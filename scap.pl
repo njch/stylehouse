@@ -2,88 +2,104 @@
 use strict;
 use warnings;
 use YAML::Syck;
+use List::MoreUtils qw"uniq";
 use v5.10;
 
 my @one = ("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
 
-our $patterns = {
-    string => sub {
-        say(my $s = shift);
-        my @e = (
-["filename", qr{/}],
-["relative filename", qr{^\.\.}],
-["relative filename", qr{^(?!/)}],
-["absolute filename", qr{^/}],
-["reachable filename", sub { -e shift }],
-["file", sub { -f shift }],
-["reachable dir", sub { -d shift }],
-["readable", sub { -r shift }],
-        );
-        for my $t (@e) {
-            if (ref $t->[1] eq "Regexp") {
-                next unless $s =~ $t->[1]
-            }
-            elsif (ref $t->[1] eq "CODE") {
-                next unless $t->[1]->($s);
-            }
-            else {
-                say "NO!";
-            }
-            met("string/$t->[0]", $s);
-        }
-    },
-    etc => sub {
-        my $it = shift;
-        my @e = (
-[ "file size",
-    qq { "string/reachable filename"
-         && "string/file" },
-    sub {
-        my $it = shift;
-        met("file size", $it, (stat($it))[7]);
-    },
-],
-
-        );
-        for my $e (@e) {
-            my ($t, $logic, $e) = @$e;
-            if (mete_logic($it, $logic) && !mete($it, $t)) {
-                $e->($it);
-            }
-        }
-    },
-};
-our $meta = [];
+our $intuition = [];
+our $learnings = [];
+our $index = {};
 our $at_total_entropy = 0;
 
-sub met {
-    my ($from, $it, $eh) = @_;
-    $at_total_entropy = 0;
-    push @$meta, { i => $it, f => $from, e => $eh};
-}
-sub meta {
-    my $w = shift;
-    grep { $_->{i} eq $w } @$meta;
-}
-sub mete {
-    my $it = shift;
-    my ($f) = shift;
-    my @m = grep { $_->{f} eq $f } meta($it);
-    return @m;
-}
-sub mete_logic {
-    my $it = shift;
-    my $l = shift;
-    $l =~ s{"(.+?)"}{mete(\$it, "$1")}g;
-    say $l;
-    if (eval $l) {
-        return 11;
+my @givensif = split "\n", <<"";
+string:
+    /\// maybe filename
+filename:
+    /^\.\./  probly relative
+    /^(?!/)/ maybe relative
+    /^\//    probly absolute
+    { -e shift } is reachable
+relative or absolute
+reachable filename:
+    { -f shift } is file
+    { -d shift } is dir
+file or dir
+file:
+    { -r shift } is readable
+    { (stat(shift))[7] } is size
+
+
+while (defined($_ = shift @givensif)) {
+    if (/^(\w+):/) {
+
+        my $from = $1;
+        # some leads
+
+        until (!@givensif || $givensif[0] =~ /^\S/) {
+            $_ = shift @givensif || last;
+            s/^\s+// || die;
+
+            my $cog =
+                s/^\/(.+)\/ // ? qr"$1" :
+                s/^\{(.+)\} // ? eval "sub { $1 }" :
+                die;
+            my ($cer, $to) = /^\s*(\w+)\s+(\w+)$/;
+            $cer && $to || die;
+            pat(
+                from => $from,
+                cer => $cer,
+                to => $to,
+                cog => $cog,
+            );
+        }
+
     }
-    else {
-        say "+False!: ".$@
+    elsif (/^([\w ]+)$/) {
+        my @mutex = split / or / || die;
+        # things that cannot be all true
+        pat(
+            mutex => \@mutex,
+        );
     }
 }
 
+sub pat {
+    my $a = { @_ };
+    push @$intuition, $a;
+
+    # chuck names into an index
+    for my $w ("from", "to", "mutex") {
+        my @words = map { ref $_ eq "ARRAY" ? @$_ : $_ }
+            $a->{$w} || next;
+        map { push @{$index->{$_} ||= []}, $a } @words;
+    }
+}
+
+
+sub met {
+    my ($int, $it, $val) = @_;
+    if (@_ == 2) {
+        $val = 1;
+    }
+    unless (ref $int eq "HASH") {
+        $int = { to => $int };
+    }
+    push @$learnings, {
+        int => $int,
+        it => $it,
+        val => $val,
+    };
+    $at_total_entropy = 0;
+}
+sub metit {
+    my $it = shift;
+    grep { $_->{it} eq $it } @$learnings;
+}
+sub metitint {
+    my ($it, $int) = @_;
+    grep { $_->{int} eq $int } metit($it);
+}
 
 use Data::Walk;
 sub analyse {
@@ -92,23 +108,55 @@ sub analyse {
         walk \&analyse, @$it
     }
     else {
-        if (meta($it)) {
-            $patterns->{etc}->($it);
+        my @meta = metit($it);
+        if (!@meta) {
+            if (ref \$it eq "SCALAR") {
+                say "Met string!";
+                met("string" => $it);
+            }
+            else {
+                say "no idea how to start with $it";
+            }
         }
-        elsif (ref \$it eq "SCALAR") {
-            $patterns->{string}->($it);
+        else {
+            # learned things, ideas we got TO
+            my %tos = map { $_ => 1 }
+                map { $_->{int}->{to} }
+                grep { $_->{val} }
+                grep { defined $_->{int}->{to} } @meta;
+            # intuitions involving these things somehow
+            my @relvnt = grep { $_->{from} && $tos{$_->{from}} } @$intuition;
+
+            for my $r (@relvnt) {
+                if ($tos{$r->{to}}) {
+                    say "already got $r->{to}";
+                    next
+                }
+                say " - $r->{cer} $r->{to}...";
+                my $cog = $r->{cog};
+                my @val = 
+                    ref $cog eq "Regexp" ? $it =~ $cog :
+                    ref $cog eq "CODE" ? $cog->($it) :
+                    die;
+                say @val ? "   @val" : "NOPE";
+                @val = [] if @val > 1;
+                met($r, $it, @val);
+            }
         }
     }
 }
 
 until ($at_total_entropy) {
     $at_total_entropy = 1;
-    analyse(@one);
 }
+
+analyse(@one);
+analyse(@one);
+analyse(@one);
+analyse(@one);
 
 my $mbyit = {};
-for my $e (@$meta) {
-    push @{$mbyit->{$e->{i}} ||= []}, [$e->{f}, $e->{e}];
+for my $e (@$learnings) {
+    push @{$mbyit->{$e->{it}} ||= []}, [$e->{int}->{to}, $e->{val}];
 }
 say Dump($mbyit);
-
