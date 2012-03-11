@@ -7,12 +7,46 @@ use v5.10;
 
 my @one = ("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
 
-our $intuition = [];
 our $learnings = [];
-our $index = {};
 our $at_total_entropy = 0;
+our $matches = new Stuff();
 
-my @givensif = split "\n", <<"";
+# we have patterns leading to intuitions
+# applied intuitions ($learnings) unlock more patterns...
+
+{ package Stuff;
+sub new {
+    bless {}, __PACKAGE__;
+}
+sub link {
+    my $self = shift;
+    push @{$self->{links}||=[]}, shift;
+}
+sub all { return @{shift->{links}} }
+}
+{ package Pattern;
+use base 'Stuff';
+sub new {
+    shift;
+    my $self = bless {@_}, __PACKAGE__; # names => @names
+    $matches->link($self);
+    $self;
+}
+}
+{ package Intuition;
+use base 'Stuff';
+sub new {
+    shift;
+    my $self = bless {@_}, __PACKAGE__;
+    $self->{in}->link($self);
+}
+}
+
+# here we generate a basic pyramid scheme of matches and data
+# {{{
+# pat() is the out tray
+
+my @giv = split "\n", <<"";
 string:
     /\// maybe filename
 filename:
@@ -29,27 +63,33 @@ file:
     { -r shift } is readable
     { (stat(shift))[7] } is size
 
+sub shift_until {
+    my ($shift, $until) = @_;
+    my @ret;
+    until (!@$shift || $until->()) {
+        push @ret, shift @$shift;
+    }
+    return @ret;
+}
 
-while (defined($_ = shift @givensif)) {
-    if (/^(\w+):/) {
+while (defined($_ = shift @giv)) {
+    if (/^([\w ]+):/) {
 
-        my $from = $1;
-        # some leads
+        my $in_match = new Pattern(names => [split /\s+/, $1]);
 
-        until (!@givensif || $givensif[0] =~ /^\S/) {
-            $_ = shift @givensif || last;
-            s/^\s+// || die;
+        my @ints = shift_until(\@giv, sub { $giv[0] =~ /^\S/ });
 
+        for (@ints) {
             my $cog =
                 s/^\/(.+)\/ // ? qr"$1" :
                 s/^\{(.+)\} // ? eval "sub { $1 }" :
                 die;
             my ($cer, $to) = /^\s*(\w+)\s+(\w+)$/;
             $cer && $to || die;
-            pat(
-                from => $from,
-                cer => $cer,
+            new Intuition(
+                in => $in_match,
                 to => $to,
+                cer => $cer,
                 cog => $cog,
             );
         }
@@ -62,20 +102,10 @@ while (defined($_ = shift @givensif)) {
             mutex => \@mutex,
         );
     }
+    else { die $_ }
 }
 
-sub pat {
-    my $a = { @_ };
-    push @$intuition, $a;
-
-    # chuck names into an index
-    for my $w ("from", "to", "mutex") {
-        my @words = map { ref $_ eq "ARRAY" ? @$_ : $_ }
-            $a->{$w} || next;
-        map { push @{$index->{$_} ||= []}, $a } @words;
-    }
-}
-
+# }}}
 
 sub met {
     my ($int, $it, $val) = @_;
@@ -92,32 +122,25 @@ sub met {
     };
     $at_total_entropy = 0;
 }
-sub metit {
+sub meta_for {
     my $it = shift;
     grep { $_->{it} eq $it } @$learnings;
-}
-sub metitint {
-    my ($it, $int) = @_;
-    grep { $_->{int} eq $int } metit($it);
 }
 
 use Data::Walk;
 sub analyse {
     my $it = shift || $_;
-    if (ref $it eq "ARRAY") {
-        walk \&analyse, @$it
+
+    my @meta = meta_for($it);
+
+    if (!@meta && ref \$it eq "SCALAR") {
+        say "Met string!";
+        met("string", $it);
     }
-    else {
-        my @meta = metit($it);
-        if (!@meta) {
-            if (ref \$it eq "SCALAR") {
-                say "Met string!";
-                met("string" => $it);
-            }
-            else {
-                say "no idea how to start with $it";
-            }
-        }
+
+    my @positive_intuitions = grep { $_->{val} } @meta;
+    # match our learnings for $it against $matches
+
         else {
             # learned things, ideas we got TO
             my %tos = map { $_ => 1 }
@@ -125,6 +148,7 @@ sub analyse {
                 grep { $_->{val} }
                 grep { defined $_->{int}->{to} } @meta;
             # intuitions involving these things somehow
+
             my @relvnt = grep { $_->{from} && $tos{$_->{from}} } @$intuition;
 
             for my $r (@relvnt) {
@@ -160,3 +184,4 @@ for my $e (@$learnings) {
     push @{$mbyit->{$e->{it}} ||= []}, [$e->{int}->{to}, $e->{val}];
 }
 say Dump($mbyit);
+
