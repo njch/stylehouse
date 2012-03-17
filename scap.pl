@@ -16,7 +16,7 @@ our $matches = new Stuff();
 # applied intuitions ($learnings) unlock more patterns...
 
 { package Stuff;
-# base class for all things in this meta-universe
+# base class for all things in this metaverse
 # link  links stuff together
 # links returns all links
 # {{{
@@ -54,7 +54,7 @@ sub match {
     say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
     $res;
 }
-} # }}}
+} # $}}}
 { package Intuition;
 # new
 #   in => Pattern(to look for),
@@ -108,7 +108,7 @@ file:
     { -r shift } is readable
     { (stat(shift))[7] } is size
 
-sub shift_until {
+sub shift_until { # TODO util functions
     my ($shift, $until) = @_;
     my @ret;
     until (!@$shift || $until->()) {
@@ -217,3 +217,32 @@ for my $e (@$learnings) {
 }
 say Dump($mbyit);
 
+sub summarise {
+    my $thing = shift;
+    if (ref $thing eq "HASH") {
+        return {
+            id => "$thing",
+            text => "$thing->{val} ".\$thing->{it}." $thing->{int}->{to}",
+        }
+    }
+}
+
+use Mojolicious::Lite;
+use JSON::XS;
+get '/' => 'index';
+get '/ajax' => sub {
+    my $self = shift;
+    my $from = $self->param('from');
+    my @nodes = map { summarise($_) } @$learnings;
+    $self->render(text => encode_json(\@nodes));
+};
+app->start;
+__DATA__
+
+@@ index.html.ep
+<!doctype html><html>
+    <head><title>scap!</title>
+    <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
+    <script type="text/javascript" src="scope.js"></script></head>
+    <body><%== content %></body>
+</html>
