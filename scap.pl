@@ -5,7 +5,7 @@ use YAML::Syck;
 use List::MoreUtils qw"uniq";
 use v5.10;
 
-my @one = ("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
+my @one = new Text("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
 
 our $learnings = [];
 our $at_total_entropy = 0;
@@ -25,11 +25,37 @@ sub new {
 }
 sub link {
     my $self = shift;
-    push @{$self->{links}||=[]}, shift;
+    push @{$self->{links}||=[]}, \@_;
 }
-sub links { return @{shift->{links}} }
+sub linked {
+    my $self = shift;
+    my $spec = shift;
+    map { $_->[0] } $self->links($spec);
+}
+sub links {
+    my $self = shift;
+    my $spec = shift;
+    my $links = $self->{links};
+    if (ref $spec) { # object
+        grep { $_->[0] eq $spec } @$links
+    }
+    elsif ($spec) {
+        grep { ref $_->[0] eq $spec } @$links
+    }
+    else {
+        @$links
+    }
+}
 }
 # }}}
+{ package Text;
+# uhm...
+use base 'Stuff';
+sub new { shift; bless { text => shift }, __PACKAGE__; }
+sub text {
+    shift->{text}
+}
+}
 { package Pattern;
 # new(names => @names) # primitive pattern matching
 # are linked to $matches
@@ -39,20 +65,30 @@ sub new {
     shift;
     my $self = bless {@_}, __PACKAGE__; # names => @names
     $matches->link($self);
+    die if grep { $_ eq "string" } @{$self->{names}};
     $self;
 }
 sub match {
     my $self = shift;
     my $it = shift;
-    my %res;
-    for my $name (@{$self->{names}}) {
-        my ($had, $uh) = ::it_has($it, $name);
-        die ::Dump($uh) if $uh;
-        $res{$name} = ($had && $had->{val} == 1) || 0;
+
+        $DB::single = 1;
+    if ($self->{object}) {
+        my $res = ref $it eq $self->{object};
+        say "match ".($res?"PASS":"FAIL").": string";
+        $res
     }
-    my $res = (0 == grep { $res{$_} == 0 } keys %res);
-    say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
-    $res;
+    elsif ($self->{names}) {
+        my %res;
+        for my $name (@{$self->{names}}) {
+            my ($had, $uh) = ::it_is_to($it, $name);
+            die ::Dump($uh) if $uh;
+            $res{$name} = ($had && $had->{val} == 1) || 0;
+        }
+        my $res = (0 == grep { $res{$_} == 0 } keys %res);
+        say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
+        $res;
+    }
 }
 } # $}}}
 { package Intuition;
@@ -73,7 +109,7 @@ sub look {
     my $self = shift;
     my $it = shift;
 
-    return if ::it_has($it, $self->{to}); # already
+    return if $self->links($it); # already
 
     say " looking: $self->{cer} $self->{to}...";
     my $cog = $self->{cog};
@@ -120,7 +156,9 @@ sub shift_until { # TODO util functions
 while (defined($_ = shift @giv)) {
     if (/^([\w ]+):/) {
 
-        my $in_match = new Pattern(names => [split /\s+/, $1]);
+        my $in_match = $1 eq "string" ?
+            new Pattern (object => "Text") :
+            new Pattern(names => [split /\s+/, $1]);
 
         my @ints = shift_until(\@giv, sub { $giv[0] =~ /^\S/ });
 
@@ -160,20 +198,16 @@ sub met {
     unless (ref $int) {
         $int = { to => $int };
     }
-    push @$learnings, {
-        int => $int,
-        it => $it,
-        val => $val,
-    };
+    $int->link($it, $val);
     $at_total_entropy = 0;
 }
 sub meta_for {
     my $it = shift;
-    grep { $_->{it} eq $it } @$learnings;
+    $it->links("Intuition");
 }
-sub it_has {
-    my ($it, $has) = @_;
-    grep { $_->{int}->{to} eq $has } meta_for($it);
+sub it_is_to {
+    my ($it, $to) = @_;
+    grep { $_->{to} eq $to } $it->linked("Intuition");
 }
 
 use Data::Walk;
@@ -183,7 +217,7 @@ sub analyse {
     METATRIEVE:
     my @meta = meta_for($it);
 
-    if (!@meta && ref \$it eq "SCALAR") {
+    if (!@meta && ref \$it eq "Text") {
         say "Met string!";
         met("string", $it);
         goto METATRIEVE;
@@ -191,13 +225,12 @@ sub analyse {
 
     # match 
     my @positive_intuitions = grep { $_->{val} } @meta;
-    my @matches = $matches->links();
     my @intuitions = map {
-        $_->links()
+        $_->linked()
     } grep {
         $_->match($it)
-    } @matches;
-    say Dump(\@intuitions);
+    } $matches->linked("Pattern");
+    say "ints: ".Dump(\@intuitions);
 
     $_->look($it) for @intuitions;
 
@@ -236,7 +269,7 @@ get '/ajax' => sub {
     my @nodes = map { summarise($_) } @$learnings;
     $self->render(text => encode_json(\@nodes));
 };
-app->start;
+#app->start;
 __DATA__
 
 @@ index.html.ep
