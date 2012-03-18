@@ -219,19 +219,11 @@ use Data::Walk;
 sub analyse {
     my $it = shift || $_;
 
-    METATRIEVE:
-
-    # match 
-    my @intuitions = map {
-        $_->linked("Intuition")
-    } grep {
-        $_->match($it)
-    } $matches->linked("Pattern");
-
-    $_->look($it) for @intuitions;
-
-    # match our learnings for $it against $matches
-
+    # TODO this flows of entropy! make special thingy!
+    map { $_->look($it) }
+    map { $_->linked("Intuition") }
+    grep { $_->match($it) }
+        $matches->linked("Pattern");
 }
 
 until ($at_maximum_entropy) {
