@@ -7,10 +7,10 @@ use v5.10;
 
 my @one = new Text("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
 
-our $learnings = [];
-our $at_total_entropy = 0;
+our $at_maximum_entropy = 0;
 # a bunch of Patterns will link themselves to $matches
 our $matches = new Stuff();
+our @links;
 
 # we have patterns leading to intuitions
 # applied intuitions ($learnings) unlock more patterns...
@@ -24,27 +24,32 @@ sub new {
     bless {}, __PACKAGE__;
 }
 sub link {
-    my $self = shift;
-    push @{$self->{links}||=[]}, \@_;
+    push @links, [@_]; # self, other, ...
 }
 sub linked {
     my $self = shift;
     my $spec = shift;
-    map { $_->[0] } $self->links($spec);
+    map { $_->[1] } $self->links($spec);
 }
 sub links {
     my $self = shift;
     my $spec = shift;
-    my $links = $self->{links};
-    if (ref $spec) { # object
-        grep { $_->[0] eq $spec } @$links
-    }
-    elsif ($spec) {
-        grep { ref $_->[0] eq $spec } @$links
-    }
-    else {
-        @$links
-    }
+    return grep {
+        ref $spec   ? $_->[1] eq $spec      # an object
+        : $spec     ? ref $_->[1] eq $spec  # package name
+        : 1
+    } map {
+        # ensure that $self is one, make it the first one
+        $_->[0] eq $self 
+            ? [@$_]
+        : $_->[1] eq $self
+            ? do {
+                my @a = @$_;
+                my @b = (shift(@a), shift(@a));
+                [ reverse(@b), @a ]
+            }
+        : ()
+    } @links # all the links in the whole metaverse
 }
 }
 # }}}
@@ -65,36 +70,35 @@ sub new {
     shift;
     my $self = bless {@_}, __PACKAGE__; # names => @names
     $matches->link($self);
-    die if grep { $_ eq "string" } @{$self->{names}};
+    die if $self->{names} && grep { $_ eq "string" } @{$self->{names}};
     $self;
 }
 sub match {
     my $self = shift;
     my $it = shift;
 
-        $DB::single = 1;
-    if ($self->{object}) {
+    # TODO some logicator from cpan?
+    if ($self->{object} && !$self->{names}) {
         my $res = ref $it eq $self->{object};
         say "match ".($res?"PASS":"FAIL").": string";
         $res
     }
     elsif ($self->{names}) {
         my %res;
+        my %objects = map {$_->[1]->{name} => $_->[2]} $it->links($self->{object});
         for my $name (@{$self->{names}}) {
-            my ($had, $uh) = ::it_is_to($it, $name);
-            die ::Dump($uh) if $uh;
-            $res{$name} = ($had && $had->{val} == 1) || 0;
+            $res{$name} = (exists $objects{$name} && $objects{$name} == 1);
         }
         my $res = (0 == grep { $res{$_} == 0 } keys %res);
         say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
         $res;
-    }
+    } else { die }
 }
 } # $}}}
 { package Intuition;
 # new
 #   in => Pattern(to look for),
-#   to => "word", the word describing a positive intuition
+#   name => "word", the word describing a positive intuition
 #   cer => is|probly|maybe|slight, security of knowledge
 #           greater arrangements made out of uncertainties should be upgraded
 #   cog => regex or code->($_) to test
@@ -111,11 +115,12 @@ sub look {
 
     return if $self->links($it); # already
 
-    say " looking: $self->{cer} $self->{to}...";
+    say " looking: $self->{cer} $self->{name}...";
     my $cog = $self->{cog};
+    my $t = $it->text;
     my @val = 
-        ref $cog eq "Regexp" ? $it =~ $cog :
-        ref $cog eq "CODE" ? $cog->($it) :
+        ref $cog eq "Regexp" ? $t =~ $cog :
+        ref $cog eq "CODE" ? $cog->($t) :
         die;
     say @val ? "   @val" : "NOPE";
     @val = [] if @val > 1;
@@ -126,6 +131,7 @@ sub look {
 
 # here we generate some intuitions and their matches 
 # {{{
+
 
 my @giv = split "\n", <<"";
 string:
@@ -157,8 +163,13 @@ while (defined($_ = shift @giv)) {
     if (/^([\w ]+):/) {
 
         my $in_match = $1 eq "string" ?
-            new Pattern (object => "Text") :
-            new Pattern(names => [split /\s+/, $1]);
+            new Pattern(
+                object => "Text"
+            ) :
+            new Pattern(
+                object => "Intuition",
+                names => [split /\s+/, $1]
+            );
 
         my @ints = shift_until(\@giv, sub { $giv[0] =~ /^\S/ });
 
@@ -172,7 +183,7 @@ while (defined($_ = shift @giv)) {
             $cer && $to || die;
             new Intuition(
                 in => $in_match,
-                to => $to,
+                name => $to,
                 cer => $cer,
                 cog => $cog,
             );
@@ -192,22 +203,16 @@ while (defined($_ = shift @giv)) {
 
 sub met {
     my ($int, $it, $val) = @_;
+    say "intuited $int->{name}";
     if (@_ == 2) {
         $val = 1;
     }
-    unless (ref $int) {
-        $int = { to => $int };
-    }
     $int->link($it, $val);
-    $at_total_entropy = 0;
+    $at_maximum_entropy = 0;
 }
 sub meta_for {
     my $it = shift;
     $it->links("Intuition");
-}
-sub it_is_to {
-    my ($it, $to) = @_;
-    grep { $_->{to} eq $to } $it->linked("Intuition");
 }
 
 use Data::Walk;
@@ -215,22 +220,13 @@ sub analyse {
     my $it = shift || $_;
 
     METATRIEVE:
-    my @meta = meta_for($it);
-
-    if (!@meta && ref \$it eq "Text") {
-        say "Met string!";
-        met("string", $it);
-        goto METATRIEVE;
-    }
 
     # match 
-    my @positive_intuitions = grep { $_->{val} } @meta;
     my @intuitions = map {
-        $_->linked()
+        $_->linked("Intuition")
     } grep {
         $_->match($it)
     } $matches->linked("Pattern");
-    say "ints: ".Dump(\@intuitions);
 
     $_->look($it) for @intuitions;
 
@@ -238,17 +234,19 @@ sub analyse {
 
 }
 
-until ($at_total_entropy) {
-    $at_total_entropy = 1;
+until ($at_maximum_entropy) {
+    $at_maximum_entropy = 1;
 analyse(@one);
 }
 
 
-my $mbyit = {};
-for my $e (@$learnings) {
-    push @{$mbyit->{$e->{it}} ||= []}, [$e->{int}->{to}, $e->{val}];
+# DISPLAY
+
+for my $it (@one) {
+    for my $e ($it->links("Intuition")) {
+        say $e->[1]->{name} ."\t\t". $e->[2];
+    }
 }
-say Dump($mbyit);
 
 sub summarise {
     my $thing = shift;
@@ -266,7 +264,7 @@ get '/' => 'index';
 get '/ajax' => sub {
     my $self = shift;
     my $from = $self->param('from');
-    my @nodes = map { summarise($_) } @$learnings;
+    my @nodes = map { summarise($_) } "balls";
     $self->render(text => encode_json(\@nodes));
 };
 #app->start;
