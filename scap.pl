@@ -5,7 +5,10 @@ use YAML::Syck;
 use List::MoreUtils qw"uniq";
 use v5.10;
 
-my @one = new Text("../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac");
+my $junk = new Stuff();
+my @one = map { $_->link($junk); $_ }
+    map { new Text($_) }
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac";
 
 our $at_maximum_entropy = 0;
 # a bunch of Patterns will link themselves to $matches
@@ -228,13 +231,13 @@ sub analyse {
 
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
-analyse(@one);
+    analyse($_) for $junk->linked;
 }
 
 
 # DISPLAY
 
-for my $it (@one) {
+for my $it ($junk->linked) {
     for my $e ($it->links("Intuition")) {
         say $e->[1]->{name} ."\t\t". $e->[2];
     }
@@ -242,24 +245,48 @@ for my $it (@one) {
 
 sub summarise {
     my $thing = shift;
-    if (ref $thing eq "HASH") {
-        return {
-            id => "$thing",
-            text => "$thing->{val} ".\$thing->{it}." $thing->{int}->{to}",
-        }
+    my $text = "??? $thing";
+    if (ref $thing eq "Text") {
+        $text = $thing->text;
     }
+    elsif (ref $thing eq "Intuition") {
+        $text = "Intuition: $thing->{cer} $thing->{name}"
+    }
+    my $id;
+    if (ref $thing) {
+        ($id) = $thing=~ /\((.+)\)/;
+    }
+    return sprintf '<li id="%s">%s </li>', $id, $text;
 }
 
+sub junkilate {
+    my $self = shift;
+    my $point = $junk;
+    if ($self && $self->param('from')) {
+        my $from = $self->param('from');
+        say "From: $from";
+        for (@links) {
+            if ($_->[0] =~ /$from/) {
+                $point = $_->[0];
+                last;
+            }
+            elsif ($_->[1] =~ /$from/) {
+                $point = $_->[1];
+                last;
+            }
+        }
+        say "new point: $point";
+        # from becomes Pattern?
+    }
+    $DB::single = 1;
+    my @nodes = map { summarise($_) } $point->linked;
+    $self->render(text => join "\n", @nodes);
+};
 use Mojolicious::Lite;
 use JSON::XS;
 get '/' => 'index';
-get '/ajax' => sub {
-    my $self = shift;
-    my $from = $self->param('from');
-    my @nodes = map { summarise($_) } "balls";
-    $self->render(text => encode_json(\@nodes));
-};
-#app->start;
+get '/ajax' => \&junkilate;
+app->start;
 __DATA__
 
 @@ index.html.ep
@@ -267,5 +294,5 @@ __DATA__
     <head><title>scap!</title>
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
     <script type="text/javascript" src="scope.js"></script></head>
-    <body><%== content %></body>
+    <body><ul></ul></body>
 </html>
