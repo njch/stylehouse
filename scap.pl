@@ -11,13 +11,9 @@ my @one = map { $_->link($junk); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac";
 
+my $wants = new Stuff();
 our $at_maximum_entropy = 0;
-# a bunch of Patterns will link themselves to $matches
-our $matches = new Stuff();
 our @links;
-
-# we have patterns leading to intuitions
-# applied intuitions ($learnings) unlock more patterns...
 
 { package Stuff;
 # base class for all things in this metaverse
@@ -25,7 +21,14 @@ our @links;
 # links returns all links
 # {{{
 sub new {
-    bless {}, __PACKAGE__;
+    shift;
+    my $package = __PACKAGE__;
+    if ($_[0]) {
+        $package = shift;
+        eval "package $package; use base 'Stuff';";
+        die $@ if $@;
+    }
+    bless {@_}, $package;
 }
 sub link {
     push @links, [@_]; # self, other, ...
@@ -73,7 +76,6 @@ use base 'Stuff';
 sub new {
     shift;
     my $self = bless {@_}, __PACKAGE__; # names => @names
-    $matches->link($self);
     die if $self->{names} && grep { $_ eq "string" } @{$self->{names}};
     $self;
 }
@@ -99,21 +101,29 @@ sub match {
     } else { die }
 }
 } # $}}}
-{ package Intuition;
+{ package Action;
 # new
-#   in => Pattern(to look for),
+# {{{
+use base 'Stuff';
+sub new {
+    my $self = SUPER::new(@_);
+    if ($self->{want}) {
+        $wants->link($self, $self->{want});
+    }
+    return $self
+}
+}
+# }}}
+
+our $intuitor = new Stuff("Intuitor");
+$intuitor->link(
+new Stuff(
+    "Intuition",
 #   name => "word", the word describing a positive intuition
 #   cer => is|probly|maybe|slight, security of knowledge
 #           greater arrangements made out of uncertainties should be upgraded
 #   cog => regex or code->($_) to test
-# {{{
-use base 'Stuff';
-sub new {
-    shift;
-    my $self = bless {@_}, __PACKAGE__;
-    $self->{in}->link($self);
-}
-sub look {
+    does => sub {
     my $self = shift;
     my $it = shift;
 
@@ -130,17 +140,22 @@ sub look {
     @val = [@val] if @val > 1;
     @val = (1) if @val == 0;
     
-    say "intuited $int->{name}";
-    $int->link($it, $val);
+    say "intuited $self->{name}";
+    $self->link($it, @val);
     $at_maximum_entropy = 0;
-}
-}
-# }}}
+    },
+));
+$intuitor->link(
+new Action(
+"Intuit",
+want => new Pattern(object => "Text"),
+does => sub {
+    my $self = shift;
+    my $it = shift;
 
+    unless ($self->linked("Intuition")) {
 # here we generate some intuitions and their matches 
 # {{{
-
-
 my @giv = split "\n", <<"";
 string:
     /\// maybe filename
@@ -189,12 +204,13 @@ while (defined($_ = shift @giv)) {
                 die $_;
             my ($cer, $to) = /^\s*(\w+)\s+(\w+)$/;
             $cer && $to || die;
-            new Intuition(
-                in => $in_match,
+            my $int = new Intuition(
                 name => $to,
                 cer => $cer,
                 cog => $cog,
             );
+            $int->link($in_match);
+            $int->link($self);
         }
 
     }
@@ -206,27 +222,29 @@ while (defined($_ = shift @giv)) {
     }
     else { die $_ }
 }
-
 # }}}
-
-
-use Data::Walk;
-sub analyse {
-    my $it = shift || $_;
-
-    # TODO this flows of entropy! make special thingy!
-    map { $_->look($it) }
-    map { $_->linked("Intuition") }
-    grep { $_->match($it) }
-        $matches->linked("Pattern");
-}
+    }
+    else {
+        map { $_->{does}->($_, $it) }
+        map { $_->linked("Intuition") }
+        grep { $_->match($it) }
+        grep { $_->linked("Intuition") }
+        map { $_->linked("Pattern") }
+            $self->linked("Intuitor");
+    }
+},
+));
 
 start_timer();
 my $clicks = 0;
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
     $clicks++;
-    analyse($_) for $junk->linked;
+    for ($wants->links) {
+        my ($wants, $action, $pattern) = @$_;
+        map { $action->{does}->($action, $_) }
+        grep { $pattern->match($_) }
+            $junk->linked();
 }
 say "$clicks clicks in ". show_delta();
 
