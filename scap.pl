@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use YAML::Syck;
 use List::MoreUtils qw"uniq";
+use Scriptalicious;
 use v5.10;
 
 my $junk = new Stuff();
@@ -126,8 +127,12 @@ sub look {
         ref $cog eq "CODE" ? $cog->($t) :
         die;
     say @val ? "   @val" : "NOPE";
-    @val = [] if @val > 1;
-    ::met($self, $it, @val);
+    @val = [@val] if @val > 1;
+    @val = (1) if @val == 0;
+    
+    say "intuited $int->{name}";
+    $int->link($it, $val);
+    $at_maximum_entropy = 0;
 }
 }
 # }}}
@@ -204,19 +209,6 @@ while (defined($_ = shift @giv)) {
 
 # }}}
 
-sub met {
-    my ($int, $it, $val) = @_;
-    say "intuited $int->{name}";
-    if (@_ == 2) {
-        $val = 1;
-    }
-    $int->link($it, $val);
-    $at_maximum_entropy = 0;
-}
-sub meta_for {
-    my $it = shift;
-    $it->links("Intuition");
-}
 
 use Data::Walk;
 sub analyse {
@@ -229,10 +221,14 @@ sub analyse {
         $matches->linked("Pattern");
 }
 
+start_timer();
+my $clicks = 0;
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
+    $clicks++;
     analyse($_) for $junk->linked;
 }
+say "$clicks clicks in ". show_delta();
 
 
 # DISPLAY
@@ -256,7 +252,7 @@ sub summarise {
     if (ref $thing) {
         ($id) = $thing=~ /\((.+)\)/;
     }
-    return sprintf '<li id="%s">%s </li>', $id, $text;
+    return sprintf '<li id="%s">%s <a id="%s">-></a></li>', $id, $text, $id;
 }
 
 sub junkilate {
@@ -286,7 +282,12 @@ use Mojolicious::Lite;
 use JSON::XS;
 get '/' => 'index';
 get '/ajax' => \&junkilate;
-app->start;
+use Mojo::Server::Daemon;
+
+my $daemon = Mojo::Server::Daemon->new;
+$daemon->listen(['http://*:3000']);
+$daemon->run;
+
 __DATA__
 
 @@ index.html.ep

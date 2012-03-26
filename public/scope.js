@@ -5,11 +5,11 @@ $.get('ajax', { hell: 0 }, function (eh) {
     });
 
 function triggery () {
-$("li").click(function (li) {
+$("a").click(function (li) {
     var where = this;
     $.get('ajax', { from: $(where).attr("id") }, function (eh) {
 	console.log(where);
-        $(where).append("<ul>"+eh+"</ul>");
+    $(where).append("<ul>"+eh+"</ul>");
 	triggery()
     })
 });
