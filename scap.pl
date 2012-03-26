@@ -21,8 +21,9 @@ our @links;
 # links returns all links
 # {{{
 sub new {
-    shift;
+    shift if $_[0] eq "Stuff";
     my $package = __PACKAGE__;
+
     if ($_[0]) {
         $package = shift;
         eval "package $package; use base 'Stuff';";
@@ -106,7 +107,8 @@ sub match {
 # {{{
 use base 'Stuff';
 sub new {
-    my $self = SUPER::new(@_);
+    shift;
+    my $self = Stuff::new(@_);
     if ($self->{want}) {
         $wants->link($self, $self->{want});
     }
@@ -245,6 +247,7 @@ until ($at_maximum_entropy) {
         map { $action->{does}->($action, $_) }
         grep { $pattern->match($_) }
             $junk->linked();
+    }
 }
 say "$clicks clicks in ". show_delta();
 
@@ -270,7 +273,8 @@ sub summarise {
     if (ref $thing) {
         ($id) = $thing=~ /\((.+)\)/;
     }
-    return sprintf '<li id="%s">%s <a id="%s">-></a></li>', $id, $text, $id;
+    my ($color) = $id =~ /(...)$/;
+    return sprintf '<li id="%s" style="background-color: #%s">%s <a id="%s">-></a></li>', $id, $color, $text, $id;
 }
 
 sub junkilate {
@@ -292,7 +296,6 @@ sub junkilate {
         say "new point: $point";
         # from becomes Pattern?
     }
-    $DB::single = 1;
     my @nodes = map { summarise($_) } $point->linked;
     $self->render(text => join "\n", @nodes);
 };
