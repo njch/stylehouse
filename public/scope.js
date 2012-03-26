@@ -7,9 +7,12 @@ $.get('ajax', { hell: 0 }, function (eh) {
 function triggery () {
 $("a").click(function (li) {
     var where = this;
-    $.get('ajax', { from: $(where).attr("id") }, function (eh) {
+    var id = $(where).attr("id");
+    $.get('ajax', { from: id }, function (eh) {
 	console.log(where);
-    $(where).append("<ul>"+eh+"</ul>");
+    var nest = $("li[id='"+id+"']:first");
+    console.log(nest);
+    nest.append("<ul>"+eh+"</ul>");
 	triggery()
     })
 });

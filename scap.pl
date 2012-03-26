@@ -6,12 +6,12 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-my $junk = new Stuff();
+my $junk = new Stuff("Junk");
 my @one = map { $_->link($junk); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac";
 
-my $wants = new Stuff();
+my $wants = new Stuff("Wants");
 our $at_maximum_entropy = 0;
 our @links;
 
@@ -268,6 +268,9 @@ sub summarise {
     }
     elsif (ref $thing eq "Intuition") {
         $text = "Intuition: $thing->{cer} $thing->{name}"
+    }
+    else {
+        $text = "<pre>".Dump($thing)."</pre>";
     }
     my $id;
     if (ref $thing) {
