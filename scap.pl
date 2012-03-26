@@ -32,30 +32,28 @@ sub new {
     bless {@_}, $package;
 }
 sub link {
-    push @links, [@_]; # self, other, ...
+    $at_maximum_entropy = 0;
+    push @links, {0=>shift, 1=>shift,
+                val=>\@_, id=>scalar(@links)}; # self, other, ...
 }
 sub linked {
     my $self = shift;
     my $spec = shift;
-    map { $_->[1] } $self->links($spec);
+    map { $_->{1} } $self->links($spec);
 }
 sub links {
     my $self = shift;
     my $spec = shift;
     return grep {
-        ref $spec   ? $_->[1] eq $spec      # an object
-        : $spec     ? ref $_->[1] eq $spec  # package name
+        ref $spec   ? $_->{1} eq $spec      # an object
+        : $spec     ? ref $_->{1} eq $spec  # package name
         : 1
     } map {
         # ensure that $self is one, make it the first one
-        $_->[0] eq $self 
-            ? [@$_]
-        : $_->[1] eq $self
-            ? do {
-                my @a = @$_;
-                my @b = (shift(@a), shift(@a));
-                [ reverse(@b), @a ]
-            }
+        $_->{0} eq $self 
+            ? $_
+        : $_->{1} eq $self
+            ? { 1 => $_->{0}, 0 => $_->{1}, val => $_->{val}, id => $_->{id} }
         : ()
     } @links # all the links in the whole metaverse
 }
@@ -92,7 +90,7 @@ sub match {
     }
     elsif ($self->{names}) {
         my %res;
-        my %objects = map {$_->[1]->{name} => $_->[2]} $it->links($self->{object});
+        my %objects = map {$_->{1}->{name} => $_->{val}} $it->links($self->{object});
         for my $name (@{$self->{names}}) {
             $res{$name} = (exists $objects{$name} && $objects{$name} == 1);
         }
@@ -118,14 +116,7 @@ sub new {
 # }}}
 
 our $intuitor = new Stuff("Intuitor");
-$intuitor->link(
-new Stuff(
-    "Intuition",
-#   name => "word", the word describing a positive intuition
-#   cer => is|probly|maybe|slight, security of knowledge
-#           greater arrangements made out of uncertainties should be upgraded
-#   cog => regex or code->($_) to test
-    does => sub {
+sub do_intuition {
     my $self = shift;
     my $it = shift;
 
@@ -144,9 +135,7 @@ new Stuff(
     
     say "intuited $self->{name}";
     $self->link($it, @val);
-    $at_maximum_entropy = 0;
-    },
-));
+}
 $intuitor->link(
 new Action(
 "Intuit",
@@ -206,10 +195,15 @@ while (defined($_ = shift @giv)) {
                 die $_;
             my ($cer, $to) = /^\s*(\w+)\s+(\w+)$/;
             $cer && $to || die;
-            my $int = new Intuition(
+            my $int = new Stuff("Intuition",
+#   name => "word", the word describing a positive intuition
+#   cer => is|probly|maybe|slight, security of knowledge
+#           greater arrangements made out of uncertainties should be upgraded
+#   cog => regex or code->($_) to test
                 name => $to,
                 cer => $cer,
                 cog => $cog,
+                does => \&do_intuition,
             );
             $int->link($in_match);
             $int->link($self);
@@ -243,7 +237,9 @@ until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
     $clicks++;
     for ($wants->links) {
-        my ($wants, $action, $pattern) = @$_;
+        my $action = $_->{1};
+        my $pattern = $action->{want};
+        $DB::single = ref $pattern ne "Pattern";
         map { $action->{does}->($action, $_) }
         grep { $pattern->match($_) }
             $junk->linked();
@@ -262,25 +258,25 @@ for my $it ($junk->linked) {
 
 sub summarise {
     my $thing = shift;
-    my $text = "??? $thing";
-    if (ref $thing eq "Text") {
-        $text = $thing->text;
-    }
-    elsif (ref $thing eq "Intuition") {
-        $text = "Intuition: $thing->{cer} $thing->{name}"
-    }
-    else {
-        $text = "<pre>".Dump($thing)."</pre>";
-    }
+    my $text = "$thing";
     my $id;
     if (ref $thing) {
         ($id) = $thing=~ /\((.+)\)/;
     }
     my ($color) = $id =~ /(...)$/;
-    return sprintf '<li id="%s" style="background-color: #%s">%s <a id="%s">-></a></li>', $id, $color, $text, $id;
+    if (ref $thing eq "Text") {
+        $text = $thing->text;
+    }
+    elsif (ref $thing eq "Intuition") {
+        $text = "Intuition $id: $thing->{cer} $thing->{name}"
+    }
+    elsif (ref $thing eq "Pattern") {
+        $text = "Pattern $id: object=$thing->{object} ".($thing->{names} ? join("+",@{$thing->{names}}):"");
+    }
+    return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
 }
 
-sub junkilate {
+sub junkilate { # {{{
     my $self = shift;
     my $point = $junk;
     if ($self && $self->param('from')) {
@@ -301,11 +297,44 @@ sub junkilate {
     }
     my @nodes = map { summarise($_) } $point->linked;
     $self->render(text => join "\n", @nodes);
-};
+} # }}}
+
+my %seen;
+my %seen_ob;
+my $n = 1;
+sub see {
+    my ($thing, $seen) = @_;
+    return "" if $n++ > 500;
+    
+    my $t = summarise($thing);
+    return $t if $seen;
+
+    my @links =  $thing->links;
+
+    if (@links) {
+        $t .= "\n<ul>";
+        for my $l (@links) {
+            my $seen = $seen{$l->{id}};
+            $seen{$l->{id}} = 1;
+            next if $seen_ob{"$l->{1}"};
+            $seen_ob{"$l->{1}"} = 1;
+            $t .= see($l->{1}, $seen) 
+        }
+        $t .= "</ul>";
+    }
+    return $t;
+}
+sub treez {
+    my $self = shift;
+    my $text = see($intuitor);
+    $text .= see($junk);
+    $self->render(text => $text);
+}
+
 use Mojolicious::Lite;
 use JSON::XS;
 get '/' => 'index';
-get '/ajax' => \&junkilate;
+get '/ajax' => \&treez;
 use Mojo::Server::Daemon;
 
 my $daemon = Mojo::Server::Daemon->new;
