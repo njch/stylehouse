@@ -259,19 +259,22 @@ for my $it ($junk->linked) {
 sub summarise {
     my $thing = shift;
     my $text = "$thing";
-    my $id;
-    if (ref $thing) {
-        ($id) = $thing=~ /\((.+)\)/;
-    }
+    my ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!?";
     my ($color) = $id =~ /(...)$/;
-    if (ref $thing eq "Text") {
-        $text = $thing->text;
-    }
-    elsif (ref $thing eq "Intuition") {
-        $text = "Intuition $id: $thing->{cer} $thing->{name}"
-    }
-    elsif (ref $thing eq "Pattern") {
-        $text = "Pattern $id: object=$thing->{object} ".($thing->{names} ? join("+",@{$thing->{names}}):"");
+    given (ref $thing) {
+        when ("Text") {
+            $text = $thing->text;
+        }
+        when ("Intuition") {
+            $text = "Intuition $id: $thing->{cer} $thing->{name}"
+        }
+        when ("Intuit") {
+            $text = "Intuit $id: wants: ".summarise($thing->{want});
+        }
+        when ("Pattern") {
+            $text = "Pattern $id: object=$thing->{object} ".
+                ($thing->{names} ? join("+",@{$thing->{names}}):"");
+        }
     }
     return $text;
     return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
@@ -279,58 +282,57 @@ sub summarise {
 
 my $n = 1;
 my %seen;
-
-
-
+my $link2text = sub {
+    my $l = shift;
+    my $val = join " ", tup($l->{val});
+    my $far = summarise($l->{1});
+    return join ": ", ($val ? $val : ()), $far;
+};
+my $links_by_id = sub {
+    map { 
+        $_->{id} => {
+            text => $link2text->($_),
+            l => $_,
+        }
+    } @_;
+};
+my $links_by_other_type = sub {
+    my %links = @_;
+    my %by_other;
+    for my $l (values %links) {
+        my $type = ref $l->{l}->{1};
+        push @{$by_other{$type}||=[]}, $l;
+    }
+    %by_other;
+};
+my @path = qw{Intuit};
 sub assplain {
     my $thing = shift;
-    my $thing2node = sub {
-        new Stuff("Node",
-            t => $thing,
-            id => ($thing=~ /\((.+)\)/)[0],
-            links => [],
-        )
+    my %links = $links_by_id->($thing->links);
+    my %by_other = $links_by_other_type->(%links);
+    
+    my $follow = do {
+        my $next = shift @path;
+        delete $by_other{$next} if $next;
     };
-    my $link2text = sub {
-        my $l = shift;
-        my $val = join " ", tup($l->{val});
-        my $far = summarise($l->{1});
-        return join ": ", ($val ? $val : ()), $far;
-    };
-
-    my $linkmax = @links - 1;
-    for (0..$linkmax) {
-        my $link = $links[$_];
-        die;
+    my $tree = [];
+    for my $k (sort keys %by_other) {
+        for my $l (@{$by_other{$k}}) {
+            push @$tree, $l->{text};
+        }
     }
-
-    my @workings = ();
-    my $level; $level = sub {
-        my $node = $thing2node->($thing);
-        my %links = by(id => $node->{t}->links());
-        my $sorted = sorted([keys %links], "anywhere in", \@workings);
-
-        push @workings, $sorted->{0};
-
-        for my $seen (1, 0) {
-            for my $l (@{$sorted->{$seen}}) {
-                $l = $links{$l};
-                
-                my $label = new Text($link2text->($l));
-                $label->link($node);
-
-                if (!$seen) {
-                    my $next = $level->($l->{1});
-                    $node->link($next);
-                }
+    if ($follow) {
+        for my $l (@$follow) {
+            push @$tree, {
+                $l->{text} => assplain($l->{l}->{1})
             }
         }
+    }
+    else {
+        push @$tree, "endeth"
+    }
 
-        pop @workings;
-
-        return $node;
-    };
-    $level->($thing);
+    return $tree;
 }
 
 sub tup {
@@ -340,59 +342,12 @@ sub tup {
         : $tuple;
 }
             
-use Data::Walk;
-
-sub sorted {
-    my ($needles, $rule, $haystack) = @_;
-    die unless $rule eq "anywhere in";
-    my (@yes, @no);
-    my %needles = map { $_ => 1 } @$needles;
-
-    eval {
-        walk sub {
-            for my $need (keys %needles) {
-                if ($_ eq $need) {
-                    push @yes, $need;
-                    delete $needles{$need}
-                }
-                die "found\n" if keys %needles == 0;
-            }
-        }, $haystack;
-    };
-    $@ && $@ ne "found\n" && die $@;
-    $@ = "";
-    
-    @no = keys %needles;
-    return { 1 => \@yes, 0 => \@no }
-}
-
 sub by {
     my $by = shift;
     map { $_->{$by} => $_ } @_
 }
 
-my $tree = {};
-sub see {
-    my ($thing, $from_link) = @_;
-    die if $n++ > 50;
-    
-    my $t = summarise($thing);
-
-    if ($seen{$thing}) {
-        return $t;
-    }
-    $seen{$thing} = 1;
-
-    my @links = grep { !$from_link || $_->{id} ne $from_link } $thing->links;
-    my @going;
-    for my $l (@links) {
-        my $val = join " ", @{$l->{val}};
-        push @going, { "$val" => see($l->{1}, $l->{id}) };
-    }
-    return { $t => \@going };
-}
-my $g = assplain($intuitor);
-$DB::single = 1;
+my $g = assplain($junk);
 say Dump($g);
 
 sub treez {
