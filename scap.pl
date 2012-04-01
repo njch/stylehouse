@@ -239,7 +239,6 @@ until ($at_maximum_entropy) {
     for ($wants->links) {
         my $action = $_->{1};
         my $pattern = $action->{want};
-        $DB::single = ref $pattern ne "Pattern";
         map { $action->{does}->($action, $_) }
         grep { $pattern->match($_) }
             $junk->linked();
@@ -263,16 +262,16 @@ sub summarise {
     my ($color) = $id =~ /(...)$/;
     given (ref $thing) {
         when ("Text") {
-            $text = $thing->text;
+            $text = "$thing: ".$thing->text;
         }
         when ("Intuition") {
-            $text = "Intuition $id: $thing->{cer} $thing->{name}"
+            $text = "$thing: $thing->{cer} $thing->{name}"
         }
         when ("Intuit") {
-            $text = "Intuit $id: wants: ".summarise($thing->{want});
+            $text = "$thing: wants: ".summarise($thing->{want});
         }
         when ("Pattern") {
-            $text = "Pattern $id: object=$thing->{object} ".
+            $text = "$thing: object=$thing->{object} ".
                 ($thing->{names} ? join("+",@{$thing->{names}}):"");
         }
     }
@@ -280,8 +279,6 @@ sub summarise {
     return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
 }
 
-my $n = 1;
-my %seen;
 my $link2text = sub {
     my $l = shift;
     my $val = join " ", tup($l->{val});
@@ -310,8 +307,6 @@ my %seen_lids;
 my $n= 0;
 sub assplain {
     my ($thing, $path) = @_;
-    $path ||= ["$thing"];
-    $DB::single = 1;
     my %links = $links_by_id->($thing->links);
     $seen_lids{$_}++ for keys %links;
     my %by_other = $links_by_other_type->(%links);
@@ -321,7 +316,7 @@ sub assplain {
         my @ld;
         my $oid = "$l->{1}";
 
-        my $no_recurs;
+        my $no_recurs = 0;
         if ($seen_lids{$l->{id}} > 1) {
             $no_recurs = 1;
         }
@@ -329,23 +324,27 @@ sub assplain {
             $no_recurs = 2;
         }
 
-        if ($n++ > 500) {
-            push @ld, "DEEP RECURSION!";
+        if ($n++ > 100) {
+            return "DEEP RECURSION!";
         }
         push @ld, $l->{text};
 
         $seen_lids{$l->{id}}++;
 
-        return () if $no_recurs;
-        return \@ld if $no_recurs == 1;
-        $DB::single = 1;
+        return ("links back to $oid") if $no_recurs == 2;
+        return ["links end", @ld] if $no_recurs == 1;
         return [
             @ld,
+            "link ->",
             assplain($l->{1}, [@$path, $oid])
         ]
     };
 
     my $tree = [];
+    unless ($path) {
+        $path = ["$thing"];
+        push @$tree, summarise($thing);
+    }
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
             push @$tree, $figure_link->($l);
@@ -367,13 +366,47 @@ sub by {
     map { $_->{$by} => $_ } @_
 }
 
-my $g = assplain($intuitor);
-say Dump($g);
-say Dump(\%seen_lids);
+for ($intuitor, $junk) {
+    my $g = assplain($_);
+    my @lines = grep { /\w/ } split "\n", Dump($g);
+    my $line = 1;
+    say "\n". join "\n", @lines;
+    say "\n\n\n\n";
+    @lines = map { " $_" } @lines;
+    while ($line < @lines) {
+        my $this = $lines[$line];
+        if ($this =~ /links back to (.+)/) {
+            splice @lines, $line, 1; # remove matched line
+            my $home;
+            my $ob = $1;
+            for my $l (reverse 0..$line-1) {
+                if ($lines[$l] =~ /\Q$ob\E/) {
+                    $home = $l
+                }
+            }
+            if (!defined$home) {
+                $DB::single = 1;
+                die "HOMELESS! $ob";
+            }
+            my ($padold) = $lines[$home] =~ /^([\s\|]*)- \S+/;
+            $padold = length($padold) - 2;
+            $padold = 1 if $padold < 1;
+            !($lines[$line] =~ s/(?<=^.{$padold}) /@/);
+            for my $l (reverse $home..$line) {
+                $lines[$l] =~ s/(?<=^.{$padold}) /|/;
+            }
+        }
+        else {
+            $line++;
+        }
+    }
+    say "RIGHT!!!\n\n\n";
+    say "\n". join "\n", @lines;
+}
 
 sub treez {
     my $self = shift;
-    my $text = see($intuitor);
+    my $text = "";
     $self->render(text => $text);
 }
 exit;
