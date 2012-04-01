@@ -273,63 +273,134 @@ sub summarise {
     elsif (ref $thing eq "Pattern") {
         $text = "Pattern $id: object=$thing->{object} ".($thing->{names} ? join("+",@{$thing->{names}}):"");
     }
+    return $text;
     return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
 }
 
-sub junkilate { # {{{
-    my $self = shift;
-    my $point = $junk;
-    if ($self && $self->param('from')) {
-        my $from = $self->param('from');
-        say "From: $from";
-        for (@links) {
-            if ($_->[0] =~ /$from/) {
-                $point = $_->[0];
-                last;
-            }
-            elsif ($_->[1] =~ /$from/) {
-                $point = $_->[1];
-                last;
+my $n = 1;
+my %seen;
+
+
+
+sub assplain {
+    my $thing = shift;
+    my $thing2node = sub {
+        new Stuff("Node",
+            t => $thing,
+            id => ($thing=~ /\((.+)\)/)[0],
+            links => [],
+        )
+    };
+    my $link2text = sub {
+        my $l = shift;
+        my $val = join " ", tup($l->{val});
+        my $far = summarise($l->{1});
+        return join ": ", ($val ? $val : ()), $far;
+    };
+
+    my $linkmax = @links - 1;
+    for (0..$linkmax) {
+        my $link = $links[$_];
+        die;
+    }
+
+    my @workings = ();
+    my $level; $level = sub {
+        my $node = $thing2node->($thing);
+        my %links = by(id => $node->{t}->links());
+        my $sorted = sorted([keys %links], "anywhere in", \@workings);
+
+        push @workings, $sorted->{0};
+
+        for my $seen (1, 0) {
+            for my $l (@{$sorted->{$seen}}) {
+                $l = $links{$l};
+                
+                my $label = new Text($link2text->($l));
+                $label->link($node);
+
+                if (!$seen) {
+                    my $next = $level->($l->{1});
+                    $node->link($next);
+                }
             }
         }
-        say "new point: $point";
-        # from becomes Pattern?
-    }
-    my @nodes = map { summarise($_) } $point->linked;
-    $self->render(text => join "\n", @nodes);
-} # }}}
 
-my %seen;
-my %seen_ob;
-my $n = 1;
+        pop @workings;
+
+        return $node;
+    };
+    $level->($thing);
+}
+
+sub tup {
+    my $tuple = shift;
+    ref $tuple eq "ARRAY" ?
+        @$tuple
+        : $tuple;
+}
+            
+use Data::Walk;
+
+sub sorted {
+    my ($needles, $rule, $haystack) = @_;
+    die unless $rule eq "anywhere in";
+    my (@yes, @no);
+    my %needles = map { $_ => 1 } @$needles;
+
+    eval {
+        walk sub {
+            for my $need (keys %needles) {
+                if ($_ eq $need) {
+                    push @yes, $need;
+                    delete $needles{$need}
+                }
+                die "found\n" if keys %needles == 0;
+            }
+        }, $haystack;
+    };
+    $@ && $@ ne "found\n" && die $@;
+    $@ = "";
+    
+    @no = keys %needles;
+    return { 1 => \@yes, 0 => \@no }
+}
+
+sub by {
+    my $by = shift;
+    map { $_->{$by} => $_ } @_
+}
+
+my $tree = {};
 sub see {
-    my ($thing, $seen) = @_;
-    return "" if $n++ > 500;
+    my ($thing, $from_link) = @_;
+    die if $n++ > 50;
     
     my $t = summarise($thing);
-    return $t if $seen;
 
-    my @links =  $thing->links;
-
-    if (@links) {
-        $t .= "\n<ul>";
-        for my $l (@links) {
-            my $seen = $seen{$l->{id}};
-            $seen{$l->{id}} = 1;
-            next if $seen_ob{"$l->{1}"};
-            $seen_ob{"$l->{1}"} = 1;
-            $t .= see($l->{1}, $seen) 
-        }
-        $t .= "</ul>";
+    if ($seen{$thing}) {
+        return $t;
     }
-    return $t;
+    $seen{$thing} = 1;
+
+    my @links = grep { !$from_link || $_->{id} ne $from_link } $thing->links;
+    my @going;
+    for my $l (@links) {
+        my $val = join " ", @{$l->{val}};
+        push @going, { "$val" => see($l->{1}, $l->{id}) };
+    }
+    return { $t => \@going };
 }
+my $g = assplain($intuitor);
+$DB::single = 1;
+say Dump($g);
+
 sub treez {
     my $self = shift;
     my $text = see($intuitor);
-    $text .= see($junk);
     $self->render(text => $text);
 }
+exit;
 
 use Mojolicious::Lite;
 use JSON::XS;
@@ -348,5 +419,5 @@ __DATA__
     <head><title>scap!</title>
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
     <script type="text/javascript" src="scope.js"></script></head>
-    <body><ul></ul></body>
+    <body style="background: black"><ul></ul></body>
 </html>
