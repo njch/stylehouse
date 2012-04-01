@@ -291,8 +291,8 @@ my $link2text = sub {
 my $links_by_id = sub {
     map { 
         $_->{id} => {
+            %$_,
             text => $link2text->($_),
-            l => $_,
         }
     } @_;
 };
@@ -300,36 +300,56 @@ my $links_by_other_type = sub {
     my %links = @_;
     my %by_other;
     for my $l (values %links) {
-        my $type = ref $l->{l}->{1};
+        my $type = ref $l->{1};
         push @{$by_other{$type}||=[]}, $l;
     }
     %by_other;
 };
-my @path = qw{Intuit};
+
+my %seen_lids;
+my $n= 0;
 sub assplain {
-    my $thing = shift;
+    my ($thing, $path) = @_;
+    $path ||= ["$thing"];
+    $DB::single = 1;
     my %links = $links_by_id->($thing->links);
+    $seen_lids{$_}++ for keys %links;
     my %by_other = $links_by_other_type->(%links);
-    
-    my $follow = do {
-        my $next = shift @path;
-        delete $by_other{$next} if $next;
+   
+    my $figure_link = sub {
+        my $l = shift;
+        my @ld;
+        my $oid = "$l->{1}";
+
+        my $no_recurs;
+        if ($seen_lids{$l->{id}} > 1) {
+            $no_recurs = 1;
+        }
+        if (grep { $oid eq $_ } @$path) {
+            $no_recurs = 2;
+        }
+
+        if ($n++ > 500) {
+            push @ld, "DEEP RECURSION!";
+        }
+        push @ld, $l->{text};
+
+        $seen_lids{$l->{id}}++;
+
+        return () if $no_recurs;
+        return \@ld if $no_recurs == 1;
+        $DB::single = 1;
+        return [
+            @ld,
+            assplain($l->{1}, [@$path, $oid])
+        ]
     };
+
     my $tree = [];
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
-            push @$tree, $l->{text};
+            push @$tree, $figure_link->($l);
         }
-    }
-    if ($follow) {
-        for my $l (@$follow) {
-            push @$tree, {
-                $l->{text} => assplain($l->{l}->{1})
-            }
-        }
-    }
-    else {
-        push @$tree, "endeth"
     }
 
     return $tree;
@@ -347,8 +367,9 @@ sub by {
     map { $_->{$by} => $_ } @_
 }
 
-my $g = assplain($junk);
+my $g = assplain($intuitor);
 say Dump($g);
+say Dump(\%seen_lids);
 
 sub treez {
     my $self = shift;
