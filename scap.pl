@@ -7,7 +7,7 @@ use Scriptalicious;
 use v5.10;
 
 my $junk = new Stuff("Junk");
-my @one = map { $_->link($junk); $_ }
+my ($one, @etc) = map { $_->link($junk); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac";
 
@@ -20,6 +20,7 @@ our @links;
 # link  links stuff together
 # links returns all links
 # {{{
+use List::MoreUtils 'uniq';
 sub new {
     shift if $_[0] eq "Stuff";
     my $package = __PACKAGE__;
@@ -39,6 +40,18 @@ sub link {
 sub linked {
     my $self = shift;
     my $spec = shift;
+
+    if ($spec && $spec =~ /^(\w+)(->(\w+))+$/) {
+        my @specs = split "->", $spec;
+        my @rs = $self;
+        for my $spec (@specs) {
+            @rs = uniq map {
+                $_->linked($spec)
+            } @rs;
+        }
+        return @rs;
+    }
+
     map { $_->{1} } $self->links($spec);
 }
 sub links {
@@ -57,6 +70,7 @@ sub links {
         : ()
     } @links # all the links in the whole metaverse
 }
+
 }
 # }}}
 { package Text;
@@ -90,7 +104,7 @@ sub match {
     }
     elsif ($self->{names}) {
         my %res;
-        my %objects = map {$_->{1}->{name} => $_->{val}} $it->links($self->{object});
+        my %objects = map {$_->{1}->{name} => $_->{val}->[0]} $it->links($self->{object});
         for my $name (@{$self->{names}}) {
             $res{$name} = (exists $objects{$name} && $objects{$name} == 1);
         }
@@ -221,12 +235,13 @@ while (defined($_ = shift @giv)) {
 # }}}
     }
     else {
-        map { $_->{does}->($_, $it) }
-        map { $_->linked("Intuition") }
-        grep { $_->match($it) }
-        grep { $_->linked("Intuition") }
-        map { $_->linked("Pattern") }
-            $self->linked("Intuitor");
+        my @patterns = $self->linked("Intuition->Pattern");
+        my @matching = grep { $_->match($it) } @patterns;
+        for (@matching) {
+            for ($_->linked("Intuition")) {
+                $_->{does}->($_, $it);
+            }
+        }
     }
 },
 ));
@@ -239,13 +254,19 @@ until ($at_maximum_entropy) {
     for ($wants->links) {
         my $action = $_->{1};
         my $pattern = $action->{want};
-        map { $action->{does}->($action, $_) }
-        grep { $pattern->match($_) }
-            $junk->linked();
+        my @wanted_junk = grep { $pattern->match($_) } $junk->linked();
+        for my $wj (@wanted_junk) {
+            $action->{does}->($action, $wj);
+        }
     }
 }
 say "$clicks clicks in ". show_delta();
 
+
+#my $everything = new Stuff;
+#$everything->link($junk);
+#$everything->link($intuitor);
+displo($junk);
 
 # DISPLAY
 
@@ -265,7 +286,7 @@ sub summarise {
             $text = "$thing: ".$thing->text;
         }
         when ("Intuition") {
-            $text = "$thing: $thing->{cer} $thing->{name}"
+            $text = "$thing: $thing->{cer} $thing->{name} $thing->{cog}"
         }
         when ("Intuit") {
             $text = "$thing: wants: ".summarise($thing->{want});
@@ -279,21 +300,21 @@ sub summarise {
     return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
 }
 
-my $link2text = sub {
+sub link2text {
     my $l = shift;
     "$l->{1}" =~ /^(\w+)/;
     my $val = join " ", "_", tup($l->{val}), $1;
     return $val
 };
-my $links_by_id = sub {
+sub links_by_id {
     map { 
         $_->{id} => {
             %$_,
-            text => $link2text->($_),
+            text => link2text($_),
         }
     } @_;
 };
-my $links_by_other_type = sub {
+sub links_by_other_type {
     my %links = @_;
     my %by_other;
     for my $l (values %links) {
@@ -307,22 +328,28 @@ my %seen_oids;
 my $n= 0;
 sub assplain {
     my ($thing, $previous_lid) = @_;
-    my %links = $links_by_id->($thing->links);
-    my %by_other = $links_by_other_type->(%links);
-   
+    my %links = links_by_id($thing->links);
+    my %by_other = links_by_other_type(%links);
+
     my $figure_link = sub {
         my $l = shift;
-        my $oid = "$l->{1}";
 
+        if (!defined $l->{1}) {
+            warn "undef link: $l->{id}";
+            return "UNDEFINED!"
+        }
         if ($n++ > 100) {
-            return "DEEP RECURSION!";
+            return "DEEP RECURSION!"
         }
 
+        my $o = $l->{1};
+        my $oid = "$o";
+
         my $prev = exists $seen_oids{$oid};
-        my $ob = $seen_oids{$oid} ||= { summarise($l->{1}) => [] };
+        my $ob = $seen_oids{$oid} ||= { summarise($o) => [] };
         my ($linkstash) = values %$ob;
 
-        unless ($prev) {
+        unless ($prev) { # || $o =~ /Intuition/) {
             my $connective = assplain($l->{1}, $l->{id});
             push @$linkstash, @$connective;
         }
@@ -346,21 +373,18 @@ sub assplain {
 
 sub tup {
     my $tuple = shift;
-    ref $tuple eq "ARRAY" ?
-        @$tuple
-        : $tuple;
-}
-            
-sub by {
-    my $by = shift;
-    map { $_->{$by} => $_ } @_
+    ref $tuple eq "ARRAY" ? @$tuple : $tuple;
 }
 
-for ($intuitor, $junk) {
-    my $g = assplain($_);
-    my @lines = grep { /\w/ } split "\n", Dump($g);
-    say "\n". join "\n", @lines;
+sub displo {
+    for (@_) {
+        %seen_oids = ();
+        my $g = assplain($_);
+        my @lines = grep { /\w/ } split "\n", Dump($g);
+        say "\n". join "\n", @lines;
+    }
 }
+
 
 sub treez {
     my $self = shift;
