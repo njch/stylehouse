@@ -281,9 +281,9 @@ sub summarise {
 
 my $link2text = sub {
     my $l = shift;
-    my $val = join " ", tup($l->{val});
-    my $far = summarise($l->{1});
-    return join ": ", ($val ? $val : ()), $far;
+    "$l->{1}" =~ /^(\w+)/;
+    my $val = join " ", "_", tup($l->{val}), $1;
+    return $val
 };
 my $links_by_id = sub {
     map { 
@@ -303,51 +303,41 @@ my $links_by_other_type = sub {
     %by_other;
 };
 
-my %seen_lids;
+my %seen_oids;
 my $n= 0;
 sub assplain {
-    my ($thing, $path) = @_;
+    my ($thing, $previous_lid) = @_;
     my %links = $links_by_id->($thing->links);
-    $seen_lids{$_}++ for keys %links;
     my %by_other = $links_by_other_type->(%links);
    
     my $figure_link = sub {
         my $l = shift;
-        my @ld;
         my $oid = "$l->{1}";
-
-        my $no_recurs = 0;
-        if ($seen_lids{$l->{id}} > 1) {
-            $no_recurs = 1;
-        }
-        if (grep { $oid eq $_ } @$path) {
-            $no_recurs = 2;
-        }
 
         if ($n++ > 100) {
             return "DEEP RECURSION!";
         }
-        push @ld, $l->{text};
 
-        $seen_lids{$l->{id}}++;
+        my $prev = exists $seen_oids{$oid};
+        my $ob = $seen_oids{$oid} ||= { summarise($l->{1}) => [] };
+        my ($linkstash) = values %$ob;
 
-        return ("links back to $oid") if $no_recurs == 2;
-        return ["links end", @ld] if $no_recurs == 1;
-        return [
-            @ld,
-            "link ->",
-            assplain($l->{1}, [@$path, $oid])
-        ]
+        unless ($prev) {
+            my $connective = assplain($l->{1}, $l->{id});
+            push @$linkstash, @$connective;
+        }
+
+        return $ob;
     };
 
     my $tree = [];
-    unless ($path) {
-        $path = ["$thing"];
+    unless ($previous_lid) {
+        $previous_lid = -1;
         push @$tree, summarise($thing);
     }
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
-            push @$tree, $figure_link->($l);
+            push @$tree, { $l->{text}, $figure_link->($l) };
         }
     }
 
@@ -369,38 +359,6 @@ sub by {
 for ($intuitor, $junk) {
     my $g = assplain($_);
     my @lines = grep { /\w/ } split "\n", Dump($g);
-    my $line = 1;
-    say "\n". join "\n", @lines;
-    say "\n\n\n\n";
-    @lines = map { " $_" } @lines;
-    while ($line < @lines) {
-        my $this = $lines[$line];
-        if ($this =~ /links back to (.+)/) {
-            splice @lines, $line, 1; # remove matched line
-            my $home;
-            my $ob = $1;
-            for my $l (reverse 0..$line-1) {
-                if ($lines[$l] =~ /\Q$ob\E/) {
-                    $home = $l
-                }
-            }
-            if (!defined$home) {
-                $DB::single = 1;
-                die "HOMELESS! $ob";
-            }
-            my ($padold) = $lines[$home] =~ /^([\s\|]*)- \S+/;
-            $padold = length($padold) - 2;
-            $padold = 1 if $padold < 1;
-            !($lines[$line] =~ s/(?<=^.{$padold}) /@/);
-            for my $l (reverse $home..$line) {
-                $lines[$l] =~ s/(?<=^.{$padold}) /|/;
-            }
-        }
-        else {
-            $line++;
-        }
-    }
-    say "RIGHT!!!\n\n\n";
     say "\n". join "\n", @lines;
 }
 
