@@ -15,6 +15,91 @@ my $wants = new Stuff("Wants");
 our $at_maximum_entropy = 0;
 our @links;
 
+sub search {
+    my %more;
+    if (@_ % 2) {
+        $more{spec} = shift;
+        $more{want} = "linked";
+    }
+    else {
+        %more = @_;
+    }
+    
+    my $want = $more{want}; # links/linked
+    my $spec = $more{spec};
+    my @spec;
+    if (ref $spec) {
+        @spec = $spec;
+    }
+    elsif ($spec) {
+        @spec = split "->", $spec;
+    }
+    my $start_from = $more{start_from};
+    $start_from ||= shift @spec;
+    my $findlinks = sub {
+        my ($from, $to) = @_;
+        return grep {
+            main::spec_comp($to, $_->{1})
+        } map {
+            main::order_link($from, $_);
+        } @links
+    };
+    my $dospec;
+    my $rtree = {};
+    my $take_results = sub {
+        my ($from, $rs) = @_;
+    };
+    $dospec = sub {
+        my ($rs, @spec) = @_;
+        my @flin;
+        my $to = shift @spec;
+        for my $from (@$rs) {
+            my @ls = $findlinks->($from, $to);
+            my @res = map { $_->{1} } @ls;
+            $take_results->(
+                !@ls ? "404 ($from)" : "$ls[0]->{0}",
+                \@ls
+            );
+            if (@spec) {
+                @ls = $dospec->(\@res, @spec);
+            }
+            push @flin, @ls;
+        }
+        return uniq @flin;
+    };
+    
+    if (!$spec) {
+        return $findlinks->($start_from, "*");
+    }
+    my @ar = $dospec->([$start_from], @spec);
+    say "$start_from $more{spec} ". scalar @ar;
+    return @ar; 
+}
+
+sub spec_comp {
+    my $spec = shift;
+    my $thing = shift;
+    
+    return 1 if $spec && $spec eq "*";
+    ref $spec   ? $thing eq $spec      # an object
+    : $spec     ? ref $thing eq $spec  # package name
+    : 1
+}
+
+sub order_link { # also greps for the spec $us
+    my ($us, $l) = @_;
+    if (spec_comp($us, $l->{0})) {
+        return $l
+    }
+    elsif (spec_comp($us, $l->{1})) {
+        return {
+            1 => $_->{0}, 0 => $_->{1},
+            val => $_->{val}, id => $_->{id}
+        }
+    }
+    return ()    
+}
+
 { package Stuff;
 # base class for all things in this metaverse
 # link  links stuff together
@@ -34,6 +119,7 @@ sub new {
 }
 sub link {
     $at_maximum_entropy = 0;
+    $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     push @links, {0=>shift, 1=>shift,
                 val=>\@_, id=>scalar(@links)}; # self, other, ...
 }
@@ -41,34 +127,16 @@ sub linked {
     my $self = shift;
     my $spec = shift;
 
-    if ($spec && $spec =~ /^(\w+)(->(\w+))+$/) {
-        my @specs = split "->", $spec;
-        my @rs = $self;
-        for my $spec (@specs) {
-            @rs = uniq map {
-                $_->linked($spec)
-            } @rs;
-        }
-        return @rs;
-    }
-
-    map { $_->{1} } $self->links($spec);
+    uniq map { $_->{1} } $self->links($spec);
 }
 sub links {
     my $self = shift;
     my $spec = shift;
-    return grep {
-        ref $spec   ? $_->{1} eq $spec      # an object
-        : $spec     ? ref $_->{1} eq $spec  # package name
-        : 1
-    } map {
-        # ensure that $self is one, make it the first one
-        $_->{0} eq $self 
-            ? $_
-        : $_->{1} eq $self
-            ? { 1 => $_->{0}, 0 => $_->{1}, val => $_->{val}, id => $_->{id} }
-        : ()
-    } @links # all the links in the whole metaverse
+    
+    return main::search(
+        start_from => $self,
+        spec => $spec,
+    );
 }
 
 }
@@ -99,7 +167,7 @@ sub match {
     # TODO some logicator from cpan?
     if ($self->{object} && !$self->{names}) {
         my $res = ref $it eq $self->{object};
-        say "match ".($res?"PASS":"FAIL").": string";
+        # say "match ".($res?"PASS":"FAIL").": string";
         $res
     }
     elsif ($self->{names}) {
@@ -109,50 +177,49 @@ sub match {
             $res{$name} = (exists $objects{$name} && $objects{$name} == 1);
         }
         my $res = (0 == grep { $res{$_} == 0 } keys %res);
-        say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
+        # say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
         $res;
     } else { die }
 }
 } # $}}}
-{ package Action;
+{ package Flow;
 # new
 # {{{
 use base 'Stuff';
 sub new {
     shift;
-    my $self = Stuff::new(@_);
+    my $self = bless { @_ }, __PACKAGE__;
     if ($self->{want}) {
-        $wants->link($self, $self->{want});
+        $wants->link($self);
     }
     return $self
 }
 }
 # }}}
 
-our $intuitor = new Stuff("Intuitor");
 sub do_intuition {
     my $self = shift;
     my $it = shift;
 
     return if $self->links($it); # already
 
-    say " looking: $self->{cer} $self->{name}...";
+    # say " looking: $self->{cer} $self->{name}...";
     my $cog = $self->{cog};
     my $t = $it->text;
     my @val = 
         ref $cog eq "Regexp" ? $t =~ $cog :
         ref $cog eq "CODE" ? $cog->($t) :
         die;
-    say @val ? "   @val" : "NOPE";
+    # say @val ? "   @val" : "NOPE";
     @val = [@val] if @val > 1;
     @val = (1) if @val == 0;
     
-    say "intuited $self->{name}";
+    # say "intuited $self->{name}";
     $self->link($it, @val);
 }
+our $intuitor = new Stuff("Intuitor");
 $intuitor->link(
-new Action(
-"Intuit",
+new Flow(
 want => new Pattern(object => "Text"),
 does => sub {
     my $self = shift;
@@ -250,7 +317,7 @@ start_timer();
 my $clicks = 0;
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
-    $clicks++;
+    $clicks++ > 21 && last;
     for ($wants->links) {
         my $action = $_->{1};
         my $pattern = $action->{want};
@@ -269,12 +336,8 @@ say "$clicks clicks in ". show_delta();
 displo($junk);
 
 # DISPLAY
-
-for my $it ($junk->linked) {
-    for my $e ($it->links("Intuition")) {
-        say $e->[1]->{name} ."\t\t". $e->[2];
-    }
-}
+my @ints = search("Junk->Text->Intuition");
+say Dump([ map { link2text($_) } @ints ]);
 
 sub summarise {
     my $thing = shift;
@@ -303,7 +366,9 @@ sub summarise {
 sub link2text {
     my $l = shift;
     "$l->{1}" =~ /^(\w+)/;
-    my $val = join " ", "_", tup($l->{val}), $1;
+    my $name = $1;
+    $name = summarise($l->{1});
+    my $val = join " ", "_", tup($l->{val}), $name;
     return $val
 };
 sub links_by_id {
