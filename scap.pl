@@ -9,7 +9,10 @@ use v5.10;
 my $junk = new Stuff("Junk");
 my ($one, @etc) = map { $_->link($junk); $_ }
     map { new Text($_) }
-    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac";
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
+    "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac";
 
 my $wants = new Stuff("Wants");
 our $at_maximum_entropy = 0;
@@ -212,7 +215,7 @@ sub do_intuition {
         die;
     # say @val ? "   @val" : "NOPE";
     @val = [@val] if @val > 1;
-    @val = (1) if @val == 0;
+    @val = (1) if @val == 0 && ref $cog ne "Regexp";
     
     # say "intuited $self->{name}";
     $self->link($it, @val);
@@ -232,9 +235,9 @@ my @giv = split "\n", <<"";
 string:
     /\// maybe filename
 filename:
-    /^\.\./  probly relative
+    /^\\.\\.//  probly relative
     /^(?!/)/ maybe relative
-    /^\//    probly absolute
+    /^//    probly absolute
     { -e shift } is reachable
 relative or absolute
 reachable filename:
@@ -333,11 +336,23 @@ say "$clicks clicks in ". show_delta();
 #my $everything = new Stuff;
 #$everything->link($junk);
 #$everything->link($intuitor);
-displo($junk);
+#displo($junk);
 
 # DISPLAY
+
 my @ints = search("Junk->Text->Intuition");
-say Dump([ map { link2text($_) } @ints ]);
+my @texts = sort map { "$_->{0}" } @ints;
+my %fin;
+for my $text (uniq @texts) {
+    my @ours = grep { $text eq "$_->{0}" } @ints;
+    my @links = map { summarise($_->{1}, $_->{val}) } @ours;
+    $fin{$ours[0]->{0}->{text}} = \@links;
+}
+
+use Test::More "no_plan";
+is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
+
+exit;
 
 sub summarise {
     my $thing = shift;
@@ -349,7 +364,19 @@ sub summarise {
             $text = "$thing: ".$thing->text;
         }
         when ("Intuition") {
-            $text = "$thing: $thing->{cer} $thing->{name} $thing->{cog}"
+            if (my $val = shift) {
+                $text = join "\t", "Intuition",
+                    join(" ",
+                        map { $_ eq "" ? '""' : $_ }
+                        map { !defined($_) ? " " : $_ }
+                        tup($val)
+                    ),
+                    "$thing->{cer} $thing->{name}",
+                    ref $thing->{cog} eq "Regexp" ? "$thing->{cog}" : (),
+            }
+            else {
+                $text = "$thing: $thing->{cer} $thing->{name} $thing->{cog}"
+            }
         }
         when ("Intuit") {
             $text = "$thing: wants: ".summarise($thing->{want});
@@ -468,6 +495,48 @@ my $daemon = Mojo::Server::Daemon->new;
 $daemon->listen(['http://*:3000']);
 $daemon->run;
 
+sub johnfaheys {
+    return <<''
+--- 
+../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac: 
+  - Intuition	1	maybe filename	(?-xism:/)
+  - Intuition	1	probly relative	(?-xism:^\.\./)
+  - Intuition	1	maybe relative	(?-xism:^(?!/))
+  - Intuition		probly absolute	(?-xism:^/)
+  - Intuition	1	is reachable
+  - Intuition	1	is file
+  - Intuition	""	is dir
+  - Intuition	1	is readable
+  - Intuition	8115090	is size
+../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac: 
+  - Intuition	1	maybe filename	(?-xism:/)
+  - Intuition	1	probly relative	(?-xism:^\.\./)
+  - Intuition	1	maybe relative	(?-xism:^(?!/))
+  - Intuition		probly absolute	(?-xism:^/)
+  - Intuition	 	is reachable
+../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac: 
+  - Intuition	1	maybe filename	(?-xism:/)
+  - Intuition	1	probly relative	(?-xism:^\.\./)
+  - Intuition	1	maybe relative	(?-xism:^(?!/))
+  - Intuition		probly absolute	(?-xism:^/)
+  - Intuition	1	is reachable
+  - Intuition	1	is file
+  - Intuition	""	is dir
+  - Intuition	1	is readable
+  - Intuition	9056908	is size
+/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac: 
+  - Intuition	1	maybe filename	(?-xism:/)
+  - Intuition		probly relative	(?-xism:^\.\./)
+  - Intuition		maybe relative	(?-xism:^(?!/))
+  - Intuition	1	probly absolute	(?-xism:^/)
+  - Intuition	1	is reachable
+  - Intuition	1	is file
+  - Intuition	""	is dir
+  - Intuition	1	is readable
+  - Intuition	8115090	is size
+
+
+}
 __DATA__
 
 @@ index.html.ep
