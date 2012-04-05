@@ -18,7 +18,7 @@ my $wants = new Stuff("Wants");
 our $at_maximum_entropy = 0;
 our @links;
 
-sub search {
+sub search { # {{{
     my %more;
     if (@_ % 2) {
         $more{spec} = shift;
@@ -75,7 +75,7 @@ sub search {
         return $findlinks->($start_from, "*");
     }
     my @ar = $dospec->([$start_from], @spec);
-    say "$start_from $more{spec} ". scalar @ar;
+    say sum($start_from)." $more{spec} ". scalar @ar;
     return @ar; 
 }
 
@@ -101,7 +101,7 @@ sub order_link { # also greps for the spec $us
         }
     }
     return ()    
-}
+} # }}}
 
 { package Stuff;
 # base class for all things in this metaverse
@@ -177,7 +177,7 @@ sub match {
         my %res;
         my %objects = map {$_->{1}->{name} => $_->{val}->[0]} $it->links($self->{object});
         for my $name (@{$self->{names}}) {
-            $res{$name} = (exists $objects{$name} && $objects{$name} == 1);
+            $res{$name} = (defined $objects{$name} && $objects{$name} == 1);
         }
         my $res = (0 == grep { $res{$_} == 0 } keys %res);
         # say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
@@ -200,29 +200,8 @@ sub new {
 }
 # }}}
 
-sub do_intuition {
-    my $self = shift;
-    my $it = shift;
-
-    return if $self->links($it); # already
-
-    # say " looking: $self->{cer} $self->{name}...";
-    my $cog = $self->{cog};
-    my $t = $it->text;
-    my @val = 
-        ref $cog eq "Regexp" ? $t =~ $cog :
-        ref $cog eq "CODE" ? $cog->($t) :
-        die;
-    # say @val ? "   @val" : "NOPE";
-    @val = [@val] if @val > 1;
-    @val = (1) if @val == 0 && ref $cog ne "Regexp";
-    
-    # say "intuited $self->{name}";
-    $self->link($it, @val);
-}
-our $intuitor = new Stuff("Intuitor");
-$intuitor->link(
 new Flow(
+name => "Intuitor",
 want => new Pattern(object => "Text"),
 does => sub {
     my $self = shift;
@@ -287,7 +266,6 @@ while (defined($_ = shift @giv)) {
                 name => $to,
                 cer => $cer,
                 cog => $cog,
-                does => \&do_intuition,
             );
             $int->link($in_match);
             $int->link($self);
@@ -307,20 +285,35 @@ while (defined($_ = shift @giv)) {
     else {
         my @patterns = $self->linked("Intuition->Pattern");
         my @matching = grep { $_->match($it) } @patterns;
-        for (@matching) {
-            for ($_->linked("Intuition")) {
-                $_->{does}->($_, $it);
-            }
+        my @ints = map { $_->linked("Intuition") } @matching;
+
+        for my $int (@ints) {
+            next if $int->links($it); # already
+
+            # say " looking: $self->{cer} $self->{name}...";
+            my $cog = $int->{cog};
+            my $t = $it->text;
+            my @val = 
+                ref $cog eq "Regexp" ? $t =~ $cog :
+                ref $cog eq "CODE" ? $cog->($t) :
+                die;
+            # say @val ? "   @val" : "NOPE";
+            @val = [@val] if @val > 1;
+            @val = (1) if @val == 0 && ref $cog ne "Regexp";
+            
+            # say "intuited $self->{name}";
+            $int->link($it, @val);
         }
     }
 },
-));
+); # }}}
 
 start_timer();
 my $clicks = 0;
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
     $clicks++ > 21 && last;
+    say "\nclick!\n";
     for ($wants->links) {
         my $action = $_->{1};
         my $pattern = $action->{want};
@@ -331,12 +324,6 @@ until ($at_maximum_entropy) {
     }
 }
 say "$clicks clicks in ". show_delta();
-
-
-#my $everything = new Stuff;
-#$everything->link($junk);
-#$everything->link($intuitor);
-#displo($junk);
 
 # DISPLAY
 
@@ -354,6 +341,14 @@ is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
 
 exit;
 
+sub sum {
+    my $thing = shift;
+    my $text = "$thing";
+    if (ref $thing eq "Flow") {
+        $text =~ s/HASH\(0x/$thing->{name}(/;
+    }
+    return $text
+}
 sub summarise {
     my $thing = shift;
     my $text = "$thing";
