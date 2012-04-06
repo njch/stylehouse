@@ -17,7 +17,14 @@ my ($one, @etc) = map { $_->link($junk); $_ }
 my $wants = new Stuff("Wants");
 our $at_maximum_entropy = 0;
 our @links;
+our @pyramid_scheme;
 
+sub be {
+    my $it = shift;
+    push @pyramid_scheme, [$it, @_];
+    $it->{be}->($it, @_);
+    pop @pyramid_scheme;
+}
 sub search { # {{{
     my %more;
     if (@_ % 2) {
@@ -101,7 +108,21 @@ sub order_link { # also greps for the spec $us
         }
     }
     return ()    
-} # }}}
+}
+sub delete_link {
+    my $l = shift;
+    my $id = $l->{id};
+    my $i = 0;
+    for ($i..@links-1) {
+        if ($links[$i]->{id} eq $id) {
+            splice @links, $i, 1;
+            return;
+        }
+        $i++;
+    }
+    die "no such link (to delete) $l->{id}"
+}
+# }}}
 
 { package Stuff;
 # base class for all things in this metaverse
@@ -115,7 +136,8 @@ sub new {
 
     if ($_[0]) {
         $package = shift;
-        eval "package $package; use base 'Stuff';";
+        my $base = $_[0] && ref $_[0] eq "HASH" && $_[0]->{base} && shift(@_)->{base} || "Stuff";
+        eval "package $package; use base '$base';";
         die $@ if $@;
     }
     bless {@_}, $package;
@@ -125,12 +147,23 @@ sub link {
     $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     push @links, {0=>shift, 1=>shift,
                 val=>\@_, id=>scalar(@links)}; # self, other, ...
+    return $_[0]
+}
+sub unlink {
+    $at_maximum_entropy = 0;
+    my $self = shift;
+    my $other = shift;
+    my @ls = $self->links($other);
+    for my $l (@ls) {
+        main::delete_link($l);
+    }
 }
 sub linked {
     my $self = shift;
     my $spec = shift;
 
-    uniq map { $_->{1} } $self->links($spec);
+    my @linked = uniq map { $_->{1} } $self->links($spec);
+    wantarray ? @linked : shift @linked
 }
 sub links {
     my $self = shift;
@@ -141,9 +174,34 @@ sub links {
         spec => $spec,
     );
 }
+} {
+package Transducer;
+use base 'Stuff';
+sub new {
+    shift; # Transducer
+    my $self = Stuff::new(shift, {base=>"Transducer"}, @_);
+    $self->{name} ||= ref $self;
+    $self
+}
+sub do {
+    my $self = shift;
+    # make @_ findable and then be
 
 }
-# }}}
+sub find_the {
+    my $self = shift;
+    my $what = shift;
+    my $pyramid_scheme = \@main::pyramid_scheme;
+    # TODO this is a kind of search.
+    # search should be all about traversal and such
+    # surrounding functions apply aggregation and whatever
+    # and what graph arches to look along, here we want state first
+    $self->{$what} || do {
+        my ($ok) = map { $_->{$what} } grep { $_->{$what} } map { @$_ } reverse @$pyramid_scheme;
+        $ok
+    }
+}
+} # }}}
 { package Text;
 # uhm...
 use base 'Stuff';
@@ -201,9 +259,9 @@ sub new {
 # }}}
 
 new Flow(
-name => "Intuitor",
-want => new Pattern(object => "Text"),
-does => sub {
+name => "Intuitor", # {{{
+#want => new Pattern(object => "Text"),
+be => sub {
     my $self = shift;
     my $it = shift;
 
@@ -300,7 +358,7 @@ while (defined($_ = shift @giv)) {
             # say @val ? "   @val" : "NOPE";
             @val = [@val] if @val > 1;
             @val = (1) if @val == 0 && ref $cog ne "Regexp";
-            
+
             # say "intuited $self->{name}";
             $int->link($it, @val);
         }
@@ -308,25 +366,114 @@ while (defined($_ = shift @giv)) {
 },
 ); # }}}
 
+new Flow(
+name => "scap2blog",
+want => "satisfaction",
+filename => do { use FindBin '$Script'; $Script },
+be => sub {
+    my $self = shift;
+    my $tl = text_liner();
+    # TODO see overload the Transducer, so:
+    # my $sel = $tl->select(...)->trim_white;
+    # pass $sel to blog stash...
+    be($tl, {select => q[after 'use v5.10' and before 'my $junk =']});
+    be($tl, {unselect => qr/^\s+$/});
+    say Dump([
+        map { $_->{1}->{text} } search("LineSelection->Text")
+    ]);
+    exit;
+},
+);
+
+sub text_liner {
+    my $tl =
+new Transducer("TextLinerFile",
+    be => sub {
+        my $self = shift;
+        unless ($self->linked("Text")) {
+            use File::Slurp;
+            my @lines = read_file($self->find_the("filename"));
+            $self->link(new Text($_)) for @lines;
+        }
+        if (my $s = $self->find_the("select")) {
+            my ($from, $froms, $to, $tos) = 
+                $s =~ /(after) '(.+)' and (before) '(.+)'/;
+            my $sle = new Stuff("LineSelection", spec => $s);
+            $sle->link($self);
+            my $region_match = 0;
+            for my $t ($self->linked("Text")) {
+                $_ = $t->{text};
+                if (!$region_match && /\Q$froms\E/ && !/select.+\Q$s\E/) {
+                    $sle->link($t) unless $from eq "after";
+                    $region_match = 1;
+                }
+                elsif ($region_match && /\Q$tos\E/) {
+                    $sle->link($t) unless $to eq "before";
+                    $region_match = 0;
+                }
+                elsif ($region_match) {
+                    $sle->link($t);
+                }
+            }
+        }
+        if (my $us = $self->find_the("unselect")) {
+            my $sle = $self->linked("LineSelection");
+            $DB::single = 1;
+            my @linked_text = $sle->linked("Text");
+            for my $t (@linked_text) {
+                if ($t->{text} =~ $us) {
+                    $sle->unlink($t);
+                }
+            }
+            $sle->{spec} = {
+                select => $sle->{spec},
+                unselect => $us,
+            };
+        }
+    },
+);
+    be($tl);
+    return $tl;
+}
+
+sub travel {
+    my ($p, $body) = @_;
+    my $lock = $p->match($body);
+}
+
+sub p {
+    my $p = shift;
+    if (ref $p) {
+        new Pattern(ref $p => $p);
+    }
+    else {
+        new Pattern(object => $p);
+    }
+}
+
 start_timer();
 my $clicks = 0;
 until ($at_maximum_entropy) {
     $at_maximum_entropy = 1;
     $clicks++ > 21 && last;
     say "\nclick!\n";
-    for ($wants->links) {
-        my $action = $_->{1};
-        my $pattern = $action->{want};
-        my @wanted_junk = grep { $pattern->match($_) } $junk->linked();
-        for my $wj (@wanted_junk) {
-            $action->{does}->($action, $wj);
+
+    for my $todo ($wants->linked) {
+        my $want = $todo->{want};
+        if (ref $want eq "Pattern") {
+            for my $wanted (grep { $want->match($_) } $junk->linked()) {
+                be($todo, $wanted);
+            }
+        }
+        elsif ($want ne "nothing") {
+            be($todo);
         }
     }
 }
 say "$clicks clicks in ". show_delta();
 
 # DISPLAY
-
+exit;
 my @ints = search("Junk->Text->Intuition");
 my @texts = sort map { "$_->{0}" } @ints;
 my %fin;
@@ -335,6 +482,10 @@ for my $text (uniq @texts) {
     my @links = map { summarise($_->{1}, $_->{val}) } @ours;
     $fin{$ours[0]->{0}->{text}} = \@links;
 }
+
+displo($wants);
+exit;
+
 
 use Test::More "no_plan";
 is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
