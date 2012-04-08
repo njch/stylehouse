@@ -83,6 +83,12 @@ sub search { # {{{
     }
     my @ar = $dospec->([$start_from], @spec);
     say sum($start_from)." $more{spec} ". scalar @ar;
+
+    $DB::single = 1;
+    my $callers = sub { [reverse((caller(shift || 1))[0..3])] };
+    my @ca = ($callers->(), $callers->(2), $callers->(3));
+    say "  : ". join " ", map { @$_ } @ca;
+    
     return @ar; 
 }
 
