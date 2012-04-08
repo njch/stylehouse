@@ -19,24 +19,29 @@ my $code = new Stuff("Code");
 our @links;
 our $G = new Stuff("Nothing");
 our $root = $G;
-our @entropy_fields;
+our @entropy_fields = ($root);
 sub entropy_increases {
+    die "too many entropy fields" if @entropy_fields > 10;
     $_->{at_maximum_entropy} = 0 for @entropy_fields;
 }
 
 =pod
 so from everywhere we can see $G, which is the current point on the graph
 $G->spawn(...) to add a branch
-then something maxes entropy on that little island of logic
+we shall call the maxing of entropy evaportation
+ready evaporates that little island of logic
   like a lexical scope, being coded together out of known intellect
 then things are executed
 so you see the division between code and data is blurred into a graph
-we shall call the maxing of entropy evaportation
 the evaportation may build more graph, which is solved first
 
 so given a datastructure, we spawn code objects
 everything sorts itself out until it's done
 then executables are run
+
+a swarm of clicks get things done in the graph
+
+the Click should be limit and entropy management
 =cut
 
 sub do_stuff {
@@ -46,7 +51,7 @@ sub do_stuff {
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
         $root->{at_maximum_entropy} = 1;
         my $click = $root->spawn("Click");
-        say "\nclick!\n";
+        $clicks++ && say "\nclick!\n";
         process("Click");
         say Dump($G);
         exit;
@@ -61,16 +66,17 @@ $code->spawn(
 
 sub process {
     my $d = shift;
-    my $dir = $G;
-    local @entropy_fields = (@entropy_fields, $dir);
-    # run ready, which does patterny preparations without executing anything
-    until ($dir->{at_maximum_entropy}) {
-        $dir->{at_maximum_entropy} = 1;
-        # TODO apply pattern matches, somehow with a clue that $d has't been processed
+    my $here = $G;
+    local @entropy_fields = (@entropy_fields, $here);
+    # ready() does patterny preparations without executing anything
+    until ($here->{at_maximum_entropy}) {
+        $here->{at_maximum_entropy} = 1;
+        # TODO apply pattern matches to $here with some clue re: pre-ready()
         ready($d);
-        # TODO apply pattern matches
+        # TODO apply pattern matches to $here
     }
-    # TODO execute
+    # TODO execute from $here
+}
 
 sub ready {
     my $d = shift; # the nugget
@@ -94,6 +100,7 @@ sub ready {
         # TODO crunch()
         # compose order... fire them just so
         # composed from known algorithm territory, chunks of intellect...
+        # should be user-helpable eventually
         # get things to apply themselves to $G:
         my $new_cleverness = crunch(\%di, \%db);
         $G->spawn($new_cleverness);
