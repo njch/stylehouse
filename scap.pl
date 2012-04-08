@@ -15,74 +15,98 @@ my ($one, @etc) = map { $_->link($junk); $_ }
     "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac";
 
 my $wants = new Stuff("Wants");
-my $beh = new Stuff("Behaviour");
-our $at_maximum_entropy = 0;
+my $code = new Stuff("Code");
 our @links;
+our $G = new Stuff("Nothing");
+our $root = $G;
+our @entropy_fields;
+sub entropy_increases {
+    $_->{at_maximum_entropy} = 0 for @entropy_fields;
+}
+
+=pod
+so from everywhere we can see $G, which is the current point on the graph
+$G->spawn(...) to add a branch
+then something maxes entropy on that little island of logic
+  like a lexical scope, being coded together out of known intellect
+then things are executed
+so you see the division between code and data is blurred into a graph
+we shall call the maxing of entropy evaportation
+the evaportation may build more graph, which is solved first
+
+so given a datastructure, we spawn code objects
+everything sorts itself out until it's done
+then executables are run
+=cut
 
 sub do_stuff {
 
     start_timer();
     my $clicks = 0;
-# satisfy until $at_maximum_entropy or $clicks++ > 21
-# satisfy is:
-#   do $wants
-    my $nothing = new Stuff("Nothing");
-    until ($at_maximum_entropy || $clicks++ > 21) {
-        $at_maximum_entropy = 1;
-        my $click = $nothing->spawn("Click");
+    until ($root->{at_maximum_entropy} || $clicks++ > 21) {
+        $root->{at_maximum_entropy} = 1;
+        my $click = $root->spawn("Click");
         say "\nclick!\n";
-
-        process({Linked => $wants}, $click);
-
-        for my $todo ($wants->linked) {
-            my $want = $todo->{want};
-            if (ref $want eq "Pattern") {
-                for my $wanted (grep { $want->match($_) } $junk->linked()) {
-                    be($todo, $wanted);
-                }
-            }
-            elsif ($want ne "nothing") {
-                be($todo);
-            }
-        }
+        process("Click");
+        say Dump($G);
+        exit;
     }
     say "$clicks clicks in ". show_delta();
 }
 
-our @pyramid_scheme;
-sub be {
-    my $it = shift;
-    push @pyramid_scheme, [$it, @_];
-    $it->{be}->($it, @_);
-    pop @pyramid_scheme;
-}
+$code->spawn(
+[ "Click", be => sub { process({Linked => $wants}) } ],
+[ "Linked", be => sub { shift->linked } ],
+);
 
 sub process {
+    my $d = shift;
+    my $dir = $G;
+    local @entropy_fields = (@entropy_fields, $dir);
+    # run ready, which does patterny preparations without executing anything
+    until ($dir->{at_maximum_entropy}) {
+        $dir->{at_maximum_entropy} = 1;
+        # TODO apply pattern matches, somehow with a clue that $d has't been processed
+        ready($d);
+        # TODO apply pattern matches
+    }
+    # TODO execute
+
+sub ready {
     my $d = shift; # the nugget
-    my $g = shift; # the tip
-    my $t = shift; # traveller algorithm
+    # $G is god now!
+    # be sure that $G at_maximum_entropy gets set appropriately
     if (ref $d eq "ARRAY") {
-        $g->spawn("Sequence", @$g);
-        return
+        $G->spawn("Sequence", @$d);
+        say "Jhurtiiz: ".Dump($g);
+        die;
     }
     elsif (ref $d eq "HASH") {
-
-        # apply things
+        my (%di, %db);
+        while (my ($d, $i) = each %$d) {
+            $di{$d} = new Stuff("In", it => $i); # instruction, given to
+            $db{$d} = [ $code->linked($k) ];     # behaviour
+        }
+        # this is like a lexical scope, involving possibly many
+        # algorithms intertwining dependence/other forces on each other.
+        # finding the codes is more special than just search I think...
+        # we might want to define (A and B) as well as individually
+        # TODO crunch()
+        # compose order... fire them just so
+        # composed from known algorithm territory, chunks of intellect...
+        # get things to apply themselves to $G:
+        my $new_cleverness = crunch(\%di, \%db);
+        $G->spawn($new_cleverness);
         return
     }
     elsif (ref $d eq "CODE") {
-        $d->($g, $t);
+        $g->spawn("Code", it => $d);
     }
     else {
-        say $d;
-        exit;
-#        my @algo = $beh->linked($d);
+        $g->spawn("Data", it => $d);
     }
 }
 
-# satisfy until $at_maximum_entropy or $clicks++ > 21
-# satisfy is:
-#   do $wants
         
 
 sub search { # {{{
@@ -216,18 +240,21 @@ sub spawn {
     else {
         my $new = new Stuff(@_);
         $self->link($new);
+        if ($self eq $G) {
+            $G = $new
+        }
         return $new
     }
 }
 sub link {
-    $at_maximum_entropy = 0;
+    entropy_increases();
     $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     push @links, {0=>shift, 1=>shift,
                 val=>\@_, id=>scalar(@links)}; # self, other, ...
     return $_[0]
 }
 sub unlink {
-    $at_maximum_entropy = 0;
+    entropy_increases();
     my $self = shift;
     my $other = shift;
     my @ls = $self->links($other);
