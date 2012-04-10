@@ -16,7 +16,7 @@ my ($one, @etc) = map { $_->link($junk); $_ }
 
 my $wants = new Stuff("Wants");
 my $code = new Stuff("Code");
-our @links;
+our @links; our $ln = 0;
 our $G = new Stuff("Nothing");
 our $root = $G;
 our @entropy_fields = ($root);
@@ -245,15 +245,24 @@ sub travel {
 }
 
 my @dospec_testdata;
+my %linksets;
+my $save_links = sub {
+    return $linksets{$ln} ||= { linkset => Dump(\@links) }
+};
 my $dospec_called = sub {
     my $args = shift;
     my $ret = [];
-    push @dospec_testdata, [ $args, $ret ];
+    push @dospec_testdata, [ Dump($args), Dump($ret), $save_links->() ];
     return sub { push @$ret, @_ }
 };
 sub END {
+    use Data::Walk;
+    walk sub {
+        eval { $_->{be} = undef if $_->{be} };
+        $@ = "";
+    }, @dospec_testdata;
     say "are ". scalar @dospec_testdata;
-    say Dump(\@dospec_testdata);
+    DumpFile('dospec_testdata.yml', \@dospec_testdata);
 }
 
 sub search { # {{{
@@ -423,7 +432,7 @@ sub link {
     main::entropy_increases();
     $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     push @links, {0=>shift, 1=>shift,
-                val=>\@_, id=>scalar(@links)}; # self, other, ...
+                val=>\@_, id=>$main::ln++}; # self, other, ...
     return $_[0]
 }
 sub unlink {
@@ -431,6 +440,7 @@ sub unlink {
     my $self = shift;
     my $other = shift;
     my @ls = $self->links($other);
+    $main::ln++;
     for my $l (@ls) {
         main::delete_link($l);
     }
