@@ -49,27 +49,25 @@ sub do_stuff {
     my $clicks = 0;
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
         $root->{at_maximum_entropy} = 1;
-        my $click = $root->spawn("Click");
         $clicks++ && say "\nclick!\n";
-        for my $w ($wants->linked) {
-            for my $it (grep { $w->{want}->match($_) } $junk->linked) {
-                $w->{be}->($w, $it)
-            }
-        }
-        #process("Click");
+        process({Linked => $wants});
+        last
     }
     say "$clicks clicks in ". show_delta();
 }
 
-my $dumpstruction = new Stuff();
+my $dumpstruction = new Stuff("DS");
+use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
 [ "In", be => sub { "In ".join" ",tup($_[0]->{it}) } ],
+#[ 'Stuff', be => sub { $DB::single = 1; "Stuff: ".encode_json($_[0]) } ],
 );
 my $evaporation = new Stuff("Evaporation");
 $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
-[ "Linked", be => sub { $G->In->linked } ],
+[ "Linked", be => sub { 
+    transmog($G => $G->In->{it}->[0]->linked) } ],
 [ "Flow", be => sub { $G->{be}->($G) } ],
 [ "If", link => [$evaporation], be => sub {
     my $B = $G->linked("BunchOfCode");
@@ -100,84 +98,110 @@ $code->spawn(
 } ],
 );
 
-sub evaporate {
-    $G = shift;
-}
+# Instruction = (Linked => $wants)
+# string matches In's "Linked"
+# $wants becomes a new Instruction = ($wants)
+# entropy maxed, Linked executes:
+# pulls in its Instruction, returns linked
+# $wants are Flows so obviously to be executed
+# unless stated otherwise
+# the process of string matching In's "Linked" must be a graph,
+# so that too many or too few matches can be graphable
+# chances are that several bits of logic come to work together somehow
+# but for now, throw a wobbly
 
 sub process {
     my $d = shift;
     my $here = $G;
-    local @entropy_fields = (@entropy_fields, $here);
 # ready() does patterny preparations without executing anything
-# takes datastructure and makes it into graph objects by:
-# take hash keys and use them to look up graph objects
-# hash values are kept around as "In"structions
-# arrays turned into sequences
-# coderefs turned into Code
-# data recursed
-# all these moves and phases need to be graph-based
-# big sexy graph/datastructure traveller thing to be developed
-# from search()
-    displo($here);
+# takes datastructure and makes it into graph objects by
+# turning datastructure into an Instruction
+# then whateverses match the Instruction by sheer digital willpower...
+
+    my $proc = $G = $here->spawn("proc");
+    local @entropy_fields = (@entropy_fields, $proc);
     ready($d);
     displo($here);
-    until ($here->{at_maximum_entropy}) {    # EVAPORATE
-        $here->{at_maximum_entropy} = 1;
-        say "GOING ROUND";
-        $G = $here;
-        # apply all sorts of pattern matches
-        travel($G,
-            [ sub { $G->linked($code) && $G->linked($evaporation) },
-              sub { $G->{be}->() unless $G->{evap}; $G->{evap} = 1 } ],
-        );
-        displo($here);
-        # traverse within $here applying matches however they want to
-        # they would link to $evaporate stuff I guess
+    EVAPORATE: until ($proc->{at_maximum_entropy}) {
+        $proc->{at_maximum_entropy} = 1;
+        say "EVAPORATING";
+        # apply all sorts of pattern matches eventually
+        # for now just compare $code linked things to the first Instruction,
+        # if matching replace
+        for my $c ($code->linked) {
+            my $o = ref $c;
+            for my $in ($G->linked("In")) {
+                if ($in->{it}->[0] eq $o) {
+                    my @new_in = @{ $in->{it} };
+                    shift @new_in;
+                    if (@new_in) {
+                        $c->spawn("In", it => \@new_in);
+                    }
+                    $G->unlink($in);
+                    $G->link($c);
+                }
+            }
+        }
         # time to unify search() and assplain()!
-        # need to write tests for them...
+    }
+    say "READY!";
+    $proc->{at_maximum_entropy} = 0;
+    EXECUTE: until ($proc->{at_maximum_entropy}) {
+        $proc->{at_maximum_entropy} = 1;
+        travel($G,
+            [ sub { $G->linked($code) },
+              sub { $G->{be}->() } ],
+        );
+        # also this ole thing
+        for my $w ($proc->linked("Flow")) {
+            for my $it (grep { $w->{want}->match($_) } $junk->linked) {
+                $w->{be}->($w, $it)
+            }
+        }
+        unless ($proc->{at_maximum_entropy}) {
+            say "RUN - GOING BACK TO EVAPORATE";
+            goto EVAPORATE;
+        }
+        say "RUNNING ROUND";
     }
     say "IS DONE!";
-    travel($G,
-        [ sub { die ; $G->linked($code) },
-          sub { $G->{be}->() } ],
-    );
     displo($here);
-    # TODO execute from $here
+}
+
+sub transmog {
+    my ($going, @coming) = @_;
+    my $proc = $going->linked("proc");
+# TODO relate between coming and going things
+    $proc->unlink($going);
+    for my $c (@coming) {
+        $proc->link($c);
+        $c->link($going, "replaces");
+    }
 }
 
 sub ready {
     my $d = shift; # the nugget
-    # $G is god now!
-    # be sure that $G at_maximum_entropy gets set appropriately
     if (ref $d eq "ARRAY") {
-        $G->spawn("Sequence", @$d);
+        $G->spawn("In", it => $d);
         say "Jhurtiiz: ".Dump($G);
         die;
     }
     elsif (ref $d eq "HASH") {
-        my $codes = new Stuff("Codes");
-        while (my ($d, $i) = each %$d) {
-            my $bunch = new Stuff("BunchOfCode", called => $d);
-            my @bunched = $code->linked($d);
-            say "no codes for $d" unless @bunched;
-            $bunch->link($_) for @bunched;
-            $bunch->link(new Stuff("In", it => $i)) if defined $i;
-            $codes->link($bunch);
+        while (my ($k, $v) = each %$d) {
+            $G->spawn("In", it => [$k, $v]);
         }
-        # find codes by name and bunch them together, post-hook to get sorted
-        # TODO crunch()
-        # should be user-helpable eventually
-        $G->link($codes);
-        return
     }
-    elsif (ref $d eq "CODE") {
-        $G->spawn("Code", it => $d);
-    }
-    elsif (defined $d) {
-        # this should really be graphed
-        ready({$d=>undef})
+    else {
+        $G->spawn("In", it => [$d]);
     }
 }
+
+# the thing that's constantly watching the graph evolve and tracking pattern
+# matches needs to be able to take a transient limb at any point, as well
+# as being fed bits, so Stuff code can have hooks, eg.
+
+# search(Flow-Wants
+
 sub travel {
     $G = shift;
     my $tree = [];
@@ -416,16 +440,12 @@ sub spawn {
     else {
         my $new = new Stuff(@_);
         $self->link($new);
-        if ($self eq $G) { # TODO
-            $G = $new
-        }
         return $new
     }
 }
 sub In { #TODO
     my $self = shift;
-    my $in = $self->linked("BunchOfCode->In") || die;
-    $in->spawn("Found", link => $self);
+    my $in = $self->linked("In") || die;
     return $in
 }
 sub link {
@@ -618,7 +638,7 @@ sub link2text {
     "$l->{1}" =~ /^(\w+)/;
     my $name = $1;
     # TODO should display like link val query syntax, to be formulated
-    my $val = join " ", tup($l->{val}), $name;
+    my $val = join " ", map { $_ ||= "undef"; $_ } tup($l->{val}), $name;
     return $val
 };
 sub links_by_id {
