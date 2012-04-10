@@ -45,36 +45,103 @@ the Click should be limit and entropy management
 =cut
 
 sub do_stuff {
-
     start_timer();
     my $clicks = 0;
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
         $root->{at_maximum_entropy} = 1;
         my $click = $root->spawn("Click");
         $clicks++ && say "\nclick!\n";
-        process("Click");
-        say Dump($G);
-        exit;
+        for my $w ($wants->linked) {
+            for my $it (grep { $w->{want}->match($_) } $junk->linked) {
+                $w->{be}->($w, $it)
+            }
+        }
+        #process("Click");
     }
     say "$clicks clicks in ". show_delta();
 }
 
+my $dumpstruction = new Stuff();
+$dumpstruction->spawn(
+[ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
+[ "In", be => sub { "In ".join" ",tup($_[0]->{it}) } ],
+);
+my $evaporation = new Stuff("Evaporation");
 $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
-[ "Linked", be => sub { shift->linked } ],
+[ "Linked", be => sub { $G->In->linked } ],
+[ "Flow", be => sub { $G->{be}->($G) } ],
+[ "If", link => [$evaporation], be => sub {
+    my $B = $G->linked("BunchOfCode");
+    my $C = $B->linked("Codes");
+    $B->link($G->In, "EXPR")
+} ],
+[ "If", link => [$evaporation], be => sub {
+    # move the other bunches of code in our code
+    my $B = $G->linked("BunchOfCode");
+    my $C = $B->linked("Codes");
+    my @others = grep { $_ ne $B } $C->linked("BunchOfCode");
+    $C->unlink($_) for @others;
+    $B->link($_, "BLOCK") for @others;
+} ],
+[ "If", link => [$evaporation], be => sub {
+    my $B = $G->linked("BunchOfCode");
+    my $C = $B->linked("Codes");
+    if ($B->linked("l(EXPR)") && $B->linked("l(BLOCK)")) {
+        for my $If ($B->linked("If")) {
+            $B->unlink($If) if $If->linked("Evaporation");
+        }
+    }
+} ],
+[ "If", be => sub {
+    my $B = $G->linked("BunchOfCode");
+    my $expr = $B->linked("l(EXPR)")->{it};
+    say "$expr";
+} ],
 );
+
+sub evaporate {
+    $G = shift;
+}
 
 sub process {
     my $d = shift;
     my $here = $G;
     local @entropy_fields = (@entropy_fields, $here);
-    # ready() does patterny preparations without executing anything
-    until ($here->{at_maximum_entropy}) {
+# ready() does patterny preparations without executing anything
+# takes datastructure and makes it into graph objects by:
+# take hash keys and use them to look up graph objects
+# hash values are kept around as "In"structions
+# arrays turned into sequences
+# coderefs turned into Code
+# data recursed
+# all these moves and phases need to be graph-based
+# big sexy graph/datastructure traveller thing to be developed
+# from search()
+    displo($here);
+    ready($d);
+    displo($here);
+    until ($here->{at_maximum_entropy}) {    # EVAPORATE
         $here->{at_maximum_entropy} = 1;
-        # TODO apply pattern matches to $here with some clue re: pre-ready()
-        ready($d);
-        # TODO apply pattern matches to $here
+        say "GOING ROUND";
+        $G = $here;
+        # apply all sorts of pattern matches
+        travel($G,
+            [ sub { $G->linked($code) && $G->linked($evaporation) },
+              sub { $G->{be}->() unless $G->{evap}; $G->{evap} = 1 } ],
+        );
+        displo($here);
+        # traverse within $here applying matches however they want to
+        # they would link to $evaporate stuff I guess
+        # time to unify search() and assplain()!
+        # need to write tests for them...
     }
+    say "IS DONE!";
+    travel($G,
+        [ sub { die ; $G->linked($code) },
+          sub { $G->{be}->() } ],
+    );
+    displo($here);
     # TODO execute from $here
 }
 
@@ -84,37 +151,110 @@ sub ready {
     # be sure that $G at_maximum_entropy gets set appropriately
     if (ref $d eq "ARRAY") {
         $G->spawn("Sequence", @$d);
-        say "Jhurtiiz: ".Dump($g);
+        say "Jhurtiiz: ".Dump($G);
         die;
     }
     elsif (ref $d eq "HASH") {
-        my (%di, %db);
+        my $codes = new Stuff("Codes");
         while (my ($d, $i) = each %$d) {
-            $di{$d} = new Stuff("In", it => $i); # instruction, given to
-            $db{$d} = [ $code->linked($k) ];     # behaviour
+            my $bunch = new Stuff("BunchOfCode", called => $d);
+            my @bunched = $code->linked($d);
+            say "no codes for $d" unless @bunched;
+            $bunch->link($_) for @bunched;
+            $bunch->link(new Stuff("In", it => $i)) if defined $i;
+            $codes->link($bunch);
         }
-        # this is like a lexical scope, involving possibly many
-        # algorithms intertwining dependence/other forces on each other.
-        # finding the codes is more special than just search I think...
-        # we might want to define (A and B) as well as individually
+        # find codes by name and bunch them together, post-hook to get sorted
         # TODO crunch()
-        # compose order... fire them just so
-        # composed from known algorithm territory, chunks of intellect...
         # should be user-helpable eventually
-        # get things to apply themselves to $G:
-        my $new_cleverness = crunch(\%di, \%db);
-        $G->spawn($new_cleverness);
+        $G->link($codes);
         return
     }
     elsif (ref $d eq "CODE") {
-        $g->spawn("Code", it => $d);
+        $G->spawn("Code", it => $d);
     }
-    else {
-        $g->spawn("Data", it => $d);
+    elsif (defined $d) {
+        # this should really be graphed
+        ready({$d=>undef})
     }
 }
+sub travel {
+    $G = shift;
+    my $tree = [];
+    my $ex = shift if ref $_[0] eq "HASH";
+    $ex ||= do {
+        push @$tree, summarise($G);
+        { seen_oids => {},
+          n => 0,
+          via_link => -1,
+          patterns => shift,
+        },
+    };
 
-        
+    my $ps = $ex->{patterns};
+    if ($ps->[0]->()) {
+        $ps->[1]->()
+    }
+
+
+    my %links = links_by_id($G->links);
+    my %by_other = links_by_other_type(%links);
+
+    my $figure_link = sub {
+        my $l = shift;
+
+        if ($l->{id} eq $ex->{via_link}) {
+            return 
+        }
+        if (!defined $l->{1}) {
+            warn "undef link: $l->{id}";
+            return "UNDEFINED!"
+        }
+        if ($ex->{n}++ > 50) {
+            return "DEEP RECURSION!"
+        }
+
+        my $o = $l->{1};
+        my $oid = "$o";
+
+        my $prev = exists $ex->{seen_oids}->{$oid};
+        my $ob = $ex->{seen_oids}->{$oid} ||= { summarise($o) => [] };
+        my ($linkstash) = values %$ob;
+
+        if ($o eq $code || $o eq $evaporation) {
+            @$linkstash = ("...");
+        }
+        elsif (!$prev) {
+            $ex->{via_link} = $l->{id};
+            my $connective = travel($l->{1}, $ex);
+            push @$linkstash, @$connective;
+        }
+
+        return $ob;
+    };
+
+    for my $k (sort keys %by_other) {
+        for my $l (@{$by_other{$k}}) {
+            my $fig = $figure_link->($l);
+            next unless $fig;
+            push @$tree, { $l->{text}, $fig };
+        }
+    }
+
+    return $tree;
+}
+
+my @dospec_testdata;
+my $dospec_called = sub {
+    my $args = shift;
+    my $ret = [];
+    push @dospec_testdata, [ $args, $ret ];
+    return sub { push @$ret, @_ }
+};
+sub END {
+    say "are ". scalar @dospec_testdata;
+    say Dump(\@dospec_testdata);
+}
 
 sub search { # {{{
     my %more;
@@ -140,7 +280,7 @@ sub search { # {{{
     my $findlinks = sub {
         my ($from, $to) = @_;
         return grep {
-            main::spec_comp($to, $_->{1})
+            main::spec_comp($to, $_)
         } map {
             main::order_link($from, $_);
         } @links
@@ -151,6 +291,7 @@ sub search { # {{{
         my ($from, $rs) = @_;
     };
     $dospec = sub {
+        my $ret = $dospec_called->(\@_);
         my ($rs, @spec) = @_;
         my @flin;
         my $to = shift @spec;
@@ -166,26 +307,41 @@ sub search { # {{{
             }
             push @flin, @ls;
         }
-        return uniq @flin;
+        my @ret = uniq @flin;
+        $ret->(@ret);
+        return @ret
     };
     
     if (!$spec) {
         return $findlinks->($start_from, "*");
     }
     my @ar = $dospec->([$start_from], @spec);
-    say sum($start_from)." $more{spec} ". scalar @ar;
+    #say sum($start_from)." $more{spec} ". scalar @ar;
 
-    $DB::single = 1;
     my $callers = sub { [reverse((caller(shift || 1))[0..3])] };
     my @ca = ($callers->(), $callers->(2), $callers->(3));
-    say "  : ". join "   ", map { join("/", @$_) } @ca;
+#    say "  : ". join "   ", map { join("/", @$_) } @ca;
     
     return @ar; 
 }
 
+
+
 sub spec_comp {
     my $spec = shift;
     my $thing = shift;
+    my $l;
+    if (ref $thing eq "HASH") {
+        $l = $thing;
+        $thing = $l->{1};
+    }
+
+    if ($spec =~ /^l\((\w+)\)$/) {
+        my $linkval = $1;
+        say "$linkval vs $l->{val}->[0]";
+        return 1 if $l->{val}->[0] eq $linkval;
+        return 0
+    }
     
     return 1 if $spec && $spec eq "*";
     ref $spec   ? $thing eq $spec      # an object
@@ -237,7 +393,11 @@ sub new {
         eval "package $package; use base '$base';";
         die $@ if $@;
     }
-    bless {@_}, $package;
+    my $self = bless {@_}, $package;
+    if (my $ls = delete $self->{link}) {
+        $self->link($_) for ::tup($ls)
+    }
+    return $self;
 }
 sub spawn {
     my $self = shift;
@@ -247,21 +407,27 @@ sub spawn {
     else {
         my $new = new Stuff(@_);
         $self->link($new);
-        if ($self eq $G) {
+        if ($self eq $G) { # TODO
             $G = $new
         }
         return $new
     }
 }
+sub In { #TODO
+    my $self = shift;
+    my $in = $self->linked("BunchOfCode->In") || die;
+    $in->spawn("Found", link => $self);
+    return $in
+}
 sub link {
-    entropy_increases();
+    main::entropy_increases();
     $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     push @links, {0=>shift, 1=>shift,
                 val=>\@_, id=>scalar(@links)}; # self, other, ...
     return $_[0]
 }
 sub unlink {
-    entropy_increases();
+    main::entropy_increases();
     my $self = shift;
     my $other = shift;
     my @ls = $self->links($other);
@@ -302,15 +468,14 @@ sub do {
 sub find_the {
     my $self = shift;
     my $what = shift;
-    my $pyramid_scheme = \@main::pyramid_scheme;
     # TODO this is a kind of search.
     # search should be all about traversal and such
     # surrounding functions apply aggregation and whatever
     # and what graph arches to look along, here we want state first
-    $self->{$what} || do {
-        my ($ok) = map { $_->{$what} } grep { $_->{$what} } map { @$_ } reverse @$pyramid_scheme;
-        $ok
-    }
+#    $self->{$what} || do {
+#        my ($ok) = map { $_->{$what} } grep { $_->{$what} } map { @$_ } reverse @$pyramid_scheme;
+#        $ok
+#    }
 }
 } # }}}
 { package Text;
@@ -392,9 +557,13 @@ sub sum {
 }
 sub summarise {
     my $thing = shift;
-    my $text = "$thing";
+    my $text;
     my ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!?";
     my ($color) = $id =~ /(...)$/;
+    if (my ($inst) = $dumpstruction->linked(ref $thing)) {
+        $text = $inst->{be}->($thing);
+    }
+    else {
     given (ref $thing) {
         when ("Text") {
             $text = "$thing: ".$thing->text;
@@ -421,7 +590,15 @@ sub summarise {
             $text = "$thing: object=$thing->{object} ".
                 ($thing->{names} ? join("+",@{$thing->{names}}):"");
         }
+        when ("BunchOfCode") {
+            $text = "BunchOfCode $thing->{called}";
+        }
+        when ("In") {
+            $text = "Instruction ".tup($thing->{it});
+        }
     }
+    }
+    $text ||= "$thing";
     return $text;
     return sprintf '<li id="%s" style="background-color: #%s">%s</li>', $id, $color, $text, $id;
 }
@@ -430,8 +607,8 @@ sub link2text {
     my $l = shift;
     "$l->{1}" =~ /^(\w+)/;
     my $name = $1;
-    $name = summarise($l->{1});
-    my $val = join " ", "_", tup($l->{val}), $name;
+    # TODO should display like link val query syntax, to be formulated
+    my $val = join " ", tup($l->{val}), $name;
     return $val
 };
 sub links_by_id {
@@ -462,11 +639,14 @@ sub assplain {
     my $figure_link = sub {
         my $l = shift;
 
+        if ($l->{id} eq $previous_lid) {
+            return 
+        }
         if (!defined $l->{1}) {
             warn "undef link: $l->{id}";
             return "UNDEFINED!"
         }
-        if ($n++ > 100) {
+        if ($n++ > 50) {
             return "DEEP RECURSION!"
         }
 
@@ -477,7 +657,10 @@ sub assplain {
         my $ob = $seen_oids{$oid} ||= { summarise($o) => [] };
         my ($linkstash) = values %$ob;
 
-        unless ($prev) { # || $o =~ /Intuition/) {
+        if ($o eq $code || $o eq $evaporation) {
+            @$linkstash = ("...");
+        }
+        elsif (!$prev) {
             my $connective = assplain($l->{1}, $l->{id});
             push @$linkstash, @$connective;
         }
@@ -492,7 +675,9 @@ sub assplain {
     }
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
-            push @$tree, { $l->{text}, $figure_link->($l) };
+            my $fig = $figure_link->($l);
+            next unless $fig;
+            push @$tree, { $l->{text}, $fig };
         }
     }
 
@@ -507,6 +692,7 @@ sub tup {
 sub displo {
     for (@_) {
         %seen_oids = ();
+        $n = 0;
         my $g = assplain($_);
         my @lines = grep { /\w/ } split "\n", Dump($g);
         say "\n". join "\n", @lines;
