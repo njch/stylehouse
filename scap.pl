@@ -26,22 +26,36 @@ sub entropy_increases {
 }
 
 =pod
-so from everywhere we can see $G, which is the current point on the graph
-$G->spawn(...) to add a branch
+everywhere can see $G, the current point on the graph
+$G->spawn("Node", etc => etc) to add a Stuffy thing
 we shall call the maxing of entropy evaportation
-ready evaporates that little island of logic
-  like a lexical scope, being coded together out of known intellect
-then things are executed
-so you see the division between code and data is blurred into a graph
-the evaportation may build more graph, which is solved first
+ready takes input into the graph in the form of a datastructure
+it spawns a 'proc', kind of a composable lexicality
+$code relations coagulate intellect
+code and data blur into a graph
 
-so given a datastructure, we spawn code objects
-everything sorts itself out until it's done
-then executables are run
+so given a datastructure, we spawn instruction objects
+pattern matching replaces part or all of these with code objects
+once things settle down,
+the codes are executed,
+instruction objects hang around getting used like args,
+any transmog()rification to the graph sends back to evaporate, etc
 
-a swarm of clicks get things done in the graph
+so imagine input entropy flowing into a system, the output measured
+and failing a test. once would have to trace execution forwards
+(or back depending on human intuition) until the insanity was found.
 
-the Click should be limit and entropy management
+the graph should be able to present the human with the human-readable
+parts first, allow them to bisect down to where the problem is.
+also useful would be difficult-to-effect test functions like
+capturing all state through the system with slight differences and
+laying it out all nicely, using that data to quickly unit test.
+
+execution order should be introduced by making the execution
+itself a graph happening to do with a sequence of codes that can
+be messed with. this kind of flow of things will get nice
+representation eventually
+
 =cut 
 #}}}
 
@@ -88,53 +102,25 @@ use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
 [ "In", be => sub { "In ".join" ",tup($_[0]->{it}) } ],
-#[ 'Stuff', be => sub { $DB::single = 1; "Stuff: ".encode_json($_[0]) } ],
 );
-my $evaporation = new Stuff("Evaporation");
 $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
 [ "Linked", be => sub { 
     transmog($G => $G->In->{it}->[0]->linked) } ],
 [ "Flow", be => sub { $G->{be}->($G) } ],
-[ "If", link => [$evaporation], be => sub {
-    my $B = $G->linked("BunchOfCode");
-    my $C = $B->linked("Codes");
-    $B->link($G->In, "EXPR")
-} ],
-[ "If", link => [$evaporation], be => sub {
-    # move the other bunches of code in our code
-    my $B = $G->linked("BunchOfCode");
-    my $C = $B->linked("Codes");
-    my @others = grep { $_ ne $B } $C->linked("BunchOfCode");
-    $C->unlink($_) for @others;
-    $B->link($_, "BLOCK") for @others;
-} ],
-[ "If", link => [$evaporation], be => sub {
-    my $B = $G->linked("BunchOfCode");
-    my $C = $B->linked("Codes");
-    if ($B->linked("l(EXPR)") && $B->linked("l(BLOCK)")) {
-        for my $If ($B->linked("If")) {
-            $B->unlink($If) if $If->linked("Evaporation");
-        }
-    }
-} ],
-[ "If", be => sub {
-    my $B = $G->linked("BunchOfCode");
-    my $expr = $B->linked("l(EXPR)")->{it};
-    say "$expr";
-} ],
 ); #}}}
 
 # Instruction = (Linked => $wants)
 # string matches In's "Linked"
 # $wants becomes a new Instruction = ($wants)
 # entropy maxed, Linked executes:
-# pulls in its Instruction, returns linked
-# $wants are Flows so obviously to be executed
-# unless stated otherwise
+# pulls in its Instruction, returns linked $wants (the Flows)
+# replaces itself with them via transmog()
+# Flows get coded and executed
 # the process of string matching In's "Linked" must be a graph,
-# so that too many or too few matches can be graphable
-# chances are that several bits of logic come to work together somehow
+# so that too many or too few matches can be graphable,
+# this kind of thing would help in debugger graphs.
+# chances are that codes will want to work together
 # but for now, throw a wobbly
 
 sub process {
@@ -152,9 +138,11 @@ sub process {
     EVAPORATE: until ($proc->{at_maximum_entropy}) {
         $proc->{at_maximum_entropy} = 1;
         say "EVAPORATING";
-        # apply all sorts of pattern matches eventually
-        # for now just compare $code linked things to the first Instruction,
-        # if matching replace
+        # TODO there will be a pattern matching engine working
+        # all the time which can see that we're here and there are
+        # Ins and Codes to get together etc, but...
+        # for now just compare $code linked things to the first
+        # Instruction if matching replace
         for my $c ($code->linked) {
             my $o = ref $c;
             for my $in ($G->linked("In")) {
@@ -169,7 +157,6 @@ sub process {
                 }
             }
         }
-        # time to unify search() and assplain()!
     }
     say "READY!";
     $proc->{at_maximum_entropy} = 0;
@@ -198,7 +185,6 @@ sub process {
 sub transmog {
     my ($going, @coming) = @_;
     my $proc = $going->linked("proc");
-# TODO relate between coming and going things
     $proc->unlink($going);
     for my $c (@coming) {
         $proc->link($c);
@@ -207,7 +193,7 @@ sub transmog {
 }
 
 sub ready {
-    my $d = shift; # the nugget
+    my $d = shift;
     if (ref $d eq "ARRAY") {
         $G->spawn("In", it => $d);
         say "Jhurtiiz: ".Dump($G);
@@ -223,22 +209,15 @@ sub ready {
     }
 }
 
-# the thing that's constantly watching the graph evolve and tracking pattern
-# matches needs to be able to take a transient limb at any point, as well
-# as being fed bits, so Stuff code can have hooks, eg.
+# the thing that's constantly watching the graph evolve and tracking
+# pattern matches needs to be able to take a transient limb at any
+# point, as well as being drip fed, so Stuff code can have hooks,
+# eg, on link, unlink, you name it.
+# hyperreal code. it should know about callstack interrogation for
+# the debug toolchain fantasy.
 
-# pattern completor keeps track of graph shapes as far as patterns require
-# Flow@-{want-} @-> $junk@->match(${want}) && be(${Flow}, ${junk}
+# Flow@-{want-} @-> $junk@->match(${want}) && In(${junk}) be(${Flow}) )
 # foreach Flow, foreach junk linked where match $want, be Flow with junk
-
-=pod
-so you're travelling right.
-    you're either from a proc, looking for patterns to DO
-or
-    you're a specially dispatched search from ->linked or whatever
-in both cases the patternal state machine is watching, fed your steps
-steps not into subroutines but onto tasks such as recursing here
-=cut
 
 sub search { # {{{
     my %p;
@@ -246,7 +225,6 @@ sub search { # {{{
     %p = @_ if @_ > 1;
 
     my @spec = parse_spec($p{spec});
-    # spec = ( { arrow => 0|1, return => 0|1, object => "Ref" }, ... )
     if ($p{start_from}) {
         unshift @spec, { object => $p{start_from} };
     }
@@ -261,7 +239,6 @@ sub search { # {{{
     };
 
     my @cols;
-#        say "Spec is: ".Dump(\@spec);
     for my $s (@spec) {
         my @rows;
         if (!@cols) {
@@ -297,7 +274,7 @@ sub parse_spec { #{{{
         return { object => $spec }
     }
     my @spec = split /(?<=->)/, $spec;
-    my $chunk = sub {
+    my $chunk = sub { # hmm... rewrite in perl6?
         $_ = shift;
         my $i = {};
         ($i->{arrow} = s/->$//)
@@ -349,7 +326,7 @@ sub travel {
         my $ob = $ex->{seen_oids}->{$oid} ||= { summarise($o) => [] };
         my ($linkstash) = values %$ob;
 
-        if ($o eq $code || $o eq $evaporation) {
+        if ($o eq $code) {
             @$linkstash = ("...");
         }
         elsif (!$prev) {
@@ -693,7 +670,7 @@ sub assplain {
         my $ob = $seen_oids{$oid} ||= { summarise($o) => [] };
         my ($linkstash) = values %$ob;
 
-        if ($o eq $code || $o eq $evaporation) {
+        if ($o eq $code) {
             @$linkstash = ("...");
         }
         elsif (!$prev) {
