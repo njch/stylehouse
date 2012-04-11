@@ -45,25 +45,28 @@ the Click should be limit and entropy management
 =cut 
 #}}}
 
-my $test = 1;
+my $test = 0;
 my @modules = (
-#"Intuitor",
+"Intuitor",
 #"Scap2Blog",
 );
 sub do_stuff {
     start_timer();
     if ($test == 1) {
     my $td = LoadFile('search_testdata.yml');
-    use Test::More 'no_plan';
+    #use Test::More 'no_plan';
     my $round = 1;
     for my $t (@$td) {
         my ($args, $ret, $links) = @{ Load($t) };
         @links = @$links;
-        $DB::single = $round++ == 468;
-        my $aret = [ _search(@$args) ];
+        $DB::single = $round++ == 54;
+        my $aret = [ search(@$args) ];
         my @args = map { !defined $_ ? "undef" : $_ } @$args;
         is_deeply($aret, $ret, "@args correct!")
-            || say Dump([$aret, $ret]);;
+            || do {
+                $DB::single = 1;
+                say Dump([$aret, $ret])
+            };
     }
     say " okay:". show_delta();
     return;
@@ -237,7 +240,7 @@ in both cases the patternal state machine is watching, fed your steps
 steps not into subroutines but onto tasks such as recursing here
 =cut
 
-sub _search { # {{{
+sub search { # {{{
     my %p;
     $p{spec} = shift if @_ == 1;
     %p = @_ if @_ > 1;
@@ -245,65 +248,43 @@ sub _search { # {{{
     my @spec = parse_spec($p{spec});
     # spec = ( { arrow => 0|1, return => 0|1, object => "Ref" }, ... )
     if ($p{start_from}) {
-        unshift @spec, { it => $p{start_from} };
-    }
-
-    my $res_g = new Stuff("SearchResults");
-    my (@todo, @cols);
-    my $col_i = 0;
-    for my $s (@spec) {
-        my $col = $res_g->spawn("Column", spec => $s, i => $col_i++);
-        if ($s->{it}) {
-            $col->link($s->{it});
-        }
-        else {
-            my $todo = { col => $col };
-            $todo->{from_col} = $cols[-1] if @cols;
-            push @todo, $todo;
-        }
-        push @cols, $col;
+        unshift @spec, { object => $p{start_from} };
     }
 
     my $findlinks = sub {
         my ($from, $to) = @_;
-        return
-          grep {
-            main::spec_comp("!Column", $_)
-        } grep {
+        return grep {
             main::spec_comp($to, $_)
         } map {
             main::order_link($from, $_);
         } @links
     };
 
-    for my $t (@todo) {
-        my $col = $t->{col};
-        my $spec = $col->{spec};
-        my $ospec = $spec->{object};
-        my $prev = $t->{from_col};
-        if ($prev) {
-            for my $r ($prev->linked("!SearchResults")) {
-                my @links = $findlinks->($r => $ospec);
-                for my $l (@links) {
-                    $col->link($l->{1}, $l);
-                }
-                if (!@links) {
-                    say "found no links from $r ($prev)";
-                }
-            }
+    my @cols;
+#        say "Spec is: ".Dump(\@spec);
+    for my $s (@spec) {
+        my @rows;
+        if (!@cols) {
+            my @links = $findlinks->($s->{object} => "*");
+            my @objects = uniq map { $_->{0} } @links;
+            push @rows, @objects;
         }
         else {
-            my @links = $findlinks->($ospec, "*");
-            my @objects = uniq map { $_->{0} } @links;
-            for my $o (@objects) {
-                $col->link($o);
+            my $from_links = $cols[-1]->{rows};
+            my @froms = @cols == 1 ? @$from_links :
+                map { $_->{1} } @$from_links;
+            for my $from (@froms) {
+                my @links = $findlinks->($from => $s->{object});
+                push @rows, @links;
             }
         }
+        push @cols, {
+            spec => $s,
+            rows => \@rows,
+        };
     }
 
-    my @ar = map {
-        $_->{val}->[0]
-    } $cols[-1]->links("!SearchResults");
+    my @ar = @{ $cols[-1]->{rows} };
     return @ar; 
 }
 
@@ -322,7 +303,7 @@ sub parse_spec { #{{{
         ($i->{arrow} = s/->$//)
             || s/-$//;
         $i->{return} = s/^\((\w+)\)$/$1/;
-        /^(\w+|\*)$/ || die "$_ noparse object!";
+        /^(!?\w+|\*)$/ || die "$_ noparse object!";
         $i->{object} = $1;
         return $i
     };
@@ -391,97 +372,6 @@ sub travel {
     return $tree;
 }
 
-my @search_testdata;
-my $search_called = sub {
-    my $args = shift;
-    my $td = [$args, undef, \@links];
-    return sub {
-        $td->[1] = \@_;
-        push @search_testdata, Dump($td);
-    }
-};
-sub END {
-    return unless $test == 0;
-    use Data::Walk;
-    walk sub {
-        eval { $_->{be} = undef if $_->{be} };
-        $@ = "";
-    }, @search_testdata;
-    say "are ". scalar @search_testdata;
-    DumpFile('search_testdata.yml', \@search_testdata);
-}
-sub search { # {{{
-    my $ret = $search_called->([@_]);
-    my %more;
-    if (@_ % 2) {
-        $more{spec} = shift;
-        $more{want} = "linked";
-    }
-    else {
-        %more = @_;
-    }
-    
-    my $want = $more{want}; # links/linked
-    my $spec = $more{spec};
-    my @spec;
-    if (ref $spec) {
-        @spec = $spec;
-    }
-    elsif ($spec) {
-        @spec = split "->", $spec;
-    }
-    my $start_from = $more{start_from};
-    $start_from ||= shift @spec;
-    my $findlinks = sub {
-        my ($from, $to) = @_;
-        return grep {
-            main::spec_comp($to, $_)
-        } map {
-            main::order_link($from, $_);
-        } @links
-    };
-    my $dospec;
-    my $rtree = {};
-    my $take_results = sub {
-        my ($from, $rs) = @_;
-    };
-    $dospec = sub {
-        my ($rs, @spec) = @_;
-        my @flin;
-        my $to = shift @spec;
-        for my $from (@$rs) {
-            my @ls = $findlinks->($from, $to);
-            my @res = map { $_->{1} } @ls;
-            $take_results->(
-                !@ls ? "404 ($from)" : "$ls[0]->{0}",
-                \@ls
-            );
-            if (@spec) {
-                @ls = $dospec->(\@res, @spec);
-            }
-            push @flin, @ls;
-        }
-        my @ret = uniq @flin;
-        return @ret
-    };
-    
-    my @ar;
-    if (!$spec) {
-        @ar = $findlinks->($start_from, "*");
-    }
-    else {
-        @ar = $dospec->([$start_from], @spec);
-    }
-    #say sum($start_from)." $more{spec} ". scalar @ar;
-
-    my $callers = sub { [reverse((caller(shift || 1))[0..3])] };
-    my @ca = ($callers->(), $callers->(2), $callers->(3));
-#    say "  : ". join "   ", map { join("/", @$_) } @ca;
-    $ret->(@ar);
-    return @ar; 
-}
-
-
 
 sub spec_comp {
     my $spec = shift;
@@ -498,7 +388,7 @@ sub spec_comp {
         return 1 if $l->{val}->[0] eq $linkval;
         return 0
     }
-    
+
     return 1 if $spec && $spec eq "*";
     my $not = $spec =~ s/^!//;
     my $r = ref $spec   ? $thing eq $spec      # an object
