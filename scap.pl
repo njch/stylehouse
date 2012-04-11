@@ -55,14 +55,15 @@ sub do_stuff {
     if ($test == 1) {
     my $td = LoadFile('search_testdata.yml');
     use Test::More 'no_plan';
+    my $round = 1;
     for my $t (@$td) {
         my ($args, $ret, $links) = @{ Load($t) };
         @links = @$links;
-        my $aret = [ search(@$args) ];
+        $DB::single = $round++ == 468;
+        my $aret = [ _search(@$args) ];
         my @args = map { !defined $_ ? "undef" : $_ } @$args;
-        $DB::single = "@args" !~ /\S/;
         is_deeply($aret, $ret, "@args correct!")
-            || say Dump([$args, $ret]);;
+            || say Dump([$aret, $ret]);;
     }
     say " okay:". show_delta();
     return;
@@ -239,13 +240,12 @@ steps not into subroutines but onto tasks such as recursing here
 sub _search { # {{{
     my %p;
     $p{spec} = shift if @_ == 1;
-    %p = @_ if @_ != 1;
+    %p = @_ if @_ > 1;
 
     my @spec = parse_spec($p{spec});
     # spec = ( { arrow => 0|1, return => 0|1, object => "Ref" }, ... )
     if ($p{start_from}) {
         unshift @spec, { it => $p{start_from} };
-        push @spec, parse_spec("*")     if @spec == 1;
     }
 
     my $res_g = new Stuff("SearchResults");
@@ -266,7 +266,10 @@ sub _search { # {{{
 
     my $findlinks = sub {
         my ($from, $to) = @_;
-        return grep {
+        return
+          grep {
+            main::spec_comp("!Column", $_)
+        } grep {
             main::spec_comp($to, $_)
         } map {
             main::order_link($from, $_);
@@ -276,31 +279,51 @@ sub _search { # {{{
     for my $t (@todo) {
         my $col = $t->{col};
         my $spec = $col->{spec};
+        my $ospec = $spec->{object};
         my $prev = $t->{from_col};
-        for my $r ($prev->linked("!SearchResults")) {
-            my @links = $findlinks->($r => $spec);
-            for my $l (@links) {
-                $col->link($l->{1}, $l);
+        if ($prev) {
+            for my $r ($prev->linked("!SearchResults")) {
+                my @links = $findlinks->($r => $ospec);
+                for my $l (@links) {
+                    $col->link($l->{1}, $l);
+                }
+                if (!@links) {
+                    say "found no links from $r ($prev)";
+                }
             }
-            if (!@links) {
-                say "found no links from $r ($prev)";
+        }
+        else {
+            my @links = $findlinks->($ospec, "*");
+            my @objects = uniq map { $_->{0} } @links;
+            for my $o (@objects) {
+                $col->link($o);
             }
         }
     }
 
-    my @ar = $cols[-1]->linked("!SearchResults");
+    my @ar = map {
+        $_->{val}->[0]
+    } $cols[-1]->links("!SearchResults");
     return @ar; 
 }
 
 sub parse_spec { #{{{
-    my @spec = split /((?<=-)|(?<=->))/, shift;
+    my $spec = shift;
+    if (!defined $spec) {
+        $spec = "*"
+    }
+    if (ref $spec) {
+        return { object => $spec }
+    }
+    my @spec = split /(?<=->)/, $spec;
     my $chunk = sub {
         $_ = shift;
         my $i = {};
         ($i->{arrow} = s/->$//)
             || s/-$//;
         $i->{return} = s/^\((\w+)\)$/$1/;
-        ($i->{object}) = /^(\w+|\*)$/ || die "$_ noparse object!";
+        /^(\w+|\*)$/ || die "$_ noparse object!";
+        $i->{object} = $1;
         return $i
     };
     return map { $chunk->($_) } @spec
