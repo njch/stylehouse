@@ -6,7 +6,7 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-my $junk = new Stuff("Junk");
+my $junk = new Stuff("Junk"); #{{{
 my ($one, @etc) = map { $_->link($junk); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
@@ -42,10 +42,32 @@ then executables are run
 a swarm of clicks get things done in the graph
 
 the Click should be limit and entropy management
-=cut
+=cut 
+#}}}
 
+my $test = 1;
+my @modules = (
+#"Intuitor",
+#"Scap2Blog",
+);
 sub do_stuff {
     start_timer();
+    if ($test == 1) {
+    my $td = LoadFile('search_testdata.yml');
+    use Test::More 'no_plan';
+    for my $t (@$td) {
+        my ($args, $ret, $links) = @{ Load($t) };
+        @links = @$links;
+        my $aret = [ search(@$args) ];
+        my @args = map { !defined $_ ? "undef" : $_ } @$args;
+        $DB::single = "@args" !~ /\S/;
+        is_deeply($aret, $ret, "@args correct!")
+            || say Dump([$args, $ret]);;
+    }
+    say " okay:". show_delta();
+    return;
+    }
+    else {
     my $clicks = 0;
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
         $root->{at_maximum_entropy} = 1;
@@ -54,9 +76,10 @@ sub do_stuff {
         last
     }
     say "$clicks clicks in ". show_delta();
+    }
 }
 
-my $dumpstruction = new Stuff("DS");
+my $dumpstruction = new Stuff("DS"); #{{{
 use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
@@ -96,7 +119,7 @@ $code->spawn(
     my $expr = $B->linked("l(EXPR)")->{it};
     say "$expr";
 } ],
-);
+); #}}}
 
 # Instruction = (Linked => $wants)
 # string matches In's "Linked"
@@ -200,7 +223,88 @@ sub ready {
 # matches needs to be able to take a transient limb at any point, as well
 # as being fed bits, so Stuff code can have hooks, eg.
 
-# search(Flow-Wants
+# pattern completor keeps track of graph shapes as far as patterns require
+# Flow@-{want-} @-> $junk@->match(${want}) && be(${Flow}, ${junk}
+# foreach Flow, foreach junk linked where match $want, be Flow with junk
+
+=pod
+so you're travelling right.
+    you're either from a proc, looking for patterns to DO
+or
+    you're a specially dispatched search from ->linked or whatever
+in both cases the patternal state machine is watching, fed your steps
+steps not into subroutines but onto tasks such as recursing here
+=cut
+
+sub _search { # {{{
+    my %p;
+    $p{spec} = shift if @_ == 1;
+    %p = @_ if @_ != 1;
+
+    my @spec = parse_spec($p{spec});
+    # spec = ( { arrow => 0|1, return => 0|1, object => "Ref" }, ... )
+    if ($p{start_from}) {
+        unshift @spec, { it => $p{start_from} };
+        push @spec, parse_spec("*")     if @spec == 1;
+    }
+
+    my $res_g = new Stuff("SearchResults");
+    my (@todo, @cols);
+    my $col_i = 0;
+    for my $s (@spec) {
+        my $col = $res_g->spawn("Column", spec => $s, i => $col_i++);
+        if ($s->{it}) {
+            $col->link($s->{it});
+        }
+        else {
+            my $todo = { col => $col };
+            $todo->{from_col} = $cols[-1] if @cols;
+            push @todo, $todo;
+        }
+        push @cols, $col;
+    }
+
+    my $findlinks = sub {
+        my ($from, $to) = @_;
+        return grep {
+            main::spec_comp($to, $_)
+        } map {
+            main::order_link($from, $_);
+        } @links
+    };
+
+    for my $t (@todo) {
+        my $col = $t->{col};
+        my $spec = $col->{spec};
+        my $prev = $t->{from_col};
+        for my $r ($prev->linked("!SearchResults")) {
+            my @links = $findlinks->($r => $spec);
+            for my $l (@links) {
+                $col->link($l->{1}, $l);
+            }
+            if (!@links) {
+                say "found no links from $r ($prev)";
+            }
+        }
+    }
+
+    my @ar = $cols[-1]->linked("!SearchResults");
+    return @ar; 
+}
+
+sub parse_spec { #{{{
+    my @spec = split /((?<=-)|(?<=->))/, shift;
+    my $chunk = sub {
+        $_ = shift;
+        my $i = {};
+        ($i->{arrow} = s/->$//)
+            || s/-$//;
+        $i->{return} = s/^\((\w+)\)$/$1/;
+        ($i->{object}) = /^(\w+|\*)$/ || die "$_ noparse object!";
+        return $i
+    };
+    return map { $chunk->($_) } @spec
+} #}}}
 
 sub travel {
     $G = shift;
@@ -220,7 +324,6 @@ sub travel {
         $ps->[1]->()
     }
 
-
     my %links = links_by_id($G->links);
     my %by_other = links_by_other_type(%links);
 
@@ -230,10 +333,7 @@ sub travel {
         if ($l->{id} eq $ex->{via_link}) {
             return 
         }
-        if (!defined $l->{1}) {
-            warn "undef link: $l->{id}";
-            return "UNDEFINED!"
-        }
+        die "undef link: $l->{id}" unless defined $l->{1};
         if ($ex->{n}++ > 50) {
             return "DEEP RECURSION!"
         }
@@ -268,28 +368,27 @@ sub travel {
     return $tree;
 }
 
-my @dospec_testdata;
-my %linksets;
-my $save_links = sub {
-    return $linksets{$ln} ||= { linkset => Dump(\@links) }
-};
-my $dospec_called = sub {
+my @search_testdata;
+my $search_called = sub {
     my $args = shift;
-    my $ret = [];
-    push @dospec_testdata, [ Dump($args), Dump($ret), $save_links->() ];
-    return sub { push @$ret, @_ }
+    my $td = [$args, undef, \@links];
+    return sub {
+        $td->[1] = \@_;
+        push @search_testdata, Dump($td);
+    }
 };
 sub END {
+    return unless $test == 0;
     use Data::Walk;
     walk sub {
         eval { $_->{be} = undef if $_->{be} };
         $@ = "";
-    }, @dospec_testdata;
-    say "are ". scalar @dospec_testdata;
-    DumpFile('dospec_testdata.yml', \@dospec_testdata);
+    }, @search_testdata;
+    say "are ". scalar @search_testdata;
+    DumpFile('search_testdata.yml', \@search_testdata);
 }
-
 sub search { # {{{
+    my $ret = $search_called->([@_]);
     my %more;
     if (@_ % 2) {
         $more{spec} = shift;
@@ -324,7 +423,6 @@ sub search { # {{{
         my ($from, $rs) = @_;
     };
     $dospec = sub {
-        my $ret = $dospec_called->(\@_);
         my ($rs, @spec) = @_;
         my @flin;
         my $to = shift @spec;
@@ -341,20 +439,22 @@ sub search { # {{{
             push @flin, @ls;
         }
         my @ret = uniq @flin;
-        $ret->(@ret);
         return @ret
     };
     
+    my @ar;
     if (!$spec) {
-        return $findlinks->($start_from, "*");
+        @ar = $findlinks->($start_from, "*");
     }
-    my @ar = $dospec->([$start_from], @spec);
+    else {
+        @ar = $dospec->([$start_from], @spec);
+    }
     #say sum($start_from)." $more{spec} ". scalar @ar;
 
     my $callers = sub { [reverse((caller(shift || 1))[0..3])] };
     my @ca = ($callers->(), $callers->(2), $callers->(3));
 #    say "  : ". join "   ", map { join("/", @$_) } @ca;
-    
+    $ret->(@ar);
     return @ar; 
 }
 
@@ -377,9 +477,12 @@ sub spec_comp {
     }
     
     return 1 if $spec && $spec eq "*";
-    ref $spec   ? $thing eq $spec      # an object
-    : $spec     ? ref $thing eq $spec  # package name
-    : 1
+    my $not = $spec =~ s/^!//;
+    my $r = ref $spec   ? $thing eq $spec      # an object
+            : $spec     ? ref $thing eq $spec  # package name
+            : 1;
+    return !$r if $not;
+    $r;
 }
 
 sub order_link { # also greps for the spec $us
@@ -485,7 +588,7 @@ sub links {
 package Transducer;
 use base 'Stuff';
 sub new {
-    shift; # Transducer
+    shift; # 'Transducer'
     my $self = Stuff::new(shift, {base=>"Transducer"}, @_);
     $self->{name} ||= ref $self;
     $self
@@ -494,18 +597,6 @@ sub do {
     my $self = shift;
     # make @_ findable and then be
 
-}
-sub find_the {
-    my $self = shift;
-    my $what = shift;
-    # TODO this is a kind of search.
-    # search should be all about traversal and such
-    # surrounding functions apply aggregation and whatever
-    # and what graph arches to look along, here we want state first
-#    $self->{$what} || do {
-#        my ($ok) = map { $_->{$what} } grep { $_->{$what} } map { @$_ } reverse @$pyramid_scheme;
-#        $ok
-#    }
 }
 } # }}}
 { package Text;
@@ -564,8 +655,10 @@ sub new {
 }
 # }}}
 
-require 'Intuitor.pl';
-#require 'Scap2Blog.pl';
+for (@modules) {
+    say "loading $_...";
+    require "$_.pl";
+}
 
 do_stuff();
 
