@@ -108,20 +108,137 @@ $code->spawn(
 [ "Linked", be => sub { 
     transmog($G => $G->In->{it}->[0]->linked) } ],
 [ "Flow", be => sub { $G->{be}->($G) } ],
-); #}}}
+);
 
+my $patterns = new Stuff("Patterns");
+do {
+    my $on_evap = new Pattern(spec => "(proc)->Evaporation");
+    $on_evap->link(new Flow(
+        name => "Apply Codes in Evaporation",
+        be => sub {
+            for my $c ($code->linked) {
+                my $o = ref $c;
+                for my $in ($G->linked("In")) {
+                    if ($in->{it}->[0] eq $o) {
+                        my @new_in = @{ $in->{it} };
+                        shift @new_in;
+                        if (@new_in) {
+# TODO this code needs to be instantiated somehow from the "factory" in
+# orbit around $code.
+                            $c->spawn("In", it => \@new_in);
+                        }
+                        $G->unlink($in);
+                        $G->link($c);
+                    }
+                }
+            }
+        },
+    ));
+    my $on_execute = new Pattern(spec => "(proc)->Execution");
+    $on_execute->link(new Flow(
+        name => "Be Codes",
+        be => sub {
+            travel($G,
+                [ sub { $G->linked($code) },
+                  sub { $G->{be}->() } ],
+            );
+        },
+    ));
+    $on_execute->link(new Flow(
+        name => "Be Flows",
+        be => sub {
+            for my $w ($G->linked("Flow")) {
+# {want} is special
+                for my $it (grep { $w->{want}->match($_) } $junk->linked) {
+                    $w->{be}->($w, $it)
+                }
+            }
+        },
+    ));
+
+        # also this ole thing
+    $on_evap->link($patterns);
+    $on_execute->link($patterns);
+};
+#}}}
+
+my %patterns;
+my @flows_in_progress;
+
+sub patterner {
+    my %p = @_;
+    return unless $patterns;
+
+    if (my $l = $p{new_link}) {
+        if (my $ol = order_link($patterns, $l)) {
+            my $p = $ol->{1};
+            my @objects = spec_objects($p);
+            for my $o (@objects) {
+                my $ops = $patterns{$o} ||= [];
+                push @$ops, $p;
+            }
+            say "Pattern linked as @objects ".Dump($l);
+        }
+        elsif (my $oll = order_link("Pattern", $l)) {
+            #say "Linking to patterns: ".Dump($l);
+            #$patterns->link($oll->{0});
+            say "Pattern links to $oll->{1}"
+                if spec_comp("!Flow" => $oll->{1});
+        }
+        else {
+            # try and complete patterns related to $l->{0,1}
+            my @tryable = uniq map { @{$patterns{$_}||[]} }
+                map { ref $_ } $l->{0}, $l->{1};
+            for my $p (@tryable) {
+                my @matching = search($p->{spec});
+                next unless @matching;
+                my @flows = $p->linked("Flow");
+                say("no flows on $p"), next unless @flows;
+                my @call_set;
+                for my $r (@matching) {
+                    for my $f (@flows) {
+                        my $sig = "$r $f";
+                        if (grep { $sig eq $_ } @flows_in_progress) {
+                            say "Going to avoid recursing $p->{spec} $sig";
+                            next;
+                        }
+                        push @call_set, [ $r, $f ];
+                    }
+                }
+                my $call_set_n = @call_set;
+                push @flows_in_progress, map { "$_->[0] $_->[1]" } @call_set;
+                for (@call_set) {
+                    $G = $_->[0];
+                    my $f = $_->[1];
+                    say "calling Flow: $f->{name}";
+                    $f->{be}->($f);
+                    say "OUT!";
+                }
+                pop @flows_in_progress for $call_set_n;
+            }
+        }
+    }
+    else {
+        die
+    }
+}
+# {{{
+# Evaporation and Execution is pattern-based, see $patterns
 # Instruction = (Linked => $wants)
 # string matches In's "Linked"
 # $wants becomes a new Instruction = ($wants)
 # entropy maxed, Linked executes:
 # pulls in its Instruction, returns linked $wants (the Flows)
 # replaces itself with them via transmog()
-# Flows get coded and executed
-# the process of string matching In's "Linked" must be a graph,
-# so that too many or too few matches can be graphable,
-# this kind of thing would help in debugger graphs.
-# chances are that codes will want to work together
-# but for now, throw a wobbly
+# Flows get executed
+
+# Evaporation and Execution and proc are candidates for
+# a new architecture based around entropy fields
+# which are like domains of graph that won't implicitly
+# get mixed up with everything.
+# like having a nice callstack tracking graph.
+# or just avoiding infinite loops when we're waiting for nothing
+# to change while we create and destroy a link to set off pattern matches.
 
 sub process {
     my $d = shift;
@@ -137,46 +254,25 @@ sub process {
     displo($here);
     EVAPORATE: until ($proc->{at_maximum_entropy}) {
         $proc->{at_maximum_entropy} = 1;
+
         say "EVAPORATING";
-        # TODO there will be a pattern matching engine working
-        # all the time which can see that we're here and there are
-        # Ins and Codes to get together etc, but...
-        # for now just compare $code linked things to the first
-        # Instruction if matching replace
-        for my $c ($code->linked) {
-            my $o = ref $c;
-            for my $in ($G->linked("In")) {
-                if ($in->{it}->[0] eq $o) {
-                    my @new_in = @{ $in->{it} };
-                    shift @new_in;
-                    if (@new_in) {
-                        $c->spawn("In", it => \@new_in);
-                    }
-                    $G->unlink($in);
-                    $G->link($c);
-                }
-            }
-        }
+        my $evap = $proc->spawn("Evaporation");
+        $proc->unlink($evap);
+
     }
     say "READY!";
     $proc->{at_maximum_entropy} = 0;
     EXECUTE: until ($proc->{at_maximum_entropy}) {
         $proc->{at_maximum_entropy} = 1;
-        travel($G,
-            [ sub { $G->linked($code) },
-              sub { $G->{be}->() } ],
-        );
-        # also this ole thing
-        for my $w ($proc->linked("Flow")) {
-            for my $it (grep { $w->{want}->match($_) } $junk->linked) {
-                $w->{be}->($w, $it)
-            }
-        }
+
+        say "EXECUTING";
+        my $exec = $proc->spawn("Execution");
+        $proc->unlink($exec);
+
         unless ($proc->{at_maximum_entropy}) {
             say "RUN - GOING BACK TO EVAPORATE";
             goto EVAPORATE;
         }
-        say "RUNNING ROUND";
     }
     say "IS DONE!";
     displo($here);
@@ -216,9 +312,13 @@ sub ready {
 # hyperreal code. it should know about callstack interrogation for
 # the debug toolchain fantasy.
 
+# the whole thing can be composed of probably a dozen algorithms
+# glued together with the right names.
+# Flows are just CODE for now but in the future they could be graphs
+# of algorithms, graphs of input and output specs, etc.
 # Flow@-{want-} @-> $junk@->match(${want}) && In(${junk}) be(${Flow}) )
 # foreach Flow, foreach junk linked where match $want, be Flow with junk
-
+# }}}
 sub search { # {{{
     my %p;
     $p{spec} = shift if @_ == 1;
@@ -238,6 +338,12 @@ sub search { # {{{
         } @links
     };
 
+    # first column: find the first spec
+    # the rest: for each row of the last column, find linked the next spec
+    # one row in column A may correspond to several in column B
+    # also if column C yields no matches all the results leading to it are
+    # deleted
+    # if they just asked for some ($s->{return}) just return them
     my @cols;
     for my $s (@spec) {
         my @rows;
@@ -252,7 +358,28 @@ sub search { # {{{
                 map { $_->{1} } @$from_links;
             for my $from (@froms) {
                 my @links = $findlinks->($from => $s->{object});
-                push @rows, @links;
+                if (@links) {
+                    push @rows, @links;
+                }
+                else {
+                    # delete the parents of this failure
+                    my @rents = ($from);
+                    for my $col (reverse @cols) {
+                        my $rs = $col->{rows};
+                        my @keepers;
+                        for my $l (@$rs) {
+                            my $o = $col eq $cols[0] ? $l : $l->{1};
+                            if (grep { $_ eq $o } @rents) {
+                                push @rents, $l->{0} unless $col eq $cols[0];
+                                next;
+                            }
+                            else {
+                                push @keepers, $l;
+                            }
+                        }
+                        $col->{rows} = \@keepers;
+                    }
+                }
             }
         }
         push @cols, {
@@ -261,6 +388,12 @@ sub search { # {{{
         };
     }
 
+    if (my @return = grep { $_->{spec}->{return} } @cols) {
+        my @rcols;
+        push @rcols, $_->{rows} for @return;
+        return @{ $rcols[0] } if @rcols == 1;
+        return @rcols;
+    }
     my @ar = @{ $cols[-1]->{rows} };
     return @ar; 
 }
@@ -285,7 +418,13 @@ sub parse_spec { #{{{
         return $i
     };
     return map { $chunk->($_) } @spec
-} #}}}
+}
+sub spec_objects {
+    my $p = shift;
+    die unless ref $p eq "Pattern";
+    return uniq map { $_->{object} } parse_spec($p->{spec});
+}
+#}}}
 
 sub travel {
     $G = shift;
@@ -382,8 +521,8 @@ sub order_link { # also greps for the spec $us
     }
     elsif (spec_comp($us, $l->{1})) {
         return {
-            1 => $_->{0}, 0 => $_->{1},
-            val => $_->{val}, id => $_->{id}
+            1 => $l->{0}, 0 => $l->{1},
+            val => $l->{val}, id => $l->{id}
         }
     }
     return ()    
@@ -442,19 +581,28 @@ sub In { #TODO
     return $in
 }
 sub link {
-    main::entropy_increases();
+    say "linking @_";
     $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
-    push @links, {0=>shift, 1=>shift,
-                val=>\@_, id=>$main::ln++}; # self, other, ...
+    my ($I, $II, @val) = @_;
+    my $l = {0=>$I, 1=>$II,
+                val=>\@val, id=>$main::ln++}; # self, other, ...
+    main::entropy_increases()
+        unless main::order_link("Evaporation", $l)
+            || main::order_link("Execution", $l);
+    push @links, $l;
+    ::patterner( new_link => $l );
     return $_[0]
 }
 sub unlink {
-    main::entropy_increases();
+    say "unlinking @_";
     my $self = shift;
     my $other = shift;
     my @ls = $self->links($other);
     $main::ln++;
     for my $l (@ls) {
+        main::entropy_increases()
+            unless main::order_link("Evaporation", $l)
+                || main::order_link("Execution", $l);
         main::delete_link($l);
     }
 }
