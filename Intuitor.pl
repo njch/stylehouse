@@ -6,9 +6,56 @@ name => "Intuitor", # {{{
 want => new Pattern(object => "Text"),
 be => sub {
     my $self = shift;
-    my $it = shift;
 
-    unless ($self->linked("Intuition")) {
+    ensure_intuitions_exist($self);
+
+    my @its = map { $_->{it} } $self->linked("In");
+    for my $it (@its) {
+        my @patterns = $self->linked("Intuition->Pattern");
+        my @matching = grep { $_->match($it) } @patterns;
+        my @ints = map { $_->linked("Intuition") } @matching;
+
+        for my $int (@ints) {
+            next if $int->links($it); # already
+
+            # say " looking: $self->{cer} $self->{name}...";
+            my $cog = $int->{cog};
+            my $t = $it->text;
+            my @val = 
+                ref $cog eq "Regexp" ? $t =~ $cog :
+                ref $cog eq "CODE" ? $cog->($t) :
+                die;
+            # say @val ? "   @val" : "NOPE";
+            @val = [@val] if @val > 1;
+            @val = (1) if @val == 0 && ref $cog ne "Regexp";
+
+            # say "intuited $self->{name}";
+            $int->link($it, @val);
+        }
+    }
+},
+); # }}}
+
+
+sub END {
+
+my @ints = search("Junk->Text->Intuition");
+my @texts = sort map { "$_->{0}" } @ints;
+my %fin;
+for my $text (uniq @texts) {
+    my @ours = grep { $text eq "$_->{0}" } @ints;
+    my @links = map { summarise($_->{1}, $_->{val}) } @ours;
+    $fin{$ours[0]->{0}->{text}} = \@links;
+}
+use Test::More "no_plan";
+say Dump(\%fin);
+say "There are: ".@main::links." links";
+is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
+
+}
+sub ensure_intuitions_exist {
+    my $self = shift;
+    return if $self->linked("Intuition");
 # here we generate some intuitions and their matches 
 # {{{
 my @giv = split "\n", <<"";
@@ -81,50 +128,6 @@ while (defined($_ = shift @giv)) {
     }
     else { die $_ }
 }
-# }}}
-    }
-    else {
-        my @patterns = $self->linked("Intuition->Pattern");
-        my @matching = grep { $_->match($it) } @patterns;
-        my @ints = map { $_->linked("Intuition") } @matching;
-
-        for my $int (@ints) {
-            next if $int->links($it); # already
-
-            # say " looking: $self->{cer} $self->{name}...";
-            my $cog = $int->{cog};
-            my $t = $it->text;
-            my @val = 
-                ref $cog eq "Regexp" ? $t =~ $cog :
-                ref $cog eq "CODE" ? $cog->($t) :
-                die;
-            # say @val ? "   @val" : "NOPE";
-            @val = [@val] if @val > 1;
-            @val = (1) if @val == 0 && ref $cog ne "Regexp";
-
-            # say "intuited $self->{name}";
-            $int->link($it, @val);
-        }
-    }
-},
-); # }}}
-
-
-sub END {
-
-my @ints = search("Junk->Text->Intuition");
-my @texts = sort map { "$_->{0}" } @ints;
-my %fin;
-for my $text (uniq @texts) {
-    my @ours = grep { $text eq "$_->{0}" } @ints;
-    my @links = map { summarise($_->{1}, $_->{val}) } @ours;
-    $fin{$ours[0]->{0}->{text}} = \@links;
-}
-use Test::More "no_plan";
-say Dump(\%fin);
-say "There are: ".@main::links." links";
-is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
-
 }
 
 sub johnfaheys {

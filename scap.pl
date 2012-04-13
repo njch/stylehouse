@@ -110,56 +110,74 @@ $code->spawn(
 [ "Flow", be => sub { $G->{be}->($G) } ],
 );
 
+
 my $patterns = new Stuff("Patterns");
-do {
-    my $on_evap = new Pattern(spec => "(proc)->Evaporation");
-    $on_evap->link(new Flow(
-        name => "Apply Codes in Evaporation",
-        be => sub {
-            for my $c ($code->linked) {
-                my $o = ref $c;
-                for my $in ($G->linked("In")) {
-                    if ($in->{it}->[0] eq $o) {
-                        my @new_in = @{ $in->{it} };
-                        shift @new_in;
-                        if (@new_in) {
+$patterns->link(
+    $patterns->{on_evap} = new Pattern(spec => "(proc)->Evaporation") );
+$patterns->link(
+    $patterns->{on_exec} = new Pattern(spec => "(proc)->Execution") );
+sub on_evaporation_flow {
+    $patterns->{on_evap}->link(new Flow(@_));
+}
+sub on_execution_flow {
+    $patterns->{on_exec}->link(new Flow(@_));
+}
+on_evaporation_flow(
+    name => "Apply Codes in Evaporation",
+    be => sub {
+        for my $c ($code->linked) {
+            my $o = ref $c;
+            for my $in ($G->linked("In")) {
+                if ($in->{it}->[0] eq $o) {
+                    my @new_in = @{ $in->{it} };
+                    shift @new_in;
+                    if (@new_in) {
 # TODO this code needs to be instantiated somehow from the "factory" in
 # orbit around $code.
-                            $c->spawn("In", it => \@new_in);
-                        }
-                        $G->unlink($in);
-                        $G->link($c);
+                        $c->spawn("In", it => \@new_in);
                     }
+                    $G->unlink($in);
+                    $G->link($c);
                 }
             }
-        },
-    ));
-    my $on_execute = new Pattern(spec => "(proc)->Execution");
-    $on_execute->link(new Flow(
-        name => "Be Codes",
-        be => sub {
-            travel($G,
-                [ sub { $G->linked($code) },
-                  sub { $G->{be}->() } ],
-            );
-        },
-    ));
-    $on_execute->link(new Flow(
-        name => "Be Flows",
-        be => sub {
-            for my $w ($G->linked("Flow")) {
-# {want} is special
-                for my $it (grep { $w->{want}->match($_) } $junk->linked) {
-                    $w->{be}->($w, $it)
-                }
+        }
+    },
+);
+on_evaporation_flow(
+    name => "Make Instructions from what Flows want",
+    be => sub {
+        for my $f ($G->linked("Flow")) {
+            next unless $f->{want};
+            next if $f->linked("In");
+            my @junk = grep { $f->{want}->match($_) } $junk->linked;
+            unless (@junk) {
+                say "Flow ".summarise($f)." nothing wanted found";
+                next;
             }
-        },
-    ));
+            for my $j (@junk) {
+                $f->spawn("In", it => $j);
+            }
+        }
+    },
+);
+on_execution_flow(
+    name => "Be Codes",
+    be => sub {
+        travel($G,
+            [ sub { $G->linked($code) },
+              sub { $G->{be}->() } ],
+        );
+    },
+);
+on_execution_flow(
+    name => "Be Flows",
+    be => sub {
+        for my $w ($G->linked("Flow")) {
+            $w->{be}->($w)
+        }
 
-        # also this ole thing
-    $on_evap->link($patterns);
-    $on_execute->link($patterns);
-};
+    },
+);
 #}}}
 
 my %patterns;
