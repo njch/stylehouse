@@ -24,6 +24,31 @@ sub entropy_increases {
     die "too many entropy fields" if @entropy_fields > 10;
     $_->{at_maximum_entropy} = 0 for @entropy_fields;
 }
+=pod ENTROPY FIELDS
+are like a grouping of nodes looser than a link.
+it's based on a pattern, like "everything anyhow linked
+to $callstack" or so, meaning directly and indirectly.
+the pattern tracking machine will be good enough for this.
+fields should begin when they're simplest, of course, or with
+strict patterns applied so it doesn't get too wide.
+this could be displayed as a goo smothered graph while foreign
+looking junk looks foreign.
+the interfaces from one field to another must be defined, then,
+to allow them to be useful to each other and not spread indefinitely.
+
+upon ->link, which is represented in graph in the callstack field,
+patterns can be used to behave good with:
+ - linking into $code orbitals, instantiating the $code object in
+   the linkees field
+also most fields will want to hide themselves from search() unless
+explicitly spec'd somehow.
+=cut
+sub field_entropy {
+    if ($_[0] eq "new_link") {
+        my $l = $_[1];
+        
+    }
+}
 
 =pod
 everywhere can see $G, the current point on the graph
@@ -54,7 +79,15 @@ laying it out all nicely, using that data to quickly unit test.
 execution order should be introduced by making the execution
 itself a graph happening to do with a sequence of codes that can
 be messed with. this kind of flow of things will get nice
-representation eventually
+representation eventually.
+
+it seems like a scientific understandening, hacking up concepts into
+finer detailed models until everything that needs to work works.
+
+perhaps entropy field as a mutable concept is really more like a fog,
+consuming lies for the rest of the design to seem right. perhaps I will
+recurse into it, implementing, narrowing down the shape of the source
+of entropy itself, perhaps understanding it, perhaps harnessing its mystery.
 
 =cut 
 #}}}
@@ -111,7 +144,7 @@ $code->spawn(
 );
 
 
-my $patterns = new Stuff("Patterns");
+my $patterns = new Stuff("Patterns"); #{{{
 $patterns->link(
     $patterns->{on_evap} = new Pattern(spec => "(proc)->Evaporation") );
 $patterns->link(
@@ -133,7 +166,10 @@ on_evaporation_flow(
                     shift @new_in;
                     if (@new_in) {
 # TODO this code needs to be instantiated somehow from the "factory" in
-# orbit around $code.
+# orbit around $code. $code has it's own entropy field since it's abstract
+# intellect for plucking out into arrangements.
+# so when a code gets linked, we instead put a clone of it outside $code's
+# orbit, transparently that one is linked to instead.
                         $c->spawn("In", it => \@new_in);
                     }
                     $G->unlink($in);
@@ -149,6 +185,9 @@ on_evaporation_flow(
         for my $f ($G->linked("Flow")) {
             next unless $f->{want};
             next if $f->linked("In");
+# make an entropy field for what this Flow consumes? the In's stick around,
+# and don't get update (if it mattered). perhaps the field I speak of here
+# is another concept close by...
             my @junk = grep { $f->{want}->match($_) } $junk->linked;
             unless (@junk) {
                 say "Flow ".summarise($f)." nothing wanted found";
@@ -163,10 +202,11 @@ on_evaporation_flow(
 on_execution_flow(
     name => "Be Codes",
     be => sub {
-        travel($G,
-            [ sub { $G->linked($code) },
-              sub { $G->{be}->() } ],
-        );
+        travel($G, {
+            everywhere => sub {
+                $G->{be}->() if $G->linked($code)
+            },
+        });
     },
 );
 on_execution_flow(
@@ -183,7 +223,7 @@ on_execution_flow(
 my %patterns;
 my @flows_in_progress;
 
-sub patterner {
+sub patterner { # {{{
     my %p = @_;
     return unless $patterns;
 
@@ -239,7 +279,7 @@ sub patterner {
     else {
         die
     }
-}
+} # }}}
 # {{{
 # Evaporation and Execution is pattern-based, see $patterns
 # Instruction = (Linked => $wants)
@@ -293,7 +333,7 @@ sub process {
         }
     }
     say "IS DONE!";
-    displo($here);
+    #displo($here);
 }
 
 sub transmog {
@@ -362,6 +402,16 @@ sub search { # {{{
     # also if column C yields no matches all the results leading to it are
     # deleted
     # if they just asked for some ($s->{return}) just return them
+
+=pod
+first: col = search object => *
+restwise:
+  for ($prev) {
+      new = search $_, next_spec
+      new || invalidate $_
+      col = new (from $_)
+=cut
+
     my @cols;
     for my $s (@spec) {
         my @rows;
@@ -600,10 +650,13 @@ sub In { #TODO
 }
 sub link {
     say "linking @_";
-    $_[0] && $_[1] && $_[0] ne $_[1] || die "linkybusiness";
     my ($I, $II, @val) = @_;
-    my $l = {0=>$I, 1=>$II,
-                val=>\@val, id=>$main::ln++}; # self, other, ...
+    $I && $II && $I ne $II || die "linkybusiness";
+    my $l = {
+        0 => $I, 1 => $II,
+        val => \@val, id => $main::ln++,
+    };
+    ::field_entropy( new_link => $l );
     main::entropy_increases()
         unless main::order_link("Evaporation", $l)
             || main::order_link("Execution", $l);
