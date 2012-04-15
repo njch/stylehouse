@@ -359,6 +359,7 @@ sub ready {
         $G->spawn("In", it => [$d]);
     }
 }
+# }}}
 
 # the thing that's constantly watching the graph evolve and tracking
 # pattern matches needs to be able to take a transient limb at any
@@ -371,9 +372,11 @@ sub ready {
 # glued together with the right names.
 # Flows are just CODE for now but in the future they could be graphs
 # of algorithms, graphs of input and output specs, etc.
-# Flow@-{want-} @-> $junk@->match(${want}) && In(${junk}) be(${Flow}) )
+# these seem like information about branches of the task of building a tree.
+# all to do with travel() and things poking it with closures.
+# spec could eventually understand the whole stick:
+# Flow@-{want-} @-> $junk@->match(${want}) && In<-(${junk}) be(${Flow}) )
 # foreach Flow, foreach junk linked where match $want, be Flow with junk
-# }}}
 sub search { # {{{
     my %p;
     $p{spec} = shift if @_ == 1;
@@ -472,7 +475,7 @@ sub parse_spec { #{{{
         return { object => $spec }
     }
     my @spec = split /(?<=->)/, $spec;
-    my $chunk = sub { # hmm... rewrite in perl6?
+    my $chunk = sub {
         $_ = shift;
         my $i = {};
         ($i->{arrow} = s/->$//)
