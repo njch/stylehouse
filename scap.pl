@@ -202,12 +202,9 @@ on_evaporation_flow(
 on_execution_flow(
     name => "Be Codes",
     be => sub {
-        travel($G, {
-            everywhere => sub {
-                $G->{be}->() if $G->linked($code)
-            },
+        travel($G, { everywhere =>
+            sub { $G->{be}->() if $G->linked($code) }
         });
-    },
 );
 on_execution_flow(
     name => "Be Flows",
@@ -495,59 +492,28 @@ sub spec_objects {
 #}}}
 
 sub travel {
-    $G = shift;
-    my $tree = [];
+    $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
-    $ex ||= do {
+    $ex ||= {};
+    my $tree = [];
+    unless ($ex->{seen_oids}) {
+        $ex->{n} = 0;
+        $ex->{seen_oids} = {};
+        $ex->{via_link} = -1;
         push @$tree, summarise($G);
-        { seen_oids => {},
-          n => 0,
-          via_link => -1,
-          patterns => shift,
-        },
-    };
+    }
 
-    my $ps = $ex->{patterns};
-    if ($ps->[0]->()) {
-        $ps->[1]->()
+    if ($ex->{everywhere}) {
+        $ex->{everywhere}->($G)
     }
 
     my %links = links_by_id($G->links);
     my %by_other = links_by_other_type(%links);
 
-    my $figure_link = sub {
-        my $l = shift;
-
-        if ($l->{id} eq $ex->{via_link}) {
-            return 
-        }
-        die "undef link: $l->{id}" unless defined $l->{1};
-        if ($ex->{n}++ > 50) {
-            return "DEEP RECURSION!"
-        }
-
-        my $o = $l->{1};
-        my $oid = "$o";
-
-        my $prev = exists $ex->{seen_oids}->{$oid};
-        my $ob = $ex->{seen_oids}->{$oid} ||= { summarise($o) => [] };
-        my ($linkstash) = values %$ob;
-
-        if ($o eq $code) {
-            @$linkstash = ("...");
-        }
-        elsif (!$prev) {
-            $ex->{via_link} = $l->{id};
-            my $connective = travel($l->{1}, $ex);
-            push @$linkstash, @$connective;
-        }
-
-        return $ob;
-    };
 
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
-            my $fig = $figure_link->($l);
+            my $fig = travel_seelinks($l, $ex, $l->{0}, $l->{1});
             next unless $fig;
             push @$tree, { $l->{text}, $fig };
         }
@@ -556,6 +522,36 @@ sub travel {
     return $tree;
 }
 
+sub travel_seelinks {
+    my ($l, $ex) = @_;
+
+    if ($l->{id} eq $ex->{via_link}) {
+        return 
+    }
+    die "undef link: $l->{id}" unless defined $l->{1};
+    if ($ex->{n}++ > 50) {
+        return "DEEP RECURSION!"
+    }
+    return if $l->{val} && $l->{val}->[0] && $l->{val}->[0] eq "replaces";
+
+    my $o = $l->{1};
+    my $oid = "$o";
+
+    my $prev = exists $ex->{seen_oids}->{$oid};
+    my $ob = $ex->{seen_oids}->{$oid} ||= { summarise($o) => [] };
+    my ($linkstash) = values %$ob;
+
+    if ($o eq $code) {
+        @$linkstash = ("...");
+    }
+    elsif (!$prev) {
+        $ex->{via_link} = $l->{id};
+        my $connective = travel($l->{1}, $ex);
+        push @$linkstash, @$connective;
+    }
+
+    return $ob;
+}
 
 sub spec_comp {
     my $spec = shift;
