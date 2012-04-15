@@ -406,6 +406,12 @@ sub search { # {{{
         unshift @spec, { object => $p{start_from} };
     }
 
+    my $get_first_column = sub {
+        my $spec = shift;
+        return uniq map { $_->{0} }
+            map { main::order_link($spec, $_) } @links
+    };
+
     my $findlinks = sub {
         my ($from, $to) = @_;
         return grep {
@@ -428,9 +434,7 @@ restwise:
     for my $s (@spec) {
         my @rows;
         if (!@cols) {
-            my @links = $findlinks->($s->{object} => "*");
-            my @objects = uniq map { $_->{0} } @links;
-            push @rows, @objects;
+            push @rows, $get_first_column->($s);
         }
         else {
             my $from_links = $cols[-1]->{rows};
@@ -506,18 +510,22 @@ sub spec_objects {
 }
 #}}}
 
+=pod
+travel is to channel graph interrogations
+with logic about fields (not going into $code or transmogs)
 
+=cut
 sub travel {
     $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
     $ex ||= {};
     unless ($ex->{seen_oids}) {
-        $ex->{n} = 0;
+        $ex->{depth} = 0;
         $ex->{seen_oids} = {};
         $ex->{via_link} = -1;
     }
 
-    if ($ex->{n}++ > 50) {
+    if ($ex->{depth}++ > 50) {
         warn "DEEP RECURSION!";
         return "DEEP RECURSION!"
     }
