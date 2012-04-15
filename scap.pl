@@ -203,8 +203,14 @@ on_execution_flow(
     name => "Be Codes",
     be => sub {
         travel($G, { everywhere =>
-            sub { $G->{be}->() if $G->linked($code) }
+            sub { 
+                if ($G->linked($code)) {
+                    say "  Being the code $G";
+                    $G->{be}->()
+                }
+            },
         });
+    },
 );
 on_execution_flow(
     name => "Be Flows",
@@ -217,22 +223,24 @@ on_execution_flow(
 );
 #}}}
 
-my %patterns;
 my @flows_in_progress;
 
 sub patterner { # {{{
     my %p = @_;
     return unless $patterns;
 
+    my $pat_by_o = $patterns->{by_o} ||= {};
+    my $in_progress = $patterns->{in_progress} ||= {};
+
     if (my $l = $p{new_link}) {
         if (my $ol = order_link($patterns, $l)) {
             my $p = $ol->{1};
             my @objects = spec_objects($p);
             for my $o (@objects) {
-                my $ops = $patterns{$o} ||= [];
+                my $ops = $pat_by_o->{$o} ||= [];
                 push @$ops, $p;
             }
-            say "Pattern linked as @objects ".Dump($l);
+            say "Pattern linked as @objects";
         }
         elsif (my $oll = order_link("Pattern", $l)) {
             #say "Linking to patterns: ".Dump($l);
@@ -241,13 +249,24 @@ sub patterner { # {{{
                 if spec_comp("!Flow" => $oll->{1});
         }
         else {
-            # try and complete patterns related to $l->{0,1}
-            my @tryable = uniq map { @{$patterns{$_}||[]} }
+            # try and complete patterns related to either object
+            my @tryable = uniq map { @{$pat_by_o->{$_}||[]} }
                 map { ref $_ } $l->{0}, $l->{1};
+            
             for my $p (@tryable) {
+                # about here... look up progressed matches and resume
+                my $progress = $in_progress->{"$p"} ||= [];
+                $DB::single = 1;
+                # feed the progress if any to search, continue from there
+                #   it'll need the tree of nodes it came through
+                #   the spec up to the point
+                # if it finishes keep all the branches I guess?
+                #   then we'd have all these patterns and all their matches
+                # 
+
                 my @matching = search($p->{spec});
                 next unless @matching;
-                my @flows = $p->linked("Flow");
+                my @flows = $p->linked("Flow"); #{{{
                 say("no flows on $p"), next unless @flows;
                 my @call_set;
                 for my $r (@matching) {
@@ -271,7 +290,7 @@ sub patterner { # {{{
                 }
                 pop @flows_in_progress for $call_set_n;
             }
-        }
+        } # }}}
     }
     else {
         die
@@ -396,13 +415,6 @@ sub search { # {{{
         } @links
     };
 
-    # first column: find the first spec
-    # the rest: for each row of the last column, find linked the next spec
-    # one row in column A may correspond to several in column B
-    # also if column C yields no matches all the results leading to it are
-    # deleted
-    # if they just asked for some ($s->{return}) just return them
-
 =pod
 first: col = search object => *
 restwise:
@@ -494,66 +506,54 @@ sub spec_objects {
 }
 #}}}
 
+
 sub travel {
     $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
     $ex ||= {};
-    my $tree = [];
     unless ($ex->{seen_oids}) {
         $ex->{n} = 0;
         $ex->{seen_oids} = {};
         $ex->{via_link} = -1;
-        push @$tree, summarise($G);
+    }
+
+    if ($ex->{n}++ > 50) {
+        warn "DEEP RECURSION!";
+        return "DEEP RECURSION!"
     }
 
     if ($ex->{everywhere}) {
-        $ex->{everywhere}->($G)
+        $ex->{everywhere}->($G, $ex)
     }
 
-    my %links = links_by_id($G->links);
-    my %by_other = links_by_other_type(%links);
+    my %links = map {$_->{id} => $_} $G->links;
+    delete $links{$ex->{via_link}};
 
+    my @links;
+    for my $l (values %links) {
+        
+        my @nofollow;
+        push @nofollow, 'to $code' if $l->{1} eq $code;
+        push @nofollow, "over transmog" if 
+                    $l->{val} && $l->{val}->[0] 
+                       && $l->{val}->[0] eq "replaces";
+        push @nofollow, "seen target" if
+                    exists $ex->{seen_oids}->{"$l->{1}"};
+        my $nofollow = @nofollow ? join(", ",@nofollow) : undef;
 
-    for my $k (sort keys %by_other) {
-        for my $l (@{$by_other{$k}}) {
-            my $fig = travel_seelinks($l, $ex, $l->{0}, $l->{1});
-            next unless $fig;
-            push @$tree, { $l->{text}, $fig };
-        }
+        push @links, { %$l, nofollow => $nofollow, };
     }
+   
+    $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
 
-    return $tree;
-}
-
-sub travel_seelinks {
-    my ($l, $ex) = @_;
-
-    if ($l->{id} eq $ex->{via_link}) {
-        return 
-    }
-    die "undef link: $l->{id}" unless defined $l->{1};
-    if ($ex->{n}++ > 50) {
-        return "DEEP RECURSION!"
-    }
-    return if $l->{val} && $l->{val}->[0] && $l->{val}->[0] eq "replaces";
-
-    my $o = $l->{1};
-    my $oid = "$o";
-
-    my $prev = exists $ex->{seen_oids}->{$oid};
-    my $ob = $ex->{seen_oids}->{$oid} ||= { summarise($o) => [] };
-    my ($linkstash) = values %$ob;
-
-    if ($o eq $code) {
-        @$linkstash = ("...");
-    }
-    elsif (!$prev) {
+    for my $l (@links) {
+        next if $l->{nofollow};
+        
         $ex->{via_link} = $l->{id};
-        my $connective = travel($l->{1}, $ex);
-        push @$linkstash, @$connective;
+        
+        say "TRAVELOONG $l->{0} -> $l->{1}";
+        travel($l->{1}, $ex)
     }
-
-    return $ob;
 }
 
 sub spec_comp {
