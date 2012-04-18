@@ -256,7 +256,6 @@ sub patterner { # {{{
             for my $p (@tryable) {
                 # about here... look up progressed matches and resume
                 my $progress = $in_progress->{"$p"} ||= [];
-                $DB::single = 1;
                 # feed the progress if any to search, continue from there
                 #   it'll need the tree of nodes it came through
                 #   the spec up to the point
@@ -313,7 +312,6 @@ sub patterner { # {{{
 # like having a nice callstack tracking graph.
 # or just avoiding infinite loops when we're waiting for nothing
 # to change while we create and destroy a link to set off pattern matches.
-
 sub process {
     my $d = shift;
     my $here = $G;
@@ -421,25 +419,92 @@ sub search { # {{{
         } @links
     };
 
-=pod
-first: col = search object => *
-restwise:
-  for ($prev) {
-      new = search $_, next_spec
-      new || invalidate $_
-      col = new (from $_)
-=cut
-
     my @cols;
+    my $results = {};
+    my $by_parent = {};
+    my $take_result = sub {
+        my $l = shift;
+        # parent being the previous column
+        if ($l) {
+            push @{$by_parent->{"$l->{0}"} ||= []}, $l;
+            $results->{"$l"} = $l;
+        }
+    };
+
+# {{{
+#    for my $fr (@first_column) {
+# travel from $fr through spec, into $take_result...
+#                my ($l, $ex, $G) = shift;
+#                if (main::spec_comp($ex->{spec}->[$ex->{depth}], $l)) {
+#                    $take_result->($l->{1}, $G
+
+    my @first_column;
+    my $results2tuples = sub {
+        my @tuples;
+        if (my $travelled_cols = @spec - 1) {
+            my $interro;
+            $interro = sub {
+                my ($parent_id, $depth, @tuple) = @_;
+                $depth--;
+                if ($depth < 0) {
+                    # reached the end
+                    push @tuples, \@tuple;
+                    return 1;
+                }
+                if (my $children = $by_parent->{$parent_id}) {
+                    my @c_fails;
+                    # see if later on the trail dries up
+                    for my $c (@$children) {
+                        my $parent_id = $c->{1};
+                        $interro->($parent_id, $depth, (@tuple, $c))
+                            || push @c_fails, 1;
+                    }
+                    if (@c_fails == @$children) {
+                        delete $by_parent->{$parent_id};
+                        return 0;
+                    }
+                    else {
+                        # results as graph? too hard.
+                    }
+                }
+                else {
+                    return 0;
+                }
+            };
+            for my $fr (@first_column) {
+                $interro->("$fr", $travelled_cols, ($fr));
+            }
+        }
+        else {
+            die "spec was just 1 thing (this is a test)";
+            @tuples = \@first_column;
+        } #}}}
+        return \@tuples
+    };
+    
+    @first_column = $get_first_column->($spec[0]->{object});
+    my @last_column = @first_column;
     for my $s (@spec) {
         my @rows;
         if (!@cols) {
-            push @rows, $get_first_column->($s);
+            push @rows, $get_first_column->($s->{object});
         }
         else {
             my $from_links = $cols[-1]->{rows};
             my @froms = @cols == 1 ? @$from_links :
                 map { $_->{1} } @$from_links;
+
+            do { # algorithm rehash:
+                my @froms = @last_column;
+                @last_column = ();
+                for my $from (@froms) {
+                    my @links = $findlinks->($from, $s->{object});
+                    for my $l (@links) {
+                        push @last_column, $l->{1};
+                        $take_result->($l);
+                    }
+                }
+            }; #{{{
             for my $from (@froms) {
                 my @links = $findlinks->($from => $s->{object});
                 if (@links) {
@@ -470,16 +535,49 @@ restwise:
             spec => $s,
             rows => \@rows,
         };
+    } #}}}
+
+    my $tups = $results2tuples->();
+
+    my @treturn;
+    if (my @col_ns = grep { $spec[$_]->{return} } 0..@spec-1) {
+        my @return;
+        for my $row (@$tups) {
+            my @cols = map { $row->[$_] } @col_ns;
+            push @return, \@cols;
+        }
+        if (@return == 1) {
+            @treturn = @{$return[0]}
+        }
+        else {
+            @treturn = @return
+        }
+    }
+    else {
+        @treturn = map { $_->[-1] } @$tups
     }
 
+    my @creturn;
     if (my @return = grep { $_->{spec}->{return} } @cols) {
         my @rcols;
         push @rcols, $_->{rows} for @return;
-        return @{ $rcols[0] } if @rcols == 1;
-        return @rcols;
+        if (@rcols == 1) {
+            @creturn = @{ $rcols[0] }
+        }
+        else {
+            @creturn = @rcols
+        }
     }
-    my @ar = @{ $cols[-1]->{rows} };
-    return @ar; 
+    else {
+        @creturn = @{ $cols[-1]->{rows} }
+    }
+
+    #say "Hmm: ". join"  ", map { $_->{object} } @spec;
+    #say Dump([ \@treturn, \@creturn]) if $yeah;
+    is_deeply(\@treturn, \@creturn, "two algorithms")
+        || do { $DB::single = 1 };
+
+    return @treturn
 }
 
 sub parse_spec { #{{{
