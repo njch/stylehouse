@@ -575,7 +575,7 @@ sub search { # {{{
     #say "Hmm: ". join"  ", map { $_->{object} } @spec;
     #say Dump([ \@treturn, \@creturn]) if $yeah;
     is_deeply(\@treturn, \@creturn, "two algorithms")
-        || do { $DB::single = 1 };
+        || do { $DB::single = 1 } unless 1;
 
     return @treturn
 }
