@@ -38,141 +38,46 @@ be => sub {
 
 
 sub END {
-
-my @ints = search("Junk->Text->Intuition");
-my @texts = sort map { "$_->{0}" } @ints;
-my %fin;
-for my $text (uniq @texts) {
-    my @ours = grep { $text eq "$_->{0}" } @ints;
-    my @links = map { summarise($_->{1}, $_->{val}) } @ours;
-    $fin{$ours[0]->{0}->{text}} = \@links;
+    my @ints = search("Junk->Text->Intuition");
+    my @texts = sort map { "$_->{0}" } @ints;
+    my %fin;
+    for my $text (uniq @texts) {
+        my @ours = grep { $text eq "$_->{0}" } @ints;
+        my @links = map { summarise($_->{1}, $_->{val}) } @ours;
+        $fin{$ours[0]->{0}->{text}} = \@links;
+    }
+    use Test::More "no_plan";
+    say Dump(\%fin);
+    say "There are: ".@main::links." links";
+    is_deeply(\%fin, LoadFile("johnfahey.yml"), "John Fahey files discovered")
+        || do {
+            prompt_yN("Update test data?") && do {
+                DumpFile("johnfahey.yml", \%fin);
+                say "Updated";
+            };
+        };
 }
-use Test::More "no_plan";
-say Dump(\%fin);
-say "There are: ".@main::links." links";
-is_deeply(\%fin, Load(johnfaheys()), "John Fahey files discovered");
 
-}
 sub ensure_intuitions_exist {
     my $self = shift;
     return if $self->linked("Intuition");
 # here we generate some intuitions and their matches 
 # {{{
-my $int_data = Load(<<'');
---- 
-- 
-  cer: maybe
-  cog: { regex: / }
-  match: 
-    object: Text
-  name: filename
-- 
-  cer: probly
-  cog: { regex: "^\\.\\./" }
-  match: &1 
-    names: 
-      - filename
-    object: Intuition
-  name: relative
-- 
-  cer: maybe
-  cog: { regex: "^(?!/)" }
-  match: *1
-  name: relative
-- 
-  cer: probly
-  cog: { regex: "^/" }
-  match: *1
-  name: absolute
-- 
-  cer: is
-  cog: { code: " -e shift " }
-  match: *1
-  name: reachable
-- 
-  cer: is
-  cog: { code: " -f shift " }
-  match: &2 
-    names: 
-      - reachable
-      - filename
-    object: Intuition
-  name: file
-- 
-  cer: is
-  cog: { code: " -d shift " }
-  match: *2
-  name: dir
-- 
-  cer: is
-  cog: { code: " -r shift " }
-  match: &3 
-    names: 
-      - file
-    object: Intuition
-  name: readable
-- 
-  cer: is
-  cog: { code: " (stat(shift))[7] " }
-  match: *3
-  name: size
+    my $int_data = LoadFile("intuition_data.yml");
+    for my $intt (@$int_data) {
+        my $match = delete $intt->{match} || die "Urph: ". Dump($intt);
+        $match = new Pattern(%$match);
+        
+        my $cog = delete $intt->{cog};
+        $intt->{cog} = qr"$cog->{regex}" if $cog->{regex};
+        $intt->{cog} = eval " sub {$cog->{code}} " if $cog->{code};
+        die $@ if $@;
 
-for my $intt (@$int_data) {
-    my $match = delete $intt->{match};
-    $match = $match->{it} ||= new Pattern(%$match);
-    
-    my $cog = delete $intt->{cog};
-    $intt->{cog} = qr"$cog->{regex}" if $cog->{regex};
-    $intt->{cog} = eval " sub {$cog->{code}} " if $cog->{code};
-    die $@ if $@;
-
-    my $int = new Stuff('Intuition', %$intt);
-    $int->link($match);
-    $int->link($self);
-}
-}
-
-sub johnfaheys {
-    return <<''
---- 
-../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac: 
-  - Intuition	1	maybe filename	(?-xism:/)
-  - Intuition	1	probly relative	(?-xism:^\.\./)
-  - Intuition	1	maybe relative	(?-xism:^(?!/))
-  - Intuition		probly absolute	(?-xism:^/)
-  - Intuition	1	is reachable
-  - Intuition	1	is file
-  - Intuition	""	is dir
-  - Intuition	1	is readable
-  - Intuition	8115090	is size
-../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac: 
-  - Intuition	1	maybe filename	(?-xism:/)
-  - Intuition	1	probly relative	(?-xism:^\.\./)
-  - Intuition	1	maybe relative	(?-xism:^(?!/))
-  - Intuition		probly absolute	(?-xism:^/)
-  - Intuition	 	is reachable
-../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac: 
-  - Intuition	1	maybe filename	(?-xism:/)
-  - Intuition	1	probly relative	(?-xism:^\.\./)
-  - Intuition	1	maybe relative	(?-xism:^(?!/))
-  - Intuition		probly absolute	(?-xism:^/)
-  - Intuition	1	is reachable
-  - Intuition	1	is file
-  - Intuition	""	is dir
-  - Intuition	1	is readable
-  - Intuition	9056908	is size
-/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac: 
-  - Intuition	1	maybe filename	(?-xism:/)
-  - Intuition		probly relative	(?-xism:^\.\./)
-  - Intuition		maybe relative	(?-xism:^(?!/))
-  - Intuition	1	probly absolute	(?-xism:^/)
-  - Intuition	1	is reachable
-  - Intuition	1	is file
-  - Intuition	""	is dir
-  - Intuition	1	is readable
-  - Intuition	8115090	is size
-
-
+        my $int = new Stuff('Intuition', %$intt);
+        $int->link($match);
+        $int->link($self);
+    }
+# }}}
 }
 
 1;
