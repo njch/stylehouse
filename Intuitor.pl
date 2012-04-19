@@ -58,75 +58,77 @@ sub ensure_intuitions_exist {
     return if $self->linked("Intuition");
 # here we generate some intuitions and their matches 
 # {{{
-my @giv = split "\n", <<"";
-string:
-    /\// maybe filename
-filename:
-    /^\\.\\.//  probly relative
-    /^(?!/)/ maybe relative
-    /^//    probly absolute
-    { -e shift } is reachable
-relative or absolute
-reachable filename:
-    { -f shift } is file
-    { -d shift } is dir
-file or dir
-file:
-    { -r shift } is readable
-    { (stat(shift))[7] } is size
+my $int_data = Load(<<'');
+--- 
+- 
+  cer: maybe
+  cog: { regex: / }
+  match: 
+    object: Text
+  name: filename
+- 
+  cer: probly
+  cog: { regex: "^\\.\\./" }
+  match: &1 
+    names: 
+      - filename
+    object: Intuition
+  name: relative
+- 
+  cer: maybe
+  cog: { regex: "^(?!/)" }
+  match: *1
+  name: relative
+- 
+  cer: probly
+  cog: { regex: "^/" }
+  match: *1
+  name: absolute
+- 
+  cer: is
+  cog: { code: " -e shift " }
+  match: *1
+  name: reachable
+- 
+  cer: is
+  cog: { code: " -f shift " }
+  match: &2 
+    names: 
+      - reachable
+      - filename
+    object: Intuition
+  name: file
+- 
+  cer: is
+  cog: { code: " -d shift " }
+  match: *2
+  name: dir
+- 
+  cer: is
+  cog: { code: " -r shift " }
+  match: &3 
+    names: 
+      - file
+    object: Intuition
+  name: readable
+- 
+  cer: is
+  cog: { code: " (stat(shift))[7] " }
+  match: *3
+  name: size
 
-sub shift_until { # TODO util functions
-    my ($shift, $until) = @_;
-    my @ret;
-    until (!@$shift || $until->()) {
-        push @ret, shift @$shift;
-    }
-    return @ret;
-}
+for my $intt (@$int_data) {
+    my $match = delete $intt->{match};
+    $match = $match->{it} ||= new Pattern(%$match);
+    
+    my $cog = delete $intt->{cog};
+    $intt->{cog} = qr"$cog->{regex}" if $cog->{regex};
+    $intt->{cog} = eval " sub {$cog->{code}} " if $cog->{code};
+    die $@ if $@;
 
-while (defined($_ = shift @giv)) {
-    if (/^([\w ]+):/) {
-
-        my $in_match = $1 eq "string" ?
-            new Pattern(
-                object => "Text"
-            ) :
-            new Pattern(
-                object => "Intuition",
-                names => [split /\s+/, $1]
-            );
-
-        my @ints = shift_until(\@giv, sub { $giv[0] =~ /^\S/ });
-
-        for (@ints) {
-            s/^\s+//;
-            my $cog =
-                s/^\/(.+)\/ // ? qr"$1" :
-                s/^\{(.+)\} // ? eval "sub { $1 }" :
-                die $_;
-            my ($cer, $to) = /^\s*(\w+)\s+(\w+)$/;
-            $cer && $to || die;
-            my $int = new Stuff("Intuition",
-#   name => "word", the word describing a positive intuition
-#   cer => is|probly|maybe|slight, security of knowledge
-#           greater arrangements made out of uncertainties should be upgraded
-#   cog => regex or code->($_) to test
-                name => $to,
-                cer => $cer,
-                cog => $cog,
-            );
-            $int->link($in_match);
-            $int->link($self);
-        }
-
-    }
-    elsif (/^([\w ]+)$/) {
-        my @mutex = split / or / || die;
-        # things that cannot be all true
-        # should work like Intuitions except it projects LIES unto the
-        # stuff that's wrong
-    }
-    else { die $_ }
+    my $int = new Stuff('Intuition', %$intt);
+    $int->link($match);
+    $int->link($self);
 }
 }
 
