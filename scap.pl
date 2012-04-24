@@ -335,6 +335,21 @@ sub ready {
 }
 # }}}
 
+sub getlinks {
+    my %p = @_;
+
+    my @links = @links;
+    @links = map { main::order_link($p{from}, $_) } @links if $p{from};
+    @links = grep {
+        $p{field} && $_->{1}->{field} eq $p{field}
+        || $_->{0}->field eq $_->{1}->field
+        || say("$_->{id} $_->{0}->{field} eq $_->{1}->{field}") && 0
+    } @links;
+    @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
+
+    return @links;
+}
+
 # the thing that's constantly watching the graph evolve and tracking
 # pattern matches needs to be able to take a transient limb at any
 # point, as well as being drip fed, so Stuff code can have hooks,
@@ -363,17 +378,7 @@ sub search { # {{{
 
     my $get_first_column = sub {
         my $spec = shift;
-        return uniq map { $_->{0} }
-            map { main::order_link($spec, $_) } @links
-    };
-
-    my $findlinks = sub {
-        my ($from, $to) = @_;
-        return grep {
-            main::spec_comp($to, $_)
-        } map {
-            main::order_link($from, $_);
-        } @links
+        return uniq map { $_->{0} } getlinks(from => $spec)
     };
 
     my @cols;
@@ -441,100 +446,38 @@ sub search { # {{{
     
     @first_column = $get_first_column->($spec[0]->{object});
     my @last_column = @first_column;
-    for my $s (@spec) {
-        my @rows;
-        if (!@cols) {
-            push @rows, $get_first_column->($s->{object});
-        }
-        else {
-            my $from_links = $cols[-1]->{rows};
-            my @froms = @cols == 1 ? @$from_links :
-                map { $_->{1} } @$from_links;
-
-            do { # algorithm rehash:
-                my @froms = @last_column;
-                @last_column = ();
-                for my $from (@froms) {
-                    my @links = $findlinks->($from, $s->{object});
-                    for my $l (@links) {
-                        push @last_column, $l->{1};
-                        $take_result->($l);
-                    }
-                }
-            }; #{{{
-            for my $from (@froms) {
-                my @links = $findlinks->($from => $s->{object});
-                if (@links) {
-                    push @rows, @links;
-                }
-                else {
-                    # delete the parents of this failure
-                    my @rents = ($from);
-                    for my $col (reverse @cols) {
-                        my $rs = $col->{rows};
-                        my @keepers;
-                        for my $l (@$rs) {
-                            my $o = $col eq $cols[0] ? $l : $l->{1};
-                            if (grep { $_ eq $o } @rents) {
-                                push @rents, $l->{0} unless $col eq $cols[0];
-                                next;
-                            }
-                            else {
-                                push @keepers, $l;
-                            }
-                        }
-                        $col->{rows} = \@keepers;
-                    }
-                }
+    my ($first_specsicle, @travelling_spec) = @spec;
+    for my $s (@travelling_spec) {
+        my @froms = @last_column;
+        @last_column = ();
+        for my $from (@froms) {
+            my @links = getlinks(from => $from, to => $s->{object});
+            for my $l (@links) {
+                push @last_column, $l->{1};
+                $take_result->($l);
             }
         }
-        push @cols, {
-            spec => $s,
-            rows => \@rows,
-        };
-    } #}}}
+    }
 
     my $tups = $results2tuples->();
 
-    my @treturn;
+    my @return;
     if (my @col_ns = grep { $spec[$_]->{return} } 0..@spec-1) {
-        my @return;
         for my $row (@$tups) {
             my @cols = map { $row->[$_] } @col_ns;
             push @return, \@cols;
         }
-        if (@return == 1) {
-            @treturn = @{$return[0]}
-        }
-        else {
-            @treturn = @return
+        if (@col_ns == 1) {
+            @return = @{$return[0]}
         }
     }
     else {
-        @treturn = map { $_->[-1] } @$tups
+        @return = map { $_->[-1] } @$tups
     }
-
-    my @creturn;
-    if (my @return = grep { $_->{spec}->{return} } @cols) {
-        my @rcols;
-        push @rcols, $_->{rows} for @return;
-        if (@rcols == 1) {
-            @creturn = @{ $rcols[0] }
-        }
-        else {
-            @creturn = @rcols
-        }
-    }
-    else {
-        @creturn = @{ $cols[-1]->{rows} }
-    }
-
     #say "Hmm: ". join"  ", map { $_->{object} } @spec;
-    #say Dump([ \@treturn, \@creturn]) if $yeah;
-    is_deeply(\@treturn, \@creturn, "two algorithms")
-        || do { $DB::single = 1 } unless 1;
+    #say Dump([ \@return ]) if $yeah;
 
-    return @treturn
+    return @return
 }
 
 sub parse_spec { #{{{
@@ -589,30 +532,20 @@ sub travel {
         $ex->{everywhere}->($G, $ex)
     }
 
-    my %links = map {$_->{id} => $_} $G->links;
-    delete $links{$ex->{via_link}};
+    my @links = getlinks(from => $G);
+    @links = grep { 
+        ! ($_[0] eq $ex->{via_link}
+           || exists $ex->{seen_oids}->{"$_[0]->{1}"})
+        } @links;
 
-    my @links;
-    for my $l (values %links) {
-        
-        my @nofollow;
-        push @nofollow, 'to $code' if $l->{1} eq $code;
-        push @nofollow, "over transmog" if 
-                    $l->{val} && $l->{val}->[0] 
-                       && $l->{val}->[0] eq "replaces";
-        push @nofollow, "seen target" if
-                    exists $ex->{seen_oids}->{"$l->{1}"};
-        my $nofollow = @nofollow ? join(", ",@nofollow) : undef;
-
-        push @links, { %$l, nofollow => $nofollow, };
+    if ($ex->{greplink}) {
+        @links = grep { $ex->{greplink}->($_) } @links
     }
-   
+
     $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
 
     for my $l (@links) {
-        next if $l->{nofollow};
-        
-        $ex->{via_link} = $l->{id};
+        $ex->{via_link} = $l;
         
         say "TRAVELOONG $l->{0} -> $l->{1}";
         travel($l->{1}, $ex)
