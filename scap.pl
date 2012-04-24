@@ -718,7 +718,12 @@ sub link {
         0 => $I, 1 => $II,
         val => \@val, id => $main::ln++,
     };
-    ::field_entropy( new_link => $l );
+
+# TODO this should be the field we're travelling through
+    my $field = $I->field;
+    say "Field decided: $field";
+    $l->{field} = $field || 'non';
+
     main::entropy_increases()
         unless main::order_link("Evaporation", $l)
             || main::order_link("Execution", $l);
@@ -738,6 +743,16 @@ sub unlink {
                 || main::order_link("Execution", $l);
         main::delete_link($l);
     }
+}
+sub field {
+    my $self = shift;
+    my @fields = $self->fields;
+    say "$self fields: @fields" if @fields != 1;
+    return shift @fields
+}
+sub fields {
+    my $self = shift;
+    return uniq map { $_->{field} || () } $self->links;
 }
 sub linked {
     my $self = shift;
@@ -808,7 +823,12 @@ sub match {
         my $res = (0 == grep { $res{$_} == 0 } keys %res);
         # say "match ".($res?"PASS":"FAIL").": ". join "\t", %res;
         $res;
-    } else { die }
+    } else {
+        say "Pattern unmatchable: $self";
+        say Dump($self);
+        $DB::single = 1;
+        say "BLAC!"
+    }
 }
 } # $}}}
 { package Flow;
