@@ -24,13 +24,17 @@ sub entropy_increases {
     die "too many entropy fields" if @entropy_fields > 10;
     $_->{at_maximum_entropy} = 0 for @entropy_fields;
 }
-=pod ENTROPY FIELDS
-are like a grouping of nodes looser than a link.
-it's based on a pattern, like "everything anyhow linked
-to $callstack" or so, meaning directly and indirectly.
-the pattern tracking machine will be good enough for this.
-fields should begin when they're simplest, of course, or with
-strict patterns applied so it doesn't get too wide.
+=pod ENTROPY FIELD
+each link is in one field.
+things can be in multiple fields by many links.
+field A thing links to field B thing, link is field A, &? hook.
+search doesn't cross fields unless demanded.
+
+fields defined by patterns, including the meanderer '...' which is like
+a wildcard... goes off in all directions, in the current field.
+
+dumper prettyprints meanders
+
 this could be displayed as a goo smothered graph while foreign
 looking junk looks foreign.
 the interfaces from one field to another must be defined, then,
@@ -42,53 +46,6 @@ patterns can be used to behave good with:
    the linkees field
 also most fields will want to hide themselves from search() unless
 explicitly spec'd somehow.
-=cut
-sub field_entropy {
-    if ($_[0] eq "new_link") {
-        my $l = $_[1];
-        
-    }
-}
-
-=pod
-everywhere can see $G, the current point on the graph
-$G->spawn("Node", etc => etc) to add a Stuffy thing
-we shall call the maxing of entropy evaportation
-ready takes input into the graph in the form of a datastructure
-it spawns a 'proc', kind of a composable lexicality
-$code relations coagulate intellect
-code and data blur into a graph
-
-so given a datastructure, we spawn instruction objects
-pattern matching replaces part or all of these with code objects
-once things settle down,
-the codes are executed,
-instruction objects hang around getting used like args,
-any transmog()rification to the graph sends back to evaporate, etc
-
-so imagine input entropy flowing into a system, the output measured
-and failing a test. once would have to trace execution forwards
-(or back depending on human intuition) until the insanity was found.
-
-the graph should be able to present the human with the human-readable
-parts first, allow them to bisect down to where the problem is.
-also useful would be difficult-to-effect test functions like
-capturing all state through the system with slight differences and
-laying it out all nicely, using that data to quickly unit test.
-
-execution order should be introduced by making the execution
-itself a graph happening to do with a sequence of codes that can
-be messed with. this kind of flow of things will get nice
-representation eventually.
-
-it seems like a scientific understandening, hacking up concepts into
-finer detailed models until everything that needs to work works.
-
-perhaps entropy field as a mutable concept is really more like a fog,
-consuming lies for the rest of the design to seem right. perhaps I will
-recurse into it, implementing, narrowing down the shape of the source
-of entropy itself, perhaps understanding it, perhaps harnessing its mystery.
-
 =cut 
 #}}}
 
