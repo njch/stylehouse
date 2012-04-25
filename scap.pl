@@ -97,7 +97,7 @@ $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
 [ "Linked", be => sub { 
     transmog($G => $G->In->{it}->[0]->linked) } ],
-[ "Flow", be => sub { $G->{be}->($G) } ],
+#[ "Flow", be => sub { $G->{be}->($G) } ],
 );
 
 
@@ -528,9 +528,9 @@ sub travel {
     }
 
     my @links = getlinks(from => $G);
-    @links = grep { 
-        ! ($_[0] eq $ex->{via_link}
-           || exists $ex->{seen_oids}->{"$_[0]->{1}"})
+    @links = grep {
+        ! ($_ eq $ex->{via_link}
+           || exists $ex->{seen_oids}->{"$_->{1}"})
         } @links;
 
     if ($ex->{greplink}) {
@@ -639,7 +639,6 @@ sub In { #TODO
     return $in
 }
 sub link {
-    say "linking @_";
     my ($I, $II, @val) = @_;
     $I && $II && $I ne $II || die "linkybusiness";
     my $l = {
