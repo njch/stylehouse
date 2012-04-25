@@ -468,7 +468,7 @@ sub search { # {{{
             push @return, \@cols;
         }
         if (@col_ns == 1) {
-            @return = @{$return[0]}
+            @return = @{$return[0]} if $return[0];
         }
     }
     else {
