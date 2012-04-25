@@ -6,16 +6,16 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-my $junk = new Stuff("Junk"); #{{{
-my ($one, @etc) = map { $_->link($junk); $_ }
+my $junk = new Stuff("Junk", field => "Junk"); #{{{
+my ($one, @etc) = map { $junk->link($_); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
     "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac";
 
-my $wants = new Stuff("Wants");
-my $code = new Stuff("Code");
+my $wants = new Stuff("Wants", field => "Wants");
+my $code = new Stuff("Code", field => "Code");
 our @links; our $ln = 0;
 our $G = new Stuff("Nothing");
 our $root = $G;
@@ -87,7 +87,7 @@ sub do_stuff {
     }
 }
 
-my $dumpstruction = new Stuff("DS"); #{{{
+my $dumpstruction = new Stuff("DS", field => "DS"); #{{{
 use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
@@ -101,7 +101,7 @@ $code->spawn(
 );
 
 
-my $patterns = new Stuff("Patterns"); #{{{
+my $patterns = new Stuff("Patterns", field => "Patterns"); #{{{
 $patterns->link(
     $patterns->{on_evap} = new Pattern(spec => "(proc)->Evaporation") );
 $patterns->link(
@@ -341,7 +341,7 @@ sub getlinks {
     my @links = @links;
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep {
-        $p{field} && $_->{1}->{field} eq $p{field}
+        $p{field} && ($p{field} eq "*" || $_->{1}->{field} eq $p{field})
         || $_->{0}->field eq $_->{1}->field
         || say("$_->{id} $_->{0}->{field} eq $_->{1}->{field}") && 0
     } @links;
@@ -653,9 +653,7 @@ sub link {
     };
 
 # TODO this should be the field we're travelling through
-    my $field = $I->field;
-    say "Field decided: $field";
-    $l->{field} = $field || 'non';
+    $l->{field} = $I->field;
 
     main::entropy_increases()
         unless main::order_link("Evaporation", $l)
@@ -679,13 +677,15 @@ sub unlink {
 }
 sub field {
     my $self = shift;
+    return $self->{field} if $self->{field};
     my @fields = $self->fields;
     say "$self fields: @fields" if @fields != 1;
-    return shift @fields
+    return shift @fields || "non";
 }
 sub fields {
     my $self = shift;
-    return uniq map { $_->{field} || () } $self->links;
+    return uniq map { $_->{field} || () }
+        main::getlinks(from => $self, field => "*");
 }
 sub linked {
     my $self = shift;
@@ -697,7 +697,9 @@ sub linked {
 sub links {
     my $self = shift;
     my $spec = shift;
-    
+    if (!$spec) {
+        return main::getlinks(from => $self);
+    }
     return main::search(
         start_from => $self,
         spec => $spec,
