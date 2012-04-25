@@ -6,7 +6,7 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-my $junk = new Stuff("Junk", field => "Junk"); #{{{
+my $junk = new Stuff("Junk"); #{{{
 my ($one, @etc) = map { $junk->link($_); $_ }
     map { new Text($_) }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
@@ -14,8 +14,8 @@ my ($one, @etc) = map { $junk->link($_); $_ }
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
     "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac";
 
-my $wants = new Stuff("Wants", field => "Wants");
-my $code = new Stuff("Code", field => "Code");
+my $wants = new Stuff("Wants");
+my $code = new Stuff("Code");
 our @links; our $ln = 0;
 our $G = new Stuff("Nothing");
 our $root = $G;
@@ -87,7 +87,7 @@ sub do_stuff {
     }
 }
 
-my $dumpstruction = new Stuff("DS", field => "DS"); #{{{
+my $dumpstruction = new Stuff("DS"); #{{{
 use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
@@ -101,7 +101,7 @@ $code->spawn(
 );
 
 
-my $patterns = new Stuff("Patterns", field => "Patterns"); #{{{
+my $patterns = new Stuff("Patterns"); #{{{
 $patterns->link(
     $patterns->{on_evap} = new Pattern(spec => "(proc)->Evaporation") );
 $patterns->link(
@@ -340,11 +340,6 @@ sub getlinks {
 
     my @links = @links;
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
-    @links = grep {
-        $p{field} && ($p{field} eq "*" || $_->{1}->{field} eq $p{field})
-        || $_->{0}->field eq $_->{1}->field
-        || say("$_->{id} $_->{0}->{field} eq $_->{1}->{field}") && 0
-    } @links;
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
 
     return @links;
@@ -652,8 +647,7 @@ sub link {
         val => \@val, id => $main::ln++,
     };
 
-# TODO this should be the field we're travelling through
-    $l->{field} = $I->field;
+    # TODO field attachment
 
     main::entropy_increases()
         unless main::order_link("Evaporation", $l)
@@ -674,18 +668,6 @@ sub unlink {
                 || main::order_link("Execution", $l);
         main::delete_link($l);
     }
-}
-sub field {
-    my $self = shift;
-    return $self->{field} if $self->{field};
-    my @fields = $self->fields;
-    say "$self fields: @fields" if @fields != 1;
-    return shift @fields || "non";
-}
-sub fields {
-    my $self = shift;
-    return uniq map { $_->{field} || () }
-        main::getlinks(from => $self, field => "*");
 }
 sub linked {
     my $self = shift;
