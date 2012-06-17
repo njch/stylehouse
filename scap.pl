@@ -6,13 +6,73 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
+    use SDL;
+    use SDL::App;
+    use SDL::Rect;
+    use SDL::Color;
+    use Time::HiRes 'usleep';
+    our $app = SDL::App->new();
+    our %satan;
+    my $color = sub {
+        my @rgb = $_[0] =~ /(..)(..)(..)/;
+        return SDL::Color->new(
+            -r => $rgb[0],
+            -g => $rgb[1],
+            -b => $rgb[2],
+        );
+    };
+    my $rect = sub {
+        my ($wh, $xy, $col) = @_;
+        my $rect = SDL::Rect->new(
+            -height => $wh->[1],
+            -width => $wh->[0],
+            -x => $xy->[0],
+            -y => $xy->[1],
+        );
+        $app->fill($rect, $color->($col));
+        $app->update($rect);
+    };
+
+our $y = 5;
+sub linkery {
+    my $l = shift;
+    my $p = $satan{"$l->{0}"} ||= do {
+#        $app->print(2, $y, "yes");
+        [30, ($y = $y + 20)]
+    };
+    $p->[0] += 20;
+
+    $satan{"$l->{1}"} ||= $p;
+
+        $rect->(
+            [18, 18],
+            $p,
+            "444444",
+        );
+}
+
+=pod
+sdl aint gonna cut it. it even segfaults. maybe check out new API/surroundings
+it immediately needs so much on top of it to be useful...
+
+we need to be able to define views which graph the graph subsets in 2d space.
+then we can click things around. construction then.
+then we introduce all the debugging features that require some UI
+ - the program should be able to mess with core programming and test itself,
+ bootstrapping into itself when ready...
+ - the state of the graphics frontend is just data about the other data,
+   it should all be able to survive program restart
+right so get educated about SVG
+=cut
+
 my $junk = new Stuff("Junk"); #{{{
-my ($one, @etc) = map { $junk->link($_); $_ }
-    map { new Text($_) }
+
+$junk->link(new Text($_)) for (
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
-    "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac";
+    "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac"
+    );
 
 my $wants = new Stuff("Wants");
 my $code = new Stuff("Code");
@@ -49,33 +109,12 @@ explicitly spec'd somehow.
 =cut 
 #}}}
 
-my $test = 0;
 my @modules = (
 "Intuitor",
 #"Scap2Blog",
 );
 sub do_stuff {
     start_timer();
-    if ($test == 1) {
-    my $td = LoadFile('search_testdata.yml');
-    #use Test::More 'no_plan';
-    my $round = 1;
-    for my $t (@$td) {
-        my ($args, $ret, $links) = @{ Load($t) };
-        @links = @$links;
-        $DB::single = $round++ == 54;
-        my $aret = [ search(@$args) ];
-        my @args = map { !defined $_ ? "undef" : $_ } @$args;
-        is_deeply($aret, $ret, "@args correct!")
-            || do {
-                $DB::single = 1;
-                say Dump([$aret, $ret])
-            };
-    }
-    say " okay:". show_delta();
-    return;
-    }
-    else {
     my $clicks = 0;
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
         $root->{at_maximum_entropy} = 1;
@@ -84,7 +123,6 @@ sub do_stuff {
         last
     }
     say "$clicks clicks in ". show_delta();
-    }
 }
 
 my $dumpstruction = new Stuff("DS"); #{{{
@@ -647,7 +685,7 @@ sub link {
     };
 
     # TODO field attachment
-
+    main::linkery($l);
     main::entropy_increases()
         unless main::order_link("Evaporation", $l)
             || main::order_link("Execution", $l);
@@ -768,7 +806,8 @@ for (@modules) {
 }
 
 do_stuff();
-
+my $event = new SDL::Event;
+prompt_Yn();
 # DISPLAY
 exit;
 displo($wants);
@@ -955,3 +994,4 @@ __DATA__
     <script type="text/javascript" src="scope.js"></script></head>
     <body style="background: black"><ul></ul></body>
 </html>
+
