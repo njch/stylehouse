@@ -6,56 +6,41 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-    use SDL;
-    use SDL::App;
-    use SDL::Rect;
-    use SDL::Color;
-    use Time::HiRes 'usleep';
-    our $app = SDL::App->new();
-    our %satan;
-    my $color = sub {
-        my @rgb = $_[0] =~ /(..)(..)(..)/;
-        return SDL::Color->new(
-            -r => $rgb[0],
-            -g => $rgb[1],
-            -b => $rgb[2],
-        );
-    };
-    my $rect = sub {
-        my ($wh, $xy, $col) = @_;
-        my $rect = SDL::Rect->new(
-            -height => $wh->[1],
-            -width => $wh->[0],
-            -x => $xy->[0],
-            -y => $xy->[1],
-        );
-        $app->fill($rect, $color->($col));
-        $app->update($rect);
-    };
+our %satan;
+
+my @boxen;
+my @labels;
 
 our $y = 5;
 sub linkery {
     my $l = shift;
     my $p = $satan{"$l->{0}"} ||= do {
-#        $app->print(2, $y, "yes");
-        [30, ($y = $y + 20)]
+        $y += 20;
+        push @labels, ["$l->{0}", $y];
+        [30, $y];
     };
     $p->[0] += 20;
 
-    $satan{"$l->{1}"} ||= $p;
+#    $satan{"$l->{1}"} ||= $p;
 
-        $rect->(
-            [18, 18],
-            $p,
-            "444444",
-        );
+    push @boxen, [
+        18, 18,
+        @{ $p },
+        "444444",
+        "$l->{1}",
+    ];
 }
 
 =pod
-sdl aint gonna cut it. it even segfaults. maybe check out new API/surroundings
-it immediately needs so much on top of it to be useful...
-
 we need to be able to define views which graph the graph subsets in 2d space.
+
+the client asks for some kind of view
+the objects in view are poked into the svg
+clickthrough to more views
+some clicks/drags/whatevers eventually get shit done
+yep
+etc
+
 then we can click things around. construction then.
 then we introduce all the debugging features that require some UI
  - the program should be able to mess with core programming and test itself,
@@ -806,17 +791,11 @@ for (@modules) {
 }
 
 do_stuff();
-my $event = new SDL::Event;
-prompt_Yn();
 # DISPLAY
-exit;
-displo($wants);
-exit;
+#displo($wants);
 
 
-exit;
-
-sub sum {
+sub sum { # {{{
     my $thing = shift;
     my $text = "$thing";
     if (ref $thing eq "Flow") {
@@ -896,11 +875,11 @@ sub links_by_other_type {
         push @{$by_other{$type}||=[]}, $l;
     }
     %by_other;
-};
+};# }}}
 
 my %seen_oids;
 my $n= 0;
-sub assplain {
+sub assplain { # {{{
     my ($thing, $previous_lid) = @_;
     my %links = links_by_id($thing->links);
     my %by_other = links_by_other_type(%links);
@@ -966,20 +945,28 @@ sub displo {
         my @lines = grep { /\w/ } split "\n", Dump($g);
         say "\n". join "\n", @lines;
     }
-}
+} # }}}
 
-
-sub treez {
+use JSON::XS;
+sub stats {
     my $self = shift;
-    my $text = "";
-    $self->render(text => $text);
+    $self->render("text" => "There are ".scalar(@links)." links");
 }
-exit;
+
+sub boxen {
+    my $self = shift;
+    $self->render("text" =>
+        encode_json(
+            {boxen => \@boxen,
+             labels => \@labels}
+        ),
+    );
+}
 
 use Mojolicious::Lite;
-use JSON::XS;
 get '/' => 'index';
-get '/ajax' => \&treez;
+get '/stats' => \&stats;
+get '/boxen' => \&boxen;
 use Mojo::Server::Daemon;
 
 my $daemon = Mojo::Server::Daemon->new;
@@ -991,7 +978,11 @@ __DATA__
 <!doctype html><html>
     <head><title>scap!</title>
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
+    <style type="text/css">@import "jquery.svg.css";</style>
+    <script type="text/javascript" src="jquery.svg.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
-    <body style="background: black"><ul></ul></body>
+    <body style="background: #897">
+    <div id="view" style="background: #fff"></div>
+    </body>
 </html>
 
