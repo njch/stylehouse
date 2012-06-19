@@ -7,22 +7,17 @@ use Scriptalicious;
 use v5.10;
 
 our %satan;
-
 my @boxen;
 my @labels;
-
 our $y = 5;
 sub linkery {
     my $l = shift;
     my $p = $satan{"$l->{0}"} ||= do {
         $y += 20;
-        push @labels, ["$l->{0}", $y];
+        push @labels, [7, $y, "$l->{0}"];
         [30, $y];
     };
     $p->[0] += 20;
-
-#    $satan{"$l->{1}"} ||= $p;
-
     push @boxen, [
         18, 18,
         @{ $p },
@@ -945,28 +940,62 @@ sub displo {
         my @lines = grep { /\w/ } split "\n", Dump($g);
         say "\n". join "\n", @lines;
     }
+}
+sub displow {
+    my @ret;
+    for (@_) {
+        %seen_oids = ();
+        $n = 0;
+        my $g = assplain($_);
+        my @lines = grep { /\w/ } split "\n", Dump($g);
+        push @ret, "\n". join "\n", @lines;
+    }
+    return "@ret";
 } # }}}
 
 use JSON::XS;
 sub stats {
     my $self = shift;
-    $self->render("text" => "There are ".scalar(@links)." links");
+    drawings($self,
+        ["status", "There are ".scalar(@links)." links"]
+    );
 }
 
 sub boxen {
     my $self = shift;
-    $self->render("text" =>
-        encode_json(
-            {boxen => \@boxen,
-             labels => \@labels}
-        ),
+    drawings($self,
+        ["clear"],
+        (map { [ "boxen", @$_ ] } @boxen),
+        (map { [ "label", @$_ ] } @labels),
     );
+}
+
+sub object {
+    my $self = shift;
+    my $id = $self->param('id');
+    my $object;
+    _link: for my $l (@links) {
+        for (0, 1) {
+            if ("$l->{$_}" eq $id) {
+                $object = $l->{$_};
+                last _link;
+            }
+        }
+    }
+    my $text = $object ? displow($object) : "not found";
+    $self->render("text" => $text);
 }
 
 use Mojolicious::Lite;
 get '/' => 'index';
 get '/stats' => \&stats;
 get '/boxen' => \&boxen;
+get '/object' => \&object;
+sub drawings {
+    my $self = shift;
+    $self->render("text" => encode_json(\@_));
+}
+    
 use Mojo::Server::Daemon;
 
 my $daemon = Mojo::Server::Daemon->new;
