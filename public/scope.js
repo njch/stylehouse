@@ -1,12 +1,22 @@
 
 
-
-
+var nav = [['boxen', {}]];
 var ins = [];
 var svg;
 function heresthesvg (the) {
     svg = the;
-    ting('boxen');
+    $('#view svg').attr('height', '5000');
+    navigate();
+}
+
+function navigate(where) {
+    if (where) {
+        nav.push(where);
+    }
+    else {
+        where = nav.slice(-1)[0]
+    }
+    ting(where[0], where[1]);
 }
 
 function drawstuff () {
@@ -25,7 +35,8 @@ function drawstuff () {
         }
         else if (inst[0] == 'boxen') {
             var b = inst.slice(1);
-            var rect = svg.rect(b[2] + 50, b[3], b[0], b[1], {fill: b[4], id: b[5]});
+            var rect = svg.rect(b[2] + 50, b[3], b[0], b[1],
+                {fill: b[6], id: b[5], class: b[6], name: b[4]});
             $(rect)
                 .bind('mouseover', ob_Over)
                 .bind('mouseout', ob_Out)
@@ -36,27 +47,19 @@ function drawstuff () {
             svg.text(l[0], l[1] + 12, l[2]);
         }
 //        var g = svg.group({stroke: 'black', strokeWidth: 2});
-    }); 
+    });
+    ins = [];
 }
 function ob_Over() { // set status line to object id
-    var id = $(this).attr('id')
-    $('text#status').text( 'yep: '+id );
-    $('#'+id).attr('stroke', 'lime');
+    $('text#status').text( 'yep: '+$(this).attr('name'));
+    $('.'+$(this).attr('class')).attr('stroke', 'lime').attr('stroke-width', '5px');
 }
 function ob_Out() {
-    var id = $(this).attr('id')
-    $('#'+id).attr('stroke', 'none');
+    $('.'+$(this).attr('class')).attr('stroke', 'none');
 }
 function ob_Click() { // look up object info
-    $('#view').svg('destroy');
     var id = $(this).attr('id');
-    $('#view').svg({onLoad: drawinfo($('#view'), id)})
-}
-
-function drawinfo(svg, id) {
-    $.getJSON('object', { id: id }, function (info) {
-        svg.text('<pre>'+info+'</pre>')
-    });
+    navigate(["object", {id: id}])
 }
 
 function ting(action, param) {
@@ -69,6 +72,8 @@ function ting(action, param) {
         drawstuff();
     })
 }
+
+
 
 $.get('stats', {}, function (stats) {
     $('#view').svg({onLoad: heresthesvg})

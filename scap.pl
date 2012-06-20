@@ -6,23 +6,36 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
+my $linkery = new Stuff();
+
 our %satan;
 my @boxen;
 my @labels;
 our $y = 5;
 sub linkery {
     my $l = shift;
-    my $p = $satan{"$l->{0}"} ||= do {
+    my ($parent, $child);
+    for (0, 1) {
+        my ($name, $id, $color) = "$l->{$_}" =~ m{^(\w+)=.+\((0x...(...).)\)$}
+            or die "HUr";
+        $name = "$name $id";
+        my $tup = [ $name, $id, $color ];
+        unless ($parent) {
+            $parent = $tup
+        }
+        else {
+            $child = $tup
+        }
+    }
+    my $p = $satan{$parent->[1]} ||= do {
         $y += 20;
-        push @labels, [7, $y, "$l->{0}"];
-        [30, $y];
+        push @labels, [7, $y, @$parent];
+        [80, $y];
     };
-    $p->[0] += 20;
+    $p->[0] += 20; # line height/leading... text coorded from bottom of line
     push @boxen, [
         18, 18,
-        @{ $p },
-        "444444",
-        "$l->{1}",
+        @$p, @$child,
     ];
 }
 
@@ -963,8 +976,16 @@ sub stats {
 
 sub boxen {
     my $self = shift;
+    if (0) {
+        (%satan, @labels, @boxen) = ();
+        $y = 7;
+        for (@links) {
+            linkery($_)
+        }
+    }
     drawings($self,
         ["clear"],
+        ["status", "There are ".scalar(@links)." links"],
         (map { [ "boxen", @$_ ] } @boxen),
         (map { [ "label", @$_ ] } @labels),
     );
@@ -976,14 +997,34 @@ sub object {
     my $object;
     _link: for my $l (@links) {
         for (0, 1) {
-            if ("$l->{$_}" eq $id) {
+            if ("$l->{$_}" =~ $id) {
                 $object = $l->{$_};
                 last _link;
             }
         }
     }
-    my $text = $object ? displow($object) : "not found";
-    $self->render("text" => $text);
+    my @drawings;
+    if ($object) {
+        my $text = displow($object);
+        my ($x, $y) = 10, 10;
+        for my $l (split "\n", $text) {
+            my ($indent, $stuff) = $l =~ /^(\s+)(\S.+)$/;
+            my $x = $x + length($indent) * 3;
+            $y += 18;
+            next unless $stuff;
+            push @drawings, [ "label", $x, $y, $stuff ];
+        }
+        unshift @drawings, 
+            ["clear"],
+            ["status", "For $id"];
+    }
+    else {
+        push @drawings,
+            ["status", "$id no longer exists!"]
+    }
+    drawings($self,
+        @drawings,
+    );
 }
 
 use Mojolicious::Lite;
