@@ -1,6 +1,15 @@
 use strict;
 use warnings;
 
+my $junk = new Stuff("Junk");
+
+$junk->link(new Text($_)) for (
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
+    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
+    "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac"
+);
+
 new Flow(
 name => "Intuitor", # {{{
 want => new Pattern(object => "Text"),

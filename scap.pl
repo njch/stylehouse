@@ -6,8 +6,6 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
-my $linkery = new Stuff();
-
 our %satan;
 my @boxen;
 my @labels;
@@ -39,7 +37,7 @@ sub linkery {
     ];
 }
 
-=pod
+=pod USER INTERFACE
 we need to be able to define views which graph the graph subsets in 2d space.
 
 the client asks for some kind of view
@@ -58,14 +56,44 @@ then we introduce all the debugging features that require some UI
 right so get educated about SVG
 =cut
 
-my $junk = new Stuff("Junk"); #{{{
 
-$junk->link(new Text($_)) for (
-    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
-    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
-    "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
-    "/home/steve/Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac"
-    );
+
+
+=pod THE THICKNESS OF GRAPH
+So there's usually just one graph per App
+App would branch away its various data but it's one bunch of links
+
+linking more in a graph means node linkage
+linking an alien object means it is put in a node and the node is linked in
+the node is appropriately transparent:
+    ->links() for eg is a node method, non-node method calls are passed
+    through the node so $G is set up for any graphy business the object wants
+
+this is all so we can fork an App in a certain state better
+
+we also want to create graphs that are subsets of larger graphs
+each node in the subset could be linked to the original in secret way
+(if a query asked it could traverse back into the original graph)
+once we have subsets carved out we can run them into algorithms easier
+the technology of mingling various @links is probably like having data stores
+
+there's kind of a turf concept going on... various customs for travellers...
+
+case study of different graphs, as a flow diagram:
+    run a graph query
+    figure out how to SVG the results
+      - sorting branches
+      - spacing things out...
+    diff that SVG <-> user's SVG
+    drawing instructions for the user's SVG canvas
+=cut
+
+package Graph;
+sub new {
+    my $self = bless {}, __PACKAGE__;
+    $self->{links} = [];
+}
+package main;
 
 my $wants = new Stuff("Wants");
 my $code = new Stuff("Code");
