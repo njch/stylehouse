@@ -88,6 +88,14 @@ case study of different graphs, as a flow diagram:
     drawing instructions for the user's SVG canvas
 =cut
 
+=pod
+to migrate this code from the one-graph model to the graph-nodery-object model...
+bring back the Tracer hack, with timestamps, and capture the current graphening into a new Graph
+yes... get the application "testable" through the UI (which needs some Graph extravaganze)
+  meaning you can fire it off and see the Tracer/etc graph/etc that it outputs
+  graph differencible development primitively progresses...
+=cut
+
 package Graph;
 sub new {
     my $self = bless {}, __PACKAGE__;
