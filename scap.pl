@@ -96,12 +96,97 @@ yes... get the application "testable" through the UI (which needs some Graph ext
   graph differencible development primitively progresses...
 =cut
 
+our %graphs;
 package Graph;
-sub new {
+sub new { # name, 
     my $self = bless {}, __PACKAGE__;
+    $self->{name} = shift || "unnamed";
     $self->{links} = [];
+    $graphs{$self->{name}} = $self;
+    return $self
 }
+sub link {
+    my ($self, $I, $II, @val) = @_;
+    my $l = {
+        0 => $I, 1 => $II,
+        val => \@val,
+    };
+    push @{$self->{links}}, $l;
+}
+sub unlink {
+    my ($self, @to_unlink) = @_;
+    my %to_unlink;
+    $to_unlink{"$_"} = undef for @to_unlink;
+    my $links = $self->{links};
+    for my $i (@$links-1..0) {
+        if (exists $to_unlink{$links->[$i]}) {
+            splice @$links, $i, 1;
+            delete $to_unlink{$links->[$i]};
+            return unless keys %to_unlink;
+        }
+    }
+}
+sub spawn {
+    my $self = shift;
+    return new Node(
+        graph => $self,
+        thing => shift,
+    );
+}
+package Node;
+use List::MoreUtils 'uniq';
+sub new { # graph => name, 
+    my $self = bless {}, __PACKAGE__;
+    my %params = @_;
+    $self->{graph} = $params{graph};
+    $self->{thing} = $params{thing};
+    return $self
+}
+sub spawn {
+    my $self = shift;
+    my $spawn = $self->graph->spawn(shift);
+    $self->link($spawn, @_);
+    return $spawn;
+}
+sub graph {
+    $main::graphs->{$_[0]->{graph}}
+}
+sub link {
+    $_[0]->graph->link(@_)
+}
+sub unlink {
+    my ($self, $I, @others) = @_;
+    # finding all links from $_[1] to $_[2..]s seems silly
+    my @links;
+    for my $o (@others) {
+        for my $l ($I->links($o)) {
+            push @links, $l
+        }
+    }
+    $self->graph->unlink(@links)
+}
+sub linked {
+    my ($self, $spec) = @_;
+    my @linked = uniq map { $_->{1} } $self->links($spec);
+    wantarray ? @linked : shift @linked;
+}
+sub links {
+    my ($self, $spec) = @_;
+    local @main::links = @{$self->graph->{links}};
+    if (!$spec) {
+        return main::getlinks(from => $self);
+    }
+    else {
+        return main::search(
+            start_from => $self,
+            spec => $spec,
+        );
+    }
+}
+        
 package main;
+
+my $tracery = new Graph ("tracery");
 
 our $junk = new Stuff("Junk");
 my $wants = new Stuff("Wants");
