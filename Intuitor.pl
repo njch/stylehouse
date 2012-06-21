@@ -1,9 +1,7 @@
 use strict;
 use warnings;
 
-my $junk = new Stuff("Junk");
-
-$junk->link(new Text($_)) for (
+$main::junk->link(new Text($_)) for (
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Mill.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 08 - The Downfall Of The Adelphi Rolling Grist Meal.flac",
     "../Music/Fahey/Death Chants, Breakdowns and Military Waltzes/Fahey, John - 04 - Some Summer Day.flac",
@@ -47,6 +45,7 @@ be => sub {
 
 
 sub END {
+    return;
     my @ints = search("Junk->Text->Intuition");
     my @texts = sort map { "$_->{0}" } @ints;
     my %fin;

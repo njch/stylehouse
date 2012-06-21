@@ -103,6 +103,7 @@ sub new {
 }
 package main;
 
+our $junk = new Stuff("Junk");
 my $wants = new Stuff("Wants");
 my $code = new Stuff("Code");
 our @links; our $ln = 0;
@@ -112,6 +113,14 @@ our @entropy_fields = ($root);
 sub entropy_increases {
     die "too many entropy fields" if @entropy_fields > 10;
     $_->{at_maximum_entropy} = 0 for @entropy_fields;
+}
+sub get_linked_object_by_memory_address {
+    my $id = shift;
+    for my $l (@links) {
+        for (0, 1) {
+            return $l->{$_} if "$l->{$_}" =~ $id;
+        }
+    }
 }
 =pod ENTROPY FIELD
 each link is in one field.
@@ -1006,16 +1015,22 @@ sub displow {
         %seen_oids = ();
         $n = 0;
         my $g = assplain($_);
+
         my @lines = grep { /\w/ } split "\n", Dump($g);
         push @ret, "\n". join "\n", @lines;
     }
     return "@ret";
 } # }}}
 
+our $whereto = ["boxen", {}];
 use JSON::XS;
+sub hello {
+    my $self = shift;
+    $self->render("text" => encode_json($whereto));
+}
 sub stats {
     my $self = shift;
-    drawings($self,
+    $self->drawings(
         ["status", "There are ".scalar(@links)." links"]
     );
 }
@@ -1029,7 +1044,7 @@ sub boxen {
             linkery($_)
         }
     }
-    drawings($self,
+    $self->drawings(
         ["clear"],
         ["status", "There are ".scalar(@links)." links"],
         (map { [ "boxen", @$_ ] } @boxen),
@@ -1040,37 +1055,24 @@ sub boxen {
 sub object {
     my $self = shift;
     my $id = $self->param('id');
-    my $object;
-    _link: for my $l (@links) {
-        for (0, 1) {
-            if ("$l->{$_}" =~ $id) {
-                $object = $l->{$_};
-                last _link;
-            }
-        }
+    my $object = get_linked_object_by_memory_address($id);
+    unless ($object) {
+        return $self->sttus("$id no longer exists!");
     }
     my @drawings;
-    if ($object) {
-        my $text = displow($object);
-        my ($x, $y) = 10, 10;
-        for my $l (split "\n", $text) {
-            my ($indent, $stuff) = $l =~ /^(\s+)(\S.+)$/;
-            my $x = $x + length($indent) * 3;
-            $y += 18;
-            next unless $stuff;
-            push @drawings, [ "label", $x, $y, $stuff ];
-        }
-        unshift @drawings, 
-            ["clear"],
-            ["status", "For $id"];
+    my $text = displow($object);
+    my ($x, $y) = 10, 10;
+    for my $l (split "\n", $text) {
+        my ($indent, $stuff) = $l =~ /^(\s+)(\S.+)$/;
+        my $x = $x + length($indent) * 3;
+        $y += 18;
+        next unless $stuff;
+        push @drawings, [ "label", $x, $y, $stuff ];
     }
-    else {
-        push @drawings,
-            ["status", "$id no longer exists!"]
-    }
-    drawings($self,
-        @drawings,
-    );
+    unshift @drawings, 
+        ["clear"],
+        ["status", "For $id"];
+    $self->drawings(@drawings);
 }
 
 use Mojolicious::Lite;
@@ -1078,13 +1080,17 @@ get '/' => 'index';
 get '/stats' => \&stats;
 get '/boxen' => \&boxen;
 get '/object' => \&object;
-sub drawings {
+get '/hello' => \&hello;
+*Mojolicious::Controller::drawings = sub {
     my $self = shift;
     $self->render("text" => encode_json(\@_));
-}
+};
+*Mojolicious::Controller::sttus = sub {
+    my $self = shift;
+    $self->drawings(["status", shift]);
+};
     
 use Mojo::Server::Daemon;
-
 my $daemon = Mojo::Server::Daemon->new;
 $daemon->listen(['http://*:3000']);
 $daemon->run;

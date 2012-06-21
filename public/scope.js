@@ -1,6 +1,6 @@
 
 
-var nav = [['boxen', {}]];
+var nav = [];
 var ins = [];
 var svg;
 function heresthesvg (the) {
@@ -21,7 +21,7 @@ function navigate(where) {
 
 function drawstuff () {
     jQuery.each(ins, function (i, inst) {
-        console.log('Instruction'+ inst);
+        console.log('Instruction '+ inst);
         if (inst[0] == 'clear') {
             svg.clear();
         }
@@ -75,7 +75,8 @@ function ting(action, param) {
 
 
 
-$.get('stats', {}, function (stats) {
+$.getJSON('hello', {}, function (whereto) {
+    nav.push(whereto);
     $('#view').svg({onLoad: heresthesvg})
 });
 
