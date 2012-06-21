@@ -27,8 +27,8 @@ sub linkery {
     }
     my $p = $satan{$parent->[1]} ||= do {
         $y += 20;
-        push @labels, [7, $y, @$parent];
-        [80, $y];
+        push @labels, [8, $y, @$parent];
+        [160, $y];
     };
     $p->[0] += 20; # line height/leading... text coorded from bottom of line
     push @boxen, [
@@ -167,7 +167,7 @@ my $dumpstruction = new Stuff("DS"); #{{{
 use JSON::XS;
 $dumpstruction->spawn(
 [ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
-[ "In", be => sub { "In ".join" ",tup($_[0]->{it}) } ],
+[ "In", be => sub { "In-".join" ",tup($_[0]->{it}) } ],
 );
 $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
@@ -584,6 +584,11 @@ travel is to channel graph interrogations
 with logic about fields (not going into $code or transmogs)
 
 =cut
+sub hook {
+    my ($ex, $hook) = (shift, shift);
+    return unless exists $ex->{$hook};
+    $ex->{$hook}->($G, $ex, @_);
+}
 sub travel {
     $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
@@ -593,32 +598,34 @@ sub travel {
         $ex->{seen_oids} = {};
         $ex->{via_link} = -1;
     }
+    hook($ex, "everywhere");
 
-    if ($ex->{depth}++ > 50) {
-        warn "DEEP RECURSION!";
-        return "DEEP RECURSION!"
+    if ($ex->{depth}++ > 500) {
+        die "DEEP RECURSION!";
     }
 
-    if ($ex->{everywhere}) {
-        $ex->{everywhere}->($G, $ex)
-    }
 
     my @links = getlinks(from => $G);
-    @links = grep {
-        ! ($_ eq $ex->{via_link}
-           || exists $ex->{seen_oids}->{"$_->{1}"})
-        } @links;
+    hook($ex, "all_links", \@links);
 
-    if ($ex->{greplink}) {
-        @links = grep { $ex->{greplink}->($_) } @links
-    }
+    @links = grep { $_ ne $ex->{via_link} } @links;
+    hook($ex, "forward_links", \@links);
+
+    @links = grep { ! exists $ex->{seen_oids}->{"$_->{1}"} } @links;
+    hook($ex, "new_links", \@links);
 
     $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
 
     for my $l (@links) {
+        $G = $l->{1};
+        $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
+    }
+    for my $l (@links) {
+        $ex = { %$ex };
         $ex->{via_link} = $l;
         
         say "TRAVELOONG $l->{0} -> $l->{1}";
+        $G = $l->{1};
         travel($l->{1}, $ex)
     }
 }
@@ -1010,16 +1017,36 @@ sub displo {
     }
 }
 sub displow {
-    my @ret;
-    for (@_) {
-        %seen_oids = ();
-        $n = 0;
-        my $g = assplain($_);
-
-        my @lines = grep { /\w/ } split "\n", Dump($g);
-        push @ret, "\n". join "\n", @lines;
-    }
-    return "@ret";
+    my $object = shift;
+    my @lines;
+    my $gsay = sub {
+        my ($G, $ex, $ind, $tail) = @_;
+        $ind ||= "";
+        $tail ||= "";
+        push @lines,
+            join("", (" " x $ex->{depth})).$ind.$ex->{depth}
+            .summarise($G).$tail;
+    };
+    my $ex = {
+    everywhere => sub {
+        $gsay->(@_)
+    },
+    forward_links => sub {
+        my ($G, $ex, $links) = @_;
+        my @acceptable;
+        for my $l (@$links) {
+            if ("$l->{1}" !~ /^(Text|Intuition)/) {
+                $gsay->($l->{1}, $ex, "", "...");
+            }
+            else {
+                push @acceptable, $l;
+            }
+        }
+        @$links = @acceptable
+    },
+    };
+    travel($object, $ex);
+    return join "\n", @lines;
 } # }}}
 
 our $whereto = ["boxen", {}];
@@ -1061,17 +1088,26 @@ sub object {
     }
     my @drawings;
     my $text = displow($object);
-    my ($x, $y) = 10, 10;
+    my ($x, $y) = 20, 40;
     for my $l (split "\n", $text) {
-        my ($indent, $stuff) = $l =~ /^(\s+)(\S.+)$/;
-        my $x = $x + length($indent) * 3;
+        my ($indent, $stuff) = $l =~ /^(\s*)(\S.+)$/;
+        $indent ||= "";
+        my $x = $x + length($indent) * 18;
         $y += 18;
         next unless $stuff;
-        push @drawings, [ "label", $x, $y, $stuff ];
+        if ($stuff =~ m{^\s*(\w+)=.+\((0x...(...).)\)}) {
+            my ($name, $id, $color) = ($1, $2, $3);
+            $name = "$name $id";
+            my $tup = [ $name, $id, $color ];
+            push @drawings, [ "boxen", 18, 18, $x-20, $y-2, @$tup ];
+        }
+        my @grayness;
+        @grayness = ("etc") x 3 if $stuff =~ /\.\.\.$/;
+        push @drawings, [ "label", $x, $y, $stuff, @grayness];
     }
     unshift @drawings, 
         ["clear"],
-        ["status", "For $id"];
+        ["status", "For ". Dump($object)];
     $self->drawings(@drawings);
 }
 

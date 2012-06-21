@@ -35,7 +35,7 @@ function drawstuff () {
         }
         else if (inst[0] == 'boxen') {
             var b = inst.slice(1);
-            var rect = svg.rect(b[2] + 50, b[3], b[0], b[1],
+            var rect = svg.rect(b[2], b[3], b[0], b[1],
                 {fill: b[6], id: b[5], class: b[6], name: b[4]});
             $(rect)
                 .bind('mouseover', ob_Over)
@@ -44,7 +44,10 @@ function drawstuff () {
         }
         else if (inst[0] == 'label') {
             var l = inst.slice(1);
-            svg.text(l[0], l[1] + 12, l[2]);
+            var text = svg.text(l[0], l[1] + 12, l[2]);
+            if (l.length == 6) {
+                $(text).attr("fill", "gray");
+            }
         }
 //        var g = svg.group({stroke: 'black', strokeWidth: 2});
     });
