@@ -925,32 +925,29 @@ my %seen_oids;
 my $n= 0;
 sub assplain { # {{{
     my ($thing, $previous_lid) = @_;
-    my %links = links_by_id($thing->links);
-    my %by_other = links_by_other_type(%links);
+
+    my $tree = [];
+    unless ($previous_lid) { # start
+        $previous_lid = -1;
+        push @$tree, summarise($thing);
+    }
 
     my $figure_link = sub {
-        my $l = shift;
+        my ($l, $ob, $prev) = @_;
+        my $o = $l->{1};
 
-        if ($l->{id} eq $previous_lid) {
-            return 
-        }
-        if (!defined $l->{1}) {
+        if (!defined $o) {
             warn "undef link: $l->{id}";
             return "UNDEFINED!"
         }
-        if ($n++ > 50) {
+        if ($n++ > 2000) {
             return "DEEP RECURSION!"
         }
 
-        my $o = $l->{1};
-        my $oid = "$o";
-
-        my $prev = exists $seen_oids{$oid};
-        my $ob = $seen_oids{$oid} ||= { summarise($o) => [] };
         my ($linkstash) = values %$ob;
 
         if ($o eq $code) {
-            @$linkstash = ("...");
+            @$linkstash = ("Code...");
         }
         elsif (!$prev) {
             my $connective = assplain($l->{1}, $l->{id});
@@ -960,14 +957,27 @@ sub assplain { # {{{
         return $ob;
     };
 
-    my $tree = [];
-    unless ($previous_lid) {
-        $previous_lid = -1;
-        push @$tree, summarise($thing);
+    my %links = links_by_id($thing->links);
+    my %by_other = links_by_other_type(%links);
+    my %prev;
+    for my $k (sort keys %by_other) {
+        for my $l (@{$by_other{$k}}) {
+            next if $l->{id} eq $previous_lid;
+
+            my $o = $l->{1};
+            my $oid = "$o";
+            $prev{$oid} = exists $seen_oids{$oid};
+            $seen_oids{$oid} ||= { summarise($o) => [] };
+        }
     }
     for my $k (sort keys %by_other) {
         for my $l (@{$by_other{$k}}) {
-            my $fig = $figure_link->($l);
+            next if $l->{id} eq $previous_lid;
+
+            my $o = $l->{1};
+            my $oid = "$o";
+            my $fig = $figure_link->($l, $seen_oids{$oid}, $prev{$oid});
+
             next unless $fig;
             push @$tree, { $l->{text}, $fig };
         }
