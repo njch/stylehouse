@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use YAML::Syck;
+use JSON::XS;
 use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
@@ -94,16 +95,32 @@ bring back the Tracer hack, with timestamps, and capture the current graphening 
 yes... get the application "testable" through the UI (which needs some Graph extravaganze)
   meaning you can fire it off and see the Tracer/etc graph/etc that it outputs
   graph differencible development primitively progresses...
+
+so eventually the Graph/Node infrastructure code will be represented on itself
+so hacks can be loaded in without impurifying the basic apparition of IT.
+those hacks, being datastructure concerns, should be compiled back into CODEs
+the system tests the new tech then just changes some links to hop over to it
+=cut
+
+=pod
+Graph/Nodelry seems to be working.
+make displow()'s travel() generate a new graph, run that into SVGer
 =cut
 
 our %graphs;
 package Graph;
+use strict;
+use warnings;
 sub new { # name, 
+    shift;
     my $self = bless {}, __PACKAGE__;
     $self->{name} = shift || "unnamed";
     $self->{links} = [];
-    $graphs{$self->{name}} = $self;
+    $main::graphs{$self->{name}} = $self;
     return $self
+}
+sub name {
+    return $_[0]->{name};
 }
 sub link {
     my ($self, $I, $II, @val) = @_;
@@ -128,17 +145,20 @@ sub unlink {
 }
 sub spawn {
     my $self = shift;
-    return new Node(
+    return Node->new(
         graph => $self,
         thing => shift,
     );
 }
 package Node;
+use strict;
+use warnings;
 use List::MoreUtils 'uniq';
 sub new { # graph => name, 
+    shift;
     my $self = bless {}, __PACKAGE__;
     my %params = @_;
-    $self->{graph} = $params{graph};
+    $self->{graph} = $params{graph}->name;
     $self->{thing} = $params{thing};
     return $self
 }
@@ -149,7 +169,7 @@ sub spawn {
     return $spawn;
 }
 sub graph {
-    $main::graphs->{$_[0]->{graph}}
+    $main::graphs{$_[0]->{graph}} || die "no graph $_[0]->{graph}";
 }
 sub link {
     $_[0]->graph->link(@_)
@@ -237,6 +257,10 @@ my @modules = (
 #"Scap2Blog",
 );
 sub do_stuff {
+    for (@modules) {
+        say "loading $_...";
+        require "$_.pl";
+    }
     start_timer();
     my $clicks = 0;
     until ($root->{at_maximum_entropy} || $clicks++ > 21) {
@@ -358,7 +382,7 @@ sub patterner { # {{{
                 my $ops = $pat_by_o->{$o} ||= [];
                 push @$ops, $p;
             }
-            say "Pattern linked as @objects";
+            #say "Pattern linked as @objects";
         }
         elsif (my $oll = order_link("Pattern", $l)) {
             #say "Linking to patterns: ".Dump($l);
@@ -498,6 +522,11 @@ sub ready {
 
 sub getlinks {
     my %p = @_;
+
+    local @main::links = @{$p{from}->graph->{links}}
+        if $p{from} && ref $p{from} eq "Node";
+    local @main::links = @{$p{to}->graph->{links}}
+        if $p{to} && ref $p{to} eq "Node";
 
     my @links = @links;
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
@@ -685,7 +714,7 @@ sub travel {
     }
     hook($ex, "everywhere");
 
-    if ($ex->{depth}++ > 500) {
+    if ($ex->{depth} > 500) {
         die "DEEP RECURSION!";
     }
 
@@ -705,11 +734,13 @@ sub travel {
         $G = $l->{1};
         $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
     }
+    my $next_depth = $ex->{depth} + 1;
     for my $l (@links) {
         $ex = { %$ex };
         $ex->{via_link} = $l;
+        $ex->{depth} = $next_depth;
         
-        say "TRAVELOONG $l->{0} -> $l->{1}";
+        #say "TRAVELOONG $l->{0} -> $l->{1}";
         $G = $l->{1};
         travel($l->{1}, $ex)
     }
@@ -930,12 +961,8 @@ sub new {
 }
 # }}}
 
-for (@modules) {
-    say "loading $_...";
-    require "$_.pl";
-}
 
-do_stuff();
+do_stuff() unless caller;
 # DISPLAY
 #displo($wants);
 
@@ -988,6 +1015,12 @@ sub summarise {
         }
         when ("In") {
             $text = "Instruction ".tup($thing->{it});
+        }
+        when ("Node") {
+            $text = "Node ".summarise($thing->{thing});
+        }
+        when ("HASH") {
+            $text = encode_json($thing);
         }
     }
     }
@@ -1109,7 +1142,7 @@ sub displow {
         $ind ||= "";
         $tail ||= "";
         push @lines,
-            join("", (" " x $ex->{depth})).$ind.$ex->{depth}
+            join("", (" " x $ex->{depth})).$ind
             .summarise($G).$tail;
     };
     my $ex = {
@@ -1120,7 +1153,7 @@ sub displow {
         my ($G, $ex, $links) = @_;
         my @acceptable;
         for my $l (@$links) {
-            if ("$l->{1}" !~ /^(Text|Intuition)/) {
+            if (0 && "$l->{1}" !~ /^(Text|Intuition)/) {
                 $gsay->($l->{1}, $ex, "", "...");
             }
             else {
@@ -1173,14 +1206,14 @@ sub object {
     }
     my @drawings;
     my $text = displow($object);
-    my ($x, $y) = 20, 40;
+    my ($x, $y) = (20, 40);
     for my $l (split "\n", $text) {
         my ($indent, $stuff) = $l =~ /^(\s*)(\S.+)$/;
         $indent ||= "";
         my $x = $x + length($indent) * 18;
         $y += 18;
         next unless $stuff;
-        if ($stuff =~ m{^\s*(\w+)=.+\((0x...(...).)\)}) {
+        if ($stuff =~ m{^\s*([\w-]+)=.+\((0x...(...).)\)}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             my $tup = [ $name, $id, $color ];
@@ -1210,7 +1243,8 @@ get '/hello' => \&hello;
     my $self = shift;
     $self->drawings(["status", shift]);
 };
-    
+
+return 1 if caller;
 use Mojo::Server::Daemon;
 my $daemon = Mojo::Server::Daemon->new;
 $daemon->listen(['http://*:3000']);
