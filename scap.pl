@@ -11,6 +11,10 @@ our %satan;
 my @boxen;
 my @labels;
 our $y = 5;
+sub mapboxen {
+    return (map { [ "boxen", @$_ ] } @boxen),
+           (map { [ "label", @$_ ] } @labels),
+}
 sub linkery {
     my $l = shift;
     my ($parent, $child);
@@ -927,7 +931,7 @@ sub do {
     # make @_ findable and then be
 
 }
-} # }}}
+}
 { package Text;
 # uhm...
 use base 'Stuff';
@@ -935,7 +939,7 @@ sub new { shift; bless { text => shift }, __PACKAGE__; }
 sub text {
     shift->{text}
 }
-}
+} # }}}
 { package Pattern;
 # new(names => @names) # primitive pattern matching
 # are linked to $matches
@@ -989,11 +993,7 @@ sub new {
 }
 # }}}
 
-
 do_stuff() unless caller;
-# DISPLAY
-#displo($wants);
-
 
 sub sum { # {{{
     my $thing = shift;
@@ -1161,7 +1161,9 @@ sub displo {
         my @lines = grep { /\w/ } split "\n", Dump($g);
         say "\n". join "\n", @lines;
     }
-}
+}#}}}
+
+
 sub displow {
     my $object = shift;
     my @lines;
@@ -1178,38 +1180,33 @@ sub displow {
 } # }}}
 
 our $whereto = ["boxen", {}];
-use JSON::XS;
 sub hello {
     my $self = shift;
-    $self->render("text" => encode_json($whereto));
+    $self->render(json => $whereto);
 }
 sub stats {
     my $self = shift;
     $self->drawings(
-        ["status", "There are ".scalar(@links)." links"]
+        ["status", thestatus()]
     );
 }
+sub thestatus { "There are ".scalar(@main::links)." links" }
 
 sub boxen {
     my $self = shift;
-    if (0) {
-        (%satan, @labels, @boxen) = ();
-        $y = 7;
-        for (@links) {
-            linkery($_)
-        }
-    }
+    $DB::single = 1;
     $self->drawings(
         ["clear"],
-        ["status", "There are ".scalar(@links)." links"],
-        (map { [ "boxen", @$_ ] } @boxen),
-        (map { [ "label", @$_ ] } @labels),
+        ["status", thestatus()],
+        mapboxen(),
     );
 }
 
 sub object {
     my $self = shift;
     my $id = $self->param('id');
+    my @timings;
+    push @timings, "start: ".show_delta();
     my $object = get_linked_object_by_memory_address($id);
     unless ($object) {
         return $self->sttus("$id no longer exists!");
@@ -1245,7 +1242,7 @@ sub object {
         my $x = $x + length($indent) * 18;
         $y += 18;
         next unless $stuff;
-        if ($stuff =~ m{^\s*([\w- ]+)=.+\((0x...(...).)\)}) {
+        if ($stuff =~ m{^\s*([\w -]+)=.+\((0x...(...).)\)}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             my $tup = [ $name, $id, $color ];
@@ -1255,9 +1252,12 @@ sub object {
         @grayness = ("etc") x 3 if $stuff =~ /\.\.\.$/;
         push @drawings, [ "label", $x, $y, $stuff, @grayness];
     }
+    push @timings, "enzot: ".show_delta();
     unshift @drawings, 
         ["clear"],
         ["status", "For ". Dump($object)];
+    push @drawings,
+        [label => 10, 20 => join(" ... ", @timings)];
     $self->drawings(@drawings);
 }
 
@@ -1269,7 +1269,7 @@ get '/object' => \&object;
 get '/hello' => \&hello;
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
-    $self->render("text" => encode_json(\@_));
+    $self->render(json => \@_);
 };
 *Mojolicious::Controller::sttus = sub {
     my $self = shift;
