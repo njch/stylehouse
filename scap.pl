@@ -115,6 +115,9 @@ sub new { # name,
     shift;
     my $self = bless {}, __PACKAGE__;
     $self->{name} = shift || "unnamed";
+    while (exists $graphs{$self->{name}}) {
+        $self->{name} =~ s/(\d*)$/($1||1)+1/e;
+    }
     $self->{links} = [];
     $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;

@@ -35,3 +35,9 @@ diag "done ".show_delta();
 #do_stuff();
 
 diag "done ".show_delta();
+
+my $g2 = new Graph();
+my $g3 = new Graph();
+my $g4 = new Graph();
+
+ok(exists($main::graphs{unnamed2}) && exists($main::graphs{unnamed3}), "duplicate names incremented");
