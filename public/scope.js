@@ -55,7 +55,7 @@ function drawstuff () {
 }
 function ob_Over() { // set status line to object id
     $('text#status').text( 'yep: '+$(this).attr('name'));
-    $('.'+$(this).attr('class')).attr('stroke', 'lime').attr('stroke-width', '5px');
+    $('.'+$(this).attr('class')).attr('stroke', 'lime').attr('stroke-width', '10px');
 }
 function ob_Out() {
     $('.'+$(this).attr('class')).attr('stroke', 'none');

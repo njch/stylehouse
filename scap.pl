@@ -146,7 +146,8 @@ sub unlink {
 }
 sub map_nodes {
     my ($self, $code) = @_;
-    for my $n (@{$self->{nodes}}) {
+    my @nodes = @{$self->{nodes}};
+    for my $n (@nodes) {
         $code->($n);
     }
 }
@@ -157,8 +158,8 @@ sub find {
     my ($self, $thing) = @_;
     my @nodes;
     $self->map_nodes(sub {
-        if ($n->{thing} eq $thing) {
-            push @nodes, $thing;
+        if ($_[0]->{thing} eq $thing) {
+            push @nodes, $_[0];
         }
     });
     wantarray ? @nodes : shift @nodes;
@@ -725,7 +726,7 @@ sub hook {
     return unless exists $ex->{$hook};
     $ex->{$hook}->($G, $ex, @_);
 }
-sub travel {
+sub travel { # TRAVEL
     $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
     $ex ||= {};
@@ -740,7 +741,6 @@ sub travel {
         die "DEEP RECURSION!";
     }
 
-
     my @links = getlinks(from => $G);
     hook($ex, "all_links", \@links);
 
@@ -752,15 +752,17 @@ sub travel {
 
     $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
 
+    die if grep { $G ne $_->{0} } @links;
+    my $next_depth = $ex->{depth} + 1;
+    my $previous = $G;
     for my $l (@links) {
         $G = $l->{1};
         $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
     }
-    my $next_depth = $ex->{depth} + 1;
     for my $l (@links) {
-        $ex = { %$ex };
+        my $ex = { %$ex };
         $ex->{via_link} = $l;
-        $ex->{previous} = $G;
+        $ex->{previous} = $previous;
         $ex->{depth} = $next_depth;
         
         #say "TRAVELOONG $l->{0} -> $l->{1}";
@@ -1164,8 +1166,8 @@ sub displow {
         everywhere => sub {
             my ($G, $ex) = @_;
             push @lines,
-                join("", (" " x $ex->{depth})).$ind
-                .summarise($G).$tail;
+                join("", (" " x $ex->{depth}))
+                .summarise($G)
         },
     };
     travel($object, $ex);
@@ -1216,8 +1218,9 @@ sub object {
         everywhere => sub {
             my ($G, $ex) = @_;
             if ($ex->{previous}) {
-                $subset
-                    ->find($ex->{previous})
+                my $found = $subset
+                    ->find($ex->{previous});
+                $found
                     ->spawn($G, $ex->{via_link});
             }
             else {
@@ -1230,16 +1233,16 @@ sub object {
         $_[0]->spawn({no_of_links => scalar @links});
     });
     my $first_node = $subset->first;
-    my $text = displow($subset);
+    my $text = displow($first_node);
 
     my ($x, $y) = (20, 40);
-    for my $l (split "\n", "") { #$text) {
+    for my $l (split "\n", "$text") {
         my ($indent, $stuff) = $l =~ /^(\s*)(\S.+)$/;
         $indent ||= "";
         my $x = $x + length($indent) * 18;
         $y += 18;
         next unless $stuff;
-        if ($stuff =~ m{^\s*([\w-]+)=.+\((0x...(...).)\)}) {
+        if ($stuff =~ m{^\s*([\w- ]+)=.+\((0x...(...).)\)}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             my $tup = [ $name, $id, $color ];
