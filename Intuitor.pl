@@ -71,7 +71,80 @@ sub ensure_intuitions_exist {
     return if $self->linked("Intuition");
 # here we generate some intuitions and their matches 
 # {{{
-    my $int_data = LoadFile("intuition_data.yml");
+    my $int_data = Load(<<YAML);
+--- 
+- 
+  cer: maybe
+  cog: 
+    regex: /
+  match: 
+    object: Text
+  name: filename
+- 
+  cer: probly
+  cog: 
+    regex: "^\\.\\./"
+  match: &1 
+    names: 
+      - filename
+    object: Intuition
+  name: relative
+- 
+  cer: maybe
+  cog: 
+    regex: "^(?!/)"
+  match: *1
+  name: relative
+- 
+  cer: probly
+  cog: 
+    regex: "^/"
+  match: *1
+  name: absolute
+- 
+  cer: is
+  cog: 
+    code: " -e shift "
+  match: *1
+  name: reachable
+- 
+  cer: is
+  cog: 
+    code: " -f shift "
+  match: &2 
+    names: 
+      - reachable
+      - filename
+    object: Intuition
+  name: file
+- 
+  cer: is
+  cog: 
+    code: " -d shift "
+  match: *2
+  name: dir
+- 
+  cer: is
+  cog: 
+    code: " -r shift "
+  match: &3 
+    names: 
+      - file
+    object: Intuition
+  name: readable
+- 
+  cer: is
+  cog: 
+    code: " (stat(shift))[7] "
+  match: *3
+  name: size
+- 
+  cer: probly
+  cog: 
+    regex: "(?i:music)"
+  match: *1
+  name: say-music
+YAML
     for my $intt (@$int_data) {
         my $match = delete $intt->{match} || die "Urph: ". Dump($intt);
         $match = new Pattern(%$match);
