@@ -116,6 +116,7 @@ sub new { # name,
     my $self = bless {}, __PACKAGE__;
     $self->{name} = shift || "unnamed";
     $self->{links} = [];
+    $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;
     return $self
 }
@@ -143,12 +144,33 @@ sub unlink {
         }
     }
 }
+sub map_nodes {
+    my ($self, $code) = @_;
+    for my $n (@{$self->{nodes}}) {
+        $code->($n);
+    }
+}
+sub first {
+    $_[0]->{nodes}->[0]
+}
+sub find {
+    my ($self, $thing) = @_;
+    my @nodes;
+    $self->map_nodes(sub {
+        if ($n->{thing} eq $thing) {
+            push @nodes, $thing;
+        }
+    });
+    wantarray ? @nodes : shift @nodes;
+}
 sub spawn {
     my $self = shift;
-    return Node->new(
+    my $n = Node->new(
         graph => $self,
         thing => shift,
     );
+    push @{$self->{nodes}}, $n; #TODO weaken? garbage collect?
+    return $n;
 }
 package Node;
 use strict;
@@ -738,6 +760,7 @@ sub travel {
     for my $l (@links) {
         $ex = { %$ex };
         $ex->{via_link} = $l;
+        $ex->{previous} = $G;
         $ex->{depth} = $next_depth;
         
         #say "TRAVELOONG $l->{0} -> $l->{1}";
@@ -1137,31 +1160,13 @@ sub displo {
 sub displow {
     my $object = shift;
     my @lines;
-    my $gsay = sub {
-        my ($G, $ex, $ind, $tail) = @_;
-        $ind ||= "";
-        $tail ||= "";
-        push @lines,
-            join("", (" " x $ex->{depth})).$ind
-            .summarise($G).$tail;
-    };
     my $ex = {
-    everywhere => sub {
-        $gsay->(@_)
-    },
-    forward_links => sub {
-        my ($G, $ex, $links) = @_;
-        my @acceptable;
-        for my $l (@$links) {
-            if (0 && "$l->{1}" !~ /^(Text|Intuition)/) {
-                $gsay->($l->{1}, $ex, "", "...");
-            }
-            else {
-                push @acceptable, $l;
-            }
-        }
-        @$links = @acceptable
-    },
+        everywhere => sub {
+            my ($G, $ex) = @_;
+            push @lines,
+                join("", (" " x $ex->{depth})).$ind
+                .summarise($G).$tail;
+        },
     };
     travel($object, $ex);
     return join "\n", @lines;
@@ -1205,9 +1210,30 @@ sub object {
         return $self->sttus("$id no longer exists!");
     }
     my @drawings;
-    my $text = displow($object);
+
+    my $subset = new Graph;
+    travel($object, {
+        everywhere => sub {
+            my ($G, $ex) = @_;
+            if ($ex->{previous}) {
+                $subset
+                    ->find($ex->{previous})
+                    ->spawn($G, $ex->{via_link});
+            }
+            else {
+                $subset->spawn($G);
+            }
+        },
+    });
+    $subset->map_nodes(sub {
+        my @links = $_[0]->links;
+        $_[0]->spawn({no_of_links => scalar @links});
+    });
+    my $first_node = $subset->first;
+    my $text = displow($subset);
+
     my ($x, $y) = (20, 40);
-    for my $l (split "\n", $text) {
+    for my $l (split "\n", "") { #$text) {
         my ($indent, $stuff) = $l =~ /^(\s*)(\S.+)$/;
         $indent ||= "";
         my $x = $x + length($indent) * 18;
