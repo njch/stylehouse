@@ -13,7 +13,7 @@ my @labels;
 our $y = 5;
 sub mapboxen {
     return (map { [ "boxen", @$_ ] } @boxen),
-           (map { [ "label", @$_ ] } @labels),
+           (map { [ "label", @$_ ] } @labels)
 }
 sub linkery {
     my $l = shift;
@@ -1166,14 +1166,13 @@ sub displo {
 
 sub displow {
     my $object = shift;
+    my $ex = shift || {};
     my @lines;
-    my $ex = {
-        everywhere => sub {
-            my ($G, $ex) = @_;
-            push @lines,
-                join("", (" " x $ex->{depth}))
-                .summarise($G)
-        },
+    $ex->{everywhere} = sub {
+        my ($G, $ex) = @_;
+        push @lines,
+            join("", (" " x $ex->{depth}))
+            .summarise($G)
     };
     travel($object, $ex);
     return join "\n", @lines;
@@ -1233,7 +1232,12 @@ sub object {
         $_[0]->spawn({no_of_links => scalar @links});
     });
     my $first_node = $subset->first;
-    my $text = displow($first_node);
+    my $text = displow($first_node,
+        { new_links => sub {
+            my ($G,$ex,$l) = @_;
+            @$l = grep { ! exists $_->{1}->{thing}->{no_of_links} } @$l;
+        } },
+    );
 
     my ($x, $y) = (20, 40);
     for my $l (split "\n", "$text") {

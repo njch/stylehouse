@@ -45,7 +45,6 @@ be => sub {
 
 
 sub END {
-    return;
     my @ints = search("Junk->Text->Intuition");
     my @texts = sort map { "$_->{0}" } @ints;
     my %fin;
