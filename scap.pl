@@ -9,12 +9,7 @@ use v5.10;
 
 our %satan;
 my @boxen;
-my @labels;
 our $y = 5;
-sub mapboxen {
-    return (map { [ "boxen", @$_ ] } @boxen),
-           (map { [ "label", @$_ ] } @labels)
-}
 sub linkery {
     my $l = shift;
     my ($parent, $child);
@@ -32,14 +27,11 @@ sub linkery {
     }
     my $p = $satan{$parent->[1]} ||= do {
         $y += 20;
-        push @labels, [8, $y, @$parent];
+        push @boxen, [label => 8, $y => $parent->[0]];
         [160, $y];
     };
     $p->[0] += 20; # line height/leading... text coorded from bottom of line
-    push @boxen, [
-        18, 18,
-        @$p, @$child,
-    ];
+    push @boxen, [boxen => 18, 18 => @$p, @$child ];
 }
 
 =pod USER INTERFACE
@@ -189,6 +181,8 @@ sub new { # graph => name,
     my $self = bless {}, __PACKAGE__;
     my %params = @_;
     $self->{graph} = $params{graph}->name;
+    my @fields = main::tup($params{fields}); # detupalises?
+    $self->{fields} = \@fields;
     $self->{thing} = $params{thing};
     return $self
 }
@@ -233,7 +227,66 @@ sub links {
         );
     }
 }
+sub thing {
+    shift->{thing}
+}
+package Travel;
+use strict;
+use warnings;
+sub new {
+    shift;
+    my %p = @_;
+    my $self = bless {}, __PACKAGE__;
+    if ($p{ignore}) {
+        $self->ignore($p{ignore});
+    }
+    return $self;
+}
+sub ignore {
+    my $self = shift;
+    push @{$self->{ignore}||=[]}, main::tup(shift);
+}
+sub travel {
+    my $self = shift;
+    $main::G = shift || $main::G;
+    my $ex = {};
+    if ($self->{ignore}) {
+        my @ignores = map {
+            /^->\{(.+)\}$/ ? do {
+                my $k = $1;
+                sub { ref $_[0]->{1} eq "Node"
+                    && $_[0]->{1}->thing->{$k} }
+            } :
+            die "don't know how to ignore a $_"
+        } main::tup($self->{ignore});
+        my $anything_to_ignore = sub {
+            my $l = shift;
+            for (@ignores) {
+                return 1 if $_->($l)
+            }
+            return 0
+        };
+        $ex->{new_links} = sub {
+            my ($G, $ex, $l) = @_;
+            @$l = grep { !$anything_to_ignore->($_) } @$l
+        };
+    }
+    my %params = @_ == 1 ? (everywhere => $_[0]) : @_;
+    while (my ($k, $v) = each %params) {
+        if (exists $ex->{$k}) {
+            $ex->{$k} = sub {
+                $ex->{$k}->(@_);
+                $v->(@_);
+            };
+        }
+        else {
+            $ex->{$k} = $v
+        }
+    }
+    main::travel($main::G, $ex);
+}
         
+
 package main;
 
 my $tracery = new Graph ("tracery");
@@ -757,20 +810,21 @@ sub travel { # TRAVEL
     @links = grep { ! exists $ex->{seen_oids}->{"$_->{1}"} } @links;
     hook($ex, "new_links", \@links);
 
-    $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
+    $ex->{seen_oids}->{"$G"} ||= { summarise($G) => [] }; #\@links };
 
     die if grep { $G ne $_->{0} } @links;
     my $next_depth = $ex->{depth} + 1;
     my $previous = $G;
     for my $l (@links) {
         $G = $l->{1};
-        $ex->{seen_oids}->{"$G"} ||= { summarise($G) => \@links };
+        $ex->{seen_oids}->{"$G"} ||= { summarise($G) => [] };
     }
     for my $l (@links) {
         my $ex = { %$ex };
         $ex->{via_link} = $l;
         $ex->{previous} = $previous;
         $ex->{depth} = $next_depth;
+        $ex->{stack} = [@{$ex->{stack} || []}, summarise($G)];
         
         #say "TRAVELOONG $l->{0} -> $l->{1}";
         $G = $l->{1};
@@ -1197,7 +1251,7 @@ sub boxen {
     $self->drawings(
         ["clear"],
         ["status", thestatus()],
-        mapboxen(),
+        @boxen,
     );
 }
 
@@ -1213,49 +1267,53 @@ sub object {
     my @drawings;
 
     my $subset = new Graph;
-    travel($object, {
-        everywhere => sub {
-            my ($G, $ex) = @_;
-            if ($ex->{previous}) {
-                my $found = $subset
-                    ->find($ex->{previous});
-                $found
-                    ->spawn($G, $ex->{via_link});
-            }
-            else {
-                $subset->spawn($G);
-            }
-        },
+    my $trav = Travel->new(ignore => "->{no_of_links}");
+
+    $trav->travel($object, sub {
+        my ($G, $ex) = @_;
+        if ($ex->{previous}) {
+            my $found = $subset
+                ->find($ex->{previous});
+            $found
+                ->spawn($G, $ex->{via_link});
+        }
+        else {
+            $subset->spawn($G);
+        }
     });
-    $subset->map_nodes(sub {
+
+    my $first_node = $subset->first;
+    $trav->travel($first_node, sub {
         my @links = $_[0]->links;
         $_[0]->spawn({no_of_links => scalar @links});
     });
-    my $first_node = $subset->first;
-    my $text = displow($first_node,
-        { new_links => sub {
-            my ($G,$ex,$l) = @_;
-            @$l = grep { ! exists $_->{1}->{thing}->{no_of_links} } @$l;
-        } },
-    );
 
     my ($x, $y) = (20, 40);
-    for my $l (split "\n", "$text") {
-        my ($indent, $stuff) = $l =~ /^(\s*)(\S.+)$/;
-        $indent ||= "";
-        my $x = $x + length($indent) * 18;
+    my $svgery = sub {
+        my ($G, $ex) = @_;
+        my $x = $x + $ex->{depth} * 18;
         $y += 18;
-        next unless $stuff;
+        my $stuff = summarise($G);
+        $DB::single = 1;
+        my ($linknode) = grep { $_->thing->{no_of_links} } $G->linked;
+        my $no_of_links = $linknode->thing->{no_of_links}
+            if $linknode;
+
         if ($stuff =~ m{^\s*([\w -]+)=.+\((0x...(...).)\)}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             my $tup = [ $name, $id, $color ];
             push @drawings, [ "boxen", 18, 18, $x-20, $y-2, @$tup ];
         }
-        my @grayness;
-        @grayness = ("etc") x 3 if $stuff =~ /\.\.\.$/;
-        push @drawings, [ "label", $x, $y, $stuff, @grayness];
-    }
+        my $set = {};
+        if ($no_of_links > 1) {
+            $set->{'font-weight'} = "bold";
+        }
+        $set->{id} = "$G";
+        push @drawings, [ "label", $x, $y, $stuff, $set];
+    };
+    $trav->travel($first_node, $svgery);
+
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
         ["clear"],
@@ -1265,12 +1323,16 @@ sub object {
     $self->drawings(@drawings);
 }
 
+sub object_info {
+    my $self = shift;
+
 use Mojolicious::Lite;
 get '/' => 'index';
 get '/stats' => \&stats;
 get '/boxen' => \&boxen;
 get '/object' => \&object;
 get '/hello' => \&hello;
+get '/object_info' => \&object_info;
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
     $self->render(json => \@_);
