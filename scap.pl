@@ -1333,12 +1333,12 @@ sub object {
 
         $DB::single = 1;
         my ($name, $id, $color) = $nameidcolor->($stuff);
+        my $oxble_uniq = uniquify_id($ids, "${id}oxble");
+        $ids->{$oxble_uniq} = undef;
         my $settings = sub {
             my $kind = shift;
-            my $settings = { fill => $color, id => "$id-$kind",
-                class => "$color, $id, $id-$kind", name => $id };
-            $settings->{id} = uniquify_id($ids, $settings->{id});
-            $ids->{$settings->{id}} = undef;
+            my $settings = { fill => $color, id => $id,
+                class => "$oxble_uniq, $color, $id", name => $name };
             return $settings;
         };
 
@@ -1378,17 +1378,25 @@ sub object {
                 new => $bitsof->($new, $new_svg),
             };
 
-            my $id = ($nameidcolor->(summarise($new)))[1];
+            my ($oxble_uniq) = $bits->{new}->{boxen}->[-1]->{class}
+                =~ /^(\S+),/;
 
+            my $diffs;
             for my $t ("label", "boxen") {
-                push @animations, ["animate", $id,
-                    {svgTransform => "translate(".
-                        ($bits->{new}->{$t}->[1] - $bits->{old}->{$t}->[1])
-                        ." ".
-                        ($bits->{new}->{$t}->[2] - $bits->{old}->{$t}->[2])
-                    .")"},
-                    300];
+                $diffs->{$t}->{x} =
+                    ($bits->{new}->{$t}->[1]
+                        - $bits->{old}->{$t}->[1]);
+                $diffs->{$t}->{y} =
+                    ($bits->{new}->{$t}->[2]
+                        - $bits->{old}->{$t}->[2]);
             }
+            die "divorcing boxen-labels" unless
+                $diffs->{label}->{x} == $diffs->{boxen}->{x}
+                && $diffs->{label}->{y} == $diffs->{boxen}->{y};
+            my $trans = $diffs->{label}->{x}." ".$diffs->{boxen}->{y};
+            push @animations, ["animate", $oxble_uniq,
+                {svgTransform => "translate($trans)"},
+                300];
         }
         else {
             push @drawings,
