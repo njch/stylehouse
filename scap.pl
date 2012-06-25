@@ -83,6 +83,31 @@ case study of different graphs, as a flow diagram:
       - spacing things out...
     diff that SVG <-> user's SVG
     drawing instructions for the user's SVG canvas
+
+we're almost up to here... not spacing things out though
+want to figure out why classing box + label pairs like 0x9299e08lb
+makes them impossible to find. even if you inspect the element you can
+see class="0x9299e08lb, 9e0, 0x9299e08", but searching for it finds nothing.
+I guess I should take off the 0x... though 0x12 doesn't find 18
+
+anyway...
+there's some fun data analysis to be done with graphing the graph from
+various points and finding patterns in the translation data given to the
+client. if you make things move twice as far as they should things
+start meandering off in groups of likeness. hail the complexity!
+
+some time when can think proper, about object()'s subset graphs and
+svging relating to Nodes... err.. nah missed it good luck.
+aha see for instance $viewed->find($new->thing);
+yes
+
+fields, :field, whatever, could speed things up by partitioning the various
+arrays of nodes. a thing in one field would travel in its own field first,
+then outwards... The Field is given by links...
+the syntax for dealing with this machine needs to imply the sanest
+dont forget this should be the simplest incantation of "fields", turns into
+all sorts of contextuality the further you go up the pyramid...
+this needs guitar playing meditation after a quick briefing?
 =cut
 
 =pod
@@ -98,10 +123,6 @@ those hacks, being datastructure concerns, should be compiled back into CODEs
 the system tests the new tech then just changes some links to hop over to it
 =cut
 
-=pod
-Graph/Nodelry seems to be working.
-make displow()'s travel() generate a new graph, run that into SVGer
-=cut
 sub uniquify_id {
     my ($pool, $string) = @_;
     while (exists $pool->{$string}) {
