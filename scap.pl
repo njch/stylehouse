@@ -31,7 +31,7 @@ sub linkery {
         [160, $y];
     };
     $p->[0] += 20; # line height/leading... text coorded from bottom of line
-    push @boxen, [boxen => 18, 18 => @$p, @$child ];
+    push @boxen, [boxen => @$p, 18, 18, @$child ];
 }
 
 =pod USER INTERFACE
@@ -102,6 +102,13 @@ the system tests the new tech then just changes some links to hop over to it
 Graph/Nodelry seems to be working.
 make displow()'s travel() generate a new graph, run that into SVGer
 =cut
+sub uniquify_id {
+    my ($pool, $string) = @_;
+    while (exists $pool->{$string}) {
+        $string =~ s/(\d*)$/($1||1)+1/e;
+    }
+    return $string
+}
 
 our %graphs;
 package Graph;
@@ -110,10 +117,7 @@ use warnings;
 sub new { # name, 
     shift;
     my $self = bless {}, __PACKAGE__;
-    $self->{name} = shift || "unnamed";
-    while (exists $graphs{$self->{name}}) {
-        $self->{name} =~ s/(\d*)$/($1||1)+1/e;
-    }
+    $self->{name} = main::uniquify_id(\%main::graphs, shift || "unnamed");
     $self->{links} = [];
     $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;
@@ -124,6 +128,8 @@ sub name {
 }
 sub link {
     my ($self, $I, $II, @val) = @_;
+    $I = $self->spawn($I) unless ref $I eq "Node";
+    $II = $self->spawn($II) unless ref $II eq "Node";
     my $l = {
         0 => $I, 1 => $II,
         val => \@val,
@@ -1233,8 +1239,13 @@ sub displow {
 } # }}}
 
 our $whereto = ["boxen", {}];
+$whereto = [object => { id => "Text" }];
+our $viewed;
+our $old_svg;
 sub hello {
     my $self = shift;
+    undef $viewed;
+    $old_svg = {iggy => "the guana"};
     $self->render(json => $whereto);
 }
 sub stats {
@@ -1247,7 +1258,6 @@ sub thestatus { "There are ".scalar(@main::links)." links" }
 
 sub boxen {
     my $self = shift;
-    $DB::single = 1;
     $self->drawings(
         ["clear"],
         ["status", thestatus()],
@@ -1264,10 +1274,15 @@ sub object {
     unless ($object) {
         return $self->sttus("$id no longer exists!");
     }
-    my @drawings;
+
+    if ($viewed && $viewed->first."" eq $object) {
+        return $self->sttus("same diff");
+    }
+    my (@drawings, @animations, @removals);
 
     my $subset = new Graph;
-    my $trav = Travel->new(ignore => "->{no_of_links}");
+    my $trav = Travel->new(ignore =>
+        ["->{no_of_links}", "->{iggy}"]);
 
     $trav->travel($object, sub {
         my ($G, $ex) = @_;
@@ -1283,40 +1298,124 @@ sub object {
     });
 
     my $first_node = $subset->first;
-    $trav->travel($first_node, sub {
-        my @links = $_[0]->links;
-        $_[0]->spawn({no_of_links => scalar @links});
-    });
+    $trav->travel($first_node,
+        all_links => sub {
+            $_[0]->spawn({no_of_links => scalar @{$_[2]}})
+        },
+    );
+
+    my $new_svg = $subset->spawn({iggy => "..."});
+
+    my $nameidcolor = sub {
+        my $summarised = shift;
+        if ($summarised =~
+            m{^(?:Node )?\s*([\w -]+)=.+\((0x...(...).)\)}) {
+            my ($name, $id, $color) = ($1, $2, $3);
+            $name = "$name $id";
+            return ($name, $id, $color);
+        }
+        else {
+            $DB::single = 1;
+        }
+    };
+
 
     my ($x, $y) = (20, 40);
-    my $svgery = sub {
+    my $ids = {};
+    $trav->travel($first_node, sub {
         my ($G, $ex) = @_;
         my $x = $x + $ex->{depth} * 18;
         $y += 18;
         my $stuff = summarise($G);
-        $DB::single = 1;
         my ($linknode) = grep { $_->thing->{no_of_links} } $G->linked;
         my $no_of_links = $linknode->thing->{no_of_links}
             if $linknode;
 
-        if ($stuff =~ m{^\s*([\w -]+)=.+\((0x...(...).)\)}) {
-            my ($name, $id, $color) = ($1, $2, $3);
-            $name = "$name $id";
-            my $tup = [ $name, $id, $color ];
-            push @drawings, [ "boxen", 18, 18, $x-20, $y-2, @$tup ];
-        }
-        my $set = {};
+        $DB::single = 1;
+        my ($name, $id, $color) = $nameidcolor->($stuff);
+        my $settings = sub {
+            my $kind = shift;
+            my $settings = { fill => $color, id => "$id-$kind",
+                class => "$color, $id, $id-$kind", name => $id };
+            $settings->{id} = uniquify_id($ids, $settings->{id});
+            $ids->{$settings->{id}} = undef;
+            return $settings;
+        };
+
+        my $box_set = $settings->("boxen");
+        $new_svg->link($G,
+            [ "boxen", $x-20, $y-2, 18, 18, $box_set ]
+        );
+
+        my $lab_set = $settings->("label");
+        delete $lab_set->{fill};
         if ($no_of_links > 1) {
-            $set->{'font-weight'} = "bold";
+            $lab_set->{'font-weight'} = "bold";
         }
-        $set->{id} = "$G";
-        push @drawings, [ "label", $x, $y, $stuff, $set];
-    };
-    $trav->travel($first_node, $svgery);
+        $new_svg->link($G,
+            [ "label", $x, $y, $stuff, $lab_set]
+        );
+    });
+
+    my $preserve = $subset->spawn({});
+    $trav->travel($first_node, sub {
+        my ($new, $ex) = @_;
+        my $old = $viewed && $viewed->find($new->thing);
+        if ($old) {
+            $preserve->link($old);
+
+            my $bitsof = sub {
+                my ($from, $what) = @_;
+                my $bits = {};
+                for my $b (map { $_->{val}->[0] } $from->links($what)) {
+                    $bits->{$b->[0]} = $b;
+                }
+                return $bits;
+            };
+
+            my $bits = {
+                old => $bitsof->($old, $old_svg),
+                new => $bitsof->($new, $new_svg),
+            };
+
+            my $id = ($nameidcolor->(summarise($new)))[1];
+
+            for my $t ("label", "boxen") {
+                push @animations, ["animate", $id,
+                    {svgTransform => "translate(".
+                        ($bits->{new}->{$t}->[1] - $bits->{old}->{$t}->[1])
+                        ." ".
+                        ($bits->{new}->{$t}->[2] - $bits->{old}->{$t}->[2])
+                    .")"},
+                    300];
+            }
+        }
+        else {
+            push @drawings,
+                map { $_->{val}->[0] } # new: label, boxen
+                $new_svg->links($new);
+        }
+    });
+    if ($viewed) {
+        $trav->travel($viewed->first, sub {
+            my ($G,$ex) = @_;
+            $DB::single = 1;
+            unless ($preserve->links($subset->find($G))) {
+                my $sum = summarise($G);
+                my @tup = $nameidcolor->($sum);
+                my $id = $tup[1];
+                push @removals, ["remove", $id ];
+            }
+        });
+    }
+
+    $viewed = $subset;
+    $old_svg = $new_svg;
+
+    @drawings = (@removals, @animations, @drawings);
 
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
-        ["clear"],
         ["status", "For ". Dump($object)];
     push @drawings,
         [label => 10, 20 => join(" ... ", @timings)];
@@ -1325,6 +1424,8 @@ sub object {
 
 sub object_info {
     my $self = shift;
+    $self->render("404");
+}
 
 use Mojolicious::Lite;
 get '/' => 'index';
@@ -1355,6 +1456,7 @@ __DATA__
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
     <style type="text/css">@import "jquery.svg.css";</style>
     <script type="text/javascript" src="jquery.svg.js"></script>
+    <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
     <body style="background: #897">
     <div id="view" style="background: #fff"></div>

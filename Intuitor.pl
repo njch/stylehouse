@@ -54,7 +54,7 @@ sub END {
         $fin{$ours[0]->{0}->{text}} = \@links;
     }
     use Test::More "no_plan";
-    say Dump(\%fin);
+    #say Dump(\%fin);
     say "There are: ".@main::links." links";
     is_deeply(\%fin, LoadFile("johnfahey.yml"), "John Fahey files discovered")
         || do {

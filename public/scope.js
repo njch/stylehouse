@@ -35,8 +35,7 @@ function drawstuff () {
         }
         else if (inst[0] == 'boxen') {
             var b = inst.slice(1);
-            var rect = svg.rect(b[2], b[3], b[0], b[1],
-                {fill: b[6], id: b[5], class: b[6], name: b[4]});
+            var rect = svg.rect(b[0], b[1], b[2], b[3], b[4]);
             $(rect)
                 .bind('mouseover', ob_Over)
                 .bind('mouseout', ob_Out)
@@ -44,10 +43,21 @@ function drawstuff () {
         }
         else if (inst[0] == 'label') {
             var l = inst.slice(1);
-            var text = svg.text(l[0], l[1] + 12, l[2]);
-            if (l.length == 6) {
-                $(text).attr("fill", "gray");
-            }
+            var text = svg.text(l[0], l[1] + 12, l[2], l[3]);
+            $(text)
+                .bind('click', lab_Click);
+        }
+        else if (inst[0] == 'remove') {
+            var id = inst[1];
+            $('.'+id).each(function (i, t) {
+                svg.remove(t);
+            });
+        }
+        else if (inst[0] == 'animate') {
+            var id = inst[1];
+            var how = inst[2];
+            var timing = inst[3];
+            $('.'+id).animate(how, timing);
         }
 //        var g = svg.group({stroke: 'black', strokeWidth: 2});
     });
@@ -55,15 +65,20 @@ function drawstuff () {
 }
 function ob_Over() { // set status line to object id
     $('text#status').text( 'yep: '+$(this).attr('name'));
-    $('.'+$(this).attr('class')).attr('stroke', 'lime').attr('stroke-width', '10px');
+    $('.'+$(this).attr('name')).attr('stroke', 'lime').attr('stroke-width', '10px');
 }
 function ob_Out() {
-    $('.'+$(this).attr('class')).attr('stroke', 'none');
+    $('.'+$(this).attr('name')).attr('stroke', 'none');
 }
 function ob_Click() { // look up object info
     var id = $(this).attr('id');
     navigate(["object", {id: id}])
 }
+function lab_Click() {
+    var id = $(this).attr('id');
+    ting("object_info", {id: id});
+}
+
 
 function ting(action, param) {
     $.getJSON(action, param, function (json) {
