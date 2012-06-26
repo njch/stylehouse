@@ -199,6 +199,14 @@ sub spawn {
     push @{$self->{nodes}}, $n; #TODO weaken? garbage collect?
     return $n;
 }
+sub DESTROY {
+    my $self = shift;
+    for my $l (@{$self->{links}}) {
+        delete $l->{$_} for keys %$l;
+    }
+    undef $self->{links};
+    undef $self->{nodes};
+};
 package Node;
 use strict;
 use warnings;
@@ -1352,14 +1360,13 @@ sub object {
         my $no_of_links = $linknode->thing->{no_of_links}
             if $linknode;
 
-        $DB::single = 1;
         my ($name, $id, $color) = $nameidcolor->($stuff);
         my $oxble_uniq = uniquify_id($ids, "${id}oxble");
         $ids->{$oxble_uniq} = undef;
         my $settings = sub {
             my $kind = shift;
             my $settings = { fill => $color, id => $id,
-                class => "$oxble_uniq, $color, $id", name => $name };
+                class => "$oxble_uniq $color $id", name => $name };
             return $settings;
         };
 
@@ -1379,45 +1386,59 @@ sub object {
     });
 
     my $preserve = $subset->spawn({});
+    my @actuallies;
     $trav->travel($first_node, sub {
         my ($new, $ex) = @_;
-        my $old = $viewed && $viewed->find($new->thing);
+        my @old = $viewed->find($new->thing) if $viewed;
+        $DB::single = 1;
+        my ($old) = grep { !$_->linked($preserve) } @old;
         if ($old) {
             $preserve->link($old);
 
-            my $bitsof = sub {
-                my ($from, $what) = @_;
-                my $bits = {};
-                for my $b (map { $_->{val}->[0] } $from->links($what)) {
-                    $bits->{$b->[0]} = $b;
+     
+            my @olds = map { $_->{val}->[0] } $old->links($old_svg);
+            die "hmm" if @olds != 2;
+            my @news = map { $_->{val}->[0] } $new->links($new_svg);
+            die "har" if @news != 2;
+
+            my ($oxble_uniq) = split /\s/, $olds[0]->[-1]->{class};
+
+            my $bits;
+            for ([old => @olds], [new => @news]) {
+                my ($e, @d) = @$_;
+                for my $ds (@d) {
+                    $bits->{$e}->{$ds->[0]} = $ds;
                 }
-                return $bits;
-            };
-
-            my $bits = {
-                old => $bitsof->($old, $old_svg),
-                new => $bitsof->($new, $new_svg),
-            };
-
-            my ($oxble_uniq) = $bits->{new}->{boxen}->[-1]->{class}
-                =~ /^(\S+),/;
-
+            }
+            push @actuallies, [
+                $bits->{new}->{boxen}->[-1]->{id}, 'rect',
+                $bits->{new}->{boxen}->[1],
+                $bits->{new}->{boxen}->[2],
+            ];
+            push @actuallies, [
+                $bits->{new}->{label}->[-1]->{id}, 'text',
+                $bits->{new}->{label}->[1],
+                $bits->{new}->{label}->[2],
+            ];
             my $diffs;
             for my $t ("label", "boxen") {
                 $diffs->{$t}->{x} =
                     ($bits->{new}->{$t}->[1]
-                        - $bits->{old}->{$t}->[1]);
+                   - $bits->{old}->{$t}->[1]);
                 $diffs->{$t}->{y} =
                     ($bits->{new}->{$t}->[2]
-                        - $bits->{old}->{$t}->[2]);
+                   - $bits->{old}->{$t}->[2]);
             }
             die "divorcing boxen-labels" unless
                 $diffs->{label}->{x} == $diffs->{boxen}->{x}
                 && $diffs->{label}->{y} == $diffs->{boxen}->{y};
             my $trans = $diffs->{label}->{x}." ".$diffs->{boxen}->{y};
-            push @animations, ["animate", $oxble_uniq,
-                {svgTransform => "translate($trans)"},
-                300];
+            if ($diffs->{label}->{x} != 0 ||
+                $diffs->{boxen}->{y} != 0) {
+                push @animations, ["animate", $oxble_uniq,
+                        {svgTransform => "translate($trans)"},
+                    300];
+            }
         }
         else {
             push @drawings,
@@ -1428,7 +1449,6 @@ sub object {
     if ($viewed) {
         $trav->travel($viewed->first, sub {
             my ($G,$ex) = @_;
-            $DB::single = 1;
             unless ($preserve->links($subset->find($G))) {
                 my $sum = summarise($G);
                 my @tup = $nameidcolor->($sum);
@@ -1437,11 +1457,13 @@ sub object {
             }
         });
     }
-
+    
+    $viewed->DESTROY() if $viewed;
     $viewed = $subset;
     $old_svg = $new_svg;
 
-    @drawings = (@removals, @animations, @drawings);
+    @drawings = (@removals, @animations, @drawings,
+        [ actuallies => \@actuallies ]);
 
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
@@ -1449,6 +1471,12 @@ sub object {
     push @drawings,
         [label => 10, 20 => join(" ... ", @timings)];
     $self->drawings(@drawings);
+}
+
+sub check_object_animations {
+    my $self = shift;
+    say Dump [ $self->param('junk') ];
+    $self->render(500);
 }
 
 sub object_info {
@@ -1462,6 +1490,7 @@ get '/stats' => \&stats;
 get '/boxen' => \&boxen;
 get '/object' => \&object;
 get '/hello' => \&hello;
+get '/check_object_animations' => \&check_object_animations;
 get '/object_info' => \&object_info;
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
