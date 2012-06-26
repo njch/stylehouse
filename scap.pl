@@ -1271,30 +1271,33 @@ our $whereto = ["boxen", {}];
 $whereto = [object => { id => "Text" }];
 our $viewed;
 our $old_svg;
-sub hello {
+our $webbery = new Graph('webbery');
+
+use Mojolicious::Lite;
+get '/hello' => sub {
     my $self = shift;
     undef $viewed;
     $old_svg = {iggy => "the guana"};
     $self->render(json => $whereto);
-}
-sub stats {
+};
+get '/stats' => sub {
     my $self = shift;
     $self->drawings(
         ["status", thestatus()]
     );
-}
+};
 sub thestatus { "There are ".scalar(@main::links)." links" }
 
-sub boxen {
+get '/boxen' => sub {
     my $self = shift;
     $self->drawings(
         ["clear"],
         ["status", thestatus()],
         @boxen,
     );
-}
+};
 
-sub object {
+get '/object' => sub {
     my $self = shift;
     my $id = $self->param('id');
     my @timings;
@@ -1349,13 +1352,14 @@ sub object {
         }
     };
 
+    push @timings, "got subset: ".show_delta();
 
     my ($x, $y) = (30, 40);
     my $ids = {};
     $trav->travel($first_node, sub {
         my ($G, $ex) = @_;
-        my $x = $x + $ex->{depth} * 18;
-        $y += 18;
+        my $x = $x + $ex->{depth} * 20;
+        $y += 20;
         my $stuff = summarise($G);
         my ($linknode) = grep { $_->thing->{no_of_links} } $G->linked;
         my $no_of_links = $linknode->thing->{no_of_links}
@@ -1385,6 +1389,8 @@ sub object {
             [ "label", $x, $y, $stuff, $lab_set]
         );
     });
+    
+    push @timings, "linked svg: ".show_delta();
 
     my $preserve = $subset->spawn({});
     $trav->travel($first_node, sub {
@@ -1453,6 +1459,8 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
         });
     }
     
+    push @timings, "diffed svg: ".show_delta();
+    
     my $clear;
     unless ($viewed) {
         $clear = 1;
@@ -1469,32 +1477,17 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
 
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
-        ["status", "For ". Dump($object)];
+        ["status", "For ". Dump($object) ." ". join(" ... ", @timings)];
     unshift @drawings, ["clear"] if $clear;
-    push @drawings,
-        [label => 10, 20 => join(" ... ", @timings)];
     $self->drawings(@drawings);
-}
+};
 
-sub check_object_animations {
-    my $self = shift;
-    say Dump [ $self->param('junk') ];
-    $self->render(500);
-}
-
-sub object_info {
+get '/object_info' => sub {
     my $self = shift;
     $self->render("404");
-}
+};
 
-use Mojolicious::Lite;
 get '/' => 'index';
-get '/stats' => \&stats;
-get '/boxen' => \&boxen;
-get '/object' => \&object;
-get '/hello' => \&hello;
-get '/check_object_animations' => \&check_object_animations;
-get '/object_info' => \&object_info;
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
     $self->render(json => \@_);
