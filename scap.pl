@@ -1310,6 +1310,7 @@ sub object {
     my (@drawings, @animations, @removals);
 
     my $subset = new Graph;
+
     my $trav = Travel->new(ignore =>
         ["->{no_of_links}", "->{iggy}"]);
 
@@ -1344,12 +1345,12 @@ sub object {
             return ($name, $id, $color);
         }
         else {
-            $DB::single = 1;
+            die "!";
         }
     };
 
 
-    my ($x, $y) = (20, 40);
+    my ($x, $y) = (30, 40);
     my $ids = {};
     $trav->travel($first_node, sub {
         my ($G, $ex) = @_;
@@ -1386,15 +1387,12 @@ sub object {
     });
 
     my $preserve = $subset->spawn({});
-    my @actuallies;
     $trav->travel($first_node, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
-        $DB::single = 1;
         my ($old) = grep { !$_->linked($preserve) } @old;
         if ($old) {
             $preserve->link($old);
-
      
             my @olds = map { $_->{val}->[0] } $old->links($old_svg);
             die "hmm" if @olds != 2;
@@ -1410,16 +1408,13 @@ sub object {
                     $bits->{$e}->{$ds->[0]} = $ds;
                 }
             }
-            push @actuallies, [
-                $bits->{new}->{boxen}->[-1]->{id}, 'rect',
-                $bits->{new}->{boxen}->[1],
-                $bits->{new}->{boxen}->[2],
-            ];
-            push @actuallies, [
-                $bits->{new}->{label}->[-1]->{id}, 'text',
-                $bits->{new}->{label}->[1],
-                $bits->{new}->{label}->[2],
-            ];
+
+=pod
+when we call translate() on it the second time in the next request it
+moves the thing from where it was before translate() in this request...
+it doesn't MOVE things, it just translates... wish I had more docs offline
+=cut
+
             my $diffs;
             for my $t ("label", "boxen") {
                 $diffs->{$t}->{x} =
@@ -1458,16 +1453,24 @@ sub object {
         });
     }
     
-    $viewed->DESTROY() if $viewed;
-    $viewed = $subset;
-    $old_svg = $new_svg;
+    my $clear;
+    unless ($viewed) {
+        $clear = 1;
+        $viewed = $subset;
+        $old_svg = $new_svg;
+    }
+    else {
+        $viewed->DESTROY();
+        undef $viewed;
+        undef $old_svg;
+    }
 
-    @drawings = (@removals, @animations, @drawings,
-        [ actuallies => \@actuallies ]);
+    @drawings = (@removals, @animations, @drawings);
 
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
         ["status", "For ". Dump($object)];
+    unshift @drawings, ["clear"] if $clear;
     push @drawings,
         [label => 10, 20 => join(" ... ", @timings)];
     $self->drawings(@drawings);
