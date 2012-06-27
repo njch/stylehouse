@@ -152,6 +152,8 @@ sub link {
     my ($self, $I, $II, @val) = @_;
     $I = $self->spawn($I) unless ref $I eq "Node";
     $II = $self->spawn($II) unless ref $II eq "Node";
+    die "diff graphs: ".$I->graph->{name}." vs ".$II->graph->{name}.":  ". main::summarise($I) . "\t\t" . main::summarise($II)
+        if $I->graph ne $II->graph;
     my $l = {
         0 => $I, 1 => $II,
         val => \@val,
@@ -265,6 +267,7 @@ sub linked {
     my @linked = uniq map { $_->{1} } $self->links($spec);
     wantarray ? @linked : shift @linked;
 }
+# so also if ga n1 links to gb n2, n2 should find n1 somehow
 sub links {
     my ($self, $spec) = @_;
     local @main::links = @{$self->graph->{links}};
