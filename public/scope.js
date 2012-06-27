@@ -65,10 +65,10 @@ function drawstuff () {
 }
 function ob_Over() { // set status line to object id
     $('text#status').text( 'yep: '+$(this).attr('name'));
-    $('.'+$(this).attr('name')).attr('stroke', 'lime').attr('stroke-width', '10px');
+    $('rect.'+$(this).attr('id')).attr('stroke', 'lime').attr('stroke-width', '10px');
 }
 function ob_Out() {
-    $('.'+$(this).attr('name')).attr('stroke', 'none');
+    $('rect.'+$(this).attr('id')).attr('stroke', 'none');
 }
 function ob_Click() { // look up object info
     var id = $(this).attr('id');

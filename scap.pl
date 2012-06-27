@@ -32,7 +32,8 @@ sub linkery {
         [160, $y];
     };
     $p->[0] += 20; # line height/leading... text coorded from bottom of line
-    push @boxen, [boxen => @$p, 18, 18, @$child ];
+    push @boxen, [boxen => @$p, 18, 18,
+        { fill => $child->[2], name => $child->[0], id => $child->[1] } ];
 }
 
 =pod USER INTERFACE
@@ -363,13 +364,19 @@ sub D {
 package main;
 
 our @findable_objects;
+our $no_more_tracery = 0;
 our $trace = new Graph ("Trace");
 my $trace_head = $trace->spawn(new Tracer("/"));
 push @findable_objects, $trace_head;
 our @tracers = ("b", $trace_head);
 
 my $nore = 0;
+package NotTracer;
+sub new { bless {}, __PACKAGE__ };
+sub D {};
+package main;
 sub trace {
+    return NotTracer->new() if $no_more_tracery;
     $nore++;
     my $t = $tracers[-1]->spawn(new Tracer(@_)) unless $nore > 1;
     $t->{thing}->{n} = @tracers;
@@ -401,7 +408,8 @@ sub get_linked_object_by_memory_address {
         }
     }
     for my $o (@findable_objects) {
-        return $o if "$o" =~ /\Q$id\E/;
+        return $o if "$o" =~ /\Q$id\E/
+            || ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
     }
 }
 =pod ENTROPY FIELD
@@ -449,19 +457,14 @@ sub do_stuff {
     say "$clicks clicks in ". show_delta();
 }
 
-my $dumpstruction = new Stuff("DS"); #{{{
-use JSON::XS;
-$dumpstruction->spawn(
-[ "If", be => sub { "If expr=".($_[0]->{EXPR}||"") } ],
-[ "In", be => sub { "In-".join" ",tup($_[0]->{it}) } ],
-);
+
+
 $code->spawn(
 [ "Click", be => sub { process({Linked => $wants}) } ],
 [ "Linked", be => sub { 
     transmog($G => $G->In->{it}->[0]->linked) } ],
 #[ "Flow", be => sub { $G->{be}->($G) } ],
 );
-
 
 my $patterns = new Stuff("Patterns"); #{{{
 $patterns->link(
@@ -1191,11 +1194,13 @@ sub summarise {
     ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!? $thing";
     ($color) = $id =~ /(...)$/;
     $color ||= "000";
-    if (my ($inst) = $dumpstruction->linked(ref $thing)) {
-        $text = $inst->{be}->($thing);
-    }
-    else {
     given (ref $thing) {
+        when ("If") {
+            $text = "If expr=".($_[0]->{EXPR}||"")
+        }
+        when ("In") {
+            $text = "In-".join" ",tup($_[0]->{it})
+        }
         when ("Text") {
             $text = "$thing: ".$thing->text;
         }
@@ -1231,12 +1236,16 @@ sub summarise {
             $text = "Node ".summarise($thing->{thing});
         }
         when ("Tracer") {
-            $text = "Tracer: ".$json->encode($_[0]->{val});
+            my @bits = map {
+                ref $_ && (ref $_ eq "HASH" || ref $_ eq "ARRAY") ?
+                    $json->encode($_)
+                  : "$_"
+            } @{$_[0]->{val}};
+            $text = "Tracer: ".join "   ", @bits;
         }
         when ("HASH") {
             $text = encode_json($thing);
         }
-    }
     }
     $text ||= "$thing";
     return $text;
@@ -1388,6 +1397,7 @@ use Mojolicious::Lite;
 get '/hello' => sub {
     my $self = shift;
     $webbery->find("clients")->spawn("the"); # cleans/sets things up with when_link ^
+    $no_more_tracery = 1;
     $self->render(json => $whereto);
 };
 get '/stats' => sub {
@@ -1408,7 +1418,8 @@ get '/boxen' => sub {
             say "making $_->{thing} findable..";
             my ($name, $id, $color) = "$_->{thing}" =~ m{^(\w+)=.+\((0x...(...).)\)$};
             $name = "$name $id";
-            ["boxen", 500, 20, 30, 30, $name, $id, $color ]
+            ["boxen", 500, 20, 30, 30,
+                { fill => $color, name => $name, id => $id } ]
         } @findable_objects
     );
 };
@@ -1419,6 +1430,7 @@ get '/object' => sub {
     my @timings;
     push @timings, "start: ".show_delta();
     say "ID ID ID $id";
+    say "@findable_objects";
     die "no id" unless $id;
     my $object = get_linked_object_by_memory_address($id);
     unless ($object) {
