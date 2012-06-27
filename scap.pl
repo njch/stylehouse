@@ -85,12 +85,7 @@ case study of different graphs, as a flow diagram:
     drawing instructions for the user's SVG canvas
 
 we're almost up to here... not spacing things out though
-want to figure out why classing box + label pairs like 0x9299e08lb
-makes them impossible to find. even if you inspect the element you can
-see class="0x9299e08lb, 9e0, 0x9299e08", but searching for it finds nothing.
-I guess I should take off the 0x... though 0x12 doesn't find 18
 
-anyway...
 there's some fun data analysis to be done with graphing the graph from
 various points and finding patterns in the translation data given to the
 client. if you make things move twice as far as they should things
@@ -108,6 +103,12 @@ the syntax for dealing with this machine needs to imply the sanest
 dont forget this should be the simplest incantation of "fields", turns into
 all sorts of contextuality the further you go up the pyramid...
 this needs guitar playing meditation after a quick briefing?
+
+RIGHT so start here:
+Welcome to Wednesday. Make web ids really unique.
+Graph things out so there can be the "graph" and the "toolbar"
+Make a tool graph already, for doing the things object() does.
+the atoms won't be round, they're individual but woven into each other.
 =cut
 
 =pod
@@ -156,6 +157,7 @@ sub link {
         val => \@val,
     };
     push @{$self->{links}}, $l;
+    $self->{when_link} && $self->{when_link}->($self, $l);
 }
 sub unlink {
     my ($self, @to_unlink) = @_;
@@ -225,7 +227,21 @@ sub spawn {
     my $self = shift;
     my $spawn = $self->graph->spawn(shift);
     $self->link($spawn, @_);
+    $spawn->{fields} = $self->{fields} if $self->{fields};
     return $spawn;
+}
+sub field {
+    my $self = shift;
+    $self->{fields} = shift if $_[0];
+    $self->{fields};
+}
+sub trash {
+    my $self = shift;
+    my $field = shift;
+    # TODO travel to the extremities of $field deleting everything...
+    map { $self->unlink($_); $_->DESTROY if ref $_ eq "Graph" }
+    grep { $_->{field} && $_->{field} eq $field} $self->linked;
+    $self->unlink($_) for $self->linked;
 }
 sub graph {
     $main::graphs{$_[0]->{graph}} || die "no graph $_[0]->{graph}";
@@ -290,10 +306,16 @@ sub travel {
             /^->\{(.+)\}$/ ? do {
                 my $k = $1;
                 sub { ref $_[0]->{1} eq "Node"
+                    && ref $_[0]->{1}->thing eq "HASH"
                     && $_[0]->{1}->thing->{$k} }
-            } :
+            } : /^nonref$/ ?
+                sub {
+                    ref $_[0]->{1} eq "Node" || return 0;
+                    !ref $_[0]->{1}->thing }
+              :
             die "don't know how to ignore a $_"
         } main::tup($self->{ignore});
+        say "Ingores: ".join" ", main::tup($self->{ignore});
         my $anything_to_ignore = sub {
             my $l = shift;
             for (@ignores) {
@@ -1094,9 +1116,16 @@ sub sum { # {{{
 }
 sub summarise {
     my $thing = shift;
-    my $text;
-    my ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!?";
-    my ($color) = $id =~ /(...)$/;
+    my ($text, $id, $color);
+    if ($thing =~ /^\w+$/) {
+        $id = "???",
+        $text = "'$thing'";
+        $color = "000";
+        return $thing;
+    }
+    ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!? $thing";
+    ($color) = $id =~ /(...)$/;
+    $color ||= "000";
     if (my ($inst) = $dumpstruction->linked(ref $thing)) {
         $text = $inst->{be}->($thing);
     }
@@ -1269,15 +1298,28 @@ sub displow {
 
 our $whereto = ["boxen", {}];
 $whereto = [object => { id => "Text" }];
-our $viewed;
-our $old_svg;
+
 our $webbery = new Graph('webbery');
+$webbery->spawn("clients");
+$webbery->{when_link} = sub { # this is a unique-or-delete-other
+    my ($self, $l) = @_;
+    return unless $l->{0}->{thing} eq "clients";
+    say "clearing up...";
+    my $new_client = $l->{1};
+    my @client_nodes = $webbery->find("clients")->linked();
+    my @our_old_client =
+        grep { $l->{1} ne $_ }
+        grep { $new_client->{thing} eq $_->{thing} } @client_nodes;
+    die "morenone" if @our_old_client > 1;
+    $our_old_client[0]->trash(":session") if @our_old_client;
+
+    $new_client->field(":session");
+};
 
 use Mojolicious::Lite;
 get '/hello' => sub {
     my $self = shift;
-    undef $viewed;
-    $old_svg = {iggy => "the guana"};
+    $webbery->find("clients")->spawn("the"); # cleans/sets things up with when_link ^
     $self->render(json => $whereto);
 };
 get '/stats' => sub {
@@ -1307,37 +1349,55 @@ get '/object' => sub {
         return $self->sttus("$id no longer exists!");
     }
 
-    if ($viewed && $viewed->first."" eq $object) {
+    # find the VIEWED graph: existing subset and svg info
+    # "the" == unique identifier per /hello (per browse)
+    my @us = grep { $_->{thing} eq "the" } $webbery->find("clients")->linked();
+    die "client fuckery" if @us != 1;
+    my ($us) = @us;
+    my @viewed = grep { ref $_->{thing} eq "Graph"
+                        && $_->{thing}->{name} eq "object-examination" } $us->linked();
+    die "hu1" if @viewed > 1;
+    my ($viewed) = @viewed;
+    $viewed = $viewed->thing if $viewed;
+
+    if ($viewed && $viewed->first->thing."" eq $object) {
         return $self->sttus("same diff");
     }
+
+
     my (@drawings, @animations, @removals);
 
-    my $subset = new Graph;
+
+    # TODO this is a travel()/search() result-as-graph idea
+    my $exam = $us->spawn(Graph->new('object-examination'));
+    $exam = $exam->{thing};
 
     my $trav = Travel->new(ignore =>
-        ["->{no_of_links}", "->{iggy}"]);
+        ["->{no_of_links}", "->{iggy}", "nonref"]);
 
+    my $head;
     $trav->travel($object, sub {
         my ($G, $ex) = @_;
         if ($ex->{previous}) {
-            my $found = $subset
+            my $found = $exam
                 ->find($ex->{previous});
             $found
                 ->spawn($G, $ex->{via_link});
         }
         else {
-            $subset->spawn($G);
+            $head = $exam->spawn($G);
         }
     });
 
-    my $first_node = $subset->first;
-    $trav->travel($first_node,
+
+    # Just an exercise, we can do this more casually in the svg build
+    $trav->travel($head,
         all_links => sub {
             $_[0]->spawn({no_of_links => scalar @{$_[2]}})
         },
     );
 
-    my $new_svg = $subset->spawn({iggy => "..."});
+    my $new_svg = $exam->spawn("svg");
 
     my $nameidcolor = sub {
         my $summarised = shift;
@@ -1348,20 +1408,26 @@ get '/object' => sub {
             return ($name, $id, $color);
         }
         else {
-            die "!";
+            return ("$summarised", "???", "000");
         }
     };
 
-    push @timings, "got subset: ".show_delta();
+    push @timings, "got examined subset: ".show_delta();
+
+    my ($ids) = grep { ref $_->{thing} eq "HASH"
+        && $_->{thing}->{ids} } $us->linked;
+    $ids ||= do { $us->spawn({ids => {}})->{ids} };
 
     my ($x, $y) = (30, 40);
-    my $ids = {};
-    $trav->travel($first_node, sub {
+
+    $trav->travel($head, sub {
         my ($G, $ex) = @_;
         my $x = $x + $ex->{depth} * 20;
         $y += 20;
         my $stuff = summarise($G);
-        my ($linknode) = grep { $_->thing->{no_of_links} } $G->linked;
+
+        my ($linknode) = grep { ref $_->thing eq "HASH"
+            && $_->thing->{no_of_links} } $G->linked;
         my $no_of_links = $linknode->thing->{no_of_links}
             if $linknode;
 
@@ -1382,7 +1448,7 @@ get '/object' => sub {
 
         my $lab_set = $settings->("label");
         delete $lab_set->{fill};
-        if ($no_of_links > 1) {
+        if ($no_of_links && $no_of_links > 1) {
             $lab_set->{'font-weight'} = "bold";
         }
         $new_svg->link($G,
@@ -1392,8 +1458,9 @@ get '/object' => sub {
     
     push @timings, "linked svg: ".show_delta();
 
-    my $preserve = $subset->spawn({});
-    $trav->travel($first_node, sub {
+    my $preserve = $exam->spawn("preserve");
+    my $old_svg = $viewed->find("svg") if $viewed;
+    $trav->travel($head, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
         my ($old) = grep { !$_->linked($preserve) } @old;
@@ -1450,7 +1517,7 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
     if ($viewed) {
         $trav->travel($viewed->first, sub {
             my ($G,$ex) = @_;
-            unless ($preserve->links($subset->find($G))) {
+            unless ($preserve->links($exam->find($G))) {
                 my $sum = summarise($G);
                 my @tup = $nameidcolor->($sum);
                 my $id = $tup[1];
@@ -1464,13 +1531,9 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
     my $clear;
     unless ($viewed) {
         $clear = 1;
-        $viewed = $subset;
-        $old_svg = $new_svg;
     }
     else {
-        $viewed->DESTROY();
-        undef $viewed;
-        undef $old_svg;
+        $viewed->DESTROY(); # can't translate() twice so trash it
     }
 
     @drawings = (@removals, @animations, @drawings);
