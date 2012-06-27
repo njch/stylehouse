@@ -7,6 +7,7 @@ use List::MoreUtils qw"uniq";
 use Scriptalicious;
 use v5.10;
 
+our $json = JSON::XS->new()->convert_blessed(1);
 our %satan;
 my @boxen;
 our $y = 5;
@@ -52,7 +53,6 @@ then we introduce all the debugging features that require some UI
    it should all be able to survive program restart
 right so get educated about SVG
 =cut
-
 
 
 
@@ -153,7 +153,7 @@ sub link {
     $I = $self->spawn($I) unless ref $I eq "Node";
     $II = $self->spawn($II) unless ref $II eq "Node";
     die "diff graphs: ".$I->graph->{name}." vs ".$II->graph->{name}.":  ". main::summarise($I) . "\t\t" . main::summarise($II)
-        if $I->graph ne $II->graph;
+        if $I->graph ne $II->graph && 0;
     my $l = {
         0 => $I, 1 => $II,
         val => \@val,
@@ -224,6 +224,10 @@ sub new { # graph => name,
     $self->{fields} = \@fields;
     $self->{thing} = $params{thing};
     return $self
+}
+sub TO_JSON {
+    my $self = shift;
+    return join "  ", "$self:", %$self
 }
 sub spawn {
     my $self = shift;
@@ -345,11 +349,38 @@ sub travel {
     }
     main::travel($main::G, $ex);
 }
-        
+package Tracer;
+sub new {
+    shift;
+    bless {val => \@_}, __PACKAGE__
+}
+sub D {
+    my $self = shift;
+    return if $self->{nore};
+    @main::tracers = @main::tracers[0..$self->{n}-1];
+}
 
 package main;
 
-my $tracery = new Graph ("tracery");
+our @findable_objects;
+our $trace = new Graph ("Trace");
+my $trace_head = $trace->spawn(new Tracer("/"));
+push @findable_objects, $trace_head;
+our @tracers = ("b", $trace_head);
+
+my $nore = 0;
+sub trace {
+    $nore++;
+    my $t = $tracers[-1]->spawn(new Tracer(@_)) unless $nore > 1;
+    $t->{thing}->{n} = @tracers;
+    push @tracers, $t;
+    say(("  " x @tracers) ." ".$json->encode(\@_));
+    if (@tracers > 100) {
+        die "yay many";
+    }
+    $nore = 0;
+    return $t->{thing};
+}
 
 our $junk = new Stuff("Junk");
 my $wants = new Stuff("Wants");
@@ -366,8 +397,11 @@ sub get_linked_object_by_memory_address {
     my $id = shift;
     for my $l (@links) {
         for (0, 1) {
-            return $l->{$_} if "$l->{$_}" =~ $id;
+            return $l->{$_} if "$l->{$_}" =~ /\Q$id\E/;
         }
+    }
+    for my $o (@findable_objects) {
+        return $o if "$o" =~ /\Q$id\E/;
     }
 }
 =pod ENTROPY FIELD
@@ -490,8 +524,10 @@ on_execution_flow(
         travel($G, { everywhere =>
             sub { 
                 if ($G->linked($code)) {
+                    my $t = main::trace("Being the code $G");
                     say "  Being the code $G";
-                    $G->{be}->()
+                    $G->{be}->();
+                    $t->D;
                 }
             },
         });
@@ -512,7 +548,9 @@ my @flows_in_progress;
 
 sub patterner { # {{{
     my %p = @_;
-    return unless $patterns;
+    $DB::single = 1 if $p{new_link}->{1} =~ /Tracer/;
+    my $t = main::trace("patterner", \%p);
+    $t->D, return unless $patterns;
 
     my $pat_by_o = $patterns->{by_o} ||= {};
     my $in_progress = $patterns->{in_progress} ||= {};
@@ -520,18 +558,22 @@ sub patterner { # {{{
     if (my $l = $p{new_link}) {
         if (my $ol = order_link($patterns, $l)) {
             my $p = $ol->{1};
+            my $t = main::trace("link new pattern", $p);
             my @objects = spec_objects($p);
             for my $o (@objects) {
                 my $ops = $pat_by_o->{$o} ||= [];
                 push @$ops, $p;
             }
+            $t->D;
             #say "Pattern linked as @objects";
         }
         elsif (my $oll = order_link("Pattern", $l)) {
             #say "Linking to patterns: ".Dump($l);
             #$patterns->link($oll->{0});
-            say "Pattern links to $oll->{1}"
+            my $t = main::trace("pattern out there", $oll->{0});
+            main::trace("Pattern links to $oll->{1}")->D
                 if spec_comp("!Flow" => $oll->{1});
+            $t->D;
         }
         else {
             # try and complete patterns related to either object
@@ -547,17 +589,17 @@ sub patterner { # {{{
                 # if it finishes keep all the branches I guess?
                 #   then we'd have all these patterns and all their matches
                 # 
-
+                my $t = main::trace('trying pattern', $p, $progress);
                 my @matching = search($p->{spec});
-                next unless @matching;
+                $t->D, next unless @matching;
                 my @flows = $p->linked("Flow"); #{{{
-                say("no flows on $p"), next unless @flows;
+                $t->D, main::trace("no flows on $p")->D, next unless @flows;
                 my @call_set;
                 for my $r (@matching) {
                     for my $f (@flows) {
                         my $sig = "$r $f";
                         if (grep { $sig eq $_ } @flows_in_progress) {
-                            say "Going to avoid recursing $p->{spec} $sig";
+                            main::trace("Going to avoid recursing $p->{spec} $sig")->D;
                             next;
                         }
                         push @call_set, [ $r, $f ];
@@ -568,10 +610,11 @@ sub patterner { # {{{
                 for (@call_set) {
                     $G = $_->[0];
                     my $f = $_->[1];
-                    say "calling Flow: $f->{name}";
+                    my $t = main::trace("calling Flow: $f->{name}");
                     $f->{be}->($f);
-                    say "OUT!";
+                    $t->D;
                 }
+                $t->D;
                 pop @flows_in_progress for $call_set_n;
             }
         } # }}}
@@ -579,6 +622,7 @@ sub patterner { # {{{
     else {
         die
     }
+    $t->D;
 } # }}}
 # {{{
 # Evaporation and Execution is pattern-based, see $patterns
@@ -606,6 +650,7 @@ sub process {
 # then whateverses match the Instruction by sheer digital willpower...
 
     my $proc = $G = $here->spawn("proc");
+    my $t = main::trace("process", $d, $proc);
     local @entropy_fields = (@entropy_fields, $proc);
     ready($d);
     displo($here);
@@ -614,7 +659,9 @@ sub process {
 
         say "EVAPORATING";
         my $evap = $proc->spawn("Evaporation");
+        my $t = main::trace("Evap", $evap);
         $proc->unlink($evap);
+        $t->D;
 
     }
     say "READY!";
@@ -624,13 +671,16 @@ sub process {
 
         say "EXECUTING";
         my $exec = $proc->spawn("Execution");
+        my $t = main::trace("Exec", $exec);
         $proc->unlink($exec);
+        $t->D;
 
         unless ($proc->{at_maximum_entropy}) {
             say "RUN - GOING BACK TO EVAPORATE";
             goto EVAPORATE;
         }
     }
+    $t->D;
     say "IS DONE!";
     #displo($here);
 }
@@ -638,15 +688,18 @@ sub process {
 sub transmog {
     my ($going, @coming) = @_;
     my $proc = $going->linked("proc");
+    my $t = main::trace("transmog", $proc, $going, \@coming);
     $proc->unlink($going);
     for my $c (@coming) {
         $proc->link($c);
         $c->link($going, "replaces");
     }
+    $t->D;
 }
 
 sub ready {
     my $d = shift;
+    my $t = main::trace("ready");
     if (ref $d eq "ARRAY") {
         $G->spawn("In", it => $d);
         say "Jhurtiiz: ".Dump($G);
@@ -660,6 +713,7 @@ sub ready {
     else {
         $G->spawn("In", it => [$d]);
     }
+    $t->D;
 }
 # }}}
 
@@ -674,6 +728,8 @@ sub getlinks {
     my @links = @links;
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
+
+    main::trace("getlinks", \%p, scalar(@links))->D;
 
     return @links;
 }
@@ -696,6 +752,7 @@ sub getlinks {
 # foreach Flow, foreach junk linked where match $want, be Flow with junk
 sub search { # {{{
     my %p;
+    my $t = main::trace("search", @_);
     $p{spec} = shift if @_ == 1;
     %p = @_ if @_ > 1;
 
@@ -805,6 +862,7 @@ sub search { # {{{
     #say "Hmm: ". join"  ", map { $_->{object} } @spec;
     #say Dump([ \@return ]) if $yeah;
 
+    $t->D;
     return @return
 }
 
@@ -966,6 +1024,10 @@ sub new {
         $self->link($_) for ::tup($ls)
     }
     return $self;
+}
+sub TO_JSON {
+    my $self = shift;
+    return "$self: ".join(" ",%$self);
 }
 sub spawn {
     my $self = shift;
@@ -1168,6 +1230,9 @@ sub summarise {
         when ("Node") {
             $text = "Node ".summarise($thing->{thing});
         }
+        when ("Tracer") {
+            $text = "Tracer: ".$json->encode($_[0]->{val});
+        }
         when ("HASH") {
             $text = encode_json($thing);
         }
@@ -1300,7 +1365,7 @@ sub displow {
 } # }}}
 
 our $whereto = ["boxen", {}];
-$whereto = [object => { id => "Text" }];
+#$whereto = [object => { id => "Text" }];
 
 our $webbery = new Graph('webbery');
 $webbery->spawn("clients");
@@ -1339,6 +1404,12 @@ get '/boxen' => sub {
         ["clear"],
         ["status", thestatus()],
         @boxen,
+        map {
+            say "making $_->{thing} findable..";
+            my ($name, $id, $color) = "$_->{thing}" =~ m{^(\w+)=.+\((0x...(...).)\)$};
+            $name = "$name $id";
+            ["boxen", 500, 20, 30, 30, $name, $id, $color ]
+        } @findable_objects
     );
 };
 
@@ -1347,6 +1418,8 @@ get '/object' => sub {
     my $id = $self->param('id');
     my @timings;
     push @timings, "start: ".show_delta();
+    say "ID ID ID $id";
+    die "no id" unless $id;
     my $object = get_linked_object_by_memory_address($id);
     unless ($object) {
         return $self->sttus("$id no longer exists!");
