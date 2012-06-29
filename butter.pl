@@ -8,6 +8,7 @@ use Scriptalicious;
 use v5.10;
 
 our $json = JSON::XS->new()->convert_blessed(1);
+our $G;
 
 =pod NEW FILE!
 
@@ -76,6 +77,22 @@ the syntax for dealing with this machine needs to imply the sanest
 dont forget this should be the simplest incantation of "fields", turns into
 all sorts of contextuality the further you go up the pyramid...
 this needs guitar playing meditation after a quick briefing?
+
+perhaps this can be thought of as an experiment to determine the nature of field
+a field is the scope of determinism in existence
+
+anyway data flows through algorithms, each datum shouldn't invoke the whole
+shebang once for itself, resources should be bundled together where possible
+for instance finding files as we are and linking them to their directory,
+could be done with a hash much faster than using find() for what it really means
+so it seems the basic Graph/Node/Traveller stuff is supplanted, nay, hot-hacked
+into line with new graphy rules. graph system holds graph, creates another
+graph system, etc. great. so it needs to hack up perl code pretty much first...
+but it's all so well layed out it can't be too much trouble. exciting stuff to
+get on with.
+but yeah, streaming algorithms that can make shortcuts for big datasets.
+the question is how to express this in graph so it scales...
+also start using the server for this bullox.
 =cut
 
 sub uniquify_id {
@@ -86,7 +103,7 @@ sub uniquify_id {
     return $string
 }
 
-our %graphs;
+our %graphs; # {{{
 package Graph;
 use strict;
 use warnings;
@@ -175,7 +192,7 @@ sub new { # graph => name,
     my %params = @_;
     $self->{graph} = $params{graph}->name;
     my @fields = main::tup($params{fields}); # detupalises?
-    $self->{fields} = \@fields;
+    $self->{fields} = \@fields if @fields;
     $self->{thing} = $params{thing};
     return $self
 }
@@ -187,7 +204,7 @@ sub spawn {
     my $self = shift;
     my $spawn = $self->graph->spawn(shift);
     $self->link($spawn, @_);
-    $spawn->{fields} = $self->{fields} if $self->{fields};
+    $spawn->{fields} = [ @{ $self->{fields} } ] if $self->{fields};
     return $spawn;
 }
 sub field {
@@ -313,14 +330,29 @@ sub D {
     return if $self->{nore};
     @main::tracers = @main::tracers[0..$self->{n}-1];
 }
-
+# }}}
 package main;
 
 our @findable_objects;
 our $no_more_tracery = 0;
 our $trace = new Graph ("Trace");
 my $trace_head = $trace->spawn(new Tracer("/"));
-push @findable_objects, $trace_head;
+
+use File::Find;
+start_timer();
+my $fs = new Graph ("filesystem");
+my $fs_head = $fs->spawn("/media/AG");
+find(sub {
+    $DB::single = 1;
+    next if $_ eq "." || $_ =~ /\/\.rockbox/;
+    say $File::Find::name;
+    my $dir = $fs->find($File::Find::dir);
+    $dir || die "no dir... $File::Find::dir";
+    $dir->spawn($File::Find::name);
+}, $fs_head->thing);
+say "AG'd: ". show_delta();
+DumpFile($fs, "ag_fs.yml");
+push @findable_objects, $trace_head, $fs_head;
 our @tracers = ("b", $trace_head);
 
 my $nore = 0;
@@ -342,24 +374,8 @@ sub trace {
     return $t->{thing};
 }
 
-our $junk = new Stuff("Junk");
-my $wants = new Stuff("Wants");
-my $code = new Stuff("Code");
-our @links; our $ln = 0;
-our $G = new Stuff("Nothing");
-our $root = $G;
-our @entropy_fields = ($root);
-sub entropy_increases {
-    die "too many entropy fields" if @entropy_fields > 10;
-    $_->{at_maximum_entropy} = 0 for @entropy_fields;
-}
 sub get_linked_object_by_memory_address {
     my $id = shift;
-    for my $l (@links) {
-        for (0, 1) {
-            return $l->{$_} if "$l->{$_}" =~ /\Q$id\E/;
-        }
-    }
     for my $o (@findable_objects) {
         return $o if "$o" =~ /\Q$id\E/
             || ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
@@ -398,12 +414,12 @@ sub search {
 sub getlinks {
     my %p = @_;
 
-    local @main::links = @{$p{from}->graph->{links}}
+    my @links;
+    @links = @{$p{from}->graph->{links}}
         if $p{from} && ref $p{from} eq "Node";
-    local @main::links = @{$p{to}->graph->{links}}
+    @links = @{$p{to}->graph->{links}}
         if $p{to} && ref $p{to} eq "Node";
 
-    my @links = @links;
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
 
@@ -508,9 +524,6 @@ sub order_link { # also greps for the spec $us
     }
     return ()    
 }
-
-
-
 
 sub summarise {
     my $thing = shift;
@@ -623,17 +636,17 @@ get '/stats' => sub {
 };
 sub thestatus { "There are ".scalar(@main::links)." links" }
 
+my $findable_y = 20;
 get '/boxen' => sub {
     my $self = shift;
     $self->drawings(
         ["clear"],
         ["status", thestatus()],
-        @boxen,
         map {
             say "making $_->{thing} findable..";
-            my ($name, $id, $color) = "$_->{thing}" =~ m{^(\w+)=.+\((0x...(...).)\)$};
+            my ($name, $id, $color) = "$_" =~ m{^(\w+)=.+\((0x...(...).)\)$};
             $name = "$name $id";
-            ["boxen", 500, 20, 30, 30,
+            ["boxen", 500, do { $findable_y += 40 }, 30, 30,
                 { fill => $color, name => $name, id => $id } ]
         } @findable_objects
     );
@@ -676,7 +689,7 @@ get '/object' => sub {
     $exam = $exam->{thing};
 
     my $trav = Travel->new(ignore =>
-        ["->{no_of_links}", "->{iggy}", "nonref"]);
+        ["->{no_of_links}", "->{iggy}"]);
 
     my $head;
     $trav->travel($object, sub {
