@@ -8,6 +8,7 @@ use Scriptalicious;
 use v5.10;
 
 our $json = JSON::XS->new()->convert_blessed(1);
+our $webbery = new Graph('webbery');
 our $G;
 
 =pod NEW FILE!
@@ -93,6 +94,14 @@ get on with.
 but yeah, streaming algorithms that can make shortcuts for big datasets.
 the question is how to express this in graph so it scales...
 also start using the server for this bullox.
+nodes could store links on themselves if it made sense...
+all these slight tweaks in nature "if it makes sense" are obviously coming from
+the world of graph self-analysis and optimisation...
+firstly we should break the /object code into functions which feed each other..
+or the getlinks() code, why not...
+the variables' light cone allows the shape of the algorithm around it to change.
+inputs and outputs, chains of them
+
 =cut
 
 sub uniquify_id {
@@ -333,7 +342,6 @@ sub D {
 # }}}
 package main;
 
-our @findable_objects;
 our $no_more_tracery = 0;
 our $trace = new Graph ("Trace");
 my $trace_head = $trace->spawn(new Tracer("/"));
@@ -341,18 +349,20 @@ my $trace_head = $trace->spawn(new Tracer("/"));
 use File::Find;
 start_timer();
 my $fs = new Graph ("filesystem");
-my $fs_head = $fs->spawn("/media/AG");
+my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
 find(sub {
     $DB::single = 1;
-    next if $_ eq "." || $_ =~ /\/\.rockbox/;
+    return if $_ eq "." || $_ =~ /\/\.rockbox/;
     say $File::Find::name;
     my $dir = $fs->find($File::Find::dir);
     $dir || die "no dir... $File::Find::dir";
     $dir->spawn($File::Find::name);
 }, $fs_head->thing);
 say "AG'd: ". show_delta();
-DumpFile($fs, "ag_fs.yml");
-push @findable_objects, $trace_head, $fs_head;
+DumpFile("ag_fs.yml", $fs);
+my $findable = $webbery->spawn("findable_objects");
+$findable->link($trace_head);
+$findable->link($fs_head);
 our @tracers = ("b", $trace_head);
 
 my $nore = 0;
@@ -376,7 +386,7 @@ sub trace {
 
 sub get_linked_object_by_memory_address {
     my $id = shift;
-    for my $o (@findable_objects) {
+    for my $o ($findable->linked) {
         return $o if "$o" =~ /\Q$id\E/
             || ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
     }
@@ -396,13 +406,6 @@ this could be displayed as a goo smothered graph while foreign
 looking junk looks foreign.
 the interfaces from one field to another must be defined, then,
 to allow them to be useful to each other and not spread indefinitely.
-
-upon ->link, which is represented in graph in the callstack field,
-patterns can be used to behave good with:
- - linking into $code orbitals, instantiating the $code object in
-   the linkees field
-also most fields will want to hide themselves from search() unless
-explicitly spec'd somehow.
 =cut 
 #}}}
 
@@ -430,11 +433,6 @@ sub getlinks {
 
 
 
-=pod
-travel is to channel graph interrogations
-with logic about fields (not going into $code or transmogs)
-
-=cut
 sub hook {
     my ($ex, $hook) = (shift, shift);
     return unless exists $ex->{$hook};
@@ -527,64 +525,15 @@ sub order_link { # also greps for the spec $us
 
 sub summarise {
     my $thing = shift;
-    my ($text, $id, $color);
-    if ($thing =~ /^\w+$/) {
-        $id = "???",
-        $text = "'$thing'";
-        $color = "000";
-        return $thing;
-    }
-    ($id) = $thing =~ /\((.+)\)/ or moan "summarise not a ref!? $thing";
-    ($color) = $id =~ /(...)$/;
-    $color ||= "000";
+    my $text;
     given (ref $thing) {
-        when ("If") {
-            $text = "If expr=".($_[0]->{EXPR}||"")
-        }
-        when ("In") {
-            $text = "In-".join" ",tup($_[0]->{it})
-        }
-        when ("Text") {
-            $text = "$thing: ".$thing->text;
-        }
-        when ("Intuition") {
-            if (my $val = shift) {
-                $text = join "\t", "Intuition",
-                    join(" ",
-                        map { $_ eq "" ? '""' : $_ }
-                        map { !defined($_) ? " " : $_ }
-                        tup($val)
-                    ),
-                    "$thing->{cer} $thing->{name}",
-                    ref $thing->{cog} eq "Regexp" ? "$thing->{cog}" : (),
-            }
-            else {
-                $text = "$thing: $thing->{cer} $thing->{name} $thing->{cog}"
-            }
-        }
-        when ("Intuit") {
-            $text = "$thing: wants: ".summarise($thing->{want});
-        }
-        when ("Pattern") {
-            $text = "$thing: object=$thing->{object} ".
-                ($thing->{names} ? join("+",@{$thing->{names}}):"");
-        }
-        when ("BunchOfCode") {
-            $text = "BunchOfCode $thing->{called}";
-        }
-        when ("In") {
-            $text = "Instruction ".tup($thing->{it});
-        }
         when ("Node") {
-            $text = "Node ".summarise($thing->{thing});
-        }
-        when ("Tracer") {
-            my @bits = map {
-                ref $_ && (ref $_ eq "HASH" || ref $_ eq "ARRAY") ?
-                    $json->encode($_)
-                  : "$_"
-            } @{$_[0]->{val}};
-            $text = "Tracer: ".join "   ", @bits;
+            my $inner = $thing->thing;
+            $text = "N($thing->{graph}) ".summarise($inner);
+            unless (ref $inner eq "Node") {
+                my ($addy) = $thing =~ /(\(0x.{7}\))/;
+                $text .= " $addy"
+            }
         }
         when ("HASH") {
             $text = encode_json($thing);
@@ -604,7 +553,6 @@ sub tup {
 our $whereto = ["boxen", {}];
 #$whereto = [object => { id => "Text" }];
 
-our $webbery = new Graph('webbery');
 $webbery->spawn("clients");
 $webbery->{when_link} = sub { # this is a unique-or-delete-other
     my ($self, $l) = @_;
@@ -648,7 +596,7 @@ get '/boxen' => sub {
             $name = "$name $id";
             ["boxen", 500, do { $findable_y += 40 }, 30, 30,
                 { fill => $color, name => $name, id => $id } ]
-        } @findable_objects
+        } $webbery->find("findable_objects")->linked()
     );
 };
 
@@ -658,8 +606,8 @@ get '/object' => sub {
     my @timings;
     push @timings, "start: ".show_delta();
     say "ID ID ID $id";
-    say "@findable_objects";
     die "no id" unless $id;
+    $DB::single = 1;
     my $object = get_linked_object_by_memory_address($id);
     unless ($object) {
         return $self->sttus("$id no longer exists!");
@@ -718,7 +666,7 @@ get '/object' => sub {
     my $nameidcolor = sub {
         my $summarised = shift;
         if ($summarised =~
-            m{^(?:Node )?\s*([\w -]+)=.+\((0x...(...).)\)}) {
+            m{^(?:N\(.+?\) )*(.+) \((0x...(...).)\)$}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             return ($name, $id, $color);
