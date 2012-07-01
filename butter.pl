@@ -147,8 +147,9 @@ sub unlink {
     my $links = $self->{links};
     for my $i (reverse 0..@$links-1) {
         if (exists $to_unlink{$links->[$i]}) {
+            my $name = $links->[$i];
             splice @$links, $i, 1;
-            delete $to_unlink{$links->[$i]};
+            delete $to_unlink{$name};
             return unless keys %to_unlink;
         }
     }
@@ -267,7 +268,6 @@ sub linked {
 # so also if ga n1 links to gb n2, n2 should find n1 somehow
 sub links {
     my ($self, $spec) = @_;
-    local @main::links = @{$self->graph->{links}};
     if (!$spec) {
         return main::getlinks(from => $self);
     }
@@ -382,10 +382,12 @@ my $findable = $webbery->spawn("findable_objects");
 $findable->link($trace_head);
 $findable->link($fs);
 $findable->link($fs_head);
+$findable->link($webbery);
 
 use File::Slurp;
 my @code = read_file($0);
 my $codes = new Graph("codes");
+$findable->link($codes);
 $codes = $codes->spawn("/object");
 $findable->link($codes);
 while ($_ = shift @code) {
@@ -455,7 +457,7 @@ to allow them to be useful to each other and not spread indefinitely.
 # TODO
 sub search {
     my %p = @_;
-    return getlinks(from => $p{start_from}, spec => $p{spec});
+    return getlinks(from => $p{start_from}, to => $p{spec});
 }
 sub getlinks {
     my %p = @_;
@@ -469,7 +471,7 @@ sub getlinks {
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
 
-    main::trace("getlinks", \%p, scalar(@links))->D;
+#    main::trace("getlinks", \%p, scalar(@links))->D;
 
     return @links;
 }
@@ -683,6 +685,9 @@ get '/object' => sub { # OBJ
     unless ($object) {
         return $self->sttus("$id no longer exists!");
     }
+    unless (ref $object eq "Node") {
+        return $self->sttus("don't like to objectify ".ref $object);
+    }
 
     # find the VIEWED graph: existing subset and svg info
     # "the" == unique identifier per /hello (per browse)
@@ -691,8 +696,11 @@ get '/object' => sub { # OBJ
     my ($us) = @us;
     my @viewed = grep { ref $_->{thing} eq "Graph"
                         && $_->{thing}->{name} =~ "^object-examination" } $us->linked();
-    moan "Viewedes" if @viewed > 1;
-    my ($viewed) = $viewed[-1];
+    my (@etc, $viewed) = @viewed;
+    if (@etc) {
+        moan "Viewedes";
+        $us->unlink($_) for @etc;
+    }
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
     if ($viewed && $viewed->first && $viewed->first->thing."" eq $object) {
@@ -728,11 +736,11 @@ get '/object' => sub { # OBJ
     # Just an exercise, we can do this more casually in the svg build
     $trav->travel($head,
         all_links => sub {
-            $_[0]->spawn({no_of_links => scalar @{$_[2]}})
+            $_[0]->spawn({iggy => 1, no_of_links => scalar @{$_[2]}})
         },
     );
 
-    my $new_svg = $exam->spawn("svg");
+    my $new_svg = $exam->spawn({ iggy => 1 });
 
     my $nameidcolor = sub {
         my $summarised = shift;
@@ -754,13 +762,13 @@ get '/object' => sub { # OBJ
 
     my ($x, $y) = (30, 40);
 
-    my $codes = 0;
+
     $trav->travel($head, sub {
         my ($G, $ex) = @_;
         my $thing = $G->{thing};
         return if $thing eq "svg";
-        return if $codes++ > 10;
-        die "urm" unless ref $thing eq "Node";
+        return if $thing->{iggy};
+        die "urm ".Dump($thing) unless ref $thing eq "Node";
         $thing = $thing->{thing};
 
         my $x = $x + $ex->{depth} * 20;
@@ -816,7 +824,6 @@ get '/object' => sub { # OBJ
         }
     });
     
-
     my $preserve = $exam->spawn("preserve");
     my $old_svg = $viewed->find("svg") if $viewed;
     $trav->travel($head, sub {
@@ -841,12 +848,6 @@ get '/object' => sub { # OBJ
                 }
             }
 
-=pod
-when we call translate() on it the second time in the next request it
-moves the thing from where it was before translate() in this request...
-it doesn't MOVE things, it just translates... wish I had more docs offline
-=cut
-
             my $diffs;
             for my $t ("label", "boxen") {
                 $diffs->{$t}->{x} =
@@ -868,11 +869,12 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
             }
         }
         else {
-            push @drawings,
-                map { $_->{val}->[0] } # new: label, boxen
-                $new_svg->links($new);
+            my @whats = $new_svg->links($new);
+            @whats = map { $_->{val}->[0] } @whats; # new: label, boxen
+            push @drawings, @whats;
         }
     });
+
     if ($viewed) {
         $trav->travel($viewed->first, sub {
             my ($G,$ex) = @_;
