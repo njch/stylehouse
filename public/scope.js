@@ -6,6 +6,7 @@ var svg;
 function heresthesvg (the) {
     svg = the;
     $('#view svg').attr('height', '5000');
+    $.getJSON("width", {width: $('#view').width()}, function () {}); 
     navigate();
 }
 

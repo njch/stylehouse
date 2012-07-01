@@ -104,13 +104,6 @@ inputs and outputs, chains of them
 
 =cut
 
-sub uniquify_id {
-    my ($pool, $string) = @_;
-    while (exists $pool->{$string}) {
-        $string =~ s/(\d*)$/($1||1)+1/e;
-    }
-    return $string
-}
 
 our %graphs; # {{{
 package Graph;
@@ -319,7 +312,12 @@ sub travel {
                 sub {
                     ref $_[0]->{1} eq "Node" || return 0;
                     !ref $_[0]->{1}->thing }
-              :
+              : /^(\w+)$/ ? do {
+                my $w = $1;
+                sub {
+                    $_[0]->{1}->thing eq $w
+                }
+            } :
             die "don't know how to ignore a $_"
         } main::tup($self->{ignore});
         say "Ingores: ".join" ", main::tup($self->{ignore});
@@ -379,12 +377,34 @@ find(sub {
 }, $fs_head->thing);
 say "AG'd: ". show_delta();
 DumpFile("ag_fs.yml", $fs);
+
 my $findable = $webbery->spawn("findable_objects");
 $findable->link($trace_head);
 $findable->link($fs);
 $findable->link($fs_head);
-our @tracers = ("b", $trace_head);
 
+use File::Slurp;
+my @code = read_file($0);
+my $codes = new Graph("codes");
+$codes = $codes->spawn("/object");
+$findable->link($codes);
+while ($_ = shift @code) {
+    next until /get '\/object/;
+    my $chunk;
+    $_ = " ";
+    until (/^\S/) {
+        $chunk .= $_ = shift @code;
+        if (/^\s*$/sm) {
+            $codes->spawn({ code => $chunk });
+            $chunk = "";
+            shift @code until $code[0] =~ /\S/;
+        }
+    }
+}
+
+# {{{
+
+our @tracers = ("b", $trace_head);
 my $nore = 0;
 package NotTracer;
 sub new { bless {}, __PACKAGE__ };
@@ -406,7 +426,6 @@ sub trace {
 
 sub get_linked_object_by_memory_address {
     my $id = shift;
-    $DB::single = 1;
     for my $o ($findable->linked) {
         return $o if "$o" =~ /\Q$id\E/;
         return $o if ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
@@ -432,7 +451,6 @@ looking junk looks foreign.
 the interfaces from one field to another must be defined, then,
 to allow them to be useful to each other and not spread indefinitely.
 =cut 
-#}}}
 
 # TODO
 sub search {
@@ -564,7 +582,12 @@ sub summarise { # SUM
             }
         }
         when ("HASH") {
-            $text = encode_json($thing);
+            if ($thing->{code}) {
+                $text = '$code'
+            }
+            else {
+                $text = encode_json($thing);
+            }
         }
     }
     $text ||= "$thing";
@@ -576,16 +599,25 @@ sub tup {
     my $tuple = shift;
     ref $tuple eq "ARRAY" ? @$tuple : $tuple;
 }
+sub uniquify_id {
+    my ($pool, $string) = @_;
+    while (exists $pool->{$string}) {
+        $string =~ s/(\d*)$/($1||1)+1/e;
+    }
+    return $string
+}
 
-
+# }}}
 our $whereto = ["boxen", {}];
-#$whereto = [object => { id => "Text" }];
+$whereto = [object => { id => "". $codes }];
 
 $findable->link($webbery->spawn("clients"));
+our $us; # client - low priority: sessions
 
 use Mojolicious::Lite;
 get '/hello' => sub {
     my $self = shift;
+
     my $client_id = "the";
 
     # trash the old state
@@ -595,7 +627,7 @@ get '/hello' => sub {
         }
     }
 
-    $webbery->find("clients")->spawn("the");
+    $us = $webbery->find("clients")->spawn("the");
 
     $no_more_tracery = 1;
     $self->render(json => $whereto);
@@ -618,24 +650,35 @@ get '/boxen' => sub {
     );
 };
 
+get '/width' => sub {
+    my $self = shift;
+    my $width = $self->param('width');
+    $us->spawn({width => $width});
+    $self->render(json => "Q");
+};
+
 sub draw_findable {
+    my $findable_y = $findable_y;
+    my ($width) = map { $_->{thing}->{width} }
+        grep { ref $_->{thing} eq "HASH" && $_->{thing}->{width} }
+        $us->linked();
+    my $x = $width - 35;
+
     map {
         say "making $_->{thing} findable..";
         my ($name, $id, $color) = "$_" =~ m{^(\w+)=.+\((0x...(...).)\)$};
         $name = "$name $id";
-        ["boxen", 500, do { $findable_y += 40 }, 30, 30,
-            { fill => $color, name => $name, id => $id } ]
+        my $sum = summarise($_);
+        ["boxen", $x, do { $findable_y += 40 }, 30, 30,
+            { fill => $color, name => $name, id => $id } ],
+        ["label", $x - length($sum)*8.5, $findable_y, $sum ],
     } $webbery->find("findable_objects")->linked()
 }
 
-get '/object' => sub {
+get '/object' => sub { # OBJ
     my $self = shift;
     my $id = $self->param('id');
-    my @timings;
-    push @timings, "start: ".show_delta();
-    say "ID ID ID $id";
     die "no id" unless $id;
-    $DB::single = 1;
     my $object = get_linked_object_by_memory_address($id);
     unless ($object) {
         return $self->sttus("$id no longer exists!");
@@ -665,7 +708,7 @@ get '/object' => sub {
     $exam = $exam->{thing};
 
     my $trav = Travel->new(ignore =>
-        ["->{no_of_links}", "->{iggy}"]);
+        ["->{no_of_links}", "->{iggy}", "findable_objects"]);
 
     my $head;
     $trav->travel($object, sub {
@@ -704,7 +747,6 @@ get '/object' => sub {
         }
     };
 
-    push @timings, "got examined subset: ".show_delta();
 
     my ($ids) = grep { ref $_->{thing} eq "HASH"
         && $_->{thing}->{ids} } $us->linked;
@@ -712,8 +754,15 @@ get '/object' => sub {
 
     my ($x, $y) = (30, 40);
 
+    my $codes = 0;
     $trav->travel($head, sub {
         my ($G, $ex) = @_;
+        my $thing = $G->{thing};
+        return if $thing eq "svg";
+        return if $codes++ > 10;
+        die "urm" unless ref $thing eq "Node";
+        $thing = $thing->{thing};
+
         my $x = $x + $ex->{depth} * 20;
         $y += 20;
         my $stuff = summarise($G);
@@ -730,7 +779,7 @@ get '/object' => sub {
         my $settings = sub {
             my $kind = shift;
             my $settings = { fill => $color, id => $id,
-                class => "$oxble_uniq $color $id", name => $name };
+                class => [$oxble_uniq, $color, $id], name => $name };
             return $settings;
         };
 
@@ -744,12 +793,29 @@ get '/object' => sub {
         if ($no_of_links && $no_of_links > 1) {
             $lab_set->{'font-weight'} = "bold";
         }
-        $new_svg->link($G,
-            [ "label", $x, $y, $stuff, $lab_set]
-        );
+        if (ref $thing eq "HASH" && $thing->{code}) {
+            my $li = 1;
+            for my $line (split /\n/, $thing->{code} ) {
+                my ($ind) = $line =~ /^( +)/;
+                my $x = $x + (length($ind)-4) * 10;
+                my $lab_set = { %$lab_set };
+                $lab_set->{class} = [ @{$lab_set->{class}} ];
+                $lab_set->{class}->[0] .= "-$li";
+                $lab_set->{id} .= "-$li";
+                $new_svg->link($G,
+                    [ "label", $x, $y, $line, $lab_set]
+                );
+                $li++;
+                $y += 20;
+            }
+        }
+        else {
+            $new_svg->link($G,
+                [ "label", $x, $y, $stuff, $lab_set]
+            );
+        }
     });
     
-    push @timings, "linked svg: ".show_delta();
 
     my $preserve = $exam->spawn("preserve");
     my $old_svg = $viewed->find("svg") if $viewed;
@@ -819,7 +885,6 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
         });
     }
     
-    push @timings, "diffed svg: ".show_delta();
     
     my $clear;
     unless ($viewed) {
@@ -832,9 +897,13 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
 
     @drawings = (@removals, @animations, @drawings, draw_findable());
 
-    push @timings, "enzot: ".show_delta();
+    # join together the class="etc etc etc" setting
+    map { ref $_->[-1] eq "HASH" && ref $_->[-1]->{class} eq "ARRAY" && do {
+        $_->[-1]->{class} = join " ", @{ delete $_->[-1]->{class} }
+    } } @drawings;
+
     unshift @drawings, 
-        ["status", "For ". Dump($object) ." ". join(" ... ", @timings)];
+        ["status", "For ". Dump($object)];
     unshift @drawings, ["clear"] if $clear;
     $self->drawings(@drawings);
 };
@@ -847,6 +916,8 @@ get '/object_info' => sub {
 get '/' => 'index';
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
+    use Storable 'dclone';
+    DumpFile("erg", dclone(\@_));
     $self->render(json => \@_);
 };
 *Mojolicious::Controller::sttus = sub {
