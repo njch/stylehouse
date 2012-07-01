@@ -114,6 +114,7 @@ sub uniquify_id {
 
 our %graphs; # {{{
 package Graph;
+use YAML::Syck;
 use strict;
 use warnings;
 sub new { # name, 
@@ -144,9 +145,14 @@ sub link {
 sub unlink {
     my ($self, @to_unlink) = @_;
     my %to_unlink;
-    $to_unlink{"$_"} = undef for @to_unlink;
+    for (@to_unlink) {
+        die "different graphs..".Dump($_)
+            if $_->{1}->{graph} ne $_->{0}->{graph}
+                || $_->{1}->{graph} ne $self->{name}
+    }
+    $to_unlink{$_->{_id} || "$_"} = undef for @to_unlink;
     my $links = $self->{links};
-    for my $i (@$links-1..0) {
+    for my $i (reverse 0..@$links-1) {
         if (exists $to_unlink{$links->[$i]}) {
             splice @$links, $i, 1;
             delete $to_unlink{$links->[$i]};
@@ -174,6 +180,14 @@ sub find {
     });
     wantarray ? @nodes : shift @nodes;
 }
+sub find_id {
+    my ($self, $id) = @_;
+    my $node;
+    eval { $self->map_nodes(sub { "$_[0]" =~ $id && do { $node = $_[0]; } }) };
+    $@ = "" if $node;
+    die $@ if $@;
+    return $node;
+}
 sub spawn {
     my $self = shift;
     my $n = Node->new(
@@ -185,6 +199,7 @@ sub spawn {
 }
 sub DESTROY {
     my $self = shift;
+    say "DESTROY ".main::summarise($self);
     for my $l (@{$self->{links}}) {
         delete $l->{$_} for keys %$l;
     }
@@ -225,9 +240,14 @@ sub trash {
     my $self = shift;
     my $field = shift;
     # TODO travel to the extremities of $field deleting everything...
-    map { $self->unlink($_); $_->DESTROY if ref $_ eq "Graph" }
-    grep { $_->{field} && $_->{field} eq $field} $self->linked;
-    $self->unlink($_) for $self->linked;
+    for my $n ($self->linked) {
+        if ($field && $field ne $n->{field}) {
+            say "$n not in $field";
+            next;
+        }
+        $self->unlink($n);
+        $n->{thing}->DESTROY if ref $n->{thing} eq "Graph";
+    }
 }
 sub graph {
     $main::graphs{$_[0]->{graph}} || die "no graph $_[0]->{graph}";
@@ -236,11 +256,11 @@ sub link {
     $_[0]->graph->link(@_)
 }
 sub unlink {
-    my ($self, $I, @others) = @_;
+    my ($self, @others) = @_;
     # finding all links from $_[1] to $_[2..]s seems silly
     my @links;
     for my $o (@others) {
-        for my $l ($I->links($o)) {
+        for my $l ($self->links($o)) {
             push @links, $l
         }
     }
@@ -351,7 +371,6 @@ start_timer();
 my $fs = new Graph ("filesystem");
 my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
 find(sub {
-    $DB::single = 1;
     return if $_ eq "." || $_ =~ /\/\.rockbox/;
     say $File::Find::name;
     my $dir = $fs->find($File::Find::dir);
@@ -362,6 +381,7 @@ say "AG'd: ". show_delta();
 DumpFile("ag_fs.yml", $fs);
 my $findable = $webbery->spawn("findable_objects");
 $findable->link($trace_head);
+$findable->link($fs);
 $findable->link($fs_head);
 our @tracers = ("b", $trace_head);
 
@@ -386,9 +406,14 @@ sub trace {
 
 sub get_linked_object_by_memory_address {
     my $id = shift;
+    $DB::single = 1;
     for my $o ($findable->linked) {
-        return $o if "$o" =~ /\Q$id\E/
-            || ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
+        return $o if "$o" =~ /\Q$id\E/;
+        return $o if ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
+        if (ref $o->{thing} eq "Graph") {
+
+            return $o->{thing}->find_id($id) || next
+        }
     }
 }
 =pod ENTROPY FIELD
@@ -517,16 +542,19 @@ sub order_link { # also greps for the spec $us
     elsif (spec_comp($us, $l->{1})) {
         return {
             1 => $l->{0}, 0 => $l->{1},
-            val => $l->{val}, id => $l->{id}
+            val => $l->{val}, _id => "$l",
         }
     }
     return ()    
 }
 
-sub summarise {
+sub summarise { # SUM
     my $thing = shift;
     my $text;
     given (ref $thing) {
+        when ("Graph") {
+            $text = "Graph $thing->{name}"
+        }
         when ("Node") {
             my $inner = $thing->thing;
             $text = "N($thing->{graph}) ".summarise($inner);
@@ -553,26 +581,22 @@ sub tup {
 our $whereto = ["boxen", {}];
 #$whereto = [object => { id => "Text" }];
 
-$webbery->spawn("clients");
-$webbery->{when_link} = sub { # this is a unique-or-delete-other
-    my ($self, $l) = @_;
-    return unless $l->{0}->{thing} eq "clients";
-    say "clearing up...";
-    my $new_client = $l->{1};
-    my @client_nodes = $webbery->find("clients")->linked();
-    my @our_old_client =
-        grep { $l->{1} ne $_ }
-        grep { $new_client->{thing} eq $_->{thing} } @client_nodes;
-    die "morenone" if @our_old_client > 1;
-    $our_old_client[0]->trash(":session") if @our_old_client;
-
-    $new_client->field(":session");
-};
+$findable->link($webbery->spawn("clients"));
 
 use Mojolicious::Lite;
 get '/hello' => sub {
     my $self = shift;
-    $webbery->find("clients")->spawn("the"); # cleans/sets things up with when_link ^
+    my $client_id = "the";
+
+    # trash the old state
+    for my $client ($webbery->find("clients")->linked()) {
+        if ($client->{thing} eq $client_id) {
+            $client->trash()
+        }
+    }
+
+    $webbery->find("clients")->spawn("the");
+
     $no_more_tracery = 1;
     $self->render(json => $whereto);
 };
@@ -590,15 +614,19 @@ get '/boxen' => sub {
     $self->drawings(
         ["clear"],
         ["status", thestatus()],
-        map {
-            say "making $_->{thing} findable..";
-            my ($name, $id, $color) = "$_" =~ m{^(\w+)=.+\((0x...(...).)\)$};
-            $name = "$name $id";
-            ["boxen", 500, do { $findable_y += 40 }, 30, 30,
-                { fill => $color, name => $name, id => $id } ]
-        } $webbery->find("findable_objects")->linked()
+        draw_findable(),
     );
 };
+
+sub draw_findable {
+    map {
+        say "making $_->{thing} findable..";
+        my ($name, $id, $color) = "$_" =~ m{^(\w+)=.+\((0x...(...).)\)$};
+        $name = "$name $id";
+        ["boxen", 500, do { $findable_y += 40 }, 30, 30,
+            { fill => $color, name => $name, id => $id } ]
+    } $webbery->find("findable_objects")->linked()
+}
 
 get '/object' => sub {
     my $self = shift;
@@ -616,15 +644,15 @@ get '/object' => sub {
     # find the VIEWED graph: existing subset and svg info
     # "the" == unique identifier per /hello (per browse)
     my @us = grep { $_->{thing} eq "the" } $webbery->find("clients")->linked();
-    die "client fuckery" if @us != 1;
+    die "client fuckery @us" if @us != 1;
     my ($us) = @us;
     my @viewed = grep { ref $_->{thing} eq "Graph"
-                        && $_->{thing}->{name} eq "object-examination" } $us->linked();
-    die "hu1" if @viewed > 1;
-    my ($viewed) = @viewed;
-    $viewed = $viewed->thing if $viewed;
+                        && $_->{thing}->{name} =~ "^object-examination" } $us->linked();
+    moan "Viewedes" if @viewed > 1;
+    my ($viewed) = $viewed[-1];
+    ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
-    if ($viewed && $viewed->first->thing."" eq $object) {
+    if ($viewed && $viewed->first && $viewed->first->thing."" eq $object) {
         return $self->sttus("same diff");
     }
 
@@ -689,6 +717,7 @@ get '/object' => sub {
         my $x = $x + $ex->{depth} * 20;
         $y += 20;
         my $stuff = summarise($G);
+        $stuff =~ s/^N\($exam->{name}\) //;
 
         my ($linknode) = grep { ref $_->thing eq "HASH"
             && $_->thing->{no_of_links} } $G->linked;
@@ -798,9 +827,10 @@ it doesn't MOVE things, it just translates... wish I had more docs offline
     }
     else {
         $viewed->DESTROY(); # can't translate() twice so trash it
+        $viewed_node->unlink($us);
     }
 
-    @drawings = (@removals, @animations, @drawings);
+    @drawings = (@removals, @animations, @drawings, draw_findable());
 
     push @timings, "enzot: ".show_delta();
     unshift @drawings, 
