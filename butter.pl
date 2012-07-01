@@ -387,22 +387,36 @@ $findable->link($webbery);
 use File::Slurp;
 my @code = read_file($0);
 my $codes = new Graph("codes");
+
+my $get_object = graph_code($codes, "get '/object'", @code);
+
 $findable->link($codes);
-$codes = $codes->spawn("/object");
-$findable->link($codes);
-while ($_ = shift @code) {
-    next until /get '\/object/;
-    my $chunk;
-    $_ = " ";
-    until (/^\S/) {
-        $chunk .= $_ = shift @code;
-        if (/^\s*$/sm) {
-            $codes->spawn({ code => $chunk });
-            $chunk = "";
-            shift @code until $code[0] =~ /\S/;
+$findable->link($get_object);
+
+sub graph_code {
+    my ($codes, $section, @code) = @_;
+    my $codes = $codes->spawn($section);
+    while ($_ = shift @code) {
+        next until /\Q$section\E/;
+        my $chunk;
+        $_ = " ";
+        until (/^\S/) {
+            $chunk .= $_ = shift @code;
+            if (/^\s*$/sm) {
+                $codes->spawn({ code => $chunk });
+                $chunk = "";
+                shift @code until $code[0] =~ /\S/;
+            }
         }
     }
+    my $chunk_i = 0;
+    travel($codes, sub {
+        my ($chunk) = @_;
+        $chunk->thing->{i} = $chunk_i++;
+    });
+    return $codes;
 }
+
 
 # {{{
 
@@ -611,7 +625,7 @@ sub uniquify_id {
 
 # }}}
 our $whereto = ["boxen", {}];
-$whereto = [object => { id => "". $codes }];
+$whereto = [object => { id => "". $get_object }];
 
 $findable->link($webbery->spawn("clients"));
 our $us; # client - low priority: sessions
