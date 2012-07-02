@@ -4,6 +4,7 @@ use warnings;
 use YAML::Syck;
 use JSON::XS;
 use List::MoreUtils qw"uniq";
+use File::Slurp;
 use Scriptalicious;
 use v5.10;
 
@@ -347,26 +348,12 @@ sub travel {
     }
     main::travel($main::G, $ex);
 }
-package Tracer;
-sub new {
-    shift;
-    bless {val => \@_}, __PACKAGE__
-}
-sub D {
-    my $self = shift;
-    return if $self->{nore};
-    @main::tracers = @main::tracers[0..$self->{n}-1];
-}
-# }}}
 package main;
-
-our $no_more_tracery = 0;
-our $trace = new Graph ("Trace");
-my $trace_head = $trace->spawn(new Tracer("/"));
+#}}}
 
 use File::Find;
 start_timer();
-my $fs = new Graph ("filesystem");
+my $fs = new Graph ("filesystem"); #{{{
 my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
 find(sub {
     return if $_ eq "." || $_ =~ /\/\.rockbox/;
@@ -376,28 +363,26 @@ find(sub {
     $dir->spawn($File::Find::name);
 }, $fs_head->thing);
 say "AG'd: ". show_delta();
-DumpFile("ag_fs.yml", $fs);
+#DumpFile("ag_fs.yml", $fs); # }}}
 
 my $findable = $webbery->spawn("findable_objects");
-$findable->link($trace_head);
 $findable->link($fs);
 $findable->link($fs_head);
 $findable->link($webbery);
 
-use File::Slurp;
-my @code = read_file($0);
 my $codes = new Graph("codes");
 
-my $get_object = graph_code($codes, "get '/object'", @code);
+my $get_object = graph_code($codes, "get '/object'");
 
 $findable->link($codes);
 $findable->link($get_object);
 
 sub graph_code {
-    my ($codes, $section, @code) = @_;
+    my ($codes, $section) = @_;
+    my @code = read_file($0);
     $codes = $codes->spawn($section);
     while ($_ = shift @code) {
-        next until /\Q$section\E/;
+        next until /^\Q$section\E/;
         my $chunk;
         $_ = " ";
         until (/^\S/) {
@@ -407,6 +392,10 @@ sub graph_code {
                 $chunk = "";
                 shift @code until $code[0] =~ /\S/;
             }
+        }
+        if ($chunk =~ /\S/) {
+            $chunk =~ s/\};?\s*\Z//xsm;
+            $codes->spawn({ code => $chunk });
         }
     }
     my $chunk_i = 0;
@@ -419,26 +408,6 @@ sub graph_code {
 
 
 # {{{
-
-our @tracers = ("b", $trace_head);
-my $nore = 0;
-package NotTracer;
-sub new { bless {}, __PACKAGE__ };
-sub D {};
-package main;
-sub trace {
-    return NotTracer->new() if $no_more_tracery;
-    $nore++;
-    my $t = $tracers[-1]->spawn(new Tracer(@_)) unless $nore > 1;
-    $t->{thing}->{n} = @tracers;
-    push @tracers, $t;
-    say(("  " x @tracers) ." ".$json->encode(\@_));
-    if (@tracers > 100) {
-        die "yay many";
-    }
-    $nore = 0;
-    return $t->{thing};
-}
 
 sub get_linked_object_by_memory_address {
     my $id = shift;
@@ -485,8 +454,6 @@ sub getlinks {
 
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
-
-#    main::trace("getlinks", \%p, scalar(@links))->D;
 
     return @links;
 }
@@ -625,6 +592,9 @@ sub uniquify_id {
 }
 
 # }}}
+
+
+
 our $whereto = ["boxen", {}];
 $whereto = [object => { id => "". $get_object }];
 
@@ -646,7 +616,6 @@ get '/hello' => sub {
 
     $us = $webbery->find("clients")->spawn("the");
 
-    $no_more_tracery = 1;
     $self->render(json => $whereto);
 };
 get '/stats' => sub {
@@ -970,7 +939,7 @@ __DATA__
     <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
     <body style="background: #897; font-family: monospace">
-    <div id="view" style="background: #039"></div>
+    <div id="view" style="background: #239"></div>
     </body>
 </html>
 
