@@ -395,14 +395,14 @@ $findable->link($get_object);
 
 sub graph_code {
     my ($codes, $section, @code) = @_;
-    my $codes = $codes->spawn($section);
+    $codes = $codes->spawn($section);
     while ($_ = shift @code) {
         next until /\Q$section\E/;
         my $chunk;
         $_ = " ";
         until (/^\S/) {
             $chunk .= $_ = shift @code;
-            if (/^\s*$/sm) {
+            if (/^\s*$/sm && $chunk =~ /\S/) {
                 $codes->spawn({ code => $chunk });
                 $chunk = "";
                 shift @code until $code[0] =~ /\S/;
@@ -477,10 +477,11 @@ sub getlinks {
     my %p = @_;
 
     my @links;
-    @links = @{$p{from}->graph->{links}}
-        if $p{from} && ref $p{from} eq "Node";
     @links = @{$p{to}->graph->{links}}
         if $p{to} && ref $p{to} eq "Node";
+    if ($p{from} && ref $p{from} eq "Node") {
+        @links = @{$p{from}->graph->{links}}
+    }
 
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
     @links = grep { main::spec_comp($p{to}, $_) } @links if $p{to};
@@ -649,19 +650,13 @@ get '/hello' => sub {
     $self->render(json => $whereto);
 };
 get '/stats' => sub {
-    my $self = shift;
-    $self->drawings(
-        ["status", thestatus()]
-    );
+    $_[0]->drawings(["status", "hi"]);
 };
-sub thestatus { "There are ".scalar(@main::links)." links" }
-
 my $findable_y = 20;
 get '/boxen' => sub {
     my $self = shift;
     $self->drawings(
         ["clear"],
-        ["status", thestatus()],
         draw_findable(),
     );
 };
@@ -674,21 +669,32 @@ get '/width' => sub {
 };
 
 sub draw_findable {
+    my $self = shift;
     my $findable_y = $findable_y;
     my ($width) = map { $_->{thing}->{width} }
         grep { ref $_->{thing} eq "HASH" && $_->{thing}->{width} }
         $us->linked();
     my $x = $width - 35;
 
-    map {
-        say "making $_->{thing} findable..";
-        my ($name, $id, $color) = "$_" =~ m{^(\w+)=.+\((0x...(...).)\)$};
+    my $svg = $self->svg();
+    my @new;
+    for my $ble ($webbery->find("findable_objects")->linked()) {
+        if ($ble->links($svg) == 2) {
+            say "$ble->{thing} already on screen";
+            next;
+        }
+
+        say "making $ble->{thing} findable..";
+        my ($name, $id, $color) = "$ble" =~ m{^(\w+)=.+\((0x...(...).)\)$};
         $name = "$name $id";
-        my $sum = summarise($_);
-        ["boxen", $x, do { $findable_y += 40 }, 30, 30,
-            { fill => $color, name => $name, id => $id } ],
-        ["label", $x - length($sum)*8.5, $findable_y, $sum ],
-    } $webbery->find("findable_objects")->linked()
+        my $sum = summarise($ble);
+        push @new, grep { $svg->link($ble, $_); 1 }
+            ["boxen", $x, do { $findable_y += 40 }, 30, 30,
+                { fill => $color, name => $name, id => $id, } ],
+            ["label", $x - length($sum)*8.5, $findable_y, $sum,
+                { id => $id } ]
+    }
+    return @new;
 }
 
 get '/object' => sub { # OBJ
@@ -754,7 +760,7 @@ get '/object' => sub { # OBJ
         },
     );
 
-    my $new_svg = $exam->spawn({ iggy => 1 });
+    my $svg = $self->svg;
 
     my $nameidcolor = sub {
         my $summarised = shift;
@@ -806,7 +812,7 @@ get '/object' => sub { # OBJ
         };
 
         my $box_set = $settings->("boxen");
-        $new_svg->link($G,
+        $svg->link($G,
             [ "boxen", $x-20, $y-2, 18, 18, $box_set ]
         );
 
@@ -824,22 +830,21 @@ get '/object' => sub { # OBJ
                 $lab_set->{class} = [ @{$lab_set->{class}} ];
                 $lab_set->{class}->[0] .= "-$li";
                 $lab_set->{id} .= "-$li";
-                $new_svg->link($G,
+                $svg->link($G,
                     [ "label", $x, $y, $line, $lab_set]
                 );
                 $li++;
-                $y += 20;
+                $y += 14;
             }
         }
         else {
-            $new_svg->link($G,
+            $svg->link($G,
                 [ "label", $x, $y, $stuff, $lab_set]
             );
         }
     });
     
     my $preserve = $exam->spawn("preserve");
-    my $old_svg = $viewed->find("svg") if $viewed;
     $trav->travel($head, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
@@ -847,9 +852,9 @@ get '/object' => sub { # OBJ
         if ($old) {
             $preserve->link($old);
      
-            my @olds = map { $_->{val}->[0] } $old->links($old_svg);
+            my @olds = map { $_->{val}->[0] } $old->links($svg);
             die "hmm" if @olds != 2;
-            my @news = map { $_->{val}->[0] } $new->links($new_svg);
+            my @news = map { $_->{val}->[0] } $new->links($svg);
             die "har" if @news != 2;
 
             my ($oxble_uniq) = split /\s/, $olds[0]->[-1]->{class};
@@ -883,7 +888,7 @@ get '/object' => sub { # OBJ
             }
         }
         else {
-            my @whats = $new_svg->links($new);
+            my @whats = $svg->links($new);
             @whats = map { $_->{val}->[0] } @whats; # new: label, boxen
             push @drawings, @whats;
         }
@@ -898,6 +903,7 @@ get '/object' => sub { # OBJ
                 my $id = $tup[1];
                 push @removals, ["remove", $id ];
             }
+            $G->unlink($svg);
         });
     }
     
@@ -911,15 +917,16 @@ get '/object' => sub { # OBJ
         $viewed_node->unlink($us);
     }
 
-    @drawings = (@removals, @animations, @drawings, draw_findable());
+    @drawings = (@removals, @animations, @drawings, draw_findable($self));
 
     # join together the class="etc etc etc" setting
     map { ref $_->[-1] eq "HASH" && ref $_->[-1]->{class} eq "ARRAY" && do {
         $_->[-1]->{class} = join " ", @{ delete $_->[-1]->{class} }
     } } @drawings;
 
+    my $status = "For ". summarise($object);
     unshift @drawings, 
-        ["status", "For ". Dump($object)];
+        ["status", $status];
     unshift @drawings, ["clear"] if $clear;
     $self->drawings(@drawings);
 };
@@ -930,10 +937,14 @@ get '/object_info' => sub {
 };
 
 get '/' => 'index';
+
+*Mojolicious::Controller::svg = sub {
+    my ($svg) = grep { $_->{thing} eq 'svg' } $main::us->linked;
+    $svg ||= $main::us->spawn('svg');
+};
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
-    use Storable 'dclone';
-    DumpFile("erg", dclone(\@_));
+    say scalar(@_)." drawings";
     $self->render(json => \@_);
 };
 *Mojolicious::Controller::sttus = sub {
@@ -952,12 +963,14 @@ __DATA__
 <!doctype html><html>
     <head><title>scap!</title>
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
-    <style type="text/css">@import "jquery.svg.css";</style>
+    <style type="text/css">
+    @import "jquery.svg.css";
+    </style>
     <script type="text/javascript" src="jquery.svg.js"></script>
     <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
-    <body style="background: #897">
-    <div id="view" style="background: #fff"></div>
+    <body style="background: #897; font-family: monospace">
+    <div id="view" style="background: #039"></div>
     </body>
 </html>
 
