@@ -378,14 +378,14 @@ $findable->link($webbery);
 
 my $codes = new Graph("codes");#{{{
 
-my $get_object = graph_code($codes, "get '/object'");
+my $get_object = graph_code($codes, "sub get_object");
 
 $findable->link($codes);
 $findable->link($get_object);
 
 sub graph_code { 
     my ($codes, $section) = @_;
-    my @code = read_file($0);
+    my @code = read_file('butter.pl');
     $codes = $codes->spawn($section);
     while ($_ = shift @code) {
         next until /^\Q$section\E/;
@@ -474,7 +474,6 @@ sub goof {
         confess "heaps of $spec from $start: ".Dump[@ed] if @ed > 1;
         my $ed = shift @ed;
         unless ($ed) {
-            $DB::single = 1;
             eval '$default = '.$default.';';
             confess "interpolating $default: $@" if $@;
             $ed = $start->spawn($default);
@@ -623,7 +622,6 @@ sub summarise { # SUM
                 $text = encode_json($thing)
                 };
                 if ($@) {
-                    $DB::single = 1;
                     $text = Dump($thing);
                     say "but whatever: $@";
                 }
@@ -669,7 +667,8 @@ $findable->link($webbery->spawn("clients"));
 our $us; # client - low priority: sessions
 
 use Mojolicious::Lite;
-get '/hello' => sub {
+get '/hello' => \&hello;
+sub hello {
     my $self = shift;
 
     my $client_id = "the";
@@ -744,7 +743,9 @@ sub happs {
 
 }
 
-get '/object' => sub { # OBJ
+
+get '/object' => \&get_object;
+sub get_object { # OBJ
     my $self = shift;
     my $id = $self->param('id')
         || die "no id";
@@ -821,6 +822,7 @@ get '/object' => sub { # OBJ
         && $_->{thing}->{ids} } $us->linked;
     $ids ||= do { $us->spawn({ids => {}})->{ids} };
 
+    $DB::single = 1;
     my ($x, $y) = (30, 40);
 
 
@@ -979,14 +981,20 @@ get '/object_info' => sub {
 
 get '/' => 'index';
 
-*Mojolicious::Controller::svg = sub {
+*Mojolicious::Controller::svg = \&procure_svg;
+sub procure_svg {
+    $main::us || confess "Argsh";
     my ($svg) = grep { $_->{thing} eq 'svg' } $main::us->linked;
     $svg ||= $main::us->spawn('svg');
 };
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
     say scalar(@_)." drawings";
-    $self->render(json => \@_);
+    use Storable 'dclone';
+    DumpFile("drawings.yml", dclone([@_]));
+#    my $a = LoadFile ( 'srawnbjgs');
+    my $a = [@_];
+    $self->render(json => $a);
 };
 *Mojolicious::Controller::sttus = sub {
     my $self = shift;
