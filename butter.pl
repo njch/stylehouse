@@ -6,6 +6,7 @@ use JSON::XS;
 use List::MoreUtils qw"uniq";
 use File::Slurp;
 use Scriptalicious;
+use Carp 'confess';
 use v5.10;
 
 our $json = JSON::XS->new()->convert_blessed(1);
@@ -127,8 +128,8 @@ sub link {
     my ($self, $I, $II, @val) = @_;
     $I = $self->spawn($I) unless ref $I eq "Node";
     $II = $self->spawn($II) unless ref $II eq "Node";
-    die "diff graphs: ".$I->graph->{name}." vs ".$II->graph->{name}.":  ". main::summarise($I) . "\t\t" . main::summarise($II)
-        if $I->graph ne $II->graph && 0;
+    main::moan "diff graphs: ".$I->graph->{name}." vs ".$II->graph->{name}.":  ". main::summarise($I) . "\t\t" . main::summarise($II)
+        if $I->graph ne $II->graph;
     my $l = {
         0 => $I, 1 => $II,
         val => \@val,
@@ -231,6 +232,12 @@ sub field {
     $self->{fields} = shift if $_[0];
     $self->{fields};
 }
+sub id {
+    my $self = shift;
+    my $id = shift;
+    $id =~ s/^#//;
+    $self->{id} = $id;
+}
 sub trash {
     my $self = shift;
     my $field = shift;
@@ -252,7 +259,6 @@ sub link {
 }
 sub unlink {
     my ($self, @others) = @_;
-    # finding all links from $_[1] to $_[2..]s seems silly
     my @links;
     for my $o (@others) {
         for my $l ($self->links($o)) {
@@ -370,14 +376,14 @@ $findable->link($fs);
 $findable->link($fs_head);
 $findable->link($webbery);
 
-my $codes = new Graph("codes");
+my $codes = new Graph("codes");#{{{
 
 my $get_object = graph_code($codes, "get '/object'");
 
 $findable->link($codes);
 $findable->link($get_object);
 
-sub graph_code {
+sub graph_code { 
     my ($codes, $section) = @_;
     my @code = read_file($0);
     $codes = $codes->spawn($section);
@@ -404,7 +410,7 @@ sub graph_code {
         $chunk->thing->{i} = $chunk_i++;
     });
     return $codes;
-}
+} # }}}
 
 
 # {{{
@@ -421,6 +427,8 @@ sub get_linked_object_by_memory_address {
     }
 }
 =pod ENTROPY FIELD
+some crazy shit. for post-X.
+
 each link is in one field.
 things can be in multiple fields by many links.
 field A thing links to field B thing, link is field A, &? hook.
@@ -458,7 +466,26 @@ sub getlinks {
     return @links;
 }
 
-
+sub goof {
+    my ($start, $etc) = @_;
+    if ($etc =~ /^\+ (#\w+) (\{\})$/) { # + means autovivify
+        my ($spec, $default) = ($1, $2);
+        my @ed = $start->linked($spec);
+        confess "heaps of $spec from $start: ".Dump[@ed] if @ed > 1;
+        my $ed = shift @ed;
+        unless ($ed) {
+            $DB::single = 1;
+            eval '$default = '.$default.';';
+            confess "interpolating $default: $@" if $@;
+            $ed = $start->spawn($default);
+            $ed->id($spec);
+        }
+        return $ed;
+    }
+    else {
+        confess "goof $start: $etc is crazy";
+    }
+}
 
 sub hook {
     my ($ex, $hook) = (shift, shift);
@@ -513,11 +540,30 @@ sub travel { # TRAVEL
 
 sub spec_comp {
     my $spec = shift;
-    my $thing = shift;
+    my $node = shift;
     my $l;
-    if (ref $thing eq "HASH") {
-        $l = $thing;
-        $thing = $l->{1};
+    if (ref $node eq "HASH") {
+        $l = $node;
+        $node = $l->{1};
+    }
+    my $thing = $node->{thing};
+
+    if ($spec =~ /^#(\w+)/) {
+        my $id = $1;
+        return $node->{id} && $node->{id} eq $id;
+    }
+
+    if ($spec =~ /^{(\w+) => (\.\.\.|\{\})\}$/) { # hash with key
+        my $key_exists = $1;
+        my $keys_value = $2;
+        return ref $thing eq "HASH"
+            && exists $thing->{$key_exists};
+    }
+
+    if ($spec =~ /^G\((.+?)\)$/) { # graph name
+        my $name = $1;
+        return ref $thing eq "Graph"
+            && $thing->{name} =~ /$name/;
     }
 
     if ($spec =~ /^l\((\w+)\)$/) {
@@ -529,8 +575,11 @@ sub spec_comp {
 
     return 1 if $spec && $spec eq "*";
     my $not = $spec =~ s/^!//;
-    my $r = ref $spec   ? $thing eq $spec      # an object
-            : $spec     ? ref $thing eq $spec  # package name
+    my $r = ref $spec   ? $node eq $spec      # an object
+            : $spec     ? do {
+                confess "still using non-ref spec: $spec";
+                ref $node eq $spec  # package name
+            }
             : 1;
     return !$r if $not;
     $r;
@@ -570,7 +619,14 @@ sub summarise { # SUM
                 $text = '$code'
             }
             else {
-                $text = encode_json($thing);
+                eval {
+                $text = encode_json($thing)
+                };
+                if ($@) {
+                    $DB::single = 1;
+                    $text = Dump($thing);
+                    say "but whatever: $@";
+                }
             }
         }
     }
@@ -590,6 +646,17 @@ sub uniquify_id {
     }
     return $string
 }
+
+sub displow {
+    my $ob = shift;
+    my @lines;
+    travel($ob, { everywhere => sub {
+        my ($G, $ex) = @_;
+        push @lines, join '', (" ") x $ex->{depth}, summarise($G);
+    } } );
+    return join "\n", map { s/ \(.+?\)$//; $_; } @lines;
+}
+
 
 # }}}
 
@@ -665,24 +732,29 @@ sub draw_findable {
     }
     return @new;
 }
+=pod
+/object means examination gets new id;
+that creates a new limb, to create graph and svg stuff
+then at the end the New SVG Stuff as determined purely by linkage to us->svg
+=cut
+
+sub happs {
+    my ($web, $act) = @_;
+
+
+}
 
 get '/object' => sub { # OBJ
     my $self = shift;
-    my $id = $self->param('id');
-    die "no id" unless $id;
-    my $object = get_linked_object_by_memory_address($id);
-    unless ($object) {
-        return $self->sttus("$id no longer exists!");
-    }
+    my $id = $self->param('id')
+        || die "no id";
+    my $object = get_linked_object_by_memory_address($id)
+        || return $self->sttus("$id no longer exists!");
     unless (ref $object eq "Node") {
         return $self->sttus("don't like to objectify ".ref $object);
     }
 
     # find the VIEWED graph: existing subset and svg info
-    # "the" == unique identifier per /hello (per browse)
-    my @us = grep { $_->{thing} eq "the" } $webbery->find("clients")->linked();
-    die "client fuckery @us" if @us != 1;
-    my ($us) = @us;
     my @viewed = grep { ref $_->{thing} eq "Graph"
                         && $_->{thing}->{name} =~ "^object-examination" } $us->linked();
     my (@etc, $viewed) = @viewed;
