@@ -128,14 +128,12 @@ sub link {
     my ($self, $I, $II, @val) = @_;
     $I = $self->spawn($I) unless ref $I eq "Node";
     $II = $self->spawn($II) unless ref $II eq "Node";
-    main::moan "diff graphs: ".$I->graph->{name}." vs ".$II->graph->{name}.":  ". main::summarise($I) . "\t\t" . main::summarise($II)
-        if $I->graph ne $II->graph;
     my $l = {
         0 => $I, 1 => $II,
-        val => \@val,
+        val => [@val],
     };
     push @{$self->{links}}, $l;
-    $self->{when_link} && $self->{when_link}->($self, $l);
+    main::done_linked($self, $l);
 }
 sub unlink {
     my ($self, @to_unlink) = @_;
@@ -150,11 +148,13 @@ sub unlink {
     for my $i (reverse 0..@$links-1) {
         if (exists $to_unlink{$links->[$i]}) {
             my $name = $links->[$i];
-            splice @$links, $i, 1;
+            my $l = splice @$links, $i, 1;
             delete $to_unlink{$name};
+            main::done_unlinked($self, $l);
             return unless keys %to_unlink;
         }
     }
+
 }
 sub map_nodes {
     my ($self, $code) = @_;
@@ -257,6 +257,7 @@ sub graph {
 sub link {
     $_[0]->graph->link(@_)
 }
+# TODO require node or link input
 sub unlink {
     my ($self, @others) = @_;
     my @links;
@@ -356,6 +357,18 @@ sub travel {
 }
 package main;
 #}}}
+
+sub done_linked {
+    my ($g, $l) = @_;
+    main::moan "diff graphs: ". main::summarise($l->{0}) . "\t\t" . main::summarise($l->{1})
+        if $l->{0}->graph ne $l->{1}->graph;
+
+}
+sub done_unlinked {
+    my ($g, $l) = @_;
+    # could check that $l indended at $n->unlink get $g->unlinked (here)
+}
+
 
 use File::Find;
 start_timer();

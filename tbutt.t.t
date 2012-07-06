@@ -77,9 +77,11 @@ my $del = $g1n1->linked("{del => ...}");
 is $del->thing->{del}, "rigor", "del => rigor";
 }; # }}}
 
+say "";
+say "";
 
 our ($sttus, $drawings);
-package NonMojo;
+package NonMojo; # {{{
 use strict;
 use warnings;
 sub new { shift; bless {@_} => "NonMojo" }
@@ -100,7 +102,7 @@ sub moje {
     $sttus = undef;
     $drawings = undef;
     NonMojo->new(param => {id => shift});
-}
+} # }}}
 do {
     my $id = $main::whereto->[1]->{id};
     say "ID: $id";
