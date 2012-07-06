@@ -391,7 +391,7 @@ $findable->link($webbery);
 
 my $codes = new Graph("codes");#{{{
 
-my $get_object = graph_code($codes, "sub get_object");
+my $get_object = graph_code($codes, "sub graph_code");
 
 $findable->link($codes);
 $findable->link($get_object);
@@ -400,6 +400,7 @@ sub graph_code {
     my ($codes, $section) = @_;
     my @code = read_file('butter.pl');
     $codes = $codes->spawn($section);
+
     while ($_ = shift @code) {
         next until /^\Q$section\E/;
         my $chunk;
@@ -417,11 +418,13 @@ sub graph_code {
             $codes->spawn({ code => $chunk });
         }
     }
+
     my $chunk_i = 0;
     travel($codes, sub {
         my ($chunk) = @_;
         $chunk->thing->{i} = $chunk_i++;
     });
+
     return $codes;
 } # }}}
 
@@ -881,7 +884,7 @@ sub get_object { # OBJ
             my $li = 1;
             for my $line (split /\n/, $thing->{code} ) {
                 my ($ind) = $line =~ /^( +)/;
-                my $x = $x + (length($ind)-4) * 10;
+                my $x = $x + (length($ind || "")-4) * 10;
                 my $lab_set = { %$lab_set };
                 $lab_set->{class} = [ @{$lab_set->{class}} ];
                 $lab_set->{class}->[0] .= "-$li";
