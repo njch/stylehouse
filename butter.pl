@@ -367,7 +367,7 @@ package main;
 sub done_linked {
     my ($g, $l) = @_;
     main::moan "diff graphs: ". main::summarise($l->{0}) . "\t\t" . main::summarise($l->{1})
-        if $l->{0}->graph ne $l->{1}->graph;
+        if $l->{0}->graph ne $l->{1}->graph && 0;
 
 }
 sub done_unlinked {
@@ -595,7 +595,7 @@ sub spec_comp {
     }
     my $thing = $node->{thing};
 
-    if ($spec =~ /^#(\w+)/) {
+    if ($spec =~ /^#(.+)$/) {
         my $id = $1;
         return $node->{id} && $node->{id} eq $id;
     }
@@ -798,6 +798,8 @@ sub get_object { # OBJ
     my $id = $self->param('id')
         || die "no id";
 
+    $id =~ s/-(l|b)\d*$//; # id is #..., made uniqe
+
     my $object = get_linked_object_by_memory_address($id)
         || return $self->sttus("$id no longer exists!");
 
@@ -805,12 +807,12 @@ sub get_object { # OBJ
         || return $self->sttus("don't like to objectify ".ref $object);
 
     # find the VIEWED graph: existing subset and svg info
-    my @viewed = $us->linked("#object-examination");
-    my (@etc, $viewed) = reverse @viewed;
+    my ($viewed, @etc) = $us->linked("#object-examination");
     if (@etc) {
-        moan "Viewedes";
+        moan "too many views...";
         $us->unlink($_) for @etc;
     }
+    say $viewed ? "got previous view" : "no view";
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
     if ($viewed && $viewed->first && $viewed->first->thing."" eq $object) {
@@ -862,6 +864,12 @@ sub get_object { # OBJ
     };
 
     my $ids = goof($us, "+ #ids {}")->thing;
+    my $getid = sub {
+        my $id = uniquify_id($ids, shift);
+        $ids->{$id} = undef;
+        return $id;
+    };
+
 
     my ($x, $y) = (30, 40);
 
@@ -885,44 +893,50 @@ sub get_object { # OBJ
             if $linknode;
 
         my ($name, $id, $color) = $nameidcolor->($stuff);
-        my $oxble_uniq = uniquify_id($ids, "${id}oxble");
-        $ids->{$oxble_uniq} = undef;
-        my $settings = sub {
-            my $kind = shift;
-            my $settings = { fill => $color, id => $id,
-                class => [$oxble_uniq, $color, $id], name => $name };
-            return $settings;
-        };
 
-        my $box_set = $settings->("boxen");
         $svg->link($G,
-            [ "boxen", $x-20, $y-2, 18, 18, $box_set ]
+            [ "boxen", $x-20, $y-2, 18, 18, 
+            {
+                id => $getid->("$id-b"),
+                fill => $color,
+                class => "$color $id",
+                name => $name,
+            }]
         );
 
-        my $lab_set = $settings->("label");
-        delete $lab_set->{fill};
+        my %label_set_etc;
         if ($no_of_links && $no_of_links > 1) {
-            $lab_set->{'font-weight'} = "bold";
+            $label_set_etc{'font-weight'} = "bold";
         }
         if (ref $thing eq "HASH" && $thing->{code}) {
             my $li = 1;
             for my $line (split /\n/, $thing->{code} ) {
                 my ($ind) = $line =~ /^( +)/;
                 my $x = $x + (length($ind || "")-4) * 10;
-                my $lab_set = { %$lab_set };
-                $lab_set->{class} = [ @{$lab_set->{class}} ];
-                $lab_set->{class}->[0] .= "-$li";
-                $lab_set->{id} .= "-$li";
+
                 $svg->link($G,
-                    [ "label", $x, $y, $line, $lab_set]
+                    [ "label", $x, $y, $line,
+                    {
+                        id => $getid->("$id-l"),
+                        class => "$color $id",
+                        name => $name,
+                        %label_set_etc,
+                    }]
                 );
+
                 $li++;
                 $y += 14;
             }
         }
         else {
             $svg->link($G,
-                [ "label", $x, $y, $stuff, $lab_set]
+                [ "label", $x, $y, $stuff,
+                {
+                    id => $getid->("$id-l"),
+                    class => "$color $id",
+                    name => $name,
+                    %label_set_etc,
+                }]
             );
         }
     });
@@ -935,39 +949,48 @@ sub get_object { # OBJ
         if ($old) {
             $preserve->link($old);
      
-            my @olds = map { $_->{val}->[0] } $old->links($svg);
-            die "hmm" if @olds != 2;
-            my @news = map { $_->{val}->[0] } $new->links($svg);
-            die "har" if @news != 2;
-
-            my ($oxble_uniq) = split /\s/, $olds[0]->[-1]->{class};
-
-            my $bits;
-            for ([old => @olds], [new => @news]) {
-                my ($e, @d) = @$_;
-                for my $ds (@d) {
-                    $bits->{$e}->{$ds->[0]} = $ds;
-                }
+            my @olds = map { $_->{val}->[0] } $svg->links($old);
+            die "hmm" if @olds != 2
+                && $old->thing->{graph} ne "codes"; # lines of code spawn into labels each
+            my @news = map { $_->{val}->[0] } $svg->links($new);
+            die "har" if @news != 2
+                && $new->thing->{graph} ne "codes"; # lines of code spawn into labels each
+            die "diff" if @news != @olds;
+            
+            my @diffs;
+            while (@olds) {
+                my $old = shift @olds;
+                my $new = shift @news;
+                die "WHAT\n".Dump[$old, $new]
+                    if $old->[-1]->{class} ne $new->[-1]->{class}
+                    || $old->[0] eq "label" && $old->[3] ne $new->[3]; # lable text
+                # ids are l1-17 on old, l18-34 on new... post-x could handle
+                # make sure we can keep finding them:
+                $new->[-1]->{id} = $old->[-1]->{id};
+                push @diffs, {
+                    wassa => $old->[0],
+                    wasclass => $old->[-1]->{class},
+                    id => $old->[-1]->{id},
+                    x => $new->[1] - $old->[1],
+                    y => $new->[2] - $old->[2],
+                };
             }
 
-            my $diffs;
-            for my $t ("label", "boxen") {
-                $diffs->{$t}->{x} =
-                    ($bits->{new}->{$t}->[1]
-                   - $bits->{old}->{$t}->[1]);
-                $diffs->{$t}->{y} =
-                    ($bits->{new}->{$t}->[2]
-                   - $bits->{old}->{$t}->[2]);
+            my (%by_xy, %by_id);
+            for (@diffs) {
+                $by_xy{"$_->{x},$_->{y}"} = undef;
+                $by_id{$_->{id}}++;
             }
-            die "divorcing boxen-labels" unless
-                $diffs->{label}->{x} == $diffs->{boxen}->{x}
-                && $diffs->{label}->{y} == $diffs->{boxen}->{y};
-            my $trans = $diffs->{label}->{x}." ".$diffs->{boxen}->{y};
-            if ($diffs->{label}->{x} != 0 ||
-                $diffs->{boxen}->{y} != 0) {
-                push @animations, ["animate", $oxble_uniq,
-                        {svgTransform => "translate($trans)"},
-                    300];
+            die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
+            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
+            
+            if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
+                push @animations,
+                    map {
+                        ["animate", $_->{id},
+                        {svgTransform => "translate($_->{x} $_->{y})"},
+                        300];
+                    } @diffs
             }
         }
         else {
@@ -993,6 +1016,7 @@ sub get_object { # OBJ
     
     my $clear;
     unless ($viewed) {
+        say "gonna clear screen";
         $clear = 1;
     }
     else {

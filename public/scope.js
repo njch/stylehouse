@@ -58,7 +58,8 @@ function drawstuff () {
             var id = inst[1];
             var how = inst[2];
             var timing = inst[3];
-            $('.'+id).animate(how, timing);
+            console.log(how);
+            $('#'+id).animate(how, timing);
         }
 //        var g = svg.group({stroke: 'black', strokeWidth: 2});
     });
