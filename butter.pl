@@ -1020,8 +1020,10 @@ sub get_object { # OBJ
         $clear = 1;
     }
     else {
-        $viewed->DESTROY(); # can't translate() twice so trash it
-        $viewed_node->unlink($us);
+        # can't translate() twice so trash it
+        $viewed->DESTROY(); 
+        $exam->DESTROY();
+        $us->unlink("#object-examination");
     }
 
     @drawings = (@removals, @animations, @drawings, draw_findable($self));
