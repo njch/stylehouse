@@ -201,6 +201,7 @@ sub DESTROY {
     }
     undef $self->{links};
     undef $self->{nodes};
+    undef $main::graphs{$self->{name}};
 };
 package Node;
 use strict;
@@ -281,8 +282,9 @@ sub links {
     }
     else {
         return main::search(
-            start_from => $self,
+            start=> $self,
             spec => $spec,
+            want => "links",
         );
     }
 }
@@ -325,10 +327,14 @@ sub travel {
                 sub {
                     $_[0]->{1}->thing eq $w
                 }
+            } : /^#(.+)$/ ? do {
+                my $id = $1;
+                sub {
+                    $_[0]->{1}->{id} && $_[0]->{1}->{id} eq $id
+                }
             } :
             die "don't know how to ignore a $_"
         } main::tup($self->{ignore});
-        say "Ingores: ".join" ", main::tup($self->{ignore});
         my $anything_to_ignore = sub {
             my $l = shift;
             for (@ignores) {
@@ -367,6 +373,7 @@ sub done_linked {
 sub done_unlinked {
     my ($g, $l) = @_;
     # could check that $l indended at $n->unlink get $g->unlinked (here)
+    say "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
 }
 
 
@@ -414,7 +421,7 @@ sub graph_code {
             }
         }
         if ($chunk =~ /\S/) {
-            $chunk =~ s/\};?\s*\Z//xsm;
+            $chunk =~ s/^\}.*\Z//xsm;
             $codes->spawn({ code => $chunk });
         }
     }
@@ -464,7 +471,29 @@ to allow them to be useful to each other and not spread indefinitely.
 # TODO
 sub search {
     my %p = @_;
-    return getlinks(from => $p{start_from}, to => $p{spec});
+    $p{start} || die "where?";
+    if ($p{want} && $p{want} eq "links") {
+        return getlinks(from => $p{start}, to => $p{spec});
+    }
+    elsif ($p{want} && $p{want} =~ /^G\((\S+)\)$/) {
+        my $graph_name = $1;
+        my $res = new Graph($graph_name);
+        my $trav = $p{traveller} || Travel->new(
+            ($p{ignore} ? (ignore => $p{ignore}) : ())
+        );
+        $trav->travel($p{start}, sub {
+            my ($G, $ex) = @_;
+            if ($ex->{previous}) {
+                my $found = $res->find($ex->{previous});
+                $found->spawn($G, $ex->{via_link});
+            }
+            else {
+                $res->spawn($G);
+            }
+        });
+        return $res;
+    }
+
 }
 sub getlinks {
     my %p = @_;
@@ -473,6 +502,9 @@ sub getlinks {
     @links = @{$p{to}->graph->{links}}
         if $p{to} && ref $p{to} eq "Node";
     if ($p{from} && ref $p{from} eq "Node") {
+        if (!$p{from}->graph) {
+            say "$p{from} is no more?";
+        }
         @links = @{$p{from}->graph->{links}}
     }
 
@@ -623,7 +655,8 @@ sub summarise { # SUM
         }
         when ("Node") {
             my $inner = $thing->thing;
-            $text = "N($thing->{graph}) ".summarise($inner);
+            my $id = $thing->{id} ? "#$thing->{id} " : "";
+            $text = "N($thing->{graph}) $id".summarise($inner);
             unless (ref $inner eq "Node") {
                 my ($addy) = $thing =~ /(\(0x.{7}\))/;
                 $text .= " $addy"
@@ -715,16 +748,14 @@ get '/boxen' => sub {
 get '/width' => sub {
     my $self = shift;
     my $width = $self->param('width');
-    $us->spawn({width => $width});
+    $us->spawn($width)->id("width");
     $self->render(json => "Q");
 };
 
 sub draw_findable {
     my $self = shift;
     my $findable_y = $findable_y;
-    my ($width) = map { $_->{thing}->{width} }
-        grep { ref $_->{thing} eq "HASH" && $_->{thing}->{width} }
-        $us->linked();
+    my ($width) = $us->linked("#width")->thing;
     my $x = $width - 35;
 
     my $svg = $self->svg();
@@ -759,22 +790,23 @@ sub happs {
 
 }
 
-
+my $vid = 0;
 get '/object' => \&get_object;
 sub get_object { # OBJ
     my $self = shift;
+
     my $id = $self->param('id')
         || die "no id";
+
     my $object = get_linked_object_by_memory_address($id)
         || return $self->sttus("$id no longer exists!");
-    unless (ref $object eq "Node") {
-        return $self->sttus("don't like to objectify ".ref $object);
-    }
+
+    ref $object eq "Node"
+        || return $self->sttus("don't like to objectify ".ref $object);
 
     # find the VIEWED graph: existing subset and svg info
-    my @viewed = grep { ref $_->{thing} eq "Graph"
-                        && $_->{thing}->{name} =~ "^object-examination" } $us->linked();
-    my (@etc, $viewed) = @viewed;
+    my @viewed = $us->linked("#object-examination");
+    my (@etc, $viewed) = reverse @viewed;
     if (@etc) {
         moan "Viewedes";
         $us->unlink($_) for @etc;
@@ -790,29 +822,25 @@ sub get_object { # OBJ
 
 
     # TODO this is a travel()/search() result-as-graph idea
-    my $exam = $us->spawn(Graph->new('object-examination'));
+    # TODO new Graph should take name from id of node its going into if possible
+    # this graph name oughtta be useless but for debug verbosity due to using id now
+    my $trav = Travel->new(
+        ignore =>
+            ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination"],
+    );
+    my $exam = search(
+        start => $object,
+        spec => '**',
+        want => "G(object-examination)",
+        traveller => $trav,
+    );
+    $exam = $us->spawn($exam);
+    $exam->id("#object-examination");
     $exam = $exam->{thing};
-
-    my $trav = Travel->new(ignore =>
-        ["->{no_of_links}", "->{iggy}", "findable_objects"]);
-
-    my $head;
-    $trav->travel($object, sub {
-        my ($G, $ex) = @_;
-        if ($ex->{previous}) {
-            my $found = $exam
-                ->find($ex->{previous});
-            $found
-                ->spawn($G, $ex->{via_link});
-        }
-        else {
-            $head = $exam->spawn($G);
-        }
-    });
 
 
     # Just an exercise, we can do this more casually in the svg build
-    $trav->travel($head,
+    $trav->travel($exam->first,
         all_links => sub {
             $_[0]->spawn({iggy => 1, no_of_links => scalar @{$_[2]}})
         },
@@ -833,16 +861,12 @@ sub get_object { # OBJ
         }
     };
 
+    my $ids = goof($us, "+ #ids {}")->thing;
 
-    my ($ids) = grep { ref $_->{thing} eq "HASH"
-        && $_->{thing}->{ids} } $us->linked;
-    $ids ||= do { $us->spawn({ids => {}})->{ids} };
-
-    $DB::single = 1;
     my ($x, $y) = (30, 40);
 
 
-    $trav->travel($head, sub {
+    $trav->travel($exam->first, sub {
         my ($G, $ex) = @_;
         my $thing = $G->{thing};
         return if $thing eq "svg";
@@ -904,7 +928,7 @@ sub get_object { # OBJ
     });
     
     my $preserve = $exam->spawn("preserve");
-    $trav->travel($head, sub {
+    $trav->travel($exam->first, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
         my ($old) = grep { !$_->linked($preserve) } @old;
