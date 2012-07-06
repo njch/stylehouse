@@ -111,8 +111,8 @@ do {
     $main::us->spawn({width => 1427});
     get_object($mojo);
     use Storable 'dclone';
-    my $sdrwings = Dump(dclone $drawings);
-    my $proper = <<''; # {{{
+    my $got = Dump(dclone $drawings);
+    my $expected = <<''; # {{{
 --- 
 - 
   - clear
@@ -2316,33 +2316,52 @@ do {
     id: 0x9b5c5f8
 
 #}}}
-    my @plines = split "\n", $proper;
-    my @slines = split "\n", $sdrwings;
-    use File::Slurp;
-    write_file "srawnbjgs", $sdrwings;
-    for my $i (0..@plines-1) {
-        $_ = $plines[$i];
-
-        if (/class: .+ (\S{3}) /) {
-            my $id = $1;
-            $slines[$i] =~ s/(class: .+ )(\S{3}) /$1$id /;
-        }
-        if (/fill: ('?\S{3}'?)/) {
-            my $id = $1;
-            $slines[$i] =~ s/(fill: )'?(\S{3})('?)/$1$id/;
-            die "$slines[$i]\n\n$1\n$id" if $slines[1] =~ /fd48$/;
-        }
-        if (/(0x\S{7}(oxble.*)?)/) {
-            my $id = $1;
-            $slines[$i] =~ s/(0x\S{7}(oxble.*)?)/$id/;
-        }
-        $slines[$i] =~ s/ y=\d+$//;
-    }
+    ($expected, $got) = swap_svg_instruction_ids($expected, $got);
     $DB::single = 1;
-    is_deeply(\@slines, \@plines, "yeah!");
+    is_deeply($expected, $got, "yeah!");
 
 };
 
+sub swap_svg_instruction_ids {
+    my ($expected, $got) = @_;
 
+    use File::Slurp;
+    write_file "gots.instro", $got;
+
+    my @elines = split "\n", $expected;
+    my @glines = split "\n", $got;
+
+    my %exchanges;
+    my $i;
+    my $swap = sub {
+        my ($what, $for, $i) = @_;
+        $for =~ s/^'|'$//gs;
+        $exchanges{$what} ||= $for;
+        die "change!?!?! ($what -> $for != $exchanges{$what}) \n$elines[$i]\n$glines[$i]"
+            unless $exchanges{$what} eq $for;
+    };
+
+    for $i (0..@elines-1) {
+        $_ = $elines[$i];
+
+        if (/class: .+ (\S{3}) /) {
+            my $id = $1;
+            $glines[$i] =~ s/(class: .+ )(\S{3}) /$1$id /;
+            $swap->($2, $id, $i);
+        }
+        if (/fill: ('?\S{3}'?)/) {
+            my $id = $1;
+            $glines[$i] =~ s/(fill: )('?\S{3}'?)/$1$id/;
+            $swap->($2, $id, $i);
+        }
+        if (/(0x\S{7}(oxble.*)?)/) {
+            my $id = $1;
+            $glines[$i] =~ s/(0x\S{7}(oxble.*)?)/$id/;
+            $swap->($1, $id, $i);
+        }
+        $glines[$i] =~ s/ y=\d+$//;
+    }
+    (\@elines, \@glines);
+}
 
 
