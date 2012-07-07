@@ -763,12 +763,6 @@ sub draw_findable {
     my $svg = $self->svg();
     my @new;
     for my $ble ($webbery->find("findable_objects")->linked()) {
-        if ($ble->links($svg) == 2) {
-            say "$ble->{thing} already on screen";
-            next;
-        }
-
-        say "making $ble->{thing} findable..";
         my ($name, $id, $color) = "$ble" =~ m{^(\w+)=.+\((0x...(...).)\)$};
         $name = "$name $id";
         my $sum = summarise($ble);
@@ -1014,8 +1008,8 @@ sub get_object { # OBJ
             $G->unlink($svg);
         });
     }
-    
-    
+
+
     my $clear;
     unless ($viewed) {
         say "gonna clear screen";
@@ -1028,13 +1022,13 @@ sub get_object { # OBJ
         $us->unlink("#object-examination");
     }
 
-    @drawings = (@removals, @animations, @drawings, draw_findable($self));
+    @drawings = (@removals, @animations, @drawings);
 
-
-    my $status = "For ". summarise($object);
-    unshift @drawings, 
-        ["status", $status];
-    unshift @drawings, ["clear"] if $clear;
+    unshift @drawings, ["status", "For ". summarise($object)];
+    if ($clear) {
+        unshift @drawings, draw_findable($self);
+        unshift @drawings, ["clear"];
+    }
     $self->drawings(@drawings);
 };
 
