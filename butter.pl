@@ -253,7 +253,7 @@ sub trash {
     }
 }
 sub graph {
-    $main::graphs{$_[0]->{graph}} || die "no graph $_[0]->{graph}";
+    $main::graphs{$_[0]->{graph}} || main::confess "no graph $_[0]->{graph}";
 }
 sub link {
     $_[0]->graph->link(@_)
@@ -516,14 +516,16 @@ sub getlinks {
 
 sub goof {
     my ($start, $etc) = @_;
-    if ($etc =~ /^\+ (#\w+) (\{\})$/) { # + means autovivify
+    if ($etc =~ /^\+ (#\w+) ?(\{\})?$/) { # + means autovivify
         my ($spec, $default) = ($1, $2);
         my @ed = $start->linked($spec);
         confess "heaps of $spec from $start: ".Dump[@ed] if @ed > 1;
         my $ed = shift @ed;
         unless ($ed) {
-            eval '$default = '.$default.';';
-            confess "interpolating $default: $@" if $@;
+            if ($default) {
+                eval '$default = '.$default.';';
+                confess "interpolating $default: $@" if $@;
+            }
             $ed = $start->spawn($default);
             $ed->id($spec);
         }
@@ -1028,10 +1030,6 @@ sub get_object { # OBJ
 
     @drawings = (@removals, @animations, @drawings, draw_findable($self));
 
-    # join together the class="etc etc etc" setting
-    map { ref $_->[-1] eq "HASH" && ref $_->[-1]->{class} eq "ARRAY" && do {
-        $_->[-1]->{class} = join " ", @{ delete $_->[-1]->{class} }
-    } } @drawings;
 
     my $status = "For ". summarise($object);
     unshift @drawings, 
