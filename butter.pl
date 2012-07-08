@@ -13,15 +13,13 @@ our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $G;
 
-=pod NEW FILE!
+=head1 NEW FILE!
 
-needing to move the architecture forward without the clunkiness and the many
+need to move the architecture forward without clunkiness and many
 hundred estranged lines of code
 
-in this file:
-focus on being able to play with the scope
+focus on being able to play with the ui
 make some algorithms to play with there
-composable stuff (algorithms)
 finally an answer to what is a field and how it works
 
 and DONT FORGET TO TAKE GUITAR BREAKS
@@ -30,6 +28,7 @@ and DONT FORGET TO TAKE GUITAR BREAKS
 etc
 
 
+=head1 ALGORITHMS
 
 so eventually the Graph/Node infrastructure code will be represented on itself
 so hacks can be loaded in without impurifying the basic apparition of IT.
@@ -37,8 +36,44 @@ those hacks, being datastructure concerns, should be compiled back into CODEs
 the system tests the new tech then just changes some links to hop over to it
 
 I suppose this means sucking in the Graph/Node code and making it an algorithm
-graph, dumping it back into code with adjustments...
+graph, hacking up by rules, dumping it back into code to run it
 
+anyway data flows through algorithms, each datum shouldn't invoke the whole
+shebang once for itself, resources should be bundled together where possible
+for instance finding files as we are and linking them to their directory,
+could be done with a hash much faster than using find() for what it really means
+so it seems the basic Graph/Node/Traveller stuff is supplanted, nay, hot-hacked
+into line with new graphy rules. graph system holds graph, creates another
+graph system, etc. great. so it needs to hack up perl code pretty much first...
+streaming algorithms that can make shortcuts for big datasets.
+
+the question is how to express this in graph so it scales...
+nodes could store links on themselves if it made sense...
+all these slight tweaks in nature "if it makes sense" are obviously coming from
+the world of graph self-analysis and optimisation...
+firstly we should break the /object code into functions which feed each other..
+or the getlinks() code, why not...
+the variables' light cone allows the shape of the algorithm around it to change.
+inputs and outputs, chains of them
+
+=cut
+
+=head1 NOT FIELDS
+
+We're using different Graph objects to get a field effect... a complete set
+of links without neighbour noise
+
+we should be able to say this part of the graph is now a field...
+a field might be manifested in UI as a subselection of some songs
+if an algorithm is entropied by the limit of the field, this is shown
+    as a bulge or something, somewhere
+links to within from outside and vice versa should be seen
+field secretiveness (relative to anything?)
+so is creating a field over nodes cloning them? with backlinking?
+perhaps you create the selection first then say clone
+perhaps something can slither out of the way, of course it can...
+
+all the algorithms are just graphs, into which complexity can be injected.
 
 So there's usually just one graph per App
 App would branch away its various data but it's one bunch of links
@@ -47,11 +82,13 @@ the illusion of several Apps and whatever they need, down to the existing tech
 
 linking more in a graph means node linkage
 linking an alien object means it is put in a node and the node is linked in
-the node is appropriately transparent:
+the node should be appropriately transparent:
     ->links() for eg is a node method, non-node method calls are passed
     through the node so $G is set up for any graphy business the object wants
 
-we also want to create graphs that are subsets of larger graphs
+that's lies of course because all the stuff is nothing to do with lexical
+scopes and method calls anymore but floatilla of algorithms and junk
+
 each node in the subset could be linked to the original in secret way
 (if a query asked it could traverse back into the original graph)
 once we have subsets carved out we can run them into algorithms easier
@@ -68,10 +105,10 @@ case study of different graphs, as a flow diagram:
 
 we're almost up to here... not spacing things out though
 
-some time when can think proper, about object()'s subset graphs and
-svging relating to Nodes... err.. nah missed it good luck.
-aha see for instance $viewed->find($new->thing);
-yes
+=cut
+
+
+=head1 FIELD IT OUT
 
 fields, :field, whatever, could speed things up by partitioning the various
 arrays of nodes. a thing in one field would travel in its own field first,
@@ -79,33 +116,13 @@ then outwards... The Field is given by links...
 the syntax for dealing with this machine needs to imply the sanest
 dont forget this should be the simplest incantation of "fields", turns into
 all sorts of contextuality the further you go up the pyramid...
-this needs guitar playing meditation after a quick briefing?
 
 perhaps this can be thought of as an experiment to determine the nature of field
 a field is the scope of determinism in existence
 
-anyway data flows through algorithms, each datum shouldn't invoke the whole
-shebang once for itself, resources should be bundled together where possible
-for instance finding files as we are and linking them to their directory,
-could be done with a hash much faster than using find() for what it really means
-so it seems the basic Graph/Node/Traveller stuff is supplanted, nay, hot-hacked
-into line with new graphy rules. graph system holds graph, creates another
-graph system, etc. great. so it needs to hack up perl code pretty much first...
-but it's all so well layed out it can't be too much trouble. exciting stuff to
-get on with.
-but yeah, streaming algorithms that can make shortcuts for big datasets.
-the question is how to express this in graph so it scales...
-also start using the server for this bullox.
-nodes could store links on themselves if it made sense...
-all these slight tweaks in nature "if it makes sense" are obviously coming from
-the world of graph self-analysis and optimisation...
-firstly we should break the /object code into functions which feed each other..
-or the getlinks() code, why not...
-the variables' light cone allows the shape of the algorithm around it to change.
-inputs and outputs, chains of them
-
+so at all points in time the determinator deals with things from several fields
+at once, some active instructioney things and some passive data
 =cut
-
 
 our %graphs; # {{{
 package Graph;
@@ -443,24 +460,6 @@ sub get_linked_object_by_memory_address {
         }
     }
 }
-=pod ENTROPY FIELD
-some crazy shit. for post-X.
-
-each link is in one field.
-things can be in multiple fields by many links.
-field A thing links to field B thing, link is field A, &? hook.
-search doesn't cross fields unless demanded.
-
-fields defined by patterns, including the meanderer '...' which is like
-a wildcard... goes off in all directions, in the current field.
-
-dumper prettyprints meanders
-
-this could be displayed as a goo smothered graph while foreign
-looking junk looks foreign.
-the interfaces from one field to another must be defined, then,
-to allow them to be useful to each other and not spread indefinitely.
-=cut 
 
 # TODO
 sub search {
@@ -780,17 +779,6 @@ sub draw_findable {
     }
     return @new;
 }
-=pod
-/object means examination gets new id;
-that creates a new limb, to create graph and svg stuff
-then at the end the New SVG Stuff as determined purely by linkage to us->svg
-=cut
-
-sub happs {
-    my ($web, $act) = @_;
-
-
-}
 
 my $vid = 0;
 get '/object' => \&get_object;
@@ -1007,6 +995,7 @@ sub get_object { # OBJ
                 };
             }
 
+            start_timer();
             my (%by_xy, %by_id);
             for (@diffs) {
                 $by_xy{"$_->{x},$_->{y}"} = undef;
@@ -1014,6 +1003,7 @@ sub get_object { # OBJ
             }
             die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
             die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
+            say "YEAH!!!!! ".show_delta();
             
             if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
                 push @animations,
@@ -1048,6 +1038,10 @@ sub get_object { # OBJ
     my $clear;
     unless ($viewed) {
         say "gonna clear screen";
+        $clear = 1;
+    }
+    unless (@animations) {
+        @removals = ();
         $clear = 1;
     }
 
