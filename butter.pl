@@ -170,7 +170,7 @@ sub find {
     my ($self, $thing) = @_;
     my @nodes;
     $self->map_nodes(sub {
-        if ($_[0]->{thing} eq $thing) {
+        if (defined $_[0]->{thing} && $_[0]->{thing} eq $thing) {
             push @nodes, $_[0];
         }
     });
@@ -426,12 +426,6 @@ sub graph_code {
         }
     }
 
-    my $chunk_i = 0;
-    travel($codes, sub {
-        my ($chunk) = @_;
-        $chunk->thing->{i} = $chunk_i++;
-    });
-
     return $codes;
 } # }}}
 
@@ -545,6 +539,7 @@ sub travel { # TRAVEL
     $G = shift || $G;
     my $ex = shift if ref $_[0] eq "HASH";
     $ex ||= {};
+    $ex->{everywhere} = shift if ref $_[0] eq "CODE";
     unless ($ex->{seen_oids}) {
         $ex->{depth} = 0;
         $ex->{seen_oids} = {};
@@ -599,7 +594,14 @@ sub spec_comp {
 
     if ($spec =~ /^#(.+)$/) {
         my $id = $1;
-        return $node->{id} && $node->{id} eq $id;
+        return 0 unless defined $node->{id};
+        if ($id =~ m{^/(.+)/$}) {
+            $id = $1;
+            return $node->{id} =~ $id;
+        }
+        else {
+            return $node->{id} && $node->{id} eq $id;
+        }
     }
 
     if ($spec =~ /^{(\w+) => (\.\.\.|\{\})\}$/) { # hash with key
@@ -679,6 +681,9 @@ sub summarise { # SUM
             }
         }
     }
+    if (!defined $thing) {
+        $text = "~undef~";
+    }
     $text ||= "$thing";
     return $text;
 }
@@ -715,6 +720,7 @@ our $whereto = ["boxen", {}];
 $whereto = [object => { id => "". $get_object }];
 
 $findable->link($webbery->spawn("clients"));
+my $re = goof($findable, "+ #reexamine");
 our $us; # client - low priority: sessions
 
 use Mojolicious::Lite;
@@ -802,11 +808,40 @@ sub get_object { # OBJ
     ref $object eq "Node"
         || return $self->sttus("don't like to objectify ".ref $object);
 
+    if ($object eq $re) {
+        my @exams = $us->linked("#/^object-examination/");
+        my $exam = $exams[0]->thing;
+        my @drawings;
+        my $svg = $self->svg;
+        travel($exam->first, sub {
+            my ($G, $ex) = @_;
+            push @drawings, map {
+                $_ = $_->{val}->[0];
+                $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+                $_->[1] +=  $us->linked("#width")->thing / 2 - 100;
+                $_
+            } $svg->links($G);
+        });
+        return $self->drawings(@drawings);
+    }
+
+
+
     # find the VIEWED graph: existing subset and svg info
-    my ($viewed, @etc) = $us->linked("#object-examination");
-    if (@etc) {
-        moan "too many views...";
-        $us->unlink($_) for @etc;
+    my @exams = $us->linked("#/^object-examination/");
+    if (@exams > 1) {
+        my %graph_names = map { $_->{thing}->{name} => $_ } @exams;
+        @exams = map { $graph_names{$_} } sort keys %graph_names;
+    }
+    my $viewed = pop @exams;
+    if (@exams) {
+        # for translate()'s one-time-only catch:
+        push @exams, $viewed;
+        undef $viewed;
+        for my $old_exam (@exams) {
+            $old_exam->{thing}->DESTROY;
+            $us->unlink($old_exam);
+        }
     }
     say $viewed ? "got previous view" : "no view";
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
@@ -1014,12 +1049,6 @@ sub get_object { # OBJ
     unless ($viewed) {
         say "gonna clear screen";
         $clear = 1;
-    }
-    else {
-        # can't translate() twice so trash it
-        $viewed->DESTROY(); 
-        $exam->DESTROY();
-        $us->unlink("#object-examination");
     }
 
     @drawings = (@removals, @animations, @drawings);
