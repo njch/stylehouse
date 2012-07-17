@@ -788,7 +788,8 @@ sub get_object { # OBJ
     my $id = $self->param('id')
         || die "no id";
 
-    $id =~ s/-(l|b)\d*$//; # id is #..., made uniqe
+    $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
+    my $mode = $1;
 
     my $object = get_linked_object_by_memory_address($id)
         || return $self->sttus("$id no longer exists!");
@@ -796,7 +797,7 @@ sub get_object { # OBJ
     ref $object eq "Node"
         || return $self->sttus("don't like to objectify ".ref $object);
 
-    if ($object eq $re) {
+    if ($object eq $re) {# get the old drawing data and plot it again next door {{{
         my @exams = $us->linked("#/^object-examination/");
         my $exam = $exams[0]->thing;
         my @drawings;
@@ -811,21 +812,28 @@ sub get_object { # OBJ
             } $svg->links($G);
         });
         return $self->drawings(@drawings);
-    }
+    }#}}}
 
-
-
-    # find the VIEWED graph: existing subset and svg info
+    # find the old graph
     my @exams = $us->linked("#/^object-examination/");
+    # the latest one (serial numbered name)
     if (@exams > 1) {
         my %graph_names = map { $_->{thing}->{name} => $_ } @exams;
         @exams = map { $graph_names{$_} } sort keys %graph_names;
     }
     my $viewed = pop @exams;
+
+    if ($mode eq "c") {
+        $object->spawn("Hello");
+        $object = $viewed->thing->first;
+    }
+
+
     if (@exams) {
         # for translate()'s one-time-only catch:
         push @exams, $viewed;
         undef $viewed;
+        die "many" if @exams > 2;
         for my $old_exam (@exams) {
             $old_exam->{thing}->DESTROY;
             $us->unlink($old_exam);
@@ -869,7 +877,7 @@ sub get_object { # OBJ
 
     my $svg = $self->svg;
 
-    my $nameidcolor = sub {
+    my $nameidcolor = sub { #{{{
         my $summarised = shift;
         if ($summarised =~
             m{^(?:N\(.+?\) )*(.+) \((0x...(...).)\)$}) {
@@ -880,7 +888,7 @@ sub get_object { # OBJ
         else {
             return ("$summarised", "???", "000");
         }
-    };
+    };#}}}
 
     my $ids = goof($us, "+ #ids {}")->thing;
     my $getid = sub {
@@ -918,6 +926,16 @@ sub get_object { # OBJ
             {
                 id => $getid->("$id-b"),
                 fill => $color,
+                class => "$color $id",
+                name => $name,
+            }]
+        );
+        $svg->link($G,
+            [ "boxen", $x-4, $y-2, 4, 18,
+            {
+                id => $getid->("$id-c"),
+                fill => "000$color",
+                stroke=> "000",
                 class => "$color $id",
                 name => $name,
             }]
