@@ -124,13 +124,39 @@ so at all points in time the determinator deals with things from several fields
 at once, some active instructioney things and some passive data
 =cut
 
+=head1 HMM
+
+so like protein coders that want to survive, the base apparition creates a
+luxurious overworld
+
+"if it lives, it lives" is the base statistical point to life, humanity and its
+complexity is just increasing luxury erupting on top
+
+I believe I am sewing mental dischord sometimes but I am working it okay
+
+nice thought the floatilla of apparatus. the junk no longer lines of code.
+code would still exist but in lives more like formulas and equations.
+equate to what the user wants.
+the world of graph could be shoved into xml if need be.. maybe even a YAML
+notation would be worth working out soon:
+ - G(exam)
+   - {node}
+   - {node}
+anyway IDs would be key there... UUIDs I guess. thing would have to know
+what the incredibly unlikely collision would feel like...
+"collisions" or just free association, would be useful for healthy chaos if
+the system could handle it.
+entropy can't be explained, the teacher will go off on tangent after tangent,
+while the student gets more and more full of unresolving notionettes.
+
 our %graphs; # {{{
 package Graph;
 use YAML::Syck;
 use strict;
 use warnings;
 sub new { # name, 
-    shift;
+
+
     my $self = bless {}, __PACKAGE__;
     $self->{name} = main::uniquify_id(\%main::graphs, shift || "unnamed");
     $self->{links} = [];
@@ -224,6 +250,7 @@ package Node;
 use strict;
 use warnings;
 use List::MoreUtils 'uniq';
+
 sub new { # graph => name, 
     shift;
     my $self = bless {}, __PACKAGE__;
@@ -232,6 +259,7 @@ sub new { # graph => name,
     my @fields = main::tup($params{fields}); # detupalises?
     $self->{fields} = \@fields if @fields;
     $self->{thing} = $params{thing};
+    $self->{uuid} = main::make_uuid($self);
     return $self
 }
 sub TO_JSON {
@@ -449,7 +477,16 @@ sub graph_code {
 
 # {{{
 
-sub get_linked_object_by_memory_address {
+use UUID;
+use Scalar::Util 'weaken';
+sub make_uuid {
+    my $o = shift;
+    weaken $o;
+    UUID::generate(my $uuid);
+    UUID::unparse($uuid, my $stringuuid);
+    $objects_by_id{$stringuuid} = $o;
+}
+sub object_by_uuid {
     my $id = shift;
     for my $o ($findable->linked) {
         return $o if "$o" =~ /\Q$id\E/;
@@ -791,7 +828,7 @@ sub get_object { # OBJ
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1;
 
-    my $object = get_linked_object_by_memory_address($id)
+    my $object = get_object_by_uuid($id)
         || return $self->sttus("$id no longer exists!");
 
     ref $object eq "Node"
@@ -825,7 +862,7 @@ sub get_object { # OBJ
 
     if ($mode eq "c") {
         $object->spawn("Hello");
-        $object = $viewed->thing->first;
+        $object = $viewed->thing->first->thing;
     }
 
 
@@ -842,7 +879,7 @@ sub get_object { # OBJ
     say $viewed ? "got previous view" : "no view";
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
-    if ($viewed && $viewed->first && $viewed->first->thing."" eq $object) {
+    if ($viewed && $mode ne "c" && $viewed->first && $viewed->first->thing."" eq $object) {
         return $self->sttus("same diff");
     }
 
