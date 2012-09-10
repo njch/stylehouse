@@ -149,6 +149,103 @@ the system could handle it.
 entropy can't be explained, the teacher will go off on tangent after tangent,
 while the student gets more and more full of unresolving notionettes.
 
+head1 THIRD
+
+linkery can be on each object or in the fields link store
+revelation 1 is links-on-objects.
+r1 is to get a graph of the codey rules leading to r2
+r1 holds objects to represent itself in an extensible manner
+
+extensible like post-linked hooks or rules about how and what can be overlaid
+on the simplest description of what's going on.
+
+for any function there's a physical medium/machinery for data flow
+on top of that something says "this is this kind of idea"
+and the idea itself is applied to the machinery it will effect
+
+so we want graphs of objects which are:
+machinery (for data flow)
+thinking (on the machinery)
+ideas (what happens on machinery)
+data (alive!)
+
+so ideas need to cosy up to machinery real nicely, thinking could get complicated adapting things
+(had gone on a tangent here) so through their shared ideas (adapted by thinking) different machinery can work together.
+there might be an ambient idea realiser in r2 pattern matching... like how ideas look for reality to improve on
+
+concurrent graph pattern matching needed...
+pattern matching means a chunk of graph exists, for example execution is at this point about this kind of machinery/data/etc...
+
+so lets categorise some function...
+everything in r1 is machine and data, even the pattern matcher.
+everything r2 is r1 data.
+execution in r1 is a queue of unresolved data flows.
+
+argumentative language is machinery, which invokes ideas through fractured thinking.
+
+so the syncing music machine graph has a "usb filesystem" (or something) (linked to the idea) and music syncing gear.
+the usb fs object is inherited from syncing music, usb trouble is handled, action then allowed by sycing music
+
+so we needa take data to make machines to make thinking and ideas and more graph computer complexity.
+
+the graph computer is something... takes pattern matches about the identity of the objects, does stuff
+
+machine says take this data, munge it like so, put it here.
+
+there's a machine around the machine, the execution environ, where data is looked for and dumped out.
+in this environ there's arms and eyeballs protruding in on the swarming machines.
+
+r1 code implements:
+a link-on-objects graph
+all that search stuff that works already...
+dimensionality of runtime variables (the graph) vs coded functions sticking together (also graph)
+
+hmm like ideas get more beautifully meaningful-per-word, the oil rig of r2 dangles increasingly greasey code down to perl
+
+trying to see the shape of things where code becomes machine! ah long lost reality.
+
+At Field Hutt Josh says "massive chunks" and my being ignites, salivating... We're dogs with jobs.
+
+on search: the result graph is result nodes containing the matched thing...
+IT IS DETERMINED somewhere before execution of the receiving function whether that thing wants the result node or the thing
+this situation can be SEEN, because it's all graph all the time.
+the resolve could be thinking, machine-generated in test cases.
+
+test cases should be a major part of generating the program as well as proving it.
+say "take [a,b,c]s and {etc}". etc code has sanity checks mixed in with function and either. like /(.+) etc/ || die
+
+so what does r2 want to do?
+pattern matches to:
+    notice where/when/what we are and mess with things accordingly
+        each of these messings creates a mess, in theory, but it's better to have messy theory and clean practice since you can't see theory.
+        mostly we shall just load up the graph technology itself with little complications. that graph generates code that we hop over to.
+
+so r1 allows the graph tech to be loaded up with complications and then that generates r2 graph tech code.
+r2 graph tech supports all the sweet functionality.
+r2 graph computer? what decides what gets executed? well for development, tests and web client requests will do...
+
+the r2 graph computer is just another machine that gets executed.
+    I wonder if it implements the thinking-idea relative strangeness or that stuff could be r1 complicated
+    it could perhaps not be required for some initial r2 functionality?
+    perhaps it is a mistake to avoid putting things in r1? what shape is r1 really?
+    if there's anything to do it can get done first hand
+        the point of separating machine-thinking-idea is to clarify the engineering and also open possibilities of computer understanding
+    the graph computer is an ambient dude that waits for the world to get to it?
+    aha no yeah its state wants to be seen by things wanting to do things at certain points of computation
+
+anyway we will say we want to run this machine here -> "lastfm submit scrobbler.log"
+and it executes its machine pulls in other machines through ideas etc etc.
+ah so a machine graph can specify specific other machines too somehow, if it can locate them somehow...
+you could also say NO, not that machine, this machine, for it is an alike idea, but adapt the input/output data flow with this machine, etc.
+
+
+can I turn my typing-letters-in-order skills into a profitable business? no, probably just a bizarre bunch of material (art?)
+
+the interface is for capturing material to compute and impressing the user.
+
+
+=cut
+
 our %graphs; # {{{
 package Graph;
 use YAML::Syck;
