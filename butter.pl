@@ -431,7 +431,7 @@ sub links {
     }
 }
 sub thing {
-    shift->{thing}
+    $_[0]->{thing} || $_[0]->{id} || die "nothing in ". Dump $_[0];
 }
 package Travel;
 use strict;
@@ -798,8 +798,8 @@ sub summarise { # SUM
         }
         when ("Node") {
             my $inner = $thing->thing;
-            my $id = $thing->{id} ? "#$thing->{id} " : "";
-            $text = "N($thing->{graph}) $id".summarise($inner);
+            my $id = $thing->{uuid};
+            $text = "N($thing->{graph}) $id ".summarise($inner);
             unless (ref $inner eq "Node") {
                 my $addy = $thing->{uuid};
                 $text .= " $addy"
@@ -908,9 +908,9 @@ sub draw_findable {
     my $svg = $self->svg();
     my @new;
     for my $ble ($webbery->find("findable_objects")->linked()) {
-        my ($name, $id, $color) = "$ble" =~ m{^(\w+)=.+\((0x...(...).)\)$};
-        $name = "$name $id";
         my $sum = summarise($ble);
+        my ($name, $id, $color) = nameidcolor($sum);
+        $name = "$name $id";
         push @new, grep { $svg->link($ble, $_); 1 }
             ["boxen", $x, do { $findable_y += 40 }, 30, 30,
                 { fill => $color, name => $name, id => $id, } ],
@@ -920,6 +920,18 @@ sub draw_findable {
     return @new;
 }
 
+sub nameidcolor { #{{{
+    my $summarised = shift;
+    if ($summarised =~
+        m{^(?:N\(.+?\) )*(.+) (.+(...))$}) {
+        my ($name, $id, $color) = ($1, $2, $3);
+        $name = "$name $id";
+        return ($name, $id, $color);
+    }
+    else {
+        return ("$summarised", "???", "000");
+    }
+};#}}}
 my $vid = 0;
 get '/object' => \&get_object;
 sub get_object { # OBJ
@@ -1018,18 +1030,6 @@ sub get_object { # OBJ
 
     my $svg = $self->svg;
 
-    my $nameidcolor = sub { #{{{
-        my $summarised = shift;
-        if ($summarised =~
-            m{^(?:N\(.+?\) )*(.+) (.+(...))$}) {
-            my ($name, $id, $color) = ($1, $2, $3);
-            $name = "$name $id";
-            return ($name, $id, $color);
-        }
-        else {
-            return ("$summarised", "???", "000");
-        }
-    };#}}}
 
     my $ids = goof($us, "+ #ids {}")->thing;
     my $getid = sub {
@@ -1060,7 +1060,7 @@ sub get_object { # OBJ
         my $no_of_links = $linknode->thing->{no_of_links}
             if $linknode;
 
-        my ($name, $id, $color) = $nameidcolor->($stuff);
+        my ($name, $id, $color) = nameidcolor($stuff);
 
         $svg->link($G,
             [ "boxen", $x-20, $y-2, 18, 18, 
@@ -1185,7 +1185,7 @@ sub get_object { # OBJ
             my ($G,$ex) = @_;
             unless ($preserve->links($exam->find($G))) {
                 my $sum = summarise($G);
-                my @tup = $nameidcolor->($sum);
+                my @tup = nameidcolor($sum);
                 my $id = $tup[1];
                 push @removals, ["remove", $id ];
             }
@@ -1195,7 +1195,7 @@ sub get_object { # OBJ
 
 
     my $clear;
-    unless ($viewed) {
+    unless ($viewed && $mode ne "c") {
         say "gonna clear screen";
         $clear = 1;
     }
