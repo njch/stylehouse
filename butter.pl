@@ -573,7 +573,7 @@ sub graph_code {
 
 
 # {{{ the linkstash
-
+our %objects_by_id;
 use UUID;
 use Scalar::Util 'weaken';
 sub make_uuid {
@@ -581,17 +581,22 @@ sub make_uuid {
     weaken $o;
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
+    $stringuuid =~ s/^.+-(.+?)$/$1/;
     $objects_by_id{$stringuuid} = $o;
+    return $stringuuid;
 }
 sub object_by_uuid {
     my $id = shift;
-    for my $o ($findable->linked) {
-        return $o if "$o" =~ /\Q$id\E/;
-        return $o if ref $o eq "Node" && "$o->{thing}" =~ /\Q$id\E/;
-        if (ref $o->{thing} eq "Graph") {
-
-            return $o->{thing}->find_id($id) || next
-        }
+    if (!exists $objects_by_id{$id}) {
+        return undef;
+    }
+    elsif (!defined $objects_by_id{$id}) {
+        # weak link  garbage collected
+        delete $objects_by_id{$id};
+        return undef;
+    }
+    else {
+        return $objects_by_id{$id}
     }
 }
 
@@ -796,7 +801,7 @@ sub summarise { # SUM
             my $id = $thing->{id} ? "#$thing->{id} " : "";
             $text = "N($thing->{graph}) $id".summarise($inner);
             unless (ref $inner eq "Node") {
-                my ($addy) = $thing =~ /(\(0x.{7}\))/;
+                my $addy = $thing->{uuid};
                 $text .= " $addy"
             }
         }
@@ -851,7 +856,7 @@ sub displow {
 
 
 our $whereto = ["boxen", {}];
-$whereto = [object => { id => "". $get_object }];
+$whereto = [object => { id => $get_object->{uuid} }];
 
 $findable->link($webbery->spawn("clients"));
 my $re = goof($findable, "+ #reexamine");
@@ -922,11 +927,12 @@ sub get_object { # OBJ
 
     my $id = $self->param('id')
         || die "no id";
+    say $id;
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
-    my $mode = $1;
+    my $mode = $1 || "b";
 
-    my $object = get_object_by_uuid($id)
+    my $object = object_by_uuid($id)
         || return $self->sttus("$id no longer exists!");
 
     ref $object eq "Node"
@@ -1015,7 +1021,7 @@ sub get_object { # OBJ
     my $nameidcolor = sub { #{{{
         my $summarised = shift;
         if ($summarised =~
-            m{^(?:N\(.+?\) )*(.+) \((0x...(...).)\)$}) {
+            m{^(?:N\(.+?\) )*(.+) (.+(...))$}) {
             my ($name, $id, $color) = ($1, $2, $3);
             $name = "$name $id";
             return ($name, $id, $color);
