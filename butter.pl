@@ -166,11 +166,11 @@ and the idea itself is applied to the machinery it will effect
 so we want graphs of objects which are:
 machinery (for data flow)
 thinking (on the machinery)
-ideas (what happens on machinery)
+ideas (what stuff is for)
 data (alive!)
 
 so ideas need to cosy up to machinery real nicely, thinking could get complicated adapting things
-(had gone on a tangent here) so through their shared ideas (adapted by thinking) different machinery can work together.
+(had gone on a tangent here) so through their shared ideas (and/or via thinking) different machinery can work together.
 there might be an ambient idea realiser in r2 pattern matching... like how ideas look for reality to improve on
 
 concurrent graph pattern matching needed...
@@ -252,7 +252,7 @@ use YAML::Syck;
 use strict;
 use warnings;
 sub new { # name, 
-
+    shift;
 
     my $self = bless {}, __PACKAGE__;
     $self->{name} = main::uniquify_id(\%main::graphs, shift || "unnamed");
@@ -572,7 +572,7 @@ sub graph_code {
 } # }}}
 
 
-# {{{
+# {{{ the linkstash
 
 use UUID;
 use Scalar::Util 'weaken';
@@ -641,6 +641,7 @@ sub getlinks {
     return @links;
 }
 
+# trvl
 sub goof {
     my ($start, $etc) = @_;
     if ($etc =~ /^\+ (#\w+) ?(\{\})?$/) { # + means autovivify
