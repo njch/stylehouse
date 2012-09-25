@@ -374,6 +374,12 @@ sub new { # graph => name,
     $self->{fields} = \@fields if @fields;
     $self->{thing} = $params{thing};
     $self->{uuid} = main::make_uuid($self);
+
+    if ($self->{thing} =~ /^#/) {
+        $self->id($self->{thing});
+        undef $self->{thing};
+    }
+        
     return $self
 }
 sub TO_JSON {
@@ -536,10 +542,9 @@ sub done_unlinked {
 } # }}}
 
 
-use File::Find;
-start_timer();
 my $fs = new Graph ("filesystem"); #{{{
 my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
+use File::Find;
 find(sub {
     return if $_ eq "." || $_ =~ /\/\.rockbox/;
     say $File::Find::name;
@@ -547,10 +552,10 @@ find(sub {
     $dir || die "no dir... $File::Find::dir";
     $dir->spawn($File::Find::name);
 }, $fs_head->thing);
-say "AG'd: ". show_delta();
 #DumpFile("ag_fs.yml", $fs); # }}}
 
-my $findable = $webbery->spawn("findable_objects");
+
+our $findable = $webbery->spawn("findable_objects");
 $findable->link($fs);
 $findable->link($fs_head);
 $findable->link($webbery);

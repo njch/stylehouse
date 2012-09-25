@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use Scriptalicious;
 use Test::More 'no_plan';
+use YAML::Syck;
 start_timer();
 require_ok 'butter.pl';
 diag "required ".show_delta();
@@ -40,7 +41,7 @@ N(test1) {"color":"yellow"}
 diag "done ".show_delta();
 
 #do_stuff();
-
+    
 diag "done ".show_delta();
 
 my $g2 = new Graph();
@@ -65,8 +66,6 @@ $ed = $g1n1->linked("#jesus");
 ok ($ed eq $ided, "jesus!");
 
 my $crap = $ed->spawn("#crap");
-ok !$ed->linked("#crap"), "no not id";
-$crap->id("crap");
 ok $ed->linked("#crap"), "id!";
 
 my @ed_links = $ed->linked;
@@ -115,24 +114,35 @@ my $tests = new Graph;
 my $case_1 = $tests->spawn("case 1");
 run_case($case_1);
 
+my $case_2 = $tests->spawn("case 2");
+$case_2->spawn("#id")->{thing} = sub {
+    $main::findable->linked("#reexamine")->{uuid};
+};
+run_case($case_2);
+
+
 sub run_case {
     my $case = shift;
     
     my $expect  = load_expected($case);
 
-    my $id = $main::whereto->[1]->{id};
+    my $id = $case->linked("#id") || $main::whereto->[1]->{id};
+    if (ref $id eq "Node") {
+        $id = $id->thing->();
+    }
     say "ID: $id";
     my $mojo = moje($id);
     hello($mojo);
     $main::us->spawn(1427)->id("width");
-    get_object($mojo);
-    use Storable 'dclone';
 
+    get_object($mojo);
+
+    use Storable 'dclone';
     my $got = dclone $drawings;
 
-    diff_instructions($expect, dclone $got);
+    my $ok = diff_instructions($expect, dclone $got);
 
-    if (prompt_yN("Overwrite expectations?")) {
+    if (!$ok && prompt_yN("update expectations?")) {
         save_expected($case, $got);
     }
 }
@@ -144,6 +154,7 @@ sub diff_instructions {
     my $results = new Graph();
     my $notok = $results->spawn("#notok");
     my $extra = $results->spawn("#extra");
+    my $ok = 1;
     my $i = 0;
     my $what_for = {};
     for my $e_in (@$expect) {
@@ -157,17 +168,20 @@ sub diff_instructions {
             )) {
 #            use YAML::Syck;
 #            say Dump[$e_in, $g_in];
+            $ok = 0;
             $ginode->link($notok, $e_in);
         }
         $i++;
     }
     while (exists $got->[$i]) {
-        ok(0, "got extra instruction");
+        $ok = 0;
+        fail("got extra instruction");
         $extra->link($got->[$i]);
         $i++;
     }
 
     say displow($extra);
+    return $ok;
 }
 sub copy_instructions_uuids {
     my ($what_for, $from, $to) = @_;
