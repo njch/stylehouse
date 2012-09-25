@@ -152,7 +152,9 @@ sub diff_instructions {
         copy_instructions_uuids($what_for, $e_in, $g_in);
 
         my $ginode = $results->spawn($g_in);
-        unless (is_deeply($e_in, $g_in, "an instruction")) {
+        unless (is_deeply($e_in, $g_in, "an instruction of $g_in->[0]")) {
+    use YAML::Syck;
+            say Dump[$e_in, $g_in];
             $ginode->link($notok, $e_in);
         }
         $i++;
@@ -171,8 +173,7 @@ sub copy_instructions_uuids {
     my $af = $from->[-1];
     my $at = $to->[-1];
     my $swapped = sub {
-        my ($for, $what, $fo) = @_;
-        say "Swapped $what -> $fo";
+        my ($what, $fo) = @_;
         if (my $for_before = $what_for->{$what}) {
             is ($fo, $for_before, "swapped like before $what $fo in %$af");
         }
@@ -180,28 +181,32 @@ sub copy_instructions_uuids {
             $what_for->{$what} = $fo
         }
     };
-    use YAML::Syck;
-    say Dump[$af, $at];
     for my $for (qw{fill stroke name id class}) {
         if ($at->{$for} && $af->{$for}) {
-            $DB::single = 1;
 
-            if (my ($for3) = $af->{$for} =~ /\W([0-9a-f]{3})\W/) {
-                if ($at->{$for} =~ s/(\W?)([0-9a-f]{3})(?![0-9a-f]{9})(\W?)/$1$for3$3/g) {
-                    $swapped->($for, $2, $for3);
+            use List::MoreUtils 'natatime', 'zip';
+            my @afcs = split " ", $af->{$for};
+            my @atcs = split " ", $at->{$for};
+            my @aftcs = zip @afcs, @atcs;
+            my $ch = natatime 2, @aftcs;
+
+            my @tdone;
+            while (my ($f, $t) = $ch->()) {
+                my $long = $f =~ /\W?([0-9a-f]{12})\W?/ ? 12 : 3;
+                if ($f =~ /(?:000)?\W?([0-9a-f]{$long})\W?/ && $1 ne "000") {
+                    my $new = $1;
+                    $t =~ s/(\W?)([0-9a-f]{$long})(\W?)/$1$new$3/g;
+                    my $old = $2;
+                    $f =~ /^000/ && $t =~ s/^.../000/;
+                    $swapped->($new, $new);
                 }
+                push @tdone, $t;
             }
+            $at->{$for} = join " ", @tdone;
 
-            if (my ($for12) = $af->{$for} =~ /\W([0-9a-f]{12})\W/) {
-                if ($at->{$for} =~ s/(\W?)([0-9a-f]{12})(\W?)/$1$for12$3/g) {
-                    $swapped->($for, $2, $for12);
-                }
-            }
-
-            $DB::single = !is_deeply($at, $af);
-            say ".";
         }
     }
+            $DB::single = !is_deeply($at, $af);
 }
     
 sub load_expected {
