@@ -12,7 +12,13 @@ my $g1n1 = $g1->spawn({color => "yellow"});
 my $g1n2 = $g1->spawn({color => "red"});
 $g1n1->link($g1n2);
 
-is(displow($g1n1)."\n", <<"", "displows");
+sub disploww {
+    my $got = displow(shift);
+    $got =~ s/ [[:xdigit:]]{12}$//sgm;
+    return $got;
+}
+
+is(disploww($g1n1)."\n", <<"", "displows");
 N(test1) {"color":"yellow"}
  N(test1) {"color":"red"}
 
@@ -21,7 +27,7 @@ for (qw{red red red red orange vermillion}) {
     /orange/ && $n->link($g1n1);
 }
 
-is(displow($g1n1)."\n", <<"", "displows");
+is(disploww($g1n1)."\n", <<"", "displows");
 N(test1) {"color":"yellow"}
  N(test1) {"color":"red"}
   N(test1) {"color":"red"}
@@ -103,302 +109,117 @@ sub moje {
     $drawings = undef;
     NonMojo->new(param => {id => shift});
 } # }}}
-do {
+
+my $tests = new Graph;
+
+my $case_1 = $tests->spawn("case 1");
+run_case($case_1);
+
+sub run_case {
+    my $case = shift;
+    
+    my $expect  = load_expected($case);
+
     my $id = $main::whereto->[1]->{id};
     say "ID: $id";
     my $mojo = moje($id);
     hello($mojo);
-    $main::us->spawn({width => 1427});
+    $main::us->spawn(1427)->id("width");
     get_object($mojo);
     use Storable 'dclone';
-    my $got = Dump(dclone $drawings);
-    my $expected = <<''; # {{{
---- 
-- 
-  - clear
-- 
-  - status
-- 
-  - boxen
-  - 10
-  - 58
-  - 18
-  - 18
-  - 
-- 
-  - label
-  - 30
-  - 60
-  - 
-    font-weight: bold
-- 
-  - boxen
-  - 30
-  - 78
-  - 18
-  - 18
-  - 
-- 
-  - label
-  - 50
-  - 80
-  - "    my ($codes, $section) = @_;"
-  - 
-- 
-  - label
-  - 50
-  - 94
-  - "    my @code = read_file('butter.pl');"
-  - 
-- 
-  - label
-  - 50
-  - 108
-  - "    $codes = $codes->spawn($section);"
-  - 
-- 
-  - boxen
-  - 30
-  - 140
-  - 18
-  - 18
-  - 
-- 
-  - label
-  - 50
-  - 142
-  - "    while ($_ = shift @code) {"
-  - 
-- 
-  - label
-  - 90
-  - 156
-  - "        next until /^\\Q$section\\E/;"
-  - 
-- 
-  - label
-  - 90
-  - 170
-  - "        my $chunk;"
-  - 
-- 
-  - label
-  - 90
-  - 184
-  - "        $_ = \" \";"
-  - 
-- 
-  - label
-  - 90
-  - 198
-  - "        until (/^\\S/) {"
-  - 
-- 
-  - label
-  - 130
-  - 212
-  - "            $chunk .= $_ = shift @code;"
-  - 
-- 
-  - label
-  - 130
-  - 226
-  - "            if (/^\\s*$/sm && $chunk =~ /\\S/) {"
-  - 
-- 
-  - label
-  - 170
-  - 240
-  - "                $codes->spawn({ code => $chunk });"
-  - 
-- 
-  - label
-  - 170
-  - 254
-  - "                $chunk = \"\";"
-  - 
-- 
-  - label
-  - 170
-  - 268
-  - "                shift @code until $code[0] =~ /\\S/;"
-  - 
-- 
-  - label
-  - 130
-  - 282
-  - "            }"
-  - 
-- 
-  - label
-  - 90
-  - 296
-  - "        }"
-  - 
-- 
-  - label
-  - 90
-  - 310
-  - "        if ($chunk =~ /\\S/) {"
-  - 
-- 
-  - label
-  - 130
-  - 324
-  - "            $chunk =~ s/\\};?\\s*\\Z//xsm;"
-  - 
-- 
-  - label
-  - 130
-  - 338
-  - "            $codes->spawn({ code => $chunk });"
-  - 
-- 
-  - label
-  - 90
-  - 352
-  - "        }"
-  - 
-- 
-  - label
-  - 50
-  - 366
-  - "    }"
-  - 
-- 
-  - boxen
-  - 30
-  - 398
-  - 18
-  - 18
-  - 
-- 
-  - label
-  - 50
-  - 400
-  - "    my $chunk_i = 0;"
-  - 
-- 
-  - label
-  - 50
-  - 414
-  - "    travel($codes, sub {"
-  - 
-- 
-  - label
-  - 90
-  - 428
-  - "        my ($chunk) = @_;"
-  - 
-- 
-  - label
-  - 90
-  - 442
-  - "        $chunk->thing->{i} = $chunk_i++;"
-  - 
-- 
-  - label
-  - 50
-  - 456
-  - "    });"
-  - 
-- 
-  - boxen
-  - 30
-  - 488
-  - 18
-  - 18
-  - 
-- 
-  - label
-  - 50
-  - 490
-  - "    return $codes;"
-  - 
-- 
-  - label
-  - 10
-  - 504
-  - "} # }}"
-  - 
-- 
-  - boxen
-  - 1392
-  - 60
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - '1060.5'
-  - 60
-  - 
-- 
-  - boxen
-  - 1392
-  - 100
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - 865
-  - 100
-  - 
-- 
-  - boxen
-  - 1392
-  - 140
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - 1086
-  - 140
-  - 
-- 
-  - boxen
-  - 1392
-  - 180
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - 1103
-  - 180
-  - 
-- 
-  - boxen
-  - 1392
-  - 220
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - '1094.5'
-  - 220
-  - 
-- 
-  - boxen
-  - 1392
-  - 260
-  - 30
-  - 30
-  - 
-- 
-  - label
-  - 1137
-  - 260
-  - 
 
-#}}}
-    ($expected, $got) = swap_svg_instruction_ids($expected, $got);
-    is_deeply($expected, $got, "yeah!")
-        || makediff($expected, $got);
+    my $got = dclone $drawings;
 
+    diff_instructions($expect, dclone $got);
+
+    if (prompt_yN) {
+        save_expected($case, $got);
+    }
+}
+
+sub diff_instructions {
+    my ($expect, $got) = @_;
+    # diff got <> expected, into a two column graph if diff
+    # so the svger needs to know about columns, just a x offset initially
+    my $results = new Graph();
+    my $notok = $results->spawn("#notok");
+    my $extra = $results->spawn("#extra");
+    my $i = 0;
+    my $what_for = {};
+    for my $e_in (@$expect) {
+        my $g_in = $got->[$i];
+
+        copy_instructions_uuids($what_for, $e_in, $g_in);
+
+        my $ginode = $results->spawn($g_in);
+        unless (is_deeply($e_in, $g_in, "an instruction")) {
+            $ginode->link($notok, $e_in);
+        }
+        $i++;
+    }
+    while (exists $got->[$i]) {
+        ok(0, "got extra instruction");
+        $extra->link($got->[$i]);
+        $i++;
+    }
+
+    say displow($extra);
+}
+sub copy_instructions_uuids {
+    my ($what_for, $from, $to) = @_;
+    return unless $from->[0] =~ /boxen|label/;
+    my $af = $from->[-1];
+    my $at = $to->[-1];
+    my $swapped = sub {
+        my ($for, $what, $fo) = @_;
+        say "Swapped $what -> $fo";
+        if (my $for_before = $what_for->{$what}) {
+            is ($fo, $for_before, "swapped like before $what $fo in %$af");
+        }
+        else {
+            $what_for->{$what} = $fo
+        }
+    };
+    use YAML::Syck;
+    say Dump[$af, $at];
+    for my $for (qw{fill stroke name id class}) {
+        if ($at->{$for} && $af->{$for}) {
+            $DB::single = 1;
+
+            if (my ($for3) = $af->{$for} =~ /\W([0-9a-f]{3})\W/) {
+                if ($at->{$for} =~ s/(\W?)([0-9a-f]{3})(?![0-9a-f]{9})(\W?)/$1$for3$3/g) {
+                    $swapped->($for, $2, $for3);
+                }
+            }
+
+            if (my ($for12) = $af->{$for} =~ /\W([0-9a-f]{12})\W/) {
+                if ($at->{$for} =~ s/(\W?)([0-9a-f]{12})(\W?)/$1$for12$3/g) {
+                    $swapped->($for, $2, $for12);
+                }
+            }
+
+            $DB::single = !is_deeply($at, $af);
+            say ".";
+        }
+    }
+}
+    
+sub load_expected {
+    my $case = shift;
+    my $case_name = $case->thing;
+    my $expected_file = "testdata/$case_name/expected.yml";
+    return LoadFile($expected_file) if -f $expected_file;
+}
+sub save_expected {
+    my $case = shift;
+    my $expected = shift;
+    my $case_name = $case->thing;
+    my $dir = "testdata/$case_name";
+    mkdir $dir unless -d $dir;
+    my $expected_file = "$dir/expected.yml";
+    DumpFile($expected_file, $expected);
+}
+do {
 };
 
 sub makediff {
@@ -419,14 +240,14 @@ sub swap_svg_instruction_ids {
     my @glines = split "\n", $got;
     @elines = grep {
         ! (
-            /class: .+ (\S{3}) /
+            /class: .+ /
          || /fill: ('?\S{3}'?)/
          || /(0x\S{7}(oxble.*)?)/
          )
         } @elines;
     @glines = grep {
         ! (
-            /class: .+ (\S{3}) /
+            /class: .+ /
          || /fill: ('?\S{3}'?)/
          || /(0x\S{7}(oxble.*)?)/
          )

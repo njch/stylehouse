@@ -243,6 +243,8 @@ can I turn my typing-letters-in-order skills into a profitable business? no, pro
 
 the interface is for capturing material to compute and impressing the user.
 
+a lexical scope, adapted into a graph function, is a sorta field
+inherited variables are adapted with thinking...
 
 =cut
 
@@ -506,7 +508,7 @@ sub travel {
 package main;
 #}}}
 
-sub done_linked {
+sub done_linked { # {{{
     my ($g, $l) = @_;
     main::moan "diff graphs: ". main::summarise($l->{0}) . "\t\t" . main::summarise($l->{1})
         if $l->{0}->graph ne $l->{1}->graph && 0;
@@ -516,7 +518,7 @@ sub done_unlinked {
     my ($g, $l) = @_;
     # could check that $l indended at $n->unlink get $g->unlinked (here)
     say "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
-}
+} # }}}
 
 
 use File::Find;
@@ -571,6 +573,7 @@ sub graph_code {
     return $codes;
 } # }}}
 
+$findable->spawn("tbutt");
 
 # {{{ the linkstash
 our %objects_by_id;
@@ -799,7 +802,7 @@ sub summarise { # SUM
         when ("Node") {
             my $inner = $thing->thing;
             my $id = $thing->{uuid};
-            $text = "N($thing->{graph}) $id ".summarise($inner);
+            $text = "N($thing->{graph}) ".summarise($inner);
             unless (ref $inner eq "Node") {
                 my $addy = $thing->{uuid};
                 $text .= " $addy"
@@ -817,6 +820,15 @@ sub summarise { # SUM
                     $text = Dump($thing);
                     say "but whatever: $@";
                 }
+            }
+        }
+        when ("ARRAY") {
+            eval {
+            $text = encode_json($thing)
+            };
+            if ($@) {
+                $text = Dump($thing);
+                say "but whatever: $@";
             }
         }
     }
@@ -958,7 +970,6 @@ sub get_object { # OBJ
         travel($exam->first, sub {
             my ($G, $ex) = @_;
             push @drawings, map {
-                $_ = $_->{val}->[0];
                 $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
                 $_->[1] +=  $us->linked("#width")->thing / 2 - 100;
                 $_
@@ -966,6 +977,29 @@ sub get_object { # OBJ
         });
         return $self->drawings(@drawings);
     }#}}}
+
+    if ($object->thing eq "tbutt") {
+        my @both_drawings;
+        for my $w ("gots", "expe") {
+            my $drawings = LoadFile($w.".instro");
+            shift(@$drawings)->[0] eq "clear" or die "uhg";
+            shift @$drawings if $drawings->[0]->[0] eq "status";
+            for my $d (@$drawings) {
+                $d->[1] += 50;
+                $d->[2] += 50;
+            }
+            if ($w eq "expe") {
+                for my $d (@$drawings) {
+                    $d->[1] += 100;
+                }
+            }
+            push @both_drawings, @$drawings;
+        }
+        unshift @both_drawings, ["status", "Got vs expected"];
+        unshift @both_drawings, ["clear"];
+        say Dump[@both_drawings];
+        return $self->drawings(@both_drawings);
+    }
 
     # find the old graph
     my @exams = $us->linked("#/^object-examination/");
