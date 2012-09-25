@@ -132,7 +132,7 @@ sub run_case {
 
     diff_instructions($expect, dclone $got);
 
-    if (prompt_yN) {
+    if (prompt_yN("Overwrite expectations?")) {
         save_expected($case, $got);
     }
 }
@@ -152,9 +152,11 @@ sub diff_instructions {
         copy_instructions_uuids($what_for, $e_in, $g_in);
 
         my $ginode = $results->spawn($g_in);
-        unless (is_deeply($e_in, $g_in, "an instruction of $g_in->[0]")) {
-    use YAML::Syck;
-            say Dump[$e_in, $g_in];
+        unless (is_deeply($e_in, $g_in, "an instruction of $g_in->[0]"
+                .($g_in->[0] eq "label" ? ": $g_in->[-2]" : "")
+            )) {
+#            use YAML::Syck;
+#            say Dump[$e_in, $g_in];
             $ginode->link($notok, $e_in);
         }
         $i++;
@@ -169,44 +171,52 @@ sub diff_instructions {
 }
 sub copy_instructions_uuids {
     my ($what_for, $from, $to) = @_;
-    return unless $from->[0] =~ /boxen|label/;
+    return unless $from->[0] =~ /boxen|label|status/;
     my $af = $from->[-1];
     my $at = $to->[-1];
-    my $swapped = sub {
-        my ($what, $fo) = @_;
-        if (my $for_before = $what_for->{$what}) {
-            is ($fo, $for_before, "swapped like before $what $fo in %$af");
-        }
-        else {
-            $what_for->{$what} = $fo
-        }
-    };
-    for my $for (qw{fill stroke name id class}) {
-        if ($at->{$for} && $af->{$for}) {
-
-            use List::MoreUtils 'natatime', 'zip';
-            my @afcs = split " ", $af->{$for};
-            my @atcs = split " ", $at->{$for};
-            my @aftcs = zip @afcs, @atcs;
-            my $ch = natatime 2, @aftcs;
-
-            my @tdone;
-            while (my ($f, $t) = $ch->()) {
-                my $long = $f =~ /\W?([0-9a-f]{12})\W?/ ? 12 : 3;
-                if ($f =~ /(?:000)?\W?([0-9a-f]{$long})\W?/ && $1 ne "000") {
-                    my $new = $1;
-                    $t =~ s/(\W?)([0-9a-f]{$long})(\W?)/$1$new$3/g;
-                    my $old = $2;
-                    $f =~ /^000/ && $t =~ s/^.../000/;
-                    $swapped->($new, $new);
-                }
-                push @tdone, $t;
+    if ($from->[0] ne "status") {
+        for my $for (qw{fill stroke name id class}) {
+            if ($at->{$for} && $af->{$for}) {
+                $at->{$for} = idswapchunk($what_for, $af->{$for}, $at->{$for});
             }
-            $at->{$for} = join " ", @tdone;
-
         }
     }
-            $DB::single = !is_deeply($at, $af);
+    if ($from->[0] eq "label") {
+        $to->[3] = idswapchunk($what_for, $from->[3], $to->[3]);
+    }
+    if ($from->[0] eq "status") {
+        $to->[1] = idswapchunk($what_for, $from->[1], $to->[1]);
+    }
+}
+sub idswapchunk {
+    my ($what_for, $from, $to) = @_;
+
+    use List::MoreUtils 'natatime', 'zip';
+    my @fcs = split /(?<=\S) (?=\S)/, $from;
+    my @tcs = split /(?<=\S) (?=\S)/, $to;
+    my @ftcs = zip @fcs, @tcs;
+    my $ch = natatime 2, @ftcs;
+
+    my @tdone;
+    while (my ($f, $t) = $ch->()) {
+        my $long = $f =~ /\W?([0-9a-f]{12})\W?/ ? 12 : 3;
+        if ($f =~ /(?:000)?\W?([0-9a-f]{$long})\W?/ && $1 ne "000") {
+            my $new = $1;
+            $t =~ s/(\W?)([0-9a-f]{$long})(\W?)/$1$new$3/g;
+            my $old = $2;
+            $f =~ /^000/ && $t =~ s/^.../000/;
+    
+            if (my $for_before = $what_for->{$old}) {
+                fail("swapped like before $old -> $new")
+                    unless $new eq $for_before;
+            }
+            else {
+                $what_for->{$old} = $new
+            }
+        }
+        push @tdone, $t;
+    }
+    return join " ", @tdone;
 }
     
 sub load_expected {
