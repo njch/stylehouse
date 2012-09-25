@@ -243,8 +243,23 @@ can I turn my typing-letters-in-order skills into a profitable business? no, pro
 
 the interface is for capturing material to compute and impressing the user.
 
+=head1 SO
+
 a lexical scope, adapted into a graph function, is a sorta field
 inherited variables are adapted with thinking...
+
+it's feeling more musical for further along this cut.
+
+keeping time with a six minute track on loop.
+
+making testery for graph, represented as ui drawing instructions.
+that stuff will eventually be runnable/always run and visible in the ui.
+twould be good to have ui in one process and fork for tests.
+run another perl process altogether and get output?
+get output how? database time? nah.
+fuck that, just ui runnable test routines would be the ticket.
+then those routines could elabourate into machine clusterations
+the tests are the routines right.
 
 =cut
 
