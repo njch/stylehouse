@@ -376,7 +376,7 @@ sub new { # graph => name,
     $self->{thing} = $params{thing};
     $self->{uuid} = main::make_uuid($self);
 
-    if ($self->{thing} =~ /^#/) {
+    if ($self->{thing} && $self->{thing} =~ /^#/) {
         $self->id($self->{thing});
         undef $self->{thing};
     }
@@ -1274,8 +1274,7 @@ get '/' => 'index';
 *Mojolicious::Controller::svg = \&procure_svg;
 sub procure_svg {
     $main::us || confess "Argsh";
-    my ($svg) = grep { $_->{thing} eq 'svg' } $main::us->linked;
-    $svg ||= $main::us->spawn('svg');
+    return goof($main::us, "+ #svg");
 };
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
