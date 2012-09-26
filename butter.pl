@@ -276,6 +276,7 @@ sub new { # name,
     $self->{links} = [];
     $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;
+    $self->{uuid} = main::make_uuid($self);
     return $self
 }
 sub name {
