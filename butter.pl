@@ -400,9 +400,11 @@ sub field {
 }
 sub id {
     my $self = shift;
-    my $id = shift;
-    $id =~ s/^#//;
-    $self->{id} = $id;
+    if (my $id = shift) {
+        $id =~ s/^#//;
+        $self->{id} = $id;
+    }
+    return $self->{id};
 }
 sub trash {
     my $self = shift;
@@ -414,6 +416,7 @@ sub trash {
             next;
         }
         $self->unlink($n);
+        say "Blowing up ".main::summarise($n->{thing});
         $n->{thing}->DESTROY if ref $n->{thing} eq "Graph";
     }
 }
@@ -560,6 +563,8 @@ $findable->link($fs);
 $findable->link($fs_head);
 $findable->link($webbery);
 
+my $mach = $webbery->spawn("#mach");
+
 my $codes = new Graph("codes");#{{{
 
 my $get_object = graph_code($codes, "sub graph_code");
@@ -633,6 +638,7 @@ sub search {
     elsif ($p{want} && $p{want} =~ /^G\((\S+)\)$/) {
         my $graph_name = $1;
         my $res = new Graph($graph_name);
+        say "Made new graph for results: ".anydump($res);
         my $trav = $p{traveller} || Travel->new(
             ($p{ignore} ? (ignore => $p{ignore}) : ())
         );
@@ -675,7 +681,7 @@ sub goof {
     if ($etc =~ /^\+ (#\w+) ?(\{\})?$/) { # + means autovivify
         my ($spec, $default) = ($1, $2);
         my @ed = $start->linked($spec);
-        confess "heaps of $spec from $start: ".Dump[@ed] if @ed > 1;
+        #confess "heaps of $spec from $start: ".Dump[@ed] if @ed > 1;
         my $ed = shift @ed;
         unless ($ed) {
             if ($default) {
@@ -685,7 +691,7 @@ sub goof {
             $ed = $start->spawn($default);
             $ed->id($spec);
         }
-        return $ed;
+        return wantarray ? ($ed, @ed) : $ed;
     }
     else {
         confess "goof $start: $etc is crazy";
@@ -712,7 +718,8 @@ sub travel { # TRAVEL
     if ($ex->{depth} > 500) {
         die "DEEP RECURSION!";
     }
-
+    
+    $DB::single = $G->graph eq "object-examination";
     my @links = getlinks(from => $G);
     hook($ex, "all_links", \@links);
 
@@ -821,8 +828,8 @@ sub summarise { # SUM
         }
         when ("Node") {
             my $inner = $thing->thing;
-            my $id = $thing->{uuid};
-            $text = "N($thing->{graph}) ".summarise($inner);
+            my $id = $thing->id;
+            $text = "N($thing->{graph}) ".($id ? "$id " : "").summarise($inner);
             unless (ref $inner eq "Node") {
                 my $addy = $thing->{uuid};
                 $text .= " $addy"
@@ -850,6 +857,9 @@ sub summarise { # SUM
                 $text = Dump($thing);
                 say "but whatever: $@";
             }
+        }
+        when ("CODE") {
+            $text = "code";
         }
     }
     if (!defined $thing) {
@@ -891,7 +901,6 @@ our $whereto = ["boxen", {}];
 $whereto = [object => { id => $get_object->{uuid} }];
 
 $findable->link($webbery->spawn("clients"));
-my $re = goof($findable, "+ #reexamine");
 our $us; # client - low priority: sessions
 
 use Mojolicious::Lite;
@@ -965,6 +974,27 @@ sub nameidcolor { #{{{
     }
 };#}}}
 my $vid = 0;
+
+my $re = $mach->spawn("#reexamine");
+$re->link($findable);
+$re->{thing} = sub {
+    my ($self, $us) = @_;
+    my @exams = $us->linked("#/^object-examination/");
+    die "no old graph" unless @exams;
+    my $exam = $exams[0]->thing;
+    my @drawings;
+    my $svg = $self->svg;
+    travel($exam->first, sub {
+        my ($G, $ex) = @_;
+        push @drawings, map {
+            $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+            $_->[1] +=  $us->linked("#width")->thing / 2 - 100;
+            $_
+        } map { $_->{val}->[0] } $svg->links($G);
+    });
+    return $self->drawings(@drawings);
+};
+
 get '/object' => \&get_object;
 sub get_object { # OBJ
     my $self = shift;
@@ -982,45 +1012,10 @@ sub get_object { # OBJ
     ref $object eq "Node"
         || return $self->sttus("don't like to objectify ".ref $object);
 
-    if ($object eq $re) {# get the old drawing data and plot it again next door {{{
-        my @exams = $us->linked("#/^object-examination/");
-        my $exam = $exams[0]->thing;
-        my @drawings;
-        my $svg = $self->svg;
-        travel($exam->first, sub {
-            my ($G, $ex) = @_;
-            push @drawings, map {
-                $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
-                $_->[1] +=  $us->linked("#width")->thing / 2 - 100;
-                $_
-            } $svg->links($G);
-        });
-        return $self->drawings(@drawings);
-    }#}}}
-
-    if ($object->thing eq "tbutt") {
-        my @both_drawings;
-        for my $w ("gots", "expe") {
-            my $drawings = LoadFile($w.".instro");
-            shift(@$drawings)->[0] eq "clear" or die "uhg";
-            shift @$drawings if $drawings->[0]->[0] eq "status";
-            for my $d (@$drawings) {
-                $d->[1] += 50;
-                $d->[2] += 50;
-            }
-            if ($w eq "expe") {
-                for my $d (@$drawings) {
-                    $d->[1] += 100;
-                }
-            }
-            push @both_drawings, @$drawings;
-        }
-        unshift @both_drawings, ["status", "Got vs expected"];
-        unshift @both_drawings, ["clear"];
-        say Dump[@both_drawings];
-        return $self->drawings(@both_drawings);
-    }
-
+    if ($mach->linked($object)) {
+        return $object->thing->($self, $us);
+    };
+            
     # find the old graph
     my @exams = $us->linked("#/^object-examination/");
     # the latest one (serial numbered name)

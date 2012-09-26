@@ -96,6 +96,10 @@ sub param {
     my $val = $self->{param}->{$what};
     return $val;
 }
+sub id {
+    my $self = shift;
+    $self->{param}->{id} = shift;
+}
 sub render {};
 sub svg {
     return main::procure_svg();
@@ -103,10 +107,10 @@ sub svg {
 sub sttus { shift; $main::sttus = [@_]; }
 sub drawings { shift; $main::drawings = [@_]; }
 package main;
-sub moje {
+sub new_moje {
     $sttus = undef;
     $drawings = undef;
-    NonMojo->new(param => {id => shift});
+    NonMojo->new();
 } # }}}
 
 my $tests = new Graph;
@@ -115,8 +119,22 @@ my $case_1 = $tests->spawn("case 1");
 run_case($case_1);
 
 my $case_2 = $tests->spawn("case 2");
-$case_2->spawn("#id")->{thing} = sub {
+$case_2->spawn("#steps");
+$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
     $main::findable->linked("#reexamine")->{uuid};
+};
+$case_2->spawn("#post")->{thing} = sub {
+    my $last = load_expected($case_1);
+    delete $last->[$_] for 0..17;
+    @$last = grep {
+        defined $_ && 
+        !($_->[0] eq "boxen" && $_->[3] == 4
+            || @$_ > 2 && $_->[-1]->{class} && $_->[-1]->{class} =~ /findable/
+        )
+    } @$last;
+    my $this = load_expected($case_2);
+    $DB::single = 1;
+    diff_instructions($last, $this);
 };
 run_case($case_2);
 
@@ -126,16 +144,22 @@ sub run_case {
     
     my $expect  = load_expected($case);
 
-    my $id = $case->linked("#id") || $main::whereto->[1]->{id};
-    if (ref $id eq "Node") {
-        $id = $id->thing->();
-    }
-    say "ID: $id";
-    my $mojo = moje($id);
+    my @steps = goof($case, "+ #steps");
+
+    say @steps." steps";
+    my $mojo = new_moje();
     hello($mojo);
     $main::us->spawn(1427)->id("width");
 
-    get_object($mojo);
+    for my $s (@steps) {
+        say "Case $case->{thing} step!";
+        my $id = $s->linked("#id") || $main::whereto->[1]->{id};
+        $id = $id->thing->() if ref $id eq "Node";
+        say "ID: $id";
+        $mojo->id($id);
+
+        get_object($mojo);
+    }
 
     use Storable 'dclone';
     my $got = dclone $drawings;
@@ -144,6 +168,10 @@ sub run_case {
 
     if (!$ok && prompt_yN("update expectations?")) {
         save_expected($case, $got);
+    }
+
+    if (my $post = $case->linked("#post")) {
+        $post->thing->();
     }
 }
 
@@ -163,7 +191,7 @@ sub diff_instructions {
         copy_instructions_uuids($what_for, $e_in, $g_in);
 
         my $ginode = $results->spawn($g_in);
-        unless (is_deeply($e_in, $g_in, "an instruction of $g_in->[0]"
+        unless (is_deeply($g_in, $e_in, "an instruction of $g_in->[0]"
                 .($g_in->[0] eq "label" ? ": $g_in->[-2]" : "")
             )) {
 #            use YAML::Syck;
