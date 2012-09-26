@@ -528,7 +528,7 @@ sub travel {
             $ex->{$k} = $v
         }
     }
-    main::travel($main::G, $ex);
+    main::travel($main::G, $ex, main::summarise($main::G));
 }
 package main;
 #}}}
@@ -748,7 +748,7 @@ sub travel { # TRAVEL
         
         #say "TRAVELOONG $l->{0} -> $l->{1}";
         $G = $l->{1};
-        travel($l->{1}, $ex)
+        travel($l->{1}, $ex, main::summarise($main::G))
     }
 }
 
