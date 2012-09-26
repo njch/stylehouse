@@ -115,28 +115,30 @@ sub new_moje {
 
 my $tests = new Graph;
 
+`rm testrun/*.yml`;
+
 my $case_1 = $tests->spawn("case 1");
 run_case($case_1);
 
+my $webbery = $main::findable->linked("G(webbery)")->thing;
+my $webgraph = examinate_graph($webbery);
+
+$DB::single = 1;
+my @svgs = $webbery->linked("#svg");
+say "svgs: \n".Dump[\@svgs];
+
 my $case_2 = $tests->spawn("case 2");
 $case_2->spawn("#steps");
-$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
-    $main::findable->linked("#reexamine")->{uuid};
-};
+#$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
+#    $main::us->linked("#width")->{uuid};
+#};
 $case_2->spawn("#post")->{thing} = sub {
-    my $last = load_expected($case_1);
-    delete $last->[$_] for 0..17;
-    @$last = grep {
-        defined $_ && 
-        !($_->[0] eq "boxen" && $_->[3] == 4
-            || @$_ > 2 && $_->[-1]->{class} && $_->[-1]->{class} =~ /findable/
-        )
-    } @$last;
-    my $this = load_expected($case_2);
-    $DB::single = 1;
-    diff_instructions($last, $this);
+    # could one day match up drawing instructions between the two sets
+    # prev draws extra stuff on screen and this one has more y coord
 };
 run_case($case_2);
+my @svgs2 = $webbery->linked("#svg");
+say "svgs: \n".Dump[\@svgs2];
 
 
 sub run_case {
@@ -153,7 +155,9 @@ sub run_case {
 
     for my $s (@steps) {
         say "Case $case->{thing} step!";
-        my $id = $s->linked("#id") || $main::whereto->[1]->{id};
+        my $id = $s->linked("#id") || do {
+            ($main::findable->linked("G(codes)"))[0]->thing->first->{uuid}
+        };
         $id = $id->thing->() if ref $id eq "Node";
         say "ID: $id";
         $mojo->id($id);
@@ -173,6 +177,8 @@ sub run_case {
     if (my $post = $case->linked("#post")) {
         $post->thing->();
     }
+
+    DumpFile('testrun/'.$case->{thing}.'.yml', $got);
 }
 
 sub diff_instructions {

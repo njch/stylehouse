@@ -328,7 +328,8 @@ sub find {
     my ($self, $thing) = @_;
     my @nodes;
     $self->map_nodes(sub {
-        if (defined $_[0]->{thing} && $_[0]->{thing} eq $thing) {
+        if ($thing =~ /^#/ ? main::spec_comp($thing, $_[0])
+             : defined $_[0]->{thing} && $_[0]->{thing} eq $thing) {
             push @nodes, $_[0];
         }
     });
@@ -422,7 +423,17 @@ sub trash {
     }
 }
 sub graph {
-    $main::graphs{$_[0]->{graph}} || main::confess "no graph $_[0]->{graph}";
+    my $self = shift;
+    until ($main::graphs{$self->{graph}}) {
+        $self->{graph} = shift @{ $self->{other_graphs} || [] } || return undef;
+    }
+    return $main::graphs{$self->{graph}}
+}
+sub another_graph {
+    my $self = shift;
+    my $other_graph = shift;
+    my $ogs = $self->{other_graphs} ||= [];
+    push @$ogs, $other_graph;
 }
 sub link {
     $_[0]->graph->link(@_)
@@ -535,9 +546,9 @@ package main;
 
 sub done_linked { # {{{
     my ($g, $l) = @_;
-    main::moan "diff graphs: ". main::summarise($l->{0}) . "\t\t" . main::summarise($l->{1})
-        if $l->{0}->graph ne $l->{1}->graph && 0;
-
+    if ($l->{0}->graph ne $l->{1}->graph) {
+        $l->{1}->another_graph($l->{0}->graph);
+    }
 }
 sub done_unlinked {
     my ($g, $l) = @_;
@@ -569,6 +580,7 @@ my $mach = $webbery->spawn("#mach");
 my $codes = new Graph("codes");#{{{
 
 my $get_object = graph_code($codes, "sub graph_code");
+$get_object = $webbery;
 
 $findable->link($codes);
 $findable->link($get_object);
@@ -632,7 +644,7 @@ sub object_by_uuid {
 # TODO
 sub search {
     my %p = @_;
-    $p{start} || die "where?";
+    $p{start} || confess "where?";
     if ($p{want} && $p{want} eq "links") {
         return getlinks(from => $p{start}, to => $p{spec});
     }
@@ -661,13 +673,21 @@ sub getlinks {
     my %p = @_;
 
     my @links;
-    @links = @{$p{to}->graph->{links}}
-        if $p{to} && ref $p{to} eq "Node";
+    if ($p{to} && ref $p{to} eq "Node") {
+        if (!$p{to}->{graph}) {
+            say "$p{to} is no more?";
+        }
+        else {
+            @links = @{$p{to}->graph->{links}}
+        }
+    }
     if ($p{from} && ref $p{from} eq "Node") {
         if (!$p{from}->graph) {
             say "$p{from} is no more?";
         }
-        @links = @{$p{from}->graph->{links}}
+        else {
+            @links = @{$p{from}->graph->{links}}
+        }
     }
 
     @links = map { main::order_link($p{from}, $_) } @links if $p{from};
@@ -720,7 +740,9 @@ sub travel { # TRAVEL
         die "DEEP RECURSION!";
     }
     
-    $DB::single = $G->graph eq "object-examination";
+    unless ($main::graphs{$G->{graph}}) {
+        warn "graph $G->{graph} has been destroyed!";
+    }
     my @links = getlinks(from => $G);
     hook($ex, "all_links", \@links);
 
@@ -995,6 +1017,16 @@ $re->{thing} = sub {
     });
     return $self->drawings(@drawings);
 };
+sub examinate_graph {
+    my $graph = shift;
+
+    my $exam = new Graph('graph-exam');
+    $exam = $exam->spawn("Graph exam");
+    $graph->map_nodes( sub {
+        $exam->spawn(shift);
+    } );
+    return $exam;
+}
 
 get '/object' => \&get_object;
 sub get_object { # OBJ
@@ -1002,7 +1034,6 @@ sub get_object { # OBJ
 
     my $id = $self->param('id')
         || die "no id";
-    say $id;
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
@@ -1010,13 +1041,23 @@ sub get_object { # OBJ
     my $object = object_by_uuid($id)
         || return $self->sttus("$id no longer exists!");
 
-    ref $object eq "Node"
-        || return $self->sttus("don't like to objectify ".ref $object);
+    my $status = "For ". summarise($object);
+    if (ref $object eq "Graph") {
+        # can't traverse from a graph so create a list of Nodes and continue with that
+        $object = examinate_graph($object);
+    }
+    elsif (ref $object eq "Node") {
+        if ($mach->linked($object)) {
+            return $object->thing->($self, $us);
+        }
+    }
+    else {
+        confess ref $object;
+        return $self->sttus("don't like to objectify ".ref $object);
+    }
 
-    if ($mach->linked($object)) {
-        return $object->thing->($self, $us);
-    };
-            
+
+
     # find the old graph
     my @exams = $us->linked("#/^object-examination/");
     # the latest one (serial numbered name)
@@ -1178,7 +1219,10 @@ sub get_object { # OBJ
             $preserve->link($old);
      
             my @olds = map { $_->{val}->[0] } $svg->links($old);
-            die "hmm" if @olds != 2
+            do {
+                say Dump[@olds];
+                die "hmm"
+                } if @olds != 2
                 && $old->thing->{graph} ne "codes"; # lines of code spawn into labels each
             my @news = map { $_->{val}->[0] } $svg->links($new);
             die "har" if @news != 2
@@ -1256,7 +1300,7 @@ sub get_object { # OBJ
 
     @drawings = (@removals, @animations, @drawings);
 
-    unshift @drawings, ["status", "For ". summarise($object)];
+    unshift @drawings, ["status", $status];
     if ($clear) {
         unshift @drawings, draw_findable($self);
         unshift @drawings, ["clear"];
