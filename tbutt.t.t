@@ -124,21 +124,23 @@ my $webbery = $main::findable->linked("G(webbery)")->thing;
 my $webgraph = examinate_graph($webbery);
 
 $DB::single = 1;
-my @svgs = $webbery->linked("#svg");
-say "svgs: \n".Dump[\@svgs];
+my @svgs = $webbery->find("#svg");
+for my $svg (@svgs) {
+    say main::summarise($svg) ." ". $svg->links();
+}
 
 my $case_2 = $tests->spawn("case 2");
 $case_2->spawn("#steps");
 #$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
 #    $main::us->linked("#width")->{uuid};
 #};
-$case_2->spawn("#post")->{thing} = sub {
-    # could one day match up drawing instructions between the two sets
-    # prev draws extra stuff on screen and this one has more y coord
-};
+# make drawings
+
 run_case($case_2);
-my @svgs2 = $webbery->linked("#svg");
-say "svgs: \n".Dump[\@svgs2];
+my @svgs2 = $webbery->find("#svg");
+for my $svg (@svgs2) {
+    say main::summarise($svg) ." ". $svg->links();
+}
 
 
 sub run_case {
@@ -173,13 +175,13 @@ sub run_case {
     if (!$ok && prompt_yN("update expectations?")) {
         save_expected($case, $got);
     }
-
-    if (my $post = $case->linked("#post")) {
-        $post->thing->();
-    }
-
     DumpFile('testrun/'.$case->{thing}.'.yml', $got);
 }
+
+{ no warnings 'redefine';
+*main::test_get_object_data = sub {
+    ($removals, $animations, $drawings) = @_;
+}; }
 
 sub diff_instructions {
     my ($expect, $got) = @_;
@@ -222,7 +224,7 @@ sub copy_instructions_uuids {
     return unless $from->[0] =~ /boxen|label|status/;
     my $af = $from->[-1];
     my $at = $to->[-1];
-    if ($from->[0] ne "status") {
+    if ($from->[0] !~ /clear|status/ && $to->[0] !~ /clear|status/) {
         for my $for (qw{fill stroke name id class}) {
             if ($at->{$for} && $af->{$for}) {
                 $at->{$for} = idswapchunk($what_for, $af->{$for}, $at->{$for});

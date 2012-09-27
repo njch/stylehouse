@@ -417,7 +417,7 @@ sub trash {
             say "$n not in $field";
             next;
         }
-        say summarise($self)." going to delete ".summarise($n);
+        say main::summarise($self)." going to delete ".main::summarise($n);
         $self->unlink($n);
     }
 }
@@ -936,9 +936,8 @@ sub hello {
 
     # trash the old state
     for my $client ($webbery->find("clients")->linked()) {
-        if ($client->{thing} eq $client_id) {
-            $client->trash()
-        }
+        # if client eq us,
+        # $client->trash()
     }
 
     $us = $webbery->find("clients")->spawn("the");
@@ -1298,6 +1297,7 @@ sub get_object { # OBJ
         $clear = 1;
     }
 
+    test_get_object_data(\@removals, \@animations, \@drawings);
     @drawings = (@removals, @animations, @drawings);
 
     unshift @drawings, ["status", $status];
@@ -1307,6 +1307,7 @@ sub get_object { # OBJ
     }
     $self->drawings(@drawings);
 };
+sub test_get_object_data { }
 
 get '/object_info' => sub {
     my $self = shift;
