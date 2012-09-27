@@ -417,9 +417,8 @@ sub trash {
             say "$n not in $field";
             next;
         }
+        say summarise($self)." going to delete ".summarise($n);
         $self->unlink($n);
-        say "Blowing up ".main::summarise($n->{thing});
-        $n->{thing}->DESTROY if ref $n->{thing} eq "Graph";
     }
 }
 sub graph {
@@ -740,7 +739,9 @@ sub travel { # TRAVEL
         die "DEEP RECURSION!";
     }
     
+    confess "Graph?" if ref $G eq "Graph";
     unless ($main::graphs{$G->{graph}}) {
+        $DB::single = 1;
         warn "graph $G->{graph} has been destroyed!";
     }
     my @links = getlinks(from => $G);
@@ -1079,7 +1080,7 @@ sub get_object { # OBJ
         undef $viewed;
         die "many" if @exams > 2;
         for my $old_exam (@exams) {
-            $old_exam->{thing}->DESTROY;
+#            $old_exam->{thing}->DESTROY;
             $us->unlink($old_exam);
         }
     }
@@ -1209,6 +1210,9 @@ sub get_object { # OBJ
             );
         }
     });
+
+    write_file('new_exam', displow($exam->first)."\n\n\n\n\n");
+    `cat new_exam >> exams`;
     
     my $preserve = $exam->spawn("preserve");
     $trav->travel($exam->first, sub {
@@ -1219,11 +1223,7 @@ sub get_object { # OBJ
             $preserve->link($old);
      
             my @olds = map { $_->{val}->[0] } $svg->links($old);
-            do {
-                say Dump[@olds];
-                die "hmm"
-                } if @olds != 2
-                && $old->thing->{graph} ne "codes"; # lines of code spawn into labels each
+            
             my @news = map { $_->{val}->[0] } $svg->links($new);
             die "har" if @news != 2
                 && $new->thing->{graph} ne "codes"; # lines of code spawn into labels each
