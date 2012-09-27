@@ -1099,7 +1099,8 @@ sub get_object { # OBJ
     # this graph name oughtta be useless but for debug verbosity due to using id now
     my $trav = Travel->new(
         ignore =>
-            ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination"],
+            ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination",
+             "#ids"],
     );
     my $exam = search(
         start => $object,

@@ -86,6 +86,17 @@ say "";
 say "";
 
 our ($sttus, $drawings);
+my $drawdata = {};
+{ no warnings 'redefine';
+*main::test_get_object_data = sub {
+    $drawdata = {
+        removals => shift,
+        animations => shift,
+        drawings => shift,
+    }
+}; }
+
+
 package NonMojo; # {{{
 use strict;
 use warnings;
@@ -131,9 +142,9 @@ for my $svg (@svgs) {
 
 my $case_2 = $tests->spawn("case 2");
 $case_2->spawn("#steps");
-#$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
-#    $main::us->linked("#width")->{uuid};
-#};
+$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
+    $main::us->linked("#width")->{uuid};
+};
 # make drawings
 
 run_case($case_2);
@@ -146,7 +157,7 @@ for my $svg (@svgs2) {
 sub run_case {
     my $case = shift;
     
-    my $expect  = load_expected($case);
+    my $expected  = load_expected($case);
 
     my @steps = goof($case, "+ #steps");
 
@@ -168,21 +179,22 @@ sub run_case {
     }
 
     use Storable 'dclone';
-    my $got = dclone $drawings;
+    $drawdata = dclone $drawdata;
+    my $ok = 1;
+    for my $t (qw'drawings animations removals') {
+        my $got = $drawdata->{$t};
+        my $expected = $expected->{$t};
 
-    my $ok = diff_instructions($expect, dclone $got);
-
-    if (!$ok && prompt_yN("update expectations?")) {
-        save_expected($case, $got);
+        unless (diff_instructions($expected, dclone $got)) {
+            $ok = 0;
+            say "Was a $t";
+        }
     }
-    DumpFile('testrun/'.$case->{thing}.'.yml', $got);
+    if (!$ok && prompt_yN("update expectations?")) {
+        save_expected($case, $drawdata);
+    }
+    DumpFile('testrun/'.$case->{thing}.'.yml', $drawdata);
 }
-
-{ no warnings 'redefine';
-*main::test_get_object_data = sub {
-    ($removals, $animations, $drawings) = @_;
-}; }
-
 sub diff_instructions {
     my ($expect, $got) = @_;
     # diff got <> expected, into a two column graph if diff
@@ -195,6 +207,8 @@ sub diff_instructions {
     my $what_for = {};
     for my $e_in (@$expect) {
         my $g_in = $got->[$i];
+
+        next if $e_in->[3] && $e_in->[3] =~ /^\S+ ids/;
 
         copy_instructions_uuids($what_for, $e_in, $g_in);
 
