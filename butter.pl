@@ -575,6 +575,24 @@ $findable->link($fs_head);
 $findable->link($webbery);
 
 my $mach = $webbery->spawn("#mach");
+sub mach_spawn {
+    my $m = $mach->spawn(shift);
+    $m->{thing} = shift;
+    return $m
+}
+
+mach_spawn("#tbutt", sub {
+    my ($self, $us) = @_;
+
+    my ($rc, @output) = capture_err("perl", "tbutt.t.t", "harnessed");
+
+    say "test run $rc with ".@output;
+    my $run = $webbery->spawn("#testrun");
+    $run->spawn("return code: $rc");
+    $run->spawn("output", \@output);
+
+    get_object($self, $run->{uuid});
+})->link($findable);
 
 my $codes = new Graph("codes");#{{{
 
@@ -609,8 +627,6 @@ sub graph_code {
 
     return $codes;
 } # }}}
-
-$findable->spawn("tbutt");
 
 # {{{ the linkstash
 our %objects_by_id;
@@ -871,6 +887,7 @@ sub summarise { # SUM
                     $text = Dump($thing);
                     say "but whatever: $@";
                 }
+                $text =~ s/^(.{40})(.+)$/"$1...".length($2)/e;
             }
         }
         when ("ARRAY") {
@@ -998,9 +1015,7 @@ sub nameidcolor { #{{{
 };#}}}
 my $vid = 0;
 
-my $re = $mach->spawn("#reexamine");
-$re->link($findable);
-$re->{thing} = sub {
+mach_spawn("#reexamine", sub {
     my ($self, $us) = @_;
     my @exams = $us->linked("#/^object-examination/");
     die "no old graph" unless @exams;
@@ -1016,7 +1031,7 @@ $re->{thing} = sub {
         } map { $_->{val}->[0] } $svg->links($G);
     });
     return $self->drawings(@drawings);
-};
+})->link($findable);
 sub examinate_graph {
     my $graph = shift;
 
@@ -1032,7 +1047,7 @@ get '/object' => \&get_object;
 sub get_object { # OBJ
     my $self = shift;
 
-    my $id = $self->param('id')
+    my $id = shift || $self->param('id')
         || die "no id";
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
@@ -1040,6 +1055,8 @@ sub get_object { # OBJ
 
     my $object = object_by_uuid($id)
         || return $self->sttus("$id no longer exists!");
+
+
 
     my $status = "For ". summarise($object);
     if (ref $object eq "Graph") {

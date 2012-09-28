@@ -139,7 +139,7 @@ my @svgs = $webbery->find("#svg");
 for my $svg (@svgs) {
     say main::summarise($svg) ." ". $svg->links();
 }
-
+=pod
 my $case_2 = $tests->spawn("case 2");
 $case_2->spawn("#steps");
 $case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
@@ -152,7 +152,7 @@ my @svgs2 = $webbery->find("#svg");
 for my $svg (@svgs2) {
     say main::summarise($svg) ." ". $svg->links();
 }
-
+=cut
 
 sub run_case {
     my $case = shift;
@@ -190,7 +190,7 @@ sub run_case {
             say "Was a $t";
         }
     }
-    if (!$ok && prompt_yN("update expectations?")) {
+    if (0 && !$ok && prompt_yN("update expectations?")) {
         save_expected($case, $drawdata);
     }
     DumpFile('testrun/'.$case->{thing}.'.yml', $drawdata);
