@@ -271,8 +271,10 @@ sub idswapchunk {
             $f =~ /^000/ && $t =~ s/^.../000/;
     
             if (my $for_before = $what_for->{$old}) {
-                fail("swapped like before $old -> $new")
-                    unless $new eq $for_before;
+                unless ($new eq $for_before) {
+                    fail("swapped like before $old -> $new");
+                    say Dump[$f, $t, $new, $for_before, $old];
+                }
             }
             else {
                 $what_for->{$old} = $new
@@ -298,8 +300,6 @@ sub save_expected {
     my $expected_file = "$dir/expected.yml";
     DumpFile($expected_file, $expected);
 }
-do {
-};
 
 sub makediff {
     my ($expected, $got) = @_;
