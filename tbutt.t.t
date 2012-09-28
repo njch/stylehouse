@@ -89,10 +89,11 @@ our ($sttus, $drawings);
 my $drawdata = {};
 { no warnings 'redefine';
 *main::test_get_object_data = sub {
+    use Storable 'dclone';
     $drawdata = {
-        removals => shift,
-        animations => shift,
-        drawings => shift,
+        removals => dclone shift,
+        animations => dclone shift,
+        drawings => dclone shift,
     }
 }; }
 
@@ -207,6 +208,10 @@ sub diff_instructions {
     my $what_for = {};
     for my $e_in (@$expect) {
         my $g_in = $got->[$i];
+        unless ($g_in) {
+            fail "got no instruction";
+            next;
+        }
 
         next if $e_in->[3] && $e_in->[3] =~ /^\S+ ids/;
 
@@ -273,7 +278,6 @@ sub idswapchunk {
             if (my $for_before = $what_for->{$old}) {
                 unless ($new eq $for_before) {
                     fail("swapped like before $old -> $new");
-                    say Dump[$f, $t, $new, $for_before, $old];
                 }
             }
             else {
