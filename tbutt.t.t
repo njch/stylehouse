@@ -3,10 +3,11 @@ use warnings;
 use Scriptalicious;
 use Test::More 'no_plan';
 use YAML::Syck;
+use Storable 'dclone';
 start_timer();
 require_ok 'butter.pl';
 diag "required ".show_delta();
-
+our $TEST = 1;
 do { # {{{
 my $g1 = new Graph("test1");
 my $g1n1 = $g1->spawn({color => "yellow"});
@@ -86,17 +87,6 @@ say "";
 say "";
 
 our ($sttus, $drawings);
-my $drawdata = {};
-{ no warnings 'redefine';
-*main::test_get_object_data = sub {
-    use Storable 'dclone';
-    $drawdata = {
-        removals => dclone shift,
-        animations => dclone shift,
-        drawings => dclone shift,
-    }
-}; }
-
 
 package NonMojo; # {{{
 use strict;
@@ -127,7 +117,7 @@ sub new_moje {
 
 my $tests = new Graph;
 
-`rm testrun/*.yml`;
+`rm testrun/*.yml` if glob "testrun/*.yml";
 
 my $case_1 = $tests->spawn("case 1");
 run_case($case_1);
@@ -157,6 +147,8 @@ for my $svg (@svgs2) {
 
 sub run_case {
     my $case = shift;
+
+    local $TEST = $case;
     
     my $expected  = load_expected($case);
 
@@ -167,8 +159,10 @@ sub run_case {
     hello($mojo);
     $main::us->spawn(1427)->id("width");
 
+    my $si = 1;
     for my $s (@steps) {
-        say "Case $case->{thing} step!";
+        local $TEST = $s;
+        say "Case $case->{thing} step ".$si++;
         my $id = $s->linked("#id") || do {
             ($main::findable->linked("G(codes)"))[0]->thing->first->{uuid}
         };
@@ -179,8 +173,9 @@ sub run_case {
         get_object($mojo);
     }
 
-    use Storable 'dclone';
-    $drawdata = dclone $drawdata;
+    my $last_drawings = ($case->linked("#steps"))[-1]->linked("#drawings");
+    my $drawdata = $last_drawings->thing;
+
     my $ok = 1;
     for my $t (qw'drawings animations removals') {
         my $got = $drawdata->{$t};

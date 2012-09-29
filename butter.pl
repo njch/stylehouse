@@ -12,6 +12,7 @@ use v5.10;
 our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $G;
+our $TEST;
 
 =head1 NEW FILE!
 
@@ -1315,7 +1316,15 @@ sub get_object { # OBJ
         $clear = 1;
     }
 
-    test_get_object_data(\@removals, \@animations, \@drawings);
+    if ($TEST) {
+        use Storable 'dclone';
+        $TEST->spawn(dclone {
+            id => $id,
+            removals => \@removals,
+            animations => \@animations,
+            drawings => \@drawings,
+        })->id("#drawings");
+    }
     @drawings = (@removals, @animations, @drawings);
 
     unshift @drawings, ["status", $status];
