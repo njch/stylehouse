@@ -296,11 +296,12 @@ sub link {
 }
 sub unlink {
     my ($self, @to_unlink) = @_;
+    warn 'nothing to unlink' unless @to_unlink;
     my %to_unlink;
     for (@to_unlink) {
         die "different graphs..".Dump($_)
             if $_->{1}->{graph} ne $_->{0}->{graph}
-                || $_->{1}->{graph} ne $self->{name}
+                || $_->{1}->{graph} ne $self->{uuid}
     }
     $to_unlink{$_->{_id} || "$_"} = undef for @to_unlink;
     my $links = $self->{links};
@@ -795,7 +796,6 @@ sub travel { # TRAVEL
     
     unless (ref $G eq "Node" && $main::objects_by_id{$G->{graph}}
         || ref $G eq "Graph" && $main::objects_by_id{$G->{uuid}}) {
-        $DB::single = 1;
         confess "graph $G->{graph} has been destroyed!";
     }
     my @links;
@@ -1096,6 +1096,7 @@ sub get_object { # OBJ
 
     my $id = shift || $self->param('id')
         || die "no id";
+
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
