@@ -262,6 +262,15 @@ fuck that, just ui runnable test routines would be the ticket.
 then those routines could elabourate into machine clusterations
 the tests are the routines right.
 
+- limber up graph happening.
+thawed graph bootstraps itself with links from nowhere to all its nodes.
+usually there'd be links from somewhere to everything
+talking about it relative to various formulas
+some of that thought for thinking about writing it.
+
+there's definitely that machine-thinking-ideas pattern.
+
+WORDS
 =cut
 
 our %graphs; # {{{
@@ -588,7 +597,9 @@ sub mach_for_test_results {
     my $run = shift;
     my $m = mach_spawn("#testsults", sub {
         my ($self, $mojo, $client) = @_;
+        start_timer();
         my $case = load_graph_yml("testrun/case 2.yml");
+        say "Load graph took: ".show_delta();
         my $cases = $case->find("#cases");
         get_object($mojo, $cases->{uuid});
     });
@@ -624,7 +635,7 @@ mach_spawn("#tbutt", sub {
 my $codes = new Graph("codes");#{{{
 
 my $get_object = graph_code($codes, "sub graph_code");
-$get_object = $findable->linked("#tbutt");
+$get_object = mach_for_test_results(undef); # $findable->linked("#tbutt");
 
 $findable->link($codes);
 $findable->link($get_object);
@@ -1105,7 +1116,7 @@ sub get_object { # OBJ
         || return $self->sttus("$id no longer exists!");
 
 
-
+    start_timer();
     my $status = "For ". summarise($object);
     if (ref $object eq "Graph") {
         # can't traverse from a graph so create a list of Nodes and continue with that
@@ -1157,6 +1168,7 @@ sub get_object { # OBJ
 
 
     my (@drawings, @animations, @removals);
+    say "Beginning: ".show_delta();
 
 
     # TODO this is a travel()/search() result-as-graph idea
@@ -1198,6 +1210,7 @@ sub get_object { # OBJ
 
     my ($x, $y) = (30, 40);
 
+    say "pre svg: ".show_delta();
 
     $trav->travel($exam->first, sub {
         my ($G, $ex) = @_;
@@ -1276,8 +1289,7 @@ sub get_object { # OBJ
         }
     });
 
-    write_file('new_exam', displow($exam->first)."\n\n\n\n\n");
-    `cat new_exam >> exams`;
+    say "post svg: ".show_delta();
     
     my $preserve = $exam->spawn("preserve");
     $trav->travel($exam->first, sub {
@@ -1290,8 +1302,11 @@ sub get_object { # OBJ
             my @olds = map { $_->{val}->[0] } $svg->links($old);
             
             my @news = map { $_->{val}->[0] } $svg->links($new);
-            die "har" if @news != 2
-                && $new->thing->{graph} ne "codes"; # lines of code spawn into labels each
+            if (@news != 2) {
+                if ($new->thing->graph->name ne "codes") {
+#                    say "strange number of news:\n".Dump \@news
+                }
+            }
             die "diff" if @news != @olds;
             
             my @diffs;
@@ -1313,7 +1328,6 @@ sub get_object { # OBJ
                 };
             }
 
-            start_timer();
             my (%by_xy, %by_id);
             for (@diffs) {
                 $by_xy{"$_->{x},$_->{y}"} = undef;
@@ -1321,7 +1335,6 @@ sub get_object { # OBJ
             }
             die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
             die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
-            say "YEAH!!!!! ".show_delta();
             
             if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
                 push @animations,
@@ -1338,6 +1351,7 @@ sub get_object { # OBJ
             push @drawings, @whats;
         }
     });
+    say "diff: ".show_delta();
 
     if ($viewed) {
         $trav->travel($viewed->first, sub {
