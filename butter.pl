@@ -25,9 +25,41 @@ finally an answer to what is a field and how it works
 
 and DONT FORGET TO TAKE GUITAR BREAKS
 
+=head1 ETC
 
-etc
+I saw the talk about our terrible tools hindering the chance of anything
+good being made. maybe I will get some nicer tools soon.
 
+I need to make the jump to pulling pools of perl together like goops in
+an environment where my creations are mostly data and fractures of data
+architecture, only occasional hacks on the underlying atomic structure.
+
+taxonomic inspiration: each knowledge thing we can reason to about any
+$_ is a field - as in a field of knowledge, opposite end to the unified
+field where everything becomes the same, applying fields is increasing
+entropy.
+
+the machinery is made of itself asap. we shall call this singularity X.
+
+Post-X must be rules about what can react, creation of new fields.
+
+
+Next time is about discerning shapes and levels of behaviour and trying
+to hallucinate visual representation for them and how that would work.
+need to research animated datastructure toolkits... (like they exist)
+
+God damn those lumps of my intellect before they're broken down into
+perly contrivances are exactly the thing to cater for. it's all just
+flowing datastructures. rhythm is the new thing I will be doing, since
+it's so important to Doing The Right Thing.
+
+the problem is I became an artist. now I know that my ideas are
+expressions. it is too hard to express them with the material available.
+lower the barrier for entry, but more importantly shorten the marathon
+of invention, always trying to beat apathy.
+
+I'd love a command & conquer like map of code, instead of being a huge
+text file. swampy bits could be shrank up relative to important bits.
 
 =head1 ALGORITHMS
 
