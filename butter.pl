@@ -684,25 +684,18 @@ sub object_by_uuid {
 sub load_graph_yml {
     my $file = shift;
     my $graph = LoadFile($file);
-    $DB::single = 1;
-#    die "wtf" if exists $objects_by_id{$graph->{uuid}};
-#    $objects_by_id{$graph->{uuid}} = $graph;
-#    say "loaded up graph $graph";
-
     travel($graph, sub {
         my ($G) = shift;
         my $id = $G->{uuid};
         if (exists $objects_by_id{$id}) {
             die $G;
         }
-        say "Loading up $id => $G";
         $objects_by_id{$id} = $G;
     });
     return $graph;
 }
 
-# TODO
-sub search {
+sub search { # TODO {{{
     my %p = @_;
     $p{start} || confess "where?";
     if ($p{want} && $p{want} eq "links") {
@@ -777,7 +770,7 @@ sub goof {
     else {
         confess "goof $start: $etc is crazy";
     }
-}
+} # }}}
 
 sub hook {
     my ($ex, $hook) = (shift, shift);
@@ -800,13 +793,18 @@ sub travel { # TRAVEL
         die "DEEP RECURSION!";
     }
     
-    warn "Graph?" if ref $G eq "Graph";
-    unless ($main::objects_by_id{$G->{graph}}
+    unless (ref $G eq "Node" && $main::objects_by_id{$G->{graph}}
         || ref $G eq "Graph" && $main::objects_by_id{$G->{uuid}}) {
         $DB::single = 1;
         confess "graph $G->{graph} has been destroyed!";
     }
-    my @links = getlinks(from => $G);
+    my @links;
+    if (ref $G eq "Node") {
+        @links = getlinks(from => $G);
+    }
+    elsif (ref $G eq "Graph") {
+        @links = map { { 1 => $_ } } @{$G->{nodes}};
+    }
     hook($ex, "all_links", \@links);
 
     @links = grep { $_ ne $ex->{via_link} } @links;
@@ -817,7 +815,7 @@ sub travel { # TRAVEL
 
     $ex->{seen_oids}->{"$G"} ||= { summarise($G) => [] }; #\@links };
 
-    die if grep { $G ne $_->{0} } @links;
+    #die if grep { $G ne $_->{0} } @links;
     my $next_depth = $ex->{depth} + 1;
     my $previous = $G;
     for my $l (@links) {
