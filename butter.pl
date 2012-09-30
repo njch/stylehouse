@@ -1040,6 +1040,7 @@ sub draw_findable {
         my $sum = summarise($ble);
         my ($name, $id, $color) = nameidcolor($sum);
         $name = "$name $id";
+        $sum =~ s/ .{12}$//;
         push @new, grep { $svg->link($ble, $_); 1 }
             ["boxen", $x, do { $findable_y += 40 }, 30, 30,
                 { fill => $color, name => $name, id => $id, } ],
