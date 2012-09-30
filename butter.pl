@@ -1444,11 +1444,8 @@ sub procure_svg {
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
     say scalar(@_)." drawings";
-    use Storable 'dclone';
-    DumpFile("drawings.yml", dclone([@_]));
-#    my $a = LoadFile ( 'srawnbjgs');
-    my $a = [@_];
-    $self->render(json => $a);
+#    DumpFile("drawings.yml", [@_]);
+    $self->render(json => [@_]);
 };
 *Mojolicious::Controller::sttus = sub {
     my $self = shift;
