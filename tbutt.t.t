@@ -116,10 +116,11 @@ sub new_moje {
 } # }}}
 
 my $tests = new Graph;
+my $cases = $tests->spawn("#cases");
 
 `rm testrun/*.yml` if glob "testrun/*.yml";
 
-my $case_1 = $tests->spawn("case 1");
+my $case_1 = $cases->spawn("case 1");
 run_case($case_1);
 
 my $webbery = $main::findable->linked("G(webbery)")->thing;
@@ -130,7 +131,7 @@ my @svgs = $webbery->find("#svg");
 for my $svg (@svgs) {
     say main::summarise($svg) ." ". $svg->links();
 }
-my $case_2 = $tests->spawn("case 2");
+my $case_2 = $cases->spawn("case 2");
 $case_2->spawn("#steps");
 $case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
     $main::us->linked("#width")->{uuid};

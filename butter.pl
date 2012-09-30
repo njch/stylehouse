@@ -588,7 +588,8 @@ sub mach_for_test_results {
     my $m = mach_spawn("#testsults", sub {
         my ($self, $mojo, $client) = @_;
         my $case = load_graph_yml("testrun/case 2.yml");
-        get_object($mojo, $case->{uuid});
+        my $cases = $case->find("#cases");
+        get_object($mojo, $cases->{uuid});
     });
 }
 
