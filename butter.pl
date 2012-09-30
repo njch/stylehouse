@@ -522,7 +522,10 @@ sub new {
     my %p = @_;
     my $self = bless {}, __PACKAGE__;
     if ($p{ignore}) {
-        $self->ignore($p{ignore});
+        $self->ignore(delete $p{ignore});
+    }
+    if (%p) {
+        $self->{ex} = \%p;
     }
     return $self;
 }
@@ -533,7 +536,7 @@ sub ignore {
 sub travel {
     my $self = shift;
     $main::G = shift || $main::G;
-    my $ex = {};
+    my $ex = $self->{ex} || {};
     if ($self->{ignore}) {
         my @ignores = map {
             /^->\{(.+)\}$/ ? do {
@@ -748,11 +751,11 @@ sub search { # TODO {{{
     elsif ($p{want} && $p{want} =~ /^G\((\S+)\)$/) {
         my $graph_name = $1;
         my $res = new Graph($graph_name);
-        say "Made new graph for results: ".anydump($res);
+        say "Made new graph for results: ".main::summarise($res);
         my $trav = $p{traveller} || Travel->new(
             ($p{ignore} ? (ignore => $p{ignore}) : ())
         );
-        $trav->travel($p{start}, sub {
+        my %tps = ( everywhere => sub {
             my ($G, $ex) = @_;
             if ($ex->{previous}) {
                 my $found = $res->find($ex->{previous});
@@ -761,7 +764,11 @@ sub search { # TODO {{{
             else {
                 $res->spawn($G);
             }
-        });
+        } );
+        for (qw'forward_links') {
+            $tps{$_} = $p{$_};
+        }
+        $trav->travel($p{start}, %tps);
         return $res;
     }
 
@@ -1211,11 +1218,29 @@ sub get_object { # OBJ
             ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination",
              "#ids"],
     );
+    # TODO pagination can be chucked onto the graph pretty easy (eventually)
+    # each dimension or array in the tree we're building can have it going on
+# when it's going on it needs to be going on in several places
+# that means that for the rest of that execution of the process of get_object
+# there are pagination hooks in place
+# we don't want to go looking for #paginated links more than we have to
+# also what graph is goof($G, "+ #paginated") creating #paginated and the link in?
+# it should be in a field of "run time" things for this process
+# so as to be easily destroyable and not get in the way of the traveller
+# this kind of field concept might almost be realistic to implement in about
+# another 30%
     my $exam = search(
         start => $object,
         spec => '**',
         want => "G(object-examination)",
         traveller => $trav,
+        forward_links => sub {
+            my ($G, $ex, $links) = @_;
+            if (@$links > 20) {
+                goof($G, "+ #paginated");
+                splice @$links, 20;
+            }
+        },
     );
     $exam = $us->spawn($exam);
     $exam->id("#object-examination");
@@ -1244,6 +1269,7 @@ sub get_object { # OBJ
 
     say "pre svg: ".show_delta();
 
+    my @xs;
     $trav->travel($exam->first, sub {
         my ($G, $ex) = @_;
         my $thing = $G->{thing};
@@ -1253,6 +1279,28 @@ sub get_object { # OBJ
         $thing = $thing->{thing};
 
         my $x = $x + $ex->{depth} * 20;
+        if (@xs && $xs[-1] eq $x) {
+            push @xs, $x;
+        }
+        else {
+            @xs = ($x);
+        }
+        if (@xs == 15) {
+            my $from = $ex->{via_link}->{0};
+            if (my $pag = $from->linked("#paginated")) {
+# TODO make this boxen for $pag, so as to etc
+                $svg->link($G,
+                    [ "boxen", $x-28, $y-400, 400, 6, 
+                    {
+                        id => '000',
+                        fill => '777',
+                        class => "777 000",
+                        name => "pagination!",
+                    }]
+                );
+            }
+        }
+
         $y += 20;
         my $stuff = summarise($G);
         $stuff =~ s/^N\($exam->{name}\) //;
