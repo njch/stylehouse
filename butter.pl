@@ -606,7 +606,7 @@ mach_spawn("#tbutt", sub {
     my $res = "parse error";
     for (reverse @output) {
         if (/# Looks like you failed (\d+) tests of (\d+)/) {
-            $res = "$1 / $2";
+            $res = $2-$1." / $2";
             last;
         }
     }
