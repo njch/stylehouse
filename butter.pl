@@ -585,12 +585,20 @@ sub mach_spawn {
 mach_spawn("#tbutt", sub {
     my ($self, $us) = @_;
 
+    start_timer();
     my ($rc, @output) = capture_err("perl", "tbutt.t.t", "harnessed");
 
     say "test run $rc with ".@output;
     my $run = $webbery->spawn("#testrun");
-    $run->spawn("return code: $rc");
-    $run->spawn("output", \@output);
+    $run->spawn(["return code", $rc]);
+    $run->spawn(["time", show_delta()]);
+    $run->spawn(["output", \@output]);
+    grep { /# Looks like you failed (\d+) tests of (\d+)/ } @output;
+    $run->spawn(["result", $1 && $2 ? "$1 / $2" : "parse error"]);
+    my $nt = $run->spawn("#notrim");
+    for (1..20) {
+        $run->spawn(["line -$_", $output[-$_]])->link($nt);
+    }
 
     get_object($self, $run->{uuid});
 })->link($findable);
@@ -898,6 +906,9 @@ sub summarise { # SUM
             if ($@) {
                 $text = Dump($thing);
                 say "but whatever: $@";
+            }
+            if (/^(.{40})(.+)$/ && !$thing->linked("#notrim")) {
+                $text =~ s/^(.{40})(.+)$/"$1...".length($2)/e;
             }
         }
         when ("CODE") {
