@@ -368,11 +368,11 @@ use strict;
 use warnings;
 use List::MoreUtils 'uniq';
 
-sub new { # graph => name, 
+sub new { # graph => $graph,
     shift;
     my $self = bless {}, __PACKAGE__;
     my %params = @_;
-    $self->{graph} = $params{graph}->name;
+    $self->{graph} = $params{graph}->{uuid};
     my @fields = main::tup($params{fields}); # detupalises?
     $self->{fields} = \@fields if @fields;
     $self->{thing} = $params{thing};
@@ -424,10 +424,11 @@ sub trash {
 }
 sub graph {
     my $self = shift;
-    until ($main::graphs{$self->{graph}}) {
+    until ($main::objects_by_id{$self->{graph}}) {
+        say main::summarise($self)." is looking for another graph to be in...";
         $self->{graph} = shift @{ $self->{other_graphs} || [] } || return undef;
     }
-    return $main::graphs{$self->{graph}}
+    return $main::objects_by_id{$self->{graph}}
 }
 sub another_graph {
     my $self = shift;
@@ -702,7 +703,7 @@ sub getlinks {
 
     my @links;
     if ($p{to} && ref $p{to} eq "Node") {
-        if (!$p{to}->{graph}) {
+        if (!$p{to}->graph) {
             say "$p{to} is no more?";
         }
         else {
@@ -768,10 +769,11 @@ sub travel { # TRAVEL
         die "DEEP RECURSION!";
     }
     
-    confess "Graph?" if ref $G eq "Graph";
-    unless ($main::graphs{$G->{graph}}) {
+    warn "Graph?" if ref $G eq "Graph";
+    unless ($main::objects_by_id{$G->{graph}}
+        || ref $G eq "Graph" && $main::objects_by_id{$G->{uuid}}) {
         $DB::single = 1;
-        warn "graph $G->{graph} has been destroyed!";
+        confess "graph $G->{graph} has been destroyed!";
     }
     my @links = getlinks(from => $G);
     hook($ex, "all_links", \@links);
@@ -882,7 +884,8 @@ sub summarise { # SUM
         when ("Node") {
             my $inner = $thing->thing;
             my $id = $thing->id;
-            $text = "N($thing->{graph}) ".($id ? "$id " : "").summarise($inner);
+            my $graph_name = $thing->graph->name;
+            $text = "N($graph_name) ".($id ? "$id " : "").summarise($inner);
             unless (ref $inner eq "Node") {
                 my $addy = $thing->{uuid};
                 $text .= " $addy"
