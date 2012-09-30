@@ -126,7 +126,6 @@ run_case($case_1);
 my $webbery = $main::findable->linked("G(webbery)")->thing;
 my $webgraph = examinate_graph($webbery);
 
-$DB::single = 1;
 my @svgs = $webbery->find("#svg");
 for my $svg (@svgs) {
     say main::summarise($svg) ." ". $svg->links();
@@ -172,39 +171,43 @@ sub run_case {
         get_object($mojo);
     }
 
-    my $last_drawings = ($case->linked("#steps"))[-1]->linked("#drawings");
+    my $last_step = ($case->linked("#steps"))[-1];
+    my $last_drawings = $last_step->linked("#drawings");
     my $drawdata = $last_drawings->thing;
 
     my $ok = 1;
     for my $t (qw'drawings animations removals') {
         my $got = $drawdata->{$t};
         my $expected = $expected->{$t};
+        my $datagraph = $last_step->spawn("#$t");
 
-        unless (diff_instructions($expected, dclone $got)) {
+        unless (diff_instructions($datagraph, $expected, dclone $got)) {
             $ok = 0;
             say "Was a $t";
         }
     }
-    if (0 && !$ok && prompt_yN("update expectations?")) {
+    if (!$ok && prompt_yN("update expectations?")) {
         save_expected($case, $drawdata);
     }
     # TODO search up a new graph to dump out
     DumpFile('testrun/'.$case->{thing}.'.yml', $tests);
 }
 sub diff_instructions {
-    my ($expect, $got) = @_;
+    my ($datagraph, $expect, $got) = @_;
     # diff got <> expected, into a two column graph if diff
     # so the svger needs to know about columns, just a x offset initially
-    my $results = new Graph();
-    my $notok = $results->spawn("#notok");
-    my $extra = $results->spawn("#extra");
     my $ok = 1;
     my $i = 0;
     my $what_for = {};
     for my $e_in (@$expect) {
         my $g_in = $got->[$i];
+        my $d = { got => $g_in, expected => $e_in };
+        $d = $datagraph->spawn($d);
+
         unless ($g_in) {
-            fail "got no instruction";
+            $ok = 0;
+            goof( $d, "+ #notok" );
+            fail("got no instruction");
             next;
         }
 
@@ -212,25 +215,20 @@ sub diff_instructions {
 
         copy_instructions_uuids($what_for, $e_in, $g_in);
 
-        my $ginode = $results->spawn($g_in);
-        unless (is_deeply($g_in, $e_in, "an instruction of $g_in->[0]"
-                .($g_in->[0] eq "label" ? ": $g_in->[-2]" : "")
-            )) {
-#            use YAML::Syck;
-#            say Dump[$e_in, $g_in];
+        my $diag = "an instruction of $g_in->[0]"
+                .($g_in->[0] eq "label" ? ": $g_in->[-2]" : "");
+        unless (is_deeply($g_in, $e_in, $diag)) {
             $ok = 0;
-            $ginode->link($notok, $e_in);
+            goof( $d, "+ #notok" );
         }
         $i++;
     }
     while (exists $got->[$i]) {
         $ok = 0;
+        goof($datagraph->spawn({ got => $got->[$i] }), "+ #notok");
         fail("got extra instruction");
-        $extra->link($got->[$i]);
         $i++;
     }
-
-    say displow($extra);
     return $ok;
 }
 sub copy_instructions_uuids {
