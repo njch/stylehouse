@@ -592,13 +592,17 @@ mach_spawn("#tbutt", sub {
     my $run = $webbery->spawn("#testrun");
     $run->spawn(["return code", $rc]);
     $run->spawn(["time", show_delta()]);
-    $run->spawn(["output", \@output]);
-    grep { /# Looks like you failed (\d+) tests of (\d+)/ } @output;
-    $run->spawn(["result", $1 && $2 ? "$1 / $2" : "parse error"]);
-    my $nt = $run->spawn("#notrim");
-    for (1..20) {
-        $run->spawn(["line -$_", $output[-$_]])->link($nt);
+
+    my $res = "parse error";
+    for (reverse @output) {
+        if (/# Looks like you failed (\d+) tests of (\d+)/) {
+            $res = "$1 / $2";
+            last;
+        }
     }
+    $run->spawn(["result", $res]);
+
+    $run->spawn(["output", \@output]);
 
     get_object($self, $run->{uuid});
 })->link($findable);
@@ -907,9 +911,7 @@ sub summarise { # SUM
                 $text = Dump($thing);
                 say "but whatever: $@";
             }
-            if (/^(.{40})(.+)$/ && !$thing->linked("#notrim")) {
-                $text =~ s/^(.{40})(.+)$/"$1...".length($2)/e;
-            }
+            $text =~ s/^(.{40})(.+)$/"$1...".length($2)/e;
         }
         when ("CODE") {
             $text = "code";

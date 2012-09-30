@@ -143,6 +143,8 @@ for my $svg (@svgs2) {
     say main::summarise($svg) ." ". $svg->links();
 }
 
+DumpFile("letssee", $tests);
+
 sub run_case {
     my $case = shift;
 
