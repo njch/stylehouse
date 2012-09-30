@@ -583,8 +583,17 @@ sub mach_spawn {
     return $m
 }
 
+sub mach_for_test_results {
+    my $run = shift;
+    my $m = mach_spawn("#testsults", sub {
+        my ($self, $mojo, $client) = @_;
+        my $case = load_graph_yml("testrun/case 2.yml");
+        get_object($mojo, $case->{uuid});
+    });
+}
+
 mach_spawn("#tbutt", sub {
-    my ($self, $us) = @_;
+    my ($self, $mojo, $client) = @_;
 
     start_timer();
     my ($rc, @output) = capture_err("perl", "tbutt.t.t", "harnessed");
@@ -605,13 +614,15 @@ mach_spawn("#tbutt", sub {
 
     $run->spawn(["output", \@output]);
 
-    get_object($self, $run->{uuid});
+    $run->spawn(mach_for_test_results($run));
+
+    get_object($mojo, $run->{uuid});
 })->link($findable);
 
 my $codes = new Graph("codes");#{{{
 
 my $get_object = graph_code($codes, "sub graph_code");
-$get_object = $webbery;
+$get_object = $findable->linked("#tbutt");
 
 $findable->link($codes);
 $findable->link($get_object);
@@ -668,6 +679,25 @@ sub object_by_uuid {
     else {
         return $objects_by_id{$id}
     }
+}
+sub load_graph_yml {
+    my $file = shift;
+    my $graph = LoadFile($file);
+    $DB::single = 1;
+#    die "wtf" if exists $objects_by_id{$graph->{uuid}};
+#    $objects_by_id{$graph->{uuid}} = $graph;
+#    say "loaded up graph $graph";
+
+    travel($graph, sub {
+        my ($G) = shift;
+        my $id = $G->{uuid};
+        if (exists $objects_by_id{$id}) {
+            die $G;
+        }
+        say "Loading up $id => $G";
+        $objects_by_id{$id} = $G;
+    });
+    return $graph;
 }
 
 # TODO
@@ -1033,21 +1063,21 @@ sub nameidcolor { #{{{
 my $vid = 0;
 
 mach_spawn("#reexamine", sub {
-    my ($self, $us) = @_;
-    my @exams = $us->linked("#/^object-examination/");
+    my ($self, $mojo, $client) = @_;
+    my @exams = $client->linked("#/^object-examination/");
     die "no old graph" unless @exams;
     my $exam = $exams[0]->thing;
     my @drawings;
-    my $svg = $self->svg;
+    my $svg = $mojo->svg;
     travel($exam->first, sub {
         my ($G, $ex) = @_;
         push @drawings, map {
             $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
-            $_->[1] +=  $us->linked("#width")->thing / 2 - 100;
+            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
             $_
         } map { $_->{val}->[0] } $svg->links($G);
     });
-    return $self->drawings(@drawings);
+    return $mojo->drawings(@drawings);
 })->link($findable);
 sub examinate_graph {
     my $graph = shift;
@@ -1082,7 +1112,7 @@ sub get_object { # OBJ
     }
     elsif (ref $object eq "Node") {
         if ($mach->linked($object)) {
-            return $object->thing->($self, $us);
+            return $object->thing->($object, $self, $us);
         }
     }
     else {

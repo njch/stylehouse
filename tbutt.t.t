@@ -143,8 +143,6 @@ for my $svg (@svgs2) {
     say main::summarise($svg) ." ". $svg->links();
 }
 
-DumpFile("letssee", $tests);
-
 sub run_case {
     my $case = shift;
 
@@ -189,7 +187,8 @@ sub run_case {
     if (0 && !$ok && prompt_yN("update expectations?")) {
         save_expected($case, $drawdata);
     }
-    DumpFile('testrun/'.$case->{thing}.'.yml', $drawdata);
+    # TODO search up a new graph to dump out
+    DumpFile('testrun/'.$case->{thing}.'.yml', $tests);
 }
 sub diff_instructions {
     my ($expect, $got) = @_;
