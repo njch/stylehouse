@@ -1426,8 +1426,8 @@ __DATA__
     <script type="text/javascript" src="jquery.svg.js"></script>
     <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
-    <body style="background: #897; font-family: monospace">
-    <div id="view" style="background: #239"></div>
+    <body style="background: #ab6; font-family: monospace">
+    <div id="view" style="background: #ab9"></div>
     </body>
 </html>
 
