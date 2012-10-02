@@ -133,7 +133,7 @@ for my $svg (@svgs) {
 my $case_2 = $cases->spawn("case 2");
 $case_2->spawn("#steps");
 $case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
-    $main::us->linked("#width")->{uuid};
+    $main::client->linked("#width")->{uuid};
 };
 # make drawings
 
@@ -155,7 +155,7 @@ sub run_case {
     say @steps." steps";
     my $mojo = new_moje();
     hello($mojo);
-    $main::us->spawn(1427)->id("width");
+    $main::client->spawn(1427)->id("width");
 
     my $si = 1;
     for my $s (@steps) {
