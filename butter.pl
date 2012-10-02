@@ -1035,10 +1035,11 @@ sub displow {
 
 
 our $whereto = ["boxen", {}];
-$whereto = [object => { id => $get_object->{uuid} }];
+my $clients = $webbery->spawn("clients");
+$whereto = [object => { id => $clients->{uuid} }];
 
-$findable->link($webbery->spawn("clients"));
-our $us; # client - low priority: sessions
+$findable->link($clients);
+our $client; # client - low priority: sessions
 
 use Mojolicious::Lite;
 get '/hello' => \&hello;
@@ -1053,7 +1054,7 @@ sub hello {
         # $client->trash()
     }
 
-    $us = $webbery->find("clients")->spawn("the");
+    $client = $webbery->find("clients")->spawn("the");
 
     $self->render(json => $whereto);
 };
@@ -1072,14 +1073,14 @@ get '/boxen' => sub {
 get '/width' => sub {
     my $self = shift;
     my $width = $self->param('width');
-    $us->spawn($width)->id("width");
+    $client->spawn($width)->id("width");
     $self->render(json => "Q");
 };
 
 sub draw_findable {
     my $self = shift;
     my $findable_y = $findable_y;
-    my ($width) = $us->linked("#width")->thing;
+    my ($width) = $client->linked("#width")->thing;
     my $x = $width - 35;
 
     my $svg = $self->svg();
@@ -1163,7 +1164,7 @@ sub get_object { # OBJ
     }
     elsif (ref $object eq "Node") {
         if ($mach->linked($object)) {
-            return $object->thing->($object, $self, $us);
+            return $object->thing->($object, $self, $client);
         }
     }
     else {
@@ -1174,7 +1175,7 @@ sub get_object { # OBJ
 
 
     # find the old graph
-    my @exams = $us->linked("#/^object-examination/");
+    my @exams = $client->linked("#/^object-examination/");
     # the latest one (serial numbered name)
     if (@exams > 1) {
         my %graph_names = map { $_->{thing}->{name} => $_ } @exams;
@@ -1195,7 +1196,7 @@ sub get_object { # OBJ
         die "many" if @exams > 2;
         for my $old_exam (@exams) {
 #            $old_exam->{thing}->DESTROY;
-            $us->unlink($old_exam);
+            $client->unlink($old_exam);
         }
     }
     say $viewed ? "got previous view" : "no view";
@@ -1242,7 +1243,7 @@ sub get_object { # OBJ
             }
         },
     );
-    $exam = $us->spawn($exam);
+    $exam = $client->spawn($exam);
     $exam->id("#object-examination");
     $exam = $exam->{thing};
 
@@ -1257,7 +1258,7 @@ sub get_object { # OBJ
     my $svg = $self->svg;
 
 
-    my $ids = goof($us, "+ #ids {}")->thing;
+    my $ids = goof($client, "+ #ids {}")->thing;
     my $getid = sub {
         my $id = uniquify_id($ids, shift);
         $ids->{$id} = undef;
@@ -1475,7 +1476,6 @@ sub get_object { # OBJ
     }
     $self->drawings(@drawings);
 };
-sub test_get_object_data { }
 
 get '/object_info' => sub {
     my $self = shift;
@@ -1486,8 +1486,8 @@ get '/' => 'index';
 
 *Mojolicious::Controller::svg = \&procure_svg;
 sub procure_svg {
-    $main::us || confess "Argsh";
-    return goof($main::us, "+ #svg");
+    $main::client || confess "Argsh";
+    return goof($main::client, "+ #svg");
 };
 *Mojolicious::Controller::drawings = sub {
     my $self = shift;
