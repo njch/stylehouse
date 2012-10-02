@@ -209,10 +209,6 @@ do { # UNIT_EY
     is scalar(@ob_exams_again), 2, "linked another";
     is ($client->linked("#object-examination"), $twas3, "scalar ->linked... could be either though; not ordered");
 
-    for (@ob_exams_again) {
-        say "fore: ".$_->{thing}->{name};
-    }
-
     $todo->();
     my @ob_exams_again_again = $client->linked("#object-examination");
     is scalar(@ob_exams_again_again), 1, "only one now";
@@ -229,8 +225,7 @@ do { # UNIT_EY
 
     diag "test sub make_traveller"; #{{{
     my $self = $client->spawn("#get_objection");
-    $todo = sub { make_traveller($self, $mojo, $client) };
-    $todo->();
+    make_traveller($self, $mojo, $client);
     my $trav = $self->linked("#traveller")->thing;
     say $trav;
     ok(defined $trav && ref $trav eq "Travel", "got Travel");
@@ -254,6 +249,27 @@ do { # UNIT_EY
     ok($self->linked("#traveller"), "here");
     $self->unlink($self->linked("#traveller"));
     ok(!$self->linked("#traveller"), "gone");
+#}}}
+
+    diag "test sub search_about_object"; #{{{
+    $self->spawn($mess)->id("#object");
+    make_traveller($self, $mojo, $client);
+    my $exam = search_about_object($self, $mojo, $client);
+    ok defined $exam && ref $exam eq "Graph", "is a Graph!";
+    is $exam->{name}, "object-examination8", "Graph with a name";
+    is $exam->first->thing->graph->{name}, "TheMess", "contains nodes from TheMess graph";
+    my @data = map { join(',', split /N\(object-examination8\) N\(TheMess\) /) }
+        grep { s/ .{12}$// }
+        split /\n/, displow($exam->first);
+    is(join(";", @data), ',ringo; ,del;  ,rigo; ,john; ,paul; ,delwhert', "dumps correctly");
+
+    is $client->linked("G(object-examination8)")->thing->{name}, 'object-examination8',
+        "linked via client";
+    is $self->linked("G(object-examination8)")->thing->{name}, 'object-examination8',
+        "linked via self";
+    is $self->linked("#object-examination")->thing->{name}, 'object-examination8',
+        "linked via self with id";
+
 #}}}
 };
 
