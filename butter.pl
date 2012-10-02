@@ -1268,7 +1268,7 @@ sub garbage_collect_examinations {
         $client->linked("#/^object-examination/");
     pop @exams;
     if (@exams) {
-        die "many" if @exams > 2;
+        Carp::cluck "many" if @exams > 2;
         for my $old_exam (@exams) {
 #            $old_exam->{thing}->DESTROY;
             $client->unlink($old_exam);

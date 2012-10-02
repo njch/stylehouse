@@ -189,10 +189,41 @@ do { # UNIT_EY
     is(($eeg->linked)[0]->thing->thing, "Graph exam", "graph buck stops");
     is(($eeg->linked)[1]->thing->thing->graph, $themess, "graph beyond");
 
-    say displow($eeg);
     is_deeply([uniq(map { $_->{0} } $eeg->links)], [$eeg], "they they they");
     my $john = ($eeg->linked)[4];
     is($john->{thing}->{thing}->{thing}, "john", "John!");
+#}}}
+
+    diag "test sub garbage_collect_examinations"; #{{{
+    my @ob_exams = $client->linked("#object-examination");
+    is scalar(@ob_exams), 4, "lots of old #object-examination";
+    $todo = sub { garbage_collect_examinations(undef, $mojo, $client) };
+    $todo->();
+    my @ob_exams_now = $client->linked("#object-examination");
+    is scalar(@ob_exams_now), 1, "only one now";
+    is ($client->linked("#object-examination"), $twas3, "correct one remains");
+    $client->link($ob_exams[1]);
+
+    my @ob_exams_again = $client->linked("#object-examination");
+    is scalar(@ob_exams_again), 2, "linked another";
+    is ($client->linked("#object-examination"), $twas3, "scalar ->linked... could be either though; not ordered");
+
+    for (@ob_exams_again) {
+        say "fore: ".$_->{thing}->{name};
+    }
+
+    $todo->();
+    my @ob_exams_again_again = $client->linked("#object-examination");
+    is scalar(@ob_exams_again_again), 1, "only one now";
+    is ($client->linked("#object-examination"), $twas3, "correct one remains");
+
+    my $twas5 = $exammess->();
+    my @ob_exams_again_again_again = $client->linked("#object-examination");
+    is scalar(@ob_exams_again_again_again), 2, "two now";
+    $todo->();
+    my @ob_exams_aaggaaiinn = $client->linked("#object-examination");
+    is scalar(@ob_exams_aaggaaiinn), 1, "only one now";
+    is $ob_exams_aaggaaiinn[0], $twas5, "correct one remains";
 #}}}
 };
 
