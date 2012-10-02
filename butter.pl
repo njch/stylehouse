@@ -398,7 +398,7 @@ sub spawn {
 }
 sub DESTROY {
     my $self = shift;
-    say "DESTROY ".main::summarise($self);
+#    say "DESTROY ".main::summarise($self);
     for my $l (@{$self->{links}}) {
         delete $l->{$_} for keys %$l;
     }
@@ -767,7 +767,7 @@ sub search { # TODO {{{
             }
         } );
         for (qw'forward_links') {
-            $tps{$_} = $p{$_};
+            $tps{$_} = $p{$_} if defined $p{$_};
         }
         $trav->travel($p{start}, %tps);
         return $res;

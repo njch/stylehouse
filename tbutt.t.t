@@ -4,10 +4,12 @@ use Scriptalicious;
 use Test::More 'no_plan';
 use YAML::Syck;
 use Storable 'dclone';
+use List::MoreUtils;
 start_timer();
 require_ok 'butter.pl';
 diag "required ".show_delta();
 our $TEST = 1;
+our $client;
 do { # {{{
 my $g1 = new Graph("test1");
 my $g1n1 = $g1->spawn({color => "yellow"});
@@ -112,7 +114,9 @@ package main;
 sub new_moje {
     $sttus = undef;
     $drawings = undef;
-    NonMojo->new();
+    my $mojo = NonMojo->new();
+    hello($mojo);
+    $main::client->spawn(1427)->id("width");
 } # }}}
 
 my $tests = new Graph('tests');
@@ -120,16 +124,64 @@ my $cases = $tests->spawn("#cases");
 
 `rm testrun/*.yml` if glob "testrun/*.yml";
 
+do { # UNIT_EY
+    my $case = $cases->spawn("unit test 1");
+    local $TEST = $case;
+    diag "BEGIN $case->{thing}";
+#    my $expected  = load_expected($case);
+    my $mojo = new_moje();
+
+    my $themess = my $mess = new Graph("TheMess");
+    for (qw{del rigo ringo john paul delwhert}) {
+        my $s = $mess->spawn($_);
+        length($_) % 2 && do { $mess = $s };
+    }
+
+    my $exammess = sub {
+        my $s = $client->spawn(search(
+            start => $mess,
+            spec => '**',
+            want => "G(object-examination)",
+        ));
+        $s->id("object-examination");
+        return $s;
+    };
+
+    diag "test sub find_latest_examination"; #{{{
+    my $todo = sub { find_latest_examination(undef, $mojo, $client) };
+
+    ok(!defined($todo->()), "no last exam");
+
+    my $twas = $exammess->();
+    ok($todo->(), "got last exam");
+    is($todo->(), $twas, "got last exam");
+
+    my $twas2 = $exammess->();
+    my $twas3 = $exammess->();
+    my $twas4 = $exammess->();
+    is($todo->(), $twas4, "got last exam");
+    $twas3->link($client, "etc");
+    is($todo->(), $twas4, "got last exam");
+    is("object-examination4", $todo->()->thing->{name}, "named object-examination4");
+    $twas3->thing->{name} = 'object-examination4';
+    $twas4->thing->{name} = 'object-examination3';
+    is($todo->(), $twas3, "lied about name - got lied back to");
+#}}}
+
+};
+
+exit;
+
+
+
+
 my $case_1 = $cases->spawn("case 1");
 run_case($case_1);
 
 my $webbery = $main::findable->linked("G(webbery)")->thing;
 my $webgraph = examinate_graph($webbery);
 
-my @svgs = $webbery->find("#svg");
-for my $svg (@svgs) {
-    say main::summarise($svg) ." ". $svg->links();
-}
+
 my $case_2 = $cases->spawn("case 2");
 $case_2->spawn("#steps");
 $case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
@@ -138,10 +190,7 @@ $case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
 # make drawings
 
 run_case($case_2);
-my @svgs2 = $webbery->find("#svg");
-for my $svg (@svgs2) {
-    say main::summarise($svg) ." ". $svg->links();
-}
+
 
 sub run_case {
     my $case = shift;
@@ -154,8 +203,6 @@ sub run_case {
 
     say @steps." steps";
     my $mojo = new_moje();
-    hello($mojo);
-    $main::client->spawn(1427)->id("width");
 
     my $si = 1;
     for my $s (@steps) {
