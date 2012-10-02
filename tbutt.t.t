@@ -251,7 +251,9 @@ do { # UNIT_EY
     is(@gots2, 6, "got all-2 with traveller ignoring things");
     is($gots2[-1], 'delwhert', "the datum");
 
-    $self->unlink($trav);
+    ok($self->linked("#traveller"), "here");
+    $self->unlink($self->linked("#traveller"));
+    ok(!$self->linked("#traveller"), "gone");
 #}}}
 };
 

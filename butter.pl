@@ -337,7 +337,7 @@ sub link {
 }
 sub unlink {
     my ($self, @to_unlink) = @_;
-    warn 'nothing to unlink' unless @to_unlink;
+    Carp::confess 'nothing to unlink' unless @to_unlink;
     my %to_unlink;
     for (@to_unlink) {
         warn "different graphs.. ".
