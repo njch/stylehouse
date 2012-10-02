@@ -1239,7 +1239,7 @@ sub get_object { # OBJ
             my ($G, $ex, $links) = @_;
             if (@$links > 20) {
                 goof($G, "+ #paginated");
-                splice @$links, 20;
+                splice @$links, 21;
             }
         },
     );
@@ -1280,27 +1280,29 @@ sub get_object { # OBJ
         $thing = $thing->{thing};
 
         my $x = $x + $ex->{depth} * 20;
-        if (@xs && $xs[-1] eq $x) {
+# PAG {{{
+        if (!@xs || @xs && $xs[-1] eq $x) {
             push @xs, $x;
         }
         else {
             @xs = ($x);
         }
-        if (@xs == 15) {
-            my $from = $ex->{via_link}->{0};
-            if (my $pag = $from->linked("#paginated")) {
-# TODO make this boxen for $pag, so as to etc
-                $svg->link($G,
-                    [ "boxen", $x-28, $y-400, 400, 6, 
-                    {
-                        id => '000',
-                        fill => '777',
-                        class => "777 000",
-                        name => "pagination!",
-                    }]
-                );
-            }
+        if (@xs > 5) {
+            say "xs is ".@xs;
         }
+        if (@xs == 20) {
+# TODO make this boxen for $pag, so as to etc
+            $svg->link($G,
+                [ "boxen", $x-28, $y-332, 6, 320, 
+                {
+                    id => '000',
+                    fill => '777',
+                    class => "777 000",
+                    name => "pagination!",
+                }]
+            );
+        }
+# }}}
 
         $y += 20;
         my $stuff = summarise($G);
