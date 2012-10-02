@@ -1268,7 +1268,7 @@ sub garbage_collect_examinations {
         $client->linked("#/^object-examination/");
     pop @exams;
     if (@exams) {
-        Carp::cluck "many" if @exams > 2;
+        Carp::cluck "many" if @exams > 2 && !$TEST;
         for my $old_exam (@exams) {
 #            $old_exam->{thing}->DESTROY;
             $client->unlink($old_exam);
@@ -1278,6 +1278,9 @@ sub garbage_collect_examinations {
 
 sub make_traveller {
     my ($self, $mojo, $client) = @_;
+    if ($self->linked("#traveller")) {
+        Carp::cluck "traveller exists already..."
+    }
 # TODO for traversing for get_object without running into backstage stuff
 # fields to outdate?
     my $traveller = Travel->new(

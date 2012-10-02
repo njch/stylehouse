@@ -142,6 +142,7 @@ do { # UNIT_EY
             start => $mess,
             spec => '**',
             want => "G(object-examination)",
+            ($_[0] ? (traveller => $_[0]) : ()),
         ));
         $s->id("object-examination");
         return $s;
@@ -224,6 +225,33 @@ do { # UNIT_EY
     my @ob_exams_aaggaaiinn = $client->linked("#object-examination");
     is scalar(@ob_exams_aaggaaiinn), 1, "only one now";
     is $ob_exams_aaggaaiinn[0], $twas5, "correct one remains";
+#}}}
+
+    diag "test sub make_traveller"; #{{{
+    my $self = $client->spawn("#get_objection");
+    $todo = sub { make_traveller($self, $mojo, $client) };
+    $todo->();
+    my $trav = $self->linked("#traveller")->thing;
+    say $trav;
+    ok(defined $trav && ref $trav eq "Travel", "got Travel");
+    is($trav->{ignore}->[0], "->{no_of_links}", "going to ignore no_of_links");
+
+    $mess->spawn('findable_objects');
+    $mess->spawn({no_of_links => 3});
+    my $em = $exammess->();
+    my $emeg = examinate_graph($em->thing);
+    my @gots = map { $_->{thing}->{thing}->{thing} } $emeg->linked;
+    is(@gots, 8, "got all without traveller");
+    is($gots[-2], "findable_objects", "the datum");
+    is($gots[-1]->{no_of_links}, 3, "the datum");
+    
+    my $em2 = $exammess->($trav);
+    my $emeg2 = examinate_graph($em2->thing);
+    my @gots2 = map { $_->{thing}->{thing}->{thing} } $emeg2->linked;
+    is(@gots2, 6, "got all-2 with traveller ignoring things");
+    is($gots2[-1], 'delwhert', "the datum");
+
+    $self->unlink($trav);
 #}}}
 };
 
