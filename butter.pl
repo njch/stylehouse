@@ -1301,8 +1301,7 @@ sub search_about_object {
 # that means that for the rest of that execution of the process of get_object
 # there are pagination hooks in place
 # we don't want to go looking for #paginated links more than we have to
-# also what graph is goof($G, "+ #paginated") creating #paginated and the link in?
-# it should be in a field of "run time" things for this process
+# carefully, stuff should be in a field of "run time" things for this process
 # so as to be easily destroyable and not get in the way of the traveller
 # this kind of field concept might almost be realistic to implement in about
 # another 30%
@@ -1314,7 +1313,7 @@ sub search_about_object {
         forward_links => sub {
             my ($G, $ex, $links) = @_;
             if (@$links > 20) {
-                goof($G, "+ #paginated");
+                goof($self, "+ #paginated")->link($G);
                 splice @$links, 21;
             }
         },
