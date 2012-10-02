@@ -1036,7 +1036,7 @@ sub displow {
 
 
 our $whereto = ["boxen", {}];
-my $clients = $webbery->spawn("clients");
+my $clients = $webbery->spawn("#clients");
 $whereto = [object => { id => $clients->{uuid} }];
 
 $findable->link($clients);
@@ -1045,46 +1045,45 @@ our $client; # client - low priority: sessions
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub hello {
-    my $self = shift;
+    my $mojo = shift;
 
     my $client_id = "the";
 
     # trash the old state
-    for my $client ($webbery->find("clients")->linked()) {
-        # if client eq us,
-        # $client->trash()
+    for my $client ($clients->linked()) {
+        $clients->unlink($client);
     }
 
-    $client = $webbery->find("clients")->spawn("the");
+    $client = $clients->spawn("the");
 
-    $self->render(json => $whereto);
+    $mojo->render(json => $whereto);
 };
 get '/stats' => sub {
     $_[0]->drawings(["status", "hi"]);
 };
 my $findable_y = 20;
 get '/boxen' => sub {
-    my $self = shift;
-    $self->drawings(
+    my $mojo = shift;
+    $mojo->drawings(
         ["clear"],
-        draw_findable(),
+        draw_findable(undef, $mojo, $client),
     );
 };
 
 get '/width' => sub {
-    my $self = shift;
-    my $width = $self->param('width');
+    my $mojo = shift;
+    my $width = $mojo->param('width');
     $client->spawn($width)->id("width");
-    $self->render(json => "Q");
+    $mojo->render(json => "Q");
 };
 
 sub draw_findable {
-    my $self = shift;
+    my ($self, $mojo, $client) = @_;
     my $findable_y = $findable_y;
     my ($width) = $client->linked("#width")->thing;
     my $x = $width - 35;
 
-    my $svg = $self->svg();
+    my $svg = $mojo->svg();
     my @new;
     for my $ble ($webbery->find("findable_objects")->linked()) {
         my $sum = summarise($ble);
@@ -1116,9 +1115,10 @@ my $vid = 0;
 
 mach_spawn("#reexamine", sub {
     my ($self, $mojo, $client) = @_;
-    my @exams = $client->linked("#/^object-examination/");
-    die "no old graph" unless @exams;
-    my $exam = $exams[0]->thing;
+    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
+        $client->linked("#/^object-examination/");
+    my $exam = pop @exams;
+    $exam = $exam->thing;
     my @drawings;
     my $svg = $mojo->svg;
     travel($exam->first, sub {
@@ -1244,9 +1244,10 @@ sub get_object { # OBJ
     if ($clear) {
 # TODO the rest of the screen should be structured graph
 # theres probably a group thing in svg that can tidily remove etc...
-        unshift @drawings, draw_findable($mojo); 
+        unshift @drawings, draw_findable(undef, $mojo, $client); 
         unshift @drawings, ["clear"];
     }
+    $client->unlink($self);
     $mojo->drawings(@drawings);
 };
 
@@ -1461,7 +1462,7 @@ sub diff_svgs {
     $traveller->travel($exam->first, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
-        my ($old) = grep { !$_->linked($preserve) } @old;
+        my ($old) = grep { !$preserve->linked($_) } @old;
         if ($old) {
             $preserve->link($old);
      
@@ -1473,7 +1474,7 @@ sub diff_svgs {
 #                    say "strange number of news:\n".Dump \@news
                 }
             }
-            die "diff" if @news != @olds;
+#            die "diff" if @news != @olds;
             
             my @diffs;
             while (@olds) {
@@ -1499,8 +1500,8 @@ sub diff_svgs {
                 $by_xy{"$_->{x},$_->{y}"} = undef;
                 $by_id{$_->{id}}++;
             }
-            die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
-            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
+#            die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
+#            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
             
             if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
                 push @$animations,
@@ -1517,6 +1518,7 @@ sub diff_svgs {
             push @$drawings, @whats;
         }
     });
+
 
     if ($viewed) {
         $traveller->travel($viewed->first, sub {

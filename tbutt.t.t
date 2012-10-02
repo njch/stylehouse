@@ -115,7 +115,7 @@ sub new_moje {
     NonMojo->new();
 } # }}}
 
-my $tests = new Graph;
+my $tests = new Graph('tests');
 my $cases = $tests->spawn("#cases");
 
 `rm testrun/*.yml` if glob "testrun/*.yml";
@@ -186,7 +186,7 @@ sub run_case {
             say "Was a $t";
         }
     }
-    if (!$ok && prompt_yN("update expectations?")) {
+    if (0 && !$ok && prompt_yN("update expectations?")) {
         save_expected($case, $drawdata);
     }
     # TODO search up a new graph to dump out
