@@ -1143,9 +1143,9 @@ sub examinate_graph {
 
 get '/object' => \&get_object;
 sub get_object { # OBJ
-    my $self = shift;
+    my $mojo = shift;
 
-    my $id = shift || $self->param('id')
+    my $id = shift || $mojo->param('id')
         || die "no id";
 
 
@@ -1153,7 +1153,7 @@ sub get_object { # OBJ
     my $mode = $1 || "b";
 
     my $object = object_by_uuid($id)
-        || return $self->sttus("$id no longer exists!");
+        || return $mojo->sttus("$id no longer exists!");
 
 
     start_timer();
@@ -1164,12 +1164,12 @@ sub get_object { # OBJ
     }
     elsif (ref $object eq "Node") {
         if ($mach->linked($object)) {
-            return $object->thing->($object, $self, $client);
+            return $object->thing->($object, $mojo, $client);
         }
     }
     else {
         confess ref $object;
-        return $self->sttus("don't like to objectify ".ref $object);
+        return $mojo->sttus("don't like to objectify ".ref $object);
     }
 
 
@@ -1203,7 +1203,7 @@ sub get_object { # OBJ
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
     if ($viewed && $mode ne "c" && $viewed->first && $viewed->first->thing."" eq $object) {
-        return $self->sttus("same diff");
+        return $mojo->sttus("same diff");
     }
 
 
@@ -1255,7 +1255,7 @@ sub get_object { # OBJ
         },
     );
 
-    my $svg = $self->svg;
+    my $svg = $mojo->svg;
 
 
     my $ids = goof($client, "+ #ids {}")->thing;
@@ -1473,15 +1473,15 @@ sub get_object { # OBJ
 
     unshift @drawings, ["status", $status];
     if ($clear) {
-        unshift @drawings, draw_findable($self);
+        unshift @drawings, draw_findable($mojo);
         unshift @drawings, ["clear"];
     }
-    $self->drawings(@drawings);
+    $mojo->drawings(@drawings);
 };
 
 get '/object_info' => sub {
-    my $self = shift;
-    $self->render("404");
+    my $mojo = shift;
+    $mojo->render("404");
 };
 
 get '/' => 'index';
@@ -1492,14 +1492,14 @@ sub procure_svg {
     return goof($main::client, "+ #svg");
 };
 *Mojolicious::Controller::drawings = sub {
-    my $self = shift;
+    my $mojo = shift;
     say scalar(@_)." drawings";
 #    DumpFile("drawings.yml", [@_]);
-    $self->render(json => [@_]);
+    $mojo->render(json => [@_]);
 };
 *Mojolicious::Controller::sttus = sub {
-    my $self = shift;
-    $self->drawings(["status", shift]);
+    my $mojo = shift;
+    $mojo->drawings(["status", shift]);
 };
 
 return 1 if caller;
