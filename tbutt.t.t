@@ -168,6 +168,32 @@ do { # UNIT_EY
     is($todo->(), $twas3, "lied about name - got lied back to");
 #}}}
 
+    diag "test sub examinate_graph"; #{{{
+    $todo = sub { examinate_graph(shift || $themess) };
+    my $ge = $todo->();
+    ok($ge && ref $ge eq "Node", "got a Node");
+    is($ge->links, 6, "six links");
+    isnt($ge->{graph}, $themess->{uuid}, "separate Graph");
+    my $rigo = ($ge->linked)[1];
+    is($rigo->{graph}, $ge->{graph}, "node and node in graph");
+    is($rigo->{thing}->{graph}, $themess->{uuid}, "inner node in other graph");
+    is_deeply([map { $_->{thing}->{thing} } ($ge->linked)[1,2,3]],
+        [qw'rigo ringo john'], "a bunch");
+    
+    my $eeg = $todo->($ge->graph);
+    ok($eeg && ref $eeg eq "Node", "got a Node");
+    is($eeg->links, 7, "six links");
+    is(($eeg->linked)[0]->graph, $eeg->graph, "graph here");
+    is(($eeg->linked)[0]->thing->graph, $ge->graph, "graph there");
+    is(($eeg->linked)[3]->thing->graph, $ge->graph, "graph there");
+    is(($eeg->linked)[0]->thing->thing, "Graph exam", "graph buck stops");
+    is(($eeg->linked)[1]->thing->thing->graph, $themess, "graph beyond");
+
+    say displow($eeg);
+    is_deeply([uniq(map { $_->{0} } $eeg->links)], [$eeg], "they they they");
+    my $john = ($eeg->linked)[4];
+    is($john->{thing}->{thing}->{thing}, "john", "John!");
+#}}}
 };
 
 exit;
