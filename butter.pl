@@ -340,7 +340,8 @@ sub unlink {
     warn 'nothing to unlink' unless @to_unlink;
     my %to_unlink;
     for (@to_unlink) {
-        die "different graphs..".Dump($_)
+        warn "different graphs.. ".
+            main::summarise($_->{1}) ." vs ". main::summarise($_->{0})
             if $_->{1}->{graph} ne $_->{0}->{graph}
                 || $_->{1}->{graph} ne $self->{uuid}
     }
@@ -1152,8 +1153,12 @@ sub get_object { # OBJ
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
 
+    my $self = $client->spawn("#get_objection");
+    $self->spawn($id)->id('id');
+
     my $object = object_by_uuid($id)
         || return $mojo->sttus("$id no longer exists!");
+    $self->spawn($object)->id('object');
 
 
     start_timer();
@@ -1173,54 +1178,121 @@ sub get_object { # OBJ
     }
 
 
-
-    # find the old graph
-    my @exams = $client->linked("#/^object-examination/");
-    # the latest one (serial numbered name)
-    if (@exams > 1) {
-        my %graph_names = map { $_->{thing}->{name} => $_ } @exams;
-        @exams = map { $graph_names{$_} } sort keys %graph_names;
-    }
-    my $viewed = pop @exams;
+    my $viewed = find_latest_examination($self, $mojo, $client);
 
     if ($mode eq "c") {
-        $object->spawn("Hello");
-        $object = $viewed->thing->first->thing;
+        $object->spawn("Hello"); # sprout limb
+        $object = $viewed->thing->first->thing; # do it again
     }
 
+    garbage_collect_examinations($self, $mojo, $client);
+    
+    say $viewed ? "got previous view" : "no view";
+    ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
+    say "Beginning: ".show_delta();
+
+    make_traveller($self, $mojo, $client);
+    my $exam = search_about_object($self, $mojo, $client);
+
+    # Just an exercise {{{
+    $self->linked("#traveller")->thing->travel($exam->first,
+        all_links => sub {
+            $_[0]->spawn({iggy => 1, no_of_links => scalar @{$_[2]}})
+        },
+    ); # }}}
+
+    for (qw'drawings animations removals') {
+        $self->spawn([])->id($_);
+    }
+
+    # TODO
+    generate_svg($self, $mojo, $client);
+
+    say "post svg: ".show_delta();
+
+    diff_svgs($self, $mojo, $client);
+
+    say "diff: ".show_delta();
+
+
+    my $clear;
+    unless ($viewed && $mode ne "c" && 0) { # TODO hmm
+        say "gonna clear screen";
+        $clear = 1;
+    }
+
+    unless (@{ $self->linked("#animations")->thing }) {
+        @{ $self->linked("#animations")->thing } = ();
+        $clear = 1;
+    }
+
+    if ($TEST) {
+        use Storable 'dclone';
+        $TEST->spawn(dclone {
+            id => $id,
+            removals => $self->linked("#removals")->thing,
+            animations => $self->linked("#animations")->thing,
+            drawings => $self->linked("#drawings")->thing,
+        })->id("#drawings");
+    }
+
+    my @drawings = map { @{ $self->linked("#".$_)->thing } }
+        qw'removals animations drawings';
+
+    unshift @drawings, ["status", $status];
+    if ($clear) {
+# TODO the rest of the screen should be structured graph
+# theres probably a group thing in svg that can tidily remove etc...
+        unshift @drawings, draw_findable($mojo); 
+        unshift @drawings, ["clear"];
+    }
+    $mojo->drawings(@drawings);
+};
+
+sub find_latest_examination {
+    my ($self, $mojo, $client) = @_;
+    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
+        $client->linked("#/^object-examination/");
+    my $latest = pop @exams;
+    if ($latest) {
+        $client->spawn($latest)->id("#viewed");
+    }
+    return $latest;
+}
+
+sub garbage_collect_examinations {
+    my ($self, $mojo, $client) = @_;
+    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
+        $client->linked("#/^object-examination/");
+    pop @exams;
     if (@exams) {
-        # for translate()'s one-time-only catch:
-        push @exams, $viewed;
-        undef $viewed;
         die "many" if @exams > 2;
         for my $old_exam (@exams) {
 #            $old_exam->{thing}->DESTROY;
             $client->unlink($old_exam);
         }
     }
-    say $viewed ? "got previous view" : "no view";
-    ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
+}
 
-    if ($viewed && $mode ne "c" && $viewed->first && $viewed->first->thing."" eq $object) {
-        return $mojo->sttus("same diff");
-    }
-
-
-    my (@drawings, @animations, @removals);
-    say "Beginning: ".show_delta();
-
-
-    # TODO this is a travel()/search() result-as-graph idea
-    # TODO new Graph should take name from id of node its going into if possible
-    # this graph name oughtta be useless but for debug verbosity due to using id now
-    my $trav = Travel->new(
+sub make_traveller {
+    my ($self, $mojo, $client) = @_;
+# TODO for traversing for get_object without running into backstage stuff
+# fields to outdate?
+    my $traveller = Travel->new(
         ignore =>
             ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination",
              "#ids"],
     );
-    # TODO pagination can be chucked onto the graph pretty easy (eventually)
-    # each dimension or array in the tree we're building can have it going on
+    $self->spawn($traveller)->id("#traveller");
+}
+
+sub search_about_object {
+    my ($self, $mojo, $client) = @_;
+    my $object = $self->linked("#object")->thing;
+    my $traveller  = $self->linked("#traveller")->thing;
+# TODO pagination can be chucked onto the graph pretty easy (eventually)
+# each dimension or array in the tree we're building can have it going on
 # when it's going on it needs to be going on in several places
 # that means that for the rest of that execution of the process of get_object
 # there are pagination hooks in place
@@ -1234,7 +1306,7 @@ sub get_object { # OBJ
         start => $object,
         spec => '**',
         want => "G(object-examination)",
-        traveller => $trav,
+        traveller => $traveller,
         forward_links => sub {
             my ($G, $ex, $links) = @_;
             if (@$links > 20) {
@@ -1243,20 +1315,14 @@ sub get_object { # OBJ
             }
         },
     );
-    $exam = $client->spawn($exam);
-    $exam->id("#object-examination");
-    $exam = $exam->{thing};
+    for ($self, $client) {
+        $_->spawn($exam)->id("#object-examination");
+    }
+    return $exam;
+}
 
-
-    # Just an exercise, we can do this more casually in the svg build
-    $trav->travel($exam->first,
-        all_links => sub {
-            $_[0]->spawn({iggy => 1, no_of_links => scalar @{$_[2]}})
-        },
-    );
-
-    my $svg = $mojo->svg;
-
+sub generate_svg {
+    my ($self, $mojo, $client) = @_;
 
     my $ids = goof($client, "+ #ids {}")->thing;
     my $getid = sub {
@@ -1264,14 +1330,16 @@ sub get_object { # OBJ
         $ids->{$id} = undef;
         return $id;
     };
-
+    my $exam = $self->linked("#object-examination")->thing;
+    my $traveller  = $self->linked("#traveller")->thing;
+    my $svg = $mojo->svg; # client->#svg
 
     my ($x, $y) = (30, 40);
 
     say "pre svg: ".show_delta();
 
     my @xs;
-    $trav->travel($exam->first, sub {
+    $traveller->travel($exam->first, sub {
         my ($G, $ex) = @_;
         my $thing = $G->{thing};
         return if $thing eq "svg";
@@ -1371,11 +1439,26 @@ sub get_object { # OBJ
             );
         }
     });
+}
 
-    say "post svg: ".show_delta();
-    
-    my $preserve = $exam->spawn("preserve");
-    $trav->travel($exam->first, sub {
+sub diff_svgs {
+    my ($self, $mojo, $client) = @_;
+
+    my $traveller= $self->linked("#traveller")->thing;
+    my $drawings = $self->linked("#drawings")->thing;
+    my $animations = $self->linked("#animations")->thing;
+    my $removals = $self->linked("#removals")->thing;
+    my $viewed = $client->linked("#viewed");
+        say "viewd: ".summarise($viewed);
+    $viewed = $viewed->thing if $viewed;
+        say "viewd: ".summarise($viewed);
+    $viewed = $viewed->thing if $viewed;
+        say "viewd: ".summarise($viewed);
+    my $exam = $self->linked("#object-examination")->thing;
+    my $preserve = $self->spawn("#preserve");
+    my $svg = $mojo->svg;
+
+    $traveller->travel($exam->first, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
         my ($old) = grep { !$_->linked($preserve) } @old;
@@ -1420,7 +1503,7 @@ sub get_object { # OBJ
             die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
             
             if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
-                push @animations,
+                push @$animations,
                     map {
                         ["animate", $_->{id},
                         {svgTransform => "translate($_->{x} $_->{y})"},
@@ -1431,53 +1514,24 @@ sub get_object { # OBJ
         else {
             my @whats = $svg->links($new);
             @whats = map { $_->{val}->[0] } @whats; # new: label, boxen
-            push @drawings, @whats;
+            push @$drawings, @whats;
         }
     });
-    say "diff: ".show_delta();
 
     if ($viewed) {
-        $trav->travel($viewed->first, sub {
+        $traveller->travel($viewed->first, sub {
             my ($G,$ex) = @_;
             unless ($preserve->links($exam->find($G))) {
                 my $sum = summarise($G);
                 my @tup = nameidcolor($sum);
                 my $id = $tup[1];
-                push @removals, ["remove", $id ];
+                push @$removals, ["remove", $id ];
             }
-            $G->unlink($svg);
+            $svg->unlink($G);
         });
     }
 
-
-    my $clear;
-    unless ($viewed && $mode ne "c") {
-        say "gonna clear screen";
-        $clear = 1;
-    }
-    unless (@animations) {
-        @removals = ();
-        $clear = 1;
-    }
-
-    if ($TEST) {
-        use Storable 'dclone';
-        $TEST->spawn(dclone {
-            id => $id,
-            removals => \@removals,
-            animations => \@animations,
-            drawings => \@drawings,
-        })->id("#drawings");
-    }
-    @drawings = (@removals, @animations, @drawings);
-
-    unshift @drawings, ["status", $status];
-    if ($clear) {
-        unshift @drawings, draw_findable($mojo);
-        unshift @drawings, ["clear"];
-    }
-    $mojo->drawings(@drawings);
-};
+}
 
 get '/object_info' => sub {
     my $mojo = shift;
