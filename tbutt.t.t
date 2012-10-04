@@ -363,8 +363,20 @@ do { # UNIT_EY
             }
         }
     }
+#}}}
 
-
+    diag "test sub diff_svgs"; #{{{
+    my $i = 0;
+    until (++$i > 2) {
+        diag "BEGIN fork()";
+        if (my $pid = fork()) {
+            start_timer();
+            wait();
+            diag "END fork() (".show_delta().")";
+        }
+        else {
+            if ($i == 1) {
+    diag "garbage collection observations"; #{{{
     $_->unlink('#object-examination') for $self, $client;
 
     for my $samples (\%exam9samples, \%exam8samples) {
@@ -401,18 +413,31 @@ do { # UNIT_EY
         while (my ($k, $v) = each %$samples) {
             my $o = object_by_uuid($k);
             ok($o && ref $o eq "Node", "looked up $k"); # TODO ?
-            say summarise($o);
             ok(@$v > 1, "vals");
             for (@$v) {
                 ok(!defined($_), "val gone");
             }
         }
     }
+    #}}}
+            }
+            elsif ($i == 2) {
+                for (qw'drawings animations removals') {
+                    $self->spawn([])->id($_);
+                }
+                say summarise($exam8);
+                    sleep 2;
+                $client->spawn($exam8)->id("#viewed");
+                my $ringo = object_by_uuid('4c3543690e14');
+                #say Dump [ map { [ summarise($_->{0}), summarise($_->{1}), $_->{val} ] } $svg->links($ringo) ];
+                say "NOWNOW";
+                diff_svgs($self, $mojo, $client);
 
-
-    say summarise(object_by_uuid(( sort keys %exam9samples)[0]));
-    say "\n\n\n".displow($client);
-
+                is(1, 1, "yeahp");
+            }
+            exit;
+        }
+    }
 #}}}
 };
 
