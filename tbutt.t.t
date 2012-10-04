@@ -400,7 +400,7 @@ do { # UNIT_EY
     for my $samples (\%exam8samples) {
         while (my ($k, $v) = each %$samples) {
             my $o = object_by_uuid($k);
-            ok($o && ref $o eq "Node", "looked up $k");
+            ok($o && ref $o eq "Node", "looked up $k"); # TODO ?
             say summarise($o);
             ok(@$v > 1, "vals");
             for (@$v) {
