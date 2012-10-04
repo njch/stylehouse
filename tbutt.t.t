@@ -117,6 +117,7 @@ sub new_moje {
     my $mojo = NonMojo->new();
     hello($mojo);
     $main::client->spawn(1427)->id("width");
+    return $mojo
 } # }}}
 
 my $tests = new Graph('tests');
@@ -132,7 +133,8 @@ do { # UNIT_EY
     my $mojo = new_moje();
 
     my $themess = my $mess = new Graph("TheMess");
-    for (qw{del rigo ringo john paul delwhert}) {
+    my @messfolk = qw{del rigo ringo john paul delwhert};
+    for (@messfolk) {
         my $s = $mess->spawn($_);
         length($_) % 2 && do { $mess = $s };
     }
@@ -227,7 +229,6 @@ do { # UNIT_EY
     my $self = $client->spawn("#get_objection");
     make_traveller($self, $mojo, $client);
     my $trav = $self->linked("#traveller")->thing;
-    say $trav;
     ok(defined $trav && ref $trav eq "Travel", "got Travel");
     is($trav->{ignore}->[0], "->{no_of_links}", "going to ignore no_of_links");
 
@@ -269,6 +270,79 @@ do { # UNIT_EY
         "linked via self";
     is $self->linked("#object-examination")->thing->{name}, 'object-examination8',
         "linked via self with id";
+
+#}}}
+
+    diag "test sub generate_svg"; #{{{
+    is(summarise($client->linked("#svg")), "~undef~", "no #svg node");
+    generate_svg($self, $mojo, $client);
+    my $svg = $client->linked("#svg");
+    like(summarise($svg), qr/^N\(webbery\) svg svg [0-9a-f]{12}$/, "got #svg node");
+    is($svg, $mojo->svg, "got save svg node both ways");
+    my @examsvgs = grep /N\(object-examination/,
+        split "\n", displow($mojo->svg);
+    my %messfolk = map { $_ => 0 } @messfolk;
+    ok(!(   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
+                    || do { $messfolk{$1}++; 0 } } @examsvgs
+        ),
+        "svg graph nodes look good"
+    );
+    ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
+        || diag Dump(\%messfolk);
+
+    my @folks = uniq(map { /TheMess\) (\w+ [0-9a-f]{12})$/ } @examsvgs);
+
+    is($exam->name, "object-examination8", "have the object-exam");
+    for (sort @folks) {
+        my ($who, $uuid) = split ' ';
+        my $who_node = object_by_uuid($uuid);
+        is($who_node->thing, "$who", "$who found $who node");
+
+        my @nonlinks = $svg->links($who_node);
+        is(scalar(@nonlinks), 0, "$who svg doesn't link $who node");
+
+        my $who_exam = $exam->find($who_node);
+        is($who_exam->thing, $who_node, "$who found $who in exam");
+        my @links = $svg->links($who_exam);
+        is(scalar(@links), 3, "$who svg does link to $who exam node");
+        is_deeply(
+            [ uniq(map { $_->{0} } @links) ],
+            [ $svg ],
+            "$who all links from svg",
+        );
+        is_deeply(
+            [ uniq(map { $_->{1} } @links) ],
+            [ $who_exam ],
+            "$who all links to $who exam",
+        );
+        my @vals = map { shift @{ $_->{val} } } @links;
+        my %whats;
+        for my $v (@vals) {
+            my $name = $v->[0] eq "boxen" ? "boxen ".$v->[3]."x".$v->[4] : "label";
+            $whats{$name} = $v;
+        }
+        my ($uuid_3) = $uuid =~ /(...)$/;
+
+        ok(my $b = $whats{"boxen 18x18"}, "$who boxen 18x18");
+        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+        is($b->[-1]->{id}, "$uuid-b", "  id");
+        is($b->[-1]->{name}, "$who $uuid", "  name");
+        is($b->[-1]->{fill}, "$uuid_3", "  fill");
+        is($b->[-1]->{stroke}, undef, "  stroke");
+
+        ok($b = $whats{"boxen 4x18"}, "$who boxen 4x18");
+        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+        is($b->[-1]->{id}, "$uuid-c", "  id");
+        is($b->[-1]->{name}, "$who $uuid", "  name");
+        is($b->[-1]->{fill}, "000$uuid_3", "  fill");
+        is($b->[-1]->{stroke}, "000", "  stroke");
+
+        ok($b = $whats{"label"}, "$who label");
+        like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
+        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+        is($b->[-1]->{id}, "$uuid-l", "  id");
+        is($b->[-1]->{name}, "$who $uuid", "  name");
+    }
 
 #}}}
 };
