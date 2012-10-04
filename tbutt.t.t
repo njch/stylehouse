@@ -295,15 +295,13 @@ do { # UNIT_EY
 
     is($exam->name, "object-examination8", "have the object-exam");
 
-    my %samples;
+    my %exam8samples;
     my $randomly = sub {
         my ($who_exam, @vals) = @_;
-        $samples{$who_exam->{uuid}} = \@vals;
+        $exam8samples{$who_exam->{uuid}} = \@vals;
     };
     
 
-    my %exam8samples = %samples;
-    %samples = ();
     for (sort @folks) {
         my ($who, $uuid) = split ' ';
         check_folks_svg($exam, $svg, $who, $uuid, undef, undef, $randomly);
@@ -341,14 +339,17 @@ do { # UNIT_EY
         || diag Dump(\%messfolk);
     @folks = uniq(map { /TheMess\) (\$?\w+ [0-9a-f]{12})$/ } @examsvgs);
 
+    my %exam9samples;
+    $randomly = sub {
+        my ($who_exam, @vals) = @_;
+        $exam9samples{$who_exam->{uuid}} = \@vals;
+    };
+
     for (sort @folks) {
         my ($who, $uuid) = split ' ';
         my $whoreally = sub {$codenode->thing} if $who eq '$code';
         check_folks_svg($exam9, $svg, $who, $uuid, $whoreally, 2, $randomly);
     }
-
-    my %exam9samples = %samples;
-    %samples = ();
 
     for my $samples (\%exam9samples, \%exam8samples) {
         while (my ($k, $v) = each %$samples) {
