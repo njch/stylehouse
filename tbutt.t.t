@@ -283,7 +283,7 @@ do { # UNIT_EY
         split "\n", displow($mojo->svg);
     my %messfolk = map { $_ => 0 } @messfolk;
     ok(!(   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
-                    || do { $messfolk{$1}++; 0 } } @examsvgs
+                    || do { die "no $1" unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
         ),
         "svg graph nodes look good"
     );
@@ -293,56 +293,52 @@ do { # UNIT_EY
     my @folks = uniq(map { /TheMess\) (\w+ [0-9a-f]{12})$/ } @examsvgs);
 
     is($exam->name, "object-examination8", "have the object-exam");
+    
     for (sort @folks) {
         my ($who, $uuid) = split ' ';
-        my $who_node = object_by_uuid($uuid);
-        is($who_node->thing, "$who", "$who found $who node");
-
-        my @nonlinks = $svg->links($who_node);
-        is(scalar(@nonlinks), 0, "$who svg doesn't link $who node");
-
-        my $who_exam = $exam->find($who_node);
-        is($who_exam->thing, $who_node, "$who found $who in exam");
-        my @links = $svg->links($who_exam);
-        is(scalar(@links), 3, "$who svg does link to $who exam node");
-        is_deeply(
-            [ uniq(map { $_->{0} } @links) ],
-            [ $svg ],
-            "$who all links from svg",
-        );
-        is_deeply(
-            [ uniq(map { $_->{1} } @links) ],
-            [ $who_exam ],
-            "$who all links to $who exam",
-        );
-        my @vals = map { shift @{ $_->{val} } } @links;
-        my %whats;
-        for my $v (@vals) {
-            my $name = $v->[0] eq "boxen" ? "boxen ".$v->[3]."x".$v->[4] : "label";
-            $whats{$name} = $v;
-        }
-        my ($uuid_3) = $uuid =~ /(...)$/;
-
-        ok(my $b = $whats{"boxen 18x18"}, "$who boxen 18x18");
-        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-        is($b->[-1]->{id}, "$uuid-b", "  id");
-        is($b->[-1]->{name}, "$who $uuid", "  name");
-        is($b->[-1]->{fill}, "$uuid_3", "  fill");
-        is($b->[-1]->{stroke}, undef, "  stroke");
-
-        ok($b = $whats{"boxen 4x18"}, "$who boxen 4x18");
-        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-        is($b->[-1]->{id}, "$uuid-c", "  id");
-        is($b->[-1]->{name}, "$who $uuid", "  name");
-        is($b->[-1]->{fill}, "000$uuid_3", "  fill");
-        is($b->[-1]->{stroke}, "000", "  stroke");
-
-        ok($b = $whats{"label"}, "$who label");
-        like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
-        is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-        is($b->[-1]->{id}, "$uuid-l", "  id");
-        is($b->[-1]->{name}, "$who $uuid", "  name");
+        check_folks_svg($exam, $svg, $who, $uuid);
     }
+
+    # make another exam
+    my $exam8 = $exam;
+    $_->unlink('#object-examination') for $self, $client;
+    my $ringo = $themess->find("ringo");
+    is($ringo->thing, "ringo", "ringo is ringo");
+    my $codenode = $ringo->spawn( { code => <<''
+    my $exam8 = $exam;
+    $_->unlink($exam) for $self, $client;
+
+        } );
+    is(ref $codenode, "Node", 'codenode is node');
+    is(ref $codenode->thing, "HASH", ' " thing is hash');
+
+    my $exam9 = search_about_object($self, $mojo, $client);
+    is($exam9->name, "object-examination9", "have the next object-exam");
+    generate_svg($self, $mojo, $client);
+    @examsvgs = grep /N\(object-examination9/,
+        split "\n", displow($svg);
+    %messfolk = map { $_ => 0 } @messfolk, '$code';
+    ok(!(   grep { $_ !~ /^ N\(object-examination9\) N\(TheMess\) (\$?\w+) [0-9a-f]{12}$/
+                    || do { die unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
+        ),
+        "svg graph nodes look good"
+    );
+# $code should be multi-labelled...
+    my $code_svgs = delete $messfolk{'$code'};
+    is($code_svgs, 4, 'svg graph nodes for $code - split out lines of code');
+    ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
+        || diag Dump(\%messfolk);
+    @folks = uniq(map { /TheMess\) (\$?\w+ [0-9a-f]{12})$/ } @examsvgs);
+ 
+    for (sort @folks) {
+        my ($who, $uuid) = split ' ';
+        my $whoreally = sub {$codenode->thing} if $who eq '$code';
+        check_folks_svg($exam9, $svg, $who, $uuid, $whoreally, 2);
+    }
+
+
+
+
 
 #}}}
 };
@@ -350,6 +346,80 @@ do { # UNIT_EY
 exit;
 
 
+sub check_folks_svg {
+    my ($exam, $svg, $who, $uuid, $whoreally, $iduncs) = @_;
+    my $who_node = object_by_uuid($uuid);
+    is($who_node->thing, ($whoreally ? $whoreally->() : "$who"),
+        "$who found $who node");
+
+    my @nonlinks = $svg->links($who_node);
+    is(scalar(@nonlinks), 0, "$who svg doesn't link $who node");
+
+    my $who_exam = $exam->find($who_node);
+    is($who_exam->thing, $who_node, "$who found $who in exam");
+    my @links = $svg->links($who_exam);
+    my $howmany = 3;
+    $howmany = 4 if $who eq '$code';
+    is(scalar(@links), $howmany, "$who svg does link to $who exam node");
+    is_deeply(
+        [ uniq(map { $_->{0} } @links) ],
+        [ $svg ],
+        "$who all links from svg",
+    );
+    is_deeply(
+        [ uniq(map { $_->{1} } @links) ],
+        [ $who_exam ],
+        "$who all links to $who exam",
+    );
+    my @vals = map { shift @{ $_->{val} } } @links;
+    my %whats;
+    my @linesofcode;
+    for my $v (@vals) {
+        my $name = $v->[0] eq "boxen" ? "boxen ".$v->[3]."x".$v->[4] : "label";
+        $whats{$name} = $v;
+        if ($who eq '$code' && $v->[0] eq "label") {
+            push @linesofcode, $v;
+        }
+    }
+    my ($uuid_3) = $uuid =~ /(...)$/;
+    $iduncs ||= "";
+    $iduncs = "" if $who eq '$code';
+
+    ok(my $b = $whats{"boxen 18x18"}, "$who boxen 18x18");
+    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+    is($b->[-1]->{id}, "$uuid-b$iduncs", "  id");
+    is($b->[-1]->{name}, "$who $uuid", "  name");
+    is($b->[-1]->{fill}, "$uuid_3", "  fill");
+    is($b->[-1]->{stroke}, undef, "  stroke");
+
+    ok($b = $whats{"boxen 4x18"}, "$who boxen 4x18");
+    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+    is($b->[-1]->{id}, "$uuid-c$iduncs", "  id");
+    is($b->[-1]->{name}, "$who $uuid", "  name");
+    is($b->[-1]->{fill}, "000$uuid_3", "  fill");
+    is($b->[-1]->{stroke}, "000", "  stroke");
+
+    ok($b = $whats{"label"}, "$who label");
+    if ($who eq '$code') {
+        $b = $linesofcode[0];
+        is($linesofcode[0]->[3],
+            '    my $exam8 = $exam;',
+            '  line of code 1');
+        is($linesofcode[0]->[-1]->{id}, "$uuid-l", "    id");
+        is($linesofcode[1]->[3],
+            '    $_->unlink($exam) for $self, $client;',
+            '  line of code 2');
+        is($linesofcode[1]->[-1]->{id}, "$uuid-l2", "    id");
+        
+        say Dump(@linesofcode);
+    }
+    else {
+        like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
+    }
+    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
+    is($b->[-1]->{id}, "$uuid-l$iduncs", "  id");
+    is($b->[-1]->{name}, "$who $uuid", "  name");
+}
 
 
 my $case_1 = $cases->spawn("case 1");
