@@ -4,6 +4,7 @@ use Scriptalicious;
 use Test::More 'no_plan';
 use YAML::Syck;
 use Storable 'dclone';
+use Scalar::Util 'weaken', 'isweak';
 use List::MoreUtils;
 start_timer();
 require_ok 'butter.pl';
@@ -293,14 +294,24 @@ do { # UNIT_EY
     my @folks = uniq(map { /TheMess\) (\w+ [0-9a-f]{12})$/ } @examsvgs);
 
     is($exam->name, "object-examination8", "have the object-exam");
+
+    my %samples;
+    my $randomly = sub {
+        my ($who_exam, @vals) = @_;
+        $samples{$who_exam->{uuid}} = \@vals;
+    };
     
+
+    my %exam8samples = %samples;
+    %samples = ();
     for (sort @folks) {
         my ($who, $uuid) = split ' ';
-        check_folks_svg($exam, $svg, $who, $uuid);
+        check_folks_svg($exam, $svg, $who, $uuid, undef, undef, $randomly);
     }
 
     # make another exam
     my $exam8 = $exam;
+    undef $exam;
     $_->unlink('#object-examination') for $self, $client;
     my $ringo = $themess->find("ringo");
     is($ringo->thing, "ringo", "ringo is ringo");
@@ -329,16 +340,77 @@ do { # UNIT_EY
     ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
         || diag Dump(\%messfolk);
     @folks = uniq(map { /TheMess\) (\$?\w+ [0-9a-f]{12})$/ } @examsvgs);
- 
+
     for (sort @folks) {
         my ($who, $uuid) = split ' ';
         my $whoreally = sub {$codenode->thing} if $who eq '$code';
-        check_folks_svg($exam9, $svg, $who, $uuid, $whoreally, 2);
+        check_folks_svg($exam9, $svg, $who, $uuid, $whoreally, 2, $randomly);
+    }
+
+    my %exam9samples = %samples;
+    %samples = ();
+
+    for my $samples (\%exam9samples, \%exam8samples) {
+        while (my ($k, $v) = each %$samples) {
+            my $o = object_by_uuid($k);
+            ok($o && ref $o eq "Node", "looked up $k");
+            ok(@$v > 1, "vals");
+            for (@$v) {
+                like($_->[0], qr/boxen|label/, "val sensible");
+                weaken $_;
+                like($_->[0], qr/boxen|label/, "weakened val still sensible");
+            }
+        }
     }
 
 
+    $_->unlink('#object-examination') for $self, $client;
+
+    for my $samples (\%exam9samples, \%exam8samples) {
+        while (my ($k, $v) = each %$samples) {
+            my $o = object_by_uuid($k);
+            ok($o && ref $o eq "Node", "looked up $k");
+            ok(@$v > 1, "vals");
+            for (@$v) {
+                like($_->[0], qr/boxen|label/, "val sensible");
+            }
+        }
+    }
+
+    my $exam8graphuuid = $exam8->{uuid};
+    undef $exam8;
+    for my $l ($svg->links()) {
+        if ($l->{1}->{graph} eq $exam8graphuuid) {
+            $svg->graph->unlink($l);
+        }
+    }
+
+    for my $samples (\%exam9samples) {
+        while (my ($k, $v) = each %$samples) {
+            my $o = object_by_uuid($k);
+            ok($o && ref $o eq "Node", "looked up $k");
+            is($o->graph->name, "object-examination9", "name");
+            ok(@$v > 1, "vals");
+            for (@$v) {
+                like($_->[0], qr/boxen|label/, "val sensible");
+            }
+        }
+    }
+    for my $samples (\%exam8samples) {
+        while (my ($k, $v) = each %$samples) {
+            my $o = object_by_uuid($k);
+            ok($o && ref $o eq "Node", "looked up $k");
+            say summarise($o);
+            ok(@$v > 1, "vals");
+            for (@$v) {
+                ok(!defined($_), "val gone");
+            }
+        }
+    }
 
 
+    say summarise(object_by_uuid(( sort keys %exam9samples)[0]));
+    say "\n\n\n".displow($client);
 
 #}}}
 };
@@ -347,7 +419,7 @@ exit;
 
 
 sub check_folks_svg {
-    my ($exam, $svg, $who, $uuid, $whoreally, $iduncs) = @_;
+    my ($exam, $svg, $who, $uuid, $whoreally, $iduncs, $randomly) = @_;
     my $who_node = object_by_uuid($uuid);
     is($who_node->thing, ($whoreally ? $whoreally->() : "$who"),
         "$who found $who node");
@@ -371,7 +443,7 @@ sub check_folks_svg {
         [ $who_exam ],
         "$who all links to $who exam",
     );
-    my @vals = map { shift @{ $_->{val} } } @links;
+    my @vals = map { ${ $_->{val} }[0] } @links;
     my %whats;
     my @linesofcode;
     for my $v (@vals) {
@@ -410,8 +482,6 @@ sub check_folks_svg {
             '    $_->unlink($exam) for $self, $client;',
             '  line of code 2');
         is($linesofcode[1]->[-1]->{id}, "$uuid-l2", "    id");
-        
-        say Dump(@linesofcode);
     }
     else {
         like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
@@ -419,6 +489,10 @@ sub check_folks_svg {
     is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
     is($b->[-1]->{id}, "$uuid-l$iduncs", "  id");
     is($b->[-1]->{name}, "$who $uuid", "  name");
+
+    if ($randomly) {
+        $randomly->($who_exam, @vals);
+    }
 }
 
 
