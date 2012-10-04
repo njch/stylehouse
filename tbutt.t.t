@@ -425,14 +425,18 @@ do { # UNIT_EY
                 for (qw'drawings animations removals') {
                     $self->spawn([])->id($_);
                 }
-                say summarise($exam8);
-                    sleep 2;
-                $client->spawn($exam8)->id("#viewed");
-                my $ringo = object_by_uuid('4c3543690e14');
-                #say Dump [ map { [ summarise($_->{0}), summarise($_->{1}), $_->{val} ] } $svg->links($ringo) ];
-                say "NOWNOW";
+                for ($client->linked("#viewed")) {
+                    $client->unlink($_);
+                }
+                my $box8 = $client->spawn($exam8);
+                $box8->id("#object-examination");
+                $client->spawn($box8)->id("#viewed");
+
                 diff_svgs($self, $mojo, $client);
 
+                for (qw'drawings animations removals') {
+                    say Dump([ $self->linked("#$_") ]);
+                }
                 is(1, 1, "yeahp");
             }
             exit;

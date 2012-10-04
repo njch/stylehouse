@@ -1502,8 +1502,8 @@ sub diff_svgs {
                 $by_xy{"$_->{x},$_->{y}"} = undef;
                 $by_id{$_->{id}}++;
             }
-#            die "divorcing boxen-labels ".Dump(\@diffs) unless keys %by_xy == 1;
-#            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
+            die "divorcing boxen-labels ".Dump([\@news, \@olds, \@diffs]) unless keys %by_xy == 1;
+            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
             
             if ($diffs[0]->{x} != 0 && $diffs[0]->{y} != 0) {
                 push @$animations,
