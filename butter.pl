@@ -11,6 +11,7 @@ use v5.10;
 
 our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
+our $whereto;
 our $G;
 our $TEST;
 
@@ -468,8 +469,12 @@ sub trash {
 sub graph {
     my $self = shift;
     until ($main::objects_by_id{$self->{graph}}) {
-        say main::summarise($self)." is looking for another graph to be in...";
-        $self->{graph} = shift @{ $self->{other_graphs} || [] } || return undef;
+        say $self->{graph}." not existing";
+        say $self ." (".$self->thing.") is looking for another graph to be in...";
+        $self->{graph} = shift @{ $self->{other_graphs} || [] } || do {
+            say "No other graphs"; return undef;
+        };
+        say "Found $self->{graph}";
     }
     return $main::objects_by_id{$self->{graph}}
 }
@@ -594,7 +599,7 @@ package main;
 sub done_linked { # {{{
     my ($g, $l) = @_;
     if ($l->{0}->graph ne $l->{1}->graph) {
-        $l->{1}->another_graph($l->{0}->graph);
+        $l->{1}->another_graph($l->{0}->graph->{uuid});
     }
 }
 sub done_unlinked {
@@ -629,18 +634,6 @@ sub mach_spawn {
     return $m
 }
 
-sub mach_for_test_results {
-    my $run = shift;
-    my $m = mach_spawn("#testsults", sub {
-        my ($self, $mojo, $client) = @_;
-        start_timer();
-        my $case = load_graph_yml("testrun/case 2.yml");
-        say "Load graph took: ".show_delta();
-        my $cases = $case->find("#cases");
-        get_object($mojo, $cases->{uuid});
-    });
-}
-
 mach_spawn("#tbutt", sub {
     my ($self, $mojo, $client) = @_;
 
@@ -669,12 +662,10 @@ mach_spawn("#tbutt", sub {
 })->link($findable);
 
 my $codes = new Graph("codes");#{{{
-
-my $get_object = graph_code($codes, "sub graph_code");
-$get_object = mach_for_test_results(undef); # $findable->linked("#tbutt");
+my $get_object_code_graph = graph_code($codes, "sub graph_code");
+$findable->link($get_object_code_graph);
 
 $findable->link($codes);
-$findable->link($get_object);
 
 sub graph_code { 
     my ($codes, $section) = @_;
@@ -731,16 +722,21 @@ sub object_by_uuid {
 }
 sub load_graph_yml {
     my $file = shift;
-    my $graph = LoadFile($file);
-    travel($graph, sub {
-        my ($G) = shift;
-        my $id = $G->{uuid};
-        if (exists $objects_by_id{$id}) {
-            die $G;
-        }
-        $objects_by_id{$id} = $G;
-    });
-    return $graph;
+    my $graphs = LoadFile($file);
+    for my $graph (@$graphs) {
+        travel($graph, sub {
+            my ($G) = shift;
+            my $id = $G->{uuid};
+            if (ref $G eq "Graph") {
+                say "$G $G->{name} $G->{uuid}";
+            }
+            if (exists $objects_by_id{$id}) {
+                #die "Reloading already:". $G;
+            }
+            $objects_by_id{$id} = $G;
+        });
+    }
+    return $graphs->[0];
 }
 
 sub search { # TODO {{{
@@ -847,6 +843,7 @@ sub travel { # TRAVEL
     
     unless (ref $G eq "Node" && $main::objects_by_id{$G->{graph}}
         || ref $G eq "Graph" && $main::objects_by_id{$G->{uuid}}) {
+        $DB::single = 1;
         confess "graph $G->{graph} has been destroyed!";
     }
     my @links;
@@ -964,7 +961,8 @@ sub summarise { # SUM
         when ("Node") {
             my $inner = $thing->thing;
             my $id = $thing->id;
-            my $graph_name = $thing->graph->name;
+            my $graph = $thing->graph;
+            my $graph_name = $graph ? $graph->name : "ORPHAN";
             $text = "N($graph_name) ".($id ? "$id " : "").summarise($inner);
             unless (ref $inner eq "Node") {
                 my $addy = $thing->{uuid};
@@ -1035,9 +1033,20 @@ sub displow {
 
 
 
-our $whereto = ["boxen", {}];
 my $clients = $webbery->spawn("#clients");
-$whereto = [object => { id => $clients->{uuid} }];
+#$whereto = [object => { id => $clients->{uuid} }];
+
+my $dsplay = mach_spawn("#dsplay", sub {
+    my ($self, $mojo, $client) = @_;
+    start_timer();
+    my $dump = load_graph_yml("td.yml");
+    say "Load graph took: ".show_delta();
+    my $begin = $dump->find("#find") || $dump;
+    get_object($mojo, $begin->{uuid});
+});
+$whereto = [object => { id => $dsplay->{uuid} }];
+
+
 
 $findable->link($clients);
 our $client; # client - low priority: sessions
@@ -1347,8 +1356,7 @@ sub generate_svg {
         my $thing = $G->{thing};
         return if $thing eq "svg";
         return if $thing->{iggy};
-        die "urm ".Dump($thing) unless ref $thing eq "Node";
-        $thing = $thing->{thing};
+        $thing = ref $thing eq "Node" ? $thing->{thing} : "G=$thing->{name}";
 
         my $x = $x + $ex->{depth} * 20;
 # PAG {{{

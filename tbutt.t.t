@@ -428,8 +428,9 @@ do { # UNIT_EY
                 for ($client->linked("#viewed")) {
                     $client->unlink($_);
                 }
+                $client->spawn($exam9)->id("#find");
+                $client->spawn($exam9)->id("#object-examination");
                 my $box8 = $client->spawn($exam8);
-                $box8->id("#object-examination");
                 $client->spawn($box8)->id("#viewed");
 
                 diff_svgs($self, $mojo, $client);
@@ -438,12 +439,42 @@ do { # UNIT_EY
                     say Dump([ $self->linked("#$_") ]);
                 }
                 is(1, 1, "yeahp");
+                dumpgraph('td.yml', $self->graph);
             }
             exit;
         }
     }
 #}}}
 };
+
+# because it can link to nodes in other graphs, save them graphs too
+sub dumpgraph {
+    my ($file, $graph) = @_;
+    my $graphs = [ $graph ];
+    my $yaml;
+    my $loop = 1;
+    while ($loop) {
+        say "Round";
+        $loop = 0;
+        $yaml = Dump($graphs);
+        my %graph_uuids;
+        while ($yaml =~ /graph: ([0-9a-f]{12})/g) {
+            $graph_uuids{$1} = undef;
+        }
+        my %uuids;
+        while ($yaml =~ /uuid: ([0-9a-f]{12})/g) {
+            $uuids{$1} = undef;
+        }
+        for my $guuid (keys %graph_uuids) {
+            unless (exists $uuids{$guuid}) {
+                my $graph = object_by_uuid($guuid);
+                push @$graphs, $graph;
+                $loop = 1;
+            }
+        }
+    }
+    write_file($file, $yaml);
+}
 
 exit;
 
