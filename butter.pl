@@ -833,7 +833,7 @@ sub travel { # TRAVEL
     unless ($ex->{seen_oids}) {
         $ex->{depth} = 0;
         $ex->{seen_oids} = {};
-        $ex->{via_link} = -1;
+        $ex->{via_link} = undef;
     }
     hook($ex, "everywhere");
 
@@ -855,7 +855,7 @@ sub travel { # TRAVEL
     }
     hook($ex, "all_links", \@links);
 
-    @links = grep { $_ ne $ex->{via_link} } @links;
+    @links = grep { !$ex->{via_link} || $_ ne $ex->{via_link} } @links;
     hook($ex, "forward_links", \@links);
 
     @links = grep { ! exists $ex->{seen_oids}->{"$_->{1}"} } @links;
