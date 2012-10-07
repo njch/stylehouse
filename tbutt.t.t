@@ -433,6 +433,9 @@ do { # UNIT_EY
                 my $box8 = $client->spawn($exam8);
                 $client->spawn($box8)->id("#viewed");
 
+                dump_svg_linkage($svg, $exam8, $exam9);
+                die;
+
                 diff_svgs($self, $mojo, $client);
 
                 for (qw'drawings animations removals') {
@@ -447,6 +450,63 @@ do { # UNIT_EY
 #}}}
 };
 
+sub dump_svg_linkage {
+    my ($svg, @exams) = @_;
+    my $vals_per_exam = svgvals($svg, @exams);
+    my @exam_ks = keys %$vals_per_exam;
+    my %seen_uuids;
+    my $dump = sub {
+        my $s = Dump(shift);
+        $s =~ s/([0-9a-f]{12}-\w)\d/$1/g;
+        return $s
+    };
+    my $vump = sub {
+        return Dump [ map { encode_json($_) } @{ $_[0] }  ]
+    };
+    while (my ($uuid, $vals) = each %{ $vals_per_exam->{$exam_ks[0]} }) {
+        if ($vals_per_exam->{$exam_ks[1]}->{$uuid}) {
+            if ($dump->($vals_per_exam->{$exam_ks[1]}->{$uuid}) ne $dump->($vals)) {
+                say "Differing vals for $uuid:\n  $exam_ks[0]: ".
+                    $vump->($vals)
+                    ."\n\n  $exam_ks[1]: ".
+                    $vump->($vals_per_exam->{$exam_ks[1]}->{$uuid})."\n\n\n";
+            }
+            else {
+                say "$uuid same         $vals->[0]->[1] $vals->[0]->[2]";
+            }
+        }
+        else {
+            say "$uuid not in $exam_ks[1]:\n".$vump->($vals);
+        }
+        $seen_uuids{$uuid} = 1;
+    }
+    while (my ($uuid, $vals) = each %{ $vals_per_exam->{$exam_ks[1]} }) {
+        next if $seen_uuids{$uuid};
+        say "$uuid new:\n".$vump->($vals);
+        my $o = object_by_uuid($uuid);
+        my $eo = $exams[1]->find($o);
+        say Dump($eo);
+        for (map { $_->name } map { object_by_uuid($_) } @{ $eo->{other_graphs} } ) {
+            say $_;
+        }
+    }
+}
+sub svgvals {
+    my ($svg, @exams) = @_;
+    my %svgvals;
+    for my $e (@exams) {
+        my %obs_vals;
+        travel($e, sub {
+            my $G = shift;
+            for ($svg->links($G)) {
+                my $uuid = $G->thing->{uuid};
+                push @{ $obs_vals{$uuid} ||= [] }, @{$_->{val}};
+            }
+        });
+        $svgvals{$e->name} = \%obs_vals;
+    }
+    return \%svgvals;
+}
 # because it can link to nodes in other graphs, save them graphs too
 sub dumpgraph {
     my ($file, $graph) = @_;
