@@ -482,7 +482,7 @@ sub another_graph {
     my $self = shift;
     my $other_graph = shift;
     my $ogs = $self->{other_graphs} ||= [];
-    push @$ogs, $other_graph;
+    push @$ogs, $other_graph unless grep { $other_graph eq $_ } @$ogs;
 }
 sub link {
     $_[0]->graph->link(@_)
