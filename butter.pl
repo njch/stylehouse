@@ -303,6 +303,12 @@ some of that thought for thinking about writing it.
 
 there's definitely that machine-thinking-ideas pattern.
 
+=head1 TODO
+
+- graph dumping/reloading needs debugging, they end up orphaning into webbery for some reason
+- get butter to dump problematic use cases to tbutt for testing
+- diff_svgs decides there are no animations too often, eg. for buttering around in TheMess
+
 WORDS
 =cut
 
@@ -475,7 +481,7 @@ sub graph {
         $self->{graph} = shift @{ $self->{other_graphs} || [] } || do {
             say "No other graphs"; return undef;
         };
-        say "Found $self->{graph}";
+        say "Found $self->{graph} called ".$main::objects_by_id{$self->{graph}}->{name};
     }
     return $main::objects_by_id{$self->{graph}}
 }
@@ -1474,16 +1480,16 @@ sub diff_svgs {
         my ($old) = grep { !$preserve->linked($_) } @old;
         if ($old) {
             $preserve->link($old);
-     
+
             my @olds = map { $_->{val}->[0] } $svg->links($old);
-            
+
             my @news = map { $_->{val}->[0] } $svg->links($new);
             if (@news != 3) {
                 if ($new->thing->graph->name ne "codes") {
 #                    say "strange number of news:\n".Dump \@news
                 }
             }
-            die "diff" if @news != @olds;
+            say Dump({new => \@news, old => \@olds}) if @news != @olds;
             
             my @diffs;
             while (@olds) {
@@ -1538,7 +1544,15 @@ sub diff_svgs {
                 my $id = $tup[1];
                 push @$removals, ["remove", $id ];
             }
-            $svg->unlink($G);
+            eval {
+                $svg->unlink($G);
+            };
+            if ($@ && $@ =~ /nothing to unlink/) {
+                say "Nothing to unlink svg -> ".Dump($G);
+            }
+            else {
+                die $@ if $@;
+            }
         });
     }
 
