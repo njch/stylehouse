@@ -1227,14 +1227,14 @@ sub get_object { # OBJ
 
 
     my $clear;
-    unless ($viewed && $mode ne "c" && 0) { # TODO hmm
+    unless ($viewed && $mode ne "c") { # TODO hmm
         say "gonna clear screen";
-        $clear = 1;
+        $clear = "viewed";
     }
 
     unless (@{ $self->linked("#animations")->thing }) {
         @{ $self->linked("#animations")->thing } = ();
-        $clear = 1;
+        $clear = "noanim";
     }
 
     if ($TEST) {
@@ -1255,7 +1255,7 @@ sub get_object { # OBJ
 # TODO the rest of the screen should be structured graph
 # theres probably a group thing in svg that can tidily remove etc...
         unshift @drawings, draw_findable(undef, $mojo, $client); 
-        unshift @drawings, ["clear"];
+        unshift @drawings, ["clear", $clear];
     }
     $client->unlink($self);
     $mojo->drawings(@drawings);
