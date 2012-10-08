@@ -367,7 +367,7 @@ do { # UNIT_EY
 
     diag "test sub diff_svgs"; #{{{
     my $i = 0;
-    until (++$i > 2) {
+    until (++$i > 3) {
         diag "BEGIN fork()";
         if (my $pid = fork()) {
             start_timer();
@@ -421,7 +421,7 @@ do { # UNIT_EY
     }
     #}}}
             }
-            elsif ($i == 2) {
+            elsif ($i == 2 || $i == 3) {
                 for (qw'drawings animations removals') {
                     $self->spawn([])->id($_);
                 }
@@ -514,7 +514,7 @@ do { # UNIT_EY
 #}}}
 };
 
-sub dump_svg_linkage {
+sub dump_svg_linkage { # {{{
     my ($svg, @exams) = @_;
     my $vals_per_exam = svgvals($svg, @exams);
     my @exam_ks = keys %$vals_per_exam;
@@ -566,15 +566,14 @@ sub svgvals {
         $svgvals{$e->name} = \%obs_vals;
     }
     return \%svgvals;
-}
+} # }}}
+sub dumpgraph { # {{{
 # because it can link to nodes in other graphs, save them graphs too
-sub dumpgraph {
     my ($file, $graph) = @_;
     my $graphs = [ $graph ];
     my $yaml;
     my $loop = 1;
     while ($loop) {
-        say "Round";
         $loop = 0;
         $yaml = Dump($graphs);
         my %graph_uuids;
@@ -594,12 +593,11 @@ sub dumpgraph {
         }
     }
     write_file($file, $yaml);
-}
+} # }}}
 
 exit;
 
-
-sub check_folks_svg {
+sub check_folks_svg { # {{{
     my ($exam, $svg, $who, $uuid, $whoreally, $iduncs, $randomly) = @_;
     my $who_node = object_by_uuid($uuid);
     is($who_node->thing, ($whoreally ? $whoreally->() : "$who"),
@@ -674,7 +672,7 @@ sub check_folks_svg {
     if ($randomly) {
         $randomly->($who_exam, @vals);
     }
-}
+} #}}}
 
 
 my $case_1 = $cases->spawn("case 1");

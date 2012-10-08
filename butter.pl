@@ -343,8 +343,9 @@ sub unlink {
     for (@to_unlink) {
         warn "different graphs.. ".
             main::summarise($_->{0}) ." vs ". main::summarise($_->{1})
-            if $_->{1}->{graph} ne $_->{0}->{graph}
-                || $_->{1}->{graph} ne $self->{uuid}
+            if ($_->{1}->{graph} ne $_->{0}->{graph}
+                || $_->{1}->{graph} ne $self->{uuid})
+                && !($_->{0}->thing && $_->{0}->thing eq "svg")
     }
     $to_unlink{$_->{_id} || "$_"} = undef for @to_unlink;
     my $links = $self->{links};
@@ -1460,11 +1461,8 @@ sub diff_svgs {
     my $animations = $self->linked("#animations")->thing;
     my $removals = $self->linked("#removals")->thing;
     my $viewed = $client->linked("#viewed");
-        say "viewd: ".summarise($viewed);
     $viewed = $viewed->thing if $viewed;
-        say "viewd: ".summarise($viewed);
     $viewed = $viewed->thing if $viewed;
-        say "viewd: ".summarise($viewed);
     my $exam = $self->linked("#object-examination")->thing;
     my $preserve = $self->spawn("#preserve");
     my $svg = $mojo->svg;
