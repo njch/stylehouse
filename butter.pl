@@ -1472,6 +1472,7 @@ sub diff_svgs {
     $traveller->travel($exam->first, sub {
         my ($new, $ex) = @_;
         my @old = $viewed->find($new->thing) if $viewed;
+        # TODO what was this grep for again? not hitting something twice?
         my ($old) = grep { !$preserve->linked($_) } @old;
         if ($old) {
             $preserve->link($old);
@@ -1484,7 +1485,7 @@ sub diff_svgs {
 #                    say "strange number of news:\n".Dump \@news
                 }
             }
-#            die "diff" if @news != @olds;
+            die "diff" if @news != @olds;
             
             my @diffs;
             while (@olds) {
