@@ -631,19 +631,18 @@ sub check_folks_svg { # {{{
     $iduncs ||= "";
     $iduncs = "" if $who eq '$code';
 
+    my $collap = sub {
+        my ($h, @ids) = @_;
+        return join(";", map { !defined($_) ? '~undef~' : $_ } @{$h}{@ids});
+    };
     ok(my $b = $whats{"boxen 18x18"}, "$who boxen 18x18");
-    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-    is($b->[-1]->{id}, "$uuid-b$iduncs", "  id");
-    is($b->[-1]->{name}, "$who $uuid", "  name");
-    is($b->[-1]->{fill}, "$uuid_3", "  fill");
-    is($b->[-1]->{stroke}, undef, "  stroke");
-
+    is($collap->($b->[-1], qw'class id name fill stroke'),
+        join(";", "$uuid_3 $uuid", "$uuid-b$iduncs", "$who $uuid", "$uuid_3", '~undef~'),
+        "attributes");
     ok($b = $whats{"boxen 4x18"}, "$who boxen 4x18");
-    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-    is($b->[-1]->{id}, "$uuid-c$iduncs", "  id");
-    is($b->[-1]->{name}, "$who $uuid", "  name");
-    is($b->[-1]->{fill}, "000$uuid_3", "  fill");
-    is($b->[-1]->{stroke}, "000", "  stroke");
+    is($collap->($b->[-1], qw'class id name fill stroke'),
+        join(";", "$uuid_3 $uuid", "$uuid-c$iduncs", "$who $uuid", "000$uuid_3", "000"),
+        "attributes");
 
     ok($b = $whats{"label"}, "$who label");
     if ($who eq '$code') {
@@ -660,9 +659,9 @@ sub check_folks_svg { # {{{
     else {
         like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
     }
-    is($b->[-1]->{class}, "$uuid_3 $uuid", "  class");
-    is($b->[-1]->{id}, "$uuid-l$iduncs", "  id");
-    is($b->[-1]->{name}, "$who $uuid", "  name");
+    is($collap->($b->[-1], qw'class id name'),
+        join(";", "$uuid_3 $uuid", "$uuid-l$iduncs", "$who $uuid"),
+        "attributes");
 
     if ($randomly) {
         $randomly->($who_exam, @vals);
