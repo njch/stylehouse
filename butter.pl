@@ -1480,7 +1480,7 @@ sub diff_svgs {
             my @olds = map { $_->{val}->[0] } $svg->links($old);
             
             my @news = map { $_->{val}->[0] } $svg->links($new);
-            if (@news != 2) {
+            if (@news != 3) {
                 if ($new->thing->graph->name ne "codes") {
 #                    say "strange number of news:\n".Dump \@news
                 }
