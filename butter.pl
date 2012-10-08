@@ -342,7 +342,7 @@ sub unlink {
     my %to_unlink;
     for (@to_unlink) {
         warn "different graphs.. ".
-            main::summarise($_->{1}) ." vs ". main::summarise($_->{0})
+            main::summarise($_->{0}) ." vs ". main::summarise($_->{1})
             if $_->{1}->{graph} ne $_->{0}->{graph}
                 || $_->{1}->{graph} ne $self->{uuid}
     }
