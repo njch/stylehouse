@@ -375,7 +375,7 @@ do { # UNIT_EY
             diag "END fork() (".show_delta().")";
         }
         else {
-            if ($i == 5) {
+            if ($i == 1) {
     diag "garbage collection observations"; #{{{
     $_->unlink('#object-examination') for $self, $client;
 
@@ -456,6 +456,7 @@ do { # UNIT_EY
                 my $codey = $codec->{new}->{'y'};
                 ok($codey > 5, "Y coord of CODE sane");
 
+
                 for my $who (keys %$linkage) {
                     my $es = $linkage->{$who};
                     my $c = $xy->($es);
@@ -487,14 +488,24 @@ do { # UNIT_EY
                     }
                 }
 
+                diff_svgs($self, $mojo, $client);
 
+                my $getd = sub {
+                    my ($d) = $self->linked("#".shift);
+                    return $d->thing;
+                };
+                my $draw = $getd->('drawings');
+                is(scalar(@$draw), 4, "4 drawings");
+                is_deeply([ map { $_->[0] } @$draw ], [('boxen')x2, ('label')x2], "2 boxen, 2 labels");
+                like($draw->[0]->[-1]->{name}, qr/^\$code [0-9a-f]{12}$/, "attr good");
 
-        #                diff_svgs($self, $mojo, $client);
+                my $remo = $getd->('removals');
+                is(scalar(@$remo), 0, "0 removals");
 
-                for (qw'drawings animations removals') {
-                    say Dump([ $self->linked("#$_") ]);
-                }
-                is(1, 1, "yeahp");
+                my $anim = $getd->('animations');
+                my $jsons = Load($vump->($anim));
+                is(scalar( grep { /translate\(0 48\)/ } @$jsons ), 9, "9 animations go down 48px");
+
                 dumpgraph('td.yml', $self->graph);
             }
             exit;
@@ -526,18 +537,6 @@ sub dump_svg_linkage {
 
         if ($vals_per_exam->{$exam_ks[1]}->{$uuid}) {
             $by->{$exam_ks[1]} = $vals_per_exam->{$exam_ks[1]}->{$uuid};
-            if ($dump->($vals_per_exam->{$exam_ks[1]}->{$uuid}) ne $dump->($vals)) {
-                say "Differing vals for $uuid:\n  $exam_ks[0]: ".
-                    $vump->($vals)
-                    ."\n\n  $exam_ks[1]: ".
-                    $vump->($vals_per_exam->{$exam_ks[1]}->{$uuid})."\n\n\n";
-            }
-            else {
-                say "$uuid same   ($who)      $vals->[0]->[1] $vals->[0]->[2]";
-            }
-        }
-        else {
-            say "$uuid not in $exam_ks[1]:\n".$vump->($vals);
         }
         $seen_uuids{$uuid} = 1;
     }
@@ -549,12 +548,6 @@ sub dump_svg_linkage {
         my $who = $eo->thing->thing;
         my $by = $by_who->{$who} = {};
         $by->{$exam_ks[1]} = $vals_per_exam->{$exam_ks[1]}->{$uuid};
-
-        say "$uuid new:\n".$vump->($vals);
-        say Dump([$eo->linked]);
-        for (map { $_->name } map { object_by_uuid($_) } @{ $eo->{other_graphs} } ) {
-            say "In other graph: ". $_;
-        }
     }
     return $by_who;
 }
