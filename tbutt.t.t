@@ -424,6 +424,7 @@ do { # UNIT_EY
     #}}}
             }
             elsif ($i == 2 || $i == 3) {
+                diag "an svg diff"; # {{{
                 for (qw'drawings animations removals') {
                     $self->spawn([])->id($_);
                 }
@@ -509,6 +510,7 @@ do { # UNIT_EY
                 is(scalar( grep { /translate\(0 48\)/ } @$jsons ), 9, "9 animations go down 48px");
 
                 dumpgraph('td.yml', $self->graph);
+# }}}
             }
             exit;
         }
@@ -572,26 +574,17 @@ sub svgvals {
 sub dumpgraph { # {{{
 # because it can link to nodes in other graphs, save them graphs too
     my ($file, $graph) = @_;
-    my $graphs = [ $graph ];
+    my $graphs = { $graph->{uuid} => $graph };
     my $yaml;
     my $loop = 1;
     while ($loop) {
         $loop = 0;
-        $yaml = Dump($graphs);
-        my %graph_uuids;
+        $yaml = Dump([ values %$graphs ]);
         while ($yaml =~ /graph: ([0-9a-f]{12})/g) {
-            $graph_uuids{$1} = undef;
-        }
-        my %uuids;
-        while ($yaml =~ /uuid: ([0-9a-f]{12})/g) {
-            $uuids{$1} = undef;
-        }
-        for my $guuid (keys %graph_uuids) {
-            unless (exists $uuids{$guuid}) {
-                my $graph = object_by_uuid($guuid);
-                push @$graphs, $graph;
+            $graphs->{$1} ||= do {
                 $loop = 1;
-            }
+                object_by_uuid($1);
+            };
         }
     }
     write_file($file, $yaml);

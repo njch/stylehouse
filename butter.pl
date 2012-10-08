@@ -735,6 +735,9 @@ sub load_graph_yml {
     my $file = shift;
     my $graphs = LoadFile($file);
     for my $graph (@$graphs) {
+        $objects_by_id{$graph->{uuid}} = $graph;
+    }
+    for my $graph (@$graphs) {
         travel($graph, sub {
             my ($G) = shift;
             my $id = $G->{uuid};
@@ -742,7 +745,7 @@ sub load_graph_yml {
                 say "$G $G->{name} $G->{uuid}";
             }
             if (exists $objects_by_id{$id}) {
-                #die "Reloading already:". $G;
+                say "Reloading already:". $G;
             }
             $objects_by_id{$id} = $G;
         });
@@ -1376,9 +1379,6 @@ sub generate_svg {
         }
         else {
             @xs = ($x);
-        }
-        if (@xs > 5) {
-            say "xs is ".@xs;
         }
         if (@xs == 20) {
 # TODO make this boxen for $pag, so as to etc
