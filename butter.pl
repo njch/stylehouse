@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# copyright Steve Craig 2012
 use strict;
 use warnings;
 use YAML::Syck;
@@ -308,6 +309,9 @@ there's definitely that machine-thinking-ideas pattern.
 - graph dumping/reloading needs debugging, they end up orphaning into webbery for some reason
 - get butter to dump problematic use cases to tbutt for testing
 - diff_svgs decides there are no animations too often, eg. for buttering around in TheMess
+
+perhaps I should do this Tuesday and have two art days, try and arouse a higher level
+endeavour on Friday, and do something about it Sunday and Tuesday and Thursday. Sweet.
 
 WORDS
 =cut

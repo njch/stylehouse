@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+# copyright Steve Craig 2012
 use strict;
 use warnings;
 use Scriptalicious;
