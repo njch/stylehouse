@@ -733,12 +733,13 @@ sub object_by_uuid {
 }
 sub dump_graph_yml {
     my ($file, $graph) = @_;
+    my $first = $graph;
     my $graphs = { $graph->{uuid} => $graph };
     my $yaml;
     my $loop = 1;
     while ($loop) {
         $loop = 0;
-        $yaml = Dump([ values %$graphs ]);
+        $yaml = Dump([ $first, values %$graphs ]);
         while ($yaml =~ /graph: ([0-9a-f]{12})/g) {
             $graphs->{$1} ||= do {
                 $loop = 1;
@@ -748,7 +749,7 @@ sub dump_graph_yml {
     }
     write_file($file, $yaml);
 }
-sub load_graph_yml {
+sub load_graph_yml { #LOAD
     my $file = shift;
     my $graphs = LoadFile($file);
     for my $graph (@$graphs) {
@@ -767,7 +768,7 @@ sub load_graph_yml {
             $objects_by_id{$id} = $G;
         });
     }
-    return $graphs->[0];
+    return wantarray ? @$graphs : $graphs->[0]
 }
 
 sub search { # TODO {{{
