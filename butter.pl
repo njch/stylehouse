@@ -1064,7 +1064,7 @@ sub displow {
 
 
 
-my $clients = $webbery->spawn("#clients");
+$findable->link($webbery->spawn("#clients"));
 #$whereto = [object => { id => $clients->{uuid} }];
 
 my $dsplay = mach_spawn("#dsplay", sub {
@@ -1077,9 +1077,6 @@ my $dsplay = mach_spawn("#dsplay", sub {
 });
 $whereto = [object => { id => $dsplay->{uuid} }];
 
-
-
-$findable->link($clients);
 our $client; # client - low priority: sessions
 
 use Mojolicious::Lite;
@@ -1090,6 +1087,7 @@ sub hello {
     my $client_id = "the";
 
     # trash the old state
+    my $clients = $webbery->find("#clients");
     for my $client ($clients->linked()) {
         $clients->unlink($client);
     }
