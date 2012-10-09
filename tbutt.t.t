@@ -509,7 +509,7 @@ do { # UNIT_EY
                 my $jsons = Load($vump->($anim));
                 is(scalar( grep { /translate\(0 48\)/ } @$jsons ), 9, "9 animations go down 48px");
 
-                dumpgraph('td.yml', $self->graph);
+                dump_graph_yml('td.yml', $self->graph);
 # }}}
             }
             exit;
@@ -571,26 +571,6 @@ sub svgvals {
     }
     return \%svgvals;
 } # }}}
-sub dumpgraph { # {{{
-# because it can link to nodes in other graphs, save them graphs too
-    my ($file, $graph) = @_;
-    my $graphs = { $graph->{uuid} => $graph };
-    my $yaml;
-    my $loop = 1;
-    while ($loop) {
-        $loop = 0;
-        $yaml = Dump([ values %$graphs ]);
-        while ($yaml =~ /graph: ([0-9a-f]{12})/g) {
-            $graphs->{$1} ||= do {
-                $loop = 1;
-                object_by_uuid($1);
-            };
-        }
-    }
-    write_file($file, $yaml);
-} # }}}
-
-exit;
 
 sub check_folks_svg { # {{{
     my ($exam, $svg, $who, $uuid, $whoreally, $iduncs, $randomly) = @_;
