@@ -119,8 +119,17 @@ sub new_moje {
     $sttus = undef;
     $drawings = undef;
     my $mojo = NonMojo->new();
-    hello($mojo);
-    $main::client->spawn(1427)->id("width");
+    if ($_[0]) {
+        $webbery = shift;
+        my $clients = $webbery->find("#clients");
+        my @clients = $clients->linked;
+        @clients != 1 && die "oh no!";
+        $main::client = shift @clients;
+    }
+    else {
+        hello($mojo);
+        $main::client->spawn(1427)->id("width");
+    }
     return $mojo
 } # }}}
 
@@ -671,16 +680,69 @@ until (++$i > 3) {
             my $case_2 = $cases->spawn("case 2");
             $TEST = $case_2;
 
-            $webbery = load_graph_yml("testdata/case 2/webbery graph.yml");
+            my $mojo = new_moje(
+                load_graph_yml("testdata/case 2/webbery graph.yml")
+            );
             is($webbery->name, "webbery", "webbery is webbery");
             my $svg = $webbery->find("#svg");
             my ($graphcode) = grep { $_->thing eq "sub graph_code" } $svg->linked;
 
-            my $mojo = new_moje();
+            $case_2->spawn(sub {
+                my $viewed = $case_2->linked("#viewed")->thing->thing;
+                say displow($viewed); # TODOWTF this or not controls wether svg = 3 or 33
+                my @viewed_svg;
+                travel($viewed->first, sub {
+                    my ($G, $ex) = @_;
+                    return if $G->{thing}->{iggy};
+                    push @viewed_svg, $svg->links($G);
+                });
+                is(scalar(@viewed_svg), 33, "viewed svg count");
+            })->id("#viewed_hook");
+
+            $case_2->spawn(sub {
+                my $exam = $case_2->linked("#exam")->thing;
+                my @exam_svg;
+                travel($exam->first, sub {
+                    my ($G, $ex) = @_;
+                    return if $G->{thing}->{iggy};
+                    push @exam_svg, $svg->links($G);
+                });
+                is(scalar(@exam_svg), 0, "pre-generate_svg exam svg count");
+            })->id("#exam_hook");
+
+            $case_2->spawn(sub {
+                my $exam = $case_2->linked("#exam")->thing;
+                my @exam_svg;
+                travel($exam->first, sub {
+                    my ($G, $ex) = @_;
+                    return if $G->{thing}->{iggy};
+                    push @exam_svg, $svg->links($G);
+                });
+                is(scalar(@exam_svg), 30, "post-generate_svg exam svg count");
+            })->id("#svg_hook");
+
+
             get_object($mojo, $graphcode->{uuid});
-            say "Clients: ". displow($client);
+
+
             my $drawings = $case_2->linked("#drawings")->thing;
-            say Dump($drawings);
+            my $clear = $case_2->linked("#clear");
+            ok(!defined($clear), "no clear")
+                || diag "clear says: ".join(": ", @{ $clear->thing });
+            is($drawings->{id}, $graphcode->{uuid}, "id passed");
+
+
+            is(scalar(@{$drawings->{drawings}}), 0, "0 drawings");
+            is(scalar(@{$drawings->{removals}}), 1, "1 removal");
+            is(scalar(@{$drawings->{animations}}), 30, "30 animations");
+
+            for my $a (grep { $_->[1] =~ /^$graphcode->{uuid}/ } @{$drawings->{animations}}) {
+                is($a->[2]->{svgTransform}, 'translate(-20 -20)', "first object moves up and to the left");
+            }
+            for my $a (grep { $_->[1] !~ /^$graphcode->{uuid}/ } @{$drawings->{animations}}) {
+                is($a->[2]->{svgTransform}, 'translate(0 -20)', "other objects move up");
+            }
+
         }
         exit;
     }
