@@ -1225,6 +1225,12 @@ sub get_object { # OBJ
 
 
     my $viewed = find_latest_examination($self, $mojo, $client);
+    if ($TEST) {
+        $TEST->spawn($viewed)->id("viewed");
+        if (my $h = $TEST->linked("#viewed_hook")) {
+            $h->thing->();
+        }
+    }
 
     if ($mode eq "c") {
         $object->spawn("Hello"); # sprout limb
@@ -1240,6 +1246,12 @@ sub get_object { # OBJ
 
     make_traveller($self, $mojo, $client);
     my $exam = search_about_object($self, $mojo, $client);
+    if ($TEST) {
+        $TEST->spawn($exam)->id("exam");
+        if (my $h = $TEST->linked("#exam_hook")) {
+            $h->thing->();
+        }
+    }
 
     # Just an exercise {{{
     $self->linked("#traveller")->thing->travel($exam->first,
@@ -1254,6 +1266,11 @@ sub get_object { # OBJ
 
     # TODO
     generate_svg($self, $mojo, $client);
+    if ($TEST) {
+        if (my $h = $TEST->linked("#svg_hook")) {
+            $h->thing->();
+        }
+    }
 
     say "post svg: ".show_delta();
 
@@ -1292,6 +1309,9 @@ sub get_object { # OBJ
 # theres probably a group thing in svg that can tidily remove etc...
         unshift @drawings, draw_findable(undef, $mojo, $client); 
         unshift @drawings, ["clear", $clear];
+        if ($TEST) {
+            $TEST->spawn($drawings[0])->id("#clear");
+        }
     }
     $client->unlink($self);
     $mojo->drawings(@drawings);
