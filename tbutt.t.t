@@ -13,6 +13,7 @@ require_ok 'butter.pl';
 diag "required ".show_delta();
 our $TEST = 1;
 our $client;
+our $webbery;
 do { # {{{
 my $g1 = new Graph("test1");
 my $g1n1 = $g1->spawn({color => "yellow"});
@@ -369,7 +370,7 @@ do { # UNIT_EY
 
     diag "test sub diff_svgs"; #{{{
     my $i = 0;
-    until (++$i > 3) {
+    until (++$i > 2) {
         diag "BEGIN fork()";
         if (my $pid = fork()) {
             start_timer();
@@ -423,7 +424,7 @@ do { # UNIT_EY
     }
     #}}}
             }
-            elsif ($i == 2 || $i == 3) {
+            elsif ($i == 2) {
                 diag "an svg diff"; # {{{
                 for (qw'drawings animations removals') {
                     $self->spawn([])->id($_);
@@ -649,21 +650,30 @@ sub check_folks_svg { # {{{
 } #}}}
 
 
-my $case_1 = $cases->spawn("case 1");
-run_case($case_1);
+diag "test cases..s.";
 
-my $webbery = $main::findable->linked("G(webbery)")->thing;
-my $webgraph = examinate_graph($webbery);
+my $i = 0;
+until (++$i > 3) {
+    diag "BEGIN fork()";
+    if (my $pid = fork()) {
+        start_timer();
+        wait();
+        diag "END fork() (".show_delta().")";
+    }
+    else {
+        if ($i == 1) {
+            diag "case 1";
+            my $case_1 = $cases->spawn("case 1");
+            run_case($case_1);
+        }
+        elsif ($i == 2) {
+            diag "case 2";
+            $webbery = load_graph_yml("testdata/case 2/webbery graph.yml");
 
-
-my $case_2 = $cases->spawn("case 2");
-$case_2->spawn("#steps");
-$case_2->spawn("#steps")->spawn("#id")->{thing} = sub {
-    $main::client->linked("#width")->{uuid};
-};
-# make drawings
-
-run_case($case_2);
+        }
+        exit;
+    }
+}
 
 
 sub run_case {
