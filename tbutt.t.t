@@ -744,6 +744,21 @@ until (++$i > 3) {
             }
 
         }
+        elsif ($i == 3) {
+            diag "case 3";
+            my $case_3 = $cases->spawn("case 3");
+            $TEST = $case_3;
+
+            my $mojo = new_moje(
+                load_graph_yml("testdata/case 3/webbery graph.yml")
+            );
+            is($webbery->name, "webbery", "webbery is webbery");
+            my $finder = $webbery->find("findable_objects");
+            my ($codes) = grep { ref $_ eq "Graph" && $_->name eq "codes" }
+                map { $_->thing } $finder->linked;
+
+            get_object($mojo, $codes->{uuid});
+        }
         exit;
     }
 }
