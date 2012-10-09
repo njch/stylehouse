@@ -1076,7 +1076,7 @@ my $dsplay = mach_spawn("#dsplay", sub {
     my $begin = $dump->find("#find") || $dump;
     get_object($mojo, $begin->{uuid});
 });
-$whereto = [object => { id => $dsplay->{uuid} }];
+$whereto = [object => { id => $codes->{uuid} }];
 
 our $client; # client - low priority: sessions
 
@@ -1173,7 +1173,7 @@ mach_spawn("#reexamine", sub {
 mach_spawn("#dump_graph", sub {
     my ($self, $mojo, $client) = @_;
     
-    dump_graph_yml("testdata/case 2/webbery graph.yml", $client->graph);
+    dump_graph_yml("testdata/case 5/webbery graph.yml", $client->graph);
     return $mojo->drawings([status => "dumped graph"]);
 })->link($findable);
 

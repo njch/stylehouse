@@ -517,7 +517,7 @@ do { # UNIT_EY
         }
     }
 #}}}
-};
+} if 0;
 
 sub dump_svg_linkage { # {{{
     my ($svg, @exams) = @_;
@@ -661,15 +661,26 @@ until (++$i > 3) {
         diag "END fork() (".show_delta().")";
     }
     else {
-        if ($i == 1) {
+        if ($i == 5) {
             diag "case 1";
             my $case_1 = $cases->spawn("case 1");
             run_case($case_1);
         }
         elsif ($i == 2) {
             diag "case 2";
-            $webbery = load_graph_yml("testdata/case 2/webbery graph.yml");
+            my $case_2 = $cases->spawn("case 2");
+            $TEST = $case_2;
 
+            $webbery = load_graph_yml("testdata/case 2/webbery graph.yml");
+            is($webbery->name, "webbery", "webbery is webbery");
+            my $svg = $webbery->find("#svg");
+            my ($graphcode) = grep { $_->thing eq "sub graph_code" } $svg->linked;
+
+            my $mojo = new_moje();
+            get_object($mojo, $graphcode->{uuid});
+            say "Clients: ". displow($client);
+            my $drawings = $case_2->linked("#drawings")->thing;
+            say Dump($drawings);
         }
         exit;
     }
