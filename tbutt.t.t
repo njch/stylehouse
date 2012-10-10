@@ -689,7 +689,11 @@ until (++$i > 3) {
 
             $case_2->spawn(sub {
                 my $viewed = $case_2->linked("#viewed")->thing->thing;
-                say displow($viewed); # TODOWTF this or not controls wether svg = 3 or 33
+                # TODO need this displow() call or viewed svg count will be only 3...
+                # these dump the same
+                #dump_graph_yml("bah", $webbery);
+                displow($viewed);
+                #dump_graph_yml("bah2", $webbery);
                 my @viewed_svg;
                 travel($viewed->first, sub {
                     my ($G, $ex) = @_;

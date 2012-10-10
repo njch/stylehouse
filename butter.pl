@@ -306,12 +306,7 @@ there's definitely that machine-thinking-ideas pattern.
 
 =head1 TODO
 
-- graph dumping/reloading needs debugging, they end up orphaning into webbery for some reason
-- get butter to dump problematic use cases to tbutt for testing
-- diff_svgs decides there are no animations too often, eg. for buttering around in TheMess
-
-perhaps I should do this Tuesday and have two art days, try and arouse a higher level
-endeavour on Friday, and do something about it Sunday and Tuesday and Thursday. Sweet.
+yep
 
 WORDS
 =cut
@@ -1090,6 +1085,7 @@ sub hello {
     # trash the old state
     my $clients = $webbery->find("#clients");
     for my $client ($clients->linked()) {
+        next if $client->thing eq "findable_objects";
         $clients->unlink($client);
     }
 
