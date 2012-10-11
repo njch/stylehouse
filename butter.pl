@@ -1169,7 +1169,7 @@ mach_spawn("#reexamine", sub {
 mach_spawn("#dump_graph", sub {
     my ($self, $mojo, $client) = @_;
     
-    dump_graph_yml("testdata/case 5/webbery graph.yml", $client->graph);
+    dump_graph_yml("testdata/case 4/webbery graph.yml", $client->graph);
     return $mojo->drawings([status => "dumped graph"]);
 })->link($findable);
 

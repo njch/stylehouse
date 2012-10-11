@@ -9,7 +9,8 @@ use Storable 'dclone';
 use Scalar::Util 'weaken', 'isweak';
 use List::MoreUtils;
 start_timer();
-require_ok 'butter.pl';
+require_ok('butter.pl')
+    || die $@;
 diag "required ".show_delta();
 our $TEST = 1;
 our $client;
@@ -670,13 +671,13 @@ until (++$i > 3) {
         diag "END fork() (".show_delta().")";
     }
     else {
-        if ($i == 5) {
+        if ($i == 0) {
             diag "case 1";
             my $case_1 = $cases->spawn("case 1");
             run_case($case_1);
         }
-        elsif ($i == 2) {
-            diag "case 2";
+        elsif ($i == 0) {
+            diag "case 2: animation, removal"; # {{{
             my $case_2 = $cases->spawn("case 2");
             $TEST = $case_2;
 
@@ -746,7 +747,7 @@ until (++$i > 3) {
             for my $a (grep { $_->[1] !~ /^$graphcode->{uuid}/ } @{$drawings->{animations}}) {
                 is($a->[2]->{svgTransform}, 'translate(0 -20)', "other objects move up");
             }
-
+# }}}
         }
         elsif ($i == 3) {
             diag "case 3";
