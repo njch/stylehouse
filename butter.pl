@@ -411,7 +411,7 @@ sub DESTROY {
     }
     undef $self->{links};
     undef $self->{nodes};
-    undef $main::graphs{$self->{name}};
+    delete $main::graphs{$self->{name}};
 };
 package Node;
 use strict;
@@ -755,6 +755,11 @@ sub load_graph_yml { #LOAD
             my ($G) = shift;
             my $id = $G->{uuid};
             if (ref $G eq "Graph") {
+                if (exists $main::graphs{$G->{name}}) {
+                    die "already got a graph named $G->{name}!"
+                        unless $TEST;
+                }
+                $main::graphs{$G->{name}} = $G;
                 say "$G $G->{name} $G->{uuid}";
             }
             if (exists $objects_by_id{$id}) {
@@ -1524,6 +1529,7 @@ sub diff_svgs {
         my @old = $viewed->find($new->thing) if $viewed;
         # TODO what was this grep for again? not hitting something twice?
         my ($old) = grep { !$preserve->linked($_) } @old;
+
         if ($old) {
             $preserve->link($old);
 
