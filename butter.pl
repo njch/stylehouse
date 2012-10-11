@@ -1323,6 +1323,9 @@ sub find_latest_examination {
     my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
         $client->linked("#/^object-examination/");
     my $latest = pop @exams;
+    for my $old_viewed ($client->linked("#viewed")) {
+        $client->unlink($old_viewed)
+    }
     if ($latest) {
         $client->spawn($latest)->id("#viewed");
     }
