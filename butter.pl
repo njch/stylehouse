@@ -1116,14 +1116,19 @@ mach_spawn("#reexamine", sub { # {{{
     $exam = $exam->thing;
     my @drawings;
     my $svg = $client->linked("#svg");
-    travel($exam->first, sub {
-        my ($G, $ex) = @_;
-        push @drawings, map {
-            $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
-            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
-            $_
-        } map { $_->{val}->[0] } $svg->links($G);
-    });
+    my $reremo = goof($client, "+ #reremo {}");
+
+    push @drawings, map {
+        $_ = Load(Dump($_));
+        $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+        $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
+        $_->[-1]->{id} = "re".$_->[-1]->{id};
+        #            $_->[0] eq "label" && die "woohoo!";
+        $reremo->{ $_->[-1]->{id} }++;
+        $_
+    } map { $_->{val}->[0] }
+    grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
+
     return $mojo->drawings(@drawings);
 }); # }}}
 mach_spawn("#dump_trail", sub { # {{{
@@ -1337,12 +1342,20 @@ sub get_object { # OBJ
 
     unshift @drawings, ["status", $status];
     if ($clear) {
+        $drawings[0]->[1] .= "(clear=$clear)";
 # TODO the rest of the screen should be structured graph
 # theres probably a group thing in svg that can tidily remove etc...
         unshift @drawings, draw_findable(undef, $mojo, $client); 
         unshift @drawings, ["clear", $clear];
         if ($TEST) {
             $TEST->spawn($drawings[0])->id("#clear");
+        }
+    }
+    if (my $reremo = $client->linked("#reremo")) {
+        $reremo = $reremo->thing;
+        for my $id (keys %$reremo) {
+            delete $reremo->{$id};
+            unshift @drawings, ['remove' => $id] unless $clear;
         }
     }
     $client->unlink($self);
