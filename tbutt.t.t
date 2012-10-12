@@ -126,6 +126,7 @@ sub new_moje {
         my @clients = $clients->linked;
         @clients != 1 && die "oh no!";
         $main::client = shift @clients;
+        $main::client->spawn("#trail");
     }
     else {
         hello($mojo);

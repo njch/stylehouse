@@ -1097,6 +1097,7 @@ sub displow {
 
 
 $webbery->spawn("#clients");
+$webbery->spawn("#trail");
 
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
@@ -1125,16 +1126,19 @@ mach_spawn("#reexamine", sub {
     });
     return $mojo->drawings(@drawings);
 });
-mach_spawn("#dump_graph", sub {
+mach_spawn("#dump_trail", sub {
     my ($self, $mojo, $client) = @_;
-    dump_graph_yml("testdata/case 4/webbery graph.yml", $client->graph);
+    dump_graph_yml("thetrail.yml", $client->graph);
+    my $trail = load_graph_yml("thetrail.yml");
+    $trail = $trail->find("#clients")->linked("#client")->linked("#trail");
+    say displow($trail);
     return $mojo->drawings([status => "dumped graph"]);
 });
 
 
 # define the TOOLBAR
 $toolbar->spawn($webbery);
-for my $tid ('tbutt', 'reexamine') {
+for my $tid ('tbutt', 'reexamine', 'dump_trail') {
     $DB::single = 1;
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
@@ -1157,6 +1161,8 @@ sub hello {
     }
 
     $client = $clients->spawn("the");
+    $client->id("#client");
+    $client->spawn("#trail");
 
     $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
@@ -1238,6 +1244,7 @@ sub get_object { # OBJ
     my $mode = $1 || "b";
 
     my $self = $client->spawn("#get_objection");
+    $client->linked("#trail")->spawn($self);
     $self->spawn($id)->id('id');
 
     my $object = object_by_uuid($id)
