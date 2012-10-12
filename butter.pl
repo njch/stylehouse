@@ -1621,14 +1621,12 @@ sub diff_svgs {
             die "divorcing boxen-labels ".Dump([\@news, \@olds, \@diffs]) unless keys %by_xy == 1;
             die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
             
-            if ($diffs[0]->{x} != 0 || $diffs[0]->{y} != 0) {
-                push @$animations,
-                    map {
-                        ["animate", $_->{id},
-                        {svgTransform => "translate($_->{x} $_->{y})"},
-                        300];
-                    } @diffs
-            }
+            push @$animations,
+                map {
+                    ["animate", $_->{id},
+                    {svgTransform => "translate($_->{x} $_->{y})"},
+                    300]
+                } @diffs;
         }
         else {
             my @whats = $svg->links($new);
