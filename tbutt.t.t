@@ -90,9 +90,6 @@ my $del = $g1n1->linked("{del => ...}");
 is $del->thing->{del}, "rigor", "del => rigor";
 }; # }}}
 
-say "";
-say "";
-
 our ($sttus, $drawings);
 
 package NonMojo; # {{{

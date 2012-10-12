@@ -792,10 +792,10 @@ sub load_graph_yml { #LOAD
                         unless $TEST;
                 }
                 $main::graphs{$G->{name}} = $G;
-                say "$G $G->{name} $G->{uuid}";
             }
             if (exists $objects_by_id{$id}) {
-                say "Reloading already:". $G;
+                die "Dump restore clang:". $G
+                    if "$G" ne "$objects_by_id{$id}";
             }
             $objects_by_id{$id} = $G;
         });
@@ -812,7 +812,6 @@ sub search { # TODO {{{
     elsif ($p{want} && $p{want} =~ /^G\((\S+)\)$/) {
         my $graph_name = $1;
         my $res = new Graph($graph_name);
-        say "Made new graph for results: ".main::summarise($res);
         my $trav = $p{traveller} || Travel->new(
             ($p{ignore} ? (ignore => $p{ignore}) : ())
         );
