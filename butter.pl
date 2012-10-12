@@ -306,7 +306,20 @@ there's definitely that machine-thinking-ideas pattern.
 
 =head1 TODO
 
-yep
+can't translate() morenonce, again
+need to get whole svg state from test script back to the scope, so it can be seen
+should probably rejig the ui a bit now it's more stable to support...
+- breadcrumb history
+- yadda
+- dump depth limiting
+- exceptions to said
+- those exceptions a kind of view port
+- view ports
+- view ports by graph pattern like G(webbery)/filesystem
+- tests run from ui
+- butter hacks managed in butter ui itself
+- to deploy a new butter ui the new process requests to the old process to die
+- leaving it necessary state to keep on truckin
 
 WORDS
 =cut
@@ -646,7 +659,7 @@ mach_spawn("#tbutt", sub {
     start_timer();
     my ($rc, @output) = capture_err("perl", "tbutt.t.t", "harnessed");
 
-    say "test run $rc with ".@output;
+    say "test run $rc with ".scalar(@output);
     my $run = $webbery->spawn("#testrun");
     $run->spawn(["return code", $rc]);
     $run->spawn(["time", show_delta()]);
@@ -658,13 +671,34 @@ mach_spawn("#tbutt", sub {
             last;
         }
     }
+    my ($ok, $notok, @blabs);
+    push @blabs, { '...' => [] };
+    for (@output) {
+        /^ok \d+/ && $ok++;
+        /^not ok \d+/ && $notok++;
+        if (/^# (.+)$/) {
+            push @blabs, { $1 => [] };
+        }
+        else {
+            my $h = $blabs[-1];
+            my ($a) = values %$h;
+            push @$a, $_
+        }
+    }
     $run->spawn(["result", $res]);
+    $run->spawn(["oks", $ok]);
+    $run->spawn(["notoks", $notok]);
+    $run->spawn(["diags", [map { keys %$_ } @blabs]]);
 
-    $run->spawn(["output", \@output]);
-
-    $run->spawn(mach_for_test_results($run));
 
     get_object($mojo, $run->{uuid});
+})->link($findable);
+
+mach_spawn("#test-results", sub {
+    my ($self, $mojo, $client) = @_;
+
+    my $tests = load_graph_yml("testrun/case 3.yml");
+    get_object($mojo, $tests->{uuid});
 })->link($findable);
 
 my $codes = new Graph("codes");#{{{
@@ -756,7 +790,7 @@ sub load_graph_yml { #LOAD
             my $id = $G->{uuid};
             if (ref $G eq "Graph") {
                 if (exists $main::graphs{$G->{name}}) {
-                    die "already got a graph named $G->{name}!"
+                    warn "already got a graph named $G->{name}!"
                         unless $TEST;
                 }
                 $main::graphs{$G->{name}} = $G;

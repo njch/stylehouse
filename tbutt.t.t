@@ -527,7 +527,7 @@ do { # UNIT_EY
         }
     }
 #}}}
-} if 0;
+};
 
 sub dump_svg_linkage { # {{{
     my ($svg, @exams) = @_;
@@ -671,12 +671,12 @@ until (++$i > 3) {
         diag "END fork() (".show_delta().")";
     }
     else {
-        if ($i == 0) {
+        if ($i == 1) {
             diag "case 1";
             my $case_1 = $cases->spawn("case 1");
             run_case($case_1);
         }
-        elsif ($i == 0) {
+        elsif ($i == 2) {
             diag "case 2: animation, removal"; # {{{
             my $case_2 = $cases->spawn("case 2");
             $TEST = $case_2;
@@ -763,6 +763,8 @@ until (++$i > 3) {
                 map { $_->thing } $finder->linked;
 
             get_object($mojo, $codes->{uuid});
+
+            dump_graph_yml('testrun/'.$case_3->{thing}.'.yml', $tests);
         }
         exit;
     }
