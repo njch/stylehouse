@@ -1162,20 +1162,7 @@ sub hello {
 
     $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
-get '/stats' => sub {
-    die "stats";
-    $_[0]->drawings(["status", "hi"]);
-};
 my $findable_y = 20;
-get '/boxen' => sub {
-    my $mojo = shift;
-    die "sieg heil";
-    $mojo->drawings(
-        ["clear"],
-        draw_findable(undef, $mojo, $client),
-    );
-};
-
 get '/width' => sub {
     my $mojo = shift;
     my $width = $mojo->param('width');
@@ -1396,8 +1383,7 @@ sub make_traveller {
 # fields to outdate?
     my $traveller = Travel->new(
         ignore =>
-            ["->{no_of_links}", "->{iggy}", "findable_objects", "#object-examination",
-             "#ids"],
+            ["->{no_of_links}", "->{iggy}", "#object-examination", "#ids"],
     );
     $self->spawn($traveller)->id("#traveller");
 }
@@ -1660,7 +1646,7 @@ sub diff_svgs {
 
 get '/object_info' => sub {
     my $mojo = shift;
-    $mojo->render("404");
+    $mojo->sttus("shag off!");
 };
 
 get '/' => 'index';
