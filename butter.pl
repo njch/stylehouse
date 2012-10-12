@@ -1235,6 +1235,8 @@ sub get_object { # OBJ
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
 
+    defined $client || return $mojo->sttus("hit F5!");
+
     my $self = $client->spawn("#get_objection");
     $client->linked("#trail")->spawn($self);
     $self->spawn($id)->id('id');
