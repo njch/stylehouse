@@ -108,7 +108,7 @@ sub id {
 }
 sub render {};
 sub svg {
-    return main::procure_svg();
+    return main::rocure_svg();
 }
 sub sttus { shift; $main::sttus = [@_]; }
 sub drawings { shift; $main::drawings = [@_]; }
@@ -427,9 +427,8 @@ until (++$i > 5) {
         generate_svg($self, $mojo, $client);
         my $svg = $client->linked("#svg");
         like(summarise($svg), qr/^N\(webbery\) svg svg [0-9a-f]{12}$/, "got #svg node");
-        is($svg, $mojo->svg, "got save svg node both ways");
         my @examsvgs = grep /N\(object-examination/,
-            split "\n", displow($mojo->svg);
+            split "\n", displow($svg);
         my %messfolk = map { $_ => 0 } @messfolk;
         ok(!(   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
                         || do { die "no $1" unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs

@@ -1095,8 +1095,6 @@ sub displow {
 # }}}
 
 
-$webbery->spawn("#clients");
-$webbery->spawn("#trail");
 
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
@@ -1107,14 +1105,14 @@ mach_spawn("#dsplay", sub { #{{{
     get_object($mojo, $begin->{uuid});
 });#}}}
 
-mach_spawn("#reexamine", sub {
+mach_spawn("#reexamine", sub { # {{{
     my ($self, $mojo, $client) = @_;
     my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
         $client->linked("#/^object-examination/");
     my $exam = pop @exams;
     $exam = $exam->thing;
     my @drawings;
-    my $svg = $mojo->svg;
+    my $svg = $client->linked("#svg");
     travel($exam->first, sub {
         my ($G, $ex) = @_;
         push @drawings, map {
@@ -1124,24 +1122,25 @@ mach_spawn("#reexamine", sub {
         } map { $_->{val}->[0] } $svg->links($G);
     });
     return $mojo->drawings(@drawings);
-});
-mach_spawn("#dump_trail", sub {
+}); # }}}
+mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
     dump_graph_yml("thetrail.yml", $client->graph);
     my $trail = load_graph_yml("thetrail.yml");
     $trail = $trail->find("#clients")->linked("#client")->linked("#trail");
     say displow($trail);
     return $mojo->drawings([status => "dumped graph"]);
-});
+}); # }}}
 
+$webbery->spawn("#clients");
 
 # define the TOOLBAR
-$toolbar->spawn($webbery);
+$toolbar->link($webbery);
 for my $tid ('tbutt', 'reexamine', 'dump_trail') {
     $DB::single = 1;
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
-    $toolbar->spawn($t);
+    $toolbar->link($t);
 }
 
 our $client; # client - low priority: sessions
@@ -1151,21 +1150,20 @@ get '/hello' => \&hello;
 sub hello {
     my $mojo = shift;
 
-    my $client_id = "the";
+    my $clients = $webbery->find("#clients");
 
     # trash the old state
-    my $clients = $webbery->find("#clients");
-    for my $client ($clients->linked()) {
-        $clients->unlink($client);
-    }
+    $_->trash for $clients->linked();
 
     $client = $clients->spawn("the");
     $client->id("#client");
     $client->spawn("#trail");
+    $client->spawn("#svg");
 
     $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
 get '/stats' => sub {
+    die "stats";
     $_[0]->drawings(["status", "hi"]);
 };
 my $findable_y = 20;
@@ -1191,7 +1189,7 @@ sub draw_findable {
     my ($width) = $client->linked("#width")->thing;
     my $x = $width - 35;
 
-    my $svg = $mojo->svg();
+    my $svg = $client->linked("#svg");
     my @new;
     for my $ble ($toolbar->linked()) {
         my $sum = summarise($ble);
@@ -1448,7 +1446,7 @@ sub generate_svg {
     };
     my $exam = $self->linked("#object-examination")->thing;
     my $traveller  = $self->linked("#traveller")->thing;
-    my $svg = $mojo->svg; # client->#svg
+    my $svg = $client->linked("#svg");
 
     my ($x, $y) = (30, 40);
 
@@ -1565,7 +1563,7 @@ sub diff_svgs {
     $viewed = $viewed->thing if $viewed;
     my $exam = $self->linked("#object-examination")->thing;
     my $preserve = $self->spawn("#preserve");
-    my $svg = $mojo->svg;
+    my $svg = $client->linked("#svg");
 
     my %new_uuids;
     $traveller->travel($exam->first, sub {
@@ -1667,11 +1665,6 @@ get '/object_info' => sub {
 
 get '/' => 'index';
 
-*Mojolicious::Controller::svg = \&procure_svg;
-sub procure_svg {
-    $main::client || confess "Argsh";
-    return goof($main::client, "+ #svg");
-};
 *Mojolicious::Controller::drawings = sub {
     my $mojo = shift;
     say scalar(@_)." drawings";
