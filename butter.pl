@@ -1167,6 +1167,7 @@ sub hello {
     $client->id("#client");
     $client->spawn("#trail");
     $client->spawn("#svg");
+    $client->spawn({})->id("#translates");
 
     $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
@@ -1568,6 +1569,7 @@ sub diff_svgs {
     my $exam = $self->linked("#object-examination")->thing;
     my $preserve = $self->spawn("#preserve");
     my $svg = $client->linked("#svg");
+    my $translates = $client->linked("#translates")->thing;
 
     my %new_uuids;
     $traveller->travel($exam->first, sub {
@@ -1602,7 +1604,8 @@ sub diff_svgs {
                 my $new = shift @news;
                 die "WHAT\n".Dump[$old, $new]
                     if $old->[-1]->{class} ne $new->[-1]->{class}
-                    || $old->[0] eq "label" && $old->[3] ne $new->[3]; # lable text
+                    || $old->[0] eq "label" && $old->[3] ne $new->[3] # lable text
+                    && $new->[-1]->{name} !~ /translates/; # data dump changes
                 # ids are l1-17 on old, l18-34 on new... post-x could handle
                 # make sure we can keep finding them:
                 $new->[-1]->{id} = $old->[-1]->{id};
@@ -1622,6 +1625,16 @@ sub diff_svgs {
             }
             die "divorcing boxen-labels ".Dump([\@news, \@olds, \@diffs]) unless keys %by_xy == 1;
             die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
+
+            # add to how they already are translated
+            my $one = $diffs[0];
+            my ($id) = $one->{wasclass} =~ / (.+)$/;
+            $translates->{$id}->{x} += $one->{x};
+            $translates->{$id}->{y} += $one->{y};
+            for (@diffs) {
+                $_->{x} = $translates->{$id}->{x};
+                $_->{y} = $translates->{$id}->{y};
+            }
             
             push @$animations,
                 map {
@@ -1647,6 +1660,7 @@ sub diff_svgs {
                 my @tup = nameidcolor($sum);
                 my $id = $tup[1];
                 push @$removals, ["remove", $id ];
+                $translates->{$id} && delete $translates->{$id};
             }
             eval {
                 $svg->unlink($G);
