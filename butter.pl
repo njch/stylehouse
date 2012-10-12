@@ -674,10 +674,17 @@ mach_spawn("#tbutt", sub {
     my ($ok, $notok, @blabs);
     push @blabs, { '...' => [] };
     for (@output) {
-        /^ok \d+/ && $ok++;
-        /^not ok \d+/ && $notok++;
-        if (/^# (.+)$/) {
-            push @blabs, { $1 => [] };
+        if (/^ok (\d+)/ && ++$ok || /^not ok (\d+)/ && ++$notok) {
+# in each forked process the oks will reiterate
+        }
+        if (my ($d) = /^# (.+)$/) {
+            push @blabs, { $d => [] };
+            if ($d =~ /BEGIN fork\(\)/) {
+# start a branch
+            }
+            elsif ($d =~ /END fork\(\) \((.+)\)/) {
+# finish a branch
+            }
         }
         else {
             my $h = $blabs[-1];
