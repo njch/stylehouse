@@ -1564,13 +1564,18 @@ sub diff_svgs {
     my %new_uuids;
     $traveller->travel($exam->first, sub {
         my ($new, $ex) = @_;
-        $new_uuids{$new->thing->{uuid}} = 1;
+        $new_uuids{$new->thing->{uuid}}++;
 
         my @old = $viewed->find($new->thing) if $viewed;
         # TODO what was this grep for again? not hitting something twice?
-        my ($old) = grep { !$preserve->linked($_) } @old;
+        my @pres_old = grep { !$preserve->linked($_) } @old;
+        my $old_i = $new_uuids{$new->thing->{uuid}} - 1;
+        my $old = $old[$old_i];
 
         if ($old) {
+            if ($old ne $pres_old[0]) {
+                die "diffornce";
+            }
             $preserve->link($old);
 
             my @olds = map { $_->{val}->[0] } $svg->links($old);
@@ -1630,7 +1635,8 @@ sub diff_svgs {
     if ($viewed) {
         $traveller->travel($viewed->first, sub {
             my ($G,$ex) = @_;
-            unless ($new_uuids{$G->thing->{uuid}}) {
+            unless ($new_uuids{$G->thing->{uuid}}
+                && $new_uuids{$G->thing->{uuid}}-- > 0) {
                 my $sum = summarise($G);
                 my @tup = nameidcolor($sum);
                 my $id = $tup[1];
