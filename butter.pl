@@ -646,7 +646,10 @@ mach_spawn("#filesystem", sub { # {{{
         $dir || die "no dir... $File::Find::dir";
         $dir->spawn($File::Find::name);
     }, $fs_head->thing);
-
+    $fs->map_nodes(sub {
+        my $G = shift;
+        ($G->{thing}) = $G->{thing} =~ /\/([^\/]+)$/;
+    });
     get_object($mojo, $fs->{uuid});
 }); # }}}
 
