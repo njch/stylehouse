@@ -10,12 +10,6 @@ use Scriptalicious;
 use Carp 'confess';
 use v5.10;
 
-our $json = JSON::XS->new()->convert_blessed(1);
-our $webbery = new Graph('webbery');
-our $whereto;
-our $G;
-our $TEST;
-
 =head1 NEW FILE!
 
 need to move the architecture forward without clunkiness and many
@@ -324,6 +318,12 @@ should probably rejig the ui a bit now it's more stable to support...
 WORDS
 =cut
 
+our $json = JSON::XS->new()->convert_blessed(1);
+our $webbery = new Graph('webbery');
+our $toolbar = new Graph('tools')->spawn('toolbar');
+our $G;
+our $TEST;
+
 our %graphs; # {{{
 package Graph;
 use YAML::Syck;
@@ -615,7 +615,14 @@ sub travel {
 package main;
 #}}}
 
-sub done_linked { # {{{
+my $mach = $webbery->spawn("#mach");# {{{
+sub mach_spawn {
+    my $m = $mach->spawn(shift);
+    $m->{thing} = shift;
+    return $m
+}
+
+sub done_linked { 
     my ($g, $l) = @_;
     if ($l->{0}->graph ne $l->{1}->graph) {
         $l->{1}->another_graph($l->{0}->graph->{uuid});
@@ -624,36 +631,59 @@ sub done_linked { # {{{
 sub done_unlinked {
     my ($g, $l) = @_;
     # could check that $l indended at $n->unlink get $g->unlinked (here)
-    say "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
+    die "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
 } # }}}
 
+mach_spawn("#filesystem", sub { # {{{
+    my ($self, $mojo, $client) = @_;
+    my $fs = new Graph ("filesystem"); 
+    my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
+    use File::Find;
+    find(sub {
+        return if $_ eq "." || $_ =~ /\/\.rockbox/;
+        say $File::Find::name;
+        my $dir = $fs->find($File::Find::dir);
+        $dir || die "no dir... $File::Find::dir";
+        $dir->spawn($File::Find::name);
+    }, $fs_head->thing);
 
-my $fs = new Graph ("filesystem"); #{{{
-my $fs_head = $fs->spawn("/home/steve/Music/The Human Instinct");
-use File::Find;
-find(sub {
-    return if $_ eq "." || $_ =~ /\/\.rockbox/;
-    say $File::Find::name;
-    my $dir = $fs->find($File::Find::dir);
-    $dir || die "no dir... $File::Find::dir";
-    $dir->spawn($File::Find::name);
-}, $fs_head->thing);
-#DumpFile("ag_fs.yml", $fs); # }}}
+    get_object($mojo, $fs->{uuid});
+}); # }}}
 
+mach_spawn("#codes", sub { # {{{
+    my ($self, $mojo, $client) = @_;
+    my $graph_code_code_graph = graph_code($webbery, "sub graph_code");
 
-our $findable = $webbery->spawn("findable_objects");
-$findable->link($fs);
-$findable->link($fs_head);
-$findable->link($webbery);
+    get_object($mojo, $graph_code_code_graph->{uuid});
+});
 
-my $mach = $webbery->spawn("#mach");
-sub mach_spawn {
-    my $m = $mach->spawn(shift);
-    $m->{thing} = shift;
-    return $m
-}
+sub graph_code { 
+    my ($hang_from, $section) = @_;
+    my @code = read_file('butter.pl');
+    my $codes = $hang_from->spawn($section);
 
-mach_spawn("#tbutt", sub {
+    while ($_ = shift @code) {
+        next until /^\Q$section\E/;
+        my $chunk;
+        $_ = " ";
+        until (/^\S/) {
+            $chunk .= $_ = shift @code;
+            if (/^\s*$/sm && $chunk =~ /\S/) {
+                $codes->spawn({ code => $chunk });
+                $chunk = "";
+                shift @code until $code[0] =~ /\S/;
+            }
+        }
+        if ($chunk =~ /\S/) {
+            $chunk =~ s/^\}.*\Z//xsm;
+            $codes->spawn({ code => $chunk });
+        }
+    }
+
+    return $codes;
+} # }}}
+
+mach_spawn("#tbutt", sub { # {{{
     my ($self, $mojo, $client) = @_;
 
     start_timer();
@@ -699,46 +729,7 @@ mach_spawn("#tbutt", sub {
 
 
     get_object($mojo, $run->{uuid});
-})->link($findable);
-
-mach_spawn("#test-results", sub {
-    my ($self, $mojo, $client) = @_;
-
-    my $tests = load_graph_yml("testrun/case 3.yml");
-    get_object($mojo, $tests->{uuid});
-})->link($findable);
-
-my $codes = new Graph("codes");#{{{
-my $get_object_code_graph = graph_code($codes, "sub graph_code");
-$findable->link($get_object_code_graph);
-
-$findable->link($codes);
-
-sub graph_code { 
-    my ($codes, $section) = @_;
-    my @code = read_file('butter.pl');
-    $codes = $codes->spawn($section);
-
-    while ($_ = shift @code) {
-        next until /^\Q$section\E/;
-        my $chunk;
-        $_ = " ";
-        until (/^\S/) {
-            $chunk .= $_ = shift @code;
-            if (/^\s*$/sm && $chunk =~ /\S/) {
-                $codes->spawn({ code => $chunk });
-                $chunk = "";
-                shift @code until $code[0] =~ /\S/;
-            }
-        }
-        if ($chunk =~ /\S/) {
-            $chunk =~ s/^\}.*\Z//xsm;
-            $codes->spawn({ code => $chunk });
-        }
-    }
-
-    return $codes;
-} # }}}
+}); # }}}
 
 # {{{ the linkstash
 our %objects_by_id;
@@ -1105,19 +1096,50 @@ sub displow {
 # }}}
 
 
+$webbery->spawn("#clients");
 
-$findable->link($webbery->spawn("#clients"));
-#$whereto = [object => { id => $clients->{uuid} }];
-
-my $dsplay = mach_spawn("#dsplay", sub {
+mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
     start_timer();
     my $dump = load_graph_yml("td.yml");
     say "Load graph took: ".show_delta();
     my $begin = $dump->find("#find") || $dump;
     get_object($mojo, $begin->{uuid});
+});#}}}
+
+mach_spawn("#reexamine", sub {
+    my ($self, $mojo, $client) = @_;
+    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
+        $client->linked("#/^object-examination/");
+    my $exam = pop @exams;
+    $exam = $exam->thing;
+    my @drawings;
+    my $svg = $mojo->svg;
+    travel($exam->first, sub {
+        my ($G, $ex) = @_;
+        push @drawings, map {
+            $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
+            $_
+        } map { $_->{val}->[0] } $svg->links($G);
+    });
+    return $mojo->drawings(@drawings);
 });
-$whereto = [object => { id => $codes->{uuid} }];
+mach_spawn("#dump_graph", sub {
+    my ($self, $mojo, $client) = @_;
+    dump_graph_yml("testdata/case 4/webbery graph.yml", $client->graph);
+    return $mojo->drawings([status => "dumped graph"]);
+});
+
+
+# define the TOOLBAR
+$toolbar->spawn($webbery);
+for my $tid ('tbutt', 'reexamine') {
+    $DB::single = 1;
+    my $t = $webbery->find("#mach")->linked("#".$tid);
+    $t || die "no such mach: #$tid";
+    $toolbar->spawn($t);
+}
 
 our $client; # client - low priority: sessions
 
@@ -1131,13 +1153,12 @@ sub hello {
     # trash the old state
     my $clients = $webbery->find("#clients");
     for my $client ($clients->linked()) {
-        next if $client->thing eq "findable_objects";
         $clients->unlink($client);
     }
 
     $client = $clients->spawn("the");
 
-    $mojo->render(json => $whereto);
+    $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
 get '/stats' => sub {
     $_[0]->drawings(["status", "hi"]);
@@ -1145,6 +1166,7 @@ get '/stats' => sub {
 my $findable_y = 20;
 get '/boxen' => sub {
     my $mojo = shift;
+    die "sieg heil";
     $mojo->drawings(
         ["clear"],
         draw_findable(undef, $mojo, $client),
@@ -1166,7 +1188,7 @@ sub draw_findable {
 
     my $svg = $mojo->svg();
     my @new;
-    for my $ble ($webbery->find("findable_objects")->linked()) {
+    for my $ble ($toolbar->linked()) {
         my $sum = summarise($ble);
         my ($name, $id, $color) = nameidcolor($sum);
         $name = "$name $id";
@@ -1193,32 +1215,6 @@ sub nameidcolor { #{{{
     }
 };#}}}
 my $vid = 0;
-
-mach_spawn("#reexamine", sub {
-    my ($self, $mojo, $client) = @_;
-    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
-        $client->linked("#/^object-examination/");
-    my $exam = pop @exams;
-    $exam = $exam->thing;
-    my @drawings;
-    my $svg = $mojo->svg;
-    travel($exam->first, sub {
-        my ($G, $ex) = @_;
-        push @drawings, map {
-            $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
-            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
-            $_
-        } map { $_->{val}->[0] } $svg->links($G);
-    });
-    return $mojo->drawings(@drawings);
-})->link($findable);
-mach_spawn("#dump_graph", sub {
-    my ($self, $mojo, $client) = @_;
-    
-    dump_graph_yml("testdata/case 4/webbery graph.yml", $client->graph);
-    return $mojo->drawings([status => "dumped graph"]);
-})->link($findable);
-
 sub examinate_graph {
     my $graph = shift;
 
