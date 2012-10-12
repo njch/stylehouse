@@ -5,6 +5,7 @@ use warnings;
 use YAML::Syck;
 use JSON::XS;
 use List::MoreUtils qw"uniq";
+use Storable 'dclone';
 use File::Slurp;
 use Scriptalicious;
 use Carp 'confess';
@@ -1119,10 +1120,10 @@ mach_spawn("#reexamine", sub { # {{{
     my $reremo = goof($client, "+ #reremo {}");
 
     push @drawings, map {
-        $_ = Load(Dump($_));
+        $_ = dclone $_;
         $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
         $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
-        $_->[-1]->{id} = "re".$_->[-1]->{id};
+        $_->[-1]->{class} .= " re".$_->[-1]->{id};
         #            $_->[0] eq "label" && die "woohoo!";
         $reremo->{ $_->[-1]->{id} }++;
         $_
