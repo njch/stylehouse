@@ -301,7 +301,6 @@ there's definitely that machine-thinking-ideas pattern.
 
 =head1 TODO
 
-can't translate() morenonce, again
 need to get whole svg state from test script back to the scope, so it can be seen
 should probably rejig the ui a bit now it's more stable to support...
 - breadcrumb history
@@ -798,8 +797,9 @@ sub load_graph_yml { #LOAD
                 $main::graphs{$G->{name}} = $G;
             }
             if (exists $objects_by_id{$id}) {
-                die "Dump restore clang:". $G
-                    if "$G" ne "$objects_by_id{$id}";
+                die "Dump restore clang:".
+                    Dump [$G, $objects_by_id{$id}]
+                        if "$G" ne "$objects_by_id{$id}";
             }
             $objects_by_id{$id} = $G;
         });

@@ -124,6 +124,8 @@ sub new_moje {
         @clients != 1 && die "oh no!";
         $main::client = shift @clients;
         $main::client->spawn("#trail");
+        $client->spawn({})->id("#translates");
+        $client->spawn("#svg");
     }
     else {
         hello($mojo);
@@ -381,13 +383,11 @@ until (++$i > 5) {
         ok(defined $trav && ref $trav eq "Travel", "got Travel");
         is($trav->{ignore}->[0], "->{no_of_links}", "going to ignore no_of_links");
 
-        $mess->spawn('findable_objects');
         $mess->spawn({no_of_links => 3});
         my $em = $exammess->();
         my $emeg = examinate_graph($em->thing);
         my @gots = map { $_->{thing}->{thing}->{thing} } $emeg->linked;
-        is(@gots, 8, "got all without traveller");
-        is($gots[-2], "findable_objects", "the datum");
+        is(@gots, 7, "got all without traveller");
         is($gots[-1]->{no_of_links}, 3, "the datum");
         
         my $em2 = $exammess->($trav);
@@ -423,8 +423,11 @@ until (++$i > 5) {
 #}}}
 
         diag "test sub generate_svg"; #{{{
-        is(summarise($client->linked("#svg")), "~undef~", "no #svg node");
+        my @svgn = $client->linked("#svg")->links();
+        is(scalar(@svgn), 1, "no #svg linkage");
         generate_svg($self, $mojo, $client);
+        my @svgp = $client->linked("#svg")->links();
+        is(scalar(@svgp), 19, "some #svg linkage");
         my $svg = $client->linked("#svg");
         like(summarise($svg), qr/^N\(webbery\) svg svg [0-9a-f]{12}$/, "got #svg node");
         my @examsvgs = grep /N\(object-examination/,
@@ -758,15 +761,13 @@ until (++$i > 5) {
                 load_graph_yml("testdata/case 3/webbery graph.yml")
             );
             is($webbery->name, "webbery", "webbery is webbery");
-            my $finder = $webbery->find("findable_objects");
-            my ($codes) = grep { ref $_ eq "Graph" && $_->name eq "codes" }
-                map { $_->thing } $finder->linked;
+            #my $codes = $webbery->find("codes");
 
-            is($codes->name, "codes", "codes");
+            #is($codes->name, "codes", "codes");
 
-            get_object($mojo, $codes->{uuid});
+            #get_object($mojo, $codes->{uuid});
 
-            dump_graph_yml('testrun/'.$case_3->{thing}.'.yml', $tests);
+            #dump_graph_yml('testrun/'.$case_3->{thing}.'.yml', $tests);
         }
         exit;
     }
@@ -790,7 +791,7 @@ sub run_case {
         local $TEST = $s;
         say "Case $case->{thing} step ".$si++;
         my $id = $s->linked("#id") || do {
-            ($main::findable->linked("G(codes)"))[0]->thing->first->{uuid}
+            $webbery->find("#codes")->thing->first->{uuid}
         };
         $id = $id->thing->() if ref $id eq "Node";
         say "ID: $id";
