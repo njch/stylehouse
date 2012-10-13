@@ -315,6 +315,12 @@ should probably rejig the ui a bit now it's more stable to support...
 - to deploy a new butter ui the new process requests to the old process to die
 - leaving it necessary state to keep on truckin
 
+seeing things happening
+per time slice
+how to slice time? slice up code, insert break/dump points, run code as another entity
+in this way one butter chains up another butter and they work together in increasing
+experiment
+
 WORDS
 =cut
 
@@ -1370,6 +1376,11 @@ sub get_object { # OBJ
 };
 
 sub trash_viewed_exam {
+# this should be more like a hook on the client->exam link destruction
+# al-so placing the exam #viewed should happen upon client->self (get_object) destruction
+# then it's all ready for the next round
+# get_object should have more clearly defined persistantness I guess
+# sort out some time when we can see things happening
     my ($client, $viewed) = @_;
     my $svg = $client->linked("#svg");
     for (uniq map { $_->{1} }
