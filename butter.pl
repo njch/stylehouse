@@ -1362,9 +1362,22 @@ sub get_object { # OBJ
             unshift @drawings, ['remove' => $id] unless $clear;
         }
     }
+    for my $old_viewed ($client->linked("#viewed")) {
+        trash_viewed_exam($client, $old_viewed);
+    }
     $client->unlink($self);
     $mojo->drawings(@drawings);
 };
+
+sub trash_viewed_exam {
+    my ($client, $viewed) = @_;
+    my $svg = $client->linked("#svg");
+    for (uniq map { $_->{1} }
+        grep { $_->{1}->{graph} eq $viewed->{uuid} } $svg->links()) {
+        $svg->unlink($_->{1});
+    }
+    $client->unlink($viewed);
+}
 
 sub find_latest_examination {
     my ($self, $mojo, $client) = @_;
@@ -1372,7 +1385,8 @@ sub find_latest_examination {
         $client->linked("#/^object-examination/");
     my $latest = pop @exams;
     for my $old_viewed ($client->linked("#viewed")) {
-        $client->unlink($old_viewed)
+        warn "Got an old #viewed exam: ".summarise($old_viewed);
+        trash_viewed_exam($client, $old_viewed);
     }
     if ($latest) {
         $client->spawn($latest)->id("#viewed");
