@@ -117,7 +117,7 @@ sub new_moje {
     $sttus = undef;
     $drawings = undef;
     my $mojo = NonMojo->new();
-    if ($_[0]) {
+    if ($_[0]) { # TODO do we ever want to do this?
         $webbery = shift;
         my $clients = $webbery->find("#clients");
         my @clients = $clients->linked;
@@ -272,6 +272,10 @@ sub check_folks_svg { # {{{
     }
 } #}}}
 
+sub ss {
+    my @nodes = @_;
+    return scalar(@nodes);
+}
 
 
 my $i = 0;
@@ -769,6 +773,28 @@ until (++$i > 5) {
 
             #dump_graph_yml('testrun/'.$case_3->{thing}.'.yml', $tests);
         }
+        elsif ($i == 5) {
+            diag "trash client"; #{{{
+            my $case_3 = $cases->spawn("case 3");
+            $TEST = $case_3;
+
+            is(ss($webbery->find("#client")), 1, "0 #client initially");
+            my $mojo = new_moje();
+            is(ss($webbery->find("#client")), 1, "1 #client hello");
+            hello($mojo);
+            hello($mojo);
+            hello($mojo);
+            hello($mojo);
+            is(ss($webbery->find("#svg")), 1, "1 svg still");
+            is(ss($webbery->find("#client")), 1, "1 client still");
+            is(ss($webbery->find("#translates")), 1, "1 translates still");
+            hello($mojo);
+            hello($mojo);
+            is(ss($webbery->find("#clients")), 1, "1 clients still");
+            is(ss($webbery->find("#clients")->linked), 1, "1 clients still");
+            #say displow($mojo);
+            is(ss($webbery->find("#svg")), 1, "1 svg still");
+        } #}}}
         exit;
     }
 }

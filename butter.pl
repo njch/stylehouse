@@ -384,6 +384,26 @@ sub unlink {
     }
 
 }
+sub denode {
+    my ($self, @to_denode) = @_;
+    my %to_denode;
+    for my $n (@to_denode) {
+        $to_denode{$n} = $n;
+    }
+    my $nodes = $self->{nodes};
+    for my $i (reverse 0..@$nodes-1) {
+        if ($to_denode{$nodes->[$i]}) {
+            my $gone = delete $to_denode{$nodes->[$i]};
+            splice @$nodes, $i, 1;
+        }
+    }
+    if (%to_denode) {
+        my ($one) = values %to_denode;
+        die "failed to delete node: ".Dump[
+            map { main::summarise($_) } values %to_denode
+        ];
+    }
+}
 sub map_nodes {
     my ($self, $code) = @_;
     my @nodes = @{$self->{nodes}};
@@ -458,17 +478,20 @@ sub TO_JSON {
     my $self = shift;
     return join "  ", "$self:", %$self
 }
+our $field;
 sub spawn {
     my $self = shift;
     my $spawn = $self->graph->spawn(shift);
     $self->link($spawn, @_);
-    $spawn->{fields} = [ @{ $self->{fields} } ] if $self->{fields};
+    $spawn->{field} = $field if $field;
     return $spawn;
 }
-sub field {
+sub in_field {
     my $self = shift;
-    $self->{fields} = shift if $_[0];
-    $self->{fields};
+    my $code = shift;
+    $self->{field} = $field = main::make_uuid($self);
+    $code->($self);
+    undef $field;
 }
 sub id {
     my $self = shift;
@@ -482,13 +505,36 @@ sub trash {
     my $self = shift;
     my $field = shift;
     # TODO travel to the extremities of $field deleting everything...
-    for my $n ($self->linked) {
-        if ($field && $field ne $n->{field}) {
-            say "$n not in $field";
-            next;
+    #say "Gun trash: ". main::summarise($self);
+    die $field if $field;
+    if ($self->{field}) {
+        #say "Field!! $self->{field}";
+        my (@links, @nodes);
+        main::travel($self, { forward_links => sub {
+            my ($G, $ex, $ls) = @_;
+            if ($G->{field} && $G->{field} eq $self->{field}) {
+                $ex->{via_link}->{0} || return;
+                ref $G eq "Node" || die "hur";
+                die "field leaving graph at ".main::summarise($G)
+                    if $G->{graph} ne $self->{graph};
+                #say "Gun unlink ".main::summarise($ex->{via_link}->{0})."    ".main::summarise($G);
+                push @links, $ex->{via_link};
+                push @nodes, $G;
+            }
+            else {
+                @$ls = ();
+            }
+        } });
+        $self->graph->unlink(uniq @links) if @links;
+        push @nodes, $self;
+        $self->graph->denode(uniq @nodes) if @nodes;
+    }
+    else {
+        for my $n ($self->linked) {
+            say main::summarise($self)." going to delete ".main::summarise($n);
+            $self->unlink($n);
         }
-        say main::summarise($self)." going to delete ".main::summarise($n);
-        $self->unlink($n);
+        $self->graph->denode($self);
     }
 }
 sub graph {
@@ -1168,13 +1214,18 @@ sub hello {
     my $clients = $webbery->find("#clients");
 
     # trash the old state
-    $_->trash for $clients->linked();
+    for my $client ($clients->linked()) {
+        $clients->unlink($client);
+        $client->trash;
+    }
 
-    $client = $clients->spawn("the");
-    $client->id("#client");
-    $client->spawn("#trail");
-    $client->spawn("#svg");
-    $client->spawn({})->id("#translates");
+    $clients->spawn("the")->in_field(sub {
+        $client = shift;
+        $client->id("#client");
+        $client->spawn("#trail");
+        $client->spawn("#svg");
+        $client->spawn({})->id("#translates");
+    });
 
     $mojo->render(json => [object => { id => $webbery->{uuid} }]);
 };
