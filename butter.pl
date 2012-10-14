@@ -522,6 +522,7 @@ sub trash {
                 push @nodes, $G;
             }
             else {
+                push @links, $ex->{via_link};
                 @$ls = ();
             }
         } });
