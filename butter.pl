@@ -1510,6 +1510,9 @@ sub search_about_object {
                 goof($self, "+ #paginated")->link($G);
                 splice @$links, 21;
             }
+            if (ref $G eq "Node" && $G->id && $G->id eq "svg") {
+                @$links = () unless $ex->{depth} < 2;
+            }
         },
     );
     for ($self, $client) {
