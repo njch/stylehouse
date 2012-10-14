@@ -1359,13 +1359,6 @@ sub get_object { # OBJ
         }
     }
 
-    # Just an exercise {{{
-    $self->linked("#traveller")->thing->travel($exam->first,
-        all_links => sub {
-            $_[0]->spawn({iggy => 1, no_of_links => scalar @{$_[2]}})
-        },
-    ); # }}}
-
     for (qw'drawings animations removals') {
         $self->spawn([])->id($_);
     }
@@ -1487,7 +1480,7 @@ sub make_traveller {
 # fields to outdate?
     my $traveller = Travel->new(
         ignore =>
-            ["->{no_of_links}", "->{iggy}", "#object-examination", "#ids"],
+            ["->{iggy}", "#object-examination", "#ids"],
     );
     $self->spawn($traveller)->id("#traveller");
 }
@@ -1514,13 +1507,13 @@ sub search_about_object {
     return $exam;
 }
 
-sub generate_svg {
+sub generate_svg { # GEN
     my ($self, $mojo, $client) = @_;
 
     my $ids = goof($client, "+ #ids {}")->thing;
     my $getid = sub {
         my $id = uniquify_id($ids, shift);
-        $ids->{$id} = undef;
+        $ids->{$id} = undef; # TODO eh
         return $id;
     };
     my $exam = $self->linked("#object-examination")->thing;
@@ -1533,9 +1526,10 @@ sub generate_svg {
 
     my @xs;
     $traveller->travel($exam->first, sub {
-        my ($G, $ex) = @_;
-        my $thing = $G->{thing};
-        return if $thing eq "svg";
+        my ($en, $ex) = @_;
+        my $n = $en->thing;
+#        return if $thing eq "svg";
+        my $thing = $n;
         return if $thing->{iggy};
         $thing = ref $thing eq "Node" ? $thing->{thing} : "G=$thing->{name}";
 
@@ -1544,12 +1538,6 @@ sub generate_svg {
         $y += 20;
         my $stuff = summarise($G);
         $stuff =~ s/^N\($exam->{name}\) //;
-
-        my ($linknode) = grep { ref $_->thing eq "HASH"
-            && $_->thing->{no_of_links} } $G->linked;
-        my $no_of_links = $linknode->thing->{no_of_links}
-            if $linknode;
-
         my ($name, $id, $color) = nameidcolor($stuff);
 
         $svg->link($G,
@@ -1573,9 +1561,7 @@ sub generate_svg {
         );
 
         my %label_set_etc;
-        if ($no_of_links && $no_of_links > 1) {
-            $label_set_etc{'font-weight'} = "bold";
-        }
+            #$label_set_etc{'font-weight'} = "bold";
         if (ref $thing eq "HASH" && $thing->{code}) {
             my $li = 1;
             for my $line (split /\n/, $thing->{code} ) {

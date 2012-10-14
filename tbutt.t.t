@@ -385,14 +385,11 @@ until (++$i > 5) {
         make_traveller($self, $mojo, $client);
         my $trav = $self->linked("#traveller")->thing;
         ok(defined $trav && ref $trav eq "Travel", "got Travel");
-        is($trav->{ignore}->[0], "->{no_of_links}", "going to ignore no_of_links");
 
-        $mess->spawn({no_of_links => 3});
         my $em = $exammess->();
         my $emeg = examinate_graph($em->thing);
         my @gots = map { $_->{thing}->{thing}->{thing} } $emeg->linked;
         is(@gots, 7, "got all without traveller");
-        is($gots[-1]->{no_of_links}, 3, "the datum");
         
         my $em2 = $exammess->($trav);
         my $emeg2 = examinate_graph($em2->thing);
@@ -437,9 +434,9 @@ until (++$i > 5) {
         my @examsvgs = grep /N\(object-examination/,
             split "\n", displow($svg);
         my %messfolk = map { $_ => 0 } @messfolk;
-        ok(!(   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
+        is_deeply([   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
                         || do { die "no $1" unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
-            ),
+            ], [],
             "svg graph nodes look good"
         );
         ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
@@ -481,9 +478,9 @@ until (++$i > 5) {
         @examsvgs = grep /N\(object-examination9/,
             split "\n", displow($svg);
         %messfolk = map { $_ => 0 } @messfolk, '$code';
-        ok(!(   grep { $_ !~ /^ N\(object-examination9\) N\(TheMess\) (\$?\w+) [0-9a-f]{12}$/
+        is_deeply([   grep { $_ !~ /^ N\(object-examination9\) N\(TheMess\) (\$?\w+) [0-9a-f]{12}$/
                         || do { die unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
-            ),
+            ], [],
             "svg graph nodes look good"
         );
 # $code should be multi-labelled...
