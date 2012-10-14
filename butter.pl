@@ -321,6 +321,17 @@ how to slice time? slice up code, insert break/dump points, run code as another 
 in this way one butter chains up another butter and they work together in increasing
 experiment
 
+the trail needs to have cursors into the previous UI
+to get anywhere for test thrashing, start out with the starting thing,
+apply all the actions with the current testing code
+see output etc.
+so svg output needs a little more structure...
+ index them branches
+  see when re-navigating that things become indexed right
+   ie i=4 &&, id=#mach
+ make a grid by x-y, explode to pixels on the way out
+
+
 WORDS
 =cut
 
