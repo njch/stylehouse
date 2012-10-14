@@ -504,11 +504,8 @@ sub id {
 sub trash {
     my $self = shift;
     my $field = shift;
-    # TODO travel to the extremities of $field deleting everything...
-    #say "Gun trash: ". main::summarise($self);
     die $field if $field;
     if ($self->{field}) {
-        #say "Field!! $self->{field}";
         my (@links, @nodes);
         main::travel($self, { forward_links => sub {
             my ($G, $ex, $ls) = @_;
@@ -517,7 +514,6 @@ sub trash {
                 ref $G eq "Node" || die "hur";
                 die "field leaving graph at ".main::summarise($G)
                     if $G->{graph} ne $self->{graph};
-                #say "Gun unlink ".main::summarise($ex->{via_link}->{0})."    ".main::summarise($G);
                 push @links, $ex->{via_link};
                 push @nodes, $G;
             }
@@ -1489,16 +1485,6 @@ sub search_about_object {
     my ($self, $mojo, $client) = @_;
     my $object = $self->linked("#object")->thing;
     my $traveller  = $self->linked("#traveller")->thing;
-# TODO pagination can be chucked onto the graph pretty easy (eventually)
-# each dimension or array in the tree we're building can have it going on
-# when it's going on it needs to be going on in several places
-# that means that for the rest of that execution of the process of get_object
-# there are pagination hooks in place
-# we don't want to go looking for #paginated links more than we have to
-# carefully, stuff should be in a field of "run time" things for this process
-# so as to be easily destroyable and not get in the way of the traveller
-# this kind of field concept might almost be realistic to implement in about
-# another 30%
     my $exam = search(
         start => $object,
         spec => '**',
@@ -1506,10 +1492,6 @@ sub search_about_object {
         traveller => $traveller,
         forward_links => sub {
             my ($G, $ex, $links) = @_;
-            if (@$links > 20) {
-                goof($self, "+ #paginated")->link($G);
-                splice @$links, 21;
-            }
             if (ref $G eq "Node" && $G->id && $G->id eq "svg") {
                 @$links = () unless $ex->{depth} < 2;
             }
@@ -1547,26 +1529,6 @@ sub generate_svg {
         $thing = ref $thing eq "Node" ? $thing->{thing} : "G=$thing->{name}";
 
         my $x = $x + $ex->{depth} * 20;
-# PAG {{{
-        if (!@xs || @xs && $xs[-1] eq $x) {
-            push @xs, $x;
-        }
-        else {
-            @xs = ($x);
-        }
-        if (@xs == 20) {
-# TODO make this boxen for $pag, so as to etc
-            $svg->link($G,
-                [ "boxen", $x-28, $y-332, 6, 320, 
-                {
-                    id => '000',
-                    fill => '777',
-                    class => "777 000",
-                    name => "pagination!",
-                }]
-            );
-        }
-# }}}
 
         $y += 20;
         my $stuff = summarise($G);
