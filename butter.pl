@@ -980,7 +980,6 @@ sub travel { # TRAVEL
     
     unless (ref $G eq "Node" && $main::objects_by_id{$G->{graph}}
         || ref $G eq "Graph" && $main::objects_by_id{$G->{uuid}}) {
-        $DB::single = 1;
         confess "graph $G->{graph} has been destroyed!";
     }
     my @links;
@@ -1216,7 +1215,6 @@ $webbery->spawn("#clients");
 # define the TOOLBAR
 $toolbar->link($webbery);
 for my $tid ('tbutt', 'reexamine', 'dump_trail') {
-    $DB::single = 1;
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
     $toolbar->link($t);
@@ -1387,6 +1385,7 @@ sub get_object { # OBJ
 
     say "diff: ".show_delta();
 
+    fill_in_svg($self, $mojo, $client);
 
     my $clear;
     unless ($viewed && $mode ne "c") { # TODO hmm
@@ -1530,96 +1529,36 @@ sub generate_svg { # GEN
     my $traveller  = $self->linked("#traveller")->thing;
     my $svg = $client->linked("#svg");
 
-    my ($x, $y) = (30, 40);
-
+    my $y = 0;
     say "pre svg: ".show_delta();
 
-    my @xs;
     $traveller->travel($exam->first, sub {
         my ($en, $ex) = @_;
         my $n = $en->thing;
-#        return if $thing eq "svg";
         my $thing = $n;
-        return if $thing->{iggy};
+
         $thing = ref $thing eq "Node" ? $thing->{thing} : "G=$thing->{name}";
 
-        my $x = $x + $ex->{depth} * 20;
-
-        $y += 20;
-        my $stuff = summarise($G);
-        $stuff =~ s/^N\($exam->{name}\) //;
-        my ($name, $id, $color) = nameidcolor($stuff);
-
-        $svg->link($G,
-            [ "boxen", $x-20, $y-2, 18, 18, 
-            {
-                id => $getid->("$id-b"),
-                fill => $color,
-                class => "$color $id",
-                name => $name,
-            }]
-        );
-        $svg->link($G,
-            [ "boxen", $x-4, $y-2, 4, 18,
-            {
-                id => $getid->("$id-c"),
-                fill => "000$color",
-                stroke=> "000",
-                class => "$color $id",
-                name => $name,
-            }]
-        );
-
-        my %label_set_etc;
-            #$label_set_etc{'font-weight'} = "bold";
-        if (ref $thing eq "HASH" && $thing->{code}) {
-            my $li = 1;
-            for my $line (split /\n/, $thing->{code} ) {
-                my ($ind) = $line =~ /^( +)/;
-                my $x = $x + (length($ind || "")-4) * 10;
-
-                $svg->link($G,
-                    [ "label", $x, $y, $line,
-                    {
-                        id => $getid->("$id-l"),
-                        class => "$color $id",
-                        name => $name,
-                        %label_set_etc,
-                    }]
-                );
-
-                $li++;
-                $y += 14;
-            }
-        }
-        else {
-            $svg->link($G,
-                [ "label", $x, $y, $stuff,
-                {
-                    id => $getid->("$id-l"),
-                    class => "$color $id",
-                    name => $name,
-                    %label_set_etc,
-                }]
-            );
-        }
+        $svg->link($G, {
+            y => $y++,
+            x => $ex->{depth},
+        });
     });
 }
 
 sub diff_svgs {
     my ($self, $mojo, $client) = @_;
 
-    my $traveller= $self->linked("#traveller")->thing;
-    my $drawings = $self->linked("#drawings")->thing;
-    my $animations = $self->linked("#animations")->thing;
-    my $removals = $self->linked("#removals")->thing;
+    my $drawings = $self->linked("#drawings");
+    my $animations = $self->linked("#animations");
+    my $removals = $self->linked("#removals");
+
+    my $traveller = $self->linked("#traveller")->thing;
     my $viewed = $client->linked("#viewed");
     $viewed = $viewed->thing if $viewed;
     $viewed = $viewed->thing if $viewed;
     my $exam = $self->linked("#object-examination")->thing;
-    my $preserve = $self->spawn("#preserve");
     my $svg = $client->linked("#svg");
-    my $translates = $client->linked("#translates")->thing;
 
     my %new_uuids;
     $traveller->travel($exam->first, sub {
@@ -1627,103 +1566,234 @@ sub diff_svgs {
         $new_uuids{$new->thing->{uuid}}++;
 
         my @old = $viewed->find($new->thing) if $viewed;
-        # TODO what was this grep for again? not hitting something twice?
-        my @pres_old = grep { !$preserve->linked($_) } @old;
+        # for not hittting the same thing twice in the old exam
         my $old_i = $new_uuids{$new->thing->{uuid}} - 1;
-        my $old = $old[$old_i];
+        my $oldn = $old[$old_i];
 
-        if ($old) {
-            if ($old ne $pres_old[0]) {
-                die "diffornce";
-            }
-            $preserve->link($old);
+        if ($oldn) {
+            $animations->link($new, $oldn);
+#{{{
+#                die "WHAT\n".Dump[$old, $new]
+#                    if $old->[-1]->{class} ne $new->[-1]->{class}
+#                    || $old->[0] eq "label" && $old->[3] ne $new->[3] # lable text
+#                    && $new->[-1]->{name} !~ /translates/; # data dump changes
 
-            my @olds = map { $_->{val}->[0] } $svg->links($old);
-
-            my @news = map { $_->{val}->[0] } $svg->links($new);
-            if (@news != 3) {
-                if ($new->thing->graph->name ne "codes") {
-#                    say "strange number of news:\n".Dump \@news
-                }
-            }
-            say Dump({new => \@news, old => \@olds}) if @news != @olds;
-            
-            my @diffs;
-            while (@olds) {
-                my $old = shift @olds;
-                my $new = shift @news;
-                die "WHAT\n".Dump[$old, $new]
-                    if $old->[-1]->{class} ne $new->[-1]->{class}
-                    || $old->[0] eq "label" && $old->[3] ne $new->[3] # lable text
-                    && $new->[-1]->{name} !~ /translates/; # data dump changes
                 # ids are l1-17 on old, l18-34 on new... post-x could handle
                 # make sure we can keep finding them:
-                $new->[-1]->{id} = $old->[-1]->{id};
-                push @diffs, {
-                    wassa => $old->[0],
-                    wasclass => $old->[-1]->{class},
-                    id => $old->[-1]->{id},
-                    x => $new->[1] - $old->[1],
-                    y => $new->[2] - $old->[2],
-                };
-            }
+#                $new->[-1]->{id} = $old->[-1]->{id};
 
-            my (%by_xy, %by_id);
-            for (@diffs) {
-                $by_xy{"$_->{x},$_->{y}"} = undef;
-                $by_id{$_->{id}}++;
-            }
-            die "divorcing boxen-labels ".Dump([\@news, \@olds, \@diffs]) unless keys %by_xy == 1;
-            die "multiple translations to... ".Dump(\@diffs) if grep { $_ > 1 } values %by_id;
-
-            # add to how they already are translated
-            my $one = $diffs[0];
-            my ($id) = $one->{wasclass} =~ / (.+)$/;
-            $translates->{$id}->{x} += $one->{x};
-            $translates->{$id}->{y} += $one->{y};
-            for (@diffs) {
-                $_->{x} = $translates->{$id}->{x};
-                $_->{y} = $translates->{$id}->{y};
-            }
-            
-            push @$animations,
-                map {
-                    ["animate", $_->{id},
-                    {svgTransform => "translate($_->{x} $_->{y})"},
-                    300]
-                } @diffs;
+#            my $xdiff = $new->{x} - $old->{x};
+#            my $ydiff = $new->{y} - $old->{y};
+#}}}
         }
         else {
-            my @whats = $svg->links($new);
-            @whats = map { $_->{val}->[0] } @whats; # new: label, boxen
-            push @$drawings, @whats;
+            $drawings->link($new);
         }
     });
 
 
     if ($viewed) {
         $traveller->travel($viewed->first, sub {
-            my ($G,$ex) = @_;
+            my ($old, $ex) = @_;
             unless ($new_uuids{$G->thing->{uuid}}
                 && $new_uuids{$G->thing->{uuid}}-- > 0) {
-                my $sum = summarise($G);
-                my @tup = nameidcolor($sum);
-                my $id = $tup[1];
-                push @$removals, ["remove", $id ];
-                $translates->{$id} && delete $translates->{$id};
-            }
-            eval {
-                $svg->unlink($G);
-            };
-            if ($@ && $@ =~ /nothing to unlink/) {
-                say "Nothing to unlink svg -> ".Dump($G);
-            }
-            else {
-                die $@ if $@;
+                $removals->link($old);
             }
         });
     }
 
+}
+
+sub chlnkg {
+    my ($new, $anim, $draw) = @_;
+    my @an = $anim->linked($new);
+    my @dr = $draw->linked($new);
+    unless (@an == 1 || @dr == 1) {
+        die Dump{anim=>\@an, draw=>\@dr};
+    }
+}
+
+
+sub fill_in_svg {
+    my ($self, $mojo, $client) = @_;
+
+    my $drawings = $self->linked("#drawings");
+    my $animations = $self->linked("#animations");
+    my $removals = $self->linked("#removals");
+    my $translates = $client->linked("#translates")->thing;
+    my $traveller = $self->linked("#traveller")->thing;
+    my $viewed = $client->linked("#viewed");
+    $viewed = $viewed->thing if $viewed;
+    $viewed = $viewed->thing if $viewed;
+    my $exam = $self->linked("#object-examination")->thing;
+    my $svg = $client->linked("#svg");
+
+# fill out svg first
+# turn divvy up animations
+
+# svg element removal is by class so lets use oaid
+# TODO removals' olds should be a field so it don't find its links to $self
+    for my $old (grep { $_->{graph} eq $viewed->{uuid} } $removals->linked) {
+        my ($oaid) = map { $_->{val}->[0]->{oaid} } $svg->links($old);
+        $DB::single = !$oaid;
+        $oaid || die;
+        eval {
+            $svg->unlink($old);
+        };
+        if ($@ && $@ =~ /nothing to unlink/) {
+            say "Nothing to unlink svg -> ".Dump($G);
+        }
+        else {
+            die $@ if $@;
+        }
+        push @{ $removals->thing }, [remove => $oaid];
+    }
+
+# oaid    $uuid-$sn             class on the bunch of things for this exam $G
+# id        $oaid-[bcl]$sn?     id on the svg element
+    my $e_by_tuuids = {};
+    my $e_by_y = {};
+    $traveller->travel($exam->first, sub {
+        my ($new, $ex) = @_;
+
+        chlnkg($new, $animations, $drawings);
+        ref $new->thing eq "Graph" ? ($new->thing->{uuid} ne $exam->{uuid}) :
+        ($new->thing->{graph} ne $exam->{uuid}) || die;
+
+        # gather uuids for possible indexing
+        my $tuuid = $new->thing->{uuid};
+        my $euuid = $new->{uuid};
+        my $by = $e_by_tuuids->{$tuuid} ||= [];
+        push @$by, $new;
+
+        # by y position
+        my ($y) = map { $_->{val}->[0]->{y} } $svg->links($new);
+        $e_by_y->{$y} && die;
+        $e_by_y->{$y} = $new;
+    });
+
+    for my $y (sort keys %$e_by_y) {
+        my $new = $e_by_y->{$y};
+        my ($svgv) = map { $_->{val}->[0] } $svg->links($new);
+        $svgv || die;
+
+        my $oaid = do {
+            my $tuuid = $new->thing->{uuid};
+            my @es = $e_by_tuuids->{$tuuid};
+            @es > 0 || die;
+            
+            if (@es > 1) {
+                my $i = 0;
+                $i++ until $es[$i] eq $new;
+                $tuuid .= "-$i";
+            }
+            $tuuid;
+        };
+
+        my $stuff = summarise($new->thing);
+        my ($name, $id, $color) = nameidcolor($stuff);
+        my (@elements, $height);
+
+        push @elements, [ 'boxen', -20, -2, 18, 18, {
+            fill => $color,
+            name => $name,
+            id => "$oaid-b",
+        } ];
+        push @elements, [ 'boxen', -4, -2, 4, 18, {
+            fill => "000$color",
+            stroke=> "000",
+            id => "$oaid-c",
+        } ];
+
+        #$label_set_etc{'font-weight'} = "bold" if $new->linked > 1;
+        if (ref $new->thing eq "HASH" && $new->thing->{code}) {
+            my $li = 1;
+            for my $line (split /\n/, $new->thing->{code} ) {
+                my ($ind) = $line =~ /^( +)/;
+                my $x = (length($ind || "")-4) * 10;
+                my $y = $li * 14;
+
+                push @elements, [ 'label', $x, $y, $line, {
+                    id => "$oaid-l$li",
+                } ];
+                $li++;
+            }
+            $height = $li * 14;
+        }
+        else {
+            push @elements, [ 'label', 0, 0, $stuff, {
+                id => "$oaid-l",
+            } ];
+        }
+
+        for my $e (@elements) {
+            my $a = $e->[-1];
+            $a->{class} = "";
+            $a->{class} .= "$a->{fill} " if $a->{fill};
+            $a->{class} .= $oaid;
+        }
+
+        $height ||= 20;
+        $svgv->{height} = $height;
+        $svgv->{elements} = \@elements;
+        $svgv->{oaid} = $oaid;
+    }
+
+    my ($posx, $posy) = (30, 40);
+    my $new_translates = {};
+    my $y_add = 0;
+    for my $y (sort keys %$e_by_y) {
+        my $new = $e_by_y->{$y};
+        my ($svgv) = map { $_->{val}->[0] } $svg->links($new);
+        $svgv || die;
+
+        my $y = $y * 20 + $y_add + $posy;
+        my $x = $svgv->{x} * 20 + $posx;
+        for my $e (@{$svgv->{elements}}) {
+            $e->[1] += $x;
+            $e->[2] += $y;
+        }
+
+        if (my ($anim_l) = $animations->links($new)) {
+            my ($old) = $anim_l->{val}->[0];
+            $old || die;
+            my ($old_svgv) = map { $_->{val}->[0] } $svg->links($old);
+            $old_svgv || die;
+            
+            die unless @{$old_svgv->{elements}} == @{$svgv->{elements}};
+
+            my $eg = [$old_svgv->{elements}->[0], $svgv->{elements}->[0]];
+            my $dx = $eg->[1]->[2] - $eg->[0]->[2]; # new - old x
+            my $dy = $eg->[1]->[2] - $eg->[0]->[2]; # new - old y
+
+            say "Oacid diffrances" unless $old_svgv->{oaid} eq $svgv->{oaid};
+            my $trid = $old_svgv->{trid} || $svgv->{oaid};
+            $svgv->{trid} = $trid;
+
+            my $trans = $translates->{$trid};
+            $trans->{x} += $dx;
+            $trans->{y} += $dy;
+            $new_translates->{$trid} = $trans;
+
+            for my $e (@{ $svgv->{elements} }) {
+                my $id = $e->[-1]->{id};
+                push @{ $animations->thing },
+                    ["animate", $id,
+                    {svgTransform => "translate($trans->{x} $trans->{y})"},
+                    300]
+            }
+        }
+        elsif ($drawings->linked($new)) {
+            push @{ $drawings->thing },
+                @{ $svgv->{elements} }
+        }
+        else {
+            die;
+        }
+        $y_add = $y_add + ($svgv->{height} - 20);
+    }
+    %$translates = %$new_translates if %$new_translates;
+    return;
 }
 
 get '/object_info' => sub {
@@ -1733,6 +1803,7 @@ get '/object_info' => sub {
 
 get '/' => 'index';
 
+no warnings 'once';
 *Mojolicious::Controller::drawings = sub {
     my $mojo = shift;
     say scalar(@_)." drawings";
@@ -1743,6 +1814,7 @@ get '/' => 'index';
     my $mojo = shift;
     $mojo->drawings(["status", shift]);
 };
+use warnings;
 
 return 1 if caller;
 use Mojo::Server::Daemon;
