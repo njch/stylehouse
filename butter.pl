@@ -390,7 +390,8 @@ sub unlink {
             main::summarise($_->{0}) ." vs ". main::summarise($_->{1})
             if ($_->{1}->{graph} ne $_->{0}->{graph}
                 || $_->{1}->{graph} ne $self->{uuid})
-                && !($_->{0}->thing && $_->{0}->thing eq "svg")
+                && !($_->{0}->id =~ /drawings|animations|removals/
+                     || $_->{0}->thing && $_->{0}->thing eq "svg")
     }
     $to_unlink{$_->{_id} || "$_"} = undef for @to_unlink;
     my $links = $self->{links};
@@ -580,6 +581,8 @@ sub link {
 sub unlink {
     my ($self, @others) = @_;
     my @links;
+    @others = grep { !(ref $_ eq "HASH" && $_->{0} && $_->{1}
+                        && do { push @links, $_; 1 }) } @others;
     for my $o (@others) {
         for my $l ($self->links($o)) {
             push @links, $l
@@ -1410,8 +1413,15 @@ sub get_object { # OBJ
         })->id("#drawings");
     }
 
-    my @drawings = map { @{ $self->linked("#".$_)->thing } }
-        qw'removals animations drawings';
+    my @drawings;
+    for (qw'removals animations drawings') {
+        my $bit = $self->linked("#".$_);
+        @drawings = @{ $bit->thing };
+        for my $l ($bit->links) {
+            $bit->unlink($l);
+        }
+        $self->graph->denode($bit);
+    }
 
     unshift @drawings, ["status", $status];
     if ($clear) {
