@@ -331,6 +331,16 @@ so svg output needs a little more structure...
    ie i=4 &&, id=#mach
  make a grid by x-y, explode to pixels on the way out
 
+an invention:
+render shapes at random, endeavouring genetically using human to point out bits
+that look like this or that
+build with that a visual vocabulary
+use that to generate a noisy field that could be interpreted by four square orientations
+into four sequences of a comic
+all this kind of formulaicism
+
+looking at the screen vs not.
+may be something to experiment with.
 
 WORDS
 =cut
