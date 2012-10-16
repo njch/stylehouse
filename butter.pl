@@ -1092,7 +1092,7 @@ sub summarise { # SUM
     my $text;
     given (ref $thing) {
         when ("Graph") {
-            $text = "Graph $thing->{name}"
+            $text = "Graph $thing->{name} $thing->{uuid}"
         }
         when ("Node") {
             my $inner = $thing->thing;
@@ -1387,6 +1387,8 @@ sub get_object { # OBJ
 
     fill_in_svg($self, $mojo, $client);
 
+    say "filled: ".show_delta();
+
     my $clear;
     unless ($viewed && $mode ne "c") { # TODO hmm
         say "gonna clear screen";
@@ -1440,7 +1442,7 @@ sub trash_viewed_exam {
 # this should be more like a hook on the client->exam link destruction
 # al-so placing the exam #viewed should happen upon client->self (get_object) destruction
 # then it's all ready for the next round
-# get_object should have more clearly defined persistantness I guess
+# get_object should have more clearly defined persistances I guess
 # sort out some time when we can see things happening
     my ($client, $viewed) = @_;
     my $svg = $client->linked("#svg");
@@ -1633,9 +1635,10 @@ sub fill_in_svg {
 
 # svg element removal is by class so lets use oaid
 # TODO removals' olds should be a field so it don't find its links to $self
-    for my $old (grep { $_->{graph} eq $viewed->{uuid} } $removals->linked) {
+    my $viewed_uuid = $viewed ? $viewed->{uuid} : "nothing";
+    for my $old (grep { $_->{uuid} eq $viewed_uuid } $removals->linked) {
         my ($oaid) = map { $_->{val}->[0]->{oaid} } $svg->links($old);
-        $DB::single = !$oaid;
+        say "old is ".$old." ".summarise($old);
         $oaid || die;
         eval {
             $svg->unlink($old);
@@ -1657,8 +1660,7 @@ sub fill_in_svg {
         my ($new, $ex) = @_;
 
         chlnkg($new, $animations, $drawings);
-        ref $new->thing eq "Graph" ? ($new->thing->{uuid} ne $exam->{uuid}) :
-        ($new->thing->{graph} ne $exam->{uuid}) || die;
+        ($new->thing->{graph} || $new->thing->{uuid}) ne $exam->{uuid} || die;
 
         # gather uuids for possible indexing
         my $tuuid = $new->thing->{uuid};
@@ -1738,6 +1740,8 @@ sub fill_in_svg {
         $svgv->{elements} = \@elements;
         $svgv->{oaid} = $oaid;
     }
+
+    say "elemented: ".show_delta();
 
     my ($posx, $posy) = (30, 40);
     my $new_translates = {};
