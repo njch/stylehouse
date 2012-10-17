@@ -588,6 +588,10 @@ sub unlink {
             push @links, $l
         }
     }
+    if (@others && !@links) {
+        Carp::cluck "not actually linked: ".main::Dump { main::summarise($self) => [ map { main::summarise($_) } @others ] };
+        return;
+    }
     $self->graph->unlink(@links)
 }
 sub linked {
@@ -1459,10 +1463,12 @@ sub trash_viewed_exam {
 # get_object should have more clearly defined persistances I guess
 # sort out some time when we can see things happening
     my ($client, $viewed) = @_;
+    my $exam = $viewed->thing->thing;
+    ref $exam eq "Graph" || confess "not graph: ".summarise($exam);
     my $svg = $client->linked("#svg");
     for (uniq map { $_->{1} }
-        grep { $_->{1}->{graph} eq $viewed->{uuid} } $svg->links()) {
-        $svg->unlink($_->{1});
+        grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links()) {
+        $svg->unlink($_);
     }
     $client->unlink($viewed);
 }
