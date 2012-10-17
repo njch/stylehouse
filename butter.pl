@@ -1252,7 +1252,9 @@ my $findable_y = 20;
 get '/width' => sub {
     my $mojo = shift;
     my $width = $mojo->param('width');
-    $client->spawn($width)->id("width");
+    $client->in_field(sub{
+        shift->spawn($width)->id("width");
+    });
     $mojo->render(json => "Q");
 };
 
@@ -1290,7 +1292,7 @@ sub nameidcolor { #{{{
         return ("$summarised", "???", "000");
     }
 };#}}}
-my $vid = 0;
+
 sub examinate_graph {
     my $graph = shift;
 
@@ -1317,7 +1319,9 @@ sub get_object { # OBJ
 
     my $self = $client->spawn("#get_objection");
     $client->linked("#trail")->spawn($self);
-    $self->spawn($id)->id('id');
+    $self->in_field(sub {
+        shift->spawn($id)->id('id');
+    });
 
     my $object = object_by_uuid($id)
         || return $mojo->sttus("$id no longer exists!");
