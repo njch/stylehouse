@@ -511,7 +511,7 @@ sub spawn {
 sub in_field {
     my $self = shift;
     my $code = shift;
-    $self->{field} = $field = main::make_uuid($self);
+    $self->{field} = $field = $self->{field} ||= main::make_uuid($self);
     $code->($self);
     undef $field;
 }
