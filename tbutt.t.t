@@ -380,7 +380,7 @@ until (++$i > 5) {
         is $ob_exams_aaggaaiinn[0], $twas5, "correct one remains";
 #}}}
 
-        diag "test sub make_traveller"; #{{{
+        diag "test sub make_traveller"; #{{{ TODO pointless nowish?
         my $self = $client->spawn("#get_objection");
         make_traveller($self, $mojo, $client);
         my $trav = $self->linked("#traveller")->thing;
@@ -389,7 +389,7 @@ until (++$i > 5) {
         my $em = $exammess->();
         my $emeg = examinate_graph($em->thing);
         my @gots = map { $_->{thing}->{thing}->{thing} } $emeg->linked;
-        is(@gots, 7, "got all without traveller");
+        is(@gots, 6, "got all without traveller");
         
         my $em2 = $exammess->($trav);
         my $emeg2 = examinate_graph($em2->thing);
@@ -424,13 +424,19 @@ until (++$i > 5) {
 #}}}
 
         diag "test sub generate_svg"; #{{{
+
         my @svgn = $client->linked("#svg")->links();
         is(scalar(@svgn), 1, "no #svg linkage");
         generate_svg($self, $mojo, $client);
-        my @svgp = $client->linked("#svg")->links();
-        is(scalar(@svgp), 19, "some #svg linkage");
         my $svg = $client->linked("#svg");
         like(summarise($svg), qr/^N\(webbery\) svg svg [0-9a-f]{12}$/, "got #svg node");
+        my @svgp = $svg->links();
+        is(scalar(@svgp), 7, "some #svg linkage");
+        is($svgp[0]->{1}->{id}, "client", "linkage 0 == client");
+        is_deeply($svgp[1]->{val}->[0], {x => 0, y => 0}, "linkage 1 == 0,0");
+        is_deeply($svgp[2]->{val}->[0], {x => 1, y => 1}, "linkage 2 == 1,1");
+        is_deeply($svgp[3]->{val}->[0], {x => 2, y => 2}, "linkage 3 == 2,2");
+        is_deeply($svgp[4]->{val}->[0], {x => 1, y => 3}, "linkage 4 == 1,3");
         my @examsvgs = grep /N\(object-examination/,
             split "\n", displow($svg);
         my %messfolk = map { $_ => 0 } @messfolk;
@@ -439,24 +445,16 @@ until (++$i > 5) {
             ], [],
             "svg graph nodes look good"
         );
-        ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
+        ok(!(grep { $_ ne 1 } values %messfolk), "svg graph nodes accounted for")
             || diag Dump(\%messfolk);
 
         my @folks = uniq(map { /TheMess\) (\w+ [0-9a-f]{12})$/ } @examsvgs);
 
         is($exam->name, "object-examination8", "have the object-exam");
 
-        my %exam8samples;
-        my $randomly = sub {
-            my ($who_exam, @vals) = @_;
-            $exam8samples{$who_exam->{uuid}} = \@vals;
-        };
-        
+#        diff_svg($self, $mojo, $client);
+#        fill_in_svg(($self, $mojo, $client);
 
-        for (sort @folks) {
-            my ($who, $uuid) = split ' ';
-            check_folks_svg($exam, $svg, $who, $uuid, undef, undef, $randomly);
-        }
 
         # make another exam
         my $exam8 = $exam;
@@ -483,37 +481,17 @@ until (++$i > 5) {
             ], [],
             "svg graph nodes look good"
         );
-# $code should be multi-labelled...
-        my $code_svgs = delete $messfolk{'$code'};
-        is($code_svgs, 4, 'svg graph nodes for $code - split out lines of code');
-        ok(!(grep { $_ ne 3 } values %messfolk), "svg graph nodes accounted for")
+        @svgp = grep { $_->{1}->graph eq $exam9 } $svg->links();
+        is(scalar(@svgp), 7, "some #svg linkage");
+        is_deeply($svgp[0]->{val}->[0], {x => 0, y => 0}, "linkage 0 == 0,0");
+        is_deeply($svgp[1]->{val}->[0], {x => 1, y => 1}, "linkage 1 == 1,1");
+        is_deeply($svgp[2]->{val}->[0], {x => 2, y => 2}, "linkage 2 == 2,2");
+        is_deeply($svgp[3]->{val}->[0], {x => 3, y => 3}, "linkage 3 == 3,3");
+        ok(defined $svgp[3]->{1}->{thing}->{thing}->{code}, "linkage 3 is to code");
+        is_deeply($svgp[4]->{val}->[0], {x => 1, y => 4}, "linkage 4 == 1,4");
+        ok(!(grep { $_ ne 1 } values %messfolk), "svg graph nodes accounted for")
             || diag Dump(\%messfolk);
         @folks = uniq(map { /TheMess\) (\$?\w+ [0-9a-f]{12})$/ } @examsvgs);
-
-        my %exam9samples;
-        $randomly = sub {
-            my ($who_exam, @vals) = @_;
-            $exam9samples{$who_exam->{uuid}} = \@vals;
-        };
-
-        for (sort @folks) {
-            my ($who, $uuid) = split ' ';
-            my $whoreally = sub {$codenode->thing} if $who eq '$code';
-            check_folks_svg($exam9, $svg, $who, $uuid, $whoreally, 2, $randomly);
-        }
-
-        for my $samples (\%exam9samples, \%exam8samples) {
-            while (my ($k, $v) = each %$samples) {
-                my $o = object_by_uuid($k);
-                ok($o && ref $o eq "Node", "looked up $k");
-                ok(@$v > 1, "vals");
-                for (@$v) {
-                    like($_->[0], qr/boxen|label/, "val sensible");
-                    weaken $_;
-                    like($_->[0], qr/boxen|label/, "weakened val still sensible");
-                }
-            }
-        }
 #}}}
 
         diag "test sub diff_svgs"; #{{{
@@ -527,52 +505,6 @@ until (++$i > 5) {
             }
             else {
                 if ($i == 1) {
-        diag "garbage collection observations"; #{{{
-        $_->unlink('#object-examination') for $self, $client;
-
-        for my $samples (\%exam9samples, \%exam8samples) {
-            while (my ($k, $v) = each %$samples) {
-                my $o = object_by_uuid($k);
-                ok($o && ref $o eq "Node", "looked up $k");
-                ok(@$v > 1, "vals");
-                for (@$v) {
-                    like($_->[0], qr/boxen|label/, "val sensible");
-                }
-            }
-        }
-
-        my $exam8graphuuid = $exam8->{uuid};
-        undef $exam8;
-        for my $l ($svg->links()) {
-            if ($l->{1}->{graph} eq $exam8graphuuid) {
-                $svg->graph->unlink($l);
-            }
-        }
-
-        for my $samples (\%exam9samples) {
-            while (my ($k, $v) = each %$samples) {
-                my $o = object_by_uuid($k);
-                ok($o && ref $o eq "Node", "looked up $k");
-                is($o->graph->name, "object-examination9", "name");
-                ok(@$v > 1, "vals");
-                for (@$v) {
-                    like($_->[0], qr/boxen|label/, "val sensible");
-                }
-            }
-        }
-        for my $samples (\%exam8samples) {
-            while (my ($k, $v) = each %$samples) {
-                my $o = object_by_uuid($k);
-                ok($o && ref $o eq "Node", "looked up $k"); # TODO ?
-                ok(@$v > 1, "vals");
-                for (@$v) {
-                    ok(!defined($_), "val gone");
-                }
-            }
-        }
-        #}}}
-                }
-                elsif ($i == 2) {
                     diag "an svg diff"; # {{{
                     for (qw'drawings animations removals') {
                         $self->spawn([])->id($_);
