@@ -517,80 +517,19 @@ until (++$i > 5) {
                     my $box8 = $client->spawn($exam8);
                     $client->spawn($box8)->id("#viewed");
 
-                    my $linkage = dump_svg_linkage($svg, $exam8, $exam9);
-                    my $dump = sub {
-                        my $s = Dump(shift);
-                        $s =~ s/([0-9a-f]{12}-\w)\d/$1/g;
-                        return $s
-                    };
-                    my $vump = sub {
-                        return Dump [ map { encode_json($_) } @{ $_[0] }  ]
-                    };
-                    my $xy = sub {
-                        my $es = shift;
-                        my $b1 = $es->{'object-examination8'}->[0];
-                        my $b2 = $es->{'object-examination9'}->[0];
-                        return { old => { x => $b1->[1], y => $b1->[2] },
-                            new => { x => $b2->[1], y => $b2->[2] } };@{$b1}[1,2];
-                    };
-                    my ($codekey) = grep /HASH/, keys %$linkage;
-                    $codekey || die;
-                    my $codees = $linkage->{$codekey};
-                    my $codec = $xy->($codees);
-                    my $codey = $codec->{new}->{'y'};
-                    ok($codey > 5, "Y coord of CODE sane");
-
-
-                    for my $who (keys %$linkage) {
-                        my $es = $linkage->{$who};
-                        my $c = $xy->($es);
-                        if ($who =~ 'HASH') {
-                            ok(!defined $c->{old}->{x}, "CODE is new")
-                        }
-                        elsif ($who =~ /ringo|del$|rigo/) {
-                            is($c->{old}->{x}, $c->{new}->{x}, "$who X still");
-                            is($c->{old}->{y}, $c->{new}->{y}, "$who Y still");
-                            is($dump->($es->{'object-examination8'}),
-                                $dump->($es->{'object-examination9'}),
-                                "svg data same");
-                        }
-                        else {
-                            ok($c->{new}->{y} > $codey, "$who is below CODE");
-                            is($c->{old}->{x}, $c->{new}->{x}, "$who X still");
-                            is($c->{old}->{y} + 48, $c->{new}->{y}, "$who Y  = old Y + 48");
-                            my @dumps;
-                            for (8, 9) {
-                                my $vals = Load($dump->($es->{'object-examination'.$_}));
-                                for (@$vals) {
-                                    delete $_->[1];
-                                    delete $_->[2];
-                                }
-                                push @dumps, $vals;
-                            }
-                            is_deeply(@dumps,
-                                "svg data same (but different)");
-                        }
-                    }
-
                     diff_svgs($self, $mojo, $client);
 
-                    my $getd = sub {
-                        my ($d) = $self->linked("#".shift);
-                        return $d->thing;
-                    };
-                    my $draw = $getd->('drawings');
-                    is(scalar(@$draw), 4, "4 drawings");
-                    is_deeply([ map { $_->[0] } @$draw ], [('boxen')x2, ('label')x2], "2 boxen, 2 labels");
-                    like($draw->[0]->[-1]->{name}, qr/^\$code [0-9a-f]{12}$/, "attr good");
+                    my @anim_ls = $self->linked("#animations")->links;
+                    shift @anim_ls; # get_objection
+                    is(scalar(@anim_ls), 6, "all animate");
 
-                    my $remo = $getd->('removals');
-                    is(scalar(@$remo), 0, "0 removals");
+                    my @draw_ls = $self->linked("#drawings")->links;
+                    shift @draw_ls; # get_objection
+                    is(scalar(@draw_ls), 1, "one new drawing");
 
-                    my $anim = $getd->('animations');
-                    my $jsons = Load($vump->($anim));
-                    is(scalar( grep { /translate\(0 48\)/ } @$jsons ), 9, "9 animations go down 48px");
-
-                    dump_graph_yml('td.yml', $self->graph);
+                    my @rem_ls = $self->linked("#removals")->links;
+                    shift @rem_ls; # get_objection
+                    is(scalar(@rem_ls), 0, "no removals");
 # }}}
                 }
                 exit;
