@@ -1405,7 +1405,6 @@ sub get_object { # OBJ
     }
 
     unless (@{ $self->linked("#animations")->thing }) {
-        @{ $self->linked("#animations")->thing } = ();
         $clear = "noanim";
     }
 
@@ -1422,7 +1421,7 @@ sub get_object { # OBJ
     my @drawings;
     for (qw'removals animations drawings') {
         my $bit = $self->linked("#".$_);
-        @drawings = @{ $bit->thing };
+        push @drawings, @{ $bit->thing };
         for my $l ($bit->links) {
             $bit->unlink($l);
         }
