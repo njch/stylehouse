@@ -1187,22 +1187,20 @@ mach_spawn("#dsplay", sub { #{{{
 
 mach_spawn("#reexamine", sub { # {{{
     my ($self, $mojo, $client) = @_;
-    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
-        $client->linked("#/^object-examination/");
-    my $exam = pop @exams;
-    $exam = $exam->thing;
-    my @drawings;
+
+    my $exam = find_latest_examination($self, $mojo, $client)->thing;
     my $svg = $client->linked("#svg");
     my $reremo = goof($client, "+ #reremo {}");
 
-    push @drawings, map {
-        $_ = dclone $_;
-        $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
-        $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
-        $_->[-1]->{class} .= " re".$_->[-1]->{id};
-        #            $_->[0] eq "label" && die "woohoo!";
-        $reremo->{ $_->[-1]->{id} }++;
-        $_
+    my @drawings = map {
+        map {
+            $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
+            $_->[-1]->{class} .= " re".$_->[-1]->{id};
+            #            $_->[0] eq "label" && die "woohoo!";
+            $reremo->{ $_->[-1]->{id} }++;
+            $_
+        } @{ dclone($_)->{elements} }
     } map { $_->{val}->[0] }
     grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
 
@@ -1577,25 +1575,11 @@ sub diff_svgs {
 
         if ($oldn) {
             $animations->link($new, $oldn);
-#{{{
-#                die "WHAT\n".Dump[$old, $new]
-#                    if $old->[-1]->{class} ne $new->[-1]->{class}
-#                    || $old->[0] eq "label" && $old->[3] ne $new->[3] # lable text
-#                    && $new->[-1]->{name} !~ /translates/; # data dump changes
-
-                # ids are l1-17 on old, l18-34 on new... post-x could handle
-                # make sure we can keep finding them:
-#                $new->[-1]->{id} = $old->[-1]->{id};
-
-#            my $xdiff = $new->{x} - $old->{x};
-#            my $ydiff = $new->{y} - $old->{y};
-#}}}
         }
         else {
             $drawings->link($new);
         }
     });
-
 
     if ($viewed) {
         $traveller->travel($viewed->first, sub {
@@ -1606,7 +1590,6 @@ sub diff_svgs {
             }
         });
     }
-
 }
 
 sub chlnkg {
