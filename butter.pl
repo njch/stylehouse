@@ -1753,7 +1753,7 @@ sub fill_in_svg {
             die unless @{$old_svgv->{elements}} == @{$svgv->{elements}};
 
             my $eg = [$old_svgv->{elements}->[0], $svgv->{elements}->[0]];
-            my $dx = $eg->[1]->[2] - $eg->[0]->[2]; # new - old x
+            my $dx = $eg->[1]->[1] - $eg->[0]->[1]; # new - old x
             my $dy = $eg->[1]->[2] - $eg->[0]->[2]; # new - old y
 
             say "Oacid diffrances" unless $old_svgv->{oaid} eq $svgv->{oaid};
