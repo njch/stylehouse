@@ -1728,9 +1728,10 @@ sub fill_in_svg {
         } ];
 
         #$label_set_etc{'font-weight'} = "bold" if $new->linked > 1;
-        if (ref $new->thing eq "HASH" && $new->thing->{code}) {
-            my $li = 1;
-            for my $line (split /\n/, $new->thing->{code} ) {
+        if (ref $new->thing eq "Node" &&
+            ref $new->thing->thing eq "HASH" && $new->thing->thing->{code}) {
+            my $li = 0;
+            for my $line (split /\n/, $new->thing->thing->{code} ) {
                 my ($ind) = $line =~ /^( +)/;
                 my $x = (length($ind || "")-4) * 10;
                 my $y = $li * 14;
@@ -1740,7 +1741,7 @@ sub fill_in_svg {
                 } ];
                 $li++;
             }
-            $height = $li * 14;
+            $height = ($li+1) * 14;
         }
         else {
             push @elements, [ 'label', 0, 0, $stuff, {
