@@ -1350,6 +1350,8 @@ sub get_object { # OBJ
 
 
     my $viewed = find_latest_examination($self, $mojo, $client);
+    $client->spawn($viewed)->id("#viewed") if $viewed;
+
     if ($TEST) {
         $TEST->spawn($viewed)->id("viewed");
         if (my $h = $TEST->linked("#viewed_hook")) {
@@ -1362,8 +1364,6 @@ sub get_object { # OBJ
         $object = $viewed->thing->first->thing; # do it again
     }
 
-    garbage_collect_examinations($self, $mojo, $client);
-    
     say $viewed ? "got previous view" : "no view";
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
 
@@ -1482,24 +1482,7 @@ sub find_latest_examination {
         warn "Got an old #viewed exam: ".summarise($old_viewed);
         trash_viewed_exam($client, $old_viewed);
     }
-    if ($latest) {
-        $client->spawn($latest)->id("#viewed");
-    }
     return $latest;
-}
-
-sub garbage_collect_examinations {
-    my ($self, $mojo, $client) = @_;
-    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
-        $client->linked("#/^object-examination/");
-    pop @exams;
-    if (@exams) {
-        Carp::cluck "many" if @exams > 2 && !$TEST;
-        for my $old_exam (@exams) {
-#            $old_exam->{thing}->DESTROY;
-            $client->unlink($old_exam);
-        }
-    }
 }
 
 sub make_traveller {
