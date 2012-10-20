@@ -1209,9 +1209,9 @@ mach_spawn("#reexamine", sub { # {{{
 }); # }}}
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
-    my $trail = $client->linked("#trail");
-    DumpFile("thetrail.yml", $trail->thing);
-    return $mojo->drawings([status => "dumped graph"]);
+    my $trail = $client->linked("#trail")->thing;
+    say join "", map { ' - ["'.join('", "', @$_).'"]'."\n" } @$trail;
+    return $mojo->drawings([status => "dumped trail to console"]);
 }); # }}}
 
 $webbery->spawn("#clients");
