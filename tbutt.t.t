@@ -198,32 +198,79 @@ sub ss {
     my @nodes = @_;
     return scalar(@nodes);
 }
+my $reex = $webbery->find("#mach")->linked("#reexamine");
 
 my $case = $cases->spawn("trail 1");
 local $TEST = $case;
 diag "BEGIN $case->{thing}";
 my $mojo = new_moje();
+restep("home");
+restep("exam", "2", "N(object-examination) N(webbery) filesystem code 4d9a91e3545d");
+restep("?");
+restep("exam", "1", "N(object-examination2) N(filesystem) The Human Instinct cc3beca6e0cb");
+restep("exam", "2", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 02 - Stoned Guitar (1971).mp3 d5b5b2da803c");
+restep("exam", "1", "N(object-examination4) N(filesystem) The Human Instinct - Stoned Guitar (NZ 1971) d8e4277309aa");
+restep("exam", "3", "N(object-examination5) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8faff7d2adee");
 
-my $trail = Load(<<'');
- - ["home"]
- - ["exam", "2", "N(object-examination) N(webbery) filesystem code ecc82f19b3f2"]
- - ["?"]
- - ["exam", "4", "N(object-examination2) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8901aa9c5670"]
- - ["exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca"]
- - ["exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5"]
- - ["toolbar", "N(webbery) dump_trail code 963989fbadef"]
+say displow(find_latest_examination(undef, undef, $client)->thing->first);
+exit;
 
-for my $s (@$trail) {
-    restep($s);
-say displow(find_latest_examination(undef, undef, $client)->thing);
-say "\n\n\n";
+restep("home");
+restep("exam", "2", "N(object-examination) N(webbery) filesystem code ecc82f19b3f2");
+restep("?");
+restep("exam", "4", "N(object-examination2) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8901aa9c5670");
+{
+    my %byw;
+    $byw{$_->[0]}++ for @$drawings;
+    is($byw{'status'}, 1, "1 status");
+    is($byw{'animate'}, 36, "36 anims");
+    is(join(',', sort keys %byw), "animate,status", "nothin else");
+
+    get_object($mojo, $reex->{uuid});
+    my @labels =
+        sort { $a->[2] <=> $b->[2] }
+        grep { $_->[0] eq "label" } @$drawings;
+    like($labels[0]->[3], qr/04 - Midnight Sun/, "first first");
 }
 
+restep("exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca");
+{
+    my %byw;
+    $byw{$_->[0]}++ for @$drawings;
+    is($byw{'status'}, 1, "1 status");
+    is($byw{'animate'}, 36, "36 anims");
+    is(join(',', sort keys %byw), "animate,status", "nothin else");
+
+    get_object($mojo, $reex->{uuid});
+    my @labels =
+        sort { $a->[2] <=> $b->[2] }
+        grep { $_->[0] eq "label" } @$drawings;
+    like($labels[0]->[3], qr/06 - Railway and Gun/, "first first");
+}
+
+restep("exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5");
+{
+    my %byw;
+    $byw{$_->[0]}++ for @$drawings;
+    is($byw{'status'}, 1, "1 status");
+    is($byw{'animate'}, 36, "36 anims");
+    is(join(',', sort keys %byw), "animate,status", "nothin else");
+
+    get_object($mojo, $reex->{uuid});
+    my @labels =
+        sort { $a->[2] <=> $b->[2] }
+        grep { $_->[0] eq "label" } @$drawings;
+    like($labels[0]->[3], qr/Info.txt/, "first first");
+}
+
+
+
 sub restep {
-    my $s = shift;
+    my $s = [ @_ ];
+    my $id;
     if ($s->[0] eq "home") {
         say "Going home";
-        get_object($mojo, main::home());
+        $id = main::home();
     }
     elsif ($s->[0] eq "exam") {
         my ($y, $sum) = ($s->[1], $s->[2]);
@@ -234,15 +281,13 @@ sub restep {
         my %by_y = map { $_->{val}->[0]->{y} => $_->{1} } @svgls;
         my $ours = $by_y{$y};
         my $oursum = summarise($ours);
-        say "Wanting $sum";
         for ($oursum, $sum) {
             s/^(N\(\S\) )+//;
             s/ [0-9a-f]{12}$//;
         }
         if ($oursum eq $sum) {
-            say "Found ".summarise($ours);
             $ours = $ours->thing;
-            get_object($mojo, $ours->{uuid});
+            $id = $ours->{uuid};
         }
         else {
              die Dump([ "$oursum ne $sum", {"wanted at $y"=>$sum}])
@@ -261,15 +306,18 @@ sub restep {
             die "no $sum" unless @tools;
             die Dump[@tools] if @tools > 1;
             say "Found tool $sum";
-            get_object($mojo, $tools[0]->{uuid});
+            $id = $tools[0]->{uuid};
         }
     }
     elsif ($s->[0] eq "?") {
         say "Questionmark";
+        $id = "?";
     }
     else {
         die
     }
+    get_object($mojo, $id) unless $id eq "?";
+    return $id;
 }
 exit;
 

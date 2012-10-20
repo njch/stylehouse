@@ -325,11 +325,6 @@ the trail needs to have cursors into the previous UI
 to get anywhere for test thrashing, start out with the starting thing,
 apply all the actions with the current testing code
 see output etc.
-so svg output needs a little more structure...
- index them branches
-  see when re-navigating that things become indexed right
-   ie i=4 &&, id=#mach
- make a grid by x-y, explode to pixels on the way out
 
 an invention:
 render shapes at random, endeavouring genetically using human to point out bits
@@ -718,7 +713,6 @@ mach_spawn("#filesystem", sub { # {{{
     use File::Find;
     find(sub {
         return if $_ eq "." || $_ =~ /\/\.rockbox/;
-        say $File::Find::name;
         my $dir = $fs->find($File::Find::dir);
         $dir || die "no dir... $File::Find::dir";
         $dir->spawn($File::Find::name);
@@ -1175,8 +1169,6 @@ sub displow {
 
 # }}}
 
-
-
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
     start_timer();
@@ -1207,10 +1199,11 @@ mach_spawn("#reexamine", sub { # {{{
 
     return $mojo->drawings(@drawings);
 }); # }}}
+
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
     my $trail = $client->linked("#trail")->thing;
-    say join "", map { ' - ["'.join('", "', @$_).'"]'."\n" } @$trail;
+    say join "", map { 'restep("'.join('", "', @$_).'");'."\n" } @$trail;
     return $mojo->drawings([status => "dumped trail to console"]);
 }); # }}}
 
