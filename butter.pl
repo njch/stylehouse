@@ -1228,6 +1228,9 @@ our $client; # client - low priority: sessions
 
 use Mojolicious::Lite;
 get '/hello' => \&hello;
+sub home {
+    return $webbery->{uuid}
+}
 sub hello {
     my $mojo = shift;
 
@@ -1247,7 +1250,7 @@ sub hello {
         $client->spawn({})->id("#translates");
     });
 
-    $mojo->render(json => [object => { id => $webbery->{uuid} }]);
+    $mojo->render(json => [object => { id => home() }]);
 };
 my $findable_y = 20;
 get '/width' => sub {
@@ -1325,10 +1328,7 @@ sub track {
         my %by_y;
         $exam->map_nodes(sub {
             my $n = shift;
-            my ($svgl, @etc) = $svg->links($n);
-            if (@etc) {
-                die Dump(\@etc);
-            }
+            my ($svgl) = $svg->links($n);
             my $y = $svgl->{val}->[0]->{y};
             $by_y{$y} = $n;
         });
@@ -1376,7 +1376,6 @@ sub get_object { # OBJ
         || return $mojo->sttus("$id no longer exists!");
     $self->spawn($object)->id('object');
 
-
     start_timer();
     my $status = "For ". summarise($object);
     if (ref $object eq "Graph") {
@@ -1409,10 +1408,7 @@ sub get_object { # OBJ
         $object = $viewed->thing->first->thing; # do it again
     }
 
-    say $viewed ? "got previous view" : "no view";
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
-
-    say "Beginning: ".show_delta();
 
     make_traveller($self, $mojo, $client);
     my $exam = search_about_object($self, $mojo, $client);
@@ -1435,19 +1431,12 @@ sub get_object { # OBJ
         }
     }
 
-    say "post svg: ".show_delta();
-
     diff_svgs($self, $mojo, $client);
-
-    say "diff: ".show_delta();
 
     fill_in_svg($self, $mojo, $client);
 
-    say "filled: ".show_delta();
-
     my $clear;
     if (!$viewed && $mode ne "c") { # TODO hmm
-        say "gonna clear screen";
         $clear = "viewed";
     }
 
@@ -1497,6 +1486,7 @@ sub get_object { # OBJ
         trash_viewed_exam($client, $old_viewed);
     }
     $client->unlink($self);
+    say $status ." in ". show_delta();
     $mojo->drawings(@drawings);
 };
 
@@ -1579,7 +1569,6 @@ sub generate_svg { # GEN
     my $svg = $client->linked("#svg");
 
     my $y = 0;
-    say "pre svg: ".show_delta();
 
     $traveller->travel($exam->first, sub {
         my ($en, $ex) = @_;
@@ -1773,8 +1762,6 @@ sub fill_in_svg {
         $svgv->{elements} = \@elements;
         $svgv->{oaid} = $oaid;
     }
-
-    say "elemented: ".show_delta();
 
     my ($posx, $posy) = (30, 40);
     my $new_translates = {};
