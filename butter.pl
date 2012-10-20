@@ -1209,10 +1209,8 @@ mach_spawn("#reexamine", sub { # {{{
 }); # }}}
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
-    dump_graph_yml("thetrail.yml", $client->graph);
-    my $trail = load_graph_yml("thetrail.yml");
-    $trail = $trail->find("#clients")->linked("#client")->linked("#trail");
-    say displow($trail);
+    my $trail = $client->linked("#trail");
+    DumpFile("thetrail.yml", $trail->thing);
     return $mojo->drawings([status => "dumped graph"]);
 }); # }}}
 
@@ -1244,7 +1242,7 @@ sub hello {
     $clients->spawn("the")->in_field(sub {
         $client = shift;
         $client->id("#client");
-        $client->spawn("#trail");
+        $client->spawn([])->id("#trail");
         $client->spawn("#svg");
         $client->spawn({})->id("#translates");
     });
@@ -1307,6 +1305,53 @@ sub examinate_graph {
     return $exam;
 }
 
+sub track {
+    my $id = shift;
+
+
+    my $trail = $client->linked("#trail")->thing;
+
+    for my $n ($toolbar->linked()) {
+        if ($n->{uuid} eq $id) {
+            push @$trail, [ "toolbar", summarise($n) ];
+            return;
+        }
+    }
+
+    my $exam = find_latest_examination(undef, undef, $client);
+    if ($exam) {
+        my $svg = $client->linked("#svg");
+        $exam = $exam->thing;
+        my %by_y;
+        $exam->map_nodes(sub {
+            my $n = shift;
+            my ($svgl, @etc) = $svg->links($n);
+            if (@etc) {
+                die Dump(\@etc);
+            }
+            my $y = $svgl->{val}->[0]->{y};
+            $by_y{$y} = $n;
+        });
+        for my $y (sort keys %by_y) {
+            my $n = $by_y{$y};
+            if ($n->thing eq "Graph") {
+                say Dump($n->thing);
+            }
+            if ($n->thing->{uuid} eq $id) { # summarise($n->thing) =~ $id) {
+                push @$trail, [ "exam", $y, summarise($n) ];
+                return;
+            }
+        }
+    }
+
+    if ($webbery->{uuid} eq $id) {
+        push @$trail, [ "home" ];
+        return;
+    }
+
+    push @$trail, [ "?" ]; # eg some mach generates a get_object call
+}
+
 get '/object' => \&get_object;
 sub get_object { # OBJ
     my $mojo = shift;
@@ -1320,8 +1365,9 @@ sub get_object { # OBJ
 
     defined $client || return $mojo->sttus("hit F5!");
 
+    track($id);
+
     my $self = $client->spawn("#get_objection");
-    $client->linked("#trail")->spawn($self);
     $self->in_field(sub {
         shift->spawn($id)->id('id');
     });
