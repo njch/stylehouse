@@ -139,9 +139,6 @@ my $cases = $tests->spawn("#cases");
 
 `rm testrun/*.yml` if glob "testrun/*.yml";
 
-do { # UNIT_EY
-} if 1;
-
 sub dump_svg_linkage { # {{{
     my ($svg, @exams) = @_;
     my $vals_per_exam = svgvals($svg, @exams);
@@ -195,82 +192,6 @@ sub svgvals {
     }
     return \%svgvals;
 } # }}}
-
-sub check_folks_svg { # {{{
-    my ($exam, $svg, $who, $uuid, $whoreally, $iduncs, $randomly) = @_;
-    my $who_node = object_by_uuid($uuid);
-    is($who_node->thing, ($whoreally ? $whoreally->() : "$who"),
-        "$who found $who node");
-
-    my @nonlinks = $svg->links($who_node);
-    is(scalar(@nonlinks), 0, "$who svg doesn't link $who node");
-
-    my $who_exam = $exam->find($who_node);
-    is($who_exam->thing, $who_node, "$who found $who in exam");
-    my @links = $svg->links($who_exam);
-    my $howmany = 3;
-    $howmany = 4 if $who eq '$code';
-    is(scalar(@links), $howmany, "$who svg does link to $who exam node");
-    is_deeply(
-        [ uniq(map { $_->{0} } @links) ],
-        [ $svg ],
-        "$who all links from svg",
-    );
-    is_deeply(
-        [ uniq(map { $_->{1} } @links) ],
-        [ $who_exam ],
-        "$who all links to $who exam",
-    );
-    my @vals = map { ${ $_->{val} }[0] } @links;
-    my %whats;
-    my @linesofcode;
-    for my $v (@vals) {
-        my $name = $v->[0] eq "boxen" ? "boxen ".$v->[3]."x".$v->[4] : "label";
-        $whats{$name} = $v;
-        if ($who eq '$code' && $v->[0] eq "label") {
-            push @linesofcode, $v;
-        }
-    }
-    my ($uuid_3) = $uuid =~ /(...)$/;
-    $iduncs ||= "";
-    $iduncs = "" if $who eq '$code';
-
-    my $collap = sub {
-        my ($h, @ids) = @_;
-        return join(";", map { !defined($_) ? '~undef~' : $_ } @{$h}{@ids});
-    };
-    ok(my $b = $whats{"boxen 18x18"}, "$who boxen 18x18");
-    is($collap->($b->[-1], qw'class id name fill stroke'),
-        join(";", "$uuid_3 $uuid", "$uuid-b$iduncs", "$who $uuid", "$uuid_3", '~undef~'),
-        "attributes");
-    ok($b = $whats{"boxen 4x18"}, "$who boxen 4x18");
-    is($collap->($b->[-1], qw'class id name fill stroke'),
-        join(";", "$uuid_3 $uuid", "$uuid-c$iduncs", "$who $uuid", "000$uuid_3", "000"),
-        "attributes");
-
-    ok($b = $whats{"label"}, "$who label");
-    if ($who eq '$code') {
-        $b = $linesofcode[0];
-        is($linesofcode[0]->[3],
-            '    my $exam8 = $exam;',
-            '  line of code 1');
-        is($linesofcode[0]->[-1]->{id}, "$uuid-l", "    id");
-        is($linesofcode[1]->[3],
-            '    $_->unlink($exam) for $self, $client;',
-            '  line of code 2');
-        is($linesofcode[1]->[-1]->{id}, "$uuid-l2", "    id");
-    }
-    else {
-        like($b->[3], qr/^N\(TheMess\) $who $uuid/, "  text");
-    }
-    is($collap->($b->[-1], qw'class id name'),
-        join(";", "$uuid_3 $uuid", "$uuid-l$iduncs", "$who $uuid"),
-        "attributes");
-
-    if ($randomly) {
-        $randomly->($who_exam, @vals);
-    }
-} #}}}
 
 sub ss {
     my @nodes = @_;
@@ -352,34 +273,6 @@ until (++$i > 5) {
         is($john->{thing}->{thing}->{thing}, "john", "John!");
 #}}}
 
-        diag "test sub garbage_collect_examinations"; #{{{
-        my @ob_exams = $client->linked("#object-examination");
-        is scalar(@ob_exams), 4, "lots of old #object-examination";
-        $todo = sub { garbage_collect_examinations(undef, $mojo, $client) };
-        $todo->();
-        my @ob_exams_now = $client->linked("#object-examination");
-        is scalar(@ob_exams_now), 1, "only one now";
-        is ($client->linked("#object-examination"), $twas3, "correct one remains");
-        $client->link($ob_exams[1]);
-
-        my @ob_exams_again = $client->linked("#object-examination");
-        is scalar(@ob_exams_again), 2, "linked another";
-        is ($client->linked("#object-examination"), $twas3, "scalar ->linked... could be either though; not ordered");
-
-        $todo->();
-        my @ob_exams_again_again = $client->linked("#object-examination");
-        is scalar(@ob_exams_again_again), 1, "only one now";
-        is ($client->linked("#object-examination"), $twas3, "correct one remains");
-
-        my $twas5 = $exammess->();
-        my @ob_exams_again_again_again = $client->linked("#object-examination");
-        is scalar(@ob_exams_again_again_again), 2, "two now";
-        $todo->();
-        my @ob_exams_aaggaaiinn = $client->linked("#object-examination");
-        is scalar(@ob_exams_aaggaaiinn), 1, "only one now";
-        is $ob_exams_aaggaaiinn[0], $twas5, "correct one remains";
-#}}}
-
         diag "test sub make_traveller"; #{{{ TODO pointless nowish?
         my $self = $client->spawn("#get_objection");
         make_traveller($self, $mojo, $client);
@@ -407,18 +300,18 @@ until (++$i > 5) {
         make_traveller($self, $mojo, $client);
         my $exam = search_about_object($self, $mojo, $client);
         ok defined $exam && ref $exam eq "Graph", "is a Graph!";
-        is $exam->{name}, "object-examination8", "Graph with a name";
+        is $exam->{name}, "object-examination7", "Graph with a name";
         is $exam->first->thing->graph->{name}, "TheMess", "contains nodes from TheMess graph";
-        my @data = map { join(',', split /N\(object-examination8\) N\(TheMess\) /) }
+        my @data = map { join(',', split /N\(object-examination7\) N\(TheMess\) /) }
             grep { s/ .{12}$// }
             split /\n/, displow($exam->first);
         is(join(";", @data), ',ringo; ,del;  ,rigo; ,john; ,paul; ,delwhert', "dumps correctly");
 
-        is $client->linked("G(object-examination8)")->thing->{name}, 'object-examination8',
+        is $client->linked("G(object-examination7)")->thing->{name}, 'object-examination7',
             "linked via client";
-        is $self->linked("G(object-examination8)")->thing->{name}, 'object-examination8',
+        is $self->linked("G(object-examination7)")->thing->{name}, 'object-examination7',
             "linked via self";
-        is $self->linked("#object-examination")->thing->{name}, 'object-examination8',
+        is $self->linked("#object-examination")->thing->{name}, 'object-examination7',
             "linked via self with id";
 
 #}}}
@@ -440,7 +333,7 @@ until (++$i > 5) {
         my @examsvgs = grep /N\(object-examination/,
             split "\n", displow($svg);
         my %messfolk = map { $_ => 0 } @messfolk;
-        is_deeply([   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
+        is_deeply([   grep { $_ !~ /^ N\(object-examination7\) N\(TheMess\) (\w+) [0-9a-f]{12}$/
                         || do { die "no $1" unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
             ], [],
             "svg graph nodes look good"
@@ -450,7 +343,7 @@ until (++$i > 5) {
 
         my @folks = uniq(map { /TheMess\) (\w+ [0-9a-f]{12})$/ } @examsvgs);
 
-        is($exam->name, "object-examination8", "have the object-exam");
+        is($exam->name, "object-examination7", "have the object-exam");
 
 #        diff_svg($self, $mojo, $client);
 #        fill_in_svg(($self, $mojo, $client);
@@ -471,12 +364,12 @@ until (++$i > 5) {
         is(ref $codenode->thing, "HASH", ' " thing is hash');
 
         my $exam9 = search_about_object($self, $mojo, $client);
-        is($exam9->name, "object-examination9", "have the next object-exam");
+        is($exam9->name, "object-examination8", "have the next object-exam");
         generate_svg($self, $mojo, $client);
-        @examsvgs = grep /N\(object-examination9/,
+        @examsvgs = grep /N\(object-examination8/,
             split "\n", displow($svg);
         %messfolk = map { $_ => 0 } @messfolk, '$code';
-        is_deeply([   grep { $_ !~ /^ N\(object-examination9\) N\(TheMess\) (\$?\w+) [0-9a-f]{12}$/
+        is_deeply([   grep { $_ !~ /^ N\(object-examination8\) N\(TheMess\) (\$?\w+) [0-9a-f]{12}$/
                         || do { die unless defined $messfolk{$1}; $messfolk{$1}++; 0 } } @examsvgs
             ], [],
             "svg graph nodes look good"
@@ -502,6 +395,7 @@ until (++$i > 5) {
                 start_timer();
                 wait();
                 diag "END fork() (".show_delta().")";
+                is($?, 0, "child status");
             }
             else {
                 if ($i == 1) {
@@ -544,6 +438,7 @@ until (++$i > 5) {
         start_timer();
         wait();
         diag "END fork() (".show_delta().")";
+        is($?, 0, "child status");
     }
     else {
         if ($i == 2) {
@@ -598,7 +493,7 @@ until (++$i > 5) {
                     return if $G->{thing}->{iggy};
                     push @exam_svg, $svg->links($G);
                 });
-                is(scalar(@exam_svg), 30, "post-generate_svg exam svg count");
+                is(scalar(@exam_svg), 4, "post-generate_svg exam svg count");
             })->id("#svg_hook");
 
 

@@ -855,6 +855,7 @@ sub dump_graph_yml {
         }
     }
     write_file($file, $yaml);
+    say "wrote $file";
 }
 sub load_graph_yml { #LOAD
     my $file = shift;
@@ -1399,7 +1400,7 @@ sub get_object { # OBJ
     say "filled: ".show_delta();
 
     my $clear;
-    unless ($viewed && $mode ne "c") { # TODO hmm
+    if (!$viewed && $mode ne "c") { # TODO hmm
         say "gonna clear screen";
         $clear = "viewed";
     }
@@ -1750,7 +1751,7 @@ sub fill_in_svg {
             my ($old_svgv) = map { $_->{val}->[0] } $svg->links($old);
             $old_svgv || die;
             
-            die unless @{$old_svgv->{elements}} == @{$svgv->{elements}};
+            confess unless @{$old_svgv->{elements}} == @{$svgv->{elements}};
 
             my $eg = [$old_svgv->{elements}->[0], $svgv->{elements}->[0]];
             my $dx = $eg->[1]->[1] - $eg->[0]->[1]; # new - old x
