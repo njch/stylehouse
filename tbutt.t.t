@@ -15,6 +15,7 @@ diag "required ".show_delta();
 our $TEST = 1;
 our $client;
 our $webbery;
+our $toolbar;
 do { # {{{
 my $g1 = new Graph("test1");
 my $g1n1 = $g1->spawn({color => "yellow"});
@@ -198,6 +199,79 @@ sub ss {
     return scalar(@nodes);
 }
 
+my $case = $cases->spawn("trail 1");
+local $TEST = $case;
+diag "BEGIN $case->{thing}";
+my $mojo = new_moje();
+
+my $trail = Load(<<'');
+ - ["home"]
+ - ["exam", "2", "N(object-examination) N(webbery) filesystem code ecc82f19b3f2"]
+ - ["?"]
+ - ["exam", "4", "N(object-examination2) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8901aa9c5670"]
+ - ["exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca"]
+ - ["exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5"]
+ - ["toolbar", "N(webbery) dump_trail code 963989fbadef"]
+
+for my $s (@$trail) {
+    restep($s);
+say displow(find_latest_examination(undef, undef, $client)->thing);
+say "\n\n\n";
+}
+
+sub restep {
+    my $s = shift;
+    if ($s->[0] eq "home") {
+        say "Going home";
+        get_object($mojo, main::home());
+    }
+    elsif ($s->[0] eq "exam") {
+        my ($y, $sum) = ($s->[1], $s->[2]);
+        my $exam = find_latest_examination(undef, undef, $client)->thing;
+        $exam || die;
+        my $svg = $client->linked("#svg");
+        my @svgls = grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
+        my %by_y = map { $_->{val}->[0]->{y} => $_->{1} } @svgls;
+        my $ours = $by_y{$y};
+        my $oursum = summarise($ours);
+        say "Wanting $sum";
+        for ($oursum, $sum) {
+            s/^(N\(\S\) )+//;
+            s/ [0-9a-f]{12}$//;
+        }
+        if ($oursum eq $sum) {
+            say "Found ".summarise($ours);
+            $ours = $ours->thing;
+            get_object($mojo, $ours->{uuid});
+        }
+        else {
+             die Dump([ "$oursum ne $sum", {"wanted at $y"=>$sum}])
+                .displow($exam);
+        }
+    }
+    elsif ($s->[0] eq "toolbar") {
+        if ($s->[1] =~ /dump_trail code/) {
+            diag "fin";
+        }
+        else {
+            my $sum = $s->[1];
+            $sum =~ s/^(N\(\S\) )+//;
+            $sum =~ s/ [0-9a-f]{12}$//;
+            my @tools = grep { summarise($_) =~ /\Q$sum\E [0-9a-f]{12}$/ } $toolbar->linked();
+            die "no $sum" unless @tools;
+            die Dump[@tools] if @tools > 1;
+            say "Found tool $sum";
+            get_object($mojo, $tools[0]->{uuid});
+        }
+    }
+    elsif ($s->[0] eq "?") {
+        say "Questionmark";
+    }
+    else {
+        die
+    }
+}
+exit;
 
 my $i = 0;
 until (++$i > 5) {
