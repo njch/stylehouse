@@ -16,6 +16,7 @@ our $TEST = 1;
 our $client;
 our $webbery;
 our $toolbar;
+our $mojo;
 do { # {{{
 my $g1 = new Graph("test1");
 my $g1n1 = $g1->spawn({color => "yellow"});
@@ -117,7 +118,7 @@ package main;
 sub new_moje {
     $sttus = undef;
     $drawings = undef;
-    my $mojo = NonMojo->new();
+    $mojo = NonMojo->new();
     if ($_[0]) { # TODO do we ever want to do this?
         $webbery = shift;
         my $clients = $webbery->find("#clients");
@@ -200,76 +201,28 @@ sub ss {
 }
 my $reex = $webbery->find("#mach")->linked("#reexamine");
 
-my $case = $cases->spawn("trail 1");
-local $TEST = $case;
-diag "BEGIN $case->{thing}";
-my $mojo = new_moje();
-restep("home");
-restep("exam", "2", "N(object-examination) N(webbery) filesystem code 4d9a91e3545d");
-restep("?");
-restep("exam", "1", "N(object-examination2) N(filesystem) The Human Instinct cc3beca6e0cb");
-restep("exam", "2", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 02 - Stoned Guitar (1971).mp3 d5b5b2da803c");
-restep("exam", "1", "N(object-examination4) N(filesystem) The Human Instinct - Stoned Guitar (NZ 1971) d8e4277309aa");
-restep("exam", "3", "N(object-examination5) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8faff7d2adee");
-
-say displow(find_latest_examination(undef, undef, $client)->thing->first);
-exit;
-
-restep("home");
-restep("exam", "2", "N(object-examination) N(webbery) filesystem code ecc82f19b3f2");
-restep("?");
-restep("exam", "4", "N(object-examination2) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8901aa9c5670");
-{
+sub ok_for_drawings {
+    my %p = @_;
     my %byw;
     $byw{$_->[0]}++ for @$drawings;
-    is($byw{'status'}, 1, "1 status");
-    is($byw{'animate'}, 36, "36 anims");
-    is(join(',', sort keys %byw), "animate,status", "nothin else");
-
+    while (my ($k, $v) = each %p) {
+        is($byw{$k}, $v, "$v $k");
+    }
+    is(join(',', sort keys %byw), join(',', sort keys %p), "nothin else");
+}
+sub get_labels {
     get_object($mojo, $reex->{uuid});
     my @labels =
         sort { $a->[2] <=> $b->[2] }
         grep { $_->[0] eq "label" } @$drawings;
-    like($labels[0]->[3], qr/04 - Midnight Sun/, "first first");
+    $client->unlink("#reremo");
+    return \@labels;
 }
-
-restep("exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca");
-{
-    my %byw;
-    $byw{$_->[0]}++ for @$drawings;
-    is($byw{'status'}, 1, "1 status");
-    is($byw{'animate'}, 36, "36 anims");
-    is(join(',', sort keys %byw), "animate,status", "nothin else");
-
-    get_object($mojo, $reex->{uuid});
-    my @labels =
-        sort { $a->[2] <=> $b->[2] }
-        grep { $_->[0] eq "label" } @$drawings;
-    like($labels[0]->[3], qr/06 - Railway and Gun/, "first first");
-}
-
-restep("exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5");
-{
-    my %byw;
-    $byw{$_->[0]}++ for @$drawings;
-    is($byw{'status'}, 1, "1 status");
-    is($byw{'animate'}, 36, "36 anims");
-    is(join(',', sort keys %byw), "animate,status", "nothin else");
-
-    get_object($mojo, $reex->{uuid});
-    my @labels =
-        sort { $a->[2] <=> $b->[2] }
-        grep { $_->[0] eq "label" } @$drawings;
-    like($labels[0]->[3], qr/Info.txt/, "first first");
-}
-
-
 
 sub restep {
     my $s = [ @_ ];
     my $id;
     if ($s->[0] eq "home") {
-        say "Going home";
         $id = main::home();
     }
     elsif ($s->[0] eq "exam") {
@@ -278,11 +231,12 @@ sub restep {
         $exam || die;
         my $svg = $client->linked("#svg");
         my @svgls = grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
+        @svgls || die "no svg linkage to".summarise($exam).":\n".displow($client);
         my %by_y = map { $_->{val}->[0]->{y} => $_->{1} } @svgls;
         my $ours = $by_y{$y};
         my $oursum = summarise($ours);
         for ($oursum, $sum) {
-            s/^(N\(\S\) )+//;
+            s/^(N\(\S+\) )+//;
             s/ [0-9a-f]{12}$//;
         }
         if ($oursum eq $sum) {
@@ -290,7 +244,7 @@ sub restep {
             $id = $ours->{uuid};
         }
         else {
-             die Dump([ "$oursum ne $sum", {"wanted at $y"=>$sum}])
+             die Dump([ summarise($ours), "$oursum ne $sum", {"wanted at $y"=>$sum}])
                 .displow($exam);
         }
     }
@@ -310,7 +264,6 @@ sub restep {
         }
     }
     elsif ($s->[0] eq "?") {
-        say "Questionmark";
         $id = "?";
     }
     else {
@@ -319,15 +272,65 @@ sub restep {
     get_object($mojo, $id) unless $id eq "?";
     return $id;
 }
+my $i = 0;
+until (++$i > 3) {
+diag "BEGIN fork()";
+if (my $pid = fork()) {
+    start_timer();
+    wait();
+    diag "END fork() (".show_delta().")";
+    is($?, 0, "child status") || BAIL_OUT "child died";
+}
+else {
+    if ($i == 1) {
+        my $case = $cases->spawn("trail 1");
+        local $TEST = $case;
+        diag "BEGIN $case->{thing}";
+        my $mojo = new_moje();
+        restep("home");
+        restep("exam", "2", "N(object-examination) N(webbery) filesystem code 4d9a91e3545d");
+        restep("?");
+        restep("exam", "1", "N(object-examination2) N(filesystem) The Human Instinct cc3beca6e0cb");
+        restep("exam", "2", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 02 - Stoned Guitar (1971).mp3 d5b5b2da803c");
+        restep("exam", "1", "N(object-examination4) N(filesystem) The Human Instinct - Stoned Guitar (NZ 1971) d8e4277309aa");
+        restep("exam", "3", "N(object-examination5) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8faff7d2adee");
+
+        like(get_labels()->[0]->[3], qr/04 - Midnight Sun/, "first first");
+        say displow(find_latest_examination(undef, undef, $client)->thing->first);
+    }
+    elsif ($i == 2) {
+        my $case = $cases->spawn("trail 2");
+        local $TEST = $case;
+        diag "BEGIN $case->{thing}";
+        my $mojo = new_moje();
+        restep("home");
+        restep("exam", "2", "N(object-examination) N(webbery) filesystem code ecc82f19b3f2");
+        restep("?");
+        restep("exam", "4", "N(object-examination2) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8901aa9c5670");
+        ok_for_drawings(status => 1, animate => 36);
+        like(get_labels()->[0]->[3], qr/04 - Midnight Sun/, "first first");
+
+
+        restep("exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca");
+        ok_for_drawings(status => 1, animate => 36);
+    
+        my $labs = get_labels();
+        like($labs->[0]->[3], qr/06 - Railway and Gun/, "first first");
+
+        restep("exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5");
+        ok_for_drawings(status => 1, animate => 36);
+        like(get_labels()->[0]->[3], qr/Info.txt/, "first first");
+    }
+}
+}
 exit;
 
-my $i = 0;
+$i = 0;
 until (++$i > 5) {
     if ($i == 1) {
         my $case = $cases->spawn("unit test 1");
         local $TEST = $case;
         diag "BEGIN $case->{thing}";
-#    my $expected  = load_expected($case);
         my $mojo = new_moje();
 
         my $themess = my $mess = new Graph("TheMess");

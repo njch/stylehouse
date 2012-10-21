@@ -1169,6 +1169,12 @@ sub displow {
 
 # }}}
 
+mach_spawn("#tout", sub { #{{{
+    my ($self, $mojo, $client) = @_;
+    $mojo->drawings(Load("tout.yml"));
+});#}}}
+
+
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
     start_timer();
@@ -1211,7 +1217,7 @@ $webbery->spawn("#clients");
 
 # define the TOOLBAR
 $toolbar->link($webbery);
-for my $tid ('tbutt', 'reexamine', 'dump_trail') {
+for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail') {
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
     $toolbar->link($t);
@@ -1859,7 +1865,7 @@ __DATA__
     <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="scope.js"></script></head>
     <body style="background: #ab6; font-family: monospace">
-    <div id="view" style="background: #ab9"></div>
+    <div id="view" style="background: #ce9"></div>
     </body>
 </html>
 
