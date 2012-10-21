@@ -1502,8 +1502,16 @@ sub trash_viewed_exam {
 
 sub find_latest_examination {
     my ($self, $mojo, $client) = @_;
-    my @exams = sort { $a->{thing}->{name} cmp $b->{thing}->{name} }
-        $client->linked("#/^object-examination/");
+
+    my @exams = $client->linked("#/^object-examination/");
+
+    @exams = sort {
+        my ($a, $b) =
+            grep { s/^.+?(\d+)$/$1/ || s/^.+$/1/ }
+            map { $_->thing->{name} } $a, $b;
+        $a <=> $b
+    } @exams;
+
     my $latest = pop @exams;
     for my $old_viewed ($client->linked("#viewed")) {
         warn "Got an old #viewed exam: ".summarise($old_viewed);
