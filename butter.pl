@@ -1484,6 +1484,8 @@ sub get_object { # OBJ
     for my $old_viewed ($client->linked("#viewed")) {
         trash_viewed_exam($client, $old_viewed);
     }
+    $self->trash();
+    say "trashed self";
     $client->unlink($self);
     say $status ." in ". show_delta();
     $mojo->drawings(@drawings);
@@ -1502,8 +1504,10 @@ sub trash_viewed_exam {
     for (uniq map { $_->{1} }
         grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links()) {
         $svg->unlink($_);
+        $_->graph->denode($_);
     }
     $client->unlink($viewed);
+    $viewed->graph->denode($viewed);
 }
 
 sub find_latest_examination {
