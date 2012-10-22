@@ -316,7 +316,18 @@ should probably rejig the ui a bit now it's more stable to support...
 
 seeing things happening
 per time slice
-how to slice time? slice up code, insert break/dump points, run code as another entity
+how to slice time?
+
+slice up code
+ - apply some tweaks to chunking
+ - add structure eg packages, sections etc
+ - add subtler structure such as shrinking vast swathes
+ - diagram/maps of code
+gvim hacks text file, changes slotted in to place
+ - make copy of text, track chunk line numbers and use diff to cut down on processing
+thing get more graphy woohoo
+
+insert break/dump points, run code as another entity
 need to have each sub log somewhere what it does
 then we have this huge shape of the program's execution
 we can look for places where svg gets linked to anything
@@ -735,36 +746,35 @@ mach_spawn("#filesystem", sub { # {{{
 
 mach_spawn("#codes", sub { # {{{
     my ($self, $mojo, $client) = @_;
-    my $graph_code_code_graph = graph_code($webbery, "sub graph_code");
 
-    get_object($mojo, $graph_code_code_graph->{uuid});
-});
-
-sub graph_code { 
-    my ($hang_from, $section) = @_;
     my @code = read_file('butter.pl');
-    my $codes = $hang_from->spawn($section);
+    my @chunks = ([]);
+
 
     while ($_ = shift @code) {
-        next until /^\Q$section\E/;
-        my $chunk;
-        $_ = " ";
-        until (/^\S/) {
-            $chunk .= $_ = shift @code;
-            if (/^\s*$/sm && $chunk =~ /\S/) {
-                $codes->spawn({ code => $chunk });
-                $chunk = "";
-                shift @code until $code[0] =~ /\S/;
+        if (/^=head1/) {
+            1 until shift(@code) =~ /^=cut/;
+            next;
+        }
+        elsif (/^\S/ && !/^(use|our|#).+/) {
+            unless (/^\}/) {
+                push @chunks, [$_];
+                next;
             }
         }
-        if ($chunk =~ /\S/) {
-            $chunk =~ s/^\}.*\Z//xsm;
-            $codes->spawn({ code => $chunk });
-        }
+
+        push @{ $chunks[-1] }, $_;
     }
 
-    return $codes;
-} # }}}
+    say Dump(\@chunks);
+    exit;
+
+    my $codes = $webbery->spawn("#codes");
+    $codes->spawn($_) for map { join "\n", @$_ } @chunks;
+
+    get_object($mojo, $codes->{uuid});
+});
+# }}}
 
 mach_spawn("#tbutt", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1237,7 +1247,7 @@ our $client; # client - low priority: sessions
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->{uuid}
+    return $webbery->find("#codes")->{uuid}
 }
 sub hello {
     my $mojo = shift;
