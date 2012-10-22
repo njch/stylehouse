@@ -293,11 +293,10 @@ the tests are the routines right.
 
 - limber up graph happening.
 thawed graph bootstraps itself with links from nowhere to all its nodes.
-usually there'd be links from somewhere to everything
+usually there'd be links from at least somewhere philosophical to everything
 talking about it relative to various formulas
-some of that thought for thinking about writing it.
 
-there's definitely that machine-thinking-ideas pattern.
+there's definitely that machine-thinking-ideas pattern awaiting elegant apparition.
 
 =head1 TODO
 
@@ -318,13 +317,23 @@ should probably rejig the ui a bit now it's more stable to support...
 seeing things happening
 per time slice
 how to slice time? slice up code, insert break/dump points, run code as another entity
-in this way one butter chains up another butter and they work together in increasing
-experiment
+need to have each sub log somewhere what it does
+then we have this huge shape of the program's execution
+we can look for places where svg gets linked to anything
+one butter creates another butter for increasing experiment
 
-the trail needs to have cursors into the previous UI
-to get anywhere for test thrashing, start out with the starting thing,
-apply all the actions with the current testing code
-see output etc.
+so we need to automatically hack hooks into butter and execute it
+the hooks note whats happening
+hopefully the program can be re-executed and happen exactly the same
+so we can go up to a point and hit pause
+simple
+
+entropy field == light cone for data?
+with total functional entropy figured by watching execution of test cases
+hmm indeed
+
+queries are middle managers.
+if the top boss works infinitely fast as computers do he can deal with everything.
 
 an invention:
 render shapes at random, endeavouring genetically using human to point out bits
