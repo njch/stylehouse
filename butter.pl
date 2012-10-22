@@ -1485,8 +1485,6 @@ sub get_object { # OBJ
         trash_viewed_exam($client, $old_viewed);
     }
     $self->trash();
-    say "trashed self";
-    $client->unlink($self);
     say $status ." in ". show_delta();
     $mojo->drawings(@drawings);
 };

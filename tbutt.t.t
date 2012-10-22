@@ -272,14 +272,14 @@ sub restep {
     get_object($mojo, $id) unless $id eq "?";
     return $id;
 }
-my $i = 0;
+my $i = 2;
 until (++$i > 3) {
 diag "BEGIN fork()";
 if (my $pid = fork()) {
     start_timer();
     wait();
     diag "END fork() (".show_delta().")";
-    is($?, 0, "child status") || BAIL_OUT "child died";
+    is($?, 0, "$$ child status") || BAIL_OUT "child died";
 }
 else {
     if ($i == 1) {
@@ -296,7 +296,6 @@ else {
         restep("exam", "3", "N(object-examination5) N(filesystem) Human Instinct - Stoned Guitar - 04 - Midnight Sun (1971).mp3 8faff7d2adee");
 
         like(get_labels()->[0]->[3], qr/04 - Midnight Sun/, "first first");
-        say displow(find_latest_examination(undef, undef, $client)->thing->first);
     }
     elsif ($i == 2) {
         my $case = $cases->spawn("trail 2");
@@ -313,14 +312,29 @@ else {
 
         restep("exam", "7", "N(object-examination3) N(filesystem) Human Instinct - Stoned Guitar - 06 - Railway and Gun (1971).mp3 541807d12cca");
         ok_for_drawings(status => 1, animate => 36);
-    
-        my $labs = get_labels();
-        like($labs->[0]->[3], qr/06 - Railway and Gun/, "first first");
+        like(get_labels()->[0]->[3], qr/06 - Railway and Gun/, "first first");
 
         restep("exam", "5", "N(object-examination4) N(filesystem) Info.txt 9988084a14b5");
         ok_for_drawings(status => 1, animate => 36);
         like(get_labels()->[0]->[3], qr/Info.txt/, "first first");
     }
+    elsif ($i == 3) {
+        my $case = $cases->spawn("trail 3");
+        local $TEST = $case;
+        diag "BEGIN $case->{thing}";
+        my $mojo = new_moje();
+        restep("home");
+        restep("home");
+        restep("exam", "1", "mach mach");
+        my $exam = find_latest_examination(undef, undef, $client)->thing;
+        for (@{$exam->{nodes}}) {
+            say summarise($_);
+            if ($_->thing->id =~ "svg") {
+                say Dump[$_->linked];
+            }
+        }
+    }
+    exit;
 }
 }
 exit;
