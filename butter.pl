@@ -440,7 +440,7 @@ sub new {
     $self->{links} = [];
     $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;
-    $self->{uuid} = main::make_uuid($self);
+    $self->{uuid} = main::make_uuid();
     main::reg_object_uuid($self);
     return $self
 }
@@ -568,7 +568,7 @@ sub new { # graph => $graph,
         undef $self->{thing};
     }
 
-    $self->{uuid} = main::make_uuid($self);
+    $self->{uuid} = main::make_uuid();
     main::reg_object_uuid($self);
         
     return $self
@@ -588,7 +588,7 @@ sub spawn {
 sub in_field {
     my $self = shift;
     my $code = shift;
-    $self->{field} = $field = $self->{field} ||= main::make_uuid($self);
+    $self->{field} = $field = $self->{field} ||= main::make_uuid();
     $code->($self);
     undef $field;
 }
