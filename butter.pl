@@ -10,6 +10,7 @@ use File::Slurp;
 use Scriptalicious;
 use Carp 'confess';
 use v5.10;
+say "we are $0";
 
 =head1 NEW FILE!
 
@@ -357,6 +358,11 @@ all this kind of formulaicism
 looking at the screen vs not.
 may be something to experiment with.
 
+summarise and this little thing growing in note are a case of data massage
+from one set into a string various ways, pulling out extra bits of info
+or recursing deeper in, always with some limitation
+seems like the kind of thing to take care of easily somehow
+
 WORDS
 =cut
 
@@ -365,13 +371,68 @@ our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $G;
 our $TEST;
+use File::Slurp 'append_file';
+`cat /dev/null > notation`;
+
+sub note {
+    my $args = \@_;
+    my @a;
+    my $splash;
+    my $sply;
+    $sply = sub {
+        my $t = shift;
+        return '~undef~' if !defined $t;
+        return "'$t'" if !ref $t;
+
+        given (ref $t) {
+            when ("CODE") {
+                return "CODE";
+            }
+            when (/Node|Graph/) {
+                if ($t->{uuid}) {
+                    return ref($t)."=$t->{uuid}"
+                }
+                else {
+                    my $hash = $splash->($t) unless $_[0];
+                    $hash ||= "%t";
+                    return ref($t)." NO UUID: ".$hash
+                }
+            }
+            when ("HASH") {
+                return $splash->($t);
+            }
+            when ("ARRAY") {
+                return '['.join(", ", map { $sply->($_) } @$t).']';
+            }
+            when (/Mojolicious::Controller/) {
+                return 'Mojo'
+            }
+            default {
+                die "unknown ref: ".ref $t;
+            }
+        }
+        die" ";
+    };
+    $splash = sub {
+        my $hr = shift;
+        return "{ ".join(", ", map { $sply->($_, "noresplash") } %$hr)." }"
+    };
+    my $i = 0;
+    while ((caller($i++))[0]) {}
+    for (@$args) {
+        push @a, $sply->($_);
+    }
+    my $ind = join "", (" ")x$i;
+    append_file("notation", $ind. shift(@a)."\t". join(", ", @a) ."\n");
+}
+
 
 our %graphs; # {{{
 package Graph;
 use YAML::Syck;
 use strict;
 use warnings;
-sub new { # name, 
+sub new {
     shift;
 
     my $self = bless {}, __PACKAGE__;
@@ -482,7 +543,7 @@ sub spawn {
 }
 sub DESTROY {
     my $self = shift;
-#    say "DESTROY ".main::summarise($self);
+    say "DESTROY ".main::summarise($self);
     for my $l (@{$self->{links}}) {
         delete $l->{$_} for keys %$l;
     }
@@ -500,10 +561,8 @@ sub new { # graph => $graph,
     my $self = bless {}, __PACKAGE__;
     my %params = @_;
     $self->{graph} = $params{graph}->{uuid};
-    my @fields = main::tup($params{fields}); # detupalises?
-    $self->{fields} = \@fields if @fields;
-    $self->{thing} = $params{thing};
 
+    $self->{thing} = $params{thing};
     if ($self->{thing} && $self->{thing} =~ /^#/) {
         $self->id($self->{thing});
         undef $self->{thing};
@@ -747,15 +806,17 @@ mach_spawn("#filesystem", sub { # {{{
     get_object($mojo, $fs->{uuid});
 }); # }}}
 
-mach_spawn("#codes", sub { # {{{
+mach_spawn("#codes", sub { # {{{ COD
     my ($self, $mojo, $client) = @_;
-
+    my $codes = codes();
+    get_object($mojo, $codes->{uuid});
+});
+sub codes {
     my @code = read_file('butter.pl');
     my @chunks = ([]);
 
-
     while ($_ = shift @code) {
-        if (/^=head1/) {
+        if (0 && /^=head1/) {
             1 until shift(@code) =~ /^=cut/;
             next;
         }
@@ -768,16 +829,41 @@ mach_spawn("#codes", sub { # {{{
 
         push @{ $chunks[-1] }, $_;
     }
+    my $codes = new Graph("codes");
+    my $parse = $codes->spawn("#aparse");
+    my $i = 0;
+    my $p = "main";
+    my @fb;
+    for (map { join "", @$_ } @chunks) {
+        my $code = $_;
+        $p = $1 if /^package (\w+);/;
+        my %etc;
+        $etc{sub} = $1 if /^sub (\w+) {/;
+        $etc{sub} = "mach $1" if /^mach_spawn\("#(\w+)", sub {/;
 
-    say Dump(\@chunks);
-    exit;
+        $parse->spawn({
+            code => $code,
+            i => $i++,
+            p => $p,
+            %etc,
+        });
 
-    my $codes = $webbery->spawn("#codes");
-    $codes->spawn($_) for map { join "\n", @$_ } @chunks;
+        if ($etc{sub} && $etc{sub} !~ /note|DESTROY|summarise/) {
+            my $notecode = "main::note('$p\:\:$etc{sub}', \@_);";
+            $code =~ s/(sub (\w+ )?{)/$1 $notecode/
+                || die "faile $code";
+        }
+        push @fb, $code;
+    }
+    write_file("frankenbutter.pl", join "", @fb);
 
-    get_object($mojo, $codes->{uuid});
-});
+    say "running frankbutter";
+unless ($0 =~ /frankenbutter/) {
+    exec "perl frankenbutter.pl";
+}
+}
 # }}}
+codes() unless $0 =~ /frankenbutter/;
 
 mach_spawn("#tbutt", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1119,7 +1205,7 @@ sub summarise { # SUM
     my $text;
     given (ref $thing) {
         when ("Graph") {
-            $text = "Graph $thing->{name} $thing->{uuid}"
+            $text = "Graph ".($thing->{name}||"~noname~")." ".($thing->{uuid}||"~nouuid~")
         }
         when ("Node") {
             my $inner = $thing->thing;
@@ -1253,7 +1339,7 @@ our $client; # client - low priority: sessions
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#codes")->{uuid}
+    return $webbery->find("#mach")->{uuid}
 }
 sub hello {
     my $mojo = shift;
@@ -1766,12 +1852,15 @@ sub fill_in_svg {
         if (ref $new->thing eq "Node" &&
             ref $new->thing->thing eq "HASH" && $new->thing->thing->{code}) {
             my $li = 0;
-            for my $line (split /\n/, $new->thing->thing->{code} ) {
+            my $code = $new->thing->thing->{code};
+            $code =~ s/\s+\Z//sgm;
+            $code =~ s/(?<=\n\n)\n+//sgm;
+            for my $line (split /\n/, $code) {
                 my ($ind) = $line =~ /^( +)/;
-                my $x = (length($ind || "")-4) * 10;
+                my $x = (length($ind || "")) * 10;
                 my $y = $li * 14;
 
-                push @elements, [ 'label', $x, $y, $line, {
+                unshift @elements, [ 'label', $x, $y, $line, {
                     id => "$oaid-l$li",
                 } ];
                 $li++;
