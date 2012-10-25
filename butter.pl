@@ -380,6 +380,7 @@ sub new { # name,
     $self->{nodes} = [];
     $main::graphs{$self->{name}} = $self;
     $self->{uuid} = main::make_uuid($self);
+    main::reg_object_uuid($self);
     return $self
 }
 sub name {
@@ -502,12 +503,14 @@ sub new { # graph => $graph,
     my @fields = main::tup($params{fields}); # detupalises?
     $self->{fields} = \@fields if @fields;
     $self->{thing} = $params{thing};
-    $self->{uuid} = main::make_uuid($self);
 
     if ($self->{thing} && $self->{thing} =~ /^#/) {
         $self->id($self->{thing});
         undef $self->{thing};
     }
+
+    $self->{uuid} = main::make_uuid($self);
+    main::reg_object_uuid($self);
         
     return $self
 }
@@ -829,13 +832,16 @@ our %objects_by_id;
 use UUID;
 use Scalar::Util 'weaken';
 sub make_uuid {
-    my $o = shift;
-    weaken $o;
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
     $stringuuid =~ s/^.+-(.+?)$/$1/;
-    $objects_by_id{$stringuuid} = $o;
     return $stringuuid;
+}
+sub reg_object_uuid {
+    my $o = shift;
+    weaken $o;
+    my $stringuuid = $o->{uuid} || die;
+    $objects_by_id{$stringuuid} = $o;
 }
 sub object_by_uuid {
     my $id = shift;
