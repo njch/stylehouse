@@ -316,21 +316,30 @@ should probably rejig the ui a bit now it's more stable to support...
 - leaving it necessary state to keep on truckin
 
 seeing things happening
-per time slice
-how to slice time?
 
-slice up code
- - apply some tweaks to chunking
- - add structure eg packages, sections etc
- - add subtler structure such as shrinking vast swathes
+the scope is for navigating through dimensions and aspects of program execution
+
+code becomes code graph
+ - artistic code structure abstractions like shrinking vast uglies
  - diagram/maps of code
-gvim hacks text file, changes slotted in to place
- - make copy of text, track chunk line numbers and use diff to cut down on processing
-thing get more graphy woohoo
+ - invent: click link in browser, gvim goes to the line of code
+
+gvim still hacks up text file, changes migrated into code graph
+ - needs to be visual if it's tricky or if user wants to
+ - this could stretch right down to git
+ - the whole user's interaction is an evolving tree of actions
+
+avoid changing line numbers
 
 insert break/dump points, run code as another entity
+
 need to have each sub log somewhere what it does
+
 then we have this huge shape of the program's execution
+ - look for patterns
+
+these patterns involve some data nature and some program nature
+
 we can look for places where svg gets linked to anything
 one butter creates another butter for increasing experiment
 
@@ -354,14 +363,19 @@ build with that a visual vocabulary
 use that to generate a noisy field that could be interpreted by four square orientations
 into four sequences of a comic
 all this kind of formulaicism
+if you see the images in different order is your brain effectively prepared differently
 
 looking at the screen vs not.
 may be something to experiment with.
 
-summarise and this little thing growing in note are a case of data massage
+summarise and this little thing growing in note() are a case of data massage
 from one set into a string various ways, pulling out extra bits of info
 or recursing deeper in, always with some limitation
 seems like the kind of thing to take care of easily somehow
+
+it's all about massaging data
+
+click click
 
 WORDS
 =cut
