@@ -576,15 +576,15 @@ sub new { # graph => $graph,
     my %params = @_;
     $self->{graph} = $params{graph}->{uuid};
 
+    $self->{uuid} = main::make_uuid();
+    main::reg_object_uuid($self);
+
     $self->{thing} = $params{thing};
     if ($self->{thing} && $self->{thing} =~ /^#/) {
         $self->id($self->{thing});
         undef $self->{thing};
     }
 
-    $self->{uuid} = main::make_uuid();
-    main::reg_object_uuid($self);
-        
     return $self
 }
 sub TO_JSON {
