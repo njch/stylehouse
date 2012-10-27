@@ -402,7 +402,7 @@ sub note {
             when ("CODE") {
                 return "CODE";
             }
-            when (/Node|Graph/) {
+            when (/Node|Graph|Travel/) {
                 if ($t->{uuid}) {
                     return ref($t)."=$t->{uuid}"
                 }
@@ -844,7 +844,6 @@ sub codes {
         push @{ $chunks[-1] }, $_;
     }
     my $codes = new Graph("codes");
-    my $parse = $codes->spawn("#aparse");
     my $i = 0;
     my $p = "main";
     my @fb;
@@ -855,7 +854,7 @@ sub codes {
         $etc{sub} = $1 if /^sub (\w+) {/;
         $etc{sub} = "mach $1" if /^mach_spawn\("#(\w+)", sub {/;
 
-        $parse->spawn({
+        $codes->spawn({
             code => $code,
             i => $i++,
             p => $p,
@@ -870,14 +869,26 @@ sub codes {
         push @fb, $code;
     }
     write_file("frankenbutter.pl", join "", @fb);
-
-    say "running frankbutter";
-unless ($0 =~ /frankenbutter/) {
-    exec "perl frankenbutter.pl";
-}
+    return $codes;
 }
 # }}}
-codes() unless $0 =~ /frankenbutter/;
+if ($0 =~ /frankenbutter/) {
+    exit; # ?
+    # start webbery on another port
+    # fork for test routines
+    # reload subroutines as butter hacks them up
+}
+else {
+    my $codes = codes();
+    if (my $pid = fork()) {
+        $webbery->spawn($codes)->id("#codegraph");
+        # start our own webbery, talk to frankenbutter
+    }
+    else {
+        say "  $$ exec'ing frankbutter.pl ...";
+        exec "perl frankenbutter.pl";
+    }
+}
 
 mach_spawn("#tbutt", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1342,18 +1353,22 @@ $webbery->spawn("#clients");
 
 # define the TOOLBAR
 $toolbar->link($webbery);
+if (my $cg = $webbery->find("#codegraph")) {
+    $toolbar->link($cg->thing);
+}
 for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail') {
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
     $toolbar->link($t);
 }
 
+
 our $client; # client - low priority: sessions
 
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#mach")->{uuid}
+    return $webbery->find("#codegraph")->thing->{uuid}
 }
 sub hello {
     my $mojo = shift;
@@ -1426,13 +1441,34 @@ sub examinate_graph {
 
     my $exam = new Graph('graph-exam');
     $exam = $exam->spawn("Graph exam");
-    $graph->map_nodes( sub {
-        $exam->spawn(shift);
-    } );
+
+    if ($graph->{name} eq "codes") {
+        my $byp = {};
+        $graph->map_nodes(sub {
+            my $n = shift;
+            my $p = $byp->{$n->{thing}->{p}} ||= [];
+            push @$p, $n;
+        });
+        while (my ($k, $v) = each %$byp) {
+            my $p = $exam->spawn($k);
+            my @ns = sort { $a->{thing}->{i} <=> $b->{thing}->{i} } @$v;
+            for my $n (@ns) {
+                if ($n->{thing}->{sub}) {
+                    $p->spawn($n->{thing}->{sub});
+                }
+            }
+        }
+    }
+    else {
+        $graph->map_nodes( sub {
+            $exam->spawn(shift);
+        } );
+    }
+
     return $exam;
 }
 
-sub track {
+sub track { # {{{
     my $id = shift;
 
 
@@ -1468,13 +1504,13 @@ sub track {
         }
     }
 
-    if ($webbery->{uuid} eq $id) {
+    if (home() eq $id) {
         push @$trail, [ "home" ];
         return;
     }
 
     push @$trail, [ "?" ]; # eg some mach generates a get_object call
-}
+} # }}}
 
 get '/object' => \&get_object;
 sub get_object { # OBJ
@@ -1498,7 +1534,6 @@ sub get_object { # OBJ
 
     my $object = object_by_uuid($id)
         || return $mojo->sttus("$id no longer exists!");
-    $self->spawn($object)->id('object');
 
     start_timer();
     my $status = "For ". summarise($object);
@@ -1516,6 +1551,7 @@ sub get_object { # OBJ
         return $mojo->sttus("don't like to objectify ".ref $object);
     }
 
+    $self->spawn($object)->id('object');
 
     my $viewed = find_latest_examination($self, $mojo, $client);
     $client->spawn($viewed)->id("#viewed") if $viewed;
@@ -1528,8 +1564,19 @@ sub get_object { # OBJ
     }
 
     if ($mode eq "c") {
-        $object->spawn("Hello"); # sprout limb
+        my $p = $object->linked();
+        unless ($p->thing =~ /Travel|Graph|Node|main/) {
+            die "no! ".Dump($p);
+        }
+        my $subr = $p->thing() . "::" . $object->thing();
+        my @notation = read_file('notation');
+        my $i = 0;
+        for (@notation) {
+            /'\Q$subr\E'/ && $i++
+        }
+        $object->spawn("$subr hit $i times"); # sprout limb
         $object = $viewed->thing->first->thing; # do it again
+        $self->linked("#object")->{thing} = $object;
     }
 
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
