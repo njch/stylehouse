@@ -871,6 +871,29 @@ sub codes {
     write_file("frankenbutter.pl", join "", @fb);
     return $codes;
 }
+sub short_codegraph {
+    my $codes = shift;
+    my $byp = {};
+    my $short = Graph->new("shortcodegraph")->spawn("root");
+    $codes->map_nodes(sub {
+        my $n = shift;
+        my $p = $byp->{$n->{thing}->{p}} ||= [];
+        push @$p, $n;
+    });
+    while (my ($k, $v) = each %$byp) {
+        my $p = $short->spawn($k);
+        my @ns = sort { $a->{thing}->{i} <=> $b->{thing}->{i} } @$v;
+        for my $n (@ns) {
+            if ($n->{thing}->{sub}) {
+                $p->spawn({
+                    sub => $k."::".$n->{thing}->{sub},
+                    origin => $n->{uuid},
+                });
+            }
+        }
+    }
+    return $short;
+}
 # }}}
 if ($0 =~ /frankenbutter/) {
     exit; # ?
@@ -880,8 +903,9 @@ if ($0 =~ /frankenbutter/) {
 }
 else {
     my $codes = codes();
+    my $short= short_codegraph($codes);
     if (my $pid = fork()) {
-        $webbery->spawn($codes)->id("#codegraph");
+        $webbery->spawn($short)->id("#codegraph");
         # start our own webbery, talk to frankenbutter
     }
     else {
@@ -1443,21 +1467,6 @@ sub examinate_graph {
     $exam = $exam->spawn("Graph exam");
 
     if ($graph->{name} eq "codes") {
-        my $byp = {};
-        $graph->map_nodes(sub {
-            my $n = shift;
-            my $p = $byp->{$n->{thing}->{p}} ||= [];
-            push @$p, $n;
-        });
-        while (my ($k, $v) = each %$byp) {
-            my $p = $exam->spawn($k);
-            my @ns = sort { $a->{thing}->{i} <=> $b->{thing}->{i} } @$v;
-            for my $n (@ns) {
-                if ($n->{thing}->{sub}) {
-                    $p->spawn($n->{thing}->{sub});
-                }
-            }
-        }
     }
     else {
         $graph->map_nodes( sub {
@@ -1568,13 +1577,10 @@ sub get_object { # OBJ
         unless ($p->thing =~ /Travel|Graph|Node|main/) {
             die "no! ".Dump($p);
         }
-        my $subr = $p->thing() . "::" . $object->thing();
         my @notation = read_file('notation');
         my $i = 0;
         for (@notation) {
-            /'\Q$subr\E'/ && $i++
         }
-        $object->spawn("$subr hit $i times"); # sprout limb
         $object = $viewed->thing->first->thing; # do it again
         $self->linked("#object")->{thing} = $object;
     }
@@ -1909,7 +1915,6 @@ sub fill_in_svg {
             id => "$oaid-c",
         } ];
 
-        #$label_set_etc{'font-weight'} = "bold" if $new->linked > 1;
         if (ref $new->thing eq "Node" &&
             ref $new->thing->thing eq "HASH" && $new->thing->thing->{code}) {
             my $li = 0;
@@ -1929,8 +1934,17 @@ sub fill_in_svg {
             $height = ($li+1) * 14;
         }
         else {
+            my %etc;
+            if ($new->linked > 2) {
+                $etc{'font-weight'} = "bold";
+            }
+            if ($new->thing->graph->name eq "shortcodegraph"
+                && ref $new->thing->thing ne "") {
+                $stuff = $new->thing->thing->{sub};
+            }
             push @elements, [ 'label', 0, 0, $stuff, {
                 id => "$oaid-l",
+                %etc,
             } ];
         }
 
