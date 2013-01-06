@@ -317,7 +317,7 @@ should probably rejig the ui a bit now it's more stable to support...
 
 seeing things happening
 
-the scope is for navigating through dimensions and aspects of program execution
+the scope is for navigating through dimensions and aspects of program being
 
 code becomes code graph
  - artistic code structure abstractions like shrinking vast uglies
@@ -342,9 +342,10 @@ these patterns involve some data nature and some program nature
 
 we can look for places where svg gets linked to anything
 one butter creates another butter for increasing experiment
+like an intellectual caterpillar slipping into the future
 
 so we need to automatically hack hooks into butter and execute it
-the hooks note whats happening
+the hooks note whats happening back to the past
 hopefully the program can be re-executed and happen exactly the same
 so we can go up to a point and hit pause
 simple
@@ -388,6 +389,11 @@ make them dispatch tables/graphs for get_object so we can start hacking on it fa
 get_object will get the object of stylehouse in to being
 
 life works through its means
+
+structures for structures. perhaps it wuld be more playful and fun and maybe even faster
+to build something for sheer graph gaming, then distill a stylehouse from what's possible
+to imitate in there. probably just an insightful exercise...
+
 WORDS
 =cut
 
@@ -404,7 +410,7 @@ sub note {
     my @a;
     my $splash;
     my $sply;
-    $sply = sub {
+    $sply = sub { # TODO refactor together the SOOMs
         my $t = shift;
         return '~undef~' if !defined $t;
         return "'$t'" if !ref $t;
@@ -1260,7 +1266,7 @@ sub order_link { # also greps for the spec $us
     return ()    
 }
 
-sub summarise { # SUM
+sub summarise { # SUM # SOOM
     my $thing = shift;
     my $text;
     given (ref $thing) {
