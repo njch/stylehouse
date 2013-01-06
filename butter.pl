@@ -377,6 +377,17 @@ it's all about massaging data
 
 click click
 
+make a tool for capturing the path from one point in the graph to another
+
+make a tool for drawing links
+
+get_object turns into a dispatcher
+
+make them dispatch tables/graphs for get_object so we can start hacking on it fast
+
+get_object will get the object of stylehouse in to being
+
+life works through its means
 WORDS
 =cut
 
@@ -863,7 +874,7 @@ sub codes {
 
         if ($etc{sub} && $etc{sub} !~ /note|DESTROY|summarise/) {
             my $notecode = "main::note('$p\:\:$etc{sub}', \@_);";
-            $code =~ s/(sub (\w+ )?{)/$1 $notecode/
+            $code =~ s/(sub (\w+ )?\{)/$1 $notecode/
                 || die "faile $code";
         }
         push @fb, $code;
@@ -1350,7 +1361,6 @@ mach_spawn("#reexamine", sub { # {{{
     my $exam = find_latest_examination($self, $mojo, $client)->thing;
     my $svg = $client->linked("#svg");
     my $reremo = goof($client, "+ #reremo {}");
-
     my @drawings = map {
         map {
             $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
@@ -1366,6 +1376,34 @@ mach_spawn("#reexamine", sub { # {{{
     return $mojo->drawings(@drawings);
 }); # }}}
 
+mach_spawn("#hits", sub { # {{{
+    my ($self, $mojo, $client) = @_;
+
+    my $exam = find_latest_examination($self, $mojo, $client)->thing;
+    my $svg = $client->linked("#svg");
+    my $reremo = goof($client, "+ #reremo {}");
+
+    my @notation = read_file('notation');
+    my $i = 0;
+    for (@notation) {
+        # totals
+    }
+
+    my @drawings = map {
+        map {
+            $_->[-1]->{class} .= " re".$_->[-1]->{id};
+            $reremo->{ $_->[-1]->{id} }++;
+            my $o = object_by_uuid($_->[-1]->{id});
+            my $total = $hits->{$o->thing->{sub}}
+        } grep { $_->[0] =~ /label/ }
+            @{ dclone($_)->{elements} }
+    } map { $_->{val}->[0] }
+    grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
+
+    return $mojo->drawings(@drawings);
+}); # }}}
+
+
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
     my $trail = $client->linked("#trail")->thing;
@@ -1380,7 +1418,7 @@ $toolbar->link($webbery);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
-for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail') {
+for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail', 'hits') {
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
     $toolbar->link($t);
@@ -1573,14 +1611,6 @@ sub get_object { # OBJ
     }
 
     if ($mode eq "c") {
-        my $p = $object->linked();
-        unless ($p->thing =~ /Travel|Graph|Node|main/) {
-            die "no! ".Dump($p);
-        }
-        my @notation = read_file('notation');
-        my $i = 0;
-        for (@notation) {
-        }
         $object = $viewed->thing->first->thing; # do it again
         $self->linked("#object")->{thing} = $object;
     }
