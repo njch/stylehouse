@@ -965,9 +965,13 @@ mach_spawn("#tbutt", sub { # {{{
     my ($ok, $notok, @blabs);
     push @blabs, { '...' => [] };
     for (@output) {
-        if (/^ok (\d+)/ && ++$ok || /^not ok (\d+)/ && ++$notok) {
-# in each forked process the oks will reiterate
+        if (/^ok (\d+)/) {
+            $ok++
         }
+        elsif (/^not ok (\d+)/) {
+            $notok++
+        }
+# in each forked process the oks will reiterate
         if (my ($d) = /^# (.+)$/) {
             push @blabs, { $d => [] };
             if ($d =~ /BEGIN fork\(\)/) {
