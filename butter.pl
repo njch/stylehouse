@@ -1391,16 +1391,31 @@ mach_spawn("#hits", sub { # {{{
 
     my @notation = read_file('notation');
     my $i = 0;
+    my $hits = {};
     for (@notation) {
-        # totals
+        my ($sub) = /^\s+'(.+?)'/;
+        $hits->{$sub}++;
     }
 
     my @drawings = map {
         map {
-            $_->[-1]->{class} .= " re".$_->[-1]->{id};
-            $reremo->{ $_->[-1]->{id} }++;
-            my $o = object_by_uuid($_->[-1]->{id});
-            my $total = $hits->{$o->thing->{sub}}
+            # add the number of hits beside the subroutine
+            my $label = $_;
+            if ($label->[3] =~ /::/) {
+                my $id = $label->[-1]->{id};
+                $label->[-1]->{class} .= " re".$id;
+                $reremo->{$id}++;
+
+                $label->[1] += 300;
+
+                my $total = $hits->{$label->[3]} || '0';
+                $label->[3] = "hit $total times";
+
+                $label
+            }
+            else {
+                ()
+            }
         } grep { $_->[0] =~ /label/ }
             @{ dclone($_)->{elements} }
     } map { $_->{val}->[0] }
