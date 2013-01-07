@@ -315,7 +315,15 @@ should probably rejig the ui a bit now it's more stable to support...
 - to deploy a new butter ui the new process requests to the old process to die
 - leaving it necessary state to keep on truckin
 
-seeing things happening
+seeing things happening:
+ lets make the get_object:
+   make drawing cats: drawings animations removals
+   gen, diff, fillin svg
+   collecting them things and clearing, statusing...
+ should be able to see these things happening in graph...
+ see the execution of get_object at all points
+ resume in there and interrogate data
+
 
 the scope is for navigating through dimensions and aspects of program being
 
@@ -393,6 +401,11 @@ life works through its means
 structures for structures. perhaps it wuld be more playful and fun and maybe even faster
 to build something for sheer graph gaming, then distill a stylehouse from what's possible
 to imitate in there. probably just an insightful exercise...
+
+we are all stylehouses. get to the point of freedom of expression where you're just applying styles.
+it's not the end, it's just the stylehouse. what then.
+
+
 
 WORDS
 =cut
