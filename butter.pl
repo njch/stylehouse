@@ -872,6 +872,9 @@ package main;
 sub mach_spawn {
     my $m = $machs->spawn(shift);
     $m->{thing} = shift;
+    if ($_[0] && $_[0] eq "toolbar") {
+        $toolbar->link($m);
+    }
     return $m
 }
 sub done_linked { 
@@ -1048,7 +1051,7 @@ mach_spawn("#tbutt", sub { # {{{
 
 
     get_object($mojo, $run->{uuid});
-}); # }}}
+}, "toolbar"); # }}}
 
 # {{{ the linkstash
 our %objects_by_id;
@@ -1420,7 +1423,7 @@ sub displow {
 mach_spawn("#tout", sub { #{{{
     my ($self, $mojo, $client) = @_;
     $mojo->drawings(Load("tout.yml"));
-});#}}}
+}, "toolbar");#}}}
 
 
 mach_spawn("#dsplay", sub { #{{{
@@ -1451,7 +1454,7 @@ mach_spawn("#reexamine", sub { # {{{
     grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
 
     return $mojo->drawings(@drawings);
-}); # }}}
+}, "toolbar"); # }}}
 
 mach_spawn("#notation", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1481,7 +1484,7 @@ mach_spawn("#notation", sub { # {{{
         $r->spawn($_);
     }
     get_object($mojo, $r->{uuid});
-}); # }}}
+}, "toolbar"); # }}}
 
 
 mach_spawn("#hits", sub { # {{{
@@ -1524,7 +1527,7 @@ mach_spawn("#hits", sub { # {{{
     grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
 
     return $mojo->drawings(@drawings);
-}); # }}}
+}, "toolbar"); # }}}
 
 
 mach_spawn("#dump_trail", sub { # {{{
@@ -1532,7 +1535,7 @@ mach_spawn("#dump_trail", sub { # {{{
     my $trail = $client->linked("#trail")->thing;
     say join "", map { 'restep("'.join('", "', @$_).'");'."\n" } @$trail;
     return $mojo->drawings([status => "dumped trail to console"]);
-}); # }}}
+}, "toolbar"); # }}}
 
 
 
@@ -1543,14 +1546,10 @@ $toolbar->link($webbery);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
-for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail', 'hits', 'notation') {
-    my $t = $webbery->find("#mach")->linked("#".$tid);
-    $t || die "no such mach: #$tid";
-    $toolbar->link($t);
-}
 
 
-our $client; # client - low priority: sessions
+our $client; # TODO low priority though is sessions
+# TODO also is stateless data access functions, so butter can interrogate frankenbutter
 
 use Mojolicious::Lite;
 get '/hello' => \&hello;
@@ -1577,7 +1576,7 @@ sub hello {
     });
 
     $mojo->render(json => [object => { id => home() }]);
-};
+}
 my $findable_y = 20;
 get '/width' => sub {
     my $mojo = shift;
