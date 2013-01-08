@@ -1647,8 +1647,13 @@ attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
 
     my $trail = $client->linked("#trail")->thing;
 
+    if (home() eq $id && @$trail == 0) {
+        push @$trail, [ "home" ];
+        return;
+    }
+
     for my $n ($toolbar->linked()) {
-        if ($n->{uuid} eq $id) { # TODO if this is actually home(), say home
+        if ($n->{uuid} eq $id) {
             push @$trail, [ "toolbar", summarise($n) ];
             return;
         }
