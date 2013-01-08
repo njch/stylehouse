@@ -405,7 +405,15 @@ to imitate in there. probably just an insightful exercise...
 we are all stylehouses. get to the point of freedom of expression where you're just applying styles.
 it's not the end, it's just the stylehouse. what then.
 
+we want to find patterns in the notation:
+ everything under a certain call becomes a map
+ apply the map to another certain call, if things are relatively the same then alright!
+that would take a lot of coding but not much user clicking around time
 
+code need tons of intellect put into it or it can be more open to the user's intellect
+
+need a do_stuff() call with prgram graph limb, which calls anything cmplicated loaed there
+as a mach
 
 WORDS
 =cut
@@ -413,12 +421,59 @@ WORDS
 our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
+our $machs = $webbery->spawn("#mach");
+our $port = "3000";
 our $G;
 our $TEST;
 use File::Slurp 'append_file';
 `cat /dev/null > notation`;
 
-sub note {
+our $P = new Graph('program');
+
+{
+    my $go = $P->spawn("#get_object");
+    $go->spawn("#01");
+}
+
+sub pointilise {
+    my $point = shift;
+    my @path = split '/', $point;
+    my $p = $P->find("#".shift @path);
+    $p = $p->linked("#".shift @path) while @path;
+    return $p;
+}
+sub attach_stuff {
+    my ($p, $mach) = @_;
+    my $point = pointilise($p);
+    $point->link($mach);
+    say "attached $mach->{id} to $p";
+}
+sub detach_stuff {
+    my ($p, $mach) = @_;
+    my $point = pointilise($p);
+    unless (ref $mach) {
+        $mach = $machs->linked("$mach");
+    }
+    say "doing detach of $mach->{id} to $p";
+    $point->unlink($mach);
+sub do_stuff {
+    my ($p, @a) = @_;
+    my $point = pointilise($p);
+    my @machs = grep { $_->linked($machs) } $point->linked();
+    say " machs at $p: ".join (", ", map { $_->id } @machs);
+    my $plan = {};
+    for my $m (@machs) {
+        say " running mach ". $m->id;
+        say "args @a";
+        my $r = $m->thing->(@a);
+        if (ref $r eq "HASH" && $r->{changeofplan}) {
+            $plan = $r; # TODO later geometry testing will make haphazardness like so okay
+        }
+    }
+    return $plan;
+}
+
+sub note { # {{{
     my $args = \@_;
     my @a;
     my $splash;
@@ -468,7 +523,7 @@ sub note {
     }
     my $ind = join "", (" ")x$i;
     append_file("notation", $ind. shift(@a)."\t". join(", ", @a) ."\n");
-}
+} # }}}
 
 
 our %graphs; # {{{
@@ -813,13 +868,12 @@ sub travel {
 package main;
 #}}}
 
-my $mach = $webbery->spawn("#mach");# {{{
+# {{{
 sub mach_spawn {
-    my $m = $mach->spawn(shift);
+    my $m = $machs->spawn(shift);
     $m->{thing} = shift;
     return $m
 }
-
 sub done_linked { 
     my ($g, $l) = @_;
     if ($l->{0}->graph ne $l->{1}->graph) {
@@ -926,7 +980,7 @@ sub short_codegraph {
 }
 # }}}
 if ($0 =~ /frankenbutter/) {
-    exit; # ?
+    $port = "3001";
     # start webbery on another port
     # fork for test routines
     # reload subroutines as butter hacks them up
@@ -1399,6 +1453,37 @@ mach_spawn("#reexamine", sub { # {{{
     return $mojo->drawings(@drawings);
 }); # }}}
 
+mach_spawn("#notation", sub { # {{{
+    my ($self, $mojo, $client) = @_;
+
+    my $r = new Graph("notation")->spawn("#root");
+    my @notation = read_file('notation');
+    my $l = 0;
+    my $ind_limit = 5;
+    my @notes;
+    for (@notation) {
+        s/^(\s+)/('.') x length($1)/e;
+        $l++;
+        if (length($1) >= $ind_limit) {
+            unless ($notes[-1] =~ /etc/) {
+                push @notes, "$l ".((".") x $ind_limit)."etc 0"
+            }
+            my ($c) = $notes[-1] =~ /etc (\d+)/;
+            $c++;
+            $notes[-1] =~ s/etc \d+/etc $c/;
+            say $notes[-1];
+        }
+        else {
+            push @notes, $l." ".$_;
+        }
+    }
+    for (@notes) {
+        $r->spawn($_);
+    }
+    get_object($mojo, $r->{uuid});
+}); # }}}
+
+
 mach_spawn("#hits", sub { # {{{
     my ($self, $mojo, $client) = @_;
 
@@ -1449,6 +1534,8 @@ mach_spawn("#dump_trail", sub { # {{{
     return $mojo->drawings([status => "dumped trail to console"]);
 }); # }}}
 
+
+
 $webbery->spawn("#clients");
 
 # define the TOOLBAR
@@ -1456,7 +1543,7 @@ $toolbar->link($webbery);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
-for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail', 'hits') {
+for my $tid ('tout', 'tbutt', 'reexamine', 'dump_trail', 'hits', 'notation') {
     my $t = $webbery->find("#mach")->linked("#".$tid);
     $t || die "no such mach: #$tid";
     $toolbar->link($t);
@@ -1468,7 +1555,7 @@ our $client; # client - low priority: sessions
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#codegraph")->thing->{uuid}
+    return $webbery->find("#notation")->{uuid}
 }
 sub hello {
     my $mojo = shift;
@@ -1553,14 +1640,15 @@ sub examinate_graph {
     return $exam;
 }
 
-sub track { # {{{
-    my $id = shift;
+attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
+    my ($self, $mojo, $client) = @_;
 
+    my $id = $self->linked("#id")->thing;
 
     my $trail = $client->linked("#trail")->thing;
 
     for my $n ($toolbar->linked()) {
-        if ($n->{uuid} eq $id) {
+        if ($n->{uuid} eq $id) { # TODO if this is actually home(), say home
             push @$trail, [ "toolbar", summarise($n) ];
             return;
         }
@@ -1595,7 +1683,32 @@ sub track { # {{{
     }
 
     push @$trail, [ "?" ]; # eg some mach generates a get_object call
-} # }}}
+})); # }}}
+
+
+# TODO another toolbar mach to kick this one off
+# TODO then cont is to grab the notation slice indicated by ids
+#      make a pattern to reapply where the user wants
+#      let the user select specify acceptable irregularities
+#      there'll be lots of emergent code patterns with only variables changing
+mach_spawn("#clickcapture", sub {
+    my ($n, $cont, $self, $mojo, $client) = @_;
+
+    $client->spawn({ n => $n, cont => $cont, ids => [] }, "#clickcap");
+
+    attach_stuff("get_object/01", mach_spawn("#clickcapture_click", sub { # {{{
+        my ($self, $mojo, $client) = @_;
+        my $id = $self->linked("#id")->thing;
+        my $cap = $client->graph->find("#clickcap")->thing;
+        my $ids = $cap->{ids};
+        push @$ids, $id;
+        if (@$ids >= $cap->{n}) {
+            detach_stuff("get_object/01", "clickcapture_click"); # TODO detach_myself() in machworld
+            $cap->{cont}->($ids, @_);
+        }
+    }));
+});
+# }}}
 
 get '/object' => \&get_object;
 sub get_object { # OBJ
@@ -1609,9 +1722,6 @@ sub get_object { # OBJ
     my $mode = $1 || "b";
 
     defined $client || return $mojo->sttus("hit F5!");
-
-    track($id);
-
     my $self = $client->spawn("#get_objection");
     $self->in_field(sub {
         shift->spawn($id)->id('id');
@@ -1620,6 +1730,16 @@ sub get_object { # OBJ
     my $object = object_by_uuid($id)
         || return $mojo->sttus("$id no longer exists!");
 
+
+
+    my $r = do_stuff('get_object/01', $self, $mojo, $client);
+    if ($r->{changeofplan} && $r->{changeofplan} eq "return") {
+        # TODO better than this
+        return;
+    }
+
+
+
     start_timer();
     my $status = "For ". summarise($object);
     if (ref $object eq "Graph") {
@@ -1627,7 +1747,7 @@ sub get_object { # OBJ
         $object = examinate_graph($object);
     }
     elsif (ref $object eq "Node") {
-        if ($mach->linked($object)) {
+        if ($machs->linked($object)) {
             return $object->thing->($object, $mojo, $client);
         }
     }
@@ -2109,7 +2229,7 @@ use warnings;
 return 1 if caller;
 use Mojo::Server::Daemon;
 my $daemon = Mojo::Server::Daemon->new;
-$daemon->listen(['http://*:3000']);
+$daemon->listen(['http://*:'.$port]);
 $daemon->run;
 __DATA__
 
