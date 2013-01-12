@@ -61,22 +61,25 @@ text file. swampy bits could be shrank up relative to important bits.
 
 =head1 ALGORITHMS
 
-so eventually the Graph/Node infrastructure code will be represented on itself
-so hacks can be loaded in without impurifying the basic apparition of IT.
-those hacks, being datastructure concerns, should be compiled back into CODEs
-the system tests the new tech then just changes some links to hop over to it
+data flows through algorithms
 
-I suppose this means sucking in the Graph/Node code and making it an algorithm
-graph, hacking up by rules, dumping it back into code to run it
+an algorithm is a bunch of machine-thinking-ideas graph
+ which can be the unit of testability
+ testable means the nature of what's inside can be experimented upon
+ to optimise it and the surrounding program
 
-anyway data flows through algorithms, each datum shouldn't invoke the whole
-shebang once for itself, resources should be bundled together where possible
-for instance finding files as we are and linking them to their directory,
-could be done with a hash much faster than using find() for what it really means
-so it seems the basic Graph/Node/Traveller stuff is supplanted, nay, hot-hacked
-into line with new graphy rules. graph system holds graph, creates another
-graph system, etc. great. so it needs to hack up perl code pretty much first...
-streaming algorithms that can make shortcuts for big datasets.
+all the algorithms are just graphs, into which complexity can be injected.
+like passing a closure but without making code exponentially ugly.
+
+so at a point of the program there could be yay many algorithms working together like so
+with some complicated by some need to work together just so
+it's a tangle of machines and thinking and ideas layered on top of each other graphically
+
+probably we would find that the pattern of node linkage was always very simple
+and could be simulated behind link() etc API with something faster
+
+streaming algorithms that can make shortcuts for big datasets
+and resources with timing etc realities
 
 the question is how to express this in graph so it scales...
 nodes could store links on themselves if it made sense...
@@ -95,7 +98,6 @@ We're using different Graph objects to get a field effect... a complete set
 of links without neighbour noise
 
 we should be able to say this part of the graph is now a field...
-a field might be manifested in UI as a subselection of some songs
 if an algorithm is entropied by the limit of the field, this is shown
     as a bulge or something, somewhere
 links to within from outside and vice versa should be seen
@@ -104,21 +106,12 @@ so is creating a field over nodes cloning them? with backlinking?
 perhaps you create the selection first then say clone
 perhaps something can slither out of the way, of course it can...
 
-all the algorithms are just graphs, into which complexity can be injected.
-
 So there's usually just one graph per App
 App would branch away its various data but it's one bunch of links
 a perl program in this new world would be more like a daemon serving
 the illusion of several Apps and whatever they need, down to the existing tech
 
-linking more in a graph means node linkage
-linking an alien object means it is put in a node and the node is linked in
-the node should be appropriately transparent:
-    ->links() for eg is a node method, non-node method calls are passed
-    through the node so $G is set up for any graphy business the object wants
-
-that's lies of course because all the stuff is nothing to do with lexical
-scopes and method calls anymore but floatilla of algorithms and junk
+but floatilla of algorithms and junk
 
 each node in the subset could be linked to the original in secret way
 (if a query asked it could traverse back into the original graph)
@@ -126,33 +119,8 @@ once we have subsets carved out we can run them into algorithms easier
 
 there's kind of a turf concept going on... various customs for travellers...
 
-case study of different graphs, as a flow diagram:
-    run a graph query
-    figure out how to SVG the results
-      - sorting branches
-      - spacing things out...
-    diff that SVG <-> user's SVG
-    drawing instructions for the user's SVG canvas
+now we're using IDs to find things in closed circuits of links...
 
-we're almost up to here... not spacing things out though
-
-=cut
-
-
-=head1 FIELD IT OUT
-
-fields, :field, whatever, could speed things up by partitioning the various
-arrays of nodes. a thing in one field would travel in its own field first,
-then outwards... The Field is given by links...
-the syntax for dealing with this machine needs to imply the sanest
-dont forget this should be the simplest incantation of "fields", turns into
-all sorts of contextuality the further you go up the pyramid...
-
-perhaps this can be thought of as an experiment to determine the nature of field
-a field is the scope of determinism in existence
-
-so at all points in time the determinator deals with things from several fields
-at once, some active instructioney things and some passive data
 =cut
 
 =head1 HMM
@@ -165,18 +133,6 @@ complexity is just increasing luxury erupting on top
 
 I believe I am sewing mental dischord sometimes but I am working it okay
 
-nice thought the floatilla of apparatus. the junk no longer lines of code.
-code would still exist but in lives more like formulas and equations.
-equate to what the user wants.
-the world of graph could be shoved into xml if need be.. maybe even a YAML
-notation would be worth working out soon:
- - G(exam)
-   - {node}
-   - {node}
-anyway IDs would be key there... UUIDs I guess. thing would have to know
-what the incredibly unlikely collision would feel like...
-"collisions" or just free association, would be useful for healthy chaos if
-the system could handle it.
 entropy can't be explained, the teacher will go off on tangent after tangent,
 while the student gets more and more full of unresolving notionettes.
 
@@ -187,51 +143,32 @@ revelation 1 is links-on-objects.
 r1 is to get a graph of the codey rules leading to r2
 r1 holds objects to represent itself in an extensible manner
 
-extensible like post-linked hooks or rules about how and what can be overlaid
-on the simplest description of what's going on.
-
-for any function there's a physical medium/machinery for data flow
-on top of that something says "this is this kind of idea"
+for any function there's a physical medium/machinery for data flow and action
+on top of that something says "this is this kind of idea and why"
 and the idea itself is applied to the machinery it will effect
 
-so we want graphs of objects which are:
 machinery (for data flow)
 thinking (on the machinery)
 ideas (what stuff is for)
-data (alive!)
 
 so ideas need to cosy up to machinery real nicely, thinking could get complicated adapting things
 (had gone on a tangent here) so through their shared ideas (and/or via thinking) different machinery can work together.
-there might be an ambient idea realiser in r2 pattern matching... like how ideas look for reality to improve on
+there might be an ambient idea realiser (optimisation ideas...) in r2 pattern matching...
+like how ideas look for reality to improve on
 
 concurrent graph pattern matching needed...
 pattern matching means a chunk of graph exists, for example execution is at this point about this kind of machinery/data/etc...
 
-so lets categorise some function...
-everything in r1 is machine and data, even the pattern matcher.
-everything r2 is r1 data.
-execution in r1 is a queue of unresolved data flows.
-
 argumentative language is machinery, which invokes ideas through fractured thinking.
 
-so the syncing music machine graph has a "usb filesystem" (or something) (linked to the idea) and music syncing gear.
-the usb fs object is inherited from syncing music, usb trouble is handled, action then allowed by sycing music
-
 so we needa take data to make machines to make thinking and ideas and more graph computer complexity.
-
-the graph computer is something... takes pattern matches about the identity of the objects, does stuff
 
 machine says take this data, munge it like so, put it here.
 
 there's a machine around the machine, the execution environ, where data is looked for and dumped out.
 in this environ there's arms and eyeballs protruding in on the swarming machines.
 
-r1 code implements:
-a link-on-objects graph
-all that search stuff that works already...
-dimensionality of runtime variables (the graph) vs coded functions sticking together (also graph)
-
-hmm like ideas get more beautifully meaningful-per-word, the oil rig of r2 dangles increasingly greasey code down to perl
+hmm like ideas get more beautifully meaningful-per-word, the rig of r2 dangles increasingly greasey code down to perl
 
 trying to see the shape of things where code becomes machine! ah long lost reality.
 
