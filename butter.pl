@@ -415,6 +415,39 @@ code need tons of intellect put into it or it can be more open to the user's int
 need a do_stuff() call with prgram graph limb, which calls anything cmplicated loaed there
 as a mach
 
+=head1 singularity X
+
+It's made by itself
+
+It's another graph infrastructure, called r2, made by compiling hacks and stuff held in an r1 graph.
+
+Changes to how r2 graph infrastructure works becomes r3, tested from r2 until it's safe to hop up to it.
+
+the $P graph is a table of contents for the program
+
+hacks are expressed as machs attached to the $P graph
+
+the $E graph is execution state/history
+ a call stack down to a point
+ pointers to dead graph etc.
+ a way to pause, fork, change, resume continuously as a sexy debugging process
+
+I suppose within the $E flow will be various entropy-related forces of execution
+
+when compiling r2:
+the machs are coded into place as subroutines (via the $E state machine)
+there'll be more $P hooked gear for doing whatever complicated stuff comes along
+  but it'll be more transient, eg some function needs to tidyup at some point
+
+a case of tidyup is m.hits being cleared from the screen when something else happens
+each hit counter is supposedly relative to the sub label, so perhaps that could be
+found again and realigned or not found and removed
+
+currently we have some points of r1 looking up machs to run like hooks
+this is slow but relatively brief until r2 takes over
+
+also the $U graph, stuff the user is doing
+
 WORDS
 =cut
 
@@ -429,6 +462,9 @@ use File::Slurp 'append_file';
 `cat /dev/null > notation`;
 
 our $P = do {
+# TODO eventually everything beyond the r1 Graph/Node/main stuff will be built up here
+# then Graph/link will not refer to r1 Graph/link but r2 Graph/link which is generated
+#   by conplications in G(program), which is run on r1
     my $P = new Graph('program');
     for (qw{
         Graph/link/done
