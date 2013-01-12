@@ -428,19 +428,42 @@ our $TEST;
 use File::Slurp 'append_file';
 `cat /dev/null > notation`;
 
-our $P = new Graph('program');
+our $P = do {
+    my $P = new Graph('program');
+    for (qw{
+        Graph/link/done
+        Graph/unlink/deleted_link
+        get_object/01
+        }) {
+        my @path = split '/';
+        my $pathmake;
+        $pathmake = sub {
+            my ($from, @path) = @_;
+            my $next = shift @path;
+            my $already = ref $from eq "Graph" ? $from->find('#'.$next) : $from->linked('#'.$next);
+            $from = $already || $from->spawn("#". $next);
+            $pathmake->($from, @path) if @path;
+        };
+        $pathmake->($P, @path);
+    }
+    $P
+};
 
-{
-    my $go = $P->spawn("#get_object");
-    $go->spawn("#01");
-}
-
+my $pointilisecache = {}; # TODO in the future this would be a self-optimisation
 sub pointilise {
     my $point = shift;
-    my @path = split '/', $point;
-    my $p = $P->find("#".shift @path);
-    $p = $p->linked("#".shift @path) while @path;
-    return $p;
+    $pointilisecache->{$point} ||= do {
+        my @path = split '/', $point;
+        my $next = shift @path;
+        my $p = $P->find("#".$next);
+        $p or die "no such $next";
+        while (@path) {
+            $next = shift @path;
+            $p = $p->linked("#".$next);
+            $p or die "no such $next";
+        }
+        $p;
+    };
 }
 sub attach_stuff {
     my ($p, $mach) = @_;
@@ -456,8 +479,13 @@ sub detach_stuff {
     }
     say "doing detach of $mach->{id} to $p";
     $point->unlink($mach);
+}
 sub do_stuff {
     my ($p, @a) = @_;
+    unless ($P) {
+        say "P graph setup phase";
+        return
+    };
     my $point = pointilise($p);
     my @machs = grep { $_->linked($machs) } $point->linked();
     say " machs at $p: ".join (", ", map { $_->id } @machs);
@@ -467,11 +495,12 @@ sub do_stuff {
         say "args @a";
         my $r = $m->thing->(@a);
         if (ref $r eq "HASH" && $r->{changeofplan}) {
-            $plan = $r; # TODO later geometry testing will make haphazardness like so okay
+            $plan = $r; # TODO multiplicity clobbered: geometry testing will make the haphazard okay
         }
     }
     return $plan;
 }
+
 
 sub note { # {{{
     my $args = \@_;
@@ -555,7 +584,7 @@ sub link {
         val => [@val],
     };
     push @{$self->{links}}, $l;
-    main::done_linked($self, $l);
+    main::do_stuff('Graph/link/done', $self, $l);
 }
 sub unlink {
     my ($self, @to_unlink) = @_;
@@ -576,7 +605,7 @@ sub unlink {
             my $name = $links->[$i];
             my $l = splice @$links, $i, 1;
             delete $to_unlink{$name};
-            main::done_unlinked($self, $l);
+            main::do_stuff('Graph/unlink/deleted_link', $self, $l);
             return unless keys %to_unlink;
         }
     }
@@ -868,8 +897,7 @@ sub travel {
 package main;
 #}}}
 
-# {{{
-sub mach_spawn {
+sub mach_spawn { # {{{
     my $m = $machs->spawn(shift);
     $m->{thing} = shift;
     if ($_[0] && $_[0] eq "toolbar") {
@@ -877,17 +905,19 @@ sub mach_spawn {
     }
     return $m
 }
-sub done_linked { 
+attach_stuff("Graph/link/done", mach_spawn("#graph_interlinkage", sub {
     my ($g, $l) = @_;
     if ($l->{0}->graph ne $l->{1}->graph) {
         $l->{1}->another_graph($l->{0}->graph->{uuid});
     }
-}
-sub done_unlinked {
+}));
+attach_stuff("Graph/unlink/deleted_link", mach_spawn("#unlink_sanitycheck", sub {
     my ($g, $l) = @_;
-    # could check that $l indended at $n->unlink get $g->unlinked (here)
+    # TODO could check that $l intended at $n->unlink gets $g->unlinked (here)
+    # TODO for that we'd need to look up the $E graph until we found the $P Node/unlink call
+    # TODO this sub is doing nothing, it's sorta too late to check the sanity of the unlink
     die "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
-} # }}}
+})); # }}}
 
 mach_spawn("#filesystem", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1587,7 +1617,8 @@ get '/width' => sub {
     $mojo->render(json => "Q");
 };
 
-sub draw_findable {
+sub draw_findable { # TOOLBAR
+    # TODO this should be just another thing in webbery...
     my ($self, $mojo, $client) = @_;
     my $findable_y = $findable_y;
     my ($width) = $client->linked("#width")->thing;
