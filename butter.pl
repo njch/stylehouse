@@ -380,10 +380,11 @@ a case of tidyup is m.hits being cleared from the screen when something else hap
 each hit counter is supposedly relative to the sub label, so perhaps that could be
 found again and realigned or not found and removed
 
-currently we have some points of r1 looking up machs to run like hooks
-this is slow but relatively brief until r2 takes over
-
 also the $U graph, stuff the user is doing
+
+but lets not rush into recompiling/hardcoding complications yet
+lets make the code for complications faster, caching them into perl data from graph masters
+then get on with USING complixity to enhance enhance etc
 
 WORDS
 =cut
@@ -398,7 +399,7 @@ our $TEST;
 use File::Slurp 'append_file';
 `cat /dev/null > notation`;
 
-our $P = do {
+our $P = do { # {{{
 # TODO eventually everything beyond the r1 Graph/Node/main stuff will be built up here
 # then Graph/link will not refer to r1 Graph/link but r2 Graph/link which is generated
 #   by conplications in G(program), which is run on r1
@@ -422,30 +423,30 @@ our $P = do {
     $P
 };
 
-my $pointilisecache = {}; # TODO in the future this would be a self-optimisation
+my $todo_per_point_cache = {};
 sub pointilise {
     my $point = shift;
-    $pointilisecache->{$point} ||= do {
-        my @path = split '/', $point;
-        my $next = shift @path;
-        my $p = $P->find("#".$next);
+    my @path = split '/', $point;
+    my $next = shift @path;
+    my $p = $P->find("#".$next);
+    $p or die "no such $next";
+    while (@path) {
+        $next = shift @path;
+        $p = $p->linked("#".$next);
         $p or die "no such $next";
-        while (@path) {
-            $next = shift @path;
-            $p = $p->linked("#".$next);
-            $p or die "no such $next";
-        }
-        $p;
-    };
+    }
+    return $p;
 }
 sub attach_stuff {
     my ($p, $mach) = @_;
+    delete $todo_per_point_cache->{$p};
     my $point = pointilise($p);
     $point->link($mach);
     say "attached $mach->{id} to $p";
 }
 sub detach_stuff {
     my ($p, $mach) = @_;
+    delete $todo_per_point_cache->{$p};
     my $point = pointilise($p);
     unless (ref $mach) {
         $mach = $machs->linked("$mach");
@@ -459,20 +460,29 @@ sub do_stuff {
         say "P graph setup phase";
         return
     };
-    my $point = pointilise($p);
-    my @machs = grep { $_->linked($machs) } $point->linked();
-    say " machs at $p: ".join (", ", map { $_->id } @machs);
+
+    my $todo_cached = $todo_per_point_cache->{$p};
+    my @machs;
+    if (defined $todo_cached) {
+        @machs = @$todo_cached;
+    }
+    else {
+        my $point = pointilise($p);
+        @machs = grep { $_->linked($machs) } $point->linked();
+        $todo_per_point_cache->{$p} = [@machs];
+    }
+
     my $plan = {};
     for my $m (@machs) {
-        say " running mach ". $m->id;
-        say "args @a";
+#        say " running mach ". $m->id;
+#        say "args @a";
         my $r = $m->thing->(@a);
         if (ref $r eq "HASH" && $r->{changeofplan}) {
             $plan = $r; # TODO multiplicity clobbered: geometry testing will make the haphazard okay
         }
     }
     return $plan;
-}
+} # }}}
 
 
 sub note { # {{{
