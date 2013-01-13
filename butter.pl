@@ -290,6 +290,7 @@ one butter creates another butter for increasing experiment
 like an intellectual caterpillar slipping into the future
 
 so we need to automatically hack hooks into butter and execute it
+
 the hooks note whats happening back to the past
 hopefully the program can be re-executed and happen exactly the same
 so we can go up to a point and hit pause
@@ -342,6 +343,10 @@ to imitate in there. probably just an insightful exercise...
 we are all stylehouses. get to the point of freedom of expression where you're just applying styles.
 it's not the end, it's just the stylehouse. what then.
 
+
+
+=head1 FOURTH
+
 we want to find patterns in the notation:
  everything under a certain call becomes a map
  apply the map to another certain call, if things are relatively the same then alright!
@@ -349,16 +354,34 @@ that would take a lot of coding but not much user clicking around time
 
 code need tons of intellect put into it or it can be more open to the user's intellect
 
-need a do_stuff() call with prgram graph limb, which calls anything cmplicated loaed there
-as a mach
+=head2 COMPLICATIONS
 
-=head1 singularity X
+do_stuff() takes a $P-rogram graph limb, calls mach hooked in there
 
-It's made by itself
+they can mess with the nature of what calls them
+messing with the caller is hacked in right now cause what calls them isn't graphy algorithm yet
 
-It's another graph infrastructure, called r2, made by compiling hacks and stuff held in an r1 graph.
+eventually the complication would be an algorithm complete with how to mess with the caller,
+etc etc. and of course sanity/test cases...
 
-Changes to how r2 graph infrastructure works becomes r3, tested from r2 until it's safe to hop up to it.
+so eventually there'd be a whole lot of things complicating the Graph/Node infrastructure
+until its nature is juicy enough to do everything we want to do with it
+
+tempting to say it would rewrite itself in perl with less hooking...
+its actions would have to be able to be in $E if bug chasing got down to it
+tracking calls beyond eg getlinks() is a waste of time, except for sometimes maybe
+
+it's a computer mind that can be forked, tested and suddenly begin real work on real data
+
+a lot of short term complications will be, for doing stuff through time, like later_id_remover()
+which is where making things algorithms can make things more semantically simple
+cause then they can be stretched out through time with obviousness
+
+=head2 REAL DATA
+
+some user input etc. should be saved into yaml datasheets.
+
+=head2 ANYWAY
 
 the $P graph is a table of contents for the program
 
@@ -371,18 +394,8 @@ the $E graph is execution state/history
 
 I suppose within the $E flow will be various entropy-related forces of execution
 
-when compiling r2:
-the machs are coded into place as subroutines (via the $E state machine)
-there'll be more $P hooked gear for doing whatever complicated stuff comes along
-  but it'll be more transient, eg some function needs to tidyup at some point
+also the $U graph, stuff the user is doing?
 
-a case of tidyup is m.hits being cleared from the screen when something else happens
-each hit counter is supposedly relative to the sub label, so perhaps that could be
-found again and realigned or not found and removed
-
-also the $U graph, stuff the user is doing
-
-but lets not rush into recompiling/hardcoding complications yet
 lets make the code for complications faster, caching them into perl data from graph masters
 then get on with USING complixity to enhance enhance etc
 
