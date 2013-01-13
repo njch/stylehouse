@@ -407,6 +407,7 @@ our $P = do { # {{{
     for (qw{
         Graph/link/done
         Graph/unlink/deleted_link
+        get_object/changing_object
         get_object/01
         }) {
         my @path = split '/';
@@ -1447,24 +1448,28 @@ mach_spawn("#dsplay", sub { #{{{
     my $begin = $dump->find("#find") || $dump;
     get_object($mojo, $begin->{uuid});
 });#}}}
-
 mach_spawn("#reexamine", sub { # {{{
     my ($self, $mojo, $client) = @_;
 
     my $exam = find_latest_examination($self, $mojo, $client)->thing;
     my $svg = $client->linked("#svg");
-    my $reremo = goof($client, "+ #reremo {}");
+    my $remove_later = {};
     my @drawings = map {
         map {
             $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
+
             $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
-            $_->[-1]->{class} .= " re".$_->[-1]->{id};
-            #            $_->[0] eq "label" && die "woohoo!";
-            $reremo->{ $_->[-1]->{id} }++;
+
+            my $classid = $_->[-1]->{id}."_reexamine";
+            $_->[-1]->{class} .= " $classid";
+            $remove_later->{$classid}++;
+
             $_
         } @{ dclone($_)->{elements} }
     } map { $_->{val}->[0] }
     grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
+
+    later_id_remover("reexamine", keys %$remove_later);
 
     return $mojo->drawings(@drawings);
 }, "toolbar"); # }}}
@@ -1487,7 +1492,6 @@ mach_spawn("#notation", sub { # {{{
             my ($c) = $notes[-1] =~ /etc (\d+)/;
             $c++;
             $notes[-1] =~ s/etc \d+/etc $c/;
-            say $notes[-1];
         }
         else {
             push @notes, $l." ".$_;
@@ -1505,7 +1509,7 @@ mach_spawn("#hits", sub { # {{{
 
     my $exam = find_latest_examination($self, $mojo, $client)->thing;
     my $svg = $client->linked("#svg");
-    my $reremo = goof($client, "+ #reremo {}");
+    my $remove_later = {};
 
     my @notation = read_file('notation');
     my $i = 0;
@@ -1521,8 +1525,9 @@ mach_spawn("#hits", sub { # {{{
             my $label = $_;
             if ($label->[3] =~ /::/) {
                 my $id = $label->[-1]->{id};
-                $label->[-1]->{class} .= " re".$id;
-                $reremo->{$id}++;
+                my $classid = $id."_hits";
+                $label->[-1]->{class} .= " $classid";
+                $remove_later->{$classid}++;
 
                 $label->[1] += 300;
 
@@ -1539,9 +1544,28 @@ mach_spawn("#hits", sub { # {{{
     } map { $_->{val}->[0] }
     grep { $_->{1}->{graph} eq $exam->{uuid} } $svg->links;
 
+    later_id_remover("hits", keys %$remove_later);
+
     return $mojo->drawings(@drawings);
 }, "toolbar"); # }}}
 
+sub later_id_remover {
+    my ($from, @ids) = @_;
+
+    my $detach_us = sub {};
+
+    my $us = mach_spawn("#tidyup_$from", sub {
+        my ($self) = @_;
+        my $rms = $self->linked("#removals")->thing;
+        push @$rms, map { [ remove => $_ ] } @ids;
+        $detach_us->();
+    });
+
+    attach_stuff('get_object/changing_object', $us);
+    $detach_us = sub {
+        detach_stuff('get_object/changing_object', $us);
+    };
+}
 
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1826,6 +1850,7 @@ sub get_object { # OBJ
     unless (@{ $self->linked("#animations")->thing }) {
         $clear = "noanim";
     }
+    main::do_stuff('get_object/changing_object', $self, $mojo, $client);
 
     if ($TEST) {
         use Storable 'dclone';
