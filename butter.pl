@@ -1552,18 +1552,26 @@ mach_spawn("#hits", sub { # {{{
 sub later_id_remover {
     my ($from, @ids) = @_;
 
-    my $detach_us = sub {};
-
-    my $us = mach_spawn("#tidyup_$from", sub {
+    attach_for_once('get_object/changing_object', "#tidyup_$from", sub {
         my ($self) = @_;
         my $rms = $self->linked("#removals")->thing;
         push @$rms, map { [ remove => $_ ] } @ids;
+    });
+}
+
+sub attach_for_once {
+    my ($where, $named, $sub) = @_;
+
+    my $detach_us = sub {};
+
+    my $us = mach_spawn($named, sub {
+        $sub->(@_);
         $detach_us->();
     });
 
-    attach_stuff('get_object/changing_object', $us);
+    attach_stuff($where, $us);
     $detach_us = sub {
-        detach_stuff('get_object/changing_object', $us);
+        detach_stuff($where, $us);
     };
 }
 
@@ -1576,7 +1584,7 @@ mach_spawn("#dump_trail", sub { # {{{
 
 
 
-$webbery->spawn("#clients");
+$webbery->spawn("#clients"); # {{{
 
 # define the TOOLBAR
 $toolbar->link($webbery);
@@ -1726,7 +1734,7 @@ attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
 
     push @$trail, [ "?" ]; # eg some mach generates a get_object call
 })); # }}}
-
+# }}}
 
 # TODO another toolbar mach to kick this one off
 # TODO then cont is to grab the notation slice indicated by ids
