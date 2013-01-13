@@ -1922,13 +1922,6 @@ sub get_object { # OBJ
             $TEST->spawn($drawings[0])->id("#clear");
         }
     }
-    if (my $reremo = $client->linked("#reremo")) {
-        $reremo = $reremo->thing;
-        for my $id (keys %$reremo) {
-            delete $reremo->{$id};
-            unshift @drawings, ['remove' => $id] unless $clear;
-        }
-    }
     for my $old_viewed ($client->linked("#viewed")) {
         trash_viewed_exam($client, $old_viewed);
     }
