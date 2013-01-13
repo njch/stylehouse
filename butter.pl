@@ -953,7 +953,7 @@ sub codes {
         $p = $1 if /^package (\w+);/;
         my %etc;
         $etc{sub} = $1 if /^sub (\w+) {/;
-        $etc{sub} = "mach $1" if /^mach_spawn\("#(\w+)", sub {/;
+        $etc{sub} = "mach $1" if /^\S+.+mach_spawn\("#(\w+)", sub {/;
 
         $codes->spawn({
             code => $code,
