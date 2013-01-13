@@ -386,6 +386,17 @@ but lets not rush into recompiling/hardcoding complications yet
 lets make the code for complications faster, caching them into perl data from graph masters
 then get on with USING complixity to enhance enhance etc
 
+trippyboxen needs config saving abilities
+which involves finding paths into the code to various numbers
+
+need a way to graph code such that the user can click on things to give meaning
+need these meaning mappings to break upon refactoring
+meaning can then be mapped into a meaningful UI for eg synth playing
+
+make get_object use transparent not-graph stuff for its algorithming...
+encapsulate the algorithm as a light cone entropy field whatever
+the code shines lights through the API, through time, it's about connecting those beams
+
 WORDS
 =cut
 
@@ -1440,35 +1451,65 @@ mach_spawn("#tout", sub { #{{{
     $mojo->drawings(Load("tout.yml"));
 }, "toolbar");#}}}
 
-my $in = 1;
-my @trippybits;
-my $trippy = mach_spawn("#trippyboxen", sub { #{{{
+my @trippybits; #{{{
+my @nontrippybits;
+my @instore;
+my $trippy = mach_spawn("#trippyboxen", sub {
     my ($self, $mojo, $clunt, $id) = @_;
 
     if ($id && $id =~ /trippycontrol/) {
         return config_trip($mojo, $id);
     }
+    if (@instore) {
+        my @yep = @instore;
+        @instore = ();
+        return $mojo->drawings(@yep);
+    }
+    my $in = -300;
 
-    my @elements;
-    for my $d (-15..15) {
-        $d = ($d / 15) * 50 * ($d / 14);
-        for (1..5) {
-            $in++;
-            push @elements, [ 'boxen',
-                500 + $_ * 10 - $d * ($d - (1 * ($in / 60))),
+    my $idi = 0;
+    my $elements = sub {
+        my @elements;
+        for my $d (-15..15) {
+            $d = ($d / 15) * 50 * ($d / 14);
+            for (1..5) {
+                $in += 15;
+                push @elements, [ 'boxen',
+                    500 + $_ * 10 - $d * ($d - (1 * ($in / 30))),
 
-                50 * $_ - $d,
+                    50 * $_ - $d,
 
-                40, 40, {
-                fill => "fff",
-                stroke=> "000",
-                id => "trippy$_$d",
-            } ];
-        }
-    } # '"'
+                    40, 40, {
+                    fill => "555",
+                    stroke=> "000",
+                    id => "trippy".$idi++,
+                } ];
+            }
+        } # '"'
+        @elements;
+    };
+    my @elements = do {
+        my $in = 0;
+        $elements->();
+    };
+    my @elements2 = $elements->();
+    my @anims;
+    for my $e1 (@elements) {
+        my $e2 = shift @elements2;
+        my $x = $e1->[1] - $e2->[1];
+        my $y = $e1->[2] - $e2->[2];
+        push @anims, ["animate", $e1->[-1]->{id},
+                    {svgTransform => "translate($x $y)"},
+                    5000]
+    }
+
     push @elements, trippycontrols();
     push @elements, draw_findable(undef, $mojo, $client);
+
+    push @elements, @anims;
+
     $mojo->drawings(['clear'], @elements);
+
 }, "toolbar"); #}}}
 
 sub config_trip {
@@ -1479,12 +1520,15 @@ sub config_trip {
         down => '- 1', downdown => '* 0.5',
     };
     $trippybits[$i] =~ s/(\d+)/eval "\$1 $hows->{$how}"/e;
-    eval "\$trippy->{thing} = sub { ".join('', @trippybits)." } ";
+    eval "\$trippy->{thing} = sub { ".
+        join('', $nontrippybits[0], @trippybits, $nontrippybits[1])
+    ." } ";
     die $@ if $@;
     $trippy->{thing}->(undef, $mojo, "re");
 }
 
 sub trippycontrols {
+    my (@head, @tail);
     unless (@trippybits) {
         my $codes = codes();
         my $trippyboxencode;
@@ -1495,7 +1539,11 @@ sub trippycontrols {
             }
         });
         my @tbc = split /\n/, $trippyboxencode;
-        shift @tbc; pop @tbc;
+        shift @tbc;
+        push @head, shift @tbc until $tbc[0] =~ /elements = sub/;
+        pop @tbc;
+        push @tail, pop @tbc until $tbc[-1] =~ /\@elements;/;
+        @nontrippybits = (join("\n", @head), join("\n", reverse @tail));
         $trippyboxencode = join "\n", @tbc;
 
         @trippybits = split /(?=\s+|[\+\-\*\/\)\(]|\.\.)/, $trippyboxencode;
@@ -1506,18 +1554,18 @@ sub trippycontrols {
     my $i = 0;
     for (@trippybits) {
         if (/\d+/) {
-            my $b = -8;
+            my $b = -12;
             for (qw'upup up down downdown') {
                 push @es,
-                    ['boxen', $x, $y + $b + 8, 10, 4,
+                    ['boxen', $x, $y + $b + 8, 10, 6,
                     { fill => "f".(8 + $b / 2)."7", id => "trippycontrol".$i.$_ }];
-                $b += 4;
+                $b += 7;
             }
             $x += 12
         }
         if ($_ eq "\n") {
             $x = 20;
-            $y += 14;
+            $y += 30;
         }
         push @es, ['label', $x, $y, $_] if /\S/;
         $x += length($_) * 10;
