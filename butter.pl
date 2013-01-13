@@ -1483,11 +1483,11 @@ mach_spawn("#notation", sub { # {{{
     my $ind_limit = 5;
     my @notes;
     for (@notation) {
-        s/^(\s+)/('.') x length($1)/e;
+        s/^(\s+)/('..') x length($1)/e;
         $l++;
         if (length($1) >= $ind_limit) {
             unless ($notes[-1] =~ /etc/) {
-                push @notes, "$l ".((".") x $ind_limit)."etc 0"
+                push @notes, "$l ".(("..") x $ind_limit)."etc 0"
             }
             my ($c) = $notes[-1] =~ /etc (\d+)/;
             $c++;
@@ -1500,7 +1500,35 @@ mach_spawn("#notation", sub { # {{{
     for (@notes) {
         $r->spawn($_);
     }
+
     get_object($mojo, $r->{uuid});
+
+    # while this graph is on the screen
+    my $click_handler;
+    $click_handler = mach_spawn("#notation_expand", sub {
+        my ($self, $mojo, $client, $object) = @_;
+        if ($object->{graph} eq $r->{graph} && $object ne $r) {
+            my ($from, $for) = $object->thing =~ /^(\d+) .+etc (\d+)$/;
+            unless ($for) {
+                $mojo->sttus("not expandable: ". $object->thing);
+                return {changeofplan => "return"};
+            }
+            $from--;
+            my @new = @notation[$from..$from+$for];
+            for (@new) {
+                $object->spawn($_);
+            }
+            get_object($mojo, $r->{uuid});
+            return {changeofplan => "return"};
+
+        }
+        elsif ($object->{graph} ne $r->{graph}) {
+            detach_stuff('get_object/01', $click_handler);
+        }
+    });
+
+    attach_stuff('get_object/01', $click_handler);
+
 }, "toolbar"); # }}}
 
 
@@ -1781,8 +1809,7 @@ sub get_object { # OBJ
         || return $mojo->sttus("$id no longer exists!");
 
 
-
-    my $r = do_stuff('get_object/01', $self, $mojo, $client);
+    my $r = do_stuff('get_object/01', $self, $mojo, $client, $object);
     if ($r->{changeofplan} && $r->{changeofplan} eq "return") {
         # TODO better than this
         return;
