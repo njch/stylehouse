@@ -1840,7 +1840,11 @@ sub get_object { # OBJ
     my @drawings;
     for (qw'removals animations drawings') {
         my $bit = $self->linked("#".$_);
-        push @drawings, @{ $bit->thing };
+        unless ($clear && $_ eq "removals") {
+            push @drawings, grep {
+                !($_->[0] eq "animate" && $_->[2]->{svgTransform} eq "translate(0 0)" )
+            } @{ $bit->thing };
+        }
         for my $l ($bit->links) {
             $bit->unlink($l);
         }
