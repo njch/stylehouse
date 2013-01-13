@@ -393,6 +393,7 @@ our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
+our $client; # TODO low priority though is sessions
 our $port = "3000";
 our $G;
 our $TEST;
@@ -1439,6 +1440,92 @@ mach_spawn("#tout", sub { #{{{
     $mojo->drawings(Load("tout.yml"));
 }, "toolbar");#}}}
 
+my $in = 1;
+my @trippybits;
+my $trippy = mach_spawn("#trippyboxen", sub { #{{{
+    my ($self, $mojo, $clunt, $id) = @_;
+
+    if ($id && $id =~ /trippycontrol/) {
+        return config_trip($mojo, $id);
+    }
+
+    my @elements;
+    for my $d (-15..15) {
+        $d = ($d / 15) * 50 * ($d / 14);
+        for (1..5) {
+            $in++;
+            push @elements, [ 'boxen',
+                500 + $_ * 10 - $d * ($d - (1 * ($in / 60))),
+
+                50 * $_ - $d,
+
+                40, 40, {
+                fill => "fff",
+                stroke=> "000",
+                id => "trippy$_$d",
+            } ];
+        }
+    } # '"'
+    push @elements, trippycontrols();
+    push @elements, draw_findable(undef, $mojo, $client);
+    $mojo->drawings(['clear'], @elements);
+}, "toolbar"); #}}}
+
+sub config_trip {
+    my ($mojo, $id) = @_;
+    my ($i, $how) = $id =~ /\w(\d+)(\w+)$/;
+    my $hows = {
+        up => '+ 1', upup => '* 2',
+        down => '- 1', downdown => '* 0.5',
+    };
+    $trippybits[$i] =~ s/(\d+)/eval "\$1 $hows->{$how}"/e;
+    eval "\$trippy->{thing} = sub { ".join('', @trippybits)." } ";
+    die $@ if $@;
+    $trippy->{thing}->(undef, $mojo, "re");
+}
+
+sub trippycontrols {
+    unless (@trippybits) {
+        my $codes = codes();
+        my $trippyboxencode;
+        $codes->map_nodes(sub {
+            my $n = shift;
+            if ($n->thing->{sub} && $n->thing->{sub} eq "mach trippyboxen") {
+                $trippyboxencode = $n->thing->{code};
+            }
+        });
+        my @tbc = split /\n/, $trippyboxencode;
+        shift @tbc; pop @tbc;
+        $trippyboxencode = join "\n", @tbc;
+
+        @trippybits = split /(?=\s+|[\+\-\*\/\)\(]|\.\.)/, $trippyboxencode;
+    }
+    my @es;
+    my $y = 400;
+    my $x = 20;
+    my $i = 0;
+    for (@trippybits) {
+        if (/\d+/) {
+            my $b = -8;
+            for (qw'upup up down downdown') {
+                push @es,
+                    ['boxen', $x, $y + $b + 8, 10, 4,
+                    { fill => "f".(8 + $b / 2)."7", id => "trippycontrol".$i.$_ }];
+                $b += 4;
+            }
+            $x += 12
+        }
+        if ($_ eq "\n") {
+            $x = 20;
+            $y += 14;
+        }
+        push @es, ['label', $x, $y, $_] if /\S/;
+        $x += length($_) * 10;
+        $i++;
+    }
+
+    @es;
+}
 
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
@@ -1621,13 +1708,12 @@ if (my $cg = $webbery->find("#codegraph")) {
 }
 
 
-our $client; # TODO low priority though is sessions
 # TODO also is stateless data access functions, so butter can interrogate frankenbutter
 
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#notation")->{uuid}
+    return $webbery->find("#trippyboxen")->{uuid}
 }
 sub hello {
     my $mojo = shift;
@@ -1764,30 +1850,6 @@ attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
 })); # }}}
 # }}}
 
-# TODO another toolbar mach to kick this one off
-# TODO then cont is to grab the notation slice indicated by ids
-#      make a pattern to reapply where the user wants
-#      let the user select specify acceptable irregularities
-#      there'll be lots of emergent code patterns with only variables changing
-mach_spawn("#clickcapture", sub {
-    my ($n, $cont, $self, $mojo, $client) = @_;
-
-    $client->spawn({ n => $n, cont => $cont, ids => [] }, "#clickcap");
-
-    attach_stuff("get_object/01", mach_spawn("#clickcapture_click", sub { # {{{
-        my ($self, $mojo, $client) = @_;
-        my $id = $self->linked("#id")->thing;
-        my $cap = $client->graph->find("#clickcap")->thing;
-        my $ids = $cap->{ids};
-        push @$ids, $id;
-        if (@$ids >= $cap->{n}) {
-            detach_stuff("get_object/01", "clickcapture_click"); # TODO detach_myself() in machworld
-            $cap->{cont}->($ids, @_);
-        }
-    }));
-});
-# }}}
-
 get '/object' => \&get_object;
 sub get_object { # OBJ
     my $mojo = shift;
@@ -1795,6 +1857,7 @@ sub get_object { # OBJ
     my $id = shift || $mojo->param('id')
         || die "no id";
 
+    $id =~ /^trippy/ && return $trippy->thing->(undef, $mojo, undef, $id);
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
