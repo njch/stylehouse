@@ -410,6 +410,23 @@ make get_object use transparent not-graph stuff for its algorithming...
 encapsulate the algorithm as a light cone entropy field whatever
 the code shines lights through the API, through time, it's about connecting those beams
 
+from the forray of graphing codes...
+  codes() gets data,
+  short_codegraph() chews it up a bit for #thecodegraph,
+  #codegraph_ancode digs out the actual code back from G(codes)
+probably lets...
+  user wires meaning into the codes
+  user fucks with frankenbutter codes
+  frankenbutter behaviour observed
+  behaviour mapped to fuckery
+like saving synth operations
+programs synthesise data
+also lets...
+  define some datatypes eg a node, perl code, a search() result for passing things
+  to svgering
+  so while experimenting we can just chuck things out to the scope
+  also that area needs polygrowth
+
 WORDS
 =cut
 
@@ -418,6 +435,7 @@ our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
 our $client; # TODO low priority though is sessions
+our $codes = codes();
 our $port = "3000";
 our $G;
 our $TEST;
@@ -946,11 +964,48 @@ mach_spawn("#filesystem", sub { # {{{
     get_object($mojo, $fs->{uuid});
 }); # }}}
 
-mach_spawn("#codes", sub { # {{{ COD
+mach_spawn("#thecodegraph", sub { # {{{ COD
     my ($self, $mojo, $client) = @_;
-    my $codes = codes();
-    get_object($mojo, $codes->{uuid});
-});
+
+    my $short = $webbery->find("#codegraph");
+    $short ||= $webbery->spawn(short_codegraph());
+    $short->id("#codegraph");
+
+    my $root = $short->thing->find("root");
+
+    get_object($mojo, $root->{uuid});
+
+    # while this graph is on the screen
+    # TODO doesn't work when using attach_for_once() instead? 
+    my $click_handler;
+    $click_handler = mach_spawn("#codegraph_ancode", sub {
+        my ($self, $mojo, $client, $object) = @_;
+        if ($object->{graph} eq $root->{graph} && $object ne $root) {
+            my $origin = $object->thing->{origin};
+            my $codenode;
+            $codes->map_nodes(sub { $codenode = $_[0] if $_[0]->{uuid} eq $origin });
+            my $code = $codenode->thing->{code};
+
+            my $y = 50;
+            my @draws = ['clear'];
+            for (split("\n", $code)) {
+                my ($ws) = /^(\s+)/;
+                push @draws, ['label', 10 + (5 * length($ws)), ($y += 20), $_ ]
+            }
+            $mojo->drawings(@draws);
+
+            return {changeofplan => "return"};
+        }
+        elsif ($object->{graph} ne $root->{graph}) {
+            detach_stuff('get_object/01', $click_handler);
+        }
+    });
+
+    attach_stuff('get_object/01', $click_handler);
+
+
+
+}, "toolbar");
 sub codes {
     my @code = read_file('butter.pl');
     my @chunks = ([]);
@@ -998,7 +1053,6 @@ sub codes {
     return $codes;
 }
 sub short_codegraph {
-    my $codes = shift;
     my $byp = {};
     my $short = Graph->new("shortcodegraph")->spawn("root");
     $codes->map_nodes(sub {
@@ -1018,7 +1072,7 @@ sub short_codegraph {
             }
         }
     }
-    return $short;
+    return $short->graph;
 }
 # }}}
 if ($0 =~ /frankenbutter/) {
@@ -1028,10 +1082,7 @@ if ($0 =~ /frankenbutter/) {
     # reload subroutines as butter hacks them up
 }
 else {
-    my $codes = codes();
-    my $short= short_codegraph($codes);
     if (my $pid = fork()) {
-        $webbery->spawn($short)->id("#codegraph");
         # start our own webbery, talk to frankenbutter
     }
     else {
@@ -1523,7 +1574,7 @@ my $trippy = mach_spawn("#trippyboxen", sub {
 
     $mojo->drawings(['clear'], @elements);
 
-}, "toolbar"); #}}}
+}, "toolbar"); 
 
 sub config_trip {
     my ($mojo, $id) = @_;
@@ -1543,7 +1594,6 @@ sub config_trip {
 sub trippycontrols {
     my (@head, @tail);
     unless (@trippybits) {
-        my $codes = codes();
         my $trippyboxencode;
         $codes->map_nodes(sub {
             my $n = shift;
@@ -1586,7 +1636,7 @@ sub trippycontrols {
     }
 
     @es;
-}
+}#}}}
 
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
