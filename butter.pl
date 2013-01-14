@@ -422,8 +422,7 @@ probably lets...
 like saving synth operations
 programs synthesise data
 also lets...
-  define some datatypes eg a node, perl code, a search() result for passing things
-  to svgering
+  define some datatypes eg a node, perl code, a list or a search() result for svgering
   so while experimenting we can just chuck things out to the scope
   also that area needs polygrowth
 
@@ -434,6 +433,7 @@ our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
+our $trippy = {};
 our $client; # TODO low priority though is sessions
 our $codes = codes();
 our $port = "3000";
@@ -501,7 +501,6 @@ sub detach_stuff {
 sub do_stuff {
     my ($p, @a) = @_;
     unless ($P) {
-        say "P graph setup phase";
         return
     };
 
@@ -990,7 +989,7 @@ mach_spawn("#thecodegraph", sub { # {{{ COD
             my @draws = ['clear'];
             for (split("\n", $code)) {
                 my ($ws) = /^(\s+)/;
-                push @draws, ['label', 10 + (5 * length($ws)), ($y += 20), $_ ]
+                push @draws, ['label', 10 + (5 * length($ws||"")), ($y += 20), $_ ]
             }
             $mojo->drawings(@draws);
 
@@ -1003,9 +1002,109 @@ mach_spawn("#thecodegraph", sub { # {{{ COD
 
     attach_stuff('get_object/01', $click_handler);
 
-
-
 }, "toolbar");
+
+sub display_code_guts {
+    my ($codename, %p) = @_;
+
+    my ($package) = $codename =~ s/^(\w+):://;
+    $package ||= "main";
+
+    my $thecode;
+    $codes->map_nodes(sub {
+        my $n = shift;
+        if ($n->thing->{sub} && $n->thing->{sub} eq $codename
+            && $n->thing->{p} && $n->thing->{p} eq $package) {
+            $thecode = $n->thing->{code};
+        }
+    });
+
+    my @tbc = split /\n/, $thecode;
+    shift @tbc; # ... {
+    pop @tbc;   # }
+
+    my @head_tail;
+    if ($p{from} || $p{to}) {
+        my (@head, @tail);
+        if ($p{from}) {
+            push @head, shift @tbc until $tbc[0] =~ $p{from};
+        }
+        if ($p{to}) {
+            push @tail, pop @tbc until $tbc[-1] =~ $p{to};
+        }
+        @head_tail = (join("\n", @head) || "", join("\n", reverse @tail) || "");
+    }
+
+    my @bits = split /(?=\s+|[\+\-\*\/\)\(]|\.\.)/, join "\n", @tbc;
+
+    my $controls = sub {
+        my @controls;
+        my $y = $p{y} || 40;
+        my $x = 20;
+        my $i = 0;
+        for (@bits) {
+            if (/\d+/ && $p{controls} =~ /numbercrankers/) {
+                my $b = -12;
+                for (qw'upup up down downdown') {
+                    push @controls,
+                        ['boxen', $x, $y + $b + 8, 10, 6,
+                        { fill => "f".(8 + $b / 2)."7", id => "trippycontrol".$i."num_".$_ }];
+                    $b += 7;
+                }
+                $x += 12
+            }
+            if ($_ eq "\n") {
+                $x = 20;
+                $y += 30;
+            }
+            push @controls, ['label', $x, $y, $_] if /\S/;
+            $x += length($_) * 10;
+            $i++;
+        }
+        return @controls;
+    };
+
+    my $configer = sub {
+        my ($mojo, $id) = @_;
+        my ($i, $what, $how) = $id =~ /\w(\d+)(\w+)_(\w+)$/;
+        if ($what eq "num") {
+            my $hows = {
+                up => '+ 1', upup => '* 2',
+                down => '- 1', downdown => '* 0.5',
+            };
+            $bits[$i] =~ s/(\d+)/eval "\$1 $hows->{$how}"/e;
+        }
+
+        my $new_code = join "", @bits;
+        if (@head_tail) {
+            $new_code = join "\n", $head_tail[0], $new_code, $head_tail[1];
+        }
+
+        my $new_sub;
+        eval "\$new_sub = sub { $new_code } ";
+        die Dump[$new_code, $@] if $@;
+
+        if ($codename =~ /^mach (.+)$/) {
+            my $mach = $machs->linked("#$1");
+            $mach->{thing} = $new_sub;
+        }
+        else {
+            my $glob = '*'.$package.'::'.$codename;
+            eval "$glob = \$new_sub";
+            die Dump[$new_code, $glob, $@] if $@;
+        }
+    };
+
+    my $rewriter = {
+        controls => $controls,
+        configer => $configer,
+    };
+
+    # we might add hooks to GO/01 to grab control cranks
+    # but we're hard coded /trippy/ -> #trippyboxen
+    return $rewriter;
+}
+
 sub codes {
     my @code = read_file('butter.pl');
     my @chunks = ([]);
@@ -1073,8 +1172,8 @@ sub short_codegraph {
         }
     }
     return $short->graph;
-}
-# }}}
+} # }}}
+
 if ($0 =~ /frankenbutter/) {
     $port = "3001";
     # start webbery on another port
@@ -1515,19 +1614,20 @@ mach_spawn("#tout", sub { #{{{
     $mojo->drawings(Load("tout.yml"));
 }, "toolbar");#}}}
 
-my @trippybits; #{{{
-my @nontrippybits;
-my @instore;
-my $trippy = mach_spawn("#trippyboxen", sub {
+
+$trippy->{code_control} = display_code_guts( # {{{
+    "mach trippyboxen",
+    from => qr/elements = sub/,
+    to => qr/\@elements;/,
+    controls => "numbercrankers",
+    y => 400,
+);
+$trippy->{itself} = mach_spawn("#trippyboxen", sub {
     my ($self, $mojo, $clunt, $id) = @_;
 
     if ($id && $id =~ /trippycontrol/) {
-        return config_trip($mojo, $id);
-    }
-    if (@instore) {
-        my @yep = @instore;
-        @instore = ();
-        return $mojo->drawings(@yep);
+        $trippy->{code_control}->{configer}->($mojo, $id);
+        return $trippy->{itself}->{thing}->(undef, $mojo, "re");
     }
     my $in = -300;
 
@@ -1567,76 +1667,15 @@ my $trippy = mach_spawn("#trippyboxen", sub {
                     5000]
     }
 
-    push @elements, trippycontrols();
+    push @elements, $trippy->{code_control}->{controls}->();
     push @elements, draw_findable(undef, $mojo, $client);
 
     push @elements, @anims;
 
     $mojo->drawings(['clear'], @elements);
 
-}, "toolbar"); 
+}, "toolbar"); # }}}
 
-sub config_trip {
-    my ($mojo, $id) = @_;
-    my ($i, $how) = $id =~ /\w(\d+)(\w+)$/;
-    my $hows = {
-        up => '+ 1', upup => '* 2',
-        down => '- 1', downdown => '* 0.5',
-    };
-    $trippybits[$i] =~ s/(\d+)/eval "\$1 $hows->{$how}"/e;
-    eval "\$trippy->{thing} = sub { ".
-        join('', $nontrippybits[0], @trippybits, $nontrippybits[1])
-    ." } ";
-    die $@ if $@;
-    $trippy->{thing}->(undef, $mojo, "re");
-}
-
-sub trippycontrols {
-    my (@head, @tail);
-    unless (@trippybits) {
-        my $trippyboxencode;
-        $codes->map_nodes(sub {
-            my $n = shift;
-            if ($n->thing->{sub} && $n->thing->{sub} eq "mach trippyboxen") {
-                $trippyboxencode = $n->thing->{code};
-            }
-        });
-        my @tbc = split /\n/, $trippyboxencode;
-        shift @tbc;
-        push @head, shift @tbc until $tbc[0] =~ /elements = sub/;
-        pop @tbc;
-        push @tail, pop @tbc until $tbc[-1] =~ /\@elements;/;
-        @nontrippybits = (join("\n", @head), join("\n", reverse @tail));
-        $trippyboxencode = join "\n", @tbc;
-
-        @trippybits = split /(?=\s+|[\+\-\*\/\)\(]|\.\.)/, $trippyboxencode;
-    }
-    my @es;
-    my $y = 400;
-    my $x = 20;
-    my $i = 0;
-    for (@trippybits) {
-        if (/\d+/) {
-            my $b = -12;
-            for (qw'upup up down downdown') {
-                push @es,
-                    ['boxen', $x, $y + $b + 8, 10, 6,
-                    { fill => "f".(8 + $b / 2)."7", id => "trippycontrol".$i.$_ }];
-                $b += 7;
-            }
-            $x += 12
-        }
-        if ($_ eq "\n") {
-            $x = 20;
-            $y += 30;
-        }
-        push @es, ['label', $x, $y, $_] if /\S/;
-        $x += length($_) * 10;
-        $i++;
-    }
-
-    @es;
-}#}}}
 
 mach_spawn("#dsplay", sub { #{{{
     my ($self, $mojo, $client) = @_;
@@ -1775,7 +1814,7 @@ mach_spawn("#hits", sub { # {{{
     return $mojo->drawings(@drawings);
 }, "toolbar"); # }}}
 
-sub later_id_remover {
+sub later_id_remover { #{{{
     my ($from, @ids) = @_;
 
     attach_for_once('get_object/changing_object', "#tidyup_$from", sub {
@@ -1799,7 +1838,7 @@ sub attach_for_once {
     $detach_us = sub {
         detach_stuff($where, $us);
     };
-}
+} #}}}
 
 mach_spawn("#dump_trail", sub { # {{{
     my ($self, $mojo, $client) = @_;
@@ -1968,7 +2007,7 @@ sub get_object { # OBJ
     my $id = shift || $mojo->param('id')
         || die "no id";
 
-    $id =~ /^trippy/ && return $trippy->thing->(undef, $mojo, undef, $id);
+    $id =~ /^trippy/ && return $trippy->{itself}->thing->(undef, $mojo, undef, $id);
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
