@@ -403,6 +403,12 @@ trippyboxen needs config saving abilities
 which involves finding paths into the code to various numbers
 
 need a way to graph code such that the user can click on things to give meaning
+  so code becomes lines
+  lines become bits
+  alterations attach to bits
+  meaning attaches also to bits
+    meanings create thinking to ideas, and we have an algorithm
+    make another algorithm that connects them algorithms
 need these meaning mappings to break upon refactoring
 meaning can then be mapped into a meaningful UI for eg synth playing
 
@@ -425,6 +431,14 @@ also lets...
   define some datatypes eg a node, perl code, a list or a search() result for svgering
   so while experimenting we can just chuck things out to the scope
   also that area needs polygrowth
+
+hmm lets...
+  expand upon "#notation" with pagination
+  create some notation maps, known low-level trees to fold up
+    and some big-deals to draw bigger
+  see frankenbutter execution
+    add breakpoints
+    interrogate franken being via port 3001 from butter
 
 WORDS
 =cut
