@@ -447,7 +447,6 @@ our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
-our $trippy = {};
 our $client; # TODO low priority though is sessions
 our $codes = codes();
 our $port = "3000";
@@ -465,6 +464,7 @@ our $P = do { # {{{
         Graph/link/done
         Graph/unlink/deleted_link
         get_object/changing_object
+        get_object/ctrl
         get_object/01
         }) {
         my @path = split '/';
@@ -575,8 +575,11 @@ sub note { # {{{
             when (/Mojolicious::Controller/) {
                 return 'Mojo'
             }
+            when ("Regexp") {
+                return "$t"
+            }
             default {
-                die "unknown ref: ".ref $t;
+                die "unknown ref: $t: ".ref $t;
             }
         }
         die" ";
@@ -938,10 +941,22 @@ package main;
 #}}}
 
 sub mach_spawn { # {{{
-    my $m = $machs->spawn(shift);
-    $m->{thing} = shift;
-    if ($_[0] && $_[0] eq "toolbar") {
+    my ($id, $sub, @etc) = @_;
+    $id =~ /^#?\w+$/ || die "bad id: $id";
+    $id =~ s/^(?!#)/#/; # add a # if none
+    my $m = $machs->spawn($id);
+    $m->{thing} = $sub;
+    if (shift @etc) {
         $toolbar->link($m);
+    }
+    if (@etc) {
+        my ($spec) = @etc;
+        my $for = delete $spec->{open_guts};
+        $spec->{owner} = $m->id;
+        my ($controls, $controller) = display_code_guts($for, %$spec);
+        mach_spawn($m->id."_controls" => $controls);
+        my $ctrl_mach = mach_spawn($m->id."_controller" => $controller);
+        attach_stuff("get_object/ctrl", $ctrl_mach);
     }
     return $m
 }
@@ -1021,6 +1036,8 @@ mach_spawn("#thecodegraph", sub { # {{{ COD
 sub display_code_guts {
     my ($codename, %p) = @_;
 
+    my $owner_mach = $machs->linked('#'.$p{owner}) || die;
+
     my ($package) = $codename =~ s/^(\w+):://;
     $package ||= "main";
 
@@ -1032,7 +1049,9 @@ sub display_code_guts {
             $thecode = $n->thing->{code};
         }
     });
-
+    unless ($thecode) {
+        die "cannot find ".$package."::".$codename;
+    }
     my @tbc = split /\n/, $thecode;
     shift @tbc; # ... {
     pop @tbc;   # }
@@ -1062,7 +1081,7 @@ sub display_code_guts {
                 for (qw'upup up down downdown') {
                     push @controls,
                         ['boxen', $x, $y + $b + 8, 10, 6,
-                        { fill => "f".(8 + $b / 2)."7", id => "trippycontrol".$i."num_".$_ }];
+                        { fill => "f".(8 + $b / 2)."7", id => $p{owner}."_ctrl_".$i."num_".$_ }];
                     $b += 7;
                 }
                 $x += 12
@@ -1078,9 +1097,12 @@ sub display_code_guts {
         return @controls;
     };
 
-    my $configer = sub {
+    my $controller = sub {
         my ($mojo, $id) = @_;
-        my ($i, $what, $how) = $id =~ /\w(\d+)(\w+)_(\w+)$/;
+        my ($i, $what, $how) = $id =~ /^$p{owner}_ctrl_(\d+)(\w+)_(\w+)$/;
+        unless ($what && $how) {
+            return
+        }
         if ($what eq "num") {
             my $hows = {
                 up => '+ 1', upup => '* 2',
@@ -1107,16 +1129,12 @@ sub display_code_guts {
             eval "$glob = \$new_sub";
             die Dump[$new_code, $glob, $@] if $@;
         }
+
+        # run the thing we just hacked up. do we always want to?
+        $owner_mach->thing->(undef, $mojo);
     };
 
-    my $rewriter = {
-        controls => $controls,
-        configer => $configer,
-    };
-
-    # we might add hooks to GO/01 to grab control cranks
-    # but we're hard coded /trippy/ -> #trippyboxen
-    return $rewriter;
+    return ($controls, $controller);
 }
 
 sub codes {
@@ -1146,7 +1164,7 @@ sub codes {
         $p = $1 if /^package (\w+);/;
         my %etc;
         $etc{sub} = $1 if /^sub (\w+) {/;
-        $etc{sub} = "mach $1" if /^\S+.+mach_spawn\("#(\w+)", sub {/;
+        $etc{sub} = "mach $1" if /^(?:\S+.+)?mach_spawn\("#(\w+)", sub {/;
 
         $codes->spawn({
             code => $code,
@@ -1628,21 +1646,9 @@ mach_spawn("#tout", sub { #{{{
     $mojo->drawings(Load("tout.yml"));
 }, "toolbar");#}}}
 
-
-$trippy->{code_control} = display_code_guts( # {{{
-    "mach trippyboxen",
-    from => qr/elements = sub/,
-    to => qr/\@elements;/,
-    controls => "numbercrankers",
-    y => 400,
-);
-$trippy->{itself} = mach_spawn("#trippyboxen", sub {
+mach_spawn("#trippyboxen", sub { # {{{
     my ($self, $mojo, $clunt, $id) = @_;
 
-    if ($id && $id =~ /trippycontrol/) {
-        $trippy->{code_control}->{configer}->($mojo, $id);
-        return $trippy->{itself}->{thing}->(undef, $mojo, "re");
-    }
     my $in = -300;
 
     my $idi = 0;
@@ -1681,14 +1687,22 @@ $trippy->{itself} = mach_spawn("#trippyboxen", sub {
                     5000]
     }
 
-    push @elements, $trippy->{code_control}->{controls}->();
+    push @elements, $machs->linked("#trippyboxen_controls")->thing->();
     push @elements, draw_findable(undef, $mojo, $client);
 
     push @elements, @anims;
 
     $mojo->drawings(['clear'], @elements);
 
-}, "toolbar"); # }}}
+}, "toolbar",
+{
+    open_guts => "mach trippyboxen",
+    from => qr/elements = sub/,
+    to => qr/\@elements;/,
+    controls => "numbercrankers",
+    y => 400,
+},
+); # }}}
 
 
 mach_spawn("#dsplay", sub { #{{{
@@ -1699,6 +1713,7 @@ mach_spawn("#dsplay", sub { #{{{
     my $begin = $dump->find("#find") || $dump;
     get_object($mojo, $begin->{uuid});
 });#}}}
+
 mach_spawn("#reexamine", sub { # {{{
     my ($self, $mojo, $client) = @_;
 
@@ -1726,12 +1741,18 @@ mach_spawn("#reexamine", sub { # {{{
 }, "toolbar"); # }}}
 
 mach_spawn("#notation", sub { # {{{
-    my ($self, $mojo, $client) = @_;
+    my ($self, $mojo, $cliuent, $id) = @_;
 
     my $r = new Graph("notation")->spawn("#root");
     my @notation = read_file('notation');
     my $l = 0;
     my $ind_limit = 5;
+    my $from = 0;
+    my $row_limit = 1000;
+    if ($from) {
+        splice @notation, 0, $from
+    }
+    @notation = @notation[0..$row_limit];
     my @notes;
     for (@notation) {
         s/^(\s+)/('..') x length($1)/e;
@@ -1748,13 +1769,26 @@ mach_spawn("#notation", sub { # {{{
             push @notes, $l." ".$_;
         }
     }
+    my @note_nodes;
     for (@notes) {
-        $r->spawn($_);
+        push @note_nodes, $r->spawn($_);
     }
 
-    get_object($mojo, $r->{uuid});
+    my @elements = ['clear'];
+    push @elements, draw_findable(undef, $mojo, $client);
+    my ($x, $y) = (40, 40);
+    for (@note_nodes) {
+        my ($name, $id, $color) = nameidcolor(summarise($_));
+        push @elements,
+            ['boxen', $x, $y, 10, 10, { fill => $color, id => $id }],
+            ['label', $x + 15, $y, $_->thing];
+        $y += 12;
+    }
+    push @elements, $machs->linked("#notation_controls")->thing->();
+    $mojo->drawings(@elements);
 
     # while this graph is on the screen
+    0 && do {
     my $click_handler;
     $click_handler = mach_spawn("#notation_expand", sub {
         my ($self, $mojo, $client, $object) = @_;
@@ -1779,8 +1813,16 @@ mach_spawn("#notation", sub { # {{{
     });
 
     attach_stuff('get_object/01', $click_handler);
-
-}, "toolbar"); # }}}
+    };
+}, "toolbar",
+{
+    open_guts => "mach notation",
+    from => qr/my \$ind_limit/,
+    to => qr/my \$row_limit/,
+    controls => "numbercrankers",
+    y => 800,
+},
+); # }}}
 
 
 mach_spawn("#hits", sub { # {{{
@@ -2014,6 +2056,8 @@ attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
 })); # }}}
 # }}}
 
+
+
 get '/object' => \&get_object;
 sub get_object { # OBJ
     my $mojo = shift;
@@ -2021,7 +2065,9 @@ sub get_object { # OBJ
     my $id = shift || $mojo->param('id')
         || die "no id";
 
-    $id =~ /^trippy/ && return $trippy->{itself}->thing->(undef, $mojo, undef, $id);
+    if ($id =~ /_ctrl_/) {
+        return do_stuff('get_object/ctrl', $mojo, $id);
+    }
 
     $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
     my $mode = $1 || "b";
