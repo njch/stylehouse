@@ -427,10 +427,17 @@ probably lets...
   behaviour mapped to fuckery
 like saving synth operations
 programs synthesise data
+
 also lets...
   define some datatypes eg a node, perl code, a list or a search() result for svgering
   so while experimenting we can just chuck things out to the scope
-  also that area needs polygrowth
+G(scope):
+    "toolbar" -> elements
+    "exam" -> elements
+  where the elements are scope data objects (connected with layout sensibilities)
+  we complicate unlinks in this graph to generate element removes
+  things that want animation can complicate for it
+  has begun but need to delete "exam" when it's no longer the object of attention...
 
 hmm lets...
   expand upon "#notation" with pagination
@@ -440,11 +447,14 @@ hmm lets...
     add breakpoints
     interrogate franken being via port 3001 from butter
 
+console.log when a remove or animate doesn't find its target
+
 WORDS
 =cut
 
 our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
+our $scope = new Graph('scope');
 our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
 our $client; # TODO low priority though is sessions
@@ -695,14 +705,6 @@ sub find {
     });
     wantarray ? @nodes : shift @nodes;
 }
-sub find_id {
-    my ($self, $id) = @_;
-    my $node;
-    eval { $self->map_nodes(sub { "$_[0]" =~ $id && do { $node = $_[0]; } }) };
-    $@ = "" if $node;
-    die $@ if $@;
-    return $node;
-}
 sub spawn {
     my $self = shift;
     my $n = Node->new(
@@ -711,6 +713,11 @@ sub spawn {
     );
     push @{$self->{nodes}}, $n; #TODO weaken? garbage collect?
     return $n;
+}
+sub trash_id {
+    my $self = shift;
+    my $id = shift;
+    $_->trash for $self->find($id);
 }
 sub DESTROY {
     my $self = shift;
@@ -954,9 +961,7 @@ sub mach_spawn { # {{{
         my $for = delete $spec->{open_guts};
         $spec->{owner} = $m->id;
         my ($controls, $controller) = display_code_guts($for, %$spec);
-        mach_spawn($m->id."_controls" => $controls);
-        my $ctrl_mach = mach_spawn($m->id."_controller" => $controller);
-        attach_stuff("get_object/ctrl", $ctrl_mach);
+        attach_stuff("get_object/ctrl", $controller);
     }
     return $m
 }
@@ -1070,7 +1075,7 @@ sub display_code_guts {
 
     my @bits = split /(?=\s+|[\+\-\*\/\)\(]|\.\.)/, join "\n", @tbc;
 
-    my $controls = sub {
+    my $controls = mach_spawn($p{owner}."_controls", sub {
         my @controls;
         my $y = $p{y} || 40;
         my $x = 20;
@@ -1094,10 +1099,13 @@ sub display_code_guts {
             $x += length($_) * 10;
             $i++;
         }
-        return @controls;
-    };
+        $scope->trash_id("#$p{owner}_controls");
+        my $ctrls = $scope->spawn("#$p{owner}_controls");
+        $ctrls->spawn($_) for @controls;
+        return ();
+    });
 
-    my $controller = sub {
+    my $controller = mach_spawn($p{owner}."_controller", sub {
         my ($mojo, $id) = @_;
         my ($i, $what, $how) = $id =~ /^$p{owner}_ctrl_(\d+)(\w+)_(\w+)$/;
         unless ($what && $how) {
@@ -1132,7 +1140,7 @@ sub display_code_guts {
 
         # run the thing we just hacked up. do we always want to?
         $owner_mach->thing->(undef, $mojo);
-    };
+    });
 
     return ($controls, $controller);
 }
@@ -1687,7 +1695,7 @@ mach_spawn("#trippyboxen", sub { # {{{
                     5000]
     }
 
-    push @elements, $machs->linked("#trippyboxen_controls")->thing->();
+    $machs->linked("#trippyboxen_controls")->thing->();
     push @elements, draw_findable(undef, $mojo, $client);
 
     push @elements, @anims;
@@ -1784,7 +1792,7 @@ mach_spawn("#notation", sub { # {{{
             ['label', $x + 15, $y, $_->thing];
         $y += 12;
     }
-    push @elements, $machs->linked("#notation_controls")->thing->();
+    $machs->linked("#notation_controls")->thing->();
     $mojo->drawings(@elements);
 
     # while this graph is on the screen
@@ -2564,9 +2572,44 @@ get '/' => 'index';
 no warnings 'once';
 *Mojolicious::Controller::drawings = sub {
     my $mojo = shift;
-    say scalar(@_)." drawings";
+    my @drawings = @_;
+
+    my @sdc;
+    my $loose = {};
+    $scope->map_nodes(sub {
+        if ($_[0]->id) {
+            push @sdc, $_[0]
+        }
+        else {
+            $loose->{$_[0]->{uuid}} = $_[0]
+        }
+    });
+    my @more_drawings;
+    for my $cluster (@sdc) {
+        for ($cluster->linked) {
+            push @more_drawings, $_->thing;
+            delete $loose->{$_->{uuid}};
+        }
+    }
+    if (@more_drawings) {
+        say scalar(@more_drawings)." G(scope) drawings from: ".
+            join(", ", map { $_->id } @sdc);
+    }
+    my @removes;
+    if (keys %$loose) {
+        for my $d (values %$loose) {
+            push @removes, ["remove" => $d->thing->[-1]->{id}]
+        }
+        $scope->denode(values %$loose);
+    }
+    say "and ".scalar(@removes)." removals" if @removes;
+
+    push @drawings, @more_drawings, @removes;
+
+    say scalar(@drawings)." drawings";
+
 #    DumpFile("drawings.yml", [@_]);
-    $mojo->render(json => [@_]);
+    $mojo->render(json => [@drawings]);
 };
 *Mojolicious::Controller::sttus = sub {
     my $mojo = shift;
