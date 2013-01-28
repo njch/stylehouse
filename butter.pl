@@ -449,6 +449,8 @@ hmm lets...
 
 console.log when a remove or animate doesn't find its target
 
+make field membership a hash in the node for fast association
+
 WORDS
 =cut
 
@@ -976,7 +978,6 @@ attach_stuff("Graph/unlink/deleted_link", mach_spawn("#unlink_sanitycheck", sub 
     # TODO could check that $l intended at $n->unlink gets $g->unlinked (here)
     # TODO for that we'd need to look up the $E graph until we found the $P Node/unlink call
     # TODO this sub is doing nothing, it's sorta too late to check the sanity of the unlink
-    die "unlinked ". Dump($l) if (($l->{1}->thing . $l->{0}->thing) =~ /findable_objects/);
 })); # }}}
 
 mach_spawn("#filesystem", sub { # {{{
@@ -1038,7 +1039,7 @@ mach_spawn("#thecodegraph", sub { # {{{ COD
 
 }, "toolbar");
 
-sub display_code_guts {
+sub display_code_guts { # GUTS
     my ($codename, %p) = @_;
 
     my $owner_mach = $machs->linked('#'.$p{owner}) || die;
@@ -1700,7 +1701,6 @@ mach_spawn("#trippyboxen", sub { # {{{
     }
 
     $machs->linked("#trippyboxen_controls")->thing->();
-    push @elements, draw_findable(undef, $mojo, $client);
 
     push @elements, @anims;
 
@@ -1787,7 +1787,6 @@ mach_spawn("#notation", sub { # {{{
     }
 
     my @elements = ['clear'];
-    push @elements, draw_findable(undef, $mojo, $client);
     my ($x, $y) = (40, 40);
     for (@note_nodes) {
         my ($name, $id, $color) = nameidcolor(summarise($_));
@@ -1919,11 +1918,34 @@ mach_spawn("#dump_trail", sub { # {{{
 
 $webbery->spawn("#clients"); # {{{
 
-# define the TOOLBAR
+# {{{ define the TOOLBAR
 $toolbar->link($webbery);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
+sub scopify_toolbar {
+    my $y = 20;
+    my ($width) = $client->linked("#width")->thing;
+    my $x = $width - 35;
+
+    # in the future you'd link $scope to $toolbar with algorithm to grab what's displaying and how
+    my @new;
+    for my $ble ($toolbar->linked()) {
+        my $sum = summarise($ble);
+        my ($name, $id, $color) = nameidcolor($sum);
+        $name = "$name $id";
+        $sum =~ s/ .{12}$//;
+        $y += 40;
+        push @new, ["boxen", $x, $y, 30, 30,
+                { fill => $color, name => $name, id => $id, } ],
+            ["label", $x - length($sum)*8.5, $y, $sum,
+                { id => $id } ]
+    }
+    my $toolbarn = $scope->spawn("#toolbar");
+    $toolbarn->spawn($_) for @new;
+}
+# }}}
+
 
 
 # TODO also is stateless data access functions, so butter can interrogate frankenbutter
@@ -1954,38 +1976,15 @@ sub hello {
 
     $mojo->render(json => [object => { id => home() }]);
 }
-my $findable_y = 20;
 get '/width' => sub {
     my $mojo = shift;
     my $width = $mojo->param('width');
     $client->in_field(sub{
         shift->spawn($width)->id("width");
     });
+    scopify_toolbar();
     $mojo->render(json => "Q");
 };
-
-sub draw_findable { # TOOLBAR
-    # TODO this should be just another thing in webbery...
-    my ($self, $mojo, $client) = @_;
-    my $findable_y = $findable_y;
-    my ($width) = $client->linked("#width")->thing;
-    my $x = $width - 35;
-
-    my $svg = $client->linked("#svg");
-    my @new;
-    for my $ble ($toolbar->linked()) {
-        my $sum = summarise($ble);
-        my ($name, $id, $color) = nameidcolor($sum);
-        $name = "$name $id";
-        $sum =~ s/ .{12}$//;
-        push @new, grep { $svg->link($ble, $_); 1 }
-            ["boxen", $x, do { $findable_y += 40 }, 30, 30,
-                { fill => $color, name => $name, id => $id, } ],
-            ["label", $x - length($sum)*8.5, $findable_y, $sum,
-                { id => $id } ]
-    }
-    return @new;
-}
 
 sub nameidcolor { #{{{
     my $summarised = shift;
@@ -2201,7 +2200,6 @@ sub get_object { # OBJ
         $drawings[0]->[1] .= "(clear=$clear)";
 # TODO the rest of the screen should be structured graph
 # theres probably a group thing in svg that can tidily remove etc...
-        unshift @drawings, draw_findable(undef, $mojo, $client); 
         unshift @drawings, ["clear", $clear];
         if ($TEST) {
             $TEST->spawn($drawings[0])->id("#clear");
@@ -2215,7 +2213,7 @@ sub get_object { # OBJ
     $mojo->drawings(@drawings);
 };
 
-sub trash_viewed_exam {
+sub trash_viewed_exam { # {{{
 # this should be more like a hook on the client->exam link destruction
 # al-so placing the exam #viewed should happen upon client->self (get_object) destruction
 # then it's all ready for the next round
@@ -2288,9 +2286,9 @@ sub search_about_object {
         $_->spawn($exam)->id("#object-examination");
     }
     return $exam;
-}
+} # }}}
 
-sub generate_svg { # GEN
+sub generate_svg { # {{{
     my ($self, $mojo, $client) = @_;
 
     my $ids = goof($client, "+ #ids {}")->thing;
@@ -2317,9 +2315,9 @@ sub generate_svg { # GEN
             x => $ex->{depth},
         });
     });
-}
+} # }}}
 
-sub diff_svgs {
+sub diff_svgs { # {{{
     my ($self, $mojo, $client) = @_;
 
     my $drawings = $self->linked("#drawings");
@@ -2369,10 +2367,10 @@ sub chlnkg {
     unless (@an == 1 || @dr == 1) {
         die Dump{anim=>\@an, draw=>\@dr};
     }
-}
+} # }}}
 
 
-sub fill_in_svg {
+sub fill_in_svg { # {{{
     my ($self, $mojo, $client) = @_;
 
     my $drawings = $self->linked("#drawings");
@@ -2564,7 +2562,7 @@ sub fill_in_svg {
     }
     %$translates = %$new_translates if %$new_translates;
     return;
-}
+} # }}}
 
 get '/object_info' => sub {
     my $mojo = shift;
