@@ -1681,10 +1681,12 @@ mach_spawn("#trippyboxen", sub { # {{{
     $machs->linked("#trippyboxen_setup")->thing->();
 
     my $in = -300;
+    my $rotate;
 
     my $idi = 0;
     my $elements = sub {
         my @elements;
+        $rotate = "30 100 100";
         for my $d (-15..15) {
             $d = ($d / 15) * 50 * ($d / 14);
             for (1..5) {
@@ -1713,8 +1715,13 @@ mach_spawn("#trippyboxen", sub { # {{{
         my $e2 = shift @elements2;
         my $x = $e1->[1] - $e2->[1];
         my $y = $e1->[2] - $e2->[2];
+        my $rotate = $rotate;
+        $rotate =~ s/^(\d+)/$1 + ($e2->[2] * 4) \/ ($1 * 0.7) /e;
         push @anims, ["animate", $e1->[-1]->{id},
-                    {svgTransform => "translate($x $y)"},
+                    {svgTransform => "rotate($rotate) translate($x $y)",
+                    svgStrokeWidth => 3,
+                    svgStroke => "white",
+                    svgFillOpacity => 0.3},
                     5000]
     }
 
