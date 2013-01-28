@@ -451,6 +451,10 @@ console.log when a remove or animate doesn't find its target
 
 make field membership a hash in the node for fast association
 
+the linguotic web of program
+the attention that shines on patches of structure
+the actions that build graph
+
 WORDS
 =cut
 
@@ -2112,7 +2116,7 @@ sub get_object { # OBJ
     my $id = shift || $mojo->param('id')
         || die "no id";
 
-    say "ID : $id";
+    say "ID: $id";
     if ($id =~ /_ctrl_/) {
         return do_stuff('get_object/ctrl', $mojo, $id);
     }
