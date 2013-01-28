@@ -964,6 +964,11 @@ sub mach_spawn { # {{{
         $spec->{owner} = $m->id;
         my ($controls, $controller) = display_code_guts($for, %$spec);
         attach_stuff("get_object/ctrl", $controller);
+        attach_for_once('get_object/changing_object', "#tidyup_".$spec->{owner}, sub {
+            my ($self) = @_;
+            detach_stuff("get_object/ctrl", $controller);
+            $scope->trash_id("#".$spec->{owner}."_controls");
+        });
     }
     return $m
 }
