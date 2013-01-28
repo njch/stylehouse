@@ -442,7 +442,7 @@ G(scope):
 hmm lets...
   expand upon "#notation" with pagination
   create some notation maps, known low-level trees to fold up
-    and some big-deals to draw bigger
+    and some big-deals to draw bigger, eg Web->run, get_object requests
   see frankenbutter execution
     add breakpoints
     interrogate franken being via port 3001 from butter
@@ -1095,7 +1095,11 @@ sub display_code_guts {
                 $x = 20;
                 $y += 30;
             }
-            push @controls, ['label', $x, $y, $_] if /\S/;
+            if (/\S/) {
+                push @controls, ['label', $x, $y, $_,
+                    { id => $p{owner}."_ctrl_".$i."l" },
+                ]
+            }
             $x += length($_) * 10;
             $i++;
         }
