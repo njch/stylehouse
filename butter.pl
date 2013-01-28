@@ -1945,6 +1945,7 @@ if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
 sub scopify_toolbar {
+    return if $scope->find("#toolbar");
     my $y = 20;
     my ($width) = $client->linked("#width")->thing;
     my $x = $width - 35;
