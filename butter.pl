@@ -807,7 +807,7 @@ sub trash {
     }
     else {
         for my $n ($self->linked) {
-            say main::summarise($self)." going to delete ".main::summarise($n);
+            #say main::summarise($self)." going to delete ".main::summarise($n);
             $self->unlink($n);
         }
         $self->graph->denode($self);
@@ -962,12 +962,22 @@ sub mach_spawn { # {{{
         my ($spec) = @etc;
         my $for = delete $spec->{open_guts};
         $spec->{owner} = $m->id;
+        # TODO in_field for all these machs so they go away on tidyup?
+        #   or some more graphily robust mach-awakeness epicentre 
+        # these sub-machs need to be attached and detached as the owner is requested or dequested
         my ($controls, $controller) = display_code_guts($for, %$spec);
-        attach_stuff("get_object/ctrl", $controller);
-        attach_for_once('get_object/changing_object', "#tidyup_".$spec->{owner}, sub {
-            my ($self) = @_;
-            detach_stuff("get_object/ctrl", $controller);
-            $scope->trash_id("#".$spec->{owner}."_controls");
+        my $enabled = 0;
+        mach_spawn("#".$spec->{owner}."_setup", sub {
+            unless ($enabled) {
+                attach_stuff("get_object/ctrl", $controller);
+                attach_for_once('get_object/changing_object', "#".$spec->{owner}."_tidyup", sub {
+                    my ($self) = @_;
+                    detach_stuff("get_object/ctrl", $controller);
+                    $scope->trash_id("#".$spec->{owner}."_controls");
+                    $enabled = 0;
+                });
+                $enabled = 1;
+            }
         });
     }
     return $m
@@ -1226,6 +1236,7 @@ sub short_codegraph {
 
 if ($0 =~ /frankenbutter/) {
     $port = "3001";
+    exit;
     # start webbery on another port
     # fork for test routines
     # reload subroutines as butter hacks them up
@@ -1667,6 +1678,8 @@ mach_spawn("#tout", sub { #{{{
 mach_spawn("#trippyboxen", sub { # {{{
     my ($self, $mojo, $clunt, $id) = @_;
 
+    $machs->linked("#trippyboxen_setup")->thing->();
+
     my $in = -300;
 
     my $idi = 0;
@@ -1759,6 +1772,8 @@ mach_spawn("#reexamine", sub { # {{{
 
 mach_spawn("#notation", sub { # {{{
     my ($self, $mojo, $cliuent, $id) = @_;
+
+    $machs->linked("#notation_setup")->thing->();
 
     my $r = new Graph("notation")->spawn("#root");
     my @notation = read_file('notation');
@@ -1925,6 +1940,7 @@ $webbery->spawn("#clients"); # {{{
 
 # {{{ define the TOOLBAR
 $toolbar->link($webbery);
+$toolbar->link($P);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
@@ -1950,7 +1966,6 @@ sub scopify_toolbar {
     $toolbarn->spawn($_) for @new;
 }
 # }}}
-
 
 
 # TODO also is stateless data access functions, so butter can interrogate frankenbutter
@@ -2081,6 +2096,7 @@ sub get_object { # OBJ
     my $id = shift || $mojo->param('id')
         || die "no id";
 
+    say "ID : $id";
     if ($id =~ /_ctrl_/) {
         return do_stuff('get_object/ctrl', $mojo, $id);
     }
