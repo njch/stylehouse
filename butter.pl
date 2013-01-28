@@ -1952,6 +1952,7 @@ $webbery->spawn("#clients"); # {{{
 # {{{ define the TOOLBAR
 $toolbar->link($webbery);
 $toolbar->link($P);
+$toolbar->link($scope);
 if (my $cg = $webbery->find("#codegraph")) {
     $toolbar->link($cg->thing);
 }
@@ -1964,6 +1965,9 @@ sub scopify_toolbar {
     # in the future you'd link $scope to $toolbar with algorithm to grab what's displaying and how
     my @new;
     for my $ble ($toolbar->linked()) {
+        if (ref $ble->thing eq "Graph") {
+            $ble = $ble->thing;
+        }
         my $sum = summarise($ble);
         my ($name, $id, $color) = nameidcolor($sum);
         $name = "$name $id";
