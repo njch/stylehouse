@@ -970,7 +970,7 @@ sub mach_spawn { # {{{
         mach_spawn("#".$spec->{owner}."_setup", sub {
             unless ($enabled) {
                 attach_stuff("get_object/ctrl", $controller);
-                attach_for_once('get_object/changing_object', "#".$spec->{owner}."_tidyup", sub {
+                attach_for_once('get_object/01', "#".$spec->{owner}."_tidyup", sub {
                     my ($self) = @_;
                     detach_stuff("get_object/ctrl", $controller);
                     $scope->trash_id("#".$spec->{owner}."_controls");
