@@ -1791,7 +1791,7 @@ mach_spawn("#notation", sub { # {{{
     if ($from) {
         splice @notation, 0, $from
     }
-    @notation = @notation[0..$row_limit];
+    splice @notation, $row_limit; # warns if limit is past the end
     my @notes;
     for (@notation) {
         s/^(\s+)/('..') x length($1)/e;
