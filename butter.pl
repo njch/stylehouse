@@ -1234,9 +1234,13 @@ sub short_codegraph {
     return $short->graph;
 } # }}}
 
+sub make_an_exit {
+    exit;
+}
+
 if ($0 =~ /frankenbutter/) {
     $port = "3001";
-    exit;
+    make_an_exit();
     # start webbery on another port
     # fork for test routines
     # reload subroutines as butter hacks them up
