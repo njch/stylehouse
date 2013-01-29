@@ -466,6 +466,7 @@ our $machs = $webbery->spawn("#mach");
 our $client; # TODO low priority though is sessions
 our $codes = codes();
 our $port = "3000";
+our $frankpid;
 our $G;
 our $TEST;
 use File::Slurp 'append_file';
@@ -1244,13 +1245,15 @@ sub make_an_exit {
 
 if ($0 =~ /frankenbutter/) {
     $port = "3001";
-    make_an_exit();
     # start webbery on another port
     # fork for test routines
     # reload subroutines as butter hacks them up
 }
 else {
-    if (my $pid = fork()) {
+    frankenfork();
+}
+sub frankenfork {
+    if ($frankpid = fork()) {
         # start our own webbery, talk to frankenbutter
     }
     else {
@@ -1870,6 +1873,13 @@ mach_spawn("#notation", sub { # {{{
 },
 ); # }}}
 
+mach_spawn("#refrank", sub { # {{{
+    my ($self, $mojo, $cliuent, $id) = @_;
+    `kill $frankpid`;
+    frankenfork();
+    sleep 1;
+    $machs->linked("#notation")->thing->(@_);
+}, 'toolbar'); # }}}
 
 mach_spawn("#hits", sub { # {{{
     my ($self, $mojo, $client) = @_;
