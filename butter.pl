@@ -464,6 +464,8 @@ the linguotic web of program
 the attention that shines on patches of structure
 the actions that build graph
 
+so features complicate "public" program bits until common ground is laterally established
+
 WORDS
 =cut
 
@@ -489,7 +491,7 @@ our $P = do { # {{{
     for (qw{
         Graph/link/done
         Graph/unlink/deleted_link
-        get_object/changing_object
+        scope/changing_object
         get_object/ctrl
         get_object/01
         }) {
@@ -1027,7 +1029,7 @@ mach_spawn("#filesystem", sub { # {{{
     get_object($mojo, $fs->{uuid});
 }); # }}}
 
-mach_spawn("#thecodegraph", sub { # {{{ COD
+mach_spawn("#thecodegraph", sub { # {{{
     my ($self, $mojo, $client) = @_;
 
     my $short = $webbery->find("#codegraph");
@@ -1066,9 +1068,98 @@ mach_spawn("#thecodegraph", sub { # {{{ COD
 
     attach_stuff('get_object/01', $click_handler);
 
-}, "toolbar");
+}, "toolbar"); # }}}
 
-sub display_code_guts { # GUTS
+mach_spawn("#notation", sub { # {{{
+    my ($self, $mojo, $cliuent, $id) = @_;
+
+    $machs->linked("#notation_setup")->thing->();
+
+    my @notation = read_file('notation');
+    my $l = 0;
+
+    my $ind_limit = 5;
+    my $row_limit = 60;
+    my $from = 0;
+
+
+    my @notes;
+    for (@notation) {
+        $l++;
+        next while --$from > 0;
+
+        s/\n$//;
+        s/^(\s+)/('..') x length($1)/e;
+        if (length($1) >= $ind_limit) {
+            unless ($notes[-1] =~ /etc/) {
+                push @notes, "$l ".(("..") x $ind_limit)."etc 0"
+            }
+            my ($c) = $notes[-1] =~ /etc (\d+)/;
+            $c++;
+            $notes[-1] =~ s/etc \d+/etc $c/;
+        }
+        elsif (@notes >= $row_limit) {
+            last;
+        }
+        else {
+            push @notes, $l." ".$_;
+        }
+    }
+
+    my @elements = ['clear'];
+
+    # TODO make thecodegraph use ids
+    if ($id && $id =~ /_l(\d+)$/) {
+        push @elements, ['status' => "Line: $1"];
+    }
+
+    my ($x, $y) = (40, 40);
+    my $make_note_element = sub {
+        my $note = shift;
+        my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
+        $pack ||= "etc";
+        $note =~ s/^(\d+) (\.+)//;
+        my ($l, $ind) = ($1, $2);
+        my $x = $x + length($ind) * 6;
+
+        my $strokes = {
+            main => "black",
+            Graph => "#33ff44",
+            Node => "red",
+            etc => "#656565",
+        };
+
+        my $attr = {};
+        $attr->{id} = "notation_l$l";
+        $attr->{fill} = "#gg9922";
+        $attr->{fillOpacity} = "0.5";
+        $attr->{stroke} = $strokes->{$pack} || "white";
+        $attr->{strokeWidth} = 3;
+
+        push @elements,
+            ['boxen', $x, $y + 7, 8, 8, $attr],
+            ['label', $x + 19, $y, $note];
+
+        $y += 12;
+    };
+    $make_note_element->($_) for @notes;
+
+
+
+    $machs->linked("#notation_controls")->thing->();
+    $mojo->drawings(@elements);
+
+}, "toolbar",
+{
+    open_guts => "mach notation",
+    from => qr/my \$ind_limit/,
+    to => qr/my \$from/,
+    controls => "numbercrankers",
+    y => 800,
+},
+); # }}}
+
+sub display_code_guts { # {{{ GUTS
     my ($codename, %p) = @_;
 
     my $owner_mach = $machs->linked('#'.$p{owner}) || die;
@@ -1177,9 +1268,9 @@ sub display_code_guts { # GUTS
     });
 
     return ($controls, $controller);
-}
+} # }}}
 
-sub codes {
+sub codes { # {{{
     my @code = read_file('butter.pl');
     my @chunks = ([]);
 
@@ -1797,92 +1888,6 @@ mach_spawn("#reexamine", sub { # {{{
     return $mojo->drawings(@drawings);
 }, "toolbar"); # }}}
 
-mach_spawn("#notation", sub { # {{{
-    my ($self, $mojo, $cliuent, $id) = @_;
-
-    $machs->linked("#notation_setup")->thing->();
-
-    my @notation = read_file('notation');
-    my $l = 0;
-
-    my $ind_limit = 5;
-    my $row_limit = 60;
-    my $from = 0;
-
-    my @notes;
-    for (@notation) {
-        $l++;
-        next while --$from > 0;
-
-        s/\n$//;
-        s/^(\s+)/('..') x length($1)/e;
-        if (length($1) >= $ind_limit) {
-            unless ($notes[-1] =~ /etc/) {
-                push @notes, "$l ".(("..") x $ind_limit)."etc 0"
-            }
-            my ($c) = $notes[-1] =~ /etc (\d+)/;
-            $c++;
-            $notes[-1] =~ s/etc \d+/etc $c/;
-        }
-        elsif (@notes >= $row_limit) {
-            last;
-        }
-        else {
-            push @notes, $l." ".$_;
-        }
-    }
-
-    my @elements = ['clear'];
-
-    if ($id && $id =~ /ctrl_l(\d+)$/) {
-        push @elements, ['status' => "Line: $1"];
-    }
-
-    my ($x, $y) = (40, 40);
-    my $make_note_element = sub {
-        my $note = shift;
-        my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
-        $pack ||= "etc";
-        $note =~ s/^(\d+) (\.+)//;
-        my ($l, $ind) = ($1, $2);
-        my $x = $x + length($ind) * 4;
-
-        my $strokes = {
-            main => "black",
-            Graph => "#33ff44",
-            Node => "red",
-            etc => "#656565",
-        };
-
-        my $attr = {};
-        $attr->{id} = "notation_ctrl_l$l";
-        $attr->{fill} = "#gg9922";
-        $attr->{fillOpacity} = "0.5";
-        $attr->{stroke} = $strokes->{$pack} || "white";
-        $attr->{strokeWidth} = 3;
-
-        push @elements,
-            ['boxen', $x, $y + 7, 8, 8, $attr],
-            ['label', $x + 19, $y, $note];
-
-        $y += 12;
-    };
-    $make_note_element->($_) for @notes;
-
-
-
-    $machs->linked("#notation_controls")->thing->();
-    $mojo->drawings(@elements);
-
-}, "toolbar",
-{
-    open_guts => "mach notation",
-    from => qr/my \$ind_limit/,
-    to => qr/my \$from/,
-    controls => "numbercrankers",
-    y => 800,
-},
-); # }}}
 
 mach_spawn("#refrank", sub { # {{{
     my ($self, $mojo, $cliuent, $id) = @_;
@@ -1940,7 +1945,7 @@ mach_spawn("#hits", sub { # {{{
 sub later_id_remover { #{{{
     my ($from, @ids) = @_;
 
-    attach_for_once('get_object/changing_object', "#tidyup_$from", sub {
+    attach_for_once('scope/changing_object', "#tidyup_$from", sub {
         my ($self) = @_;
         my $rms = $self->linked("#removals")->thing;
         push @$rms, map { [ remove => $_ ] } @ids;
@@ -2134,6 +2139,7 @@ get '/object' => \&get_object;
 sub get_object { # OBJ
     my $mojo = shift;
 
+    defined $client || return $mojo->sttus("hit F5!");
     my $id = shift || $mojo->param('id')
         || die "no id";
 
@@ -2142,18 +2148,25 @@ sub get_object { # OBJ
         return do_stuff('get_object/ctrl', $mojo, $id);
     }
 
-    $id =~ s/-(l|b|c)\d*$//; # id is #..., made uniqe
-    my $mode = $1 || "b";
-
-    defined $client || return $mojo->sttus("hit F5!");
-    my $self = $client->spawn("#get_objection");
+    my $self = $client->spawn("#get_object");
     $self->in_field(sub {
         shift->spawn($id)->id('id');
     });
 
-    my $object = object_by_uuid($id)
-        || return $mojo->sttus("$id no longer exists!");
+    my $object = object_by_uuid($id);
 
+    unless ($object) {
+        # this must be some made-up id of a mach's internals
+        if (do { $object = $client->linked("#object") }
+            && ref $object->thing eq "Node"
+            && $machs->linked($object->thing)) {
+
+            return $object->thing->thing->($object, $mojo, $client, $id);
+        }
+        else {
+            return $mojo->sttus("$id no longer exists!");
+        }
+    }
 
     my $r = do_stuff('get_object/01', $self, $mojo, $client, $object);
     if ($r->{changeofplan} && $r->{changeofplan} eq "return") {
@@ -2161,18 +2174,31 @@ sub get_object { # OBJ
         return;
     }
 
+    if (ref $object eq "Node") {
+        if ($machs->linked($object)) {
+            the_object($object);
+            return $object->thing->($object, $mojo, $client);
+        }
+    }
 
+    the_object($object);
+    examinate_object($self, $mojo, $object, $id);
+}
+
+sub the_object { # hook here...
+    my $object = shift;
+    $_->trash() for $client->linked("#object");
+    $client->spawn($object)->id("#object");
+}
+
+sub examinate_object {
+    my ($self, $mojo, $object, $id) = @_;
 
     start_timer();
     my $status = "For ". summarise($object);
     if (ref $object eq "Graph") {
         # can't traverse from a graph so create a list of Nodes and continue with that
         $object = examinate_graph($object);
-    }
-    elsif (ref $object eq "Node") {
-        if ($machs->linked($object)) {
-            return $object->thing->($object, $mojo, $client);
-        }
     }
     else {
         confess ref $object;
@@ -2189,11 +2215,6 @@ sub get_object { # OBJ
         if (my $h = $TEST->linked("#viewed_hook")) {
             $h->thing->();
         }
-    }
-
-    if ($mode eq "c") {
-        $object = $viewed->thing->first->thing; # do it again
-        $self->linked("#object")->{thing} = $object;
     }
 
     ($viewed, my $viewed_node) = ($viewed->thing, $viewed) if $viewed;
@@ -2224,14 +2245,14 @@ sub get_object { # OBJ
     fill_in_svg($self, $mojo, $client);
 
     my $clear;
-    if (!$viewed && $mode ne "c") { # TODO hmm
+    if (!$viewed) { # TODO hmm
         $clear = "viewed";
     }
 
     unless (@{ $self->linked("#animations")->thing }) {
         $clear = "noanim";
     }
-    main::do_stuff('get_object/changing_object', $self, $mojo, $client);
+    main::do_stuff('scope/changing_object', $self, $mojo, $client); # TODO clinging to existence
 
     if ($TEST) {
         use Storable 'dclone';
