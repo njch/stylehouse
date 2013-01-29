@@ -439,17 +439,26 @@ G(scope):
   things that want animation can complicate for it
   has begun but need to delete "exam" when it's no longer the object of attention...
 
-hmm lets...
-  expand upon "#notation" with pagination
-  create some notation maps, known low-level trees to fold up
+expand upon #notation
+it's the beginning of the action/attention machine
+to understand its own functioning
+understand meaning to be able to present it to the developer so they can understand
+it's a symbiosis of three:
+ franken does stuff
+ butter interprets notation
+ developer sees patterns and applies the human mind
+
+create some notation maps, known low-level trees to fold up
     and some big-deals to draw bigger, eg Web->run, get_object requests
   see frankenbutter execution
-    add breakpoints
+    add resume/breakpoints
+      control via notation()
+      run webserver while broken?
     interrogate franken being via port 3001 from butter
 
 console.log when a remove or animate doesn't find its target
 
-make field membership a hash in the node for fast association
+make field membership a hash in the node for fast association (and use it so)
 
 the linguotic web of program
 the attention that shines on patches of structure
@@ -1793,20 +1802,20 @@ mach_spawn("#notation", sub { # {{{
 
     $machs->linked("#notation_setup")->thing->();
 
-    my $r = new Graph("notation")->spawn("#root");
     my @notation = read_file('notation');
     my $l = 0;
+
     my $ind_limit = 5;
+    my $row_limit = 60;
     my $from = 0;
-    my $row_limit = 1000;
-    if ($from) {
-        splice @notation, 0, $from
-    }
-    splice @notation, $row_limit; # warns if limit is past the end
+
     my @notes;
     for (@notation) {
-        s/^(\s+)/('..') x length($1)/e;
         $l++;
+        next while --$from > 0;
+
+        s/\n$//;
+        s/^(\s+)/('..') x length($1)/e;
         if (length($1) >= $ind_limit) {
             unless ($notes[-1] =~ /etc/) {
                 push @notes, "$l ".(("..") x $ind_limit)."etc 0"
@@ -1815,59 +1824,61 @@ mach_spawn("#notation", sub { # {{{
             $c++;
             $notes[-1] =~ s/etc \d+/etc $c/;
         }
+        elsif (@notes >= $row_limit) {
+            last;
+        }
         else {
             push @notes, $l." ".$_;
         }
     }
-    my @note_nodes;
-    for (@notes) {
-        push @note_nodes, $r->spawn($_);
-    }
 
     my @elements = ['clear'];
-    my ($x, $y) = (40, 40);
-    for (@note_nodes) {
-        my ($name, $id, $color) = nameidcolor(summarise($_));
-        push @elements,
-            ['boxen', $x, $y, 10, 10, { fill => $color, id => $id }],
-            ['label', $x + 15, $y, $_->thing];
-        $y += 12;
+
+    if ($id && $id =~ /ctrl_l(\d+)$/) {
+        push @elements, ['status' => "Line: $1"];
     }
+
+    my ($x, $y) = (40, 40);
+    my $make_note_element = sub {
+        my $note = shift;
+        my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
+        $pack ||= "etc";
+        $note =~ s/^(\d+) (\.+)//;
+        my ($l, $ind) = ($1, $2);
+        my $x = $x + length($ind) * 4;
+
+        my $strokes = {
+            main => "black",
+            Graph => "#33ff44",
+            Node => "red",
+            etc => "#656565",
+        };
+
+        my $attr = {};
+        $attr->{id} = "notation_ctrl_l$l";
+        $attr->{fill} = "#gg9922";
+        $attr->{fillOpacity} = "0.5";
+        $attr->{stroke} = $strokes->{$pack} || "white";
+        $attr->{strokeWidth} = 3;
+
+        push @elements,
+            ['boxen', $x, $y + 7, 8, 8, $attr],
+            ['label', $x + 19, $y, $note];
+
+        $y += 12;
+    };
+    $make_note_element->($_) for @notes;
+
+
+
     $machs->linked("#notation_controls")->thing->();
     $mojo->drawings(@elements);
 
-    # while this graph is on the screen
-    0 && do {
-    my $click_handler;
-    $click_handler = mach_spawn("#notation_expand", sub {
-        my ($self, $mojo, $client, $object) = @_;
-        if ($object->{graph} eq $r->{graph} && $object ne $r) {
-            my ($from, $for) = $object->thing =~ /^(\d+) .+etc (\d+)$/;
-            unless ($for) {
-                $mojo->sttus("not expandable: ". $object->thing);
-                return {changeofplan => "return"};
-            }
-            $from--;
-            my @new = @notation[$from..$from+$for];
-            for (@new) {
-                $object->spawn($_);
-            }
-            get_object($mojo, $r->{uuid});
-            return {changeofplan => "return"};
-
-        }
-        elsif ($object->{graph} ne $r->{graph}) {
-            detach_stuff('get_object/01', $click_handler);
-        }
-    });
-
-    attach_stuff('get_object/01', $click_handler);
-    };
 }, "toolbar",
 {
     open_guts => "mach notation",
     from => qr/my \$ind_limit/,
-    to => qr/my \$row_limit/,
+    to => qr/my \$from/,
     controls => "numbercrankers",
     y => 800,
 },
@@ -2003,7 +2014,7 @@ sub scopify_toolbar {
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#trippyboxen")->{uuid}
+    return $webbery->find("#notation")->{uuid}
 }
 sub hello {
     my $mojo = shift;
