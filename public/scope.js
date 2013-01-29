@@ -36,7 +36,7 @@ function drawstuff () {
         }
         else if (inst[0] == 'boxen') {
             var b = inst.slice(1);
-            var rect = svg.rect(b[0], b[1], b[2], b[3], b[4]);
+            var rect = svg.ellipse(b[0], b[1], b[2], b[3], b[4]);
             $(rect)
                 .bind('mouseover', ob_Over)
                 .bind('mouseout', ob_Out)
