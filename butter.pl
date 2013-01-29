@@ -494,6 +494,7 @@ our $P = do { # {{{
         scope/changing_object
         get_object/ctrl
         get_object/01
+        fill_in_svg/oaid
         }) {
         my @path = split '/';
         my $pathmake;
@@ -522,6 +523,20 @@ sub pointilise {
         $p or die "no such $next";
     }
     return $p;
+}
+sub attach_stuff_until {
+    my ($p, $untilp, $mach) = @_;
+    attach_stuff($p, $mach);
+    attach_tidyup($p, $untilp, $mach);
+}
+sub attach_tidyup {
+    my ($p, $untilp, $mach) = @_;
+    my $tidyup;
+    $tidyup = mach_spawn("#".$mach->id."_tidyup", sub {
+        detach_stuff($p, $mach);
+        detach_stuff($untilp, $tidyup);
+    });
+    attach_stuff($untilp, $tidyup);
 }
 sub attach_stuff {
     my ($p, $mach) = @_;
@@ -564,6 +579,9 @@ sub do_stuff {
         my $r = $m->thing->(@a);
         if (ref $r eq "HASH" && $r->{changeofplan}) {
             $plan = $r; # TODO multiplicity clobbered: geometry testing will make the haphazard okay
+        }
+        if (ref $r eq "HASH" && $r->{return}) {
+            $plan = $r->{return}
         }
     }
     return $plan;
@@ -1030,44 +1048,45 @@ mach_spawn("#filesystem", sub { # {{{
 }); # }}}
 
 mach_spawn("#thecodegraph", sub { # {{{
-    my ($self, $mojo, $client) = @_;
+    my ($self, $mojo, $client, $id) = @_;
 
-    my $short = $webbery->find("#codegraph");
-    $short ||= $webbery->spawn(short_codegraph());
-    $short->id("#codegraph");
+    if (!$id) {
+        # rendering all codes
+        my $short = $webbery->find("#codegraph");
+        $short ||= $webbery->spawn(short_codegraph());
+        $short->id("#codegraph");
 
-    my $root = $short->thing->find("root");
+        my $root = $short->thing->find("root");
 
-    get_object($mojo, $root->{uuid});
+        # so that the get_object graph has weird ids that will lead back to this mach
+        my $oaid_munt = mach_spawn("#codegraph_munt_oaid", sub {
+            my ($self, $new, $oaid) = @_;
+            return {return => "cg_".$new->thing->{uuid}};
+        });
+        attach_stuff("fill_in_svg/oaid", $oaid_munt);
+        get_object($mojo, $root->{uuid});
+        # return to us though, this aint really an exam
+        the_object($machs->linked("#thecodegraph"));
+        attach_tidyup("fill_in_svg/oaid", "get_object/01", $oaid_munt);
+    }
+    else {
+        # expanding a code
+        $id =~ s/^cg_//;
+        my $codenode;
+        my $short = $webbery->find("#codegraph")->thing;
+        $short->map_nodes(sub {
+            $codenode = $_[0] if $_[0]->{uuid} eq $id});
+        $codenode = object_by_uuid($codenode->thing->{origin});
+        my $code = $codenode->thing->{code};
 
-    # while this graph is on the screen
-    # TODO doesn't work when using attach_for_once() instead? 
-    my $click_handler;
-    $click_handler = mach_spawn("#codegraph_ancode", sub {
-        my ($self, $mojo, $client, $object) = @_;
-        if ($object->{graph} eq $root->{graph} && $object ne $root) {
-            my $origin = $object->thing->{origin};
-            my $codenode;
-            $codes->map_nodes(sub { $codenode = $_[0] if $_[0]->{uuid} eq $origin });
-            my $code = $codenode->thing->{code};
-
-            my $y = 50;
-            my @draws = ['clear'];
-            for (split("\n", $code)) {
-                my ($ws) = /^(\s+)/;
-                push @draws, ['label', 10 + (5 * length($ws||"")), ($y += 20), $_ ]
-            }
-            $mojo->drawings(@draws);
-
-            return {changeofplan => "return"};
+        my $y = 50;
+        my @draws = ['clear'];
+        for (split("\n", $code)) {
+            my ($ws) = /^(\s+)/;
+            push @draws, ['label', 10 + (5 * length($ws||"")), ($y += 20), $_ ]
         }
-        elsif ($object->{graph} ne $root->{graph}) {
-            detach_stuff('get_object/01', $click_handler);
-        }
-    });
-
-    attach_stuff('get_object/01', $click_handler);
-
+        $mojo->drawings(@draws);
+    }
 }, "toolbar"); # }}}
 
 mach_spawn("#notation", sub { # {{{
@@ -2019,7 +2038,7 @@ sub scopify_toolbar {
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#notation")->{uuid}
+    return $webbery->find("#thecodegraph")->{uuid}
 }
 sub hello {
     my $mojo = shift;
@@ -2199,6 +2218,9 @@ sub examinate_object {
     if (ref $object eq "Graph") {
         # can't traverse from a graph so create a list of Nodes and continue with that
         $object = examinate_graph($object);
+    }
+    elsif (ref $object eq "Node") {
+        # alright!
     }
     else {
         confess ref $object;
@@ -2533,15 +2555,13 @@ sub fill_in_svg { # {{{
         my ($name, $id, $color) = nameidcolor($stuff);
         my (@elements, $height);
 
+        my $new_oaid = do_stuff('fill_in_svg/oaid', $self, $new, $oaid);
+        $oaid = $new_oaid if $new_oaid && ref $new_oaid ne "HASH";
+
         push @elements, [ 'boxen', -20, -2, 18, 18, {
             fill => $color,
             name => $name,
-            id => "$oaid-b",
-        } ];
-        push @elements, [ 'boxen', -4, -2, 4, 18, {
-            fill => "000$color",
-            stroke=> "000",
-            id => "$oaid-c",
+            id => "$oaid",
         } ];
 
         if (ref $new->thing eq "Node" &&
