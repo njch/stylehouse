@@ -2674,7 +2674,11 @@ return 1 if caller;
 use Mojo::Server::Daemon;
 my $daemon = Mojo::Server::Daemon->new;
 $daemon->listen(['http://*:'.$port]);
-$daemon->run;
+web_run();
+
+sub web_run {
+    $daemon->run;
+}
 __DATA__
 
 @@ index.html.ep
