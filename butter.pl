@@ -1060,11 +1060,10 @@ sub mach2_spawn {
     mach_spawn("#".$m->id."_setup", sub {
         unless ($enabled) {
             $client->spawn("#".$m->id."_process");
-            say "process is called #".$m->id."_process \n\n";
             $_->() for @setup;
             attach_for_once('get_object/01', "#".$m->id."_tidyup", sub {
                 $_->() for @tidyup;
-                $client->trash_id("#".$m->id."_process");
+                $client->graph->trash_id("#".$m->id."_process");
                 $enabled = 0;
             });
             $enabled = 1;
@@ -1249,12 +1248,28 @@ controls => {
     elements => [
         ["page", "number", "up down"],
     ],
-    y => 800,
+    y => 10,
+    x => -300,
 },
 vars => [
     { "page" => 1 },
 ],
 ); # }}}
+
+sub demagnetise_coord {
+    my ($axis, $val) = @_;
+    if ($val >= 1) {
+        return $val
+    }
+    my ($width) = $client->linked("#width")->thing;
+    if ($val > 0 && $val < 1) {
+        die "relative y" if $axis eq "y";
+        return int($val * $width)
+    }
+    $val = $val * -1;
+    die "relative y" if $axis eq "y";
+    return $width - $val
+}
 
 sub make_controls { # {{{ CONTI
     my (%p) = @_;
@@ -1267,8 +1282,8 @@ sub make_controls { # {{{ CONTI
             || die "no $p{owner} process in progress";
 
         my @controls;
-        my $y = $p{y} || 40;
-        my $x = 20;
+        my $y = demagnetise_coord( y => $p{y} || 40 );
+        my $x = demagnetise_coord( x => $p{x} || 20 );
         my $i = 0;
         for (@bits) {
             my ($target, $type, $etc) = @$_;
@@ -2038,7 +2053,7 @@ mach_spawn("#reexamine", sub { # {{{
         map {
             $_->[0] =~ /^(label|boxen)$/ || die "Nah ". Dump $_;
 
-            $_->[1] +=  $client->linked("#width")->thing / 2 - 100;
+            $_->[1] += demagnetise_coord( x => 0.4 );
 
             my $classid = $_->[-1]->{id}."_reexamine";
             $_->[-1]->{class} .= " $classid";
@@ -2155,8 +2170,7 @@ if (my $cg = $webbery->find("#codegraph")) {
 sub scopify_toolbar {
     return if $scope->find("#toolbar");
     my $y = 20;
-    my ($width) = $client->linked("#width")->thing;
-    my $x = $width - 35;
+    my $x = demagnetise_coord( x => -35 );
 
     # in the future you'd link $scope to $toolbar with algorithm to grab what's displaying and how
     my @new;
