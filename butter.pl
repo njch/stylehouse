@@ -440,6 +440,7 @@ G(scope):
   has begun but need to delete "exam" when it's no longer the object of attention...
 
 expand upon #notation
+so we can use it to watch frankenbutter tick
 it's the beginning of the action/attention machine
 to understand its own functioning
 understand meaning to be able to present it to the developer so they can understand
