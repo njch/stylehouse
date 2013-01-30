@@ -2038,7 +2038,9 @@ sub scopify_toolbar {
 use Mojolicious::Lite;
 get '/hello' => \&hello;
 sub home {
-    return $webbery->find("#thecodegraph")->{uuid}
+    return $webbery->find( # butter      frankenbutter
+        $port eq "3000" ? "#notation" : "#trippyboxen"
+    )->{uuid}
 }
 sub hello {
     my $mojo = shift;
