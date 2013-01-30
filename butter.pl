@@ -986,7 +986,7 @@ package main;
 sub mach_spawn { # {{{
     my ($id, $sub, @etc) = @_;
     $id =~ /^#?\w+$/ || die "bad id: $id";
-    $id =~ s/^(?!#)/#/; # add a # if none
+    $id =~ s/^(?!#)/#/; # add a # if none (stored/returned by Node->id() without)
     my $m = $machs->spawn($id);
     $m->{thing} = $sub;
     if (shift @etc) {
@@ -1016,6 +1016,63 @@ sub mach_spawn { # {{{
     }
     return $m
 }
+sub mach2_spawn {
+    my ($id, $sub, @etc) = @_;
+    $id =~ /^#?\w+$/ || die "bad id: $id";
+    $id =~ s/^(?!#)/#/; # add a # if none (stored/returned by Node->id() without)
+    my $m = $machs->spawn($id);
+    $m->{thing} = $sub;
+    my (@setup, @tidyup);
+    while (@etc) {
+        my $k = shift @etc;
+        if ($k eq "toolbar") {
+            $toolbar->link($m);
+        }
+        elsif ($k eq "controls") {
+            my $spec = shift @etc;
+            $spec->{owner} = $m->id;
+            my ($controls, $controller) = make_controls(%$spec);
+
+            push @setup, sub {
+                attach_stuff("get_object/ctrl", $controller);
+            };
+            push @tidyup, sub {
+                detach_stuff("get_object/ctrl", $controller);
+                $scope->trash_id("#".$spec->{owner}."_controls");
+            };
+        }
+        elsif ($k eq "vars") {
+            my $vs = shift @etc;
+            push @setup, sub {
+                my $process = $client->linked("#".$m->id."_process");
+                my $vars = $process->spawn("#vars");
+                for my $v (@$vs) {
+                    my ($name, $default) = %$v;
+                    $vars->spawn($default)->id("#".$name);
+
+                }
+            }
+        }
+    }
+
+    my $enabled = 0;
+    mach_spawn("#".$m->id."_setup", sub {
+        unless ($enabled) {
+            $client->spawn("#".$m->id."_process");
+            say "process is called #".$m->id."_process \n\n";
+            $_->() for @setup;
+            attach_for_once('get_object/01', "#".$m->id."_tidyup", sub {
+                $_->() for @tidyup;
+                $client->trash_id("#".$m->id."_process");
+                $enabled = 0;
+            });
+            $enabled = 1;
+        }
+    });
+
+    return $m
+}
+
 attach_stuff("Graph/link/done", mach_spawn("#graph_interlinkage", sub {
     my ($g, $l) = @_;
     if ($l->{0}->graph ne $l->{1}->graph) {
@@ -1089,18 +1146,25 @@ mach_spawn("#thecodegraph", sub { # {{{
     }
 }, "toolbar"); # }}}
 
-mach_spawn("#notation", sub { # {{{ NOT
+mach2_spawn("#notation", sub { # {{{ NOT
     my ($self, $mojo, $cliuent, $id) = @_;
 
-    $machs->linked("#notation_setup")->thing->();
+    $machs->linked("#notation_setup")->thing->(); # should be outside of this sub?
+    my $process = $client->linked("#notation_process") || die "no process ". Dump([$client->linked]);
+    my $vars = $process->linked("#vars"); # like OO data
 
     my @notation = read_file('notation');
     my @elements = ['clear'];
     my $l = 0;
 
+    # we wanna have a scrollbar kinda thing on the side
+    # then you click an entity in the tree and it explodes 1 level down
+    # so the seeking must be by page first
+    # then keeping that entity in the top-left...
+
     my $ind_limit = 5;
     my $row_limit = 60;
-    my $page = 1;
+    my $page = $vars->linked("#page")->thing;
     my $from = 0;
 
     if ($page != 1) {
@@ -1180,14 +1244,85 @@ mach_spawn("#notation", sub { # {{{ NOT
     $mojo->drawings(@elements);
 
 }, "toolbar",
-{
-    open_guts => "mach notation",
-    from => qr/my \$ind_limit/,
-    to => qr/my \$from /,
-    controls => "numbercrankers",
+controls => {
+    elements => [
+        ["page", "number", "up down"],
+    ],
     y => 800,
 },
+vars => [
+    { "page" => 1 },
+],
 ); # }}}
+
+sub make_controls { # {{{ CONTI
+    my (%p) = @_;
+
+    my $owner_mach = $machs->linked('#'.$p{owner}) || die;
+    my @bits = @{$p{elements}};
+
+    my $controls = mach_spawn($p{owner}."_controls", sub {
+        my $process = $client->linked("#".$p{owner}."_process")
+            || die "no $p{owner} process in progress";
+
+        my @controls;
+        my $y = $p{y} || 40;
+        my $x = 20;
+        my $i = 0;
+        for (@bits) {
+            my ($target, $type, $etc) = @$_;
+            # vaguely looks like the mach has become an object and here are the data
+            my $vnode = $process->linked("#vars")->linked("#".$target);
+            my $vuuid = $vnode->{uuid};
+            my $current = $vnode->thing;
+            if ($type eq "number") {
+                my $b = -6;
+                for (qw'up down') {
+                    next unless $etc =~ /\b$_\b/;
+                    push @controls,
+                        ['boxen', $x, $y + $b + 8, 10, 6,
+                        { fill => "f".(8 + $b / 2)."7", id => $p{owner}."_ctrl_".$vuuid."_number_".$_ }];
+                    $b += 7;
+                }
+                $x += 12
+            }
+            if (/\S/) {
+                push @controls, ['label', $x, $y, "$target $current",
+                    { id => $p{owner}."_ctrl_".$vuuid."_l" },
+                ]
+            }
+            $x += length($_) * 10;
+            $i++;
+        }
+        $scope->trash_id("#$p{owner}_controls");
+        my $ctrls = $scope->spawn("#$p{owner}_controls");
+        $ctrls->spawn($_) for @controls;
+        return ();
+    });
+
+    my $controller = mach_spawn($p{owner}."_controller", sub {
+        my ($mojo, $id) = @_;
+        my ($vuuid, $what, $how) = $id =~ /^$p{owner}_ctrl_(\w+)_(\w+)_(\w+)$/;
+
+        return unless $vuuid && $what && $how;
+        my $vnode = object_by_uuid($vuuid) || die "no vnode";
+
+        if ($what eq "number") {
+            my $hows = {
+                up => '+ 1', upup => '* 2',
+                down => '- 1', downdown => '* 0.5',
+            };
+            my $v = $vnode->thing;
+            eval "\$v = \$v $hows->{$how}";
+            $vnode->{thing} = $v;
+        }
+
+        # run the thing we just hacked up. do we always want to?
+        $owner_mach->thing->(undef, $mojo);
+    });
+
+    return ($controls, $controller);
+} # }}}
 
 sub display_code_guts { # {{{ GUTS
     my ($codename, %p) = @_;
