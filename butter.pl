@@ -1232,7 +1232,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
 
         push @elements,
             ['boxen', $x, $y + 7, 8, 8, $attr],
-            ['label', $x + 19, $y, $note];
+            ['label', $x + 19, $y, $note, { id => $attr->{id}."l" }];
 
         $y += 12;
     };
@@ -1248,7 +1248,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
     if ($vars->linked("#olds")) {
         my $olds = $vars->linked("#olds")->thing;
         for (@elements) {
-            next unless $_->[0] eq "boxen";
+            next unless $_->[0] =~ /boxen|label/;
             my $old = $olds->{$_->[-1]->{id}};
             next unless $old;
 
