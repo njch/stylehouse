@@ -1089,23 +1089,28 @@ mach_spawn("#thecodegraph", sub { # {{{
     }
 }, "toolbar"); # }}}
 
-mach_spawn("#notation", sub { # {{{
+mach_spawn("#notation", sub { # {{{ NOT
     my ($self, $mojo, $cliuent, $id) = @_;
 
     $machs->linked("#notation_setup")->thing->();
 
     my @notation = read_file('notation');
+    my @elements = ['clear'];
     my $l = 0;
 
     my $ind_limit = 5;
     my $row_limit = 60;
+    my $page = 1;
     my $from = 0;
 
+    if ($page != 1) {
+        $from = ($page - 1) * ($row_limit - 1);
+    }
+    say "page $page is $from away";
 
     my @notes;
     for (@notation) {
         $l++;
-        next while --$from > 0;
 
         s/\n$//;
         s/^(\s+)/('..') x length($1)/e;
@@ -1117,17 +1122,23 @@ mach_spawn("#notation", sub { # {{{
             $c++;
             $notes[-1] =~ s/etc \d+/etc $c/;
         }
-        elsif (@notes >= $row_limit) {
-            last;
-        }
         else {
             push @notes, $l." ".$_;
         }
     }
+    my @notes_really;
+    for (@notes) {
+        next while --$from > 0;
+        push @notes_really, $_;
+        if (@notes_really >= $row_limit) {
+            last;
+        }
+    }
+    if (@notes_really == 0 && $page > 1) {
+        push @elements, ['status', "no page $page"];
+    }
+    @notes = @notes_really;
 
-    my @elements = ['clear'];
-
-    # TODO make thecodegraph use ids
     if ($id && $id =~ /_l(\d+)$/) {
         push @elements, ['status' => "Line: $1"];
     }
@@ -1137,7 +1148,7 @@ mach_spawn("#notation", sub { # {{{
         my $note = shift;
         my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
         $pack ||= "etc";
-        $note =~ s/^(\d+) (\.+)//;
+        $note =~ s/^(\d+) (\.+)/$1 /;
         my ($l, $ind) = ($1, $2);
         my $x = $x + length($ind) * 6;
 
@@ -1172,7 +1183,7 @@ mach_spawn("#notation", sub { # {{{
 {
     open_guts => "mach notation",
     from => qr/my \$ind_limit/,
-    to => qr/my \$from/,
+    to => qr/my \$from /,
     controls => "numbercrankers",
     y => 800,
 },
