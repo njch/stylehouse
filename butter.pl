@@ -1238,7 +1238,35 @@ mach2_spawn("#notation", sub { # {{{ NOT
     };
     $make_note_element->($_) for @notes;
 
+    my $news = {};
+    # must come first as translated boxen get rendered in the old place first
+    for (@elements) {
+        next unless $_->[0] eq "boxen";
+        $news->{$_->[-1]->{id}} = [$_->[1], $_->[2]];
+    }
+    my @anim;
+    if ($vars->linked("#olds")) {
+        my $olds = $vars->linked("#olds")->thing;
+        for (@elements) {
+            next unless $_->[0] eq "boxen";
+            my $old = $olds->{$_->[-1]->{id}};
+            next unless $old;
 
+            say "gun animate $_->[-1]->{id}";
+
+            push @anim, [
+                "animate", $_->[-1]->{id},
+                {svgTransform => "translate(".
+                    ($_->[1] - $old->[0])." ".($_->[2] - $old->[1]).")"},
+                500
+            ];
+            $_->[1] = $old->[0];
+            $_->[2] = $old->[1];
+        }
+        $vars->linked("#olds")->trash();
+    }
+    $vars->spawn($news)->id("#olds");
+    push @elements, @anim;
 
     $machs->linked("#notation_controls")->thing->();
     $mojo->drawings(@elements);
