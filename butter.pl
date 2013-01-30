@@ -2679,6 +2679,10 @@ no warnings 'once';
     my $mojo = shift;
     my @drawings = @_;
 
+    if (@drawings == 1 && $drawings[0]->[0] eq "status") {
+        $mojo->render(json => [@drawings]);
+    }
+
     my @sdc;
     my $loose = {};
     $scope->map_nodes(sub {
