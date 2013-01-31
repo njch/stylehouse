@@ -1049,6 +1049,9 @@ sub mach2_spawn {
                 my $vars = $process->spawn("#vars");
                 for my $v (@$vs) {
                     my ($name, $default) = %$v;
+                    if (ref $default) {
+                        $default = dclone $default;
+                    }
                     $vars->spawn($default)->id("#".$name);
 
                 }
@@ -1157,64 +1160,85 @@ mach2_spawn("#notation", sub { # {{{ NOT
     my @elements = ['clear'];
     my $l = 0;
 
-    # we wanna have a scrollbar kinda thing on the side
     # then you click an entity in the tree and it explodes 1 level down
-    # so the seeking must be by page first
-    # then keeping that entity in the top-left...
+    # then you click beside an entity to "select" it
+    # select more...
+    # compare those trees you selected
+    # each olf these thing needs to be graph, talking about graph.
+    # need more geometric graph pattern matching
 
     my $ind_limit = 5;
     my $row_limit = 60;
     my $page = $vars->linked("#page")->thing;
     my $from = 0;
+    my $lines = $vars->linked("#selected_lines")->thing;
 
     if ($page != 1) {
         $from = ($page - 1) * ($row_limit - 1);
     }
     say "page $page is $from away";
 
-    my @notes;
-    for (@notation) {
-        $l++;
+    my @notes = map {
+        my ($ind, $note) = /^(\s+)(.+)\n$/;
+        $ind = length($ind);
 
-        s/\n$//;
-        s/^(\s+)/('..') x length($1)/e;
-        if (length($1) >= $ind_limit) {
-            unless ($notes[-1] =~ /etc/) {
-                push @notes, "$l ".(("..") x $ind_limit)."etc 0"
-            }
-            my ($c) = $notes[-1] =~ /etc (\d+)/;
-            $c++;
-            $notes[-1] =~ s/etc \d+/etc $c/;
-        }
-        else {
-            push @notes, $l." ".$_;
-        }
+        { l => $l++, note => $note, ind => $ind };
+    } @notation;
+
+    if ($id && $id =~ /_l(\d+)(etc)?$/) {
+        $lines->{$1} = undef;
+        push @elements, ['status' => "Line: $1"];
     }
-    my @notes_really;
+
+    my @notes_collapsed;
+    while (my $n = shift @notes) {
+        my @this_row;
+        while ($n && $n->{ind} >= $ind_limit) {
+            push @this_row, $n;
+            $n = shift @notes;
+        }
+        push @this_row, $n unless @this_row;
+        if (@this_row > 1) {
+            my $total = scalar(@this_row);
+            my $first = shift @this_row;
+            if (exists $lines->{$first->{l}}) {
+                $_->{ind} += 2 for @this_row;
+                unshift @this_row, $first;
+            }
+            else {
+                my $etc = dclone $first;
+                $etc->{note} = "etc $total";
+                $etc->{ind} += 2;
+                @this_row = ($first, $etc);
+            }
+        }
+        push @notes_collapsed, @this_row;
+    }
+    @notes = @notes_collapsed;
+
+    my @notes_paged;
     for (@notes) {
         next while --$from > 0;
-        push @notes_really, $_;
-        if (@notes_really >= $row_limit) {
+        push @notes_paged, $_;
+        if (@notes_paged >= $row_limit) {
             last;
         }
     }
-    if (@notes_really == 0 && $page > 1) {
+
+    if (@notes_paged == 0 && $page > 1) {
         push @elements, ['status', "no page $page"];
     }
-    @notes = @notes_really;
-
-    if ($id && $id =~ /_l(\d+)$/) {
-        push @elements, ['status' => "Line: $1"];
-    }
+    @notes = @notes_paged;
 
     my ($x, $y) = (40, 40);
     my $make_note_element = sub {
         my $note = shift;
+        my $l = $note->{l};
+        my $ind = $note->{ind};
+        $note = $note->{note};
         my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
         $pack ||= "etc";
-        $note =~ s/^(\d+) (\.+)/$1 /;
-        my ($l, $ind) = ($1, $2);
-        my $x = $x + length($ind) * 6;
+        my $x = $x + $ind * 6;
 
         my $strokes = {
             main => "black",
@@ -1225,6 +1249,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
 
         my $attr = {};
         $attr->{id} = "notation_l$l";
+        $attr->{id} .= "etc" if $note =~ /^etc/;
         $attr->{fill} = "#gg9922";
         $attr->{fillOpacity} = "0.5";
         $attr->{stroke} = $strokes->{$pack} || "white";
@@ -1236,6 +1261,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
 
         $y += 12;
     };
+
     $make_note_element->($_) for @notes;
 
     my $news = {};
@@ -1252,12 +1278,15 @@ mach2_spawn("#notation", sub { # {{{ NOT
             my $old = $olds->{$_->[-1]->{id}};
             next unless $old;
 
+            my $x = $_->[1] - $old->[0];
+            my $y = $_->[2] - $old->[1];
+            next if $x == 0 && $y == 0;
+
             say "gun animate $_->[-1]->{id}";
 
             push @anim, [
                 "animate", $_->[-1]->{id},
-                {svgTransform => "translate(".
-                    ($_->[1] - $old->[0])." ".($_->[2] - $old->[1]).")"},
+                {svgTransform => "translate($x $y)"},
                 500
             ];
             $_->[1] = $old->[0];
@@ -1281,6 +1310,7 @@ controls => {
 },
 vars => [
     { "page" => 1 },
+    { "selected_lines" => {} },
 ],
 ); # }}}
 
