@@ -1347,22 +1347,33 @@ sub make_controls { # {{{ CONTI
             my ($target, $type, $etc) = @$_;
             # vaguely looks like the mach has become an object and here are the data
             my $vnode = $process->linked("#vars")->linked("#".$target);
-            my $vuuid = $vnode->{uuid};
-            my $current = $vnode->thing;
+            my $label = $target;
+            my $id = $p{owner}."_ctrl_";
+
             if ($type eq "number") {
+                $vnode || die;
+                $label .= " ".$vnode->thing;
+                $id .= $vnode->{uuid};
                 my $b = -6;
                 for (qw'up down') {
                     next unless $etc =~ /\b$_\b/;
                     push @controls,
                         ['boxen', $x, $y + $b + 8, 10, 6,
-                        { fill => "f".(8 + $b / 2)."7", id => $p{owner}."_ctrl_".$vuuid."_number_".$_ }];
+                        { fill => "f".(8 + $b / 2)."7", id => $id."_number_".$_ }];
                     $b += 7;
                 }
                 $x += 12
             }
+            elsif ($type eq "button") {
+                $id .= $target;
+                push @controls,
+                    ['boxen', $x, $y + 8, 18, 18,
+                    { fill => "f".(8 / 2)."7", id => $id."_button" }];
+            }
+
             if (/\S/) {
-                push @controls, ['label', $x, $y, "$target $current",
-                    { id => $p{owner}."_ctrl_".$vuuid."_l" },
+                push @controls, ['label', $x, $y, $label,
+                    { id => $id."_l" },
                 ]
             }
             $x += length($_) * 10;
@@ -1376,10 +1387,10 @@ sub make_controls { # {{{ CONTI
 
     my $controller = mach_spawn($p{owner}."_controller", sub {
         my ($mojo, $id) = @_;
-        my ($vuuid, $what, $how) = $id =~ /^$p{owner}_ctrl_(\w+)_(\w+)_(\w+)$/;
+        my ($vuuid, $what, $how) = $id =~ /^$p{owner}_ctrl_(\w+?)_(\w+?)(?:_(\w+))?$/;
 
-        return unless $vuuid && $what && $how;
-        my $vnode = object_by_uuid($vuuid) || die "no vnode";
+        return unless $vuuid && $what;
+        my $vnode = object_by_uuid($vuuid);
 
         if ($what eq "number") {
             my $hows = {
@@ -1392,7 +1403,7 @@ sub make_controls { # {{{ CONTI
         }
 
         # run the thing we just hacked up. do we always want to?
-        $owner_mach->thing->(undef, $mojo);
+        $owner_mach->thing->(undef, $mojo, undef, $id);
     });
 
     return ($controls, $controller);
