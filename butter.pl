@@ -92,7 +92,7 @@ inputs and outputs, chains of them
 
 =cut
 
-=head1 NOT FIELDS
+=head1 FIELDS
 
 We're using different Graph objects to get a field effect... a complete set
 of links without neighbour noise
@@ -470,6 +470,17 @@ so features complicate "public" program bits until common ground is laterally es
 WORDS
 =cut
 
+our $breaks = [];
+if ($0 =~ /frankenbutter/ && -e "breaks.yml") {
+    $breaks = LoadFile("breaks.yml");
+}
+elsif (-e "breaks.yml") {
+    `rm breaks.yml`
+}
+our $note_line = 0;
+our $port = "3000";
+our $frankpid;
+
 our $json = JSON::XS->new()->convert_blessed(1);
 our $webbery = new Graph('webbery');
 our $scope = new Graph('scope');
@@ -477,8 +488,6 @@ our $toolbar = new Graph('tools')->spawn('toolbar');
 our $machs = $webbery->spawn("#mach");
 our $client; # TODO low priority though is sessions
 our $codes = codes();
-our $port = "3000";
-our $frankpid;
 our $G;
 our $TEST;
 use File::Slurp 'append_file';
@@ -597,7 +606,10 @@ sub note { # {{{
     $sply = sub { # TODO refactor together the SOOMs
         my $t = shift;
         return '~undef~' if !defined $t;
-        return "'$t'" if !ref $t;
+        if (!ref $t) {
+            $t =~ s/\n//;
+            return "'$t'";
+        }
 
         given (ref $t) {
             when ("CODE") {
@@ -642,8 +654,28 @@ sub note { # {{{
     }
     my $ind = join "", (" ")x$i;
     append_file("notation", $ind. shift(@a)."\t". join(", ", @a) ."\n");
+
+    my $line_was = $note_line;
+    $note_line++;
+
+    if (@$breaks && $line_was >= $breaks->[0]) {
+        if ($line_was == $breaks->[0]) {
+            say "for the first time at $line_was\n";
+            $breaks->[1] = $i;
+            break_dump(1);
+        }
+        elsif ($breaks->[1] && $i < $breaks->[1]) {
+            say "and out at $line_was\n";
+            break_dump(2);
+            $breaks = [];
+        }
+    }
 } # }}}
 
+sub break_dump {
+    my $n = shift;
+    DumpFile("break_dump_$n", $P);
+}
 
 our %graphs; # {{{
 package Graph;
@@ -1152,45 +1184,56 @@ mach_spawn("#thecodegraph", sub { # {{{
 mach2_spawn("#notation", sub { # {{{ NOT
     my ($self, $mojo, $cliuent, $id) = @_;
 
+
     $machs->linked("#notation_setup")->thing->(); # should be outside of this sub?
     my $process = $client->linked("#notation_process") || die "no process ". Dump([$client->linked]);
     my $vars = $process->linked("#vars"); # like OO data
+    my $lines = $vars->linked("#selected_lines")->thing;
 
     my @notation = read_file('notation');
     my @elements = ['clear'];
     my $l = 0;
 
-    # then you click an entity in the tree and it explodes 1 level down
-    # then you click beside an entity to "select" it
-    # select more...
-    # compare those trees you selected
-    # each olf these thing needs to be graph, talking about graph.
+    # we select an entity in the tree
+    # we restart frankenbutter with directions to go to that entity in the notation
+    # ie. point in execution, and send us a report on something
+    # then continue one step and send us another report
     # need more geometric graph pattern matching
 
     my $ind_limit = 5;
     my $row_limit = 60;
     my $page = $vars->linked("#page")->thing;
     my $from = 0;
-    my $lines = $vars->linked("#selected_lines")->thing;
 
     if ($page != 1) {
         $from = ($page - 1) * ($row_limit - 1);
     }
     say "page $page is $from away";
 
-    my @notes = map {
+    my @notes;
+    my $stupid;
+    foreach (@notation) {
         my ($ind, $note) = /^(\s+)(.+)\n$/;
+        unless (defined $ind) {
+            $stupid = 1;
+            next;
+        }
         $ind = length($ind);
 
-        { l => $l++, note => $note, ind => $ind };
-    } @notation;
-
-    if ($id && $id =~ /_l(\d+)(etc)?$/) {
-        $lines->{$1} = undef;
-        push @elements, ['status' => "Line: $1"];
+        push @notes, { l => $l++, note => $note, ind => $ind };
+    }
+    if ($stupid) {
+        warn "unindented stuff left unparsed";
     }
 
-    my @notes_collapsed;
+    if ($id && $id =~ /_l(\d+)(etc)?$/) {
+        my $line = $1;
+        $lines->{$line} = undef;
+        push @elements, ['status' => "Will break on line: $line"];
+        DumpFile("breaks.yml", [$line]);
+    }
+
+    my @notes_collapsed; #{{{
     while (my $n = shift @notes) {
         my @this_row;
         while ($n && $n->{ind} >= $ind_limit) {
@@ -1238,7 +1281,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
         $note = $note->{note};
         my ($pack, $sub) = $note =~ /'(\w+)::(\w+)'/;
         $pack ||= "etc";
-        my $x = $x + $ind * 6;
+        my $x = $x + $ind * 16;
 
         my $strokes = {
             main => "black",
@@ -1256,15 +1299,15 @@ mach2_spawn("#notation", sub { # {{{ NOT
         $attr->{strokeWidth} = 3;
 
         push @elements,
-            ['boxen', $x, $y + 7, 8, 8, $attr],
+            ['boxen', $x, $y + 7, 6, 6, $attr],
             ['label', $x + 19, $y, $note, { id => $attr->{id}."l" }];
 
         $y += 12;
-    };
+    }; #}}}
 
     $make_note_element->($_) for @notes;
 
-    my $news = {};
+    my $news = {}; # animatin {{{
     # must come first as translated boxen get rendered in the old place first
     for (@elements) {
         next unless $_->[0] eq "boxen";
@@ -1295,7 +1338,7 @@ mach2_spawn("#notation", sub { # {{{ NOT
         $vars->linked("#olds")->trash();
     }
     $vars->spawn($news)->id("#olds");
-    push @elements, @anim;
+    push @elements, @anim; #}}}
 
     $machs->linked("#notation_controls")->thing->();
     $mojo->drawings(@elements);
@@ -1314,7 +1357,7 @@ vars => [
 ],
 ); # }}}
 
-sub demagnetise_coord {
+sub demagnetise_coord { # {{{ CONTI
     my ($axis, $val) = @_;
     if ($val >= 1) {
         return $val
@@ -1329,7 +1372,7 @@ sub demagnetise_coord {
     return $width - $val
 }
 
-sub make_controls { # {{{ CONTI
+sub make_controls {
     my (%p) = @_;
 
     my $owner_mach = $machs->linked('#'.$p{owner}) || die;
@@ -2144,7 +2187,7 @@ mach_spawn("#refrank", sub { # {{{
     `kill $frankpid`;
     frankenfork();
     sleep 1;
-    $machs->linked("#notation")->thing->(@_);
+    $machs->linked("#notation")->thing->(@_) unless $id;
 }, 'toolbar'); # }}}
 
 mach_spawn("#hits", sub { # {{{
@@ -2383,8 +2426,6 @@ attach_stuff("get_object/01", mach_spawn("#track", sub { # {{{
     push @$trail, [ "?" ]; # eg some mach generates a get_object call
 })); # }}}
 # }}}
-
-
 
 get '/object' => \&get_object;
 sub get_object { # OBJ
