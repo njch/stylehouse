@@ -520,6 +520,12 @@ our $P = do { # {{{
     $P
 };
 
+sub sw33t {
+    # nothing
+}
+
+sw33t();
+
 my $todo_per_point_cache = {};
 sub pointilise {
     my $point = shift;
@@ -1190,6 +1196,18 @@ mach2_spawn("#notation", sub { # {{{ NOT
     my $vars = $process->linked("#vars"); # like OO data
     my $lines = $vars->linked("#selected_lines")->thing;
 
+    if ($id && $id =~ /_l(\d+)(etc)?$/) {
+        my $line = $1;
+        $lines->{$line} = undef;
+        DumpFile("breaks.yml", [$line]);
+        $machs->linked("#refrank")->thing->(undef, undef, undef, "nogodiggydie");
+        $vars->spawn("1")->id("#break_dump");
+    }
+    elsif ($id && $id =~ /switcheroo_button$/) {
+        my $bd = $vars->linked("#break_dump");
+        $bd->{thing} = $bd->{thing} == 2 ? 1 : 2 if $bd;
+    }
+
     my @notation = read_file('notation');
     my @elements = ['clear'];
     my $l = 0;
@@ -1224,13 +1242,6 @@ mach2_spawn("#notation", sub { # {{{ NOT
     }
     if ($stupid) {
         warn "unindented stuff left unparsed";
-    }
-
-    if ($id && $id =~ /_l(\d+)(etc)?$/) {
-        my $line = $1;
-        $lines->{$line} = undef;
-        push @elements, ['status' => "Will break on line: $line"];
-        DumpFile("breaks.yml", [$line]);
     }
 
     my @notes_collapsed; #{{{
@@ -1341,15 +1352,25 @@ mach2_spawn("#notation", sub { # {{{ NOT
     push @elements, @anim; #}}}
 
     $machs->linked("#notation_controls")->thing->();
+    if ($vars->linked("#break_dump")) {
+        my $bd = $vars->linked("#break_dump");
+        my @dump = read_file("break_dump_".$bd->{thing});
+        my ($x, $y) = (20, 800);
+        for (@dump) {
+            push @elements,
+                ['label', $x, ($y += 20), $_ ]
+        }
+    }
     $mojo->drawings(@elements);
 
 }, "toolbar",
 controls => {
     elements => [
         ["page", "number", "up down"],
+        ["switcheroo", "button"],
     ],
-    y => 10,
-    x => -300,
+    y => 800,
+    x => 20,
 },
 vars => [
     { "page" => 1 },
