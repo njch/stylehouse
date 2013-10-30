@@ -12,14 +12,9 @@ use Carp 'confess';
 use v5.10;
 say "we are $0";
 
-=head1 NEW FILE!
+=head1 O
 
-need to move the architecture forward without clunkiness and many
-hundred estranged lines of code
-
-focus on being able to play with the ui
-make some algorithms to play with there
-finally an answer to what is a field and how it works
+just a test harness?
 
 and DONT FORGET TO TAKE GUITAR BREAKS
 
