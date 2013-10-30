@@ -612,6 +612,8 @@ sub note { # {{{
             return "'$t'";
         }
 
+        no warnings "experimental";
+
         given (ref $t) {
             when ("CODE") {
                 return "CODE";
@@ -2013,6 +2015,7 @@ sub order_link { # also greps for the spec $us
 sub summarise { # SUM # SOOM
     my $thing = shift;
     my $text;
+    no warnings "experimental";
     given (ref $thing) {
         when ("Graph") {
             $text = "Graph ".($thing->{name}||"~noname~")." ".($thing->{uuid}||"~nouuid~")
@@ -2632,7 +2635,7 @@ sub find_latest_examination {
     my @exams = $client->linked("#/^object-examination/");
 
     @exams = sort {
-        my ($a, $b) =
+        ($a, $b) =
             grep { s/^.+?(\d+)$/$1/ || s/^.+$/1/ }
             map { $_->thing->{name} } $a, $b;
         $a <=> $b
