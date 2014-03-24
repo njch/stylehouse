@@ -1,18 +1,26 @@
 
 var svg;
 
-$('#view').svg({onLoad: heresthesvg})
+
 function heresthesvg (the) {
     svg = the;
+    var text = svg.text(svg, 14, 50, 'jugular');
     $('#view svg').attr('height', '5000');
     navigate("hello", {width: $('#view').width()});
 }
 
-function navigate(where) {
-    $.getJSON(where[0], where[1], function (json) {
-        eval(json)
+function navigate(where, params) {
+    $.getJSON(where, params, function (json) {
+        console.log(json);
+        eval(json);
     });
 }
+
+$.getJSON('nothing', {}, function () {
+    $('#view').svg({onLoad: heresthesvg})
+});
+
+
 
 function drawstuff () {
     jQuery.each(ins, function (i, inst) {
@@ -76,18 +84,3 @@ function lab_Click() {
 }
 
 
-//$.get('ajax', { hell: 0 }, function (eh) {
-//        $('body').html(eh);
-//        triggery();
-//    });
-//
-//function triggery () {
-//$("a").click(function (li) {
-//    var where = this;
-//    var id = $(where).attr("id");
-//    $.get('ajax', { from: id }, function (eh) {
-//    nest.append("<ul>"+eh+"</ul>");
-//	triggery()
-//    })
-//});
-//}

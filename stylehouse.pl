@@ -18,19 +18,40 @@ use Mojolicious::Lite;
 get '/' => 'index';
 
 get '/hello' => sub {
-    
+    my $mojo = shift;
+    $mojo->tosvg(["label", 10, 40, "EEEEEEEEEEEEE"]);
+};
+get '/nothing' => sub {
+    my $mojo = shift;
+    $mojo->render(json => 'thing');
 };
 
-sub tosvg {
-    
-                   var l = inst.slice(1);
-            var text = svg.text(l[0], l[1] + 12, l[2], l[3]);
-            $(text)
-                .bind('click', lab_Click);
+*Mojolicious::Controller::tosvg = sub {
+    my $mojo = shift;
+    my @js;
+    for my $t (@_) {
+        my ($what, @p) = @$t;
+        if ($what eq "label") {
+            push @js, "
+            console.log('it works');
+            console.log('it works');
+            ";
+            my $nothing = "
+            var text = svg.text(svg, ".($p[0] + 12).", $p[1], '$p[2]');
+                ";
+        }
+        else {
+            die "$what";
+        }
+    }
 
+    $mojo->render(json => join("", @js));
+};
 
 app->start;
 __DATA__
+#            jQuery(text)
+#                .bind('click', lab_Click);
 
 @@ index.html.ep
 <!doctype html><html>
@@ -41,7 +62,7 @@ __DATA__
     </style>
     <script type="text/javascript" src="jquery.svg.js"></script>
     <script type="text/javascript" src="jquery.svganim.js"></script>
-    <script type="text/javascript" src="scope.js"></script></head>
+    <script type="text/javascript" src="stylehouse.js"></script></head>
     <body style="background: #ab6; font-family: monospace">
     <div id="view" style="background: #ce9"></div>
     </body>
