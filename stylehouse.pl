@@ -37,11 +37,14 @@ websocket '/stylehouse' => sub {
             my $code = encode_jquery(directoria("/home/s/Music"));
             $self->send($code);
         }
-        elsif ($msg =~ /Width: (\d+)px/) {
-
+        elsif ($msg =~ /^Width: (\d+)px$/) {
+            $self->hostinfo->set(width => $1); # per client?
+        }
+        elsif ($msg =~ /^dclick: (.+)$/s) {
+            # route to $1
         }
         else {
-            $self->send("echo: $msg");
+            $self->send("// echo: $msg");
         }
     });
 
@@ -86,6 +89,17 @@ sub encode_jquery {
             die anydump($e);
         }
     }
+    if (@js) {
+        # TODO controllers create views
+        push @js, "  \$('#view').delegate('.data', 'click', function (event) {
+            var data = {
+                id: event.target.id,
+                value: event.target.innerText,
+            };
+            ws.send('dClick '+JSON.stringify(data))
+        })
+";
+    }
 
     return join("", @js);
 };
@@ -116,7 +130,7 @@ __DATA__
 @@ index.html.ep
 <!doctype html><html>
     <head><title>stylehouse</title>
-    <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
+    <script type="text/javascript" src="jquery-1.11.0.js"></script></head>
     <script>
       var ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
 
@@ -124,6 +138,7 @@ __DATA__
       ws.onmessage = function(event) {
         console.log(event.data);
         eval(event.data);
+
       };
       
       ws.onopen = function() {
@@ -137,7 +152,6 @@ __DATA__
         white-space: pre;
     }
     </style>
-    <script type="text/javascript" src="stylehouse.js"></script></head>
     <body style="background: #ab6; font-family: monospace">
     <div id="view" class="view" style="position: relative; background: #ce9; height: 400px;"></div>
     </body>

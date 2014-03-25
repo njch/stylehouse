@@ -5,7 +5,7 @@ use warnings;
 
 my $hostinfo = {};
 
-sub hostinfo {
+sub set {
     my ($self, $i, $d) = @_;
     $hostinfo->{$i} = $d if $d;
     return $hostinfo->{$i};
