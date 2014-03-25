@@ -10,8 +10,20 @@ use Storable 'dclone';
 use File::Slurp;
 use Scriptalicious;
 use Carp 'confess';
-use v5.10;
+use v5.18;
 say "\n\n\nwe are $0";
+
+=pod
+
+hostinfo
+for modules, IPs, files, everything
+anything storage upgradable to sticky schemas
+modules create a view div, fill it with spans
+the spans' ids reach back to the module and/or controller it came from
+passing it the whole element and "click" or whatever
+lets eval everything from a WebSocket on the client
+
+=cut
 
 #!/usr/bin/env perl
 use Mojolicious::Lite;
@@ -105,27 +117,8 @@ sub encode_jquery {
 };
 
 
-=pod
-
-hostinfo
-for modules, IPs, files, everything
-anything storage upgradable to sticky schemas
-modules create a view div, fill it with spans
-the spans' ids reach back to the module and/or controller it came from
-passing it the whole element and "click" or whatever
-lets eval everything from a WebSocket on the client
-
-=cut
-
-get '/nothing' => sub {
-    my $mojo = shift;
-    $mojo->render(json => 'thing');
-};
-
 app->start;
 __DATA__
-#            jQuery(text)
-#                .bind('click', lab_Click);
 
 @@ index.html.ep
 <!doctype html><html>
