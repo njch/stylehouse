@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use YAML::Syck;
 use JSON::XS;
+my $jsoner = JSON::XS->new->allow_nonref;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
 use File::Slurp;
@@ -15,37 +16,96 @@ say "\n\n\nwe are $0";
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 
+use lib 'lib';
+use Hostinfo;
+
 get '/' => 'index';
 
-get '/hello' => sub {
-    my $mojo = shift;
-    $mojo->tosvg(["label", 10, 40, "EEEEEEEEEEEEE"]);
-};
-get '/nothing' => sub {
-    my $mojo = shift;
-    $mojo->render(json => 'thing');
-};
+websocket '/stylehouse' => sub {
+    my $self = shift;
 
-*Mojolicious::Controller::tosvg = sub {
-    my $mojo = shift;
-    my @js;
-    for my $t (@_) {
-        my ($what, @p) = @$t;
-        if ($what eq "label") {
-            push @js, "
-            console.log('it works');
-            console.log('it works');
-            ";
-            my $nothing = "
-            var text = svg.text(svg, ".($p[0] + 12).", $p[1], '$p[2]');
-                ";
+    $self->app->log->info("WebSocket opened");
+    
+    Mojo::IOLoop->stream($self->tx->connection)->timeout(300);
+
+    $self->on(message => sub {
+        my ($self, $msg) = @_;
+
+        $self->app->log->info("WebSocket: $msg");
+
+        if ($msg eq "Hello!") {
+            my $code = encode_jquery(directoria("/home/s/Music"));
+            $self->send($code);
+        }
+        elsif ($msg =~ /Width: (\d+)px/) {
+
         }
         else {
-            die "$what";
+            $self->send("echo: $msg");
+        }
+    });
+
+    $self->send("ws.send('Width: '+\$('#view').width()+'px')");
+    # connect above dispatcher to controllery
+    # ask for screen width, etc from client
+
+    $self->on(finish => sub {
+      my ($self, $code, $reason) = @_;
+      $self->app->log->debug("WebSocket closed with status $code.");
+    });
+
+};
+
+helper hostinfo => sub { state $hostinfo = Hostinfo->new };
+
+sub directoria {
+    my @etc = capture("ls", "-lh", "/home/s");
+    my $i = 0;
+    return map {
+        s/\n$//s;
+        { type => "label",
+          id => "directoria-".$i++,
+          top => 10 * $i,
+          left => 20,
+          value => "$_", } } @etc;
+}
+sub encode_jquery {
+    my @js;
+    my @es = @_;
+    for my $e (@es) {
+        if ($e->{type} eq "label") {
+            my $lspan = '<span class="data" style="'
+                .'top: '.($e->{top}).'px; '
+                .'left: '.($e->{left}).'px;"'
+                .($e->{id} ? ' id="'.$e->{id}.'"' : '')
+                .'>'.$e->{value}.'</span>';
+            
+            push @js, "  \$('#view').append('$lspan');\n";
+        }
+        else {
+            die anydump($e);
         }
     }
 
-    $mojo->render(json => join("", @js));
+    return join("", @js);
+};
+
+
+=pod
+
+hostinfo
+for modules, IPs, files, everything
+anything storage upgradable to sticky schemas
+modules create a view div, fill it with spans
+the spans' ids reach back to the module and/or controller it came from
+passing it the whole element and "click" or whatever
+lets eval everything from a WebSocket on the client
+
+=cut
+
+get '/nothing' => sub {
+    my $mojo = shift;
+    $mojo->render(json => 'thing');
 };
 
 app->start;
@@ -57,14 +117,29 @@ __DATA__
 <!doctype html><html>
     <head><title>stylehouse</title>
     <script type="text/javascript" src="jquery-1.7.1.js"></script></head>
+    <script>
+      var ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
+
+      // Incoming messages
+      ws.onmessage = function(event) {
+        console.log(event.data);
+        eval(event.data);
+      };
+      
+      ws.onopen = function() {
+        ws.send('Hello!');
+      }
+    </script>
     <style type="text/css">
     @import "jquery.svg.css";
+    .data {
+        position: absolute;
+        white-space: pre;
+    }
     </style>
-    <script type="text/javascript" src="jquery.svg.js"></script>
-    <script type="text/javascript" src="jquery.svganim.js"></script>
     <script type="text/javascript" src="stylehouse.js"></script></head>
     <body style="background: #ab6; font-family: monospace">
-    <div id="view" style="background: #ce9"></div>
+    <div id="view" class="view" style="position: relative; background: #ce9; height: 400px;"></div>
     </body>
 </html>
 
