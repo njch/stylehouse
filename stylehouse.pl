@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use YAML::Syck;
 use JSON::XS;
-my $jsoner = JSON::XS->new->allow_nonref;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
 use File::Slurp;
@@ -30,30 +29,40 @@ use Mojolicious::Lite;
 
 use lib 'lib';
 use Hostinfo;
+use Direction; 
+use Texty;
 
 get '/' => 'index';
+my $haps;
+my $hostinfo = Hostinfo->new();
+helper 'hostinfo' => sub { $hostinfo };
 
 websocket '/stylehouse' => sub {
     my $self = shift;
 
     $self->app->log->info("WebSocket opened");
-    
-    Mojo::IOLoop->stream($self->tx->connection)->timeout(300);
 
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
+        Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
+    say "Message and hostinfo is:";
+    $hostinfo->dump();
+        # all sorts of things want to get in here...
         if ($msg eq "Hello!") {
-            my $code = encode_jquery(directoria("/home/s/Music"));
-            $self->send($code);
+            # clear the way, or merge with it?
+            # need to blow away
+            Direction->new(cd => "/home/s/Music", app => $self);
         }
         elsif ($msg =~ /^Width: (\d+)px$/) {
-            $self->hostinfo->set(width => $1); # per client?
+            $self->hostinfo->set("screen/width" => $1); # per client?
         }
-        elsif ($msg =~ /^dclick: (.+)$/s) {
-            # route to $1
+        elsif ($msg =~ /^event (.+)$/s) {
+            my $event = decode_json($1);
+            $self->hostinfo->dispatch_event($event);
+            # route to $1 via hostinfo register of texty thing owners
         }
         else {
             $self->send("// echo: $msg");
@@ -71,51 +80,6 @@ websocket '/stylehouse' => sub {
 
 };
 
-helper hostinfo => sub { state $hostinfo = Hostinfo->new };
-
-sub directoria {
-    my @etc = capture("ls", "-lh", "/home/s");
-    my $i = 0;
-    return map {
-        s/\n$//s;
-        { type => "label",
-          id => "directoria-".$i++,
-          top => 10 * $i,
-          left => 20,
-          value => "$_", } } @etc;
-}
-sub encode_jquery {
-    my @js;
-    my @es = @_;
-    for my $e (@es) {
-        if ($e->{type} eq "label") {
-            my $lspan = '<span class="data" style="'
-                .'top: '.($e->{top}).'px; '
-                .'left: '.($e->{left}).'px;"'
-                .($e->{id} ? ' id="'.$e->{id}.'"' : '')
-                .'>'.$e->{value}.'</span>';
-            
-            push @js, "  \$('#view').append('$lspan');\n";
-        }
-        else {
-            die anydump($e);
-        }
-    }
-    if (@js) {
-        # TODO controllers create views
-        push @js, "  \$('#view').delegate('.data', 'click', function (event) {
-            var data = {
-                id: event.target.id,
-                value: event.target.innerText,
-            };
-            ws.send('dClick '+JSON.stringify(data))
-        })
-";
-    }
-
-    return join("", @js);
-};
-
 
 app->start;
 __DATA__
@@ -125,24 +89,41 @@ __DATA__
     <head><title>stylehouse</title>
     <script type="text/javascript" src="jquery-1.11.0.js"></script></head>
     <script>
-      var ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
+      var ws;
 
-      // Incoming messages
-      ws.onmessage = function(event) {
-        console.log(event.data);
-        eval(event.data);
+      function connect () {
+          ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
+          ws.onmessage = function(event) {
+            console.log(event.data);
+            eval(event.data);
+          };
+          
+          ws.onopen = function() {
+            $('body').removeClass('dead');
+            ws.send('Hello!');
+          }
 
-      };
-      
-      ws.onopen = function() {
-        ws.send('Hello!');
+          ws.onclose = function() {
+            $('body').addClass('dead');
+            //reconnect();
+          }
       }
+      function reconnect () {
+          console.log('waiting to retry');
+          window.setTimeout(connect, 250);
+      }
+
+      connect();
+
+
     </script>
     <style type="text/css">
-    @import "jquery.svg.css";
     .data {
         position: absolute;
         white-space: pre;
+    }
+    .dead {
+        background: black;
     }
     </style>
     <body style="background: #ab6; font-family: monospace">
