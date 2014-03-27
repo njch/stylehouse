@@ -26,6 +26,7 @@ sub screenthing {
     my ($ownername) = $thing->owner =~ /^(\w+)/;
     $uuid =~ /^(\w+)-/;
     my $id = "$ownername-$1";
+    say "Thingd $id";
     $thing->id($id);
     my $screenthing = {
         thing => $thing,

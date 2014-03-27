@@ -31,6 +31,7 @@ use lib 'lib';
 use Hostinfo;
 use Direction; 
 use Texty;
+use Dump;
 
 get '/' => 'index';
 my $haps;
@@ -115,7 +116,18 @@ __DATA__
 
       connect();
 
-
+      function clickyhand (event) {
+            var data = {
+                id: event.target.id,
+                value: event.target.innerText,
+                type: event.type,
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey,
+            };
+            console.log(event);
+            ws.send('event '+JSON.stringify(data))
+        }
     </script>
     <style type="text/css">
     .data {
@@ -128,6 +140,7 @@ __DATA__
     </style>
     <body style="background: #ab6; font-family: monospace">
     <div id="view" class="view" style="position: relative; background: #ce9; height: 400px;"></div>
+    <div id="hodu" class="view" style="position: relative; background: #ce9; top: 50; height: 400px;"></div>
     </body>
 </html>
 

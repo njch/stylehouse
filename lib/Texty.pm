@@ -4,62 +4,72 @@ use Scriptalicious;
 
 has 'owner';
 has 'lines';
+has 'spans';
+has 'jquery';
+has 'view'; # Set this up
 has 'id';
 
 sub new {
     my $self = bless {}, shift;
     $self->owner(shift);
     $self->lines(shift);
-    my $hostinfo = $self->owner->app->hostinfo;
-    $hostinfo->screenthing($self);
-    my $code = $self->encode_jquery();
-    $self->owner->app->send($code);
+    $self->view(shift || "view");
+    if ($self->view eq "hodu") {
+        # hide from screen cares
+    }
+    else {
+        # ugly swooping
+        my $hostinfo = $self->owner->app->hostinfo;
+        # make a persistent object for this Texty thing
+        $hostinfo->screenthing($self);
+    }
+    $self->lines_to_spans();
+    $self->spans_to_jquery();
+    $self->owner->app->send($self->jquery);
 }
 
-sub set {
-    my ($self, $i, $d) = @_;
-}
-sub encode_jquery {
+sub lines_to_spans {
     my $self = shift;
     my $es = $self->lines;
     my $id = $self->id;
     my $top = 20;
     my $left = 20;
-    my @js;
+    my @spans;
     my $l = 0;
     for my $e (@$es) {
-        if (ref $e) {
-            die;
-        }
-        else {
-            my $lspan = '<span class="data" style="'
-                .'top: '.($top += 20).'px; '
-                .'left: '.($left).'px;"'
-                .' id="'.$id.'-'.$l++.'"'
-                .'>'.$e.'</span>';
-            
-            push @js, "  \$('#view').append('$lspan');\n";
-        }
+        push @spans, {
+            class => "data", id => ($id.'-'.$l++),
+            top => ($top += 20), left => $left,
+            value => $e,
+        };
     }
-    if (@js) {
-        # TODO controllers create views
-        push @js, "  \$('#view').delegate('.data', 'click', function (event) {
-            var data = {
-                id: event.target.id,
-                value: event.target.innerText,
-                type: event.type,
-                shiftKey: event.shiftKey,
-                ctrlKey: event.ctrlKey,
-                altKey: event.altKey,
-            };
-            console.log(event);
-            ws.send('event '+JSON.stringify(data))
-        })
-";
-    }
+    $self->spans([@spans]);
+}
 
-    return join("", @js);
-};
+sub spans_to_jquery {
+    my $self = shift;
+    my $spans = $self->spans;
+    my @jquery;
+    for my $s (@$spans) {
+        my $p = { %$s };
+        my $value = delete($p->{value});
+        $p->{style} = join "; ",
+            ($p->{top} ? "top: ".delete($p->{top})."px" : ''),
+            ($p->{left} ? "left: ".delete($p->{left})."px" : ''),
+            ($p->{right} ? "right: ".delete($p->{right})."px" : ''),
+            ($p->{style} ? delete($p->{style}) : '');
+        my $attrstring = join " ", map {
+            $_.'="'.$p->{$_}.'"' } keys %$p;
+        my $spanstring = "<span $attrstring>$value</span>";
+        my $viewid = $self->view;
+        push @jquery, "  \$('#$viewid').append('$spanstring').on('click', clickyhand)";
+    }
+    $self->jquery(join"\n", @jquery);
+}
+
+sub set {
+    my ($self, $i, $d) = @_;
+}
 
 sub event {
     my $self = shift;
