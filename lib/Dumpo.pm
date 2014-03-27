@@ -12,15 +12,7 @@ sub new {
     $self->app($p{app});
 
     my $dump = $self->app->hostinfo->dump("dontsay");
-    my $text = new Texty($self, [split("\n", $dump)], 'hodu', {
-        spans_to_jquery=> sub {
-            my $self = shift;
-            for my $s (@{$self->spans}) {
-                $s->{right} = "0";
-                $s->{value} =~ s/^(\s+)(\S+): (.+)$/$3 :$2 $1/s;
-                $s->{value} =~ s/^(\s+)- (.+)$/$2 -$1/s;
-            }
-        }});
+    my $text = new Texty($self, [split("\n", $dump)], 'hodu');
     return $self;
 }
 
