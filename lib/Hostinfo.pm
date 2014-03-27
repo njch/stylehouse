@@ -66,7 +66,9 @@ sub set {
     return $d;
 }
 sub dump {
-    say join "\n", grep { !/^          /sgm } split /\n/, anydump($data);
+    my $dump = join "\n", grep { !/^          /sgm } split /\n/, anydump($data);
+    return $dump if shift;
+    say $dump;
 }
 
 1;

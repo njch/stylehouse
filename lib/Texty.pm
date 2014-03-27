@@ -7,6 +7,7 @@ has 'lines';
 has 'spans';
 has 'jquery';
 has 'view'; # Set this up
+has 'hooks';
 has 'id';
 
 sub new {
@@ -14,6 +15,7 @@ sub new {
     $self->owner(shift);
     $self->lines(shift);
     $self->view(shift || "view");
+    $self->hooks(shift);
     if ($self->view eq "hodu") {
         # hide from screen cares
     }
@@ -48,7 +50,11 @@ sub lines_to_spans {
 
 sub spans_to_jquery {
     my $self = shift;
+    if ($self->{hooks}->{span2jquery}) {
+        $self->{hooks}->{span2jquery}->($self);
+    }
     my $spans = $self->spans;
+    my $viewid = $self->view;
     my @jquery;
     for my $s (@$spans) {
         my $p = { %$s };
@@ -61,9 +67,9 @@ sub spans_to_jquery {
         my $attrstring = join " ", map {
             $_.'="'.$p->{$_}.'"' } keys %$p;
         my $spanstring = "<span $attrstring>$value</span>";
-        my $viewid = $self->view;
-        push @jquery, "  \$('#$viewid').append('$spanstring').on('click', clickyhand)";
+        push @jquery, "  \$('#$viewid').append('$spanstring');";
     }
+    push @jquery, "  \$('#$viewid').on('click', clickyhand);";
     $self->jquery(join"\n", @jquery);
 }
 
