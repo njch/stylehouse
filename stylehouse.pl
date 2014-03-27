@@ -31,7 +31,7 @@ use lib 'lib';
 use Hostinfo;
 use Direction; 
 use Texty;
-use Dump;
+use Dumpo;
 
 get '/' => 'index';
 my $haps;
@@ -56,6 +56,7 @@ websocket '/stylehouse' => sub {
             # clear the way, or merge with it?
             # need to blow away
             Direction->new(cd => "/home/s/Music", app => $self);
+            Dumpo->new(app => $self);
         }
         elsif ($msg =~ /^Width: (\d+)px$/) {
             $self->hostinfo->set("screen/width" => $1); # per client?
@@ -137,10 +138,13 @@ __DATA__
     .dead {
         background: black;
     }
+    #hodu.data {
+        position: relative;
+    }
     </style>
     <body style="background: #ab6; font-family: monospace">
-    <div id="view" class="view" style="position: relative; background: #ce9; height: 400px;"></div>
-    <div id="hodu" class="view" style="position: relative; background: #ce9; top: 50; height: 400px;"></div>
+    <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
+    <div id="hodu" class="view" style="float:left; width:58%; border: 1px solid black; background: #ce9; top: 50; height: 4000px;"></div>
     </body>
 </html>
 

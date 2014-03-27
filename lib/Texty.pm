@@ -1,6 +1,7 @@
 package Texty;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
+use HTML::Entities;
 
 has 'owner';
 has 'lines';
@@ -16,15 +17,11 @@ sub new {
     $self->lines(shift);
     $self->view(shift || "view");
     $self->hooks(shift);
-    if ($self->view eq "hodu") {
-        # hide from screen cares
-    }
-    else {
-        # ugly swooping
-        my $hostinfo = $self->owner->app->hostinfo;
-        # make a persistent object for this Texty thing
-        $hostinfo->screenthing($self);
-    }
+    # ugly swooping
+    my $hostinfo = $self->owner->app->hostinfo;
+    # make a persistent object for this Texty thing
+    # #hodu dump junk will not be saved
+    $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
     $self->owner->app->send($self->jquery);
@@ -50,8 +47,8 @@ sub lines_to_spans {
 
 sub spans_to_jquery {
     my $self = shift;
-    if ($self->{hooks}->{span2jquery}) {
-        $self->{hooks}->{span2jquery}->($self);
+    if ($self->{hooks}->{spans_to_jquery}) {
+        $self->{hooks}->{spans_to_jquery}->($self);
     }
     my $spans = $self->spans;
     my $viewid = $self->view;
@@ -59,15 +56,15 @@ sub spans_to_jquery {
     for my $s (@$spans) {
         my $p = { %$s };
         my $value = delete($p->{value});
-        $p->{style} = join "; ",
+        $p->{style} = join "; ", grep /\S/, 
             ($p->{top} ? "top: ".delete($p->{top})."px" : ''),
             ($p->{left} ? "left: ".delete($p->{left})."px" : ''),
             ($p->{right} ? "right: ".delete($p->{right})."px" : ''),
             ($p->{style} ? delete($p->{style}) : '');
         my $attrstring = join " ", map {
-            $_.'="'.$p->{$_}.'"' } keys %$p;
-        my $spanstring = "<span $attrstring>$value</span>";
-        push @jquery, "  \$('#$viewid').append('$spanstring');";
+            $_.'="'.$p->{$_}.'"' } sort keys %$p;
+        my $spanstring = "<span $attrstring>".encode_entities($value)."</span>";
+        push @jquery, "  \$('#$viewid').append('".$spanstring."');";
     }
     push @jquery, "  \$('#$viewid').on('click', clickyhand);";
     $self->jquery(join"\n", @jquery);
@@ -82,6 +79,7 @@ sub event {
     my $event = shift;
 
     $self->owner->app->send("\$('#$event->{id}').css('color', 'red');");
+    $self->owner->event($event, $self);
 }
 
 1;

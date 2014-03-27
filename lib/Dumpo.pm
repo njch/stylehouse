@@ -1,4 +1,4 @@
-package Dump;
+package Dumpo;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
@@ -13,10 +13,11 @@ sub new {
 
     my $dump = $self->app->hostinfo->dump("dontsay");
     my $text = new Texty($self, [split("\n", $dump)], 'hodu', {
-        spans2jquery => sub {
+        spans_to_jquery=> sub {
             my $self = shift;
             for my $s (@{$self->spans}) {
-                $s->{right} = delete $s->{left};
+                delete $s->{left};
+                say "Shit yeah ";
             }
         }});
     return $self;

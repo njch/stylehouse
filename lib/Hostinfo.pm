@@ -28,6 +28,9 @@ sub screenthing {
     my $id = "$ownername-$1";
     say "Thingd $id";
     $thing->id($id);
+    if ($thing->view eq "hodu") {
+        return;
+    }
     my $screenthing = {
         thing => $thing,
         id => $id,

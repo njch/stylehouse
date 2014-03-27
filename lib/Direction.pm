@@ -16,4 +16,11 @@ sub new {
     return $self;
 }
 
+sub event {
+    my $self = shift;
+    my $event = shift;
+    my $texty = shift; # texty has triggers, brings events back to here
+    say "Thanksyou: ".anydump($event);
+}
+
 1;
