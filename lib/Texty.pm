@@ -32,13 +32,12 @@ sub lines_to_spans {
     my $es = $self->lines;
     my $id = $self->id;
     my $top = 20;
-    my $left = 20;
     my @spans;
     my $l = 0;
     for my $e (@$es) {
         push @spans, {
             class => "data", id => ($id.'-'.$l++),
-            top => ($top += 20), left => $left,
+            top => ($top += 20),
             value => $e,
         };
     }
@@ -57,16 +56,17 @@ sub spans_to_jquery {
         my $p = { %$s };
         my $value = delete($p->{value});
         $p->{style} = join "; ", grep /\S/, 
-            ($p->{top} ? "top: ".delete($p->{top})."px" : ''),
-            ($p->{left} ? "left: ".delete($p->{left})."px" : ''),
-            ($p->{right} ? "right: ".delete($p->{right})."px" : ''),
+            (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
+            (exists $p->{left} ? "left: ".delete($p->{left})."px" : ''),
+            (exists $p->{right} ? "right: ".delete($p->{right})."px" : ''),
             ($p->{style} ? delete($p->{style}) : '');
+        say anydump($p);
         my $attrstring = join " ", map {
             $_.'="'.$p->{$_}.'"' } sort keys %$p;
         my $spanstring = "<span $attrstring>".encode_entities($value)."</span>";
         push @jquery, "  \$('#$viewid').append('".$spanstring."');";
     }
-    push @jquery, "  \$('#$viewid').on('click', clickyhand);";
+    push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);";
     $self->jquery(join"\n", @jquery);
 }
 

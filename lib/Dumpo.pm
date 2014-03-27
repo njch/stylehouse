@@ -16,8 +16,9 @@ sub new {
         spans_to_jquery=> sub {
             my $self = shift;
             for my $s (@{$self->spans}) {
-                delete $s->{left};
-                say "Shit yeah ";
+                $s->{right} = "0";
+                $s->{value} =~ s/^(\s+)(\S+): (.+)$/$3 :$2 $1/s;
+                $s->{value} =~ s/^(\s+)- (.+)$/$2 -$1/s;
             }
         }});
     return $self;

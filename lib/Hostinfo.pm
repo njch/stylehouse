@@ -26,7 +26,6 @@ sub screenthing {
     my ($ownername) = $thing->owner =~ /^(\w+)/;
     $uuid =~ /^(\w+)-/;
     my $id = "$ownername-$1";
-    say "Thingd $id";
     $thing->id($id);
     if ($thing->view eq "hodu") {
         return;
@@ -48,7 +47,13 @@ sub dispatch_event {
     my $id = $event->{id};
     $id =~ s/^(\w+\-\w+).+$/$1/;
     my ($thing) = grep { $id eq $_->{id} } @$things;
-    $self->dump() && die "urgh $id" unless $thing;
+    unless ($thing) {
+        # probably a Dumpo
+        $self->owner->app->send(
+            "\$(body).addStyle('dead').delay(250).removeStyle('dead');"
+        );
+        return;
+    }
     $thing->{thing}->event($event);
 }
 
