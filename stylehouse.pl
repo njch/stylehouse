@@ -1,8 +1,10 @@
 #!/usr/bin/perl
 # copyright Steve Craig 2014
-use strict;
-use warnings;
+use Mojo::Base -strict;
+
+
 use YAML::Syck;
+
 use JSON::XS;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
@@ -28,7 +30,8 @@ which fires a screen attachment conty
 =cut
 
 #!/usr/bin/env perl
-use Mojolicious::Lite;
+package Stylehouse;
+use Mojo::Base 'Mojolicious';
 
 use lib 'lib';
 use Hostinfo;
@@ -38,39 +41,48 @@ use Dumpo;
 use Lyrico;
 use Conty;
 
-get '/' => 'index';
+has hostinfo => sub { Hostinfo->new() };
+has 'conty' => sub { Conty->new() };
 
-helper 'hostinfo' => sub { Hostinfo->new() };
-helper 'conty' => sub { Conty->new() };
 
-websocket '/stylehouse' => sub {
+sub startup {
     my $self = shift;
 
-    $self->app->log->info("WebSocket opened");
+    $self->helper(hostinfo => sub { $self->app->hostinfo });
+    $self->helper(conty => sub { $self->app->conty });
 
-    $self->on(message => sub {
-        my ($self, $msg) = @_;
+    $self->routes->get('/')->to('index');
 
-        $self->app->log->info("WebSocket: $msg");
-        Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
+    $self->routes->websocket('/stylehouse' => sub {
+        my $self = shift;
 
-        $self->conty->message($self, $msg);
-    });
+        $self->app->log->info("WebSocket opened");
 
-    $self->app->log->info("happens:!". anydump($self->app->conty));
-    $self->conty->initiate();
-    # connect above dispatcher to conty
-    # ask for screen width, etc from client
+        $self->on(message => sub {
+            my ($self, $msg) = @_;
 
-    $self->on(finish => sub {
-      my ($self, $code, $reason) = @_;
-      $self->app->log->debug("WebSocket closed with status $code.");
+            $self->app->log->info("WebSocket: $msg");
+            Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
+
+            $self->conty->message($self, $msg);
+        });
+
+        $self->app->log->info("happens:!". anydump($self->app->conty));
+        $self->conty->initiate();
+        # connect above dispatcher to conty
+        # ask for screen width, etc from client
+
+        $self->on(finish => sub {
+          my ($self, $code, $reason) = @_;
+          $self->app->log->debug("WebSocket closed with status $code.");
+        });
     });
 
 };
+package main;
 
+Stylehouse->new->start;
 
-app->start;
 __DATA__
 
 @@ index.html.ep
