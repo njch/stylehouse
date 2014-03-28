@@ -32,10 +32,12 @@ use Hostinfo;
 use Direction; 
 use Texty;
 use Dumpo;
+use Lyrico;
 
 get '/' => 'index';
 my $haps;
 my $hostinfo = Hostinfo->new();
+my $lyrico;
 helper 'hostinfo' => sub { $hostinfo };
 
 websocket '/stylehouse' => sub {
@@ -49,29 +51,38 @@ websocket '/stylehouse' => sub {
         $self->app->log->info("WebSocket: $msg");
         Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-    say "Message and hostinfo is:";
-    $hostinfo->dump();
         # all sorts of things want to get in here...
         if ($msg eq "Hello!") {
             # clear the way, or merge with it?
             # need to blow away
-            Direction->new(cd => "/home/s/Music", app => $self);
-            Dumpo->new(app => $self);
+            if (1) {
+                $lyrico = Lyrico->new(app => $self, hostinfo => $hostinfo);
+            }
+            elsif (1) {
+                Direction->new(cd => "/home/s/Music", app => $self);
+                Dumpo->new(app => $self);
+            }
         }
-        elsif ($msg =~ /^Width: (\d+)px$/) {
+        elsif ($msg =~ /^screen: (\d+)x(\d+)$/) {
             $self->hostinfo->set("screen/width" => $1); # per client?
+            $self->hostinfo->set("screen/height" => $2); # per client?
         }
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
-            $self->hostinfo->dispatch_event($event);
-            # route to $1 via hostinfo register of texty thing owners
+            if (1) {
+                $lyrico->event($event);
+            }
+            elsif (1) {
+                $self->hostinfo->dispatch_event($event);
+                # route to $1 via hostinfo register of texty thing owners
+            }
         }
         else {
             $self->send("// echo: $msg");
         }
     });
 
-    $self->send("ws.send('Width: '+\$('#view').width()+'px')");
+    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight.')");
     # connect above dispatcher to controllery
     # ask for screen width, etc from client
 
@@ -117,6 +128,19 @@ __DATA__
 
       connect();
 
+      function clickhand (event) {
+            var data = {
+                id: event.target.id,
+                type: event.type,
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey,
+                x: event.clientX,
+                y: event.clientY,
+            };
+            console.log(event);
+            ws.send('event '+JSON.stringify(data))
+      }
       function clickyhand (event) {
             var data = {
                 id: event.target.id,
@@ -125,6 +149,8 @@ __DATA__
                 shiftKey: event.shiftKey,
                 ctrlKey: event.ctrlKey,
                 altKey: event.altKey,
+                x: event.clientX,
+                y: event.clientY,
             };
             console.log(event);
             ws.send('event '+JSON.stringify(data))
@@ -141,10 +167,14 @@ __DATA__
     #hodu.data {
         position: relative;
     }
+    .lyrics {
+        width: 80px;
+        position: absolute;
+    }
     </style>
     <body style="background: #ab6; font-family: monospace">
     <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
-    <div id="hodu" class="view" style="float:left; width:58%; border: 1px solid black; background: #ce9; top: 50; height: 4000px;"></div>
+    <div id="hodu" class="view" style="float:left; width:58%; border: 1px solid black; background: #ce9; top: 50; height: 4000px"></div>
     </body>
 </html>
 

@@ -60,13 +60,13 @@ sub spans_to_jquery {
             (exists $p->{left} ? "left: ".delete($p->{left})."px" : ''),
             (exists $p->{right} ? "right: ".delete($p->{right})."px" : ''),
             ($p->{style} ? delete($p->{style}) : '');
-        say anydump($p);
         my $attrstring = join " ", map {
             $_.'="'.$p->{$_}.'"' } sort keys %$p;
         my $spanstring = "<span $attrstring>".encode_entities($value)."</span>";
         push @jquery, "  \$('#$viewid').append('".$spanstring."');";
     }
-    push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);";
+    push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);"
+        unless $self->id =~ "Lyrico";
     $self->jquery(join"\n", @jquery);
 }
 

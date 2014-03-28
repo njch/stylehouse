@@ -43,7 +43,7 @@ sub dispatch_event {
     my $self = shift;
     my $event = shift;
     my $things = $self->get('screen/things');
-    $self->dump() unless @$things;
+    die "nothing...". $self->dump() unless @$things;
     my $id = $event->{id};
     $id =~ s/^(\w+\-\w+).+$/$1/;
     my ($thing) = grep { $id eq $_->{id} } @$things;
