@@ -108,7 +108,7 @@ websocket '/stylehouse' => sub {
     # startup applications:
     Lyrico->new($self);
     Dumpo->new($self);
-#    push @apps, Direction->new("/home/s/Music", $self->app);
+    Direction->new("/home/s/Music", $self);
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
@@ -137,7 +137,7 @@ __DATA__
          
           ws.onclose = function() {
             $('body').addClass('dead');
-            reconnect();
+            //reconnect();
           }
       }
       function reconnect () {

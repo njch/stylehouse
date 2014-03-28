@@ -15,7 +15,7 @@ sub new {
     my $self = bless {}, shift;
     $self->owner(shift);
     $self->lines(shift);
-    $self->hooks(shift);
+    $self->hooks(shift || {});
     $self->view($self->hooks->{view} || "hodu");
     # ugly swooping
     my $hostinfo = $self->owner->hostinfo;

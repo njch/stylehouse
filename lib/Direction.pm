@@ -5,13 +5,14 @@ use Texty;
 
 has 'cd';
 has 'app';
+has 'hostinfo';
 
 sub new {
     my $self = bless {}, shift;
     $self->cd(shift);
-    $self->app(shift);
+    $self->hostinfo(shift->hostinfo);
     my @etc = map { s/\n$//s; $_ } capture("ls", "-lh", $self->cd);
-    my $text = new Texty($self, [@etc]);
+    my $text = new Texty($self, [@etc], { view => "view" });
     return $self;
 }
 
