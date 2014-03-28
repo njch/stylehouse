@@ -29,6 +29,8 @@ blowing up and coming back down in a linguatic clang
 here to think about what to do
 find the screen for the event and pass that to the event handler!
 
+need to error check client side javascript
+
 =cut
 
 #!/usr/bin/env perl
@@ -82,7 +84,7 @@ websocket '/stylehouse' => sub {
                 unless ($thing) {
                     $self->app->log->error("Thing lookup failed for $event->{id}");
                     $self->send(
-                        "\$(body).addStyle('dead').delay(250).removeStyle('dead');"
+                        "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
                     );
                 }
                 else {

@@ -15,8 +15,8 @@ sub new {
     my $self = bless {}, shift;
     $self->owner(shift);
     $self->lines(shift);
-    $self->view(shift || "view");
     $self->hooks(shift);
+    $self->view($self->hooks->{view} || "hodu");
     # ugly swooping
     my $hostinfo = $self->owner->hostinfo;
     # make a persistent object for this Texty thing
@@ -25,6 +25,7 @@ sub new {
     $self->lines_to_spans();
     $self->spans_to_jquery();
     $hostinfo->tx->send($self->jquery);
+    return $self;
 }
 
 sub lines_to_spans {

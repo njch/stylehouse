@@ -43,7 +43,9 @@ sub screenthing {
         die "no $thing";
     }
     
-    return if $thing->owner =~ /Lyrico/;
+    if ($thing->hooks->{skip_hostinfo}) {
+        return;
+    }
     
     my $things = $self->set('screen/things ||=', []);
     push @$things, $thing;

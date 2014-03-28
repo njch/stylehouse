@@ -13,7 +13,7 @@ sub new {
     $self->hostinfo->set('Dumpo', $self);
 
     my $dump = $self->hostinfo->dump("dontsay");
-    my $text = new Texty($self, [split("\n", $dump)], 'hodu');
+    my $text = new Texty($self, [split("\n", $dump)], { skip_hostinfo => 1 });
     return $self;
 }
 

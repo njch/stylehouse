@@ -39,7 +39,8 @@ sub zlyrics {
 sub write {
     my $self = shift;
     my $h = shift;
-    my $text = new Texty($self, [$self->zlyrics], undef, {
+    my $text = new Texty($self, [$self->zlyrics], {
+        skip_hostinfo => 1,
         spans_to_jquery=> sub {
             my $self = shift;
             my $i = $h->{i} || 0;
@@ -70,6 +71,7 @@ sub event {
     if ($event->{y} < 40) {
         my @js;
         for my $t (@texties) {
+            next;
             my $id = $t->lines->[0]->{id};
             my $x = $t->lines->[0]->{left};
             if (int(rand 1)) {
