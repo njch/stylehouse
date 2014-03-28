@@ -17,6 +17,7 @@ sub data {
 sub make_uuid {
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
+    $stringuuid =~ s/^(\w+)-.+$/$1/s;
     return $stringuuid
 }
 # take a Texty that wants to go on the screen
@@ -49,6 +50,11 @@ sub screenthing {
 
 }
 
+sub tx {
+    my $self = shift;
+    $self->get("screen/tx");
+}
+
 sub event_id_thing_lookup {
     my $self = shift;
     my $event = shift;
@@ -77,7 +83,6 @@ sub set {
     else {
         $data->{$i} = $d;
     }
-    say $i." -> ".$d;
     return $d;
 }
 sub dump {

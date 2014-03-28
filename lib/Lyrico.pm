@@ -6,6 +6,7 @@ use Time::HiRes 'usleep';
 
 has 'cd';
 has 'lyrics';
+has 'hostinfo';
 my @texties;
 
 my $i = 0;
@@ -13,12 +14,16 @@ my $i = 0;
 sub new {
     my $self = bless {}, shift;
 
+    $self->hostinfo(shift->hostinfo);
+
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
 
     $self->write;
 
-    $self->app->send("\$(window).on('click', clickhand);");
+    $self->hostinfo->tx->send("\$(window).on('click', clickhand);");
+    $self->hostinfo->set('Lyrico', $self);
+    $self->hostinfo->set('eventcatcher', $self);
     return $self;
 }
 sub zlyrics {
@@ -57,6 +62,7 @@ sub write {
 
 sub event {
     my $self = shift;
+    my $tx = shift;
     my $event = shift;
     my $h = {};
     if ($event->{y} < 40) {
@@ -73,7 +79,7 @@ sub event {
 
             push @js, "\$('#$id').animate({left: $x}, 5000, 'swing');"
         }
-        $self->app->send(join "\n", @js);
+        $tx->send(join "\n", @js);
 
     } else {
         $h->{tp} = $event->{y};

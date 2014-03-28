@@ -18,13 +18,14 @@ sub new {
     $self->view(shift || "view");
     $self->hooks(shift);
     # ugly swooping
-    my $hostinfo = $self->owner->app->hostinfo;
+    say "Owner app: ".$self->owner->app;
+    my $hostinfo = $self->owner->hostinfo;
     # make a persistent object for this Texty thing
     # #hodu dump junk will not be saved
     $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
-    $self->owner->app->send($self->jquery);
+    $hostinfo->tx->send($self->jquery);
 }
 
 sub lines_to_spans {
@@ -76,10 +77,11 @@ sub set {
 
 sub event {
     my $self = shift;
+    my $tx = shift;
     my $event = shift;
 
-    $self->owner->app->send("\$('#$event->{id}').css('color', 'red');");
-    $self->owner->event($event, $self);
+    $tx->send("\$('#$event->{id}').css('color', 'red');");
+    $self->owner->event($tx, $event, $self);
 }
 
 1;

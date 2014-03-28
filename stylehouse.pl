@@ -22,8 +22,12 @@ the spans' ids reach back to the module and/or controller it came from
 passing it the whole element and "click" or whatever
 lets eval everything from a WebSocket on the client
 
-new screen created in Hostinfo
-which fires a screen attachment conty
+new screens/websockets attached to screen/tx
+
+by the event dispatch... we see the waters edge
+blowing up and coming back down in a linguatic clang
+here to think about what to do
+find the screen for the event and pass that to the event handler!
 
 =cut
 
@@ -36,17 +40,17 @@ use Direction;
 use Texty;
 use Dumpo;
 use Lyrico;
-use Conty;
 
 get '/' => 'index';
 
-helper 'hostinfo' => sub { Hostinfo->new() };
-helper 'conty' => sub { Conty->new() };
+my $hostinfo = new Hostinfo();
+helper 'hostinfo' => sub { $hostinfo };
 
 websocket '/stylehouse' => sub {
     my $self = shift;
 
     $self->app->log->info("WebSocket opened");
+    $self->hostinfo->set("screen/tx", $self->tx);
 
     $self->on(message => sub {
         my ($self, $msg) = @_;
@@ -54,11 +58,52 @@ websocket '/stylehouse' => sub {
         $self->app->log->info("WebSocket: $msg");
         Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-        $self->conty->message($self, $msg);
+        # all sorts of things want to get in here...
+        if ($msg eq "Hello!") {
+            # clear the way, or merge with it?
+            # need to blow away
+        }
+        elsif ($msg =~ /^screen: (\d+)x(\d+)$/) {
+            $self->hostinfo->set("screen/width" => $1); # per client?
+            $self->hostinfo->set("screen/height" => $2); # per client?
+        }
+        elsif ($msg =~ /^event (.+)$/s) {
+            my $event = decode_json($1);
+            
+            my $catcher = $self->hostinfo->get('eventcatcher');
+            if (defined $catcher) {
+                $catcher->event($self->tx, $event);
+            }
+            else {
+                $self->app->log->error("Thing lookup for $event->{id}");
+                my $thing = $self->app->hostinfo->event_id_thing_lookup($event);
+                
+                unless ($thing) {
+                    $self->app->log->error("Thing lookup failed for $event->{id}");
+                    $self->send(
+                        "\$(body).addStyle('dead').delay(250).removeStyle('dead');"
+                    );
+                }
+                else {
+                    $self->app->log->info("Thing lookup $event->{id} -> $thing->{thing}");
+                    $thing->{thing}->event($event);
+                    # route to $1 via hostinfo register of texty thing owners
+                }
+            }
+        }
+        else {
+            $self->send("// echo: $msg");
+        }
     });
 
-    $self->app->log->info("happens:!". anydump($self->app->conty));
-    $self->conty->initiate();
+    # this bit could be like a transaction, handler hooked into message
+    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight.')");
+    # startup applications:
+    $self->app->log->debug("Is; ".$self->app);
+    Lyrico->new($self);
+#    push @apps, Direction->new("/home/s/Music", $self->app);
+#    push @apps, Dumpo->new();
+
     # connect above dispatcher to conty
     # ask for screen width, etc from client
 
