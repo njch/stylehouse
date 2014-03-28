@@ -66,6 +66,7 @@ websocket '/stylehouse' => sub {
         elsif ($msg =~ /^screen: (\d+)x(\d+)$/) {
             $self->hostinfo->set("screen/width" => $1); # per client?
             $self->hostinfo->set("screen/height" => $2); # per client?
+            # AND THEN...
         }
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
@@ -76,7 +77,7 @@ websocket '/stylehouse' => sub {
             }
             else {
                 $self->app->log->error("Thing lookup for $event->{id}");
-                my $thing = $self->app->hostinfo->event_id_thing_lookup($event);
+                my $thing = $self->hostinfo->event_id_thing_lookup($event);
                 
                 unless ($thing) {
                     $self->app->log->error("Thing lookup failed for $event->{id}");
@@ -86,7 +87,7 @@ websocket '/stylehouse' => sub {
                 }
                 else {
                     $self->app->log->info("Thing lookup $event->{id} -> $thing->{thing}");
-                    $thing->{thing}->event($event);
+                    $thing->{thing}->event($self->tx, $event);
                     # route to $1 via hostinfo register of texty thing owners
                 }
             }
@@ -96,16 +97,11 @@ websocket '/stylehouse' => sub {
         }
     });
 
-    # this bit could be like a transaction, handler hooked into message
-    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight.')");
+    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
     # startup applications:
-    $self->app->log->debug("Is; ".$self->app);
     Lyrico->new($self);
 #    push @apps, Direction->new("/home/s/Music", $self->app);
 #    push @apps, Dumpo->new();
-
-    # connect above dispatcher to conty
-    # ask for screen width, etc from client
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;

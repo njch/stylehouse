@@ -42,9 +42,9 @@ sub screenthing {
     else {
         die "no $thing";
     }
-    if ($thing->view eq "hodu") {
-        return;
-    }
+    
+    return if $thing->owner =~ /Lyrico/;
+    
     my $things = $self->set('screen/things ||=', []);
     push @$things, $thing;
 

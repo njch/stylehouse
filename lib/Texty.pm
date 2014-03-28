@@ -18,7 +18,6 @@ sub new {
     $self->view(shift || "view");
     $self->hooks(shift);
     # ugly swooping
-    say "Owner app: ".$self->owner->app;
     my $hostinfo = $self->owner->hostinfo;
     # make a persistent object for this Texty thing
     # #hodu dump junk will not be saved
@@ -69,10 +68,6 @@ sub spans_to_jquery {
     push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);"
         unless $self->id =~ "Lyrico";
     $self->jquery(join"\n", @jquery);
-}
-
-sub set {
-    my ($self, $i, $d) = @_;
 }
 
 sub event {

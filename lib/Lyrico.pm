@@ -64,6 +64,8 @@ sub event {
     my $self = shift;
     my $tx = shift;
     my $event = shift;
+    my $height = $self->hostinfo->get("screen/height");
+    $height ||= 900;
     my $h = {};
     if ($event->{y} < 40) {
         my @js;
@@ -84,9 +86,9 @@ sub event {
     } else {
         $h->{tp} = $event->{y};
         $h->{lp} = $event->{x};
-        for my $i (1..10) {
+        for my $i (1..1) {
             usleep 250;
-            $h->{x} = ($i * 30) + int rand $self->hostinfo->get("screen/height");
+            $h->{x} = ($i * 30) + int rand $height;
             $self->write($h) for 1..7;
         }
     }
