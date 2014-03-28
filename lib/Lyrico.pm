@@ -19,8 +19,6 @@ sub new {
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
 
-    $self->write;
-
     $self->hostinfo->tx->send("\$(window).on('click', clickhand);");
     $self->hostinfo->set('Lyrico', $self);
     $self->hostinfo->set('eventcatcher', $self);
@@ -40,6 +38,7 @@ sub write {
     my $self = shift;
     my $h = shift;
     my $text = new Texty($self, [$self->zlyrics], {
+        view => "view",
         skip_hostinfo => 1,
         spans_to_jquery=> sub {
             my $self = shift;
@@ -83,6 +82,10 @@ sub event {
 
             push @js, "\$('#$id').animate({left: $x}, 5000, 'swing');"
         }
+        if ($event->{x} < 100) {
+            $self->hostinfo->set("Ballz $event->{x}");
+        }
+        new Dumpo($self);
         $tx->send(join "\n", @js);
 
     } else {

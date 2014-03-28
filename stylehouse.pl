@@ -31,6 +31,11 @@ find the screen for the event and pass that to the event handler!
 
 need to error check client side javascript
 
+Texty, sending things through hostinfo awaits knowing about which screen its on
+handled by whatever provisions the viewport
+
+the modes that programs go through...
+
 =cut
 
 #!/usr/bin/env perl
@@ -102,8 +107,8 @@ websocket '/stylehouse' => sub {
     $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
     # startup applications:
     Lyrico->new($self);
+    Dumpo->new($self);
 #    push @apps, Direction->new("/home/s/Music", $self->app);
-#    push @apps, Dumpo->new();
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
@@ -132,6 +137,7 @@ __DATA__
          
           ws.onclose = function() {
             $('body').addClass('dead');
+            reconnect();
           }
       }
       function reconnect () {
@@ -186,8 +192,9 @@ __DATA__
     }
     </style>
     <body style="background: #ab6; font-family: monospace">
+    <div id="menu" class="view" style="float:left; width:100%; background: #333; height: 20px;"></div>
     <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
-    <div id="hodu" class="view" style="float:left; width:58%; border: 1px solid black; background: #ce9; top: 50; height: 4000px"></div>
+    <div id="hodu" class="view" style="float:left; width:60%;  background: #ce9; top: 50; height: 4000px"></div>
     </body>
 </html>
 
