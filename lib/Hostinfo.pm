@@ -4,6 +4,7 @@ use Scriptalicious;
 
 my $data = {};
 has 'obyuuid' => sub { {} };
+has 'controllery';
 
 use UUID;
 use Scalar::Util 'weaken';
@@ -18,43 +19,48 @@ sub make_uuid {
     UUID::unparse($uuid, my $stringuuid);
     return $stringuuid
 }
-
+# take a Texty that wants to go on the screen
+# it has a owner, give them the events? 
 sub screenthing {
     my $self = shift;
     my $thing = shift;
-    my $uuid = make_uuid();
-    my ($ownername) = $thing->owner =~ /^(\w+)/;
-    $uuid =~ /^(\w+)-/;
-    my $id = "$ownername-$1";
-    $thing->id($id);
+
+    # put an ID on it from ClassnameUUID of the Texty->owner;
+    # controller makes div? spans are texty things?
+    # events find texty, find owner
+    if (ref $thing eq "Texty") {
+        my $tuuid = make_uuid();
+        my $ouuid = make_uuid();
+        my ($oname) = $thing->owner =~ /^(\w+)/;
+        my $oid = "$oname-$ouuid";
+        my $tid = "Texty-$tuuid"; # could stack the ownership like Texty-UUID-Direction-UUID
+        $thing->id($tid);
+        # $thing->owner->id($oid) 
+        $self->app->log->info("$oid created screen thing $tid");
+    }
+    else {
+        die "no $thing";
+    }
     if ($thing->view eq "hodu") {
         return;
     }
-    my $screenthing = {
-        thing => $thing,
-        id => $id,
-    };
     my $things = $self->set('screen/things ||=', []);
-    push @$things, $screenthing;
+    push @$things, $thing;
 
 }
 
-sub dispatch_event {
+sub event_id_thing_lookup {
     my $self = shift;
     my $event = shift;
     my $things = $self->get('screen/things');
     die "nothing...". $self->dump() unless @$things;
+
     my $id = $event->{id};
     $id =~ s/^(\w+\-\w+).+$/$1/;
+
     my ($thing) = grep { $id eq $_->{id} } @$things;
-    unless ($thing) {
-        # probably a Dumpo
-        $self->owner->app->send(
-            "\$(body).addStyle('dead').delay(250).removeStyle('dead');"
-        );
-        return;
-    }
-    $thing->{thing}->event($event);
+
+    return $thing;
 }
 
 
@@ -64,6 +70,7 @@ sub get {
 }
 sub set {
     my ($self, $i, $d) = @_;
+    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
     if ($i =~ s/ \|\|\=$//s) {
         $data->{$i} ||= $d;
     }

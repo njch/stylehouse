@@ -5,18 +5,13 @@ use Texty;
 use Time::HiRes 'usleep';
 
 has 'cd';
-has 'app';
 has 'lyrics';
-has 'hostinfo';
 my @texties;
 
 my $i = 0;
 
 sub new {
     my $self = bless {}, shift;
-    my %p = @_;
-    $self->app($p{app});
-    $self->hostinfo($p{hostinfo});
 
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);

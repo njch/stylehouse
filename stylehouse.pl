@@ -22,6 +22,9 @@ the spans' ids reach back to the module and/or controller it came from
 passing it the whole element and "click" or whatever
 lets eval everything from a WebSocket on the client
 
+new screen created in Hostinfo
+which fires a screen attachment conty
+
 =cut
 
 #!/usr/bin/env perl
@@ -33,12 +36,12 @@ use Direction;
 use Texty;
 use Dumpo;
 use Lyrico;
+use Conty;
 
 get '/' => 'index';
-my $haps;
-my $hostinfo = Hostinfo->new();
-my $lyrico;
-helper 'hostinfo' => sub { $hostinfo };
+
+helper 'hostinfo' => sub { Hostinfo->new() };
+helper 'conty' => sub { Conty->new() };
 
 websocket '/stylehouse' => sub {
     my $self = shift;
@@ -51,39 +54,12 @@ websocket '/stylehouse' => sub {
         $self->app->log->info("WebSocket: $msg");
         Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-        # all sorts of things want to get in here...
-        if ($msg eq "Hello!") {
-            # clear the way, or merge with it?
-            # need to blow away
-            if (1) {
-                $lyrico = Lyrico->new(app => $self, hostinfo => $hostinfo);
-            }
-            elsif (1) {
-                Direction->new(cd => "/home/s/Music", app => $self);
-                Dumpo->new(app => $self);
-            }
-        }
-        elsif ($msg =~ /^screen: (\d+)x(\d+)$/) {
-            $self->hostinfo->set("screen/width" => $1); # per client?
-            $self->hostinfo->set("screen/height" => $2); # per client?
-        }
-        elsif ($msg =~ /^event (.+)$/s) {
-            my $event = decode_json($1);
-            if (1) {
-                $lyrico->event($event);
-            }
-            elsif (1) {
-                $self->hostinfo->dispatch_event($event);
-                # route to $1 via hostinfo register of texty thing owners
-            }
-        }
-        else {
-            $self->send("// echo: $msg");
-        }
+        $self->conty->message($self, $msg);
     });
 
-    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight.')");
-    # connect above dispatcher to controllery
+    $self->app->log->info("happens:!". anydump($self->app->conty));
+    $self->conty->initiate();
+    # connect above dispatcher to conty
     # ask for screen width, etc from client
 
     $self->on(finish => sub {
@@ -110,15 +86,9 @@ __DATA__
             console.log(event.data);
             eval(event.data);
           };
-          
-          ws.onopen = function() {
-            $('body').removeClass('dead');
-            ws.send('Hello!');
-          }
-
+         
           ws.onclose = function() {
             $('body').addClass('dead');
-            //reconnect();
           }
       }
       function reconnect () {
