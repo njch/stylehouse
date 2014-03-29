@@ -145,8 +145,9 @@ __DATA__
             eval(event.data);
           };
          
-          ws.onclose = function() {
+          ws.onclose = function(e) {
             $('body').addClass('dead');
+            console.log("WebSocket Error: " , e);
             //reconnect();
           }
       }

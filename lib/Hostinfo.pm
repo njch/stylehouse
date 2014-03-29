@@ -37,7 +37,7 @@ sub screenthing {
         my $tid = "Texty-$tuuid"; # could stack the ownership like Texty-UUID-Direction-UUID
         $thing->id($tid);
         # $thing->owner->id($oid) 
-        $self->app->log->info("$oid created screen thing $tid");
+        #$self->app->log->info("$oid created screen thing $tid");
     }
     else {
         die "no $thing";
@@ -52,6 +52,13 @@ sub screenthing {
 
 }
 
+sub send {
+    my $self = shift;
+    my $message = shift;
+    say "Websocket SEND: ".$message;
+    my $tx = $self->tx;
+    $tx->send($message);
+}
 sub tx {
     my $self = shift;
     $self->get("screen/tx");

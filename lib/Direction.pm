@@ -20,7 +20,7 @@ sub menu {
     my $self = shift;
     return {
         close => sub {
-            $self->hostinfo->tx->send("\$('#view span').remove();");
+            $self->hostinfo->send("\$('#view span').remove();");
             # nuke from hostinfo
         },
     };

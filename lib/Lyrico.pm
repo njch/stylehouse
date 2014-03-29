@@ -19,7 +19,7 @@ sub new {
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
 
-    $self->hostinfo->tx->send("\$(window).on('click', clickhand);");
+    $self->hostinfo->send("\$(window).on('click', clickhand);");
     $self->hostinfo->set('Lyrico', $self);
     $self->hostinfo->set('eventcatcher', $self);
     return $self;
@@ -28,7 +28,7 @@ sub menu {
     my $self = shift;
     return {
         shudup => sub {
-            $self->hostinfo->tx->send("\$(window).off('click', clickhand);");
+            $self->hostinfo->send("\$(window).off('click', clickhand);");
         },
     };
 }
@@ -45,7 +45,8 @@ sub zlyrics {
 sub write {
     my $self = shift;
     my $h = shift;
-    my $text = new Texty($self, [$self->zlyrics], {
+    my @lyrics = @_;
+    my $text = new Texty($self, [@lyrics], {
         view => "view",
         skip_hostinfo => 1,
         spans_to_jquery=> sub {
@@ -88,7 +89,7 @@ sub event {
                 $x *= 2;
             }
 
-            push @js, "\$('#$id').animate({left: $x}, 5000, 'swing');"
+            push @js, "\$('#$id').animate({left: 400}, 5000, 'swing');"
         }
         if ($event->{x} < 100) {
             $self->hostinfo->set("Ballz $event->{x}");
@@ -102,7 +103,8 @@ sub event {
         for my $i (1..1) {
             usleep 250;
             $h->{x} = ($i * 30) + int rand $height;
-            $self->write($h) for 1..7;
+            my @lyrics = map {$self->zlyrics} 1..3;
+            $self->write($h, @lyrics);
         }
     }
 }

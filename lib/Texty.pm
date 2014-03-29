@@ -26,8 +26,7 @@ sub new {
     $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
-    say "Finished $self for ".$self->owner." and got notx=".($self->hooks->{notx}||"~");
-    $hostinfo->tx->send($self->jquery) unless $self->hooks->{notx};
+    $hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
     return $self;
 }
 
