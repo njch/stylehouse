@@ -2,6 +2,8 @@ package Texty;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use HTML::Entities;
+use JSON::XS;
+my $json = JSON::XS->new->allow_nonref(1);
 
 has 'owner';
 has 'hostinfo';
@@ -82,9 +84,7 @@ sub spans_to_jquery {
         $self->{hooks}->{catch_span_htmls}->($self, @span_htmls);
     }
     my @jquery;
-    push @jquery, "  \$('#$viewid').append('".join('', @span_htmls)."');";
-    push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);"
-        unless $self->id =~ "Lyrico";
+    push @jquery, "  \$('#$viewid').append(".$json->encode(join('', @span_htmls)).");";
     $self->jquery(join"\n", @jquery);
 }
 
