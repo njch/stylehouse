@@ -161,6 +161,7 @@ __DATA__
       function clickhand (event) {
             var data = {
                 id: event.target.id,
+                value: event.target.innerText,
                 type: event.type,
                 shiftKey: event.shiftKey,
                 ctrlKey: event.ctrlKey,

@@ -44,10 +44,15 @@ sub screenthing {
     }
     
     if ($thing->hooks->{skip_hostinfo}) {
-        return;
+        say "   ! ! ! ! ! !SKIPPING HOSTINFO for $thing->{id}";
+        #return;
     }
     
-    my $things = $self->set('screen/things ||=', []);
+    if (!$self->get('screen/things')) {
+        $self->set('screen/things', []);
+    }
+    my $things = $self->get('screen/things');
+    
     push @$things, $thing;
 
 }
@@ -55,7 +60,7 @@ sub screenthing {
 sub send {
     my $self = shift;
     my $message = shift;
-    say "Websocket SEND: ".$message;
+    say "Websocket SEND: ".substr($message,0,50);
     my $tx = $self->tx;
     $tx->send($message);
 }
@@ -86,16 +91,11 @@ sub get {
 sub set {
     my ($self, $i, $d) = @_;
     $self->app->log->info("Hosting info: $i -> ".($d||"~"));
-    if ($i =~ s/ \|\|\=$//s) {
-        $data->{$i} ||= $d;
-    }
-    else {
-        $data->{$i} = $d;
-    }
+    $data->{$i} = $d;
     return $d;
 }
 sub dump {
-    my $dump = join "\n", grep { !/^          /sgm } split /\n/, anydump($data);
+    my $dump = join "\n", grep { !/^          /sgm } split /\n/, anydump($data->{'screen/things'});
     return $dump if shift;
     say $dump;
 }

@@ -76,7 +76,7 @@ sub event {
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
     my $h = {};
-    if ($event->{y} < 40) {
+    my $animate = sub {
         my @js;
         for my $t (@texties) {
             next;
@@ -91,22 +91,14 @@ sub event {
 
             push @js, "\$('#$id').animate({left: 400}, 5000, 'swing');"
         }
-        if ($event->{x} < 100) {
-            $self->hostinfo->set("Ballz $event->{x}");
-        }
-        new Dumpo($self);
-        $tx->send(join "\n", @js);
+        $self->hostinfo->send(join "\n", @js);
+    };
 
-    } else {
-        $h->{tp} = $event->{y};
-        $h->{lp} = $event->{x};
-        for my $i (1..1) {
-            usleep 250;
-            $h->{x} = ($i * 30) + int rand $height;
-            my @lyrics = map {$self->zlyrics} 1..3;
-            $self->write($h, @lyrics);
-        }
-    }
+    $h->{tp} = $event->{y};
+    $h->{lp} = $event->{x};
+    $h->{x} = ($i * 30) + int rand $height;
+    my @lyrics = map {$self->zlyrics} 1..3;
+    $self->write($h, @lyrics);
 }
 
 1;

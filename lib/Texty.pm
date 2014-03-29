@@ -2,6 +2,7 @@ package Texty;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use HTML::Entities;
+use Storable 'dclone';
 use JSON::XS;
 my $json = JSON::XS->new->allow_nonref(1);
 
@@ -19,6 +20,7 @@ sub new {
     $self->owner(shift);
     $self->hostinfo($self->owner->hostinfo);
     $self->lines(shift);
+    ref $self->lines eq "ARRAY" || die "need arrayref";
     $self->hooks(shift || {});
     $self->view($self->hooks->{view} || "hodu");
     # ugly swooping
@@ -59,7 +61,7 @@ sub spans_to_jquery {
     my $viewid = $self->view;
     my @span_htmls;
     for my $s (@$spans) {
-        my $p = { %$s };
+        my $p = dclone $s;
         my $value = delete($p->{value});
         $p->{style} = join "; ", grep /\S/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
