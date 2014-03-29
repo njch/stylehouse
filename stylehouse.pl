@@ -63,8 +63,8 @@ websocket '/stylehouse' => sub {
 
     my $startup = sub {
         Lyrico->new($self);
-        Dumpo->new($self);
         Direction->new("/home/s/Music", $self);
+        Dumpo->new($self);
         Menu->new($self);
     };
 

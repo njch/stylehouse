@@ -45,7 +45,7 @@ sub screenthing {
     
     if ($thing->hooks->{skip_hostinfo}) {
         say "   ! ! ! ! ! !SKIPPING HOSTINFO for $thing->{id}";
-        #return;
+        return;
     }
     
     if (!$self->get('screen/things')) {
@@ -95,9 +95,26 @@ sub set {
     return $d;
 }
 sub dump {
-    my $dump = join "\n", grep { !/^          /sgm } split /\n/, anydump($data->{'screen/things'});
+    my $dump = thedump($data->{'screen/things'});
     return $dump if shift;
     say $dump;
+}
+
+sub thedump {
+    my $thing = shift;
+    my @rdump = split /\n/, anydump($thing);
+    my @dump;
+    while (defined(my $line = shift @rdump)) {
+        if ($line =~ /^(\s*).+?Mojo::Transaction::WebSocket/) {
+            my $ind = $1;
+            until ($rdump[0] =~ /^$ind\S+/) {
+                shift @rdump;
+            }
+        }
+        push @dump, $line;
+    }
+
+    return join "\n", @dump;
 }
 
 1;
