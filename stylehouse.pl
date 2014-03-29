@@ -17,6 +17,7 @@ say "\n\n\nwe are $0";
 hostinfo
 for modules, IPs, files, everything
 anything storage upgradable to sticky schemas
+
 modules create a view div, fill it with spans
 the spans' ids reach back to the module and/or controller it came from
 passing it the whole element and "click" or whatever
@@ -27,7 +28,6 @@ new screens/websockets attached to screen/tx
 by the event dispatch... we see the waters edge
 blowing up and coming back down in a linguatic clang
 here to think about what to do
-find the screen for the event and pass that to the event handler!
 
 need to error check client side javascript
 
@@ -62,7 +62,7 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
 
     my $startup = sub {
-        Lyrico->new($self);
+#       Lyrico->new($self);
         Direction->new("/home/s/Music", $self);
         Dumpo->new($self);
         Menu->new($self);
@@ -107,8 +107,8 @@ websocket '/stylehouse' => sub {
                     );
                 }
                 else {
-                    $self->app->log->info("Thing lookup $event->{id} -> $thing->{thing}");
-                    $thing->{thing}->event($self->tx, $event);
+                    $self->app->log->info("Thing lookup $event->{id} -> $thing");
+                    $thing->event($self->tx, $event);
                     # route to $1 via hostinfo register of texty thing owners
                 }
             }

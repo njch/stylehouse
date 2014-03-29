@@ -95,7 +95,6 @@ sub event {
     my $tx = shift;
     my $event = shift;
 
-    $tx->send("\$('#$event->{id}').css('color', 'red');");
     $self->owner->event($tx, $event, $self);
 }
 
