@@ -35,6 +35,7 @@ Texty, sending things through hostinfo awaits knowing about which screen its on
 handled by whatever provisions the viewport
 
 the modes that programs go through...
+menu aggregate
 
 =cut
 
@@ -59,6 +60,12 @@ websocket '/stylehouse' => sub {
     $self->app->log->info("WebSocket opened");
     $self->hostinfo->set("screen/tx", $self->tx);
 
+    my $startup = sub {
+        Lyrico->new($self);
+        Dumpo->new($self);
+        Direction->new("/home/s/Music", $self);
+    };
+
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
@@ -74,6 +81,7 @@ websocket '/stylehouse' => sub {
             $self->hostinfo->set("screen/width" => $1); # per client?
             $self->hostinfo->set("screen/height" => $2); # per client?
             # AND THEN...
+            $startup->();
         }
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
@@ -105,10 +113,6 @@ websocket '/stylehouse' => sub {
     });
 
     $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
-    # startup applications:
-    Lyrico->new($self);
-    Dumpo->new($self);
-    Direction->new("/home/s/Music", $self);
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
