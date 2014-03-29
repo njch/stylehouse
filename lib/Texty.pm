@@ -4,6 +4,7 @@ use Scriptalicious;
 use HTML::Entities;
 
 has 'owner';
+has 'hostinfo';
 has 'lines';
 has 'spans';
 has 'jquery';
@@ -14,6 +15,7 @@ has 'id';
 sub new {
     my $self = bless {}, shift;
     $self->owner(shift);
+    $self->hostinfo($self->owner->hostinfo);
     $self->lines(shift);
     $self->hooks(shift || {});
     $self->view($self->hooks->{view} || "hodu");
@@ -24,7 +26,8 @@ sub new {
     $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
-    $hostinfo->tx->send($self->jquery);
+    say "Finished $self for ".$self->owner." and got notx=".($self->hooks->{notx}||"~");
+    $hostinfo->tx->send($self->jquery) unless $self->hooks->{notx};
     return $self;
 }
 
@@ -33,12 +36,13 @@ sub lines_to_spans {
     my $es = $self->lines;
     my $id = $self->id;
     my $top = 20;
+    my $spacer = sub { top => ($top += 20) };
     my @spans;
     my $l = 0;
     for my $e (@$es) {
         push @spans, {
             class => "data", id => ($id.'-'.$l++),
-            top => ($top += 20),
+            $spacer->(),
             value => $e,
         };
     }
@@ -52,7 +56,7 @@ sub spans_to_jquery {
     }
     my $spans = $self->spans;
     my $viewid = $self->view;
-    my @jquery;
+    my @span_htmls;
     for my $s (@$spans) {
         my $p = { %$s };
         my $value = delete($p->{value});
@@ -63,9 +67,23 @@ sub spans_to_jquery {
             ($p->{style} ? delete($p->{style}) : '');
         my $attrstring = join " ", map {
             $_.'="'.$p->{$_}.'"' } sort keys %$p;
-        my $spanstring = "<span $attrstring>".encode_entities($value)."</span>";
-        push @jquery, "  \$('#$viewid').append('".$spanstring."');";
+
+
+        if ($value =~ /<span/) {
+            # something's taking care of it
+        }
+        else {
+            $value = encode_entities($value);
+        }
+        my $span_html = "<span $attrstring>$value</span>";
+        push @span_htmls, $span_html;
+        
     }
+    if ($self->{hooks}->{catch_span_htmls}) {
+        $self->{hooks}->{catch_span_htmls}->($self, @span_htmls);
+    }
+    my @jquery;
+    push @jquery, "  \$('#$viewid').append('".join('', @span_htmls)."');";
     push @jquery, "  \$('#$viewid span.data').on('click', clickyhand);"
         unless $self->id =~ "Lyrico";
     $self->jquery(join"\n", @jquery);

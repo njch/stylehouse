@@ -48,6 +48,7 @@ use Direction;
 use Texty;
 use Dumpo;
 use Lyrico;
+use Menu;
 
 get '/' => 'index';
 
@@ -64,6 +65,7 @@ websocket '/stylehouse' => sub {
         Lyrico->new($self);
         Dumpo->new($self);
         Direction->new("/home/s/Music", $self);
+        Menu->new($self);
     };
 
     $self->on(message => sub {
@@ -86,12 +88,16 @@ websocket '/stylehouse' => sub {
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
             
-            my $catcher = $self->hostinfo->get('eventcatcher');
-            if (defined $catcher) {
+            if ($event->{y} < 40) {
+                $self->app->log->info("Sending event to Menu");
+                $self->hostinfo->get("Menu")->event($self->tx, $event);
+            }
+            elsif (my $catcher = $self->hostinfo->get('eventcatcher')) {
+                $self->app->log->info("Event caught by $catcher");
                 $catcher->event($self->tx, $event);
             }
             else {
-                $self->app->log->error("Thing lookup for $event->{id}");
+                $self->app->log->info("Looking up event handler");
                 my $thing = $self->hostinfo->event_id_thing_lookup($event);
                 
                 unless ($thing) {
@@ -186,6 +192,9 @@ __DATA__
     }
     .dead {
         background: black;
+    }
+    .menu {
+        padding:1px;
     }
     #hodu.data {
         position: relative;

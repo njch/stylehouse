@@ -24,6 +24,14 @@ sub new {
     $self->hostinfo->set('eventcatcher', $self);
     return $self;
 }
+sub menu {
+    my $self = shift;
+    return {
+        shudup => sub {
+            $self->hostinfo->tx->send("\$(window).off('click', clickhand);");
+        },
+    };
+}
 sub zlyrics {
     my $self = shift;
     my $lyrics = $self->lyrics;
