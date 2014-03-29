@@ -81,12 +81,10 @@ sub event {
     $height ||= 900;
     my $h = {};
     if ($event->{y} < 40) {
-        my @js;
         if ($event->{x} < 100) {
             $self->hostinfo->set("Ballz $event->{x}");
         }
-        new Dumpo($self);
-        $tx->send(join "\n", @js);
+        new Dumpo($self, $event);
 
     } else {
         $h->{tp} = $event->{y};
