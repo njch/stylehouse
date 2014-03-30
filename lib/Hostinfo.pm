@@ -99,7 +99,7 @@ sub set {
     return $d;
 }
 sub dump {
-    my $dump = thedump($data->{'screen/things'});
+    my $dump = thedump($data);
     return $dump if shift;
     say $dump;
 }
@@ -111,7 +111,14 @@ sub thedump {
     while (defined(my $line = shift @rdump)) {
         if ($line =~ /^(\s*).+?Mojo::Transaction::WebSocket/) {
             my $ind = $1;
-            until ($rdump[0] =~ /^$ind\S+/) {
+            until (!@rdump || $rdump[0] =~ /^$ind\S+/) {
+                shift @rdump;
+            }
+        }
+        if ($line =~ /^(\s*).+?hostinfo: \S+ !!perl\/hash:Hostinfo/) {
+            my $ind = $1;
+            push @dump, "HOstinfo: ";
+            until (1 || !@rdump || $rdump[0] =~ /^$ind\S+/) {
                 shift @rdump;
             }
         }

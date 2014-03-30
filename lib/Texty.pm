@@ -30,6 +30,7 @@ sub new {
     $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
+
     if (length($self->jquery) > 3000) {
         my ($start, $spannage, $end) = $self->jquery =~
             /^(.+append\(")(.+)("\);)$/sg;

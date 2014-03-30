@@ -62,6 +62,7 @@ use Menu;
 get '/' => 'index';
 
 my $hostinfo = new Hostinfo();
+$hostinfo->set('0', $hostinfo);
 helper 'hostinfo' => sub { $hostinfo };
 
 websocket '/stylehouse' => sub {
@@ -71,8 +72,8 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
 
     my $startup = sub {
-#       Lyrico->new($self);
-        Direction->new("/home/s/Pictures", $self);
+       Lyrico->new($self);
+#        Direction->new("/home/s/Pictures", $self);
         Dumpo->new($self);
         Menu->new($self);
     };
@@ -97,29 +98,25 @@ websocket '/stylehouse' => sub {
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
             
-            if ($event->{y} < 40) {
-                $self->app->log->info("Sending event to Menu");
-                $self->hostinfo->get("Menu")->event($self->tx, $event);
-            }
-            elsif (my $catcher = $self->hostinfo->get('eventcatcher')) {
-                $self->app->log->info("Event caught by $catcher");
-                $catcher->event($self->tx, $event);
+            $self->app->log->info("Looking up event handler");
+            # find the Texty to ->event ->{ owner->event
+            my $thing = $self->hostinfo->event_id_thing_lookup($event);
+
+            unless ($thing) {
+                $self->app->log->error("Thing lookup failed for $event->{id}");
+
+                if (my $catcher = $self->hostinfo->get('eventcatcher')) {
+                    $catcher->event($self->tx, $event);
+                }
+
+                $self->send(
+                    "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
+                );
             }
             else {
-                $self->app->log->info("Looking up event handler");
-                my $thing = $self->hostinfo->event_id_thing_lookup($event);
-                
-                unless ($thing) {
-                    $self->app->log->error("Thing lookup failed for $event->{id}");
-                    $self->send(
-                        "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
-                    );
-                }
-                else {
-                    $self->app->log->info("Thing lookup $event->{id} -> $thing");
-                    $thing->event($self->tx, $event);
-                    # route to $1 via hostinfo register of texty thing owners
-                }
+                $self->app->log->info("Thing lookup $event->{id} -> $thing");
+                $thing->event($self->tx, $event);
+                # route to $1 via hostinfo register of texty thing owners
             }
         }
         else {
