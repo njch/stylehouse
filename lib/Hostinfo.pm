@@ -69,7 +69,7 @@ sub send {
         die "Message is bigger (".length($message).") than max websocket size=".$self->tx->max_websocket_size
             ."\n\n".substr($message,0,180)."...";
     }
-    say "Websocket SEND: $message";#.substr($message,0,70);
+    say "Websocket SEND: ".substr($message,0,70);
     my $tx = $self->tx;
     $tx->send({text => $message});
 }
@@ -109,101 +109,33 @@ sub unset {
     delete $data->{$i};
 }
 
+sub thedump {
+    my $self = shift;
+    my $thing = shift;
+    my $dumpo = $self->get('Dumpo');
+    unless ($dumpo) {
+        say "---pre dumpo @_";
+    }
+    $dumpo->thedump($thing, $self); # owner: $self
+}
 sub intro {
     my $self = shift;
     my $new = shift;
     my ($name) = split '=', ref $new;
     if (my $exist = $self->get($name)) {
-        say "$name already in hostinfo, new value:";
-        say "Existing: ".$self->thedump($exist);
-        say "New: ".$self->thedump($new);
+        my $oldname = $name."_old";
+        unless ($self->get($oldname)) {
+            $self->set($oldname, []);
+        }
+        my $old = $self->get($oldname);
+        push @$old, $exist;
+        say "$name already in hostinfo, retiring... from there";
     }
     $self->set($name, $new);
-    say "Registered name for ".ref $new;
     if ($new->can("dumphooks")) {
         my @otherhooks = $new->dumphooks;
         my $ourhooks = $self->get('dumphooks');
         push @$ourhooks, @otherhooks;
     }
-}
-
-sub dump {
-    my $self = shift;
-    my $dump = $self->thedump($data);
-    return $dump if shift;
-    say $dump;
-}
-
-sub thedump {
-    my $self = shift;
-    my $thing = shift;
-    my $hooks = $self->get('dumphooks');
-    push @$hooks, {
-        ref => "HASH",
-        getlines => sub {
-            my $thing = shift;
-            my $hooks = shift;
-            my $d = shift;
-            my @ks = keys %$thing;
-            my @sub;
-            for my $k (@ks) {
-                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
-            }
-            return ("THIS $thing", @sub);
-        },
-    }, {
-        ref => "Lyrico",
-        getlines => sub {
-            my $thing = shift;
-            my $hooks = shift;
-            my $d = shift;
-            say "DOING A THING WITH $thing";
-            my @ks = keys %$thing;
-            my @sub;
-            for my $k (@ks) {
-                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
-            }
-            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            say "$self";
-            return new Texty($self, ["$thing: ", @sub], { leave_spans => 1 });
-        },
-    };
-    my @rdump = dumpdeal($thing, $hooks);
-
-    return join "\n", @rdump;
-}
-sub dumpdeal {
-    my $thing = shift;
-    my $hooks = shift;
-    my $depth = shift;
-    $depth = 1;
-    my @lines;
-    my $ignore;
-
-    my $dohook = sub {
-        my $h = shift;
-        my $d;
-        if ($h->{getlines}) {
-            push @lines, $h->{getlines}->($thing, $hooks, $depth);
-        }
-        else {
-            say "                   NO SOLUTION?";
-        }
-    };
-    my $scanhooks = sub {
-        for my $h (@$hooks) {
-            if ($h->{ref}) {
-                if (ref $thing eq $h->{ref}) {
-                    $dohook->($h) && return 1;
-                    last;
-                }
-            }
-        }
-    };
-    unless ($scanhooks->()) {
-        push @lines, "? $thing";
-    }
-    s/^/('  ')x$depth/e for @lines;
-    return @lines;
 }
 1;

@@ -76,7 +76,23 @@ sub lines_to_spans {
     }
     $self->spans([@spans]);
 }
-
+sub spans_to_htmls {
+    my $self = shift;
+    my $add = shift;
+    my @htmls;
+    $self->{hooks}->{catch_span_htmls} = sub {
+        shift; push @htmls, @_;
+    };
+    $self->{hooks}->{spans_to_jquery} = sub {
+        my $self = shift;
+        for my $s (@{$self->spans}) {
+            $s->{top} += $add->{top};
+            $s->{left} += $add->{left}
+        }
+    };
+    $self->spans_to_jquery();
+    return @htmls;
+}
 sub spans_to_jquery {
     my $self = shift;
     if ($self->{hooks}->{spans_to_jquery}) {
@@ -84,10 +100,12 @@ sub spans_to_jquery {
     }
     my $spans = $self->spans;
     my $viewid = $self->view;
+    my $top_add = 0;
     my @span_htmls;
     for my $s (@$spans) {
-        my $p = dclone $s;
-        my $value = delete($p->{value});
+        my $mid = { %$s };
+        my $value = delete($mid->{value});
+        my $p = dclone $mid;
         $p->{style} = join "; ", grep /\S/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
             (exists $p->{left} ? "left: ".delete($p->{left})."px" : ''),
@@ -96,14 +114,21 @@ sub spans_to_jquery {
         my $attrstring = join " ", map {
             $_.'="'.$p->{$_}.'"' } sort keys %$p;
 
-
+        my $span_html;
         if ($value =~ /<span/) {
-            # something's taking care of it
+            $span_html = $value;
+        }
+        if (ref $value eq "Texty") {
+            $p->{style} .= "border: 1px solid pink;";
+            say "Doing this thing now";
+            my @htmls = $value->spans_to_htmls($p);
+            $value = join" ", @htmls;
+            $span_html = "<span $attrstring></span>$value";
         }
         else {
             $value = encode_entities($value);
+            $span_html = "<span $attrstring>$value</span>";
         }
-        my $span_html = "<span $attrstring>$value</span>";
         push @span_htmls, $span_html;
         
     }

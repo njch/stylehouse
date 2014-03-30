@@ -40,25 +40,21 @@ sub updump {
         $self->hostinfo->send("\$('#".$self->view." span').fadeOut(500);");
     }
         
-    my $dump = $object ? anydump($object) : $self->dump("dontsay");
+
     use File::Slurp;
-    write_file('public/dump', $dump);
-    my $text = new Texty($self, [grep { !/^       / } split("\n", $dump)],
+    write_file('public/dump2', "Balls\n\n".anydump($self->hostinfo->data));
+
+    my $text = new Texty($self, [$self->thedump($self->hostinfo->data)],
         { view => $self->view,
         skip_hostinfo => 1 }
     );
 }
 
-sub dump {
-    my $self = shift;
-    my $dump = $self->thedump($self->hostinfo->data);
-    return $dump if shift;
-    say $dump;
-}
-
 sub thedump {
     my $self = shift;
     my $thing = shift;
+    my $owner = shift;
+    $owner ||= $self;
     my $hooks = $self->hostinfo->get('dumphooks');
     push @$hooks, {
         ref => "HASH",
@@ -86,13 +82,26 @@ sub thedump {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            say "$self";
-            return new Texty($self, ["$thing: ", @sub], { leave_spans => 1 });
+            return new Texty($owner, ["$thing: ", @sub], { leave_spans => 1 });
+        },
+    }, {
+        ref => "Texty",
+        getlines => sub {
+            my $thing = shift;
+            my $hooks = shift;
+            my $d = shift;
+            say "DOING A THING WITH $thing";
+            my @ks = keys %$thing;
+            my @sub;
+            for my $k (@ks) {
+                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
+            }
+            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
+            return new Texty($owner, ["$thing: ", @sub], { leave_spans => 1 });
         },
     };
-    my @rdump = dumpdeal($thing, $hooks);
-
-    return join "\n", @rdump;
+    my @dump = dumpdeal($thing, $hooks);
+    return @dump;
 }
 sub dumpdeal {
     my $thing = shift;
@@ -125,7 +134,7 @@ sub dumpdeal {
     unless ($scanhooks->()) {
         push @lines, "? $thing";
     }
-    s/^/('  ')x$depth/e for @lines;
+    ref $_ || s/^/('  ')x$depth/e for @lines;
     return @lines;
 }
 
