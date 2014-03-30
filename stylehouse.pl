@@ -120,7 +120,7 @@ websocket '/stylehouse' => sub {
             }
             else {
                 $self->app->log->info("Thing lookup $event->{id} -> $thing");
-                $thing->event($self->tx, $event);
+                $thing->event($event);
                 # route to $1 via hostinfo register of texty thing owners
             }
         }
@@ -129,8 +129,7 @@ websocket '/stylehouse' => sub {
         }
     });
 
-    $self->hostinfo->send("\$(window).on('click', clickyhand);");
-    $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
+    $self->hostinfo->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
@@ -156,11 +155,14 @@ __DATA__
             console.log(event.data);
             eval(event.data);
           };
-         
+          ws.onopen = function(e) {
+             $(window).on('click', clickyhand)
+          }
           ws.onclose = function(e) {
+             $(window).off('click', clickyhand)
             $('body').addClass('dead');
             console.log("WebSocket Error: " , e);
-            //reconnect();
+            reconnect();
           }
       }
       function reconnect () {

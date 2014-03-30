@@ -93,7 +93,6 @@ sub random_colour_background {
 
 sub event {
     my $self = shift;
-    my $tx = shift;
     my $event = shift;
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
