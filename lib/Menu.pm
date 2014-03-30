@@ -47,7 +47,6 @@ sub write {
                     $self->hostinfo->send("console.log('Text $s->{id}')");
                     my $ob_menu_texty = new Texty($self, [ keys %$menu ], {
                         view => $s->{id},
-                        notx => 1,
                         spans_to_jquery => sub {
                             my $self = shift;
                             my $i = $h->{i} || 0;

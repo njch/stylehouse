@@ -75,14 +75,13 @@ sub thedump {
             my $thing = shift;
             my $hooks = shift;
             my $d = shift;
-            say "DOING A THING WITH $thing";
             my @ks = keys %$thing;
             my @sub;
             for my $k (@ks) {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($owner, ["$thing: ", @sub], { leave_spans => 1 });
+            return new Texty($owner, ["Lyrico", @sub], { leave_spans => 1 });
         },
     }, {
         ref => "Texty",
@@ -90,14 +89,13 @@ sub thedump {
             my $thing = shift;
             my $hooks = shift;
             my $d = shift;
-            say "DOING A THING WITH $thing";
             my @ks = keys %$thing;
             my @sub;
             for my $k (@ks) {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($owner, ["$thing: ", @sub], { leave_spans => 1 });
+            return new Texty($owner, ["Texty owner=".$thing->{owner}, @sub], { leave_spans => 1 });
         },
     };
     my @dump = dumpdeal($thing, $hooks);

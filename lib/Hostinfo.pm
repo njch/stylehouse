@@ -129,7 +129,6 @@ sub intro {
         }
         my $old = $self->get($oldname);
         push @$old, $exist;
-        say "$name already in hostinfo, retiring... from there";
     }
     $self->set($name, $new);
     if ($new->can("dumphooks")) {
