@@ -106,7 +106,9 @@ websocket '/stylehouse' => sub {
                 $self->app->log->error("Thing lookup failed for $event->{id}");
 
                 if (my $catcher = $self->hostinfo->get('eventcatcher')) {
+                    $self->app->log->info("Event catcher found: $catcher");
                     $catcher->event($self->tx, $event);
+                    return;
                 }
 
                 $self->send(

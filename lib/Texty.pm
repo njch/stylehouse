@@ -23,14 +23,17 @@ sub new {
     ref $self->lines eq "ARRAY" || die "need arrayref";
     $self->hooks(shift || {});
     $self->view($self->hooks->{view} || "hodu");
-    # ugly swooping
-    my $hostinfo = $self->owner->hostinfo;
+
     # make a persistent object for this Texty thing
     # #hodu dump junk will not be saved
-    $hostinfo->screenthing($self);
+    $self->hostinfo->screenthing($self);
+
     $self->lines_to_spans();
+
     $self->spans_to_jquery();
 
+    # get in there and sprinkle spans by the tens over many jquery.appends
+    # start $('selector').append('(<span.+</span>)+');
     if (length($self->jquery) > 3000) {
         my ($start, $spannage, $end) = $self->jquery =~
             /^(.+append\(")(.+)("\);)$/sg;
@@ -38,13 +41,13 @@ sub new {
         my @spans = split /(?<=<\/span>)/, $spannage;
         while (@spans) {
             my @chunks;
-            push @chunks, grep { defined } shift @spans for 1..5;
+            push @chunks, grep { defined } shift @spans for 1..10;
             my $middle = join "", @chunks;
-            $hostinfo->send("$start $middle $end");
+            $self->hostinfo->send("$start $middle $end");
         }
     }
     else {
-        $hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
+        $self->hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
     }
     return $self;
 }

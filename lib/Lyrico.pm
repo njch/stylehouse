@@ -26,8 +26,27 @@ sub new {
 sub menu {
     my $self = shift;
     return {
-        shudup => sub {
-            $self->hostinfo->send("\$(window).off('click', clickhand);");
+        stop => sub {
+            $self->hostinfo->unset('eventcatcher');
+            $self->hostinfo->send("\$('#view span').remove();");
+        },
+
+        anim => sub {
+            my @js;
+            for my $t (@texties) {
+                next;
+                my $id = $t->lines->[0]->{id};
+                my $x = $t->lines->[0]->{left};
+                if (int(rand 1)) {
+                    $x *= 0.3;
+                }
+                else {
+                    $x *= 2;
+                }
+
+                push @js, "\$('#$id').animate({left: 400}, 5000, 'swing');"
+            }
+            $self->hostinfo->send(join "\n", @js);
         },
     };
 }
@@ -47,7 +66,6 @@ sub write {
     my @lyrics = @_;
     my $text = new Texty($self, [@lyrics], {
         view => "view",
-        skip_hostinfo => 1,
         spans_to_jquery=> sub {
             my $self = shift;
             my $i = $h->{i} || 0;
@@ -75,23 +93,7 @@ sub event {
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
     my $h = {};
-    my $animate = sub {
-        my @js;
-        for my $t (@texties) {
-            next;
-            my $id = $t->lines->[0]->{id};
-            my $x = $t->lines->[0]->{left};
-            if (int(rand 1)) {
-                $x *= 0.3;
-            }
-            else {
-                $x *= 2;
-            }
 
-            push @js, "\$('#$id').animate({left: 400}, 5000, 'swing');"
-        }
-        $self->hostinfo->send(join "\n", @js);
-    };
 
     $h->{tp} = $event->{y};
     $h->{lp} = $event->{x};

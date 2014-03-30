@@ -98,6 +98,11 @@ sub set {
     $data->{$i} = $d;
     return $d;
 }
+sub unset {
+    my ($self, $i) = @_;
+    $self->app->log->info("Deleting info: $i (".($data->{$i}||"~").")");
+    delete $data->{$i};
+}
 sub dump {
     my $dump = thedump($data);
     return $dump if shift;
@@ -106,9 +111,9 @@ sub dump {
 
 sub thedump {
     my $thing = shift;
-    my @rdump = split /\n/, anydump($thing);
+    my @rdump = dumpdeal($thing);
     my @dump;
-    while (defined(my $line = shift @rdump)) {
+    while (0 && defined(my $line = shift @rdump)) {
         if ($line =~ /^(\s*).+?Mojo::Transaction::WebSocket/) {
             my $ind = $1;
             until (!@rdump || $rdump[0] =~ /^$ind\S+/) {
@@ -125,7 +130,25 @@ sub thedump {
         push @dump, $line;
     }
 
-    return join "\n", @dump;
+    return join "\n", @rdump;
 }
+use Data::Walk;
 
+sub dumpdeal {
+    my $thing = shift;
+    my @lines;
+    my $ignore;
+    walk sub {
+        if (0 && $ignore) {
+            $ignore = 0 if $ignore > $Data::Walk::depth;
+            return if $ignore;
+        }
+        if (ref $_ && $_ =~ /WebSocket/) {
+            $ignore = $Data::Walk::depth + 1;
+        }
+        push @lines, join "", ("  " x $Data::Walk::depth)."$_";
+    }, $thing;
+    say join"\n", @lines;
+    return @lines;
+}
 1;
