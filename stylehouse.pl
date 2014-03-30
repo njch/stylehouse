@@ -63,6 +63,7 @@ get '/' => 'index';
 
 my $hostinfo = new Hostinfo();
 $hostinfo->set('0', $hostinfo);
+$hostinfo->set('dumphooks', []);
 helper 'hostinfo' => sub { $hostinfo };
 
 websocket '/stylehouse' => sub {

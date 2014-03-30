@@ -86,6 +86,14 @@ sub write {
     return $self;
 }
 
+sub dumphooks {
+    my $self = shift;
+    return {
+        ref => "Lyrico",
+        
+    }
+}
+
 sub event {
     my $self = shift;
     my $tx = shift;

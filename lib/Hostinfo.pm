@@ -121,51 +121,65 @@ sub intro {
 }
 
 sub dump {
-    my $dump = thedump($data);
+    my $self = shift;
+    my $dump = $self->thedump($data);
     return $dump if shift;
     say $dump;
 }
 
 sub thedump {
+    my $self = shift;
     my $thing = shift;
-    my @rdump = dumpdeal($thing);
-    my @dump;
-    while (0 && defined(my $line = shift @rdump)) {
-        if ($line =~ /^(\s*).+?Mojo::Transaction::WebSocket/) {
-            my $ind = $1;
-            until (!@rdump || $rdump[0] =~ /^$ind\S+/) {
-                shift @rdump;
+    my $hooks = $self->get('dumphooks');
+    push @$hooks, {
+        ref => "HASH",
+        getlines => sub {
+            my $thing = shift;
+            my $d = shift;
+            my @ks = keys %$thing;
+            my @sub;
+            for my $k (@ks) {
+                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
-        }
-        if ($line =~ /^(\s*).+?hostinfo: \S+ !!perl\/hash:Hostinfo/) {
-            my $ind = $1;
-            push @dump, "HOstinfo: ";
-            until (1 || !@rdump || $rdump[0] =~ /^$ind\S+/) {
-                shift @rdump;
-            }
-        }
-        push @dump, $line;
-    }
+            return ("THIS $thing", @sub);
+        },
+    };
+    my @rdump = dumpdeal($thing, $hooks);
 
     return join "\n", @rdump;
 }
-use Data::Walk;
-
 sub dumpdeal {
     my $thing = shift;
+    my $hooks = shift;
+    my $depth = shift;
+    $depth = 1;
     my @lines;
     my $ignore;
-    walk sub {
-        if (0 && $ignore) {
-            $ignore = 0 if $ignore > $Data::Walk::depth;
-            return if $ignore;
+
+    my $dohook = sub {
+        my $h = shift;
+        my $d;
+        if ($h->{getlines}) {
+            push @lines, $h->{getlines}->($thing);
         }
-        if (ref $_ && $_ =~ /WebSocket/) {
-            $ignore = $Data::Walk::depth + 1;
+        else {
+            say "                   NO SOLUTION?";
         }
-        push @lines, join "", ("  " x $Data::Walk::depth)."$_";
-    }, $thing;
-    say join"\n", @lines;
+    };
+    my $scanhooks = sub {
+        for my $h (@$hooks) {
+            if ($h->{ref}) {
+                if (ref $thing eq $h->{ref}) {
+                    $dohook->($h) && return 1;
+                    last;
+                }
+            }
+        }
+    };
+    unless ($scanhooks->()) {
+        push @lines, "? $thing";
+    }
+    s/^/('  ')x$depth/e for @lines;
     return @lines;
 }
 1;
