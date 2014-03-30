@@ -136,4 +136,10 @@ sub dumpdeal {
     return @lines;
 }
 
+sub event {
+    my $self = shift;
+    my $event = shift;
+    #blah
+}
+
 1;

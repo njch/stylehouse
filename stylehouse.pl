@@ -48,7 +48,11 @@ everything exists from two places
 
 the unfolding along the texty line... jostling into space
 
-
+yep line jostling
+span spannering
+space building
+program cursor
+tubes of where what & how
 
 Lyrico
 

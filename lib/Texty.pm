@@ -78,7 +78,7 @@ sub lines_to_spans {
         };
 
         if ($value =~ /<span/) {
-            die "antwerp: $value";
+            # TODO where what how
             $span->{value} = $value;
         }
         if (ref $value eq "Texty") {
