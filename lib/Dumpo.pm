@@ -62,7 +62,7 @@ sub thedump {
             my $thing = shift;
             my $hooks = shift;
             my $d = shift;
-            my @ks = keys %$thing;
+            my @ks = sort keys %$thing;
             my @sub;
             for my $k (@ks) {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
@@ -75,7 +75,7 @@ sub thedump {
             my $thing = shift;
             my $hooks = shift;
             my $d = shift;
-            my @ks = keys %$thing;
+            my @ks = sort keys %$thing;
             my @sub;
             for my $k (@ks) {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
@@ -89,7 +89,7 @@ sub thedump {
             my $thing = shift;
             my $hooks = shift;
             my $d = shift;
-            my @ks = keys %$thing;
+            my @ks = sort keys %$thing;
             my @sub;
             for my $k (@ks) {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)

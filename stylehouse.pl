@@ -46,6 +46,10 @@ the tri is a point of balance
 
 everything exists from two places
 
+the unfolding along the texty line... jostling into space
+
+
+
 Lyrico
 
 =cut
@@ -105,24 +109,26 @@ websocket '/stylehouse' => sub {
             # find the Texty to ->event ->{ owner->event
             my $thing = $self->hostinfo->event_id_thing_lookup($event);
 
+            start_timer();
             unless ($thing) {
                 $self->app->log->error("Thing lookup failed for $event->{id}");
 
                 if (my $catcher = $self->hostinfo->get('eventcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
-                    $catcher->event($self->tx, $event);
-                    return;
+                    $catcher->event($event);
                 }
-
-                $self->send(
-                    "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
-                );
+                else {
+                    $self->send(
+                        "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
+                    );
+                }
             }
             else {
                 $self->app->log->info("Thing lookup $event->{id} -> $thing");
                 $thing->event($event);
                 # route to $1 via hostinfo register of texty thing owners
             }
+            say "event handled in ".show_delta()."\n\n";
         }
         else {
             $self->send("// echo: $msg");
@@ -130,6 +136,7 @@ websocket '/stylehouse' => sub {
     });
 
     $self->hostinfo->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
+    say "";
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
