@@ -40,13 +40,93 @@ sub updump {
         $self->hostinfo->send("\$('#".$self->view." span').fadeOut(500);");
     }
         
-    my $dump = $object ? anydump($object) : $self->hostinfo->dump("dontsay");
+    my $dump = $object ? anydump($object) : $self->dump("dontsay");
     use File::Slurp;
     write_file('public/dump', $dump);
     my $text = new Texty($self, [grep { !/^       / } split("\n", $dump)],
         { view => $self->view,
         skip_hostinfo => 1 }
     );
+}
+
+sub dump {
+    my $self = shift;
+    my $dump = $self->thedump($self->hostinfo->data);
+    return $dump if shift;
+    say $dump;
+}
+
+sub thedump {
+    my $self = shift;
+    my $thing = shift;
+    my $hooks = $self->hostinfo->get('dumphooks');
+    push @$hooks, {
+        ref => "HASH",
+        getlines => sub {
+            my $thing = shift;
+            my $hooks = shift;
+            my $d = shift;
+            my @ks = keys %$thing;
+            my @sub;
+            for my $k (@ks) {
+                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
+            }
+            return ("THIS $thing", @sub);
+        },
+    }, {
+        ref => "Lyrico",
+        getlines => sub {
+            my $thing = shift;
+            my $hooks = shift;
+            my $d = shift;
+            say "DOING A THING WITH $thing";
+            my @ks = keys %$thing;
+            my @sub;
+            for my $k (@ks) {
+                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
+            }
+            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
+            say "$self";
+            return new Texty($self, ["$thing: ", @sub], { leave_spans => 1 });
+        },
+    };
+    my @rdump = dumpdeal($thing, $hooks);
+
+    return join "\n", @rdump;
+}
+sub dumpdeal {
+    my $thing = shift;
+    my $hooks = shift;
+    my $depth = shift;
+    $depth = 1;
+    my @lines;
+    my $ignore;
+
+    my $dohook = sub {
+        my $h = shift;
+        my $d;
+        if ($h->{getlines}) {
+            push @lines, $h->{getlines}->($thing, $hooks, $depth);
+        }
+        else {
+            say "                   NO SOLUTION?";
+        }
+    };
+    my $scanhooks = sub {
+        for my $h (@$hooks) {
+            if ($h->{ref}) {
+                if (ref $thing eq $h->{ref}) {
+                    $dohook->($h) && return 1;
+                    last;
+                }
+            }
+        }
+    };
+    unless ($scanhooks->()) {
+        push @lines, "? $thing";
+    }
+    s/^/('  ')x$depth/e for @lines;
+    return @lines;
 }
 
 1;

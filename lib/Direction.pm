@@ -19,7 +19,6 @@ sub new {
 sub redir {
     my $self = shift;
     $self->hostinfo->send("\$('#view span').remove();");
-    say "for ".$self->cd;
     $self->dir();
 }
 sub dir {

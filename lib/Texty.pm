@@ -35,6 +35,8 @@ sub new {
 
     $self->lines_to_spans();
 
+    return $self if $self->hooks->{leave_spans};
+
     $self->spans_to_jquery();
 
     # get in there and sprinkle spans by the tens over many jquery.appends

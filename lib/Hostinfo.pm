@@ -14,6 +14,11 @@ sub data {
     return $data
 }
 
+sub hostinfo {
+    my $self = shift;
+    $self;
+}
+
 sub make_uuid {
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
@@ -106,15 +111,17 @@ sub unset {
 
 sub intro {
     my $self = shift;
-    my $other = shift;
-    my ($name) = split '=', ref $other;
+    my $new = shift;
+    my ($name) = split '=', ref $new;
     if (my $exist = $self->get($name)) {
-        say "$name already in hostinfo, new value:".anydump([$exist, $other]);
+        say "$name already in hostinfo, new value:";
+        say "Existing: ".$self->thedump($exist);
+        say "New: ".$self->thedump($new);
     }
-    $self->set($name, $other);
-    say "Registered name for ".ref $other;
-    if ($other->can("dumphooks")) {
-        my @otherhooks = $other->dumphooks;
+    $self->set($name, $new);
+    say "Registered name for ".ref $new;
+    if ($new->can("dumphooks")) {
+        my @otherhooks = $new->dumphooks;
         my $ourhooks = $self->get('dumphooks');
         push @$ourhooks, @otherhooks;
     }
@@ -135,6 +142,7 @@ sub thedump {
         ref => "HASH",
         getlines => sub {
             my $thing = shift;
+            my $hooks = shift;
             my $d = shift;
             my @ks = keys %$thing;
             my @sub;
@@ -142,6 +150,22 @@ sub thedump {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             return ("THIS $thing", @sub);
+        },
+    }, {
+        ref => "Lyrico",
+        getlines => sub {
+            my $thing = shift;
+            my $hooks = shift;
+            my $d = shift;
+            say "DOING A THING WITH $thing";
+            my @ks = keys %$thing;
+            my @sub;
+            for my $k (@ks) {
+                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
+            }
+            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
+            say "$self";
+            return new Texty($self, ["$thing: ", @sub], { leave_spans => 1 });
         },
     };
     my @rdump = dumpdeal($thing, $hooks);
@@ -160,7 +184,7 @@ sub dumpdeal {
         my $h = shift;
         my $d;
         if ($h->{getlines}) {
-            push @lines, $h->{getlines}->($thing);
+            push @lines, $h->{getlines}->($thing, $hooks, $depth);
         }
         else {
             say "                   NO SOLUTION?";

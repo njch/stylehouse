@@ -86,12 +86,9 @@ sub write {
     return $self;
 }
 
-sub dumphooks {
-    my $self = shift;
-    return {
-        ref => "Lyrico",
-        
-    }
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
 }
 
 sub event {

@@ -46,6 +46,8 @@ the tri is a point of balance
 
 everything exists from two places
 
+Lyrico
+
 =cut
 
 #!/usr/bin/env perl
@@ -218,8 +220,8 @@ __DATA__
     </style>
     <body style="background: #ab6; font-family: monospace">
     <div id="menu" class="view" style="float:left; width:100%; background: #333; height: 20px;"></div>
-    <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
     <div id="hodu" class="view" style="float:left; width:60%;  background: #ce9; top: 50; height: 4000px"></div>
+    <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
     </body>
 </html>
 
