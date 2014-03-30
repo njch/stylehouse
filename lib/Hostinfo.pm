@@ -60,9 +60,13 @@ sub screenthing {
 sub send {
     my $self = shift;
     my $message = shift;
-    say "Websocket SEND: ".substr($message,0,50);
+    if (length($message) > $self->tx->max_websocket_size) {
+        die "Message is bigger (".length($message).") than max websocket size=".$self->tx->max_websocket_size
+            ."\n\n".substr($message,0,180)."...";
+    }
+    say "Websocket SEND: $message";#.substr($message,0,70);
     my $tx = $self->tx;
-    $tx->send($message);
+    $tx->send({text => $message});
 }
 sub tx {
     my $self = shift;

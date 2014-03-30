@@ -2,6 +2,7 @@ package Direction;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
+use HTML::Entities;
 
 has 'cd';
 has 'app';
@@ -23,7 +24,8 @@ sub redir {
 }
 sub dir {
     my $self = shift;
-    my @etc = map { s/\n$//s; $_ } capture("ls", "-lh", $self->cd);
+    my @etc = map { decode_entities($_) }
+        map { s/\n$//s; $_ } capture("ls", "-lh", $self->cd);
     my $text = new Texty($self, [@etc], { view => "view" });
 }
 sub menu {
@@ -53,8 +55,13 @@ sub event {
     my ($filename) = $event->{value} =~
         m/....................................(.+)$/;
     $self->cd($self->cd."/$filename");
-    $self->redir;
-    $tx->send("\$('#$event->{id}').css('color', 'red');");
+    if (-f $self->cd) {
+        $self->hostinfo->send("\$('#$event->{id}').append('<span style=\"left: $event->{x}; top: $event->{y};\"><img src=\"file://".$self->cd."\"></img></span> ');");
+        
+    }
+    else {
+        $self->redir;
+    }
 }
 
 1;

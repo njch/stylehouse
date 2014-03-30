@@ -36,15 +36,17 @@ sub updump {
     my $self = shift;
     my $object = shift;
     my $init = shift;
-    if (!$init) {
+    if (0 && !$init) {
         $self->hostinfo->send("\$('#".$self->view." span').remove();");
     }
         
     my $dump = $object ? anydump($object) : $self->hostinfo->dump("dontsay");
-    my $text = new Texty($self, [grep { !/^       / } split("\n", $dump)],
-        { view => $self->view,
-        skip_hostinfo => 1 }
-    );
+    use File::Slurp;
+    write_file('public/dump', $dump);
+    #my $text = new Texty($self, [grep { !/^       / } split("\n", $dump)],
+    #    { view => $self->view,
+    #    skip_hostinfo => 1 }
+    #);
 }
 
 1;

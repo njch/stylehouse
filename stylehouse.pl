@@ -35,7 +35,16 @@ Texty, sending things through hostinfo awaits knowing about which screen its on
 handled by whatever provisions the viewport
 
 the modes that programs go through...
-menu aggregate
+ - like awaiting event
+
+dump hostinfo to a file (in another window)
+
+going into the jungle horizontal
+come out vertical again and pick up the dream
+
+the tri is a point of balance
+
+everything exists from two places
 
 =cut
 
@@ -63,7 +72,7 @@ websocket '/stylehouse' => sub {
 
     my $startup = sub {
 #       Lyrico->new($self);
-        Direction->new("/home/s/Music", $self);
+        Direction->new("/home/s/Pictures", $self);
         Dumpo->new($self);
         Menu->new($self);
     };
