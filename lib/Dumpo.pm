@@ -10,11 +10,11 @@ has 'view';
 sub new {
     my $self = bless {}, shift;
     $self->hostinfo(shift->hostinfo);
+    $self->hostinfo->intro($self);
     my $object = shift;
 
     $self->view("hodu");
 
-    $self->hostinfo->set('Dumpo', $self);
     $self->updump($object, "init");
 
     return $self;

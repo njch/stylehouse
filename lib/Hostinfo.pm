@@ -103,6 +103,23 @@ sub unset {
     $self->app->log->info("Deleting info: $i (".($data->{$i}||"~").")");
     delete $data->{$i};
 }
+
+sub intro {
+    my $self = shift;
+    my $other = shift;
+    my ($name) = split '=', ref $other;
+    if (my $exist = $self->get($name)) {
+        say "$name already in hostinfo, new value:".anydump([$exist, $other]);
+    }
+    $self->set($name, $other);
+    say "Registered name for ".ref $other;
+    if ($other->can("dumphooks")) {
+        my @otherhooks = $other->dumphooks;
+        my $ourhooks = $self->get('dumphooks');
+        push @$ourhooks, @otherhooks;
+    }
+}
+
 sub dump {
     my $dump = thedump($data);
     return $dump if shift;

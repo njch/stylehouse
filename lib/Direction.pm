@@ -12,7 +12,7 @@ sub new {
     my $self = bless {}, shift;
     $self->cd(shift);
     $self->hostinfo(shift->hostinfo);
-    $self->hostinfo->set('Direction', $self);
+    $self->hostinfo->intro($self);
     $self->dir;
     return $self;
 }

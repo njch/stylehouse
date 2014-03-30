@@ -18,9 +18,14 @@ has 'id';
 sub new {
     my $self = bless {}, shift;
     $self->owner(shift);
+
     $self->hostinfo($self->owner->hostinfo);
+    $self->hostinfo->intro($self);
+
     $self->lines(shift);
+
     ref $self->lines eq "ARRAY" || die "need arrayref";
+
     $self->hooks(shift || {});
     $self->view($self->hooks->{view} || "hodu");
 

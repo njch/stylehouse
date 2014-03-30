@@ -15,11 +15,11 @@ sub new {
     my $self = bless {}, shift;
 
     $self->hostinfo(shift->hostinfo);
+    $self->hostinfo->intro($self);
 
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
 
-    $self->hostinfo->set('Lyrico', $self);
     $self->hostinfo->set('eventcatcher', $self);
     return $self;
 }
