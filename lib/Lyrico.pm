@@ -19,7 +19,6 @@ sub new {
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
 
-    $self->hostinfo->send("\$(window).on('click', clickhand);");
     $self->hostinfo->set('Lyrico', $self);
     $self->hostinfo->set('eventcatcher', $self);
     return $self;

@@ -14,7 +14,6 @@ sub new {
 
     $self->hostinfo(shift->hostinfo);
 
-    $self->hostinfo->send("\$(window).on('click', clickyhand);");
     $self->hostinfo->set('Menu', $self);
     $self->items([
         $self->hostinfo->get('Lyrico'),

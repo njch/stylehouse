@@ -124,6 +124,7 @@ websocket '/stylehouse' => sub {
         }
     });
 
+    $self->hostinfo->send("\$(window).on('click', clickyhand);");
     $self->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
 
     $self->on(finish => sub {
