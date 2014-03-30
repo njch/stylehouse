@@ -30,7 +30,21 @@ sub new {
     $hostinfo->screenthing($self);
     $self->lines_to_spans();
     $self->spans_to_jquery();
-    $hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
+    if (length($self->jquery) > 3000) {
+        my ($start, $spannage, $end) = $self->jquery =~
+            /^(.+append\(")(.+)("\);)$/sg;
+        die "ugh" unless $start && $spannage && $end;
+        my @spans = split /(?<=<\/span>)/, $spannage;
+        while (@spans) {
+            my @chunks;
+            push @chunks, grep { defined } shift @spans for 1..5;
+            my $middle = join "", @chunks;
+            $hostinfo->send("$start $middle $end");
+        }
+    }
+    else {
+        $hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
+    }
     return $self;
 }
 
