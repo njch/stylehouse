@@ -156,10 +156,11 @@ __DATA__
             eval(event.data);
           };
           ws.onopen = function(e) {
-             $(window).on('click', clickyhand)
+             $(window).on('click', clickyhand);
+             $('div span').fadeOut(100);
           }
           ws.onclose = function(e) {
-             $(window).off('click', clickyhand)
+             $(window).off('click', clickyhand);
             $('body').addClass('dead');
             console.log("WebSocket Error: " , e);
             reconnect();
