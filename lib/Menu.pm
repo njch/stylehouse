@@ -34,12 +34,14 @@ sub write {
             push @items, $item;
         }
         else {
-            push @items, $self->hostinfo->get($item);
+            my $got = $self->hostinfo->get($item);
+            die "Not got $item" unless $got;
+            push @items, $got;
         }
     }
-# inflate the value to the module name + more spans
+    $self->items([@items]);
+    # make Texty[$item] hook to append menu items as more spans from another Texty
     for my $item (@{ $self->items }) {
-    say "Item: ".$item;
         my $text = new Texty($self, [$item], {
             view => "menu",
             spans_to_jquery=> sub {
@@ -105,7 +107,7 @@ sub event {
         }
         my $ownerowner = $object->owner->lines->[0];
         my $value = $event->{value};
-        say "Ya click $value <- $ownerowner";
+        
         my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
         if ($menuobject) {
             my $mob = $menuobject->menu();

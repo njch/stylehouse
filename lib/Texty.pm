@@ -23,7 +23,7 @@ sub new {
     $self->hostinfo->intro($self);
 
     $self->lines(shift);
-
+    
     ref $self->lines eq "ARRAY" || die "need arrayref";
 
     $self->hooks(shift || {});
@@ -77,10 +77,6 @@ sub lines_to_spans {
             id => ($id.'-'.$l++),
         };
 
-        if ($value =~ /<span/) {
-            # TODO where what how
-            $span->{value} = $value;
-        }
         if (ref $value eq "Texty") {
             $span->{style} .= "border: 1px solid pink;";
             my @inners = @{ $value->spans };
@@ -88,7 +84,8 @@ sub lines_to_spans {
             push @spans, @inners;
         }
         else {
-            $value = encode_entities($value);
+            $value = encode_entities($value)
+                unless $value =~ /<span/sgm;
         }
 
         push @spans, {

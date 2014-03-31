@@ -11,11 +11,12 @@ if ("yes") {
 }
 
 sub do_stuff {
-    print "rah!\n" for 3;
+    print "rah!\n" for 1..3;
 }
 
 sub do_more_stuff {
     $o .= int rand 3;
+    print "woo: ".$o;
 }
 
 1 && tidy_up();
