@@ -16,9 +16,11 @@ sub new {
 
     $self->hostinfo->set('Menu', $self);
     $self->items([
-        $self->hostinfo->get('Lyrico'),
-#        $self->hostinfo->get('Direction'),
-        $self->hostinfo->get('Dumpo'),
+
+#        'Lyrico',
+#        'Direction',
+        'Dumpo',
+        'Codo',
     ]);
     $self->write;
     return $self;
@@ -26,9 +28,18 @@ sub new {
 sub write {
     my $self = shift;
     my $h = shift;
+    my @items;
+    for my $item (@{ $self->items }) {
+        if (ref $item) {
+            push @items, $item;
+        }
+        else {
+            push @items, $self->hostinfo->get($item);
+        }
+    }
 # inflate the value to the module name + more spans
     for my $item (@{ $self->items }) {
-
+    say "Item: ".$item;
         my $text = new Texty($self, [$item], {
             view => "menu",
             spans_to_jquery=> sub {

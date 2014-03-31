@@ -54,6 +54,10 @@ space building
 program cursor
 tubes of where what & how
 
+Devel::ebug interface
+slurpy other programs
+
+
 Lyrico
 
 =cut
@@ -67,6 +71,7 @@ use Direction;
 use Texty;
 use Dumpo;
 use Lyrico;
+use Codo;
 use Menu;
 
 get '/' => 'index';
@@ -83,10 +88,11 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
 
     my $startup = sub {
-       Lyrico->new($self);
+#       Lyrico->new($self);
 #        Direction->new("/home/s/Pictures", $self);
         Dumpo->new($self);
         Menu->new($self);
+        Codo->new($self);
     };
 
     $self->on(message => sub {
@@ -234,8 +240,9 @@ __DATA__
     </style>
     <body style="background: #ab6; font-family: monospace">
     <div id="menu" class="view" style="float:left; width:100%; background: #333; height: 20px;"></div>
-    <div id="hodu" class="view" style="float:left; width:60%;  background: #ce9; top: 50; height: 4000px"></div>
+    <div id="hodu" class="view" style="float:left; width:60%;  background: #352035; top: 50; height: 4000px"></div>
     <div id="view" class="view" style="float:left; width:40%; background: #c9f; height: 500px;"></div>
+    <div id="hodi" class="view" style="float:left; width:40%; background: #09f; height: 5000px;"></div>
     </body>
 </html>
 

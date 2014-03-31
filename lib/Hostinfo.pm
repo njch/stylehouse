@@ -59,7 +59,23 @@ sub screenthing {
     my $things = $self->get('screen/things');
     
     push @$things, $thing;
+}
 
+sub provision_view { # TODO create views and shit
+    my $self = shift;
+    my $other = shift;
+    my $viewid = shift;
+    if (my $exist = $self->get('screen/views/'.$viewid)) {
+        say "view $viewid already owned by ".$exist->{owner};
+    }
+    my $viewport = {
+        owner => $other,
+        id => $viewid,
+    };
+
+    $self->set('screen/views/'.$viewid, $viewport);
+
+    return $viewport;
 }
 
 sub send {

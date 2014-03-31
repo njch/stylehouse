@@ -13,7 +13,7 @@ sub new {
     $self->hostinfo->intro($self);
     my $object = shift;
 
-    $self->view("hodu");
+    $self->view("hodi");
 
     $self->updump($object, "init");
 
