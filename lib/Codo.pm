@@ -35,11 +35,11 @@ sub new {
 sub menu {
     my $self = shift;
     my $menu = {};
-    for my $i (qw{next step run}) {
+    for my $i (qw{next step run undo}) {
         $menu->{$i} = sub { $self->ebug->$i(); $self->ebug_exec(); };
     }
-    for my $i (qw{stack_trace}) {
-        $menu->{$i} = sub { $self->ebug_exec($self->ebug->$i(), shift); };
+    for my $i (qw{stack_trace pad}) {
+        $menu->{$i} = sub { $self->ebug_exec([$self->ebug->$i()], shift, $i); };
     }
     return $menu;
 }
@@ -59,16 +59,18 @@ sub ebug_exec {
     my $ebug = $self->ebug;
     my $output = shift;
     my $event = shift;
+    my $command = shift;
+
+        $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
 
     if ($output) {
-        new Texty($self, [ split "\n", $output ],
-            { view => $self->exec_view->{id},
-            skip_hostinfo => 1 }
-        );
+        if ($command eq "pad") {
+            $output = [ split "\n", anydump($output) ]; # the ocean lies this way
+        }
+        unshift @$output, "Output from $command:";
     }
 
     
-    $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
     my ($stdout, $stderr) = $ebug->output;
         
     my @lines;
@@ -82,6 +84,7 @@ sub ebug_exec {
             "Code: "          . $ebug->codeline   . "\n",
         );
     };
+    push @lines, @$output if $output;
     push @lines,
             "OUTPUT: <span class=\"on\"> $stdout $stderr </span>";
 
