@@ -9,7 +9,7 @@ has 'hostinfo';
 has 'code_view';
 has 'exec_view';
 has 'ebug';
-has 'codelines';
+has 'output';
 
 sub new {
     my $self = bless {}, shift;
@@ -21,7 +21,6 @@ sub new {
     $self->exec_view($self->hostinfo->provision_view($self, "view"));
 
     $self->load();
-    $self->source();
     $self->ebug_exec();
 
 
@@ -34,10 +33,28 @@ sub load {
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
 
+    $self->output([]);
+
     my $ebug = Devel::ebug->new;
     $self->ebug($ebug);
     $ebug->program('test/stylehouse.pl');
     $ebug->load;
+
+    # litter it with places to wait
+# might even need a middleware so we can consider the jam instead of just jamming
+    my @filenames    = $ebug->filenames();
+    @filenames = grep { /^lib|stylehouse\.pl$/ } @filenames;
+    for my $filename (@filenames) {
+        my $code = capture("cat $filename");
+        my @codelines = split "\n", $code;
+        my $line = 0;
+        for my $codeline (@codelines) {
+            if ($codeline =~ /my \$self = shift;/) {
+                $self->ebug->break_point($filename, $line);
+            }
+            $line++;
+        }
+    }
 }
 
 sub menu {
@@ -65,11 +82,16 @@ sub menu {
     return $menu;
 }
 
-sub source {
+sub ebug_exec {
     my $self = shift;
+    my $ebug = $self->ebug;
+    my $output = shift;
+    my $event = shift;
+    my $command = shift;
+
+    # CODE
     my @lines = $self->ebug->codelines;
     my $current = $self->ebug->line;
-    say "current $current";
 
     if ($current) {
         my $from = $current - 10;
@@ -83,23 +105,11 @@ sub source {
     my $text = new Texty($self, [@lines],
         { view => $self->code_view->{id} }
     );
-    $self->codelines($text);
 
-    my $span = $self->codelines->spans->[$current-1]->{id};
+    my $span = $text->spans->[$current-1]->{id};
     $self->hostinfo->send("\$('#$span').addClass('on');");
-}
 
-sub ebug_exec {
-    my $self = shift;
-    my $ebug = $self->ebug;
-    my $output = shift;
-    my $event = shift;
-    my $command = shift;
-
-    $self->source();
-
-        $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
-
+    # EXEC
     if ($output) {
         if ($command eq "pad") {
             $output = [ split "\n", anydump($output) ]; # the ocean lies this way
@@ -110,7 +120,7 @@ sub ebug_exec {
     
     my ($stdout, $stderr) = $ebug->output;
         
-    my @lines;
+    @lines = ();
     if ($ebug->finished) {
         @lines = "Finished!";
     }
@@ -125,7 +135,8 @@ sub ebug_exec {
     push @lines,
             "OUTPUT: <span class=\"on\"> $stdout $stderr </span>";
 
-    my $text = new Texty($self, [@lines],
+    $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
+    $text = new Texty($self, [@lines],
         { view => $self->exec_view->{id},
         skip_hostinfo => 1 }
     );

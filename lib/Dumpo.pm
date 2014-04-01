@@ -40,10 +40,6 @@ sub updump {
         $self->hostinfo->send("\$('#".$self->view." span').fadeOut(500);");
     }
         
-
-    use File::Slurp;
-    write_file('public/dump2', "Balls\n\n".anydump($self->hostinfo->data));
-
     my $text = new Texty($self, [$self->thedump($self->hostinfo->data)],
         { view => $self->view,
         skip_hostinfo => 1 }

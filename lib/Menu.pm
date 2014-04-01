@@ -107,7 +107,7 @@ sub event {
         my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
         if ($menuobject) {
             my $mob = $menuobject->menu();
-            $menuobject->menu->{$value}->($event);
+            $mob->{$value}->($event);
         }
         else {
             say "Nope wrong: ";#anydump([$object, $self]);

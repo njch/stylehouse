@@ -10,7 +10,8 @@ use File::Slurp;
 use Scriptalicious;
 use Carp 'confess';
 use v5.18;
-say "\n\n\nwe are $0";
+use FindBin '$Bin';
+say "\n\n\nwe are $Bin/$0";
 
 =pod
 
@@ -106,6 +107,7 @@ use Lyrico;
 use Codo;
 use Menu;
 use View;
+use Carp::Always;
 
 get '/' => 'index';
 
@@ -137,7 +139,7 @@ websocket '/stylehouse' => sub {
             $self->hostinfo->set("screen/height" => $2); # per client?
             # AND THEN...
             Dumpo->new($self);
-            Codo->new($self);
+            Codo->new($self) unless $Bin=~/test/;
             Menu->new($self);
         }
         elsif ($msg =~ /^event (.+)$/s) {
@@ -187,9 +189,9 @@ websocket '/stylehouse' => sub {
 
 };
 
-use FindBin '$Bin';
 if ($Bin =~ /test$/) {
-    my $daemon = Mojo::Server::Daemon->new(listen => ['http://*:3001']);
+    my $daemon = Mojo::Server::Daemon->new(app => app, listen => ['http://*:3001']);
+    push @{app->static->paths}, "$Bin/../public";
     $daemon->run();
 }
 
