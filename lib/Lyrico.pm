@@ -93,8 +93,8 @@ sub event {
     $height ||= 900;
     my $h = {};
 
-    $h->{top} = $event->{y};
-    $h->{left} = $event->{x};
+    $h->{top} = $event->{pagey};
+    $h->{left} = $event->{pagex};
     $h->{x} = ($i * 30) + int rand $height;
     my @lyrics = map {$self->zlyrics} 1..3;
     $self->write($h, @lyrics);

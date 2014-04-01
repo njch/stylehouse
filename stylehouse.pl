@@ -121,6 +121,9 @@ websocket '/stylehouse' => sub {
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
             
+            if ($event->{type} eq "scroll") {
+                $self->hostinfo->get('Lyrico')->event($event);
+            }
             $self->app->log->info("Looking up event handler");
             # find the Texty to ->event ->{ owner->event
             my $thing = $self->hostinfo->event_id_thing_lookup($event);
@@ -152,7 +155,6 @@ websocket '/stylehouse' => sub {
     });
 
     $self->hostinfo->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
-    say "";
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
@@ -180,6 +182,7 @@ __DATA__
           };
           ws.onopen = function(e) {
              $(window).on('click', clickyhand);
+             $(window).scroll(clickyhand);
              $('div span').fadeOut(100);
           }
           ws.onclose = function(e) {
@@ -196,20 +199,6 @@ __DATA__
 
       connect();
 
-      function clickhand (event) {
-            var data = {
-                id: event.target.id,
-                value: event.target.innerText,
-                type: event.type,
-                shiftKey: event.shiftKey,
-                ctrlKey: event.ctrlKey,
-                altKey: event.altKey,
-                x: event.clientX,
-                y: event.clientY,
-            };
-            console.log(event);
-            ws.send('event '+JSON.stringify(data))
-      }
       function clickyhand (event) {
             var data = {
                 id: event.target.id,
@@ -220,6 +209,8 @@ __DATA__
                 altKey: event.altKey,
                 x: event.clientX,
                 y: event.clientY,
+                pagex: window.pageXOffset,
+                pagey: window.pageYOffset,
             };
             console.log(event);
             ws.send('event '+JSON.stringify(data))
