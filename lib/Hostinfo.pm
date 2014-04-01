@@ -152,5 +152,9 @@ sub intro {
         my $ourhooks = $self->get('dumphooks');
         push @$ourhooks, @otherhooks;
     }
+    my $apps = $self->get('apps');
+    $apps ||= {};
+    $apps->{$name} = $new;
+    $self->set('apps', $apps);
 }
 1;

@@ -15,13 +15,9 @@ sub new {
     $self->hostinfo(shift->hostinfo);
 
     $self->hostinfo->set('Menu', $self);
-    $self->items([
-
-#        'Lyrico',
-#        'Direction',
-        'Dumpo',
-        'Codo',
-    ]);
+    my $apps = $self->hostinfo->get('apps');
+    $apps = [ grep { $_->can('menu') } values $apps ];
+    $self->items($apps);
     $self->write;
     return $self;
 }
