@@ -61,9 +61,13 @@ Codo is one whole universe of code
 flip through them, prepare another program execution behind the one the user is looking at
 so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
+put the view on a screen 
+
 wow
 t pus
 Lyrico
+
+we can sell Tolaga water to the Russians at $300 bucks a pop
 
 =cut
 
@@ -94,10 +98,10 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
 
     my $startup = sub {
-       Lyrico->new($self);
+#       Lyrico->new($self);
 #        Direction->new("/home/s/Pictures", $self);
         Dumpo->new($self);
-#        Codo->new($self);
+        Codo->new($self);
         Menu->new($self);
     };
 
@@ -165,6 +169,10 @@ websocket '/stylehouse' => sub {
 
 };
 
+if (!caller) {
+    my $daemon = Mojo::Server::Daemon->new(listen => ['http://*:3001']);
+    $daemon->run();
+}
 
 app->start;
 __DATA__

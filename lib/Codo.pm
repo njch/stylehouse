@@ -31,9 +31,12 @@ sub new {
 sub load {
     my $self = shift;
 
+    run("cp -a stylehouse.pl test/");
+    run("cp -a lib/*.pm test/lib");
+
     my $ebug = Devel::ebug->new;
     $self->ebug($ebug);
-    $ebug->program('ordilly.pl');
+    $ebug->program('test/stylehouse.pl');
     $ebug->load;
 }
 
