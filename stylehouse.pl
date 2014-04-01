@@ -77,6 +77,19 @@ if (e.keyCode==90 && e.ctrlKey)
 
 something like that
 
+we want to give away the whole internet
+but you have to become a member at $5/month
+so we know who you are
+the you can have it
+
+facilitating human attachment
+
+there's a greenhouse in London that cycles a whole day of mountain air underground and blows the cool night air over the plants during the day cos that's their environment
+
+String::Koremutake
+instead of urls
+
+
 =cut
 
 #!/usr/bin/env perl
@@ -105,13 +118,6 @@ websocket '/stylehouse' => sub {
     $self->app->log->info("WebSocket opened");
     $self->hostinfo->set("screen/tx", $self->tx);
 
-    my $startup = sub {
-#       Lyrico->new($self);
-#        Direction->new("/home/s/Pictures", $self);
-        Dumpo->new($self);
-        Codo->new($self);
-        Menu->new($self);
-    };
 
     $self->on(message => sub {
         my ($self, $msg) = @_;
@@ -128,7 +134,9 @@ websocket '/stylehouse' => sub {
             $self->hostinfo->set("screen/width" => $1); # per client?
             $self->hostinfo->set("screen/height" => $2); # per client?
             # AND THEN...
-            $startup->();
+            Dumpo->new($self);
+            Codo->new($self);
+            Menu->new($self);
         }
         elsif ($msg =~ /^event (.+)$/s) {
             my $event = decode_json($1);
@@ -177,7 +185,8 @@ websocket '/stylehouse' => sub {
 
 };
 
-if (!caller) {
+use FindBin '$Bin';
+if ($Bin =~ /test$/) {
     my $daemon = Mojo::Server::Daemon->new(listen => ['http://*:3001']);
     $daemon->run();
 }

@@ -3,8 +3,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 
-use Devel::ebug;
-
 has 'hostinfo';
 has 'code_view';
 has 'exec_view';
