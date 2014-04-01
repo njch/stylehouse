@@ -10,6 +10,8 @@ has 'code_view';
 has 'exec_view';
 has 'ebug';
 has 'output';
+use Mojo::Transaction::WebSocket;
+use Mojo::UserAgent;
 
 sub new {
     my $self = bless {}, shift;
@@ -20,41 +22,31 @@ sub new {
     $self->code_view($self->hostinfo->provision_view($self, "hodu"));
     $self->exec_view($self->hostinfo->provision_view($self, "view"));
 
-    $self->load();
-    $self->ebug_exec();
+    run("cp -a stylehouse.pl test/");
+    run("cp -a lib/*.pm test/lib");
+    
+#    system("perl ebuge.pl &");
+
+    say "Connecting websocket...";
+    my $ua = Mojo::UserAgent->new();
+    $ua->websocket('http://127.0.0.1:4008/ebuge' => sub {
+        my ($ua, $tx) = @_;
+        say "tx is $tx"; # Mojo::Transaction::HTTP=HASH(0xa029678)
+        $DB::single = 1;
+        unless ($tx->is_websocket) {
+            say "Error: ".$tx->res->error;
+        }
+        $tx->on(message => sub {
+            my ($tx, $message) = @_;
+            say anydump($message);
+        });
+        say "Yeah";
+      $tx->send('hello');
+    });
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 
 
     return $self;
-}
-
-sub load {
-    my $self = shift;
-
-    run("cp -a stylehouse.pl test/");
-    run("cp -a lib/*.pm test/lib");
-
-    $self->output([]);
-
-    my $ebug = Devel::ebug->new;
-    $self->ebug($ebug);
-    $ebug->program('test/stylehouse.pl');
-    $ebug->load;
-
-    # litter it with places to wait
-# might even need a middleware so we can consider the jam instead of just jamming
-    my @filenames    = $ebug->filenames();
-    @filenames = grep { /^lib|stylehouse\.pl$/ } @filenames;
-    for my $filename (@filenames) {
-        my $code = capture("cat $filename");
-        my @codelines = split "\n", $code;
-        my $line = 0;
-        for my $codeline (@codelines) {
-            if ($codeline =~ /my \$self = shift;/) {
-                $self->ebug->break_point($filename, $line);
-            }
-            $line++;
-        }
-    }
 }
 
 sub menu {
@@ -81,6 +73,7 @@ sub menu {
     };
     return $menu;
 }
+
 
 sub ebug_exec {
     my $self = shift;
