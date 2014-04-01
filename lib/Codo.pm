@@ -16,20 +16,25 @@ sub new {
     $self->hostinfo(shift->hostinfo);
     $self->hostinfo->intro($self);
 
-    my $ebug = Devel::ebug->new;
-    $self->ebug($ebug);
-    $ebug->program('ordilly.pl');
-    $ebug->load;
-
     # TODO viewport objects we can easily interact with without seeing javascript
     $self->code_view($self->hostinfo->provision_view($self, "hodu"));
     $self->exec_view($self->hostinfo->provision_view($self, "view"));
 
+    $self->load();
     $self->source();
     $self->ebug_exec();
 
 
     return $self;
+}
+
+sub load {
+    my $self = shift;
+
+    my $ebug = Devel::ebug->new;
+    $self->ebug($ebug);
+    $ebug->program('ordilly.pl');
+    $ebug->load;
 }
 
 sub menu {
@@ -38,9 +43,23 @@ sub menu {
     for my $i (qw{next step run undo}) {
         $menu->{$i} = sub { $self->ebug->$i(); $self->ebug_exec(); };
     }
+    $menu->{undo} = sub {
+        my $response = $self->ebug->talk({ command => "commands" });
+        if (!$response) {
+            say "It's only just begun!";
+            return;
+        }
+        $self->ebug->undo();
+        $self->ebug_exec();
+    };
     for my $i (qw{stack_trace pad}) {
         $menu->{$i} = sub { $self->ebug_exec([$self->ebug->$i()], shift, $i); };
     }
+    $menu->{"load"} = sub {
+        $self->load;
+        $self->source();
+        $self->ebug_exec();
+    };
     return $menu;
 }
 
