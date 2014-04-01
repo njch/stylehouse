@@ -90,6 +90,8 @@ String::Koremutake
 instead of urls
 
 
+https://www.airbnb.co.nz/rooms/705210
+
 =cut
 
 #!/usr/bin/env perl

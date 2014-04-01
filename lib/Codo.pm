@@ -60,7 +60,6 @@ sub menu {
     }
     $menu->{"load"} = sub {
         $self->load;
-        $self->source();
         $self->ebug_exec();
     };
     return $menu;
@@ -69,11 +68,25 @@ sub menu {
 sub source {
     my $self = shift;
     my @lines = $self->ebug->codelines;
+    my $current = $self->ebug->line;
+    say "current $current";
+
+    if ($current) {
+        my $from = $current - 10;
+        $from = 0 if $from < 0;
+        @lines = splice @lines, $from, 20;
+        $current = 10;
+    }
+
     
+    $self->hostinfo->send("\$('#".$self->code_view->{id}." span').fadeOut(500);");
     my $text = new Texty($self, [@lines],
         { view => $self->code_view->{id} }
     );
     $self->codelines($text);
+
+    my $span = $self->codelines->spans->[$current-1]->{id};
+    $self->hostinfo->send("\$('#$span').addClass('on');");
 }
 
 sub ebug_exec {
@@ -82,6 +95,8 @@ sub ebug_exec {
     my $output = shift;
     my $event = shift;
     my $command = shift;
+
+    $self->source();
 
         $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
 
@@ -109,10 +124,6 @@ sub ebug_exec {
     push @lines, @$output if $output;
     push @lines,
             "OUTPUT: <span class=\"on\"> $stdout $stderr </span>";
-
-    $self->hostinfo->send("\$('#".$self->codelines->view." span').removeClass('on');");
-    my $span = $self->codelines->spans->[$ebug->line-1]->{id};
-    $self->hostinfo->send("\$('#$span').addClass('on');");
 
     my $text = new Texty($self, [@lines],
         { view => $self->exec_view->{id},
