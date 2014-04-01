@@ -122,11 +122,13 @@ websocket '/stylehouse' => sub {
             my $event = decode_json($1);
             
             if ($event->{type} eq "scroll") {
-                $self->hostinfo->get('Lyrico')->event($event);
+                my $ly = $self->hostinfo->get('Lyrico');
+                $ly->event($event) if $ly;
             }
             $self->app->log->info("Looking up event handler");
             # find the Texty to ->event ->{ owner->event
-            my $thing = $self->hostinfo->event_id_thing_lookup($event);
+            my $thing = $self->hostinfo->event_id_thing_lookup($event)
+                unless $event->{type} eq "scroll";
 
             start_timer();
             unless ($thing) {
@@ -182,7 +184,6 @@ __DATA__
           };
           ws.onopen = function(e) {
              $(window).on('click', clickyhand);
-             $(window).scroll(clickyhand);
              $('div span').fadeOut(100);
           }
           ws.onclose = function(e) {

@@ -19,6 +19,7 @@ sub new {
 
     my $lyrics = capture("cat", "trampled_rose_lyrics");
     $self->lyrics([split "\n", $lyrics]);
+    $self->hostinfo->send('$(window).scroll(clickyhand);');
 
     $self->hostinfo->set('eventcatcher', $self);
     return $self;
@@ -85,7 +86,7 @@ sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
+use Mojo::IOLoop;
 sub event {
     my $self = shift;
     my $event = shift;
@@ -93,11 +94,23 @@ sub event {
     $height ||= 900;
     my $h = {};
 
-    $h->{top} = $event->{pagey};
-    $h->{left} = $event->{pagex};
-    $h->{x} = ($i * 30) + int rand $height;
-    my @lyrics = map {$self->zlyrics} 1..3;
-    $self->write($h, @lyrics);
+    if ($event->{type} eq "scroll") {
+        if ($self->{scroll_throttle}) {
+            return;
+        }
+        $self->{scroll_throttle} = 1;
+        Mojo::IOLoop->timer(0.2, sub {
+            $self->{scroll_throttle} = 0;
+        });
+    }
+
+    for (1..3) {
+        $h->{top} = $event->{pagey} + int  rand $height;
+        $h->{left} = $event->{pagex};
+        $h->{x} = ($i * 30) + int rand $height;
+        my @lyrics = map {$self->zlyrics} 1..3;
+        $self->write($h, @lyrics);
+    }
 }
 
 1;
