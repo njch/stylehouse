@@ -69,6 +69,14 @@ Lyrico
 
 we can sell Tolaga water to the Russians at $300 bucks a pop
 
+keypress catcher:
+$(document).keydown(function(e){
+if (e.keyCode==90 && e.ctrlKey)
+    $("body").append("<p>ctrl+z detected!</p>");
+});
+
+something like that
+
 =cut
 
 #!/usr/bin/env perl
