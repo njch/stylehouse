@@ -65,7 +65,7 @@ sub write {
     my $h = shift;
     my @lyrics = @_;
     my $text = new Texty($self, [@lyrics], {
-        view => "view",
+        view => "hodu",
         leave_spans => 1,
     });
     for my $s (@{$text->spans}) {
