@@ -57,8 +57,12 @@ tubes of where what & how
 Devel::ebug interface
 slurpy other programs
 
-wow
+Codo is one whole universe of code
+flip through them, prepare another program execution behind the one the user is looking at
+so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
+wow
+t pus
 Lyrico
 
 =cut
@@ -74,6 +78,7 @@ use Dumpo;
 use Lyrico;
 use Codo;
 use Menu;
+use View;
 
 get '/' => 'index';
 
@@ -89,10 +94,10 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
 
     my $startup = sub {
-#       Lyrico->new($self);
+       Lyrico->new($self);
 #        Direction->new("/home/s/Pictures", $self);
         Dumpo->new($self);
-        Codo->new($self);
+#        Codo->new($self);
         Menu->new($self);
     };
 
