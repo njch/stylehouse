@@ -2,6 +2,9 @@
 # copyright Steve Craig 2014
 use strict;
 use warnings;
+if (fork()) {
+    exec('procserv.pl');
+}
 use YAML::Syck;
 use JSON::XS;
 use List::MoreUtils qw"uniq";

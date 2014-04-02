@@ -29,7 +29,9 @@ sub new {
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
 
-    $self->ebug(Ebuge->new($self));
+    $self->ebug(Ebuge->new($self, "ebuge.pl", sub {
+        $self->drawstuff(shift);
+    }));
 
     return $self;
 }

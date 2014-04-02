@@ -1,6 +1,8 @@
 package Hostinfo;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
+use IO::Async::Loop::Mojo;
+use IO::Async::Stream;
 
 my $data = {};
 has 'obyuuid' => sub { {} };
@@ -60,6 +62,35 @@ sub screenthing {
     
     push @$things, $thing;
 }
+sub loop {
+    my $self = shift;
+    $self->{loop} ||= IO::Async::Loop::Mojo->new();
+}
+
+sub stream_file {
+    my $self = shift;
+    my $filename = shift;
+    open my $handle $filename;
+    my $linehook = shift;
+    my $stream = IO::Async::Stream->new(
+        read_handle  => $handle,
+
+        on_read => sub {
+            my ( $self, $buffref, $eof ) = @_;
+
+            while( $$buffref =~ s/^(.*\n)// ) {
+                $linehook->($1);
+            }
+
+            if( $eof ) {
+                $linehook->($$buffref);
+            }
+
+            return 0;
+        },
+    );
+    $self->loop->add($stream);
+}
 
 sub provision_view { # TODO create views and shit
     my $self = shift;
@@ -115,7 +146,7 @@ sub get {
 }
 sub set {
     my ($self, $i, $d) = @_;
-    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
+#    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
     $data->{$i} = $d;
     return $d;
 }

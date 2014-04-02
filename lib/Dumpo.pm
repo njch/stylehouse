@@ -45,7 +45,7 @@ sub updump {
         
     my $codo = $self->hostinfo->get('Codo');
     if ($codo) {
-        $object = $codo->ebug; # look at the ua
+        $object = $codo;
     }
 
     my $text = new Texty($self, [$self->thedump($object)],

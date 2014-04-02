@@ -1,8 +1,14 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Scriptalicious;
+
+say "ordilly!";
+
+sleep 40;
 
 my $o = "viddy";
+
 do_stuff();
 
 if ("yes") {
