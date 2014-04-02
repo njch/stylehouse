@@ -22,13 +22,15 @@ get '/hello' => sub {
 };
 get '/exec/:command' => sub {
     my $self = shift;
-    my $command = $self->params('command');
+    my $command = $self->stash('command');
     my $return = $ebug->$command();
 
     my $output = output();
     $output->{return} = $return;
     $output->{command} = $command;
 
+    say "Sending:";
+    say anydump($output);
     $self->render(json => $output);
 };
 
@@ -44,7 +46,7 @@ sub output {
             subroutine => $ebug->subroutine,
             line => $ebug->line,
             filename => $ebug->filename,
-            code => $ebug->codeline,
+            codeline => $ebug->codeline,
         };
 }
 

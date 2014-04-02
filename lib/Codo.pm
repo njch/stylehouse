@@ -32,6 +32,21 @@ sub new {
 
     return $self;
 }
+
+sub menu {
+    my $self = shift;
+    my $menu = {};
+    for my $i (qw{next step run undo stack_trace pad}) {
+        $menu->{$i} = sub { $self->trycommand($i) };
+    }
+    $menu->{"load"} = sub {
+        # restart the process?
+        say "code load!";
+    };
+    return $menu;
+}
+
+
 sub connect {
     my $self = shift;
     unless ($self->ebug) {
@@ -44,6 +59,7 @@ sub connect {
     }
 
     say "Connecting to ebuge...";
+    say " is running: ". Mojo::IOLoop->is_running;
     $self->ebug->{ua}->get('http://127.0.0.1:4008/hello' => sub {
         my ($ua, $tx) = @_;
         if ($tx->res->error) {
@@ -53,18 +69,21 @@ sub connect {
         $self->ebug->{r} = 1;
         say "EBUGE SAY HELLO TO US!";
         my $output = decode_json($tx->res->body);
-        $self->output($output);
+        $self->drawstuff($output);
         say anydump($output);
-        $self->command(); # send pending commands
+        $self->trycommand(); # send pending commands
+        say "...";
     });
+    say " is running: ". Mojo::IOLoop->is_running;
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+    say "Here!";
 }
 
 has 'next_command';
 # save the command if ebug is not ready (we nee
 # or run the command
 # 
-sub command {
+sub trycommand {
     my $self = shift;
     my $command = shift;
     if ($self->ebug->{r} == 0) {
@@ -77,25 +96,13 @@ sub command {
     say "Going to query ebuge $command";
     $self->ebug->{ua}->get("http://127.0.0.1:4008/exec/$command" => sub {
         my ($ua, $tx) = @_;
-        say anydump($tx->res->body);
+        my $output = decode_json($tx->res->body);
+        $self->drawstuff($output);
+        say anydump($output);
     });
 }
 
-sub menu {
-    my $self = shift;
-    my $menu = {};
-    for my $i (qw{next step run undo stack_trace pad}) {
-        $menu->{$i} = sub { $self->command($_) };
-    }
-    $menu->{"load"} = sub {
-        # restart the process?
-        say "code load!";
-    };
-    return $menu;
-}
-
-
-sub output {
+sub drawstuff {
     my $self = shift;
     my $output = shift;
     say "HEEEEEER";
@@ -132,7 +139,7 @@ sub output {
             "Line ". $output->{line} ." in ". $output->{filename},
             "Code: "          . $output->{codeline},
     };
-    if ($output->{command} eq "pad") {
+    if ($output->{command} && $output->{command} eq "pad") {
         push @exec, split "\n", anydump(delete $output->{return}); # the ocean lies this way
     }
     push @exec,
