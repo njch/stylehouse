@@ -13,6 +13,10 @@ use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
 
+sub DESTROY {
+    my $self = shift;
+    $self->ebug->kill();
+}
 sub new {
     my $self = bless {}, shift;
     $self->hostinfo(shift->hostinfo);
@@ -24,14 +28,12 @@ sub new {
 
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
-    
 
-#    system("perl ebuge.pl &");
-
-    $self->connect();
+    $self->ebug(Ebuge->new($self));
 
     return $self;
 }
+
 
 sub menu {
     my $self = shift;
@@ -46,61 +48,6 @@ sub menu {
     return $menu;
 }
 
-
-sub connect {
-    my $self = shift;
-    unless ($self->ebug) {
-        my $ua = Mojo::UserAgent->new();
-        my $uar = {
-            ua => $ua,
-            r => 0,
-        };
-        $self->ebug($uar);
-    }
-
-    say "Connecting to ebuge...";
-    say " is running: ". Mojo::IOLoop->is_running;
-    $self->ebug->{ua}->get('http://127.0.0.1:4008/hello' => sub {
-        my ($ua, $tx) = @_;
-        if ($tx->res->error) {
-            say "Ebuge fucked up: ".$tx->res->error;
-            return;
-        }
-        $self->ebug->{r} = 1;
-        say "EBUGE SAY HELLO TO US!";
-        my $output = decode_json($tx->res->body);
-        $self->drawstuff($output);
-        say anydump($output);
-        $self->trycommand(); # send pending commands
-        say "...";
-    });
-    say " is running: ". Mojo::IOLoop->is_running;
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-    say "Here!";
-}
-
-has 'next_command';
-# save the command if ebug is not ready (we nee
-# or run the command
-# 
-sub trycommand {
-    my $self = shift;
-    my $command = shift;
-    if ($self->ebug->{r} == 0) {
-        $self->next_command($command);
-        return;
-
-    }
-    $command ||= $self->next_command;
-    return unless $command;
-    say "Going to query ebuge $command";
-    $self->ebug->{ua}->get("http://127.0.0.1:4008/exec/$command" => sub {
-        my ($ua, $tx) = @_;
-        my $output = decode_json($tx->res->body);
-        $self->drawstuff($output);
-        say anydump($output);
-    });
-}
 
 sub drawstuff {
     my $self = shift;

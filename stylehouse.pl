@@ -112,6 +112,8 @@ use Lyrico;
 use Codo;
 use Menu;
 use View;
+use Ebuge;
+use Proc;
 use Carp::Always;
 
 get '/' => 'index';

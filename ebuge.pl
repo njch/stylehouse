@@ -16,7 +16,10 @@ our $ebug;
 get '/hello' => sub {
     my $self = shift;
 
-    load();
+    unless ($ebug) {
+        say "loading";
+        load();
+    }
 
     $self->render(json => output());
 };
@@ -29,8 +32,6 @@ get '/exec/:command' => sub {
     $output->{return} = $return;
     $output->{command} = $command;
 
-    say "Sending:";
-    say anydump($output);
     $self->render(json => $output);
 };
 
