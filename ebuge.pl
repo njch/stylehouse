@@ -24,7 +24,11 @@ get '/exec/:command' => sub {
     my $self = shift;
     my $command = $self->params('command');
     my $return = $ebug->$command();
-    my $output = output($return);
+
+    my $output = output();
+    $output->{return} = $return;
+    $output->{command} = $command;
+
     $self->render(json => $output);
 };
 
@@ -41,7 +45,6 @@ sub output {
             line => $ebug->line,
             filename => $ebug->filename,
             code => $ebug->codeline,
-            return => $return,
         };
 }
 

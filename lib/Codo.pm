@@ -10,6 +10,8 @@ has 'exec_view';
 has 'ebug';
 has 'output';
 use Mojo::UserAgent;
+use JSON::XS;
+use File::Slurp;
 
 sub new {
     my $self = bless {}, shift;
@@ -23,62 +25,84 @@ sub new {
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
     
+
 #    system("perl ebuge.pl &");
 
-    say "Connecting to ebuge...";
-    my $ua = Mojo::UserAgent->new();
-    my $uar = {
-        ua => $ua,
-        r => 0,
-    };
-    $self->ebug($uar);
-    $ua->get('http://127.0.0.1:4008/hello' => sub {
-        my ($ua, $tx) = @_;
-        say anydump($tx);
-        $uar->{r} = 1;
-    });
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-
+    $self->connect();
 
     return $self;
+}
+sub connect {
+    my $self = shift;
+    unless ($self->ebug) {
+        my $ua = Mojo::UserAgent->new();
+        my $uar = {
+            ua => $ua,
+            r => 0,
+        };
+        $self->ebug($uar);
+    }
+
+    say "Connecting to ebuge...";
+    $self->ebug->{ua}->get('http://127.0.0.1:4008/hello' => sub {
+        my ($ua, $tx) = @_;
+        if ($tx->res->error) {
+            say "Ebuge fucked up: ".$tx->res->error;
+            return;
+        }
+        $self->ebug->{r} = 1;
+        say "EBUGE SAY HELLO TO US!";
+        my $output = decode_json($tx->res->body);
+        $self->output($output);
+        say anydump($output);
+        $self->command(); # send pending commands
+    });
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+}
+
+has 'next_command';
+# save the command if ebug is not ready (we nee
+# or run the command
+# 
+sub command {
+    my $self = shift;
+    my $command = shift;
+    if ($self->ebug->{r} == 0) {
+        $self->next_command($command);
+        return;
+
+    }
+    $command ||= $self->next_command;
+    return unless $command;
+    say "Going to query ebuge $command";
+    $self->ebug->{ua}->get("http://127.0.0.1:4008/exec/$command" => sub {
+        my ($ua, $tx) = @_;
+        say anydump($tx->res->body);
+    });
 }
 
 sub menu {
     my $self = shift;
     my $menu = {};
-    for my $i (qw{next step run undo}) {
-        $menu->{$i} = sub { $self->ebug->$i(); $self->ebug_exec(); };
-    }
-    $menu->{undo} = sub {
-        my $response = $self->ebug->talk({ command => "commands" });
-        if (!$response) {
-            say "It's only just begun!";
-            return;
-        }
-        $self->ebug->undo();
-        $self->ebug_exec();
-    };
-    for my $i (qw{stack_trace pad}) {
-        $menu->{$i} = sub { $self->ebug_exec([$self->ebug->$i()], shift, $i); };
+    for my $i (qw{next step run undo stack_trace pad}) {
+        $menu->{$i} = sub { $self->command($_) };
     }
     $menu->{"load"} = sub {
-        $self->load;
-        $self->ebug_exec();
+        # restart the process?
+        say "code load!";
     };
     return $menu;
 }
 
 
-sub ebug_exec {
+sub output {
     my $self = shift;
-    my $ebug = $self->ebug;
     my $output = shift;
-    my $event = shift;
-    my $command = shift;
+    say "HEEEEEER";
 
     # CODE
-    my @lines = $self->ebug->codelines;
-    my $current = $self->ebug->line;
+    my @lines = lines_for_file($output->{filename});
+    my $current = $output->{line};
 
     if ($current) {
         my $from = $current - 10;
@@ -97,37 +121,35 @@ sub ebug_exec {
     $self->hostinfo->send("\$('#$span').addClass('on');");
 
     # EXEC
-    if ($output) {
-        if ($command eq "pad") {
-            $output = [ split "\n", anydump($output) ]; # the ocean lies this way
-        }
-        unshift @$output, "Output from $command:";
-    }
+    my @exec;
 
-    
-    my ($stdout, $stderr) = $ebug->output;
-        
-    @lines = ();
-    if ($ebug->finished) {
-        @lines = "Finished!";
+    if ($output->{finished}) {
+        push @exec, "Finished!";
     }
     else {
-        @lines = (       
-            "In subroutine: " . $ebug->package.'::'.$ebug->subroutine,
-            "Line ". $ebug->line ." in ". $ebug->filename   . "\n",
-            "Code: "          . $ebug->codeline   . "\n",
-        );
+        push @exec, 
+            "In subroutine: " . $output->{package}.'::'.$output->{subroutine},
+            "Line ". $output->{line} ." in ". $output->{filename},
+            "Code: "          . $output->{codeline},
     };
-    push @lines, @$output if $output;
-    push @lines,
-            "OUTPUT: <span class=\"on\"> $stdout $stderr </span>";
+    if ($output->{command} eq "pad") {
+        push @exec, split "\n", anydump(delete $output->{return}); # the ocean lies this way
+    }
+    push @exec,
+            "OUTPUT: <span class=\"on\"> $output->{stdout} $output->{stderr} </span>";
 
     $self->hostinfo->send("\$('#".$self->exec_view->{id}." span').fadeOut(500);");
-    $text = new Texty($self, [@lines],
+    $text = new Texty($self, [@exec],
         { view => $self->exec_view->{id},
         skip_hostinfo => 1 }
     );
 }
+
+sub lines_for_file {
+    my $filename = shift;
+    return split "\n", read_file($filename);
+}
+
 sub event {
     my $self = shift;
     my $event = shift;

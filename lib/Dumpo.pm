@@ -39,8 +39,14 @@ sub updump {
     if (!$init) {
         $self->hostinfo->send("\$('#".$self->view." span').fadeOut(500);");
     }
+    
+    $object = $self->hostinfo->data;
         
-    my $text = new Texty($self, [$self->thedump($self->hostinfo->data)],
+    my $codo = $self->thedump($self->hostinfo->get('Codo');
+    if ($codo) {
+        $codo
+
+    my $text = new Texty($self, [$self->thedump($self->hostinfo->get('Codo')->ebuge)],
         { view => $self->view,
         skip_hostinfo => 1 }
     );
