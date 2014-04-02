@@ -10,17 +10,28 @@ say "\n\n\nwe are $Bin/$0";
 
 use Mojolicious::Lite;
 
-my $ebug;
-websocket '/ebuge' => sub {
+use Devel::ebug;
+
+our $ebug;
+get '/hello' => sub {
     my $self = shift;
-    say "Blahh!";
 
-    $self->app->log->info("WebSocket opened");
+    load();
 
-    my $output = sub {
+    $self->render(json => output());
+};
+get '/exec/:command' => sub {
+    my $self = shift;
+    my $command = $self->params('command');
+    my $return = $ebug->$command();
+    my $output = output($return);
+    $self->render(json => $output);
+};
+
+sub output {
         my ($return, $time) = @_;
         my ($stdout, $stderr) = $ebug->output;
-        $self->tx->send(encode_json({
+        return {
             line => $ebug->line,
             stdout => $stdout,
             stderr => $stderr,
@@ -31,35 +42,12 @@ websocket '/ebuge' => sub {
             filename => $ebug->filename,
             code => $ebug->codeline,
             return => $return,
-        })."\n");
-    };
+        };
+}
 
-    $self->on(message => sub {
-        my ($self, $msg) = @_;
+sub load {
 
-        $self->app->log->info("WebSocket: $msg");
-
-        if ($msg =~ /hello/) {
-            $ebug = _load();
-            $output->(undef);
-        }
-        elsif ($msg =~ /exec (.+)/) {
-            my $command = $1;
-            my $return = $ebug->$command();
-            $output->($return);
-        }
-    });
-
-    $self->on(finish => sub {
-      my ($self, $code, $reason) = @_;
-      $self->app->log->debug("WebSocket closed with status $code.");
-    });
-
-};
-
-sub _load {
-
-    my $ebug = Devel::ebug->new;
+    $ebug = Devel::ebug->new;
     $ebug->program('test/stylehouse.pl');
     $ebug->load;
 

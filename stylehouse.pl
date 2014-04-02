@@ -93,6 +93,11 @@ instead of urls
 
 https://www.airbnb.co.nz/rooms/705210
 
+tip, travel, the wake of
+
+ebuge is supposed to run Devel::ebug and speak when it gets the chance via websocket
+or maybe via http if that's not going to work...
+
 =cut
 
 #!/usr/bin/env perl

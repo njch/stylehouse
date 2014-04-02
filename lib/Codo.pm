@@ -3,14 +3,12 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 
-use Devel::ebug;
 
 has 'hostinfo';
 has 'code_view';
 has 'exec_view';
 has 'ebug';
 has 'output';
-use Mojo::Transaction::WebSocket;
 use Mojo::UserAgent;
 
 sub new {
@@ -27,21 +25,17 @@ sub new {
     
 #    system("perl ebuge.pl &");
 
-    say "Connecting websocket...";
+    say "Connecting to ebuge...";
     my $ua = Mojo::UserAgent->new();
-    $ua->websocket('http://127.0.0.1:4008/ebuge' => sub {
+    my $uar = {
+        ua => $ua,
+        r => 0,
+    };
+    $self->ebug($uar);
+    $ua->get('http://127.0.0.1:4008/hello' => sub {
         my ($ua, $tx) = @_;
-        say "tx is $tx"; # Mojo::Transaction::HTTP=HASH(0xa029678)
-        $DB::single = 1;
-        unless ($tx->is_websocket) {
-            say "Error: ".$tx->res->error;
-        }
-        $tx->on(message => sub {
-            my ($tx, $message) = @_;
-            say anydump($message);
-        });
-        say "Yeah";
-      $tx->send('hello');
+        say anydump($tx);
+        $uar->{r} = 1;
     });
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 
