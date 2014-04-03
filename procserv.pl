@@ -10,7 +10,11 @@ my @old;
 `rm proc/*.*` if glob('proc/*.*');
 while (1) {
     my $i = 0;
-    for my $command (`cat proc/start`) {
+    my @commands = `cat proc/start`;
+    if (!@commands && @old) {
+        @old = ();
+    }
+    for my $command (@commands) {
         if ($old[$i++]) {
             next;
         }
@@ -21,29 +25,26 @@ while (1) {
         else {
             write_file("proc/list", {append => 1}, "$$: $command");
             chomp($command);
+            local $|;
             print "Going to redirect output and start '$command' in $$\n";
-            local $/;
             print "Err 1 $!\n" if $!;
-            open(my $out, '>&', STDOUT);
-            print $out "Err 2 $!\n" if $!;
 
             close STDOUT;
-            `touch proc/$$.out`;
-            open STDOUT, ">>proc/$$.out" || die "out open fial: $!";
-            print $out "Err 3 $!\n" if $!;
+            open (STDOUT, ">>", "proc/$$.out") || die "out open fial: $!";
+            print "Err 3 $!\n" if $!;
 
-            close STDOUT;
-            `touch proc/$$.err`;
-            open STDERR, ">>proc/$$.err" || die "err open fial: $!";
-            print $out "Err 4 $!\n" if $!;
+            close STDERR;
+            open (STDERR, ">>proc/$$.err") || die "err open fial: $!";
+            print "Err 4 $!\n" if $!;
 
             close STDIN;
             `touch proc/$$.in`;
-            open STDIN, "<", "proc/$$.in" || die "in open fial: $!";
-            print $out "Err 5 $!\n" if $!;
+            open (STDIN, "<", "proc/$$.in") || die "in open fial: $!";
+            print "Err 5 $!\n" if $!;
 
             exec $command;
-            print $out "Err 6 $!\n" if $!;
+            print "Err 6 $!\n" if $!;
+            print "after exec\n";
             exit;
         }
     }
