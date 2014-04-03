@@ -137,11 +137,11 @@ my @startup = (
       }
     ],
     [ sub {
-        $hostinfo->send("ws.reply({divs: [ \$('body div').id ]})");
+        $hostinfo->send("ws.reply({divs: 'too hard'})");
       }, sub {
         $_[0]->{divs}
       }, sub {
-        $hostinfo->load_views(shift);
+        $hostinfo->load_views(qw{menu hodu view hodi});
       }
     ]
 );
@@ -166,9 +166,10 @@ websocket '/stylehouse' => sub {
 
         if (@startup) {
             my $t = 0;
+            my $json = decode_json($msg);
             for my $s (@startup) {
-                if ($s->[1]->($msg)) {
-                    $s->[2]->(decode_json($msg));
+                if ($s->[1]->($json)) {
+                    $s->[2]->($json);
                     splice @startup, $t, 1;
                 }
                 $t++;
