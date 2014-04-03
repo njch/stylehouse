@@ -140,11 +140,11 @@ sub get_view { # TODO create views and shit
         # instead of solidity
     }
 
-    my $view = new View{ $hostintro,
+    my $view = new View( $hostintro,
         owner => $other,
         id => $viewid,
         others => $views,
-    };
+    );
 
 
     # add together
