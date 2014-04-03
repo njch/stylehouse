@@ -41,6 +41,7 @@ sub new {
         unless ($line =~ /\S+/) {
             return 0;
         }
+        sleep 1;
 
         my ($pid, $toexec_echo) = $line =~ /^(\d+): (.+)$/;
         say "Proc: started $pid for $toexec_echo";

@@ -32,10 +32,14 @@ sub new {
 
     my $handle_proc_talk = sub {
         my ($d, $line) = @_;
+        say "Ebuge $d: $line";
+        $self->outhook->(std => [$d, $line]);
         # etc welcome to thursday
     };
 
-    $self->proc(Proc->new($self, "perl ".$self->filename." -l ".$self->hostname, $handle_proc_talk));
+    my $perlcall = "perl ".$self->filename." daemon -l ".$self->hostname;
+
+    $self->proc(Proc->new($self, $perlcall, $handle_proc_talk));
     $self->connect();
 
     return $self;
@@ -54,7 +58,6 @@ sub connect {
     my $self = shift;
 
     say "Connecting to ebuge...";
-    say " is running: ". Mojo::IOLoop->is_running;
     $self->ua->get('http://127.0.0.1:4008/hello' => sub {
         my ($ua, $tx) = @_;
         if (my $error = $tx->res->error) {
@@ -87,7 +90,7 @@ sub trycommand {
     $self->ua->get("http://127.0.0.1:4008/exec/$command" => sub {
         my ($ua, $tx) = @_;
         my $output = decode_json($tx->res->body);
-        $self->outhook->($output);
+        $self->outhook->(exec => $output);
         say anydump($output);
     });
     say "starting loop...";

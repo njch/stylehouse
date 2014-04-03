@@ -5,8 +5,7 @@ use Texty;
 
 
 has 'hostinfo';
-has 'code_view';
-has 'exec_view';
+has 'view' => sub { {} };
 has 'ebug';
 has 'output';
 use Mojo::UserAgent;
@@ -15,26 +14,34 @@ use File::Slurp;
 
 sub DESTROY {
     my $self = shift;
-    $self->ebug->kill();
+    $self->ebug->kill() if $self->ebug;
 }
 sub new {
     my $self = bless {}, shift;
     $self->hostinfo(shift->hostinfo);
     $self->hostinfo->intro($self);
 
-    # TODO viewport objects we can easily interact with without seeing javascript
-    $self->code_view($self->hostinfo->provision_view($self, "hodu"));
-    $self->exec_view($self->hostinfo->provision_view($self, "view"));
+    $self->hostinfo->get_view($self, "hodu");
+    $self->hostinfo->get_view($self, "view");
 
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
 
     $self->ebug(Ebuge->new($self, "ebuge.pl", sub {
-        $self->drawstuff(shift);
+        my %p = @_;
+        if ($p{std}) { 
+            my $new = shift;
+            $self->hodu->text->append([$new->[0]." ".$new->[1]]);
+        }
+        elsif ($p{exec}) {
+            $self->drawstuff($p{exec});
+        }
     }));
 
     return $self;
 }
+
+
 
 
 sub menu {

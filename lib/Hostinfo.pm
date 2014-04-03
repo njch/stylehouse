@@ -11,6 +11,19 @@ has 'controllery';
 use UUID;
 use Scalar::Util 'weaken';
 
+my $hostintro;
+sub new {
+    my $self = bless {}, shift;
+    
+    $hostintro = sub {
+        my $other = shift;
+        $other->hostinfo($self);
+        $self->intro($self);
+    };
+
+    $self;
+}
+
 sub data {
     my $self = shift;
     return $data
@@ -95,21 +108,52 @@ sub stream_file {
     $self->loop->add($stream);
 }
 
-sub provision_view { # TODO create views and shit
+sub load_views { # state from client
+    my $self = shift;
+    my $js = shift;
+    my @divs;
+    for my $divid (@divs) {
+        $self->set('screen/views/'.$divid, []);
+    }
+}
+
+# build its own div or something
+sub provision_view {
+    my $self = shift;
+}
+
+sub get_view { # TODO create views and shit
     my $self = shift;
     my $other = shift;
     my $viewid = shift;
-    if (my $exist = $self->get('screen/views/'.$viewid)) {
-        say "view $viewid already owned by ".$exist->{owner};
+    my ($divid) = $viewid =~ /^(.+)_?/;
+    my $views = $self->get('screen/views/'.$divid);
+    unless ($views) {
+        $self->set('screen/views/'.$divid, []);
+        $self->provision_view();
+        # something new
+        # but closest to the nature of a program
+        # then popular views can get names
+        # but the latest innovations at the view can be streamed in
+        # it's feeding an idea about the way of the view
+        # gathering by ideas for progress
+        # instead of solidity
     }
-    my $viewport = {
+
+    my $view = new View{ $hostintro,
         owner => $other,
         id => $viewid,
+        others => $views,
     };
 
-    $self->set('screen/views/'.$viewid, $viewport);
 
-    return $viewport;
+    # add together
+    push @$views, $view;
+
+    # store it on the View
+    $other->view->{$viewid} = $view;
+
+    return $view;
 }
 
 sub send {
@@ -132,7 +176,7 @@ sub event_id_thing_lookup {
     my $self = shift;
     my $event = shift;
     my $things = $self->get('screen/things');
-    die "nothing...". $self->dump() unless @$things;
+    return say "nothing...". $self->dump()  unless $things;
 
     my $id = $event->{id};
     $id =~ s/^(\w+\-\w+).+$/$1/;
