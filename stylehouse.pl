@@ -115,7 +115,7 @@ use Menu;
 use View;
 use Ebuge;
 use Proc;
-use Carp::Always;
+#use Carp::Always;
 
 get '/' => 'index';
 
@@ -125,12 +125,38 @@ $hostinfo->set('0', $hostinfo);
 $hostinfo->set('dumphooks', []);
 helper 'hostinfo' => sub { $hostinfo };
 
+my @startup = (
+    [ sub {
+        $hostinfo->send("ws.reply({screen: {x: screen.availWidth, y: screen.availHeight}});");
+      }, sub {
+        $_[0]->{screen}
+      }, sub {
+        my $sc = shift->{screen};
+        $hostinfo->set("screen/width" => $sc->{x});
+        $hostinfo->set("screen/height" => $sc->{y});
+      }
+    ],
+    [ sub {
+        $hostinfo->send("ws.reply({divs: [ \$('body div').id ]})");
+      }, sub {
+        $_[0]->{divs}
+      }, sub {
+        $hostinfo->load_views(shift);
+      }
+    ]
+);
+
 websocket '/stylehouse' => sub {
     my $self = shift;
 
     $self->app->log->info("WebSocket opened");
     $self->hostinfo->set("screen/tx", $self->tx);
 
+    if (@startup) {
+        for my $s (@startup) {
+            $s->[0]->();
+        }
+    }
 
     $self->on(message => sub {
         my ($self, $msg) = @_;
@@ -138,20 +164,23 @@ websocket '/stylehouse' => sub {
         $self->app->log->info("WebSocket: $msg");
         Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-        # all sorts of things want to get in here...
-        if ($msg eq "Hello!") {
-            # clear the way, or merge with it?
-            # need to blow away
+        if (@startup) {
+            my $t = 0;
+            for my $s (@startup) {
+                if ($s->[1]->($msg)) {
+                    $s->[2]->(decode_json($msg));
+                    splice @startup, $t, 1;
+                }
+                $t++;
+            }
         }
-        elsif ($msg =~ /^screen: (\d+)x(\d+)$/) {
-            $self->hostinfo->set("screen/width" => $1); # per client?
-            $self->hostinfo->set("screen/height" => $2); # per client?
-            # AND THEN...
-            Dumpo->new($self);
+        else {
             Codo->new($self) unless $Bin=~/test/;
             Menu->new($self);
         }
-        elsif ($msg =~ /^event (.+)$/s) {
+
+        if ($msg =~ /^event/) {
+            my ($json) = $msg =~ /^event (.+)$/s;
             my $event = decode_json($1);
             
             if ($event->{type} eq "scroll") {
@@ -189,8 +218,6 @@ websocket '/stylehouse' => sub {
         }
     });
 
-    $self->hostinfo->send("ws.send('screen: '+screen.availWidth+'x'+screen.availHeight);");
-
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
       $self->app->log->debug("WebSocket closed with status $code.");
@@ -218,6 +245,9 @@ __DATA__
     <script type="text/javascript" src="jquery-1.11.0.js"></script></head>
     <script>
       var ws;
+      WebSocket.prototype.reply = function reply (stuff) {
+          ws.send(JSON.stringify(stuff));
+      };
 
       function connect () {
           ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
