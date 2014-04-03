@@ -5,11 +5,12 @@ use Texty;
 
 use AnyEvent::Subprocess;
 use AnyEvent::Util;
+use File::Slurp;
 
 has 'hostinfo';
 has 'output';
 has 'outhook';
-has 'command';
+has 'toexec';
 has 'pid';
 
 # talk to procserv (at the end in ``), setup handlers for its output
@@ -26,19 +27,24 @@ sub new {
     $self->hostinfo(shift->hostinfo);
     $self->hostinfo->intro($self);
 
-    my $command = $self->command(shift);
+    $self->toexec(shift);
+    my $toexec = $self->toexec;
 
     $self->outhook(shift);
     $self->output([]);
 
-    say "Proc: starting ".$self->command;
+    say "Proc: starting ".$self->toexec;
 
     $self->hostinfo->stream_file("proc/list", sub {
         my $line = shift;
         chomp $line;
-        my ($pid, $command_echo) = $line =~ /^(\d+): (.+)$/;
-        say "Proc: started $pid for $command_echo";
-        die "weird: $command_echo $command" unless $command_echo eq $command;
+        unless ($line =~ /\S+/) {
+            return 0;
+        }
+
+        my ($pid, $toexec_echo) = $line =~ /^(\d+): (.+)$/;
+        say "Proc: started $pid for $toexec_echo";
+        die "weird: $toexec_echo $toexec" unless $toexec_echo eq $toexec;
 
         $self->pid($pid);
         
@@ -49,9 +55,11 @@ sub new {
                 $self->outhook->($d, $line);
             });
         }
+        return 0;
     });
         
-    `echo $command >> proc/start`;
+    write_file("proc/start", {append => 1}, $self->toexec."\n");
+    sleep 1;
 
     return $self;
 }

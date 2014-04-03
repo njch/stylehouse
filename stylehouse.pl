@@ -2,15 +2,13 @@
 # copyright Steve Craig 2014
 use strict;
 use warnings;
-if (fork()) {
-    exec('procserv.pl');
-}
+use Scriptalicious;
+die "no procserv" unless grep { /procserv.pl/ } `ps faux`;
 use YAML::Syck;
 use JSON::XS;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
 use File::Slurp;
-use Scriptalicious;
 use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
@@ -121,6 +119,7 @@ use Carp::Always;
 
 get '/' => 'index';
 
+clear_procserv_io();
 my $hostinfo = new Hostinfo();
 $hostinfo->set('0', $hostinfo);
 $hostinfo->set('dumphooks', []);
@@ -198,6 +197,11 @@ websocket '/stylehouse' => sub {
     });
 
 };
+
+sub clear_procserv_io {
+    `cat /dev/null > proc/start`;
+    `cat /dev/null > proc/list`;
+}
 
 if ($Bin =~ /test$/) {
     my $daemon = Mojo::Server::Daemon->new(app => app, listen => ['http://*:3001']);

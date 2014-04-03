@@ -70,8 +70,11 @@ sub loop {
 sub stream_file {
     my $self = shift;
     my $filename = shift;
-    open my $handle $filename;
     my $linehook = shift;
+
+    say "stream_file: $filename";
+    open(my $handle, "$filename");
+
     my $stream = IO::Async::Stream->new(
         read_handle  => $handle,
 
