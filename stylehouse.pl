@@ -125,6 +125,26 @@ $hostinfo->set('0', $hostinfo);
 $hostinfo->set('dumphooks', []);
 helper 'hostinfo' => sub { $hostinfo };
 
+my $stylehouse = bless {}, "God";
+
+my $console = $hostinfo->get_view($stylehouse, "hodu");
+sub handle_to_texty {
+    my $handle = shift;
+    my $pre = shift;
+    my $view = shift;
+
+    $hostinfo->stream_file($handle, sub {
+        my $line = shift;
+        $view->texty->append([$pre, $line]);
+    });
+}
+say "About to...";
+do {
+    handle_to_texty(*STDOUT, "out", $console);
+    handle_to_texty(*STDERR, "err", $console);
+} if 0;
+# STDOUT -> consol texty
+
 my @startup = (
     [ sub {
         $hostinfo->send("ws.reply({screen: {x: screen.availWidth, y: screen.availHeight}});");
@@ -151,7 +171,9 @@ websocket '/stylehouse' => sub {
 
     $self->app->log->info("WebSocket opened");
     $self->hostinfo->set("screen/tx", $self->tx);
+    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
+    # send startup requests
     if (@startup) {
         for my $s (@startup) {
             $s->[0]->();
@@ -162,8 +184,8 @@ websocket '/stylehouse' => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-        Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
+        # handle startup responses until they're done
         if (@startup) {
             my $t = 0;
             my $json = decode_json($msg);
@@ -175,9 +197,9 @@ websocket '/stylehouse' => sub {
                 $t++;
             }
         }
-        else {
-            Codo->new($self) unless $Bin=~/test/;
-            Menu->new($self);
+        if (!@startup) {
+            Codo->new($hostinfo->intro) unless $Bin=~/test/;
+            Menu->new($hostinfo->intro);
         }
 
         if ($msg =~ /^event/) {

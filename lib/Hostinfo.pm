@@ -5,25 +5,12 @@ use IO::Async::Loop::Mojo;
 use IO::Async::Stream;
 
 my $data = {};
-has 'obyuuid' => sub { {} };
-has 'controllery';
+
+has 'console';
 
 use UUID;
 use Scalar::Util 'weaken';
-
-my $hostintro;
-sub new {
-    my $self = bless {}, shift;
-    
-    $hostintro = sub {
-        my $other = shift;
-        $other->hostinfo($self);
-        $self->intro($self);
-    };
-
-    $self;
-}
-
+use View;
 sub data {
     my $self = shift;
     return $data
@@ -51,20 +38,14 @@ sub screenthing {
     # events find texty, find owner
     if (ref $thing eq "Texty") {
         my $tuuid = make_uuid();
-        my $ouuid = make_uuid();
-        my ($oname) = $thing->owner =~ /^(\w+)/;
-        my $oid = "$oname-$ouuid";
         my $tid = "Texty-$tuuid"; # could stack the ownership like Texty-UUID-Direction-UUID
         $thing->id($tid);
-        # $thing->owner->id($oid) 
-        #$self->app->log->info("$oid created screen thing $tid");
     }
     else {
         die "no $thing";
     }
     
     if ($thing->hooks->{skip_hostinfo}) {
-        say "   ! ! ! ! ! !SKIPPING HOSTINFO for $thing->{id}";
         return;
     }
     
@@ -84,9 +65,14 @@ sub stream_file {
     my $self = shift;
     my $filename = shift;
     my $linehook = shift;
-
     say "stream_file: $filename";
     open(my $handle, "$filename");
+    $self->stream_handle($handle, $linehook);
+}
+sub stream_handle {
+    my $self = shift;
+    my $handle = shift;
+    my $linehook = shift;
 
     my $stream = IO::Async::Stream->new(
         read_handle  => $handle,
@@ -129,8 +115,9 @@ sub get_view { # TODO create views and shit
     my ($divid) = $viewid =~ /^(.+)_?/;
     my $views = $self->get('screen/views/'.$divid);
     unless ($views) {
-        $self->set('screen/views/'.$divid, []);
-        $self->provision_view();
+        $views = $self->set('screen/views/'.$divid, []);
+        $self->provision_view(); # write the div, open the window
+
         # something new
         # but closest to the nature of a program
         # then popular views can get names
@@ -140,10 +127,10 @@ sub get_view { # TODO create views and shit
         # instead of solidity
     }
 
-    my $view = new View( $hostintro,
-        owner => $other,
-        id => $viewid,
-        others => $views,
+    my $view = new View( $self->intro,
+        $other,
+        $viewid,
+        $views,
     );
 
 
@@ -151,10 +138,18 @@ sub get_view { # TODO create views and shit
     push @$views, $view;
 
     # store it on the View
-    $other->view->{$viewid} = $view;
+    unless (ref $other eq "God") {
+        unless ($other->view) {
+            $other->view({});
+        }
+        $other->view->{$viewid} = $view;
+    }
 
     return $view;
 }
+
+
+
 
 sub send {
     my $self = shift;
@@ -213,6 +208,15 @@ sub thedump {
     $dumpo->thedump($thing, $self); # owner: $self
 }
 sub intro {
+    my $self = shift;
+    return sub {
+        my $other = shift;
+        $other->hostinfo($self);
+        $self->duction($other);
+    };
+}
+
+sub duction {
     my $self = shift;
     my $new = shift;
     my ($name) = split '=', ref $new;

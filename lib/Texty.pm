@@ -6,103 +6,115 @@ use Storable 'dclone';
 use JSON::XS;
 my $json = JSON::XS->new->allow_nonref(1);
 
-has 'owner';
 has 'hostinfo';
+has 'view';
 has 'lines';
-has 'spans';
-has 'jquery';
-has 'view'; # Set this up
 has 'hooks';
-has 'id';
+
+has 'id'; # of view->owner
+has 'tuxts';
+has 'htmls';
+
+has 'empty';
 
 sub new {
     my $self = bless {}, shift;
-    $self->owner(shift);
+    shift->($self);
 
-    $self->hostinfo($self->owner->hostinfo);
-    $self->hostinfo->intro($self);
+    my $notakeoveryet = $_[0] && $_[0] eq "..." && shift @_;
 
-    $self->lines(shift);
-    
-    ref $self->lines eq "ARRAY" || die "need arrayref";
-
+    $self->view(shift || die "need owner");
+    $self->lines(shift || []);
     $self->hooks(shift || {});
-    $self->view($self->hooks->{view} || "hodu");
 
     # make a persistent object for this Texty thing
     # #hodu dump junk will not be saved
     $self->hostinfo->screenthing($self);
 
-    $self->lines_to_spans();
+    $self->lines_to_tuxts();
+
+    $self->tuxts_to_htmls();
     
     # make leaving here default?
-    return $self if $self->hooks->{leave_spans};
+    # the rest could be attracted to View
+    # attention shoving should be something that reaches here and figures out whether to...
+    return $self if $self->hooks->{notakeover} || $notakeoveryet;
 
-    $self->spans_to_jquery();
+    $self->view->takeover(htmls => $self->htmls);
 
-    $self->send_jquery();
     return $self;
 }
-
-sub send_jquery {
+sub replace {
     my $self = shift;
-    # get in there and sprinkle spans by the tens over many jquery.appends
-    # start $('selector').append('(<span.+</span>)+');
-    if (length($self->jquery) > 3000) {
-        my ($start, $spannage, $end) = $self->jquery =~
-            /^(.+append\(")(.+)("\);)$/sg;
-        die "ugh" unless $start && $spannage && $end;
-        my @spans = split /(?<=<\/span>)/, $spannage;
-        while (@spans) {
-            my @chunks;
-            push @chunks, grep { defined } shift @spans for 1..10;
-            my $middle = join "", @chunks;
-            $self->hostinfo->send("$start $middle $end");
-        }
-    }
-    else {
-        $self->hostinfo->send($self->jquery."\n") unless $self->hooks->{notx};
-    }
+    
+    $self->lines([ @_ ]);
+    $self->lines_to_tuxts();
+    $self->tuxts_to_htmls();
+    $self->view->takeover(htmls => $self->htmls);
 }
 
-sub lines_to_spans {
+sub append {
     my $self = shift;
-    my $es = $self->lines;
-    my $id = $self->id;
-    my @spans;
+    my @new = @_;
+    push @{ $self->lines }, @new;
+    $self->lines_to_tuxts();
+    $self->tuxts_to_htmls();
+    my @newhtml;
+    my @allhtml = @{$self->htmls};
+    for (1..scalar(@new)) {
+        push @newhtml, pop @allhtml;
+    }
+    $self->view->takeover(htmls => \@newhtml);
+}
+
+sub lines_to_tuxts {
+    my $self = shift;
+
+    unless (@{ $self->lines }) {
+        $self->empty(1);
+        $self->lines([
+            ">nothing<"
+        ]);
+    }
+    else {
+        $self->empty(0);
+    }
+
     my $l = 0;
-    for my $value (@$es) {
-        my $span = {
+    my @tuxts;
+    for my $value (@{ $self->lines }) {
+        $value =~ s/\n$//;
+        my $tuxt = {
             class => "data",
-            id => ($id.'-'.$l++),
+            id => ($self->id.'-'.$l++),
         };
 
         if (ref $value eq "Texty") {
-            $span->{style} .= "border: 1px solid pink;";
-            my @inners = @{ $value->spans };
+            $tuxt->{style} .= "border: 1px solid pink;";
+            my @inners = @{ $value->tuxt };
             $_->{left} += 20 for @inners;
-            push @spans, @inners;
+            push @tuxts, @inners;
         }
         else {
             $value = encode_entities($value)
                 unless $value =~ /<span/sgm;
         }
 
-        push @spans, {
+        push @tuxts, {
             class => "data",
-            id => ($id.'-'.$l++),
+            id => ($self->id.'-'.$l++),
             value => $value,
         };
     }
 
-    $self->spans([@spans]);
+    $self->tuxts([@tuxts]);
 
     $self->spatialise();
 }
 sub spatialise {
     my $self = shift;
     my $geo = shift || { top => 30, left => 20 };
-    for my $s (@{$self->spans}) {
+    for my $s (@{$self->tuxts}) {
         $s->{top} ||= 0;
         $s->{top} = $geo->{top};
         $s->{left} ||= 0;
@@ -111,27 +123,15 @@ sub spatialise {
     }
 }
 
-sub spans_to_htmls {
+sub tuxts_to_htmls {
     my $self = shift;
-    my $add = shift;
-    my $owner = shift;
-    my @htmls;
-    $self->{hooks}->{catch_span_htmls} = sub {
-        shift; push @htmls, @_;
-    };
-    $self->spans_to_jquery();
-    return @htmls;
-}
-sub spans_to_jquery {
-    my $self = shift;
-    if ($self->{hooks}->{spans_to_jquery}) {
-        $self->{hooks}->{spans_to_jquery}->($self);
+    if ($self->{hooks}->{tuxts_to_htmls}) {
+        $self->{hooks}->{tuxts_to_htmls}->($self);
     }
-    my $spans = $self->spans;
-    my $viewid = $self->view;
+
     my $top_add = 0;
     my @span_htmls;
-    for my $s (@$spans) {
+    for my $s (@{$self->tuxts}) {
         my $mid = { %$s };
         my $value = delete($mid->{value});
         my $p = dclone $mid;
@@ -148,12 +148,9 @@ sub spans_to_jquery {
         push @span_htmls, $span_html;
         
     }
-    if ($self->{hooks}->{catch_span_htmls}) {
-        $self->{hooks}->{catch_span_htmls}->($self, @span_htmls);
-    }
-    my @jquery;
-    push @jquery, "  \$('#$viewid').append(".$json->encode(join('', @span_htmls)).");";
-    $self->jquery(join"\n", @jquery);
+
+
+    $self->htmls([@span_htmls]);
 }
 
 sub event {
@@ -161,7 +158,7 @@ sub event {
     my $tx = shift;
     my $event = shift;
 
-    $self->owner->event($tx, $event, $self);
+    $self->view->owner->event($tx, $event, $self);
 }
 
 1;

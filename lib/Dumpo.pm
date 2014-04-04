@@ -13,7 +13,11 @@ sub new {
     $self->hostinfo->intro($self);
     my $object = shift;
 
-    $self->view("hodi");
+    my $view = $self->hostinfo->get_view($self, "hodi");
+    $view->text(
+        lines => [],
+        skip_hostinfo => 1,
+    );
 
     $self->updump($object, "init");
 
@@ -48,10 +52,7 @@ sub updump {
         $object = $codo;
     }
 
-    my $text = new Texty($self, [$self->thedump($object)],
-        { view => $self->view,
-        skip_hostinfo => 1 }
-    );
+    $self->view->{hodi}->replace([$self->thedump($object)]);
 }
 
 sub thedump {

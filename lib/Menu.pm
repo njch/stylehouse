@@ -5,16 +5,17 @@ use Texty;
 use Time::HiRes 'usleep';
 
 has 'hostinfo';
+has 'view' => sub { {} };
 has 'items';
 
 my $i = 0;
 
 sub new {
     my $self = bless {}, shift;
+    shift->($self);
 
-    $self->hostinfo(shift->hostinfo);
+    $self->hostinfo->get_view($self, "menu");
 
-    $self->hostinfo->set('Menu', $self);
     my $apps = $self->hostinfo->get('apps');
     $apps = [ grep { $_->can('menu') } values $apps ];
     $self->items($apps);
@@ -37,13 +38,15 @@ sub write {
     }
     $self->items([@items]);
     # make Texty[$item] hook to append menu items as more spans from another Texty
+
     for my $item (@{ $self->items }) {
-        my $text = new Texty($self, [$item], {
+
+        $self->view->{menu}->text([$item], {
             view => "menu",
-            spans_to_jquery=> sub {
+            tuxts_to_htmls => sub {
                 my $self = shift;
                 my $i = $h->{i} || 0;
-                for my $s (@{$self->spans}) {
+                for my $s (@{$self->tuxts}) {
                     my $object = $s->{value};
 
                     my $menu = $object->menu();
@@ -52,29 +55,23 @@ sub write {
                     
                     # generate another Texty for menu items
                     # catch their <spans> and add to our value
-                    my @htmls;
-                    $self->hostinfo->send("console.log('Text $s->{id}')");
-                    my $ob_menu_texty = new Texty($self, [ keys %$menu ], {
-                        view => $s->{id},
-                        spans_to_jquery => sub {
+                    my $inner = new Texty($self->hostinfo->intro, "...", $object, [ keys %$menu ], {
+                        tuxts_to_htmls => sub {
                             my $self = shift;
                             my $i = $h->{i} || 0;
-                            for my $s (@{$self->spans}) {
+                            for my $s (@{$self->tuxts}) {
                                 delete $s->{top};
                                 delete $s->{left};
                                 $s->{class} = 'menu';
                                 $s->{style} .= random_colour_background();
                             }
                         },
-                        catch_span_htmls => sub {
-                            my $self = shift;
-                            push @htmls, @_;
-                        },
+                        notakeover => 1,
                     });
                     
                     $s->{style} = random_colour_background();
                     $s->{class} = 'menu';
-                    $s->{value} .= " @htmls ";
+                    $s->{value} .= join "", @{$inner->htmls};
                 }
             }
          });
