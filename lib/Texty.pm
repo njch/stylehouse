@@ -11,7 +11,7 @@ has 'view';
 has 'lines';
 has 'hooks';
 
-has 'id'; # of view->owner
+has 'id';
 has 'tuxts';
 has 'htmls';
 
@@ -40,7 +40,7 @@ sub new {
     # attention shoving should be something that reaches here and figures out whether to...
     return $self if $self->hooks->{notakeover} || $notakeoveryet;
 
-    $self->view->takeover(htmls => $self->htmls);
+    $self->view->takeover([$self->htmls]);
 
     return $self;
 }
@@ -50,7 +50,7 @@ sub replace {
     $self->lines([ @_ ]);
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
-    $self->view->takeover(htmls => $self->htmls);
+    $self->view->takeover([$self->htmls]);
 }
 
 sub append {
@@ -64,7 +64,7 @@ sub append {
     for (1..scalar(@new)) {
         push @newhtml, pop @allhtml;
     }
-    $self->view->takeover(htmls => \@newhtml);
+    $self->view->takeover([@newhtml], "append");
 }
 
 sub lines_to_tuxts {
@@ -86,7 +86,7 @@ sub lines_to_tuxts {
         $value =~ s/\n$//;
         my $tuxt = {
             class => "data",
-            id => ($self->id.'-'.$l++),
+            id => ($self->view->id.'-'.$self->id.'-'.$l++),
         };
 
         if (ref $value eq "Texty") {
@@ -101,7 +101,7 @@ sub lines_to_tuxts {
         }
 
         push @tuxts, {
-            class => "data",
+            class => "data ".$self->view->id,
             id => ($self->id.'-'.$l++),
             value => $value,
         };

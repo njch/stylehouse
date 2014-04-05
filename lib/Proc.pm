@@ -13,6 +13,7 @@ has 'output';
 has 'outhook';
 has 'toexec';
 has 'pid';
+has 'kilt';
 
 # talk to procserv (at the end in ``), setup handlers for its output
 sub kill {
@@ -21,7 +22,8 @@ sub kill {
         say "! ! killing before Proc got started ! !";
         return;
     }
-    $self->run->kill(2); # SIGINT
+    kill "INT", $self->pid;
+    $self->kilt(1); # tell ebuge somehow (later)
 }
 sub new {
     my $self = bless {}, shift;
@@ -34,7 +36,8 @@ sub new {
     $self->outhook(shift);
     $self->output([]);
 
-    my $view = $self->hostinfo->get_view($self, "hodi"); # for printing STDERR, STDOUT
+    my $view = $self->hostinfo->get_view($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
+
     $view->text([],
         { tuxts_to_htmls => sub {
             my $texty = shift;
@@ -71,7 +74,7 @@ sub new {
                 my $line = shift;
                 push @{ $self->output }, [ $d, $line ];
 
-                $self->view->{hodi}->text->append("$d $line");
+                $self->view->{hodu}->text->append("$d $line");
             });
         }
         return 0;

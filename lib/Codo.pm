@@ -6,7 +6,7 @@ use Texty;
 
 has 'hostinfo';
 has 'view' => sub { {} };
-has 'ebug';
+has 'ebuge' => sub { [] };
 has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
@@ -14,7 +14,7 @@ use File::Slurp;
 
 sub DESTROY {
     my $self = shift;
-    $self->ebug->kill() if $self->ebug;
+    $self->killall;
 }
 sub new {
     my $self = bless {}, shift;
@@ -27,9 +27,38 @@ sub new {
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
 
-    $self->ebug(Ebuge->new($self->hostinfo->intro, "ebuge.pl"));
+    $self->new_ebuge();
 
     return $self;
+}
+
+sub killall {
+    my $self = shift;
+    $DB::single = 1;
+    for my $ebuge (@{ $self->ebuge }) {
+        unless ($ebuge) {
+            say "weird, no ebuge...";
+            next;
+        }
+        $ebuge->kill;
+    }
+    $self->ebuge([]);
+}
+
+sub new_ebuge {
+    my $self = shift;
+    my $ebuge = Ebuge->new($self->hostinfo->intro, "ebuge.pl");
+    push @{ $self->ebuge }, $ebuge;
+    return $ebuge;
+}
+
+sub menu {
+    my $self = shift;
+    my $menu = {};
+    $menu->{"killall"} = sub { $self->killall };
+    $menu->{"new"} = sub { $self->new_ebuge() };
+
+    return $menu;
 }
 
 

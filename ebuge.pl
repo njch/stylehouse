@@ -11,8 +11,12 @@ say "\n\n\nwe are $Bin/$0";
 use Mojolicious::Lite;
 
 use Devel::ebug;
-has 'ebug';
 
+sub ebug {
+    my $self = shift;
+    $self->{ebug} = shift if @_;
+    $self->{ebug};
+}
 get '/hello' => sub {
     my $self = shift;
 
@@ -21,7 +25,7 @@ get '/hello' => sub {
         $self->load();
     }
 
-    $self->render(json => output());
+    $self->render(json => $self->output());
 };
 get '/exec/:command' => sub {
     my $self = shift;

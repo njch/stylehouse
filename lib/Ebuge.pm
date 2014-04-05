@@ -16,6 +16,7 @@ has 'hostname';
 has 'ua';
 has 'proc';
 
+our $ebuges = [];
 # start a process via Proc (via procserv.pl) and talk web to it
 sub new {
     my $self = bless {}, shift;
@@ -39,9 +40,13 @@ sub new {
         # etc welcome to thursday
     };
 
+    push @$ebuges, $self;
+    say "Making another ebuge: ".$self->hostname if @$ebuges > 1;
+
     my $perlcall = "perl ".$self->filename." daemon -l ".$self->hostname;
 
     $self->proc(Proc->new($self, $perlcall, $handle_proc_talk));
+    
     $self->connect();
 
     return $self;
@@ -54,48 +59,75 @@ sub kill {
         return;
     }
     $self->proc->kill();
+    $self->view->kill();
 }
 
 my $first = 1;
 sub connect {
     my $self = shift;
 
-    say "Ebuge: Connecting to ebuge..." if $first;
+    say "Ebuge: Connecting to ebuge...";
     $self->ua->get($self->hostname.'/hello' => sub {
         my ($ua, $tx) = @_;
         if (my $error = $tx->res->error) {
             $self->ready(0);
-            say "Ebuge: $error, reconnecting..." if $first;
+            say "Ebuge: $error, reconnecting... first=$first";
             $first = 0;
             my $delay = Mojo::IOLoop::Delay->new();
             $delay->steps(
-                sub { Mojo::IOLoop->timer(2 => $delay->begin); },
-                sub { $self->connect },
+                sub { Mojo::IOLoop->timer(2 => $delay->begin); say "Set a 2 second timer to ".$self->hostname; },
+                sub { $self->connect; return 0 },
             );
         }
         $self->ready(1);
+
         say "Ebuge: ebuge responds";
         my $output = $tx->res->body;
-        if ($output =~ /<!DOCTYPE html>/) {
-            write_file('public/ebugewebpage', $output);
-            $output = "Wrote ebugwebpage";
+
+        my $new;
+
+        $new = $self->handle_body($output) if $output =~ /<!DOCTYPE html>/;
+        
+        if (!$new) {
+            $@ = "";
+            eval {
+                $new = decode_json($output) if $output;
+            };
+            if ($@) {
+                $new = "Error decoding output: ".anydump($output);
+                $new = { error => $new }; 
+            }
         }
-        else {
-            $output = decode_json($output) if $output;
-        }
-        $self->drawstuff($output);
+
+        $self->drawstuff($new);
     });
 }
+sub handle_body {
+    my $self = shift;
+    my $body = shift;
+    my $e = {};
 
+    $e->{error} = $1 if $body =~ /<title>(Page not found)<\/title>/;
+
+    # great value conjuring syntax: .+?
+    $e->{request} = "$1 '$2'" if $body =~ /<code>(.+?)<\/code> request for \s+ <code>(.+?)<\/code>/;
+
+    $e->{has_some_routes} = 1 if $body =~ /<pre>\/hello<\/pre>.+<pre>\/exec\/:command<\/pre>/s;
+
+    unless (scalar(keys %$e) == 3) {
+        $e->{body} = $body;
+    }
+    return $e;
+}
 sub menu {
     my $self = shift;
     my $menu = {};
     for my $i (qw{next step run undo stack_trace pad}) {
         $menu->{$i} = sub { $self->trycommand($i) };
     }
-    $menu->{"load"} = sub {
+    $menu->{"reload"} = sub {
         # restart the process?
-        say "code load!";
+        $self->kill;
     };
     return $menu;
 }
@@ -105,14 +137,8 @@ sub drawstuff {
     my $self = shift;
     my $output = shift;
 
-    if ($output eq "Wrote ebugwebpage") {
-        $output = 'Wrote <a ref="/ebugwebpage" style="font-size: 30">ebugwebpage</a>';
-        $self->view->{hodi}->text->append($output);
-        return;
-    }
-    if ($output eq "") {
-        $output = 'Got a blank response';
-        $self->view->{hodi}->text->append($output);
+    if ($output->{error}) {
+        $self->view->{hodi}->text->replace([ split "\n", anydump($output) ]);
         return;
     }
 

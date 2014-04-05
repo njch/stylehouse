@@ -4,10 +4,18 @@ use warnings;
 use Scriptalicious;
 use Time::HiRes 'usleep';
 use File::Slurp;
-my @old;
+
+sub append {
+    write_file("proc/list", {append => 1}, shift);
+}
+
 `cat /dev/null > proc/start`;
 `cat /dev/null > proc/list`;
 `rm proc/*.*` if glob('proc/*.*');
+
+append("$$: $0");
+
+my @old;
 while (1) {
     my $i = 0;
     my @commands = `cat proc/start`;
@@ -23,7 +31,7 @@ while (1) {
             print "forked $pid\n";
         }
         else {
-            write_file("proc/list", {append => 1}, "$$: $command");
+            append("$$: $command");
             chomp($command);
             local $|;
             print "Going to redirect output and start '$command' in $$\n";
@@ -50,4 +58,3 @@ while (1) {
     }
     usleep(100);
 }
-

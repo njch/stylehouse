@@ -16,15 +16,11 @@ sub new {
     $self->owner(shift);
     $self->divid(shift);
     my ($id) = $self->owner =~ /^(\w+)/;
+    $self->hostinfo->screenthing($self);
     $self->id($id);
     $self->others(shift);
 
     $self;
-}
-sub pos {
-    my $self = shift;
-    my $i = 0;
-    return grep { $_ eq $self || $i++ && 0 } @{ $self->others }
 }
 
 # plugin for "And: $self->id"
@@ -34,45 +30,64 @@ sub text {
 
     $self->{text} ||= Texty->new($self->hostinfo->intro, $self, @_);
 }
+sub kill {
+    my $self = shift;
+    $self->wipehtml;
+}
+
+sub wipehtml {
+    my $self = shift;
+    $self->hostinfo->send("\$('.".$self->id."').remove()");
+}
+sub hide {
+    my $self = shift;
+    $self->hostinfo->send("\$('.".$self->id."').hide()");
+}
+sub show {
+    my $self = shift;
+    $self->hostinfo->send("\$('.".$self->id."').show()");
+}
+
 
 sub takeover {
     my $self = shift;
-    my $p = { @_ };
+    my $htmls = shift;
+    my $append = shift;
     
-    # shift pos
-    say "Pos is ".$self->pos;
+    # other views .id set hidden
+    $_->hide for @{ $self->others };
 
-    # delete our hidden stuff?
+    $self->show;
+   
+    unless ($append) {
+        # #divid span where id /&$self->id
+        $self->hostinfo->send("\$('".$self->divid."').remove()");
+    }
     
-    if (my $htmls = $p->{htmls}) {
-        my $divid = $self->divid;
-        my @htmls = split /(?<=<\/span>)\s*(?=<span)/, join "", @$htmls;
+    my $divid = $self->divid;
+    my @htmls = split /(?<=<\/span>)\s*(?=<span)/, join "", @$htmls;
 
-        my @html_batches;
-        my $b = [];
-        for my $html (@htmls) {
-            push @$b, $html;
-            if (@$b > 10) {
-                push @html_batches, $b;
-                $b = [];
-            }
+    say "First: ". anydump(\@htmls);
+    my @html_batches;
+    my $b = [];
+    for my $html (@htmls) {
+        push @$b, $html;
+        if (@$b > 10) {
+            push @html_batches, [ @$b ];
+            $b = [];
         }
-        push @html_batches, $b;
+    }
+    push @html_batches, [ @$b ];
+    say "Second: ". anydump(\@html_batches);
 
-        for my $html_batch (@html_batches) {
+    for my $html_batch (@html_batches) {
 
-            my $html = join "", @$html_batch;
+        my $html = join "", @$html_batch;
 
-            $html =~ s/'/\\'/;
-            $self->hostinfo->send("  \$('#$divid').append('$html');");
-
-        }
+        $html =~ s/'/\\'/;
+        $self->hostinfo->send("  \$('#$divid').append('$html');");
 
     }
-    else {
-        die "how to takeover?";
-    }
-        
 }
 
 1;

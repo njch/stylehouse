@@ -55,7 +55,7 @@ sub write {
                     
                     # generate another Texty for menu items
                     # catch their <spans> and add to our value
-                    my $inner = new Texty($self->hostinfo->intro, "...", $object, [ keys %$menu ], {
+                    my $inner = new Texty($self->hostinfo->intro, "...", $self->view, [ keys %$menu ], {
                         tuxts_to_htmls => sub {
                             my $self = shift;
                             my $i = $h->{i} || 0;

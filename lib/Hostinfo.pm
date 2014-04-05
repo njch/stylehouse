@@ -33,19 +33,9 @@ sub screenthing {
     my $self = shift;
     my $thing = shift;
 
-    # put an ID on it from ClassnameUUID of the Texty->owner;
-    # controller makes div? spans are texty things?
-    # events find texty, find owner
-    if (ref $thing eq "Texty") {
-        my $tuuid = make_uuid();
-        my $tid = "Texty-$tuuid"; # could stack the ownership like Texty-UUID-Direction-UUID
-        $thing->id($tid);
-    }
-    else {
-        die "no $thing";
-    }
+    $thing->id(ref $thing.'-'.make_uuid());
     
-    if ($thing->hooks->{skip_hostinfo}) {
+    if ($thing->can('hooks') && $thing->hooks->{skip_hostinfo}) {
         return;
     }
     
