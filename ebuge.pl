@@ -11,14 +11,14 @@ say "\n\n\nwe are $Bin/$0";
 use Mojolicious::Lite;
 
 use Devel::ebug;
+has 'ebug';
 
-our $ebug;
 get '/hello' => sub {
     my $self = shift;
 
-    unless ($ebug) {
+    unless ($self->ebug) {
         say "loading";
-        load();
+        $self->load();
     }
 
     $self->render(json => output());
@@ -26,9 +26,9 @@ get '/hello' => sub {
 get '/exec/:command' => sub {
     my $self = shift;
     my $command = $self->stash('command');
-    my $return = $ebug->$command();
+    my $return = $self->ebug->$command();
 
-    my $output = output();
+    my $output = $self->output();
     $output->{return} = $return;
     $output->{command} = $command;
 
@@ -36,30 +36,30 @@ get '/exec/:command' => sub {
 };
 
 sub output {
-        my ($return, $time) = @_;
-        my ($stdout, $stderr) = $ebug->output;
-        return {
-            line => $ebug->line,
-            stdout => $stdout,
-            stderr => $stderr,
-            finished => $ebug->finished,
-            package => $ebug->package,
-            subroutine => $ebug->subroutine,
-            line => $ebug->line,
-            filename => $ebug->filename,
-            codeline => $ebug->codeline,
-        };
+    my $self = shift;
+    my ($return, $time) = @_;
+    my ($stdout, $stderr) = $self->ebug->output;
+    return {
+        line => $self->ebug->line,
+        stdout => $stdout,
+        stderr => $stderr,
+        finished => $self->ebug->finished,
+        package => $self->ebug->package,
+        subroutine => $self->ebug->subroutine,
+        line => $self->ebug->line,
+        filename => $self->ebug->filename,
+        codeline => $self->ebug->codeline,
+    };
 }
 
 sub load {
+    my $self = shift;
+    $self->ebug(Devel::ebug->new);
+    $self->ebug->program('test/stylehouse.pl');
+    $self->ebug->load;
 
-    $ebug = Devel::ebug->new;
-    $ebug->program('test/stylehouse.pl');
-    $ebug->load;
-
-    # litter it with places to wait
-# might even need a middleware so we can consider the jam instead of just jamming
-    my @filenames    = $ebug->filenames();
+    # litter it with places to wait? explore
+    my @filenames    = $self->ebug->filenames();
     @filenames = grep { /^lib|stylehouse\.pl$/ } @filenames;
     for my $filename (@filenames) {
         my $code = capture("cat $filename");
@@ -67,7 +67,7 @@ sub load {
         my $line = 0;
         for my $codeline (@codelines) {
             if ($codeline =~ /my \$self = shift;/) {
-                $ebug->break_point($filename, $line);
+                $self->ebug->break_point($filename, $line);
             }
             $line++;
         }
