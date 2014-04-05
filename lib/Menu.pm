@@ -72,6 +72,7 @@ sub write {
                     $s->{style} = random_colour_background();
                     $s->{class} = 'menu';
                     $s->{value} .= join "", @{$inner->htmls};
+                    $s->{inner} = $inner;
                 }
             }
          });
@@ -90,35 +91,23 @@ sub event {
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
     my $h = {};
-    if ($event->{y} < 40) {
-        if ($event->{x} < 100) {
-            $self->hostinfo->set("Ballz $event->{x}");
-        }
-        my $object = $self->hostinfo->event_id_thing_lookup($event);
-        if (!$object) {
-            $self->hostinfo->send("console.log('$event->{id} not found')");
-        }
-        my $ownerowner = $object->owner->lines->[0];
-        my $value = $event->{value};
-        
-        my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
-        if ($menuobject) {
-            my $mob = $menuobject->menu();
-            $mob->{$value}->($event);
-        }
-        else {
-            say "Nope wrong: ";#anydump([$object, $self]);
-        }
 
+    # get this event to go to the right object
 
-    } else {
-        $h->{tp} = $event->{y};
-        $h->{lp} = $event->{x};
-        for my $i (1..1) {
-            usleep 250;
-            $h->{x} = ($i * 30) + int rand $height;
-            $self->write($h) for 1..7;
-        }
+    my $object = $self->hostinfo->event_id_thing_lookup($event);
+    if (!$object) {
+        $self->hostinfo->send("console.log('$event->{id} not found')");
+    }
+    my $ownerowner = $object->owner->lines->[0];
+    my $value = $event->{value};
+    
+    my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
+    if ($menuobject) {
+        my $mob = $menuobject->menu();
+        $mob->{$value}->($event);
+    }
+    else {
+        say "Nope wrong: ";#anydump([$object, $self]);
     }
 }
 

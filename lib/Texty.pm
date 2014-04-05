@@ -134,7 +134,12 @@ sub tuxts_to_htmls {
     for my $s (@{$self->tuxts}) {
         my $mid = { %$s };
         my $value = delete($mid->{value});
-        my $p = dclone $mid;
+        my $p = {};
+        if (exists $mid->{inner}) {
+            $p->{inner} = delete $mid->{inner};
+        }
+        my $pm = dclone $mid;
+        $p = { %$pm, %$p };
 
         $p->{style} = join "; ", grep /\S/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
