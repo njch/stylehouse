@@ -18,7 +18,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->view($self->hostinfo->get_view($self, "hodi"));
+    $self->view($self->hostinfo->get_view($self, "hodu"));
     $self->text($self->view->text([],
         { skip_hostinfo => 1,
         leave_spans => 1, 
@@ -64,7 +64,7 @@ sub event {
         $h->{top} = $event->{pagey} + int  rand $height;
         $h->{left} = $event->{pagex};
         $h->{x} = ($i * 30) + int rand $height;
-        my @lyrics = map {$self->zlyrics} 1..3;
+        my @lyrics = grep { s/\n//g; } grep /\S+/, map { $self->zlyrics } 1..3;
         $self->write($h, @lyrics);
     }
 }
@@ -84,6 +84,7 @@ sub write {
     my $h = shift;
     my @lyrics = @_;
     $self->text->hooks->{spatialise} = sub { $h };
+    say "Writing ".join(", ", @lyrics);
     $self->text->append([@lyrics]);
     return $self;
 }
