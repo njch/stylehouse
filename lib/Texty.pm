@@ -65,13 +65,20 @@ sub append {
     for (1..scalar(@new)) {
         push @newhtml, pop @allhtml;
     }
-    $self->view->takeover([@newhtml], "append");
+    say "frist: ".$self->lines->[0];
+    if ($self->empty) {
+        $self->empty(0);
+        $self->view->takeover([@newhtml]);
+    }
+    else {
+        $self->view->takeover([@newhtml], "append");
+    }
 }
 
 sub lines_to_tuxts {
     my $self = shift;
 
-    unless (@{ $self->lines }) {
+    if (!@{ $self->lines } && defined($self->empty)) {
         $self->empty(1);
         $self->lines([
             ">nothing<"

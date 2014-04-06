@@ -50,7 +50,6 @@ sub takeover {
        .($append ? "" : "\$('.".$self->id."').remove()")
     );
 
-   
     $self->wipehtml unless $append;
     
     my $divid = $self->divid;
