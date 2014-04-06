@@ -6,6 +6,7 @@ use Texty;
 use AnyEvent::Subprocess;
 use AnyEvent::Util;
 use File::Slurp;
+use Time::HiRes 'gettimeofday';
 
 has 'hostinfo';
 has 'view';
@@ -72,9 +73,7 @@ sub new {
         for my $d ("err", "out") {
             $self->hostinfo->stream_file("proc/$pid.$d", sub {
                 my $line = shift;
-                push @{ $self->output }, [ $d, $line ];
-
-                $self->view->{hodu}->text->append("$d $line");
+                $self->gotline($d, $line);
             });
         }
         return 0;
@@ -85,6 +84,61 @@ sub new {
 
     return $self;
 }
+
+has 'lastlinepush' => sub { 0 };
+has 'queuestarts' => sub { 0 };
+
+sub hitime {
+    my $self = shift;
+    return join ".", time, (gettimeofday())[1];
+}
+
+has 'linepushdelay' => sub { Mojo::IOLoop::Delay->new() };
+has 'linepushdelay_on' => sub { 0 };
+
+sub pushlines {
+    my $self = shift;
+
+    my @newlines;
+
+    my $last = $self->queuestarts || 0;
+    my $first = $last + 1;
+    $last = (scalar(@{$self->output})||1)-1;
+
+    push @newlines, @{$self->output}[$first..$last];
+
+    $self->view->{hodu}->text->append(map { join" ",@$_ } @newlines);
+    say "Proc: pushed ".scalar(@newlines)." lines outwards";
+
+    $self->queuestarts( $last+1 );
+    $self->lastlinepush($self->hitime());
+    $self->linepushdelay_on(0);
+}
+
+sub gotline {
+    my $self = shift;
+    my $std = shift;
+    my $line = shift;
+
+    say "gotline: $std $line";
+
+    push @{ $self->output }, [ $std, $line ];
+
+    return if $self->linepushdelay_on;
+
+    if ($self->hitime < $self->lastlinepush + 1) {
+        
+        $self->linepushdelay_on(1);
+        $self->linepushdelay->steps(
+            sub { Mojo::IOLoop->timer(1 => $self->linepushdelay->begin); say "Pushing lines in 1 second"; },
+            sub { $self->pushlines; },
+        );
+    }
+    else {
+        $self->pushlines();
+    }
+}
+
 
 sub event {
     my $self = shift;

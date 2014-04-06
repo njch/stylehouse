@@ -70,6 +70,8 @@ sub part_and_append {
     my $self = shift;
     my $divid = shift;
     my $html = shift;
+
+    return say "no html" unless $html;
     
     if (length($html) > 30000) {
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
