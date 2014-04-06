@@ -65,7 +65,6 @@ sub append {
     for (1..scalar(@new)) {
         push @newhtml, pop @allhtml;
     }
-    say "frist: ".$self->lines->[0];
     if ($self->empty) {
         $self->empty(0);
         $self->view->takeover([@newhtml]);
@@ -170,7 +169,18 @@ sub event {
     my $tx = shift;
     my $event = shift;
 
-    $self->view->owner->event($tx, $event, $self);
+    $self->owner->event($tx, $event, $self);
 }
+
+sub owner {
+    my $self = shift;
+    my $owner = $self;
+    until (ref $owner eq "View") {
+        $owner = $owner->view;
+    }
+    $owner = $owner->owner;
+    return $owner;
+}
+
 
 1;
