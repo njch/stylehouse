@@ -178,6 +178,7 @@ websocket '/stylehouse' => sub {
     if (@startup) {
         for my $s (@startup) {
             $s->[0]->();
+            $s->[0] = sub { };
         }
         @startup = ();
     }
