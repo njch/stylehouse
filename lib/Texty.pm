@@ -104,7 +104,7 @@ sub lines_to_tuxts {
         }
         else {
             $value = encode_entities($value)
-                unless $value =~ /<span/sgm;
+                unless $value =~ /<span|<textarea/sgm;
         }
 
         push @tuxts, {
@@ -120,14 +120,27 @@ sub lines_to_tuxts {
 }
 sub spatialise {
     my $self = shift;
-    my $geo = shift || { top => 30, left => 20 };
+    my $here = shift;
+    my $geo;
+    if ($self->hooks->{spatialise}) {
+        $geo = $self->hooks->{spatialise}->();
+    }
+    $geo ||= $here || { top => 30, left => 20 };
+    $geo->{top} ||= 0;
     for my $s (@{$self->tuxts}) {
         $s->{top} ||= 0;
         $s->{top} = $geo->{top};
-        $s->{left} ||= 0;
-        $s->{left} += $geo->{left};
+        if ($s->{right}) {
+            $s->{right} ||= 0;
+            $s->{right} += $geo->{right};
+        }
+        else {
+            $s->{left} ||= 0;
+            $s->{left} += $geo->{left};
+        }
         $geo->{top} += 20;
     }
+    say "geo being: ". anydump($geo);
 }
 
 sub tuxts_to_htmls {

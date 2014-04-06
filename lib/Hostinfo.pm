@@ -11,15 +11,12 @@ has 'console';
 use UUID;
 use Scalar::Util 'weaken';
 use View;
-sub data {
-    my $self = shift;
-    return $data
-}
 
-sub hostinfo {
-    my $self = shift;
-    $self;
-}
+sub tx { shift->get("screen/tx") }
+
+sub hostinfo { shift }
+
+sub data { $data }
 
 # make a number bigger than the universe...
 sub make_uuid {
@@ -53,43 +50,7 @@ sub screenthing {
     
     push @$things, $thing;
 }
-sub loop {
-    my $self = shift;
-    $self->{loop} ||= IO::Async::Loop::Mojo->new();
-}
 
-sub stream_file {
-    my $self = shift;
-    my $filename = shift;
-    my $linehook = shift;
-    say "stream_file: $filename";
-    open(my $handle, "$filename");
-    $self->stream_handle($handle, $linehook);
-}
-sub stream_handle {
-    my $self = shift;
-    my $handle = shift;
-    my $linehook = shift;
-
-    my $stream = IO::Async::Stream->new(
-        read_handle  => $handle,
-
-        on_read => sub {
-            my ( $self, $buffref, $eof ) = @_;
-
-            while( $$buffref =~ s/^(.*\n)// ) {
-                $linehook->($1);
-            }
-
-            if( $eof ) {
-                $linehook->($$buffref);
-            }
-
-            return 0;
-        },
-    );
-    $self->loop->add($stream);
-}
 
 sub load_views { # state from client
     my $self = shift;
@@ -145,16 +106,19 @@ sub get_view { # TODO create views and shit
     return $view;
 }
 
-
-
-
 sub send {
     my $self = shift;
     my $message = shift;
+
     if (length($message) > $self->tx->max_websocket_size) {
         die "Message is bigger (".length($message).") than max websocket size=".$self->tx->max_websocket_size
             ."\n\n".substr($message,0,180)."...";
     }
+
+    if ($message =~ /\n/) {
+        warn "Message contains \\n";
+    }
+
     my $short = $message if length($message) < 400;
     $short ||= substr($message,0,70)." >SNIP<";
     
@@ -163,10 +127,43 @@ sub send {
     my $tx = $self->tx;
     $tx->send({text => $message});
 }
-sub tx {
+sub loop {
     my $self = shift;
-    $self->get("screen/tx");
+    $self->{loop} ||= IO::Async::Loop::Mojo->new();
 }
+sub stream_file {
+    my $self = shift;
+    my $filename = shift;
+    my $linehook = shift;
+    say "stream_file: $filename";
+    open(my $handle, "$filename");
+    $self->stream_handle($handle, $linehook);
+}
+sub stream_handle {
+    my $self = shift;
+    my $handle = shift;
+    my $linehook = shift;
+
+    my $stream = IO::Async::Stream->new(
+        read_handle  => $handle,
+
+        on_read => sub {
+            my ( $self, $buffref, $eof ) = @_;
+
+            while( $$buffref =~ s/^(.*\n)// ) {
+                $linehook->($1);
+            }
+
+            if( $eof ) {
+                $linehook->($$buffref);
+            }
+
+            return 0;
+        },
+    );
+    $self->loop->add($stream);
+}
+
 
 sub event_id_thing_lookup {
     my $self = shift;

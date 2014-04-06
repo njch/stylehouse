@@ -115,6 +115,7 @@ use Menu;
 use View;
 use Ebuge;
 use Proc;
+use Keys;
 #use Carp::Always;
 
 get '/' => 'index';
@@ -198,7 +199,8 @@ websocket '/stylehouse' => sub {
             }
         }
         if (!@startup) {
-            Codo->new($hostinfo->intro) unless $Bin=~/test/;
+            Keys->new($hostinfo->intro);
+#            Codo->new($hostinfo->intro) unless $Bin=~/test/;
             Menu->new($hostinfo->intro);
         }
 
@@ -310,7 +312,8 @@ __DATA__
                 pagey: window.pageYOffset,
             };
             console.log(event);
-            ws.send('event '+JSON.stringify(data))
+            ws.send('event '+JSON.stringify(data));
+            $('#Keys').focus;
         }
     </script>
     <style type="text/css">
@@ -334,6 +337,9 @@ __DATA__
     .on {
         color: white;
         background: #777;
+    }
+    #Keys {
+        font-size: 30pt;
     }
     </style>
     <body style="background: #ab6; font-family: monospace">
