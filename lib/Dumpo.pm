@@ -13,12 +13,16 @@ sub new {
     my $object = shift;
 
     my $view = $self->hostinfo->get_view($self, "hodi");
-    $view->text(
-        lines => [],
-        skip_hostinfo => 1,
+    $view->text([],
+        { skip_hostinfo => 1, }
     );
 
-    $self->updump($object, "init");
+        my $delay = Mojo::IOLoop::Delay->new();
+        $delay->steps(
+            sub { Mojo::IOLoop->timer(5 => $delay->begin); },
+            sub { $self->updump($object, "init"); },
+        );
+    
 
     return $self;
 }
@@ -99,7 +103,10 @@ sub thedump {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($owner, ["Texty owner=".$thing->{owner}, @sub], { leave_spans => 1 });
+            return new Texty($self->hostinfo->intro, "...", $self->view,
+                ["Texty owner=".$thing->{owner}, @sub],
+                { leave_spans => 1 },
+            );
         },
     };
     my @dump = dumpdeal($thing, $hooks);

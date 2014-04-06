@@ -146,7 +146,7 @@ do {
 } if 0;
 # STDOUT -> consol texty
 
-my @startup = (
+my @startup = my @another = (
     [ sub {
         $hostinfo->send("ws.reply({screen: {x: screen.availWidth, y: screen.availHeight}});");
       }, sub {
@@ -174,13 +174,23 @@ websocket '/stylehouse' => sub {
     $self->hostinfo->set("screen/tx", $self->tx);
     Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
+    if ($hostinfo->get("Menu")) {
+        # been here before
+        @startup = @another;
+    }
+
     # send startup requests
     if (@startup) {
         for my $s (@startup) {
             $s->[0]->();
             $s->[0] = sub { };
         }
-        @startup = ();
+        if (grep { defined $_->[0] } @startup) {
+            @startup = ();
+        }
+    }
+    else {
+        $hostinfo->get("Menu")->view->resume;
     }
 
     my $keys;
@@ -202,9 +212,11 @@ websocket '/stylehouse' => sub {
             }
         }
         if (!@startup) {
+            #Dumpo->new($hostinfo->intro);
             $keys = Keys->new($hostinfo->intro);
 #            Codo->new($hostinfo->intro) unless $Bin=~/test/;
             Menu->new($hostinfo->intro);
+            Lyrico->new($hostinfo->intro);
         }
 
         if ($msg =~ /^event/) {
@@ -215,6 +227,12 @@ websocket '/stylehouse' => sub {
                 my $ly = $self->hostinfo->get('Lyrico');
                 $ly->event($event) if $ly;
             }
+
+            if ($event->{id} eq "Keys") {
+                $keys->event($event);
+                return;
+            }
+
             $self->app->log->info("Looking up event handler");
             # find the Texty to ->event ->{ owner->event
             my $thing = $self->hostinfo->event_id_thing_lookup($event)
@@ -224,13 +242,14 @@ websocket '/stylehouse' => sub {
             unless ($thing) {
                 $self->app->log->error("Thing lookup failed for $event->{id}");
 
-                if (my $catcher = $self->hostinfo->get('eventcatcher')) {
+                if (my $catcher = $self->hostinfo->get('clickcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
+                    $DB::single = 1;
                     $catcher->event($event);
                 }
                 else {
                     $self->send(
-                        "\$('body').addStyle('dead').delay(250).removeStyle('dead');"
+                        "\$('#body').addClass('dead').delay(250).removeClass('dead');"
                     );
                 }
             }
@@ -289,7 +308,7 @@ __DATA__
           }
           ws.onclose = function(e) {
              $(window).off('click', clickyhand);
-            $('body').addClass('dead');
+            $('#body').addClass('dead');
             console.log("WebSocket Error: " , e);
             reconnect();
           }
@@ -345,7 +364,7 @@ __DATA__
         font-size: 30pt;
     }
     </style>
-    <body style="background: #ab6; font-family: monospace">
+    <body id="body" style="background: #ab6; font-family: monospace">
     <div id="menu" class="view" style="width:100%; background: #333; height: 20px;"></div>
     <div id="hodu" class="view" style="width:60%;  background: #352035; color: #afc; top: 50; height: 4000px"></div>
     <div id="view" class="view" style="width:40%; background: #c9f; height: 500px;"></div>

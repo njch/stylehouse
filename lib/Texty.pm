@@ -9,7 +9,7 @@ my $json = JSON::XS->new->allow_nonref(1);
 has 'hostinfo';
 has 'view';
 has 'lines';
-has 'hooks';
+has 'hooks' => sub { {} };
 
 has 'id';
 has 'tuxts';
@@ -31,7 +31,7 @@ sub new {
     # #hodu dump junk will not be saved
     $self->hostinfo->screenthing($self);
 
-    $self->lines_to_tuxts();
+    $self->lines_to_tuxts() eq "bail" && return;
 
     $self->tuxts_to_htmls();
     
@@ -58,6 +58,7 @@ sub append {
     my $self = shift;
     my @new = @_;
     push @{ $self->lines }, @new;
+    say anydump($self->lines);
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
     my @newhtml;
@@ -77,14 +78,19 @@ sub append {
 sub lines_to_tuxts {
     my $self = shift;
 
-    if (!@{ $self->lines } && defined($self->empty)) {
-        $self->empty(1);
-        $self->lines([
-            ">nothing<"
-        ]);
+    # bizzare
+    if (!@{ $self->lines }) {
+        $self->tuxts([]);
     }
-    else {
-        $self->empty(0);
+
+    if (ref $self->view eq "HASH") {
+        say "Here's something: ". join ", ", keys %{ $self->view };
+        my $delay = Mojo::IOLoop::Delay->new();
+        $delay->steps(
+            sub { Mojo::IOLoop->timer(1 => $delay->begin); },
+            sub { $self->lines_to_tuxts(); },
+        );
+        return "bail";
     }
 
     my $l = 0;
@@ -118,6 +124,7 @@ sub lines_to_tuxts {
 
     $self->spatialise();
 }
+
 sub spatialise {
     my $self = shift;
     my $here = shift;

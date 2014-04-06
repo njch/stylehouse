@@ -39,7 +39,6 @@ sub screenthing {
 
     $thing->id("$id-$uu");
     
-    say "yep";
 
     if (!$self->get('screen/things')) {
         $self->set('screen/things', []);
@@ -184,7 +183,7 @@ sub get {
 }
 sub set {
     my ($self, $i, $d) = @_;
-#    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
+    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
     $data->{$i} = $d;
     return $d;
 }

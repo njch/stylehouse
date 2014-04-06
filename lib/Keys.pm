@@ -16,6 +16,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+    return if $self->hostinfo->get("Keys");
+
     $self->hostinfo->get_view($self, "hodu")->text(
         ['<form action="#"><textarea rows="1" cols="20" id="Keys"></textarea></form>'],
         { spatialise => sub {
