@@ -30,7 +30,8 @@ sub text {
 }
 sub kill {
     my $self = shift;
-    $self->wipehtml;
+    say "Ref: ".ref $self->owner;
+    $self->wipehtml unless ref $self->owner eq "Lyrico";
 }
 sub resume {
     my $self = shift;
@@ -50,7 +51,7 @@ sub takeover {
     
     # other views .id set hidden
     $self->hostinfo->send(
-        "\$('#".$self->divid." span').hide();" # others
+        "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
        ." \$('.".$self->id."').show();" # us
        .($append ? "" : "\$('.".$self->id."').remove()")
     );
