@@ -39,10 +39,8 @@ sub screenthing {
 
     $thing->id("$id-$uu");
     
-    if ($thing->can('hooks') && $thing->hooks->{skip_hostinfo}) {
-        return;
-    }
-    
+    say "yep";
+
     if (!$self->get('screen/things')) {
         $self->set('screen/things', []);
     }
