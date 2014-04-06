@@ -9,8 +9,7 @@ has 'view';
 
 sub new {
     my $self = bless {}, shift;
-    $self->hostinfo(shift->hostinfo);
-    $self->hostinfo->intro($self);
+    shift->($self);
     my $object = shift;
 
     my $view = $self->hostinfo->get_view($self, "hodi");
