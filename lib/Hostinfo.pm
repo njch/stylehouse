@@ -21,6 +21,7 @@ sub hostinfo {
     $self;
 }
 
+# make a number bigger than the universe...
 sub make_uuid {
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
@@ -33,7 +34,13 @@ sub screenthing {
     my $self = shift;
     my $thing = shift;
 
-    $thing->id(ref $thing.'-'.make_uuid());
+    my $id = ref $thing;
+    if ($id =~ /View/) {
+        $id .= "-".ref $thing->owner;
+    }
+    my $uu = make_uuid();
+
+    $thing->id("$id-$uu");
     
     if ($thing->can('hooks') && $thing->hooks->{skip_hostinfo}) {
         return;
@@ -148,7 +155,11 @@ sub send {
         die "Message is bigger (".length($message).") than max websocket size=".$self->tx->max_websocket_size
             ."\n\n".substr($message,0,180)."...";
     }
-    say "Websocket SEND: ".substr($message,0,70);
+    my $short = $message if length($message) < 400;
+    $short ||= substr($message,0,70)." >SNIP<";
+    
+    say "Websocket SEND: ". $short;
+
     my $tx = $self->tx;
     $tx->send({text => $message});
 }

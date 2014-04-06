@@ -15,9 +15,7 @@ sub new {
 
     $self->owner(shift);
     $self->divid(shift);
-    my ($id) = $self->owner =~ /^(\w+)/;
     $self->hostinfo->screenthing($self);
-    $self->id($id);
     $self->others(shift);
 
     $self;
@@ -39,15 +37,6 @@ sub wipehtml {
     my $self = shift;
     $self->hostinfo->send("\$('.".$self->id."').remove()");
 }
-sub hide {
-    my $self = shift;
-    $self->hostinfo->send("\$('.".$self->id."').hide()");
-}
-sub show {
-    my $self = shift;
-    $self->hostinfo->send("\$('.".$self->id."').show()");
-}
-
 
 sub takeover {
     my $self = shift;
@@ -55,38 +44,61 @@ sub takeover {
     my $append = shift;
     
     # other views .id set hidden
-    $_->hide for @{ $self->others };
+    $self->hostinfo->send(
+        "\$('#".$self->divid." span').hide();" # others
+       ." \$('.".$self->id."').show();" # us
+       .($append ? "" : "\$('.".$self->id."').remove()")
+    );
 
-    $self->show;
    
-    unless ($append) {
-        # #divid span where id /&$self->id
-        $self->hostinfo->send("\$('".$self->divid."').remove()");
-    }
+    $self->wipehtml unless $append;
     
     my $divid = $self->divid;
-    my @htmls = split /(?<=<\/span>)\s*(?=<span)/, join "", @$htmls;
+    my $html;
+    for my $h (@$htmls) {
+        if (ref $h eq "ARRAY") {
+            use Carp;
+            confess "bullshit!".anydump($h);
+        }
+        $html .= $h;
+    }
 
-    say "First: ". anydump(\@htmls);
-    my @html_batches;
-    my $b = [];
-    for my $html (@htmls) {
-        push @$b, $html;
-        if (@$b > 10) {
-            push @html_batches, [ @$b ];
-            $b = [];
+    $self->part_and_append($divid => $html);
+}
+
+sub part_and_append {
+    my $self = shift;
+    my $divid = shift;
+    my $html = shift;
+    
+    if (length($html) > 30000) {
+        my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
+
+        
+        my @html_batches;
+        my $b = [];
+        for my $html (@htmls) {
+            push @$b, $html;
+            if (@$b > 10) {
+                push @html_batches, [ @$b ];
+                $b = [];
+            }
+        }
+        push @html_batches, [ @$b ] if @$b;
+        say "Think we've batchified htmls: ". anydump(\@html_batches);
+
+        for my $html_batch (@html_batches) {
+
+            my $html = join "", @$html_batch;
+
+            $html =~ s/'/\\'/;
+            $self->hostinfo->send("  \$('#$divid').append('$html');");
+
         }
     }
-    push @html_batches, [ @$b ];
-    say "Second: ". anydump(\@html_batches);
-
-    for my $html_batch (@html_batches) {
-
-        my $html = join "", @$html_batch;
-
+    else {
         $html =~ s/'/\\'/;
         $self->hostinfo->send("  \$('#$divid').append('$html');");
-
     }
 }
 

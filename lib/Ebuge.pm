@@ -62,39 +62,38 @@ sub kill {
     $self->view->kill();
 }
 
-my $first = 1;
 sub connect {
     my $self = shift;
 
     say "Ebuge: Connecting to ebuge...";
     $self->ua->get($self->hostname.'/hello' => sub {
         my ($ua, $tx) = @_;
-        if (my $error = $tx->res->error) {
-            $self->ready(0);
-            say "Ebuge: $error, reconnecting... first=$first";
-            $first = 0;
-            my $delay = Mojo::IOLoop::Delay->new();
-            $delay->steps(
-                sub { Mojo::IOLoop->timer(2 => $delay->begin); say "Set a 2 second timer to ".$self->hostname; },
-                sub { $self->connect; return 0 },
-            );
-        }
-        $self->ready(1);
-
-        say "Ebuge: ebuge responds";
-        my $output = $tx->res->body;
 
         my $new;
 
-        $new = $self->handle_body($output) if $output =~ /<!DOCTYPE html>/;
+        if (my $error = $tx->res->error) {
+            $self->ready(0);
+            say "Ebuge: $error";
+            $new = [ "Ebug has fucked up: ", $error ];
+            $new = { error => $new };
+        }
+
+        my $output = $tx->res->body;
+
+
+        if (!$new->{error} && $output =~ /<!DOCTYPE html>/) {
+            $new = $self->handle_body($output);
+            $new = [ "Ebug has fucked up: ", split "\n", anydump($new) ];
+            $new = { error => $new };
+        }
         
-        if (!$new) {
+        unless ($new->{error}) {
             $@ = "";
             eval {
                 $new = decode_json($output) if $output;
             };
             if ($@) {
-                $new = "Error decoding output: ".anydump($output);
+                $new = [ "Error decoding output: ", split "\n", anydump($output) ];
                 $new = { error => $new }; 
             }
         }
@@ -115,7 +114,9 @@ sub handle_body {
     $e->{has_some_routes} = 1 if $body =~ /<pre>\/hello<\/pre>.+<pre>\/exec\/:command<\/pre>/s;
 
     unless (scalar(keys %$e) == 3) {
-        $e->{body} = $body;
+        write_file("public/ebuge_reply_page", $body);
+        $e->{body} = '<a href="/ebuge_reply_page">Saved Page From ebuge.pl</a>';
+        $e->{title} = $1 if $body=~ /<title>(.+?)<\/title>/;
     }
     return $e;
 }
@@ -138,10 +139,9 @@ sub drawstuff {
     my $output = shift;
 
     if ($output->{error}) {
-        $self->view->{hodi}->text->replace([ split "\n", anydump($output) ]);
+        $self->view->{hodi}->text->replace($output->{error});
         return;
     }
-
     # CODE
     my @lines = lines_for_file($output->{filename});
     my $current = $output->{line};
@@ -218,6 +218,11 @@ sub trycommand {
     say "starting loop...";
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
     say "wandering off...";
+}
+
+sub event {
+    my $self = shift;
+    my $event = shift;
 }
 
 1;

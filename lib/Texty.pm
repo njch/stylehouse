@@ -40,17 +40,18 @@ sub new {
     # attention shoving should be something that reaches here and figures out whether to...
     return $self if $self->hooks->{notakeover} || $notakeoveryet;
 
-    $self->view->takeover([$self->htmls]);
+    $self->view->takeover($self->htmls);
 
     return $self;
 }
 sub replace {
     my $self = shift;
+    my $lines = shift;
     
-    $self->lines([ @_ ]);
+    $self->lines($lines);
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
-    $self->view->takeover([$self->htmls]);
+    $self->view->takeover($self->htmls);
 }
 
 sub append {
@@ -153,7 +154,6 @@ sub tuxts_to_htmls {
         push @span_htmls, $span_html;
         
     }
-
 
     $self->htmls([@span_htmls]);
 }
