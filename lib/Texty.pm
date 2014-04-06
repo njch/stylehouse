@@ -136,7 +136,7 @@ sub spatialise {
         }
         else {
             $s->{left} ||= 0;
-            $s->{left} += $geo->{left};
+            $s->{left} += $geo->{left} if $geo->{left};
         }
         $geo->{top} += 20;
     }

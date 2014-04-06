@@ -179,8 +179,10 @@ websocket '/stylehouse' => sub {
         for my $s (@startup) {
             $s->[0]->();
         }
+        @startup = ();
     }
 
+    my $keys;
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
@@ -199,7 +201,7 @@ websocket '/stylehouse' => sub {
             }
         }
         if (!@startup) {
-            Keys->new($hostinfo->intro);
+            $keys = Keys->new($hostinfo->intro);
 #            Codo->new($hostinfo->intro) unless $Bin=~/test/;
             Menu->new($hostinfo->intro);
         }
