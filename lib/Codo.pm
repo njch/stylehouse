@@ -20,9 +20,9 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->hostinfo->get_view($self, "hodu")->text(["Noffing"], { skip_hostinfo => 1 });
-    $self->hostinfo->get_view($self, "view")->text(["Noffing"], { skip_hostinfo => 1 });
-    $self->hostinfo->get_view($self, "hodi")->text(["Noffing"], { skip_hostinfo => 1 });
+    $self->hostinfo->get_view($self, "hodu")->text([], { skip_hostinfo => 1 });
+    $self->hostinfo->get_view($self, "view")->text([], { skip_hostinfo => 1 });
+    $self->hostinfo->get_view($self, "hodi")->text([], { skip_hostinfo => 1 });
 
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
