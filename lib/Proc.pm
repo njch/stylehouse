@@ -86,4 +86,8 @@ sub new {
     return $self;
 }
 
+sub event {
+    my $self = shift;
+}
+
 1;

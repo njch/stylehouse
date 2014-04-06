@@ -70,24 +70,31 @@ sub connect {
         my ($ua, $tx) = @_;
 
         my $new;
+        my $output = $tx->res->body;
+        my $error = $tx->res->error;
 
-        if (my $error = $tx->res->error) {
+        if ($error) {
             $self->ready(0);
             say "Ebuge: $error";
-            $new = [ "Ebug has fucked up: ", $error ];
-            $new = { error => $new };
+            my $e = {};
+            $e->{error} = $error;
+
+            if ($output =~ /<!DOCTYPE html>/) {
+                $e->{pagetitle} = $1 if $output =~ /<title>(.*)<\/title>/;
+
+                # great value conjuring syntax: .+?
+                $e->{request} = "request for $1 '$2'" if $output =~ /<code>(.+?)<\/code> request for \s+ <code>(.+?)<\/code>/;
+
+                $e->{hasroutes} = 1 if $output =~ /<pre>\/hello<\/pre>.+<pre>\/exec\/:command<\/pre>/s;
+            }
+
+            write_file("public/ebuge_reply_page", $output);
+            $e->{body} = 'See /ebuge_reply_page Page From ebuge.pl';
+
+            $e = [ "Ebug has fucked up: ", split "\n", anydump($e) ];
+            $new = { error => $e };
         }
-
-        my $output = $tx->res->body;
-
-
-        if (!$new->{error} && $output =~ /<!DOCTYPE html>/) {
-            $new = $self->handle_body($output);
-            $new = [ "Ebug has fucked up: ", split "\n", anydump($new) ];
-            $new = { error => $new };
-        }
-        
-        unless ($new->{error}) {
+        else {
             $@ = "";
             eval {
                 $new = decode_json($output) if $output;
@@ -101,25 +108,7 @@ sub connect {
         $self->drawstuff($new);
     });
 }
-sub handle_body {
-    my $self = shift;
-    my $body = shift;
-    my $e = {};
 
-    $e->{error} = $1 if $body =~ /<title>(Page not found)<\/title>/;
-
-    # great value conjuring syntax: .+?
-    $e->{request} = "$1 '$2'" if $body =~ /<code>(.+?)<\/code> request for \s+ <code>(.+?)<\/code>/;
-
-    $e->{has_some_routes} = 1 if $body =~ /<pre>\/hello<\/pre>.+<pre>\/exec\/:command<\/pre>/s;
-
-    unless (scalar(keys %$e) == 3) {
-        write_file("public/ebuge_reply_page", $body);
-        $e->{body} = '<a href="/ebuge_reply_page">Saved Page From ebuge.pl</a>';
-        $e->{title} = $1 if $body=~ /<title>(.+?)<\/title>/;
-    }
-    return $e;
-}
 sub menu {
     my $self = shift;
     my $menu = {};
