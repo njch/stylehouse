@@ -36,7 +36,6 @@ sub kill {
 sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";
-#    $self->takeover($self->
 }
 
 sub wipehtml {

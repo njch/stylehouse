@@ -34,7 +34,6 @@ sub new {
 
 sub killall {
     my $self = shift;
-    $DB::single = 1;
     for my $ebuge (@{ $self->ebuge }) {
         unless ($ebuge) {
             say "weird, no ebuge...";

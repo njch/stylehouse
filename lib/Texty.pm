@@ -47,10 +47,13 @@ sub new {
 sub replace {
     my $self = shift;
     my $lines = shift;
-    
-    $self->lines($lines);
-    $self->lines_to_tuxts();
-    $self->tuxts_to_htmls();
+   
+    if ($lines) { 
+        $self->lines($lines);
+        $self->lines_to_tuxts();
+        $self->tuxts_to_htmls();
+    }
+    say anydump(["righto", $self->htmls]);
     $self->view->takeover($self->htmls);
 }
 

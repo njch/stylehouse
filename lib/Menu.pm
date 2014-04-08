@@ -16,15 +16,23 @@ sub new {
 
     $self->hostinfo->get_view($self, "menu");
 
-    my $apps = $self->hostinfo->get('apps');
-    $apps = [ grep { $_->can('menu') } values $apps ];
-    $self->items($apps);
     $self->write;
     return $self;
+}
+sub menu {
+    my $self = shift
+    return {
+        blah => sub { },
+    };
 }
 sub write {
     my $self = shift;
     my $h = shift;
+
+    my $apps = $self->hostinfo->get('apps');
+    $apps = [ grep { $_->can('menu') } values $apps ];
+    $self->items($apps);
+
     my @items;
     for my $item (@{ $self->items }) {
         if (ref $item) {
@@ -36,6 +44,7 @@ sub write {
             push @items, $got;
         }
     }
+    push @items, $self;
     $self->items([@items]);
     # make Texty[$item] hook to append menu items as more spans from another Texty
 
@@ -98,7 +107,7 @@ sub event {
     if (!$object) {
         $self->hostinfo->send("console.log('$event->{id} not found')");
     }
-    my $ownerowner = $object->owner->lines->[0];
+    my $ownerowner = $object->view->text->lines->[0];
     my $value = $event->{value};
     
     my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };

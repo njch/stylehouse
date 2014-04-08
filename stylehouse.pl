@@ -127,6 +127,7 @@ $hostinfo->set('dumphooks', []);
 helper 'hostinfo' => sub { $hostinfo };
 
 my $stylehouse = bless {}, "God";
+my $hands = {};
 
 my $console = $hostinfo->get_view($stylehouse, "hodu");
 sub handle_to_texty {
@@ -146,52 +147,84 @@ do {
 } if 0;
 # STDOUT -> consol texty
 
-my @startup = my @another = (
-    [ sub {
-        $hostinfo->send("ws.reply({screen: {x: screen.availWidth, y: screen.availHeight}});");
-      }, sub {
-        $_[0]->{screen}
-      }, sub {
-        my $sc = shift->{screen};
+my $underworld = 1; # our fate's the most epic shift ever
+
+# see what's there in all different ways
+# get the language
+# de-particulate
+# roller coaster
+
+# we have become a runtime
+sub init {
+    my $self = shift;
+    #Dumpo->new($hostinfo->intro);
+    #$keys = Keys->new($hostinfo->intro);
+    Codo->new($hostinfo->intro) unless $Bin=~/test/;
+#    Lyrico->new($hostinfo->intro);
+    Menu->new($hostinfo->intro);
+
+    $underworld = 0;
+}
+
+$hands = {
+    geometry => [ sub {
+        $hostinfo->send("ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
+    }, sub {
+        my $sc = shift;
         $hostinfo->set("screen/width" => $sc->{x});
         $hostinfo->set("screen/height" => $sc->{y});
-      }
-    ],
-    [ sub {
-        $hostinfo->send("ws.reply({divs: 'too hard'})");
-      }, sub {
-        $_[0]->{divs}
-      }, sub {
+    } ],
+    whatsthere => [ sub {
+        $hostinfo->send("ws.reply({whatsthere: 'too hard'})");
+    }, sub {
         $hostinfo->load_views(qw{menu hodu view hodi});
-      }
-    ]
-);
+    } ],
+};
+
+my $handyin;
+# the thing we can do all the time
+sub reconnecty {
+    my $self = shift;
+
+    $self->hostinfo->set("screen/tx", $self->tx); # the way out! is the way in
+
+    init() if $underworld;
+
+    while (my ($name, $do) = each %$hands) {
+        $do->[0]->();
+        $handyin->{$name} = $do->[1];
+    }
+
+    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
+    $hostinfo->get("Menu")->write();
+}
+
+sub handy_reconnections {
+    my $self = shift;
+    my $j = shift;
+    
+    while (my ($name, $do) = each %$handyin) {
+        if ($j->{$name}) {
+            $do->($j->{$name});
+            delete $handyin->{$name};
+        }
+    }
+}
+
+# it's just about putting enough of it by itself so it makes sense
+# urgh so simple
+# when you stop trying the poetry builds itself into the language
+# almost
+# "I don't want to talk to you so you think"
+# it's not to produce thinking, it's a recognition
+# something more energetic
 
 websocket '/stylehouse' => sub {
     my $self = shift;
 
     $self->app->log->info("WebSocket opened");
-    $self->hostinfo->set("screen/tx", $self->tx);
-    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-    if ($hostinfo->get("Menu")) {
-        # been here before
-        @startup = @another;
-    }
-
-    # send startup requests
-    if (@startup) {
-        for my $s (@startup) {
-            $s->[0]->();
-            $s->[0] = sub { };
-        }
-        if (grep { defined $_->[0] } @startup) {
-            @startup = ();
-        }
-    }
-    else {
-        $hostinfo->get("Menu")->view->resume;
-    }
+    reconnecty($self);
 
     my $keys;
     $self->on(message => sub {
@@ -199,33 +232,20 @@ websocket '/stylehouse' => sub {
 
         $self->app->log->info("WebSocket: $msg");
 
-        # handle startup responses until they're done
-        if (@startup) {
-            my $t = 0;
-            my $json = decode_json($msg);
-            for my $s (@startup) {
-                if ($s->[1]->($json)) {
-                    $s->[2]->($json);
-                    splice @startup, $t, 1;
-                }
-                $t++;
-            }
-        }
-        if (!@startup) {
-            #Dumpo->new($hostinfo->intro);
-            $keys = Keys->new($hostinfo->intro);
-#            Codo->new($hostinfo->intro) unless $Bin=~/test/;
-            Menu->new($hostinfo->intro);
-            Lyrico->new($hostinfo->intro);
-        }
+        my $j;
+        eval { $j = decode_json($msg); };
+        return if $@;
 
-        if ($msg =~ /^event/) {
-            my ($json) = $msg =~ /^event (.+)$/s;
-            my $event = decode_json($1);
+        # handle startup responses until they're done
+        if (keys %$handyin) {
+            handy_reconnections($self, $j);
+        }
+        elsif (my $event = $j->{event}) {
             
             if ($event->{type} eq "scroll") {
                 my $ly = $self->hostinfo->get('Lyrico');
                 $ly->event($event) if $ly;
+                return;
             }
 
             if ($event->{id} eq "Keys") {
@@ -244,7 +264,6 @@ websocket '/stylehouse' => sub {
 
                 if (my $catcher = $self->hostinfo->get('clickcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
-                    $DB::single = 1;
                     $catcher->event($event);
                 }
                 else {
@@ -333,8 +352,7 @@ __DATA__
                 pagex: window.pageXOffset,
                 pagey: window.pageYOffset,
             };
-            console.log(event);
-            ws.send('event '+JSON.stringify(data));
+            ws.reply({event: data});
             $('#Keys').focus;
         }
     </script>
@@ -351,7 +369,8 @@ __DATA__
         float: left;
     }
     .menu {
-        padding:1px;
+        padding: 5px;
+        font-size: 20pt;
     }
     .lyrics {
         position: absolute;
@@ -371,4 +390,5 @@ __DATA__
     <div id="hodi" class="view" style="width:40%; background: #09f; height: 5000px;"></div>
     </body>
 </html>
+
 
