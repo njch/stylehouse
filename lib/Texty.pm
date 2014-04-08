@@ -31,6 +31,8 @@ sub new {
     # #hodu dump junk will not be saved
     $self->hostinfo->screenthing($self);
 
+    return $self if ! @{ $self->lines };
+
     $self->lines_to_tuxts() eq "bail" && return;
 
     $self->tuxts_to_htmls();
@@ -47,14 +49,25 @@ sub new {
 sub replace {
     my $self = shift;
     my $lines = shift;
+    my $hooks = shift;
+    if ($hooks) {
+        $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
+    }
    
     if ($lines) { 
         $self->lines($lines);
         $self->lines_to_tuxts();
         $self->tuxts_to_htmls();
     }
-    say anydump(["righto", $self->htmls]);
     $self->view->takeover($self->htmls);
+}
+sub spurt {
+    my $self = shift;
+    my $lines = shift;
+    $self->lines($lines);
+    $self->lines_to_tuxts();
+    $self->tuxts_to_htmls();
+    $self->view->takeover($self->htmls, "append");
 }
 
 sub append {

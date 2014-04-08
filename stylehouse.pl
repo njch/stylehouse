@@ -159,9 +159,7 @@ sub init {
     my $self = shift;
     #Dumpo->new($hostinfo->intro);
     #$keys = Keys->new($hostinfo->intro);
-    Codo->new($hostinfo->intro) unless $Bin=~/test/;
-#    Lyrico->new($hostinfo->intro);
-    Menu->new($hostinfo->intro);
+    Lyrico->new($hostinfo->intro);
 
     $underworld = 0;
 }
@@ -181,6 +179,11 @@ $hands = {
     } ],
 };
 
+sub menu_init {
+    my $menu = $hostinfo->get("Menu") || Menu->new($hostinfo->intro);
+    $menu->write();
+}
+
 my $handyin;
 # the thing we can do all the time
 sub reconnecty {
@@ -188,7 +191,6 @@ sub reconnecty {
 
     $self->hostinfo->set("screen/tx", $self->tx); # the way out! is the way in
 
-    init() if $underworld;
 
     while (my ($name, $do) = each %$hands) {
         $do->[0]->();
@@ -196,7 +198,6 @@ sub reconnecty {
     }
 
     Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
-    $hostinfo->get("Menu")->write();
 }
 
 sub handy_reconnections {
@@ -208,6 +209,12 @@ sub handy_reconnections {
             $do->($j->{$name});
             delete $handyin->{$name};
         }
+    }
+
+    if (!keys %$handyin) {
+        init() if $underworld;
+
+        menu_init();
     }
 }
 
@@ -384,7 +391,7 @@ __DATA__
     }
     </style>
     <body id="body" style="background: #ab6; font-family: monospace">
-    <div id="menu" class="view" style="width:100%; background: #333; height: 20px;"></div>
+    <div id="menu" class="view" style="width:100%; background: #333; height: 50px;"></div>
     <div id="hodu" class="view" style="width:60%;  background: #352035; color: #afc; top: 50; height: 4000px"></div>
     <div id="view" class="view" style="width:40%; background: #c9f; height: 500px;"></div>
     <div id="hodi" class="view" style="width:40%; background: #09f; height: 5000px;"></div>

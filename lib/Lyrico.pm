@@ -65,7 +65,7 @@ sub event {
         $h->{left} = $event->{pagex};
         $h->{x} = ($i * 30) + int rand $height;
         my @lyrics = grep { s/\n//g; } grep /\S+/, map { $self->zlyrics } 1..3;
-        $self->write($h, @lyrics);
+        $self->write($h, \@lyrics);
     }
 }
 
@@ -82,10 +82,9 @@ sub zlyrics {
 sub write {
     my $self = shift;
     my $h = shift;
-    my @lyrics = @_;
-    $self->text->hooks->{spatialise} = sub { $h };
-    say "Writing ".join(", ", @lyrics);
-    $self->text->append([@lyrics]);
+    my $lyrics = shift;
+    
+    $self->text->replace($lyrics, { spatialise => sub { $h } });
     return $self;
 }
 

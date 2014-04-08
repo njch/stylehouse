@@ -67,7 +67,9 @@ sub get_view { # TODO create views and shit
     my $self = shift;
     my $other = shift;
     my $viewid = shift;
+
     my ($divid) = $viewid =~ /^(.+)_?/;
+
     my $views = $self->get('screen/views/'.$divid);
     unless ($views) {
         $views = $self->set('screen/views/'.$divid, []);
@@ -92,12 +94,13 @@ sub get_view { # TODO create views and shit
     # add together
     push @$views, $view;
 
-    # store it on the View
-    unless (ref $other eq "God") {
-        unless ($other->view) {
-            $other->view({});
+    # store it on the App
+    my $oname = defined $other ? ref $other : "undef";
+    if ($other->can("ports")) {
+        unless ($other->ports) {
+            $other->ports({});
         }
-        $other->view->{$viewid} = $view;
+        $other->ports->{$viewid} = $view;
     }
 
     return $view;

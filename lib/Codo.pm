@@ -5,7 +5,7 @@ use Texty;
 
 
 has 'hostinfo';
-has 'view' => sub { {} };
+has 'ports' => sub { {} };
 has 'ebuge' => sub { [] };
 has 'output';
 use Mojo::UserAgent;
@@ -19,15 +19,9 @@ sub DESTROY {
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-
-    $self->hostinfo->get_view($self, "hodu")->text([], { skip_hostinfo => 1 });
-    $self->hostinfo->get_view($self, "view")->text([], { skip_hostinfo => 1 });
-    $self->hostinfo->get_view($self, "hodi")->text([], { skip_hostinfo => 1 });
-
+    
     run("cp -a stylehouse.pl test/");
     run("cp -a lib/*.pm test/lib");
-
-    $self->new_ebuge();
 
     return $self;
 }

@@ -49,11 +49,11 @@ sub takeover {
     my $append = shift;
     
     # other views .id set hidden
-    $self->hostinfo->send(
-        "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
-       ." \$('.".$self->id."').show();" # us
-       .($append ? "" : "\$('.".$self->id."').remove()")
-    );
+    #$self->hostinfo->send(
+    #    "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
+    #   ." \$('.".$self->id."').show();" # us
+    #   .($append ? "" : "\$('.".$self->id."').remove()")
+    #) unless $self->divid eq "menu";
 
     $self->wipehtml unless $append;
     
@@ -61,8 +61,7 @@ sub takeover {
     my $html;
     for my $h (@$htmls) {
         if (ref $h eq "ARRAY") {
-            use Carp;
-            confess "bullshit!".anydump($h);
+            $h = @$h;
         }
         $html .= $h;
     }

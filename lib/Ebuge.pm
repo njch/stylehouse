@@ -7,7 +7,7 @@ use JSON::XS;
 
 has 'cd';
 has 'hostinfo';
-has 'view';
+has 'ports';
 has 'outhook';
 
 has 'filename';
@@ -59,7 +59,7 @@ sub kill {
         return;
     }
     $self->proc->kill();
-    $self->view->kill();
+    # TODO delete views
 }
 
 sub connect {
