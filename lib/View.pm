@@ -21,6 +21,14 @@ sub new {
     $self;
 }
 
+# the tab is the repositories
+# each thing you care about has a certain thing going on you like to keep an eye on
+# they are free to change and adapt, join and split
+# whatever
+# TODO store everything we need on the USER'S DOM so the server doesn't fill up with clutter
+# it could work even from a residential internet site...
+# you just have to push your content out to hosts as you host it
+# it could be a whole lot of websockets free to come and go to a whole lot of stylehousen hosted by google
 # plugin for "And: $self->id"
 # args: lines, hooks
 sub text {

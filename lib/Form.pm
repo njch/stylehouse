@@ -41,8 +41,17 @@ sub inject_space {
     my $stuff = $self->hostinfo->get_goya(); # it's almost never a concept you get to play with on its own
 
     # the rest of this is up to innovation, finally
-    my %spans_by_x;
-    my %spans_by_y;
+    my %space = {
+        top => {},
+        left => {},
+        right => {}, # right now is lost because it's all really coming from the center
+    };
+    # wow dinosaurs died for us so we could be safe and use their residue as an energy source to get us here
+    # we can fit the essential DNA in a twitter message that shows people what the author wanted to express
+    # and gives them expression tools of their own
+    for my $g (@$stuff) { # everything is a minor God
+        my $span = $stuff->{span}; # [{top => etc}s]
+        $spans_by_x->{$span->{left}
 }
 
 sub event {

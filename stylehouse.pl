@@ -164,6 +164,7 @@ sub init {
     #$keys = Keys->new($hostinfo->intro);
     Lyrico->new($hostinfo->intro);
     Dumpo->new($hostinfo->intro);
+    Key->new($hostinfo->intro);
 
     $underworld = 0;
 }
