@@ -116,7 +116,7 @@ use View;
 use Ebuge;
 use Proc;
 use Keys;
-#use Carp::Always;
+use Form;
 
 get '/' => 'index';
 
