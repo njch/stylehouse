@@ -41,7 +41,7 @@ sub inject_space {
     my $stuff = $self->hostinfo->get_goya(); # it's almost never a concept you get to play with on its own
 
     # the rest of this is up to innovation, finally
-    my %space = {
+    my $space = {
         top => {},
         left => {},
         right => {}, # right now is lost because it's all really coming from the center
@@ -51,7 +51,22 @@ sub inject_space {
     # and gives them expression tools of their own
     for my $g (@$stuff) { # everything is a minor God
         my $span = $stuff->{span}; # [{top => etc}s]
-        $spans_by_x->{$span->{left}
+        for my $angle (qw{left top right}) {
+            $space->{$angle}->{$span->{$angle}} ||= []; # cymbal rush
+# I want to be the security guard at WINZ
+            push @{ $space{$angle}->{$span->{$angle}} },
+                $span; # cymbal rush
+        }
+    }
+
+    my $dials = {
+        amount => 0,
+    };
+    my $synthspace = sub {
+        my $span = shift;
+        my $angle = shift;
+        
+
 }
 
 sub event {
