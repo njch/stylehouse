@@ -15,32 +15,86 @@ sub view {
     my ($self, $view) = @_;
     $self->{view} ||= {};
 }
-sub queue_update {
-    my $self = shift;
-    return if $self->{queue_update};
-    
-        my $delay = Mojo::IOLoop::Delay->new();
-        $delay->steps(
-            sub { Mojo::IOLoop->timer(1 => $delay->begin); },
-            sub { $self->lines_to_tuxts(); },
-        );
-}
 sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $DB::single = 1;
-    $self->hostinfo->get_view($self, "menu");
-    usleep 250;
+    my $view = $self->hostinfo->get_view($self, "menu");
+    $view->text( [], {
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            my $h = $self->hooks;
+            my $i = $h->{i} ||= 0;
+            say "Doing some $self, tuxts=".@{$self->tuxts};
+            for my $s (@{$self->tuxts}) {
+                my $object = $s->{value};
 
-    $self->write;
+                my $menu = $object->menu();
+                $s->{value} = "$object";
+                $s->{value} =~ s/^(\w+).+$/$1/sgm;
+                
+                # generate another Texty for menu items
+                # catch their <spans> and add to our value
+                my $inner = new Texty($self->hostinfo->intro, "...", $view, [ keys %$menu ], {
+                    tuxts_to_htmls => sub {
+                        my $self = shift;
+                        my $i = $h->{i} || 0;
+                        for my $s (@{$self->tuxts}) {
+                            delete $s->{top};
+                            delete $s->{left};
+                            $s->{class} = 'menu';
+                            $s->{style} .= random_colour_background();
+                        }
+                    },
+                    notakeover => 1,
+                });
+                
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+                $s->{value} .= join "", @{$inner->htmls};
+                $s->{inner} = $inner;
+                say ref $object." buttons: ".join ", ", @{ $inner->lines };
+            }
+        }
+    });
+
+    $self->make_menu();
     return $self;
 }
+
+
+sub make_menu {
+    my $self = shift;
+    my $h = shift;
+    
+    if (!$self->ports) {
+        say "Nein porten!";
+        sleep 4;
+        return $self;
+    }
+    my $v = $self->ports->{menu};
+
+
+    my @items = $self->get_menu_items;
+    
+    say "Writing menu for ".join ", ", map { ref $_ } @items;
+
+    $v->text->replace([@items], );
+
+    say "Got out of there ok\n\n\n";
+
+    $v->takeover($v->text->htmls);
+
+    return $self;
+}
+
 sub menu {
     my $self = shift;
     return {
         blah => sub {
+            say "STarting Codo!";
             Codo->new($self->hostinfo->intro) unless $Bin=~/test/;
+            $self->write;
         },
     };
 }
@@ -63,77 +117,17 @@ sub get_menu_items {
             push @items, $got;
         }
     }
+    $self->items([@items]);
     @items;
     # make Texty[$item] hook to append menu items as more spans from another Texty
 }
 
+use YAML::Syck;
 sub ddump {
     my $thing = shift;
     return join "\n",
-        grep !/^    /,
-        split "\n", anydump($thing);
-}
-
-sub write {
-    my $self = shift;
-    my $h = shift;
-    
-    usleep 250;
-    
-    
-
-    usleep 25000;
-    if (!$self->ports) {
-        sleep 4;
-        return $self;
-    }
-    my $v = $self->ports->{menu};
-
-    $v->text();
-    say "HTMLS: ".anydump($v->text->htmls);
-
-    my @items = $self->get_menu_items;
-    say "Items: ".ddump(\@items);
-
-    $v->text->replace([@items], {
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            my $i = $h->{i} || 0;
-            say "Doing some $self";
-            for my $s (@{$self->tuxts}) {
-                my $object = $s->{value};
-
-                my $menu = $object->menu();
-                say "emnu: ". anydump($menu);
-                $s->{value} = "$object";
-                $s->{value} =~ s/^(\w+).+$/$1/sgm;
-                
-                # generate another Texty for menu items
-                # catch their <spans> and add to our value
-                my $inner = new Texty($self->hostinfo->intro, "...", $v, [ keys %$menu ], {
-                    tuxts_to_htmls => sub {
-                        my $self = shift;
-                        my $i = $h->{i} || 0;
-                        for my $s (@{$self->tuxts}) {
-                            delete $s->{top};
-                            delete $s->{left};
-                            $s->{class} = 'menu';
-                            $s->{style} .= random_colour_background();
-                        }
-                    },
-                    notakeover => 1,
-                });
-                
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
-                $s->{value} .= join "", @{$inner->htmls};
-                $s->{inner} = $inner;
-            }
-        }
-    });
-    say "Got out of there ok\n\n\n";
-
-    return $self;
+        grep !/^     /,
+        split "\n", Dump($thing);
 }
 
 sub random_colour_background {
@@ -151,16 +145,24 @@ sub event {
     # get this event to go to the right object
 
     my $object = $self->hostinfo->event_id_thing_lookup($event);
+            say "Object:\n".ref $object;
     if (!$object) {
         $self->hostinfo->send("console.log('$event->{id} not found')");
     }
+
+    say ddump($object->view->text);
     my $ownerowner = $object->view->text->lines->[0];
     my $value = $event->{value};
     
     my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
     if ($menuobject) {
         my $mob = $menuobject->menu();
-        say "Is a: ".ddump($mob);
+        say "$value in ".ref $menuobject;
+        unless ($mob->{value}) {
+            say "Can't find $value hook amongst ".join", ",keys %$mob;
+            say "Object:\n".ref $object;
+            return;
+        }
         $mob->{$value}->($event);
     }
     else {

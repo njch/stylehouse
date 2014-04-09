@@ -28,11 +28,13 @@ sub text {
 
     $self->{text} ||= Texty->new($self->hostinfo->intro, $self, @_);
 }
+
 sub kill {
     my $self = shift;
     say "Ref: ".ref $self->owner;
     $self->wipehtml unless ref $self->owner eq "Lyrico";
 }
+
 sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";

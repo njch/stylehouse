@@ -48,8 +48,6 @@ sub event {
     $height ||= 900;
     my $h = {};
 
-    say anydump($self->lyrics);
-
     if ($event->{type} eq "scroll") {
         if ($self->{scroll_throttle}) {
             return;
@@ -84,7 +82,7 @@ sub write {
     my $h = shift;
     my $lyrics = shift;
     
-    $self->text->replace($lyrics, { spatialise => sub { $h } });
+    $self->text->spurt($lyrics, { spatialise => sub { $h } });
     return $self;
 }
 
@@ -93,7 +91,7 @@ sub menu {
     return {
         stop => sub {
             $self->hostinfo->unset('clickcatcher');
-            $self->hostinfo->send("\$('#view span').remove();");
+            $self->hostinfo->send("\$('.lyrics').remove();");
         },
 
         anim => sub {

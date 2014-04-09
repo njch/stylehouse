@@ -64,6 +64,10 @@ sub replace {
 sub spurt {
     my $self = shift;
     my $lines = shift;
+    my $hooks = shift;
+    if ($hooks) {
+        $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
+    }
     $self->lines($lines);
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
@@ -163,7 +167,6 @@ sub spatialise {
         }
         $geo->{top} += 20;
     }
-    say "geo being: ". anydump($geo);
 }
 
 sub tuxts_to_htmls {

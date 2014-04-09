@@ -154,12 +154,16 @@ my $underworld = 1; # our fate's the most epic shift ever
 # de-particulate
 # roller coaster
 
+# start git torrent backend?
+# 
+
 # we have become a runtime
 sub init {
     my $self = shift;
     #Dumpo->new($hostinfo->intro);
     #$keys = Keys->new($hostinfo->intro);
     Lyrico->new($hostinfo->intro);
+    Dumpo->new($hostinfo->intro);
 
     $underworld = 0;
 }
@@ -181,7 +185,7 @@ $hands = {
 
 sub menu_init {
     my $menu = $hostinfo->get("Menu") || Menu->new($hostinfo->intro);
-    $menu->write();
+    $menu->make_menu();
 }
 
 my $handyin;
@@ -241,7 +245,7 @@ websocket '/stylehouse' => sub {
 
         my $j;
         eval { $j = decode_json($msg); };
-        return if $@;
+        return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
 
         # handle startup responses until they're done
         if (keys %$handyin) {

@@ -1,4 +1,4 @@
-package ;
+package Form;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
