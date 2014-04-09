@@ -105,6 +105,8 @@ sub get_view { # TODO create views and shit
 # this is where human attention is (before this text was in the wrong place)
 # it's a place things flow into sporadically now
 # but it's a beautiful picture of the plays of whatever
+# thanks to the high perfect babel of the #perl
+# I think my drug is hash and perl and everything
 sub get_goya {
     my $self = shift;
 
