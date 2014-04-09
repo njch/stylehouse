@@ -3,11 +3,11 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 
-
 has 'hostinfo';
 has 'view' => sub { {} };
 has 'ebuge' => sub { [] };
 has 'output';
+
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
@@ -41,6 +41,9 @@ sub event {
     my $self = shift;
     my $event = shift;
     #blah
+    # chunk away the input
+    # always able to hit space
+    # tap out a vibe id :O
 }
 
 1;

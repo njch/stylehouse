@@ -59,10 +59,14 @@ sub load_views { # state from client
 }
 
 # build its own div or something
-sub provision_view {
-    my $self = shift;
-}
 
+        # something new
+        # but closest to the nature of a program: a viewport with trustworthy language
+        # then popular views can get names
+        # but the latest innovations at the view can be streamed in
+        # it's feeding an idea about the way of the view
+        # gathering by ideas for progress
+        # instead of solidity
 sub get_view { # TODO create views and shit
     my $self = shift;
     my $other = shift;
@@ -73,15 +77,7 @@ sub get_view { # TODO create views and shit
     my $views = $self->get('screen/views/'.$divid);
     unless ($views) {
         $views = $self->set('screen/views/'.$divid, []);
-        $self->provision_view(); # write the div, open the window
 
-        # something new
-        # but closest to the nature of a program
-        # then popular views can get names
-        # but the latest innovations at the view can be streamed in
-        # it's feeding an idea about the way of the view
-        # gathering by ideas for progress
-        # instead of solidity
     }
 
     my $view = new View( $self->intro,
@@ -104,6 +100,40 @@ sub get_view { # TODO create views and shit
     }
 
     return $view;
+}
+
+# this is where human attention is (before this text was in the wrong place)
+# it's a place things flow into sporadically now
+# but it's a beautiful picture of the plays of whatever
+sub get_goya {
+    my $self = shift;
+
+    my $stuff = $self->grep('screen/views');
+
+    my @goya;
+    for my $k (keys %$stuff) {
+        my $views = $stuff->{$k};
+        for my $view (@$views) {
+            if (exists $view->{text}) {
+                my $text = $view->{text};
+                push @goya, { view => $view, thing => $text, span => $text->tuxts };
+            }
+            else {
+                say "something other than text has popped up"
+            }
+        }
+    }
+    return \@goya;
+}
+
+sub grep {
+    my $self = shift;
+    my $regex = shift;
+    return {
+        map { $_ => $data->{$_} }
+        grep /$regex/,
+        keys %$data
+    };
 }
 
 sub send {
