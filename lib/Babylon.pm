@@ -49,10 +49,15 @@ sub event {
 }
 
 use Audio::MPD;
+sub audio_mpd {
+    my $babylon = shift;
+    my $self = {
+       mpd => Audio::MPD->new;
 
-    my $mpd = Audio::MPD->new;
+    }
     $mpd->play;
     sleep 10;
     $mpd->next;
+}
 
 1;
