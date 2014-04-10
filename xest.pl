@@ -19,76 +19,65 @@ my $goya =
         { top => $_ },
     } 1..20 ];
 
+# figure out the whole space is what dinos missed
+# Tuataras
+# the rest of this is up to innovation, finally
+my $space = {
+    top => {},
+#        left => {},
+#        right => {}, # right now is lost because it's all really coming from the center
+};
+
 my $order_in_space;
-my $space;
-my $junk; # trash guy in the background - I'm throwing away I wheel I couldn't get replaced for my hand truck for gear fuck it all
-my $stuff;
+
+my $junk; # trash guy in the background - I'm throwing away I wheel I couldn't get replaced for my hand truck for gear so fuck it all
+# gondolas are better anyway
+
 my $amp = 1.2;
 my $q = 0.5;
+
 # it's not a hash, it doesn't get along with the hash people still # now it does
 # looks more like 9 tabs than a hash
 # exactly my content, adjusted for everything
 # man Arabia is beautiful
 # it distills lush people
-my $changes = {}; # ch ch ch
 
-sub order_in_space {
-    for my $angle (qw{top}) {
-        # my $vast = $goya->{$angle}; # Karl Sagan
+my $changes = {}; # ch ch ch, train wrecks, see page 0.
+# wow dinosaurs died for us so we could be safe and use
+# their residue as an energy source to get us here
+# we can fit the essential DNA in a twitter message that
+# shows people what the author wanted to express
+# and gives them expression tools of their own
+for my $g (@$junk) { # everything is a minor God
+    my $span = $g->{span}; # [{top => etc}s]
+    for my $angle (qw{ top }) { # when you give it proper space from the top
+        my $value = $span->{$angle}; # and then you tidily fix the flaws in the rest of it
+        my $where = $junk->{$angle}->{$value} ||= [];
+        # cymbal rush - it's just where all that jargon hangs out naturally
+        push @$where, $span; # cymbal rush
+    }
+}
+# I don't want to be persued as an individual
+# music makes that clear
+# so the main thing to learn if you haven't figured
+# out babylon is what else is there to learn.
+# people art on the ground
+# female forces hold all the power
+# and there's nothing you can do about that, finally.
 
-        $order_in_space->{$angle} = { max => 0, min => undef};
-        for my $span (@$goya) {
+for my $angle (qw{ top }) { #                                                                  # get min and max space
+    my $dimension = $space->{$angle}; # Karl Sagan
 
+    $order_in_space->{$angle} = { max => 0, min => undef };
+    for my $span (@$dimension) {
+        for my $end (qw{min max}) {
             if (!defined($order_in_space->{$angle}->{min})
                 || $order_in_space->{$angle}->{min} > $span->{$angle}) {
                 $order_in_space->{$angle}->{min} = $span->{$angle};
             }
-            if ($order_in_space->{$angle}->{max} < $span->{$angle}) {
-                $order_in_space->{$angle}->{max} = $span->{$angle};
-            }
         }
-    }
-}
-
-sub space { # figure out the whole space
-    # the rest of this is up to innovation, finally
-    $space = {
-        top => {},
-#        left => {},
-#        right => {}, # right now is lost because it's all really coming from the center
-    };
-    # wow dinosaurs died for us so we could be safe and use their residue as an energy source to get us here
-    # we can fit the essential DNA in a twitter message that shows people what the author wanted to express
-    # and gives them expression tools of their own
-    for my $g (@$stuff) { # everything is a minor God
-        my $span = $space->{span}; # [{top => etc}s]
-        for my $angle (qw{ top }) { # when you give it proper space from the top
-            my $value = $span->{$angle}; # and then you tidily fix the flaws in the rest of it
-            my $where = $junk->{$angle}->{$value} ||= []; # cymbal rush - it's just where all that jargon hangs out naturally
-            push @$where, $span; # cymbal rush
-        }
-    }
-    # I don't want to be persued as an individual
-    # music makes that clear
-    # so the main thing to learn if you haven't figured out babylon is what else is there to learn.
-    # people art on the ground
-}
-
-sub angle {
-    for my $angle (qw{left top right}) {
-        my $dimension = $space->{$angle}; # Karl Sagan
-
-        $order_in_space->{$angle} = { max => 0, min => undef };
-        for my $span ($vast) {
-            for my $end (qw{min max}) {
-                if (!defined($order_in_space->{$angle}->{min})
-                    || $order_in_space->{$angle}->{min} > $span->{$angle}) {
-                    $order_in_space->{$angle}->{min} = $span->{$angle};
-                }
-            }
-            if ($order_in_space->{$angle}->{max} < $span->{$angle}) {
-                $order_in_space->{$angle}->{max} = $span->{$angle};
-            }
+        if ($order_in_space->{$angle}->{max} < $span->{$angle}) {
+            $order_in_space->{$angle}->{max} = $span->{$angle};
         }
     }
 }
@@ -126,6 +115,7 @@ sub inject_space {
     my $synthspace = sub {
         my $angle = shift;
         my $span = shift;
+        say "Here : $span->{top}";
         my $min = $ord->{$angle}->{min};
         my $max = $ord->{$angle}->{max};
         my $half = $max / 2; # sharing is caring
@@ -146,13 +136,13 @@ sub inject_space {
         $changes->{$span->id}->{$angle} = $way;
     };
 
-    for $angle (qw{left top right}) {
+    for $angle (qw{ top }) {
         $changes->{$angle} ||= [];
         for my $points ($order_in_space->{$angle}) {
             # don't go looking for the points
             for my $point (values %$points) { # we are almost nothing with an insane society
                 if (my $a_space = $space->{$angle}->{$point}) { # but there's something here
-                    for my $span ($stuff) {
+                    for my $span (@$junk) {
                         $synthspace->($angle => $span);
                     }
                 }
@@ -160,7 +150,7 @@ sub inject_space {
         }
     }
 
-    return $stuff;
+    return $junk;
 }
 
 say join"\n",grep !/\d+/, split "\n", anydump(inject_space());
