@@ -22,6 +22,7 @@ sub new {
     shift->($self);
 
     my $notakeoveryet = $_[0] && $_[0] eq "..." && shift @_;
+    say "@_";
 
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
@@ -100,6 +101,7 @@ sub lines_to_tuxts {
 
     # bizzare
     if (!@{ $self->lines }) {
+        say "That thing happened";
         $self->tuxts([]);
     }
 
@@ -124,7 +126,7 @@ sub lines_to_tuxts {
 
         if (ref $value eq "Texty") {
             $tuxt->{style} .= "border: 1px solid pink;";
-            my @inners = @{ $value->tuxt };
+            my @inners = @{ $value->tuxts };
             $_->{left} += 20 for @inners;
             push @tuxts, @inners;
         }
@@ -179,11 +181,13 @@ sub tuxts_to_htmls {
     my @span_htmls;
     for my $s (@{$self->tuxts}) {
         my $mid = { %$s };
+        delete $mid->{_origin};
         my $value = delete($mid->{value});
         my $p = {};
         if (exists $mid->{inner}) {
             $p->{inner} = delete $mid->{inner};
         }
+        say ddump($mid);
         my $pm = dclone $mid;
         $p = { %$pm, %$p };
 
@@ -202,6 +206,14 @@ sub tuxts_to_htmls {
 
     $self->htmls([@span_htmls]);
 }
+use YAML::Syck;
+sub ddump {
+    my $thing = shift;
+    return join "\n",
+        grep !/^     /,
+        split "\n", Dump($thing);
+}
+
 
 sub event {
     my $self = shift;

@@ -164,7 +164,7 @@ sub init {
     #$keys = Keys->new($hostinfo->intro);
     Lyrico->new($hostinfo->intro);
     Dumpo->new($hostinfo->intro);
-    Key->new($hostinfo->intro);
+    Keys->new($hostinfo->intro);
 
     $underworld = 0;
 }
@@ -320,7 +320,7 @@ __DATA__
 @@ index.html.ep
 <!doctype html><html>
     <head><title>stylehouse</title>
-    <script type="text/javascript" src="jquery-1.11.0.js"></script></head>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script></head>
     <script>
       var ws;
       WebSocket.prototype.reply = function reply (stuff) {
@@ -396,7 +396,7 @@ __DATA__
     }
     </style>
     <body id="body" style="background: #ab6; font-family: monospace">
-    <div id="menu" class="view" style="width:100%; background: #333; height: 50px;"></div>
+    <div id="menu" class="view" style="width:100%; background: #333; height: 90px;"></div>
     <div id="hodu" class="view" style="width:60%;  background: #352035; color: #afc; top: 50; height: 4000px"></div>
     <div id="view" class="view" style="width:40%; background: #c9f; height: 500px;"></div>
     <div id="hodi" class="view" style="width:40%; background: #09f; height: 5000px;"></div>

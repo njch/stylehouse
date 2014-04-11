@@ -34,7 +34,9 @@ sub new {
 
 sub menu {
     my $self = shift;
-    my $menu = {};
+    my $menu = {
+        guru => $self->hostinfo->send("\$('#hodi').css('background-image: url(\\\'http://24.media.tumblr.com/tumblr_lzsfutEA3G1rop013o1_1280.jpg\\\')');");
+    };
 
     return $menu;
 }
@@ -47,6 +49,8 @@ sub event {
     # always able to hit space
     # tap out a vibe id :O
 }
+
+
 
 use Audio::MPD;
 sub audio_mpd {

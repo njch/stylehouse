@@ -55,7 +55,7 @@ sub updump {
         $object = $codo;
     }
 
-    $self->ports->{hodi}->replace([$self->thedump($object)]);
+    $self->ports->{hodi}->text->replace([$self->thedump($object)]);
 }
 
 sub thedump {
@@ -107,7 +107,7 @@ sub thedump {
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
             return new Texty($self->hostinfo->intro, "...", $self->ports->{hodi},
-                ["Texty owner=".$thing->{owner}, @sub],
+                ["Texty owner=".$thing->view->owner, @sub],
                 { leave_spans => 1 },
             );
         },

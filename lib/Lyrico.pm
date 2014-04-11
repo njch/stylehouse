@@ -34,12 +34,22 @@ sub new {
     ));
 
     $self->lyrics([read_file("trampled_rose_lyrics")]);
-    $self->hostinfo->send('$(window).scroll(clickyhand);');
 
-    $self->hostinfo->set('clickcatcher', $self);
+    $self->startclicky;
+
     return $self;
 }
 
+sub startclicky {
+    my $self = shift;
+    $self->hostinfo->set('clickcatcher', $self);
+    $self->hostinfo->send('$(window).scroll(clickyhand);');
+}
+sub stopclicky {
+    my $self = shift;
+    $self->hostinfo->unset('clickcatcher');
+    $self->hostinfo->send("\$('.lyrics').remove();");
+}
 use Mojo::IOLoop;
 sub event {
     my $self = shift;
@@ -90,8 +100,7 @@ sub menu {
     my $self = shift;
     return {
         stop => sub {
-            $self->hostinfo->unset('clickcatcher');
-            $self->hostinfo->send("\$('.lyrics').remove();");
+            $self->stopclicky;
         },
 
         anim => sub {

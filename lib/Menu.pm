@@ -18,7 +18,7 @@ sub view {
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-    
+
     my $view = $self->hostinfo->get_view($self, "menu");
     $view->text( [], {
         tuxts_to_htmls => sub {
@@ -49,6 +49,7 @@ sub new {
                     notakeover => 1,
                 });
                 
+                $inner->{origin} = $object;
                 $s->{style} = random_colour_background();
                 $s->{class} = 'menu';
                 $s->{value} .= join "", @{$inner->htmls || []};
@@ -146,21 +147,22 @@ sub event {
 
     say anydump($event);
     my $object = $self->hostinfo->event_id_thing_lookup($event);
-            say "Object:\n".ref $object;
     if (!$object) {
+        say "$event->{id} not found";
         $self->hostinfo->send("console.log('$event->{id} not found')");
+        return;
     }
 
-    my $ownerowner = $object->view->text->lines->[0];
+    say ddump($object->tuxts);
+    $DB::single = 1;
+    my $app = $object->{origin};
     my $value = $event->{value};
     
-    my ($menuobject) = grep { $_ eq $ownerowner } @{ $self->items };
-    if ($menuobject) {
-        my $mob = $menuobject->menu();
-        say "$value in ".ref $menuobject;
-        unless ($mob->{value}) {
+    if ($app) {
+        my $mob = $app->menu();
+        say "$value in ".ref $app;
+        unless ($mob->{$value}) {
             say "Can't find $value hook amongst ".join", ",keys %$mob;
-            say "Object:\n".ref $object;
             return;
         }
         $mob->{$value}->($event);
