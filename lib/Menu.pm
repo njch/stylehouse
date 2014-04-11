@@ -35,7 +35,7 @@ sub new {
                 
                 # generate another Texty for menu items
                 # catch their <spans> and add to our value
-                my $inner = new Texty($self->hostinfo->intro, "...", $view, [ keys %$menu ], {
+                my $inner = new Texty($self->hostinfo->intro, $view, [ keys %$menu ], {
                     tuxts_to_htmls => sub {
                         my $self = shift;
                         my $i = $h->{i} || 0;
@@ -51,7 +51,7 @@ sub new {
                 
                 $s->{style} = random_colour_background();
                 $s->{class} = 'menu';
-                $s->{value} .= join "", @{$inner->htmls};
+                $s->{value} .= join "", @{$inner->htmls || []};
                 $s->{inner} = $inner;
                 say ref $object." buttons: ".join ", ", @{ $inner->lines };
             }
@@ -144,13 +144,13 @@ sub event {
 
     # get this event to go to the right object
 
+    say anydump($event);
     my $object = $self->hostinfo->event_id_thing_lookup($event);
             say "Object:\n".ref $object;
     if (!$object) {
         $self->hostinfo->send("console.log('$event->{id} not found')");
     }
 
-    say ddump($object->view->text);
     my $ownerowner = $object->view->text->lines->[0];
     my $value = $event->{value};
     

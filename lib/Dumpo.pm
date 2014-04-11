@@ -13,16 +13,15 @@ sub new {
     my $object = shift;
 
     my $view = $self->hostinfo->get_view($self, "hodi");
-
     $view->text([],
         { skip_hostinfo => 1, }
     );
 
-        my $delay = Mojo::IOLoop::Delay->new();
-        $delay->steps(
-            sub { Mojo::IOLoop->timer(5 => $delay->begin); },
-            sub { $self->updump($object, "init"); },
-        );
+    my $delay = Mojo::IOLoop::Delay->new();
+    $delay->steps(
+        sub { Mojo::IOLoop->timer(5 => $delay->begin); },
+        sub { $self->updump($object, "init"); },
+    );
     
 
     return $self;
@@ -43,6 +42,10 @@ sub menu {
 sub updump {
     my $self = shift;
     my $object = shift;
+    my $init = shift;
+    if (!$init) {
+        $self->hostinfo->send("\$('#".$self->ports->{hodi}->id." span').fadeOut(500);");
+    }
    
     # DEFAULT 
     $object = $self->hostinfo->data;
@@ -52,7 +55,7 @@ sub updump {
         $object = $codo;
     }
 
-    $self->ports->{hodi}->text->replace([$self->thedump($object)]);
+    $self->ports->{hodi}->replace([$self->thedump($object)]);
 }
 
 sub thedump {
@@ -86,7 +89,10 @@ sub thedump {
                 push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
             }
             #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($self->hostinfo->intro, ["Lyrico", @sub], { leave_spans => 1 });
+            return new Texty($self->hostinfo->intro, "...", $self->ports->{hodi},
+                ["Lyrico", @sub],
+                { leave_spans => 1 }
+            );
         },
     }, {
         ref => "Texty",
