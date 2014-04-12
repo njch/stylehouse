@@ -8,24 +8,78 @@ my $data = {};
 
 has 'console';
 
+has 'for_everyone';
+has 'multicasting';
+
 use UUID;
 use Scalar::Util 'weaken';
 use View;
 
+sub send {
+    my $self = shift;
+    my $message = shift;
+
+    if (length($message) > $self->{tx_max}) {
+        die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max}
+        # TODO DOS fixed by visualising {ts} and their sizes
+            ."\n\n".substr($message,0,180)."...";
+    }
+
+    if ($message =~ /\n/) {
+        warn "Message contains \\n";
+    }
+
+    my $short = $message if length($message) < 666;
+    $short ||= substr($message,0,66*3)." >SNIP<";
+    
+    say "Websocket SEND: ". $short;
+
+    if ($self->is_multicasting) {
+        push @{ $self->for_everyone }, $message;
+        say "Stashed something for everyone";
+        return;
+    }
+    else {
+        my $tx = $self->tx;
+        for my $tx_indi (@$tx) {
+            my ($max, $tx) = @{$tx_indi};
+            $tx->send({text => $message});
+        }
+    }
+}
+
 sub tx {
     my $self = shift;
     my $newtx = shift;
-    unless ($self->tx) {
+
+    if ($newtx && !$self->{tx}) {
         $self->{tx} = [];
+        undef $newtx;
     }
     if ($newtx) {
-        my $max = $self->tx->max_websocket_size;
-        push @{ $self->tx }, [$max, $newtx];
+        my $max = $newtx->max_websocket_size;
         $self->{tx_max} ||= $max;
         unless ($max >= $self->{tx_max}) {
             $self->{tx_max} = $max; # TODO potential DOS
         }
+        push @{ $self->{tx} }, [$max, $newtx];
+        $self->stash(tx => $newtx);
     }
+        
+    say "in tx again";
+    eval {
+        use Carp;
+        confess
+    };
+    my @e = split "\n", $@;
+    say "stacktrace head";
+    say $_ for @e[0..10];
+
+    sleep 1;
+
+
+
+    warn "TX array coming at ya";
     return $self->{tx};
 }
 sub tx_last { # TODO potential race
@@ -157,30 +211,6 @@ sub grep {
     };
 }
 
-sub send {
-    my $self = shift;
-    my $message = shift;
-
-    if (length($message) > $self->{tx_max}) {
-        die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max} # TODO DOS fixed by visualising {ts} and their sizes
-            ."\n\n".substr($message,0,180)."...";
-    }
-
-    if ($message =~ /\n/) {
-        warn "Message contains \\n";
-    }
-
-    my $short = $message if length($message) < 400;
-    $short ||= substr($message,0,70)." >SNIP<";
-    
-    say "Websocket SEND: ". $short;
-
-    my $tx = $self->tx;
-    for my $tx_indi (@$tx) {
-        my ($max, $tx) = @{$tx_indi};
-        $tx->send({text => $message});
-    }
-}
 sub loop {
     my $self = shift;
     $self->{loop} ||= IO::Async::Loop::Mojo->new();

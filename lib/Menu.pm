@@ -129,7 +129,7 @@ sub ddump {
     my $thing = shift;
     return join "\n",
         grep !/^     /,
-        split "\n", dump($thing);
+        split "\n", Dump($thing);
 }
 
 sub random_colour_background {
