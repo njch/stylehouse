@@ -168,7 +168,8 @@ sub event {
         $mob->{$value}->($event);
     }
     else {
-        say "Nope wrong: ";#anydump([$object, $self]);
+        say "Nope wrong: ";
+        $self->hostinfo->thedump($object);
     }
 }
 

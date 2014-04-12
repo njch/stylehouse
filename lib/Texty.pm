@@ -79,7 +79,6 @@ sub append {
     my $self = shift;
     my @new = @_;
     push @{ $self->lines }, @new;
-    say anydump($self->lines);
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
     my @newhtml;
@@ -187,7 +186,6 @@ sub tuxts_to_htmls {
         if (exists $mid->{inner}) {
             $p->{inner} = delete $mid->{inner};
         }
-        say ddump($mid);
         my $pm = dclone $mid;
         $p = { %$pm, %$p };
 

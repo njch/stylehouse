@@ -233,10 +233,19 @@ sub thedump {
     my $thing = shift;
     my $dumpo = $self->get('Dumpo');
     unless ($dumpo) {
-        say "---pre dumpo @_";
+        say "---no Dumpo, doing it here"; # constipated leaders
+        say ddump($thing);
     }
-    $dumpo->thedump($thing, $self); # owner: $self
+    $dumpo->updump($thing); # owner: $self
 }
+use YAML::Syck;
+sub ddump {
+    my $thing = shift;
+    return join "\n",
+        grep !/^     /,
+        split "\n", Dump($thing);
+}
+
 sub intro {
     my $self = shift;
     return sub {

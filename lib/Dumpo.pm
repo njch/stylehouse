@@ -47,13 +47,7 @@ sub updump {
         $self->hostinfo->send("\$('#".$self->ports->{hodi}->id." span').fadeOut(500);");
     }
    
-    # DEFAULT 
-    $object = $self->hostinfo->data;
-        
-    my $codo = $self->hostinfo->get('Codo');
-    if ($codo) {
-        $object = $codo;
-    }
+    $object ||= $self->hostinfo->data;
 
     $self->ports->{hodi}->text->replace([$self->thedump($object)]);
 }
