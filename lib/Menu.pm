@@ -129,7 +129,7 @@ sub ddump {
     my $thing = shift;
     return join "\n",
         grep !/^     /,
-        split "\n", Dump($thing);
+        split "\n", dump($thing);
 }
 
 sub random_colour_background {
@@ -149,10 +149,7 @@ sub event {
     say anydump($event);
     my $texty = $self->hostinfo->event_id_thing_lookup($event);
     if (!$texty) {
-        $self->hostinfo->error({
-            error => "$event->{id} not found",
-            suspects => [ $texty ],
-        });
+        $self->hostinfo->error("$event->{id} not found", [ $texty ]);
         return;
     }
 
@@ -164,14 +161,19 @@ sub event {
     if ($app) {
         my $menu = $app->menu();
 
-    $self->hostinfo->updump($itemtexty);
-        my $mob = $app->menu();
-        say "$value in ".ref $app;
-        unless ($mob->{$value}) {
-            say "Can't find $value hook amongst ".join", ",keys %$mob;
-            return;
+        $self->hostinfo->updump($itemtexty);
+
+        my $heardof = ref $app;
+        if ($value =~ /^$heardof/) {
+            unless ($menu->{'.'}) {
+                return $self->hostinfo->error("$event->{id} found, object has no . menu item", $texty);
+            }
+            $menu->{'.'}->($event);
         }
-        $mob->{$value}->($event);
+        unless ($menu->{'.'}) {
+            return $self->hostinfo->error("can't find $value hook amongst ".join(", ",keys %$menu), $texty);
+        }
+        $menu->{$value}->($event);
     }
     else {
         say "Nope wrong: ";

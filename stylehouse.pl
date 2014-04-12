@@ -160,11 +160,9 @@ my $underworld = 1; # our fate's the most epic shift ever
 # we have become a runtime
 sub init {
     my $self = shift;
-    #Dumpo->new($hostinfo->intro);
-    #$keys = Keys->new($hostinfo->intro);
+
     Lyrico->new($hostinfo->intro);
     Dumpo->new($hostinfo->intro);
-    Keys->new($hostinfo->intro);
 
     $underworld = 0;
 }
@@ -185,8 +183,15 @@ $hands = {
 };
 
 sub menu_init {
-    my $menu = $hostinfo->get("Menu") || Menu->new($hostinfo->intro);
-    $menu->make_menu();
+    my $menu;
+    if ($menu = $hostinfo->get("Menu")) {
+        $menu->make_menu($hostinfo->tx_last);
+        # TODO websocket server should hit the road and start one with the real stuff in it
+        return;
+    }
+
+    Menu->new($hostinfo->intro);
+    Keys->new($hostinfo->intro)->start;
 }
 
 my $handyin;
@@ -242,7 +247,9 @@ websocket '/stylehouse' => sub {
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
+
         $self->app->log->info("WebSocket: $msg");
+        $self->hostinfo->message($self, $msg);
 
         my $j;
         eval { $j = decode_json($msg); };

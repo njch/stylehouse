@@ -12,7 +12,26 @@ use UUID;
 use Scalar::Util 'weaken';
 use View;
 
-sub tx { shift->get("screen/tx") }
+sub tx {
+    my $self = shift;
+    my $newtx = shift;
+    unless ($self->tx) {
+        $self->{tx} = [];
+    }
+    if ($newtx) {
+        my $max = $self->tx->max_websocket_size;
+        push @{ $self->tx }, [$max, $newtx];
+        $self->{tx_max} ||= $max;
+        unless ($max >= $self->{tx_max}) {
+            $self->{tx_max} = $max; # TODO potential DOS
+        }
+    }
+    return $self->{tx};
+}
+sub tx_last { # TODO potential race
+    my $self = shift;
+    $self->tx->[-1]->[1];
+}
 
 sub hostinfo { shift }
 
@@ -23,7 +42,7 @@ sub make_uuid {
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
     $stringuuid =~ s/^(\w+)-.+$/$1/s;
-    return $stringuuid
+    return $stringuuid;
 }
 # take a Texty that wants to go on the screen
 # it has a owner, give them the events? 
@@ -142,8 +161,8 @@ sub send {
     my $self = shift;
     my $message = shift;
 
-    if (length($message) > $self->tx->max_websocket_size) {
-        die "Message is bigger (".length($message).") than max websocket size=".$self->tx->max_websocket_size
+    if (length($message) > $self->{tx_max}) {
+        die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max} # TODO DOS fixed by visualising {ts} and their sizes
             ."\n\n".substr($message,0,180)."...";
     }
 
@@ -157,7 +176,10 @@ sub send {
     say "Websocket SEND: ". $short;
 
     my $tx = $self->tx;
-    $tx->send({text => $message});
+    for my $tx_indi (@$tx) {
+        my ($max, $tx) = @{$tx_indi};
+        $tx->send({text => $message});
+    }
 }
 sub loop {
     my $self = shift;
