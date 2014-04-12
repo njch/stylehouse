@@ -103,8 +103,9 @@ or maybe via http if that's not going to work...
 
 #!/usr/bin/env perl
 use Mojolicious::Lite;
-
 use lib 'lib';
+use Mojolicious::Command::secret;
+
 use Hostinfo;
 use Direction; 
 use Texty;
@@ -251,7 +252,14 @@ websocket '/stylehouse' => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-        $self->hostinfo->on_message($self, $msg);
+
+        my $drug = $self->hostinfo->on_message($self, $msg);
+        if ($drug eq "God") {
+            the_usual($self, $msg);
+        }
+        else {
+            the_swarm($self, $msg);
+        }
 
         my $j;
         eval { $j = decode_json($msg); };
