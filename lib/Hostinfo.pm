@@ -228,7 +228,13 @@ sub unset {
     delete $data->{$i};
 }
 
-sub thedump {
+sub error {
+    my $self = shift;
+    my $e = {@_};
+    say "Error: ".ddump($e);
+    $self->updump($e);
+}
+sub updump {
     my $self = shift;
     my $thing = shift;
     my $dumpo = $self->get('Dumpo');

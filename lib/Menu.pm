@@ -29,7 +29,8 @@ sub new {
             for my $s (@{$self->tuxts}) {
                 my $object = $s->{value};
 
-                my $menu = $object->menu();
+                my $menu = $object->menu(); # we don't clobber this hash?
+                delete $menu->{'.'};
                 $s->{value} = "$object";
                 $s->{value} =~ s/^(\w+).+$/$1/sgm;
                 
@@ -49,11 +50,11 @@ sub new {
                     notakeover => 1,
                 });
                 
-                $inner->{origin} = $object;
                 $s->{style} = random_colour_background();
                 $s->{class} = 'menu';
                 $s->{value} .= join "", @{$inner->htmls || []};
                 $s->{inner} = $inner;
+                $s->{origin} = $object;
                 say ref $object." buttons: ".join ", ", @{ $inner->lines };
             }
         }
@@ -146,19 +147,24 @@ sub event {
     # get this event to go to the right object
 
     say anydump($event);
-    my $object = $self->hostinfo->event_id_thing_lookup($event);
-    if (!$object) {
-        say "$event->{id} not found";
-        $self->hostinfo->send("console.log('$event->{id} not found')");
+    my $texty = $self->hostinfo->event_id_thing_lookup($event);
+    if (!$texty) {
+        $self->hostinfo->error({
+            error => "$event->{id} not found",
+            suspects => [ $texty ],
+        });
         return;
     }
 
-    say ddump($object->tuxts);
-    $DB::single = 1;
-    my $app = $object->{origin};
+    my ($itemtexty) = grep { $_->{id} eq $event->{id} } @{ $texty->tuxts };
+    $self->hostinfo->updump($itemtexty);
+    my $app = $itemtexty->{origin};
     my $value = $event->{value};
     
     if ($app) {
+        my $menu = $app->menu();
+
+    $self->hostinfo->updump($itemtexty);
         my $mob = $app->menu();
         say "$value in ".ref $app;
         unless ($mob->{$value}) {
@@ -169,7 +175,7 @@ sub event {
     }
     else {
         say "Nope wrong: ";
-        $self->hostinfo->thedump($object);
+        $self->hostinfo->updump($itemtexty);
     }
 }
 

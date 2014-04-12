@@ -180,7 +180,7 @@ sub tuxts_to_htmls {
     my @span_htmls;
     for my $s (@{$self->tuxts}) {
         my $mid = { %$s };
-        delete $mid->{_origin};
+        delete $mid->{origin};
         my $value = delete($mid->{value});
         my $p = {};
         if (exists $mid->{inner}) {

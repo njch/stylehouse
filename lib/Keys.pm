@@ -30,7 +30,11 @@ sub new {
 
 sub menu {
     my $self = shift;
-    my $menu = {};
+    my $menu = {
+        '.' => sub {
+            $self->startkeys;
+        },
+    };
 
     return $menu;
 }
