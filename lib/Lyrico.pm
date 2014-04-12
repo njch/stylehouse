@@ -10,6 +10,7 @@ has 'lyrics';
 has 'hostinfo';
 has 'text';
 has 'view';
+has 'started';
 my @texties;
 
 my $i = 0;
@@ -44,11 +45,13 @@ sub startclicky {
     my $self = shift;
     $self->hostinfo->set('clickcatcher', $self);
     $self->hostinfo->send('$(window).scroll(clickyhand);');
+    $self->started(1);
 }
 sub stopclicky {
     my $self = shift;
     $self->hostinfo->unset('clickcatcher');
     $self->hostinfo->send("\$('.lyrics').remove();");
+    $self->started(0);
 }
 use Mojo::IOLoop;
 sub event {
@@ -99,8 +102,13 @@ sub write {
 sub menu {
     my $self = shift;
     return {
-        stop => sub {
-            $self->stopclicky;
+        onoff => sub {
+            if ($self->started) {
+                $self->stopclicky;
+            }
+            else {
+                $self->startclicky;
+            }
         },
 
         anim => sub {
