@@ -199,8 +199,10 @@ my $handyin;
 sub reconnecty {
     my $self = shift;
 
-    $self->hostinfo->set("screen/tx", $self->tx); # the way out! is the way in
+    $self->hostinfo->tx($self->tx); # the way out! is the way in
 
+    # find the old websocket and replace that
+    $self->stash(tx => $self->tx); # swith sess
 
     while (my ($name, $do) = each %$hands) {
         $do->[0]->();
@@ -223,6 +225,7 @@ sub handy_reconnections {
 
     if (!keys %$handyin) {
         init() if $underworld;
+
 
         menu_init();
     }
@@ -247,9 +250,8 @@ websocket '/stylehouse' => sub {
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
-
         $self->app->log->info("WebSocket: $msg");
-        $self->hostinfo->message($self, $msg);
+        $self->hostinfo->on_message($self, $msg);
 
         my $j;
         eval { $j = decode_json($msg); };
@@ -328,6 +330,10 @@ __DATA__
 <!doctype html><html>
     <head><title>stylehouse</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script></head>
+    <script src="lib/codemirror.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="mode/javascript/javascript.js"></script>
+
     <script>
       var ws;
       WebSocket.prototype.reply = function reply (stuff) {
@@ -353,7 +359,7 @@ __DATA__
       }
       function reconnect () {
           console.log('waiting to retry');
-          window.setTimeout(connect, 250);
+          window.setTimeout(connect, 256);
       }
 
       connect();
