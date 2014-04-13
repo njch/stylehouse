@@ -6,7 +6,7 @@ use File::Slurp;
 use Time::HiRes 'usleep';
 
 has 'cd';
-has 'lyrics';
+has 'pictures';
 has 'hostinfo';
 has 'text';
 has 'view';
@@ -29,22 +29,49 @@ sub new {
                 my $size = int rand 20;
                 my $width = int rand 60;
                 $s->{style} = random_colour_background()." opacity:0.4; font-size: ${size}em; width: ${width}em";
-                $s->{class} = "lyrics";
+                $s->{class} = "pictures";
+                $s->{value} = '<img src="'.$s->{value}.'">';
             }
         }, }
     ));
 
-    $self->lyrics([read_file("trampled_rose_lyrics")]);
-
-    $self->startclicky;
+    $self->read_list;
+    $self->write;
 
     return $self;
+}
+
+sub zlyrics {
+    my $self = shift;
+    my $lyrics = $self->lyrics;
+    $i++;
+    unless (exists $lyrics->[$i]) {
+        $i = 0;
+    }
+    return $lyrics->[$i];
+}
+sub write {
+    my $self = shift;
+    my $spath = shift;
+    my $picture = shift;
+    $picture ||= $self->zlyrics;
+
+    my $hooks = {};
+    $hook->{spatialise} = sub { $spath } if $h;
+    
+    $self->text->spurt($picture, $hooks);
+    return $self;
+}
+
+sub read_list {
+    my $self = shift;
+    $self->pictures([read_file("no_problem")]); # TODO stream God
 }
 
 sub startclicky {
     my $self = shift;
     $self->hostinfo->set('clickcatcher', $self);
-#    $self->hostinfo->send('$(window).scroll(clickyhand);');
+    $self->hostinfo->send('$(window).scroll(clickyhand);');
     $self->started(1);
 }
 sub stopclicky {
@@ -72,40 +99,12 @@ sub event {
     }
 
     for (1..3) {
-        $h->{top} = $event->{pagey} + int  rand $height; # isn't y coming from below?
+        $h->{top} = $event->{pagey} + int  rand $height;
         $h->{left} = $event->{pagex};
         $h->{x} = ($i * 30) + int rand $height;
         my @lyrics = grep { s/\n//g; } grep /\S+/, map { $self->zlyrics } 1..3;
-
-        if (grep { /love/ } @lyrics) {
-            if (my $pictures = $self->hostinfo->get("Pictures")) {
-                $pictures->write($h);
-                return;
-            }
-        }
-            
         $self->write($h, \@lyrics);
     }
-}
-
-sub zlyrics {
-    my $self = shift;
-    my $lyrics = $self->lyrics;
-    $i++;
-    unless (exists $lyrics->[$i]) {
-        $i = 0;
-    }
-    my $ly = $lyrics->[$i];
-    return $ly;
-}
-
-sub write {
-    my $self = shift;
-    my $h = shift;
-    my $lyrics = shift;
-    
-    $self->text->spurt($lyrics, { spatialise => sub { $h } });
-    return $self;
 }
 
 sub menu {

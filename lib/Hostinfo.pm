@@ -6,10 +6,8 @@ use IO::Async::Stream;
 
 my $data = {};
 
-has 'console';
-
-has 'for_everyone';
-has 'multicasting';
+has 'for_all';
+has 'indi'; # spawners of websocket activity
 
 use UUID;
 use Scalar::Util 'weaken';
@@ -34,39 +32,64 @@ sub send {
     
     say "Websocket SEND: ". $short;
 
-    if ($self->is_multicasting) {
-        push @{ $self->for_everyone }, $message;
-        say "Stashed something for everyone";
+    # here we want to graph things out real careful because it is how things get around
+    # the one to the many
+    # apps can be multicasting too
+    # none of these workings should be trapped at this level
+    # send it out there and get the hair on it
+    if (!$self->indi) {
+        # got a push from stylhouse
+        push @{ $self->for_all }, $message;
+        say "Websocket Multi Loaded: $short";
         return;
     }
     else {
         my $tx = $self->tx;
         for my $tx_indi (@$tx) {
             my ($max, $tx) = @{$tx_indi};
-            $tx->send({text => $message});
         }
     }
+}
+
+sub indi_send {
+    my $self = shift;
+    my $tx = shift;
+    my $message = shift;
+    $tx ||= $self->indi;
+    $tx->send({text => $message});
+}
+
+sub send_all {
+    my $self = shift;
+    my $messages = $self->for_all;
+    my $who = $self->who;
+    $self->who(undef);
+    for my $message (@$messages) {
+        for my $tx_indi (@{ $self->tx }) {
+            $self->indi_send($tx_indi, $messages);
+        }
+    }
+    $self->who($who);
 }
 
 sub tx {
     my $self = shift;
     my $newtx = shift;
 
-    if ($newtx && !$self->{tx}) {
-        $self->{tx} = [];
-        undef $newtx;
-    }
     if ($newtx) {
+        $self->{tx} ||= [];
+
         my $max = $newtx->max_websocket_size;
         $self->{tx_max} ||= $max;
         unless ($max >= $self->{tx_max}) {
             $self->{tx_max} = $max; # TODO potential DOS
         }
-        push @{ $self->{tx} }, [$max, $newtx];
+        push @{ $self->{tx} }, $newtx;
         $self->stash(tx => $newtx);
     }
         
     say "in tx again";
+        if (1) {
     eval {
         use Carp;
         confess
@@ -74,8 +97,10 @@ sub tx {
     my @e = split "\n", $@;
     say "stacktrace head";
     say $_ for @e[0..10];
-
+    $@ = "";
+        }
     sleep 1;
+
 
 
 
@@ -132,6 +157,23 @@ sub load_views { # state from client
 }
 
 # build its own div or something
+sub provision_view {
+    my $self = shift;
+    my $divid = shift;
+    
+    my $div_attr = { # these go somewhere magical and together, like always
+        menu => "width:100%; background: #333; height: 90px;",
+        hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
+        view => "width:40%; background: #c9f; height: 500px;",
+        hodi => "width:40%; background: #09f; height: 5000px;",
+    };
+
+    my $styles = $div_attr->{$divid} || die "wtf";
+    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.'"></div>';
+    $self->send("\$('body').append('$div');");
+
+    return $self->set('screen/views/'.$divid, []);
+}
 
         # something new
         # but closest to the nature of a program: a viewport with trustworthy language
@@ -149,7 +191,7 @@ sub get_view { # TODO create views and shit
 
     my $views = $self->get('screen/views/'.$divid);
     unless ($views) {
-        $views = $self->set('screen/views/'.$divid, []);
+        $views = $self->provision_view($divid);
 
     }
 
@@ -247,7 +289,6 @@ sub stream_handle {
     );
     $self->loop->add($stream);
 }
-
 
 sub event_id_thing_lookup {
     my $self = shift;

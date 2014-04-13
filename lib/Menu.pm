@@ -94,9 +94,7 @@ sub menu {
     my $self = shift;
     return {
         blah => sub {
-            say "STarting Codo!";
-            Codo->new($self->hostinfo->intro) unless $Bin=~/test/;
-            $self->write;
+            $self->hostinfo->send_all;
         },
     };
 }
