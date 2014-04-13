@@ -17,7 +17,7 @@ sub send {
     my $self = shift;
     my $message = shift;
 
-    if (length($message) > $self->{tx_max}) {
+    if (length($message) > ($self->{tx_max} || 300000)) {
         die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max}
         # TODO DOS fixed by visualising {ts} and their sizes
             ."\n\n".substr($message,0,180)."...";
@@ -44,19 +44,20 @@ sub send {
         return;
     }
     else {
-        $self->indi_send($message);
+        $self->god_send($message);
     }
 }
 
-sub indi_send {
+sub god_send {
     my $self = shift;
     my $message = shift;
-    my $tx = shift;
-    $tx ||= $self->who;
-    if (!$tx) {
+    my $god = shift;
+    $god ||= $self->who;
+    if (!$god) {
         warn "NO INDIVIDUAL TO send $message";
     }
-    $tx->send({text => $message});
+#    say anydump($god);
+    $god->{tx}->send({text => $message});
 }
 
 sub send_all {
@@ -65,49 +66,78 @@ sub send_all {
     my $who = $self->who;
     $self->who(undef);
     for my $message (@$messages) {
-        for my $tx (@{ $self->tx }) {
-            $self->indi_send($messages, $tx);
+        my $gods = $self->get('gods');
+        for my $god (@$gods) {
+            say "Am here";
+            $self->god_send($messages, $god);
         }
     }
     $self->who($who);
 }
 
-sub tx {
-    my $self = shift;
-    my $newtx = shift;
-
-    if ($newtx) {
-        $self->{tx} ||= [];
-
-        my $max = $newtx->max_websocket_size;
-        $self->{tx_max} ||= $max;
-        unless ($max >= $self->{tx_max}) {
-            $self->{tx_max} = $max; # TODO potential DOS
-        }
-        push @{ $self->{tx} }, $newtx;
-        $self->stash(tx => $newtx);
-    }
-        
-    say "in tx again";
-    use Time::HiRes 'usleep';
-    usleep 250;
-
-
-
-    warn "TX array coming at ya";
-    return $self->{tx};
-}
-
-sub tx_leaves {
+sub new_god {
     my $self = shift;
     my $tx = shift;
+
+    my $max = $tx->max_websocket_size;
+    $self->{tx_max} ||= $max;
+    unless ($max >= $self->{tx_max}) {
+        $self->{tx_max} = $max; # TODO potential DOS
+    }
+
+    my $gods = $self->get('gods');
+    $gods ||= [];
+    $self->set(gods => $gods);
+
+    my $new = { # upgrade to God?
+        address => $tx->remote_address,
+        max => $tx->max_websocket_size,
+        tx => $tx,
+    };
+    say "$new->{address} appears";
+    push @$gods, $new;
+    $self->who($new);
+}
+
+sub god_enters {
+    my $self = shift;
+    my $tx = shift;
+    # someone, anyone
+    my $exist = $self->find_god($tx);
+    if ($exist) {
+        say "$exist->{address} returns";
+        $self->who($exist);
+    }
+    else {
+        $self->new_god($tx);
+    }
+}
+
+sub find_god {
+    my $self = shift;
+    my $tx = shift;
+
+    my ($god) = grep { $_->{tx} eq $tx } @{$self->{tx}}; # vibe equator
+    return $god || undef;
+}
+
+sub god_leaves {
+    my $self = shift;
+    my $tx = shift;
+    if (!$tx) {
+        # they're just leaving this request
+        $self->who(undef);
+        say "God leaves";
+        return;
+    }
     my $code = shift || "?";
     my $reason = shift || "?";
 
     say "Part: ".$tx->remote_address.": $code: $reason";
-    my $self->{tx} = [
-        grep { $_ ne $tx } @{$self->{tx}}
-    ];
+    say anydump $self->find_god($tx);
+
+    my $gods = $self->get('gods');
+    @$gods = grep { $_->{tx} ne $tx } @{$self->{tx}};
 }
 
 sub hostinfo { shift }
@@ -147,10 +177,9 @@ sub screenthing {
 
 sub load_views { # state from client
     my $self = shift;
-    my $js = shift;
-    my @divs;
-    for my $divid (@divs) {
-        $self->set('screen/views/'.$divid, []);
+    my @divids = shift;
+    for my $divid (@divids) {
+        $self->provision_view($divid);
     }
 }
 

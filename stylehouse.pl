@@ -189,13 +189,12 @@ websocket '/stylehouse' => sub {
     $self->app->log->info("WebSocket opened");
     Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-    # collect everyone in tx[] # TODO should be per screen (people + div collection)
-    $hostinfo->tx($self->tx);
+    # collect everyone
+    # TODO should be per screen (people + div collection)
+    # also means per websocket bump individual
+    $hostinfo->new_god($self->tx);
 
-    # per websocket bump individual
-    $hostinfo->who($self->tx);
-
-    # find the old websocket and replace that
+    # here's our individual
     $self->stash(  tx => $self->tx);
 
     # setup setups
@@ -232,7 +231,7 @@ websocket '/stylehouse' => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-        $hostinfo->who($self->tx);
+        $hostinfo->god_enters($self->tx);
 
         my $j;
         eval { $j = decode_json($msg); };
@@ -242,6 +241,7 @@ websocket '/stylehouse' => sub {
         my $done = 0;
         if ($self->stash('handy')) {
             $self->stash('handy')->($self, $j);
+            say "Handi";
             return if $self->stash('handy');
             $done = 1;
         }
@@ -251,15 +251,16 @@ websocket '/stylehouse' => sub {
         # it beings! not that we don't come through here all the time
         init() if $underworld;
 
-        if ($done) {
+        unless ($self->stash('menu')) {
             if (my $menu = $hostinfo->get("Menu")) {
-                #$menu->make_menu();
+                $menu->make_menu();
                 # TODO websocket server should hit the road and start one with the real stuff in it
             }
             else {
                 Menu->new($hostinfo->intro);
                 Keys->new($hostinfo->intro);
             }
+            $self->stash('menu' => '1');
         }
 
         # ongoing stuff
@@ -305,13 +306,13 @@ websocket '/stylehouse' => sub {
         else {
             $self->send("// echo: $msg");
         }
-        $hostinfo->who(undef);
+        $hostinfo->god_leaves();
     });
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
       my $tx = $self->tx;
-      $hostinfo->tx_leaves($tx, $code, $reason);
+      $hostinfo->god_leaves($tx, $code, $reason);
       $self->app->log->debug("WebSocket closed with status $code.");
     });
 

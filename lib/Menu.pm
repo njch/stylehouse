@@ -19,6 +19,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+    say "\nTHis is starting\n\n";
+
     my $view = $self->hostinfo->get_view($self, "menu");
     $view->text( [], {
         tuxts_to_htmls => sub {

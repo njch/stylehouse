@@ -151,7 +151,6 @@ sub spatialise {
     my $here = shift;
     my $geo;
     if ($self->hooks->{spatialise}) {
-        say "Hello: ".ddump($self->hooks);
         $geo = $self->hooks->{spatialise}->();
     }
     $geo ||= $here || { top => 30, left => 20 };
