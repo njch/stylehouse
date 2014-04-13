@@ -105,7 +105,6 @@ sub tx_leaves {
     my $reason = shift || "?";
 
     say "Part: ".$tx->remote_address.": $code: $reason";
-    my $tx = $self->{tx};
     my $self->{tx} = [
         grep { $_ ne $tx } @{$self->{tx}}
     ];
@@ -189,6 +188,7 @@ sub get_view { # TODO create views and shit
     my ($divid) = $viewid =~ /^(.+)_?/;
 
     my $views = $self->get('screen/views/'.$divid);
+    say "Have $divid\n\n" if $views;
     unless ($views) {
         $views = $self->provision_view($divid);
 
