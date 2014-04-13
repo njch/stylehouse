@@ -125,28 +125,11 @@ clear_procserv_io();
 my $hostinfo = new Hostinfo();
 $hostinfo->set('0', $hostinfo);
 $hostinfo->set('dumphooks', []);
+$hostinfo->for_all([]);
 helper 'hostinfo' => sub { $hostinfo };
 
 my $stylehouse = bless {}, "God";
 my $hands = {};
-
-my $console = $hostinfo->get_view($stylehouse, "hodu");
-sub handle_to_texty {
-    my $handle = shift;
-    my $pre = shift;
-    my $view = shift;
-
-    $hostinfo->stream_file($handle, sub {
-        my $line = shift;
-        $view->texty->append([$pre, $line]);
-    });
-}
-say "About to...";
-do {
-    handle_to_texty(*STDOUT, "out", $console);
-    handle_to_texty(*STDERR, "err", $console);
-} if 0;
-# STDOUT -> consol texty
 
 my $underworld = 1; # our fate's the most epic shift ever
 
@@ -155,10 +138,10 @@ my $underworld = 1; # our fate's the most epic shift ever
 # de-particulate
 # roller coaster
 
-# start git torrent backend?
-# 
+# start git torrent
+# do it all
 
-# we have become a runtime
+# $0 has become a runtime
 sub init {
     my $self = shift;
 
@@ -168,6 +151,7 @@ sub init {
     $underworld = 0;
 }
 
+# where we pay attention
 $hands = {
     geometry => [ sub {
         $hostinfo->send("ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -203,7 +187,10 @@ sub reconnecty {
     $self->hostinfo->tx($self->tx); # the way out! is the way in
 
     # find the old websocket and replace that
-    $self->stash(tx => $self->tx); # swith sess
+    $self->stash(
+        tx => $self->tx,
+    ); # swith sess (collect who => name (email) through Keys somehow)
+    # we work on a git repository
 
     while (my ($name, $do) = each %$hands) {
         $do->[0]->();
@@ -240,6 +227,8 @@ sub handy_reconnections {
 # it's not to produce thinking, it's a recognition
 # something more energetic
 
+# hold lots of websockets
+
 websocket '/stylehouse' => sub {
     my $self = shift;
 
@@ -252,14 +241,7 @@ websocket '/stylehouse' => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-
-        my $drug = $self->hostinfo->on_message($self, $msg);
-        if ($drug eq "God") {
-            the_usual($self, $msg);
-        }
-        else {
-            the_swarm($self, $msg);
-        }
+        $hostinfo->indi($self->tx);
 
         my $j;
         eval { $j = decode_json($msg); };
@@ -311,6 +293,7 @@ websocket '/stylehouse' => sub {
         else {
             $self->send("// echo: $msg");
         }
+        $hostinfo->indi(undef);
     });
 
     $self->on(finish => sub {
@@ -417,10 +400,6 @@ __DATA__
     }
     </style>
     <body id="body" style="background: #ab6; font-family: monospace">
-    <div id="menu" class="view" style="width:100%; background: #333; height: 90px;"></div>
-    <div id="hodu" class="view" style="width:60%;  background: #352035; color: #afc; top: 50; height: 4000px"></div>
-    <div id="view" class="view" style="width:40%; background: #c9f; height: 500px;"></div>
-    <div id="hodi" class="view" style="width:40%; background: #09f; height: 5000px;"></div>
     </body>
 </html>
 
