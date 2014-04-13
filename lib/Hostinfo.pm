@@ -7,7 +7,7 @@ use IO::Async::Stream;
 my $data = {};
 
 has 'for_all';
-has 'indi'; # spawners of websocket activity
+has 'who'; # spawners of websocket activity
 
 use UUID;
 use Scalar::Util 'weaken';
@@ -37,25 +37,25 @@ sub send {
     # apps can be multicasting too
     # none of these workings should be trapped at this level
     # send it out there and get the hair on it
-    if (!$self->indi) {
+    if (!$self->who) {
         # got a push from stylhouse
         push @{ $self->for_all }, $message;
         say "Websocket Multi Loaded: $short";
         return;
     }
     else {
-        my $tx = $self->tx;
-        for my $tx_indi (@$tx) {
-            my ($max, $tx) = @{$tx_indi};
-        }
+        $self->indi_send($message);
     }
 }
 
 sub indi_send {
     my $self = shift;
-    my $tx = shift;
     my $message = shift;
-    $tx ||= $self->indi;
+    my $tx = shift;
+    $tx ||= $self->who;
+    if (!$tx) {
+        warn "NO INDIVIDUAL TO send $message";
+    }
     $tx->send({text => $message});
 }
 
@@ -65,8 +65,8 @@ sub send_all {
     my $who = $self->who;
     $self->who(undef);
     for my $message (@$messages) {
-        for my $tx_indi (@{ $self->tx }) {
-            $self->indi_send($tx_indi, $messages);
+        for my $tx (@{ $self->tx }) {
+            $self->indi_send($messages, $tx);
         }
     }
     $self->who($who);
@@ -89,27 +89,26 @@ sub tx {
     }
         
     say "in tx again";
-        if (1) {
-    eval {
-        use Carp;
-        confess
-    };
-    my @e = split "\n", $@;
-    say "stacktrace head";
-    say $_ for @e[0..10];
-    $@ = "";
-        }
-    sleep 1;
-
+    use Time::HiRes 'usleep';
+    usleep 250;
 
 
 
     warn "TX array coming at ya";
     return $self->{tx};
 }
-sub tx_last { # TODO potential race
+
+sub tx_leaves {
     my $self = shift;
-    $self->tx->[-1]->[1];
+    my $tx = shift;
+    my $code = shift || "?";
+    my $reason = shift || "?";
+
+    say "Part: ".$tx->remote_address.": $code: $reason";
+    my $tx = $self->{tx};
+    my $self->{tx} = [
+        grep { $_ ne $tx } @{$self->{tx}}
+    ];
 }
 
 sub hostinfo { shift }

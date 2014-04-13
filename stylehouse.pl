@@ -169,55 +169,9 @@ $hands = {
 
 sub menu_init {
     my $menu;
-    if ($menu = $hostinfo->get("Menu")) {
-        $menu->make_menu($hostinfo->tx_last);
-        # TODO websocket server should hit the road and start one with the real stuff in it
-        return;
-    }
-
-    Menu->new($hostinfo->intro);
-    Keys->new($hostinfo->intro)->start;
 }
 
 my $handyin;
-# the thing we can do all the time
-sub reconnecty {
-    my $self = shift;
-
-    $self->hostinfo->tx($self->tx); # the way out! is the way in
-
-    # find the old websocket and replace that
-    $self->stash(
-        tx => $self->tx,
-    ); # swith sess (collect who => name (email) through Keys somehow)
-    # we work on a git repository
-
-    while (my ($name, $do) = each %$hands) {
-        $do->[0]->();
-        $handyin->{$name} = $do->[1];
-    }
-
-    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
-}
-
-sub handy_reconnections {
-    my $self = shift;
-    my $j = shift;
-    
-    while (my ($name, $do) = each %$handyin) {
-        if ($j->{$name}) {
-            $do->($j->{$name});
-            delete $handyin->{$name};
-        }
-    }
-
-    if (!keys %$handyin) {
-        init() if $underworld;
-
-
-        menu_init();
-    }
-}
 
 # it's just about putting enough of it by itself so it makes sense
 # urgh so simple
@@ -233,25 +187,83 @@ websocket '/stylehouse' => sub {
     my $self = shift;
 
     $self->app->log->info("WebSocket opened");
+    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-    reconnecty($self);
+    # collect everyone in tx[] # TODO should be per screen (people + div collection)
+    $hostinfo->tx($self->tx);
+
+    # per websocket bump individual
+    $hostinfo->who($self->tx);
+
+    # find the old websocket and replace that
+    $self->stash(  tx => $self->tx);
+
+    # setup setups
+    my $handyin = {};
+    while (my ($name, $do) = each %$hands) {
+        my ($first, $last) = @$do;
+        $first->();
+        $handyin->{$name} = $do->[1];
+    }
+    $self->stash(  handy => sub {
+        my $self = shift; # mojo, should be person or so
+        my $j = shift;
+
+        while (my ($name, $do) = each %$handyin) {
+            if ($j->{$name}) {
+                $do->($j->{$name});
+                delete $handyin->{$name};
+            }
+        }
+        unless (%$handyin) {
+            $self->stash(handy => undef);
+        }
+    });
+    # swith sess (collect who => name (email) through Keys somehow)
+    # we work on a git repository
+
+
+
+
+
 
     my $keys;
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-        $hostinfo->indi($self->tx);
+        $hostinfo->who($self->tx);
 
         my $j;
         eval { $j = decode_json($msg); };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
 
         # handle startup responses until they're done
-        if (keys %$handyin) {
-            handy_reconnections($self, $j);
+        my $done = 0;
+        if ($self->stash('handy')) {
+            $self->stash('handy')->($self, $j);
+            return if $self->stash('handy');
+            $done = 1;
         }
-        elsif (my $event = $j->{event}) {
+
+
+
+        # it beings! not that we don't come through here all the time
+        init() if $underworld;
+
+        if ($done) {
+            if (my $menu = $hostinfo->get("Menu")) {
+                #$menu->make_menu();
+                # TODO websocket server should hit the road and start one with the real stuff in it
+            }
+            else {
+                Menu->new($hostinfo->intro);
+                Keys->new($hostinfo->intro);
+            }
+        }
+
+        # ongoing stuff
+        if (my $event = $j->{event}) {
             
             if ($event->{type} eq "scroll") {
                 my $ly = $self->hostinfo->get('Lyrico');
@@ -293,11 +305,13 @@ websocket '/stylehouse' => sub {
         else {
             $self->send("// echo: $msg");
         }
-        $hostinfo->indi(undef);
+        $hostinfo->who(undef);
     });
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
+      my $tx = $self->tx;
+      $hostinfo->tx_leaves($tx, $code, $reason);
       $self->app->log->debug("WebSocket closed with status $code.");
     });
 

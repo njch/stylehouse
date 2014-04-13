@@ -67,7 +67,6 @@ sub new {
 
 sub make_menu {
     my $self = shift;
-    my $h = shift;
     
     if (!$self->ports) {
         say "Nein porten!";
