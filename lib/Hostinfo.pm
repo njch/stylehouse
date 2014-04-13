@@ -54,7 +54,7 @@ sub god_send {
     my $god = shift;
     $god ||= $self->who;
     if (!$god) {
-        warn "NO INDIVIDUAL TO send $message";
+        say "NO INDIVIDUAL TO send $message";
     }
 #    say anydump($god);
     $god->{tx}->send({text => $message});
@@ -117,7 +117,7 @@ sub find_god {
     my $self = shift;
     my $tx = shift;
 
-    my ($god) = grep { $_->{tx} eq $tx } @{$self->{tx}}; # vibe equator
+    my ($god) = grep { $_->{tx} eq $tx } @{$self->get('gods')}; # vibe equator
     return $god || undef;
 }
 
@@ -134,7 +134,7 @@ sub god_leaves {
     my $reason = shift || "?";
 
     say "Part: ".$tx->remote_address.": $code: $reason";
-    say ddump $self->find_god($tx);
+    say ddump($self->find_god($tx));
 
     my $gods = $self->get('gods');
     @$gods = grep { $_->{tx} ne $tx } @{$self->{tx}};
@@ -323,12 +323,10 @@ sub stream_handle {
 
 sub event_id_thing_lookup {
     my $self = shift;
-    my $event = shift;
+    my $id = shift;
+
     my $things = $self->get('screen/things');
     return say "nothing...". $self->dump()  unless $things;
-
-    my $id = $event->{id};
-    $id =~ s/^(\w+\-\w+).+$/$1/;
 
     my ($thing) = grep { $id eq $_->{id} } @$things;
 
@@ -342,7 +340,7 @@ sub get {
 }
 sub set {
     my ($self, $i, $d) = @_;
-    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
+#    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
     $data->{$i} = $d;
     return $d;
 }
@@ -355,7 +353,7 @@ sub unset {
 sub error {
     my $self = shift;
     my $e = {@_};
-    say "Error: ".ddump($e);
+    say "\nError: ".ddump($e);
     $self->updump($e);
 }
 sub updump {

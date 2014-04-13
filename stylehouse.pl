@@ -257,8 +257,7 @@ websocket '/stylehouse' => sub {
                 # TODO websocket server should hit the road and start one with the real stuff in it
             }
             else {
-                Menu->new($hostinfo->intro);
-                Keys->new($hostinfo->intro);
+                Menu->new($hostinfo->intro) unless $0 =~ /crowd/;
             }
             $self->stash('menu' => '1');
         }
@@ -279,7 +278,7 @@ websocket '/stylehouse' => sub {
 
             $self->app->log->info("Looking up event handler");
             # find the Texty to ->event ->{ owner->event
-            my $thing = $self->hostinfo->event_id_thing_lookup($event)
+            my $thing = $self->hostinfo->event_id_thing_lookup($event->{id})
                 unless $event->{type} eq "scroll";
 
             start_timer();

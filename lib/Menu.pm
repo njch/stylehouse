@@ -144,39 +144,45 @@ sub event {
     my $h = {};
 
     # get this event to go to the right object
+    my $id = $event->{id};
+    my ($tid) = $id =~ /^(.+)(?:-\d+)?$/;
+    my $value = $event->{value};
 
-    say anydump($event);
-    my $texty = $self->hostinfo->event_id_thing_lookup($event);
+    my $texty = $self->hostinfo->event_id_thing_lookup($id);
     if (!$texty) {
-        $self->hostinfo->error("$event->{id} not found", [ $texty ]);
+        $self->hostinfo->error("$id not found", [ $texty ]);
         return;
     }
-
-    my ($itemtexty) = grep { $_->{id} eq $event->{id} } @{ $texty->tuxts };
-
-    my $app = $itemtexty->{origin};
-    unless ($app) {
-        my ($app) =
-             map { $_->{inner}->{origin} }
-             grep { $_->{inner}->{id} eq $event->{id} } @{ $texty->tuxts };
+    
+    my $app;
+    my $menutuxt;
+    say "id: $id";
+    for my $tuxt (@{ $texty->tuxts }) {
+        if ($tuxt->{id} eq $id) {
+            $app = $tuxt->{origin};
+            $menutuxt = $tuxt;
+            last;
+        }
+        elsif ($tuxt->{inner}->{id} eq $id) {
+            $app = $tuxt->{origin};
+            $menutuxt = $tuxt;
+            last;
+        }
     }
-    $self->hostinfo->updump($texty->tuxts->[0]);
-    my $value = $event->{value};
+    return $self->hostinfo->updump($app);
     
     if ($app) {
         my $menu = $app->menu();
 
-        $self->hostinfo->updump($itemtexty);
-
         my $heardof = ref $app;
         if ($value =~ /^$heardof/) {
             unless ($menu->{'.'}) {
-                return $self->hostinfo->error("$event->{id} found, object has no . menu item", $texty);
+                return $self->hostinfo->error("$event->{id} found, object has no . menu item", $menutuxt);
             }
             $menu->{'.'}->($event);
         }
         unless ($menu->{'.'}) {
-            return $self->hostinfo->error("can't find $value hook amongst ".join(", ",keys %$menu), $texty);
+            return $self->hostinfo->error("can't find $value hook amongst ".join(", ",keys %$menu), $menutuxt);
         }
         $menu->{$value}->($event);
     }
