@@ -153,8 +153,14 @@ sub event {
     }
 
     my ($itemtexty) = grep { $_->{id} eq $event->{id} } @{ $texty->tuxts };
-    $self->hostinfo->updump($itemtexty);
+
     my $app = $itemtexty->{origin};
+    unless ($app) {
+        my ($app) =
+             map { $_->{inner}->{origin} }
+             grep { $_->{inner}->{id} eq $event->{id} } @{ $texty->tuxts };
+    }
+    $self->hostinfo->updump($texty->tuxts->[0]);
     my $value = $event->{value};
     
     if ($app) {
@@ -176,7 +182,7 @@ sub event {
     }
     else {
         say "Nope wrong: ";
-        $self->hostinfo->updump($itemtexty);
+        #$self->hostinfo->updump($itemtexty);
     }
 }
 

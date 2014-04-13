@@ -134,7 +134,7 @@ sub god_leaves {
     my $reason = shift || "?";
 
     say "Part: ".$tx->remote_address.": $code: $reason";
-    say anydump $self->find_god($tx);
+    say ddump $self->find_god($tx);
 
     my $gods = $self->get('gods');
     @$gods = grep { $_->{tx} ne $tx } @{$self->{tx}};
@@ -179,27 +179,30 @@ sub load_views { # state from client
     my $self = shift;
     my @divids = shift;
     for my $divid (@divids) {
+        # if view exists in Hostinfo it will only resend its drawing
         $self->provision_view($divid);
     }
 }
 
+    
+my $div_attr = { # these go somewhere magical and together, like always
+    menu => "width:100%; background: #333; height: 90px;",
+    hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
+    view => "width:40%; background: #c9f; height: 500px;",
+    hodi => "width:40%; background: #09f; height: 5000px;",
+};
 # build its own div or something
 sub provision_view {
     my $self = shift;
     my $divid = shift;
-    
-    my $div_attr = { # these go somewhere magical and together, like always
-        menu => "width:100%; background: #333; height: 90px;",
-        hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
-        view => "width:40%; background: #c9f; height: 500px;",
-        hodi => "width:40%; background: #09f; height: 5000px;",
-    };
 
     my $styles = $div_attr->{$divid} || die "wtf";
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.'"></div>';
     $self->send("\$('body').append('$div');");
 
-    return $self->set('screen/views/'.$divid, []);
+    unless ($self->get('screen/views/'.$divid)) {
+        $self->set('screen/views/'.$divid, []);
+    }
 }
 
         # something new
