@@ -233,6 +233,9 @@ sub get_view { # TODO create views and shit
     my $self = shift;
     my $other = shift;
     my $viewid = shift;
+    my $alias = shift;
+    ($alias, $viewid) = ($viewid, $alias) if $alias;
+
 
     my ($divid) = $viewid =~ /^(.+)_?/;
 
@@ -259,6 +262,7 @@ sub get_view { # TODO create views and shit
             $other->ports({});
         }
         $other->ports->{$viewid} = $view;
+        $other->ports->{$alias} = $view if $alias;
     }
 
     return $view;

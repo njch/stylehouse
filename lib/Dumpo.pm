@@ -12,16 +12,18 @@ sub new {
     shift->($self);
     my $object = shift;
 
-    my $view = $self->hostinfo->get_view($self, "hodi");
-    $view->text([],
-        { skip_hostinfo => 1, }
-    );
+    if ($object) {
+        my $view = $self->hostinfo->get_view($self, "hodi");
+        $view->text([],
+            { skip_hostinfo => 1, }
+        );
 
-    my $delay = Mojo::IOLoop::Delay->new();
-    $delay->steps(
-        sub { Mojo::IOLoop->timer(5 => $delay->begin); },
-        sub { $self->updump($object, "init"); },
-    );
+        my $delay = Mojo::IOLoop::Delay->new();
+        $delay->steps(
+            sub { Mojo::IOLoop->timer(5 => $delay->begin); },
+            sub { $self->updump($object, "init"); },
+        );
+    }
     
 
     return $self;
