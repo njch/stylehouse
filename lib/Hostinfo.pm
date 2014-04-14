@@ -89,14 +89,17 @@ sub new_god {
     $gods ||= [];
     $self->set(gods => $gods);
 
-    my $new = { # upgrade to God?
+    my $new = { # upgrade to God? ip leads to
         address => $tx->remote_address,
         max => $tx->max_websocket_size,
         tx => $tx,
     };
+
+
     say "$new->{address} appears";
     push @$gods, $new;
     $self->who($new);
+    $self->review();
 }
 
 sub god_enters {
@@ -205,6 +208,20 @@ sub provision_view {
     $self->get('screen/views/'.$divid);
 }
 
+sub view_incharge {
+    my $self = shift;
+    my $view = shift;
+    $self->set('screen/views/'.$view->divid.'/top', $view);
+}
+
+sub review {
+    my $self = shift;
+    my $tops = $self->grep('screen/views/.+/top');
+    for my $view (values %$tops) {
+        $self->provision_view($view->divid);
+        $view->review;
+    }
+}
         # something new
         # but closest to the nature of a program: a viewport with trustworthy language
         # then popular views can get names

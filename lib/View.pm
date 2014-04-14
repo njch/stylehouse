@@ -7,6 +7,7 @@ has 'hostinfo';
 has 'owner';
 has 'divid';
 has 'id';
+has 'html';
 
 sub new {
     my $self = bless {}, shift;
@@ -48,23 +49,15 @@ sub resume {
 
 sub wipehtml {
     my $self = shift;
+    $self->html("");
     $self->hostinfo->send("\$('.".$self->id."').remove()");
+    1;
 }
 
 sub takeover {
     my $self = shift;
     my $htmls = shift;
     my $append = shift;
-    
-    # other views .id set hidden
-    #$self->hostinfo->send(
-    #    "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
-    #   ." \$('.".$self->id."').show();" # us
-    #   .($append ? "" : "\$('.".$self->id."').remove()")
-    #) unless $self->divid eq "menu";
-
-    $self->wipehtml unless $append;
-    
     my $divid = $self->divid;
     my $html;
     for my $h (@$htmls) {
@@ -73,8 +66,27 @@ sub takeover {
         }
         $html .= $h;
     }
+    
+    # other views .id set hidden
+    #$self->hostinfo->send(
+    #    "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
+    #   ." \$('.".$self->id."').show();" # us
+    #   .($append ? "" : "\$('.".$self->id."').remove()")
+    #) unless $self->divid eq "menu";
+
+    $append ?
+        $self->html($self->html."\n".$html)
+      : $self->wipehtml && $self->html($html);
+    
+
+    $self->hostinfo->view_incharge($self);
 
     $self->part_and_append($divid => $html);
+}
+
+sub review {
+    my $self = shift;
+    $self->part_and_append($self->divid => $self->html);
 }
 
 sub part_and_append {

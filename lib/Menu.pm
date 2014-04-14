@@ -152,6 +152,7 @@ sub event {
     my $app;
     my $menutuxt;
     say "id: $tid";
+    $self->hostinfo->get('Codo')->take_picture("001", {themenu => $texty, id => $id});
     my @seen;
     for my $tuxt (@{ $texty->tuxts }) {
         say "$id\t\t$tuxt->{id}\t\t$tuxt->{inner}->{id}";

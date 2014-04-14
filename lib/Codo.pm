@@ -7,11 +7,12 @@ use Texty;
 has 'hostinfo';
 has 'ports' => sub { {} };
 has 'ebuge' => sub { [] };
+has 'codeview';
+has 'runview';
 has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
-use Dumpo;
 
 sub DESTROY {
     my $self = shift;
@@ -21,17 +22,48 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->{in_things} = $self->hostinfo->set("Codo/in_things", []);
-    $self->{dumpo} = Dumpo->new($self->hostinfo->intro, "hodu");
+    $self->codeview($self->hostinfo->get_view($self, "hodu"));
+    $self->runview($self->hostinfo->get_view($self, "hodi"));
+
+    $self->{pics} = $self->hostinfo->set("Codo/pics", {});
+    $self->{code_breaks} = $self->hostinfo->set("Codo/code_breaks", []);
 
     return $self;
 }
 
-sub haveathing {
+sub thedump {
     my $self = shift;
-    
-    my $thing = shift;
-    push @{ $self->{in_things} }, $thing;
+    my $dumpo = $self->hostinfo->get("Dumpo") || die;
+    $dumpo->thedump(@_);
+}
+
+# break happening
+sub take_picture {
+    my $self = shift;
+    my $picid = shift;
+    my @seen = @_;
+
+    my $stack = [ map { [ caller($_) ] } 0..10 ];
+
+    my $pic;
+    unless ($pic = $self->{pics}->{$picid}) {
+        say "Codo: no such $picid, adding";
+        my $f = $stack->[0];
+        $f = "$f->[0] $f->[3] ($f->[1] $f->[2])";
+        $pic = $self->{pics}->{$picid} = {
+            picid => $picid,
+            name => "Rogue from $f",
+            pics => [],
+        };
+    }
+
+    my $picturehooks = $pic->{hooks};
+
+    my $picture = [$self->thedump(\@seen, $picturehooks)];
+    push @{$pic->{pics}}, {
+        stack => $stack,
+        picture => $picture,
+    };
 }
 
 sub killall {

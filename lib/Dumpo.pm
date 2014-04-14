@@ -55,9 +55,9 @@ sub updump {
 sub thedump {
     my $self = shift;
     my $thing = shift;
-    my $owner = shift;
-    $owner ||= $self;
+    my $ahooks = shift;
     my $hooks = $self->hostinfo->get('dumphooks');
+    push @$hooks, @$ahooks if $ahooks;
     push @$hooks, {
         ref => "HASH",
         getlines => sub {
