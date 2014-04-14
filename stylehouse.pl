@@ -146,6 +146,7 @@ sub init {
 
     #Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
+    Menu->new($hostinfo->intro);
 
     $underworld = 0;
 }
@@ -165,10 +166,6 @@ $hands = {
         $hostinfo->load_views(qw{menu hodu view hodi});
     } ],
 };
-
-sub menu_init {
-    my $menu;
-}
 
 my $handyin;
 
@@ -250,16 +247,6 @@ websocket '/stylehouse' => sub {
         # it beings! not that we don't come through here all the time
         init() if $underworld;
 
-        unless ($self->stash('menu')) {
-            if (my $menu = $hostinfo->get("Menu")) {
-                $menu->make_menu();
-                # TODO websocket server should hit the road and start one with the real stuff in it
-            }
-            else {
-                Menu->new($hostinfo->intro) unless $0 =~ /crowd/;
-            }
-            $self->stash('menu' => '1');
-        }
 
         # ongoing stuff
         if (my $event = $j->{event}) {
@@ -333,10 +320,10 @@ __DATA__
 @@ index.html.ep
 <!doctype html><html>
     <head><title>stylehouse</title>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script></head>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="lib/codemirror.js"></script>
     <link rel="stylesheet" href="lib/codemirror.css">
-    <script src="mode/javascript/javascript.js"></script>
+    <script src="mode/perl/perl.js"></script></head>
 
     <script>
       var ws;

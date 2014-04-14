@@ -82,8 +82,6 @@ sub make_menu {
 
     $v->text->replace([@items], );
 
-    say "Got out of there ok\n\n\n";
-
     $v->takeover($v->text->htmls);
 
     return $self;
