@@ -104,7 +104,6 @@ or maybe via http if that's not going to work...
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use lib 'lib';
-use Mojolicious::Command::secret;
 
 use Hostinfo;
 use Direction; 
@@ -145,8 +144,8 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
-    Lyrico->new($hostinfo->intro);
-    Dumpo->new($hostinfo->intro);
+    #Lyrico->new($hostinfo->intro);
+    Codo->new($hostinfo->intro);
 
     $underworld = 0;
 }

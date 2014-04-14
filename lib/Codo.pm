@@ -11,6 +11,7 @@ has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
+use Dumpo;
 
 sub DESTROY {
     my $self = shift;
@@ -20,10 +21,17 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    run("cp -a stylehouse.pl test/");
-    run("cp -a lib/*.pm test/lib");
+    $self->{in_things} = $self->hostinfo->set("Codo/in_things", []);
+    $self->{dumpo} = Dumpo->new($self->hostinfo->intro, "hodu");
 
     return $self;
+}
+
+sub haveathing {
+    my $self = shift;
+    
+    my $thing = shift;
+    push @{ $self->{in_things} }, $thing;
 }
 
 sub killall {

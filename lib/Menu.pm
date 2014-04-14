@@ -19,8 +19,6 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    say "\nTHis is starting\n\n";
-
     my $view = $self->hostinfo->get_view($self, "menu");
     $view->text( [], {
         tuxts_to_htmls => sub {
@@ -148,28 +146,37 @@ sub event {
     my ($tid) = $id =~ /^(.+)(?:-\d+)?$/;
     my $value = $event->{value};
 
-    my $texty = $self->hostinfo->event_id_thing_lookup($id);
-    if (!$texty) {
-        $self->hostinfo->error("$id not found", [ $texty ]);
-        return;
-    }
+
+    my $texty = $self->ports->{menu}->text;
     
     my $app;
     my $menutuxt;
-    say "id: $id";
+    say "id: $tid";
+    my @seen;
     for my $tuxt (@{ $texty->tuxts }) {
-        if ($tuxt->{id} eq $id) {
+        say "$id\t\t$tuxt->{id}\t\t$tuxt->{inner}->{id}";
+        say ddump($tuxt->{inner});
+        if ($tuxt->{id} eq $tid) {
+            say "$tid is $tuxt->{origin}";
             $app = $tuxt->{origin};
             $menutuxt = $tuxt;
             last;
         }
-        elsif ($tuxt->{inner}->{id} eq $id) {
+        elsif ($tuxt->{inner}->{id} eq $tid) {
+            say "$tuxt->{inner}->{id} ieq $id";
+
+            return $self->hostinfo->updump($tuxt->{inner});
+
+            next;
+            say "texty nner:".ddump($tuxt->{inner});
             $app = $tuxt->{origin};
             $menutuxt = $tuxt;
             last;
         }
+        say "$tuxt->{inner}->{id} ieq $id";
+
     }
-    return $self->hostinfo->updump($app);
+    return $self->hostinfo->updump($app || $texty);
     
     if ($app) {
         my $menu = $app->menu();

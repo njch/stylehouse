@@ -7,7 +7,6 @@ has 'hostinfo';
 has 'owner';
 has 'divid';
 has 'id';
-has 'others';
 
 sub new {
     my $self = bless {}, shift;
@@ -16,7 +15,6 @@ sub new {
     $self->owner(shift);
     $self->divid(shift);
     $self->hostinfo->screenthing($self);
-    $self->others(shift);
 
     $self;
 }

@@ -134,7 +134,6 @@ sub god_leaves {
     my $reason = shift || "?";
 
     say "Part: ".$tx->remote_address.": $code: $reason";
-    say ddump($self->find_god($tx));
 
     my $gods = $self->get('gods');
     @$gods = grep { $_->{tx} ne $tx } @{$self->{tx}};
@@ -203,6 +202,7 @@ sub provision_view {
     unless ($self->get('screen/views/'.$divid)) {
         $self->set('screen/views/'.$divid, []);
     }
+    $self->get('screen/views/'.$divid);
 }
 
         # something new
@@ -229,7 +229,6 @@ sub get_view { # TODO create views and shit
     my $view = new View( $self->intro,
         $other,
         $viewid,
-        $views,
     );
 
 
@@ -324,9 +323,10 @@ sub stream_handle {
 sub event_id_thing_lookup {
     my $self = shift;
     my $id = shift;
+    $id =~ s/^(\w+\-\w+).+$/$1/;
 
     my $things = $self->get('screen/things');
-    return say "nothing...". $self->dump()  unless $things;
+    return say "nothing..." unless $things;
 
     my ($thing) = grep { $id eq $_->{id} } @$things;
 
