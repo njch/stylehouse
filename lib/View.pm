@@ -86,6 +86,7 @@ sub takeover {
 
 sub review {
     my $self = shift;
+    
     $self->part_and_append($self->divid => $self->html);
 }
 

@@ -7,8 +7,6 @@ use Texty;
 has 'hostinfo';
 has 'ports' => sub { {} };
 has 'ebuge' => sub { [] };
-has 'codeview';
-has 'runview';
 has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
@@ -22,11 +20,14 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->codeview($self->hostinfo->get_view($self, "hodu"));
-    $self->runview($self->hostinfo->get_view($self, "hodi"));
+    my $codem = $self->hostinfo->get_view($self, code => "hodu")->text(['CodeMirrrrrrr']);
+    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
+    say "Doing it! $cm_init\n\n\n";
+    $self->hostinfo->send($cm_init);
+
+    $self->hostinfo->get_view($self, run => "hodi");
 
     $self->{pics} = $self->hostinfo->set("Codo/pics", {});
-    $self->{code_breaks} = $self->hostinfo->set("Codo/code_breaks", []);
 
     return $self;
 }
@@ -36,6 +37,10 @@ sub thedump {
     my $dumpo = $self->hostinfo->get("Dumpo") || die;
     $dumpo->thedump(@_);
 }
+sub view_code {
+    my $self = shift;
+    my $cv = $self->ports->{run};
+    $cv}
 
 # break happening
 sub take_picture {

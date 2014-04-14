@@ -217,7 +217,12 @@ sub view_incharge {
 sub review {
     my $self = shift;
     my $tops = $self->grep('screen/views/.+/top');
-    for my $view (values %$tops) {
+    my @tops = values %$tops;
+    return unless @tops;
+    say "resurrecting: ".anydump([keys %$tops]);
+    for my $div (qw{menu hodu view hodi}) {
+        my ($view) = grep { $_->divid eq $div } @tops;
+        next unless $view;
         $self->provision_view($view->divid);
         $view->review;
     }
@@ -240,7 +245,6 @@ sub get_view { # TODO create views and shit
     my ($divid) = $viewid =~ /^(.+)_?/;
 
     my $views = $self->get('screen/views/'.$divid);
-    say "Have $divid\n\n" if $views;
     unless ($views) {
         $views = $self->provision_view($divid);
 

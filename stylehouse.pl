@@ -144,10 +144,11 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
+    $hostinfo->provision_view("menu");
     #Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
-    Menu->new($hostinfo->intro);
 
+    Menu->new($hostinfo->intro);
     $underworld = 0;
 }
 
@@ -161,7 +162,7 @@ $hands = {
         $hostinfo->set("screen/height" => $sc->{y});
     } ],
     whatsthere => [ sub {
-        $hostinfo->send("ws.reply({whatsthere: 'too hard'})");
+        $hostinfo->send("ws.reply({whatsthere: 'too hard'}); \$('body div').remove();");
     }, sub {
         $hostinfo->load_views(qw{menu hodu view hodi});
     } ],
@@ -230,6 +231,9 @@ websocket '/stylehouse' => sub {
         $hostinfo->god_enters($self->tx);
 
         my $j;
+        if ($msg =~ /^{"event":{"id":"",/) {
+            return say "STUPID MESSAGE: $msg";
+        }
         eval { $j = decode_json($msg); };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
 
