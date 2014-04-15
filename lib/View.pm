@@ -20,6 +20,24 @@ sub new {
     $self;
 }
 
+sub onunfocus {
+    my $self = shift;
+    my $sub = shift;
+    $self->{onunfocus} = $sub;
+    return $self;
+}
+
+sub unfocus {
+    my $self = shift;
+    if ($self->{onunfocus}) {
+        $self->{onunfocus}->();
+    }
+    if ($self->{menu}) {
+        # our menu span ids will be like text but -menu so the texty takeover will not rm it
+    }
+    # could hide our spans? the above hook from Codo to code_unfocus does that
+}
+
 
 
 # the tab is the repositories

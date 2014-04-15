@@ -21,7 +21,7 @@ sub new {
     shift->($self);
 
     $self->hostinfo->get_view($self, run => "hodi");
-    my $codem = $self->hostinfo->get_view($self, code => "hodu");
+    $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
 
     $self->{pics} = $self->hostinfo->set("Codo/pics", {});
 
@@ -31,15 +31,49 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    for my $codefile (qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm") {
+    my @files = qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm";
+    for my $codefile (@files) {
         $self->resume_codefile($codefile);
     }
 
-    $code_vie
+    $self->make_code_menu();
 
     $self->code_focus('stylehouse.pl', {line => 50});
 
     return $self;
+}
+
+sub make_code_menu {
+    my $self = shift;
+
+    $self->ports->{code}->menu({
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            for my $s (@{$self->tuxts}) {
+                my $code = $s->{value};
+                $s->{value} = $code->{codefile};
+                $s->{origin} = $code;
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+            }
+        },
+    });
+
+    $self->update_code_menu();
+}
+
+sub update_code_menu {
+    my $self = shift;
+
+    $self->ports->{code}->menu->replace($self->{codes});
+
+    return $self;
+}
+
+sub code_unfocus {
+    my $self = shift;
+    $self->hostinfo->send("\$('.codocode').fadeOut(500);");
+    # TODO carefully suspend their Texty + Ghosts
 }
 
 sub code_focus {
@@ -48,8 +82,7 @@ sub code_focus {
     my $point = shift;
 
     if ($self->{code_focus}) {
-        $self->hostinfo->send("\$('.codocode').fadeOut(500);");
-        # TODO carefully suspend their Texty + Ghosts
+        $self->code_unfocus();
     }
 
     my $code = $self->get_code($codefile) || die;
@@ -67,15 +100,18 @@ sub code_focus {
         $current = 10;
     }
 
-    my $text = new Texty(
+    my $texty = new Texty( # auto takeover onto the screen
         $self->hostinfo->intro,
         $self->ports->{code},
         [@lines],
         { class => 'codocode' },
     );
 
-    $code->{texty}
+    my $spanid = $texty->tuxts->[$current-1]->{id};
+    $self->hostinfo->send("\$('#$spanid').addClass('on');");
 
+    $texty->{code} = $code;
+    $code->{texty} = $texty;
 }
 
 sub get_code {
@@ -104,8 +140,16 @@ sub resume_codefile {
         $code->{rogue_change_detected} = 1;
         # $self->ports->{code}->menu->flash($code, "mtime changed"); # do merge if problemo. later.
     }
+
+    if ($isnew) {
+        push @{ $self->{codes} }, $code;
+    }
 }
 
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
+}
 
 sub lines_for_file {
     my $filename = shift;
@@ -115,32 +159,21 @@ sub lines_for_file {
 sub code_mirror {
     my $self = shift;
 
-    # interrupt section of spans of code with a codemirror window of the same
-    # hold all such patches of change open until the programmer commits a wander
+# interrupt section of spans of code with a codemirror window of the same
+# changes branch until the programmer commits a wander
 
 #    ->text(['CodeMirrrrrrr']);
 #    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
 #    say "Doing it! $cm_init\n\n\n";
 #    $self->hostinfo->send($cm_init);
+
 }
 
-sub code_sheet {
-    my $self = shift;
-
-    # CODE
-    my @lines = lines_for_file($output->{filename});
-
-    my $spanid = $text->tuxts->[$current-1]->{id};
-    $self->hostinfo->send("\$('#$spanid').addClass('on');");
 sub thedump {
     my $self = shift;
     my $dumpo = $self->hostinfo->get("Dumpo") || die;
     $dumpo->thedump(@_);
 }
-sub view_code {
-    my $self = shift;
-    my $cv = $self->ports->{run};
-    $cv}
 
 # break happening
 sub take_picture {

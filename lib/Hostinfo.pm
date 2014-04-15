@@ -7,6 +7,7 @@ use IO::Async::Stream;
 my $data = {};
 
 has 'for_all';
+has 'ports';
 has 'who'; # spawners of websocket activity
 
 use UUID;
@@ -162,6 +163,7 @@ sub screenthing {
     my $id = ref $thing;
     if ($id =~ /View/) {
         $id .= "-".ref $thing->owner;
+
     }
     my $uu = make_uuid();
 
@@ -201,6 +203,7 @@ sub provision_view {
 
     my $styles = $div_attr->{$divid} || die "wtf";
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.'"></div>';
+    $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
     $self->send("\$('body').append('$div');");
 
     unless ($self->get('screen/views/'.$divid)) {
@@ -212,11 +215,14 @@ sub provision_view {
 sub view_incharge {
     my $self = shift;
     my $view = shift;
+    my $old = $self->get('screen/views/'.$view->divid.'/top');
+    $old->unfocus() if $old;
     $self->set('screen/views/'.$view->divid.'/top', $view);
 }
 
 sub review {
     my $self = shift;
+
     my $tops = $self->grep('screen/views/.+/top');
     my @tops = values %$tops;
     return unless @tops;
@@ -242,7 +248,6 @@ sub get_view { # TODO create views and shit
     my $alias = shift;
     ($alias, $viewid) = ($viewid, $alias) if $alias;
 
-
     my ($divid) = $viewid =~ /^(.+)_?/;
 
     my $views = $self->get('screen/views/'.$divid);
@@ -256,9 +261,11 @@ sub get_view { # TODO create views and shit
         $viewid,
     );
 
-
     # add together
     push @$views, $view;
+    if (@$views == 1) {
+        $self->view_incharge($view);
+    }
 
     # store it on the App
     my $oname = defined $other ? ref $other : "undef";
@@ -271,6 +278,97 @@ sub get_view { # TODO create views and shit
     }
 
     return $view;
+}
+
+sub make_app_menu {
+    my $self = shift;
+
+    $self->get_view($self, "menu");
+
+    $self->ports->{menu}->menu({
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            my $h = $self->hooks;
+            my $i = $h->{i} ||= 0;
+            say "Doing some $self, tuxts=".@{$self->tuxts};
+            for my $s (@{$self->tuxts}) {
+                my $object = $s->{value};
+                $s->{value} = ref $object;
+                unless (ref $object) {
+                    say "Object unref: ".ddump($object);
+                    use Carp;
+                    confess ;
+                }
+                $s->{origin} = $object;
+
+                if (ref $object && $object->can('menu')) {
+                    my $menu = $object->menu(); # we don't clobber this hash?
+                    delete $menu->{'.'};
+                    $s->{value} = "$object";
+                    $s->{value} =~ s/^(\w+).+$/$1/sgm;
+                
+                    # generate another Texty for menu items
+                    # catch their <spans> and add to our value
+                    my $inner = new Texty($self->hostinfo->intro, $self->view, [ keys %$menu ], {
+                        tuxts_to_htmls => sub {
+                            my $self = shift;
+                            my $i = $h->{i} || 0;
+                            for my $s (@{$self->tuxts}) {
+                                delete $s->{top};
+                                delete $s->{left};
+                                $s->{class} = 'menu';
+                                $s->{style} .= random_colour_background();
+                            }
+                        },
+                        notakeover => 1,
+                    });
+                    $s->{inner} = $inner;
+                    $s->{value} .= join "", @{$inner->htmls || []};
+                    say ref $object." buttons: ".join ", ", @{ $inner->lines };
+                }
+                
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+                $s->{origin} = $object;
+            }
+        },
+    });
+
+
+    $self->update_app_menu();
+}
+
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
+}
+
+sub update_app_menu {
+    my $self = shift;
+    my $apps = $self->hostinfo->get('apps');
+    $apps = [ values %$apps ];
+    #$apps = [ grep { $_->can('menu') } values $apps ];
+
+    $self->ports->{menu}->menu->replace($apps);
+}
+
+sub event {
+    my $self = shift;
+    my $event = shift;
+    $self->error(
+        "in Hostinfo event " => [$self, $event]
+    );
+    #$self->ports->{menu}->menu->event(@_);
+}
+    
+
+sub menu {
+    my $self = shift;
+    return {
+        blah => sub {
+            $self->send_all;
+        },
+    };
 }
 
 # this is where human attention is (before this text was in the wrong place)
@@ -389,6 +487,7 @@ sub updump {
     unless ($dumpo) {
         say "---no Dumpo, doing it here"; # constipated leaders
         say ddump($thing);
+        return;
     }
     $dumpo->updump($thing); # owner: $self
 }

@@ -19,7 +19,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->view($self->hostinfo->get_view($self, "hodu"));
+    $self->view($self->hostinfo->get_view($self, "lyrics" => "hodi"));
     $self->text($self->view->text([],
         { skip_hostinfo => 1,
         leave_spans => 1, 

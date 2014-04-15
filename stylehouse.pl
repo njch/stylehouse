@@ -145,10 +145,11 @@ sub init {
     my $self = shift;
 
     $hostinfo->provision_view("menu");
-    #Lyrico->new($hostinfo->intro);
+    Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
 
-    Menu->new($hostinfo->intro);
+
+    $hostinfo->make_app_menu();
     $underworld = 0;
 }
 
@@ -388,9 +389,15 @@ __DATA__
         position: relative;
         float: left;
     }
+    .view span {
+        position: absolute;
+    }
     .menu {
         padding: 5px;
         font-size: 20pt;
+    }
+    .view .menu {
+        font-size: 8pt;
     }
     .lyrics {
         position: absolute;

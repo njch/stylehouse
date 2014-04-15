@@ -7,7 +7,8 @@ use Codo;
 use FindBin '$Bin';
 
 has 'hostinfo';
-has 'ports';
+has 'view';
+has 'text';
 has 'items';
 
 my $i = 0;
@@ -19,104 +20,28 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    my $view = $self->hostinfo->get_view($self, "menu");
-    $view->text( [], {
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            my $h = $self->hooks;
-            my $i = $h->{i} ||= 0;
-            say "Doing some $self, tuxts=".@{$self->tuxts};
-            for my $s (@{$self->tuxts}) {
-                my $object = $s->{value};
-
-                my $menu = $object->menu(); # we don't clobber this hash?
-                delete $menu->{'.'};
-                $s->{value} = "$object";
-                $s->{value} =~ s/^(\w+).+$/$1/sgm;
-                
-                # generate another Texty for menu items
-                # catch their <spans> and add to our value
-                my $inner = new Texty($self->hostinfo->intro, $view, [ keys %$menu ], {
-                    tuxts_to_htmls => sub {
-                        my $self = shift;
-                        my $i = $h->{i} || 0;
-                        for my $s (@{$self->tuxts}) {
-                            delete $s->{top};
-                            delete $s->{left};
-                            $s->{class} = 'menu';
-                            $s->{style} .= random_colour_background();
-                        }
-                    },
-                    notakeover => 1,
-                });
-                
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
-                $s->{value} .= join "", @{$inner->htmls || []};
-                $s->{inner} = $inner;
-                $s->{origin} = $object;
-                say ref $object." buttons: ".join ", ", @{ $inner->lines };
-            }
-        }
-    });
-
-    $self->make_menu();
-    return $self;
-}
-
-
-sub make_menu {
-    my $self = shift;
+    $self->view(shift);
     
-    if (!$self->ports) {
-        say "Nein porten!";
-        sleep 4;
-        return $self;
-    }
-    my $v = $self->ports->{menu};
+    # pick apart spec for us & our texty
+    $self->{hooks} = shift;
 
-
-    my @items = $self->get_menu_items;
-    
-    say "Writing menu for ".join ", ", map { ref $_ } @items;
-
-    $v->text->replace([@items], );
-
-    $v->takeover($v->text->htmls);
+    $self->{text} = new Texty($self->hostinfo->intro, $self->view, [], $self->{hooks});
 
     return $self;
 }
 
-sub menu {
-    my $self = shift;
-    return {
-        blah => sub {
-            $self->hostinfo->send_all;
-        },
-    };
-}
-
-sub get_menu_items {
+sub replace {
     my $self = shift;
 
-    my $apps = $self->hostinfo->get('apps');
-    $apps = [ grep { $_->can('menu') } values $apps ];
-    $self->items($apps);
+    my $items = shift;
 
-    my @items;
-    for my $item (@{ $self->items }) {
-        if (ref $item) {
-            push @items, $item;
-        }
-        else {
-            my $got = $self->hostinfo->get($item);
-            die "Not got $item" unless $got;
-            push @items, $got;
-        }
-    }
-    $self->items([@items]);
-    @items;
-    # make Texty[$item] hook to append menu items as more spans from another Texty
+    say "Writing menu for ".join ", ", map { ref $_ } @$items;
+
+    $self->text->replace([@$items]);
+
+    $self->view->takeover($self->text->htmls);
+
+    return $self;
 }
 
 use YAML::Syck;

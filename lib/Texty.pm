@@ -27,6 +27,7 @@ sub new {
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
     $self->hooks(shift || {});
+    $self->tuxts([]);
 
     # make a persistent object for this Texty thing
     # #hodu dump junk will not be saved
@@ -170,6 +171,11 @@ sub spatialise {
         $geo->{top} += 20;
     }
 }
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
+}
+
 
 sub tuxts_to_htmls {
     my $self = shift;
