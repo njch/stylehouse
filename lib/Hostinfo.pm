@@ -192,6 +192,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
     view => "width:40%; background: #c9f; height: 500px;",
     hodi => "width:40%; background: #09f; height: 5000px;",
+    babs => "width:60%; background: #09f; height: 2000px;",
 };
 # build its own div or something
 sub provision_view {

@@ -131,27 +131,6 @@ sub drawstuff {
         $self->view->{hodi}->text->replace($output->{error});
         return;
     }
-    # CODE
-    my @lines = lines_for_file($output->{filename});
-    my $current = $output->{line};
-
-    if ($current) {
-        my $from = $current - 10;
-        $from = 0 if $from < 0;
-        @lines = splice @lines, $from, 20;
-        $current = 10;
-    }
-
-    
-    $self->hostinfo->send("\$('#".$self->code_view->{id}." span').fadeOut(500);");
-
-    $self->view->{hodi}->text->replace([]);
-    my $text = new Texty($self, [@lines],
-        { view => $self->code_view->{id} }
-    );
-
-    my $spanid = $text->tuxts->[$current-1]->{id};
-    $self->hostinfo->send("\$('#$spanid').addClass('on');");
 
     # EXEC
     my @exec;
@@ -176,10 +155,6 @@ sub drawstuff {
     $self->view->{hodi}->text->replace([@exec]);
 }
 
-sub lines_for_file {
-    my $filename = shift;
-    return split "\n", read_file($filename);
-}
 
 
 has 'next_command';

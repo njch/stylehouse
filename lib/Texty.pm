@@ -118,8 +118,9 @@ sub lines_to_tuxts {
     my @tuxts;
     for my $value (@{ $self->lines }) {
         $value =~ s/\n$//;
+        my $class = $self->hooks->{class} || "data";
         my $tuxt = {
-            class => "data",
+            class => $class,
             id => ($self->view->id.'-'.$self->id.'-'.$l++),
         };
 
@@ -135,7 +136,7 @@ sub lines_to_tuxts {
         }
 
         push @tuxts, {
-            class => "data ".$self->view->id,
+            class => "$class ".$self->view->id,
             id => ($self->id.'-'.$l++),
             value => $value,
         };

@@ -20,6 +20,8 @@ sub new {
     $self;
 }
 
+
+
 # the tab is the repositories
 # each thing you care about has a certain thing going on you like to keep an eye on
 # they are free to change and adapt, join and split
@@ -34,6 +36,12 @@ sub text {
     my $self = shift;
 
     $self->{text} ||= Texty->new($self->hostinfo->intro, $self, @_);
+}
+
+sub menu {
+    my $self = shift;
+
+    $self->{menu} ||= Menu->new($self->hostinfo->intro, $self, @_);
 }
 
 sub kill {

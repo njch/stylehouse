@@ -29,6 +29,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+
     return $self;
 }
 
@@ -62,6 +63,17 @@ sub audio_mpd {
     $mpd->play;
     sleep 10;
     $mpd->next;
+}
+
+
+sub youtube {
+    my $babs = shift;
+    my $video_id = shift || "PSNPpssruFY"; # Fats Waller - Aint Misbehavin
+    my $iframe = '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/'
+        .$video_id.'" allowfullscreen frameborder="0"></iframe>';
+    my $view = $babs->hostinfo->get_view($babs, "babs");
+    $view->text->append([$iframe]); # here's where we attach a Ghost, once the concept emerges from other places
+# Ghost is a server-side wiring for client side stuff we mirror
 }
 
 1;
