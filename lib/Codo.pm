@@ -31,14 +31,14 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    my @files = qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm";
+    my @files = (qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
     for my $codefile (@files) {
         $self->resume_codefile($codefile);
     }
 
     $self->make_code_menu();
 
-    $self->code_focus('stylehouse.pl', {line => 50});
+    $self->code_focus('stylehouse.pl', {line => 100});
 
     return $self;
 }
@@ -51,11 +51,14 @@ sub make_code_menu {
             my $self = shift;
             for my $s (@{$self->tuxts}) {
                 my $code = $s->{value};
-                $s->{value} = $code->{codefile};
+                $s->{value} = $code->{codename};
                 $s->{origin} = $code;
                 $s->{style} = random_colour_background();
                 $s->{class} = 'menu';
             }
+        },
+        spatialise => sub {
+            return { horizontal => 40 } # space tabs by 40px
         },
     });
 
@@ -96,7 +99,7 @@ sub code_focus {
     if ($current) {
         my $from = $current - 10;
         $from = 0 if $from < 0;
-        @lines = splice @lines, $from, 20;
+        @lines = splice @lines, $from, 200;
         $current = 10;
     }
 
@@ -130,6 +133,7 @@ sub resume_codefile {
     if ($isnew) {
         $code = {
             codefile => $codefile,
+            codename => (($codefile =~ /(\w+).pm$/)[0] || $codefile),
             mtime => 0,
         };
     }

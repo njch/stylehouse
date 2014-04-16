@@ -13,12 +13,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->hostinfo->get_view($self, "hodu")->text(
-        ['<form action="#"><input type="text" name="action"></form>'],
-        { spatialise => sub {
-            return { top => 30, right => 20 }
-        }, },
-    );
+# lives in hostinfo somewhere
+# creates... this...
 
     return $self;
 }

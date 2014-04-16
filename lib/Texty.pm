@@ -157,18 +157,27 @@ sub spatialise {
     }
     $geo ||= $here || { top => 30, left => 20 };
     $geo->{top} ||= 0;
+    my $i = 0;
     for my $s (@{$self->tuxts}) {
-        $s->{top} ||= 0;
-        $s->{top} = $geo->{top};
-        if ($s->{right}) {
-            $s->{right} ||= 0;
-            $s->{right} += $geo->{right};
+        if ($geo->{horizontal}) {
+            $s->{top} = 0;
+            $s->{left} = $i * $geo->{horizontal};
+
         }
         else {
-            $s->{left} ||= 0;
-            $s->{left} += $geo->{left} if $geo->{left};
+            $s->{top} ||= 0;
+            $s->{top} = $geo->{top};
+            if ($s->{right}) {
+                $s->{right} ||= 0;
+                $s->{right} += $geo->{right};
+            }
+            else {
+                $s->{left} ||= 0;
+                $s->{left} += $geo->{left} if $geo->{left};
+            }
+            $geo->{top} += 20;
         }
-        $geo->{top} += 20;
+        $i++;
     }
 }
 sub random_colour_background {

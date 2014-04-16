@@ -12,8 +12,8 @@ sub new {
     shift->($self);
     my $object = shift;
 
+    my $view = $self->hostinfo->get_view($self, "hodi");
     if ($object) {
-        my $view = $self->hostinfo->get_view($self, "hodi");
         $view->text([],
             { skip_hostinfo => 1, }
         );

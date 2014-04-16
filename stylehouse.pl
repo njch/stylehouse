@@ -63,41 +63,12 @@ Codo is one whole universe of code
 flip through them, prepare another program execution behind the one the user is looking at
 so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
-put the view on a screen 
-
-wow
-t pus
-Lyrico
-
-we can sell Tolaga water to the Russians at $300 bucks a pop
-
-keypress catcher:
-$(document).keydown(function(e){
-if (e.keyCode==90 && e.ctrlKey)
-    $("body").append("<p>ctrl+z detected!</p>");
-});
-
-something like that
-
-we want to give away the whole internet
-but you have to become a member at $5/month
-so we know who you are
-the you can have it
-
 facilitating human attachment
 
 there's a greenhouse in London that cycles a whole day of mountain air underground and blows the cool night air over the plants during the day cos that's their environment
 
 String::Koremutake
 instead of urls
-
-
-https://www.airbnb.co.nz/rooms/705210
-
-tip, travel, the wake of
-
-ebuge is supposed to run Devel::ebug and speak when it gets the chance via websocket
-or maybe via http if that's not going to work...
 
 =cut
 
@@ -144,9 +115,9 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
-    $hostinfo->provision_view("menu");
     Lyrico->new($hostinfo->intro);
-    Codo->new($hostinfo->intro);
+    #Codo->new($hostinfo->intro);
+    Dumpo->new($hostinfo->intro);
 
 
     $hostinfo->make_app_menu();
@@ -288,6 +259,7 @@ websocket '/stylehouse' => sub {
             }
             else {
                 $self->app->log->info("Thing lookup $event->{id} -> $thing");
+                $self->hostinfo->error("Thing dispatch" => [$event, $thing]);
                 $thing->event($event);
                 # route to $1 via hostinfo register of texty thing owners
             }
