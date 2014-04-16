@@ -42,7 +42,7 @@ sub stop {
     my $self = shift;
     
     $self->started(1);
-    $self->gear->kill;
+    $self->gear->nah;
     $self->gr;
 }
 

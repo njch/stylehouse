@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-# copyright Steve Craig 2014
 use strict;
 use warnings;
 use Scriptalicious;
@@ -259,7 +258,7 @@ websocket '/stylehouse' => sub {
             }
             else {
                 $self->app->log->info("Thing lookup $event->{id} -> $thing");
-                $self->hostinfo->error("Thing dispatch" => [$event, $thing]);
+                $self->hostinfo->error("Thing dispatch" => $thing);
                 $thing->event($event);
                 # route to $1 via hostinfo register of texty thing owners
             }
@@ -373,6 +372,9 @@ __DATA__
     }
     .lyrics {
         position: absolute;
+    }
+    .codocode {
+        white-space:pre;
     }
     .on {
         color: white;

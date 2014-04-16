@@ -1,4 +1,4 @@
-package Dumpo;
+package Travel;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
@@ -11,8 +11,11 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     my $object = shift;
-
-    my $view = $self->hostinfo->get_view($self, "hodi");
+    my $view = shift;
+    if (!ref $view) {
+        # someone wants us to grab a port and wait
+        #$self->hostinfo->get_view($self, "hodi");
+    my $view = 
     if ($object) {
         $view->text([],
             { skip_hostinfo => 1, }

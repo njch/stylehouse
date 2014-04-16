@@ -52,13 +52,13 @@ sub new {
     return $self;
 }
 
-sub kill {
+sub nah {
     my $self = shift;
     unless ($self->proc) {
-        say "! ! killing before Proc finished starting ! !";
+        say "! ! Ebuge->nah before Proc finished starting ! !";
         return;
     }
-    $self->proc->kill();
+    $self->proc->nah();
     # TODO delete views
 }
 
@@ -117,7 +117,7 @@ sub menu {
     }
     $menu->{"reload"} = sub {
         # restart the process?
-        $self->kill;
+        $self->nah;
     };
     return $menu;
 }

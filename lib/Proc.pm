@@ -17,10 +17,10 @@ has 'pid';
 has 'kilt';
 
 # talk to procserv (at the end in ``), setup handlers for its output
-sub kill {
+sub nah {
     my $self = shift;
     unless ($self->pid) {
-        say "! ! killing before Proc got started ! !";
+        say "! ! ->nah before Proc got started ! !";
         return;
     }
     kill "INT", $self->pid;

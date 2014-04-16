@@ -62,7 +62,7 @@ sub menu {
     $self->{menu} ||= Menu->new($self->hostinfo->intro, $self, @_);
 }
 
-sub kill {
+sub nah {
     my $self = shift;
     say "Ref: ".ref $self->owner;
     $self->wipehtml unless ref $self->owner eq "Lyrico";

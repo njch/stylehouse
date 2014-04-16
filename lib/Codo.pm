@@ -14,7 +14,7 @@ use File::Slurp;
 
 sub DESTROY {
     my $self = shift;
-    $self->killall;
+    $self->nah;
 }
 sub new {
     my $self = bless {}, shift;
@@ -38,7 +38,7 @@ sub new {
 
     $self->make_code_menu();
 
-    $self->code_focus('stylehouse.pl', {line => 100});
+    $self->code_focus('stylehouse.pl');
 
     return $self;
 }
@@ -75,7 +75,7 @@ sub update_code_menu {
 
 sub code_unfocus {
     my $self = shift;
-    $self->hostinfo->send("\$('.codocode').fadeOut(500);");
+    $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
     # TODO carefully suspend their Texty + Ghosts
 }
 
@@ -92,7 +92,8 @@ sub code_focus {
     $code->{line} = $point->{line} if $point->{line};
     $self->{code_focus} = $code;
 
-    my @lines = lines_for_file($codefile);
+
+    my $codelumps = $self->eat_codefile($codefile);
 
     my $current = $point->{line} || 0;
 
@@ -107,7 +108,6 @@ sub code_focus {
         $self->hostinfo->intro,
         $self->ports->{code},
         [@lines],
-        { class => 'codocode' },
     );
 
     my $spanid = $texty->tuxts->[$current-1]->{id};
@@ -115,6 +115,24 @@ sub code_focus {
 
     $texty->{code} = $code;
     $code->{texty} = $texty;
+}
+
+sub eat_codefile {
+    my $self = shift;
+
+    my @lines = lines_for_file($codefile);
+    my @stuff = ([]);
+    for my $l (@lines) {
+        if ($l =~ /^\S+.+ \{$/gm) {
+           push @stuff, []
+        }
+        push @{ $stuff[-1] }, $l;
+    }
+    @lines = ();
+    for my $s (@stuff) {
+        push @lines, "$s->[0] (+".(@$s-1)." lines)";
+    }
+    return \@lines;
 }
 
 sub get_code {
@@ -208,14 +226,14 @@ sub take_picture {
     };
 }
 
-sub killall {
+sub nah {
     my $self = shift;
     for my $ebuge (@{ $self->ebuge }) {
         unless ($ebuge) {
             say "weird, no ebuge...";
             next;
         }
-        $ebuge->kill;
+        $ebuge->nah;
     }
     $self->ebuge([]);
 }
@@ -230,7 +248,7 @@ sub new_ebuge {
 sub menu {
     my $self = shift;
     my $menu = {};
-    $menu->{"killall"} = sub { $self->killall };
+    $menu->{"nah"} = sub { $self->nah };
     $menu->{"new"} = sub { $self->new_ebuge() };
 
     return $menu;

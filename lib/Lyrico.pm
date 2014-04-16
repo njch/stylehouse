@@ -28,7 +28,8 @@ sub new {
             for my $s (@{$text->tuxts}) {
                 my $size = int rand 20;
                 my $width = int rand 60;
-                $s->{style} = random_colour_background()." opacity:0.4; font-size: ${size}em; width: ${width}em";
+                $s->{style} = random_colour_background()." opacity:0.4; font-size: ${size}em; width: ${width}em"
+                    .($size > 10 ? "font-family: Cambria, Georgia, serif;" : "");
                 $s->{class} = "lyrics";
             }
         }, }
