@@ -21,6 +21,7 @@ sub new {
 
 sub haunt {
     my $self = shift;
+    my $depth = shift;
     #my $where = shift; # where is in us, we are now next thing long
     my $thing = shift;
     my $in = shift; # all board games are haunted as

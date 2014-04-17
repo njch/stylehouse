@@ -16,6 +16,7 @@ sub new {
     $self->owner(shift);
     $self->divid(shift);
     $self->hostinfo->screenthing($self);
+    $self->html("");
 
     $self;
 }
@@ -151,7 +152,6 @@ sub part_and_append {
 
             $html =~ s/'/\\'/;
             $self->hostinfo->send("  \$('#$divid').append('$html');");
-
         }
     }
     else {

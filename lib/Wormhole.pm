@@ -21,10 +21,10 @@ sub continues {
     my ($self, $in, $ghost, $depth, $thing, $etc, $out) = @_; # %
     
     my @lines = (
-        "wayin: ".json_encode($move),
+        "wayin: ".json_encode($in),
         "thing: ".thing_encode($thing),
         "etc: ".json_encode($etc),
-        "wayout: ".json_encode($in),
+        "wayout: ".json_encode($out),
     );
 
     ref $_ || s/^/('  ')x$depth/e for @lines;

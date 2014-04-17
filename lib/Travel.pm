@@ -23,7 +23,7 @@ sub travel {
     my $way = shift;
     my $depth = shift || 0;
 
-    my $away = $ghost->haunt($thing, $way);
+    my $away = $ghost->haunt($depth, $thing, $way);
 
     if (!@$away) {
         return "";

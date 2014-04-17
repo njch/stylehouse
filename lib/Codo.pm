@@ -128,12 +128,6 @@ sub code_focus {
     $code->{texty} = $texty;
 }
 
-sub eat_codefile {
-    my $self = shift;
-
-
-}
-
 sub get_code {
     my $self = shift;
     my $codefile = shift;
