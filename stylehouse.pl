@@ -78,7 +78,6 @@ use lib 'lib';
 use Hostinfo;
 use Direction; 
 use Texty;
-use Dumpo;
 use Lyrico;
 use Codo;
 use Menu;
@@ -87,6 +86,9 @@ use Ebuge;
 use Proc;
 use Keys;
 use Form;
+use Travel;
+use Ghost;
+use Wormhole;
 
 get '/' => 'index';
 

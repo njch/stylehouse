@@ -453,7 +453,7 @@ sub event_id_thing_lookup {
 
     my ($thing) = grep { $id eq $_->{id} } @$things;
 
-    /return $thing;
+    return $thing;
 }
 
 
@@ -498,7 +498,8 @@ sub flood {
     my $thing = shift;
 
     if (my $flood = $self->ports->{flood}) {
-        $flood->travel->flood($thing);
+        my @script = $flood->travel->travel($thing);
+        $flood->text->replace([@script]);
     }
     else {
         say "---no Dumpo, doing it here"; # constipated leaders

@@ -92,9 +92,20 @@ sub code_focus {
     $code->{line} = $point->{line} if $point->{line};
     $self->{code_focus} = $code;
 
-
-    my $codelumps = $self->eat_codefile($codefile);
-
+# make this out of Ghosts
+    my @lines = lines_for_file($codefile);
+    my @stuff = ([]);
+    for my $l (@lines) {
+        if ($l =~ /^\S+.+ \{$/gm) {
+           push @stuff, []
+        }
+        push @{ $stuff[-1] }, $l;
+    }
+    @lines = ();
+    for my $s (@stuff) {
+        push @lines, "$s->[0] (+".(@$s-1)." lines)";
+    }
+    return \@lines;
     my $current = $point->{line} || 0;
 
     if ($current) {
@@ -120,19 +131,7 @@ sub code_focus {
 sub eat_codefile {
     my $self = shift;
 
-    my @lines = lines_for_file($codefile);
-    my @stuff = ([]);
-    for my $l (@lines) {
-        if ($l =~ /^\S+.+ \{$/gm) {
-           push @stuff, []
-        }
-        push @{ $stuff[-1] }, $l;
-    }
-    @lines = ();
-    for my $s (@stuff) {
-        push @lines, "$s->[0] (+".(@$s-1)." lines)";
-    }
-    return \@lines;
+
 }
 
 sub get_code {
