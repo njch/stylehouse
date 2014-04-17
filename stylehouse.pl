@@ -93,7 +93,6 @@ get '/' => 'index';
 clear_procserv_io();
 my $hostinfo = new Hostinfo();
 $hostinfo->set('0', $hostinfo);
-$hostinfo->set('dumphooks', []);
 $hostinfo->for_all([]);
 helper 'hostinfo' => sub { $hostinfo };
 
@@ -116,9 +115,8 @@ sub init {
 
     Lyrico->new($hostinfo->intro);
     #Codo->new($hostinfo->intro);
-    Dumpo->new($hostinfo->intro);
 
-
+    $hostinfo->make_floodzone();
     $hostinfo->make_app_menu();
     $underworld = 0;
 }

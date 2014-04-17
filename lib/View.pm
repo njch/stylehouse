@@ -62,6 +62,12 @@ sub menu {
     $self->{menu} ||= Menu->new($self->hostinfo->intro, $self, @_);
 }
 
+sub travel {
+    my $self = shift;
+
+    $self->{travel} ||= Travel->new($self->hostinfo->intro, $self, @_);
+}
+
 sub nah {
     my $self = shift;
     say "Ref: ".ref $self->owner;

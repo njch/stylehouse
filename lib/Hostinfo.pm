@@ -57,7 +57,6 @@ sub god_send {
     if (!$god) {
         say "NO INDIVIDUAL TO send $message";
     }
-#    say anydump($god);
     $god->{tx}->send({text => $message});
 }
 
@@ -225,7 +224,7 @@ sub review {
 
     my $tops = $self->grep('screen/views/.+/top');
     my @tops = values %$tops;
-    return unless @tops;
+    return say "nothing to ->review" unless @tops;
     say "resurrecting: ".anydump([keys %$tops]);
     for my $div (qw{menu hodu view hodi}) {
         my ($view) = grep { $_->divid eq $div } @tops;
@@ -454,7 +453,7 @@ sub event_id_thing_lookup {
 
     my ($thing) = grep { $id eq $_->{id} } @$things;
 
-    return $thing;
+    /return $thing;
 }
 
 
@@ -474,23 +473,40 @@ sub unset {
     delete $data->{$i};
 }
 
+sub arrive {
+    my $self = shift;
+}
+
+
+sub make_floodzone {
+    my $self = shift;
+
+    my $flood = $self->get_view($self, "flood");
+
+    Travel->new($self->intro, $flood);
+}
+
 sub error {
     my $self = shift;
     my $e = {@_};
     say "\nError: ".ddump($e);
-    $self->updump($e);
+    $self->flood($e);
 }
-sub updump {
+
+sub flood {
     my $self = shift;
     my $thing = shift;
-    my $dumpo = $self->get('Dumpo');
-    unless ($dumpo) {
+
+    if (my $flood = $self->ports->{flood}) {
+        $flood->travel->flood($thing);
+    }
+    else {
         say "---no Dumpo, doing it here"; # constipated leaders
         say ddump($thing);
         return;
     }
-    $dumpo->updump($thing); # owner: $self
 }
+
 use YAML::Syck;
 sub ddump {
     my $thing = shift;
@@ -521,11 +537,6 @@ sub duction {
         push @$old, $exist;
     }
     $self->set($name, $new);
-    if ($new->can("dumphooks")) {
-        my @otherhooks = $new->dumphooks;
-        my $ourhooks = $self->get('dumphooks');
-        push @$ourhooks, @otherhooks;
-    }
     my $apps = $self->get('apps');
     $apps ||= {};
     $apps->{$name} = $new;

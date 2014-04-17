@@ -5,46 +5,17 @@ use Texty;
 
 has 'cd';
 has 'hostinfo';
-has 'ports';
 
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-    my $object = shift;
-    my $view = shift;
-    if (!ref $view) {
-        # someone wants us to grab a port and wait
-        #$self->hostinfo->get_view($self, "hodi");
-    my $view = 
-    if ($object) {
-        $view->text([],
-            { skip_hostinfo => 1, }
-        );
-
-        my $delay = Mojo::IOLoop::Delay->new();
-        $delay->steps(
-            sub { Mojo::IOLoop->timer(5 => $delay->begin); },
-            sub { $self->updump($object, "init"); },
-        );
-    }
-    
+    my $self->{hooks} = shift;
 
     return $self;
 }
 
-sub menu {
-    my $self = shift;
-    return {
-        updump => sub {
-            $self->updump;
-            my $event = shift;
-            $self->hostinfo->send(
-                "\$('#$event->{id}').delay(100).fadeOut().fadeIn('slow')");
-        },
-    };
-}
 
-sub updump {
+sub flood {
     my $self = shift;
     my $object = shift;
     my $init = shift;
@@ -54,69 +25,36 @@ sub updump {
    
     $object ||= $self->hostinfo->data;
 
-    $self->ports->{hodi}->text->replace([$self->thedump($object)]);
+    $self->ports->{hodi}->text->replace([$self->travel($object)]);
 }
 
-sub thedump {
+# stack of ghosts...
+sub travel {
     my $self = shift;
     my $thing = shift;
-    my $ahooks = shift;
-    my $hooks = $self->hostinfo->get('dumphooks');
-    push @$hooks, @$ahooks if $ahooks;
-    push @$hooks, {
+    my $ghost = shift;
+
+
+    if (!$ghost) {
+        $ghost = new Ghost($self->hostinfo->intro, $
+
+
+    push @$ghost, {
         ref => "HASH",
-        getlines => sub {
-            my $thing = shift;
-            my $hooks = shift;
-            my $d = shift;
-            my @ks = sort keys %$thing;
-            my @sub;
-            for my $k (@ks) {
-                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
-            }
-            return ("THIS $thing", @sub);
-        },
-    }, {
-        ref => "Lyrico",
-        getlines => sub {
-            my $thing = shift;
-            my $hooks = shift;
-            my $d = shift;
-            my @ks = sort keys %$thing;
-            my @sub;
-            for my $k (@ks) {
-                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
-            }
-            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($self->hostinfo->intro, "...", $self->ports->{hodi},
-                ["Lyrico", @sub],
-                { leave_spans => 1 }
-            );
-        },
+        for => sub { sort keys %{$_[0]} },
+        travel => sub { $_[0]->{$_[1]} },
     }, {
         ref => "Texty",
-        getlines => sub {
-            my $thing = shift;
-            my $hooks = shift;
-            my $d = shift;
-            my @ks = sort keys %$thing;
-            my @sub;
-            for my $k (@ks) {
-                push @sub, "$k => ", dumpdeal($thing->{$k}, $hooks, $d+1)
-            }
-            #return ('<span style="'.random_colour_background().'>'.$thing.'</span>', @sub);
-            return new Texty($self->hostinfo->intro, "...", $self->ports->{hodi},
-                ["Texty owner=".$thing->view->owner, @sub],
-                { leave_spans => 1 },
-            );
-        },
-    };
-    my @dump = dumpdeal($thing, $hooks);
+        note => sub { owner => $_->view->owner },
+    }
+    ;
+
+    my @dump = border($thing, $ghost);
     return @dump;
 }
-sub dumpdeal {
+sub border {
     my $thing = shift;
-    my $hooks = shift;
+    my $ghosties = shift;
     my $depth = shift;
     $depth = 1;
     my @lines;
