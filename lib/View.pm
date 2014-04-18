@@ -2,6 +2,7 @@ package View;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
+use Time::HiRes 'usleep';
 
 has 'hostinfo';
 has 'owner';
@@ -129,7 +130,7 @@ sub part_and_append {
     my $html = shift;
 
     return say "no html" unless $html;
-    
+
     if (length($html) > 30000) {
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
 
@@ -144,7 +145,9 @@ sub part_and_append {
             }
         }
         push @html_batches, [ @$b ] if @$b;
-        say "Think we've batchified htmls: ". anydump(\@html_batches);
+        say anydump($html_batches[0]->[0]);
+        say anydump($html_batches[1]->[0]);
+        say "batchified htmls heading for #$divid from ".$self->owner.": ".(scalar(@html_batches)-1)." x 10 + ".scalar(@{$html_batches[-1]});
 
         for my $html_batch (@html_batches) {
 
@@ -152,6 +155,7 @@ sub part_and_append {
 
             $html =~ s/'/\\'/;
             $self->hostinfo->send("  \$('#$divid').append('$html');");
+            usleep 10000;
         }
     }
     else {

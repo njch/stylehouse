@@ -4,6 +4,7 @@ use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use Texty;
+use Wormhole;
 
 
 has 'hostinfo';
@@ -15,6 +16,19 @@ sub new {
     $self->{travel} = shift; # joining up to the vastness of the Travels is something
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro);
+    
+    # also something big to join up to
+    $self->{chains} = shift || [{
+        ref => "HASH",
+        for => q{ [ sort keys %$thing ] },
+        travel => q{ $thing->{$e} },
+    }, {
+        ref => "Texty", as => "HASH",
+        note => q{ { owner => "not ".$thing->view->owner } },
+    }, {
+        default => q{ { thing => "? '$thing' "}},
+        unless => q{ ref \$thing eq "SCALAR" },
+    }];
 
     return $self;
 }
@@ -22,9 +36,8 @@ sub new {
 sub haunt {
     my $self = shift;
     my $depth = shift;
-    #my $where = shift; # where is in us, we are now next thing long
     my $thing = shift;
-    my $in = shift; # all board games are haunted as
+    my $in = shift;
 
     my $out = [];
     my $def = [];
@@ -41,31 +54,52 @@ sub haunt {
         if ($c->{default}) {
             push @$def, $c;
         }
+    }
+    for my $c (@$out) {
         if ($c->{note}) {
-            push @{ $etc->{note}||=[] }, $c->{note}->($thing);
+            push @{ $etc->{note}||=[] }, doo($c->{note}, $thing);
         }
     }
 
     if (!@$out) {
-        @$out = @$def;
+        push @$out, @$def;
     }
 
     $self->{wormhole}->continues($in, $self, $depth, $thing, $etc, $out); # %
 
     my $away = [];
+    #say "The way out: ".anydump([ $out, "$thing" ]);
     for my $o (@$out) {
         if ($o->{for}) {
-            for my $e ($o->{for}->($thing)) {
+            for my $e (@{ doo($o->{for}, $thing) }) {
                 if (my $t = $o->{travel}) {
-                    push @$away, { travel => { thing => $t->($thing, $e), way => { %$o, for => $e } } };
+                    push @$away, { travel => { thing => doo($t, $thing, $e), way => { %$o, for => $e } } };
                 }
             }
         }
         if (my $d = $o->{default}) {
-            push @$away, { travel => [ $d->($thing), $o ] };
+            if (!$o->{unless} || !doo($o->{unless}, $thing, $d)) {
+                push @$away, { travel => { thing => doo($d, $thing), way => $o } };
+            }
         }
     }
+    #say "Away: ".anydump($away);
     return $away;
+}
+
+sub doo {
+    my $eval = shift;
+    my $thing = shift;
+    my $e = shift;
+    my $new;
+    my $evs = "\$new = $eval";
+    eval $evs;
+    if ($@) {
+        say "eval - $evs";
+        say "Thinf $new";
+        die $@;
+    }
+    return $new;
 }
 
 sub grep_chains {
@@ -79,7 +113,7 @@ sub grep_chains {
             }
         }
     }
-    return \@go;
+    return @go;
 }
 
 sub event {

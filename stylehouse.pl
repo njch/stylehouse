@@ -120,6 +120,7 @@ sub init {
 
     $hostinfo->make_floodzone();
     $hostinfo->make_app_menu();
+    $hostinfo->flood($hostinfo->data());
     $underworld = 0;
 }
 

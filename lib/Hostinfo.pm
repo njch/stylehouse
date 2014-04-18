@@ -24,6 +24,8 @@ sub send {
             ."\n\n".substr($message,0,180)."...";
     }
 
+    $message =~ s/\n/<br>/g;
+
     if ($message =~ /\n/) {
         warn "Message contains \\n";
     }
@@ -194,7 +196,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     view => "width:40%; background: #c9f; height: 500px;",
     hodi => "width:40%; background: #09f; height: 5000px;",
     babs => "width:60%; background: #09f; height: 2000px;",
-    flood => "width:800px; height:800px; background: #90e21a;  position:absolute",
+    flood => "width:800px; height:8000px; background: #9aa2aa;  position:absolute",
 };
 # build its own div or something
 sub provision_view {
@@ -479,12 +481,6 @@ sub arrive {
 }
 
 
-sub make_floodzone {
-    my $self = shift;
-
-    $self->get_view($self, "flood");
-}
-
 sub error {
     my $self = shift;
     my $e = {@_};
@@ -492,14 +488,19 @@ sub error {
     $self->flood($e);
 }
 
+sub make_floodzone {
+    my $self = shift;
+
+    $self->get_view($self, "flood");
+}
+
 sub flood {
     my $self = shift;
     my $thing = shift;
 
     if (my $flood = $self->ports->{flood}) {
-        my @script = $flood->travel($thing);
-        say "SCript: ".anydump(\@script);
-        $flood->text->replace([@script]);
+        my $wormhole = $flood->travel($thing);
+        $wormhole->appear($flood);
     }
     else {
         say "---no Dumpo, doing it here"; # constipated leaders

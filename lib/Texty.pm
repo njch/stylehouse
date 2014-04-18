@@ -58,6 +58,7 @@ sub replace {
    
     if ($lines) { 
         $self->lines($lines);
+        $self->spatialise();
         $self->lines_to_tuxts();
         $self->tuxts_to_htmls();
     }
@@ -150,13 +151,13 @@ sub lines_to_tuxts {
 
 sub spatialise {
     my $self = shift;
-    my $here = shift;
     my $geo;
     if ($self->hooks->{spatialise}) {
         $geo = $self->hooks->{spatialise}->();
     }
-    $geo ||= $here || { top => 30, left => 20 };
-    $geo->{top} ||= 0;
+    $geo->{top} ||= 20;
+    $geo->{left} ||= 30;
+    $geo->{space} ||= 20;
     my $i = 0;
     for my $s (@{$self->tuxts}) {
         if ($geo->{horizontal}) {
@@ -165,7 +166,6 @@ sub spatialise {
 
         }
         else {
-            $s->{top} ||= 0;
             $s->{top} = $geo->{top};
             if ($s->{right}) {
                 $s->{right} ||= 0;
@@ -175,7 +175,7 @@ sub spatialise {
                 $s->{left} ||= 0;
                 $s->{left} += $geo->{left} if $geo->{left};
             }
-            $geo->{top} += 20;
+            $geo->{top} += $geo->{space};
         }
         $i++;
     }

@@ -2,6 +2,7 @@ package Travel;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
+use Ghost;
 
 has 'cd';
 has 'hostinfo';
@@ -22,6 +23,8 @@ sub travel {
     my $way = shift;
     my $depth = shift || 0;
 
+    say " travel! - " if !$depth;
+
     my $away = $ghost->haunt($depth, $thing, $way);
 
     if (!@$away) {
@@ -34,8 +37,7 @@ sub travel {
         }
     }
 
-    my $script = $ghost->{wormhole}->{script};
-    return @$script;
+    return $ghost->{wormhole};
 }
 
 sub event {
