@@ -151,10 +151,10 @@ sub part_and_append {
 
         for my $html_batch (@html_batches) {
 
-            my $html = join "", @$html_batch;
+            my $batch = join "", @$html_batch;
 
-            $html =~ s/'/\\'/;
-            $self->hostinfo->send("  \$('#$divid').append('$html');");
+            $batch =~ s/'/\\'/;
+            $self->hostinfo->send("  \$('#$divid').append('$batch');");
             usleep 10000;
         }
     }

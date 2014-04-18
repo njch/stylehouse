@@ -120,7 +120,6 @@ sub init {
 
     $hostinfo->make_floodzone();
     $hostinfo->make_app_menu();
-    $hostinfo->flood($hostinfo->data());
     $underworld = 0;
 }
 
@@ -331,23 +330,6 @@ __DATA__
       }
 
       connect();
-
-      function clickyhand (event) {
-            var data = {
-                id: event.target.id,
-                value: event.target.innerText,
-                type: event.type,
-                shiftKey: event.shiftKey,
-                ctrlKey: event.ctrlKey,
-                altKey: event.altKey,
-                x: event.clientX,
-                y: event.clientY,
-                pagex: window.pageXOffset,
-                pagey: window.pageYOffset,
-            };
-            ws.reply({event: data});
-            $('#Keys').focus;
-        }
     </script>
     <style type="text/css">
     .data {

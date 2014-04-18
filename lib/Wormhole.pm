@@ -90,7 +90,8 @@ sub appear {
 sub colorf {
     my $fing = shift;
     my ($color) = $fing =~ /\(0x....(...)/;
-    $color =~ s/[02456789]/a/g;
+    return "" unless $color;
+    $color =~ s/[12456789]/a/g;
     return "background-color: #".($color || "fe9").";";
 }
 

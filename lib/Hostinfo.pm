@@ -24,7 +24,7 @@ sub send {
             ."\n\n".substr($message,0,180)."...";
     }
 
-    $message =~ s/\n/<br>/g;
+    $message =~ s/\n//g;
 
     if ($message =~ /\n/) {
         warn "Message contains \\n";
@@ -102,6 +102,28 @@ sub new_god {
     push @$gods, $new;
     $self->who($new);
     $self->review();
+    $self->clickyhand();
+}
+
+sub clickyhand {
+    my $self = shift;
+    $self->send(q{
+      function clickyhand (event) {
+            var data = {
+                id: event.target.id,
+                value: event.target.innerText,
+                type: event.type,
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey,
+                x: event.clientX,
+                y: event.clientY,
+                pagex: window.pageXOffset,
+                pagey: window.pageYOffset,
+            };
+            ws.reply({event: data});
+            $('#Keys').focus;
+        }});
 }
 
 sub god_enters {
