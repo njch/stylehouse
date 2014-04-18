@@ -21,10 +21,10 @@ sub continues {
     my ($self, $in, $ghost, $depth, $thing, $etc, $out) = @_; # %
     
     my @lines = (
-        "wayin: ".json_encode($in),
-        "thing: ".thing_encode($thing),
-        "etc: ".json_encode($etc),
-        "wayout: ".json_encode($out),
+        "wayin: ".encode_json($in),
+        "thing: ".encode_thing($thing, $out),
+        "etc: ".encode_json($etc),
+        "wayout: ".encode_json($out),
     );
 
     ref $_ || s/^/('  ')x$depth/e for @lines;
@@ -32,9 +32,10 @@ sub continues {
     push @{$self->{script}}, join "\n", @lines;
 }
 
-sub thing_encode {
+sub encode_thing {
     my $self = shift;
     my $thing = shift;
+    my $out = shift;
     return "$thing";
 }
 

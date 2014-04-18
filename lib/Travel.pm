@@ -9,7 +9,6 @@ has 'hostinfo';
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-    my $self->{hooks} = shift;
 
     return $self;
 }

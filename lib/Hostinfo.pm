@@ -482,9 +482,7 @@ sub arrive {
 sub make_floodzone {
     my $self = shift;
 
-    my $flood = $self->get_view($self, "flood");
-
-    Travel->new($self->intro, $flood);
+    $self->get_view($self, "flood");
 }
 
 sub error {
@@ -499,7 +497,8 @@ sub flood {
     my $thing = shift;
 
     if (my $flood = $self->ports->{flood}) {
-        my @script = $flood->travel->travel($thing);
+        my @script = $flood->travel($thing);
+        say "SCript: ".anydump(\@script);
         $flood->text->replace([@script]);
     }
     else {
