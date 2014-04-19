@@ -29,6 +29,7 @@ sub continues {
         etc => ($etc),
         wayout => ($out),
         depth => $depth,
+        last => $last_state->{uuid},
     };
 
     push @{$self->{script}}, $line;

@@ -13,9 +13,6 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-# lives in hostinfo somewhere
-# creates... this...
-
     return $self;
 }
 
