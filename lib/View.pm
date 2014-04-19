@@ -66,8 +66,8 @@ sub menu {
 
 sub travel {
     my $self = shift;
-
-    ($self->{travel} ||= Travel->new($self->hostinfo->intro))->travel(@_);
+    
+    ($self->{travel} ||= Travel->new($self->hostinfo->intro, $self->id))->travel(@_);
 }
 
 sub nah {

@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
+use YAML::Syck;
 use Texty;
 use Wormhole;
 
@@ -14,30 +15,45 @@ sub new {
     shift->($self);
 
     $self->{travel} = shift; # joining up to the vastness of the Travels is something
+    # one travel = one ghost, to get things going
+    # when the ghost becomes more a living datastructure (haha)
+    # it will need to be more a shifting tide of Ways 
+    # needs a PATHway
+    # where LastWormholeID is passed around 
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro);
     
     # also something big to join up to
-    $self->{chains} = shift || [{
-        ref => "HASH",
-        for => q{ [ sort keys %$thing ] },
-        travel => q{ $thing->{$e} },
-    }, {
-        ref => "Texty", as => "HASH",
-        note => q{ { owner => "not ".$thing->view->owner } },
-    }, {
-        default => q{ { thing => "? '$thing' "}},
-        unless => q{ ref \$thing eq "SCALAR" },
-    }];
+    # it looks like the fuzz of how you want to act while Traveling. yay.
+    # which is just the place to join to liquified language
+    # there may be more structure through/around a list of lingos we hard code for now
+    # it's a tube with no phases yet, just "select ways" and misc chewing
+    my $morechains = shift;
+    $self->{chains} = Load(<<'YAML');
+- ref: HASH
+  for: ' [ sort keys %$thing ] '
+  travel: ' $thing->{$for} '
+  wayd: ' "key $for" '
+- for: ' [ @$thing ] '
+  ref: ARRAY
+  travel: ' $for '
+  wayd: ' "[$i]" '
+- as: HASH
+  note: ' { owner => $thing->view->owner } '
+  ref: Texty
+- default: " { thing => \"? '$thing' \"}"
+  unless: ' ref \$thing eq "SCALAR" '
+YAML
 
     return $self;
 }
 
-sub haunt {
+sub rattle {
     my $self = shift;
     my $depth = shift;
-    my $thing = shift;
+    my $last_state = shift;
     my $in = shift;
+    my $thing = shift;
 
     my $out = [];
     my $def = [];
@@ -64,16 +80,27 @@ sub haunt {
     if (!@$out) {
         push @$out, @$def;
     }
+    return ($out, $etc);
+}
 
-    $self->{wormhole}->continues($in, $self, $depth, $thing, $etc, $out); # %
+sub haunt {
+    my $self = shift;
+    my $depth = shift;
+    my $thing = shift;
+    my $in = shift;
+    my $last_state = shift;
+
+    my ($out, $etc) = $self->rattle($depth, $last_state, $in, $thing);
+
+    my $state = $self->{wormhole}->continues($in, $self, $last_state, $depth, $thing, $etc, $out); # %
 
     my $away = [];
     #say "The way out: ".anydump([ $out, "$thing" ]);
     for my $o (@$out) {
         if ($o->{for}) {
-            for my $e (@{ doo($o->{for}, $thing) }) {
+            for my $for (@{ doo($o->{for}, $thing) }) {
                 if (my $t = $o->{travel}) {
-                    push @$away, { travel => { thing => doo($t, $thing, $e), way => { %$o, for => $e } } };
+                    push @$away, { travel => { thing => doo($t, $thing, $for), way => { %$o, for => $for } } };
                 }
             }
         }
@@ -84,13 +111,13 @@ sub haunt {
         }
     }
     #say "Away: ".anydump($away);
-    return $away;
+    return ($state, $away);
 }
 
 sub doo {
     my $eval = shift;
     my $thing = shift;
-    my $e = shift;
+    my $for = shift;
     my $new;
     my $evs = "\$new = $eval";
     eval $evs;

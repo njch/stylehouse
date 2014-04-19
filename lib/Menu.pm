@@ -72,7 +72,7 @@ sub event {
 
     my $texty = $self->ports->{menu}->text;
     
-    $self->hostinfo->flood({themenu => $texty, id => $id});
+    #$self->hostinfo->flood({themenu => $texty, id => $id});
 
     my $app;
     my $menutuxt;

@@ -329,6 +329,22 @@ __DATA__
           window.setTimeout(connect, 256);
       }
 
+      function clickyhand (event) {
+            var data = {
+                id: event.target.id,
+                value: event.target.innerText,
+                type: event.type,
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey,
+                x: event.clientX,
+                y: event.clientY,
+                pagex: window.pageXOffset,
+                pagey: window.pageYOffset,
+            };
+            ws.reply({event: data});
+            $('#Keys').focus;
+        }
       connect();
     </script>
     <style type="text/css">

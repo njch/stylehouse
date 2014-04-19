@@ -11,6 +11,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+    $self->{name} = shift;
+
     return $self;
 }
 
@@ -22,10 +24,11 @@ sub travel {
     my $ghost = shift || new Ghost($self->hostinfo->intro, $self);
     my $way = shift;
     my $depth = shift || 0;
+    my $last_state = shift;
 
     say " travel! - " if !$depth;
 
-    my $away = $ghost->haunt($depth, $thing, $way);
+    my ($state, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 
     if (!@$away) {
         return "";
@@ -33,7 +36,7 @@ sub travel {
 
     for my $c (@$away) {
         if (my $t = $c->{travel}) {
-            $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1);
+            $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1, $state);
         }
     }
 
