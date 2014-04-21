@@ -40,6 +40,7 @@ sub continues {
 sub encode_thing {
     my $thing = shift;
     my $out = shift;
+    $thing = "~" unless defined $thing;
     return "$thing";
 }
 
@@ -52,6 +53,14 @@ sub encode_thing {
 # and usable as a flowing with nice triggers and invisible but well organised complications.
 # it's the call stack/circuit flowing in reverse, from state tube to layers & lingo tricks to items in a Texty.
 
+use YAML::Syck;
+sub ddump {
+    my $thing = shift;
+    return join "\n",
+        grep !/^     /,
+        split "\n", Dump($thing);
+}
+
 sub appear {
     my $self = shift;
     my $view = shift;
@@ -60,27 +69,35 @@ sub appear {
         tuxts_to_htmls => sub {
             my $self = shift;
             my $newtuxts = [];
-            say "Here here here".@{$self->tuxts};
+            say "Wormhole is ".@{$self->tuxts}." lines long";
             for my $s (@{$self->tuxts}) {
                 my $line = $s->{value};
-                say anydump($s);
                 $s->{left} += $line->{depth} * 40;
                 
                 my $wins = { %$s };
                 $wins->{id} .= "-wins";
-                $wins->{value} = encode_entities(anydump($line->{wayin}));
-                $wins->{style} .= colorf($line->{wayin});
+                my $wi = $line->{wayin};
+                $wins->{value} = "(nowhere)";
+                $wins->{value} = encode_entities(getway($wi)) if $wi;
+                $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
                 $wins->{top} -= 10;
                 $wins->{style} .= "font-size: 5pt; opacity:0.4;";
 
                 my $wous = { %$s };
                 $wous->{id} .= "-wous";
                 my $wo = $line->{wayout};
-                @$wo = map { $_ = $_->{for} ? { for => $_->{for} } : $_ } @$wo;
-                $wous->{value} = encode_entities(anydump($wo));
-                $wous->{style} .= colorf($line->{wayout});
-                $wous->{top} += 10;
-                $wous->{style} .= "font-size: 5pt; opacity:0.4;";
+                do {
+                    my $sum = scalar(@$wo)." ways";
+                    say $sum;
+                    $wo = $wo->[0];
+                    say ddump({aboutto=>$wo});
+                    my $eg = encode_entities(getway($wo)) if $wo;
+                    $eg ||= "(no futher)";
+                    $wous->{value} = "$sum $eg";
+                    $wous->{style} .= colorf($wo);
+                    $wous->{top} += 10;
+                    $wous->{style} .= "font-size: 5pt; opacity:0.4;";
+                };
 
                 my $etcs = { %$s };
                 $etcs->{id} .= "-etcs";
@@ -94,8 +111,9 @@ sub appear {
 
                 my $this = { %$s };
                 $this->{id} .= "-this";
-                $this->{value} = encode_entities(anydump($line->{thing}));
+                $this->{value} = encode_entities($line->{thing});
                 $this->{style} .= "font-color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.9em; ";
+                $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
                 $this->{top} -= 30;
                 $this->{left} += 50;
 
@@ -106,11 +124,18 @@ sub appear {
     })
 }
 
+sub getway {
+    my $way = shift;
+    join "\n", map { "$_: $way->{$_}" } keys %$way
+}
+
 sub colorf {
     my $fing = shift;
-    my ($color) = ($fing || "0(0x000000000000000000") =~ /\(0x....(...)/;
-    return "" unless $color;
-    $color =~ s/[12456789]/a/g;
+    my ($color) = ($fing || "0") =~ /\(0x....(...)/;
+    return "border: 1px solid black;" unless $color;
+    $color ||= "fff";
+    
+    $color =~ s/([12457])/$1.($1+2)/eg;
     return "background-color: #".($color || "fe9").";";
 }
 

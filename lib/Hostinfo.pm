@@ -464,6 +464,10 @@ sub get {
     my ($self, $i) = @_;
     $data->{$i};
 }
+sub getapp {
+    my ($self, $i) = @_;
+    $self->get($i)->[0];
+}
 sub set {
     my ($self, $i, $d) = @_;
 #    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
@@ -533,18 +537,7 @@ sub duction {
     my $self = shift;
     my $new = shift;
     my ($name) = split '=', ref $new;
-    if (my $exist = $self->get($name)) {
-        my $oldname = $name."_old";
-        unless ($self->get($oldname)) {
-            $self->set($oldname, []);
-        }
-        my $old = $self->get($oldname);
-        push @$old, $exist;
-    }
-    $self->set($name, $new);
-    my $apps = $self->get('apps');
-    $apps ||= {};
-    $apps->{$name} = $new;
-    $self->set('apps', $apps);
+    my $where = $self->get($name) || $self->set($name, []);
+    unshift @$where, $new;
 }
 1;

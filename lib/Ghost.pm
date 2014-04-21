@@ -41,7 +41,7 @@ hooks:
     if (!@{$self->{away}}) {
         for my $dc (grep { $_->{default} } $self->chains) {
             if (!$dc->{unless} || !$self->doo($dc->{unless})) {
-                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => $dc } };
+                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
             }
         }
     }
@@ -75,10 +75,9 @@ chains:
  - ref: HASH
    for: ' [ sort keys %$thing ] '
    travel: ' $thing->{$for} '
- - for: ' [ @$thing ] '
-   ref: ARRAY
+ - ref: ARRAY
+   for: ' [ @$thing ] '
    travel: ' $for '
-   wayd: ' "[$i]" '
  - as: HASH
    note: ' { owner => $thing->view->owner } '
    ref: Texty
