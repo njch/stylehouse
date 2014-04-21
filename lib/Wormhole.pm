@@ -20,16 +20,16 @@ sub new {
 }
 
 sub continues {
-    my ($self, $in, $ghost, $last_state, $depth, $thing, $etc, $out) = @_; # %
+    my ($self, $ghost) = @_; # %
 
     my $line = {
         uuid => $self->hostinfo->make_uuid,
-        wayin => ($in),
-        thing => encode_thing($thing, $out),
-        etc => ($etc),
-        wayout => ($out),
-        depth => $depth,
-        last => $last_state->{uuid},
+        wayin => $ghost->{wayin},
+        thing => encode_thing($ghost->{thing}),
+        etc => ($ghost->{etc}),
+        wayout => $ghost->{wayout},
+        depth => $ghost->{depth},
+        last => $ghost->{last_state}->{uuid},
     };
 
     push @{$self->{script}}, $line;
@@ -108,7 +108,7 @@ sub appear {
 
 sub colorf {
     my $fing = shift;
-    my ($color) = $fing =~ /\(0x....(...)/;
+    my ($color) = ($fing || "0(0x000000000000000000") =~ /\(0x....(...)/;
     return "" unless $color;
     $color =~ s/[12456789]/a/g;
     return "background-color: #".($color || "fe9").";";
