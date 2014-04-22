@@ -14,9 +14,6 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->owner(shift);
-    $self->divid(shift);
-    $self->hostinfo->screenthing($self);
     $self->html("");
 
     $self;

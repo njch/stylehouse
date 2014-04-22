@@ -3,6 +3,9 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use IO::Async::Loop::Mojo;
 use IO::Async::Stream;
+use UUID;
+use Scalar::Util 'weaken';
+use View;
 
 my $data = {};
 
@@ -10,9 +13,6 @@ has 'for_all';
 has 'ports';
 has 'who'; # spawners of websocket activity
 
-use UUID;
-use Scalar::Util 'weaken';
-use View;
 
 sub send {
     my $self = shift;
@@ -148,37 +148,6 @@ sub hostinfo { shift }
 
 sub data { $data }
 
-# make a number bigger than the universe...
-sub make_uuid {
-    UUID::generate(my $uuid);
-    UUID::unparse($uuid, my $stringuuid);
-    $stringuuid =~ s/^(\w+)-.+$/$1/s;
-    return $stringuuid;
-}
-# take a Texty that wants to go on the screen
-# it has a owner, give them the events? 
-sub screenthing {
-    my $self = shift;
-    my $thing = shift;
-
-    my $id = ref $thing;
-    if ($id =~ /View/) {
-        $id .= "-".ref $thing->owner;
-
-    }
-    my $uu = make_uuid();
-
-    $thing->id("$id-$uu");
-    
-
-    if (!$self->get('screen/things')) {
-        $self->set('screen/things', []);
-    }
-    my $things = $self->get('screen/things');
-    
-    push @$things, $thing;
-}
-
 
 sub load_views { # state from client
     my $self = shift;
@@ -238,6 +207,7 @@ sub review {
 }
         # something new
         # but closest to the nature of a program: a viewport with trustworthy language
+        # they compete for attention
         # then popular views can get names
         # but the latest innovations at the view can be streamed in
         # it's feeding an idea about the way of the view
@@ -258,10 +228,10 @@ sub get_view { # TODO create views and shit
 
     }
 
-    my $view = new View( $self->intro,
-        $other,
-        $viewid,
-    );
+    my $view = new View($self->intro);
+    $self->set("$view $other");
+    $view->divid($divid);
+    $self->screenthing($view);
 
     # add together
     push @$views, $view;
@@ -496,7 +466,7 @@ sub make_floodzone {
     my $self = shift;
 
     $self->get_view($self, "flood");
-    $self->flood([$self->grep('screen/.*')]);
+    $self->flood($self->getapp("Lyrico"));
 }
 
 sub flood {
@@ -531,13 +501,82 @@ sub intro {
     };
 }
 
+sub loadghost {
+    my $self = shift;
+    my $ghost = shift;
+    $ghost->{wormhole} = new Wormhole($self->hostinfo->intro);
+}
+
 # as a chain, this is a new object coming into the web
 # might want to spawn some intuition...
 sub duction {
     my $self = shift;
     my $new = shift;
     my ($name) = split '=', ref $new;
-    my $where = $self->get($name) || $self->set($name, []);
-    unshift @$where, $new;
+
+    my $thiss = $self->get($name) || $self->set($name, []);
+    unshift @$thiss, $new;
+
+    my $uuids = $self->get("$name"."->uuid") || $self->set("$name"."->uuid", []);
+    unshift @$uuids, make_uuid();
+
+    return $self;
 }
+
+# make a number bigger than the universe...
+sub make_uuid {
+    UUID::generate(my $uuid);
+    UUID::unparse($uuid, my $stringuuid);
+    $stringuuid =~ s/^(\w+)-.+$/$1/s;
+    return $stringuuid;
+}
+
+sub grap {
+    my $self = shift;
+    my $left = shift;
+    my $right = shift;
+    if (ref $right) {
+        ($left, $right) = ($right, $left);
+    }
+    my $name = ref $left;
+    $name || die "non ref on join $left$right";
+    my @apps = $self->get($name);
+    my ($app) = grep { $_ eq $left } @apps;
+    my $i;
+    for my $ii (0..@apps-1) {
+        if ($apps[$ii] eq $app) {
+            $i = $ii;
+            last;
+        }
+    }
+    if (!defined($i)) {
+        die "not findo $left".ddump($data);
+    }
+    my $set = $self->get("$name$right");
+    if (!$set) {
+        die "not findo $name$right";
+    }
+    $set->[$i];
+}
+
+sub screenthing {
+    my $self = shift;
+    my $thing = shift;
+
+    my $id = ref $thing;
+    if ($thing->can('owner')) {
+        $id = ref($thing->owner)."-$id";
+
+    }
+
+    $thing->id("$id-".$self->grap($thing,"->uuid"));
+
+    if (!$self->get('screen/things')) {
+        $self->set('screen/things', []);
+    }
+    my $things = $self->get('screen/things');
+    
+    push @$things, $thing;
+}
+
 1;

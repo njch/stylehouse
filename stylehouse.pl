@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use Scriptalicious;
-die "no procserv" unless grep { /procserv.pl/ } `ps faux`;
 use YAML::Syck;
 use JSON::XS;
 use List::MoreUtils qw"uniq";
@@ -55,12 +54,6 @@ space building
 program cursor
 tubes of where what & how
 
-Devel::ebug interface
-slurpy other programs
-
-Codo is one whole universe of code
-flip through them, prepare another program execution behind the one the user is looking at
-so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
 facilitating human attachment
 
@@ -74,7 +67,6 @@ instead of urls
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use lib 'lib';
-
 use Hostinfo;
 use Direction; 
 use Texty;
@@ -86,11 +78,18 @@ use Ebuge;
 use Proc;
 use Keys;
 use Form;
-
 use Travel;
 use Ghost;
 use Wormhole;
 use Way;
+
+die "no procserv" unless grep /procserv.pl/, `ps faux`;
+
+for my $m (grep /use lib 'lib';/.../^\n$/, read_file($0)) {
+    say $m;
+    $m =~ /use (\w+);/ || next;
+    #run("perl -Ilib -c lib/$1.pm");
+}
 
 get '/' => 'index';
 

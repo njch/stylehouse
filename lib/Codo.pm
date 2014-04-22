@@ -2,7 +2,16 @@ package Codo;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
+=pod
+Devel::ebug interface
+slurpy other programs
 
+Codo is one whole universe of code
+flip through them, prepare another program execution behind the one the user is looking at
+so you can say, go here, what's this, watch this, find the pathway of its whole existence
+
+
+=cut
 
 has 'hostinfo';
 has 'ports' => sub { {} };
@@ -174,8 +183,11 @@ sub lines_for_file {
 sub code_mirror {
     my $self = shift;
 
-# interrupt section of spans of code with a codemirror window of the same
-# changes branch until the programmer commits a wander
+# for Ghosts and Ways
+# client side state for codemirrors
+# put coloured blocks over different parts of the code to shade it pretty colours
+# when clicked they relay the click to the codemirror?
+# might be possible one day, maybe underneath transparent codemirror...
 
 #    ->text(['CodeMirrrrrrr']);
 #    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
