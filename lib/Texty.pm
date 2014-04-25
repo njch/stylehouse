@@ -234,17 +234,12 @@ sub event {
     my $tx = shift;
     my $event = shift;
 
-    $self->owner->event($tx, $event, $self);
+    $self->view->event($tx, $event, $self);
 }
 
 sub owner {
     my $self = shift;
-    my $owner = $self;
-    until (ref $owner eq "View") {
-        $owner = $owner->view;
-    }
-    $owner = $owner->owner;
-    return $owner;
+    return $self->view;
 }
 
 

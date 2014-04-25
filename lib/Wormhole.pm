@@ -34,6 +34,8 @@ sub continues {
     };
 
     push @{$self->{script}}, $line;
+
+    # travel that $line writing a serialisation in $ghostname/
     
     return $line;
 }

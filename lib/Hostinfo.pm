@@ -9,8 +9,9 @@ use View;
 
 my $data = {};
 
-has 'for_all';
 has 'ports';
+
+has 'for_all';
 has 'who'; # spawners of websocket activity
 
 
@@ -205,17 +206,33 @@ sub review {
         $view->review;
     }
 }
-        # something new
-        # but closest to the nature of a program: a viewport with trustworthy language
-        # they compete for attention
-        # then popular views can get names
-        # but the latest innovations at the view can be streamed in
-        # it's feeding an idea about the way of the view
-        # gathering by ideas for progress
-        # instead of solidity
+ 
+sub screenthing {
+    my $self = shift;
+    my $thing = shift; # texty or view
+
+    my $id = ref $thing;
+    $DB::single = 1;
+    say "id: $id";
+    if ($thing->can('owner')) {
+        say "owner: ".$thing->owner;
+        $id = ref($thing->owner)."-$id";
+    }
+    say "id: $id";
+
+    $thing->id("$id-".$thing->{huid});
+
+    if (!$self->get('screen/things')) {
+        $self->set('screen/things', []);
+    }
+    my $things = $self->get('screen/things');
+    
+    push @$things, $thing;
+}
+
 sub get_view { # TODO create views and shit
     my $self = shift;
-    my $other = shift;
+    my $this = shift;
     my $viewid = shift;
     my $alias = shift;
     ($alias, $viewid) = ($viewid, $alias) if $alias;
@@ -225,11 +242,13 @@ sub get_view { # TODO create views and shit
     my $views = $self->get('screen/views/'.$divid);
     unless ($views) {
         $views = $self->provision_view($divid);
-
     }
 
     my $view = new View($self->intro);
-    $self->set("$view $other");
+
+    $self->set("$view $this" => 1); # same as:
+    $view->owner($this);
+
     $view->divid($divid);
     $self->screenthing($view);
 
@@ -240,13 +259,13 @@ sub get_view { # TODO create views and shit
     }
 
     # store it on the App
-    my $oname = defined $other ? ref $other : "undef";
-    if ($other->can("ports")) {
-        unless ($other->ports) {
-            $other->ports({});
+    my $oname = defined $this ? ref $this : "undef";
+    if ($this->can("ports")) {
+        unless ($this->ports) {
+            $this->ports({});
         }
-        $other->ports->{$viewid} = $view;
-        $other->ports->{$alias} = $view if $alias;
+        $this->ports->{$viewid} = $view;
+        $this->ports->{$alias} = $view if $alias;
     }
 
     return $view;
@@ -474,8 +493,17 @@ sub flood {
     my $thing = shift;
 
     if (my $flood = $self->ports->{flood}) {
-        my $wormhole = $flood->travel($thing);
-        $wormhole->appear($flood);
+        my $wormhole;
+        return;
+        eval {
+            $wormhole = $flood->travel($thing);
+        };
+        say "!!!!!\nError doing a wormhole! $@!!!!!\n" if $@;
+        $@ || eval {
+            $wormhole->appear($flood);
+        };
+        say "!!!!!\nError rendering a wormhole! $@!!!!!\n" if $@;
+        $@ = "";
     }
     else {
         say "---no Dumpo, doing it here"; # constipated leaders
@@ -517,8 +545,9 @@ sub duction {
     my $thiss = $self->get($name) || $self->set($name, []);
     unshift @$thiss, $new;
 
-    my $uuids = $self->get("$name"."->uuid") || $self->set("$name"."->uuid", []);
-    unshift @$uuids, make_uuid();
+    #my $uuids = $self->get("$name"."->uuid") || $self->set("$name"."->uuid", []);
+    #unshift @$uuids, make_uuid();
+    $new->{huid} = make_uuid();
 
     return $self;
 }
@@ -531,7 +560,7 @@ sub make_uuid {
     return $stringuuid;
 }
 
-sub grap {
+sub grap { # joiney thing, the lie that won't die
     my $self = shift;
     my $left = shift;
     my $right = shift;
@@ -540,17 +569,10 @@ sub grap {
     }
     my $name = ref $left;
     $name || die "non ref on join $left$right";
-    my @apps = $self->get($name);
-    my ($app) = grep { $_ eq $left } @apps;
-    my $i;
-    for my $ii (0..@apps-1) {
-        if ($apps[$ii] eq $app) {
-            $i = $ii;
-            last;
-        }
-    }
+
+    my $i = $self->get_this_it($left);
     if (!defined($i)) {
-        die "not findo $left".ddump($data);
+        die "not findo $left".ddump({soome=>$data});
     }
     my $set = $self->get("$name$right");
     if (!$set) {
@@ -559,24 +581,18 @@ sub grap {
     $set->[$i];
 }
 
-sub screenthing {
+sub get_this_it { # find it amongst itselves
     my $self = shift;
-    my $thing = shift;
-
-    my $id = ref $thing;
-    if ($thing->can('owner')) {
-        $id = ref($thing->owner)."-$id";
-
+    my $this = shift;
+    my $ah = $self->get(ref $this);
+    say "Every $this: ".ddump($ah);
+    my $i;
+    for my $a (@$ah) {
+        return $i if $a eq $this;
+        $i++;
     }
-
-    $thing->id("$id-".$self->grap($thing,"->uuid"));
-
-    if (!$self->get('screen/things')) {
-        $self->set('screen/things', []);
-    }
-    my $things = $self->get('screen/things');
-    
-    push @$things, $thing;
+    die "no findo ".ref($this)." i i i i i i $this";
+    return undef;
 }
 
 1;

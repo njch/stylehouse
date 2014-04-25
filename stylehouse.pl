@@ -85,12 +85,6 @@ use Way;
 
 die "no procserv" unless grep /procserv.pl/, `ps faux`;
 
-for my $m (grep /use lib 'lib';/.../^\n$/, read_file($0)) {
-    say $m;
-    $m =~ /use (\w+);/ || next;
-    #run("perl -Ilib -c lib/$1.pm");
-}
-
 get '/' => 'index';
 
 clear_procserv_io();

@@ -37,8 +37,6 @@ sub unfocus {
     # could hide our spans? the above hook from Codo to code_unfocus does that
 }
 
-
-
 # the tab is the repositories
 # each thing you care about has a certain thing going on you like to keep an eye on
 # they are free to change and adapt, join and split
@@ -83,6 +81,15 @@ sub wipehtml {
     $self->html("");
     $self->hostinfo->send("\$('.".$self->id."').remove()");
     1;
+}
+
+sub event {
+    my $self = shift;
+    my $tx = shift;
+    my $event = shift;
+    my $this = shift;
+
+    $self->owner->event($tx, $event, $this, $self);
 }
 
 sub takeover {

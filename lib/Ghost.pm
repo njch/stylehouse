@@ -43,6 +43,7 @@ hooks:
     $self->hookways("maketravels_post");
 YAML
 <<'YAML',
+name: ghost refs
 hooks:
   donetravels_chain: |
     if ($c->{ref}) {
@@ -146,7 +147,7 @@ chains:
 YAML
 # {{{
 <<'YAML',
-name: notes
+name: ghost notes
 hooks:
   donethinking: |
     for my $c (@{$self->{out}}) {
@@ -156,6 +157,7 @@ hooks:
     }
 YAML
 <<'YAML',
+name: ghost default
 hooks:
   maketravels_post: |
     if (!@{$self->{away}}) {
