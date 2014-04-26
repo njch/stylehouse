@@ -35,7 +35,7 @@ sub continues {
 
     push @{$self->{script}}, $line;
 
-    # travel that $line writing a serialisation in $ghostname/
+    # travel that $line writing a serialisation in wormhole/$ghostname/
     
     return $line;
 }

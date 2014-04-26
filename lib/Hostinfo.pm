@@ -455,7 +455,7 @@ sub stream_handle {
     $self->loop->add($stream);
 }
 
-sub load_ghost { # ways & wormholes for an object (the google?)
+sub get_ghost { # ways & wormholes for an object (the google?)
     my $self = shift;
     my $this = shift; # Travel or something
 
@@ -466,16 +466,13 @@ sub load_ghost { # ways & wormholes for an object (the google?)
     # which is just the place to join to liquified language
     # there may be more structure through/around a list of lingos we hard code for now
     # it's a tube with no phases yet, just "select ways" and misc chewing
+    # just saw Enlightenment, which I absolutely must ignore for now.
+    # it's instant babylon competing for all I know.
+    # I write on facebook for now: Craig Steve
 
     # we eat all the ways and fire their hooks through our flow
     # so expression can be ordered more by theme, not scattered over variation
     # anyway this gets stored somehow and edited in codemirror, via Codo?
-
-    for my $w (@{$self->{ways}}) {
-        for my $c (@{$w->{chains}}) {
-            $c->{way} ||= $w;
-        }
-    }
 
     my $name = ref $this;
     if (!$name) {
@@ -483,6 +480,14 @@ sub load_ghost { # ways & wormholes for an object (the google?)
     }
     $this->{ways} = []; # should be hostinfoways replacement maneuvre
     push @{$this->{ways}}, map { new Way($this->hostinfo->intro, LoadFile($_)) } glob "ghosts/$name/*";
+
+    for my $w (@{$this->{ways}}) {
+        for my $c (@{$w->{chains}}) {
+            $c->{way} ||= $w;
+        }
+    }
+    
+    return $ghost
 }
 
 sub get {
