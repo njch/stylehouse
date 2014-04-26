@@ -4,8 +4,6 @@ use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
-use Texty;
-use Wormhole;
 
 has 'hostinfo';
 
@@ -15,36 +13,10 @@ sub new {
 
     $self->{travel} = shift;
 
-    $self->hostinfo->load_ghost($self); # ways & wormhole
-
-    
-    # Way also something big to join up to
-    # it looks like the fuzz of how you want to act while Traveling. yay.
-    # which is just the place to join to liquified language
-    # there may be more structure through/around a list of lingos we hard code for now
-    # it's a tube with no phases yet, just "select ways" and misc chewing
-
-    # we eat all the ways and fire their hooks through our flow
-    # so expression can be ordered more by theme, not scattered over variation
-    # anyway this gets stored somehow and edited in codemirror, via Codo?
-
-    for my $w (@{$self->{ways}}) {
-        for my $c (@{$w->{chains}}) {
-            $c->{way} ||= $w;
-        }
-    }
-
     return $self;
 }
 # }}}
 
-sub load_way {
-    my $self = shift;
-    my $this = shift;
-    my $name = ref $this;
-    $self->{ways} = []; # should be hostinfoways replacement maneuvre
-    push @{$self->{ways}}, map { new Way($self->hostinfo->intro, LoadFile("ghosts/$name/$_")) } glob "ghosts/$name/*";
-}
 
 sub colorf {
     my $fing = shift;
@@ -75,26 +47,23 @@ sub hookways {
     }
 }
 
-sub doo {
+sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
     my $ar = shift;
     my $thing = $self->{thing};
-    my $download = map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar;
-    my $upload = map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar;
+    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar;
+    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar;
     
-    my $for = $ar->{for};
-    my $c = $ar->{c};
-
     my @return;
-    my $evs = "$download \@return = (sub { $eval })->();  $upload";
+    my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
     eval $evs;
-    die anydump({dooing => [$@, $eval]}) if $@;
+    die Hostinfo::ddump({dooing => [$@, $evs]}) if $@;
 
     return wantarray ? @return : $return[0]
 }
 
-sub haunt {
+sub haunt { # arrives
     my $self = shift;
     $self->{depth} = shift;
     $self->{thing} = shift;

@@ -455,6 +455,35 @@ sub stream_handle {
     $self->loop->add($stream);
 }
 
+sub load_ghost { # ways & wormholes for an object (the google?)
+    my $self = shift;
+    my $this = shift; # Travel or something
+
+    my $ghost = new Ghost($self->hostinfo->intro, $this);
+    
+    # Way also something big to join up to
+    # it looks like the fuzz of how you want to act while Traveling. yay.
+    # which is just the place to join to liquified language
+    # there may be more structure through/around a list of lingos we hard code for now
+    # it's a tube with no phases yet, just "select ways" and misc chewing
+
+    # we eat all the ways and fire their hooks through our flow
+    # so expression can be ordered more by theme, not scattered over variation
+    # anyway this gets stored somehow and edited in codemirror, via Codo?
+
+    for my $w (@{$self->{ways}}) {
+        for my $c (@{$w->{chains}}) {
+            $c->{way} ||= $w;
+        }
+    }
+
+    my $name = ref $this;
+    if (!$name) {
+        die "load_ghost need to lookup ghosts for $this";
+    }
+    $this->{ways} = []; # should be hostinfoways replacement maneuvre
+    push @{$this->{ways}}, map { new Way($this->hostinfo->intro, LoadFile($_)) } glob "ghosts/$name/*";
+}
 
 sub get {
     my ($self, $i) = @_;
@@ -569,7 +598,7 @@ sub make_uuid {
     return $stringuuid;
 }
 
-sub grap { # joiney thing, the lie that won't die
+sub grap { # joiney thing, the lie that won't die... maybe it checks data and this->{k} they seem parallel
     my $self = shift;
     my $left = shift;
     my $right = shift;
