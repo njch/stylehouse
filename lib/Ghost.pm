@@ -63,7 +63,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     return wantarray ? @return : $return[0]
 }
 
-sub haunt { # arrives
+sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;
     $self->{thing} = shift;

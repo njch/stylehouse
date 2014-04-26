@@ -11,7 +11,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{name} = shift;
+    $self->{name} = shift; # id instead of link, is wrong at the next level
 
     return $self;
 }

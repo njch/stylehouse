@@ -15,6 +15,7 @@ sub new {
     shift->($self);
     
     $self->{script} = shift || [];
+    say "script: ".Hostinfo::ddump($self->{script});
 
     return $self;
 }
