@@ -14,7 +14,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->{script} = [];
+    $self->{script} = shift || [];
 
     return $self;
 }

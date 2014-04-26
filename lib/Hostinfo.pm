@@ -486,6 +486,13 @@ sub get_ghost { # ways & wormholes for an object (the google?)
             $c->{way} ||= $w;
         }
     }
+
+    # default tip of the ghost is this most definite 0
+    $ghost->{wormhole} = new Wormhole($this->hostinfo->intro, LoadFile("ghosts/$name/0"));
+    # and then they build 1s in easily controllable Ghost Pyramids
+    # where layers can be injected in space anywhere without breaking the fabric of it
+    # right now time is not something we can flop out anywhere, depending on what we're going for
+    # take that morality
     
     return $ghost
 }
