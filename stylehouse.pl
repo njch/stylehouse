@@ -155,9 +155,8 @@ websocket '/stylehouse' => sub {
     # collect everyone
     # TODO should be per screen (people + div collection)
     # also means per websocket bump individual
-    $hostinfo->new_god($self->tx);
+    $hostinfo->god_connects($self->tx);
 
-    # here's our individual
     $self->stash(  tx => $self->tx);
 
     # setup setups
@@ -198,7 +197,7 @@ websocket '/stylehouse' => sub {
 
         my $j;
         if ($msg =~ /^{"event":{"id":"",/) {
-            return say "STUPID MESSAGE: $msg";
+            say "STUPID MESSAGE: $msg";
         }
         eval { $j = decode_json($msg); };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
@@ -252,10 +251,7 @@ websocket '/stylehouse' => sub {
                 }
             }
             else {
-                $self->app->log->info("Thing lookup $event->{id} -> $thing");
-                $self->hostinfo->error("Thing dispatch" => $thing);
                 $thing->event($event);
-                # route to $1 via hostinfo register of texty thing owners
             }
             say "event handled in ".show_delta()."\n\n";
         }

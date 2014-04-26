@@ -66,59 +66,38 @@ sub event {
 
     # get this event to go to the right object
     my $id = $event->{id};
-    my ($tid) = $id =~ /^(.+)(?:-\d+)?$/;
     my $value = $event->{value};
 
-
-    my $texty = $self->ports->{menu}->text;
-    
-    #$self->hostinfo->flood({themenu => $texty, id => $id});
-
-    my $app;
-    my $menutuxt;
-    my @seen;
+    my $texty = $self->text;
+    my $dest;
+    my $method;
     for my $tuxt (@{ $texty->tuxts }) {
-        say "$id\t\t$tuxt->{id}\t\t$tuxt->{inner}->{id}";
-        if ($tuxt->{id} eq $tid) {
-            say "$tid is $tuxt->{origin}";
-            $app = $tuxt->{origin};
-            $menutuxt = $tuxt;
+        if ($tuxt->{id} eq $id) {
+            $dest = $tuxt->{origin};
+            $method = ".";
             last;
         }
-        elsif ($tuxt->{inner}->{id} eq $tid) {
-            say "$tuxt->{inner}->{id} ieq $id";
-
-            return $self->hostinfo->updump($tuxt->{inner});
-
-            next;
-            say "texty nner:".ddump($tuxt->{inner});
-            $app = $tuxt->{origin};
-            $menutuxt = $tuxt;
-            last;
-        }
-        say "$tuxt->{inner}->{id} ieq $id";
-
-    }
-    return $self->hostinfo->updump($app || $texty);
-    
-    if ($app) {
-        my $menu = $app->menu();
-
-        my $heardof = ref $app;
-        if ($value =~ /^$heardof/) {
-            unless ($menu->{'.'}) {
-                return $self->hostinfo->error("$event->{id} found, object has no . menu item", $menutuxt);
+        say "This tuxt: ".ddump($tuxt);
+        for my $subtuxt (@{ $tuxt->{inner}->tuxts }) {
+            if ($subtuxt->{id} eq $id) {
+                $dest = $tuxt->{origin};
+                $method = $subtuxt->{value};
+                last;
             }
-            $menu->{'.'}->($event);
         }
-        unless ($menu->{'.'}) {
-            return $self->hostinfo->error("can't find $value hook amongst ".join(", ",keys %$menu), $menutuxt);
+    }
+    
+    if ($dest) {
+        my $menu = $dest->menu();
+        unless ($menu->{$method}) {
+            say "Menu for $dest has no $method";
+            return;
         }
-        $menu->{$value}->($event);
+        $menu->{$method}->($event);
     }
     else {
         say "Nope wrong: ";
-        #$self->hostinfo->updump($itemtexty);
+        $self->hostinfo->flood($texty);
     }
 }
 

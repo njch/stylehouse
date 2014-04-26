@@ -89,6 +89,8 @@ sub event {
     my $event = shift;
     my $this = shift;
 
+    say "Event in $self heading for ".$self->owner;
+
     $self->owner->event($tx, $event, $this, $self);
 }
 

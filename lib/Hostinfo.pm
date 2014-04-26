@@ -31,8 +31,8 @@ sub send {
         warn "Message contains \\n";
     }
 
-    my $short = $message if length($message) < 666;
-    $short ||= substr($message,0,66*3)." >SNIP<";
+    my $short = $message if length($message) < 200;
+    $short ||= substr($message,0,23*3)." >SNIP<";
     
     say "Websocket SEND: ". $short;
 
@@ -78,7 +78,7 @@ sub send_all {
     $self->who($who);
 }
 
-sub new_god {
+sub god_connects {
     my $self = shift;
     my $tx = shift;
 
@@ -92,7 +92,7 @@ sub new_god {
     $gods ||= [];
     $self->set(gods => $gods);
 
-    my $new = { # upgrade to God? ip leads to
+    my $new = {
         address => $tx->remote_address,
         max => $tx->max_websocket_size,
         tx => $tx,
@@ -166,7 +166,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     view => "width:40%; background: #c9f; height: 500px;",
     hodi => "width:40%; background: #09f; height: 5000px;",
     babs => "width:60%; background: #09f; height: 2000px;",
-    flood => "width:800px; height:8000px; background: #9aa2aa;  position:absolute",
+    flood => "width:800px; height:8000px; border: 4px solid gray; position:absolute",
 };
 # build its own div or something
 sub provision_view {
@@ -207,18 +207,33 @@ sub review {
     }
 }
  
+sub event_id_thing_lookup {
+    my $self = shift;
+    my $id = shift;
+    $id =~ s/^((\w+-)?\w+\-\w+).+$/$1/;
+
+    my $things = $self->get('screen/things');
+    return say "nothing..." unless $things;
+
+    my ($thing) = grep { $id eq $_->{id} } @$things;
+
+    return $thing;
+}
+
 sub screenthing {
     my $self = shift;
     my $thing = shift; # texty or view
 
     my $id = ref $thing;
-    $DB::single = 1;
-    say "id: $id";
     if ($thing->can('owner')) {
-        say "owner: ".$thing->owner;
-        $id = ref($thing->owner)."-$id";
+        my $owner = $thing->owner;
+        die "wtf ".ddump($thing) unless $owner;
+        if (ref $owner eq "View") {
+            $owner = $owner->owner;
+            die "wtf View owner ".ddump($thing->owner) unless $owner;
+        }
+        $id = ref($owner)."-$id";
     }
-    say "id: $id";
 
     $thing->id("$id-".$thing->{huid});
 
@@ -336,20 +351,25 @@ sub random_colour_background {
 
 sub update_app_menu {
     my $self = shift;
-    my $apps = $self->hostinfo->get('apps');
-    $apps = [ values %$apps ];
-    #$apps = [ grep { $_->can('menu') } values $apps ];
+    my @fings = grep /^[A-Z]\w+$/ && !/View/, keys %$data;
+    my @items;
+    for my $f (@fings) {
+        say "$f";
+        my $a = $self->get($f);
+        for my $app (@$a) {
+            if ($app->can('menu')) {
+                push @items, $app;
+            }
+        }
+    }
 
-    $self->ports->{menu}->menu->replace($apps);
+    $self->ports->{menu}->menu->replace(\@items);
 }
 
 sub event {
     my $self = shift;
-    my $event = shift;
-    $self->error(
-        "in Hostinfo event " => [$self, $event]
-    );
-    #$self->ports->{menu}->menu->event(@_);
+    my $menuv = $self->ports->{menu};
+    $menuv->{menu}->event(@_);
 }
     
 
@@ -435,19 +455,6 @@ sub stream_handle {
     $self->loop->add($stream);
 }
 
-sub event_id_thing_lookup {
-    my $self = shift;
-    my $id = shift;
-    $id =~ s/^(\w+\-\w+).+$/$1/;
-
-    my $things = $self->get('screen/things');
-    return say "nothing..." unless $things;
-
-    my ($thing) = grep { $id eq $_->{id} } @$things;
-
-    return $thing;
-}
-
 
 sub get {
     my ($self, $i) = @_;
@@ -494,6 +501,7 @@ sub flood {
 
     if (my $flood = $self->ports->{flood}) {
         my $wormhole;
+        say "Flood: ".ddump($thing);
         return;
         eval {
             $wormhole = $flood->travel($thing);

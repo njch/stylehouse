@@ -85,8 +85,6 @@ sub event {
             }
         }
 
-        $self->hostinfo->flood([$h, \@lyrics]);
-            
         $self->write($h, \@lyrics);
     }
 }

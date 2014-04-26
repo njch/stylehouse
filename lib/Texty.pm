@@ -102,7 +102,7 @@ sub lines_to_tuxts {
 
     # bizzare
     if (!@{ $self->lines }) {
-        say "\nThat thing happened\n\n\n\n";
+        say "\nThat thing happened to ".$self->id."\n\n\n\n";
         $self->tuxts([]);
     }
 
