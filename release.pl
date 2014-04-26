@@ -5,6 +5,4 @@ use warnings;
 my $version = "@ARGV";
 my $name = "stylehouse-$version";
 `mkdir $name`;
-`cp -a CHANGES COPYING.txt ebuge.pl killbo.pl META.yml lib not proc procserv.pl public README.pod trampled_rose_lyrics ghosts wormholes $name/`;
-`tar cf $name.tar $name/`;
-`gzip $name.tar`;
+`cp -a CHANGES COPYING.txt ebuge.pl killbo.pl META.yml lib not proc procserv.pl public README.pod trampled_rose_lyrics ghosts wormholes ./$name/`;
