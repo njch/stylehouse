@@ -499,22 +499,23 @@ sub flood {
     my $self = shift;
     my $thing = shift;
 
-    if (my $flood = $self->ports->{flood}) {
-        my $wormhole;
+    my $flood = $self->ports->{flood};
+    my $done = 0;
+    if ($flood) {
         say "Flood: ".ddump($thing);
-        return;
-        eval {
+            my $wormhole;
             $wormhole = $flood->travel($thing);
-        };
-        say "!!!!!\nError doing a wormhole! $@!!!!!\n" if $@;
-        $@ || eval {
+            $done++;
+            say "WOM HOLEY".ddump($wormhole);
             $wormhole->appear($flood);
-        };
-        say "!!!!!\nError rendering a wormhole! $@!!!!!\n" if $@;
+            $done++;
+        if ($@) {
+            say "!!!!!\nError ".($done == 1 ? "makin" : "rendering")." a wormhole! $@!!!!!\n";
+        }
         $@ = "";
     }
-    else {
-        say "---no Dumpo, doing it here"; # constipated leaders
+    if ($done < 2) {
+        say "--- Flood Travel fucked up, doing it here"; # leaders delivering reality turds
         say ddump($thing);
         return;
     }

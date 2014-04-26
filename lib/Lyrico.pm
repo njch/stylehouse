@@ -112,6 +112,9 @@ sub write {
 sub menu {
     my $self = shift;
     return {
+        '.' => sub {
+            $self->hostinfo->flood($self->{text});
+        },
         onoff => sub {
             if ($self->started) {
                 $self->stopclicky;
