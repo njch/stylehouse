@@ -499,30 +499,28 @@ sub flood {
     my $self = shift;
     my $thing = shift;
 
-    my $done = 0;
     my $flood = $self->ports->{flood};
-    if ($flood) {
+    if (ref \$thing eq "SCALAR") {
+        say "Doing STRING FLOOD STRING";
+        $flood->text([split "\n", $thing]);
+    }
+    elsif ($flood) {
         my $travel = $flood->travel;
         
         my $wormhole;
-        eval { $wormhole = $travel->travel($thing); };
+                                        eval { $wormhole = $travel->travel($thing); };
+
         if ($@) {
-            say "flood travel error: $@\n".ddump($travel);
+            $@ = "flood travel error: $@\n".ddump($travel);
+            $self->flood("flood appear error: $@\n".ddump($travel));
         }
         else {
-            eval { $wormhole->appear($flood) };
+                                        eval { $wormhole->appear($flood) };
+
             if ($@) {
-                say "flood appear error: $@\n".ddump($travel);
-            }
-            else {
-                $done = 1;
+                $self->flood("flood appear error: $@\n".ddump($travel));
             }
         }
-    }
-    unless ($done) {
-        say "--- Flood Travel fucked up, doing it here"; # leaders delivering reality turds
-        say ddump($thing);
-        return;
     }
 }
 
