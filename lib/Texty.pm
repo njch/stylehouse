@@ -148,7 +148,6 @@ sub lines_to_tuxts {
  
         if (ref \$line eq "SCALAR") {
             $line =~ s/\n$//s;
-            say "so to speak: $line";
             push @tuxts, $mktuxty->($_) for split /\\n|\n/, $line;
         }
         else {
@@ -157,7 +156,6 @@ sub lines_to_tuxts {
     }
 
     $self->tuxts([@tuxts]);
-    say anydump(\@tuxts);
 
     $self->spatialise();
 }

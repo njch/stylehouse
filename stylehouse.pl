@@ -110,8 +110,8 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
-    #Lyrico->new($hostinfo->intro);
-    #Codo->new($hostinfo->intro);
+    Lyrico->new($hostinfo->intro);
+    Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
     $hostinfo->make_floodzone();
