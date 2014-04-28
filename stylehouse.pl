@@ -194,7 +194,7 @@ websocket '/stylehouse' => sub {
         my ($self, $msg) = @_;
 
         $self->app->log->info("WebSocket: $msg");
-        $hostinfo->god_enters($self->tx);
+        $hostinfo->god_enters($self->tx); # this'll all be way soon
 
         my $j;
         if ($msg =~ /^{"event":{"id":"",/) {
@@ -209,6 +209,7 @@ websocket '/stylehouse' => sub {
             $self->stash('handy')->($self, $j);
             say "Handi";
             return if $self->stash('handy');
+            $hostinfo->furnish_god($);
             $done = 1;
         }
 
@@ -340,6 +341,11 @@ __DATA__
       connect();
     </script>
     <style type="text/css">
+    div {
+        opacity:0.4;
+        overflow: scroll;
+        clear: both;
+    }
     .data {
         position: absolute;
         white-space: pre;

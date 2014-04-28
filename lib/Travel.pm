@@ -11,13 +11,14 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{name} = shift; # id instead of link, is wrong at the next level
+    $self->{owner} = shift; # id instead of link, is wrong at the next level
+    $self->{name} = $self->{owner}->id;
 
     return $self;
 }
 
 
-# stack of ghosts...
+# what's a wormhole of ghosts? hookways mixes ways
 sub travel {
     my $self = shift;
     my $thing = shift;

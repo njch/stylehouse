@@ -119,6 +119,38 @@ sub god_enters {
     }
 }
 
+sub furnish_god {
+    my $self = shift;
+=pod
+$(function() {
+  $('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+     $(function() {
+  $('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+          scrollTop: target.offset().top
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});     scrollTop: target.offset().top
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});
+=cut
+}
 sub find_god {
     my $self = shift;
     my $tx = shift;
@@ -161,13 +193,13 @@ sub load_views { # state from client
 
     
 my $div_attr = { # these go somewhere magical and together, like always
-    menu => "width:100%; background: #333; height: 90px;",
-    hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
-    gear => "width:10%;  background: #352035; color: #445; top: 50; height: 20px",
-    view => "width:40%; background: #c9f; height: 500px;",
-    hodi => "width:40%; background: #09f; height: 5000px;",
-    babs => "width:60%; background: #09f; height: 2000px;",
-    flood => "width:800px; height:8000px; border: 4px solid gray; position:absolute",
+    menu => "width:97%; background: #333; height: 90px;",
+    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px",
+    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px",
+    view => "width:35%; background: #c9f; height: 500px;",
+    hodi => "width:30%; background: #09f; height: 500px;",
+    babs => "width:55%; background: #09f; height: 300px;",
+    flood => "width:780px; background: #43f; border: 4px solid gray; height: 400px;",
 };
 # build its own div or something
 sub provision_view {
@@ -175,6 +207,9 @@ sub provision_view {
     my $divid = shift;
 
     my $styles = $div_attr->{$divid} || die "wtf";
+
+    $styles .= "margin: 0.3em";
+
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.'"></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
     $self->send("\$('body').append('$div');");
@@ -309,7 +344,7 @@ sub make_app_menu {
                 $s->{origin} = $object;
 
                 if (ref $object && $object->can('menu')) {
-                    my $menu = $object->menu(); # we don't clobber this hash?
+                    my $menu = {%{ $object->menu() }};
                     delete $menu->{'.'};
                     $s->{value} = "$object";
                     $s->{value} =~ s/^(\w+).+$/$1/sgm;

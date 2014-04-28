@@ -10,9 +10,11 @@ has 'hostinfo';
 sub new {
     my $self = bless {}, shift;
     my $hi = shift;
-    $self->{travel} = shift;
-    $hi->($self);
 
+    $self->{travel} = shift;
+    $self->{name} = $self->{travel}->{name};
+
+    $hi->($self);
 
     return $self;
 }
@@ -36,10 +38,12 @@ sub hookways {
     my $point = shift;
     my $ar = shift;
     my $wayspec = shift;
-    # these might want to be ordered
-    # so things can gather at points of the program workflow like "maketravels"
+
+    # these might want to be a wormhole that travel mixes in
+    # things gather along the spines
     # and be the big thing to do or a little thing to do
     # these stuff go together like that, hopefully, with language forming their surface tension
+    # jelly pyramids...
     for my $w (@{ $self->{ways} }) {
         next if $wayspec && $w ne $wayspec;
         if (exists $w->{hooks}->{$point}) {

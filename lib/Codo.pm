@@ -29,8 +29,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->hostinfo->get_view($self, run => "hodi");
-    $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
+    $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
+    $self->{code} = $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
 
     $self->{pics} = $self->hostinfo->set("Codo/pics", {});
 
@@ -40,16 +40,56 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    my @files = (qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
-    for my $codefile (@files) {
-        $self->resume_codefile($codefile);
-    }
+    $self->resume_codefile($_) for (qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
 
     $self->make_code_menu();
 
     $self->code_focus('stylehouse.pl');
 
     return $self;
+}
+
+sub resume_codefile {
+    my $self = shift;
+    my $codefile = shift;
+
+    my $code = $self->get_code($codefile);
+    my $isnew = 1 if !$code;
+    if ($isnew) {
+        $code = {
+            codefile => $codefile,
+            codename => (($codefile =~ /(\w+).pm$/)[0] || $codefile),
+            mtime => 0,
+        };
+    }
+    my $mtime = (stat $codefile)[9];
+    if ($code->{mtime} < $mtime) {
+        say "$codefile changed";
+        $code->{mtime} = $mtime;
+        $code->{rogue_change_detected} = 1;
+        # $self->ports->{code}->menu->flash($code, "mtime changed"); # do merge if problemo. later.
+    }
+
+    if ($isnew) {
+        push @{ $self->{codes} }, $code;
+    }
+}
+
+sub get_code {
+    my $self = shift;
+    my $codefile = shift;
+    my ($code) = grep { $_->{codefile} eq $codefile } @{ $self->{codes} };
+    return $code;
+}
+
+sub menu {
+    my $self = shift;
+    my $menu = {};
+    $menu->{"nah"} = sub { $self->nah };
+    $menu->{"new"} = sub { $self->new_ebuge() };
+    $menu->{"<views>"} = sub { $self->show_views(); };
+
+    return $menu;
 }
 
 sub make_code_menu {
@@ -82,6 +122,10 @@ sub update_code_menu {
     return $self;
 }
 
+sub show_views {
+    my $self = shift;
+
+
 sub code_unfocus {
     my $self = shift;
     $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
@@ -101,12 +145,12 @@ sub code_focus {
     $code->{line} = $point->{line} if $point->{line};
     $self->{code_focus} = $code;
 
-# make this out of Ghosts
-    my @lines = lines_for_file($codefile);
+# make this out of Wormholes
+    my @lines = $self->{code}->travel(code => $code);
     my @stuff = ([]);
     for my $l (@lines) {
-        if ($l =~ /^\S+.+ \{$/gm) {
-           push @stuff, []
+        if ($l =~ /^\S+.+ \{$/gm) { # travel... as we see this branch a line from the spine route
+           push @stuff, [];
         }
         push @{ $stuff[-1] }, $l;
     }
@@ -137,47 +181,9 @@ sub code_focus {
     $code->{texty} = $texty;
 }
 
-sub get_code {
-    my $self = shift;
-    my $codefile = shift;
-    my ($code) = grep { $_->{codefile} eq $codefile } @{ $self->{codes} };
-    return $code;
-}
-
-sub resume_codefile {
-    my $self = shift;
-    my $codefile = shift;
-
-    my $code = $self->get_code($codefile);
-    my $isnew = 1 if !$code;
-    if ($isnew) {
-        $code = {
-            codefile => $codefile,
-            codename => (($codefile =~ /(\w+).pm$/)[0] || $codefile),
-            mtime => 0,
-        };
-    }
-    my $mtime = (stat $codefile)[9];
-    if ($code->{mtime} < $mtime) {
-        say "$codefile changed";
-        $code->{mtime} = $mtime;
-        $code->{rogue_change_detected} = 1;
-        # $self->ports->{code}->menu->flash($code, "mtime changed"); # do merge if problemo. later.
-    }
-
-    if ($isnew) {
-        push @{ $self->{codes} }, $code;
-    }
-}
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
-}
-
-sub lines_for_file {
-    my $filename = shift;
-    return split "\n", read_file($filename);
 }
 
 sub code_mirror {
@@ -248,15 +254,6 @@ sub new_ebuge {
     my $ebuge = Ebuge->new($self->hostinfo->intro, "ebuge.pl");
     push @{ $self->ebuge }, $ebuge;
     return $ebuge;
-}
-
-sub menu {
-    my $self = shift;
-    my $menu = {};
-    $menu->{"nah"} = sub { $self->nah };
-    $menu->{"new"} = sub { $self->new_ebuge() };
-
-    return $menu;
 }
 
 
