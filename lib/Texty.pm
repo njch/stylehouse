@@ -119,33 +119,45 @@ sub lines_to_tuxts {
 
     my $l = 0;
     my @tuxts;
-    for my $value (@{ $self->lines }) {
-        $value =~ s/\n$//;
+    for my $line (@{ $self->lines }) {
         my $class = $self->hooks->{class} || "data";
-        my $tuxt = {
-            class => $class,
-            id => ($self->view->id.'-'.$self->id.'-'.$l++),
-        };
 
-        if (ref $value eq "Texty") {
-            $tuxt->{style} .= "border: 1px solid pink;";
-            my @inners = @{ $value->tuxts };
-            $_->{left} += 20 for @inners;
-            push @tuxts, @inners;
+        my $mktuxty = sub {
+            my $value = shift;
+            my $tuxt = {
+                class => $class,
+                id => ($self->view->id.'-'.$self->id.'-'.$l++),
+            };
+
+            if (ref $value eq "Texty") {
+                $tuxt->{style} .= "border: 1px solid pink;";
+                my @inners = @{ $value->tuxts }; # NOT a wormhole!
+                $_->{left} += 20 for @inners;
+                push @tuxts, @inners;
+            }
+            else {
+                $value = encode_entities($value)
+                    unless $value =~ /<span|<textarea/sgm;
+            }
+            return {
+                class => "$class ".$self->view->id,
+                id => ($self->id.'-'.$l++),
+                value => $value,
+            }
+        };
+ 
+        if (ref \$line eq "SCALAR") {
+            $line =~ s/\n$//s;
+            say "so to speak: $line";
+            push @tuxts, $mktuxty->($_) for split /\\n|\n/, $line;
         }
         else {
-            $value = encode_entities($value)
-                unless $value =~ /<span|<textarea/sgm;
+            push @tuxts, $mktuxty->($line);
         }
-
-        push @tuxts, {
-            class => "$class ".$self->view->id,
-            id => ($self->id.'-'.$l++),
-            value => $value,
-        };
     }
 
     $self->tuxts([@tuxts]);
+    say anydump(\@tuxts);
 
     $self->spatialise();
 }
