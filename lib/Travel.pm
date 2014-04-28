@@ -21,7 +21,7 @@ sub new {
 sub travel {
     my $self = shift;
     my $thing = shift;
-    my $ghost = shift || $self->hostinfo->get_ghost($self);
+    my $ghost = shift || new Ghost($self->hostinfo->intro, $self);
     say "The Ghost: ".Hostinfo::ddump($ghost);
     my $way = shift;
     my $depth = shift || 0;

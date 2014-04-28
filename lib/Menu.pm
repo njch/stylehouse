@@ -39,8 +39,6 @@ sub replace {
 
     $self->text->replace([@$items]);
 
-    $self->view->takeover($self->text->htmls);
-
     return $self;
 }
 

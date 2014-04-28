@@ -14,7 +14,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->{script} = shift || [];
+    $self->{file} = shift;
+    $self->{script} = LoadFile($self->{file});
     say "script: ".Hostinfo::ddump($self->{script});
 
     return $self;
@@ -75,9 +76,14 @@ sub appear {
             my $newtuxts = [];
             say "Wormhole is ".@{$self->tuxts}." lines long";
             for my $s (@{$self->tuxts}) {
-                my $ghost = $s->{value}->{ghost};
-                $ghost->hookways("chain_to_tuxts", { texty => $self, s => $s });
-                push @$newtuxts, @{$ghost->{tuxts}};
+                if ($s->{value} eq "nothing") {
+                    push @$newtuxts, $s;
+                }
+                else {
+                    my $ghost = $s->{value}->{ghost};
+                    $ghost->hookways("chain_to_tuxts", { texty => $self, s => $s });
+                    push @$newtuxts, @{$ghost->{tuxts}};
+                }
             }
             $self->tuxts($newtuxts);
         }

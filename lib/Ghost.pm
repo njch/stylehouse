@@ -9,9 +9,10 @@ has 'hostinfo';
 
 sub new {
     my $self = bless {}, shift;
-    shift->($self);
-
+    my $hi = shift;
     $self->{travel} = shift;
+    $hi->($self);
+
 
     return $self;
 }
@@ -58,7 +59,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my @return;
     my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
     eval $evs;
-    die Hostinfo::ddump({dooing => [$@, $evs]}) if $@;
+    die "DOO Fuckup:\n".split("\n", $@)."\n\n".Hostinfo::ddump([$evs]) if $@;
 
     return wantarray ? @return : $return[0]
 }

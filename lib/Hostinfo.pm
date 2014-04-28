@@ -163,6 +163,7 @@ sub load_views { # state from client
 my $div_attr = { # these go somewhere magical and together, like always
     menu => "width:100%; background: #333; height: 90px;",
     hodu => "width:60%;  background: #352035; color: #afc; top: 50; height: 4000px",
+    gear => "width:10%;  background: #352035; color: #445; top: 50; height: 20px",
     view => "width:40%; background: #c9f; height: 500px;",
     hodi => "width:40%; background: #09f; height: 5000px;",
     babs => "width:60%; background: #09f; height: 2000px;",
@@ -362,7 +363,7 @@ sub update_app_menu {
             }
         }
     }
-
+    
     $self->ports->{menu}->menu->replace(\@items);
 }
 
@@ -455,48 +456,6 @@ sub stream_handle {
     $self->loop->add($stream);
 }
 
-sub get_ghost { # ways & wormholes for an object (the google?)
-    my $self = shift;
-    my $this = shift; # Travel or something
-
-    my $ghost = new Ghost($self->hostinfo->intro, $this);
-    
-    # Way also something big to join up to (!)
-    # it looks like the fuzz of how you want to act while Travelling. yay.
-    # which is just the place to join to liquified language
-    # there may be more structure through/around a list of lingos we hard code for now
-    # it's a tube with no phases yet, just "select ways" and misc chewing
-    # just saw Enlightenment, which I absolutely must ignore for now.
-    # it's instant babylon competing for all I know.
-    # I write on facebook for now: Craig Steve
-
-    # we eat all the ways and fire their hooks through our flow
-    # so expression can be ordered more by theme, not scattered over variation
-    # anyway this gets stored somehow and edited in codemirror, via Codo?
-
-    my $name = ref $this;
-    if (!$name) {
-        die "load_ghost need to lookup ghosts for $this";
-    }
-    $this->{ways} = []; # should be hostinfoways replacement maneuvre
-    push @{$this->{ways}}, map { new Way($this->hostinfo->intro, LoadFile($_)) } glob "ghosts/$name/*";
-
-    for my $w (@{$this->{ways}}) {
-        for my $c (@{$w->{chains}}) {
-            $c->{way} ||= $w;
-        }
-    }
-
-    # default tip of the ghost is this most definite 0
-    $ghost->{wormhole} = new Wormhole($this->hostinfo->intro, LoadFile("wormholes/$name/0"));
-    # and then they build 1s in easily controllable Ghost Pyramids
-    # where layers can be injected in space anywhere without breaking the fabric of it
-    # right now time is not something we can flop out anywhere, depending on what we're going for
-    # take that morality
-    
-    return $ghost
-}
-
 sub get {
     my ($self, $i) = @_;
     $data->{$i};
@@ -533,30 +492,34 @@ sub make_floodzone {
     my $self = shift;
 
     $self->get_view($self, "flood");
-    $self->flood($self->getapp("Lyrico"));
+    $self->flood($self);
 }
-
+# grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
     my $thing = shift;
 
-    my $flood = $self->ports->{flood};
     my $done = 0;
+    my $flood = $self->ports->{flood};
     if ($flood) {
-        say "Flood: ".ddump($thing);
-            my $travel = $flood->{travel};
-            my $wormhole;
-            ($wormhole) = $travel->travel($thing); # grep '.-.travel' -R * # like an art student game
-            $done++;
-            say "WOM HOLEY".ddump($travel->{ghost}->{wormhole});
-            $wormhole->appear($flood);
-            $done++;
+        my $travel = $flood->travel;
+        
+        my $wormhole;
+        eval { $wormhole = $travel->travel($thing); };
         if ($@) {
-            say "!!!!!\nError ".($done == 1 ? "makin" : "rendering")." a wormhole! $@!!!!!\n";
+            say "flood travel error: $@\n".ddump($travel);
         }
-        $@ = "";
+        else {
+            eval { $wormhole->appear($flood) };
+            if ($@) {
+                say "flood appear error: $@\n".ddump($travel);
+            }
+            else {
+                $done = 1;
+            }
+        }
     }
-    if ($done < 2) {
+    unless ($done) {
         say "--- Flood Travel fucked up, doing it here"; # leaders delivering reality turds
         say ddump($thing);
         return;
@@ -599,6 +562,32 @@ sub duction {
     #my $uuids = $self->get("$name"."->uuid") || $self->set("$name"."->uuid", []);
     #unshift @$uuids, make_uuid();
     $new->{huid} = make_uuid();
+
+    if ($name eq "Ghost") {
+        my $ghost = $new;
+        my $travel = $ghost->{travel}
+            || do {
+            use Carp;
+            confess "duck setup need to lookup ghosts for ".ddump($new);
+        };
+        $name = ref $travel;
+        $ghost->{ways} = []; # should be hostinfoways replacement maneuvre
+        push @{$ghost->{ways}}, map { new Way($self->intro, $_) } glob "ghosts/$name/*";
+
+        for my $w (@{$ghost->{ways}}) {
+            for my $c (@{$w->{chains}}) {
+                $c->{way} ||= $w;
+            }
+        }
+        # default tip of the ghost is this most definite 0
+        $ghost->{wormhole} = new Wormhole($self->intro, "wormholes/$name/0");
+        # and then they build 1s in easily controllable Ghost Pyramids
+        # where layers can be injected in space anywhere without breaking the fabric of it
+        # right now time is not something we can flop out anywhere, depending on what we're going for
+        # take that morality
+
+        say "\n\n\nductiondaGhost:\n".ddump($ghost);
+    }
 
     return $self;
 }

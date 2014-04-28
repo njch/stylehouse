@@ -48,6 +48,7 @@ sub new {
 
     return $self;
 }
+
 sub replace {
     my $self = shift;
     my $lines = shift;

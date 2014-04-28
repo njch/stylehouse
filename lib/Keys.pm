@@ -7,7 +7,7 @@ has 'hostinfo';
 has 'view' => sub { {} };
 has 'ebuge' => sub { [] };
 has 'output';
-has 'gear';
+has 'ports';
 has 'started';
 
 use Mojo::UserAgent;
@@ -20,7 +20,7 @@ sub new {
 
     return if $self->hostinfo->get("Keys");
 
-    $self->gear($self->hostinfo->get_view($self, "hodu"));
+    $self->hostinfo->get_view($self, "gear");
 
     say "Made keys";
     return $self;
@@ -30,7 +30,7 @@ sub start {
     my $self = shift;
     
     $self->started(1);
-    $self->gear->text(
+    $self->ports->{gear}->text(
         ['<form action="#"><textarea rows="1" cols="20" id="Keys"></textarea></form>'],
         { spatialise => sub {
             return { top => '50%', right => 20 }
