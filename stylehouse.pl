@@ -203,21 +203,18 @@ websocket '/stylehouse' => sub {
         eval { $j = decode_json($msg); };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
 
-        # handle startup responses until they're done
+        # all this stuff before they join the stream
         my $done = 0;
         if ($self->stash('handy')) {
             $self->stash('handy')->($self, $j);
             say "Handi";
             return if $self->stash('handy');
-            $hostinfo->furnish_god($);
+            $hostinfo->furnish_god();
             $done = 1;
         }
 
-
-
         # it beings! not that we don't come through here all the time
         init() if $underworld;
-
 
         # ongoing stuff
         if (my $event = $j->{event}) {
@@ -344,7 +341,6 @@ __DATA__
     div {
         opacity:0.4;
         overflow: scroll;
-        clear: both;
     }
     .data {
         position: absolute;

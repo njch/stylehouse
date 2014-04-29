@@ -32,54 +32,18 @@ sub new {
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
     $self->{code} = $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
 
-    $self->{pics} = $self->hostinfo->set("Codo/pics", {});
-
-
-
+    $self->{pics} = $self->hostinfo->set("Codo/pics", {}); # stuff goin on live in this process
 
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    $self->resume_codefile($_) for (qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
+    $self->init_wormcodes(qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
 
     $self->make_code_menu();
 
     $self->code_focus('stylehouse.pl');
 
     return $self;
-}
-
-sub resume_codefile {
-    my $self = shift;
-    my $codefile = shift;
-
-    my $code = $self->get_code($codefile);
-    my $isnew = 1 if !$code;
-    if ($isnew) {
-        $code = {
-            codefile => $codefile,
-            codename => (($codefile =~ /(\w+).pm$/)[0] || $codefile),
-            mtime => 0,
-        };
-    }
-    my $mtime = (stat $codefile)[9];
-    if ($code->{mtime} < $mtime) {
-        say "$codefile changed";
-        $code->{mtime} = $mtime;
-        $code->{rogue_change_detected} = 1;
-        # $self->ports->{code}->menu->flash($code, "mtime changed"); # do merge if problemo. later.
-    }
-
-    if ($isnew) {
-        push @{ $self->{codes} }, $code;
-    }
-}
-
-sub get_code {
-    my $self = shift;
-    my $codefile = shift;
-    my ($code) = grep { $_->{codefile} eq $codefile } @{ $self->{codes} };
-    return $code;
 }
 
 sub menu {
@@ -113,18 +77,14 @@ sub make_code_menu {
 
     $self->update_code_menu();
 }
-
 sub update_code_menu {
     my $self = shift;
-
     $self->ports->{code}->menu->replace($self->{codes});
-
-    return $self;
 }
-
 sub show_views {
     my $self = shift;
-
+    $self->{run}->travel($self->hostinfo->get("screen/views/*"))->appear();
+}
 
 sub code_unfocus {
     my $self = shift;
@@ -134,38 +94,31 @@ sub code_unfocus {
 
 sub code_focus {
     my $self = shift;
-    my $codefile = shift;
+    my $codename = shift;
     my $point = shift;
 
     if ($self->{code_focus}) {
         $self->code_unfocus();
     }
 
-    my $code = $self->get_code($codefile) || die;
-    $code->{line} = $point->{line} if $point->{line};
+    my $code = $self->code_by_name($codename) || die;
+    $code->{point} = $point;
+
     $self->{code_focus} = $code;
 
-# make this out of Wormholes
-    my @lines = $self->{code}->travel(code => $code);
+
+    # gather outselves to point :D!
+    # this consumes lines, should do wormhole at the end of init_wormhole
     my @stuff = ([]);
-    for my $l (@lines) {
-        if ($l =~ /^\S+.+ \{$/gm) { # travel... as we see this branch a line from the spine route
+    for my $l (@{$code->{lines}}) {
+        if ($l =~ /^\S+.+ \{$/gm) { # travel... as we see this branch a lines from the spine route
            push @stuff, [];
         }
         push @{ $stuff[-1] }, $l;
     }
-    @lines = ();
+    my @lines = ();
     for my $s (@stuff) {
         push @lines, "$s->[0] (+".(@$s-1)." lines)";
-    }
-    return \@lines;
-    my $current = $point->{line} || 0;
-
-    if ($current) {
-        my $from = $current - 10;
-        $from = 0 if $from < 0;
-        @lines = splice @lines, $from, 200;
-        $current = 10;
     }
 
     my $texty = new Texty( # auto takeover onto the screen
@@ -174,12 +127,60 @@ sub code_focus {
         [@lines],
     );
 
-    my $spanid = $texty->tuxts->[$current-1]->{id};
-    $self->hostinfo->send("\$('#$spanid').addClass('on');");
-
     $texty->{code} = $code;
     $code->{texty} = $texty;
+
+    if (0) {
+        # invent pointing $code->{point}
+        my $current = "?";
+        my $from = $current - 10;
+        $from = 0 if $from < 0;
+        @lines = splice @lines, $from, 200;
+        $current = 10;
+        my $spanid = $texty->tuxts->[$current-1]->{id};
+        $self->hostinfo->send("\$('#$spanid').addClass('on');");
+    }
 }
+
+sub init_wormcodes {
+    my $self = shift;
+    my @codefiles = @_;
+
+    for my $cf (@codefiles) {
+        my $codename = (($cf =~ /(\w+).pm$/)[0] || $cf);
+        my $code = $self->code_by_name($codename);
+
+        my $isnew = 1 if !$code;
+
+        my $mtime = (stat $cf)[9];
+        if ($isnew) {
+            $code = {
+                codefile => $cf,
+                codename => $codename,
+                mtime => $mtime,
+            };
+        }
+
+        if ($code->{mtime} < $mtime) {
+            say "$cf changed";
+            $code->{mtime} = $mtime;
+            $isnew = 1;
+        }
+
+        if ($isnew) {
+            $code->{lines} = [read_file($code->{codefile})]; # travel here
+            push @{ $self->{codes} }, $code;
+        }
+    }
+}
+
+sub code_by_name {
+    my $self = shift;
+    my $name = shift;
+    my ($code) = grep { $_->{codename} eq $name } @{ $self->{codes} };
+    $code;
+}
+
 
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
@@ -202,12 +203,6 @@ sub code_mirror {
 
 }
 
-sub thedump {
-    my $self = shift;
-    my $dumpo = $self->hostinfo->get("Dumpo") || die;
-    $dumpo->thedump(@_);
-}
-
 # break happening
 sub take_picture {
     my $self = shift;
@@ -228,9 +223,7 @@ sub take_picture {
         };
     }
 
-    my $picturehooks = $pic->{hooks};
-
-    my $picture = [$self->thedump(\@seen, $picturehooks)];
+    my $picture = Hostinfo::ddump(\@seen);
     push @{$pic->{pics}}, {
         stack => $stack,
         picture => $picture,

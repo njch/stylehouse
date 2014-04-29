@@ -14,6 +14,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
+    $self->{ghost} = shift;
     $self->{file} = shift;
     $self->{script} = LoadFile($self->{file});
     say "script: ".Hostinfo::ddump($self->{script});
@@ -68,7 +69,8 @@ sub ddump {
 
 sub appear {
     my $self = shift;
-    my $view = shift;
+    my $view = $self->{ghost}->{travel}->{owner};
+    ref $view eq "View" || die " $view not View";
     return new Texty($self->hostinfo->intro, $view, $self->{script}, {
         spatialise => sub { { space => 40, top => 50 } },
         tuxts_to_htmls => sub {

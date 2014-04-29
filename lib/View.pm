@@ -64,7 +64,10 @@ sub travel {
     
     $self->{travel} ||= Travel->new($self->hostinfo->intro, $self);
 
-    $self->{travel}->travel([@_]);
+    if (@_) {
+        return $self->{travel}->travel([@_]);
+    }
+    return $self->{travel};
 }
 
 sub nah {

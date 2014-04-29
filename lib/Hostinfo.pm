@@ -199,7 +199,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     view => "width:35%; background: #c9f; height: 500px;",
     hodi => "width:30%; background: #09f; height: 500px;",
     babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:780px; background: #43f; border: 4px solid gray; height: 400px;",
+    flood => "width:780px; background: #8af; border: 4px solid gray; top: 700px; height: 400px; overflow: scroll;",
 };
 # build its own div or something
 sub provision_view {
@@ -210,7 +210,7 @@ sub provision_view {
 
     $styles .= "margin: 0.3em";
 
-    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.'"></div>';
+    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' clear:both;"></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
     $self->send("\$('body').append('$div');");
 
@@ -540,20 +540,17 @@ sub flood {
         $flood->text([split "\n", $thing]);
     }
     elsif ($flood) {
-        my $travel = $flood->travel;
-        
         my $wormhole;
-                                        eval { $wormhole = $travel->travel($thing); };
+                                        eval { $wormhole = $flood->travel($thing); };
 
         if ($@) {
-            $@ = "flood travel error: $@\n".ddump($travel);
-            $self->flood("flood appear error: $@\n".ddump($travel));
+            $self->flood("flood travel error: $@\n".ddump($flood->travel));
         }
         else {
                                         eval { $wormhole->appear($flood) };
 
             if ($@) {
-                $self->flood("flood appear error: $@\n".ddump($travel));
+                $self->flood("flood appear error: $@\n".ddump($flood->travel));
             }
         }
     }
@@ -596,7 +593,7 @@ sub duction {
     #unshift @$uuids, make_uuid();
     $new->{huid} = make_uuid();
 
-    if ($name eq "Ghost") {
+    if ($name eq "Ghost") { # way as
         my $ghost = $new;
         my $travel = $ghost->{travel}
             || do {
@@ -613,7 +610,7 @@ sub duction {
             }
         }
         # default tip of the ghost is this most definite 0
-        $ghost->{wormhole} = new Wormhole($self->intro, "wormholes/$name/0");
+        $ghost->{wormhole} = new Wormhole($self->intro, $ghost, "wormholes/$name/0");
         # and then they build 1s in easily controllable Ghost Pyramids
         # where layers can be injected in space anywhere without breaking the fabric of it
         # right now time is not something we can flop out anywhere, depending on what we're going for

@@ -122,33 +122,42 @@ sub lines_to_tuxts {
     for my $line (@{ $self->lines }) {
         my $class = $self->hooks->{class} || "data";
 
-        my $mktuxty = sub {
+        my $mktuxty;
+        $mktuxty = sub {
             my $value = shift;
+            my $hooks = shift;
             my $tuxt = {
-                class => $class,
+                class => "$class ".$self->view->id,
                 id => ($self->view->id.'-'.$self->id.'-'.$l++),
+                style => "",
             };
+            my @extratuxts;
+
+            if ($hooks->{inner_linebreak}) {
+                $tuxt->{style} .= "border-left: 2px dotted blue;";
+            }
+            if ($value =~ /\\n/) {
+                say "\nGoing to split value: '$value'\n";
+                return map { $mktuxty->("$_", {inner_linebreak=>1}) } split /\\n/, $value;
+            }
 
             if (ref $value eq "Texty") {
                 $tuxt->{style} .= "border: 1px solid pink;";
                 my @inners = @{ $value->tuxts }; # NOT a wormhole!
                 $_->{left} += 20 for @inners;
-                push @tuxts, @inners;
+                push @extratuxts, @inners;
             }
             else {
                 $value = encode_entities($value)
                     unless $value =~ /<span|<textarea/sgm;
             }
-            return {
-                class => "$class ".$self->view->id,
-                id => ($self->id.'-'.$l++),
-                value => $value,
-            }
+            $tuxt->{value} = $value;
+            return $tuxt, @extratuxts;
         };
  
         if (ref \$line eq "SCALAR") {
             $line =~ s/\n$//s;
-            push @tuxts, $mktuxty->($_) for split /\\n|\n/, $line;
+            push @tuxts, $mktuxty->($_) for split /\n/, $line;
         }
         else {
             push @tuxts, $mktuxty->($line);

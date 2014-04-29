@@ -63,7 +63,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my @return;
     my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
     eval $evs;
-    die "DOO Fuckup:\n".split("\n", $@)."\n\n".Hostinfo::ddump([$evs]) if $@;
+    die "DOO Fuckup:\n$@\n\n".Hostinfo::ddump([$evs]) if $@;
 
     return wantarray ? @return : $return[0]
 }

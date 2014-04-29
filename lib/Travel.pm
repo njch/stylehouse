@@ -28,7 +28,9 @@ sub travel {
     my $depth = shift || 0;
     my $last_state = shift;
 
-    say " travel! - " if !$depth;
+    if (!$depth) {
+        $self->hostinfo->getapp("Codo")->take_picture("travel!", $thing);
+    }
 
     my ($state, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 
