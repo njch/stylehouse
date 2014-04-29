@@ -86,10 +86,43 @@ sub show_views {
     $self->{run}->travel($self->hostinfo->get("screen/views/*"))->appear();
 }
 
-sub code_unfocus {
+{   package Codon;
+    
+    sub new {
+        my $self = bless {}, shift;
+        shift->($self);
+    }
+}
+
+sub init_wormcodes {
     my $self = shift;
-    $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
-    # TODO carefully suspend their Texty + Ghosts
+    my @codefiles = @_;
+
+    for my $cf (@codefiles) {
+        my $codename = (($cf =~ /(\w+).pm$/)[0] || $cf);
+        my $codon = $self->code_by_name($codename);
+        my $isnew = 1 if !$codon;
+
+        my $mtime = (stat $cf)[9];
+        if ($isnew) {
+            $codon = new Codon($self->hostinfo->intro);
+            $codon->{codefile} = $cf;
+            $codon->{codename} = $codename;
+            $codon->{mtime} = $mtime;
+        }
+
+        if ($codon->{mtime} < $mtime) {
+            say "$cf changed";
+            $codon->{mtime} = $mtime;
+            $isnew = 1;
+        }
+
+        if ($isnew) {
+            $codon->{lines} = [read_file($codon->{codefile})]; # travel here
+            push @{ $self->{codes} }, $codon;
+            say "Mad codon: ".Hostinfo::ddump([ "COTON CONTY", keys %$codon ]);
+        }
+    }
 }
 
 sub code_focus {
@@ -100,6 +133,8 @@ sub code_focus {
     if ($self->{code_focus}) {
         $self->code_unfocus();
     }
+    
+    die Hostinfo::ddump($self->{codes});
 
     my $code = $self->code_by_name($codename) || die;
     $code->{point} = $point;
@@ -141,39 +176,11 @@ sub code_focus {
         $self->hostinfo->send("\$('#$spanid').addClass('on');");
     }
 }
-
-sub init_wormcodes {
+sub code_unfocus {
     my $self = shift;
-    my @codefiles = @_;
-
-    for my $cf (@codefiles) {
-        my $codename = (($cf =~ /(\w+).pm$/)[0] || $cf);
-        my $code = $self->code_by_name($codename);
-
-        my $isnew = 1 if !$code;
-
-        my $mtime = (stat $cf)[9];
-        if ($isnew) {
-            $code = {
-                codefile => $cf,
-                codename => $codename,
-                mtime => $mtime,
-            };
-        }
-
-        if ($code->{mtime} < $mtime) {
-            say "$cf changed";
-            $code->{mtime} = $mtime;
-            $isnew = 1;
-        }
-
-        if ($isnew) {
-            $code->{lines} = [read_file($code->{codefile})]; # travel here
-            push @{ $self->{codes} }, $code;
-        }
-    }
+    $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
+    # TODO carefully suspend their Texty + Ghosts
 }
-
 sub code_by_name {
     my $self = shift;
     my $name = shift;
@@ -189,18 +196,12 @@ sub random_colour_background {
 
 sub code_mirror {
     my $self = shift;
-
-# for Ghosts and Ways
-# client side state for codemirrors
-# put coloured blocks over different parts of the code to shade it pretty colours
-# when clicked they relay the click to the codemirror?
-# might be possible one day, maybe underneath transparent codemirror...
-
+# client side state for codemirrors..?
+# put coloured blocks underneath transparent codemirror
 #    ->text(['CodeMirrrrrrr']);
 #    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
 #    say "Doing it! $cm_init\n\n\n";
 #    $self->hostinfo->send($cm_init);
-
 }
 
 # break happening
@@ -248,9 +249,6 @@ sub new_ebuge {
     push @{ $self->ebuge }, $ebuge;
     return $ebuge;
 }
-
-
-
 sub event {
     my $self = shift;
     my $event = shift;

@@ -568,7 +568,7 @@ sub intro {
     my $self = shift;
     return sub {
         my $other = shift;
-        $other->hostinfo($self);
+        $other->{hostinfo} = $self;
         $self->duction($other);
     };
 }
