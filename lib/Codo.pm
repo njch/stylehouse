@@ -32,7 +32,7 @@ sub new {
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
     $self->{code} = $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
 
-    $self->{pics} = $self->hostinfo->set("Codo/pics", {}); # stuff goin on live in this process
+    $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
@@ -51,7 +51,12 @@ sub menu {
     my $menu = {};
     $menu->{"nah"} = sub { $self->nah };
     $menu->{"new"} = sub { $self->new_ebuge() };
-    $menu->{"<views>"} = sub { $self->show_views(); };
+    $menu->{"<views>"} = sub {
+        $self->{run}->text(ddump($self->hostinfo->get("screen/views/*"));
+    },
+    $menu->{"<obso>"} = sub {
+        $self->{run}->text(ddump($self->hostinfo->get("Codo/obsetrav")));
+    },
 
     return $menu;
 }
@@ -81,10 +86,6 @@ sub make_code_menu {
 sub update_code_menu {
     my $self = shift;
     $self->ports->{code}->menu->replace($self->{codes});
-}
-sub show_views {
-    my $self = shift;
-    $self->{run}->travel($self->hostinfo->get("screen/views/*"))->appear();
 }
 
 {   package Codon;

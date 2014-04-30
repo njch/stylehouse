@@ -25,6 +25,21 @@ sub new {
     return $self;
 }
 
+sub ob {
+    my $self = shift;
+    my @seen = @_;
+
+    # good place to way up with strings/tubes
+    my $stack = [ map { "$_->[0] $_->[3] ($_->[1] $_->[2])" } map { [ caller($_) ] } 0..10 ];
+    
+    my $data = Hostinfo::ddump(\@seen);
+
+    my $ob = [ $stack, $data ];
+
+    $self->{self}->travel($ob);
+
+    push @{$self->hostinfo->get("Codo/obsetrav")}, $ob;
+}
 
 # what's a wormhole of ghosts? hookways mixes ways
 sub travel {

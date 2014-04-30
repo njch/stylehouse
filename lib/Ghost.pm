@@ -19,7 +19,10 @@ sub new {
     return $self;
 }
 # }}}
-
+sub ob {
+    my $self = shift;
+    $self->{travel}->ob(@_);
+}
 
 sub colorf {
     my $fing = shift;

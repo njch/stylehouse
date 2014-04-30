@@ -574,12 +574,6 @@ sub intro {
     };
 }
 
-sub loadghost {
-    my $self = shift;
-    my $ghost = shift;
-    $ghost->{wormhole} = new Wormhole($self->hostinfo->intro);
-}
-
 # as a chain, this is a new object coming into the web
 # might want to spawn some intuition...
 sub duction {
@@ -595,6 +589,7 @@ sub duction {
     $new->{huid} = make_uuid();
 
     if ($name eq "Ghost") { # way as
+        # the path to ghosts and wormholes need to be reach to other places from stylehouse at the root
         my $ghost = $new;
         my $travel = $ghost->{travel}
             || do {

@@ -21,6 +21,10 @@ sub new {
 
     return $self;
 }
+sub ob {
+    my $self = shift;
+    $self->{ghost}->ob(@_);
+}
 
 sub continues {
     my ($self, $ghost) = @_; # %
