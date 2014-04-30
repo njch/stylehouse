@@ -17,6 +17,10 @@ sub new {
         # observer of whole codon function
         $self->{self} = new Travel($self->hostinfo->intro, $self);
     }
+    else {
+        # all travels of travels
+        push @{ $self->hostinfo->get('Travel Travel') }, $self;
+    }
 
     return $self;
 }

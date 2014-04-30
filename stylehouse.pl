@@ -90,6 +90,7 @@ get '/' => 'index';
 clear_procserv_io();
 my $hostinfo = new Hostinfo();
 $hostinfo->set('0', $hostinfo);
+$hostinfo->set('Travel Travel', []);
 $hostinfo->for_all([]);
 helper 'hostinfo' => sub { $hostinfo };
 
