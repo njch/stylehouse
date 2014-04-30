@@ -64,6 +64,7 @@ sub make_code_menu {
             my $self = shift;
             for my $s (@{$self->tuxts}) {
                 my $code = $s->{value};
+                say "A menu for $code->{codename} ".join", ", keys %$code;
                 $s->{value} = $code->{codename};
                 $s->{origin} = $code;
                 $s->{style} = random_colour_background();
@@ -118,13 +119,13 @@ sub init_wormcodes {
         }
 
         if ($isnew) {
-            $codon->{lines} = [read_file($codon->{codefile})]; # travel here
+            $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel here
             push @{ $self->{codes} }, $codon;
-            say "Mad codon: ".Hostinfo::ddump([ "COTON CONTY", keys %$codon ]);
+            say "new Codon: $codon->{codename}\t\t".scalar(@{$codon->{lines}})." lines";
         }
     }
 }
-
+sub ddump { Hostinfo::ddump(@_) }
 sub code_focus {
     my $self = shift;
     my $codename = shift;
@@ -133,10 +134,12 @@ sub code_focus {
     if ($self->{code_focus}) {
         $self->code_unfocus();
     }
-    
-    die Hostinfo::ddump($self->{codes});
 
-    my $code = $self->code_by_name($codename) || die;
+    if (ref $self->{codes}->[0] eq "Hostinfo") {
+        return say "Can't code_focus, Codons fucked as: ".ddump($self->{codes}->[0]);
+    }
+    
+    my $code = $self->code_by_name($codename) || die "noncodon: $codename ".Hostinfo::ddump($self->{codes});
     $code->{point} = $point;
 
     $self->{code_focus} = $code;
@@ -188,7 +191,6 @@ sub code_by_name {
     $code;
 }
 
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
@@ -202,33 +204,6 @@ sub code_mirror {
 #    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
 #    say "Doing it! $cm_init\n\n\n";
 #    $self->hostinfo->send($cm_init);
-}
-
-# break happening
-sub take_picture {
-    my $self = shift;
-    my $picid = shift;
-    my @seen = @_;
-
-    my $stack = [ map { [ caller($_) ] } 0..10 ];
-
-    my $pic;
-    unless ($pic = $self->{pics}->{$picid}) {
-        say "Codo: no such $picid, adding";
-        my $f = $stack->[0];
-        $f = "$f->[0] $f->[3] ($f->[1] $f->[2])";
-        $pic = $self->{pics}->{$picid} = {
-            picid => $picid,
-            name => "Rogue from $f",
-            pics => [],
-        };
-    }
-
-    my $picture = Hostinfo::ddump(\@seen);
-    push @{$pic->{pics}}, {
-        stack => $stack,
-        picture => $picture,
-    };
 }
 
 sub nah {

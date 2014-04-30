@@ -340,7 +340,6 @@ __DATA__
     <style type="text/css">
     div {
         opacity:0.4;
-        overflow: scroll;
     }
     .data {
         position: absolute;

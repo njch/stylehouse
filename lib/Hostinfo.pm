@@ -194,12 +194,12 @@ sub load_views { # state from client
     
 my $div_attr = { # these go somewhere magical and together, like always
     menu => "width:97%; background: #333; height: 90px;",
-    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px",
-    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px",
+    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
+    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
     view => "width:35%; background: #c9f; height: 500px;",
     hodi => "width:30%; background: #09f; height: 500px;",
     babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:780px; background: #8af; border: 4px solid gray; top: 700px; height: 400px; overflow: scroll;",
+    flood => "width:780px; background: #8af; border: 4px solid gray; height: 400px; overflow: scroll;",
 };
 # build its own div or something
 sub provision_view {
@@ -405,6 +405,7 @@ sub update_app_menu {
 sub event {
     my $self = shift;
     my $menuv = $self->ports->{menu};
+    say "Hostinfo passing probable menu action to $menuv->{id} $menuv->{menu}";
     $menuv->{menu}->event(@_);
 }
     
@@ -609,12 +610,12 @@ sub duction {
                 $c->{way} ||= $w;
             }
         }
-        # default tip of the ghost is this most definite 0
+# start 0? load old stuff?
         $ghost->{wormhole} = new Wormhole($self->intro, $ghost, "wormholes/$name/0");
-        # and then they build 1s in easily controllable Ghost Pyramids
-        # where layers can be injected in space anywhere without breaking the fabric of it
-        # right now time is not something we can flop out anywhere, depending on what we're going for
-        # take that morality
+# and then they build 1s in easily controllable Ghost Pyramids
+# where layers can be injected in space anywhere without breaking the fabric of it
+# right now time is not something we can flop out anywhere, depending on what we're going for
+# take that morality
 
         say "\n\n\nductiondaGhost:\n".ddump($ghost);
     }
