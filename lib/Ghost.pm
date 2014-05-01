@@ -9,12 +9,16 @@ has 'hostinfo';
 
 sub new {
     my $self = bless {}, shift;
-    my $hi = shift;
+    shift->($self);
 
     $self->{travel} = shift;
     $self->{name} = $self->{travel}->{name};
 
-    $hi->($self);
+    $self->hostinfo->geistion($self); # init codes from (ghosts|wormholes)/$name/...
+# and then they build 1s in easily controllable Ghost Pyramids
+# where layers can be injected in space anywhere without breaking the fabric of it
+# right now time is not something we can flop out anywhere, depending on what we're going for
+# take that morality
 
     return $self;
 }
@@ -67,6 +71,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
     eval $evs;
     die "DOO Fuckup:\n$@\n\n".Hostinfo::ddump([$evs]) if $@;
+    # more ^
 
     return wantarray ? @return : $return[0]
 }

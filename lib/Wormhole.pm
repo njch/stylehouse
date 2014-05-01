@@ -54,10 +54,11 @@ sub encode_thing {
     return "$thing";
 }
 
-# here's another wormhole sticking out the back of this one, Textying into human forms.
-# by starting a texty first,
-# catching up with things in the middle,
-# using our Ghost, who should know what it's doing here...
+# here's a... tube... sticking out the back of this wormhole, Textying the script.
+# Form would Ghost all sorts of data type munging and humanisation from lower order geometries
+# also space bending etc.
+# it can help make a lot of tractograms under the curve of the human show.
+# here we call another branch of thought in Ghost Ghost
 
 # this whole procedure should be mapped/plumbed, all the way out to the View, Gods, etc
 # and usable as a flowing with nice triggers and invisible but well organised complications.

@@ -13,17 +13,21 @@ use JSON::XS;
 use File::Slurp;
 
 # stuff from the old world
+# randomness
 # can feel it already
 # stuff we're going to take with us
 
 # RSS: http://www.colorglare.com/feed.xml
+# scrape http://www.google.com/alerts/feeds/00684618315804676977/5245232935839067521
 
 # it's a join to other lumps of stuff that have what we need
+# could make a sandbox for foreign ghosts.. they must land somewhere... later thing
 # whole apps can start via procserv.pl
 # we can build them apis in their own process like ebuge.pl
 # this file's going to get huge but it's the right thing to do ;)
 # turn this file into our old unconsciousness
 # so we can watch ourselves wake up again and again
+
 
 sub new {
     my $self = bless {}, shift;

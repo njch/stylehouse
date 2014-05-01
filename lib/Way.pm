@@ -14,8 +14,6 @@ sub new {
 
     $self->downway(shift);
 
-    $self->{G} = shift;
-
     return $self;
 }
 

@@ -12,7 +12,7 @@ sub new {
     shift->($self);
 
     $self->{owner} = shift; # id instead of link, is wrong at the next level
-    $self->{name} = $self->{owner}->id;
+    $self->{name} = $self->{owner}->{id};
     unless (ref $self->{owner} eq "Travel") {
         # observer of whole codon function
         $self->{self} = new Travel($self->hostinfo->intro, $self);
@@ -27,6 +27,7 @@ sub new {
 
 sub ob {
     my $self = shift;
+    return if ref $self->{owner} eq "Travel";
     my @seen = @_;
 
     # good place to way up with strings/tubes
@@ -51,9 +52,7 @@ sub travel {
     my $depth = shift || 0;
     my $last_state = shift;
 
-    if (!$depth) {
-        $self->hostinfo->getapp("Codo")->take_picture("travel!", $thing);
-    }
+    $self->ob(($depth ? "..travel..." : "travel!") => $thing);
 
     my ($state, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 

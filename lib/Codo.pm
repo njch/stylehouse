@@ -14,6 +14,7 @@ so you can say, go here, what's this, watch this, find the pathway of its whole 
 =cut
 
 has 'hostinfo';
+sub ddump { Hostinfo::ddump(@_) }
 has 'ports' => sub { {} };
 has 'ebuge' => sub { [] };
 has 'output';
@@ -52,14 +53,15 @@ sub menu {
     $menu->{"nah"} = sub { $self->nah };
     $menu->{"new"} = sub { $self->new_ebuge() };
     $menu->{"<views>"} = sub {
-        $self->{run}->text(ddump($self->hostinfo->get("screen/views/*"));
-    },
+        $self->{run}->text(ddump($self->hostinfo->get("screen/views/*")));
+    };
     $menu->{"<obso>"} = sub {
         $self->{run}->text(ddump($self->hostinfo->get("Codo/obsetrav")));
-    },
+    };
 
     return $menu;
 }
+
 
 sub make_code_menu {
     my $self = shift;
@@ -126,7 +128,6 @@ sub init_wormcodes {
         }
     }
 }
-sub ddump { Hostinfo::ddump(@_) }
 sub code_focus {
     my $self = shift;
     my $codename = shift;

@@ -134,9 +134,9 @@ sub lines_to_tuxts {
             my @extratuxts;
 
             if ($hooks->{inner_linebreak}) {
-                $tuxt->{style} .= "border-left: 2px dotted blue;";
+                $tuxt->{style} .= "border-left: 3px solid blue;";
             }
-            if ($value =~ /\\n/ && 0) {
+            if ($value =~ /\\n/) {
                 say "\nGoing to split value: '$value'\n";
                 return map { $mktuxty->("$_", {inner_linebreak=>1}) } split /\\n/, $value;
             }

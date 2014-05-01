@@ -588,34 +588,31 @@ sub duction {
     #unshift @$uuids, make_uuid();
     $new->{huid} = make_uuid();
 
-    if ($name eq "Ghost") { # way as
-        # the path to ghosts and wormholes need to be reach to other places from stylehouse at the root
-        my $ghost = $new;
-        my $travel = $ghost->{travel}
-            || do {
-            use Carp;
-            confess "duck setup need to lookup ghosts for ".ddump($new);
-        };
-        $name = ref $travel;
-        $ghost->{ways} = []; # should be hostinfoways replacement maneuvre
-        push @{$ghost->{ways}}, map { new Way($self->intro, $_) } glob "ghosts/$name/*";
-
-        for my $w (@{$ghost->{ways}}) {
-            for my $c (@{$w->{chains}}) {
-                $c->{way} ||= $w;
-            }
-        }
-# start 0? load old stuff?
-        $ghost->{wormhole} = new Wormhole($self->intro, $ghost, "wormholes/$name/0");
-# and then they build 1s in easily controllable Ghost Pyramids
-# where layers can be injected in space anywhere without breaking the fabric of it
-# right now time is not something we can flop out anywhere, depending on what we're going for
-# take that morality
-
-        say "\n\n\nductiondaGhost:\n".ddump($ghost);
-    }
-
     return $self;
+}
+sub geistion {
+    my $self = shift;
+    my $ghost = shift;
+
+    # the path to ghosts and wormholes need to be reach to other places from stylehouse at the root
+    my $travel = $ghost->{travel}
+        || do {
+        use Carp;
+        confess "duck setup need to lookup ghosts for ".ddump($ghost);
+    };
+    my $name = ref $travel;
+    $ghost->{ways} = []; # should be hostinfoways replacement maneuvre
+    push @{$ghost->{ways}}, map { new Way($self->intro, $_) } glob "ghosts/$name/*";
+
+    for my $w (@{$ghost->{ways}}) {
+        for my $c (@{$w->{chains}}) {
+            $c->{way} ||= $w;
+        }
+    }
+# restart 0? load old stuff?
+    $ghost->{wormhole} = new Wormhole($self->intro, $ghost, "wormholes/$name/0");
+
+    say "\n\n\nductiondaGhost:\n".ddump($ghost);
 }
 
 # make a number bigger than the universe...
@@ -625,6 +622,7 @@ sub make_uuid {
     $stringuuid =~ s/^(\w+)-.+$/$1/s;
     return $stringuuid;
 }
+
 
 sub grap { # joiney thing, the lie that won't die... maybe it checks data and this->{k} they seem parallel
     my $self = shift;

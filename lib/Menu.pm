@@ -5,6 +5,7 @@ use Texty;
 use Time::HiRes 'usleep';
 use Codo;
 use FindBin '$Bin';
+use HTML::Entities;
 
 has 'hostinfo';
 has 'view';
@@ -87,6 +88,7 @@ sub event {
     
     if ($dest) {
         my $menu = $dest->menu();
+        $method = encode_entities($method);
         unless ($menu->{$method}) {
             say "Menu for $dest has no $method";
             return;
