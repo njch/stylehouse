@@ -25,6 +25,11 @@ sub downway {
     for my $i (keys %{$self->{way}}) {
         $self->{$i} = $self->{way}->{$i};
     }
+    if ($self->{chains}) {
+        for my $c (@{$self->{chains}}) {
+            $c->{way} ||= $self;
+        }
+    }
 }
 
 1;

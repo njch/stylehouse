@@ -15,8 +15,16 @@ sub new {
     shift->($self);
     
     $self->{ghost} = shift;
-    $self->{file} = shift;
-    $self->{script} = LoadFile($self->{file});
+    my $file = $self->{file} = shift;
+    unless (-e $file) {
+        say "no $file";
+        my ($wom) = $file =~ qr{(wormholes/.+)/};
+        unless (-e $wom) {
+            mkdir $wom;
+        }
+        `echo '' > $file`;
+    }
+    $self->{script} = LoadFile($file);
     say "script: ".Hostinfo::ddump($self->{script});
 
     return $self;
@@ -39,6 +47,8 @@ sub continues {
         last => $ghost->{last_state}->{uuid},
         ghost => $ghost,
     };
+
+    $self->ob($line);
 
     push @{$self->{script}}, $line;
 

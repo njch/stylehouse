@@ -3,14 +3,18 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 =pod
+
 Devel::ebug interface
 slurpy other programs
 
-Codo is one whole universe of code
+Codo is for ghosting ghosts.
 flip through them, prepare another program execution behind the one the user is looking at
 so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
-
+# and then they build 1s in easily controllable Ghost Pyramids
+# where layers can be injected in space anywhere without breaking the fabric of it
+# right now time is not something we can flop out anywhere, depending on what we're going for
+# take that morality
 =cut
 
 has 'hostinfo';
@@ -53,10 +57,12 @@ sub menu {
     $menu->{"nah"} = sub { $self->nah };
     $menu->{"new"} = sub { $self->new_ebuge() };
     $menu->{"<views>"} = sub {
-        $self->{run}->text(ddump($self->hostinfo->get("screen/views/*")));
+        say "Sending view dump\n\n";
+        $self->{run}->text->replace(ddump($self->hostinfo->get("screen/views/*")));
     };
     $menu->{"<obso>"} = sub {
-        $self->{run}->text(ddump($self->hostinfo->get("Codo/obsetrav")));
+        say "Sending obsotrav dump\n\n";
+        $self->{run}->text->replace(ddump($self->hostinfo->get("Codo/obsetrav")));
     };
 
     return $menu;
@@ -141,7 +147,7 @@ sub code_focus {
         return say "Can't code_focus, Codons fucked as: ".ddump($self->{codes}->[0]);
     }
     
-    my $code = $self->code_by_name($codename) || die "noncodon: $codename ".Hostinfo::ddump($self->{codes});
+    my $code = $self->code_by_name($codename) || die "noncodon: $codename ".ddump($self->{codes});
     $code->{point} = $point;
 
     $self->{code_focus} = $code;

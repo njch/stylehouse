@@ -136,8 +136,8 @@ sub lines_to_tuxts {
             if ($hooks->{inner_linebreak}) {
                 $tuxt->{style} .= "border-left: 3px solid blue;";
             }
-            if ($value =~ /\\n/) {
-                say "\nGoing to split value: '$value'\n";
+            if ($value =~ /;\\n/) {
+                say "\nGoing to split probable perl code: '$value'\n";
                 return map { $mktuxty->("$_", {inner_linebreak=>1}) } split /\\n/, $value;
             }
 

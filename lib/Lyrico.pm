@@ -37,8 +37,6 @@ sub new {
 
     $self->lyrics([read_file("trampled_rose_lyrics")]);
 
-    $self->startclicky;
-
     return $self;
 }
 

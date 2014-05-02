@@ -11,18 +11,26 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{travel} = shift;
-    $self->{name} = $self->{travel}->{name};
+    my $travel = shift;
+    $self->{travel} = $travel;
+    my $name = $self->{name} = $travel->{name};
+    say "Name: $name";
 
-    $self->hostinfo->geistion($self); # init codes from (ghosts|wormholes)/$name/...
-# and then they build 1s in easily controllable Ghost Pyramids
-# where layers can be injected in space anywhere without breaking the fabric of it
-# right now time is not something we can flop out anywhere, depending on what we're going for
-# take that morality
+    $self->{ways} = [];
+    push @{$self->{ways}}, $self->ways_for($_) for "Ghost", $name;
+
+    $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
 
     return $self;
 }
-# }}}
+
+sub ways_for {
+    my $self = shift;
+    my $name = shift;
+    my @ghosts = glob "ghosts/$name/*";
+    return map { new Way($self->hostinfo->intro, $_) } @ghosts;
+}
+
 sub ob {
     my $self = shift;
     $self->{travel}->ob(@_);
@@ -83,14 +91,26 @@ sub haunt { # arrives through here
     $self->{wayin} = shift;
     $self->{last_state} = shift;
 
+    $self->ob($self);
+    
     $self->{wayout} = [];
     $self->hookways("donetravels");
+
+    $self->ob($self);
+
     $self->{away} = []; # of {} args to Travel
     $self->hookways("donethinking");
 
+    $self->ob($self);
+
     my $state = $self->{wormhole}->continues($self); # %
 
+    $self->ob($self);
+
     $self->hookways("maketravels");
+
+    $self->ob($self);
+
     return ($state, $self->{away});
 }
 

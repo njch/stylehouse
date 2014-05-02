@@ -590,30 +590,6 @@ sub duction {
 
     return $self;
 }
-sub geistion {
-    my $self = shift;
-    my $ghost = shift;
-
-    # the path to ghosts and wormholes need to be reach to other places from stylehouse at the root
-    my $travel = $ghost->{travel}
-        || do {
-        use Carp;
-        confess "duck setup need to lookup ghosts for ".ddump($ghost);
-    };
-    my $name = ref $travel;
-    $ghost->{ways} = []; # should be hostinfoways replacement maneuvre
-    push @{$ghost->{ways}}, map { new Way($self->intro, $_) } glob "ghosts/$name/*";
-
-    for my $w (@{$ghost->{ways}}) {
-        for my $c (@{$w->{chains}}) {
-            $c->{way} ||= $w;
-        }
-    }
-# restart 0? load old stuff?
-    $ghost->{wormhole} = new Wormhole($self->intro, $ghost, "wormholes/$name/0");
-
-    say "\n\n\nductiondaGhost:\n".ddump($ghost);
-}
 
 # make a number bigger than the universe...
 sub make_uuid {

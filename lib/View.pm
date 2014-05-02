@@ -93,7 +93,7 @@ sub event {
     my $event = shift;
     my $this = shift;
 
-    say "Event in View $self->{id} heading for ".$self->owner;
+    say "Event in $self->{id} heading for ".$self->owner;
 
     $self->owner->event($tx, $event, $this, $self);
 }

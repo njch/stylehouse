@@ -12,7 +12,7 @@ sub new {
     shift->($self);
 
     $self->{owner} = shift; # id instead of link, is wrong at the next level
-    $self->{name} = $self->{owner}->{id};
+    $self->{name} = $self->{owner}->{name};
     unless (ref $self->{owner} eq "Travel") {
         # observer of whole codon function
         $self->{self} = new Travel($self->hostinfo->intro, $self);
@@ -20,6 +20,7 @@ sub new {
     else {
         # all travels of travels
         push @{ $self->hostinfo->get('Travel Travel') }, $self;
+        # also pushes to Codo/obsetrav
     }
 
     return $self;
@@ -42,12 +43,13 @@ sub ob {
     push @{$self->hostinfo->get("Codo/obsetrav")}, $ob;
 }
 
+# back here again
+# the wormhole for self
 # what's a wormhole of ghosts? hookways mixes ways
 sub travel {
     my $self = shift;
     my $thing = shift;
     my $ghost = shift || new Ghost($self->hostinfo->intro, $self);
-    say "The Ghost: ".Hostinfo::ddump($ghost);
     my $way = shift;
     my $depth = shift || 0;
     my $last_state = shift;
