@@ -42,16 +42,20 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    $self->init_wormcodes(qw{ebuge.pl stylehouse.pl}, glob "lib/*.pm");
+    $self->init_wormcodes(
+        qw(ebuge.pl stylehouse.pl),
+        glob("lib/*.pm"),
+        glob("ghosts/*/*"),
+    );
 
-    $self->make_code_menu();
+    $self->init_codemenu();
 
     $self->code_focus('stylehouse.pl');
 
     return $self;
 }
 
-sub menu {
+sub menu { # {{{
     my $self = shift;
     my $menu = {};
     $menu->{"nah"} = sub { $self->nah };
@@ -69,7 +73,7 @@ sub menu {
 }
 
 
-sub make_code_menu {
+sub init_codemenu {
     my $self = shift;
 
     $self->ports->{code}->menu({
@@ -94,13 +98,14 @@ sub make_code_menu {
 sub update_code_menu {
     my $self = shift;
     $self->ports->{code}->menu->replace($self->{codes});
-}
+} # }}}
 
 {   package Codon;
     
     sub new {
         my $self = bless {}, shift;
         shift->($self);
+        $self;
     }
 }
 
@@ -128,11 +133,13 @@ sub init_wormcodes {
         }
 
         if ($isnew) {
-            $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel here
+            $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel: we would be building
             push @{ $self->{codes} }, $codon;
             say "new Codon: $codon->{codename}\t\t".scalar(@{$codon->{lines}})." lines";
         }
     }
+    $DB::single = 1;
+    say  $self->{codes};
 }
 sub code_focus {
     my $self = shift;

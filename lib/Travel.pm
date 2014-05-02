@@ -12,7 +12,7 @@ sub new {
     shift->($self);
 
     $self->{owner} = shift; # id instead of link, is wrong at the next level
-    $self->{name} = $self->{owner}->{name};
+    $self->{name} = $self->{owner}->{name} || $self->{owner}->{id};
     unless (ref $self->{owner} eq "Travel") {
         # observer of whole codon function
         $self->{self} = new Travel($self->hostinfo->intro, $self);
