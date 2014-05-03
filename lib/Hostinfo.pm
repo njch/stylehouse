@@ -224,7 +224,6 @@ sub view_incharge {
     my $self = shift;
     my $view = shift;
     my $old = $self->get('screen/views/'.$view->divid.'/top');
-    $old->unfocus() if $old;
     $self->set('screen/views/'.$view->divid.'/top', $view);
 }
 

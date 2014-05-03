@@ -30,7 +30,7 @@ sub new {
     $self->tuxts([]);
 
     # make a persistent object for this Texty thing
-    # #hodu dump junk will not be saved
+    # dump junk should not be saved
     $self->hostinfo->screenthing($self);
 
     return $self if ! @{ $self->lines };

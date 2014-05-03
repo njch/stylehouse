@@ -8,13 +8,19 @@ Devel::ebug interface
 slurpy other programs
 
 Codo is for ghosting ghosts.
-flip through them, prepare another program execution behind the one the user is looking at
+fishing around in the void.
+flip through stuff.
 so you can say, go here, what's this, watch this, find the pathway of its whole existence
 
-# and then they build 1s in easily controllable Ghost Pyramids
-# where layers can be injected in space anywhere without breaking the fabric of it
-# right now time is not something we can flop out anywhere, depending on what we're going for
-# take that morality
+context richness.
+
+form.
+
+and then they build 1s as Codons (genetic model for something like a travel/ghost/wormhole coupling)
+where layers can be injected in space anywhere without breaking the fabric of it
+right now time is not something we can flop out anywhere, depending on what we're going for
+take that morality
+
 =cut
 
 has 'hostinfo';
@@ -35,7 +41,7 @@ sub new {
     shift->($self);
 
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
-    $self->{code} = $self->hostinfo->get_view($self, code => "hodu")->onunfocus(sub { $self->code_unfocus });
+    $self->{code} = $self->hostinfo->get_view($self, code => "hodu");
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 
@@ -138,52 +144,52 @@ sub init_wormcodes {
             say "new Codon: $codon->{codename}\t\t".scalar(@{$codon->{lines}})." lines";
         }
     }
-    $DB::single = 1;
-    say  $self->{codes};
 }
 sub code_focus {
     my $self = shift;
     my $codename = shift;
     my $point = shift;
 
-    if ($self->{code_focus}) {
-        $self->code_unfocus();
-    }
+    $self->code_unfocus();
+    my $code = $self->code_by_name($codename) || die "cant find: $codename";
 
-    if (ref $self->{codes}->[0] eq "Hostinfo") {
-        return say "Can't code_focus, Codons fucked as: ".ddump($self->{codes}->[0]);
-    }
-    
-    my $code = $self->code_by_name($codename) || die "noncodon: $codename ".ddump($self->{codes});
-    $code->{point} = $point;
+# client side state for codemirrors..?
+# put coloured blocks underneath transparent codemirror
+#    ->text(['CodeMirrrrrrr']);
+#    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
+#    say "Doing it! $cm_init\n\n\n";
+#    $self->hostinfo->send($cm_init);
+    $code->{code_point} = $point;
 
-    $self->{code_focus} = $code;
-
-
-    # gather outselves to point :D!
-    # this consumes lines, should do wormhole at the end of init_wormhole
-    my @stuff = ([]);
-    for my $l (@{$code->{lines}}) {
-        if ($l =~ /^\S+.+ \{$/gm) { # travel... as we see this branch a lines from the spine route
-           push @stuff, [];
-        }
-        push @{ $stuff[-1] }, $l;
-    }
-    my @lines = ();
-    for my $s (@stuff) {
-        push @lines, "$s->[0] (+".(@$s-1)." lines)";
-    }
+    $self->{code} = $code;
 
     my $texty = new Texty( # auto takeover onto the screen
         $self->hostinfo->intro,
         $self->ports->{code},
-        [@lines],
+        [@{$code->{lines}}],
     );
 
     $texty->{code} = $code;
     $code->{texty} = $texty;
 
+    # gather outselves to point :D!
     if (0) {
+        # this consumes lines, should do wormhole at the end of init_wormhole
+        my @stuff = ([]);
+        for my $l (@{$code->{lines}}) {
+            if ($l =~ /^\S+.+ \{$/gm) {
+               push @stuff, [];
+            }
+            push @{ $stuff[-1] }, $l;
+        }
+        my @lines = ();
+        for my $s (@stuff) {
+            push @lines, "$s->[0] (+".(@$s-1)." lines)";
+        }
+    }
+
+    if (0) {
+        my @lines;
         # invent pointing $code->{point}
         my $current = "?";
         my $from = $current - 10;
@@ -196,8 +202,8 @@ sub code_focus {
 }
 sub code_unfocus {
     my $self = shift;
+    return unless $self->{code};
     $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
-    # TODO carefully suspend their Texty + Ghosts
 }
 sub code_by_name {
     my $self = shift;
@@ -209,16 +215,6 @@ sub code_by_name {
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
-}
-
-sub code_mirror {
-    my $self = shift;
-# client side state for codemirrors..?
-# put coloured blocks underneath transparent codemirror
-#    ->text(['CodeMirrrrrrr']);
-#    my $cm_init = 'CodeMirror(document.getElementById(\''.$codem->id.'-1\'), {mode:  "perl", theme: "cobalt"});';
-#    say "Doing it! $cm_init\n\n\n";
-#    $self->hostinfo->send($cm_init);
 }
 
 sub nah {

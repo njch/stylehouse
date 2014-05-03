@@ -19,33 +19,10 @@ sub new {
     $self;
 }
 
-sub onunfocus {
-    my $self = shift;
-    my $sub = shift;
-    $self->{onunfocus} = $sub;
-    return $self;
-}
+# right so here we have an arc of stuff, going from motive to static
+# menu items to text
+# here's a travel too, that's kind of a mirage.
 
-sub unfocus {
-    my $self = shift;
-    if ($self->{onunfocus}) {
-        $self->{onunfocus}->();
-    }
-    if ($self->{menu}) {
-        # our menu span ids will be like text but -menu so the texty takeover will not rm it
-    }
-    # could hide our spans? the above hook from Codo to code_unfocus does that
-}
-
-# the tab is the repositories
-# each thing you care about has a certain thing going on you like to keep an eye on
-# they are free to change and adapt, join and split
-# whatever
-# it could work even from a residential internet site...
-# you just have to push your content out to hosts as you host it
-# it could be a whole lot of websockets free to come and go to a whole lot of stylehousen hosted by google
-# plugin for "And: $self->id"
-# args: lines, hooks
 sub text {
     my $self = shift;
 
@@ -100,24 +77,10 @@ sub event {
 
 sub takeover {
     my $self = shift;
-    my $htmls = shift;
+    my $html = concat_array(shift); # [([html+],html)+]
     my $append = shift;
     my $divid = $self->divid;
-    my $html;
-    for my $h (@$htmls) {
-        if (ref $h eq "ARRAY") {
-            $h = @$h;
-        }
-        $html .= $h;
-    }
-    
-    # other views .id set hidden
-    #$self->hostinfo->send(
-    #    "\$('#".$self->divid." span').hide();" # others # TODO add in exception for constant stuff
-    #   ." \$('.".$self->id."').show();" # us
-    #   .($append ? "" : "\$('.".$self->id."').remove()")
-    #) unless $self->divid eq "menu";
-
+   
     $append ?
         $self->html($self->html."\n".$html)
       : $self->wipehtml && $self->html($html);
@@ -171,6 +134,16 @@ sub part_and_append {
     else {
         $html =~ s/'/\\'/;
         $self->hostinfo->send("  \$('#$divid').append('$html');");
+    }
+}
+
+sub concat_array {
+    my $a = shift;
+    if (ref \$a eq "SCALAR") {
+        return $a;
+    }
+    else {
+        return join "", map { concat_array($_) } @$a;
     }
 }
 

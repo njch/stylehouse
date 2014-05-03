@@ -13,7 +13,7 @@ sub append {
 `cat /dev/null > proc/list`;
 `rm proc/*.*` if glob('proc/*.*');
 
-append("$$: $0");
+append("$$: $0\n");
 
 my @old;
 while (1) {
@@ -31,7 +31,7 @@ while (1) {
             print "forked $pid\n";
         }
         else {
-            append("$$: $command");
+            append("$$: $command\n");
             chomp($command);
             local $|;
             print "Going to redirect output and start '$command' in $$\n";
