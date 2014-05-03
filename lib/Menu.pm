@@ -67,38 +67,39 @@ sub event {
     my $id = $event->{id};
     my $value = $event->{value};
 
-    my $texty = $self->text;
-    my $dest;
-    my $method;
-    for my $tuxt (@{ $texty->tuxts }) {
-        if ($tuxt->{id} eq $id) {
-            $dest = $tuxt->{origin};
-            $method = ".";
-            last;
-        }
-        say "This tuxt: ".ddump($tuxt);
-        for my $subtuxt (@{ $tuxt->{inner}->tuxts }) {
-            if ($subtuxt->{id} eq $id) {
-                $dest = $tuxt->{origin};
-                $method = $subtuxt->{value};
-                last;
-            }
-        }
-    }
+    my ($origin, $method) = $self->route_menu_id($id);
     
-    if ($dest) {
-        my $menu = $dest->menu();
+    if ($origin) {
+        my $menu = $origin->menu();
         $method = encode_entities($method);
         unless ($menu->{$method}) {
-            say "Menu for $dest has no $method";
-            return;
+            die "Menu for $origin has no $method";
         }
         $menu->{$method}->($event);
     }
     else {
         say "Nope wrong: ";
-        $self->hostinfo->flood($texty);
+        $self->hostinfo->flood($self->text);
     }
+}
+
+sub route_menu_id {
+    my $self = shift;
+    my $id = shift;
+    my $texty = $self->text;
+
+    my $ids = {};
+    for my $tuxt (@{ $texty->tuxts }) {
+        $ids->{$tuxt->{id}} = [$tuxt->{origin}, "."];
+        for my $subtuxt (@{ $tuxt->{inner}->tuxts }) {
+            $ids->{$subtuxt->{id}} = [$tuxt->{origin}, $subtuxt->{value}];
+        }
+    }
+
+    unless ($ids->{$id}) {
+        die "no $id!".ddump($ids);
+    }
+    return @{$ids->{$id}}
 }
 
 1;

@@ -548,7 +548,7 @@ sub flood {
             $self->flood("flood travel error: $@\n".ddump($flood->travel));
         }
         else {
-                                        eval { $wormhole->appear($flood) };
+                                            eval { $wormhole->appear($flood) };
 
             if ($@) {
                 $self->flood("flood appear error: $@\n".ddump($flood->travel));
