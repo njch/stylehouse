@@ -94,6 +94,11 @@ $hostinfo->set('Travel Travel', []);
 $hostinfo->for_all([]);
 helper 'hostinfo' => sub { $hostinfo };
 
+get '/Codon/:name' => sub {
+    my $self = shift;
+    $hostinfo->getapp("Codo")->get_codon($self, $self->param('name'));
+};
+
 my $stylehouse = bless {}, "God";
 my $hands = {};
 
@@ -134,6 +139,12 @@ $hands = {
     }, sub {
         $hostinfo->load_views(qw{menu hodu view hodi});
     } ],
+    clickyhand => [ sub {
+             $hostinfo->send("\$(window).on('click', clickyhand);");
+    }, undef ],
+    clickyhand => [ sub {
+             $hostinfo->send("\$('div span').fadeOut(100);");
+    }, undef ],
 };
 
 my $handyin;
@@ -166,7 +177,7 @@ websocket '/stylehouse' => sub {
     while (my ($name, $do) = each %$hands) {
         my ($first, $last) = @$do;
         $first->();
-        $handyin->{$name} = $do->[1];
+        $handyin->{$name} = $do->[1] if $do->[1];
     }
     $self->stash(  handy => sub {
         my $self = shift; # mojo, should be person or so
@@ -294,6 +305,7 @@ __DATA__
 
     <script>
       var ws;
+      var cm;
       WebSocket.prototype.reply = function reply (stuff) {
           ws.send(JSON.stringify(stuff));
       };
@@ -305,8 +317,6 @@ __DATA__
             eval(event.data);
           };
           ws.onopen = function(e) {
-             $(window).on('click', clickyhand);
-             $('div span').fadeOut(100);
           }
           ws.onclose = function(e) {
              $(window).off('click', clickyhand);

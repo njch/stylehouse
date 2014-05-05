@@ -205,6 +205,14 @@ sub random_colour_background {
     return "background: rgb($rgb);";
 }
 
+sub id_to_tuxt {
+    my $self = shift;
+    my $id = shift;
+    for my $s (@{$self->tuxts}) {
+        return $s if $s->{id} eq $id;
+    }
+    return undef;
+}
 
 sub tuxts_to_htmls {
     my $self = shift;
@@ -213,7 +221,7 @@ sub tuxts_to_htmls {
     }
 
     my $top_add = 0;
-    my @span_htmls;
+    my @htmls;
     for my $s (@{$self->tuxts}) {
         my $mid = { %$s };
         delete $mid->{origin};
@@ -234,11 +242,15 @@ sub tuxts_to_htmls {
             $_.'="'.$p->{$_}.'"' } sort keys %$p;
 
         my $span_html = "<span $attrstring>$value</span>";
-        push @span_htmls, $span_html;
+        push @htmls, $span_html;
         
     }
 
-    $self->htmls([@span_htmls]);
+    if ($self->{hooks}->{div}) {
+        unshift @htmls, '<div id="'.$self->view->id.'-'.$self->{hooks}->{div}.'">';
+        push @htmls, '</div>';
+    }
+    $self->htmls([@htmls]);
 }
 use YAML::Syck;
 sub ddump {
