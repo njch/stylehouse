@@ -32,9 +32,9 @@ sub send {
     }
 
     my $short = $message if length($message) < 200;
-    $short ||= substr($message,0,23*3)." >SNIP<";
+    $short ||= substr($message,0,23*5)." >SNIP<";
     
-    say "Websocket SEND: ". $short;
+    say "Websocket SEND: ". $message;
 
     # here we want to graph things out real careful because it is how things get around
     # the one to the many
@@ -199,7 +199,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     view => "width:35%; background: #c9f; height: 500px;",
     hodi => "width:30%; background: #09f; height: 500px;",
     babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:780px; background: #8af; border: 4px solid gray; height: 400px; overflow: scroll;",
+    flood => "width:420px; background: #8af; border: 4px solid gray; height: 400px; overflow: scroll;",
 };
 # build its own div or something
 sub provision_view {
@@ -527,7 +527,7 @@ sub make_floodzone {
     my $self = shift;
 
     $self->get_view($self, "flood");
-    $self->flood($self);
+    #$self->flood($self);
 }
 # grep '.-.travel' -R * # like an art student game
 sub flood {
@@ -536,7 +536,6 @@ sub flood {
 
     my $flood = $self->ports->{flood};
     if (ref \$thing eq "SCALAR") {
-        say "Doing STRING FLOOD STRING";
         $flood->text([split "\n", $thing]);
     }
     elsif ($flood) {
@@ -624,7 +623,7 @@ sub get_this_it { # find it amongst itselves
     my $self = shift;
     my $this = shift;
     my $ah = $self->get(ref $this);
-    say "Every $this: ".ddump($ah);
+    say "\n\nEvery $this: ".ddump($ah);
     my $i;
     for my $a (@$ah) {
         return $i if $a eq $this;

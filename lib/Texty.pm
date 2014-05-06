@@ -22,7 +22,6 @@ sub new {
     shift->($self);
 
     my $notakeoveryet = $_[0] && $_[0] eq "..." && shift @_;
-    say "@_";
 
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
@@ -57,10 +56,11 @@ sub replace {
         $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
     }
    
+    say "Texty Lines: ".anydump($lines) if $self->{debug};
     if ($lines) { 
         $self->lines($lines);
-        $self->spatialise();
         $self->lines_to_tuxts();
+        $self->spatialise();
         $self->tuxts_to_htmls();
     }
     $self->view->takeover($self->htmls);
@@ -102,8 +102,8 @@ sub lines_to_tuxts {
     my $self = shift;
 
     # bizzare
-    if (!@{ $self->lines }) {
-        say "\nThat thing happened to ".$self->id."\n\n\n\n";
+    if (scalar(@{ $self->lines }) == 0) {
+        say "\n     Texty ".$self->id."   got zero lines\n\n\n\n";
         $self->tuxts([]);
     }
 
@@ -124,11 +124,12 @@ sub lines_to_tuxts {
 
         my $mktuxty;
         $mktuxty = sub {
-            my $value = shift;
-            my $hooks = shift;
+            my ($value, $hooks) = @_;
+
+            my $id = ($self->view->id.'-'.$self->id.'-'.$l++); # self->id is Texty-UUIDish from screenthing
             my $tuxt = {
                 class => "$class ".$self->view->id,
-                id => ($self->view->id.'-'.$self->id.'-'.$l++),
+                id => $id,
                 style => "",
             };
             my @extratuxts;
@@ -148,23 +149,33 @@ sub lines_to_tuxts {
                 push @extratuxts, @inners;
             }
             else {
-                $value = encode_entities($value)
-                    unless $value =~ /<span|<textarea/sgm;
+                if ($value =~ /<span/sgm || $value =~ s/^\!html //s) {
+                    $tuxt->{htmlval} = 1;
+                    $value =~ s/<<ID>>/$id/g;
+                }
+                if ($value =~ s/^!(\w+)=(\w+) //s) {
+                    $tuxt->{$1} = $2;
+                }
             }
-            $tuxt->{value} = $value;
+            $tuxt->{value} = $tuxt->{htmlval} ? $value : encode_entities($value);
             return $tuxt, @extratuxts;
         };
  
         if (ref \$line eq "SCALAR") {
+            say "  Texty Making line a SCALAR: $line" if $self->{debug};
             $line =~ s/\n$//s;
+            $line = " " if $line eq "";
             push @tuxts, $mktuxty->($_) for split /\n/, $line;
         }
         else {
+            say "  Texty Line is ref: $line" if $self->{debug} && ref $line;
             push @tuxts, $mktuxty->($line);
         }
     }
 
     $self->tuxts([@tuxts]);
+
+    say "  Texty tuxts made". ddump(\@tuxts) if $self->{debug};
 
     $self->spatialise();
 }
@@ -183,7 +194,6 @@ sub spatialise {
         if ($geo->{horizontal}) {
             $s->{top} = 0;
             $s->{left} = $i * $geo->{horizontal};
-
         }
         else {
             $s->{top} = $geo->{top};
@@ -196,10 +206,30 @@ sub spatialise {
                 $s->{left} += $geo->{left} if $geo->{left};
             }
             $geo->{top} += $geo->{space};
+            if ($s->{htmlval}) {
+                $geo->{top} += $self->htmlvalue_height($s, $geo);
+            }
         }
         $i++;
     }
 }
+# be good to rejoin things with dom recon
+# or send JS to stretch things out once it lands
+sub htmlvalue_height {
+    my $self = shift;
+    my $s = shift;
+    my $g = shift;
+    my $v = $s->{value};
+    if ($v =~ /<h(\d+)>/) {
+        my $h = 4 - $1;
+        return 15 * $h
+    }
+    if ($v=~ /<textarea .+? rows="(\d+)"/) {
+        return ((239 / 15) * $1) - $g->{space};
+    }
+    return 0;
+}
+
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
@@ -244,11 +274,6 @@ sub tuxts_to_htmls {
         my $span_html = "<span $attrstring>$value</span>";
         push @htmls, $span_html;
         
-    }
-
-    if ($self->{hooks}->{div}) {
-        unshift @htmls, '<div id="'.$self->view->id.'-'.$self->{hooks}->{div}.'">';
-        push @htmls, '</div>';
     }
     $self->htmls([@htmls]);
 }

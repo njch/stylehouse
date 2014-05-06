@@ -85,7 +85,7 @@ sub init_codemenu {
             my $self = shift;
             for my $s (@{$self->tuxts}) {
                 my $code = $s->{value};
-                say "A menu for $code->{name} ".join", ", keys %$code;
+                # say "A menu for $code->{name} ".join", ", keys %$code;
                 $s->{value} = $code->{name};
                 $s->{origin} = $code;
                 $s->{style} = random_colour_background();
@@ -103,49 +103,16 @@ sub init_codemenu {
 sub load_codon {
     my $self = shift;
     my $codon = shift;
+    $codon = $self->codon_by_name($codon) unless ref $codon;
+    say "Load Codon for $codon->{name}";
     my $codeview = $self->ports->{code};
     my $text = $codeview->text;
 
-    my $id = $codeview->id."-code";
-    $text->{hooks}->{div} = "code";
+    $codon->display($text);
 
-    $text->replace([qq{}]);
-    $self->hostinfo->send("\$(window).off('click', clickyhand);");
-    $self->hostinfo->send(qq{jQuery.get('/Codon/$codon->{name}', }
-        .qq{function(code){ cm = CodeMirror(document.getElementById('$id'), { mode: 'perl', value: 'la' }) });});
-}
-
-sub get_codon {
-    my $self = shift;
-    my $mojo = shift;
-    my $name = $mojo->param('name');
-    if (!$name) {
-        return say "\nMojoparam\n\n".anydump($mojo->param);
-    }
-    my $codon = $self->codon_by_name($name);
-    my $lines = $codon->{lines};
-
-    $mojo->app->log->info("Codo get_codon for $name ".@$lines);
-
-    my $code = join "\n", @$lines;
-
-    # this consumes lines, should do wormhole at the end of init_wormhole
-    my @stuff = ([]);
-    my $code;
-    for my $l (@$lines) {
-        if ($l =~ /^\S+.+ \{$/gm) {
-           push @stuff, [];
-        }
-        push @{ $stuff[-1] }, $l;
-    }
-    my @lines = ();
-    for my $s (@stuff) {
-        push @lines, "$s->[0] (+".(@$s-1)." lines)";
-    }
-
-    $code = join "\n", @lines;
-
-    $mojo->render(text => $code);
+    say "Done.\n\n\n";
+    # codemirror is a piece of shit
+    # $self->hostinfo->send(qq{console.log("Code mirror heading for $id:",document.getElementById('$id')); como = CodeMirror(document.getElementById('$id'), { mode: 'perl', value: "$code" }); console.log(como); });
 }
 
 sub codon_by_name {
@@ -156,15 +123,93 @@ sub codon_by_name {
 }
 
 {   package Codon;
-    
     sub new {
         my $self = bless {}, shift;
         shift->($self);
+        $self->{point} = 1;
         $self;
     }
-    sub show {
+    sub display {
         my $self = shift;
-        return;
+        my $texty = shift;
+
+        my $chunks = $self->chunks;
+
+        my @bits = (
+            "!html <h2>$self->{name}</h2>"
+        );
+        my @open = ();
+
+        for my $i (sort keys %$chunks) {
+            my $v = $chunks->{$i};
+            my $lines = $v->{lines};
+            my $rows = scalar(@$lines);
+            say "$i chunk";
+            if ($i == $self->{point}) {
+                # open
+                my $code = join "\n", @{$v->{lines}};
+                $code =~ s/"/\\"/g;
+                $code =~ s/\n/\\n/g;
+                say "$i Code is $rows lines\t\t$v->{first}";
+                $rows = 20 if $rows > 25;
+                push @bits,
+                    '!html !chunki='.$i.' '
+                    .'<textarea name="code" id="<<ID>>-ta" cols="77" rows="'.$rows.'"></textarea>'
+                    .'<input id="<<ID>>-in" type="submit" value="sav">'
+            }
+            else {
+                # closed
+                push @bits, $v->{first}." ($rows lines)";
+            }
+        }
+
+        $texty->replace([
+            @bits
+        ]);
+
+        for my $s (@{ $texty->{tuxts} }) {
+            my $id = $s->{id};
+            my $i = $s->{chunki} || next;
+            my $c = $chunks->{$i};
+            say Codo::ddump($c);
+            my $lines = $c->{lines};
+            my $code = join "\n", @$lines;
+            $code =~ s/"/\\"/g;
+            $code =~ s/\n/\\n/g;
+            say "Chunk $i is open to ".scalar(@$lines)." lines";
+            $self->{hostinfo}->send(qq{\$('#$id-ta').append("$code"); });
+            $self->{hostinfo}->send(qq{\$('#$id-in').on('click', function (ev)}
+                .qq{ { ws.reply({chunki: $i, code: document.getElementByID('#$id-ta').innerHTML}); } }
+                .qq{ ); }) if 0;
+        }
+    }
+    sub chunks {
+        my $self = shift;
+        return $self->{chunks} if $self->{chunks};
+
+        my $lines = $self->{lines};
+
+        # this consumes lines, should do wormhole at the end of init_wormhole
+        my @stuff = ([]);
+        for my $l (@$lines) {
+            if ($l =~ /^\S+.+ \{$/gm) {
+               push @stuff, [];
+            }
+            push @{ $stuff[-1] }, $l;
+        }
+
+        my $chunks;
+        my $i = 0;
+        for my $s (@stuff) {
+            $chunks->{$i} = {
+                first => $s->[0],
+                length => @$s-1,
+                lines => $s,
+            };
+            $i++;
+        }
+        $self->{chunks} = $chunks;
+        return $chunks;
     }
 }
 # get the forms of that clouds of ghosts
@@ -178,12 +223,13 @@ sub init_wormcodes {
         my $isnew = 1 if !$codon;
 
         my $mtime = (stat $cf)[9];
-        if ($isnew) {
-            $codon = new Codon($self->hostinfo->intro);
-            $codon->{codefile} = $cf;
-            $codon->{name} = $name;
-            $codon->{mtime} = $mtime;
-        }
+
+            if ($isnew) {
+                $codon = new Codon($self->hostinfo->intro);
+                $codon->{codefile} = $cf;
+                $codon->{name} = $name;
+                $codon->{mtime} = $mtime;
+            }
 
         if ($codon->{mtime} < $mtime) {
             say "$cf changed";
@@ -191,11 +237,11 @@ sub init_wormcodes {
             $isnew = 1;
         }
 
-        if ($isnew) {
-            $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel: we would be building
-            push @{ $self->{codes} }, $codon;
-            say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
-        }
+            if ($isnew) {
+                $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel: we would be building
+                push @{ $self->{codes} }, $codon;
+                say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
+            }
     }
 }
 

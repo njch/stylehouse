@@ -117,11 +117,12 @@ sub init {
     my $self = shift;
 
     Lyrico->new($hostinfo->intro);
-    Codo->new($hostinfo->intro);
+    my $c = Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
     $hostinfo->make_floodzone();
     $hostinfo->make_app_menu();
+    $c->load_codon("Keys");
     $underworld = 0;
 }
 
@@ -142,7 +143,7 @@ $hands = {
     clickyhand => [ sub {
              $hostinfo->send("\$(window).on('click', clickyhand);");
     }, undef ],
-    clickyhand => [ sub {
+    clear => [ sub {
              $hostinfo->send("\$('div span').fadeOut(100);");
     }, undef ],
 };
@@ -299,14 +300,18 @@ __DATA__
 <!doctype html><html>
     <head><title>stylehouse</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="lib/codemirror.js"></script>
-    <link rel="stylesheet" href="lib/codemirror.css">
-    <script src="mode/perl/perl.js"></script></head>
+    <script src="codemirror/lib/codemirror.js"></script>
+    <link  href="codemirror/lib/codemirror.css" rel="stylesheet">
+    <link  href="codemirror/theme/midnight.css" rel="stylesheet">
+    <script src="codemirror/mode/perl/perl.js"></script>
+    <script src="codemirror/mode/javascript/javascript.js"></script>
+    </head>
 
     <script>
       var ws;
-      var cm;
+      var fail = 0;
       WebSocket.prototype.reply = function reply (stuff) {
+          console.log(stuff);
           ws.send(JSON.stringify(stuff));
       };
 
@@ -317,6 +322,7 @@ __DATA__
             eval(event.data);
           };
           ws.onopen = function(e) {
+              fail = 0;
           }
           ws.onclose = function(e) {
              $(window).off('click', clickyhand);
@@ -326,8 +332,14 @@ __DATA__
           }
       }
       function reconnect () {
+          fail++;
           console.log('waiting to retry');
-          window.setTimeout(connect, 256);
+          if (fail < 2000) {
+              window.setTimeout(connect, 256);
+          }
+          else {
+              window.setTimeout(connect, 25600);
+          }
       }
 
       function clickyhand (event) {

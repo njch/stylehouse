@@ -36,7 +36,7 @@ sub replace {
 
     my $items = shift;
 
-    say "Writing menu for ".join ", ", map { ref $_ } @$items;
+    say "Writing Menu  ".$self->{view}->{id}."    ".join ", ", map { ref $_ eq "Codon" ? $_->{name} : ref $_ } @$items;
 
     $self->text->replace([@$items]);
 
@@ -65,13 +65,12 @@ sub event {
 
     # get this event to go to the right object
     my $id = $event->{id};
-    my $value = $event->{value};
 
     my ($origin, $method) = $self->route_menu_id($id);
     
     if ($origin) {
         my $menu = $origin->menu();
-        $method = encode_entities($method);
+        $method = decode_entities($method);
         unless ($menu->{$method}) {
             die "Menu for $origin has no $method";
         }
