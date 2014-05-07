@@ -53,33 +53,44 @@ sub stopclicky {
     $self->started(0);
 }
 use Mojo::IOLoop;
-sub event {
+sub scroll_unthrottle {
     my $self = shift;
-    my $event = shift;
+    $self->{scroll}->{throttle} = 0;
+    if ($self->{scroll}->{latest}) {
+        $self->scroll(delete $self->{scroll}->{latest});
+    }
+}
+sub scroll_throttle {
+    my $self = shift;
+    my $s = shift;
+    if ($self->{scroll}->{throttle}) {
+        $self->{scroll}->{latest} = $s;
+        return 1;
+    }
+    $self->{scroll}->{throttle} = 1;
+    Mojo::IOLoop->timer(0.2, sub {
+        $self->scroll_unthrottle;
+    });
+    return 0;
+}
+sub scroll {
+    my $self = shift;
+    my $s = shift;
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
     my $h = {};
 
-    if ($event->{type} eq "scroll") {
-        if ($self->{scroll_throttle}) {
-            return;
-        }
-        $self->{scroll_throttle} = 1;
-        Mojo::IOLoop->timer(0.2, sub {
-            $self->{scroll_throttle} = 0;
-        });
-    }
+    return if $self->scroll_throttle($s);
 
     for (1..3) {
-        $h->{top} = $event->{pagey} + int  rand $height; # isn't y coming from below?
-        $h->{left} = $event->{pagex};
+        $h->{top} = $s->{pagey} + int  rand $height; # isn't y coming from below?
+        $h->{left} = $s->{pagex};
         $h->{x} = ($i * 30) + int rand $height;
         my @lyrics = grep { s/\n//g; } grep /\S+/, map { $self->zlyrics } 1..3;
 
         if (grep { /love/ } @lyrics) {
             if (my $pictures = $self->hostinfo->get("Pictures")) {
                 $pictures->write($h);
-                return;
             }
         }
 

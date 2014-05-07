@@ -108,11 +108,20 @@ sub load_codon {
     my $codeview = $self->ports->{code};
     my $text = $codeview->text;
 
+    $self->{currodon} = $codon;
     $codon->display($text);
 
     say "Done.\n\n\n";
     # codemirror is a piece of shit
     # $self->hostinfo->send(qq{console.log("Code mirror heading for $id:",document.getElementById('$id')); como = CodeMirror(document.getElementById('$id'), { mode: 'perl', value: "$code" }); console.log(como); });
+}
+
+sub update_currodon { # just one chunk, whatevery
+    my $self = shift;
+    my $chunki = shift;
+    my $code = shift;
+    my $codon = $self->{currodon};
+    $codon->update($chunki, $code);
 }
 
 sub codon_by_name {
@@ -123,6 +132,7 @@ sub codon_by_name {
 }
 
 {   package Codon;
+    use File::Slurp;
     sub new {
         my $self = bless {}, shift;
         shift->($self);
@@ -133,7 +143,7 @@ sub codon_by_name {
         my $self = shift;
         my $texty = shift;
 
-        my $chunks = $self->chunks;
+        my $chunks = $self->{chunks};
 
         my @bits = (
             "!html <h2>$self->{name}</h2>"
@@ -155,7 +165,7 @@ sub codon_by_name {
                 push @bits,
                     '!html !chunki='.$i.' '
                     .'<textarea name="code" id="<<ID>>-ta" cols="77" rows="'.$rows.'"></textarea>'
-                    .'<input id="<<ID>>-in" type="submit" value="sav">'
+                    .'<input id="<<ID>>-up" type="submit" value="sav">'
             }
             else {
                 # closed
@@ -167,7 +177,7 @@ sub codon_by_name {
             @bits
         ]);
 
-        for my $s (@{ $texty->{tuxts} }) {
+        for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
             my $id = $s->{id};
             my $i = $s->{chunki} || next;
             my $c = $chunks->{$i};
@@ -175,17 +185,35 @@ sub codon_by_name {
             my $lines = $c->{lines};
             my $code = join "\n", @$lines;
             $code =~ s/"/\\"/g;
-            $code =~ s/\n/\\n/g;
+            $code =~ s/\n/\\n/g; # the escape is evaporated in JS string after the websocket
             say "Chunk $i is open to ".scalar(@$lines)." lines";
-            $self->{hostinfo}->send(qq{\$('#$id-ta').append("$code"); });
-            $self->{hostinfo}->send(qq{\$('#$id-in').on('click', function (ev)}
-                .qq{ { ws.reply({chunki: $i, code: document.getElementByID('#$id-ta').innerHTML}); } }
-                .qq{ ); }) if 0;
+            $self->{hostinfo}->send(qq{\$('#$id-ta').append("$code"); }); # this could be partitioned easy
         }
     }
-    sub chunks {
+    sub update {
         my $self = shift;
-        return $self->{chunks} if $self->{chunks};
+        my $i = shift;
+        my $code = shift;
+        my $chunks = $self->{chunks};
+
+        $chunks->{$i}->{lines} = $code;
+
+        my $lines = [];
+        for my $i (sort keys %$chunks) {
+            my $v = $chunks->{$i};
+            push @$lines, split "\n", $chunks->{$i}->{lines};
+        }
+        write_file($self->{codefile}, join "\n", @$lines);
+        $self->chunk();
+    }
+    sub load_file {
+        my $self = shift;
+        $self->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($self->{codefile})];
+        $self->chunk();
+    }
+    sub chunk {
+        my $self = shift;
+# supposed to be a Tractor doing this
 
         my $lines = $self->{lines};
 
@@ -209,7 +237,6 @@ sub codon_by_name {
             $i++;
         }
         $self->{chunks} = $chunks;
-        return $chunks;
     }
 }
 # get the forms of that clouds of ghosts
@@ -238,7 +265,7 @@ sub init_wormcodes {
         }
 
             if ($isnew) {
-                $codon->{lines} = [map { $_ =~ s/\n$//s; $_ } read_file($codon->{codefile})]; # travel: we would be building
+                $codon->load_file();
                 push @{ $self->{codes} }, $codon;
                 say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
             }
@@ -287,17 +314,47 @@ sub new_ebuge {
     push @{ $self->ebuge }, $ebuge;
     return $ebuge;
 }
+
 sub event {
     my $self = shift;
     my $event = shift;
     my $id = $event->{id};
-    my $tuxt = $self->ports->{code}->menu->text->id_to_tuxt($id);
+
+    my $codemenutexty = $self->ports->{code}->menu->text;
+    my $codetexty =     $self->ports->{code}->text;
+
+    if ($id =~ /-ta$/) {
+        return;
+    }
+    if ($id =~ s/-up$//) {
+        my $sec = $self->{hostinfo}->claw_add( sub {
+            my $e = shift;
+            my $tid = $e->{tid};
+            my $tuxt = $codetexty->id_to_tuxt($tid);
+            my $chunki = $tuxt->{chunki} || die;
+            $self->update_currodon($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
+        } );
+        $self->{hostinfo}->send(
+             "  ws.reply({claw: '$sec', tid: '$id', code: document.getElementById('$id-ta').innerHTML}); "
+        );
+    }
+
+    my $tuxt = $codemenutexty->id_to_tuxt($id);
+
+    unless ($tuxt){ 
+        return $self->hostinfo->error("Codo event 404" => $id);
+    }
+
     if (ref $tuxt->{origin} eq "Codon") {
-        $self->load_codon($tuxt->{origin});
+        return $self->load_codon($tuxt->{origin});
     }
-    else {
-        say "Barf!"
+
+    elsif ($id =~ /^(.+)-in$/) {
+        my $sid = $1;
+        say "Got a thing: $sid";
     }
+
+    return $self->hostinfo->error("Codo event found & wtf", ddump($tuxt), event => ), say "blah";
 }
 
 1;

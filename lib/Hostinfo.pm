@@ -520,7 +520,7 @@ sub error {
     my $self = shift;
     my $e = {@_};
     say "\nError: ".ddump($e);
-    $self->flood($e);
+    $self->flood($e) if 0;
 }
 
 sub make_floodzone {
@@ -591,12 +591,39 @@ sub duction {
 
 # make a number bigger than the universe...
 sub make_uuid {
-    UUID::generate(my $uuid);
-    UUID::unparse($uuid, my $stringuuid);
+    my $stringuuid = secret();
     $stringuuid =~ s/^(\w+)-.+$/$1/s;
     return $stringuuid;
 }
 
+sub secret {
+    UUID::generate(my $uuid);
+    UUID::unparse($uuid, my $stringuuid);
+    return $stringuuid;
+}
+
+sub claw {
+    my $self = shift;
+    my $event = shift;
+    say "Claw!";
+    return 0 unless exists $self->{claws}->{$event->{claw}};
+    say "Claw exists";
+    
+    my $sub = delete $self->{claws}->{$event->{claw}};
+    say "Doing Claw";
+    $sub->($event);
+    say "Claw Done!";
+    return 1;
+}
+sub claw_add {
+    my $self = shift;
+    my $sub = shift;
+    my $sec = secret();
+    $self->{claws} ||= {};
+    $self->{claws}->{$sec} = $sub;
+    say "Claw added: $sec";
+    return $sec;
+}
 
 sub grap { # joiney thing, the lie that won't die... maybe it checks data and this->{k} they seem parallel
     my $self = shift;

@@ -166,9 +166,7 @@ websocket '/stylehouse' => sub {
     $self->app->log->info("WebSocket opened");
     Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
-    # collect everyone
-    # TODO should be per screen (people + div collection)
-    # also means per websocket bump individual
+    # strangers are Elvis until they're not
     $hostinfo->god_connects($self->tx);
 
     $self->stash(  tx => $self->tx);
@@ -194,15 +192,8 @@ websocket '/stylehouse' => sub {
             $self->stash(handy => undef);
         }
     });
-    # swith sess (collect who => name (email) through Keys somehow)
-    # we work on a git repository
 
 
-
-
-
-
-    my $keys;
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
@@ -216,6 +207,7 @@ websocket '/stylehouse' => sub {
         eval { $j = decode_json($msg); };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
 
+
         # all this stuff before they join the stream
         my $done = 0;
         if ($self->stash('handy')) {
@@ -226,27 +218,33 @@ websocket '/stylehouse' => sub {
             $done = 1;
         }
 
+
         # it beings! not that we don't come through here all the time
         init() if $underworld;
 
+
         # ongoing stuff
-        if (my $event = $j->{event}) {
-            
-            if ($event->{type} eq "scroll") {
-                my $ly = $self->hostinfo->get('Lyrico');
-                $ly->event($event) if $ly;
-                return;
-            }
-
-            if ($event->{id} eq "Keys") {
-                $keys->event($event);
-                return;
-            }
-
+        if ($j->{claw} && $hostinfo->claw($j)) {
+            # done
+        }
+        elsif (my $k = $j->{k}) {
+            my $keys = $hostinfo->getapp("Keys");
+            return unless $keys;
+            $keys->key($k);
+        }
+        elsif (my $s = $j->{s}) {
+            # the viewport of the browser moves..
+#Lyrico used to do stuff here, it's a bit crazy but it's got potential...
+# for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
+# then bringing things back together is the key.... substance... legible shrines to anythings...
+            my $lye = $hostinfo->getapp("Lyrico");
+            return unless $lye;
+            $lye->scroll($s);
+        }
+        elsif (my $event = $j->{event}) {
             $self->app->log->info("Looking up event handler");
             # find the Texty to ->event ->{ owner->event
-            my $thing = $self->hostinfo->event_id_thing_lookup($event->{id})
-                unless $event->{type} eq "scroll";
+            my $thing = $self->hostinfo->event_id_thing_lookup($event->{id});
 
             start_timer();
             unless ($thing) {

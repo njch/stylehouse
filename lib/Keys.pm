@@ -31,10 +31,6 @@ sub start {
     
     $self->started(1);
     $self->ports->{gear}->text(
-        ['<form action="#"><textarea rows="1" cols="20" id="Keys"></textarea></form>'],
-        { spatialise => sub {
-            return { top => '50%', right => 20 }
-        }, },
     );
 }
 
@@ -67,15 +63,19 @@ sub menu {
     return $menu;
 }
 
-
-
-sub event {
+# where they come in, like event but lingo for sleek
+sub key {
     my $self = shift;
-    my $event = shift;
+    my $key = shift;
     #blah
     # chunk away the input
     # always able to hit space
     # tap out a vibe id :O
+}
+
+sub event {
+    my $self = shift;
+    my $event = shift;
 }
 
 1;
