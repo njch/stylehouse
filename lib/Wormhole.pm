@@ -15,16 +15,9 @@ sub new {
     shift->($self);
     
     $self->{ghost} = shift;
-    my $file = $self->{file} = shift;
-    unless (-e $file) {
-        say "no $file";
-        my ($wom) = $file =~ qr{(wormholes/.+)/};
-        unless (-e $wom) {
-            mkdir $wom;
-        }
-        `echo '' > $file`;
-    }
-    $self->{script} = LoadFile($file);
+
+    $self->wormfile_load(shift);
+
     say "script: ".Hostinfo::ddump($self->{script});
 
     return $self;
@@ -52,27 +45,59 @@ sub continues {
 
     push @{$self->{script}}, $line;
 
-    # travel that $line writing a serialisation in wormhole/$ghostname/
+    # $self->wormfile_check();
+    # $line = $self->encode_line($line);
+    # write_file($self->{file} append ETC
     
     return $line;
+}
+
+sub wormfile_load {
+    my $self = shift;
+    $self->{file} = shift;
+    if (-e $self->{file}) {
+        $self->{script} = LoadFile($self->{file});
+    }
+}
+
+sub encode_line {
+    my $self = shift;
+    my $yaml =  anydump([ shift ]);
+# remove first line? indent? something to make it appendable to another array via yaml
+    return $yaml;
+}
+
+sub wormfile_check {
+    my $self = shift;
+    my $file = $self->{file};
+    unless (-e $file) {
+        say "no $file";
+        my ($wom) = $file =~ qr{(wormholes/.+)/};
+        unless (-e $wom) {
+            mkdir $wom;
+        }
+        `touch $file`;
+    }
 }
 
 sub encode_thing {
     my $thing = shift;
     my $out = shift;
-    $thing = "~" unless defined $thing;
+    $thing = "~undef~" unless defined $thing;
     return "$thing";
 }
 
-# here's a... tube... sticking out the back of this wormhole, Textying the script.
-# Form would Ghost all sorts of data type munging and humanisation from lower order geometries
+# here's a tube for reflecting this wormhole into Texty so development can basically see it without Travel
+# Form would Ghost all sorts of data type munging and humanisation through geometric arrangements of thought process
 # also space bending etc.
-# it can help make a lot of tractograms under the curve of the human show.
+# it can help make a lot of tractograms under the smooth curve of the human show.
 # here we call another branch of thought in Ghost Ghost
 
-# this whole procedure should be mapped/plumbed, all the way out to the View, Gods, etc
+# this whole procedure should be mapped/plumbed, all the way out to the View, Elvi, etc
 # and usable as a flowing with nice triggers and invisible but well organised complications.
-# it's the call stack/circuit flowing in reverse, from state tube to layers & lingo tricks to items in a Texty.
+# which is the whole stylehouse deal.
+# it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
+# Form is a well-known bunch of Ghost
 
 use YAML::Syck;
 sub ddump {
