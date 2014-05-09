@@ -37,6 +37,9 @@ sub new {
     $self->outhook(shift);
     $self->output([]);
 
+    die "no procserv" unless grep /procserv.pl/, `ps faux`;
+
+
     my $view = $self->hostinfo->get_view($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
 
     $view->text([],

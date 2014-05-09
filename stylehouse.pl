@@ -83,15 +83,15 @@ use Ghost;
 use Wormhole;
 use Way;
 
-die "no procserv" unless grep /procserv.pl/, `ps faux`;
+clear_procserv_io(); # TODO pick it up
 
-get '/' => 'index';
-
-clear_procserv_io();
 my $hostinfo = new Hostinfo();
+
 $hostinfo->set('0', $hostinfo);
 $hostinfo->set('Travel Travel', []);
 $hostinfo->for_all([]);
+
+# get rid of this with Base.pm
 helper 'hostinfo' => sub { $hostinfo };
 
 get '/Codon/:name' => sub {
@@ -158,6 +158,32 @@ my $handyin;
 # something more energetic
 
 # hold lots of websockets
+
+my $first = 1;
+get '/' => sub {
+    my $self = shift;
+
+    # TODO log this to find who can't make it to the websocket
+    if ($first) {
+        $first = 0;
+
+        my $ws_location = $self->url_for('stylehouse')->to_abs;
+        say "Updating stylehouse.js for websocket $ws_location";
+
+        my $js = read_file("public/stylehouse.js");
+        $js =~ s/(new\ WebSocket\(  )  .+?  (  \);)/$1'$ws_location'$2/sx; # invent an e pragma
+        $js =~ m/( WebSocket.+\n)/;
+        say "turned into $1";
+        write_file("public/stylehouse.js", $js);
+=pod
+Prof Lue Calfman's quote from G
+Prof Lue Calfman's quote from G
+Prof Lue Calfman's quote from G
+=cut
+    }
+
+    $self->render('index');
+};
 
 websocket '/stylehouse' => sub {
     my $self = shift;
@@ -295,107 +321,14 @@ __DATA__
 
 @@ index.html.ep
 <!doctype html><html>
-    <head><title>stylehouse</title>
+    <head>
+        <title>stylehouse</title>
+
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="codemirror/lib/codemirror.js"></script>
-    <link  href="codemirror/lib/codemirror.css" rel="stylesheet">
-    <link  href="codemirror/theme/midnight.css" rel="stylesheet">
-    <script src="codemirror/mode/perl/perl.js"></script>
-    <script src="codemirror/mode/javascript/javascript.js"></script>
+
+        <link  href="stylehouse.css" rel="stylesheet">
+        <script src="stylehouse.js"></script>
     </head>
-
-    <script>
-      var ws;
-      var fail = 0;
-      WebSocket.prototype.reply = function reply (stuff) {
-          console.log(stuff);
-          ws.send(JSON.stringify(stuff));
-      };
-
-      function connect () {
-          ws = new WebSocket('<%= url_for('stylehouse')->to_abs %>');
-          ws.onmessage = function(event) {
-            console.log(event.data);
-            eval(event.data);
-          };
-          ws.onopen = function(e) {
-              fail = 0;
-          }
-          ws.onclose = function(e) {
-             $(window).off('click', clickyhand);
-            $('#body').addClass('dead');
-            console.log("WebSocket Error: " , e);
-            reconnect();
-          }
-      }
-      function reconnect () {
-          fail++;
-          console.log('waiting to retry');
-          if (fail < 2000) {
-              window.setTimeout(connect, 256);
-          }
-          else {
-              window.setTimeout(connect, 25600);
-          }
-      }
-
-      function clickyhand (event) {
-            var data = {
-                id: event.target.id,
-                value: event.target.innerText,
-                type: event.type,
-                shiftKey: event.shiftKey,
-                ctrlKey: event.ctrlKey,
-                altKey: event.altKey,
-                x: event.clientX,
-                y: event.clientY,
-                pagex: window.pageXOffset,
-                pagey: window.pageYOffset,
-            };
-            ws.reply({event: data});
-            $('#Keys').focus;
-        }
-      connect();
-    </script>
-    <style type="text/css">
-    div {
-        opacity:0.4;
-    }
-    .data {
-        position: absolute;
-        white-space: pre;
-    }
-    .dead {
-        background: black;
-    }
-    .view {
-        position: relative;
-        float: left;
-    }
-    .view span {
-        position: absolute;
-    }
-    .menu {
-        padding: 5px;
-        font-size: 20pt;
-    }
-    .view .menu {
-        font-size: 8pt;
-    }
-    .lyrics {
-        position: absolute;
-    }
-    .codocode {
-        white-space:pre;
-    }
-    .on {
-        color: white;
-        background: #777;
-    }
-    #Keys {
-        font-size: 30pt;
-    }
-    </style>
     <body id="body" style="background: #ab6; font-family: monospace">
     </body>
 </html>
