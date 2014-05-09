@@ -205,10 +205,9 @@ my $div_attr = { # these go somewhere magical and together, like always
 sub provision_view {
     my $self = shift;
     my $divid = shift;
+    my $styles = shift || $div_attr->{$divid} || die "wtf";
 
-    my $styles = $div_attr->{$divid} || die "wtf";
-
-    $styles .= "margin: 0.3em";
+    $styles .= "margin: 0.3em;";
 
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' clear:both;"></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
@@ -289,10 +288,8 @@ sub get_view { # TODO create views and shit
 
     my ($divid) = $viewid =~ /^(.+)_?/;
 
-    my $views = $self->get('screen/views/'.$divid);
-    unless ($views) {
-        $views = $self->provision_view($divid);
-    }
+    my $views = $self->get('screen/views/'.$divid)
+        || $self->provision_view($divid);
 
     my $view = new View($self->intro);
 

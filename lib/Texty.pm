@@ -32,6 +32,10 @@ sub new {
     # dump junk should not be saved
     $self->hostinfo->screenthing($self);
 
+    if (ref $self->lines ne "ARRAY") {
+        use Carp;
+        confess "f";
+    }
     return $self if ! @{ $self->lines };
 
     $self->lines_to_tuxts() eq "bail" && return;

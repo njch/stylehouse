@@ -122,7 +122,6 @@ sub init {
 
     $hostinfo->make_floodzone();
     $hostinfo->make_app_menu();
-    $c->load_codon("Keys");
     $underworld = 0;
 }
 

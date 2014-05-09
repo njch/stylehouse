@@ -41,7 +41,10 @@ sub new {
     shift->($self);
 
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
-    $self->{code} = $self->hostinfo->get_view($self, code => "hodu");
+
+    $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{codonmenu} = $self->hostinfo->get_view($self, "codonmenu");
+    $self->{codonview} = $self->hostinfo->get_view($self, "codonview" => "hodu");
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 
@@ -66,21 +69,20 @@ sub menu { # {{{
     $menu->{"new"} = sub { $self->new_ebuge() };
     $menu->{"<views>"} = sub {
         say "Sending view dump\n\n";
-        $self->{run}->text->replace(ddump($self->hostinfo->get("screen/views/*")));
+        $self->{run}->text->replace(["!html <h2>views</h2>", split "\n", ddump($self->hostinfo->get("screen/views/*"))]);
     };
     $menu->{"<obso>"} = sub {
         say "Sending obsotrav dump\n\n";
-        $self->{run}->text->replace(ddump($self->hostinfo->get("Codo/obsetrav")));
+        $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
     };
 
     return $menu;
 }
 
-
 sub init_codemenu {
     my $self = shift;
 
-    $self->ports->{code}->menu({
+    $self->{codonmenu}->text([], {
         tuxts_to_htmls => sub {
             my $self = shift;
             for my $s (@{$self->tuxts}) {
@@ -97,7 +99,7 @@ sub init_codemenu {
         },
     });
 
-    $self->ports->{code}->menu->replace($self->{codes});
+    $self->{codonmenu}->text->replace($self->{codes});
 } # }}}
 
 sub load_codon {
@@ -105,15 +107,13 @@ sub load_codon {
     my $codon = shift;
     $codon = $self->codon_by_name($codon) unless ref $codon;
     say "Load Codon for $codon->{name}";
-    my $codeview = $self->ports->{code};
-    my $text = $codeview->text;
+
+    my $text = $self->{codonview}->text;
 
     $self->{currodon} = $codon;
     $codon->display($text);
 
     say "Done.\n\n\n";
-    # codemirror is a piece of shit
-    # $self->hostinfo->send(qq{console.log("Code mirror heading for $id:",document.getElementById('$id')); como = CodeMirror(document.getElementById('$id'), { mode: 'perl', value: "$code" }); console.log(como); });
 }
 
 sub update_currodon { # just one chunk, whatevery
@@ -136,7 +136,7 @@ sub codon_by_name {
     sub new {
         my $self = bless {}, shift;
         shift->($self);
-        $self->{point} = 1;
+        $self->{points} = shift || { 1 => 1 };
         $self;
     }
     sub display {
@@ -155,7 +155,7 @@ sub codon_by_name {
             my $lines = $v->{lines};
             my $rows = scalar(@$lines);
             say "$i chunk";
-            if ($i == $self->{point}) {
+            if ($self->{points}->{$i}) {
                 # open
                 my $code = join "\n", @{$v->{lines}};
                 $code =~ s/"/\\"/g;
@@ -173,6 +173,24 @@ sub codon_by_name {
             }
         }
 
+        my $apo = sub {
+            my $t = shift;
+            my $s = shift;
+            my $top = shift;
+            my $n = { %$s };
+            $n->{id} .= "-$t";
+            $n->{left} -= 20;
+            $n->{toppy} += $top;
+            $n->{value} = $t;
+            $n->{style} .= "border: 1px solid black;";
+            $n;
+        };
+        $texty->{hooks}->{tuxts_to_html} = sub {
+            my $self = shift;
+            $self->{tuxts} = [
+                map { $_->{chunki} ? ($_, $apo->("up", $_, 10), $apo->("x", $_, 30)) : $_ } @{$self->{tuxts}}
+            ];
+        };
         $texty->replace([
             @bits
         ]);
@@ -189,6 +207,20 @@ sub codon_by_name {
             say "Chunk $i is open to ".scalar(@$lines)." lines";
             $self->{hostinfo}->send(qq{\$('#$id-ta').append("$code"); }); # this could be partitioned easy
         }
+    }
+    sub upload {
+        my $self = shift;
+        my $id = shift;
+        my $sec = $self->{hostinfo}->claw_add( sub {
+            my $e = shift;
+            my $id = $e->{id};
+            my $tuxt = $self->{text}->id_to_tuxt($id);
+            my $chunki = $tuxt->{chunki} || die;
+            $self->update_currodon($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
+        } );
+        $self->{hostinfo}->send(
+             "  ws.reply({claw: '$sec', id: '$id', code: document.getElementById('$id-ta').innerHTML}); "
+        );
     }
     sub update {
         my $self = shift;
@@ -239,7 +271,8 @@ sub codon_by_name {
         $self->{chunks} = $chunks;
     }
 }
-# get the forms of that clouds of ghosts
+
+# get the forms of that clouds of ghosts (more formation in Codon::chunk())
 sub init_wormcodes {
     my $self = shift;
     my @codefiles = @_;
@@ -272,23 +305,49 @@ sub init_wormcodes {
     }
 }
 
-=pod
-}
-#hmm
-    # invent pointing $code->{point}
-    my $current = "?";
-    my $from = $current - 10;
-    $from = 0 if $from < 0;
-    @lines = splice @lines, $from, 200;
-    $current = 10;
-    my $spanid = $texty->tuxts->[$current-1]->{id};
-    $self->hostinfo->send("\$('#$spanid').addClass('on');");
-=cut
 
-sub code_unfocus {
+sub event {
     my $self = shift;
-    return unless $self->{code};
-    $self->hostinfo->send("\$('.".$self->ports->{code}->id."').fadeOut(500);");
+    my $event = shift;
+    my $id = $event->{id};
+
+    my $codemenutexty = $self->ports->{codonmenu}->menu->text;
+    my $codetexty =     $self->ports->{codonview}->text;
+
+    # CODE ACTION
+    if ($id =~ /-ta$/) {
+        return;
+    }
+    if ($id =~ s/-up$//) {
+        $self->{currodon}->upload($id);
+        return;
+    }
+    if ($id =~ s/-close$//) {
+        my $tuxt = $codetexty->id_to_tuxt($id);
+        my $chunki = $tuxt->{chunki} || die;
+        my $codon = $self->{currodon};
+        $codon->{points}->{$chunki} = 0;
+        $codon->display;
+    }
+
+
+    # CODE EXPAND
+    if (my $tuxt = $codetexty->id_to_tuxt($id)) {
+        say "Code click got: ".ddump($tuxt);
+        say "TODO" for 1..3;
+        return;
+    }
+
+
+    # MENU
+    if (my $tuxt = $codemenutexty->id_to_tuxt($id)) {
+        if (ref $tuxt->{origin} eq "Codon") {
+            return $self->load_codon($tuxt->{origin});
+        }
+    }
+    else {
+        return $self->hostinfo->error("Codo event 404" => $id, event => ddump($event));
+    }
 }
 
 sub random_colour_background {
@@ -314,47 +373,4 @@ sub new_ebuge {
     push @{ $self->ebuge }, $ebuge;
     return $ebuge;
 }
-
-sub event {
-    my $self = shift;
-    my $event = shift;
-    my $id = $event->{id};
-
-    my $codemenutexty = $self->ports->{code}->menu->text;
-    my $codetexty =     $self->ports->{code}->text;
-
-    if ($id =~ /-ta$/) {
-        return;
-    }
-    if ($id =~ s/-up$//) {
-        my $sec = $self->{hostinfo}->claw_add( sub {
-            my $e = shift;
-            my $tid = $e->{tid};
-            my $tuxt = $codetexty->id_to_tuxt($tid);
-            my $chunki = $tuxt->{chunki} || die;
-            $self->update_currodon($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
-        } );
-        $self->{hostinfo}->send(
-             "  ws.reply({claw: '$sec', tid: '$id', code: document.getElementById('$id-ta').innerHTML}); "
-        );
-    }
-
-    my $tuxt = $codemenutexty->id_to_tuxt($id);
-
-    unless ($tuxt){ 
-        return $self->hostinfo->error("Codo event 404" => $id);
-    }
-
-    if (ref $tuxt->{origin} eq "Codon") {
-        return $self->load_codon($tuxt->{origin});
-    }
-
-    elsif ($id =~ /^(.+)-in$/) {
-        my $sid = $1;
-        say "Got a thing: $sid";
-    }
-
-    return $self->hostinfo->error("Codo event found & wtf", ddump($tuxt), event => ), say "blah";
-}
-
 1;
