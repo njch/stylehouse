@@ -1,9 +1,5 @@
 var ws;
 var fail = 0;
-WebSocket.prototype.reply = function reply (stuff) {
-  console.log(stuff);
-  ws.send(JSON.stringify(stuff));
-};
 
 function connect () {
   ws = new WebSocket('ws://localhost:3000/stylehouse');
@@ -32,14 +28,21 @@ function reconnect () {
   }
 }
 
+WebSocket.prototype.reply = function reply (stuff) {
+
+  console.log(stuff);
+
+  ws.send(JSON.stringify(stuff));
+};
+
 function clickyhand (event) {
     var data = {
         id: event.target.id,
         value: event.target.innerText,
         type: event.type,
-        shiftKey: event.shiftKey,
-        ctrlKey: event.ctrlKey,
-        altKey: event.altKey,
+        shiftKey: 0+event.shiftKey,
+        ctrlKey: 0+event.ctrlKey,
+        altKey: 0+event.altKey,
         x: event.clientX,
         y: event.clientY,
         pagex: window.pageXOffset,
