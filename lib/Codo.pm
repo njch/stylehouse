@@ -79,6 +79,24 @@ sub menu { # {{{
     return $menu;
 }
 
+sub read_file {
+    my $self = shift;
+    read_file(@_);
+}
+sub write_file {
+    my $self = shift;
+    write_file(@_);
+}
+
+sub cread_file {
+    my $self = shift;
+    return $self->{hostinfo}->get("Codo")->read_file(@_);
+}
+sub cwrite_file {
+    my $self = shift;
+    return $self->{hostinfo}->get("Codo")->write_file(@_);
+}
+
 sub init_codemenu {
     my $self = shift;
 
