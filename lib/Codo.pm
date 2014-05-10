@@ -44,7 +44,7 @@ sub new {
 
     $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; height: 60px;");
     $self->{codonmenu} = $self->hostinfo->get_view($self, "codonmenu");
-    $self->{codonview} = $self->hostinfo->get_view($self, "codonview" => "hodu");
+    $self->{codon} = $self->hostinfo->get_view($self, "codon" => "hodu");
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 
@@ -108,10 +108,7 @@ sub load_codon {
     $codon = $self->codon_by_name($codon) unless ref $codon;
     say "Load Codon for $codon->{name}";
 
-    my $text = $self->{codonview}->text;
-
-    $self->{currodon} = $codon;
-    $codon->display($text);
+    $codon->display($self->{codon}->text); # {codon} is a View
 
     say "Done.\n\n\n";
 }
@@ -120,7 +117,7 @@ sub update_currodon { # just one chunk, whatevery
     my $self = shift;
     my $chunki = shift;
     my $code = shift;
-    my $codon = $self->{currodon};
+    my $codon = $self->{the_codon};
     $codon->update($chunki, $code);
 }
 
@@ -191,6 +188,7 @@ sub codon_by_name {
                 map { $_->{chunki} ? ($_, $apo->("up", $_, 10), $apo->("x", $_, 30)) : $_ } @{$self->{tuxts}}
             ];
         };
+        $texty->{origin} = $self; # same as $Codo->{the_codon} but not singular
         $texty->replace([
             @bits
         ]);
@@ -311,28 +309,29 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
-    my $codemenutexty = $self->ports->{codonmenu}->menu->text;
-    my $codetexty =     $self->ports->{codonview}->text;
+    my $codon_menu_texty = $self->ports->{codonmenu}->text;
+    my $codon_texty =      $self->ports->{codon}->text;
 
     # CODE ACTION
     if ($id =~ /-ta$/) {
         return;
     }
     if ($id =~ s/-up$//) {
-        $self->{currodon}->upload($id);
+        $self->{the_codon}->upload($id);
         return;
     }
     if ($id =~ s/-close$//) {
-        my $tuxt = $codetexty->id_to_tuxt($id);
+        my $tuxt = $codon_texty->id_to_tuxt($id);
         my $chunki = $tuxt->{chunki} || die;
         my $codon = $self->{currodon};
         $codon->{points}->{$chunki} = 0;
         $codon->display;
+        return;
     }
 
 
     # CODE EXPAND
-    if (my $tuxt = $codetexty->id_to_tuxt($id)) {
+    if (my $tuxt = $codon_texty->id_to_tuxt($id)) {
         say "Code click got: ".ddump($tuxt);
         say "TODO" for 1..3;
         return;
@@ -340,13 +339,13 @@ sub event {
 
 
     # MENU
-    if (my $tuxt = $codemenutexty->id_to_tuxt($id)) {
+    if (my $tuxt = $codon_menu_texty->id_to_tuxt($id)) {
         if (ref $tuxt->{origin} eq "Codon") {
             return $self->load_codon($tuxt->{origin});
         }
     }
     else {
-        return $self->hostinfo->error("Codo event 404" => $id, event => ddump($event));
+        return $self->hostinfo->error("Codo event 404 for $id" => $event);
     }
 }
 

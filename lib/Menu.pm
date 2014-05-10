@@ -8,9 +8,6 @@ use FindBin '$Bin';
 use HTML::Entities;
 
 has 'hostinfo';
-has 'view';
-has 'text';
-has 'items';
 
 sub new {
     my $self = bless {}, shift;
@@ -26,6 +23,10 @@ sub new {
     return $self;
 }
 
+sub text {
+    my $self = shift;
+    return $self->{text};
+}
 sub replace {
     my $self = shift;
 
@@ -33,7 +34,7 @@ sub replace {
 
     say "Writing Menu  ".$self->{view}->{id}."    ".join ", ", map { ref $_ eq "Codon" ? $_->{name} : ref $_ } @$items;
 
-    $self->text->replace([@$items]);
+    $self->{text}->replace([@$items]);
 
     return $self;
 }
