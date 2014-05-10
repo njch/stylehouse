@@ -69,7 +69,7 @@ sub menu { # {{{
     $menu->{"new"} = sub { $self->new_ebuge() };
     $menu->{"<views>"} = sub {
         say "Sending view dump\n\n";
-        $self->{run}->text->replace(["!html <h2>views</h2>", split "\n", ddump($self->hostinfo->get("screen/views/*"))]);
+        $self->{run}->text->replace(["!html <h2>views</h2>", $self->hostinfo->dkeys]);
     };
     $menu->{"<obso>"} = sub {
         say "Sending obsotrav dump\n\n";
@@ -208,7 +208,7 @@ sub codon_by_name {
             my $id = $e->{id};
             my $tuxt = $self->{text}->id_to_tuxt($id);
             my $chunki = $tuxt->{chunki} || die;
-            $self->update($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
+            $self->update($chunki => decode_entities($e->{code})); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
         } );
         $self->{hostinfo}->send(
              "  ws.reply({claw: '$sec', id: '$id', code: document.getElementById('$id-ta').innerHTML}); "

@@ -121,35 +121,7 @@ sub god_enters {
 
 sub furnish_god {
     my $self = shift;
-=pod
-$(function() {
-  $('a[href*=#]:not([href=#])').click(function() {
-    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-      if (target.length) {
-        $('html,body').animate({
-     $(function() {
-  $('a[href*=#]:not([href=#])').click(function() {
-    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-      if (target.length) {
-        $('html,body').animate({
-          scrollTop: target.offset().top
-        }, 1000);
-        return false;
-      }
-    }
-  });
-});     scrollTop: target.offset().top
-        }, 1000);
-        return false;
-      }
-    }
-  });
-});
-=cut
+
 }
 sub find_god {
     my $self = shift;
@@ -181,6 +153,9 @@ sub hostinfo { shift }
 
 sub data { $data }
 
+sub dkeys {
+    return map { "($_ => ".(ref $data->{$_}) } keys %$data;
+}
 
 sub load_views { # state from client
     my $self = shift;
