@@ -1,32 +1,16 @@
 package Menu;
-use Mojo::Base 'Mojolicious::Controller';
-use Scriptalicious;
-use Texty;
-use Time::HiRes 'usleep';
-use Codo;
-use FindBin '$Bin';
-use HTML::Entities;
+use base 'Base';
 
-has 'hostinfo';
-has 'view';
-has 'text';
-has 'items';
-
-my $i = 0;
-sub view {
-    my ($self, $view) = @_;
-    $self->{view} ||= {};
-}
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->view(shift);
+    $self->{view} = shift;
     
     # pick apart spec for us & our texty
     $self->{hooks} = shift;
 
-    $self->{text} = new Texty($self->hostinfo->intro, $self->view, [], $self->{hooks});
+    $self->{text} = new Texty($self->hi->intro, $self->{view}, [], $self->{hooks});
 
     return $self;
 }
@@ -34,7 +18,7 @@ sub new {
 sub replace {
     my $self = shift;
 
-    my $items = shift;
+    my $items = $self->{items} = shift;
 
     say "Writing Menu  ".$self->{view}->{id}."    ".join ", ", map { ref $_ eq "Codon" ? $_->{name} : ref $_ } @$items;
 
@@ -43,23 +27,10 @@ sub replace {
     return $self;
 }
 
-use YAML::Syck;
-sub ddump {
-    my $thing = shift;
-    return join "\n",
-        grep !/^     /,
-        split "\n", Dump($thing);
-}
-
-sub random_colour_background {
-    my ($rgb) = join", ", map int rand 255, 1 .. 3;
-    return "background: rgb($rgb);";
-}
-
 sub event {
     my $self = shift;
     my $event = shift;
-    my $height = $self->hostinfo->get("screen/height");
+    my $height = $self->hi->get("screen/height");
     $height ||= 900;
     my $h = {};
 
@@ -78,14 +49,14 @@ sub event {
     }
     else {
         say "Nope wrong: ";
-        $self->hostinfo->flood($self->text);
+        $self->hi->flood($self->text);
     }
 }
 
 sub route_menu_id {
     my $self = shift;
     my $id = shift;
-    my $texty = $self->text;
+    my $texty = $self->{text};
 
     my $ids = {};
     for my $tuxt (@{ $texty->tuxts }) {
