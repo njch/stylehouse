@@ -108,17 +108,10 @@ sub load_codon {
     $codon = $self->codon_by_name($codon) unless ref $codon;
     say "Load Codon for $codon->{name}";
 
+    $self->{the_codon} = $codon;
     $codon->display($self->{codon}->text); # {codon} is a View
 
     say "Done.\n\n\n";
-}
-
-sub update_currodon { # just one chunk, whatevery
-    my $self = shift;
-    my $chunki = shift;
-    my $code = shift;
-    my $codon = $self->{the_codon};
-    $codon->update($chunki, $code);
 }
 
 sub codon_by_name {
@@ -158,7 +151,7 @@ sub codon_by_name {
                 $code =~ s/"/\\"/g;
                 $code =~ s/\n/\\n/g;
                 say "$i Code is $rows lines\t\t$v->{first}";
-                $rows = 20 if $rows > 25;
+                $rows = 25 if $rows > 25;
                 push @bits,
                     '!html !chunki='.$i.' '
                     .'<textarea name="code" id="<<ID>>-ta" cols="77" rows="'.$rows.'"></textarea>'
@@ -192,6 +185,7 @@ sub codon_by_name {
         $texty->replace([
             @bits
         ]);
+        $self->{text} = $texty;
 
         for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
             my $id = $s->{id};
@@ -206,7 +200,7 @@ sub codon_by_name {
             $self->{hostinfo}->send(qq{\$('#$id-ta').append("$code"); }); # this could be partitioned easy
         }
     }
-    sub upload {
+    sub up_load { # precursor to update
         my $self = shift;
         my $id = shift;
         my $sec = $self->{hostinfo}->claw_add( sub {
@@ -214,7 +208,7 @@ sub codon_by_name {
             my $id = $e->{id};
             my $tuxt = $self->{text}->id_to_tuxt($id);
             my $chunki = $tuxt->{chunki} || die;
-            $self->update_currodon($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
+            $self->update($chunki => $e->{code}); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
         } );
         $self->{hostinfo}->send(
              "  ws.reply({claw: '$sec', id: '$id', code: document.getElementById('$id-ta').innerHTML}); "
@@ -226,12 +220,12 @@ sub codon_by_name {
         my $code = shift;
         my $chunks = $self->{chunks};
 
-        $chunks->{$i}->{lines} = $code;
+        $chunks->{$i}->{lines} = [ split "\n", $code ];
 
         my $lines = [];
         for my $i (sort keys %$chunks) {
             my $v = $chunks->{$i};
-            push @$lines, split "\n", $chunks->{$i}->{lines};
+            push @$lines, @{$chunks->{$i}->{lines}};
         }
         write_file($self->{codefile}, join "\n", @$lines);
         $self->chunk();
@@ -317,13 +311,13 @@ sub event {
         return;
     }
     if ($id =~ s/-up$//) {
-        $self->{the_codon}->upload($id);
+        $self->{the_codon}->up_load($id); # to get rid of the_codon singularity lookup the texty->{origin}
         return;
     }
     if ($id =~ s/-close$//) {
         my $tuxt = $codon_texty->id_to_tuxt($id);
         my $chunki = $tuxt->{chunki} || die;
-        my $codon = $self->{currodon};
+        my $codon = $self->{the_codon};
         $codon->{points}->{$chunki} = 0;
         $codon->display;
         return;
