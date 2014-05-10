@@ -12,21 +12,16 @@ has 'view';
 has 'text';
 has 'items';
 
-my $i = 0;
-sub view {
-    my ($self, $view) = @_;
-    $self->{view} ||= {};
-}
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->view(shift);
+    $self->{view} = shift;
     
     # pick apart spec for us & our texty
     $self->{hooks} = shift;
 
-    $self->{text} = new Texty($self->hostinfo->intro, $self->view, [], $self->{hooks});
+    $self->{text} = new Texty($self->hostinfo->intro, $self->{view}, [], $self->{hooks});
 
     return $self;
 }
