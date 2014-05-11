@@ -6,13 +6,25 @@ use HTML::Entities;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-    $self->{openness} = shift || {};
+    my $p = shift;
+    for my $k (keys %$p) {
+        $self->{$k} = $p->{$k};
+    }
+    $self->open_codefile();
     $self;
 }
 sub ddump { Hostinfo::ddump(@_) }
 
+sub open_codefile {
+    my $self = shift;
+    $self->{lines} = [map { $_ =~ s/\n$//s; $_ } $self->readfile($self->{codefile})];
+    $self->chunk();
+}
+
 sub display {
     my $self = shift;
+
+    $self->{openness} ||= {};
 
     my $texty = $self->{text} || die "NO Texty set into $codon->{name} before ->display";
 
@@ -33,9 +45,10 @@ sub display {
             $code =~ s/\n/\\n/g;
             say "$i Code is $rows lines\t\t$v->{first}";
             $rows = 25 if $rows > 25;
+            my $style = "background-color: #a8b;";
             push @bits,
                 '!html !chunki='.$i.' !textarea=1 '
-                .'<textarea name="code" id="<<ID>>-ta" cols="77" rows="'.$rows.'"></textarea>'
+                .'<textarea name="code" id="<<ID>>-ta" cols="77" rows="'.$rows.'" style="'.$style.'"></textarea>'
                 .'<input id="<<ID>>-up" type="submit" value="sav">'
         }
         else {
@@ -62,11 +75,15 @@ sub display {
     };
     $texty->{hooks}->{tuxts_to_html} = sub {
         my $self = shift;
-        $self->{tuxts} = [
-            map { $_->{htmlval} ? 
-                                            (  $_,  $apo->("up", $_, 10),  $apo->("x", $_, 30)  )
-                : $_ } @{$self->{tuxts}}
-        ];
+        my @new;
+        for my $t (@{$self->{tuxts}}) {
+            if ($t->{textarea}) {
+                push @new, $apo->("up", $t, 10);
+                push @new, $apo->("x", $t, 30);
+            }
+            push @new, $t;
+        }
+        $self->{tuxts} = \@new;
     };
     $texty->{origin} = $self; # as $Codo->{the_codon} but not singular
     
@@ -115,6 +132,7 @@ sub display {
         $self->{last_openness} = { %{ $self->{openness} } };
     }
 
+    $texty->{max_height} = 1000;
     $texty->fit_div;
 }
 
@@ -159,10 +177,9 @@ sub update {
     $self->chunk();
 }
 
-sub loadfile {
-    my $self = shift;
-    $self->{lines} = [map { $_ =~ s/\n$//s; $_ } $self->readfile($self->{codefile})];
-    $self->chunk();
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
 }
 
 sub chunk {

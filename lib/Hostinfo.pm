@@ -154,7 +154,7 @@ sub hostinfo { shift }
 sub data { $data }
 
 sub dkeys {
-    return map { "($_ => ".(ref $data->{$_}) } keys %$data;
+    return map { "$_ => ".(ref $data->{$_}) } keys %$data;
 }
 
 sub load_views { # state from client
@@ -184,7 +184,7 @@ sub provision_view {
 
     $styles .= "margin: 0.3em;";
 
-    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' clear:both;"></div>';
+    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
     $self->send("\$('body').append('$div');");
 

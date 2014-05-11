@@ -240,11 +240,16 @@ sub fit_div {
     say "Fitting div around the last: $last->{style}";
     my ($top) = $last->{top};
     $top += $self->htmlvalue_height($last);
+    if ($self->{max_height}) {
+        if ($self->{max_height} < $top) {
+            $top = $self->{max_height};
+        }
+    }
     $top .= "px";
 
     my $divid = $self->{view}->{divid};
     say "\n\n\n\nTexty: Refitting $divid to height: $top\n\n\n\n";
-    $self->{hostinfo}->send(qq{  \$('#$divid').css('height', '$top');  });
+    $self->{hostinfo}->send(qq{  \$('#$divid').css('height', '$top')  });
 }
 
 sub random_colour_background {

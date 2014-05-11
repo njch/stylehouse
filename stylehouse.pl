@@ -11,8 +11,6 @@ use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
 
-my ($name) = $Bin =~ m{/(\w+)$};
-say "\n\n\nwe are $name $Bin/$0";
 
 =pod
 
@@ -86,7 +84,29 @@ use Ghost;
 use Wormhole;
 use Way;
 
-clear_procserv_io(); # TODO pick it up
+`cat /dev/null > proc/start`;
+`cat /dev/null > proc/list`;
+
+my ($name) = $Bin =~ m{/(\w+)$};
+# here's our internet constellation
+# N S E W
+my $styleports = {
+    stylehut => 5000,
+    stylecoast => 4000,
+    stylehouse => 3000,
+    styleshed => 3001,
+};
+# vertical supports the two degrees of weather you can feed the web
+# horizontal are your stable and unstable private research/life machines
+# TODO nicely craft:
+my $port = $styleports->{$name};
+$port || die "COUGH COUGH COUGH please change the name of the directory the script is in to 'stylehouse'\n$Bin looks funny";
+my $ip = "127.0.0.1";
+$ip = "*" if $name eq "stylehut";
+my $mojo_daemon_listen = "http://$ip:$port";
+
+say "\n\n\nwe are $name";
+say "running from $Bin/$0";
 
 my $hostinfo = new Hostinfo();
 
@@ -103,7 +123,6 @@ get '/Codon/:name' => sub {
     $hostinfo->getapp("Codo")->get_codon($self, $self->param('name'));
 };
 
-my $stylehouse = bless {}, "God";
 my $hands = {};
 
 my $underworld = 1; # our fate's the most epic shift ever
@@ -309,16 +328,8 @@ websocket '/stylehouse' => sub {
 
 };
 
-sub clear_procserv_io {
-    `cat /dev/null > proc/start`;
-    `cat /dev/null > proc/list`;
-}
-
-if ($Bin =~ /test$/) {
-    my $daemon = Mojo::Server::Daemon->new(app => app, listen => ['http://*:3001']);
-    push @{app->static->paths}, "$Bin/../public";
-    $daemon->run();
-}
+my $daemon = Mojo::Server::Daemon->new(app => app, listen => [$mojo_daemon_listen]);
+$daemon->run();
 
 app->start;
 __DATA__

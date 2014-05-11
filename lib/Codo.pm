@@ -148,10 +148,11 @@ sub init_wormcodes {
         my $mtime = (stat $cf)[9];
 
             if ($isnew) {
-                $codon = new Codon($self->hostinfo->intro);
-                $codon->{codefile} = $cf;
-                $codon->{name} = $name;
-                $codon->{mtime} = $mtime;
+                $codon = new Codon($self->hostinfo->intro, {
+                    codefile => $cf,
+                    name => $name,
+                    mtime => $mtime,
+                });
             }
 
         if ($codon->{mtime} < $mtime) {
@@ -161,7 +162,6 @@ sub init_wormcodes {
         }
 
             if ($isnew) {
-                $codon->loadfile();
                 push @{ $self->{codes} }, $codon;
                 say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
             }
