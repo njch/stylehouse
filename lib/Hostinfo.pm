@@ -254,12 +254,12 @@ sub screenthing {
     push @$things, $thing;
 }
 
-sub get_view { # TODO create views and shit
+sub get_view {
     my $self = shift;
     my $this = shift;
     my $viewid = shift;
     my $alias = shift;
-    ($alias, $viewid) = ($viewid, $alias) if $alias;
+    ($alias, $viewid) = ($viewid, $alias) if $alias; # TODO rip this out
 
     my ($divid) = $viewid =~ /^(.+)_?/;
 

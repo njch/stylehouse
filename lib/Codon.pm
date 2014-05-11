@@ -63,7 +63,7 @@ sub display {
     $texty->{hooks}->{tuxts_to_html} = sub {
         my $self = shift;
         $self->{tuxts} = [
-            map { $_->{chunki} ? 
+            map { $_->{htmlval} ? 
                                             (  $_,  $apo->("up", $_, 10),  $apo->("x", $_, 30)  )
                 : $_ } @{$self->{tuxts}}
         ];
@@ -86,14 +86,11 @@ sub display {
         $tid || die "no temp from replace()";
     }
     
-    say "openz: ".ddump({last => $self->{last_openness}, now => $self->{openness}});
-
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         next unless $s->{textarea};
         my $id = $s->{id};
         my $i = $s->{chunki};
         my $c = $chunks->[$i];
-        say "Thinking of chunk $i";
         if ($tid && $self->{last_openness}->{$i}) { # already open from last time, copy shit across on the client
             my ($oldtuxt) = grep { $_->{chunki} == $i } @$lasttuxts;
             my $oid = $oldtuxt->{id};
@@ -111,12 +108,14 @@ sub display {
         }
     }
 
-    if ($tid) {
+    if ($tid) { # remove the temp data - this be a tractor once textys are geometrica
         $self->{hostinfo}->send(qq{  \$('#$divid > #$tid').remove();  });
     }
     if (%{ $self->{openness} }) {
         $self->{last_openness} = { %{ $self->{openness} } };
     }
+
+    $texty->fit_div;
 }
 
 sub readfile {

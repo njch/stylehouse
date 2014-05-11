@@ -217,8 +217,7 @@ sub spatialise {
         $i++;
     }
 }
-# be good to rejoin things with dom recon
-# or send JS to stretch things out once it lands
+
 sub htmlvalue_height {
     my $self = shift;
     my $s = shift;
@@ -229,9 +228,23 @@ sub htmlvalue_height {
         return 15 * $h
     }
     if ($v=~ /<textarea .+? rows="(\d+)"/) {
-        return ((239 / 15) * $1) - $g->{space};
+        return int(((245 / 15) * $1) - $g->{space} + 1);
     }
-    return 0;
+    return 20;
+}
+
+sub fit_div {
+    my $self = shift;
+    my $last = $self->{tuxts}->[-1];
+    say ddump($self->{tuxts});
+    say "Fitting div around the last: $last->{style}";
+    my ($top) = $last->{top};
+    $top += $self->htmlvalue_height($last);
+    $top .= "px";
+
+    my $divid = $self->{view}->{divid};
+    say "\n\n\n\nTexty: Refitting $divid to height: $top\n\n\n\n";
+    $self->{hostinfo}->send(qq{  \$('#$divid').css('height', '$top');  });
 }
 
 sub random_colour_background {
@@ -261,8 +274,8 @@ sub tuxts_to_htmls {
         delete $mid->{origin};
         my $value = delete($mid->{value});
         my $p = {};
-        if (exists $mid->{inner}) {
-            $p->{inner} = delete $mid->{inner};
+        for ("inner") {
+            $p->{$_} = delete $mid->{$_} if exists $mid->{$_};
         }
         my $pm = dclone $mid;
         $p = { %$pm, %$p };

@@ -43,9 +43,11 @@ sub new {
 
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
 
-    $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; right: 10; height: 60px;");
     $self->{codonmenu} = $self->hostinfo->get_view($self, "codonmenu");
-    $self->{codon} = $self->hostinfo->get_view($self, "codon" => "hodu");
+
+    $self->{hostinfo}->provision_view(codon => "width:58%;  background: #352035; color: #afc; right: 10; height: 600px;");
+    $self->{codon} = $self->hostinfo->get_view($self, "codon");
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 

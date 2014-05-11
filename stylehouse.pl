@@ -10,7 +10,9 @@ use File::Slurp;
 use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
-say "\n\n\nwe are $Bin/$0";
+
+my ($name) = $Bin =~ m{/(\w+)$};
+say "\n\n\nwe are $name $Bin/$0";
 
 =pod
 
@@ -90,6 +92,7 @@ my $hostinfo = new Hostinfo();
 
 $hostinfo->set('0', $hostinfo);
 $hostinfo->set('Travel Travel', []);
+$hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
 $hostinfo->for_all([]);
 
 # get rid of this with Base.pm
