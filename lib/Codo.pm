@@ -120,7 +120,7 @@ sub load_codon {
     say "Load Codon for $codon->{name}";
 
     $self->{the_codon} = $codon;
-    $codon->{texty} = $self->{codon}->text; # {codon} is a View
+    $codon->{text} = $self->{codon}->text; # {codon} is a View
     $codon->display();
 
     say "Done.\n\n\n";

@@ -33,7 +33,6 @@ sub start {
     $self->ports->{gear}->text(
     );
 }
-
 sub stop {
     my $self = shift;
     

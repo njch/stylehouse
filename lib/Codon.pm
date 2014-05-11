@@ -1,6 +1,7 @@
 package Codon;
 use Scriptalicious;
 use File::Slurp;
+use HTML::Entities;
 
 sub new {
     my $self = bless {}, shift;
@@ -13,7 +14,7 @@ sub ddump { Hostinfo::ddump(@_) }
 sub display {
     my $self = shift;
 
-    my $texty = $self->{texty} || die "NO Texty set into $codon->{name} before ->display";
+    my $texty = $self->{text} || die "NO Texty set into $codon->{name} before ->display";
 
     my $chunks = $self->{chunks};
 
@@ -95,7 +96,6 @@ sub display {
         say "Thinking of chunk $i";
         if ($tid && $self->{last_openness}->{$i}) { # already open from last time, copy shit across on the client
             my ($oldtuxt) = grep { $_->{chunki} == $i } @$lasttuxts;
-            $DB::single = 1;
             my $oid = $oldtuxt->{id};
             say "Codon $self->{name} [$i] is still open, copying around...";
             my $tid = $temp->{tempid}; # is invisible span containing old spans
@@ -107,13 +107,12 @@ sub display {
             $code =~ s/"/\\"/g;
             $code =~ s/\n/\\n/g; # the escape is interpolated in JS string after the websocket
             say "Codon $self->{name} [$i] is opening     (".scalar(@$lines)." lines)";
-            $self->{hostinfo}->send(qq{  \$('#$divid > #$id > #$id-ta').text("$code");  }); # this could be partitioned using .append()s
+            $self->{hostinfo}->send(qq{  \$('#$divid > #$id > #$id-ta').text("$code");  }); # this could be partitioned using .append()s139G
         }
     }
 
     if ($tid) {
-        say "Not removing $tid\n";
-        #$self->{hostinfo}->send(qq{  \$('#$divid > #$tid').remove();  });
+        $self->{hostinfo}->send(qq{  \$('#$divid > #$tid').remove();  });
     }
     if (%{ $self->{openness} }) {
         $self->{last_openness} = { %{ $self->{openness} } };
