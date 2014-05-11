@@ -60,7 +60,7 @@ sub resume {
 sub wipehtml {
     my $self = shift;
     $self->html("");
-    $self->hostinfo->send("\$('.".$self->id."').remove()");
+    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()");
     1;
 }
 
@@ -79,16 +79,34 @@ sub takeover {
     my $self = shift;
     my $html = concat_array(shift); # [([html+],html)+]
     my $append = shift;
-    my $divid = $self->divid;
+    my $tempness;
    
-    $append ?
-        $self->html($self->html."\n".$html)
-      : $self->wipehtml && $self->html($html);
-    
+    if ($append) {
+        if ($append eq "temp") {
+            my $tempid = $self->{id}."-temp";
+            $self->hostinfo->send( # create a -temp span container
+                "\$('#".$self->{divid}."').append('<span style=\"display: none;\" id=\"$tempid\"></span>');"
+            );
+            $self->hostinfo->send( # chuck old stuff in there
+                "\$('#".$self->{divid}." .".$self->{id}."').appendTo('#$tempid');"
+            );
+            $self->wipehtml;
+            $tempness = { tempid => $tempid };
+        }
+        else {
+            $self->html($self->html."   ".$html);
+        }
+    }
+    else {
+        $self->wipehtml;
+        $self->html($html);
+    }
 
     $self->hostinfo->view_incharge($self);
 
-    $self->part_and_append($divid => $html);
+    $self->part_and_append($self->{divid} => $html);
+
+    return $tempness;
 }
 
 sub review {

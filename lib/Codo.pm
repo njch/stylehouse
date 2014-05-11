@@ -80,22 +80,13 @@ sub menu { # {{{
     return $menu;
 }
 
-sub read_file {
+sub readfile {
     my $self = shift;
     read_file(@_);
 }
-sub write_file {
+sub writefile {
     my $self = shift;
     write_file(@_);
-}
-
-sub cread_file {
-    my $self = shift;
-    return $self->{hostinfo}->get("Codo")->read_file(@_);
-}
-sub cwrite_file {
-    my $self = shift;
-    return $self->{hostinfo}->get("Codo")->write_file(@_);
 }
 
 sub init_codemenu {
@@ -129,7 +120,8 @@ sub load_codon {
     say "Load Codon for $codon->{name}";
 
     $self->{the_codon} = $codon;
-    $codon->display($self->{codon}->text); # {codon} is a View
+    $codon->{texty} = $self->{codon}->text; # {codon} is a View
+    $codon->display();
 
     say "Done.\n\n\n";
 }
@@ -167,7 +159,7 @@ sub init_wormcodes {
         }
 
             if ($isnew) {
-                $codon->load_file();
+                $codon->loadfile();
                 push @{ $self->{codes} }, $codon;
                 say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
             }
@@ -193,18 +185,25 @@ sub event {
     }
     if ($id =~ s/-close$//) {
         my $tuxt = $codon_texty->id_to_tuxt($id);
-        my $chunki = $tuxt->{chunki} || die;
-        my $codon = $self->{the_codon};
-        $codon->{points}->{$chunki} = 0;
-        $codon->display;
+        my $ci = $tuxt->{chunki};
+        die "no chunki on ".ddump($tuxt) unless defined $ci; # this kinda shit is so obvious   /// --- \\\
+        my $codon = $self->{the_codon} || die "no codoon?";
+        say "Codo > > > close < < < $codon->{name} chunk $ci";
+        $codon->{openness}->{$ci} = 0;
+        $codon->display();
         return;
     }
 
 
-    # CODE EXPAND
-    if (my $tuxt = $codon_texty->id_to_tuxt($id)) {
-        say "Code click got: ".ddump($tuxt);
-        say "TODO" for 1..3;
+    # CODE OPEN
+    # shall clobber all the textareas
+    if (my $tuxt = $codon_texty->id_to_tuxt($id)) { # entire texty vision of the chunk should lead here if it gets complicated
+        my $ci = $tuxt->{chunki};
+        die "no chunki on ".ddump($tuxt) unless defined $ci; # this kinda shit is so obvious   /// --- \\\
+        my $codon = $self->{the_codon} || die "no codoon?";
+        say "Codo < < < OPEN > > > $codon->{name} chunk $ci";
+        $codon->{openness}->{$ci} = 1;
+        $codon->display();
         return;
     }
 

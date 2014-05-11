@@ -56,7 +56,11 @@ sub replace {
     my $self = shift;
     my $lines = shift;
     my $hooks = shift;
+    my $append;
     if ($hooks) {
+        if ($hooks->{append}) {
+            $append = delete $hooks->{append};
+        }
         $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
     }
    
@@ -67,19 +71,15 @@ sub replace {
         $self->spatialise();
         $self->tuxts_to_htmls();
     }
-    $self->view->takeover($self->htmls);
+    return $self->view->takeover($self->htmls, $append);
 }
-sub spurt {
+sub spurt { # semi dupe of replace since they do hooks through to takeover...
     my $self = shift;
     my $lines = shift;
     my $hooks = shift;
-    if ($hooks) {
-        $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
-    }
-    $self->lines($lines);
-    $self->lines_to_tuxts();
-    $self->tuxts_to_htmls();
-    $self->view->takeover($self->htmls, "append");
+    $hooks ||= {};
+    $hooks->{append} ||= "append";
+    return $self->replace($lines, $hooks);
 }
 
 sub append {
@@ -157,7 +157,7 @@ sub lines_to_tuxts {
                     $tuxt->{htmlval} = 1;
                     $value =~ s/<<ID>>/$id/g;
                 }
-                if ($value =~ s/^!(\w+)=(\w+) //s) {
+                while ($value =~ s/^!(\w+)=(\w+) //s) {
                     $tuxt->{$1} = $2;
                 }
             }
