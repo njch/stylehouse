@@ -140,7 +140,7 @@ sub init {
     my $self = shift;
 
     Lyrico->new($hostinfo->intro);
-    my $c = Codo->new($hostinfo->intro);
+    Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
     $hostinfo->make_floodzone();
@@ -331,7 +331,6 @@ websocket '/stylehouse' => sub {
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => [$mojo_daemon_listen]);
 $daemon->run();
 
-app->start;
 __DATA__
 
 @@ index.html.ep

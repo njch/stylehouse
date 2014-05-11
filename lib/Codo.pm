@@ -41,6 +41,11 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+    my $style = $self->{hostinfo}->get("style");
+    if ($style eq "stylehouse" && -e "../styleshed") {
+        $self->{code_dir} = "../styleshed/";
+    }
+
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
 
     $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; right: 10; height: 60px;");
@@ -54,11 +59,7 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    $self->init_wormcodes(
-        qw(ebuge.pl stylehouse.pl),
-        glob("lib/*.pm"),
-        glob("ghosts/*/*"),
-    );
+    $self->init_wormcodes();
 
     $self->init_codemenu();
 
@@ -78,17 +79,28 @@ sub menu { # {{{
         say "Sending obsotrav dump\n\n";
         $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
     };
+    $menu->{"<init>"} = sub {
+        say "Codo reinit\n\n";
+        my $look = $self->{the_codon};
+        $self->init_wormcodes();
+        $self->init_codemenu();
+        $self->load_codon($look->{name}) if $look;
+    };
 
     return $menu;
 }
 
 sub readfile {
     my $self = shift;
-    read_file(@_);
+    my $path = shift;
+    $path = $self->{code_dir}.$path if $self->{code_dir};
+    read_file($path, @_);
 }
 sub writefile {
     my $self = shift;
-    write_file(@_);
+    my $path = shift;
+    $path = $self->{code_dir}.$path if $self->{code_dir};
+    write_file($path, @_);
 }
 
 sub init_codemenu {
@@ -111,7 +123,6 @@ sub init_codemenu {
         },
     });
 
-    $self->load_codon('Shite');
     $self->{codonmenu}->text->replace($self->{codes});
 } # }}}
 
@@ -120,12 +131,11 @@ sub load_codon {
     my $codon = shift;
     $codon = $self->codon_by_name($codon) unless ref $codon;
     say "Load Codon for $codon->{name}";
+    die "Can't load Codon" unless $codon;
 
     $self->{the_codon} = $codon;
     $codon->{text} = $self->{codon}->text; # {codon} is a View
     $codon->display();
-
-    say "Done.\n\n\n";
 }
 
 sub codon_by_name {
@@ -138,10 +148,15 @@ sub codon_by_name {
 # get the forms of that clouds of ghosts (more formation in Codon::chunk())
 sub init_wormcodes {
     my $self = shift;
-    my @codefiles = @_;
+
+    my $dir = $self->{code_dir} || "";
+    my @codefiles = grep { !$dir || s/^$dir// }
+        ($dir.'stylehouse.pl',
+        glob($dir.'lib/*.pm'),
+        glob($dir.'ghosts/*/*'));
 
     for my $cf (@codefiles) {
-        my $name = (($cf =~ /(\w+).pm$/)[0] || $cf);
+        my $name = (($cf =~ /\/?(\w+)(\.\w+)?$/)[0] || $cf);
         my $codon = $self->codon_by_name($name);
         my $isnew = 1 if !$codon;
 

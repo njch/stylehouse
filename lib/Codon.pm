@@ -43,8 +43,10 @@ sub display {
             my $code = join "\n", @{$v->{lines}};
             $code =~ s/"/\\"/g;
             $code =~ s/\n/\\n/g;
+            $code =~ s/\t/\\t/g;
             say "$i Code is $rows lines\t\t$v->{first}";
             $rows = 25 if $rows > 25;
+            $rows = 1 if $rows < 1;
             my $style = "background-color: #a8b;";
             push @bits,
                 '!html !chunki='.$i.' !textarea=1 '
@@ -153,11 +155,11 @@ sub up_load { # precursor to update
         my $e = shift;
         my $id = $e->{id};
         my $tuxt = $self->{text}->id_to_tuxt($id);
-        my $chunki = $tuxt->{chunki} || die;
+        my $chunki = $tuxt->{chunki};
         $self->update($chunki => decode_entities($e->{code})); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
     } );
     $self->{hostinfo}->send(
-         "  ws.reply({claw: '$sec', id: '$id', code: document.getElementById('$id-ta').innerHTML}); "
+         "  ws.reply({claw: '$sec', id: '$id', code: \$('#$id-ta').val()}); "
     );
 }
 
@@ -167,13 +169,18 @@ sub update {
     my $code = shift;
     my $chunks = $self->{chunks};
 
+    my $before = scalar(@{$chunks->[$i]->{lines}});
     $chunks->[$i]->{lines} = [ split "\n", $code ];
+    my $after = scalar(@{$chunks->[$i]->{lines}});
 
     my $lines = [];
     for my $v (@$chunks) {
         push @$lines, @{$v->{lines}};
     }
-    $self->writefile($self->{codefile}, join "\n", @$lines);
+    say "Codon $self->{name} updating\t\t$self->{codefile}\t\tchunk $i lines $before -> $after\t\tlines=".scalar(@$lines);
+    my $whole = join "\n", @$lines;
+    $whole .= "\n" unless $whole =~ /\n$/s;
+    $self->writefile($self->{codefile}, $whole);
     $self->chunk();
 }
 

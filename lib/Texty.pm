@@ -228,7 +228,7 @@ sub htmlvalue_height {
         return 15 * $h
     }
     if ($v=~ /<textarea .+? rows="(\d+)"/) {
-        return int(((245 / 15) * $1) - $g->{space} + 1);
+        return int(((250 / 15) * $1) - $g->{space} + 1);
     }
     return 20;
 }
@@ -236,8 +236,6 @@ sub htmlvalue_height {
 sub fit_div {
     my $self = shift;
     my $last = $self->{tuxts}->[-1];
-    say ddump($self->{tuxts});
-    say "Fitting div around the last: $last->{style}";
     my ($top) = $last->{top};
     $top += $self->htmlvalue_height($last);
     if ($self->{max_height}) {
@@ -248,7 +246,6 @@ sub fit_div {
     $top .= "px";
 
     my $divid = $self->{view}->{divid};
-    say "\n\n\n\nTexty: Refitting $divid to height: $top\n\n\n\n";
     $self->{hostinfo}->send(qq{  \$('#$divid').css('height', '$top')  });
 }
 
