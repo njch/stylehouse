@@ -88,6 +88,10 @@ use Way;
 `cat /dev/null > proc/list`;
 
 my ($name) = $Bin =~ m{/(\w+)$};
+say $Bin;
+say do { my $d = `pwd`; chomp $d; $d };
+say "etc";
+die "you ain't really here" unless $Bin ne `pwd`;
 # here's our internet constellation
 # N S E W
 my $styleports = {

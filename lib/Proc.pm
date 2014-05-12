@@ -9,10 +9,8 @@ use File::Slurp;
 use Time::HiRes 'gettimeofday';
 
 has 'hostinfo';
-has 'view';
 has 'output';
 has 'outhook';
-has 'toexec';
 has 'pid';
 has 'kilt';
 
@@ -28,11 +26,9 @@ sub nah {
 }
 sub new {
     my $self = bless {}, shift;
-    $self->hostinfo(shift->hostinfo);
-    $self->hostinfo->intro($self);
+    shift->($self);
 
-    $self->toexec(shift);
-    my $toexec = $self->toexec;
+    $self->{toexec} = shift;
 
     $self->outhook(shift);
     $self->output([]);
@@ -40,9 +36,9 @@ sub new {
     die "no procserv" unless grep /procserv.pl/, `ps faux`;
 
 
-    my $view = $self->hostinfo->get_view($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
+    $self->{out} = $self->hostinfo->get_view($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
 
-    $view->text([],
+    $self->{out}->text([],
         { tuxts_to_htmls => sub {
             my $texty = shift;
             return if $texty->empty;
@@ -54,10 +50,9 @@ sub new {
         }},
     );
 
-    say "Proc: starting ".$self->toexec;
+    say "Proc: starting $self->{toexec}";
 
     # watch the list of started files and their pids
-
     $self->hostinfo->stream_file("proc/list", sub {
         my $line = shift;
         chomp $line;
@@ -68,7 +63,7 @@ sub new {
 
         my ($pid, $toexec_echo) = $line =~ /^(\d+): (.+)$/;
         say "Proc: started $pid for $toexec_echo";
-        say "ww  ww  ww eird: $toexec_echo $toexec" unless $toexec_echo eq $toexec;
+        say "ww  ww  ww eird: $toexec_echo $self->{toexec}" unless $toexec_echo eq $self->{toexec};
 
         $self->pid($pid);
         
@@ -82,7 +77,7 @@ sub new {
         return 0;
     });
         
-    write_file("proc/start", {append => 1}, $self->toexec."\n");
+    write_file("proc/start", {append => 1}, $self->{toexec}."\n");
     sleep 1;
 
     return $self;
@@ -105,12 +100,15 @@ sub pushlines {
     my @newlines;
 
     my $last = $self->queuestarts || 0;
-    my $first = $last + 1;
-    $last = (scalar(@{$self->output})||1)-1;
+    my $first = $last == 0 ? 0 : $last + 1;
 
-    push @newlines, @{$self->output}[$first..$last];
+    my $i;
+    for my $l (@{$self->output}) {
+        next if $l < $first;
+        push @newlines, $l;
+    }
 
-    $self->view->{hodu}->text->append(map { join" ",@$_ } @newlines);
+    $self->{out}->text->append([map { join" ",@$_ } @newlines]);
     say "Proc: pushed ".scalar(@newlines)." lines outwards";
 
     $self->queuestarts( $last+1 );
@@ -123,6 +121,7 @@ sub gotline {
     my $std = shift;
     my $line = shift;
 
+    $line =~ s/\n$//;
     say "gotline: $std $line";
 
     push @{ $self->output }, [ $std, $line ];

@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 use Codon;
+use Proc;
 =pod
 
 Devel::ebug interface
@@ -73,11 +74,13 @@ sub new {
         say "Sending obsotrav dump\n\n";
         $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
     };
-    $m->{"R"} = sub {
+    $m->{"R"} = sub { # they might wanna load new css/js too
         $self->{codostate}->text->replace(["!html <h4>restarting (if)</h4>"]);
         `touch $0`;
     };
-
+    $m->{"s"} = sub {
+        $self->{outside} = Proc->new($self->{hostinfo}->intro, "perl ../styleshed/stylehouse.pl");
+    };
 
     $self->init_wormcodes();
 
