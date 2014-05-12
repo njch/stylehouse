@@ -254,6 +254,16 @@ sub screenthing {
     push @$things, $thing;
 }
 
+sub make_view {
+    my $self = shift;
+    my $this = shift;
+    my $name = shift;
+    my $style = shift;
+
+    $self->provision_view($name, $style);
+    $this->{$name} = $self->hostinfo->get_view($this, $name);
+}
+
 sub get_view {
     my $self = shift;
     my $this = shift;

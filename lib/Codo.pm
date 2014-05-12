@@ -48,11 +48,13 @@ sub new {
 
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
 
-    $self->{hostinfo}->provision_view(codonmenu => "width:58%;  background: #301a30; color: #afc; right: 10; height: 60px;");
-    $self->{codonmenu} = $self->hostinfo->get_view($self, "codonmenu");
 
-    $self->{hostinfo}->provision_view(codon => "width:58%;  background: #352035; color: #afc; right: 10; height: 600px;");
-    $self->{codon} = $self->hostinfo->get_view($self, "codon");
+    $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    
+    $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+
+    $self->{hostinfo}->make_view($self, codon => "width:58%;  background: #352035; color: #afc; height: 600px;");
+
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
 
@@ -213,7 +215,6 @@ sub event {
 
 
     # CODE OPEN
-    # shall clobber all the textareas
     if (my $tuxt = $codon_texty->id_to_tuxt($id)) { # entire texty vision of the chunk should lead here if it gets complicated
         my $ci = $tuxt->{chunki};
         die "no chunki on ".ddump($tuxt) unless defined $ci; # this kinda shit is so obvious   /// --- \\\
