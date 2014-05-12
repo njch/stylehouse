@@ -68,6 +68,17 @@ sub new {
     return $self;
 }
 
+sub list_of_codefiles {
+    my $self = shift;
+    my $dir = $self->{code_dir} || "";
+    grep { !$dir || s/^$dir// } (
+        glob($dir.'stylehouse.*'),
+        glob($dir.'public/stylehouse.*'),
+        glob($dir.'lib/*.pm'),
+        glob($dir.'ghosts/*/*'),
+    );
+}
+
 sub menu { # {{{
     my $self = shift;
     my $menu = {};
@@ -151,11 +162,7 @@ sub codon_by_name {
 sub init_wormcodes {
     my $self = shift;
 
-    my $dir = $self->{code_dir} || "";
-    my @codefiles = grep { !$dir || s/^$dir// }
-        ($dir.'stylehouse.pl',
-        glob($dir.'lib/*.pm'),
-        glob($dir.'ghosts/*/*'));
+    my @codefiles = $self->list_of_codefiles();
 
     for my $cf (@codefiles) {
         my $name = (($cf =~ /\/?(\w+)(\.\w+)?$/)[0] || $cf);
