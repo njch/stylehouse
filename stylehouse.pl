@@ -86,6 +86,7 @@ use Way;
 
 `cat /dev/null > proc/start`;
 `cat /dev/null > proc/list`;
+`rm proc/*.*`;
 
 my ($name) = $Bin =~ m{/(\w+)$};
 say $Bin;

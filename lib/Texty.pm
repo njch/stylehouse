@@ -81,24 +81,18 @@ sub spurt { # semi dupe of replace since they do hooks through to takeover...
     return $self->replace($lines, $hooks);
 }
 
-sub append {
+sub append { # TRACTOR
     my $self = shift;
-    my @new = @_;
-    push @{ $self->lines }, @new;
+    my $new = shift;
+    push @{ $self->lines }, @$new;
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
     my @newhtml;
     my @allhtml = @{$self->htmls};
-    for (1..scalar(@new)) {
+    for (1..scalar(@$new)) {
         push @newhtml, pop @allhtml;
     }
-    if ($self->empty) {
-        $self->empty(0);
-        $self->view->takeover([@newhtml]);
-    }
-    else {
-        $self->view->takeover([@newhtml], "append");
-    }
+    $self->view->takeover([@newhtml], "append");
 }
 
 sub lines_to_tuxts {

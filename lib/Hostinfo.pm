@@ -34,7 +34,7 @@ sub send {
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
     
-    say "Websocket SEND: ". $message;
+    say "Websocket SEND: ". $short;
 
     # here we want to graph things out real careful because it is how things get around
     # the one to the many
@@ -45,6 +45,7 @@ sub send {
         # got a push from stylhouse
         push @{ $self->for_all }, $message;
         say "Websocket Multi Loaded: $short";
+        $self->send_all(); # TRACTOR this with the view
         return;
     }
     else {
@@ -66,22 +67,21 @@ sub god_send {
 sub send_all {
     my $self = shift;
     my $messages = $self->for_all;
-    my $who = $self->who;
-    $self->who(undef);
+    say "Sending ".(0+@$messages)." messages";
     for my $message (@$messages) {
         my $gods = $self->get('gods');
         for my $god (@$gods) {
-            say "Am here";
-            $self->god_send($messages, $god);
+            $self->god_send($message, $god);
         }
     }
-    $self->who($who);
+    say "Done.";
+    $self->for_all([]);
 }
 
 sub god_connects {
     my $self = shift;
     my $tx = shift;
-
+    
     my $max = $tx->max_websocket_size;
     $self->{tx_max} ||= $max;
     unless ($max >= $self->{tx_max}) {
@@ -98,9 +98,9 @@ sub god_connects {
         tx => $tx,
     };
 
-
     say "$new->{address} appears";
     push @$gods, $new;
+
     $self->who($new);
     $self->review();
 }
@@ -168,7 +168,7 @@ sub load_views { # state from client
 
     
 my $div_attr = { # these go somewhere magical and together, like always
-    menu => "width:97%; background: #333; height: 90px;",
+    menu => "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
     hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
     gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
     view => "width:35%; background: #c9f; height: 500px;",
@@ -306,9 +306,9 @@ sub get_view {
 sub make_app_menu {
     my $self = shift;
 
-    $self->get_view($self, "menu");
+    $self->{appmenu} ||= $self->get_view($self, "menu");
 
-    $self->ports->{menu}->menu({
+    $self->{appmenu}->menu->text->hooks({
         tuxts_to_htmls => sub {
             my $self = shift;
             my $h = $self->hooks;
@@ -380,7 +380,7 @@ sub update_app_menu {
         }
     }
     
-    $self->ports->{menu}->menu->replace(\@items);
+    $self->{appmenu}->menu->replace(\@items);
 }
 
 sub event {
