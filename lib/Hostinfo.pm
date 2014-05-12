@@ -380,7 +380,7 @@ sub update_app_menu {
         }
     }
     
-    $self->{appmenu}->menu->replace(\@items);
+    $self->{appmenu}->menu->replace([@items]);
 }
 
 sub event {

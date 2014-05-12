@@ -80,6 +80,7 @@ sub new {
     };
     $m->{"s"} = sub {
         $self->{outside} = Proc->new($self->{hostinfo}->intro, "cd ../styleshed && perl stylehouse.pl");
+        $self->{hostinfo}->update_app_menu();
     };
 
     $self->init_wormcodes();
