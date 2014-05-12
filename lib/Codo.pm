@@ -73,12 +73,9 @@ sub new {
         say "Sending obsotrav dump\n\n";
         $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
     };
-    $m->{"<init>"} = sub {
-        say "Codo reinit?\n\n";
-        my $look = $self->{the_codon};
-        $self->init_wormcodes();
-        $self->init_codemenu();
-        $self->load_codon($look->{name}) if $look;
+    $m->{"R"} = sub {
+        $self->{codostate}->text->replace(["!html <h4>restarting (if)</h4>"]);
+        `touch $0`;
     };
 
 
