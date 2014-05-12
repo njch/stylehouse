@@ -68,7 +68,6 @@ sub replace {
     if ($lines) { 
         $self->lines($lines);
         $self->lines_to_tuxts();
-        $self->spatialise();
         $self->tuxts_to_htmls();
     }
     return $self->view->takeover($self->htmls, $append);
@@ -190,14 +189,22 @@ sub spatialise {
     if ($self->hooks->{spatialise}) {
         $geo = $self->hooks->{spatialise}->();
     }
-    $geo->{top} ||= 20;
-    $geo->{left} ||= 30;
-    $geo->{space} ||= 20;
+    my $inc = $geo->{horizontal};
+    my $otop = $geo->{top} ||= 20; # TODO use defined-or
+    my $oleft = $geo->{left} ||= 30;
+    my $ospace = $geo->{space} ||= 20;
     my $i = 0;
     for my $s (@{$self->tuxts}) {
         if ($geo->{horizontal}) {
-            $s->{top} = 0;
-            $s->{left} = $i * $geo->{horizontal};
+            $s->{top} = $geo->{top};
+            $s->{left} = $geo->{horizontal};
+            $geo->{horizontal} += $inc + (length($s->{value}) > 5 ? 11 : 1);
+            if ($geo->{wrap_at} && $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
+                $geo->{horizontal} = 5;
+                $geo->{top} += 20;
+                next;
+            }
+            $geo->{horizontal} += 40;
         }
         else {
             $s->{top} = $geo->{top};

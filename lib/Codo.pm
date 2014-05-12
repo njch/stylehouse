@@ -43,7 +43,7 @@ sub new {
 
     my $style = $self->{hostinfo}->get("style");
     if ($style eq "stylehouse" && -e "../styleshed") {
-        $self->{code_dir} = "../styleshed/";
+        $self->{code_dir} = "../styleshed/"; # default .
     }
 
     $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
@@ -61,11 +61,37 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
+    
+    my $m = $self->{menu} = {};
+    $m->{"nah"} = sub { $self->nah };
+    $m->{"new"} = sub { $self->new_ebuge() };
+    $m->{"<views>"} = sub {
+        say "Sending view dump\n\n";
+        $self->{run}->text->replace(["!html <h2>views</h2>", $self->hostinfo->dkeys]);
+    };
+    $m->{"<obso>"} = sub {
+        say "Sending obsotrav dump\n\n";
+        $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
+    };
+    $m->{"<init>"} = sub {
+        say "Codo reinit?\n\n";
+        my $look = $self->{the_codon};
+        $self->init_wormcodes();
+        $self->init_codemenu();
+        $self->load_codon($look->{name}) if $look;
+    };
+
+
     $self->init_wormcodes();
 
     $self->init_codemenu();
 
     return $self;
+}
+
+sub menu { # {{{
+    my $self = shift;
+    $self->{menu};
 }
 
 sub list_of_codefiles {
@@ -78,120 +104,6 @@ sub list_of_codefiles {
         glob($dir.'ghosts/*/*'),
     );
 }
-
-sub menu { # {{{
-    my $self = shift;
-    my $menu = {};
-    $menu->{"nah"} = sub { $self->nah };
-    $menu->{"new"} = sub { $self->new_ebuge() };
-    $menu->{"<views>"} = sub {
-        say "Sending view dump\n\n";
-        $self->{run}->text->replace(["!html <h2>views</h2>", $self->hostinfo->dkeys]);
-    };
-    $menu->{"<obso>"} = sub {
-        say "Sending obsotrav dump\n\n";
-        $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
-    };
-    $menu->{"<init>"} = sub {
-        say "Codo reinit\n\n";
-        my $look = $self->{the_codon};
-        $self->init_wormcodes();
-        $self->init_codemenu();
-        $self->load_codon($look->{name}) if $look;
-    };
-
-    return $menu;
-}
-
-sub readfile {
-    my $self = shift;
-    my $path = shift;
-    $path = $self->{code_dir}.$path if $self->{code_dir};
-    read_file($path, @_);
-}
-sub writefile {
-    my $self = shift;
-    my $path = shift;
-    $path = $self->{code_dir}.$path if $self->{code_dir};
-    write_file($path, @_);
-}
-
-sub init_codemenu {
-    my $self = shift;
-
-    $self->{codonmenu}->text([], {
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            for my $s (@{$self->tuxts}) {
-                my $code = $s->{value};
-                # say "A menu for $code->{name} ".join", ", keys %$code;
-                $s->{value} = $code->{name};
-                $s->{origin} = $code;
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
-            }
-        },
-        spatialise => sub {
-            return { horizontal => 40 } # space tabs by 40px
-        },
-    });
-
-    $self->{codonmenu}->text->replace($self->{codes});
-} # }}}
-
-sub load_codon {
-    my $self = shift;
-    my $codon = shift;
-    $codon = $self->codon_by_name($codon) unless ref $codon;
-    say "Load Codon for $codon->{name}";
-    die "Can't load Codon" unless $codon;
-
-    $self->{the_codon} = $codon;
-    $codon->{text} = $self->{codon}->text; # {codon} is a View
-    $codon->display();
-}
-
-sub codon_by_name {
-    my $self = shift;
-    my $name = shift;
-    my ($code) = grep { $_->{name} eq $name } @{ $self->{codes} };
-    $code;
-}
-
-# get the forms of that clouds of ghosts (more formation in Codon::chunk())
-sub init_wormcodes {
-    my $self = shift;
-
-    my @codefiles = $self->list_of_codefiles();
-
-    for my $cf (@codefiles) {
-        my $name = (($cf =~ /\/?(\w+)(\.\w+)?$/)[0] || $cf);
-        my $codon = $self->codon_by_name($name);
-        my $isnew = 1 if !$codon;
-
-        my $mtime = (stat $cf)[9];
-
-            if ($isnew) {
-                $codon = new Codon($self->hostinfo->intro, {
-                    codefile => $cf,
-                    name => $name,
-                    mtime => $mtime,
-                });
-            }
-
-        if ($codon->{mtime} < $mtime) {
-            say "$cf changed";
-            $codon->{mtime} = $mtime;
-            $isnew = 1;
-        }
-
-            if ($isnew) {
-                push @{ $self->{codes} }, $codon;
-                say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
-            }
-    }
-}
-
 
 sub event {
     my $self = shift;
@@ -242,6 +154,98 @@ sub event {
     else {
         return $self->hostinfo->error("Codo event 404 for $id" => $event);
     }
+}
+
+# get the forms of that clouds of ghosts (more formation in Codon::chunk())
+sub init_wormcodes {
+    my $self = shift;
+
+    say "INIT WORMCODES!";
+    my @codefiles = $self->list_of_codefiles();
+
+    for my $cf (@codefiles) {
+        my $name = (($cf =~ /\/?(\w+)(\.\w+)?$/)[0] || $cf);
+        my $codon = $self->codon_by_name($name);
+        my $isnew = 1 if !$codon;
+
+        my $mtime = (stat $cf)[9];
+
+            if ($isnew) {
+                $codon = new Codon($self->hostinfo->intro, {
+                    codefile => $cf,
+                    name => $name,
+                    mtime => $mtime,
+                });
+            }
+
+        if ($codon->{mtime} < $mtime) {
+            say "$cf changed";
+            $codon->{mtime} = $mtime;
+            $isnew = 1;
+        }
+
+            if ($isnew) {
+                push @{ $self->{codes} }, $codon;
+                say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
+            }
+    }
+}
+
+sub init_codemenu {
+    my $self = shift;
+
+    $self->{codonmenu}->text([], {
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            for my $s (@{$self->tuxts}) {
+                my $code = $s->{value};
+                # say "A menu for $code->{name} ".join", ", keys %$code;
+                $s->{value} = $code->{name};
+                $s->{origin} = $code;
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+            }
+        },
+        spatialise => sub {
+            return { horizontal => 20, top => 1, wrap_at => 1200 } # space tabs by 40px
+        },
+    });
+
+    $self->{codonmenu}->text->replace($self->{codes});
+} # }}}
+
+sub load_codon {
+    my $self = shift;
+    my $codon = shift;
+    $codon = $self->codon_by_name($codon) unless ref $codon;
+    say "Load Codon for $codon->{name}";
+    die "Can't load Codon" unless $codon;
+
+    $self->{the_codon} = $codon;
+    $codon->{text} = $self->{codon}->text; # {codon} is a View
+    $codon->display();
+}
+
+sub codon_by_name {
+    my $self = shift;
+    my $name = shift;
+    my ($code) = grep { $_->{name} eq $name } @{ $self->{codes} };
+    $code;
+}
+
+
+
+sub readfile {
+    my $self = shift;
+    my $path = shift;
+    $path = $self->{code_dir}.$path if $self->{code_dir};
+    read_file($path, @_);
+}
+sub writefile {
+    my $self = shift;
+    my $path = shift;
+    $path = $self->{code_dir}.$path if $self->{code_dir};
+    write_file($path, @_);
 }
 
 sub random_colour_background {
