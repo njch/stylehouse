@@ -164,7 +164,14 @@ sub init_wormcodes {
     my @codefiles = $self->list_of_codefiles();
 
     for my $cf (@codefiles) {
-        my $name = (($cf =~ /\/?(\w+)(\.\w+)?$/)[0] || $cf);
+        my $name;
+        ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
+        ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
+        say "$cf\t$name";
+        ($name) = $cf =~ /\/?([\w\.]+)$/ unless $name;
+        say "not pm? $name";
+        $name = $cf unless $name;
+        say "nah \t\t\t\t\t\t\t$name";
         my $codon = $self->codon_by_name($name);
         my $isnew = 1 if !$codon;
 
@@ -207,7 +214,7 @@ sub init_codemenu {
             }
         },
         spatialise => sub {
-            return { horizontal => 20, top => 1, wrap_at => 1200 } # space tabs by 40px
+            return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
         },
     });
 

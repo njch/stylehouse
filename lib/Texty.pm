@@ -189,22 +189,22 @@ sub spatialise {
     if ($self->hooks->{spatialise}) {
         $geo = $self->hooks->{spatialise}->();
     }
-    my $inc = $geo->{horizontal};
+    my $inc = $geo->{horizontal} if $geo->{horizontal};
     my $otop = $geo->{top} ||= 20; # TODO use defined-or
     my $oleft = $geo->{left} ||= 30;
+    $geo->{horizontal} = $oleft if $geo->{horizontal};
     my $ospace = $geo->{space} ||= 20;
     my $i = 0;
     for my $s (@{$self->tuxts}) {
         if ($geo->{horizontal}) {
             $s->{top} = $geo->{top};
             $s->{left} = $geo->{horizontal};
-            $geo->{horizontal} += $inc + (length($s->{value}) > 5 ? 11 : 1);
+            $geo->{horizontal} += $inc + (length($s->{value}->{name}) > 7 ? 11*6 : 1);
             if ($geo->{wrap_at} && $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
-                $geo->{horizontal} = 5;
+                $geo->{horizontal} = $oleft;
                 $geo->{top} += 20;
                 next;
             }
-            $geo->{horizontal} += 40;
         }
         else {
             $s->{top} = $geo->{top};
