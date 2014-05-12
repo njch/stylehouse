@@ -63,7 +63,7 @@ sub replace {
         }
         $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
     }
-   
+
     say "Texty Lines: ".anydump($lines) if $self->{debug};
     if ($lines) { 
         $self->lines($lines);

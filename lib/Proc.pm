@@ -14,6 +14,18 @@ has 'outhook';
 has 'pid';
 has 'kilt';
 
+sub menu {
+    my $self = shift;
+    return {
+        nah => sub {
+            $self->nah();
+            if ($self->{owner} && $self->{owner}->can('proc_killed')) {
+                $self->{owner}->proc_killed($self);
+            }
+        },
+    };
+}
+
 # talk to procserv (at the end in ``), setup handlers for its output
 sub nah {
     my $self = shift;
@@ -27,6 +39,8 @@ sub nah {
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+
+    $self->{name} = shift;
 
     $self->{toexec} = shift;
 

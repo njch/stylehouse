@@ -79,7 +79,9 @@ sub new {
         `touch $0`;
     };
     $m->{"s"} = sub {
-        $self->{outside} = Proc->new($self->{hostinfo}->intro, "cd ../styleshed && perl stylehouse.pl");
+        $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../styleshed && echo 'okay...' && perl stylehouse.pl");
+        $self->{outside}->{owner} = $self;
+        $self->{codostate}->text->replace(["!html <h4>spawning styleshed</h4>"]);
         $self->{hostinfo}->update_app_menu();
     };
 
@@ -89,7 +91,12 @@ sub new {
 
     return $self;
 }
-
+sub proc_killed {
+    my $self = shift;
+    my $proc = shift;
+    delete $self->{$proc->{name}};
+    $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
+}
 sub menu { # {{{
     my $self = shift;
     $self->{menu};
@@ -168,11 +175,8 @@ sub init_wormcodes {
         my $name;
         ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
         ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
-        say "$cf\t$name";
         ($name) = $cf =~ /\/?([\w\.]+)$/ unless $name;
-        say "not pm? $name";
         $name = $cf unless $name;
-        say "nah \t\t\t\t\t\t\t$name";
         my $codon = $self->codon_by_name($name);
         my $isnew = 1 if !$codon;
 

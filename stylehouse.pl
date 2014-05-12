@@ -84,9 +84,11 @@ use Ghost;
 use Wormhole;
 use Way;
 
-`cat /dev/null > proc/start`;
-`cat /dev/null > proc/list`;
-`rm proc/*.*` if glob('proc/*.*');
+if (-e 'proc') {
+    `cat /dev/null > proc/start`;
+    `cat /dev/null > proc/list`;
+    `rm proc/*.*` if glob('proc/*.*');
+}
 
 my ($name) = $Bin =~ m{/(\w+)$};
 say $Bin;
