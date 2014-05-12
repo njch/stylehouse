@@ -111,7 +111,8 @@ $ip = "*" if $name eq "stylehut";
 my $mojo_daemon_listen = "http://$ip:$port";
 
 say "\n\n\nwe are $name";
-say "running from $Bin/$0";
+my $x = `pwd`; chomp $x;
+say "running from $x into $mojo_daemon_listen";
 
 my $hostinfo = new Hostinfo();
 

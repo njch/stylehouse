@@ -79,7 +79,7 @@ sub new {
         `touch $0`;
     };
     $m->{"s"} = sub {
-        $self->{outside} = Proc->new($self->{hostinfo}->intro, "perl ../styleshed/stylehouse.pl");
+        $self->{outside} = Proc->new($self->{hostinfo}->intro, "cd ../styleshed && perl stylehouse.pl");
     };
 
     $self->init_wormcodes();
