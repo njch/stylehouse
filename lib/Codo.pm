@@ -47,10 +47,9 @@ sub new {
         $self->{code_dir} = "../styleshed/"; # default .
     }
 
-    $self->{run} = $self->hostinfo->get_view($self, run => "hodi");
-
-
     $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{avoid_app_menu} = 1;
+    $self->{codostate}->menu->replace([$self]);
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
@@ -63,27 +62,6 @@ sub new {
                   || $self->hostinfo->set("Codo/codes", []);
 
     
-    my $m = $self->{menu} = {};
-    $m->{"nah"} = sub { $self->nah };
-    $m->{"new"} = sub { $self->new_ebuge() };
-    $m->{"<views>"} = sub {
-        say "Sending view dump\n\n";
-        $self->{run}->text->replace(["!html <h2>views</h2>", $self->hostinfo->dkeys]);
-    };
-    $m->{"<obso>"} = sub {
-        say "Sending obsotrav dump\n\n";
-        $self->{run}->text->replace(["!html <h2>obsetrav</h2>", split "\n", ddump($self->hostinfo->get("Codo/obsetrav"))]);
-    };
-    $m->{"R"} = sub { # they might wanna load new css/js too
-        $self->{codostate}->text->replace(["!html <h4>restarting (if)</h4>"]);
-        `touch $0`;
-    };
-    $m->{"s"} = sub {
-        $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../styleshed && echo 'okay...' && perl stylehouse.pl");
-        $self->{outside}->{owner} = $self;
-        $self->{codostate}->text->replace(["!html <h4>spawning styleshed</h4>"]);
-        $self->{hostinfo}->update_app_menu();
-    };
 
     $self->init_wormcodes();
 
@@ -91,15 +69,62 @@ sub new {
 
     return $self;
 }
+sub menu {
+    my $self = shift;
+    $self->{menu} ||= do {
+        my $m = {};
+        $m->{"nah"} = sub { $self->nah };
+        $m->{"new"} = sub { $self->new_ebuge() };
+        $m->{"<views>"} = sub {
+            say "Sending view dump\n\n";
+            $self->infrl("views", $self->hostinfo->dkeys);
+        };
+        $m->{"<obso>"} = sub {
+            say "Sending obsotrav dump\n\n";
+            $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
+        };
+        $m->{"R"} = sub { # they might wanna load new css/js too
+            $self->infrl('restarting (if)');
+            `touch $0`;
+        };
+        $m->{"s"} = sub {
+            $self->spawn_child();
+        };
+        $m;
+    };
+}
+sub spawn_child {
+    my $self = shift;
+    unless ( grep /procserv.pl/, `ps faux` ) {
+        return $self->errl( "no procserv.pl",
+            "cannot spawn processes", "run ./procserv.pl yourself");
+    }
+    my $outside = "styleshed";
+    unless (-d "../$outside") {
+        return $self->errl("../$outside does not exist");
+    }
+    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../$outside && echo 'okay...' && perl stylehouse.pl");
+    $self->{outside}->{owner} = $self;
+    $self->infrl("spawning $outside");
+    $self->{hostinfo}->update_app_menu();
+}
+sub infrl {
+    my $self = shift;
+    my $first = shift;
+    $first = qq{!html <h2>$first</h2>};
+    $self->{hostinfo}->flood(join "\n", $first, @_);
+}
+sub errl {
+    my $self = shift;
+    my $first = shift;
+    $first = qq{!html <h2 class="err">$first</h2>};
+    $self->{hostinfo}->flood(join "\n", $first, @_);
+}
 sub proc_killed {
     my $self = shift;
     my $proc = shift;
     delete $self->{$proc->{name}};
     $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
-}
-sub menu { # {{{
-    my $self = shift;
-    $self->{menu};
 }
 
 sub list_of_codefiles {
@@ -224,7 +249,7 @@ sub init_codemenu {
     });
 
     $self->{codonmenu}->text->replace($self->{codes});
-} # }}}
+}
 
 sub load_codon {
     my $self = shift;

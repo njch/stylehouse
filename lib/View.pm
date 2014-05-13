@@ -80,6 +80,8 @@ sub takeover {
     my $html = concat_array(shift); # [([html+],html)+]
     my $append = shift;
     my $tempness;
+
+    say "Takeover ".($append||"clobber");
    
     if ($append) {
         if ($append eq "temp") {

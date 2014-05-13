@@ -368,18 +368,21 @@ sub random_colour_background {
 
 sub update_app_menu {
     my $self = shift;
-    my @fings = grep /^[A-Z]\w+$/ && !/View/, keys %$data;
+    my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
     my @items;
     for my $f (@fings) {
-        say "$f";
         my $a = $self->get($f);
+        $a = [$a] unless ref $a eq "ARRAY";
         for my $app (@$a) {
+            next if $app->{avoid_app_menu};
             if ($app->can('menu')) {
                 push @items, $app;
             }
         }
     }
     
+    $self->{appmenu}->{name} = "appmenu";
+    $self->send("\$('#menu > span').remove();"); # TODO solve
     $self->{appmenu}->menu->replace([@items]);
 }
 
@@ -497,28 +500,51 @@ sub arrive {
     my $self = shift;
 }
 
-
 sub error {
     my $self = shift;
-    my $e = {@_};
+    my $e;
+    eval { $e = {@_}; };
+    unless ($e) {
+        $@ = "";
+        $e = [@_];
+    }
     say "\nError: ".ddump($e);
-    $self->flood($e) if 0;
+    $self->flood($e);
+}
+sub info {
+    my $self = shift;
+    my $e;
+    eval { $e = {@_}; };
+    unless ($e) {
+        $@ = "";
+        $e = [@_];
+    }
+    say "\nInfo: ".ddump($e);
+    $self->flood($e);
 }
 
 sub make_floodzone {
     my $self = shift;
 
-    $self->get_view($self, "flood");
-    #$self->flood($self);
+    $self->{flood} = $self->get_view($self, "flood");
+    $self->{flood}->travel();
+    $self->{flood}->text();
+    $self->flood($self);
 }
 # grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
     my $thing = shift;
 
-    my $flood = $self->ports->{flood};
+    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
+
+    my $flood = $self->{flood};
+    $flood || do {
+        use Carp;
+        confess "no flood yet?";
+    };
     if (ref \$thing eq "SCALAR") {
-        $flood->text([split "\n", $thing]);
+        $flood->text->replace([split "\n", $thing]);
     }
     elsif ($flood) {
         my $wormhole;
@@ -528,7 +554,7 @@ sub flood {
             $self->flood("flood travel error: $@\n".ddump($flood->travel));
         }
         else {
-                                            eval { $wormhole->appear($flood) };
+                                            eval { $wormhole->appear() };
 
             if ($@) {
                 $self->flood("flood appear error: $@\n".ddump($flood->travel));

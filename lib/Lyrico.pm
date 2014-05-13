@@ -19,7 +19,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->view($self->hostinfo->get_view($self, "lyrics" => "hodi"));
+    $self->{view} = $self->{hostinfo}->make_view($self, "lyrics" => "height: 2px; width: 2px;");
     $self->text($self->view->text([],
         { skip_hostinfo => 1,
         leave_spans => 1, 
@@ -73,18 +73,16 @@ sub scroll_throttle {
     });
     return 0;
 }
-sub scroll {
+sub event {
     my $self = shift;
-    my $s = shift;
+    my $event = shift;
     my $height = $self->hostinfo->get("screen/height");
     $height ||= 900;
     my $h = {};
 
-    return if $self->scroll_throttle($s);
-
     for (1..3) {
-        $h->{top} = $s->{pagey} + int  rand $height; # isn't y coming from below?
-        $h->{left} = $s->{pagex};
+        $h->{top} = $event->{pagey} + int  rand $height; # isn't y coming from below?
+        $h->{left} = $event->{pagex};
         $h->{x} = ($i * 30) + int rand $height;
         my @lyrics = grep { s/\n//g; } grep /\S+/, map { $self->zlyrics } 1..3;
 
