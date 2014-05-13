@@ -31,10 +31,6 @@ sub send {
         warn "Message contains \\n";
     }
 
-    my $short = $message if length($message) < 200;
-    $short ||= substr($message,0,23*5)." >SNIP<";
-    
-    say "Websocket SEND: ". $short;
 
     # here we want to graph things out real careful because it is how things get around
     # the one to the many
@@ -44,8 +40,8 @@ sub send {
     if (!$self->who) {
         # got a push from stylhouse
         push @{ $self->for_all }, $message;
-        say "Websocket Multi Loaded: $short";
         $self->send_all(); # TRACTOR this with the view
+        #say "Websocket Multi Loaded: $short";
         return;
     }
     else {
@@ -61,6 +57,12 @@ sub god_send {
     if (!$god) {
         say "NO INDIVIDUAL TO send $message";
     }
+
+    my $short = $message if length($message) < 200;
+    $short ||= substr($message,0,23*5)." >SNIP<";
+    
+    say "Websocket SEND: ". $short;
+    
     $god->{tx}->send({text => $message});
 }
 
