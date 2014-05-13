@@ -303,12 +303,9 @@ sub get_view {
     return $view;
 }
 
-sub make_app_menu {
+sub app_menu_hooks {
     my $self = shift;
-
-    $self->{appmenu} ||= $self->get_view($self, "menu");
-
-    $self->{appmenu}->menu->text->hooks({
+    return {
         tuxts_to_htmls => sub {
             my $self = shift;
             my $h = $self->hooks;
@@ -351,12 +348,15 @@ sub make_app_menu {
                 }
                 
                 $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
+                $s->{class} .= ' menu';
                 $s->{origin} = $object;
             }
         },
-    });
+    };
+}
 
+sub make_app_menu {
+    my $self = shift;
 
     $self->update_app_menu();
 }
@@ -368,6 +368,14 @@ sub random_colour_background {
 
 sub update_app_menu {
     my $self = shift;
+
+
+    $self->{appmenu} ||= do {
+        my $am = $self->get_view($self, "menu");
+        $am->menu->text->hooks($self->app_menu_hooks());
+        $am;
+    };
+    
     my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
     my @items;
     for my $f (@fings) {
@@ -382,7 +390,6 @@ sub update_app_menu {
     }
     
     $self->{appmenu}->{name} = "appmenu";
-    $self->send("\$('#menu > span').remove();"); # TODO solve
     $self->{appmenu}->menu->replace([@items]);
 }
 

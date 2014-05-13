@@ -49,6 +49,7 @@ sub new {
 
     $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
     $self->{avoid_app_menu} = 1;
+    $self->{codostate}->menu($self->{hostinfo}->app_menu_hooks());
     $self->{codostate}->menu->replace([$self]);
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
