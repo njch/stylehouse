@@ -310,7 +310,8 @@ sub app_menu_hooks {
             my $self = shift;
             my $h = $self->hooks;
             my $i = $h->{i} ||= 0;
-            say "Doing some $self, tuxts=".@{$self->tuxts};
+            say "\n\n\nDoing menu in $self for $self->{view}->{id}, tuxts=".@{$self->tuxts};
+
             for my $s (@{$self->tuxts}) {
                 my $object = $s->{value};
                 $s->{value} = ref $object;
@@ -329,17 +330,16 @@ sub app_menu_hooks {
                 
                     # generate another Texty for menu items
                     # catch their <spans> and add to our value
-                    my $inner = new Texty($self->hostinfo->intro, $self->view, [ keys %$menu ], {
+                    my $inner = new Texty($self->hostinfo->intro, $self->view, [ sort keys %$menu ], {
                         tuxts_to_htmls => sub {
                             my $self = shift;
                             my $i = $h->{i} || 0;
                             for my $s (@{$self->tuxts}) {
-                                delete $s->{top};
-                                delete $s->{left};
-                                $s->{class} = 'menu';
                                 $s->{style} .= random_colour_background();
                             }
                         },
+                        class => "menu",
+                        nospace => 1,
                         notakeover => 1,
                     });
                     $s->{inner} = $inner;
@@ -347,28 +347,17 @@ sub app_menu_hooks {
                     say ref $object." buttons: ".join ", ", @{ $inner->lines };
                 }
                 
-                $s->{style} = random_colour_background();
-                $s->{class} .= ' menu';
+                $s->{style} = random_colour_background()."postition:relative; border: 5px solid black;";
                 $s->{origin} = $object;
             }
         },
+        class => "menu",
+        nospace => 1,
     };
-}
-
-sub make_app_menu {
-    my $self = shift;
-
-    $self->update_app_menu();
-}
-
-sub random_colour_background {
-    my ($rgb) = join", ", map int rand 255, 1 .. 3;
-    return "background: rgb($rgb);";
 }
 
 sub update_app_menu {
     my $self = shift;
-
 
     $self->{appmenu} ||= do {
         my $am = $self->get_view($self, "menu");
@@ -391,6 +380,11 @@ sub update_app_menu {
     
     $self->{appmenu}->{name} = "appmenu";
     $self->{appmenu}->menu->replace([@items]);
+}
+
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
 }
 
 sub event {
@@ -533,23 +527,21 @@ sub info {
 sub make_floodzone {
     my $self = shift;
 
-    $self->{flood} = $self->get_view($self, "flood");
-    $self->{flood}->travel();
-    $self->{flood}->text();
-    $self->flood($self);
 }
 # grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
     my $thing = shift;
 
-    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
 
-    my $flood = $self->{flood};
-    $flood || do {
-        use Carp;
-        confess "no flood yet?";
+    my $flood = $self->{flood} ||= do {
+        my $f = $self->get_view($self, "flood");
+        $f->travel();
+        $f->text();
+        $f;
     };
+
+    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
     if (ref \$thing eq "SCALAR") {
         $flood->text->replace([split "\n", $thing]);
     }

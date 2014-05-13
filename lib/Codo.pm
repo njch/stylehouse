@@ -48,9 +48,8 @@ sub new {
     }
 
     $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
-    $self->{avoid_app_menu} = 1;
-    $self->{codostate}->menu($self->{hostinfo}->app_menu_hooks());
-    $self->{codostate}->menu->replace([$self]);
+    #$self->{codostate}->menu->text->hooks($self->{hostinfo}->app_menu_hooks());
+    #$self->{codostate}->menu->replace([$self]);
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
@@ -61,8 +60,6 @@ sub new {
 
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
-
-    
 
     $self->init_wormcodes();
 
@@ -224,7 +221,7 @@ sub init_wormcodes {
 
             if ($isnew) {
                 push @{ $self->{codes} }, $codon;
-                say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
+                #say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
             }
     }
 }

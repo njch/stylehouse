@@ -81,8 +81,6 @@ sub takeover {
     my $append = shift;
     my $tempness;
 
-    say "Takeover ".($append||"clobber");
-   
     if ($append) {
         if ($append eq "temp") {
             my $tempid = $self->{id}."-temp";

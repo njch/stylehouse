@@ -26,6 +26,7 @@ sub new {
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
     $self->hooks(shift || {});
+    say "Hooks: ".join ", ", sort keys %{$self->{hooks}};
     $self->tuxts([]);
 
     # make a persistent object for this Texty thing
@@ -174,7 +175,7 @@ sub lines_to_tuxts {
 
     say "  Texty tuxts made". ddump(\@tuxts) if $self->{debug};
 
-    $self->spatialise();
+    $self->spatialise() unless $self->{hooks}->{nospace};
 }
 
 sub spatialise {
@@ -194,7 +195,7 @@ sub spatialise {
             $s->{top} = $geo->{top};
             $s->{left} = $geo->{horizontal};
             $geo->{horizontal} += $inc + (length($s->{value}->{name}) > 7 ? 11*6 : 1);
-            if ($geo->{wrap_at} && $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
+            if ($geo->{wrap_at}   &&   $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
                 $geo->{horizontal} = $oleft;
                 $geo->{top} += 20;
                 next;
@@ -273,15 +274,10 @@ sub tuxts_to_htmls {
     my $top_add = 0;
     my @htmls;
     for my $s (@{$self->tuxts}) {
-        my $mid = { %$s };
-        delete $mid->{origin};
-        my $value = delete($mid->{value});
-        my $p = {};
-        for ("inner") {
-            $p->{$_} = delete $mid->{$_} if exists $mid->{$_};
-        }
-        my $pm = dclone $mid;
-        $p = { %$pm, %$p };
+        my $p = { %$s };
+        delete $p->{origin};
+        delete $p->{inner};
+        my $value = delete($p->{value});
 
         $p->{style} = join "; ", grep /\S/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),

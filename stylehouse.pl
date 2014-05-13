@@ -147,12 +147,13 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
+    $hostinfo->flood($hostinfo->data);
+
     Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
-    $hostinfo->make_floodzone();
-    $hostinfo->make_app_menu();
+    $hostinfo->update_app_menu();
     $underworld = 0;
 }
 
