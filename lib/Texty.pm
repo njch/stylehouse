@@ -207,7 +207,7 @@ sub spatialise {
                 # would be handy as to string the facets together prog-y-y and also in phsyical display space to create chains of parts of things...
                 return 11*6 if length($s->{value}->{name}) > 7;
                 return 1;
-            }
+            };
             $geo->{horizontal} += $inc + $guessextrawidth->();
             if ($geo->{wrap_at}   &&   $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
                 $geo->{horizontal} = $oleft;

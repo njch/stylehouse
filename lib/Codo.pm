@@ -67,50 +67,6 @@ sub new {
 
     return $self;
 }
-sub init_state {
-    my $self = shift;
-    my $st = $self->{state} ||= {};
-    my $ps = [];
-    for (`ps -eo pid,cmd | grep style`) {
-        chomp;
-        if (/(\d+) (.+)$/s) {
-            push @$ps, {
-                pid => $1,
-                process => $2,
-            };
-        }
-    }
-    my @style;
-    for my $p (@$ps) {
-        if ($p->{process} =~ /cd \.\.\/style(\S+) && echo '(.+)' && \.\/stylehouse.pl/) {
-            $p->{name} = $1;
-            $p->{mess} = $2;
-        }
-        elsif ($p->{process} =~ /stylehouse\.pl/) {
-            $p->{name} = "stylehouse";
-            $p->{mess} = "???";
-        }
-        else {
-            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
-            next;
-        }
-        push @style, $p;
-    }
-    for my $p (@style) {
-        $p->{_tuxtform} = sub {
-            my ($p, $tuxt) = @_;
-            $tuxt->{htmlval} = 1;
-            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
-                .'<span style="color: blue; left: 40px;">'.$p->{name}.'</span><br/>'
-                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
-                .'<span style="color: black;">'.$p->{mess}.'</span>';
-        };
-    }
-    my $cst = $self->{codostate}->text;
-    $cst->{hooks}->{spatialise} = sub { { horizontal => 40 } };
-    $cst->{hooks}->{tuxtstyle} = random_colour_background();
-    $cst->replace([@style]);
-}
 sub menu {
     my $self = shift;
     $self->{menu} ||= do {
@@ -132,8 +88,59 @@ sub menu {
         $m->{"s"} = sub {
             $self->spawn_child();
         };
+        $m->{"^"} = sub {
+            $self->init_state();
+        };
+
         $m;
     };
+}
+sub init_state {
+    my $self = shift;
+    my $st = $self->{state} ||= {};
+    my $ps = [];
+    for (`ps -eo pid,cmd | grep style`) {
+        chomp;
+        if (/(\d+) (.+)$/s) {
+            push @$ps, {
+                pid => $1,
+                process => $2,
+            };
+        }
+    }
+    my @style;
+    for my $p (@$ps) {
+        if ($p->{process} =~ /cd \.\.\/style(\S+) && echo '(.+)' && \.\/stylehouse.pl/) {
+            $p->{name} = $1;
+            $p->{mess} = $2;
+            push @style, $p;
+        }
+        elsif ($p->{process} =~ /stylehouse\.pl/) {
+            $p->{name} = "stylehouse";
+            $p->{mess} = "???";
+        }
+        else {
+            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
+            next;
+        }
+    }
+    for my $p (@style) {
+        $p->{_tuxtform} = sub {
+            my ($p, $tuxt) = @_;
+            $tuxt->{htmlval} = 1;
+            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
+                .'<span style="color: blue; left: 40px;">'.$p->{name}.'</span><br/>'
+                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
+                .'<span style="color: black;">'.$p->{mess}.'</span>';
+        };
+    }
+    unless (@style) {
+        push @style, '!html <h2 style="color: black;"> no child processes </h2>';
+    }
+    my $cst = $self->{codostate}->text;
+    $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
+    $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
+    $cst->replace([@style]);
 }
 sub spawn_child {
     my $self = shift;
@@ -314,8 +321,6 @@ sub codon_by_name {
     my ($code) = grep { $_->{name} eq $name } @{ $self->{codes} };
     $code;
 }
-
-
 
 sub readfile {
     my $self = shift;
