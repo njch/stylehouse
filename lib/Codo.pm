@@ -47,7 +47,8 @@ sub new {
         $self->{code_dir} = "../styleshed/"; # default .
     }
 
-    $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{hostinfo}->make_view($self, codostate_ps   => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{hostinfo}->make_view($self, codostate_proc => "width:58%;  background: #301a30; color: #afc; height: 60px;");
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
@@ -67,6 +68,7 @@ sub new {
 
     return $self;
 }
+
 sub menu {
     my $self = shift;
     $self->{menu} ||= do {
@@ -81,38 +83,65 @@ sub menu {
             say "Sending obsotrav dump\n\n";
             $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
         };
-        $m->{"R"} = sub { # they might wanna load new css/js too
+        $m->{"RRR"} = sub { # they might wanna load new css/js too
             $self->infrl('restarting (if)');
             `touch $0`;
         };
-        $m->{"s"} = sub {
+        $m->{"spawn"} = sub {
             $self->spawn_child();
         };
-        $m->{"^"} = sub {
+        $m->{"restate"} = sub {
             $self->init_state();
         };
 
         $m;
     };
 }
+
+sub child {
+    my $self = shift;
+    my $given = shift;
+    if ($given =~ /^style(\w+)$/) {
+        return "cd ../$given && echo '<<ID>>' && ./stylehouse.pl"
+    }
+    elsif ($given =~ /cd \.\.\/style(\S+) && echo '(.+)' && perl stylehouse.pl/) {
+        return ($1, $2)
+    }
+    else {
+        return undef
+    }
+}
+
 sub init_state {
     my $self = shift;
     my $st = $self->{state} ||= {};
-    my $ps = [];
-    for (`ps -eo pid,cmd | grep style`) {
-        chomp;
-        if (/(\d+) (.+)$/s) {
-            push @$ps, {
-                pid => $1,
-                process => $2,
-            };
-        }
+    $st->{ps} = $self->scan_ps();
+    $st->{proc} = $self->scan_proc();
+    # build up $self->{state}->{stylesheds} etc
+}
+
+sub scan_proc {
+    my $self = shift;
+    my $pids = {};
+    for my $procch (glob('proc/*.*')) {
+        my ($pid,$ch) = $procch =~ /(\d+)\.(\d+)/;
+        my $p = $pids->{$pid} ||= {};
+        $p->{$ch} = $procch;
+        $p->{pid} = $pid unless $p->{pid};
     }
-    my @style;
-    for my $p (@$ps) {
-        if ($p->{process} =~ /cd \.\.\/style(\S+) && echo '(.+)' && \.\/stylehouse.pl/) {
-            $p->{name} = $1;
-            $p->{mess} = $2;
+    my @list = `cat proc/list`;
+    my @start = `cat proc/start`;
+    my @style = values %$pids;
+    my $ps = [];
+    for my $l (@list) {
+        say "List line looks like $l";
+        next;
+        my $pid = "";
+        my $p = $pids->{$pid};
+        if ($self->child($p->{process})) {
+            my ($name, $mess) = $self->child($p->{process});
+            $p->{name} = $name;
+            $p->{mess} = $mess;
             push @style, $p;
         }
         elsif ($p->{process} =~ /stylehouse\.pl/) {
@@ -128,16 +157,65 @@ sub init_state {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
             $tuxt->{htmlval} = 1;
+            my $chs = map { '<span style="color: green;">'.(-s $p->{$_}.' '.$_).'</span><br/>' } qw{err out in};
             $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
-                .'<span style="color: blue; left: 40px;">'.$p->{name}.'</span><br/>'
-                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
-                .'<span style="color: black;">'.$p->{mess}.'</span>';
+                .'<span style="color: blue; left: 40px;">'.($p->{name}||"???").'</span><br/>'
+#   more from start/list (name/uuid)
+                .$chs
         };
     }
-    unless (@style) {
+    unless (@style) {   
+        push @style, '!html <h2 style="color: black;"> nothin in proc/list </h2>';
+    }
+    my $cst = $self->{codostate_proc}->text;
+    $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
+    $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
+    $cst->replace([@style]);
+}
+sub scan_ps {
+    my $self = shift;
+    my $ps = [];
+    for (`ps -eo pid,cmd | grep style`) {
+        chomp;
+        if (/(\d+) (.+)$/s) {
+            push @$ps, {
+                pid => $1,
+                process => $2,
+            };
+        }
+    }
+    my @style;
+    for my $p (@$ps) {
+        if ($self->child($p->{process})) {
+            my ($name, $mess) = $self->child($p->{process});
+            $p->{name} = $name;
+            $p->{mess} = $mess;
+            push @style, $p;
+        }
+        elsif ($p->{process} =~ /stylehouse\.pl/) {
+            $p->{name} = "stylehouse";
+            $p->{mess} = "???";
+        }
+        else {
+            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
+            next;
+        }
+    }
+    for my $p (@style) {
+        $p->{_tuxtform} = sub {
+            my ($p, $tuxt) = @_;
+            say ddump($p);
+            $tuxt->{htmlval} = 1;
+            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
+                .'<span style="color: blue; left: 40px;">'.($p->{name}||"???").'</span><br/>'
+                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
+                .'<span style="color: black;">'.($p->{mess}||"???").'</span>';
+        };
+    }
+    unless (@style) {   
         push @style, '!html <h2 style="color: black;"> no child processes </h2>';
     }
-    my $cst = $self->{codostate}->text;
+    my $cst = $self->{codostate_ps}->text;
     $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
     $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
     $cst->replace([@style]);
@@ -155,7 +233,7 @@ sub spawn_child {
     unless (-d "../$outside") {
         return $self->errl("../$outside does not exist");
     }
-    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../$outside && echo 'okay...' && ./stylehouse.pl");
+    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => $self->child($outside));
     $self->{outside}->{owner} = $self;
     $self->infrl("spawning $outside");
     $self->{hostinfo}->update_app_menu();
@@ -197,6 +275,8 @@ sub event {
 
     my $codon_menu_texty = $self->ports->{codonmenu}->text;
     my $codon_texty =      $self->ports->{codon}->text;
+
+# Codo-View-fc6272d1-Codo-Texty-c417836b-0 -> flood proc/ps/whatever data
 
     # CODE ACTION
     if ($id =~ /-ta$/) {
