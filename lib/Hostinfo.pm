@@ -176,7 +176,7 @@ my $div_attr = { # these go somewhere magical and together, like always
     view => "width:35%; background: #c9f; height: 500px;",
     hodi => "width:30%; background: #09f; height: 500px;",
     babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:420px; background: #8af; border: 4px solid gray; height: 400px; overflow: scroll;",
+    flood => "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;",
 };
 # build its own div or something
 sub provision_view {

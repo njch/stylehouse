@@ -128,7 +128,7 @@ sub lines_to_tuxts {
             my $tuxt = {
                 class => "$class ".$self->view->id,
                 id => $id,
-                style => "",
+                style => ($self->{hooks}->{tuxtstyle} || ""),
             };
             my @extratuxts;
 
@@ -142,9 +142,16 @@ sub lines_to_tuxts {
 
             if (ref $value eq "Texty") {
                 $tuxt->{style} .= "border: 1px solid pink;";
-                my @inners = @{ $value->tuxts }; # NOT a wormhole!
-                $_->{left} += 20 for @inners;
-                push @extratuxts, @inners;
+                push @extratuxts, @{ $value->tuxts }; # NOT a wormhole!
+            }
+            elsif (ref $value eq "HASH") {
+                if ($value->{_tuxtform}) {
+                    $value->{_tuxtform}->($value, $tuxt);
+                    $value = $value->{value} || die "HASH thingy didn't revalue itself";
+                }
+                else {
+                    die "Texty line HASH value no _tuxtform: ".ddump($value)
+                }
             }
             else {
                 if ($value =~ /<span/sgm || $value =~ s/^\!html //s) {

@@ -48,12 +48,10 @@ sub new {
     }
 
     $self->{hostinfo}->make_view($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px;");
-    #$self->{codostate}->menu->text->hooks($self->{hostinfo}->app_menu_hooks());
-    #$self->{codostate}->menu->replace([$self]);
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $self->{hostinfo}->make_view($self, codon => "width:58%;  background: #352035; color: #afc; height: 600px;");
+    $self->{hostinfo}->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 600px;");
 
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
@@ -61,11 +59,57 @@ sub new {
     $self->{codes} = $self->hostinfo->get("Codo/codes")
                   || $self->hostinfo->set("Codo/codes", []);
 
-    $self->init_wormcodes();
+    $self->init_codons();
 
     $self->init_codemenu();
 
+    $self->init_state();
+
     return $self;
+}
+sub init_state {
+    my $self = shift;
+    my $st = $self->{state} ||= {};
+    my $ps = [];
+    for (`ps -eo pid,cmd | grep style`) {
+        chomp;
+        if (/(\d+) (.+)$/s) {
+            push @$ps, {
+                pid => $1,
+                process => $2,
+            };
+        }
+    }
+    my @style;
+    for my $p (@$ps) {
+        if ($p->{process} =~ /cd \.\.\/style(\S+) && echo '(.+)' && \.\/stylehouse.pl/) {
+            $p->{name} = $1;
+            $p->{mess} = $2;
+        }
+        elsif ($p->{process} =~ /stylehouse\.pl/) {
+            $p->{name} = "stylehouse";
+            $p->{mess} = "???";
+        }
+        else {
+            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
+            next;
+        }
+        push @style, $p;
+    }
+    for my $p (@style) {
+        $p->{_tuxtform} = sub {
+            my ($p, $tuxt) = @_;
+            $tuxt->{htmlval} = 1;
+            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
+                .'<span style="color: blue; left: 40px;">'.$p->{name}.'</span><br/>'
+                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
+                .'<span style="color: black;">'.$p->{mess}.'</span>';
+        };
+    }
+    my $cst = $self->{codostate}->text;
+    $cst->{hooks}->{spatialise} = sub { { horizontal => 40 } };
+    $cst->{hooks}->{tuxtstyle} = random_colour_background();
+    $cst->replace([@style]);
 }
 sub menu {
     my $self = shift;
@@ -98,10 +142,13 @@ sub spawn_child {
             "cannot spawn processes", "run ./procserv.pl yourself");
     }
     my $outside = "styleshed";
+    if ($self->{state}->{$outside}) {
+        return $self->errl("$outside already running");
+    }
     unless (-d "../$outside") {
         return $self->errl("../$outside does not exist");
     }
-    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../$outside && echo 'okay...' && perl stylehouse.pl");
+    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => "cd ../$outside && echo 'okay...' && ./stylehouse.pl");
     $self->{outside}->{owner} = $self;
     $self->infrl("spawning $outside");
     $self->{hostinfo}->update_app_menu();
@@ -188,10 +235,10 @@ sub event {
 }
 
 # get the forms of that clouds of ghosts (more formation in Codon::chunk())
-sub init_wormcodes {
+sub init_codons {
     my $self = shift;
 
-    say "INIT WORMCODES!";
+    say "INIT CODONS!";
     my @codefiles = $self->list_of_codefiles();
 
     for my $cf (@codefiles) {

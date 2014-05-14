@@ -84,16 +84,8 @@ use Ghost;
 use Wormhole;
 use Way;
 
-if (-e 'proc') {
-    `cat /dev/null > proc/start`;
-    `cat /dev/null > proc/list`;
-    `rm proc/*.*` if glob('proc/*.*');
-}
-
 my ($name) = $Bin =~ m{/(\w+)$};
-say $Bin;
 say do { my $d = `pwd`; chomp $d; $d };
-say "etc";
 die "you ain't really here" unless $Bin ne `pwd`;
 # here's our internet constellation
 # N S E W
@@ -101,7 +93,7 @@ my $styleports = {
     stylehut => 5000,
     stylecoast => 4000,
     stylehouse => 3000,
-    styleshed => 3001,
+    styleshed => 2000,
 };
 # vertical supports the two degrees of weather you can feed the web
 # horizontal are your stable and unstable private research/life machines
