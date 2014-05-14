@@ -201,7 +201,14 @@ sub spatialise {
         if ($geo->{horizontal}) {
             $s->{top} = $geo->{top};
             $s->{left} = $geo->{horizontal};
-            $geo->{horizontal} += $inc + (length($s->{value}->{name}) > 7 ? 11*6 : 1);
+            my $guessextrawidth = sub { # wants to be a Tractor
+                return 20 unless ref $s->{value} eq "HASH";
+                # TODO link back to the line before tuxtying
+                # would be handy as to string the facets together prog-y-y and also in phsyical display space to create chains of parts of things...
+                return 11*6 if length($s->{value}->{name}) > 7;
+                return 1;
+            }
+            $geo->{horizontal} += $inc + $guessextrawidth->();
             if ($geo->{wrap_at}   &&   $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
                 $geo->{horizontal} = $oleft;
                 $geo->{top} += 20;
