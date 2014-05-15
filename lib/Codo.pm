@@ -47,20 +47,18 @@ sub new {
         $self->{code_dir} = "../styleshed/"; # default .
     }
 
-    $self->{hostinfo}->make_view($self, codostate_ps   => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;")
-        ->label()->wipehtml;
-    $self->{hostinfo}->make_view($self, codostate_proc => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;")
-        ->label()->wipehtml;
+    my $hi = $self->{hostinfo};
+    $hi->make_flooz($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
     
-    $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+    $hi->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $self->{hostinfo}->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
+    $hi->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
 
 
-    $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
+    $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
 
-    $self->{codes} = $self->hostinfo->get("Codo/codes")
-                  || $self->hostinfo->set("Codo/codes", []);
+    $self->{codes} = $hi->get("Codo/codes")
+                  || $hi->set("Codo/codes", []);
 
     $self->init_codons();
 
@@ -200,9 +198,11 @@ sub init_state {
 
 
 
+    $self->{codostate}->flooz($s);
     say "Thy state:\n".anydump($s);
     my @style;
 
+    if (0) {
     for my $p (@style) {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
@@ -211,7 +211,6 @@ sub init_state {
             my $chs = join " <br/>", map { '<span style="color: #230;">'.((-s $p->{$_}).' '.$_).'</span>' } qw{in err out};
             $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span> '
                 .'<span style="color: blue; left: 40px;"> '.($p->{name}||"???").'</span><br/>'
-#   more from start/list (name/uuid)
                 .$chs;
             say "Proc value is: ".$p->{value};
         };
@@ -223,6 +222,7 @@ sub init_state {
     $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
     $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
     $cst->replace([@style]);
+    }
 }
 
 sub spawn_child {

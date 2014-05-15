@@ -8,28 +8,19 @@ has 'hostinfo';
 has 'owner';
 has 'divid';
 has 'id';
-has 'html';
 
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->divid(shift);
-
-    $self->wipehtml();
-
+    my $divid = $self->{divid} = shift;
+    
     $self;
 }
 
 # right so here we have an arc of stuff, going from motive to static
 # menu items to text
 # here's a travel too, that's kind of a mirage.
-
-sub label {
-    my $self = shift;
-    $self->{label} = 1;
-    $self;
-}
 
 sub text {
     my $self = shift;
@@ -54,6 +45,14 @@ sub travel {
     return $self->{travel};
 }
 
+sub flooz {
+    my $self = shift;
+    my $what = shift;
+# and flood it now
+}
+
+    
+
 sub nah {
     my $self = shift;
     say "Ref: ".ref $self->owner;
@@ -65,12 +64,41 @@ sub resume {
     say "cannot be bothered resuming right now";
 }
 
+sub label {
+    my $self = shift;
+    return "$self->owner $self->{divid}";
+}
+
+sub floozy {
+    my $self = shift;
+    return $self->{hostinfo}->get('screen/views/'.$self->{divid}.'/floozy');
+}
+
+sub default_html {
+    my $self = shift;
+    my $html = "";
+    if ($self->floozy) {
+        $html .= '<span class="'.$self->{id}
+            .'" style="top 1px; position: relative; right: 1px; align: right;">'
+            .$self->label.'</span>';
+    }
+    return $html;
+}
+
+sub html {
+    my $self = shift;
+    my $html = shift;
+    if (defined $html) {
+        $self->{html} = $self->default_html().$html;
+    }
+    else {
+        $self->{html};
+    }
+}
+
 sub wipehtml {
     my $self = shift;
-    my $blank = $self->{label} ? ('<span class="'.$self->{id}
-        .'" style="top 1px; position relative; right: 1px; align: right;">'
-        .$self->{divid}.'</span>') : "";
-    $self->html($blank);
+    $self->html("");
     $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()") if $self->{id};
     1;
 }
@@ -115,7 +143,7 @@ sub takeover {
 
     $self->hostinfo->view_incharge($self);
 
-    $self->part_and_append($self->{divid} => $html);
+    $self->append_spans($self->{divid} => $html);
 
     return $tempness;
 }
@@ -123,10 +151,10 @@ sub takeover {
 sub review {
     my $self = shift;
     
-    $self->part_and_append($self->divid => $self->html);
+    $self->append_spans($self->divid => $self->html);
 }
 
-sub part_and_append {
+sub append_spans {
     my $self = shift;
     my $divid = shift;
     my $html = shift;

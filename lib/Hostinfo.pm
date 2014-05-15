@@ -248,22 +248,34 @@ sub provision_view {
 
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
-    $self->send("\$('body').append('$div');");
+
+    unless ($self->get('screen/views/'.$divid.'/floozy')) {
+        $self->send("\$('body').append('$div');");
+    }
 
     unless ($self->get('screen/views/'.$divid)) {
         $self->set('screen/views/'.$divid, []);
     }
+    $self->set('screen/views/'.$divid.'/html', $div);
+    $self->set('screen/views/'.$divid.'/styles', $styles);
     $self->get('screen/views/'.$divid);
+}
+
+sub make_flooz {
+    my $self = shift;
+    $self->set('screen/views/'.$_[1].'/floozy', 1);
+    my $v = $self->make_view(@_);
+    $self->flood_add($v);
 }
 
 sub make_view {
     my $self = shift;
     my $this = shift;
-    my $name = shift;
+    my $divid = shift;
     my $style = shift;
 
-    $self->provision_view($name, $style);
-    $this->{$name} = $self->hostinfo->get_view($this, $name);
+    $self->provision_view($divid, $style);
+    $this->{$divid} = $self->hostinfo->get_view($this, $divid);
 }
 
 sub get_view {
@@ -299,6 +311,11 @@ sub get_view {
         }
         $this->ports->{$viewid} = $view;
         $this->ports->{$alias} = $view if $alias;
+    }
+
+    # AND maybe label it
+    unless ($view->floozy) {
+        $view->wipehtml();
     }
 
     return $view;
@@ -513,6 +530,7 @@ sub error {
     say "\nError: ".ddump($e);
     $self->flood($e);
 }
+
 sub info {
     my $self = shift;
     my $e;
@@ -527,21 +545,57 @@ sub info {
 
 sub make_floodzone {
     my $self = shift;
-
+    die "never";
 }
+
+sub floozy_add {
+    my $self = shift;
+    my $view = shift;
+
+    my $divid = $view->{divid};
+    my $div = $self->get('screen/views/'.$divid.'/html');
+
+    my $flood_id = $self->zflood->{divid};
+    $self->send("\$('#$flood_id').append('$div');");
+    $view->wipehtml(); # labels itself?
+
+    $self->set('floozies/'.$divid, $view);
+}
+
+# TODO all the time, we should know if anything touches $what and what to do then
+sub floozi_add {
+    my $self = shift;
+    my $view = shift;
+    my $what = shift;
+
+    $self->set('floozi/'.$view->{divid}, $what);
+    $self->flood($view);
+}
+
+sub zflood {
+    my $self = shift;
+    return $self->{flood} ||= $self->init_flood();
+}
+sub init_flood {
+    my $self = shift;
+    $self->{flood} = $self->get_view($self, "flood");
+
+    $f;
+}
+
 # grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
     my $thing = shift;
+    my $view = shift;
 
+    my $from = join ", ", (caller(1))[0,3,2];
 
-    my $flood = $self->{flood} ||= do {
-        my $f = $self->get_view($self, "flood");
-        $f->travel();
-        $f->text();
-        $f;
-    };
+# move $view to the top (under flood menu)
+    unless ($view) {
+        $view = $self->
 
+    my $flood = $self->zflood;
     $thing = ddump($thing) unless ref \$thing eq "SCALAR";
     if (ref \$thing eq "SCALAR") {
         $flood->text->replace([split "\n", $thing]);
