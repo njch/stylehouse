@@ -47,12 +47,14 @@ sub new {
         $self->{code_dir} = "../styleshed/"; # default .
     }
 
-    $self->{hostinfo}->make_view($self, codostate_ps   => "width:58%;  background: #301a30; color: #afc; height: 60px;");
-    $self->{hostinfo}->make_view($self, codostate_proc => "width:58%;  background: #301a30; color: #afc; height: 60px;");
+    $self->{hostinfo}->make_view($self, codostate_ps   => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;")
+        ->label()->wipehtml;
+    $self->{hostinfo}->make_view($self, codostate_proc => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;")
+        ->label()->wipehtml;
     
     $self->{hostinfo}->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $self->{hostinfo}->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 600px;");
+    $self->{hostinfo}->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
 
 
     $self->{obsetrav} = $self->hostinfo->set("Codo/obsetrav", []); # observations of travel
@@ -101,10 +103,10 @@ sub menu {
 sub child {
     my $self = shift;
     my $given = shift;
-    if ($given =~ /^style(\w+)$/) {
+    if ($given && $given =~ /^style(\w+)$/) {
         return "cd ../$given && echo '<<ID>>' && ./stylehouse.pl"
     }
-    elsif ($given =~ /cd \.\.\/style(\S+) && echo '(.+)' && perl stylehouse.pl/) {
+    elsif ($given && $given =~ /cd \.\.\/style(\S+) && echo '(.*)' && perl stylehouse.pl/) {
         return ($1, $2)
     }
     else {
@@ -124,44 +126,52 @@ sub scan_proc {
     my $self = shift;
     my $pids = {};
     for my $procch (glob('proc/*.*')) {
-        my ($pid,$ch) = $procch =~ /(\d+)\.(\d+)/;
+        my ($pid,$ch) = $procch =~ /(\d+)\.(\w+)/;
         my $p = $pids->{$pid} ||= {};
         $p->{$ch} = $procch;
         $p->{pid} = $pid unless $p->{pid};
     }
+    say "pids: ".ddump($pids);
     my @list = `cat proc/list`;
     my @start = `cat proc/start`;
     my @style = values %$pids;
     my $ps = [];
     for my $l (@list) {
+        next unless $l =~ /\S/;
         say "List line looks like $l";
-        next;
-        my $pid = "";
+        my ($pid, $process) = $l =~ /(\d+): (.+)\n/;
         my $p = $pids->{$pid};
-        if ($self->child($p->{process})) {
-            my ($name, $mess) = $self->child($p->{process});
-            $p->{name} = $name;
-            $p->{mess} = $mess;
-            push @style, $p;
+        if ($p->{process} && $p->{process} ne $process) {
+            die "Heard $pid was $process from list, but it looks more like: ".ddump($p); # not the same hash yet, but here joines
         }
-        elsif ($p->{process} =~ /stylehouse\.pl/) {
-            $p->{name} = "stylehouse";
-            $p->{mess} = "???";
-        }
-        else {
-            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
-            next;
+        unless ($p->{process}) {
+            if ($self->child($p->{process})) {
+                my ($name, $mess) = $self->child($p->{process});
+                $p->{name} = $name;
+                $p->{mess} = $mess;
+                push @style, $p;
+            }
+            elsif ($p->{process} =~ /stylehouse\.pl/) {
+                $p->{name} = "stylehouse";
+                $p->{mess} = "???";
+            }
+            else {
+                say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
+                next;
+            }
         }
     }
     for my $p (@style) {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
             $tuxt->{htmlval} = 1;
-            my $chs = map { '<span style="color: green;">'.(-s $p->{$_}.' '.$_).'</span><br/>' } qw{err out in};
-            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
-                .'<span style="color: blue; left: 40px;">'.($p->{name}||"???").'</span><br/>'
+            say "proc form: ".ddump($p);
+            my $chs = join " <br/>", map { '<span style="color: #230;">'.((-s $p->{$_}).' '.$_).'</span>' } qw{in err out};
+            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span> '
+                .'<span style="color: blue; left: 40px;"> '.($p->{name}||"???").'</span><br/>'
 #   more from start/list (name/uuid)
-                .$chs
+                .$chs;
+            say "Proc value is: ".$p->{value};
         };
     }
     unless (@style) {   

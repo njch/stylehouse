@@ -14,7 +14,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->html("");
+    $self->wipehtml();
 
     $self;
 }
@@ -22,6 +22,12 @@ sub new {
 # right so here we have an arc of stuff, going from motive to static
 # menu items to text
 # here's a travel too, that's kind of a mirage.
+
+sub label {
+    my $self = shift;
+    $self->{label} = 1;
+    $self;
+}
 
 sub text {
     my $self = shift;
@@ -59,7 +65,10 @@ sub resume {
 
 sub wipehtml {
     my $self = shift;
-    $self->html("");
+    my $blank = $self->{label} ? ('<span class="'.$self->{id}
+        .'" style="top 1px; position relative; right: 1px; align: right;">'
+        .$self->{divid}.'</span>') : "";
+    $self->html($blank);
     $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()");
     1;
 }
@@ -123,6 +132,7 @@ sub part_and_append {
     return say "no html" unless $html;
 
     if (length($html) > 30000) {
+        die "this is probably fucked";
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
 
         

@@ -44,7 +44,7 @@ sub new {
 
     $self->{toexec} = shift;
 
-    $self->{toexec} =~ s/<<ID>>/$self->{id}/;
+    $self->{toexec} =~ s/<<ID>>/$self->{huid}/;
 
     $self->outhook(shift);
     $self->output([]);
