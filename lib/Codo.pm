@@ -136,7 +136,7 @@ sub init_state {
 
     my $i = 0;
     for my $l (`cat proc/list`) {
-        if ($l =~ /(\d+): (.+)$/sm) {
+        if ($l =~ /(\d+): (.+)/) {
             $l_p->{$1} = {
                 pid => $1,
                 cmd => $2,
@@ -157,7 +157,7 @@ sub init_state {
 
     $i = 0;
     for my $s (`cat proc/start`) {
-        my ($exec) = $s =~ /^(.+)$/sm;
+        my ($exec) = $s =~ /^(.+)/;
         $s_p_i->{$i} = {
             cmd => $exec,
             i => $i++,
@@ -165,10 +165,21 @@ sub init_state {
         
     }
 
-    # ps
+    my $ps = {};
+
+    $i = 0;
+    for (`ps -eo pid,cmd | grep style`) {
+        if (/(\d+) (.+)$/s) {
+            $ps->{$1} = {
+                pid => $1,
+                cmd => $2,
+                i => $i++,
+            };
+        }
+    }
 
     my $s = $self->{state};
-    for my $w (qw{ch_p l_p l_p_i s_p_i}) {
+    for my $w (qw{ch_p l_p l_p_i s_p_i ps}) {
         eval "\$s->{$w} = \$$w;";
         die $@ if $@;
     }
@@ -176,9 +187,10 @@ sub init_state {
     for my $t (values %$s) {
         for my $p (values %$t) {
             if ($p->{cmd}) {
-                $p->{cmd} =~ s/\n$//;
                 my ($name, $mess) = $self->child($p->{cmd});
-                say "from: $p->{cmd}\nto $name, $mess";
+                if ($p->{name} && ($p->{name} ne $name || $p->{mess} ne $mess)) {
+                    die "conflicter of the... $p->{cmd}\n'$p->{name}' ne '$name' || '$p->{mess}' ne '$mess'\n".anydump($s);
+                }
                 $p->{name} = $name;
                 $p->{mess} = $mess;
             }
@@ -189,37 +201,8 @@ sub init_state {
 
 
     say "Thy state:\n".anydump($s);
-    return;
+    my @style;
 
-    my @style = (); 
-    my @list = ();
-    my $ps = [];
-    my $pids;
-    for my $l (@list) {
-        next unless $l =~ /\S/;
-        say "List line looks like $l";
-        my ($pid, $process) = $l =~ /(\d+): (.+)\n/;
-        my $p = $pids->{$pid};
-        if ($p->{process} && $p->{process} ne $process) {
-            die "Heard $pid was $process from list, but it looks more like: ".ddump($p); # not the same hash yet, but here joines
-        }
-        unless ($p->{process}) {
-            if ($self->child($p->{process})) {
-                my ($name, $mess) = $self->child($p->{process});
-                $p->{name} = $name;
-                $p->{mess} = $mess;
-                push @style, $p;
-            }
-            elsif ($p->{process} =~ /stylehouse\.pl/) {
-                $p->{name} = "stylehouse";
-                $p->{mess} = "???";
-            }
-            else {
-                say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
-                next;
-            }
-        }
-    }
     for my $p (@style) {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
@@ -241,58 +224,7 @@ sub init_state {
     $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
     $cst->replace([@style]);
 }
-sub scan_ps {
-    my $self = shift;
 
-    my $ps = [];
-
-    for (`ps -eo pid,cmd | grep style`) {
-        chomp;
-        if (/(\d+) (.+)$/s) {
-            push @$ps, {
-                pid => $1,
-                process => $2,
-            };
-        }
-    }
-
-    my @style;
-    for my $p (@$ps) {
-        if ($self->child($p->{process})) {
-            my ($name, $mess) = $self->child($p->{process});
-            $p->{name} = $name;
-            $p->{mess} = $mess;
-            push @style, $p;
-        }
-        elsif ($p->{process} =~ /stylehouse\.pl/) {
-            $p->{name} = "stylehouse?";
-            $p->{mess} = "? ? ?";
-            push @style, $p;
-        }
-        else {
-            say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
-            next;
-        }
-    }
-
-    for my $p (@style) {
-        $p->{_tuxtform} = sub {
-            my ($p, $tuxt) = @_;
-            $tuxt->{htmlval} = 1;
-            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
-                .'<span style="color: blue; left: 40px;">'.($p->{name}||"???").'</span><br/>'
-                .'<span style="color: green;">'.$p->{process}.'</span><br/>'
-                .'<span style="color: black;">'.($p->{mess}||"???").'</span>';
-        };
-    }
-    unless (@style) {   
-        push @style, '!html <h2 style="color: black;"> no child processes </h2>';
-    }
-    my $cst = $self->{codostate_ps}->text;
-    $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
-    $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
-    $cst->replace([@style]);
-}
 sub spawn_child {
     my $self = shift;
     unless ( grep /procserv.pl/, `ps faux` ) {

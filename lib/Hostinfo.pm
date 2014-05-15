@@ -168,34 +168,6 @@ sub load_views { # state from client
     }
 }
 
-    
-my $div_attr = { # these go somewhere magical and together, like always
-    menu => "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
-    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
-    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
-    view => "width:35%; background: #c9f; height: 500px;",
-    hodi => "width:30%; background: #09f; height: 500px;",
-    babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;",
-};
-# build its own div or something
-sub provision_view {
-    my $self = shift;
-    my $divid = shift;
-    my $styles = shift || $div_attr->{$divid} || die "wtf";
-
-    $styles .= "margin: 0.3em;";
-
-    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
-    $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
-    $self->send("\$('body').append('$div');");
-
-    unless ($self->get('screen/views/'.$divid)) {
-        $self->set('screen/views/'.$divid, []);
-    }
-    $self->get('screen/views/'.$divid);
-}
-
 sub view_incharge {
     my $self = shift;
     my $view = shift;
@@ -254,6 +226,34 @@ sub screenthing {
     my $things = $self->get('screen/things');
     
     push @$things, $thing;
+}
+
+my $div_attr = { # these go somewhere magical and together, like always
+    menu => "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
+    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
+    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
+    view => "width:35%; background: #c9f; height: 500px;",
+    hodi => "width:30%; background: #09f; height: 500px;",
+    babs => "width:55%; background: #09f; height: 300px;",
+    flood => "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;",
+};
+
+# build its own div or something
+sub provision_view {
+    my $self = shift;
+    my $divid = shift;
+    my $styles = shift || $div_attr->{$divid} || die "wtf";
+
+    $styles .= "margin: 0.3em;";
+
+    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
+    $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
+    $self->send("\$('body').append('$div');");
+
+    unless ($self->get('screen/views/'.$divid)) {
+        $self->set('screen/views/'.$divid, []);
+    }
+    $self->get('screen/views/'.$divid);
 }
 
 sub make_view {
