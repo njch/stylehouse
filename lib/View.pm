@@ -45,11 +45,16 @@ sub travel {
     return $self->{travel};
 }
 
+# we don't quite lose this thing
 sub flooz {
     my $self = shift;
     my $what = shift;
-# and flood it now
+
+    $self->{hostinfo}->floozi_add($self, $what);
+
+    $self->fluz();
 }
+sub fluz { $_[0]->flood($_[0]) }
 
     
 

@@ -551,54 +551,52 @@ sub make_floodzone {
 sub floozy_add {
     my $self = shift;
     my $view = shift;
-
-    my $divid = $view->{divid};
-    my $div = $self->get('screen/views/'.$divid.'/html');
-
-    my $flood_id = $self->zflood->{divid};
-    $self->send("\$('#$flood_id').append('$div');");
-    $view->wipehtml(); # labels itself?
+    my $flood = $self->{flood} || die;
 
     $self->set('floozies/'.$divid, $view);
+
+    $self->send("\$('#".$flood->{divid}."').append('".$self->get('screen/views/'.$view->{divid}.'/html')."');");
+
+    $view->wipehtml(); # labels itself?
+    
+    # also move to the top of the stack or so when floozy floods (lingfo)
 }
 
-# TODO all the time, we should know if anything touches $what and what to do then
 sub floozi_add {
     my $self = shift;
     my $view = shift;
     my $what = shift;
 
-    $self->set('floozi/'.$view->{divid}, $what);
-    $self->flood($view);
+    # we should know if anything changes in $what and etc
+    $self->set('floozi/'.$view->{divid}, $what); # should join up floozies (Views) by divid and/or id or something
 }
 
-sub zflood {
-    my $self = shift;
-    return $self->{flood} ||= $self->init_flood();
-}
 sub init_flood {
     my $self = shift;
-    $self->{flood} = $self->get_view($self, "flood");
+    $self->{flood} = $self->get_view($self, "flood"); # flood menu
+}
 
-    $f;
+sub default_floozy {
+    my $self = shift;
+    return $self->make_view($self, "default_floozy", # this $divid will clobber itself a bit, in life it travels
+        "width:".420*1.1.";  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
 }
 
 # grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
+    $self->{flood} || $self->init_flood();
     my $thing = shift;
     my $view = shift;
 
     my $from = join ", ", (caller(1))[0,3,2];
 
+    $view ||= $self->default_floozy();
 # move $view to the top (under flood menu)
-    unless ($view) {
-        $view = $self->
 
-    my $flood = $self->zflood;
     $thing = ddump($thing) unless ref \$thing eq "SCALAR";
     if (ref \$thing eq "SCALAR") {
-        $flood->text->replace([split "\n", $thing]);
+        $flood->text->replace([split "\n", $thing]); # poke $from
     }
     elsif ($flood) {
         my $wormhole;
