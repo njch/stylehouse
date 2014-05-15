@@ -26,7 +26,7 @@ sub new {
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
     $self->hooks(shift || {});
-    say "Hooks: ".join ", ", sort keys %{$self->{hooks}};
+#    say "Hooks: ".join ", ", sort keys %{$self->{hooks}};
     $self->tuxts([]);
 
     # make a persistent object for this Texty thing
@@ -99,9 +99,9 @@ sub append { # TRACTOR
 sub lines_to_tuxts {
     my $self = shift;
 
-    # bizzare
+    # supposed to be avoided?
     if (scalar(@{ $self->lines }) == 0) {
-        say "\n     Texty ".$self->id."   got zero lines\n\n\n\n";
+        say "\n     Texty ".$self->id."   got zero lines\n";
         $self->tuxts([]);
     }
 

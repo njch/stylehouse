@@ -14,6 +14,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+    $self->divid(shift);
+
     $self->wipehtml();
 
     $self;
@@ -69,7 +71,7 @@ sub wipehtml {
         .'" style="top 1px; position relative; right: 1px; align: right;">'
         .$self->{divid}.'</span>') : "";
     $self->html($blank);
-    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()");
+    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()") if $self->{id};
     1;
 }
 

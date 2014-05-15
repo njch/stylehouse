@@ -106,7 +106,7 @@ sub child {
     if ($given && $given =~ /^style(\w+)$/) {
         return "cd ../$given && echo '<<ID>>' && ./stylehouse.pl"
     }
-    elsif ($given && $given =~ /cd \.\.\/style(\S+) && echo '(.*)' && perl stylehouse.pl/) {
+    elsif ($given && $given =~ /cd \.\.\/style(\S+) && echo '(.*)' && (?:perl |\.\/)stylehouse\.pl/) {
         return ($1, $2)
     }
     else {
@@ -116,26 +116,85 @@ sub child {
 
 sub init_state {
     my $self = shift;
-    my $st = $self->{state} ||= {};
-    $st->{ps} = $self->scan_ps();
-    $st->{proc} = $self->scan_proc();
-    # build up $self->{state}->{stylesheds} etc
-}
 
-sub scan_proc {
-    my $self = shift;
-    my $pids = {};
-    for my $procch (glob('proc/*.*')) {
-        my ($pid,$ch) = $procch =~ /(\d+)\.(\w+)/;
-        my $p = $pids->{$pid} ||= {};
-        $p->{$ch} = $procch;
-        $p->{pid} = $pid unless $p->{pid};
+    my $ch_p = {};
+
+    for my $ch_f (glob('proc/*.*')) {
+        if ($ch_f =~ /(\d+)\.(\w+)/) {
+            $ch_p->{$1} = {
+                $2 => $ch_f,
+                pid => $1,
+            };
+        }
+        else {
+            say "garbage from proc/*.*: $ch_f";
+        }
+
     }
-    say "pids: ".ddump($pids);
-    my @list = `cat proc/list`;
-    my @start = `cat proc/start`;
-    my @style = values %$pids;
+
+    my $l_p = {};
+
+    my $i = 0;
+    for my $l (`cat proc/list`) {
+        if ($l =~ /(\d+): (.+)$/sm) {
+            $l_p->{$1} = {
+                pid => $1,
+                cmd => $2,
+                i => $i++,
+            };
+        }
+        else {
+            say "garbage from proc/list: $l";
+        }
+    }
+
+    my $l_p_i = {};
+    for my $p (values %$l_p) {
+        $l_p_i->{$p->{i}} = $p;
+    }
+
+    my $s_p_i = {};
+
+    $i = 0;
+    for my $s (`cat proc/start`) {
+        my ($exec) = $s =~ /^(.+)$/sm;
+        $s_p_i->{$i} = {
+            cmd => $exec,
+            i => $i++,
+        };
+        
+    }
+
+    # ps
+
+    my $s = $self->{state};
+    for my $w (qw{ch_p l_p l_p_i s_p_i}) {
+        eval "\$s->{$w} = \$$w;";
+        die $@ if $@;
+    }
+
+    for my $t (values %$s) {
+        for my $p (values %$t) {
+            if ($p->{cmd}) {
+                $p->{cmd} =~ s/\n$//;
+                my ($name, $mess) = $self->child($p->{cmd});
+                say "from: $p->{cmd}\nto $name, $mess";
+                $p->{name} = $name;
+                $p->{mess} = $mess;
+            }
+        }
+    }
+
+
+
+
+    say "Thy state:\n".anydump($s);
+    return;
+
+    my @style = (); 
+    my @list = ();
     my $ps = [];
+    my $pids;
     for my $l (@list) {
         next unless $l =~ /\S/;
         say "List line looks like $l";
@@ -184,7 +243,9 @@ sub scan_proc {
 }
 sub scan_ps {
     my $self = shift;
+
     my $ps = [];
+
     for (`ps -eo pid,cmd | grep style`) {
         chomp;
         if (/(\d+) (.+)$/s) {
@@ -194,6 +255,7 @@ sub scan_ps {
             };
         }
     }
+
     my @style;
     for my $p (@$ps) {
         if ($self->child($p->{process})) {
@@ -203,18 +265,19 @@ sub scan_ps {
             push @style, $p;
         }
         elsif ($p->{process} =~ /stylehouse\.pl/) {
-            $p->{name} = "stylehouse";
-            $p->{mess} = "???";
+            $p->{name} = "stylehouse?";
+            $p->{mess} = "? ? ?";
+            push @style, $p;
         }
         else {
             say "Codo proc lookaround Ignoring not-quite-styley thing ".ddump($p);
             next;
         }
     }
+
     for my $p (@style) {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
-            say ddump($p);
             $tuxt->{htmlval} = 1;
             $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span>'
                 .'<span style="color: blue; left: 40px;">'.($p->{name}||"???").'</span><br/>'

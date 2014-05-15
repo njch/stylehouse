@@ -93,7 +93,7 @@ sub new {
         return 0;
     });
         
-    write_file("proc/start", {append => 1}, $self->{toexec}."\n");
+    write_file("proc/start", {append => 1}, $self->{toexec});
     sleep 1;
 
     return $self;

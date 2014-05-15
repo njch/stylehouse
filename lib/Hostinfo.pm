@@ -278,12 +278,11 @@ sub get_view {
     my $views = $self->get('screen/views/'.$divid)
         || $self->provision_view($divid);
 
-    my $view = new View($self->intro);
+    my $view = new View($self->intro, $divid); # TODO could know about div style?
 
     $self->set("$view $this" => 1); # same as:
     $view->owner($this);
 
-    $view->divid($divid);
     $self->screenthing($view);
 
     # add together
@@ -312,7 +311,7 @@ sub app_menu_hooks {
             my $self = shift;
             my $h = $self->hooks;
             my $i = $h->{i} ||= 0;
-            say "\n\n\nDoing menu in $self for $self->{view}->{id}, tuxts=".@{$self->tuxts};
+            say "Doing menu in $self for $self->{view}->{id}, tuxts=".@{$self->tuxts};
 
             for my $s (@{$self->tuxts}) {
                 my $object = $s->{value};
