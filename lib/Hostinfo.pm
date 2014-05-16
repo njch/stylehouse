@@ -249,15 +249,13 @@ sub provision_view {
     my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
     $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
 
-    unless ($self->get('screen/views/'.$divid.'/floozy')) {
-        $self->send("\$('body').append('$div');");
-    }
-
-    unless ($self->get('screen/views/'.$divid)) {
-        $self->set('screen/views/'.$divid, []);
-    }
     $self->set('screen/views/'.$divid.'/html', $div);
     $self->set('screen/views/'.$divid.'/styles', $styles);
+
+    unless ($self->get('screen/views/'.$divid.'/floozy')) { # gets inserted into #flood in flood()
+        $self->send("\$('body').append('".$div.");");
+    }
+
     $self->get('screen/views/'.$divid);
 }
 
@@ -592,7 +590,9 @@ sub flood {
     my $from = join ", ", (caller(1))[0,3,2];
 
     $view ||= $self->default_floozy();
-# move $view to the top (under flood menu)
+    
+    # move $view to the top (under flood menu)
+    $self->send("\$('body').append('".$div.");");
 
     $thing = ddump($thing) unless ref \$thing eq "SCALAR";
     if (ref \$thing eq "SCALAR") {
