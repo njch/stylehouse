@@ -109,7 +109,7 @@ sub ddump {
 
 sub appear {
     my $self = shift;
-    my $view = $self->{ghost}->{travel}->{owner};
+    my $view = shift || $self->way_out;
     ref $view eq "View" || die " $view not View";
     return new Texty($self->hostinfo->intro, $view, $self->{script}, {
         spatialise => sub { { space => 40, top => 50 } },
@@ -132,6 +132,13 @@ sub appear {
     })
 }
 
+sub way_out {
+    my $self = shift;
+    if (my $T = $self->{ghost}->{travel}) {
+        # is connected to the..?
+    }
+    die "no way out";
+}
 
 sub event {
     my $self = shift;

@@ -48,11 +48,11 @@ sub new {
     }
 
     my $hi = $self->{hostinfo};
-    $hi->make_flooz($self, codostate => "width:58%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
+    $hi->create_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
     
-    $hi->make_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+    $hi->create_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $hi->make_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
+    $hi->create_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -134,6 +134,7 @@ sub init_state {
 
     my $i = 0;
     for my $l (`cat proc/list`) {
+        next unless $l =~ /\S/;
         if ($l =~ /(\d+): (.+)/) {
             $l_p->{$1} = {
                 pid => $1,
@@ -199,7 +200,7 @@ sub init_state {
 
 
     $self->{codostate}->flooz($s);
-    say "Thy state:\n".anydump($s);
+    #say "Thy state:\n".anydump($s);
     my @style;
 
     if (0) {

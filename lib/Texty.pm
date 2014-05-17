@@ -74,6 +74,7 @@ sub replace {
     return $self->view->takeover($self->htmls, $append);
 }
 sub spurt { # semi dupe of replace since they do hooks through to takeover...
+    # supposed to add a few more lines, percolate them through to the screen with minimal effort
     my $self = shift;
     my $lines = shift;
     my $hooks = shift;

@@ -104,7 +104,8 @@ sub god_connects {
     push @$gods, $new;
 
     $self->who($new);
-    $self->review();
+
+# handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
 
 sub god_enters {
@@ -159,15 +160,6 @@ sub dkeys {
     return map { "$_ => ".(ref $data->{$_}) } keys %$data;
 }
 
-sub load_views { # state from client
-    my $self = shift;
-    my @divids = shift;
-    for my $divid (@divids) {
-        # if view exists in Hostinfo it will only resend its drawing
-        $self->provision_view($divid);
-    }
-}
-
 sub view_incharge {
     my $self = shift;
     my $view = shift;
@@ -175,18 +167,20 @@ sub view_incharge {
     $self->set('screen/views/'.$view->divid.'/top', $view);
 }
 
-sub review {
+sub reload_views {
     my $self = shift;
+    # state from client?
 
     my $tops = $self->grep('screen/views/.+/top');
     my @tops = values %$tops;
-    return say "nothing to ->review" unless @tops;
     say "resurrecting: ".anydump([keys %$tops]);
-    for my $div (qw{menu hodu view hodi}) {
-        my ($view) = grep { $_->divid eq $div } @tops;
-        next unless $view;
-        $self->provision_view($view->divid);
-        $view->review;
+
+    my ($ploked, $floozal) = ([], []);
+    for my $view (@tops) {
+        push @{ $view->{floozal} ? $floozal : $ploked }, $view;
+    }
+    for my $view (@$ploked, @$floozal) { # is divid its after
+        $view->takeover();
     }
 }
  
@@ -228,96 +222,6 @@ sub screenthing {
     push @$things, $thing;
 }
 
-my $div_attr = { # these go somewhere magical and together, like always
-    menu => "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
-    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
-    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
-    view => "width:35%; background: #c9f; height: 500px;",
-    hodi => "width:30%; background: #09f; height: 500px;",
-    babs => "width:55%; background: #09f; height: 300px;",
-    flood => "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;",
-};
-
-# build its own div or something
-sub provision_view {
-    my $self = shift;
-    my $divid = shift;
-    my $styles = shift || $div_attr->{$divid} || die "wtf";
-
-    $styles .= "margin: 0.3em;";
-
-    my $div = '<div id="'.$divid.'" class="view" style="'.$styles.' "></div>';
-    $div =~ s/class="view"/class="menu"/ if $divid eq "menu";
-
-    $self->set('screen/views/'.$divid.'/html', $div);
-    $self->set('screen/views/'.$divid.'/styles', $styles);
-
-    unless ($self->get('screen/views/'.$divid.'/floozy')) { # gets inserted into #flood in flood()
-        $self->send("\$('body').append('".$div.");");
-    }
-
-    $self->get('screen/views/'.$divid);
-}
-
-sub make_flooz {
-    my $self = shift;
-    $self->set('screen/views/'.$_[1].'/floozy', 1);
-    my $v = $self->make_view(@_);
-    $self->flood_add($v);
-}
-
-sub make_view {
-    my $self = shift;
-    my $this = shift;
-    my $divid = shift;
-    my $style = shift;
-
-    $self->provision_view($divid, $style);
-    $this->{$divid} = $self->hostinfo->get_view($this, $divid);
-}
-
-sub get_view {
-    my $self = shift;
-    my $this = shift;
-    my $viewid = shift;
-    my $alias = shift;
-    ($alias, $viewid) = ($viewid, $alias) if $alias; # TODO rip this out
-
-    my ($divid) = $viewid =~ /^(.+)_?/;
-
-    my $views = $self->get('screen/views/'.$divid)
-        || $self->provision_view($divid);
-
-    my $view = new View($self->intro, $divid); # TODO could know about div style?
-
-    $self->set("$view $this" => 1); # same as:
-    $view->owner($this);
-
-    $self->screenthing($view);
-
-    # add together
-    push @$views, $view;
-    if (@$views == 1) {
-        $self->view_incharge($view);
-    }
-
-    # store it on the App
-    my $oname = defined $this ? ref $this : "undef";
-    if ($this->can("ports")) {
-        unless ($this->ports) {
-            $this->ports({});
-        }
-        $this->ports->{$viewid} = $view;
-        $this->ports->{$alias} = $view if $alias;
-    }
-
-    # AND maybe label it
-    unless ($view->floozy) {
-        $view->wipehtml();
-    }
-
-    return $view;
-}
 
 sub app_menu_hooks {
     my $self = shift;
@@ -376,7 +280,10 @@ sub update_app_menu {
     my $self = shift;
 
     $self->{appmenu} ||= do {
-        my $am = $self->get_view($self, "menu");
+        my $am = $self->create_view($self, "menu",
+            "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
+            before => "#body div",
+        );
         $am->menu->text->hooks($self->app_menu_hooks());
         $am;
     };
@@ -394,7 +301,7 @@ sub update_app_menu {
         }
     }
     
-    $self->{appmenu}->{name} = "appmenu";
+    $self->{appmenu}->{extra_label} = "appmenu";
     $self->{appmenu}->menu->replace([@items]);
 }
 
@@ -517,6 +424,220 @@ sub arrive {
     my $self = shift;
 }
 
+
+my $div_styley = { # these go somewhere magical and together, like always
+    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
+    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
+    view => "width:35%; background: #c9f; height: 500px;",
+    hodi => "width:30%; background: #09f; height: 500px;",
+    babs => "width:55%; background: #09f; height: 300px;",
+};
+
+sub get_view { # TODO rip this out
+    my $self = shift;
+    my $this = shift;
+    my $viewid = shift;
+    my $alias = shift;
+    ($alias, $viewid) = ($viewid, $alias) if $alias;
+
+    my ($divid) = $viewid =~ /^(.+)_?/;
+
+    my $view = $self->create_view($this, $divid, undef, "not-on-object");
+
+    if ($this->can("ports")) {
+        unless ($this->ports) {
+            $this->ports({});
+        }
+        $this->ports->{$viewid} = $view;
+        $this->ports->{$alias} = $view if $alias;
+    }
+}
+
+sub accum {
+    my $self = shift;
+    my $ere = shift;
+    my $at = shift;
+    $self->get($ere) || $self->set($ere, []);
+    push @{$self->get($ere)}, $at;
+}
+
+sub create_view {
+    my $self = shift;
+    my $this = shift;
+    my $divid = shift;
+    my $style = shift;
+    my $attach = shift;
+    my $where = shift;
+
+    if (!$style) { # TODO rip out after get_view?
+        $style = $div_styley->{$divid} || do{use Carp;confess};
+    }
+
+    my $div = '<div id="'.$divid.'" class="view" style="'.$style.' "></div>';
+
+    $self->set('screen/views/'.$divid.'/div', $div);
+    $self->set('screen/views/'.$divid.'/style', $style); # Tractorise
+
+    say "Creating View -> $divid";
+    my $view = new View($self->intro, $divid);
+
+    if ($attach && $attach eq "after") {
+        $view->{floozal} = $where;
+    }
+
+    my $exists = $self->get('screen/views/'.$divid);
+    say "View already exists" if $exists;
+    $DB::single = $divid eq "menu";
+
+    $self->accum('screen/views/'.$divid, $view);
+
+    say "Placing $this ->{$divid}";
+    $this->{$divid} = $view unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
+    $self->set("$this $view" => 1); # same as:
+    $view->owner($this);
+
+    $self->screenthing($view);
+
+    $self->view_incharge($view);
+
+    if ($exists) {
+        say " REMOVING $divid";
+        $self->send("\$('#".$divid."').remove()");
+    }
+
+    say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
+
+    if ($attach && $attach eq "after") {
+        $self->send("\$('#".$where."').after('$div');");
+    }
+    elsif ($attach && $attach eq "before") {
+        if ($where =~ /^\w+$/) {
+            $where = "#".$where;
+        }
+        $self->send("\$('$where').before('$div');");
+        
+    }
+    else {
+        $where ||= "body";
+        $self->send("\$('#$where').append('$div');");
+    }
+
+    $view->wipehtml(); # + label
+
+    return $view;
+}
+
+sub create_floozy {
+    my $self = shift;
+    my $this = shift;
+    my $divid = shift;
+    if ($self->get('screen/views/'.$divid)) { say "\n\n ! Floozie CLOBBER on $divid\n"; $self->send("\$('#".$divid."').remove();"); }
+    my $style = shift;
+    my $attach = shift;
+    my $where = shift;
+
+    $attach ||= "after";
+    $where ||= $self->{flood};
+    if ($attach eq "after") {
+        $where = $self->{flood}->{ceiling};
+    }
+    $where = $where->{divid};
+    
+    my $floozy = $self->create_view(
+        $this, $divid, $style,
+        $attach => $where,
+    );
+
+    return $floozy;
+}
+
+sub init_flood {
+    my $self = shift;
+
+    my $f = $self->{flood} = $self->create_view($self, "flood",
+        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;"
+    );
+    
+    say "\n\nFlood is: $f->{divid}";
+
+    my $fm = $self->{flood_ceiling} = $self->create_floozy($self, "flood_ceiling",
+        "width: ".420*1.14."px; background: #301a30; color: #afc; height: 60px; font-weight: bold;",
+        append => $f,
+    );
+    $f->{ceiling} = $fm;
+
+    $fm->text([], {
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            for my $s (@{$self->tuxts}) {
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+            }
+        },
+        spatialise => sub {
+            { top => 1, left => 1, horizontal => 40, wrap_at => 1200 }
+        },
+    });
+
+    $fm->text->replace([("FLOOD")x7]);
+
+
+    return $f
+}
+
+sub default_floozy {
+    my $self = shift;
+    my $flood = shift;
+    return $self->{default_floozy} ||=
+        $self->create_floozy($self, "default_floozy",
+            "width:".420*1.1.";  background: #44ag30; color: #afc; height: 60px; font-weight: bold;");
+}
+
+# grep '.-.travel' -R * # like an art student game
+sub flood {
+    my $self = shift;
+    my $thing = shift;
+    my $floozy = shift;
+
+    $self->init_flood() unless $self->{flood};
+
+    $floozy ||= $self->default_floozy($self->{flood});
+    say "floozy: $floozy->{divid}";
+
+    my $from = join ", ", (caller(1))[0,3,2];
+    say "flood from: $from";
+    $floozy->{extra_label} = $from;
+
+
+    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
+    if (ref \$thing eq "SCALAR") {
+        my $lines = [split "\n", $thing];
+        my $texty = $floozy->text;
+
+        $texty->replace($lines);
+
+        #$texty->{max_height} ||= 1000;
+        $texty->fit_div;
+    }
+    elsif (0) {
+        my $wormhole;
+                                        eval { $wormhole = $floozy->travel($thing); };
+        if ($@) {
+            $self->flood(
+                "flood travel error: $@\n"
+                .ddump($floozy->travel));
+        }
+        else {
+                                            eval { $wormhole->appear($floozy) };
+            if ($@) {
+                $self->flood(
+                    "flood appear error: $@\n"
+                    .ddump($floozy->travel));
+            }
+        }
+    }
+}
+
 sub error {
     my $self = shift;
     my $e;
@@ -539,80 +660,6 @@ sub info {
     }
     say "\nInfo: ".ddump($e);
     $self->flood($e);
-}
-
-sub make_floodzone {
-    my $self = shift;
-    die "never";
-}
-
-sub floozy_add {
-    my $self = shift;
-    my $view = shift;
-    my $flood = $self->{flood} || die;
-
-    $self->set('floozies/'.$divid, $view);
-
-    $self->send("\$('#".$flood->{divid}."').append('".$self->get('screen/views/'.$view->{divid}.'/html')."');");
-
-    $view->wipehtml(); # labels itself?
-    
-    # also move to the top of the stack or so when floozy floods (lingfo)
-}
-
-sub floozi_add {
-    my $self = shift;
-    my $view = shift;
-    my $what = shift;
-
-    # we should know if anything changes in $what and etc
-    $self->set('floozi/'.$view->{divid}, $what); # should join up floozies (Views) by divid and/or id or something
-}
-
-sub init_flood {
-    my $self = shift;
-    $self->{flood} = $self->get_view($self, "flood"); # flood menu
-}
-
-sub default_floozy {
-    my $self = shift;
-    return $self->make_view($self, "default_floozy", # this $divid will clobber itself a bit, in life it travels
-        "width:".420*1.1.";  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
-}
-
-# grep '.-.travel' -R * # like an art student game
-sub flood {
-    my $self = shift;
-    $self->{flood} || $self->init_flood();
-    my $thing = shift;
-    my $view = shift;
-
-    my $from = join ", ", (caller(1))[0,3,2];
-
-    $view ||= $self->default_floozy();
-    
-    # move $view to the top (under flood menu)
-    $self->send("\$('body').append('".$div.");");
-
-    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
-    if (ref \$thing eq "SCALAR") {
-        $flood->text->replace([split "\n", $thing]); # poke $from
-    }
-    elsif ($flood) {
-        my $wormhole;
-                                        eval { $wormhole = $flood->travel($thing); };
-
-        if ($@) {
-            $self->flood("flood travel error: $@\n".ddump($flood->travel));
-        }
-        else {
-                                            eval { $wormhole->appear() };
-
-            if ($@) {
-                $self->flood("flood appear error: $@\n".ddump($flood->travel));
-            }
-        }
-    }
 }
 
 use YAML::Syck;

@@ -8,7 +8,8 @@ function connect () {
     eval(event.data);
   };
   ws.onopen = function(e) {
-      fail = 0;
+    fail = 0;
+    $('#body').removeClass('dead');
   }
   ws.onclose = function(e) {
      $(window).off('click', clickyhand);

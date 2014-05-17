@@ -45,18 +45,17 @@ sub travel {
     return $self->{travel};
 }
 
-# we don't quite lose this thing
+# Tractorise this thing
 sub flooz {
     my $self = shift;
     my $what = shift;
 
-    $self->{hostinfo}->floozi_add($self, $what);
+    if (!$self->{floozal}) {
+        die "not floozal: ".$self->label;
+    }
 
-    $self->fluz();
+    $self->{hostinfo}->flood($what => $self);
 }
-sub fluz { $_[0]->flood($_[0]) }
-
-    
 
 sub nah {
     my $self = shift;
@@ -71,18 +70,13 @@ sub resume {
 
 sub label {
     my $self = shift;
-    return "$self->owner $self->{divid}";
-}
-
-sub floozy {
-    my $self = shift;
-    return $self->{hostinfo}->get('screen/views/'.$self->{divid}.'/floozy');
+    return "$self->owner $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
 }
 
 sub default_html {
     my $self = shift;
     my $html = "";
-    if ($self->floozy) {
+    if ($self->{floozal}) {
         $html .= '<span class="'.$self->{id}
             .'" style="top 1px; position: relative; right: 1px; align: right;">'
             .$self->label.'</span>';
@@ -103,8 +97,8 @@ sub html {
 
 sub wipehtml {
     my $self = shift;
+    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove();") if $self->html;
     $self->html("");
-    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove()") if $self->{id};
     1;
 }
 
@@ -125,7 +119,11 @@ sub takeover {
     my $append = shift;
     my $tempness;
 
-    if ($append) {
+    if (!defined $html) {
+        say " $self->{divid} reload,";
+        $html = $self->html;
+    }
+    elsif ($append) {
         if ($append eq "temp") {
             my $tempid = $self->{id}."-temp";
             $self->hostinfo->send( # create a -temp span container
@@ -164,9 +162,13 @@ sub append_spans {
     my $divid = shift;
     my $html = shift;
 
-    return say "no html" unless $html;
+    return say "\n\nno html\n\n" unless $html;
 
-    if (length($html) > 30000) {
+    if (length($html) < 30000) {
+        $html =~ s/'/\\'/;
+        $self->hostinfo->send("  \$('#$divid').append('$html');");
+    }
+    else {
         die "this is probably fucked";
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
 
@@ -193,10 +195,6 @@ sub append_spans {
             $self->hostinfo->send("  \$('#$divid').append('$batch');");
             usleep 10000;
         }
-    }
-    else {
-        $html =~ s/'/\\'/;
-        $self->hostinfo->send("  \$('#$divid').append('$html');");
     }
 }
 

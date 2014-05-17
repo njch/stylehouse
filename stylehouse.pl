@@ -161,7 +161,7 @@ $hands = {
     whatsthere => [ sub {
         $hostinfo->send("ws.reply({whatsthere: 'too hard'}); \$('body div').remove();");
     }, sub {
-        $hostinfo->load_views(qw{menu hodu view hodi});
+        $hostinfo->reload_views();
     } ],
     clickyhand => [ sub {
              $hostinfo->send("\$(window).on('click', clickyhand);");

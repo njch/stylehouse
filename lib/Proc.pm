@@ -52,7 +52,7 @@ sub new {
     die "no procserv" unless grep /procserv.pl/, `ps faux`;
 
 
-    $self->{out} = $self->hostinfo->get_view($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
+    $self->{out} = $self->hostinfo->create_floozy($self, "hodu"); # for printing STDERR, STDOUT: runtime splurge space
 
     $self->{out}->text([],
         { tuxts_to_htmls => sub {
