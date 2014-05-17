@@ -39,7 +39,7 @@ WebSocket.prototype.reply = function reply (stuff) {
 function clickyhand (event) {
     var data = {
         id: event.target.id,
-        value: event.target.innerText,
+        value: event.target.id ? event.target.innerText : null,
         type: event.type,
         shiftKey: 0+event.shiftKey,
         ctrlKey: 0+event.ctrlKey,

@@ -282,7 +282,7 @@ sub update_app_menu {
     unless ($self->{appmenu}) {
         $self->create_view($self, "appmenu",
             "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
-            before => "#body :first-child",
+            before => "#body",
             "menu",
         )->menu->text->hooks($self->app_menu_hooks());
     }
@@ -486,8 +486,7 @@ sub create_view {
     }
 
     my $exists = $self->get('screen/views/'.$divid);
-    say "View already exists" if $exists;
-    $DB::single = $divid eq "menu";
+    say "View already exists\n\n" if $exists;
 
     $self->accum('screen/views/'.$divid, $view);
 
@@ -500,26 +499,24 @@ sub create_view {
 
     $self->view_incharge($view);
 
-    if ($exists) {
-        say "\n\n\n REMOVING $divid\n\n\n";
-        $self->send("\$('#".$divid."').remove()");
-    }
-
     say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
 
+    $where ||= "body";
+    $where = "#".$where if $where =~ /^\w+$/;
+    $attach ||= "append";
+
     if ($attach && $attach eq "after") {
-        $self->send("\$('#".$where."').after('$div');");
+        $self->send("\$('$where :last').after('$div');");
     }
     elsif ($attach && $attach eq "before") {
-        if ($where =~ /^\w+$/) {
-            $where = "#".$where;
-        }
-        $self->send("\$('$where').before('$div');");
+        $self->send("\$('$where :first').before('$div');");
         
     }
+    elsif ($attach && $attach eq "replace") {
+        $self->send("\$('$where').replaceWith('$div');");
+    }
     else {
-        $where ||= "body";
-        $self->send("\$('#$where').append('$div');");
+        $self->send("\$('$where').append('$div');");
     }
 
     $view->wipehtml(); # + label
@@ -531,17 +528,10 @@ sub create_floozy {
     my $self = shift;
     my $this = shift;
     my $divid = shift;
-    if ($self->get('screen/views/'.$divid)) { say "\n\n ! Floozie CLOBBER on $divid\n"; $self->send("\$('#".$divid."').remove();"); }
     my $style = shift;
-    my $attach = shift;
-    my $where = shift;
-
-    $attach ||= "after";
-    $where ||= $self->{flood};
-    if ($attach eq "after") {
-        $where = $self->{flood}->{ceiling};
-    }
-    $where = $where->{divid};
+    my $attach = shift || "after";
+    my $where = shift || $self->{flood}->{ceiling};
+    $where = $where->{divid} if ref $where;
     
     my $floozy = $self->create_view(
         $this, $divid, $style,
@@ -581,16 +571,22 @@ sub init_flood {
 
     $fm->text->replace([("FLOOD")x7]);
 
+    $self->create_floozy($self, "floodzy",
+        "width:420;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
+    );
+    $self->create_floozy($self, "hi_error",
+        "width:420;  background: #ff9988; color: #030; height: 100px; font-weight: bold;",
+    );
+    $self->create_floozy($self, "hi_info",
+        "width:420;  background: #afc; color: #44ag39; height: 100px; font-weight: bold;",
+    );
 
     return $f
 }
 
-sub default_floozy {
+sub route_floozy {
     my $self = shift;
-    my $flood = shift;
-    return $self->{default_floozy} ||=
-        $self->create_floozy($self, "default_floozy",
-            "width:".420*1.1.";  background: #44ag30; color: #afc; height: 60px; font-weight: bold;");
+    return $self->{floodzy};
 }
 
 # grep '.-.travel' -R * # like an art student game
@@ -604,8 +600,7 @@ sub flood {
     my $from = join ", ", (caller(1))[0,3,2];
     say "flood from: $from";
 
-
-    $floozy ||= $self->default_floozy($self->{flood});
+    $floozy ||= $self->route_floozy($from);
     say "floozy: $floozy->{divid}";
 
     $floozy->{extra_label} = $from;
