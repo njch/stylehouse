@@ -279,14 +279,13 @@ sub app_menu_hooks {
 sub update_app_menu {
     my $self = shift;
 
-    $self->{appmenu} ||= do {
-        my $am = $self->create_view($self, "menu",
+    unless ($self->{appmenu}) {
+        $self->create_view($self, "appmenu",
             "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
-            before => "#body div",
-        );
-        $am->menu->text->hooks($self->app_menu_hooks());
-        $am;
-    };
+            before => "#body :first-child",
+            "menu",
+        )->menu->text->hooks($self->app_menu_hooks());
+    }
     
     my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
     my @items;
@@ -468,12 +467,13 @@ sub create_view {
     my $style = shift;
     my $attach = shift;
     my $where = shift;
+    my $class = shift || "view";
 
     if (!$style) { # TODO rip out after get_view?
         $style = $div_styley->{$divid} || do{use Carp;confess};
     }
 
-    my $div = '<div id="'.$divid.'" class="view" style="'.$style.' "></div>';
+    my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' "></div>';
 
     $self->set('screen/views/'.$divid.'/div', $div);
     $self->set('screen/views/'.$divid.'/style', $style); # Tractorise
@@ -501,7 +501,7 @@ sub create_view {
     $self->view_incharge($view);
 
     if ($exists) {
-        say " REMOVING $divid";
+        say "\n\n\n REMOVING $divid\n\n\n";
         $self->send("\$('#".$divid."').remove()");
     }
 
@@ -601,11 +601,13 @@ sub flood {
 
     $self->init_flood() unless $self->{flood};
 
+    my $from = join ", ", (caller(1))[0,3,2];
+    say "flood from: $from";
+
+
     $floozy ||= $self->default_floozy($self->{flood});
     say "floozy: $floozy->{divid}";
 
-    my $from = join ", ", (caller(1))[0,3,2];
-    say "flood from: $from";
     $floozy->{extra_label} = $from;
 
 

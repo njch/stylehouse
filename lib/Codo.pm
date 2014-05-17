@@ -112,7 +112,7 @@ sub child {
     }
 }
 
-sub init_state {
+sub init_state { # {{{
     my $self = shift;
 
     my $ch_p = {};
@@ -197,13 +197,13 @@ sub init_state {
     }
 
 
-
+# }}}
 
     $self->{codostate}->flooz($s);
     #say "Thy state:\n".anydump($s);
-    my @style;
 
-    if (0) {
+    if (0) { # proc form # {{{
+    my @style;
     for my $p (@style) {
         $p->{_tuxtform} = sub {
             my ($p, $tuxt) = @_;
@@ -223,7 +223,7 @@ sub init_state {
     $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
     $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
     $cst->replace([@style]);
-    }
+    } # }}}
 }
 
 sub spawn_child {
@@ -279,8 +279,8 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
-    my $codon_menu_texty = $self->ports->{codonmenu}->text;
-    my $codon_texty =      $self->ports->{codon}->text;
+    my $codon_menu_texty = $self->{codonmenu}->text;
+    my $codon_texty =      $self->{codon}->text;
 
 # Codo-View-fc6272d1-Codo-Texty-c417836b-0 -> flood proc/ps/whatever data
 
