@@ -344,8 +344,6 @@ __DATA__
         <link  href="stylehouse.css" rel="stylesheet">
         <script src="stylehouse.js"></script>
     </head>
-    <body id="body" style="background: #ab6; font-family: monospace">
+    <body id="body">
     </body>
 </html>
-
-
