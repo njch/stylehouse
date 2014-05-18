@@ -5,6 +5,7 @@ use IO::Async::Loop::Mojo;
 use IO::Async::Stream;
 use UUID;
 use Scalar::Util 'weaken';
+use Time::HiRes 'gettimeofday';
 use View;
 
 my $data = {};
@@ -506,7 +507,7 @@ sub create_view {
     $attach ||= "append";
 
     if ($attach && $attach eq "after") {
-        $self->send("\$('$where :last').after('$div');");
+        $self->send("\$('$where').after('$div');");
     }
     elsif ($attach && $attach eq "before") {
         $self->send("\$('$where :first').before('$div');");
@@ -550,10 +551,15 @@ sub init_flood {
     
     say "\n\nFlood is: $f->{divid}";
 
-    my $fm = $self->{flood_ceiling} = $self->create_floozy($self, "flood_ceiling",
-        "width: ".420*1.14."px; background: #301a30; color: #afc; height: 60px; font-weight: bold;",
+    $self->create_floozy($self, "flood_ceiling_pad",
+        "width: ".420*1.14."px; height: 60px; opacity: 0;",
         append => $f,
     );
+    my $fm = $self->{flood_ceiling} = $self->create_floozy($self, "flood_ceiling",
+        "width: ".420*1.14."px; background: #301a30; color: #afc; height: 60px; font-weight: bold; position: fixed;",
+        append => $f,
+    );
+
     $f->{ceiling} = $fm;
 
     $fm->text([], {
@@ -572,13 +578,13 @@ sub init_flood {
     $fm->text->replace([("FLOOD")x7]);
 
     $self->create_floozy($self, "floodzy",
-        "width:420;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
+        "width:420px;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
     );
     $self->create_floozy($self, "hi_error",
-        "width:420;  background: #ff9988; color: #030; height: 100px; font-weight: bold;",
+        "width:420px;  background: #ff9988; color: #030; height: 420px; font-weight: bold;",
     );
     $self->create_floozy($self, "hi_info",
-        "width:420;  background: #afc; color: #44ag39; height: 100px; font-weight: bold;",
+        "width:420px;  background: #afc; color: #44ag39; height: 420px; font-weight: bold;",
     );
 
     return $f
@@ -635,29 +641,61 @@ sub flood {
     }
 }
 
-sub error {
+sub hitime {
     my $self = shift;
+    return join ".", time, (gettimeofday())[1];
+}
+
+sub enlogform {
+    my $self = shift;
+
     my $e;
     eval { $e = {@_}; };
     unless ($e) {
         $@ = "";
         $e = [@_];
     }
-    say "\nError: ".ddump($e);
-    $self->flood($e);
+
+    my $from = [];
+    my $back = 5;
+    for my $b (1..$back) {
+        $b += 1; # error + this sub
+        push @$from, join ", ", (caller($b))[0,3,2]; # package, subroutine, line
+    }
+
+    return [ hitime(), $from, $e ];
 }
 
 sub info {
     my $self = shift;
-    my $e;
-    eval { $e = {@_}; };
-    unless ($e) {
-        $@ = "";
-        $e = [@_];
-    }
-    say "\nInfo: ".ddump($e);
-    $self->flood($e);
+    my $info = $self->enlogform(@_);
+    say "\n   infotangent! ".ind("      ", ddump($info->[1]));
+    say ind("    ", ddump($info->[2]));
+    $self->throwlog("errors", "hi_info", $info);
 }
+sub error {
+    my $self = shift;
+    my $error = $self->enlogform(@_);
+    say "\n   infotangent! ".ind("    ", ddump($error->[1]));
+    say "Error reads: ".ddump($error->[2]);
+    $self->throwlog("errors", "hi_error", $error);
+}
+
+sub throwlog {
+    my $self = shift;
+    my $accuwhere = shift;
+    my $tryappenddivid = shift;
+    my $error = shift;
+
+    $self->accum($accuwhere, $error);
+
+    if (my $fl = $self->get("screen/view/$tryappenddivid")) {
+        $fl->text->append([ split "\n", ddump($error)]);
+    }
+}
+
+sub ind { "$_[0]".join "$_[0]\n", split "\n", $_[1] }
+
 
 use YAML::Syck;
 sub ddump {

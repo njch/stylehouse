@@ -76,6 +76,7 @@ sub label {
 sub default_html {
     my $self = shift;
     my $html = "";
+    say "\n\n$self->{divid} is ".($self->{floozal}?"FLOOZAL!":"not fl");
     if ($self->{floozal}) {
         $html .= '<span class="'.$self->{id}
             .'" style="top 1px; position: relative; right: 1px; align: right;">'
