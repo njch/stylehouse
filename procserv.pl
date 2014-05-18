@@ -31,6 +31,7 @@ while (1) {
             print "forked $pid\n";
         }
         else {
+            my ($styleparent, $command) = $command =~ /^(\d+): (.+)$/;
             append("$$: $command\n");
             chomp($command);
             local $|;

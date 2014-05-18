@@ -312,7 +312,7 @@ sub random_colour_background {
 
 sub event {
     my $self = shift;
-    my $menuv = $self->ports->{menu};
+    my $menuv = $self->{appmenu};
     say "Hostinfo passing probable menu action to $menuv->{id} $menuv->{menu}";
     $menuv->{menu}->event(@_);
 }

@@ -92,8 +92,10 @@ sub new {
         }
         return 0;
     });
-        
-    write_file("proc/start", {append => 1}, $self->{toexec});
+    my $exec = $self->{toexec};
+    $exec =~ s/\n$//s;
+    $exec = "$$: $exec\n";
+    write_file("proc/start", {append => 1}, $exec);
     sleep 1;
 
     return $self;
