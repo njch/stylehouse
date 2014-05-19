@@ -282,6 +282,10 @@ sub id_to_tuxt {
 
 sub tuxts_to_htmls {
     my $self = shift;
+    
+    my $from = join ", ", (caller(1))[0,3,2];
+    #say "tuxts_to_htmls from: $from";
+
     if ($self->{hooks}->{tuxts_to_htmls}) {
         $self->{hooks}->{tuxts_to_htmls}->($self);
     }

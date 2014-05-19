@@ -43,9 +43,16 @@ sub new {
     shift->($self);
 
     my $style = $self->{hostinfo}->get("style");
-    if ($style eq "stylehouse" && -e "../styleshed") {
-        $self->{code_dir} = "../styleshed/"; # default .
+    my $codo_unto = {
+        stylehouse => "styleshed",
+        styleshed => "stylebucky",
+    };
+    if (my $unto = $codo_unto->{$style}) {
+        my $dir = "../$unto/";
+        -d $dir || die "Cannot see $dir (am $style)";
+        $self->{code_dir} = $dir;
     }
+    else { die "no such style: $style" }
 
     my $hi = $self->{hostinfo};
     $hi->create_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
@@ -284,6 +291,12 @@ sub event {
 
 # Codo-View-fc6272d1-Codo-Texty-c417836b-0 -> flood proc/ps/whatever data
 
+    $self->{hostinfo}->info(
+        menu => $codon_menu_texty->{divid},
+        Codon => $codon_texty->{divid},
+        '->' => $id,
+    );
+
     # CODE ACTION
     if ($id =~ /-ta$/) {
         return;
@@ -321,6 +334,9 @@ sub event {
         if (ref $tuxt->{origin} eq "Codon") {
             return $self->load_codon($tuxt->{origin});
         }
+        else {
+            return $self->hostinfo->error("Codo event 400000000000000000000000000");
+        }
     }
     else {
         return $self->hostinfo->error("Codo event 404 for $id" => $event);
@@ -335,6 +351,7 @@ sub init_codons {
     my @codefiles = $self->list_of_codefiles();
 
     for my $cf (@codefiles) {
+        my $filename = $self->{code_dir}.$cf;
         my $name;
         ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
         ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
@@ -343,7 +360,7 @@ sub init_codons {
         my $codon = $self->codon_by_name($name);
         my $isnew = 1 if !$codon;
 
-        my $mtime = (stat $cf)[9];
+        my $mtime = (stat $filename)[9];
 
             if ($isnew) {
                 $codon = new Codon($self->hostinfo->intro, {
@@ -393,7 +410,33 @@ sub load_codon {
     my $self = shift;
     my $codon = shift;
     $codon = $self->codon_by_name($codon) unless ref $codon;
-    say "Load Codon for $codon->{name}";
+
+    if (my $oldon = $self->{the_codon}) {
+        if (!$oldon->{Going}) {
+            $self->{hostinfo}->info(
+                "Load Codon" => $codon,
+                "Over" => $oldon,
+            );
+            $oldon->unload();
+            $oldon->{Going} = $self->hostinfo->hitime;
+        }
+        elsif ($oldon->{Gone}) {
+            $self->hostinfo->info(
+                "$oldon->{name} unloaded",
+                ( delete($oldon->{Gone}) - delete($oldon->{Going}) )
+            );
+            $self->{the_codon} = undef;
+# TODO open as one big chunk if old eq new
+            return $self->load_codon($codon->{name}); # way out
+        }
+        Mojo::IOLoop->timer(1, sub {
+            $self->load_codon($codon->{name}); # way in
+            return 0;
+        });
+    }
+
+    $self->{hostinfo}->info({"Load Codon" => $codon});
+
     die "Can't load Codon" unless $codon;
 
     $self->{the_codon} = $codon;

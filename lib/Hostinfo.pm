@@ -174,7 +174,9 @@ sub reload_views {
 
     my $tops = $self->grep('screen/views/.+/top');
     my @tops = values %$tops;
-    say "resurrecting: ".anydump([keys %$tops]);
+    my @names = keys %$tops;
+    return say " no existing views" unless @names;
+    say " resurrecting views: ".ddump(\@names);
 
     my ($ploked, $floozal) = ([], []);
     for my $view (@tops) {
@@ -227,11 +229,10 @@ sub screenthing {
 sub app_menu_hooks {
     my $self = shift;
     return {
-        tuxts_to_htmls => sub {
+        tuxts_to_htmls => sub { # TODO leaks several \n to STDOUT somewhere... bisect this whole business some day
             my $self = shift;
             my $h = $self->hooks;
             my $i = $h->{i} ||= 0;
-            say "Doing menu in $self for $self->{view}->{id}, tuxts=".@{$self->tuxts};
 
             for my $s (@{$self->tuxts}) {
                 my $object = $s->{value};
@@ -479,7 +480,7 @@ sub create_view {
     $self->set('screen/views/'.$divid.'/div', $div);
     $self->set('screen/views/'.$divid.'/style', $style); # Tractorise
 
-    say "Creating View -> $divid";
+    #say "Creating View -> $divid";
     my $view = new View($self->intro, $divid);
 
     if ($attach && $attach eq "after") {
@@ -487,11 +488,11 @@ sub create_view {
     }
 
     my $exists = $self->get('screen/views/'.$divid);
-    say "View already exists\n\n" if $exists;
+    #say "View already exists\n\n" if $exists;
 
     $self->accum('screen/views/'.$divid, $view);
 
-    say "Placing $this ->{$divid}";
+    #say "Placing $this ->{$divid}";
     $this->{$divid} = $view unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
     $self->set("$this $view" => 1); # same as:
     $view->owner($this);
@@ -500,7 +501,7 @@ sub create_view {
 
     $self->view_incharge($view);
 
-    say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
+    #say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
 
     $where ||= "body";
     $where = "#".$where if $where =~ /^\w+$/;
@@ -549,8 +550,7 @@ sub init_flood {
         "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;"
     );
     
-    say "\n\nFlood is: $f->{divid}";
-
+# TODO floozies should hang off the View itself
     $self->create_floozy($self, "flood_ceiling_pad",
         "width: ".420*1.14."px; height: 60px; opacity: 0;",
         append => $f,
@@ -626,16 +626,20 @@ sub flood {
         my $wormhole;
                                         eval { $wormhole = $floozy->travel($thing); };
         if ($@) {
-            $self->flood(
-                "flood travel error: $@\n"
-                .ddump($floozy->travel));
+            $self->error(
+                "flood travel error" => $@,
+                Thing => $thing,
+                Travel => ddump($floozy->travel),
+            );
         }
         else {
                                             eval { $wormhole->appear($floozy) };
             if ($@) {
-                $self->flood(
-                    "flood appear error: $@\n"
-                    .ddump($floozy->travel));
+                $self->error(
+                    "flood wormhole appear error" => $@,
+                    Thing => $thing,
+                    Travel => ddump($floozy->travel),
+                );
             }
         }
     }
@@ -649,12 +653,7 @@ sub hitime {
 sub enlogform {
     my $self = shift;
 
-    my $e;
-    eval { $e = {@_}; };
-    unless ($e) {
-        $@ = "";
-        $e = [@_];
-    }
+    my $e = [@_];
 
     my $from = [];
     my $back = 5;
@@ -668,15 +667,18 @@ sub enlogform {
 
 sub info {
     my $self = shift;
-    my $info = $self->enlogform(@_);
-    say "\n   infotangent! ".ind("      ", ddump($info->[1]));
-    say ind("    ", ddump($info->[2]));
-    $self->throwlog("errors", "hi_info", $info);
+    
+    my $error = $self->enlogform(@_);
+    say "\n   infotangent! ".ind("    ", ddump($error->[1]));
+    say "Error reads: ".ddump($error->[2]);
+    $self->throwlog("errors", "hi_error", $error);
 }
 sub error {
     my $self = shift;
+    
     my $error = $self->enlogform(@_);
     say "\n   infotangent! ".ind("    ", ddump($error->[1]));
+    say "\nError from ".ddump($error->[1]);
     say "Error reads: ".ddump($error->[2]);
     $self->throwlog("errors", "hi_error", $error);
 }
@@ -688,7 +690,7 @@ sub throwlog {
     my $error = shift;
 
     $self->accum($accuwhere, $error);
-
+    
     if (my $fl = $self->get("screen/view/$tryappenddivid")) {
         $fl->text->append([ split "\n", ddump($error)]);
     }
@@ -800,6 +802,11 @@ sub get_this_it { # find it amongst itselves
     }
     die "no findo ".ref($this)." i i i i i i $this";
     return undef;
+}
+
+sub hitime {
+    my $self = shift;
+    return join ".", time, (gettimeofday())[1];
 }
 
 1;

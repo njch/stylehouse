@@ -45,7 +45,7 @@ sub travel {
     return $self->{travel};
 }
 
-# Tractorise this thing
+# Tractorise this thing, watch it
 sub flooz {
     my $self = shift;
     my $what = shift;
@@ -76,7 +76,6 @@ sub label {
 sub default_html {
     my $self = shift;
     my $html = "";
-    say "\n\n$self->{divid} is ".($self->{floozal}?"FLOOZAL!":"not fl");
     if ($self->{floozal}) {
         $html .= '<span class="'.$self->{id}
             .'" style="top 1px; position: relative; right: 1px; align: right;">'
@@ -152,12 +151,6 @@ sub takeover {
     return $tempness;
 }
 
-sub review {
-    my $self = shift;
-    
-    $self->append_spans($self->divid => $self->html);
-}
-
 sub append_spans {
     my $self = shift;
     my $divid = shift;
@@ -173,7 +166,6 @@ sub append_spans {
         die "this is probably fucked";
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
 
-        
         my @html_batches;
         my $b = [];
         for my $html (@htmls) {
@@ -189,7 +181,6 @@ sub append_spans {
         say "batchified htmls heading for #$divid from ".$self->owner.": ".(scalar(@html_batches)-1)." x 10 + ".scalar(@{$html_batches[-1]});
 
         for my $html_batch (@html_batches) {
-
             my $batch = join "", @$html_batch;
 
             $batch =~ s/'/\\'/;

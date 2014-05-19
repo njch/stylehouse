@@ -28,12 +28,11 @@ sub display {
 
     my $texty = $self->{text} || die "NO Texty set into $codon->{name} before ->display";
 
-    my $chunks = $self->{chunks};
-
     my @bits = (
         "!html <h2>$self->{name}</h2>"
     );
 
+    my $chunks = $self->{chunks};
     for my $v (@$chunks) {
         my $i = $v->{i};
         my $lines = $v->{lines};
@@ -138,6 +137,19 @@ sub display {
     $texty->fit_div;
 }
 
+sub unload {
+    my $self = shift;
+    $self->{chunks_unload} = {};
+    my $tuxts = $self->{text}->{tuxts};
+    for my $t (@$tuxts) {
+        next unless $t->{textarea};
+        my $i = $tuxt->{chunki};
+        $self->{chunks_unload}->{$i} = 1;
+        $self->up_load($t->{id});
+        say "try up_load $i";
+    }
+}
+
 sub readfile {
     my $self = shift;
     return $self->{hostinfo}->getapp("Codo")->readfile(@_);
@@ -172,12 +184,23 @@ sub update {
     my $before = scalar(@{$chunks->[$i]->{lines}});
     $chunks->[$i]->{lines} = [ split "\n", $code ];
     my $after = scalar(@{$chunks->[$i]->{lines}});
+    
+    say "Codon $self->{name} \t$self->{codefile}\tchunk $i line count $before -> $after";
+
+    if ($self->{Going}) {
+        delete $self->{chunks_unload}->{$i} || die "wtf";
+        if (keys %{ $self->{chunks_unload} }) {
+            say " more chunks awaiting...";
+            return;
+        }
+        delete $self->{chunks_unload};
+        $self->{Gone} = $self->{hostinfo}->hitime();
+    }
 
     my $lines = [];
     for my $v (@$chunks) {
         push @$lines, @{$v->{lines}};
     }
-    say "Codon $self->{name} updating\t\t$self->{codefile}\t\tchunk $i lines $before -> $after\t\tlines=".scalar(@$lines);
     my $whole = join "\n", @$lines;
     $whole .= "\n" unless $whole =~ /\n$/s;
     $self->writefile($self->{codefile}, $whole);
