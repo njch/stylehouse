@@ -26,12 +26,8 @@ sub new {
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
     $self->hooks(shift || {});
-#    say "Hooks: ".join ", ", sort keys %{$self->{hooks}};
+    $self->{class} = $self->{hooks}->{class} || "data";
     $self->tuxts([]);
-
-    # make a persistent object for this Texty thing
-    # dump junk should not be saved
-    $self->hostinfo->screenthing($self);
 
     if (ref $self->lines ne "ARRAY") {
         use Carp;
@@ -39,7 +35,9 @@ sub new {
     }
     return $self if ! @{ $self->lines };
 
-    $self->lines_to_tuxts() eq "bail" && return;
+    die "never" if ref $self->view eq "HAsH";
+
+    $self->lines_to_tuxts();
 
     $self->tuxts_to_htmls();
     
@@ -55,23 +53,19 @@ sub new {
 
 sub replace {
     my $self = shift;
-    my $lines = shift;
+    my $L = shift;
     my $hooks = shift;
-    my $append;
     if ($hooks) {
-        if ($hooks->{append}) {
-            $append = delete $hooks->{append};
-        }
-        $self->hooks->{$_} = $hooks->{$_} for keys %$hooks;
+        $self->{hooks}->{$_} = $hooks->{$_} for keys %$hooks;
     }
 
-    say "Texty Lines: ".anydump($lines) if $self->{debug};
-    if ($lines) { 
-        $self->lines($lines);
-        $self->lines_to_tuxts();
-        $self->tuxts_to_htmls();
-    }
-    return $self->view->takeover($self->htmls, $append);
+    say "Texty Lines: ".anydump($L) if $self->{debug};
+
+    $self->lines($L || []);
+    $self->lines_to_tuxts();
+    $self->tuxts_to_htmls();
+
+    return $self->view->takeover($self->htmls, $self);
 }
 sub spurt { # semi dupe of replace since they do hooks through to takeover...
     # supposed to add a few more lines, percolate them through to the screen with minimal effort
@@ -97,91 +91,75 @@ sub append { # TRACTOR
     $self->view->takeover([@newhtml], "append");
 }
 
+sub mktuxt {
+    my $self = shift;
+    my $V = shift;
+    my $l = shift;
+    my $d = shift;
+
+    my $s = {
+        class => "$self->{class} ".$self->{id},
+        id => $self->{id}.'-'.$l->{l}++,
+        style => ($self->{hooks}->{tuxtstyle} || ""),
+    };
+    if ($d > 0) {
+        $s->{id} =~ s/(\d+)$/$d.$1/;
+    }
+
+    my @moire; # forms interrupting forms
+
+    if (ref $V eq "Texty") {
+        $s->{style} .= "border: 1px solid pink;";
+
+                                        push @moire, @{ $V->{tuxts} }; # NOT a wormhole!
+    }
+    elsif (ref $V eq "HAsH") {
+        if ($V->{_mktuxt}) {
+            $V->{_mktuxt}->($V, $s);
+        }
+        else {
+            die "Texty line HAsH value confuse: ".ddump($V)
+        }
+    }
+    elsif (ref \$V eq "sCALAR") {
+
+        while ($V =~ s/^!(\w+)(?:=(\w+))? //s) {
+            $s->{$1} = defined $2 ? $2 : "yep";
+        }
+        if (!$s->{html} && $V =~ /<span/sgm) {
+            $s->{html} = 1;
+            say "$V is sudden html in $self->{id}\n\n"
+        }
+
+        $V =~ s/<<ID>>/$self->{id}/g;
+        if ($V =~ /\\n/) {
+            my $ll = { l => 0 };
+            for my $v (split /\\n/, $V) {
+
+                                        push @moire, $self->mktuxt($v, $ll, $d+1);
+            }
+        }
+    }
+
+    $s->{value} = $s->{html} ? $V: encode_entities($V);
+
+    return $s, @moire
+}
+
 sub lines_to_tuxts {
     my $self = shift;
 
-    # supposed to be avoided?
-    if (scalar(@{ $self->lines }) == 0) {
-        say "\n     Texty ".$self->id."   got zero lines\n";
-        $self->tuxts([]);
+    my $L = $self->{lines};
+    unless (@$L) {
+        push @$L, '!html <h2 style="color: red;text-shadow: 4px 7px 4px #437">¿?</h2>';
     }
 
-    if (ref $self->view eq "HASH") {
-        say "Here's something: ". join ", ", keys %{ $self->view };
-        my $delay = Mojo::IOLoop::Delay->new();
-        $delay->steps(
-            sub { Mojo::IOLoop->timer(1 => $delay->begin); },
-            sub { $self->lines_to_tuxts(); },
-        );
-        return "bail";
-    }
-
-    my $l = 0;
-    my @tuxts;
-    for my $line (@{ $self->lines }) {
-        my $class = $self->hooks->{class} || "data";
-
-        my $mktuxty;
-        $mktuxty = sub {
-            my ($value, $hooks) = @_;
-
-            my $id = ($self->view->id.'-'.$self->id.'-'.$l++); # self->id is Texty-UUIDish from screenthing
-            my $tuxt = {
-                class => "$class ".$self->view->id,
-                id => $id,
-                style => ($self->{hooks}->{tuxtstyle} || ""),
-            };
-            my @extratuxts;
-
-            if ($hooks->{inner_linebreak}) {
-                $tuxt->{style} .= "border-left: 3px solid blue;";
-            }
-            if ($value =~ /;\\n/) {
-                say "\nGoing to split probable perl code: '$value'\n";
-                return map { $mktuxty->("$_", {inner_linebreak=>1}) } split /\\n/, $value;
-            }
-
-            if (ref $value eq "Texty") {
-                $tuxt->{style} .= "border: 1px solid pink;";
-                push @extratuxts, @{ $value->tuxts }; # NOT a wormhole!
-            }
-            elsif (ref $value eq "HASH") {
-                if ($value->{_tuxtform}) {
-                    $value->{_tuxtform}->($value, $tuxt);
-                    $value = $value->{value} || die "HASH thingy didn't revalue itself";
-                }
-                else {
-                    die "Texty line HASH value no _tuxtform: ".ddump($value)
-                }
-            }
-            else {
-                if ($value =~ /<span/sgm || $value =~ s/^\!html //s) {
-                    $tuxt->{htmlval} = 1;
-                    $value =~ s/<<ID>>/$id/g;
-                }
-                while ($value =~ s/^!(\w+)=(\w+) //s) {
-                    $tuxt->{$1} = $2;
-                }
-            }
-            $tuxt->{value} = $tuxt->{htmlval} ? $value : encode_entities($value);
-            return $tuxt, @extratuxts;
-        };
- 
-        if (ref \$line eq "SCALAR") {
-            say "  Texty Making line a SCALAR: $line" if $self->{debug};
-            $line =~ s/\n$//s;
-            $line = " " if $line eq "";
-            push @tuxts, $mktuxty->($_) for split /\n/, $line;
-        }
-        else {
-            say "  Texty Line is ref: $line" if $self->{debug} && ref $line;
-            push @tuxts, $mktuxty->($line);
-        }
-    }
-
-    $self->tuxts([@tuxts]);
-
-    say "  Texty tuxts made". ddump(\@tuxts) if $self->{debug};
+    my $l = { l => 0 };
+    $self->tuxts([
+        map {
+            $self->mktuxt($_, $l, 0);
+        } @$L
+    ]);
 
     $self->spatialise() unless $self->{hooks}->{nospace};
 }
@@ -203,7 +181,7 @@ sub spatialise {
             $s->{top} = $geo->{top};
             $s->{left} = $geo->{horizontal};
             my $guessextrawidth = sub { # wants to be a Tractor
-                return 20 unless ref $s->{value} eq "HASH";
+                return 20 unless ref $s->{value} eq "HAsH";
                 # TODO link back to the line before tuxtying
                 # would be handy as to string the facets together prog-y-y and also in phsyical display space to create chains of parts of things...
                 return 11*6 if length($s->{value}->{name}) > 7;
@@ -298,7 +276,7 @@ sub tuxts_to_htmls {
         delete $p->{inner};
         my $value = delete($p->{value});
 
-        $p->{style} = join "; ", grep /\S/, 
+        $p->{style} = join "; ", grep /\s/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
             (exists $p->{left} ? "left: ".delete($p->{left})."px" : ''),
             (exists $p->{right} ? "right: ".delete($p->{right})."px" : ''),
@@ -325,6 +303,8 @@ sub event {
     my $self = shift;
     my $tx = shift;
     my $event = shift;
+
+    say "Event in $self->{id} heading for ".$self->{view};
 
     $self->view->event($tx, $event, $self);
 }

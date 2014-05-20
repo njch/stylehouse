@@ -292,8 +292,7 @@ websocket '/stylehouse' => sub {
         }
         elsif (my $event = $j->{event}) {
             $self->app->log->info("Looking up event handler");
-            # find the Texty to ->event ->{ owner->event
-            my $thing = $self->hostinfo->event_id_thing_lookup($event->{id});
+            my $thing = $hostinfo->tv_by_id($event->{id});
 
             start_timer();
             unless ($thing) {

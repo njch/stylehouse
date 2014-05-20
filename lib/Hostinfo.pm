@@ -186,44 +186,7 @@ sub reload_views {
         $view->takeover();
     }
 }
- 
-sub event_id_thing_lookup {
-    my $self = shift;
-    my $id = shift;
-    $id =~ s/^((\w+-)?\w+\-\w+).+$/$1/;
 
-    my $things = $self->get('screen/things');
-    return say "nothing..." unless $things;
-
-    my ($thing) = grep { $id eq $_->{id} } @$things;
-
-    return $thing;
-}
-
-sub screenthing {
-    my $self = shift;
-    my $thing = shift; # texty or view
-
-    my $id = ref $thing;
-    if ($thing->can('owner')) {
-        my $owner = $thing->owner;
-        die "wtf ".ddump($thing) unless $owner;
-        if (ref $owner eq "View") {
-            $owner = $owner->owner;
-            die "wtf View owner ".ddump($thing->owner) unless $owner;
-        }
-        $id = ref($owner)."-$id";
-    }
-
-    $thing->id("$id-".$thing->{huid});
-
-    if (!$self->get('screen/things')) {
-        $self->set('screen/things', []);
-    }
-    my $things = $self->get('screen/things');
-    
-    push @$things, $thing;
-}
 
 
 sub app_menu_hooks {
@@ -497,8 +460,6 @@ sub create_view {
     $self->set("$this $view" => 1); # same as:
     $view->owner($this);
 
-    $self->screenthing($view);
-
     $self->view_incharge($view);
 
     #say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
@@ -669,7 +630,7 @@ sub info {
     my $self = shift;
     
     my $error = $self->enlogform(@_);
-    say "\n   infotangent! ".ind("    ", ddump($error->[1]));
+    say "\n   infotangent! ".ind("    ", ddump($error->[1]->[0]));
     say "Error reads: ".ddump($error->[2]);
     $self->throwlog("errors", "hi_error", $error);
 }
@@ -720,17 +681,41 @@ sub intro {
 # might want to spawn some intuition...
 sub duction {
     my $self = shift;
-    my $new = shift;
-    my ($name) = split '=', ref $new;
+    my $this = shift;
 
-    my $thiss = $self->get($name) || $self->set($name, []);
-    unshift @$thiss, $new;
+    $this->{huid} = make_uuid();
+    my $ref = ref $this;
+    $self->accum($ref, $this);
 
-    #my $uuids = $self->get("$name"."->uuid") || $self->set("$name"."->uuid", []);
-    #unshift @$uuids, make_uuid();
-    $new->{huid} = make_uuid();
+    if (my $r = $self->tvs->{$ref}) {
+        $self->accum('tvs', $this);
+        $ref = $r;
+    }
+
+    $this->{id} = "$ref-$this->{huid}";
 
     return $self;
+}
+
+sub tvs {
+    my $self = shift;
+    $self->get("tvs/shortref") || do {
+        $self->set("tvs/shortref", { Texty => "t", View => "v" });
+    };
+}
+
+sub tv_by_id {
+    my $self = shift;
+    my $id = shift;
+    $id =~ s/^(\w+-\w+).*$/$1/ ||
+        say join "\n", qw{EVENT ID THING LOOKUP Got}, "a weird id: $id", "we shall try";
+
+    for my $tv (@{$self->get('tvs')}) {
+        if ($tv->{id} eq $id) {
+            return $tv;
+        }
+    }
+    return;
 }
 
 # make a number bigger than the universe...
@@ -802,11 +787,6 @@ sub get_this_it { # find it amongst itselves
     }
     die "no findo ".ref($this)." i i i i i i $this";
     return undef;
-}
-
-sub hitime {
-    my $self = shift;
-    return join ".", time, (gettimeofday())[1];
 }
 
 1;

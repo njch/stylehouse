@@ -57,9 +57,9 @@ sub new {
     my $hi = $self->{hostinfo};
     $hi->create_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
     
-    $hi->create_view($self, codonmenu => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+    $hi->create_view($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $hi->create_view($self, codon     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
+    $hi->create_view($self, coshow     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -69,9 +69,17 @@ sub new {
 
     $self->init_codons();
 
-    $self->init_codemenu();
+    $self->codolist();
 
     $self->init_state();
+    
+    my $last = "Ghost";
+    for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
+        say $s->{value};
+    }
+    my ($last_id) = map { $_->{id} } grep { say("$_->{value}") && $_->{value} eq $last } @{$self->{codolist}->{text}->{tuxts}};
+    say "Going to $last_id\n\n\n";
+    $self->event({id => $last_id}) if $last_id;
 
     return $self;
 }
@@ -204,33 +212,27 @@ sub init_state { # {{{
     }
 
 
-# }}}
 
     $self->{codostate}->flooz($s);
-    #say "Thy state:\n".anydump($s);
+    return;
 
-    if (0) { # proc form # {{{
-    my @style;
-    for my $p (@style) {
-        $p->{_tuxtform} = sub {
-            my ($p, $tuxt) = @_;
-            $tuxt->{htmlval} = 1;
-            say "proc form: ".ddump($p);
-            my $chs = join " <br/>", map { '<span style="color: #230;">'.((-s $p->{$_}).' '.$_).'</span>' } qw{in err out};
-            $p->{value} = '<span style="color: black;">'.$p->{pid}.'</span> '
-                .'<span style="color: blue; left: 40px;"> '.($p->{name}||"???").'</span><br/>'
-                .$chs;
-            say "Proc value is: ".$p->{value};
-        };
-    }
-    unless (@style) {   
-        push @style, '!html <h2 style="color: black;"> nothin in proc/list </h2>';
+    my @S = "aggregate";
+    my $S = [];
+    for my $P (@S) {
+        push @$S,
+            "!html ". join(" <br/>",
+                '<span style="color: black;">'.$P->{pid}.'</span>',
+                join("_",
+                    map { '<span style="color: #230;">'.((-s $P->{$_}).' '.$_).'</span>' } qw{in err out}
+                ),
+                '<span style="color: blue; left: 40px;"> '.($P->{name}||"¿name?").'</span><br/>',
+                ($P->{name} ? '<span style="color: blue; left: 40px;"> '.($P->{cmd}||"¿cmd?").'</span><br/>' : ""),
+            );
     }
     my $cst = $self->{codostate_proc}->text;
     $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
     $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
-    $cst->replace([@style]);
-    } # }}}
+    $cst->replace($S);
 }
 
 sub spawn_child {
@@ -281,70 +283,8 @@ sub list_of_codefiles {
     );
 }
 
-sub event {
-    my $self = shift;
-    my $event = shift;
-    my $id = $event->{id};
-
-    my $codon_menu_texty = $self->{codonmenu}->text;
-    my $codon_texty =      $self->{codon}->text;
-
-# Codo-View-fc6272d1-Codo-Texty-c417836b-0 -> flood proc/ps/whatever data
-
-    $self->{hostinfo}->info(
-        menu => $codon_menu_texty->{divid},
-        Codon => $codon_texty->{divid},
-        '->' => $id,
-    );
-
-    # CODE ACTION
-    if ($id =~ /-ta$/) {
-        return;
-    }
-    if ($id =~ s/-up$//) {
-        $self->{the_codon}->up_load($id); # to get rid of the_codon singularity lookup the texty->{origin}
-        return;
-    }
-    if ($id =~ s/-close$//) {
-        my $tuxt = $codon_texty->id_to_tuxt($id);
-        my $ci = $tuxt->{chunki};
-        die "no chunki on ".ddump($tuxt) unless defined $ci; # this kinda shit is so obvious   /// --- \\\
-        my $codon = $self->{the_codon} || die "no codoon?";
-        say "Codo > > > close < < < $codon->{name} chunk $ci";
-        $codon->{openness}->{$ci} = 0;
-        $codon->display();
-        return;
-    }
-
-
-    # CODE OPEN
-    if (my $tuxt = $codon_texty->id_to_tuxt($id)) { # entire texty vision of the chunk should lead here if it gets complicated
-        my $ci = $tuxt->{chunki};
-        die "no chunki on ".ddump($tuxt) unless defined $ci; # this kinda shit is so obvious   /// --- \\\
-        my $codon = $self->{the_codon} || die "no codoon?";
-        say "Codo < < < OPEN > > > $codon->{name} chunk $ci";
-        $codon->{openness}->{$ci} = 1;
-        $codon->display();
-        return;
-    }
-
-
-    # MENU
-    if (my $tuxt = $codon_menu_texty->id_to_tuxt($id)) {
-        if (ref $tuxt->{origin} eq "Codon") {
-            return $self->load_codon($tuxt->{origin});
-        }
-        else {
-            return $self->hostinfo->error("Codo event 400000000000000000000000000");
-        }
-    }
-    else {
-        return $self->hostinfo->error("Codo event 404 for $id" => $event);
-    }
-}
-
 # get the forms of that clouds of ghosts (more formation in Codon::chunk())
-sub init_codons {
+sub init_codons { #{{{
     my $self = shift;
 
     say "INIT CODONS!";
@@ -381,19 +321,20 @@ sub init_codons {
                 #say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
             }
     }
-}
+}#}}}
 
-sub init_codemenu {
+sub codolist {#{{{
     my $self = shift;
 
-    $self->{codonmenu}->text([], {
+    $self->{codolist}->text([], {
         tuxts_to_htmls => sub {
             my $self = shift;
             for my $s (@{$self->tuxts}) {
-                my $code = $s->{value};
-                # say "A menu for $code->{name} ".join", ", keys %$code;
-                $s->{value} = $code->{name};
-                $s->{origin} = $code;
+                if (ref $s->{value}) {
+                    my $codon = $s->{value};
+                    $s->{value} = $codon->{name};
+                    $s->{codon} = $codon;
+                }
                 $s->{style} = random_colour_background();
                 $s->{class} = 'menu';
             }
@@ -403,44 +344,90 @@ sub init_codemenu {
         },
     });
 
-    $self->{codonmenu}->text->replace($self->{codes});
+    my $menu = [
+        "Save",
+        @{ $self->{codes} },
+    ];
+    $self->{codolist}->text->replace($menu);
+}#}}}
+
+sub event {
+    my $self = shift;
+    my $event = shift;
+    my $id = $event->{id};
+
+    my $codolist_texty = $self->{codolist}->text;
+    my $codon = $self->{the_codon};
+    say ddump($codon);
+    my $tuxt = $codon->{text}->id_to_tuxt($id) if $codon;
+    my $i = $tuxt->{i} if $tuxt;
+
+    $self->{hostinfo}->info({
+        menu => $self->{codolist}->text->{divid},
+        Codon => $codon,
+        tuxt => $tuxt,
+        '->' => $id,
+    });
+
+    return if $id =~ /-ta$/;
+
+
+
+    if ($id =~ /-Save(-\d+)?$/) {
+        $codon->save();
+    }
+    elsif ($id =~ s/-Close(?:-(\d+))?$//) {
+        $i ||= $1;
+        say "Codo > > > close < < < $codon->{name} chunk $i";
+
+        $codon->save();
+
+        $codon->{openness}->{$i} = "Closing";
+
+        $codon->display();
+    }
+    elsif (my $s = $self->{codolist}->{text}->id_to_tuxt($id)) { # LIST of codons
+        my $it = $s->{value};
+        if ($s->{codon}) {
+            $codon->away() if $codon;
+
+            $codon = $s->{codon};
+
+            say "Codo load:\t\t$codon->{name}\t->\t $tuxt->{origin}->{name}";
+
+            $self->load_codon($codon);
+        }
+        elsif ($it eq "S") {
+            $codon->save();
+        }
+        else {
+            die $s;
+        }
+    }
+    elsif ($codon) {
+        say "Codo\t\t$codon->{name}\t\t OP E  N $i";
+
+        $codon->{openness}->{$i} = "Opening";
+
+        $codon->display();
+    }
+    else {
+        return $self->hostinfo->error("Codo event 404 for $id", $event, $codon, $tuxt);
+    }
 }
 
 sub load_codon {
     my $self = shift;
     my $codon = shift;
+
     $codon = $self->codon_by_name($codon) unless ref $codon;
-
-    if (my $oldon = $self->{the_codon}) {
-        if (!$oldon->{Going}) {
-            $self->{hostinfo}->info(
-                "Load Codon" => $codon,
-                "Over" => $oldon,
-            );
-            $oldon->unload();
-            $oldon->{Going} = $self->hostinfo->hitime;
-        }
-        elsif ($oldon->{Gone}) {
-            $self->hostinfo->info(
-                "$oldon->{name} unloaded",
-                ( delete($oldon->{Gone}) - delete($oldon->{Going}) )
-            );
-            $self->{the_codon} = undef;
-# TODO open as one big chunk if old eq new
-            return $self->load_codon($codon->{name}); # way out
-        }
-        Mojo::IOLoop->timer(1, sub {
-            $self->load_codon($codon->{name}); # way in
-            return 0;
-        });
-    }
-
-    $self->{hostinfo}->info({"Load Codon" => $codon});
-
-    die "Can't load Codon" unless $codon;
+    $codon || die;
 
     $self->{the_codon} = $codon;
-    $codon->{text} = $self->{codon}->text; # {codon} is a View
+
+    delete $self->{coshow}->{text} unless $codon->{text};
+    $codon->{text} ||= $self->{coshow}->text;
+    
     $codon->display();
 }
 
@@ -454,14 +441,12 @@ sub codon_by_name {
 sub readfile {
     my $self = shift;
     my $path = shift;
-    $path = $self->{code_dir}.$path if $self->{code_dir};
-    read_file($path, @_);
+    read_file($self->{code_dir}.$path, @_);
 }
 sub writefile {
     my $self = shift;
     my $path = shift;
-    $path = $self->{code_dir}.$path if $self->{code_dir};
-    write_file($path, @_);
+    write_file($self->{code_dir}.$path, @_);
 }
 
 sub random_colour_background {

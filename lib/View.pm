@@ -70,7 +70,7 @@ sub resume {
 
 sub label {
     my $self = shift;
-    return "$self->owner $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
+    return "$self->{owner} $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
 }
 
 sub default_html {
@@ -108,7 +108,7 @@ sub event {
     my $event = shift;
     my $this = shift;
 
-    say "Event in $self->{id} heading for ".$self->owner;
+    say "Event in ".$self->label." heading for ".$self->owner;
 
     $self->owner->event($tx, $event, $this, $self);
 }
@@ -116,28 +116,14 @@ sub event {
 sub takeover {
     my $self = shift;
     my $html = concat_array(shift); # [([html+],html)+]
-    my $append = shift;
-    my $tempness;
+    my $texty = shift;
 
     if (!defined $html) {
         say " $self->{divid} reload,";
         $html = $self->html;
     }
-    elsif ($append) {
-        if ($append eq "temp") {
-            my $tempid = $self->{id}."-temp";
-            $self->hostinfo->send( # create a -temp span container
-                "\$('#".$self->{divid}."').append('<span style=\"display: none;\" id=\"$tempid\"></span>');"
-            );
-            $self->hostinfo->send( # chuck old stuff in there
-                "\$('#".$self->{divid}." .".$self->{id}."').appendTo('#$tempid');"
-            );
-            $self->wipehtml;
-            $tempness = { tempid => $tempid };
-        }
-        else {
-            $self->html($self->html."   ".$html);
-        }
+    elsif ($texty->{hooks}->{append}) {
+        $self->html($self->html."   ".$html);
     }
     else {
         $self->wipehtml;
@@ -147,8 +133,6 @@ sub takeover {
     $self->hostinfo->view_incharge($self);
 
     $self->append_spans($self->{divid} => $html);
-
-    return $tempness;
 }
 
 sub append_spans {
