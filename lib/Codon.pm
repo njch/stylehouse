@@ -32,7 +32,7 @@ sub display {
     my $self = shift;
     my $codo = shift;
 
-    my $divid = map { s/[^\w]//g } $self->{id};
+    my $divid = $self->{id};
 
     my $show = $self->{show} ||= $codo->{coshow}->spawn_floozy($self, $divid, "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
@@ -45,11 +45,10 @@ sub display {
         )
     }
 
-    say "Chunkz: ".ddump($self->{chunks});
+    say "A CoDon: ". ddump($self);
 
     my @chunks;
     for my $c (@{$self->{chunks}}) {
-        my $c = $_;
         my $i = $c->{i};
         my $lines = $c->{lines};
         my $rows = scalar(@$lines);

@@ -207,7 +207,7 @@ sub spatialise {
                 $s->{left} += $geo->{left} if $geo->{left};
             }
             $geo->{top} += $geo->{space};
-            if ($s->{htmlval}) {
+            if ($s->{html}) {
                 $geo->{top} += $self->htmlvalue_height($s, $geo);
             }
         }
@@ -220,12 +220,14 @@ sub htmlvalue_height {
     my $s = shift;
     my $g = shift;
     my $v = $s->{value};
-    if ($v =~ /<h(\d+)>/) {
-        my $h = 4 - $1;
-        return 15 * $h
-    }
-    if ($v=~ /<textarea .+? rows="(\d+)"/) {
-        return int(((250 / 15) * $1) - $g->{space} + 1);
+    if ($s->{html}) {
+        if ($v =~ /<h(\d+)>/) {
+            my $h = 4 - $1;
+            return 15 * $h
+        }
+        if ($v=~ /<textarea .+? rows="(\d+)"/) {
+            return int(((250 / 15) * $1) - $g->{space} + 1);
+        }
     }
     return 20;
 }

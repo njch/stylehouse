@@ -62,7 +62,7 @@ sub new {
         coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;"
     );
 
-    $self->{coshow}->spawn_ceiling("width:58%;  background: #402a35; color: #afc; height: 60px;", "fixed");
+    $self->{codolist} = $self->{coshow}->spawn_ceiling("width:58%;  background: #402a35; color: #afc; height: 60px;", "fixed");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -129,7 +129,7 @@ sub codolist {#{{{
     my $codons = $self->{hostinfo}->get("Codon");
     say "Codons number ".@$codons;
 
-    my $codolistex = $self->{coshow}->{ceiling}->text;
+    my $codolistex = $self->{codolist}->text;
     $codolistex->add_hooks({
         tuxts_to_htmls => sub {
             my $self = shift;
@@ -363,7 +363,7 @@ sub event {
     my $codolist_texty = $self->{codolist}->text;
     my $codon = $self->{the_codon};
     say "Old CODON: $codon->{name}" if $codon;
-    my $tuxt = $codon->{text}->id_to_tuxt($id) if $codon;
+    my $tuxt = $codon->{text}->id_to_tuxt($id) if $codon && $codon->{text};
     my $i = $tuxt->{i} if $tuxt;
 
     $self->{hostinfo}->info({
