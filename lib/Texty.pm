@@ -25,7 +25,7 @@ sub new {
 
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
-    $self->hooks(shift || {});
+    $self->add_hooks(shift || {});
     $self->{class} = $self->{hooks}->{class} || "data";
     $self->tuxts([]);
 
@@ -51,13 +51,18 @@ sub new {
     return $self;
 }
 
+sub add_hooks {
+    my $self = shift;
+    my $hooks = shift;
+    $self->{hooks} ||= {};
+    $self->{hooks}->{$_} = $hooks->{$_} for keys %$hooks;
+}
+
+
 sub replace {
     my $self = shift;
     my $L = shift;
-    my $hooks = shift;
-    if ($hooks) {
-        $self->{hooks}->{$_} = $hooks->{$_} for keys %$hooks;
-    }
+    $self->add_hooks(shift);
 
     say "Texty Lines: ".anydump($L) if $self->{debug};
 
@@ -93,7 +98,7 @@ sub append { # TRACTOR
 
 sub mktuxt {
     my $self = shift;
-    my $V = shift;
+    my $line = shift;
     my $l = shift;
     my $d = shift;
 
@@ -101,49 +106,46 @@ sub mktuxt {
         class => "$self->{class} ".$self->{id},
         id => $self->{id}.'-'.$l->{l}++,
         style => ($self->{hooks}->{tuxtstyle} || ""),
+        value => $line,
     };
+    push @{$self->{tuxts}}, $s; # NOT a wormhole!
     if ($d > 0) {
         $s->{id} =~ s/(\d+)$/$d.$1/;
     }
 
-    my @moire; # forms interrupting forms
-
-    if (ref $V eq "Texty") {
+    if (ref $s->{value} eq "Texty") {
         $s->{style} .= "border: 1px solid pink;";
+        say "Still do Texty as line\n\n";
 
-                                        push @moire, @{ $V->{tuxts} }; # NOT a wormhole!
+                                        push @{$self->{tuxts}}, @{ $s->{value}->{tuxts} }; # NOT a wormhole!
     }
-    elsif (ref $V eq "HAsH") {
-        if ($V->{_mktuxt}) {
-            $V->{_mktuxt}->($V, $s);
+    elsif (ref $s->{value} eq "HASH") {
+        if ($s->{value}->{_mktuxt}) {
+            $s->{value}->{_mktuxt}->($s->{value}, $s);
         }
         else {
-            die "Texty line HAsH value confuse: ".ddump($V)
+            die "Texty line HASH value confuse: ".ddump($s->{value})
         }
     }
-    elsif (ref \$V eq "sCALAR") {
+    elsif (ref \$s->{value} eq "SCALAR") {
 
-        while ($V =~ s/^!(\w+)(?:=(\w+))? //s) {
+        while ($s->{value} =~ s/^!(\w+)(?:=(\w+))? //s) {
             $s->{$1} = defined $2 ? $2 : "yep";
         }
-        if (!$s->{html} && $V =~ /<span/sgm) {
+        if (!$s->{html} && $s->{value} =~ /<span/sgm) {
             $s->{html} = 1;
-            say "$V is sudden html in $self->{id}\n\n"
+            say "$s->{value} is sudden html in $self->{id}\n\n"
         }
 
-        $V =~ s/<<ID>>/$self->{id}/g;
-        if ($V =~ /\\n/) {
+        $s->{value} =~ s/<<ID>>/$self->{id}/g;
+        if ($s->{value} =~ /\\n/) {
             my $ll = { l => 0 };
-            for my $v (split /\\n/, $V) {
-
-                                        push @moire, $self->mktuxt($v, $ll, $d+1);
+            for my $v (split /\\n/, $s->{value}) {
+                                        $self->mktuxt($v, $ll, $d+1);
             }
+            $s->{value} = "";
         }
     }
-
-    $s->{value} = $s->{html} ? $V: encode_entities($V);
-
-    return $s, @moire
 }
 
 sub lines_to_tuxts {
@@ -154,12 +156,12 @@ sub lines_to_tuxts {
         push @$L, '!html <h2 style="color: red;text-shadow: 4px 7px 4px #437">¿?</h2>';
     }
 
+    $self->{tuxts} = [];
+
     my $l = { l => 0 };
-    $self->tuxts([
-        map {
-            $self->mktuxt($_, $l, 0);
-        } @$L
-    ]);
+    for my $V (@$L) {
+        $self->mktuxt($V, $l, 0);
+    }
 
     $self->spatialise() unless $self->{hooks}->{nospace};
 }
@@ -260,9 +262,6 @@ sub id_to_tuxt {
 
 sub tuxts_to_htmls {
     my $self = shift;
-    
-    my $from = join ", ", (caller(1))[0,3,2];
-    #say "tuxts_to_htmls from: $from";
 
     if ($self->{hooks}->{tuxts_to_htmls}) {
         $self->{hooks}->{tuxts_to_htmls}->($self);
@@ -272,19 +271,21 @@ sub tuxts_to_htmls {
     my @htmls;
     for my $s (@{$self->tuxts}) {
         my $p = { %$s };
-        delete $p->{origin};
-        delete $p->{inner};
-        my $value = delete($p->{value});
+        while(my ($k,$v) = each %$p) {
+            $p->{$k} = ref $v if ref $v;
+        }
+        my $V = delete($p->{value});
+        $V = encode_entities($V) unless $p->{html}; 
 
         $p->{style} = join "; ", grep /\s/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
             (exists $p->{left} ? "left: ".delete($p->{left})."px" : ''),
             (exists $p->{right} ? "right: ".delete($p->{right})."px" : ''),
             ($p->{style} ? delete($p->{style}) : '');
-        my $attrstring = join " ", map {
-            $_.'="'.$p->{$_}.'"' } sort keys %$p;
+        
+        my $AAA = join " ", map { $_.'="'.$p->{$_}.'"' } sort keys %$p;
 
-        my $span_html = "<span $attrstring>$value</span>";
+        my $span_html = "<span $AAA>$V</span>";
         push @htmls, $span_html;
         
     }
@@ -304,7 +305,7 @@ sub event {
     my $tx = shift;
     my $event = shift;
 
-    say "Event in $self->{id} heading for ".$self->{view};
+    say "Event in texty: $self->{id} heading for ".$self->{view}->{id};
 
     $self->view->event($tx, $event, $self);
 }

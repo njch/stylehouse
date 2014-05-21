@@ -55,11 +55,14 @@ sub new {
     else { die "no such style: $style" }
 
     my $hi = $self->{hostinfo};
-    $hi->create_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
+    $hi->{flood}->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
     
-    $hi->create_view($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
 
-    $hi->create_view($self, coshow     => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
+    $self->{coshow} = $hi->create_view($self,
+        coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;"
+    );
+
+    $self->{coshow}->spawn_ceiling("width:58%;  background: #402a35; color: #afc; height: 60px;", "fixed");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -73,16 +76,85 @@ sub new {
 
     $self->init_state();
     
+    say "\n\n\n\n\n";
     my $last = "Ghost";
     for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
         say $s->{value};
+        $s->{value} eq "Ghost" && do {
+            $self->event({id => $s->{id}});
+        };
     }
-    my ($last_id) = map { $_->{id} } grep { say("$_->{value}") && $_->{value} eq $last } @{$self->{codolist}->{text}->{tuxts}};
-    say "Going to $last_id\n\n\n";
-    $self->event({id => $last_id}) if $last_id;
+    
 
     return $self;
 }
+
+sub init_codons { #{{{
+    my $self = shift;
+
+    say "\tI N I T   C O D ON S !";
+    my @codefiles = $self->list_of_codefiles();
+
+    for my $cf (@codefiles) {
+        my $filename = $self->{code_dir}.$cf;
+        my $name;
+        ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
+        ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
+        ($name) = $cf =~ /\/?([\w\.]+)$/ unless $name;
+        $name = $cf unless $name;
+        my $codon = $self->codon_by_name($name);
+        my $isnew = 1 if !$codon;
+
+        my $mtime = (stat $filename)[9];
+
+            if ($isnew) {
+                $codon = new Codon($self->hostinfo->intro, {
+                    codefile => $cf,
+                    name => $name,
+                    mtime => $mtime,
+                });
+            }
+
+        if ($codon->{mtime} < $mtime) {
+            say "$cf changed";
+            $codon->{mtime} = $mtime;
+            $isnew = 1;
+        }
+    }
+}#}}}
+
+sub codolist {#{{{
+    my $self = shift;
+
+    my $codons = $self->{hostinfo}->get("Codon");
+    say "Codons number ".@$codons;
+
+    my $codolistex = $self->{coshow}->{ceiling}->text;
+    $codolistex->add_hooks({
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            for my $s (@{$self->tuxts}) {
+                if (ref $s->{value}) {
+                    my $codon = $s->{value};
+                    $s->{value} = $codon->{name};
+                    $s->{codon} = $codon;
+                }
+                $s->{style} = random_colour_background();
+                $s->{class} = 'menu';
+            }
+        },
+        spatialise => sub {
+            return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
+        },
+    });
+
+    my $menu = [
+        "Save",
+        @$codons,
+    ];
+    $codolistex->replace($menu);
+}#}}}
+
 
 sub menu {
     my $self = shift;
@@ -283,74 +355,6 @@ sub list_of_codefiles {
     );
 }
 
-# get the forms of that clouds of ghosts (more formation in Codon::chunk())
-sub init_codons { #{{{
-    my $self = shift;
-
-    say "INIT CODONS!";
-    my @codefiles = $self->list_of_codefiles();
-
-    for my $cf (@codefiles) {
-        my $filename = $self->{code_dir}.$cf;
-        my $name;
-        ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
-        ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
-        ($name) = $cf =~ /\/?([\w\.]+)$/ unless $name;
-        $name = $cf unless $name;
-        my $codon = $self->codon_by_name($name);
-        my $isnew = 1 if !$codon;
-
-        my $mtime = (stat $filename)[9];
-
-            if ($isnew) {
-                $codon = new Codon($self->hostinfo->intro, {
-                    codefile => $cf,
-                    name => $name,
-                    mtime => $mtime,
-                });
-            }
-
-        if ($codon->{mtime} < $mtime) {
-            say "$cf changed";
-            $codon->{mtime} = $mtime;
-            $isnew = 1;
-        }
-
-            if ($isnew) {
-                push @{ $self->{codes} }, $codon;
-                #say "new Codon: $codon->{name}\t\t".scalar(@{$codon->{lines}})." lines";
-            }
-    }
-}#}}}
-
-sub codolist {#{{{
-    my $self = shift;
-
-    $self->{codolist}->text([], {
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            for my $s (@{$self->tuxts}) {
-                if (ref $s->{value}) {
-                    my $codon = $s->{value};
-                    $s->{value} = $codon->{name};
-                    $s->{codon} = $codon;
-                }
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
-            }
-        },
-        spatialise => sub {
-            return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
-        },
-    });
-
-    my $menu = [
-        "Save",
-        @{ $self->{codes} },
-    ];
-    $self->{codolist}->text->replace($menu);
-}#}}}
-
 sub event {
     my $self = shift;
     my $event = shift;
@@ -358,7 +362,7 @@ sub event {
 
     my $codolist_texty = $self->{codolist}->text;
     my $codon = $self->{the_codon};
-    say ddump($codon);
+    say "Old CODON: $codon->{name}" if $codon;
     my $tuxt = $codon->{text}->id_to_tuxt($id) if $codon;
     my $i = $tuxt->{i} if $tuxt;
 
@@ -393,7 +397,7 @@ sub event {
 
             $codon = $s->{codon};
 
-            say "Codo load:\t\t$codon->{name}\t->\t $tuxt->{origin}->{name}";
+            say "Codo load:\t\t$codon->{name}";
 
             $self->load_codon($codon);
         }
@@ -420,22 +424,25 @@ sub load_codon {
     my $self = shift;
     my $codon = shift;
 
+    say "load $codon";
     $codon = $self->codon_by_name($codon) unless ref $codon;
     $codon || die;
 
     $self->{the_codon} = $codon;
-
-    delete $self->{coshow}->{text} unless $codon->{text};
-    $codon->{text} ||= $self->{coshow}->text;
     
-    $codon->display();
+    $codon->display($self);
 }
 
 sub codon_by_name {
     my $self = shift;
     my $name = shift;
-    my ($code) = grep { $_->{name} eq $name } @{ $self->{codes} };
-    $code;
+    
+    if (my $codons = $self->{hostinfo}->get('Codon')) {
+        for my $c (@$codons) {
+            return $c if $c->{name} eq $name;
+        }
+    }
+    return;
 }
 
 sub readfile {

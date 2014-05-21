@@ -164,15 +164,15 @@ sub dkeys {
 sub view_incharge {
     my $self = shift;
     my $view = shift;
-    my $old = $self->get('screen/views/'.$view->divid.'/top');
-    $self->set('screen/views/'.$view->divid.'/top', $view);
+    my $old = $self->get('tvs/'.$view->divid.'/top');
+    $self->set('tvs/'.$view->divid.'/top', $view);
 }
 
 sub reload_views {
     my $self = shift;
     # state from client?
 
-    my $tops = $self->grep('screen/views/.+/top');
+    my $tops = $self->grep('tvs/.+/top');
     my @tops = values %$tops;
     my @names = keys %$tops;
     return say " no existing views" unless @names;
@@ -194,7 +194,7 @@ sub app_menu_hooks {
     return {
         tuxts_to_htmls => sub { # TODO leaks several \n to STDOUT somewhere... bisect this whole business some day
             my $self = shift;
-            my $h = $self->hooks;
+            my $h = $self->{hooks};
             my $i = $h->{i} ||= 0;
 
             for my $s (@{$self->tuxts}) {
@@ -229,10 +229,12 @@ sub app_menu_hooks {
                     });
                     $s->{inner} = $inner;
                     $s->{value} .= join "", @{$inner->htmls || []};
+                    $s->{html} = 1;
                     say ref $object." buttons: ".join ", ", @{ $inner->lines };
                 }
                 
-                $s->{style} = random_colour_background()."postition:relative; border: 5px solid black;";
+                $s->{style} = random_colour_background()."border: 5px solid black;";
+                $s->{class} =~ s/data/menu/g;
                 $s->{origin} = $object;
             }
         },
@@ -246,10 +248,13 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->create_view($self, "appmenu",
-            "width:97%; background: #333; height: 90px; color: #afc; font-family: serif;",
-            before => "#body",
+            "width:98%; background: #333; color: #afc; font-family: serif;",
+            before => "#body :first",
             "menu",
-        )->menu->text->hooks($self->app_menu_hooks());
+        );
+        $self->{appmenu}->text->add_hooks(
+            $self->app_menu_hooks()
+        );
     }
     
     my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
@@ -266,7 +271,7 @@ sub update_app_menu {
     }
     
     $self->{appmenu}->{extra_label} = "appmenu";
-    $self->{appmenu}->menu->replace([@items]);
+    $self->{appmenu}->text->replace([@items]);
 }
 
 sub random_colour_background {
@@ -299,7 +304,7 @@ sub menu {
 sub get_goya {
     my $self = shift;
 
-    my $stuff = $self->grep('screen/views');
+    my $stuff = $self->grep('tvs');
 
     my @goya;
     for my $k (keys %$stuff) {
@@ -440,20 +445,16 @@ sub create_view {
 
     my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' "></div>';
 
-    $self->set('screen/views/'.$divid.'/div', $div);
-    $self->set('screen/views/'.$divid.'/style', $style); # Tractorise
+    $self->set('tvs/'.$divid.'/div', $div);
+    $self->set('tvs/'.$divid.'/style', $style); # Tractorise
 
     #say "Creating View -> $divid";
     my $view = new View($self->intro, $divid);
 
-    if ($attach && $attach eq "after") {
-        $view->{floozal} = $where;
-    }
+    my $exists = $self->get('tvs/'.$divid);
+    say "View $divid already existed\n\n" if $exists;
 
-    my $exists = $self->get('screen/views/'.$divid);
-    #say "View already exists\n\n" if $exists;
-
-    $self->accum('screen/views/'.$divid, $view);
+    $self->accum('tvs/'.$divid, $view);
 
     #say "Placing $this ->{$divid}";
     $this->{$divid} = $view unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
@@ -468,12 +469,12 @@ sub create_view {
     $where = "#".$where if $where =~ /^\w+$/;
     $attach ||= "append";
 
+    # remember to say :first or :last etc in $where
     if ($attach && $attach eq "after") {
         $self->send("\$('$where').after('$div');");
     }
     elsif ($attach && $attach eq "before") {
-        $self->send("\$('$where :first').before('$div');");
-        
+        $self->send("\$('$where').before('$div');");
     }
     elsif ($attach && $attach eq "replace") {
         $self->send("\$('$where').replaceWith('$div');");
@@ -487,41 +488,16 @@ sub create_view {
     return $view;
 }
 
-sub create_floozy {
-    my $self = shift;
-    my $this = shift;
-    my $divid = shift;
-    my $style = shift;
-    my $attach = shift || "after";
-    my $where = shift || $self->{flood}->{ceiling};
-    $where = $where->{divid} if ref $where;
-    
-    my $floozy = $self->create_view(
-        $this, $divid, $style,
-        $attach => $where,
-    );
-
-    return $floozy;
-}
-
 sub init_flood {
     my $self = shift;
 
     my $f = $self->{flood} = $self->create_view($self, "flood",
         "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;"
     );
-    
-# TODO floozies should hang off the View itself
-    $self->create_floozy($self, "flood_ceiling_pad",
-        "width: ".420*1.14."px; height: 60px; opacity: 0;",
-        append => $f,
+    my $fm = $f->spawn_ceiling(
+        "width: ".420*1.14."px; height: 60px;background: #301a30; color: #afc; font-weight: bold;",
+        "fixed",
     );
-    my $fm = $self->{flood_ceiling} = $self->create_floozy($self, "flood_ceiling",
-        "width: ".420*1.14."px; background: #301a30; color: #afc; height: 60px; font-weight: bold; position: fixed;",
-        append => $f,
-    );
-
-    $f->{ceiling} = $fm;
 
     $fm->text([], {
         tuxts_to_htmls => sub {
@@ -538,14 +514,14 @@ sub init_flood {
 
     $fm->text->replace([("FLOOD")x7]);
 
-    $self->create_floozy($self, "floodzy",
-        "width:420px;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
+    $self->{floodzy} = $f->spawn_floozy(
+        floodzy => "width:420px;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
     );
-    $self->create_floozy($self, "hi_error",
-        "width:420px;  background: #ff9988; color: #030; height: 420px; font-weight: bold;",
+    $self->{hi_error} = $f->spawn_floozy(
+        hi_error => "width:420px;  background: #ff9988; color: #030; height: 420px; font-weight: bold;",
     );
-    $self->create_floozy($self, "hi_info",
-        "width:420px;  background: #afc; color: #44ag39; height: 420px; font-weight: bold;",
+    $self->{hi_error} = $f->spawn_floozy(
+        hi_info => "width:420px;  background: #afc; color: #44ag39; height: 420px; font-weight: bold;",
     );
 
     return $f

@@ -118,11 +118,6 @@ $hostinfo->for_all([]);
 # get rid of this with Base.pm
 helper 'hostinfo' => sub { $hostinfo };
 
-get '/Codon/:name' => sub {
-    my $self = shift;
-    $hostinfo->getapp("Codo")->get_codon($self, $self->param('name'));
-};
-
 my $hands = {};
 
 my $underworld = 1; # our fate's the most epic shift ever
@@ -292,11 +287,19 @@ websocket '/stylehouse' => sub {
         }
         elsif (my $event = $j->{event}) {
             $self->app->log->info("Looking up event handler");
-            my $thing = $hostinfo->tv_by_id($event->{id});
+            my $id = $event->{id};
+
+            my $thing = $hostinfo->tv_by_id($event->{id}) if $id;
 
             start_timer();
-            unless ($thing) {
-                $self->app->log->error("Thing lookup failed for $event->{id}");
+
+            if ($thing) {
+                $thing->event($event);
+            }
+            else {
+                $id ?
+                    $self->app->log->error("Thing lookup failed for $id")
+                  : $self->app->log->error("Thing lookup failed, lacking id");
 
                 if (my $catcher = $self->hostinfo->get('clickcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
@@ -307,9 +310,6 @@ websocket '/stylehouse' => sub {
                         "\$('#body').addClass('dead').delay(250).removeClass('dead');"
                     );
                 }
-            }
-            else {
-                $thing->event($event);
             }
             say "event handled in ".show_delta()."\n\n";
         }

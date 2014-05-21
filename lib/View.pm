@@ -21,7 +21,11 @@ sub new {
 # right so here we have an arc of stuff, going from motive to static
 # menu items to text
 # here's a travel too, that's kind of a mirage.
-
+sub newtext {
+    my $self = shift;
+    delete $self->{text};
+    $self->text(@_);
+}
 sub text {
     my $self = shift;
 
@@ -43,6 +47,73 @@ sub travel {
         return $self->{travel}->travel([@_]);
     }
     return $self->{travel};
+}
+
+sub spawn_floozy {
+    my $self = shift;
+    my $this = shift if ref $_[0];
+    my $divid = shift;
+    my $style = shift;
+    my $attach = shift;
+    my $where = shift;
+
+    if (!$attach && !$where) {
+        if ($self->{ceiling}) {
+            $attach = "after";
+            $where = $self->{ceiling};
+        }
+        else {
+            if ($self->{hostinfo}->get("floods/$self->{divid}")) {
+                $attach = "before";
+                $where = "#$self->{divid} *:first";
+            }
+            else {
+                $attach = "append";
+                $where = $self;
+            }
+        }
+    }
+
+    $where = "#$where->{divid}" if ref $where;
+
+    say "Spawning floozy $divid   : $style\n$attach => $where";
+
+    my $floozy = $self->{hostinfo}->create_view(
+        ($this || $self), $divid, $style,
+        $attach => $where,
+    );
+
+    $self->{hostinfo}->accum("floods/$self->{divid}", $floozy);
+    $floozy->{floozal} = 1;
+
+    $floozy;
+}
+
+sub spawn_ceiling {
+    my $self = shift;
+    my $style = shift;
+    my $staticness = shift;
+    
+    $style .= " position: fixed;" if $staticness;
+
+    my $c = $self->{ceiling} = $self->spawn_floozy($self, $self->{divid}."_ceiling", $style);
+
+    if ($staticness) {
+        $c->spawn_floon();
+    }
+
+    $c
+}
+
+sub spawn_floon { # floozy becomes fixed to a space above the floozal cortex
+    my $self = shift;
+
+    my $style = $self->{hostinfo}->get('tvs/'.$self->{divid}.'/style');
+    my ($height) = $style =~ /(height:.+?;)/;
+    my ($width) = $style =~ /(width:.+?;)/;
+    $style = "$height $width opacity:0.1;";
+
+    $self->{floon} = $self->spawn_floozy($self, $self->{divid}."_floon", $style, before => $self);
 }
 
 # Tractorise this thing, watch it
@@ -78,7 +149,7 @@ sub default_html {
     my $html = "";
     if ($self->{floozal}) {
         $html .= '<span class="'.$self->{id}
-            .'" style="top 1px; position: relative; right: 1px; align: right;">'
+            .'" style="top 1px; position: fixed; right: 1px; align: right;">'
             .$self->label.'</span>';
     }
     return $html;
@@ -98,6 +169,7 @@ sub html {
 sub wipehtml {
     my $self = shift;
     $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove();") if $self->html;
+    $self->fit_div();
     $self->html("");
     1;
 }
@@ -147,7 +219,6 @@ sub append_spans {
         $self->hostinfo->send("  \$('#$divid').append('$html');");
     }
     else {
-        die "this is probably fucked";
         my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
 
         my @html_batches;
@@ -172,6 +243,14 @@ sub append_spans {
             usleep 10000;
         }
     }
+
+    $self->fit_div();
+}
+
+sub fit_div {
+    my $self = shift;
+    my $texty = $self->{text} || $self->{menu}->{text} || return;
+    $texty->fit_div();
 }
 
 sub concat_array {

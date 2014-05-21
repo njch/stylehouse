@@ -30,15 +30,24 @@ sub open_codefile {
 
 sub display {
     my $self = shift;
+    my $codo = shift;
 
-    my $texty = $self->{text} || die;
-    $texty->{codon} = $self; # as $Codo->{the_codon} but not singular
+    my $divid = map { s/[^\w]//g } $self->{id};
 
-    my $temp = $self->{hostinfo}->create_floozy($self,
-        temp => "width:100px; height:30px; background: white; color: #362; overflow: scroll;",
-    );
-    my $chunks = [];
-    push @$chunks, "!html <h2>$self->{name}</h2>";
+    my $show = $self->{show} ||= $codo->{coshow}->spawn_floozy($self, $divid, "width:58%;  background: #402a35; color: #afc; height: 60px;");
+
+    my $texty = $show->text;
+
+    if (grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} }) {
+
+        my $temp = $self->{hostinfo}->{flood}->spawn_floozy($self,
+            temp => "width:100px; height:30px; background: white; color: #362; overflow: scroll;",
+        )
+    }
+
+    say "Chunkz: ".ddump($self->{chunks});
+
+    my @chunks;
     for my $c (@{$self->{chunks}}) {
         my $c = $_;
         my $i = $c->{i};
@@ -56,7 +65,7 @@ sub display {
                 $texty->hostinfo->send("\$('#$texty->{id}-Text-$i').appendTo('#$tempid');");
                 $self->{openness}->{$i} = $tempid;
             }
-            push @$chunks,
+            push @chunks,
                 "!html !i=$i "
                 .'<textarea name="code" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
                 .'<input id="<<ID>>-Close-'.$i.'" type="submit" value="C">'
@@ -64,17 +73,18 @@ sub display {
         }
         elsif ($ness eq "Closed") {
             # closed
-            push @$chunks,
+            push @chunks,
                 "!i=$i $c->{first} ($rows lines)";
         }
     }
 
-    $texty->replace($chunks);
+    $texty->replace(["!html <h2>$self->{name}</h2>", @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
         my $i = $s->{i};
-        my $c = $chunks->[$i];
+        next unless defined $i;
+        my $c = $self->{chunks}->[$i];
         my $lines = $c->{lines};
         my $code = join "\n", @$lines, "";
         $code =~ s/"/\\"/g;
@@ -113,6 +123,11 @@ sub display {
 
     $texty->{max_height} = 1000;
     $texty->fit_div;
+}
+
+sub away {
+    my $self = shift;
+
 }
 
 sub unload {
