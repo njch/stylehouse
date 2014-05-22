@@ -226,7 +226,20 @@ sub app_menu_hooks {
                         class => "menu",
                         nospace => 1,
                         notakeover => 1,
+                        event => sub {
+                            my $self = shift;
+                            my $event = shift;
+                            my $id = $event->{id};
+                            for my $s (@{ $self->{tuxts} }) {
+                                if ($s->{id} eq $id) {
+                                    return $self->{owner}->event($event, $object, $s->{value});
+                                }
+                            }
+                            say ddump($self);
+                            die "no such thjing (inside $object) $id";
+                        },
                     });
+                    $inner->{owner} = $self;
                     $s->{inner} = $inner;
                     $s->{value} .= join "", @{$inner->htmls || []};
                     $s->{html} = 1;
@@ -240,6 +253,32 @@ sub app_menu_hooks {
         },
         class => "menu",
         nospace => 1,
+        event => sub {
+            my $self = shift;
+            my $event = shift;
+            my $object = shift;
+            my $submenu = shift;
+            my $id = $event->{id};
+            
+            if (!$object) {
+                for my $s (@{ $self->{tuxts} }) {
+                    if ($s->{id} eq $id) {
+                        $object = $s->{origin};
+                        last;
+                    }
+                }
+            }
+            if (!$submenu) {
+                $submenu = ".";
+            }
+            if ($object->menu->{$submenu}) {
+                $object->menu->{$submenu}->($event);
+            }
+            else {
+                say ddump($self);
+                die "$self->{id} $self->{view}->{divid} cannot route $id -> $object $submenu";
+            }
+        },
     };
 }
 
@@ -283,7 +322,7 @@ sub event {
     my $self = shift;
     my $menuv = $self->{appmenu};
     say "Hostinfo passing probable menu action to $menuv->{id} $menuv->{menu}";
-    $menuv->{menu}->event(@_);
+    $menuv->{text}->event(@_);
 }
     
 
@@ -515,7 +554,7 @@ sub init_flood {
     $fm->text->replace([("FLOOD")x7]);
 
     $self->{floodzy} = $f->spawn_floozy(
-        floodzy => "width:420px;  background: #44ag30; color: #afc; height: 100px; font-weight: bold;",
+        floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
         hi_error => "width:420px;  background: #ff9988; color: #030; height: 420px; font-weight: bold;",

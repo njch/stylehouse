@@ -178,14 +178,13 @@ sub wipehtml {
 
 sub event {
     my $self = shift;
-    my $tx = shift;
     my $event = shift;
     my $this = shift;
 
     say "Event in ".$self->label." heading for "
         .$self->owner.($self->{owner}->{name} ? " ($self->{owner}->{name})" : "");
 
-    $self->owner->event($tx, $event, $this, $self);
+    $self->owner->event($event, $this, $self);
 }
 
 sub takeover {

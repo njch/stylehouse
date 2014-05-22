@@ -305,13 +305,19 @@ sub ddump {
 
 sub event {
     my $self = shift;
-    my $tx = shift;
     my $event = shift;
 
-    say "Event in texty: $self->{id} heading for ".$self->{view}->{id};
-
-    $self->view->event($tx, $event, $self);
+    if ($self->{hooks}->{event}) {
+        say "Texty $self->{id} hooking event";
+        $self->{hooks}->{event}->($self, $event, @_);
+    }
+    else {
+        say "Texty $self->{id} event heading for ".$self->{view}->{id};
+        $self->view->event($event, $self);
+    }
 }
+
+
 
 sub owner {
     my $self = shift;
