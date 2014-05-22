@@ -1,4 +1,6 @@
 package Codon;
+use strict;
+use warnings;
 use Scriptalicious;
 use File::Slurp;
 use HTML::Entities;
@@ -36,17 +38,15 @@ sub display {
 
     my $show = $self->{show} ||= do {
         say "\n New FLoozy for $divid\n\n";
-        $codo->{coshow}->spawn_floozy($self, $divid, "width:58%;  background: #402a35; color: #afc; height: 60px;");
+        $codo->{coshow}->spawn_floozy($self, $divid, "width:89%; background:#202a15; color:#afc; height:23em;");
     };
 
     my $texty = $self->{text} = $show->text;
 
-    if (grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} }) {
-
-        my $temp = $self->{hostinfo}->{flood}->spawn_floozy($self,
-            temp => "width:100px; height:30px; background: white; color: #362; overflow: scroll;",
-        )
-    }
+    my $temp = $self->{hostinfo}->{flood}->spawn_floozy($self,
+        temp => "width:89%; height:23em; background: white; color: #362; overflow: scroll;",
+    )
+        if grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} };
 
     my @chunks;
     for my $c (@{$self->{chunks}}) {
@@ -107,9 +107,8 @@ sub display {
         elsif ($ness eq "Open") { # was Open, copy stuff cliently
             my $tempid = $texty->{id}."-Temp-$i";
             my $textid = $texty->{id}."-Text-$i";
-            die unless $1 == $i;
             $self->{hostinfo}->send(
-                "\$('#$show->{divid} #$textid').replaceWith('#$temp->{divid} #$textid');"
+                "\$('#$show->{divid} #$textid').replaceWith(\$('#$tempid #$textid'));"
             );
         }
         elsif ($ness eq "Closed") {
@@ -124,9 +123,7 @@ sub display {
         }
     }
 
-    if ($tid) { # remove the temp data - this be a tractor once textys are geometrica
-        $self->{hostinfo}->send(qq{  \$('#$divid > #$tid').remove();  });
-    }
+    $temp->nah() if $temp;
 
     $texty->{max_height} = 1000;
     $texty->fit_div;
@@ -136,24 +133,25 @@ sub event {
     my $self = shift;
     my $e = shift;
     my $id = $e->{id};
-    my $tuxt = $self->{text}->id_to_tuxt($id);
-    my $i = $tuxt->{i} if $tuxt;
+    my $s = $self->{text}->id_to_tuxt($id);
+    my $i = $s->{i} if $s;
     
-    if ($tuxt && $i) {
+    if ($s && $i) {
         say "Codo\t\t$self->{name}\t\t OP E  N $i";
 
         $self->{openness}->{$i} = "Opening";
 
         $self->display();
     }
-    elsif ($id =~ /-Save(-\d+)?$/) {
-        $self->save();
+    elsif ($id =~ /-Save-\d+$/) {
+        say "Codon $self->{name} SAVE $id, $s";
+        $self->save_chunk($s);
     }
     elsif ($id =~ s/-Close(?:-(\d+))?$//) {
         $i ||= $1;
         say "Codo > > > close < < < $self->{name} chunk $i";
 
-        $self->save();
+        $self->save_chunk($s);
 
         $self->{openness}->{$i} = "Closing";
 
@@ -164,26 +162,13 @@ sub event {
     }
     else {
         say "Codo $self->{name} event want something else?";
-        say ddump($e);
+        say ddump([$s, $i, $e]);
     }
 }
 
 sub away {
     my $self = shift;
 
-}
-
-sub unload {
-    my $self = shift;
-    $self->{chunks_unload} = {};
-    my $tuxts = $self->{text}->{tuxts};
-    for my $t (@$tuxts) {
-        next unless $t->{textarea};
-        my $i = $tuxt->{i};
-        $self->{chunks_unload}->{$i} = 1;
-        $self->up_load($t->{id});
-        say "try up_load $i";
-    }
 }
 
 sub readfile {
@@ -196,19 +181,32 @@ sub writefile {
     return $self->{hostinfo}->getapp("Codo")->writefile(@_);
 }
 
-sub save { # precursor to update
+sub save_chunk {
     my $self = shift;
-    my $id = shift;
+    my $s = shift;
+    my $i = $s->{i} || die ddump($s);
+
+    my $textid = $self->{text}->{id}."-Text-$i";
+
     my $sec = $self->{hostinfo}->claw_add( sub {
         my $e = shift;
-        my $id = $e->{id};
-        my $tuxt = $self->{text}->id_to_tuxt($id);
-        my $i = $tuxt->{i};
-        $self->update($i => decode_entities($e->{code})); # only one codon on screen at a time, build fancier shit? can probably work around it fine.
+        $self->update($i => decode_entities($e->{code}));
     } );
+
     $self->{hostinfo}->send(
-         "  ws.reply({claw: '$sec', id: '$id', code: \$('#$id-ta').val()}); "
+         "  ws.reply({claw: '$sec', code: \$('#$textid').val()}); "
     );
+}
+
+sub save_all {
+    my $self = shift;
+    $self->{saving} = {};
+    for my $s (@{$self->{text}->{tuxts}}) {
+        if ($self->{openness}->{$s->{i}}) {
+            $self->{saving}->{$s->{i}} = 1;
+            $self->save_chunk($s)
+        }
+    }
 }
 
 sub update {
@@ -216,16 +214,15 @@ sub update {
     my $i = shift;
     my $code = shift;
     my $chunks = $self->{chunks};
+    my $c = $chunks->{$i} || die;
 
-    my $before = scalar(@{$chunks->[$i]->{lines}});
-    $chunks->[$i]->{lines} = [ split "\n", $code ];
-    my $after = scalar(@{$chunks->[$i]->{lines}});
+    $c->{lines} = [ split "\n", $code ];
     
-    say "Codon $self->{name} \t$self->{codefile}\tchunk $i line count $before -> $after";
+    say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
 
-    if ($self->{Going}) {
-        delete $self->{chunks_unload}->{$i} || die "wtf";
-        if (keys %{ $self->{chunks_unload} }) {
+    if ($self->{saving}) {
+        delete $self->{saving}->{$i} || die "wtf";
+        if (keys %{ $self->{saving} }) {
             say " more chunks awaiting...";
             return;
         }
@@ -233,13 +230,17 @@ sub update {
         $self->{Gone} = $self->{hostinfo}->hitime();
     }
 
+    say "Going to write $self->{name}";
+
     my $lines = [];
     for my $v (@$chunks) {
         push @$lines, @{$v->{lines}};
     }
     my $whole = join "\n", @$lines;
     $whole .= "\n" unless $whole =~ /\n$/s;
+
     $self->writefile($self->{codefile}, $whole);
+    
     $self->chunk();
 }
 

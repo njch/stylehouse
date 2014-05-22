@@ -131,7 +131,8 @@ sub flooz {
 
 sub nah {
     my $self = shift;
-    say "Ref: ".ref $self->owner;
+    say "View removing ".$self->label;
+    $self->hostinfo->send("\$('#$self->{divid}').remove();");
     $self->wipehtml unless ref $self->owner eq "Lyrico";
 }
 

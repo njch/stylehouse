@@ -248,7 +248,7 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->create_view($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif;",
+            "width:98%; background: #333; color: #afc; font-family: serif; bottom:0px; position: fixed;",
             before => "#body :first",
             "menu",
         );

@@ -256,6 +256,7 @@ sub random_colour_background {
 sub id_to_tuxt {
     my $self = shift;
     my $id = shift;
+    $id =~ s/(\w+-\w+)-\w+-(\d+)/$1-$2/;
     for my $s (@{$self->tuxts}) {
         return $s if $s->{id} eq $id;
     }
