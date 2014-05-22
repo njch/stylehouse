@@ -668,6 +668,10 @@ sub duction {
         $ref = $r;
     }
 
+    if ($this->{owner}) {
+        $ref = "$ref-".(ref $this->{owner});
+    }
+
     $this->{id} = "$ref-$this->{huid}";
 
     return $self;

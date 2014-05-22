@@ -76,7 +76,8 @@ sub spawn_floozy {
 
     $where = "#$where->{divid}" if ref $where;
 
-    say "Spawning floozy $divid   : $style\n$attach => $where";
+    say "Spawning floozy $divid   : $style";
+    say "    $attach => $where";
 
     my $floozy = $self->{hostinfo}->create_view(
         ($this || $self), $divid, $style,
@@ -168,7 +169,7 @@ sub html {
 
 sub wipehtml {
     my $self = shift;
-    $self->hostinfo->send("\$('#".$self->{divid}." > .".$self->{id}."').remove();") if $self->html;
+    $self->hostinfo->send("\$('#".$self->{divid}." > *').remove();") if $self->html;
     $self->fit_div();
     $self->html("");
     1;
@@ -180,7 +181,8 @@ sub event {
     my $event = shift;
     my $this = shift;
 
-    say "Event in ".$self->label." heading for ".$self->owner;
+    say "Event in ".$self->label." heading for "
+        .$self->owner.($self->{owner}->{name} ? " ($self->{owner}->{name})" : "");
 
     $self->owner->event($tx, $event, $this, $self);
 }

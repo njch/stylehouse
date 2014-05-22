@@ -361,62 +361,20 @@ sub event {
     my $id = $event->{id};
 
     my $codolist_texty = $self->{codolist}->text;
-    my $codon = $self->{the_codon};
-    say "Old CODON: $codon->{name}" if $codon;
-    my $tuxt = $codon->{text}->id_to_tuxt($id) if $codon && $codon->{text};
-    my $i = $tuxt->{i} if $tuxt;
 
-    $self->{hostinfo}->info({
-        menu => $self->{codolist}->text->{divid},
-        Codon => $codon,
-        tuxt => $tuxt,
-        '->' => $id,
-    });
+    say $self->{codolist}->text->{divid}." $id";
 
-    return if $id =~ /-ta$/;
-
-
-
-    if ($id =~ /-Save(-\d+)?$/) {
-        $codon->save();
-    }
-    elsif ($id =~ s/-Close(?:-(\d+))?$//) {
-        $i ||= $1;
-        say "Codo > > > close < < < $codon->{name} chunk $i";
-
-        $codon->save();
-
-        $codon->{openness}->{$i} = "Closing";
-
-        $codon->display();
-    }
-    elsif (my $s = $self->{codolist}->{text}->id_to_tuxt($id)) { # LIST of codons
+    if (my $s = $self->{codolist}->{text}->id_to_tuxt($id)) { # LIST of codons
         my $it = $s->{value};
         if ($s->{codon}) {
-            $codon->away() if $codon;
-
-            $codon = $s->{codon};
-
-            say "Codo load:\t\t$codon->{name}";
-
-            $self->load_codon($codon);
-        }
-        elsif ($it eq "S") {
-            $codon->save();
+            $self->load_codon($s->{codon});
         }
         else {
             die $s;
         }
     }
-    elsif ($codon) {
-        say "Codo\t\t$codon->{name}\t\t OP E  N $i";
-
-        $codon->{openness}->{$i} = "Opening";
-
-        $codon->display();
-    }
     else {
-        return $self->hostinfo->error("Codo event 404 for $id", $event, $codon, $tuxt);
+        return $self->hostinfo->error("Codo event 404 for $id", $event);
     }
 }
 
@@ -424,12 +382,10 @@ sub load_codon {
     my $self = shift;
     my $codon = shift;
 
-    say "load $codon";
+    say "Codo load $codon->{name}";
     $codon = $self->codon_by_name($codon) unless ref $codon;
     $codon || die;
 
-    $self->{the_codon} = $codon;
-    
     $codon->display($self);
 }
 

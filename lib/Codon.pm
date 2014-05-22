@@ -34,9 +34,12 @@ sub display {
 
     my $divid = $self->{id};
 
-    my $show = $self->{show} ||= $codo->{coshow}->spawn_floozy($self, $divid, "width:58%;  background: #402a35; color: #afc; height: 60px;");
+    my $show = $self->{show} ||= do {
+        say "\n New FLoozy for $divid\n\n";
+        $codo->{coshow}->spawn_floozy($self, $divid, "width:58%;  background: #402a35; color: #afc; height: 60px;");
+    };
 
-    my $texty = $show->text;
+    my $texty = $self->{text} = $show->text;
 
     if (grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} }) {
 
@@ -45,14 +48,14 @@ sub display {
         )
     }
 
-    say "A CoDon: ". ddump($self);
-
     my @chunks;
     for my $c (@{$self->{chunks}}) {
         my $i = $c->{i};
         my $lines = $c->{lines};
         my $rows = scalar(@$lines);
         my $ness = $self->{openness}->{$i};
+
+        say "$i is $ness";
         
         if ($ness =~ /^Open/) {
             $rows = 25 if $rows > 25;
@@ -60,10 +63,13 @@ sub display {
 
             if ($ness eq "Open") {
                 my $tempid = $texty->{id}."-Temp-$i";
+                my $textid = $texty->{id}."-Text-$i";
                 $texty->hostinfo->send("\$('#$temp->{divid}').append('<span id=\"$tempid\"></span>');");
-                $texty->hostinfo->send("\$('#$texty->{id}-Text-$i').appendTo('#$tempid');");
-                $self->{openness}->{$i} = $tempid;
+                $texty->hostinfo->send("\$('#$textid').appendTo('#$tempid');");
             }
+
+            say "Sending TEXTAREA, totally...";
+
             push @chunks,
                 "!html !i=$i "
                 .'<textarea name="code" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
@@ -77,6 +83,7 @@ sub display {
         }
     }
 
+    say "Going to replace!!!";
     $texty->replace(["!html <h2>$self->{name}</h2>", @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
@@ -93,16 +100,20 @@ sub display {
         my $ness = $self->{openness}->{$i};
 
         if ($ness eq "Opening") {
-            $self->{hostinfo}->send(qq{  \$('#$s->{id}').text("$code");  });
+            my $textid = $texty->{id}."-Text-$i";
+            $self->{hostinfo}->send(qq{  \$('#$textid').text("$code");  });
+            $self->{openness}->{$i} = "Open";
+        }
+        elsif ($ness eq "Open") { # was Open, copy stuff cliently
+            my $tempid = $texty->{id}."-Temp-$i";
+            my $textid = $texty->{id}."-Text-$i";
+            die unless $1 == $i;
+            $self->{hostinfo}->send(
+                "\$('#$show->{divid} #$textid').replaceWith('#$temp->{divid} #$textid');"
+            );
         }
         elsif ($ness eq "Closed") {
             # has it all
-        }
-        elsif ($ness =~ /Temp-(\d+)/) { # was Open, copy stuff cliently
-            die unless $1 == $i;
-            $self->{hostinfo}->send(
-                "\$('#$texty->{view}->{divid} #$texty->{id}-Text-$i').replaceWith('#$temp->{divid} #$texty->{id}-Text-$i');"
-            );
         }
         else {
             my $lines = $c->{lines};
@@ -116,12 +127,45 @@ sub display {
     if ($tid) { # remove the temp data - this be a tractor once textys are geometrica
         $self->{hostinfo}->send(qq{  \$('#$divid > #$tid').remove();  });
     }
-    if (%{ $self->{openness} }) {
-        $self->{last_openness} = { %{ $self->{openness} } };
-    }
 
     $texty->{max_height} = 1000;
     $texty->fit_div;
+}
+
+sub event {
+    my $self = shift;
+    my $e = shift;
+    my $id = $e->{id};
+    my $tuxt = $self->{text}->id_to_tuxt($id);
+    my $i = $tuxt->{i} if $tuxt;
+    
+    if ($tuxt && $i) {
+        say "Codo\t\t$self->{name}\t\t OP E  N $i";
+
+        $self->{openness}->{$i} = "Opening";
+
+        $self->display();
+    }
+    elsif ($id =~ /-Save(-\d+)?$/) {
+        $self->save();
+    }
+    elsif ($id =~ s/-Close(?:-(\d+))?$//) {
+        $i ||= $1;
+        say "Codo > > > close < < < $self->{name} chunk $i";
+
+        $self->save();
+
+        $self->{openness}->{$i} = "Closing";
+
+        $self->display();
+    }
+    elsif ($id && $id =~ /Text-\d+/) {
+        say " clicked textarea or so";
+    }
+    else {
+        say "Codo $self->{name} event want something else?";
+        say ddump($e);
+    }
 }
 
 sub away {
