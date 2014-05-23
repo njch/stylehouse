@@ -5,7 +5,7 @@ use IO::Async::Loop::Mojo;
 use IO::Async::Stream;
 use UUID;
 use Scalar::Util 'weaken';
-use Time::HiRes 'gettimeofday';
+use Time::HiRes 'gettimeofday', 'usleep';
 use View;
 
 my $data = {};
@@ -287,7 +287,7 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->create_view($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; bottom:0px; position: fixed;",
+            "width:98%; background: #333; color: #afc; font-family: serif; bottom:0px; z-index:5; position: fixed;",
             before => "#body :first",
             "menu",
         );
@@ -433,14 +433,6 @@ sub arrive {
 }
 
 
-my $div_styley = { # these go somewhere magical and together, like always
-    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
-    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
-    view => "width:35%; background: #c9f; height: 500px;",
-    hodi => "width:30%; background: #09f; height: 500px;",
-    babs => "width:55%; background: #09f; height: 300px;",
-};
-
 sub get_view { # TODO rip this out
     my $self = shift;
     my $this = shift;
@@ -471,60 +463,9 @@ sub accum {
 
 sub create_view {
     my $self = shift;
-    my $this = shift;
-    my $divid = shift;
-    my $style = shift;
-    my $attach = shift;
-    my $where = shift;
-    my $class = shift || "view";
-
-    if (!$style) { # TODO rip out after get_view?
-        $style = $div_styley->{$divid} || do{use Carp;confess};
-    }
-
-    my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' "></div>';
-
-    $self->set('tvs/'.$divid.'/div', $div);
-    $self->set('tvs/'.$divid.'/style', $style); # Tractorise
-
-    #say "Creating View -> $divid";
-    my $view = new View($self->intro, $divid);
-
-    my $exists = $self->get('tvs/'.$divid);
-    say "View $divid already existed\n\n" if $exists;
-
-    $self->accum('tvs/'.$divid, $view);
-
-    #say "Placing $this ->{$divid}";
-    $this->{$divid} = $view unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
-    $self->set("$this $view" => 1); # same as:
-    $view->owner($this);
-
-    $self->view_incharge($view);
-
-    #say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
-
-    $where ||= "body";
-    $where = "#".$where if $where =~ /^\w+$/;
-    $attach ||= "append";
-
-    # remember to say :first or :last etc in $where
-    if ($attach && $attach eq "after") {
-        $self->send("\$('$where').after('$div');");
-    }
-    elsif ($attach && $attach eq "before") {
-        $self->send("\$('$where').before('$div');");
-    }
-    elsif ($attach && $attach eq "replace") {
-        $self->send("\$('$where').replaceWith('$div');");
-    }
-    else {
-        $self->send("\$('$where').append('$div');");
-    }
-
-    $view->wipehtml(); # + label
-
-    return $view;
+    new View(
+        $self->intro, @_
+    );
 }
 
 sub init_flood {
@@ -534,6 +475,7 @@ sub init_flood {
         "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;"
     );
     my $fm = $f->spawn_ceiling(
+        "flood_ceiling",
         "width: ".420*1.14."px; height: 60px;background: #301a30; color: #afc; font-weight: bold;",
         "fixed",
     );
@@ -597,6 +539,11 @@ sub flood {
 
         #$texty->{max_height} ||= 1000;
         $texty->fit_div;
+        
+        if ($self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
+            $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
+        }
+        $self->{flood}->{latest} = $floozy;
     }
     elsif (0) {
         my $wormhole;
@@ -621,6 +568,10 @@ sub flood {
     }
 }
 
+sub usleep {
+    my $self = shift;
+    return Time::HiRes::usleep(shift || 5000);
+}
 sub hitime {
     my $self = shift;
     return join ".", time, (gettimeofday())[1];

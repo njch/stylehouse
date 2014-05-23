@@ -9,14 +9,71 @@ has 'owner';
 has 'divid';
 has 'id';
 
+my $div_styley = { # these go somewhere magical and together, like always
+    hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
+    gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
+    view => "width:35%; background: #c9f; height: 500px;",
+    hodi => "width:30%; background: #09f; height: 500px;",
+    babs => "width:55%; background: #09f; height: 300px;",
+};
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-
+    my $this = $self->{owner} = shift;
     my $divid = $self->{divid} = shift;
-    
-    $self;
+    my $style = shift;
+    my $attach = shift;
+    my $where = shift;
+    my $class = shift || "view";
+
+    if (!$style) { # TODO rip out after get_view?
+        $style = $div_styley->{$divid} || do{use Carp;confess};
+    }
+
+    my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' "></div>';
+
+    $self->{hostinfo}->set('tvs/'.$divid.'/div', $div);
+    $self->{hostinfo}->set('tvs/'.$divid.'/style', $style); # Tractorise
+
+    my $exists = $self->{hostinfo}->get('tvs/'.$divid);
+    if ($exists) {
+        my $old = $self->{hostinfo}->get('tvs/'.$divid);
+        say "View $divid already existed\n";
+        $old->nah();
+    }
+
+    $self->{hostinfo}->accum('tvs/'.$divid, $self);
+
+    say "Placing $this ->{$divid}";
+    $this->{$divid} = $self unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
+
+    $self->{hostinfo}->view_incharge($self);
+
+    #say "\n # # (".($where||"?").")".($attach||"?")." $divid ";
+
+    $where ||= "body";
+    $where = "#".$where if $where =~ /^\w+$/;
+    $attach ||= "append";
+
+    # remember to say :first or :last etc in $where
+    if ($attach && $attach eq "after") {
+        $self->{hostinfo}->send("\$('$where').after('$div');");
+    }
+    elsif ($attach && $attach eq "before") {
+        $self->{hostinfo}->send("\$('$where').before('$div');");
+    }
+    elsif ($attach && $attach eq "replace") {
+        $self->{hostinfo}->send("\$('$where').replaceWith('$div');");
+    }
+    else {
+        $self->{hostinfo}->send("\$('$where').append('$div');");
+    }
+
+    $self->wipehtml(); # + label
+
+    return $self;
 }
+
 
 # right so here we have an arc of stuff, going from motive to static
 # menu items to text
@@ -53,7 +110,7 @@ sub spawn_floozy {
     my $self = shift;
     my $this = shift if ref $_[0];
     my $divid = shift;
-    my $style = shift;
+    my $style = shift || $self->{hostinfo}->get('tvs/'.$self->{divid}.'/style');
     my $attach = shift;
     my $where = shift;
 
@@ -92,12 +149,14 @@ sub spawn_floozy {
 
 sub spawn_ceiling {
     my $self = shift;
+    my $this = shift if ref $_[0];
+    my $divid = shift || $self->{divid}."_ceiling";
     my $style = shift;
     my $staticness = shift;
     
     $style .= " position: fixed;" if $staticness;
 
-    my $c = $self->{ceiling} = $self->spawn_floozy($self, $self->{divid}."_ceiling", $style);
+    my $c = $self->{ceiling} = $self->spawn_floozy(($this || $self), $divid, $style);
 
     if ($staticness) {
         $c->spawn_floon();
@@ -149,11 +208,9 @@ sub label {
 sub default_html {
     my $self = shift;
     my $html = "";
-    if ($self->{floozal}) {
         $html .= '<span class="'.$self->{id}
-            .'" style="top 1px; position: fixed; right: 1px; align: right;">'
+            .'" style="position: fixed; float: right;">'
             .$self->label.'</span>';
-    }
     return $html;
 }
 
@@ -189,7 +246,7 @@ sub event {
 
 sub takeover {
     my $self = shift;
-    my $html = concat_array(shift); # [([html+],html)+]
+    my $html = concat_array(shift);
     my $texty = shift;
 
     if (!defined $html) {

@@ -55,20 +55,19 @@ sub new {
     else { die "no such style: $style" }
 
     my $hi = $self->{hostinfo};
-    $hi->{flood}->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
     
 
-    $self->{coshow} = $hi->create_view($self,
-        coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;"
-    );
+    my $cs =
+    $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
 
-    $self->{codolist} = $self->{coshow}->spawn_ceiling("width:58%;  background: #402a35; color: #afc; height: 60px;", "fixed");
+        $cs->spawn_ceiling($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+
+        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
+
+        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
-
-    $self->{codes} = $hi->get("Codo/codes")
-                  || $hi->set("Codo/codes", []);
 
     $self->init_codons();
 
@@ -76,17 +75,96 @@ sub new {
 
     $self->init_state();
     
-    say "\n\n\n\n\n";
-    my $last = "Ghost";
+    $self->init_proc_list();
+
+# recover openness 
     for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
-        say $s->{value};
         $s->{value} eq "Ghost" && do {
             $self->event({id => $s->{id}});
         };
     }
-    
 
     return $self;
+}
+
+sub menu {
+    my $self = shift;
+    $self->{menu} ||= {
+        nah => sub { $self->nah },
+        new => sub { $self->new_ebuge() },
+        '<views>' => sub {
+            say "Sending view dump\n\n";
+            $self->infrl("views", $self->hostinfo->dkeys);
+        },
+        "<obso>" => sub {
+            say "Sending obsotrav dump\n\n";
+            $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
+        },
+        "RRR" => sub { # they might wanna load new css/js too
+            $self->infrl('restarting (if)');
+            `touch $0`;
+        },
+        "spawn" => sub {
+            $self->spawn_child();
+        },
+        "restate" => sub {
+            $self->init_state();
+        },
+    }
+}
+
+sub spawn_child {
+    my $self = shift;
+        return $self->errl( "no procserv.pl",
+            "cannot spawn processes", "run ./procserv.pl yourself") unless grep /procserv.pl/, `ps faux`;
+    my $outside = "styleshed";
+        return $self->errl("$outside already running") if $self->{state}->{$outside};
+        return $self->errl("../$outside does not exist") unless -d "../$outside";
+
+    push @{$self->{procs}}, Proc->new($self->{hostinfo}->intro, $self->{processes}, $self->childcmd($outside))
+}
+
+sub init_proc_list {
+    my $self = shift;
+
+    my $pl = $self->{proc_list} = $self->{coshow}->spawn_floozy(
+        'proc_list', "width:92%;  background: #303a3a; color: #afc; height: 60px; font-weight: bold;"
+    );
+    $pl->{extra_label} = "proc/list";
+
+    # watch the list of started files and their pids
+    $self->hostinfo->stream_file("proc/list", sub {
+        my $line = shift;
+        chomp $line;
+        print "~";
+        $self->{hostinfo}->usleep(5000);
+
+        $pl->text->append([$line]);
+        
+        return 0 unless $line =~ /\S/;
+
+        my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)$/;
+        my $proc;
+        for my $p (@{ $self->{procs} }) {
+            say " - have $p->{cmd}";
+            if ($p->{cmd} eq $cmd_echo) {
+                $proc = $p;
+                last;
+            }
+        }
+
+        if ($proc) {
+            $pl->text->append(["!html <i>YUP</i>"]);
+            say "\n proc appears $pid: $cmd_echo";
+            #$proc->started($pid);
+        }
+        else {
+            $pl->text->append(["!html <i>not ours</i>"]);
+            say "\n proc not ours; $cmd_echo";
+        }
+
+        return 0;
+    });
 }
 
 sub init_codons { #{{{
@@ -156,36 +234,8 @@ sub codolist {#{{{
 }#}}}
 
 
-sub menu {
-    my $self = shift;
-    $self->{menu} ||= do {
-        my $m = {};
-        $m->{"nah"} = sub { $self->nah };
-        $m->{"new"} = sub { $self->new_ebuge() };
-        $m->{"<views>"} = sub {
-            say "Sending view dump\n\n";
-            $self->infrl("views", $self->hostinfo->dkeys);
-        };
-        $m->{"<obso>"} = sub {
-            say "Sending obsotrav dump\n\n";
-            $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
-        };
-        $m->{"RRR"} = sub { # they might wanna load new css/js too
-            $self->infrl('restarting (if)');
-            `touch $0`;
-        };
-        $m->{"spawn"} = sub {
-            $self->spawn_child();
-        };
-        $m->{"restate"} = sub {
-            $self->init_state();
-        };
 
-        $m;
-    };
-}
-
-sub child {
+sub childcmd {
     my $self = shift;
     my $given = shift;
     if ($given && $given =~ /^style(\w+)$/) {
@@ -255,12 +305,12 @@ sub init_state { # {{{
 
     $i = 0;
     for (`ps -eo pid,cmd | grep style`) {
-        if (/(\d+) (.+)$/s) {
-            $ps->{$1} = {
+        if (/(\d+) (.+)$/sm) {
+            ($ps->{$1} = {
                 pid => $1,
                 cmd => $2,
                 i => $i++,
-            };
+            })->{cmd} =~ s/\n$//;
         }
     }
 
@@ -273,7 +323,7 @@ sub init_state { # {{{
     for my $t (values %$s) {
         for my $p (values %$t) {
             if ($p->{cmd}) {
-                my ($name, $mess) = $self->child($p->{cmd});
+                my ($name, $mess) = $self->childcmd($p->{cmd});
                 if ($p->{name} && ($p->{name} ne $name || $p->{mess} ne $mess)) {
                     die "conflicter of the... $p->{cmd}\n'$p->{name}' ne '$name' || '$p->{mess}' ne '$mess'\n".anydump($s);
                 }
@@ -282,10 +332,15 @@ sub init_state { # {{{
             }
         }
     }
+#}}}
 
 
+    my $what = [
+        sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
+    $_ =~ s/^\d+ // for @$what;
+    $self->{codostate}->flooz(join "\n", @$what); # Tractor should make this interactive
 
-    $self->{codostate}->flooz($s);
+
     return;
 
     my @S = "aggregate";
@@ -307,43 +362,6 @@ sub init_state { # {{{
     $cst->replace($S);
 }
 
-sub spawn_child {
-    my $self = shift;
-    unless ( grep /procserv.pl/, `ps faux` ) {
-        return $self->errl( "no procserv.pl",
-            "cannot spawn processes", "run ./procserv.pl yourself");
-    }
-    my $outside = "styleshed";
-    if ($self->{state}->{$outside}) {
-        return $self->errl("$outside already running");
-    }
-    unless (-d "../$outside") {
-        return $self->errl("../$outside does not exist");
-    }
-    $self->{outside} = Proc->new($self->{hostinfo}->intro, outside => $self->child($outside));
-    $self->{outside}->{owner} = $self;
-    $self->infrl("spawning $outside");
-    $self->{hostinfo}->update_app_menu();
-}
-sub infrl {
-    my $self = shift;
-    my $first = shift;
-    $first = qq{!html <h2>$first</h2>};
-    $self->{hostinfo}->flood(join "\n", $first, @_);
-}
-sub errl {
-    my $self = shift;
-    my $first = shift;
-    $first = qq{!html <h2 class="err">$first</h2>};
-    $self->{hostinfo}->flood(join "\n", $first, @_);
-}
-sub proc_killed {
-    my $self = shift;
-    my $proc = shift;
-    delete $self->{$proc->{name}};
-    $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
-}
-
 sub list_of_codefiles {
     my $self = shift;
     my $dir = $self->{code_dir} || "";
@@ -362,7 +380,7 @@ sub event {
 
     my $codolist_texty = $self->{codolist}->text;
 
-    say $self->{codolist}->text->{divid}." $id";
+    say $self->{codolist}->{divid}." $id";
 
     if (my $s = $self->{codolist}->{text}->id_to_tuxt($id)) { # LIST of codons
         my $it = $s->{value};
@@ -415,6 +433,25 @@ sub writefile {
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
+}
+
+sub infrl {
+    my $self = shift;
+    my $first = shift;
+    $first = qq{!html <h2>$first</h2>};
+    $self->{hostinfo}->flood(join "\n", $first, @_);
+}
+sub errl {
+    my $self = shift;
+    my $first = shift;
+    $first = qq{!html <h2 class="err">$first</h2>};
+    $self->{hostinfo}->flood(join "\n", $first, @_);
+}
+sub proc_killed {
+    my $self = shift;
+    my $proc = shift;
+    delete $self->{$proc->{name}};
+    $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
 }
 
 sub nah {

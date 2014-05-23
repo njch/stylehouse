@@ -72,28 +72,103 @@ sub replace {
 
     return $self->view->takeover($self->htmls, $self);
 }
-sub spurt { # semi dupe of replace since they do hooks through to takeover...
-    # supposed to add a few more lines, percolate them through to the screen with minimal effort
+
+has 'lastlinepush' => sub { 0 };
+has 'queuestarts' => sub { 0 };
+
+sub hitime {
     my $self = shift;
-    my $lines = shift;
-    my $hooks = shift;
-    $hooks ||= {};
-    $hooks->{append} ||= "append";
-    return $self->replace($lines, $hooks);
+    return join ".", time, (gettimeofday())[1];
 }
+
+has 'linepushdelay' => sub { Mojo::IOLoop::Delay->new() };
+has 'linepushdelay_on' => sub { 0 };
+
+sub pushlines {
+    my $self = shift;
+
+    my @newlines;
+
+    my $last = $self->queuestarts || 0;
+    my $first = $last == 0 ? 0 : $last + 1;
+
+    my $i;
+    for my $l (@{$self->output}) {
+        next if $l < $first;
+        push @newlines, $l;
+    }
+
+    $self->{out}->text->append([map { join" ",@$_ } @newlines]);
+    say "Proc: pushed ".scalar(@newlines)." lines outwards";
+
+    $self->queuestarts( $last+1 );
+    $self->lastlinepush($self->hitime());
+    $self->linepushdelay_on(0);
+}
+
+sub gotline {
+    my $self = shift;
+    my $std = shift;
+    my $line = shift;
+
+    $line =~ s/\n$//;
+    say "gotline: $std $line";
+
+    push @{ $self->output }, [ $std, $line ];
+
+    return if $self->linepushdelay_on;
+
+    if ($self->hitime < $self->lastlinepush + 1) {
+        
+        $self->linepushdelay_on(1);
+        $self->linepushdelay->steps(
+            sub { Mojo::IOLoop->timer(1 => $self->linepushdelay->begin); say "Pushing lines in 1 second"; },
+            sub { $self->pushlines; },
+        );
+    }
+    else {
+        $self->pushlines();
+    }
+}
+
 
 sub append { # TRACTOR
     my $self = shift;
-    my $new = shift;
-    push @{ $self->lines }, @$new;
-    $self->lines_to_tuxts();
+    my $lines = shift;
+    my $hooks = shift;
+    $self->eathooks($hooks) if $hooks;
+
+    $self->{hooks}->{append} = 1;
+
+    my $oldlines = $self->{lines};
+    my $oldtuxts = $self->{tuxts};
+    my $oldhtmls = $self->{htmls};
+    my $oldnospace = $self->{hooks}->{nospace};
+
+    $self->{lines} = $lines;
+    $self->{hooks}->{nospace} = 1;
+
+    my $linit = @$oldlines;
+    $self->lines_to_tuxts($linit);
+    my $tuxts = $self->{tuxts};
+
+    $self->{tuxts} = [ @$oldtuxts, @$tuxts ];
+    $self->spatialise() unless $oldnospace;
+    $self->{tuxts} = $tuxts;
+
     $self->tuxts_to_htmls();
-    my @newhtml;
-    my @allhtml = @{$self->htmls};
-    for (1..scalar(@$new)) {
-        push @newhtml, pop @allhtml;
-    }
-    $self->view->takeover([@newhtml], "append");
+    my $htmls = $self->{htmls};
+
+    $self->{lines} = $oldlines;
+    $self->{tuxts} = $oldtuxts;
+    $self->{htmls} = $oldhtmls;
+    push @{$self->{lines}}, @$lines;
+    push @{$self->{tuxts}}, @$tuxts;
+    push @{$self->{htmls}}, @$htmls;
+    delete $self->{hooks}->{nospace};
+    $self->{hooks}->{nospace} = $oldnospace if $oldnospace;
+
+    $self->view->takeover($htmls, $self);
 }
 
 sub mktuxt {
@@ -141,6 +216,7 @@ sub mktuxt {
         if ($s->{value} =~ /\\n/) {
             my $ll = { l => 0 };
             for my $v (split /\\n/, $s->{value}) {
+
                                         $self->mktuxt($v, $ll, $d+1);
             }
             $s->{value} = "";
@@ -150,6 +226,7 @@ sub mktuxt {
 
 sub lines_to_tuxts {
     my $self = shift;
+    my $linit = shift || 0;
 
     my $L = $self->{lines};
     unless (@$L) {
@@ -158,9 +235,13 @@ sub lines_to_tuxts {
 
     $self->{tuxts} = [];
 
-    my $l = { l => 0 };
+    my $l = { l => $linit };
     for my $V (@$L) {
         $self->mktuxt($V, $l, 0);
+    }
+
+    if (my $pt = $self->{hooks}->{per_tuxt}) {
+        $pt->($_) for @{$self->{tuxts}};
     }
 
     $self->spatialise() unless $self->{hooks}->{nospace};
@@ -308,7 +389,7 @@ sub event {
     my $event = shift;
 
     if ($self->{hooks}->{event}) {
-        say "Texty $self->{id} hooking event";
+        say "Texty $self->{id} $self->{view}->{divid} hooking event";
         $self->{hooks}->{event}->($self, $event, @_);
     }
     else {
