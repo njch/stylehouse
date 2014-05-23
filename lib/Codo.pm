@@ -113,6 +113,38 @@ sub menu {
     }
 }
 
+sub event {
+    my $self = shift;
+    my $event = shift;
+    my $id = $event->{id};
+
+    my $listy = $self->{codolist}->text;
+    my $staty = $self->{codostate}->text;
+
+    say $self->{codolist}->{divid}." $id";
+
+    if (my $s = $listy->id_to_tuxt($id)) {
+        my $it = $s->{value};
+        if ($s->{codon}) {
+            $self->load_codon($s->{codon});
+        }
+        else {
+            die $s;
+        }
+    }
+    elsif (my $s = $staty->id_to_tuxt($id)) {
+        my ($pid, $cmd) = split ": ", $s->{value};
+        $self->errl("killing $pid: $cmd");
+        kill "INT", $pid;
+        $self->{hostinfo}->timer(0.2, sub {
+            $self->init_state()
+        });
+    }
+    else {
+        return $self->hostinfo->error("Codo event 404 for $id", $event);
+    }
+}
+
 sub spawn_child {
     my $self = shift;
         return $self->errl( "no procserv.pl",
@@ -339,27 +371,6 @@ sub init_state { # {{{
         sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
     $_ =~ s/^\d+ // for @$what;
     $self->{codostate}->flooz(join "\n", @$what); # Tractor should make this interactive
-
-
-    return;
-
-    my @S = "aggregate";
-    my $S = [];
-    for my $P (@S) {
-        push @$S,
-            "!html ". join(" <br/>",
-                '<span style="color: black;">'.$P->{pid}.'</span>',
-                join("_",
-                    map { '<span style="color: #230;">'.((-s $P->{$_}).' '.$_).'</span>' } qw{in err out}
-                ),
-                '<span style="color: blue; left: 40px;"> '.($P->{name}||"¿name?").'</span><br/>',
-                ($P->{name} ? '<span style="color: blue; left: 40px;"> '.($P->{cmd}||"¿cmd?").'</span><br/>' : ""),
-            );
-    }
-    my $cst = $self->{codostate_proc}->text;
-    $cst->{hooks}->{spatialise} = sub { { horizontal => 166, top=> '5', left => '5' } };
-    $cst->{hooks}->{tuxtstyle} = random_colour_background().' width:180px; height: 66px;';
-    $cst->replace($S);
 }
 
 sub list_of_codefiles {
@@ -371,29 +382,6 @@ sub list_of_codefiles {
         glob($dir.'lib/*.pm'),
         glob($dir.'ghosts/*/*'),
     );
-}
-
-sub event {
-    my $self = shift;
-    my $event = shift;
-    my $id = $event->{id};
-
-    my $codolist_texty = $self->{codolist}->text;
-
-    say $self->{codolist}->{divid}." $id";
-
-    if (my $s = $self->{codolist}->{text}->id_to_tuxt($id)) { # LIST of codons
-        my $it = $s->{value};
-        if ($s->{codon}) {
-            $self->load_codon($s->{codon});
-        }
-        else {
-            die $s;
-        }
-    }
-    else {
-        return $self->hostinfo->error("Codo event 404 for $id", $event);
-    }
 }
 
 sub load_codon {

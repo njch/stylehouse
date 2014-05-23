@@ -51,18 +51,14 @@ sub started {
 
     my $opc = $self->{play}->spawn_floozy("opc");
     my $opc_ch = {
-        err => sub {
-            shift->{style} .= "font-color: #95e";
-        },
-        out => sub {
-            shift->{style} .= "font-color: #022";
-        },
+        err => "font-color: #95e; ",
+        out => "font-color: #022; ",
     };
     my $pid = $self->{pid};
     for my $d ("err", "out") {
         $self->hostinfo->stream_file("proc/$pid.$d", sub {
             my $line = shift;
-            $opc->text->addhooks({ per_tuxt => $opc_ch->{$d} });
+            $opc->text->{hooks}->{tuxtstyle} = $opc_ch->{$d};
             $opc->text->append($line);
             1;
         });

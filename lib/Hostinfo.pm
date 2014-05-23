@@ -1,6 +1,7 @@
 package Hostinfo;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
+use Mojo::IOLoop;
 use IO::Async::Loop::Mojo;
 use IO::Async::Stream;
 use UUID;
@@ -62,7 +63,7 @@ sub god_send {
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
     
-    say "Websocket SEND: ". $short;
+    say "send\t\t". $short;
     
     $god->{tx}->send({text => $message});
 }
@@ -70,14 +71,14 @@ sub god_send {
 sub send_all {
     my $self = shift;
     my $messages = $self->for_all;
-    say "Sending ".(0+@$messages)." messages";
+    #say "Sending ".(0+@$messages)." messages";
     for my $message (@$messages) {
         my $gods = $self->get('gods');
         for my $god (@$gods) {
             $self->god_send($message, $god);
         }
     }
-    say "Done.";
+    #say "Done.";
     $self->for_all([]);
 }
 
@@ -576,6 +577,11 @@ sub hitime {
     my $self = shift;
     return join ".", time, (gettimeofday())[1];
 }
+sub timer {
+    my $self = shift;
+    my $time = shift || 0.2;
+    Mojo::IOLoop->timer( $time, @_ );
+}
 
 sub enlogform {
     my $self = shift;
@@ -586,7 +592,7 @@ sub enlogform {
     my $back = 5;
     for my $b (1..$back) {
         $b += 1; # error + this sub
-        push @$from, join ", ", (caller($b))[0,3,2]; # package, subroutine, line
+        push @$from, grep { !/Mojo::Server::SandBox/..0 } join " ", (caller($b))[0,3,2]; # package, subroutine, line
     }
 
     return [ hitime(), $from, $e ];
