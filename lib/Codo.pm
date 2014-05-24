@@ -335,7 +335,8 @@ sub init_state { # {{{
     my $ps = {};
 
     $i = 0;
-    for (`ps -eo pid,cmd | grep style`) {
+    for (`ps -eo pid,cmd`) {
+        next unless /style/;
         if (/(\d+) (.+)$/sm) {
             ($ps->{$1} = {
                 pid => $1,
