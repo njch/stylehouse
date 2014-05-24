@@ -393,7 +393,7 @@ sub event {
         $self->{hooks}->{event}->($self, $event, @_);
     }
     else {
-        say "Texty $self->{id} event heading for ".$self->{view}->{id};
+        say "Texty $self->{id} $self->{view}->{divid} event heading for ".$self->{view}->{id};
         $self->view->event($event, $self);
     }
 }

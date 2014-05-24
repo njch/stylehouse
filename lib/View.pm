@@ -37,7 +37,7 @@ sub new {
 
     my $exists = $self->{hostinfo}->get('tvs/'.$divid);
     if ($exists) {
-        my $old = $self->{hostinfo}->get('tvs/'.$divid);
+        my $old = $self->{hostinfo}->get('tvs/'.$divid.'/top');
         say "View $divid already existed\n";
         $old->nah();
     }

@@ -272,7 +272,8 @@ sub app_menu_hooks {
             if (!$submenu) {
                 $submenu = ".";
             }
-            if ($object->menu->{$submenu}) {
+            if ($object->can('menu') && $object->menu->{$submenu}) {
+                say "Hostinfo appmenu passing event ($id) to $object->{id} ->menu->{'$submenu'}";
                 $object->menu->{$submenu}->($event);
             }
             else {
@@ -325,17 +326,6 @@ sub event {
     say "Hostinfo passing probable menu action to $menuv->{id} $menuv->{menu}";
     $menuv->{text}->event(@_);
 }
-    
-
-sub menu {
-    my $self = shift;
-    return {
-        blah => sub {
-            $self->send_all;
-        },
-    };
-}
-
 # this is where human attention is (before this text was in the wrong place)
 # it's a place things flow into sporadically now
 # but it's a beautiful picture of the plays of whatever

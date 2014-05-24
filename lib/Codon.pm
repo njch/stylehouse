@@ -136,7 +136,7 @@ sub event {
     my $s = $self->{text}->id_to_tuxt($id);
     my $i = $s->{i} if $s;
     
-    if ($s && $i) {
+    if ($s && defined $i) {
         say "Codo\t\t$self->{name}\t\t OP E  N $i";
 
         $self->{openness}->{$i} = "Opening";
