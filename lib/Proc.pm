@@ -54,7 +54,6 @@ sub started {
         err => "font-color: #95e; ",
         out => "font-color: #022; ",
     };
-    my $pid = $self->{pid};
     for my $d ("err", "out") {
         $self->hostinfo->stream_file("proc/$pid.$d", sub {
             my $line = shift;

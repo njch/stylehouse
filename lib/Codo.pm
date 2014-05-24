@@ -132,7 +132,7 @@ sub event {
             die $s;
         }
     }
-    elsif (my $s = $staty->id_to_tuxt($id)) {
+    elsif ($s = $staty->id_to_tuxt($id)) {
         my ($pid, $cmd) = split ": ", $s->{value};
         $self->errl("killing $pid: $cmd");
         kill "INT", $pid;
@@ -168,8 +168,7 @@ sub init_proc_list {
     $self->hostinfo->stream_file("proc/list", sub {
         my $line = shift;
         chomp $line;
-        print "~";
-        $self->{hostinfo}->usleep(5000);
+        $self->{hostinfo}->snooze();
 
         $pl->text->append([$line]);
         

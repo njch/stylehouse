@@ -63,7 +63,7 @@ sub god_send {
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
     
-    say "send\t\t". $short;
+    say "send\t\t". $short unless $short =~ /#proc_list'\)\.(css|append)/;
     
     $god->{tx}->send({text => $message});
 }
@@ -569,7 +569,7 @@ sub flood {
     }
 }
 
-sub usleep {
+sub snooze {
     my $self = shift;
     return Time::HiRes::usleep(shift || 5000);
 }
