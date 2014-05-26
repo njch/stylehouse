@@ -6,6 +6,7 @@ use Scriptalicious;
 use Mojo::IOLoop;
 use IO::Async::Loop::Mojo;
 use IO::Async::FileStream;
+use HTML::Entities;
 use UUID;
 use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
@@ -374,21 +375,15 @@ sub loop {
     my $self = shift;
     $self->{loop} ||= IO::Async::Loop::Mojo->new();
 }
+
 sub stream_file {
     my $self = shift;
     my $filename = shift;
     my $linehook = shift;
     say "stream_file: $filename";
-    open(my $handle, "$filename");
-    $self->stream_handle($handle, $linehook);
-}
-sub stream_handle {
-    my $self = shift;
-    my $handle = shift;
-    my $linehook = shift;
 
     my $stream = IO::Async::FileStream->new(
-        read_handle  => $handle,
+        filename => $filename,
 
         on_read => sub {
             my ( $self, $buffref ) = @_;
@@ -467,7 +462,7 @@ sub init_flood {
     my $self = shift;
 
     my $f = $self->{flood} = $self->create_view($self, "flood",
-        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".420*2.34."px; overflow: scroll;"
+        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".8*420*2.34."px; overflow: scroll;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
@@ -525,7 +520,7 @@ sub flood {
     $floozy->{extra_label} = $from;
 
 
-    $thing = ddump($thing) unless ref \$thing eq "SCALAR";
+    $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
     if (ref \$thing eq "SCALAR") {
         my $lines = [split "\n", $thing];
         my $texty = $floozy->text;

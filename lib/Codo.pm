@@ -60,8 +60,10 @@ sub new {
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
         $cs->spawn_ceiling($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; font-weight: bold;")
+        ->text->replace(['!html <h2>processes</h2>']);
         $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
-        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
+
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -105,7 +107,6 @@ sub menu {
             $self->spawn_child();
         },
         "restate" => sub {
-            $self->init_proc_list();
             $self->init_state();
         },
     }
@@ -151,7 +152,7 @@ sub spawn_child {
         return $self->errl("$outside already running") if $self->{state}->{$outside};
         return $self->errl("../$outside does not exist") unless -d "../$outside";
 
-    push @{$self->{procs}}, Proc->new($self->{hostinfo}->intro, $self->{processes}, $self->childcmd($outside))
+    push @{$self->{procs}}, Proc->new($self->{hostinfo}->intro, $self->{coshow}, $self->childcmd($outside))
 }
 
 sub init_proc_list {

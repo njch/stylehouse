@@ -20,7 +20,7 @@ sub new {
     $self->{avoid_app_menu} = 1;
 
     my $play_in = shift;
-    $self->{play} = $play_in->spawn_floozy($self->{id});
+    $self->{play} = $play_in->spawn_floozy($self->{id}, 'width:92%;  background: #005a50; color: #afc; font-weight: bold;');
     $self->{play}->{extra_label} = $self->{cmd};
 
     $self->{cmd} = shift;
