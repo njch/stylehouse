@@ -390,6 +390,9 @@ sub stream_handle {
     my $stream = IO::Async::Stream->new(
         read_handle  => $handle,
 
+# TODO bullshit! doesn't keep trying to read further appendages
+#        close_on_read_eof => 0,
+
         on_read => sub {
             my ( $self, $buffref, $eof ) = @_;
 
