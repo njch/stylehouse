@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Mojo::IOLoop;
 use IO::Async::Loop::Mojo;
-use IO::Async::Stream;
+use IO::Async::FileStream;
 use UUID;
 use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
@@ -128,7 +128,7 @@ sub god_enters {
         $self->who($exist);
     }
     else {
-        $self->new_god($tx);
+        say "\n\n\nCannot God";
     }
 }
 
@@ -387,21 +387,14 @@ sub stream_handle {
     my $handle = shift;
     my $linehook = shift;
 
-    my $stream = IO::Async::Stream->new(
+    my $stream = IO::Async::FileStream->new(
         read_handle  => $handle,
 
-# TODO bullshit! doesn't keep trying to read further appendages
-#        close_on_read_eof => 0,
-
         on_read => sub {
-            my ( $self, $buffref, $eof ) = @_;
+            my ( $self, $buffref ) = @_;
 
             while( $$buffref =~ s/^(.*\n)// ) {
                 $linehook->($1);
-            }
-
-            if( $eof ) {
-                $linehook->($$buffref);
             }
 
             return 0;

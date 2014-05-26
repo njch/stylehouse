@@ -58,8 +58,7 @@ sub started {
         $self->hostinfo->stream_file("proc/$pid.$d", sub {
             my $line = shift;
             $opc->text->{hooks}->{tuxtstyle} = $opc_ch->{$d};
-            $opc->text->append($line);
-            1;
+            $opc->text->append([$line]);
         });
     }
 

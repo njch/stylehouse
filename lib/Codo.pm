@@ -60,8 +60,8 @@ sub new {
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
         $cs->spawn_ceiling($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
-        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
-        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
+        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
+        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
 
 
     $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
@@ -105,6 +105,7 @@ sub menu {
             $self->spawn_child();
         },
         "restate" => sub {
+            $self->init_proc_list();
             $self->init_state();
         },
     }
@@ -156,22 +157,21 @@ sub spawn_child {
 sub init_proc_list {
     my $self = shift;
 
-    my $pl = $self->{proc_list} = $self->{coshow}->spawn_floozy(
-        'proc_list', "width:92%;  background: #303a3a; color: #afc; height: 60px; font-weight: bold;"
-    );
-    $pl->{extra_label} = "proc/list";
+    my $pl = $self->{proc_list} ||= do {
+        my $pl = $self->{coshow}->spawn_floozy(
+        'proc_list', "width:92%;  background: #303a3a; color: #afc; font-weight: bold;"
+        );
+        $pl->text->replace(['!html <h2 style="'.random_colour_background().'">proc/list</h2>']);
+        $pl;
+    };
 
     # watch the list of started files and their pids
-    $self->hostinfo->stream_file("proc/list", sub {
-        my $line = shift;
-        chomp $line;
-        $self->{hostinfo}->snooze();
-
-        $pl->text->append([$line]);
+    $self->{hostinfo}->stream_file("proc/list", sub {
+        $_ = shift;
+        next unless /\S/;
+        my ($pid, $cmd_echo) = /^(\d+): (.+)\n?$/;
+        my $line = $_;
         
-        return 0 unless $line =~ /\S/;
-
-        my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)$/;
         my $proc;
         for my $p (@{ $self->{procs} }) {
             say " - have $p->{cmd}";
@@ -181,17 +181,25 @@ sub init_proc_list {
             }
         }
 
+        my $stat;
         if ($proc) {
-            $pl->text->append(["!html <i>YUP</i>"]);
-            say "\n proc appears $pid: $cmd_echo";
-            #$proc->started($pid);
+            if ($proc->{pid}) {
+                $stat = "$proc->{id} running";
+                if ($proc->{pid} ne $pid) {
+                    $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc, $line);
+                }
+            }
+            else {
+                $proc->started($pid);
+                $stat = "$proc->{id} s t a r t e d"
+            }
         }
         else {
-            $pl->text->append(["!html <i>not ours</i>"]);
-            say "\n proc not ours; $cmd_echo";
+            $stat = "unknown";
         }
+        $stat = "!html <i>$stat</i>";
 
-        return 0;
+        $pl->text->append([$line, $stat]);
     });
 }
 
