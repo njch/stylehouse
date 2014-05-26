@@ -424,13 +424,13 @@ sub infrl {
     my $self = shift;
     my $first = shift;
     $first = qq{!html <h2>$first</h2>};
-    $self->{hostinfo}->flood(join "\n", $first, @_);
+    $self->{hostinfo}->info(join "\n", $first, @_);
 }
 sub errl {
     my $self = shift;
     my $first = shift;
     $first = qq{!html <h2 class="err">$first</h2>};
-    $self->{hostinfo}->flood(join "\n", $first, @_);
+    $self->{hostinfo}->error(join "\n", $first, @_);
 }
 sub proc_killed {
     my $self = shift;

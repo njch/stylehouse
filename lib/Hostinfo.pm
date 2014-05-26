@@ -590,7 +590,7 @@ sub enlogform {
     my $back = 5;
     for my $b (1..$back) {
         $b += 1; # error + this sub
-        push @$from, grep { !/Mojo::Server::SandBox/..0 } join " ", (caller($b))[0,3,2]; # package, subroutine, line
+        push @$from, grep { (!/Mojo::Server::SandBox/)..0 } join " ", (caller($b))[0,3,2]; # package, subroutine, line
     }
 
     return [ hitime(), $from, $e ];
@@ -622,8 +622,8 @@ sub throwlog {
 
     $self->accum($accuwhere, $error);
     
-    if (my $fl = $self->get("screen/view/$tryappenddivid")) {
-        $fl->text->append([ split "\n", ddump($error)]);
+    if (my $fl = $self->get("tvs/$tryappenddivid/top")) {
+        $self->flood(ddump($error), $fl);
     }
 }
 

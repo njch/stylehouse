@@ -30,7 +30,7 @@ sub new {
         $style = $div_styley->{$divid} || do{use Carp;confess};
     }
 
-    my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' "></div>';
+    my $div = '<div id="'.$divid.'" class="'.$class.'" style="'.$style.' ">'.$self->default_html.'</div>';
 
     $self->{hostinfo}->set('tvs/'.$divid.'/div', $div);
     $self->{hostinfo}->set('tvs/'.$divid.'/style', $style); # Tractorise
@@ -133,9 +133,6 @@ sub spawn_floozy {
 
     $where = "#$where->{divid}" if ref $where;
 
-    say "Spawning floozy $divid   : $style";
-    say "    $attach => $where";
-
     my $floozy = $self->{hostinfo}->create_view(
         ($this || $self), $divid, $style,
         $attach => $where,
@@ -191,8 +188,7 @@ sub flooz {
 sub nah {
     my $self = shift;
     say "View removing ".$self->label;
-    $self->hostinfo->send("\$('#$self->{divid}').remove();");
-    $self->wipehtml unless ref $self->owner eq "Lyrico";
+    $self->hostinfo->send("\$('#$self->{divid}').slideUp(500, function () { this.remove(); });");
 }
 
 sub resume {
@@ -202,14 +198,16 @@ sub resume {
 
 sub label {
     my $self = shift;
-    return "$self->{owner} $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
+    my $o = $self->{owner};
+    $o = ref($o).": ".($o->{divid} ? "$o->{divid}/ " : "");
+    return "$o $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
 }
 
 sub default_html {
     my $self = shift;
     my $html = "";
-        $html .= '<span class="'.$self->{id}
-            .'" style="position: fixed; float: right;">'
+        $html .= '<span class="'.$self->{id} .' divlabel'
+            .'" style="position: absolute; right:1px; opacity: 0.4;">'
             .$self->label.'</span>';
     return $html;
 }

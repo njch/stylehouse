@@ -37,14 +37,13 @@ sub display {
     my $divid = $self->{id};
 
     my $show = $self->{show} ||= do {
-        say "\n New FLoozy for $divid\n\n";
         $codo->{coshow}->spawn_floozy($self, $divid, "width:89%; background:#202a15; color:#afc; height:23em;");
     };
 
     my $texty = $self->{text} = $show->text;
 
     my $temp = $codo->{temp} ||= $self->{hostinfo}->{flood}->spawn_floozy($self,
-        temp => "width:89%; height:13em; background: #fc8; color: #362;",
+        temp => "width:89%; height:1em; background: #fc8; color: #362;",
     )
         if grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} };
 
@@ -79,7 +78,7 @@ sub display {
         }
     }
 
-    $texty->replace(["!html !wtf=head <h2>$self->{name}</h2>", @chunks, scalar(@chunks)." chunks"]);
+    $texty->replace(['!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
@@ -88,6 +87,7 @@ sub display {
         my $c = $self->{chunks}->[$i];
         my $lines = $c->{lines};
         my $code = join "\n", @$lines, "";
+        $code =~ s/\\/\\\\/g;
         $code =~ s/"/\\"/g;
         $code =~ s/\n/\\n/g;
         $code =~ s/\t/\\t/g;
@@ -116,11 +116,7 @@ sub display {
             $self->{openness}->{$i} = "Closed";
         }
         else {
-            my $lines = $c->{lines};
-            my $code = join "\n", @$lines;
-            $code =~ s/"/\\"/g;
-            $code =~ s/\n/\\n/g; # the escape is interpolated in JS string after the websocket
-            say "Codon $self->{name} [$i] is opening     (".scalar(@$lines)." lines)";
+            die "WTF";
         }
     }
 
@@ -151,8 +147,8 @@ sub event {
 
         $self->display();
     }
-    elsif ($id && $id =~ /Text-\d+/) {
-        say " clicked textarea or so";
+    elsif ($id =~ s/-Head$//) {
+        $self->away();
     }
     elsif ($s && defined $i) {
         say "Codo\t\t$self->{name}\t\t OP E  N $i";
@@ -169,7 +165,8 @@ sub event {
 
 sub away {
     my $self = shift;
-
+    $self->{Going} = 1;
+    $self->save_all();
 }
 
 sub readfile {
@@ -191,7 +188,10 @@ sub save_all {
             $self->save_chunk($i)
         }
     }
-    say "\n\nnothing in $self->{name} is Open\n\n" unless %$sv;
+    unless (%$sv) {
+        say "\n\nnothing in $self->{name} is Open\n\n";
+        $self->save_done();
+    }
 }
 
 sub save_chunk {
@@ -216,7 +216,7 @@ sub update_chunk {
     my $code = shift;
     my $c = $self->{chunks}->[$i];
 
-    $c->{lines} = [ split("\n", $code), "" ];
+    $c->{lines} = [ split("\n", $code) ];
     
     say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
 
@@ -240,10 +240,33 @@ sub update_chunk {
     $whole .= "\n" unless $whole =~ /\n$/s;
 
     $self->writefile($self->{codefile}, $whole);
-    
-    $self->open_codefile();
-    
-    $self->chunkify();
+
+    $self->save_done;
+}
+
+sub save_done {
+    my $self = shift;
+    if ($self->{Going}) {
+        say "Codon $self->{name} is going away";
+        my $O = $self->{openness};
+        while (my ($i, $ness) = each %$O) {
+            if ($ness eq "Open") {
+                $O->{$i} = "Opening"; # next time
+            }
+            else {
+                $O->{$i} = "Closed";
+            }
+        }
+        $self->{show}->nah();
+        delete $self->{show};
+        delete $self->{Going};
+    }
+    else {
+        say "Codon $self->{name} is going away";
+        $self->open_codefile();
+        
+        $self->chunkify();
+    }
 }
 
 sub random_colour_background {
@@ -260,7 +283,7 @@ sub chunkify {
     # this consumes lines, should do wormhole at the end of init_wormhole
     my @stuff = ([]);
     for my $l (@$lines) {
-        if ($l =~ /^\S+.+ \{$/gm) {
+        if ($l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm) {
            push @stuff, [];
         }
         push @{ $stuff[-1] }, $l;
