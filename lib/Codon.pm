@@ -111,7 +111,7 @@ sub display {
         }
         elsif ($ness eq "Closing") {
             $self->{hostinfo}->send(
-                "\$('#$s->{id}');"
+                "\$('#$s->{id}').animate({ fontSize: '3em' }, 0).animate({ fontSize: '1em' }, 400);"
             );
             $self->{openness}->{$i} = "Closed";
         }
