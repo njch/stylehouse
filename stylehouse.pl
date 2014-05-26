@@ -240,8 +240,7 @@ websocket '/stylehouse' => sub {
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
-        $self->app->log->info("WebSocket: $msg");
-        $hostinfo->god_enters($self->tx); # this'll all be way soon
+        $hostinfo->god_enters($self, $msg); # this'll all be way soon
 
         my $j;
         if ($msg =~ /^{"event":{"id":"",/) {

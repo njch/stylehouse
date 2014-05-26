@@ -20,8 +20,11 @@ sub new {
 
     return if $self->hostinfo->get("Keys");
 
-    $self->hostinfo->get_view($self, "gear");
+    $self->hostinfo->send(
+        '$( "#whichkey" ).on( "keydown", function( event ) {  ws.reply({Keys: event});  $( "#log" ).html( event.type + ": " +  event.which );'
+    );
 
+    
     say "Made keys";
     return $self;
 }

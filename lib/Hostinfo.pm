@@ -1,4 +1,6 @@
 package Hostinfo;
+use strict;
+use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Mojo::IOLoop;
@@ -112,8 +114,14 @@ sub god_connects {
 
 sub god_enters {
     my $self = shift;
-    my $tx = shift;
+    my $mojo = shift;
+    my $msg = shift;
+    my $tx = $mojo->tx;
     # someone, anyone
+    say "\n\n\n\n\nGod enters";
+    say "";
+    say "$msg";
+    say "";
     my $exist = $self->find_god($tx);
     if ($exist) {
         say "$exist->{address} returns";
@@ -310,7 +318,7 @@ sub update_app_menu {
             }
         }
     }
-    
+
     $self->{appmenu}->{extra_label} = "appmenu";
     $self->{appmenu}->text->replace([@items]);
 }
@@ -625,7 +633,15 @@ sub ind { "$_[0]".join "$_[0]\n", split "\n", $_[1] }
 use YAML::Syck;
 sub ddump {
     my $thing = shift;
-    return join "\n",
+    my $ind;
+    return
+        join "\n",
+        grep {
+            !( do { /^(\s+)hostinfo:/ && do { $ind = $1; 1 } }
+            ...
+            do { /^$ind\S/ } )
+        }
+        "",
         grep !/^     /,
         split "\n", Dump($thing);
 }

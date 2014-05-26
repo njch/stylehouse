@@ -16,7 +16,7 @@ sub new {
 
     $self->open_codefile();
 
-    $self->chunk();
+    $self->chunkify();
 
     my $o = $self->{openness} = {};
     $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
@@ -43,8 +43,8 @@ sub display {
 
     my $texty = $self->{text} = $show->text;
 
-    my $temp = $self->{hostinfo}->{flood}->spawn_floozy($self,
-        temp => "width:89%; height:23em; background: white; color: #362; overflow: scroll;",
+    my $temp = $codo->{temp} ||= $self->{hostinfo}->{flood}->spawn_floozy($self,
+        temp => "width:89%; height:13em; background: #fc8; color: #362;",
     )
         if grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} };
 
@@ -55,8 +55,6 @@ sub display {
         my $rows = scalar(@$lines);
         my $ness = $self->{openness}->{$i};
 
-        say "$i is $ness";
-        
         if ($ness =~ /^Open/) {
             $rows = 25 if $rows > 25;
             $rows = 1 if $rows < 1;
@@ -68,23 +66,20 @@ sub display {
                 $texty->hostinfo->send("\$('#$textid').appendTo('#$tempid');");
             }
 
-            say "Sending TEXTAREA, totally...";
-
             push @chunks,
                 "!html !i=$i "
-                .'<textarea name="code" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
+                .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
                 .'<input id="<<ID>>-Close-'.$i.'" type="submit" value="C">'
                 .'<input id="<<ID>>-Save-'.$i.'" type="submit" value="S">'
         }
-        elsif ($ness eq "Closed") {
+        elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
             push @chunks,
                 "!i=$i $c->{first} ($rows lines)";
         }
     }
 
-    say "Going to replace!!!";
-    $texty->replace(["!html <h2>$self->{name}</h2>", @chunks, scalar(@chunks)." chunks"]);
+    $texty->replace(["!html !wtf=head <h2>$self->{name}</h2>", @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
@@ -114,6 +109,12 @@ sub display {
         elsif ($ness eq "Closed") {
             # has it all
         }
+        elsif ($ness eq "Closing") {
+            $self->{hostinfo}->send(
+                "\$('#$s->{id}');"
+            );
+            $self->{openness}->{$i} = "Closed";
+        }
         else {
             my $lines = $c->{lines};
             my $code = join "\n", @$lines;
@@ -123,9 +124,8 @@ sub display {
         }
     }
 
-    $temp->nah() if $temp;
+    $temp->wipehtml() if $temp;
 
-    $texty->{max_height} = 1000;
     $texty->fit_div;
 }
 
@@ -133,25 +133,19 @@ sub event {
     my $self = shift;
     my $e = shift;
     my $id = $e->{id};
-    my $s = $self->{text}->id_to_tuxt($id);
+    my $s = $self->{text}->id_to_tuxt($id); # LIES
     my $i = $s->{i} if $s;
     
-    if ($s && defined $i) {
-        say "Codo\t\t$self->{name}\t\t OP E  N $i";
-
-        $self->{openness}->{$i} = "Opening";
-
-        $self->display();
+    if ($id =~ /-Save-(\d+)$/) {
+        $i = $1;
+        say "Codon $self->{name} SAVE $i";
+        $self->save_chunk($i);
     }
-    elsif ($id =~ /-Save-\d+$/) {
-        say "Codon $self->{name} SAVE $id, $s";
-        $self->save_chunk($s);
-    }
-    elsif ($id =~ s/-Close(?:-(\d+))?$//) {
-        $i ||= $1;
+    elsif ($id =~ s/-Close-(\d+)$//) {
+        $i = $1;
         say "Codo > > > close < < < $self->{name} chunk $i";
 
-        $self->save_chunk($s);
+        $self->save_chunk($i);
 
         $self->{openness}->{$i} = "Closing";
 
@@ -159,6 +153,13 @@ sub event {
     }
     elsif ($id && $id =~ /Text-\d+/) {
         say " clicked textarea or so";
+    }
+    elsif ($s && defined $i) {
+        say "Codo\t\t$self->{name}\t\t OP E  N $i";
+
+        $self->{openness}->{$i} = "Opening";
+
+        $self->display();
     }
     else {
         say "Codo $self->{name} event want something else?";
@@ -181,16 +182,27 @@ sub writefile {
     return $self->{hostinfo}->getapp("Codo")->writefile(@_);
 }
 
+sub save_all {
+    my $self = shift;
+    my $sv = $self->{saving} = {};
+    while (my ($i, $ness) = each %{ $self->{openness} }) {
+        if ($ness eq "Open") {
+            $self->{saving}->{$i} = 1;
+            $self->save_chunk($i)
+        }
+    }
+    say "\n\nnothing in $self->{name} is Open\n\n" unless %$sv;
+}
+
 sub save_chunk {
     my $self = shift;
-    my $s = shift;
-    my $i = $s->{i} || die ddump($s);
+    my $i = shift;
 
     my $textid = $self->{text}->{id}."-Text-$i";
 
     my $sec = $self->{hostinfo}->claw_add( sub {
         my $e = shift;
-        $self->update($i => decode_entities($e->{code}));
+        $self->update_chunk($i => decode_entities($e->{code}));
     } );
 
     $self->{hostinfo}->send(
@@ -198,25 +210,13 @@ sub save_chunk {
     );
 }
 
-sub save_all {
-    my $self = shift;
-    $self->{saving} = {};
-    for my $s (@{$self->{text}->{tuxts}}) {
-        if ($self->{openness}->{$s->{i}}) {
-            $self->{saving}->{$s->{i}} = 1;
-            $self->save_chunk($s)
-        }
-    }
-}
-
-sub update {
+sub update_chunk {
     my $self = shift;
     my $i = shift;
     my $code = shift;
-    my $chunks = $self->{chunks};
-    my $c = $chunks->{$i} || die;
+    my $c = $self->{chunks}->[$i];
 
-    $c->{lines} = [ split "\n", $code ];
+    $c->{lines} = [ split("\n", $code), "" ];
     
     say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
 
@@ -226,22 +226,24 @@ sub update {
             say " more chunks awaiting...";
             return;
         }
-        delete $self->{chunks_unload};
+        delete $self->{saving};
         $self->{Gone} = $self->{hostinfo}->hitime();
     }
 
     say "Going to write $self->{name}";
 
     my $lines = [];
-    for my $v (@$chunks) {
-        push @$lines, @{$v->{lines}};
+    for my $c (@{ $self->{chunks} }) {
+        push @$lines, @{$c->{lines}};
     }
     my $whole = join "\n", @$lines;
     $whole .= "\n" unless $whole =~ /\n$/s;
 
     $self->writefile($self->{codefile}, $whole);
     
-    $self->chunk();
+    $self->open_codefile();
+    
+    $self->chunkify();
 }
 
 sub random_colour_background {
@@ -249,7 +251,7 @@ sub random_colour_background {
     return "background: rgb($rgb);";
 }
 
-sub chunk {
+sub chunkify {
     my $self = shift;
 # supposed to be a Tractor doing this
 

@@ -59,11 +59,8 @@ sub new {
 
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
-
         $cs->spawn_ceiling($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
-
         $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
-
         $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; height: 60px; font-weight: bold;");
 
 

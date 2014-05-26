@@ -36,6 +36,8 @@ WebSocket.prototype.reply = function reply (stuff) {
   ws.send(JSON.stringify(stuff));
 };
 
+function clickon () { $(window).on("click", clickyhand); }
+function clickoff () { $(window).off("click", clickyhand); }
 function clickyhand (event) {
     var data = {
         id: event.target.id,
@@ -50,6 +52,5 @@ function clickyhand (event) {
         pagey: window.pageYOffset,
     };
     ws.reply({event: data});
-    $('#Keys').focus;
 }
 connect();
