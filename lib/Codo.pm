@@ -59,10 +59,11 @@ sub new {
 
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
-        $cs->spawn_ceiling($self, codolist => "width:58%;  background: #402a35; color: #afc; height: 60px;");
+        $cs->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
         $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; font-weight: bold;")
         ->text->replace(['!html <h2>processes</h2>']);
         $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
+        $cs->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
 
 
 
@@ -134,7 +135,7 @@ sub event {
     elsif ($s = $staty->id_to_tuxt($id)) {
         my ($pid, $cmd) = split ": ", $s->{value};
         $self->errl("killing $pid: $cmd");
-        kill "INT", $pid;
+        kill "TERM", $pid;
         $self->{hostinfo}->timer(0.2, sub {
             $self->init_state()
         });
@@ -158,13 +159,12 @@ sub spawn_child {
 sub init_proc_list {
     my $self = shift;
 
-    my $pl = $self->{proc_list} ||= do {
-        my $pl = $self->{coshow}->spawn_floozy(
-        'proc_list', "width:92%;  background: #303a3a; color: #afc; font-weight: bold;"
-        );
-        $pl->text->replace(['!html <h2 style="'.random_colour_background().'">proc/list</h2>']);
-        $pl;
-    };
+    my $pl = $self->{proc_list} ||= $self->{coshow}->spawn_floozy(
+        'proc_list', "width:92%;  background: #303a3a; border: 2px solid pink; color: #afc; font-weight: bold;"
+    );
+
+    $pl->text->{hooks}->{fit_div} = 1;
+    $pl->text->replace(['!html <b> proc/list </b>']);
 
     # watch the list of started files and their pids
     $self->{hostinfo}->stream_file("proc/list", sub {

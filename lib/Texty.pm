@@ -70,7 +70,10 @@ sub replace {
     $self->lines_to_tuxts();
     $self->tuxts_to_htmls();
 
-    return $self->view->takeover($self->htmls, $self);
+    my $ah = delete $self->{hooks}->{append};
+    my @o = $self->view->takeover($self->htmls, $self);
+    $self->{hooks}->{append} = $ah if $ah;
+    return wantarray ? @o : $o[0]
 }
 
 has 'lastlinepush' => sub { 0 };
@@ -169,6 +172,13 @@ sub append { # TRACTOR
     $self->{hooks}->{nospace} = $oldnospace if $oldnospace;
 
     $self->view->takeover($htmls, $self);
+}
+
+sub tookover {
+    my $self = shift;
+    if ($self->{hooks}->{fit_div}) {
+        $self->fit_div();
+    }
 }
 
 sub mktuxt {

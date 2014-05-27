@@ -262,6 +262,8 @@ sub takeover {
     $self->hostinfo->view_incharge($self);
 
     $self->append_spans($self->{divid} => $html);
+
+    $texty->tookover();
 }
 
 sub append_spans {

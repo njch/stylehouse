@@ -135,7 +135,7 @@ sub init {
 
     $hostinfo->flood($hostinfo->data);
 
-    Lyrico->new($hostinfo->intro);
+    #Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
