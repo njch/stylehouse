@@ -204,7 +204,7 @@ sub init_proc_list {
     };
 
     # watch the list of started files and their pids
-    $self->{hostinfo}->stream_file("proc/list", $per_line, "Whole");
+    $self->{hostinfo}->stream_file("proc/list", $per_line);
 }
 
 sub init_codons { #{{{

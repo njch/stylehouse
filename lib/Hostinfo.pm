@@ -371,42 +371,54 @@ sub grep {
     };
 }
 
-sub loop {
-    my $self = shift;
-    $self->{loop} ||= IO::Async::Loop::Mojo->new();
-}
-
+sub tail_file { shift->stream_file(@_, "just_tail") }
 sub stream_file {
     my $self = shift;
-    my $filename = shift;
-    my $linehook = shift;
-    my $whole = shift;
 
-    my $op = {
-        filename => $filename,
-        on_read => sub {
-            my ( $self, $buffref ) = @_;
-
-            while( $$buffref =~ s/^(.*\n)// ) {
-                $linehook->($1);
-            }
-
-            return 0;
-        },
+    my $st = {
+        filename => shift,
+        linehook => shift,
     };
-    if ($whole) {
-        $linehook->($_) for `cat $filename`;
-        say "read whole thing, going to tail...";
-        $op->{on_initial} = sub {
-            my $self = shift;
-            $self->seek_to_last( "\n" );
-        };
+    my $just_tail = shift;
+
+    open(my $fh, '<', $st->{filename})
+        or die "cannot open $st->{filename}: $!";
+
+    while (<$fh>) {
+        unless ($just_tail) {
+            $st->{linehook}->($_);
+        }
     }
 
-    say "Streaming $filename: ". join " ", keys %$op;
+    $st->{handle} = $fh;
+    $st->{size} = (stat $st->{filename})[7];
 
-    my $stream = IO::Async::FileStream->new( %$op );
-    $self->loop->add($stream);
+    my $streams = $self->{file_streams} ||= [];
+
+    push @$streams, $st;
+
+    if (@$streams == 1) {
+        $self->watch_file_streams();
+    }
+}
+sub watch_file_streams {
+    my $self = shift;
+
+    say "watching file streams: ".join ", ", map { $_->{filename} } @{ $self->{file_streams} };
+
+    for my $st (@{ $self->{file_streams} }) {
+        if ((stat $st->{filename})[7] > $st->{size}) {
+            say "$st->{filename} has GROWTH";
+            my $fh = $st->{handle};
+            while (<$fh>) {
+                $st->{linehook}->($_);
+            }
+            $st->{size} = (stat $st->{filename})[7];
+        }
+    }
+    $self->timer(0.5, sub {
+        $self->watch_file_streams();
+    });
 }
 
 sub get {

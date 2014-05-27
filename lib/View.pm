@@ -263,7 +263,7 @@ sub takeover {
 
     $self->append_spans($self->{divid} => $html);
 
-    $texty->tookover();
+    $texty->tookover() if $texty;
 }
 
 sub append_spans {
