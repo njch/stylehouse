@@ -391,7 +391,7 @@ sub stream_file {
     }
 
     $st->{handle} = $fh;
-    $st->{size} = (stat $st->{filename})[7];
+    ($st->{ino}, $st->{ctime}, $st->{size}) = (stat $st->{filename})[1,10,7];
 
     my $streams = $self->{file_streams} ||= [];
 
@@ -405,7 +405,26 @@ sub watch_file_streams {
     my $self = shift;
 
     for my $st (@{ $self->{file_streams} }) {
-        if ((stat $st->{filename})[7] > $st->{size}) {
+        my ($ino, $ctime, $size) = (stat $st->{filename})[1,10,7];
+
+        if ($size < $st->{size} || $ctime != $st->{ctime} || $ino != $st->{ino}) {
+            say "$st->{filename} has been REPLACED or something";
+            say "$size\n$st->{size}\n$ctime\n$st->{ctime}\n$ino\n$st->{ino}";
+
+            my $fh = $st->{handle}; # try finish off the old one
+            while (<$fh>) {
+                $st->{linehook}->("!!! ".$_);
+            }
+            close $fh;
+            open(my $anfh, '<', $st->{filename})
+                or die "cannot open $st->{filename}: $!";
+            $st->{handle} = $anfh;
+            $st->{ctime} = $ctime;
+            $st->{ino} = $ino;
+            $st->{size} = -1;
+            $st->{linehook}->("!!! Reopened !!!");
+        }
+        if ($size > $st->{size}) {
             say "$st->{filename} has GROWTH";
             my $fh = $st->{handle};
             while (<$fh>) {
