@@ -166,12 +166,12 @@ sub init_proc_list {
     $pl->text->{hooks}->{fit_div} = 1;
     $pl->text->replace(['!html <b> proc/list </b>']);
 
-    # watch the list of started files and their pids
-    $self->{hostinfo}->stream_file("proc/list", sub {
-        $_ = shift;
-        next unless /\S/;
-        my ($pid, $cmd_echo) = /^(\d+): (.+)\n?$/;
-        my $line = $_;
+    my $per_line = sub {
+        my $line = shift;
+        $line =~ s/\n$//;
+        say "proc list got line: '$line'";
+        return unless $line =~ /\S/;
+        my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)\n?$/;
         
         my $proc;
         for my $p (@{ $self->{procs} }) {
@@ -201,7 +201,10 @@ sub init_proc_list {
         $stat = "!html <i>$stat</i>";
 
         $pl->text->append([$line, $stat]);
-    });
+    };
+
+    # watch the list of started files and their pids
+    $self->{hostinfo}->stream_file("proc/list", $per_line, "Whole");
 }
 
 sub init_codons { #{{{

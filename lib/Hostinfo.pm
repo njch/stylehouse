@@ -380,11 +380,10 @@ sub stream_file {
     my $self = shift;
     my $filename = shift;
     my $linehook = shift;
-    say "stream_file: $filename";
+    my $whole = shift;
 
-    my $stream = IO::Async::FileStream->new(
+    my $op = {
         filename => $filename,
-
         on_read => sub {
             my ( $self, $buffref ) = @_;
 
@@ -394,7 +393,19 @@ sub stream_file {
 
             return 0;
         },
-    );
+    };
+    if ($whole) {
+        $linehook->($_) for `cat $filename`;
+        say "read whole thing, going to tail...";
+        $op->{on_initial} = sub {
+            my $self = shift;
+            $self->seek_to_last( "\n" );
+        };
+    }
+
+    say "Streaming $filename: ". join " ", keys %$op;
+
+    my $stream = IO::Async::FileStream->new( %$op );
     $self->loop->add($stream);
 }
 
