@@ -60,10 +60,9 @@ sub new {
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
         $cs->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
-        $cs->spawn_floozy($self, processes => "width:92%;  background: #301a30; color: #afc; font-weight: bold;")
-        ->text->replace(['!html <h2>processes</h2>']);
-        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
-        $cs->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold;");
+        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+        $cs->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+        $cs->spawn_floozy($self, processes => "width:92%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
 
 
 
@@ -165,7 +164,7 @@ sub spawn_child {
 
 sub spawn_proc {
     my $self = shift;
-    my $P = Proc->new($self->{hostinfo}->intro, $self->{coshow}, @_);
+    my $P = Proc->new($self->{hostinfo}->intro, $self->{processes}, @_);
     push @{$self->{procs}}, $P;
     return $P
 }
@@ -178,7 +177,7 @@ sub init_proc_list {
     );
 
     $pl->text->{hooks}->{fit_div} = 1;
-    $pl->text->{max_height} = 400;
+    $pl->text->{max_height} = 160;
     $pl->text->replace(['!html <b> proc/list </b>']);
 
     my $per_line = sub {

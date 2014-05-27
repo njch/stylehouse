@@ -39,7 +39,7 @@ sub new {
 
 
     $self->{mess} = $self->{play}->spawn_ceiling("$self->{id}_mess",
-                                    "background: #353; width: 89%; border: 2px solid black; text-shadow: 4px 4px 4px #white;");
+                                    "background: #353; width: 99%; border: 2px solid black; text-shadow: 4px 4px 4px #white; margin: 1em;");
     $self->{mess}->text->{hooks}->{fit_div} = 1;
 
     $self->{cmd} = shift;
@@ -75,7 +75,7 @@ sub started {
 
     say "Proc: $self->{id} started ($pid)";
 
-    my $opc = $self->{play}->spawn_floozy("$self->{id}_opc", "width: 99%; background-color: #444; border: 2px solid white; overflow: scroll;");
+    my $opc = $self->{play}->spawn_floozy("$self->{id}_opc", "width: 99%; background-color: #444; border: 2px solid white; overflow: scroll; margin: 1em;");
     $opc->text->add_hooks({
         spatialise => sub { { left => 0, top => 0 } },
     });
