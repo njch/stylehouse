@@ -404,8 +404,6 @@ sub stream_file {
 sub watch_file_streams {
     my $self = shift;
 
-    say "watching file streams: ".join ", ", map { $_->{filename} } @{ $self->{file_streams} };
-
     for my $st (@{ $self->{file_streams} }) {
         if ((stat $st->{filename})[7] > $st->{size}) {
             say "$st->{filename} has GROWTH";
@@ -512,10 +510,10 @@ sub init_flood {
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:420px;  background: #ff9988; color: #030; height: 420px; font-weight: bold;",
+        hi_error => "width:99%; border: 2px solid white; background: #ff9988; color: #030; height: 420px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
-        hi_info => "width:420px;  background: #afc; color: #44ag39; height: 420px; font-weight: bold;",
+        hi_info => "width:99%; border: 2px solid white; background: #afc; color: #44ag39; height: 420px; font-weight: bold;",
     );
 
     return $f

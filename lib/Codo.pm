@@ -100,9 +100,13 @@ sub menu {
             say "Sending obsotrav dump\n\n";
             $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
         },
-        "RRR" => sub { # they might wanna load new css/js too
+        "Rst" => sub { # they might wanna load new css/js too
             $self->infrl('restarting (if)');
             `touch $0`;
+        },
+        'rps' => sub {
+            $self->infrl('restarting procserv');
+            $self->spawn_proc('killall procserv.pl; ./procserv.pl &');
         },
         "spawn" => sub {
             $self->spawn_child();
@@ -125,7 +129,10 @@ sub event {
 
     if (my $s = $listy->id_to_tuxt($id)) {
         my $it = $s->{value};
-        if ($s->{codon}) {
+        if ($it eq "Save") {
+            $self->infrl("Argh! just do it yourself")
+        }
+        elsif ($s->{codon}) {
             $self->load_codon($s->{codon});
         }
         else {
@@ -153,7 +160,14 @@ sub spawn_child {
         return $self->errl("$outside already running") if $self->{state}->{$outside};
         return $self->errl("../$outside does not exist") unless -d "../$outside";
 
-    push @{$self->{procs}}, Proc->new($self->{hostinfo}->intro, $self->{coshow}, $self->childcmd($outside))
+    $self->spawn_proc($self->childcmd($outside));
+}
+
+sub spawn_proc {
+    my $self = shift;
+    my $P = Proc->new($self->{hostinfo}->intro, $self->{coshow}, @_);
+    push @{$self->{procs}}, $P;
+    return $P
 }
 
 sub init_proc_list {
@@ -169,7 +183,6 @@ sub init_proc_list {
     my $per_line = sub {
         my $line = shift;
         $line =~ s/\n$//;
-        say "proc list got line: '$line'";
         return unless $line =~ /\S/;
         my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)\n?$/;
         

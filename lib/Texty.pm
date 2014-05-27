@@ -181,6 +181,19 @@ sub tookover {
     }
 }
 
+sub h_tuxtstyle {
+    my $self = shift;
+    my $s = shift;
+
+    if (my $ts = $self->{hooks}->{tuxtstyle}) {
+        my $style = ref $ts eq "CODE" ? $ts->($s) : $ts;
+        if ($style) {
+            $s->{style} = $style;
+            return;
+        }
+    }
+    $s->{style} = "";
+}
 sub mktuxt {
     my $self = shift;
     my $line = shift;
@@ -190,9 +203,9 @@ sub mktuxt {
     my $s = {
         class => "$self->{class} ".$self->{id},
         id => $self->{id}.'-'.$l->{l}++,
-        style => ($self->{hooks}->{tuxtstyle} || ""),
         value => $line,
     };
+    $self->h_tuxtstyle($s);
     push @{$self->{tuxts}}, $s; # NOT a wormhole!
     if ($d > 0) {
         $s->{id} =~ s/(\d+)$/$d.$1/;
