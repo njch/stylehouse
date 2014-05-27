@@ -341,15 +341,20 @@ sub fit_div {
     my $last = $self->{tuxts}->[-1];
     my ($top) = $last->{top};
     $top += $self->htmlvalue_height($last);
+    my $scroll_down;
     if ($self->{max_height}) {
         if ($self->{max_height} < $top) {
             $top = $self->{max_height};
+            $scroll_down = 1;
         }
     }
     $top .= "px";
 
     my $divid = $self->{view}->{divid};
     $self->{hostinfo}->send(qq{  \$('#$divid').css('height', '$top')  });
+    if ($scroll_down) {
+        $self->{hostinfo}->send(qq{ \$('#$divid').scrollTop($last->{top});  });
+    }
 }
 
 sub random_colour_background {

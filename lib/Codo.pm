@@ -174,10 +174,11 @@ sub init_proc_list {
     my $self = shift;
 
     my $pl = $self->{proc_list} ||= $self->{coshow}->spawn_floozy(
-        'proc_list', "width:92%;  background: #303a3a; border: 2px solid pink; color: #afc; font-weight: bold;"
+        'proc_list', "width:92%;  background: #303a3a; border: 2px solid pink; color: #afc; font-weight: bold; overflow: scroll;"
     );
 
     $pl->text->{hooks}->{fit_div} = 1;
+    $pl->text->{max_height} = 400;
     $pl->text->replace(['!html <b> proc/list </b>']);
 
     my $per_line = sub {

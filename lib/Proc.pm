@@ -75,8 +75,11 @@ sub started {
 
     say "Proc: $self->{id} started ($pid)";
 
-    my $opc = $self->{play}->spawn_floozy("$self->{id}_opc", "width: 99%; background-color: #444; border: 2px solid white;");
-    $opc->text->{hooks}->{spatialise} = sub { { left => 0, top => 0 } };
+    my $opc = $self->{play}->spawn_floozy("$self->{id}_opc", "width: 99%; background-color: #444; border: 2px solid white; overflow: scroll;");
+    $opc->text->add_hooks({
+        spatialise => sub { { left => 0, top => 0 } },
+    });
+    $opc->text->{max_height} = 420 * 1.1;
     my $opc_ch = {
         err => "color: pink; text-shadow: 2px 2px 4px #000;",
         out => "color: white; ",
@@ -117,10 +120,6 @@ sub kill {
 sub killed {
     my $self = shift;
     $self->{killed}++; # tell whatever somehow (later)
-}
-
-sub event {
-    my $self = shift;
 }
 
 1;
