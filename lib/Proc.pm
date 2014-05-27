@@ -51,8 +51,8 @@ sub started {
 
     my $opc = $self->{play}->spawn_floozy("opc");
     my $opc_ch = {
-        err => "font-color: #95e; ",
-        out => "font-color: #022; ",
+        err => "color: pink; text-shadow: 4px 4px 4px #000;",
+        out => "color: white; ",
     };
     for my $d ("err", "out") {
         $self->hostinfo->stream_file("proc/$pid.$d", sub {
