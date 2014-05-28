@@ -42,17 +42,8 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    my $style = $self->{hostinfo}->get("style");
-    my $codo_unto = {
-        stylehouse => "styleshed",
-        styleshed => "stylebucky",
-    };
-    if (my $unto = $codo_unto->{$style}) {
-        my $dir = "../$unto/";
-        -d $dir || die "Cannot see $dir (am $style)";
-        $self->{code_dir} = $dir;
-    }
-    else { die "no such style: $style" }
+    $self->{git} = $self->{hostinfo}->get("Git");
+    $self->{code_dir} = $self->{git}->below(); 
 
     my $hi = $self->{hostinfo};
     
@@ -60,9 +51,7 @@ sub new {
     my $cs =
     $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
         $cs->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
-        $cs->spawn_floozy($self, codostate => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
         $cs->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-        $cs->spawn_floozy($self, processes => "width:92%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
 
 
 
@@ -72,10 +61,7 @@ sub new {
 
     $self->codolist();
 
-    $self->init_state();
     
-    $self->init_proc_list();
-
 # recover openness 
     for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
         $s->{value} eq "Ghost" && do {
@@ -122,7 +108,6 @@ sub event {
     my $id = $event->{id};
 
     my $listy = $self->{codolist}->text;
-    my $staty = $self->{codostate}->text;
 
     say $self->{codolist}->{divid}." $id";
 
@@ -167,57 +152,6 @@ sub spawn_proc {
     my $P = Proc->new($self->{hostinfo}->intro, $self->{processes}, @_);
     push @{$self->{procs}}, $P;
     return $P
-}
-
-sub init_proc_list {
-    my $self = shift;
-
-    my $pl = $self->{proc_list} ||= $self->{coshow}->spawn_floozy(
-        'proc_list', "width:92%;  background: #303a3a; border: 2px solid pink; color: #afc; font-weight: bold; overflow: scroll;"
-    );
-
-    $pl->text->{hooks}->{fit_div} = 1;
-    $pl->text->{max_height} = 160;
-    $pl->text->replace(['!html <b> proc/list </b>']);
-
-    my $per_line = sub {
-        my $line = shift;
-        $line =~ s/\n$//;
-        return unless $line =~ /\S/;
-        my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)\n?$/;
-        
-        my $proc;
-        for my $p (@{ $self->{procs} }) {
-            say " - have $p->{cmd}";
-            if ($p->{cmd} eq $cmd_echo) {
-                $proc = $p;
-                last;
-            }
-        }
-
-        my $stat;
-        if ($proc) {
-            if ($proc->{pid}) {
-                $stat = "$proc->{id} running";
-                if ($proc->{pid} ne $pid) {
-                    $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc, $line);
-                }
-            }
-            else {
-                $proc->started($pid);
-                $stat = "$proc->{id} s t a r t e d"
-            }
-        }
-        else {
-            $stat = "unknown";
-        }
-        $stat = "!html <i>$stat</i>";
-
-        $pl->text->append([$line, $stat]);
-    };
-
-    # watch the list of started files and their pids
-    $self->{hostinfo}->stream_file("proc/list", $per_line);
 }
 
 sub init_codons { #{{{
@@ -286,114 +220,6 @@ sub codolist {#{{{
     $codolistex->replace($menu);
 }#}}}
 
-
-
-sub childcmd {
-    my $self = shift;
-    my $given = shift;
-    if ($given && $given =~ /^style(\w+)$/) {
-        return "cd ../$given && echo '<<ID>>' && ./stylehouse.pl"
-    }
-    elsif ($given && $given =~ /cd \.\.\/style(\S+) && echo '(.*)' && (?:perl |\.\/)stylehouse\.pl/) {
-        return ($1, $2)
-    }
-    else {
-        return undef
-    }
-}
-
-sub init_state { # {{{
-    my $self = shift;
-
-    my $ch_p = {};
-
-    for my $ch_f (glob('proc/*.*')) {
-        if ($ch_f =~ /(\d+)\.(\w+)/) {
-            $ch_p->{$1} = {
-                $2 => $ch_f,
-                pid => $1,
-            };
-        }
-        else {
-            say "garbage from proc/*.*: $ch_f";
-        }
-
-    }
-
-    my $l_p = {};
-
-    my $i = 0;
-    for my $l (`cat proc/list`) {
-        next unless $l =~ /\S/;
-        if ($l =~ /(\d+): (.+)/) {
-            $l_p->{$1} = {
-                pid => $1,
-                cmd => $2,
-                i => $i++,
-            };
-        }
-        else {
-            say "garbage from proc/list: $l";
-        }
-    }
-
-    my $l_p_i = {};
-    for my $p (values %$l_p) {
-        $l_p_i->{$p->{i}} = $p;
-    }
-
-    my $s_p_i = {};
-
-    $i = 0;
-    for my $s (`cat proc/start`) {
-        my ($exec) = $s =~ /^(.+)/;
-        $s_p_i->{$i} = {
-            cmd => $exec,
-            i => $i++,
-        };
-        
-    }
-
-    my $ps = {};
-
-    $i = 0;
-    for (`ps -eo pid,cmd`) {
-        next unless /style/;
-        if (/(\d+) (.+)$/sm) {
-            ($ps->{$1} = {
-                pid => $1,
-                cmd => $2,
-                i => $i++,
-            })->{cmd} =~ s/\n$//;
-        }
-    }
-
-    my $s = $self->{state};
-    for my $w (qw{ch_p l_p l_p_i s_p_i ps}) {
-        eval "\$s->{$w} = \$$w;";
-        die $@ if $@;
-    }
-
-    for my $t (values %$s) {
-        for my $p (values %$t) {
-            if ($p->{cmd}) {
-                my ($name, $mess) = $self->childcmd($p->{cmd});
-                if ($p->{name} && ($p->{name} ne $name || $p->{mess} ne $mess)) {
-                    die "conflicter of the... $p->{cmd}\n'$p->{name}' ne '$name' || '$p->{mess}' ne '$mess'\n".anydump($s);
-                }
-                $p->{name} = $name;
-                $p->{mess} = $mess;
-            }
-        }
-    }
-#}}}
-
-
-    my $what = [
-        sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
-    $_ =~ s/^\d+ // for @$what;
-    $self->{codostate}->flooz(join "\n", @$what); # Tractor should make this interactive
-}
 
 sub list_of_codefiles {
     my $self = shift;

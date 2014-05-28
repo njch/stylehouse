@@ -137,6 +137,7 @@ sub init {
 
     #Lyrico->new($hostinfo->intro);
     Codo->new($hostinfo->intro);
+    Git->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
     $hostinfo->update_app_menu();
