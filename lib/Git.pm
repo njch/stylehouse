@@ -18,7 +18,7 @@ sub new {
 
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #afc; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    $G->spawn_floozy($self, procwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
+    $G->spawn_floozy($self, proclistwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
     $G->spawn_floozy($self, pswatch => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $G->spawn_floozy($self, repos => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -33,7 +33,7 @@ sub init {
 
     $self->pswatch();
     
-    $self->procwatch();
+    $self->proclistwatch();
 
     $self->repos();
 }
@@ -188,26 +188,29 @@ sub pswatch {
     my $what = [ sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
 
     $_ =~ s/^\d+ // for @$what;
+    $_ = "'$_'" for @$what;
 
-    $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
+    $self->{pswatch}->text->{hooks}->{fit_div} = 1;
+    $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
 }
 
-sub procwatch {
+sub proclistwatch {
     my $self = shift;
 
-    my $plt = $self->{procwatch}->text;
+    my $plt = $self->{proclistwatch}->text;
     $plt->{hooks}->{fit_div} = 1;
     $plt->{max_height} = 400;
 
     my $menu = {
         toggle => sub {
-            $self->{procwatch}->{toggle}++;
-            $self->procwatch();
+            $self->{proclistwatch}->{toggle}++;
+            $self->proclistwatch();
         },
         startproc => sub {
             my ($e, $s) = @_;
             my ($pid, $cmd) = $s->{value} =~ /.+?: (\d+): (.+)/;
             $self->procup($pid, $cmd);
+            $self->init();
         },
     };
     $plt->add_hooks({

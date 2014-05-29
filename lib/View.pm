@@ -69,7 +69,8 @@ sub new {
         $self->{hostinfo}->send("\$('$where').append('$div');");
     }
 
-    $self->wipehtml(); # + label
+    $self->wipehtml(); # set label
+    $self->takeover();
 
     return $self;
 }
@@ -178,10 +179,6 @@ sub flooz {
     my $self = shift;
     my $what = shift;
 
-    if (!$self->{floozal}) {
-        die "not floozal: ".$self->label;
-    }
-
     $self->{hostinfo}->flood($what => $self);
 }
 
@@ -205,11 +202,9 @@ sub label {
 
 sub default_html {
     my $self = shift;
-    my $html = "";
-        $html .= '<span class="'.$self->{id} .' divlabel'
-            .'" style="position: absolute; right:1px; opacity: 0.4;">'
-            .$self->label.'</span>';
-    return $html;
+       '<span class="'.$self->{id} .' divlabel'
+       .'" style="position: absolute; right:1px; opacity: 0.4;">'
+       .$self->label.'</span>'
 }
 
 sub html {
@@ -226,8 +221,8 @@ sub html {
 sub wipehtml {
     my $self = shift;
     $self->hostinfo->send("\$('#".$self->{divid}." > *').remove();") if $self->html;
-    $self->fit_div();
     $self->html("");
+    # $self->fit_div(); TODO how to?
     1;
 }
 
@@ -252,10 +247,10 @@ sub takeover {
         $html = $self->html;
     }
     elsif ($texty->{hooks}->{append}) {
-        $self->html($self->html."   ".$html);
+        $self->{html} .= $html;
     }
     else {
-        $self->wipehtml;
+        $self->hostinfo->send("\$('#".$self->{divid}." > *').remove();") if $self->html;
         $self->html($html);
     }
 
@@ -302,18 +297,11 @@ sub append_spans {
             usleep 10000;
         }
     }
-
-    $self->fit_div();
-}
-
-sub fit_div {
-    my $self = shift;
-    my $texty = $self->{text} || $self->{menu}->{text} || return;
-    $texty->fit_div();
 }
 
 sub concat_array {
     my $a = shift;
+    return unless $a;
     if (ref \$a eq "SCALAR") {
         return $a;
     }
