@@ -9,9 +9,10 @@ sub append {
     write_file("proc/list", {append => 1}, shift);
 }
 
+`rm -rf proc` if -e 'proc';
+`mkdir proc`;
 `cat /dev/null > proc/start`;
 `cat /dev/null > proc/list`;
-`rm proc/*.*` if glob('proc/*.*');
 
 append("$$: $0\n");
 
@@ -28,7 +29,7 @@ while (1) {
         }
         push @old, $command;
         if (my $pid = fork()) {
-            print "forked $pid\n";
+            print "forked $pid: $command\n";
         }
         else {
             my ($styleparent, $command) = $command =~ /^(\d+): (.+)$/;
@@ -52,10 +53,7 @@ while (1) {
             print "Err 5 $!\n" if $!;
 
             exec $command;
-            print "Err 6 $!\n" if $!;
-            print "after exec\n";
-            exit;
         }
     }
-    usleep(100);
+    usleep(90000);
 }

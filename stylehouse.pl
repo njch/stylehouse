@@ -73,6 +73,7 @@ use Texty;
 use Lyrico;
 use Codo;
 use Codon;
+use Git;
 use View;
 use Ebuge;
 use Proc;
@@ -136,8 +137,8 @@ sub init {
     $hostinfo->flood($hostinfo->data);
 
     #Lyrico->new($hostinfo->intro);
-    Codo->new($hostinfo->intro);
     Git->new($hostinfo->intro);
+    #Codo->new($hostinfo->intro);
     Keys->new($hostinfo->intro);
 
     $hostinfo->update_app_menu();

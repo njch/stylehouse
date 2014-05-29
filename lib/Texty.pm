@@ -227,8 +227,13 @@ sub mktuxt {
     }
     elsif (ref \$s->{value} eq "SCALAR") {
 
-        while ($s->{value} =~ s/^!(\w+)(?:=(\w+))? //s) {
-            $s->{$1} = defined $2 ? $2 : "yep";
+        while ($s->{value} =~ s/^! (\w+) (?: = ( (?:\w+|'.+?') ) )? \s//sx) {
+            if ($1 eq "style") {
+                $s->{style} .= ($2 =~ /^'(.+)'$/)[0];
+            }
+            else {
+                $s->{$1} = defined $2 ? $2 : "yep";
+            }
         }
         if (!$s->{html} && $s->{value} =~ /<span/sgm) {
             $s->{html} = 1;
@@ -338,15 +343,17 @@ sub htmlvalue_height {
 
 sub fit_div {
     my $self = shift;
+
+    my $max = $self->{max_height};
     my $last = $self->{tuxts}->[-1];
     my ($top) = $last->{top};
     $top += $self->htmlvalue_height($last);
+    $top += 10;
+
     my $scroll_down;
-    if ($self->{max_height}) {
-        if ($self->{max_height} < $top) {
-            $top = $self->{max_height};
-            $scroll_down = 1;
-        }
+    if ($max && $max < $top) {
+        $top = $max;
+        $scroll_down = 1;
     }
     $top .= "px";
 

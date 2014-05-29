@@ -42,7 +42,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{git} = $self->{hostinfo}->get("Git");
+    $self->{git} = $self->{hostinfo}->getapp("Git");
     $self->{code_dir} = $self->{git}->below(); 
 
     my $hi = $self->{hostinfo};
@@ -91,13 +91,7 @@ sub menu {
         },
         'rps' => sub {
             $self->infrl('restarting procserv');
-            $self->spawn_proc('killall procserv.pl; ./procserv.pl &');
-        },
-        "spawn" => sub {
-            $self->spawn_child();
-        },
-        "restate" => sub {
-            $self->init_state();
+            $self->{git}->reprocserv();
         },
     }
 }
@@ -123,35 +117,9 @@ sub event {
             die $s;
         }
     }
-    elsif ($s = $staty->id_to_tuxt($id)) {
-        my ($pid, $cmd) = split ": ", $s->{value};
-        $self->errl("killing $pid: $cmd");
-        kill "TERM", $pid;
-        $self->{hostinfo}->timer(0.2, sub {
-            $self->init_state()
-        });
-    }
     else {
         return $self->hostinfo->error("Codo event 404 for $id", $event);
     }
-}
-
-sub spawn_child {
-    my $self = shift;
-        return $self->errl( "no procserv.pl",
-            "cannot spawn processes", "run ./procserv.pl yourself") unless grep /procserv.pl/, `ps faux`;
-    my $outside = "styleshed";
-        return $self->errl("$outside already running") if $self->{state}->{$outside};
-        return $self->errl("../$outside does not exist") unless -d "../$outside";
-
-    $self->spawn_proc($self->childcmd($outside));
-}
-
-sub spawn_proc {
-    my $self = shift;
-    my $P = Proc->new($self->{hostinfo}->intro, $self->{processes}, @_);
-    push @{$self->{procs}}, $P;
-    return $P
 }
 
 sub init_codons { #{{{

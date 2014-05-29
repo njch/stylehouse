@@ -1,25 +1,78 @@
 package Git;
 use strict;
 use warnings;
+use feature 'say';
 
 sub hi { shift->{hostinfo} }
+sub ddump { Hostinfo::ddump(@_) }
 
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->hi->set("Git/repos", [ map { "style$_" } qw{ house shed bucky } ]);
+    my $repos = $self->hi->set("Git/repos", [ map { "style$_" } qw{ house shed bucky } ]);
+    for my $r (@$repos) {
+        $self->hi->set("Git/repos/$r", {});
+    }
     $self->wire_procs();
 
-    my $G = $hi->{flood}->spawn_floozy($self, Git => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
-    $G->spawn_floozy($self, pswatch => "width:92%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    $G->spawn_floozy($self, procwatch => "width:92%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
-
-    $self->init_state();
-    
-    $self->init_proc_list();
-
+    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #afc; border: 5px solid blue;");
+    $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $G->spawn_floozy($self, procwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
+    $G->spawn_floozy($self, pswatch => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $G->spawn_floozy($self, repos => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+   
+    $self->init();
     return $self;
+}
+
+sub init {
+    my $self = shift; 
+    $self->gitrack();
+
+    $self->pswatch();
+    
+    $self->procwatch();
+
+    $self->repos();
+}
+
+sub gitrack {
+    my $self = shift;
+    
+    $self->{menu} = {
+        stat => sub {
+            shift->init();
+        },
+    };
+    my $rt = $self->{gitrack}->text;
+    $rt->add_hooks({
+        tuxtstyle => sub {
+            return 'padding: 4.20px; font-size: 1em; '.random_colour_background();
+        },
+        class => "menu",
+        nospace => 1,
+        notakeover => 1,
+        event => sub {
+            my $texty = shift;
+            my $event = shift;
+            my $id = $event->{id};
+            my $s = $texty->id_to_tuxt($id);
+            die "no findo $id" unless $s;
+            my $v = $s->{value};
+
+            my $w = $self->{menu}->{$v};
+            return $w->($self, $event) if $w;
+            die "no $v in $self";
+        },
+    });
+    $rt->replace([sort keys %{$self->{menu}}]);
+}
+
+sub random_colour_background {
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "background: rgb($rgb);";
 }
 
 
@@ -30,7 +83,7 @@ sub event {
 
     my $staty = $self->{codostate}->text;
 
-    if ($s = $staty->id_to_tuxt($id)) {
+    if (my $s = $staty->id_to_tuxt($id)) {
         my ($pid, $cmd) = split ": ", $s->{value};
         $self->errl("killing $pid: $cmd");
         kill "TERM", $pid;
@@ -43,81 +96,169 @@ sub event {
     }
 }
 
-
-sub childcmd {
+sub reprocserv {
     my $self = shift;
-    my $given = shift;
-    if ($given && $given =~ /^style(\w+)$/) {
-        return "cd ../$given && echo '<<ID>>' && ./stylehouse.pl"
-    }
-    elsif ($given && $given =~ /cd \.\.\/style(\S+) && echo '(.*)' && (?:perl |\.\/)stylehouse\.pl/) {
-        return ($1, $2)
-    }
-    else {
-        return undef
-    }
+    $self->spawn_proc('killall procserv.pl; ./procserv.pl &');
 }
 
+sub pstylecmd {
+    my $self = shift;
+    my $cmd = shift;
+
+    if ($cmd && $cmd =~ /cd \.\.\/style(\S+) && echo '(.*)' && (?:perl |\.\/)stylehouse\.pl/) {
+        return ($1, $2)
+    }
+}
+sub mstylecmd {
+    my $self = shift;
+    my $name = shift;
+    return "cd ../$name && echo '<<ID>>' && ./stylehouse.pl"
+}
+
+sub spawn_style {
+    my $self = shift;
+    my $outside = shift;
+    my $repo = $self->hi->get("Git/repos/$outside") || die "no such $outside";
+    return $self->errl("../$outside does not exist") unless -d "../$outside";
+    return $self->errl( "no procserv.pl") unless grep /procserv.pl/, `ps faux`;
+
+        return $self->errl("$outside already running") if $self->{state}->{$outside};
+
+    my $P = $self->spawn_proc($self->mstylecmd($outside));
+    $P->{repo} = $repo;
+    $P
+}
+
+sub spawn_proc {
+    my $self = shift;
+    say "spawning: ".ddump([@_]);
+    my $P = Proc->new($self->{hostinfo}->intro, $self->{Procshow}, @_);
+    push @{$self->{procs}}, $P;
+    $P
+}
+
+sub procup {
+    my $self = shift;
+    my ($pid, $cmd) = @_;
+    say "resurrecting: $pid: $cmd";
+    my $P = Proc->new($self->{hostinfo}->intro, $self->{Procshow});
+    $P->{cmd} = $pid;
+    $P->started($pid);
+    push @{$self->{procs}}, $P;
+    $P
+}
+
+sub repos {
+    my $self = shift;
+
+    my $rt = $self->{repos}->text;
+    $rt->{hooks}->{fit_div} = 1;
+    $rt->{max_height} = 400;
+
+    my $menu = {
+        up => sub {
+            my ($e, $s) = @_;
+            my $which = $s->{value};
+            $self->spawn_style($which);
+        },
+    };
+    $rt->add_hooks({
+        spatialise => sub { { top => 1 } },
+        event => sub {
+            my $texty = shift;
+            my $event = shift;
+            my $s = $texty->id_to_tuxt($event->{id});
+            if (my $m = $s->{menu}) {
+                $menu->{$m}->($event, $s);
+            }
+        },
+    });
+
+    my $repos = $self->hi->get('Git/repos');
+    $rt->replace([ map { "!menu=up $_" } @$repos ]);
+}
 
 sub pswatch {
     my $self = shift;
 
     $self->init_state();
+
     my $ps = $self->{state}->{ps};
 
     my $what = [ sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
 
     $_ =~ s/^\d+ // for @$what;
 
-    $self->{pswatch}->flooz(join "\n", @$what); # Tractor should make this interactive
+    $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
 }
 
 sub procwatch {
     my $self = shift;
 
-    my $pl = $self->{procwatch};
-    $pl->text->{hooks}->{fit_div} = 1;
-    $pl->text->{max_height} = 160;
-    $pl->text->replace(['!html <b> proc/list </b>']);
+    my $plt = $self->{procwatch}->text;
+    $plt->{hooks}->{fit_div} = 1;
+    $plt->{max_height} = 400;
 
-    my $per_line = sub {
-        my $line = shift;
-        $line =~ s/\n$//;
-        return unless $line =~ /\S/;
-        my ($pid, $cmd_echo) = $line =~ /^(\d+): (.+)\n?$/;
-        
-        my $proc;
-        for my $p (@{ $self->{procs} }) {
-            say " - have $p->{cmd}";
-            if ($p->{cmd} eq $cmd_echo) {
-                $proc = $p;
-                last;
+    my $menu = {
+        toggle => sub {
+            $self->{procwatch}->{toggle}++;
+            $self->procwatch();
+        },
+        startproc => sub {
+            my ($e, $s) = @_;
+            my ($pid, $cmd) = $s->{value} =~ /.+?: (\d+): (.+)/;
+            $self->procup($pid, $cmd);
+        },
+    };
+    $plt->add_hooks({
+        spatialise => sub { { top => 1 } },
+        event => sub {
+            my $texty = shift;
+            my $event = shift;
+            my $s = $texty->id_to_tuxt($event->{id});
+            if (my $m = $s->{menu}) {
+                $menu->{$m}->($event, $s);
             }
-        }
+        },
+    });
 
-        my $stat;
-        if ($proc) {
-            if ($proc->{pid}) {
-                $stat = "$proc->{id} running";
-                if ($proc->{pid} ne $pid) {
-                    $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc, $line);
+    my $hid = ($plt->view->{toggle} || 2) % 2;
+    $plt->replace([ '!menu=toggle proc/list'.($hid ? " ~" : "") ]);
+
+    unless ($hid) {
+        my $per_line = sub {
+            my $line = shift;
+            $line =~ s/\n$//;
+            say "Line: $line";
+            my ($pid, $cmd) = $line =~ /^(\d+): (.+)\n?$/;
+            
+            my %procs = map { $_->{cmd} => $_ } @{$self->{procs}};
+            my $proc = $procs{$cmd};
+
+            my $stat;
+            if ($proc) {
+                if ($proc->{pid}) {
+                    $stat = "$proc->{id}";
+
+                    if ($proc->{pid} ne $pid) {
+                        $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc->{pid}, $proc->{cmd}, $line);
+                    }
+                }
+                else {
+                    $proc->started($pid);
+                    $stat = "$proc->{id} s t a r t e d"
                 }
             }
             else {
-                $proc->started($pid);
-                $stat = "$proc->{id} s t a r t e d"
+                $stat = "!menu=startproc ? no ? Proc ?";
             }
-        }
-        else {
-            $stat = "unknown";
-        }
-        $stat = "!html <i>$stat</i>";
 
-        $pl->text->append([$line, $stat]);
-    };
+            $plt->append(["$stat: $line"]);
+        };
 
-    # watch the list of started files and their pids
-    $self->{hostinfo}->stream_file("proc/list", $per_line);
+        # watch the list of started files and their pids
+        $self->{hostinfo}->stream_file("proc/list", $per_line);
+    }
 }
 
 sub init_state {
@@ -192,7 +333,7 @@ sub init_state {
     for my $t (values %$s) {
         for my $p (values %$t) {
             if ($p->{cmd}) {
-                my ($name, $mess) = $self->childcmd($p->{cmd});
+                my ($name, $mess) = $self->pstylecmd($p->{cmd});
                 if ($p->{name} && ($p->{name} ne $name || $p->{mess} ne $mess)) {
                     die "conflicter of the... $p->{cmd}\n'$p->{name}' ne '$name' || '$p->{mess}' ne '$mess'\n".anydump($s);
                 }
@@ -202,6 +343,7 @@ sub init_state {
         }
     }
 }
+
 
 sub below {
     my $self = shift;
@@ -230,21 +372,43 @@ sub wire_procs {
     my $style = $self->{hostinfo}->get("style");
     
     my $tower = "../$top/proc";
-    die "proc tower $tower not directory" unless -d $proctower;
+    die "proc tower $tower not exist"                                   unless -e $tower;
+    die "proc tower $tower is a link somewhere else: ".readlink($tower) if -l $tower;
+    die "proc tower $tower not directory" unless -d $tower;
 
     if ($style eq $top) {
         for my $y (@rest) {
             my $unto = "../$y/proc";
-            die "remote proc $unto is a directory" if -d $unto;
-            my $lw = readlink $unto;
-            die "remote proc $unto already wired to $lw instead of $tower" if $lw && $lw ne $tower;
-            `ln -s $tower $unto` unless $lw;
+            if (-e $unto) {
+                if (-l $unto) {
+                    my $lw = readlink $unto;
+                    if ($lw ne $tower) {
+                        die "remote proc $unto already wired to $lw instead of $tower"
+                    }
+                    else { # sweet
+                    }
+                }
+                else {
+                    die "remote proc $unto is something else:\n".`ls -lh $unto`
+                }
+            }
+            else {
+                `ln -s $tower $unto`
+            }
         }
     }
     else {
-        my $procto = readlink 'proc';
-        die "procs not wired" unless $procto;
-        die "proc already wired to $procto instead of $tower" if $procto && $procto ne $tower;
+        if (-l 'proc') {
+            my $procto = readlink 'proc';
+            if ($procto ne $tower) {
+                die "proc already wired to $procto instead of $tower"
+            }
+            else { # sweet
+            }
+        }
+        else {
+            die "procs not wired"
+        }
     }
 }
 

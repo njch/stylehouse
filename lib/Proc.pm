@@ -9,6 +9,7 @@ use File::Slurp;
 use Time::HiRes 'gettimeofday';
 
 has 'hostinfo';
+sub ddump { Hostinfo::ddump(@_) }
 has 'output';
 has 'pid';
 has 'kilt';
@@ -17,13 +18,16 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
+
     $self->{avoid_app_menu} = 1;
 
-    my $play_in = shift;
-    $self->{play} = $play_in->spawn_floozy($self->{id},
+    my $P = $self->{play} = shift->spawn_floozy($self->{id},
                                     'width:92%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
+    $self->{cmd} = shift;
+    my $i = $self->{id};
+    say "$i starting $self->{cmd}";
 
-    $self->{controls} = $self->{play}->spawn_ceiling("$self->{id}_controls",
+    $self->{controls} = $P->spawn_ceiling("$self->{id}_controls",
                                     "background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 2em;");
     my $ct = $self->{controls}->text;
     $ct->add_hooks({
@@ -42,7 +46,6 @@ sub new {
                                     "background: #353; width: 99%; border: 2px solid black; text-shadow: 4px 4px 4px #white; margin: 1em;");
     $self->{mess}->text->{hooks}->{fit_div} = 1;
 
-    $self->{cmd} = shift;
     if ($self->{cmd}) {
         $self->{cmd}  =~ s/<<ID>>/$self->{id}/;
 
