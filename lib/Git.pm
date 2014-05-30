@@ -19,9 +19,11 @@ sub new {
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     
-    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold;");
-    $G->spawn_floozy($self, proclistwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
-    $G->spawn_floozy($self, procstartwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
+    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
+    #$self->{Procshow}->text->add_hooks({fit_div => 1});
+    $self->{Procshow}->text->replace(['!class=hear Procshow']);
+    $G->spawn_floozy($self, proclistwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
+    $G->spawn_floozy($self, procstartwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
     $G->spawn_floozy($self, pswatch => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $G->spawn_floozy($self, repos => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
    
@@ -99,7 +101,7 @@ sub event {
     }
     else {
         say "Errour!";
-        return $self->hostinfo->error("Codo event 404 for $id", $event);
+        return $self->{hostinfo}->error("Codo event 404 for $id", $event);
     }
 }
 
@@ -222,12 +224,12 @@ sub procstartwatch {
 
     my $menu = {
         toggle => sub {
-            $self->{prostartwatch}->{toggle}++;
+            $self->{procstartwatch}->{toggle}++;
             $self->procstartwatch();
         },
     };
     $plt->add_hooks({
-        spatialise => sub { { top => 1 } },
+        spatialise => sub { { top => 1, space => 10 } },
         event => sub {
             my $texty = shift;
             my $event = shift;
@@ -242,7 +244,7 @@ sub procstartwatch {
     });
 
     my $hid = ($self->{prostartwatch}->{toggle} || 2) % 2;
-    $plt->replace([ '!menu=toggle proc/start'.($hid ? " ~" : "") ]);
+    $plt->replace([ "!menu=toggle !style='color: black; font-weight: bold;font-size: 10pt;  text-shadow: 2px 2px 4px #fa0;' proc/start".($hid ? " ~" : "") ]);
 
     unless ($hid) {
         my $per_line = sub {
@@ -280,7 +282,7 @@ sub proclistwatch {
         },
     };
     $plt->add_hooks({
-        spatialise => sub { { top => 1 } },
+        spatialise => sub { { top => 1, space => 10 } },
         event => sub {
             my $texty = shift;
             my $event = shift;
@@ -292,7 +294,7 @@ sub proclistwatch {
     });
 
     my $hid = ($self->{proclistwatch}->{toggle} || 2) % 2;
-    $plt->replace([ '!menu=toggle proc/list'.($hid ? " ~" : "") ]);
+    $plt->replace([ "!menu=toggle !style='color: black; font-weight: bold; font-size: 10pt; text-shadow: 2px 2px 4px #fa0;' proc/list".($hid ? " ~" : "") ]);
 
     unless ($hid) {
         my $per_line = sub {

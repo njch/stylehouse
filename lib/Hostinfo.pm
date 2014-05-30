@@ -322,10 +322,14 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->create_view($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; bottom:0px; z-index:5; position: fixed;",
+            "width:98%; background: #333; color: #afc; font-family: serif; z-index:5; top: 0px; position: fixed;",
             before => "#body :first",
             "menu",
         );
+        $self->create_view($self, "appmenu_floon",
+            "width:98%;  z-index:5; top: 0px; height: 3em; ",
+            after => "#appmenu",
+            );
         $self->{appmenu}->text->add_hooks(
             $self->app_menu_hooks()
         );
@@ -526,7 +530,7 @@ sub init_flood {
     my $self = shift;
 
     my $f = $self->{flood} = $self->create_view($self, "flood",
-        "width:".420*2.14."px; background: #8af; border: 4px solid gray; height: ".8*420*2.34."px; overflow: scroll;"
+        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".8*420*2.34."px; overflow: scroll;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",

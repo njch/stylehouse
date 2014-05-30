@@ -196,8 +196,17 @@ sub resume {
 sub label {
     my $self = shift;
     my $o = $self->{owner};
-    $o = ref($o).": ".($o->{divid} ? "$o->{divid}/ " : "");
-    return "$o $self->{divid}".($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
+    return do {
+        if ($o->{divid} && $self->{divid} =~ /^$o->{divid}(.+)/) {
+            "$o->{divid}/ $1"
+        }
+        elsif ($o->{divid}) {
+            "$o->{divid}/$self->{divid}"
+        }
+        else {
+            ref($o).": $self->{divid}"
+        }
+    } . ($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
 }
 
 sub default_html {

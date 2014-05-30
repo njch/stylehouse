@@ -282,8 +282,8 @@ sub spatialise {
         $geo = $self->hooks->{spatialise}->();
     }
     my $inc = $geo->{horizontal} if $geo->{horizontal};
-    my $otop = $geo->{top} ||= 20; # TODO use defined-or
-    my $oleft = $geo->{left} ||= 30;
+    my $otop = $geo->{top} ||= 2; # TODO use defined-or
+    my $oleft = $geo->{left} ||= 3;
     $geo->{horizontal} = $oleft if $geo->{horizontal};
     my $ospace = $geo->{space} ||= 20;
     my $i = 0;
@@ -332,7 +332,7 @@ sub htmlvalue_height {
     if ($s->{html}) {
         if ($v =~ /<h(\d+)>/) {
             my $h = 4 - $1;
-            return 15 * $h
+            return 15 * $h + 10;
         }
         if ($v=~ /<textarea .+? rows="(\d+)"/) {
             return int(((250 / 15) * $1) - $g->{space} + 1);

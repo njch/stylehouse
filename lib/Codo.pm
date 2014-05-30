@@ -61,7 +61,6 @@ sub new {
 
     $self->codolist();
 
-    
 # recover openness 
     for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
         $s->{value} eq "Ghost" && do {

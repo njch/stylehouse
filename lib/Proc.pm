@@ -89,14 +89,15 @@ sub started {
     say $_ for @mesa;
 
     my $opc = $self->{Proc}->spawn_floozy("$self->{id}_opc",
-        "width: 99%; background-color: #444; border: 2px solid white; overflow: scroll; margin: 1em;");
+        "width: 99%; background-color: #111; border: 2px solid white; overflow: scroll; margin: 1em;");
 
     $opc->text->add_hooks({
         spatialise => sub { { left => 0, top => 0 } },
+        fit_div => 1,
     });
     $opc->text->{max_height} = 420 * 1.1;
     my $opc_ch = {
-        err => "color: pink; text-shadow: 2px 2px 4px #000;",
+        err => "color: #FF0066; text-shadow: 2px 2px 4px #3D001F;",
         out => "color: white; ",
     };
     for my $d ("err", "out") {
