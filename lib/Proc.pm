@@ -18,17 +18,22 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-
     $self->{avoid_app_menu} = 1;
 
-    my $P = $self->{play} = shift->spawn_floozy($self->{id},
-                                    'width:92%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
+    $self->{flwhere} = shift;
     $self->{cmd} = shift;
     my $i = $self->{id};
-    say "$i starting $self->{cmd}";
 
-    $self->{controls} = $P->spawn_ceiling("$self->{id}_controls",
-                                    "background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 2em;");
+
+    $self->{Proc} =
+        $self->{flwhere}->spawn_floozy($self->{id},
+            'width:92%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
+
+    say "$self->{Proc} is!";
+    $self->{controls} =
+        $self->{Proc}->spawn_ceiling("$self->{id}_controls",
+            "background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 2em;");
+
     my $ct = $self->{controls}->text;
     $ct->add_hooks({
         tuxtstyle => sub {
@@ -41,12 +46,15 @@ sub new {
     });
     $ct->replace([ "KILL", "web" ]);
 
-
-    $self->{mess} = $self->{play}->spawn_ceiling("$self->{id}_mess",
-                                    "background: #353; width: 99%; border: 2px solid black; text-shadow: 4px 4px 4px #white; margin: 1em;");
+    $self->{mess} =
+        $self->{Proc}->spawn_floozy("$self->{id}_mess",
+            "background: #353; width: 99%; border: 2px solid black; text-shadow: 4px 4px 4px #white; margin: 1em;");
     $self->{mess}->text->{hooks}->{fit_div} = 1;
 
+
+
     if ($self->{cmd}) {
+        say "$i starting $self->{cmd}";
         $self->{cmd}  =~ s/<<ID>>/$self->{id}/;
 
         my $cmd = $self->{cmd};
@@ -60,10 +68,15 @@ sub new {
     else {
         $self->{mess}->text->append(['Vacant lot']);
         say "Proc vacant lot";
+        $self->{vacant} = 1;
     }
 
 
     return $self;
+}
+
+sub init {
+    my $self = shift;
 }
 
 sub random_colour_background {
@@ -76,7 +89,13 @@ sub started {
     my $pid = shift;
     $self->{pid} = $pid;
 
-    say "Proc: $self->{id} started ($pid)";
+    my @mesa;
+    if ($self->{vacant}) {
+        push @mesa, "Picked up: $self->{cmd}";
+    }
+    push @mesa, "Proc: $self->{id} started ($pid)";
+    $self->{mess}->text->append([@mesa]);
+    say         "Proc: $self->{id} started ($pid)";
 
     my $opc = $self->{play}->spawn_floozy("$self->{id}_opc", "width: 99%; background-color: #444; border: 2px solid white; overflow: scroll; margin: 1em;");
     $opc->text->add_hooks({

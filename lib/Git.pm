@@ -18,10 +18,12 @@ sub new {
 
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #afc; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    
+    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold;");
     $G->spawn_floozy($self, proclistwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
+    $G->spawn_floozy($self, procstartwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-weight: bold; overflow: scroll;");
     $G->spawn_floozy($self, pswatch => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $G->spawn_floozy($self, repos => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
    
     $self->init();
     return $self;
@@ -34,6 +36,8 @@ sub init {
     $self->pswatch();
     
     $self->proclistwatch();
+
+    $self->procstartwatch();
 
     $self->repos();
 }
@@ -81,17 +85,20 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
-    my $staty = $self->{codostate}->text;
+    my $pst = $self->{pswatch}->text;
 
-    if (my $s = $staty->id_to_tuxt($id)) {
+        say "Hello!";
+    if (my $s = $pst->id_to_tuxt($id)) {
+        say "Hello!";
         my ($pid, $cmd) = split ": ", $s->{value};
-        $self->errl("killing $pid: $cmd");
+        $self->hi->info("killing $pid  cmd: $cmd");
         kill "TERM", $pid;
         $self->{hostinfo}->timer(0.2, sub {
             $self->init_state()
         });
     }
     else {
+        say "Errour!";
         return $self->hostinfo->error("Codo event 404 for $id", $event);
     }
 }
@@ -188,10 +195,55 @@ sub pswatch {
     my $what = [ sort map { "$_->{i} $_->{pid}: $_->{cmd}" } values %$ps ];
 
     $_ =~ s/^\d+ // for @$what;
-    $_ = "'$_'" for @$what;
 
     $self->{pswatch}->text->{hooks}->{fit_div} = 1;
     $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
+
+    $self->hi->timer(2, sub { $self->pswatch() });
+}
+
+sub procstartwatch {
+    my $self = shift;
+
+    my $plt = $self->{procstartwatch}->text;
+    $plt->{hooks}->{fit_div} = 1;
+    $plt->{max_height} = 400;
+
+    my $menu = {
+        toggle => sub {
+            $self->{prostartwatch}->{toggle}++;
+            $self->procstartwatch();
+        },
+    };
+    $plt->add_hooks({
+        spatialise => sub { { top => 1 } },
+        event => sub {
+            my $texty = shift;
+            my $event = shift;
+            my $s = $texty->id_to_tuxt($event->{id});
+            if (my $m = $s->{menu}) {
+                $menu->{$m}->($event, $s);
+            }
+        },
+    });
+
+    my $hid = ($plt->view->{toggle} || 2) % 2;
+    $plt->replace([ '!menu=toggle proc/start'.($hid ? " ~" : "") ]);
+
+    unless ($hid) {
+        my $per_line = sub {
+            my $line = shift;
+            $line =~ s/\n$//;
+            say "start Line: $line";
+            my ($pid, $cmd) = $line =~ /^(\d+): (.+)\n?$/;
+
+            my $stat = $pid == $$ ? "us" : "??";
+            
+            $plt->append(["$stat: $line"]);
+        };
+
+        $self->{hostinfo}->stream_file("proc/start", $per_line);
+    }
 }
 
 sub proclistwatch {

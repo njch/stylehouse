@@ -135,6 +135,7 @@ sub god_enters {
 
 sub furnish_god {
     my $self = shift;
+    say "FURNISHING!?";
 
 }
 sub find_god {
@@ -201,8 +202,26 @@ sub reload_views {
         $view->takeover();
     }
 }
+sub gest {
+    my $self = shift;
+    my ($k, $v) = @_;
+    $data->{$k} ||= $v;
+}
 
+use Digest::SHA 'sha1_hex';
+sub ignorable_mess {
+    my $self = shift;
+    my $mess = shift;
+    my $dig = sha1_hex($mess);
+    my $iggy = $self->gest('ignorable_messs', {});
 
+    return 1 if $iggy->{$dig};
+
+    $iggy->{$dig} = 1;
+    $self->timer(0.2, sub { delete $iggy->{$dig} });
+
+    return 0;
+}
 
 sub app_menu_hooks {
     my $self = shift;
@@ -622,31 +641,30 @@ sub enlogform {
 
     my $e = [@_];
 
-    my $from = [];
-    my $back = 5;
-    for my $b (1..$back) {
-        $b += 1; # error + this sub
-        push @$from, grep { (!/Mojo::Server::SandBox/)..0 } join " ", (caller($b))[0,3,2]; # package, subroutine, line
+    my @from;
+    my $b = 1; # past last couple
+    while (1) {
+        my $from = join " ", (caller($b))[0,3,2];# package, subroutine, line
+        push @from, $from;
+        last if $from =~ /^Mojo/; 
+        $b++;
     }
 
-    return [ hitime(), $from, $e ];
+    return [ hitime(), \@from, $e ];
 }
 
 sub info {
     my $self = shift;
     
-    my $error = $self->enlogform(@_);
-    say "\n   infotangent! ".ind("    ", ddump($error->[1]->[0]));
-    say "Error reads: ".ddump($error->[2]);
-    $self->throwlog("errors", "hi_error", $error);
+    my $info = $self->enlogform(@_);
+    say ddump( {Info => $info} );
+    $self->throwlog("infos", "hi_info", $info);
 }
 sub error {
     my $self = shift;
     
     my $error = $self->enlogform(@_);
-    say "\n   infotangent! ".ind("    ", ddump($error->[1]));
-    say "\nError from ".ddump($error->[1]);
-    say "Error reads: ".ddump($error->[2]);
+    say ddump( {Error => $error} );
     $self->throwlog("errors", "hi_error", $error);
 }
 

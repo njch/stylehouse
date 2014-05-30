@@ -16,18 +16,16 @@ sub append {
 
 append("$$: $0\n");
 
-my @old;
+my $i = 0;
 while (1) {
-    my $i = 0;
     my @commands = `cat proc/start`;
-    if (!@commands && @old) {
-        @old = ();
-    }
+    $i = 0 if @commands < $i;
+    splice(@commands, 0, $i);
+    say "HAve ".@commands.'coammdn';
+
     for my $command (@commands) {
-        if ($old[$i++]) {
-            next;
-        }
-        push @old, $command;
+        $i++;
+        say "A command";
         if (my $pid = fork()) {
             print "forked $pid: $command\n";
         }
@@ -53,7 +51,8 @@ while (1) {
             print "Err 5 $!\n" if $!;
 
             exec $command;
+            exit;
         }
     }
-    usleep(90000);
+    usleep(290000);
 }
