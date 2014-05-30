@@ -21,11 +21,9 @@ while (1) {
     my @commands = `cat proc/start`;
     $i = 0 if @commands < $i;
     splice(@commands, 0, $i);
-    say "HAve ".@commands.'coammdn';
 
     for my $command (@commands) {
         $i++;
-        say "A command";
         if (my $pid = fork()) {
             print "forked $pid: $command\n";
         }
