@@ -16,7 +16,7 @@ sub new {
     }
     $self->wire_procs();
 
-    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #afc; border: 5px solid blue;");
+    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     
     $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold;");
@@ -138,7 +138,7 @@ sub spawn_style {
 
 sub spawn_proc {
     my $self = shift;
-    say "spawning: ".ddump([@_]);
+    $self->hi->info("spawning ".join", ",@_);
     my $P = Proc->new($self->{hostinfo}->intro, $self->{Procshow}, @_);
     push @{$self->{procs}}, $P;
     $P
@@ -178,6 +178,9 @@ sub repos {
             if (my $m = $s->{menu}) {
                 $menu->{$m}->($event, $s);
             }
+            else {
+                say "unhandled tuxt click: ".ddump($s);
+            }
         },
     });
 
@@ -196,8 +199,16 @@ sub pswatch {
 
     $_ =~ s/^\d+ // for @$what;
 
-    $self->{pswatch}->text->{hooks}->{fit_div} = 1;
-    $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
+    my $pswt = $self->{pswatch}->text;
+    $pswt->{hooks}->{fit_div} = 1;
+
+    my ($etc, @old) = @{$pswt->{lines}};
+    my $old = join "\n", @old;
+    my $new = join "\n", @$what;
+    unless ($old eq $new) {
+        $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
+    }
+    else { print "." }
 
     $self->hi->timer(2, sub { $self->pswatch() });
 }
@@ -224,10 +235,13 @@ sub procstartwatch {
             if (my $m = $s->{menu}) {
                 $menu->{$m}->($event, $s);
             }
+            else {
+                say "unhandled tuxt click: ".ddump($s);
+            }
         },
     });
 
-    my $hid = ($plt->view->{toggle} || 2) % 2;
+    my $hid = ($self->{prostartwatch}->{toggle} || 2) % 2;
     $plt->replace([ '!menu=toggle proc/start'.($hid ? " ~" : "") ]);
 
     unless ($hid) {
@@ -277,7 +291,7 @@ sub proclistwatch {
         },
     });
 
-    my $hid = ($plt->view->{toggle} || 2) % 2;
+    my $hid = ($self->{proclistwatch}->{toggle} || 2) % 2;
     $plt->replace([ '!menu=toggle proc/list'.($hid ? " ~" : "") ]);
 
     unless ($hid) {
