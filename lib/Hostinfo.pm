@@ -182,10 +182,15 @@ sub reload_views {
     my $self = shift;
     # state from client?
 
+
     my $tops = $self->grep('tvs/.+/top');
     my @tops = values %$tops;
     my @names = keys %$tops;
     return say " no existing views" unless @names;
+
+        `touch $0`;
+        sleep 2;
+        
     say " resurrecting views: ".ddump(\@names);
 
     my ($ploked, $floozal) = ([], []);
