@@ -181,6 +181,9 @@ sub event {
 
 sub kill {
     my $self = shift;
+    if ($_[0]) {
+        $self->{kill_andthen} = shift;
+    }
     $self->{pid} || die "kill no pid";
 
     if ($self->{killing}) {
@@ -192,7 +195,6 @@ sub kill {
         $self->kill_loop();
     }
 }
-
 sub killed {
     my $self = shift;
     $self->output("Killed");
