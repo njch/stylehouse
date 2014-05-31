@@ -67,9 +67,13 @@ sub elvis_send {
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
     
-
-    print colored("send\t\t", 'blue');
-    print colored($short, 'bold blue'), "\n";
+    if (-t STDOUT) {
+        print colored("send\t\t", 'blue');
+        print colored($short, 'bold blue'), "\n";
+    }
+    else {
+        say "send\t\t$short";
+    }
     
     $elvis->{tx}->send({text => $message});
 }
