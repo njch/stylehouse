@@ -348,7 +348,6 @@ __DATA__
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
         <script src="codemirror/mode/perl/perl.js"></script>
-
     </head>
     <body id="body">
     </body>

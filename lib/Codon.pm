@@ -118,6 +118,12 @@ sub display {
         else {
             die "WTF";
         }
+        if ($self->{openness}->{$i} eq "Open") {
+            my $textid = $texty->{id}."-Text-$i";
+            $self->{hostinfo}->send(
+                "CodeMirror.fromTextArea(document.getElementById('$textid'));"
+            );
+        }
     }
 
     $temp->wipehtml() if $temp;
