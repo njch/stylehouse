@@ -214,7 +214,7 @@ sub kill_loop {
     }
 
     my $sig = $self->{killing}++ > 2 ? "KILL" : "INT";
-    kill $sig, $self->{pid};
+    CORE::kill $sig, $self->{pid};
     $self->output("kill $sig $self->{pid}");
 
     $self->hi->timer(1, sub { $self->kill_loop });
