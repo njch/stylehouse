@@ -148,12 +148,11 @@ sub spawn_style {
 
 sub spawn_proc {
     my $self = shift;
-    $self->hi->info("spawning ".join", ",@_);
+    #$self->hi->info("spawning ".join", ",@_);
     my $P = Proc->new($self->{hostinfo}->intro, $self, @_);
     push @{$self->{procs}}, $P;
     $P
 }
-
 sub procup {
     my $self = shift;
     my ($pid, $cmd) = @_;
