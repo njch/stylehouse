@@ -212,7 +212,7 @@ websocket '/stylehouse' => sub {
     Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
 
     # strangers are Elvis until they're not
-    $hostinfo->god_connects($self->tx);
+    $hostinfo->elvis_connects($self->tx);
 
     $self->stash(  tx => $self->tx);
 
@@ -242,7 +242,7 @@ websocket '/stylehouse' => sub {
     $self->on(message => sub {
         my ($self, $msg) = @_;
 
-        $hostinfo->god_enters($self, $msg); # this'll all be way soon
+        $hostinfo->elvis_enters($self, $msg); # this'll all be way soon
 
         return say "\n\nIGNORING Message: $msg\n\n\n\n" if $hostinfo->ignorable_mess($msg);
         
@@ -260,7 +260,7 @@ websocket '/stylehouse' => sub {
             $self->stash('handy')->($self, $j);
             say "Handi";
             return if $self->stash('handy');
-            $hostinfo->furnish_god();
+            $hostinfo->furnish_elvis();
             $done = 1;
         }
 
@@ -318,13 +318,13 @@ websocket '/stylehouse' => sub {
         else {
             $self->send("// echo: $msg");
         }
-        $hostinfo->god_leaves();
+        $hostinfo->elvis_leaves();
     });
 
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
       my $tx = $self->tx;
-      $hostinfo->god_leaves($tx, $code, $reason);
+      $hostinfo->elvis_leaves($tx, $code, $reason);
       $self->app->log->debug("WebSocket closed with status $code.");
     });
 

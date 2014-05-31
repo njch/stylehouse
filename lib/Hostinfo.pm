@@ -51,16 +51,16 @@ sub send {
         return;
     }
     else {
-        $self->god_send($message);
+        $self->elvis_send($message);
     }
 }
 
-sub god_send {
+sub elvis_send {
     my $self = shift;
     my $message = shift;
-    my $god = shift;
-    $god ||= $self->who;
-    if (!$god) {
+    my $elvis = shift;
+    $elvis ||= $self->who;
+    if (!$elvis) {
         say "NO INDIVIDUAL TO send $message";
     }
 
@@ -71,7 +71,7 @@ sub god_send {
     print colored("send\t\t", 'blue');
     print colored($short, 'bold blue'), "\n";
     
-    $god->{tx}->send({text => $message});
+    $elvis->{tx}->send({text => $message});
 }
 
 sub send_all {
@@ -79,16 +79,16 @@ sub send_all {
     my $messages = $self->for_all;
     #say "Sending ".(0+@$messages)." messages";
     for my $message (@$messages) {
-        my $gods = $self->get('gods');
-        for my $god (@$gods) {
-            $self->god_send($message, $god);
+        my $elviss = $self->get('elviss');
+        for my $elvis (@$elviss) {
+            $self->elvis_send($message, $elvis);
         }
     }
     #say "Done.";
     $self->for_all([]);
 }
 
-sub god_connects {
+sub elvis_connects {
     my $self = shift;
     my $tx = shift;
     
@@ -98,9 +98,9 @@ sub god_connects {
         $self->{tx_max} = $max; # TODO potential DOS
     }
 
-    my $gods = $self->get('gods');
-    $gods ||= [];
-    $self->set(gods => $gods);
+    my $elviss = $self->get('elviss');
+    $elviss ||= [];
+    $self->set(elviss => $elviss);
 
     my $new = {
         address => $tx->remote_address,
@@ -108,15 +108,15 @@ sub god_connects {
         tx => $tx,
     };
 
-    say "$new->{address} appears";
-    push @$gods, $new;
+    say "God $new->{address} appears";
+    push @$elviss, $new;
 
     $self->who($new);
 
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
 
-sub god_enters {
+sub elvis_enters {
     my $self = shift;
     my $mojo = shift;
     my $msg = shift;
@@ -126,7 +126,7 @@ sub god_enters {
     say "";
     say "$msg";
     say "";
-    my $exist = $self->find_god($tx);
+    my $exist = $self->find_elvis($tx) || $self->who;
     if ($exist) {
         say "$exist->{address} returns";
         $self->who($exist);
@@ -136,20 +136,20 @@ sub god_enters {
     }
 }
 
-sub furnish_god {
+sub furnish_elvis {
     my $self = shift;
     say "FURNISHING!?";
 
 }
-sub find_god {
+sub find_elvis {
     my $self = shift;
     my $tx = shift;
 
-    my ($god) = grep { $_->{tx} eq $tx } @{$self->get('gods')}; # vibe equator
-    return $god || undef;
+    my ($elvis) = grep { $_->{tx} eq $tx } @{$self->get('elviss')}; # vibe equator
+    return $elvis || undef;
 }
 
-sub god_leaves {
+sub elvis_leaves {
     my $self = shift;
     my $tx = shift;
     if (!$tx) {
@@ -163,8 +163,8 @@ sub god_leaves {
 
     say "Part: ".$tx->remote_address.": $code: $reason";
 
-    my $gods = $self->get('gods');
-    @$gods = grep { $_->{tx} ne $tx } @{$self->{tx}};
+    my $elviss = $self->get('elviss');
+    @$elviss = grep { $_->{tx} ne $tx } @{$self->{tx}};
 }
 
 sub hostinfo { shift }
