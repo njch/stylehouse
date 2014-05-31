@@ -11,6 +11,7 @@ use UUID;
 use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
 use View;
+use Term::ANSIColor;
 
 my $data = {};
 
@@ -66,7 +67,9 @@ sub god_send {
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
     
-    say "send\t\t". $short unless $short =~ /#proc_list'\)\.(css|append)/;
+
+    print colored("send\t\t", 'blue');
+    print colored($short, 'bold blue'), "\n";
     
     $god->{tx}->send({text => $message});
 }

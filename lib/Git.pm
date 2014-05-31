@@ -18,15 +18,23 @@ sub new {
 
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+
+    my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
+    $PS->text->replace(['!class=hear Procshow']);
     
-    $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
-    #$self->{Procshow}->text->add_hooks({fit_div => 1});
-    $self->{Procshow}->text->replace(['!class=hear Procshow']);
-    $G->spawn_floozy($self, proclistwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-    $G->spawn_floozy($self, procstartwatch => "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-    $G->spawn_floozy($self, pswatch => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    $G->spawn_floozy($self, repos => "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-   
+    my $GS = $G->spawn_floozy($self, Gitshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
+    $GS->text->replace(['!class=hear Gitshow']);
+
+    $GS->spawn_floozy($self, proclistwatch =>
+        "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
+    $GS->spawn_floozy($self, procstartwatch =>
+        "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
+    $GS->spawn_floozy($self, pswatch =>
+        "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $GS->spawn_floozy($self, repos =>
+        "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    
+
     $self->init();
     return $self;
 }
@@ -141,7 +149,7 @@ sub spawn_style {
 sub spawn_proc {
     my $self = shift;
     $self->hi->info("spawning ".join", ",@_);
-    my $P = Proc->new($self->{hostinfo}->intro, $self->{Procshow}, @_);
+    my $P = Proc->new($self->{hostinfo}->intro, $self, @_);
     push @{$self->{procs}}, $P;
     $P
 }
@@ -150,7 +158,7 @@ sub procup {
     my $self = shift;
     my ($pid, $cmd) = @_;
     say "resurrecting: $pid: $cmd";
-    my $P = Proc->new($self->{hostinfo}->intro, $self->{Procshow});
+    my $P = Proc->new($self->{hostinfo}->intro, $self);
     $P->{cmd} = $pid;
     $P->started($pid);
     push @{$self->{procs}}, $P;
@@ -161,6 +169,7 @@ sub repos {
     my $self = shift;
 
     my $rt = $self->{repos}->text;
+    $rt->{hooks}->{class} = "hidata";
     $rt->{hooks}->{fit_div} = 1;
     $rt->{max_height} = 400;
 
@@ -203,6 +212,7 @@ sub pswatch {
 
     my $pswt = $self->{pswatch}->text;
     $pswt->{hooks}->{fit_div} = 1;
+    $pswt->{hooks}->{class} = "hidata";
 
     my ($etc, @old) = @{$pswt->{lines}};
     my $old = join "\n", @old;
@@ -210,7 +220,7 @@ sub pswatch {
     unless ($old eq $new) {
         $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
     }
-    else { print "." }
+    else { }
 
     $self->hi->timer(2, sub { $self->pswatch() });
 }
@@ -220,6 +230,7 @@ sub procstartwatch {
 
     my $plt = $self->{procstartwatch}->text;
     $plt->{hooks}->{fit_div} = 1;
+    $plt->{hooks}->{class} = "hidata";
     $plt->{max_height} = 400;
 
     my $menu = {
@@ -244,7 +255,7 @@ sub procstartwatch {
     });
 
     my $hid = ($self->{prostartwatch}->{toggle} || 2) % 2;
-    $plt->replace([ "!menu=toggle !style='color: black; font-weight: bold;font-size: 10pt;  text-shadow: 2px 2px 4px #fa0;' proc/start".($hid ? " ~" : "") ]);
+    $plt->replace(["!menu=toggle !style='color: black; font-weight: bold;font-size: 10pt;  text-shadow: 2px 2px 4px #fa0;' proc/start".($hid ? " ~" : "")]);
 
     unless ($hid) {
         my $per_line = sub {
@@ -267,6 +278,7 @@ sub proclistwatch {
 
     my $plt = $self->{proclistwatch}->text;
     $plt->{hooks}->{fit_div} = 1;
+    $plt->{hooks}->{class} = "hidata";
     $plt->{max_height} = 400;
 
     my $menu = {
@@ -386,12 +398,12 @@ sub init_state {
     $i = 0;
     for (`ps -eo pid,cmd`) {
         next unless /style/;
-        if (/(\d+) (.+)$/sm) {
-            ($ps->{$1} = {
+        if (/(\d+) (.+)\n?$/sm) {
+            $ps->{$1} = {
                 pid => $1,
                 cmd => $2,
                 i => $i++,
-            })->{cmd} =~ s/\n$//;
+            }
         }
     }
 
@@ -413,6 +425,8 @@ sub init_state {
             }
         }
     }
+    
+    return $self->{state}
 }
 
 

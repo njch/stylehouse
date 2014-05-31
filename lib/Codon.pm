@@ -37,7 +37,7 @@ sub display {
     my $divid = $self->{id};
 
     my $show = $self->{show} ||= do {
-        $codo->{coshow}->spawn_floozy($self, $divid, "width:89%; background:#202a15; color:#afc; height:23em;");
+        $codo->{Codo}->spawn_floozy($self, $divid, "width:89%; background:#202a15; color:#afc; height:23em;");
     };
 
     my $texty = $self->{text} = $show->text;

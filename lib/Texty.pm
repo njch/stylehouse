@@ -228,12 +228,18 @@ sub mktuxt {
     elsif (ref \$s->{value} eq "SCALAR") {
 
         while ($s->{value} =~ s/^! (\w+) (?: = ( (?:\w+|'.+?') ) )? \s//sx) {
-            if ($1 eq "style") {
+            if ($1 eq "menu" && !$2) {
+                $s->{$1} = undef;
+            }
+            elsif ($1 eq "style") {
                 $s->{style} .= ($2 =~ /^'(.+)'$/)[0];
             }
             else {
                 $s->{$1} = defined $2 ? $2 : "yep";
             }
+        }
+        if (exists $s->{menu} && !defined $s->{menu}) {
+            $s->{menu} = $s->{value};
         }
         if (!$s->{html} && $s->{value} =~ /<span/sgm) {
             $s->{html} = 1;

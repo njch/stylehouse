@@ -48,10 +48,13 @@ sub new {
     my $hi = $self->{hostinfo};
     
 
-    my $cs =
-    $hi->create_view($self, coshow => "width:58%;  background: #352035; color: #afc; height: 4px; border: 2px solid light-blue;");
-        $cs->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
-        $cs->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    my $Codo =
+    $hi->create_view($self, Codo => "width:58%;  background: #f5f0f5; color: #afc; border: 2px solid light-blue;");
+
+        $Codo->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
+
+
+        $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
 
 
