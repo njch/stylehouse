@@ -59,12 +59,15 @@ sub init {
     $self->{out}->text->{max_height} = 420 * 1.1;
 
     my $ct = $self->{controls}->text;
-    my $menu = {
+    my $menu = $self->{the_controls} = {
         kill => sub {
             $self->kill();
         },
         web => sub {
             $self->open_web_in_tab();
+        },
+        X => sub {
+            $self->hi->send("\$('#$self->{Proc}->{divid}').remove();");
         },
     };
     $ct->add_hooks({
@@ -82,13 +85,13 @@ sub init {
                 $menu->{$m}->($event, $s);
             }
             else {
-                $self->hi->error("unhandled tuxt click in controls", $s, $self);
+                say "Proc tuxt non handles click on $s->{value}";
             }
         },
         class => 'menu',
     });
-    $ct->replace([ "!menu web", "!menu=kill kill($self->{pid})" ]);
-
+    $self->{controls_lines} ||= [ "!menu web", "!menu=kill kill($self->{pid})", '!menu X' ];
+    $ct->replace($self->{controls_lines});
 }
 
 
@@ -114,6 +117,12 @@ sub started {
     $self->init();
     $self->output("Picked up: $self->{cmd}") if delete $self->{vacant};
     $self->output("Proc: $self->{id} started ($pid)");
+    unless ($self->is_running()) {
+        $self->killed();
+        $self->output("Proc: $self->{id} already dead");
+        $self->hi->send("\$('#$self->{Proc}->{divid}').css('background-color', 'black');");
+    }
+
 
     for my $ch (reverse "err", "out") { # TODO high speed proc output stitcher: read each handle, other signals it at 50Hz
         $self->hostinfo->stream_file("proc/$pid.$ch", sub {
@@ -195,20 +204,29 @@ sub kill {
         $self->kill_loop();
     }
 }
+
 sub killed {
     my $self = shift;
-    $self->output("Killed");
+    $self->output("is gone.");
+    $self->hi->timer(2, sub { $self->output("is gone."); });
+    $self->hi->timer(1, sub { $self->output("is gone."); });
+    
     delete $self->{killing};
-    $self->{killed} = 1;
+    $self->{gone} = 1;
+}
+
+sub is_running {
+    my $self = shift;
+
+    my $state = $self->{git}->init_state();
+    exists $state->{ps}->{$self->{pid}}
 }
 
 sub kill_loop {
     my $self = shift;
 
     return unless $self->{killing};
-
-    my $state = $self->{git}->init_state();
-    if (!exists $state->{ps}->{$self->{pid}}) {
+    if (!$self->is_running) {
         $self->killed();
         return;
     }
