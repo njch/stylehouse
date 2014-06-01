@@ -95,6 +95,12 @@ sub menu {
             $self->infrl('restarting procserv');
             $self->{git}->reprocserv();
         },
+        'MH' => sub {
+            my $h = $self->{hostinfo};
+            $h->{MH} = !$h->{MH};
+            $self->infrl(map { $h->{MH} ? uc($_) : lc($_)." off" } 'MULTIHEADING');
+        },
+
     }
 }
 

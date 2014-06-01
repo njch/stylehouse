@@ -92,6 +92,12 @@ sub send_all {
     $self->for_all([]);
 }
 
+
+sub elvi {
+    my $self = shift;
+    map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
+}
+
 sub elvis_connects {
     my $self = shift;
     my $mojo = shift;
@@ -110,15 +116,26 @@ sub elvis_connects {
         address => $tx->remote_address,
         max => $tx->max_websocket_size,
         tx => $tx,
+        i => $self->{elvii}++,
     };
 
-    say "God $new->{address} appears";
+    if ($self->{elvii} > 1 && !$self->{MH}) {
+        my @make_reconnect_laterer_than_ = grep { $_ ne $self->{first_elvis} } values %{ $data->{elviss} };
+        say "\n\n Going to touch $0 and hope for a solution (too many Elvi and not multiheading)" for 1..4;
+        `touch $0`;
+        sleep 2;
+    }
+
+    say "A New Elvis from $new->{address} appears";
     $elviss->{$new->{id}} = $new;
     $self->{who} = $new;
 
     $mojo->stash(elvisid => $new->{id});
 
     $self->{first_elvis} ||= $new;
+
+    say "All Elvi:";
+    $self->elvi();
 
     return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
@@ -133,7 +150,6 @@ sub elvis_enters {
 
     my $eid = $mojo->stash('elvisid'); 
     say "Elvis enters with stash: ".($eid||"undef");
-
  
     if (-t STDOUT) {
         print colored("recv >\t\t", 'blue');
@@ -210,9 +226,6 @@ sub reload_views {
     my @names = keys %$tops;
     return say " no existing views" unless @names;
 
-        `touch $0`;
-        sleep 2;
-        
     say " resurrecting views: ".ddump(\@names);
 
     my ($ploked, $floozal) = ([], []);
@@ -348,7 +361,7 @@ sub update_app_menu {
             "menu",
         );
         $self->create_view($self, "appmenu_floon",
-            "width:98%;  z-index:5; top: 0px; height: 3em; ",
+            "width:98%;  z-index:4; top: 0px; height: 3em; ",
             after => "#appmenu",
             );
         $self->{appmenu}->text->add_hooks(
