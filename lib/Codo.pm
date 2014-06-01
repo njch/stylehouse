@@ -49,7 +49,7 @@ sub new {
     
 
     my $Codo =
-    $hi->create_view($self, Codo => "width:58%;  background: #f5f0f5; color: #afc; border: 2px solid light-blue; position: fixed; right: 0px;");
+    $hi->create_view($self, Codo => "width:58%;  background: #f5f0f5; color: #afc; border: 2px solid light-blue;");
 
         $Codo->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
 
@@ -73,6 +73,7 @@ sub new {
 
     return $self;
 }
+
 sub menu {
     my $self = shift;
     $self->{menu} ||= {
