@@ -68,11 +68,11 @@ sub elvis_send {
     $short ||= substr($message,0,23*5)." >SNIP<";
     
     if (-t STDOUT) {
-        print colored("send\t\t", 'blue');
+        print colored("< send\t\t", 'blue');
         print colored($short, 'bold blue'), "\n";
     }
     else {
-        say "send\t\t$short";
+        say "< send\t\t$short";
     }
     
     $elvis->{tx}->send({text => $message});
@@ -94,7 +94,8 @@ sub send_all {
 
 sub elvis_connects {
     my $self = shift;
-    my $tx = shift;
+    my $mojo = shift;
+    my $tx = $mojo->tx;
     
     my $max = $tx->max_websocket_size;
     $self->{tx_max} ||= $max;
@@ -102,73 +103,86 @@ sub elvis_connects {
         $self->{tx_max} = $max; # TODO potential DOS
     }
 
-    my $elviss = $self->get('elviss');
-    $elviss ||= [];
-    $self->set(elviss => $elviss);
+    my $elviss = $self->gest(elviss => {});
 
     my $new = {
+        id => "Elvis-".make_uuid(),
         address => $tx->remote_address,
         max => $tx->max_websocket_size,
         tx => $tx,
     };
 
     say "God $new->{address} appears";
-    push @$elviss, $new;
+    $elviss->{$new->{id}} = $new;
+    $self->{who} = $new;
 
-    $self->who($new);
+    $mojo->stash(elvisid => $new->{id});
 
+    $self->{first_elvis} ||= $new;
+
+    return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
 
 sub elvis_enters {
     my $self = shift;
+    my $sug = shift;
     my $mojo = shift;
     my $msg = shift;
     my $tx = $mojo->tx;
-    # someone, anyone
-    say "\n\n\n\n\nGod enters";
-    say "";
-    say "$msg";
-    say "";
-    my $exist = $self->find_elvis($tx) || $self->who;
-    if ($exist) {
-        say "$exist->{address} returns";
-        $self->who($exist);
+
+    my $eid = $mojo->stash('elvisid'); 
+    say "Elvis enters with stash: ".($eid||"undef");
+
+ 
+    if (-t STDOUT) {
+        print colored("recv >\t\t", 'blue');
+        print colored($msg, 'bold blue'), "\n";
     }
     else {
-        say "\n\n\nCannot God";
+        say "recv >\t\t$msg";
+    }
+
+    if (my $elvis = $self->get('elviss')->{$eid}) {
+        if ($elvis ne $sug) {
+            say "Elvis found by stash is not elvis passed: $sug->{address} to $elvis->{address}";
+        }
+        if ($elvis ne $self->{who}) {
+            say "Elvission: $self->{who}->{address} to $elvis->{address}";
+        }
+        $self->{who} = $elvis;
+    }
+    else {
+        die "Cannot find elvis: $eid";
     }
 }
 
-sub furnish_elvis {
+sub elvis_gone {
     my $self = shift;
-    say "FURNISHING!?";
-
-}
-sub find_elvis {
-    my $self = shift;
-    my $tx = shift;
-
-    my ($elvis) = grep { $_->{tx} eq $tx } @{$self->get('elviss')}; # vibe equator
-    return $elvis || undef;
+    say "Elvis is Gone.";
+    $self->elvis_leaves(@_);
 }
 
 sub elvis_leaves {
     my $self = shift;
-    my $tx = shift;
-    if (!$tx) {
-        # they're just leaving this request
-        $self->who(undef);
-        say "God leaves";
-        return;
+    my $mojo = shift;
+    my $code = shift;
+    my $reason = shift;
+
+    my $eid = $mojo->stash('elvisid'); 
+    say "Elvis had stash: ".($eid||"undef");
+    if (my $elvis = $self->get('elviss')->{$eid}) {
+        say "Goes $elvis->{address}";
     }
-    my $code = shift || "?";
-    my $reason = shift || "?";
-
-    say "Part: ".$tx->remote_address.": $code: $reason";
-
-    my $elviss = $self->get('elviss');
-    @$elviss = grep { $_->{tx} ne $tx } @{$self->{tx}};
+    else {
+        die "Cannot find elvis: $eid\n"."Remote address: ".$mojo->tx->remote_address;
+    }
+    if ($code || $reason) {
+        say "  reason: ".($code||'?').": ".($reason||'?');
+    }
+    $self->{who} = $self->{first_elvis};
+# could unset $who, demand views specify how to multicast
+# leave it open
 }
 
 sub hostinfo { shift }
@@ -737,7 +751,7 @@ sub duction {
         $ref = $r;
     }
 
-    if ($this->{owner}) {
+    if ($this->{owner} && 0) {
         $ref = "$ref-".(ref $this->{owner});
     }
 
