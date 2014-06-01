@@ -32,7 +32,7 @@ while (1) {
             append("$$: $command\n");
             chomp($command);
             local $|;
-            print "Going to redirect output and start '$command' in $$\n";
+            print "\n\nstarting '$command' in $$\n";
             print "Err 1 $!\n" if $!;
 
             close STDOUT;
