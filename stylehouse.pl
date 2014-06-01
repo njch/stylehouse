@@ -344,6 +344,7 @@ __DATA__
 
         <link  href="stylehouse.css" rel="stylesheet">
         <script src="stylehouse.js"></script>
+        <script src="tabby.js"></script>
 
     </head>
     <body id="body">
