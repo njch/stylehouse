@@ -670,6 +670,7 @@ sub info {
     say ddump( {Info => $info} );
     $self->throwlog("infos", "hi_info", $info);
 }
+
 sub error {
     my $self = shift;
     
@@ -685,9 +686,11 @@ sub throwlog {
     my $error = shift;
 
     $self->accum($accuwhere, $error);
+
+    my $string = ddump($error); # XRDixhe.gif
     
     if (my $fl = $self->get("tvs/$tryappenddivid/top")) {
-        $self->flood(ddump($error), $fl);
+        $self->flood($string, $fl);
     }
 }
 
@@ -754,7 +757,7 @@ sub tv_by_id {
     my $self = shift;
     my $id = shift;
     $id =~ s/^(\w+-\w+).*$/$1/ ||
-        say join "\n", qw{EVENT ID THING LOOKUP Got}, "a weird id: $id", "we shall try";
+        $self->error(join "\n", qw{EVENT ID THING LOOKUP Got}, "a weird id: $id", "we shall try");
 
     for my $tv (@{$self->get('tvs')}) {
         if ($tv->{id} eq $id) {
