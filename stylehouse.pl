@@ -340,11 +340,12 @@ __DATA__
     <head>
         <title>stylehouse</title>
 
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
         <link  href="stylehouse.css" rel="stylesheet">
+
+        <script src="jquery-1.11.1.min.js"></script>
         <script src="stylehouse.js"></script>
         <script src="tabby.js"></script>
+        <script src="jquery.scrollTo.js"></script>
 
     </head>
     <body id="body">

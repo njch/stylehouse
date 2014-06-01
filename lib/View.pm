@@ -266,6 +266,8 @@ sub takeover {
     $self->hostinfo->view_incharge($self);
 
     $self->append_spans($self->{divid} => $html);
+    
+#    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
 
     $texty->tookover() if $texty;
 }
