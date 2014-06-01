@@ -537,7 +537,7 @@ sub init_flood {
     my $self = shift;
 
     my $f = $self->{flood} = $self->create_view($self, "flood",
-        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: ".8*420*2.34."px; overflow: scroll;"
+        "width:".420*1.14."px; background: #8af; border: 4px solid gray; height: 1px; overflow: scroll;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
