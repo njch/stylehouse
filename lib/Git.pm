@@ -101,7 +101,6 @@ sub gitrack {
     });
     my @items = sort keys %{$self->{rackmenu}};
     $rt->replace([@items]);
-    $self->hi->info("rackmenu items: ". join ", ", @items);
 }
 
 sub random_colour_background {
