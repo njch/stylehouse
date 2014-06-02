@@ -296,15 +296,15 @@ websocket '/stylehouse' => sub {
                 $thing->event($event);
             }
             else {
-                $id ?
-                    $self->app->log->error("Thing lookup failed for $id")
-                  : $self->app->log->error("Thing lookup failed, lacking id");
+                my $s = "Thing lookup failed".( $id ? ": $id" : ", lacking id");
+                $hostinfo->error("$s");
 
                 if (my $catcher = $self->hostinfo->get('clickcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
                     $catcher->event($event);
                 }
                 else {
+                    $self->app->log->info("NOTHING");
                     $self->send(
                         "\$('#body').addClass('dead').delay(250).removeClass('dead');"
                     );

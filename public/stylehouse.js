@@ -17,6 +17,7 @@ function connect () {
     console.log("WebSocket Error: " , e);
     reconnect();
   }
+  ws.onerror = ws.onclose;
 }
 function reconnect () {
   fail++;

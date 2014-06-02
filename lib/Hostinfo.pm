@@ -714,8 +714,7 @@ sub info {
     my $self = shift;
     
     my $info = $self->enlogform(@_);
-    say ddump( {Info => $info} );
-    $self->throwlog("infos", "hi_info", $info);
+    $self->throwlog("Info", "infos", "hi_info", $info);
 }
 
 sub error {
@@ -723,19 +722,26 @@ sub error {
     
     my $error = $self->enlogform(@_);
     say ddump( {Error => $error} );
-    $self->throwlog("errors", "hi_error", $error);
+    $self->throwlog("Error", "errors", "hi_error", $error);
 }
 
 sub throwlog {
     my $self = shift;
+    my $what = shift;
     my $accuwhere = shift;
     my $divid = shift;
     my $error = shift;
 
     $self->accum($accuwhere, $error);
 
-    my $string = ddump($error); # XRDixhe.gif
-    
+    my $string = 
+        join("\n",
+            $error->[0],
+            (map { "    - $_" } reverse @{$error->[1]}),
+            (map { "$_" } reverse @{$error->[2]}),
+        );
+
+    say ddump( {$what => $string} );
     if (my $fl = $self->get("tvs/$divid/top")) {
         $self->flood($string, $fl);
     }
