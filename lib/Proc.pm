@@ -30,14 +30,14 @@ sub new {
 
     $self->{controls} =
         $self->{Proc}->spawn_ceiling("$self->{id}_controls",
-            "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em;");
+            "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
 
     $self->{out} =
         $self->{Proc}->spawn_floozy("$self->{id}_out",
-            "left: -5px; width: 110%; background-color: #000; border: 2px solid white; overflow: scroll; margin: 1em;");
+            "width: 100%; background-color: #000; border: 2px solid white; border: 3px solid gold; overflow: scroll; margin: 2px; padding: 5px;");
     $self->{in} =
         $self->{Proc}->spawn_floozy("$self->{id}_in",
-            "left: -5px; width: 90%; background-color: #321; border: 2px solid white; overflow: scroll; margin: 1em;");
+            "width: 100%; background-color: #321; border: 2px solid white; border: 3px solid gold; overflow: scroll; margin: 2px;");
 
     $self->init();
 
@@ -45,8 +45,6 @@ sub new {
         $self->start();
     }
     else {
-        $self->output("Vacant lot");
-        say "Proc vacant lot";
         $self->{vacant} = 1;
     }
     return $self;
@@ -129,12 +127,12 @@ sub started {
 
     $self->init();
 
-    $self->output("Picked up: $self->{cmd}") if delete $self->{vacant};
-    $self->output("Proc: $self->{id} started ($pid)");
+    $self->output(qq{!html cmd: <span style="color: gold;">$self->{cmd}</span>}) if delete $self->{vacant};
+    $self->output("$self->{id} ($pid)");
     unless ($self->is_running()) {
-        $self->killed();
+        $self->killed("uiet");
         $self->output("Proc: $self->{id} already dead");
-        $self->hi->send("\$('#$self->{Proc}->{divid}').css('background-color', 'black');");
+        $self->hi->send("\$('#$self->{Proc}->{divid}').css('background-color', 'white');");
     }
 
 
@@ -237,9 +235,11 @@ sub kill {
 
 sub killed {
     my $self = shift;
-    $self->output("is gone.");
-    $self->hi->timer(2, sub { $self->output("is gone."); });
-    $self->hi->timer(1, sub { $self->output("is gone."); });
+    unless (shift) {
+        $self->output("is gone.");
+        $self->hi->timer(2, sub { $self->output("is gone."); });
+        $self->hi->timer(1, sub { $self->output("is gone."); });
+    }
     
     delete $self->{killing};
     delete $self->{kill_pid};

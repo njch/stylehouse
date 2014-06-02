@@ -804,7 +804,7 @@ sub tv_by_id {
     my $self = shift;
     my $id = shift;
     $id =~ s/^(\w+-\w+).*$/$1/ ||
-        $self->error(join "\n", qw{EVENT ID THING LOOKUP Got}, "a weird id: $id", "we shall try");
+        $self->error("EVENT ID THING LOOKUP Got a weird id", $id);
 
     for my $tv (@{$self->get('tvs')}) {
         if ($tv->{id} eq $id) {

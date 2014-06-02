@@ -61,16 +61,16 @@ sub gitrack {
             shift->init();
         },
         sp => sub {
-            `cd ../styleshed && git pull house conty`;
+            $self->spawn_proc('cd ../styleshed && git pull house conty');
         },
         sG => sub {
-            `cd ../styleshed && git gui`;
+            $self->spawn_proc('cd ../styleshed && git gui');
         },
         hp => sub {
-            `cd ../stylehouse && git pull shed conty`;
+            $self->spawn_proc('cd ../stylehouse && git pull shed conty');
         },
         hG => sub {
-            `cd ../stylehouse && git gui`;
+            $self->spawn_proc('cd ../stylehouse && git gui');
         },
     };
     my $rt = $self->{gitrack}->text;
@@ -98,7 +98,7 @@ sub gitrack {
     });
     my @items = sort keys %{$self->{rackmenu}};
     $rt->replace([@items]);
-    $self->hi->error("rackmenu items: ", \@items);
+    $self->hi->info("rackmenu items: ". join ", ", @items);
 }
 
 sub random_colour_background {
@@ -175,7 +175,7 @@ sub procup {
     my ($pid, $cmd) = @_;
     say "resurrecting: $pid: $cmd";
     my $P = Proc->new($self->{hostinfo}->intro, $self);
-    $P->{cmd} = $pid;
+    $P->{cmd} = $cmd;
     $P->started($pid);
     push @{$self->{procs}}, $P;
     $P

@@ -198,7 +198,7 @@ sub label {
     my $o = $self->{owner};
     return do {
         if ($o->{divid} && $self->{divid} =~ /^$o->{divid}(.+)/) {
-            "$o->{divid}/ $1"
+            "$1"
         }
         elsif ($o->{divid}) {
             "$o->{divid}/$self->{divid}"
@@ -212,7 +212,7 @@ sub label {
 sub default_html {
     my $self = shift;
        '<span class="'.$self->{id} .' divlabel'
-       .'" style="position: absolute; right:1px; opacity: 0.4;">'
+       .'" style="position: absolute; right:-3px; opacity: 0.1;">'
        .$self->label.'</span>'
 }
 
