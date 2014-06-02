@@ -72,6 +72,9 @@ sub gitrack {
         hG => sub {
             $self->spawn_proc('cd ../stylehouse && git gui');
         },
+        'rps' => sub {
+            $self->reprocserv();
+        },
     };
     my $rt = $self->{gitrack}->text;
     $rt->add_hooks({
@@ -146,7 +149,7 @@ sub pstylecmd {
 sub mstylecmd {
     my $self = shift;
     my $name = shift;
-    return "cd ../$name && echo '<<ID>>' && ./stylehouse.pl"
+    return "cd ../$name && ./stylehouse.pl"
 }
 
 sub spawn_style {
@@ -166,7 +169,8 @@ sub spawn_style {
 sub spawn_proc {
     my $self = shift;
     #$self->hi->info("spawning ".join", ",@_);
-    my $P = Proc->new($self->{hostinfo}->intro, $self, @_);
+    my $cmd = shift;
+    my $P = Proc->new($self->{hostinfo}->intro, $self, "echo '<<ID>>' && $cmd", @_);
     push @{$self->{procs}}, $P;
     $P
 }
@@ -345,14 +349,14 @@ sub proclistwatch {
                 }
                 else {
                     $proc->started($pid);
-                    $stat = "$proc->{id} s t a r t e d"
+                    $stat = "!style='color: gold;'"
                 }
             }
             else {
-                $stat = "!menu=startproc ? no ? Proc ?";
+                $stat = "!menu=startproc ?";
             }
 
-            $plt->append(["$stat: $line"]);
+            $plt->append(["$stat $line"]);
         };
 
         # watch the list of started files and their pids

@@ -91,10 +91,6 @@ sub menu {
             $self->infrl('restarting (if)');
             `touch $0`;
         },
-        'rps' => sub {
-            $self->infrl('restarting procserv');
-            $self->{git}->reprocserv();
-        },
         'MH' => sub {
             my $h = $self->{hostinfo};
             $h->{MH} = !$h->{MH};

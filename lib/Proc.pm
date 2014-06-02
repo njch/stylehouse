@@ -114,7 +114,7 @@ sub start {
     my $cmd = $self->{cmd};
     $cmd =~ s/\n$//s;
 
-    $self->output("Starting: $cmd");
+    $self->output(qq{!html cmd: <span style="color: gold;">$self->{cmd}</span>}) if delete $self->{vacant};
     
     $cmd = "$$: $cmd\n";
     write_file("proc/start", {append => 1}, $cmd);
