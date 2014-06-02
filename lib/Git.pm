@@ -59,6 +59,18 @@ sub gitrack {
         stat => sub {
             shift->init();
         },
+        sp => sub {
+            `cd ../styleshed && git pull house conty`;
+        },
+        sg => sub {
+            `cd ../styleshed && git gui`;
+        },
+        hp => sub {
+            `cd ../stylehouse && git pull shed conty`;
+        },
+        hg => sub {
+            `cd ../stylehouse && git gui`;
+        },
     };
     my $rt = $self->{gitrack}->text;
     $rt->add_hooks({
@@ -213,11 +225,11 @@ sub pswatch {
     $pswt->{hooks}->{fit_div} = 1;
     $pswt->{hooks}->{class} = "hidata";
 
-    my ($etc, @old) = @{$pswt->{lines}};
+    my @old = @{$pswt->{lines}};
     my $old = join "\n", @old;
     my $new = join "\n", @$what;
     unless ($old eq $new) {
-        $self->{pswatch}->text->replace(["!html <i>ps</i>", @$what]); # Tractor should make this interactive
+        $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
     }
     else { }
 
