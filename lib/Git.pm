@@ -41,6 +41,7 @@ sub new {
 
 sub init {
     my $self = shift; 
+
     $self->gitrack();
 
     $self->pswatch();
@@ -55,20 +56,20 @@ sub init {
 sub gitrack {
     my $self = shift;
     
-    $self->{menu} = {
+    $self->{rackmenu} = {
         stat => sub {
             shift->init();
         },
         sp => sub {
             `cd ../styleshed && git pull house conty`;
         },
-        sg => sub {
+        sG => sub {
             `cd ../styleshed && git gui`;
         },
         hp => sub {
             `cd ../stylehouse && git pull shed conty`;
         },
-        hg => sub {
+        hG => sub {
             `cd ../stylehouse && git gui`;
         },
     };
@@ -78,7 +79,9 @@ sub gitrack {
             return 'padding: 4.20px; font-size: 1em; '.random_colour_background();
         },
         class => "menu",
-        nospace => 1,
+        spatialise => sub {
+            return { top => 1, left => 1, horizontal => 20, wrap_at => 1200 } # space tabs by 40px
+        },
         notakeover => 1,
         event => sub {
             my $texty = shift;
@@ -88,12 +91,14 @@ sub gitrack {
             die "no findo $id" unless $s;
             my $v = $s->{value};
 
-            my $w = $self->{menu}->{$v};
+            my $w = $self->{rackmenu}->{$v};
             return $w->($self, $event) if $w;
             die "no $v in $self";
         },
     });
-    $rt->replace([sort keys %{$self->{menu}}]);
+    my @items = sort keys %{$self->{rackmenu}};
+    $rt->replace([@items]);
+    $self->hi->error("rackmenu items: ", \@items);
 }
 
 sub random_colour_background {
