@@ -440,6 +440,7 @@ sub stream_file {
     my $st = {
         filename => shift,
         linehook => shift,
+        lines => [],
     };
     my $just_tail = shift;
 
@@ -475,16 +476,35 @@ sub watch_file_streams {
 
             my $fh = $st->{handle}; # try finish off the old one
             while (<$fh>) {
-                $st->{linehook}->("!!! ".$_);
+                push @{$st->{lines}}, $_;
+                $st->{linehook}->($_);
             }
             close $fh;
             open(my $anfh, '<', $st->{filename})
                 or die "cannot open $st->{filename}: $!";
+            my @replines;
+            while (<$anfh>) {
+                push @replines, $_;
+            }
+            my $i = 0;
+            my $extraness = 0;
+            for my $rl (@replines) {
+                my $ol = $st->{lines}->[$i++];
+                if (defined $ol && $ol ne $st->{lines}) {
+                    push @{$st->{lines}}, map { $self->{linehook}->($_) } @replines; # some diff, append all reread lines
+                    $extraness = -1;
+                    last;
+                }
+                elsif (!defined $ol) {
+                    $extraness++;
+                    push @{$st->{lines}}, map { $self->{linehook}->($_) } $rl; # append this one
+                }
+            }
+            say "reread file, seems extraness: $extraness";
             $st->{handle} = $anfh;
             $st->{ctime} = $ctime;
             $st->{ino} = $ino;
             $st->{size} = -1;
-            $st->{linehook}->("!!! Reopened !!!");
         }
         if ($size > $st->{size}) {
             say "$st->{filename} has GROWTH";
