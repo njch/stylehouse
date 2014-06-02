@@ -729,16 +729,17 @@ sub error {
 sub throwlog {
     my $self = shift;
     my $accuwhere = shift;
-    my $tryappenddivid = shift;
+    my $divid = shift;
     my $error = shift;
 
     $self->accum($accuwhere, $error);
 
     my $string = ddump($error); # XRDixhe.gif
     
-    if (my $fl = $self->get("tvs/$tryappenddivid/top")) {
+    if (my $fl = $self->get("tvs/$divid/top")) {
         $self->flood($string, $fl);
     }
+    $self->send("\$('#$divid').removeClass('widdle');");
 }
 
 sub ind { "$_[0]".join "$_[0]\n", split "\n", $_[1] }
@@ -803,8 +804,14 @@ sub tvs {
 sub tv_by_id {
     my $self = shift;
     my $id = shift;
-    $id =~ s/^(\w+-\w+).*$/$1/ ||
-        $self->error("EVENT ID THING LOOKUP Got a weird id", $id);
+    $id =~ s/^(\w+-\w+).*$/$1/ || do {
+        if ($id =~ /^hi_/) {
+            $self->send("\$('#$id').toggleClass('widdle');");
+        }
+        else {
+            $self->error("EVENT ID THING LOOKUP Got a weird id", $id);
+        }
+    };
 
     for my $tv (@{$self->get('tvs')}) {
         if ($tv->{id} eq $id) {
