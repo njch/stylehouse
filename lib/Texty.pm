@@ -401,7 +401,7 @@ sub tuxts_to_htmls {
     my $top_add = 0;
     my @htmls;
     for my $s (@$t) {
-        next if $skip-- > 0;
+        next if $self->{hooks}->{append} && $skip-- > 0;
         my $p = { %$s };
         while(my ($k,$v) = each %$p) {
             $p->{$k} = ref $v if ref $v;
