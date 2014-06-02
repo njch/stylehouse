@@ -308,7 +308,7 @@ sub proclistwatch {
         },
         startproc => sub {
             my ($e, $s) = @_;
-            my ($pid, $cmd) = $s->{value} =~ /.+?: (\d+): (.+)/;
+            my ($pid, $cmd) = $s->{value} =~ /.+?(\d+): (.+)/;
             $self->procup($pid, $cmd);
             $self->init();
         },

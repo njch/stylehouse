@@ -86,7 +86,7 @@ sub init {
             return 'font-size: 1em; '.random_colour_background();
         },
         spatialise => sub {
-            return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
+            return { top => 1, left => 1, horizontal => 44, wrap_at => 1200 } # space tabs by 40px
         },
         event => sub {
             my $texty = shift;
@@ -101,7 +101,7 @@ sub init {
         },
         class => 'menu',
     });
-    $self->{controls_lines} ||= [ "!style='color: #CCFF66;' $self->{pid}", "!menu web", "!menu kp", "!menu kc", '!menu X' ];
+    $self->{controls_lines} ||= [ "!menu web", "!menu kp", "!menu kc", '!menu X' ];
     $ct->replace($self->{controls_lines});
 }
 
@@ -124,7 +124,11 @@ sub started {
     my $self = shift;
     my $pid = shift;
     $self->{pid} = $pid;
+    if (!$pid) {
+        $self->hi->error("NO PID");
+    }
 
+    unshift @{$self->{controls_lines}}, "!style='color: #CCFF66; font-weight: bold;' $pid";
     $self->init();
 
     $self->output(qq{!html cmd: <span style="color: gold;">$self->{cmd}</span>}) if delete $self->{vacant};

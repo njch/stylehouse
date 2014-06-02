@@ -805,7 +805,7 @@ sub tv_by_id {
     my $self = shift;
     my $id = shift;
     $id =~ s/^(\w+-\w+).*$/$1/ || do {
-        if ($id =~ /^hi_/) {
+        if ($id =~ /^hi_|procstartwatch/) {
             $self->send("\$('#$id').toggleClass('widdle');");
         }
         else {
