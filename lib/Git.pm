@@ -120,7 +120,6 @@ sub event {
     if (my $s = $pst->id_to_tuxt($id)) {
         say "Hello!";
         my ($pid, $cmd) = split ": ", $s->{value};
-        $self->hi->info("killing $pid  cmd: $cmd");
         kill "TERM", $pid;
         $self->{hostinfo}->timer(0.2, sub {
             $self->init_state()
@@ -416,7 +415,7 @@ sub init_state {
     my $ps = {};
     $i = 0;
     for (`ps -eo pid,cmd`) {
-        next unless /style/;
+        next unless /style/ || /git/;
         if (/(\d+) (.+)\n?$/sm) {
             $ps->{$1} = {
                 pid => $1,
