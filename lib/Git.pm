@@ -308,7 +308,6 @@ sub proclistwatch {
             my ($e, $s) = @_;
             my ($pid, $cmd) = $s->{value} =~ /.+?(\d+): (.+)/;
             $self->procup($pid, $cmd);
-            $self->init();
         },
     };
     $plt->add_hooks({
@@ -317,8 +316,13 @@ sub proclistwatch {
             my $texty = shift;
             my $event = shift;
             my $s = $texty->id_to_tuxt($event->{id});
-            if (my $m = $s->{menu}) {
-                $menu->{$m}->($event, $s);
+
+            if ($s->{menu}) {
+                say "e t $s->{menu} ->";
+                $menu->{$s->{menu}}->($event, $s);
+            }
+            else {
+                say "Nothing for $s->{value}";
             }
         },
     });

@@ -40,9 +40,13 @@ WebSocket.prototype.reply = function reply (stuff) {
 function clickon () { $(window).on("click", clickyhand); }
 function clickoff () { $(window).off("click", clickyhand); }
 function clickyhand (event) {
+    var value = event.target.id ? event.target.innerText : null;
+    if (value.length >= 666) {
+        value = 'SATAN';
+    }
     var data = {
         id: event.target.id,
-        value: event.target.id ? event.target.innerText : null,
+        value: value,
         type: event.type,
         shiftKey: 0+event.shiftKey,
         ctrlKey: 0+event.ctrlKey,

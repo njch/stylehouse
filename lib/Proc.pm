@@ -173,6 +173,9 @@ sub output {
         $self->{cpid} = $2;
         $self->output("Fished up $1 child pid: $2");
     }
+    elsif ($ch eq "out" && $line =~ /Err \d Inappropriate ioctl for device/) {
+        return
+    }
 
     $t->append([$line]);
     

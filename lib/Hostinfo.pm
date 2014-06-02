@@ -480,33 +480,36 @@ sub watch_file_streams {
                 $st->{linehook}->($_);
             }
             close $fh;
+            my $reread;
+            if ($size > $st->{size}) {
+                my $whole = `cat $st->{filename}`;
+                my $new = join("", @{$st->{lines}});
+                unless ($whole eq $new) {
+                    $reread = 1;
+                }
+            }
+
+            if ($reread) {
+                my $mark = "==== ~!";
+                push @{$st->{lines}}, $mark;
+                $st->{linehook}->($mark);
+            }
+
             open(my $anfh, '<', $st->{filename})
                 or die "cannot open $st->{filename}: $!";
-            my @replines;
-            while (<$anfh>) {
-                push @replines, $_;
-            }
+
             my $i = 0;
-            my $extraness = 0;
-            for my $rl (@replines) {
-                my $ol = $st->{lines}->[$i++];
-                if (defined $ol && $ol ne $st->{lines}) {
-                    push @{$st->{lines}}, map { $self->{linehook}->($_) } @replines; # some diff, append all reread lines
-                    $extraness = -1;
-                    last;
-                }
-                elsif (!defined $ol) {
-                    $extraness++;
-                    push @{$st->{lines}}, map { $self->{linehook}->($_) } $rl; # append this one
-                }
+            while (<$anfh>) {
+                push @{$st->{lines}}, $_;
+                $st->{linehook}->($_);
             }
-            say "reread file, seems extraness: $extraness";
+            
             $st->{handle} = $anfh;
             $st->{ctime} = $ctime;
             $st->{ino} = $ino;
             $st->{size} = -1;
         }
-        if ($size > $st->{size}) {
+        elsif ($size > $st->{size}) {
             say "$st->{filename} has GROWTH";
             my $fh = $st->{handle};
             while (<$fh>) {
@@ -514,6 +517,10 @@ sub watch_file_streams {
             }
             $st->{size} = (stat $st->{filename})[7];
         }
+        elsif ($size == $st->{size}) {
+            #
+        }
+        else { die "something$size > $st->{size})  else?" }
     }
     $self->timer(0.5, sub {
         $self->watch_file_streams();
@@ -721,7 +728,6 @@ sub error {
     my $self = shift;
     
     my $error = $self->enlogform(@_);
-    say ddump( {Error => $error} );
     $self->throwlog("Error", "errors", "hi_error", $error);
 }
 
@@ -741,7 +747,7 @@ sub throwlog {
             (map { "$_" } reverse @{$error->[2]}),
         );
 
-    say ddump( {$what => $string} );
+    say "$what =>\n$string";
     if (my $fl = $self->get("tvs/$divid/top")) {
         $self->flood($string, $fl);
     }

@@ -293,11 +293,12 @@ websocket '/stylehouse' => sub {
             start_timer();
 
             if ($thing) {
+                $self->app->log->info("TV  $thing->{id}");
                 $thing->event($event);
             }
             else {
-                my $s = "Thing lookup failed".( $id ? ": $id" : ", lacking id");
-                $hostinfo->error("$s");
+                my $s = "TV not found".( $id ? ": $id" : ", lacking id");
+                $self->app->log->info("$s");
 
                 if (my $catcher = $self->hostinfo->get('clickcatcher')) {
                     $self->app->log->info("Event catcher found: $catcher");
