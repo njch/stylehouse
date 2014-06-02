@@ -30,11 +30,14 @@ sub new {
 
     $self->{controls} =
         $self->{Proc}->spawn_ceiling("$self->{id}_controls",
-            "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 2em;");
+            "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em;");
 
     $self->{out} =
         $self->{Proc}->spawn_floozy("$self->{id}_out",
-            "left: -5px; width: 110%; background-color: #111; border: 2px solid white; overflow: scroll; margin: 1em;");
+            "left: -5px; width: 110%; background-color: #000; border: 2px solid white; overflow: scroll; margin: 1em;");
+    $self->{in} =
+        $self->{Proc}->spawn_floozy("$self->{id}_in",
+            "left: -5px; width: 90%; background-color: #321; border: 2px solid white; overflow: scroll; margin: 1em;");
 
     $self->init();
 
@@ -58,10 +61,20 @@ sub init {
     });
     $self->{out}->text->{max_height} = 420 * 1.1;
 
+    $self->{in}->text->add_hooks({
+        spatialise => sub { { left => 0, top => 0, space => 14 } },
+        fit_div => 1,
+    });
+    $self->{in}->text->{max_height} = 420 * 0.34;
+
+
     my $ct = $self->{controls}->text;
     my $menu = $self->{the_controls} = {
-        kill => sub {
+        kp => sub {
             $self->kill();
+        },
+        kc => sub {
+            $self->killc();
         },
         web => sub {
             $self->open_web_in_tab();
@@ -90,7 +103,7 @@ sub init {
         },
         class => 'menu',
     });
-    $self->{controls_lines} ||= [ "!menu web", "!menu=kill kill($self->{pid})", '!menu X' ];
+    $self->{controls_lines} ||= [ "!style='color: #CCFF66;' $self->{pid}", "!menu web", "!menu kp", "!menu kc", '!menu X' ];
     $ct->replace($self->{controls_lines});
 }
 
@@ -115,6 +128,7 @@ sub started {
     $self->{pid} = $pid;
 
     $self->init();
+
     $self->output("Picked up: $self->{cmd}") if delete $self->{vacant};
     $self->output("Proc: $self->{id} started ($pid)");
     unless ($self->is_running()) {
@@ -142,8 +156,9 @@ sub output {
         non => "color: #0066FF; font-weight: 500;",
         poo => "color: #FFDA91; ",
     };
-    my $ot = $self->{out}->text;
-    $ot->{hooks}->{tuxtstyle} = $stylech->{$ch};
+    my $much = $ch =~ /err|out/ ? "out" : "in";
+    my $t = $self->{$much}->text;
+    $t->{hooks}->{tuxtstyle} = $stylech->{$ch};
 
     if ($ch eq "err" && $line =~ s/(\[info\] Listening at )"(.+)"\./$1<a href="$2">$2<\/a>/) {
         $self->{website} = $2;
@@ -152,8 +167,12 @@ sub output {
     elsif ($ch eq "err" && $line =~ /(Can't create listen socket: Address already in use)/) {
         $self->bung(split ': ', $1);
     }
+    elsif ($ch eq "out" && $line =~ /running (\w+) PID=(\d+) into /) {
+        $self->{cpid} = $2;
+        $self->output("Fished up $1 child pid: $2");
+    }
 
-    $ot->append([$line]);
+    $t->append([$line]);
     
     say "Appent $self->{id} $self->{pid}>$ch: $line";
 }
@@ -183,17 +202,28 @@ sub event {
     
     if (my $s = $ct->id_to_tuxt($id)) {
         my $it = $s->{value};
-        say "You wanna $it";
-        $self->{mess}->text->append(['You wanna $it']);
+        $self->output("You wanna $it");
+    }
+}
+
+sub killc {
+    my $self = shift;
+    my $cpid = $self->{cpid};
+    if ($cpid) {
+        $self->output("Killing underling $self->{cpid}");
+        $self->kill($self->{cpid});
+    }
+    else {
+        $self->output("There is no child pid");
     }
 }
 
 sub kill {
     my $self = shift;
+    $self->{kill_pid} = $self->{pid} || shift || die "kill no pid";
     if ($_[0]) {
         $self->{kill_andthen} = shift;
     }
-    $self->{pid} || die "kill no pid";
 
     if ($self->{killing}) {
         $self->{killing} = 0;
@@ -212,6 +242,7 @@ sub killed {
     $self->hi->timer(1, sub { $self->output("is gone."); });
     
     delete $self->{killing};
+    delete $self->{kill_pid};
     $self->{gone} = 1;
 }
 
@@ -232,8 +263,8 @@ sub kill_loop {
     }
 
     my $sig = $self->{killing}++ > 2 ? "KILL" : "INT";
-    CORE::kill $sig, $self->{pid};
-    $self->output("kill $sig $self->{pid}");
+    CORE::kill $sig, $self->{kill_pid};
+    $self->output("kill $sig $self->{kill_pid}");
 
     $self->hi->timer(1, sub { $self->kill_loop });
 }

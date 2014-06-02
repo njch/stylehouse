@@ -85,8 +85,8 @@ use Wormhole;
 use Way;
 
 my ($name) = $Bin =~ m{/(\w+)$};
-say do { my $d = `pwd`; chomp $d; $d };
-die "you ain't really here" unless $Bin ne `pwd`;
+my ($pwd) = `pwd` =~ /(.+)\n/;
+die "you ain't really here" unless $Bin eq $pwd;
 # here's our internet constellation
 # N S E W
 my $styleports = {
@@ -104,9 +104,7 @@ my $ip = "127.0.0.1";
 $ip = "*" if $name eq "stylehut";
 my $mojo_daemon_listen = "http://$ip:$port";
 
-say "\n\n\nwe are $name";
-my $x = `pwd`; chomp $x;
-say "running from $x into $mojo_daemon_listen";
+say "running $name PID=$$ into $mojo_daemon_listen";
 
 my $hostinfo = new Hostinfo();
 
@@ -177,7 +175,7 @@ my $handyin;
 # it's not to produce thinking, it's a recognition
 # something more energetic
 
-# hold lots of websockets
+# hold lots of websocket
 
 my $first = 1;
 get '/' => sub {
