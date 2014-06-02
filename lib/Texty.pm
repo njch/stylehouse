@@ -62,6 +62,7 @@ sub add_hooks {
 sub replace {
     my $self = shift;
     my $L = shift;
+    die "L not []" unless ref $L eq "ARRAY";
     $self->add_hooks(shift);
 
     say "Texty Lines: ".anydump($L) if $self->{debug};
@@ -392,9 +393,15 @@ sub tuxts_to_htmls {
         $self->{hooks}->{tuxts_to_htmls}->($self);
     }
 
+    my $t = $self->tuxts;
+    my $skip;
+    if (@$t> 666 / 8) {
+        $skip = -666/8 + @$t;
+    }
     my $top_add = 0;
     my @htmls;
-    for my $s (@{$self->tuxts}) {
+    for my $s (@$t) {
+        next if $skip-- > 0;
         my $p = { %$s };
         while(my ($k,$v) = each %$p) {
             $p->{$k} = ref $v if ref $v;

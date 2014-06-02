@@ -32,6 +32,10 @@ sub new {
         $self->{Proc}->spawn_ceiling("$self->{id}_controls",
             "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
 
+    $self->{title} =
+        $self->{Proc}->spawn_ceiling("$self->{id}_title",
+            "font-size: 15pt; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
+
     $self->{out} =
         $self->{Proc}->spawn_floozy("$self->{id}_out",
             "width: 100%; background-color: #000; border: 2px solid white; border: 3px solid gold; overflow: scroll; margin: 2px; padding: 5px;");
@@ -50,6 +54,17 @@ sub new {
     return $self;
 }
 
+sub desc {
+    my $self = shift;
+    my $c = $self->{cmd} || "";
+    if ($c =~ /echo '(.+)'( && cd .+)? && (.+)/) {
+        my ($say, $cd, $cmd) = ($1, $2, $3);
+        $cd = $1 if $cd =~ /\/(style\w+)$/;
+        $cd ||= "";
+        $c = qq{<span style="color:#aaa;">$say</span> <span style="color:gold;">$cd</span> $cmd};
+    }
+    return $c;
+}
 sub init {
     my $self = shift;
 
@@ -65,6 +80,10 @@ sub init {
     });
     $self->{in}->text->{max_height} = 420 * 0.34;
 
+    $self->{title}->text->add_hooks({
+        nospace => 1,
+    });
+    $self->{title}->text->replace([$self->desc()]);
 
     my $ct = $self->{controls}->text;
     my $menu = $self->{the_controls} = {

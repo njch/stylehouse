@@ -33,9 +33,14 @@ sub new {
         "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $GS->spawn_floozy($self, repos =>
         "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    
 
     $self->init();
+    
+    $self->hi->timer(1, sub {
+        my ($last) = reverse @{ $self->{proclistwatch}->text->{lines} };
+        $self->procup($last =~ /.+?(\d+): (.+)/);
+    });
+
     return $self;
 }
 
@@ -175,7 +180,7 @@ sub spawn_proc {
 sub procup {
     my $self = shift;
     my ($pid, $cmd) = @_;
-    say "resurrecting: $pid: $cmd";
+    say "$pid^$cmd";
     my $P = Proc->new($self->{hostinfo}->intro, $self);
     $P->{cmd} = $cmd;
     $P->started($pid);
@@ -235,10 +240,12 @@ sub pswatch {
     my @old = @{$pswt->{lines}};
     my $old = join "\n", @old;
     my $new = join "\n", @$what;
-    unless ($old eq $new) {
+    if ($old =~ /\Q$new\E/) {
+        #
+    }
+    else {
         $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
     }
-    else { }
 
     $self->hi->timer(2, sub { $self->pswatch() });
 }

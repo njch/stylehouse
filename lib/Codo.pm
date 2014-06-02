@@ -80,11 +80,9 @@ sub menu {
         nah => sub { $self->nah },
         new => sub { $self->new_ebuge() },
         '<views>' => sub {
-            say "Sending view dump\n\n";
             $self->infrl("views", $self->hostinfo->dkeys);
         },
         "<obso>" => sub {
-            say "Sending obsotrav dump\n\n";
             $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
         },
         "Rst" => sub { # they might wanna load new css/js too
@@ -96,7 +94,9 @@ sub menu {
             $h->{MH} = !$h->{MH};
             $self->infrl(map { $h->{MH} ? uc($_) : lc($_)." off" } 'MULTIHEADING');
         },
-
+        '^>' => sub {
+            $self->{hostinfo}->send("\$('#Codo').toggleClass('NE');");
+        },
     }
 }
 
