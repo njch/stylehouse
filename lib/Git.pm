@@ -349,7 +349,7 @@ sub proclistwatch {
                     $stat = "!style='color: green;'";
 
                     if ($proc->{pid} ne $pid) {
-                        $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc->{pid}, $proc->{cmd}, $line);
+                        $self->{hostinfo}->error("proc/list Proc has Pid: $proc->{pid} vs $line");
                     }
                 }
                 else {

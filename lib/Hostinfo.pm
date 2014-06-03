@@ -95,13 +95,6 @@ sub elvis_connects {
         i => $self->{elvii}++,
     };
 
-    if ($self->{elvii} > 1 && !$self->{MH}) {
-        my @make_reconnect_laterer_than_ = grep { $_ ne $self->{first_elvis} } values %{ $data->{elviss} };
-        say "\n\n Going to touch $0 and hope for a solution (too many Elvi and not multiheading)" for 1..4;
-        `touch $0`;
-        sleep 2;
-    }
-
     say "A New Elvis from $new->{address} appears";
     $elviss->{$new->{id}} = $new;
     $self->{who} = $new;
@@ -456,19 +449,14 @@ sub watch_file_streams {
                 $st->{linehook}->($_);
             }
             close $fh;
-            my $reread;
+            my $samei;
             if ($size > $st->{size}) {
-                my $whole = `cat $st->{filename}`;
+                my @whole = `cat $st->{filename}`;
+                my $whole = join "", @whole;
                 my $new = join("", @{$st->{lines}});
-                unless ($whole eq $new) {
-                    $reread = 1;
+                if ($whole ne $new) {
+                    $samei = scalar @whole;
                 }
-            }
-
-            if ($reread) {
-                my $mark = "==== ~!";
-                push @{$st->{lines}}, $mark;
-                $st->{linehook}->($mark);
             }
 
             open(my $anfh, '<', $st->{filename})
@@ -476,8 +464,14 @@ sub watch_file_streams {
 
             my $i = 0;
             while (<$anfh>) {
-                push @{$st->{lines}}, $_;
-                $st->{linehook}->($_);
+                unless ($samei-- > 0) {
+                    if ($samei == 0) {
+                        my $mark = "==== ~!";
+                        $st->{linehook}->($mark);
+                    }
+                    push @{$st->{lines}}, $_;
+                    $st->{linehook}->($_);
+                }
             }
             
             $st->{handle} = $anfh;
@@ -489,6 +483,7 @@ sub watch_file_streams {
             say "$st->{filename} has GROWTH";
             my $fh = $st->{handle};
             while (<$fh>) {
+                push @{$st->{lines}}, $_;
                 $st->{linehook}->($_);
             }
             $st->{size} = (stat $st->{filename})[7];

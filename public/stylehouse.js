@@ -2,7 +2,7 @@ var ws;
 var fail = 0;
 
 function connect () {
-  ws = new WebSocket('ws://localhost:3000/stylehouse');
+  ws = new WebSocket('ws://127.0.0.1:3000/stylehouse');
   ws.onmessage = function(event) {
     console.log(event.data);
     eval(event.data);
@@ -23,7 +23,7 @@ function reconnect () {
   fail++;
   console.log('waiting to retry');
   if (fail < 2000) {
-      window.setTimeout(connect, 256);
+      window.setTimeout(connect, 2560);
   }
   else {
       window.setTimeout(connect, 25600);
