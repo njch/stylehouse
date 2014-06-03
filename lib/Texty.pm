@@ -85,15 +85,15 @@ sub editing {
     $self->{editing} = 0;
 
     $self->append([@newlines]);
-    say "Texty pushed ".scalar(@newlines)." lines out".ddump(\@newlines);
+    say "Texty pushed ".scalar(@newlines)." lines out";
 }
 
 sub gotline {
     my $self = shift;
     my $line = shift;
-    say "Got line: $line";
 
-    push @{ $self->{output} ||= [] }, $line;
+    $self->{output} ||= [];
+    push @{$self->{output}}, $line;
 
     return if $self->{editing};
 
@@ -208,10 +208,6 @@ sub mktuxt {
         }
         if (exists $s->{menu} && !defined $s->{menu}) {
             $s->{menu} = $s->{value};
-        }
-        if (!$s->{html} && $s->{value} =~ /<span/sgm) {
-            $s->{html} = 1;
-            say "$s->{value} is sudden html in $self->{id}\n\n"
         }
 
         $s->{value} =~ s/<<ID>>/$self->{id}/g;

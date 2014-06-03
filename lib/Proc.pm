@@ -26,15 +26,15 @@ sub new {
 
     $self->{Proc} =
         $self->{git}->{Procshow}->spawn_floozy($self->{id},
-            'width:92%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
+            'width:98%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
 
     $self->{controls} =
         $self->{Proc}->spawn_ceiling("$self->{id}_controls",
-            "font-size: 2em; color: black; font-family: serif; background-color: #993333; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
+            "font-size: 1.2em; color: #9ED9D9; font-family: serif; background-color: #5C1F1F; width: 100%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
 
     $self->{title} =
         $self->{Proc}->spawn_ceiling("$self->{id}_title",
-            "font-size: 15pt; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;", undef, undef, 'vvvv');
+            "font-size: 15pt; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
 
     $self->{out} =
         $self->{Proc}->spawn_floozy("$self->{id}_out",
@@ -61,8 +61,8 @@ sub desc {
         my ($say, $cd, $cmd) = ($1, $2, $3);
         $cd = $1 if $cd =~ /\/(style\w+)$/;
         $cd ||= "";
-        $c = qq{<span style="color:#aaa;">$say</span> <span style="color:gold;">$cd</span> $cmd};
-        $c = qq{<span style="color:gold;">($say) $cd: $cmd</span>};
+        $c = qq{!html <span style="color:#aaa;">$say</span> <span style="color:gold;">$cd</span> $cmd};
+        $c = qq{!html <span style="color:gold;">($say) $cd: $cmd</span>};
     }
     return $c;
 }
@@ -167,7 +167,10 @@ sub started {
             say "$file do not exist          cmd: $self->{cmd}";
             next;
         }
-        $self->hostinfo->stream_file($file, sub {
+        for (`tail -n200 $file`) {
+            $self->output($_, $ch);
+        }
+        $self->hostinfo->tail_file($file, sub {
             my $line = shift;
             $self->output($line, $ch);
         });
@@ -202,14 +205,10 @@ sub output {
         return
     }
 
-    if (@{$t->{lines}} > 1000) {
-        splice @{$t->{lines}}, -1000;
-    }
-    $t->append([$line]);
     
     $line =~ s/^/!style='$stylech->{$ch}' /;
+    $t->gotline($line);
     
-    say "Appent $self->{id}    ($self->{pid}) > $ch    $line";
 }
 
 sub bung {

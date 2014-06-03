@@ -124,7 +124,7 @@ sub event {
     if (my $s = $pst->id_to_tuxt($id)) {
         my ($pid, $cmd) = split ": ", $s->{value};
         say "KILLING $pid";
-        kill "TERM", $pid;
+        kill "INT", $pid;
         $self->{hostinfo}->timer(0.2, sub {
             $self->init_state()
         });
@@ -285,12 +285,9 @@ sub procstartwatch {
         my $per_line = sub {
             my $line = shift;
             $line =~ s/\n$//;
-            say "start Line: $line";
             my ($pid, $cmd) = $line =~ /^(\d+): (.+)\n?$/;
-
-            my $stat = $pid == $$ ? "us" : "??";
-            
-            $plt->append(["$stat: $line"]);
+            my $stat = $pid == $$ ? "!style='color:gold;' " : "";
+            $plt->gotline("$stat$line");
         };
 
         $self->{hostinfo}->stream_file("proc/start", $per_line);
@@ -349,7 +346,7 @@ sub proclistwatch {
             my $stat;
             if ($proc) {
                 if ($proc->{pid}) {
-                    $stat = "$proc->{id}";
+                    $stat = "!style='color: green;'";
 
                     if ($proc->{pid} ne $pid) {
                         $self->{hostinfo}->error("proc/list name suggests had proc, different pid", $proc->{pid}, $proc->{cmd}, $line);
@@ -361,7 +358,7 @@ sub proclistwatch {
                 }
             }
             else {
-                $stat = "!menu=startproc ?";
+                $stat = "!menu=startproc";
             }
 
             $plt->append(["$stat $line"]);

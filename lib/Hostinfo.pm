@@ -43,16 +43,7 @@ sub send {
     # apps can be multicasting too
     # none of these workings should be trapped at this level
     # send it out there and get the hair on it
-    if (!$self->who) {
-        # got a push from stylhouse
-        push @{ $self->for_all }, $message;
-        $self->send_all(); # TRACTOR this with the view
-        #say "Websocket Multi Loaded: $short";
-        return;
-    }
-    else {
-        $self->elvis_send($message);
-    }
+    $self->elvis_send($message);
 }
 
 sub elvis_send {
@@ -77,21 +68,6 @@ sub elvis_send {
     
     $elvis->{tx}->send({text => $message});
 }
-
-sub send_all {
-    my $self = shift;
-    my $messages = $self->for_all;
-    #say "Sending ".(0+@$messages)." messages";
-    for my $message (@$messages) {
-        my $elviss = $self->get('elviss');
-        for my $elvis (@$elviss) {
-            $self->elvis_send($message, $elvis);
-        }
-    }
-    #say "Done.";
-    $self->for_all([]);
-}
-
 
 sub elvi {
     my $self = shift;
@@ -119,7 +95,7 @@ sub elvis_connects {
         i => $self->{elvii}++,
     };
 
-    if ($self->{elvii} > 1 && !$self->{MH}) {
+    if (0 && $self->{elvii} > 1 && !$self->{MH}) {
         my @make_reconnect_laterer_than_ = grep { $_ ne $self->{first_elvis} } values %{ $data->{elviss} };
         say "\n\n Going to touch $0 and hope for a solution (too many Elvi and not multiheading)" for 1..4;
         `touch $0`;
