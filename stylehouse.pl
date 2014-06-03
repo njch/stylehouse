@@ -246,7 +246,7 @@ websocket '/stylehouse' => sub {
 
         $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
 
-        #return say "\n\nIGNORING Message: $msg\n\n\n\n" if $hostinfo->ignorable_mess($msg);
+        return say "\n\nIGNORING Message: $msg\n\n\n\n" if $hostinfo->ignorable_mess($msg);
         
         my $j;
         if ($msg =~ /^{"event":{"id":"",/) {

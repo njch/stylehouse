@@ -449,7 +449,7 @@ sub watch_file_streams {
                 $st->{linehook}->($_);
             }
             close $fh;
-            my $samei;
+            my $samei = 0;
             if ($size > $st->{size}) {
                 my @whole = `cat $st->{filename}`;
                 my $whole = join "", @whole;
@@ -464,11 +464,11 @@ sub watch_file_streams {
 
             my $i = 0;
             while (<$anfh>) {
+                if ($samei == 0) {
+                    my $mark = "==== ~!";
+                    $st->{linehook}->($mark);
+                }
                 unless ($samei-- > 0) {
-                    if ($samei == 0) {
-                        my $mark = "==== ~!";
-                        $st->{linehook}->($mark);
-                    }
                     push @{$st->{lines}}, $_;
                     $st->{linehook}->($_);
                 }

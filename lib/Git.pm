@@ -62,7 +62,10 @@ sub gitrack {
     my $self = shift;
     
     $self->{rackmenu} = {
-        stat => sub {
+        ps => sub {
+            shift->pswatch("once");
+        },
+        init => sub {
             shift->init();
         },
         sp => sub {
@@ -126,7 +129,7 @@ sub event {
         say "KILLING $pid";
         kill "INT", $pid;
         $self->{hostinfo}->timer(0.2, sub {
-            $self->init_state()
+            $self->pswatch("once")
         });
     }
     else {
@@ -223,6 +226,7 @@ sub repos {
 
 sub pswatch {
     my $self = shift;
+    my $one = shift;
 
     $self->init_state();
 
@@ -246,7 +250,7 @@ sub pswatch {
         $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
     }
 
-    $self->hi->timer(2, sub { $self->pswatch() });
+    $self->hi->timer(2, sub { $self->pswatch() }) unless $one;
 }
 
 sub procstartwatch {
