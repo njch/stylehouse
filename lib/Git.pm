@@ -121,10 +121,9 @@ sub event {
 
     my $pst = $self->{pswatch}->text;
 
-        say "Hello!";
     if (my $s = $pst->id_to_tuxt($id)) {
-        say "Hello!";
         my ($pid, $cmd) = split ": ", $s->{value};
+        say "KILLING $pid";
         kill "TERM", $pid;
         $self->{hostinfo}->timer(0.2, sub {
             $self->init_state()
@@ -159,10 +158,10 @@ sub spawn_style {
     my $self = shift;
     my $outside = shift;
     my $repo = $self->hi->get("Git/repos/$outside") || die "no such $outside";
-    return $self->errl("../$outside does not exist") unless -d "../$outside";
-    return $self->errl( "no procserv.pl") unless grep /procserv.pl/, `ps faux`;
+    return $self->hi->error("../$outside does not exist") unless -d "../$outside";
+    return $self->hi->error( "no procserv.pl") unless grep /procserv.pl/, `ps faux`;
 
-        return $self->errl("$outside already running") if $self->{state}->{$outside};
+        return $self->error("$outside already running") if $self->{state}->{$outside};
 
     my $P = $self->spawn_proc($self->mstylecmd($outside));
     $P->{repo} = $repo;
@@ -426,7 +425,7 @@ sub init_state {
     my $ps = {};
     $i = 0;
     for (`ps -eo pid,cmd`) {
-        next unless /style/ || /git/;
+        next unless /style/ || /git/ || /procserv/;
         if (/(\d+) (.+)\n?$/sm) {
             $ps->{$1} = {
                 pid => $1,

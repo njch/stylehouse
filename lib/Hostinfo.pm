@@ -618,10 +618,10 @@ sub init_flood {
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:99%; border: 2px solid white; background: #B24700; color: #030; height: 420px; font-weight: bold;",
+        hi_error => "width:58%; bottom: 0px; right: 0px; position: fixed; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold;",
     );
     $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width:99%; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 420px; font-weight: bold;",
+        hi_info => "width:14em; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 420px; font-weight: bold;",
     );
 
     return $f

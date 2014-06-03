@@ -30,7 +30,7 @@ sub new {
 
     $self->{controls} =
         $self->{Proc}->spawn_ceiling("$self->{id}_controls",
-            "font-size: 2em; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
+            "font-size: 2em; color: black; font-family: serif; background-color: #993333; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
 
     $self->{title} =
         $self->{Proc}->spawn_ceiling("$self->{id}_title",
@@ -122,8 +122,9 @@ sub init {
         },
         class => 'menu',
     });
-    $self->{controls_lines} ||= [ "!menu web", "!menu kp", "!menu kc", '!menu X' ];
-    $ct->replace($self->{controls_lines});
+    my $lines = [ "!menu web", "!menu kp", "!menu kc", '!menu X' ];
+    push @$lines, "!meny=kp !style='font-size:3em;color:gold;' $self->{pid}" if $self->{pid};
+    $ct->replace($lines);
 }
 
 
@@ -149,7 +150,6 @@ sub started {
         $self->hi->error("NO PID");
     }
 
-    unshift @{$self->{controls_lines}}, "!style='color: #CCFF66; font-weight: bold;' $pid";
     $self->init();
 
     $self->output(qq{!html cmd: <span style="color: gold;">$self->{cmd}</span>}) if delete $self->{vacant};
@@ -162,7 +162,12 @@ sub started {
 
 
     for my $ch (reverse "err", "out") { # TODO high speed proc output stitcher: read each handle, other signals it at 50Hz
-        $self->hostinfo->stream_file("proc/$pid.$ch", sub {
+        my $file = "proc/$pid.$ch";
+        unless (-f $file) {
+            say "$file do not exist          cmd: $self->{cmd}";
+            next;
+        }
+        $self->hostinfo->stream_file($file, sub {
             my $line = shift;
             $self->output($line, $ch);
         });
@@ -197,7 +202,10 @@ sub output {
         return
     }
 
-    $t->gotline($line);
+    if (@{$t->{lines}} > 1000) {
+        splice @{$t->{lines}}, -1000;
+    }
+    $t->append([$line]);
     
     $line =~ s/^/!style='$stylech->{$ch}' /;
     
