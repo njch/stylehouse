@@ -620,39 +620,53 @@ sub flood {
 
 
     $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
-    if (ref \$thing eq "SCALAR") {
-        my $lines = [split "\n", $thing];
-        my $texty = $floozy->text;
 
-        $texty->replace($lines);
+    my $lines = [split "\n", $thing];
+    my $texty = $floozy->text;
 
-        #$texty->{max_height} ||= 1000;
-        $texty->fit_div;
-        
-        if ($self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
-            $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
-        }
-        $self->{flood}->{latest} = $floozy;
+    $texty->replace($lines);
+
+    #$texty->{max_height} ||= 1000;
+    $texty->fit_div;
+    
+    if ($self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
+        $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
     }
-    elsif (0) {
-        my $wormhole;
-                                        eval { $wormhole = $floozy->travel($thing); };
+    $self->{flood}->{latest} = $floozy;
+}
+
+sub travel {
+    my $self = shift;
+    my $thing = shift;
+    my $floozy = shift;
+
+    $self->init_flood() unless $self->{flood};
+
+    my $from = join ", ", (caller(1))[0,3,2];
+    say "travel from: $from";
+
+    $floozy ||= $self->route_floozy($from);
+    say "floozy: $floozy->{divid}";
+
+    $floozy->{extra_label} = $from;
+
+    my $wormhole;
+                                    eval { $wormhole = $floozy->travel($thing); };
+    if ($@) {
+        $self->error(
+            "flood travel error" => $@,
+            Thing => $thing,
+            Travel => ddump($floozy->travel),
+        );
+    }
+    else {
+                                        eval { $wormhole->appear($floozy) };
         if ($@) {
             $self->error(
-                "flood travel error" => $@,
+                "flood wormhole appear error" => $@,
                 Thing => $thing,
                 Travel => ddump($floozy->travel),
             );
-        }
-        else {
-                                            eval { $wormhole->appear($floozy) };
-            if ($@) {
-                $self->error(
-                    "flood wormhole appear error" => $@,
-                    Thing => $thing,
-                    Travel => ddump($floozy->travel),
-                );
-            }
         }
     }
 }

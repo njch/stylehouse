@@ -135,13 +135,13 @@ sub init {
     $hostinfo->flood($hostinfo->data);
 
     if ($name eq "styleshed") {
-        Lyrico->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
         Codo->new($hostinfo->intro);
         Keys->new($hostinfo->intro);
     }
+        Lyrico->new($hostinfo->intro);
 
     $hostinfo->update_app_menu();
     $underworld = 0;
@@ -192,10 +192,11 @@ get '/' => sub {
         my $ws_location = $self->url_for('stylehouse')->to_abs;
         say "Updating stylehouse.js for websocket $ws_location";
 
-        my $js = read_file("public/stylehouse.js");
+        my $js = read_file("stylehouse.js");
         $js =~ s/(new\ WebSocket\(  )  .+?  (  \);)/$1'$ws_location'$2/sx; # invent an e pragma
         $js =~ m/( WebSocket.+\n)/;
         say "turned into $1";
+        unlink "public/stylehouse.js";
         write_file("public/stylehouse.js", $js);
 =pod
 Prof Lue Calfman's quote from G

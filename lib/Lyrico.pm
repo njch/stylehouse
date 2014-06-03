@@ -38,6 +38,10 @@ sub menu {
         '.' => sub {
             $self->{hostinfo}->flood($self->{text});
         },
+        TRAVEL => sub {
+            delete $self->{hostinfo}->{floodzy}->{travel};
+            $self->{hostinfo}->travel($self->{lyrics});
+        },
         onoff => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky
         },

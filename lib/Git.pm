@@ -39,7 +39,7 @@ sub new {
     $self->hi->timer(1, sub {
         my ($last) = reverse @{ $self->{proclistwatch}->text->{lines} };
         $self->procup($last =~ /.+?(\d+): (.+)/);
-    });
+    }) if 0;
 
     return $self;
 }
