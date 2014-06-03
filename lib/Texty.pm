@@ -86,6 +86,7 @@ sub editing {
 
     $self->append([@newlines]);
     say "Texty pushed ".scalar(@newlines)." lines out";
+    #say ddump(\@newlines);
 }
 
 sub gotline {
@@ -112,6 +113,12 @@ sub append { # TRACTOR
     $self->{hooks}->{append} = 1;
 
     my $oldlines = $self->{lines};
+
+    my $total = @$lines + @$oldlines;
+    if ($total > 1000) {
+        # trip out
+    }
+
     my $oldtuxts = $self->{tuxts};
     my $oldhtmls = $self->{htmls};
     my $oldnospace = $self->{hooks}->{nospace};

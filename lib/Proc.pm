@@ -190,6 +190,10 @@ sub output {
     my $much = $ch =~ /err|out/ ? "out" : "in";
     my $t = $self->{$much}->text;
 
+    if ($ch eq "err") {
+        $line =~ s/^\[.*(:\d+) \d+\] \[(debug|info)\]/[$1 $2]/;
+    }
+
     if ($ch eq "err" && $line =~ s/(\[info\] Listening at )"(.+)"\./$1<a href="$2">$2<\/a>/) {
         $self->{website} = $2;
         $line = "!html $line";

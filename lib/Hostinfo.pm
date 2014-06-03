@@ -95,7 +95,7 @@ sub elvis_connects {
         i => $self->{elvii}++,
     };
 
-    if (0 && $self->{elvii} > 1 && !$self->{MH}) {
+    if ($self->{elvii} > 1 && !$self->{MH}) {
         my @make_reconnect_laterer_than_ = grep { $_ ne $self->{first_elvis} } values %{ $data->{elviss} };
         say "\n\n Going to touch $0 and hope for a solution (too many Elvi and not multiheading)" for 1..4;
         `touch $0`;
