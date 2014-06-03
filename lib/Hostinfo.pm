@@ -744,7 +744,7 @@ sub throwlog {
         join("\n",
             $error->[0],
             (map { "    - $_" } reverse @{$error->[1]}),
-            (map { "$_" } reverse @{$error->[2]}),
+            (map { ref $_ ? ddump($_) : "$_" } reverse @{$error->[2]}),
         );
 
     say "$what =>\n$string";
@@ -816,14 +816,10 @@ sub tvs {
 sub tv_by_id {
     my $self = shift;
     my $id = shift;
-    $id =~ s/^(\w+-\w+).*$/$1/ || do {
-        if ($id =~ /^hi_|procstartwatch/) {
-            $self->send("\$('#$id').toggleClass('widdle');");
-        }
-        else {
+        $id =~ s/^(\w+-\w+).*$/$1/ || do {
             $self->error("EVENT ID THING LOOKUP Got a weird id", $id);
-        }
-    };
+        };
+    say "ID : $id";
 
     for my $tv (@{$self->get('tvs')}) {
         if ($tv->{id} eq $id) {

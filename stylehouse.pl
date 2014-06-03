@@ -288,6 +288,13 @@ websocket '/stylehouse' => sub {
             $self->app->log->info("Looking up event handler");
             my $id = $event->{id};
 
+            if ($id =~ /^hi_|procstartwatch/) {
+                $hostinfo->send("\$('#$id').toggleClass('widdle');");
+            }
+            elsif ($id =~ /_out$/) {
+                $hostinfo->send("\$('#$id').toggleClass('widel');");
+            }
+
             my $thing = $hostinfo->tv_by_id($event->{id}) if $id;
 
             start_timer();
