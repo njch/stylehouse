@@ -122,7 +122,7 @@ sub event {
         }
     }
     else {
-        return $self->hostinfo->error("Codo event 404 for $id", $event);
+        say "Codo event 404 for $id". ddump($event);
     }
 }
 

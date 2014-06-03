@@ -77,62 +77,29 @@ sub replace {
     return wantarray ? @o : $o[0]
 }
 
-has 'lastlinepush' => sub { 0 };
-has 'queuestarts' => sub { 0 };
-
-sub hitime {
-    my $self = shift;
-    return join ".", time, (gettimeofday())[1];
-}
-
-has 'linepushdelay' => sub { Mojo::IOLoop::Delay->new() };
-has 'linepushdelay_on' => sub { 0 };
-
-sub pushlines {
+sub editing {
     my $self = shift;
 
-    my @newlines;
+    my @newlines = @{ $self->{output} };
+    $self->{output} = [];
+    $self->{editing} = 0;
 
-    my $last = $self->queuestarts || 0;
-    my $first = $last == 0 ? 0 : $last + 1;
-
-    my $i;
-    for my $l (@{$self->output}) {
-        next if $l < $first;
-        push @newlines, $l;
-    }
-
-    $self->{out}->text->append([map { join" ",@$_ } @newlines]);
-    say "Proc: pushed ".scalar(@newlines)." lines outwards";
-
-    $self->queuestarts( $last+1 );
-    $self->lastlinepush($self->hitime());
-    $self->linepushdelay_on(0);
+    $self->append([@newlines]);
+    say "Texty pushed ".scalar(@newlines)." lines out".ddump(\@newlines);
 }
 
 sub gotline {
     my $self = shift;
-    my $std = shift;
     my $line = shift;
+    say "Got line: $line";
 
-    $line =~ s/\n$//;
-    say "gotline: $std $line";
+    push @{ $self->{output} ||= [] }, $line;
 
-    push @{ $self->output }, [ $std, $line ];
+    return if $self->{editing};
 
-    return if $self->linepushdelay_on;
+    $self->{hostinfo}->timer(0.2, sub { $self->editing });
 
-    if ($self->hitime < $self->lastlinepush + 1) {
-        
-        $self->linepushdelay_on(1);
-        $self->linepushdelay->steps(
-            sub { Mojo::IOLoop->timer(1 => $self->linepushdelay->begin); say "Pushing lines in 1 second"; },
-            sub { $self->pushlines; },
-        );
-    }
-    else {
-        $self->pushlines();
-    }
+    $self->{editing} = 1;
 }
 
 

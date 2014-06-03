@@ -34,7 +34,7 @@ sub new {
 
     $self->{title} =
         $self->{Proc}->spawn_ceiling("$self->{id}_title",
-            "font-size: 15pt; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;");
+            "font-size: 15pt; font-family: serif; background-color: black; width: 99%; text-shadow: 4px 4px 4px #white; height: 1em; margin-bottom: 5px;", undef, undef, 'vvvv');
 
     $self->{out} =
         $self->{Proc}->spawn_floozy("$self->{id}_out",
@@ -62,6 +62,7 @@ sub desc {
         $cd = $1 if $cd =~ /\/(style\w+)$/;
         $cd ||= "";
         $c = qq{<span style="color:#aaa;">$say</span> <span style="color:gold;">$cd</span> $cmd};
+        $c = qq{<span style="color:gold;">($say) $cd: $cmd</span>};
     }
     return $c;
 }
@@ -82,6 +83,7 @@ sub init {
 
     $self->{title}->text->add_hooks({
         nospace => 1,
+        class => 'some',
     });
     $self->{title}->text->replace([$self->desc()]);
 
@@ -179,7 +181,6 @@ sub output {
     };
     my $much = $ch =~ /err|out/ ? "out" : "in";
     my $t = $self->{$much}->text;
-    $t->{hooks}->{tuxtstyle} = $stylech->{$ch};
 
     if ($ch eq "err" && $line =~ s/(\[info\] Listening at )"(.+)"\./$1<a href="$2">$2<\/a>/) {
         $self->{website} = $2;
@@ -196,9 +197,11 @@ sub output {
         return
     }
 
-    $t->append([$line]);
+    $t->gotline($line);
     
-    say "Appent $self->{id} $self->{pid}>$ch: $line";
+    $line =~ s/^/!style='$stylech->{$ch}' /;
+    
+    say "Appent $self->{id}    ($self->{pid}) > $ch    $line";
 }
 
 sub bung {
