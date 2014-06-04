@@ -13,14 +13,16 @@ sub new {
 
     $self->{owner} = shift; # id instead of link, is wrong at the next level
     $self->{name} = $self->{owner}->{name} || $self->{owner}->{id};
-    unless (ref $self->{owner} eq "Travel") {
-        # observer of whole codon function
-        $self->{self} = new Travel($self->hostinfo->intro, $self);
+    if (ref $self->{owner} eq "Travel") {
+        $self->{name} = "Travel-Travel";
+        say "Travel named $self->{name}";
+        # all travels of travels
+        push @{ $self->hostinfo->gest('Travel-Travel', []) }, $self;
+        # also pushes to Codo/obsetrav
     }
     else {
-        # all travels of travels
-        push @{ $self->hostinfo->get('Travel Travel') }, $self;
-        # also pushes to Codo/obsetrav
+        # observer of whole codon function
+        #$self->{self} = new Travel($self->hostinfo->intro, $self);
     }
 
     return $self;
@@ -28,6 +30,7 @@ sub new {
 
 sub ob {
     my $self = shift;
+    return;
     return if ref $self->{owner} eq "Travel";
     my @seen = @_;
 
@@ -40,7 +43,7 @@ sub ob {
 
     $self->{self}->travel($ob);
 
-    push @{$self->hostinfo->get("Codo/obsetrav")}, $ob;
+    push @{ $self->hostinfo->gest("Codo/obsetrav", []) }, $ob;
 }
 
 # back here again
@@ -58,12 +61,9 @@ sub travel {
 
     my ($state, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 
-    if (!@$away) {
-        return "";
-    }
-
     for my $c (@$away) {
         if (my $t = $c->{travel}) {
+            say join(("  ")x$depth)."  away to: $t->{thing}";
             $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1, $state);
         }
     }

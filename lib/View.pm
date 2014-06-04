@@ -103,6 +103,7 @@ sub travel {
     $self->{travel} ||= Travel->new($self->hostinfo->intro, $self);
 
     if (@_) {
+        say "Travelling... A THING!";
         return $self->{travel}->travel([@_]);
     }
     return $self->{travel};

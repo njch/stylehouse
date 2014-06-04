@@ -20,10 +20,10 @@ sub new {
 sub downway {
     my $self = shift;
     $self->{file} = shift;
-    $self->{way} = LoadFile($self->{file});
+    my $w = LoadFile($self->{file});
     # merge the ways into $self
-    for my $i (keys %{$self->{way}}) {
-        $self->{$i} = $self->{way}->{$i};
+    for my $i (keys %$w) {
+        $self->{$i} = $w->{$i};
     }
     if ($self->{chains}) {
         for my $c (@{$self->{chains}}) {

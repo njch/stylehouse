@@ -589,7 +589,7 @@ sub init_flood {
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:58%; bottom: 0px; right: 0px; position: fixed; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold;",
+        hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(
         hi_info => "width:14em; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 420px; font-weight: bold;",
@@ -650,25 +650,34 @@ sub travel {
 
     $floozy->{extra_label} = $from;
 
-    my $wormhole;
-                                    eval { $wormhole = $floozy->travel($thing); };
-    if ($@) {
-        $self->error(
-            "flood travel error" => $@,
-            Thing => $thing,
-            Travel => ddump($floozy->travel),
-        );
-    }
-    else {
-                                        eval { $wormhole->appear($floozy) };
+    my $travel = $floozy->travel();
+
+                                    eval { $travel->travel($thing) };
+
+    return $self->error(
+        "flood travel error" => $@,
+        Travel => ddump($travel),
+    ) if $@;
+
+
+
+    my $ghost = $travel->{ghost};
+    my $wormhole = $ghost->{wormhole};
+
+    return $self->error(
+        "no wormhole!?",
+        Travel => ddump($travel),
+    ) if !$wormhole;
+
+
+
+                                       eval { $wormhole->appear($floozy) };
         if ($@) {
             $self->error(
                 "flood wormhole appear error" => $@,
-                Thing => $thing,
-                Travel => ddump($floozy->travel),
+                Wormhole => ddump($wormhole),
             );
         }
-    }
 }
 
 sub snooze {
@@ -749,12 +758,12 @@ sub ddump {
     return
         join "\n",
         grep {
-            !( do { /^(\s+)hostinfo:/ && do { $ind = $1; 1 } }
+            1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
             ...
             do { /^$ind\S/ } )
         }
         "",
-        grep !/^     /,
+        grep !/^       /,
         split "\n", Dump($thing);
 }
 

@@ -39,8 +39,11 @@ sub menu {
             $self->{hostinfo}->flood($self->{text});
         },
         TRAVEL => sub {
-            delete $self->{hostinfo}->{floodzy}->{travel};
-            $self->{hostinfo}->travel($self->{lyrics});
+            say "Tarevli";
+            $self->{hostinfo}->timer(2, sub {
+                delete $self->{hostinfo}->{floodzy}->{travel};
+                $self->{hostinfo}->travel($self->{lyrics});
+            });
         },
         onoff => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky

@@ -4,6 +4,8 @@ use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
+use Way;
+sub ddump { Hostinfo::ddump(@_) }
 
 has 'hostinfo';
 
@@ -14,10 +16,10 @@ sub new {
     my $travel = shift;
     $self->{travel} = $travel;
     my $name = $self->{name} = $travel->{name};
-    say "Name: $name";
+    say "Ghost named $name";
 
-    $self->{ways} = [];
-    push @{$self->{ways}}, $self->ways_for($_) for "Ghost", $name;
+    $self->ways_for("Travel");
+    $self->ways_for($name);
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
 
@@ -27,8 +29,15 @@ sub new {
 sub ways_for {
     my $self = shift;
     my $name = shift;
-    my @ghosts = glob "ghosts/$name/*";
-    return map { new Way($self->hostinfo->intro, $_) } @ghosts;
+    $self->{ways} ||= [];
+    unless (-d "ghosts/$name") {
+        say "No ghosts for $name";
+        return;
+    }
+    say "Loading Ghost of $name";
+    for (glob "ghosts/$name/*") {
+        push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
+    }
 }
 
 sub ob {
@@ -45,7 +54,7 @@ sub colorf {
 }
 sub chains {
     my $self = shift;
-    map { @{ $_->{chains} } } @{ $self->{ways} }
+    map { $_->{chains} ? @{ $_->{chains} } : () } @{ $self->{ways} }
 }
 
 sub hookways {
