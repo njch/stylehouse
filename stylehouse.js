@@ -10,14 +10,19 @@ function connect () {
   ws.onopen = function(e) {
     fail = 0;
     $('#body').removeClass('dead');
-  }
+  };
   ws.onclose = function(e) {
      $(window).off('click', clickyhand);
     $('#body').addClass('dead');
     console.log("WebSocket Error: " , e);
-    reconnect();
-  }
-  ws.onerror = ws.onclose;
+    //reconnect();
+  };
+  ws.onerror = function(e) {
+     $(window).off('click', clickyhand);
+    $('#body').addClass('dead');
+    console.log("WebSocket Error: " , e);
+    //reconnect();
+  };
 }
 function reconnect () {
   fail++;
@@ -41,7 +46,7 @@ function clickon () { $(window).on("click", clickyhand); }
 function clickoff () { $(window).off("click", clickyhand); }
 function clickyhand (event) {
     var value = event.target.id ? event.target.innerText : null;
-    if (value.length >= 666) {
+    if (value && value.length >= 666) {
         value = 'SATAN';
     }
     var data = {

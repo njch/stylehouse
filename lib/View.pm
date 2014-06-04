@@ -116,6 +116,7 @@ sub spawn_floozy {
     my $style = shift || $self->{hostinfo}->get('tvs/'.$self->{divid}.'/style');
     my $attach = shift;
     my $where = shift;
+    my $class = shift;
 
     if (!$attach && !$where) {
         if ($self->{ceiling}) {
@@ -139,6 +140,7 @@ sub spawn_floozy {
     my $floozy = $self->{hostinfo}->create_view(
         ($this || $self), $divid, $style,
         $attach => $where,
+        $class,
     );
 
     $self->{hostinfo}->accum("floods/$self->{divid}", $floozy);

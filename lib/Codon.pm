@@ -77,9 +77,8 @@ sub display {
                 "!i=$i $c->{first} ($rows lines)";
         }
     }
-    my @bits = [ map { $_, "!html <br/>" } '!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks" ];
-    pop @bits;
-    $texty->replace(\@bits);
+
+    $texty->replace([ map { $_ } '!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};

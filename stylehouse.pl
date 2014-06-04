@@ -10,6 +10,7 @@ use File::Slurp;
 use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
+use utf8;
 
 
 =pod
@@ -219,6 +220,8 @@ websocket '/stylehouse' => sub {
 
     $self->stash(  tx => $self->tx);
 
+    $hostinfo->snooze(30000);
+
     # setup setups
     my $handyin = {};
     while (my ($name, $do) = each %$hands) {
@@ -334,7 +337,7 @@ websocket '/stylehouse' => sub {
     $self->on(finish => sub {
       my ($self, $code, $reason) = @_;
       $hostinfo->elvis_gone($self, $code, $reason);
-      $self->app->log->debug("WebSocket closed with status $code.");
+      $self->app->log->debug("WebSocket closed with status $code: ".($reason||"no reason"));
     });
 
 };

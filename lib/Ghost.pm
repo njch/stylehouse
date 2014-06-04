@@ -16,7 +16,7 @@ sub new {
     my $travel = shift;
     $self->{travel} = $travel;
     my $name = $self->{name} = $travel->{name};
-    say "Ghost named $name";
+    say "Ghost named $name    ".join" ", glob "ghosts/$name/*";
 
     $self->ways_for("Travel");
     $self->ways_for($name);
@@ -34,7 +34,6 @@ sub ways_for {
         say "No ghosts for $name";
         return;
     }
-    say "Loading Ghost of $name";
     for (glob "ghosts/$name/*") {
         push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
     }

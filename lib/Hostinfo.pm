@@ -57,7 +57,7 @@ sub elvis_send {
 
     my $short = $message if length($message) < 200;
     $short ||= substr($message,0,23*5)." >SNIP<";
-    
+
     if (-t STDOUT) {
         print colored("< send\t\t", 'blue');
         print colored($short, 'bold blue'), "\n";
@@ -66,6 +66,18 @@ sub elvis_send {
         say "< send\t\t$short";
     }
     
+    unless ($elvis->{tx}) {
+        say "All Elvi:";
+        $self->elvi();
+        my ($nelvis) = grep {$_->{tx}} values %{ $data->{elviss} };
+        if ($nelvis) {
+            say "Found a way to $nelvis->{address}";
+        }
+        else {
+            say "No way to send to $elvis->{address} anymore!";
+        }
+        $elvis = $nelvis;
+    }
     $elvis->{tx}->send({text => $message});
 }
 
@@ -96,6 +108,7 @@ sub elvis_connects {
     };
 
     say "A New Elvis from $new->{address} appears";
+    sleep 1;
     $elviss->{$new->{id}} = $new;
     $self->{who} = $new;
 
@@ -158,6 +171,7 @@ sub elvis_leaves {
     say "Elvis had stash: ".($eid||"undef");
     if (my $elvis = $self->get('elviss')->{$eid}) {
         say "Goes $elvis->{address}";
+        delete $elvis->{tx};
     }
     else {
         die "Cannot find elvis: $eid\n"."Remote address: ".$mojo->tx->remote_address;
@@ -324,15 +338,11 @@ sub update_app_menu {
     my $self = shift;
 
     unless ($self->{appmenu}) {
-        $self->create_view($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; z-index:5; top: 0px; position: fixed;",
-            before => "#body :first",
+        $self->flood->spawn_floozy($self, "appmenu",
+            "width:98%; background: #333; color: #afc; font-family: serif; height: 3em;",
+            undef, undef,
             "menu",
         );
-        $self->create_view($self, "appmenu_floon",
-            "width:98%;  z-index:4; top: 0px; height: 3em; ",
-            after => "#appmenu",
-            );
         $self->{appmenu}->text->add_hooks(
             $self->app_menu_hooks()
         );
@@ -436,6 +446,12 @@ sub stream_file {
 sub watch_file_streams {
     my $self = shift;
 
+    my $clean_text = sub {
+        $_ = shift;
+        s/[^a-zA-Z\t\n '":\[\]\)\(\;\.\$_\?!#\@\\\/\-\=]//gs;
+        return $_;
+    };
+
     for my $st (@{ $self->{file_streams} }) {
         my ($ino, $ctime, $size) = (stat $st->{filename})[1,10,7];
 
@@ -445,6 +461,7 @@ sub watch_file_streams {
 
             my $fh = $st->{handle}; # try finish off the old one
             while (<$fh>) {
+                $_ = $clean_text->($_);
                 push @{$st->{lines}}, $_;
                 $st->{linehook}->($_);
             }
@@ -469,6 +486,7 @@ sub watch_file_streams {
                     $st->{linehook}->($mark);
                 }
                 unless ($samei-- > 0) {
+                    $_ = $clean_text->($_);
                     push @{$st->{lines}}, $_;
                     $st->{linehook}->($_);
                 }
@@ -483,6 +501,7 @@ sub watch_file_streams {
             say "$st->{filename} has GROWTH";
             my $fh = $st->{handle};
             while (<$fh>) {
+                $_ = $clean_text->($_);
                 push @{$st->{lines}}, $_;
                 $st->{linehook}->($_);
             }
@@ -610,6 +629,10 @@ sub flood {
 
     $self->init_flood() unless $self->{flood};
 
+    if (!defined $thing && !defined $floozy) {
+        return $self->{flood}
+    }
+
     my $from = join ", ", (caller(1))[0,3,2];
     say "flood from: $from";
 
@@ -652,17 +675,14 @@ sub travel {
 
     my $travel = $floozy->travel();
 
-                                    eval { $travel->travel($thing) };
+    my $wormhole;
+                                    eval { $wormhole = $travel->travel($thing) };
 
     return $self->error(
         "flood travel error" => $@,
         Travel => ddump($travel),
     ) if $@;
 
-
-
-    my $ghost = $travel->{ghost};
-    my $wormhole = $ghost->{wormhole};
 
     return $self->error(
         "no wormhole!?",
@@ -671,11 +691,11 @@ sub travel {
 
 
 
-                                       eval { $wormhole->appear($floozy) };
+                                      eval {  $wormhole->appear($floozy) };
         if ($@) {
             $self->error(
                 "flood wormhole appear error" => $@,
-                Wormhole => ddump($wormhole),
+                Wormhole => 1,#ddump($wormhole),
             );
         }
 }
