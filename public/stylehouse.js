@@ -23,10 +23,10 @@ function reconnect () {
   fail++;
   console.log('waiting to retry');
   if (fail < 2000) {
-      window.setTimeout(connect, 256);
+      window.setTimeout(connect, 2560);
   }
   else {
-      window.setTimeout(connect, 2048);
+      window.setTimeout(connect, 25600);
   }
 }
 
