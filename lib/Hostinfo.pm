@@ -108,11 +108,16 @@ sub elvis_connects {
     };
 
     say "A New Elvis from $new->{address} appears";
-    sleep 1;
     $elviss->{$new->{id}} = $new;
     $self->{who} = $new;
 
     $mojo->stash(elvisid => $new->{id});
+
+    if (%$elviss > 1) {
+        say " Elvis is taking over!";
+        `touch $0`;
+        sleep 3;
+    }
 
     $self->{first_elvis} ||= $new;
 

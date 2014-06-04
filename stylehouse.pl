@@ -105,7 +105,20 @@ my $ip = "127.0.0.1";
 $ip = "*" if $name eq "stylehut";
 my $mojo_daemon_listen = "http://$ip:$port";
 
-say "running $name PID=$$ into $mojo_daemon_listen";
+say "running $name PID=$$ into $mojo_daemon_listen
+
+
+
+
+
+
+
+
+
+
+
+
+";
 
 my $hostinfo = new Hostinfo();
 
