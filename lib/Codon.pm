@@ -55,8 +55,8 @@ sub display {
         my $ness = $self->{openness}->{$i};
 
         if ($ness =~ /^Open/) {
-            $rows = 25 if $rows > 25;
-            $rows = 1 if $rows < 1;
+            $rows = 105 if $rows > 105;
+            $rows = 2 if $rows < 2;
 
             if ($ness eq "Open") {
                 my $tempid = $texty->{id}."-Temp-$i";
@@ -77,8 +77,9 @@ sub display {
                 "!i=$i $c->{first} ($rows lines)";
         }
     }
-
-    $texty->replace(['!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks"]);
+    my @bits = [ map { $_, "!html <br/>" } '!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks" ];
+    pop @bits;
+    $texty->replace(\@bits);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
@@ -289,9 +290,9 @@ sub chunkify {
     # this consumes lines, should do wormhole at the end of init_wormhole
     my @stuff = ([]);
     for my $l (@$lines) {
-        if ($l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm) {
-           push @stuff, [];
-        }
+            push @stuff, []
+                if $self->{name} =~ /^ghosts/ && @{$stuff[-1]} > 0 &&   $l =~ /^(\w+|  \S+)/
+                    || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
         push @{ $stuff[-1] }, $l;
     }
 
