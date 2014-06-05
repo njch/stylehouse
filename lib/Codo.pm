@@ -105,6 +105,10 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
+    if ($id eq "codolist") {
+        $self->{hostinfo}->send("\$('#".$self->{Codo}->{divid}."').toggleClass('widdle');");
+    }
+
     my $listy = $self->{codolist}->text;
 
     say $self->{codolist}->{divid}." $id";

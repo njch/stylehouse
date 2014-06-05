@@ -602,7 +602,6 @@ sub init_flood {
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
         "width: ".420*1.14."px; height: 60px;background: #301a30; color: #afc; font-weight: bold;",
-        "fixed",
     );
 
     $fm->text([], {
@@ -855,6 +854,9 @@ sub tv_by_id {
         if ($tv->{id} eq $id) {
             return $tv;
         }
+    }
+    if (my $tv = $self->get('tvs/'.$id.'/top')) {
+        return $tv;
     }
     return;
 }
