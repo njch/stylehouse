@@ -153,7 +153,7 @@ sub init {
     else {
         Git->new($hostinfo->intro);
         Codo->new($hostinfo->intro);
-        Keys->new($hostinfo->intro);
+        #Keys->new($hostinfo->intro);
     }
         Lyrico->new($hostinfo->intro);
 
@@ -166,9 +166,7 @@ $hands = {
     geometry => [ sub {
         $hostinfo->send("ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
     }, sub {
-        my $sc = shift;
-        $hostinfo->set("screen/width" => $sc->{x});
-        $hostinfo->set("screen/height" => $sc->{y});
+        $hostinfo->screen_height(shift);
     } ],
     whatsthere => [ sub {
         $hostinfo->send("ws.reply({whatsthere: 'too hard'}); \$('body div').remove();");

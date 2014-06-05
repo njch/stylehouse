@@ -197,7 +197,9 @@ sub mktuxt {
             $s->{value}->{_mktuxt}->($s->{value}, $s);
         }
         else {
-            die "Texty line HASH value confuse: ".ddump($self->{lines});#ddump($s->{value})
+            #die "Texty line HASH value confuse: ".ddump($self->{value});
+            #say "Something oughtta catch: ". ddump($s->{value});
+            #$s->{value} = encode_entities(ddump($s->{value}));
         }
     }
     elsif (ref \$s->{value} eq "SCALAR") {
