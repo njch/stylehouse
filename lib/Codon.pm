@@ -33,6 +33,11 @@ sub open_codefile {
 sub display {
     my $self = shift;
     my $codo = shift;
+    my $ope = shift;
+    if ($ope) {
+        say "Openen $self->{name} ".anydump($ope);
+        $self->{openness} = $ope;
+    }
 
     my $divid = $self->{id};
 
@@ -162,6 +167,7 @@ sub event {
         $self->{openness}->{$i} = "Opening";
 
         $self->display();
+        $self->{codo}->mind_openness();
     }
     else {
         say "Codo $self->{name} event want something else?";

@@ -1,6 +1,7 @@
 package Codo;
 use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
+use YAML::Syck;
 use Texty;
 use Codon;
 use Proc;
@@ -64,12 +65,7 @@ sub new {
 
     $self->codolist();
 
-# recover openness 
-    for my $s (@{$self->{codolist}->{text}->{tuxts}}) {
-        $s->{value} eq "Ghost" && do {
-            $self->event({id => $s->{id}});
-        };
-    }
+    $self->re_openness();
 
     return $self;
 }
@@ -153,6 +149,7 @@ sub init_codons { #{{{
                     codefile => $cf,
                     name => $name,
                     mtime => $mtime,
+                    codo => $self,
                 });
             }
 
@@ -196,6 +193,42 @@ sub codolist {#{{{
     $codolistex->replace($menu);
 }#}}}
 
+sub re_openness {
+    my $self = shift;
+
+    my $codopenyl = "Codo-openness.yml";
+    my $open = LoadFile($codopenyl) if -e $codopenyl;
+    for my $o (@$open) {
+        my ($name, $ope) = each %$o;
+        say "Ressur $name";
+        $self->load_codon($name, $ope);
+    }
+}
+sub mind_openness {
+    my $self = shift;
+    my $codon = shift;
+    return 1;
+    if ($codon) {
+        say "Codon minded: $codon->{name}";
+        push @{ $self->{all_open} }, { $codon->{name} => $codon } unless grep { $_->{$codon->{name}} } @{ $self->{all_open} }
+    }
+    my @saveopen;
+    for my $o (@{ $self->{all_open} }) {
+        my ($name, $codon) = each %$o;
+        next unless $codon;
+        my $ope = $codon->{openness};
+        my $opes = { %$ope };
+        
+        while (my ($c, $oo) = each %$opes) {
+            if ($oo eq "Open") {
+                $opes->{$c} = "Opening";
+            }
+        }
+        push @saveopen, { $name => $opes };
+    }
+
+    DumpFile("Codo-openness.yml", \@saveopen);
+}
 
 sub list_of_codefiles {
     my $self = shift;
@@ -211,12 +244,15 @@ sub list_of_codefiles {
 sub load_codon {
     my $self = shift;
     my $codon = shift;
+    my $ope = shift;
 
-    say "Codo load $codon->{name}";
     $codon = $self->codon_by_name($codon) unless ref $codon;
+    say "Codo load $codon->{name}";
     $codon || die;
 
-    $codon->display($self);
+    $codon->display($self, $ope);
+    
+    $self->mind_openness($codon);
 }
 
 sub codon_by_name {
