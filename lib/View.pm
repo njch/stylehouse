@@ -69,7 +69,7 @@ sub new {
         $self->{hostinfo}->send("\$('$where').append('$div');");
     }
 
-    $self->{hostinfo}->send("\$('#$divid').show(3000);");
+    $self->{hostinfo}->send("\$('#$divid').fadeIn(300);");
     $self->wipehtml(); # set label
     $self->takeover();
 

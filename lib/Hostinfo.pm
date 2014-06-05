@@ -344,7 +344,7 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->flood->spawn_floozy($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; height: 3em;",
+            "width:98%; background: #333; color: #afc; font-family: serif; height: 4em;",
             undef, undef,
             "menu",
         );
@@ -622,7 +622,10 @@ sub init_flood {
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
-    $self->{hi_error} = $f->spawn_floozy(
+    $self->{ra} = $self->{sky}->spawn_floozy(
+        ra => "width:100%;  background: gold; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;",
+    );
+    $self->{hi_error} = $self->{ra}->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(
@@ -630,10 +633,6 @@ sub init_flood {
     );
 
     return $f
-}
-sub route_floozy {
-    my $self = shift;
-    return $self->{floodzy};
 }
 
 # grep '.-.travel' -R * # like an art student game
@@ -649,10 +648,9 @@ sub flood {
     }
 
     my $from = join ", ", (caller(1))[0,3,2];
-    say "flood from: $from";
 
-    $floozy ||= $self->route_floozy($from);
-    say "floozy: $floozy->{divid}";
+    $floozy ||= $self->{floodzy};
+    say "floozy: $floozy->{divid}    from $from";
 
     $floozy->{extra_label} = $from;
 
@@ -667,7 +665,7 @@ sub flood {
     #$texty->{max_height} ||= 1000;
     $texty->fit_div;
     
-    if ($self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
+    if ($floozy->{divid} ne "hi_error" && $self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
         $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
     }
     $self->{flood}->{latest} = $floozy;
@@ -683,7 +681,7 @@ sub travel {
     my $from = join ", ", (caller(1))[0,3,2];
     say "travel from: $from";
 
-    $floozy ||= $self->route_floozy($from);
+    $floozy ||= $self->{ra};
     say "floozy: $floozy->{divid}";
 
     $floozy->{extra_label} = $from;
