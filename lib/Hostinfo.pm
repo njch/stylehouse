@@ -139,8 +139,8 @@ sub elvis_enters {
     say "Elvis enters with stash: ".($eid||"undef");
  
     if (-t STDOUT) {
-        print colored("recv >\t\t", 'blue');
-        print colored($msg, 'bold blue'), "\n";
+        print colored("recv >\t\t", 'red');
+        print colored($msg, 'bold red'), "\n";
     }
     else {
         say "recv >\t\t$msg";

@@ -51,11 +51,12 @@ function clickyhand (event) {
     }
     var data = {
         id: event.target.id,
+        class: event.target.class,
         value: value,
         type: event.type,
-        shiftKey: 0+event.shiftKey,
-        ctrlKey: 0+event.ctrlKey,
-        altKey: 0+event.altKey,
+        S: 0+event.shiftKey,
+        C: 0+event.ctrlKey,
+        A: 0+event.altKey,
         x: event.clientX,
         y: event.clientY,
         pagex: window.pageXOffset,
