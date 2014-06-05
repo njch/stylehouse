@@ -70,7 +70,7 @@ sub hookways {
     for my $w (@{ $self->{ways} }) {
         next if $wayspec && $w ne $wayspec;
         if (exists $w->{hooks}->{$point}) {
-            $self->doo($w->{hooks}->{$point}, $ar);
+            $self->doo($w->{hooks}->{$point}, $ar, $point);
         }
     }
 }
@@ -79,6 +79,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
     my $ar = shift;
+    my $point = shift;
     my $thing = $self->{thing};
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar;
@@ -86,11 +87,18 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my @return;
     my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
     eval $evs;
-    die "DOO Fuckup:\n$@\n\n".Hostinfo::ddump([$evs]) if $@;
+    if ($@) {
+        die "DOO Fuckup:\n"
+            .(defined $point ? "point: $point\n" : "")
+            ."args: ".join(", ", keys %$ar)."\n"
+            .ind("|   ", $@)."\n"
+            .ind("|-  ", $eval);
+    }
     # more ^
 
     return wantarray ? @return : $return[0]
 }
+sub ind { "$_[0]".join "$_[0]\n", split "\n", $_[1] }
 
 sub haunt { # arrives through here
     my $self = shift;
