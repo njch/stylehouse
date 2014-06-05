@@ -115,8 +115,13 @@ sub elvis_connects {
 
     if (scalar(keys %$elviss) > 1) {
         say " Elvis is taking over!";
-        `touch $0`;
-        sleep 3;
+        if ($self->get('style') =~ /house/) {
+            `touch $0`;
+            sleep 3;
+        }
+        else {
+            sleep 1;
+        }
     }
 
     $self->{first_elvis} ||= $new;
@@ -327,7 +332,7 @@ sub app_menu_hooks {
             if (!$submenu) {
                 $submenu = ".";
             }
-            if ($object->can('menu') && $object->menu->{$submenu}) {
+            if ($object && $object->can('menu') && $object->menu->{$submenu}) {
                 say "Hostinfo appmenu passing event ($id) to $object->{id} ->menu->{'$submenu'}";
                 $object->menu->{$submenu}->($event);
             }
