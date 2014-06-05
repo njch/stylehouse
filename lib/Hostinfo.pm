@@ -781,9 +781,6 @@ sub throwlog {
     $self->send("\$('#$divid').removeClass('widdle');");
 }
 
-sub ind { "$_[0]".join "$_[0]\n", split "\n", $_[1] }
-
-
 use YAML::Syck;
 sub ddump {
     my $thing = shift;
