@@ -115,13 +115,8 @@ sub elvis_connects {
 
     if (scalar(%$elviss) > 1) {
         say " Elvis is taking over!";
-        if ($self->get('style') =~ /house/) {
-            `touch $0`;
-            sleep 3;
-        }
-        else {
-            sleep 1;
-        }
+        `touch $0`;
+        sleep 3;
     }
 
     $self->{first_elvis} ||= $new;
