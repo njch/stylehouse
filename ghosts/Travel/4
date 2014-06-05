@@ -1,0 +1,13 @@
+name: ghost default
+hooks:
+  maketravels_post: |
+    if (!@{$self->{away}}) {
+        for my $dc (grep { $_->{default} } $self->chains) {
+            if (!$dc->{unless} || !$self->doo($dc->{unless})) {
+                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
+            }
+        }
+    }
+chains:
+ - default: " \"? '$thing' \""
+   unless: ' ref \$thing eq "SCALAR" '

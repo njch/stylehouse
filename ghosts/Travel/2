@@ -1,0 +1,106 @@
+name: ghost refs
+hooks:
+  donetravels_chain: |
+    if ($c->{ref}) {
+        if ($c->{ref} eq ref $thing) {
+            if ($c->{as}) {
+                my @really = $self->grep_chains("ref" => $c->{as});
+                die "cannot find ref=$c->{as}".ddump(@really) if @really != 1;
+                my $new_c = shift @really;
+                $c = { %$new_c, as_from => $c };
+            }
+            push @{$self->{wayout}}, $c;
+        }
+    }
+  maketravels_chain: |
+    if ($c->{for}) {
+        my $i = 0;
+        for my $for (@{ $self->doo($c->{for}) }) {
+            if (my $t = $c->{travel}) {
+                push @{$self->{away}}, {
+                    travel => {
+                        thing => $self->doo($t, {for => $for}),
+                        way => { %$c, i => $i++, value => $for }
+                    }
+                };
+            }
+        }
+    }
+  chain_to_tuxts: |
+    my $line = $s->{value};
+    $ar->{line} = $line;
+    $self->{tuxts} = [];
+    $s->{left} += $line->{depth} * 40;
+    
+    $self->hookways("tuxt_way_in", $ar);
+    $self->hookways("tuxt_ways_out", $ar);
+    $self->hookways("tuxt_etc", $ar);
+    $self->hookways("tuxt_this", $ar);
+    
+    $_->{value} =~ s/\n/<br>/ for @{ $self->{tuxts} };
+  tuxt_way_in: |
+    my $wins = { %$s };
+    $wins->{id} .= "-wayin";
+    my $wi = $line->{wayin};
+    $wins->{value} = "(nowhere)";
+    $wins->{value} = encode_entities(getway($wi)) if $wi;
+    $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
+    $wins->{top} -= 10;
+    $wins->{style} .= "font-size: 5pt; opacity:0.4;";
+    push @{$self->{tuxts}}, $wins;
+  tuxt_ways_out: |
+    my $wous = { %$s };
+    $wous->{id} .= "-waysout";
+    my $wo = $line->{wayout} || [];
+    my @ways;
+    for my $chain (@$wo) {
+        push @ways, $self->hookways("tuxt_chain", { %$ar, chain => $chain });
+    }
+    $wous->{value} = @ways ? join("\n", map { encode_entities($_) } @ways) : "(no futher)";
+    $wous->{style} .= colorf($wo);
+    $wous->{top} += 10;
+    $wous->{style} .= "font-size: 5pt; opacity:0.4;";
+    $wous->{class} .= "idly";
+    push @{$self->{tuxts}}, $wous;
+  tuxt_chain: |
+    my $lchain = { %$chain };
+    my $as_from = delete $lchain->{as_from};
+    use JSON::XS;
+    my $l = encode_json($lchain);
+    if ($as_from) {
+        my $li = $self->hookways("tuxt_chain", { %$ar, chain => $as_from });
+        return "$l\n".ind("  as_from: ", $li);
+    }
+    else {
+        return "$l";
+    }
+  tuxt_etc: |
+    my $etcs = { %$s };
+    $etcs->{id} .= "-etcs";
+    $etcs->{value} = encode_entities(anydump($line->{etc}));
+    $etcs->{value} =~ s/\$x = {};//;
+    $etcs->{style} .= colorf($line->{etc});
+    $etcs->{style} .= "font-color: #434; font-size: 5pt; opacity:0.4;";
+    $etcs->{top} += 20;
+    delete $etcs->{left};
+    $etcs->{right} = 5;
+    push @{$self->{tuxts}}, $etcs;
+  tuxt_this: |
+    my $this = { %$s };
+    $this->{id} .= "-this";
+    $this->{value} = encode_entities($line->{thing});
+    $this->{style} .= "font-color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.9em; ";
+    $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
+    $this->{top} -= 30;
+    $this->{left} += 50;
+    push @{$self->{tuxts}}, $this;
+chains:
+ - ref: HASH
+   for: ' [ sort keys %$thing ] '
+   travel: ' $thing->{$for} '
+ - ref: ARRAY
+   for: ' [ @$thing ] '
+   travel: ' $for '
+ - as: HASH
+   note: ' { owner => $thing->view->owner } '
+   ref: Texty
