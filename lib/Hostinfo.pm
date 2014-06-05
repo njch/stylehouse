@@ -113,7 +113,7 @@ sub elvis_connects {
 
     $mojo->stash(elvisid => $new->{id});
 
-    if (scalar(%$elviss) > 1) {
+    if (scalar(keys %$elviss) > 1) {
         say " Elvis is taking over!";
         `touch $0`;
         sleep 3;
