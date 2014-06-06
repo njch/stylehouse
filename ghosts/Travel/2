@@ -42,8 +42,9 @@ hooks:
     my $wins = { %$s };
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
-    $wins->{value} = "(nowhere)";
-    $wins->{value} = encode_entities(getway($wi)) if $wi;
+    
+    $wins->{value} = $wi ? encode_entities($self->hookways("tuxt_chain", { %$ar, chain => $wi })) : "(nowhence)";
+    
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
     $wins->{style} .= "font-size: 5pt; opacity:0.4;";
@@ -51,13 +52,12 @@ hooks:
   tuxt_ways_out: |
     my $wous = { %$s };
     $wous->{id} .= "-waysout";
-    my $wo = $line->{wayout} || [];
-    my @ways;
-    for my $chain (@$wo) {
-        push @ways, $self->hookways("tuxt_chain", { %$ar, chain => $chain });
-    }
-    $wous->{value} = @ways ? join("\n", map { encode_entities($_) } @ways) : "(no futher)";
-    $wous->{style} .= colorf($wo);
+    my $wo = $line->{wayout};
+    
+    my @ways = map { $self->hookways("tuxt_chain", { %$ar, chain => $_ }) } @{$wo || []};
+    $wous->{value} = @ways ? join("\n.\n", map { encode_entities($_) } @ways) : "(no futher)";
+    $wous->{value} = "<pre>$wous->{value}</pre>";
+    
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 5pt; opacity:0.4;";
     $wous->{class} .= "idly";
@@ -65,8 +65,8 @@ hooks:
   tuxt_chain: |
     my $lchain = { %$chain };
     my $as_from = delete $lchain->{as_from};
-    use JSON::XS;
-    my $l = encode_json($lchain);
+    delete $lchain->{way}; # TODO random hack
+    my $l = join " }{ ", map { "$_: $lchain->{$_}" } sort keys %$lchain;
     if ($as_from) {
         my $li = $self->hookways("tuxt_chain", { %$ar, chain => $as_from });
         return "$l\n".ind("  as_from: ", $li);

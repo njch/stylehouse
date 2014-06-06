@@ -4,6 +4,7 @@ use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
+use HTML::Entities;
 use Way;
 sub ddump { Hostinfo::ddump(@_) }
 
@@ -91,8 +92,8 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
         die "DOO Fuckup:\n"
             .(defined $point ? "point: $point\n" : "")
             ."args: ".join(", ", keys %$ar)."\n"
-            .ind("|   ", $@)."\n"
-            .ind("|-  ", $eval);
+            .($@ !~ /DOO Fuckup/ ? ind("|-  ", $eval) : "|")."\n"
+            .ind("|   ", $@)."\n^\n";
     }
     # more ^
     
