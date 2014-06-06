@@ -587,14 +587,13 @@ sub screen_height {
     my $sc = shift;
     $self->set("screen/width" => $sc->{x});
     $self->set("screen/height" => $sc->{y});
-    $self->send("\$('#sky').css('height', '".($sc->{y} / 2)."');");
 }
 
 sub init_flood {
     my $self = shift;
 
     $self->create_view($self, "sky",
-        "height:50%; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+        "height:".($data->{style} eq "stylehouse" ? "50%" : "80%")."; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     my $f = $self->{flood} = $self->create_view($self, "flood",
         "width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: 50%; left: 0px; z-index:-1;"
