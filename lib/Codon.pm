@@ -126,7 +126,8 @@ sub display {
         if ($self->{openness}->{$i} eq "Open") {
             my $textid = $texty->{id}."-Text-$i";
             $self->{hostinfo}->send(
-                "\$('#$textid').tabby({tabString:'    '});"
+                "\$('#$textid').tabby({tabString:'    '});".
+                "\$('#$textid').attr('onchange', 'function(){ws.reply({event:{id:\'$texty->{id}-Save-'.$i.'\'}})});"
             );
         }
     }
@@ -162,12 +163,18 @@ sub event {
         $self->away();
     }
     elsif ($s && defined $i) {
-        say "Codo\t\t$self->{name}\t\t OP E  N $i";
+        if ($self->{openness}->{$i} eq "Open") {
+            say " Codon $self->{name}\tc$i\tis open, saving?";
+            $self->save_chunk($i);
+        }
+        else {
+            say " Codon $self->{name}\tc$i\tis  OP E  Ning";
 
-        $self->{openness}->{$i} = "Opening";
+            $self->{openness}->{$i} = "Opening";
 
-        $self->display();
-        $self->{codo}->mind_openness();
+            $self->display();
+            $self->{codo}->mind_openness();
+        }
     }
     else {
         say "Codo $self->{name} event want something else?";
@@ -231,6 +238,8 @@ sub update_chunk {
     $c->{lines} = [ split("\n", $code) ];
     
     say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
+    my $textid = $self->{text}->{id}."-Text-$i";
+    $self->{hostinfo}->send("\$('#$textid').fadeIn(100).fadeOut(100).fadeIn(100);");
 
     if ($self->{saving}) {
         delete $self->{saving}->{$i} || die "wtf";
@@ -274,7 +283,7 @@ sub save_done {
         delete $self->{Going};
     }
     else {
-        say "Codon $self->{name} is going away";
+        say "Codon $self->{name} is here";
         $self->open_codefile();
         
         $self->chunkify();
