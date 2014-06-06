@@ -48,7 +48,6 @@ sub ob {
 sub colorf {
     my $fing = shift;
     my ($color) = ($fing || "0") =~ /\(0x....(...)/;
-    return "border: 1px solid black;" unless $color;
     $color ||= "fff";
     return "background-color: #".($color || "fe9").";";
 }

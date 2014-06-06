@@ -29,9 +29,10 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
 
+    $self->menu->{TRAVEL}->();
+
     return $self;
 }
-
 sub menu {
     my $self = shift;
     return {
