@@ -98,7 +98,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     
     my @ret = wantarray ? @return : $return[0];
     say "\t\t\t\t\t$point: @ret";
-    return @ret
+    return wantarray ? @return : $return[0];
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 
