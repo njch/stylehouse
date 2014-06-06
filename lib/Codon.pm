@@ -126,8 +126,10 @@ sub display {
         if ($self->{openness}->{$i} eq "Open") {
             my $textid = $texty->{id}."-Text-$i";
             $self->{hostinfo}->send(
-                "\$('#$textid').tabby({tabString:'    '});".
-                "\$('#$textid').attr('onchange', 'function(){ws.reply({event:{id:\'$texty->{id}-Save-'.$i.'\'}})});"
+                "\$('#$textid').change(function(){ ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });"
+            );
+            $self->{hostinfo}->send(
+                "\$('#$textid').tabby({tabString:'    '});",
             );
         }
     }
