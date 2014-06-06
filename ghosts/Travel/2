@@ -44,6 +44,8 @@ hooks:
     my $wi = $line->{wayin};
     
     $wins->{value} = $wi ? encode_entities($self->hookways("tuxt_chain", { %$ar, chain => $wi })) : "(nowhence)";
+    $wins->{value} = "<pre>$wins->{value}</pre>";
+    $wins->{html} = 1;
     
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
@@ -57,6 +59,7 @@ hooks:
     my @ways = map { $self->hookways("tuxt_chain", { %$ar, chain => $_ }) } @{$wo || []};
     $wous->{value} = @ways ? join("\n.\n", map { encode_entities($_) } @ways) : "(no futher)";
     $wous->{value} = "<pre>$wous->{value}</pre>";
+    $wous->{html} = 1;
     
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 5pt; opacity:0.4;";
