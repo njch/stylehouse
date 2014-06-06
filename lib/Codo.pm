@@ -175,6 +175,7 @@ sub codolist {#{{{
                 if (ref $s->{value}) {
                     my $codon = $s->{value};
                     $s->{value} = $codon->{name};
+                    $s->{value} =~ s/^ghosts\///;
                     $s->{codon} = $codon;
                 }
                 $s->{style} = random_colour_background();
@@ -192,7 +193,6 @@ sub codolist {#{{{
     ];
     $codolistex->replace($menu);
 }#}}}
-
 sub re_openness {
     my $self = shift;
 
