@@ -41,8 +41,9 @@ hooks:
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
     
-    $wins->{value} = $wi ? encode_entities($self->hookways("tuxt_chain", { %$ar, chain => $wi })) : "(nowhence)";
-    $wins->{value} = "<pre>$wins->{value}</pre>";
+    my ($waydo) = $self->hookways("tuxt_chain", { %$ar, chain => $wi }) if $wi;
+    $waydo ||= "(nowhence)";
+    $wins->{value} = "<pre>".encode_entities($waydo)."</pre>";
     $wins->{html} = 1;
     
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
@@ -54,9 +55,17 @@ hooks:
     $wous->{id} .= "-waysout";
     my $wo = $line->{wayout};
     
-    my @ways = map { $self->hookways("tuxt_chain", { %$ar, chain => $_ }) } @{$wo || []};
-    $wous->{value} = @ways ? join("\n.\n", map { encode_entities($_) } @ways) : "(no futher)";
-    $wous->{value} = "<pre>$wous->{value}</pre>";
+    my $waygo;
+    if ($wo) {
+        my @ways = map {
+            $self->hookways("tuxt_chain", { %$ar, chain => $_ }) })
+         } @$wo;
+        $waygo = join("\n.\n", @ways);
+    }
+    else {
+        $waygo = "no out";
+    }
+    $wous->{value} = "<pre>".encode_entities($waydo)."</pre>";
     $wous->{html} = 1;
     
     $wous->{top} += 10;
@@ -90,7 +99,7 @@ hooks:
     my $this = { %$s };
     $this->{id} .= "-this";
     $this->{value} = encode_entities($line->{thing});
-    $this->{style} .= "font-color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.9em; ";
+    $this->{style} .= "color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.4em; ";
     $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
     $this->{top} -= 30;
     $this->{left} += 50;
