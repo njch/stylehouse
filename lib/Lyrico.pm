@@ -37,7 +37,11 @@ sub somewhere {
     my $self = shift;
             say "Tarevli!";
     delete $self->{hostinfo}->{floodzy}->{travel};
-    $self->{hostinfo}->travel($self->{lyrics});
+    $self->{hostinfo}->travel({
+art => "Blaba"
+}
+#$self->{lyrics}
+);
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
