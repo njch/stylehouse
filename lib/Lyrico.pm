@@ -29,9 +29,71 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
 
-    $self->menu->{TRAVEL}->();
+    $self->somewhere();
 
     return $self;
+}
+sub somewhere {
+    my $self = shift;
+            say "Tarevli!";
+    delete $self->{hostinfo}->{floodzy}->{travel};
+    $self->{hostinfo}->travel($self->{lyrics});
+
+    $self->{hostinfo}->timer(2, sub {
+        $self->somewhere();
+    });
+}
+
+sub menu {
+    my $self = shift;
+    return {
+        '.' => sub {
+            $self->{hostinfo}->flood($self->{text});
+        },
+        TRAVEL => sub {
+            $self->somewhere;
+        },
+        onoff => sub {
+            $self->{started} ? $self->stopclicky : $self->startclicky
+        },
+        anim => sub {
+            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
+        },
+    };
+}
+sub menu {
+    my $self = shift;
+    return {
+        '.' => sub {
+            $self->{hostinfo}->flood($self->{text});
+        },
+        TRAVEL => sub {
+            $self->somewhere;
+        },
+        onoff => sub {
+            $self->{started} ? $self->stopclicky : $self->startclicky
+        },
+        anim => sub {
+            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
+        },
+    };
+}
+sub menu {
+    my $self = shift;
+    return {
+        '.' => sub {
+            $self->{hostinfo}->flood($self->{text});
+        },
+        TRAVEL => sub {
+            $self->somewhere;
+        },
+        onoff => sub {
+            $self->{started} ? $self->stopclicky : $self->startclicky
+        },
+        anim => sub {
+            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
+        },
+    };
 }
 sub menu {
     my $self = shift;
@@ -41,10 +103,6 @@ sub menu {
         },
         TRAVEL => sub {
             say "Tarevli";
-            $self->{hostinfo}->timer(2, sub {
-                delete $self->{hostinfo}->{floodzy}->{travel};
-                $self->{hostinfo}->travel($self->{lyrics});
-            });
         },
         onoff => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky
