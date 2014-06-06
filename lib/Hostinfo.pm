@@ -691,12 +691,17 @@ sub travel {
     my $travel = $floozy->travel();
 
     my $wormhole;
+    start_timer();
                                     eval { $wormhole = $travel->travel($thing) };
+
+    my $travel_exec = "->travel in ".show_delta();
+    $self->info("$travel_exec");
 
     return $self->error(
         "flood travel error" => $@,
         Travel => ddump($travel),
     ) if $@;
+
 
 
     return $self->error(
@@ -707,6 +712,10 @@ sub travel {
 
 
                                       eval {  $wormhole->appear($floozy) };
+
+    my $travel_exec = "wormhole->appear in ".show_delta();
+    $self->info("$travel_exec");
+    
         if ($@) {
             $self->error(
                 "flood wormhole appear error" => $@,
@@ -714,7 +723,6 @@ sub travel {
             );
         }
 }
-
 sub snooze {
     my $self = shift;
     return Time::HiRes::usleep(shift || 5000);
@@ -759,7 +767,6 @@ sub error {
     my $error = $self->enlogform(@_);
     $self->throwlog("Error", "errors", "hi_error", $error);
 }
-
 sub throwlog {
     my $self = shift;
     my $what = shift;
