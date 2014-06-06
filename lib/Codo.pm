@@ -50,7 +50,7 @@ sub new {
     
 
     my $Codo =
-    $hi->create_view($self, Codo => "width:58%;  background: #f7772e; color: #afc; position: absolute; top: 50%; right: 0px; z-index:-1;");
+    $hi->create_view($self, Codo => "width:58%;  background: #f7772e; color: #afc; position: absolute; top: $self->{hostinfo}->{horizon}; right: 0px; z-index:-1;");
 
         $Codo->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
 

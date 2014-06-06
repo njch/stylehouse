@@ -592,11 +592,12 @@ sub screen_height {
 sub init_flood {
     my $self = shift;
 
+    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "80%";
     $self->create_view($self, "sky",
-        "height:".($data->{style} eq "stylehouse" ? "50%" : "80%")."; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+        "height:$self->{horizon}; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     my $f = $self->{flood} = $self->create_view($self, "flood",
-        "width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: 50%; left: 0px; z-index:-1;"
+        "width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
