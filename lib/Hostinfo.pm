@@ -333,7 +333,9 @@ sub app_menu_hooks {
             }
             else {
                 say ddump($self);
-                say "$self->{id} $self->{view}->{divid} cannot route $id -> $object $submenu";
+                say "$self->{id} $self->{view}->{divid} cannot route $id ->";
+                say "Object: $object" if $object;
+                say "submenu: $submenu" if $submenu;
             }
         },
     };
