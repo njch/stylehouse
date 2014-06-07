@@ -3,8 +3,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 
-use AnyEvent::Subprocess;
-use AnyEvent::Util;
 use File::Slurp;
 use Time::HiRes 'gettimeofday';
 
