@@ -21,7 +21,7 @@ function connect () {
      $(window).off('click', clickyhand);
     $('#body').addClass('dead');
     console.log("WebSocket Error: " , e);
-    reconnect();
+    //reconnect();
   };
 }
 function reconnect () {
