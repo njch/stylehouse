@@ -14,8 +14,9 @@ sub new {
         $self->{$k} = $p->{$k};
     }
 
-    $self->open_codefile();
-
+    if ($self->{codefile}) {
+        $self->open_codefile();
+    }
     $self->chunkify();
 
     my $o = $self->{openness} = {};
