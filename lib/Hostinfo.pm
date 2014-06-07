@@ -12,6 +12,7 @@ use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
 use View;
 use Term::ANSIColor;
+use Digest::SHA 'sha1_hex';
 
 my $data = {};
 
@@ -19,8 +20,6 @@ has 'ports';
 
 has 'for_all';
 has 'who'; # spawners of websocket activity
-
-
 sub send {
     my $self = shift;
     my $message = shift;
@@ -224,13 +223,6 @@ sub reload_views {
         $view->takeover();
     }
 }
-sub gest {
-    my $self = shift;
-    my ($k, $v) = @_;
-    $data->{$k} ||= $v;
-}
-
-use Digest::SHA 'sha1_hex';
 sub ignorable_mess {
     my $self = shift;
     my $mess = shift;
@@ -527,6 +519,17 @@ sub watch_file_streams {
 sub get {
     my ($self, $i) = @_;
     $data->{$i};
+}
+
+sub get {
+    my ($self, $i) = @_;
+    $data->{$i};
+}
+
+sub gest {
+    my $self = shift;
+    my ($k, $v) = @_;
+    $data->{$k} ||= $v;
 }
 sub getapp {
     my ($self, $i) = @_;
