@@ -29,7 +29,7 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
 
-    $self->somewhere();
+    $self->somewhere() if $self->{hostinfo}->get("style") ne "stylehouse";
 
     return $self;
 }
@@ -45,7 +45,7 @@ art => "Blaba"
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
-    });
+    }) if $self->{hostinfo}->get("style") ne "stylehouse";
 }
 
 sub menu {
@@ -65,57 +65,7 @@ sub menu {
         },
     };
 }
-sub menu {
-    my $self = shift;
-    return {
-        '.' => sub {
-            $self->{hostinfo}->flood($self->{text});
-        },
-        TRAVEL => sub {
-            $self->somewhere;
-        },
-        onoff => sub {
-            $self->{started} ? $self->stopclicky : $self->startclicky
-        },
-        anim => sub {
-            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
-        },
-    };
-}
-sub menu {
-    my $self = shift;
-    return {
-        '.' => sub {
-            $self->{hostinfo}->flood($self->{text});
-        },
-        TRAVEL => sub {
-            $self->somewhere;
-        },
-        onoff => sub {
-            $self->{started} ? $self->stopclicky : $self->startclicky
-        },
-        anim => sub {
-            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
-        },
-    };
-}
-sub menu {
-    my $self = shift;
-    return {
-        '.' => sub {
-            $self->{hostinfo}->flood($self->{text});
-        },
-        TRAVEL => sub {
-            say "Tarevli";
-        },
-        onoff => sub {
-            $self->{started} ? $self->stopclicky : $self->startclicky
-        },
-        anim => sub {
-            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
-        },
-    };
-}
+
 sub event {
     my $self = shift;
     my $event = shift;
