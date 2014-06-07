@@ -126,7 +126,7 @@ sub event {
     }
 }
 
-sub init_codons { #{{{
+sub init_codons {
     my $self = shift;
 
     say "\tI N I T   C O D ON S !";
@@ -159,12 +159,13 @@ sub init_codons { #{{{
             $isnew = 1;
         }
     }
-}#}}}
+}
 
-sub codolist {#{{{
+sub codolist {
     my $self = shift;
 
     my $codons = $self->{hostinfo}->get("Codon");
+    die "no codons" unless $codons;
     say "Codons number ".@$codons;
 
     my $codolistex = $self->{codolist}->text;
@@ -192,7 +193,7 @@ sub codolist {#{{{
         @$codons,
     ];
     $codolistex->replace($menu);
-}#}}}
+}
 sub re_openness {
     my $self = shift;
 
@@ -233,6 +234,8 @@ sub mind_openness {
 sub list_of_codefiles {
     my $self = shift;
     my $dir = $self->{code_dir} || "";
+    die "$dir not dir" unless -d $dir;
+    $dir .= "/" unless $dir =~ /\/$/;
     grep { !$dir || s/^$dir// } (
         glob($dir.'stylehouse.*'),
         glob($dir.'public/stylehouse.*'),

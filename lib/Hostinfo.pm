@@ -530,7 +530,9 @@ sub get {
 }
 sub getapp {
     my ($self, $i) = @_;
-    $self->get($i)->[0];
+    my $as = $self->get($i);
+    warn "no such app: $i" if !$as;
+    $as->[0] if $as;
 }
 sub set {
     my ($self, $i, $d) = @_;
@@ -921,7 +923,6 @@ sub grap { # joiney thing, the lie that won't die... maybe it checks data and th
     }
     $set->[$i];
 }
-
 sub get_this_it { # find it amongst itselves
     my $self = shift;
     my $this = shift;
