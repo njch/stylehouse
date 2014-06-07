@@ -713,8 +713,8 @@ sub travel {
 
                                       eval {  $wormhole->appear($floozy) };
 
-    my $travel_exec = "wormhole->appear in ".show_delta();
-    $self->info("$travel_exec");
+    my $womholy_exec = "wormhole->appear in ".show_delta();
+    $self->info("$womholy_exec");
     
         if ($@) {
             $self->error(
