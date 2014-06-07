@@ -87,7 +87,9 @@ hooks:
   tuxt_etc: |
     my $etcs = { %$s };
     $etcs->{id} .= "-etcs";
-    $etcs->{value} = encode_entities(anydump($line->{etc}));
+    my $etc = $line->{etc};
+    return unless $etc;
+    $etcs->{value} = encode_entities(anydump($etc));
     $etcs->{value} =~ s/\$x = {};//;
     $etcs->{style} .= colorf($line->{etc});
     $etcs->{style} .= "font-color: #434; font-size: 5pt; opacity:0.4;";
