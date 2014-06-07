@@ -631,7 +631,7 @@ sub init_flood {
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width: 50%; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 420px; font-weight: bold; position: fixed; bottom: 0px; right: 0px; opacity: 0.7;",
+        hi_info => "width: 50%; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold; position: fixed; bottom: 0px; right: 0px; opacity: 0.7;",
     );
 
     return $f
@@ -713,8 +713,8 @@ sub travel {
 
                                       eval {  $wormhole->appear($floozy) };
 
-    my $travel_exec = "wormhole->appear in ".show_delta();
-    $self->info("$travel_exec");
+    my $womholy_exec = "wormhole->appear in ".show_delta();
+    $self->info("$womholy_exec");
     
         if ($@) {
             $self->error(
