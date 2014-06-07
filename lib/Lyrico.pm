@@ -36,18 +36,17 @@ sub new {
 sub somewhere {
     my $self = shift;
             say "Tarevli!";
+
     delete $self->{hostinfo}->{floodzy}->{travel};
-    $self->{hostinfo}->travel({
-art => "Blaba"
-}
-#$self->{lyrics}
-);
+
+
+    $self->{hostinfo}->travel($self->{lyrics});
+
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
     }) if $self->{hostinfo}->get("style") ne "stylehouse";
 }
-
 sub menu {
     my $self = shift;
     return {
@@ -65,7 +64,6 @@ sub menu {
         },
     };
 }
-
 sub event {
     my $self = shift;
     my $event = shift;
