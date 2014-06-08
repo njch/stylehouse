@@ -17,16 +17,18 @@ sub new {
     my $travel = shift;
     $self->{travel} = $travel;
     my $name = $self->{name} = $travel->{name};
-    say "Ghost named $name    ".join" ", glob "ghosts/$name/*";
+    say "Ghost named $name";
 
     $self->ways_for("Travel");
     $self->ways_for($name);
+    if ($name =~ /^(\w+)-.+/) {
+        $self->ways_for($1);
+    }
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
 
     return $self;
 }
-
 sub ways_for {
     my $self = shift;
     my $name = shift;
@@ -37,9 +39,9 @@ sub ways_for {
     }
     for (glob "ghosts/$name/*") {
         push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
+        say "Ghost eats $_";
     }
 }
-
 sub ob {
     my $self = shift;
     $self->{travel}->ob(@_);
