@@ -142,10 +142,9 @@ sub display {
 sub draw_chunk {
     my $self = shift;
     my $c = shift;
-    my $line = "!i=$c->{i} !html ";
     my $first = $c->{lines}->[0];
 
-    return "$first !style='font-size: 12pt; color:FFCC00;' $1"
+    return "!i=$c->{i} $first"
         .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
 
