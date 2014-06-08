@@ -46,7 +46,7 @@ sub new {
     # attention shoving should be something that reaches here and figures out whether to...
     return $self if $self->hooks->{notakeover} || $notakeoveryet;
 
-    $self->view->takeover($self->htmls);
+    $self->view->takeover($self->htmls, $self);
 
     return $self;
 }

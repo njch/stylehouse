@@ -18,7 +18,7 @@ sub new {
 
     $self->wormfile_load(shift);
 
-    say "script: ".Hostinfo::ddump($self->{script});
+    say $self->describe_size;
 
     return $self;
 }
@@ -57,6 +57,13 @@ sub wormfile_load {
     $self->{file} = shift;
     if (-e $self->{file}) {
         $self->{script} = LoadFile($self->{file});
+        die ($self->{script}||"~undef~")." script (loaded from $self->{file}) ne ARRAYref"
+            unless ref $self->{script} eq "ARRAY";
+        say "W $self->{file} loaded";
+    }
+    else {
+        $self->{script} = [];
+        say "W ".($self->{file}||"~undef~ ->{file}")." not exist";
     }
 }
 
@@ -109,14 +116,16 @@ sub ddump {
 
 sub appear {
     my $self = shift;
-    my $view = shift || $self->way_out;
+    my $view = shift || $self->{way_out};
     ref $view eq "View" || die " $view not View";
-    return new Texty($self->hostinfo->intro, $view, $self->{script}, {
+    say "Wormhole Appear: $view->{divid}";
+    say $self->describe_size;
+
+    $view->newtext($self->{script}, {
         spatialise => sub { { space => 40, top => 50 } },
         tuxts_to_htmls => sub {
             my $self = shift;
             my $newtuxts = [];
-            say "Wormhole is ".@{$self->tuxts}." lines long";
             for my $s (@{$self->tuxts}) {
                 if ($s->{value} eq "nothing") {
                     push @$newtuxts, $s;
@@ -130,6 +139,11 @@ sub appear {
             $self->tuxts($newtuxts);
         }
     })
+}
+
+sub describe_size {
+    my $self = shift;
+    "Wormhole is ".@{$self->{script}}." lines long";
 }
 
 sub way_out {

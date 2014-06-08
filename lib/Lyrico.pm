@@ -29,19 +29,18 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
 
+    $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
+
     $self->somewhere() if $self->{hostinfo}->get("style") ne "stylehouse";
 
     return $self;
 }
 sub somewhere {
     my $self = shift;
+
             say "Tarevli!";
 
-    delete $self->{hostinfo}->{floodzy}->{travel};
-
-
-    $self->{hostinfo}->travel($self->{lyrics});
-
+    $self->{hostinfo}->ravel($self->{T}, $self->{lyrics}, $self->{hostinfo}->{ra});
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();

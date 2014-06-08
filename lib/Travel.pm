@@ -63,7 +63,7 @@ sub travel {
 
     for my $c (@$away) {
         if (my $t = $c->{travel}) {
-            say join(("  ")x$depth)."  away to: $t->{thing}";
+            #say join(("  ")x$depth)."  away to: $t->{thing}";
             $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1, $state);
         }
     }

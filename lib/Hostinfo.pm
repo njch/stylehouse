@@ -678,22 +678,11 @@ sub flood {
     $self->{flood}->{latest} = $floozy;
 }
 
-sub travel {
+sub ravel {
     my $self = shift;
+    my $travel = shift;
     my $thing = shift;
     my $floozy = shift;
-
-    $self->init_flood() unless $self->{flood};
-
-    my $from = join ", ", (caller(1))[0,3,2];
-    say "travel from: $from";
-
-    $floozy ||= $self->{ra};
-    say "floozy: $floozy->{divid}";
-
-    $floozy->{extra_label} = $from;
-
-    my $travel = $floozy->travel();
 
     my $wormhole;
     start_timer();
@@ -716,7 +705,7 @@ sub travel {
 
 
 
-                                      eval {  $wormhole->appear($floozy) };
+                                        $wormhole->appear($floozy) ;
 
     my $womholy_exec = "wormhole->appear in ".show_delta();
     $self->info("$womholy_exec");
@@ -727,6 +716,27 @@ sub travel {
                 Wormhole => 1,#ddump($wormhole),
             );
         }
+}
+
+sub travel {
+    my $self = shift;
+    my $thing = shift;
+    my $floozy = shift;
+
+    $self->init_flood() unless $self->{flood};
+
+    my $from = join ", ", (caller(1))[0,3,2];
+    say "Hostinfo->travel from: $from";
+
+    $floozy ||= $self->{ra};
+    say "floozy: $floozy->{divid}";
+
+    $floozy->{extra_label} = $from;
+
+    my $travel = $floozy->travel();
+
+    $self->ravel($travel, $thing, $floozy);
+
 }
 sub snooze {
     my $self = shift;

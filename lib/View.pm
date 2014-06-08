@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 use Time::HiRes 'usleep';
+sub ddump { Hostinfo::ddump(@_) }
 
 has 'hostinfo';
 has 'owner';
@@ -272,7 +273,6 @@ sub takeover {
     $self->append_spans($self->{divid} => $html);
     
 #    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
-
     $texty->tookover() if $texty;
 }
 
