@@ -38,8 +38,6 @@ sub new {
 sub somewhere {
     my $self = shift;
 
-            say "Tarevli!";
-
     $self->{hostinfo}->ravel($self->{T}, $self->{lyrics}, $self->{hostinfo}->{ra});
 
     $self->{hostinfo}->timer(2, sub {

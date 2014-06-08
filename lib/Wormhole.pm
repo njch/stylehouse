@@ -6,6 +6,7 @@ use JSON::XS;
 use Texty;
 my $json = JSON::XS->new->allow_nonref(1)->allow_unknown(1);
 use HTML::Entities;
+sub ddump { Hostinfo::ddump(@_) }
 
 
 has 'hostinfo';
@@ -105,14 +106,6 @@ sub encode_thing {
 # which is the whole stylehouse deal.
 # it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
 # Form is a well-known bunch of Ghost
-
-use YAML::Syck;
-sub ddump {
-    my $thing = shift;
-    return join "\n",
-        grep !/^     /,
-        split "\n", Dump($thing);
-}
 
 sub appear {
     my $self = shift;
