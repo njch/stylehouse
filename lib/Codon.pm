@@ -79,8 +79,7 @@ sub display {
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
-            push @chunks,
-                "!i=$i $c->{first} ($rows lines)";
+            push @chunks, $self->draw_chunk($c);
         }
     }
 
@@ -138,6 +137,16 @@ sub display {
     $temp->wipehtml() if $temp;
 
     $texty->fit_div;
+}
+
+sub draw_chunk {
+    my $self = shift;
+    my $c = shift;
+    my $line = "!i=$c->{i} !html ";
+    my $first = $c->{lines}->[0];
+
+    return "$first !style='font-size: 12pt; color:FFCC00;' $1"
+        .($rows > 1 ? " ~ $rows" : "")
 }
 
 sub event {
@@ -318,7 +327,6 @@ sub chunkify {
     for my $s (@stuff) {
         push @$chunks, {
             i => $i++,
-            first => $s->[0],
             length => @$s-1,
             lines => $s,
         };
