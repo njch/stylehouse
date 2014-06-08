@@ -146,7 +146,7 @@ sub draw_chunk {
     my $first = $c->{lines}->[0];
 
     return "$first !style='font-size: 12pt; color:FFCC00;' $1"
-        .($rows > 1 ? " ~ $rows" : "")
+        .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
 
 sub event {
@@ -327,7 +327,7 @@ sub chunkify {
     for my $s (@stuff) {
         push @$chunks, {
             i => $i++,
-            length => @$s-1,
+            rows => scalar(@$s),
             lines => $s,
         };
     }
