@@ -13,21 +13,21 @@ sub new {
 
     $self->{owner} = shift; # id instead of link, is wrong at the next level
     $self->{name} = $self->{owner}->{name} || $self->{owner}->{id};
-    if (ref $self->{owner} eq "Travel") {
+
+    unless (ref $self->{owner} eq "Travel") {
+        # observer of whole codon function
+        #$self->{self} = new Travel($self->hostinfo->intro, $self);
+    }
+    else {
         $self->{name} = "Travel-Travel";
         say "Travel named $self->{name}";
         # all travels of travels
         push @{ $self->hostinfo->gest('Travel-Travel', []) }, $self;
         # also pushes to Codo/obsetrav
     }
-    else {
-        # observer of whole codon function
-        #$self->{self} = new Travel($self->hostinfo->intro, $self);
-    }
 
     return $self;
 }
-
 sub ob {
     my $self = shift;
     return;
