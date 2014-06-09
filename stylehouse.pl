@@ -146,7 +146,7 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
-    $hostinfo->flood($hostinfo->data);
+    $hostinfo->flood([(jah => "waka")x7]);
 
     if ($name eq "styleshed") {
         Git->new($hostinfo->intro);
