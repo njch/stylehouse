@@ -44,6 +44,12 @@ sub send {
     # send it out there and get the hair on it
     $self->elvis_send($message);
 }
+sub JS {
+    my $self = shift;
+    my $js = shift;
+    $js =~ s/\n/ /sg;
+    $self->send($js);
+}
 
 sub elvis_send {
     my $self = shift;

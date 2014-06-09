@@ -375,6 +375,8 @@ __DATA__
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
         <link href="codemirror/theme/night.css" rel="stylesheet">
+        <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css">
+        <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>
     </head>
     <body id="body">

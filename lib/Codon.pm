@@ -74,8 +74,8 @@ sub display {
             push @chunks,
                 "!html !i=$i "
                 .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
-                .'<input id="<<ID>>-Close-'.$i.'" type="submit" value="C">'
-                .'<input id="<<ID>>-Save-'.$i.'" type="submit" value="S">'
+                .'<input id="<<ID>>-Close-'.$i.'" type="submit" style="position: absolute; right: -25px; opacity: 0.4; top: 0%; height: 45%;" value="C">'
+                .'<input id="<<ID>>-Save-'.$i.'" type="submit" style="position: absolute; right: -25px; opacity: 0.4; top: 55%; height: 45%;" style="position: absolute; right: -20px; top: 10px; height: 30px;" value="S">'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
@@ -125,22 +125,34 @@ sub display {
         }
         if ($self->{openness}->{$i} eq "Open") {
             my $textid = $texty->{id}."-Text-$i";
-            $self->{hostinfo}->send(
-                "\$('#$textid').change(function(){ ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });"
-            );
             if ("codemirror") {
-                $self->{hostinfo}->send(
-                    "CodeMirror.fromTextArea(document.getElementById('$textid'), "
-                    ."{ mode: 'perl', theme: 'night' });"
-                );
-                $self->{hostinfo}->send(
-                    "\$('#$textid > div.CodeMirror').css('width', \$('#$textid > textarea').width()+'px');"
-                );
-                $self->{hostinfo}->send(
-                    "\$('#$textid > div.CodeMirror').css('height', \$('#$textid > textarea').height()+'px');"
+                my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
+                $he ||= 42;
+                $self->{hostinfo}->JS(
+<<CM
+var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
+    mode: 'perl',
+    theme: 'night',
+    lineWrapping: true,
+    extraKeys: {
+        'F11': function(cm) {
+          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function(cm) {
+          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        }
+    }
+});
+ cm.setSize(579, $he);
+ cm.on('blur', function() { cm.save() });
+
+CM
                 );
             }
             else {
+                $self->{hostinfo}->send(
+                    "\$('#$textid').change(function(){ ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });"
+                );
                 $self->{hostinfo}->send(
                     "\$('#$textid').tabby({tabString:'    '});",
                 );
@@ -264,7 +276,7 @@ sub update_chunk {
     
     say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
     my $textid = $self->{text}->{id}."-Text-$i";
-    $self->{hostinfo}->send("\$('#$textid').fadeIn(100).fadeOut(100).fadeIn(100);");
+    $self->{hostinfo}->send("\$('.$self->{text}->{id} .CodeMirror').fadeIn(100).fadeOut(100).fadeIn(100);");
 
     if ($self->{saving}) {
         delete $self->{saving}->{$i} || die "wtf";
