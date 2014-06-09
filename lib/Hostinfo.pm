@@ -27,10 +27,8 @@ sub send {
     if (length($message) > ($self->{tx_max} || 300000)) {
         die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max}
         # TODO DOS fixed by visualising {ts} and their sizes
-            ."\n\n".substr($message,0,180)."...";
+            ."\n\n".substr($message,0,300)."...";
     }
-
-    $message =~ s/\n//g;
 
     if ($message =~ /\n/) {
         warn "Message contains \\n";
@@ -60,9 +58,12 @@ sub elvis_send {
         say "NO INDIVIDUAL TO send $message";
     }
 
-    my $short = $message if length($message) < 200;
-    $short ||= substr($message,0,23*5)." >SNIP<";
-
+    my $short = length($message) < 200 ?
+    	$message
+        :
+        '('.substr(sha1_hex($message),0,8).') '
+    	.substr($message,0,23*9)." >SNIP<";
+    
     if (-t STDOUT) {
         print colored("< send\t\t", 'blue');
         print colored($short, 'bold blue'), "\n";
@@ -85,7 +86,6 @@ sub elvis_send {
     }
     $elvis->{tx}->send({text => $message});
 }
-
 sub elvi {
     my $self = shift;
     map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
