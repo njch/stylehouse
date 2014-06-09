@@ -344,9 +344,7 @@ sub update_app_menu {
 
     unless ($self->{appmenu}) {
         $self->flood->spawn_floozy($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; height: 4em;",
-            undef, undef,
-            "menu",
+            "width:98%; background: #333; color: #afc; font-family: serif; height: 4em;"
         );
         $self->{appmenu}->text->add_hooks(
             $self->app_menu_hooks()
@@ -369,7 +367,6 @@ sub update_app_menu {
     $self->{appmenu}->{extra_label} = "appmenu";
     $self->{appmenu}->text->replace([@items]);
 }
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
@@ -636,7 +633,7 @@ sub init_flood {
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{ra} = $self->{sky}->spawn_floozy(
-        ra => "width:100%;  background: gold; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;", undef, undef, "abspan"
+        ra => "width:100%;  background: #AE947B; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;", undef, undef, "abspan"
     );
     $self->{hi_error} = $self->{ra}->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
