@@ -42,7 +42,7 @@ sub somewhere {
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
-    }) if 00 && $self->{hostinfo}->get("style") ne "stylehouse";
+    }) if $self->{hostinfo}->get("style") ne "stylehouse";
 }
 sub menu {
     my $self = shift;
@@ -105,7 +105,6 @@ sub zlyrics {
     my $ly = $lyrics->[$i];
     return $ly;
 }
-
 sub write {
     my $self = shift;
     my $h = shift;

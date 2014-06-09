@@ -51,7 +51,7 @@ sub colorf {
     my $fing = shift;
     my ($color) = ($fing || "0") =~ /\(0x....(...)/;
     $color ||= "fff";
-    return "background-color: #".($color || "fe9").";";
+    return "text-shadow: 0px 0px 3px #".($color || "fe9").";";
 }
 sub chains {
     my $self = shift;

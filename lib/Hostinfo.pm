@@ -633,7 +633,7 @@ sub init_flood {
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
     $self->{ra} = $self->{sky}->spawn_floozy(
-        ra => "width:100%;  background: #AE947B; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;", undef, undef, "abspan"
+        ra => "width:100%;  background: #AE947B; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;"
     );
     $self->{hi_error} = $self->{ra}->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
