@@ -67,9 +67,10 @@ sub new {
 
     $self->re_openness();
 
+    $self->load_codon("Lyrico");
+
     return $self;
 }
-
 sub menu {
     my $self = shift;
     $self->{menu} ||= {

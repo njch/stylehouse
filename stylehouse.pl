@@ -149,6 +149,8 @@ sub init {
     $hostinfo->flood($hostinfo->data);
 
     if ($name eq "styleshed") {
+        Git->new($hostinfo->intro);
+        Codo->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
@@ -370,6 +372,10 @@ __DATA__
         <script src="tabby.js"></script>
         <script src="jquery.scrollTo.js"></script>
 
+        <script src="codemirror/lib/codemirror.js"></script>
+        <link href="codemirror/lib/codemirror.css" rel="stylesheet">
+        <link href="codemirror/theme/night.css" rel="stylesheet">
+        <script src="codemirror/mode/perl/perl.js"></script>
     </head>
     <body id="body">
     </body>

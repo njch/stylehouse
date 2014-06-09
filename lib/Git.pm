@@ -16,6 +16,8 @@ sub new {
     }
     $self->wire_procs();
 
+    return $self if $self->hi->get('style') ne "stylehouse";
+
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
@@ -43,7 +45,6 @@ sub new {
 
     return $self;
 }
-
 sub init {
     my $self = shift; 
 
@@ -57,7 +58,6 @@ sub init {
 
     $self->repos();
 }
-
 sub gitrack {
     my $self = shift;
     

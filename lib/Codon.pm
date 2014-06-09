@@ -128,9 +128,23 @@ sub display {
             $self->{hostinfo}->send(
                 "\$('#$textid').change(function(){ ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });"
             );
-            $self->{hostinfo}->send(
-                "\$('#$textid').tabby({tabString:'    '});",
-            );
+            if ("codemirror") {
+                $self->{hostinfo}->send(
+                    "CodeMirror.fromTextArea(document.getElementById('$textid'), "
+                    ."{ mode: 'perl', theme: 'night' });"
+                );
+                $self->{hostinfo}->send(
+                    "\$('#$textid > div.CodeMirror').css('width', \$('#$textid > textarea').width()+'px');"
+                );
+                $self->{hostinfo}->send(
+                    "\$('#$textid > div.CodeMirror').css('height', \$('#$textid > textarea').height()+'px');"
+                );
+            }
+            else {
+                $self->{hostinfo}->send(
+                    "\$('#$textid').tabby({tabString:'    '});",
+                );
+            }
         }
     }
 
