@@ -149,15 +149,13 @@ sub init {
     $hostinfo->flood([(jah => "waka")x7]);
 
     if ($name eq "styleshed") {
-        Git->new($hostinfo->intro);
-        Codo->new($hostinfo->intro);
+        Lyrico->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
         Codo->new($hostinfo->intro);
         #Keys->new($hostinfo->intro);
     }
-        Lyrico->new($hostinfo->intro);
 
     $hostinfo->update_app_menu();
     $underworld = 0;

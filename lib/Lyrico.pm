@@ -28,6 +28,10 @@ sub new {
     );
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
+    
+    $self->{ra} = $self->{sky}->spawn_floozy(
+        ra => "width:100%;  color: black; height: 100%; opacity: 0.8; overflow: scroll;"
+    );
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
 

@@ -601,16 +601,16 @@ sub screen_height {
 sub init_flood {
     my $self = shift;
 
-    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "80%";
+    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "89.91%";
     $self->create_view($self, "sky",
-        "height:$self->{horizon}; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     my $f = $self->{flood} = $self->create_view($self, "flood",
         "width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
-        "width: ".420*1.14."px; height: 60px;background: #301a30; color: #afc; font-weight: bold;",
+        "width: ".420*1.14."px; height: 12px; background: #301a30; color: #afc; font-weight: bold;",
     );
 
     $fm->text([], {
@@ -626,13 +626,10 @@ sub init_flood {
         },
     });
 
-    $fm->text->replace([("FLOOD")x7]);
+    $fm->text->replace([("FLOOD")x1]);
 
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
-    );
-    $self->{ra} = $self->{sky}->spawn_floozy(
-        ra => "width:100%;  background: #AE947B; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;"
     );
     $self->{hi_error} = $self->{ra}->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
