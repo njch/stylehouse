@@ -14,7 +14,7 @@ use View;
 use Term::ANSIColor;
 use Digest::SHA 'sha1_hex';
 
-my $data = {};
+our $data = {};
 
 has 'ports';
 
@@ -601,7 +601,7 @@ sub screen_height {
 sub init_flood {
     my $self = shift;
 
-    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "89.91%";
+    $self->{horizon} = $data->{horizon};
     $self->create_view($self, "sky",
         "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );

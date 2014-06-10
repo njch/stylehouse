@@ -7,6 +7,16 @@ use Time::HiRes 'usleep';
 
 my $i = 0; # sweeps through @{lyrics}
 
+$Hostinfo::data->{'horizon'} =
+	$Hostinfo::data->{style} eq
+"stylehouse"?
+"50%"
+:
+#"89.91%"
+"30%"
+;
+
+$Hostinfo::data->{'flood/default_thing'} = $Hostinfo::data;
 sub new {
     my $self = bless {}, shift;
     shift->($self);

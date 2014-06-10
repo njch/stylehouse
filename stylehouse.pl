@@ -105,7 +105,7 @@ my $ip = "127.0.0.1";
 $ip = "*" if $name eq "stylehut";
 my $mojo_daemon_listen = "http://$ip:$port";
 
-say "running $name PID=$$ into $mojo_daemon_listen
+say "$name $$ $mojo_daemon_listen
 
 
 
@@ -146,7 +146,7 @@ my $underworld = 1; # our fate's the most epic shift ever
 sub init {
     my $self = shift;
 
-    $hostinfo->flood([(jah => "waka")x7]);
+    $hostinfo->flood($hostinfo->get('flood/default_thing') || [(jah => "waka")x7]);
 
     if ($name eq "styleshed") {
         Lyrico->new($hostinfo->intro);
