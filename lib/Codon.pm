@@ -128,11 +128,12 @@ sub display {
             if ("codemirror") {
                 my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
                 $he ||= 42;
+                my $theme = $self->{name} =~ /^ghosts\// ? "night" : "ambience";
                 $self->{hostinfo}->JS(
 <<CM
 var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
     mode: 'perl',
-    theme: 'night',
+    theme: '$theme',
     lineWrapping: true,
     extraKeys: {
         'F11': function(cm) {
