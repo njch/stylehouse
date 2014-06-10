@@ -280,7 +280,7 @@ sub update_chunk {
     $self->{hostinfo}->send("\$('.$self->{text}->{id} .CodeMirror').fadeIn(100).fadeOut(100).fadeIn(100);");
 
     if ($self->{saving}) {
-        delete $self->{saving}->{$i} || die "wtf";
+        delete $self->{saving}->{$i} || say " - wasn't updating $i but it came along anyway";
         if (keys %{ $self->{saving} }) {
             say " more chunks awaiting...";
             return;
