@@ -70,16 +70,12 @@ hooks:
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
-    my $a = W wdump({ in => $wo });
-    say "A A A A A $a";
-    $wous->{value} = "<pre>allo</pre>";
+    $wous->{value} = "<pre>".enc(W wdump({in =>$wo}))."</pre>";
     push @{$self->{tuxts}}, $wous;
   wdump: |
     use Data::Dumper;
     $Data::Dumper::Maxdepth = 2;
-    my $s = Dumper($in);
-    say "WDUMPED!\n$s\n.";
-    return $s;
+    return Dumper($in);
   tuxt_chain: |
     my $lchain = { %$chain };
     my $as_from = delete $lchain->{as_from};

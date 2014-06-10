@@ -79,7 +79,7 @@ sub hookways {
     						if @returns > 1;	
     return say " NO REty ".($point||'some?where')
     						if @returns < 1;
-    my @return = @$_ for shift @returns;
+    my @return = @{$returns[0]};
     if (wantarray) {
     	say "Returning ".($point||'somewhere').": @return";
         return @return
