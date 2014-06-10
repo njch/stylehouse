@@ -631,7 +631,7 @@ sub init_flood {
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
-    $self->{hi_error} = $self->{ra}->spawn_floozy(
+    $self->{hi_error} = $f->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(

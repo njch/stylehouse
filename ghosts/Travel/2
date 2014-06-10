@@ -48,7 +48,7 @@ hooks:
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
     $wins->{style} .= "font-size: 8pt; opacity:0.4;";
-    $wins->{value} = "<pre>".encode_entities(ddump($wins))."</pre>";
+    $wins->{value} = "<pre>".W wdump({ in => $wi })."</pre>";
     push @{$self->{tuxts}}, $wins;
   tuxt_ways_out: |
     my $wous = { %$s };
@@ -67,12 +67,15 @@ hooks:
     }
     $waygo .= " (".(defined $wo ? $wo : "~").")";
     $wous->{html} = 1;
-    
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
-    $wous->{value} = "<pre>".encode_entities(ddump($wous))."</pre>";
+    $wous->{value} = "<pre>".W wdump({ in => $wo })."</pre>";
     push @{$self->{tuxts}}, $wous;
+  wdump: |
+    use Data::Dumper;
+    $Data::Dumper::Maxdepth = 2;
+    return Dumper($in);
   tuxt_chain: |
     my $lchain = { %$chain };
     my $as_from = delete $lchain->{as_from};

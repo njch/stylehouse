@@ -45,18 +45,16 @@ sub ob {
     my $self = shift;
     $self->{travel}->ob(@_);
 }
-
 sub colorf {
     my $fing = shift;
     my ($color) = ($fing || "0") =~ /\(0x....(...)/;
-    $color ||= "fff";
+    $color ||= "663300";
     return "text-shadow: 0px 0px 3px #".($color || "fe9").";";
 }
 sub chains {
     my $self = shift;
     map { $_->{chains} ? @{ $_->{chains} } : () } @{ $self->{ways} }
 }
-
 sub hookways {
     my $self = shift;
     my $point = shift;
@@ -75,10 +73,16 @@ sub hookways {
         }
     }
 }
-
 sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
+    while ($eval =~ /(W (\w+)\((.+?)\))/sg) {
+    	my $p = pos();
+        my ($old, $way, $are) = ($1, $2, $3);
+    	$eval =~ s/\Q$old\E/\$self->hookways("$way", $are)/
+        	|| die "Ca't replace $1 at $p\n the: $1\t\t$2"
+            ." in\n".ind("E ", $eval);
+    }
     my $ar = shift;
     my $point = shift;
     my $thing = $self->{thing};
@@ -98,11 +102,11 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     # more ^
     
     if (wantarray) {
-    	say "Returning $point: @return";
+    	say "Returning ".($point||'somewhere').": @return";
         return @return
     }
     else {
-    	say "Returning $point: ".(@return[0]||"~");
+    	say "Returning ".($point||'somewhere').": ".(@return[0]||"~");
         return shift @return;
     }
 }

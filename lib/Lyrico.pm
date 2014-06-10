@@ -29,8 +29,8 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
     
-    $self->{ra} = $self->{sky}->spawn_floozy(
-        ra => "width:100%;  color: black; height: 100%; opacity: 0.8; overflow: scroll;"
+    $self->{wormhola} = $self->{hostinfo}->{sky}->spawn_floozy(
+        ra => "width:50%; border: 2px dotted green; color: black; height: 100%; opacity: 0.8; overflow: scroll;"
     );
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
@@ -47,7 +47,7 @@ sub somewhere {
     $self->{hostinfo}->ravel(
     	$self->{T},
         $what,
-        $self->{hostinfo}->{ra}
+        $self->{wormhola}
     );
 
     $self->{hostinfo}->timer(2, sub {
