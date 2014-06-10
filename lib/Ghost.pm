@@ -121,6 +121,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     
     return @return;
 }
+sub enc { encode_entities(shift) }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub haunt { # arrives through here
     my $self = shift;
