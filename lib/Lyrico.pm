@@ -39,7 +39,7 @@ sub somewhere {
     my $self = shift;
 
 	my $what = $self->{lyrics};
-    $what = { one => { two => { three => '!' } } };
+    $what = "eh";#{ two => { three => '!' } } };
     $self->{hostinfo}->ravel(
     	$self->{T},
         $what,

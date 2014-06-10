@@ -9,7 +9,6 @@ use Way;
 sub ddump { Hostinfo::ddump(@_) }
 
 has 'hostinfo';
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -34,12 +33,12 @@ sub ways_for {
     my $name = shift;
     $self->{ways} ||= [];
     unless (-d "ghosts/$name") {
-        say "No ghosts for $name";
+        say "Ghost ? $name";
         return;
     }
     for (glob "ghosts/$name/*") {
         push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
-        say "Ghost eats $_";
+        say "Ghost + $_";
     }
 }
 sub ob {
@@ -99,14 +98,15 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     # more ^
     
     if (wantarray) {
+    	say "Returning $point: @return";
         return @return
     }
     else {
+    	say "Returning $point: ".(@return[0]||"~");
         return shift @return;
     }
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
-
 sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;

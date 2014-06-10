@@ -133,7 +133,6 @@ sub appear {
         }
     })
 }
-
 sub describe_size {
     my $self = shift;
     "Wormhole is ".@{$self->{script}}." lines long";

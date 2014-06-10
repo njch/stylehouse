@@ -3,10 +3,9 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use Texty;
 use Ghost;
-
+sub ddump { Hostinfo::ddump(@_) }
 has 'cd';
 has 'hostinfo';
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -37,7 +36,7 @@ sub ob {
     # good place to way up with strings/tubes
     my $stack = [ map { "$_->[0] $_->[3] ($_->[1] $_->[2])" } map { [ caller($_) ] } 0..10 ];
     
-    my $data = Hostinfo::ddump(\@seen);
+    my $data = ddump(\@seen);
 
     my $ob = [ $stack, $data ];
 
@@ -70,7 +69,6 @@ sub travel {
 
     return $ghost->{wormhole};
 }
-
 sub event {
     my $self = shift;
     my $event = shift;

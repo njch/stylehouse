@@ -242,7 +242,6 @@ sub ignorable_mess {
 
     return 0;
 }
-
 sub app_menu_hooks {
     my $self = shift;
     return {

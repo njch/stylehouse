@@ -275,7 +275,6 @@ sub takeover {
 #    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
     $texty->tookover() if $texty;
 }
-
 sub append_spans {
     my $self = shift;
     my $divid = shift;
