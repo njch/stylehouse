@@ -66,13 +66,31 @@ sub hookways {
     # and be the big thing to do or a little thing to do
     # these stuff go together like that, hopefully, with language forming their surface tension
     # jelly pyramids...
+    my @returns;
     for my $w (@{ $self->{ways} }) {
         next if $wayspec && $w ne $wayspec;
         if (exists $w->{hooks}->{$point}) {
-            $self->doo($w->{hooks}->{$point}, $ar, $point);
+            push @returns, [
+            	$self->doo($w->{hooks}->{$point}, $ar, $point)
+			];
         }
     }
+    return say "Multiple returns from ".($point||'some?where')
+    						if @returns > 1;	
+    return say " NO REty ".($point||'some?where')
+    						if @returns < 1;
+    my @return = @$_ for shift @returns;
+    if (wantarray) {
+    	say "Returning ".($point||'somewhere').": @return";
+        return @return
+    }
+    else {
+    	my $one = shift @return;
+    	say "Returning ".($point||'somewhere').": ".($one||"~");
+        return $one;
+    }
 }
+sub wdump { shift->hookways('wdump', { in => shift }) }
 sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
@@ -101,14 +119,7 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     }
     # more ^
     
-    if (wantarray) {
-    	say "Returning ".($point||'somewhere').": @return";
-        return @return
-    }
-    else {
-    	say "Returning ".($point||'somewhere').": ".(@return[0]||"~");
-        return shift @return;
-    }
+    return @return;
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub haunt { # arrives through here
