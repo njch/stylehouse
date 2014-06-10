@@ -38,7 +38,13 @@ sub new {
 sub somewhere {
     my $self = shift;
 
-    $self->{hostinfo}->ravel($self->{T}, $self->{lyrics}, $self->{hostinfo}->{ra});
+	my $what = $self->{lyrics};
+    $what = { one => { two => { three => '!' } } };
+    $self->{hostinfo}->ravel(
+    	$self->{T},
+        $what,
+        $self->{hostinfo}->{ra}
+    );
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();

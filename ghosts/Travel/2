@@ -41,14 +41,14 @@ hooks:
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
     
-    my ($waydo) = $self->hookways("tuxt_chain", { %$ar, chain => $wi }) if $wi;
-    $waydo ||= "! . !";
-    $wins->{value} = "<pre>".encode_entities($waydo)."</pre>";
+    my ($waydo) = $wi ? $self->hookways("tuxt_chain", { %$ar, chain => $wi }) : "! way in";
+    $waydo .= " (".(defined $wi ? $wi : "~").")";
     $wins->{html} = 1;
     
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
-    $wins->{style} .= "font-size: 8:pt; opacity:0.4;";
+    $wins->{style} .= "font-size: 8pt; opacity:0.4;";
+    $wins->{value} = "<pre>".encode_entities(ddump($wins))."</pre>";
     push @{$self->{tuxts}}, $wins;
   tuxt_ways_out: |
     my $wous = { %$s };
@@ -65,12 +65,13 @@ hooks:
     else {
         $waygo = "no out";
     }
-    $wous->{value} = "<pre>".encode_entities($waygo)."</pre>";
+    $waygo .= " (".(defined $wo ? $wo : "~").")";
     $wous->{html} = 1;
     
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
+    $wous->{value} = "<pre>".encode_entities(ddump($wous))."</pre>";
     push @{$self->{tuxts}}, $wous;
   tuxt_chain: |
     my $lchain = { %$chain };
