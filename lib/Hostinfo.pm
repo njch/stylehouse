@@ -27,10 +27,8 @@ sub send {
     if (length($message) > ($self->{tx_max} || 300000)) {
         die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max}
         # TODO DOS fixed by visualising {ts} and their sizes
-            ."\n\n".substr($message,0,180)."...";
+            ."\n\n".substr($message,0,300)."...";
     }
-
-    $message =~ s/\n//g;
 
     if ($message =~ /\n/) {
         warn "Message contains \\n";
@@ -60,9 +58,12 @@ sub elvis_send {
         say "NO INDIVIDUAL TO send $message";
     }
 
-    my $short = $message if length($message) < 200;
-    $short ||= substr($message,0,23*5)." >SNIP<";
-
+    my $short = length($message) < 200 ?
+    	$message
+        :
+        '('.substr(sha1_hex($message),0,8).') '
+    	.substr($message,0,23*9)." >SNIP<";
+    
     if (-t STDOUT) {
         print colored("< send\t\t", 'blue');
         print colored($short, 'bold blue'), "\n";
@@ -85,7 +86,6 @@ sub elvis_send {
     }
     $elvis->{tx}->send({text => $message});
 }
-
 sub elvi {
     my $self = shift;
     map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
@@ -242,7 +242,6 @@ sub ignorable_mess {
 
     return 0;
 }
-
 sub app_menu_hooks {
     my $self = shift;
     return {
@@ -602,16 +601,16 @@ sub screen_height {
 sub init_flood {
     my $self = shift;
 
-    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "80%";
+    $self->{horizon} = $data->{style} eq "stylehouse" ? "50%" : "89.91%";
     $self->create_view($self, "sky",
-        "height:$self->{horizon}; background: #88aaaa; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     my $f = $self->{flood} = $self->create_view($self, "flood",
         "width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
-        "width: ".420*1.14."px; height: 60px;background: #301a30; color: #afc; font-weight: bold;",
+        "width: ".420*1.14."px; height: 12px; background: #301a30; color: #afc; font-weight: bold;",
     );
 
     $fm->text([], {
@@ -627,15 +626,12 @@ sub init_flood {
         },
     });
 
-    $fm->text->replace([("FLOOD")x7]);
+    $fm->text->replace([("FLOOD")x1]);
 
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
     );
-    $self->{ra} = $self->{sky}->spawn_floozy(
-        ra => "width:100%;  background: #AE947B; color: black; height: 100%; font-weight: bold; opacity: 0.8; overflow: scroll;"
-    );
-    $self->{hi_error} = $self->{ra}->spawn_floozy(
+    $self->{hi_error} = $f->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(

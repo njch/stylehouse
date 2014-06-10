@@ -9,7 +9,6 @@ use Way;
 sub ddump { Hostinfo::ddump(@_) }
 
 has 'hostinfo';
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -34,30 +33,28 @@ sub ways_for {
     my $name = shift;
     $self->{ways} ||= [];
     unless (-d "ghosts/$name") {
-        say "No ghosts for $name";
+        say "Ghost ? $name";
         return;
     }
     for (glob "ghosts/$name/*") {
         push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
-        say "Ghost eats $_";
+        say "Ghost + $_";
     }
 }
 sub ob {
     my $self = shift;
     $self->{travel}->ob(@_);
 }
-
 sub colorf {
     my $fing = shift;
     my ($color) = ($fing || "0") =~ /\(0x....(...)/;
-    $color ||= "fff";
+    $color ||= "663300";
     return "text-shadow: 0px 0px 3px #".($color || "fe9").";";
 }
 sub chains {
     my $self = shift;
     map { $_->{chains} ? @{ $_->{chains} } : () } @{ $self->{ways} }
 }
-
 sub hookways {
     my $self = shift;
     my $point = shift;
@@ -69,17 +66,41 @@ sub hookways {
     # and be the big thing to do or a little thing to do
     # these stuff go together like that, hopefully, with language forming their surface tension
     # jelly pyramids...
+    my @returns;
     for my $w (@{ $self->{ways} }) {
         next if $wayspec && $w ne $wayspec;
         if (exists $w->{hooks}->{$point}) {
-            $self->doo($w->{hooks}->{$point}, $ar, $point);
+            push @returns, [
+            	$self->doo($w->{hooks}->{$point}, $ar, $point)
+			];
         }
     }
+    return say "Multiple returns from ".($point||'some?where')
+    						if @returns > 1;	
+    return say " NO REty ".($point||'some?where')
+    						if @returns < 1;
+    my @return = @$_ for shift @returns;
+    if (wantarray) {
+    	say "Returning ".($point||'somewhere').": @return";
+        return @return
+    }
+    else {
+    	my $one = shift @return;
+    	say "Returning ".($point||'somewhere').": ".($one||"~");
+        return $one;
+    }
 }
-
+sub wdump { shift->hookways('wdump', { in => shift }) }
 sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
+    while ($eval =~ /(W (\w+)\((.+?)\))/sg) {
+    	my $p = pos();
+        my ($old, $way, $are) = ($1, $2, $3);
+    	$eval =~ s/\Q$old\E/\$self->hookways("$way", $are)/
+        	|| die "Ca't replace $1 at $p\n the: $1\t\t$2"
+            ." in\n".ind("E ", $eval);
+    }
     my $ar = shift;
     my $point = shift;
     my $thing = $self->{thing};
@@ -98,15 +119,9 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     }
     # more ^
     
-    if (wantarray) {
-        return @return
-    }
-    else {
-        return shift @return;
-    }
+    return @return;
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
-
 sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;

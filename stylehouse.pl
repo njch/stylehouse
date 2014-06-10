@@ -149,15 +149,13 @@ sub init {
     $hostinfo->flood([(jah => "waka")x7]);
 
     if ($name eq "styleshed") {
-        Git->new($hostinfo->intro);
-        Codo->new($hostinfo->intro);
+        Lyrico->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
         Codo->new($hostinfo->intro);
         #Keys->new($hostinfo->intro);
     }
-        Lyrico->new($hostinfo->intro);
 
     $hostinfo->update_app_menu();
     $underworld = 0;
@@ -375,6 +373,7 @@ __DATA__
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
         <link href="codemirror/theme/night.css" rel="stylesheet">
+        <link href="codemirror/theme/ambience.css" rel="stylesheet">
         <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css">
         <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>

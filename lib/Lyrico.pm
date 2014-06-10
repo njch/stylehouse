@@ -28,6 +28,10 @@ sub new {
     );
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
+    
+    $self->{wormhola} = $self->{hostinfo}->{sky}->spawn_floozy(
+        ra => "width:50%; border: 2px dotted green; color: black; height: 100%; opacity: 0.8; overflow: scroll;"
+    );
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
 
@@ -38,7 +42,13 @@ sub new {
 sub somewhere {
     my $self = shift;
 
-    $self->{hostinfo}->ravel($self->{T}, $self->{lyrics}, $self->{hostinfo}->{ra});
+	my $what = $self->{lyrics};
+    $what = "eh";#{ two => { three => '!' } } };
+    $self->{hostinfo}->ravel(
+    	$self->{T},
+        $what,
+        $self->{wormhola}
+    );
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();

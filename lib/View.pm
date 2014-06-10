@@ -275,45 +275,41 @@ sub takeover {
 #    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
     $texty->tookover() if $texty;
 }
-
 sub append_spans {
     my $self = shift;
     my $divid = shift;
     my $html = shift;
 
     return say "\n\nno html\n\n" unless $html;
+        $html =~ s/'/\\'/sg;
+        $html =~ s/\n/\\n/sg;
 
-    if (length($html) < 30000) {
-        $html =~ s/'/\\'/;
+	my $Bmax = 30000;
+    if (length($html) < $Bmax) {
         $self->hostinfo->send("  \$('#$divid').append('$html');");
     }
     else {
-        my @htmls = split /(?<=<\/span>)\s*(?=<span)/, $html;
-
-        my @html_batches;
-        my $b = [];
-        for my $html (@htmls) {
-            push @$b, $html;
-            if (@$b > 10) {
-                push @html_batches, [ @$b ];
-                $b = [];
+        my @htmls = split /(?<=<\/span>)/, $html;
+        say "html span chunks number: ".@htmls;
+        my @Bs = ("");
+        while (@htmls) {
+            if (length($Bs[-1]) + length($htmls[0]) >= $Bmax) {
+				push @Bs, "";
             }
+            $Bs[-1] .= shift @htmls;
         }
-        push @html_batches, [ @$b ] if @$b;
-        say anydump($html_batches[0]->[0]);
-        say anydump($html_batches[1]->[0]);
-        say "batchified htmls heading for #$divid from ".$self->owner.": ".(scalar(@html_batches)-1)." x 10 + ".scalar(@{$html_batches[-1]});
-
-        for my $html_batch (@html_batches) {
-            my $batch = join "", @$html_batch;
-
-            $batch =~ s/'/\\'/;
-            $self->hostinfo->send("  \$('#$divid').append('$batch');");
-            usleep 10000;
+        say "batchified appends heading for #$divid from ".$self->owner.":";
+        for my $B (@Bs) {
+            my $M = "  \$('#$divid').append('$B');";
+            say " M ".length($M).' ('.substr(Hostinfo::sha1_hex($M),0,8).')';
+            say "";
+            $self->{hostinfo}->send($M);
+            say "";
+            usleep 50000;
         }
+
     }
 }
-
 sub concat_array {
     my $a = shift;
     return unless $a;
