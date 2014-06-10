@@ -47,9 +47,14 @@ sub ob {
 }
 sub colorf {
     my $fing = shift;
+    my ($l,$r,$b) = @_;
     my ($color) = ($fing || "0") =~ /\(0x....(...)/;
+    $color ||= $fing if $fing && ref \$fing eq "SCALAR" && $fing =~ /^(\x{3}|\x{6})$/;
     $color ||= "663300";
-    return "text-shadow: 0px 0px 3px #".($color || "fe9").";";
+    $l ||= 0;
+    $r ||= 0;
+    $b ||= 3;
+    return "text-shadow: ${l}px ${r}px ${b}px #$color;";
 }
 sub chains {
     my $self = shift;
