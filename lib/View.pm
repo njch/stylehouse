@@ -57,18 +57,7 @@ sub new {
     $attach ||= "append";
 
     # remember to say :first or :last etc in $where
-    if ($attach && $attach eq "after") {
-        $self->{hostinfo}->send("\$('$where').after('$div');");
-    }
-    elsif ($attach && $attach eq "before") {
-        $self->{hostinfo}->send("\$('$where').before('$div');");
-    }
-    elsif ($attach && $attach eq "replace") {
-        $self->{hostinfo}->send("\$('$where').replaceWith('$div');");
-    }
-    else {
-        $self->{hostinfo}->send("\$('$where').append('$div');");
-    }
+    $self->get_attached($attach, $where, "'$div'");
 
     $self->{hostinfo}->send("\$('#$divid').fadeIn(300);");
     $self->wipehtml(); # set label
@@ -76,7 +65,26 @@ sub new {
 
     return $self;
 }
-
+sub get_attached {
+	my $self = shift;
+    my ($attach, $where, $what) = @_;
+    
+    if ($attach && $attach eq "after") {
+        $self->{hostinfo}->send("\$('$where').after($what);");
+    }
+    elsif ($attach && $attach eq "before") {
+        $self->{hostinfo}->send("\$('$where').before($what);");
+    }
+    elsif ($attach && $attach eq "replace") {
+        $self->{hostinfo}->send("\$('$where').replaceWith($what);");
+    }
+    else {
+        $self->{hostinfo}->send("\$('$where').append($what);");
+    }
+    
+    $self->{oattachment} ||= [$attach, $where];
+    $self->{attachment} = [$attach, $where];
+}
 
 # right so here we have an arc of stuff, going from motive to static
 # menu items to text
@@ -125,7 +133,9 @@ sub spawn_floozy {
             $where = $self->{ceiling};
         }
         else {
-            if ($self->{hostinfo}->get("floods/$self->{divid}")) {
+            if ($self->{hostinfo}->get("floods/$self->{divid}")
+                || $class eq "-ceil" ) {
+                $class = undef if $class eq "-ceil";
                 $attach = "before";
                 $where = "#$self->{divid} *:first";
             }
@@ -159,7 +169,7 @@ sub spawn_ceiling {
     
     $style .= " position: fixed;" if $staticness;
 
-    my $c = $self->{ceiling} = $self->spawn_floozy(($this || $self), $divid, $style);
+    my $c = $self->{ceiling} = $self->spawn_floozy(($this || $self), $divid, $style, undef, undef, "-ceil");
 
     if ($staticness) {
         $c->spawn_floon();
@@ -239,7 +249,31 @@ sub wipehtml {
     # $self->fit_div(); TODO how to?
     1;
 }
-
+sub float {
+	my $self = shift;
+    
+    if ($self->{floated}) {
+    	return $self->unfloat();
+    }
+    $self->{hostinfo}->JS(
+    	"\$('#$self->{divid}').addClass('floated');"
+    );
+    $self->{hostinfo}->JS(
+    	"\$('#sky').after(\$('#$self->{divid}'));"
+    );
+    $self->{floated} = 1;
+}
+sub unfloat {
+	my $self = shift;
+    
+    $self->{hostinfo}->JS(
+    	"\$('#$self->{divid}').removeClass('floated');"
+    );
+    $self->get_attached(
+    	@{$self->{oattachment}}, "\$('#$self->{divid}')"
+    );
+    $self->{floated} = 0;
+}
 sub event {
     my $self = shift;
     my $event = shift;

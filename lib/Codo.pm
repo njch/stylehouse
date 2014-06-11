@@ -50,9 +50,9 @@ sub new {
     
 
     my $Codo =
-    $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; top: $self->{hostinfo}->{horizon}; right: 0px; z-index:-1; opacity: 0.95;");
+    $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; top: $self->{hostinfo}->{horizon}; right: 0px; z-index:4; opacity: 0.95;");
 
-        $Codo->spawn_ceiling($self, codolist => "width:98%;  background: #402a35; color: #afc; height: 60px;");
+        $Codo->spawn_ceiling($self, codolist => "width:500px; z-index:3; background: #402a35; color: #afc; height: 4em;");
 
 
         $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -156,32 +156,27 @@ sub codolist {
     $listy->{hooks}->{fit_div} = 1;
     $listy->add_hooks({
         tuxts_to_htmls_tuxt => sub {
-            my ($texty, $s, $e) = shift;
-            
+            my ($texty, $s) = @_;
+
             if (ref $s->{value} eq "Codon") {
                 my $codon = $s->{value};
-                say "@ $codon->{name}";
                 $s->{value} = $codon->{name};
                 $s->{value} =~ s/^ghosts\///;
                 $s->{codon} = $codon;
-            	$s->{style} = 'background-color: #'.codoncolour($codon).';';
+            	$s->{style} .= 'background-color: #'.codoncolour($codon).';';
                 $s->{menu} = "hunt";
+            }
+            elsif ($s->{menu}) {
+                $s->{style} .= "border: 2px solid #8A002E"
             }
         },
         spatialise => sub {
-            return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
+            return { top => 1, left => 1, horizontal => 40, wrap_at => 700 } # space tabs by 40px
         },
+        tuxtstyle => "font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+            ."text-shadow: 2px 4px 5px #4C0000;",
     });
     
-    my $float = sub {
-    	$self->{hostinfo}->JS("\$('#$list->{divid})"
-        .".css('position', 'fixed')"
-        .".css('top', '40%')"
-        .".css('right', '50%')"
-        .".css('position', 'fixed')"
-        );
-    };
-
     my $menu = {
         hunt => sub {
         	my ($ev, $s) = @_;
@@ -193,8 +188,7 @@ sub codolist {
             }
         },
         float => sub {
-        	my ($ev, $s) = @_;
-        	$float->();
+            $list->float();
         },
     };
     
@@ -203,7 +197,7 @@ sub codolist {
     });
 
 	my $lines = [
-        "Hello!",
+        "!menu float",
         @$codons,
     ];
     $listy->replace($lines);
@@ -213,58 +207,15 @@ sub codoncolour {
     my $n = $codon->{name};
 
     $n =~ /^ghost/ ? "99FF66" :
-    $n =~ /Travel|Ghost|Wormhole/ ? "9999FF" :
+    $n =~ /Travel|Ghost|Wormhole/ ? "0B0906" :
     $n =~ /Texty/ ? "00FFFF" :
     $n =~ /View|Lyrico/ ? "CCFF66" :
     $n =~ /Hostinfo/ ? "3366FF" :
     $n =~ /Codo/ ? "3366FF" :
     $n =~ /Codon/ ? "3366FF" :
+    $n =~ /stylehouse\.css/ ? "00CCFF" :
+    $n =~ /Codon/ ? "3366FF" :
     "B8B86E"
-}
-sub blabs {
-    my $self = shift;
-
-	my $bl = $self->{blabs};
-    my $plt = $bl->text;
-    $plt->{hooks}->{fit_div} = 1;
-    $plt->{hooks}->{class} = "hidata";
-    $plt->{max_height} = 400;
-
-    my $menu = {
-        toggle => sub {
-            $self->{procstartwatch}->{toggle}++;
-            $self->procstartwatch();
-        },
-    };
-    $plt->add_hooks({
-        spatialise => sub { { top => 1, space => 10 } },
-        event => sub {
-            my $texty = shift;
-            my $event = shift;
-            my $s = $texty->id_to_tuxt($event->{id});
-            if (my $m = $s->{menu}) {
-                $menu->{$m}->($event, $s);
-            }
-            else {
-                say "unhandled tuxt click: ".ddump($s);
-            }
-        },
-    });
-
-    my $hid = ($self->{prostartwatch}->{toggle} || 2) % 2;
-    $plt->replace(["!menu=toggle !style='color: black; font-weight: bold;font-size: 10pt;  text-shadow: 2px 2px 4px #fa0;' proc/start".($hid ? " ~" : "")]);
-
-    unless ($hid) {
-        my $per_line = sub {
-            my $line = shift;
-            $line =~ s/\n$//;
-            my ($pid, $cmd) = $line =~ /^(\d+): (.+)\n?$/;
-            my $stat = $pid == $$ ? "!style='color:gold;' " : "";
-            $plt->gotline("$stat$line");
-        };
-
-        $self->{hostinfo}->stream_file("proc/start", $per_line);
-    }
 }
 sub re_openness {
     my $self = shift;

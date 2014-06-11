@@ -366,23 +366,15 @@ sub tuxts_to_htmls {
     }
 
     my $t = [ @{ $self->tuxts } ];
-    my $e = [];
 
-    my $skip = 0;
     if ($self->{hooks}->{append} && @$t> 666 / 8) {
-        @$t = splice @$t, -666/8;
+        $t = [ splice @$t, -666/8 ];
     }
 
-    my $next = sub {
-        return shift @$e if @$e;
-        return shift @$t;
-    };
-
     my @htmls;
-    while (my $s = $next->()) {
-
+    for my $s (@$t) {
         if ($self->{hooks}->{tuxts_to_htmls_tuxt}) {
-            $self->{hooks}->{tuxts_to_htmls_tuxt}->($self, $s, $e);
+            $self->{hooks}->{tuxts_to_htmls_tuxt}->($self, $s);
         }
 
         my $p = { %$s };
