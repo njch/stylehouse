@@ -105,28 +105,10 @@ sub event {
     if ($id eq "codolist") {
         $self->{hostinfo}->send("\$('#".$self->{Codo}->{divid}."').toggleClass('widdle');");
     }
-
-    my $listy = $self->{codolist}->text;
-
-    say $self->{codolist}->{divid}." $id";
-
-    if (my $s = $listy->id_to_tuxt($id)) {
-        my $it = $s->{value};
-        if ($it eq "Save") {
-            $self->infrl("Argh! just do it yourself")
-        }
-        elsif ($s->{codon}) {
-            $self->load_codon($s->{codon});
-        }
-        else {
-            die $s;
-        }
-    }
     else {
-        say "Codo event 404 for $id". ddump($event);
+    	$self->{hostinfo}>error("Codo event 404 for $id". ddump($event));
     }
 }
-
 sub init_codons {
     my $self = shift;
 
@@ -169,31 +151,76 @@ sub codolist {
     die "no codons" unless $codons;
     say "Codons number ".@$codons;
 
-    my $codolistex = $self->{codolist}->text;
-    $codolistex->add_hooks({
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            for my $s (@{$self->tuxts}) {
-                if (ref $s->{value}) {
-                    my $codon = $s->{value};
-                    $s->{value} = $codon->{name};
-                    $s->{value} =~ s/^ghosts\///;
-                    $s->{codon} = $codon;
-                }
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
+	my $list = $self->{codolist};
+	my $listy = $list->text;
+    $listy->{hooks}->{fit_div} = 1;
+    $listy->add_hooks({
+        tuxts_to_htmls_tuxt => sub {
+            my ($texty, $s, $e) = shift;
+            
+            if (ref $s->{value} eq "Codon") {
+                my $codon = $s->{value};
+                say "@ $codon->{name}";
+                $s->{value} = $codon->{name};
+                $s->{value} =~ s/^ghosts\///;
+                $s->{codon} = $codon;
+            	$s->{style} = 'background-color: #'.codoncolour($codon).';';
+                $s->{menu} = "hunt";
             }
         },
         spatialise => sub {
             return { top => 1, left => 1, horizontal => 40, wrap_at => 1200 } # space tabs by 40px
         },
     });
+    
+    my $float = sub {
+    	$self->{hostinfo}->JS("\$('#$list->{divid})"
+        .".css('position', 'fixed')"
+        .".css('top', '40%')"
+        .".css('right', '50%')"
+        .".css('position', 'fixed')"
+        );
+    };
 
-    my $menu = [
-        "Save",
+    my $menu = {
+        hunt => sub {
+        	my ($ev, $s) = @_;
+            if ($s->{codon}) {
+            	$self->load_codon($s->{codon});
+            }
+            else {
+            	$self->{hostinfo}->error(" no go diggy die", $ev, $s);
+            }
+        },
+        float => sub {
+        	my ($ev, $s) = @_;
+        	$float->();
+        },
+    };
+    
+    $listy->add_hooks({
+        event => { menu => $menu },
+    });
+
+	my $lines = [
+        "Hello!",
         @$codons,
     ];
-    $codolistex->replace($menu);
+    $listy->replace($lines);
+}
+sub codoncolour {
+	my $codon = shift;
+    my $n = $codon->{name};
+
+    $n =~ /^ghost/ ? "99FF66" :
+    $n =~ /Travel|Ghost|Wormhole/ ? "9999FF" :
+    $n =~ /Texty/ ? "00FFFF" :
+    $n =~ /View|Lyrico/ ? "CCFF66" :
+    $n =~ /Hostinfo/ ? "3366FF" :
+    $n =~ /Codo/ ? "3366FF" :
+    $n =~ /Codon/ ? "3366FF" :
+    "B8B86E"
+}
 }
 sub blabs {
     my $self = shift;

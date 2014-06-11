@@ -53,7 +53,7 @@ sub somewhere {
     my $self = shift;
 
 	my $what = $self->{lyrics};
-    $what = { three => '!' };
+    $what = ['!'];
     $self->{hostinfo}->ravel(
     	$self->{T},
         $what,
@@ -62,7 +62,7 @@ sub somewhere {
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
-    }) if $self->{hostinfo}->get("style") ne "stylehouse";
+    }) if 0 && $self->{hostinfo}->get("style") ne "stylehouse";
 }
 sub menu {
     my $self = shift;
