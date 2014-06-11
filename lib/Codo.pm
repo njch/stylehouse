@@ -221,7 +221,6 @@ sub codoncolour {
     $n =~ /Codon/ ? "3366FF" :
     "B8B86E"
 }
-}
 sub blabs {
     my $self = shift;
 
