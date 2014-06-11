@@ -252,7 +252,6 @@ sub pswatch {
 
     $self->hi->timer(2, sub { $self->pswatch() }) unless $one;
 }
-
 sub procstartwatch {
     my $self = shift;
 
@@ -297,7 +296,6 @@ sub procstartwatch {
         $self->{hostinfo}->stream_file("proc/start", $per_line);
     }
 }
-
 sub proclistwatch {
     my $self = shift;
 
