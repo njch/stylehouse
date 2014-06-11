@@ -276,8 +276,10 @@ sub update_chunk {
     $c->{lines} = [ split("\n", $code) ];
     
     say "Codon $self->{name} $i came along,  ".scalar(@{$c->{lines}})."x".length($code);
-    my $textid = $self->{text}->{id}."-Text-$i";
-    $self->{hostinfo}->send("\$('.$self->{text}->{id} .CodeMirror').fadeIn(100).fadeOut(100).fadeIn(100);");
+    
+    my $textid = $self->{text}->{id}."-$i";
+    $self->{hostinfo}->send(
+    	"\$(#$textid').fadeOut(200).fadeIn(100);");
 
     if ($self->{saving}) {
         delete $self->{saving}->{$i} || say " - wasn't updating $i but it came along anyway";
