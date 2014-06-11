@@ -195,6 +195,51 @@ sub codolist {
     ];
     $codolistex->replace($menu);
 }
+sub blabs {
+    my $self = shift;
+
+	my $bl = $self->{blabs};
+    my $plt = $bl->text;
+    $plt->{hooks}->{fit_div} = 1;
+    $plt->{hooks}->{class} = "hidata";
+    $plt->{max_height} = 400;
+
+    my $menu = {
+        toggle => sub {
+            $self->{procstartwatch}->{toggle}++;
+            $self->procstartwatch();
+        },
+    };
+    $plt->add_hooks({
+        spatialise => sub { { top => 1, space => 10 } },
+        event => sub {
+            my $texty = shift;
+            my $event = shift;
+            my $s = $texty->id_to_tuxt($event->{id});
+            if (my $m = $s->{menu}) {
+                $menu->{$m}->($event, $s);
+            }
+            else {
+                say "unhandled tuxt click: ".ddump($s);
+            }
+        },
+    });
+
+    my $hid = ($self->{prostartwatch}->{toggle} || 2) % 2;
+    $plt->replace(["!menu=toggle !style='color: black; font-weight: bold;font-size: 10pt;  text-shadow: 2px 2px 4px #fa0;' proc/start".($hid ? " ~" : "")]);
+
+    unless ($hid) {
+        my $per_line = sub {
+            my $line = shift;
+            $line =~ s/\n$//;
+            my ($pid, $cmd) = $line =~ /^(\d+): (.+)\n?$/;
+            my $stat = $pid == $$ ? "!style='color:gold;' " : "";
+            $plt->gotline("$stat$line");
+        };
+
+        $self->{hostinfo}->stream_file("proc/start", $per_line);
+    }
+}
 sub re_openness {
     my $self = shift;
 
