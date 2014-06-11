@@ -407,10 +407,21 @@ sub ddump {
 sub event {
     my $self = shift;
     my $event = shift;
-
-    if ($self->{hooks}->{event}) {
-        say "Texty $self->{id} $self->{view}->{divid} hooking event";
-        $self->{hooks}->{event}->($self, $event, @_);
+    
+    my $evh = $self->{hooks}->{event};
+    if (ref $evh eq "CODE") {
+        say "Texty $self->{id} $self->{view}->{divid} hooking event->()";
+        $evh->($self, $event, @_);
+    }
+    elsif (ref $evh eq "HASH") {
+        my $menu = $evh->{menu};
+        my $s = $self->id_to_tuxt($event->{id});
+        if (my $m = $s->{menu}) {
+            $menu->{$m}->($event, $s);
+        }
+        else {
+            $self->{hostinfo}->error("unhandled tuxt click", $event, $s);
+        }
     }
     else {
         say "Event id: ".$event->{id};
