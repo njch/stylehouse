@@ -52,7 +52,9 @@ sub new {
     my $Codo =
     $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; top: $self->{hostinfo}->{horizon}; right: 0px; z-index:4; opacity: 0.95;");
 
-        $Codo->spawn_ceiling($self, codolist => "width:500px; z-index:3; background: #402a35; color: #afc; height: 4em;");
+    $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;')
+        ->spawn_floozy($self, codolist =>
+            "width:500px; z-index:3; background: #402a35; color: #afc;");
 
 
         $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -163,17 +165,16 @@ sub codolist {
                 $s->{value} = $codon->{name};
                 $s->{value} =~ s/^ghosts\///;
                 $s->{codon} = $codon;
-            	$s->{style} .= 'background-color: #'.codoncolour($codon).';';
+            	$s->{style} .= 'background-color: #'.codoncolour($codon).';'
+                    .($codon->{name} =~ /^ghosts\// ? 'color: #5A5AAF;' : '');
                 $s->{menu} = "hunt";
             }
             elsif ($s->{menu}) {
                 $s->{style} .= "border: 2px solid #8A002E"
             }
         },
-        spatialise => sub {
-            return { space => 25, top => 1, left => 1, horizontal => 40, wrap_at => 700 } # space tabs by 40px
-        },
-        tuxtstyle => "font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+        nospace => 1,
+        tuxtstyle => "float: left; opacity: 0.7; position: relative; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
     });
     
