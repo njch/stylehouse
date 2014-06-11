@@ -16,7 +16,7 @@ $Hostinfo::data->{'horizon'} =
 "39%"
 ;
 
-$Hostinfo::data->{'flood/default_thing'} = $Hostinfo::data;
+$Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
