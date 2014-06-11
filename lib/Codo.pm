@@ -171,7 +171,7 @@ sub codolist {
             }
         },
         spatialise => sub {
-            return { top => 1, left => 1, horizontal => 40, wrap_at => 700 } # space tabs by 40px
+            return { space => 25, top => 1, left => 1, horizontal => 40, wrap_at => 700 } # space tabs by 40px
         },
         tuxtstyle => "font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
@@ -196,10 +196,14 @@ sub codolist {
         event => { menu => $menu },
     });
 
-	my $lines = [
-        "!menu float",
-        @$codons,
-    ];
+	my $lines = [ "!menu float" ];
+    my $coname = { map { $_->{name} => $_ } @$codons };
+    for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css Codo Codon Direction',
+               qw'Travel Ghost Wormhole Lyrico Texty View') {
+
+        push @$lines, delete $coname->{$n};
+    }
+    push @$lines, values $coname;
     $listy->replace($lines);
 }
 sub codoncolour {
@@ -213,7 +217,8 @@ sub codoncolour {
     $n =~ /Hostinfo/ ? "3366FF" :
     $n =~ /Codo/ ? "3366FF" :
     $n =~ /Codon/ ? "3366FF" :
-    $n =~ /stylehouse\.css/ ? "00CCFF" :
+    $n =~ /stylehouse/ ? "00CCFF" :
+    $n =~ /stylehouse\.pl/ ? "33CDDD" :
     $n =~ /Codon/ ? "3366FF" :
     "B8B86E"
 }

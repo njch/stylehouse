@@ -280,7 +280,7 @@ sub spatialise {
             $geo->{horizontal} += $inc + $guessextrawidth->();
             if ($geo->{wrap_at}   &&   $s->{left} + $geo->{horizontal} > $geo->{wrap_at}) {
                 $geo->{horizontal} = $oleft;
-                $geo->{top} += 20;
+                $geo->{top} += $geo->{space};
                 next;
             }
         }
