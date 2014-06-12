@@ -76,6 +76,10 @@ sub menu {
         onoff => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky
         },
+        C => sub {
+        	Git->new($self->{hostinfo}->intro);
+        	Codo->new($self->{hostinfo}->intro);
+        },
         anim => sub {
             $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
         },
