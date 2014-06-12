@@ -165,11 +165,12 @@ sub draw_chunk {
     my $self = shift;
     my $c = shift;
     my $first = $c->{lines}->[0];
+    
+    $first =~ s/^(.{65}).+$/$1.../;
 
     return "!i=$c->{i} $first"
         .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
-
 sub event {
     my $self = shift;
     my $e = shift;
