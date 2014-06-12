@@ -6,6 +6,15 @@ hooks:
             push @{ $self->{etc}->{note}||=[] }, $self->doo($c->{note});
         }
     }
+  maketravels: |
+    for my $c (@{$self->{wayout}}) {
+        $self->hookways("maketravels_chain", {c => $c});
+    }
+    $self->hookways("maketravels_post");
+  donetravels: |
+    for my $c ($self->chains) {
+        $self->hookways("donetravels_chain", {c => $c});
+    }
   maketravels_post: |
     if (!@{$self->{away}}) {
         for my $dc (grep { $_->{default} } $self->chains) {
