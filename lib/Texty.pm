@@ -50,7 +50,6 @@ sub new {
 
     return $self;
 }
-
 sub add_hooks {
     my $self = shift;
     my $hooks = shift;

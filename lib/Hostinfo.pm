@@ -767,7 +767,6 @@ sub enlogform {
 
     return [ hitime(), \@from, $e ];
 }
-
 sub info {
     my $self = shift;
     
@@ -793,8 +792,9 @@ sub throwlog {
     my $string = 
         join("\n",
             $error->[0],
-            (map { "    - $_" } reverse @{$error->[1]}),
-            (map { ref $_ ? ddump($_) : "$_" } reverse @{$error->[2]}),
+            
+            	(map { "    - $_" } reverse @{$error->[1]}),
+            join("\n\n\n", map { ref $_ ? ddump($_) : "$_" } @{$error->[2]}),
         );
 
     say "$what =>\n$string";

@@ -58,12 +58,12 @@ sub travel {
 
     $self->ob(($depth ? "..travel..." : "travel!") => $thing);
 
-    my ($state, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
+    my ($last, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 
     for my $c (@$away) {
         if (my $t = $c->{travel}) {
             #say join(("  ")x$depth)."  away to: $t->{thing}";
-            $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1, $state);
+            $self->travel($t->{thing}, $ghost, $t->{way}, $depth+1, $last);
         }
     }
 
