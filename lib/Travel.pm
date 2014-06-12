@@ -27,6 +27,10 @@ sub new {
 
     return $self;
 }
+sub ghost {
+	my $self = shift;
+    $self->{ghost} ||= new Ghost($self->hostinfo->intro, $self, @_);
+}
 sub ob {
     my $self = shift;
     return;
@@ -51,7 +55,7 @@ sub ob {
 sub travel {
     my $self = shift;
     my $thing = shift;
-    my $ghost = shift || new Ghost($self->hostinfo->intro, $self);
+    my $ghost = shift || $self->ghost;
     my $way = shift;
     my $depth = shift || 0;
     my $last_state = shift;

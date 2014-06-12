@@ -18,17 +18,17 @@ sub new {
     my $name = $self->{name} = $travel->{name};
     say "Ghost named $name";
 
-    $self->ways_for("Travel");
-    $self->ways_for($name);
+    $self->load_way("Travel");
+    $self->load_way($name);
     if ($name =~ /^(\w+)-.+/) {
-        $self->ways_for($1);
+        $self->load_way($1);
     }
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
 
     return $self;
 }
-sub ways_for {
+sub load_way {
     my $self = shift;
     my $name = shift;
     $self->{ways} ||= [];
