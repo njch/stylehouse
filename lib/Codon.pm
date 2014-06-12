@@ -141,11 +141,12 @@ var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
         "Esc": function(cm) {
           if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
           cm.save();
+          ws.reply({event:{id:"$texty->{id}-Save-$i"}})
         }
     }
 });
  cm.setSize(579, $he);
- cm.on('blur', function() { cm.save() });
+ cm.on('blur', function() { cm.save(); ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });
 
 CM
             );
@@ -303,25 +304,35 @@ sub save_done {
     my $self = shift;
     if ($self->{Going}) {
         say "Codon $self->{name} is going away";
-        my $O = $self->{openness};
-        while (my ($i, $ness) = each %$O) {
-            if ($ness eq "Open") {
-                $O->{$i} = "Opening"; # next time
-            }
-            else {
-                $O->{$i} = "Closed";
-            }
-        }
+        $self->sleeep();
         $self->{show}->nah();
         delete $self->{show};
         delete $self->{Going};
         $self->{codo}->lobo($self);
     }
     else {
+    	my $olds = $self->{chunks};
         say "Codon $self->{name} is here";
         $self->open_codefile();
-        
         $self->chunkify();
+        
+        if (@{$olds} != @{$self->{chunks}}) {
+        	$self->sleeep();
+            $self->display();
+        }
+    }
+}
+
+sub sleeep {
+    my $self = shift;
+    my $O = $self->{openness};
+    while (my ($i, $ness) = each %$O) {
+        if ($ness eq "Open") {
+        $O->{$i} = "Opening"; # next time
+        }
+        else {
+        $O->{$i} = "Closed";
+        }
     }
 }
 sub random_colour_background {
