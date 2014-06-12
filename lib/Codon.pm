@@ -30,7 +30,6 @@ sub open_codefile {
     my $self = shift;
     $self->{lines} = [map { $_ =~ s/\n$//s; $_ } $self->readfile($self->{codefile})];
 }
-
 sub display {
     my $self = shift;
     my $codo = shift;
@@ -56,6 +55,7 @@ sub display {
     my @chunks;
     for my $c (@{$self->{chunks}}) {
         my $i = $c->{i};
+        say "$i";
         my $lines = $c->{lines};
         my $rows = scalar(@$lines);
         my $ness = $self->{openness}->{$i};
@@ -221,7 +221,6 @@ sub away {
     $self->{Going} = 1;
     $self->save_all();
 }
-
 sub readfile {
     my $self = shift;
     return $self->{hostinfo}->getapp("Codo")->readfile(@_);
@@ -246,7 +245,6 @@ sub save_all {
         $self->save_done();
     }
 }
-
 sub save_chunk {
     my $self = shift;
     my $i = shift;
@@ -262,7 +260,6 @@ sub save_chunk {
          "  ws.reply({claw: '$sec', code: \$('#$textid').val()}); "
     );
 }
-
 sub update_chunk {
     my $self = shift;
     my $i = shift;
@@ -322,7 +319,6 @@ sub save_done {
         }
     }
 }
-
 sub sleeep {
     my $self = shift;
     my $O = $self->{openness};
@@ -339,19 +335,24 @@ sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
 sub chunkify {
     my $self = shift;
 # supposed to be a Tractor doing this
 
     my $lines = $self->{lines};
+    my $isgho = $self->{name} =~ /^ghosts/; 
 
-    # this consumes lines, should do wormhole at the end of init_wormhole
     my @stuff = ([]);
+    my $newchunk = sub {
+        my $l = shift;
+
+        $isgho && @{$stuff[-1]} > 0 && $l =~ /^(\w+|  \S+)/
+        
+        || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
+    };
+    # this consumes lines, should do wormhole at the end of init_wormhole
     for my $l (@$lines) {
-            push @stuff, []
-                if $self->{name} =~ /^ghosts/ && @{$stuff[-1]} > 0 &&   $l =~ /^(\w+|  \S+)/
-                    || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
+        push @stuff, [] if $newchunk->($l);
         push @{ $stuff[-1] }, $l;
     }
 
