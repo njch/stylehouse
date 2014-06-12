@@ -1,5 +1,23 @@
 name: ghost refs
 hooks:
+  donethinking: |
+    for my $c (@{$self->{out}}) {
+        if ($c->{note}) {
+            push @{ $self->{etc}->{note}||=[] }, $self->doo($c->{note});
+        }
+    }
+  maketravels_post: |
+    if (!@{$self->{away}}) {
+        for my $dc (grep { $_->{default} } $self->chains) {
+            if (!$dc->{unless} || !$self->doo($dc->{unless})) {
+                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
+            }
+        }
+    }
+  donetravels: |
+    for my $c ($self->chains) {
+        $self->hookways("donetravels_chain", {c => $c});
+    }
   donetravels_chain: |
     if ($c->{ref}) {
         if ($c->{ref} eq ref $thing) {
@@ -120,3 +138,5 @@ chains:
  - as: HASH
    note: ' { owner => $thing->view->owner } '
    ref: Texty
+ - default: " \"? '$thing' \""
+   unless: ' ref \$thing eq "SCALAR" '
