@@ -312,7 +312,7 @@ sub load_codon {
     
     if (grep { $_ eq $codon } @{$self->{all_open}}) {
 		$self->{hostinfo}->send(
-        	"\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 800);"
+        	"\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 400);"
         );
     }
     else {
