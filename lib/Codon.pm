@@ -125,11 +125,10 @@ sub display {
         }
         if ($self->{openness}->{$i} eq "Open") {
             my $textid = $texty->{id}."-Text-$i";
-            if ("codemirror") {
-                my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
-                $he ||= 42;
-                my $theme = $self->{name} =~ /^ghosts\// ? "night" : "midnight";
-                $self->{hostinfo}->JS(
+            my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
+            $he ||= 42;
+            my $theme = $self->{name} =~ /^ghosts\// ? "night" : "midnight";
+            $self->{hostinfo}->JS(
 <<CM
 var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
     mode: 'perl',
@@ -141,6 +140,7 @@ var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
         },
         "Esc": function(cm) {
           if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+          cm.save();
         }
     }
 });
@@ -148,16 +148,12 @@ var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
  cm.on('blur', function() { cm.save() });
 
 CM
-                );
-            }
-            else {
-                $self->{hostinfo}->send(
-                    "\$('#$textid').change(function(){ ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });"
-                );
-                $self->{hostinfo}->send(
-                    "\$('#$textid').tabby({tabString:'    '});",
-                );
-            }
+            );
+            $self->{hostinfo}->send(
+            "\$('#$textid').change(function(){"
+            	."ws.reply({event:{id:\"$texty->{id}-Save-$i\"}})"
+            ."});"
+            );
         }
     }
 
@@ -165,7 +161,6 @@ CM
 
     $texty->fit_div;
 }
-
 sub draw_chunk {
     my $self = shift;
     my $c = shift;
@@ -219,7 +214,6 @@ sub event {
         say ddump([$s, $i, $e]);
     }
 }
-
 sub away {
     my $self = shift;
     $self->{Going} = 1;
@@ -279,7 +273,7 @@ sub update_chunk {
     
     my $textid = $self->{text}->{id}."-$i";
     $self->{hostinfo}->send(
-    	"\$(#$textid').fadeOut(200).fadeIn(100);");
+    	"\$('#$textid').fadeOut(200).fadeIn(100);");
 
     if ($self->{saving}) {
         delete $self->{saving}->{$i} || say " - wasn't updating $i but it came along anyway";
