@@ -304,7 +304,6 @@ sub update_chunk {
 
     $self->save_done;
 }
-
 sub save_done {
     my $self = shift;
     if ($self->{Going}) {
@@ -321,6 +320,7 @@ sub save_done {
         $self->{show}->nah();
         delete $self->{show};
         delete $self->{Going};
+        $self->{codo}->lobo($self);
     }
     else {
         say "Codon $self->{name} is here";
@@ -329,7 +329,6 @@ sub save_done {
         $self->chunkify();
     }
 }
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";

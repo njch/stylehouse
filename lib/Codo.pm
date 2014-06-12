@@ -54,7 +54,7 @@ sub new {
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;')
         ->spawn_floozy($self, codolist =>
-            "width:500px; z-index:3; background: #402a35; color: #afc;");
+            "width:500px; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
 
 
         $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -66,10 +66,12 @@ sub new {
     $self->init_codons();
 
     $self->codolist();
+    $self->{codolist}->float();
 
+    my $ao = $self->{all_open} = [];
     $self->re_openness();
 
-    $self->load_codon("Lyrico");
+    $self->load_codon("Lyrico") unless @$ao;
 
     return $self;
 }
@@ -108,7 +110,7 @@ sub event {
         $self->{hostinfo}->send("\$('#".$self->{Codo}->{divid}."').toggleClass('widdle');");
     }
     else {
-    	$self->{hostinfo}>error("Codo event 404 for $id". ddump($event));
+    	$self->{hostinfo}->error("Codo event 404 for $id". ddump($event));
     }
 }
 sub init_codons {
@@ -174,7 +176,7 @@ sub codolist {
             }
         },
         nospace => 1,
-        tuxtstyle => "float: left; opacity: 0.7; position: relative; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+        tuxtstyle => "float: left; opacity: 0.9; position: relative; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
     });
     
@@ -212,7 +214,7 @@ sub codoncolour {
     my $n = $codon->{name};
 
     $n =~ /^ghost/ ? "99FF66" :
-    $n =~ /Travel|Ghost|Wormhole/ ? "0B0906" :
+    $n =~ /Travel|Ghost|Wormhole/ ? "990906" :
     $n =~ /Texty/ ? "00FFFF" :
     $n =~ /View|Lyrico/ ? "CCFF66" :
     $n =~ /Hostinfo/ ? "3366FF" :
@@ -229,7 +231,12 @@ sub re_openness {
     my $codopenyl = "Codo-openness.yml";
     my $open = LoadFile($codopenyl) if -e $codopenyl;
     for my $o (@$open) {
-        my ($name, $ope) = each %$o;
+        my ($name, $ope) = @$o;
+        while (my ($k, $v) = each %$ope) {
+        	if ($v eq "Open") {
+            	$ope->{$k} = 'Opening';
+            }
+        }
         say "Ressur $name";
         $self->load_codon($name, $ope);
     }
@@ -237,29 +244,50 @@ sub re_openness {
 sub mind_openness {
     my $self = shift;
     my $codon = shift;
-    return 1;
+
     if ($codon) {
-        say "Codon minded: $codon->{name}";
-        push @{ $self->{all_open} }, { $codon->{name} => $codon } unless grep { $_->{$codon->{name}} } @{ $self->{all_open} }
-    }
-    my @saveopen;
-    for my $o (@{ $self->{all_open} }) {
-        my ($name, $codon) = each %$o;
-        next unless $codon;
-        my $ope = $codon->{openness};
-        my $opes = { %$ope };
-        
-        while (my ($c, $oo) = each %$opes) {
-            if ($oo eq "Open") {
-                $opes->{$c} = "Opening";
-            }
+        my $codlt = $self->{codolist}->{text};
+        my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
+        if ($menut) {
+            $self->{hostinfo}->send(
+                "\$('#$menut->{id}').addClass('onn');"
+            );
         }
-        push @saveopen, { $name => $opes };
+        else {
+        	$self->{hostinfo}->error("No findo $codon->{name} in codolist");
+        }
     }
+
+    if ($codon && !grep { $_ eq $codon } @{$self->{all_open}}) {
+        say "Codon minded: $codon->{name}";
+        push @{$self->{all_open}}, Hostinfo::weaken $codon;
+    }
+
+	my @saveopen = map {
+        [ $_->{name} => $_->{openness} ]
+    } grep { defined $_ } @{$self->{all_open}};
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
 
+sub lobo {
+    my $self = shift;
+    my $codon = shift;
+    
+    @{$self->{all_open}} =
+    	grep { $_ ne $codon } @{$self->{all_open}};
+    
+    my $codlt = $self->{codolist}->{text};
+    my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
+    if ($menut) {
+      $self->{hostinfo}->send(
+      	"\$('#$menut->{id}').removeClass('onn');"
+      );
+    }
+    else {
+    	$self->{hostinfo}->error("No findo $codon->{name} in codolist");
+    }
+}
 sub list_of_codefiles {
     my $self = shift;
     my $dir = $self->{code_dir} || "";
@@ -278,15 +306,21 @@ sub load_codon {
     my $codon = shift;
     my $ope = shift;
 
+
     $codon = $self->codon_by_name($codon) unless ref $codon;
     say "Codo load $codon->{name}";
     $codon || die;
-
-    $codon->display($self, $ope);
     
-    $self->mind_openness($codon);
+    if (grep { $_ eq $codon } @{$self->{all_open}}) {
+		$self->{hostinfo}->send(
+        	"\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 800);"
+        );
+    }
+    else {
+    	$codon->display($self, $ope);
+    	$self->mind_openness($codon);
+    }
 }
-
 sub codon_by_name {
     my $self = shift;
     my $name = shift;
