@@ -193,13 +193,19 @@ sub codolist {
         float => sub {
             $list->float();
         },
+        _ => sub {
+        	$_->away for @{ $self->{all_open} };
+        },
+        S => sub {
+        	$_->save_all for @{ $self->{all_open} };
+        },
     };
     
     $listy->add_hooks({
         event => { menu => $menu },
     });
 
-	my $lines = [ "!menu float" ];
+	my $lines = [ "!menu float", "!menu S", "!menu _" ];
     my $coname = { map { $_->{name} => $_ } @$codons };
     for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
