@@ -1,6 +1,6 @@
 name: ghost refs
 hooks:
-  donethinking: |
+  umm: |
     for my $c (@{$self->{out}}) {
         if ($c->{note}) {
             push @{ $self->{etc}->{note}||=[] }, $self->doo($c->{note});
@@ -11,23 +11,20 @@ hooks:
         $self->hookways("maketravels_chain", {c => $c});
     }
     $self->hookways("maketravels_post");
-  donetravels: |
-    for my $c ($self->chains) {
-        $self->hookways("donetravels_chain", {c => $c});
-    }
   maketravels_post: |
     if (!@{$self->{away}}) {
+        
         for my $dc (grep { $_->{default} } $self->chains) {
             if (!$dc->{unless} || !$self->doo($dc->{unless})) {
                 push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
             }
         }
     }
-  donetravels: |
+  arr: |
     for my $c ($self->chains) {
-        $self->hookways("donetravels_chain", {c => $c});
+        $self->hookways("arr_chain", {c => $c});
     }
-  donetravels_chain: |
+  arr_chain: |
     if ($c->{ref}) {
         if ($c->{ref} eq ref $thing) {
             if ($c->{as}) {
@@ -37,20 +34,6 @@ hooks:
                 $c = { %$new_c, as_from => $c };
             }
             push @{$self->{wayout}}, $c;
-        }
-    }
-  maketravels_chain: |
-    if ($c->{for}) {
-        my $i = 0;
-        for my $for (@{ $self->doo($c->{for}) }) {
-            if (my $t = $c->{travel}) {
-                push @{$self->{away}}, {
-                    travel => {
-                        thing => $self->doo($t, {for => $for}),
-                        way => { %$c, i => $i++, value => $for }
-                    }
-                };
-            }
         }
     }
   chain_to_tuxts: |

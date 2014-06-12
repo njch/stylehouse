@@ -138,12 +138,12 @@ sub haunt { # arrives through here
     $self->ob($self);
     
     $self->{wayout} = [];
-    $self->hookways("donetravels");
+    $self->hookways("arr");
 
     $self->ob($self);
 
     $self->{away} = []; # of {} args to Travel
-    $self->hookways("donethinking");
+    $self->hookways("umm");
 
     $self->ob($self);
 
@@ -151,13 +151,12 @@ sub haunt { # arrives through here
 
     $self->ob($self);
 
-    $self->hookways("maketravels");
+    $self->hookways("and");
 
     $self->ob($self);
 
     return ($state, $self->{away});
 }
-
 sub grep_chains {
     my $self = shift;
     my %s = @_;
