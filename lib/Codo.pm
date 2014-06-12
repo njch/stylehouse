@@ -247,7 +247,7 @@ sub mind_openness {
 
     if ($codon) {
         my $codlt = $self->{codolist}->{text};
-        my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
+        my ($menut) = grep { $_->{codon} && $_->{codon} eq $codon } @{ $codlt->{tuxts} };
         if ($menut) {
             $self->{hostinfo}->send(
                 "\$('#$menut->{id}').addClass('onn');"
