@@ -260,7 +260,7 @@ sub mind_openness {
 
     if ($codon && !grep { $_ eq $codon } @{$self->{all_open}}) {
         say "Codon minded: $codon->{name}";
-        push @{$self->{all_open}}, Hostinfo::weaken $codon;
+        push @{$self->{all_open}}, $codon;
     }
 
 	my @saveopen = map {
@@ -269,7 +269,6 @@ sub mind_openness {
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
-
 sub lobo {
     my $self = shift;
     my $codon = shift;
