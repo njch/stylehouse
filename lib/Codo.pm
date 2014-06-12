@@ -310,15 +310,14 @@ sub load_codon {
     say "Codo load $codon->{name}";
     $codon || die;
     
-    if (grep { $_ eq $codon } @{$self->{all_open}}) {
-		$self->{hostinfo}->send(
-        	"\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
-        );
-    }
-    else {
+    say "OPen Codons: ".join", ", map { $_->{name} } @{$self->{all_open}};
+    unless (grep { $_ eq $codon } @{$self->{all_open}}) {
     	$codon->display($self, $ope);
     	$self->mind_openness($codon);
     }
+    $self->{hostinfo}->send(
+    "\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
+    );
 }
 sub codon_by_name {
     my $self = shift;
