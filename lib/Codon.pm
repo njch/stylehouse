@@ -55,7 +55,6 @@ sub display {
     my @chunks;
     for my $c (@{$self->{chunks}}) {
         my $i = $c->{i};
-        say "$i";
         my $lines = $c->{lines};
         my $rows = scalar(@$lines);
         my $ness = $self->{openness}->{$i} ||= "Opening";
