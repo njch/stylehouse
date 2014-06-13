@@ -285,11 +285,7 @@ sub update_chunk {
 
     say "Going to write $self->{name}";
 
-    my $lines = [];
-    for my $c (@{ $self->{chunks} }) {
-        push @$lines, @{$c->{lines}};
-    }
-    my $whole = join "\n\n", @$lines;
+    my $whole = join "\n\n", map { join "\n", @{$_->{lines}} } @{ $self->{chunks} };
     $whole .= "\n" unless $whole =~ /\n$/s;
     $whole =~ s/\t/    /g;
 
