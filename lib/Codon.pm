@@ -290,8 +290,9 @@ sub update_chunk {
     for my $c (@{ $self->{chunks} }) {
         push @$lines, @{$c->{lines}};
     }
-    my $whole = join "\n", @$lines;
+    my $whole = join "\n\n", @$lines;
     $whole .= "\n" unless $whole =~ /\n$/s;
+    $whole =~ s/\t/    /g;
 
     $self->writefile($self->{codefile}, $whole);
 
