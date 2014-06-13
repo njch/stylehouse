@@ -288,6 +288,7 @@ sub lobo {
     
     @{$self->{all_open}} =
         grep { $_ ne $codon } @{$self->{all_open}};
+    $self->mind_openness;
     
     my $codlt = $self->{codolist}->{text};
     my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
@@ -300,7 +301,6 @@ sub lobo {
         $self->{hostinfo}->error("No findo $codon->{name} in codolist");
     }
 }
-
 sub list_of_codefiles {
     my $self = shift;
     my $dir = $self->{code_dir} || "";
