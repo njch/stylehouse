@@ -39,7 +39,7 @@ sub load_ways {
         
         for my $file (glob "ghosts/$name/*") {
         
-            my $ow = grep { $_->{file} eq $file } @$ows;
+            my ($ow) = grep { $_->{file} eq $file } @$ows;
             
             if ($ow) {
                 $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
@@ -54,8 +54,7 @@ sub load_ways {
             }
         }
         
-            say "Wachingways!" for 1..40;
-        $self->{hostinfo}->watch_these_ways($name, $self);
+        $self->{hostinfo}->watch_ghost_way($self, $name);
     }
     
     $self->hookways("load_ways_post");
