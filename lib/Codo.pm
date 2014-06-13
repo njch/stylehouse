@@ -154,35 +154,11 @@ sub codolist {
     my $codons = $self->{hostinfo}->get("Codon");
     die "no codons" unless $codons;
     say "Codons number ".@$codons;
-
 	my $list = $self->{codolist};
 	my $listy = $list->text;
-    $listy->{hooks}->{fit_div} = 1;
-    $listy->add_hooks({
-        tuxts_to_htmls_tuxt => sub {
-            my ($texty, $s) = @_;
-
-            if (ref $s->{value} eq "Codon") {
-                my $codon = $s->{value};
-                $s->{value} = $codon->{name};
-                $s->{value} =~ s/^ghosts\///;
-                $s->{codon} = $codon;
-            	$s->{style} .= 'background-color: #'.codoncolour($codon).';'
-                    .($codon->{name} =~ /^ghosts\// ? 'color: #5A5AAF;' : '');
-                $s->{menu} = "hunt";
-            }
-            elsif ($s->{menu}) {
-                $s->{style} .= "border: 2px solid #8A002E"
-            }
-        },
-        nospace => 1,
-        class => 'menu',
-        tuxtstyle => "opacity: 0.9; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
-            ."text-shadow: 2px 4px 5px #4C0000;",
-    });
     
     my $menu = {
-        hunt => sub {
+        h => sub {
         	my ($ev, $s) = @_;
             if ($s->{codon}) {
             	$self->load_codon($s->{codon});
@@ -201,14 +177,34 @@ sub codolist {
         	$_->save_all for @{ $self->{all_open} };
         },
     };
-    
     $listy->add_hooks({
+        tuxts_to_htmls_tuxt => sub {
+            my ($texty, $s) = @_;
+
+            if (ref $s->{value} eq "Codon") {
+                my $codon = $s->{value};
+                $s->{value} = $codon->{name};
+                $s->{value} =~ s/^ghosts\///;
+                $s->{codon} = $codon;
+            	$s->{style} .= 'background-color: #'.codoncolour($codon).';'
+                    .($codon->{name} =~ /^ghosts\// ? 'color: #5A5AAF;' : '');
+                $s->{menu} = "h";
+            }
+            elsif ($s->{menu}) {
+                $s->{style} .= "border: 2px solid #8A002E"
+            }
+        },
+        nospace => 1,
+        class => 'menu',
+        tuxtstyle => "opacity: 0.9; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+            ."text-shadow: 2px 4px 5px #4C0000;",
         event => { menu => $menu },
     });
 
-	my $lines = [ "!menu float", "!menu S", "!menu _" ];
+	my $lines = [ map { "!menu $_" } keys %$menu ];
     my $coname = { map { $_->{name} => $_ } @$codons };
-    for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css Codo Codon Direction',
+    for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css',
+    		   qw'Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
 
         push @$lines, delete $coname->{$n};
