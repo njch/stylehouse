@@ -35,10 +35,12 @@ use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
 
+
 sub DESTROY {
     my $self = shift;
     $self->nah;
 }
+
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -75,6 +77,7 @@ sub new {
 
     return $self;
 }
+
 sub menu {
     my $self = shift;
     $self->{menu} ||= {
@@ -101,6 +104,7 @@ sub menu {
     }
 }
 
+
 sub event {
     my $self = shift;
     my $event = shift;
@@ -110,9 +114,10 @@ sub event {
         $self->{hostinfo}->send("\$('#".$self->{Codo}->{divid}."').toggleClass('widdle');");
     }
     else {
-    	$self->{hostinfo}->error("Codo event 404 for $id". ddump($event));
+        $self->{hostinfo}->error("Codo event 404 for $id". ddump($event));
     }
 }
+
 sub init_codons {
     my $self = shift;
 
@@ -148,33 +153,34 @@ sub init_codons {
     }
 }
 
+
 sub codolist {
     my $self = shift;
 
     my $codons = $self->{hostinfo}->get("Codon");
     die "no codons" unless $codons;
     say "Codons number ".@$codons;
-	my $list = $self->{codolist};
-	my $listy = $list->text;
+    my $list = $self->{codolist};
+    my $listy = $list->text;
     
     my $menu = {
         h => sub {
-        	my ($ev, $s) = @_;
+            my ($ev, $s) = @_;
             if ($s->{codon}) {
-            	$self->load_codon($s->{codon});
+                $self->load_codon($s->{codon});
             }
             else {
-            	$self->{hostinfo}->error(" no go diggy die", $ev, $s);
+                $self->{hostinfo}->error(" no go diggy die", $ev, $s);
             }
         },
         float => sub {
             $list->float();
         },
         _ => sub {
-        	$_->away for @{ $self->{all_open} };
+            $_->away for @{ $self->{all_open} };
         },
         S => sub {
-        	$_->save_all for @{ $self->{all_open} };
+            $_->save_all for @{ $self->{all_open} };
         },
     };
     $listy->add_hooks({
@@ -186,7 +192,7 @@ sub codolist {
                 $s->{value} = $codon->{name};
                 $s->{value} =~ s/^ghosts\///;
                 $s->{codon} = $codon;
-            	$s->{style} .= 'background-color: #'.codoncolour($codon).';'
+                $s->{style} .= 'background-color: #'.codoncolour($codon).';'
                     .($codon->{name} =~ /^ghosts\// ? 'color: #5A5AAF;' : '');
                 $s->{menu} = "h";
             }
@@ -201,10 +207,10 @@ sub codolist {
         event => { menu => $menu },
     });
 
-	my $lines = [ map { "!menu $_" } keys %$menu ];
+    my $lines = [ map { "!menu $_" } keys %$menu ];
     my $coname = { map { $_->{name} => $_ } @$codons };
     for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css',
-    		   qw'Codo Codon Direction',
+               qw'Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
 
         push @$lines, delete $coname->{$n};
@@ -212,8 +218,9 @@ sub codolist {
     push @$lines, values $coname;
     $listy->replace($lines);
 }
+
 sub codoncolour {
-	my $codon = shift;
+    my $codon = shift;
     my $n = $codon->{name};
 
     $n =~ /^ghost/ ? "99FF66" :
@@ -228,6 +235,7 @@ sub codoncolour {
     $n =~ /Codon/ ? "3366FF" :
     "B8B86E"
 }
+
 sub re_openness {
     my $self = shift;
 
@@ -236,14 +244,15 @@ sub re_openness {
     for my $o (@$open) {
         my ($name, $ope) = @$o;
         while (my ($k, $v) = each %$ope) {
-        	if ($v eq "Open") {
-            	$ope->{$k} = 'Opening';
+            if ($v eq "Open") {
+                $ope->{$k} = 'Opening';
             }
         }
         say "Ressur $name";
         $self->load_codon($name, $ope);
     }
 }
+
 sub mind_openness {
     my $self = shift;
     my $codon = shift;
@@ -257,7 +266,7 @@ sub mind_openness {
             );
         }
         else {
-        	$self->{hostinfo}->error("No findo $codon->{name} in codolist");
+            $self->{hostinfo}->error("No findo $codon->{name} in codolist");
         }
     }
 
@@ -266,30 +275,32 @@ sub mind_openness {
         push @{$self->{all_open}}, $codon;
     }
 
-	my @saveopen = map {
+    my @saveopen = map {
         [ $_->{name} => $_->{openness} ]
     } grep { defined $_ } @{$self->{all_open}};
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
+
 sub lobo {
     my $self = shift;
     my $codon = shift;
     
     @{$self->{all_open}} =
-    	grep { $_ ne $codon } @{$self->{all_open}};
+        grep { $_ ne $codon } @{$self->{all_open}};
     
     my $codlt = $self->{codolist}->{text};
     my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
     if ($menut) {
       $self->{hostinfo}->send(
-      	"\$('#$menut->{id}').removeClass('onn');"
+          "\$('#$menut->{id}').removeClass('onn');"
       );
     }
     else {
-    	$self->{hostinfo}->error("No findo $codon->{name} in codolist");
+        $self->{hostinfo}->error("No findo $codon->{name} in codolist");
     }
 }
+
 sub list_of_codefiles {
     my $self = shift;
     my $dir = $self->{code_dir} || "";
@@ -303,6 +314,7 @@ sub list_of_codefiles {
     );
 }
 
+
 sub load_codon {
     my $self = shift;
     my $codon = shift;
@@ -315,13 +327,14 @@ sub load_codon {
     
     say "OPen Codons: ".join", ", map { $_->{name} } @{$self->{all_open}};
     unless (grep { $_ eq $codon } @{$self->{all_open}}) {
-    	$codon->display($self, $ope);
-    	$self->mind_openness($codon);
+        $codon->display($self, $ope);
+        $self->mind_openness($codon);
     }
     $self->{hostinfo}->send(
     "\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
     );
 }
+
 sub codon_by_name {
     my $self = shift;
     my $name = shift;
@@ -334,21 +347,25 @@ sub codon_by_name {
     return;
 }
 
+
 sub readfile {
     my $self = shift;
     my $path = shift;
     read_file($self->{code_dir}.$path, @_);
 }
+
 sub writefile {
     my $self = shift;
     my $path = shift;
     write_file($self->{code_dir}.$path, @_);
 }
 
+
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
+
 
 sub infrl {
     my $self = shift;
@@ -356,18 +373,21 @@ sub infrl {
     $first = qq{!html <h2>$first</h2>};
     $self->{hostinfo}->info(join "\n", $first, @_);
 }
+
 sub errl {
     my $self = shift;
     my $first = shift;
     $first = qq{!html <h2 class="err">$first</h2>};
     $self->{hostinfo}->error(join "\n", $first, @_);
 }
+
 sub proc_killed {
     my $self = shift;
     my $proc = shift;
     delete $self->{$proc->{name}};
     $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
 }
+
 
 sub nah {
     my $self = shift;
@@ -380,6 +400,7 @@ sub nah {
     }
     $self->ebuge([]);
 }
+
 
 sub new_ebuge {
     my $self = shift;

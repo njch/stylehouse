@@ -8,7 +8,7 @@ use Time::HiRes 'usleep';
 my $i = 0; # sweeps through @{lyrics}
 
 $Hostinfo::data->{'horizon'} =
-	$Hostinfo::data->{style} eq
+    $Hostinfo::data->{style} eq
 "stylehouse"?
 "50%"
 :
@@ -17,6 +17,8 @@ $Hostinfo::data->{'horizon'} =
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
+
+
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -49,13 +51,15 @@ sub new {
 
     return $self;
 }
+
+
 sub somewhere {
     my $self = shift;
 
-	my $what = $self->{lyrics};
+    my $what = $self->{lyrics};
     $what = ['!'];
     $self->{hostinfo}->ravel(
-    	$self->{T},
+        $self->{T},
         $what,
         $self->{wormhola}
     );
@@ -64,6 +68,8 @@ sub somewhere {
         $self->somewhere();
     }) if 0 && $self->{hostinfo}->get("style") ne "stylehouse";
 }
+
+
 sub menu {
     my $self = shift;
     return {
@@ -77,14 +83,15 @@ sub menu {
             $self->{started} ? $self->stopclicky : $self->startclicky
         },
         C => sub {
-        	Git->new($self->{hostinfo}->intro);
-        	Codo->new($self->{hostinfo}->intro);
+            Git->new($self->{hostinfo}->intro);
+            Codo->new($self->{hostinfo}->intro);
         },
         anim => sub {
             $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
         },
     };
 }
+
 sub event {
     my $self = shift;
     my $event = shift;
@@ -107,17 +114,23 @@ sub event {
         $self->write($h, \@lyrics);
     }
 }
+
+
 sub startclicky {
     my $self = shift;
     $self->{hostinfo}->set('clickcatcher', $self);
     $self->{started} = 1;
 }
+
+
 sub stopclicky {
     my $self = shift;
     $self->{hostinfo}->unset('clickcatcher');
     $self->{hostinfo}->send("\$('.lyrics').remove();");
     $self->{started} = 0;
 }
+
+
 
 sub zlyrics {
     my $self = shift;
@@ -129,6 +142,8 @@ sub zlyrics {
     my $ly = $lyrics->[$i];
     return $ly;
 }
+
+
 sub write {
     my $self = shift;
     my $h = shift;
@@ -140,6 +155,8 @@ sub write {
 }
 
 use Mojo::IOLoop;
+
+
 sub scroll_unthrottle {
     my $self = shift;
     $self->{scroll}->{throttle} = 0;
@@ -147,6 +164,8 @@ sub scroll_unthrottle {
         $self->scroll(delete $self->{scroll}->{latest});
     }
 }
+
+
 sub scroll_throttle {
     my $self = shift;
     my $s = shift;
@@ -161,6 +180,8 @@ sub scroll_throttle {
     });
     return 0;
 }
+
+
 
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
