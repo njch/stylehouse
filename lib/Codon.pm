@@ -58,7 +58,7 @@ sub display {
         say "$i";
         my $lines = $c->{lines};
         my $rows = scalar(@$lines);
-        my $ness = $self->{openness}->{$i};
+        my $ness = $self->{openness}->{$i} ||= "Opening";
 
         if ($ness =~ /^Open/) {
             $rows = 105 if $rows > 105;
