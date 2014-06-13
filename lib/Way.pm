@@ -12,15 +12,19 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->downway(shift);
+	$self->{wayofthe} = shift;
+	$self->{file} = shift;
+    $self->load_wayfile();
 
     return $self;
 }
-
-sub downway {
+sub load_wayfile {
     my $self = shift;
-    $self->{file} = shift;
-    my $w = LoadFile($self->{file});
+    my $w = eval { LoadFile($self->{file}) };
+    if (!$w || ref $w ne 'HASH' || $@) {
+    	die "! YAML load $self->{file} failed: "
+        	.($@ ? $@ : "got: ".($w || "~"));
+    }
     # merge the ways into $self
     for my $i (keys %$w) {
         $self->{$i} = $w->{$i};

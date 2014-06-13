@@ -18,28 +18,44 @@ sub new {
     my $name = $self->{name} = $travel->{name};
     say "Ghost named $name";
 
-    $self->load_way("Travel");
-    $self->load_way($name);
-    if ($name =~ /^(\w+)-.+/) {
-        $self->load_way($1);
-    }
+	my @wayns = ("Travel", $name);
+    push @wayns, $1 if $name =~ /^(\w+)-.+/;
+    $self->load_ways(@wayns);
 
     $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
 
     return $self;
 }
-sub load_way {
+sub load_ways {
     my $self = shift;
-    my $name = shift;
-    $self->{ways} ||= [];
-    unless (-d "ghosts/$name") {
-        say "Ghost ? $name";
-        return;
+    my @wayns = @_;
+    my $ows = $self->{ways} ||= [];
+    
+    for my $name (@wayns) {
+        unless (-d "ghosts/$name") {
+            say "Ghost ? $name"; # might be gone since last load, this all very additive
+            next;
+        }
+        
+        for my $file (glob "ghosts/$name/*") {
+        
+        	my $ow = grep { $_->{file} eq $file } @$ows;
+            
+            if ($ow) {
+            	$ow->load_wayfile(); # and the top level hashkeys will not go away without restart
+                say "Ghost U $ow->{id}: $file";
+
+            }
+            else {
+            	$ow = new Way($self->hostinfo->intro, $name, $file);
+                
+                say "Ghost + $ow->{id}: $file";
+                push $ows, $ow;
+            }
+        }
     }
-    for (glob "ghosts/$name/*") {
-        push @{ $self->{ways} }, new Way($self->hostinfo->intro, $_);
-        say "Ghost + $_";
-    }
+    
+    $self->hookways("load_ways_post");
 }
 sub ob {
     my $self = shift;
