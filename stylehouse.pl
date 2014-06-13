@@ -149,9 +149,9 @@ sub init {
     $hostinfo->flood($hostinfo->get('flood/default_thing') || [(jah => "waka")x7]);
 
     if ($name eq "styleshed") {
-        Lyrico->new($hostinfo->intro);
         Git->new($hostinfo->intro);
         Codo->new($hostinfo->intro);
+        Lyrico->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
