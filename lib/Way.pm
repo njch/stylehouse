@@ -35,5 +35,11 @@ sub load_wayfile {
         }
     }
 }
+sub spawn {
+    my $self = shift;
+    return new Way($self->{hostinfo}->intro,
+    	$self->{wayofthe}, $self->{file}
+    );
+}
 
 1;
