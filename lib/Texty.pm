@@ -26,7 +26,7 @@ sub new {
     $self->view(shift || die "need owner");
     $self->lines(shift || []);
     $self->add_hooks(shift || {});
-    $self->{class} = $self->{hooks}->{class} || "data";
+    $self->{class} ||= "data";
     $self->tuxts([]);
 
     if (ref $self->lines ne "ARRAY") {
@@ -55,6 +55,8 @@ sub add_hooks {
     my $hooks = shift;
     $self->{hooks} ||= {};
     $self->{hooks}->{$_} = $hooks->{$_} for keys %$hooks;
+    my $c = $self->{hooks}->{class};
+    $self->{class} = $c if $c;
 }
 
 
