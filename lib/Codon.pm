@@ -151,7 +151,7 @@ CM
             );
             $self->{hostinfo}->send(
             "\$('#$textid').change(function(){"
-            	."ws.reply({event:{id:\"$texty->{id}-Save-$i\"}})"
+                ."ws.reply({event:{id:\"$texty->{id}-Save-$i\"}})"
             ."});"
             );
         }
@@ -271,7 +271,7 @@ sub update_chunk {
     
     my $textid = $self->{text}->{id}."-$i";
     $self->{hostinfo}->send(
-    	"\$('#$textid').fadeOut(200).fadeIn(100);");
+        "\$('#$textid').fadeOut(200).fadeIn(100);");
 
     if ($self->{saving}) {
         delete $self->{saving}->{$i} || say " - wasn't updating $i but it came along anyway";
@@ -304,13 +304,13 @@ sub save_done {
         $self->{codo}->lobo($self);
     }
     else {
-    	my $olds = $self->{chunks};
+        my $olds = $self->{chunks};
         say "Codon $self->{name} is here";
         $self->open_codefile();
         $self->chunkify();
         
         if (@{$olds} != @{$self->{chunks}}) {
-        	$self->sleeep();
+            $self->sleeep();
             $self->display();
         }
     }
