@@ -150,8 +150,8 @@ sub init {
 
     if ($name eq "styleshed") {
         Lyrico->new($hostinfo->intro);
-     #   Git->new($hostinfo->intro);
-     #   Codo->new($hostinfo->intro);
+        Git->new($hostinfo->intro);
+        Codo->new($hostinfo->intro);
     }
     else {
         Git->new($hostinfo->intro);
