@@ -176,7 +176,8 @@ sub codolist {
             }
         },
         nospace => 1,
-        tuxtstyle => "float: left; opacity: 0.9; position: relative; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+        class => 'menu',
+        tuxtstyle => "opacity: 0.9; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
     });
     

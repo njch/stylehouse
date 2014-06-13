@@ -22,6 +22,7 @@ sub new {
     $self->{cmd} = shift;
     my $i = $self->{id};
 
+    if ($self->{git}->{Procshow}) {
     $self->{Proc} =
         $self->{git}->{Procshow}->spawn_floozy($self->{id},
             'width:98%; border: 2px dashed black; background: #005a50; color: #afc; font-weight: bold;');
@@ -42,6 +43,8 @@ sub new {
             "width: 100%; background-color: #321; border: 2px solid white; border: 3px solid gold; overflow: scroll; margin: 2px;");
 
     $self->init();
+    }
+    
 
     if ($self->{cmd}) {
         $self->start();

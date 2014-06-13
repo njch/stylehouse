@@ -421,6 +421,7 @@ sub event {
         my $menu = $evh->{menu};
         my $s = $self->id_to_tuxt($event->{id});
         if (my $m = $s->{menu}) {
+            say "hooking HASHY event menu for $m";
             $menu->{$m}->($event, $s);
         }
         else {

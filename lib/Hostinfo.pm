@@ -197,7 +197,6 @@ sub elvis_leaves {
 sub hostinfo { shift }
 
 sub data { $data }
-
 sub dkeys {
     return map { "$_ => ".(ref $data->{$_}) } keys %$data;
 }
@@ -516,11 +515,6 @@ sub watch_file_streams {
     $self->timer(0.5, sub {
         $self->watch_file_streams();
     });
-}
-
-sub get {
-    my ($self, $i) = @_;
-    $data->{$i};
 }
 
 sub get {

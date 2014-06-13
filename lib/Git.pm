@@ -16,11 +16,15 @@ sub new {
     }
     $self->wire_procs();
 
-    return $self if $self->hi->get('style') ne "stylehouse";
+  #  return $self if $self->hi->get('style') ne "stylehouse";
 
     my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
-    $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;", undef, undef, "menu");
 
+    $self->gitrack();
+    
+	$self->{spawn_init} = sub {
+    
     my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
     $PS->text->replace(['!class=hear Procshow']);
     
@@ -35,19 +39,18 @@ sub new {
         "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     $GS->spawn_floozy($self, repos =>
         "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-
-    $self->init();
-    
-    $self->hi->timer(1, sub {
-        my ($last) = reverse @{ $self->{proclistwatch}->text->{lines} };
-        $self->procup($last =~ /.+?(\d+): (.+)/);
-    }) if 0;
+        
+	};
 
     return $self;
 }
 sub init {
     my $self = shift; 
-
+	
+    unless ($self->{Gitshow}) {
+		$self->{spawn_init}->();
+    }
+    
     $self->gitrack();
 
     $self->pswatch();
@@ -63,10 +66,10 @@ sub gitrack {
     
     $self->{rackmenu} = {
         ps => sub {
-            shift->pswatch("once");
+            $self->pswatch("once");
         },
         init => sub {
-            shift->init();
+            $self->init();
         },
         sp => sub {
             $self->spawn_proc('cd ../styleshed && git pull house conty');
@@ -90,27 +93,12 @@ sub gitrack {
             return 'padding: 4.20px; font-size: 1em; '.random_colour_background();
         },
         class => "menu",
-        spatialise => sub {
-            return { top => 1, left => 1, horizontal => 20, wrap_at => 1200 } # space tabs by 40px
-        },
-        notakeover => 1,
-        event => sub {
-            my $texty = shift;
-            my $event = shift;
-            my $id = $event->{id};
-            my $s = $texty->id_to_tuxt($id);
-            die "no findo $id" unless $s;
-            my $v = $s->{value};
-
-            my $w = $self->{rackmenu}->{$v};
-            return $w->($self, $event) if $w;
-            die "no $v in $self";
-        },
+        nospace => 1,
+        event => { menu => $self->{rackmenu} },
     });
     my @items = sort keys %{$self->{rackmenu}};
-    $rt->replace([@items]);
+    $rt->replace([ map { "!menu $_" } @items]);
 }
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
