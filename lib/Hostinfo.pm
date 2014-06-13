@@ -59,10 +59,10 @@ sub elvis_send {
     }
 
     my $short = length($message) < 200 ?
-    	$message
+        $message
         :
         '('.substr(sha1_hex($message),0,8).') '
-    	.substr($message,0,23*9)." >SNIP<";
+        .substr($message,0,23*9)." >SNIP<";
     
     if (-t STDOUT) {
         print colored("< send\t\t", 'blue');
@@ -336,7 +336,6 @@ sub app_menu_hooks {
         },
     };
 }
-
 sub update_app_menu {
     my $self = shift;
 
@@ -421,107 +420,188 @@ sub stream_file {
         linehook => shift,
         lines => [],
     };
-    my $just_tail = shift;
+    my $tail = shift;
+    $st->{tail} = $tail if defined $tail;
 
-    open(my $fh, '<', $st->{filename})
-        or die "cannot open $st->{filename}: $!";
 
-    while (<$fh>) {
-        unless ($just_tail) {
-            $st->{linehook}->($_);
-        }
-    }
 
-    $st->{handle} = $fh;
-    ($st->{ino}, $st->{ctime}, $st->{size}) = (stat $st->{filename})[1,10,7];
+    push @{$self->{file_streams} ||= []}, $st;
 
-    my $streams = $self->{file_streams} ||= [];
-
-    push @$streams, $st;
-
-    if (@$streams == 1) {
-        $self->watch_file_streams();
-    }
+    $self->watch_files();
+    
+    return $st;
 }
-sub watch_file_streams {
+sub watch_files {
     my $self = shift;
+    my $forever = shift;
+    die unless !$forever || $forever =~ /forever/;
 
     my $clean_text = sub {
-        $_ = shift;
-        s/[^a-zA-Z\t\n '":\[\]\)\(\;\.\$_\?!#\@\\\/\-\=]//gs;
-        return $_;
+        my $l = shift;
+        my @dirt;
+        my $c = sub {
+            push @dirt, shift;
+            return ""
+        };
+        $l =~ s/([^a-zA-Z\t\n '":\[\]\)\(\;\.\$_\?!#\@\\\/\-\=]+)/$c->($1);/ges;
+        return ($_, \@dirt);;
     };
+    if (0) {
+        say "clean_text god some dirt";
+        for my $dirt ([]) {
+            say capture(
+                -in => sub { print "$dirt\n" },
+                'xxd');
+        }
+    }
+    say " Watching files...";
 
     for my $st (@{ $self->{file_streams} }) {
-        my ($ino, $ctime, $size) = (stat $st->{filename})[1,10,7];
+        my ($ino, $ctime, $size) =
+        (stat $st->{filename})[1,10,7];
 
-        if ($size < $st->{size} || $ctime != $st->{ctime} || $ino != $st->{ino}) {
-            say "$st->{filename} has been REPLACED or something";
-            say "$size\n$st->{size}\n$ctime\n$st->{ctime}\n$ino\n$st->{ino}";
-
-            my $fh = $st->{handle}; # try finish off the old one
-            while (<$fh>) {
-                $_ = $clean_text->($_);
-                push @{$st->{lines}}, $_;
-                $st->{linehook}->($_);
-            }
-            close $fh;
-            my $samei = 0;
-            if ($size > $st->{size}) {
-                my @whole = `cat $st->{filename}`;
-                my $whole = join "", @whole;
-                my $new = join("", @{$st->{lines}});
-                if ($whole ne $new) {
-                    $samei = scalar @whole;
+        my @diffs;
+        push @diffs, "Size: $size < SHRUNKEN  $st->{size}" if $size < $st->{size};
+        push @diffs, "ctime: $ctime != $st->{ctime}" if $ctime != $st->{ctime};
+        push @diffs, "inode: $ino != $st->{ino}" if $ino != $st->{ino};
+        
+        if (@diffs) {
+            say "$st->{filename} has been REPLACED or something:";
+            say "    ".join("    ", @diffs)
+        }
+        
+        if ($st->{lines}) {
+            
+            unless ($st->{handle}) {
+                open(my $fh, '<', $st->{filename})
+                    or die "cannot open $st->{filename}: $!";
+                # TODO tail number of lines $st->{tail}
+                while (<$fh>) {
+                    unless (defined $st->{tail}) {
+                        push @{$st->{lines}}, $_;
+                        $st->{linehook}->($_);
+                    }
                 }
-            }
-
-            open(my $anfh, '<', $st->{filename})
-                or die "cannot open $st->{filename}: $!";
-
-            my $i = 0;
-            while (<$anfh>) {
-                if ($samei == 0) {
-                    my $mark = "==== ~!";
-                    $st->{linehook}->($mark);
-                }
-                unless ($samei-- > 0) {
-                    $_ = $clean_text->($_);
-                    push @{$st->{lines}}, $_;
-                    $st->{linehook}->($_);
-                }
+                $st->{handle} = $fh;
             }
             
-            $st->{handle} = $anfh;
-            $st->{ctime} = $ctime;
-            $st->{ino} = $ino;
-            $st->{size} = -1;
-        }
-        elsif ($size > $st->{size}) {
-            say "$st->{filename} has GROWTH";
-            my $fh = $st->{handle};
-            while (<$fh>) {
-                $_ = $clean_text->($_);
-                push @{$st->{lines}}, $_;
-                $st->{linehook}->($_);
+            if (@diffs) {
+            
+                my $fh = $st->{handle}; # try finish off the old one
+                while (<$fh>) {
+                    my ($l, $d) = $clean_text->($_);
+                    push @{$st->{lines}}, $l;
+                    $st->{linehook}->($l);
+                }
+                close $fh;
+                my $samei = 0;
+                if ($size > $st->{size}) {
+                    my @whole = `cat $st->{filename}`;
+                    my $whole = join "", @whole;
+                    my $new = join("", @{$st->{lines}});
+                    if ($whole ne $new) {
+                        $samei = scalar @whole;
+                    }
+                }
+
+                open(my $anfh, '<', $st->{filename})
+                    or die "cannot open $st->{filename}: $!";
+
+                my $i = 0;
+                while (<$anfh>) {
+                    if ($samei == 0) {
+                        my $mark = "==== ~!";
+                        $st->{linehook}->($mark);
+                    }
+                    unless ($samei-- > 0) {
+                        my ($l, $d) = $clean_text->($_);
+                        push @{$st->{lines}}, $l;
+                        $st->{linehook}->($l);
+                    }
+                }
+
+                $st->{handle} = $anfh;
+                $st->{ctime} = $ctime;
+                $st->{ino} = $ino;
+                $st->{size} = (stat $st->{filename})[7];
+                
             }
-            $st->{size} = (stat $st->{filename})[7];
+            
+            if ($size > $st->{size}) {
+                say "$st->{filename} has GROWTH";
+                my $fh = $st->{handle};
+                while (<$fh>) {
+                    my ($l, $d) = $clean_text->($_);
+                    push @{$st->{lines}}, $l;
+                    $st->{linehook}->($l);
+                }
+                $st->{size} = (stat $st->{filename})[7];
+            }
+            elsif ($size == $st->{size}) {
+            }
+            else {# size < $st->size means file was re-read for @diffs
+            }
+            
         }
-        elsif ($size == $st->{size}) {
-            #
+        
+        if (my $gs = $st->{ghosts}) {
+            my $gr = $self->{ghosts_to_reload} ||= do {
+                $self->timer(0.3, sub { $self->reload_ghosts });
+                {};
+            };
+            while (my ($gid, $gw) = each %$gs) {
+                for my $wn (keys %$gw) {
+                    $gr->{$gid}->{$wn} = 1;
+                }
+            }
         }
         else { die "something$size > $st->{size})  else?" }
     }
+    return unless $forever || !$self->{watching_files};
     $self->timer(0.5, sub {
-        $self->watch_file_streams();
+        $self->{watching_files} = time;
+        $self->watch_files("forever!");
     });
 }
-
+sub reload_ghosts {
+    my $self = shift;
+    my $gr = delete $self->{ghosts_to_reload};
+    
+    while (my ($gid, $gw) = each %$gr) {
+        my $ghost = $self->get($gid);
+        die "NO Ghostys" unless $ghost;
+        $ghost->load_ways(keys %$gw);
+    }
+}
+sub watch_these_ways {
+    my $self = shift;
+    my $name = shift;
+    my $ghost = shift;
+    my $f = { map { $_ => 1 } glob "ghosts/$name/*" };
+    
+    say "Going to watch $name for $ghost->{id}";
+    
+    for my $est (@{$self->{file_streams}}) {
+        if (my $st = delete $f->{$est->{filename}}) {
+            my $ghosts = $st->{ghosts};
+            my $gw = $ghosts->{$ghost->{id}} ||= {};
+            $gw->{$name} = 1;
+        }
+    }
+    for my $file (keys %$f) {
+        my $st = {
+            filename => $file,
+            ghosts => { $ghost->{id} => { $name => 1 } },
+        };
+        push @{$self->{file_streams}}, $st;
+    }
+    
+    $self->watch_files();
+}
 sub get {
     my ($self, $i) = @_;
     $data->{$i};
 }
-
 sub gest {
     my $self = shift;
     my ($k, $v) = @_;
@@ -787,7 +867,7 @@ sub throwlog {
         join("\n",
             $error->[0],
             
-            	(map { "    - $_" } reverse @{$error->[1]}),
+                (map { "    - $_" } reverse @{$error->[1]}),
             join("\n\n\n", map { ref $_ ? ddump($_) : "$_" } @{$error->[2]}),
         );
 
@@ -843,10 +923,10 @@ sub duction {
     }
 
     $this->{id} = "$ref-$this->{huid}";
+    $self->set($this->{id}, $this);
 
     return $self;
 }
-
 sub tvs {
     my $self = shift;
     $self->get("tvs/shortref") || do {

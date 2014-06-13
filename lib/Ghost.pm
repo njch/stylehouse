@@ -18,7 +18,7 @@ sub new {
     my $name = $self->{name} = $travel->{name};
     say "Ghost named $name";
 
-	my @wayns = ("Travel", $name);
+    my @wayns = ("Travel", $name);
     push @wayns, $1 if $name =~ /^(\w+)-.+/;
     $self->load_ways(@wayns);
 
@@ -39,20 +39,23 @@ sub load_ways {
         
         for my $file (glob "ghosts/$name/*") {
         
-        	my $ow = grep { $_->{file} eq $file } @$ows;
+            my $ow = grep { $_->{file} eq $file } @$ows;
             
             if ($ow) {
-            	$ow->load_wayfile(); # and the top level hashkeys will not go away without restart
+                $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
                 say "Ghost U $ow->{id}: $file";
 
             }
             else {
-            	$ow = new Way($self->hostinfo->intro, $name, $file);
+                $ow = new Way($self->hostinfo->intro, $name, $file);
                 
                 say "Ghost + $ow->{id}: $file";
                 push $ows, $ow;
             }
         }
+        
+            say "Wachingways!" for 1..40;
+        $self->{hostinfo}->watch_these_ways($name, $self);
     }
     
     $self->hookways("load_ways_post");
@@ -92,22 +95,22 @@ sub hookways {
         next if $wayspec && $w ne $wayspec;
         if (exists $w->{hooks}->{$point}) {
             push @returns, [
-            	$self->doo($w->{hooks}->{$point}, $ar, $point)
-			];
+                $self->doo($w->{hooks}->{$point}, $ar, $point)
+            ];
         }
     }
     return say "Multiple returns from ".($point||'some?where')
-    						if @returns > 1;	
+                            if @returns > 1;    
     return say " NO REty ".($point||'some?where')
-    						if @returns < 1;
+                            if @returns < 1;
     my @return = @{$returns[0]};
     if (wantarray) {
-    	say "Returning ".($point||'somewhere').": @return";
+        say "Returning ".($point||'somewhere').": @return";
         return @return
     }
     else {
-    	my $one = shift @return;
-    	say "Returning ".($point||'somewhere').": ".($one||"~");
+        my $one = shift @return;
+        say "Returning ".($point||'somewhere').": ".($one||"~");
         return $one;
     }
 }
@@ -116,10 +119,10 @@ sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
     while ($eval =~ /(W (\w+)\((.+?)\))/sg) {
-    	my $p = pos();
+        my $p = pos();
         my ($old, $way, $are) = ($1, $2, $3);
-    	$eval =~ s/\Q$old\E/\$self->hookways("$way", $are)/
-        	|| die "Ca't replace $1 at $p\n the: $1\t\t$2"
+        $eval =~ s/\Q$old\E/\$self->hookways("$way", $are)/
+            || die "Ca't replace $1 at $p\n the: $1\t\t$2"
             ." in\n".ind("E ", $eval);
     }
     my $ar = shift;
