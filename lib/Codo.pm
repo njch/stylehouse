@@ -77,7 +77,6 @@ sub new {
 
     return $self;
 }
-
 sub menu {
     my $self = shift;
     $self->{menu} ||= {
@@ -249,10 +248,9 @@ sub re_openness {
             }
         }
         say "Ressur $name";
-        $self->load_codon($name, $ope);
+        $self->load_codon($name, $ope, "noscrolly");
     }
 }
-
 sub mind_openness {
     my $self = shift;
     my $codon = shift;
@@ -281,7 +279,6 @@ sub mind_openness {
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
-
 sub lobo {
     my $self = shift;
     my $codon = shift;
@@ -319,6 +316,7 @@ sub load_codon {
     my $self = shift;
     my $codon = shift;
     my $ope = shift;
+    my $noscrolly = shift;
 
 
     $codon = $self->codon_by_name($codon) unless ref $codon;
@@ -332,9 +330,8 @@ sub load_codon {
     }
     $self->{hostinfo}->send(
     "\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
-    );
+    ) unless $noscrolly;
 }
-
 sub codon_by_name {
     my $self = shift;
     my $name = shift;
