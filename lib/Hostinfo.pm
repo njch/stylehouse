@@ -684,11 +684,9 @@ sub accum {
 
 sub create_view {
     my $self = shift;
-    new View(
-        $self->intro, @_
-    );
+    
+    return $self->{ground}->spawn_floozy(@_);
 }
-
 sub screen_height {
     my $self = shift;
     my $sc = shift;
@@ -700,11 +698,14 @@ sub init_flood {
     my $self = shift;
 
     $self->{horizon} = $data->{horizon};
-    $self->create_view($self, "sky",
+    new View($self->intro, $self, "sky",
         "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
-    my $f = $self->{flood} = $self->create_view($self, "flood",
-        "width: 42%; min-width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
+    new View($self->intro, $self, "ground",
+        "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
+    );
+    my $f = $self->create_view($self, "flood",
+        "width: 42%; min-width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",

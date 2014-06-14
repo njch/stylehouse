@@ -66,7 +66,7 @@ sub new {
     return $self;
 }
 sub get_attached {
-	my $self = shift;
+    my $self = shift;
     my ($attach, $where, $what) = @_;
     
     if ($attach && $attach eq "after") {
@@ -126,7 +126,7 @@ sub spawn_floozy {
     my $attach = shift;
     my $where = shift;
     my $class = shift;
-
+    
     if (!$attach && !$where) {
         if ($self->{ceiling}) {
             $attach = "after";
@@ -148,7 +148,7 @@ sub spawn_floozy {
 
     $where = "#$where->{divid}" if ref $where;
 
-    my $floozy = $self->{hostinfo}->create_view(
+    my $floozy = new View($self->{hostinfo}->intro, 
         ($this || $self), $divid, $style,
         $attach => $where,
         $class,
@@ -159,7 +159,6 @@ sub spawn_floozy {
 
     $floozy;
 }
-
 sub spawn_ceiling {
     my $self = shift;
     my $this = shift if ref $_[0];
@@ -250,27 +249,27 @@ sub wipehtml {
     1;
 }
 sub float {
-	my $self = shift;
+    my $self = shift;
     
     if ($self->{floated}) {
-    	return $self->unfloat();
+        return $self->unfloat();
     }
     $self->{hostinfo}->JS(
-    	"\$('#$self->{divid}').addClass('floated');"
+        "\$('#$self->{divid}').addClass('floated');"
     );
     $self->{hostinfo}->JS(
-    	"\$('#sky').after(\$('#$self->{divid}'));"
+        "\$('#sky').after(\$('#$self->{divid}'));"
     );
     $self->{floated} = 1;
 }
 sub unfloat {
-	my $self = shift;
+    my $self = shift;
     
     $self->{hostinfo}->JS(
-    	"\$('#$self->{divid}').removeClass('floated');"
+        "\$('#$self->{divid}').removeClass('floated');"
     );
     $self->get_attached(
-    	@{$self->{oattachment}}, "\$('#$self->{divid}')"
+        @{$self->{oattachment}}, "\$('#$self->{divid}')"
     );
     $self->{floated} = 0;
 }
@@ -318,7 +317,7 @@ sub append_spans {
         $html =~ s/'/\\'/sg;
         $html =~ s/\n/\\n/sg;
 
-	my $Bmax = 30000;
+    my $Bmax = 30000;
     if (length($html) < $Bmax) {
         $self->hostinfo->send("  \$('#$divid').append('$html');");
     }
@@ -328,7 +327,7 @@ sub append_spans {
         my @Bs = ("");
         while (@htmls) {
             if (length($Bs[-1]) + length($htmls[0]) >= $Bmax) {
-				push @Bs, "";
+                push @Bs, "";
             }
             $Bs[-1] .= shift @htmls;
         }
