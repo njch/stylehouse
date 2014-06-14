@@ -52,7 +52,7 @@ sub new {
     
 
     my $Codo =
-    $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; top: $self->{hostinfo}->{horizon}; right: 0px; z-index:4; opacity: 0.95;");
+    $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; right: 0px; z-index:4; opacity: 0.95; height: 100%; overflow: scroll;");
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;')
         ->spawn_floozy($self, codolist =>
@@ -175,8 +175,11 @@ sub codolist {
         float => sub {
             $list->float();
         },
-        _ => sub {
+        '.' => sub {
             $_->away for @{ $self->{all_open} };
+        },
+        _ => sub {
+            $_->save_all("Collapse") for @{ $self->{all_open} };
         },
         S => sub {
             $_->save_all for @{ $self->{all_open} };
@@ -217,7 +220,6 @@ sub codolist {
     push @$lines, values $coname;
     $listy->replace($lines);
 }
-
 sub codoncolour {
     my $codon = shift;
     my $n = $codon->{name};
@@ -329,7 +331,8 @@ sub load_codon {
         $self->mind_openness($codon);
     }
     $self->{hostinfo}->send(
-    "\$.scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
+    "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
+    ." \$('#$codon->{show}->{text}->{id}-Head').fadeOut(300).fadeIn(500);"
     ) unless $noscrolly;
 }
 sub codon_by_name {

@@ -35,7 +35,6 @@ sub display {
     my $codo = shift;
     my $ope = shift;
     if ($ope) {
-        say "Openen $self->{name} ".anydump($ope);
         $self->{openness} = $ope;
     }
 
@@ -230,11 +229,17 @@ sub writefile {
     return $self->{hostinfo}->getapp("Codo")->writefile(@_);
 }
 
+
 sub save_all {
     my $self = shift;
+    my $Collapsing = shift;
     my $sv = $self->{saving} = {};
     while (my ($i, $ness) = each %{ $self->{openness} }) {
         if ($ness eq "Open") {
+            if ($Collapsing) {
+                $self->{openness}->{$i} = "Closing";
+                $self->{Collapsing} = 1;
+            }
             $self->{saving}->{$i} = 1;
             $self->save_chunk($i)
         }
@@ -309,7 +314,8 @@ sub save_done {
         $self->open_codefile();
         $self->chunkify();
         
-        if (@{$olds} != @{$self->{chunks}}) {
+        if (@{$olds} != @{$self->{chunks}}
+            || delete $self->{Collapsing}) {
             $self->sleeep();
             $self->display();
         }
