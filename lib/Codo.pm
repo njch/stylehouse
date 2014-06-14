@@ -328,6 +328,7 @@ sub load_codon {
 
 
     $codon = $self->codon_by_name($codon) unless ref $codon;
+    return $self->{hostinfo}->error("Can't load codon: $codon") unless $codon;
     say "Codo load $codon->{name}";
     $codon || die;
     
