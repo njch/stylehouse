@@ -27,7 +27,11 @@ sub new {
 sub ddump { Hostinfo::ddump(@_) }
 sub open_codefile {
     my $self = shift;
-    $self->{lines} = [map { $_ =~ s/\n$//s; $_ } $self->readfile($self->{codefile})];
+    $self->{lines} = [
+        map { $_ =~ s/\n$//s; $_ }
+        split "\n",
+        $self->readfile($self->{codefile})
+    ];
 }
 sub display {
     my $self = shift;

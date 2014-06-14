@@ -2,10 +2,10 @@ package Git;
 use strict;
 use warnings;
 use feature 'say';
+use Scriptalicious;
 
 sub hi { shift->{hostinfo} }
 sub ddump { Hostinfo::ddump(@_) }
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -23,7 +23,7 @@ sub new {
 
     $self->gitrack();
     
-	$self->{spawn_init} = sub {
+    $self->{spawn_init} = sub {
     
     my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
     $PS->text->replace(['!class=hear Procshow']);
@@ -40,15 +40,15 @@ sub new {
     $GS->spawn_floozy($self, repos =>
         "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
         
-	};
+    };
 
     return $self;
 }
 sub init {
     my $self = shift; 
-	
+    
     unless ($self->{Gitshow}) {
-		$self->{spawn_init}->();
+        $self->{spawn_init}->();
     }
     
     $self->gitrack();
@@ -82,6 +82,9 @@ sub gitrack {
         },
         hG => sub {
             $self->spawn_proc('cd ../stylehouse && git gui');
+        },
+        'BR--' => sub {
+            run('cd ../stylebucky && git reset --hard');
         },
         'rps' => sub {
             $self->reprocserv();

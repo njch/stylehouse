@@ -1,19 +1,19 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use utf8;
 use Scriptalicious;
 use YAML::Syck;
-use JSON::XS;
+use JSON;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
 use File::Slurp;
 use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
-use utf8;
-use Mojo::JSON;
-my $json = Mojo::JSON->new;
-use Mojo::ByteStream 'b';
+binmode(STDOUT, ":utf8");
+binmode(STDERR, ":utf8");
+binmode(STDIN, ":utf8");
 
 =pod
 
@@ -259,7 +259,7 @@ websocket '/stylehouse' => sub {
     });
 $self->on(message => sub {
         my ($self, $msg) = @_;
-        $msg = b($msg)->encode('UTF-8');
+        say $msg if $msg =~ /Collapse\\"/;
 
         $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
         
@@ -269,11 +269,35 @@ $self->on(message => sub {
         if ($msg =~ /^{"event":{"id":"",/) {
             say "STUPID MESSAGE: $msg";
         }
-        eval { $j = $json->decode($msg) };
+        
+        eval {
+        
+        
+        $hostinfo->spurt('/tmp/elvis', $msg);
+        
+        run(q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;       DumpFile("/tmp/elvis", decode_json(read_file("/tmp/elvis")));'});
+        
+        $j = LoadFile('/tmp/elvis');
+        
+        while (my ($k, $v) = each %$j) {
+            if (ref \$v eq "SCALAR") {
+                $j->{$k} = Hostinfo::decode_utf8($v);
+            }
+        }    
+
+        
+        };
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
             if $@;
 
-
+        return say "$msg\n\nJSON decoded to ~undef~" unless defined $j;
+        
+        
+        
+        
+        
+        
+        
         # all this stuff before they join the stream
         my $done = 0;
         if ($self->stash('handy')) {

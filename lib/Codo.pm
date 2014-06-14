@@ -6,6 +6,7 @@ use YAML::Syck;
 use Texty;
 use Codon;
 use Proc;
+use utf8;
 =pod
 
 Devel::ebug interface
@@ -46,16 +47,18 @@ sub new {
 
     $self->{git} = $self->{hostinfo}->getapp("Git");
     $self->{code_dir} = $self->{git}->below(); 
+    if ($self->{code_dir} =~ /bucky/) {
+        run('cd ../stylebucky && git reset --hard');
+    }
 
     my $hi = $self->{hostinfo};
-    
 
     my $Codo =
     $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #f7772e; color: #afc; position: absolute; right: 0px; z-index:4; opacity: 0.95; height: 100%; overflow: scroll;");
 
-    $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;')
-        ->spawn_floozy($self, codolist =>
-            "width:500px; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
+    $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
+    $self->{hostinfo}->{flood}->spawn_floozy($self, codolist =>
+        "width:500px; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
 
 
         $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -67,7 +70,6 @@ sub new {
     $self->init_codons();
 
     $self->codolist();
-    $self->{codolist}->float();
 
     my $ao = $self->{all_open} = [];
     $self->re_openness();
@@ -150,8 +152,6 @@ sub init_codons {
         }
     }
 }
-
-
 sub codolist {
     my $self = shift;
 

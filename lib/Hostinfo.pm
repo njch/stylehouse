@@ -14,7 +14,9 @@ use Time::HiRes 'gettimeofday', 'usleep';
 use View;
 use Term::ANSIColor;
 use Digest::SHA 'sha1_hex';
+use File::Slurp;
 use utf8;
+use Encode qw(encode_utf8 decode_utf8);
 
 our $data = {};
 
@@ -54,7 +56,6 @@ sub JS {
 sub elvis_send {
     my $self = shift;
     my $message = shift;
-    $message = "".b($message)->encode("UTF-8");
     my $elvis = shift;
     $elvis ||= $self->who;
     if (!$elvis) {
@@ -64,7 +65,7 @@ sub elvis_send {
     my $short = length($message) < 200 ?
         $message
         :
-        '('.substr(sha1_hex($message),0,8).') '
+        '('.substr(enhash($message),0,8).') '
         .substr($message,0,23*9)." >SNIP<";
     
     if (-t STDOUT) {
@@ -87,13 +88,12 @@ sub elvis_send {
         }
         $elvis = $nelvis;
     }
-    $elvis->{tx}->send({text => $message});
+    $elvis->{tx}->send($message);
 }
 sub elvi {
     my $self = shift;
     map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
 }
-
 sub elvis_connects {
     my $self = shift;
     my $mojo = shift;
@@ -123,6 +123,7 @@ sub elvis_connects {
 
     if (scalar(keys %$elviss) > 1) {
         say " Elvis is taking over!";
+        $_->{tx} && $_->{tx}->finish for values %$elviss;
         `touch $0`;
         sleep 3;
     }
@@ -135,7 +136,6 @@ sub elvis_connects {
     return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
-
 sub elvis_enters {
     my $self = shift;
     my $sug = shift;
@@ -167,7 +167,6 @@ sub elvis_enters {
         die "Cannot find elvis: $eid";
     }
 }
-
 sub elvis_gone {
     my $self = shift;
     say "Elvis is Gone.";
@@ -234,15 +233,21 @@ sub reload_views {
 sub ignorable_mess {
     my $self = shift;
     my $mess = shift;
-    my $dig = sha1_hex($mess);
+    my $dig = enhash($mess);
     my $iggy = $self->gest('ignorable_messs', {});
 
-    return 1 if $iggy->{$dig};
+    if ($iggy->{$dig}) {
+        say "Something to ignore: $dig";
+        return;
+    }
 
     $iggy->{$dig} = 1;
     $self->timer(0.2, sub { delete $iggy->{$dig} });
 
     return 0;
+}
+sub enhash {
+    return sha1_hex(encode_utf8(shift))
 }
 sub app_menu_hooks {
     my $self = shift;
@@ -1040,14 +1045,23 @@ sub slurp {
     my $self = shift;
     my $file = shift;
     say "Hostinfo: slurping $file";
-    split "\n", b($file)->slurp();
+    
+      open my $f, $file || die "O no $!";
+    binmode $f, ':utf8';
+    my $m = join "", <$f>;
+    close $f;
+    $m;
 }
 sub spurt {
     my $self = shift;
     my $file = shift;
     my $stuff = shift;
     say "Hostinfo: spurting $file (".length($stuff).")";
-    b($stuff)->spurt($file);
+      open my $f, '>', $file || die "O no $!";
+    binmode $f, ':utf8';
+    print $f $stuff;
+    close $f;
+    system("grep ' sub' $file")    ;
 }
 
 
