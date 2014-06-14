@@ -1047,7 +1047,7 @@ sub spurt {
     my $file = shift;
     my $stuff = shift;
     say "Hostinfo: spurting $file (".length($stuff).")";
-    b(b($stuff)->encode("UTF-8"))->spurt($file);
+    b($stuff)->spurt($file);
 }
 
 
