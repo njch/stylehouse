@@ -171,19 +171,19 @@ sub codolist {
                 $self->{hostinfo}->error(" no go diggy die", $ev, $s);
             }
         },
-        float => sub {
+        ѷ => sub {
             $list->float();
         },
-        '.' => sub {
+        ɷ => sub {
             $_->away for @{ $self->{all_open} };
         },
-        _ => sub {
+        ʚ => sub {
             $_->save_all("Collapse") for @{ $self->{all_open} };
         },
-        S => sub {
+        ʗ => sub {
             $_->save_all for @{ $self->{all_open} };
         },
-        '[]' => sub {
+        Ш => sub {
             $self->{hostinfo}->JS(
                 "\$.scrollTo(\$('#ground').offset().top, 360);"
                 ."\$('#ground').scrollTo(\$('#self->{Codo}->{divid}').offset().top, 360);"

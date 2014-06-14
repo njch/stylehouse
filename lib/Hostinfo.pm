@@ -54,6 +54,7 @@ sub JS {
 sub elvis_send {
     my $self = shift;
     my $message = shift;
+    $message = "".b($message)->encode("UTF-8");
     my $elvis = shift;
     $elvis ||= $self->who;
     if (!$elvis) {
