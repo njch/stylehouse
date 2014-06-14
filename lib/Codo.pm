@@ -1,5 +1,6 @@
 package Codo;
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::ByteStream;
 use Scriptalicious;
 use YAML::Syck;
 use Texty;
@@ -34,8 +35,6 @@ has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
-
-
 sub DESTROY {
     my $self = shift;
     $self->nah;
@@ -182,6 +181,9 @@ sub codolist {
             $_->save_all("Collapse") for @{ $self->{all_open} };
         },
         S => sub {
+            $_->save_all for @{ $self->{all_open} };
+        },
+        '[]' => sub {
             $_->save_all for @{ $self->{all_open} };
         },
     };
@@ -351,16 +353,13 @@ sub codon_by_name {
 sub readfile {
     my $self = shift;
     my $path = shift;
-    read_file($self->{code_dir}.$path, @_);
+    $self->{hostinfo}->slurp($self->{code_dir}.$path);
 }
-
 sub writefile {
     my $self = shift;
     my $path = shift;
-    write_file($self->{code_dir}.$path, @_);
+    $self->{hostinfo}->spurt($self->{code_dir}.$path, shift);
 }
-
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";

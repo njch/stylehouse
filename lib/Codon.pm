@@ -25,7 +25,6 @@ sub new {
     $self;
 }
 sub ddump { Hostinfo::ddump(@_) }
-
 sub open_codefile {
     my $self = shift;
     $self->{lines} = [map { $_ =~ s/\n$//s; $_ } $self->readfile($self->{codefile})];

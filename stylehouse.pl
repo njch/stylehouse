@@ -11,7 +11,9 @@ use Carp 'confess';
 use v5.18;
 use FindBin '$Bin';
 use utf8;
-
+use Mojo::JSON;
+my $json = Mojo::JSON->new;
+use Mojo::ByteStream 'b';
 
 =pod
 
@@ -221,7 +223,6 @@ Prof Lue Calfman's quote from G
 
     $self->render('index');
 };
-
 websocket '/stylehouse' => sub {
     my $self = shift;
 
@@ -256,21 +257,21 @@ websocket '/stylehouse' => sub {
             $self->stash(handy => undef);
         }
     });
-
-
-    $self->on(message => sub {
+$self->on(message => sub {
         my ($self, $msg) = @_;
+        $msg = b($msg)->encode('UTF-8');
 
         $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
-
+        
         return say "\n\nIGNORING Message: $msg\n\n\n\n" if $hostinfo->ignorable_mess($msg);
         
         my $j;
         if ($msg =~ /^{"event":{"id":"",/) {
             say "STUPID MESSAGE: $msg";
         }
-        eval { $j = decode_json($msg); };
-        return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n" if $@;
+        eval { $j = $json->decode($msg) };
+        return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
+            if $@;
 
 
         # all this stuff before they join the stream

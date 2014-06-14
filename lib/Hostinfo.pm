@@ -2,6 +2,7 @@ package Hostinfo;
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::ByteStream 'b';
 use Scriptalicious;
 use Mojo::IOLoop;
 use IO::Async::Loop::Mojo;
@@ -13,6 +14,7 @@ use Time::HiRes 'gettimeofday', 'usleep';
 use View;
 use Term::ANSIColor;
 use Digest::SHA 'sha1_hex';
+use utf8;
 
 our $data = {};
 
@@ -372,7 +374,7 @@ sub random_colour_background {
 sub event {
     my $self = shift;
     my $menuv = $self->{appmenu};
-    say "Hostinfo passing probable appmenu action to $menuv->{id}";
+    say "Hostinfo event, probably appmenu}";
     $menuv->{text}->event(@_);
 }
 # this is where human attention is (before this text was in the wrong place)
@@ -429,7 +431,7 @@ sub stream_file {
         
         my $fh = $st->{handle}; # try finish off the old one
         while (<$fh>) {
-            my ($l, $d) = clean_text($_);
+            my $l = clean_text($_);
             push @{$st->{lines}}, $l;
             $st->{linehook}->($l);
         }
@@ -454,7 +456,7 @@ sub stream_file {
                 $st->{linehook}->($mark);
             }
             unless ($samei-- > 0) {
-                my ($l, $d) = clean_text($_);
+                my $l = clean_text($_);
                 push @{$st->{lines}}, $l;
                 $st->{linehook}->($l);
             }
@@ -473,21 +475,7 @@ sub stream_file {
 sub clean_text {
     my $self = shift;
     my $l = shift;
-    my @dirt;
-    my $c = sub {
-        push @dirt, shift;
-        return ""
-    };
-    $l =~ s/([^a-zA-Z\t\n '":\[\]\)\(\;\.\$_\?!#\@\\\/\-\=]+)/$c->($1);/ges;
-    return ($_, \@dirt);
-    if (0) {
-        say "clean_text god some dirt";
-        for my $dirt ([]) {
-            say capture(
-                -in => sub { print "$dirt\n" },
-                'xxd');
-        }
-    }
+    return b($l)->encode("UTF-8");
 }
 sub watch_files {
     my $self = shift;
@@ -531,7 +519,7 @@ sub watch_files {
                 # TODO tail number of lines $st->{tail}
                 while (<$fh>) {
                     unless (defined $st->{tail}) {
-                        my ($l, $d) = clean_text($_);
+                        my $l = clean_text($_);
                         push @{$st->{lines}}, $l;
                         $st->{linehook}->($l);
                     }
@@ -547,7 +535,7 @@ sub watch_files {
                 say "$st->{filename} has GROWTH";
                 my $fh = $st->{handle};
                 while (<$fh>) {
-                    my ($l, $d) = clean_text($_);
+                    my $l = clean_text($_);
                     push @{$st->{lines}}, $l;
                     $st->{linehook}->($l);
                 }
@@ -1047,5 +1035,19 @@ sub get_this_it { # find it amongst itselves
     die "no findo ".ref($this)." i i i i i i $this";
     return undef;
 }
+sub slurp {
+    my $self = shift;
+    my $file = shift;
+    say "Hostinfo: slurping $file";
+    split "\n", b($file)->slurp();
+}
+sub spurt {
+    my $self = shift;
+    my $file = shift;
+    my $stuff = shift;
+    say "Hostinfo: spurting $file (".length($stuff).")";
+    b(b($stuff)->encode("UTF-8"))->spurt($file);
+}
+
 
 1;
