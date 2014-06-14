@@ -184,7 +184,11 @@ sub codolist {
             $_->save_all for @{ $self->{all_open} };
         },
         '[]' => sub {
-            $_->save_all for @{ $self->{all_open} };
+            $self->{hostinfo}->JS(
+                "\$.scrollTo(\$('#ground').offset().top, 360);"
+                ."\$('#ground').scrollTo(\$('#self->{Codo}->{divid}').offset().top, 360);"
+                #."\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
+            );
         },
     };
     $listy->add_hooks({
