@@ -372,7 +372,7 @@ sub random_colour_background {
 sub event {
     my $self = shift;
     my $menuv = $self->{appmenu};
-    say "Hostinfo passing probable menu action to $menuv->{id} $menuv->{menu}";
+    say "Hostinfo passing probable appmenu action to $menuv->{id}";
     $menuv->{text}->event(@_);
 }
 # this is where human attention is (before this text was in the wrong place)

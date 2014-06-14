@@ -57,9 +57,9 @@ sub wormfile_load {
     my $self = shift;
     $self->{file} = shift;
     if (-e $self->{file}) {
-        $self->{script} = LoadFile($self->{file});
-        die ($self->{script}||"~undef~")." script (loaded from $self->{file}) ne ARRAYref"
-            unless ref $self->{script} eq "ARRAY";
+        my $s = $self->{script} = LoadFile($self->{file});
+        die " script (loaded from $self->{file}) ne ARRAYref: ".($s||"~undef~")
+            unless ref $s && $s eq "ARRAY";
         say "W $self->{file} loaded";
     }
     else {

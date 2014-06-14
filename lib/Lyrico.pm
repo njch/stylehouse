@@ -91,7 +91,6 @@ sub menu {
         },
     };
 }
-
 sub event {
     my $self = shift;
     my $event = shift;
