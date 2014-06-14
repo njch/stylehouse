@@ -222,13 +222,10 @@ sub readfile {
     my $self = shift;
     return $self->{hostinfo}->getapp("Codo")->readfile(@_);
 }
-
 sub writefile {
     my $self = shift;
     return $self->{hostinfo}->getapp("Codo")->writefile(@_);
 }
-
-
 sub save_all {
     my $self = shift;
     my $Collapsing = shift;
