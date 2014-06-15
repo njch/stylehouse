@@ -4,6 +4,7 @@ use Scriptalicious;
 use Texty;
 use File::Slurp;
 use Time::HiRes 'usleep';
+use utf8;
 
 my $i = 0; # sweeps through @{lyrics}
 
@@ -17,8 +18,6 @@ $Hostinfo::data->{'horizon'} =
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
-
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -71,25 +70,25 @@ sub somewhere {
 sub menu {
     my $self = shift;
     my $m = {
-        '.' => sub {
-            $self->{hostinfo}->flood($self->{text});
-        },
-        TRAVEL => sub {
+        چ => sub {
             $self->somewhere;
         },
-        onoff => sub {
+        ښ => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky
         },
-        C => sub {
+        ה => sub {
             Git->new($self->{hostinfo}->intro);
             Codo->new($self->{hostinfo}->intro);
         },
-        anim => sub {
+        Թ => sub {
             $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
         },
     };
     return { _spawn => [ [ sort keys %$m ], {
         event => { menu => $m },
+        tuxtstyle => sub { 
+            "font-size: 23pt; ".random_colour_background()
+        },
     } ] }
         
         

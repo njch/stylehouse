@@ -163,7 +163,7 @@ sub h_tuxtstyle {
     my $s = shift;
 
     if (my $ts = $self->{hooks}->{tuxtstyle}) {
-    my $style = ref $ts eq "CODE" ? $ts->($s->{value}, $s) : $ts;
+        my $style = ref $ts eq "CODE" ? $ts->($s->{value}, $s) : $ts;
         if ($style) {
             $s->{style} = $style;
             return;
@@ -201,7 +201,6 @@ sub mktuxt {
         }
         elsif (my $LH = $line->{_spawn}) {
             $line = $self->spawn(@$LH);
-            say "Line becomes $line";
         }
         else {
             #

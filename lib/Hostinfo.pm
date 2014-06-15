@@ -617,27 +617,31 @@ sub init_flood {
         "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $f = $self->create_view($self, "flood",
-        "width: 42%; min-width:509.188px; background: #8af; height: 666%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
+        "width: 42%; min-width:509.188px; background: #8af; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1; padding: 4px;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
-        "width: ".420*1.14."px; height: 12px; background: #301a30; color: #afc; font-weight: bold;",
+        "width: ".420*1.14."px; height: 16px; background: #301a30; color: #afc; font-weight: bold;",
     );
 
-    $fm->text([], {
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            for my $s (@{$self->tuxts}) {
-                $s->{style} = random_colour_background();
-                $s->{class} = 'menu';
-            }
+    my $floodm = {
+        Ш => sub {
+            $self->JS(
+                "\$.scrollTo(\$('#ground').offset().top, 360);"
+                ."\$('#ground').scrollTo(0, 360);"
+            );
         },
-        spatialise => sub {
-            { top => 1, left => 1, horizontal => 40, wrap_at => 1200 }
-        },
-    });
+    };
 
-    $fm->text->replace([("FLOOD")x1]);
+    $fm->text->add_hooks({
+        nospace => 1,
+    });
+    $fm->text->replace([
+        { _spawn => [ [ sort keys %$floodm ], {
+            event => {menu => $floodm},
+            tuxtstyle => 'font-size: 10pt;',
+        } ] }
+    ]);
 
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
