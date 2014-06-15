@@ -224,14 +224,14 @@ sub mktuxt {
             $s->{menu} = $line;
         }
 
-        $s->{value} =~ s/<<ID>>/$self->{id}/g;
-        if ($s->{value} =~ /\\n/) {
+        $line =~ s/<<ID>>/$self->{id}/g;
+        if ($line =~ /\\n/) {
             my $ll = { l => 0 };
-            for my $v (split /\\n/, $s->{value}) {
+            for my $v (split /\\n/, $line) {
 
                                         $self->mktuxt($v, $ll, $d+1);
             }
-            $s->{value} = "";
+            $line = "";
         }
     }
     $s->{value} = $line;

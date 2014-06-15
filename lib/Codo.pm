@@ -212,18 +212,17 @@ sub codolist {
         nospace => 1,
         class => 'menu',
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
-            ."color: #99FF66; font-weight: 700; "
+            ."color: #99FF66; font-size: 20pt; background-color: #FF5050; font-weight: 700; "
             ."text-shadow: 2px 4px 5px #4C0000;",
     } ] },
     { _spawn => [ [ @coli ], {
-        event => $m->{h},
+        event => sub { $m->{h}->(@_) },
         nospace => 1,
         class => 'menu',
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
         tuxts_to_htmls_tuxt => sub {
             my ($texty, $s) = @_;
-
             my $codon = $s->{codon} = $s->{value};
             $s->{value} = $codon->{name};
 
