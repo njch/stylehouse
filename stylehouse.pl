@@ -270,23 +270,30 @@ $self->on(message => sub {
             say "STUPID MESSAGE: $msg";
         }
         
-        eval {
-        
-        
+        start_timer();
         $hostinfo->spurt('/tmp/elvis', $msg);
+        my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
+        .q{print " - reading json from /tmp/elvis\n";}
+        .q{my $j = read_file("/tmp/elvis");}
+        .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
+        .q{print " - convert json -> yaml\n";}
+        .q{my $d = decode_json($j);}
+        .q{print " - write yaml to /tmp/elvis\n";}
+        .q{DumpFile("/tmp/elvis", $d);}
+        .q{print " - done\n";}
+        .q{'};
+        `$convert`;
         
-        run(q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;       DumpFile("/tmp/elvis", decode_json(read_file("/tmp/elvis")));'});
-        
+        eval {
         $j = LoadFile('/tmp/elvis');
         
         while (my ($k, $v) = each %$j) {
             if (ref \$v eq "SCALAR") {
                 $j->{$k} = Hostinfo::decode_utf8($v);
             }
-        }    
-
-        
+        }
         };
+        say "Decode in ".show_delta();
         return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
             if $@;
 

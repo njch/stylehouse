@@ -172,7 +172,6 @@ sub elvis_gone {
     say "Elvis is Gone.";
     $self->elvis_leaves(@_);
 }
-
 sub elvis_leaves {
     my $self = shift;
     my $mojo = shift;
@@ -1045,7 +1044,6 @@ sub slurp {
     my $self = shift;
     my $file = shift;
     say "Hostinfo: slurping $file";
-    
       open my $f, $file || die "O no $!";
     binmode $f, ':utf8';
     my $m = join "", <$f>;
@@ -1059,9 +1057,8 @@ sub spurt {
     say "Hostinfo: spurting $file (".length($stuff).")";
       open my $f, '>', $file || die "O no $!";
     binmode $f, ':utf8';
-    print $f $stuff;
+    print $f $stuff."\n";
     close $f;
-    system("grep ' sub' $file")    ;
 }
 
 
