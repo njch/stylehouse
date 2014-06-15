@@ -205,12 +205,13 @@ sub codolist {
                 $s->{menu} = "h";
             }
             elsif ($s->{menu}) {
-                $s->{style} .= "border: 2px solid #8A002E"
+                $s->{style} .= "border: 2px solid #8A002E;"
             }
+            $s->{style} .= "font-size: 30pt;" if length($s->{value}) == 1;
         },
         nospace => 1,
         class => 'menu',
-        tuxtstyle => "opacity: 0.9; font-size: 17pt; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+        tuxtstyle => "opacity: 0.9; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
             ."text-shadow: 2px 4px 5px #4C0000;",
         event => { menu => $menu },
     });
@@ -413,3 +414,4 @@ sub new_ebuge {
     return $ebuge;
 }
 1;
+
