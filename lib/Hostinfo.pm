@@ -248,111 +248,18 @@ sub ignorable_mess {
 sub enhash {
     return sha1_hex(encode_utf8(shift))
 }
-sub app_menu_hooks {
-    my $self = shift;
-    return {
-        tuxts_to_htmls => sub { # TODO leaks several \n to STDOUT somewhere... bisect this whole business some day
-            my $self = shift;
-            my $h = $self->{hooks};
-            my $i = $h->{i} ||= 0;
 
-            for my $s (@{$self->tuxts}) {
-                my $object = $s->{value};
-                $s->{value} = ref $object;
-                unless (ref $object) {
-                    say "Object unref: ".ddump($object);
-                    use Carp;
-                    confess ;
-                }
-                $s->{origin} = $object;
-
-                if (ref $object && $object->can('menu')) {
-                    my $menu = {%{ $object->menu() }};
-                    delete $menu->{'.'};
-                    $s->{value} = "$object";
-                    $s->{value} =~ s/^(\w+).+$/$1/sgm;
-                
-                    # generate another Texty for menu items
-                    # catch their <spans> and add to our value
-                    my $inner = new Texty($self->hostinfo->intro, $self->view, [ sort keys %$menu ], {
-                        tuxts_to_htmls => sub {
-                            my $self = shift;
-                            my $i = $h->{i} || 0;
-                            for my $s (@{$self->tuxts}) {
-                                $s->{style} .= random_colour_background();
-                            }
-                        },
-                        class => "menu",
-                        nospace => 1,
-                        notakeover => 1,
-                        event => sub {
-                            my $self = shift;
-                            my $event = shift;
-                            my $id = $event->{id};
-                            for my $s (@{ $self->{tuxts} }) {
-                                if ($s->{id} eq $id) {
-                                    return $self->{owner}->event($event, $object, $s->{value});
-                                }
-                            }
-                            say ddump($self);
-                            die "no such thjing (inside $object) $id";
-                        },
-                    });
-                    $inner->{owner} = $self;
-                    $s->{inner} = $inner;
-                    $s->{value} .= join "", @{$inner->htmls || []};
-                    $s->{html} = 1;
-                    say ref $object." buttons: ".join ", ", @{ $inner->lines };
-                }
-                
-                $s->{style} = random_colour_background()."border: 5px solid black;";
-                $s->{class} =~ s/data/menu/g;
-                $s->{origin} = $object;
-            }
-        },
-        class => "menu",
-        nospace => 1,
-        event => sub {
-            my $self = shift;
-            my $event = shift;
-            my $object = shift;
-            my $submenu = shift;
-            my $id = $event->{id};
-            
-            if (!$object) {
-                for my $s (@{ $self->{tuxts} }) {
-                    if ($s->{id} eq $id) {
-                        $object = $s->{origin};
-                        last;
-                    }
-                }
-            }
-            if (!$submenu) {
-                $submenu = ".";
-            }
-            if ($object && $object->can('menu') && $object->menu->{$submenu}) {
-                say "Hostinfo appmenu passing event ($id) to $object->{id} ->menu->{'$submenu'}";
-                $object->menu->{$submenu}->($event);
-            }
-            else {
-                say ddump($self);
-                say "$self->{id} $self->{view}->{divid} cannot route $id ->";
-                say "Object: $object" if $object;
-                say "submenu: $submenu" if $submenu;
-            }
-        },
-    };
-}
 sub update_app_menu {
     my $self = shift;
-
+    
     unless ($self->{appmenu}) {
         $self->flood->spawn_floozy($self, "appmenu",
             "width:98%; background: #333; color: #afc; font-family: serif; height: 4em;", undef, undef, 'menu'
         );
-        $self->{appmenu}->text->add_hooks(
-            $self->app_menu_hooks()
-        );
+        $self->{appmenu}->text->add_hooks({
+            class => 'menu',
+            nospace => 1,
+        });
     }
     
     my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
@@ -367,20 +274,32 @@ sub update_app_menu {
             }
         }
     }
+    
+    my @lines;
+    for my $i (@items) {
+        if ($i->can('menu')) {
+            my $m = $i->menu();
+            if (my $s = $m->{_spawn}) {
+                $s->[1]->{class} ||= 'menu';
+                $s->[1]->{nospace} ||= 1;
+                push @lines, $m;
+            }
+            else {
+                die "Oldskool menu: $i\n".ddump($m);
+            }
+        }
+    }
 
     $self->{appmenu}->{extra_label} = "appmenu";
-    $self->{appmenu}->text->replace([@items]);
+    $self->{appmenu}->text->replace([@lines]);
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
 sub event {
     my $self = shift;
-    my $menuv = $self->{appmenu};
-    say "Hostinfo event, probably appmenu}";
-    $menuv->{text}->event(@_);
+    $self->info("hostinfo event, don't know what to do", shift);
 }
 # this is where human attention is (before this text was in the wrong place)
 # it's a place things flow into sporadically now
@@ -1063,3 +982,4 @@ sub spurt {
 
 
 1;
+

@@ -22,7 +22,7 @@ $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-
+    
     $self->{hostinfo}->create_view($self, "lyrico" => "height: 2px; width: 2px;");
     $self->{lyrico}->text([],
         { skip_hostinfo => 1,
@@ -51,8 +51,6 @@ sub new {
 
     return $self;
 }
-
-
 sub somewhere {
     my $self = shift;
 
@@ -72,7 +70,7 @@ sub somewhere {
 
 sub menu {
     my $self = shift;
-    return {
+    my $m = {
         '.' => sub {
             $self->{hostinfo}->flood($self->{text});
         },
@@ -90,6 +88,12 @@ sub menu {
             $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
         },
     };
+    return { _spawn => [ [ sort keys %$m ], {
+        event => { menu => $m },
+    } ] }
+        
+        
+        
 }
 sub event {
     my $self = shift;
@@ -188,3 +192,4 @@ sub random_colour_background {
 }
 
 1;
+

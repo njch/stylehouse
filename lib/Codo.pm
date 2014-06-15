@@ -80,7 +80,7 @@ sub new {
 }
 sub menu {
     my $self = shift;
-    $self->{menu} ||= {
+    my $m = $self->{menu} ||= {
         nah => sub { $self->nah },
         new => sub { $self->new_ebuge() },
         '<views>' => sub {
@@ -101,10 +101,12 @@ sub menu {
         '^>' => sub {
             $self->{hostinfo}->send("\$('#Codo').toggleClass('NE');");
         },
-    }
+    };
+    return { _spawn => [ [ sort keys %$m ], {
+        event => { menu => $m },
+        allmenu => 1,
+    } ] }
 }
-
-
 sub event {
     my $self = shift;
     my $event = shift;
@@ -161,7 +163,7 @@ sub codolist {
     my $list = $self->{codolist};
     my $listy = $list->text;
     
-    my $menu = {
+    my $m = {
         h => sub {
             my ($ev, $s) = @_;
             if ($s->{codon}) {
@@ -191,41 +193,53 @@ sub codolist {
             );
         },
     };
-    $listy->add_hooks({
-        tuxts_to_htmls_tuxt => sub {
-            my ($texty, $s) = @_;
-
-            if (ref $s->{value} eq "Codon") {
-                my $codon = $s->{value};
-                $s->{value} = $codon->{name};
-                $s->{value} =~ s/^ghosts\///;
-                $s->{codon} = $codon;
-                $s->{style} .= 'background-color: #'.codoncolour($codon).';'
-                    .($codon->{name} =~ /^ghosts\// ? 'color: #5A5AAF;' : '');
-                $s->{menu} = "h";
-            }
-            elsif ($s->{menu}) {
-                $s->{style} .= "border: 2px solid #8A002E;"
-            }
-            $s->{style} .= "font-size: 30pt;" if length($s->{value}) == 1;
-        },
-        nospace => 1,
-        class => 'menu',
-        tuxtstyle => "opacity: 0.9; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
-            ."text-shadow: 2px 4px 5px #4C0000;",
-        event => { menu => $menu },
-    });
-
-    my $lines = [ map { "!menu $_" } keys %$menu ];
+    
+    
+    my @coli;
     my $coname = { map { $_->{name} => $_ } @$codons };
     for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css',
                qw'Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
 
-        push @$lines, delete $coname->{$n};
+        push @coli, delete $coname->{$n};
     }
-    push @$lines, values $coname;
-    $listy->replace($lines);
+    push @coli, values $coname;
+    
+    $listy->add_hooks({nospace => 1, class => 'menu'});
+    $listy->replace([
+    { _spawn => [ [ sort keys %$m ], {
+        event => { menu => $m },
+        nospace => 1,
+        class => 'menu',
+        tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
+            ."color: #99FF66; font-weight: 700; "
+            ."text-shadow: 2px 4px 5px #4C0000;",
+    } ] },
+    { _spawn => [ [ @coli ], {
+        event => $m->{h},
+        nospace => 1,
+        class => 'menu',
+        tuxtstyle => "opacity: 0.9; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
+            ."text-shadow: 2px 4px 5px #4C0000;",
+        tuxts_to_htmls_tuxt => sub {
+            my ($texty, $s) = @_;
+
+            my $codon = $s->{codon} = $s->{value};
+            $s->{value} = $codon->{name};
+
+            $s->{style} .= 'color: #5A5AAF;'
+                if $s->{value} =~ s/^ghosts\///;
+
+            $s->{style} .= 'background-color:'
+                .'#'.codoncolour($codon).';';
+            
+            $s->{style} .= "font-size: 30pt;"
+                if length($s->{value}) == 1;
+
+            $s->{menu} = "h";
+        },
+    } ] },
+    ]);
 }
 sub codoncolour {
     my $codon = shift;
@@ -243,7 +257,6 @@ sub codoncolour {
     $n =~ /Codon/ ? "3366FF" :
     "B8B86E"
 }
-
 sub re_openness {
     my $self = shift;
 

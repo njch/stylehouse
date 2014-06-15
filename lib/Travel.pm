@@ -28,7 +28,7 @@ sub new {
     return $self;
 }
 sub ghost {
-	my $self = shift;
+    my $self = shift;
     $self->{ghost} ||= new Ghost($self->hostinfo->intro, $self, @_);
 }
 sub ob {
@@ -80,3 +80,4 @@ sub event {
 }
 
 1;
+

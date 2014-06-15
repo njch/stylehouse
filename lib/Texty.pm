@@ -4,6 +4,7 @@ use Scriptalicious;
 use HTML::Entities;
 use Storable 'dclone';
 use JSON::XS;
+sub ddump { Hostinfo::ddump(@_) }
 my $json = JSON::XS->new->allow_nonref(1);
 
 has 'hostinfo';
@@ -16,14 +17,13 @@ has 'tuxts';
 has 'htmls';
 
 has 'empty';
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
     my $notakeoveryet = $_[0] && $_[0] eq "..." && shift @_;
 
-    $self->view(shift || die "need owner");
+    $self->view(shift);
     $self->lines(shift || []);
     $self->add_hooks(shift || {});
     $self->{class} ||= "data";
@@ -35,8 +35,6 @@ sub new {
     }
     return $self if ! @{ $self->lines };
 
-    die "never" if ref $self->view eq "HAsH";
-
     $self->lines_to_tuxts();
 
     $self->tuxts_to_htmls();
@@ -44,11 +42,17 @@ sub new {
     # make leaving here default?
     # the rest could be attracted to View
     # attention shoving should be something that reaches here and figures out whether to...
-    return $self if $self->hooks->{notakeover} || $notakeoveryet;
+    return $self if !$self->{view} || $self->hooks->{notakeover} || $notakeoveryet;
 
     $self->view->takeover($self->htmls, $self);
 
     return $self;
+}
+sub spawn {
+    my $self = shift;
+    my $L = shift;
+    my $H = shift;
+    new Texty($self->{hostinfo}->intro, undef, $L, $H);
 }
 sub add_hooks {
     my $self = shift;
@@ -58,8 +62,6 @@ sub add_hooks {
     my $c = $self->{hooks}->{class};
     $self->{class} = $c if $c;
 }
-
-
 sub replace {
     my $self = shift;
     my $L = shift;
@@ -156,13 +158,12 @@ sub tookover {
         $self->fit_div();
     }
 }
-
 sub h_tuxtstyle {
     my $self = shift;
     my $s = shift;
 
     if (my $ts = $self->{hooks}->{tuxtstyle}) {
-        my $style = ref $ts eq "CODE" ? $ts->($s) : $ts;
+    my $style = ref $ts eq "CODE" ? $ts->($s->{value}, $s) : $ts;
         if ($style) {
             $s->{style} = $style;
             return;
@@ -181,31 +182,34 @@ sub mktuxt {
         id => $self->{id}.'-'.$l->{l}++,
         value => $line,
     };
+    push @{$self->{tuxts}}, $s;
+    
     $self->h_tuxtstyle($s);
-    push @{$self->{tuxts}}, $s; # NOT a wormhole!
+    $line = $s->{value};
+    
+    
     if ($d > 0) {
         $s->{id} =~ s/(\d+)$/$d.$1/;
     }
 
-    if (ref $s->{value} eq "Texty") {
-        $s->{style} .= "border: 1px solid pink;";
-        say "Still do Texty as line\n\n";
-
-                                        push @{$self->{tuxts}}, @{ $s->{value}->{tuxts} }; # NOT a wormhole!
+    if (ref $line eq "Texty") {
+        # yes...
     }
-    elsif (ref $s->{value} eq "HASH") {
-        if ($s->{value}->{_mktuxt}) {
-            $s->{value}->{_mktuxt}->($s->{value}, $s);
+    elsif (ref $line eq "HASH") {
+        if ($line->{_mktuxt}) {
+            $line->{_mktuxt}->($line, $s);
+        }
+        elsif (my $LH = $line->{_spawn}) {
+            $line = $self->spawn(@$LH);
+            say "Line becomes $line";
         }
         else {
-            #die "Texty line HASH value confuse: ".ddump($self->{value});
-            #say "Something oughtta catch: ". ddump($s->{value});
-            #$s->{value} = encode_entities(ddump($s->{value}));
+            #
         }
     }
-    elsif (ref \$s->{value} eq "SCALAR") {
+    elsif (ref \$line eq "SCALAR") {
 
-        while ($s->{value} =~ s/^! (\w+) (?: = ( (?:\w+|'.+?') ) )? \s//sx) {
+        while ($line =~ s/^! (\w+) (?: = ( (?:\w+|'.+?') ) )? \s//sx) {
             if ($1 eq "menu" && !$2) {
                 $s->{$1} = undef;
             }
@@ -216,8 +220,9 @@ sub mktuxt {
                 $s->{$1} = defined $2 ? $2 : "yep";
             }
         }
-        if (exists $s->{menu} && !defined $s->{menu}) {
-            $s->{menu} = $s->{value};
+        if (exists $s->{menu} && !defined $s->{menu}
+            || $self->{hooks}->{all_menu}) {
+            $s->{menu} = $line;
         }
 
         $s->{value} =~ s/<<ID>>/$self->{id}/g;
@@ -230,8 +235,8 @@ sub mktuxt {
             $s->{value} = "";
         }
     }
+    $s->{value} = $line;
 }
-
 sub lines_to_tuxts {
     my $self = shift;
     my $linit = shift || 0;
@@ -254,7 +259,6 @@ sub lines_to_tuxts {
 
     $self->spatialise() unless $self->{hooks}->{nospace};
 }
-
 sub spatialise {
     my $self = shift;
     my $geo;
@@ -358,7 +362,6 @@ sub id_to_tuxt {
     }
     return undef;
 }
-
 sub tuxts_to_htmls {
     my $self = shift;
 
@@ -380,10 +383,17 @@ sub tuxts_to_htmls {
 
         my $p = { %$s };
         while(my ($k,$v) = each %$p) {
-            $p->{$k} = ref $v if ref $v;
+            $p->{$k} = ref $v if ref $v && $k ne 'value';
         }
-        my $V = delete($p->{value});
-        $V = encode_entities($V) unless $p->{html}; 
+        my $V = delete $p->{value};
+        
+        
+        if (ref $V eq "Texty") {
+            $V = join "", @{ $V->{htmls} };
+        }
+        elsif (!$p->{html}) {
+            $V = encode_entities($V);
+        }
 
         $p->{style} = join "; ", grep /\s/, 
             (exists $p->{top} ? "top: ".delete($p->{top})."px" : ''),
@@ -399,28 +409,22 @@ sub tuxts_to_htmls {
     }
     $self->htmls([@htmls]);
 }
-use YAML::Syck;
-sub ddump {
-    my $thing = shift;
-    return join "\n",
-        grep !/^     /,
-        split "\n", Dump($thing);
-}
-
-
 sub event {
     my $self = shift;
     my $event = shift;
     
     my $evh = $self->{hooks}->{event};
+    my $s = $self->id_to_tuxt($event->{id});
+    say "line reads: $s->{value}";
+    
     if (ref $evh eq "CODE") {
         say "Texty $self->{id} $self->{view}->{divid} hooking event->()";
-        $evh->($self, $event, @_);
+        $evh->($self, $event, $s, @_);
     }
     elsif (ref $evh eq "HASH") {
         my $menu = $evh->{menu};
-        my $s = $self->id_to_tuxt($event->{id});
-        if (my $m = $s->{menu}) {
+        say 'hashy menu';
+        if (my $m = $s->{menu} || $s->{value}) {
             say "hooking HASHY event menu for $m";
             $menu->{$m}->($event, $s);
         }
@@ -434,9 +438,6 @@ sub event {
         $self->view->event($event, $self);
     }
 }
-
-
-
 sub owner {
     my $self = shift;
     return $self->view;
@@ -444,3 +445,4 @@ sub owner {
 
 
 1;
+
