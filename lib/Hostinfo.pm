@@ -262,8 +262,8 @@ sub update_app_menu {
         });
     }
     
-    my @fings = grep $_ eq "0" || /^[A-Z]\w+$/ && !/View/ , keys %$data;
-    my @items;
+    my @fings = grep /^[A-Z]\w+$/ && !/View/ , keys %$data;
+    my @items = $self;
     for my $f (@fings) {
         my $a = $self->get($f);
         $a = [$a] unless ref $a eq "ARRAY";
@@ -292,6 +292,28 @@ sub update_app_menu {
 
     $self->{appmenu}->{extra_label} = "appmenu";
     $self->{appmenu}->text->replace([@lines]);
+}
+sub menu {
+    my $self = shift;
+    my $floodm = {
+        Ш => sub {
+            $self->JS(
+                "\$.scrollTo(\$('#ground').offset().top, 360);"
+                ."\$('#ground').scrollTo(0, 360);"
+            );
+        },
+    };
+
+    return { _spawn => [
+        [ sort keys %$floodm ], {
+            event => {menu => $floodm},
+            tuxtstyle => sub {
+                my ($v, $s) = @_;
+                $s->{style} .= "padding 5px; font-size: 35pt; "
+                ."text-shadow: 2px 4px 5px #4C0000;"
+            },
+        }
+    ] };
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
@@ -617,40 +639,21 @@ sub init_flood {
         "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $f = $self->create_view($self, "flood",
-        "width: 42%; min-width:509.188px; background: #8af; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1; padding: 4px;"
+        "width: 42%; min-width:509.188px; background: #8af; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
         "width: ".420*1.14."px; height: 16px; background: #301a30; color: #afc; font-weight: bold;",
     );
 
-    my $floodm = {
-        Ш => sub {
-            $self->JS(
-                "\$.scrollTo(\$('#ground').offset().top, 360);"
-                ."\$('#ground').scrollTo(0, 360);"
-            );
-        },
-    };
-
-    $fm->text->add_hooks({
-        nospace => 1,
-    });
-    $fm->text->replace([
-        { _spawn => [ [ sort keys %$floodm ], {
-            event => {menu => $floodm},
-            tuxtstyle => 'font-size: 10pt;',
-        } ] }
-    ]);
-
     $self->{floodzy} = $f->spawn_floozy(
-        floodzy => "width:420px;  background: #44ag30; color: black; height: 100px; font-weight: bold;",
+        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: bold;",
     );
     $self->{hi_error} = $f->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
     );
     $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width: 50%; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold; position: fixed; bottom: 0px; right: 0px; opacity: 0.7;",
+        hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
     );
 
     return $f

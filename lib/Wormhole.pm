@@ -137,7 +137,6 @@ sub describe_size {
     my $self = shift;
     "Wormhole is ".@{$self->{script}}." lines long";
 }
-
 sub way_out {
     my $self = shift;
     if (my $T = $self->{ghost}->{travel}) {
@@ -153,3 +152,4 @@ sub event {
 }
 
 1;
+
