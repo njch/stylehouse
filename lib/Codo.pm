@@ -6,7 +6,7 @@ use YAML::Syck;
 use Texty;
 use Codon;
 use Proc;
-use utf8;
+use utf8 'all';
 =pod
 
 Devel::ebug interface
@@ -81,30 +81,30 @@ sub new {
 sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= {
-        nah => sub { $self->nah },
-        new => sub { $self->new_ebuge() },
-        '<views>' => sub {
+        ʵ => sub { $self->nah },
+        ɺ => sub { $self->new_ebuge() },
+        Ψ => sub {
             $self->infrl("views", $self->hostinfo->dkeys);
         },
-        "<obso>" => sub {
+        Ͱ => sub {
             $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
         },
-        "Rst" => sub { # they might wanna load new css/js too
+        ʥ => sub { # they might wanna load new css/js too
             $self->infrl('restarting (if)');
             `touch $0`;
         },
-        'MH' => sub {
-            my $h = $self->{hostinfo};
-            $h->{MH} = !$h->{MH};
-            $self->infrl(map { $h->{MH} ? uc($_) : lc($_)." off" } 'MULTIHEADING');
-        },
-        '^>' => sub {
+        ɤ => sub {
             $self->{hostinfo}->send("\$('#Codo').toggleClass('NE');");
         },
     };
     return { _spawn => [ [ sort keys %$m ], {
         event => { menu => $m },
-        allmenu => 1,
+        tuxtstyle => sub {
+            my ($v, $s) = @_;
+            $s->{style} .= "padding 5px; font-size: 35pt; "
+            ." background-color: #cc5050;"
+            ."text-shadow: 2px 4px 5px #4C0000;"
+        },
     } ] }
 }
 sub event {
@@ -119,7 +119,6 @@ sub event {
         $self->{hostinfo}->error("Codo event 404 for $id". ddump($event));
     }
 }
-
 sub init_codons {
     my $self = shift;
 
@@ -166,12 +165,7 @@ sub codolist {
     my $m = {
         h => sub {
             my ($ev, $s) = @_;
-            if ($s->{codon}) {
-                $self->load_codon($s->{codon});
-            }
-            else {
-                $self->{hostinfo}->error(" no go diggy die", $ev, $s);
-            }
+            $self->load_codon($s->{value});
         },
         ѷ => sub {
             $list->float();
@@ -188,7 +182,7 @@ sub codolist {
         Ш => sub {
             $self->{hostinfo}->JS(
                 "\$.scrollTo(\$('#ground').offset().top, 360);"
-                ."\$('#ground').scrollTo(\$('#self->{Codo}->{divid}').offset().top, 360);"
+                ."\$('#ground').scrollTo(\$('#self->{Codo}->{divid}').position().top, 360);"
                 #."\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
             );
         },
@@ -214,17 +208,16 @@ sub codolist {
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
             ."color: #99FF66; font-size: 20pt; background-color: #FF5050; font-weight: 700; "
             ."text-shadow: 2px 4px 5px #4C0000;",
+        
     } ] },
     { _spawn => [ [ @coli ], {
         event => sub { $m->{h}->(@_) },
         nospace => 1,
         class => 'menu',
-        tuxtstyle => "opacity: 0.9; padding-bottom: 2px; color: #99FF66; font-weight: 700;"
-            ."text-shadow: 2px 4px 5px #4C0000;",
-        tuxts_to_htmls_tuxt => sub {
-            my ($texty, $s) = @_;
-            my $codon = $s->{codon} = $s->{value};
+        tuxtstyle => sub {
+            my ($codon, $s) = @_;
             $s->{value} = $codon->{name};
+            $s->{codon} = $codon;
 
             $s->{style} .= 'color: #5A5AAF;'
                 if $s->{value} =~ s/^ghosts\///;
@@ -236,6 +229,11 @@ sub codolist {
                 if length($s->{value}) == 1;
 
             $s->{menu} = "h";
+            
+            $s->{style} .= "opacity: 0.9; padding-bottom: 2px;"
+                ." color: #99FF66; font-weight: 700;"
+                ." text-shadow: 2px 4px 5px #4C0000;";
+            return undef;
         },
     } ] },
     ]);
@@ -351,7 +349,7 @@ sub load_codon {
         $self->mind_openness($codon);
     }
     $self->{hostinfo}->send(
-    "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
+    "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').position().top, 360);"
     ." \$('#$codon->{show}->{text}->{id}-Head').fadeOut(300).fadeIn(500);"
     ) unless $noscrolly;
 }

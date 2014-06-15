@@ -79,7 +79,6 @@ sub replace {
     $self->{hooks}->{append} = $ah if $ah;
     return wantarray ? @o : $o[0]
 }
-
 sub editing {
     my $self = shift;
 
@@ -162,14 +161,17 @@ sub h_tuxtstyle {
     my $self = shift;
     my $s = shift;
 
-    if (my $ts = $self->{hooks}->{tuxtstyle}) {
-        my $style = ref $ts eq "CODE" ? $ts->($s->{value}, $s) : $ts;
-        if ($style) {
+    if (my $style = $self->{hooks}->{tuxtstyle}) {
+        if (ref $style eq "CODE") {
+            $style->($s->{value}, $s);
+        }
+        else {
             $s->{style} = $style;
-            return;
         }
     }
-    $s->{style} = "";
+    else {
+        $s->{style} = "";
+    }
 }
 sub mktuxt {
     my $self = shift;
@@ -417,7 +419,7 @@ sub event {
     say "line reads: $s->{value}";
     
     if (ref $evh eq "CODE") {
-        say "Texty $self->{id} $self->{view}->{divid} hooking event->()";
+        say "Texty $self->{id} hooking event->()";
         $evh->($self, $event, $s, @_);
     }
     elsif (ref $evh eq "HASH") {

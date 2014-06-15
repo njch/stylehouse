@@ -86,8 +86,11 @@ sub menu {
     };
     return { _spawn => [ [ sort keys %$m ], {
         event => { menu => $m },
-        tuxtstyle => sub { 
-            "font-size: 23pt; ".random_colour_background()
+        tuxtstyle => sub {
+            my ($v, $s) = @_;
+            $s->{style} .= "padding 5px; font-size: 35pt; "
+            .random_colour_background()
+            ."text-shadow: 2px 4px 5px #4C0000;"
         },
     } ] }
         

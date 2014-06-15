@@ -389,6 +389,9 @@ $self->on(message => sub {
 
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => [$mojo_daemon_listen]);
 $daemon->run();
+sub love {
+
+}
 
 __DATA__
 
@@ -403,6 +406,8 @@ __DATA__
         <script src="stylehouse.js"></script>
         <script src="tabby.js"></script>
         <script src="jquery.scrollTo.js"></script>
+        
+        <link href="font-awesome.min.css" rel="stylesheet">
 
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
@@ -415,3 +420,4 @@ __DATA__
     <body id="body">
     </body>
 </html>
+

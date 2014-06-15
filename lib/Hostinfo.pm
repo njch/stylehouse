@@ -254,7 +254,7 @@ sub update_app_menu {
     
     unless ($self->{appmenu}) {
         $self->flood->spawn_floozy($self, "appmenu",
-            "width:98%; background: #333; color: #afc; font-family: serif; height: 4em;", undef, undef, 'menu'
+            "width:100%; background: #555; padding: 5px; color: #afc; font-family: serif; height: 4em;", undef, undef, 'menu'
         );
         $self->{appmenu}->text->add_hooks({
             class => 'menu',
