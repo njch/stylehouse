@@ -271,21 +271,22 @@ $self->on(message => sub {
         }
         
         start_timer();
-        $hostinfo->spurt('/tmp/elvis', $msg);
+        `cat /dev/null > elvis_sez`;
+        $hostinfo->spurt('elvis_sez', $msg);
         my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
-        .q{print " - reading json from /tmp/elvis\n";}
-        .q{my $j = read_file("/tmp/elvis");}
+        .q{print " - reading json from elvis_sez";}
+        .q{my $j = read_file("elvis_sez");}
         .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
         .q{print " - convert json -> yaml\n";}
         .q{my $d = decode_json($j);}
-        .q{print " - write yaml to /tmp/elvis\n";}
-        .q{DumpFile("/tmp/elvis", $d);}
+        .q{print " - write yaml to elvis_sez\n";}
+        .q{DumpFile("elvis_sez", $d);}
         .q{print " - done\n";}
         .q{'};
         `$convert`;
         
         eval {
-        $j = LoadFile('/tmp/elvis');
+        $j = LoadFile('elvis_sez');
         
         while (my ($k, $v) = each %$j) {
             if (ref \$v eq "SCALAR") {
