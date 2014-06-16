@@ -643,7 +643,7 @@ sub init_flood {
         "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $f = $self->create_view($self, "flood",
-        "width: 42%; min-width:509.188px; background: #8af; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
+        "width: 42%; min-width:509.188px; background: #337921; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",

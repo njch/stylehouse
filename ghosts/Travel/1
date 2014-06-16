@@ -36,90 +36,20 @@ hooks:
             push @{$self->{wayout}}, $c;
         }
     }
-  chain_to_tuxts: |
-    my $line = $s->{value};
-    $ar->{line} = $line;
-    $self->{tuxts} = [];
-    $s->{left} += $line->{depth} * 40;
-    
-    $self->hookways("tuxt_way_in", $ar);
-    $self->hookways("tuxt_ways_out", $ar);
-    $self->hookways("tuxt_etc", $ar);
-    $self->hookways("tuxt_this", $ar);
-  tuxt_way_in: |
-    my $wins = { %$s };
-    $wins->{id} .= "-wayin";
-    my $wi = $line->{wayin};
-    
-    my ($waydo) = $wi ? $self->hookways("tuxt_chain", { %$ar, chain => $wi }) : "! way in";
-    $waydo .= " (".(defined $wi ? $wi : "~").")";
-    $wins->{html} = 1;
-    
-    $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
-    $wins->{top} -= 10;
-    $wins->{style} .= "font-size: 8pt; opacity:0.4;";
-    $wins->{value} = "<pre>".W wdump({ in => $wi})."</pre>";
-    push @{$self->{tuxts}}, $wins;
-  tuxt_ways_out: |
-    my $wous = { %$s };
-    $wous->{id} .= "-waysout";
-    my $wo = $line->{wayout};
-    
-    my $waygo;
-    if ($wo) {
-        my @ways = map {
-            $self->hookways("tuxt_chain", { %$ar, chain => $_ })
-         } @$wo;
-        $waygo = join("\n.\n", @ways);
+  maketravels_chain: |
+    if ($c->{for}) {
+        my $i = 0;
+        for my $for (@{ $self->doo($c->{for}) }) {
+            if (my $t = $c->{travel}) {
+                push @{$self->{away}}, {
+                    travel => {
+                        thing => $self->doo($t, {for => $for}),
+                        way => { %$c, i => $i++, value => $for }
+                    }
+                };
+            }
+        }
     }
-    else {
-        $waygo = "no out";
-    }
-    $waygo .= " (".(defined $wo ? $wo : "~").")";
-    $wous->{html} = 1;
-    $wous->{top} += 10;
-    $wous->{style} .= "font-size: 7pt; opacity:0.4;";
-    $wous->{class} .= "idly";
-    $wous->{value} = "<pre>".enc(W wdump({in =>$wo}))."</pre>";
-    push @{$self->{tuxts}}, $wous;
-  wdump: |
-    use Data::Dumper;
-    $Data::Dumper::Maxdepth = 2;
-    return Dumper($in);
-  tuxt_chain: |
-    my $lchain = { %$chain };
-    my $as_from = delete $lchain->{as_from};
-    delete $lchain->{way}; # TODO random hack
-    my $l = join " }{ ", map { "$_: $lchain->{$_}" } sort keys %$lchain;
-    if ($as_from) {
-        my $li = $self->hookways("tuxt_chain", { %$ar, chain => $as_from });
-        return "$l\n".ind("  as_from: ", $li);
-    }
-    else {
-        return "$l";
-    }
-  tuxt_etc: |
-    my $etcs = { %$s };
-    $etcs->{id} .= "-etcs";
-    my $etc = $line->{etc};
-    return unless $etc;
-    $etcs->{value} = encode_entities(anydump($etc));
-    $etcs->{value} =~ s/\$x = {};//;
-    $etcs->{style} .= colorf($line->{etc});
-    $etcs->{style} .= "font-color: #434; font-size: 5pt; opacity:0.4;";
-    $etcs->{top} += 20;
-    delete $etcs->{left};
-    $etcs->{right} = 5;
-    push @{$self->{tuxts}}, $etcs;
-  tuxt_this: |
-    my $this = { %$s };
-    $this->{id} .= "-this";
-    $this->{value} = encode_entities($line->{thing});
-    $this->{style} .= "color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.4em; ";
-    $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
-    $this->{top} -= 30;
-    $this->{left} += 50;
-    push @{$self->{tuxts}}, $this;
 chains:
  - ref: HASH
    for: ' [ sort keys %$thing ] '

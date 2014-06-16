@@ -1,64 +1,48 @@
-name: ghost refs
+name: wormhole splatter
 hooks:
-  umm: |
-    for my $c (@{$self->{out}}) {
-        if ($c->{note}) {
-            push @{ $self->{etc}->{note}||=[] }, $self->doo($c->{note});
+  splat_wormhole: |
+    say "Wormhole Splattur: $view->{divid}";
+    say $wormhole->describe_size();
+
+    $view->newtext($wormhole->{script}, {
+        spatialise => sub { { left => 40, space => 40, top => 50 } },
+        tuxts_to_htmls => sub {
+            my $self = shift;
+            $self->{tuxts} = [
+            map {
+                $_->{value} eq "nothing" ? $_
+                : do {
+                    my $line = $_->{value};
+                    my $ghost = $line->{ghost};
+                    $ghost->{tuxts} = [];
+                    W $ghost chain_to_tuxts({ texty => $self, s => $_ });
+                    @{$ghost->{tuxts}};
+                }
+            } @{$self->{tuxts}}
+            ];
         }
-    }
-  maketravels: |
-    for my $c (@{$self->{wayout}}) {
-        $self->hookways("maketravels_chain", {c => $c});
-    }
-    $self->hookways("maketravels_post");
-  maketravels_post: |
-    if (!@{$self->{away}}) {
-        
-        for my $dc (grep { $_->{default} } $self->chains) {
-            if (!$dc->{unless} || !$self->doo($dc->{unless})) {
-                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
-            }
-        }
-    }
-  arr: |
-    for my $c ($self->chains) {
-        $self->hookways("arr_chain", {c => $c});
-    }
-  arr_chain: |
-    if ($c->{ref}) {
-        if ($c->{ref} eq ref $thing) {
-            if ($c->{as}) {
-                my @really = $self->grep_chains("ref" => $c->{as});
-                die "cannot find ref=$c->{as}".ddump(@really) if @really != 1;
-                my $new_c = shift @really;
-                $c = { %$new_c, as_from => $c };
-            }
-            push @{$self->{wayout}}, $c;
-        }
-    }
+    });
   chain_to_tuxts: |
     my $line = $s->{value};
     $ar->{line} = $line;
-    $self->{tuxts} = [];
+    W tuxt_way_in($ar);
+    W tuxt_ways_out($ar);
+    W tuxt_etc($ar);
+    W tuxt_this($ar);
     $s->{left} += $line->{depth} * 40;
     
-    $self->hookways("tuxt_way_in", $ar);
-    $self->hookways("tuxt_ways_out", $ar);
-    $self->hookways("tuxt_etc", $ar);
-    $self->hookways("tuxt_this", $ar);
   tuxt_way_in: |
     my $wins = { %$s };
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
     
-    my ($waydo) = $wi ? $self->hookways("tuxt_chain", { %$ar, chain => $wi }) : "! way in";
-    $waydo .= " (".(defined $wi ? $wi : "~").")";
-    $wins->{html} = 1;
+    my $waydo = $wi ? W tuxt_chain({ %$ar, chain => $wi }) : "! way in";
+    $wins->{value} = "<pre>".enc($waydo)."</pre>";
     
+    $wins->{html} = 1;
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
-    $wins->{style} .= "font-size: 8pt; opacity:0.4;";
-    $wins->{value} = "<pre>".W wdump({ in => $wi})."</pre>";
+    $wins->{style} .= "font-size: 8pt; opacity:0.4; -webkit-transform:rotate(45deg);";
     push @{$self->{tuxts}}, $wins;
   tuxt_ways_out: |
     my $wous = { %$s };
@@ -68,31 +52,32 @@ hooks:
     my $waygo;
     if ($wo) {
         my @ways = map {
-            $self->hookways("tuxt_chain", { %$ar, chain => $_ })
+            W tuxt_a_waychain({ %$ar, chain => $_ })
          } @$wo;
         $waygo = join("\n.\n", @ways);
     }
     else {
         $waygo = "no out";
     }
-    $waygo .= " (".(defined $wo ? $wo : "~").")";
+    $wous->{value} = "<pre>".enc($waygo)."</pre>";
+    
     $wous->{html} = 1;
     $wous->{top} += 10;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
-    $wous->{value} = "<pre>".enc(W wdump({in =>$wo}))."</pre>";
+    
     push @{$self->{tuxts}}, $wous;
   wdump: |
     use Data::Dumper;
     $Data::Dumper::Maxdepth = 2;
     return Dumper($in);
-  tuxt_chain: |
+  tuxt_a_waychain: |
     my $lchain = { %$chain };
     my $as_from = delete $lchain->{as_from};
     delete $lchain->{way}; # TODO random hack
     my $l = join " }{ ", map { "$_: $lchain->{$_}" } sort keys %$lchain;
     if ($as_from) {
-        my $li = $self->hookways("tuxt_chain", { %$ar, chain => $as_from });
+        my $li = W tuxt_chain({ %$ar, chain => $as_from });
         return "$l\n".ind("  as_from: ", $li);
     }
     else {
@@ -120,16 +105,4 @@ hooks:
     $this->{top} -= 30;
     $this->{left} += 50;
     push @{$self->{tuxts}}, $this;
-chains:
- - ref: HASH
-   for: ' [ sort keys %$thing ] '
-   travel: ' $thing->{$for} '
- - ref: ARRAY
-   for: ' [ @$thing ] '
-   travel: ' $for '
- - as: HASH
-   note: ' { owner => $thing->view->owner } '
-   ref: Texty
- - default: " \"? '$thing' \""
-   unless: ' ref \$thing eq "SCALAR" '
 
