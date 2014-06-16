@@ -343,7 +343,7 @@ sub chunkify {
     my $newchunk = sub {
         my $l = shift;
 
-        $isgho && @{$stuff[-1]} > 0 && $l =~ /^(\w+|  \S+)/
+        $isgho && @{$stuff[-1]} > 0 && $l =~ /^\w+/
         
         || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
     };
