@@ -106,31 +106,14 @@ sub encode_thing {
 # it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
 # Form is a well-known bunch of Ghost
 
-sub appear {
+sub splat {
     my $self = shift;
     my $view = shift || $self->{way_out};
     ref $view eq "View" || die " $view not View";
-    say "Wormhole Appear: $view->{divid}";
-    say $self->describe_size;
-
-    $view->newtext($self->{script}, {
-        spatialise => sub { { space => 40, top => 50 } },
-        tuxts_to_htmls => sub {
-            my $self = shift;
-            my $newtuxts = [];
-            for my $s (@{$self->tuxts}) {
-                if ($s->{value} eq "nothing") {
-                    push @$newtuxts, $s;
-                }
-                else {
-                    my $ghost = $s->{value}->{ghost};
-                    $ghost->hookways("chain_to_tuxts", { texty => $self, s => $s });
-                    push @$newtuxts, @{$ghost->{tuxts}};
-                }
-            }
-            $self->tuxts($newtuxts);
-        }
-    })
+    
+    $self->{ghost}->hookways('splat_wormhole',
+        {wormhole => $self, view => $view},
+    );
 }
 sub describe_size {
     my $self = shift;

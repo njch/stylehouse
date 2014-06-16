@@ -11,10 +11,10 @@ my $i = 0; # sweeps through @{lyrics}
 $Hostinfo::data->{'horizon'} =
     $Hostinfo::data->{style} eq
 "stylehouse"?
-"50%"
+"40%"
 :
 #"89.91%"
-"39%"
+"80%"
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
@@ -22,7 +22,7 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->{hostinfo}->create_view($self, "lyrico" => "height: 2px; width: 2px;");
+    $self->{hostinfo}->{flood}->spawn_floozy($self, "lyrico" => "height: 1em; width: 100%;");
     $self->{lyrico}->text([],
         { skip_hostinfo => 1,
         leave_spans => 1, 
@@ -40,33 +40,41 @@ sub new {
 
     $self->{lyrics} = [read_file("trampled_rose_lyrics")];
     
-    $self->{wormhola} = $self->{hostinfo}->{sky}->spawn_floozy(
-        ra => "width:50%; border: 2px dotted green; color: black; height: 100%; opacity: 0.8; overflow: scroll;"
-    );
+    $self->{hostinfo}->timer(1, sub {
+        $self->stup();
+    });
+
+    return $self;
+}
+sub stup {
+    my $self = shift;
+    
+    my $sky = $self->{hostinfo}->{sky};
+    $self->{sky} = {};
+    for my $note (qw{M D N R G}) {
+        $self->{sky}->{$note} =
+            $sky->spawn_floozy(
+                $note => "width:20%; color: black; height: 100%;"
+            );
+    }
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
 
-    $self->somewhere() if $self->{hostinfo}->get("style") ne "stylehouse";
-
-    return $self;
+    $self->somewhere();
 }
 sub somewhere {
     my $self = shift;
 
     my $what = $self->{lyrics};
-    $what = ['!'];
-    $self->{hostinfo}->ravel(
-        $self->{T},
-        $what,
-        $self->{wormhola}
-    );
+    $what = [['!']];
+    
+    my $w = $self->{T}->travel($what);
+    $w->splat($self->{sky}->{M});
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
     }) if 0 && $self->{hostinfo}->get("style") ne "stylehouse";
 }
-
-
 sub menu {
     my $self = shift;
     my $m = {
@@ -119,8 +127,6 @@ sub event {
         $self->write($h, \@lyrics);
     }
 }
-
-
 sub startclicky {
     my $self = shift;
     $self->{hostinfo}->set('clickcatcher', $self);

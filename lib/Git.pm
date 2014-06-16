@@ -116,9 +116,9 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
-    my $pst = $self->{pswatch}->text;
+    my $pst = $self->{pswatch}->text if $self->{pswatch};
 
-    if (my $s = $pst->id_to_tuxt($id)) {
+    if ($pst && (my $s = $pst->id_to_tuxt($id))) {
         my ($pid, $cmd) = split ": ", $s->{value};
         say "KILLING $pid";
         kill "INT", $pid;
@@ -127,8 +127,7 @@ sub event {
         });
     }
     else {
-        say "Errour!";
-        return $self->{hostinfo}->error("Codo event 404 for $id", $event);
+        return $self->{hostinfo}->error("Errour! no $id", $event);
     }
 }
 
