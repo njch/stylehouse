@@ -701,45 +701,6 @@ sub flood {
     }
     $self->{flood}->{latest} = $floozy;
 }
-sub ravel {
-    my $self = shift;
-    my $travel = shift;
-    my $thing = shift;
-    my $floozy = shift;
-
-    my $wormhole;
-    start_timer();
-                                    eval { $wormhole = $travel->travel($thing) };
-
-    my $travel_exec = "->travel in ".show_delta();
-    $self->info("$travel_exec");
-
-    return $self->error(
-        "flood travel error" => $@,
-        Travel => ddump($travel),
-    ) if $@;
-
-
-
-    return $self->error(
-        "no wormhole!?",
-        Travel => ddump($travel),
-    ) if !$wormhole;
-
-
-
-                                        $wormhole->appear($floozy) ;
-
-    my $womholy_exec = "wormhole->appear in ".show_delta();
-    $self->info("$womholy_exec");
-    
-        if ($@) {
-            $self->error(
-                "flood wormhole appear error" => $@,
-                Wormhole => 1,#ddump($wormhole),
-            );
-        }
-}
 
 sub travel {
     my $self = shift;

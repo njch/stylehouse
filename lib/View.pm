@@ -164,7 +164,6 @@ sub spawn_ceiling {
 
     $c
 }
-
 sub spawn_floon { # floozy becomes fixed to a space above the floozal cortex
     my $self = shift;
 
