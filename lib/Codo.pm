@@ -165,7 +165,10 @@ sub codolist {
     my $m = {
         h => sub {
             my ($ev, $s) = @_;
-            $self->load_codon($s->{value});
+            my $codon = $s->{codon};
+            return $self->{hostinfo}->error("No Codon attached to", $s)
+                unless $codon;
+            $self->load_codon($codon->{name});
         },
         ѷ => sub {
             $list->float();

@@ -698,7 +698,6 @@ sub flood {
     }
     $self->{flood}->{latest} = $floozy;
 }
-
 sub ravel {
     my $self = shift;
     my $travel = shift;
@@ -816,7 +815,7 @@ sub throwlog {
             $error->[0],
             
                 (map { "    - $_" } reverse @{$error->[1]}),
-            join("\n\n\n", map { ref $_ ? ddump($_) : "$_" } @{$error->[2]}),
+            join("\n\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
         );
 
     say "$what =>\n$string";
@@ -841,7 +840,12 @@ sub ddump {
         grep !/^       /,
         split "\n", Dump($thing);
 }
-
+sub wdump {
+    my $thing = shift;
+    use Data::Dumper;
+    $Data::Dumper::Maxdepth = 2;
+    return Dumper($thing);
+}
 sub intro {
     my $self = shift;
     return sub {
