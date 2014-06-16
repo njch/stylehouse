@@ -388,7 +388,6 @@ sub tuxts_to_htmls {
         }
         my $V = delete $p->{value};
         
-        
         if (ref $V eq "Texty") {
             $V = join "", @{ $V->{htmls} };
         }
@@ -418,20 +417,20 @@ sub event {
     my $s = $self->id_to_tuxt($event->{id});
     say "line reads: $s->{value}";
     
-    if (ref $evh eq "CODE") {
-        say "Texty $self->{id} hooking event->()";
-        $evh->($self, $event, $s, @_);
-    }
-    elsif (ref $evh eq "HASH") {
-        my $menu = $evh->{menu};
-        say 'hashy menu';
-        if (my $m = $s->{menu} || $s->{value}) {
-            say "hooking HASHY event menu for $m";
-            $menu->{$m}->($event, $s);
+    if ($evh) {
+        if (ref $evh eq "HASH") {
+            my $menu = $evh->{menu};
+            my $m = $s->{menu} || $s->{value};
+            if ($menu->{$m}) {
+                say "hooking HASHY event menu for $m";
+                $evh = $menu->{$m};
+            }
+            else {
+                return $self->{hostinfo}->error(
+                "unhandled tuxt click", $s, $event);
+            }
         }
-        else {
-            $self->{hostinfo}->error("unhandled tuxt click", $event, $s);
-        }
+        $evh->($event, $s, $self, @_);
     }
     else {
         say "Event id: ".$event->{id};
