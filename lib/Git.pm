@@ -80,6 +80,9 @@ sub gitrack {
         hp => sub {
             $self->spawn_proc('cd ../stylehouse && git pull shed conty');
         },
+        hP => sub {
+            $self->spawn_proc('cd ../stylehouse && git push');
+        },
         hG => sub {
             $self->spawn_proc('cd ../stylehouse && git gui');
         },
