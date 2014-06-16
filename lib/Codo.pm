@@ -283,25 +283,12 @@ sub mind_openness {
     my $codon = shift;
 
     if ($codon) {
-        my $codlt = $self->{codolist}->{text};
-        my $menut;
-        for my $clt (@{ $codlt->{tuxts} }) {
-            for my $cltt (@{ $clt->{value}->{tuxts} }) {
-                $menut = $cltt
-                    if $cltt->{codon}
-                    && $cltt->{codon} eq $codon;
-                last if $menut;
-            }
-            last if $menut;
-        }
+        my $menut = $self->find_codolist_tuxt($codon);
         
         if ($menut) {
             $self->{hostinfo}->send(
                 "\$('#$menut->{id}').addClass('onn');"
             );
-        }
-        else {
-            $self->{hostinfo}->error("No findo $codon->{name} in codolist");
         }
     }
 
@@ -316,23 +303,40 @@ sub mind_openness {
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
+sub find_codolist_tuxt {
+    my $self = shift;
+    my $codon = shift;
+    my $codlt = $self->{codolist}->{text};
+
+    my $menut;
+    for my $clt (@{ $codlt->{tuxts} }) {
+        for my $cltt (@{ $clt->{value}->{tuxts} }) {
+            $menut = $cltt
+                if $cltt->{codon}
+                && $cltt->{codon} eq $codon;
+            last if $menut;
+        }
+        last if $menut;
+    }
+    unless ($menut) {
+        $self->{hostinfo}->error("Non findo $codon->{name} in codolist");
+    }
+    return $menut;
+}
 sub lobo {
     my $self = shift;
     my $codon = shift;
     
     @{$self->{all_open}} =
         grep { $_ ne $codon } @{$self->{all_open}};
-    $self->mind_openness;
+        
+    $self->mind_openness();
     
-    my $codlt = $self->{codolist}->{text};
-    my ($menut) = grep { $_->{codon} eq $codon } @{ $codlt->{tuxts} };
+    my ($menut) = $self->find_codolist_tuxt($codon);
     if ($menut) {
-      $self->{hostinfo}->send(
-          "\$('#$menut->{id}').removeClass('onn');"
-      );
-    }
-    else {
-        $self->{hostinfo}->error("No findo $codon->{name} in codolist");
+          $self->{hostinfo}->send(
+              "\$('#$menut->{id}').removeClass('onn');"
+          );
     }
 }
 sub list_of_codefiles {
@@ -347,8 +351,6 @@ sub list_of_codefiles {
         glob($dir.'ghosts/*/*'),
     );
 }
-
-
 sub load_codon {
     my $self = shift;
     my $codon = shift;
