@@ -295,7 +295,7 @@ sub update_app_menu {
 }
 sub menu {
     my $self = shift;
-    my $floodm = {
+    my $m = $self->{floodmenu} = {
         Ш => sub {
             $self->JS(
                 "\$.scrollTo(\$('#ground').offset().top, 360);"
@@ -305,8 +305,8 @@ sub menu {
     };
 
     return { _spawn => [
-        [ sort keys %$floodm ], {
-            event => {menu => $floodm},
+        [ sort keys %$m ], {
+            event => {menu => $m},
             tuxtstyle => sub {
                 my ($v, $s) = @_;
                 $s->{style} .= "padding 5px; font-size: 35pt; "
@@ -659,6 +659,9 @@ sub init_flood {
     $self->{hi_info} = $f->spawn_floozy(
         hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
     );
+    
+    $self->menu();
+    $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
 
     return $f
 }
