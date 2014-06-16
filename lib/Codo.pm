@@ -369,7 +369,7 @@ sub load_codon {
         $self->mind_openness($codon);
     }
     $self->{hostinfo}->send(
-    "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').position().top, 360);"
+    "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}'), 360);"
     ." \$('#$codon->{show}->{text}->{id}-Head').fadeOut(300).fadeIn(500);"
     ) unless $noscrolly;
 }
