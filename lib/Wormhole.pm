@@ -10,7 +10,6 @@ sub ddump { Hostinfo::ddump(@_) }
 
 
 has 'hostinfo';
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);

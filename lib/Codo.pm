@@ -189,6 +189,10 @@ sub codolist {
                 #."\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}').offset().top, 360);"
             );
         },
+        ƾ => sub {
+            `rm Codo-openness.yml`;
+            $self->{hostinfo}->info("deleted openness savefile");
+        },
     };
     
     
@@ -208,8 +212,9 @@ sub codolist {
         event => { menu => $m },
         nospace => 1,
         class => 'menu',
+        style => 'border: 3px solid #bb3333;',
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
-            ."color: #99FF66; font-size: 20pt; background-color: #FF5050; font-weight: 700; "
+            ."color: #99FF66; font-size: 29pt; background-color: #FF5050; font-weight: 700; "
             ."text-shadow: 2px 4px 5px #4C0000;",
         
     } ] },
@@ -279,7 +284,17 @@ sub mind_openness {
 
     if ($codon) {
         my $codlt = $self->{codolist}->{text};
-        my ($menut) = grep { $_->{codon} && $_->{codon} eq $codon } @{ $codlt->{tuxts} };
+        my $menut;
+        for my $clt (@{ $codlt->{tuxts} }) {
+            for my $cltt (@{ $clt->{value}->{tuxts} }) {
+                $menut = $cltt
+                    if $cltt->{codon}
+                    && $cltt->{codon} eq $codon;
+                last if $menut;
+            }
+            last if $menut;
+        }
+        
         if ($menut) {
             $self->{hostinfo}->send(
                 "\$('#$menut->{id}').addClass('onn');"
