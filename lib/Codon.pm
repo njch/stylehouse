@@ -151,11 +151,6 @@ var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
 
 CM
             );
-            $self->{hostinfo}->send(
-            "\$('#$textid').change(function(){"
-                ."ws.reply({event:{id:\"$texty->{id}-Save-$i\"}})"
-            ."});"
-            );
         }
     }
 
