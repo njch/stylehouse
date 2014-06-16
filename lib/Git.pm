@@ -68,7 +68,7 @@ sub gitrack {
         ps => sub {
             $self->pswatch("once");
         },
-        init => sub {
+        i => sub {
             $self->init();
         },
         sp => sub {
@@ -83,7 +83,8 @@ sub gitrack {
         hG => sub {
             $self->spawn_proc('cd ../stylehouse && git gui');
         },
-        'BR--' => sub {
+        BR => sub {
+            $self->{hostinfo}->info("Bucky rip");
             run('cd ../stylebucky && git reset --hard');
         },
         'rps' => sub {
@@ -93,14 +94,16 @@ sub gitrack {
     my $rt = $self->{gitrack}->text;
     $rt->add_hooks({
         tuxtstyle => sub {
-            return 'padding: 4.20px; font-size: 1em; '.random_colour_background();
+            my ($v, $s) = @_;
+            $s->{style} .= 'opacity: 0.5; text-shadow: -2px -3px 3px #9999FF; padding: 4.20px; color: black; font-size: 2em; '.random_colour_background();
         },
         class => "menu",
         nospace => 1,
+        allmenu => 1,
         event => { menu => $self->{rackmenu} },
     });
     my @items = sort keys %{$self->{rackmenu}};
-    $rt->replace([ map { "!menu $_" } @items]);
+    $rt->replace([ @items]);
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;

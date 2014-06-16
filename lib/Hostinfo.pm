@@ -253,7 +253,7 @@ sub update_app_menu {
     my $self = shift;
     
     unless ($self->{appmenu}) {
-        $self->flood->spawn_floozy($self, "appmenu",
+        $self->{flood}->{ceiling}->spawn_floozy($self, "appmenu",
             "width:100%; background: #555; padding: 5px; color: #afc; font-family: serif; height: 4em;", undef, undef, 'menu'
         );
         $self->{appmenu}->text->add_hooks({
@@ -321,7 +321,12 @@ sub random_colour_background {
 }
 sub event {
     my $self = shift;
-    $self->info("hostinfo event, don't know what to do", shift);
+    my $ev = shift;
+    my $id = $ev->{id};
+    if ($id eq "hi_error" || $id eq "hi_info") {
+        $self->send("\$('#$id').toggleClass('widdle');");
+    }
+    #$self->info("hostinfo event, don't know what to do: $id", [$id, $id]);
 }
 # this is where human attention is (before this text was in the wrong place)
 # it's a place things flow into sporadically now
@@ -627,7 +632,6 @@ sub screen_height {
     $self->set("screen/width" => $sc->{x});
     $self->set("screen/height" => $sc->{y});
 }
-
 sub init_flood {
     my $self = shift;
 
@@ -643,7 +647,7 @@ sub init_flood {
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
-        "width: ".420*1.14."px; height: 16px; background: #301a30; color: #afc; font-weight: bold;",
+        "width: ".420*1.14."px; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
     );
 
     $self->{floodzy} = $f->spawn_floozy(
