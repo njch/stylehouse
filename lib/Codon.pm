@@ -75,8 +75,7 @@ sub display {
             push @chunks,
                 "!html !i=$i "
                 .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
-                .'<input id="<<ID>>-Close-'.$i.'" type="submit" style="position: absolute; right: -25px; opacity: 0.4; top: 0%; height: 45%;" value="C">'
-                .'<input id="<<ID>>-Save-'.$i.'" type="submit" style="position: absolute; right: -25px; opacity: 0.4; top: 55%; height: 45%;" style="position: absolute; right: -20px; top: 10px; height: 30px;" value="S">'
+                .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: 0px; opacity: 0.4; top: 2em; height: 45%; z-index: 20;">@@</span>'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
