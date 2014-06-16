@@ -9,7 +9,6 @@ has 'hostinfo';
 has 'owner';
 has 'divid';
 has 'id';
-
 my $div_styley = { # these go somewhere magical and together, like always
     hodu => "width:58%;  background: #352035; color: #afc; top: 50; height: 600px;",
     gear => "width:9.67%;  background: #352035; color: #445; top: 50; height: 20px;",
@@ -106,17 +105,6 @@ sub menu {
     $self->{menu} ||= Menu->new($self->hostinfo->intro, $self, @_);
 }
 
-sub travel {
-    my $self = shift;
-    
-    $self->{travel} ||= Travel->new($self->hostinfo->intro, $self);
-
-    if (@_) {
-        say "Travelling... A THING!";
-        return $self->{travel}->travel([@_]);
-    }
-    return $self->{travel};
-}
 
 sub spawn_floozy {
     my $self = shift;
@@ -134,8 +122,8 @@ sub spawn_floozy {
         }
         else {
             if ($self->{hostinfo}->get("floods/$self->{divid}")
-                || $class eq "-ceil" ) {
-                $class = undef if $class eq "-ceil";
+                || $class && $class eq "-ceil" ) {
+                $class = undef if $class && $class eq "-ceil";
                 $attach = "before";
                 $where = "#$self->{divid} *:first";
             }
@@ -355,3 +343,4 @@ sub concat_array {
 }
 
 1;
+
