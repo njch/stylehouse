@@ -51,10 +51,10 @@ sub stup {
     
     my $sky = $self->{hostinfo}->{sky};
     $self->{sky} = {};
-    for my $note (qw{M D N R G}) {
+    for my $note (qw{M}) {# D N R G
         $self->{sky}->{$note} =
             $sky->spawn_floozy(
-                $note => "width:20%; color: black; height: 100%;"
+                $note => "width:100%; color: black; height: 100%;"
             );
     }
 
@@ -69,7 +69,9 @@ sub somewhere {
     $what = [['!']];
     
     my $w = $self->{T}->travel($what);
-    $w->splat($self->{sky}->{M});
+    my $v = $self->{sky}->{M};
+    $v->wipehtml();
+    $w->splat($v);
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();

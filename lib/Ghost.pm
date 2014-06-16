@@ -117,16 +117,20 @@ sub wdump { shift->hookways('wdump', { in => shift }) }
 sub doo { # here we are in a node, facilitating the popup code that is Way
     my $self = shift;
     my $eval = shift;
-    while ($eval =~ /(W (\w+)\((.+?)\))/sg) {
-        my $p = pos();
-        my ($old, $way, $are) = ($1, $2, $3);
-        $eval =~ s/\Q$old\E/\$self->hookways("$way", $are)/
-            || die "Ca't replace $1 at $p\n the: $1\t\t$2"
-            ." in\n".ind("E ", $eval);
-    }
     my $ar = shift;
     my $point = shift;
+    
+    while ($eval =~ /(W (\$\w+ )?(\w+)\((.+?)\))/sg) {
+        my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
+        $ghost ||= '$self';
+        $eval =~ s/\Q$old\E/$ghost->hookways("$way", $are)/
+            || die "Ca't replace $1\n"
+            ." in\n".ind("E ", $eval);
+    }
+    
     my $thing = $self->{thing};
+    my $O = $self->{travel}->{owner};
+    
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar;
     
@@ -196,3 +200,4 @@ sub event {
 }
 
 1;
+
