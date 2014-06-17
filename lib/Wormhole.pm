@@ -32,12 +32,16 @@ sub continues {
 
     my $line = {
         uuid => $self->hostinfo->make_uuid,
-        wayin => $ghost->{wayin},
+        
         thing => encode_thing($ghost->{thing}),
-        etc => ($ghost->{etc}),
+        
+        wayin => $ghost->{wayin},
         wayout => $ghost->{wayout},
+        
+        etc => ($ghost->{etc}),
         depth => $ghost->{depth},
         last => $ghost->{last_state}->{uuid},
+        
         ghost => $ghost,
     };
 
@@ -51,7 +55,6 @@ sub continues {
     
     return $line;
 }
-
 sub wormfile_load {
     my $self = shift;
     $self->{file} = shift;

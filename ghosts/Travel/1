@@ -1,65 +1,54 @@
-name: ghost refs
+name: ghost data structure crawl
+chains:
+ - look_at_thing: ref $thing eq 'HASH' 
+   for: ' [ sort keys %$thing ] '
+   travel: ' $thing->{$for} '
+ - re f: ARRAY
+   for: ' [ @$thing ] '
+   travel: ' $for '
 hooks:
-  umm: |
-    for my $c (@{$self->{out}}) {
-        if ($c->{note}) {
-            push @{ $self->{etc}->{note}||=[] }, $self->doo($c->{note});
-        }
-    }
-  maketravels: |
-    for my $c (@{$self->{wayout}}) {
-        $self->hookways("maketravels_chain", {c => $c});
-    }
-    $self->hookways("maketravels_post");
-  maketravels_post: |
-    if (!@{$self->{away}}) {
-        
-        for my $dc (grep { $_->{default} } $self->chains) {
-            if (!$dc->{unless} || !$self->doo($dc->{unless})) {
-                push @{$self->{away}}, { travel => { thing => $self->doo($dc->{default}), way => { %$dc } } };
-            }
-        }
-    }
   arr: |
-    for my $c ($self->chains) {
-        $self->hookways("arr_chain", {c => $c});
+      W arr_chains();
+  arr_chains: |
+    for my $c ($G->chains) {
+        W arr_chain({c => $c});
     }
   arr_chain: |
-    if ($c->{ref}) {
-        if ($c->{ref} eq ref $thing) {
-            if ($c->{as}) {
-                my @really = $self->grep_chains("ref" => $c->{as});
-                die "cannot find ref=$c->{as}".ddump(@really) if @really != 1;
-                my $new_c = shift @really;
-                $c = { %$new_c, as_from => $c };
-            }
-            push @{$self->{wayout}}, $c;
+    if ($c->{ref} && $c->{ref} eq ref $thing) {
+        if ($c->{as}) {
+            my @really = $G->grep_chains("ref" => $c->{as});
+            die "cannot find ref=$c->{as}".ddump(@really)
+                if @really != 1;
+            my $new_c = shift @really;
+            $c = { %$new_c, as_from => $c };
+        }
+        push @{$G->{wayout}}, $c;
+    }
+  umm: |
+    for my $c (@{$G->{out}}) {
+        if ($c->{note}) {
+            push @{ $G->{etc}->{note}||=[] }, $G->doo($c->{note});
         }
     }
-  maketravels_chain: |
+  and: |
+    for my $c (@{$G->{wayout}}) {
+        W and_chain({c => $c});
+    }
+    if (!@{$G->{away}}) {
+        
+    }
+  and_chain: |
     if ($c->{for}) {
         my $i = 0;
-        for my $for (@{ $self->doo($c->{for}) }) {
+        for my $for (@{ $G->doo($c->{for}) }) {
             if (my $t = $c->{travel}) {
-                push @{$self->{away}}, {
+                push @{$G->{away}}, {
                     travel => {
-                        thing => $self->doo($t, {for => $for}),
+                        thing => $G->doo($t, {for => $for}),
                         way => { %$c, i => $i++, value => $for }
                     }
                 };
             }
         }
     }
-chains:
- - ref: HASH
-   for: ' [ sort keys %$thing ] '
-   travel: ' $thing->{$for} '
- - ref: ARRAY
-   for: ' [ @$thing ] '
-   travel: ' $for '
- - as: HASH
-   note: ' { owner => $thing->view->owner } '
-   ref: Texty
- - default: " \"? '$thing' \""
-   unless: ' ref \$thing eq "SCALAR" '
 

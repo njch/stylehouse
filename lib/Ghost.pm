@@ -114,39 +114,42 @@ sub hookways {
     }
 }
 sub wdump { shift->hookways('wdump', { in => shift }) }
-sub doo { # here we are in a node, facilitating the popup code that is Way
-    my $self = shift;
+sub doo {
+    my $G = shift;
     my $eval = shift;
     my $ar = shift;
     my $point = shift;
     
-    while ($eval =~ /(W (\$\w+ )?(\w+)\((.+?)\))/sg) {
+    while ($eval =~ /(W (\$\w+ )?(\w+)\((.*?)\))/sg) {
         my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
-        $ghost ||= '$self';
+        $ghost ||= '$G';
         $eval =~ s/\Q$old\E/$ghost->hookways("$way", $are)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
     
-    my $thing = $self->{thing};
-    my $O = $self->{travel}->{owner};
+    my $thing = $G->{thing};
+    my $O = $G->{travel}->{owner};
+    my $H = $G->{hostinfo};
     
-    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar;
-    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar;
+    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar if $ar;
+    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar if $ar;
     
     my @return;
-    my $evs = "$download ".'@return'." = (sub { $eval })->();  $upload";
+    my $evs = ($download||'')
+        .' @return = (sub { '.$eval.' })->(); '
+        .($upload||'');
     eval $evs;
     if ($@) {
         die "DOO Fuckup:\n"
             .(defined $point ? "point: $point\n" : "")
             ."args: ".join(", ", keys %$ar)."\n"
-            .($@ !~ /DOO Fuckup/ ? ind("|-  ", $eval) : "|")."\n"
+            .($@ !~ /DOO Fuckup/ ? ind("c  ", $eval) : "|")."\n"
             .ind("|   ", $@)."\n^\n";
     }
     # more ^
     
-    return @return;
+    return wantarray ? @return : shift @return;
 }
 sub enc { encode_entities(shift) }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }

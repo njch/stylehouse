@@ -308,7 +308,6 @@ sub spatialise {
         $i++;
     }
 }
-
 sub htmlvalue_height {
     my $self = shift;
     my $s = shift;
@@ -325,7 +324,6 @@ sub htmlvalue_height {
     }
     return 20;
 }
-
 sub fit_div {
     my $self = shift;
 
