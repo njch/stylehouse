@@ -1,38 +1,45 @@
 name: ghost data structure crawl
 chains:
- - look_at_thing: ref $thing eq 'HASH' 
+ - name: HASH crawl
+   at_thing: ref $thing eq 'HASH' 
    for: ' [ sort keys %$thing ] '
    travel: ' $thing->{$for} '
- - re f: ARRAY
+   print: $chain->{value}
+   
+ - name: ARRAY crawl
+   at_thing: ref $thing eq 'ARRAY'
    for: ' [ @$thing ] '
    travel: ' $for '
+   print: $chain->{i}
 hooks:
   arr: |
-      W arr_chains();
+      w arr_chains();
   arr_chains: |
     for my $c ($G->chains) {
-        W arr_chain({c => $c});
+        w arr_chain({c => $c});
     }
   arr_chain: |
-    if ($c->{ref} && $c->{ref} eq ref $thing) {
+    if ($c->{at_thing} && $G->doo($c->{at_thing})) {
+    
         if ($c->{as}) {
-            my @really = $G->grep_chains("ref" => $c->{as});
+            my @really = $G->grep_chains("name" => $c->{as});
             die "cannot find ref=$c->{as}".ddump(@really)
                 if @really != 1;
             my $new_c = shift @really;
             $c = { %$new_c, as_from => $c };
         }
+        
         push @{$G->{wayout}}, $c;
     }
   umm: |
-    for my $c (@{$G->{out}}) {
+    for my $c (@{$G->{wayout}}) {
         if ($c->{note}) {
             push @{ $G->{etc}->{note}||=[] }, $G->doo($c->{note});
         }
     }
   and: |
     for my $c (@{$G->{wayout}}) {
-        W and_chain({c => $c});
+        w and_chain({c => $c});
     }
     if (!@{$G->{away}}) {
         

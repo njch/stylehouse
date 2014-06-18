@@ -22,9 +22,11 @@ sub new {
     push @wayns, $1 if $name =~ /^(\w+)-.+/;
     $self->load_ways(@wayns);
 
-    $self->{wormhole} = new Wormhole($self->hostinfo->intro, $self, "wormholes/$name/0");
-
     return $self;
+}
+sub W {
+    my $self = shift;
+    $self->{wormhole} ||= Wormhole->new($self->hostinfo->intro, $self, "wormholes/$self->{name}/0");
 }
 sub load_ways {
     my $self = shift;
@@ -120,7 +122,7 @@ sub doo {
     my $ar = shift;
     my $point = shift;
     
-    while ($eval =~ /(W (\$\w+ )?(\w+)\((.*?)\))/sg) {
+    while ($eval =~ /(w (\$\w+ )?(\w+)\((.*?)\))/sg) {
         my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
         $ghost ||= '$G';
         $eval =~ s/\Q$old\E/$ghost->hookways("$way", $are)/
@@ -172,7 +174,7 @@ sub haunt { # arrives through here
 
     $self->ob($self);
 
-    my $state = $self->{wormhole}->continues($self); # %
+    my $state = $self->W->continues($self); # %
 
     $self->ob($self);
 

@@ -68,10 +68,13 @@ sub somewhere {
 
     my $what = $self->{lyrics};
     
-    my $w = $self->{T}->travel($what);
+    my $T = $self->{T};
+    $T->W->{script} = [];
+    $T->travel($what);
+    $T->travel($self);
     my $v = $self->{sky}->{M};
     $v->wipehtml();
-    $w->splat($v);
+    $T->W->splat($v);
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();
