@@ -59,6 +59,7 @@ sub stup {
     }
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
+    $self->{T}->travel($self);
 
     $self->somewhere();
 }
@@ -66,12 +67,14 @@ sub somewhere {
     my $self = shift;
 
     my $what = $self->{lyrics};
-    $what = [['!']];
     
-    my $w = $self->{T}->travel($what);
+    my $T = $self->{T};
+    $T->W->{script} = [];
+    $T->travel($what);
+    $T->travel($self);
     my $v = $self->{sky}->{M};
     $v->wipehtml();
-    $w->splat($v);
+    $T->W->splat($v);
 
     $self->{hostinfo}->timer(2, sub {
         $self->somewhere();

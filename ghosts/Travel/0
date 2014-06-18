@@ -3,9 +3,8 @@ hooks:
   splat_wormhole: |
     say "Wormhole Splattur: $view->{divid}";
     say $wormhole->describe_size();
-
     $view->newtext($wormhole->{script}, {
-        spatialise => sub { { left => 40, space => 40, top => 50 } },
+        spatialise => sub { { left => 40, space => 30, top => 50 } },
         tuxts_to_htmls => sub {
             my $self = shift;
             $self->{tuxts} = [
@@ -14,36 +13,40 @@ hooks:
                 : do {
                     my $line = $_->{value};
                     my $ghost = $line->{ghost};
-                    $ghost->{tuxts} = [];
-                    W $ghost chain_to_tuxts({ texty => $self, s => $_ });
-                    @{$ghost->{tuxts}};
+                    my $ar = { texty => $self,
+                               s => $_, tuxts => [] };
+                    w $ghost chain_to_tuxts($ar);
+                    @{$ar->{tuxts}};
                 }
             } @{$self->{tuxts}}
             ];
         }
     });
+    
   chain_to_tuxts: |
     my $line = $s->{value};
     $ar->{line} = $line;
-    W tuxt_way_in($ar);
-    W tuxt_ways_out($ar);
-    W tuxt_etc($ar);
-    W tuxt_this($ar);
     $s->{left} += $line->{depth} * 40;
+    w tuxt_way_in($ar);
+    w tuxt_ways_out($ar);
+    w tuxt_etc($ar);
+    w tuxt_this($ar);
     
   tuxt_way_in: |
     my $wins = { %$s };
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
     
-    my $waydo = $wi ? W tuxt_chain({ %$ar, chain => $wi }) : "! way in";
-    $wins->{value} = "<pre>".enc($waydo)."</pre>";
+    my $waydo = $wi ? w tuxt_a_waychain({ %$ar, chain => $wi }) : "! way in";
+    $wins->{value} = "i<pre>".enc($waydo)."</pre>";
     
     $wins->{html} = 1;
     $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
     $wins->{top} -= 10;
-    $wins->{style} .= "font-size: 8pt; opacity:0.4; -webkit-transform:rotate(45deg);";
-    push @{$self->{tuxts}}, $wins;
+    $wins->{left} += -20;
+    $wins->{style} .= "font-size: 8pt; opacity:0.4;";
+    push @{$ar->{tuxts}}, $wins;
+    
   tuxt_ways_out: |
     my $wous = { %$s };
     $wous->{id} .= "-waysout";
@@ -52,57 +55,55 @@ hooks:
     my $waygo;
     if ($wo) {
         my @ways = map {
-            W tuxt_a_waychain({ %$ar, chain => $_ })
+            w tuxt_a_waychain({ %$ar, chain => $_ })
          } @$wo;
         $waygo = join("\n.\n", @ways);
     }
     else {
         $waygo = "no out";
     }
-    $wous->{value} = "<pre>".enc($waygo)."</pre>";
+    $wous->{value} = "o<pre>".enc($waygo)."</pre>";
     
     $wous->{html} = 1;
-    $wous->{top} += 10;
+    $wous->{top} += 0;
+    $wous->{left} += 330;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
     
-    push @{$self->{tuxts}}, $wous;
+    push @{$ar->{tuxts}}, $wous;
+    
   wdump: |
     use Data::Dumper;
     $Data::Dumper::Maxdepth = 2;
     return Dumper($in);
+    
   tuxt_a_waychain: |
-    my $lchain = { %$chain };
-    my $as_from = delete $lchain->{as_from};
-    delete $lchain->{way}; # TODO random hack
-    my $l = join " }{ ", map { "$_: $lchain->{$_}" } sort keys %$lchain;
-    if ($as_from) {
-        my $li = W tuxt_chain({ %$ar, chain => $as_from });
-        return "$l\n".ind("  as_from: ", $li);
+    $chain = { %$chain };
+    my $as_from = delete $chain->{as_from};
+    delete $chain->{way}; # TODO random hack
+    my $l;
+    if ($chain->{print}) {
+        $l = $G->doo($chain->{print},
+            {chain => $chain});
     }
     else {
-        return "$l";
+        $l = join " }{ ",
+            map { "$_: $chain->{$_}" }
+            sort keys %$chain;
     }
-  tuxt_etc: |
-    my $etcs = { %$s };
-    $etcs->{id} .= "-etcs";
-    my $etc = $line->{etc};
-    return unless $etc;
-    $etcs->{value} = encode_entities(anydump($etc));
-    $etcs->{value} =~ s/\$x = {};//;
-    $etcs->{style} .= colorf($line->{etc});
-    $etcs->{style} .= "font-color: #434; font-size: 5pt; opacity:0.4;";
-    $etcs->{top} += 20;
-    delete $etcs->{left};
-    $etcs->{right} = 5;
-    push @{$self->{tuxts}}, $etcs;
+    if ($as_from) {
+        my $li = w tuxt_a_waychain({ %$ar, chain => $as_from });
+        $l .= ind("  as_from: ", $li);
+    }
+    return $l
+    
   tuxt_this: |
     my $this = { %$s };
     $this->{id} .= "-this";
-    $this->{value} = encode_entities($line->{thing});
-    $this->{style} .= "color: #bb3564; font-size: 15pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.4em; ";
+    $this->{value} = $line->{thing};
+    $this->{style} .= "color: #bb3564; font-size: 10pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.4em; ";
     $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
-    $this->{top} -= 30;
-    $this->{left} += 50;
-    push @{$self->{tuxts}}, $this;
+    #$this->{top} -= 0;
+    #$this->{left} += 50;
+    push @{$ar->{tuxts}}, $this;
 
