@@ -3,8 +3,10 @@ hooks:
   splat_wormhole: |
     say "Wormhole Splattur: $view->{divid}";
     say $wormhole->describe_size();
+    
+    
     $view->newtext($wormhole->{script}, {
-        spatialise => sub { { left => 40, space => 30, top => 50 } },
+        spatialise => sub { { left => 20, space => 15, top => 50 } },
         tuxts_to_htmls => sub {
             my $self = shift;
             $self->{tuxts} = [
@@ -22,28 +24,68 @@ hooks:
             ];
         }
     });
-    
+
+  colorf: |
+    my $fing = $in;
+    my ($l,$r,$b) = @_;
+    my ($color) = ($in || "0") =~ /\(0x....(...)/;
+    $color ||= $fing if $in && ref \$in eq "SCALAR" && $in =~ /^(\x{3}|\x{6})$/;
+    $color ||= "663300";
+    $l ||= 0;
+    $r ||= 0;
+    $b ||= 3;
+    return "text-shadow: ${l}px ${r}px ${b}px #$color;";
+
+  random_shadow: |
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "text-shadow: 0px 0px 4px rgb($rgb);";
+  random_colour: |
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "rgb($rgb);";
+  random_colour_background: |
+    my ($rgb) = join", ", map int rand 255, 1 .. 3;
+    return "rgb($rgb);";
   chain_to_tuxts: |
     my $line = $s->{value};
     $ar->{line} = $line;
     $s->{left} += $line->{depth} * 40;
+    $ar->{B} = {};
     w tuxt_way_in($ar);
     w tuxt_ways_out($ar);
     w tuxt_etc($ar);
     w tuxt_this($ar);
+    my $o = $ar->{B}->{o};
+    my $t = $ar->{B}->{t};
+    for (values %{$ar->{B}}) {
+    $_->{style} .=
+        "font-size: 15pt; ".w random_shadow().";";
+    }
+    if (length($o->{value}) > 9) {
+        $t->{left} += 50;
+    }
     
+  tuxt_this: |
+    my $this = { %$s };
+    $this->{id} .= "-this";
+    $this->{value} = $line->{thing};
+    $this->{style} .= "color: #bb3564; font-size: 16pt; ".w colorf({in => $line->{thing}})." opacity:0.4; padding: 0.4em; ";
+    $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
+    #$this->{top} -= 0;
+    $this->{left} += 250;
+    push @{$ar->{tuxts}}, $this;
   tuxt_way_in: |
     my $wins = { %$s };
+    
     $wins->{id} .= "-wayin";
     my $wi = $line->{wayin};
     
-    my $waydo = $wi ? w tuxt_a_waychain({ %$ar, chain => $wi }) : "! way in";
-    $wins->{value} = "i<pre>".enc($waydo)."</pre>";
+    my $waydo = $wi ? w tuxt_a_waychain({ %$ar, chain => $wi })
+        : "?";
+    $wins->{value} = "<pre>".enc($waydo)."</pre>";
     
     $wins->{html} = 1;
-    $wins->{style} .= colorf(!$wi ? $wi : $wi->{way});
-    $wins->{top} -= 10;
-    $wins->{left} += -20;
+    $wins->{style} .= w colorf({in => !$wi ? $wi : $wi->{way}});
+    $wins->{left} -= 20;
     $wins->{style} .= "font-size: 8pt; opacity:0.4;";
     push @{$ar->{tuxts}}, $wins;
     
@@ -62,11 +104,10 @@ hooks:
     else {
         $waygo = "no out";
     }
-    $wous->{value} = "o<pre>".enc($waygo)."</pre>";
+    $wous->{value} = "<pre>o".enc($waygo)."</pre>";
     
     $wous->{html} = 1;
-    $wous->{top} += 0;
-    $wous->{left} += 330;
+    # $wous->{left} += 330;
     $wous->{style} .= "font-size: 7pt; opacity:0.4;";
     $wous->{class} .= "idly";
     
@@ -93,17 +134,8 @@ hooks:
     }
     if ($as_from) {
         my $li = w tuxt_a_waychain({ %$ar, chain => $as_from });
-        $l .= ind("  as_from: ", $li);
+        $l .= ind("  sa ", $li);
     }
     return $l
     
-  tuxt_this: |
-    my $this = { %$s };
-    $this->{id} .= "-this";
-    $this->{value} = $line->{thing};
-    $this->{style} .= "color: #bb3564; font-size: 10pt; ".colorf($line->{thing})." opacity:0.4; padding: 0.4em; ";
-    $this->{style} .= "border: 2px dotted red;" if ref $line->{thing};
-    #$this->{top} -= 0;
-    #$this->{left} += 50;
-    push @{$ar->{tuxts}}, $this;
 

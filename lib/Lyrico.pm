@@ -70,8 +70,8 @@ sub somewhere {
     
     my $T = $self->{T};
     $T->W->{script} = [];
-    $T->travel($what);
     $T->travel($self);
+    $T->travel($what);
     my $v = $self->{sky}->{M};
     $v->wipehtml();
     $T->W->splat($v);
