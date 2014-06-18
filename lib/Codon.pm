@@ -297,7 +297,7 @@ sub save_done {
     if ($self->{Going}) {
         say "Codon $self->{name} is going away";
         $self->sleeep();
-        $self->{show}->nah();
+        $self->{show}->nah() if $self->{show};
         delete $self->{show};
         delete $self->{Going};
         $self->{codo}->lobo($self);
