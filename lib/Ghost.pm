@@ -70,7 +70,8 @@ sub chains {
     my $self = shift;
     map { $_->{chains} ? @{ $_->{chains} } : () } @{ $self->{ways} }
 }
-sub hookways {
+
+sub w {
     my $self = shift;
     my $point = shift;
     my $ar = shift;
@@ -84,11 +85,11 @@ sub hookways {
     my @returns;
     for my $w (@{ $self->{ways} }) {
         next if $wayspec && $w ne $wayspec;
-        if (exists $w->{hooks}->{$point}) {
+        my $h = $w->find($point);
+        next unless $h;
             push @returns, [
-                $self->doo($w->{hooks}->{$point}, $ar, $point)
+                $self->doo($h, $ar, $point)
             ];
-        }
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -105,14 +106,16 @@ sub hookways {
         return $one;
     }
 }
-sub wdump { shift->hookways('wdump', { in => shift }) }
+sub hookways {
+    shift->w(@_);
+}
 sub doo {
     my $G = shift;
     my $eval = shift;
     my $ar = shift;
     my $point = shift;
     
-    while ($eval =~ /(w (\$\w+ )?(\w+)\((.*?)\))/sg) {
+    while ($eval =~ /(w (\$\w+ )?([\w\/]+)\((.*?)\))/sg) {
         my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
         $ghost ||= '$G';
         $eval =~ s/\Q$old\E/$ghost->hookways("$way", $are)/
