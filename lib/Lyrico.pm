@@ -73,7 +73,6 @@ sub somewhere {
     $T->travel($self);
     $T->travel($what);
     my $v = $self->{sky}->{M};
-    $v->wipehtml();
     $T->W->splat($v);
 
     $self->{hostinfo}->timer(2, sub {

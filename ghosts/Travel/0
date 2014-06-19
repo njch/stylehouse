@@ -6,74 +6,108 @@ hooks:
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
-        $ar->{R} = [];
-        $ar->{B} = {};
-        $ar->{line} = $line;
-        my $ghost = $line->{ghost};
-        
-        w $ghost line/to_row($ar);
-        
-        
-        push @$lines, { _spawn => [ $ar->{R}, {
-            tuxts_to_htmls => sub {
-                say "Inner! $line->{depth}";
-            },
-        }]};
+        push @$lines, w make_line({%$ar,
+            line => $line,
+            R => [],
+            B => {},
+        });
     }
-        
+    $view->wipehtml();
     $view->newtext($lines, {
-        spatialise => sub { { left => 20, space => 15, top => 50 } },
+        spatialise => sub {
+            { left => 20, space => 15, top => 50 }
+        },
     });
+  make_line: |
+    my $ghost = $line->{ghost};
+
+      w $ghost line/value($ar);
+
+    return { _spawn => [ $R, {
+        nospace => 1,
+        B => $ar->{B},
+        tuxtstyle => 'position: relative; float: left; margin-left: 1em; border: 1px solid black;',
+        tuxts_to_htmls => sub {
+            my $texty = shift;
+            $ar->{tuxts} = $texty->{tuxts};
+            w $ghost line/style($ar);
+        },
+    }]}
+  load_ways_post: |
+    say "Reloaded!";
   line:
-    to_row: |
-      for my $hh (qw[i o t e]) {
-          my $v = $G->w("line/$hh", $ar);
-          $v = "!B=$hh $v";
+    value: |
+      for my $bb (qw[d i o t]) {
+          my $b = $B->{$bb} = {line => $line};
+          my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
+          $v = "!b=$bb $v";
           say " - $v";
           push @$R, $v;
       }
-      for (values %$B) {
-          $_->{style} .=
-              "font-size: 15pt; ".w random_shadow().";";
-      }
-    t: |
-      $line->{thing};
-    i: |
-      my $wi = $line->{wayin};
-      my $wt = w tuxt_a_waychain({ %$ar, chain => $wi });
-      "!html <pre>".enc($wt)."</pre>";
-    o: |
-      my $wo = $line->{wayout};
-      my $wt = join "\n.\n", map {
-        w tuxt_a_waychain({ %$ar, chain => $_ })
-      } @$wo;
-      "!html <pre>o".enc($wt)."</pre>";
+    style: |
+        $B->{$_->{b}} = $_ for @$tuxts;
+        while (my ($b, $s) = each %$B) {
+            $G->w("line/$b/s",{%$ar,
+                b => $b, s => $s});
+        }
+    t:
+      v: |
+        $line->{thing}
+      s: |
+        $s->{style}.="color: red;";
+    d:
+      v: |
+        $line->{depth}
+      s: |
+        $s->{style}.="color: blue;";
+    i:
+      v: |
+        $b->{c} = $line->{wayin};
+        my $wt = 
+        "!html <pre>".enc(
+          w desc/chain({%$ar, 
+              c => ($b->{c} = $line->{wayin})
+          })
+        )."</pre>";
+    o:
+      v: |
+        my $wt = w desc/chain({%$ar, c => $b->{c}});
+        "!html <pre>o".enc(
+          w desc/chain({%$ar, 
+              c => ($b->{c} = $line->{wayout})
+          })
+        )."</pre>";
     
   wdump: |
     use Data::Dumper;
     $Data::Dumper::Maxdepth = 2;
     return Dumper($in);
-    
-  tuxt_a_waychain: |
-    return "?" unless $chain;
-    $chain = { %$chain };
-    my $as_from = delete $chain->{as_from};
-    delete $chain->{way}; # TODO random hack
-    my $l;
-    if ($chain->{print}) {
-        $l = $G->doo($chain->{print},
-            {chain => $chain});
-    }
-    else {
-        $l = join " }{ ",
-            map { "$_: $chain->{$_}" }
-            sort keys %$chain;
-    }
-    if ($as_from) {
-        my $li = w tuxt_a_waychain({ %$ar, chain => $as_from });
-        $l .= ind("  sa ", $li);
-    }
-    return $l
+  desc:
+    chain: |
+      return "?" unless $c;
+      
+      if (ref $c eq "ARRAY") {
+          return
+          join(", ", map {
+              w desc/chain({%$ar, c => $_})
+          } @$c)
+      }
+      my $l =
+          $c->{print} ?
+          $G->doo($c->{print},
+             {c => $c})
+        :
+          join ", ",
+              map { "$_: $c->{$_}" }
+              sort keys %$c;
+      
+     
+      if ($c->{as_from}) {
+          $l .= "<".w desc/chain({%$ar, 
+              c => $c->{as_from},
+          });
+      }
+      return $l
     
 
   colorf: |
