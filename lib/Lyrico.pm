@@ -38,7 +38,7 @@ sub new {
         }, }
     );
 
-    $self->{lyrics} = [read_file("trampled_rose_lyrics")];
+    $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..3]];
     
     $self->{hostinfo}->timer(1, sub {
         $self->stup();

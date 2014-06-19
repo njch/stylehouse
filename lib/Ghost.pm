@@ -93,16 +93,14 @@ sub w {
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
-    return say " NO REty ".($point||'some?where')
+    return 
                             if @returns < 1;
     my @return = @{$returns[0]};
     if (wantarray) {
-        say "Returning ".($point||'somewhere').": @return";
         return @return
     }
     else {
         my $one = shift @return;
-        say "Returning ".($point||'somewhere').": ".($one||"~");
         return $one;
     }
 }

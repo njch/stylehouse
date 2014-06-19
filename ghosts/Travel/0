@@ -15,40 +15,45 @@ hooks:
     $view->wipehtml();
     $view->newtext($lines, {
         spatialise => sub {
-            { left => 20, space => 15, top => 50 }
+            { left => 40, space => 25, top => 50 }
         },
     });
+  load_ways_post: |
+    say "Reloaded!";
   make_line: |
     my $ghost = $line->{ghost};
 
-      w $ghost line/value($ar);
+    w $ghost line/value($ar);
+    
 
     return { _spawn => [ $R, {
         nospace => 1,
-        B => $ar->{B},
-        tuxtstyle => 'position: relative; float: left; margin-left: 1em; border: 1px solid black;',
+        B => $B,
+        tuxtstyle => 'position: relative; float: left; margin-left: 1em; border: 1px solid black; padding: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
+            w tuxtsB($ar);
             w $ghost line/style($ar);
         },
     }]}
-  load_ways_post: |
-    say "Reloaded!";
+  tuxtsB:
+      $B->{$_->{bb}}->{s} = $_ for @$tuxts;
+  
   line:
     value: |
       for my $bb (qw[d i o t]) {
           my $b = $B->{$bb} = {line => $line};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
-          $v = "!b=$bb $v";
+          $v = "!bb=$bb $v";
           say " - $v";
           push @$R, $v;
       }
+      # ^ v here's the void; many R come to B
     style: |
-        $B->{$_->{b}} = $_ for @$tuxts;
-        while (my ($b, $s) = each %$B) {
-            $G->w("line/$b/s",{%$ar,
-                b => $b, s => $s});
+        while (my ($bb, $b) = each %$B) {
+            $G->w("line/$bb/s",{%$ar,
+              b => $b, s => $b->{s}});
         }
     t:
       v: |
@@ -60,23 +65,21 @@ hooks:
         $line->{depth}
       s: |
         $s->{style}.="color: blue;";
+        $s->{style}.="width: ".($line->{depth} * 4)."em;";
     i:
       v: |
         $b->{c} = $line->{wayin};
-        my $wt = 
-        "!html <pre>".enc(
-          w desc/chain({%$ar, 
+        w desc/chain({%$ar, 
               c => ($b->{c} = $line->{wayin})
           })
-        )."</pre>";
+      s: |
+        #hmm
     o:
       v: |
         my $wt = w desc/chain({%$ar, c => $b->{c}});
-        "!html <pre>o".enc(
-          w desc/chain({%$ar, 
+        w desc/chain({%$ar, 
               c => ($b->{c} = $line->{wayout})
           })
-        )."</pre>";
     
   wdump: |
     use Data::Dumper;
@@ -87,10 +90,13 @@ hooks:
       return "?" unless $c;
       
       if (ref $c eq "ARRAY") {
-          return
-          join(", ", map {
-              w desc/chain({%$ar, c => $_})
-          } @$c)
+          my @cl;
+          say "Ways: ".@$c;
+          for my $cc (@$c) {
+              push @cl,
+            scalar w desc/chain({%$ar, c => $_})
+          }
+          return join(", ", @cl) || ".";
       }
       my $l =
           $c->{print} ?
