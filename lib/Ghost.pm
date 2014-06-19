@@ -127,19 +127,38 @@ sub doo {
     my $O = $G->{travel}->{owner};
     my $H = $G->{hostinfo};
     
-    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};\n  " } keys %$ar if $ar;
-    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";\n  " } keys %$ar if $ar;
+    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
+    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
     
     my @return;
     my $evs = ($download||'')
-        .' @return = (sub { '.$eval.' })->(); '
+        ."\n".' @return = (sub { '
+        ."\n".$eval."\n".
+        ' })->(); '."\n"
         .($upload||'');
     eval $evs;
+    
     if ($@) {
+        say $@;
+        my ($x) = $@ =~ /line (\d+)\.$/;
+        my $eval = "";
+        my @eval = split "\n", $evs;
+        my $xx = 1;
+        for (@eval) {
+            if ($x - 8 < $xx && $xx < $x + 5) {
+                if ($xx == $x) {
+                    $eval .= ind("Ͱ->", $_)."\n"
+                }
+                else {
+                    $eval .= ind("|  ", $_)."\n"
+                }
+            }
+            $xx++;
+        }
         die "DOO Fuckup:\n"
             .(defined $point ? "point: $point\n" : "")
             ."args: ".join(", ", keys %$ar)."\n"
-            .($@ !~ /DOO Fuckup/ ? ind("c  ", $eval) : "|")."\n"
+            .($@ !~ /DOO Fuckup/ ? $eval : "|")."\n"
             .ind("|   ", $@)."\n^\n";
     }
     # more ^
