@@ -202,6 +202,9 @@ sub mktuxt {
             $line->{_mktuxt}->($line, $s);
         }
         elsif (my $LH = $line->{_spawn}) {
+            if (my $ct = $line->{contyt}) {
+                $s->{$_} = $ct->{$_} for keys %$ct;
+            }
             $line = $self->spawn(@$LH);
         }
         else {

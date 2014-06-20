@@ -32,7 +32,8 @@ sub find {
 }
 sub load_wayfile {
     my $self = shift;
-    my $w = eval { LoadFile($self->{file}) };
+    my $cont = $self->{hostinfo}->slurp($self->{file});
+    my $w = eval { Load($cont) };
     if (!$w || ref $w ne 'HASH' || $@) {
         say $@;
         my ($x, $y) = $@ =~
