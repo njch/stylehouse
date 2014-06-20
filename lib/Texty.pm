@@ -57,10 +57,25 @@ sub spawn {
 sub add_hooks {
     my $self = shift;
     my $hooks = shift;
-    $self->{hooks} ||= {};
-    $self->{hooks}->{$_} = $hooks->{$_} for keys %$hooks;
-    my $c = $self->{hooks}->{class};
-    $self->{class} = $c if $c;
+    my $h = $self->{hooks} ||= {};
+    $h->{$_} = $hooks->{$_} for keys %$hooks;
+    if (my $c = $h->{class}) {
+        $self->{class} = $c;
+    }
+    if ($h->{event} && ref $h->{event} eq "HASH") {
+        if (my $m = $h->{event}->{menu}) {
+            if (ref $m eq "ARRAY") {
+                my @m = @$m;
+                $h->{event}->{menu} = { @m };
+                my $newl = [];
+                while (my $k = shift @$m) {
+                    push @$newl, $k;
+                    shift $m;
+                }
+                unshift @{$self->{lines}}, @$newl;
+            }
+        }
+    }
 }
 sub replace {
     my $self = shift;

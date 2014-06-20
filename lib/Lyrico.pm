@@ -77,10 +77,6 @@ sub somewhere {
     
     my $v = $self->{sky}->{M};
     $T->W->splat($v);
-
-    $self->{hostinfo}->timer(2, sub {
-        $self->somewhere();
-    }) if 0 && $self->{hostinfo}->get("style") ne "stylehouse";
 }
 sub menu {
     my $self = shift;

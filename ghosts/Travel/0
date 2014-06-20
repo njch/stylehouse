@@ -12,8 +12,7 @@ hooks:
             B => {},
         });
     }
-    $view->wipehtml();
-    $view->newtext($lines, {
+    my $t = $view->newtext($lines, {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%;',
@@ -29,7 +28,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'position: relative; float: left; margin-left: 1em; border: 1px solid black; padding: 2px;',
+        tuxtstyle => 'position: relative; float: left; border: 1px solid #CCFF33; padding: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
@@ -42,7 +41,7 @@ hooks:
   
   line:
     value: |
-      for my $bb (qw[d i o t m]) {
+      for my $bb (qw[d i t o m]) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
           $v = "!bb=$bb $v" unless ref $v;
@@ -57,15 +56,20 @@ hooks:
     m:
       v: |
         my $t = $line->{thing};
-        {
-        contyt => { bb => $b->{bb} },
-        _spawn => [ [ ' Ώ ' ], {
-          event => sub {
-            my ($ev, $s) = @_;
+        
+        my $menu = [
+          Ώ => sub {
             my $v =  $line->{thing};
-            say "Heading to $v $t";
+            say "\n  Heading to $v\n\n";
             $O->somewhere($v);
           },
+        ];
+        
+        {
+        contyt => { bb => $b->{bb} },
+        _spawn => [ [], {
+        event => { menu => $menu },
+        class => 'menu',
         }]
         }
       s: |
@@ -82,7 +86,7 @@ hooks:
         $line->{depth}
       s: |
         $s->{style}.="color: blue;";
-        $s->{style}.="width: ".($line->{depth} * 4)."em;";
+        $s->{style}.="width: ".($line->{depth} * 2 + 0.5)."em;";
     i:
       v: |
         $b->{c} = $line->{wayin};
@@ -90,7 +94,10 @@ hooks:
               c => ($b->{c} = $line->{wayin})
           })
       s: |
-        #hmm
+        for ($b->{c}->{name}) {
+            $s->{style}.="width: 7em;" if /HASH crawl/;
+            $s->{style}.="width: 4em;" if /ARRAY crawl/;
+        }
     o:
       v: |
         my $wt = w desc/chain({%$ar, c => $b->{c}});
@@ -121,7 +128,7 @@ hooks:
               sort keys %$c;
       
      
-      if ($c->{as_from}) {
+      if (0 && $c->{as_from}) {
           $l .= "<".w desc/chain({%$ar, 
               c => $c->{as_from},
           });
