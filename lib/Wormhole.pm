@@ -94,7 +94,7 @@ sub encode_thing {
     my $thing = shift;
     my $out = shift;
     $thing = "~undef~" unless defined $thing;
-    return "$thing";
+    return $thing;
 }
 
 # here's a tube for reflecting this wormhole into Texty so development can basically see it without Travel

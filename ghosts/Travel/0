@@ -12,11 +12,10 @@ hooks:
             B => {},
         });
     }
-    $view->wipehtml();
-    $view->newtext($lines, {
-        spatialise => sub {
-            { left => 40, space => 25, top => 50 }
-        },
+    my $t = $view->newtext($lines, {
+        nospace => 1,
+        class => 'menu',
+        tuxtstyle => 'width: 100%;',
     });
   load_ways_post: |
     say "Reloaded!";
@@ -29,7 +28,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'position: relative; float: left; margin-left: 1em; border: 1px solid black; padding: 2px;',
+        tuxtstyle => 'position: relative; float: left; border: 1px solid #CCFF33; padding: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
@@ -42,30 +41,52 @@ hooks:
   
   line:
     value: |
-      for my $bb (qw[d i o t]) {
-          my $b = $B->{$bb} = {line => $line};
+      for my $bb (qw[d i t o m]) {
+          my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
-          $v = "!bb=$bb $v";
-          say " - $v";
+          $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
       }
       # ^ v here's the void; many R come to B
     style: |
         while (my ($bb, $b) = each %$B) {
             $G->w("line/$bb/s",{%$ar,
-              b => $b, s => $b->{s}});
+            b => $b, s => $b->{s}, line => $b->{line}});
         }
+    m:
+      v: |
+        my $t = $line->{thing};
+        
+        my $menu = [
+          Ώ => sub {
+            my $v =  $line->{thing};
+            say "\n  Heading to $v\n\n";
+            $O->somewhere($v);
+          },
+        ];
+        
+        {
+        contyt => { bb => $b->{bb} },
+        _spawn => [ [], {
+        event => { menu => $menu },
+        class => 'menu',
+        }]
+        }
+      s: |
+        $s->{style}.="border: none;"
     t:
       v: |
-        $line->{thing}
+        my $t = $line->{thing};
+        ref $t ? "$t" : $t;
       s: |
-        $s->{style}.="color: red;";
+        $s->{style}.="color: #FF6600;" unless ref $line->{thing};
+        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{thing};
     d:
       v: |
         $line->{depth}
       s: |
         $s->{style}.="color: blue;";
-        $s->{style}.="width: ".($line->{depth} * 4)."em;";
+        $s->{style}.="width: ".($line->{depth} * 2 + 0.5)."em;";
     i:
       v: |
         $b->{c} = $line->{wayin};
@@ -73,7 +94,10 @@ hooks:
               c => ($b->{c} = $line->{wayin})
           })
       s: |
-        #hmm
+        for ($b->{c}->{name}) {
+            $s->{style}.="width: 7em;" if /HASH crawl/;
+            $s->{style}.="width: 4em;" if /ARRAY crawl/;
+        }
     o:
       v: |
         my $wt = w desc/chain({%$ar, c => $b->{c}});
@@ -81,17 +105,13 @@ hooks:
               c => ($b->{c} = $line->{wayout})
           })
     
-  wdump: |
-    use Data::Dumper;
-    $Data::Dumper::Maxdepth = 2;
-    return Dumper($in);
   desc:
     chain: |
       return "?" unless $c;
       
       if (ref $c eq "ARRAY") {
           my @cl;
-          say "Ways: ".@$c;
+          
           for my $cc (@$c) {
               push @cl,
             scalar w desc/chain({%$ar, c => $_})
@@ -108,13 +128,17 @@ hooks:
               sort keys %$c;
       
      
-      if ($c->{as_from}) {
+      if (0 && $c->{as_from}) {
           $l .= "<".w desc/chain({%$ar, 
               c => $c->{as_from},
           });
       }
       return $l
     
+  wdump: |
+    use Data::Dumper;
+    $Data::Dumper::Maxdepth = 2;
+    return Dumper($in);
 
   colorf: |
     my $fing = $in;

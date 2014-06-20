@@ -65,19 +65,18 @@ sub stup {
 }
 sub somewhere {
     my $self = shift;
-
-    my $what = $self->{lyrics};
+    my @what = @_;
+    unless (@what) {
+        @what = ($self, $self->{lyrics});
+    }
     
     my $T = $self->{T};
     $T->W->{script} = [];
-    $T->travel($self);
-    $T->travel($what);
+    
+    $T->travel($_) for @what;
+    
     my $v = $self->{sky}->{M};
     $T->W->splat($v);
-
-    $self->{hostinfo}->timer(2, sub {
-        $self->somewhere();
-    }) if 0 && $self->{hostinfo}->get("style") ne "stylehouse";
 }
 sub menu {
     my $self = shift;

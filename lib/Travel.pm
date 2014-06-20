@@ -63,6 +63,7 @@ sub travel {
 
     $self->ob(($depth ? "..travel..." : "travel!") => $thing);
 
+    say "Travel to $thing";
     my ($last, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
 
     for my $c (@$away) {
