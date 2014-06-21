@@ -433,13 +433,17 @@ sub watch_files {
     my $forever = shift;
 
     if ($forever || !$self->{watching_files_aleady}) {
+        $self->{watching_files_aleady} = 1;
         $self->timer(0.5, sub {
-            $self->{watching_files} = time;
-            $self->{watching_files_aleady} = 0;
             $self->watch_files("forever!");
         });
     }
-    $self->{watching_files_aleady} = 1;
+    
+    $self->watch_file_streams();
+    $self->watch_git_diff();
+}
+sub watch_file_streams {
+    my $self = shift;
 
     for my $st (@{ $self->{file_streams} }) {
         my ($ino, $ctime, $size) =
@@ -524,6 +528,26 @@ sub watch_files {
         ($st->{ino}, $st->{ctime}, $st->{size}) = 
             (stat $st->{filename})[1,10,7];
     }
+}
+sub watch_git_diff {
+    my $self = shift;
+    
+    my @diff = `git diff`;
+    my $d = {};
+    my $f;
+    for (@diff) {
+        if (/^diff --git a\/(.+) b\/.+/) {
+            $f = $1;
+        }
+        else {
+            $d->{$f} .= $_
+        }
+    }
+    while (my ($f, $D) = each %$d) {
+        $d->{$f} = enhash($D);
+    }
+    my $od = $self->{last_git_diff};
+    # ENGHOST
 }
 sub reload_ghosts {
     my $self = shift;
