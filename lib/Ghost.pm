@@ -104,7 +104,6 @@ sub w {
         return $one;
     }
 }
-
 sub doo {
     my $G = shift;
     my $eval = shift;
@@ -174,18 +173,13 @@ sub haunt { # arrives through here
     $self->{T} = []; # traveling
     
     $self->ob($self);
-    
     $self->w("arr");
-
-    my $state = $self->W->continues($self); # %
-
     $self->ob($self);
+    
+    my $line = $self->W->continues($self); # %
+    $self->ob($line);
 
-    $self->hookways("and");
-
-    $self->ob($self);
-
-    return ($state, $self->{away});
+    return ($line, $self->{o});
 }
 sub grep_chains {
     my $self = shift;

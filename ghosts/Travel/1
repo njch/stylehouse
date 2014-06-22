@@ -2,66 +2,63 @@ name: ghost data structure crawl
 chains:
  - K: 'dsc/%'
    arr_if: ref $thing eq 'HASH' 
-   for: ' [ sort keys %$thing ] '
-   travel: ' $thing->{$for} '
+   foreach_travel:
+     each: sort keys %$thing
+     next_thing: $thing->{$each}
    print: |
-     $c->{value}
+     $c->{each}
    
  - K: 'dsc/@'
-   at_thing: ref $thing eq 'ARRAY'
-   for: ' [ @$thing ] '
-   travel: ' $for '
+   arr_if: ref $thing eq 'ARRAY'
+   foreach_travel:
+     each: @$thing
+     next_thing: $each
    print: |
      $c->{i}
 hooks:
   arr: |
-    for my $c ($G->chains) {
-        if (w $c arr_if) {
-    w arr_chains();
-  arr_chains: |
-    for my $c ($G->chains) {
-        w arr_chain({c => $c});
-    }
-  arr_chain: |
+          map { w figureout{c => $_} }
+        map { w c_follow_as{c => $_} }
+          map { $_->spawn }
+        grep { w $_ arr_if } # all these motions we want to grab finer pictures of eventually
+        $G->chains
+    
+  figureout: |
+    # these borders of my code our data... the language invention streams only just upstream from each other
+    
     return if $G->{depth} > 5;
-    if (
-    if ($c->{at_thing} && $G->doo($c->{at_thing})) {
-        $c = { %$c };
-        if ($c->{as}) {
-            my @really = $G->grep_chains("name" => $c->{as});
-            die "cannot find ref=$c->{as}".ddump(@really)
-                if @really != 1;
-            my $new_c = shift @really;
-            $c = { %$new_c, as_from => $c };
-        }
-        
-        push @{$G->{wayout}}, $c;
-    }
-  umm: |
-    for my $c (@{$G->{wayout}}) {
-        if ($c->{note}) {
-            push @{ $G->{etc}->{note}||=[] }, $G->doo($c->{note});
-        }
-    }
-  and: |
-    for my $c (@{$G->{wayout}}) {
-        w and_chain({c => $c});
-    }
-    if (!@{$G->{away}}) {
-        
-    }
-  and_chain: |
-    if ($c->{for}) {
+    
+    if (my $fe = $c->{foreach_travel}) {
+        my @list = $G->doo(
+            $fe->{each}
+        );
         my $i = 0;
-        for my $for (@{ $G->doo($c->{for}) }) {
-            if (my $t = $c->{travel}) {
-                push @{$G->{away}}, {
-                    travel => {
-                        thing => $G->doo($t, {for => $for}),
-                        way => { %$c, i => $i++, value => $for }
-                    }
-                };
-            }
+        for my $each (@list) {
+            # eddies of lingo
+            my $next_thing = $G->doo(
+                $fe->{next_thing}, {each => $each}
+            );
+            my $oc = $c->spawn;
+            $oc->{travel_this} = $next_thing;
+            $oc->{i} = $i++;
+            $oc->{each} = $each;
+            
+            push @{$G->{o}}, $oc;
         }
     }
+    else {
+        die "canot figure out".ddump($c);
+    }
+
+  c_follow_as: |
+    my $as = $c->{as};
+      return $c unless $as;
+    
+    my @really = $G->grep_chains("K" => $as);
+    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump(@really);
+    
+    my $asc = shift @really;
+    my $nc = $asc->spawn;
+    $nc->{as_from} = $c;
+    return $nc
 
