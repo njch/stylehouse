@@ -766,11 +766,11 @@ sub enlogform {
     my $e = [@_];
 
     my @from;
-    my $b = 1; # past last couple
-    while (1) {
-        my $from = join " ", (caller($b))[0,3,2];# package, subroutine, line
-        push @from, $from;
-        last if $from =~ /^Mojo/; 
+    my $b = 1;
+    while (join " ", (caller($b))[0,3,2]) {
+        s/^Mojo::Server::SandBox::\w{24}//;
+        push @from, $_;
+        last if /^Mojo/; 
         $b++;
     }
 
@@ -965,7 +965,6 @@ sub get_this_it { # find it amongst itselves
 sub slurp {
     my $self = shift;
     my $file = shift;
-    say "Hostinfo: slurping $file";
       open my $f, $file || die "O no $!";
     binmode $f, ':utf8';
     my $m = join "", <$f>;

@@ -270,7 +270,6 @@ sub event {
 
     $self->owner->event($event, $this, $self);
 }
-
 sub takeover {
     my $self = shift;
     my $html = concat_array(shift);

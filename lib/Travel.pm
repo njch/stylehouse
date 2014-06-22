@@ -13,18 +13,6 @@ sub new {
     $self->{owner} = shift; # id instead of link, is wrong at the next level
     $self->{name} = $self->{owner}->{name} || $self->{owner}->{id};
 
-    unless (ref $self->{owner} eq "Travel") {
-        # observer of whole codon function
-        #$self->{self} = new Travel($self->hostinfo->intro, $self);
-    }
-    else {
-        $self->{name} = "Travel-Travel";
-        say "Travel named $self->{name}";
-        # all travels of travels
-        push @{ $self->hostinfo->gest('Travel-Travel', []) }, $self;
-        # also pushes to Codo/obsetrav
-    }
-
     return $self;
 }
 sub G {
@@ -32,39 +20,54 @@ sub G {
     $self->{ghost} ||= new Ghost($self->hostinfo->intro, $self, @_);
 }
 sub W { shift->G->W }
+
+# back here again
+# the wormhole for self
+# what's a wormhole of ghosts? hookways mixes ways
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+# self awareness
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+# self awareness
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+# self awareness
+
+# the wormhole for self
+# so G can make harmonic W inside a singular T
+# self awareness
 sub ob {
     my $self = shift;
-    return;
     return if ref $self->{owner} eq "Travel";
     my @seen = @_;
-
-    # good place to way up with strings/tubes
-    my $stack = [ map { "$_->[0] $_->[3] ($_->[1] $_->[2])" } map { [ caller($_) ] } 0..10 ];
-    
-    my $data = ddump(\@seen);
-
-    my $ob = [ $stack, $data ];
+    $self->{hostinfo}->enlogform(@seen);
 
     $self->{self}->travel($ob);
 
     push @{ $self->hostinfo->gest("Codo/obsetrav", []) }, $ob;
 }
-
-# back here again
-# the wormhole for self
-# what's a wormhole of ghosts? hookways mixes ways
 sub travel {
     my $self = shift;
-    my $thing = shift;
-    my $ghost = shift || $self->G;
-    my $way = shift;
+    my $t = shift;
+    my $G = shift || $self->G;
+    my $i = shift;
     my $depth = shift || 0;
     my $last_state = shift;
 
     $self->ob(($depth ? "..travel..." : "travel!") => $thing);
 
     say "Travel to $thing";
-    my ($last, $away) = $ghost->haunt($depth, $thing, $way, $last_state);
+    my ($last, $away) = $G->haunt($depth, $t, $i, $last_state);
 
     for my $c (@$away) {
         if (my $t = $c->{travel}) {

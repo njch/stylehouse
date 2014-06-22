@@ -33,12 +33,13 @@ sub continues {
     my $line = {
         uuid => $self->hostinfo->make_uuid,
         
-        thing => encode_thing($ghost->{thing}),
+        t => encode_thing($ghost->{thing}),
         
-        wayin => $ghost->{wayin},
-        wayout => $ghost->{wayout},
+        i => $ghost->{i},
+        o => $ghost->{o},
+        T => $ghost->{T},
         
-        etc => ($ghost->{etc}),
+        e => ($ghost->{etc}),
         depth => $ghost->{depth},
         last => $ghost->{last_state}->{uuid},
         

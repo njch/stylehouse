@@ -1,13 +1,13 @@
 name: ghost data structure crawl
 chains:
- - name: HASH crawl
-   at_thing: ref $thing eq 'HASH' 
+ - K: 'dsc/%'
+   arr_if: ref $thing eq 'HASH' 
    for: ' [ sort keys %$thing ] '
    travel: ' $thing->{$for} '
    print: |
      $c->{value}
    
- - name: ARRAY crawl
+ - K: 'dsc/@'
    at_thing: ref $thing eq 'ARRAY'
    for: ' [ @$thing ] '
    travel: ' $for '
@@ -15,13 +15,16 @@ chains:
      $c->{i}
 hooks:
   arr: |
-      w arr_chains();
+    for my $c ($G->chains) {
+        if (w $c arr_if) {
+    w arr_chains();
   arr_chains: |
     for my $c ($G->chains) {
         w arr_chain({c => $c});
     }
   arr_chain: |
     return if $G->{depth} > 5;
+    if (
     if ($c->{at_thing} && $G->doo($c->{at_thing})) {
         $c = { %$c };
         if ($c->{as}) {

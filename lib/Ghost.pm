@@ -104,19 +104,18 @@ sub w {
         return $one;
     }
 }
-sub hookways {
-    shift->w(@_);
-}
+
 sub doo {
     my $G = shift;
     my $eval = shift;
     my $ar = shift;
     my $point = shift;
     
-    while ($eval =~ /(w (\$\w+ )?([\w\/]+)\((.*?)\))/sg) {
+    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?[\(\{](.*?)[\}\)]|))/sg) {
         my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
         $ghost ||= '$G';
-        $eval =~ s/\Q$old\E/$ghost->hookways("$way", $are)/
+        $are =~ s/^\{(.+)\}$/({\%\$ar, $1})/;
+        $eval =~ s/\Q$old\E/$ghost->w("$way", $are)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
@@ -168,21 +167,15 @@ sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;
-    $self->{thing} = shift;
-    $self->{wayin} = shift;
+    $self->{t} = shift; # thing
+    $self->{i} = shift; # way[] in
     $self->{last_state} = shift;
-
+    $self->{o} = []; # way[] out
+    $self->{T} = []; # traveling
+    
     $self->ob($self);
     
-    $self->{wayout} = [];
-    $self->hookways("arr");
-
-    $self->ob($self);
-
-    $self->{away} = []; # of {} args to Travel
-    $self->hookways("umm");
-
-    $self->ob($self);
+    $self->w("arr");
 
     my $state = $self->W->continues($self); # %
 
@@ -207,7 +200,6 @@ sub grep_chains {
     }
     return @go;
 }
-
 sub event {
     my $self = shift;
     my $event = shift;

@@ -14,7 +14,7 @@ $Hostinfo::data->{'horizon'} =
 "40%"
 :
 #"89.91%"
-"80%"
+"95%"
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
@@ -22,25 +22,16 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
     
-    $self->{hostinfo}->{flood}->spawn_floozy($self, "lyrico" => "height: 1em; width: 100%;");
-    $self->{lyrico}->text([],
-        { skip_hostinfo => 1,
-        leave_spans => 1, 
-        tuxts_to_htmls => sub {
-            my $text = shift;
-            for my $s (@{$text->tuxts}) {
-                my $size = int rand 20;
-                my $width = int rand 60;
-                $s->{style} = random_colour_background()." opacity:0.4; font-size: ${size}em; width: ${width}em"
-                    .($size > 10 ? "font-family: Cambria, Georgia, serif;" : "");
-                $s->{class} = "lyrics";
-            }
-        }, }
-    );
+    
+    my $size = int rand 20;
+    my $width = int rand 60;
+    my $lyrical_style = random_colour_background()
+    ." opacity:0.4; font-size: ${size}em; width: ${width}em"
+    .($size > 10 ? "font-family: Cambria, Georgia, serif;" : "");
 
     $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..3]];
     
-    $self->{hostinfo}->timer(1, sub {
+    $self->{hostinfo}->timer(0.7, sub {
         $self->stup();
     });
 
@@ -49,18 +40,10 @@ sub new {
 sub stup {
     my $self = shift;
     
-    my $sky = $self->{hostinfo}->{sky};
-    $self->{sky} = {};
-    for my $note (qw{M}) {# D N R G
-        $self->{sky}->{$note} =
-            $sky->spawn_floozy(
-                $note => "width:100%; color: black; height: 100%;"
-            );
-    }
+    $self->{sky} = $self->{hostinfo}->{sky};
 
     $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
-    $self->{T}->travel($self);
-
+    $self->{T}->G();
     $self->somewhere();
 }
 sub somewhere {
@@ -70,12 +53,14 @@ sub somewhere {
         @what = ($self, $self->{lyrics});
     }
     
+    @what = $self->{hostinfo}->get('
+    
     my $T = $self->{T};
     $T->W->{script} = [];
     
     $T->travel($_) for @what;
     
-    my $v = $self->{sky}->{M};
+    my $v = $self->{sky};
     $T->W->splat($v);
 }
 sub menu {
@@ -114,7 +99,7 @@ sub event {
     my $height = $self->{hostinfo}->get("screen/height");
     $height ||= 900;
     my $h = {};
-
+    
     for (1..3) {
         $h->{top} = $event->{pagey} + int  rand $height; # isn't y coming from below?
         $h->{left} = $event->{pagex};
@@ -132,20 +117,16 @@ sub event {
 }
 sub startclicky {
     my $self = shift;
+    say "start clicky";
     $self->{hostinfo}->set('clickcatcher', $self);
     $self->{started} = 1;
 }
-
-
 sub stopclicky {
     my $self = shift;
     $self->{hostinfo}->unset('clickcatcher');
     $self->{hostinfo}->send("\$('.lyrics').remove();");
     $self->{started} = 0;
 }
-
-
-
 sub zlyrics {
     my $self = shift;
     my $lyrics = $self->{lyrics};
@@ -169,8 +150,6 @@ sub write {
 }
 
 use Mojo::IOLoop;
-
-
 sub scroll_unthrottle {
     my $self = shift;
     $self->{scroll}->{throttle} = 0;
