@@ -27,10 +27,10 @@ sub new {
     my $size = int rand 20;
     my $width = int rand 60;
     my $lyrical_style = random_colour_background()
-    ." opacity:0.4; font-size: ${size}em; width: ${width}em"
+    ." opacity:0.4; font-size: ${size}em; width: ${width}em;"
     .($size > 10 ? "font-family: Cambria, Georgia, serif;" : "");
 
-    $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..3]];
+    $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..13]];
     
     $self->{hostinfo}->timer(0.7, sub {
         $self->stup();
@@ -51,18 +51,20 @@ sub somewhere {
     my $self = shift;
     my @what = @_;
     unless (@what) {
-        @what = ($self, $self->{lyrics});
+        @what = (
+        $self, 
+        $self->{lyrics});
     }
     
-    @what = $self->{hostinfo}->grep('tv/*');
+    #@what = $self->{hostinfo}->grep('.*top');
     
     my $T = $self->{T};
     $T->W->{script} = [];
     
-    $T->travel($_) for \@what;
+    $T->travel($_) for @what;
     
     my $v = $self->{sky};
-    $T->W->splat($v);
+    $T->G->w('splat_wormhole', {view => $v});
 }
 sub menu {
     my $self = shift;

@@ -7,6 +7,7 @@ use YAML::Syck;
 use HTML::Entities;
 use Way;
 sub ddump { Hostinfo::ddump(@_) }
+sub wdump { Hostinfo::wdump(@_) }
 
 has 'hostinfo';
 sub new {
@@ -46,7 +47,7 @@ sub load_ways {
             else {
                 my $nw = new Way($self->hostinfo->intro,
                     $name, $file);
-                say "G+".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                say "G+".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
             }
         }
@@ -75,7 +76,6 @@ sub w {
     my $point = shift;
     my $ar = shift;
     my $way = shift; # so we can get into chains
-    say "Way is: $way";
     # these might want to be a wormhole that travel mixes in
     # things gather along the spines
     # and be the big thing to do or a little thing to do
@@ -118,27 +118,23 @@ sub w {
 sub doo {
     my $G = shift;
     my $eval = shift;
-    my $ar = shift;
+    my $ar = shift || {};
     my $point = shift;
     
     while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
         my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
-        say "\n\n$old\nare: '$are'";
         $gw = ", $gw" if $gw; # ghost or way
         $gw ||= "";
         $gw =~ s/ $//;
         if ($are && $are =~ s/^\(\+ //) {
             $are =~ s/\)$//;
             $are = '{ %$ar, '.$are.'}';
-            say "Are grows $are";
         }
         elsif ($are) {
             $are = "{ $are }";
-            say "Are become $are";
         }
         else {
-        $are = '{ %$ar }';
-            say "Are clone $are";
+            $are = '{ %$ar }';
         }
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
@@ -194,7 +190,6 @@ sub haunt { # arrives through here
     $self->{i} = shift; # way[] in
     $self->{last_state} = shift;
     $self->{o} = []; # way[] out
-    $self->{T} = []; # traveling
     
     $self->ob($self);
     $self->w("arr");

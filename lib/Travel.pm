@@ -43,13 +43,13 @@ sub travel {
     my $last_line = shift;
 
     $self->ob("Travel", $depth, $t);
-    say "Travel to $t";
+    say "Travel to ".($t||"~");
     
     my ($line, $o) = $G->haunt($depth, $t, $i, $last_line);
 
     for my $c (@$o) {
-        if (my $t = $c->{travel_this}) {
-            $self->travel($t->{travel_this}, $G, $c, $depth+1, $line);
+        if (exists $c->{travel_this}) {
+            $self->travel($c->{travel_this}, $G, $c, $depth+1, $line);
         }
         else {
             die "what kind of way out is ".ddump($c);

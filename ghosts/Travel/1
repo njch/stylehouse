@@ -1,7 +1,12 @@
 name: ghost data structure crawl
 chains:
  - K: 'dsc/%'
-   arr_if: ref $thing eq 'HASH' 
+   arr_if: |
+     ref $thing eq 'HASH'
+     || $G->{depth} == 0
+     && ref $thing
+     && "$thing" =~ /=HASH/
+     
    foreach_travel:
      each: sort keys %$thing
      next_thing: $thing->{$each}
@@ -17,12 +22,22 @@ chains:
      $c->{i}
 hooks:
   arr: |
-      say "HGI";
-    map { w figureout(+ c => $_) }
-    map { w c_follow_as(+ c => $_) }
-    map { $_->spawn }
-    grep { w $_ arr_if } # all these motions we want to grab finer pictures of eventually
-    $G->chains
+    my @actcs;
+    for my $c ($G->chains) {
+        if (w $c arr_if) {
+            push @actcs, $c->spawn;
+        }
+    }
+    my @f;
+    for my $c (@actcs) {
+        push @f, w c_follow_as(+ c => $c);
+    }
+    @actcs = @f;
+    say $_->{K} for @actcs;
+    for my $c (@actcs) {
+        w figureout(+ c => $c);
+    }
+    # all these motions we want to grab finer pictures of eventually
     
   figureout: |
     # these borders of my code our data... the language invention streams only just upstream from each other
@@ -31,13 +46,13 @@ hooks:
     
     if (my $fe = $c->{foreach_travel}) {
         my @list = $G->doo(
-            $fe->{each}
+            $fe->{each}, $ar
         );
         my $i = 0;
         for my $each (@list) {
             # eddies of lingo
             my $next_thing = $G->doo(
-                $fe->{next_thing}, {each => $each}
+                $fe->{next_thing}, {%$ar, each => $each}
             );
             my $oc = $c->spawn;
             $oc->{travel_this} = $next_thing;

@@ -32,8 +32,9 @@ sub continues {
 
     my $line = {
         uuid => $self->hostinfo->make_uuid,
+        n => $self->{n}++,
         
-        t => encode_thing($ghost->{thing}),
+        t => encode_thing($ghost->{t}),
         
         i => $ghost->{i},
         o => $ghost->{o},
@@ -70,14 +71,12 @@ sub wormfile_load {
         say "W ".($self->{file}||"~undef~ ->{file}")." not exist";
     }
 }
-
 sub encode_line {
     my $self = shift;
     my $yaml =  anydump([ shift ]);
 # remove first line? indent? something to make it appendable to another array via yaml
     return $yaml;
 }
-
 sub wormfile_check {
     my $self = shift;
     my $file = $self->{file};
@@ -109,15 +108,7 @@ sub encode_thing {
 # which is the whole stylehouse deal.
 # it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
 # Form is a well-known bunch of Ghost
-sub splat {
-    my $self = shift;
-    my $view = shift || $self->{way_out};
-    ref $view eq "View" || die " $view not View";
-    
-    $self->{ghost}->w('splat_wormhole',
-        {wormhole => $self, view => $view},
-    );
-}
+
 sub describe_size {
     my $self = shift;
     "Wormhole is ".@{$self->{script}}." lines long";

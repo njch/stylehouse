@@ -39,10 +39,33 @@ sub find {
 }
 sub load_wayfile {
     my $self = shift;
+    unless ($self->{_wayfile}) {
+        delete $self->{hostinfo};
+        say "$self->{_ghostname} has no wayfile !".ddump($self);
+    }
     my $cont = $self->{hostinfo}->slurp($self->{_wayfile});
     my $w = eval { Load($cont) };
-    if (!$w || ref $w ne 'HASH' || $@) {
-        $self->parse_error($w, $@);
+    if ($@ || !$w || ref $w ne 'HASH' || $@) {
+        say $@;
+        my ($x, $y) = $@ =~
+              /parser \(line (\d+), column (\d+)\)/;
+        say "$x and $y";
+        my @file = read_file($self->{_wayfile});
+        my $xx = 1;
+        for (@file) {
+          if ($x - 8 < $xx && $xx < $x + 5) {
+            if ($xx == $x) {
+              print "HERE > $_";
+              say "HERE > ".join("", (" ")x$y)."^";
+            }
+            else {
+              print "       $_";
+            }
+          }
+          $xx++;
+        }
+        die "! YAML load $self->{file} failed: "
+        .($@ ? $@ : "got: ".($w || "~"));
     }
     # merge the ways into $self
     for my $i (keys %$w) {
@@ -55,30 +78,6 @@ sub load_wayfile {
             @{$self->{chains}}
         ];
     }
-}
-sub parse_error {
-    my $self = shift;
-    my $w = shift;
-    say $@;
-    my ($x, $y) = $@ =~
-          /parser \(line (\d+), column (\d+)\)/;
-    say "$x and $y";
-    my @file = read_file($self->{file});
-    my $xx = 1;
-    for (@file) {
-      if ($x - 8 < $xx && $xx < $x + 5) {
-        if ($xx == $x) {
-          print "HERE > $_";
-          say "HERE > ".join("", (" ")x$y)."^";
-        }
-        else {
-          print "       $_";
-        }
-      }
-      $xx++;
-    }
-    die "! YAML load $self->{file} failed: "
-    .($@ ? $@ : "got: ".($w || "~"));
 }
 sub spawn {
     my $self = shift;

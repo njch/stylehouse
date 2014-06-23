@@ -1,6 +1,7 @@
 name: wormhole splatter
 hooks:
   splat_wormhole: |
+    my $wormhole = $G->W;
     say "Wormhole Splattur: $view->{divid}";
     say $wormhole->describe_size();
     
@@ -50,11 +51,11 @@ hooks:
         }
     m:
       v: |
-        my $t = $line->{thing};
+        my $t = $line->{t};
         
         my $menu = [
           Ώ => sub {
-            my $v =  $line->{thing};
+            my $v =  $line->{t};
             say "\n  Heading to $v\n\n";
             $O->somewhere($v);
           },
@@ -71,7 +72,7 @@ hooks:
         $s->{style}.="border: none;"
     t:
       v: |
-        my $t = $line->{thing};
+        my $t = $line->{t};
         ref $t ? "$t" : $t;
       s: |
         $s->{style}.="color: #FF6600;" unless ref $line->{t};
@@ -81,15 +82,15 @@ hooks:
         $line->{depth}
       s: |
         $s->{style}.="color: blue;";
-        $s->{style}.="width: ".($line->{depth} * 2 + 0.5)."em;";
     i:
       v: |
         $b->{c} = $line->{i};
         w desc/chain(+ c => $b->{c});
       s: |
+        $s->{style}.= "min-width:".($line->{depth} * 2 + 3)."em;";
         for ($b->{c}->{K}) {
-            $s->{style}.="width: 7em;" if $_ eq 'dsc/%';
-            $s->{style}.="width: 4em;" if $_ eq 'dsc/@';
+            $s->{style}.="background-color:#FF8533;" if $_ eq 'dsc/%';
+            $s->{style}.="background-color:#85FF33;" if $_ eq 'dsc/@';
         }
     o:
       v: |
