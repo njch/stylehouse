@@ -5,6 +5,7 @@ use Texty;
 use File::Slurp;
 use Time::HiRes 'usleep';
 use utf8;
+use Carp;
 
 my $i = 0; # sweeps through @{lyrics}
 

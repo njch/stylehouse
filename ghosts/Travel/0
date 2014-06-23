@@ -6,11 +6,7 @@ hooks:
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
-        push @$lines, w make_line({%$ar,
-            line => $line,
-            R => [],
-            B => {},
-        });
+        push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
     my $t = $view->newtext($lines, {
         nospace => 1,
@@ -22,7 +18,7 @@ hooks:
   make_line: |
     my $ghost = $line->{ghost};
 
-    w $ghost line/value($ar);
+    w $ghost line/value;
 
     return { _spawn => [ $R, {
         nospace => 1,
@@ -31,8 +27,8 @@ hooks:
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
-            w tuxtsB($ar);
-            w $ghost line/style($ar);
+            w tuxtsB(+ tuxts => $texty->{tuxts});
+            w $ghost line/style;
         },
     }]}
   tuxtsB:
@@ -78,8 +74,8 @@ hooks:
         my $t = $line->{thing};
         ref $t ? "$t" : $t;
       s: |
-        $s->{style}.="color: #FF6600;" unless ref $line->{thing};
-        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{thing};
+        $s->{style}.="color: #FF6600;" unless ref $line->{t};
+        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{t};
     d:
       v: |
         $line->{depth}
@@ -88,22 +84,18 @@ hooks:
         $s->{style}.="width: ".($line->{depth} * 2 + 0.5)."em;";
     i:
       v: |
-        $b->{c} = $line->{wayin};
-        w desc/chain({%$ar, 
-              c => ($b->{c} = $line->{wayin})
-          })
+        $b->{c} = $line->{i};
+        w desc/chain(+ c => $b->{c});
       s: |
-        for ($b->{c}->{name}) {
-            $s->{style}.="width: 7em;" if /HASH crawl/;
-            $s->{style}.="width: 4em;" if /ARRAY crawl/;
+        for ($b->{c}->{K}) {
+            $s->{style}.="width: 7em;" if $_ eq 'dsc/%';
+            $s->{style}.="width: 4em;" if $_ eq 'dsc/@';
         }
     o:
       v: |
-        my $wt = w desc/chain({%$ar, c => $b->{c}});
-        w desc/chain({%$ar, 
-              c => ($b->{c} = $line->{wayout})
-          })
-    
+        $b->{c} = $line->{o};
+        w desc/chain(+ c => $b->{c});
+  
   desc:
     chain: |
       return "?" unless $c;
@@ -113,7 +105,7 @@ hooks:
           
           for my $cc (@$c) {
               push @cl,
-            scalar w desc/chain({%$ar, c => $_})
+            scalar w desc/chain(+ c => $_)
           }
           return join(", ", @cl) || ".";
       }
@@ -128,9 +120,7 @@ hooks:
       
      
       if (0 && $c->{as_from}) {
-          $l .= "<".w desc/chain({%$ar, 
-              c => $c->{as_from},
-          });
+          $l .= "<".w desc/chain(+ c => $c->{as_from});
       }
       return $l
     

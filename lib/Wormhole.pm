@@ -114,7 +114,7 @@ sub splat {
     my $view = shift || $self->{way_out};
     ref $view eq "View" || die " $view not View";
     
-    $self->{ghost}->hookways('splat_wormhole',
+    $self->{ghost}->w('splat_wormhole',
         {wormhole => $self, view => $view},
     );
 }

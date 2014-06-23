@@ -30,29 +30,24 @@ sub W {
 }
 sub load_ways {
     my $self = shift;
-    my @wayns = @_;
-    my $ows = $self->{ways} ||= [];
+    my @way_names = @_;
+    my $ws = $self->{ways} ||= [];
     
-    for my $name (@wayns) {
-        unless (-d "ghosts/$name") {
-            say "Ghost ? $name"; # might be gone since last load, this all very additive
-            next;
-        }
-        
+    for my $name (@way_names) {
         for my $file (glob "ghosts/$name/*") {
         
-            my ($ow) = grep { $_->{file} eq $file } @$ows;
+            my ($ow) = grep { $_->{_wayfile} eq $file } @$ws;
             
             if ($ow) {
                 $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
-                say "Ghost U $ow->{id}: $file";
+                say "G++".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
 
             }
             else {
-                $ow = new Way($self->hostinfo->intro, $name, $file);
-                
-                say "Ghost + $ow->{id}: $file";
-                push $ows, $ow;
+                my $nw = new Way($self->hostinfo->intro,
+                    $name, $file);
+                say "G+".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                push @$ws, $nw;
             }
         }
         
@@ -65,31 +60,47 @@ sub ob {
     my $self = shift;
     $self->{travel}->ob(@_);
 }
-
 sub chains {
     my $self = shift;
-    map { $_->{chains} ? @{ $_->{chains} } : () } @{ $self->{ways} }
+    grep { !$_->{_disabled} }
+    map { @{$_->{chains}||[]} } $self->ways
 }
-
+sub ways {
+    my $self = shift;
+    
+    grep { !$_->{_disabled} } @{$self->{ways}}
+}
 sub w {
     my $self = shift;
     my $point = shift;
     my $ar = shift;
-    my $wayspec = shift;
-
+    my $way = shift; # so we can get into chains
+    say "Way is: $way";
     # these might want to be a wormhole that travel mixes in
     # things gather along the spines
     # and be the big thing to do or a little thing to do
     # these stuff go together like that, hopefully, with language forming their surface tension
     # jelly pyramids...
+    my @ways;
+    if ($way) {
+        if (ref $way eq 'Ghost') {
+            @ways = $way->ways;
+        }
+        elsif (ref $way eq 'Way') {
+            @ways = $way;
+        }
+    }
+    else {
+           @ways = $self->ways;
+    }
+    
     my @returns;
-    for my $w (@{ $self->{ways} }) {
-        next if $wayspec && $w ne $wayspec;
+    for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-            push @returns, [
-                $self->doo($h, $ar, $point)
-            ];
+        push @returns, [
+            $self->doo($h, $ar, $point)
+        ];
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -110,17 +121,32 @@ sub doo {
     my $ar = shift;
     my $point = shift;
     
-    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?[\(\{](.*?)[\}\)]|))/sg) {
-        my ($old, $ghost, $way, $are) = ($1, $2, $3, $4);
-        $ghost ||= '$G';
-        $are =~ s/^\{(.+)\}$/({\%\$ar, $1})/;
-        $eval =~ s/\Q$old\E/$ghost->w("$way", $are)/
+    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
+        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
+        say "\n\n$old\nare: '$are'";
+        $gw = ", $gw" if $gw; # ghost or way
+        $gw ||= "";
+        $gw =~ s/ $//;
+        if ($are && $are =~ s/^\(\+ //) {
+            $are =~ s/\)$//;
+            $are = '{ %$ar, '.$are.'}';
+            say "Are grows $are";
+        }
+        elsif ($are) {
+            $are = "{ $are }";
+            say "Are become $are";
+        }
+        else {
+        $are = '{ %$ar }';
+            say "Are clone $are";
+        }
+        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
     
-    my $thing = $G->{thing};
-    my $O = $G->{travel}->{owner};
+    my $thing = $G->{t};
+    my $O = $G->{travel}->{O};
     my $H = $G->{hostinfo};
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
@@ -141,14 +167,12 @@ sub doo {
         my @eval = split "\n", $evs;
         my $xx = 1;
         for (@eval) {
-            if ($x - 8 < $xx && $xx < $x + 5) {
                 if ($xx == $x) {
                     $eval .= ind("Ͱ->", $_)."\n"
                 }
                 else {
                     $eval .= ind("|  ", $_)."\n"
                 }
-            }
             $xx++;
         }
         die "DOO Fuckup:\n"
