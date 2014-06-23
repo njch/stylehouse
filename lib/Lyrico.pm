@@ -63,7 +63,7 @@ sub somewhere {
     
     $T->travel($_) for @what;
     
-    my $v = $self->{sky};
+    my $v = $self->{sky}->spawn_floozy($self->{wni}++);
     $T->G->w('splat_wormhole', {view => $v});
 }
 sub menu {
