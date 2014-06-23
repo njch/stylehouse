@@ -1,15 +1,25 @@
 name: wormhole splatter
 hooks:
   splat_wormhole: |
+    my $Vs = $O->{Vs} ||= [];
+    my $v = $sky->spawn_floozy($O->{wni}++, "position: absolute;");
+    my $top = 10;
+    for my $ov (@$Vs) {
+        $H->JS("\$('#$ov->{divid}').animate({transform: 'scale(0.2,0.1)', bottom: '".$top."px', right: '10px'});")
+            unless $ov->{_shrunken}++;
+        #$H->JS("\$('#$ov->{divid}').animate({});");
+        $top += 50;
+    }
+    push @$Vs, $v;
     my $wormhole = $G->W;
-    say "Wormhole Splattur: $view->{divid}";
+    say "Wormhole Splattur: $v->{divid}";
     say $wormhole->describe_size();
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
         push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
-    my $t = $view->newtext($lines, {
+    my $t = $v->newtext($lines, {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%;',
