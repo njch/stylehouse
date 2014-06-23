@@ -53,12 +53,12 @@ sub somewhere {
         @what = ($self, $self->{lyrics});
     }
     
-    @what = $self->{hostinfo}->get('
+    @what = $self->{hostinfo}->grep('tv/*');
     
     my $T = $self->{T};
     $T->W->{script} = [];
     
-    $T->travel($_) for @what;
+    $T->travel($_) for \@what;
     
     my $v = $self->{sky};
     $T->W->splat($v);

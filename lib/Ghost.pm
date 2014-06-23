@@ -59,7 +59,7 @@ sub load_ways {
         $self->{hostinfo}->watch_ghost_way($self, $name);
     }
     
-    $self->hookways("load_ways_post");
+    $self->w("load_ways_post");
 }
 sub ob {
     my $self = shift;

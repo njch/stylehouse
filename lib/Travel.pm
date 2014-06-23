@@ -28,7 +28,7 @@ sub ob {
     
     my $ob = $self->{hostinfo}->enlogform(@_); # describes stack, etc
 # we want to catch runaway recursion from here
-    $self->{TT}->T($ob);
+    $self->{TT}->travel($ob);
 }
 
 # the wormhole for self
@@ -56,7 +56,7 @@ sub travel {
         }
     }
 
-    return $ghost->{wormhole};
+    return $G->{wormhole};
 }
 sub event {
     my $self = shift;
