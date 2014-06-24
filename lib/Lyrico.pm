@@ -59,6 +59,7 @@ sub somewhere {
     
     #@what = $self->{hostinfo}->grep('.*top');
     say 'NOT SOMEWHERE ANYMORE';
+    $self->{L}->w("somewhere");
 }
 sub menu {
     my $self = shift;

@@ -16,12 +16,14 @@ sub new {
 
     my $travel = shift;
     $self->{travel} = $travel;
-    my $name = $self->{name} = $travel->{name};
-    say "Ghost named $name";
+    my $name = $travel->{name};
     my @ways = @_;
     unless (@ways) {
         @ways = "Elvis";
     }
+    $name = "$name - ".join", ",@ways;
+    $self->{name} = $name;
+    say "Ghost named $name";
     $self->load_ways(@ways);
 
     return $self;
@@ -35,23 +37,30 @@ sub W {
 }
 sub load_ways {
     my $self = shift;
-    my @way_names = @_;
+    my @ways = @_;
     my $ws = $self->{ways} ||= [];
     
-    for my $name (@way_names) {
-        for my $file (glob "ghosts/$name/*") {
-        
+    for my $name (@ways) {
+        my @files;
+        my $base = "ghosts/$name";
+        if (-f $base) {
+            push @files, $base;
+        }
+        else {
+            push @files, glob "$base/*";
+        }
+        for my $file (@files) {
             my ($ow) = grep { $_->{_wayfile} eq $file } @$ws;
             
             if ($ow) {
                 $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
-                say "G++".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                say "G ++ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
 
             }
             else {
                 my $nw = new Way($self->hostinfo->intro,
                     $name, $file);
-                say "G+".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
+                say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
             }
         }
@@ -148,6 +157,7 @@ sub doo {
     my $thing = $G->{t};
     my $O = $G->{travel}->{O};
     my $H = $G->{hostinfo};
+    say "$G->{name}: $point";
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
@@ -160,14 +170,14 @@ sub doo {
         .($upload||'');
     eval $evs;
     
-    if ($@) {
+    if ($@ || $point eq 'line/value') {
         say $@;
         my ($x) = $@ =~ /line (\d+)\.$/;
         my $eval = "";
         my @eval = split "\n", $evs;
         my $xx = 1;
         for (@eval) {
-                if ($xx == $x) {
+                if (defined $x && $xx == $x) {
                     $eval .= ind("Ͱ->", $_)."\n"
                 }
                 else {
@@ -175,6 +185,7 @@ sub doo {
                 }
             $xx++;
         }
+        return unless $@;
         die "DOO Fuckup:\n"
             .(defined $point ? "point: $point\n" : "")
             ."args: ".join(", ", keys %$ar)."\n"

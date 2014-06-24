@@ -405,7 +405,8 @@ sub tuxts_to_htmls {
         my $V = delete $p->{value};
         
         if (ref $V eq "Texty") {
-            $V = join "", @{ $V->{htmls} };
+        #if (!$V->{htmls}) { delete $V->{hostinfo}; say "Thing inside ".ddump($V) }
+            $V = join "", @{ $V->{htmls} || [] };
         }
         elsif (!$p->{html}) {
             $V = encode_entities($V);

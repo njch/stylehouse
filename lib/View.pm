@@ -98,7 +98,6 @@ sub text {
 
     $self->{text} ||= Texty->new($self->hostinfo->intro, $self, @_);
 }
-
 sub menu {
     my $self = shift;
 

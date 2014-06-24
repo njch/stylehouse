@@ -9,7 +9,9 @@ hooks:
     if ($ss->{o}) {
         $H->JS("\$('#$ss->{o}->{divid}').fadeOut();");
     }
-    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;");
+    my $epos = $splatname eq "wing" ?
+        "right: 0px;border:5px solid green;" : "";
+    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;$epos");
     $ss->{o} = $v;
     
     say "Wormhole Splattur: $v->{divid}";
@@ -18,6 +20,7 @@ hooks:
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
+        say " : $line->{depth} - $line->{t}";
         push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
     my $t = $v->newtext($lines, {
@@ -28,7 +31,9 @@ hooks:
   make_line: |
     my $ghost = $line->{ghost};
 
-    w $ghost line/value;
+          say "Raewr $B";
+    w line/value;
+    say "ETc";
 
     return { _spawn => [ $R, {
         nospace => 1,
@@ -41,14 +46,19 @@ hooks:
             w $ghost line/style;
         },
     }]}
-  tuxtsB:
-      $B->{$_->{bb}}->{s} = $_ for @$tuxts;
+  tuxtsB: |
+        for (@$tuxts) {
+          next unless $_->{bb};
+          $B->{$_->{bb}}->{s} = $_;
+      }
   
   line:
     value: |
+      say "Yagga";
       for my $bb (qw[d i t o m]) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
+          say "Raewr";
           $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
       }
@@ -61,6 +71,7 @@ hooks:
     m:
       v: |
         my $t = $line->{t};
+        say " m v $t" for 1..3;
         
         my $menu = [
           Ώ => sub {

@@ -2,22 +2,31 @@ name: Lyricoso writoro
 hooks:
   load_ways_post: |
     say 'yeha!';
-  init:
-    $G->{_splat} ||= $O->fT->G("Travel");
+    w init;
+  init: |
+    $G->{_splat} ||= $O->fT->G("Travel/splat");
+    $G->{_crawl} ||= $O->fT->G("Travel/crawl");
     $G->{_follow} ||= $O->fT->G("Lyrico/follow");
     w somewhere;
-  somewhere:
+  somewhere: |
     my $thing = $ar->{thing} || $O;
-    my $sT = $G->{_splat}->T;
     
-    $sT->W->{script} = [];
+    $G->{_crawl}->W->{script} = [];
     
-    $sT->travel($thing);
+    $G->{_follow}->T->travel($thing);
+    $G->{_crawl}->T->travel($thing);
     
-    $sT->G->w("splat_wormhole", {
+    say "Yayaya!";
+    $G->{_splat}->w("splat_wormhole", {
         splatname => 'trev',
         sky => $O->{sky},
-        wormhole => $sT->W,
+        wormhole => $G->{_crawl}->W,
+    });
+    
+    $G->{_splat}->w("splat_wormhole", {
+        splatname => 'wing',
+        sky => $O->{sky},
+        wormhole => $G->{_follow}->W,
     });
     
     
