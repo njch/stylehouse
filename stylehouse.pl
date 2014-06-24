@@ -403,7 +403,8 @@ __DATA__
 
         <link  href="stylehouse.css" rel="stylesheet">
 
-        <script src="jquery-1.11.1.min.js"></script>
+        <script src="jquery-1.10.2.js"></script>
+        <script src="jquery-ui-1.10.4.min.js"></script>
         <script src="stylehouse.js"></script>
         <script src="tabby.js"></script>
         <script src="jquery.scrollTo.js"></script>

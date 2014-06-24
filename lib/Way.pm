@@ -11,17 +11,24 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{wayofthe} = shift;
-    $self->{file} = shift;
-    $self->load_wayfile();
-
+    $self->{_ghostname} = shift;
+    $self->{_wayfile} = shift;
+    if (my $from = shift) {
+        for my $i (keys %$from) {
+            $self->{$i} = $from->{$i};
+        }
+    }
+    else {
+        $self->load_wayfile();
+    }
+        
     return $self;
 }
 sub find {
     my $self = shift;
     my $point = shift;
     my @path = split '/', $point;
-    my $h = $self->{hooks};
+    my $h = $self->{hooks} || $self;
     for my $p (@path) {
         $h = $h->{$p};
         unless ($h) {
@@ -32,44 +39,51 @@ sub find {
 }
 sub load_wayfile {
     my $self = shift;
-    my $cont = $self->{hostinfo}->slurp($self->{file});
+    unless ($self->{_wayfile}) {
+        delete $self->{hostinfo};
+        say "$self->{_ghostname} has no wayfile !".ddump($self);
+    }
+    my $cont = $self->{hostinfo}->slurp($self->{_wayfile});
     my $w = eval { Load($cont) };
-    if (!$w || ref $w ne 'HASH' || $@) {
+    if ($@ || !$w || ref $w ne 'HASH' || $@) {
         say $@;
         my ($x, $y) = $@ =~
-            /parser \(line (\d+), column (\d+)\)/;
+              /parser \(line (\d+), column (\d+)\)/;
         say "$x and $y";
-        my @file = read_file($self->{file});
+        my @file = read_file($self->{_wayfile});
         my $xx = 1;
         for (@file) {
-            if ($x - 8 < $xx && $xx < $x + 5) {
-                if ($xx == $x) {
-                    print "HERE > $_";
-                    say "HERE > ".join("", (" ")x$y)."^";
-                }
-                else {
-                    print "       $_";
-                }
+          if ($x - 8 < $xx && $xx < $x + 5) {
+            if ($xx == $x) {
+              print "HERE > $_";
+              say "HERE > ".join("", (" ")x$y)."^";
             }
-            $xx++;
+            else {
+              print "       $_";
+            }
+          }
+          $xx++;
         }
         die "! YAML load $self->{file} failed: "
-            .($@ ? $@ : "got: ".($w || "~"));
+        .($@ ? $@ : "got: ".($w || "~"));
     }
     # merge the ways into $self
     for my $i (keys %$w) {
         $self->{$i} = $w->{$i};
     }
     if ($self->{chains}) {
-        for my $c (@{$self->{chains}}) {
-            $c->{way} ||= $self;
-        }
+        $self->{chains} = [
+            map { $_->{_way} ||= $self; $_; }
+            map { $self->spawn($_) }
+            @{$self->{chains}}
+        ];
     }
 }
 sub spawn {
     my $self = shift;
+    my $from = shift || $self;
     return new Way($self->{hostinfo}->intro,
-        $self->{wayofthe}, $self->{file}
+        $self->{_ghostname}, $self->{_wayfile}, $from
     );
 }
 

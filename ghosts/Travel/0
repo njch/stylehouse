@@ -1,28 +1,36 @@
 name: wormhole splatter
 hooks:
+  load_ways_post: |
+    say "Reloaded!";
+    #$H->JS("\$('#sky > *').remove();");
+    #$G->{Vs} = [];
   splat_wormhole: |
-    say "Wormhole Splattur: $view->{divid}";
+    my $Vs = $G->{Vs} ||= [];
+    for my $ov (reverse @$Vs) {
+        $H->JS("\$('#$ov->{divid}').fadeOut();");
+        next;
+    }
+    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;background-color:#0099FF;");
+    #$H->JS("\$('#$v->{divid}').fadeIn();");
+    @$Vs = $v;
+    my $wormhole = $G->W;
+    say "Wormhole Splattur: $v->{divid}";
     say $wormhole->describe_size();
+    
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
-        push @$lines, w make_line({%$ar,
-            line => $line,
-            R => [],
-            B => {},
-        });
+        push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
-    my $t = $view->newtext($lines, {
+    my $t = $v->newtext($lines, {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%;',
     });
-  load_ways_post: |
-    say "Reloaded!";
   make_line: |
     my $ghost = $line->{ghost};
 
-    w $ghost line/value($ar);
+    w $ghost line/value;
 
     return { _spawn => [ $R, {
         nospace => 1,
@@ -31,8 +39,8 @@ hooks:
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
-            w tuxtsB($ar);
-            w $ghost line/style($ar);
+            w tuxtsB(+ tuxts => $texty->{tuxts});
+            w $ghost line/style;
         },
     }]}
   tuxtsB:
@@ -54,11 +62,11 @@ hooks:
         }
     m:
       v: |
-        my $t = $line->{thing};
+        my $t = $line->{t};
         
         my $menu = [
           Ώ => sub {
-            my $v =  $line->{thing};
+            my $v =  $line->{t};
             say "\n  Heading to $v\n\n";
             $O->somewhere($v);
           },
@@ -75,35 +83,31 @@ hooks:
         $s->{style}.="border: none;"
     t:
       v: |
-        my $t = $line->{thing};
+        my $t = $line->{t};
         ref $t ? "$t" : $t;
       s: |
-        $s->{style}.="color: #FF6600;" unless ref $line->{thing};
-        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{thing};
+        $s->{style}.="color: #aa3300; font-weight:200em;" unless ref $line->{t};
+        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{t};
     d:
       v: |
         $line->{depth}
       s: |
         $s->{style}.="color: blue;";
-        $s->{style}.="width: ".($line->{depth} * 2 + 0.5)."em;";
     i:
       v: |
-        $b->{c} = $line->{wayin};
-        w desc/chain({%$ar, 
-              c => ($b->{c} = $line->{wayin})
-          })
+        $b->{c} = $line->{i};
+        w desc/chain(+ c => $b->{c});
       s: |
-        for ($b->{c}->{name}) {
-            $s->{style}.="width: 7em;" if /HASH crawl/;
-            $s->{style}.="width: 4em;" if /ARRAY crawl/;
+        $s->{style}.= "min-width:".($line->{depth} * 2 + 3)."em;";
+        for ($b->{c}->{K}) {
+            $s->{style}.="background-color:#FF8533;" if $_ eq 'dsc/%';
+            $s->{style}.="background-color:#85FF33;" if $_ eq 'dsc/@';
         }
     o:
       v: |
-        my $wt = w desc/chain({%$ar, c => $b->{c}});
-        w desc/chain({%$ar, 
-              c => ($b->{c} = $line->{wayout})
-          })
-    
+        $b->{c} = $line->{o};
+        w desc/chain(+ c => $b->{c});
+  
   desc:
     chain: |
       return "?" unless $c;
@@ -113,7 +117,7 @@ hooks:
           
           for my $cc (@$c) {
               push @cl,
-            scalar w desc/chain({%$ar, c => $_})
+            scalar w desc/chain(+ c => $_)
           }
           return join(", ", @cl) || ".";
       }
@@ -128,9 +132,7 @@ hooks:
       
      
       if (0 && $c->{as_from}) {
-          $l .= "<".w desc/chain({%$ar, 
-              c => $c->{as_from},
-          });
+          $l .= "<".w desc/chain(+ c => $c->{as_from});
       }
       return $l
     

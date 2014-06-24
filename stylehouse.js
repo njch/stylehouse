@@ -1,10 +1,10 @@
 var ws;
 var fail = 0;
-
+var db = 0;
 function connect () {
   ws = new WebSocket('ws://127.0.0.1:3000/stylehouse');
   ws.onmessage = function(event) {
-    console.log(event.data);
+    if (db) { console.log(event.data); }
     eval(event.data);
   };
   ws.onopen = function(e) {
@@ -65,3 +65,4 @@ function clickyhand (event) {
     ws.reply({event: data});
 }
 connect();
+
