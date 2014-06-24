@@ -165,7 +165,7 @@ sub draw_chunk {
     $first =~ s/^(.{65}).+$/$1.../;
 
     $first =~ s/(sub|package) (.+) /$1<t
-    style="font-size:33pt; display:inline;">$2<\/t>/;
+    style="font-size:33pt; font-family:cursive;display:inline;">$2<\/t>/;
     return "!html !i=$c->{i} $first"
         .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
