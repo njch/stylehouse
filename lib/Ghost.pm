@@ -170,7 +170,7 @@ sub doo {
         .($upload||'');
     eval $evs;
     
-    if ($@ || $point eq 'line/value') {
+    if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
         my $eval = "";
         my @eval = split "\n", $evs;
