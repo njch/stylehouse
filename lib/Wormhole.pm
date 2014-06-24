@@ -108,7 +108,6 @@ sub encode_thing {
 # which is the whole stylehouse deal.
 # it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
 # Form is a well-known bunch of Ghost
-
 sub describe_size {
     my $self = shift;
     "Wormhole is ".@{$self->{script}}." lines long";

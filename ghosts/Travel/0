@@ -1,19 +1,22 @@
 name: wormhole splatter
 hooks:
+  load_ways_post: |
+    say "Reloaded!";
+    #$H->JS("\$('#sky > *').remove();");
+    #$G->{Vs} = [];
   splat_wormhole: |
-    my $Vs = $O->{Vs} ||= [];
-    my $v = $sky->spawn_floozy($O->{wni}++, "position: absolute;");
-    my $top = 10;
-    for my $ov (@$Vs) {
-        $H->JS("\$('#$ov->{divid}').animate({transform: 'scale(0.2,0.1)', bottom: '".$top."px', right: '10px'});")
-            unless $ov->{_shrunken}++;
-        #$H->JS("\$('#$ov->{divid}').animate({});");
-        $top += 50;
+    my $Vs = $G->{Vs} ||= [];
+    for my $ov (reverse @$Vs) {
+        $H->JS("\$('#$ov->{divid}').fadeOut();");
+        next;
     }
-    push @$Vs, $v;
+    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;background-color:#0099FF;");
+    #$H->JS("\$('#$v->{divid}').fadeIn();");
+    @$Vs = $v;
     my $wormhole = $G->W;
     say "Wormhole Splattur: $v->{divid}";
     say $wormhole->describe_size();
+    
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
@@ -24,8 +27,6 @@ hooks:
         class => 'menu',
         tuxtstyle => 'width: 100%;',
     });
-  load_ways_post: |
-    say "Reloaded!";
   make_line: |
     my $ghost = $line->{ghost};
 
@@ -85,7 +86,7 @@ hooks:
         my $t = $line->{t};
         ref $t ? "$t" : $t;
       s: |
-        $s->{style}.="color: #FF6600;" unless ref $line->{t};
+        $s->{style}.="color: #aa3300; font-weight:200em;" unless ref $line->{t};
         $s->{style}.="color: blue; font-style: underlined;" if ref $line->{t};
     d:
       v: |
