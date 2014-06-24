@@ -20,10 +20,78 @@ use Encode qw(encode_utf8 decode_utf8);
 
 our $data = {};
 
-has 'ports';
+sub init_flood {
+    my $self = shift;
 
-has 'for_all';
-has 'who'; # spawners of websocket activity
+    $self->{horizon} = $data->{horizon};
+    new View($self->intro, $self, "sky",
+        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+    );
+    new View($self->intro, $self, "ground",
+        "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
+    );
+    my $f = $self->create_view($self, "flood",
+        "width: 42%; min-width:509.188px; background: #337921; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
+    );
+    my $fm = $f->spawn_ceiling(
+        "flood_ceiling",
+        "width: ".420*1.14."px; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
+    );
+
+    $self->{floodzy} = $f->spawn_floozy(
+        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: bold;",
+    );
+    $self->{hi_error} = $f->spawn_floozy(
+        hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
+    );
+    $self->{hi_info} = $f->spawn_floozy(
+        hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
+    );
+    
+    $self->menu();
+    $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
+
+    return $f
+}
+
+# grep '.-.travel' -R * # like an art student game
+sub flood {
+    my $self = shift;
+    my $thing = shift;
+    my $floozy = shift;
+
+    $self->init_flood() unless $self->{flood};
+
+    if (!defined $thing && !defined $floozy) {
+        return $self->{flood}
+    }
+
+    my $from = join ", ", (caller(1))[0,3,2];
+
+    $floozy ||= $self->{floodzy};
+    say "floozy: $floozy->{divid}    from $from";
+
+    $floozy->{extra_label} = $from;
+
+
+    $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
+
+    my $lines = [split "\n", $thing];
+    my $texty = $floozy->text;
+
+    $texty->replace($lines);
+
+    #$texty->{max_height} ||= 1000;
+    $texty->fit_div;
+    
+    if ($floozy->{divid} ne "hi_error" && $self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
+        $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
+    }
+    $self->{flood}->{latest} = $floozy;
+}
+
+# $self->{who} made websocket activity
+
 sub send {
     my $self = shift;
     my $message = shift;
@@ -57,7 +125,7 @@ sub elvis_send {
     my $self = shift;
     my $message = shift;
     my $elvis = shift;
-    $elvis ||= $self->who;
+    $elvis ||= $self->{who};
     if (!$elvis) {
         say "NO INDIVIDUAL TO send $message";
     }
@@ -660,75 +728,6 @@ sub screen_height {
     my $sc = shift;
     $self->set("screen/width" => $sc->{x});
     $self->set("screen/height" => $sc->{y});
-}
-sub init_flood {
-    my $self = shift;
-
-    $self->{horizon} = $data->{horizon};
-    new View($self->intro, $self, "sky",
-        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
-    );
-    new View($self->intro, $self, "ground",
-        "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
-    );
-    my $f = $self->create_view($self, "flood",
-        "width: 42%; min-width:509.188px; background: #337921; height: 100%; overflow: scroll;position: absolute; left: 0px; z-index:-1;"
-    );
-    my $fm = $f->spawn_ceiling(
-        "flood_ceiling",
-        "width: ".420*1.14."px; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
-    );
-
-    $self->{floodzy} = $f->spawn_floozy(
-        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: bold;",
-    );
-    $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
-    );
-    $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
-    );
-    
-    $self->menu();
-    $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
-
-    return $f
-}
-
-# grep '.-.travel' -R * # like an art student game
-sub flood {
-    my $self = shift;
-    my $thing = shift;
-    my $floozy = shift;
-
-    $self->init_flood() unless $self->{flood};
-
-    if (!defined $thing && !defined $floozy) {
-        return $self->{flood}
-    }
-
-    my $from = join ", ", (caller(1))[0,3,2];
-
-    $floozy ||= $self->{floodzy};
-    say "floozy: $floozy->{divid}    from $from";
-
-    $floozy->{extra_label} = $from;
-
-
-    $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
-
-    my $lines = [split "\n", $thing];
-    my $texty = $floozy->text;
-
-    $texty->replace($lines);
-
-    #$texty->{max_height} ||= 1000;
-    $texty->fit_div;
-    
-    if ($floozy->{divid} ne "hi_error" && $self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
-        $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
-    }
-    $self->{flood}->{latest} = $floozy;
 }
 
 sub travel {
