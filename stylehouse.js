@@ -34,24 +34,28 @@ function reconnect () {
       window.setTimeout(connect, 25600);
   }
 }
-
 WebSocket.prototype.reply = function reply (stuff) {
 
   console.log(stuff);
 
-  ws.send(JSON.stringify(stuff));
+  this.send(JSON.stringify(stuff));
 };
 
 function clickon () { $(window).on("click", clickyhand); }
 function clickoff () { $(window).off("click", clickyhand); }
 function clickyhand (event) {
-    var value = event.target.id ? event.target.innerText : null;
+    var tag = $(event.target);
+    
+    var value = ''+tag.contents();
+    if (!(tag.attr('id') || tag.attr('class'))) {
+        tag = tag.parent();
+    }
     if (value && value.length >= 666) {
         value = 'SATAN';
     }
     var data = {
-        id: event.target.id,
-        class: event.target.class,
+        id: tag.attr('id'),
+        class: tag.attr('class'),
         value: value,
         type: event.type,
         S: 0+event.shiftKey,
