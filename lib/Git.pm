@@ -18,29 +18,11 @@ sub new {
 
   #  return $self if $self->hi->get('style') ne "stylehouse";
 
-    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:98%;  background: #352035; color: #aff; border: 5px solid blue;");
+    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff; border: 5px solid blue;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;", undef, undef, "menu");
 
     $self->gitrack();
     
-    $self->{spawn_init} = sub {
-    
-    my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
-    $PS->text->replace(['!class=hear Procshow']);
-    
-    my $GS = $G->spawn_floozy($self, Gitshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
-    $GS->text->replace(['!class=hear Gitshow']);
-
-    $GS->spawn_floozy($self, proclistwatch =>
-        "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-    $GS->spawn_floozy($self, procstartwatch =>
-        "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-    $GS->spawn_floozy($self, pswatch =>
-        "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    $GS->spawn_floozy($self, repos =>
-        "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-        
-    };
 
     return $self;
 }
@@ -48,7 +30,20 @@ sub init {
     my $self = shift; 
     
     unless ($self->{Gitshow}) {
-        $self->{spawn_init}->();
+        my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
+        $PS->text->replace(['!class=hear Procshow']);
+
+        my $GS = $G->spawn_floozy($self, Gitshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
+        $GS->text->replace(['!class=hear Gitshow']);
+
+        $GS->spawn_floozy($self, proclistwatch =>
+            "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
+        $GS->spawn_floozy($self, procstartwatch =>
+            "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
+        $GS->spawn_floozy($self, pswatch =>
+            "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+        $GS->spawn_floozy($self, repos =>
+            "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
     }
     
     $self->gitrack();
