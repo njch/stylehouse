@@ -587,6 +587,11 @@ sub watch_ghost_way {
 }
 sub get {
     my ($self, $i) = @_;
+    
+    if ($i =~ /^(\w+)-(........)$/) {
+        return grep { $_->{huid} eq $2 } @{$self->get($1)};
+    }
+    
     $data->{$i};
 }
 sub gest {
@@ -863,7 +868,6 @@ sub duction {
     }
 
     $this->{id} = "$ref-$this->{huid}";
-    $self->set($this->{id}, $this);
 
     return $self;
 }
