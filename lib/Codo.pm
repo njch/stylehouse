@@ -54,7 +54,9 @@ sub new {
     my $hi = $self->{hostinfo};
 
     my $Codo =
-    $hi->create_view($self, Codo => "width:58%; min-width: 600px; background: #001452; color: #afc; position: absolute; right: 0px; z-index:4; opacity: 0.95; height: 100%; overflow: scroll;");
+    $hi->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: #001452; color: #afc; position: absolute;"
+    ." z-index:4; opacity: 0.95; height: 100%;"
+    ."overflow: scroll;", before => 'flood');
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
     $self->{hostinfo}->{flood}->spawn_floozy($self, codolist =>
