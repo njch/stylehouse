@@ -42,6 +42,9 @@ sub display {
     }
 
     my $divid = $self->{id};
+    my $name = $self->{name};
+    $name =~ s/^ghosts\/(.+)\/(.+)$/<t style="font-size:33pt; font-family:cursive;display:inline;">G<\/t><t style="color:#63D13E">$1<\/t><t style="font-size:53pt; font-family:monospace;display:inline;">$2<\/t>/;
+    my $head = '!html <span style="text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;font-size:58pt; z-index:20; position: absolute: top:-30px;" id="<<ID>>-Head">'.$name.'</span>';
 
     my $show = $self->{show} ||= do {
         $codo->{Codo}->spawn_floozy($self, $divid, "width:89%; background:#80182; color:#afc; height:23em;");
@@ -83,7 +86,7 @@ sub display {
         }
     }
 
-    $texty->replace([ map { $_ } '!html <span style="text-shadow: 2px 3px 4px #FFFFFF;color:#66CCFF;font-size:58pt; z-index:20; position: absolute: top:-30px;display:inline;" id="<<ID>>-Head">'. $self->{name}.'</span>', @chunks, scalar(@chunks)." chunks"]);
+    $texty->replace([ map { $_ } $head, @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
