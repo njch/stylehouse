@@ -209,14 +209,12 @@ sub label {
         }
     } . ($self->{extra_label} ? "<br/>$self->{extra_label}" : "");
 }
-
 sub default_html {
     my $self = shift;
        '<span class="'.$self->{id} .' divlabel'
        .'" style="position: absolute; right:0px; opacity: 0.1;">'
        .$self->label.'</span>'
 }
-
 sub html {
     my $self = shift;
     my $html = shift;
@@ -227,7 +225,6 @@ sub html {
         $self->{html};
     }
 }
-
 sub wipehtml {
     my $self = shift;
     $self->hostinfo->send("\$('#".$self->{divid}." > *').remove();") if $self->html;

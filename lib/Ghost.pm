@@ -18,12 +18,16 @@ sub new {
     $self->{travel} = $travel;
     my $name = $self->{name} = $travel->{name};
     say "Ghost named $name";
-
-    my @wayns = ("Travel", $name);
-    push @wayns, $1 if $name =~ /^(\w+)-.+/;
-    $self->load_ways(@wayns);
+    my @ways = @_;
+    unless (@ways) {
+        @ways = "Elvis";
+    }
+    $self->load_ways(@ways);
 
     return $self;
+}
+sub T {
+    shift->{travel}
 }
 sub W {
     my $self = shift;

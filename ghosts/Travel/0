@@ -5,15 +5,13 @@ hooks:
     #$H->JS("\$('#sky > *').remove();");
     #$G->{Vs} = [];
   splat_wormhole: |
-    my $Vs = $G->{Vs} ||= [];
-    for my $ov (reverse @$Vs) {
-        $H->JS("\$('#$ov->{divid}').fadeOut();");
-        next;
+    my $ss = $G->{$splatname} ||= {};
+    if ($ss->{o}) {
+        $H->JS("\$('#$ss->{o}->{divid}').fadeOut();");
     }
-    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;background-color:#0099FF;");
-    #$H->JS("\$('#$v->{divid}').fadeIn();");
-    @$Vs = $v;
-    my $wormhole = $G->W;
+    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;");
+    $ss->{o} = $v;
+    
     say "Wormhole Splattur: $v->{divid}";
     say $wormhole->describe_size();
     
@@ -35,7 +33,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'position: relative; float: left; border: 1px solid #CCFF33; padding: 2px;',
+        tuxtstyle => 'position: relative; float: left; border-left: 3px solid #BBFF55; border-right: 4px solid #CCFF33;padding: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
@@ -68,7 +66,7 @@ hooks:
           Ώ => sub {
             my $v =  $line->{t};
             say "\n  Heading to $v\n\n";
-            $O->somewhere($v);
+            $O->{L}->w('somewhere', {thing => $v});
           },
         ];
         
@@ -92,13 +90,17 @@ hooks:
       v: |
         $line->{depth}
       s: |
-        $s->{style}.="color: blue;";
+        $s->{style}.="color: blue; text-align:right;";
     i:
       v: |
         $b->{c} = $line->{i};
         w desc/chain(+ c => $b->{c});
       s: |
-        $s->{style}.= "min-width:".($line->{depth} * 2 + 3)."em;";
+        $s->{style}.= "direction:rtl; min-width:"
+        .(($line->{depth}+1) * 2 + 3)."em;";
+        if ($line->{depth} == 0) {
+            $s->{style}.= "background-color:#445;";
+        }
         for ($b->{c}->{K}) {
             $s->{style}.="background-color:#FF8533;" if $_ eq 'dsc/%';
             $s->{style}.="background-color:#85FF33;" if $_ eq 'dsc/@';

@@ -43,27 +43,22 @@ sub stup {
     
     $self->{sky} = $self->{hostinfo}->{sky};
 
-    $self->{T} = Travel->new($self->{hostinfo}->intro, $self);
-    $self->{T}->G();
-    $self->somewhere();
+    $self->{L} = $self->fT->G("Lyrico");
+}
+sub fT {
+    my $self = shift;
+    return Travel->new($self->{hostinfo}->intro, $self);
 }
 sub somewhere {
     my $self = shift;
     my @what = @_;
     unless (@what) {
         @what = (
-        $self, 
-        $self->{lyrics});
+        $self);
     }
     
     #@what = $self->{hostinfo}->grep('.*top');
-    
-    my $T = $self->{T};
-    $T->W->{script} = [];
-    
-    $T->travel($_) for @what;
-    
-    $T->G->w('splat_wormhole', {sky => $self->{sky}});
+    say 'NOT SOMEWHERE ANYMORE';
 }
 sub menu {
     my $self = shift;

@@ -2,10 +2,29 @@ name: Lyricoso writoro
 hooks:
   load_ways_post: |
     say 'yeha!';
-    $O->somewhere() if $G->{click}++;
-  bang: |
+  init:
+    $G->{_splat} ||= $O->fT->G("Travel");
+    $G->{_follow} ||= $O->fT->G("Lyrico/follow");
+    w somewhere;
+  somewhere:
+    my $thing = $ar->{thing} || $O;
+    my $sT = $G->{_splat}->T;
+    
+    $sT->W->{script} = [];
+    
+    $sT->travel($thing);
+    
+    $sT->G->w("splat_wormhole", {
+        splatname => 'trev',
+        sky => $O->{sky},
+        wormhole => $sT->W,
+    });
+    
+    
+    
+  menu: |
+    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;");
     say "Something!\n" for 1..20;
-
 something:
   else: 1
 
