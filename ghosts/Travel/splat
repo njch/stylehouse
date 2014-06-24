@@ -7,11 +7,15 @@ hooks:
   splat_wormhole: |
     my $ss = $G->{$splatname} ||= {};
     if ($ss->{o}) {
-        $H->JS("\$('#$ss->{o}->{divid}').fadeOut();");
+        $H->JS("\$('#$ss->{o}->{divid}').fadeOut().remove;");
     }
-    my $epos = $splatname eq "wing" ?
-        "right: 0px;border:5px solid green;" : "";
-    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;$epos");
+    
+    my $style = "position:absolute;";
+    if ($splatname eq "wing") {
+        $style .= "right: 0px;border:5px solid green;width:10em;z-index:20;"
+    }
+    
+    my $v = $sky->spawn_floozy($O->{wni}++, $style);
     $ss->{o} = $v;
     
     say "Wormhole Splattur: $v->{divid}";
@@ -31,23 +35,21 @@ hooks:
   make_line: |
     my $ghost = $line->{ghost};
 
-          say "Raewr $B";
     w line/value;
-    say "ETc";
 
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'position: relative; float: left; border-left: 3px solid #BBFF55; border-right: 4px solid #CCFF33;padding: 2px;',
+        tuxtstyle => 'opacity:0.6;position: relative; float: left; border-left: 3px solid #BBFF55; border-right: 4px solid #CCFF33;padding: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};
             w tuxtsB(+ tuxts => $texty->{tuxts});
-            w $ghost line/style;
+            w line/style;
         },
     }]}
   tuxtsB: |
-        for (@$tuxts) {
+      for (@$tuxts) {
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
