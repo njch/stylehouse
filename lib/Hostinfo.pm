@@ -28,7 +28,7 @@ sub init_flood {
         "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     new View($self->intro, $self, "ground",
-        "width: 100%; height: 100%; background: #A65300; overflow: scroll;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
+        "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
     my $f = $self->{ground}->spawn_floozy($self, "flood",
         "width: 42%; min-width:509.188px; background: #337921; height: 100%; overflow: scroll;position: absolute; right:0px;z-index:-1;"
