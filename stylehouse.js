@@ -4,8 +4,12 @@ var db = 0;
 function connect () {
   ws = new WebSocket('ws://127.0.0.1:3000/stylehouse');
   ws.onmessage = function(event) {
-    if (db) { console.log(event.data); }
-    eval(event.data);
+    try {
+        eval(event.data);
+    } catch (e) {
+        console.log(event.data);
+        ws.reply({e=>e, d=>event.data});
+    }
   };
   ws.onopen = function(e) {
     fail = 0;
