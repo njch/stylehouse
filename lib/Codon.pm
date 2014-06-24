@@ -83,7 +83,7 @@ sub display {
         }
     }
 
-    $texty->replace([ map { $_ } '!html <h2 id="<<ID>>-Head">'.$self->{name}.'</h2>', @chunks, scalar(@chunks)." chunks"]);
+    $texty->replace([ map { $_ } '!html <span style="text-shadow: 2px 3px 4px #FFFFFF;color:#66CCFF;font-size:58pt; z-index:20; position: absolute: top:-30px;display:inline;" id="<<ID>>-Head">'. $self->{name}.'</span>', @chunks, scalar(@chunks)." chunks"]);
 
     for my $s (@{ $texty->{tuxts} }) { # go through adding other stuff we can't throw down the websocket all at once
         my $id = $s->{id};
@@ -164,7 +164,9 @@ sub draw_chunk {
     
     $first =~ s/^(.{65}).+$/$1.../;
 
-    return "!i=$c->{i} $first"
+    $first =~ s/(sub|package) (.+) /$1<t
+    style="font-size:33pt; display:inline;">$2<\/t>/;
+    return "!html !i=$c->{i} $first"
         .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
 sub event {
