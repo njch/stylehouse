@@ -451,6 +451,10 @@ sub event {
     }
     else {
         say "Event id: ".$event->{id};
+        if (!$self->{view}) {
+            say join"\n", "! viewless texty without event hook:", @{$self->{lines}};
+            return;
+        }
         say "Texty $self->{id} $self->{view}->{divid} event heading for ".$self->{view}->{id};
         $self->view->event($event, $self);
     }
