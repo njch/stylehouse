@@ -171,7 +171,6 @@ sub doo {
     eval $evs;
     
     if ($@ || $point eq 'line/value') {
-        say $@;
         my ($x) = $@ =~ /line (\d+)\.$/;
         my $eval = "";
         my @eval = split "\n", $evs;
@@ -185,12 +184,21 @@ sub doo {
                 }
             $xx++;
         }
-        return unless $@;
-        die "DOO Fuckup:\n"
-            .(defined $point ? "point: $point\n" : "")
-            ."args: ".join(", ", keys %$ar)."\n"
-            .($@ !~ /DOO Fuckup/ ? $eval : "|")."\n"
-            .ind("|   ", $@)."\n^\n";
+        return say "DOO $point: $@\n$eval" unless $@;
+        
+        say <<"" if $@ !~ /^DONT/;
+     .-'''-.     
+   '   _    \   
+ /   /` '.   \  
+.   |     \  '  
+|   '      |  ' 
+\    \     / /  
+ `.   ` ..' /   
+    '-...-'`    
+
+        die "DONT $point  ".join(", ", keys %$ar)."\n"
+            .($@ !~ /^DONT/ ? "$eval\n" : "")
+            .ind("E   ", $@)."\n^\n";
     }
     # more ^
     
