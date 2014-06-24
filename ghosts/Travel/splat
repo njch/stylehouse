@@ -56,11 +56,9 @@ hooks:
   
   line:
     value: |
-      say "Yagga";
       for my $bb (qw[d i t o m]) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
-          say "Raewr";
           $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
       }
@@ -82,6 +80,16 @@ hooks:
             $O->{L}->w('somewhere', {thing => $v});
           },
         ];
+        if (ref $t && ref $t eq 'Hostinfo') {
+            push @$menu, data => sub {
+                $O->{L}->w('somewhere', {thing => $t->data});
+            }
+        }
+        if (ref $t && "$t" =~ /\w=HASH/) {
+            if ($t->{Ώ}) {
+                push @$menu, each %{$t->{Ώ}};
+            }
+        }
         
         {
         contyt => { bb => $b->{bb} },
