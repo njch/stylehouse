@@ -15,7 +15,7 @@ $Hostinfo::data->{'horizon'} =
 "40%"
 :
 #"89.91%"
-"95%"
+"55%"
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;

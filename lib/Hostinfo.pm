@@ -35,11 +35,11 @@ sub init_flood {
     );
     my $fm = $f->spawn_ceiling(
         "flood_ceiling",
-        "width: ".420*1.14."px; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
+        "width: 100%; margin:1em; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
     );
 
     $self->{floodzy} = $f->spawn_floozy(
-        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: bold;",
+        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: 7em;",
     );
     $self->{hi_error} = $f->spawn_floozy(
         hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",

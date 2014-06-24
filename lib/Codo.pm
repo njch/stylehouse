@@ -60,10 +60,10 @@ sub new {
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
     $self->{hostinfo}->{flood}->spawn_floozy($self, codolist =>
-        "width:500px; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
+        "padding: 1em; width:100%; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
 
 
-        $Codo->spawn_floozy($self, blabs => "width:92%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+        $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
 
 

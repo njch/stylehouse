@@ -18,8 +18,8 @@ sub new {
 
   #  return $self if $self->hi->get('style') ne "stylehouse";
 
-    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff; border: 5px solid blue;");
-    $G->spawn_ceiling($self, gitrack => "width:98%; background: #301a30; color: #afc; font-weight: bold; height: 2em;", undef, undef, "menu");
+    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff;");
+    $G->spawn_ceiling($self, gitrack => "width:98%; background: #2E0F00; color: #afc; font-weight: bold; margin:1em;", undef, undef, "menu");
 
     $self->gitrack();
     
@@ -30,6 +30,7 @@ sub init {
     my $self = shift; 
     
     unless ($self->{Gitshow}) {
+        my $G = $self->{Git};
         my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
         $PS->text->replace(['!class=hear Procshow']);
 
