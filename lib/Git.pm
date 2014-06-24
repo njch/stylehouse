@@ -73,6 +73,9 @@ sub gitrack {
         sG => sub {
             $self->spawn_proc('cd ../styleshed && git gui');
         },
+        st => sub {
+            $self->spawn_proc('cd ../styleshed && touch stylehouse.pl');
+        },
         hp => sub {
             $self->spawn_proc('cd ../stylehouse && git pull shed conty');
         },
