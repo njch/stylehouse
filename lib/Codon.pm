@@ -44,13 +44,13 @@ sub display {
     my $divid = $self->{id};
 
     my $show = $self->{show} ||= do {
-        $codo->{Codo}->spawn_floozy($self, $divid, "width:89%; background:#202a15; color:#afc; height:23em;");
+        $codo->{Codo}->spawn_floozy($self, $divid, "width:89%; background:#80182; color:#afc; height:23em;");
     };
 
     my $texty = $self->{text} = $show->text;
 
     my $temp = $codo->{temp} ||= $self->{hostinfo}->{flood}->spawn_floozy($self,
-        temp => "width:89%; height:1em; background: #fc8; color: #362;",
+        temp => "width:89%; height:1em; background: #0c8; color: #362;",
     )
         if grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} };
 
@@ -74,8 +74,8 @@ sub display {
 
             push @chunks,
                 "!html !i=$i "
-                .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #a8b;"></textarea>'
-                .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: 0px; opacity: 0.4; top: 2em; font-size: 32pt; height: 45%; z-index: 20;">@@</span>'
+                .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="77" rows="'.$rows.'" style="background-color: #08b;"></textarea>'
+                .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: 0px; opacity: 0.4; top: 2em; font-size: 32pt; height: 45%; z-index: 20;">@@@</span>'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
