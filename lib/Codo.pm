@@ -55,7 +55,7 @@ sub new {
 
     my $Codo =
     $hi->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: #001452; color: #afc; position: absolute;"
-    ."background-image: url(blue-velvet-sofa.jpg); background-size: 100%; z-index:4; opacity: 0.95; height: 100%;"
+    ." z-index:4; opacity: 0.95; height: 100%;"
     ."overflow: scroll;", before => 'flood');
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
