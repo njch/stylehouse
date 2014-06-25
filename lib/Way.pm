@@ -78,7 +78,7 @@ sub load_wayfile {
           }
           $xx++;
         }
-        die "! YAML load $self->{file} failed: "
+        die "! YAML load $self->{_wayfile} failed: "
         .($@ ? $@ : "got: ".($w || "~"));
     }
     # merge the ways into $self
