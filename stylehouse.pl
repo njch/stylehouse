@@ -328,6 +328,9 @@ $self->on(message => sub {
             return unless $keys;
             $keys->key($k);
         }
+        elsif ($j->{e}) {
+            $hostinfo->error("javascript error from client", $j->{d}, $j->{e});
+        }
         elsif (my $s = $j->{s}) {
             # the viewport of the browser moves..
 #Lyrico used to do stuff here, it's a bit crazy but it's got potential...

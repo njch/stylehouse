@@ -8,7 +8,7 @@ function connect () {
         eval(event.data);
     } catch (e) {
         console.log(event.data);
-        ws.reply({e:e, d:event.data});
+        ws.reply({e:e.message, d:event.data});
     }
   };
   ws.onopen = function(e) {

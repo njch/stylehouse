@@ -17,9 +17,9 @@ use Digest::SHA 'sha1_hex';
 use File::Slurp;
 use utf8;
 use Encode qw(encode_utf8 decode_utf8);
+use YAML::Syck;
 
 our $data = {};
-
 sub init_flood {
     my $self = shift;
 
@@ -771,10 +771,12 @@ sub enlogform {
 
     my @from;
     my $b = 1;
-    while (join " ", (caller($b))[0,3,2]) {
-        s/^Mojo::Server::SandBox::\w{24}//;
-        push @from, $_;
-        last if /^Mojo/; 
+    while (my $f = join " ", (caller($b))[0,3,2]) {
+        last unless defined $f;
+        say ' a - - --a -: '.$f;
+        my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/;
+        push @from, $f;
+        last if $surface; 
         $b++;
     }
 
@@ -802,22 +804,19 @@ sub throwlog {
 
     $self->accum($accuwhere, $error);
 
-    my $string = 
-        join("\n",
-            $error->[0],
-            
-                (map { "    - $_" } reverse @{$error->[1]}),
-            join("\n\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
+    my $string = join("\n", $error->[0],
+        (map { "    - $_" } reverse @{$error->[1]}),
+            join("\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
         );
 
-    say "$what =>\n$string";
+
+    print colored(ind("$what  ", $string), $what eq "Error"?'red':'green');
     if (my $fl = $self->get("tvs/$divid/top")) {
         $self->flood($string, $fl);
     }
     $self->send("\$('#$divid').removeClass('widdle');");
 }
-
-use YAML::Syck;
+sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
     my $thing = shift;
     my $ind;
