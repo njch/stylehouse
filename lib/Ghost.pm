@@ -42,6 +42,7 @@ sub load_ways {
     
     for my $name (@ways) {
         my @files;
+        
         my $base = "ghosts/$name";
         if (-f $base) {
             push @files, $base;
@@ -49,13 +50,14 @@ sub load_ways {
         else {
             push @files, glob "$base/*";
         }
+        
         for my $file (@files) {
             my ($ow) = grep { $_->{_wayfile} eq $file } @$ws;
             
             if ($ow) {
                 $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
                 say "G ++ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
-
+                
             }
             else {
                 my $nw = new Way($self->hostinfo->intro,
@@ -65,7 +67,12 @@ sub load_ways {
             }
         }
         
-        $self->{hostinfo}->watch_ghost_way($self, $name);
+        if (@files) {
+            $self->{hostinfo}->watch_ghost_way($self, $name);
+        }
+        else {
+            $self->{hostinfo}->error("No way! $name");
+        }
     }
     
     $self->w("load_ways_post");
