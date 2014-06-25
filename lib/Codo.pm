@@ -36,10 +36,6 @@ has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
-sub DESTROY {
-    my $self = shift;
-    $self->nah;
-}
 
 sub new {
     my $self = bless {}, shift;
@@ -438,8 +434,10 @@ sub nah {
     }
     $self->ebuge([]);
 }
-
-
+sub DESTROY {
+    my $self = shift;
+    $self->nah;
+}
 sub new_ebuge {
     my $self = shift;
     my $ebuge = Ebuge->new($self->hostinfo->intro, "ebuge.pl");
