@@ -10,8 +10,10 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{O} = shift;
-    $self->{name} = shift || $self->{O}->{name} || $self->{O}->{id};
+    my @from = @_;
+    ($self->{O}) = @from;
+    $self->{from} = \@from;
+    $self->{name} = $self->{O}->{name} || $self->{O}->{id};
 
     return $self;
 }

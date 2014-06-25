@@ -15,7 +15,7 @@ $Hostinfo::data->{'horizon'} =
 "40%"
 :
 #"89.91%"
-"55%"
+"95%"
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
@@ -41,13 +41,22 @@ sub new {
 sub stup {
     my $self = shift;
     
-    $self->{sky} = $self->{hostinfo}->{sky};
+    my $sky = $self->{sky} = $self->{hostinfo}->{sky};
+    $self->{S} = $self->fT($sky, $self)->G("Sky");
 
+    
+    
     $self->{L} = $self->fT->G("Lyrico");
+    
+    $self->{hostinfo}->timer(0.1, sub {
+        $self->{hostinfo}->send("\$('#".$self->{sky}->{divid}."').animate({backgroundColor: '#6B8FB2'}, 5000);");
+    });
 }
 sub fT {
     my $self = shift;
-    return Travel->new($self->{hostinfo}->intro, $self);
+    my @from = @_;
+    @from = $self unless @from;
+    return Travel->new($self->{hostinfo}->intro, @from);
 }
 sub somewhere {
     my $self = shift;
