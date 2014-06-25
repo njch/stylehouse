@@ -75,7 +75,7 @@ sub menu {
             Codo->new($self->{hostinfo}->intro);
         },
         Թ => sub {
-            $self->hostinfo->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
+            $self->{hostinfo}->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
         },
     };
     return { _spawn => [ [ sort keys %$m ], {
