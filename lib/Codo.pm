@@ -237,6 +237,7 @@ sub codolist {
             
             $s->{style} .= "font-size: 30pt;"
                 if length($s->{value}) == 1;
+            $s->{style} .= "font-size: 20pt;";
 
             $s->{menu} = "h";
             
