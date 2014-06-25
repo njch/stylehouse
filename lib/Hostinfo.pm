@@ -771,10 +771,12 @@ sub enlogform {
 
     my @from;
     my $b = 1;
-    while (join " ", (caller($b))[0,3,2]) {
-        s/^Mojo::Server::SandBox::\w{24}//;
-        push @from, $_;
-        last if /^Mojo/; 
+    while (my $f = join " ", (caller($b))[0,3,2]) {
+        last unless defined $f;
+        say ' a - - --a -: '.$f;
+        my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/;
+        push @from, $f;
+        last if $surface; 
         $b++;
     }
 
