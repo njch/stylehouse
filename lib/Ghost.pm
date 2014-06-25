@@ -157,7 +157,7 @@ sub doo {
     my $thing = $G->{t};
     my $O = $G->{travel}->{O};
     my $H = $G->{hostinfo};
-    say "$G->{name}: $point";
+    say "$G->{name}: ".($point||$eval);
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
