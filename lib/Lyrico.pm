@@ -43,6 +43,12 @@ sub stup {
     
     $self->{sky} = $self->{hostinfo}->{sky};
 
+    
+    $self->{hostinfo}->timer(0.7, sub {
+        
+    $self->{hostinfo}->send("\$('#".$self->{sky}->{divid}."').animate({left: 400}, 5000, 'swing');");
+    });
+    
     $self->{L} = $self->fT->G("Lyrico");
 }
 sub fT {
