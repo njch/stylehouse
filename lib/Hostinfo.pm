@@ -959,14 +959,30 @@ sub tv_by_id {
     }
     return;
 }
-
+sub nah {
+    my $self = shift;
+    my $this = shift;
+    say "DESTROYING EVERYTHING $this STOOD FOR";
+    for my $OO (
+        grep { $_->{O} ? $_->{O} eq $this
+                    : $_->{owner} eq $this }
+        map { @{$_} }
+        map { $self->get($_) } "View", "Travel") {
+        
+        $OO->nah;
+        $self->deaccum($this);
+    }
+} 
+    
+    
+    
+    
 # make a number bigger than the universe...
 sub make_uuid {
     my $stringuuid = secret();
     $stringuuid =~ s/^(\w+)-.+$/$1/s;
     return $stringuuid;
 }
-
 sub secret {
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);

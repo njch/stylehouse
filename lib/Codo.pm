@@ -78,30 +78,17 @@ sub new {
 sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= {
-        ʵ => sub { $self->nah },
-        ɺ => sub { $self->new_ebuge() },
-        Ψ => sub {
-            $self->infrl("views", $self->hostinfo->dkeys);
-        },
-        Ͱ => sub {
-            $self->infrl("obsetrav", split "\n", ddump($self->hostinfo->get("Codo/obsetrav")));
-        },
-        ʥ => sub { # they might wanna load new css/js too
+        ܤ => sub { # they might wanna load new css/js too
             $self->infrl('restarting (if)');
             `touch $0`;
         },
-        ɤ => sub {
-            $self->{hostinfo}->send("\$('#Codo').toggleClass('NE');");
-        },
+        ɤ => sub {},
     };
     return { _spawn => [ [ sort keys %$m ], {
         event => { menu => $m },
-        tuxtstyle => sub {
-            my ($v, $s) = @_;
-            $s->{style} .= "padding 5px; font-size: 35pt; "
-            ." background-color: #cc5050;"
+        tuxtstyle => "padding 5px; font-size: 35pt; "
+            ." background-color: #1919FF;"
             ."text-shadow: 2px 4px 5px #4C0000;"
-        },
     } ] }
 }
 sub event {
@@ -241,9 +228,8 @@ sub codolist {
             $s->{style} .= 'background-color:'
                 .'#'.codoncolour($codon).';';
             
-            $s->{style} .= "font-size: 30pt;"
-                if length($s->{value}) == 1;
-            $s->{style} .= "font-size: 20pt;";
+            $s->{style} .= length($s->{value}) < 4 ?
+                "font-size: 50pt;" : "font-size: 20pt;";
 
             $s->{menu} = "h";
             
@@ -430,6 +416,7 @@ sub nah {
         $ebuge->nah;
     }
     $self->ebuge([]);
+    $self->{hostinfo}->nah($self);
 }
 sub DESTROY {
     my $self = shift;

@@ -340,22 +340,31 @@ sub chunkify {
 # supposed to be a Tractor doing this
 
     my $lines = $self->{lines};
-    my $isgho = $self->{name} =~ /^ghosts/; 
-
-    my @stuff = ([]);
-    my $newchunk = sub {
-        my $l = shift;
-
-        $isgho && @{$stuff[-1]} > 0 && $l =~ /^\w+/
-        
-        || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
-    };
-    # this consumes lines, should do wormhole at the end of init_wormhole
-    for my $l (@$lines) {
-        push @stuff, [] if $newchunk->($l);
-        push @{ $stuff[-1] }, $l;
+    my $isG;
+    my $isN;
+    for ($self->{name}) {
+        $isG = /^ghosts/; 
+        $isN = /^n/; 
     }
 
+    my @stuff = ([]);
+    # this consumes lines, should do wormhole at the end of init_wormhole
+    my @lines = @$lines;
+        while (defined(my $l = shift @lines)) {
+            push @stuff, []
+            if
+            $isG && @{$stuff[-1]} > 0 && $l =~ /^\w+||^  \w+/
+
+            || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
+            
+            push @{ $stuff[-1] }, $l;
+            
+            
+            push @stuff, []
+            if
+            $isN && $l eq ''
+                 && $lines[0] ne '';
+        }
     my $chunks = [];
     my $i = 0;
     for my $s (@stuff) {
