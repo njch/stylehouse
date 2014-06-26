@@ -20,6 +20,38 @@ use Encode qw(encode_utf8 decode_utf8);
 use YAML::Syck;
 
 our $data = {};
+sub new {
+    my $self = bless {}, shift;
+    #$self->set('0', $self);
+    $self->{for_all} = [];
+    
+    $Lyrico::H = $self;
+    $Ghost::H = $self;
+    $Travel::H = $self;
+    $Wormhole::H = $self;
+
+
+    #jQuery.Color().hsla( array )
+    return $self
+}
+sub TT {
+    my $self = shift;
+    my @from = @_;
+    @from = $self unless @from;
+    return Travel->new($self->intro, @from);
+}
+sub Gf {
+    my $self = shift;
+    my $Gf = shift;
+    my $way = shift;
+    my @Gs =
+        grep { $_->{name} =~ /$way/ }
+        map { $_->{G} }
+        grep { grep { $Gf eq $_ } @{$_->{from}} }
+        @{$self->get('Travel')};
+    $self->error("Strange, ".scalar(@Gs)." G from $Gf->{name} have $way", \@Gs) if @Gs != 1;
+    shift @Gs;
+}
 sub init_flood {
     my $self = shift;
 

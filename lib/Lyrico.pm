@@ -6,9 +6,10 @@ use File::Slurp;
 use Time::HiRes 'usleep';
 use utf8;
 use Carp;
+sub TT { Hostinfo::TT(@_) }
 
 my $i = 0; # sweeps through @{lyrics}
-
+our $H;
 $Hostinfo::data->{'horizon'} =
     $Hostinfo::data->{style} eq
 "stylehouse"?

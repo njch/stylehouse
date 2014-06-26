@@ -5,7 +5,7 @@ use Texty;
 use Ghost;
 sub ddump { Hostinfo::ddump(@_) }
 has 'cd';
-has 'hostinfo';
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -19,7 +19,7 @@ sub new {
 }
 sub G {
     my $self = shift;
-    $self->{ghost} ||= new Ghost($self->hostinfo->intro, $self, @_);
+    $self->{G} ||= new Ghost($H->intro, $self, @_);
 }
 sub W {
     shift->G->W
@@ -28,7 +28,7 @@ sub ob {
     my $self = shift;
     return unless $self->{TT};
     
-    my $ob = $self->{hostinfo}->enlogform(@_); # describes stack, etc
+    my $ob = $H->enlogform(@_); # describes stack, etc
 # we want to catch runaway recursion from here
     $self->{TT}->travel($ob);
 }

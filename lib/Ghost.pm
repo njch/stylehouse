@@ -9,13 +9,13 @@ use Way;
 sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 
-has 'hostinfo';
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
     my $travel = shift;
-    $self->{travel} = $travel;
+    $self->{T} = $travel;
     my $name = $travel->{name};
     my @ways = @_;
     unless (@ways) {
@@ -29,11 +29,13 @@ sub new {
     return $self;
 }
 sub T {
-    shift->{travel}
+    my $self = shift;
+    $self->{T}->travel($_) for @_;
+    $self->{T};
 }
 sub W {
     my $self = shift;
-    $self->{wormhole} ||= Wormhole->new($self->hostinfo->intro, $self, "wormholes/$self->{name}/0");
+    $self->{wormhole} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub load_ways {
     my $self = shift;
@@ -60,8 +62,7 @@ sub load_ways {
                 
             }
             else {
-                my $nw = new Way($self->hostinfo->intro,
-                    $name, $file);
+                my $nw = new Way($H->intro, $name, $file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
             }
@@ -79,7 +80,7 @@ sub load_ways {
 }
 sub ob {
     my $self = shift;
-    $self->{travel}->ob(@_);
+    $self->{T}->ob(@_);
 }
 sub chains {
     my $self = shift;
