@@ -314,8 +314,8 @@ $self->on(message => sub {
 
         # it beings! not that we don't come through here all the time
         init() if $underworld;
-
-
+sub dostuff {
+}
         # ongoing stuff
         if ($j->{claw} && $hostinfo->claw($j)) {
             # done
@@ -326,6 +326,7 @@ $self->on(message => sub {
             $keys->key($k);
         }
         elsif ($j->{e}) {
+            die $j->{d} if $hostinfo->{JErrors}++ > 3;
             $hostinfo->error("javascript error from client", $j->{d}, $j->{e});
         }
         elsif (my $s = $j->{s}) {
