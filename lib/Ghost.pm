@@ -142,25 +142,7 @@ sub doo {
     my $ar = shift || {};
     my $point = shift;
     
-    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
-        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
-        $gw = ", $gw" if $gw; # ghost or way
-        $gw ||= "";
-        $gw =~ s/ $//;
-        if ($are && $are =~ s/^\(\+ //) {
-            $are =~ s/\)$//;
-            $are = '{ %$ar, '.$are.'}';
-        }
-        elsif ($are) {
-            $are = "{ $are }";
-        }
-        else {
-            $are = '{ %$ar }';
-        }
-        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
-    }
+    $eval = $G->parse_babble($eval);
     
     my $thing = $G->{t};
     my $O = $G->{travel}->{O};
