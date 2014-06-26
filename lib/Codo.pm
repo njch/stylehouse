@@ -120,7 +120,18 @@ sub init_codons {
     my $self = shift;
 
     say "\tI N I T   C O D ON S !";
-    my @codefiles = $self->list_of_codefiles();
+    my @codefiles = do {
+        my $dir = $self->{code_dir} || "";
+        die "$dir not dir" unless -d $dir;
+        $dir .= "/" unless $dir =~ /\/$/;
+        grep { !$dir || s/^$dir// } (
+            "not",
+            glob($dir.'stylehouse.*'),
+            glob($dir.'public/stylehouse.*'),
+            glob($dir.'lib/*.pm'),
+            glob($dir.'ghosts/*/*'),
+        );
+    };
 
     for my $cf (@codefiles) {
         my $filename = $self->{code_dir}.$cf;
@@ -337,18 +348,7 @@ sub lobo {
           );
     }
 }
-sub list_of_codefiles {
-    my $self = shift;
-    my $dir = $self->{code_dir} || "";
-    die "$dir not dir" unless -d $dir;
-    $dir .= "/" unless $dir =~ /\/$/;
-    grep { !$dir || s/^$dir// } (
-        glob($dir.'stylehouse.*'),
-        glob($dir.'public/stylehouse.*'),
-        glob($dir.'lib/*.pm'),
-        glob($dir.'ghosts/*/*'),
-    );
-}
+
 sub load_codon {
     my $self = shift;
     my $codon = shift;
