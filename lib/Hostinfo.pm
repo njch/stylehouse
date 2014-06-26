@@ -849,6 +849,10 @@ sub throwlog {
         $self->flood($string, $fl);
     }
     $self->send("\$('#$divid').removeClass('widdle');");
+    if ($what eq "Error") {
+        $self->send("\$('#$divid').addClass('inface')"
+        .".on('click', function(){this.removeClass('inface')});");
+    }
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
