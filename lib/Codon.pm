@@ -98,7 +98,6 @@ sub display {
         $code =~ s/\\/\\\\/g;
         $code =~ s/"/\\"/g;
         $code =~ s/\n/\\n/g;
-        $code =~ s/\t/\\t/g;
         my $rows = scalar(@$lines);
         my $ness = $self->{openness}->{$i};
 
