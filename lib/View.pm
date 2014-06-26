@@ -259,6 +259,12 @@ sub event {
     my $self = shift;
     my $event = shift;
     my $this = shift;
+    
+    if ($self->{on_event}) {
+        say "Event in ".$self->label."  h on_event";
+        $self->{on_event}->($self, $event, $this);
+        return;
+    }
 
     say "Event in ".$self->label." heading for "
         .$self->owner.($self->{owner}->{name} ? " ($self->{owner}->{name})" : "");

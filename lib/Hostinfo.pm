@@ -66,7 +66,10 @@ sub init_flood {
     my $sky = new View($self->intro, $self, "sky",
         "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
-    $self->TT($sky, $self)->G("Hostinfo/sky");
+    my $Gsky = $self->TT($sky, $self)->G("Hostinfo/sky");
+    $sky->{on_event} = sub {
+        $Gsky->w("touch", @_);
+    };
     
     
     new View($self->intro, $self, "ground",
@@ -90,13 +93,22 @@ sub init_flood {
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; background: #B247F0; color: #030; font-weight: bold; ");
+        
+    my $colle = sub {
+        my ($me, $e, $t) = @_;
+        say " MESSY COLLAPSE EVENT";
+        $self->JS($me, "addClass('widdle');");
+    };
     
     $m->spawn_floozy(
-        Info => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
-    );
+        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
+    )
+    ->{on_event} = $colle;
+    
     $m->spawn_floozy(
-        Error => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
-    );
+        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
+    )
+    ->{on_event} = $colle;
     
     $self->menu();
     $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
@@ -932,9 +944,9 @@ sub tvs {
 sub tv_by_id {
     my $self = shift;
     my $id = shift;
-        $id =~ s/^(\w+-\w+).*$/$1/ || do {
-            $self->error("EVENT ID THING LOOKUP Got a weird id", $id);
-        };
+    
+    $id =~ s/^(\w+-\w+).*$/$1/
+        || $self->info("tv_by_id weird id: $id");
     say "ID : $id";
 
     for my $tv (@{$self->get('tvs')}) {
