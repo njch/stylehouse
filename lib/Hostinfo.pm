@@ -169,7 +169,7 @@ sub JS {
         use Carp;
         croak " \n\n\n\nTHIS:\n$js\nis not View" unless ref $js eq "View";
         my $jq = shift;
-        $js = "\$('$js->{divid}').$jq";
+        $js = "\$('#$js->{divid}').$jq";
     }
     
     $js =~ s/\n/ /sg;
