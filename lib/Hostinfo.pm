@@ -68,7 +68,7 @@ sub init_flood {
     );
     my $Gsky = $self->TT($sky, $self)->G("Hostinfo/sky");
     $sky->{on_event} = sub {
-        $Gsky->w("touch", @_);
+        $Gsky->w("touch");
     };
     
     
