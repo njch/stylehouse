@@ -23,6 +23,7 @@ $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
     
     
     my $size = int rand 20;
@@ -33,7 +34,7 @@ sub new {
 
     $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..13]];
     
-    $self->{hostinfo}->timer(0.7, sub {
+    $H->timer(0.7, sub {
         $self->stup();
     });
 
@@ -41,11 +42,6 @@ sub new {
 }
 sub stup {
     my $self = shift;
-    
-    my $sky = $self->{sky} = $self->{hostinfo}->{sky};
-    
-    
-    $self->{S} = $H->TT($sky, $self)->G("Sky");
 
     
     

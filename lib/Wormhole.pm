@@ -12,6 +12,7 @@ our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
     
     $self->{G} = shift;
 

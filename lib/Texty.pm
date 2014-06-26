@@ -235,6 +235,9 @@ sub mktuxt {
             elsif ($1 eq "style") {
                 $s->{style} .= ($2 =~ /^'(.+)'$/)[0];
             }
+            elsif ($1 eq "class") {
+                $s->{class} .= " $2";
+            }
             else {
                 $s->{$1} = defined $2 ? $2 : "yep";
             }

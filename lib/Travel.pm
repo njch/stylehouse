@@ -9,6 +9,7 @@ our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
 
     my @from = @_;
     ($self->{O}) = @from;

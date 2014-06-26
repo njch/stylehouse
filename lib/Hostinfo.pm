@@ -158,10 +158,16 @@ sub send {
 sub JS {
     my $self = shift;
     my $js = shift;
+    if (ref $js) {
+        use Carp;
+        croak " \n\n\n\nTHIS:\n$js\nis not View" unless ref $js eq "View";
+        my $jq = shift;
+        $js = "\$('$js->{divid}').$jq";
+    }
+    
     $js =~ s/\n/ /sg;
     $self->send($js);
 }
-
 sub elvis_send {
     my $self = shift;
     my $message = shift;

@@ -13,6 +13,7 @@ our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
 
     my $travel = shift;
     $self->{T} = $travel;
@@ -69,10 +70,10 @@ sub load_ways {
         }
         
         if (@files) {
-            $self->{hostinfo}->watch_ghost_way($self, $name);
+            $H->watch_ghost_way($self, $name);
         }
         else {
-            $self->{hostinfo}->error("No way! $name");
+            $H->error("No way! $name");
         }
     }
     
@@ -146,7 +147,6 @@ sub doo {
     
     my $thing = $G->{t};
     my $O = $G->{travel}->{O};
-    my $H = $G->{hostinfo};
     say "$G->{name}: ".($point||$eval);
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
@@ -200,7 +200,7 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) /\$H->timer(0.1, /sg;
+    $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer(0.1, sub { $1 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
 
