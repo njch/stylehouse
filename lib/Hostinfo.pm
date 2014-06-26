@@ -30,6 +30,7 @@ sub new {
     $Travel::H = $self;
     $Wormhole::H = $self;
 
+    
 
     #jQuery.Color().hsla( array )
     return $self
@@ -83,11 +84,18 @@ sub init_flood {
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: 7em;",
     );
-    $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
+    
+    
+    
+    my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
+        ."position:absolute; overflow: scroll; height:100%;"
+        ."border: 2px solid white; background: #B247F0; color: #030; font-weight: bold; ");
+    
+    $m->spawn_floozy(
+        Info => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
     );
-    $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
+    $m->spawn_floozy(
+        Error => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
     );
     
     $self->menu();
@@ -114,14 +122,13 @@ sub flood {
     say "floozy: $floozy->{divid}    from $from";
 
     $floozy->{extra_label} = $from;
-
-
-    $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
-
-    my $lines = [split "\n", $thing];
     my $texty = $floozy->text;
 
-    $texty->replace($lines);
+    $thing = ddump($thing)
+        unless ref \$thing eq "SCALAR";
+
+
+    $texty->replace([$thing]);
 
     #$texty->{max_height} ||= 1000;
     $texty->fit_div;
@@ -833,23 +840,20 @@ sub info {
     my $self = shift;
     
     my $info = $self->enlogform(@_);
-    $self->throwlog("Info", "infos", "hi_info", $info);
+    $self->throwlog("Info", $info);
 }
-
 sub error {
     my $self = shift;
     
     my $error = $self->enlogform(@_);
-    $self->throwlog("Error", "errors", "hi_error", $error);
+    $self->throwlog("Error", $error);
 }
 sub throwlog {
     my $self = shift;
     my $what = shift;
-    my $accuwhere = shift;
-    my $divid = shift;
     my $error = shift;
 
-    $self->accum($accuwhere, $error);
+    $self->accum("log/$what", $error);
 
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
@@ -857,15 +861,12 @@ sub throwlog {
         );
 
 
-    print colored(ind("$what  ", $string), $what eq "Error"?'red':'green');
-    if (my $fl = $self->get("tvs/$divid/top")) {
-        $self->flood($string, $fl);
-    }
-    $self->send("\$('#$divid').removeClass('widdle');");
-    if ($what eq "Error") {
-        $self->send("\$('#$divid').addClass('inface')"
-        .".on('click', function(){this.removeClass('inface')});");
-    }
+    print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+    
+    $string = encode_entities($string);
+    $string =~ s/'/\\'/g;
+    $string =~ s/\n/\\n/g;
+    $self->JS("\$('#$what').removeClass('widdle').html('$string');");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
@@ -885,14 +886,13 @@ sub ddump {
 sub wdump {
     my $thing = shift;
     use Data::Dumper;
-    $Data::Dumper::Maxdepth = 2;
+    $Data::Dumper::Maxdepth = 3;
     return Dumper($thing);
 }
 sub intro {
     my $self = shift;
     return sub {
         my $other = shift;
-        $other->{hostinfo} = $self;
         $self->duction($other);
     };
 }
@@ -902,6 +902,8 @@ sub intro {
 sub duction {
     my $self = shift;
     my $this = shift;
+    
+    $this->{hostinfo} = $self;
 
     $this->{huid} = make_uuid();
     my $ref = ref $this;
