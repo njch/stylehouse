@@ -4,16 +4,23 @@ hooks:
     say 'yeha!';
     w init;
   init: |
-    $G->{_splat} ||= $O->fT->G("Travel/splat");
-    $G->{_crawl} ||= $O->fT->G("Travel/crawl");
-    $G->{_follow} ||= $O->fT->G("Lyrico/follow");
+    unless (G splat ) {
+        G TT ->G("Travel/splat");
+        G TT ->G("Travel/crawl");
+        G TT ->G("Lyrico/follow");
+    }
     w somewhere;
+    w colorsky;
+  colorsky: |
+    $H->JS($O->{sky},".animate({backgroundColor: '#6B8FB2'}, 5000);");
+
+    timer 0.1 w colorsky;
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
-    $G->{_crawl}->W->{script} = [];
+    G crawl ->W->{script} = [];
     
-    $G->{_follow}->T->travel($thing);
+    G follow ->T->travel($thing);
     $G->{_crawl}->T->travel($thing);
     
     say "Yayaya!";

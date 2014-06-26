@@ -43,21 +43,14 @@ sub stup {
     my $self = shift;
     
     my $sky = $self->{sky} = $self->{hostinfo}->{sky};
-    $self->{S} = $self->fT($sky, $self)->G("Sky");
+    
+    
+    $self->{S} = $H->TT($sky, $self)->G("Sky");
 
     
     
-    $self->{L} = $self->fT->G("Lyrico");
+    $self->{L} = $H->TT($self)->G("Lyrico");
     
-    $self->{hostinfo}->timer(0.1, sub {
-        $self->{hostinfo}->send("\$('#".$self->{sky}->{divid}."').animate({backgroundColor: '#6B8FB2'}, 5000);");
-    });
-}
-sub fT {
-    my $self = shift;
-    my @from = @_;
-    @from = $self unless @from;
-    return Travel->new($self->{hostinfo}->intro, @from);
 }
 sub somewhere {
     my $self = shift;
@@ -181,9 +174,6 @@ sub scroll_throttle {
     });
     return 0;
 }
-
-
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
