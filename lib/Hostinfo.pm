@@ -38,12 +38,14 @@ sub TT {
     my $self = shift;
     my @from = @_;
     @from = $self unless @from;
+    say "H Making Travel @from";
     return Travel->new($self->intro, @from);
 }
 sub Gf {
     my $self = shift;
     my $Gf = shift;
     my $way = shift;
+    say "H ghostfind: $Gf $way";
     my @Gs =
         grep { $_->{name} =~ /$way/ }
         map { $_->{G} }
@@ -57,7 +59,7 @@ sub init_flood {
 
     $self->{horizon} = $data->{horizon};
     new View($self->intro, $self, "sky",
-        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+        "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
     new View($self->intro, $self, "ground",
         "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"

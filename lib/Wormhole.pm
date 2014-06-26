@@ -29,7 +29,7 @@ sub continues {
     my ($self, $ghost) = @_; # %
 
     my $line = {
-        uuid => $self->hostinfo->make_uuid,
+        uuid => $H    ->make_uuid,
         n => $self->{n}++,
         
         t => encode_thing($ghost->{t}),
