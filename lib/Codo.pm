@@ -124,8 +124,8 @@ sub init_codons {
         my $dir = $self->{code_dir} || "";
         die "$dir not dir" unless -d $dir;
         $dir .= "/" unless $dir =~ /\/$/;
+        "not",
         grep { !$dir || s/^$dir// } (
-            "not",
             glob($dir.'stylehouse.*'),
             glob($dir.'public/stylehouse.*'),
             glob($dir.'lib/*.pm'),
