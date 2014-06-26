@@ -8,6 +8,13 @@
 name: the sky
 hooks:
   load_ways_post: |
-    say 'yeha!';
+    $G->{colours} = ['6B8FB2','6B8FB2','6B8FB2','6B8FB2','6699FF','3366FF',
+    '000099','6699FF','9999FF','a699FF','4C3380','336699',
+    '336aa9','72a699','000099','00CCFF','00CCFF'];
     $H->JS($H->{sky},"animate({backgroundColor: '#6B8FB2'}, 5000);");
+    
+  touch: |
+    push @{$G->{colours}}, shift @{$G->{colours}};
+    $H->JS($H->{sky},"animate({backgroundColor: '#$G->{colours}->[0]'}, 1000);");
+    
 
