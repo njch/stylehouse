@@ -20,13 +20,55 @@ use Encode qw(encode_utf8 decode_utf8);
 use YAML::Syck;
 
 our $data = {};
+sub new {
+    my $self = bless {}, shift;
+    #$self->set('0', $self);
+    $self->{for_all} = [];
+    
+    $Lyrico::H = $self;
+    $Ghost::H = $self;
+    $Travel::H = $self;
+    $Wormhole::H = $self;
+
+    
+
+    #jQuery.Color().hsla( array )
+    return $self
+}
+sub TT {
+    my $self = shift;
+    my @from = @_;
+    @from = $self unless @from;
+    say "H Making Travel @from";
+    return Travel->new($self->intro, @from);
+}
+sub Gf {
+    my $self = shift;
+    my $O = shift;
+    my $way = shift;
+    say "\n\nH ghostfind: $O TOOOOOOOOOOOO $way";
+    
+    my @Gs = map { $_->{G} }
+        grep { $_->{O} eq $O
+            && $_->{G}->{name} =~ /$way/ }
+        @{$self->get('Travel')};
+    
+    if (@Gs != 1) {
+        $self->error("Gfound!=1".scalar(@Gs)." G from $O have $way", \@Gs);
+    }
+    shift @Gs;
+}
 sub init_flood {
     my $self = shift;
 
     $self->{horizon} = $data->{horizon};
-    new View($self->intro, $self, "sky",
-        "height:$self->{horizon}; background: #CCFFFF; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+    
+    my $sky = new View($self->intro, $self, "sky",
+        "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
+    $self->TT($sky, $self)->G("Hostinfo/sky");
+    
+    
     new View($self->intro, $self, "ground",
         "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
@@ -42,11 +84,18 @@ sub init_flood {
     $self->{floodzy} = $f->spawn_floozy(
         floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: 7em;",
     );
-    $self->{hi_error} = $f->spawn_floozy(
-        hi_error => "width:100%; border: 2px solid white; background: #B24700; color: #030; height: 1em; font-weight: bold; overflow-x: scroll;",
+    
+    
+    
+    my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
+        ."position:absolute; overflow: scroll; height:100%;"
+        ."border: 2px solid white; background: #B247F0; color: #030; font-weight: bold; ");
+    
+    $m->spawn_floozy(
+        Info => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
     );
-    $self->{hi_info} = $f->spawn_floozy(
-        hi_info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; height: 1em; font-weight: bold;  opacity: 0.7; z-index: 50;",
+    $m->spawn_floozy(
+        Error => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
     );
     
     $self->menu();
@@ -73,14 +122,13 @@ sub flood {
     say "floozy: $floozy->{divid}    from $from";
 
     $floozy->{extra_label} = $from;
-
-
-    $thing = encode_entities(ddump($thing)) unless ref \$thing eq "SCALAR";
-
-    my $lines = [split "\n", $thing];
     my $texty = $floozy->text;
 
-    $texty->replace($lines);
+    $thing = ddump($thing)
+        unless ref \$thing eq "SCALAR";
+
+
+    $texty->replace([$thing]);
 
     #$texty->{max_height} ||= 1000;
     $texty->fit_div;
@@ -117,10 +165,16 @@ sub send {
 sub JS {
     my $self = shift;
     my $js = shift;
+    if (ref $js) {
+        use Carp;
+        croak " \n\n\n\nTHIS:\n$js\nis not View" unless ref $js eq "View";
+        my $jq = shift;
+        $js = "\$('$js->{divid}').$jq";
+    }
+    
     $js =~ s/\n/ /sg;
     $self->send($js);
 }
-
 sub elvis_send {
     my $self = shift;
     my $message = shift;
@@ -773,8 +827,8 @@ sub enlogform {
     my $b = 1;
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
-        say ' a - - --a -: '.$f;
-        my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/;
+        my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/
+            || $f =~ m/^Mojo::IOLoop/;
         push @from, $f;
         last if $surface; 
         $b++;
@@ -786,23 +840,20 @@ sub info {
     my $self = shift;
     
     my $info = $self->enlogform(@_);
-    $self->throwlog("Info", "infos", "hi_info", $info);
+    $self->throwlog("Info", $info);
 }
-
 sub error {
     my $self = shift;
     
     my $error = $self->enlogform(@_);
-    $self->throwlog("Error", "errors", "hi_error", $error);
+    $self->throwlog("Error", $error);
 }
 sub throwlog {
     my $self = shift;
     my $what = shift;
-    my $accuwhere = shift;
-    my $divid = shift;
     my $error = shift;
 
-    $self->accum($accuwhere, $error);
+    $self->accum("log/$what", $error);
 
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
@@ -810,11 +861,12 @@ sub throwlog {
         );
 
 
-    print colored(ind("$what  ", $string), $what eq "Error"?'red':'green');
-    if (my $fl = $self->get("tvs/$divid/top")) {
-        $self->flood($string, $fl);
-    }
-    $self->send("\$('#$divid').removeClass('widdle');");
+    print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+    
+    $string = encode_entities($string);
+    $string =~ s/'/\\'/g;
+    $string =~ s/\n/\\n/g;
+    $self->JS("\$('#$what').removeClass('widdle').html('$string');");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
@@ -834,14 +886,13 @@ sub ddump {
 sub wdump {
     my $thing = shift;
     use Data::Dumper;
-    $Data::Dumper::Maxdepth = 2;
+    $Data::Dumper::Maxdepth = 3;
     return Dumper($thing);
 }
 sub intro {
     my $self = shift;
     return sub {
         my $other = shift;
-        $other->{hostinfo} = $self;
         $self->duction($other);
     };
 }
@@ -851,6 +902,8 @@ sub intro {
 sub duction {
     my $self = shift;
     my $this = shift;
+    
+    $this->{hostinfo} = $self;
 
     $this->{huid} = make_uuid();
     my $ref = ref $this;

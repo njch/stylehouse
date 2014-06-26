@@ -123,10 +123,7 @@ say "$name $$ $mojo_daemon_listen
 ";
 
 my $hostinfo = new Hostinfo();
-
-$hostinfo->set('0', $hostinfo);
 $hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
-$hostinfo->{for_all} = [];
 
 # get rid of this with Base.pm
 helper 'hostinfo' => sub { $hostinfo };

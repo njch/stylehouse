@@ -9,13 +9,14 @@ use Way;
 sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 
-has 'hostinfo';
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
 
     my $travel = shift;
-    $self->{travel} = $travel;
+    $self->{T} = $travel;
     my $name = $travel->{name};
     my @ways = @_;
     unless (@ways) {
@@ -29,11 +30,13 @@ sub new {
     return $self;
 }
 sub T {
-    shift->{travel}
+    my $self = shift;
+    $self->{T}->travel($_) for @_;
+    $self->{T};
 }
 sub W {
     my $self = shift;
-    $self->{wormhole} ||= Wormhole->new($self->hostinfo->intro, $self, "wormholes/$self->{name}/0");
+    $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub load_ways {
     my $self = shift;
@@ -60,18 +63,17 @@ sub load_ways {
                 
             }
             else {
-                my $nw = new Way($self->hostinfo->intro,
-                    $name, $file);
+                my $nw = new Way($H->intro, $name, $file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
             }
         }
         
         if (@files) {
-            $self->{hostinfo}->watch_ghost_way($self, $name);
+            $H->watch_ghost_way($self, $name);
         }
         else {
-            $self->{hostinfo}->error("No way! $name");
+            $H->error("No way! $name");
         }
     }
     
@@ -79,7 +81,7 @@ sub load_ways {
 }
 sub ob {
     my $self = shift;
-    $self->{travel}->ob(@_);
+    $self->{T}->ob(@_);
 }
 sub chains {
     my $self = shift;
@@ -141,29 +143,10 @@ sub doo {
     my $ar = shift || {};
     my $point = shift;
     
-    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
-        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
-        $gw = ", $gw" if $gw; # ghost or way
-        $gw ||= "";
-        $gw =~ s/ $//;
-        if ($are && $are =~ s/^\(\+ //) {
-            $are =~ s/\)$//;
-            $are = '{ %$ar, '.$are.'}';
-        }
-        elsif ($are) {
-            $are = "{ $are }";
-        }
-        else {
-            $are = '{ %$ar }';
-        }
-        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
-    }
+    $eval = $G->parse_babble($eval);
     
     my $thing = $G->{t};
     my $O = $G->{travel}->{O};
-    my $H = $G->{hostinfo};
     say "$G->{name}: ".($point||$eval);
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
@@ -213,6 +196,35 @@ sub doo {
 }
 sub enc { encode_entities(shift) }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
+sub parse_babble {
+    my $self = shift;
+    my $eval = shift;
+    
+    $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer(0.1, sub { $1 })/sg;
+    $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
+    $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
+
+    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
+        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
+        $gw = ", $gw" if $gw; # ghost or way
+        $gw ||= "";
+        $gw =~ s/ $//;
+        if ($are && $are =~ s/^\(\+ //) {
+            $are =~ s/\)$//;
+            $are = '{ %$ar, '.$are.'}';
+        }
+        elsif ($are) {
+            $are = "{ $are }";
+        }
+        else {
+            $are = '{ %$ar }';
+        }
+        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
+            || die "Ca't replace $1\n"
+            ." in\n".ind("E ", $eval);
+    }
+    $eval;
+}
 sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;

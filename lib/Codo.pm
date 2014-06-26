@@ -36,7 +36,6 @@ has 'output';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -421,8 +420,6 @@ sub proc_killed {
     delete $self->{$proc->{name}};
     $self->{codostate}->text->replace(["!html <h4>styleshed killed</h4>"]);
 }
-
-
 sub nah {
     my $self = shift;
     for my $ebuge (@{ $self->ebuge }) {

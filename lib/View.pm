@@ -38,8 +38,9 @@ sub new {
     my $exists = $self->{hostinfo}->get('tvs/'.$divid);
     if ($exists) {
         my $old = $self->{hostinfo}->get('tvs/'.$divid.'/top');
-        say "View $divid already existed\n";
-        $old->nah();
+        $self->{hostinfo}->info(
+            "View $divid $self->{owner} already from $old->{owner}");
+        #$old->nah();
     }
 
     $self->{hostinfo}->accum('tvs/'.$divid, $self);
@@ -187,7 +188,6 @@ sub nah {
     say "View removing ".$self->label;
     $self->hostinfo->send("\$('#$self->{divid}').slideUp(500, function () { this.remove(); });");
 }
-
 sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";
@@ -234,9 +234,8 @@ sub wipehtml {
 sub float {
     my $self = shift;
     
-    if ($self->{floated}) {
-        return $self->unfloat();
-    }
+    return $self->unfloat() if $self->{floated};
+    
     $self->{hostinfo}->JS(
         "\$('#$self->{divid}').addClass('floated');"
     );

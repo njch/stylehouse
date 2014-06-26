@@ -1,13 +1,11 @@
 name: wormhole splatter
 hooks:
   load_ways_post: |
-    say "Reloaded!";
-    #$H->JS("\$('#sky > *').remove();");
-    #$G->{Vs} = [];
+    $H->info("Reloaded!");
   splat_wormhole: |
     my $ss = $G->{$splatname} ||= {};
     if ($ss->{o}) {
-        $H->JS("\$('#$ss->{o}->{divid}').fadeOut().remove;");
+        $H->JS($ss->{o}, "fadeOut().remove;");
     }
     
     my $style = "position:absolute;";
@@ -30,7 +28,7 @@ hooks:
     my $t = $v->newtext($lines, {
         nospace => 1,
         class => 'menu',
-        tuxtstyle => 'width: 100%;',
+        tuxtstyle => 'width: 100%; padding:0.5em; background: #fff;',
     });
   make_line: |
     my $ghost = $line->{ghost};
@@ -40,7 +38,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'opacity:0.6;position: relative; float: left; border-left: 3px solid #BBFF55; border-right: 4px solid #CCFF33;padding: 2px;',
+        tuxtstyle => 'opacity:0.6;position: relative; float: left; background: #0066CC; margin: 2px;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             $ar->{tuxts} = $texty->{tuxts};

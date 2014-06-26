@@ -8,13 +8,13 @@ my $json = JSON::XS->new->allow_nonref(1)->allow_unknown(1);
 use HTML::Entities;
 sub ddump { Hostinfo::ddump(@_) }
 
-
-has 'hostinfo';
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
     
-    $self->{ghost} = shift;
+    $self->{G} = shift;
 
     $self->wormfile_load(shift);
 
@@ -24,14 +24,13 @@ sub new {
 }
 sub ob {
     my $self = shift;
-    $self->{ghost}->ob(@_);
+    $self->{G}->ob(@_);
 }
-
 sub continues {
     my ($self, $ghost) = @_; # %
 
     my $line = {
-        uuid => $self->hostinfo->make_uuid,
+        uuid => $H    ->make_uuid,
         n => $self->{n}++,
         
         t => encode_thing($ghost->{t}),
@@ -114,12 +113,11 @@ sub describe_size {
 }
 sub way_out {
     my $self = shift;
-    if (my $T = $self->{ghost}->{travel}) {
+    if (my $T = $self->{G}->{T}) {
         # is connected to the..?
     }
     die "no way out";
 }
-
 sub event {
     my $self = shift;
     my $event = shift;
