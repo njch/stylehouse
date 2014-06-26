@@ -213,6 +213,35 @@ sub doo {
 }
 sub enc { encode_entities(shift) }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
+sub parse_babble {
+    my $self = shift;
+    my $eval = shift;
+    
+    $eval =~ s/timer (\d+(\.\d+)?) /\$H->timer(0.1, /sg;
+    $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
+    $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
+
+    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
+        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
+        $gw = ", $gw" if $gw; # ghost or way
+        $gw ||= "";
+        $gw =~ s/ $//;
+        if ($are && $are =~ s/^\(\+ //) {
+            $are =~ s/\)$//;
+            $are = '{ %$ar, '.$are.'}';
+        }
+        elsif ($are) {
+            $are = "{ $are }";
+        }
+        else {
+            $are = '{ %$ar }';
+        }
+        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
+            || die "Ca't replace $1\n"
+            ." in\n".ind("E ", $eval);
+    }
+    $eval;
+}
 sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;
