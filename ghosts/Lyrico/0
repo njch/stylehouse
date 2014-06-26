@@ -8,13 +8,9 @@ hooks:
         G TT ->G("Travel/splat");
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
+        G TT ->G("Hostinfo/coloursky");
     }
     w somewhere;
-    w colorsky;
-  colorsky: |
-    $H->JS($O->{sky},".animate({backgroundColor: '#6B8FB2'}, 5000);");
-
-    timer 0.1 w colorsky;
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
@@ -23,16 +19,15 @@ hooks:
     G follow ->T->travel($thing);
     G crawl ->T->travel($thing);
     
-    say "Yayaya!";
-    $G->{_splat}->w("splat_wormhole", {
+    G splat ->w("splat_wormhole", {
         splatname => 'trev',
-        sky => $O->{sky},
+        sky => $H->{sky},
         wormhole => G crawl ->W,
     });
     
-    $G->{_splat}->w("splat_wormhole", {
+    G splat ->w("splat_wormhole", {
         splatname => 'wing',
-        sky => $O->{sky},
+        sky => $H->{sky},
         wormhole => G follow ->W,
     });
     

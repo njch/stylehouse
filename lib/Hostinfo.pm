@@ -43,24 +43,31 @@ sub TT {
 }
 sub Gf {
     my $self = shift;
-    my $Gf = shift;
+    my $O = shift;
     my $way = shift;
-    say "H ghostfind: $Gf $way";
-    my @Gs =
-        grep { $_->{name} =~ /$way/ }
-        map { $_->{G} }
-        grep { grep { $Gf eq $_ } @{$_->{from}} }
+    say "\n\nH ghostfind: $O TOOOOOOOOOOOO $way";
+    
+    my @Gs = map { $_->{G} }
+        grep { $_->{O} eq $O
+            && $_->{G}->{name} =~ /$way/ }
         @{$self->get('Travel')};
-    $self->error("Strange, ".scalar(@Gs)." G from $Gf->{name} have $way", \@Gs) if @Gs != 1;
+    
+    if (@Gs != 1) {
+        $self->error("Gfound!=1".scalar(@Gs)." G from $O have $way", \@Gs);
+    }
     shift @Gs;
 }
 sub init_flood {
     my $self = shift;
 
     $self->{horizon} = $data->{horizon};
-    new View($self->intro, $self, "sky",
+    
+    my $sky = new View($self->intro, $self, "sky",
         "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
+    $self->TT($sky, $self)->G("Hostinfo/sky");
+    
+    
     new View($self->intro, $self, "ground",
         "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
     );
