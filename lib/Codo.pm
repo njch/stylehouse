@@ -124,21 +124,14 @@ sub init_codons {
 
     for my $cf (@codefiles) {
         my $filename = $self->{code_dir}.$cf;
-        my $name;
-        ($name) = $cf =~ /\/?((?:ghosts|wormholes)\/\w+\/.+)$/ unless $name;
-        ($name) = $cf =~ /\/?(\w+)\.pm$/ unless $name;
-        ($name) = $cf =~ /\/?([\w\.]+)$/ unless $name;
-        $name = $cf unless $name;
-        my $codon = $self->codon_by_name($name);
+        my $codon = $self->codon_by_filename($filename);
         my $isnew = 1 if !$codon;
 
         my $mtime = (stat $filename)[9];
 
             if ($isnew) {
                 $codon = new Codon($H->intro, {
-                    codefile => $cf,
-                    name => $name,
-                    mtime => $mtime,
+                    filename => $filename,
                     codo => $self,
                 });
             }
@@ -344,7 +337,7 @@ sub load_codon {
     my $noscrolly = shift;
 
 
-    $codon = $self->codon_by_name($codon) unless ref $codon;
+    ($codon) = $self->codon_by_name($codon) unless ref $codon;
     return $self->{hostinfo}->error("Can't load codon: $codon") unless $codon;
     say "Codo load $codon->{name}";
     $codon || die;
@@ -362,16 +355,27 @@ sub load_codon {
 sub codon_by_name {
     my $self = shift;
     my $name = shift;
-    
-    if (my $codons = $self->{hostinfo}->get('Codon')) {
-        for my $c (@$codons) {
-            return $c if $c->{name} eq $name;
-        }
+    my @codons;
+    for my $c ($self->get_codons()) {
+        push @codons, $c if $c->{name} eq $name
     }
-    return;
+    return @codons;
 }
-
-
+sub codon_by_filename {
+    my $self = shift;
+    my $filename = shift;
+    my @codons;    
+    for my $c ($self->get_codons()) {
+        push @codons, $c if $c->{filename} eq $filename
+    }
+    return @codons;
+}
+sub get_codons {
+    my $self = shift;
+    my $codons = $H->get('Codon');
+    return @$codons if $codons;
+    return ();
+}
 sub readfile {
     my $self = shift;
     my $path = shift;

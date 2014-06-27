@@ -5,32 +5,68 @@ use Scriptalicious;
 use File::Slurp;
 use HTML::Entities;
 
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-
     my $p = shift;
-    for my $k (keys %$p) {
-        $self->{$k} = $p->{$k};
-    }
-
-    if ($self->{codefile}) {
-        $self->open_codefile();
-    }
-    $self->chunkify();
-
-    my $o = $self->{openness} = {};
-    $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
+    
+    $self->{codo} = $p->{codo};
+    
+    my $f = $p->{filename};
+    $self->{mtime} = (stat $f)[9];
+    
+    $self->open_filename($f);
+    
+    $self->closed_openness();
 
     $self;
 }
+sub open_filename {
+    my $self = shift;
+    my $f = $self->{filename} = shift;
+    die "no such codon file: $f" unless -f $f;
+    
+    ($self->{style}, $self->{stylefile}) = $f =~
+        /style(\w+)\/(.+)$/;
+        
+    my $sf = $self->{stylefile};
+    
+    $self->{is} = {};
+    $self->{name} =
+    $sf ?
+        do {
+             $sf =~ /ghosts\/(\w)\w*\/(.+)$/ ?
+                 do { $self->{is}->{G} = 1; "$1/$2" }
+             :
+             $sf =~ /lib\/(\w+)\.pm$/ ?
+                 do { $self->{is}->{P} = 1; $1 }
+             :
+             $sf =~ /^not$/ ?
+                 do { $self->{is}->{N} = 1; $sf }
+             :
+             $sf
+        }
+        :    
+        $self->{filename};
+    
+    $self->open_codefile();
+    
+    $self->chunkify();    
+}
+sub closed_openness {
+    my $self = shift;
+    my $o = $self->{openness} ||= {};
+    $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
+}
+    
 sub ddump { Hostinfo::ddump(@_) }
 sub open_codefile {
     my $self = shift;
     $self->{lines} = [
         map { $_ =~ s/\n$//s; $_ }
         split "\n",
-        $self->readfile($self->{codefile})
+        $self->readfile($self->{filename})
     ];
 }
 sub display {
@@ -226,7 +262,7 @@ sub readfile {
 }
 sub writefile {
     my $self = shift;
-    return $self->{hostinfo}->getapp("Codo")->writefile(@_);
+    return $self->{codo}->writefile(@_);
 }
 sub save_all {
     my $self = shift;
@@ -292,7 +328,7 @@ sub update_chunk {
     $whole .= "\n" unless $whole =~ /\n$/s;
     $whole =~ s/\t/    /g;
 
-    $self->writefile($self->{codefile}, $whole);
+    $self->writefile($self->{filename}, $whole);
 
     $self->save_done;
 }
@@ -338,14 +374,7 @@ sub random_colour_background {
 sub chunkify {
     my $self = shift;
 # supposed to be a Tractor doing this
-
     my $lines = $self->{lines};
-    my $isG;
-    my $isN;
-    for ($self->{name}) {
-        $isG = /^ghosts/; 
-        $isN = /^n/; 
-    }
 
     my @stuff = ([]);
     # this consumes lines, should do wormhole at the end of init_wormhole
@@ -353,7 +382,8 @@ sub chunkify {
         while (defined(my $l = shift @lines)) {
             push @stuff, []
             if
-            $isG && @{$stuff[-1]} > 0 && $l =~ /^\w+||^  \w+/
+            $self->{is}->{G} && @{$stuff[-1]} > 0
+                && $l =~ /^\w+||^  \w+/
 
             || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
             
@@ -362,7 +392,7 @@ sub chunkify {
             
             push @stuff, []
             if
-            $isN && $l eq ''
+            $self->{is}->{N} && $l eq ''
                  && $lines[0] ne '';
         }
     my $chunks = [];

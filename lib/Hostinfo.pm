@@ -30,6 +30,7 @@ sub new {
     $Travel::H = $self;
     $Wormhole::H = $self;
     $Codo::H = $self;
+    $Codon::H = $self;
 
     
 
