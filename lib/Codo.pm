@@ -146,7 +146,7 @@ sub init_codons {
 sub codolist {
     my $self = shift;
 
-    my $codons = $self->{hostinfo}->get("Codon");
+    my $codons = [$self->get_codons];
     die "no codons" unless $codons;
     say "Codons number ".@$codons;
     my $list = $self->{codolist};
@@ -192,7 +192,7 @@ sub codolist {
                qw'Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
 
-        push @coli, delete $coname->{$n};
+        push @coli, delete $coname->{$n} if $coname->{$n};
     }
     push @coli, values $coname;
     
@@ -214,15 +214,10 @@ sub codolist {
         class => 'menu',
         tuxtstyle => sub {
             my ($codon, $s) = @_;
+
             $s->{value} = $codon->{name};
             $s->{codon} = $codon;
 
-            $s->{style} .= 'color: #5A5AAF;'
-                if $s->{value} =~ s/^ghosts\///;
-
-            $s->{style} .= 'background-color:'
-                .'#'.codoncolour($codon).';';
-            
             $s->{style} .= length($s->{value}) < 4 ?
                 "font-size: 50pt;" : "font-size: 20pt;";
 
@@ -231,6 +226,12 @@ sub codolist {
             $s->{style} .= "opacity: 0.9; padding-bottom: 2px;"
                 ." color: #99FF66; font-weight: 700;"
                 ." text-shadow: 2px 4px 5px #4C0000;";
+                            
+            $s->{style} .= 'background-color:'
+                .'#'.codoncolour($codon).';';
+            
+            $s->{style} .= 'color: #5A5AAF;'
+                if $codon->{is}->{G};
             return undef;
         },
     } ] },
@@ -335,7 +336,6 @@ sub load_codon {
     my $codon = shift;
     my $ope = shift;
     my $noscrolly = shift;
-
 
     ($codon) = $self->codon_by_name($codon) unless ref $codon;
     return $self->{hostinfo}->error("Can't load codon: $codon") unless $codon;

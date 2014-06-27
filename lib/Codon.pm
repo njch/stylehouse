@@ -382,18 +382,19 @@ sub chunkify {
         while (defined(my $l = shift @lines)) {
             push @stuff, []
             if
-            $self->{is}->{G} && @{$stuff[-1]} > 0
-                && $l =~ /^\w+||^  \w+/
+            $self->{is}->{G} ?
+                @{$stuff[-1]} > 0 && $l =~ /^\w+|^  \w+/
+            :
+            !$self->{is}->{N} ?
+                $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
+            : 0;
 
-            || $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm;
             
             push @{ $stuff[-1] }, $l;
             
-            
-            push @stuff, []
-            if
-            $self->{is}->{N} && $l eq ''
-                 && $lines[0] ne '';
+            if ($self->{is}->{N}) {
+                push @stuff, [] if $l eq '' && $lines[0] ne '';
+            }
         }
     my $chunks = [];
     my $i = 0;
