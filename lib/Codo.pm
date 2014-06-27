@@ -27,8 +27,7 @@ right now time is not something we can flop out anywhere, depending on what we'r
 take that morality
 
 =cut
-
-has 'hostinfo';
+our $H;
 sub ddump { Hostinfo::ddump(@_) }
 has 'ports' => sub { {} };
 has 'ebuge' => sub { [] };
@@ -82,7 +81,10 @@ sub menu {
             $self->infrl('restarting (if)');
             `touch $0`;
         },
-        ɤ => sub {},
+        ɤ => sub {
+            $self->nah;
+            $H->timer(4, sub { Codo->new($H->intro) });
+        },
     };
     return { _spawn => [ [ sort keys %$m ], {
         event => { menu => $m },
@@ -133,7 +135,7 @@ sub init_codons {
         my $mtime = (stat $filename)[9];
 
             if ($isnew) {
-                $codon = new Codon($self->hostinfo->intro, {
+                $codon = new Codon($H->intro, {
                     codefile => $cf,
                     name => $name,
                     mtime => $mtime,
@@ -408,6 +410,10 @@ sub proc_killed {
 }
 sub nah {
     my $self = shift;
+    $H->nah($self);
+}
+sub DESTROY {
+    my $self = shift;
     for my $ebuge (@{ $self->ebuge }) {
         unless ($ebuge) {
             say "weird, no ebuge...";
@@ -416,15 +422,10 @@ sub nah {
         $ebuge->nah;
     }
     $self->ebuge([]);
-    $self->{hostinfo}->nah($self);
-}
-sub DESTROY {
-    my $self = shift;
-    $self->nah;
 }
 sub new_ebuge {
     my $self = shift;
-    my $ebuge = Ebuge->new($self->hostinfo->intro, "ebuge.pl");
+    my $ebuge = Ebuge->new($H->intro, "ebuge.pl");
     push @{ $self->ebuge }, $ebuge;
     return $ebuge;
 }

@@ -29,6 +29,7 @@ sub new {
     $Ghost::H = $self;
     $Travel::H = $self;
     $Wormhole::H = $self;
+    $Codo::H = $self;
 
     
 
@@ -780,10 +781,15 @@ sub accum {
     my $self = shift;
     my $ere = shift;
     my $at = shift;
-    $self->get($ere) || $self->set($ere, []);
-    push @{$self->get($ere)}, $at;
+    push @{$self->gest($ere, [])}, $at;
 }
-
+sub deaccum {
+    my $self = shift;
+    my $ere = shift;
+    my $at = shift;
+    #$self->get($ere) || $self->set($ere, []);
+    #push @{$self->get($ere)}, $at;
+}
 sub create_view {
     my $self = shift;
     
@@ -972,9 +978,7 @@ sub nah {
         $OO->nah;
         $self->deaccum($this);
     }
-} 
-    
-    
+}
     
     
 # make a number bigger than the universe...
