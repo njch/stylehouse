@@ -203,8 +203,9 @@ sub parse_babble {
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer(0.1, sub { $1 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
+    $eval =~ s/T (\S+)([ ;\)])/->T($1)$2/sg;
 
-    while ($eval =~ /(w (\$\w+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
+    while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
         my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
         $gw = ", $gw" if $gw; # ghost or way
         $gw ||= "";
