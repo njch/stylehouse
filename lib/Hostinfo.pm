@@ -1053,6 +1053,7 @@ sub get_this_it { # find it amongst itselves
 sub slurp {
     my $self = shift;
     my $file = shift;
+    $file = decode_utf8($file);
       open my $f, $file || die "O no $!";
     binmode $f, ':utf8';
     my $m = join "", <$f>;
@@ -1064,6 +1065,7 @@ sub spurt {
     my $file = shift;
     my $stuff = shift;
     say "Hostinfo: spurting $file (".length($stuff).")";
+    $file = encode_utf8($file);
       open my $f, '>', $file || die "O no $!";
     binmode $f, ':utf8';
     print $f $stuff."\n";
