@@ -42,13 +42,12 @@ hooks:
         tuxts_to_htmls => sub {
             my $texty = shift;
             my $tx = $texty->{tuxts};
-            $ar->{tx} = $tx;
-            w tuxtsB;
+            w tuxtsB(+ tx => $tx);
             w line/style;
         },
     }]}
   tuxtsB: |
-      for (@$tuxts) {
+      for (@$tx) {
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
