@@ -60,14 +60,14 @@ sub wormfile_load {
     my $self = shift;
     $self->{file} = shift;
     if (-e $self->{file}) {
-        my $s = $self->{script} = LoadFile($self->{file});
+        my $s = $self->{script} = LoadFile(Hostinfo::encode_utf8($self->{file}));
         die " script (loaded from $self->{file}) ne ARRAYref: ".($s||"~undef~")
             unless ref $s && $s eq "ARRAY";
         say "W $self->{file} loaded";
     }
     else {
         $self->{script} = [];
-        say "W ".($self->{file}||"~undef~ ->{file}")." not exist";
+        #say "W ".($self->{file}||"~undef~ ->{file}")." not exist";
     }
 }
 sub encode_line {
