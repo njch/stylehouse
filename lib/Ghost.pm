@@ -36,7 +36,7 @@ sub T {
 }
 sub W {
     my $self = shift;
-    $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
+    $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub RW {
     my $self = shift;
