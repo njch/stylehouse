@@ -16,7 +16,7 @@ $Hostinfo::data->{'horizon'} =
 "40%"
 :
 #"89.91%"
-"70%"
+"90.0%"
 ;
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
@@ -46,7 +46,6 @@ sub stup {
     
     
     $self->{L} = $H->TT($self)->G("Lyrico");
-    
 }
 sub somewhere {
     my $self = shift;

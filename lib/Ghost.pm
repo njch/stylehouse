@@ -146,7 +146,7 @@ sub doo {
     $eval = $G->parse_babble($eval);
     
     my $thing = $G->{t};
-    my $O = $G->{travel}->{O};
+    my $O = $G->T->{O};
     say "$G->{name}: ".($point||$eval);
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
@@ -200,7 +200,7 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer(0.1, sub { $1 })/sg;
+    $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
     $eval =~ s/T (\S+)([ ;\)])/->T($1)$2/sg;
