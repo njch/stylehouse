@@ -93,15 +93,14 @@ sub init_flood {
     
     
     
+    my $colle = sub {
+        $self->JS(shift,"toggleClass('widdle');");
+    };
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; background: #B247F0; color: #030; font-weight: bold; ");
+    $m->{on_event} = $colle;
         
-    my $colle = sub {
-        my ($me, $e, $t) = @_;
-        say " MESSY COLLAPSE EVENT";
-        $self->JS($me, "addClass('widdle');");
-    };
     
     $m->spawn_floozy(
         Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
@@ -459,10 +458,7 @@ sub random_colour_background {
 sub event {
     my $self = shift;
     my $ev = shift;
-    my $id = $ev->{id};
-    if ($id eq "hi_error" || $id eq "hi_info") {
-        $self->send("\$('#$id').toggleClass('widdle');");
-    }
+    $self->info("Hostinfo nothing todo with", $ev);
     #$self->info("hostinfo event, don't know what to do: $id", [$id, $id]);
 }
 # this is where human attention is (before this text was in the wrong place)
@@ -691,7 +687,8 @@ sub reload_ghosts {
     my $gr = delete $self->{ghosts_to_reload};
     
     while (my ($gid, $gw) = each %$gr) {
-        my $ghost = $self->get($gid);
+        my ($ghost) = grep { $_->{id} eq $gid }
+            @{$self->get("Ghost")};
         say "reload ghost: $ghost->{id}";
         die "NO Ghostys" unless $ghost;
         $ghost->load_ways(keys %$gw);
@@ -886,6 +883,7 @@ sub throwlog {
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
+    $self->JS("\$('#mess').removeClass('widdle');");
     $self->JS("\$('#$what').removeClass('widdle').html('$string');");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
