@@ -104,19 +104,7 @@ sub init_codons {
     my $self = shift;
 
     say "\tI N I T   C O D ON S !";
-    my @codefiles = do {
-        my $dir = $self->{code_dir} || "";
-        die "$dir not dir" unless -d $dir;
-        $dir .= "/" unless $dir =~ /\/$/;
-        map { Hostinfo::decode_utf8($_) }
-        "not",
-        grep { !$dir || s/^$dir// } (
-            glob($dir.'stylehouse.*'),
-            glob($dir.'public/stylehouse.*'),
-            glob($dir.'lib/*.pm'),
-            glob($dir.'ghosts/*/*'),
-        );
-    };
+    my @codefiles = $self->codefiles();
 
     for my $cf (@codefiles) {
         my $filename = $self->{code_dir}.$cf;
@@ -138,6 +126,21 @@ sub init_codons {
             $isnew = 1;
         }
     }
+}
+sub codefiles {
+    my $self = shift;
+
+        my $dir = $self->{code_dir} || "";
+        die "$dir not dir" unless -d $dir;
+        $dir .= "/" unless $dir =~ /\/$/;
+    
+    map { Hostinfo::decode_utf8($_) }
+        "not",
+        grep { !$dir || s/^$dir// } (
+            glob($dir.'stylehouse.*'),
+            glob($dir.'lib/*.pm'),
+            glob($dir.'ghosts/*/*'),
+        );
 }
 sub codolist {
     my $self = shift;

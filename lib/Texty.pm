@@ -217,8 +217,13 @@ sub mktuxt {
             $line->{_mktuxt}->($line, $s);
         }
         elsif (my $LH = $line->{_spawn}) {
-            if (my $ct = $line->{contyt}) {
-                $s->{$_} = $ct->{$_} for keys %$ct;
+            if (my $ct = $line->{S_attr}) {
+                for my $k (keys %$ct) {
+                $s->{$k} = $k =~ /class|style/ ?
+                    "$s->{$k} $ct->{$k}"
+                    :
+                    $ct->{k};
+                }
             }
             $line = $self->spawn(@$LH);
         }
