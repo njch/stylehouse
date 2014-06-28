@@ -113,10 +113,11 @@ hooks:
         if ($line->{depth} == 0) {
             $s->{style}.= "background-color:#445;";
         }
-        for ($b->{c}->{K}) {
-            $s->{style}.="background-color:#FF8533;" if $_ eq 'dsc/%';
-            $s->{style}.="background-color:#85FF33;" if $_ eq 'dsc/@';
-        }
+        my $K = $b->{c}->{K};
+        $s->{style}.="background-color:#".(
+            $K eq 'dsc/%' ? "FF8533" :
+            $K eq 'dsc/@' ? "85FF33" :
+            '000' ).";";
     o:
       v: |
         $b->{c} = $line->{o};

@@ -38,6 +38,10 @@ sub W {
     my $self = shift;
     $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
+sub RW {
+    my $self = shift;
+    $self->W->{script} = [];
+}
 sub load_ways {
     my $self = shift;
     my @ways = @_;

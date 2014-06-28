@@ -98,7 +98,7 @@ sub init_flood {
     };
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
-        ."border: 2px solid white; background: #B247F0; color: #030; font-weight: bold; ");
+        ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
     $m->{on_event} = $colle;
         
     
