@@ -9,7 +9,7 @@ hooks:
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
     }
-    w somewhere;
+    timer 0.4 { w somewhere };
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
@@ -19,12 +19,14 @@ hooks:
     G crawl T $thing;
     
     G splat ->w("splat_wormhole", {
+        somewhereness => $G,
         splatname => 'trev',
         sky => $H->{sky},
         wormhole => G crawl ->W,
     });
     
     G splat ->w("splat_wormhole", {
+        somewhereness => $G,
         splatname => 'wing',
         sky => $H->{sky},
         wormhole => G follow ->W,

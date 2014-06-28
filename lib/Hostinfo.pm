@@ -49,7 +49,7 @@ sub Gf {
     my $self = shift;
     my $O = shift;
     my $way = shift;
-    say "\n\nH ghostfind: $O TOOOOOOOOOOOO $way";
+    say "\n\nH ghostfind: $O->{name}     w $way";
     
     my @Gs = map { $_->{G} }
         grep { $_->{O} eq $O
@@ -953,8 +953,7 @@ sub tv_by_id {
     my $self = shift;
     my $id = shift;
     
-    $id =~ s/^(\w+-\w+).*$/$1/
-        || $self->info("tv_by_id weird id: $id");
+    $id =~ s/^(\w+-\w+).*$/$1/;
     say "ID : $id";
 
     for my $tv (@{$self->get('tvs')}) {

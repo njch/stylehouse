@@ -11,9 +11,8 @@ sub new {
     shift->($self);
     delete $self->{hostinfo};
 
-    my @from = @_;
-    ($self->{O}) = @from;
-    $self->{from} = \@from;
+    $self->{O} = shift || die "no O";
+    $self->{from} = [$self->{O}, @_];
     $self->{name} = $self->{O}->{name} || $self->{O}->{id};
 
     return $self;
