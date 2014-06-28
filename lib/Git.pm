@@ -112,17 +112,17 @@ sub gitrack {
         };
     }
     my $gitm = [
-        ps => sub {
+        '♖' => sub {
             $self->pswatch("once");
         },
-        i => sub {
+        '⚙' => sub {
             $self->init();
         },
-        BR => sub {
+        '♘' => sub {
             $H->info("Bucky rip");
             run('cd ../stylebucky && git reset --hard');
         },
-        'rps' => sub {
+        '⚚' => sub {
             $self->reprocserv();
         },
     ];

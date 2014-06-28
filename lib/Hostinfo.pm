@@ -698,7 +698,9 @@ sub watch_ghost_way {
     my $self = shift;
     my $ghost = shift;
     my $name = shift;
-    my $f = { map { $_ => 1 } glob "ghosts/$name/*" };
+    my @files = -f "ghosts/$name" ? "ghosts/$name"
+        : glob "ghosts/$name/*";
+    my $f = { map { $_ => 1 } @files };
     
     say "Going to watch $name for $ghost->{id}";
     

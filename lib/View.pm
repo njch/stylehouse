@@ -116,7 +116,7 @@ sub spawn_floozy {
     my $class = shift;
     
     if (my $going = $self->{floozal}->{$divid}) {
-        $self->{hostinfo}->JS($going, "attr('id', '$going->{divid}-going').fadeOut(500).remove;");
+        $going->nah();
     }
     
     if (!$attach && !$where) {
@@ -190,7 +190,8 @@ sub flooz {
 sub nah {
     my $self = shift;
     say "View removing ".$self->label;
-    $self->hostinfo->send("\$('#$self->{divid}').slideUp(500, function () { this.remove(); });");
+    $self->{hostinfo}->JS($self,
+    "attr('id', '$self->{divid}-going').fadeOut(500).remove;");
 }
 sub resume {
     my $self = shift;
