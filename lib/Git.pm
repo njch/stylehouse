@@ -3,22 +3,26 @@ use strict;
 use warnings;
 use feature 'say';
 use Scriptalicious;
+use utf8;
 
-sub hi { shift->{hostinfo} }
+our $H;
 sub ddump { Hostinfo::ddump(@_) }
 sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    my $repos = $self->hi->set("Git/repos", [ map { "style$_" } qw{ house shed bucky } ]);
+    my $repos = $H->set("Git/repos", [ map { "style$_" } qw{ house shed bucky } ]);
+    $H->set("Git/repo=stylehouse/aka", '⭅');
+    $H->set("Git/repo=styleshed/aka", '⭆');
+    $H->set("Git/repo=stylebucky/aka", 'ც');
     for my $r (@$repos) {
-        $self->hi->set("Git/repos/$r", {});
+        $H->set("Git/repos/$r", {});
     }
     $self->wire_procs();
 
-  #  return $self if $self->hi->get('style') ne "stylehouse";
+  #  return $self if $H->get('style') ne "stylehouse";
 
-    my $G = $self->hi->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff;");
+    my $G = $H->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #2E0F00; color: #afc; font-weight: bold; margin:1em;", undef, undef, "menu");
 
     $self->gitrack();
@@ -60,59 +64,88 @@ sub init {
 sub gitrack {
     my $self = shift;
     
-    $self->{rackmenu} = {
+    my $rs = $H->get("Git/repos");
+    my $sh = sub { ($_[0] =~ /style(\w+)/)[0] };
+    
+    my @m;
+    for my $r (@$rs) {
+        #die "$r   ".$self->rbe(up => $r);
+        my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
+        my $menu = [
+    '↳' => sub {
+        my $rbe = $self->rbe(up => $r);
+        $rbe = $rbe ? $sh->($rbe).' conty' : "";
+        $self->spawn_proc("cd ../$r && git pull $rbe");
+    },
+    '↰' => sub {
+        my $rbe = $self->rbe(up => $r);
+        if ($rbe) {
+            $self->spawn_proc('cd ../'.$rbe
+            .' && git pull '.$sh->($r).' conty');
+        }
+        else {
+            $self->spawn_proc('cd ../'.$r
+            .' && git push');
+        }
+    },
+    '⏚' => sub {
+        say" HEading to $r";
+        $self->spawn_proc('cd ../'.$r.' && git gui');
+    },
+    'ܤ' => sub {
+        $self->spawn_proc('cd ../'.$r.' && touch stylehouse.pl');
+    },
+        ];
+        my $sub =
+        { _spawn => [ [], {
+        nospace => 1,
+        event => { menu => $menu },
+        class => 'menu',
+        }]
+        };
+        push @m,
+        { _spawn => [ ["!style='color: #fff; font-size:20pt;' $aka", $sub], {
+        nospace => 1,
+        class => 'menu',
+        }]
+        };
+    }
+    my $gitm = [
         ps => sub {
             $self->pswatch("once");
         },
         i => sub {
             $self->init();
         },
-        sp => sub {
-            $self->spawn_proc('cd ../styleshed && git pull house conty');
-        },
-        sG => sub {
-            $self->spawn_proc('cd ../styleshed && git gui');
-        },
-        st => sub {
-            $self->spawn_proc('cd ../styleshed && touch stylehouse.pl');
-        },
-        hp => sub {
-            $self->spawn_proc('cd ../stylehouse && git pull shed conty');
-        },
-        hP => sub {
-            $self->spawn_proc('cd ../stylehouse && git push');
-        },
-        hG => sub {
-            $self->spawn_proc('cd ../stylehouse && git gui');
-        },
         BR => sub {
-            $self->{hostinfo}->info("Bucky rip");
+            $H->info("Bucky rip");
             run('cd ../stylebucky && git reset --hard');
         },
         'rps' => sub {
             $self->reprocserv();
         },
-    };
-    my $rt = $self->{gitrack}->text;
-    $rt->add_hooks({
+    ];
+    unshift @m, 
+        { _spawn => [ [], {
+        nospace => 1,
+        event => { menu => $gitm },
+        class => 'menu',
+        }]
+        };
+
+    my $rt = $self->{gitrack}->text([@m], {
         tuxtstyle => sub {
             my ($v, $s) = @_;
             $s->{style} .= 'opacity: 0.5; text-shadow: -2px -3px 3px #9999FF; padding: 4.20px; color: black; font-size: 2em; '.random_colour_background();
         },
         class => "menu",
         nospace => 1,
-        allmenu => 1,
-        event => { menu => $self->{rackmenu} },
     });
-    my @items = sort keys %{$self->{rackmenu}};
-    $rt->replace([ @items]);
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
-
 sub event {
     my $self = shift;
     my $event = shift;
@@ -124,15 +157,14 @@ sub event {
         my ($pid, $cmd) = split ": ", $s->{value};
         say "KILLING $pid";
         kill "INT", $pid;
-        $self->{hostinfo}->timer(0.2, sub {
+        $H->timer(0.2, sub {
             $self->pswatch("once")
         });
     }
     else {
-        return $self->{hostinfo}->error("Errour! no $id", $event);
+        return $H->error("Errour! no $id", $event);
     }
 }
-
 sub reprocserv {
     my $self = shift;
     $self->spawn_proc('killall procserv.pl; ./procserv.pl &');
@@ -155,9 +187,9 @@ sub mstylecmd {
 sub spawn_style {
     my $self = shift;
     my $outside = shift;
-    my $repo = $self->hi->get("Git/repos/$outside") || die "no such $outside";
-    return $self->hi->error("../$outside does not exist") unless -d "../$outside";
-    return $self->hi->error( "no procserv.pl") unless grep /procserv.pl/, `ps faux`;
+    my $repo = $H->get("Git/repos/$outside") || die "no such $outside";
+    return $H->error("../$outside does not exist") unless -d "../$outside";
+    return $H->error( "no procserv.pl") unless grep /procserv.pl/, `ps faux`;
 
         return $self->error("$outside already running") if $self->{state}->{$outside};
 
@@ -168,9 +200,9 @@ sub spawn_style {
 
 sub spawn_proc {
     my $self = shift;
-    #$self->hi->info("spawning ".join", ",@_);
+    #$H->info("spawning ".join", ",@_);
     my $cmd = shift;
-    my $P = Proc->new($self->{hostinfo}->intro, $self, "echo '<<ID>>' && $cmd", @_);
+    my $P = Proc->new($H->intro, $self, "echo '<<ID>>' && $cmd", @_);
     push @{$self->{procs}}, $P;
     $P
 }
@@ -178,7 +210,7 @@ sub procup {
     my $self = shift;
     my ($pid, $cmd) = @_;
     say "$pid^$cmd";
-    my $P = Proc->new($self->{hostinfo}->intro, $self);
+    my $P = Proc->new($H->intro, $self);
     $P->{cmd} = $cmd;
     $P->started($pid);
     push @{$self->{procs}}, $P;
@@ -215,7 +247,7 @@ sub repos {
         },
     });
 
-    my $repos = $self->hi->get('Git/repos');
+    my $repos = $H->get('Git/repos');
     $rt->replace([ map { "!menu=up $_" } @$repos ]);
 }
 
@@ -245,7 +277,7 @@ sub pswatch {
         $self->{pswatch}->text->replace([@$what]); # Tractor should make this interactive
     }
 
-    $self->hi->timer(2, sub { $self->pswatch() }) unless $one;
+    $H->timer(2, sub { $self->pswatch() }) unless $one;
 }
 sub procstartwatch {
     my $self = shift;
@@ -288,7 +320,7 @@ sub procstartwatch {
             $plt->gotline("$stat$line");
         };
 
-        $self->{hostinfo}->stream_file("proc/start", $per_line);
+        $H->stream_file("proc/start", $per_line);
     }
 }
 sub proclistwatch {
@@ -346,7 +378,7 @@ sub proclistwatch {
                     $stat = "!style='color: green;'";
 
                     if ($proc->{pid} ne $pid) {
-                        $self->{hostinfo}->error("proc/list Proc has Pid: $proc->{pid} vs $line");
+                        $H->error("proc/list Proc has Pid: $proc->{pid} vs $line");
                     }
                 }
                 else {
@@ -362,7 +394,7 @@ sub proclistwatch {
         };
 
         # watch the list of started files and their pids
-        $self->{hostinfo}->stream_file("proc/list", $per_line);
+        $H->stream_file("proc/list", $per_line);
     }
 }
 
@@ -452,31 +484,31 @@ sub init_state {
 }
 
 
-sub below {
+sub rbe {
     my $self = shift;
-
-    my $next = sub {
-        my $i = 0;
-        for my $s (@{$_[0]}) {
-            $i++;
-            return $_[0]->[$i] if $s eq $_[1];
+    my $side = shift;
+    my $s = shift || $H->get("style");
+    
+    my ($l, $r);
+    my @rs = @{ $H->get('Git/repos') };
+    while (my $c = shift @rs) {
+        $r = $rs[0];
+        if ($s eq $c) {
+            if ($side && $side eq "up") {
+                return $l;
+            }
+            else {
+                return $r;
+            }
         }
-        die "no such style: $_[1]\nhave: ".join" ",@{$_[0]};
-    };
-        
-    my $repos = $self->hi->get('Git/repos');
-    my $style = $self->{hostinfo}->get("style");
-    my $unto = $next->($repos => $style);
-    my $dir = "../$unto/";
-    -d $dir || die "Cannot see $dir (am $style)";
-    return $dir;
+    }
+    die "NO WTF";
 }
-
 sub wire_procs {
     my $self = shift;
-    my $repos = $self->hi->get('Git/repos');
+    my $repos = $H->get('Git/repos');
     my ($top, @rest) = @$repos;
-    my $style = $self->{hostinfo}->get("style");
+    my $style = $H->get("style");
     
     my $tower = "../$top/proc";
     die "proc tower $tower not exist"                                   unless -e $tower;
