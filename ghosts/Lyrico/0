@@ -13,9 +13,10 @@ hooks:
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
-    G crawl ->W->{script} = [];
+    G crawl ->RW;
+    G follow ->RW;
     
-    G follow T $thing;
+    G follow T $_ for $H, $thing;
     G crawl T $thing;
     
     G splat ->w("splat_wormhole", {
