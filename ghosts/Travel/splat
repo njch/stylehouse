@@ -1,15 +1,18 @@
 name: wormhole splatter
 hooks:
   load_ways_post: |
+    $H->getapp("Lyrico")->somewhere();
+  
+  
     #
   splat_wormhole: |
     
-    my $style = "position:absolute;overflow:hidden;";
+    my $style = "padding: 1em;position:absolute;overflow:hidden;";
     if ($splatname eq "wing") {
         $style .= "right: 0px;border:5px solid green;width:10em;z-index:20;"
     }
         
-    my $v = $sky->spawn_floozy($splatname, $style);
+    my $v = $sky->spawn_floozy($G, $splatname, $style);
     
     say "Wormhole Splattur: $v->{divid}     ".$wormhole->describe_size();
     
@@ -31,7 +34,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'opacity:0.6;position: relative; float: left; background: #0066CC; ',
+        tuxtstyle => 'opacity:1;position: relative; float: left; background: #0066CC; ',
         tuxts_to_htmls => sub {
             my $texty = shift;
             my $tx = $texty->{tuxts};
@@ -47,7 +50,8 @@ hooks:
   
   line:
     value: |
-      for my $bb (qw[d i t o m]) {
+      my @atom = qw[d i t o m]; # TODO combine d+i = a
+      for my $bb (@atom) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
           $v = "!bb=$bb $v" unless ref $v;
@@ -96,8 +100,12 @@ hooks:
         my $t = $line->{t};
         ref $t ? "$t" : $t;
       s: |
-        $s->{style}.="color: #aa3300; font-weight:200em;" unless ref $line->{t};
-        $s->{style}.="color: blue; font-style: underlined;" if ref $line->{t};
+        my $t = $line->{t};
+        $s->{style}.="font-weight:900; color:#".(
+        ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
+                  : ref $t eq "HASH" ? "F42211" : "FF6666")
+        : "000032"
+        ).";";
     d:
       v: |
         $line->{depth}

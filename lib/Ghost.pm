@@ -36,7 +36,7 @@ sub T {
 }
 sub W {
     my $self = shift;
-    $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
+    $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub RW {
     my $self = shift;
@@ -151,7 +151,7 @@ sub doo {
     
     my $thing = $G->{t};
     my $O = $G->T->{O};
-    say "$G->{name}: ".($point||$eval);
+    $G->ob($point||$eval);
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
