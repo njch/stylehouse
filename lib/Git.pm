@@ -69,7 +69,6 @@ sub gitrack {
     
     my @m;
     for my $r (@$rs) {
-        #die "$r   ".$self->rbe(up => $r);
         my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
         my $menu = [
     '↳' => sub {
@@ -100,14 +99,16 @@ sub gitrack {
         { _spawn => [ [], {
         nospace => 1,
         event => { menu => $menu },
-        class => 'menu',
-        }]
+        class => 'menu en',
+        }],
+        S_attr => { style => "font-size:19pt;"},
         };
         push @m,
-        { _spawn => [ ["!style='color: #fff; font-size:20pt;' $aka", $sub], {
+        { _spawn => [ ["!style='color:#fff; font-size:20pt;' $aka", $sub], {
         nospace => 1,
         class => 'menu',
-        }]
+        }],
+        S_attr => { style => 'border: 1px solid white;' },
         };
     }
     my $gitm = [
