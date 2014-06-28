@@ -115,6 +115,10 @@ sub spawn_floozy {
     my $where = shift;
     my $class = shift;
     
+    if (my $going = $self->{floozal}->{$divid}) {
+        $self->{hostinfo}->JS($going, "attr('id', '$going->{divid}-going').fadeOut(500).remove;");
+    }
+    
     if (!$attach && !$where) {
         if ($self->{ceiling}) {
             $attach = "after";
@@ -141,9 +145,9 @@ sub spawn_floozy {
         $attach => $where,
         $class,
     );
+    ($self->{floozal} ||= {})->{$divid} = $floozy;
 
-    $self->{hostinfo}->accum("floods/$self->{divid}", $floozy);
-    $floozy->{floozal} = 1;
+    $floozy->{floozal} = $self;
 
     $floozy;
 }

@@ -3,21 +3,15 @@ hooks:
   load_ways_post: |
     #
   splat_wormhole: |
-    my $ss = $G->{$splatname} ||= {};
-    if ($ss->{o}) {
-        $H->JS($ss->{o}, "slideUp(500).remove;");
-    }
     
-    my $style = "position:absolute;";
+    my $style = "position:absolute;overflow:hidden;";
     if ($splatname eq "wing") {
         $style .= "right: 0px;border:5px solid green;width:10em;z-index:20;"
     }
-    
-    my $v = $sky->spawn_floozy($sky->{wni}++, $style);
-    $ss->{o} = $v;
+        
+    my $v = $sky->spawn_floozy($splatname, $style);
     
     say "Wormhole Splattur: $v->{divid}     ".$wormhole->describe_size();
-    
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
