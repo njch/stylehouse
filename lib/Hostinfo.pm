@@ -31,6 +31,7 @@ sub new {
     $Wormhole::H = $self;
     $Codo::H = $self;
     $Codon::H = $self;
+    $Git::H = $self;
 
     
 

@@ -39,29 +39,24 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    $self->{git} = $self->{hostinfo}->getapp("Git");
-    $self->{code_dir} = $self->{git}->below(); 
-    if ($self->{code_dir} =~ /bucky/) {
-        run('cd ../stylebucky && git reset --hard');
-    }
-
-    my $hi = $self->{hostinfo};
+    $self->{git} = $H->getapp("Git");
+    my $cd = $self->{git}->rbe("down");
+    $cd = "../$cd/";
+    die "No code dir: $cd" unless -d $cd;
+    $self->{code_dir} = $cd;
 
     my $Codo =
-    $hi->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: #001452; color: #afc; position: absolute;"
+    $H->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: #001452; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"
     ."overflow: scroll;", before => 'flood');
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
-    $self->{hostinfo}->{flood}->spawn_floozy($self, codolist =>
+    $H->{flood}->spawn_floozy($self, codolist =>
         "padding: 1em; width:100%; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
 
 
-        $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
+    $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
-
-
-    $self->{obsetrav} = $hi->set("Codo/obsetrav", []); # observations of travel
 
     $self->init_codons();
 
