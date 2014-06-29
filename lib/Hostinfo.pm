@@ -99,11 +99,11 @@ sub init_flood {
         
     
     $m->spawn_floozy(
-        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
+        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
+        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; max-height: 100%;",
     );
     
     $self->menu();
@@ -875,7 +875,9 @@ sub throwlog {
 
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
-    
+    if ($string =~ /DOOF/) {
+        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
+    }
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;

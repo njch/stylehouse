@@ -81,7 +81,7 @@ sub menu {
             $H->timer(4, sub { Codo->new($H->intro) });
         },
         Ꮉ => sub {
-            $H->JS("\$('#mess').toggleClass('widdle');");
+            $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
     ];
     return { _spawn => [ [], {

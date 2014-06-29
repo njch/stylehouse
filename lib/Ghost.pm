@@ -87,6 +87,23 @@ sub ob {
     my $self = shift;
     $self->{T}->ob(@_);
 }
+sub haunt { # arrives through here
+    my $self = shift;
+    $self->{depth} = shift;
+    $self->{t} = shift; # thing
+    $self->{i} = shift; # way in
+    $self->{last_state} = shift;
+    $self->{o} = []; # way[] out
+    
+    $self->ob($self);
+    $self->w("arr");
+    $self->ob($self);
+    
+    my $line = $self->W->continues($self); # %
+    $self->ob($line);
+
+    return ($line, $self->{o});
+}
 sub chains {
     my $self = shift;
     grep { !$_->{_disabled} }
@@ -181,7 +198,7 @@ sub doo {
         }
         
         my $DOOF;
-        $DOOF .= "\n".<<"" if $@ !~ /^DONT/;
+        $DOOF .= "\n".<<"" if $@ !~ /DOOF/;
      .-'''-.     
    '   _    \   
  /   /` '.   \  
@@ -192,7 +209,7 @@ sub doo {
     '-...-'`    
 
         $DOOF .= "DOOF $point  ".join(", ", keys %$ar)."\n"
-            .($@ !~ /^DOOF/ ? "$eval\n" : "")
+            .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
         $H->error($DOOF) if $@ !~ /^DONT/;
@@ -236,23 +253,7 @@ sub parse_babble {
     }
     $eval;
 }
-sub haunt { # arrives through here
-    my $self = shift;
-    $self->{depth} = shift;
-    $self->{t} = shift; # thing
-    $self->{i} = shift; # way[] in
-    $self->{last_state} = shift;
-    $self->{o} = []; # way[] out
-    
-    $self->ob($self);
-    $self->w("arr");
-    $self->ob($self);
-    
-    my $line = $self->W->continues($self); # %
-    $self->ob($line);
 
-    return ($line, $self->{o});
-}
 sub grep_chains {
     my $self = shift;
     my %s = @_;
