@@ -93,12 +93,7 @@ sub event {
     my $event = shift;
     my $id = $event->{id};
 
-    if ($id eq "codolist") {
-        $self->{hostinfo}->send("\$('#".$self->{Codo}->{divid}."').toggleClass('widdle');");
-    }
-    else {
-        $self->{hostinfo}->error("Codo event 404 for $id". ddump($event));
-    }
+    $H->info("Co do no e", $event);
 }
 sub init_codons {
     my $self = shift;
