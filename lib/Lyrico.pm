@@ -43,20 +43,13 @@ sub new {
 sub stup {
     my $self = shift;
 
-    
-    
     $self->{L} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;
-    my @what = @_;
-    unless (@what) {
-        @what = (
-        $self);
-    }
     
-    #@what = $self->{hostinfo}->grep('.*top');
-    say 'NOT SOMEWHERE ANYMORE';
+    return say 'NOT SOMEWHERE YET' unless $self->{L};
+    
     $self->{L}->w("somewhere");
 }
 sub menu {
