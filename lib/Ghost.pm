@@ -55,7 +55,7 @@ sub load_ways {
             push @files, $base;
         }
         else {
-            push @files, glob "$base/*";
+            push @files, grep { /\/\d+$/ } glob "$base/*";
         }
         
         for my $file (@files) {

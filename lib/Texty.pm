@@ -411,6 +411,7 @@ sub tuxts_to_htmls {
             $p->{$k} = ref $v if ref $v && $k ne 'value';
         }
         my $V = delete $p->{value};
+        delete $p->{$_} for grep { /^_/ } keys %$p;
         
         if (ref $V eq "Texty") {
         #if (!$V->{htmls}) { delete $V->{hostinfo}; say "Thing inside ".ddump($V) }
@@ -440,6 +441,10 @@ sub event {
     
     my $evh = $self->{hooks}->{event};
     my $s = $self->id_to_tuxt($event->{id});
+    if ($s->{_event}) {
+        say "hooking tuxt event";
+        $evh = $s->{_event};
+    }
     say "line reads: $s->{value}";
     
     if ($evh) {

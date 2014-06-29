@@ -93,24 +93,18 @@ sub init_flood {
     
     
     
-    my $colle = sub {
-        $self->JS(shift,"toggleClass('widdle');");
-    };
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
-    $m->{on_event} = $colle;
         
     
     $m->spawn_floozy(
         Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre;",
-    )
-    ->{on_event} = $colle;
+    );
     
     $m->spawn_floozy(
         Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre;",
-    )
-    ->{on_event} = $colle;
+    );
     
     $self->menu();
     $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';

@@ -71,17 +71,20 @@ sub new {
 }
 sub menu {
     my $self = shift;
-    my $m = $self->{menu} ||= {
+    my $m = $self->{menu} ||= [
         ܤ => sub { # they might wanna load new css/js too
-            $self->infrl('restarting (if)');
+            $H->error('restarting');
             `touch $0`;
         },
         ɤ => sub {
             $self->nah;
             $H->timer(4, sub { Codo->new($H->intro) });
         },
-    };
-    return { _spawn => [ [ sort keys %$m ], {
+        Ꮉ => sub {
+            $H->JS("\$('#mess').toggleClass('widdle');");
+        },
+    ];
+    return { _spawn => [ [], {
         event => { menu => $m },
         tuxtstyle => "padding 5px; font-size: 35pt; "
             ." background-color: #1919FF;"
@@ -386,19 +389,6 @@ sub random_colour_background {
 }
 
 
-sub infrl {
-    my $self = shift;
-    my $first = shift;
-    $first = qq{!html <h2>$first</h2>};
-    $self->{hostinfo}->info(join "\n", $first, @_);
-}
-
-sub errl {
-    my $self = shift;
-    my $first = shift;
-    $first = qq{!html <h2 class="err">$first</h2>};
-    $self->{hostinfo}->error(join "\n", $first, @_);
-}
 
 sub proc_killed {
     my $self = shift;
