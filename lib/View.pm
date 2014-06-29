@@ -35,14 +35,6 @@ sub new {
     $self->{hostinfo}->set('tvs/'.$divid.'/div', $div);
     $self->{hostinfo}->set('tvs/'.$divid.'/style', $style); # Tractorise
 
-    my $exists = $self->{hostinfo}->get('tvs/'.$divid);
-    if ($exists) {
-        my $old = $self->{hostinfo}->get('tvs/'.$divid.'/top');
-        $self->{hostinfo}->info(
-            "View $divid $self->{owner} already from $old->{owner}");
-        #$old->nah();
-    }
-
     $self->{hostinfo}->accum('tvs/'.$divid, $self);
 
     say "Placing $this ->{$divid}";
