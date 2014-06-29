@@ -166,6 +166,7 @@ sub doo {
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
+        $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
         my @eval = split "\n", $evs;
         my $xx = 1;
@@ -178,9 +179,9 @@ sub doo {
                 }
             $xx++;
         }
-        return say "DOO $point: $@\n$eval" unless $@;
         
-        say <<"" if $@ !~ /^DONT/;
+        my $DOOF;
+        $DOOF .= "\n".<<"" if $@ !~ /^DONT/;
      .-'''-.     
    '   _    \   
  /   /` '.   \  
@@ -190,9 +191,13 @@ sub doo {
  `.   ` ..' /   
     '-...-'`    
 
-        die "DONT $point  ".join(", ", keys %$ar)."\n"
-            .($@ !~ /^DONT/ ? "$eval\n" : "")
+        $DOOF .= "DOOF $point  ".join(", ", keys %$ar)."\n"
+            .($@ !~ /^DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
+        
+        $H->error($DOOF) if $@ !~ /^DONT/;
+        
+        die $DOOF;
     }
     # more ^
     
@@ -204,10 +209,11 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) \{(.+)\}/\$H->timer($1, sub { $3 })/sg;
+    $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/G (\w+) /\$H->Gf(\$G, '$1') /sg;
-    $eval =~ s/T (\S+)([ ;\)])/->T($1)$2/sg;
+    $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G, '$1')/sg;
+    $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
+    $eval =~ s/T (?=->)/->T() /sg;
 
     while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
         my ($old, $gw, $path, $are) = ($1, $2, $3, $4);

@@ -30,7 +30,7 @@ sub ob {
     
     my $ob = $H->enlogform(@_); # describes stack, etc
 # we want to catch runaway recursion from here
-    $self->{TT}->travel($ob);
+    $self->{TT}->T($ob);
 }
 
 # the wormhole for self

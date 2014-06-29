@@ -8,15 +8,22 @@ hooks:
         G TT ->G("Travel/splat");
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
+        G TT ->G("Lyrico/ob");
     }
+    timer 0.3 { $H->info("Alright MATE!?") };
     timer 0.4 { w somewhere };
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
+    start_timer();
+    
+    G ob ->RW;
     G crawl ->RW;
     G follow ->RW;
     
-    G follow T $_ for $H, $thing, $H->grep('.*top');
+    G crawl T ->{TT} = G ob;
+    
+    G follow T $_ for G ob, $H, $thing, $H->grep('.*top');
     G crawl T $thing;
     
     G splat ->w("splat_wormhole", {
@@ -28,11 +35,20 @@ hooks:
     
     G splat ->w("splat_wormhole", {
         somewhereness => $G,
+        splatname => 'ob',
+        sky => $H->{sky},
+        wormhole => G ob ->W,
+    });
+    
+    G splat ->w("splat_wormhole", {
+        somewhereness => $G,
         splatname => 'wing',
         sky => $H->{sky},
         wormhole => G follow ->W,
     });
     
+    $H->info("splatting: ".show_delta());
+  splatob: |
     
     
   menu: |

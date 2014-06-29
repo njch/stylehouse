@@ -43,7 +43,7 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $self->{L} = $H->TT($self)->G("Lyrico");
+    $self->{G} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;
@@ -60,10 +60,6 @@ sub menu {
         },
         ښ => sub {
             $self->{started} ? $self->stopclicky : $self->startclicky
-        },
-        ה => sub {
-            Git->new($self->{hostinfo}->intro);
-            Codo->new($self->{hostinfo}->intro);
         },
         Թ => sub {
             $self->{hostinfo}->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
