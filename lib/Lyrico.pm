@@ -43,14 +43,14 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $self->{G} = $H->TT($self)->G("Lyrico");
+    $self->{GG} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;
     
-    return say 'NOT SOMEWHERE YET' unless $self->{G};
+    return say 'NOT SOMEWHERE YET' unless $self->{GG};
     
-    $self->{G}->w("somewhere");
+    $self->{GG}->w("somewhere");
 }
 sub menu {
     my $self = shift;
