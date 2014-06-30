@@ -26,7 +26,7 @@ sub W {
 }
 sub ob {
     my $self = shift;
-    return;# unless $self->{TT};
+    return unless $self->{TT};
     
     my $ob = $H->enlogform(@_); # describes stack, etc
 # we want to catch runaway recursion from here
@@ -46,7 +46,7 @@ sub travel {
     
     $self->ob("Travel", $depth, $t);
     (my $td = $t||"~") =~ s/\n/\\n/g;
-    say("Travel $G->{name}            $depth to $td    ".($i?($i->{K}||$i->{name}):"?"));
+    say("Travel $G->{name}            $depth to $td    ".($i?($i->{K}||$i->{name}):"?")) unless $G->{name} =~ /Lyrico\/ob/;
     
     my ($line, $o) = $G->haunt($depth, $t, $i, $last_line);
 
