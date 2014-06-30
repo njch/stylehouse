@@ -31,12 +31,13 @@ sub new {
 }
 sub T {
     my $self = shift;
-    $self->{T}->travel($_) for @_;
+    $self->{T}->travel(@_) if @_;
     $self->{T};
 }
 sub Tw {
     my $self = shift;    
     my ($GG, $Twar, $wp, $war, $thing) = @_;
+    
     my $w = $self->nw();
     $w->{GG} = $self; # reflection of $GG
     $w->{arr_hook} = $wp if $wp;
@@ -45,16 +46,18 @@ sub Tw {
     # on some levels, travel_this hooks arr with thing
     # we want to impose the case left by $G straight into wp
     die $thing if $thing && $wp;
-    # $thing could be passed in $war
+    # $thing could be passed the wp in $war
     # or it could be something else altogether... 
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
     
-    my @r = $GG->{T}->travel($thing, undef, $w);
+    my @r = $GG->T($thing, undef, $w);
     # TODO stop passing ghost through travel
     
     die "Many returns for Tw to $GG->{name}\nway: $wp".ddump(\@r) if @r != 1;
+    die "TRravel treutnrs:". Hostinfo::ddump($r[0]);
     return @{ $r[0] };
+    ($GG, $Twar, $wp, $war, $thing);
 }
 sub W {
     my $self = shift;
@@ -119,12 +122,20 @@ sub haunt { # arrives through here
     my $self = shift;
     $self->{depth} = shift;
     $self->{t} = shift; # thing
-    $self->{i} = shift; # way in
+    my $i = $self->{i} = shift; # way in
     $self->{last_state} = shift;
-    $self->{o} = []; # way[] out
+    my $o = $self->{o} = []; # way[] out
     
     $self->ob($self);
-    $self->w("arr");
+    
+    if ($i->{arr_hook}) { # could be moved into a crawl-like chain
+        my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
+        push @$o, $i->spawn()->from({ travel_returns => \@r });
+    }
+    else {
+        $self->w("arr");
+    }
+    
     $self->ob($self);
     
     my $line = $self->W->continues($self); # %
@@ -268,10 +279,12 @@ sub parse_babble {
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
-    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)(?:\((.*)\))? (?:\((.*?)\) )?)/sg) {
+    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
         my ($old, $GG, $Twar, $wp, $war, $thing) = ($1, $2, $3, $4, $5);
         
+        $wp = "'$wp'" if $wp;
         $war = $self->parse_babblar($war) if $war;
+        
         my $tw = join ", ", 
             map { $_ || 'undef' }
             ($GG, $Twar, $wp, $war, $thing);

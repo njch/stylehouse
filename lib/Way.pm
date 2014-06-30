@@ -36,6 +36,7 @@ sub from {
             if $i eq "G" && $self->{G} ne $from->{G};
         $self->{$i} = $from->{$i};
     }
+    $self;
 }
 sub load {
     my $self = shift;
@@ -88,7 +89,7 @@ sub load {
     }
     if ($self->{chains}) {
         $self->{chains} = [
-            map { $self->spawn($_) }
+            map { $self->spawn()->from($_) }
             @{$self->{chains}}
         ];
     }

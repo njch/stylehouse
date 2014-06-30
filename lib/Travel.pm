@@ -34,7 +34,7 @@ sub ob {
 }
 
 # the wormhole for self
-# so G can make harmonic W inside a singular T
+# so G can make higher frequency W inside a singular T
 # self awareness
 sub travel {
     my $self = shift;
@@ -45,7 +45,8 @@ sub travel {
     my $last_line = shift;
 
     $self->ob("Travel", $depth, $t);
-    say "Travel to ".($t||"~");
+    (my $td = $t||"~") =~ s/\n/\\n/g;
+    say "Travel to $td";
     
     my ($line, $o) = $G->haunt($depth, $t, $i, $last_line);
 
@@ -55,7 +56,7 @@ sub travel {
             $self->travel($c->{travel_this}, $G, $c, $depth+1, $line);
         }
         elsif (exists $c->{travel_returns}) {
-            push @r, $c->{travel_returns};
+            push @r, @{$c->{travel_returns}};
         }
         else {
             die "what kind of way out is ".ddump($c);
