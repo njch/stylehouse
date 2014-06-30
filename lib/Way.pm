@@ -6,10 +6,11 @@ use JSON::XS;
 use YAML::Syck;
 use Texty;
 
-has 'hostinfo';
+our $H;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
+    delete $self->{hostinfo};
 
     $self->{_ghostname} = shift;
     $self->{_wayfile} = shift;

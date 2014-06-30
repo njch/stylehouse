@@ -32,6 +32,7 @@ sub new {
     $Codo::H = $self;
     $Codon::H = $self;
     $Git::H = $self;
+    $Way::H = $self;
 
     
 
