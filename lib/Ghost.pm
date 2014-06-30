@@ -190,11 +190,11 @@ sub w {
 }
 sub doo {
     my $G = shift;
-    my $eval = shift;
+    my $babble = shift;
     my $ar = shift || {};
     my $point = shift;
     
-    $eval = $G->parse_babble($eval);
+    my $eval = $G->parse_babble($babble);
     
     my $thing = $G->{t};
     my $O = $G->T->{O};
@@ -218,10 +218,14 @@ sub doo {
         my @eval = split "\n", $evs;
         my $xx = 1;
         for (@eval) {
-                if (defined $x && $xx == $x) {
-                    $eval .= ind("Ͱ->", $_)."\n"
+                if (!defined $x) {
+                    $eval .= ind("⊖  ", $_)."\n"
                 }
-                else {
+                elsif ($xx == $x) {
+                    $eval .= ind("⊘  ", $_)."\n";
+                    $eval .= ind("⊖rg", (split"\n",$babble)[$x - 3])."\n";
+                }
+                elsif ($xx > $x-5 && $xx < $x+5) {
                     $eval .= ind("|  ", $_)."\n"
                 }
             $xx++;
