@@ -1,7 +1,7 @@
 name: wormhole splatter
 hooks:
   load_ways_post: |
-    $H->getapp("Lyrico")->somewhere();
+    # yeah
   
   
     #
@@ -47,6 +47,12 @@ hooks:
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
+  gosomewhere: |
+      say "\n  Heading to $thing\n\n";
+      $somewhereness->w('somewhere', {thing => $thing});
+      
+      
+      # ye
   
   line:
     value: |
@@ -57,7 +63,7 @@ hooks:
           $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
       }
-      # ^ v here's the void; many R come to B
+      # ^ v here's the void; many R come to B, pretty much via Texty::mktuxts
     style: |
         while (my ($bb, $b) = each %$B) {
             $G->w("line/$bb/s",{%$ar,
@@ -66,20 +72,24 @@ hooks:
     m:
       v: |
         my $t = $line->{t};
-        
-        my $menu = [
+        my $menu = [];
+        if (ref $t && ref $t =~ /HASH/) {
+            if ($t->{G}) {
+                push @$menu,
+                    $t->{G} Tw () splatgoes ();
+            }
+        }    
+        push @$menu,
           Ώ => sub {
-            my $v =  $line->{t};
-            say "\n  Heading to $v\n\n";
-            $somewhereness->w('somewhere', {thing => $v});
-          },
-        ];
+            w gosomewhere(+ thing => $line->{t})
+          };
+        
         if (ref $t && ref $t eq 'Hostinfo') {
             push @$menu, data => sub {
                 $O->{L}->w('somewhere', {thing => $t->data() });
             }
         }
-        if (ref $t && "$t" =~ /\w=HASH/) {
+        if (ref $t && "$t" =~ /\wHASH/) {
             if ($t->{Ώ}) {
                 push @$menu, each %{$t->{Ώ}};
             }
