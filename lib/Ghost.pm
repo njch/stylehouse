@@ -31,7 +31,7 @@ sub new {
 }
 sub T {
     my $self = shift;
-    $self->{T}->travel(@_) if @_;
+    $self->{T}->travel($_) for @_;
     $self->{T};
 }
 sub Tw {
@@ -51,7 +51,7 @@ sub Tw {
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
     
-    my @r = $GG->T($thing, undef, $w);
+    my @r = $GG->T->travel($thing, undef, $w);
     # TODO stop passing ghost through travel
     
     die "Many returns for Tw to $GG->{name}\nway: $wp".ddump(\@r) if @r != 1;
@@ -211,6 +211,8 @@ sub doo {
     my $O = $G->T->{O};
     $G->ob($point||$eval);
     
+    say " $G->{name}         ".($point ? "w $point" : "⊖ $eval");
+    
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
     
@@ -230,7 +232,7 @@ sub doo {
         my $xx = 1;
         for (@eval) {
                 if (!defined $x) {
-                    $eval .= ind("⊖  ", $_)."\n"
+                    $eval .= ind("⊘  ", $_)."\n"
                 }
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";

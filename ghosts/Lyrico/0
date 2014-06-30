@@ -15,8 +15,6 @@ hooks:
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
-    start_timer();
-    
     G ob ->RW;
     G crawl ->RW;
     G follow ->RW;
@@ -24,21 +22,22 @@ hooks:
     G crawl T ->{TT} = G ob;
     
     G follow T $_ for G ob, $H, $thing, $H->grep('.*top');
-    G crawl T $thing;
     
+    G crawl T $thing;
     G splat ->w("splat_wormhole", {
         somewhereness => $G,
         splatname => 'trev',
         sky => $H->{sky},
         wormhole => G crawl ->W,
     });
+    return;
     
     G splat ->w("splat_wormhole", {
         somewhereness => $G,
         splatname => 'ob',
         sky => $H->{sky},
         wormhole => G ob ->W,
-    }) if 0;
+    });
     
     G splat ->w("splat_wormhole", {
         somewhereness => $G,
@@ -47,7 +46,6 @@ hooks:
         wormhole => G follow ->W,
     });
     
-    $H->info("splatting: ".show_delta());
   splatob: |
     
     

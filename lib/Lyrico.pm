@@ -48,9 +48,9 @@ sub stup {
 sub somewhere {
     my $self = shift;
     
-    return say 'NOT SOMEWHERE YET' unless $self->{L};
+    return say 'NOT SOMEWHERE YET' unless $self->{G};
     
-    $self->{L}->w("somewhere");
+    $self->{G}->w("somewhere");
 }
 sub menu {
     my $self = shift;

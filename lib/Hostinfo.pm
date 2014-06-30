@@ -18,6 +18,7 @@ use File::Slurp;
 use utf8;
 use Encode qw(encode_utf8 decode_utf8);
 use YAML::Syck;
+use JSON::XS;
 
 our $data = {};
 sub new {
@@ -50,16 +51,16 @@ sub Gf {
     my $self = shift;
     my $O = shift;
     my $way = shift;
-    say "\n\nH ghostfind: $O->{name}     w $way";
     
     my @Gs = map { $_->{G} }
-        grep { $_->{O} eq $O
-            && $_->{G}->{name} =~ /$way/ }
+        grep { #$_->{O} eq $O
+          1  && $_->{G}->{name} =~ /$way/ }
         @{$self->get('Travel')};
     
-    if (@Gs != 1) {
-        $self->error("Gfound!=1".scalar(@Gs)." G from $O have $way", \@Gs);
+    if (@Gs > 1) {
+        $self->error("H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way", \@Gs, $self->get('Travel'));
     }
+    say "\nH::Gf NOTHING nothing! $O->{name}     w $way" unless @Gs;
     shift @Gs;
 }
 sub init_flood {

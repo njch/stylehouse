@@ -20,7 +20,7 @@ sub spawn {
     my $self = shift;
     my $from = shift || $self;
     my $nw = $self->{G}->nw();
-    $nw->from($self);
+    $nw->from($from);
     $nw;
 }
 sub name {
@@ -47,6 +47,8 @@ sub load {
     }
     my $cont = $H->slurp($self->{_wayfile});
     my $w = eval { Load($cont) };
+    
+    
     if ($@ || !$w || ref $w ne 'HASH' || $@) {
         say $@;
         my ($x, $y) = $@ =~
@@ -83,17 +85,28 @@ sub load {
         die "! YAML load $self->{_wayfile} failed: "
         .($@ ? $@ : "got: ".($w || "~"));
     }
+    
+    $self->init_way($w);
+}
+sub init_way {
+    my $self = shift;
+    my $w = shift;
+
     # merge the ways into $self
     for my $i (keys %$w) {
         $self->{$i} = $w->{$i};
     }
     if ($self->{chains}) {
-        $self->{chains} = [
-            map { $self->spawn()->from($_) }
-            @{$self->{chains}}
-        ];
+        my $chains = [];
+        for my $c (@{$self->{chains}}) {
+            $c = $self->spawn($c);
+            push @$chains, $c;
+        }
+        
+        $self->{chains} = $chains;
     }
-}
+    say "21!";
+}    
 sub find {
     my $self = shift;
     my $point = shift;
