@@ -21,22 +21,18 @@ hooks:
     
     G crawl T ->{TT} = G ob;
     
-    G follow T $_ for G ob, $H, $thing, $H->grep('.*top');
+    G follow T G ob;
+    G follow T $H;
+    G follow T $thing;
     
     G crawl T $thing;
+    
+    
     G splat ->w("splat_wormhole", {
         somewhereness => $G,
         splatname => 'trev',
         sky => $H->{sky},
         wormhole => G crawl ->W,
-    });
-    return;
-    
-    G splat ->w("splat_wormhole", {
-        somewhereness => $G,
-        splatname => 'ob',
-        sky => $H->{sky},
-        wormhole => G ob ->W,
     });
     
     G splat ->w("splat_wormhole", {
@@ -45,6 +41,16 @@ hooks:
         sky => $H->{sky},
         wormhole => G follow ->W,
     });
+    
+    $H->timer(2, sub {
+        G splat ->w("splat_wormhole", {
+            somewhereness => $G,
+            splatname => 'ob',
+            sky => $H->{sky},
+            wormhole => G ob ->W,
+        });
+    });
+    return;
     
   splatob: |
     

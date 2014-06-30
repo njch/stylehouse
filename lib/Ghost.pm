@@ -236,7 +236,7 @@ sub doo {
                 }
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
-                    $eval .= ind("⊖rg", (split"\n",$babble)[$x - 3])."\n";
+                    $eval .= ind("⊖r ", (split"\n",$babble)[$x - 3])."\n";
                 }
                 elsif ($xx > $x-5 && $xx < $x+5) {
                     $eval .= ind("|  ", $_)."\n"
@@ -275,7 +275,7 @@ sub parse_babble {
     
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G, '$1')/sg;
+    $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G,'$1')/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
