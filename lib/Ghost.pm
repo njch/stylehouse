@@ -34,6 +34,28 @@ sub T {
     $self->{T}->travel($_) for @_;
     $self->{T};
 }
+sub Tw {
+    my $self = shift;    
+    my ($GG, $Twar, $wp, $war, $thing) = @_;
+    my $w = $self->nw();
+    $w->{GG} = $self; # reflection of $GG
+    $w->{arr_hook} = $wp if $wp;
+    $w->{arr_ar} = $war if $war;
+    $w->{thing} = $thing if $thing;
+    # on some levels, travel_this hooks arr with thing
+    # we want to impose the case left by $G straight into wp
+    die $thing if $thing && $wp;
+    # $thing could be passed in $war
+    # or it could be something else altogether... 
+    # here (but not constructed here) is where ways may pool
+    #   for more thinking before travelling
+    
+    my @r = $GG->{T}->travel($thing, undef, $w);
+    # TODO stop passing ghost through travel
+    
+    die "Many returns for Tw to $GG->{name}\nway: $wp".ddump(\@r) if @r != 1;
+    return @{ $r[0] };
+}
 sub W {
     my $self = shift;
     $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
@@ -239,29 +261,51 @@ sub parse_babble {
     $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G, '$1')/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
+    
+    # $t->{G} Tw() splatgoes ();
+    my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
+    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)(?:\((.*)\))? (?:\((.*?)\) )?)/sg) {
+        my ($old, $GG, $Twar, $wp, $war, $thing) = ($1, $2, $3, $4, $5);
+        
+        $war = $self->parse_babblar($war) if $war;
+        my $tw = join ", ", 
+            map { $_ || 'undef' }
+            ($GG, $Twar, $wp, $war, $thing);
+        
+        $eval =~ s/\Q$old\E/\$G->Tw($tw)/
+            || die "Ca't replace $1\n"
+            ." in\n".ind("E ", $eval);
+    }
 
     while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
         my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
-        $gw = ", $gw" if $gw; # ghost or way
-        $gw ||= "";
+        
+        $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
-        if ($are && $are =~ s/^\(\+ //) {
-            $are =~ s/\)$//;
-            $are = '{ %$ar, '.$are.'}';
-        }
-        elsif ($are) {
-            $are = "{ $are }";
-        }
-        else {
-            $are = '{ %$ar }';
-        }
+        $are = $self->parse_babblar($are);
+        
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
     $eval;
 }
-
+sub parse_babblar {
+    my $self = shift;
+    my $are = shift;
+    if ($are && $are =~ s/^\(\+ //) {
+        $are =~ s/\)$//;
+        $are = '{ %$ar, '.$are.'}';
+    }
+    elsif ($are) {
+        $are = "{ $are }";
+    }
+    else {
+        $are = '{ %$ar }';
+    }
+    return $are;
+}
+    
 sub grep_chains {
     my $self = shift;
     my %s = @_;
