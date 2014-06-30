@@ -62,12 +62,14 @@ sub load_ways {
             my ($ow) = grep { $_->{_wayfile} eq $file } @$ws;
             
             if ($ow) {
-                $ow->load_wayfile(); # and the top level hashkeys will not go away without restart
+                $ow->load(); # and the top level hashkeys will not go away without restart
                 say "G ++ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
                 
             }
             else {
-                my $nw = new Way($H->intro, $name, $file);
+                my $nw = $self->nw;
+                $nw->name($name);
+                $nw->load($file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
             }
@@ -82,6 +84,10 @@ sub load_ways {
     }
     
     $self->w("load_ways_post");
+}
+sub nw {
+    my $self = shift;
+    new Way($H->intro, $self);
 }
 sub ob {
     my $self = shift;
@@ -128,13 +134,15 @@ sub w {
     if ($way) {
         if (ref $way eq 'Ghost') {
             @ways = $way->ways;
+            die "really?";
         }
         elsif (ref $way eq 'Way') {
             @ways = $way;
         }
+        $ar = {%$ar, way => $way}; # TODO should s/way/c/
     }
     else {
-           @ways = $self->ways;
+        @ways = $self->ways;
     }
     
     my @returns;

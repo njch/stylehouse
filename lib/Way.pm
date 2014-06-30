@@ -12,39 +12,39 @@ sub new {
     shift->($self);
     delete $self->{hostinfo};
 
-    $self->{_ghostname} = shift;
-    $self->{_wayfile} = shift;
-    if (my $from = shift) {
-        for my $i (keys %$from) {
-            $self->{$i} = $from->{$i};
-        }
-    }
-    else {
-        $self->load_wayfile();
-    }
+    $self->{G} = shift;
         
     return $self;
 }
-sub find {
+sub spawn {
     my $self = shift;
-    my $point = shift;
-    my @path = split '/', $point;
-    my $h = $self->{hooks} || $self;
-    for my $p (@path) {
-        $h = $h->{$p};
-        unless ($h) {
-            return undef;
-        }
-    }
-    return $h
+    my $from = shift || $self;
+    my $nw = $self->{G}->nw();
+    $nw->from($self);
+    $nw;
 }
-sub load_wayfile {
+sub name {
     my $self = shift;
+    $self->{name} = shift;
+    $self;
+}
+sub from {
+    my $self = shift;
+    my $from = shift;
+    for my $i (keys %$from) {
+        die "Diff ghost way from ing"
+            if $i eq "G" && $self->{G} ne $from->{G};
+        $self->{$i} = $from->{$i};
+    }
+}
+sub load {
+    my $self = shift;
+    $self->{_wayfile} = shift if @_;
     unless ($self->{_wayfile}) {
         delete $self->{hostinfo};
-        say "$self->{_ghostname} has no wayfile !".ddump($self);
+        say "$self->{_ghostname} has no wayfile !".Hostinfo::ddump($self);
     }
-    my $cont = $self->{hostinfo}->slurp($self->{_wayfile});
+    my $cont = $H->slurp($self->{_wayfile});
     my $w = eval { Load($cont) };
     if ($@ || !$w || ref $w ne 'HASH' || $@) {
         say $@;
@@ -88,18 +88,23 @@ sub load_wayfile {
     }
     if ($self->{chains}) {
         $self->{chains} = [
-            map { $_->{_way} ||= $self; $_; }
             map { $self->spawn($_) }
             @{$self->{chains}}
         ];
     }
 }
-sub spawn {
+sub find {
     my $self = shift;
-    my $from = shift || $self;
-    return new Way($self->{hostinfo}->intro,
-        $self->{_ghostname}, $self->{_wayfile}, $from
-    );
+    my $point = shift;
+    my @path = split '/', $point;
+    my $h = $self->{hooks} || $self;
+    for my $p (@path) {
+        $h = $h->{$p};
+        unless ($h) {
+            return undef;
+        }
+    }
+    return $h
 }
 
 1;
