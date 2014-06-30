@@ -276,6 +276,7 @@ sub parse_babble {
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G,'$1')/sg;
+    $eval =~ s/Say (([^;](?! if ))+)/\$H->Say($1)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     

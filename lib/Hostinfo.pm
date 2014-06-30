@@ -107,6 +107,10 @@ sub init_flood {
         Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; max-height: 100%;",
     );
     
+    $m->spawn_floozy(
+        Say => "width: 100%; overflow: scroll; border: 2px solid white; background: #66FF66; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; max-height: 100%;",
+    );
+    
     $self->menu();
     $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
 
@@ -838,7 +842,7 @@ sub enlogform {
     my $e = [@_];
 
     my @from;
-    my $b = 1;
+    my $b = 3;
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
         my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/
@@ -852,20 +856,21 @@ sub enlogform {
 }
 sub info {
     my $self = shift;
-    
-    my $info = $self->enlogform(@_);
-    $self->throwlog("Info", $info);
+    $self->throwlog("Info", @_);
 }
 sub error {
     my $self = shift;
-    
-    my $error = $self->enlogform(@_);
-    $self->throwlog("Error", $error);
+    $self->throwlog("Error", @_);
 }
+sub Say {
+    my $self = shift;
+    $self->throwlog("Say", @_);
+}
+    
 sub throwlog {
     my $self = shift;
     my $what = shift;
-    my $error = shift;
+    my $error = $self->enlogform(@_);
 
     $self->accum("log/$what", $error);
 
