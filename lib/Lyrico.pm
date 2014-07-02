@@ -59,7 +59,7 @@ sub menu {
             $self->somewhere;
         },
         ښ => sub {
-            $self->{started} ? $self->stopclicky : $self->startclicky
+            
         },
         Թ => sub {
             $self->{hostinfo}->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");

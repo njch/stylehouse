@@ -870,7 +870,6 @@ sub timer {
     my $time = shift || 0.2;
     Mojo::IOLoop->timer( $time, @_ );
 }
-
 sub enlogform {
     my $self = shift;
 

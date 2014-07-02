@@ -205,7 +205,7 @@ sub doo {
     my $ar = shift || {};
     my $point = shift;
     
-    my $eval = $G->parse_babble($babble);
+    my $eval = $G->parse_babble($babble, $point);
     
     my $thing = $G->{t};
     my $O = $G->T->{O};
@@ -276,6 +276,7 @@ sub parse_babble {
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G,'$1')/sg;
+    $eval =~ s/G\((\w+)\)/\$H->Gf(\$G,'$1')/sg;
     $eval =~ s/Say (([^;](?! if ))+)/\$H->Say($1)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
@@ -296,7 +297,7 @@ sub parse_babble {
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
-
+    
     while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
         my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
         
