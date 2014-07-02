@@ -27,6 +27,10 @@ sub new {
     say "Ghost named $name";
     $self->load_ways(@ways);
 
+    if ($self->tractors) {
+        $H->TT($self)->G("Wormhole/tractor");
+    }
+
     return $self;
 }
 sub T {
@@ -147,6 +151,11 @@ sub chains {
     my $self = shift;
     grep { !$_->{_disabled} }
     map { @{$_->{chains}||[]} } $self->ways
+}
+sub tractors {
+    my $self = shift;
+    grep { !$_->{_disabled} }
+    map { @{$_->{tractors}||[]} } $self->ways
 }
 sub ways {
     my $self = shift;
@@ -280,6 +289,19 @@ sub parse_babble {
     $eval =~ s/Say (([^;](?! if ))+)/\$H->Say($1)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
+    #A[$splatname, $wormhole];
+    
+    
+    while ($eval =~ /(A\[(.+)\])/sg) {
+        my ($old, $spec) = ($1, $2, $3, $4, $5);
+        
+        my $are = $self->parse_babblar(undef, $spec);
+        
+        
+        $eval =~ s/\Q$old\E/G tractor Tw arr($are)/
+            || die "Ca't replace $1\n"
+            ." in\n".ind("E ", $eval);
+    }
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
@@ -298,12 +320,12 @@ sub parse_babble {
             ." in\n".ind("E ", $eval);
     }
     
-    while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
-        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
+    while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?(:?\[(.+?)\])?)/sg) {
+        my ($old, $gw, $path, $are, $square) = ($1, $2, $3, $4, $5);
         
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
-        $are = $self->parse_babblar($are);
+        $are = $self->parse_babblar($are, $square);
         
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
@@ -314,7 +336,11 @@ sub parse_babble {
 sub parse_babblar {
     my $self = shift;
     my $are = shift;
-    if ($are && $are =~ s/^\(\+ //) {
+    my $square = shift;
+    if (!$are && $square) {
+        $are = join ", ", map { (/^\$(\w+)/)[0]." => $_" } split /, /, $square;
+    }
+    if ($are && $are =~ s/^\+ //) {
         $are =~ s/\)$//;
         $are = '{ %$ar, '.$are.'}';
     }
