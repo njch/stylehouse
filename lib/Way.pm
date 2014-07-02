@@ -70,20 +70,22 @@ sub load {
 
         my @file = read_file($self->{_wayfile});
         my $xx = 1;
+        my $vision = "";
         for (@file) {
           if ($x - 8 < $xx && $xx < $x + 5) {
             if ($xx == $x) {
-              print "HERE > $_";
-              say "HERE > ".join("", (" ")x$y)."^";
+              $vision .= "HERE > $_";
+              $vision .= "HERE > ".join("", (" ")x$y)."^\n";
             }
             else {
-              print "       $_";
+              $vision .= "       $_";
             }
           }
           $xx++;
         }
         die "! YAML load $self->{_wayfile} failed: "
-        .($@ ? $@ : "got: ".($w || "~"));
+        .($@ ? $@ : "got: ".($w || "~"))
+        ."\n\n".$vision;
     }
     
     $self->init_way($w);
