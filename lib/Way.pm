@@ -52,7 +52,7 @@ sub load {
     if ($@ || !$w || ref $w ne 'HASH' || $@) {
         say $@;
         my ($x, $y) = $@ =~
-              /parser \(line (\d+), column (\d+)\)/;
+              /parser \(line (\d+), column -?(\d+)\)/;
         say <<'';
                              _..._                   
                           .-'_..._''.                
