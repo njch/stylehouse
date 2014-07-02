@@ -289,15 +289,13 @@ sub parse_babble {
     $eval =~ s/Say (([^;](?! if ))+)/\$H->Say($1)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
-    #A[$splatname, $wormhole];
     
     
     while ($eval =~ /(A\[(.+)\])/sg) {
         my ($old, $spec) = ($1, $2, $3, $4, $5);
         
         my $are = $self->parse_babblar(undef, $spec);
-        
-        
+
         $eval =~ s/\Q$old\E/G tractor Tw arr($are)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);

@@ -98,14 +98,14 @@ sub init_way {
     for my $i (keys %$w) {
         $self->{$i} = $w->{$i};
     }
-    if ($self->{chains}) {
-        my $chains = [];
-        for my $c (@{$self->{chains}}) {
+    for my $a ("chains", "tractors") {
+        next unless $self->{$a};
+        my $as = [];
+        for my $c (@{$self->{$a}}) {
             $c = $self->spawn($c);
-            push @$chains, $c;
+            push @$as, $c;
         }
-        
-        $self->{chains} = $chains;
+        $self->{$a} = $as;
     }
     say "21!";
 }    
