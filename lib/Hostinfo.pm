@@ -151,8 +151,43 @@ sub flood {
     }
     $self->{flood}->{latest} = $floozy;
 }
+sub decode_message {
+    my $self = shift;
+    my $msg = shift;
+    
+    my $j;
+    start_timer();
+    
+    `cat /dev/null > elvis_sez`;
+    $self->spurt('elvis_sez', $msg);
+    my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
+        .q{print " - reading json from elvis_sez";}
+        .q{my $j = read_file("elvis_sez");}
+        .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
+        .q{print " - convert json -> yaml\n";}
+        .q{my $d = decode_json($j);}
+        .q{print " - write yaml to elvis_sez\n";}
+        .q{DumpFile("elvis_sez", $d);}
+        .q{print " - done\n";}
+        .q{'};
+    `$convert`;
 
-# $self->{who} made websocket activity
+    eval {
+        $j = LoadFile('elvis_sez');
+
+        while (my ($k, $v) = each %$j) {
+            if (ref \$v eq "SCALAR") {
+                $j->{$k} = decode_utf8($v);
+            }
+        }
+    };
+    say "Decode in ".show_delta();
+    die "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
+        if $@;
+
+    die "$msg\n\nJSON decoded to ~undef~" unless defined $j;
+    return $j;
+}
 sub send {
     my $self = shift;
     my $message = shift;
@@ -840,13 +875,15 @@ sub enlogform {
     my $self = shift;
 
     my $e = [@_];
+#    - Mojofbd0a371 Mojo::Server::SandBox::4826ff7dbcc5a7b1e294ecb4fbd0a371::dostuff 287
 
     my @from;
     my $b = 3;
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
-        my $surface = $f =~ s/^(Mojo)::Server::SandBox::\w{24}/$1/
+        my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
             || $f =~ m/^Mojo::IOLoop/;
+        $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
         push @from, $f;
         last if $surface; 
         $b++;

@@ -255,49 +255,19 @@ websocket '/stylehouse' => sub {
     });
 $self->on(message => sub {
         my ($self, $msg) = @_;
-        say $msg if $msg =~ /Collapse\\"/;
 
         $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
         
-        return say "\n\nIGNORING Message: $msg\n\n\n\n" if $hostinfo->ignorable_mess($msg);
+        return say "\n\nIGNORING Message: $msg\n\n\n\n"
+            if $hostinfo->ignorable_mess($msg);
+        
         
         my $j;
-        if ($msg =~ /^{"event":{"id":"",/) {
-            say "STUPID MESSAGE: $msg";
+        eval { $j = $hostinfo->decode_message($msg); };
+        if ($@) {
+            $hostinfo->error("message decode fup", $@);
+            return;
         }
-        
-        start_timer();
-        `cat /dev/null > elvis_sez`;
-        $hostinfo->spurt('elvis_sez', $msg);
-        my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
-        .q{print " - reading json from elvis_sez";}
-        .q{my $j = read_file("elvis_sez");}
-        .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
-        .q{print " - convert json -> yaml\n";}
-        .q{my $d = decode_json($j);}
-        .q{print " - write yaml to elvis_sez\n";}
-        .q{DumpFile("elvis_sez", $d);}
-        .q{print " - done\n";}
-        .q{'};
-        `$convert`;
-        
-        eval {
-        $j = LoadFile('elvis_sez');
-        
-        while (my ($k, $v) = each %$j) {
-            if (ref \$v eq "SCALAR") {
-                $j->{$k} = Hostinfo::decode_utf8($v);
-            }
-        }
-        };
-        say "Decode in ".show_delta();
-        return say "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
-            if $@;
-
-        return say "$msg\n\nJSON decoded to ~undef~" unless defined $j;
-        
-        
-        
         
         
         
@@ -314,68 +284,10 @@ $self->on(message => sub {
 
         # it beings! not that we don't come through here all the time
         init() if $underworld;
-sub dostuff {
-}
-        # ongoing stuff
-        if ($j->{claw} && $hostinfo->claw($j)) {
-            # done
-        }
-        elsif (my $k = $j->{k}) {
-            my $keys = $hostinfo->getapp("Keys");
-            return unless $keys;
-            $keys->key($k);
-        }
-        elsif ($j->{e}) {
-            die $j->{d} if $hostinfo->{JErrors}++ > 3;
-            $hostinfo->error("javascript error from client", $j->{d}, $j->{e});
-        }
-        elsif (my $s = $j->{s}) {
-            # the viewport of the browser moves..
-#Lyrico used to do stuff here, it's a bit crazy but it's got potential...
-# for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
-# then bringing things back together is the key.... substance... legible shrines to anythings...
-            my $lye = $hostinfo->getapp("Lyrico");
-            return unless $lye;
-            $lye->scroll($s);
-        }
-        elsif (my $event = $j->{event}) {
-            $self->app->log->info("Looking up event handler");
-            my $id = $event->{id};
-
-            if ($id =~ /^hi_|procstartwatch/) {
-                $hostinfo->send("\$('#$id').toggleClass('widdle');");
-            }
-            elsif ($id =~ /_out$/) {
-                $hostinfo->send("\$('#$id').toggleClass('widel');");
-            }
-
-            my $thing = $hostinfo->tv_by_id($event->{id}) if $id;
-
-            start_timer();
-
-            if ($thing) {
-                $self->app->log->info("TV  $thing->{id}");
-                $thing->event($event);
-            }
-            else {
-                my $s = "TV not found".( $id ? ": $id" : ", lacking id");
-                $self->app->log->info("$s");
-
-                if (my $catcher = $self->hostinfo->get('clickcatcher')) {
-                    $self->app->log->info("Event catcher found: $catcher");
-                    $catcher->event($event);
-                }
-                else {
-                    $self->app->log->info("NOTHING");
-                    $self->send(
-                        "\$('#body').addClass('dead').delay(250).removeClass('dead');"
-                    );
-                }
-            }
-            say "event handled in ".show_delta()."\n\n";
-        }
-        else {
-            $self->send("// echo: $msg");
+        eval { dostuff($self, $j, $msg); };
+        if ($@) {
+            $hostinfo->error("message process fup", $@);
+            return;
         }
         #$hostinfo->elvis_leaves($self);
     });
@@ -387,6 +299,70 @@ sub dostuff {
     });
 
 };
+sub dostuff {
+    my ($self, $j, $msg) = @_;
+    # ongoing stuff
+    if ($j->{claw} && $hostinfo->claw($j)) {
+        # done
+    }
+    elsif (my $k = $j->{k}) {
+        my $keys = $hostinfo->getapp("Keys");
+        $keys->key($k) if $keys;
+    }
+    elsif ($j->{e}) {
+        die $j->{d} if $hostinfo->{JErrors}++ > 3;
+        $hostinfo->error("javascript error from client", $j->{d}, $j->{e});
+    }
+    elsif (my $s = $j->{s}) {
+        # the viewport of the browser moves..
+        #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
+        # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
+        # then bringing things back together is the key.... substance... legible shrines to anythings...
+        my $lye = $hostinfo->getapp("Lyrico");
+        $lye->scroll($s) if $lye;
+    }
+    elsif (my $event = $j->{event}) {
+        $self->app->log->info("Looking up event handler");
+        my $id = $event->{id};
+
+        if ($id =~ /^hi_|procstartwatch/) {
+            $hostinfo->send("\$('#$id').toggleClass('widdle');");
+        }
+        elsif ($id =~ /_out$/) {
+            $hostinfo->send("\$('#$id').toggleClass('widel');");
+        }
+
+        my $thing = $hostinfo->tv_by_id($event->{id}) if $id;
+
+        start_timer();
+
+        if ($thing) {
+            $self->app->log->info("TV  $thing->{id}");
+            $thing->event($event);
+        }
+        else {
+            my $s = "TV not found".( $id ? ": $id" : ", lacking id");
+            $self->app->log->info("$s");
+
+            if (my $catcher = $self->hostinfo->get('clickcatcher')) {
+                $self->app->log->info("Event catcher found: $catcher");
+                $catcher->event($event);
+            }
+            else {
+                $self->app->log->info("NOTHING");
+                $self->send(
+                    "\$('#body').addClass('dead').delay(250).removeClass('dead');"
+                );
+            }
+        }
+        say "event handled in ".show_delta()."\n\n";
+    }
+    else {
+        my $undorf = !defined $msg ? " is~undef~" : "";
+        $hostinfo->error("EH!? '$msg'$undorf");
+    }
+    say "Done\n\n\n\n\n";
+}
 
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => [$mojo_daemon_listen]);
 $daemon->run();
