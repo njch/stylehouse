@@ -1,6 +1,6 @@
 name: wormhole splatter
 tractors:
-  - K: Wormholes
+  - K: Wormhole Splat
     arr_if: |
       $splatname =~ /^\w+$/ && ref $wormhole eq "Wormhole"
     B_: |
@@ -20,7 +20,8 @@ tractors:
       
     nonfirst_times: |
       $S->{view}->fadehtml();
-    arr: blah
+    print: |
+      $S->{K} .": ". $S->{B}->{_}
 hooks:
   load_ways_post: |
     
@@ -122,6 +123,12 @@ hooks:
     t:
       v: |
         my $t = $line->{t};
+        if (ref $t eq "Way") {
+            if ($t->{B}) {
+                my $p = w $t print;
+                return $p if $p;
+            }
+        }
         ref $t ? "$t" : $t;
       s: |
         my $t = $line->{t};
