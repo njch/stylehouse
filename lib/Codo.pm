@@ -133,7 +133,6 @@ sub codefiles {
         $dir .= "/" unless $dir =~ /\/$/;
     
     map { Hostinfo::decode_utf8($_) }
-        "not",
         grep { !$dir || s/^$dir// } (
             glob($dir.'stylehouse.*'),
             glob($dir.'lib/*.pm'),
