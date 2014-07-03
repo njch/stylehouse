@@ -291,13 +291,16 @@ sub parse_babble {
     $eval =~ s/T (?=->)/->T() /sg;
     
     
-    while ($eval =~ /(A\[(.+)\])/sg) {
+    while ($eval =~ /(A\[(.+?)\])/sg) {
         my ($old, $spec) = ($1, $2);
         
-        
         my $are = $self->parse_babblar(undef, $spec);
+        
+        my $tw = join ", ", 
+            map { $_ || 'undef' }
+            ("\$H->Gf(\$G,'tractor')", undef, "'arr'", $are, undef);
 
-        $eval =~ s/\Q$old\E/\$H->Gf(\$G,'tractor') Tw arr($are)/
+        $eval =~ s/\Q$old\E/\$G->Tw($tw)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }

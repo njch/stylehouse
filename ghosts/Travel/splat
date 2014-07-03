@@ -16,10 +16,10 @@ tractors:
             ."border: 2px solid white; z-index: 10; background: #B247F0;"
             ." color: #030; font-weight: bold; "
       }
-      $A->{view} = $H->{sky}->spawn_floozy($G, $splatname, $style);
+      $S->{view} = $H->{sky}->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
-      $A->{view}->wipehtml();
+      $S->{view}->wipehtml();
     arr: blah
 hooks:
   load_ways_post: |
@@ -33,14 +33,14 @@ hooks:
     my $S = A[$splatname, $wormhole];
     
     
-    say "Wormhole Splattur: $v->{divid}     ".$wormhole->describe_size();
+    say "Wormhole Splattur: $S->{view}->{divid}     ".$wormhole->describe_size();
     
     my $lines = [];
     for my $line (@{$wormhole->{script}}) {
         #say " : $line->{depth} - $line->{t}";
         push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
-    my $t = $v->newtext($lines, {
+    my $t = $S->{view}->newtext($lines, {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%; background: #fff;',
