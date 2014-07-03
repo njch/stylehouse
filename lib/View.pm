@@ -228,6 +228,13 @@ sub wipehtml {
     # $self->fit_div(); TODO how to?
     1;
 }
+sub fadehtml {
+    my $self = shift;
+    $self->hostinfo->send("\$('#".$self->{divid}." > *').fadeOut();") if $self->html;
+    $self->html("");
+    # $self->fit_div(); TODO how to?
+    1;
+}
 sub float {
     my $self = shift;
     
