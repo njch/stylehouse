@@ -292,11 +292,12 @@ sub parse_babble {
     
     
     while ($eval =~ /(A\[(.+)\])/sg) {
-        my ($old, $spec) = ($1, $2, $3, $4, $5);
+        my ($old, $spec) = ($1, $2);
+        
         
         my $are = $self->parse_babblar(undef, $spec);
 
-        $eval =~ s/\Q$old\E/G tractor Tw arr($are)/
+        $eval =~ s/\Q$old\E/\$H->Gf(\$G,'tractor') Tw arr($are)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
