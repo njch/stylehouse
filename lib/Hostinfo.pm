@@ -894,10 +894,12 @@ sub info {
     my $self = shift;
     $self->throwlog("Info", @_);
 }
+sub Info { shift->info(@_) }
 sub error {
     my $self = shift;
     $self->throwlog("Error", @_);
 }
+sub Err { shift->error(@_) }
 sub Say {
     my $self = shift;
     $self->throwlog("Say", @_);

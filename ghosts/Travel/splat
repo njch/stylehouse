@@ -71,9 +71,9 @@ hooks:
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
-  gosomewhere: |
-      say "\n  Heading to $thing\n\n";
-      $O->w('somewhere', {thing => $thing});
+  go: |
+      Info "\n  Heading to ".join "  ", %$ar;
+      $O->w('somewhere', $ar);
       
       
       # ye
@@ -100,17 +100,14 @@ hooks:
       v: |
         my $t = $line->{t};
         my $menu = [];
-        if (ref $t && "$t" =~ /HASH/) {
-            if ($t->{GG}) {
-                my @g = $t->{GG} Tw splatmenues;
-                push @$menu, @g;
-            }
-        }    
-        push @$menu,
-          Ώ => sub {
-            w gosomewhere(+ thing => $line->{t})
-          };
         
+        if (ref $t && "$t" =~ /HASH/ && $t->{GG}) {
+            push @$menu, $t->{GG} Tw splatmenues;
+        }
+        
+        push @$menu, 't' => sub { w go( thing => $t ) };
+        push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
+            if ref $t eq "Wormhole";
         
         {
         contyt => { bb => $b->{bb} },
@@ -137,7 +134,9 @@ hooks:
                   : ref $t eq "HASH" ? "F42211" : "FF6666")
         : "000032"
         ).";";
-        $s->{_event} = sub { w gosomewhere( line => $line ) }
+        $s->{_event} = $splatname eq "trev" ?
+            sub { w go( line => $line ) } :
+            sub { w go( thing => $t ) }
     d:
       v: |
         $line->{depth}
@@ -160,13 +159,13 @@ hooks:
             $K eq 'dsc/%' ? "FF8533" :
             $K eq 'dsc/@' ? "85FF33" :
             'bbb' ).";";
-        $s->{_event} = sub { w gosomewhere(+ thing => $line->{i}) }
+        $s->{_event} = sub { w go(+ thing => $line->{i}) }
     o:
       v: |
         $b->{c} = $line->{o};
         w desc/chain(+ c => $b->{c});
       s: |
-        $s->{_event} = sub { w gosomewhere(+ thing => $line->{o}) }
+        $s->{_event} = sub { w go(+ thing => $line->{o}) }
   
   desc:
     chain: |
