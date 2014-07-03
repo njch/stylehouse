@@ -13,40 +13,43 @@ hooks:
     #timer 0.3 { $H->info("Alright MATE!?") };
     my $codons = $H->data->{Codon};
     timer 0.4 { w somewhere(thing => $codons) };
-  somewhere: |
-    my $thing = $ar->{thing} || $O;
-    
-    
-    G ob ->RW;
-    G crawl ->RW;
+  resurround: |
     G follow ->RW;
-    
-    G crawl T ->{TT} = G ob;
     
     G follow T G ob;
     G follow T $H;
     G follow T $O;
     G follow T $thing;
     
-    G crawl T $thing;
-    
-    my $Gs = G splat;
-    G splat Tw splat_wormhole(trev => G(crawl)->W );
+  reflect: |
+    G splat Tw splat_wormhole(trev => $wormhole);
     
     G splat Tw splat_wormhole(wing => G(follow)->W );
     
     G splat Tw splat_wormhole(splatselves => G(splat)->W );
     
-    Say "seen $thing";
+  somewhere: |
+    my $thing = $ar->{thing};
+    my $wormhole = $ar->{wormhole};
     
-  splatmenu: |
-      ob => sub { w splatob };
-  splatob: |
-    G splat Tw splat_wormhole(ob => G(ob)->W );
+    w resurround;
+    unless ($wormhole) {
+          die "no thing no wormhole!" unless $thing;
+        G ob ->RW;
+        G crawl T ->{TT} = G ob;
+        G crawl ->RW;
+        G crawl T $thing;
+        $wormhole = G(crawl)->W;
+    }
     
-  menu: |
-    my $v = $sky->spawn_floozy($O->{wni}++, "position:absolute;");
-    say "Something!\n" for 1..20;
-something:
-  else: 1
+    w reflect( wormhole => $wormhole );
+    
+  somewormhole: |
+      Say "raw Wormhole: $wormhole->{name}";
+    
+    w resurround;
+    w reflect(wormhole => $wormhole);
+  splatmenues: |
+    my $ob = G(ob)->W;
+    ob => sub { w somewhere(thing => $ob) };
 
