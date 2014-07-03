@@ -117,7 +117,6 @@ hooks:
         nospace => 1,
         event => { menu => $menu },
         class => 'menu',
-        tuxtstyle => "font-size:25pt;",
         }]
         }
     t:
@@ -146,7 +145,7 @@ hooks:
         $s->{style}.= "direction:rtl;";
         $s->{style}.=" width: ".(($line->{depth}+1) * 2 + 3)."em;";
         if ($line->{depth} == 0) {
-            $s->{style}.= "background-color:#445; max-width: 45em; word-wrap: break-word; overflow:hidden; max-height: 2em;";
+            $s->{style}.= "font-size:10pt;background-color:#445; max-width: 450em; word-wrap: break-word; overflow:hidden; max-height: 3em;";
         }
         my $K = $b->{c}->{K};
         $K ||= ">:|";
@@ -159,6 +158,8 @@ hooks:
       v: |
         $b->{c} = $line->{o};
         w desc/chain(+ c => $b->{c});
+      s: |
+        $s->{_event} = sub { w gosomewhere(+ thing => $line->{o}) }
   
   desc:
     chain: |
@@ -171,6 +172,8 @@ hooks:
               push @cl,
             scalar w desc/chain(+ c => $_)
           }
+          return "?" unless @cl;
+          
           return join(", ", @cl) || ".";
       }
       my $l =
