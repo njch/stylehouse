@@ -10,12 +10,12 @@ hooks:
         G TT ->G("Lyrico/follow");
         G TT ->G("Lyrico/ob");
     }
-    timer 0.3 { $H->info("Alright MATE!?") };
-    timer 0.4 { w somewhere };
+    #timer 0.3 { $H->info("Alright MATE!?") };
+    my $codons = $H->data->{Codon};
+    timer 0.4 { w somewhere(thing => $codons) };
   somewhere: |
     my $thing = $ar->{thing} || $O;
     
-    $H->info("Some $thing");
     
     G ob ->RW;
     G crawl ->RW;
@@ -27,8 +27,6 @@ hooks:
     G follow T $H;
     G follow T $thing;
     
-    my $t = G TT;
-    Say " G_TT_ returns: ", [$t];
     G crawl T $thing;
     
     my $Gs = G splat;
@@ -38,6 +36,7 @@ hooks:
     
     G splat Tw splat_wormhole(splatselves => G(splat)->W );
     
+    Say "seen $thing";
     
   splatob: |
     G splat Tw splat_wormhole(ob => G(ob)->W );
