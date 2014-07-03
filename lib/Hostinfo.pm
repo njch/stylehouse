@@ -35,7 +35,7 @@ sub new {
     $Git::H = $self;
     $Way::H = $self;
 
-    
+    $self->{GG} = $self->TT($self)->G;
 
     #jQuery.Color().hsla( array )
     return $self
@@ -43,7 +43,7 @@ sub new {
 sub TT {
     my $self = shift;
     my @from = @_;
-    @from = $self unless @from;
+    @from || die "WTF H::TT NO FROM";
     say "H Making Travel @from";
     return Travel->new($self->intro, @from);
 }
