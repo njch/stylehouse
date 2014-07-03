@@ -50,19 +50,18 @@ sub travel {
     
     my ($line, $o) = $G->haunt($depth, $t, $i, $last_line);
 
-    my @r;
+    my @r = $self->W;
     for my $c (@$o) {
         if (exists $c->{travel_this}) {
             $self->travel($c->{travel_this}, $G, $c, $depth+1, $line);
         }
-        elsif (exists $c->{travel_returns}) {
-            push @r, @{$c->{travel_returns}};
+        elsif (exists $c->{arr_returns}) {
+            @r = @{$c->{arr_returns}};
         }
         else {
             die "what kind of way out is ".ddump($c);
         }
     }
-    push @r, $self->W unless @r;
 
     return @r;
 }

@@ -130,7 +130,7 @@ sub haunt { # arrives through here
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
-        push @$o, $i->spawn()->from({ travel_returns => \@r });
+        push @$o, $i->spawn()->from({ arr_returns => \@r });
         
     }
     else {
