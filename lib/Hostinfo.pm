@@ -945,7 +945,7 @@ sub wdump {
     my $thing = shift;
     use Data::Dumper;
     $Data::Dumper::Maxdepth = 3;
-    return Dumper($thing);
+    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 sub intro {
     my $self = shift;
