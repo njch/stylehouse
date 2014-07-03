@@ -27,22 +27,23 @@ hooks:
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
-    Say "splatting for: $O->{name}", $G->{name};
-    
     my $A = A[$splatname, $wormhole];
     
-    
-    say "Wormhole Splattur: $splatname ".$wormhole->describe_size();
+    #Say "Wormhole Splattur: $splatname ".$wormhole->describe_size();
     
     my $lines = [];
+    my $i = 0;
     for my $line ($wormhole->star) {
-        #say " : $line->{depth} - $line->{t}";
-        push @$lines, w make_line(+ line => $line, R => [], B => {});
+        if($i++ > 40) {
+            push @$lines, "more..."
+        }
+        push @$lines, w make_line(+ splatname => $splatname,
+            line => $line, R => [], B => {});
     }
     my $t = $A->{view}->newtext($lines, {
         nospace => 1,
         class => 'menu',
-        tuxtstyle => 'width: 100%; background: #fff;',
+        tuxtstyle => 'width: 100%;',
     });
   make_line: |
     if (ref $line ne "HASH") {
@@ -55,7 +56,7 @@ hooks:
     return { _spawn => [ $R, {
         nospace => 1,
         B => $B,
-        tuxtstyle => 'opacity:1;position: relative; float: left; background: #0066CC; ',
+        tuxtstyle => 'opacity:1; height:120%;position: relative; float: left; background: #0066CC; ',
         tuxts_to_htmls => sub {
             my $texty = shift;
             my $tx = $texty->{tuxts};
@@ -79,6 +80,9 @@ hooks:
   line:
     value: |
       my @atom = qw[d i t o m]; # TODO combine d+i = a
+      if ($splatname eq "wing") {
+          @atom = qw[t m];
+      }
       for my $bb (@atom) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
@@ -95,10 +99,10 @@ hooks:
       v: |
         my $t = $line->{t};
         my $menu = [];
-        if (ref $t && ref $t =~ /HASH/) {
+        if (ref $t && "$t" =~ /HASH/) {
             if ($t->{GG}) {
-                push @$menu,
-                $t->{GG} Tw splatgoes;
+                my @g = $t->{GG} Tw splatmenues;
+                push @$menu, @g;
             }
         }    
         push @$menu,
@@ -106,11 +110,6 @@ hooks:
             w gosomewhere(+ thing => $line->{t})
           };
         
-        if (ref $t && "$t" =~ /\wHASH/) {
-            if ($t->{Ώ}) {
-                push @$menu, each %{$t->{Ώ}};
-            }
-        }
         
         {
         contyt => { bb => $b->{bb} },
@@ -118,17 +117,16 @@ hooks:
         nospace => 1,
         event => { menu => $menu },
         class => 'menu',
+        tuxtstyle => "font-size:25pt;",
         }]
         }
-      s: |
-        $s->{style}.="border: none;"
     t:
       v: |
         my $t = $line->{t};
         ref $t ? "$t" : $t;
       s: |
         my $t = $line->{t};
-        $s->{style}.="font-weight:900; color:#".(
+        $s->{style}.="font-weight:900; font-size: 15pt; color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : ref $t eq "HASH" ? "F42211" : "FF6666")
         : "000032"
@@ -148,7 +146,7 @@ hooks:
         $s->{style}.= "direction:rtl;";
         $s->{style}.=" width: ".(($line->{depth}+1) * 2 + 3)."em;";
         if ($line->{depth} == 0) {
-            $s->{style}.= "background-color:#445; width: 15em; word-wrap: break-word; ";
+            $s->{style}.= "background-color:#445; max-width: 45em; word-wrap: break-word; overflow:hidden; max-height: 2em;";
         }
         my $K = $b->{c}->{K};
         $K ||= ">:|";
