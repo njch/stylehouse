@@ -22,8 +22,10 @@ sub new {
     unless (@ways) {
         @ways = "Elvis";
     }
-    $name = "$name - ".join", ",@ways;
+    my $way = join", ",@ways;
+    $name = "$name`s $way";
     $self->{name} = $name;
+    $self->{way} = $way;
     say "Ghost named $name";
     $self->load_ways(@ways);
 
@@ -56,12 +58,9 @@ sub Tw {
     #   for more thinking before travelling
     
     my @r = $GG->T->travel($thing, undef, $w);
-    # TODO stop passing ghost through travel
     
-    die "Many returns for Tw to $GG->{name}\nway: $wp".ddump(\@r) if @r != 1;
-    die "TRravel treutnrs:". Hostinfo::ddump($r[0]);
-    return @{ $r[0] };
-    ($GG, $Twar, $wp, $war, $thing);
+    die "Many returns for Tw to $GG->{name}\nway: $wp".wdump(\@r) if @r != 1;
+    return $r[0];
 }
 sub W {
     my $self = shift;
@@ -135,6 +134,7 @@ sub haunt { # arrives through here
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ travel_returns => \@r });
+        
     }
     else {
         $self->w("arr");
@@ -166,22 +166,22 @@ sub w {
     my $self = shift;
     my $point = shift;
     my $ar = shift;
-    my $way = shift; # so we can get into chains
+    my $Sway = shift; # so we can get into chains/tractors
     # these might want to be a wormhole that travel mixes in
     # things gather along the spines
     # and be the big thing to do or a little thing to do
     # these stuff go together like that, hopefully, with language forming their surface tension
     # jelly pyramids...
     my @ways;
-    if ($way) {
-        if (ref $way eq 'Ghost') {
-            @ways = $way->ways;
+    if ($Sway) {
+        if (ref $Sway eq 'Ghost') {
+            @ways = $Sway->ways;
             die "really?";
         }
-        elsif (ref $way eq 'Way') {
-            @ways = $way;
+        elsif (ref $Sway eq 'Way') {
+            @ways = $Sway;
         }
-        $ar = {%$ar, way => $way}; # TODO should s/way/c/
+        $ar = {%$ar, S => $Sway};
     }
     else {
         @ways = $self->ways;
@@ -233,6 +233,8 @@ sub doo {
         .($upload||'');
     eval $evs;
     
+    
+    
     if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
@@ -254,7 +256,7 @@ sub doo {
         }
         
         my $DOOF;
-        $DOOF .= "\n".<<"" if $@ !~ /DOOF/;
+        $DOOF .= "\n".<<"" if $@ !~ /DOOF/ && $@ !~ /^Yep/;
      .-'''-.     
    '   _    \   
  /   /` '.   \  
@@ -264,7 +266,8 @@ sub doo {
  `.   ` ..' /   
     '-...-'`    
 
-        $DOOF .= "DOOF $point  ".join(", ", keys %$ar)."\n"
+        $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
+            ."  way point: $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         

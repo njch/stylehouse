@@ -3,7 +3,7 @@ tractors:
   - K: Wormholes
     arr_if: |
       $splatname =~ /^\w+$/ && ref $wormhole eq "Wormhole"
-    key: |
+    B_: |
       $splatname
     first_time: |
       my $style = "padding: 1em;position:absolute;overflow:hidden;";
@@ -11,8 +11,8 @@ tractors:
           $style .= "right: 0px;border:5px solid green;width:10em;z-index:20;"
       }
       elsif ($splatname eq "splatselves") {
-            $style = "max-width:39%; left:0px; bottom:0px;"
-            ."position:absolute; overflow-x: scroll; height:4em;"
+            $style = "max-width:60%; height: 14em; left:0px; bottom:0px;"
+            ."position:absolute; overflow-x: scroll;"
             ."border: 2px solid white; z-index: 10; background: #B247F0;"
             ." color: #030; font-weight: bold; "
       }
@@ -25,27 +25,29 @@ hooks:
   load_ways_post: |
     
   splat_wormhole: |
-    my $GG = $G->{somewhereness} = $G->{i}->{GG};
     my ($splatname, $wormhole) = %$ar;
     
-    Say "splatting from: $GG->{name}";
+    Say "splatting for: $O->{name}", $G->{name};
     
-    my $S = A[$splatname, $wormhole];
+    my $A = A[$splatname, $wormhole];
     
     
-    say "Wormhole Splattur: $S->{view}->{divid}     ".$wormhole->describe_size();
+    say "Wormhole Splattur: $splatname ".$wormhole->describe_size();
     
     my $lines = [];
-    for my $line (@{$wormhole->{script}}) {
+    for my $line ($wormhole->star) {
         #say " : $line->{depth} - $line->{t}";
         push @$lines, w make_line(+ line => $line, R => [], B => {});
     }
-    my $t = $S->{view}->newtext($lines, {
+    my $t = $A->{view}->newtext($lines, {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%; background: #fff;',
     });
   make_line: |
+    if (ref $line ne "HASH") {
+        return "FUKN ".wdump($line);
+    }
     my $ghost = $line->{ghost};
 
     w line/value;
@@ -57,7 +59,8 @@ hooks:
         tuxts_to_htmls => sub {
             my $texty = shift;
             my $tx = $texty->{tuxts};
-            w tuxtsB(+ tx => $tx);
+            
+            w tuxtsB(B => $B, tx => $tx);
             w line/style;
         },
     }]}
@@ -68,7 +71,7 @@ hooks:
       }
   gosomewhere: |
       say "\n  Heading to $thing\n\n";
-      $somewhereness->w('somewhere', {thing => $thing});
+      $O->w('somewhere', {thing => $thing});
       
       
       # ye

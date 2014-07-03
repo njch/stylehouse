@@ -54,7 +54,7 @@ sub Gf {
     # TODO
     my @Gs = map { $_->{G} }
         grep { #$_->{O} eq $O TODO
-        1 && $_->{G} && $_->{G}->{name} =~ /$way/ }
+        1 && $_->{G} && $_->{G}->{way} =~ /$way/ }
         @{$self->get('Travel')};
     if (@Gs > 1) {
         $self->error("H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way", \@Gs, $self->get('Travel'));

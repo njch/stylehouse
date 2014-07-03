@@ -2,20 +2,66 @@ name: ghost data structure crawl
 desc: |
     Blah
     Babbel:
-        A[$splatname, $wormhole]   
-     ->   G tractor Tw arr(splatname => $splatname, wormhole => $wormhole);
-    
     
     Blah
     
 hooks:
+  load_ways_post: |
+    #
+    #
+    #
+    #
+    #
   arr: |
     $G->{As} = [ $O->tractors ];
-    for my $A ($G->{As}) {
+    my @AA;
+    for my $A (@{$G->{As}}) {
         if (w $A arr_if) {
-            say "$splatname $wormhole !";
+            push @AA, $A->spawn();
         }
     }
+    
+
+    die "CROWD OF TRACTORS" if @AA > 1;
+    for my $A (@AA) {
+        $A->{B} = {
+            _ => scalar(w $A B_),
+            %$ar,
+        };
+        #$A->{AA} = $G;
+    }
+    
+    for my $A (@AA) {
+        
+        if (my $Already = w retract(A => $A)) {
+            $Already->{B} = $A->{B};
+            $A = $Already;
+            w $A nonfirst_times;
+        }
+        else {
+            $A = $A->spawn;
+            w $A first_time;
+        }
+        $O->{t} = $A;
+    }
+    
+    return @AA    ;
+  retract: |
+    my @keep = [];
+    my @found;
+    for my $line (@{ $O->W->{script} }) {
+        #$H->info("Line: $line", $O->{name}, $line);
+        next if ref $line eq "ARRAY" && @$line == 0; # wtf case
+        if ($line->{t}->{B}->{_} eq $A->{B}->{_}) { # ar this to W->{G}?
+             push @found, $line;
+        }
+        else {
+            push @keep, $line;
+        }
+    }
+    $O->W->{script} = \@keep;
+    return if !@found;
+    return $found[0]->{t};
     
     
     
@@ -27,7 +73,7 @@ hooks:
     
     #
     
-  load_ways_post: |
+  load_ways_pasta: |
     
 
     my @actcs;
