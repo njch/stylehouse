@@ -15,12 +15,11 @@ sub new {
     shift->($self);
     delete $self->{hostinfo};
 
-    my $travel = shift;
-    $self->{T} = $travel;
-    my $name = $travel->{name};
+    $self->{T} = shift;
+    my $name = $self->{T}->{name};
     my @ways = @_;
     unless (@ways) {
-        @ways = "Elvis";
+        @ways = ref $self->{T}->{O};
     }
     my $way = join", ",@ways;
     $name = "$name`s $way";

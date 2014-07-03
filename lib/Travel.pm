@@ -13,7 +13,7 @@ sub new {
 
     $self->{O} = shift || die "no O";
     $self->{from} = [$self->{O}, @_];
-    $self->{name} = $self->{O}->{name} || $self->{O}->{id};
+    $self->{name} = $self->{O}->{name} || $self->{O}->{id} || "$self->{O}";
 
     return $self;
 }
