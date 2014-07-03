@@ -26,6 +26,10 @@ sub ob {
     my $self = shift;
     $self->{G}->ob(@_);
 }
+sub star {
+    my $self = shift;
+    @{$self->{script}}
+}
 sub continues {
     my ($self, $ghost) = @_; # %
 
