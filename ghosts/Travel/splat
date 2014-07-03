@@ -106,11 +106,6 @@ hooks:
             w gosomewhere(+ thing => $line->{t})
           };
         
-        if (ref $t && ref $t eq 'Hostinfo') {
-            push @$menu, data => sub {
-                $O->{L}->w('somewhere', {thing => $t->data() });
-            }
-        }
         if (ref $t && "$t" =~ /\wHASH/) {
             if ($t->{Ώ}) {
                 push @$menu, each %{$t->{Ώ}};
@@ -143,23 +138,25 @@ hooks:
       v: |
         $line->{depth}
       s: |
-        $s->{style}.="color: blue; text-align:right;";
+        $s->{class}.=" splat-d";
+        
     i:
       v: |
         $b->{c} = $line->{i};
         w desc/chain(+ c => $b->{c});
       s: |
-        $s->{style}.= "direction:rtl; min-width:"
-        .(($line->{depth}+1) * 2 + 3)."em;";
+        $s->{style}.= "direction:rtl;";
+        $s->{style}.=" width: ".(($line->{depth}+1) * 2 + 3)."em;";
         if ($line->{depth} == 0) {
-            $s->{style}.= "background-color:#445;";
+            $s->{style}.= "background-color:#445; width: 15em; word-wrap: break-word; ";
         }
         my $K = $b->{c}->{K};
         $K ||= ">:|";
         $s->{style}.="background-color:#".(
             $K eq 'dsc/%' ? "FF8533" :
             $K eq 'dsc/@' ? "85FF33" :
-            '000' ).";";
+            'bbb' ).";";
+        $s->{_event} = sub { w gosomewhere(+ thing => $line->{i}) }
     o:
       v: |
         $b->{c} = $line->{o};

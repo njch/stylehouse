@@ -10,14 +10,7 @@ sub TT { Hostinfo::TT(@_) }
 
 my $i = 0; # sweeps through @{lyrics}
 our $H;
-$Hostinfo::data->{'horizon'} =
-    $Hostinfo::data->{style} eq
-"stylehouse"?
-"40%"
-:
-#"89.91%"
-"90.0%"
-;
+$Hostinfo::data->{'horizon'} = "90.0%";
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
@@ -62,7 +55,7 @@ sub menu {
             
         },
         Թ => sub {
-            $self->{hostinfo}->send("\$('.".$self->{lyrico}->{divid}."').animate({left: 400}, 5000, 'swing');");
+            $H->send("\$(#sky div').animate({left: 400});");
         },
     };
     return { _spawn => [ [ sort keys %$m ], {

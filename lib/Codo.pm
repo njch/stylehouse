@@ -83,6 +83,9 @@ sub menu {
         Ꮉ => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
+        '≲' => sub {
+            $H->JS("\$('#splatselves').toggleClass('widdle');");
+        },
     ];
     return { _spawn => [ [], {
         event => { menu => $m },
