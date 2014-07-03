@@ -178,7 +178,9 @@ sub w {
         elsif (ref $Sway eq 'Way') {
             @ways = $Sway;
         }
-        $ar = {%$ar, S => $Sway};
+        my $b = {};
+        %$b = %{$Sway->{B}} if $Sway->{B};
+        $ar = {%$ar, S => $Sway, %$b};
     }
     else {
         @ways = $self->ways;
