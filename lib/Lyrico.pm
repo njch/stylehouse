@@ -55,7 +55,7 @@ sub menu {
             
         },
         Թ => sub {
-            $H->send("\$(#sky div').animate({left: 400});");
+            $H->send("\$('#sky div').animate({left: 400});");
         },
     };
     return { _spawn => [ [ sort keys %$m ], {

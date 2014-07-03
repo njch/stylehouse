@@ -386,8 +386,6 @@ __DATA__
         <script src="jquery.scrollTo.js"></script>
         <script src="jquery.color.js"></script>
         
-        <link href="font-awesome.min.css" rel="stylesheet">
-        
         <script src="jquery.transform2d.js"></script>
 
         <script src="codemirror/lib/codemirror.js"></script>

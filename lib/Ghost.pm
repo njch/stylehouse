@@ -57,9 +57,7 @@ sub Tw {
     #   for more thinking before travelling
     
     my @r = $GG->T->travel($thing, undef, $w);
-    
-    die "Many returns for Tw to $GG->{name}\nway: $wp".wdump(\@r) if @r != 1;
-    return $r[0];
+    return wantarray ? @r : $r[0];
 }
 sub W {
     my $self = shift;
@@ -185,6 +183,7 @@ sub w {
     else {
         @ways = $self->ways;
     }
+    
     
     my @returns;
     for my $w (@ways) {
