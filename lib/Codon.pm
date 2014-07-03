@@ -173,7 +173,7 @@ var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
     theme: '$theme',
     lineWrapping: true,
     extraKeys: {
-        'F11': function(cm) {
+        'F9': function(cm) {
           cm.setOption("fullScreen", !cm.getOption("fullScreen"));
         },
         "Esc": function(cm) {
