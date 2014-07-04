@@ -286,10 +286,11 @@ sub takeover {
     }
     elsif (my $apid = $texty->{hooks}->{append}) {
         if ($apid =~ /\w\w/) {
-            return $self->append_spans("#$apid", $html, "replaceWith");
+            return $self->append_spans("#$apid", $html, "parent().after")
+            && $self->{hostinfo}->JS("\$('#$apid').parent().slideUp();");
         }
         else {
-        $self->{html} .= $html;
+            $self->{html} .= $html;
         }
     }
     else {
@@ -301,7 +302,6 @@ sub takeover {
 
     $self->append_spans("#$self->{divid}" => $html);
     
-#    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
     $texty->tookover() if $texty;
 }
 sub append_spans {
@@ -316,7 +316,7 @@ sub append_spans {
 
     my $Bmax = 30000;
     if (length($html) < $Bmax) {
-        $self->hostinfo->send("  \$('$sel').$attach('$html');");
+        $self->hostinfo->send("  \$('$sel').$attach('$html').slideDown();");
     }
     else {
         my @htmls = split /(?<=<\/span>)/, $html;
