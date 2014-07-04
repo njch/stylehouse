@@ -144,6 +144,10 @@ hooks:
         $line->{depth}
       s: |
         $s->{class}.=" splat-d";
+        $s->{_event} = sub {
+            my ($e, $s, $t) = @_;
+            $H->JS("\$('.$t->{id}').slideUp();");
+        };
         
     i:
       v: |
@@ -151,8 +155,9 @@ hooks:
         w desc/chain(+ c => $b->{c});
       s: |
         $s->{class} .= " splat-w ";
-        $s->{style}.= "";
-        $s->{style}.=" direction:rtl;width: ".(($line->{depth}+1) * 2 + 3)."em;" if $line->{depth} > 0;
+        $s->{style}.=" direction:rtl;width: "
+        .(($line->{depth}+1) * 2 + 3)."em;"
+            if $line->{depth} > 0;
         
         my $K = $b->{c}->{K};
         

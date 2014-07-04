@@ -43,13 +43,13 @@ sub somewhere {
     
     return say 'NOT SOMEWHERE YET' unless $self->{GG};
     
-    $self->{GG}->w("somewhere");
+    $self->{GG}->w("somewhere", {thing => \@_});
 }
 sub menu {
     my $self = shift;
     my $m = {
         چ => sub {
-            $self->somewhere;
+            $self->somewhere(@_);
         },
         ښ => sub {
             
