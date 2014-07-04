@@ -24,7 +24,6 @@ tractors:
       $S->{K} .": ". $S->{B}->{_}
 hooks:
   load_ways_post: |
-    
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
@@ -46,6 +45,9 @@ hooks:
         class => 'menu',
         tuxtstyle => 'width: 100%;',
     });
+    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
+    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
+    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
   make_line: |
     if (ref $line ne "HASH") {
         return "FUKN ".wdump($line);
@@ -159,6 +161,7 @@ hooks:
             $K eq 'dsc/@' ? "85FF33" :
             'bbb' ).";" if $K;
             
+        $s->{style} .= "font-size:7pt;" if length($s->{value}) > 8;
         $s->{_event} = sub { w go(+ thing => $line->{i}) }
     o:
       v: |
@@ -166,6 +169,7 @@ hooks:
         w desc/chain(+ c => $b->{c});
       s: |
         $s->{class} .= " splat-w ";
+        $s->{style} .= "font-size:7pt;" if length($s->{value}) > 8;
         $s->{_event} = sub { w go(+ thing => $line->{o}) }
   
   desc:
@@ -179,18 +183,19 @@ hooks:
               push @cl,
             scalar w desc/chain(+ c => $cc)
           }
-          return "0" unless @cl;
+          return "none" unless @cl;
           
           
           my @names = @cl;
           return scalar(@cl)." @names";
       }
       my $l = w $c print;
-      $l ||=
+      unless (defined $l) {
+          $l = 
           join ", ",
               map { "$_: $c->{$_}" }
               sort keys %$c;
-      
+      }
      
       if (0 && $c->{as_from}) {
           $l .= "<".w desc/chain(+ c => $c->{as_from});

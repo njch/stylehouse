@@ -44,10 +44,10 @@ sub Tw {
     my ($GG, $Twar, $wp, $war, $thing) = @_;
     
     my $w = $self->nw();
-    $w->{GG} = $self; # reflection of $GG
     $w->{arr_hook} = $wp if $wp;
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
+    $w->{print} = '"$G->{name} $S->{arr_hook} ".join",",%{$S->{arr_ar}};';
     # on some levels, travel_this hooks arr with thing
     # we want to impose the case left by $G straight into wp
     die $thing if $thing && $wp;
@@ -310,10 +310,11 @@ sub parse_babble {
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
-    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
+    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)?(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
         my ($old, $GG, $Twar, $wp, $war, $thing) = ($1, $2, $3, $4, $5);
         
-        $wp = "'$wp'" if $wp;
+        $wp ||= "arr";
+        $wp = "'$wp'";
         $war = $self->parse_babblar($war) if $war;
         
         my $tw = join ", ", 

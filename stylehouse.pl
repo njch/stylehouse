@@ -387,6 +387,7 @@ __DATA__
         <script src="jquery.color.js"></script>
         
         <script src="jquery.transform2d.js"></script>
+        <script src="jquery.hoverIntent.js"></script>
 
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
