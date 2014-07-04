@@ -102,7 +102,7 @@ sub display {
 
         if ($ness =~ /^Open/) {
             $rows = 105 if $rows > 105;
-            $rows = 2 if $rows < 2;
+            $rows = 5 if $rows < 5;
 
             if ($ness eq "Open") {
                 my $tempid = $texty->{id}."-Temp-$i";
