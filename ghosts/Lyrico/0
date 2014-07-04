@@ -9,23 +9,19 @@ hooks:
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
         G TT ->G("Lyrico/ob");
+        
+        my $codons = $H->data->{Codon};
+        timer 0.4 { w somewhere(thing => $codons) };
+        G follow T G ob;
+        G follow T $H;
+        G follow T $O;
     }
-    #timer 0.3 { $H->info("Alright MATE!?") };
-    my $codons = $H->data->{Codon};
-    timer 0.4 { w somewhere(thing => $codons) };
-    G follow T G ob;
-    G follow T $H;
-    G follow T $O;
+    timer 0.3 { $H->Say("Alright MATE!?") };
+    timer 0.5 { $H->Say("ALL_RIGHT_MATE!?") };
   resurround: |
     #G follow ->RW;
     
   reflect: |
-    G splat Tw splat_wormhole(trev => $wormhole);
-    
-    G splat Tw splat_wormhole(wing => G(follow)->W );
-    
-    my $nonscript = {script => [@{G(splat)->W->{script}}] };
-    G splat Tw splat_wormhole(splatselves => $nonscript );
     
   somewhere: |
     my $thing = $ar->{thing};
@@ -36,7 +32,6 @@ hooks:
         if ($line) {
             Say "Line into $line->{t}";
             $thing = $line->{t};
-            #$line->{t};
         }
     unless ($wormhole) {
         G ob ->RW;
@@ -49,8 +44,11 @@ hooks:
     G follow T $thing;
     Say "Wormhole coming: $wormhole->{name}";
     
-    w reflect( wormhole => $wormhole );
+    G splat Tw splat_wormhole(trev => $wormhole);
     
+    G splat Tw splat_wormhole(wing => G(follow)->W );
+    
+    G splat Tw splat_wormhole(splatselves => G(splat)->W );
   splatmenues: |
     my $ob = G(ob)->W;
     ob => sub { w somewhere(wormhole => $ob) };

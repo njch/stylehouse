@@ -27,6 +27,11 @@ hooks:
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
+    if ($wormhole eq $G->W) {
+        # traction interrupts
+        $wormhole = { script => [@{$wormhole->{script}}] }
+    }
+    
     my $A = A[$splatname, $wormhole];
     
     #Say "Wormhole Splattur: $splatname ".$wormhole->describe_size();
@@ -137,7 +142,7 @@ hooks:
         : "000032"
         ).";";
         $s->{_event} = $splatname eq "trev" ?
-            sub { w go( line => $line ) } :
+            sub { w go( line => $line, append => $s->{id} ) } :
             sub { w go( thing => $t ) }
     d:
       v: |

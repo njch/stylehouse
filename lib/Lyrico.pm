@@ -52,7 +52,7 @@ sub menu {
             $self->somewhere(@_);
         },
         ښ => sub {
-            
+            $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         Թ => sub {
             $H->send("\$('#sky div').animate({left: 400});");
