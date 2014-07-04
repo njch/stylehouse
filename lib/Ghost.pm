@@ -65,7 +65,9 @@ sub W {
 }
 sub RW {
     my $self = shift;
+    my $OW = $self->W->{script};
     $self->W->{script} = [];
+    $OW;
 }
 sub load_ways {
     my $self = shift;

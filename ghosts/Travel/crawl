@@ -20,6 +20,8 @@ chains:
      next_thing: $each
    print: |
         $S->{i}
+dials:
+  max_depth: 1
 hooks:
   arr: |
     my @actcs;
@@ -40,14 +42,14 @@ hooks:
     }
     # all these motions we want to grab finer pictures of eventually
     
-  max_depth: |
-      1
-      
-      ;
+
   figureout: |
     # these borders of my code our data... the language invention streams only just upstream from each other
     
-    return if $G->{depth} >= w max_depth;
+    if ($G->{depth} >= $G->{max_depth}) {
+        $H->Say(" $G->{depth} >= $G->{max_depth}");
+        return;
+    }
     
     if (my $fe = $c->{foreach_travel}) {
         my @list = $G->doo(

@@ -107,6 +107,12 @@ sub init_way {
         }
         $self->{$a} = $as;
     }
+    for my $d ("dials") {
+        next unless $self->{$d};
+        while (my ($k, $v) = each %{$self->{$d}}) {
+            $self->{G}->{$k} = $v;
+        }
+    }
     say "21!";
 }    
 sub find {

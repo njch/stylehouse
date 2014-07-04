@@ -231,7 +231,7 @@ sub wipehtml {
 sub fadehtml {
     my $self = shift;
     $self->hostinfo->send("\$('#".$self->{divid}." > *').fadeOut();") if $self->html;
-    $self->html("");
+    $self->{html} = "";
     # $self->fit_div(); TODO how to?
     1;
 }
@@ -284,8 +284,13 @@ sub takeover {
         say " $self->{divid} reload,";
         $html = $self->html;
     }
-    elsif ($texty->{hooks}->{append}) {
+    elsif (my $apid = $texty->{hooks}->{append}) {
+        if ($apid =~ /\w\w/) {
+            return $self->append_spans("#$apid", $html, "replaceWith");
+        }
+        else {
         $self->{html} .= $html;
+        }
     }
     else {
         $self->hostinfo->send("\$('#".$self->{divid}." > *').remove();") if $self->html;
@@ -294,23 +299,24 @@ sub takeover {
 
     $self->hostinfo->view_incharge($self);
 
-    $self->append_spans($self->{divid} => $html);
+    $self->append_spans("#$self->{divid}" => $html);
     
 #    $self->{hostinfo}->send("\$.scrollTo(\$('#$self->{divid}').offset.top(), 800);");
     $texty->tookover() if $texty;
 }
 sub append_spans {
     my $self = shift;
-    my $divid = shift;
+    my $sel = shift || "#".$self->{divid};
     my $html = shift;
+    my $attach = shift || "append";
 
     return say "\n\nno html\n\n" unless $html;
-        $html =~ s/'/\\'/sg;
-        $html =~ s/\n/\\n/sg;
+    $html =~ s/'/\\'/sg;
+    $html =~ s/\n/\\n/sg;
 
     my $Bmax = 30000;
     if (length($html) < $Bmax) {
-        $self->hostinfo->send("  \$('#$divid').append('$html');");
+        $self->hostinfo->send("  \$('$sel').$attach('$html');");
     }
     else {
         my @htmls = split /(?<=<\/span>)/, $html;
@@ -322,9 +328,9 @@ sub append_spans {
             }
             $Bs[-1] .= shift @htmls;
         }
-        say "batchified appends heading for #$divid from ".$self->owner.":";
+        say "batchified appends heading for $sel from ".$self->owner.":";
         for my $B (@Bs) {
-            my $M = "  \$('#$divid').append('$B');";
+            my $M = "  \$('$sel').$attach('$B');";
             say " M ".length($M).' ('.substr(Hostinfo::sha1_hex($M),0,8).')';
             say "";
             $self->{hostinfo}->send($M);

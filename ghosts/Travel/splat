@@ -19,7 +19,7 @@ tractors:
       $S->{view} = $H->{sky}->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
-      $S->{view}->fadehtml();
+      #$S->{view}->fadehtml()
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
@@ -45,11 +45,15 @@ hooks:
         push @$lines, w make_line(+ splatname => $splatname,
             line => $line, R => [], B => {});
     }
-    my $t = $A->{view}->newtext($lines, {
+    my $th = {
         nospace => 1,
         class => 'menu',
         tuxtstyle => 'width: 100%;',
-    });
+    };
+    $th->{append} = $O->{trev_append}
+        if $splatname eq "trev" && $O->{trev_append};
+    
+    my $t = $A->{view}->newtext($lines, $th);
     $H->JS("\$('.splat-w').hoverIntent(function(e) {"
     ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
     ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
@@ -79,7 +83,7 @@ hooks:
           $B->{$_->{bb}}->{s} = $_;
       }
   go: |
-      Info "\n  Heading to ".join "  ", %$ar;
+      Info "\n go ".join "  ", %$ar;
       $O->w('somewhere', $ar);
       
       

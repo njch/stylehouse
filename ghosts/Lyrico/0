@@ -11,11 +11,14 @@ hooks:
         G TT ->G("Lyrico/ob");
         
         my $codons = $H->data->{Codon};
-        timer 0.4 { w somewhere(thing => $codons) };
+        timer 0.4 { w somewhere(thing => $O) };
         G follow T G ob;
         G follow T $H;
         G follow T $O;
+        G follow T $H->data->{Codon};
     }
+        
+    timer 0.1 { w somewhere(thing => $O) };
     timer 0.3 { $H->Say("Alright MATE!?") };
     timer 0.5 { $H->Say("ALL_RIGHT_MATE!?") };
   resurround: |
@@ -27,28 +30,46 @@ hooks:
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
     my $line = $ar->{line};
+    my $append = $ar->{append};
     
     w resurround;
-        if ($line) {
-            Say "Line into $line->{t}";
-            $thing = $line->{t};
-        }
+    if ($append) {
+        Say "Line into $line->{t}";
+        $G->{trev_append} = $append;
+    }
+    if ($line) {
+        Say "Line into $line->{t}";
+        $thing = $line->{t};
+    }
     unless ($wormhole) {
         G ob ->RW;
-        G crawl ->RW;
+        my $OW = G crawl ->RW;
         G crawl T ->{TT} = G ob;
-        G crawl T $thing;
+        
+        G crawl T ->travel($thing, undef, ($line?$line->{i}:undef));
         $wormhole = G(crawl)->W;
+        
+        if ($append && $line) {
+            my $WS = $wormhole->{script};
+            #shift @$WS;
+            map { $_->{depth} += $line->{depth} } @$WS;
+            
+            #push @$WS, pop @$OW until !@$OW || $OW->[0]->{uuid} eq $line->{uuid};
+            pop @$OW;
+            #unshift @$WS, reverse @$OW;
+        }
     }
 
     G follow T $thing;
-    Say "Wormhole coming: $wormhole->{name}";
+    #Say "W for $wormhole->{G}->{name}";
     
     G splat Tw splat_wormhole(trev => $wormhole);
     
     G splat Tw splat_wormhole(wing => G(follow)->W );
     
     G splat Tw splat_wormhole(splatselves => G(splat)->W );
+    
+    delete $G->{trev_append};
   splatmenues: |
     my $ob = G(ob)->W;
     ob => sub { w somewhere(wormhole => $ob) };
