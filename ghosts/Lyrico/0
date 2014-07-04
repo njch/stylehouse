@@ -24,8 +24,8 @@ hooks:
     
     G splat Tw splat_wormhole(wing => G(follow)->W );
     
-    G splat Tw splat_wormhole(splatselves => G(splat)->W );
-    G splat Tw splat_wormhole(splatselves => G(splat)->W );
+    my $nonscript = {script => [@{G(splat)->W->{script}}] };
+    G splat Tw splat_wormhole(splatselves => $nonscript );
     
   somewhere: |
     my $thing = $ar->{thing};
@@ -33,11 +33,12 @@ hooks:
     my $line = $ar->{line};
     
     w resurround;
-    unless ($wormhole) {
         if ($line) {
             Say "Line into $line->{t}";
             $thing = $line->{t};
+            #$line->{t};
         }
+    unless ($wormhole) {
         G ob ->RW;
         G crawl ->RW;
         G crawl T ->{TT} = G ob;

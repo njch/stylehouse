@@ -2,7 +2,7 @@ name: wormhole splatter
 tractors:
   - K: Wormhole Splat
     arr_if: |
-      $splatname =~ /^\w+$/ && ref $wormhole eq "Wormhole"
+      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY"
     B_: |
       $splatname
     first_time: |
@@ -33,7 +33,7 @@ hooks:
     
     my $lines = [];
     my $i = 0;
-    for my $line ($wormhole->star) {
+    for my $line (@{$wormhole->{script}}) {
         if($i++ > 40) {
             push @$lines, "more..."
         }
