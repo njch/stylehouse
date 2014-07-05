@@ -26,13 +26,16 @@ hooks:
   load_ways_post: |
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
+    
     my $wormhole = $CG->Tw($line, 'revisit', { push_depth => 1 });
+    
     # new stuff, wedge into html like it has in the wormhole
     w script_to_lines[$wormhole;
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
-    $wormhole = { script => [@{$wormhole->{script}}] } if $wormhole eq $G->W;
+    $wormhole = { script => [@{$wormhole->{script}}] }
+        if $wormhole eq $G->W;
     
     my $A = A[$splatname, $wormhole];
     
@@ -60,6 +63,7 @@ hooks:
         tuxtstyle => 'width: 100%;',
     };
     return $lines;
+  
   go: |
       Info "\n go ".join "  ", %$ar;
       if (exists $ar->{thing}) {

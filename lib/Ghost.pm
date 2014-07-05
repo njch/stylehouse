@@ -42,7 +42,7 @@ sub new {
 }
 sub T {
     my $self = shift;
-    $self->{T}->travel($_) for @_;
+    $self->{T}->travel(@_) if @_;
     $self->{T};
 }
 sub Tw {
