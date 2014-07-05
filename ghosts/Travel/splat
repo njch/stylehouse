@@ -32,17 +32,16 @@ hooks:
     my $A = Afind[$splatname];
     
     # new stuff, wedge into html like it has in the wormhole
-    w script_out[$A, $wormhole, $append];
+    w script_out(+ A=>$A, wormhole=>$wormhole, append => $append );
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
     $wormhole = { script => [@{$wormhole->{script}}] }
         if $wormhole eq $G->W;
         
-    $DB::single = 1;
     my $A = Arr[$splatname, $wormhole];
-    
-    w script_out[$A, $wormhole];
+    #die "Her";
+    w script_out(+ A=>$A, wormhole=>$wormhole );
     
   script_out: |
     my $lines = [];
@@ -104,7 +103,6 @@ hooks:
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
-
   line:
     value: |
       my @atom = qw[d i t o m]; # TODO combine d+i = a
@@ -128,7 +126,7 @@ hooks:
         my $t = $line->{t};
         my $menu = [];
         
-        if (ref $t && "$t" =~ /HASH/ && $t->{GG}) {
+        if (ref $t && "$t" =~ /HASH/ && $t->{GG} && ref $t->{GG} eq "Ghost") {
             push @$menu, $t->{GG} Tw splatmenues;
         }
         
@@ -161,7 +159,7 @@ hooks:
                   : ref $t eq "HASH" ? "F42211" : "FF6666")
         : "000032"
         ).";";
-        $append = $s->{id};
+        my $append = $s->{id};
         $s->{_event} = sub { w go[$splatname, $line, $append] };
     d:
       v: |

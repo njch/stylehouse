@@ -57,7 +57,7 @@ sub Gf {
         1 && $_->{G} && $_->{G}->{way} =~ /$way/ }
         @{$self->get('Travel')};
     if (@Gs > 1) {
-        $self->error("H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way", \@Gs, $self->get('Travel'));
+        die "H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way";
     }
     $self->Say("\nH::Gf NOTHING nothing! $O->{name}     w $way") unless @Gs;
     shift @Gs;

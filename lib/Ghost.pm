@@ -317,7 +317,7 @@ sub parse_babble {
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
-    $eval =~ s/G\((\w+)\)/\$H->Gf(\$G,'$1')/sg;
+    $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
@@ -332,7 +332,7 @@ sub parse_babble {
         
         my $tw = join ", ", 
             map { $_ || 'undef' }
-            ("\$H->Gf(\$G,'tractor')", undef, $wp, $are, undef);
+            ("\$G->Gf('tractor')", $wp, $are, undef);
 
         $eval =~ s/\Q$old\E/\$G->Tw($tw)/
             || die "Ca't replace $1\n"
@@ -359,7 +359,6 @@ sub parse_babble {
     
     while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?(:?\[(.+?)\])?)/sg) {
         my ($old, $gw, $path, $are, $square) = ($1, $2, $3, $4, $5);
-        
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
         $are = $self->parse_babblar($are, $square);
