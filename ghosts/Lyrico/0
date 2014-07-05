@@ -29,18 +29,8 @@ hooks:
   somewhere: |
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
-    my $line = $ar->{line};
-    my $append = $ar->{append};
     
     w resurround;
-    if ($append) {
-        Say "Line into $line->{t}";
-        $G->{trev_append} = $append;
-    }
-    if ($line) {
-        Say "Line into $line->{t}";
-        $thing = $line->{t};
-    }
     unless ($wormhole) {
         G ob ->RW;
         G crawl ->RW;
@@ -48,11 +38,6 @@ hooks:
         
         G crawl T ->travel($thing, undef, ($line?$line->{i}:undef));
         $wormhole = G(crawl)->W;
-        
-        if ($append && $line) {
-            my $WS = $wormhole->{script};
-            map { $_->{depth} += $line->{depth} } @$WS;
-        }
     }
 
     G follow T $thing;

@@ -41,9 +41,24 @@ hooks:
         w figureout(+ c => $c);
     }
     # all these motions we want to grab finer pictures of eventually
-
+  crank: |
+    my ($dial, $to) = %_;
+    exists $G->{$dial} || die "no $dial";
+    my $o = $G->{$dial};
+    my $undo = sub { $G->{$dial} = $o };
+    $G->{$dial} = $to;
+    $undo;
   revisit: |
-      $G->T(
+    my $W = $G->RW;
+    my $und = w crank(max_depth => $line->{depth} + 1);
+    $G->T($line->{t}, undef, $line->{i}, $line->{depth});
+    $und->();
+    my $N = $G->W->CS;
+    my @fore;
+    push @fore, shift @$W until $W->[0]->{uuid} eq $line->{uuid};
+    my $O = shift @$W;
+    @$W = (@fore, @$N, @$W);
+    return $N;
   figureout: |
     # these borders of my code our data... the language invention streams only just upstream from each other
     

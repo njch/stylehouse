@@ -30,7 +30,7 @@ hooks:
     my $wormhole = $CG->Tw($line, 'revisit', { push_depth => 1 });
     
     # new stuff, wedge into html like it has in the wormhole
-    w script_to_lines[$wormhole;
+    w script_to_lines[$wormhole, $append];
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
@@ -70,7 +70,7 @@ hooks:
           $O->w('somewhere', $ar);
       }
       elsif (exists $ar->{line}) {
-          $O->w('somewhere', $ar);
+          $O->w('open_line', $ar);
       }
       
       
@@ -158,9 +158,8 @@ hooks:
                   : ref $t eq "HASH" ? "F42211" : "FF6666")
         : "000032"
         ).";";
-        $s->{_event} = $splatname eq "trev" ?
-            sub { w go( line => $line, append => $s->{id} ) } :
-            sub { w go( thing => $t ) }
+        $append = $s->{id};
+        $s->{_event} = sub { w go[$splatname, $line, $append] };
     d:
       v: |
         $line->{depth}
