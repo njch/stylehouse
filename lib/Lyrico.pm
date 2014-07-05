@@ -55,7 +55,8 @@ sub menu {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         Թ => sub {
-            $H->send("\$('#sky div').animate({left: 400});");
+            my $error = ["Hellyrico", $self];
+            $H->{GG}->w("throwlog", {"Say" => $error});
         },
     };
     return { _spawn => [ [ sort keys %$m ], {

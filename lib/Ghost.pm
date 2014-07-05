@@ -65,6 +65,18 @@ sub Tw {
     my @r = $GG->T->travel($thing, undef, $w);
     return wantarray ? @r : $r[0];
 }
+sub Gf {
+    my $self = shift;    
+    my $way = shift;
+
+    # TODO
+    my @Gs =
+        grep { $_->{way} =~ /$way/ } @{ $self->{GG} };
+    
+    #die "Gf = ".scalar(@Gs)." $self->{name}   $way " if @Gs != 1;
+    
+    shift @Gs;
+}
 sub W {
     my $self = shift;
     $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");

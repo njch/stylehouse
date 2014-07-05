@@ -877,7 +877,6 @@ sub enlogform {
     my $self = shift;
 
     my $e = [@_];
-#    - Mojofbd0a371 Mojo::Server::SandBox::4826ff7dbcc5a7b1e294ecb4fbd0a371::dostuff 287
 
     my @from;
     my $b = 3;
@@ -913,9 +912,6 @@ sub throwlog {
     my $what = shift;
     my $error = $self->enlogform(@_);
 
-    $self->{saylimit} ||= 5;
-    $self->{GG}->w("throwlog", {$what => $error})
-        if $self->{GG} && $what eq "Say" && $self->{saylimit}-- > 0;
 
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
