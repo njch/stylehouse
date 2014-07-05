@@ -29,32 +29,29 @@ hooks:
     
     my $wormhole = $CG->Tw($line, 'revisit', { push_depth => 1 });
     
+    my $A = Afind[$splatname];
+    
     # new stuff, wedge into html like it has in the wormhole
-    w script_to_lines[$wormhole, $append];
+    w script_out[$A, $wormhole, $append];
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
     $wormhole = { script => [@{$wormhole->{script}}] }
         if $wormhole eq $G->W;
+        
+    $DB::single = 1;
+    my $A = Arr[$splatname, $wormhole];
     
-    my $A = A[$splatname, $wormhole];
+    w script_out[$A, $wormhole];
     
-    my $lines = 
-    $th->{append} = $O->{trev_append}
-        if $splatname eq "trev" && $O->{trev_append};
-    
-    my $t = $A->{view}->newtext($lines, $th);
-    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
-    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
-    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
-  script_to_lines: |
+  script_out: |
     my $lines = [];
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
         if($i++ > 40) {
             push @$lines, "more..."
         }
-        push @$lines, w make_line(+ splatname => $splatname,
+        push @$lines, w make_line(+ splatname => $A->{B}->{splatname},
             line => $line, R => [], B => {});
     }
     my $th = {
@@ -62,7 +59,13 @@ hooks:
         class => 'menu',
         tuxtstyle => 'width: 100%;',
     };
-    return $lines;
+    $th->{append} = $ar->{append} if $ar->{append};
+    
+    my $t = $A->{view}->newtext($lines, $th);
+    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
+    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
+    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
+    return $t;
   
   go: |
       Info "\n go ".join "  ", %$ar;

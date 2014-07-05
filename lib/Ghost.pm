@@ -296,7 +296,7 @@ sub doo {
     '-...-'`    
 
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
-            ."  way point: $point  ".join(", ", keys %$ar)."\n"
+            ."  w $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
@@ -323,14 +323,16 @@ sub parse_babble {
     $eval =~ s/T (?=->)/->T() /sg;
     
     
-    while ($eval =~ /(A\[(.+?)\])/sg) {
-        my ($old, $spec) = ($1, $2);
+    while ($eval =~ /(A(\w+)?\[(.+?)\])/sg) {
+        my ($old, $wp, $spec) = ($1, $2, $3);        
+        $wp ||= "arr";
+        $wp = "'$wp'";
         
         my $are = $self->parse_babblar(undef, $spec);
         
         my $tw = join ", ", 
             map { $_ || 'undef' }
-            ("\$H->Gf(\$G,'tractor')", undef, "'arr'", $are, undef);
+            ("\$H->Gf(\$G,'tractor')", undef, $wp, $are, undef);
 
         $eval =~ s/\Q$old\E/\$G->Tw($tw)/
             || die "Ca't replace $1\n"

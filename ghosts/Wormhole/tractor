@@ -12,12 +12,13 @@ hooks:
     #
     #
     #
-  arr: |
+  rr: |
     $G->{As} = [ $O->tractors ];
     my $AR = { %$ar };
+    die "   $splatname $splatname $splatname $splatname";
     my @AA;
     for my $A (@{$G->{As}}) {
-        if (w $A arr_if) {
+        if (w $A arr_if(%$AR)) {
             push @AA, $A->spawn();
         }
     }
@@ -47,7 +48,7 @@ hooks:
     
     return @AA    ;
   retract: |
-    my @keep = [];
+    my @keep;
     my @found;
     for my $line (@{ $O->W->{script} }) {
         #$H->info("Line: $line", $O->{name}, $line);
@@ -62,9 +63,20 @@ hooks:
     $O->W->{script} = \@keep;
     return if !@found;
     return $found[0]->{t};
-    
-    
-    
+        
+  find: |
+    my @wheres;
+    while (my ($k, $v) = each %$ar) {
+        push @wheres, [ $k, $v ];
+    }
+    for my $line (@{ $O->W->{script} }) {
+        #$H->info("Line: $line", $O->{name}, $line);
+        next if ref $line eq "ARRAY" && @$line == 0; # wtf case
+        my $A = $line->{t};
+        return $A if @wheres == grep {
+            !exists $A->{B}->{$k} ||
+                $A->{B}->{$k} eq $v  } @wheres
+    }
     
     
     
