@@ -2,7 +2,7 @@ name: wormhole splatter
 tractors:
   - K: Wormhole Splat
     arr_if: |
-      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY"
+      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY";
     B_: |
       $splatname
     first_time: |
@@ -24,18 +24,27 @@ tractors:
       $S->{K} .": ". $S->{B}->{_}
 hooks:
   load_ways_post: |
+  open_line: |
+    my $CG = $O->Gf("crawl") || die "no O G crawl";
+    my $wormhole = $CG->Tw($line, 'revisit', { push_depth => 1 });
+    # new stuff, wedge into html like it has in the wormhole
+    w script_to_lines[$wormhole;
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
-    if ($wormhole eq $G->W) {
-        # traction interrupts
-        $wormhole = { script => [@{$wormhole->{script}}] }
-    }
+    $wormhole = { script => [@{$wormhole->{script}}] } if $wormhole eq $G->W;
     
     my $A = A[$splatname, $wormhole];
     
-    #Say "Wormhole Splattur: $splatname ".$wormhole->describe_size();
+    my $lines = 
+    $th->{append} = $O->{trev_append}
+        if $splatname eq "trev" && $O->{trev_append};
     
+    my $t = $A->{view}->newtext($lines, $th);
+    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
+    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
+    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
+  script_to_lines: |
     my $lines = [];
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
@@ -50,13 +59,19 @@ hooks:
         class => 'menu',
         tuxtstyle => 'width: 100%;',
     };
-    $th->{append} = $O->{trev_append}
-        if $splatname eq "trev" && $O->{trev_append};
-    
-    my $t = $A->{view}->newtext($lines, $th);
-    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
-    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
-    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
+    return $lines;
+  go: |
+      Info "\n go ".join "  ", %$ar;
+      if (exists $ar->{thing}) {
+          $O->w('somewhere', $ar);
+      }
+      elsif (exists $ar->{line}) {
+          $O->w('somewhere', $ar);
+      }
+      
+      
+      # ye
+  
   make_line: |
     if (ref $line ne "HASH") {
         return "FUKN ".wdump($line);
@@ -82,13 +97,7 @@ hooks:
           next unless $_->{bb};
           $B->{$_->{bb}}->{s} = $_;
       }
-  go: |
-      Info "\n go ".join "  ", %$ar;
-      $O->w('somewhere', $ar);
-      
-      
-      # ye
-  
+
   line:
     value: |
       my @atom = qw[d i t o m]; # TODO combine d+i = a

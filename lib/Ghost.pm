@@ -17,6 +17,8 @@ sub new {
 
     $self->{T} = shift;
     my $name = $self->{T}->{name};
+    $self->{GG} = [];
+    
     my @ways = @_;
     unless (@ways) {
         @ways = ref $self->{T}->{O};
@@ -31,6 +33,10 @@ sub new {
     if ($self->tractors) {
         $H->TT($self)->G("Wormhole/tractor");
     }
+    
+    if (ref $self->{T}->{O} eq "Ghost") {
+        push @{$self->{T}->{O}->{GG}}, $self;
+    }
 
     return $self;
 }
@@ -41,7 +47,7 @@ sub T {
 }
 sub Tw {
     my $self = shift;    
-    my ($GG, $Twar, $wp, $war, $thing) = @_;
+    my ($GG, $wp, $war, $thing) = @_;
     
     my $w = $self->nw();
     $w->{arr_hook} = $wp if $wp;
@@ -115,6 +121,15 @@ sub load_ways {
 sub nw {
     my $self = shift;
     new Way($H->intro, $self);
+}
+sub crank {
+    my $self = shift;
+    my $dial = shift;
+    die "no $dial" unless exists $self->{$dial};
+    my $original = $self->{$dial};
+    my $uncrank = sub { $self->{$dial} = $original };
+    $self->{dial} = shift;
+    return $uncrank;
 }
 sub ob {
     my $self = shift;
@@ -289,7 +304,7 @@ sub parse_babble {
     
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/G (\w+)(?=[ ;,])/\$H->Gf(\$G,'$1')/sg;
+    $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$H->Gf(\$G,'$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
@@ -312,8 +327,8 @@ sub parse_babble {
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
-    while ($eval =~ /(($GG_Gf) Tw(?:\((.*?)\))? (\w+)(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
-        my ($old, $GG, $Twar, $wp, $war, $thing) = ($1, $2, $3, $4, $5);
+    while ($eval =~ /(($GG_Gf) Tw (\w+)(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
+        my ($old, $GG, $wp, $war, $thing) = ($1, $2, $3, $4);
         
         $wp ||= "arr";
         $wp = "'$wp'";
@@ -321,7 +336,7 @@ sub parse_babble {
         
         my $tw = join ", ", 
             map { $_ || 'undef' }
-            ($GG, $Twar, $wp, $war, $thing);
+            ($GG, $wp, $war, $thing);
         
         $eval =~ s/\Q$old\E/\$G->Tw($tw)/
             || die "Ca't replace $1\n"

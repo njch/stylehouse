@@ -43,7 +43,7 @@ hooks:
     }
     unless ($wormhole) {
         G ob ->RW;
-        my $OW = G crawl ->RW;
+        G crawl ->RW;
         G crawl T ->{TT} = G ob;
         
         G crawl T ->travel($thing, undef, ($line?$line->{i}:undef));
@@ -51,19 +51,12 @@ hooks:
         
         if ($append && $line) {
             my $WS = $wormhole->{script};
-            #shift @$WS;
             map { $_->{depth} += $line->{depth} } @$WS;
-            
-            #push @$WS, pop @$OW until !@$OW || $OW->[0]->{uuid} eq $line->{uuid};
-            pop @$OW;
-            #unshift @$WS, reverse @$OW;
-            # replace $wormhole with fake subset to append
         }
     }
 
     G follow T $thing;
     #Say "W for $wormhole->{G}->{name}";
-    
     G splat Tw splat_wormhole(trev => $wormhole);
     
     G splat Tw splat_wormhole(wing => G(follow)->W );
