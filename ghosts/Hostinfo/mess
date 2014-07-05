@@ -1,0 +1,28 @@
+
+
+
+
+
+
+
+name: hostinfo
+hooks:
+  load_ways_post: |
+    unless (G splat ) {
+        G TT ->G("Travel/splat");
+        G TT ->G("Travel/crawl");
+    }
+  throwlog: |
+    my ($what, $e) = %$ar;
+    
+    G crawl ->RW;
+        
+    G crawl T $e;
+    
+    my $wormhole = G(crawl)->W;
+    
+    G splat Tw splat_wormhole($what => G(crawl)->W);
+  event: |
+    die "HELLO";
+    
+

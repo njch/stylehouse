@@ -59,7 +59,7 @@ sub Gf {
     if (@Gs > 1) {
         $self->error("H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way", \@Gs, $self->get('Travel'));
     }
-    say "\nH::Gf NOTHING nothing! $O->{name}     w $way" unless @Gs;
+    $self->Say("\nH::Gf NOTHING nothing! $O->{name}     w $way") unless @Gs;
     shift @Gs;
 }
 sub init_flood {
@@ -97,7 +97,9 @@ sub init_flood {
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
-        
+    $m->{on_event} = sub {
+        $self->{GG}->doo("G mess Tw event(%\$ar)", {e=>\@_});
+    };
     
     $m->spawn_floozy(
         Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; max-height: 100%;",
@@ -249,16 +251,17 @@ sub elvis_send {
     unless ($elvis->{tx}) {
         say "All Elvi:";
         $self->elvi();
-        my ($nelvis) = grep {$_->{tx}} values %{ $data->{elviss} };
-        if ($nelvis) {
-            say "Found a way to $nelvis->{address}";
+        ($elvis) = grep {$_->{tx}} values %{ $data->{elviss} };
+        
+        if ($elvis) {
+            say "Found a way to $elvis->{address}";
         }
         else {
             say "No way to send to $elvis->{address} anymore!";
+            return;
         }
-        $elvis = $nelvis;
     }
-    $elvis->{tx}->send($message);
+    $elvis->{tx}->send($message) if $elvis->{tx};
 }
 sub elvi {
     my $self = shift;
@@ -910,7 +913,9 @@ sub throwlog {
     my $what = shift;
     my $error = $self->enlogform(@_);
 
-    $self->accum("log/$what", $error);
+    $self->{saylimit} ||= 5;
+    $self->{GG}->w("throwlog", {$what => $error})
+        if $self->{GG} && $what eq "Say" && $self->{saylimit}-- > 0;
 
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
