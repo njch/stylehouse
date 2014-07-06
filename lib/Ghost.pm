@@ -54,13 +54,13 @@ sub Tw {
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
     $w->{print} = '"$G->{name} $S->{arr_hook} ".join",",%{$S->{arr_ar}};';
-    # on some levels, travel_this hooks arr with thing
-    # we want to impose the case left by $G straight into wp
-    die $thing if $thing && $wp;
-    # $thing could be passed the wp in $war
-    # or it could be something else altogether... 
+    # travel to a wp in another ghost
+    # we see this somewhere
+    # so we can interfere case left
+    
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
+    #   parallel, streaming...
     
     my @r = $GG->T->travel($thing, undef, $w);
     return wantarray ? @r : $r[0];
