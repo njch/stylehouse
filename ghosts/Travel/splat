@@ -26,13 +26,14 @@ hooks:
   load_ways_post: |
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
+    Info "in Open LINE: $line->{depth} $line->{t}";
     
-    my $wormhole = $CG->Tw($line, 'revisit', { push_depth => 1 });
-    
+    my $wormhole = $G->Tw($CG, 'revisit', { push_depth => 1 }, $line); 
+    $wormhole || die "NO!";
     my $A = Afind[$splatname];
     
     # new stuff, wedge into html like it has in the wormhole
-    w script_out(+ A=>$A, wormhole=>$wormhole, append => $append );
+    w script_out[$A, $wormhole, $append];
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
@@ -40,8 +41,7 @@ hooks:
         if $wormhole eq $G->W;
         
     my $A = Arr[$splatname, $wormhole];
-    #die "Her";
-    w script_out(+ A=>$A, wormhole=>$wormhole );
+    w script_out[$A, $wormhole ];
     
   script_out: |
     my $lines = [];
@@ -68,13 +68,12 @@ hooks:
   
   go: |
       Info "\n go ".join "  ", %$ar;
-      if (exists $ar->{thing}) {
+      if (exists $ar->{line}) {
+          w open_line;
+      }
+      else {
           $O->w('somewhere', $ar);
       }
-      elsif (exists $ar->{line}) {
-          $O->w('open_line', $ar);
-      }
-      
       
       # ye
   
@@ -84,7 +83,7 @@ hooks:
     }
     my $ghost = $line->{ghost};
 
-    w line/value;
+    w line/value; # R <-> B to be tractored
 
     return { _spawn => [ $R, {
         nospace => 1,
@@ -160,7 +159,9 @@ hooks:
         : "000032"
         ).";";
         my $append = $s->{id};
-        $s->{_event} = sub { w go[$splatname, $line, $append] };
+        $s->{_event} = $splatname eq 'trev' ?
+            sub { w go[$splatname, $line, $append] } :
+            sub { w go(thing => $t) };
     d:
       v: |
         $line->{depth}

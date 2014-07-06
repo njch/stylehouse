@@ -42,20 +42,21 @@ hooks:
     }
     # all these motions we want to grab finer pictures of eventually
   crank: |
-    my ($dial, $to) = %_;
+    my ($dial, $to) = %$ar;
     exists $G->{$dial} || die "no $dial";
     my $o = $G->{$dial};
     my $undo = sub { $G->{$dial} = $o };
     $G->{$dial} = $to;
     $undo;
   revisit: |
+    my $line = $thing;
     my $W = $G->RW;
     my $und = w crank(max_depth => $line->{depth} + $ar->{push_depth});
     $G->T($line->{t}, undef, $line->{i}, $line->{depth});
     $und->();
     my $N = $G->W->CS;
     my @fore;
-    push @fore, shift @$W until $W->[0]->{uuid} eq $line->{uuid};
+    push @fore, shift @$W until !@$W || $W->[0]->{uuid} eq $line->{uuid};
     my $O = shift @$W;
     @$W = (@fore, @$N, @$W);
     return $N;
