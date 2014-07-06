@@ -19,14 +19,14 @@ tractors:
       $S->{view} = $H->{sky}->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
-      #$S->{view}->fadehtml()
+      $S->{view}->fadehtml()
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
   load_ways_post: |
+    $O->w("splat_wormholes");
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
-    Info "in Open LINE: $line->{depth} $line->{t}";
     
     my $wormhole = $G->Tw($CG, 'revisit', { push_depth => 1 }, $line); 
     $wormhole || die "NO!";
@@ -144,24 +144,33 @@ hooks:
     t:
       v: |
         my $t = $line->{t};
-        if (ref $t eq "Way") {
-            if ($t->{B}) {
-                my $p = w $t print;
-                return $p if $p;
-            }
+        if (ref $t) {#text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;
+            my $ref = ref $t;
+            my $name = "$t";
+            $name = $t->{name} if $name =~ /HASH/ && $t->{name};
+            $name = "@ ".@$t."   " if $ref eq "ARRAY";
+            $name = w $t print
+                if $ref eq "Way";
+            return "!style='color: transparent; font-size:25pt; font-weight: 900; text-shadow: 0 -5px 5px rgba(255,200,125,0.9);' $name";
         }
         ref $t ? "$t" : $t;
       s: |
         my $t = $line->{t};
-        $s->{style}.="font-weight:900; font-size: 15pt; color:#".(
+        die $s->{value} if ref $s->{value};
+        $s->{style}.="font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : ref $t eq "HASH" ? "F42211" : "FF6666")
         : "000032"
         ).";";
+        $s->{_event} = w line/event;
+    event: |
         my $append = $s->{id};
-        $s->{_event} = $splatname eq 'trev' ?
+        my $t = $line->{t};
+        $splatname eq 'trev' ?
             sub { w go[$splatname, $line, $append] } :
-            sub { w go(thing => $t) };
+            $splatname eq 'wing' ?
+                sub { w go(thing => $t->{B}->{thing}) } :
+                sub { w go(thing => $t) };
     d:
       v: |
         $line->{depth}
@@ -184,7 +193,7 @@ hooks:
         
         my $K = $b->{c}->{K};
         
-        $s->{style}.="background-color:#".(
+        $s->{style}.="color: #".(
             $K eq 'dsc/%' ? "FF8533" :
             $K eq 'dsc/@' ? "85FF33" :
             'bbb' ).";" if $K;

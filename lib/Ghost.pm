@@ -48,12 +48,13 @@ sub T {
 sub Tw {
     my $self = shift;    
     my ($GG, $wp, $war, $thing) = @_;
+    $GG || die "NO Tw GG!";
     
     my $w = $self->nw();
     $w->{arr_hook} = $wp if $wp;
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
-    $w->{print} = '"$G->{name} $S->{arr_hook} ".join",",%{$S->{arr_ar}};';
+    $w->{print} = '"$G->{name} (".($thing||"").") $S->{arr_hook} ".join",",%{$S->{arr_ar}||{}};';
     # travel to a wp in another ghost
     # we see this somewhere
     # so we can interfere case left

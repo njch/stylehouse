@@ -98,19 +98,20 @@ sub init_flood {
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
-        $self->{GG}->doo("G mess Tw event(e=>\$e);", {e=>\@_});
+        my @a = @_;
+        $self->{GG}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
     };
     
     $m->spawn_floozy(
-        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; max-height: 100%;",
+        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; max-height: 100%;",
+        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Say => "width: 100%; overflow: scroll; border: 2px solid white; background: #66FF66; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; max-height: 100%;",
+        Say => "width: 100%; overflow: scroll; border: 2px solid white; background: #66FF66; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $self->menu();
