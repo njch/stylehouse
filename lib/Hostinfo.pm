@@ -98,7 +98,7 @@ sub init_flood {
         ."position:absolute; overflow: scroll; height:100%;"
         ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
-        $self->{GG}->doo("die; G mess Tw event(e=>\$e);", {e=>\@_});
+        $self->{GG}->doo("G mess Tw event(e=>\$e);", {e=>\@_});
     };
     
     $m->spawn_floozy(
