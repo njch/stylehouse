@@ -30,23 +30,33 @@ hooks:
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
     
+    start_timer();
     w resurround;
-    unless ($wormhole) {
+    if ($wormhole) {
+        G(crawl)->{W} = $wormhole;
+    }
+    else {
         G ob ->RW;
         G crawl ->RW;
         G crawl T ->{TT} = G ob;
         
         G crawl T $thing;
-        $wormhole = G(crawl) ->W;
     }
+    my $crawltime = show_delta();
 
     G follow T $thing;
-    #Say "W for $wormhole->{G}->{name}";
-    G splat Tw splat_wormhole(trev => $wormhole);
+    
+    w splat_wormholes;
+    
+    Say "W for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+  splat_wormholes: |
+    return unless G(crawl);
+    G splat Tw splat_wormhole(trev => G(crawl)->W);
     
     G splat Tw splat_wormhole(wing => G(follow)->W );
     
     G splat Tw splat_wormhole(splatselves => G(splat)->W );
+    
   splatmenues: |
     my $ob = G(ob)->W;
     ob => sub { w somewhere(wormhole => $ob) };

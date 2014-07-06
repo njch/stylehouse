@@ -316,7 +316,7 @@ sub append_spans {
 
     my $Bmax = 30000;
     if (length($html) < $Bmax) {
-        $self->hostinfo->send("  \$('$sel').$attach('$html').slideDown();");
+        $self->hostinfo->send("  \$('$sel').$attach('$html');");
     }
     else {
         my @htmls = split /(?<=<\/span>)/, $html;
