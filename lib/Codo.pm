@@ -45,7 +45,7 @@ sub new {
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
-    my $codoback = "3366FF"; #"001452"
+    my $codoback = "006600"; #"001452"
     my $Codo =
     $H->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: #$codoback; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"

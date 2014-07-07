@@ -230,7 +230,7 @@ sub wipehtml {
 }
 sub fadehtml {
     my $self = shift;
-    $self->hostinfo->send("\$('#".$self->{divid}." > *').fadeOut();") if $self->html;
+    $self->hostinfo->send("\$('#$self->{divid} > *').slideUp(500, function () { \$(this).remove(); });") if $self->html;
     $self->{html} = "";
     # $self->fit_div(); TODO how to?
     1;
@@ -286,8 +286,9 @@ sub takeover {
     }
     elsif (my $apid = $texty->{hooks}->{append}) {
         if ($apid =~ /\w\w/) {
-            return $self->append_spans("#$apid", $html, "parent().after")
-            && $self->{hostinfo}->JS("\$('#$apid').parent().slideUp();");
+            $self->append_spans("#$apid", $html, "parent().after");
+            $self->{hostinfo}->JS("\$('.$texty->{id}').slideDown();");
+            $self->{hostinfo}->JS("\$('#$apid').parent().slideUp(200, function () { \$(this).remove() });");
         }
         else {
             $self->{html} .= $html;
@@ -339,6 +340,7 @@ sub append_spans {
         }
 
     }
+    1;
 }
 sub concat_array {
     my $a = shift;
