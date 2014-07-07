@@ -226,7 +226,7 @@ sub w {
         next unless $h;
         
         push @F, { G => $self, way => $w, point => $point, ar => $ar,
-            ($Sway ? (Sway => $Sway): ()) };
+            ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform() };
         
         push @returns, [
             $self->doo($h, $ar, $point)
