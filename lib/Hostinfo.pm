@@ -922,7 +922,8 @@ sub throwlog {
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
+        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500)"
+        .".delay(2000).animate({'max-width': '30%'}, 7000);");
     }
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
