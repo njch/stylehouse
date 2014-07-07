@@ -913,7 +913,6 @@ sub throwlog {
     my $what = shift;
     my $error = $self->enlogform(@_);
 
-
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
             join("\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
@@ -922,8 +921,7 @@ sub throwlog {
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500)"
-        .".delay(2000).animate({'max-width': '30%'}, 7000);");
+        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
     }
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
