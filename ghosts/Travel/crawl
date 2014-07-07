@@ -49,10 +49,11 @@ hooks:
     $G->{$dial} = $to;
     $undo;
   revisit: |
-    my $line = $thing;
     my $W = $G->RW;
     my $und = w crank(max_depth => $line->{depth} + $ar->{push_depth});
+    
     $G->T($line->{t}, undef, $line->{i}, $line->{depth});
+    
     $und->();
     my $N = $G->W->CS;
     my @fore;
@@ -60,7 +61,7 @@ hooks:
     my $O = shift @$W;
     $H->Say("New_lines: ".@$N);
     @$W = (@fore, @$N, @$W);
-    $G->{script} = $W;
+    $G->W->{script} = $W;
     return $N;
   figureout: |
     # these borders of my code our data... the language invention streams only just upstream from each other

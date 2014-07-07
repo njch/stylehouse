@@ -55,7 +55,7 @@ sub menu {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
-            $H->{GG}->w("splat_wormholes");
+            $self->{GG}->w("splat_wormholes");
         },
         Թ => sub {
             my $error = ["Hellyrico", $self];

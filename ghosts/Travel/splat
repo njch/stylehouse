@@ -28,8 +28,9 @@ hooks:
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
     
-    my $wormhole = $G->Tw($CG, 'revisit', { push_depth => 1 }, $line); 
-    $wormhole || die "NO!";
+    my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
+    $NS || die "NO!";
+    my $wormhole = { script => $NS };
     my $A = Afind[$splatname];
     
     # new stuff, wedge into html like it has in the wormhole
@@ -41,7 +42,7 @@ hooks:
         if $wormhole eq $G->W;
         
     my $A = Arr[$splatname, $wormhole];
-    timer 0.05 { w script_out[$A, $wormhole ] };
+    timer 0.05 { w script_out[$A, $wormhole] };
     
   script_out: |
     my $lines = [];
