@@ -54,6 +54,9 @@ sub menu {
         ښ => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
+        '⥁' => sub {
+            $H->{GG}->w("splat_wormholes");
+        },
         Թ => sub {
             my $error = ["Hellyrico", $self];
             $H->{GG}->w("throwlog", {"Say" => $error});
