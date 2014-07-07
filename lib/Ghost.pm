@@ -10,6 +10,7 @@ sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 
 our $H;
+our @F;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -37,6 +38,8 @@ sub new {
     if (ref $self->{T}->{O} eq "Ghost") {
         push @{$self->{T}->{O}->{GG}}, $self;
     }
+    
+    $self->{last_state} = undef;
 
     return $self;
 }
@@ -221,9 +224,15 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
+        
+        push @F, { G => $self, way => $w, point => $point, ar => $ar,
+            ($Sway ? (Sway => $Sway): ()) };
+        
         push @returns, [
             $self->doo($h, $ar, $point)
         ];
+        
+        pop @F;
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
