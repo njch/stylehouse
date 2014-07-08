@@ -93,25 +93,25 @@ sub init_flood {
     );
     
     
-    
+    my $messborder = "border: 2px solid rgb(64,150,227);";
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
-        ."border: 2px solid white; z-index: 10; background: #B247F0; color: #030; font-weight: bold; ");
+        ."$messborder z-index: 10; background: rgba(178,71,240, 0.5); color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
         my @a = @_;
         $self->{GG}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
     };
     
     $m->spawn_floozy(
-        Error => "width:100%; border: 2px solid white; background: #B24700; color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Error => "width:100%; $messborder background: rgba(178,71,0, 0.7); color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; border: 2px solid white; background: #99CCFF; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Info => "width: 100%; overflow: scroll; $messborder background: rgba(153,204,255, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Say => "width: 100%; overflow: scroll; border: 2px solid white; background: #66FF66; color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Say => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $self->menu();
