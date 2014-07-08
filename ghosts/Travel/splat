@@ -16,7 +16,7 @@ tractors:
             ."border: 2px solid white; z-index: 10; background: #B247F0;"
             ." color: #030; font-weight: bold; "
       }
-      $S->{view} = $H->{sky}->spawn_floozy($G, $splatname, $style);
+      $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
       $S->{view}->fadehtml();
@@ -133,6 +133,8 @@ hooks:
         push @$menu, 't' => sub { w go( thing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
+        push @$menu, '⊟' => sub { w codon( codon => $t ) }
+            if ref $t eq "Codon";
         
         {
         contyt => { bb => $b->{bb} },
