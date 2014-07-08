@@ -7,10 +7,13 @@ hooks:
     'a699FF','4C3380',
     '336699','8F00B2', '666699',
     '336aa9','72a699','000099','6B8FB2','6B8FB2','00CCFF','00CCFF'];
-    $H->JS($H->{sky},"animate({backgroundColor: '#00001F'}, 5000);");
-    
+    w colourchange(c => '00001F');
+  colourchange: |
+    $H->JS($H->{sky},"animate({backgroundColor: '#$c'}, 5000);");
   touch: |
-    push @{$G->{colours}}, shift @{$G->{colours}};
-    $H->JS($H->{sky},"animate({backgroundColor: '#$G->{colours}->[0]'}, 1000);");
+    w rotate_colourwheel
+    push @{$G->{colours}}, map {
+        w colourchange(c => $_, t=>1000); $_
+    } shift @{$G->{colours}};
     
 
