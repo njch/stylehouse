@@ -378,13 +378,13 @@ sub get_codons {
 }
 sub readfile {
     my $self = shift;
-    my $path = shift;
-    $self->{hostinfo}->slurp($self->{code_dir}.$path);
+    my $filename = shift;
+    $self->{hostinfo}->slurp($filename);
 }
 sub writefile {
     my $self = shift;
-    my $path = shift;
-    $self->{hostinfo}->spurt($self->{code_dir}.$path, shift);
+    my $filename = shift;
+    $self->{hostinfo}->spurt($filename, shift);
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;

@@ -95,6 +95,7 @@ sub load_ways {
     my $self = shift;
     my @ways = @_;
     my $ws = $self->{ways} ||= [];
+    my $wfs = $self->{wayfiles} ||= [];
     
     for my $name (@ways) {
         my @files;
@@ -121,6 +122,7 @@ sub load_ways {
                 $nw->load($file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
                 push @$ws, $nw;
+                push @$wfs, $file;
             }
         }
         
