@@ -190,6 +190,7 @@ CM
             );
         }
     }
+    $H->JS("\$('#CodeMirror').css('width', '90%');");
 
     $temp->wipehtml() if $temp;
 
