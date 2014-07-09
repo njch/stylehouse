@@ -194,7 +194,7 @@ sub codolist {
 
         push @coli, delete $coname->{$n} if $coname->{$n};
     }
-    push @coli, values $coname;
+    push @coli, $coname->{$_} for sort keys $coname;
     
     $listy->add_hooks({nospace => 1, class => 'menu'});
     $listy->replace([
