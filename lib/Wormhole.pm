@@ -49,6 +49,9 @@ sub continues {
         
         ghost => $ghost,
     };
+    for my $o (@{$line->{o}}) {
+        $o->{last_line} = $line;
+    }
 
     $self->ob($line);
 
