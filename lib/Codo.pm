@@ -73,7 +73,7 @@ sub new {
 sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= [
-        ܤ => sub { # they might wanna load new css/js too
+        "!style='color:#41DB39;' ܤ" => sub { # they might wanna load new css/js too
             $H->error('restarting');
             `touch $0`;
         },
@@ -81,11 +81,11 @@ sub menu {
             $self->nah;
             $H->timer(4, sub { Codo->new($H->intro) });
         },
-        Ꮉ => sub {
+        "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '≲' => sub {
-            $H->JS("\$('#splatselves').toggleClass('widdle');");
+            # TODO Floatation device
         },
     ];
     return { _spawn => [ [], {
