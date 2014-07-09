@@ -202,7 +202,6 @@ sub codolist {
         event => { menu => $m },
         nospace => 1,
         class => 'menu',
-        style => 'border: 3px solid #bb3333;',
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
             ."color: #99FF66; font-size: 29pt; background-color: #FF5050; font-weight: 700; "
             ."text-shadow: 2px 4px 5px #4C0000;",
@@ -251,7 +250,7 @@ sub codoncolour {
     $n =~ /stylehouse/ ? "00CCFF" :
     $n =~ /stylehouse\.pl/ ? "33CDDD" :
     $n =~ /Codon/ ? "3366FF" :
-    "B8B86E"
+    "62AAB3"
 }
 sub re_openness {
     my $self = shift;
