@@ -35,6 +35,8 @@ hooks:
     
     # new stuff, wedge into html like it has in the wormhole
     w script_out[$A, $wormhole, $append];
+  lcodon: |
+    Error('no O || die "NO!"');
   splat_wormhole: |
     my ($splatname, $wormhole) = %$ar;
     
@@ -134,8 +136,8 @@ hooks:
         push @$menu, 't' => sub { w go( thing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
-        push @$menu, '⊟' => sub { w codon( codon => $t ) }
-            if ref $t eq "Codon";
+        push @$menu, '⊟' => sub { w lcodon[$line] }
+            if (ref $t)."" =~ /Codon|Ghost/;
         
         {
         contyt => { bb => $b->{bb} },
@@ -146,9 +148,16 @@ hooks:
         tuxtstyle => "font-size:25pt;",
         }]
         }
+      s: |
+        $s->{style} .= "font-size:35pt;";
     t:
       v: |
         my $t = $line->{t};
+        "$t";
+      s: |
+        my $t = $line->{t};
+        die $s->{value} if ref $s->{value};
+        
         if (ref $t) {#text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;
             my $ref = ref $t;
             my $name = "$t";
@@ -156,20 +165,14 @@ hooks:
             $name = "@ ".@$t."   " if $ref eq "ARRAY";
             $name = "ϖ". w $t print
                 if $ref eq "Way";
-            return "!style='color: transparent; font-size:25pt; font-weight: 900; "
+            $s->{value} = $name;
+            $s->{style} .= "font-size:25pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
               "0 5px 5px #CF3694; "
             : "0 -5px 5px rgba(255,200,125,0.9);")
-            ."' $name";
+            .";";
         }
-        if (-f $t) {
-            #
-            return "-f $t"
-        }
-        $t;
-      s: |
-        my $t = $line->{t};
-        die $s->{value} if ref $s->{value};
+        
         $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : "$t" =~ "HASH" ? 
