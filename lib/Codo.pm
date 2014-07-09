@@ -45,7 +45,7 @@ sub new {
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
-    my $codoback = "rgba(0,78,200,0.4)"; #"001452"
+    my $codoback = "rgba(0,78,200,0.35)"; #"001452"
     my $Codo =
     $H->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: $codoback; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"
@@ -53,7 +53,7 @@ sub new {
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
     $H->{flood}->spawn_floozy($self, codolist =>
-        "padding: 1em; width:100%; z-index:3; background: #402a35; color: #afc; opacity: 1; hegith: 8em;");
+        "padding: 1em; width:100%; z-index:3; background: rbga(0,0,90,0.9); color: #afc; opacity: 1; hegith: 8em;");
 
 
     $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
@@ -226,8 +226,8 @@ sub codolist {
                 ." color: #99FF66; font-weight: 700;"
                 ." text-shadow: 2px 4px 5px #4C0000;";
                             
-            $s->{style} .= 'background-color:'
-                .'#'.codoncolour($codon).';';
+            $s->{style} .= 'background:'
+                .codoncolour($codon).';';
             
             $s->{style} .= 'color: #5A5AAF;'
                 if $codon->{is}->{G};
@@ -238,19 +238,13 @@ sub codolist {
 }
 sub codoncolour {
     my $codon = shift;
-    my $n = $codon->{name};
-
-    $n =~ /^ghost/ ? "99FF66" :
-    $n =~ /Travel|Ghost|Wormhole/ ? "990906" :
-    $n =~ /Texty/ ? "00FFFF" :
-    $n =~ /View|Lyrico/ ? "CCFF66" :
-    $n =~ /Hostinfo/ ? "3366FF" :
-    $n =~ /Codo/ ? "3366FF" :
-    $n =~ /Codon/ ? "3366FF" :
-    $n =~ /stylehouse/ ? "00CCFF" :
-    $n =~ /stylehouse\.pl/ ? "33CDDD" :
-    $n =~ /Codon/ ? "3366FF" :
-    "62AAB3"
+    for ($codon->{name}) {
+    return "rgba(".(/^ghost/ ? "50,150,50" :
+    /Travel|Ghost|Wormhole/ ? "150,40,40" :
+    /Codo/ ? "30,200,150" :
+    /Lyrico|View/ ? "240,220,40" :
+    "85,146,224").",0.5)"
+    }
 }
 sub re_openness {
     my $self = shift;
