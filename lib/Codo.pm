@@ -385,7 +385,7 @@ sub writefile {
     my $self = shift;
     my $filename = shift;
     my $stuff = shift;
-    $self->{hostinfo}->spurt($filename, shift)
+    $self->{hostinfo}->spurt($filename, $stuff)
         unless $stuff eq $self->{hostinfo}->slurp($filename);
 }
 sub random_colour_background {
