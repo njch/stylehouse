@@ -385,8 +385,10 @@ sub writefile {
     my $self = shift;
     my $filename = shift;
     my $stuff = shift;
-    $self->{hostinfo}->spurt($filename, $stuff)
-        unless $stuff eq $self->{hostinfo}->slurp($filename);
+    $self->{hostinfo}->spurt("newcode", $stuff);
+    my $diff = `diff newcode $filename`;
+    $self->{hostinfo}->Info($diff);
+    `mv newcode $filename` if $diff;
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
