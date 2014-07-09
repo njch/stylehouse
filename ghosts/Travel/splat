@@ -154,17 +154,27 @@ hooks:
             my $name = "$t";
             $name = $t->{name} if $name =~ /HASH/ && $t->{name};
             $name = "@ ".@$t."   " if $ref eq "ARRAY";
-            $name = w $t print
+            $name = "ϖ". w $t print
                 if $ref eq "Way";
-            return "!style='color: transparent; font-size:25pt; font-weight: 900; text-shadow: 0 -5px 5px rgba(255,200,125,0.9);' $name";
+            return "!style='color: transparent; font-size:25pt; font-weight: 900; "
+            ."text-shadow: ".(@{$line->{o}} ?
+              "0 5px 5px #CF3694; "
+            : "0 -5px 5px rgba(255,200,125,0.9);")
+            ."' $name";
         }
-        ref $t ? "$t" : $t;
+        if (-f $t) {
+            #
+            return "-f $t"
+        }
+        $t;
       s: |
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
         $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
-                  : ref $t eq "HASH" ? "F42211" : "FF6666")
+                  : "$t" =~ "HASH" ? 
+                  ( @{$line->{o}} ? "111" : "f82" )
+                  : "FF6666")
         : "000032"
         ).";";
         $s->{_event} = w line/event;
@@ -180,19 +190,22 @@ hooks:
       v: |
         $line->{depth}
       s: |
-        $s->{class}.=" splat-d";
+        $s->{style} .="color: #3D52A8; font-size:20pt; position: absolute; background:none; top:-0.25em;";
         $s->{_event} = sub {
             my ($e, $s, $t) = @_;
             $H->JS("\$('.$t->{id}').slideUp();");
-        };
-        
+        };       
+
+
+
     i:
       v: |
         $b->{c} = $line->{i};
         w desc/chain(+ c => $b->{c});
       s: |
         $s->{class} .= " splat-w ";
-        $s->{style}.=" direction:rtl;width: "
+        $s->{style}.="background:rgba(130,108,33,0.5);direction:rtl;"
+            ."width: "
         .(($line->{depth}+1) * 2 + 3)."em;"
             if $line->{depth} > 0;
         
@@ -211,6 +224,8 @@ hooks:
       s: |
         $s->{class} .= " splat-w ";
         $s->{style} .= "font-size:7pt;" if length($s->{value}) > 8;
+        $s->{style} .= "max-width:15em; background:rgba(130,108,33,0.5);";
+        $s->{style} .= "color: #f82;" unless $s->{value} eq "none";
         $s->{_event} = sub { w go(+ thing => $line->{o}) }
   
   desc:
