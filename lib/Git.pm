@@ -89,7 +89,7 @@ sub gitrack {
     },
     '⏚' => sub {
         say" HEading to $r";
-        run('cd ../'.$r.' && git gui');
+        $self->spawn_proc('cd ../'.$r.' && git gui');
     },
     'ܤ' => sub {
         $self->spawn_proc('cd ../'.$r.' && touch stylehouse.pl');
