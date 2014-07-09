@@ -48,7 +48,7 @@ sub somewhere {
 sub menu {
     my $self = shift;
     my $m = {
-        چ => sub {
+        "!style='color:#2C4A2A;' چ" => sub {
             $self->somewhere(@_);
         },
         ښ => sub {
