@@ -384,7 +384,9 @@ sub readfile {
 sub writefile {
     my $self = shift;
     my $filename = shift;
-    $self->{hostinfo}->spurt($filename, shift);
+    my $stuff = shift;
+    $self->{hostinfo}->spurt($filename, shift)
+        unless $stuff eq $self->{hostinfo}->slurp($filename);
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
