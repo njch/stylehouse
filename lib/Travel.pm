@@ -29,6 +29,7 @@ sub ob {
     return unless $self->{TT};
     
     my $ob = $H->enlogform(@_); # describes stack, etc
+    push $ob, [@Ghost::F], pop $ob;
 # we want to catch runaway recursion from here
     $self->{TT}->T($ob);
 }

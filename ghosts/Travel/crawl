@@ -1,14 +1,5 @@
 name: ghost data structure crawl
 chains:
- - K: 'G->W'
-   arr_if: |
-     ref $thing eq 'Ghost'
-   foreach_travel:
-     each: $thing->W
-     next_thing: $each
-   print: |
-     "G->W"
-
  - K: 'HASH'
    arr_if: |
      ref $thing eq 'HASH'
@@ -68,7 +59,6 @@ hooks:
     my @fore;
     push @fore, shift @$W until !@$W || $W->[0]->{uuid} eq $line->{uuid};
     my $O = shift @$W;
-    $H->Say("New_lines: ".@$N);
     @$W = (@fore, @$N, @$W);
     $G->W->{script} = $W;
     return $N;
