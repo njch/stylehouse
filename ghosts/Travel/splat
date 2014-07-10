@@ -36,8 +36,22 @@ hooks:
     # new stuff, wedge into html like it has in the wormhole
     w script_out[$A, $wormhole, $append];
   lcodon: |
-    Error('no O || die "NO!"');
-  splat_wormhole: |
+    my @files;
+    my $t = $line->{t};
+    if (ref $t eq "Ghost") {
+        @files = @{ $t->{wayfiles} };
+    }
+    else { die "get codes from $t"; }
+    
+    for my $file (@files) {
+        my $c = new Codon($H->intro,
+            { codo => $H->getapp("Codo"),
+            filename => $file }
+        );
+        $c->{show} = $S->{view}->spawn_floozy($G, "codon-del-$line->{uuid}",  "width:89%; background:#80182; color:#afc; height:23em;", after => $A->{C}->{Line}->{S}->{id});
+        $c->display();
+    }
+  Splat: |
     my ($splatname, $wormhole) = %$ar;
     
     $wormhole = { script => [@{$wormhole->{script}}] }
@@ -137,7 +151,7 @@ hooks:
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
         push @$menu, '⊟' => sub { w lcodon[$line] }
-            if (ref $t)."" =~ /Codon|Ghost/;
+            if "$t" =~ /Codon|Ghost/;
         
         {
         contyt => { bb => $b->{bb} },

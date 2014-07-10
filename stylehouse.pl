@@ -97,6 +97,7 @@ my $styleports = {
     stylecoast => 4000,
     stylehouse => 3000,
     styleshed => 2000,
+    stylebucky => 1000,
 };
 # vertical supports the two degrees of weather you can feed the web
 # horizontal are your stable and unstable private research/life machines
