@@ -6,7 +6,11 @@ tractors:
     B_: |
       $splatname
     first_time: |
-      my $style = "padding: 1em;position:absolute; left:30%; overflow:hidden;";
+      my $style = 
+            "padding: 1em; opacity:0.7; max-width:40em; left:30%;"
+            ."position:absolute; overflow: hidden;"
+            ."border: 2px solid white; z-index: 7; background: #6600FF;"
+            ." color: #030; font-weight: bold; ";
       $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
@@ -42,13 +46,11 @@ hooks:
         $c->{show} = $S->{view}->spawn_floozy($G, "codon-del-$line->{uuid}",  "width:89%; background:#80182; color:#afc; height:23em;", after => $A->{C}->{Line}->{S}->{id});
         $c->display();
     }
-  Splat: |
+  Spill: |
     my ($splatname, $wormhole) = %$ar;
-    
-    $wormhole = { script => [@{$wormhole->{script}}] }
-        if $wormhole eq $G->W;
-        
+    $splatname .= "_Spill";
     my $A = Arr[$splatname, $wormhole];
+    
     timer 0.05 { w script_out[$A, $wormhole] };
     
   script_out: |
