@@ -66,7 +66,15 @@ sub add_hooks {
         if (my $m = $h->{event}->{menu}) {
             if (ref $m eq "ARRAY") {
                 my @m = @$m;
-                $h->{event}->{menu} = { @m };
+                my $gm = { @m };
+                my $mh = {};
+                for my $k (keys %$gm) {
+                    my $kk = $k;
+                    $kk =~ s/^!style='.+?' //;
+                    $mh->{$kk} = $gm->{$k};
+                }
+                $h->{event}->{menu} = $mh;
+                say "Keys:".join" ", keys %$mh;
                 my $newl = [];
                 while (my $k = shift @$m) {
                     push @$newl, $k;
@@ -456,6 +464,7 @@ sub event {
                 $evh = $menu->{$m};
             }
             else {
+            say "No '$m' amongst: ".join ", ", keys %$menu;
                 return $self->{hostinfo}->error(
                 "unhandled tuxt click", $s, $event);
             }
