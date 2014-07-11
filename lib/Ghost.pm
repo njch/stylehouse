@@ -96,6 +96,7 @@ sub load_ways {
     my @ways = @_;
     my $ws = $self->{ways} ||= [];
     my $wfs = $self->{wayfiles} ||= [];
+    $self->{load_ways_count}++;
     
     for my $name (@ways) {
         my @files;
@@ -135,6 +136,15 @@ sub load_ways {
     }
     
     $self->w("load_ways_post");
+    
+    my $G = $self;
+    while ($self->{load_ways_count} > 1 && $G->{O} && ref $G->{O} eq "Ghost") {
+        if ($G eq $self) {
+            $G->{O}->w("child_recoded_init");
+        }
+        $G = $G->{O};
+        $G->w("any_child_recoded_init");
+    }
 }
 sub nw {
     my $self = shift;
@@ -184,6 +194,7 @@ sub chains {
     grep { !$_->{_disabled} }
     map { @{$_->{chains}||[]} } $self->ways
 }
+
 sub unrush {
     my $self = shift;
     my $point = shift;

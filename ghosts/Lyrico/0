@@ -2,6 +2,7 @@ name: Lyricoso writoro
 hooks:
 
 
+
   load_ways_post: |
     unless (G splat ) {
         G TT ->G("Travel/splat");
@@ -13,7 +14,9 @@ hooks:
         w set_follow;
     }
     
-    
+    w getstarted;
+  any_child_recoded_init: |
+    die;
     w getstarted;
   set_follow: |
     G follow ->RW;
@@ -25,7 +28,6 @@ hooks:
     G follow T $H->data->{Ghost};
     G follow T \@F;
     G splat Tw Splat(wing => G(follow)->W );
-
   getstarted: |
     $G->{unrushy}++;
     $G->unrush('getstarted') || return;
