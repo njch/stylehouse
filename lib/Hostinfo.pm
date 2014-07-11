@@ -927,7 +927,8 @@ sub throwlog {
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
     $self->JS("\$('#mess').removeClass('widdle');");
-    return $self->error("Recusive error messaging, check console") if $string =~ /\Q&amp;\E/; 
+    my $amp = "&";
+    return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
     $self->JS("\$('#$what').removeClass('widdle').html('$string').scrollTo( '100%', 400);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
