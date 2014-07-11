@@ -169,7 +169,7 @@ sub display {
             my $theme = $self->{name} =~ /^ghosts\// ? "night" : "midnight";
             $self->{hostinfo}->JS(
 <<CM
-var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
+    var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {
     mode: 'perl',
     theme: '$theme',
     lineWrapping: true,
@@ -191,7 +191,7 @@ CM
             );
         }
     }
-    $H->JS("\$('.CodeMirror').css('width', '100%');");
+    $H->JS("\$('.CodeMirror').css('width', '99%');");
     $H->JS("\$('.CodeMirror').parent().css('width', '100%');");
 
     $temp->wipehtml() if $temp;
