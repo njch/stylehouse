@@ -184,6 +184,10 @@ sub chains {
     grep { !$_->{_disabled} }
     map { @{$_->{chains}||[]} } $self->ways
 }
+sub unrush {
+    my $self = shift;
+    return 0;
+}
 sub tractors {
     my $self = shift;
     grep { !$_->{_disabled} }
