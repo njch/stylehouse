@@ -191,7 +191,7 @@ CM
             );
         }
     }
-    $H->JS("\$('.CodeMirror').css('width', '99%');");
+    $H->JS("\$('.CodeMirror').css('width', '97%');");
     $H->JS("\$('.CodeMirror').parent().css('width', '100%');");
 
     $temp->wipehtml() if $temp;
