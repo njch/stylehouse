@@ -47,7 +47,7 @@ sub new {
 
     my $codoback = "rgba(0,78,200,0.35)"; #"001452"
     my $Codo =
-    $H->{ground}->spawn_floozy($self, Codo => "width:58%; min-width: 600px; background: $codoback; color: #afc; position: absolute;"
+    $H->{ground}->spawn_floozy($self, Codo => "width:78%; min-width: 600px; background: $codoback; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"
     ."overflow: scroll;", before => 'flood');
 
