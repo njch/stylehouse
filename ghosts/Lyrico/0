@@ -1,7 +1,6 @@
 name: Lyricoso writoro
 hooks:
   load_ways_post: |
-    say 'yeha!';
     unless (G splat ) {
         G TT ->G("Travel/splat");
         G TT ->G("Travel/Spill");
@@ -9,29 +8,28 @@ hooks:
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
         G TT ->G("Lyrico/ob");
-        
-        my $codons = $H->data->{Codon};
-        timer 0.4 { w somewhere(thing => $O) };
-        G follow T G ob;
-        G follow T $H;
-        G follow T $O;
-        G follow T G(follow)->W;
-        G follow T $H->data->{Codon};
-        G follow T $H->data->{Ghost};
-        G follow T \@F;
+        w set_follow;
     
         G splat Tw Splat(wing => G(follow)->W );
     }
-        
-    $H->timer( 0.1, sub { w somewhere(thing => { thing0 => [0,1,2], thing1 => [24,56,22], thing2 => [44,5555,6,6,5,2]}) });
-    timer 0.3 { $H->Say("Alright MATE!?") };
-    timer 0.5 { $H->Say("ALL_RIGHT_MATE!?") };
+    w start;
+    
 
-  
-  init: |
-    die "HUR!";
-
-
+  set_follow: |
+    G follow ->RW;
+    G follow T G ob;
+    G follow T $H;
+    G follow T $O;
+    G follow T G(follow)->W;
+    G follow T $H->data->{Codon};
+    G follow T $H->data->{Ghost};
+    G follow T \@F;
+  start: |
+    my $codons = $H->data->{Codon};
+    $H->Say(" ẞ!");
+    $H->timer( 0.1, sub {
+        w somewhere(thing => $O);
+    });
   somewhere: |
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
