@@ -214,19 +214,20 @@ sub codolist {
         tuxtstyle => sub {
             my ($codon, $s) = @_;
 
-            $s->{value} = $codon->{name};
+            my $n = $s->{value} = $codon->{name};
             $s->{value} =~ s/stylehouse\.?/s҉/;
             $s->{codon} = $codon;
 
-            $s->{style} .= length($s->{value}) < 4 ?
-                "font-size: 30pt;" : "font-size: 20pt;";
+            $s->{style} .= "font-size: ".(
+                $n=~/Git|Shite|Proc|Ebuge|Form|Keys|Direction/
+                ?"9":length($n) < 4 ? "28":"17")."pt;";
                 
                 $s->{style} .= "color:#".(
                     $codon->{is}->{G} ? (
-                        $codon->{name} =~ /^L/ ? '009900' :
-                        $codon->{name} =~ /^T/ ? '5C3749' :
+                        $n =~ /^L/ ? '009900' :
+                        $n =~ /^T/ ? '5C3749' :
                         "5A5AAF" ) :
-                    $codon->{name} =~ /Travel|Ghost|Wormhole/ ? '000' :
+                    $n =~ /Travel|Ghost|Wormhole/ ? '000' :
                     "99FF66").";";
             
             $s->{menu} = "h";
