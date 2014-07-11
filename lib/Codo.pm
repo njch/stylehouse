@@ -227,7 +227,7 @@ sub codolist {
                         $n =~ /^L/ ? '009900' :
                         $n =~ /^T/ ? '5C3749' :
                         "5A5AAF" ) :
-                    $n =~ /Travel|Ghost|Wormhole/ ? '000' :
+                    $n =~ /Travel|Ghost|Wormhole/ ? '66F' :
                     "99FF66").";";
             
             $s->{menu} = "h";
