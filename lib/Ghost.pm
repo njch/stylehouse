@@ -230,9 +230,13 @@ sub w {
     # these stuff go together like that, hopefully, with language forming their surface tension
     # jelly pyramids...
     my @ways;
+    
+        $H->snooze(0.1);
     if ($Sway) {
         if (ref $Sway eq 'Ghost') {
             @ways = $Sway->ways;
+            $self->ob("Ghost--Ghost->w", $point, $Sway);
+            $Sway->w($point, $ar);
             die "really?";
         }
         elsif (ref $Sway eq 'Way') {
@@ -378,12 +382,13 @@ sub parse_babble {
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
-    while ($eval =~ /(($GG_Gf) Tw (\w+)(?:\((.*?)\))?(?: \((.*?)\))?(?=[ ;\)]))/g) {
-        my ($old, $GG, $wp, $war, $thing) = ($1, $2, $3, $4);
+    my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
+    while ($eval =~ /(($GG_Gf) Tw (\w+)$AR?(?: \((.*?)\))?(?=[ ;\)]))/g) {
+        my ($old, $GG, $wp, $sqar, $war, $thing) = ($1, $2, $3, $4, $5, $6);
         
         $wp ||= "arr";
         $wp = "'$wp'";
-        $war = $self->parse_babblar($war) if $war;
+        $war = $self->parse_babblar($sqar, $war);
         
         my $tw = join ", ", 
             map { $_ || 'undef' }
@@ -393,23 +398,13 @@ sub parse_babble {
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }
-        
-    while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\[(.+?)\]))/sg) {
-        my ($old, $gw, $path, $square) = ($1, $2, $3, $4);
+     
+    while ($eval =~ /(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
+        my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
-        my $are = $self->parse_babblar(undef, $square);
-        
-        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
-    }
-    while ($eval =~ /(w (\$\S+ )?([\w\/]+)(:?\((.+?)\))?)/sg) {
-        my ($old, $gw, $path, $are) = ($1, $2, $3, $4);
-        $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
-        $gw =~ s/ $//;
-        $are = $self->parse_babblar($are);
-        
+        my $are = $self->parse_babblar($are, $square);
+        $H->snooze(0.1);
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
