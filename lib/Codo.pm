@@ -218,33 +218,31 @@ sub codolist {
             $s->{codon} = $codon;
 
             $s->{style} .= length($s->{value}) < 4 ?
-                "font-size: 50pt;" : "font-size: 20pt;";
-
+                "font-size: 30pt;" : "font-size: 20pt;";
+                
+                $s->{style} .= "color:#".(
+                    $codon->{is}->{G} ? (
+                        $codon->{name} =~ /^L/ ? '009900' :
+                        $codon->{name} =~ /^T/ ? '5C3749' :
+                        "5A5AAF" ) :
+                    $codon->{name} =~ /Travel|Ghost|Wormhole/ ? '000' :
+                    "99FF66").";";
+            
             $s->{menu} = "h";
             
             $s->{style} .= "opacity: 0.9; padding-bottom: 2px;"
-                ." color: #99FF66; font-weight: 700;"
+                ." font-weight: 700;"
                 ." text-shadow: 2px 4px 5px #4C0000;";
                             
-            $s->{style} .= 'background:'
-                .codoncolour($codon).';';
-            
-            $s->{style} .= 'color: #5A5AAF;'
-                if $codon->{is}->{G};
+            $s->{style} .= "background:rgba(".($codon->{name} =~ /^ghost/ ? "50,150,50" :
+    $codon->{name} =~ /Travel|Ghost|Wormhole/ ? "150,40,40" :
+    $codon->{name} =~ /Codo/ ? "30,200,150" :
+    $codon->{name} =~ /Lyrico|View/ ? "240,220,40" :
+    $codon->{name} =~ "85,146,224").",0.5);";
             return undef;
         },
     } ] },
     ]);
-}
-sub codoncolour {
-    my $codon = shift;
-    for ($codon->{name}) {
-    return "rgba(".(/^ghost/ ? "50,150,50" :
-    /Travel|Ghost|Wormhole/ ? "150,40,40" :
-    /Codo/ ? "30,200,150" :
-    /Lyrico|View/ ? "240,220,40" :
-    "85,146,224").",0.5)"
-    }
 }
 sub re_openness {
     my $self = shift;
