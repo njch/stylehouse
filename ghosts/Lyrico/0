@@ -12,6 +12,8 @@ hooks:
         G TT ->G("Lyrico/ob");
         w set_follow;
     }
+    
+    
     w getstarted;
   set_follow: |
     G follow ->RW;
@@ -25,7 +27,8 @@ hooks:
     G splat Tw Splat(wing => G(follow)->W );
 
   getstarted: |
-    return if $G->unrush('gettingstarted');
+    $G->{unrushy}++;
+    $G->unrush('getstarted') || return;
     my $codons = $H->data->{Codon};
     $H->Say(" ẞ!");
     $H->timer( 0.1, sub {

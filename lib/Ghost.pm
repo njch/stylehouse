@@ -186,7 +186,17 @@ sub chains {
 }
 sub unrush {
     my $self = shift;
-    return 0;
+    my $point = shift;
+    unless ($self->{_unrush}->{$point}) {
+        $H->timer(0.2, sub {
+            $self->{_unrush}->{$point} = 2;
+            $self->w($point);
+        });
+        $self->{_unrush}->{$point} = 1
+    }
+    $self->{_unrush}->{$point} == 2
+    
+    && delete $self->{_unrush}->{$point}
 }
 sub tractors {
     my $self = shift;
