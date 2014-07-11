@@ -215,6 +215,7 @@ sub codolist {
             my ($codon, $s) = @_;
 
             $s->{value} = $codon->{name};
+            $s->{value} =~ s/stylehouse\.?/s҉/;
             $s->{codon} = $codon;
 
             $s->{style} .= length($s->{value}) < 4 ?
