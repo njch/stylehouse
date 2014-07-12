@@ -174,6 +174,7 @@ sub haunt { # arrives through here
     $self->ob($self);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
+        say " Tarr hook: $i->{arr_hook}: ".join" ",%{$i->{arr_ar}};
         my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
         
@@ -237,7 +238,6 @@ sub w {
             @ways = $Sway->ways;
             $self->ob("Ghost--Ghost->w", $point, $Sway);
             $Sway->w($point, $ar);
-            die "really?";
         }
         elsif (ref $Sway eq 'Way') {
             @ways = $Sway;
@@ -388,7 +388,7 @@ sub parse_babble {
         
         $wp ||= "arr";
         $wp = "'$wp'";
-        $war = $self->parse_babblar($sqar, $war);
+        $war = $self->parse_babblar($war, $sqar);
         
         my $tw = join ", ", 
             map { $_ || 'undef' }
