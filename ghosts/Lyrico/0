@@ -11,12 +11,11 @@ hooks:
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
         G TT ->G("Lyrico/ob");
+        
         w set_follow;
     }
-    
     w getstarted;
   any_child_recoded_init: |
-    die;
     w getstarted;
   set_follow: |
     G follow ->RW;
@@ -33,7 +32,7 @@ hooks:
     $G->unrush('getstarted') || return;
     my $codons = $H->data->{Codon};
     $H->Say(" ẞ!");
-    my $thing = localtime;
+    my $thing = ["".localtime, $O];
     w somewhere[$thing];
   somewhere: |
     my $thing = $ar->{thing};
