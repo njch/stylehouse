@@ -290,7 +290,7 @@ sub doo {
     my $O = $G->T->{O};
     $G->ob($point||$eval);
     
-    say " $G->{name}         ".($point ? "w $point" : "⊖ $eval");
+    say " $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval");
     
     my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
     my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
