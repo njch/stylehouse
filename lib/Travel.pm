@@ -17,6 +17,92 @@ sub new {
 
     return $self;
 }
+sub watch_file_streams {
+     my $self = shift;
+    for my $st (@{ $self->{file_streams} }) {
+        my ($ino, $ctime, $mtime, $size) =
+        (stat $st->{filename})[1,10,9,7];
+
+        my @diffs;
+        if (!defined $st->{size}) {
+            $st->{size} = $size;
+            $st->{ctime} = $ctime;
+            $st->{mtime} = $mtime;
+            $st->{ino} = $ino;
+        }
+        else {
+            push @diffs, "Size: $size < $st->{size}" if $size < $st->{size};
+            push @diffs, "ctime: $ctime != $st->{ctime}" if $ctime != $st->{ctime};
+            push @diffs, "modif time: $mtime != $st->{mtime}" if $mtime != $st->{mtime};
+            push @diffs, "inode: $ino != $st->{ino}" if $ino != $st->{ino};
+        }
+        
+        if (@diffs) {
+            say "$st->{filename} has been REPLACED or something:";
+            say "    $_" for @diffs;
+        }
+        
+        if ($st->{lines}) {
+            
+            unless ($st->{handle}) {
+                open(my $fh, '<', $st->{filename})
+                    or die "cannot open $st->{filename}: $!";
+                # TODO tail number of lines $st->{tail}
+                while (<$fh>) {
+                    unless (defined $st->{tail}) {
+                        my $l = clean_text($_);
+                        push @{$st->{lines}}, $l;
+                        $st->{linehook}->($l);
+                    }
+                }
+                $st->{handle} = $fh;
+            }
+            
+            if (@diffs) {
+                $st->{hook_diffs}->(\@diffs, $st);
+            }
+            
+            if ($size > $st->{size}) {
+                say "$st->{filename} has GROWTH";
+                my $fh = $st->{handle};
+                while (<$fh>) {
+                    my $l = clean_text($_);
+                    push @{$st->{lines}}, $l;
+                    $st->{linehook}->($l);
+                }
+                $st->{size} = (stat $st->{filename})[7];
+            }
+            elsif ($size == $st->{size}) {
+            }
+            else {# size < $st->size means file was re-read for @diffs
+            }
+            
+        }
+
+        push @diffs, "Size: $size > > >  $st->{size}" if $size > $st->{size};
+        
+        if (my $gs = $st->{ghosts}) {
+            if (@diffs) {
+                my $gr = $self->{ghosts_to_reload} ||= do {
+                    $self->timer(0.3, sub { $self->reload_ghosts });
+                    {};
+                };
+                while (my ($gid, $gw) = each %$gs) {
+                    for my $wn (keys %$gw) {
+                        $gr->{$gid}->{$wn} = 1;
+                    }
+                }
+            }
+        }
+        else { die "something$size > $st->{size})  else?" }
+        
+        
+        $st->{size} = $size;
+        $st->{ctime} = $ctime;
+        $st->{mtime} = $mtime;
+        $st->{ino} = $ino;
+    }
+}
 sub G {
     my $self = shift;
     $self->{G} ||= new Ghost($H->intro, $self, @_);
