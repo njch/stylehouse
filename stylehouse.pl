@@ -86,6 +86,7 @@ use Travel;
 use Ghost;
 use Wormhole;
 use Way;
+# style {
 
 my ($name) = $Bin =~ m{/(\w+)$};
 my ($pwd) = `pwd` =~ /(.+)\n/;
@@ -93,7 +94,8 @@ die "ain't really here" unless $Bin eq $pwd;
 # here's our internet constellation
 # N S E W
 my $port = '127.0.0.1';
-my $stylelisten = {
+my $stylelisten =
+{
     stylehut =>   ['*', 5000],
     stylecoast => [$port, 4000],
     stylehouse => [$port, 3000],
