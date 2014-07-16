@@ -49,7 +49,7 @@ sub idname {
 }
 sub T {
     my $self = shift;
-    $self->{T}->travel(@_) if @_;
+    $self->T->T(@_) if @_;
     $self->{T};
 }
 sub Tw {
@@ -70,7 +70,7 @@ sub Tw {
     #   for more thinking before travelling
     #   parallel, streaming...
     
-    my @r = $GG->T->travel($thing, undef, $w);
+    my @r = $GG->T->T($thing, undef, $w);
     return wantarray ? @r : $r[0];
 }
 sub Gf {
@@ -169,13 +169,14 @@ sub ob {
 }
 sub haunt { # arrives through here
     my $self = shift;
+    my $T = shift; # A
     $self->{depth} = shift;
     $self->{t} = shift; # thing
     my $i = $self->{i} = shift; # way in
     $self->{last_state} = shift;
     my $o = $self->{o} = []; # way[] out
     
-    $self->ob($self);
+    $self->ob($self, T => $T);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         say " Tarr hook: $i->{arr_hook}: ".join" ",%{$i->{arr_ar}};

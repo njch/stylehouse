@@ -126,7 +126,7 @@ sub ob {
 sub T {
     my $T = shift;
     my $t = shift;
-    my $G = shift || $self->G;
+    my $G = shift || $T->G; # A...
     my $i = shift;
     my $depth = shift || 0;
     my $last_line = shift;
@@ -137,10 +137,10 @@ sub T {
     
     my ($line, $o) = $G->haunt($T, $depth, $t, $i, $last_line);
 
-    my @r = $self->W;
+    my @r = $T->W;
     for my $c (@$o) {
         if (exists $c->{travel_this}) {
-            $T->travel($c->{travel_this}, $G, $c, $depth+1, $line);
+            $T->T($c->{travel_this}, $G, $c, $depth+1, $line);
         }
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
