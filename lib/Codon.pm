@@ -13,12 +13,11 @@ sub new {
     
     $self->{codo} = $p->{codo};
     
-    my $f = $p->{filename};
-    $self->{mtime} = (stat $f)[9];
-    
-    $self->open_filename($f);
-    
-    $self->closed_openness();
+    if (my $f = $p->{filename}) {
+        $self->{mtime} = (stat $f)[9];
+        $self->open_filename($f);
+    }
+    $self->o($p->{o});
 
     $self;
 }
@@ -54,7 +53,7 @@ sub open_filename {
     
     $self->chunkify();    
 }
-sub closed_openness {
+sub o {
     my $self = shift;
     my $o = $self->{openness} ||= {};
     $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
