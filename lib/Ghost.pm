@@ -43,6 +43,10 @@ sub new {
 
     return $self;
 }
+sub idname {
+    my $self = shift;
+    $self->{id}."-".$self->{name}
+}
 sub T {
     my $self = shift;
     $self->{T}->travel(@_) if @_;

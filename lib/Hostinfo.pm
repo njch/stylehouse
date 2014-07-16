@@ -614,8 +614,6 @@ sub watch_files {
     $self->watch_git_diff();
 }
 
-sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
-
 sub watch_file_streams {
     my $self = shift;
     Travel::watch_file_streams(@_);

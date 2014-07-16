@@ -123,24 +123,24 @@ sub ob {
 # the wormhole for self
 # so G can make higher frequency W inside a singular T
 # self awareness
-sub travel {
-    my $self = shift;
+sub T {
+    my $T = shift;
     my $t = shift;
     my $G = shift || $self->G;
     my $i = shift;
     my $depth = shift || 0;
     my $last_line = shift;
     
-    $self->ob("Travel", $depth, $t);
+    $T->ob("Travel", $depth, $t);
     (my $td = $t||"~") =~ s/\n/\\n/g;
-    say("Travel $G->{name}            $depth to $td    ".($i?($i->{K}||$i->{name}):"?")) unless $G->{name} =~ /Lyrico\/ob/;
+    say("$T->{id} ".$G->idname."            $depth to $td    ".($i?($i->{K}||$i->{name}):"?")) unless $G->{name} =~ /Lyrico\/ob/;
     
-    my ($line, $o) = $G->haunt($depth, $t, $i, $last_line);
+    my ($line, $o) = $G->haunt($T, $depth, $t, $i, $last_line);
 
     my @r = $self->W;
     for my $c (@$o) {
         if (exists $c->{travel_this}) {
-            $self->travel($c->{travel_this}, $G, $c, $depth+1, $line);
+            $T->travel($c->{travel_this}, $G, $c, $depth+1, $line);
         }
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
