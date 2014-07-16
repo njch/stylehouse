@@ -103,6 +103,7 @@ my $styleports = {
 # horizontal are your stable and unstable private research/life machines
 # TODO nicely craft:
 my $port = $styleports->{$name};
+$port = readlink('port') || $port;
 $port || die "COUGH COUGH COUGH please change the name of the directory the script is in to 'stylehouse'\n$Bin looks funny";
 my $ip = "127.0.0.1";
 $ip = "*" if $name eq "stylehut";
