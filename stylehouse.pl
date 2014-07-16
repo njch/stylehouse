@@ -106,9 +106,7 @@ my $stylelisten =
 # horizontal are your stable and unstable private research/life machines
 
 my $listen = readlink('listen');
-if ($listen) {
-    
-$port = $1 if $listen && $listen =~ /:(\d+)$/;
+$port = chrom$listen && $listen =~ /^(.+):(\d+)$/;
 
 
 $port ||= $styleports->{$name};
