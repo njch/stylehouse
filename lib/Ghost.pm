@@ -114,7 +114,7 @@ sub load_ways {
             
             if ($ow) {
                 $ow->load(); # and the top level hashkeys will not go away without restart
-                say "G ++ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                say "$self->{id} +$self->{load_ways_count}+ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
                 
             }
             else {
