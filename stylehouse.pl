@@ -91,38 +91,43 @@ use Way;
 my ($name) = $Bin =~ m{/(\w+)$};
 my ($pwd) = `pwd` =~ /(.+)\n/;
 die "ain't really here" unless $Bin eq $pwd;
+
+my ($style) = $name =~ /style(\w+)$/;
+$style ||= $name;
+
 # here's our internet constellation
 # N S E W
-my $port = '127.0.0.1';
-my $stylelisten =
+my $stylelist =
 {
-    stylehut =>   ['*', 5000],
-    stylecoast => [$port, 4000],
-    stylehouse => [$port, 3000],
-    styleshed =>  [$port, 2000],
-    stylebucky => [$port, 1000],
+    hut   => ['*', 5000],
+    coast => [undef, 4000],
+    house => [undef, 3000],
+    shed  => [undef, 2000],
+    bucky => [undef, 1000],
 };
 # vertical supports the two degrees of weather you can feed the web
 # horizontal are your stable and unstable private research/life machines
 
 my $listen = readlink('listen');
-if ($listen) {
-    
-$port = $1 if $listen && $listen =~ /:(\d+)$/;
 
+my $port = $1 if $listen && $listen =~ /:(\d+)$/;
+my $addr = $1 if $listen && $listen =~ /^(?:http:\/\/)?(.+)(?::\d+)?\/?$/;
 
-$port ||= $styleports->{$name};
+my $listen_formed = $port && $addr;
+my $sr = $stylelist->{$style};
 
+if (!$port || !$addr) {
+    $port ||= $sr->[1] if $sr;
+    $port ||= "2000";
+    $addr ||= $sr->[0] if $sr;
+    $addr ||= "127.0.0.1";
+}
 
-$listen ||= ":$port";
- || $port;
+$listen = "http://$addr:$port" unless $listen_formed;
+$listen = [ split /, ?/, $listen ];
+# this R doesn't scale its default settings, shrug
 
-$port || die "styleport missing for $name    \$Bin:$Bin";
-my $ip = readlink('ip') || $port;
-$ip = "*" if $name eq "stylehut";
-my $mojo_daemon_listen = "http://$ip:$port";
-
-say "$name $$ $mojo_daemon_listen
+say "! enlistening $name $$ @$listen
 
 
 
@@ -139,8 +144,9 @@ say "$name $$ $mojo_daemon_listen
 
 my $hostinfo = new Hostinfo();
 $hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
+# SED name is styleblah, $style as far above is blah. layers peel everywhere.
 
-# get rid of this with Base.pm
+# get rid of this with Base.pm... or something
 helper 'hostinfo' => sub { $hostinfo };
 
 my $hands = {};
@@ -379,7 +385,7 @@ sub dostuff {
     say "Done\n\n\n\n\n";
 }
 
-my $daemon = Mojo::Server::Daemon->new(app => app, listen => [$mojo_daemon_listen]);
+my $daemon = Mojo::Server::Daemon->new(app => app, listen => $listen);
 $daemon->run();
 sub love {
     
