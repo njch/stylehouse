@@ -61,8 +61,8 @@ hooks:
             push @$lines, "more...";
             last;
         }
-        push @$lines, w make_line(+ splatname => $A->{B}->{splatname},
-            line => $line, R => [], B => {});
+        my ($splatname, $R, $B) = ($A->{B}->{splatname}, [], {});
+        push @$lines, w make_line[$splatname, $R, $B, $line];
     }
     my $th = {
         nospace => 1,
