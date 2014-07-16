@@ -89,23 +89,34 @@ use Way;
 
 my ($name) = $Bin =~ m{/(\w+)$};
 my ($pwd) = `pwd` =~ /(.+)\n/;
-die "you ain't really here" unless $Bin eq $pwd;
+die "ain't really here" unless $Bin eq $pwd;
 # here's our internet constellation
 # N S E W
-my $styleports = {
-    stylehut => 5000,
-    stylecoast => 4000,
-    stylehouse => 3000,
-    styleshed => 2000,
-    stylebucky => 1000,
+my $port = '127.0.0.1';
+my $stylelisten = {
+    stylehut =>   ['*', 5000],
+    stylecoast => [$port, 4000],
+    stylehouse => [$port, 3000],
+    styleshed =>  [$port, 2000],
+    stylebucky => [$port, 1000],
 };
 # vertical supports the two degrees of weather you can feed the web
 # horizontal are your stable and unstable private research/life machines
-# TODO nicely craft:
-my $port = $styleports->{$name};
-$port = readlink('port') || $port;
-$port || die "COUGH COUGH COUGH please change the name of the directory the script is in to 'stylehouse'\n$Bin looks funny";
-my $ip = "127.0.0.1";
+
+my $listen = readlink('listen');
+if ($listen) {
+    
+$port = $1 if $listen && $listen =~ /:(\d+)$/;
+
+
+$port ||= $styleports->{$name};
+
+
+$listen ||= ":$port";
+ || $port;
+
+$port || die "styleport missing for $name    \$Bin:$Bin";
+my $ip = readlink('ip') || $port;
 $ip = "*" if $name eq "stylehut";
 my $mojo_daemon_listen = "http://$ip:$port";
 
