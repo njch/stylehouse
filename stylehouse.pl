@@ -89,6 +89,7 @@ use Way;
 # style {
 
 my ($name) = $Bin =~ m{/(\w+)$};
+my $title = $name;
 my ($pwd) = `pwd` =~ /(.+)\n/;
 die "ain't really here" unless $Bin eq $pwd;
 
@@ -237,7 +238,7 @@ Prof Lue Calfman's quote from G
 =cut
     }
 
-    $self->render('index');
+    $self->render('index', $title);
 };
 websocket '/stylehouse' => sub {
     my $self = shift;
