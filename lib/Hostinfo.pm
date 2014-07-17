@@ -103,15 +103,15 @@ sub init_flood {
     };
     
     $m->spawn_floozy(
-        Error => "width:100%; $messborder background: rgba(178,71,0, 0.7); color: #030; font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Error => "width:100%; $messborder background: rgba(16,0,50, 0.7); color: rgba(178,71,0, 0.7); font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; $messborder background: rgba(16,0,50, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Info => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Say => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Say => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #44ag39;color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $self->menu();
@@ -311,7 +311,7 @@ sub elvis_connects {
 }
 sub restarting {
     my $self = shift;
-    exec "perl stylehouse.pl $ARGV";
+    exec "perl stylehouse.pl @ARGV";
 }
 sub elvis_enters {
     my $self = shift;
@@ -637,8 +637,16 @@ sub watch_git_diff {
     while (my ($f, $D) = each %$d) {
         $d->{$f} = enhash($D);
     }
-    my $od = $self->{last_git_diff};
-    # ENGHOST
+    my $od = $self->{last_git_diff} ||= {};
+    while (my ($f, $o) = %$od) {
+        my $n = $d->{$f};
+        if ($n ne $o) {
+            say "BALL $f \n\n\n\n\n\\n\n";
+            $self->restarting;
+        }
+    }
+    
+    # ZIPPING!? accum?
 }
 sub reload_ghosts {
     my $self = shift;
