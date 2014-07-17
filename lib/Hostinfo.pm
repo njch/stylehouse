@@ -311,6 +311,7 @@ sub elvis_connects {
 }
 sub restarting {
     my $self = shift;
+    exec "perl stylehouse.pl $ARGV";
 }
 sub elvis_enters {
     my $self = shift;
