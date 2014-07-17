@@ -94,6 +94,9 @@ sub watch_file_streams {
                 }
             }
         }
+        elsif ($st->{touch_restart} && @diffs) {
+            $H->restarting;
+        }
         else { die "something$size > $st->{size})  else?" }
         
         

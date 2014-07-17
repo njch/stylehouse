@@ -107,7 +107,7 @@ sub init_flood {
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; $messborder background: rgba(153,204,255, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Info => "width: 100%; overflow: scroll; $messborder background: rgba(16,0,50, 0.7); color: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
@@ -618,7 +618,6 @@ sub watch_files {
 }
 
 sub watch_file_streams {
-    my $self = shift;
     Travel::watch_file_streams(@_);
 }
 sub watch_git_diff {

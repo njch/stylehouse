@@ -10,7 +10,7 @@ sub TT { Hostinfo::TT(@_) }
 
 my $i = 0; # sweeps through @{lyrics}
 our $H;
-$Hostinfo::data->{'horizon'} = "97.01%";
+$Hostinfo::data->{'horizon'} = "93.01%";
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
