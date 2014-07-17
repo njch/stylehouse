@@ -74,8 +74,7 @@ sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= [
         "!style='color:#41DB39;' ܤ" => sub { # they might wanna load new css/js too
-            $H->error('restarting');
-            `touch $0`;
+            $H->restarting();
         },
         ɤ => sub {
             $self->nah;

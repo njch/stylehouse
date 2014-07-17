@@ -298,8 +298,7 @@ sub elvis_connects {
     if (scalar(keys %$elviss) > 1) {
         say " Elvis is taking over!";
         $_->{tx} && $_->{tx}->finish for values %$elviss;
-        `touch $0`;
-        sleep 3;
+        $self->restarting;
     }
 
     $self->{first_elvis} ||= $new;
@@ -309,6 +308,9 @@ sub elvis_connects {
 
     return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
+}
+sub restarting {
+    my $self = shift;
 }
 sub elvis_enters {
     my $self = shift;
