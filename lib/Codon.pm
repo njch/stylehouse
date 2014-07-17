@@ -55,10 +55,14 @@ sub open_filename {
 }
 sub o {
     my $self = shift;
-    my $o = $self->{openness} ||= {};
+    return $self->{openness} = shift if @_;
+    $self->{openness} ||= {};
+}
+sub closed_o {
+    my $self = shift;;
+    my $o = $self->{openness};
     $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
 }
-    
 sub ddump { Hostinfo::ddump(@_) }
 sub open_codefile {
     my $self = shift;
