@@ -17,7 +17,12 @@ tractors:
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
-
+  go: |
+    Info "\n go ".join "  ", %$ar;
+    exists $ar->{line}
+      ? w open_line
+      : $O->w('somewhere', $ar);
+    
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
     
@@ -77,17 +82,6 @@ hooks:
     ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
     ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
     return $t;
-  
-  go: |
-      Info "\n go ".join "  ", %$ar;
-      if (exists $ar->{line}) {
-          w open_line;
-      }
-      else {
-          $O->w('somewhere', $ar);
-      }
-      
-      # ye
   
   make_line: |
     if (ref $line ne "HASH") {
