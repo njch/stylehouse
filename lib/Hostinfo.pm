@@ -645,7 +645,7 @@ sub watch_git_diff {
             $self->restarting;
         }
     }
-    
+    $self->{last_git_diff} = $d;
     # ZIPPING!? accum?
 }
 sub reload_ghosts {
