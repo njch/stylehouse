@@ -107,11 +107,11 @@ sub init_flood {
     );
     
     $m->spawn_floozy(
-        Info => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Info => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold; color: #66c339; opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $m->spawn_floozy(
-        Say => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #44ag39;color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+        Say => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
     );
     
     $self->menu();
