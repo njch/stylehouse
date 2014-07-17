@@ -132,13 +132,14 @@ sub load_ways {
         }
         
         if (@files) {
-            $H->watch_ghost_way($self, $name);
+            $H->watch_ghost_way($self, $name, \@files);
         }
         else {
             $H->error("No way! $name");
         }
     }
     
+    say "lwp";
     $self->w("load_ways_post");
     
     my $G = $self;
@@ -149,6 +150,7 @@ sub load_ways {
         $G = $G->{O};
         $G->w("any_child_recoded_init");
     }
+    say ".";
 }
 sub nw {
     my $self = shift;

@@ -616,7 +616,6 @@ sub watch_files {
     $self->watch_file_streams();
     $self->watch_git_diff();
 }
-
 sub watch_file_streams {
     Travel::watch_file_streams(@_);
 }
@@ -638,7 +637,7 @@ sub watch_git_diff {
         $d->{$f} = enhash($D);
     }
     my $od = $self->{last_git_diff} ||= {};
-    while (my ($f, $o) = %$od) {
+    while (my ($f, $o) = each %$od) {
         my $n = $d->{$f};
         if ($n ne $o) {
             say "BALL $f \n\n\n\n\n\\n\n";
@@ -664,9 +663,8 @@ sub watch_ghost_way {
     my $self = shift;
     my $ghost = shift;
     my $name = shift;
-    my @files = -f "ghosts/$name" ? "ghosts/$name"
-        : glob "ghosts/$name/*";
-    my $f = { map { $_ => 1 } @files };
+    my $files = shift;
+    my $f = { map { $_ => 1 } @$files };
     
     say "Going to watch $name for $ghost->{id}";
     

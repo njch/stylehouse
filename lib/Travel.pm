@@ -18,7 +18,7 @@ sub new {
     return $self;
 }
 sub watch_file_streams {
-     my $self = shift;
+    my $self = shift;
     for my $st (@{ $self->{file_streams} }) {
         my ($ino, $ctime, $mtime, $size) =
         (stat $st->{filename})[1,10,9,7];
