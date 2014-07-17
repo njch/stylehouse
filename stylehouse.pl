@@ -115,7 +115,6 @@ my $addr = $1 if $listen && $listen =~ /^(?:http:\/\/)?(.+)(?::\d+)?\/?$/;
 
 my $listen_formed = $port && $addr;
 my $sr = $stylelist->{$style};
-
 if (!$port || !$addr) {
     $port ||= $sr->[1] if $sr;
     $port ||= "2000";
@@ -385,6 +384,7 @@ sub dostuff {
     say "Done\n\n\n\n\n";
 }
 
+say " Listen @$listen!?";
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => $listen);
 $daemon->run();
 sub love {
