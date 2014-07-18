@@ -127,8 +127,6 @@ sub flood {
     my $thing = shift;
     my $floozy = shift;
 
-    $self->init_flood() unless $self->{flood};
-
     if (!defined $thing && !defined $floozy) {
         return $self->{flood}
     }
@@ -772,8 +770,6 @@ sub travel {
     my $self = shift;
     my $thing = shift;
     my $floozy = shift;
-
-    $self->init_flood() unless $self->{flood};
 
     my $from = join ", ", (caller(1))[0,3,2];
     say "Hostinfo->travel from: $from";
