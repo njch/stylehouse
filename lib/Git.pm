@@ -524,7 +524,7 @@ sub wire_procs {
                 if (-l $unto) {
                     my $lw = readlink $unto;
                     if ($lw ne $tower) {
-                        die "remote proc $unto already wired to $lw instead of $tower"
+                        say "remote proc $unto already wired to $lw instead of $tower"
                     }
                     else { # sweet
                     }
