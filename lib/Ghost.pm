@@ -231,10 +231,16 @@ sub waystacken {
     push @F, $junk;
     return sub {
         my $sk = -1;
-        until ($F[$sk] eq $junk || !exists $F[$sk]) {
-            
-        if ($F[-1]
-    
+        my @gone;
+        until ($F[$sk+1] eq $junk || !exists $F[$sk-1]) {
+            push @gone, pop @F;
+            $sk--;
+        }
+        if (@gone > 1) {
+            say "Errors leaving the stack like bats:\n".ddump(@gone);
+        }
+    }
+}
 sub w {
     my $self = shift;
     my $point = shift;
@@ -271,14 +277,16 @@ sub w {
         my $h = $w->find($point);
         next unless $h;
         
-        { G => $self, way => $w, point => $point, ar => $ar,
-            ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform() };
+        my $back = $self->waystacken(
+            G => $self, way => $w, point => $point, ar => $ar,
+            ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
+        );
         
         push @returns, [
             $self->doo($h, $ar, $point)
         ];
         
-        pop @F;
+        $back->();
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
