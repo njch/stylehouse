@@ -15,59 +15,6 @@ binmode(STDOUT, ":utf8");
 binmode(STDERR, ":utf8");
 binmode(STDIN, ":utf8");
 
-=pod
-
-hostinfo
-for modules, IPs, files, everything
-anything storage upgradable to sticky schemas
-
-modules create a view div, fill it with spans
-the spans' ids reach back to the module and/or controller it came from
-passing it the whole element and "click" or whatever
-lets eval everything from a WebSocket on the client
-
-new screens/websockets attached to screen/tx
-
-by the event dispatch... we see the waters edge
-blowing up and coming back down in a linguatic clang
-here to think about what to do
-
-need to error check client side javascript
-
-Texty, sending things through hostinfo awaits knowing about which screen its on
-handled by whatever provisions the viewport
-
-the modes that programs go through...
- - like awaiting event
-
-dump hostinfo to a file (in another window)
-
-going into the jungle horizontal
-come out vertical again and pick up the dream
-
-the tri is a point of balance
-
-everything exists from two places
-
-the unfolding along the texty line... jostling into space
-
-yep line jostling
-span spannering
-space building
-program cursor
-tubes of where what & how
-
-
-facilitating human attachment
-
-there's a greenhouse in London that cycles a whole day of mountain air underground and blows the cool night air over the plants during the day cos that's their environment
-
-String::Koremutake
-instead of urls
-
-=cut
-
-#!/usr/bin/env perl
 use Mojolicious::Lite;
 use lib 'lib';
 use Hostinfo;
