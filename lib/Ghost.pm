@@ -144,11 +144,15 @@ sub load_ways {
     $self->_0('_load_ways_post');
 }
 sub _0 {
-    my $self = shift;
-    my $G0O = $G0->{O};
-    $G0->{O} = $self;
-    $G0->w(@_);
-    say ".";
+    my $G = shift;
+    my ($point, $ar) = @_;
+    unless ($G0) { # proto $G0 creation
+        $G->w("load_ways_post") if $point eq "_load_ways_post";
+        return;
+    }
+    $ar->{S} = $G;
+    $G0->w($point, $ar);
+    say ".$point";
 }
 sub nw {
     my $self = shift;
@@ -232,17 +236,12 @@ sub waystacken {
     return sub {
         my $sk = -1;
         my @gone;
-        until ($F[$sk+1] eq $junk || !exists $F[$sk-1]) {
-            push @gone, pop @F;
-            $sk--;
-        }
-        if (@gone > 1) {
-            say "Errors leaving the stack like bats:\n".ddump(@gone);
-        }
+        my $o = pop @F;
+        $o ne $junk && die "stack bats:\n".wdump([\@gone, \@F]);
     }
 }
 sub w {
-    my $self = shift;
+    my $G = shift;
     my $point = shift;
     my $ar = shift;
     my $Sway = shift; # so we can get into chains/tractors
@@ -253,11 +252,12 @@ sub w {
     # jelly pyramids...
     my @ways;
     
-        $H->snooze(0.1);
     if ($Sway) {
         if (ref $Sway eq 'Ghost') {
-            @ways = $Sway->ways;
-            $self->ob("Ghost--Ghost->w", $point, $Sway);
+        
+                @ways = $Sway->ways;
+            
+            $G->ob("Ghost--Ghost->w", $point, $Sway);
             $Sway->w($point, $ar);
         }
         elsif (ref $Sway eq 'Way') {
@@ -268,7 +268,7 @@ sub w {
         $ar = {%$ar, S => $Sway, %$b};
     }
     else {
-        @ways = $self->ways;
+        @ways = $G->ways;
     }
     
     
@@ -278,7 +278,7 @@ sub w {
         next unless $h;
         
         push @returns, [
-            $self->doo($h, $ar, $point, $Sway)
+            $G->doo($h, $ar, $point, $Sway, $w)
         ];
     }
     return say "Multiple returns from ".($point||'some?where')
@@ -300,6 +300,7 @@ sub doo {
     my $ar = shift || {};
     my $point = shift;
     my $Sway = shift;
+    my $w = shift;
     
     my $eval = $G->parse_babble($babble, $point);
     
@@ -313,11 +314,11 @@ sub doo {
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
     my @return;
-    my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload":
+    my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $self->waystacken(
-        G => $self, way => $w, point => $point, ar => $ar,
+    my $back = $G->waystacken(
+        G => $G, way => $w, point => $point, ar => $ar,
         ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
     );
     
