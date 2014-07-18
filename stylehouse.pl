@@ -94,6 +94,7 @@ my ($pwd) = `pwd` =~ /(.+)\n/;
 die "ain't really here" unless $Bin eq $pwd;
 
 my ($style) = $name =~ /style(\w+)$/;
+$style && $style =~ s/(.)/$1\N{U+0489}/g;
 $style ||= $name;
 
 # here's our internet constellation
@@ -231,14 +232,10 @@ get '/' => sub {
         say "turned into $1";
         unlink "public/stylehouse.js";
         write_file("public/stylehouse.js", $js);
-=pod
-Prof Lue Calfman's quote from G
-Prof Lue Calfman's quote from G
-Prof Lue Calfman's quote from G
-=cut
     }
-
-    $self->render('index', $title);
+    
+    $self->stash(title => $style);
+    $self->render('index');
 };
 websocket '/stylehouse' => sub {
     my $self = shift;
@@ -397,7 +394,7 @@ __DATA__
 @@ index.html.ep
 <!doctype html><html>
     <head>
-        <title>stylehouse</title>
+        <title><%= $title || "stylehouse" %></title>
 
         <link  href="stylehouse.css" rel="stylesheet">
 
