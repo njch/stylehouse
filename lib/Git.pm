@@ -482,6 +482,9 @@ sub rbe {
     my $self = shift;
     my $side = shift;
     my $s = shift || $H->get("style");
+    if ($s =~ /stylehut/) {
+        return "/s/";
+    }
     
     my ($l, $r);
     my @rs = @{ $H->get('Git/repos') };

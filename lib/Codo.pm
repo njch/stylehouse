@@ -38,10 +38,10 @@ use File::Slurp;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-
-    $self->{git} = $H->getapp("Git");
-    my $cd = $self->{git}->rbe("down");
-    $cd = "../$cd/";
+    
+    my $ss = $H->get("sstyle");
+    my $cd = $ss eq "shed" ? "/b/" : "/s/";
+    
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
@@ -131,9 +131,10 @@ sub init_codons {
 sub codefiles {
     my $self = shift;
 
-        my $dir = $self->{code_dir} || "";
-        die "$dir not dir" unless -d $dir;
-        $dir .= "/" unless $dir =~ /\/$/;
+    my $dir = $self->{code_dir} || "";
+    die "$dir not dir" unless -d $dir;
+    $dir .= "/" unless $dir =~ /\/$/;
+    say "Code dir $dir";
     
     map { Hostinfo::decode_utf8($_) }
         grep { !$dir || s/^$dir// } (
@@ -322,15 +323,14 @@ sub lobo {
           );
     }
 }
-
 sub load_codon {
     my $self = shift;
-    my $codon = shift;
+    my $codon_s = shift;
     my $ope = shift;
     my $noscrolly = shift;
 
-    ($codon) = $self->codon_by_name($codon) unless ref $codon;
-    return $self->{hostinfo}->error("Can't load codon: $codon") unless $codon;
+    my $codon =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
+    return $self->{hostinfo}->error(die "Can't load codon: $codon_s") unless $codon;
     say "Codo load $codon->{name}";
     $codon || die;
     
@@ -387,9 +387,6 @@ sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
-
-
 sub proc_killed {
     my $self = shift;
     my $proc = shift;

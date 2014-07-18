@@ -41,8 +41,8 @@ my ($pwd) = `pwd` =~ /(.+)\n/;
 die "ain't really here" unless $Bin eq $pwd;
 
 my ($style) = $name =~ /style(\w+)$/;
-($title = $style) =~ s/(.)/$1\N{U+0489}/g if $style;
 $style ||= $name;
+($title = $style) =~ s/(.)/$1\N{U+0489}/g;
 
 # here's our internet constellation
 # N S E W
@@ -92,7 +92,9 @@ say "! enlistening $name $$ @$listen
 
 my $hostinfo = new Hostinfo();
 $hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
+$hostinfo->set('sstyle', $style); # eventually to pick up a wormhole and etc.
 $hostinfo->set('stylelist', $stylelist);
+$hostinfo->{underworld} = 1; # our fate's the most epic shift ever
 # SED name is styleblah, $style as far above is blah. layers peel everywhere.
 
 # get rid of this with Base.pm... or something
@@ -100,7 +102,6 @@ helper 'hostinfo' => sub { $hostinfo };
 
 my $hands = {};
 
-my $underworld = 1; # our fate's the most epic shift ever
 
 # see what's there in all different ways
 # get the language
@@ -111,27 +112,6 @@ my $underworld = 1; # our fate's the most epic shift ever
 # do it all
 
 # $0 has become a runtime
-sub init {
-    my $self = shift;
-
-    $hostinfo->flood($hostinfo->get('flood/default_thing') || [(jah => "waka")x7]);
-
-    if ($name eq "styleshed") {
-        Git->new($hostinfo->intro);
-        Codo->new($hostinfo->intro);
-        Lyrico->new($hostinfo->intro);
-    }
-    else {
-        Git->new($hostinfo->intro);
-        Codo->new($hostinfo->intro);
-        #Keys->new($hostinfo->intro);
-    }
-
-    $hostinfo->update_app_menu();
-    $underworld = 0;
-}
-
-# where we pay attention
 $hands = {
     geometry => [ sub {
         $hostinfo->send("ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -249,7 +229,8 @@ $self->on(message => sub {
 
 
         # it beings! not that we don't come through here all the time
-        init() if $underworld;
+        $hostinfo->{G}->w('elvinit') if $hostinfo->{underworld};
+        
         eval { dostuff($self, $j, $msg); };
         if ($@) {
             $hostinfo->error("message process fup", $@);

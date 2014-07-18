@@ -1,16 +1,28 @@
 
-
-
-
-
-
-
 name: hostinfo
 hooks:
   load_ways_post: |
     unless (G mess ) {
         G TT ->G("Hostinfo/mess");
     }
+  elvinit: |
+    $G->unrush('elvinit') || return;
+    my $style = $H->get("sstyle");
+    if ($style eq "styleshed") {
+        Git->new($H->intro);
+        Codo->new($H->intro);
+        Lyrico->new($H->intro);
+    }
+    else {
+        #Git->new($H->intro);
+        Codo->new($H->intro);
+        #Keys->new($hostinfo->intro);
+    }
+
+    $H->update_app_menu();
+    
+    $H->{underworld} = 0;
+    # where we pay attention
   throwlog: |
     G mess Tw throwlog(%$ar);
   splatmenues: |

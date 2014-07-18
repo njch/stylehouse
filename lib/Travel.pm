@@ -11,9 +11,9 @@ sub new {
     shift->($self);
     delete $self->{hostinfo};
 
-    $self->{O} = shift || die "no O";
-    $self->{from} = [$self->{O}, @_];
-    $self->{name} = $self->{O}->{name} || $self->{O}->{id} || "$self->{O}";
+    my $O = $self->{O} = shift || die "no O";
+    $self->{from} = [$O, @_];
+    $self->{name} = ref $O && ($self->{O}->{name} || $self->{O}->{id}) || "$O";
 
     return $self;
 }

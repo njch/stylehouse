@@ -35,8 +35,8 @@ sub new {
     $Git::H = $self;
     $Way::H = $self;
 
-    $self->{GG} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT($self->{GG})->G("Ghost");
+    $self->{G} = $self->TT($self)->G;
+    $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
 
     #jQuery.Color().hsla( array )
     return $self

@@ -113,7 +113,6 @@ sub editing {
     say "Texty pushed ".scalar(@newlines)." lines out";
     #say ddump(\@newlines);
 }
-
 sub gotline {
     my $self = shift;
     my $line = shift;
@@ -127,8 +126,6 @@ sub gotline {
 
     $self->{editing} = 1;
 }
-
-
 sub append { # TRACTOR
     my $self = shift;
     my $lines = shift;
@@ -173,7 +170,6 @@ sub append { # TRACTOR
 
     $self->view->takeover($htmls, $self);
 }
-
 sub tookover {
     my $self = shift;
     if ($self->{hooks}->{fit_div}) {
@@ -380,12 +376,10 @@ sub fit_div {
         $self->{hostinfo}->send(qq{ \$('#$divid').scrollTop($last->{top});  });
     }
 }
-
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-
 sub id_to_tuxt {
     my $self = shift;
     my $id = shift;
