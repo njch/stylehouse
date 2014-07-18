@@ -277,16 +277,9 @@ sub w {
         my $h = $w->find($point);
         next unless $h;
         
-        my $back = $self->waystacken(
-            G => $self, way => $w, point => $point, ar => $ar,
-            ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
-        );
-        
         push @returns, [
-            $self->doo($h, $ar, $point)
+            $self->doo($h, $ar, $point, $Sway)
         ];
-        
-        $back->();
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -306,6 +299,7 @@ sub doo {
     my $babble = shift;
     my $ar = shift || {};
     my $point = shift;
+    my $Sway = shift;
     
     my $eval = $G->parse_babble($babble, $point);
     
@@ -315,18 +309,21 @@ sub doo {
     
     say " $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval");
     
-    my $download = join "", map { 'my $'.$_.' = $ar->{'.$_."};  " } keys %$ar if $ar;
-    my $upload = join "", map { '$ar->{'.$_.'} = $'.$_.";  " } keys %$ar if $ar;
+    my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
+    my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
     my @return;
-    my $evs = ($download||'')
-        ."\n".' @return = (sub { '
-        ."\n".$eval."\n".
-        ' })->(); '."\n"
-        .($upload||'');
+    my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload":
+    
+        
+    my $back = $self->waystacken(
+        G => $self, way => $w, point => $point, ar => $ar,
+        ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
+    );
+    
     eval $evs;
     
-    
+    $back->();
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
