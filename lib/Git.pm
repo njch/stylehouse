@@ -11,10 +11,11 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    my $repos = $H->set("Git/repos", [ map { "style$_" } qw{ house shed bucky } ]);
+    my $repos = $H->set("Git/repos", [ map { "style$_" } qw{ house shed bucky hut } ]);
     $H->set("Git/repo=stylehouse/aka", '⭅');
     $H->set("Git/repo=styleshed/aka", '⭆');
     $H->set("Git/repo=stylebucky/aka", 'ც');
+    $H->set("Git/repo=stylehut/aka", 'Ѧ');
     for my $r (@$repos) {
         $H->set("Git/repos/$r", {});
     }
@@ -170,7 +171,6 @@ sub reprocserv {
     my $self = shift;
     $self->spawn_proc('killall procserv.pl; ./procserv.pl &');
 }
-
 sub pstylecmd {
     my $self = shift;
     my $cmd = shift;
@@ -184,7 +184,6 @@ sub mstylecmd {
     my $name = shift;
     return "cd ../$name && ./stylehouse.pl"
 }
-
 sub spawn_style {
     my $self = shift;
     my $outside = shift;
@@ -198,7 +197,6 @@ sub spawn_style {
     $P->{repo} = $repo;
     $P
 }
-
 sub spawn_proc {
     my $self = shift;
     #$H->info("spawning ".join", ",@_);
@@ -217,7 +215,6 @@ sub procup {
     push @{$self->{procs}}, $P;
     $P
 }
-
 sub repos {
     my $self = shift;
 
@@ -251,7 +248,6 @@ sub repos {
     my $repos = $H->get('Git/repos');
     $rt->replace([ map { "!menu=up $_" } @$repos ]);
 }
-
 sub pswatch {
     my $self = shift;
     my $one = shift;
@@ -398,7 +394,6 @@ sub proclistwatch {
         $H->stream_file("proc/list", $per_line);
     }
 }
-
 sub init_state {
     my $self = shift;
 
@@ -483,8 +478,6 @@ sub init_state {
     
     return $self->{state}
 }
-
-
 sub rbe {
     my $self = shift;
     my $side = shift;
