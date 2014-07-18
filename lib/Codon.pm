@@ -55,7 +55,7 @@ sub open_filename {
 }
 sub o {
     my $self = shift;
-    return $self->{openness} = shift if @_;
+    $self->{openness} = shift if @_;
     $self->{openness} ||= {};
 }
 sub closed_o {

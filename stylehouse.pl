@@ -92,6 +92,7 @@ say "! enlistening $name $$ @$listen
 
 my $hostinfo = new Hostinfo();
 $hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
+$hostinfo->set('stylelist', $stylelist);
 # SED name is styleblah, $style as far above is blah. layers peel everywhere.
 
 # get rid of this with Base.pm... or something

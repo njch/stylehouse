@@ -119,8 +119,6 @@ sub zlyrics {
     my $ly = $lyrics->[$i];
     return $ly;
 }
-
-
 sub write {
     my $self = shift;
     my $h = shift;
@@ -139,8 +137,6 @@ sub scroll_unthrottle {
         $self->scroll(delete $self->{scroll}->{latest});
     }
 }
-
-
 sub scroll_throttle {
     my $self = shift;
     my $s = shift;
