@@ -1,0 +1,21 @@
+
+name: Ghost
+hooks:
+  _load_ways_post: |
+      
+    $_0G->w("load_ways_post");
+    
+    w trig_parent_child_init;
+    
+  trig_parent_child_init: |
+    return if $_0G->{load_ways_count} > 1;
+    my $g = $_0G;
+    
+    while ($G->{O} && ref $G->{O} eq "Ghost") {
+        if ($G eq $self) {
+            $G->{O}->w("child_recoded_init");
+        }
+        $G = $G->{O};
+        $G->w("any_child_recoded_init");
+    }
+

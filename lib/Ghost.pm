@@ -11,10 +11,11 @@ sub wdump { Hostinfo::wdump(@_) }
 
 our $H;
 our @F;
+our $G0;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
-    delete $self->{hostinfo};
+    delete $self->{hostinfo}; # TODO put this back once travelling feels right
 
     $self->{T} = shift;
     my $name = $self->{T}->{name};
@@ -25,7 +26,7 @@ sub new {
         @ways = ref $self->{T}->{O};
     }
     my $way = join", ",@ways;
-    $name = "$name`s $way";
+    $name = "$name`s ($way)";
     $self->{name} = $name;
     $self->{way} = $way;
     say "Ghost named $name";
@@ -140,16 +141,13 @@ sub load_ways {
     }
     
     say "lwp";
-    $self->w("load_ways_post");
-    
-    my $G = $self;
-    while ($self->{load_ways_count} > 1 && $G->{O} && ref $G->{O} eq "Ghost") {
-        if ($G eq $self) {
-            $G->{O}->w("child_recoded_init");
-        }
-        $G = $G->{O};
-        $G->w("any_child_recoded_init");
-    }
+    $self->_0('_load_ways_post');
+}
+sub _0 {
+    my $self = shift;
+    my $G0O = $G0->{O};
+    $G0->{O} = $self;
+    $G0->w(@_);
     say ".";
 }
 sub nw {
@@ -227,6 +225,16 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
+sub waystacken {
+    my $self = shift;
+    my $junk = {@_}; # or w/e
+    push @F, $junk;
+    return sub {
+        my $sk = -1;
+        until ($F[$sk] eq $junk || !exists $F[$sk]) {
+            
+        if ($F[-1]
+    
 sub w {
     my $self = shift;
     my $point = shift;
@@ -263,7 +271,7 @@ sub w {
         my $h = $w->find($point);
         next unless $h;
         
-        push @F, { G => $self, way => $w, point => $point, ar => $ar,
+        { G => $self, way => $w, point => $point, ar => $ar,
             ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform() };
         
         push @returns, [
