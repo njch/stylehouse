@@ -512,7 +512,7 @@ sub wire_procs {
     my ($top, @rest) = @$repos;
     my $style = $H->get("style");
     
-    my $tower = "../$top/proc";
+    my $tower = "/h/proc";
     die "proc tower $tower not exist"                                   unless -e $tower;
     die "proc tower $tower is a link somewhere else: ".readlink($tower) if -l $tower;
     die "proc tower $tower not directory" unless -d $tower;
@@ -542,7 +542,7 @@ sub wire_procs {
         if (-l 'proc') {
             my $procto = readlink 'proc';
             if ($procto ne $tower) {
-                die "proc already wired to $procto instead of $tower"
+                say "proc already wired to $procto instead of $tower"
             }
             else { # sweet
             }
