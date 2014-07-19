@@ -385,7 +385,6 @@ sub writefile {
     my $diff = `diff newcode $filename`;
     $self->{hostinfo}->Info($diff);
     `mv newcode $filename` if $diff;
-    `rm newcode`;
 }
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
