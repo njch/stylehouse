@@ -45,7 +45,7 @@ sub new {
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
-    my $codoback = "rgba(0,78,200,0.35)"; #"001452"
+    my $codoback = "rgba(100,78,200,0.35)"; #"001452"
     my $Codo =
     $H->{ground}->spawn_floozy($self, Codo => "width:78%; min-width: 600px; background: $codoback; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"
@@ -54,7 +54,6 @@ sub new {
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
     $H->{flood}->spawn_floozy($self, codolist =>
         "padding: 1em; width:100%; z-index:3; background: rbga(0,0,90,0.9); color: #afc; opacity: 1; hegith: 8em;");
-
 
     $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
