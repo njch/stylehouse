@@ -194,8 +194,11 @@ sub haunt { # arrives through here
     
     $self->ob($self);
     
-    my $line = $self->W->continues($self); # %
-    $self->ob($line);
+    my $line;
+    if (defined $self->{t}) {
+        $line = $self->W->continues($self); # %
+        $self->ob($line);
+    }
 
     return ($line, $self->{o});
 }
