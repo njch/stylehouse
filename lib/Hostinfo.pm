@@ -35,8 +35,8 @@ sub new {
     $Git::H = $self;
     $Way::H = $self;
 
-    $self->{GG} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT($self->{GG})->G("Ghost");
+    $self->{G} = $self->TT($self)->G;
+    $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
 
     #jQuery.Color().hsla( array )
     return $self
@@ -126,8 +126,6 @@ sub flood {
     my $self = shift;
     my $thing = shift;
     my $floozy = shift;
-
-    $self->init_flood() unless $self->{flood};
 
     if (!defined $thing && !defined $floozy) {
         return $self->{flood}
@@ -772,8 +770,6 @@ sub travel {
     my $self = shift;
     my $thing = shift;
     my $floozy = shift;
-
-    $self->init_flood() unless $self->{flood};
 
     my $from = join ", ", (caller(1))[0,3,2];
     say "Hostinfo->travel from: $from";
