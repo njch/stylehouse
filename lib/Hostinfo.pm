@@ -740,7 +740,7 @@ sub reload_ghosts {
     while (my ($gid, $gw) = each %$gr) {
         my ($ghost) = grep { $_->{id} eq $gid }
             @{$self->get("Ghost")};
-        say "reload ghost: $ghost->{id}";
+        say "reload ghost: $ghost->{name}";
         die "NO Ghostys" unless $ghost;
         $ghost->load_ways(keys %$gw);
     }

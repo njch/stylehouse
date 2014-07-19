@@ -4,14 +4,12 @@ hooks:
   _load_ways_post: |
       
     $S->w("load_ways_post");
+    w recoded_init if $S->{load_ways_count} < 1;
     
-    w trig_parent_child_init;
-    
-  trig_parent_child_init: |
-    say" LW WC ".$S->{load_ways_count};
-    return if $S->{load_ways_count} < 1;
+  recoded_init: |
     my $g = $S;
-    say " PWCup ".$g->{O}||"";
+    $g->w("recoded_init");
+    say "from $g->{name}\t\tUpwards:".($g->{O}||"~undef~");
     while ($g->{O} && ref $g->{O} eq "Ghost") {
         if ($g eq $S) {
             $g->{O}->w("child_recoded_init");
