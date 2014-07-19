@@ -8,9 +8,10 @@ hooks:
     w trig_parent_child_init;
     
   trig_parent_child_init: |
-    return if $S->{load_ways_count} > 1;
+    say" LW WC ".$S->{load_ways_count};
+    return if $S->{load_ways_count} < 1;
     my $g = $S;
-    
+    say " PWCup ".$g->{O}||"";
     while ($g->{O} && ref $g->{O} eq "Ghost") {
         if ($g eq $S) {
             $g->{O}->w("child_recoded_init");
