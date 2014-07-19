@@ -852,7 +852,7 @@ sub throwlog {
     $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').html('$string').scrollTo({top:'100%',left:'0%'}, 400);");
+    $self->JS("\$('#$what').removeClass('widdle').fadeOut(100).html('$string').fadeIn(100).scrollTo({top:'100%',left:'0%'}, 400);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
