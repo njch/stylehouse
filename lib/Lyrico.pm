@@ -10,6 +10,7 @@ sub TT { Hostinfo::TT(@_) }
 
 my $i = 0; # sweeps through @{lyrics}
 our $H;
+our $L;
 $Hostinfo::data->{'horizon'} = "88.01%";
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
@@ -36,7 +37,7 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $self->{G} = $H->TT($self)->G("Lyrico");
+    $L = $self->{G} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;
