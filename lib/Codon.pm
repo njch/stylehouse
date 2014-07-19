@@ -18,7 +18,7 @@ sub new {
         $self->{mtime} = (stat $f)[9];
         $self->open_filename($f);
     }
-    $self->o($p->{o});
+    $p->{o} ? $self->o($p->{o}) : $self->closed_o();
 
     $self;
 }
@@ -61,7 +61,7 @@ sub o {
 }
 sub closed_o {
     my $self = shift;;
-    my $o = $self->{openness};
+    my $o = $self->o;
     $o->{$_} = "Closed" for 0..scalar(@{$self->{chunks}})-1;
 }
 sub ddump { Hostinfo::ddump(@_) }
