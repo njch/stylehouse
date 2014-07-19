@@ -11,7 +11,6 @@ sub TT { Hostinfo::TT(@_) }
 my $i = 0; # sweeps through @{lyrics}
 our $H;
 $Hostinfo::data->{'horizon'} = "88.01%";
-$Hostinfo::data->{'horizon'} = "68.01%" if $H->get("sstyle") eq "house";
 
 $Hostinfo::data->{'flood/default_thing'} = "Yoyoyoyoy"; #$Hostinfo::data;
 sub new {
