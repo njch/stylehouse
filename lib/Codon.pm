@@ -195,7 +195,7 @@ CM
             );
         }
     }
-    $H->JS("\$('.CodeMirror').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
+    $H->JS("\$('.CodeMirror').css('background','#1F1F7A').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
     $H->JS("\$('.CodeMirror').parent().css('width', '99%');");
 
     $temp->wipehtml() if $temp;
