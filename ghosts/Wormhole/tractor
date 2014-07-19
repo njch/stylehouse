@@ -1,9 +1,8 @@
 
 hooks:
   rr: |
-    $G->{As} = [ $O->tractors ];
     my @AA;
-    for my $A (@{$G->{As}}) {
+    for my $A ($O->tractors) {
         if (w $A arr_if) {
             push @AA, $A->spawn();
         }
@@ -15,15 +14,15 @@ hooks:
     
     die "CROWD OF TRACTORS" if @AA > 1;
     for my $A (@AA) {
-        $A->{B} = {
-            _ => scalar(w $A B_),
-            %$ar,
-        };
+        $A->{B} = { %$ar };
+        if (my $B_ = w $A B_) {
+            $A->{B}->{_} = $B_;
+        }
     }
     
     for my $A (@AA) {
         
-        if (my $Already = w retract(A => $A)) {
+        if (my $Already = w retract[$A]) {
             $Already->{B} = $A->{B};
             $A = $Already;
             say "retracted  ".join " ", %$ar;
