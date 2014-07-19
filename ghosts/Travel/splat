@@ -2,7 +2,7 @@ name: wormhole splatter
 tractors:
   - K: Wormhole Splat
     arr_if: |
-      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY";
+      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
     B_: |
       $splatname
     first_time: |
@@ -30,7 +30,6 @@ hooks:
     $NS || die "NO!";
     my $wormhole = { script => $NS };
     my $A = Afind[$splatname];
-    
     # new stuff, wedge into html like it has in the wormhole
     w script_out[$A, $wormhole, $append];
   lcodon: |
@@ -59,7 +58,8 @@ hooks:
     my $A = Arr[$splatname, $wormhole];
     say 'Yep.';
     w script_out[$A, $wormhole];
-    
+  
+  script_out: |
     my $lines = [];
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
