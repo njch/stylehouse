@@ -177,7 +177,11 @@ hooks:
                     $name = '<t style="color:black;">'.$n.'</t>'.$w;
                 }
             $s->{value} = $name;
-            $s->{style} .= "font-size:25pt; font-weight: 900; "
+            my $l = length($name);
+            my $fs = 25;
+            $fs = 17 if $l > 20;
+            $fs = 10 if $l > 40;
+            $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
               "0 5px 5px #0F3694; "
             : "0 -5px 5px rgba(255,200,125,0.7);")
