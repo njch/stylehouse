@@ -169,6 +169,11 @@ hooks:
             $name = "@ ".@$t."   " if $ref eq "ARRAY";
             $name = "ϖ". w $t print
                 if $ref eq "Way";
+                if ($ref eq "Ghost") {
+                    my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
+                    $s->{html} = 2;
+                    $name = '<t style="color:black;">'.$n.'</t>'.$w;
+                }
             $s->{value} = $name;
             $s->{style} .= "font-size:25pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
