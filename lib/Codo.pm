@@ -105,6 +105,10 @@ sub init_codons {
     my $self = shift;
 
     say "\tI N I T   C O D ON S !";
+    (my $bm = $self->{code_dir}) =~ s/\/$//;
+    if (-l $bm) {
+        $self->{code_dir} = readlink($bm).'/';
+    }
     my @codefiles = $self->codefiles();
 
     for my $cf (@codefiles) {
@@ -329,7 +333,7 @@ sub load_codon {
     my $ope = shift;
     my $noscrolly = shift;
 
-    my $codon =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
+    my ($codon) =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
     return $self->{hostinfo}->error("Can't load codon: $codon_s") unless $codon;
     say "Codo load $codon->{name}";
     $codon || die;
