@@ -1,16 +1,15 @@
 name: wormhole splatter
 tractors:
-  - K: Wormhole Spill
+  - K: Wormhole Splat
     arr_if: |
-      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY";
+      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
     B_: |
       $splatname
     first_time: |
-      my $style = 
-            "padding: 1em; opacity:0.7; max-width:40em; left:50%;"
-            ."position:absolute; overflow: hidden;"
-            ."border: 2px solid white; z-index: 7; background: #6600FF;"
-            ." color: #030; font-weight: bold; ";
+      my $style = "padding: 1em;position:absolute;overflow:hidden;";
+      if ($splatname eq "wing") {
+          $style .= "bottom:0px;right:0px;border:5px solid green;width:10em;z-index:20;"
+      }
       $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
@@ -18,15 +17,21 @@ tractors:
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
-
+  go: |
+    Info "\n splat go:   ".join "  ", %$ar;
+    exists $ar->{line}
+      ? $G->w('open_line', $ar)
+      
+      : $O->w('somewhere', $ar);
+    
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
+    die "a" unless exists $ar->{append};
     
     my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
     $NS || die "NO!";
     my $wormhole = { script => $NS };
     my $A = Afind[$splatname];
-    
     # new stuff, wedge into html like it has in the wormhole
     w script_out[$A, $wormhole, $append];
   lcodon: |
@@ -38,20 +43,24 @@ hooks:
     else { die "get codes from $t"; }
     
     for my $file (@files) {
-        my $c = new Codon($H->intro,
+        my $c = Codon->new($H->intro,
             { codo => $H->getapp("Codo"),
             filename => $file }
         );
         $c->{show} = $S->{view}->spawn_floozy($G, "codon-del-$line->{uuid}",  "width:89%; background:#80182; color:#afc; height:23em;", after => $A->{C}->{Line}->{S}->{id});
         $c->display();
     }
-  Spill: |
+  
+  Splat: |
     my ($splatname, $wormhole) = %$ar;
-    $splatname .= "_Spill";
+    
+    $wormhole = { script => [@{$wormhole->{script}}] }
+        if $wormhole eq $G->W;
+    
     my $A = Arr[$splatname, $wormhole];
-    
-    timer 0.05 { w script_out[$A, $wormhole] };
-    
+    say 'Yep.';
+    w script_out[$A, $wormhole];
+  
   script_out: |
     my $lines = [];
     my $i = 0;
@@ -60,7 +69,8 @@ hooks:
             push @$lines, "more...";
             last;
         }
-        push @$lines, w make_line(+ splatname => $A->{B}->{splatname}, line => $line, R => [], B => {});
+        my ($splatname, $R, $B) = ($A->{B}->{splatname}, [], {});
+        push @$lines, w make_line[$splatname, $R, $B, $line];
     }
     my $th = {
         nospace => 1,
@@ -74,17 +84,6 @@ hooks:
     ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
     ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
     return $t;
-  
-  go: |
-      Info "\n go ".join "  ", %$ar;
-      if (exists $ar->{line}) {
-          w open_line;
-      }
-      else {
-          $O->w('somewhere', $ar);
-      }
-      
-      # ye
   
   make_line: |
     if (ref $line ne "HASH") {
@@ -134,8 +133,8 @@ hooks:
         my $t = $line->{t};
         my $menu = [];
         
-        if (ref $t && "$t" =~ /HASH/ && $t->{GG} && ref $t->{GG} eq "Ghost") {
-            push @$menu, $t->{GG} Tw splatmenues;
+        if (ref $t && "$t" =~ /HASH/ && $t->{G} && ref $t->{G} eq "Ghost") {
+            push @$menu, $t->{G} Tw splatmenues;
         }
         
         push @$menu, 't' => sub { w go( thing => $t ) };
@@ -173,7 +172,7 @@ hooks:
             $s->{value} = $name;
             $s->{style} .= "font-size:25pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
-              "0 5px 5px #CF3694; "
+              "0 5px 5px #0F3694; "
             : "0 -5px 5px rgba(255,200,125,0.9);")
             .";";
         }
@@ -188,6 +187,7 @@ hooks:
         $s->{_event} = w line/event;
     event: |
         my $append = $s->{id};
+        
         my $t = $line->{t};
         $splatname eq 'trev' ?
             sub { w go[$splatname, $line, $append] } :
