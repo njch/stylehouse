@@ -807,7 +807,8 @@ sub enlogform {
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
         my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
-            || $f =~ m/^Mojo::IOLoop/;
+            || $f =~ m/^Mojo::IOLoop/
+            || $f =~ m/^Mojolicious::Controller/;
         $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
         push @from, $f;
         last if $surface; 
@@ -852,7 +853,7 @@ sub throwlog {
     $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').html('$string').scrollTo( '100%', 400);");
+    $self->JS("\$('#$what').removeClass('widdle').fadeOut(100).html('$string').fadeIn(100).scrollTo({top:'100%',left:'0%'}, 400);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
