@@ -151,8 +151,8 @@ sub _0 {
         return;
     }
     $ar->{S} = $G;
+    say "G_0 $point";
     $G0->w($point, $ar);
-    say ".$point";
 }
 sub nw {
     my $self = shift;
@@ -273,7 +273,6 @@ sub w {
     else {
         @ways = $G->ways;
     }
-    
     
     my @returns;
     for my $w (@ways) {
