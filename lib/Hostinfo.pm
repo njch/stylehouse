@@ -310,7 +310,7 @@ sub elvis_connects {
 }
 sub restarting {
     my $self = shift;
-    exec "perl stylehouse.pl @ARGV";
+    exec "perl stylehouse.pl";
 }
 sub elvis_enters {
     my $self = shift;
@@ -726,7 +726,7 @@ sub watch_git_diff {
         next if $f =~ /^ghosts/;
         my $n = $d->{$f};
         if ($n ne $o) {
-            say "BALL $f \n\n\n\n\n\\n\n";
+            say join("  <>  ", ($f)x78);
             $self->restarting;
         }
     }
@@ -940,7 +940,7 @@ sub throwlog {
     $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').fadeOut(100).html('$string').fadeIn(100).scrollTo({top:'100%',left:'0%'}, 400);");
+    $self->JS("\$('#$what').removeClass('widdle').fadeOut(30).html('$string').fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {

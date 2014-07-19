@@ -20,11 +20,13 @@ hooks:
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}
-      ? w open_line
+      ? $G->w('open_line', $ar)
+      
       : $O->w('somewhere', $ar);
     
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
+    die "a" unless exists $ar->{append};
     
     my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
     $NS || die "NO!";
