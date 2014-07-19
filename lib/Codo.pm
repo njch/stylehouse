@@ -147,7 +147,7 @@ sub codolist {
     my $self = shift;
 
     my $codons = [$self->get_codons];
-    die "no codons" unless $codons;
+    die "no codons" unless @$codons;
     say "Codons number ".@$codons;
     my $list = $self->{codolist};
     my $listy = $list->text;
@@ -330,7 +330,7 @@ sub load_codon {
     my $noscrolly = shift;
 
     my $codon =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
-    return $self->{hostinfo}->error(die "Can't load codon: $codon_s") unless $codon;
+    return $self->{hostinfo}->error("Can't load codon: $codon_s") unless $codon;
     say "Codo load $codon->{name}";
     $codon || die;
     
