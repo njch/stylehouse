@@ -27,7 +27,7 @@ sub new {
 
     $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..13]];
     
-    $H->timer(0.7, sub {
+    $H->timer(0.05, sub {
         $self->stup();
     });
 
@@ -36,14 +36,14 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $self->{GG} = $H->TT($self)->G("Lyrico");
+    $self->{G} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;
     
-    return say 'NOT SOMEWHERE YET' unless $self->{GG};
+    return say 'NOT SOMEWHERE YET' unless $self->{G};
     
-    $self->{GG}->w("somewhere", {thing => \@_});
+    $self->{G}->w("somewhere", {thing => \@_});
 }
 sub menu {
     my $self = shift;
@@ -55,11 +55,11 @@ sub menu {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
-            $self->{GG}->w("splat_wormholes");
+            $self->{G}->w("splat_wormholes");
         },
         Թ => sub {
             my $error = ["Hellyrico", $self];
-            $H->{GG}->w("throwlog", {"Say" => $error});
+            $H->{G}->w("throwlog", {"Say" => $error});
         },
     };
     return { _spawn => [ [ sort keys %$m ], {
@@ -102,12 +102,6 @@ sub startclicky {
     say "start clicky";
     $self->{hostinfo}->set('clickcatcher', $self);
     $self->{started} = 1;
-}
-sub stopclicky {
-    my $self = shift;
-    $self->{hostinfo}->unset('clickcatcher');
-    $self->{hostinfo}->send("\$('.lyrics').remove();");
-    $self->{started} = 0;
 }
 sub zlyrics {
     my $self = shift;

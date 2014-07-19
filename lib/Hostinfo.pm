@@ -100,7 +100,7 @@ sub init_flood {
         ."$messborder z-index: 10; background: rgba(178,71,240, 0.5); color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
         my @a = @_;
-        $self->{GG}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
+        $self->{G}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
     };
     
     $m->spawn_floozy(

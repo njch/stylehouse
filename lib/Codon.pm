@@ -13,6 +13,7 @@ sub new {
     
     $self->{codo} = $p->{codo};
     
+    
     if (my $f = $p->{filename}) {
         $self->{mtime} = (stat $f)[9];
         $self->open_filename($f);
