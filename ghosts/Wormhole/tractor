@@ -1,10 +1,4 @@
-name: ghost data structure crawl
-desc: |
-    Blah
-    Babbel:
-    
-    Blah
-    
+
 hooks:
   rr: |
     $G->{As} = [ $O->tractors ];
@@ -60,7 +54,6 @@ hooks:
     $O->W->{script} = \@keep;
     return if !@found;
     return $found[0]->{t};
-        
   find: |
     my @wheres;
     while (my ($k, $v) = each %$ar) {
@@ -74,72 +67,4 @@ hooks:
             !exists $A->{B}->{$_->[0]} ||
                 $A->{B}->{$_->[0]} eq $_->[1]  } @wheres
     }
-    
-    
-    
-    
-    
-    
-    #
-    
-  load_ways_pasta: |
-    
-
-    my @actcs;
-    for my $c ($G->chains) {
-        if (w $c arr_if) {
-            say "ACting $c->{K}";
-            push @actcs, $c->spawn;
-        }
-    }
-    my @f;
-    for my $c (@actcs) {
-        push @f, w c_follow_as(+ c => $c);
-    }
-    @actcs = @f;
-    say $_->{K} for @actcs;
-    for my $c (@actcs) {
-        w figureout(+ c => $c);
-    }
-    # all these motions we want to grab finer pictures of eventually
-    
-  max_depth: |
-      2
-  figureout: |
-    # these borders of my code our data... the language invention streams only just upstream from each other
-    
-    return if $G->{depth} >= w max_depth;
-    
-    if (my $fe = $c->{foreach_travel}) {
-        my @list = $G->doo(
-            $fe->{each}, $ar
-        );
-        my $i = 0;
-        for my $each (@list) {
-            # eddies of lingo
-            my $next_thing = $G->doo(
-                $fe->{next_thing}, {%$ar, each => $each}
-            );
-            my $oc = $c->spawn;
-            $oc->{travel_this} = $next_thing;
-            $oc->{i} = $i++;
-            $oc->{each} = $each;
-            
-            push @{$G->{o}}, $oc;
-        }
-    }
-    else {
-        die "canot figure out".ddump($c);
-    }
-  c_follow_as: |
-    my $as = $c->{as};
-      return $c unless $as;
-    
-    my @really = $G->grep_chains("K" => $as);
-    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump(@really);
-    
-    my $asc = shift @really;
-    my $nc = $asc->spawn;
-    $nc->{as_from} = $c;
-    return $nc
 
