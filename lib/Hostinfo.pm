@@ -97,7 +97,7 @@ sub init_flood {
     my $messborder = "border: 2px solid rgb(64,150,227);";
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
-        ."$messborder z-index: 10; background: rgba(178,71,240, 0.5); color: #030; font-weight: bold; ");
+        ."$messborder z-index: 10; background: rgba(93,0,47, 0.5); color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
         my @a = @_;
         $self->{G}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
@@ -310,7 +310,7 @@ sub elvis_connects {
 }
 sub restarting {
     my $self = shift;
-    exec "perl stylehouse.pl @ARGV";
+    exec "perl stylehouse.pl";
 }
 sub elvis_enters {
     my $self = shift;
@@ -616,7 +616,93 @@ sub watch_files {
     $self->watch_git_diff();
 }
 sub watch_file_streams {
-    Travel::watch_file_streams(@_);
+    my $self = shift;
+    for my $st (@{ $self->{file_streams} }) {
+        my ($ino, $ctime, $mtime, $size) =
+        (stat $st->{filename})[1,10,9,7];
+
+        my @diffs;
+        if (!defined $st->{size}) {
+            $st->{size} = $size;
+            $st->{ctime} = $ctime;
+            $st->{mtime} = $mtime;
+            $st->{ino} = $ino;
+        }
+        else {
+            push @diffs, "Size: $size < $st->{size}" if $size < $st->{size};
+            push @diffs, "ctime: $ctime != $st->{ctime}" if $ctime != $st->{ctime};
+            push @diffs, "modif time: $mtime != $st->{mtime}" if $mtime != $st->{mtime};
+            push @diffs, "inode: $ino != $st->{ino}" if $ino != $st->{ino};
+        }
+        
+        if (@diffs) {
+            say "$st->{filename} has been REPLACED or something:";
+            say "    $_" for @diffs;
+        }
+        
+        if ($st->{lines}) {
+            
+            unless ($st->{handle}) {
+                open(my $fh, '<', $st->{filename})
+                    or die "cannot open $st->{filename}: $!";
+                # TODO tail number of lines $st->{tail}
+                while (<$fh>) {
+                    unless (defined $st->{tail}) {
+                        my $l = clean_text($_);
+                        push @{$st->{lines}}, $l;
+                        $st->{linehook}->($l);
+                    }
+                }
+                $st->{handle} = $fh;
+            }
+            
+            if (@diffs) {
+                $st->{hook_diffs}->(\@diffs, $st);
+            }
+            
+            if ($size > $st->{size}) {
+                say "$st->{filename} has GROWTH";
+                my $fh = $st->{handle};
+                while (<$fh>) {
+                    my $l = clean_text($_);
+                    push @{$st->{lines}}, $l;
+                    $st->{linehook}->($l);
+                }
+                $st->{size} = (stat $st->{filename})[7];
+            }
+            elsif ($size == $st->{size}) {
+            }
+            else {# size < $st->size means file was re-read for @diffs
+            }
+            
+        }
+
+        push @diffs, "Size: $size > > >  $st->{size}" if $size > $st->{size};
+        
+        if (my $gs = $st->{ghosts}) {
+            if (@diffs) {
+                my $gr = $self->{ghosts_to_reload} ||= do {
+                    $self->timer(0.3, sub { $self->reload_ghosts });
+                    {};
+                };
+                while (my ($gid, $gw) = each %$gs) {
+                    for my $wn (keys %$gw) {
+                        $gr->{$gid}->{$wn} = 1;
+                    }
+                }
+            }
+        }
+        elsif ($st->{touch_restart} && @diffs) {
+            $self->restarting;
+        }
+        else { die "something$size > $st->{size})  else?" }
+        
+        
+        $st->{size} = $size;
+        $st->{ctime} = $ctime;
+        $st->{mtime} = $mtime;
+        $st->{ino} = $ino;
+    }
 }
 sub watch_git_diff {
     my $self = shift;
@@ -637,9 +723,10 @@ sub watch_git_diff {
     }
     my $od = $self->{last_git_diff} ||= {};
     while (my ($f, $o) = each %$od) {
+        next if $f =~ /^ghosts/;
         my $n = $d->{$f};
         if ($n ne $o) {
-            say "BALL $f \n\n\n\n\n\\n\n";
+            say join("  <>  ", ($f)x78);
             $self->restarting;
         }
     }
@@ -853,7 +940,7 @@ sub throwlog {
     $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').fadeOut(100).html('$string').fadeIn(100).scrollTo({top:'100%',left:'0%'}, 400);");
+    $self->JS("\$('#$what').removeClass('widdle').fadeOut(30).html('$string').fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {

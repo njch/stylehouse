@@ -32,8 +32,8 @@ function connect () {
 function reconnect () {
   fail++;
   console.log('waiting to retry');
-  if (fail < 2000) {
-      window.setTimeout(connect, 2560);
+  if (fail < 20000) {
+      window.setTimeout(connect, 256);
   }
   else {
       window.setTimeout(connect, 25600);

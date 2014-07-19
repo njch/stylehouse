@@ -170,7 +170,7 @@ sub display {
             my $textid = $texty->{id}."-Text-$i";
             my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
             $he ||= 42;
-            my $theme = $self->{name} =~ /^ghosts\// ? "night" : "midnight";
+            my $theme = $self->{name} =~ /^ghosts\// ? "base16-dark" : "midnight";
             $self->{hostinfo}->JS(
 <<CM
     var cm = CodeMirror.fromTextArea(document.getElementById('$textid'), {

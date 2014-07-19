@@ -2,13 +2,13 @@ name: wormhole splatter
 tractors:
   - K: Wormhole Splat
     arr_if: |
-      $splatname =~ /^\w+$/ && ref $wormhole->{script} eq "ARRAY";
+      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
     B_: |
       $splatname
     first_time: |
       my $style = "padding: 1em;position:absolute;overflow:hidden;";
       if ($splatname eq "wing") {
-          $style .= "right: 0px;border:5px solid green;width:10em;z-index:20;"
+          $style .= "bottom:0px;right:0px;border:5px solid green;width:10em;z-index:20;"
       }
       $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
       
@@ -20,17 +20,18 @@ hooks:
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}
-      ? w open_line
+      ? $G->w('open_line', $ar)
+      
       : $O->w('somewhere', $ar);
     
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
+    die "a" unless exists $ar->{append};
     
     my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
     $NS || die "NO!";
     my $wormhole = { script => $NS };
     my $A = Afind[$splatname];
-    
     # new stuff, wedge into html like it has in the wormhole
     w script_out[$A, $wormhole, $append];
   lcodon: |
@@ -59,7 +60,8 @@ hooks:
     my $A = Arr[$splatname, $wormhole];
     say 'Yep.';
     w script_out[$A, $wormhole];
-    
+  
+  script_out: |
     my $lines = [];
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
