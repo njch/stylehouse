@@ -807,7 +807,8 @@ sub enlogform {
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
         my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
-            || $f =~ m/^Mojo::IOLoop/;
+            || $f =~ m/^Mojo::IOLoop/
+            || $f =~ m/^Mojolicious::Controller/;
         $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
         push @from, $f;
         last if $surface; 
