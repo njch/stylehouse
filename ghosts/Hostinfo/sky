@@ -20,8 +20,10 @@ hooks:
   touch: |
     w rotate_colourwheel;
   rotate_colourwheel: |
-    push @{$G->{colours}}, map {
-        w colourchange(c => $_, t=>1000); $_
-    } shift @{$G->{colours}};
+    $G->{colours} || w colours;
+    my $c = shift @{$G->{colours}};
+    push @{$G->{colours}}, $c;
+    my $t = 1000;
+    w colourchange[$c, $t];
     
 
