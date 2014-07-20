@@ -1,18 +1,22 @@
 
 name: the sky
 hooks:
-  load_ways_post: |
+  fresh_init: |
     # w< ...etc?
     w colours;
     w colourchange(c => '00001F');
+  recoded_init: |
+    w colours;
+    w touch;
   colours: |
-    $G->{colours} = ['ffa9a0','6699FF','3366FF',
+    $G->{colours} = ['069','ffa9a0','6699FF','3366FF',
     '000099','6B8FB2','29aa66','6699FF','008F6B',
     'a699FF','4C3380',
     '336699','8F00B2', '666699',
     '336aa9','72a699','000099','6B8FB2','6B8FB2','00CCFF','00CCFF'];
   colourchange: |
-    $H->JS($H->{sky},"animate({backgroundColor: '#$c'}, 5000);");
+    $ar->{t} ||= 5000;
+    $H->JS($H->{sky},"animate({backgroundColor: '#$ar->{c}'}, $ar->{t});");
   touch: |
     w rotate_colourwheel;
   rotate_colourwheel: |

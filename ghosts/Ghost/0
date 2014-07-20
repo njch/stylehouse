@@ -4,7 +4,11 @@ hooks:
   _load_ways_post: |
       
     $S->w("load_ways_post");
-    w recoded_init if $S->{load_ways_count} < 1;
+    my $lwc = $S->{load_ways_count};
+    say "LWC $lwc";
+    $lwc == 1 ?
+        w fresh_init
+      : w recoded_init 
     
   recoded_init: |
     my $g = $S;
