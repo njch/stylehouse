@@ -37,6 +37,11 @@ sub new {
 
     $self->{G} = $self->TT($self)->G;
     $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
+    
+    push @{ $self->{file_streams} }, {
+        filename => 'stylehouse.pl',
+        touch_restart => 1,
+    };
 
     #jQuery.Color().hsla( array )
     return $self
@@ -695,7 +700,9 @@ sub watch_file_streams {
         elsif ($st->{touch_restart} && @diffs) {
             $self->restarting;
         }
-        else { die "something$size > $st->{size})  else?" }
+        elsif (@diffs) {
+            die "something $st->{filename}\n".join("\n", @diffs)."\n\n";
+        }
         
         
         $st->{size} = $size;
