@@ -35,6 +35,8 @@ sub new {
     $Git::H = $self;
     $Way::H = $self;
 
+
+
     $self->{G} = $self->TT($self)->G;
     $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
     
