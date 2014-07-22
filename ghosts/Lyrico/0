@@ -41,37 +41,33 @@ hooks:
     my $wormhole = $ar->{wormhole};
     
     my $Cr = G crawl;
-    
     start_timer();
     w resurround;
     
     if ($wormhole) {
         $G->{the_W} = $wormhole;
-        $Cr->{W} = $wormhole;
     }
     else {
-        G(crawl)->RW;
-        my $u= $Cr->crank(max_depth=>2);
+        $Cr->RW;
+        my $u= $Cr->crank(max_depth=>1);
         
         $G->w("R", {for => G(crawl)}, G(ob));
         
         $Cr->T({maxd=>$Cr->{max_depth}});
         $Cr->T($thing);
+        
+        $G->{the_W} = $Cr->W;
         $u->();
     }
     my $crawltime = show_delta();
 
-    G follow T $thing;
-    
     w splat_wormholes;
     
     Say "W for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
     G splat Tw Splat(trev => G(crawl)->W);
-#    G Spill Tw Spill(ob => G(ob)->W);
-    
-    #G splat Tw Splat(splatselves => G(splat)->W );
+    G splat Tw Splat(ob   => G(ob)->W   );
     
   splatmenues: |
     my $ob = G(ob)->W;
