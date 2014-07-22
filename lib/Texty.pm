@@ -69,8 +69,7 @@ sub add_hooks {
                 my $gm = { @m };
                 my $mh = {};
                 for my $k (keys %$gm) {
-                    my $kk = $k;
-                    $kk =~ s/^!style='.+?' //;
+                    my ($kk) = $k =~ /(\w+)$/;
                     $mh->{$kk} = $gm->{$k};
                 }
                 $h->{event}->{menu} = $mh;

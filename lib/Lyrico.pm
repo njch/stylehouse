@@ -49,16 +49,16 @@ sub somewhere {
 sub menu {
     my $self = shift;
     my $m = {
-        "!style='color:#2C4A2A;' چ" => sub {
+        "چ" => sub {
             $self->somewhere(@_);
         },
-        ښ => sub {
+        'ښ' => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
             $self->{G}->w("splat_wormholes");
         },
-        Թ => sub {
+        'Թ' => sub {
             my $error = ["Hellyrico", $self];
             $H->{G}->w("throwlog", {"Say" => $error});
         },
