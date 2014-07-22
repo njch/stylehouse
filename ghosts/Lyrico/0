@@ -51,11 +51,12 @@ hooks:
     }
     else {
         G(crawl)->RW;
-        my $u= G(crawl) ->crank(max_depth=>3);
+        my $u= $Cr->crank(max_depth=>2);
         
         $G->w("R", {for => G(crawl)}, G(ob));
         
-        G crawl T $thing;
+        $Cr->T({maxd=>$Cr->{max_depth}});
+        $Cr->T($thing);
         $u->();
     }
     my $crawltime = show_delta();
