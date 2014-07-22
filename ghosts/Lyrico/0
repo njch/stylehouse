@@ -29,6 +29,7 @@ hooks:
     G splat Tw Splat(wing => G(follow)->W);
   getstarted: |
     $G->unrush('getstarted') || return;
+    
     my $codons = $H->data->{Codon};
     $H->Say(" ẞ!");
     
@@ -39,17 +40,23 @@ hooks:
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
     
+    my $Cr = G crawl;
+    
     start_timer();
     w resurround;
+    
     if ($wormhole) {
-        G(crawl)->{W} = $wormhole;
+        $G->{the_W} = $wormhole;
+        $Cr->{W} = $wormhole;
     }
     else {
-        G crawl ->RW;
+        G(crawl)->RW;
+        my $u= G(crawl) ->crank(max_depth=>3);
         
         $G->w("R", {for => G(crawl)}, G(ob));
         
         G crawl T $thing;
+        $u->();
     }
     my $crawltime = show_delta();
 
