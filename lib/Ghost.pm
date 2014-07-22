@@ -164,7 +164,7 @@ sub crank {
     die "no $dial" unless exists $self->{$dial};
     my $original = $self->{$dial};
     my $uncrank = sub { $self->{$dial} = $original };
-    $self->{dial} = shift;
+    $self->{$dial} = shift;
     return $uncrank;
 }
 sub ob {
