@@ -55,14 +55,13 @@ hooks:
   
   Splat: |
     my ($splatname, $wormhole) = %$ar;
-    
-    $wormhole = { script => [@{$wormhole->{script}}] }
-        if $wormhole eq $G->W;
-    
+    $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
-    say 'Yep.';
     w script_out[$A, $wormhole];
-  
+  aWstract: |
+    $wormhole ne $G->W
+        ? $wormhole
+        : { script => [@{$wormhole->{script}}] }
   script_out: |
     my $lines = [];
     my $i = 0;
@@ -179,6 +178,8 @@ hooks:
                 if $ref eq "Way";
                 if ($ref eq "Ghost") {
                     my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
+                    $s->{style}.="border:2px solid #$1;"
+                        if $n =~ m/^\w+-\w{5}(\w{3})/;
                     $s->{html} = 2;
                     $name = '<t style="color:black;">'.$n.'</t>'.$w;
                 }
@@ -193,7 +194,11 @@ hooks:
             : "0 -5px 5px rgba(255,200,125,0.7);")
             .";";
         }
-        
+        else {
+            if ($t =~ m/^\w+-\w{5}(\w{3})/) {
+                $s->{style}.="border:2px solid #$1;";
+            }
+        }
         $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : "$t" =~ "HASH" ? 

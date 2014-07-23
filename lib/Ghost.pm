@@ -140,7 +140,6 @@ sub load_ways {
         }
     }
     
-    say "lwp";
     $self->_0('_load_ways_post');
 }
 sub _0 {
@@ -151,7 +150,6 @@ sub _0 {
         return;
     }
     $ar->{S} = $G;
-    say "G_0 $point";
     $G0->w($point, $ar);
 }
 sub nw {
