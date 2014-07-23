@@ -37,7 +37,7 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $L = $self->{G} = $H->TT($self)->G("Lyrico");
+    $Ghost::L = $L = $self->{G} = $H->TT($self)->G("Lyrico");
 }
 sub somewhere {
     my $self = shift;

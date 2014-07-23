@@ -12,6 +12,7 @@ sub wdump { Hostinfo::wdump(@_) }
 our $H;
 our @F;
 our $G0;
+our $L;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
