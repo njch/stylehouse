@@ -3,16 +3,29 @@ chains:
  - K: 'HASH'
    arr_if: |
      ref $thing eq 'HASH'
-     ||
-     ref $thing
-     && "$thing" =~ /=HASH/
-     
    foreach_travel:
      each: sort keys %$thing
      next_thing: $thing->{$each}
    print: |
         $S->{each}
    
+ - K: 'HASHish'
+   arr_if: |
+     ref $thing && "$thing" =~ /=HASH/
+   foreach_travel:
+     each: |
+       my %k = map { $_ => 1 } keys %$thing;
+       my @k;
+       if ($k{id} && $k{huid} && $thing->{id} =~ /$thing->{huid}$/) {
+              push @k, "id";
+           delete $k{$_} for qw'huid id';
+       }
+       push @k, sort keys %k;
+       return @k;
+     next_thing: $thing->{$each}
+   print: |
+        $S->{each}
+     
  - K: 'ARRAY'
    arr_if: ref $thing eq 'ARRAY'
    foreach_travel:
@@ -36,7 +49,6 @@ hooks:
         push @f, w c_follow_as(+ c => $c);
     }
     @actcs = @f;
-    say $_->{K} for @actcs;
     for my $c (@actcs) {
         w figureout(+ c => $c);
     }

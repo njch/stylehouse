@@ -31,11 +31,13 @@ hooks:
     $G->unrush('getstarted') || return;
     
     my $codons = $H->data->{Codon};
-    $H->Say(" ẞ!");
+    $H->Say("ẞ");
     
     my $thing = ["".localtime, $O];
     
-    w somewhere[$thing];
+    my $u = G crawl ->crank(max_depth=>2);
+        w somewhere[$thing];
+    $u->();
   somewhere: |
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
@@ -49,15 +51,12 @@ hooks:
     }
     else {
         $Cr->RW;
-        my $u= $Cr->crank(max_depth=>1);
         
         $G->w("R", {for => G(crawl)}, G(ob));
         
-        $Cr->T({maxd=>$Cr->{max_depth}});
         $Cr->T($thing);
         
         $G->{the_W} = $Cr->W;
-        $u->();
     }
     my $crawltime = show_delta();
 
