@@ -12,12 +12,9 @@ hooks:
     
   _recoded_init: |
     $S->w("recoded_init");
-    $S->{O}->w("child_recoded_init")
-        if $S->{O} && ref $S->{O} eq "Ghost";
     my $g = $S;
-    say "from $g->{name}\t\tUpwards:".($g->{O}||"~undef~");
-    $L->w('somewhere', {thing=>$g});
     while ($g->{O} && ref $g->{O} eq "Ghost") {
+        $g->w("child_recoded_init") if $g eq $S;
         $g = $g->{O};
         $g->w("any_child_recoded_init");
     }
