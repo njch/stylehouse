@@ -59,8 +59,7 @@ sub menu {
             $self->{G}->w("splat_wormholes");
         },
         'Թ' => sub {
-            my $error = ["Hellyrico", $self];
-            $H->{G}->w("throwlog", {"Say" => $error});
+            $L->w('getstarted');
         },
     };
     return { _spawn => [ [ sort keys %$m ], {

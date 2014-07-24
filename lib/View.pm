@@ -287,8 +287,8 @@ sub takeover {
     elsif (my $apid = $texty->{hooks}->{append}) {
         if ($apid =~ /\w\w/) {
             $self->append_spans("#$apid", $html, "parent().after");
-            $self->{hostinfo}->JS("\$('.$texty->{id}').animate({transform: 'scale(0,1)'}, 1).animate({transform: 'scale(1,1)'}, 400);");
             $self->{hostinfo}->JS("\$('#$apid').parent().slideUp(200, function () { \$(this).remove() });");
+            $self->{hostinfo}->JS("\$('.$texty->{id}').slideUp(0).slideDown(500);");
             return;
         }
         else {
