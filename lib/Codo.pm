@@ -194,10 +194,15 @@ sub codolist {
     for my $n (qw'stylehouse.pl stylehouse.js stylehouse.css',
                qw'Codo Codon Direction',
                qw'Travel Ghost Wormhole Lyrico Texty View') {
-
+ 
         push @coli, delete $coname->{$n} if $coname->{$n};
     }
-    push @coli, $coname->{$_} for sort keys $coname;
+    my @end;
+    for my $N (grep { /^\w\/\d+/ } sort keys %$coname) {
+        push @end, delete $coname->{$N}
+    }
+    push @coli, $coname->{$_} for sort keys %$coname;
+    push @coli, @end;
     
     $listy->add_hooks({nospace => 1, class => 'menu'});
     $listy->replace([
