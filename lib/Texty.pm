@@ -74,7 +74,6 @@ sub add_hooks {
                     $mh->{$kk} = $gm->{$k};
                 }
                 $h->{event}->{menu} = $mh;
-                say "Keys:".join" ", keys %$mh;
                 my $newl = [];
                 while (my $k = shift @$m) {
                     push @$newl, $k;
