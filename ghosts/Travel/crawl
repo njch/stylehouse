@@ -8,7 +8,9 @@ chains:
      next_thing: $thing->{$each}
    print: |
         $S->{each}
-   
+ 
+ 
+ 
  - K: 'HASHish'
    arr_if: |
      ref $thing && "$thing" =~ /=HASH/
@@ -17,8 +19,14 @@ chains:
        my %k = map { $_ => 1 } keys %$thing;
        my @k;
        if ($k{id} && $k{huid} && $thing->{id} =~ /$thing->{huid}$/) {
-              push @k, "id";
+           push @k, "id";
            delete $k{$_} for qw'huid id';
+       }
+       if (ref $thing eq "Ghost") {
+           if (defined $thing->{way}) {
+               push @k, "way";
+               delete $k{way};
+           }
        }
        push @k, sort keys %k;
        return @k;
