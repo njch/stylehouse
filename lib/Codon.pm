@@ -397,9 +397,6 @@ sub chunkify {
                 $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
             : 0;
             
-            push @stuff, []
-                if $l =~ /^!c /;
-            
             push @{ $stuff[-1] }, $l;
             
             if ($self->{is}->{N}) {
