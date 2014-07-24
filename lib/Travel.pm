@@ -46,7 +46,12 @@ sub T {
     
     $T->ob("Travel", $depth, $t);
     (my $td = $t||"~") =~ s/\n/\\n/g;
-    say("$T->{id} ".$G->idname."            $depth to $td    ".($i?($i->{K}||$i->{name}):"?")) unless $G->{name} =~ /Lyrico\/ob/;
+    Ghost::Flab(
+        "$T->{id} ".$G->idname
+        ."            $depth to $td    ".
+        ($i?($i->{K}||$i->{name}):"?"))
+        
+        unless $G->{name} =~ /Lyrico\/ob/;
     
     my ($line, $o) = $G->haunt($T, $depth, $t, $i);
 

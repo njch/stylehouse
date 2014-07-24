@@ -11,8 +11,12 @@ sub wdump { Hostinfo::wdump(@_) }
 
 our $H;
 our @F;
+our @Flab;
 our $G0;
 our $L;
+sub Flab {
+    push @Flab, Hostinfo->enlogform(@_);
+}
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -41,8 +45,6 @@ sub new {
     if (ref $self->{T}->{O} eq "Ghost") {
         push @{$self->{T}->{O}->{GG}}, $self;
     }
-    
-    $self->{last_state} = undef;
 
     return $self;
 }
@@ -177,7 +179,6 @@ sub haunt { # arrives through here
     $self->{depth} = shift;
     $self->{t} = shift; # thing
     my $i = $self->{i} = shift; # way in
-    $self->{last_state} = shift;
     my $o = $self->{o} = []; # way[] out
     
     $self->ob($self, T => $T);
@@ -234,13 +235,14 @@ sub ways {
 }
 sub waystacken {
     my $self = shift;
-    my $junk = {@_}; # or w/e
+    my $junk = $H->enlogform(@_);
+    $self->ob("to",$junk);
     push @F, $junk;
     return sub {
-        my $sk = -1;
-        my @gone;
         my $o = pop @F;
-        $o ne $junk && die "stack bats:\n".wdump([\@gone, \@F]);
+        $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
+        $self->ob("back", $junk, \@Flab);
+        @Flab = ();
     }
 }
 sub w {
@@ -255,13 +257,14 @@ sub w {
     # jelly pyramids...
     my @ways;
     
+    my $talk = "w $point";
+    
     if ($Sway) {
+        $talk .= " S";
         if (ref $Sway eq 'Ghost') {
-        
-                @ways = $Sway->ways;
-            
-            $G->ob("Ghost--Ghost->w", $point, $Sway);
-            $Sway->w($point, $ar);
+            @ways = $Sway->ways;
+            $talk .= " G";
+            $G->ob($talk, $Sway);
         }
         elsif (ref $Sway eq 'Way') {
             @ways = $Sway;
@@ -278,10 +281,13 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        
+        my $u = $G->waystacken("$talk", $h);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
+        if ($@) {
+            $G->ob("
+        $u->();
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -310,7 +316,7 @@ sub doo {
     my $O = $G->T->{O};
     $G->ob($point||$eval);
     
-    say " $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval");
+    Ghost::Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
@@ -365,9 +371,18 @@ sub doo {
             .ind("E   ", $@)."\n^\n";
         
         $H->error($DOOF) if $@ !~ /^DONT/;
+        $@ = $DOOF;
         
-        die $DOOF;
-    }
+        my @ca = caller(1);
+        if ($ca[3] eq "Ghost::w") {
+            return;
+        }
+        else {
+            die $@
+        }
+    }for 1..50;
+    die;
+    #die (caller(1))[3];
     # more ^
     
     return wantarray ? @return : shift @return;
