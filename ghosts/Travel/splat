@@ -29,7 +29,6 @@ hooks:
     my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
     $NS || die "NO!";
     
-    
     my $wormhole = { script => $NS };
     
     my $A = Afind[$splatname];
@@ -66,12 +65,12 @@ hooks:
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
         if($i++ > 400) {
-        
             push @$lines, "more...";
             last;
         }
         my ($splatname, $R, $B) = ($A->{B}->{splatname}, [], {});
-        push @$lines, w make_line[$splatname, $R, $B, $line];
+        $splatname ||= "trev";
+        push @$lines, w make_line[$splatname, $i, $R, $B, $line];
     }
     my $th = {
         nospace => 1,
@@ -129,6 +128,15 @@ hooks:
             $G->w("line/$bb/s",{%$ar,
             b => $b, s => $b->{s}, line => $b->{line}});
         }
+    event: |
+        my $append = $s->{id};
+        
+        my $t = $line->{t};
+        $splatname eq 'trev' ?
+            sub { w go[$splatname, $line, $append] } :
+            $splatname eq 'wing' ?
+                sub { w go(thing => $t->{B}->{thing}) } :
+                sub { w go(thing => $t) };
     m:
       v: |
         my $t = $line->{t};
@@ -175,9 +183,20 @@ hooks:
             my $ref = ref $t;
             my $name = "$t";
             if ($name =~ /HASH/) {
-                 $name = $t->{name} if $t->{name};
-                 $s->{style}.="border:3px solid #$1;"
-                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
+                $name = "{";
+                if ($ref eq "HASH") {
+                    my $k = join " ", sort keys %$t;
+                    $name .= "$k";
+                }
+                else {
+                    $name = $ref.$name;
+                    if ($ref eq "View") {
+                        $name .= "#".$t->{divid};
+                    }
+                }
+                $name .= " ".$t->{name} if $t->{name};
+                $s->{style}.="border:3px solid #$1;"
+                    if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
                 $name = "@".$inc->('black', 0+@$t)." "; 
@@ -221,18 +240,9 @@ hooks:
                   ( @{$line->{o}} ? "111" : "f82" )
                   : "FF6666")
         : "000032"
-        ).";";
+        ).";"; 
         $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
-    event: |
-        my $append = $s->{id};
-        
-        my $t = $line->{t};
-        $splatname eq 'trev' ?
-            sub { w go[$splatname, $line, $append] } :
-            $splatname eq 'wing' ?
-                sub { w go(thing => $t->{B}->{thing}) } :
-                sub { w go(thing => $t) };
     d:
       v: |
         $line->{depth}
@@ -251,7 +261,7 @@ hooks:
         $s->{class} .= " splat-w ";
         $s->{style}.="background:rgba(130,108,33,0.5);direction:rtl;"
             ."width: "
-        .(($line->{depth}+1) * 2 + 3)."em;"
+        .(($line->{depth}) * 5 + 3)."em;"
             if $line->{depth} > 0;
         
         my $K = $b->{c}->{K};
