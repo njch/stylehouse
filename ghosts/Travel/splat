@@ -66,6 +66,7 @@ hooks:
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
         if($i++ > 400) {
+        
             push @$lines, "more...";
             last;
         }
@@ -169,13 +170,14 @@ hooks:
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
+        my $emb = sub { $inc->("rgba(0,0,0,0.4);font-size:38pt;position:absolute;", encode_entities(shift)) };
         if (ref $t) {#text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;
             my $ref = ref $t;
             my $name = "$t";
             if ($name =~ /HASH/) {
                  $name = $t->{name} if $t->{name};
                  $s->{style}.="border:3px solid #$1;"
-                 if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
+                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
                 $name = "@".$inc->('black', 0+@$t)." "; 
@@ -186,8 +188,10 @@ hooks:
                     }
                 }
             }
-            $name = "ϖ". w $t print
-                if $ref eq "Way";
+            if ($ref eq "Way") {
+                $name = $emb->('ϖ')
+                . w $t print;
+            }
             if ($ref eq "Ghost") {
                 my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
                 $s->{style}.="border:2px solid #$1;"
@@ -198,8 +202,8 @@ hooks:
             $s->{value} = $name;
             my $l = length($name);
             my $fs = 25;
-            $fs = 17 if $l > 20;
-            $fs = 10 if $l > 40;
+            $fs = 17 if $l > 10;
+            $fs = 10 if $l > 20;
             $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
               "0 5px 5px #0F3694; "
@@ -211,7 +215,7 @@ hooks:
                 $s->{style}.="border:3px solid #$1;";
             }
         }
-        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
+        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : "$t" =~ "HASH" ? 
                   ( @{$line->{o}} ? "111" : "f82" )
