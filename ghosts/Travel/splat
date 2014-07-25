@@ -177,7 +177,15 @@ hooks:
                  $s->{style}.="border:3px solid #$1;"
                  if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
-            $name = "@ ".$inc->('black', 0+@$t)."   " if $ref eq "ARRAY";
+            if ($ref eq "ARRAY") {
+                $name = "@".$inc->('black', 0+@$t)." "; 
+                my $fromG = $line->{i}->{L}->{t};
+                if ($fromG && ref ${fromG} eq "Ghost") {
+                    if ($line->{i}->{each} eq "GG") {
+                        $name .= join $inc->('black','~'), map { $_->{way} } @$t;
+                    }
+                }
+            }
             $name = "ϖ". w $t print
                 if $ref eq "Way";
             if ($ref eq "Ghost") {
