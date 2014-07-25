@@ -286,7 +286,10 @@ sub w {
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
         if ($@) {
-            $G->ob("
+            $G->ob("Error", $@);
+            $u->();
+            die $@;
+        }
         $u->();
     }
     return say "Multiple returns from ".($point||'some?where')
@@ -380,10 +383,7 @@ sub doo {
         else {
             die $@
         }
-    }for 1..50;
-    die;
-    #die (caller(1))[3];
-    # more ^
+    }
     
     return wantarray ? @return : shift @return;
 }
