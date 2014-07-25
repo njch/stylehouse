@@ -66,6 +66,7 @@ hooks:
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
         if($i++ > 400) {
+        
             push @$lines, "more...";
             last;
         }
@@ -154,6 +155,7 @@ hooks:
         }
       s: |
         $s->{style} .= "font-size:35pt;";
+#c thing background=#fca
     t:
       v: |
         my $t = $line->{t};
@@ -167,30 +169,41 @@ hooks:
       s: |
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
-        
+        my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
+        my $emb = sub { $inc->("rgba(0,0,0,0.4);font-size:38pt;position:absolute;", encode_entities(shift)) };
         if (ref $t) {#text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;
             my $ref = ref $t;
             my $name = "$t";
             if ($name =~ /HASH/) {
                  $name = $t->{name} if $t->{name};
                  $s->{style}.="border:3px solid #$1;"
-                 if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
+                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
-            $name = "@ ".@$t."   " if $ref eq "ARRAY";
-            $name = "ϖ". w $t print
-                if $ref eq "Way";
-                if ($ref eq "Ghost") {
-                    my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
-                    $s->{style}.="border:2px solid #$1;"
-                        if $n =~ m/^\w+-\w{5}(\w{3})/;
-                    $s->{html} = 2;
-                    $name = '<t style="color:black;">'.$n.'</t>'.$w;
+            if ($ref eq "ARRAY") {
+                $name = "@".$inc->('black', 0+@$t)." "; 
+                my $fromG = $line->{i}->{L}->{t};
+                if ($fromG && ref ${fromG} eq "Ghost") {
+                    if ($line->{i}->{each} eq "GG") {
+                        $name .= join $inc->('black','~'), map { $_->{way} } @$t;
+                    }
                 }
+            }
+            if ($ref eq "Way") {
+                $name = $emb->('ϖ')
+                . w $t print;
+            }
+            if ($ref eq "Ghost") {
+                my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
+                $s->{style}.="border:2px solid #$1;"
+                    if $n =~ m/^\w+-\w{5}(\w{3})/;
+                $s->{html} = 2;
+                $name = $inc->('black;font-size:8pt', $n).$w;
+            }
             $s->{value} = $name;
             my $l = length($name);
             my $fs = 25;
-            $fs = 17 if $l > 20;
-            $fs = 10 if $l > 40;
+            $fs = 17 if $l > 10;
+            $fs = 10 if $l > 20;
             $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
               "0 5px 5px #0F3694; "
@@ -202,13 +215,14 @@ hooks:
                 $s->{style}.="border:3px solid #$1;";
             }
         }
-        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;font-size: 15pt; color:#".(
+        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#".(
         ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
                   : "$t" =~ "HASH" ? 
                   ( @{$line->{o}} ? "111" : "f82" )
                   : "FF6666")
         : "000032"
         ).";";
+        $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
     event: |
         my $append = $s->{id};
@@ -228,9 +242,7 @@ hooks:
             my ($e, $s, $t) = @_;
             $H->JS("\$('.$t->{id}').slideUp();");
         };
-
-
-
+#c i o
     i:
       v: |
         $b->{c} = $line->{i};
@@ -257,7 +269,7 @@ hooks:
             $K eq 'dsc/@' ? "85FF33" :
             'bbb' ).";" if $K;
             
-        $s->{_event} = sub { w go(thing => $line->{i}->{last_line}->{t}) }
+        $s->{_event} = sub { w go(thing => $line->{i}) }
     o:
       v: |
         $b->{c} = $line->{o};
@@ -280,7 +292,7 @@ hooks:
               push @cl,
             scalar w desc/chain(+ c => $cc)
           }
-          return "none" unless @cl;
+          return "[]" unless @cl;
           
           
           my @names = @cl;

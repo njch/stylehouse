@@ -17,7 +17,6 @@ sub new {
 
     return $self;
 }
-
 sub G {
     my $self = shift;
     $self->{G} ||= new Ghost($H->intro, $self, @_);
@@ -27,12 +26,12 @@ sub W {
 }
 sub ob {
     my $self = shift;
-    return unless $self->{TT};
+    return unless $self->{_ob};
     
     my $ob = $H->enlogform(@_); # describes stack, etc
     push $ob, [@Ghost::F], pop $ob;
 # we want to catch runaway recursion from here
-    $self->{TT}->T($ob);
+    $self->{_ob}->T($ob);
 }
 
 # the wormhole for self
@@ -44,18 +43,22 @@ sub T {
     my $G = shift || $T->G; # A...
     my $i = shift;
     my $depth = shift || 0;
-    my $last_line = shift;
     
     $T->ob("Travel", $depth, $t);
     (my $td = $t||"~") =~ s/\n/\\n/g;
-    say("$T->{id} ".$G->idname."            $depth to $td    ".($i?($i->{K}||$i->{name}):"?")) unless $G->{name} =~ /Lyrico\/ob/;
+    Ghost::Flab(
+        "$T->{id} ".$G->idname
+        ."            $depth to $td    ".
+        ($i?($i->{K}||$i->{name}):"?"))
+        
+        unless $G->{name} =~ /Lyrico\/ob/;
     
-    my ($line, $o) = $G->haunt($T, $depth, $t, $i, $last_line);
+    my ($line, $o) = $G->haunt($T, $depth, $t, $i);
 
     my @r = $T->W;
     for my $c (@$o) {
         if (exists $c->{travel_this}) {
-            $T->T($c->{travel_this}, $G, $c, $depth+1, $line);
+            $T->T($c->{travel_this}, $G, $c, $depth+1);
         }
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};

@@ -9,16 +9,6 @@ chains:
    print: |
         $S->{each}
  
- - K: 'Ghost->@GG'
-   arr_if: |
-     ref $thing eq "Ghost" && $thing->{GG}
-   foreach_travel:
-     each: |
-       0..scalar(@{$thing->{GG}})-1
-     next_thing: $thing->{GG}->[$each]
-   print: |
-        "GG!" .$S->{each}
- 
  
  - K: 'HASHish'
    arr_if: |
@@ -57,7 +47,6 @@ hooks:
     my @actcs;
     for my $c ($G->chains) {
         if (w $c arr_if) {
-            say "ACting $c->{K}";
             push @actcs, $c->spawn;
         }
     }
@@ -95,7 +84,7 @@ hooks:
     # these borders of my code our data... the language invention streams only just upstream from each other
     
     if ($G->{depth} >= $G->{max_depth}) {
-        say "depth ends: $G->{depth} (max: $G->{max_depth})" for 1..3;
+        Flab("depth ends $G->{depth}");
         return;
     }
     

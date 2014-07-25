@@ -30,12 +30,13 @@ hooks:
   getstarted: |
     $G->unrush('getstarted') || return;
     
+    
     my $codons = $H->data->{Codon};
     $H->Say("ẞ");
     
     my $thing = ["".localtime, $O];
     
-    my $u = G crawl ->crank(max_depth=>2);
+    my $u = G crawl ->crank(max_depth=>3);
         w somewhere[$thing];
     $u->();
   somewhere: |
@@ -43,10 +44,10 @@ hooks:
     my $wormhole = $ar->{wormhole};
     
     my $Cr = G crawl;
+    $Cr->{_ob} = G ob;
     say "" for 1..5;
     return $H->error("undef thing") unless defined $thing;
     say join"", ("       ẞ           ")x38;
-    sleep 1;
     start_timer();
     w resurround;
     

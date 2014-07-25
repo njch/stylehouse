@@ -45,21 +45,16 @@ sub continues {
         
         e => ($ghost->{etc}),
         depth => $ghost->{depth},
-        last => $ghost->{last_state}->{uuid},
         
         ghost => $ghost,
     };
     for my $o (@{$line->{o}}) {
-        $o->{last_line} = $line;
+        $o->{L} = $line;
     }
 
     $self->ob($line);
 
     push @{$self->{script}}, $line;
-
-    # $self->wormfile_check();
-    # $line = $self->encode_line($line);
-    # write_file($self->{file} append ETC
     
     return $line;
 }
