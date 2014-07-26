@@ -179,10 +179,11 @@ hooks:
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
         my $emb = sub { $inc->("rgba(0,0,0,0.4);font-size:38pt;position:absolute;", encode_entities(shift)) };
-        if (ref $t) {#text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;
-            my $ref = ref $t;
-            my $name = "$t";
+        my $color;
+        my $name = "$t";
+        if (my $ref = ref $t) {
             if ($name =~ /HASH/) {
+                $color = "f66";
                 $name = "{";
                 if ($ref eq "HASH") {
                     my $k = join " ", sort keys %$t;
@@ -199,6 +200,7 @@ hooks:
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
+                $color = "0f0";
                 $name = "@".$inc->('black', 0+@$t)." "; 
                 my $fromG = $line->{i}->{L}->{t};
                 if ($fromG && ref ${fromG} eq "Ghost") {
@@ -233,14 +235,9 @@ hooks:
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
                 $s->{style}.="border:3px solid #$1;";
             }
+            $color = "003";
         }
-        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#".(
-        ref $t ? (ref $t eq "ARRAY" ? "00FF00" 
-                  : "$t" =~ "HASH" ? 
-                  ( @{$line->{o}} ? "111" : "f82" )
-                  : "FF6666")
-        : "000032"
-        ).";"; 
+        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#$color;";
         $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
     d:
