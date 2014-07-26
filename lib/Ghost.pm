@@ -67,7 +67,7 @@ sub Tw {
     $w->{arr_hook} = $wp if $wp;
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
-    $w->{print} = '"$G->{name} (".($thing||"").") $S->{arr_hook} ".join",",%{$S->{arr_ar}||{}};';
+    $w->{print} = '"$G->{way} Tw ".($thing||"")." $S->{arr_hook}"';
     # travel to a wp in another ghost
     # we see this somewhere
     # so we can interfere case left
