@@ -205,8 +205,8 @@ hooks:
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
-                $color = "040";
-                $name = "[".$inc->('black', 0+@$t)." "; 
+                $color = "090";
+                $name = $inc->(green=>"[").$inc->('black', 0+@$t)." "; 
                 my $fromG = $line->{i}->{L}->{t};
                 if ($fromG && ref ${fromG} eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -222,10 +222,8 @@ hooks:
                 my $ty = $1;
                 my ($nb, $nl);
                 if ($ty eq "T") {
-                    $nb = "o";
-                    $nl = $t->{O};
-                    $fs=12;
-                    $color = "cc6";
+                    $name = "$t->{id}";
+                    $color = "8c6";
                 }
                 if ($ty eq "W") {
                     $name = $t->{G}->{name};
@@ -235,9 +233,8 @@ hooks:
                     $name = $t->{name};
                     $color = "4c6";
                 }
-                if ($ty =~ /G|W/) {
-                    ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
-                }
+                ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
+                $nl ||= $name;
                 $s->{style}.="border:2px solid #$1;"
                     if $nb =~ m/^\w+-\w{5}(\w{3})/;
                 $s->{html} = 2;
