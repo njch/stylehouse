@@ -15,6 +15,7 @@ our @Flab;
 our $G0;
 our $L;
 sub Flab {
+    say $_[0] if 1;
     push @Flab, Hostinfo->enlogform(@_);
 }
 sub new {

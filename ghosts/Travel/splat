@@ -69,7 +69,7 @@ hooks:
             last;
         }
         my ($R, $B) = ([], {});
-        my $splatname ||= "trev";
+        my $splatname = "trev";
         push @$lines, w make_line[$splatname, $i, $R, $B, $line];
     }
     my $th = {
@@ -178,9 +178,10 @@ hooks:
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
-        my $emb = sub { $inc->("rgba(0,0,0,0.4);font-size:38pt;position:absolute;", encode_entities(shift)) };
+        my $emb = sub { $inc->("rgba(255,200,200,0.4);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
         my $color;
         my $name = "$t";
+        my $fs;
         if (my $ref = ref $t) {
             if ($name =~ /HASH/) {
                 $color = "f66";
@@ -188,20 +189,24 @@ hooks:
                 if ($ref eq "HASH") {
                     my $k = join " ", sort keys %$t;
                     $name .= "$k";
+                $fs = 10;
                 }
                 else {
+                    $fs = 26;
                     $name = $ref.$name;
                     if ($ref eq "View") {
                         $name .= "#".$t->{divid};
                     }
                 }
-                $name .= " ".$t->{name} if $t->{name};
+                if ($t->{name}) {
+                    $name .= " ".$t->{name};
+                }
                 $s->{style}.="border:3px solid #$1;"
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
-                $color = "0f0";
-                $name = "@".$inc->('black', 0+@$t)." "; 
+                $color = "040";
+                $name = "[".$inc->('black', 0+@$t)." "; 
                 my $fromG = $line->{i}->{L}->{t};
                 if ($fromG && ref ${fromG} eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -213,22 +218,40 @@ hooks:
                 $name = $emb->('ϖ')
                 . w $t print;
             }
-            if ($ref eq "Ghost") {
-                my ($n,$w) = $name =~ /^(.+)\(([^\)]+)\)$/;
+            if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) {
+                my $ty = $1;
+                my ($nb, $nl);
+                if ($ty eq "T") {
+                    $nb = "o";
+                    $nl = $t->{O};
+                    $fs=12;
+                    $color = "cc6";
+                }
+                if ($ty eq "W") {
+                    $name = $t->{G}->{name};
+                    $color = "4c6";
+                }
+                if ($ty eq "G") {
+                    $name = $t->{name};
+                    $color = "4c6";
+                }
+                if ($ty =~ /G|W/) {
+                    ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
+                }
                 $s->{style}.="border:2px solid #$1;"
-                    if $n =~ m/^\w+-\w{5}(\w{3})/;
+                    if $nb =~ m/^\w+-\w{5}(\w{3})/;
                 $s->{html} = 2;
-                $name = $inc->('black;font-size:8pt', $n).$w;
+                $name = $emb->($ty).$inc->('888;font-size:8pt', $nb).$nl;
             }
             $s->{value} = $name;
             my $l = length($name);
-            my $fs = 25;
-            $fs = 17 if $l > 10;
-            $fs = 10 if $l > 20;
+            $fs ||= 17 if $l > 10;
+            $fs ||= 10 if $l > 20;
+            $fs ||= 25;
             $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
             ."text-shadow: ".(@{$line->{o}} ?
-              "0 5px 5px #0F3694; "
-            : "0 -5px 5px rgba(255,200,125,0.7);")
+              "2px 3px 3px rgba(188,200,255,0.7);"
+            : "2px 3px 3px #0F3694; ")
             .";";
         }
         else {
