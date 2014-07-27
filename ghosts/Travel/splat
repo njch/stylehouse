@@ -206,23 +206,27 @@ hooks:
             }
             if ($ref eq "ARRAY") {
                 $color = "090";
-                $name = $inc->(green=>"[").$inc->('black', 0+@$t)." "; 
+                $name = "[".(0+@$t)."]"; 
                 my $fromG = $line->{i}->{L}->{t};
                 if ($fromG && ref ${fromG} eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
-                        $name .= join $inc->('black','~'), map { $_->{way} } @$t;
+                        $name .= " ";
+                        for (@$t) {
+                            $name .= $inc->('black','[G')."$_->{way} ";
+                        }
                     }
                 }
             }
-            if ($ref eq "Way") {
-                $name = $emb->('ϖ')
-                . w $t print;
+            if ($ref eq "Way") { 
+                $name = w $t print;
+                $name ||= join " ", sort keys %$t;
+                $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) {
                 my $ty = $1;
                 my ($nb, $nl);
                 if ($ty eq "T") {
-                    $name = "$t->{id}";
+                    $name = "$t->{G}->{way}";
                     $color = "8c6";
                 }
                 if ($ty eq "W") {
@@ -276,7 +280,7 @@ hooks:
         w desc/chain(+ c => $b->{c});
       s: |
         $s->{class} .= " splat-w ";
-        $s->{style}.="background:rgba(130,108,33,0.5);direction:rtl;"
+        $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);direction:rtl;"
             ."width: "
         .(($line->{depth}) * 5 + 3)."em;"
             if $line->{depth} > 0;
