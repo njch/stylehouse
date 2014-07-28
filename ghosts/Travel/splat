@@ -80,9 +80,6 @@ hooks:
     $th->{append} = $ar->{append} if $ar->{append};
     
     my $t = $A->{view}->newtext($lines, $th);
-    $H->JS("\$('.splat-w').hoverIntent(function(e) {"
-    ."\$(this).animate({transform: 'scale(2,2)', 'z-index':50 })}, function(e) {"
-    ."\$(this).animate({transform: 'scale(1,1)', 'z-index':'initial'}) });");
     return $t;
   
   make_line: |
@@ -206,7 +203,7 @@ hooks:
             }
             if ($ref eq "ARRAY") {
                 $color = "090";
-                $name = "[".(0+@$t)."]"; 
+                $name = "[".$inc->('black',0+@$t)."]"; 
                 my $fromG = $line->{i}->{L}->{t};
                 if ($fromG && ref ${fromG} eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -244,23 +241,30 @@ hooks:
                 $s->{html} = 2;
                 $name = $emb->($ty).$inc->('888;font-size:8pt', $nb).$nl;
             }
+            
+            $s->{style} .= "text-shadow:2px 3px 3px "
+                .(@{$line->{o}} ?"#89F":"#0F3694 ")  .";";
+            $s->{style} .= "font-weight: 900;";
         }
         else {
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
                 $s->{style}.="border:3px solid #$1;";
             }
-            $color = "003";
+            $color = "999";
+            $s->{style} .= "font-weight: 500;";
+            
         }
         $s->{value} = $name;
         my $l = length($name);
         $fs ||= 17 if $l > 10;
         $fs ||= 10 if $l > 20;
         $fs ||= 25;
-        $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
-        ."text-shadow:2px 3px 3px "
-        .(@{$line->{o}} ?"89F":"#0F3694 ")
-        .";";
-        $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#$color;";
+        $s->{style} .= "font-size:${fs}pt;";
+        
+        $s->{style}.="max-width: 20em;";
+        $s->{style}.="word-wrap:break-word; max-height:5em; min-width: 10em;";
+        $s->{style}.="color:#$color;";
+        
         $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
     d:
