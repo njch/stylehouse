@@ -244,16 +244,6 @@ hooks:
                 $s->{html} = 2;
                 $name = $emb->($ty).$inc->('888;font-size:8pt', $nb).$nl;
             }
-            $s->{value} = $name;
-            my $l = length($name);
-            $fs ||= 17 if $l > 10;
-            $fs ||= 10 if $l > 20;
-            $fs ||= 25;
-            $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
-            ."text-shadow: ".(@{$line->{o}} ?
-              "2px 3px 3px rgba(188,200,255,0.7);"
-            : "2px 3px 3px #0F3694; ")
-            .";";
         }
         else {
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
@@ -261,6 +251,15 @@ hooks:
             }
             $color = "003";
         }
+        $s->{value} = $name;
+        my $l = length($name);
+        $fs ||= 17 if $l > 10;
+        $fs ||= 10 if $l > 20;
+        $fs ||= 25;
+        $s->{style} .= "font-size:${fs}pt; font-weight: 900; "
+        ."text-shadow:2px 3px 3px "
+        .(@{$line->{o}} ?"89F":"#0F3694 ")
+        .";";
         $s->{style}.="max-width: 20em; word-wrap:break-word; max-height: 5em; font-weight:900; min-width: 10em;color:#$color;";
         $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
