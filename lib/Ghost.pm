@@ -14,8 +14,20 @@ our @F;
 our @Flab;
 our $G0;
 our $L;
+sub gname {
+    my $g = shift;
+    my $si = shift || 0;
+    my $ish = ref $g;
+    $ish = "" if $ish ne "Ghost";
+    $ish = "" if $ish eq "Ghost";
+    $ish = ref $g && ($g->{name} || $g->{id}) || "$g";
+    
+    
+    $ish =~ s/^(\w+)=HASH.*$/$1\{/;
+    $ish;
+}
 sub Flab {
-    say $_[0] if 1;
+    say $_[0] if 0;
     push @Flab, Hostinfo->enlogform(@_);
 }
 sub new {
