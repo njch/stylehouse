@@ -36,7 +36,7 @@ hooks:
     my $A = Afind[$splatname];
     die "noA" unless $A;
     # new stuff, wedge into html like it has in the wormhole
-    w script_out[$A, $wormhole, $append];
+    w script_out[$A, $wormhole, $splatname, $append];
   lcodon: |
     my @files;
     my $t = $line->{t};
@@ -58,7 +58,7 @@ hooks:
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
-    w script_out[$A, $wormhole];
+    w script_out[$A, $splatname, $wormhole];
   aWstract: |
     $wormhole ne $G->W
         ? $wormhole
@@ -72,7 +72,6 @@ hooks:
             last;
         }
         my ($R, $B) = ([], {});
-        my $splatname = "trev";
         push @$lines, w make_line[$splatname, $i, $R, $B, $line];
     }
     my $th = {
