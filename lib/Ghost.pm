@@ -31,7 +31,7 @@ sub Flab {
     ref $self eq "Ghost" || die "send Ghost";
     say $_[0] if $self->{db};
     $self->ob(@_);
-    push @Flab, Hostinfo->enlogform(@_);
+    push @Flab, $H->enlogform(@_);
 }
 sub new {
     my $self = bless {}, shift;
@@ -312,7 +312,7 @@ sub w {
         if ($@) {
             $G->ob("Error", $@);
             if (@F == 1) {
-                $H->Error($@);
+                $H->error($@);
                 $u->();
             }
             else {

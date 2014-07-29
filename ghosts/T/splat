@@ -39,8 +39,10 @@ hooks:
     my $wormhole = { script => $NS };
     
     my $A = Afind[$splatname];
-    die "noA splatname=$splatname" unless $A;
-    # new stuff, wedge into html like it has in the wormhole
+    unless ($A) {
+        w go(thing => {antf=>[@F]});
+        return;
+    }
     w script_out[$A, $wormhole, $splatname, $append];
   lcodon: |
     my @files;
