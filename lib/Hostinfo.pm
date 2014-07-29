@@ -78,7 +78,7 @@ sub init_flood {
     my $sky = new View($self->intro, $self, "sky",
         "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
-    my $Gsky = $self->TT($sky, $self)->G("Hostinfo/sky");
+    my $Gsky = $self->TT($sky, $self)->G("H/sky");
     $sky->{on_event} = sub {
         $Gsky->w("touch");
     };
