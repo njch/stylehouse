@@ -27,7 +27,8 @@ sub gname {
     $ish;
 }
 sub Flab {
-    say $_[0] if 0;
+    $self = shift;
+    say $_[0] if $self->{db};
     push @Flab, Hostinfo->enlogform(@_);
 }
 sub new {
@@ -342,7 +343,7 @@ sub doo {
     my $O = $G->T->{O};
     $G->ob($point||$eval);
     
-    Ghost::Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
+    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
@@ -400,7 +401,8 @@ sub doo {
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        $H->error($DOOF);# if $@ !~ /^DOOF/ms;
+        $G->Flab("Error: $@");
+        $G->Flab(DOOF => $DOOF);
         $@ = $DOOF;
         
         my @ca = caller(1);
