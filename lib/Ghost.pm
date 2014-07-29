@@ -305,7 +305,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken("$talk", $h);
+        my $u = $G->waystacken("Z", "$talk", $h, $w);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
@@ -360,10 +360,7 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(
-        G => $G, way => $w, point => $point, ar => $ar,
-        ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
-    );
+    my $back = $G->waystacken(DOO => $G, $point, $ar, $Sway, $w);
     
     eval $evs;
     
