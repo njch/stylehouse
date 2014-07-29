@@ -386,7 +386,7 @@ sub doo {
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        $H->error($DOOF) if $@ !~ /^DONT/;
+        $H->error($DOOF) if $@ !~ /^DOOF/ms;
         $@ = $DOOF;
         
         my @ca = caller(1);
