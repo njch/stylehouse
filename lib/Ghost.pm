@@ -209,7 +209,6 @@ sub haunt { # arrives through here
     $self->ob($self, T => $T);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-        say " Tarr hook: $i->{arr_hook}: ".join" ",%{$i->{arr_ar}};
         my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
         
