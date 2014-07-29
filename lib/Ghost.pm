@@ -381,7 +381,8 @@ sub doo {
         }
         
         my $DOOF;
-        $DOOF .= "\n".<<"" if $@ !~ /DOOF/ && $@ !~ /^Yep/;
+        if ($@ !~ /DOOF/ && $@ !~ /^Yep/) {
+            $DOOF .= "\n".<<"";
      .-'''-.     
    '   _    \   
  /   /` '.   \  
@@ -391,6 +392,9 @@ sub doo {
  `.   ` ..' /   
     '-...-'`    
 
+            
+            $DOOF .= "Flab: ". wdump(\@Flab)."\n";
+        }
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
             ."  w $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
