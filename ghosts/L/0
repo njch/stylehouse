@@ -57,7 +57,7 @@ hooks:
         
         my $u;
         if (ref $thing eq "HASH" && $thing->{antf}) {
-            $u = $Cr->crank(max_depth => 3);
+            $u = $Cr->crank(max_depth => 4);
         }
             
         $G->w("R", {for => G(crawl)}, G(ob));
@@ -74,7 +74,7 @@ hooks:
     Say "W for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
-    G splat Tw Splat(trev => G(crawl)->W);
+    G splat Tw Splat(trev => $G->{the_W});
     G splat Tw Splat(ob   => G(ob)->W   );
     
   splatmenues: |
