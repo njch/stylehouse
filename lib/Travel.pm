@@ -44,14 +44,7 @@ sub T {
     my $i = shift;
     my $depth = shift || 0;
     
-    $T->ob("Travel", $depth, $t);
-    (my $td = $t||"~") =~ s/\n/\\n/g;
-    $G->Flab(
-        "$T->{id} ".$G->idname
-        ."            $depth to $td    ".
-        ($i?($i->{K}||$i->{name}):"?"))
-        
-        unless $G->{name} =~ /Lyrico\/ob/;
+    $G->Flab("T", $t, $t, $G, $i, $depth);
     
     my ($line, $o) = $G->haunt($T, $depth, $t, $i);
 

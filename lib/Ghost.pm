@@ -30,6 +30,7 @@ sub Flab {
     my $self = shift;
     ref $self eq "Ghost" || die "send Ghost";
     say $_[0] if $self->{db};
+    $self->ob(@_);
     push @Flab, Hostinfo->enlogform(@_);
 }
 sub new {
