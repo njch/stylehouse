@@ -200,33 +200,31 @@ sub ob {
     $self->{T}->ob(@_);
 }
 sub haunt { # arrives through here
-    my $self = shift;
+    my $G = shift;
     my $T = shift; # A
-    $self->{depth} = shift;
-    $self->{t} = shift; # thing
-    my $i = $self->{i} = shift; # way in
-    my $o = $self->{o} = []; # way[] out
+    $G->{depth} = shift;
+    $G->{t} = shift; # thing
+    my $i = $G->{i} = shift; # way in
+    my $o = $G->{o} = []; # way[] out
     
-    $self->ob($self, T => $T);
+    $G->ob("h", $G);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-        my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
+        my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
         
     }
     else {
-        $self->w("arr");
+        $G->w("arr");
     }
-    
-    $self->ob($self);
     
     my $line;
-    if (defined $self->{t}) {
-        $line = $self->W->continues($self); # %
-        $self->ob($line);
+    if (defined $G->{t}) {
+        $line = $G->W->continues($G); # %
+        $G->ob($line);
     }
 
-    return ($line, $self->{o});
+    return ($line, $G->{o});
 }
 sub chains {
     my $self = shift;
