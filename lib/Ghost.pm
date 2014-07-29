@@ -42,14 +42,16 @@ sub new {
     $self->{O} = $self->{T}->{O};
     $self->{GG} = [];
     
-    my @ways = @_ || do {
+    my @ways = @_;
+    say "way spec @_";
+    unless (@ways) {
         my $s = { map { $_ => (/^(\w)/)[0] }
             qw{Ghost Hostinfo Lyrico Travel Wormhole} };
         
         my $guess = ref $self->{T}->{O};
         $guess = $s->{$guess} if $s->{$guess};
         say " . . guess way is $guess";
-        $guess;
+        @ways = $guess;
     };
     my $way = join", ",@ways;
     $name = "$name`s ($way)";
@@ -59,7 +61,7 @@ sub new {
     $self->load_ways(@ways);
 
     if ($self->tractors) {
-        $H->TT($self)->G("Wormhole/tractor");
+        $H->TT($self)->G("W/tractor");
     }
     
     if (ref $self->{T}->{O} eq "Ghost") {
