@@ -485,6 +485,9 @@ sub menu {
                 ."\$('#ground').scrollTo(0, 360);"
             );
         },
+        "ܤ" => sub {
+            `touch /s/stylehouse.pl`;
+        },
     };
 
     return { _spawn => [
