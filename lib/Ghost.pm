@@ -186,7 +186,7 @@ sub nw {
 sub crank {
     my $self = shift;
     my $dial = shift;
-    die "no $dial" unless exists $self->{$dial};
+    die "no $dial on $self->{name}" unless exists $self->{$dial};
     my $original = $self->{$dial};
     my $uncrank = sub { $self->{$dial} = $original };
     $self->{$dial} = shift;
