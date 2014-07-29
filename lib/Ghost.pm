@@ -264,7 +264,8 @@ sub waystacken {
     return sub {
         my $o = pop @F;
         $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
-        $self->ob("back", $junk, \@Flab);
+        $self->ob("back", $junk, [@Flab]);
+        
         @Flab = ();
     }
 }
