@@ -946,10 +946,14 @@ sub throwlog {
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
-    $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').fadeOut(30).html('$string').fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
+    $self->{throwings}->{$what} || $H->timer(0.5, sub { $H->throwlog_throw });
+    $self->{throwings}->{$what} = $string;
+}
+sub throwlog_throw {
+    my $self = shift;
+    $self->JS("\$('#mess').removeClass('widdle');\$('#$what').removeClass('widdle').fadeOut(30).html('$string').fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
