@@ -13,9 +13,11 @@ hooks:
         w set_follow;
     }
     
+    $G->{H} = $H;
+    
     w getstarted;
   any_child_recoded_init: |
-    w getstarted;
+    w splat_wormholes;
   set_follow: |
     G follow ->RW;
     G follow T G ob;
@@ -34,9 +36,9 @@ hooks:
     my $codons = $H->data->{Codon};
     $H->Say("ẞ");
     
-    my $thing = ["".localtime, $O];
+    my $thing = ["".localtime, $H->data->{Ghost}, $G];
     
-    my $u = G crawl ->crank(max_depth=>3);
+    my $u = G crawl ->crank(max_depth=>2);
         w somewhere[$thing];
     $u->();
   somewhere: |

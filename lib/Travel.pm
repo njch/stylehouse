@@ -13,7 +13,8 @@ sub new {
 
     my $O = $self->{O} = shift || die "no O";
     $self->{from} = [$O, @_];
-    $self->{name} = ref $O && ($self->{O}->{name} || $self->{O}->{id}) || "$O";
+    $self->{name} = Ghost::gname($O);
+    
 
     return $self;
 }
