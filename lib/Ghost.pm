@@ -27,8 +27,11 @@ sub gname {
     $ish;
 }
 sub Flab {
-    say $_[0] if 0;
-    push @Flab, Hostinfo->enlogform(@_);
+    my $self = shift;
+    ref $self eq "Ghost" || die "send Ghost";
+    say $_[0] if $self->{db};
+    $self->ob(@_);
+    push @Flab, $H->enlogform(@_);
 }
 sub new {
     my $self = bless {}, shift;
@@ -36,14 +39,23 @@ sub new {
     delete $self->{hostinfo}; # TODO put this back once travelling feels right
 
     $self->{T} = shift;
+    
     my $name = $self->{T}->{name};
+    
     $self->{O} = $self->{T}->{O};
     $self->{GG} = [];
     
     my @ways = @_;
+    say "way spec @_";
     unless (@ways) {
-        @ways = ref $self->{T}->{O};
-    }
+        my $s = { map { $_ => (/^(\w)/)[0] }
+            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
+        
+        my $guess = ref $self->{T}->{O};
+        $guess = $s->{$guess} if $s->{$guess};
+        say " . . guess way is $guess";
+        @ways = $guess;
+    };
     my $way = join", ",@ways;
     $name = "$name`s ($way)";
     $self->{name} = $name;
@@ -52,12 +64,13 @@ sub new {
     $self->load_ways(@ways);
 
     if ($self->tractors) {
-        $H->TT($self)->G("Wormhole/tractor");
+        $H->TT($self)->G("W/tractor");
     }
     
     if (ref $self->{T}->{O} eq "Ghost") {
         push @{$self->{T}->{O}->{GG}}, $self;
     }
+    
 
     return $self;
 }
@@ -176,7 +189,7 @@ sub nw {
 sub crank {
     my $self = shift;
     my $dial = shift;
-    die "no $dial" unless exists $self->{$dial};
+    die "no $dial on $self->{name}" unless exists $self->{$dial};
     my $original = $self->{$dial};
     my $uncrank = sub { $self->{$dial} = $original };
     $self->{$dial} = shift;
@@ -187,34 +200,31 @@ sub ob {
     $self->{T}->ob(@_);
 }
 sub haunt { # arrives through here
-    my $self = shift;
+    my $G = shift;
     my $T = shift; # A
-    $self->{depth} = shift;
-    $self->{t} = shift; # thing
-    my $i = $self->{i} = shift; # way in
-    my $o = $self->{o} = []; # way[] out
+    $G->{depth} = shift;
+    $G->{t} = shift; # thing
+    my $i = $G->{i} = shift; # way in
+    my $o = $G->{o} = []; # way[] out
     
-    $self->ob($self, T => $T);
+    $G->ob("h", $G);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-        say " Tarr hook: $i->{arr_hook}: ".join" ",%{$i->{arr_ar}};
-        my @r = $self->w($i->{arr_hook}, $i->{arr_ar});
+        my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
         
     }
     else {
-        $self->w("arr");
+        $G->w("arr");
     }
-    
-    $self->ob($self);
     
     my $line;
-    if (defined $self->{t}) {
-        $line = $self->W->continues($self); # %
-        $self->ob($line);
+    if (defined $G->{t}) {
+        $line = $G->W->continues($G); # %
+        $G->ob($line);
     }
 
-    return ($line, $self->{o});
+    return ($line, $G->{o});
 }
 sub chains {
     my $self = shift;
@@ -254,7 +264,8 @@ sub waystacken {
     return sub {
         my $o = pop @F;
         $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
-        $self->ob("back", $junk, \@Flab);
+        $self->ob("back", $junk, [@Flab]);
+        
         @Flab = ();
     }
 }
@@ -294,16 +305,24 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken("$talk", $h);
+        my $u = $G->waystacken("Z", $G, "$talk", $h, $w);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
         if ($@) {
             $G->ob("Error", $@);
-            $u->();
-            die $@;
+            if (@F == 1) {
+                $H->error($@);
+                $u->();
+            }
+            else {
+                $u->();
+                die $@;
+            }
         }
-        $u->();
+        else {
+            $u->();
+        }
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -332,7 +351,7 @@ sub doo {
     my $O = $G->T->{O};
     $G->ob($point||$eval);
     
-    Ghost::Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
+    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
@@ -341,10 +360,7 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(
-        G => $G, way => $w, point => $point, ar => $ar,
-        ($Sway ? (Sway => $Sway): ()), stack => $H->enlogform()
-    );
+    my $back = $G->waystacken(DOO => $G, $point, $ar, $Sway, $w);
     
     eval $evs;
     
@@ -371,7 +387,8 @@ sub doo {
         }
         
         my $DOOF;
-        $DOOF .= "\n".<<"" if $@ !~ /DOOF/ && $@ !~ /^Yep/;
+        if ($@ !~ /DOOF/ && $@ !~ /^Yep/) {
+            $DOOF .= "\n".<<"";
      .-'''-.     
    '   _    \   
  /   /` '.   \  
@@ -381,12 +398,16 @@ sub doo {
  `.   ` ..' /   
     '-...-'`    
 
+            
+            $DOOF .= "Flab: ". wdump(\@Flab)."\n";
+        }
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
             ."  w $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        $H->error($DOOF) if $@ !~ /^DONT/;
+        $G->Flab("Error: $@");
+        $G->Flab(DOOF => $DOOF);
         $@ = $DOOF;
         
         my @ca = caller(1);
@@ -454,7 +475,7 @@ sub parse_babble {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
-        my $are = $self->parse_babblar($are, $square);
+        $are = $self->parse_babblar($are, $square);
         $H->snooze(0.1);
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"

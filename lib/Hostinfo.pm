@@ -38,7 +38,7 @@ sub new {
 
 
     $self->{G} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
+    $Ghost::G0 = $self->TT($self->{G})->G("G");
     
     push @{ $self->{file_streams} }, {
         filename => 'stylehouse.pl',
@@ -78,7 +78,7 @@ sub init_flood {
     my $sky = new View($self->intro, $self, "sky",
         "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
     );
-    my $Gsky = $self->TT($sky, $self)->G("Hostinfo/sky");
+    my $Gsky = $self->TT($sky, $self)->G("H/sky");
     $sky->{on_event} = sub {
         $Gsky->w("touch");
     };
@@ -484,6 +484,9 @@ sub menu {
                 "\$.scrollTo(\$('#ground').offset().top, 360);"
                 ."\$('#ground').scrollTo(0, 360);"
             );
+        },
+        "ܤ" => sub {
+            `touch /s/stylehouse.pl`;
         },
     };
 
@@ -893,13 +896,24 @@ sub timer {
     my $time = shift || 0.2;
     Mojo::IOLoop->timer( $time, @_ );
 }
+
+
+
+
+
+
+
+
 sub enlogform {
     my $self = shift;
 
-    my $e = [@_];
-
+    return [ hitime(), $self->stack(3), [@_] ];
+}
+sub stack {
+    my $self = shift;
+    my $b = shift || 1;
+    
     my @from;
-    my $b = 3;
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
         my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
@@ -910,8 +924,7 @@ sub enlogform {
         last if $surface; 
         $b++;
     }
-
-    return [ hitime(), \@from, $e ];
+    return [@from];
 }
 sub info {
     my $self = shift;
@@ -946,10 +959,19 @@ sub throwlog {
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
-    $self->JS("\$('#mess').removeClass('widdle');");
     my $amp = "&";
     return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
-    $self->JS("\$('#$what').removeClass('widdle').fadeOut(30).html('$string').fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
+    $self->{throwings}->{$what} || $self->timer(0.5, sub { $self->throwlog_throw });
+    $self->{throwings}->{$what} = $string;
+}
+sub throwlog_throw {
+    my $self = shift;
+    my $th = delete $self->{throwings};
+    while (my ($what, $string) = each %$th) {
+        $self->JS("\$('#mess').removeClass('widdle');"
+        ."\$('#$what').removeClass('widdle').fadeOut(30).html('$string')"
+        .".fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
+    }
 }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {

@@ -14,8 +14,7 @@ sub new {
     my $O = $self->{O} = shift || die "no O";
     $self->{from} = [$O, @_];
     $self->{name} = Ghost::gname($O);
-    
-
+    say "+T $self->{name}";
     return $self;
 }
 sub G {
@@ -30,7 +29,7 @@ sub ob {
     return unless $self->{_ob};
     
     my $ob = $H->enlogform(@_); # describes stack, etc
-    push $ob, [@Ghost::F], pop $ob;
+    push @$ob, [@Ghost::F], pop $ob;
 # we want to catch runaway recursion from here
     $self->{_ob}->T($ob);
 }
@@ -45,14 +44,7 @@ sub T {
     my $i = shift;
     my $depth = shift || 0;
     
-    $T->ob("Travel", $depth, $t);
-    (my $td = $t||"~") =~ s/\n/\\n/g;
-    Ghost::Flab(
-        "$T->{id} ".$G->idname
-        ."            $depth to $td    ".
-        ($i?($i->{K}||$i->{name}):"?"))
-        
-        unless $G->{name} =~ /Lyrico\/ob/;
+    $G->Flab("T", $t, $t, $G, $i, $depth);
     
     my ($line, $o) = $G->haunt($T, $depth, $t, $i);
 

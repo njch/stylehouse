@@ -17,6 +17,13 @@ tractors:
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
+  load_ways_post: |
+    #grab A/WS
+    # nest, styles tied to atom thing
+    # everything will have its own texty things going on
+    # the gname
+    # junction
+    # so it's just over yonder in the chain
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}
@@ -32,9 +39,11 @@ hooks:
     my $wormhole = { script => $NS };
     
     my $A = Afind[$splatname];
-    die "noA" unless $A;
-    # new stuff, wedge into html like it has in the wormhole
-    w script_out[$A, $wormhole, $append];
+    unless ($A) {
+        w go(thing => {antf=>[@F]});
+        return;
+    }
+    w script_out[$A, $wormhole, $splatname, $append];
   lcodon: |
     my @files;
     my $t = $line->{t};
@@ -56,7 +65,7 @@ hooks:
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
-    w script_out[$A, $wormhole];
+    w script_out[$A, $splatname, $wormhole];
   aWstract: |
     $wormhole ne $G->W
         ? $wormhole
@@ -68,9 +77,10 @@ hooks:
         if($i++ > 400) {
             push @$lines, "more...";
             last;
+            
+            
         }
         my ($R, $B) = ([], {});
-        my $splatname = "trev";
         push @$lines, w make_line[$splatname, $i, $R, $B, $line];
     }
     my $th = {
@@ -84,11 +94,8 @@ hooks:
     return $t;
   
   make_line: |
-    if (ref $line ne "HASH") {
-        return "FUKN ".wdump($line);
-    }
-    my $ghost = $line->{ghost};
-
+    ref $line eq "HASH" || die  "FUKN ".wdump($line);
+    
     w line/value; # R <-> B to be tractored
 
     return { _spawn => [ $R, {
@@ -199,7 +206,7 @@ hooks:
                 if ($t->{name}) {
                     $name .= " ".$t->{name};
                 }
-                $s->{style}.="border:3px solid #$1;"
+                $s->{style}.="border-left:40px groove #$1;"
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
@@ -218,6 +225,10 @@ hooks:
             if ($ref eq "Way") { 
                 $name = w $t print;
                 $name ||= join " ", sort keys %$t;
+                if (my $wf = $t->{_wayfile}) {
+                    my ($n) = $wf =~ /^ghosts\/(.+)$/;
+                    $name = $inc->("#030" => $n)." ".$name;
+                }
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) {
@@ -237,7 +248,7 @@ hooks:
                 }
                 ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
                 $nl ||= $name;
-                $s->{style}.="border:2px solid #$1;"
+                $s->{style}.="border-left:40px groove #$1;"
                     if $nb =~ m/^\w+-\w{5}(\w{3})/;
                 $s->{html} = 2;
                 $name = $emb->($ty).$inc->('#111;font-size:8pt', $nb).$nl;
@@ -249,10 +260,13 @@ hooks:
         }
         else {
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
-                $s->{style}.="border:3px solid #$1;";
+                $s->{style}.="border-left:18px groove #$1;";
             }
             $color = "999";
             $s->{style} .= "font-weight: 500;";
+            if (length($t) > 100) {
+                 $s->{value} = substr($t, 0, 100)."...";
+            }
             
         }
         $s->{value} = $name;
@@ -265,9 +279,10 @@ hooks:
         $s->{style}.="max-width: 20em;";
         $s->{style}.="word-wrap:break-word; max-height:5em; min-width: 10em;";
         $s->{style}.="color:#$color;";
-        
-        $s->{style} .= "font-size:11pt;font-family:serif;" if !ref $t;
+         
+        $s->{style} .= "font-family:serif;" if !ref $t;
         $s->{_event} = w line/event;
+        $s->{class}.= " splatt ";
     d:
       v: |
         $line->{depth}

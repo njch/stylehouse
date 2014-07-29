@@ -2,19 +2,17 @@ name: Lyricoso writoro
 hooks:
   load_ways_post: |
     unless (G splat ) {
-        G TT ->G("Travel/splat");
-        #G TT ->G("Travel/Spill");
+        G TT ->G("T/splat");
         
-        G TT ->G("Travel/crawl");
-        G TT ->G("Lyrico/follow");
-        G TT ->G("Lyrico/ob");
+        G TT ->G("T/crawl");
+        G TT ->G("L/follow");
+        G TT ->G("L/ob");
         
         
         w set_follow;
     }
     
     $G->{H} = $H;
-    
     w getstarted;
   any_child_recoded_init: |
     w splat_wormholes;
@@ -32,14 +30,12 @@ hooks:
   getstarted: |
     $G->unrush('getstarted') || return;
     
-    
-    my $codons = $H->data->{Codon};
     $H->Say("ẞ");
     
-    my $thing = ["".localtime, $H->data->{Ghost}, $G];
+    my $thing = ["".localtime, $H->data->{Ghost},$H->data->{Wormhole}, $G];
     
     my $u = G crawl ->crank(max_depth=>2);
-        w somewhere[$thing];
+    w somewhere[$thing];
     $u->();
   somewhere: |
     my $thing = $ar->{thing};
@@ -48,10 +44,10 @@ hooks:
     my $Cr = G crawl;
     $Cr->{_ob} = G ob;
     say "" for 1..5;
-    return $H->error("undef thing") unless defined $thing;
     say join"", ("       ẞ           ")x38;
     start_timer();
     w resurround;
+    
     
     if ($wormhole) {
         $G->{the_W} = $wormhole;
@@ -59,10 +55,16 @@ hooks:
     else {
         $Cr->RW;
         
+        my $u;
+        if (ref $thing eq "HASH" && $thing->{antf}) {
+            $u = $Cr->crank(max_depth => 4);
+        }
+            
         $G->w("R", {for => G(crawl)}, G(ob));
         
-        $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw"',F => [@F]}));
+        $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
         
+        $u->() if $u;
         $G->{the_W} = $Cr->W;
     }
     my $crawltime = show_delta();
@@ -72,7 +74,7 @@ hooks:
     Say "W for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
-    G splat Tw Splat(trev => G(crawl)->W);
+    G splat Tw Splat(trev => $G->{the_W});
     G splat Tw Splat(ob   => G(ob)->W   );
     
   splatmenues: |

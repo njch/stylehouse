@@ -25,16 +25,18 @@ hooks:
         if (my $Already = w retract[$A]) {
             $Already->{B} = $A->{B};
             $A = $Already;
-            say "retracted  ".join " ", %$ar;
+            $G->Flab("retracted  ", $ar);
             w $A nonfirst_times;
         }
         else {
             $A = $A->spawn;
-            say "First time for  ".join " ", %$ar;
+            $G->Flab("First time for  ", $ar);
             w $A first_time;
         }
         $O->{t} = $A;
     }
+    
+    $G->Flab(AA => [@AA]);
     
     return @AA    ;
   retract: |
@@ -51,7 +53,10 @@ hooks:
         }
     }
     $O->W->{script} = \@keep;
-    return if !@found;
+    if (!@found) {
+        $H->Say("no foundo $G->{name} $A->{B}->{_}");
+        return;
+    }
     return $found[0]->{t};
   find: |
     my @wheres;
