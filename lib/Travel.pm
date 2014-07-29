@@ -46,7 +46,7 @@ sub T {
     
     $T->ob("Travel", $depth, $t);
     (my $td = $t||"~") =~ s/\n/\\n/g;
-    Ghost::Flab(
+    $G->Flab(
         "$T->{id} ".$G->idname
         ."            $depth to $td    ".
         ($i?($i->{K}||$i->{name}):"?"))
