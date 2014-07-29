@@ -3,7 +3,6 @@ hooks:
   load_ways_post: |
     unless (G splat ) {
         G TT ->G("Travel/splat");
-        #G TT ->G("Travel/Spill");
         
         G TT ->G("Travel/crawl");
         G TT ->G("Lyrico/follow");
@@ -32,15 +31,12 @@ hooks:
   getstarted: |
     $G->unrush('getstarted') || return;
     
-    
-    my $codons = $H->data->{Codon};
     $H->Say("ẞ");
     
     my $thing = ["".localtime, $H->data->{Ghost}, $G];
     
-    my $u = G crawl ->crank(max_depth=>2);
-        w somewhere[$thing];
-    $u->();
+    G crawl ->crank(max_depth=>2);
+    w somewhere[$thing];
   somewhere: |
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
