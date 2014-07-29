@@ -311,10 +311,18 @@ sub w {
         ];
         if ($@) {
             $G->ob("Error", $@);
-            $u->();
-            die $@;
+            if (@F == 1) {
+                $H->Error($@);
+                $u->();
+            }
+            else {
+                $u->();
+                die $@;
+            }
         }
-        $u->();
+        else {
+            $u->();
+        }
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    

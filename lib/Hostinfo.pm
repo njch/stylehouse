@@ -896,13 +896,24 @@ sub timer {
     my $time = shift || 0.2;
     Mojo::IOLoop->timer( $time, @_ );
 }
+
+
+
+
+
+
+
+
 sub enlogform {
     my $self = shift;
 
-    my $e = [@_];
-
+    return [ hitime(), $self->stack(3), [@_] ];
+}
+sub stack {
+    my $self = shift;
+    my $b = shift || 1;
+    
     my @from;
-    my $b = 3;
     while (my $f = join " ", (caller($b))[0,3,2]) {
         last unless defined $f;
         my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
@@ -913,8 +924,7 @@ sub enlogform {
         last if $surface; 
         $b++;
     }
-
-    return [ hitime(), \@from, $e ];
+    return [@from];
 }
 sub info {
     my $self = shift;
