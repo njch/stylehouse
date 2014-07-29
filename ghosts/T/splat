@@ -19,7 +19,11 @@ tractors:
 hooks:
   load_ways_post: |
     #grab A/WS
-    # nest 
+    # nest, styles tied to atom thing
+    # everything will have its own texty things going on
+    # the gname
+    # junction
+    # so it's just over yonder in the chain
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}
@@ -78,7 +82,7 @@ hooks:
     my $th = {
         nospace => 1,
         class => 'menu',
-        tuxtstyle => 'width: 100%;border:1px solid #b66;',
+        tuxtstyle => 'width: 100%;',
     };
     $th->{append} = $ar->{append} if $ar->{append};
     
@@ -86,11 +90,8 @@ hooks:
     return $t;
   
   make_line: |
-    if (ref $line ne "HASH") {
-        return "FUKN ".wdump($line);
-    }
-    my $ghost = $line->{ghost};
-
+    ref $line eq "HASH" || die  "FUKN ".wdump($line);
+    
     w line/value; # R <-> B to be tractored
 
     return { _spawn => [ $R, {
@@ -201,7 +202,7 @@ hooks:
                 if ($t->{name}) {
                     $name .= " ".$t->{name};
                 }
-                $s->{style}.="border:3px solid #$1;"
+                $s->{style}.="border-left:40px solid #$1;"
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
             if ($ref eq "ARRAY") {
@@ -239,7 +240,7 @@ hooks:
                 }
                 ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
                 $nl ||= $name;
-                $s->{style}.="border:2px solid #$1;"
+                $s->{style}.="border-left:40px solid #$1;"
                     if $nb =~ m/^\w+-\w{5}(\w{3})/;
                 $s->{html} = 2;
                 $name = $emb->($ty).$inc->('#111;font-size:8pt', $nb).$nl;
@@ -251,7 +252,7 @@ hooks:
         }
         else {
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
-                $s->{style}.="border:3px solid #$1;";
+                $s->{style}.="border-left:18px solid #$1;";
             }
             $color = "999";
             $s->{style} .= "font-weight: 500;";
