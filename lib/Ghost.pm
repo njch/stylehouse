@@ -305,7 +305,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken("Z", "$talk", $h, $w);
+        my $u = $G->waystacken("Z", $G, "$talk", $h, $w);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
