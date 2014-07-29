@@ -48,16 +48,23 @@ hooks:
     start_timer();
     w resurround;
     
+    
     if ($wormhole) {
         $G->{the_W} = $wormhole;
     }
     else {
         $Cr->RW;
         
+        my $u;
+        if (ref $thing eq "HASH" && $thing->{antf}) {
+            $u = $Cr->crank(max_depth => 3);
+        }
+            
         $G->w("R", {for => G(crawl)}, G(ob));
         
-        $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw"',F => [@F]}));
+        $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
         
+        $u->() if $u;
         $G->{the_W} = $Cr->W;
     }
     my $crawltime = show_delta();
