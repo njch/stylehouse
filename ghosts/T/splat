@@ -225,6 +225,10 @@ hooks:
             if ($ref eq "Way") { 
                 $name = w $t print;
                 $name ||= join " ", sort keys %$t;
+                if (my $wf = $t->{_wayfile}) {
+                    my ($n) = $wf =~ /^ghosts\/(.+)$/;
+                    $name = $inc->("#030" => $n)." ".$name;
+                }
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) {
