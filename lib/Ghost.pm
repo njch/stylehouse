@@ -27,7 +27,8 @@ sub gname {
     $ish;
 }
 sub Flab {
-    $self = shift;
+    my $self = shift;
+    ref $self eq "Ghost" || die "send Ghost";
     say $_[0] if $self->{db};
     push @Flab, Hostinfo->enlogform(@_);
 }
@@ -470,7 +471,7 @@ sub parse_babble {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
-        my $are = $self->parse_babblar($are, $square);
+        $are = $self->parse_babblar($are, $square);
         $H->snooze(0.1);
         $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
             || die "Ca't replace $1\n"
