@@ -36,14 +36,21 @@ sub new {
     delete $self->{hostinfo}; # TODO put this back once travelling feels right
 
     $self->{T} = shift;
+    
     my $name = $self->{T}->{name};
+    
     $self->{O} = $self->{T}->{O};
     $self->{GG} = [];
     
-    my @ways = @_;
-    unless (@ways) {
-        @ways = ref $self->{T}->{O};
-    }
+    my @ways = @_ || do {
+        my $s = { map { $_ => (/^(\w)/)[0] }
+            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
+        
+        my $guess = ref $self->{T}->{O};
+        $guess = $s->{$guess} if $s->{$guess};
+        say " . . guess way is $guess";
+        $guess;
+    };
     my $way = join", ",@ways;
     $name = "$name`s ($way)";
     $self->{name} = $name;
@@ -58,6 +65,7 @@ sub new {
     if (ref $self->{T}->{O} eq "Ghost") {
         push @{$self->{T}->{O}->{GG}}, $self;
     }
+    
 
     return $self;
 }

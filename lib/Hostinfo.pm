@@ -38,7 +38,7 @@ sub new {
 
 
     $self->{G} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT($self->{G})->G("Ghost");
+    $Ghost::G0 = $self->TT($self->{G})->G("G");
     
     push @{ $self->{file_streams} }, {
         filename => 'stylehouse.pl',
