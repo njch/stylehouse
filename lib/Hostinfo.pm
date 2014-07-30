@@ -104,7 +104,7 @@ sub init_flood {
     my $messborder = "border: 2px solid rgb(64,150,227);";
     my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
         ."position:absolute; overflow: scroll; height:100%;"
-        ."$messborder z-index: 10; background: rgba(93,0,47, 0.5); color: #030; font-weight: bold; ");
+        ."$messborder z-index: 10; background: rgba(175,160,47, 0.5); color: #030; font-weight: bold; ");
     $m->{on_event} = sub {
         my @a = @_;
         $self->{G}->doo("G mess Tw event(e=>\$e);", {e=>\@a});
