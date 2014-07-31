@@ -56,13 +56,14 @@ hooks:
     }
     $O->W->{script} = \@keep;
     if (!@found) {
-        say "no foundo $G->{name} $A->{B}->{_}" for 1..5;
-        $DB::single = $A->{B}->{splatname} eq "trev";
+        $G->Flab("No foundo");
         return;
     }
-    say "ypypyp $G->{name} $A->{B}->{_}" for 1..4;
-    #$H->Say("yup yup ytupy upyuyp $G->{name} $A->{B}->{_}");
     return $found[0]->{t};
+  random: |
+    my $tot = @{ $O->W->{script} }-1;
+    my $i = int rand $tot;
+    return $O->W->{script}->[$i]->{t};
   find: |
     my @wheres;
     while (my ($k, $v) = each %$ar) {

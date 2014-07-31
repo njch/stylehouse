@@ -118,6 +118,7 @@ sub Gf {
 }
 sub W {
     my $self = shift;
+    return $self->{W} if $self->{W};
     $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub RW {

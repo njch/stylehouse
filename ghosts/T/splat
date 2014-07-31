@@ -232,7 +232,9 @@ hooks:
             }
             if ($ref eq "Way") { 
                 $name = w $t print;
-                $name ||= join " ", sort keys %$t;
+                unless (defined $name) {
+                    $name = "{".join(" ", sort keys %$t);
+                }
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
