@@ -120,6 +120,7 @@ sub display {
 .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="57" rows="'.$rows.'" style="background-color: #08b;"></textarea>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; top: 0em; font-size: 32pt; z-index: 20;">@</span>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; bottom: 0em; font-size: 32pt; z-index: 20;">@</span>'
+.'<span id="<<ID>>-Colour-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; bottom: 20%; font-size: 32pt; z-index: 20;">c</span>'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
@@ -214,6 +215,19 @@ $first =~ s/(sub|function|package) (\S+) /$1<t
     return "!html !i=$c->{i} $first"
         .($c->{rows} > 1 ? " ~ $c->{rows}" : "")
 }
+our @personalities = (
+sub { int rand 123 },
+sub { int rand 255 },
+sub { 100 + int rand 155 },
+);
+sub random_colour {
+    if (shift) {
+        push @personalities, shift @personalities;
+    }
+    my ($as) = @personalities;
+    my ($rgb) = join", ", map {$as->()} 1 .. 3;
+    return "rgb($rgb)";
+}
 sub event {
     my $self = shift;
     my $e = shift;
@@ -235,6 +249,12 @@ sub event {
         $self->{openness}->{$i} = "Closing";
 
         $self->display();
+    }
+    elsif ($id =~ /^(.+)-Colour-(\d+)$/) {
+        my ($tid, $cid) = ($1, $2);
+        my $fid = "$tid-".($cid+1);
+        my $colour = random_colour($e->{C});
+        $H->JS("\$('#$fid > div').animate({backgroundColor: '$colour'}, 200);");
     }
     elsif ($id =~ s/-Head$//) {
         $self->away();

@@ -113,7 +113,6 @@ sub init_way {
             $self->{G}->{$k} = $v;
         }
     }
-    say "21!";
 }    
 sub find {
     my $self = shift;
