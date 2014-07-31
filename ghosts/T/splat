@@ -162,6 +162,8 @@ hooks:
             if ref $t eq "Ghost" || ref $t eq "Travel";
         push @$menu, '⊟' => sub { w lcodon[$line] }
             if "$t" =~ /Codon|Ghost/;
+        push @$menu, '⊟' => sub { my $res = [$t->()]; w go(thing => $res) }
+            if ref $t eq "CODE";
         
         {
         contyt => { bb => $b->{bb} },
