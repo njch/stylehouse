@@ -52,7 +52,7 @@ sub menu {
         "چ" => sub {
             $self->somewhere(@_);
         },
-        'ښ' => sub {
+        'i' => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
