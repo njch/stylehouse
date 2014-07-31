@@ -120,7 +120,8 @@ sub display {
 .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="57" rows="'.$rows.'" style="background-color: #08b;"></textarea>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; top: 0em; font-size: 32pt; z-index: 20;">@</span>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; bottom: 0em; font-size: 32pt; z-index: 20;">@</span>'
-.'<span id="<<ID>>-Colour-'.$i.'" style="position: absolute; right: 0.5em; opacity: 0.4; bottom: 0.5em; font-size: 16pt; z-index: 20;">c</span>'
+.'<span id="<<ID>>-Colour-'.$i.'" style="position: absolute; right: 0.7em; opacity: 0.4; bottom: 0.5em; font-size: 16pt; z-index: 20;">c</span>'
+.'<span id="<<ID>>-Collapse" style="position: absolute; right: 1.6em; opacity: 0.4; top: 1.6em; font-size: 8pt; z-index: 20;">z</span>'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
@@ -249,6 +250,9 @@ sub event {
         $self->{openness}->{$i} = "Closing";
 
         $self->display();
+    } 
+    elsif ($id =~ /-Collapse/) {
+        $self->save_all("Collapse");
     }
     elsif ($id =~ /^(.+)-Colour-(\d+)$/) {
         my ($tid, $cid) = ($1, $2);
