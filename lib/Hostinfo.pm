@@ -733,18 +733,27 @@ sub watch_git_diff {
     while (my ($f, $D) = each %$d) {
         $d->{$f} = enhash($D);
     }
+    for my $f (keys %$d) {
+        delete $d->{$f}
+            if $f =~ /^ghosts/;
+    }
+    unless (exists $self->{last_git_diff}) {
+        say "H watch_git_diff first time";
+        $self->{last_git_diff} = $d;
+        return;
+    }
+    
     my $od = $self->{last_git_diff} ||= {};
     $od = { %$od };
     while (my ($f, $n) = each %$d) {
-        next if $f =~ /^ghosts/;
         my $o = delete $od->{$f};
         if (!$o || $n ne $o) {
-            say join("  <>  ", ($f)x78);
+            say join("  <>  ", ($f)x38);
             $self->restarting;
         }
     }
-    if (keys %$od) {
-        say join("  <  >  ", ($f)x78);
+    for my $f (keys %$od) {
+        say join("  <  >  ", ($_)x28) for $f;
         $self->restarting;
     }
     $self->{last_git_diff} = $d;
