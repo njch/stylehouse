@@ -8,7 +8,6 @@ hooks:
         G TT ->G("L/follow");
         G TT ->G("L/ob");
         
-        
         w set_follow;
     }
     
@@ -18,21 +17,24 @@ hooks:
     w splat_wormholes;
   set_follow: |
     G follow ->RW;
+    
+    my $dfs = w default_somewhere;
+    G follow T $dfs;
     G follow T G ob;
     G follow T $H;
     G follow T $O;
     G follow T G(follow)->W;
-    G follow T $H->data->{Codon};
-    G follow T $H->data->{Ghost};
     G follow T \@F;
     
     G splat Tw Splat(wing => G(follow)->W);
+  default_somewhere: |
+    ["".localtime, $H->data->{Ghost},$H->data->{Wormhole}, $G]
   getstarted: |
     $G->unrush('getstarted') || return;
     
     $H->Say("ẞ");
     
-    my $thing = ["".localtime, $H->data->{Ghost},$H->data->{Wormhole}, $G];
+    my $thing = w default_somewhere;
     
     my $u = G crawl ->crank(max_depth=>2);
     w somewhere[$thing];
@@ -41,16 +43,12 @@ hooks:
     my $thing = $ar->{thing};
     my $wormhole = $ar->{wormhole};
     
-    # when you pick up a W
-    # she sings R
-    
     
     my $Cr = G crawl;
-    $Cr->{_ob} = G ob;
+    #$Cr->{_ob} = G ob;
     say "" for 1..5;
     say join"", ("       ẞ           ")x38;
     start_timer();
-    w resurround;
     
     
     if ($wormhole) {
@@ -61,7 +59,7 @@ hooks:
         
         my $u;
         if (ref $thing eq "HASH" && $thing->{antf}) {
-            $u = $Cr->crank(max_depth => 4);
+            #$u = $Cr->crank(max_depth => 4);
         }
             
         $G->w("R", {for => G(crawl)}, G(ob));
@@ -75,7 +73,7 @@ hooks:
 
     w splat_wormholes;
     
-    Say "W for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "W x$wormhole->{n} for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
     G splat Tw Splat(trev => $G->{the_W});

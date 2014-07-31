@@ -10,7 +10,7 @@ tractors:
       if ($splatname eq "wing") {
           $style .= "bottom:0px;right:10%;border:5px solid green;width:17em;z-index:20;"
       }
-      if ($splatname eq "WW") {
+      if ($splatname eq "splatW") {
           $style .= "bottom:0px;right:30%;border:5px solid green;width:10em;z-index:20;"
       }
       $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
@@ -43,7 +43,8 @@ hooks:
     
     my $A = Afind[$splatname];
     unless ($A) {
-        w go(thing => {antf=>[@F], undef_yonder_A => $splatname, a => $G});
+        #die "no such splatname: $splatname";
+        w go(thing => {antf=>[@F], undef_by => $splatname, z => $G->W->CS} );
         return;
     }
     w script_out[$A, $wormhole, $splatname, $append];
@@ -167,7 +168,7 @@ hooks:
         _spawn => [ [], {
         nospace => 1,
         event => { menu => $menu },
-        class => "menu",
+        class => "menu insplatm",
         style => "font-size:25pt;",
         }]
         }
