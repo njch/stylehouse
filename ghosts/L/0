@@ -1,17 +1,15 @@
 name: Lyricoso writoro
 hooks:
-  load_ways_post: |
-    unless (G splat ) {
-        G TT ->G("T/splat");
-        
-        G TT ->G("T/crawl");
-        G TT ->G("L/follow");
-        G TT ->G("L/ob");
-        
-        w set_follow;
-    }
+  fresh_init: |
+    G TT ->G("T/splat");
+    G TT ->G("T/crawl");
     
+    G TT ->G("L/follow");
+    G TT ->G("L/ob");
+    w set_follow;
     $G->{H} = $H;
+    w splat_splatW;
+  recoded_init: |
     w getstarted;
   any_child_recoded_init: |
     w splat_wormholes;
@@ -45,6 +43,7 @@ hooks:
     
     
     my $Cr = G crawl;
+    $Cr->{db} = 1;
     #$Cr->{_ob} = G ob;
     say "" for 1..5;
     say join"", ("       ẞ           ")x38;
@@ -52,7 +51,7 @@ hooks:
     
     
     if ($wormhole) {
-        $G->{the_W} = $wormhole;
+        $G->{some_W} = $wormhole;
     }
     else {
         $Cr->RW;
@@ -67,7 +66,7 @@ hooks:
         $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
         
         $u->() if $u;
-        $G->{the_W} = $Cr->W;
+        $G->{some_W} = $Cr->W;
     }
     my $crawltime = show_delta();
 
@@ -76,8 +75,11 @@ hooks:
     Say "W x$wormhole->{n} for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
-    G splat Tw Splat(trev => $G->{the_W});
+    G splat Tw Splat(trev => $G->{some_W});
     G splat Tw Splat(ob   => G(ob)->W   );
+  splat_splatW: |
+    G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
+    timer 2.5 { w splat_splatW };
     
   splatmenues: |
     my $ob = G(ob)->W;
