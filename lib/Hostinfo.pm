@@ -734,13 +734,18 @@ sub watch_git_diff {
         $d->{$f} = enhash($D);
     }
     my $od = $self->{last_git_diff} ||= {};
-    while (my ($f, $o) = each %$od) {
+    $od = { %$od };
+    while (my ($f, $n) = each %$d) {
         next if $f =~ /^ghosts/;
-        my $n = $d->{$f};
-        if ($n ne $o) {
+        my $o = delete $od->{$f};
+        if (!$o || $n ne $o) {
             say join("  <>  ", ($f)x78);
             $self->restarting;
         }
+    }
+    if (keys %$od) {
+        say join("  <  >  ", ($f)x78);
+        $self->restarting;
     }
     $self->{last_git_diff} = $d;
     # ZIPPING!? accum?

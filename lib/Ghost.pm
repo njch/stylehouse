@@ -353,6 +353,7 @@ sub doo {
     $G->ob($point||$eval);
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
+    say(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
