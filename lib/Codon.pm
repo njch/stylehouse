@@ -120,7 +120,7 @@ sub display {
 .'<textarea name="code" onfocus="clickoff();" onblur="clickon();" id="<<ID>>-Text-'.$i.'" cols="57" rows="'.$rows.'" style="background-color: #08b;"></textarea>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; top: 0em; font-size: 32pt; z-index: 20;">@</span>'
 .'<span id="<<ID>>-Close-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; bottom: 0em; font-size: 32pt; z-index: 20;">@</span>'
-.'<span id="<<ID>>-Colour-'.$i.'" style="position: absolute; right: -10px; opacity: 0.4; bottom: 20%; font-size: 32pt; z-index: 20;">c</span>'
+.'<span id="<<ID>>-Colour-'.$i.'" style="position: absolute; right: 0.5em; opacity: 0.4; bottom: 0.5em; font-size: 16pt; z-index: 20;">c</span>'
         }
         elsif ($ness eq "Closed" || $ness eq "Closing") {
             # closed
