@@ -25,11 +25,13 @@ hooks:
         if (my $Already = w retract[$A]) {
             $Already->{B} = $A->{B};
             $A = $Already;
+            say "retracted " for 1..3;
             $G->Flab("retracted  ", $ar);
             w $A nonfirst_times;
         }
         else {
             $A = $A->spawn;
+            say "first " for 1..3;
             $G->Flab("First time for  ", $ar);
             w $A first_time;
         }
@@ -54,11 +56,12 @@ hooks:
     }
     $O->W->{script} = \@keep;
     if (!@found) {
-        say "no foundo $G->{name} $A->{B}->{_}" for 1..9;
+        say "no foundo $G->{name} $A->{B}->{_}" for 1..5;
         $DB::single = $A->{B}->{splatname} eq "trev";
         return;
     }
-    $H->Say("yup yup ytupy upyuyp $G->{name} $A->{B}->{_}");
+    say "ypypyp $G->{name} $A->{B}->{_}" for 1..4;
+    #$H->Say("yup yup ytupy upyuyp $G->{name} $A->{B}->{_}");
     return $found[0]->{t};
   find: |
     my @wheres;
