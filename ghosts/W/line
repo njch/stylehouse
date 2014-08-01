@@ -1,64 +1,17 @@
 name: wormhole splatter
 tractors:
-  - K: 'W[S]er'
+  - K: 'W/line'
     arr_if: |
-      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
+      ref $line eq "HASH"
     B_: |
-      $splatname
-    first_time: |
-      my $style = "padding: 1em;position:absolute;overflow:hidden;";
-      if ($splatname eq "wing") {
-          $style .= "bottom:0px;right:10%;border:5px solid green;width:17em;z-index:20;"
-      }
-      if ($splatname eq "splatW") {
-          $style .= "bottom:0px;right:30%;border:5px solid green;width:28em;z-index:20;"
-      }
-      $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
-      
-    nonfirst_times: |
-      $S->{view}->fadehtml();
+      $line
     print: |
-      $S->{K} .": ". $S->{B}->{_}
+      $S->{K} ." t=". $S->{B}->{line}->{t}
 hooks:
 
   go: |
-    Info "\n splat go:   ".join "  ", %$ar;
-    exists $ar->{line}
-      ? $G->w('open_line', $ar)
-      : $O->w('somewhere', $ar);
+    $O->w('go', $ar);
     
-  open_line: |
-    my $CG = $O->Gf("crawl") || die "no O G crawl";
-    
-    my $NS = $CG->w('revisit', { line => $line, push_depth => 1 });
-    $NS || die "NO!";
-    
-    my $wormhole = { script => $NS };
-    
-    my $A = Afind[$splatname];
-    unless ($A) {
-        #die "no such splatname: $splatname";
-        w go(thing => {antf=>[@F], undef_by => $splatname, z => $G->W->CS} );
-        return;
-    }
-    w script_out[$A, $wormhole, $splatname, $append];
-  lcodon: |
-    my @files;
-    my $t = $line->{t};
-    if (ref $t eq "Ghost") {
-        @files = @{ $t->{wayfiles} };
-    }
-    else { die "get codes from $t"; }
-    
-    for my $file (@files) {
-        my $c = Codon->new($H->intro,
-            { codo => $H->getapp("Codo"),
-            filename => $file }
-        );
-        $c->{show} = $S->{view}->spawn_floozy($G, "codon-del-$line->{uuid}",  "width:89%; background:#80182; color:#afc; height:23em;", after => $A->{C}->{Line}->{S}->{id});
-        $c->display();
-    }
-  
   Splat: |
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
