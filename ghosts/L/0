@@ -41,13 +41,14 @@ hooks:
     w somewhere(thing => w default_somewhere);
   somewhere: |
     my $thing = $ar->{thing};
+    $thing ||= $ar->{nothing};
     my $wormhole = $ar->{wormhole};
     
     w splat_splatW;
     
     my $Cr = G crawl;
     $Cr->{db} = 1;
-    #$Cr->{_ob} = G ob;
+    $Cr->{_ob} = G ob;
     say "" for 1..5;
     say join"", ("       ẞ           ")x38;
     start_timer();
@@ -69,13 +70,13 @@ hooks:
         $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
         
         $u->() if $u;
-        $G->{some_W} = $Cr->W;
+        $wormhole = $G->{some_W} = $Cr->W;
     }
     my $crawltime = show_delta();
 
     w splat_wormholes;
     
-    Say "W x$wormhole->{n} for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "W $wormhole->{n}x".scalar(@{$wormhole->{script}})." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
     G splat Tw Splat(trev => $G->{some_W});
