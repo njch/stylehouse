@@ -80,7 +80,7 @@ sub init_flood {
     );
     my $Gsky = $self->TT($sky, $self)->G("H/sky");
     $sky->{on_event} = sub {
-        $Gsky->w("touch");
+        $Gsky->w("touch", {e => [@_]});
     };
     
     
