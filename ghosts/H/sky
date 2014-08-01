@@ -24,7 +24,14 @@ hooks:
     $ar->{t} ||= 5000;
     $ar->{c} ||= w rotate_colourwheel;
     $H->JS($H->{sky},"animate({backgroundColor: '#$ar->{c}'}, $ar->{t});");
+  getundercontrol: |
+    $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '26%'});");
   touch: |
+    if (eval { $ar->{e}->[1]->{C} }) {
+        w getundercontrol;
+    }
+    $@ = "";
+  
     $ar->{t} ||= 1000;
     w colourchange;
   rotate_colourwheel: |

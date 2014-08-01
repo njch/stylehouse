@@ -108,13 +108,18 @@ sub Gf {
     my $self = shift;    
     my $way = shift;
 
-    # TODO
+    # TODO self or $S etc
     my @Gs =
         grep { $_->{way} =~ /$way/ } @{ $self->{GG} };
     
     #die "Gf = ".scalar(@Gs)." $self->{name}   $way " if @Gs != 1;
     
     shift @Gs;
+}
+sub Gc { # TODO merge into ^ 
+    my $self = shift;
+    my $way = shift;
+    $H->TT($self)->G($way);
 }
 sub W {
     my $self = shift;
@@ -125,6 +130,7 @@ sub RW {
     my $self = shift;
     my $OW = $self->W->{script};
     $self->W->{script} = [];
+    $self->W->{n} = 0;
     $OW;
 }
 sub load_ways {
@@ -353,7 +359,6 @@ sub doo {
     $G->ob($point||$eval);
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
-    say(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
@@ -433,6 +438,7 @@ sub parse_babble {
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
+    $eval =~ s/Gf (\S+)/\$G->Gf('$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;

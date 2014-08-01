@@ -19,12 +19,13 @@ use utf8;
 use Encode qw(encode_utf8 decode_utf8);
 use YAML::Syck;
 use JSON::XS;
-
+sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
 our $data = {};
 sub new {
     my $self = bless {}, shift;
     #$self->set('0', $self);
     $self->{for_all} = [];
+    $self->{name} = 'Њ';
     
     $Lyrico::H = $self;
     $Ghost::H = $self;
@@ -80,7 +81,7 @@ sub init_flood {
     );
     my $Gsky = $self->TT($sky, $self)->G("H/sky");
     $sky->{on_event} = sub {
-        $Gsky->w("touch");
+        $Gsky->w("touch", {e => [@_]});
     };
     
     
@@ -723,7 +724,7 @@ sub watch_git_diff {
     my $d = {};
     my $f;
     for (@diff) {
-        if (/^diff --git a\/(.+) b\/.+/) {
+        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
             $f = $1;
         }
         else {

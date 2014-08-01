@@ -3,6 +3,8 @@ hooks:
   fresh_init: |
     G TT ->G("T/splat");
     G TT ->G("T/crawl");
+    G TT ->G("Ϡ");
+    
     
     G TT ->G("L/follow");
     G TT ->G("L/ob");
@@ -32,22 +34,25 @@ hooks:
     
     G splat Tw Splat(wing => G(follow)->W);
   default_somewhere: |
-    ["".localtime, $H->data->{Ghost},$H->data->{Wormhole}, $G]
+    $H->data->{Ghost}
   getstarted: |
     $G->unrush('getstarted') || return;
-    
-    $H->Say("ẞ");
-    
+    Say "ẞ";
     w somewhere(thing => w default_somewhere);
   somewhere: |
     my $thing = $ar->{thing};
+    if ($ar->{nothing}) {
+        Say "nothing...";
+        Gf Ϡ Tw arr(%$ar);
+        return;
+    }
     my $wormhole = $ar->{wormhole};
     
     w splat_splatW;
     
     my $Cr = G crawl;
-    $Cr->{db} = 1;
-    #$Cr->{_ob} = G ob;
+    #$Cr->{db} = 1;
+    $Cr->{_ob} = G ob;
     say "" for 1..5;
     say join"", ("       ẞ           ")x38;
     start_timer();
@@ -69,16 +74,16 @@ hooks:
         $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
         
         $u->() if $u;
-        $G->{some_W} = $Cr->W;
+        $wormhole = $G->{some_W} = $Cr->W;
     }
     my $crawltime = show_delta();
 
     w splat_wormholes;
     
-    Say "W x$wormhole->{n} for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "W $wormhole->{n}x".scalar(@{$wormhole->{script}})." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
-    G splat Tw Splat(trev => $G->{some_W});
+    G splat Tw Splat(somewhere => $G->{some_W});
     G splat Tw Splat(ob   => G(ob)->W   );
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
