@@ -156,6 +156,7 @@ hooks:
         }
         
         push @$menu, 't' => sub { w go( thing => $t ) };
+        push @$menu, 'ɿ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
@@ -194,8 +195,9 @@ hooks:
         my $color;
         my $name = "$t";
         my $fs;
+        my $font;
         if (my $ref = ref $t) {
-            if ($name =~ /HASH/) {
+            if ($name =~ /HASH/) { #c t s
                 $color = "f66";
                 $name = "{";
                 if ($ref eq "HASH") {
@@ -216,7 +218,7 @@ hooks:
                 $s->{style}.="border-left:40px groove #$1;"
                     if $t->{id} && $t->{id} =~ m/^\w+-\w{5}(\w{3})/;
             }
-            if ($ref eq "ARRAY") {
+            if ($ref eq "ARRAY") { #c t s
                 $color = "090";
                 $name = "[".$inc->('black',0+@$t)."]"; 
                 my $fromG = $line->{i}->{L}->{t};
@@ -229,7 +231,7 @@ hooks:
                     }
                 }
             }
-            if ($ref eq "Way") { 
+            if ($ref eq "Way") {  #c t s
                 $name = w $t print;
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
@@ -240,7 +242,7 @@ hooks:
                 }
                 $name = $emb->('ϖ').$name;
             }
-            if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) {
+            if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
                 my $ty = $1;
                 my ($nb, $nl);
                 if ($ty eq "T") {
@@ -267,18 +269,24 @@ hooks:
                 .(@{$line->{o}} ?"#89F":"#0F3694 ")  .";";
             $s->{style} .= "font-weight: 900;";
         }
-        else {
+        else { #c t string string string
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
                 $s->{style}.="border-left:18px groove #$1;";
             }
             $color = "999";
             $s->{style} .= "font-weight: 500;";
-            if (length($t) > 100) {
+            if (length($t) > 70) {
                  $s->{value} = substr($t, 0, 100)."...";
+            }
+            my $parent = $line->{i}->{L}->{t};
+            if ($parent && ref $parent eq "Way") {
+                $font = "font-family:mono;";
+                $fs = 9;
+                $color = "47B247";
             }
             
         }
-        $s->{value} = $name;
+        $s->{value} = $name; #c t
         my $l = length($name);
         $fs ||= 17 if $l > 10;
         $fs ||= 10 if $l > 20;
@@ -291,8 +299,9 @@ hooks:
         $s->{style}.="color:#$color;";
         $s->{style}.="color:#$color;";
         $s->{style}.="background: #330; ";
-         
-        $s->{style} .= "font-family:serif;" if !ref $t;
+        
+        $font ||= "font-family:serif;";
+        $s->{style} .= $font if !ref $t;
         $s->{_event} = w line/event;
         $s->{class}.= " splatt ";
     d:
