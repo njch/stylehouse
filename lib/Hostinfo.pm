@@ -723,7 +723,7 @@ sub watch_git_diff {
     my $d = {};
     my $f;
     for (@diff) {
-        if (/^diff --git a\/(.+) b\/.+/) {
+        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
             $f = $1;
         }
         else {
