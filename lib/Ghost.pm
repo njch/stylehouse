@@ -108,13 +108,18 @@ sub Gf {
     my $self = shift;    
     my $way = shift;
 
-    # TODO
+    # TODO self or $S etc
     my @Gs =
         grep { $_->{way} =~ /$way/ } @{ $self->{GG} };
     
     #die "Gf = ".scalar(@Gs)." $self->{name}   $way " if @Gs != 1;
     
     shift @Gs;
+}
+sub Gc { # TODO merge into ^ 
+    my $self = shift;
+    my $way = shift;
+    $H->TT($self)->G($way);
 }
 sub W {
     my $self = shift;
