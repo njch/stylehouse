@@ -3,6 +3,8 @@ hooks:
   fresh_init: |
     G TT ->G("T/splat");
     G TT ->G("T/crawl");
+    G TT ->G("Ϡ");
+    
     
     G TT ->G("L/follow");
     G TT ->G("L/ob");
@@ -35,13 +37,15 @@ hooks:
     ["".localtime, $H->data->{Ghost},$H->data->{Wormhole}, $G]
   getstarted: |
     $G->unrush('getstarted') || return;
-    
-    $H->Say("ẞ");
-    
+    Say "ẞ";
     w somewhere(thing => w default_somewhere);
   somewhere: |
     my $thing = $ar->{thing};
-    $thing ||= $ar->{nothing};
+    if ($ar->{nothing}) {
+        Say "nothing...";
+        G Ϡ Tw arr($ar);
+        return;
+    }
     my $wormhole = $ar->{wormhole};
     
     w splat_splatW;
