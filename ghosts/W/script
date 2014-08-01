@@ -10,7 +10,8 @@ tractors:
 hooks:
   arr: |
     my $W = $thing;
-    Arr[$W];
+    my $S = Arr[$W];
+    
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}
@@ -49,15 +50,8 @@ hooks:
         $c->display();
     }
   
-  Splat: |
-    my ($splatname, $wormhole) = %$ar;
-    $wormhole = w aWstract[$wormhole];
-    my $A = Arr[$splatname, $wormhole];
-    w script_out[$A, $splatname, $wormhole];
-  aWstract: |
-    $wormhole ne $G->W
-        ? $wormhole
-        : { script => [@{$wormhole->{script}}] }
+
+
   script_out: |
     my $lines = [];
     my $i = 0;
