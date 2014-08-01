@@ -31,6 +31,7 @@ sub new {
     $H->timer(0.05, sub {
         $self->stup();
     });
+    $self->{name}="ʝ";
 
     return $self;
 }

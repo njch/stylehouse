@@ -2,26 +2,15 @@ name: wormhole splatter
 tractors:
   - K: 'W/script'
     arr_if: |
-      
-      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
+      $W && ref $W eq "Wormhole";
     B_: |
-      $splatname
-    first_time: |
-      my $style = "padding: 1em;position:absolute;overflow:hidden;";
-      if ($splatname eq "wing") {
-          $style .= "bottom:0px;right:10%;border:5px solid green;width:17em;z-index:20;"
-      }
-      if ($splatname eq "splatW") {
-          $style .= "bottom:0px;right:30%;border:5px solid green;width:28em;z-index:20;"
-      }
-      $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
-      
-    nonfirst_times: |
-      $S->{view}->fadehtml();
+      1
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
-
+  arr: |
+    my $W = $thing;
+    Arr[$W];
   go: |
     Info "\n splat go:   ".join "  ", %$ar;
     exists $ar->{line}

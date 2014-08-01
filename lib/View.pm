@@ -21,6 +21,7 @@ sub new {
     shift->($self);
     my $this = $self->{owner} = shift;
     my $divid = $self->{divid} = shift;
+    $self->{name} = "#$divid";
     my $style = shift;
     my $attach = shift;
     my $where = shift;

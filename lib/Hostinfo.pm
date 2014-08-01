@@ -19,12 +19,13 @@ use utf8;
 use Encode qw(encode_utf8 decode_utf8);
 use YAML::Syck;
 use JSON::XS;
-
+sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
 our $data = {};
 sub new {
     my $self = bless {}, shift;
     #$self->set('0', $self);
     $self->{for_all} = [];
+    $self->{name} = 'Њ';
     
     $Lyrico::H = $self;
     $Ghost::H = $self;
