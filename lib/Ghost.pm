@@ -301,7 +301,7 @@ sub w {
             @ways = $Sway;
         }
         my $b = {};
-        %$b = %{$Sway->{B}} if $Sway->{B};
+        %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
         $ar = {%$ar, S => $Sway, %$b};
     }
     else {
@@ -436,7 +436,7 @@ sub parse_babble {
     
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
+    $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
     $eval =~ s/Gf (\S+)/\$G->Gf('$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;

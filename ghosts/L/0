@@ -46,7 +46,10 @@ hooks:
         Gf Ϡ Tw arr(%$ar);
         return;
     }
-    my $wormhole = $ar->{wormhole};
+    if ($ar->{wormhole}) {
+        w wormholify;
+        return;
+    }
     
     w splat_splatW;
     
@@ -58,33 +61,21 @@ hooks:
     start_timer();
     
     
-    if ($wormhole) {
-        $G->{some_W} = $wormhole;
-    }
-    else {
-        $Cr->RW;
-        
-        my $u;
-        if (ref $thing eq "HASH" && $thing->{antf}) {
-            #$u = $Cr->crank(max_depth => 4);
-        }
-            
-        $G->w("R", {for => G(crawl)}, G(ob));
-        
-        $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
-        
-        $u->() if $u;
-        $wormhole = $G->{some_W} = $Cr->W;
-    }
+    $Cr->RW;
+
+    $Cr->T($thing, undef, $G->nw()->from({print=>'"L0sw "',F => [@F]}));
+    
+    my $wormhole = $G->{some_W} = $Cr->W;
     my $crawltime = show_delta();
 
     w splat_wormholes;
     
-    Say "W $wormhole->{n}x".scalar(@{$wormhole->{script}})." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "ẞ W $wormhole->{n}x".scalar(@{$wormhole->{script}})." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
     G splat Tw Splat(somewhere => $G->{some_W});
-    G splat Tw Splat(ob   => G(ob)->W   );
+  wormholify: |
+    G splat Tw Splat(worm => $wormhole);
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
     #timer 2.5 { w splat_splatW };

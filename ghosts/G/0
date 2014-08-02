@@ -2,10 +2,10 @@
 name: Ghost
 hooks:
   _load_ways_post: |
-      
     $S->w("load_ways_post");
     my $lwc = $S->{load_ways_count};
     say "LWC $lwc";
+    $S->w("any_init");
     $lwc == 1 ?
         w _fresh_init(%$ar)
       : w _recoded_init(%$ar)

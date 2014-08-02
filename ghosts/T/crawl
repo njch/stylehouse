@@ -8,7 +8,15 @@ chains:
      next_thing: $thing->{$each}
    print: |
         $S->{each}
- 
+
+ - K: 'G->GG'
+   arr_if: |
+     ref $thing eq 'Ghost'
+   foreach_travel:
+     each: @{$thing->{GG}}
+     next_thing: $each;
+   print: |
+        "GG"
  
  - K: 'HASHish'
    arr_if: |
@@ -26,6 +34,7 @@ chains:
                push @k, "way";
                delete $k{way};
            }
+           delete $k{$_} for qw"depth";
        }
        push @k, sort keys %k;
        return @k;
