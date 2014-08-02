@@ -260,7 +260,7 @@ sub re_openness {
     my $self = shift;
 
     my $codopenyl = "Codo-openness.yml";
-    my $open = LoadFile($codopenyl) if -e $codopenyl;
+    my $open = Load(Hostinfo::decode_utf8(scalar `cat $codopenyl`)) if -e $codopenyl;
     for my $o (@$open) {
         my ($name, $ope) = @$o;
         while (my ($k, $v) = each %$ope) {
