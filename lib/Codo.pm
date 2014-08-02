@@ -45,7 +45,7 @@ sub new {
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
-    my $codoback = "rgba(100,78,200,0.35)"; #"001452"
+    my $codoback = "rgba(33,40,100,0.35)"; #"001452"
     $codoback = "rgba(100,78,200,0.85)" if $ss eq "shed";
     
     my $Codo =
