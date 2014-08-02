@@ -193,7 +193,7 @@ hooks:
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
-        my $emb = sub { $inc->("rgba(255,200,200,0.4);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
+        my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
         my $color;
         my $name = "$t";
         my $fs;
@@ -271,9 +271,9 @@ hooks:
                 $nb = join "ᣪ", map {
                     length($_) < 3
                     ? $inc->('#CCFF33;font-size:23pt', $_)
-                    : /^\((.+)\)$/
-                    ? $inc->('#66d;font-size:14pt', $1)
-                    : /^(#.+)$/
+                    : /^\((.+)\)$/ # O G way
+                    ? $inc->('#700;font-size:14pt', $1)
+                    : /^(#.+)$/ #divid
                     ? $inc->('#af1;font-size:14pt', $1)
                     : $inc->('#111;font-size:10pt', $_) } split '`s ', $nb;
                 if ($W && @{$W->{script}} > 0) {
@@ -291,7 +291,7 @@ hooks:
             }
             
             $s->{style} .= "text-shadow:2px 3px 3px "
-                .(@{$line->{o}} ?"#89F":"#0F3694 ")  .";";
+                .(@{$line->{o}} ?"#89F":"rgba(255,244,100,0.4)")  .";";
             $s->{style} .= "font-weight: 900;";
         }
         else { #c t string string string
