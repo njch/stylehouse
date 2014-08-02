@@ -15,10 +15,9 @@ hooks:
     $O->w('somewhere', { thing => $thing } );
   arr: |
     my $name = $ar->{name};
-    die "$name $thing";
     my $S = Arr[$thing, $name];
   narr: |
-    my ($name, $thing) = %$ar;
+    my ($name, $thing) = !$ar->{name} ? %$ar : ($ar->{name}, $ar->{thing});
     w arr[$thing, $name];
     # etc;
     
