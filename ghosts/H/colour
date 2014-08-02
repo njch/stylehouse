@@ -1,0 +1,31 @@
+
+name: H colour
+tractors:
+  - K: 'H/colour'
+    arr_if: |
+      $name || die;
+    B_: |
+      $name
+    print: |
+      $S->{K} .": ". $S->{B}->{_}
+    first_time: |
+      $S->{B}->{personalities} ||= [
+          sub { int rand 123 },
+          sub { int rand 255 },
+          sub { 100 + int rand 155 },
+          sub { int rand 88 },
+      ];
+    randomcolour: |
+      if ($ar->{e} && $ar->{e}->{C}) {
+          push @$personalities, shift @$personalities;
+      }
+      my ($as) = @$personalities;
+      my ($rgb) = join", ", map {$as->()} 1 .. 3;
+      return $S->{B}->{colour} = "rgb($rgb)";
+hooks:
+  have: |
+    my $S = Arr($ar);
+  randomcolour: |
+    my $S = Afind($ar);
+    return w $S randomcolour($ar);
+
