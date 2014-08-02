@@ -301,7 +301,7 @@ sub w {
             @ways = $Sway;
         }
         my $b = {};
-        %$b = %{$Sway->{B}} if $Sway->{B};
+        %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
         $ar = {%$ar, S => $Sway, %$b};
     }
     else {
