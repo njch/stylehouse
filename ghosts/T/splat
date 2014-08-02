@@ -248,17 +248,21 @@ hooks:
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
                 my $ty = $1;
                 my ($nb, $nl);
+                my $W;
                 if ($ty eq "T") {
                     $name = "$t->{G}->{way}";
                     $color = "8c6";
+                    $W = $t->{W};
                 }
                 if ($ty eq "W") {
                     $name = $t->{G}->{name};
                     $color = "4c6";
+                    $W = $t;
                 }
                 if ($ty eq "G") {
                     $name = $t->{name};
                     $color = "4c6";
+                    $W = $t->{T}->{W};
                 }
                 ($nb,$nl) = $name =~ /^(.+)\(([^\)]+)\)$/;
                 $nl ||= $name;
@@ -269,11 +273,22 @@ hooks:
                     length($_) < 3
                     ? $inc->('#CCFF33;font-size:33pt', $_)
                     : /^\((.+)\)$/
-                    ? $inc->('#11a;font-size:14pt', $1)
+                    ? $inc->('#66d;font-size:14pt', $1)
                     : /^(#.+)$/
                     ? $inc->('#af1;font-size:14pt', $1)
                     : $inc->('#111;font-size:10pt', $_) } split '`s ', $nb;
-                $name = $emb->($ty).$inc->('#111;font-size:8pt', $nb).$nl;
+                if ($W && @{$W->{script}} > 0) {
+                    # totals
+                    $W = "$W->{n}x".scalar(@{$W->{script}})." ";
+                    $W = "" if $W eq "W x0 ";
+                    if ($W) {
+                        $W = $inc->("rgba(255,255,255,0.8);font-size:10pt;position:absolute;left:-3em;bottom:3px;", $W)
+                    }
+                }
+                else {
+                    $W = "";
+                }
+                $name = $W.$emb->($ty).$inc->('#111;font-size:8pt', $nb).$nl;
             }
             
             $s->{style} .= "text-shadow:2px 3px 3px "
