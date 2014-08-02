@@ -20,8 +20,14 @@ hooks:
   set_follow: |
     G follow ->RW;
     
+    # breaks down to name, thing, code
+    # sends thing from code if code
+    # must specify code here to follow tho...
+    
     my $dfs = w default_somewhere;
-    G follow T $dfs;
+    G follow Tw narr(d_Ghosts => $dfs);
+    my $djdj =  sub { [ grep { $_->{name} =~ /Ϡ/ } @{ $H->data->{Ghost} } ] };
+    G follow Tw narr(name => 'Ϡ Ghosts', thing => $djdj);
     G follow T G ob;
     my $flabb = sub {
         w somewhere(thing => [@Flab]);
