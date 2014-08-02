@@ -175,7 +175,6 @@ hooks:
         nospace => 1,
         event => { menu => $menu },
         class => "menu insplatm",
-        style => "font-size:25pt;",
         }]
         }
       s: |
@@ -194,7 +193,7 @@ hooks:
         my $t = $line->{t};
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
-        my $emb = sub { $inc->("rgba(255,200,200,0.4);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
+        my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
         my $color;
         my $name = "$t";
         my $fs;
@@ -269,12 +268,12 @@ hooks:
                 $s->{style}.="border-left:40px groove #$1;"
                     if $nb =~ m/^\w+-\w{5}(\w{3})/;
                 $s->{html} = 2;
-                $nb = join "`", map {
+                $nb = join "ᣪ", map {
                     length($_) < 3
-                    ? $inc->('#CCFF33;font-size:33pt', $_)
-                    : /^\((.+)\)$/
-                    ? $inc->('#66d;font-size:14pt', $1)
-                    : /^(#.+)$/
+                    ? $inc->('#CCFF33;font-size:23pt', $_)
+                    : /^\((.+)\)$/ # O G way
+                    ? $inc->('#700;font-size:14pt', $1)
+                    : /^(#.+)$/ #divid
                     ? $inc->('#af1;font-size:14pt', $1)
                     : $inc->('#111;font-size:10pt', $_) } split '`s ', $nb;
                 if ($W && @{$W->{script}} > 0) {
@@ -292,7 +291,7 @@ hooks:
             }
             
             $s->{style} .= "text-shadow:2px 3px 3px "
-                .(@{$line->{o}} ?"#89F":"#0F3694 ")  .";";
+                .(@{$line->{o}} ?"#89F":"rgba(255,244,100,0.4)")  .";";
             $s->{style} .= "font-weight: 900;";
         }
         else { #c t string string string
