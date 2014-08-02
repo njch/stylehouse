@@ -8,14 +8,18 @@ tractors:
       $ar->{name} if $ar->{name};
       $thing
     print: |
-      $S->{B}->{_};
+      $B->{name} || $B->{thing};
 hooks:
   recoded_init: |
     my $thing = G(tractor)->w('random');
     $O->w('somewhere', { thing => $thing } );
   arr: |
-    my $S = Arr[$thing];
-
+    my $name = $ar->{name};
+    die "$name $thing";
+    my $S = Arr[$thing, $name];
+  narr: |
+    my ($name, $thing) = %$ar;
+    w arr[$thing, $name];
     # etc;
     
 
