@@ -5,20 +5,16 @@ tractors:
     arr_if: |
       1
     B_: |
-      $ar->{name} if $ar->{name};
-      $thing
+      $ar->{name} || $ar->{code} || $thing
     print: |
       $B->{name} || $B->{thing};
+    to_travel_this: |
+      $B->{code} ? $B->{code}->() : $B->{thing};
 hooks:
   recoded_init: |
     my $thing = G(tractor)->w('random');
     $O->w('somewhere', { thing => $thing } );
   arr: |
-    my $name = $ar->{name};
-    my $S = Arr[$thing, $name];
-  narr: |
-    my ($name, $thing) = !$ar->{name} ? %$ar : ($ar->{name}, $ar->{thing});
-    w arr[$thing, $name];
-    # etc;
-    
+    my ($name, $thing, $code) = ($ar->{name}, $ar->{thing}, $ar->{code});
+    my $S = Arr[$thing, $name, $code];
 

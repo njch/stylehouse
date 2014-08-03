@@ -26,6 +26,15 @@ hooks:
     
     $H->{underworld} = 0;
     # where we pay attention
+  data:
+    get_apps: |
+      my $apps = {};
+      my $d = $O->data;
+      for (keys %$d) {
+          next unless /^[A-Z]\w+$/;
+          $apps->{$_} = $d->{$_};
+      }
+      return $apps;
   throwlog: |
     G mess Tw throwlog(%$ar);
   splatmenues: |
