@@ -6,6 +6,7 @@ use JSON::XS;
 use YAML::Syck;
 use HTML::Entities;
 use Way;
+use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 
