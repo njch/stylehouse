@@ -16,27 +16,28 @@ hooks:
     
     timer 1 { w set_follow };
   any_child_recoded_init: |
+    w set_follow;
     w splat_wormholes;
   set_follow: |
     G follow ->RW;
     
-    # breaks down to name, thing, code
-    # sends thing from code if code
-    # must specify code here to follow tho...
-    
-    my $dfs = w default_somewhere;
-    G follow Tw narr(d_Ghosts => $dfs);
-    my $djdj =  sub { [ grep { $_->{name} =~ /Ϡ/ } @{ $H->data->{Ghost} } ] };
-    G follow Tw narr(name => 'Ϡ Ghosts', thing => $djdj);
-    G follow T G ob;
-    my $flabb = sub {
-        w somewhere(thing => [@Flab]);
-    };
-    G follow T $flabb;
-    G follow T $H;
-    G follow T $O;
-    G follow T G(follow)->W;
-    G follow T \@F;
+    my $fols = [
+        [ "d_Ghosts",            w default_somewhere ],
+        [ 'Ϡ Ghosts',         undef,
+          sub { [ grep { $_->{name} =~ /Ϡ/ } @{ $H->data->{Ghost} } ] } ],
+        [ "G ob",             G ob ],
+        [ "\@Flab",            undef,
+          sub { w somewhere(thing => [@Flab]) } ],
+        [ "\@F", undef,
+          sub { w somewhere(thing => [@F]) } ],
+        [ undef, $H ],
+        [ undef, $O ],
+        [ undef, G(follow)->W ],
+        [ "COLS", undef, sub { rand(255) } ],
+    ];
+    for my $fol (@$fols) {
+        G follow Tw arr(name => $fol->[0], thing => $fol->[1], code => $fol->[2]);
+    }
     
     G splat Tw Splat(wing => G(follow)->W);
   default_somewhere: |
