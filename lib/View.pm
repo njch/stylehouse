@@ -231,7 +231,7 @@ sub wipehtml {
 }
 sub fadehtml {
     my $self = shift;
-    $self->hostinfo->send("\$('#$self->{divid} > *').slideUp(500, function () { \$(this).remove(); });") if $self->html;
+    $self->hostinfo->send("\$('#$self->{divid} > *').remove();") if $self->html;
     $self->{html} = "";
     # $self->fit_div(); TODO how to?
     1;
