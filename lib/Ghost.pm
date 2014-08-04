@@ -28,24 +28,36 @@ sub gname {
     $ish;
 }
 sub Flab {
-    my $self = shift;
-    ref $self eq "Ghost" || die "send Ghost";
-    say $_[0] if $self->{db};
-    $self->ob(@_);
-    push @Flab, $H->enlogform(@_);
+    my $G = shift;
+    ref $G eq "Ghost" || die "send Ghost";
+    say $_[0] if $G->{db};
+    $G->ob(@_);
+    push @Flab, $G->stackway(@_);
 }
 sub waystacken {
-    my $self = shift;
-    my $junk = $H->enlogform(@_);
-    $self->ob("to",$junk);
+    my $G = shift;
+    my $junk = $G->stackway(@_);
+    $G->ob("to",$junk);
     push @F, $junk;
     return sub {
         my $o = pop @F;
-        $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
-        $self->ob("back", $junk, [@Flab]);
+        $o eq $junk || die "stack bats:\n".wdump([$o, \@F]);
+        $G->ob("wback", $junk);
         
         @Flab = ();
     }
+}
+sub stackway {
+    my $G = shift;
+    my $w = $G->nw;
+    $w->from({
+        hitime => $H->hitime(),
+        stack => $H->stack(0),
+        Flab => [@Flab],
+        F => [@F],
+        thing => [@_],
+    });
+    $w;
 }
 sub ob {
     my $self = shift;
