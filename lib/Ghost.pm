@@ -56,22 +56,19 @@ sub stackway {
         stack => $H->stack(0),
         Flab => [@Flab],
         F => [@F],
+        depth => 0+@F,
         thing => [@_],
         print => 'join "  ", @{$S->{thing}}',
     });
     $w;
 }
 sub ob {
-    my $self = shift;
-    return unless $self->{_ob};
+    my $G = shift;
+    return unless $G->{_ob};
     
-    my $ob = $H->enlogform(@_); # describes stack, etc
-    push @$ob, [@Ghost::F], pop $ob;
-# we want to catch runaway recursion from here
-    $self->{_ob}->T($ob)
-# the wormhole for self
-# so G can make higher frequency W inside a singular T
-# self awareness
+    $G->{_ob}->T(
+        $G->stackway
+    )
 }
 sub ki {
     my $ar = shift;
@@ -331,10 +328,9 @@ sub w {
         if (ref $Sway eq 'Ghost') {
             @ways = $Sway->ways;
             $talk .= " G";
-            $G->ob($talk, $Sway);
         }
         elsif (ref $Sway eq 'Way') {
-            @ways = $Sway;
+            @ways = $Sway; #---------------------
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
@@ -348,7 +344,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken("Z", $G, "$talk", $h, $w);
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, $h);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
@@ -403,7 +399,7 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(DOO => $G, $point, $ar, $Sway, $w);
+    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w, $evs, $babble );
     
     eval $evs;
     
