@@ -194,6 +194,11 @@ hooks:
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
         my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
+        my $contrail = sub {
+            my $curve = shift;
+            my $S = shift;
+            $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>'
+        };
         my $color;
         my $name = "$t";
         my $fs;
@@ -239,7 +244,7 @@ hooks:
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
                 }
-                $name = substr($name, 0, 30) if length($name) > 40;
+                $name = substr($name, 0, 100)."..." if length($name) > 120;
                 $fs = 14 if length($name) > 20;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
