@@ -927,7 +927,8 @@ sub enlogform {
 }
 sub stack {
     my $self = shift;
-    my $b = shift || 1;
+    my $b = shift;
+    $b = 1 unless defined $b;
     
     my @from;
     while (my $f = join " ", (caller($b))[0,3,2]) {

@@ -40,7 +40,7 @@ sub Flab {
 sub waystacken {
     my $G = shift;
     my $junk = $G->stackway(@_);
-    $G->ob("to",$junk);
+    $G->ob("to", $junk);
     push @F, $junk;
     return sub {
         my $o = pop @F;
@@ -53,11 +53,12 @@ sub waystacken {
 sub stackway {
     my $G = shift;
     my $w = $G->nw;
+    my $stack = $H->stack(1);
     $w->from({
         K => "Way stackening",
         G => $G,
         hitime => $H->hitime(),
-        stack => $H->stack(0),
+        stack => $stack,
         Flab => [@Flab],
         F => [@F],
         depth => 0+@F,
@@ -317,12 +318,7 @@ sub w {
     my $G = shift;
     my $point = shift;
     my $ar = shift;
-    my $Sway = shift; # so we can get into chains/tractors
-    # these might want to be a wormhole that travel mixes in
-    # things gather along the spines
-    # and be the big thing to do or a little thing to do
-    # these stuff go together like that, hopefully, with language forming their surface tension
-    # jelly pyramids...
+    my $Sway = shift;
     my @ways;
     
     my $talk = "w $point";
@@ -335,6 +331,9 @@ sub w {
         }
         elsif (ref $Sway eq 'Way') {
             @ways = $Sway; #---------------------
+        }
+        elsif (ref $Sway eq 'ARRAY') {
+            @ways = @$Sway;
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
@@ -515,7 +514,7 @@ sub parse_babble {
             ." in\n".ind("E ", $eval);
     }
      
-    while ($eval =~ /(?<!T)(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
+    while ($eval =~ /(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
