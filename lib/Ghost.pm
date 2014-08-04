@@ -32,8 +32,8 @@ sub ghostlyprinty {
         ref $_ ? 
             ref $_ eq "Ghost" ?
             '<t style="color:#8f9;">'.gname($_).'</t>'
-            : 
-            '<t style="color:#233;">'.gname($_).'</t>'
+            : ""
+            #'<t style="color:#999;">'.gname($_).'</t>'
             
         : $_ } @_
 }
@@ -64,8 +64,8 @@ sub stackway {
     my $w = $G->nw;
     my $stack = $H->stack(2);
     my ($from) = $stack->[0] =~ / (\S+::\S+) /;
-    $from =~ s/.*Ghost::(Flab|w(?:ay)stack)?.*/$1/;
-    $from ||= "Waystack";
+    $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+    $from ||= "stackway from $stack->[0]";
     
     $w->from({
         K => "$from",
