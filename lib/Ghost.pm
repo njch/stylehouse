@@ -28,14 +28,23 @@ sub gname {
     $ish;
 }
 sub ghostlyprinty {
-    join "  ", map { ref $_ && gname($_) || $_ } @_
+    join "  ", map {
+        ref $_ ? 
+            ref $_ eq "Ghost" ?
+            '<t style="color:#8f9;">'.gname($_).'</t>'
+            : 
+            '<t style="color:#233;">'.gname($_).'</t>'
+            
+        : $_ } @_
 }
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
     say $_[0] if $G->{db};
     $G->ob(@_);
-    push @Flab, $G->stackway(@_);
+    my $s = $G->stackway(@_);
+    push @Flab, $s;
+    $s->{Flab} = [@Flab],
 }
 sub waystacken {
     my $G = shift;
@@ -53,9 +62,13 @@ sub waystacken {
 sub stackway {
     my $G = shift;
     my $w = $G->nw;
-    my $stack = $H->stack(1);
+    my $stack = $H->stack(2);
+    my ($from) = $stack->[0] =~ / (\S+::\S+) /;
+    $from =~ s/.*Ghost::(Flab|w(?:ay)stack)?.*/$1/;
+    $from ||= "Waystack";
+    
     $w->from({
-        K => "Way stackening",
+        K => "$from",
         G => $G,
         hitime => $H->hitime(),
         stack => $stack,
@@ -63,7 +76,7 @@ sub stackway {
         F => [@F],
         depth => 0+@F,
         thing => [@_],
-        print => 'ghostlyprinty(@{$S->{thing}})',
+        print => '$S->{K}." ".ghostlyprinty(@{$S->{thing}})',
     });
     $w;
 }
@@ -347,7 +360,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, $h);
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
@@ -402,7 +415,8 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w, $evs, $babble );
+        my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
+        bless {evs=>$evs, babble=>$babble}, 'h');
     
     eval $evs;
     
