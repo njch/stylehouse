@@ -51,6 +51,7 @@ sub stackway {
     my $G = shift;
     my $w = $G->nw;
     $w->from({
+        K => "Way stackening",
         hitime => $H->hitime(),
         stack => $H->stack(0),
         Flab => [@Flab],
