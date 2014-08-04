@@ -202,39 +202,11 @@ websocket '/stylehouse' => sub {
 $self->on(message => sub {
         my ($self, $msg) = @_;
 
-        $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
-        
-        return if $hostinfo->ignorable_mess($msg);
-        
-        
-        my $j;
-        eval { $j = $hostinfo->decode_message($msg); };
-        if ($@) {
-            $hostinfo->error("message decode fup", $@);
-            return;
-        }
-        
-        
-        
-        
-        # all this stuff before they join the stream
-        my $done = 0;
-        if ($self->stash('handy')) {
-            $self->stash('handy')->($self, $j);
-            say "Handi";
-            return if $self->stash('handy');
-            $done = 1;
-        }
-
-
-        # it beings! not that we don't come through here all the time
-        $hostinfo->{G}->w('elvinit') if $hostinfo->{underworld};
-        
-        eval { dostuff($self, $j, $msg); };
-        if ($@) {
-            $hostinfo->error("message process fup", $@);
-            return;
-        }
+        $H->{G}->w('on_message', {
+            mojo => $self,
+            msg => $msg,
+            elvis => $elvis,
+        });
         #$hostinfo->elvis_leaves($self);
     });
 
@@ -245,15 +217,7 @@ $self->on(message => sub {
     });
 
 };
-sub dostuff {
-    my ($self, $j, $msg) = @_;
-    
-    $H->{G}->w('dostuff', {
-        mojo => $self,
-        j => $j,
-        msg => $msg,
-    });
-}
+
 
 say " Listen @$listen!?";
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => $listen);

@@ -26,6 +26,36 @@ hooks:
     
     $H->{underworld} = 0;
     # where we pay attention
+  on_message: |
+    
+        $H->elvis_enters($elvis, $mojo, $msg); # this'll all be way soon
+        
+        return if $H->ignorable_mess($msg);
+        
+        
+        my $j;
+        eval { $j = $H->decode_message($msg); };
+        if ($@) {
+            $H->error("message decode fup", $@);
+            return;
+        }
+        
+        
+        # all this stuff before they join the stream
+        if ($mojo->stash('handy')) {
+            $mojo->stash('handy')->($mojo, $j);
+            $mojo->stash('handy') && return;
+        }
+
+
+        # it beings! not that we don't come through here all the time
+        $H->{G}->w('elvinit') if $H->{underworld};
+        
+        eval { w dostuff[$mojo, $j, $msg]; };
+        if ($@) {
+            $H->error("message process fup", $@);
+            return;
+        }
   dostuff: |
     # ongoing stuff
     if ($j->{claw} && $H->claw($j)) {
