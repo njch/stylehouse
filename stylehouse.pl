@@ -90,7 +90,7 @@ say "! enlistening $name $$ @$listen
 
 ";
 
-my $hostinfo = new Hostinfo();
+my $H = my $hostinfo = new Hostinfo();
 $hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
 $hostinfo->set('sstyle', $style); # eventually to pick up a wormhole and etc.
 $hostinfo->set('stylelist', $stylelist);
@@ -204,8 +204,7 @@ $self->on(message => sub {
 
         $hostinfo->elvis_enters($elvis, $self, $msg); # this'll all be way soon
         
-        return say "\n\nIGNORING Message: $msg\n\n\n\n"
-            if $hostinfo->ignorable_mess($msg);
+        return if $hostinfo->ignorable_mess($msg);
         
         
         my $j;
@@ -248,67 +247,12 @@ $self->on(message => sub {
 };
 sub dostuff {
     my ($self, $j, $msg) = @_;
-    # ongoing stuff
-    if ($j->{claw} && $hostinfo->claw($j)) {
-        # done
-    }
-    elsif (my $k = $j->{k}) {
-        my $keys = $hostinfo->getapp("Keys");
-        $keys->key($k) if $keys;
-    }
-    elsif ($j->{e}) {
-        die $j->{d} if $hostinfo->{JErrors}++ > 3;
-        $hostinfo->error("javascript error from client", $j->{d}, $j->{e});
-    }
-    elsif (my $s = $j->{s}) {
-        # the viewport of the browser moves..
-        #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
-        # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
-        # then bringing things back together is the key.... substance... legible shrines to anythings...
-        my $lye = $hostinfo->getapp("Lyrico");
-        $lye->scroll($s) if $lye;
-    }
-    elsif (my $event = $j->{event}) {
-        $self->app->log->info("Looking up event handler");
-        my $id = $event->{id};
-
-        if ($id =~ /^hi_|procstartwatch/) {
-            $hostinfo->send("\$('#$id').toggleClass('widdle');");
-        }
-        elsif ($id =~ /_out$/) {
-            $hostinfo->send("\$('#$id').toggleClass('widel');");
-        }
-
-        my $thing = $hostinfo->tv_by_id($event->{id}) if $id;
-
-        start_timer();
-
-        if ($thing) {
-            $self->app->log->info("TV  $thing->{id}");
-            $thing->event($event);
-        }
-        else {
-            my $s = "TV not found".( $id ? ": $id" : ", lacking id");
-            $self->app->log->info("$s");
-
-            if (my $catcher = $self->hostinfo->get('clickcatcher')) {
-                $self->app->log->info("Event catcher found: $catcher");
-                $catcher->event($event);
-            }
-            else {
-                $self->app->log->info("NOTHING");
-                $self->send(
-                    "\$('#body').addClass('dead').delay(250).removeClass('dead');"
-                );
-            }
-        }
-        say "event handled in ".show_delta()."\n\n";
-    }
-    else {
-        my $undorf = !defined $msg ? " is~undef~" : "";
-        $hostinfo->error("EH!? '$msg'$undorf");
-    }
-    say "Done\n\n\n\n\n";
+    
+    $H->{G}->w('dostuff', {
+        mojo => $self,
+        j => $j,
+        msg => $msg,
+    });
 }
 
 say " Listen @$listen!?";
