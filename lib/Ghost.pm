@@ -49,7 +49,15 @@ sub waystacken {
 }
 sub ob {
     my $self = shift;
-    $self->{T}->ob(@_);
+    return unless $self->{_ob};
+    
+    my $ob = $H->enlogform(@_); # describes stack, etc
+    push @$ob, [@Ghost::F], pop $ob;
+# we want to catch runaway recursion from here
+    $self->{_ob}->T($ob)
+# the wormhole for self
+# so G can make higher frequency W inside a singular T
+# self awareness
 }
 sub ki {
     my $ar = shift;

@@ -26,17 +26,8 @@ sub W {
 }
 sub ob {
     my $self = shift;
-    return unless $self->{_ob};
-    
-    my $ob = $H->enlogform(@_); # describes stack, etc
-    push @$ob, [@Ghost::F], pop $ob;
-# we want to catch runaway recursion from here
-    $self->{_ob}->T($ob);
+    $self->{G}->ob(@_);
 }
-
-# the wormhole for self
-# so G can make higher frequency W inside a singular T
-# self awareness
 sub T {
     my $T = shift;
     my $t = shift;
