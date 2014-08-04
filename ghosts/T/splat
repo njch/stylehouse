@@ -47,7 +47,7 @@ hooks:
     my $A = Afind[$splatname];
     unless ($A) {
         #die "no such splatname: $splatname";
-        w go(thing => {antf=>[@F], undef_by => $splatname, z => {script=>$G->W->CS}} );
+        w go(thing => $G->stackway );
         return;
     }
     w script_out[$A, $wormhole, $splatname, $append];
@@ -158,7 +158,7 @@ hooks:
             push @$menu, $t->{G} Tw splatmenues;
         }
         
-        push @$menu, 'ᣋ' => sub { w go( splatname => $splatname, line => $line, append =>  "$_[1]->{id}:parent:parent:parent:parent") };
+        push @$menu, 'ᣋ' => sub { w go( splatname => $splatname, line => $line, append =>  "$_[1]->{id}") };
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
@@ -238,6 +238,8 @@ hooks:
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
                 }
+                $name = substr($name, 0, 100) if length($name) > 110;
+                $fs = 10 if length($name) > 20;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;

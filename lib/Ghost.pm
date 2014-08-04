@@ -56,6 +56,7 @@ sub stackway {
         Flab => [@Flab],
         F => [@F],
         thing => [@_],
+        print => 'join "  ", @{$S->{thing}}',
     });
     $w;
 }
