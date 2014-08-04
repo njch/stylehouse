@@ -20,26 +20,27 @@ hooks:
   set_follow: |
     G follow ->RW;
     
-    my $fols = [
-        [ "d_Ghosts",            w default_somewhere ],
-        [ 'Ϡ Ghosts',         undef,
-          sub { [ grep { $_->{name} =~ /Ϡ/ } @{ $H->data->{Ghost} } ] } ],
-        [ "G ob",             G ob ],
-        [ "\@Flab",     undef, sub { [@Flab] } ],
-        [ "\@F",        undef, sub { [@F] } ],
-        [ "H apps",     undef, sub { $H->{G}->w('data/get_apps') } ],
-        [ undef, $H ],
-        [ undef, $O ],
-        [ undef, G(follow)->W ],
-        [ "COLS", undef, sub { rand(255) } ],
-    ];
-    for my $fol (@$fols) {
-        G follow Tw arr(name => $fol->[0], thing => $fol->[1], code => $fol->[2]);
+    for (
+    
+    [ "d_Ghosts",  sub { $H->data->{Ghost} }                                     ],
+    [ 'Ϡ Ghosts',  sub { [ grep { $_->{name} =~ /Ϡ/ } @{$H->data->{Ghost}} ] }     ],
+    [ "G ob",      sub {  G ob }                                                 ],
+    [ "\@Flab",    sub { [@Flab] }                                                ],
+    [ "\@F",       sub { [@F] }                                                    ],
+    [ "H apps",    sub { $H->{G}->w('data/get_apps') }                            ],
+    [ '$H',sub {  $H } ],
+    [ '$O', sub { $O } ],
+    [ 'G'.'     follow',sub {  G(follow)->W } ],
+    [ "COLS", sub { rand(255) } ],
+    
+        ) {
+        my ($name, $code) = @$_;
+        G follow Tw arr[$name, $code];
     }
     
     G splat Tw Splat(wing => G(follow)->W);
   default_somewhere: |
-    [@F]#$H->data->{Ghost}
+    $F[-1]
   getstarted: |
     $G->unrush('getstarted') || return;
     Say "ẞ";
