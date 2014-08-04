@@ -27,6 +27,9 @@ sub gname {
     $ish =~ s/^(\w+)=HASH.*$/$1\{/;
     $ish;
 }
+sub ghostlyprinty {
+    join "  ", map { ref $_ && gname($_) || $_ } @_
+}
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
@@ -52,13 +55,14 @@ sub stackway {
     my $w = $G->nw;
     $w->from({
         K => "Way stackening",
+        G => $G,
         hitime => $H->hitime(),
         stack => $H->stack(0),
         Flab => [@Flab],
         F => [@F],
         depth => 0+@F,
         thing => [@_],
-        print => 'join "  ", @{$S->{thing}}',
+        print => 'ghostlyprinty(@{$S->{thing}})',
     });
     $w;
 }
@@ -67,7 +71,7 @@ sub ob {
     return unless $G->{_ob};
     
     $G->{_ob}->T(
-        $G->stackway
+        $G->stackway(@_)
     )
 }
 sub ki {
@@ -511,7 +515,7 @@ sub parse_babble {
             ." in\n".ind("E ", $eval);
     }
      
-    while ($eval =~ /(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
+    while ($eval =~ /(?<!T)(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
