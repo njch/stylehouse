@@ -1,6 +1,6 @@
 name: ghost data structure crawl
 chains:
- - K: 'HASH'
+ - K: 'HASH'#c
    arr_if: |
      ref $thing eq 'HASH'
    foreach_travel:
@@ -9,7 +9,7 @@ chains:
    print: |
         $S->{each}
 
- - K: 'G->GG'
+ - K: 'G->GG'#c
    arr_if: |
      ref $thing eq 'Ghost'
    foreach_travel:
@@ -17,8 +17,17 @@ chains:
      next_thing: $each;
    print: |
         "GG"
+        
+        
+ - K: 'Way stackening'#c
+   arr_if: |
+     ref $thing eq 'Way' && $thing->{K} eq "Way stackening";
+   foreach_travel:
+     each: $thing->{thing}->[0]
+     next_thing: $each;
  
- - K: 'HASHish'
+ 
+ - K: 'HASHish'#c
    arr_if: |
      ref $thing && "$thing" =~ /=HASH/
    foreach_travel:
@@ -42,7 +51,7 @@ chains:
    print: |
         $S->{each}
      
- - K: 'ARRAY'
+ - K: 'ARRAY'#c
    arr_if: ref $thing eq 'ARRAY'
    foreach_travel:
      each: @$thing

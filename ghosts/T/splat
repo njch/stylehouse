@@ -11,7 +11,7 @@ tractors:
           $style .= "bottom:0px;right:10%;border:1px solid green;width:17em;z-index:20;"
       }
       if ($splatname eq "splatW") {
-          $style .= "bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
+          $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
       }
       if ($splatname eq "worm") {
           $style .= "top:10em;left:40%;border:2px solid #88f;min-width:17em;z-index:20;";
@@ -31,7 +31,7 @@ hooks:
     # junction
     # so it's just over yonder in the chain
   go: |
-    Info "\n splat go:   ".join "  ", %$ar;
+    Info "GO   ".join "  ", %$ar;
     exists $ar->{line}
       ? $G->w('open_line', $ar)
       : $O->w('somewhere', $ar);
@@ -47,7 +47,7 @@ hooks:
     my $A = Afind[$splatname];
     unless ($A) {
         #die "no such splatname: $splatname";
-        w go(thing => {antf=>[@F], undef_by => $splatname, z => {script=>$G->W->CS}} );
+        w go(thing => $G->stackway );
         return;
     }
     w script_out[$A, $wormhole, $splatname, $append];
@@ -81,7 +81,7 @@ hooks:
     my $lines = [];
     my $i = 0;
     for my $line (@{$wormhole->{script}}) {
-        if($i++ > 400) {
+        if($i++ > 100) {
             push @$lines, "more...";
             last;
             
@@ -158,7 +158,7 @@ hooks:
             push @$menu, $t->{G} Tw splatmenues;
         }
         
-        push @$menu, 'ᣋ' => sub { w go( splatname => $splatname, line => $line, append =>  "$_[1]->{id}:parent:parent:parent:parent") };
+        push @$menu, 'ᣋ' => sub { w go( splatname => $splatname, line => $line, append =>  "$_[1]->{id}") };
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
@@ -222,7 +222,8 @@ hooks:
             }
             if ($ref eq "ARRAY") { #c t s
                 $color = "090";
-                $name = "[".$inc->('black',0+@$t)."]"; 
+                $name = 0+@$t.$inc->('black',"[").
+                    $inc->('#fca; font-size:10pt;line-height:10pt;',join "  ", @$t); 
                 my $parent = $line->{i}->{L}->{t};
                 if ($parent && ref $parent eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -238,6 +239,8 @@ hooks:
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
                 }
+                $name = substr($name, 0, 30) if length($name) > 40;
+                $fs = 14 if length($name) > 20;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;

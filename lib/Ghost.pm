@@ -28,11 +28,58 @@ sub gname {
     $ish;
 }
 sub Flab {
-    my $self = shift;
-    ref $self eq "Ghost" || die "send Ghost";
-    say $_[0] if $self->{db};
-    $self->ob(@_);
-    push @Flab, $H->enlogform(@_);
+    my $G = shift;
+    ref $G eq "Ghost" || die "send Ghost";
+    say $_[0] if $G->{db};
+    $G->ob(@_);
+    push @Flab, $G->stackway(@_);
+}
+sub waystacken {
+    my $G = shift;
+    my $junk = $G->stackway(@_);
+    $G->ob("to",$junk);
+    push @F, $junk;
+    return sub {
+        my $o = pop @F;
+        $o eq $junk || die "stack bats:\n".wdump([$o, \@F]);
+        $G->ob("wback", $junk);
+        
+        @Flab = ();
+    }
+}
+sub stackway {
+    my $G = shift;
+    my $w = $G->nw;
+    $w->from({
+        K => "Way stackening",
+        hitime => $H->hitime(),
+        stack => $H->stack(0),
+        Flab => [@Flab],
+        F => [@F],
+        depth => 0+@F,
+        thing => [@_],
+        print => 'join "  ", @{$S->{thing}}',
+    });
+    $w;
+}
+sub ob {
+    my $G = shift;
+    return unless $G->{_ob};
+    
+    $G->{_ob}->T(
+        $G->stackway
+    )
+}
+sub ki {
+    my $ar = shift;
+    my $s = "";
+    for my $k (sort keys %$ar) {
+        my $v = $ar->{$k};
+        $v ||= "~";
+        #$v = "( ".gname($v)." )" if ref $v;
+        $s .= "   $k=$v";
+    }
+    return $s;
 }
 sub new {
     my $self = bless {}, shift;
@@ -203,10 +250,7 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
-sub ob {
-    my $self = shift;
-    $self->{T}->ob(@_);
-}
+
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
@@ -264,19 +308,7 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
-sub waystacken {
-    my $self = shift;
-    my $junk = $H->enlogform(@_);
-    $self->ob("to",$junk);
-    push @F, $junk;
-    return sub {
-        my $o = pop @F;
-        $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
-        $self->ob("back", $junk, [@Flab]);
-        
-        @Flab = ();
-    }
-}
+
 sub w {
     my $G = shift;
     my $point = shift;
@@ -296,10 +328,9 @@ sub w {
         if (ref $Sway eq 'Ghost') {
             @ways = $Sway->ways;
             $talk .= " G";
-            $G->ob($talk, $Sway);
         }
         elsif (ref $Sway eq 'Way') {
-            @ways = $Sway;
+            @ways = $Sway; #---------------------
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
@@ -313,7 +344,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken("Z", $G, "$talk", $h, $w);
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, $h);
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
@@ -368,7 +399,7 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(DOO => $G, $point, $ar, $Sway, $w);
+    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w, $evs, $babble );
     
     eval $evs;
     

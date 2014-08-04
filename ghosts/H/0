@@ -26,6 +26,98 @@ hooks:
     
     $H->{underworld} = 0;
     # where we pay attention
+  on_message: |
+    
+        $H->elvis_enters($elvis, $mojo, $msg); # this'll all be way soon
+        
+        return if $H->ignorable_mess($msg);
+        
+        
+        my $j;
+        eval { $j = $H->decode_message($msg); };
+        if ($@) {
+            $H->error("message decode fup", $@);
+            return;
+        }
+        
+        
+        # all this stuff before they join the stream
+        if ($mojo->stash('handy')) {
+            $mojo->stash('handy')->($mojo, $j);
+            $mojo->stash('handy') && return;
+        }
+
+
+        # it beings! not that we don't come through here all the time
+        $H->{G}->w('elvinit') if $H->{underworld};
+        
+        eval { w dostuff[$mojo, $j, $msg]; };
+        if ($@) {
+            $H->error("message process fup", $@);
+            return;
+        }
+  dostuff: |
+    # ongoing stuff
+    if ($j->{claw} && $H->claw($j)) {
+        # done
+    }
+    elsif (my $k = $j->{k}) {
+        my $keys = $H->getapp("Keys");
+        $keys->key($k) if $keys;
+    }
+    elsif ($j->{e}) {
+        die $j->{d} if $H->{JErrors}++ > 3;
+        $H->error("javascript error from client", $j->{d}, $j->{e});
+    }
+    elsif (my $s = $j->{s}) {
+        # the viewport of the browser moves..
+        #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
+        # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
+        # then bringing things back together is the key.... substance... legible shrines to anythings...
+        my $lye = $H->getapp("Lyrico");
+        $lye->scroll($s) if $lye;
+    }
+    elsif (my $event = $j->{event}) {
+        $mojo->app->log->info("Looking up event handler");
+        my $id = $event->{id};
+
+        if ($id =~ /^hi_|procstartwatch/) {
+            $H->send("\$('#$id').toggleClass('widdle');");
+        }
+        elsif ($id =~ /_out$/) {
+            $H->send("\$('#$id').toggleClass('widel');");
+        }
+
+        my $thing = $H->tv_by_id($event->{id}) if $id;
+
+        start_timer();
+
+        if ($thing) {
+            $mojo->app->log->info("TV  $thing->{id}");
+            $thing->event($event);
+        }
+        else {
+            my $s = "TV not found".( $id ? ": $id" : ", lacking id");
+            $mojo->app->log->info("$s");
+
+            if (my $catcher = $H->get('clickcatcher')) {
+                $mojo->app->log->info("Event catcher found: $catcher");
+                $catcher->event($event);
+            }
+            else {
+                $mojo->app->log->info("NOTHING");
+                $mojo->send(
+                    "\$('#body').addClass('dead').delay(250).removeClass('dead');"
+                );
+            }
+        }
+        say "event handled in ".show_delta()."\n\n";
+    }
+    else {
+        my $undorf = !defined $msg ? " is~undef~" : "";
+        $H->error("EH!? '$msg'$undorf");
+    }
+    say "Done\n\n\n\n\n";
   data:
     get_apps: |
       my $apps = {};
