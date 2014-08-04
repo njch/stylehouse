@@ -34,6 +34,19 @@ sub Flab {
     $self->ob(@_);
     push @Flab, $H->enlogform(@_);
 }
+sub waystacken {
+    my $self = shift;
+    my $junk = $H->enlogform(@_);
+    $self->ob("to",$junk);
+    push @F, $junk;
+    return sub {
+        my $o = pop @F;
+        $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
+        $self->ob("back", $junk, [@Flab]);
+        
+        @Flab = ();
+    }
+}
 sub ob {
     my $self = shift;
     $self->{T}->ob(@_);
@@ -276,19 +289,7 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
-sub waystacken {
-    my $self = shift;
-    my $junk = $H->enlogform(@_);
-    $self->ob("to",$junk);
-    push @F, $junk;
-    return sub {
-        my $o = pop @F;
-        $o ne $junk && die "stack bats:\n".wdump([$o, \@F]);
-        $self->ob("back", $junk, [@Flab]);
-        
-        @Flab = ();
-    }
-}
+
 sub w {
     my $G = shift;
     my $point = shift;

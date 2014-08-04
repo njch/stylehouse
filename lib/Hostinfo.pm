@@ -780,7 +780,7 @@ sub watch_ghost_way {
     my $files = shift;
     my $f = { map { $_ => 1 } @$files };
     
-    say "Going to watch $name for $ghost->{id}";
+    #say "Going to watch $name for $ghost->{id}";
     
     for my $est (@{$self->{file_streams}}) {
         if (delete $f->{$est->{filename}}) {
