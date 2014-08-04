@@ -48,7 +48,7 @@ hooks:
         $lye->scroll($s) if $lye;
     }
     elsif (my $event = $j->{event}) {
-        $self->app->log->info("Looking up event handler");
+        $mojo->app->log->info("Looking up event handler");
         my $id = $event->{id};
 
         if ($id =~ /^hi_|procstartwatch/) {
@@ -63,20 +63,20 @@ hooks:
         start_timer();
 
         if ($thing) {
-            $self->app->log->info("TV  $thing->{id}");
+            $mojo->app->log->info("TV  $thing->{id}");
             $thing->event($event);
         }
         else {
             my $s = "TV not found".( $id ? ": $id" : ", lacking id");
-            $self->app->log->info("$s");
+            $mojo->app->log->info("$s");
 
             if (my $catcher = $H->get('clickcatcher')) {
-                $self->app->log->info("Event catcher found: $catcher");
+                $mojo->app->log->info("Event catcher found: $catcher");
                 $catcher->event($event);
             }
             else {
-                $self->app->log->info("NOTHING");
-                $self->send(
+                $mojo->app->log->info("NOTHING");
+                $mojo->send(
                     "\$('#body').addClass('dead').delay(250).removeClass('dead');"
                 );
             }
