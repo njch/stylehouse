@@ -34,6 +34,20 @@ sub Flab {
     $self->ob(@_);
     push @Flab, $H->enlogform(@_);
 }
+sub ob {
+    my $self = shift;
+    $self->{T}->ob(@_);
+}
+sub ki {
+    my $ar = shift;
+    my $s = "";
+    while (my ($k, $v) = each %$ar) {
+        $v ||= "~";
+        #$v = "( ".gname($v)." )" if ref $v;
+        $s .= "   $k=$v";
+    }
+    return $s;
+}
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -203,10 +217,7 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
-sub ob {
-    my $self = shift;
-    $self->{T}->ob(@_);
-}
+
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
