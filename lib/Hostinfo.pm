@@ -162,41 +162,6 @@ sub flood {
     $self->{flood}->{latest} = $floozy;
 }
 sub decode_message {
-    my $self = shift;
-    my $msg = shift;
-    
-    my $j;
-    start_timer();
-    
-    `cat /dev/null > elvis_sez`;
-    $self->spurt('elvis_sez', $msg);
-    my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
-        .q{print " - reading json from elvis_sez";}
-        .q{my $j = read_file("elvis_sez");}
-        .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
-        .q{print " - convert json -> yaml\n";}
-        .q{my $d = decode_json($j);}
-        .q{print " - write yaml to elvis_sez\n";}
-        .q{DumpFile("elvis_sez", $d);}
-        .q{print " - done\n";}
-        .q{'};
-    `$convert`;
-
-    eval {
-        $j = LoadFile('elvis_sez');
-
-        while (my ($k, $v) = each %$j) {
-            if (ref \$v eq "SCALAR") {
-                $j->{$k} = decode_utf8($v);
-            }
-        }
-    };
-    say "Decode in ".show_delta();
-    die "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
-        if $@;
-
-    die "$msg\n\nJSON decoded to ~undef~" unless defined $j;
-    return $j;
 }
 sub send {
     my $self = shift;
@@ -421,6 +386,7 @@ sub ignorable_mess {
 
     if ($iggy->{$dig}) {
         say "Something to ignore: $dig";
+        say;
         print colored(" IGNORE MESS    ", 'red') for 1..10;
         return 1;
     }
@@ -927,7 +893,8 @@ sub enlogform {
 }
 sub stack {
     my $self = shift;
-    my $b = shift || 1;
+    my $b = shift;
+    $b = 1 unless defined $b;
     
     my @from;
     while (my $f = join " ", (caller($b))[0,3,2]) {
@@ -958,8 +925,13 @@ sub Say {
 }
     
 sub throwlog {
-    my $self = shift;
+    my $self = my $H = shift;
     my $what = shift;
+    if ($H->{_future}) {
+        $H->{_future} = 0;
+        $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        #return;
+    }
     my $error = $self->enlogform(@_);
 
     my $string = join("\n", $error->[0],

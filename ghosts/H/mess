@@ -5,21 +5,18 @@
 
 
 
-name: hostinfo
+name: kasplat
 hooks:
-  load_ways_post: |
-    unless (G splat ) {
-        G TT ->G("T/splat");
-        G TT ->G("T/crawl");
-    }
+  fresh_init: |
+    G TT ->G("T/crawl");
   throwlog: |
     my ($what, $e) = %$ar;
     
     G crawl ->RW;
-    G crawl ->crank(max_depth=>4);
+    G crawl ->crank(max_depth=>3);
     G crawl ->T( {$what => $e} );
     
-    G splat Tw splat_wormhole(trev => G(crawl)->W);
+    G splat Tw splat_wormhole(somewhere => G(crawl)->W);
   event: |
     #w throwlog(Event => $e);
     if (eval { $ar->{e}->[1]->{C} }) {

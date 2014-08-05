@@ -27,17 +27,29 @@ sub gname {
     $ish =~ s/^(\w+)=HASH.*$/$1\{/;
     $ish;
 }
+sub ghostlyprinty {
+    join "  ", map {
+        ref $_ ? 
+            ref $_ eq "Ghost" ?
+            '<t style="color:#8f9;">'.gname($_).'</t>'
+            : ""
+            #'<t style="color:#999;">'.gname($_).'</t>'
+            
+        : $_ } @_
+}
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
     say $_[0] if $G->{db};
     $G->ob(@_);
-    push @Flab, $G->stackway(@_);
+    my $s = $G->stackway(@_);
+    push @Flab, $s;
+    $s->{Flab} = [@Flab],
 }
 sub waystacken {
     my $G = shift;
     my $junk = $G->stackway(@_);
-    $G->ob("to",$junk);
+    $G->ob("to", $junk);
     push @F, $junk;
     return sub {
         my $o = pop @F;
@@ -50,15 +62,22 @@ sub waystacken {
 sub stackway {
     my $G = shift;
     my $w = $G->nw;
+    my $stack = $H->stack(2);
+    my ($from) = $stack->[0] =~ / (\S+::\S+) /;
+    $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+    $from ||= "stackway from $stack->[0]";
+    shift @$stack;
+    
     $w->from({
-        K => "Way stackening",
+        K => "$from",
+        G => $G,
         hitime => $H->hitime(),
-        stack => $H->stack(0),
+        stack => $stack,
         Flab => [@Flab],
         F => [@F],
         depth => 0+@F,
         thing => [@_],
-        print => 'join "  ", @{$S->{thing}}',
+        print => '$S->{K}." ".ghostlyprinty(@{$S->{thing}})',
     });
     $w;
 }
@@ -67,7 +86,7 @@ sub ob {
     return unless $G->{_ob};
     
     $G->{_ob}->T(
-        $G->stackway
+        $G->stackway(@_)
     )
 }
 sub ki {
@@ -313,12 +332,7 @@ sub w {
     my $G = shift;
     my $point = shift;
     my $ar = shift;
-    my $Sway = shift; # so we can get into chains/tractors
-    # these might want to be a wormhole that travel mixes in
-    # things gather along the spines
-    # and be the big thing to do or a little thing to do
-    # these stuff go together like that, hopefully, with language forming their surface tension
-    # jelly pyramids...
+    my $Sway = shift;
     my @ways;
     
     my $talk = "w $point";
@@ -332,6 +346,9 @@ sub w {
         elsif (ref $Sway eq 'Way') {
             @ways = $Sway; #---------------------
         }
+        elsif (ref $Sway eq 'ARRAY') {
+            @ways = @$Sway;
+        }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
         $ar = {%$ar, S => $Sway, %$b};
@@ -344,7 +361,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, $h);
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
         push @returns, [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
@@ -399,7 +416,8 @@ sub doo {
     my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
-    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w, $evs, $babble );
+        my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
+        bless {evs=>$evs, babble=>$babble}, 'h');
     
     eval $evs;
     

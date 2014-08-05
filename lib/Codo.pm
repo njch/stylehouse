@@ -199,12 +199,7 @@ sub codolist {
  
         push @coli, delete $coname->{$n} if $coname->{$n};
     }
-    my @end;
-    for my $N (grep { /^\w\/\d+/ } sort keys %$coname) {
-        push @end, delete $coname->{$N}
-    }
     push @coli, $coname->{$_} for sort keys %$coname;
-    push @coli, @end;
     
     $listy->add_hooks({nospace => 1, class => 'menu'});
     $listy->replace([
