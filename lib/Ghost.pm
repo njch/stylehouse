@@ -66,6 +66,7 @@ sub stackway {
     my ($from) = $stack->[0] =~ / (\S+::\S+) /;
     $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
     $from ||= "stackway from $stack->[0]";
+    shift @$stack;
     
     $w->from({
         K => "$from",

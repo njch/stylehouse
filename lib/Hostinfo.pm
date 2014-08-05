@@ -386,6 +386,7 @@ sub ignorable_mess {
 
     if ($iggy->{$dig}) {
         say "Something to ignore: $dig";
+        say;
         print colored(" IGNORE MESS    ", 'red') for 1..10;
         return 1;
     }
