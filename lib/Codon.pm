@@ -419,6 +419,7 @@ sub chunkify {
             :
             !$self->{is}->{N} ?
                 $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
+                || $l =~ /#c/
             : 0;
             
             push @{ $stuff[-1] }, $l;
