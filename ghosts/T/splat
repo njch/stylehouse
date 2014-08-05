@@ -32,9 +32,11 @@ hooks:
     # so it's just over yonder in the chain
   go: |
     Say "GO   ".join "  ", %$ar;
+    $H->timer(0.1, sub {
     exists $ar->{line}
       ? $G->w('open_line', $ar)
-      : $O->w('somewhere', $ar);
+      : $O->w('somewhere', $ar)
+      });
     
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
@@ -74,6 +76,7 @@ hooks:
     $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
+    $H->{G}->w('sky/doof');
   aWstract: |
     $wormhole ne $G->W
         ? $wormhole
@@ -99,6 +102,8 @@ hooks:
     $th->{append} = $ar->{append} if $ar->{append};
     
     my $t = $A->{view}->newtext($lines, $th);
+    
+    
     return $t;
   
   make_line: |

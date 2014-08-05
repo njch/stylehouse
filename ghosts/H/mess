@@ -7,16 +7,19 @@
 
 name: kasplat
 hooks:
-  fresh_init: |
-    G TT ->G("T/crawl");
+  any_init: |
+    #die " $G->{load_ways_count} ";
+    #unless (Gf crawl ) {
+        G TT ->G("T/crawl");
+    
+    #die 
+    G crawl ->T("hello");
+    say "wormhole now ".G crawl ->W->describe_size();
   throwlog: |
-    my ($what, $e) = %$ar;
+    $H->timer(0.1, sub {
+    $L->w(somewhere => {thing => $ar})
+    });
     
-    G crawl ->RW;
-    G crawl ->crank(max_depth=>3);
-    G crawl ->T( {$what => $e} );
-    
-    G splat Tw splat_wormhole(somewhere => G(crawl)->W);
   event: |
     #w throwlog(Event => $e);
     if (eval { $ar->{e}->[1]->{C} }) {
