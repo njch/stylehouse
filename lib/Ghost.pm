@@ -59,8 +59,21 @@ sub waystacken {
         @Flab = ();
     }
 }
+sub timer {
+    my $self = shift;
+    my $time = shift || 0.2;
+    my $doing = shift;
+    my $last = $self->{G}->stackway("H Timer");
+    
+    my $doings = sub {
+        Flab("H remiT", $last);
+        $doing->();
+    };
+    Mojo::IOLoop->timer( $time, @_ );
+}
 sub stackway {
     my $G = shift;
+    my $thing = [@_];
     my $w = $G->nw;
     my $stack = $H->stack(2);
     my ($from) = $stack->[0] =~ / (\S+::\S+) /;
@@ -76,7 +89,7 @@ sub stackway {
         Flab => [@Flab],
         F => [@F],
         depth => 0+@F,
-        thing => [@_],
+        thing => $thing,
         print => '$S->{K}." ".ghostlyprinty(@{$S->{thing}})',
     });
     $w;
@@ -483,7 +496,7 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$H->timer($1, sub { $3 })/sg;
+    $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
