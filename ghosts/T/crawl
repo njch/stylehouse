@@ -18,11 +18,11 @@ chains:
    gravity: 1;
    as: "ARRAY"
    
- - K: 'Way'
+ - K: 'Wayslim'
    arr_if: |
-     ref $thing eq "Way" && 0
+     ref $thing eq "Way"
    eat: "HASHish"
-   each_ignore: 'id'
+   each_ignore: 'id K hitime print'
         
  - K: 'HASHish'#c
    arr_if: |
@@ -70,6 +70,20 @@ hooks:
         push @f, w c_follow_as(+ c => $c);
     }
     @actcs = @f;
+    @f = ();
+    
+    
+    for my $c (@actcs) {
+        if ($c->{eat}) {
+            map { $_->{eaten_by} = $c } grep { $_->{K} eq $c->{eat} } @actcs;
+        }
+        else {
+            push @f, $c;
+        }
+    }
+    @actcs = @f;
+    @f = ();
+            
     for my $c (@actcs) {
         w figureout(+ c => $c);
     }
@@ -105,6 +119,9 @@ hooks:
         my @list = $G->doo(
             $fe->{each}, $ar
         );
+        if (my $ei = $c->{eaten_by}->{each_ignore}) {
+            @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
+        }
         my $i = 0;
         for my $each (@list) {
             # eddies of lingo
@@ -121,7 +138,7 @@ hooks:
         }
     }
     else {
-        die "canot figure out %$c"
+        die "canot figure out ".ki($c);
     }
   c_follow_as: |
     my $as = $c->{as};
