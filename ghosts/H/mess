@@ -16,9 +16,15 @@ hooks:
     G crawl ->T("hello");
     say "wormhole now ".G crawl ->W->describe_size();
   throwlog: |
-    $H->timer(0.1, sub {
-    $L->w(somewhere => {thing => $ar})
-    });
+    my $s = $G->stackway(@$thing);
+    
+    $G->timer(0.1, sub {
+      $L->w(somewhere => {thing => $s});
+      $s = $G->stackway($s);
+      $G->timer(3, sub {
+          $L->w(somewhere => {thing => $s})
+      }); 
+    }); 
     
   event: |
     #w throwlog(Event => $e);

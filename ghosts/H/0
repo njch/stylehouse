@@ -141,13 +141,7 @@ hooks:
     elsif (my $event = $j->{event}) {
         $mojo->app->log->info("Looking up event handler");
         my $id = $event->{id};
-
-        if ($id =~ /^hi_|procstartwatch/) {
-            $H->send("\$('#$id').toggleClass('widdle');");
-        }
-        elsif ($id =~ /_out$/) {
-            $H->send("\$('#$id').toggleClass('widel');");
-        }
+        $G->Flab("event", $event);
 
         my $thing = $H->tv_by_id($event->{id}) if $id;
 
@@ -178,7 +172,6 @@ hooks:
         my $undorf = !defined $msg ? " is~undef~" : "";
         $H->error("EH!? '$msg'$undorf");
     }
-    say "Done\n\n\n\n\n";
   
   
   decode_message: |
