@@ -8,10 +8,13 @@ hooks:
   recoded_init: |
       w doof;
       $G->{db} = 1;
+      $H->timer(0.1, sub {
+          $L->w(  somewhere => {thing => $G->stackway} ) 
+      });
   doof: |
-    w colourchange(t=>200, c => '002');
-    #$H->timer(0.1, sub { $L->w(  somewhere => {thing => $G->stackway} ) });
-    w touch;
+    $H->JS($H->{sky},"stop()");
+    w colourchange(t=>200, c => '333');
+    w touch; 
   ambientness: |
     w colourchange(t=>15000);
     timer 19 { w ambientness };
