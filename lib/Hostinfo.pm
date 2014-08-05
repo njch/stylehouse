@@ -925,8 +925,13 @@ sub Say {
 }
     
 sub throwlog {
-    my $self = shift;
+    my $self = my $H = shift;
     my $what = shift;
+    if ($H->{_future}) {
+        $H->{_future} = 0;
+        $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        #return;
+    }
     my $error = $self->enlogform(@_);
 
     my $string = join("\n", $error->[0],
