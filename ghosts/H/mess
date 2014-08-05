@@ -19,10 +19,11 @@ hooks:
     my $s = $G->stackway(@$thing);
     
     $G->timer(0.1, sub {
-    $L->w(somewhere => {thing => $s});
-    $G->timer(3, sub {
-    $L->w(somewhere => {thing => $G->stackway($s)})
-    }); 
+      $L->w(somewhere => {thing => $s});
+      $s = $G->stackway($s);
+      $G->timer(3, sub {
+          $L->w(somewhere => {thing => $s})
+      }); 
     }); 
     
   event: |
