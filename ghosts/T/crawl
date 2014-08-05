@@ -24,26 +24,19 @@ chains:
    eat: "HASHish"
    each_ignore: 'id K hitime print'
         
+ - K: 'Gslim'
+   arr_if: |
+     ref $thing eq "Ghost"
+   eat: "HASHish"
+   each_ignore: 'id way T load_ways_count unrush_'
+   each_order: 'name i O'
+        
  - K: 'HASHish'#c
    arr_if: |
      ref $thing && "$thing" =~ /=HASH/
    foreach_travel:
      each: |
-       my %k = map { $_ => 1 } keys %$thing;
-       my @k;
-       if ($k{id} && $k{huid} && $thing->{id} =~ /$thing->{huid}$/) {
-           push @k, "id";
-           delete $k{$_} for qw'huid id';
-       }
-       if (ref $thing eq "Ghost") {
-           if (defined $thing->{way}) {
-               push @k, "way";
-               delete $k{way};
-           }
-           delete $k{$_} for qw"depth";
-       }
-       push @k, sort keys %k;
-       return @k;
+       sort keys %$thing;
      next_thing: $thing->{$each}
    print: |
         $S->{each}
@@ -122,6 +115,21 @@ hooks:
         if (my $ei = $c->{eaten_by}->{each_ignore}) {
             @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
         }
+        if (my $eo = $c->{eaten_by}->{each_order}) {
+             my %k = map { $_ => 1 } @list;
+             my @k;
+             if ($k{id} && $k{huid} && $thing->{id} =~ /$thing->{huid}$/) {
+                 delete $k{huid};
+             }
+             for (split ' ', $eo) {
+                 push @k, $_ if delete $k{$_}
+             }
+             for (@list) {
+                 push @k, $_ if $k{$_}
+             }
+             @list = @k;
+        }
+       
         my $i = 0;
         for my $each (@list) {
             # eddies of lingo

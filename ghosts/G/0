@@ -14,7 +14,7 @@ hooks:
     $S->w("recoded_init");
     my $g = $S;
     while ($g->{O} && ref $g->{O} eq "Ghost") {
-        $g->w("child_recoded_init") if $g eq $S;
+        $g->w("child_recoded_init", {S => $S}) if $g eq $S;
         $g = $g->{O};
         $g->w("any_child_recoded_init");
     }
