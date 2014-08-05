@@ -26,6 +26,62 @@ hooks:
     
     $H->{underworld} = 0;
     # where we pay attention
+  init_flood: |
+    my $self = $O;
+    my $data = $O->data;
+    $self->{horizon} = $data->{horizon};
+    
+    my $sky = View->new($self->intro, $self, "sky",
+        "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
+    );
+    G TT ->G("H/sky");
+    $sky->{on_event} = sub {
+        G sky ->w touch(e => [@_]);
+    };
+    
+    
+    View->new($self->intro, $self, "ground",
+        "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
+    );
+    my $f = $self->{ground}->spawn_floozy($self, "flood",
+        "width: 22%; min-width:3em; background: #337921aa;"
+        ." height: 100%; overflow: scroll;position: absolute; background-image: url(greencush.jpg); right:0px;z-index:-1;"
+    );
+    my $fm = $f->spawn_ceiling(
+        "flood_ceiling",
+        "width: 100%; margin:1em; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
+    );
+
+    $self->{floodzy} = $f->spawn_floozy(
+        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: 7em;",
+    );
+    
+    
+    my $messborder = "border: 2px solid rgb(64,150,227);";
+    my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
+        ."position:absolute; overflow: scroll; height:100%;"
+        ."$messborder z-index: 10; background: rgba(175,160,47, 0.5); color: #030; font-weight: bold; ");
+    $m->{on_event} = sub {
+        my @a = @_;
+        G mess Tw event(e=>[@a]);
+    };
+    
+    $m->spawn_floozy(
+        Error => "width:100%; $messborder background: rgba(16,0,50, 0.7); color: rgba(178,71,0, 0.7); font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
+    );
+    
+    $m->spawn_floozy(
+        'Info' => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold; color: #66c339; opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+    );
+    
+    $m->spawn_floozy(
+        'Say' => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
+    );
+    
+    $self->menu();
+    $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
+
+    return $f
   on_message: |
     
         $H->elvis_enters($elvis, $mojo, $msg); # this'll all be way soon
@@ -118,6 +174,8 @@ hooks:
         $H->error("EH!? '$msg'$undorf");
     }
     say "Done\n\n\n\n\n";
+  
+  
   decode_message: |
     
     my $j;
