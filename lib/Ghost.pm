@@ -441,6 +441,7 @@ sub doo {
         my $eval = "";
         my @eval = split "\n", $evs;
         my $xx = 1;
+        undef $x if $@ =~ /at EOF/;
         for (@eval) {
                 if (!defined $x) {
                     $eval .= ind("⊘  ", $_)."\n"

@@ -31,7 +31,6 @@ hooks:
     # junction
     # so it's just over yonder in the chain
   go: |
-    Say "GO   ".join "  ", %$ar;
     $H->timer(0.1, sub {
     exists $ar->{line}
       ? $G->w('open_line', $ar)
@@ -164,7 +163,10 @@ hooks:
             push @$menu, $t->{G} Tw splatmenues;
         }
         
-        push @$menu, 'ᣋ' => sub { w go( splatname => $splatname, line => $line, append =>  "$_[1]->{id}") };
+        push @$menu, 'ᣋ' => sub {
+            my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
+            $G->timer(0.1, sub { $G->w(go => $tar) } );
+        };
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
