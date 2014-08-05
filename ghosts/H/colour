@@ -15,9 +15,11 @@ tractors:
           sub { 100 + int rand 155 },
           sub { int rand 88 },
       ];
+    change_person: |
+      push @$personalities, shift @$personalities;
     randomcolour: |
       if ($ar->{e} && $ar->{e}->{C}) {
-          push @$personalities, shift @$personalities;
+          w $S change_person;
       }
       my ($as) = @$personalities;
       my ($rgb) = join", ", map {$as->()} 1 .. 3;
