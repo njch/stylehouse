@@ -327,7 +327,6 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
-
 sub w {
     my $G = shift;
     my $point = shift;
