@@ -5,17 +5,18 @@ hooks:
     G TT ->G("T/crawl");
     G TT ->G("Ϡ");
     
-    
-    G TT ->G("L/follow");
+    G TT ->G("L/path");
+    G TT ->G("L/land");
     G TT ->G("L/ob");
-    w set_follow;
-    $G->{H} = $H;
+    
+    w set_land;
+    
     w getstarted;
   recoded_init: |
     w getstarted;
     timer 1 { w set_follow };
   any_child_recoded_init: |
-    w set_follow;
+    w set_land;
     w splat_wormholes;
     if ($ar->{S}->{way} =~ /crawl/) {
         w getstarted;
@@ -27,33 +28,30 @@ hooks:
   
   
   
-  set_follow: |
-    G follow ->RW;
+  set_land: |
+    G land ->RW;
     my $gns = sub {
         my $s = shift;
         sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
     };
             
     for (
-    
     [ "G*",  sub { $H->data->{Ghost} }                                     ],
     [ 'G*Ϡ',  $gns->('Ϡ')    ],
     [ 'G*Њ',  $gns->('Њ')    ],
-    [ "G ob",      sub {  G ob }                                                 ],
-    [ "wayf",    sub { $G->stackway }                                                ],
+    [ "wayf", sub { $G->stackway } ],
     [ "\@F",       sub { [@F] }                                                    ],
     [ "Apps",    sub { $H->{G}->w('data/get_apps') }                            ],
     [ 'H',sub {  $H } ],
     [ 'O', sub { $O } ],
-    [ 'G'.' follow',sub {  G(follow)->W } ],
+    [ 'G'.' follow',sub {  G(land)->W } ],
     [ "COLS", sub { rand(255) } ],
-    
         ) {
         my ($name, $code) = @$_;
-        G follow Tw arr[$name, $code];
+        G land Tw arr[$name, $code];
     }
     
-    G splat Tw Splat(wing => G(follow)->W);
+    G splat Tw Splat(land => G(land)->W);
   default_somewhere: |
      $G
   getstarted: |
@@ -63,10 +61,8 @@ hooks:
   extra_crawlies:
       - K: something
   somewhere: |
-    my $thing = $ar->{thing};
     if ($ar->{nothing}) {
         Say "nothing...";
-        Gf Ϡ ->{T}->{_ob} = G ob;
         Gf Ϡ Tw arr(%$ar);
         return;
     }
@@ -75,7 +71,8 @@ hooks:
         return;
     }
     
-    
+    G path Tw arr(%$ar);
+    G splat Tw Splat(path => G(path)->W);
     
     my $Cr = G crawl;
     die unless $Cr;
