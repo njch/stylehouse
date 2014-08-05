@@ -18,9 +18,12 @@ hooks:
   throwlog: |
     my $s = $G->stackway(@$thing);
     
-    $H->timer(0.1, sub {
-    $L->w(somewhere => {thing => $s})
-    });
+    $G->timer(0.1, sub {
+    $L->w(somewhere => {thing => $s});
+    $G->timer(3, sub {
+    $L->w(somewhere => {thing => $G->stackway($s)})
+    }); 
+    }); 
     
   event: |
     #w throwlog(Event => $e);
