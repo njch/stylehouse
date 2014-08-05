@@ -13,7 +13,8 @@ chains:
      ( $G->{i}->{each} eq "Flab"
      || $G->{i}->{each} eq "F" )
      && ref $G->{i}->{L}->{t} eq "Way"
-   as: 'ARRAY'
+   gravity: 1;
+   as: "ARRAY"
         
         
  - K: 'HASHish'#c
@@ -88,11 +89,10 @@ hooks:
     $G->W->{script} = $W;
     return $N;
   figureout: |
+    my $gravity = $c->{gravity} || $c->{as_from}->{gravity};
+    my $max = $G->{max_depth} + $gravity;
     
-    if ($G->{depth} >= $G->{max_depth}) {
-        $G->Flab("depth ends $G->{depth}");
-        return;
-    }
+    return if $G->{depth} >= $max;
     
     if (my $fe = $c->{foreach_travel}) {
         my @list = $G->doo(

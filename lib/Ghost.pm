@@ -78,6 +78,8 @@ sub stackway {
     my $stack = $H->stack(2);
     my ($from) = $stack->[0] =~ / (\S+::\S+) /;
     $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+    $from =~ s/^Fl$/ᣜ/;
+    $from =~ s/^wa$/ᣝ/;
     $from ||= "stackway from $stack->[0]";
     shift @$stack;
     
