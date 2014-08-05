@@ -19,11 +19,16 @@ hooks:
     w splat_wormholes;
   set_follow: |
     G follow ->RW;
-    
+    my $gns = sub {
+        my $s = shift;
+        sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
+    };
+            
     for (
     
     [ "G*",  sub { $H->data->{Ghost} }                                     ],
-    [ 'G*Ϡ',  sub { [ grep { $_->{name} =~ /Ϡ/ } @{$H->data->{Ghost}} ] }     ],
+    [ 'G*Ϡ',  $gns->('Ϡ')    ],
+    [ 'G*Њ',  $gns->('Њ')    ],
     [ "G ob",      sub {  G ob }                                                 ],
     [ "\@Flab",    sub { [@Flab] }                                                ],
     [ "\@F",       sub { [@F] }                                                    ],
@@ -40,11 +45,13 @@ hooks:
     
     G splat Tw Splat(wing => G(follow)->W);
   default_somewhere: |
-    [@F]
+    rand(1) > 0.78 ?     [@F] : $G
   getstarted: |
     $G->unrush('getstarted') || return;
     Say "ẞ";
     w somewhere(thing => w default_somewhere);
+  extra_crawlies:
+      - K: something
   somewhere: |
     my $thing = $ar->{thing};
     if ($ar->{nothing}) {
@@ -59,10 +66,10 @@ hooks:
     }
     
     my $Cr = G crawl;
+    die unless $Cr;
     say "" for 1..5;
     say join"", ("       ẞ           ")x38;
     start_timer();
-    
     
     $Cr->RW;
 
