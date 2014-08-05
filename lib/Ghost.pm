@@ -60,16 +60,16 @@ sub waystacken {
     }
 }
 sub timer {
-    my $self = shift;
+    my $G = shift;
     my $time = shift || 0.2;
     my $doing = shift;
-    my $last = $self->{G}->stackway("H Timer");
+    my $last = $G->stackway("G Timer");
     
     my $doings = sub {
-        Flab("H remiT", $last);
+        $G->Flab("G remiT", $last);
         $doing->();
     };
-    Mojo::IOLoop->timer( $time, @_ );
+    Mojo::IOLoop->timer( $time, $doings );
 }
 sub stackway {
     my $G = shift;
