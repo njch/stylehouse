@@ -70,6 +70,7 @@ sub gitrack {
     
     my @m;
     for my $r (@$rs) {
+        next unless $r =~ /shed/;
         my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
         my $menu = [
     '↳' => sub {
@@ -102,10 +103,10 @@ sub gitrack {
         event => { menu => $menu },
         class => 'menu en',
         }],
-        S_attr => { style => "font-size:19pt;"},
+        S_attr => { style => "font-size:49pt;"},
         };
         push @m,
-        { _spawn => [ ["!style='color:#fff; font-size:20pt;' $aka", $sub], {
+        { _spawn => [ ["!style='color:#fff; font-size:55pt;' $aka", $sub], {
         nospace => 1,
         class => 'menu',
         }],
@@ -133,7 +134,8 @@ sub gitrack {
         event => { menu => $gitm },
         class => 'menu',
         }]
-        };
+        }
+        if "sudden" eq "future";
 
     my $rt = $self->{gitrack}->text([@m], {
         tuxtstyle => sub {
