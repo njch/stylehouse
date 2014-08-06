@@ -197,7 +197,12 @@ CM
             );
         }
     }
-    $H->JS("\$('.CodeMirror').css('background','rgb(90, 60, 50)').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
+    my $cmback = ".$self->{id} > .CodeMirror";
+    my $colour = $H->{G}->w("colour",
+        {name => "Codon/$self->{name}",
+        set_css_background => $cmback,
+    });
+    $H->JS("\$('$cmback').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
     $H->JS("\$('.CodeMirror').parent().css('width', '99%');");
 
     $temp->wipehtml() if $temp;

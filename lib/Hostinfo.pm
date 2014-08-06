@@ -863,6 +863,7 @@ sub error {
 sub Err { shift->error(@_) }
 sub Say {
     my $self = shift;
+    $self->{_future} = 1;
     $self->throwlog("Say", @_);
 }
     
