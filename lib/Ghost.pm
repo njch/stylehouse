@@ -40,7 +40,8 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{db};
+    say $_[0] if 1 || $G->{db};
+    Hostinfo::snooze();
     $G->ob(@_);
     my $s = $G->stackway(@_);
     push @Flab, $s;
@@ -553,8 +554,9 @@ sub parse_babble {
         my ($old, $wp, $spec) = ($1, $2, $3);        
         $wp ||= "arr";
         $wp = "'$wp'";
-        
-        my $are = $self->parse_babblar(undef, $spec);
+        my ($round) = $spec =~ /^\((.+)\)$/;
+        undef $spec if $round;
+        my $are = $self->parse_babblar($round, $spec);
         
         my $tw = join ", ", 
             map { $_ || 'undef' }

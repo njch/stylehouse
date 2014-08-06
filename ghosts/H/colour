@@ -24,17 +24,17 @@ tractors:
       my ($as) = @$personalities;
       my ($rgb) = join", ", map {$as->()} 1 .. 3;
       return $S->{B}->{colour} = "rgb($rgb)";
+    wtc: |
+      w $S randomcolour;
 hooks:
   have: |
-    my $S = Arr[$name];
+    my $S = Arr[(%$ar)];
   arr: |
-    my $S = Arr[$name];
-
-    my $cmback = ".$texty->{id} > .CodeMirror";
-    my $colour = $H->{G}->w("colour",
-        {name => "Codon/$self->{name}",
-        set_css_background => $cmback,
-    });
+    my $S = Arr[(%$ar)];
+    if (my $cmb = $ar->{set_css_background}) {
+        my $colour = w $S wtc;
+        $H->JS("\$('$cmb').css('background', '$colour');");
+    }
   randomcolour: |
     my $S = Afind[$name];
     return w $S randomcolour(%$ar);
