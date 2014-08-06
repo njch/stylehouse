@@ -384,7 +384,7 @@ sub writefile {
     my $stuff = shift;
     $self->{hostinfo}->spurt("newcode", $stuff);
     my $diff = `diff newcode $filename`;
-    $self->{hostinfo}->Info($diff);
+    #$self->{hostinfo}->Info($diff);
     $diff ? `mv newcode $filename` : `rm newcode`;
 }
 sub random_colour_background {
