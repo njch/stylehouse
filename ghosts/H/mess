@@ -11,20 +11,18 @@ tractors:
     arr_if: |
       $thing && $what
     first_time: |
-      $S->{crawlWS} = []
+      $S->{crawl_W_S} = []
     crawl: |
       my $Cr = $G->Gf("T/crawl");
       $Cr->RW;
-      $Cr->W->{script} = $S->{crawlWS};
+      $Cr->W->{script} = $S->{crawl_W_S};
       $Cr->T($thing);
       
     print: |
       $S->{K} .": ". $S->{B}->{thing}
 hooks:
   fresh_init: |
-    $G->Gc("T/crawl");
-    G crawl ->T("hello");
-    say "wormhole now ".G crawl ->W->describe_size();
+    G TT ->G("T/crawl");
   throwlog: |
     my $S = Arr[$thing, $what];
     w $S crawl;
