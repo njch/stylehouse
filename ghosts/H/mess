@@ -13,15 +13,16 @@ tractors:
     first_time: |
       $S->{crawlWS} = []
     crawl: |
-      G crawl ->RW;
-      G crawl ->W->{script} = $S->{crawlWS};
-      G crawl ->T($thing);
+      $O->Gf('crawl')->RW;
+      $O->Gf('crawl')->W->{script} = $S->{crawlWS};
+      $O->Gf('crawl')->T($thing);
       
     print: |
       $S->{K} .": ". $S->{B}->{thing}
 hooks:
   fresh_init: |
     $G->Gc("T/crawl");
+    die;
     G crawl ->T("hello");
     say "wormhole now ".G crawl ->W->describe_size();
   throwlog: |
