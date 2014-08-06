@@ -890,7 +890,7 @@ sub throwlog {
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
     my $amp = "&";
-    return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/;
+    return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/ && 0;
     $self->{throwings}->{$what} || $self->timer(0.5, sub { $self->throwlog_throw });
     $self->{throwings}->{$what} = $string;
 }
