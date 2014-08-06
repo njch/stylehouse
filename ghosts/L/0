@@ -15,6 +15,7 @@ hooks:
     w getstarted;
   recoded_init: |
     w getstarted;
+    w set_land;
     timer 1 { w set_follow };
   any_child_recoded_init: |
     w set_land;
@@ -37,16 +38,16 @@ hooks:
     };
             
     for (
-    [ "G*",  sub { $H->data->{Ghost} }                                     ],
-    [ 'G*Ϡ',  $gns->('Ϡ')    ],
-    [ 'G*Њ',  $gns->('Њ')    ],
-    [ "wayf", sub { $G->stackway } ],
-    [ "\@F",       sub { [@F] }                                                    ],
-    [ "Apps",    sub { $H->{G}->w('data/get_apps') }                            ],
-    [ 'H',sub {  $H } ],
-    [ 'O', sub { $O } ],
+    [ "G*",         sub { $H->data->{Ghost} }                                     ],
+    [ 'G*Ϡ',          $gns->('Ϡ')    ],
+    [ 'G*Њ',          $gns->('Њ')    ],
+    [ "wayf",         sub { $G->stackway } ],
+    [ "\@F",           sub { [@F] }                                                    ],
+    [ "Apps",        sub { $H->{G}->w('data/get_apps') }                            ],
+    [ 'H',            sub {  $H } ],
+    [ 'O',             sub { $O } ],
     [ 'G'.' follow',sub {  G(land)->W } ],
-    [ "COLS", sub { rand(255) } ],
+    [ "COLS",         sub { $doneprotolwptimes; } ],
         ) {
         my ($name, $code) = @$_;
         G land Tw arr[$name, $code];

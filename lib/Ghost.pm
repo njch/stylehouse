@@ -76,7 +76,7 @@ sub timer {
         $s->{timer_from} => $last;
         eval { $doing->(); };
         if ($@) {
-            $H->error("G Timer fup", $last, $s, $@);
+            $H->error("G Timer fup", $@);
         }
         $u->();
     };
@@ -272,13 +272,16 @@ sub load_ways {
     
     $self->_0('_load_ways_post');
 }
+our$doneprotolwptimes=[];
 sub _0 {
     my $G = shift;
     my ($point, $ar) = @_;
     unless ($G0) { # proto $G0 creation
         $G->w("load_ways_post") if $point eq "_load_ways_post";
+        push @$doneprotolwptimes, "PROTO ".$G->{name};
         return;
     }
+    push @$doneprotolwptimes, "_0 ".$G->{name};
     $ar->{S} = $G;
     $G0->w($point, $ar);
 }
@@ -333,7 +336,7 @@ sub unrush {
     my $self = shift;
     my $point = shift;
     unless ($self->{_unrush}->{$point}) {
-        $H->timer(0.2, sub {
+        $self->timer(0.2, sub {
             $self->{_unrush}->{$point} = 2;
             $self->w($point);
         });

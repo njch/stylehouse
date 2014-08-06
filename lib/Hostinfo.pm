@@ -39,7 +39,7 @@ sub new {
 
 
     $self->{G} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT($self->{G})->G("G");
+    $Ghost::G0 = $self->TT("Ghost")->G("G");
     
     push @{ $self->{file_streams} }, {
         filename => 'stylehouse.pl',
@@ -889,8 +889,8 @@ sub throwlog {
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;
     $string =~ s/\n/\\n/g;
-    my $amp = "&";
-    return $self->error("Recusive error messaging, check console") if $string =~ /${amp}amp;/ && 0;
+    return $self->error("Recusive error messaging, check console")
+        if $string =~ /amp;amp;amp;/;
     $self->{throwings}->{$what} || $self->timer(0.5, sub { $self->throwlog_throw });
     $self->{throwings}->{$what} = $string;
 }

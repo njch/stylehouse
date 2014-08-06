@@ -13,15 +13,17 @@ tractors:
     first_time: |
       $S->{crawlWS} = []
     crawl: |
-      G crawl ->RW;
-      G crawl ->W->{script} = $S->{crawlWS};
-      G crawl ->T($thing);
+      my $Cr = $G->Gc("T/crawl");
+      $Cr->RW;
+      $Cr->W->{script} = $S->{crawlWS};
+      $Cr->T($thing);
       
     print: |
       $S->{K} .": ". $S->{B}->{thing}
 hooks:
   fresh_init: |
     $G->Gc("T/crawl");
+    die;
     G crawl ->T("hello");
     say "wormhole now ".G crawl ->W->describe_size();
   throwlog: |
@@ -29,14 +31,8 @@ hooks:
     w $S crawl;
     my $s = $G->stackway("Throw $what", @$thing);
     
-    $G->timer(0.1, sub {
-      $L->w(somewhere => {thing => $s});
-      my $b = $s;
-      $s = $G->stackway($s);
-      $s->{Scondoto} = $b;
-      $G->timer(3, sub {
-          $L->w(somewhere => {thing => $s})
-      }); 
+    $G->timer(0.001, sub {
+      $L->w(somewhere => {thing => "yeah"});
     }); 
     
   event: |
