@@ -90,6 +90,7 @@ hooks:
     $G->{t} = $A;
     $H->{G}->w('sky/doof');
   aWstract: |
+    return { script => [@$wormhole] } if ref $wormhole eq "ARRAY";
     $wormhole ne $G->W
         ? $wormhole
         : { script => [@{$wormhole->{script}}] }
@@ -167,7 +168,7 @@ hooks:
         $splatname eq 'trev' ?
         sub { w go[$splatname, $line, $append] } :
             $splatname =~ /^(land|path)$/ ?
-                sub { w go(thing => w $t to_travel_this) } :
+                sub { w go(thing => scalar w $t to_travel_this) } :
                 sub { w go(thing => $t) };
     m: #c
       v: |
@@ -185,6 +186,8 @@ hooks:
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
+        push @$menu, 'Ώ' => sub { w go( wormhole => $t->{crawl_W_S} ) }
+            if ref $t eq "Way" && $t->{crawl_W_S};
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
             if ref $t eq "Ghost" || ref $t eq "Travel";
         push @$menu, '⊟' => sub { w lcodon[$line] }

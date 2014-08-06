@@ -40,8 +40,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if 1 || $G->{db};
-    Hostinfo::snooze();
+    say $_[0] if $G->{db};
     $G->ob(@_);
     my $s = $G->stackway(@_);
     push @Flab, $s;
