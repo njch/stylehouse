@@ -28,7 +28,7 @@ sub new {
 
     $self->{lyrics} = [(read_file("trampled_rose_lyrics"))[0..13]];
     
-    $H->timer(0.05, sub {
+    Ghost::timur(0.05, sub {
         $self->stup();
     });
     $self->{name}="ʝ";

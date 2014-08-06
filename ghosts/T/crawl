@@ -10,13 +10,16 @@ chains:
         $S->{each}
         
  - K: 'WayF'
+   cracks:
+     Flab: 1
+     thing: 1
+     F: 1
+     stack: 1
+     timer_from: 1
    arr_if: |
-     ( $G->{i}->{each} eq "Flab"
-     || $G->{i}->{each} eq "thing"
-     || $G->{i}->{each} eq "F" )
+     $S->{cracks}->{$G->{i}->{each}}
      && ref $G->{i}->{L}->{t} eq "Way"
-   gravity: 1;
-   as: "ARRAY"
+   grav_add: 1
    
  - K: 'Wayslim'
    arr_if: |
@@ -24,11 +27,20 @@ chains:
    eat: "HASHish"
    each_ignore: 'id huid K hitime print'
         
+ - K: 'GsGG'#c
+   arr_if: |
+     ref $thing eq "Ghost"
+   foreach_travel:
+     each: @{ $thing->{GG} }
+     next_thing: $each
+   print: |
+     "GG [ ".$S->{i}
+   
  - K: 'Gslim'
    arr_if: |
      ref $thing eq "Ghost"
    eat: "HASHish"
-   each_ignore: 'id huid way T load_ways_count unrush_'
+   each_ignore: 'id GG huid way T load_ways_count unrush_'
    each_order: 'name i O'
         
  - K: 'HASHish'#c
@@ -74,6 +86,19 @@ hooks:
             push @f, $c;
         }
     }
+    
+    @actcs = @f;
+    @f = ();
+    
+    for my $c (@actcs) {
+        if (my $a = $c->{grav_add}) {
+            $_->{gravity} += $c for @actcs;
+        }
+        else {
+            push @f, $c;
+        }
+    }
+    
     @actcs = @f;
     @f = ();
             
