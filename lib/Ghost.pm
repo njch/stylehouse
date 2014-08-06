@@ -76,7 +76,7 @@ sub timer {
         $s->{timer_from} => $last;
         eval { $doing->(); };
         if ($@) {
-            $H->error("G Timer fup", $last, $s, $@);
+            $H->error("G Timer fup", $@);
         }
         $u->();
     };
