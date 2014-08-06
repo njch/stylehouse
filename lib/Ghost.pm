@@ -73,7 +73,7 @@ sub timer {
         my $u = $G->waystacken("G remiT");
         my $s = $F[0];
         $s->{doings} = $doings;
-        $s->{timer_from} => $last;
+        $s->{timer_from} = $last;
         eval { $doing->(); };
         if ($@) {
             $H->error("G Timer fup", $@);
