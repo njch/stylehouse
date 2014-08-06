@@ -44,18 +44,20 @@ sub Flab {
     $G->ob(@_);
     my $s = $G->stackway(@_);
     push @Flab, $s;
-    $s->{Flab} = [@Flab],
+    $s->{Flab} = [@Flab];
 }
 sub waystacken {
     my $G = shift;
-    my $junk = $G->stackway(@_);
-    $G->ob("to", $junk);
-    push @F, $junk;
+    my $s = $G->stackway(@_);
+    push @F, $s;
+    $s->{F} = [@F],
+    $G->ob("to", $s);
     return sub {
         my $o = pop @F;
-        $o eq $junk || die "stack bats:\n".wdump([$o, \@F]);
-        $G->ob("wback", $junk);
+        $o eq $s || die "stack bats:\n".wdump([$o, \@F]);
+        $G->ob("wback", $s);
         
+        $s->{Flab} = [@Flab];
         @Flab = ();
     }
 }
@@ -64,10 +66,17 @@ sub timer {
     my $time = shift || 0.2;
     my $doing = shift;
     my $last = $G->stackway("G Timer");
+    $G->Flab($last);
     
     my $doings = sub {
-        $G->Flab("G remiT", $last);
-        $doing->();
+        my $u = $G->waystacken("G remiT");
+        my $s = $F[-1];
+        $s->{timer_from} => $last;
+        eval { $doing->(); };
+        if ($@) {
+            $H->error("G Timer fup", $last, $s, $@);
+        }
+        $u->();
     };
     Mojo::IOLoop->timer( $time, $doings );
 }
@@ -407,6 +416,7 @@ sub w {
         return $one;
     }
 }
+our $slightly = 0;
 sub doo {
     my $G = shift;
     my $babble = shift;
@@ -423,6 +433,10 @@ sub doo {
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     
+    if ($slightly++ > 50) {
+        $slightly = 0;
+        $H->snooze;
+    }
     my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     

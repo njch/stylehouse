@@ -263,6 +263,8 @@ sub elvis_enters {
     else {
         die "Cannot find elvis: $eid";
     }
+    
+    return ! $self->ignorable_mess($msg);
 }
 sub elvis_gone {
     my $self = shift;
