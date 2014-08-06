@@ -49,11 +49,11 @@ sub Flab {
 sub waystacken {
     my $G = shift;
     my $s = $G->stackway(@_);
-    push @F, $s;
+    unshift @F, $s;
     $s->{F} = [@F],
     $G->ob("to", $s);
     return sub {
-        my $o = pop @F;
+        my $o = shift @F;
         $o eq $s || die "stack bats:\n".wdump([$o, \@F]);
         $G->ob("wback", $s);
         
@@ -61,37 +61,58 @@ sub waystacken {
         @Flab = ();
     }
 }
+sub timur {
+    if ($G0) {
+        $G0->timer(@_);
+    }
+    else {
+        $H->timer(@_);
+    }
+}
 sub timer {
     my $G = shift;
     my $time = shift || 0.2;
     my $doing = shift;
     my $last = $G->stackway("G Timer");
-    $G->Flab($last);
     
     my $doings;
-    $doings = sub {
-        my $u = $G->waystacken("G remiT");
-        my $s = $F[0];
-        $s->{doings} = $doings;
-        $s->{timer_from} = $last;
-        eval { $doing->(); };
-        if ($@) {
-            $H->error("G Timer fup", $@);
-        }
-        $u->();
-    };
+    $doings = sub { $G->comeback($last, $doings, $doing, @_); };
     Mojo::IOLoop->timer( $time, $doings );
+}
+sub comeback {
+    my $G = shift;
+    my $last = shift;
+    my $doings = shift;
+    my $doing = shift;
+    my $u = $G->waystacken("G remiT", @_);
+    my $s = $F[0];
+    $s->{doings} = $doings;
+    $s->{timer_from} = $last;
+    eval { $doing->(); };
+    $u->();
+    $H->error("G Timer fup", $@) if $@;
 }
 sub stackway {
     my $G = shift;
     my $thing = [@_];
     my $w = $G->nw;
     my $stack = $H->stack(2);
-    my ($from) = $stack->[0] =~ / (\S+::\S+) /;
-    $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
-    $from =~ s/^Fl$/ᣜ/;
-    $from =~ s/^wa$/ᣝ/;
-    $from ||= "stackway from $stack->[0]";
+    my $from;
+    # FUZZ!
+    if ($stack->[0] =~ /Ghost::timer/) {
+        $from = "time"
+    }
+    elsif ($stack->[1] =~ /Ghost.+eval.+/
+        && $stack->[2] =~ /Ghost::doo/) {
+        $from = "some doing..."
+    }
+    else {
+        ($from) = $stack->[0] =~ / (\S+::\S+) /;
+        $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+        $from =~ s/^Fl$/ᣜ/;
+        $from =~ s/^wa$/ᣝ/;
+    }
+    $from ||= "stackw $stack->[0]";
     shift @$stack;
     
     $w->from({
@@ -103,7 +124,7 @@ sub stackway {
         F => [@F],
         depth => 0+@F,
         thing => $thing,
-        print => '$S->{K}." ".ghostlyprinty(@{$S->{thing}})',
+        print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, ghostlyprinty(@{$S->{thing}})',
     });
     $w;
 }
