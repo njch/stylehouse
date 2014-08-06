@@ -168,7 +168,7 @@ sub display {
         else {
             die "WTF";
         }
-        if ($self->{openness}->{$i} eq "Open") {
+        if ($self->{openness}->{$i} eq "Open") { #c
             my $textid = $texty->{id}."-Text-$i";
             my $he = int(((250 / 15) * $1)) if $s->{value} =~ /rows="(\d+)"/;
             $he ||= 42;
@@ -197,7 +197,7 @@ CM
             );
         }
     }
-    $H->JS("\$('.CodeMirror').css('background','rgb(90, 50, 20)').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
+    $H->JS("\$('.CodeMirror').css('background','rgb(90, 60, 50)').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
     $H->JS("\$('.CodeMirror').parent().css('width', '99%');");
 
     $temp->wipehtml() if $temp;
