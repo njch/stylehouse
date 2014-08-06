@@ -197,7 +197,7 @@ CM
             );
         }
     }
-    my $cmback = ".$self->{id} > .CodeMirror";
+    my $cmback = ".$texty->{id} > .CodeMirror";
     my $colour = $H->{G}->w("colour",
         {name => "Codon/$self->{name}",
         set_css_background => $cmback,
