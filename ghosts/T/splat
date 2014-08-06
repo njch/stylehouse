@@ -81,6 +81,7 @@ hooks:
     $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
+    $G->{t} = $A;
     $H->{G}->w('sky/doof');
   aWstract: |
     $wormhole ne $G->W
@@ -89,7 +90,9 @@ hooks:
   script_out: |
     my $lines = [];
     my $i = 0;
-    for my $line (@{$wormhole->{script}}) {
+    my @script = @{$wormhole->{script}};
+    @script = reverse @script if $splatname eq "path";
+    for my $line (@script) {
         if($i++ > 100) {
             push @$lines, "more...";
             last;
