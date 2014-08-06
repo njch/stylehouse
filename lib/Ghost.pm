@@ -98,7 +98,11 @@ sub stackway {
     my $w = $G->nw;
     my $stack = $H->stack(2);
     my $from;
-    if ($stack->[1] =~ /Ghost.+eval.+/
+    # FUZZ!
+    if ($stack->[0] =~ /Ghost::timer/) {
+        $from = "time"
+    }
+    elsif ($stack->[1] =~ /Ghost.+eval.+/
         && $stack->[2] =~ /Ghost::doo/) {
         $from = "some doing..."
     }
@@ -108,7 +112,7 @@ sub stackway {
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
     }
-    $from ||= "stackway from $stack->[0]";
+    $from ||= "stackw $stack->[0]";
     shift @$stack;
     
     $w->from({
@@ -120,7 +124,7 @@ sub stackway {
         F => [@F],
         depth => 0+@F,
         thing => $thing,
-        print => '$S->{K}." ".ghostlyprinty(@{$S->{thing}})',
+        print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, ghostlyprinty(@{$S->{thing}})',
     });
     $w;
 }
