@@ -45,7 +45,7 @@ sub new {
     die "No code dir: $cd" unless -d $cd;
     $self->{code_dir} = $cd;
 
-    my $codoback = "#40866c"; #"001452"
+    my $codoback = "#40446c"; #"001452"
     $codoback = "rgba(150,78,50,0.85)" if $ss eq "shed";
     
     my $Codo =
@@ -384,7 +384,7 @@ sub writefile {
     my $stuff = shift;
     $self->{hostinfo}->spurt("newcode", $stuff);
     my $diff = `diff newcode $filename`;
-    $self->{hostinfo}->Info($diff);
+    #$self->{hostinfo}->Info($diff);
     $diff ? `mv newcode $filename` : `rm newcode`;
 }
 sub random_colour_background {

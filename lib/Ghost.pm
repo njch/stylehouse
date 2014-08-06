@@ -68,9 +68,11 @@ sub timer {
     my $last = $G->stackway("G Timer");
     $G->Flab($last);
     
-    my $doings = sub {
+    my $doings;
+    $doings = sub {
         my $u = $G->waystacken("G remiT");
-        my $s = $F[-1];
+        my $s = $F[0];
+        $s->{doings} = $doings;
         $s->{timer_from} => $last;
         eval { $doing->(); };
         if ($@) {

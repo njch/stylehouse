@@ -10,8 +10,14 @@ tractors:
       if ($splatname eq "path") {
           $style .= "top:0px;left:-1em;border:1px solid green;width:11em;z-index:20;"
       }
+      if ($splatname eq "func") {
+          $style .= "bottom:0px;left:-1em;border:1px solid green;width:11em;z-index:20;"
+      }
       if ($splatname eq "somewhere") {
           $style .= "top:0px;left:10em;"
+      }
+      if ($splatname eq "swamp") {
+          $style .= "top:70%;left:10em;"
       }
       if ($splatname eq "land") {
           $style .= "bottom:0px;right:10%;border:1px solid green;width:17em;z-index:20;"
@@ -81,6 +87,7 @@ hooks:
     $wormhole = w aWstract[$wormhole];
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
+    $G->{t} = $A;
     $H->{G}->w('sky/doof');
   aWstract: |
     $wormhole ne $G->W
@@ -89,7 +96,9 @@ hooks:
   script_out: |
     my $lines = [];
     my $i = 0;
-    for my $line (@{$wormhole->{script}}) {
+    my @script = @{$wormhole->{script}};
+    @script = reverse @script if $splatname eq "path";
+    for my $line (@script) {
         if($i++ > 100) {
             push @$lines, "more...";
             last;
@@ -205,6 +214,9 @@ hooks:
         "$t";
       s: |
         my $t = $line->{t};
+        if ($splatname eq "path") {
+            $t = $t->{B}->{thing};
+        }
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
         my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };

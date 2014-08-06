@@ -6,21 +6,34 @@
 
 
 name: kasplat
+tractors:
+  - K: 'mess'
+    arr_if: |
+      $thing && $what
+    first_time: |
+      $S->{crawlWS} = []
+    crawl: |
+      G crawl ->RW;
+      G crawl ->W->{script} = $S->{crawlWS};
+      G crawl ->T($thing);
+      
+    print: |
+      $S->{K} .": ". $S->{B}->{thing}
 hooks:
-  any_init: |
-    #die " $G->{load_ways_count} ";
-    #unless (Gf crawl ) {
-        G TT ->G("T/crawl");
-    
-    #die 
+  fresh_init: |
+    $G->Gc("T/crawl");
     G crawl ->T("hello");
     say "wormhole now ".G crawl ->W->describe_size();
   throwlog: |
-    my $s = $G->stackway(@$thing);
+    my $S = Arr[$thing, $what];
+    w $S crawl;
+    my $s = $G->stackway("Throw $what", @$thing);
     
     $G->timer(0.1, sub {
       $L->w(somewhere => {thing => $s});
+      my $b = $s;
       $s = $G->stackway($s);
+      $s->{Scondoto} = $b;
       $G->timer(3, sub {
           $L->w(somewhere => {thing => $s})
       }); 
