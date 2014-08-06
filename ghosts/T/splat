@@ -205,6 +205,9 @@ hooks:
         "$t";
       s: |
         my $t = $line->{t};
+        if ($splatname eq "path") {
+            $t = $t->{B}->{thing};
+        }
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
         my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
