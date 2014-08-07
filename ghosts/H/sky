@@ -3,7 +3,12 @@ name: the sky
 hooks:
   fresh_init: |
     # w< ...etc?
-    G TT ->G("H/colour");
+    $G->{cg} = sub {
+        $G->{gcol} ||= $H->{G}->Gf("colour") || die;
+        $G->Tw($G->{gcol}, shift, {name => "#sky", @_});
+    };
+    $G->{cg}->("arr", set_css_background => "#sky");
+    
     w colours;
     w ambientness;
   recoded_init: |
@@ -27,8 +32,7 @@ hooks:
     '336aa9','72a699','6B8FB2'];
   colourchange: |
     $ar->{t} ||= 5000;
-    $ar->{c} ||= w rotate_colourwheel;
-    $H->JS($H->{sky},"animate({backgroundColor: '#$ar->{c}'}, $ar->{t});");
+    $G->{cg}->("change", t => $ar->{t}, c => $ar->{c});
   getundercontrol: |
     $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '26%'});");
   touch: |
@@ -36,7 +40,7 @@ hooks:
         w getundercontrol;
     }
     if (eval { $ar->{e}->[1]->{S} }) {
-        Gf colour Tw change_person(name => "sky");
+        $G->{gcol} Tw change_person(name => "#sky");
     }
     $@ = "";
   
