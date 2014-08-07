@@ -20,7 +20,7 @@ tractors:
           $style .= "top:70%;left:10em;"
       }
       if ($splatname eq "land") {
-          $style .= "bottom:0px;right:10%;border:1px solid green;width:17em;z-index:20;"
+          $style .= "bottom:0px;right:0px;border:1px solid green;width:9em;z-index:20;"
       }
       if ($splatname eq "splatW") {
           $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
@@ -293,8 +293,10 @@ hooks:
             if ($ref eq "ARRAY") { #c t s
                 $color = "090";
                 $name = 0+@$t.$inc->('black',"[").
-                    $inc->('#fca; font-size:10pt;line-height:8pt;',join $inc->('black',"["), @$t); 
-                    $s->{style}.="overflow:hidden";
+                    $inc->('#fca; font-size:10pt;line-height:8pt;',
+                        join $inc->('black',"["), @$t);
+                $name =~ s/^((?:.+?\n){4}).+$/$1/s;
+                $s->{style}.="overflow:hidden";
                 my $parent = $line->{i}->{L}->{t};
                 if ($parent && ref $parent eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -316,6 +318,7 @@ hooks:
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
                 }
+                $color = "fc0";
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
@@ -399,7 +402,6 @@ hooks:
         $s->{style}.="max-width: 45em;";
         $s->{style}.="word-wrap:break-word; max-height:5em; min-width: 10em;";
         $s->{style}.="color:#$color;";
-        $s->{style}.="color:#$color;";
         $s->{style}.="background: #330; ";
         
         $font ||= "font-family:serif;";
@@ -419,7 +421,12 @@ hooks:
     i:
       v: |
         $b->{c} = $line->{i};
-        w desc/chain(+ c => $b->{c});
+        my $v = w desc/chain(+ c => $b->{c});
+        if (ref $line->{t} eq "Way" && $line->{t}->{hitime}) {
+            my $ago = $line->{t}->{hitime} - hitime();
+            $v .= "\n$ago s";
+        }
+        $v;
       s: |
         $s->{class} .= " splat-w ";
         $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);direction:rtl;"
