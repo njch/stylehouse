@@ -99,6 +99,7 @@ hooks:
     my $i = 0;
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
+    unshift @script, $script[0] if $splatname eq "somewhere";
     for my $line (@script) {
         if($i++ > 100) {
             push @$lines, "more...";
@@ -149,15 +150,15 @@ hooks:
       if ($splatname eq "path" || $splatname eq "land") {
           @atom = qw[t];
       }
+      if ($splatname eq "somewhere") {
+            @atom = qw'd i' if $i == 1;
+            @atom = qw't o m' if $i == 2;
+      }
       for my $bb (@atom) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
           $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
-          say "$i $bb $line->{t}";
-          if ($bb eq "i" && $i == 1) {
-                push @$R, '!html barrack!';
-          }
       }
       # ^ v here's the void; many R come to B, pretty much via Texty::mktuxts
     style: |
