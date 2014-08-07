@@ -59,10 +59,18 @@ hooks:
     
     for (
     [ "clearworm",          sub {
-    G splat Tw clear(splatname => 'worm');
-    return "and";
+        $G->Flab("Yup yup yup");
+        G splat Tw clear(splatname => 'worm');
+        return "and";
     }    ],
-    [ 'Gdb',          sub { $Ghost::db = !$Ghost::db; $H->Say("gdb"); }    ],    
+    [ 'Gdb',          sub {
+        $Ghost::db = !$Ghost::db;
+        $H->Say("\$Ghost::db = $Ghost::db");
+    }    ],    
+    [ 'herenow',          sub {
+        G splat ->w('go', {thing => $G->stackway});
+        say "going now_later";
+    }    ],    
         ) {
         my ($name, $code) = @$_;
         G func Tw arr[$name, $code];
