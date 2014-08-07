@@ -28,6 +28,7 @@ sub gname {
     $ish =~ s/^(\w+)=HASH.*$/$1\{/;
     $ish;
 }
+sub hitime { Hostinfo::hitime() }
 sub ghostlyprinty {
     join "  ", map {
         ref $_ ? 
@@ -526,9 +527,7 @@ sub doo {
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        say "EVS: $evs" if $@ !~ /DOOF/;
-        $G->Flab("Error: $@", $DOOF);
-        $G->Flab(DOOF => $DOOF);
+        $G->Flab("Error: $@", $DOOF, $ar, $evs) if $@ !~ /DOOF/;
         $@ = $DOOF;
         
         my @ca = caller(1);

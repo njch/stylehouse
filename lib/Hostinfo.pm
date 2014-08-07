@@ -249,6 +249,7 @@ sub elvis_enters {
     }
     else {
         say "recv >\t\t$msg";
+        $self->info("recv >", $msg);
     }
 
     if (my $elvis = $self->get('elviss')->{$eid}) {
