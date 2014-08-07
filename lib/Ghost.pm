@@ -76,7 +76,7 @@ sub timer {
     my $G = shift;
     my $time = shift || 0.2;
     my $doing = shift;
-    my $last = $G->stackway("G Timer");
+    my $last = $G->stackway("G Timer", @_);
     
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
@@ -368,7 +368,7 @@ sub unrush {
         $self->timer(0.2, sub {
             $self->{_unrush}->{$point} = 2;
             $self->w($point);
-        });
+        }, "unrush");
         $self->{_unrush}->{$point} = 1
     }
     $self->{_unrush}->{$point} == 2

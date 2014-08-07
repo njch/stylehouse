@@ -249,7 +249,7 @@ sub elvis_enters {
     }
     else {
         say "recv >\t\t$msg";
-        $self->info("recv >", $msg);
+        $self->Info("recv >", $msg);
     }
 
     if (my $elvis = $self->get('elviss')->{$eid}) {
@@ -857,7 +857,9 @@ sub info {
     my $self = shift;
     $self->throwlog("Info", @_);
 }
-sub Info { shift->info(@_) }
+sub Info { 
+    my $self = shift;
+    $self->throwlog("Info", @_);}
 sub error {
     my $self = shift;
     $self->throwlog("Error", @_);
@@ -893,7 +895,7 @@ sub throwlog {
     $string =~ s/\n/\\n/g;
     return $self->error("Recusive error messaging, check console")
         if $string =~ /amp;amp;amp;/;
-    $self->{throwings}->{$what} || $self->timer(0.5, sub { $self->throwlog_throw });
+    $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
     $self->{throwings}->{$what} = $string;
 }
 sub throwlog_throw {

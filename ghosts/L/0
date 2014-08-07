@@ -2,6 +2,7 @@ name: Lyricoso writoro
 chains:
 hooks:
   fresh_init: |
+    $H->{_future} = 1;
     G TT ->G("T/splat");
     G TT ->G("T/crawl");
     G TT ->G("Ϡ");
@@ -11,7 +12,25 @@ hooks:
     G TT ->G("L/func");
     G TT ->G("L/ob");
     
+    my $Gmess = $H->{G}->Gf('mess');
+    $Gmess->{_post_throw} = sub {
+        return if $G->{_dont_mess_worm};
+        $G->{messworm} = $Gmess->W;
+        w messworm;
+    };
+    
     w getstarted;
+  messworm: |
+    $G->unrush('messworm') || return;
+    return if $G->{_dont_mess_worm};
+    $G->timer(0.1, sub {
+      return if $G->{_dont_mess_worm};
+      my $wormhole = $G->{messworm};
+      w somewhere[$wormhole];
+    }, "mess>lyrico");
+    
+    
+  
   recoded_init: |
     w getstarted;
   any_child_recoded_init: |
@@ -39,8 +58,9 @@ hooks:
         my $wormhole = $H->{G}->Gf('mess')->W;
         w somewhere[$wormhole];
     } ],
-    [ 'crawl' => sub { `touch ghosts/T/crawl` } ],
-    [ "clearworm",          sub {
+    #[ 'crawl' => sub { `touch ghosts/T/crawl` } ],
+    [ "____",          sub {
+        $G->{_dont_mess_worm} = !$G->{_dont_mess_worm};
         $G->Flab("Yup yup yup");
         G splat Tw clear(splatname => 'worm');
         return "and";

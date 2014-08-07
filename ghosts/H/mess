@@ -15,21 +15,17 @@ tractors:
       $thing
     first_time: |
       $S->{K}="m$what";
-      $S->{crawl_W_S} = []
-    crawl: |
-      my $Cr = $G->Gf("T/crawl");
-      $Cr->RW;
-      $Cr->W->{script} = $S->{crawl_W_S};
-      $Cr->T($thing);
-      
+    wheresplain: |
+      $S->{waystack} ? w $S->{waystack} wheresplain : "";
     print: |
-      $S->{K} .": ". $S->{B}->{thing}->[0]
+      join " ", $S->{K},
+      do { w $S wheresplain },
+      $S->{B}->{thing}->[0]
 hooks:
   fresh_init: |
-    G TT ->G("T/crawl");
   throwlog: |
     my $S = Arr[$thing, $what];
-    w $S crawl;
+    $G->{_post_throw} && $G->{_post_throw}->($S);
     
   event: |
     #w throwlog(Event => $e);
