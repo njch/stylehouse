@@ -85,8 +85,10 @@ hooks:
   Splat: |
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
+    $G->{nona} = 1;
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
+    $G->{nona} = 0;
     $G->{t} = $A;
     $H->{G}->w('sky/doof');
   aWstract: |
@@ -99,7 +101,7 @@ hooks:
     my $i = 0;
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
-    unshift @script, $script[0] if $splatname eq "somewhere";
+    unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};
     for my $line (@script) {
         if($i++ > 100) {
             push @$lines, "more...";
@@ -150,7 +152,7 @@ hooks:
       if ($splatname =~ /^(path|land|func)$/) {
           @atom = qw[t];
       }
-      if ($splatname eq "somewhere") {
+      if ($splatname eq "somewhere" && $G->{nona}) {
             @atom = qw'd i' if $i == 1;
             @atom = qw't o m' if $i == 2;
       }
@@ -195,9 +197,11 @@ hooks:
         my $t = $line->{t};
         my $menu = [];
         
+        return if $line->{i}->{L}->{i}->{each} eq "stack";
+        
         if (ref $t && "$t" =~ /HASH/ && $t->{G} && ref $t->{G} eq "Ghost") {
             push @$menu, $t->{G} Tw splatmenues;
-        }
+        } 
         
         push @$menu, 'ᣋ' => sub {
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
@@ -366,6 +370,9 @@ hooks:
                 $font = "font-family:mono;";
                 $fs = 9;
                 $color = "47B247";
+            }
+            if ($line->{i}->{L}->{i}->{each} eq "stack") {
+                $fs = 9;
             }
             
         }
