@@ -199,11 +199,11 @@ sub T {
     $self->{T};
 }
 sub Tw {
-    my $self = shift;    
+    my $G = shift;    
     my ($GG, $wp, $war, $thing) = @_;
     $GG || die "NO Tw GG!";
     
-    my $w = $self->nw();
+    my $w = $G->nw();
     $w->{arr_hook} = $wp if $wp;
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
@@ -215,8 +215,9 @@ sub Tw {
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
     #   parallel, streaming...
-    
+    my $u = $G->waystacken("Tw $wp", $GG, $w);
     my @r = $GG->T->T($thing, undef, $w);
+    $u->();
     return wantarray ? @r : $r[0];
 }
 sub Gf {
