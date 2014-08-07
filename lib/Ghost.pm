@@ -471,7 +471,7 @@ sub doo {
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
     my @return;
-    my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
+    my $evs = "no warnings 'experimental'; $download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
         my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
