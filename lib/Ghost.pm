@@ -458,6 +458,8 @@ sub doo {
     my $Sway = shift;
     my $w = shift;
     
+    die "RECURSION" if @F > 64;
+    
     my $eval = $G->parse_babble($babble, $point);
     
     my $thing = $G->{t};
