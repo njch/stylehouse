@@ -15,6 +15,7 @@ our @F;
 our @Flab;
 our $G0;
 our $L;
+our $db;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -40,7 +41,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{db};
+    say $_[0] if $G->{db} || $db;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     push @Flab, $s;
