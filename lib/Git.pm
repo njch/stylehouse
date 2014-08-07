@@ -106,7 +106,7 @@ sub gitrack {
         S_attr => { style => "font-size:49pt;"},
         };
         push @m,
-        { _spawn => [ ["!style='color:#fff; font-size:55pt;' $aka", $sub], {
+        { _spawn => [ ["!style='color:#fff; font-size:35pt;' s", $sub], {
         nospace => 1,
         class => 'menu',
         }],

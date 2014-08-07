@@ -36,7 +36,7 @@ hooks:
         my $s = shift;
         sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
     };
-            
+    
     for (
     [ "G*",         sub { $H->data->{Ghost} }                                     ],
     [ 'G*Ϡ',          $gns->('Ϡ')    ],
@@ -54,6 +54,21 @@ hooks:
     }
     
     G splat Tw Splat(land => G(land)->W);
+    
+    G func ->RW;
+    
+    for (
+    [ "clearworm",          sub {
+    G splat Tw clear(splatname => 'worm');
+    return "and";
+    }    ],
+    [ 'Gdb',          sub { $Ghost::db = !$Ghost::db; $H->Say("gdb"); }    ],    
+        ) {
+        my ($name, $code) = @$_;
+        G func Tw arr[$name, $code];
+    }
+    
+    G splat Tw Splat(func => G(func)->W);
   default_somewhere: |
      $G
   getstarted: |
