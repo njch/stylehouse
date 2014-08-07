@@ -220,8 +220,10 @@ hooks:
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
-        push @$menu, 'Ώ' => sub { w go( wormhole => $t->{crawl_W_S} ) }
-            if ref $t eq "Way" && $t->{crawl_W_S};
+            
+        push @$menu, 'Ώ' => sub { w go( wormhole => $t) }
+        if $line->{i}->{each} eq 'crawl_W_S';
+            
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
             if ref $t eq "Ghost" || ref $t eq "Travel";
         push @$menu, '⊟' => sub { w lcodon[$line] }
