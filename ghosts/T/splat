@@ -170,11 +170,26 @@ hooks:
         my $append = $s->{id};
         
         my $t = $line->{t};
-        $splatname eq 'trev' ?
-        sub { w go[$splatname, $line, $append] } :
-            $splatname =~ /^(land|path)$/ ?
-                sub { w go(thing => scalar w $t to_travel_this) } :
-                sub { w go(thing => $t) };
+        if ($splatname eq 'trev') {
+            return sub {
+                w go[$splatname, $line, $append];
+            }
+        }
+        elsif ($splatname eq 'func') {
+            return sub {
+                w $t to_travel_this;
+            }
+        }
+        elsif ($splatname =~ /^(land|path)$/) {
+            return sub {
+                w go(thing => scalar w $t to_travel_this)
+            }
+        }
+        else {
+            return sub {
+                w go(thing => $t);
+            }
+        }
     m: #c
       v: |
         my $t = $line->{t};
