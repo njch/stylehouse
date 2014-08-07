@@ -10,16 +10,13 @@ hooks:
     G TT ->G("L/func");
     G TT ->G("L/ob");
     
-    w set_land;
-    
     w getstarted;
   recoded_init: |
     w getstarted;
-    w set_land;
-    timer 1 { w set_follow };
   any_child_recoded_init: |
     w set_land;
-    w splat_wormholes;
+    # splat_wormholes;
+    Say $ar;
     if ($ar->{S}->{way} =~ /crawl/) {
         w getstarted;
     }
@@ -31,33 +28,40 @@ hooks:
   
   
   set_land: |
-    G land ->RW;
     my $gns = sub {
         my $s = shift;
         sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
     };
     
-    for (
-    [ "G*",         sub { $H->data->{Ghost} }                                     ],
+    my $GG;
+    my $f = sub {
+        $G->Tw($GG, 'arr', {name => shift, code => shift});
+    };
+    
+    G land ->RW;
+    G func ->RW;
+    
+    $GG = G land; 
+    $f->(@$_) for 
+    [ "G*",         sub { $H->data->{Ghost} } ],
     [ 'G*Ϡ',          $gns->('Ϡ')    ],
     [ 'G*Њ',          $gns->('Њ')    ],
     [ "wayf",         sub { $G->stackway } ],
-    [ "\@F",           sub { [@F] }                                                    ],
-    [ "Apps",        sub { $H->{G}->w('data/get_apps') }                            ],
+    [ "\@F",           sub { [@F] } ],
+    [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
     [ 'H',            sub {  $H } ],
     [ 'O',             sub { $O } ],
     [ 'G'.' follow',sub {  G(land)->W } ],
-    [ "COLS",         sub { $doneprotolwptimes; } ],
-        ) {
-        my ($name, $code) = @$_;
-        G land Tw arr[$name, $code];
-    }
+    [ "COLS",         sub { $doneprotolwptimes; } ];
     
-    G splat Tw Splat(land => G(land)->W);
     
-    G func ->RW;
-    
-    for (
+    $GG = G func;
+    $f->(@$_) for
+    [ "Hmess",         sub {
+        my $wormhole = $H->{G}->Gf('mess')->W;
+        w somewhere[$wormhole];
+    } ],
+    [ hmmm => sub { `touch ghosts/T/crawl` } ],
     [ "clearworm",          sub {
         $G->Flab("Yup yup yup");
         G splat Tw clear(splatname => 'worm');
@@ -70,18 +74,16 @@ hooks:
     [ 'herenow',          sub {
         G splat ->w('go', {thing => $G->stackway});
         say "going now_later";
-    }    ],    
-        ) {
-        my ($name, $code) = @$_;
-        G func Tw arr[$name, $code];
-    }
+    }    ];
+    
+    G splat Tw Splat(land => G(land)->W);
     
     G splat Tw Splat(func => G(func)->W);
   default_somewhere: |
      $G
   getstarted: |
     $G->unrush('getstarted') || return;
-    Say "ẞ";
+    w set_land;
     w somewhere(thing => w default_somewhere);
   extra_crawlies:
       - K: something

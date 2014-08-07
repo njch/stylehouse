@@ -46,6 +46,7 @@ sub Flab {
     my $s = $G->stackway(@_);
     push @Flab, $s;
     $s->{Flab} = [@Flab];
+    $s;
 }
 sub waystacken {
     my $G = shift;
@@ -207,7 +208,7 @@ sub Tw {
     $w->{arr_hook} = $wp if $wp;
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
-    $w->{print} = '"$G->{way} Tw ".($thing||"")." $S->{arr_hook}"';
+    $w->{print} = "'$G->{way} "."Tw"." $wp'";
     # travel to a wp in another ghost
     # we see this somewhere
     # so we can interfere case left
@@ -216,6 +217,7 @@ sub Tw {
     #   for more thinking before travelling
     #   parallel, streaming...
     my $u = $G->waystacken("Tw $wp", $GG, $w);
+    $w->{waystack} = $F[0];
     my @r = $GG->T->T($thing, undef, $w);
     $u->();
     return wantarray ? @r : $r[0];
@@ -513,14 +515,15 @@ sub doo {
     '-...-'`    
 
             
-            $DOOF .= "Flab: ". wdump(\@Flab)."\n";
         }
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
             ."  w $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        $G->Flab("Error: $@");
+        say "EVS: $evs" if $@ !~ /DOOF/;
+        say $DOOF;
+        $G->Flab("Error: $@", $DOOF);
         $G->Flab(DOOF => $DOOF);
         $@ = $DOOF;
         
