@@ -22,6 +22,8 @@ hooks:
         w getstarted;
     }
   
+  look_for_ghost: |
+    [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
     [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ') }    ],

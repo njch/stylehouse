@@ -565,6 +565,7 @@ sub watch_file_streams {
         }
         
         if (@diffs) {
+            $self->Say("$st->{filename} CHANGED: ".join("   ", @diffs));
             say "$st->{filename} has been REPLACED or something:";
             say "    $_" for @diffs;
         }
