@@ -15,6 +15,10 @@ tractors:
           sub { 100 + int rand 155 },
           sub { int rand 88 },
       ];
+      w $S set_background if $ar->{set_css_background};
+    set_background: |
+      my $colour = w $S wtc;
+      $H->JS("\$('$set_css_background').css('background', '$colour');");
     change_person: |
       push @$personalities, shift @$personalities;
     randomcolour: |
@@ -33,10 +37,6 @@ hooks:
     my $S = Arr[(%$ar)];
   arr: |
     my $S = Arr[(%$ar)];
-    if (my $cmb = $ar->{set_css_background}) {
-        my $colour = w $S wtc;
-        $H->JS("\$('$cmb').css('background', '$colour');");
-    }
   randomcolour: |
     my $S = Afind[$name];
     return w $S randomcolour(%$ar);
