@@ -55,7 +55,7 @@ sub waystacken {
     $G->ob("to", $s);
     return sub {
         my $o = shift @F;
-        $o eq $s || die "stack bats:\n".wdump([$o, \@F]);
+        $o eq $s || $H->error("stack bats:", $o, \@F);
         $G->ob("wback", $s);
         
         $s->{Flab} = [@Flab];
