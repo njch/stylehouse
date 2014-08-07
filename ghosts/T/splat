@@ -44,7 +44,7 @@ hooks:
     # so it's just over yonder in the chain
   go: |
     $G->timer(0.1, sub {
-    exists $ar->{line}
+    exists $ar->{append}
       ? $G->w('open_line', $ar)
       : $O->w('somewhere', $ar)
       });
@@ -211,6 +211,12 @@ hooks:
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
             $G->timer(0.1, sub { $G->w(go => $tar) } );
         };
+        push @$menu, 'ⲝ' => sub {
+            my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}",
+            thing => $line->{t} };
+            $G->timer(0.1, sub { $G->w(go => $tar) } );
+            } if ref $t eq "Way" && $t->{thing}->[0] =~ /remiT/;
+            
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";

@@ -356,7 +356,10 @@ sub chains {
     grep { !$_->{_disabled} }
     map { @{$_->{chains}||[]} } $self->ways
 }
-
+sub allchains {
+    my $self = shift;
+    map { @{$_->{chains}||[]} } $self->ways
+}
 sub unrush {
     my $self = shift;
     my $point = shift;
@@ -522,7 +525,6 @@ sub doo {
             .ind("E   ", $@)."\n^\n";
         
         say "EVS: $evs" if $@ !~ /DOOF/;
-        say $DOOF;
         $G->Flab("Error: $@", $DOOF);
         $G->Flab(DOOF => $DOOF);
         $@ = $DOOF;

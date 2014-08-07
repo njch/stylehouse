@@ -1,4 +1,6 @@
 name: Lyricoso writoro
+chains:
+
 hooks:
   fresh_init: |
     G TT ->G("T/splat");
@@ -21,8 +23,6 @@ hooks:
         w getstarted;
     }
   
-  look_for_ghost: |
-    [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
     [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ') }    ],
@@ -33,11 +33,12 @@ hooks:
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
   funcs: |
+    [ chch => sub { w swap_chains; } ],
     [ "Hmess",         sub {
         my $wormhole = $H->{G}->Gf('mess')->W;
         w somewhere[$wormhole];
     } ],
-    [ hmmm => sub { `touch ghosts/T/crawl` } ],
+    [ 'crawl' => sub { `touch ghosts/T/crawl` } ],
     [ "clearworm",          sub {
         $G->Flab("Yup yup yup");
         G splat Tw clear(splatname => 'worm');
@@ -78,8 +79,12 @@ hooks:
     $G->unrush('getstarted') || return;
     w set_land;
     w somewhere(thing => w default_somewhere);
-  extra_crawlies:
-      - K: something
+  swap_chains: |
+    $_->{_disabled} = !$_->{_disabled} for G crawl ->allchains;
+    $G->timer(0.1, sub {
+        w somewhere(thing => $G->{thething});
+    });
+  
   somewhere: |
     if ($ar->{nothing}) {
         Say "nothing...";
@@ -102,6 +107,7 @@ hooks:
     
     $Cr->RW;
 
+    $G->{thething} = $thing;
     $Cr->T($thing, undef, $G->stackway);
     
     my $wormhole = $G->{some_W} = $Cr->W;
