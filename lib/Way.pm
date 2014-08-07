@@ -4,6 +4,7 @@ use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
+$JSON::Syck::ImplicitUnicode = 1;
 use Texty;
 
 our $H;
