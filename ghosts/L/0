@@ -21,42 +21,18 @@ hooks:
         w getstarted;
     }
   
-  
-  
-  
-  
-  
-  
-  set_land: |
-    my $gns = sub {
-        my $s = shift;
-        sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
-    };
-    
-    my $GG;
-    my $f = sub {
-        $G->Tw($GG, 'arr', {name => shift, code => shift});
-    };
-    
-    G land ->RW;
-    G func ->RW;
-    
-    $GG = G land; 
-    $f->(@$_) for 
+  look_for_ghost: |
+    [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
+  lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
-    [ 'G*Ϡ',          $gns->('Ϡ')    ],
-    [ 'G*Њ',          $gns->('Њ')    ],
+    [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ') }    ],
+    [ 'G*Њ', sub { w look_for_ghost(name => 'Њ') }    ],
     [ "wayf",         sub { $G->stackway } ],
     [ "\@F",           sub { [@F] } ],
     [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
     [ 'H',            sub {  $H } ],
-    [ 'O',             sub { $O } ],
-    [ 'G'.' follow',sub {  G(land)->W } ],
-    [ "COLS",         sub { $doneprotolwptimes; } ];
-    
-    
-    $GG = G func;
-    $f->(@$_) for
+    [ 'L',             sub { $G } ];
+  funcs: |
     [ "Hmess",         sub {
         my $wormhole = $H->{G}->Gf('mess')->W;
         w somewhere[$wormhole];
@@ -75,6 +51,23 @@ hooks:
         G splat ->w('go', {thing => $G->stackway});
         say "going now_later";
     }    ];
+  
+  
+  set_land: |
+    my $GG;
+    my $f = sub {
+        $G->Tw($GG, 'arr', {name => shift, code => shift});
+    };
+    
+    G land ->RW;
+    G func ->RW;
+    
+    $GG = G land; 
+    $f->(@$_) for w lands;
+    
+    
+    $GG = G func;
+    $f->(@$_) for w funcs;
     
     G splat Tw Splat(land => G(land)->W);
     
