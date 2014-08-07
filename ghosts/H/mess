@@ -10,7 +10,10 @@ tractors:
   - K: 'mess'
     arr_if: |
       $thing && $what
+    B_: |
+      $thing
     first_time: |
+      $S->{K}="m$what";
       $S->{crawl_W_S} = []
     crawl: |
       my $Cr = $G->Gf("T/crawl");
@@ -19,7 +22,7 @@ tractors:
       $Cr->T($thing);
       
     print: |
-      $S->{K} .": ". $S->{B}->{thing}
+      $S->{K} .": ". $S->{B}->{thing}->[0]
 hooks:
   fresh_init: |
     G TT ->G("T/crawl");

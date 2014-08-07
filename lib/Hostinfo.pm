@@ -970,8 +970,7 @@ sub tv_by_id {
     my $id = shift;
     
     $id =~ s/^(\w+-\w+).*$/$1/;
-    say "ID : $id";
-
+    
     for my $tv (@{$self->get('tvs')}) {
         if ($tv->{id} eq $id) {
             return $tv;
