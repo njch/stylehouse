@@ -64,6 +64,7 @@ sub waystacken {
         @Flab = ();
     }
 }
+
 sub timur {
     if ($G0) {
         $G0->timer(@_);
@@ -309,7 +310,7 @@ sub _0 {
         push @$doneprotolwptimes, "PROTO ".$G->{name};
         return;
     }
-    push @$doneprotolwptimes, "_0 ".$G->{name};
+    push @$doneprotolwptimes, "__ ".$G->{name};
     $ar->{S} = $G;
     $G0->w($point, $ar);
 }

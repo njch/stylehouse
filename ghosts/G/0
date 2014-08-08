@@ -20,4 +20,16 @@ hooks:
     }
   _fresh_init: |
     $S->w("fresh_init");
+    
+  sing: |
+    return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
+    $G->{singing}->{$name} = 1;
+    my $t = $ar->{block_for} || 0.04;
+    $G->timer($t, sub {
+        my $splatter = delete $G->{singing}->{$name};
+        $S->Flab("$name blocked for $t, hits: $splatter") if $splatter > 1;
+    });
+    $code->();
+    
+    
 
