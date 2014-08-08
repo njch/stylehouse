@@ -1,5 +1,5 @@
 name: Lyricoso writoro
-chains:
+
 hooks:
   fresh_init: |
     $H->{_future} = 1;
@@ -24,19 +24,26 @@ hooks:
     $H->{G}->Gf('keys')->{trig}->{m} = sub {
         w tog_hmess;
     };
-    $H->{G}->Gf('keys')->{trig}->{q} = sub {
+    $H->{G}->Gf('keys')->{trig}->{'À'} = sub {
         w q;
+    };
+    $H->{G}->Gf('keys')->{trig}->{q} = sub {
+        my $thing = w look_for_ghost(name => 'Њ');
+        w somewhere[$thing];
     };
     
     w getstarted;
   messworm: |
-    $G->unrush('messworm') || return;
     return if $G->{_dont_mess_worm};
-    $G->timer(0.1, sub {
-      return if $G->{_dont_mess_worm};
-      my $wormhole = $G->{messworm};
-      say "Throgingo $wormhole;";
-      w somewhere[$wormhole];
+    $G->_0(sing => {
+        name => "messworm",
+        again_after => 0.7,
+        code => sub {
+          return if $G->{_dont_mess_worm};
+          my $wormhole = $G->{messworm};
+          say "Throgingo $wormhole;";
+          w somewhere[$wormhole];
+        },
     }, "mess>L");
   
     
@@ -68,7 +75,7 @@ hooks:
     w somewhere(nothing => $L); 
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { w q
+    [ "L>Ϡ", sub { w q;
     } ],
     [ "_fr",          sub {
         my $Gs = G splat;
@@ -122,7 +129,7 @@ hooks:
     
     G splat Tw Splat(func => G(func)->W);
   default_somewhere: |
-     $G
+      w look_for_ghost(name => 'Ϡ');
   getstarted: |
     $G->unrush('getstarted') || return;
     w set_land;
@@ -162,7 +169,7 @@ hooks:
 
     w splat_wormholes;
     
-    Say "ẞ W $wormhole->{n}x".scalar(@{$wormhole->{script}})." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless G(crawl);
     G splat Tw Splat(somewhere => $G->{some_W});

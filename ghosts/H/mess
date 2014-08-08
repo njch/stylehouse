@@ -25,7 +25,9 @@ hooks:
   fresh_init: |
   throwlog: |
     my $S = Arr[$thing, $what];
-    $G->{_post_throw} && $G->{_post_throw}->($S);
+    if ($G->{_post_throw}) {
+        $G->{_post_throw}->($S);
+    }
     return "yep" if $what eq "Info";
   throwthrow: |
     
