@@ -76,13 +76,12 @@ function clickyhand (event) {
 }
 var nohands = 0;
 function keyhand (e) {
-    console.log(" a: "+nohands);
     if (nohands) {
         return;
     }
     setTimeout(function () {
         nohands = 0;
-    }, 500);
+    }, 10);
     nohands = 1;
     var data = {
         type: e.type,

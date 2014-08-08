@@ -21,13 +21,17 @@ tractors:
       "key: $and$key"
 hooks:
   first_init: |
-    $H->JS("\$(window).on('keydown', keyhand);");
+    $H->JS("\$(window).on('keydown', keyhand);"); 
+  any_init: |
+    $H->JS("\$(window).on('keydown', keyhand);"); 
   arr: |
     my $e = $event;
     my $S = Arr[$e];
 
     my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
     $S->{B}->{key} ||= "";
+    
+    say `figlet '$k'`;
     
     my $t = $G->{trig};
     if ($t->{$k}) {
