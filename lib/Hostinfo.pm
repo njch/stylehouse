@@ -337,8 +337,14 @@ sub ignorable_mess {
     my $iggy = $self->gest('ignorable_messs', {});
 
     if ($iggy->{$dig}) {
-        print colored(" IGNORE MESS    ", 'red') for 1..5;
-        say "";
+        $self->{G}->_0(sing => {
+            block_for => 0.1,
+            name => "iggyprint",
+            code => sub {
+                print colored(" IGNORE MESS    ", 'red') for 1..5;
+                say "";
+            }
+        });
         return 1;
     }
 
