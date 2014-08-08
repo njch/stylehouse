@@ -73,10 +73,12 @@ hooks:
     [ 'L',             sub { $G } ];
   q: |
     w somewhere(nothing => $L); 
+  Ϡ: |
+    my $thing = w look_for_ghost(name => 'Ϡ');
+    w somewhere[$thing];
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { w q;
-    } ],
+    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
     [ "_fr",          sub {
         my $Gs = G splat;
         $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
