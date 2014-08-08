@@ -14,9 +14,15 @@ hooks:
     
     my $Gmess = $H->{G}->Gf('mess');
     $Gmess->{_post_throw} = sub {
+        my $S = shift;
+        #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
         return if $G->{_dont_mess_worm};
         $G->{messworm} = $Gmess->W;
         w messworm;
+    };
+    
+    $H->{G}->Gf('keys')->{trig}->{m} = sub {
+        w tog_hmess;
     };
     
     w getstarted;
@@ -26,12 +32,15 @@ hooks:
     $G->timer(0.1, sub {
       return if $G->{_dont_mess_worm};
       my $wormhole = $G->{messworm};
+      say "Throgingo $wormhole;";
       w somewhere[$wormhole];
-    }, "mess>lyrico");
+    }, "mess>L");
+  
     
     
   
   recoded_init: |
+    w set_land;
     w getstarted;
   any_child_recoded_init: |
     w set_land;
@@ -54,17 +63,9 @@ hooks:
     [ 'L',             sub { $G } ];
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "Hmess",         sub {
-        my $wormhole = $H->{G}->Gf('mess')->W;
-        w somewhere[$wormhole];
+    [ "L>Ϡ", sub {
+        w somewhere(nothing => $L); 
     } ],
-    #[ 'crawl' => sub { `touch ghosts/T/crawl` } ],
-    [ "____",          sub {
-        $G->{_dont_mess_worm} = !$G->{_dont_mess_worm};
-        $G->Flab("Yup yup yup");
-        G splat Tw clear(splatname => 'worm');
-        return "and";
-    }    ],
     [ "_fr",          sub {
         my $Gs = G splat;
         $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
@@ -83,7 +84,19 @@ hooks:
         G splat ->w('go', {thing => $G->stackway});
         say "going now_later";
     }    ];
-  
+  make_hmess: |
+        $G->{_dont_mess_worm} = 0;
+        my $wormhole = $H->{G}->Gf('mess')->W;
+        w somewhere[$wormhole];
+  tog_hmess: |
+    $G->{_dont_mess_worm}
+    ? w make_hmess
+    : w hide_hmess;
+  hide_hmess: |
+        $G->{_dont_mess_worm} = 1;
+        $G->Flab("Yup yup yup");
+        G splat Tw clear(splatname => 'worm');
+        return "and";
   
   set_land: |
     my $GG;
@@ -118,7 +131,6 @@ hooks:
   
   somewhere: |
     if ($ar->{nothing}) {
-        Say "nothing...";
         Gf Ϡ Tw arr(%$ar);
         return;
     }

@@ -241,7 +241,7 @@ sub elvis_enters {
     my $tx = $mojo->tx;
 
     my $eid = $mojo->stash('elvisid'); 
-    say "Elvis enters with stash: ".($eid||"undef");
+    # "Elvis enters with stash: ".($eid||"undef");
  
     if (-t STDOUT) {
         print colored("recv >\t\t", 'red');
@@ -336,9 +336,8 @@ sub ignorable_mess {
     my $iggy = $self->gest('ignorable_messs', {});
 
     if ($iggy->{$dig}) {
-        say "Something to ignore: $dig";
-        say;
-        print colored(" IGNORE MESS    ", 'red') for 1..10;
+        print colored(" IGNORE MESS    ", 'red') for 1..5;
+        say "";
         return 1;
     }
 
@@ -875,11 +874,20 @@ sub throwlog {
     my $what = shift;
     
     if ($H->{_future} && $what ne "Error") {
-        $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        if ($r && $r eq "yep") {
+            return;
+        }
     }
     
     my $error = $self->enlogform(@_);
-
+    
+    $self->keep_throwing($what, $error);
+}
+sub keep_throwing {
+    my $self = shift;
+    my $what = shift;
+    my $error = shift;
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
             join("\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),

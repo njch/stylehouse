@@ -45,7 +45,7 @@ sub Flab {
     say $_[0] if $G->{db} || $db;
     $G->ob(@_);
     my $s = $G->stackway(@_);
-    push @Flab, $s;
+    unshift @Flab, $s;
     $s->{Flab} = [@Flab];
     $s;
 }
@@ -410,7 +410,7 @@ sub w {
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
-        $ar = {%$ar, S => $Sway, %$b};
+        $ar = {%$ar, %$b, S => $Sway};
     }
     else {
         @ways = $G->ways;

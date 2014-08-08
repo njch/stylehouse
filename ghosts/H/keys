@@ -1,0 +1,52 @@
+
+
+
+
+
+
+
+name: kasplat
+tractors:
+  - K: 'key'
+    max_populi: 10
+    arr_if: |
+      $e
+    B_: |
+      $e
+    print: |
+      my $and = "";
+      for (qw{S C A M}) {
+          $and .= "$_+" if $e->{$_} 
+      }
+      "key: $and$key"
+hooks:
+  first_init: |
+    $H->JS("\$(window).on('keydown', keyhand);");
+
+  arr: |
+    my $e = $event;
+    my $S = Arr[$e];
+
+    my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
+    $S->{B}->{key} ||= "";
+    
+    my $t = $G->{trig};
+    if ($t->{$k}) {
+        $t->{$k}->($S);
+        Info "keytrig: $k", $S;
+    }
+    my $p = w $S print;
+    Say $p unless $p eq "A+";
+    
+  event: |
+    #w throwlog(Event => $e);
+    if (eval { $ar->{e}->[1]->{C} }) {
+        my $id = $ar->{e}->[1]->{id};
+        $H->JS("\$('#$id').empty();");
+    }
+    if (eval { $ar->{e}->[1]->{S} }) {
+        my $id = $ar->{e}->[1]->{id};
+        $H->JS("\$('#mess').toggleClass('inface');");
+    }
+    
+

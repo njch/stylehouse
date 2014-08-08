@@ -66,10 +66,23 @@ function clickyhand (event) {
         S: 0+event.shiftKey,
         C: 0+event.ctrlKey,
         A: 0+event.altKey,
+        M: 0+event.metaKey,
         x: event.clientX,
         y: event.clientY,
         pagex: window.pageXOffset,
         pagey: window.pageYOffset,
+    };
+    ws.reply({event: data});
+}
+function keyhand (e) {
+    var data = {
+        type: e.type,
+        S: 0+e.shiftKey,
+        C: 0+e.ctrlKey,
+        A: 0+e.altKey,
+        M: 0+e.metaKey,
+        which: e.which,
+        k: String.fromCharCode(e.keyCode),
     };
     ws.reply({event: data});
 }
