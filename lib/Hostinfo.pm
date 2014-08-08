@@ -875,11 +875,20 @@ sub throwlog {
     my $what = shift;
     
     if ($H->{_future} && $what ne "Error") {
-        $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        if ($r && $r eq "yep") {
+            return;
+        }
     }
     
     my $error = $self->enlogform(@_);
-
+    
+    $self->keep_throwing($what, $error);
+}
+sub keep_throwing {
+    my $self = shift;
+    my $what = shift;
+    my $error = shift;
     my $string = join("\n", $error->[0],
         (map { "    - $_" } reverse @{$error->[1]}),
             join("\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
