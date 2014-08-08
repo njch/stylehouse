@@ -28,13 +28,15 @@ hooks:
     $G->timer(0.1, sub {
       return if $G->{_dont_mess_worm};
       my $wormhole = $G->{messworm};
+      say "Throgingo $wormhole;";
       w somewhere[$wormhole];
-    }, "mess>lyrico");
+    }, "mess>L");
   
     
     
   
   recoded_init: |
+    w set_land;
     w getstarted;
   any_child_recoded_init: |
     w set_land;
@@ -58,12 +60,13 @@ hooks:
   funcs: |
     [ chch => sub { w swap_chains; } ],
     [ "Hmess",         sub {
+        $G->{_dont_mess_worm} = 0;
         my $wormhole = $H->{G}->Gf('mess')->W;
         w somewhere[$wormhole];
     } ],
     #[ 'crawl' => sub { `touch ghosts/T/crawl` } ],
     [ "____",          sub {
-        $G->{_dont_mess_worm} = !$G->{_dont_mess_worm};
+        $G->{_dont_mess_worm} = 1;
         $G->Flab("Yup yup yup");
         G splat Tw clear(splatname => 'worm');
         return "and";

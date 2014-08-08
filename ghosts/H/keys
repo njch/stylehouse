@@ -12,19 +12,20 @@ tractors:
     arr_if: |
       $e && $e->{k}
     B_: |
-      Hostinfo::make_uuid()
+      $e
     first_time: |
       $B->{key} ||= lc($e->{k}) unless $e->{k};
+      Info $B;
     print: |
-      $B->{k}
+      "key -".($S->{B}->{key} || $s->{B}->{k})
 hooks:
   any_init: |
     $H->JS("\$(window).on('keyup', keyhand);");
   arr: |
     my $e = $event;
     my $S = Arr[$e];
+
     Info "klogged", $S;
-    Say "klogged: ". w $S print;
     
   event: |
     #w throwlog(Event => $e);
