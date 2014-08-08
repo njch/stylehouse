@@ -113,7 +113,7 @@ sub stackway {
     }
     else {
         ($from) = $stack->[0] =~ / (\S+::\S+) /;
-        $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+        $from =~ s/.*Ghost::(Fl|wa).*/$1/;
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
     }
@@ -463,11 +463,10 @@ sub doo {
     my $Sway = shift;
     my $w = shift;
     die "RECURSION ".@F if @F > 40;
-    
-    my $thing = $G->{t};
     my $O = $G->T->{O};
     
-    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)." ".($point||"")." k=".join",",sort keys %$ar;
+    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)
+        ." ".($point||"")." k=".join",",sort keys %$ar;
     my $subhash = Hostinfo::sha1_hex($uuname);
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble"));
@@ -480,6 +479,8 @@ sub doo {
     unless ($evsub) {
         my $eval = $G->parse_babble($babble, $point);
         my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
+        $download .= 'my$thing = $G->{thing};' unless $ar->{'thing'};
+        $download .= 'my $O = $G->T->{O};';
         my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
         my $doo_return = [];
@@ -507,7 +508,8 @@ sub doo {
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
         bless {evs=>"?", babble=>$babble}, 'h');
     
-    my @return = $evsub->($ar) if ref $evsub;
+    my @return;
+    @return = $evsub->($ar) if ref $evsub;
     
     $back->();
     
