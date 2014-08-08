@@ -454,6 +454,8 @@ sub w {
     }
 }
 our $slightly = 0;
+our %subcache;
+our %evscache;
 sub doo {
     my $G = shift;
     my $babble = shift;
@@ -466,26 +468,46 @@ sub doo {
     my $thing = $G->{t};
     my $O = $G->T->{O};
     
-    my $eval = $G->parse_babble($babble, $point);
+    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)." $point k=".join",",sort keys %$ar;
+    my $subhash = Hostinfo::sha1_hex($uuname);
     
-    
-    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
+    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble"));
     
     if ($slightly++ > 50) {
         $slightly = 0;
         $H->snooze;
     }
-    my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
-    my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
+    my $evsub = $subcache{$subhash};
+    unless ($evsub) {
+        my $eval = $G->parse_babble($babble, $point);
+        my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
+        my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
-    my @return;
-    my $evs = "no warnings 'experimental'; $download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
+        my $doo_return = [];
+        my $doo_sev_sub = [];
+        
+        my $sevs = "no warnings 'experimental'; $download\n".'; @$doo_return = (sub { '."\n".$eval."\n })->(); $upload";
+        
+        my $evs = '@$doo_sev_sub = sub { my $ar = shift; '.$sevs.'; return @$doo_return };';
+        
+        eval $evs;
+        
+        my ($sub) = @$doo_sev_sub;
+        if (ref $sub) {
+            $evscache{$subhash} = $evs;
+            $subcache{$subhash} = $sub;
+        }
+        else {
+            say "NON COMPILE $@ ".ref $sub;
+        }
+    };
+    my $evsub = $subcache{$subhash};
     
         
-        my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
-        bless {evs=>$evs, babble=>$babble}, 'h');
+    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
+        bless {evs=>"?", babble=>$babble}, 'h');
     
-    eval $evs;
+    my @return = $evsub->($ar) if ref $evsub;
     
     $back->();
     
@@ -493,6 +515,7 @@ sub doo {
         my ($x) = $@ =~ /line (\d+)\.$/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
+        my $evs = $evscache{$subhash};
         my @eval = split "\n", $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
