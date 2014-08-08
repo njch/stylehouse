@@ -13,18 +13,19 @@ tractors:
       $e && $e->{k}
     B_: |
       $e
-    first_time: |
-      $B->{key} ||= lc($e->{k}) unless $e->{k};
-      Info $B;
     print: |
-      "key -".($S->{B}->{key} || $s->{B}->{k})
+      "key $key"
 hooks:
-  any_init: |
+  first_init: |
     $H->JS("\$(window).on('keyup', keyhand);");
   arr: |
     my $e = $event;
     my $S = Arr[$e];
 
+    my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
+    my $t = $G->{trig};
+    $t->{$k} && $t->{$k}->($S);
+    
     Info "klogged", $S;
     
   event: |

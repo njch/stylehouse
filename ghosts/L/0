@@ -21,6 +21,10 @@ hooks:
         w messworm;
     };
     
+    $H->{G}->Gf('keys')->{trig}->{m} = sub {
+        w tog_hmess;
+    };
+    
     w getstarted;
   messworm: |
     $G->unrush('messworm') || return;
@@ -59,18 +63,8 @@ hooks:
     [ 'L',             sub { $G } ];
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "Hmess",         sub {
-        $G->{_dont_mess_worm} = 0;
-        my $wormhole = $H->{G}->Gf('mess')->W;
-        w somewhere[$wormhole];
-    } ],
-    #[ 'crawl' => sub { `touch ghosts/T/crawl` } ],
-    [ "____",          sub {
-        $G->{_dont_mess_worm} = 1;
-        $G->Flab("Yup yup yup");
-        G splat Tw clear(splatname => 'worm');
-        return "and";
-    }    ],
+    [ "Hmess",         sub { w make_hmess; } ],
+    [ "____",          sub { w hide_hmess; }    ],
     [ "_fr",          sub {
         my $Gs = G splat;
         $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
@@ -89,7 +83,19 @@ hooks:
         G splat ->w('go', {thing => $G->stackway});
         say "going now_later";
     }    ];
-  
+  make_hmess: |
+        $G->{_dont_mess_worm} = 0;
+        my $wormhole = $H->{G}->Gf('mess')->W;
+        w somewhere[$wormhole];
+  tog_hmess: |
+    $G->{_dont_mess_worm}
+    ? w make_hmess
+    : w hide_hmess;
+  hide_hmess: |
+        $G->{_dont_mess_worm} = 1;
+        $G->Flab("Yup yup yup");
+        G splat Tw clear(splatname => 'worm');
+        return "and";
   
   set_land: |
     my $GG;
