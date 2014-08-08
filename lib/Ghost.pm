@@ -465,11 +465,13 @@ sub doo {
     die "RECURSION ".@F if @F > 40;
     my $O = $G->T->{O};
     
+    my $ksmush = join",",sort keys %$ar;
     my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)
-        ." ".($point||"")." k=".join",",sort keys %$ar;
+        ." ".($point||"")." arar=".$ksmush;
+        
     my $subhash = Hostinfo::sha1_hex($uuname);
     
-    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble"));
+    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble")."\t$ksmush");
     
     if ($slightly++ > 50) {
         $slightly = 0;
