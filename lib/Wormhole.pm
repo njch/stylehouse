@@ -111,7 +111,7 @@ sub encode_thing {
 # Form is a well-known bunch of Ghost
 sub describe_size {
     my $self = shift;
-    "Wormhole is ".@{$self->{script}}." lines long";
+    "W $self->{n}x".scalar(@{$self->{script}});
 }
 sub way_out {
     my $self = shift;

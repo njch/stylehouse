@@ -158,7 +158,7 @@ hooks:
       if ($splatname =~ /^(path|land|func)$/) {
           @atom = qw[t];
       }
-      @atom = qw"t" if $splatname eq "worm";
+      @atom = qw"i t" if $splatname eq "worm";
       if ($splatname eq "somewhere" && $G->{nona}) {
             @atom = qw'd i' if $i == 1;
             @atom = qw't o m' if $i == 2;
@@ -229,8 +229,7 @@ hooks:
             
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
             if ref $t eq "Ghost" || ref $t eq "Travel";
-        push @$menu, '⊟' => sub { w lcodon[$line] }
-            if "$t" =~ /Codon|Ghost/;
+        #push @$menu, '⊟' => sub { w lcodon[$line] } if "$t" =~ /Codon|Ghost/;
         push @$menu, '⊟' => sub { my $res = [$t->()]; w go(thing => $res) }
             if ref $t eq "CODE";
         
