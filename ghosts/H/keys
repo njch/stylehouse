@@ -13,23 +13,30 @@ tractors:
       $e
     B_: |
       $e
+    first_time: |
+      $S->{B}->{key} ||= $e->{k};
+      $S->{B}->{key} ||= "";
+      $S->{B}->{key} = lc($S->{B}->{key}) if !$e->{S};
     print: |
       my $and = "";
       for (qw{S C A M}) {
           $and .= "$_+" if $e->{$_} 
       }
+      $and = "" if $and eq "S+";
       "key: $and$key"
 hooks:
   first_init: |
     $H->JS("\$(window).on('keydown', keyhand);"); 
   any_init: |
+    $H->JS("handelay = 5;"); 
     $H->JS("\$(window).on('keydown', keyhand);"); 
   arr: |
     my $e = $event;
     my $S = Arr[$e];
 
-    my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
-    $S->{B}->{key} ||= "";
+    my $k = 
+    $S->{B}->{key};
+    #L ^ here's _, 
     
     say `figlet '$k'`;
     
