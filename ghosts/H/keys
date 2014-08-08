@@ -10,23 +10,33 @@ tractors:
   - K: 'key'
     max_populi: 10
     arr_if: |
-      $e && $e->{k}
+      $e
     B_: |
       $e
     print: |
-      "key $key"
+      my $and = "";
+      for (qw{S C A M}) {
+          $and .= "$_+" if $e->{$_} 
+      }
+      "key: $and$key"
 hooks:
   first_init: |
-    $H->JS("\$(window).on('keyup', keyhand);");
+    $H->JS("\$(window).on('keydown', keyhand);");
+
   arr: |
     my $e = $event;
     my $S = Arr[$e];
 
     my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
-    my $t = $G->{trig};
-    $t->{$k} && $t->{$k}->($S);
+    $S->{B}->{key} ||= "";
     
-    Info "klogged", $S;
+    my $t = $G->{trig};
+    if ($t->{$k}) {
+        $t->{$k}->($S);
+        Info "keytrig: $k", $S;
+    }
+    
+    Say w $S print;
     
   event: |
     #w throwlog(Event => $e);
