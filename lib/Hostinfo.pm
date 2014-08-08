@@ -241,7 +241,7 @@ sub elvis_enters {
     my $tx = $mojo->tx;
 
     my $eid = $mojo->stash('elvisid'); 
-    say "Elvis enters with stash: ".($eid||"undef");
+    # "Elvis enters with stash: ".($eid||"undef");
  
     if (-t STDOUT) {
         print colored("recv >\t\t", 'red');
