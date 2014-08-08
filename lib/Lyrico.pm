@@ -30,7 +30,7 @@ sub new {
     
     Ghost::timur(0.05, sub {
         $self->stup();
-    });
+    },"LYSUP");
     $self->{name}="ʝ";
 
     return $self;

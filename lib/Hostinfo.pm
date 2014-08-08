@@ -874,7 +874,7 @@ sub throwlog {
     my $self = my $H = shift;
     my $what = shift;
     
-    if ($H->{_future}) {
+    if ($H->{_future} && $what ne "Error") {
         $H->{G}->w(throwlog => {what => $what, thing => [@_]});
     }
     

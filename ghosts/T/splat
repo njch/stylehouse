@@ -47,7 +47,7 @@ hooks:
     exists $ar->{append}
       ? $G->w('open_line', $ar)
       : $O->w('somewhere', $ar)
-      });
+    }, "splat\go");
   
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
@@ -85,6 +85,7 @@ hooks:
   Splat: |
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
+    return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
@@ -210,12 +211,12 @@ hooks:
         
         push @$menu, 'ᣋ' => sub {
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
-            $G->timer(0.1, sub { $G->w(go => $tar) } );
+            $G->timer(0.1, sub { $G->w(go => $tar) }, "pendline" );
         };
         push @$menu, 'ⲝ' => sub {
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}",
             thing => $line->{t} };
-            $G->timer(0.1, sub { $G->w(go => $tar) } );
+            $G->timer(0.1, sub { $G->w(go => $tar) }, "pendthing" );
             } if ref $t eq "Way" && $t->{thing}->[0] =~ /remiT/;
             
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
@@ -424,14 +425,10 @@ hooks:
       v: |
         $b->{c} = $line->{i};
         my $v = w desc/chain(+ c => $b->{c});
-        if (ref $line->{t} eq "Way" && $line->{t}->{hitime}) {
-            my $ago = $line->{t}->{hitime} - hitime();
-            $v .= "\n$ago s";
-        }
         $v;
       s: |
         $s->{class} .= " splat-w ";
-        $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);direction:rtl;"
+        $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);text-align:right;"
             ."width: "
         .(($line->{depth}) * 5 + 3)."em;"
             if $line->{depth} > 0;

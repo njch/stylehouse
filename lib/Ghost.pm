@@ -87,7 +87,9 @@ sub comeback {
     my $last = shift;
     my $doings = shift;
     my $doing = shift;
-    my $u = $G->waystacken("G remiT", @_);
+    my @saying = @{ $last->{thing} };
+    $saying[0] =~ s/G Timer/G remiT/;
+    my $u = $G->waystacken(@saying, @_);
     my $s = $F[0];
     $s->{doings} = $doings;
     $s->{timer_from} = $last;
