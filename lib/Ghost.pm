@@ -45,7 +45,7 @@ sub Flab {
     say $_[0] if $G->{db} || $db;
     $G->ob(@_);
     my $s = $G->stackway(@_);
-    push @Flab, $s;
+    unshift @Flab, $s;
     $s->{Flab} = [@Flab];
     $s;
 }
