@@ -75,6 +75,11 @@ function clickyhand (event) {
     ws.reply({event: data});
 }
 function keyhand (e) {
+    var now = +new Date();
+    if (lasthand + 200 > now) {
+        return;
+    }
+    lasthand = now;
     var data = {
         type: e.type,
         S: 0+e.shiftKey,
