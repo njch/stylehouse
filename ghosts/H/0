@@ -6,6 +6,7 @@ hooks:
     $G->unrush('elvinit') || return;
     
         G TT ->G("H/mess");
+        G TT ->G("H/keys");
         G TT ->G("H/colour");
 
     $H->init_flood();
@@ -137,9 +138,12 @@ hooks:
         $lye->scroll($s) if $lye;
     }
     elsif (my $event = $j->{event}) {
-        $mojo->app->log->info("Looking up event handler");
+        $G->Flab(event => $event);
+        
+        Say $event;
+        
         my $id = $event->{id};
-        $G->Flab("event", $event);
+        
 
         my $thing = $H->tv_by_id($event->{id}) if $id;
 
@@ -219,8 +223,9 @@ hooks:
   throwlog: |
     die "no mess!" unless G mess;
     start_timer();
-    G mess Tw throwlog(%$ar);
+    my $yep = G mess Tw throwlog(%$ar);
     say "Thrownlog: ".show_delta();
+    return $yep;
   colour:
     G colour Tw arr(%$ar);
   splatmenues: |

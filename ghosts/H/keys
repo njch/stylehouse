@@ -7,7 +7,7 @@
 
 name: kasplat
 tractors:
-  - K: 'mess'
+  - K: 'key'
     max_populi: 10
     arr_if: |
       $thing && $what
@@ -22,24 +22,11 @@ tractors:
       do { w $S wheresplain },
       $S->{B}->{thing}->[0]
 hooks:
-  fresh_init: |
+  any_init: |
+    $H->JS("\$(window).on('keyup', keyhand);");
   throwlog: |
     my $S = Arr[$thing, $what];
     $G->{_post_throw} && $G->{_post_throw}->($S);
-    return "yep" if $what eq "Info";
-  throwthrow: |
-    
-    print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
-    if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
-    }
-    $string = encode_entities($string);
-    $string =~ s/'/\\'/g;
-    $string =~ s/\n/\\n/g;
-    return $self->error("Recusive error messaging, check console")
-        if $string =~ /amp;amp;amp;/;
-    $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
-    $self->{throwings}->{$what} = $string;
     
   event: |
     #w throwlog(Event => $e);
