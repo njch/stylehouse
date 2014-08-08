@@ -461,14 +461,13 @@ sub doo {
     my $point = shift;
     my $Sway = shift;
     my $w = shift;
-    
-    die "RECURSION" if @F > 64;
-    
-    my $eval = $G->parse_babble($babble, $point);
+    die "RECURSION ".@F if @F > 40;
     
     my $thing = $G->{t};
     my $O = $G->T->{O};
-    $G->ob($point||$eval);
+    
+    my $eval = $G->parse_babble($babble, $point);
+    
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
     

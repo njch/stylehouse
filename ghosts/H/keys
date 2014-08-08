@@ -23,7 +23,7 @@ tractors:
       for (qw{S C A M}) {
           $and .= "$_+" if $e->{$_} 
       }
-      $and = "" if $and eq "S+";
+      $and = "" if $and eq "S+" && !$key;
       "key: $and$key ".(hitime()-$S->{hitime})
 hooks:
   first_init: |
@@ -39,7 +39,7 @@ hooks:
     $S->{B}->{key};
     #L ^ here's _, 
     
-    say `figlet '$k'`;
+    say join($k, (" ")x28) for 1..4;
     
     my $t = $G->{trig};
     if ($t->{$k}) {
