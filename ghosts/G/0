@@ -24,10 +24,13 @@ hooks:
   sing: |
     return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
     $G->{singing}->{$name} = 1;
-    my $t = $ar->{block_for} || 0.04;
+    my $t = $ar->{block_for} || $ar->{again_after} || 0.04;
     $G->timer($t, sub {
         my $splatter = delete $G->{singing}->{$name};
-        $S->Flab("$name blocked for $t, hits: $splatter") if $splatter > 1;
+        if ($splatter > 1) {
+            $S->Flab("$name blocked for $t, hits: $splatter");
+            $ar->{again_after} && $code->();
+        }
     });
     $code->();
     

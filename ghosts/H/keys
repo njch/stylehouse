@@ -32,10 +32,15 @@ hooks:
     my $t = $G->{trig};
     if ($t->{$k}) {
         Info "keytrig: $k", $S;
-        $t->{$k}->($S);
+        $G->_0(sing => { 
+        name => "keytrig $k",
+        block_for => 0.07,
+        code => sub {
+            $t->{$k}->($S);
+        }});
     }
-    my $p = w $S print;
-    Info $p;
+    my $p =  w $S print;
+    Info $p, $S;
     
   event: |
     #w throwlog(Event => $e);

@@ -1,5 +1,5 @@
 name: Lyricoso writoro
-chains:
+
 hooks:
   fresh_init: |
     $H->{_future} = 1;
@@ -24,19 +24,26 @@ hooks:
     $H->{G}->Gf('keys')->{trig}->{m} = sub {
         w tog_hmess;
     };
-    $H->{G}->Gf('keys')->{trig}->{q} = sub {
+    $H->{G}->Gf('keys')->{trig}->{'À'} = sub {
         w q;
+    };
+    $H->{G}->Gf('keys')->{trig}->{q} = sub {
+        my $thing = w look_for_ghost(name => 'Њ');
+        w somewhere[$thing];
     };
     
     w getstarted;
   messworm: |
-    $G->unrush('messworm') || return;
     return if $G->{_dont_mess_worm};
-    $G->timer(0.1, sub {
-      return if $G->{_dont_mess_worm};
-      my $wormhole = $G->{messworm};
-      say "Throgingo $wormhole;";
-      w somewhere[$wormhole];
+    $G->_0(sing => {
+        name => "messworm",
+        again_after => 0.7,
+        code => sub {
+          return if $G->{_dont_mess_worm};
+          my $wormhole = $G->{messworm};
+          say "Throgingo $wormhole;";
+          w somewhere[$wormhole];
+        },
     }, "mess>L");
   
     
