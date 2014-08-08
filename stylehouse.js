@@ -74,12 +74,16 @@ function clickyhand (event) {
     };
     ws.reply({event: data});
 }
+var nohands = 0;
 function keyhand (e) {
-    var now = +new Date();
-    if (lasthand + 200 > now) {
+    console.log(" a: "+nohands);
+    if (nohands) {
         return;
     }
-    lasthand = now;
+    setTimeout(function () {
+        nohands = 0;
+    }, 500);
+    nohands = 1;
     var data = {
         type: e.type,
         S: 0+e.shiftKey,
