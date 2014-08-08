@@ -20,7 +20,7 @@ tractors:
           $style .= "top:70%;left:10em;"
       }
       if ($splatname eq "land") {
-          $style .= "bottom:0px;right:10%;border:1px solid green;width:17em;z-index:20;"
+          $style .= "bottom:0px;right:0px;border:1px solid green;width:9em;z-index:20;"
       }
       if ($splatname eq "splatW") {
           $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
@@ -44,10 +44,10 @@ hooks:
     # so it's just over yonder in the chain
   go: |
     $G->timer(0.1, sub {
-    exists $ar->{line}
+    exists $ar->{append}
       ? $G->w('open_line', $ar)
       : $O->w('somewhere', $ar)
-      });
+    }, "splat\go");
   
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
@@ -85,13 +85,15 @@ hooks:
   Splat: |
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
+    return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
     my $A = Arr[$splatname, $wormhole];
     w script_out[$A, $splatname, $wormhole];
     $G->{nona} = 0;
     $G->{t} = $A;
     $H->{G}->w('sky/doof');
-    $H->Say("Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}}));
+    $H->Say("Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}}))
+        unless $splatname eq "worm";
   clear: |
     my $S = Afind[$splatname];
     $S->{view}->fadehtml();
@@ -209,13 +211,21 @@ hooks:
         
         push @$menu, 'ᣋ' => sub {
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
-            $G->timer(0.1, sub { $G->w(go => $tar) } );
+            $G->timer(0.1, sub { $G->w(go => $tar) }, "pendline" );
         };
+        push @$menu, 'ⲝ' => sub {
+            my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}",
+            thing => $line->{t} };
+            $G->timer(0.1, sub { $G->w(go => $tar) }, "pendthing" );
+            } if ref $t eq "Way" && $t->{thing}->[0] =~ /remiT/;
+            
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
             if ref $t eq "Wormhole";
-        push @$menu, 'Ώ' => sub { w go( wormhole => $t->{crawl_W_S} ) }
-            if ref $t eq "Way" && $t->{crawl_W_S};
+            
+        push @$menu, 'Ώ' => sub { w go( wormhole => $t) }
+        if $line->{i}->{each} eq 'crawl_W_S';
+            
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
             if ref $t eq "Ghost" || ref $t eq "Travel";
         push @$menu, '⊟' => sub { w lcodon[$line] }
@@ -285,8 +295,10 @@ hooks:
             if ($ref eq "ARRAY") { #c t s
                 $color = "090";
                 $name = 0+@$t.$inc->('black',"[").
-                    $inc->('#fca; font-size:10pt;line-height:8pt;',join $inc->('black',"["), @$t); 
-                    $s->{style}.="overflow:hidden";
+                    $inc->('#fca; font-size:10pt;line-height:8pt;',
+                        join $inc->('black',"["), @$t);
+                $name =~ s/^((?:.+?\n){4}).+$/$1/s;
+                $s->{style}.="overflow:hidden";
                 my $parent = $line->{i}->{L}->{t};
                 if ($parent && ref $parent eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
@@ -304,10 +316,12 @@ hooks:
                 }
                 $name = substr($name, 0, 100)."..." if length($name) > 120;
                 $fs = 14 if length($name) > 20;
+                $fs = 12 if $t->{K} =~ /^m/;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
                 }
+                $color = "fc0";
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
@@ -391,7 +405,6 @@ hooks:
         $s->{style}.="max-width: 45em;";
         $s->{style}.="word-wrap:break-word; max-height:5em; min-width: 10em;";
         $s->{style}.="color:#$color;";
-        $s->{style}.="color:#$color;";
         $s->{style}.="background: #330; ";
         
         $font ||= "font-family:serif;";
@@ -411,10 +424,11 @@ hooks:
     i:
       v: |
         $b->{c} = $line->{i};
-        w desc/chain(+ c => $b->{c});
+        my $v = w desc/chain(+ c => $b->{c});
+        $v;
       s: |
         $s->{class} .= " splat-w ";
-        $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);direction:rtl;"
+        $s->{style}.="margin-top:1px;background:rgba(130,108,33,0.5);text-align:right;"
             ."width: "
         .(($line->{depth}) * 5 + 3)."em;"
             if $line->{depth} > 0;

@@ -1,6 +1,8 @@
 name: Lyricoso writoro
+chains:
 hooks:
   fresh_init: |
+    $H->{_future} = 1;
     G TT ->G("T/splat");
     G TT ->G("T/crawl");
     G TT ->G("Ϡ");
@@ -10,7 +12,25 @@ hooks:
     G TT ->G("L/func");
     G TT ->G("L/ob");
     
+    my $Gmess = $H->{G}->Gf('mess');
+    $Gmess->{_post_throw} = sub {
+        return if $G->{_dont_mess_worm};
+        $G->{messworm} = $Gmess->W;
+        w messworm;
+    };
+    
     w getstarted;
+  messworm: |
+    $G->unrush('messworm') || return;
+    return if $G->{_dont_mess_worm};
+    $G->timer(0.1, sub {
+      return if $G->{_dont_mess_worm};
+      my $wormhole = $G->{messworm};
+      w somewhere[$wormhole];
+    }, "mess>lyrico");
+    
+    
+  
   recoded_init: |
     w getstarted;
   any_child_recoded_init: |
@@ -21,18 +41,51 @@ hooks:
         w getstarted;
     }
   
-  
-  
-  
-  
+  look_for_ghost: |
+    [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
+  lands: |
+    [ "G*",         sub { $H->data->{Ghost} } ],
+    [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ') }    ],
+    [ 'G*Њ', sub { w look_for_ghost(name => 'Њ') }    ],
+    [ "wayf",         sub { $G->stackway } ],
+    [ "\@F",           sub { [@F] } ],
+    [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
+    [ 'H',            sub {  $H } ],
+    [ 'L',             sub { $G } ];
+  funcs: |
+    [ chch => sub { w swap_chains; } ],
+    [ "Hmess",         sub {
+        my $wormhole = $H->{G}->Gf('mess')->W;
+        w somewhere[$wormhole];
+    } ],
+    #[ 'crawl' => sub { `touch ghosts/T/crawl` } ],
+    [ "____",          sub {
+        $G->{_dont_mess_worm} = !$G->{_dont_mess_worm};
+        $G->Flab("Yup yup yup");
+        G splat Tw clear(splatname => 'worm');
+        return "and";
+    }    ],
+    [ "_fr",          sub {
+        my $Gs = G splat;
+        $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
+        $G->Flab("IGGY worm $Gs->{iggysplat}->{worm}");
+        return "and";
+    }    ],
+    [ "futflip" => sub {
+        $H->{_future} = !$H->{_future};
+        $H->Say("\$H->{_future} = $H->{_future}");
+    }  ],
+    [ 'Gdb',          sub {
+        $Ghost::db = !$Ghost::db;
+        $H->Say("\$Ghost::db = $Ghost::db");
+    }    ],    
+    [ 'herenow',          sub {
+        G splat ->w('go', {thing => $G->stackway});
+        say "going now_later";
+    }    ];
   
   
   set_land: |
-    my $gns = sub {
-        my $s = shift;
-        sub {[ grep { $_->{name} =~ /$s/ } @{$H->data->{Ghost}} ]}
-    };
-    
     my $GG;
     my $f = sub {
         $G->Tw($GG, 'arr', {name => shift, code => shift});
@@ -42,39 +95,11 @@ hooks:
     G func ->RW;
     
     $GG = G land; 
-    $f->(@$_) for 
-    [ "G*",         sub { $H->data->{Ghost} } ],
-    [ 'G*Ϡ',          $gns->('Ϡ')    ],
-    [ 'G*Њ',          $gns->('Њ')    ],
-    [ "wayf",         sub { $G->stackway } ],
-    [ "\@F",           sub { [@F] } ],
-    [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
-    [ 'H',            sub {  $H } ],
-    [ 'O',             sub { $O } ],
-    [ 'G'.' follow',sub {  G(land)->W } ],
-    [ "COLS",         sub { $doneprotolwptimes; } ];
+    $f->(@$_) for w lands;
     
     
     $GG = G func;
-    $f->(@$_) for
-    [ "Hmess",         sub {
-        my $wormhole = $H->{G}->Gf('mess')->W;
-        w somewhere[$wormhole];
-    } ],
-    [ hmmm => sub { `touch ghosts/T/crawl` } ],
-    [ "clearworm",          sub {
-        $G->Flab("Yup yup yup");
-        G splat Tw clear(splatname => 'worm');
-        return "and";
-    }    ],
-    [ 'Gdb',          sub {
-        $Ghost::db = !$Ghost::db;
-        $H->Say("\$Ghost::db = $Ghost::db");
-    }    ],    
-    [ 'herenow',          sub {
-        G splat ->w('go', {thing => $G->stackway});
-        say "going now_later";
-    }    ];
+    $f->(@$_) for w funcs;
     
     G splat Tw Splat(land => G(land)->W);
     
@@ -85,8 +110,12 @@ hooks:
     $G->unrush('getstarted') || return;
     w set_land;
     w somewhere(thing => w default_somewhere);
-  extra_crawlies:
-      - K: something
+  swap_chains: |
+    $_->{_disabled} = !$_->{_disabled} for G crawl ->allchains;
+    $G->timer(0.1, sub {
+        w somewhere(thing => $G->{thething});
+    });
+  
   somewhere: |
     if ($ar->{nothing}) {
         Say "nothing...";
@@ -109,6 +138,7 @@ hooks:
     
     $Cr->RW;
 
+    $G->{thething} = $thing;
     $Cr->T($thing, undef, $G->stackway);
     
     my $wormhole = $G->{some_W} = $Cr->W;

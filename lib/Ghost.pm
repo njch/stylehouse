@@ -28,6 +28,7 @@ sub gname {
     $ish =~ s/^(\w+)=HASH.*$/$1\{/;
     $ish;
 }
+sub hitime { Hostinfo::hitime() }
 sub ghostlyprinty {
     join "  ", map {
         ref $_ ? 
@@ -75,7 +76,7 @@ sub timer {
     my $G = shift;
     my $time = shift || 0.2;
     my $doing = shift;
-    my $last = $G->stackway("G Timer");
+    my $last = $G->stackway("G Timer", @_);
     
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
@@ -86,7 +87,9 @@ sub comeback {
     my $last = shift;
     my $doings = shift;
     my $doing = shift;
-    my $u = $G->waystacken("G remiT", @_);
+    my @saying = @{ $last->{thing} };
+    $saying[0] =~ s/G Timer/G remiT/;
+    my $u = $G->waystacken(@saying, @_);
     my $s = $F[0];
     $s->{doings} = $doings;
     $s->{timer_from} = $last;
@@ -356,7 +359,10 @@ sub chains {
     grep { !$_->{_disabled} }
     map { @{$_->{chains}||[]} } $self->ways
 }
-
+sub allchains {
+    my $self = shift;
+    map { @{$_->{chains}||[]} } $self->ways
+}
 sub unrush {
     my $self = shift;
     my $point = shift;
@@ -364,7 +370,7 @@ sub unrush {
         $self->timer(0.2, sub {
             $self->{_unrush}->{$point} = 2;
             $self->w($point);
-        });
+        }, "unrush");
         $self->{_unrush}->{$point} = 1
     }
     $self->{_unrush}->{$point} == 2
@@ -455,6 +461,8 @@ sub doo {
     my $Sway = shift;
     my $w = shift;
     
+    die "RECURSION" if @F > 64;
+    
     my $eval = $G->parse_babble($babble, $point);
     
     my $thing = $G->{t};
@@ -471,7 +479,7 @@ sub doo {
     my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
     my @return;
-    my $evs = "$download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
+    my $evs = "no warnings 'experimental'; $download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
     
         
         my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
@@ -521,10 +529,7 @@ sub doo {
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        say "EVS: $evs" if $@ !~ /DOOF/;
-        say $DOOF;
-        $G->Flab("Error: $@", $DOOF);
-        $G->Flab(DOOF => $DOOF);
+        $G->Flab("Error: $@", $DOOF, $ar, $evs) if $@ !~ /DOOF/;
         $@ = $DOOF;
         
         my @ca = caller(1);

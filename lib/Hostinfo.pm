@@ -249,6 +249,7 @@ sub elvis_enters {
     }
     else {
         say "recv >\t\t$msg";
+        $self->Info("recv >", $msg);
     }
 
     if (my $elvis = $self->get('elviss')->{$eid}) {
@@ -564,6 +565,7 @@ sub watch_file_streams {
         }
         
         if (@diffs) {
+            $self->Say("$st->{filename} CHANGED: ".join("   ", @diffs));
             say "$st->{filename} has been REPLACED or something:";
             say "    $_" for @diffs;
         }
@@ -855,7 +857,9 @@ sub info {
     my $self = shift;
     $self->throwlog("Info", @_);
 }
-sub Info { shift->info(@_) }
+sub Info { 
+    my $self = shift;
+    $self->throwlog("Info", @_);}
 sub error {
     my $self = shift;
     $self->throwlog("Error", @_);
@@ -863,18 +867,17 @@ sub error {
 sub Err { shift->error(@_) }
 sub Say {
     my $self = shift;
-    $self->{_future} = 1 if $self->{G} && $self->{G}->Gf("mess");
     $self->throwlog("Say", @_);
 }
     
 sub throwlog {
     my $self = my $H = shift;
     my $what = shift;
-    if ($H->{_future}) {
-        $H->{_future} = 0;
+    
+    if ($H->{_future} && $what ne "Error") {
         $H->{G}->w(throwlog => {what => $what, thing => [@_]});
-        #return;
     }
+    
     my $error = $self->enlogform(@_);
 
     my $string = join("\n", $error->[0],
@@ -892,7 +895,7 @@ sub throwlog {
     $string =~ s/\n/\\n/g;
     return $self->error("Recusive error messaging, check console")
         if $string =~ /amp;amp;amp;/;
-    $self->{throwings}->{$what} || $self->timer(0.5, sub { $self->throwlog_throw });
+    $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
     $self->{throwings}->{$what} = $string;
 }
 sub throwlog_throw {

@@ -18,7 +18,12 @@ tractors:
       w $S set_background if $ar->{set_css_background};
     set_background: |
       my $colour = w $S wtc;
-      $H->JS("\$('$set_css_background').css('background', '$colour');");
+      if ($ar->{t}) {
+          $H->JS("\$('$set_css_background').animate({backgroundColor: '$colour'}, $ar->{t});");
+      }
+      else {
+            $H->JS("\$('$set_css_background').css('background', '$colour');");
+      }
     change_person: |
       push @$personalities, shift @$personalities;
     randomcolour: |
@@ -28,6 +33,12 @@ tractors:
       my ($as) = @$personalities;
       my ($rgb) = join", ", map {$as->()} 1 .. 3;
       return $S->{B}->{colour} = "rgb($rgb)";
+    change_colour: |
+      $S->{B}->{colour} = $ar->{c} || w $S randomcolour;
+    change: |
+      w $S change_colour;
+      $H->info("H/colour /$name t=$ar->{t} c=$colour") if $ar->{t} > 666;
+      w $S set_background;
     wtc: |
       $S->{B}->{colour} ||=  w $S randomcolour;
 hooks:
@@ -37,6 +48,9 @@ hooks:
     my $S = Arr[(%$ar)];
   arr: |
     my $S = Arr[(%$ar)];
+  change: |
+    my $S = Afind[$name];
+    w $S change(%$ar);
   randomcolour: |
     my $S = Afind[$name];
     return w $S randomcolour(%$ar);
