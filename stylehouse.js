@@ -82,6 +82,7 @@ function keyhand (e) {
         A: 0+e.altKey,
         M: 0+e.metaKey,
         which: e.which,
+        k: String.fromCharCode(e.keyCode),
     };
     ws.reply({event: data});
 }

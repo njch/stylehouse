@@ -10,23 +10,21 @@ tractors:
   - K: 'key'
     max_populi: 10
     arr_if: |
-      $thing && $what
+      $e && $e->{k}
     B_: |
-      $thing
+      Hostinfo::make_uuid()
     first_time: |
-      $S->{K}="m$what";
-    wheresplain: |
-      $S->{waystack} ? w $S->{waystack} wheresplain : "";
+      $B->{key} ||= lc($e->{k}) unless $e->{k};
     print: |
-      join " ", $S->{K},
-      do { w $S wheresplain },
-      $S->{B}->{thing}->[0]
+      $B->{k}
 hooks:
   any_init: |
     $H->JS("\$(window).on('keyup', keyhand);");
-  throwlog: |
-    my $S = Arr[$thing, $what];
-    $G->{_post_throw} && $G->{_post_throw}->($S);
+  arr: |
+    my $e = $event;
+    my $S = Arr[$e];
+    Info "klogged", $S;
+    Say "klogged: ". w $S print;
     
   event: |
     #w throwlog(Event => $e);
