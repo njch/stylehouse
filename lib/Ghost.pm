@@ -15,7 +15,7 @@ our @F;
 our @Flab;
 our $G0;
 our $L;
-our $db;
+our $db = 1;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -42,7 +42,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{db} || $db;
+    say $_[0] if $G->{way} ne "T/splat" && ($G->{db} || $db);
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -64,7 +64,6 @@ sub waystacken {
         @Flab = ();
     }
 }
-
 sub timur {
     if ($G0) {
         $G0->timer(@_);
@@ -468,7 +467,7 @@ sub doo {
     my $thing = $G->{t};
     my $O = $G->T->{O};
     
-    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)." $point k=".join",",sort keys %$ar;
+    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)." ".($point||"")." k=".join",",sort keys %$ar;
     my $subhash = Hostinfo::sha1_hex($uuname);
     
     $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble"));
@@ -502,6 +501,7 @@ sub doo {
         }
     };
     my $evsub = $subcache{$subhash};
+    
     
         
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
