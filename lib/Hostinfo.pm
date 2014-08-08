@@ -241,8 +241,9 @@ sub elvis_enters {
     my $tx = $mojo->tx;
 
     my $eid = $mojo->stash('elvisid'); 
-    # "Elvis enters with stash: ".($eid||"undef");
- 
+    
+    return 0 if $self->ignorable_mess($msg);
+    
     if (-t STDOUT) {
         print colored("recv >\t\t", 'red');
         print colored($msg, 'bold red'), "\n";
@@ -265,7 +266,7 @@ sub elvis_enters {
         die "Cannot find elvis: $eid";
     }
     
-    return ! $self->ignorable_mess($msg);
+    return 1;
 }
 sub elvis_gone {
     my $self = shift;
