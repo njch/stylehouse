@@ -482,7 +482,7 @@ sub doo {
     unless ($evsub) {
         my $eval = $G->parse_babble($babble, $point);
         my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
-        $download .= 'my$thing = $G->{thing};' unless $ar->{'thing'};
+        $download .= 'my$thing = $G->{t};' unless $ar->{'thing'};
         $download .= 'my $O = $G->T->{O};';
         my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
