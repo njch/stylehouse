@@ -74,7 +74,16 @@ function clickyhand (event) {
     };
     ws.reply({event: data});
 }
+var nohands = 0;
+var handelay = 10;
 function keyhand (e) {
+    if (nohands) {
+        return;
+    }
+    setTimeout(function () {
+        nohands = 0;
+    }, handelay);
+    nohands = 1;
     var data = {
         type: e.type,
         S: 0+e.shiftKey,

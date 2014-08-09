@@ -18,9 +18,13 @@ tractors:
     wheresplain: |
       $S->{waystack} ? w $S->{waystack} wheresplain : "";
     print: |
-      join " ", $S->{K},
-      do { w $S wheresplain },
-      $S->{B}->{thing}->[0]
+      my $f = $thing->[0];
+      my $p;
+      if (ref $f eq "Way") {
+          $p = w $f print;
+      }
+      $p ||= $f || "";
+      join " ", $S->{K}, $p;
 hooks:
   fresh_init: |
   throwlog: |

@@ -94,6 +94,9 @@ hooks:
     $H->{G}->w('sky/doof');
     $H->Say("Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}}))
         unless $splatname eq "worm";
+    say "Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}})
+     ."   ".show_delta()
+        if $splatname eq "worm";
   clear: |
     my $S = Afind[$splatname];
     $S->{view}->fadehtml();
@@ -444,7 +447,7 @@ hooks:
         }
         
         $s->{style}.="color: #".(
-          $line->{i}->{K} eq 'ARRAY' ? "0F2E1F" :
+          $line->{i}->{K} && $line->{i}->{K} eq 'ARRAY' ? "0F2E1F" :
             'bbb' ).";";
             
         $s->{_event} = sub { w go(thing => $line->{i}) }

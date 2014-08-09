@@ -31,7 +31,6 @@ hooks:
     doof: |
       my $sky = G sky;
       w $sky doof;
-
   init_flood: |
     my $self = $O;
     my $data = $O->data;
@@ -116,6 +115,8 @@ hooks:
             $H->error("message process fup", $@);
             return;
         }
+        
+        print Hostinfo::colored(scalar(`figlet '<'`), 'blue');
   dostuff: |
     # ongoing stuff
     if ($j->{claw} && $H->claw($j)) {
@@ -138,7 +139,7 @@ hooks:
         $lye->scroll($s) if $lye;
     }
     elsif (my $event = $j->{event}) {
-        $G->Flab(event => $event);
+        $G->Flab("H dostuff event", $event);
         
         if ($event->{type} =~ /^key/) {
             G keys Tw arr[$event];
@@ -183,35 +184,17 @@ hooks:
     
     my $j;
     start_timer();
-    
-    `cat /dev/null > elvis_sez`;
-    $H->spurt('elvis_sez', $msg);
-    my $convert = q{perl -e 'use YAML::Syck; use JSON::XS; use File::Slurp;}
-        .q{print " - reading json from elvis_sez";}
-        .q{my $j = read_file("elvis_sez");}
-        .q{print "! json already yaml !~?\n$j\n" if $j =~ /^---/s;}
-        .q{print " - convert json -> yaml\n";}
-        .q{my $d = decode_json($j);}
-        .q{print " - write yaml to elvis_sez\n";}
-        .q{DumpFile("elvis_sez", $d);}
-        .q{print " - done\n";}
-        .q{'};
-    `$convert`;
 
     eval {
-        $j = LoadFile('elvis_sez');
-
-        while (my ($k, $v) = each %$j) {
-            if (ref \$v eq "SCALAR") {
-                $j->{$k} = Hostinfo::decode_utf8($v);
-            }
-        }
+        $j = decode_json(Hostinfo::encode_utf8($msg));
     };
-    say "Decode in ".show_delta();
+    
+    $G->Flab("H message Decode in ".show_delta());
     die "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
         if $@;
 
     die "$msg\n\nJSON decoded to ~undef~" unless defined $j;
+    
     return $j;
     
   data:
@@ -225,9 +208,7 @@ hooks:
       return $apps;
   throwlog: |
     die "no mess!" unless G mess;
-    start_timer();
     my $yep = G mess Tw throwlog(%$ar);
-    say "Thrownlog: ".show_delta();
     return $yep;
   colour:
     G colour Tw arr(%$ar);

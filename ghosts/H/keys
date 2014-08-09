@@ -13,34 +13,48 @@ tractors:
       $e
     B_: |
       $e
+    first_time: |
+      $S->{B}->{key} ||= $e->{k};
+      $S->{B}->{key} ||= "Ⲯ";
+      $S->{B}->{key} = lc($S->{B}->{key}) if !$e->{S};
+      $S->{hitime} = hitime();
     print: |
       my $and = "";
       for (qw{S C A M}) {
           $and .= "$_+" if $e->{$_} 
       }
-      "key: $and$key"
+      $and = "" if $and eq "S+" && !$key;
+      "key: $and$key ".(hitime()-$S->{hitime})
 hooks:
   first_init: |
     $H->JS("\$(window).on('keydown', keyhand);");
+  any_init: |
+    $H->JS("handelay = 5;"); 
+    $H->JS("\$(window).on('keydown', keyhand);"); 
   arr: |
     my $e = $event;
     my $S = Arr[$e];
 
-    my $k = $S->{B}->{key} = lc($e->{k}) unless $e->{S};
-    $S->{B}->{key} ||= "";
+    my $k = 
+    $S->{B}->{key};
+    #L ^ here's _, 
+    
+    say join($k, (" ")x28) for 1..4;
     
     my $t = $G->{trig};
     if ($t->{$k}) {
         Info "keytrig: $k", $S;
         $G->_0(sing => { 
-        name => "keytrig $k",
-        block_for => 0.07,
-        code => sub {
-            $t->{$k}->($S);
-        }});
+            name => "keytrig $k",
+            block_for => 0.2,
+            code => sub {
+                $t->{$k}->($S);
+            },
+        });
     }
-    my $p =  w $S print;
-    Info $p, $S;
+    $G->timer(0.01, sub  {
+        Info $S;
+    },"prop keypress Info");
     
   event: |
     #w throwlog(Event => $e);

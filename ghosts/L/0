@@ -14,6 +14,7 @@ hooks:
     
     my $Gmess = $H->{G}->Gf('mess');
     $Gmess->{_post_throw} = sub {
+      return;
         my $S = shift;
         #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
         return if $G->{_dont_mess_worm};
@@ -21,27 +22,42 @@ hooks:
         w messworm;
     };
     
-    $H->{G}->Gf('keys')->{trig}->{m} = sub {
+    $G->timer(0.01, sub {
+        w set_keys;
+        w set_Gdbs;
+    }, "L setup");
+    
+    w getstarted;
+  set_keys: |
+    my $kGs = $H->{G}->Gf('keys');
+    my $tr = $kGs->{trig};
+    $tr->{m} = sub {
         w tog_hmess;
     };
-    $H->{G}->Gf('keys')->{trig}->{'À'} = sub {
+    $tr->{'À'} = sub {
         w q;
     };
-    $H->{G}->Gf('keys')->{trig}->{q} = sub {
+    $tr->{q} = sub {
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
     };
-    
-    w getstarted;
+  set_Gdbs: |
+    my @Gdbnah = map {
+        w look_for_ghost(name => $_)
+    } qw{T/splat.....W/tractor H/sky H/mess H/colour land path func};
+    for my $g (map { @$_ } @Gdbnah) {
+    say "Setting db-1 $g->{name}";
+        $g->{db} = -1;
+    }
   messworm: |
     return if $G->{_dont_mess_worm};
     $G->_0(sing => {
         name => "messworm",
-        again_after => 0.7,
+        again_after => 0.5,
+        #begin_after => 0.2,
         code => sub {
           return if $G->{_dont_mess_worm};
           my $wormhole = $G->{messworm};
-          say "Throgingo $wormhole;";
           w somewhere[$wormhole];
         },
     }, "mess>L");
@@ -51,11 +67,10 @@ hooks:
   
   recoded_init: |
     w set_land;
-    w getstarted;
   any_child_recoded_init: |
     w set_land;
     # splat_wormholes;
-    Say $ar;
+    Say "Child recoded", $ar;
     if ($ar->{S}->{way} =~ /crawl/) {
         w getstarted;
     }
@@ -64,7 +79,7 @@ hooks:
     [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
-    [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ') }    ],
+    [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ'); }    ],
     [ 'G*Њ', sub { w look_for_ghost(name => 'Њ') }    ],
     [ "wayf",         sub { $G->stackway } ],
     [ "\@F",           sub { [@F] } ],
@@ -73,10 +88,41 @@ hooks:
     [ 'L',             sub { $G } ];
   q: |
     w somewhere(nothing => $L); 
+  Ϡ: |
+    my $thing = w look_for_ghost(name => 'Ϡ');
+    w somewhere[$thing];
+  somewhere: |
+    if ($ar->{nothing}) {
+        Gf Ϡ Tw arr(%$ar);
+        return;
+    }
+    if ($ar->{wormhole}) {
+        w wormholify;
+        return;
+    }
+    
+    #G path Tw arr(%$ar);
+    #G splat Tw Splat(path => G(path)->W);
+    my $Cr = G crawl;
+    die "HMM" unless $Cr;
+    say "" for 1..5;
+    say join"", ("       ẞ           ")x38;
+    start_timer();
+    
+    $Cr->RW;
+
+    $G->{thething} = $thing;
+    $Cr->T($thing, undef, $G->stackway);
+    
+    my $wormhole = $G->{some_W} = $Cr->W;
+    my $crawltime = show_delta();
+
+    w splat_wormholes;
+    
+    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { w q;
-    } ],
+    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
     [ "_fr",          sub {
         my $Gs = G splat;
         $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
@@ -140,40 +186,11 @@ hooks:
         w somewhere(thing => $G->{thething});
     });
   
-  somewhere: |
-    if ($ar->{nothing}) {
-        Gf Ϡ Tw arr(%$ar);
-        return;
-    }
-    if ($ar->{wormhole}) {
-        w wormholify;
-        return;
-    }
-    
-    G path Tw arr(%$ar);
-    G splat Tw Splat(path => G(path)->W);
-    
-    my $Cr = G crawl;
-    die unless $Cr;
-    say "" for 1..5;
-    say join"", ("       ẞ           ")x38;
-    start_timer();
-    
-    $Cr->RW;
-
-    $G->{thething} = $thing;
-    $Cr->T($thing, undef, $G->stackway);
-    
-    my $wormhole = $G->{some_W} = $Cr->W;
-    my $crawltime = show_delta();
-
-    w splat_wormholes;
-    
-    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
-    return unless G(crawl);
+    return unless $G->{some_W};
     G splat Tw Splat(somewhere => $G->{some_W});
   wormholify: |
+    #
     G splat Tw Splat(worm => $wormhole);
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );

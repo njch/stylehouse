@@ -15,7 +15,7 @@ our @F;
 our @Flab;
 our $G0;
 our $L;
-our $db;
+our $db = 1;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -42,7 +42,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{db} || $db;
+    say $_[0] if $G->{way} ne "T/splat" && (($G->{db}||0) + ($db||0)) > 0;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -64,7 +64,6 @@ sub waystacken {
         @Flab = ();
     }
 }
-
 sub timur {
     if ($G0) {
         $G0->timer(@_);
@@ -114,7 +113,7 @@ sub stackway {
     }
     else {
         ($from) = $stack->[0] =~ / (\S+::\S+) /;
-        $from =~ s/.*Ghost::(Fl|wa)?.*/$1/;
+        $from =~ s/.*Ghost::(Fl|wa).*/$1/;
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
     }
@@ -371,7 +370,7 @@ sub unrush {
         $self->timer(0.2, sub {
             $self->{_unrush}->{$point} = 2;
             $self->w($point);
-        }, "unrush");
+        }, "unrush $point");
         $self->{_unrush}->{$point} = 1
     }
     $self->{_unrush}->{$point} == 2
@@ -454,6 +453,8 @@ sub w {
     }
 }
 our $slightly = 0;
+our %subcache;
+our %evscache;
 sub doo {
     my $G = shift;
     my $babble = shift;
@@ -461,32 +462,61 @@ sub doo {
     my $point = shift;
     my $Sway = shift;
     my $w = shift;
+    die "RECURSION ".@F if @F > 40;
     
-    die "RECURSION" if @F > 64;
-    
-    my $eval = $G->parse_babble($babble, $point);
-    
-    my $thing = $G->{t};
     my $O = $G->T->{O};
-    $G->ob($point||$eval);
     
-    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $eval"));
+    my $ksmush = join",",sort keys %$ar;
+    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)
+        ." ".($point||"")." arar=".$ksmush;
+        
+    my $subhash = Hostinfo::sha1_hex($uuname);
+    
+    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble")."\t$ksmush");
     
     if ($slightly++ > 50) {
         $slightly = 0;
         $H->snooze;
     }
-    my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
-    my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
+    my $evsub = $subcache{$subhash};
+    unless ($evsub) {
+        my $eval = $G->parse_babble($babble, $point);
+        my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
+        $download .= 'my$thing = $G->{thing};' unless $ar->{'thing'};
+        $download .= 'my $O = $G->T->{O};';
+        my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
     
-    my @return;
-    my $evs = "no warnings 'experimental'; $download\n".' @return = (sub { '."\n".$eval."\n })->(); $upload";
+        my $doo_return = [];
+        my $doo_sev_sub = [];
+        
+        my $sevs = "no warnings 'experimental'; $download\n".'; @$doo_return = (sub { '."\n".$eval."\n })->(); $upload";
+        
+        my $evs = '@$doo_sev_sub = sub { my $ar = shift; '.$sevs.'; return @$doo_return };';
+        
+        eval $evs;
+        
+        my ($sub) = @$doo_sev_sub;
+        if (ref $sub) {
+            $evscache{$subhash} = $evs;
+            $subcache{$subhash} = $sub;
+        }
+        else {
+            say "BUNG CODE ============================\n\n$evs\n\n\n\n";
+            die "NON COMPILE $@ ".ref $sub for 1..30;
+        }
+    };
+    my $evsub = $subcache{$subhash};
+    
     
         
-        my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
-        bless {evs=>$evs, babble=>$babble}, 'h');
+    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
+        bless {evs=>"?", babble=>$babble}, 'h');
     
-    eval $evs;
+    my @return;
+    @return = $evsub->($ar) if ref $evsub;
+    unless (ref $evsub) {
+        say "DEAD ! $evsub" for 1..5;
+    }
     
     $back->();
     
@@ -494,6 +524,7 @@ sub doo {
         my ($x) = $@ =~ /line (\d+)\.$/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
+        my $evs = $evscache{$subhash};
         my @eval = split "\n", $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
