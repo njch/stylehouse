@@ -89,11 +89,6 @@ sub comeback {
     my $doing = shift;
     my @saying = @{ $last->{thing} };
     $saying[0] =~ s/G Timer/G remiT/;
-    say "                     @saying";
-    say "         @saying";
-    say " @saying";
-    say " $G->{name}";
-    say "";
     my $u = $G->waystacken(@saying, @_);
     my $s = $F[0];
     $s->{doings} = $doings;
