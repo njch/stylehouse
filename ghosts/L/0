@@ -22,6 +22,13 @@ hooks:
     };
     
     w getstarted;
+  any_init: |
+    $G->timer(0.01, sub {
+        w set_keys;
+        w set_Gdbs;
+    }, "L setup"); 
+    
+    w set_land;
   set_keys: |
     my $kGs = $H->{G}->Gf('keys');
     my $tr = $kGs->{trig} ||= {};
@@ -62,13 +69,6 @@ hooks:
     
     
   
-  recoded_init: |
-    $G->timer(0.01, sub {
-        w set_keys;
-        w set_Gdbs;
-    }, "L setup"); 
-    
-    w set_land;
   any_child_recoded_init: |
     w set_land;
     # splat_wormholes;
@@ -88,12 +88,30 @@ hooks:
     [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
+  funcs: |
+    [ chch => sub { w swap_chains; } ],
+    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('LtϠ'); }) } ],
+    [ "G*Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ');   }) } ],
+    [ "futflip" => sub {
+        $H->{_future} = !$H->{_future};
+        $H->Say("\$H->{_future} = $H->{_future}");
+    }  ],
+    [ 'Gdb',          sub {
+        $Ghost::db = !$Ghost::db;
+        $H->Say("\$Ghost::db = $Ghost::db");
+    }    ],    
+    [ 'herenow',          sub {
+        G splat ->w('go', {thing => $G->stackway});
+        say "going now_later";
+    }    ];
   q: |
     w somewhere(nothing => $L); 
   Ϡ: |
     my $thing = w look_for_ghost(name => 'Ϡ');
+    Say "Here!";
     w somewhere[$thing];
-  L>Ϡ: |
+  LtϠ: |
+    say " GGGGGGGGGGGGG " for 1..5;
     my $nothing = $G;
     w somewhere[$nothing];
   somewhere: |
@@ -128,28 +146,7 @@ hooks:
     w splat_wormholes;
     
     Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
-  funcs: |
-    [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('L>Ϡ'); }) } ],
-    [ "G*Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
-    [ "_fr",          sub {
-        my $Gs = G splat;
-        $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
-        $G->Flab("IGGY worm $Gs->{iggysplat}->{worm}");
-        return "and";
-    }    ],
-    [ "futflip" => sub {
-        $H->{_future} = !$H->{_future};
-        $H->Say("\$H->{_future} = $H->{_future}");
-    }  ],
-    [ 'Gdb',          sub {
-        $Ghost::db = !$Ghost::db;
-        $H->Say("\$Ghost::db = $Ghost::db");
-    }    ],    
-    [ 'herenow',          sub {
-        G splat ->w('go', {thing => $G->stackway});
-        say "going now_later";
-    }    ];
+
   make_hmess: |
         $G->{_dont_mess_worm} = 0;
         my $wormhole = $H->{G}->Gf('mess')->W;
