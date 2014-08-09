@@ -15,7 +15,7 @@ our @F;
 our @Flab;
 our $G0;
 our $L;
-our $db = 1;
+our $db = 0;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -439,9 +439,12 @@ sub w {
             $u->();
         }
     }
+    unless (@returns) {
+        $G->Flab("way miss $talk", $Sway);
+    }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
-    return 
+    return
                             if @returns < 1;
     my @return = @{$returns[0]};
     if (wantarray) {
