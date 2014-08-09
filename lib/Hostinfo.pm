@@ -897,7 +897,7 @@ sub keep_throwing {
     my $error = shift;
     my $string = join("\n", $error->[0],
         " stack x". @{$error->[1]},#map { "    - $_" } reverse @{$error->[1]}),
-            join("\n\n", map { ref $_ ? wdump($_) : "$_" } @{$error->[2]}),
+            join("\n\n", @{$error->[2]}),
         );
 
 
