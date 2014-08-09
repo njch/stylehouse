@@ -91,6 +91,36 @@ hooks:
   Ϡ: |
     my $thing = w look_for_ghost(name => 'Ϡ');
     w somewhere[$thing];
+  somewhere: |
+    if ($ar->{nothing}) {
+        Gf Ϡ Tw arr(%$ar);
+        return;
+    }
+    if ($ar->{wormhole}) {
+        w wormholify;
+        return;
+    }
+    
+    G path Tw arr(%$ar);
+    G splat Tw Splat(path => G(path)->W);
+    
+    my $Cr = G crawl;
+    die "HMM" unless $Cr;
+    say "" for 1..5;
+    say join"", ("       ẞ           ")x38;
+    start_timer();
+    
+    $Cr->RW;
+
+    $G->{thething} = $thing;
+    $Cr->T($thing, undef, $G->stackway);
+    
+    my $wormhole = $G->{some_W} = $Cr->W;
+    my $crawltime = show_delta();
+
+    w splat_wormholes;
+    
+    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   funcs: |
     [ chch => sub { w swap_chains; } ],
     [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
@@ -157,36 +187,7 @@ hooks:
         w somewhere(thing => $G->{thething});
     });
   
-  somewhere: |
-    if ($ar->{nothing}) {
-        Gf Ϡ Tw arr(%$ar);
-        return;
-    }
-    if ($ar->{wormhole}) {
-        w wormholify;
-        return;
-    }
-    
-    G path Tw arr(%$ar);
-    G splat Tw Splat(path => G(path)->W);
-    
-    my $Cr = G crawl;
-    die "HMM" unless $Cr;
-    say "" for 1..5;
-    say join"", ("       ẞ           ")x38;
-    start_timer();
-    
-    $Cr->RW;
 
-    $G->{thething} = $thing;
-    $Cr->T($thing, undef, $G->stackway);
-    
-    my $wormhole = $G->{some_W} = $Cr->W;
-    my $crawltime = show_delta();
-
-    w splat_wormholes;
-    
-    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   splat_wormholes: |
     return unless $G->{some_W};
     G splat Tw Splat(somewhere => $G->{some_W});
