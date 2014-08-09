@@ -64,12 +64,16 @@ hooks:
     }
     return $found[0]->{t};
   populi: |
-    $G->unrush('populi') || return;
-    # TODO enforce $A->{max_populi} (H/mess)
-    my ($A) = $O->tractors;
-    my $max = $A->{max_populi} || return;
-    my $s = $O->W->{script};
-    shift @$s until @$s < $max; # off by one for the line about to happen
+    $G->_0(sing => { 
+        name => "$O->{name} population control",
+        again_after => 0.2,
+        code => sub {
+            my ($A) = $O->tractors;
+            my $max = $A->{max_populi} || return;
+            my $s = $O->W->{script};
+            shift @$s until @$s < $max; # off by one for the line about to happen..?
+        },
+    });
   random: |
     my $tot = @{ $O->W->{script} }-1;
     my $i = int rand $tot;
