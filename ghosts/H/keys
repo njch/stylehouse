@@ -45,15 +45,16 @@ hooks:
     if ($t->{$k}) {
         Info "keytrig: $k", $S;
         $G->_0(sing => { 
-        name => "keytrig $k",
-        block_for => 0.2,
-        code => sub {
-            $t->{$k}->($S);
-        }});
+            name => "keytrig $k",
+            block_for => 0.2,
+            code => sub {
+                $t->{$k}->($S);
+            },
+        });
     }
     $G->timer(0.01, sub  {
-    Info $S;
-    },"noinfy");
+        Info $S;
+    },"prop keypress Info");
     
   event: |
     #w throwlog(Event => $e);
