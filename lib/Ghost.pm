@@ -89,6 +89,11 @@ sub comeback {
     my $doing = shift;
     my @saying = @{ $last->{thing} };
     $saying[0] =~ s/G Timer/G remiT/;
+    say "                     @saying";
+    say "         @saying";
+    say " @saying";
+    say " $G->{name}";
+    say "";
     my $u = $G->waystacken(@saying, @_);
     my $s = $F[0];
     $s->{doings} = $doings;
@@ -370,7 +375,7 @@ sub unrush {
         $self->timer(0.2, sub {
             $self->{_unrush}->{$point} = 2;
             $self->w($point);
-        }, "unrush");
+        }, "unrush $point");
         $self->{_unrush}->{$point} = 1
     }
     $self->{_unrush}->{$point} == 2
@@ -501,7 +506,8 @@ sub doo {
             $subcache{$subhash} = $sub;
         }
         else {
-            say "NON COMPILE $@ ".ref $sub;
+            say "BUNG CODE ============================\n\n$evs\n\n\n\n";
+            die "NON COMPILE $@ ".ref $sub for 1..30;
         }
     };
     my $evsub = $subcache{$subhash};
@@ -513,6 +519,9 @@ sub doo {
     
     my @return;
     @return = $evsub->($ar) if ref $evsub;
+    unless (ref $evsub) {
+        say "DEAD ! $evsub" for 1..5;
+    }
     
     $back->();
     

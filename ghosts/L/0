@@ -14,6 +14,7 @@ hooks:
     
     my $Gmess = $H->{G}->Gf('mess');
     $Gmess->{_post_throw} = sub {
+      return;
         my $S = shift;
         #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
         return if $G->{_dont_mess_worm};
@@ -21,8 +22,10 @@ hooks:
         w messworm;
     };
     
+    $G->timer(0.01, sub {
     w set_keys;
     w set_Gdbs;
+    }, "L setup");
     
     w getstarted;
   set_keys: |
@@ -41,8 +44,9 @@ hooks:
   set_Gdbs: |
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
-    } qw{T/splat H/sky H/mess H/colour};
+    } qw{T/splat.....W/tractor H/sky H/mess H/colour land path func};
     for my $g (map { @$_ } @Gdbnah) {
+    say "Setting db-1 $g->{name}";
         $g->{db} = -1;
     }
   messworm: |
@@ -66,7 +70,7 @@ hooks:
   any_child_recoded_init: |
     w set_land;
     # splat_wormholes;
-    Say $ar;
+    Say "Child recoded", $ar;
     if ($ar->{S}->{way} =~ /crawl/) {
         w getstarted;
     }
