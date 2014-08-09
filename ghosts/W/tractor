@@ -25,14 +25,12 @@ hooks:
         if (my $Already = w retract[$A]) {
             $Already->{B} = $A->{B};
             $A = $Already;
-            say "A retracted     $O->{name}\t".ki($ar);
-            $G->Flab("retracted  ", $ar);
+            $G->Flab("A retracted     $O->{name}\t".ki($ar), $ar);
             w $A nonfirst_times;
         }
         else {
             $A = $A->spawn;
-            say "A               $O->{name}\t".ki($ar);
-            $G->Flab("First time for  ", $ar);
+            $G->Flab("A               $O->{name}\t".ki($ar), $ar);
             w $A first_time;
             w populi[$A];
             $A->{waystack} = $G->stackway;
@@ -41,11 +39,9 @@ hooks:
         }
         my $p = w $A print;
         $p ||=- "";
-        say "A    $p";
+        $G->Flab("A    $p", $A);
         $O->{t} = $A;
     }
-    
-    $G->Flab(AA => [@AA]);
     
     return @AA    ;
   retract: |
@@ -63,7 +59,7 @@ hooks:
     }
     $O->W->{script} = \@keep;
     if (!@found) {
-        $G->Flab("No foundo");
+        $G->Flab("A No foundo", $A);
         return;
     }
     return $found[0]->{t};

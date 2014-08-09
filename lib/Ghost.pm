@@ -42,7 +42,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{way} ne "T/splat" && ($G->{db} || $db);
+    say $_[0] if $G->{way} ne "T/splat" && (($G->{db}||0) + ($db||0)) > 0;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -463,6 +463,7 @@ sub doo {
     my $Sway = shift;
     my $w = shift;
     die "RECURSION ".@F if @F > 40;
+    
     my $O = $G->T->{O};
     
     my $ksmush = join",",sort keys %$ar;

@@ -15,6 +15,7 @@ sub new {
     delete $self->{hostinfo};
     
     $self->{G} = shift;
+    $self->{n} = 0;
 
     $self->wormfile_load(shift);
 
