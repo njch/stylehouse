@@ -24,7 +24,7 @@ hooks:
   sing: |
     $G->{singing} ||= {};
     return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
-    $O->Flab("sing init $name");
+    $S->Flab("sing init $name");
     $G->{singing}->{$name} = 1;
     my $t = $ar->{block_for} || $ar->{again_after} || 0.04;
     my $d = $ar->{begin_after} || 0.01;
@@ -32,7 +32,7 @@ hooks:
         $G->timer($t, sub {
             my $splatter = delete $G->{singing}->{$name};
             if ($splatter > 1 && $ar->{again_after}) {
-                $O->Flab("Sig reps $splatter... "
+                $S->Flab("Sig reps $splatter... "
                     .($ar->{again_after} ? "again!" : ".")
                     ."  $name");
                 w sing(%$ar);
