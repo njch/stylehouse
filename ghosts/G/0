@@ -4,7 +4,7 @@ hooks:
   _load_ways_post: |
     $S->w("load_ways_post");
     my $lwc = $S->{load_ways_count};
-    say "LWC $lwc";
+    $G->Flab("$S->{name}        load ways count: $lwc");
     $S->w("any_init");
     $lwc == 1 ?
         w _fresh_init(%$ar)
@@ -22,20 +22,25 @@ hooks:
     $S->w("fresh_init");
     
   sing: |
+    $G->{singing} ||= {};
     return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
+    $G->Flab(" sing init $name");
     $G->{singing}->{$name} = 1;
     my $t = $ar->{block_for} || $ar->{again_after} || 0.04;
     my $d = $ar->{begin_after} || 0.01;
     $G->timer($d, sub {
         $G->timer($t, sub {
             my $splatter = delete $G->{singing}->{$name};
-            if ($splatter > 1) {
-                $S->Flab("$name blocked for $t, hits: $splatter");
-                $ar->{again_after} && $code->();
+            if ($splatter > 1 && $ar->{again_after}) {
+                $G->Flab("Sig reps $splatter... "
+                    .($ar->{again_after} ? "again!" : ".")
+                    ."  $name");
+                w sing(%$ar);
             }
-        }, "sing-block");
+        }, "sing-block        $name");
+        $G->{singing}->{$name} = 1;
         $code->();
-    }, "pre-sing");
+    }, "pre-sing     $name");
     
     
 
