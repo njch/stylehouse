@@ -21,15 +21,10 @@ hooks:
         w messworm;
     };
     
-    $G->timer(0.01, sub {
-        w set_keys;
-        w set_Gdbs;
-    }, "L setup");
-    
     w getstarted;
   set_keys: |
     my $kGs = $H->{G}->Gf('keys');
-    my $tr = $kGs->{trig};
+    my $tr = $kGs->{trig} ||= {};
     $tr->{m} = sub {
         w tog_hmess;
     };
@@ -39,6 +34,9 @@ hooks:
     $tr->{q} = sub {
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
+    };
+    $tr->{'g'} = sub {
+        $H->getapp('Git')->spawn_proc('cd ../styleshed && git gui');
     };
   set_Gdbs: |
     my @Gdbnah = map {
@@ -65,6 +63,11 @@ hooks:
     
   
   recoded_init: |
+    $G->timer(0.01, sub {
+        w set_keys;
+        w set_Gdbs;
+    }, "L setup"); 
+    
     w set_land;
   any_child_recoded_init: |
     w set_land;
@@ -90,6 +93,9 @@ hooks:
   Ϡ: |
     my $thing = w look_for_ghost(name => 'Ϡ');
     w somewhere[$thing];
+  L>Ϡ: |
+    my $nothing = $G;
+    w somewhere[$nothing];
   somewhere: |
     if ($ar->{nothing}) {
         Gf Ϡ Tw arr(%$ar);
@@ -124,7 +130,8 @@ hooks:
     Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
+    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('L>Ϡ'); }) } ],
+    [ "G*Ϡ", sub { $G->timer(0.01, sub { $G->w('Ϡ'); }) } ],
     [ "_fr",          sub {
         my $Gs = G splat;
         $Gs->{iggysplat}->{"worm"} = !$Gs->{iggysplat}->{"worm"};
