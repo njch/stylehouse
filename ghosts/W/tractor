@@ -25,12 +25,12 @@ hooks:
         if (my $Already = w retract[$A]) {
             $Already->{B} = $A->{B};
             $A = $Already;
-            $G->Flab("A retracted     $O->{name}\t".ki($ar), $ar);
+            $G->Flab("A retracted     \t".ki($ar), $ar);
             w $A nonfirst_times;
         }
         else {
             $A = $A->spawn;
-            $G->Flab("A               $O->{name}\t".ki($ar), $ar);
+            $G->Flab("A               \t".ki($ar), $ar);
             w $A first_time;
             w populi[$A];
             $A->{waystack} = $G->stackway;
@@ -45,6 +45,7 @@ hooks:
     
     return @AA    ;
   retract: |
+    return unless exists $A->{B}->{_};
     my @keep;
     my @found;
     for my $line (@{ $O->W->{script} }) {
