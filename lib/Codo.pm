@@ -336,7 +336,7 @@ sub load_codon {
     say "Codo load $codon->{name}";
     
     if (my $slip = $self->{all_open}->[-1]) {
-        $slip->away("nolobo");
+        $slip->away("nolobo") unless $slip eq $codon;
     }
     
     $codon->display($self, $ope);
