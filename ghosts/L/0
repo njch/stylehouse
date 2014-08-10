@@ -36,7 +36,7 @@ hooks:
         w tog_hmess;
     };
     $tr->{'À'} = sub {
-        w q;
+        w f/q;
     };
     $tr->{q} = sub {
         my $thing = w look_for_ghost(name => 'Њ');
@@ -91,20 +91,25 @@ hooks:
     [ 'L',             sub { $G } ];
   funcs: |
     [ chch => sub { w swap_chains; } ],
-    [ "L>Ϡ", sub { $G->timer(0.01, sub { $G->w('Lt'); }) } ],
-    [ "G*Ϡ", sub { $G->timer(0.01, sub { 
-    $H->Info("Ϡing...");
+    [ "L>Ϡ", sub { $G->w('Lt'); } ],
+    [ "G*Ϡ", sub { 
+    $H->Info("Ϡing... ".G ob );
+    $_ob = G ob;
+    $G->Flab("OBSERVE");
     $G->w('Ϡ');
-    
-    }) } ],
-    [ "splat_wormholes" => sub {
+    $_ob = undef;
+     w f/Gob
+    } ],
+    [ "⥁" => sub {
         w splat_wormholes;
     }  ],
     [ "futflip" => sub {
         $H->{_future} = !$H->{_future};
         $H->Say("\$H->{_future} = $H->{_future}");
     }  ],
-    [ 'Gdb',          sub {
+    [    Gob    => sub{ w f/Gob }],
+    [ 'G:db',          sub {
+        die "BLAH!";
         $Ghost::db = !$Ghost::db;
         $H->Say("\$Ghost::db = $Ghost::db");
     }    ],    
@@ -112,16 +117,20 @@ hooks:
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
         say "going now_later";
     }    ];
-  q: |
-    w somewhere(nothing => $L); 
-  Ϡ: |
-    my $thing = w look_for_ghost(name => 'Ϡ');
-    Say "Here!";
-    w somewhere[$thing];
-  Lt: |
-    say " GGGGGGGGGGGGG " for 1..5;
-    my $nothing = $G;
-    w somewhere[$nothing];
+  f:
+    Gob: |
+      my $W = G(ob)->W;
+      w somewhere[$W];
+    q: |
+      w somewhere(nothing => $L);
+    Ϡ: |
+      my $thing = w look_for_ghost(name => 'Ϡ');
+      Say "Here!";
+      w somewhere[$thing];
+    Lt: |
+      say " GGGGGGGGGGGGG " for 1..5;
+      my $nothing = $G;
+      w somewhere[$nothing];
   somewhere: |
     if ($ar->{nothing}) {
         Gf Ϡ Tw arr(%$ar);
@@ -131,11 +140,17 @@ hooks:
         w wormholify;
         return;
     }
+    if ($ar->{W}) {
+        $G->{some_W} = $ar->{W};
+        w splat_wormholes;
+        return;
+    }
+    
     
     $G->timer(0.1, sub {
-    G path Tw arr(%$ar);
-    G splat Tw Splat(path => G(path)->W);
-    });
+        G path Tw arr(%$ar);
+        G splat Tw Splat(path => G(path)->W);
+    }, "splatup path");
     
     my $Cr = G crawl;
     die "HMM" unless $Cr;
@@ -153,7 +168,8 @@ hooks:
 
     w splat_wormholes;
     
-    Say "ẞ ".$wormhole->describe_size()." for ".($wormhole->{G}->{name}||"$thing")."\n$crawltime   ".show_delta();
+    Say "ẞ ".$wormhole->describe_size()." for $thing"
+    ."\n$crawltime   ".show_delta();
   make_hmess: |
         $G->{_dont_mess_worm} = 0;
         my $wormhole = $H->{G}->Gf('mess')->W;
