@@ -45,6 +45,9 @@ hooks:
     $tr->{'g'} = sub {
         $H->getapp('Git')->spawn_proc('cd ../styleshed && git gui');
     };
+  bunch_of: |
+    Info "Yep";
+    w set_Gdbs
   set_Gdbs: |
     $Ghost::db = 1;
     
@@ -53,7 +56,7 @@ hooks:
         } qw{T/splat.+W/tractor H/mess H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = 0;
+        $g->{db} = -1;
     }
   messworm: |
     return if $G->{_dont_mess_worm};
@@ -90,7 +93,6 @@ hooks:
     [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
-
   f:
     Gob: |
       my $W = G(ob)->W;
@@ -102,7 +104,8 @@ hooks:
       $G->{_ob} = G ob;
       $G->{_ob}->RW();
       my $thing = w look_for_ghost(name => 'Ϡ');
-      Say "Here!";
+      w bunch_of;
+      say $thing;
       $G->{_ob} = undef;
       w f/Gob;
     Lt: |
