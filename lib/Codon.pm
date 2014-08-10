@@ -215,6 +215,7 @@ sub draw_chunk {
     my $first = $c->{lines}->[0];
     
     $first =~ s/^(.{65}).+$/$1.../;
+    $first = encode_entities($first);
 
 $first =~ s/(sub|function|package| ) (\S+) /$1<t
     style="font-size:33pt; font-family:cursive;display:inline;"> $2 <\/t>/;
