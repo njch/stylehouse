@@ -395,6 +395,12 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
+sub findway {
+    my $G = shift;
+    my $point = shift;
+    my @w = map { $_->find($point) } $G->ways;
+    wantarray ? @w : shift @w;
+}
 sub w {
     my $G = shift;
     my $point = shift;
