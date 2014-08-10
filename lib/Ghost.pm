@@ -58,11 +58,11 @@ sub waystacken {
     push @{ $F[0]->{undies} ||= [] }, $s if @F;
     unshift @F, $s;
     $s->{F} = [@F],
-    $G->ob("to", $s);
+    $G->ob("/", $s);
     return sub {
         my $o = shift @F;
         $o eq $s || $H->Info(Bats => $s);
-        $G->ob("wback", $s);
+        $G->ob("\\", $s);
         
         $s->{Flab} = [@Flab];
         @Flab = ();
@@ -438,8 +438,9 @@ sub w {
         my $h = $w->find($point);
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
+        my ($Z) = @F;
         my $r = [
-            $G->doo($h, $ar, $point, $Sway, $w)
+            $G->doo($h, $ar, $point, $Sway, $w, $Z)
         ];
         push @returns, $r;
         my $Z = $u->();
@@ -475,6 +476,7 @@ sub doo {
     my $point = shift;
     my $Sway = shift;
     my $w = shift;
+    my $Z = shift;
     die "RECURSION ".@F if @F > $MAX_FCURSION;
     
     my $O = $G->T->{O};
@@ -491,8 +493,7 @@ sub doo {
         $slightly = 0;
         $H->snooze;
     }
-    my $evsub = $subcache{$subhash};
-    unless ($evsub) {
+    my $evsub = $subcache{$subhash} ||= do {
         my $eval = $G->parse_babble($babble, $point);
         my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
         $download .= 'my$thing = $G->{t};' unless $ar->{'thing'};
@@ -502,7 +503,10 @@ sub doo {
         my $doo_return = [];
         my $doo_sev_sub = [];
         
-        my $sevs = "no warnings 'experimental'; $download\n".'; @$doo_return = (sub { '."\n".$eval."\n })->(); $upload";
+        my @warnings = ("no warnings 'experimental';");
+        
+        my $sevs = "@warnings $download\n".
+            "; @\$doo_return = (sub { \n$eval\n })->(); $upload";
         
         my $evs = '@$doo_sev_sub = sub { my $ar = shift; '.$sevs.'; return @$doo_return };';
         

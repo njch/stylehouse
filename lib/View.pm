@@ -315,6 +315,7 @@ sub append_spans {
 
     return say "\n\nno html\n\n" unless $html;
     $html =~ s/'/\\'/sg;
+    $html =~ s/\\/\\\\/sg;
     $html =~ s/\n/\\n/sg;
 
     my $Bmax = 30000;
