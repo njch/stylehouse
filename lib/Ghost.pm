@@ -16,6 +16,7 @@ our @Flab;
 our $G0;
 our $L;
 our $db = 0;
+our $_ob = undef;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -138,11 +139,15 @@ sub stackway {
 }
 sub ob {
     my $G = shift;
-    return unless $G->{_ob};
+    my $ob = $G->{_ob}||$_ob;
+    return unless $ob;
     
-    $G->{_ob}->T(
+    my $other_world = $_ob;
+    $_ob = undef;
+    $ob->T(
         $G->stackway(@_)
-    )
+    );
+    $_ob = $other_world;
 }
 sub ki {
     my $ar = shift;
