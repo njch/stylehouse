@@ -487,7 +487,7 @@ sub doo {
         
     my $subhash = Hostinfo::sha1_hex($uuname);
     
-    $G->Flab(('☺', $point ? "w $point" : "⊖ $babble")."\t$ksmush");
+    $G->Flab(join("   ", '☺', ($point ? "w $point" : "⊖ $babble"), "$ksmush"));
     
     if ($slightly++ > 50) {
         $slightly = 0;

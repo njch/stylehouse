@@ -114,7 +114,7 @@ sub init_way {
             $self->{G}->{$k} = $v;
         }
     }
-}    
+}
 sub find {
     my $self = shift;
     my $point = shift;

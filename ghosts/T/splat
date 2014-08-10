@@ -314,17 +314,17 @@ hooks:
             }
             if ($ref eq "Way") {  #c t s
                 $name = w $t print;
+                $fs = 12 if $t->{K} =~ /^m/;
+                $fs = 14 if length($name) > 20;
+                $color = "fc0";
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
                 }
                 $name = substr($name, 0, 100)."..." if length($name) > 120;
-                $fs = 14 if length($name) > 20;
-                $fs = 12 if $t->{K} =~ /^m/;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
                 }
-                $color = "fc0";
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
