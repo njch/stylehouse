@@ -9,8 +9,10 @@ tractors:
     print: |
       $B->{name} || $B->{thing};
     to_travel_this: |
-      Info "CarefuL", $S;
-      $B->{code} ? $B->{code}->() : $B->{thing};
+      $H->info($G->timer(0.001, sub {
+        $B->{code}->();
+      }, "L/funcencode"));
+        
 hooks:
   recoded_init: |
     my $thing = G(tractor)->w('random');

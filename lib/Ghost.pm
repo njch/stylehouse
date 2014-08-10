@@ -52,6 +52,7 @@ sub Flab {
 sub waystacken {
     my $G = shift;
     my $s = $G->stackway(@_);
+    push @{ $F[0]->{undies} ||= [] }, $s if @F;
     unshift @F, $s;
     $s->{F} = [@F],
     $G->ob("to", $s);
@@ -81,6 +82,7 @@ sub timer {
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
     Mojo::IOLoop->timer( $time, $doings );
+    return $last
 }
 sub comeback {
     my $G = shift;
@@ -93,6 +95,7 @@ sub comeback {
     my $s = $F[0];
     $s->{doings} = $doings;
     $s->{timer_from} = $last;
+    $last->{timer_back} = $s;
     eval { $doing->(); };
     $u->();
     $H->error("G Timer fup", $@) if $@;
