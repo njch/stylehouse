@@ -47,12 +47,13 @@ hooks:
     };
   set_Gdbs: |
     $Ghost::db = 1;
+    
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
         } qw{T/splat.+W/tractor H/mess H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = -1;
+        $g->{db} = 0;
     }
   messworm: |
     return if $G->{_dont_mess_worm};
@@ -98,12 +99,12 @@ hooks:
       w somewhere(nothing => $L);
     Ϡ: |
       $H->Info("Ϡing... ".G ob );
-      $_ob = G ob;
-      $_ob->RW();
+      $G->{_ob} = G ob;
+      $G->{_ob}->RW();
       my $thing = w look_for_ghost(name => 'Ϡ');
       Say "Here!";
-      $_ob = undef;
-       w f/Gob
+      $G->{_ob} = undef;
+      w f/Gob;
     Lt: |
       say " GGGGGGGGGGGGG " for 1..5;
       my $nothing = $G;
@@ -116,8 +117,6 @@ hooks:
     futu: |
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
-    Gob: |
-      w f/Gob;
     Gdb: |
         die "BLAH!";
         $Ghost::db = !$Ghost::db;

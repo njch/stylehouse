@@ -18,12 +18,8 @@ tractors:
       w $S set_background if $ar->{set_css_background};
     set_background: |
       my $colour = w $S wtc;
-      if ($ar->{t}) {
-          $H->JS("\$('$set_css_background').animate({backgroundColor: '$colour'}, $ar->{t});");
-      }
-      else {
-            $H->JS("\$('$set_css_background').css('background', '$colour');");
-      }
+      $ar->{t} ||= 50;
+      $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t});");
     change_person: |
       push @$personalities, shift @$personalities;
     randomcolour: |

@@ -18,9 +18,10 @@ hooks:
           $L->w(  somewhere => {thing => $G->stackway} ) 
       }, "skyrecode;stack");
   doof: |
-    $H->JS($H->{sky},"stop()");
-    w colourchange(t=>200, c => '333');
-    w touch; 
+    w colourchange(t=>100, c => '333');
+    $G->timer(0.2, sub {
+        w touch(t=>500);
+    });
   ambientness: |
     w colourchange(t=>15000);
     $G->timer(19, sub { w ambientness }, "ambiento");
@@ -39,9 +40,6 @@ hooks:
   touch: |
     if (eval { $ar->{e}->[1]->{C} }) {
         w getundercontrol;
-    }
-    if (eval { $ar->{e}->[1]->{S} }) {
-        $G->{gcol} Tw change_person(name => "#sky");
     }
     $@ = "";
   
