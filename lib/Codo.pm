@@ -280,15 +280,12 @@ sub mind_openness {
             );
         }
     }
+    
+    my @OOO = grep { $_ ne $codon } @{$self->{all_open}};
+    push @OOO, $codon;
 
-    if ($codon && !grep { $_ eq $codon } @{$self->{all_open}}) {
-        say "Codon minded: $codon->{name}";
-        push @{$self->{all_open}}, $codon;
-    }
-
-    my @saveopen = map {
-        [ $_->{name} => $_->{openness} ]
-    } grep { defined $_ } @{$self->{all_open}};
+    @{$self->{all_open}} = @OOO;
+    my @saveopen = map { [ $_->{name} => $_->{openness} ] } grep { defined $_ } @OOO;
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
@@ -335,15 +332,16 @@ sub load_codon {
     my $noscrolly = shift;
 
     my ($codon) =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
-    return $self->{hostinfo}->error("Can't load codon: $codon_s") unless $codon;
+    $codon || die "Can't load codon: $codon_s";
     say "Codo load $codon->{name}";
-    $codon || die;
     
-    say "OPen Codons: ".join", ", map { $_->{name} } @{$self->{all_open}};
-    unless (grep { $_ eq $codon } @{$self->{all_open}}) {
-        $codon->display($self, $ope);
-        $self->mind_openness($codon);
+    if (my $slip = $self->{all_open}->[-1]) {
+        $slip->away();
     }
+    
+    $codon->display($self, $ope);
+    $self->mind_openness($codon);
+    
     $self->{hostinfo}->send(
     "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}'), 360);"
     ." \$('#$codon->{show}->{text}->{id}-Head').fadeOut(300).fadeIn(500);"
