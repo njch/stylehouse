@@ -17,7 +17,7 @@ our $G0;
 our $L;
 our $db = 0;
 our $_ob = undef;
-our $MAX_FCURSION = 40;
+our $MAX_FCURSION = 140;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -438,24 +438,16 @@ sub w {
         my $h = $w->find($point);
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
-        push @returns, [
+        my $r = [
             $G->doo($h, $ar, $point, $Sway, $w)
         ];
-        if ($@) {
-            $G->ob("Error", $@);
-            if (@F == 1) {
-                my $Z = $u->();
-                $Z->{Error} = $@;
-                $H->error($@, $Z);
-            }
-            else {
-                $u->();
-                die $@;
-            }
-        }
-        else {
-            $u->();
-        }
+        push @returns, $r;
+        my $Z = $u->();
+        $Z->{Returns} = $r;
+        $Z->{Error} = $@ if $@;
+        $G->ob("Error", $Z) if $@;
+        $H->error($@, $Z) if $@;
+        die "Z $@" if $@;
     }
     unless (@returns) {
         $G->Flab("way miss $talk", \@ways, $Sway);
@@ -527,18 +519,13 @@ sub doo {
         }
     };
     my $evsub = $subcache{$subhash};
-    
-    
+    die "NO EVSUB $G->{name} $point" unless $evsub;
         
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
         bless {evs=>"?", babble=>$babble}, 'h');
     
     my @return;
     @return = $evsub->($ar) if ref $evsub;
-    unless (ref $evsub) {
-        say "DEAD ! $evsub" for 1..5;
-    }
-    
     $back->();
     
     if ($@) {
