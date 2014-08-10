@@ -290,7 +290,7 @@ sub event {
 }
 sub away {
     my $self = shift;
-    $self->{Going} = 1;
+    $self->{Going} = shift || 1;
     $self->save_all();
 }
 sub readfile {
@@ -376,8 +376,9 @@ sub save_done {
         $self->sleeep();
         $self->{show}->nah() if $self->{show};
         delete $self->{show};
-        delete $self->{Going};
-        $self->{codo}->lobo($self);
+        $self->{codo}->lobo($self)
+            unless
+                "nolobo" eq delete $self->{Going};
     }
     else {
         my $olds = $self->{chunks};
