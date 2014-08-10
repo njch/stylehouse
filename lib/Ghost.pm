@@ -17,6 +17,7 @@ our $G0;
 our $L;
 our $db = 0;
 our $_ob = undef;
+our $MAX_FCURSION = 40;
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -43,7 +44,8 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $G->{name}."  ".$_[0] if $G->{way} ne "T/splat" && (($G->{db}||0) + ($db||0)) > 0;
+    say join("",(".") x scalar(@F))."$G->{name}  $_[0]"
+        if (($G->{db}||0) + ($db||0)) > 0;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -64,6 +66,7 @@ sub waystacken {
         
         $s->{Flab} = [@Flab];
         @Flab = ();
+        $s
     }
 }
 sub timur {
@@ -441,8 +444,9 @@ sub w {
         if ($@) {
             $G->ob("Error", $@);
             if (@F == 1) {
-                $H->error($@);
-                $u->();
+                my $Z = $u->();
+                $Z->{Error} = $@;
+                $H->error($@, $Z);
             }
             else {
                 $u->();
@@ -479,7 +483,7 @@ sub doo {
     my $point = shift;
     my $Sway = shift;
     my $w = shift;
-    die "RECURSION ".@F if @F > 40;
+    die "RECURSION ".@F if @F > $MAX_FCURSION;
     
     my $O = $G->T->{O};
     
