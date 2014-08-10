@@ -58,11 +58,11 @@ sub waystacken {
     push @{ $F[0]->{undies} ||= [] }, $s if @F;
     unshift @F, $s;
     $s->{F} = [@F],
-    $G->ob("/", $s);
+    $G->ob("\\", $s);
     return sub {
         my $o = shift @F;
         $o eq $s || $H->Info(Bats => $s);
-        $G->ob("\\", $s);
+        $G->ob("/", $s);
         
         $s->{Flab} = [@Flab];
         @Flab = ();
