@@ -55,8 +55,8 @@ function clickyhand (event) {
     if (!(tag.attr('id') || tag.attr('class'))) {
         tag = tag.parent();
     }
-    if (value && value.length >= 666) {
-        value = 'SATAN';
+    if (value && value.length >= 640) {
+        value = '';
     }
     var data = {
         id: tag.attr('id'),

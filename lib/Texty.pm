@@ -397,8 +397,8 @@ sub tuxts_to_htmls {
 
     my $t = [ @{ $self->tuxts } ];
 
-    if ($self->{hooks}->{append} && @$t> 666 / 8) {
-        $t = [ splice @$t, -666/8 ];
+    if ($self->{hooks}->{append} && @$t> 99) {
+        $t = [ splice @$t, -99 ];
     }
 
     my @htmls;
