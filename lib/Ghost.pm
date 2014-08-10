@@ -42,7 +42,7 @@ sub ghostlyprinty {
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say $_[0] if $G->{way} ne "T/splat" && (($G->{db}||0) + ($db||0)) > 0;
+    say $G->{name}."  ".$_[0] if $G->{way} ne "T/splat" && (($G->{db}||0) + ($db||0)) > 0;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -440,7 +440,7 @@ sub w {
         }
     }
     unless (@returns) {
-        $G->Flab("way miss $talk", $Sway);
+        $G->Flab("way miss $talk", \@ways, $Sway);
     }
     return say "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
@@ -475,7 +475,7 @@ sub doo {
         
     my $subhash = Hostinfo::sha1_hex($uuname);
     
-    $G->Flab(" $G->{name}    \N{U+263A}     ".($point ? "w $point" : "⊖ $babble")."\t$ksmush");
+    $G->Flab(('☺', $point ? "w $point" : "⊖ $babble")."\t$ksmush");
     
     if ($slightly++ > 50) {
         $slightly = 0;
