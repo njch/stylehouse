@@ -555,7 +555,7 @@ sub doo {
         }
         
         my $DOOF;
-        if ($@ !~ /DOOF/ && $@ !~ /^Yep/) {
+        if ($@ !~ /DOOF/) {
             $DOOF .= "\n".<<"";
      .-'''-.     
    '   _    \   
