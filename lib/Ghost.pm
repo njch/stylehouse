@@ -39,7 +39,7 @@ sub ghostlyprinty {
             : ""
             #'<t style="color:#999;">'.gname($_).'</t>'
             
-        : $_ } @_
+        : (defined $_ ? $_ : "~") } @_
 }
 sub Flab {
     my $G = shift;
@@ -530,7 +530,7 @@ sub doo {
     
     my @return;
     @return = $evsub->($ar) if ref $evsub;
-    $back->();
+    my $D = $back->();
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
@@ -538,6 +538,7 @@ sub doo {
         my $eval = "";
         my $evs = $evscache{$subhash};
         my @eval = split "\n", $evs;
+        say $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
         for (@eval) {
@@ -575,14 +576,9 @@ sub doo {
         
         $G->Flab("Error: $@", $DOOF, $ar, $evs) if $@ !~ /DOOF/;
         $@ = $DOOF;
+        $H->info("An Error", $@);
         
-        my @ca = caller(1);
-        if ($ca[3] eq "Ghost::w") {
-            return;
-        }
-        else {
             die $@
-        }
     }
     
     return wantarray ? @return : shift @return;

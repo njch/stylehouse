@@ -190,7 +190,6 @@ sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";
 }
-
 sub label {
     my $self = shift;
     my $o = $self->{owner};
