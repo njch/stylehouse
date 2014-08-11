@@ -5,7 +5,7 @@ hooks:
     $H->{_future} = 1;
     G TT ->G("T/splat");
     G TT ->G("T/crawl");
-    G TT ->G("Ϡ");
+    $G->{that} = G TT ->G("Ϡ");
     
     G TT ->G("L/path");
     G TT ->G("L/land");
@@ -86,33 +86,30 @@ hooks:
     [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
-    [ 'G*Ϡ', sub { w look_for_ghost(name => 'Ϡ'); }    ],
-    [ 'G*Њ', sub { w look_for_ghost(name => 'Њ') }    ],
     [ "wayf",         sub { $G->stackway } ],
     [ "\@F",           sub { [@F] } ],
     [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
   f:
+    'Ϡ*': |
+      my $thing = w look_for_ghost(name => 'Ϡ');
+      w somewhere[$thing];
+    'Њ*': |
+      my $thing = w look_for_ghost(name => 'Њ');
+      w somewhere[$thing];
+    Ϡ: |
+      w somewhere(nothing => $L);
+    Ϡ?: |
+      $H->Info("Ϡing... ",G ob );
+      $G->{_ob} = $G->{that}->{_ob} = G ob;
+      $G->{_ob}->RW();
+      w somewhere(nothing => $L);
+      $G->{_ob} = undef;
+      w f/Gob;
     Gob: |
       my $W = G(ob)->W;
       w somewhere[$W];
-    q: |
-      w somewhere(nothing => $L);
-    Ϡ: |
-      $H->Info("Ϡing... ".G ob );
-      $G->{_ob} = G ob;
-      $G->{_ob}->RW();
-      my $thing = w look_for_ghost(name => 'Ϡ');
-      w bunch_of;
-      say $thing;
-      $G->{_ob} = undef;
-      w f/Gob;
-    Lt: |
-      say " GGGGGGGGGGGGG " for 1..5;
-      my $nothing = $G;
-      w somewhere[$nothing];
-      
     chch: |
       w swap_chains
     ⥁: |

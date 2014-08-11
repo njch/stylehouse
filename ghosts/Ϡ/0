@@ -7,18 +7,17 @@ tractors:
     B_: |
       $name
     first_time: |
-      my $style = "padding: 1em;position:absolute;overflow:hidden;"
-      ."top:1em;left:40%;border:1px solid black;width:17em;z-index:20;";
+      my $style = "position:absolute;overflow:hidden;border:1px solid black;"
+          ."top:0px;right:10em;-webkit-transform: scale(-1,1);"
       $S->{V} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $name, $style);
       $S->{V}->{S} = $S; # TUXTY
       $S->{crawl} = $O->Gc("T/crawl");
-      $S->{script} = $O->Gc("W/script");
     nonfirst_times: |
       $S->{V}->fadehtml();
     print: |
       $S->{K} .": ". $S->{B}->{_}
     tocrawl: |
-      $S->{crawl}->RW;
+      $S->{crawl}->RW; 
       $S->{crawl}->T($thing);
     toscript: |
       $S->{script}->T($S->{crawl}->W);
@@ -29,7 +28,6 @@ hooks:
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
     w $S tocrawl;
-    w $S toscript;
     Say "Ϡ, ".$S->{script}->W->describe_size;
   
   getstarted: |
