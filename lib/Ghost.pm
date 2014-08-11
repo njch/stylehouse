@@ -62,6 +62,7 @@ sub waystacken {
     return sub {
         my $o = shift @F;
         $o eq $s || $H->Info(Bats => $s);
+        die $@ if $@;
         $G->ob("/", $s);
         
         $s->{Flab} = [@Flab];
@@ -439,16 +440,18 @@ sub w {
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
         my ($Z) = @F;
-        my $r = [
+        my $r;
+        eval { $r = [
             $G->doo($h, $ar, $point, $Sway, $w, $Z)
-        ];
-        push @returns, $r;
+            ]; };
+        push @returns, $r if $r;
+        die $@ if $@;
         my $Z = $u->();
         $Z->{Returns} = $r;
         $Z->{Error} = $@ if $@;
         $G->ob("Error", $Z) if $@;
-        $H->error($@, $Z) if $@;
-        die "Z $@" if $@;
+        $H->error("Z: $talk for $G->{name}\n$@", $Z) if $@;
+        die $@ if $@;
     }
     unless (@returns) {
         $G->Flab("way miss $talk", \@ways, $Sway);
@@ -552,32 +555,20 @@ sub doo {
                     $eval .= ind("|  ", $_)."\n"
                 }
             $xx++;
-        }
+        } 
         
         my $DOOF;
-        if ($@ !~ /DOOF/) {
-            $DOOF .= "\n".<<"";
-     .-'''-.     
-   '   _    \   
- /   /` '.   \  
-.   |     \  '  
-|   '      |  ' 
-\    \     / /  
- `.   ` ..' /   
-    '-...-'`    
-
-            
-        }
+        $DOOF .= "\n".dooftip() unless $@ =~ /DOOF/;
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
             ."  w $point  ".join(", ", keys %$ar)."\n"
             .($@ !~ /DOOF/ ? "$eval\n" : "")
             .ind("E   ", $@)."\n^\n";
         
-        $G->Flab("Error: $@", $DOOF, $ar, $evs) if $@ !~ /DOOF/;
+        $G->Flab("Error: $@", $DOOF, $ar, $evs);
         $@ = $DOOF;
         
         my @ca = caller(1);
-        if ($ca[3] eq "Ghost::w") {
+        if ($ca[3] eq "Ghoooost::w") {
             return;
         }
         else {
@@ -589,6 +580,17 @@ sub doo {
 }
 sub enc { encode_entities(shift) }
 sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
+sub dooftip {<<"";
+     .-'''-.     
+   '   _    \   
+ /   /` '.   \  
+.   |     \  '  
+|   '      |  ' 
+\    \     / /  
+ `.   ` ..' /   
+    '-...-'`    
+
+}
 sub parse_babble {
     my $self = shift;
     my $eval = shift;
