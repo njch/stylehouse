@@ -374,7 +374,11 @@ sub save_done {
     if ($self->{Going}) {
         say "Codon $self->{name} is going away";
         $self->sleeep();
-        $self->{show}->nah() if $self->{show};
+        if ($self->{show}) {
+            "nolobo" eq $self->{Going} ?
+                $self->{show}->HIDEHIDEHIDE() # no anim
+              : $self->{show}->nah()
+        }
         delete $self->{show};
         $self->{codo}->lobo($self)
             unless

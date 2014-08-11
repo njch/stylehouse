@@ -186,6 +186,11 @@ sub nah {
     $self->{hostinfo}->JS($self,
     "attr('id', '$self->{divid}-going').fadeOut(500).remove;");
 }
+sub HIDEHIDEHIDE {
+    my $self = shift;
+    $self->{hostinfo}->JS($self,
+    "css('display', 'none').remove;");
+}
 sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";
