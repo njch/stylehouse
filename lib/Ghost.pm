@@ -563,13 +563,11 @@ sub doo {
         my @eval = split "\n", $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
-        my $theline = "LINE UNKNOWN";
         for (@eval) {
                 if (!defined $x) {
                     $eval .= ind("⊘  ", $_)."\n"
                 }
                 elsif ($xx == $x) {
-                    $theline = $_;
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x - 4];
                     if ($bab ne $_) {
@@ -587,7 +585,6 @@ sub doo {
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
         
-        $DOOF .= "$theline \n\n";
         $DOOF .= "$eval\n"                         if $first;
         $DOOF .= ind("E    ", "\n$komptalk$@\n")."\n\n"     if $first;
         $DOOF .= ind("E   ", "$@")."\n"             if !$first;
