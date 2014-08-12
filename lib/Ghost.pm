@@ -22,13 +22,11 @@ sub gname {
     my $g = shift;
     my $si = shift || 0;
     my $ish = ref $g;
-    $ish = "" if $ish ne "Ghost";
-    $ish = "" if $ish eq "Ghost";
-    $ish = ref $g && ($g->{name} || $g->{id}) || "$g";
-    
-    
-    $ish =~ s/^(\w+)=HASH.*$/$1\{/;
-    $ish;
+    my $ush = "$g";
+    my $may = $g->{name} || $g->{id} if $ish && $ush =~ /HASH/;
+    $may ||= "$g";
+    $may =~ s/^(\w+)=HASH.*$/$1\{/;
+    $may;
 }
 sub hitime { Hostinfo::hitime() }
 sub ghostlyprinty {
@@ -37,13 +35,12 @@ sub ghostlyprinty {
         shift;
         $witcolour = sub { shift };
     }
+    
     join "  ", map {
         ref $_ ? 
-            ref $_ eq "Ghost" ?
             $witcolour->(gname($_))
-            : ""
             
-        : (defined $_ ? $_ : "~") } @_
+          : (defined $_ ? $_ : "~") } @_
 }
 sub Flab {
     my $G = shift;
@@ -125,7 +122,7 @@ sub comeback {
     $u->();
     if ($@) {
         $H->error($s) if $@;
-        die $@; # or something?
+        die $@ if 0; # or something?
     }
 }
 sub printF {
