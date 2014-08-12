@@ -383,18 +383,18 @@ hooks:
             }
             $color = "999";
             $s->{style} .= "font-weight: 500;";
-            if (length($t) > 70) {
-                 $s->{value} = substr($t, 0, 100)."...";
+            my $v = $t;
+            if (length($v) > 400) {
+                 $v = substr($t, 0, 380)."...";
             }
-            my $parent = $line->{i}->{L}->{t};
-            if ($parent && ref $parent eq "Way") {
-                $font = "font-family:mono;";
-                $fs = 9;
-                $color = "47B247";
-            }
-            if ($line->{i}->{L}->{i}->{each} eq "stack") {
-                $fs = 9;
-            }
+            $fs = 9;
+            $fs = 14 if length($v) < 30;
+            $fs = 25 if length($v) < 12;
+            $name = $v;
+            
+            $font = "font-family:mono; line-height: 1em;";
+            $color = "47B247";
+            #if ($line->{i}->{L}->{i}->{each} eq "stack") {
             
         }
         $s->{value} = $name; #c t ETC         ETC         ETC
@@ -406,7 +406,7 @@ hooks:
         $s->{style} .= "font-size:${fs}pt;";
         
         $s->{style}.="max-width: 45em;";
-        $s->{style}.="word-wrap:break-word; max-height:5em; min-width: 10em;";
+        $s->{style}.="word-wrap:break-word; max-height:50em; min-width: 10em;";
         $s->{style}.="color:#$color;";
         $s->{style}.="background: #330; ";
         
