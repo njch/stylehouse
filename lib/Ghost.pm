@@ -547,7 +547,7 @@ sub doo {
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
         bless {evs=>"?", babble=>$babble}, 'h');
     
-    my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n$evs\n" : "";
+    my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
     my @return;
     if (ref $sub eq "CODE" && !$@) {
@@ -557,17 +557,19 @@ sub doo {
     my $D = $back->();
     
     if ($@) {
-        my ($x) = $@ =~ /line (\d+)\.$/;
+        my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
         my @eval = split "\n", $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
+        my $theline = "LINE UNKNOWN";
         for (@eval) {
                 if (!defined $x) {
                     $eval .= ind("⊘  ", $_)."\n"
                 }
                 elsif ($xx == $x) {
+                    $theline = $_;
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x - 4];
                     if ($bab ne $_) {
@@ -580,14 +582,15 @@ sub doo {
             $xx++;
         }
         my $DOOF;
-        my $first = $@ !~/DOOF/;
+        my $first = 1 unless $@ =~ /DOOF/;
         
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
         
+        $DOOF .= "$theline \n\n";
         $DOOF .= "$eval\n"                         if $first;
         $DOOF .= ind("E    ", "\n$komptalk$@\n")."\n\n"     if $first;
-        $DOOF .= ind("E=", "$@")."\n"             if !$first;
+        $DOOF .= ind("E   ", "$@")."\n"             if !$first;
         $DOOF .= dooftip()                         if $first;
         
         $G->Flab("D Error $@", $DOOF, $ar, $evs);

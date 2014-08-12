@@ -37,6 +37,7 @@ hooks:
     }, "L setup"); 
     
     w set_land;
+    $G->timer(0.1, sub { w f/Gob; }, "gob");
     w f/Gdb;
   set_keys: |
     my $kGs = $H->{G}->Gf('keys');
@@ -62,10 +63,10 @@ hooks:
     
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
-        } qw{T/splat.+W/tractor H/mess H/colour keys land path func};
+        } qw{T/splat H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = 0;
+        $g->{db} = -1;
     }
   any_child_recoded_init: |
     w set_land;
@@ -115,7 +116,7 @@ hooks:
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
     Gdb: |
-        $Ghost::db = !$Ghost::db;
+        #$Ghost::db = !$Ghost::db;
         my $some = $G->printF();
         $H->Say("\$Ghost::db = $Ghost::db \n".$some);
         $G->timer(2, sub { w f/anddie; }, "and- die");
