@@ -58,17 +58,16 @@ sub TT {
 }
 sub Gf {
     my $self = shift;
-    my $O = shift;
     my $way = shift;
     # TODO
-    my @Gs = map { $_->{G} }
-        grep { #$_->{O} eq $O TODO
-        1 && $_->{G} && $_->{G}->{way} =~ /$way/ }
-        @{$self->get('Travel')};
-    if (@Gs > 1) {
-        die "H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way";
-    }
-    $self->Say("\nH::Gf NOTHING nothing! $O->{name}     w $way") unless @Gs;
+    my @Gs =
+        grep { $_->{way} eq "$way" }
+        
+        @{$self->get('Ghost')};
+        
+    die "H::Gf 1<".scalar(@Gs)."   w $way" if @Gs > 1;
+    $self->Say("\nH::Gf NOTHING nothing!   w $way") unless @Gs;
+    
     shift @Gs;
 }
 sub init_flood {
