@@ -75,7 +75,7 @@ sub waystacken {
         else {
             shift @F;
         }
-        $G->Flab(wse => $@) if $@;
+        $G->Flab("Stack Return Error", $s, $@) if $@;
         $s->{Flab} = [@Flab];
         
         my $te = $@; $@ = "";
@@ -119,7 +119,7 @@ sub comeback {
     eval { $doing->(); };
     $u->();
     if ($@) {
-        $H->error("G Timer fup", $@, $s) if $@;
+        $H->error($s) if $@;
         die $@; # or something?
     }
 }
@@ -465,9 +465,10 @@ sub w {
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); 
         my ($Z) = @F;
-        my $r = [
-            $G->doo($h, $ar, $point, $Sway, $w, $Z)
-        ];
+        my $r;
+        
+        eval { $r = [ $G->doo($h, $ar, $point, $Sway, $w, $Z) ] };
+        
         push @returns, $r;
         my $ZZ = $u->();
         die "MISM" unless $Z eq $ZZ;
@@ -475,7 +476,7 @@ sub w {
         
         if ($@) {
             $@ = "Z $talk\t\t$G->{name}\n$@";
-            $G->Flab("Z Error");
+            $G->Flab("Z Error $@");
             die $@;
         }
     }
