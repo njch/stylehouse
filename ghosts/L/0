@@ -29,6 +29,7 @@ hooks:
     }, "L setup"); 
     
     w set_land;
+    w f/Gdb;
   set_keys: |
     my $kGs = $H->{G}->Gf('keys');
     my $tr = $kGs->{trig} ||= {};
@@ -56,24 +57,8 @@ hooks:
         } qw{T/splat.+W/tractor H/mess H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = -1;
+        $g->{db} = 0;
     }
-  messworm: |
-    return if $G->{_dont_mess_worm};
-    $G->_0(sing => {
-        name => "messworm",
-        again_after => 0.5,
-        begin_after => 0.2,
-        code => sub {
-          return if $G->{_dont_mess_worm};
-          my $wormhole = $G->{messworm};
-          w somewhere[$wormhole];
-        },
-    }, "mess>L");
-  
-    
-    
-  
   any_child_recoded_init: |
     w set_land;
     # splat_wormholes;
@@ -104,8 +89,12 @@ hooks:
       $H->Info("Ϡing... ",G ob );
       $G->{_ob} = $G->{that}->{_ob} = G ob;
       $G->{_ob}->RW();
-      w somewhere(nothing => $L);
+      eval {
+          w somewhere(nothing => $L);
+      };
       $G->{_ob} = undef;
+      $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
+      $@ = ""         if $@;
       w f/Gob;
     Gob: |
       my $W = G(ob)->W;
@@ -118,9 +107,14 @@ hooks:
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
     Gdb: |
-        die "BLAH!";
         $Ghost::db = !$Ghost::db;
-        $H->Say("\$Ghost::db = $Ghost::db");
+        my $some = $G->printF();
+        $H->Say("\$Ghost::db = $Ghost::db \n".$some);
+        $G->timer(2, sub { w f/anddie; }, "and- die");
+    anddie: |
+      $DB::single = 1;
+      say "ETC";
+      die;
     herenow: |
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
   somewhere: |
@@ -172,9 +166,21 @@ hooks:
     : w hide_hmess;
   hide_hmess: |
         $G->{_dont_mess_worm} = 1;
-        $G->Flab("Yup yup yup");
         G splat Tw clear(splatname => 'worm');
-        return "and";
+  messworm: |
+    return if $G->{_dont_mess_worm};
+    $G->_0(sing => {
+        name => "messworm",
+        again_after => 0.5,
+        begin_after => 0.2,
+        code => sub {
+          return if $G->{_dont_mess_worm};
+          w make_hmess;
+        },
+    }, "mess>L");
+  
+    
+    
   
   set_land: |
     my $GG;

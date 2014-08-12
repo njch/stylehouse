@@ -13,7 +13,7 @@ use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
 use View;
 use Term::ANSIColor;
-use Digest::SHA 'sha1_hex';
+use Digest::SHA;
 use File::Slurp;
 use utf8;
 use Encode qw(encode_utf8 decode_utf8);
@@ -880,8 +880,11 @@ sub throwlog {
     my $self = my $H = shift;
     my $what = shift;
     
-    if ($H->{_future} && $what ne "Error") {
+    if ($H->{_future}) {
+        my $te = $@;
+        $@ = "";
         my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        $@ = $te;
         if ($r && $r eq "yep") {
             return;
         }

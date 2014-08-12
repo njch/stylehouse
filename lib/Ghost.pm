@@ -39,7 +39,7 @@ sub ghostlyprinty {
             : ""
             #'<t style="color:#999;">'.gname($_).'</t>'
             
-        : $_ } @_
+        : (defined $_ ? $_ : "~") } @_
 }
 sub Flab {
     my $G = shift;
@@ -60,12 +60,27 @@ sub waystacken {
     $s->{F} = [@F],
     $G->ob("\\", $s);
     return sub {
-        my $o = shift @F;
-        $o eq $s || $H->Info(Bats => $s);
-        die $@ if $@;
-        $G->ob("/", $s);
-        
+        my @FF;
+        if ($F[0] ne $s) {
+            my $E = "BATS ";
+            if (!grep {$_ eq $s} @F) {
+                $E .= "self nowhere in \@F"
+            }
+            else {
+                unshift @FF, shift @F until $FF[0] eq $s;
+                $E .= "from $_->{name}" for shift @FF;
+            }
+            $H->error(  $G->Flab($E, $s, [@FF], [@F])  );
+        }
+        else {
+            shift @F;
+        }
+        $G->Flab(wse => $@) if $@;
         $s->{Flab} = [@Flab];
+        
+        my $te = $@; $@ = "";
+        $G->ob("/", $s);
+        $@ = $te;
         @Flab = ();
         $s
     }
@@ -95,7 +110,7 @@ sub comeback {
     my $doings = shift;
     my $doing = shift;
     my @saying = @{ $last->{thing} };
-    $saying[0] =~ s/G Timer/G remiT/;
+    $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
     my $u = $G->waystacken(@saying, @_);
     my $s = $F[0];
     $s->{doings} = $doings;
@@ -103,7 +118,15 @@ sub comeback {
     $last->{timer_back} = $s;
     eval { $doing->(); };
     $u->();
-    $H->error("G Timer fup", $@) if $@;
+    if ($@) {
+        $H->error("G Timer fup", $@, $s) if $@;
+        die $@; # or something?
+    }
+}
+sub printF {
+    my $G= shift;
+    my $F = [@F];
+    $G->_0(printF => {FFF=>$F});
 }
 sub stackway {
     my $G = shift;
@@ -124,6 +147,7 @@ sub stackway {
         $from =~ s/.*Ghost::(Fl|wa).*/$1/;
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
+        $from =~ s/Ghost::/G:/;
     }
     $from ||= "stackw $stack->[0]";
     shift @$stack;
@@ -139,19 +163,22 @@ sub stackway {
         thing => $thing,
         print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, ghostlyprinty(@{$S->{thing}})',
     });
+    $w->from({Error=>$@}) if $@;
+    $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, ghostlyprinty(@{$w->{thing}});
     $w;
 }
 sub ob {
     my $G = shift;
     my $ob = $G->{_ob}||$_ob;
     return unless $ob;
-    
-    my $other_world = $_ob;
-    $_ob = undef;
-    $ob->T(
-        $G->stackway(@_)
-    );
-    $_ob = $other_world;
+    my $s = $G->stackway(@_);
+    my $te = $@; $@ = "";
+     my $to = $_ob; $_ob = undef;
+      
+      $ob->T($s);
+      
+     $_ob = $to;
+    $@ = $te;
 }
 sub ki {
     my $ar = shift;
@@ -219,11 +246,11 @@ sub Tw {
     my ($GG, $wp, $war, $thing) = @_;
     $GG || die "NO Tw GG!";
     
-    my $a = $G->nw();
-    $a->{arr_hook} = $wp if $wp;
-    $a->{arr_ar} = $war if $war;
-    $a->{thing} = $thing if $thing;
-    $a->{print} = "'$G->{way} ⰱ $wp'";
+    my $w = $G->nw();
+    $w->{arr_hook} = $wp if $wp;
+    $w->{arr_ar} = $war if $war;
+    $w->{thing} = $thing if $thing;
+    $w->{print} = "'$G->{way} ⰱ $wp'";
     # travel to a wp in another ghost
     # we see this somewhere
     # so we can interfere case left
@@ -231,9 +258,9 @@ sub Tw {
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
     #   parallel, streaming...
-    my $u = $G->waystacken("Tw $wp", $GG, $a);
-    $a->{waystack} = $F[0];
-    my @r = $GG->T($thing, undef, $a);
+    my $u = $G->waystacken("Tw $wp", $GG, $w);
+    $w->{waystack} = $F[0];
+    my @r = $GG->T->T($thing, undef, $w);
     $u->();
     return wantarray ? @r : $r[0];
 }
@@ -318,10 +345,8 @@ sub _0 {
     my ($point, $ar) = @_;
     unless ($G0) { # proto $G0 creation
         $G->w("load_ways_post") if $point eq "_load_ways_post";
-        push @$doneprotolwptimes, "PROTO ".$G->{name};
         return;
     }
-    push @$doneprotolwptimes, "__ ".$G->{name};
     $ar->{S} = $G;
     $G0->w($point, $ar);
 }
@@ -438,20 +463,21 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); 
         my ($Z) = @F;
-        my $r;
-        eval { $r = [
+        my $r = [
             $G->doo($h, $ar, $point, $Sway, $w, $Z)
-            ]; };
-        push @returns, $r if $r;
-        die $@ if $@;
-        my $Z = $u->();
+        ];
+        push @returns, $r;
+        my $ZZ = $u->();
+        die "MISM" unless $Z eq $ZZ;
         $Z->{Returns} = $r;
-        $Z->{Error} = $@ if $@;
-        $G->ob("Error", $Z) if $@;
-        $H->error("Z: $talk for $G->{name}\n$@", $Z) if $@;
-        die $@ if $@;
+        
+        if ($@) {
+            $@ = "Z $talk\t\t$G->{name}\n$@";
+            $G->Flab("Z Error");
+            die $@;
+        }
     }
     unless (@returns) {
         $G->Flab("way miss $talk", \@ways, $Sway);
@@ -469,9 +495,7 @@ sub w {
         return $one;
     }
 }
-our $slightly = 0;
-our %subcache;
-our %evscache;
+our %D_cache;
 sub doo {
     my $G = shift;
     my $babble = shift;
@@ -482,64 +506,59 @@ sub doo {
     my $Z = shift;
     die "RECURSION ".@F if @F > $MAX_FCURSION;
     
-    my $O = $G->T->{O};
-    
     my $ksmush = join",",sort keys %$ar;
     my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)
         ." ".($point||"")." arar=".$ksmush;
         
-    my $subhash = Hostinfo::sha1_hex($uuname);
+    my $ha = Hostinfo::sha1_hex($uuname);
     
     $G->Flab(join("   ", '☺', ($point ? "w $point" : "⊖ $babble"), "$ksmush"));
     
-    if ($slightly++ > 50) {
-        $slightly = 0;
-        $H->snooze;
-    }
-    my $evsub = $subcache{$subhash} ||= do {
+    my $Ds = $D_cache{$ha};
+    unless ($Ds) {
         my $eval = $G->parse_babble($babble, $point);
-        my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."};  " } keys %$ar):"";
-        $download .= 'my$thing = $G->{t};' unless $ar->{'thing'};
-        $download .= 'my $O = $G->T->{O};';
-        my $upload =   $ar?join("", map { '$ar->{'.$_.'}=$'.$_.";  "    } keys %$ar):"";
-    
-        my $doo_return = [];
-        my $doo_sev_sub = [];
+        my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
+        $download .= 'my $thing = $G->{t}; ' unless $ar->{thing};
+        $download .= 'my $O = $G->T->{O}; ' unless $ar->{O};
+        my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
         
         my @warnings = ("no warnings 'experimental';");
+    
+        my $sub = "bollox";
         
-        my $sevs = "@warnings $download\n".
-            "; @\$doo_return = (sub { \n$eval\n })->(); $upload";
-        
-        my $evs = '@$doo_sev_sub = sub { my $ar = shift; '.$sevs.'; return @$doo_return };';
+        my $evs = '$sub = sub { my $ar = shift; '.
+                                "@warnings $download\n".
+                                
+            "my \@doo_return = (sub { \n\n$eval\n })->();\n"
+            
+                                ."$upload"
+        .'return @doo_return };';
         
         eval $evs;
         
-        my ($sub) = @$doo_sev_sub;
-        if (ref $sub) {
-            $evscache{$subhash} = $evs;
-            $subcache{$subhash} = $sub;
-        }
-        else {
-            say "BUNG CODE ============================\n\n$evs\n\n\n\n";
-            die "NON COMPILE $@ ".ref $sub for 1..30;
+        $Ds = [ $evs, $sub ];
+        if (!$@ && ref $sub eq "CODE") {
+            $D_cache{$ha} = $Ds;
         }
     };
-    my $evsub = $subcache{$subhash};
-    die "NO EVSUB $G->{name} $point" unless $evsub;
+    my ($evs, $sub) = @$Ds;
         
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
         bless {evs=>"?", babble=>$babble}, 'h');
     
+    my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n$evs\n" : "";
+    
     my @return;
-    @return = $evsub->($ar) if ref $evsub;
-    $back->();
+    if (ref $sub eq "CODE" && !$@) {
+        eval { @return = $sub->($ar) }
+    }
+    
+    my $D = $back->();
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)\.$/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
-        my $evs = $evscache{$subhash};
         my @eval = split "\n", $evs;
         my $xx = 1;
         undef $x if $@ =~ /at EOF/;
@@ -549,31 +568,31 @@ sub doo {
                 }
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
-                    $eval .= ind("⊖r ", (split"\n",$babble)[$x - 3])."\n";
+                    my $bab = (split"\n",$babble)[$x - 4];
+                    if ($bab ne $_) {
+                        $eval .= ind("⊖r ", $bab)."\n";
+                    }
                 }
                 elsif ($xx > $x-5 && $xx < $x+5) {
                     $eval .= ind("|  ", $_)."\n"
                 }
             $xx++;
-        } 
-        
+        }
         my $DOOF;
-        $DOOF .= "\n".dooftip() unless $@ =~ /DOOF/;
-        $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"")
-            ."  w $point  ".join(", ", keys %$ar)."\n"
-            .($@ !~ /DOOF/ ? "$eval\n" : "")
-            .ind("E   ", $@)."\n^\n";
+        my $first = $@ !~/DOOF/;
         
-        $G->Flab("Error: $@", $DOOF, $ar, $evs);
+        $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
+        $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
+        
+        $DOOF .= "$eval\n"                         if $first;
+        $DOOF .= ind("E    ", "\n$komptalk$@\n")."\n\n"     if $first;
+        $DOOF .= ind("E=", "$@")."\n"             if !$first;
+        $DOOF .= dooftip()                         if $first;
+        
+        $G->Flab("D Error $@", $DOOF, $ar, $evs);
+        $D->{Error} = $DOOF;
         $@ = $DOOF;
-        
-        my @ca = caller(1);
-        if ($ca[3] eq "Ghoooost::w") {
-            return;
-        }
-        else {
-            die $@
-        }
+        die "$@";
     }
     
     return wantarray ? @return : shift @return;
