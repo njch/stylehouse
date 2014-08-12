@@ -246,11 +246,11 @@ sub Tw {
     my ($GG, $wp, $war, $thing) = @_;
     $GG || die "NO Tw GG!";
     
-    my $a = $G->nw();
-    $a->{arr_hook} = $wp if $wp;
-    $a->{arr_ar} = $war if $war;
-    $a->{thing} = $thing if $thing;
-    $a->{print} = "'$G->{way} ⰱ $wp'";
+    my $w = $G->nw();
+    $w->{arr_hook} = $wp if $wp;
+    $w->{arr_ar} = $war if $war;
+    $w->{thing} = $thing if $thing;
+    $w->{print} = "'$G->{way} ⰱ $wp'";
     # travel to a wp in another ghost
     # we see this somewhere
     # so we can interfere case left
@@ -258,9 +258,9 @@ sub Tw {
     # here (but not constructed here) is where ways may pool
     #   for more thinking before travelling
     #   parallel, streaming...
-    my $u = $G->waystacken("Tw $wp", $GG, $a);
-    $a->{waystack} = $F[0];
-    my @r = $GG->T($thing, undef, $a);
+    my $u = $G->waystacken("Tw $wp", $GG, $w);
+    $w->{waystack} = $F[0];
+    my @r = $GG->T->T($thing, undef, $w);
     $u->();
     return wantarray ? @r : $r[0];
 }
