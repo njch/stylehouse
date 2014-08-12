@@ -890,7 +890,17 @@ sub throwlog {
         }
     }
     
-    my $error = $self->enlogform(@_);
+    my $f = $_[0];
+    my $error =
+        ref $f eq "Way" && $f->{Error}
+        ?
+        [ hitime(), [qw{? ? ?}], [
+            # HYPERLINKS!?
+            ( map { Ghost::ghostlyprinty("NOHTML", $_) } @{$f->{thing}}),
+            $f->{Error}
+        ] ]
+        :
+        $self->enlogform(@_);
     
     $self->keep_throwing($what, $error);
 }
@@ -898,11 +908,11 @@ sub keep_throwing {
     my $self = shift;
     my $what = shift;
     my $error = shift;
-    my $string = join("\n", $error->[0],
-        " stack x". @{$error->[1]},#map { "    - $_" } reverse @{$error->[1]}),
-            join("\n\n", @{$error->[2]}),
-        );
-
+    my $string = join("\n\n",
+        $error->[0],
+        join("\n",map { "    - $_" } @{$error->[1]}),
+        @{$error->[2]},
+    );
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {

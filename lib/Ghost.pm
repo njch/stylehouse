@@ -32,12 +32,16 @@ sub gname {
 }
 sub hitime { Hostinfo::hitime() }
 sub ghostlyprinty {
+    my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
+    if ($_[0] eq "NOHTML") {
+        shift;
+        $witcolour = sub { shift };
+    }
     join "  ", map {
         ref $_ ? 
             ref $_ eq "Ghost" ?
-            '<t style="color:#8f9;">'.gname($_).'</t>'
+            $witcolour->(gname($_))
             : ""
-            #'<t style="color:#999;">'.gname($_).'</t>'
             
         : (defined $_ ? $_ : "~") } @_
 }
