@@ -37,24 +37,17 @@ hooks:
     }, "L setup"); 
     
     w set_land;
-    $G->timer(0.1, sub { w f/Gob; }, "gob");
-    w f/Gdb;
-  set_keys: |
-    my $kGs = $H->{G}->Gf('keys');
-    my $tr = $kGs->{trig} ||= {};
-    $tr->{m} = sub {
+  key:
+    m: |
+        Say "HGOING TO KEY M";
         w tog_hmess;
-    };
-    $tr->{'À'} = sub {
+    'À': |
         w f/q;
-    };
-    $tr->{q} = sub {
+    q: |
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
-    };
-    $tr->{'g'} = sub {
+    g: |
         $H->getapp('Git')->spawn_proc('cd ../styleshed && git gui');
-    };
   bunch_of: |
     Info "Yep";
     w set_Gdbs
