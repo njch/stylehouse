@@ -77,6 +77,7 @@ sub waystacken {
         }
         $G->Flab("Stack Return Error", $s, $@) if $@;
         $s->{Flab} = [@Flab];
+        $s->{Error} = $@;
         
         my $te = $@; $@ = "";
         $G->ob("/", $s);
