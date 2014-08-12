@@ -58,17 +58,16 @@ sub TT {
 }
 sub Gf {
     my $self = shift;
-    my $O = shift;
     my $way = shift;
     # TODO
-    my @Gs = map { $_->{G} }
-        grep { #$_->{O} eq $O TODO
-        1 && $_->{G} && $_->{G}->{way} =~ /$way/ }
-        @{$self->get('Travel')};
-    if (@Gs > 1) {
-        die "H::Gf 1<".scalar(@Gs)."   $O->{name}     w $way";
-    }
-    $self->Say("\nH::Gf NOTHING nothing! $O->{name}     w $way") unless @Gs;
+    my @Gs =
+        grep { $_->{way} eq "$way" }
+        
+        @{$self->get('Ghost')};
+        
+    die "H::Gf 1<".scalar(@Gs)."   w $way" if @Gs > 1;
+    $self->Say("\nH::Gf NOTHING nothing!   w $way") unless @Gs;
+    
     shift @Gs;
 }
 sub init_flood {
@@ -890,7 +889,17 @@ sub throwlog {
         }
     }
     
-    my $error = $self->enlogform(@_);
+    my $f = $_[0];
+    my $error =
+        ref $f eq "Way" && $f->{Error}
+        ?
+        [ hitime(), [qw{? ? ?}], [
+            # HYPERLINKS!?
+            ( map { Ghost::ghostlyprinty("NOHTML", $_) } @{$f->{thing}}),
+            $f->{Error}
+        ] ]
+        :
+        $self->enlogform(@_);
     
     $self->keep_throwing($what, $error);
 }
@@ -898,15 +907,15 @@ sub keep_throwing {
     my $self = shift;
     my $what = shift;
     my $error = shift;
-    my $string = join("\n", $error->[0],
-        " stack x". @{$error->[1]},#map { "    - $_" } reverse @{$error->[1]}),
-            join("\n\n", @{$error->[2]}),
-        );
-
+    my $string = join("\n\n",
+        $error->[0],
+        join("\n",map { "    - $_" } @{$error->[1]}),
+        @{$error->[2]},
+    );
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
+        $self->JS("\$('#mess').animate({'max-width': '60%'}, 1200);");
     }
     $string = encode_entities($string);
     $string =~ s/'/\\'/g;

@@ -22,24 +22,25 @@ sub gname {
     my $g = shift;
     my $si = shift || 0;
     my $ish = ref $g;
-    $ish = "" if $ish ne "Ghost";
-    $ish = "" if $ish eq "Ghost";
-    $ish = ref $g && ($g->{name} || $g->{id}) || "$g";
-    
-    
-    $ish =~ s/^(\w+)=HASH.*$/$1\{/;
-    $ish;
+    my $ush = "$g";
+    my $may = $g->{name} || $g->{id} if $ish && $ush =~ /HASH/;
+    $may ||= "$g";
+    $may =~ s/^(\w+)=HASH.*$/$1\{/;
+    $may;
 }
 sub hitime { Hostinfo::hitime() }
 sub ghostlyprinty {
+    my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
+    if ($_[0] eq "NOHTML") {
+        shift;
+        $witcolour = sub { shift };
+    }
+    
     join "  ", map {
         ref $_ ? 
-            ref $_ eq "Ghost" ?
-            '<t style="color:#8f9;">'.gname($_).'</t>'
-            : ""
-            #'<t style="color:#999;">'.gname($_).'</t>'
+            $witcolour->(gname($_))
             
-        : (defined $_ ? $_ : "~") } @_
+          : (defined $_ ? $_ : "~") } @_
 }
 sub Flab {
     my $G = shift;
@@ -75,8 +76,9 @@ sub waystacken {
         else {
             shift @F;
         }
-        $G->Flab(wse => $@) if $@;
+        $G->Flab("Stack Return Error", $s, $@) if $@;
         $s->{Flab} = [@Flab];
+        $s->{Error} = $@;
         
         my $te = $@; $@ = "";
         $G->ob("/", $s);
@@ -119,8 +121,8 @@ sub comeback {
     eval { $doing->(); };
     $u->();
     if ($@) {
-        $H->error("G Timer fup", $@, $s) if $@;
-        die $@; # or something?
+        $H->error($s) if $@;
+        die $@ if 0; # or something?
     }
 }
 sub printF {
@@ -465,9 +467,10 @@ sub w {
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); 
         my ($Z) = @F;
-        my $r = [
-            $G->doo($h, $ar, $point, $Sway, $w, $Z)
-        ];
+        my $r;
+        
+        eval { $r = [ $G->doo($h, $ar, $point, $Sway, $w, $Z) ] };
+        
         push @returns, $r;
         my $ZZ = $u->();
         die "MISM" unless $Z eq $ZZ;
@@ -475,7 +478,7 @@ sub w {
         
         if ($@) {
             $@ = "Z $talk\t\t$G->{name}\n$@";
-            $G->Flab("Z Error");
+            $G->Flab("Z Error $@");
             die $@;
         }
     }
@@ -546,7 +549,7 @@ sub doo {
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
         bless {evs=>"?", babble=>$babble}, 'h');
     
-    my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n$evs\n" : "";
+    my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
     my @return;
     if (ref $sub eq "CODE" && !$@) {
@@ -556,37 +559,44 @@ sub doo {
     my $D = $back->();
     
     if ($@) {
-        my ($x) = $@ =~ /line (\d+)\.$/;
+        my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
         my @eval = split "\n", $evs;
-        my $xx = 1;
-        undef $x if $@ =~ /at EOF/;
+        my $xx = 0;
+        $x -= 3 if $x;
+        shift @eval for 1..3;
+        pop @eval for 1..3;
+        my $whole = @eval < 20;
         for (@eval) {
+            $xx++;
+            
                 if (!defined $x) {
                     $eval .= ind("⊘  ", $_)."\n"
                 }
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
-                    my $bab = (split"\n",$babble)[$x - 4];
+                    my $bab = (split"\n",$babble)[$x -1];
                     if ($bab ne $_) {
                         $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }
-                elsif ($xx > $x-5 && $xx < $x+5) {
+                elsif (!$whole && $xx > $x-5 && $xx < $x+5) {
                     $eval .= ind("|  ", $_)."\n"
                 }
-            $xx++;
+                elsif ($whole) {
+                    $eval .= ind("|  ", $_)."\n"
+                }
         }
         my $DOOF;
-        my $first = $@ !~/DOOF/;
+        my $first = 1 unless $@ =~ /DOOF/;
         
         $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
         
         $DOOF .= "$eval\n"                         if $first;
-        $DOOF .= ind("E    ", "\n$komptalk$@\n")."\n\n"     if $first;
-        $DOOF .= ind("E=", "$@")."\n"             if !$first;
+        $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
+        $DOOF .= ind("E   ", "$@")."\n"             if !$first;
         $DOOF .= dooftip()                         if $first;
         
         $G->Flab("D Error $@", $DOOF, $ar, $evs);

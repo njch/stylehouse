@@ -17,8 +17,16 @@ hooks:
         my $S = shift;
         #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
         return if $G->{_dont_mess_worm};
-        $G->{messworm} = $Gmess->W;
-        w messworm;
+        #$G->sing(
+          $G->_0(sing => { 
+          name => "L messworm",
+          again_after => 0.2,
+          code => sub {
+            w messworm;
+          }
+        })if 0;
+        
+            w messworm;
     };
     
     w getstarted;
@@ -29,23 +37,16 @@ hooks:
     }, "L setup"); 
     
     w set_land;
-    w f/Gdb;
-  set_keys: |
-    my $kGs = $H->{G}->Gf('keys');
-    my $tr = $kGs->{trig} ||= {};
-    $tr->{m} = sub {
+  key:
+    m: |
         w tog_hmess;
-    };
-    $tr->{'À'} = sub {
+    'À': |
         w f/q;
-    };
-    $tr->{q} = sub {
+    q: |
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
-    };
-    $tr->{'g'} = sub {
+    g: |
         $H->getapp('Git')->spawn_proc('cd ../styleshed && git gui');
-    };
   bunch_of: |
     Info "Yep";
     w set_Gdbs
@@ -54,10 +55,10 @@ hooks:
     
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
-        } qw{T/splat.+W/tractor H/mess H/colour keys land path func};
+        } qw{T/splat H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = 0;
+        $g->{db} = -1;
     }
   any_child_recoded_init: |
     w set_land;
@@ -107,14 +108,13 @@ hooks:
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
     Gdb: |
-        $Ghost::db = !$Ghost::db;
+        #$Ghost::db = !$Ghost::db;
         my $some = $G->printF();
         $H->Say("\$Ghost::db = $Ghost::db \n".$some);
         $G->timer(2, sub { w f/anddie; }, "and- die");
     anddie: |
       $DB::single = 1;
-      say "ETC";
-      die;
+      say ETC";
     herenow: |
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
   somewhere: |
