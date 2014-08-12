@@ -563,23 +563,30 @@ sub doo {
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $eval = "";
         my @eval = split "\n", $evs;
-        my $xx = 1;
-        undef $x if $@ =~ /at EOF/;
+        my $xx = 0;
+        $x -= 3 if $x;
+        shift @eval for 1..3;
+        pop @eval for 1..3;
+        my $whole = @eval < 20;
         for (@eval) {
+            $xx++;
+            
                 if (!defined $x) {
                     $eval .= ind("⊘  ", $_)."\n"
                 }
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
-                    my $bab = (split"\n",$babble)[$x - 4];
+                    my $bab = (split"\n",$babble)[$x -1];
                     if ($bab ne $_) {
                         $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }
-                elsif ($xx > $x-5 && $xx < $x+5) {
+                elsif (!$whole && $xx > $x-5 && $xx < $x+5) {
                     $eval .= ind("|  ", $_)."\n"
                 }
-            $xx++;
+                elsif ($whole) {
+                    $eval .= ind("|  ", $_)."\n"
+                }
         }
         my $DOOF;
         my $first = 1 unless $@ =~ /DOOF/;
@@ -588,7 +595,7 @@ sub doo {
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
         
         $DOOF .= "$eval\n"                         if $first;
-        $DOOF .= ind("E    ", "\n$komptalk$@\n")."\n\n"     if $first;
+        $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
         $DOOF .= ind("E   ", "$@")."\n"             if !$first;
         $DOOF .= dooftip()                         if $first;
         

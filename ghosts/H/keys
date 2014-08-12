@@ -41,20 +41,23 @@ hooks:
     
     $G->_0(sing => { 
         name => "keytrig $k",
-        block_for => 0.2,        
+        block_for => 0.2,
+        begin_after => 0.00000006,
         code => sub {
             w trigger[$S];
         },
     });
     $G->timer(0.01, sub  {
         Info "keypress $k", $S;
-        $L->w(somewhere => {thing => [$H->Gf('L')]});
     },"prop keypress Info");
   trigger: |
     my $k = $S->{B}->{key};
     for my $g ($H->Gf('L')) {
-           Say "arrkey: $g->{name}\t\t$k";
-        $g->w("key/$k", {Key => $S});
+        $G->timer(0.000001, sub {
+            my $ago = hitime() - $S->{hitime};
+            $G->Flab("keys ($k) arr..trig time taken: $ago";
+            $g->w("key/$k", {Key => $S});
+        }, "HITKEY!");
     }
     
   event: |
