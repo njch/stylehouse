@@ -432,6 +432,10 @@ sub findway {
     my @w = map { $_->find($point) } $G->ways;
     wantarray ? @w : shift @w;
 }
+sub throwlog {
+    my $what = shift;
+    $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+}
 sub w {
     my $G = shift;
     my $point = shift;
