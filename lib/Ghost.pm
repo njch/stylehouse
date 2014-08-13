@@ -97,9 +97,9 @@ sub timur {
 }
 sub timer {
     my $G = shift;
-    my $time = shift || 0.2;
+    my $time = shift || 0.001;
     my $doing = shift;
-    my $last = $G->stackway("G Timer", @_);
+    my $last = $G->Flab("G Timer", @_);
     
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
@@ -134,7 +134,7 @@ sub stackway {
     my $G = shift;
     my $thing = [@_];
     my $w = $G->nw;
-    my $stack = $H->stack(1);
+    my $stack = $H->stack(2);
     my $from;
     # FUZZ!
     if ($stack->[0] =~ /Ghost::timer/) {
@@ -432,6 +432,10 @@ sub findway {
     my @w = map { $_->find($point) } $G->ways;
     wantarray ? @w : shift @w;
 }
+sub throwlog {
+    my $what = shift;
+    $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+}
 sub w {
     my $G = shift;
     my $point = shift;
@@ -625,6 +629,7 @@ sub parse_babble {
     my $eval = shift;
     
     $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay (?:(\d+(?:\.\d+)?) )?([\w\/]+);/\$G->timer("$1", sub { w $2; },"waylay $2");/sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;

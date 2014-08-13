@@ -7,26 +7,29 @@ tractors:
     B_: |
       $name
     first_time: |
-      my $style = "position:absolute;overflow:hidden;border:1px solid black;"
-          ."top:0px;right:10em;-webkit-transform: scale(-1,1);";
-      $S->{V} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $name, $style);
       $S->{V}->{S} = $S; # TUXTY
       $S->{crawl} = $O->Gc("T/crawl");
-    nonfirst_times: |
-      $S->{V}->fadehtml();
     print: |
       $S->{K} .": ". $S->{B}->{_}
     tocrawl: |
       $S->{crawl}->RW; 
       $S->{crawl}->T($thing);
 hooks:
+  fresh_init: |
+    my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
+        position:absolute overflow:hidden border:1px solid black;
+          top:0px right:10em
+          -webkit-transform:scale(-1,1)
+    };
+    $G->{View} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ", $style);
   any_init: |
-    #w getstarted;
+    $H->Gf("T/splat")->w("clear", {splatname => "Ϡ"});
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
     w $S tocrawl;
     Say "Ϡ, ".$S->{crawl}->W->describe_size;
+    $H->Gf("T/splat")->w("Splat", { Ϡ => $S->{crawl}->W, view => $G->{View} });
   
   getstarted: |
     $G->unrush('getstarted') || return;
