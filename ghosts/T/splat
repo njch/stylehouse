@@ -28,7 +28,8 @@ tractors:
       if ($splatname eq "worm") {
           $style .= "background:#5a8;bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;";
       }
-      $S->{view} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
+      $S->{view} = $S->{B}->{view}
+          || ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
       
     nonfirst_times: |
       $S->{view}->fadehtml();
@@ -83,11 +84,12 @@ hooks:
     }
   
   Splat: |
+    my $view = delete $ar->{view};
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
     return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
-    my $A = Arr[$splatname, $wormhole];
+    my $A = Arr[$splatname, $wormhole, $view];
     w script_out[$A, $splatname, $wormhole];
     $G->{nona} = 0;
     $G->{t} = $A;
@@ -99,6 +101,8 @@ hooks:
         if $splatname eq "worm";
   clear: |
     my $S = Afind[$splatname];
+    $S || $H->error("NO findo $splatname", $G->W);
+    #w go(W => {script => $G->W->CS});
     $S->{view}->fadehtml();
   aWstract: |
     return { script => [@$wormhole] } if ref $wormhole eq "ARRAY";
