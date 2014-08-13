@@ -297,9 +297,15 @@ hooks:
             }
             if ($ref eq "ARRAY") { #c t s
                 $color = "090";
-                $name = 0+@$t.$inc->('black',"[").
+                $name = 0+@$t.$inc->('black',"[");
+                $name .=
                     $inc->('#fca; font-size:10pt;line-height:8pt;',
-                        join $inc->('black',"["), @$t);
+                    
+                        join $inc->('black',"["),     @$t
+                    )
+                        
+                        unless @{$line->{o}};
+                        
                 $name =~ s/^((?:.+?\n){4}).+$/$1/s;
                 $s->{style}.="overflow:hidden";
                 my $parent = $line->{i}->{L}->{t};
