@@ -31,7 +31,16 @@ hooks:
     doof: |
       my $sky = G sky;
       $sky->w('doof');
+  check:
+    vitals: |
+      my @ps = `ps -p$$ fu`;
+      $H->info("Vitals: ", join(" ~ ", (split /\s+/, $ps[1])[0,1,2,3]) );
+      waylay 15 check/vitals;
+  init:
+    later: |
+      waylay check/vitals;
   init_flood: |
+    waylay init/later;
     my $self = $O;
     my $data = $O->data;
     $self->{horizon} = $data->{horizon};
