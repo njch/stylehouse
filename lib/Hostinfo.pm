@@ -889,17 +889,19 @@ sub throwlog {
         }
     }
     
-    my $f = $_[0];
+    my @E;
+    for my $b (@_) {
+        if (ref $b eq "Way") {
+            push @E, "Way: $b->{name}";
+            push @E, ( map { " ` ".Ghost::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
+            push @E, $b->{Error} if $b->{Error};
+        }
+        else {
+            push @E, Ghost::ghostlyprinty("NOHTML", $b)
+        }
+    }
     my $error =
-        ref $f eq "Way" && $f->{Error}
-        ?
-        [ hitime(), [qw{? ? ?}], [
-            # HYPERLINKS!?
-            ( map { Ghost::ghostlyprinty("NOHTML", $_) } @{$f->{thing}}),
-            $f->{Error}
-        ] ]
-        :
-        $self->enlogform(@_);
+        [ hitime(), $H->stack(2), [@E] ];
     
     $self->keep_throwing($what, $error);
 }
