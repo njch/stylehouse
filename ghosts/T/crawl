@@ -9,6 +9,24 @@ chains:
    print: |
         $S->{each}
         
+ - K: 'HASHish'
+   arr_if: |
+     ref $thing && "$thing" =~ /=HASH/
+   foreach_travel:
+     each: |
+       sort keys %$thing;
+     next_thing: $thing->{$each}
+   print: |
+        $S->{each}
+     
+ - K: 'ARRAY'
+   arr_if: ref $thing eq 'ARRAY'
+   foreach_travel:
+     each: @$thing
+     next_thing: $each
+   print: |
+        $S->{i}
+        
  - K: 'WayF'#c
    cracks:
      Flab: 1
@@ -24,7 +42,7 @@ chains:
      && ref $G->{i}->{L}->{t} eq "Way"
    grav_add: 1
    
- - K: 'Waym'#c
+ - K: 'Waym'
    arr_if: | 
      my ($lM,$lB) = (
          $G->{i}->{L}->{i}->{L},
@@ -41,7 +59,8 @@ chains:
    eat: "HASHish"
    each_ignore: 'id huid print B_ K arr_if first_time'
    each_order: 'undies timer_back'
- - K: 'WayFF'#c
+   
+ - K: 'WayFF'
    _disabled: 1
    arr_if: |
      ref $thing eq "Way" && $thing->{F};
@@ -51,12 +70,7 @@ chains:
    print: |
      "WF [ ".$S->{i}
    
-
-   
-   
-   
-   
- - K: 'GsGG'#c
+ - K: 'GsGG'
    arr_if: |
      ref $thing eq "Ghost"
    foreach_travel:
@@ -71,24 +85,6 @@ chains:
    eat: "HASHish"
    each_ignore: 'id GG huid way T load_ways_count unrush_'
    each_order: 'name i O'
-        
- - K: 'HASHish'#c
-   arr_if: |
-     ref $thing && "$thing" =~ /=HASH/
-   foreach_travel:
-     each: |
-       sort keys %$thing;
-     next_thing: $thing->{$each}
-   print: |
-        $S->{each}
-     
- - K: 'ARRAY'#c
-   arr_if: ref $thing eq 'ARRAY'
-   foreach_travel:
-     each: @$thing
-     next_thing: $each
-   print: |
-        $S->{i}
 dials:
   max_depth: 1
 hooks:
