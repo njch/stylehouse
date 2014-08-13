@@ -134,7 +134,7 @@ sub stackway {
     my $G = shift;
     my $thing = [@_];
     my $w = $G->nw;
-    my $stack = $H->stack(1);
+    my $stack = $H->stack(2);
     my $from;
     # FUZZ!
     if ($stack->[0] =~ /Ghost::timer/) {
