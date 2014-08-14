@@ -103,7 +103,7 @@ sub gitrack {
         event => { menu => $menu },
         class => 'menu en',
         }],
-        S_attr => { style => "font-size:49pt;"},
+        S_attr => { style => "font-size:36pt;"},
         };
     }
     my $gitm = [
