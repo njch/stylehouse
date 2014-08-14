@@ -73,11 +73,6 @@ sub gitrack {
         next unless $r =~ /shed/;
         my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
         my $menu = [
-    'ⵘ' => sub {
-        my @hmm = grep /stylehouse\.pl/, `ps faux | grep stylehouse`;
-        my @har = split /\s+/, pop @hmm;
-        `kill -KILL $har[1]`;
-    },
     '↰' => sub {
         my $rbe = $self->rbe(up => $r);
         if ($rbe) {
@@ -93,24 +88,22 @@ sub gitrack {
         say" HEading to $r";
         $self->spawn_proc('cd ../'.$r.' && git gui');
     },
+    'ⵘ' => sub {
+        my @hmm = grep /stylehouse\.pl/, `ps faux | grep stylehouse`;
+        my @har = split /\s+/, pop @hmm;
+        `kill -KILL $har[1]`;
+    },
     'ܤ' => sub {
         $self->spawn_proc('cd ../'.$r.' && touch stylehouse.pl');
     },
         ];
-        my $sub =
+        push @m,
         { _spawn => [ [], {
         nospace => 1,
         event => { menu => $menu },
         class => 'menu en',
         }],
         S_attr => { style => "font-size:49pt;"},
-        };
-        push @m,
-        { _spawn => [ ["!style='color:#fff; font-size:35pt;' s", $sub], {
-        nospace => 1,
-        class => 'menu',
-        }],
-        S_attr => { style => 'border: 1px solid white;' },
         };
     }
     my $gitm = [
