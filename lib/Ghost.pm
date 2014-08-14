@@ -632,8 +632,10 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
-    $eval =~ s/waylay (?:(\d+(?:\.\d+)?) )?([\w\/]+);/\$G->timer("$1", sub { w $2; },"waylay $2");/sg;
+    my $num = qr/(?:(\d+(?:\.\d+)?) )/;
+    $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
