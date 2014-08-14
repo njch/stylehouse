@@ -18,6 +18,7 @@ tractors:
     every_time: |
       w $S change_person if $ar->{e} && $ar->{e}->{C};
       w $S set_background if $ar->{set_css_background};
+      w $S change if $ar->{change};
     set_background: |
       my $colour = w $S wtc;
       $ar->{t} ||= 50;
@@ -35,19 +36,16 @@ tractors:
       $S->{B}->{colour} = $ar->{c} || w $S randomcolour;
     change: |
       w $S change_colour;
-      w $S set_background;
+      w $S set_background if $B->{set_css_background};
       return $S->{B}->{colour};
     wtc: |
-      $S->{B}->{colour} ||=  w $S randomcolour;
+      $B->{colour} ||=  w $S randomcolour;
 hooks:
   any_init: |
   have: |
     die;
   arr: |
     my $S = Arr[(%$ar)];
-  change: |
-    my $S = Afind[$name];
-    #w $S change(%$ar);
   randomcolour: |
     my $S = Afind[$name];
     return w $S randomcolour(%$ar);

@@ -263,8 +263,9 @@ sub event {
     elsif ($id =~ /^(.+)-Colour-(\d+)$/) {
         my ($tid, $cid) = ($1, $2);
         my $fid = "$tid-".($cid+1);
-        my $colour = random_colour($e->{C});
-        $H->JS("\$('#$fid > div').animate({backgroundColor: '$colour'}, 200);");
+        $H->{G}->w("A/colour", {name => "Codon/$self->{name}", change => 'change'});
+        #my $colour = random_colour($e->{C});
+        #$H->JS("\$('#$fid > div').animate({backgroundColor: '$colour'}, 200);");
     }
     elsif ($id =~ s/-Head$//) {
         $self->away();
