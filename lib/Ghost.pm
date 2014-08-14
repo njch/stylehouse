@@ -181,7 +181,7 @@ sub ob {
       $ob->T($s);
       
      $_ob = $to;
-    $@ = $te; 
+    $@ = $te;
 }
 sub ki {
     my $ar = shift;
@@ -583,7 +583,7 @@ sub doo {
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x -1];
                     if ($bab ne $_) {
-                        $eval .= ind("⊖r ",$bab)."\n";
+                        $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }
                 elsif (!$whole && $xx > $x-5 && $xx < $x+5) {
