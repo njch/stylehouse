@@ -29,6 +29,10 @@ sub gname {
     $may;
 }
 sub hitime { Hostinfo::hitime() }
+sub throwlog {
+    my $G = shift;
+    $H->{G}->w(throwlog => {@_});
+}
 sub ghostlyprinty {
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
     if ($_[0] eq "NOHTML") {
