@@ -48,7 +48,7 @@ hooks:
         } qw{T/splat H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = -1;
+        #$g->{db} = -1;
     }
   any_child_recoded_init: |
     w set_land;
@@ -109,13 +109,12 @@ hooks:
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
     Gdb: |
-        #$Ghost::db = !$Ghost::db;
+        $Ghost::db = !$Ghost::db;
         my $some = $G->printF();
         $H->Say("\$Ghost::db = $Ghost::db \n".$some);
         $G->timer(2, sub { w f/anddie; }, "and- die");
     anddie: |
-      $DB::single = 1;
-      say ETC";
+      say "ETC";
     herenow: |
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
   somewhere: |
@@ -158,12 +157,15 @@ hooks:
   make_hmess: |
     $G->{_dont_mess_worm} = 0;
     my $wormhole = $H->{G}->Gf('mess')->W;
+    G splat ->{db}--;
     w somewhere[$wormhole];
+    G splat ->{db}++;
   tog_hmess: |
     $G->{_dont_mess_worm}
     ? w make_hmess
     : w hide_hmess;
   hide_hmess: |
+    return;
         $G->{_dont_mess_worm} = 1;
         G splat Tw clear(splatname => 'worm');
   messworm: |
