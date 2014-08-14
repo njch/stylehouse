@@ -15,6 +15,8 @@ tractors:
           sub { 100 + int rand 155 },
           sub { int rand 88 },
       ];
+    every_time: |
+      w $S change_person if $ar->{e} && $ar->{e}->{C};
       w $S set_background if $ar->{set_css_background};
     set_background: |
       my $colour = w $S wtc;
@@ -22,11 +24,11 @@ tractors:
       $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t});");
     change_person: |
       push @$personalities, shift @$personalities;
+    person: |
+      $personalities->[0]
     randomcolour: |
-      if ($ar->{e} && $ar->{e}->{C}) {
-          w $S change_person;
-      }
-      my ($as) = @$personalities;
+      $B->{personalities} || die "no preson!?";
+      my $as = w $S person;
       my ($rgb) = join", ", map {$as->()} 1 .. 3;
       return $S->{B}->{colour} = "rgb($rgb)";
     change_colour: |
@@ -45,7 +47,7 @@ hooks:
     my $S = Arr[(%$ar)];
   change: |
     my $S = Afind[$name];
-    w $S change(%$ar);
+    #w $S change(%$ar);
   randomcolour: |
     my $S = Afind[$name];
     return w $S randomcolour(%$ar);
