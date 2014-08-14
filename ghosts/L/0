@@ -48,7 +48,7 @@ hooks:
         } qw{T/splat H/colour keys land path func};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
-        $g->{db} = -1;
+        #$g->{db} = -1;
     }
   any_child_recoded_init: |
     w set_land;
@@ -109,13 +109,12 @@ hooks:
       $H->{_future} = !$H->{_future};
       $H->Say("\$H->{_future} = $H->{_future}");
     Gdb: |
-        #$Ghost::db = !$Ghost::db;
+        $Ghost::db = !$Ghost::db;
         my $some = $G->printF();
         $H->Say("\$Ghost::db = $Ghost::db \n".$some);
         $G->timer(2, sub { w f/anddie; }, "and- die");
     anddie: |
-      $DB::single = 1;
-      say ETC";
+      say "ETC";
     herenow: |
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
   somewhere: |
