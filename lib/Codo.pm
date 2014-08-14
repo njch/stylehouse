@@ -255,7 +255,8 @@ sub re_openness {
     my $self = shift;
 
     my $codopenyl = "Codo-openness.yml";
-    my $open = Load(Hostinfo::decode_utf8(scalar `cat $codopenyl`)) if -e $codopenyl;
+    my $open = Load(Hostinfo::decode_utf8(scalar `cat $codopenyl`)) if -e $codopenyl; 
+    my $first = $open->[-1];
     for my $o (@$open) {
         my ($name, $ope) = @$o;
         while (my ($k, $v) = each %$ope) {
@@ -264,7 +265,8 @@ sub re_openness {
             }
         }
         say "Ressur $name";
-        $self->load_codon($name, $ope, "noscrolly");
+        my $dont = $o ne $first;
+        $self->load_codon($name, $ope, "noscrolly", $dont);
     }
 }
 sub mind_openness {
@@ -330,6 +332,7 @@ sub load_codon {
     my $codon_s = shift;
     my $ope = shift;
     my $noscrolly = shift;
+    my $dont = shift;
 
     my ($codon) =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
     $codon || die "Can't load codon: $codon_s";
@@ -339,7 +342,7 @@ sub load_codon {
         $slip->away("nolobo") unless $slip eq $codon;
     }
     
-    $codon->display($self, $ope);
+    $codon->display($self, $ope) unless $dont;
     $self->mind_openness($codon);
     
     $self->{hostinfo}->send(
