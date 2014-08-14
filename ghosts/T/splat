@@ -210,7 +210,9 @@ hooks:
         my $t = $line->{t};
         my $menu = [];
         
-        return if $line->{i}->{L}->{i}->{each} && $line->{i}->{L}->{i}->{each} eq "stack";
+        my $ineach = $line->{i}->{each};
+        my $inineach = $line->{i}->{L}->{i}->{each};
+        return if $inineach && $inineach eq "stack";
         
         
         push @$menu, 'ᣋ' => sub {
@@ -223,7 +225,7 @@ hooks:
             if ref $t eq "Wormhole";
             
         push @$menu, 'Ώ' => sub { w go( wormhole => $t) }
-        if $line->{i}->{each} eq 'crawl_W_S';
+        if $ineach && $ineach eq 'crawl_W_S';
             
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
             if ref $t eq "Ghost" || ref $t eq "Travel";

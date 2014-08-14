@@ -35,7 +35,7 @@ sub throwlog {
 }
 sub ghostlyprinty {
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
-    if ($_[0] eq "NOHTML") {
+    if ($_[0] && $_[0] eq "NOHTML") {
         shift;
         $witcolour = sub { shift };
     }
