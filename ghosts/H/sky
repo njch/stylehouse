@@ -23,9 +23,8 @@ hooks:
         w touch(t=>500);
     });
   ambientness: |
-    my @c = w colourchange(t=>15000);
-    Info "Ambientness...", @c;
-    $G->timer(19, sub { w ambientness }, "ambiento");
+    Info Ambientness => w colourchange(t=>15000);
+    waylay 19 ambientness;
   colours: |
     $G->{colours} = [ shuffle
     '77a9a0','6699cF','3366cF',
@@ -43,9 +42,8 @@ hooks:
         w getundercontrol;
     }
     $@ = "";
-  
     $ar->{t} ||= 1000;
-    w colourchange;
+    Info "sky touch" => w colourchange;
   rotate_colourwheel: |
     $G->{colours} || w colours;
     my $c = shift @{$G->{colours}};
