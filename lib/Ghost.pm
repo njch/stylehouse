@@ -36,11 +36,21 @@ sub ghostlyprinty {
         $witcolour = sub { shift };
     }
     
-    join "  ", map {
-        ref $_ ? 
-            $witcolour->(gname($_))
-            
-          : (defined $_ ? $_ : "~") } @_
+    my @t = @_;
+    my @s;
+    for my $t (@t) {
+        if ($t && ref $t eq "ARRAY") {
+            push @s, map { "[".ghostlyprinty($_) } @$t;
+        }
+        elsif (ref $t) {
+            push @s, $witcolour->(gname($t));
+        }
+        else {
+            push @s, (defined $t ? $t : "~")
+        }
+    }
+    
+    join "  ", @s
 }
 sub Flab {
     my $G = shift;
