@@ -99,7 +99,8 @@ sub timer {
     my $G = shift;
     my $time = shift || 0.001;
     my $doing = shift;
-    my $last = $G->Flab("G Timer", @_);
+    my $st = " ".$_[0] if $_[0] && !ref $_[0];
+    my $last = $G->Flab("G Timer$st", @_);
     
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
