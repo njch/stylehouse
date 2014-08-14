@@ -25,7 +25,7 @@ hooks:
     for my $A (@AA) {
         my $r;
         if (my $Already = w retract[$A]) {
-            $Already->{B} = $A->{B};
+            $Already->{B} = { %{$Already->{B}}, %{$A->{B}} };
             $A = $Already;
             $G->Flab("A retracted     \t".ki($ar), $ar);
             w $A nonfirst_times;
@@ -36,6 +36,8 @@ hooks:
             w $A first_time;
             $A->{waystack} = $G->stackway;
         }
+        
+        w $A every_time;
         
         waylay populi;
             

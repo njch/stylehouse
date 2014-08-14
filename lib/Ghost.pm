@@ -494,7 +494,7 @@ sub w {
         $Z->{Returns} = $r;
         
         if ($@) {
-            $@ = "Z $talk\t\t$G->{name}\n$@";
+         $@ = "Z $G->{name}\t$talk\t\t\n$@";
             $G->Flab("Z Error $@");
             die $@;
         }
@@ -563,8 +563,7 @@ sub doo {
     };
     my ($evs, $sub) = @$Ds;
         
-    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w,
-        bless {evs=>"?", babble=>$babble}, 'h');
+    my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w);
     
     my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
@@ -606,10 +605,10 @@ sub doo {
                     $eval .= ind("|  ", $_)."\n"
                 }
         }
-        my $DOOF;
+        my $DOOF; 
         my $first = 1 unless $@ =~ /DOOF/;
         
-        $DOOF .= "DOOF $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
+        $DOOF .= "DOOF  $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
         
         $DOOF .= "$eval\n"                         if $first;
@@ -617,7 +616,10 @@ sub doo {
         $DOOF .= ind("E   ", "$@")."\n"             if !$first;
         $DOOF .= dooftip()                         if $first;
         
-        $G->Flab("D Error $@", $DOOF, $ar, $evs);
+        my $OOF = $G->Flab("D Error $@", $DOOF, $D);
+        if ($first) {
+            $H->error($OOF);
+        }
         $D->{Error} = $DOOF;
         $@ = $DOOF;
         die "$@";
