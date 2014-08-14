@@ -8,8 +8,7 @@
 name: kasplat
 tractors:
   - K: 'mess'
-    populi:
-      max: 10
+    max_populi: 10
     arr_if: |
       $thing && $what
     first_time: |
@@ -17,19 +16,20 @@ tractors:
     wheresplain: |
       $S->{waystack} ? w $S->{waystack} wheresplain : "";
     print: |
+      my $f = $thing->[0];
       my $p;
-      if ($thing && ref $thing eq "ARRAY") { 
-            $p = join ", ",
-              map { ghostlyprinty($_) } @$thing
+      if (ref $f eq "Way") {
+          $p = w $f print;
       }
-      else {
-          $p = ghostlyprinty($thing);
-      }
+      $p ||= $f || "";
       join " ", $S->{K}, $p;
 hooks:
   fresh_init: |
   throwlog: |
     my $S = Arr[$thing, $what];
+    if ($G->{_post_throw}) {
+        $G->{_post_throw}->($S);
+    }
     return "yep" if $what eq "Info" && 0;
   throwthrow: |
     

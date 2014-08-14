@@ -13,12 +13,21 @@ hooks:
     G TT ->G("L/ob");
     
     my $Gmess = $H->{G}->Gf('mess');
-    my ($A) = $Gmess->tractors;
-    die unless $A->{K} eq "mess";
-    $A->accum('populi/_hooks', sub {
+    $Gmess->{_post_throw} = sub {
+        my $S = shift;
+        #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
         return if $G->{_dont_mess_worm};
-        waylay messworm;
-    });
+        #$G->sing(
+          $G->_0(sing => { 
+          name => "L messworm",
+          again_after => 0.2,
+          code => sub {
+            w messworm;
+          }
+        })if 0;
+        
+            w messworm;
+    };
     
     w getstarted;
   any_init: |
@@ -113,7 +122,8 @@ hooks:
         return;
     }
     if ($ar->{W}) {
-        G splat Tw Splat(somewhere => $ar->{W});
+        $G->{some_W} = $ar->{W};
+        w splat_wormholes;
         return;
     }
     
@@ -142,9 +152,9 @@ hooks:
     Say "ẞ ".$wormhole->describe_size()." for ".ghostlyprinty($thing)
     ."\n$crawltime   ".show_delta();
   make_hmess: |
-    $G->{_dont_mess_worm} = 0;
-    my $wormhole = $H->{G}->Gf('mess')->W;
-    w somewhere[$wormhole];
+        $G->{_dont_mess_worm} = 0;
+        my $wormhole = $H->{G}->Gf('mess')->W;
+        w somewhere[$wormhole];
   tog_hmess: |
     $G->{_dont_mess_worm}
     ? w make_hmess
@@ -206,6 +216,7 @@ hooks:
     return unless $G->{some_W};
     G splat Tw Splat(somewhere => $G->{some_W});
   wormholify: |
+    #
     G splat Tw Splat(worm => $wormhole);
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );

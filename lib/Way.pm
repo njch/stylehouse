@@ -128,25 +128,6 @@ sub find {
     }
     return $h
 }
-sub accum {
-    my $self = shift;
-    my $ere = shift;
-    my $at = shift;
-    push @{$self->gest($ere, [])}, $at;
-}
-sub gest {
-    my $self = shift;
-    my ($k, $v) = @_;
-    my $w = $self;
-    my @moves = split '/', $k;
-    until (@moves == 1) {
-        my $m = shift @moves;
-        $w = $w->{$m};
-    }
-    my $m = shift @moves;
-    $w->{$m} ||= $v
-}
-
 
 1;
 
