@@ -99,7 +99,8 @@ sub timer {
     my $G = shift;
     my $time = shift || 0.001;
     my $doing = shift;
-    my $last = $G->Flab("G Timer", @_);
+    my $st = " ".$_[0] if $_[0] && !ref $_[0];
+    my $last = $G->Flab("G Timer$st", @_);
     
     my $doings;
     $doings = sub { $G->comeback($last, $doings, $doing, @_); };
@@ -263,7 +264,9 @@ sub Tw {
     my $u = $G->waystacken("Tw $wp", $GG, $w);
     $w->{waystack} = $F[0];
     my @r = $GG->T->T($thing, undef, $w);
-    $u->();
+    my $Tw = $u->();
+    $Tw->{Returns} = [@r];
+    
     return wantarray ? @r : $r[0];
 }
 sub Gf {
@@ -561,6 +564,7 @@ sub doo {
     }
     
     my $D = $back->();
+    $D->{Returns} = [@return];
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)/;
@@ -628,8 +632,10 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    $eval =~ s/timer (\d+(\.\d+)?) \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
-    $eval =~ s/waylay (?:(\d+(?:\.\d+)?) )?([\w\/]+);/\$G->timer("$1", sub { w $2; },"waylay $2");/sg;
+    my $num = qr/(?:(\d+(?:\.\d+)?) )/;
+    $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;

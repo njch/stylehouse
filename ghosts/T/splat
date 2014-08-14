@@ -86,6 +86,7 @@ hooks:
   Splat: |
     my $view = delete $ar->{view};
     my ($splatname, $wormhole) = %$ar;
+    start_timer();
     $wormhole = w aWstract[$wormhole];
     return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
@@ -94,11 +95,9 @@ hooks:
     $G->{nona} = 0;
     $G->{t} = $A;
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
-    $H->Say("Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}}))
+    
+    $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta())
         unless $splatname eq "worm";
-    say "Splat $splatname $wormhole->{n}x".scalar(@{$wormhole->{script}})
-     ."   ".show_delta()
-        if $splatname eq "worm";
   clear: |
     my $S = Afind[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);
@@ -165,7 +164,7 @@ hooks:
       if ($splatname =~ /^(path|land|func)$/) {
           @atom = qw[t];
       }
-      @atom = qw"i t" if $splatname eq "worm";
+      @atom = qw"i t m" if $splatname eq "worm";
       if ($splatname eq "somewhere" && $G->{nona}) {
             @atom = qw'd i' if $i == 1;
             @atom = qw't o m' if $i == 2;
@@ -335,6 +334,7 @@ hooks:
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
                 }
+                $name =~ s/(rgba?\([\d, .]+\))/<t style="background:$1;">$1<\/t>/;
                 $name = $emb->('ϖ').$name;
             }
             if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s

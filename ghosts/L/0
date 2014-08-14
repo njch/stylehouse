@@ -13,21 +13,12 @@ hooks:
     G TT ->G("L/ob");
     
     my $Gmess = $H->{G}->Gf('mess');
-    $Gmess->{_post_throw} = sub {
-        my $S = shift;
-        #$H->keep_throwing($S->{B}->{what}, $S->{B}->{error});
+    my ($A) = $Gmess->tractors;
+    die unless $A->{K} eq "mess";
+    $A->accum('populi/_hooks', sub {
         return if $G->{_dont_mess_worm};
-        #$G->sing(
-          $G->_0(sing => { 
-          name => "L messworm",
-          again_after => 0.2,
-          code => sub {
-            w messworm;
-          }
-        })if 0;
-        
-            w messworm;
-    };
+        waylay messworm;
+    });
     
     w getstarted;
   any_init: |
@@ -42,6 +33,8 @@ hooks:
         w tog_hmess;
     'À': |
         w f/q;
+    l: |
+        $H->Gf('H/sky')->w('touch');
     q: |
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
@@ -64,7 +57,11 @@ hooks:
     }
   
   look_for_ghost: |
-    [ grep { $_->{name} =~ /$name/ } @{$H->data->{Ghost}} ]
+    [ grep {
+      (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
+    && 
+      (!$ar->{not} || $_->{name} !~ /$ar->{not}/)
+    } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
     [ "wayf",         sub { $G->stackway } ],
@@ -73,15 +70,18 @@ hooks:
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
   f:
-    'Ϡ*': |
-      my $thing = w look_for_ghost(name => 'Ϡ');
-      w somewhere[$thing];
-    'Њ*': |
-      my $thing = w look_for_ghost(name => 'Њ');
-      w somewhere[$thing];
-    Ϡ: |
+    'ЊϠʝ*': |
+      my $thing = {
+        'Њ' => w look_for_ghost(name => 'Њ'),
+        'Ϡ' => w look_for_ghost(name => 'Ϡ'),
+        'ʝ' => w look_for_ghost(name => 'ʝ', not => "Ϡ"),
+        '*' => w look_for_ghost(not => 'Њ|Ϡ|ʝ'),
+      };
+      my $max_depth = 2;
+      w somewhere[$thing, $max_depth];
+    'Ϡ': |
       w somewhere(nothing => $L);
-    Ϡ?: |
+    'Ϡ?': |
       $H->Info("Ϡing... ",G ob );
       $G->{_ob} = $G->{that}->{_ob} = G ob;
       $G->{_ob}->RW();
@@ -97,7 +97,7 @@ hooks:
       w somewhere[$W];
     chch: |
       w swap_chains
-    ⥁: |
+    '⥁': |
       w splat_wormholes
     futu: |
       $H->{_future} = !$H->{_future};
@@ -112,6 +112,7 @@ hooks:
       say ETC";
     herenow: |
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
+
   somewhere: |
     if ($ar->{nothing}) {
         Gf Ϡ Tw arr(%$ar);
@@ -122,8 +123,7 @@ hooks:
         return;
     }
     if ($ar->{W}) {
-        $G->{some_W} = $ar->{W};
-        w splat_wormholes;
+        G splat Tw Splat(somewhere => $ar->{W});
         return;
     }
     
@@ -134,10 +134,10 @@ hooks:
     }, "splatup path");
     
     my $Cr = G crawl;
-    die "HMM" unless $Cr;
-    say "" for 1..5;
+    $Cr || die;
     say join"", ("       ẞ           ")x38;
     start_timer();
+    $Cr->crank(max_depth => $_) for delete $ar->{max_depth};
     
     $Cr->RW;
 
@@ -152,9 +152,9 @@ hooks:
     Say "ẞ ".$wormhole->describe_size()." for ".ghostlyprinty($thing)
     ."\n$crawltime   ".show_delta();
   make_hmess: |
-        $G->{_dont_mess_worm} = 0;
-        my $wormhole = $H->{G}->Gf('mess')->W;
-        w somewhere[$wormhole];
+    $G->{_dont_mess_worm} = 0;
+    my $wormhole = $H->{G}->Gf('mess')->W;
+    w somewhere[$wormhole];
   tog_hmess: |
     $G->{_dont_mess_worm}
     ? w make_hmess
@@ -216,7 +216,6 @@ hooks:
     return unless $G->{some_W};
     G splat Tw Splat(somewhere => $G->{some_W});
   wormholify: |
-    #
     G splat Tw Splat(worm => $wormhole);
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );

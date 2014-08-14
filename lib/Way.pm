@@ -54,7 +54,31 @@ sub load {
         say $@;
         my ($x, $y) = $@ =~
               /parser \(line (\d+), column -?(\d+)\)/;
-        say <<'';
+              
+        my @file = split "\n",  read_file($self->{_wayfile});
+        my $xx = 1;
+        my $vision = SYCK();
+        for (@file) {
+          if (1 || $x - 8 < $xx && $xx < $x + 5) {
+            if ($xx == $x) {
+              $vision .= "HERE > $_\n";
+              $vision .= "HERE > ".join("", (" ")x$y)."^\n";
+            }
+            else {
+              $vision .= "       $_\n";
+            }
+          }
+          $xx++;
+        }
+        die "! YAML load $self->{_wayfile} failed: "
+        .($@ ? $@ : "got: ".($w || "~"))
+        ."\n\n".$vision;
+    }
+    
+    $self->init_way($w);
+}
+
+sub SYCK { <<'';
                              _..._                   
                           .-'_..._''.                
                         .' .'      '.\    .          
@@ -69,27 +93,6 @@ sub load {
 .'   \_.'|`-' /                    `  '    \  \  \   
           '..'                       '------'  '---' 
 
-        my @file = read_file($self->{_wayfile});
-        my $xx = 1;
-        my $vision = "";
-        for (@file) {
-          if ($x - 8 < $xx && $xx < $x + 5) {
-            if ($xx == $x) {
-              $vision .= "HERE > $_";
-              $vision .= "HERE > ".join("", (" ")x$y)."^\n";
-            }
-            else {
-              $vision .= "       $_";
-            }
-          }
-          $xx++;
-        }
-        die "! YAML load $self->{_wayfile} failed: "
-        .($@ ? $@ : "got: ".($w || "~"))
-        ."\n\n".$vision;
-    }
-    
-    $self->init_way($w);
 }
 sub init_way {
     my $self = shift;
@@ -128,6 +131,25 @@ sub find {
     }
     return $h
 }
+sub accum {
+    my $self = shift;
+    my $ere = shift;
+    my $at = shift;
+    push @{$self->gest($ere, [])}, $at;
+}
+sub gest {
+    my $self = shift;
+    my ($k, $v) = @_;
+    my $w = $self;
+    my @moves = split '/', $k;
+    until (@moves == 1) {
+        my $m = shift @moves;
+        $w = $w->{$m};
+    }
+    my $m = shift @moves;
+    $w->{$m} ||= $v
+}
+
 
 1;
 

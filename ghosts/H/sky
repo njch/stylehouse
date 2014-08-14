@@ -16,15 +16,15 @@ hooks:
       $G->timer(0.1, sub {
           Say "Flasbss111";
           $L->w(  somewhere => {thing => $G->stackway} ) 
-      }, "skyrecode;stack");
+      }, "skyrecode;stack"); 
   doof: |
-    w colourchange(t=>100, c => '333');
-    $G->timer(0.2, sub {
-        w touch(t=>500);
-    });
+    $ar->{t} ||= 100;
+    $ar->{c} ||= '333';
+    w colourchange;
+    waylay touch(t=>500);
   ambientness: |
-    w colourchange(t=>15000);
-    $G->timer(19, sub { w ambientness }, "ambiento");
+    Info Ambientness => w colourchange(t=>15000);
+    waylay 19 ambientness;
   colours: |
     $G->{colours} = [ shuffle
     '77a9a0','6699cF','3366cF',
@@ -42,9 +42,8 @@ hooks:
         w getundercontrol;
     }
     $@ = "";
-  
-    $ar->{t} ||= 1000;
-    w colourchange;
+    $ar->{t} ||= 300;
+    Info "sky touch" => w colourchange;
   rotate_colourwheel: |
     $G->{colours} || w colours;
     my $c = shift @{$G->{colours}};

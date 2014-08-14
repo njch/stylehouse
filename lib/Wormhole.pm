@@ -114,6 +114,7 @@ sub describe_size {
     my $self = shift;
     "W $self->{n}x".scalar(@{$self->{script}});
 }
+sub desize { shift->describe_size }
 sub way_out {
     my $self = shift;
     if (my $T = $self->{G}->{T}) {
