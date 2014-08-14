@@ -211,20 +211,12 @@ hooks:
         my $menu = [];
         
         return if $line->{i}->{L}->{i}->{each} && $line->{i}->{L}->{i}->{each} eq "stack";
-         
-        if (ref $t && "$t" =~ /HASH/ && $t->{G} && ref $t->{G} eq "Ghost") {
-            push @$menu, $t->{G}->w("splatmenues");
-        } 
+        
         
         push @$menu, 'ᣋ' => sub {
             my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}"};
             $G->timer(0.1, sub { $G->w(go => $tar) }, "pendline" );
         };
-        push @$menu, 'ⲝ' => sub {
-            my $tar = {splatname => $splatname, line => $line, append =>  "$_[1]->{id}",
-            thing => $line->{t} };
-            $G->timer(0.1, sub { $G->w(go => $tar) }, "pendthing" );
-            } if ref $t eq "Way" && $t->{thing}->[0] =~ /remiT/;
             
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
