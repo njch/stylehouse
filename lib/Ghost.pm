@@ -264,7 +264,9 @@ sub Tw {
     my $u = $G->waystacken("Tw $wp", $GG, $w);
     $w->{waystack} = $F[0];
     my @r = $GG->T->T($thing, undef, $w);
-    $u->();
+    my $Tw = $u->();
+    $Tw->{Returns} = [@r];
+    
     return wantarray ? @r : $r[0];
 }
 sub Gf {
@@ -562,6 +564,7 @@ sub doo {
     }
     
     my $D = $back->();
+    $D->{Returns} = [@return];
     
     if ($@) {
         my ($x) = $@ =~ /line (\d+)/;
