@@ -74,7 +74,7 @@ sub waystacken {
     unshift @F, $s;
     $s->{F} = [@F],
     $G->ob("\\", $s);
-    return sub {
+    my $unway = sub {
         my @FF;
         if ($F[0] ne $s) {
             my $E = "BATS ";
@@ -99,7 +99,8 @@ sub waystacken {
         $@ = $te;
         @Flab = ();
         $s
-    }
+    };
+    wantarray ? ($unway, $s) : $unway;
 }
 sub timur {
     if ($G0) {
@@ -114,6 +115,7 @@ sub timer {
     my $time = shift || 0.001;
     my $doing = shift;
     my $st = " ".$_[0] if $_[0] && !ref $_[0];
+    $st ||= "";
     my $last = $G->Flab("G Timer$st", @_);
     
     my $doings;
@@ -128,8 +130,7 @@ sub comeback {
     my $doing = shift;
     my @saying = @{ $last->{thing} };
     $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
-    my $u = $G->waystacken(@saying, @_);
-    my $s = $F[0];
+    my ($u, $s) = $G->waystacken(@saying, @_);
     $s->{doings} = $doings;
     $s->{timer_from} = $last;
     $last->{timer_back} = $s;
