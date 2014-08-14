@@ -73,10 +73,10 @@ sub gitrack {
         next unless $r =~ /shed/;
         my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
         my $menu = [
-    '↳' => sub {
-        my $rbe = $self->rbe(up => $r);
-        $rbe = $rbe ? $sh->($rbe).' conty' : "";
-        $self->spawn_proc("cd ../$r && git pull $rbe");
+    'ⵘ' => sub {
+        my @hmm = grep /stylehouse\.pl/, `ps faux | grep stylehouse`;
+        my @har = split /\s+/, pop @hmm;
+        `kill -KILL $har[1]`;
     },
     '↰' => sub {
         my $rbe = $self->rbe(up => $r);
