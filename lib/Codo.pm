@@ -337,8 +337,9 @@ sub load_codon {
     my ($codon) =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
     $codon || die "Can't load codon: $codon_s";
     say "Codo load $codon->{name}";
-    
-    if (my $slip = $self->{all_open}->[-1]) {
+
+    if ((caller(1))[3] ne "Codo::re_openness") {
+        my $slip = $self->{all_open}->[-1];
         $slip->away("nolobo") unless $slip eq $codon;
     }
     
@@ -348,7 +349,7 @@ sub load_codon {
     $self->{hostinfo}->send(
     "\$('#$self->{Codo}->{divid}').scrollTo(\$('#$codon->{show}->{divid}'), 360);"
     ." \$('#$codon->{show}->{text}->{id}-Head').fadeOut(300).fadeIn(500);"
-    ) unless $noscrolly;
+    ) unless $noscrolly || $dont
 }
 sub codon_by_name {
     my $self = shift;
