@@ -1,33 +1,15 @@
 name: Styling
 chains:
- - K: 'ARRAY'
-   arr_if: |
-   $a->{K} eq ref $thing eq 'ARRAY'
-   foreach_travel:
-     each: @$thing
-     next_thing: $each
-   print: |
-        $S->{i}
-
  - K: 'Wormhole'
    arr_if: |
-   $a->{K} eq ref $thing eq 'ARRAY'
+     $G->{depth} == 1 && ref $thing eq "Wormhole";
    foreach_travel:
-     each: @$thing
+     each: @{$thing->{script}}
      next_thing: $each
    print: |
         $S->{i}
-
- - K: 'Wormhole'
-   arr_if: |
-   $a->{K} eq ref $thing eq 'ARRAY'
-   foreach_travel:
-     each: @$thing
-     next_thing: $each
-   print: |
-        $S->{i}
-
- - K: 'HASH'#c
+        
+ - K: 'Line'
    arr_if: |
      $a->{K} eq "Wormhole" && ref $thing eq 'HASH' && $thing->{
    foreach_travel:

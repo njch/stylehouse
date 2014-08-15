@@ -588,8 +588,8 @@ sub doo {
         my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $file = $1 if $@ =~ /at (\S+) line/;
-        undef $file if $file =~ /\(eval \d+\)/;
-        undef $file if !-f $file;
+        undef $file if $file && $file =~ /\(eval \d+\)/;
+        undef $file if $file && !-f $file;
         my $perl = $H->slurp($file) if $file;
         $perl ||= $evs;
         
