@@ -16,16 +16,22 @@ hooks:
     
     my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
         position:absolute overflow:hidden border:1px solid black;
-          top:30% left:20% background:#fc8
+          top:30% left:20% background:#765
           -webkit-transform:scale(0.7,0.7)
     };
     $G->{View} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ", $style);
+    $G->{View2} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ2", $style."left: 50%;");
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
+    
+    G crawl ->{max_depth} = 1;
     G crawl ->RW;
     G crawl ->T($thing);
     Say "Ϡ ".G(crawl)->W->desize;
+    G style ->T($G);
+    
     $H->Gf("T/splat")->w("Splat", { ttt => G(crawl)->W, view => $G->{View} });
+    $H->Gf("T/splat")->w("Splat", { swamp => G(style)->W, view => $G->{View2} });
   
 
