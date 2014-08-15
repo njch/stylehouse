@@ -18,6 +18,47 @@ our $L;
 our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
+sub new {
+    my $self = bless {}, shift;
+    shift->($self);
+    delete $self->{hostinfo}; # TODO put this back once travelling feels right
+
+    $self->{T} = shift;
+    
+    my $name = $self->{T}->{name};
+    
+    $self->{O} = $self->{T}->{O};
+    $self->{GG} = [];
+    
+    my @ways = @_;
+    say "way spec @_";
+    unless (@ways) {
+        my $s = { map { $_ => (/^(\w)/)[0] }
+            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
+        
+        my $guess = ref $self->{T}->{O};
+        $guess = $s->{$guess} if $s->{$guess};
+        say " . . guess way is $guess";
+        @ways = $guess;
+    };
+    my $way = join", ",@ways;
+    $name = "$name`s ($way)";
+    $self->{name} = $name;
+    $self->{way} = $way;
+    say "Ghost named $name";
+    $self->load_ways(@ways);
+
+    if ($self->tractors) {
+        $H->TT($self)->G("W/tractor");
+    }
+    
+    if (ref $self->{T}->{O} eq "Ghost") {
+        push @{$self->{T}->{O}->{GG}}, $self;
+    }
+    
+
+    return $self;
+}
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -209,47 +250,7 @@ sub ki {
     }
     return $s;
 }
-sub new {
-    my $self = bless {}, shift;
-    shift->($self);
-    delete $self->{hostinfo}; # TODO put this back once travelling feels right
 
-    $self->{T} = shift;
-    
-    my $name = $self->{T}->{name};
-    
-    $self->{O} = $self->{T}->{O};
-    $self->{GG} = [];
-    
-    my @ways = @_;
-    say "way spec @_";
-    unless (@ways) {
-        my $s = { map { $_ => (/^(\w)/)[0] }
-            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
-        
-        my $guess = ref $self->{T}->{O};
-        $guess = $s->{$guess} if $s->{$guess};
-        say " . . guess way is $guess";
-        @ways = $guess;
-    };
-    my $way = join", ",@ways;
-    $name = "$name`s ($way)";
-    $self->{name} = $name;
-    $self->{way} = $way;
-    say "Ghost named $name";
-    $self->load_ways(@ways);
-
-    if ($self->tractors) {
-        $H->TT($self)->G("W/tractor");
-    }
-    
-    if (ref $self->{T}->{O} eq "Ghost") {
-        push @{$self->{T}->{O}->{GG}}, $self;
-    }
-    
-
-    return $self;
-}
 sub idname {
     my $self = shift;
     $self->{id}."-".$self->{name}
