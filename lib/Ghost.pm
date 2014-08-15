@@ -123,7 +123,7 @@ sub waystacken {
                 $E .= "self nowhere in \@F"
             }
             else {
-                unshift @FF, shift @F until $FF[0] eq $s;
+                unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
                 $E .= "from $_->{name}" for shift @FF;
             }
             $H->error(  $G->Flab($E, $s, [@FF], [@F])  );
@@ -191,7 +191,7 @@ sub stackway {
     my $G = shift;
     my $thing = [@_];
     my $w = $G->nw;
-    my $stack = $H->stack(2);
+    my $stack = $H->stack(1);
     my $from;
     # FUZZ!
     if ($stack->[0] =~ /Ghost::timer/) {
@@ -202,7 +202,7 @@ sub stackway {
         $from = "some doing..."
     }
     else {
-        ($from) = $stack->[0] =~ / (\S+::\S+) /;
+        ($from) = $stack->[1] =~ / (\S+::\S+) /;
         $from =~ s/.*Ghost::(Fl|wa).*/$1/;
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
@@ -298,8 +298,7 @@ sub Gf {
 }
 sub Gc { # TODO merge into ^ 
     my $self = shift;
-    my $way = shift;
-    $H->TT($self)->G($way);
+    $H->TT($self)->G(@_);
 }
 sub W {
     my $self = shift;
@@ -397,7 +396,7 @@ sub haunt { # arrives through here
     my $i = $G->{i} = shift; # way in
     my $o = $G->{o} = []; # way[] out
     
-    $G->ob("h", $G);
+    $G->ob("haunt", $G);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
@@ -411,7 +410,7 @@ sub haunt { # arrives through here
     my $line;
     if (defined $G->{t}) {
         $line = $G->W->continues($G); # %
-        $G->ob($line);
+        $G->ob("continues...", $line);
     }
 
     return ($line, $G->{o});
