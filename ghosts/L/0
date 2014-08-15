@@ -68,12 +68,13 @@ hooks:
       w somewhere(nothing => $L);
     'Ϡ?': |
       $H->Info("Ϡing... ",G ob );
-      $_ob = G ob;
-      $_ob->RW();
+      my $sty = $H->Gf('Ϡ')->Gf('style');
+      $sty->{_ob} = G ob;
+      $sty->{_ob}->RW();
       eval {
           w somewhere(nothing => $L);
       };
-      $_ob = undef;
+      $sty->{_ob} = undef;
       $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
       $@ = ""         if $@;
       w f/Gob;
@@ -90,6 +91,7 @@ hooks:
       $H->Gf("T/splat")->w("clear", {splatname => "somewhere"});
     noϠ: |
       $H->Gf("Ϡ")->{View}->fadehtml();
+      $H->Gf("Ϡ")->{View2}->fadehtml();
     '⥁': |
       w splat_wormholes
     futu: |
