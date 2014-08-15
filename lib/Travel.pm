@@ -48,7 +48,7 @@ sub T {
             @r = @{$c->{arr_returns}};
         }
         else {
-            die "what kind of way out is ".ddump($c);
+            $H->error("what kind of way out is",$c)
         }
     }
 

@@ -12,14 +12,19 @@ chains:
  - K: 'Line'
    arr_if: |
      $G->{i}->{K} eq "Wormhole" && ref $thing eq 'HASH' && $thing->{uuid} && $thing->{t}
-   foreach_travel:
-     each: sort keys %$thing
-     next_thing: $thing->{$each}
    print: |
-        $S->{each}
+     $thing->{uuid}
+   exude: |
+     $thing
+ 
+ - K: 'Thing'
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{t}
+   exude: |
+     $thing->{t}
         
 dials:
-  max_depth: 1
+  max_depth: 4
   form: 42
 hooks:
   fresh_init: |

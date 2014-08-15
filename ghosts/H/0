@@ -49,7 +49,8 @@ hooks:
       $H->error("memory usage %$mem") if $mem > 40;
       w reinit/everything if $mem > 66;
       $H->error("vitals error: $!") if $!;
-      throwlog("Vitals", $v);
+      my $ma = int($a / 1024)."mB";
+      throwlog("Vitals", $ma, $v);
       waylay 4 check/vitals;
   init:
     later: |

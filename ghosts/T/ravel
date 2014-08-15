@@ -107,8 +107,15 @@ hooks:
             push @{$G->{o}}, $oc;
         }
     }
+    elsif (exists $c->{exude}) {
+        my $oc = $c->spawn;
+        $oc->{travel_this} = $G->doo($c->{exude}, {%$ar});
+        $oc->{each} = "ex ".$c->{K};
+        push @{$G->{o}}, $c;
+    }
     else {
         die "canot figure out ".ki($c);
+        push @{$G->{o}}, $c;
     }
   c_follow_as: |
     my $as = $c->{as};
