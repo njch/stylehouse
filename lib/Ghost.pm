@@ -250,7 +250,6 @@ sub ki {
     }
     return $s;
 }
-
 sub idname {
     my $self = shift;
     $self->{id}."-".$self->{name}
@@ -317,10 +316,13 @@ sub RW {
 sub load_ways {
     my $self = shift;
     my @ways = @_;
+    my $p = shift @ways if ref $ways[0] eq "HASH";
+    $p||={};
     my $ws = $self->{ways} ||= [];
     my $wfs = $self->{wayfiles} ||= [];
     $self->{load_ways_count}++;
     
+    my $ldw = [];
     for my $name (@ways) {
         my @files;
         
@@ -337,11 +339,14 @@ sub load_ways {
             
             if ($ow) {
                 $ow->load(); # and the top level hashkeys will not go away without restart
-                say "$self->{id} +$self->{load_ways_count}+ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                push @$ldw, $ow;
+                say "$self->{id} +$self->{load_ways_count}+ ".
+                ($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
                 
             }
             else {
                 my $nw = $self->nw;
+                push @$ldw, $nw;
                 $nw->name($name);
                 $nw->load($file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
@@ -358,7 +363,7 @@ sub load_ways {
         }
     }
     
-    $self->_0('_load_ways_post');
+    $self->_0('_load_ways_post', {w=>$ldw, %$p});
 }
 our$doneprotolwptimes=[];
 sub _0 {
@@ -583,8 +588,15 @@ sub doo {
     if ($@) {
         my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
+        my $file = $1 if $@ =~ /at (\S+) line/;
+        undef $file if $file =~ /\(eval \d+\)/;
+        undef $file if !-f $file;
+        my $perl = $H->slurp($file) if $file;
+        $perl ||= $evs;
+        
         my $eval = "";
-        my @eval = split "\n", $evs;
+        $eval .= "at $file\n\n" if $file;
+        my @eval = split "\n", $perl;
         my $xx = 0;
         $x -= 3 if $x;
         shift @eval for 1..3;
@@ -599,7 +611,7 @@ sub doo {
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x -1];
-                    if ($bab ne $_) {
+                    if (!$file && $bab ne $_) {
                         $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }

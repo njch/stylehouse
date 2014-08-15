@@ -4,14 +4,15 @@ hooks:
   _load_ways_post: |
     $S->w("load_ways_post");
     my $lwc = $S->{load_ways_count};
-    $G->Flab("$S->{name}        load ways count: $lwc");
+    $G->Flab("$S->{name} +$lwc+   ".join" , ", map { $_->{_wayfile} } @$w);
     $lwc == 1 ?
         w _fresh_init(%$ar)
       : w _recoded_init(%$ar);
-    $S->w("any_init");
+    $S->w("any_init", undef, $_) for @$w;
     
   _recoded_init: |
-    $S->w("recoded_init");
+    $S->w("recoded_init", undef, $_) for @$w;
+    return if $q;
     my $g = $S;
     while ($g->{O} && ref $g->{O} eq "Ghost") {
         $g->w("child_recoded_init", {S => $S}) if $g eq $S;
