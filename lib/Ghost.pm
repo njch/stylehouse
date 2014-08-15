@@ -317,7 +317,7 @@ sub load_ways {
     my $self = shift;
     my @ways = @_;
     my $p = shift @ways if ref $ways[0] eq "HASH";
-    $p||={};
+    $p ||= {};
     my $ws = $self->{ways} ||= [];
     my $wfs = $self->{wayfiles} ||= [];
     $self->{load_ways_count}++;

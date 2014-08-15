@@ -3,16 +3,15 @@ name: Ghost
 hooks:
   _load_ways_post: |
     $S->w("load_ways_post");
-    my $lwc = $S->{load_ways_count};
-    $G->Flab("$S->{name} +$lwc+   ".join" , ", map { $_->{_wayfile} } @$w);
-    $lwc == 1 ?
-        w _fresh_init(%$ar)
-      : w _recoded_init(%$ar);
-    $S->w("any_init", undef, $_) for @$w;
+    $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
+        join" , ", map { $_->{_wayfile} } @$w);
+    
+    w _fresh_init if $S->{load_ways_count} == 1;
+    w _recoded_init if $S->{load_ways_count} != 1;
+    $S->w("any_init");
     
   _recoded_init: |
-    $S->w("recoded_init", undef, $_) for @$w;
-    return if $q;
+    $S->w("recoded_init");
     my $g = $S;
     while ($g->{O} && ref $g->{O} eq "Ghost") {
         $g->w("child_recoded_init", {S => $S}) if $g eq $S;
