@@ -879,15 +879,11 @@ sub throwlog {
     my $self = my $H = shift;
     my $what = shift;
     
-    if ($H->{_future}) {
-        my $te = $@;
-        $@ = "";
-        my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
-        $@ = $te;
-        if ($r && $r eq "yep") {
-            return;
-        }
-    }
+    my $te = $@;
+    $@ = "";
+    my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+    $@ = $te;
+    return if $r && $r eq "yep";
     
     my @E;
     for my $b (@_) {
