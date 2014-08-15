@@ -22,12 +22,9 @@ hooks:
     
     w getstarted;
   any_init: |
-    $G->timer(0.01, sub {
-        w set_keys;
-        w set_Gdbs;
-    }, "L setup"); 
-    
-    w set_land;
+    waylay set_keys;
+    waylay set_Gdbs;
+    waylay set_land;
   key:
     m: |
         w tog_hmess;
@@ -45,23 +42,11 @@ hooks:
     
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
-        } qw{T/splat keys land path func mess.+tractor L.....T\/crawl};
+        } qw{T/splat keys land path func mess.+tractor L.....T\/crawl colour.+tractor};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
         $g->{db} = -1;
     }
-  any_child_recoded_init: |
-    w set_land;
-    if ($ar->{S}->{way} =~ /crawl/) {
-        w getstarted;
-    }
-  
-  look_for_ghost: |
-    [ grep {
-      (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
-    && 
-      (!$ar->{not} || $_->{name} !~ /$ar->{not}/)
-    } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
     [ "wayf",         sub { $G->stackway } ],
@@ -97,6 +82,8 @@ hooks:
       w somewhere[$W];
     G: |
       w somewhere(thing => $G);
+    enclaw: |
+      #e t c
     chch: |
       w swap_chains
     clear: |
@@ -224,5 +211,15 @@ hooks:
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
     #timer 2.5 { w splat_splatW };
-    
+  any_child_recoded_init: |
+    w set_land;
+    if ($ar->{S}->{way} =~ /crawl/) {
+        w getstarted;
+    }
+  look_for_ghost: |
+    [ grep {
+      (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
+    && 
+      (!$ar->{not} || $_->{name} !~ /$ar->{not}/)
+    } @{$H->data->{Ghost}} ]
 

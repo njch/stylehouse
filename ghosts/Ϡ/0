@@ -2,32 +2,28 @@ name: Ϡ
 etc: intoraction...
 tractors:
   - K: 'Ϡt'
+    max_populi: 2
     arr_if: |
       $name && $name ne "0" && $name ne "1" || die;
     B_: |
       $name
-    first_time: |
-      $S->{V}->{S} = $S; # TUXTY
-      $S->{crawl} = $O->Gc("T/crawl");
     print: |
       $S->{K} .": ". $S->{B}->{_}
-    tocrawl: |
-      $S->{crawl}->RW; 
-      $S->{crawl}->T($thing);
 hooks:
   fresh_init: |
+    $G->Gc("T/crawl");
     my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
         position:absolute overflow:hidden border:1px solid black;
           top:30% left:20% background:#fc8
           -webkit-transform:scale(0.7,0.7)
     };
     $G->{View} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ", $style);
-
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
-    w $S tocrawl;
-    Say "Ϡ, ".$S->{crawl}->W->describe_size;
-    $H->Gf("T/splat")->w("Splat", { ttt => $S->{crawl}->W, view => $G->{View} });
+    G crawl ->RW;
+    G crawl ->T($thing);
+    Say "Ϡ, ".G(crawl)->W->describe_size;
+    $H->Gf("T/splat")->w("Splat", { swamp => G(crawl)->W, view => $G->{View} });
   
 

@@ -383,7 +383,6 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
-
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
