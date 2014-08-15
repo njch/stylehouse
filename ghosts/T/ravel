@@ -1,0 +1,124 @@
+name: Trabambeist
+hooks:
+  arr: |
+    my @actcs;
+    for my $c ($G->chains) {
+        if (w $c arr_if) {
+            push @actcs, $c->spawn;
+        }
+    }
+    my @f;
+    for my $c (@actcs) {
+        push @f, w c_follow_as(+ c => $c);
+    }
+    @actcs = @f;
+    @f = ();
+    
+    
+    for my $c (@actcs) {
+        if ($c->{eat}) {
+            map { $_->{eaten_by} = $c } grep { $_->{K} eq $c->{eat} } @actcs;
+        }
+        else {
+            push @f, $c;
+        }
+    }
+    
+    @actcs = @f;
+    @f = ();
+    
+    for my $c (@actcs) {
+        if (my $a = $c->{grav_add}) {
+            $_->{gravity} += $c for @actcs;
+        }
+        else {
+            push @f, $c;
+        }
+    }
+    
+    @actcs = @f;
+    @f = ();
+            
+    for my $c (@actcs) {
+        w figureout(+ c => $c);
+    }
+    # all these motions we want to grab finer pictures of eventually
+  crank: |
+    my ($dial, $to) = %$ar;
+    exists $G->{$dial} || die "no $dial";
+    my $o = $G->{$dial};
+    my $undo = sub { $G->{$dial} = $o };
+    $G->{$dial} = $to;
+    $undo;
+  revisit: |
+    my $W = $G->RW;
+    my $und = w crank(max_depth => $line->{depth} + $ar->{push_depth});
+    
+    $G->T($line->{t}, undef, $line->{i}, $line->{depth});
+    
+    $und->();
+    my $N = $G->W->CS;
+    my @fore;
+    push @fore, shift @$W until !@$W || $W->[0]->{uuid} eq $line->{uuid};
+    my $O = shift @$W;
+    @$W = (@fore, @$N, @$W);
+    $G->W->{script} = $W;
+    return $N;
+  figureout: |
+    my $gravity = $c->{gravity} || $c->{as_from}->{gravity} || 0;
+    my $max = $G->{max_depth} + $gravity;
+    
+    return if $G->{depth} >= $max;
+    
+    if (my $fe = $c->{foreach_travel}) {
+        my @list = $G->doo(
+            $fe->{each}, $ar
+        );
+        if (my $ei = $c->{eaten_by}->{each_ignore}) {
+            @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
+        }
+        if (my $eo = $c->{eaten_by}->{each_order}) {
+             my %k = map { $_ => 1 } @list;
+             my @k;
+             if ($k{id} && $k{huid} && $thing->{id} =~ /$thing->{huid}$/) {
+                 delete $k{huid};
+             }
+             for (split ' ', $eo) {
+                 push @k, $_ if delete $k{$_}
+             }
+             for (@list) {
+                 push @k, $_ if $k{$_}
+             }
+             @list = @k;
+        }
+       
+        my $i = 0;
+        for my $each (@list) {
+            # eddies of lingo
+            my $next_thing = $G->doo(
+                $fe->{next_thing}, {%$ar, each => $each}
+            );
+            my $oc = $c->spawn; # TODO spawn a fresh chain here
+            # so W Sline->{i} is nice to look at
+            $oc->{travel_this} = $next_thing;
+            $oc->{i} = $i++;
+            $oc->{each} = $each;
+            
+            push @{$G->{o}}, $oc;
+        }
+    }
+    else {
+        die "canot figure out ".ki($c);
+    }
+  c_follow_as: |
+    my $as = $c->{as};
+      return $c unless $as;
+    
+    my @really = $G->grep_chains("K" => $as);
+    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump(@really);
+    
+    my $asc = shift @really;
+    my $nc = $asc->spawn;
+    $nc->{as_from} = $c;
+    return $nc
+
