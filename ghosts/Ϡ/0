@@ -11,7 +11,9 @@ tractors:
       $S->{K} .": ". $S->{B}->{_}
 hooks:
   fresh_init: |
-    $G->Gc("T/crawl");
+    $G->Gc("T/crawl", "T/ravel");
+    $G->Gc("T/style", "T/ravel");
+    
     my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
         position:absolute overflow:hidden border:1px solid black;
           top:30% left:20% background:#fc8
@@ -23,7 +25,7 @@ hooks:
     my $S = Arr[$name, $thing];
     G crawl ->RW;
     G crawl ->T($thing);
-    Say "Ϡ, ".G(crawl)->W->describe_size;
-    $H->Gf("T/splat")->w("Splat", { swamp => G(crawl)->W, view => $G->{View} });
+    Say "Ϡ ".G(crawl)->W->desize;
+    $H->Gf("T/splat")->w("Splat", { ttt => G(crawl)->W, view => $G->{View} });
   
 
