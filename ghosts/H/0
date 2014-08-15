@@ -41,20 +41,15 @@ hooks:
     vitals: |
       my ($a) = `cat /proc/meminfo | grep MemAvailable`;
       my ($a) = $a =~ /(\d+) kB/;
-      if ($a < 20000 || $!) {
-          say "vitals ps fu $a \t$!\n=\n=\n=\n=";
-          if ($! =~ "Cannot allocate memory") {
-              kill 'KILL', $$;
-            sleep 1;
-        }
-        
-      }
+              kill 'KILL', $$ if $a < 20000 || $!;
+              
       my @ps = `ps -p$$ fu`;
       my $v = join(" ~ ", (split /\s+/, $ps[1])[0,1,2,3]);
       my ($mem) = $v =~ /([\d\.]+)$/;
       $H->error("memory usage %$mem") if $mem > 40;
       w reinit/everything if $mem > 66;
-      throwlog("Vitals", "$$ $! $a", $v);
+      $H->error("vitals error: $!") if $!;
+      throwlog("Vitals", $v);
       waylay 4 check/vitals;
   init:
     later: |
