@@ -503,7 +503,10 @@ sub w {
         $Z->{Returns} = $r;
         
         if ($@) {
-         $@ = "Z $G->{name}\t$talk\t\t\n$@";
+            my $ne = "Z $G->{name}\t$talk\n";
+            $ne .= "S: ".ki($Sway)."\n" if $Sway;
+            $ne .= "$@";
+            $@ = $ne;
             $G->Flab("Z Error $@");
             die $@;
         }
