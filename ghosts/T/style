@@ -1,6 +1,6 @@
 name: Styling
 chains:
- - K: 'Wormhole'
+ - K: Wormhole
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    foreach_travel:
@@ -9,19 +9,47 @@ chains:
    print: |
         $S->{i}
         
- - K: 'Line'
+ - K: Line
    arr_if: |
      $G->{i}->{K} eq "Wormhole" && ref $thing eq 'HASH' && $thing->{uuid} && $thing->{t}
-   print: |
-     $thing->{uuid}
    exude: |
      $thing
- 
- - K: 'Thing'
+     
+ - K: Depth
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{depth};
+   exude: |
+     $thing->{depth}
+     
+ - K: Thing
    arr_if: |
      $G->{i}->{K} eq "Line" && exists $thing->{t}
    exude: |
      $thing->{t}
+     
+ - K: Ghost
+   arr_if: |
+     ref $thing eq "HASH" && exists $thing->{G}
+   exude: |
+     $thing->{G}
+     
+ - K: WayOuts
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{o}
+   exude: |
+     $thing->{o}
+     
+ - K: WayIn
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{i}
+   exude: |
+     $thing->{i}
+     
+ - K: UUID
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{uuid}
+   exude: |
+     $thing->{uuid}
         
 dials:
   max_depth: 4
