@@ -39,16 +39,26 @@ hooks:
       $sky->w('doof');
   check:
     vitals: |
+      my ($a) = `cat /proc/meminfo | grep MemAvailable`;
+      my ($a) = $a =~ /(\d+) kB/;
+              kill 'KILL', $$ if $a < 20000 || $!;
+              
       my @ps = `ps -p$$ fu`;
       my $v = join(" ~ ", (split /\s+/, $ps[1])[0,1,2,3]);
       my ($mem) = $v =~ /([\d\.]+)$/;
       $H->error("memory usage %$mem") if $mem > 40;
-      `touch stylehouse.pl` if $mem > 50;
-      throwlog("Vitals", $v);
-      waylay 10 check/vitals;
+      w reinit/everything if $mem > 66;
+      $H->error("vitals error: $!") if $!;
+      my $ma = int($a / 1024)."mB";
+      throwlog("Vitals", $ma, $v);
+      waylay 4 check/vitals;
   init:
     later: |
       waylay check/vitals;
+  reinit:
+    everything: |
+      $H->error("restarting!");
+      `touch stylehouse.pl`;
   init_flood: |
     waylay init/later;
     my $self = $O;

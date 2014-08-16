@@ -2,32 +2,72 @@ name: Ϡ
 etc: intoraction...
 tractors:
   - K: 'Ϡt'
+    max_populi: 2
     arr_if: |
       $name && $name ne "0" && $name ne "1" || die;
     B_: |
       $name
-    first_time: |
-      $S->{V}->{S} = $S; # TUXTY
-      $S->{crawl} = $O->Gc("T/crawl");
     print: |
       $S->{K} .": ". $S->{B}->{_}
-    tocrawl: |
-      $S->{crawl}->RW; 
-      $S->{crawl}->T($thing);
 hooks:
   fresh_init: |
+    $G->Gc("T/crawl", "T/ravel");
+    $G->Gc("T/style", "T/ravel");
+    
     my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
-        position:absolute overflow:hidden border:1px solid black;
-          top:30% left:20% background:#fc8
+        position:absolute overflow:hidden
+          top:20em left:10em background:#765
           -webkit-transform:scale(0.7,0.7)
     };
-    $G->{View} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ", $style);
-
+    $G->{View} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ", $style."left: 40em;");
+    $G->{View2} = ($G->{floozal} || $H->{sky})->spawn_floozy($G, "Ϡ2", $style);
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
-    w $S tocrawl;
-    Say "Ϡ, ".$S->{crawl}->W->describe_size;
-    $H->Gf("T/splat")->w("Splat", { ttt => $S->{crawl}->W, view => $G->{View} });
+    
+    G crawl ->RW;
+    G crawl ->{max_depth} = 1;
+    G crawl ->T($thing);
+    Say "Ϡ ".G(crawl)->W->desize;
+    G style ->RW;
+    G style ->T(G(crawl)->W);
+    
+    $H->Gf("T/splat") Tw Splat(ttt   => G(crawl)->W, view => $G->{View} );
+    $H->Gf("T/splat") Tw Splat(swamp => G(style)->W, view => $G->{View2});
+    
+    my @W;
+    my $W = G(style)->W;
+    for my $L (@{ $W->{script} }) {
+        push @W, '!html '.ghostlyprinty($L->{t});
+        next unless $L->{i}->{K} eq "Line";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #my $nt = $G->{View2}->newtext([@W,"yababbalj","UTJHSGF"]);
+    #$O->w("somewhere", {thing => $nt});
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #
   
 

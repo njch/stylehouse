@@ -1,0 +1,96 @@
+name: Styling
+chains:
+ - K: Wormhole
+   arr_if: |
+     $G->{depth} == 0 && ref $thing eq "Wormhole";
+   foreach_travel:
+     each: @{$thing->{script}}
+     next_thing: $each
+   print: |
+        $S->{i}
+        
+ - K: Line
+   arr:
+     _i_K: Wormhole
+   arr_if: |
+     ref $thing eq 'HASH' && $thing->{uuid} && $thing->{t}
+   exude: |
+     $thing
+     
+ - K: Depth
+   arr_if: |
+     $G->{i}->{K} eq "L" && exists $thing->{depth};
+   exude: |
+     $thing->{depth}
+     
+ - K: Thing #c
+   arr:
+     _i_K: Line
+   arr_if: |
+     exists $thing->{t}
+   exude: |
+     $thing->{t}
+     
+ - K: Way
+   arr:
+     _i_K: Thing
+   arr_if: |
+     ref $thing eq "Way";
+   exude: |
+     $thing->{t}
+     
+ - K: Ghost
+   arr:
+     _i_K: Thing
+   arr_if: |
+     exists $thing->{t}
+   exude: |
+     $thing->{t}
+     
+ - K: String
+   arr:
+     _i_K: Thing
+   arr_if: |
+     ref \$thing eq "SCALAR";
+   exude: |
+     $thing
+ - K: Ghost #c
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{G}
+   exude: |
+     $thing->{G}
+     
+ - K: WayOuts
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{o}
+   exude: |
+     $thing->{o}
+     
+ - K: WayIn
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{i}
+   exude: |
+     $thing->{i}
+     
+ - K: UUID
+   arr_if: |
+     $G->{i}->{K} eq "Line" && exists $thing->{uuid}
+   exude: |
+     $thing->{uuid}
+        
+dials:
+  max_depth: 4
+  form: 42
+hooks:
+  fresh_init: |
+    #etc
+    
+    
+    
+    
+    
+    
+    
+    
+    #
+

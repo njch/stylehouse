@@ -18,6 +18,47 @@ our $L;
 our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
+sub new {
+    my $self = bless {}, shift;
+    shift->($self);
+    delete $self->{hostinfo}; # TODO put this back once travelling feels right
+
+    $self->{T} = shift;
+    
+    my $name = $self->{T}->{name};
+    
+    $self->{O} = $self->{T}->{O};
+    $self->{GG} = [];
+    
+    my @ways = @_;
+    say "way spec @_";
+    unless (@ways) {
+        my $s = { map { $_ => (/^(\w)/)[0] }
+            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
+        
+        my $guess = ref $self->{T}->{O};
+        $guess = $s->{$guess} if $s->{$guess};
+        say " . . guess way is $guess";
+        @ways = $guess;
+    };
+    my $way = join", ",@ways;
+    $name = "$name`s ($way)";
+    $self->{name} = $name;
+    $self->{way} = $way;
+    say "Ghost named $name";
+    $self->load_ways(@ways);
+
+    if ($self->tractors) {
+        $H->TT($self)->G("W/tractor");
+    }
+    
+    if (ref $self->{T}->{O} eq "Ghost") {
+        push @{$self->{T}->{O}->{GG}}, $self;
+    }
+    
+
+    return $self;
+}
 sub gname {
     my $g = shift;
     my $si = shift || 0;
@@ -82,7 +123,7 @@ sub waystacken {
                 $E .= "self nowhere in \@F"
             }
             else {
-                unshift @FF, shift @F until $FF[0] eq $s;
+                unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
                 $E .= "from $_->{name}" for shift @FF;
             }
             $H->error(  $G->Flab($E, $s, [@FF], [@F])  );
@@ -150,7 +191,7 @@ sub stackway {
     my $G = shift;
     my $thing = [@_];
     my $w = $G->nw;
-    my $stack = $H->stack(2);
+    my $stack = $H->stack(1);
     my $from;
     # FUZZ!
     if ($stack->[0] =~ /Ghost::timer/) {
@@ -161,7 +202,7 @@ sub stackway {
         $from = "some doing..."
     }
     else {
-        ($from) = $stack->[0] =~ / (\S+::\S+) /;
+        ($from) = $stack->[1] =~ / (\S+::\S+) /;
         $from =~ s/.*Ghost::(Fl|wa).*/$1/;
         $from =~ s/^Fl$/ᣜ/;
         $from =~ s/^wa$/ᣝ/;
@@ -208,47 +249,6 @@ sub ki {
         $s .= "   $k=$v";
     }
     return $s;
-}
-sub new {
-    my $self = bless {}, shift;
-    shift->($self);
-    delete $self->{hostinfo}; # TODO put this back once travelling feels right
-
-    $self->{T} = shift;
-    
-    my $name = $self->{T}->{name};
-    
-    $self->{O} = $self->{T}->{O};
-    $self->{GG} = [];
-    
-    my @ways = @_;
-    say "way spec @_";
-    unless (@ways) {
-        my $s = { map { $_ => (/^(\w)/)[0] }
-            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
-        
-        my $guess = ref $self->{T}->{O};
-        $guess = $s->{$guess} if $s->{$guess};
-        say " . . guess way is $guess";
-        @ways = $guess;
-    };
-    my $way = join", ",@ways;
-    $name = "$name`s ($way)";
-    $self->{name} = $name;
-    $self->{way} = $way;
-    say "Ghost named $name";
-    $self->load_ways(@ways);
-
-    if ($self->tractors) {
-        $H->TT($self)->G("W/tractor");
-    }
-    
-    if (ref $self->{T}->{O} eq "Ghost") {
-        push @{$self->{T}->{O}->{GG}}, $self;
-    }
-    
-
-    return $self;
 }
 sub idname {
     my $self = shift;
@@ -298,8 +298,7 @@ sub Gf {
 }
 sub Gc { # TODO merge into ^ 
     my $self = shift;
-    my $way = shift;
-    $H->TT($self)->G($way);
+    $H->TT($self)->G(@_);
 }
 sub W {
     my $self = shift;
@@ -316,10 +315,13 @@ sub RW {
 sub load_ways {
     my $self = shift;
     my @ways = @_;
+    my $p = shift @ways if ref $ways[0] eq "HASH";
+    $p ||= {};
     my $ws = $self->{ways} ||= [];
     my $wfs = $self->{wayfiles} ||= [];
     $self->{load_ways_count}++;
     
+    my $ldw = [];
     for my $name (@ways) {
         my @files;
         
@@ -336,11 +338,14 @@ sub load_ways {
             
             if ($ow) {
                 $ow->load(); # and the top level hashkeys will not go away without restart
-                say "$self->{id} +$self->{load_ways_count}+ ".($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
+                push @$ldw, $ow;
+                say "$self->{id} +$self->{load_ways_count}+ ".
+                ($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
                 
             }
             else {
                 my $nw = $self->nw;
+                push @$ldw, $nw;
                 $nw->name($name);
                 $nw->load($file);
                 say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
@@ -357,7 +362,7 @@ sub load_ways {
         }
     }
     
-    $self->_0('_load_ways_post');
+    $self->_0('_load_ways_post', {w=>$ldw, %$p});
 }
 our$doneprotolwptimes=[];
 sub _0 {
@@ -383,7 +388,6 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
-
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
@@ -392,7 +396,7 @@ sub haunt { # arrives through here
     my $i = $G->{i} = shift; # way in
     my $o = $G->{o} = []; # way[] out
     
-    $G->ob("h", $G);
+    $G->ob("haunt", $G);
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
@@ -406,7 +410,7 @@ sub haunt { # arrives through here
     my $line;
     if (defined $G->{t}) {
         $line = $G->W->continues($G); # %
-        $G->ob($line);
+        $G->ob("continues...", $line);
     }
 
     return ($line, $G->{o});
@@ -499,7 +503,10 @@ sub w {
         $Z->{Returns} = $r;
         
         if ($@) {
-         $@ = "Z $G->{name}\t$talk\t\t\n$@";
+            my $ne = "Z $G->{name}\t$talk\n";
+            $ne .= "S: ".ki($Sway)."\n" if $Sway;
+            $ne .= "$@";
+            $@ = $ne;
             $G->Flab("Z Error $@");
             die $@;
         }
@@ -583,8 +590,15 @@ sub doo {
     if ($@) {
         my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
+        my $file = $1 if $@ =~ /at (\S+) line/;
+        undef $file if $file && $file =~ /\(eval \d+\)/;
+        undef $file if $file && !-f $file;
+        my $perl = $H->slurp($file) if $file;
+        $perl ||= $evs;
+        
         my $eval = "";
-        my @eval = split "\n", $evs;
+        $eval .= "at $file\n\n" if $file;
+        my @eval = split "\n", $perl;
         my $xx = 0;
         $x -= 3 if $x;
         shift @eval for 1..3;
@@ -599,7 +613,7 @@ sub doo {
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x -1];
-                    if ($bab ne $_) {
+                    if (!$file && $bab ne $_) {
                         $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }

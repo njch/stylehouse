@@ -3,11 +3,11 @@ name: Ghost
 hooks:
   _load_ways_post: |
     $S->w("load_ways_post");
-    my $lwc = $S->{load_ways_count};
-    $G->Flab("$S->{name}        load ways count: $lwc");
-    $lwc == 1 ?
-        w _fresh_init(%$ar)
-      : w _recoded_init(%$ar);
+    $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
+        join" , ", map { $_->{_wayfile} } @$w);
+    
+    w _fresh_init if $S->{load_ways_count} == 1;
+    w _recoded_init if $S->{load_ways_count} != 1;
     $S->w("any_init");
     
   _recoded_init: |
@@ -28,7 +28,6 @@ hooks:
   sing: |
     $G->{singing} ||= {};
     return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
-    $S->Flab("sing init $name");
     $G->{singing}->{$name} = 1;
     my $t = $ar->{block_for} || $ar->{again_after} || 0.04;
     my $d = $ar->{begin_after} || 0.001;

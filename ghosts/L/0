@@ -4,7 +4,7 @@ hooks:
   fresh_init: |
     $H->{_future} = 1;
     G TT ->G("T/splat");
-    G TT ->G("T/crawl");
+    G TT ->G("T/crawl", "T/ravel");
     $G->{that} = G TT ->G("Ϡ");
     
     G TT ->G("L/path");
@@ -22,12 +22,9 @@ hooks:
     
     w getstarted;
   any_init: |
-    $G->timer(0.01, sub {
-        w set_keys;
-        w set_Gdbs;
-    }, "L setup"); 
-    
-    w set_land;
+    waylay set_keys;
+    waylay set_Gdbs;
+    waylay set_land;
   key:
     m: |
         w tog_hmess;
@@ -45,23 +42,11 @@ hooks:
     
     my @Gdbnah = map {
         w look_for_ghost(name => $_)
-        } qw{T/splat keys land path func mess.+tractor L.....T\/crawl};
+        } qw{T/splat keys land path func mess.+tractor L.....T\/crawl colour.+tractor ob};
     for my $g (map { @$_ } @Gdbnah) {
         say "Setting db-1 $g->{name}";
         $g->{db} = -1;
     }
-  any_child_recoded_init: |
-    w set_land;
-    if ($ar->{S}->{way} =~ /crawl/) {
-        w getstarted;
-    }
-  
-  look_for_ghost: |
-    [ grep {
-      (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
-    && 
-      (!$ar->{not} || $_->{name} !~ /$ar->{not}/)
-    } @{$H->data->{Ghost}} ]
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
     [ "wayf",         sub { $G->stackway } ],
@@ -83,12 +68,13 @@ hooks:
       w somewhere(nothing => $L);
     'Ϡ?': |
       $H->Info("Ϡing... ",G ob );
-      $G->{_ob} = $G->{that}->{_ob} = G ob;
-      $G->{_ob}->RW();
+      my $sty = $H->Gf('Ϡ')->Gf('style');
+      $sty->{_ob} = G ob;
+      $sty->{_ob}->RW();
       eval {
           w somewhere(nothing => $L);
       };
-      $G->{_ob} = undef;
+      $sty->{_ob} = undef;
       $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
       $@ = ""         if $@;
       w f/Gob;
@@ -97,12 +83,15 @@ hooks:
       w somewhere[$W];
     G: |
       w somewhere(thing => $G);
+    enclaw: |
+      #e t c
     chch: |
       w swap_chains
     clear: |
       $H->Gf("T/splat")->w("clear", {splatname => "somewhere"});
     noϠ: |
       $H->Gf("Ϡ")->{View}->fadehtml();
+      $H->Gf("Ϡ")->{View2}->fadehtml();
     '⥁': |
       w splat_wormholes
     futu: |
@@ -130,7 +119,6 @@ hooks:
         G splat Tw Splat(somewhere => $ar->{W});
         return;
     }
-    
     
     $G->timer(0.1, sub {
         G path Tw arr(%$ar);
@@ -163,7 +151,6 @@ hooks:
     ? w make_hmess
     : w hide_hmess;
   hide_hmess: |
-    return;
         $G->{_dont_mess_worm} = 1;
         G splat Tw clear(splatname => 'worm');
   messworm: |
@@ -208,8 +195,8 @@ hooks:
       w look_for_ghost(name => 'Ϡ');
   getstarted: |
     $G->unrush('getstarted') || return;
-    w set_land;
     w somewhere(thing => w default_somewhere);
+    $G->w('f/L>Ϡ');
   swap_chains: |
     $_->{_disabled} = !$_->{_disabled} for G crawl ->allchains;
     $G->timer(0.1, sub {
@@ -224,5 +211,15 @@ hooks:
   splat_splatW: |
     G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
     #timer 2.5 { w splat_splatW };
-    
+  any_child_recoded_init: |
+    w set_land;
+    if ($ar->{S}->{way} =~ /crawl/) {
+        w getstarted;
+    }
+  look_for_ghost: |
+    [ grep {
+      (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
+    && 
+      (!$ar->{not} || $_->{name} !~ /$ar->{not}/)
+    } @{$H->data->{Ghost}} ]
 
