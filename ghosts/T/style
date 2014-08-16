@@ -3,6 +3,8 @@ chains:
  - K: Wormhole
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
+   B_: |
+     $thing
    foreach_travel:
      each: @{$thing->{script}}
      next_thing: $each
@@ -23,19 +25,19 @@ chains:
      
  - K_K: Line/WaysIn
    arr_if: |
-     $thing->{i}
+     exists $thing->{i}
    exude: |
      $thing->{i}
      
  - K_K: Line/Thing
    arr_if: |
-     $thing->{t}
+     exists $thing->{t}
    exude: |
-     $thing->{t
+     $thing->{t}
      
  - K_K: Line/WaysOut
    arr_if: |
-     $thing->{o}
+     exists $thing->{o}
    exude: |
      $thing->{o}
      
@@ -57,14 +59,13 @@ chains:
    exude: |
      w t;
 styles:
- - K_K: Wormhole/Line
-   
+ - _K: Wormhole
 dials:
   max_depth: 4
   form: 42
 hooks:
   t: |
-    #die wdump($c);
+    
   fresh_init: |
     #etc
     
