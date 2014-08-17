@@ -137,7 +137,8 @@ hooks:
     return $t;
   
   make_line: |
-    ref $line eq "HASH" || die  "$G->{name} making notline: ".wdump($line);
+    ref $line eq "HASH"
+    || return $H->error("$G->{name} making notline: $splatname i=$i ".wdump($line));
     
     w line/value; # R <-> B to be tractored
 
