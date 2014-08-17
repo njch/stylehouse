@@ -77,7 +77,9 @@ hooks:
     
     return if $G->{depth} >= $max;
     
+    my $some = 0;
     if (my $fe = $c->{foreach_travel}) {
+        $some++;
         my @list = $G->doo(
             $fe->{each}, $ar
         );
@@ -114,16 +116,16 @@ hooks:
             push @{$G->{o}}, $oc;
         }
     }
-    elsif (exists $c->{exude}) {
+    if (exists $c->{exude}) {
+        $some++;
         my $oc = $c->spawn;
         $oc->{travel_this} = $G->doo($oc->{exude}, {%$ar});
         $oc->{each} = "ex ".$oc->{K};
         $oc->{print} ||= q{$S->{each}};
         push @{$G->{o}}, $oc;
     }
-    else {
+    if (!$some) {
         die "canot figure out ".ki($c);
-        push @{$G->{o}}, $c;
     }
   c_follow_as: |
     my $as = $c->{as};

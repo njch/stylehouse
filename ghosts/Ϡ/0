@@ -12,7 +12,8 @@ tractors:
 hooks:
   fresh_init: |
     $G->Gc("T/crawl", "T/ravel");
-    $G->Gc("T/style", "T/ravel");
+    $G->Gc("T/yle", "T/ravel");
+    $G->Gc("T/uxt", "T/ravel");
     
     my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
         position:absolute overflow:hidden
@@ -25,12 +26,18 @@ hooks:
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
     
+    start_timer();
     G crawl ->RW;
     G crawl ->{max_depth} = 1;
     G crawl ->T($thing);
+    my $time = show_delta();
     Say "Ϡ ".G(crawl)->W->desize;
-    G style ->RW;
-    G style ->T(G(crawl)->W);
+    G yle ->RW;
+    G yle ->T(G(crawl)->W);
+    
+    
+    $time .= ", ".show_delta();
+    Say "Crawl/Style: $time";
     
     $H->Gf("T/splat") Tw Splat(ttt   => G(crawl)->W, view => $G->{View} );
     $H->Gf("T/splat") Tw Splat(swamp => G(style)->W, view => $G->{View2});
