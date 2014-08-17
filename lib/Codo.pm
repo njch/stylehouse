@@ -367,7 +367,8 @@ sub codon_by_filename {
     for my $c ($self->get_codons()) {
         push @codons, $c if $c->{filename} eq $filename
     }
-    return @codons;
+    die "lots of codons for one filename" if @codons > 1;
+    return shift @codons;
 }
 sub get_codons {
     my $self = shift;
