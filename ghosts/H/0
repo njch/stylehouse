@@ -39,9 +39,11 @@ hooks:
       $sky->w('doof');
   check:
     vitals: |
+      my $dbt = $Ghost::db;
+      $Ghost::db = 0;
       my ($a) = `cat /proc/meminfo | grep MemAvailable`;
-      my ($a) = $a =~ /(\d+) kB/;
-              kill 'KILL', $$ if $a < 20000 || $!;
+      ($a) = $a =~ /(\d+) kB/;
+      kill 'KILL', $$ if !$a || $a < 20000 || $!;
               
       my @ps = `ps -p$$ fu`;
       my $v = join(" ~ ", (split /\s+/, $ps[1])[0,1,2,3]);
@@ -52,6 +54,7 @@ hooks:
       my $ma = int($a / 1024)."mB";
       throwlog("Vitals", $ma, $v);
       waylay 4 check/vitals;
+      $Ghost::db = $dbt;
   init:
     later: |
       waylay check/vitals;
