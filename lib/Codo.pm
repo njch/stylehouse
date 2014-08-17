@@ -340,7 +340,7 @@ sub load_codon {
 
     if ((caller(1))[3] ne "Codo::re_openness") {
         my $slip = $self->{all_open}->[-1];
-        $slip->away("nolobo") unless $slip eq $codon;
+        $slip->away("nolobo") unless !$slip || $slip eq $codon;
     }
     
     $codon->display($self, $ope) unless $dont;
