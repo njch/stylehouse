@@ -10,12 +10,13 @@ hooks:
     # o[ s/...
     # with i s
     # make i s... 
-    push @{$G->{_trail}}, join("", ("  ")x$G->{depth}, $G->{t}->{i}->{K});
-    return unless @{$G->{_trail}} > 9;
+    push @{$G->{_trail}}, join(" ", ("  ")x$G->{depth}, $G->{t}->{depth},"- ",
+        $G->{t}->{i}->{K}, $G->{t}->{t},"     ".(@{$G->{t}->{o}}+0)." -");
+    return unless @{$G->{_trail}} == 40;
+    my $t = join"\n", @{$G->{_trail}};
     $G->timer(0.2, sub {
-        $O->{O}->w(somewhere=>{thing=>$G->{t}->{i}});
+        $O->{O}->w(somewhere=>{thing=>[$G->{t}->{i},$t]});
         }, "bailout");
-        die join"\n", @{$G->{_trail}}; 
     
   fresh_init: |
     #etc

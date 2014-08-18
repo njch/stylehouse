@@ -388,6 +388,12 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
+sub way_was {
+    my $G = shift;
+    my $what = shift;
+    my $lt = $F[0]->{thing};
+    $lt->[0] eq "D" && $lt->[1] eq $what
+}
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
@@ -418,7 +424,7 @@ sub haunt { # arrives through here
         $o->{L} = $L;
         $o->{Lo} = $L; # L heading back out
     }
-    $i->{Li} && die "reiterate you?";
+    $i->{Li} && die "reiterate you?" unless $G->way_was("revisit");
     $i->{Li} = $L; # L heading in
 
     my $o = $G->w("To_ways") || $G->{o};
