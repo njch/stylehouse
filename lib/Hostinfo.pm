@@ -70,40 +70,6 @@ sub Gf {
     
     shift @Gs;
 }
-
-sub flood {
-    my $self = shift;
-    my $thing = shift;
-    my $floozy = shift;
-
-    if (!defined $thing && !defined $floozy) {
-        return $self->{flood}
-    }
-
-    my $from = join ", ", (caller(1))[0,3,2];
-
-    $floozy ||= $self->{floodzy};
-    say "floozy: $floozy->{divid}    from $from";
-
-    $floozy->{extra_label} = $from;
-    my $texty = $floozy->text;
-
-    $thing = ddump($thing)
-        unless ref \$thing eq "SCALAR";
-
-
-    $texty->replace([$thing]);
-
-    #$texty->{max_height} ||= 1000;
-    $texty->fit_div;
-    
-    if ($floozy->{divid} ne "hi_error" && $self->{flood}->{latest} && $self->{flood}->{latest} ne $floozy) {
-        $self->send("\$('#$self->{flood}->{ceiling}->{divid}').after(\$('#$floozy->{divid}'));");
-    }
-    $self->{flood}->{latest} = $floozy;
-}
-sub decode_message {
-}
 sub send {
     my $self = shift;
     my $message = shift;

@@ -1,5 +1,10 @@
 
 name: the sky
+
+      # TODO css pointer-events:none to pass clicks through to ground
+      # and rgba on sky colour
+      # blur mask layer? punch holes into codon grids
+      # ground top set to horizon for now...
 hooks:
   fresh_init: |
     # w< ...etc?
@@ -18,16 +23,10 @@ hooks:
       position:absolute top:0px left:0px z-index:3
       }
   flood_init: |
-      my $self = $O->{O};
-      my $sky = $G->_0(V=>{K=>'sky'});
-      # TODO css pointer-events:none to pass clicks through to ground
-      # and rgba on sky colour
-      # blur mask layer? punch holes into codon grids
-      # ground top set to horizon for now...
-      $sky->{on_event} = sub {
+      $H->{sky} = $G->_0(V=>{K=>'sky'});
+      $H->{sky} = sub {
           w touch(e => [@_]);
       };
-      $self->{sky} = $sky;
   recoded_init: |
       w doof;
       $G->timer(0.1, sub {
