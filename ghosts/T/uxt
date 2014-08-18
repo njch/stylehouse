@@ -1,11 +1,21 @@
 name: Styling
-
+chains:
+ - K: R_end #c
+   R_end: |
+     w R_end
 dials:
   max_depth: 7
   form: 42
 hooks:
-  t: |
-    
+  To_ways: |
+    my $o = $G->{o};
+    my ($R_end) = $G->grep_chains("K" => "R_end");
+    $R_end || die;
+    return (@$o, $R_end);
+  R_end: |
+    # o[ s/...
+    # with i s
+    # make i s...
   fresh_init: |
     #etc
     
