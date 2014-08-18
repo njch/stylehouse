@@ -49,13 +49,14 @@ hooks:
     flood: | #c
       my $house = $H->get('style') eq 'stylehouse';
     
-      G TT ->G("H/mess") ->w('flood_init');
+      G TT ->G("H/mess");
       G TT ->G("H/keys") if !$house;
       G TT ->G("H/colour");
       G TT ->G("H/sky") ->w('flood_init');
+      G mess  ->w('flood_init');
       G TT ->G("H/ground") ->w('flood_init');
+      
       waylay init/later;
-      w init/flood;
     
       if (!$house) {
           Git->new($H->intro);
