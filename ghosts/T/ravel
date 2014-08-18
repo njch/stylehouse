@@ -15,8 +15,10 @@ hooks:
     };
     
     for my $c ($G->chains) {
-        if ($c->{K_K}) {
-            my ($iK, $K) = split '/', $c->{K_K};
+        if ($c->{K_K} || $c->{K_}) {
+            my ($iK, $K) = $c->{K_K} ?
+                split('/', $c->{K_K})
+                : ($c->{K_}, $c->{K});
             next unless $G->{i}->{K} eq $iK;
             $c->{K} = $K;
         }
