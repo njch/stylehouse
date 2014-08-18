@@ -10,38 +10,7 @@ hooks:
         G colour Tw arr(%$ar);
       });
   
-  elvinit: |
-    $G->unrush('elvinit') || return;
-    
-    G TT ->G("H/mess");
-    
-    
-    G TT ->G("H/keys") if $H->get('style') =~ /shed/;
-    
-    
-    G TT ->G("H/colour");
 
-    waylay init/later;
-    w init/flood;
-    
-    # grep '.-.travel' -R * # like an art student game
-
-    my $style = $H->get("sstyle");
-    if ($style eq "shed") {
-        Git->new($H->intro);
-        Codo->new($H->intro);
-        Lyrico->new($H->intro);
-    }
-    else {
-        Git->new($H->intro);
-        Codo->new($H->intro);
-        #Keys->new($hostinfo->intro);
-    }
-
-    $H->update_app_menu();
-    
-    $H->{underworld} = 0;
-    # where we pay attention
   sky:
     doof: |
       my $sky = G sky;
@@ -77,16 +46,33 @@ hooks:
   init:
     later: |
       waylay check/vitals;
-    flood: | #c 
-      my $self = $O;
-      my $data = $O->data;
+    flood: | #c
+      my $house = $H->get('style') eq 'stylehouse';
+    
+      G TT ->G("H/mess");
+      G TT ->G("H/keys") if !$house;
+      G TT ->G("H/colour");
       G TT ->G("H/sky") ->w('flood_init');
+      G mess  ->w('flood_init');
       G TT ->G("H/ground") ->w('flood_init');
+      
+      waylay init/later;
+    
+      if (!$house) {
+          Git->new($H->intro);
+          Codo->new($H->intro);
+          Lyrico->new($H->intro);
+      }
+      else {
+          Git->new($H->intro);
+          Codo->new($H->intro);
+      }
 
-      G mess ->w('flood_init');
+      $H->menu();
+      $H->{floodmenu}->{Ш}->() if $house;
 
-      $self->menu();
-      $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
+      $H->update_app_menu();
+      $H->{underworld} = 0;
   reinit:
     everything: |
       $H->error("restarting!");
@@ -111,7 +97,7 @@ hooks:
             $mojo->stash('handy') && return;
             # it beings! not that we don't come through here all the time
             if ($H->{underworld}) {
-                $H->{G}->w('elvinit');
+                $H->{G}->w('init/flood');
                 return;
             }
         }
