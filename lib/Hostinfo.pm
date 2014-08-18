@@ -70,13 +70,7 @@ sub Gf {
     
     shift @Gs;
 }
-sub init_flood {
-    my $self = shift;
 
-    $self->{G}->w('init_flood');
-}
-
-# grep '.-.travel' -R * # like an art student game
 sub flood {
     my $self = shift;
     my $thing = shift;

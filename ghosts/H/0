@@ -1,5 +1,7 @@
 
 name: hostinfo
+dials:
+  horizon: 95%
 hooks:
  
   A:
@@ -11,12 +13,19 @@ hooks:
   elvinit: |
     $G->unrush('elvinit') || return;
     
-        G TT ->G("H/mess");
-        G TT ->G("H/keys") if $H->get('style') =~ /shed/;
-        G TT ->G("H/colour");
-
-    $H->init_flood();
+    G TT ->G("H/mess");
     
+    
+    G TT ->G("H/keys") if $H->get('style') =~ /shed/;
+    
+    
+    G TT ->G("H/colour");
+
+    waylay init/later;
+    w init/flood;
+    
+    # grep '.-.travel' -R * # like an art student game
+
     my $style = $H->get("sstyle");
     if ($style eq "shed") {
         Git->new($H->intro);
@@ -39,83 +48,49 @@ hooks:
       $sky->w('doof');
   check:
     vitals: |
+      my @v = (
+          w check/MemAvailable,
+        w check/ps,
+        w check/LoC,
+      );
+      throwlog("Vitals", @v);
+      waylay 4 check/vitals;
+    MemAvailable: |
       my ($a) = `cat /proc/meminfo | grep MemAvailable`;
       ($a) = $a =~ /(\d+) kB/;
-      kill 'KILL', $$ if !$a || $a < 20000 || $!;
-              
+      $a = int($a / 1024);
+      !$a || $a < 50 || $! ? kill 'KILL', $$ : ();
+      $a < 500 ? "${a}mB" : ()
+    ps: |     
       my @ps = `ps -p$$ fu`;
-      my $v = join(" ~ ", (split /\s+/, $ps[1])[0,1,2,3]);
-      my ($mem) = $v =~ /([\d\.]+)$/;
-      $H->error("memory usage %$mem") if $mem > 40;
-      w reinit/everything if $mem > 66;
+      my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
+      $m /= 100;
+      $c /= 100;
+      $H->error("memory usage $m") if $m > 0.4;
+      #w reinit/everything if $m > 0.66;
       $H->error("vitals error: $!") if $!;
-      my $ma = int($a / 1024)."mB";
-      throwlog("Vitals", $ma, $v);
-      waylay 4 check/vitals;
+      "$u`$pid  m$m  c$c"
+    LoC: |
+      my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
+      ($tot) = $tot =~ /(\d+) total/;
+      "$tot lines"
   init:
     later: |
       waylay check/vitals;
+    flood: | #c 
+      my $self = $O;
+      my $data = $O->data;
+      G TT ->G("H/sky") ->w('flood_init');
+      G TT ->G("H/ground") ->w('flood_init');
+
+      G mess ->w('flood_init');
+
+      $self->menu();
+      $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
   reinit:
     everything: |
       $H->error("restarting!");
       `touch stylehouse.pl`;
-  init_flood: |
-    waylay init/later;
-    my $self = $O;
-    my $data = $O->data;
-    $self->{horizon} = $data->{horizon};
-    
-    my $sky = View->new($self->intro, $self, "sky",
-        "height:$self->{horizon}; background: #00248F; width: 100%; overflow: scroll; position: absolute; top: 0px; left: 0px; z-index:3;"
-    );
-    G TT ->G("H/sky");
-    $sky->{on_event} = sub {
-        G sky ->w('touch', {e => [@_]});
-    };
-    
-    
-    View->new($self->intro, $self, "ground",
-        "width: 100%; height: 100%; background: #A65300; overflow: none;position: absolute; top: $self->{horizon}; left: 0px; z-index:-1;"
-    );
-    my $f = $self->{ground}->spawn_floozy($self, "flood",
-        "width: 22%; min-width:3em; background: #337921aa;"
-        ." height: 100%; overflow: scroll;position: absolute; background-image: url(greencush.jpg); right:0px;z-index:-1;"
-    );
-    my $fm = $f->spawn_ceiling(
-        "flood_ceiling",
-        "width: 100%; margin:1em; height: 4.20em; background: #301a30; color: #afc; font-weight: bold;",
-    );
-
-    $self->{floodzy} = $f->spawn_floozy(
-        floodzy => "width:100%;  background: #0000FF; color: black; height: 100px; font-weight: 7em;",
-    );
-    
-    
-    my $messborder = "border: 2px solid rgb(64,150,227);";
-    my $m = $sky->spawn_floozy(mess => "max-width:39%; right:0px; bottom:0px;"
-        ."position:absolute; overflow: scroll; height:100%;"
-        ."$messborder z-index: -10; background: rgba(175,160,47, 0.5); color: #030; font-weight: bold; ");
-    $m->{on_event} = sub {
-        my @a = @_;
-        G mess Tw event(e=>[@a]);
-    };
-    
-    $m->spawn_floozy(
-        Error => "width:100%; $messborder background: rgba(16,0,50, 0.7); color: rgba(178,71,0, 0.7); font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
-    );
-    
-    $m->spawn_floozy(
-        'Info' => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold; color: #66c339; opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
-    );
-    
-    $m->spawn_floozy(
-        'Say' => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
-    );
-    
-    $self->menu();
-    $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
-
-    return $f
   on_message: |
     
         return unless $H->elvis_enters($elvis, $mojo, $msg); # this'll all be way soon
@@ -134,11 +109,14 @@ hooks:
         if ($mojo->stash('handy')) {
             $mojo->stash('handy')->($mojo, $j);
             $mojo->stash('handy') && return;
+            # it beings! not that we don't come through here all the time
+            if ($H->{underworld}) {
+                $H->{G}->w('elvinit');
+                return;
+            }
         }
 
 
-        # it beings! not that we don't come through here all the time
-        $H->{G}->w('elvinit') if $H->{underworld};
         
         eval { w dostuff[$mojo, $j, $msg]; };
         if ($@) {

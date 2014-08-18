@@ -11,6 +11,23 @@ hooks:
     
     w colours;
     w ambientness;
+  styles:
+    sky: |
+      "height:$O->{horizon}",
+      qw{background:#00248F width:100% overflow:scroll
+      position:absolute top:0px left:0px z-index:3
+      }
+  flood_init: |
+      my $self = $O->{O};
+      my $sky = $G->_0(V=>{K=>'sky'});
+      # TODO css pointer-events:none to pass clicks through to ground
+      # and rgba on sky colour
+      # blur mask layer? punch holes into codon grids
+      # ground top set to horizon for now...
+      $sky->{on_event} = sub {
+          w touch(e => [@_]);
+      };
+      $self->{sky} = $sky;
   recoded_init: |
       w doof;
       $G->timer(0.1, sub {
@@ -26,13 +43,6 @@ hooks:
     my $c = w colourchange(t=>15000);
     throwlog( Ambientness => $c );
     waylay 19 ambientness;
-  colours: |
-    $G->{colours} = [ shuffle
-    '77a9a0','6699cF','3366cF',
-    '6699cc','005F6B',
-    '86999F','4C3380',
-    '336699','8F00B2',
-    '336aa9','72a699','6B8FB2'];
   colourchange: |
     $ar->{t} ||= 5000;
     $G->{cg}->("arr", t => $ar->{t}, change => 1);

@@ -9,17 +9,21 @@ tractors:
       $name
     print: |
       $S->{K} .": ". $S->{B}->{_}
+styles:
 hooks:
+  styles:
+    dimen: |
+      qw{
+        position:absolute overflow:hidden
+          top:20em left:10em background:#765
+          -webkit-transform:scale(0.7,0.7)
+      }
   fresh_init: |
     $G->Gc("T/crawl", "T/ravel");
     $G->Gc("T/yle", "T/ravel");
     $G->Gc("T/uxt", "T/ravel", "T/erse");
     
-    my $style = join "", map { /;$/ ? $_ : "$_;" } qw{
-        position:absolute overflow:hidden
-          top:20em left:10em background:#765
-          -webkit-transform:scale(0.7,0.7)
-    };
+    my $style = $G->_0('style',{K=>'dimen'});
     my $Vf = $G->{floozal} || $H->{sky};
     $G->{View} = $Vf->spawn_floozy($G, "Ϡ", $style."left: 40em;background:#987");
     $G->{View2} = $Vf->spawn_floozy($G, "Ϡ2", $style);
@@ -50,9 +54,13 @@ hooks:
     }
     Say @time;
     
+    $G->timer(12, sub {
     $H->Gf("T/splat") Tw Splat(ttt   => G(crawl)->W, view => $G->{View} );
     $H->Gf("T/splat") Tw Splat(swamp => G(yle)->W,   view => $G->{View2});
     $H->Gf("T/splat") Tw Splat(wogga => G(uxt)->W,   view => $G->{View3});
+    }, "in Ϡ splta");
+    
+    
     
     my @W;
     my $W = G(yle)->W;
