@@ -40,7 +40,6 @@ sub T {
     my ($L, $o) = $G->haunt($T, $depth, $t, $i);
 
     my @r = $T->W;
-    my @R_end;
     for my $c (@$o) {
         if (exists $c->{travel_this}) {
             $T->T($c->{travel_this}, $G, $c, $depth+1);
@@ -48,16 +47,11 @@ sub T {
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
         }
-        elsif (exists $c->{R_end}) {
-            push @R_end, $c;
-        }
         else {
             $H->error("what kind of way out is",$c)
         }
     }
-    for my $c (@R_end) {
-        $G->doo($c->R_end});
-    }
+    $G->w("T_end");
 
     return @r;
 }
