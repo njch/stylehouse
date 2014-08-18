@@ -44,6 +44,8 @@ sub continues {
         o => $G->{o},
         T => $G->{T},
         
+        Wname => $W->{G}->{name},
+        
         e => ($G->{etc}),
         depth => $G->{depth},
         

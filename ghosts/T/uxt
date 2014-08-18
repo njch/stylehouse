@@ -1,16 +1,22 @@
 name: Styling
-
 dials:
   max_depth: 7
   form: 42
 hooks:
-
+  any_init: |
+    $G->{_trail} = [];
   T_end: |
     my @om = @{ $G->{o} };
     # o[ s/...
     # with i s
-    # make i s...
-    die wdump $G->{i};
+    # make i s... 
+    push @{$G->{_trail}}, join("", ("  ")x$G->{depth}, $G->{t}->{i}->{K});
+    return unless @{$G->{_trail}} > 9;
+    $G->timer(0.2, sub {
+        $O->{O}->w(somewhere=>{thing=>$G->{t}->{i}});
+        }, "bailout");
+        die join"\n", @{$G->{_trail}}; 
+    
   fresh_init: |
     #etc
     
