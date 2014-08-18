@@ -1,6 +1,6 @@
 name: Styling
 chains:
- - K: Wormhole
+ - K: Wormhole #c        Wormhole [ Lines
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    B_: |
@@ -10,14 +10,23 @@ chains:
      next_thing: $each
    print: |
         $S->{i}
+   style:
+     uxth: |
+        nospace => 1,
+        class => 'menu',
+        tuxtstyle => 'width: 100%;',
         
  - K_K: Wormhole/Line
    arr_if: |
      ref $thing eq 'HASH' && $thing->{uuid} && exists $thing->{t}
+   style:
+     uxth: |
+        nospace => 1,
+        tuxtstyle => 'opacity:1; height:120%;position: relative; float: left;',
    exude: |
      $thing
      
- - K_K: Line/Depth
+ - K_K: Line/Depth #c     D I Thing O
    arr_if: |
      exists $thing->{depth};
    exude: |
@@ -41,7 +50,7 @@ chains:
    exude: |
      $thing->{o}
      
- - K_K: Thing/Way
+ - K_K: Thing/Way    #c     Things
    arr_if: |
      ref $thing eq "Way";
    exude: |
@@ -64,8 +73,10 @@ dials:
   max_depth: 7
   form: 42
 hooks:
-  t: |
-    
+  aft_figureout: |
+    if ($G->{depth} == 0) {
+      
+    }
   fresh_init: |
     #etc
     
