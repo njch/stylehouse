@@ -398,6 +398,7 @@ sub haunt { # arrives through here
     
     $G->ob("haunt", $G);
     
+    
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
@@ -407,13 +408,20 @@ sub haunt { # arrives through here
         $G->w("arr");
     }
     
-    my $line;
+    my $L;
     if (defined $G->{t}) {
-        $line = $G->W->continues($G); # %
-        $G->ob("continues...", $line);
+        $L = $G->W->continues($G); # %
+        $G->ob("continues...", $L);
     }
+    
+    for my $o (@{$L->{o}}) {
+        $o->{L} = $L;
+        $o->{Lo} = $L; # L heading back out
+    }
+    $i->{Li} && die "reiterate you?";
+    $i->{Li} = $L; # L heading in
 
-    return ($line, $G->{o});
+    return ($L, $G->{o});
 }
 sub chains {
     my $self = shift;
