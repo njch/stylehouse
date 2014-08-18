@@ -120,12 +120,12 @@ hooks:
     if (!$some) {
         die "canot figure out ".ki($c);
     }
+    w aft_figureout;
   c_follow_as: |
-    my $as = $c->{as};
-      return $c unless $as;
+    return $c unless $c->{as};
     
-    my @really = $G->grep_chains("K" => $as);
-    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump(@really);
+    my @really = $G->grep_chains("K" => $c->{as});
+    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump([@really]);
     
     my $asc = shift @really;
     my $nc = $asc->spawn;
