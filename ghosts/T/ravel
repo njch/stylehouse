@@ -3,53 +3,49 @@ hooks:
   chains: |
     #
   arr: |
-    my @actcs;
+    my $cs = [];
+    my $doing = sub {
+      my $w = shift;
+      my @rc;
+      for my $c (@$cs) {
+            my $rc = $G->w($w, {c=>$c,cs=>$cs});
+          push @rc, $rc if $rc;
+      }
+      @$cs = @rc;
+    };
+    
     for my $c ($G->chains) {
-        if ($c->{K_K}) {
-            my ($iK, $K) = split '/', $c->{K_K};
+        if ($c->{K_K} || $c->{K_}) {
+            my ($iK, $K) = $c->{K_K} ?
+                split('/', $c->{K_K})
+                : ($c->{K_}, $c->{K});
             next unless $G->{i}->{K} eq $iK;
             $c->{K} = $K;
         }
         if (w $c arr_if) {
-            push @actcs, $c->spawn;
+            push @$cs, $c->spawn;
         }
-    }
-    my @f;
-    for my $c (@actcs) {
-        push @f, w c_follow_as(+ c => $c);
-    }
-    @actcs = @f;
-    @f = ();
-    
-    
-    for my $c (@actcs) {
-        if ($c->{eat}) {
-            map { $_->{eaten_by} = $c } grep { $_->{K} eq $c->{eat} } @actcs;
-        }
-        else {
-            push @f, $c;
-        }
-    }
-    
-    @actcs = @f;
-    @f = ();
-    
-    for my $c (@actcs) {
-        if (my $a = $c->{grav_add}) {
-            $_->{gravity} += $c for @actcs;
-        }
-        else {
-            push @f, $c;
-        }
-    }
-    
-    @actcs = @f;
-    @f = ();
-            
-    for my $c (@actcs) {
-        w figureout(+ c => $c);
     }
     # all these motions we want to grab finer pictures of eventually
+    
+    $doing->("c_follow_as");    
+    $doing->("c_eat");  
+    $doing->("c_grav_add");
+    $doing->("figureout");
+    w erse_arr;
+    
+  c_eat: |
+    return $c unless $c->{eat};
+    for my $oc (@$cs) {
+        if ($oc->{K} eq $c->{eat}) {
+            $oc->{eaten_by} = $c
+        }
+    }
+  c_grav_add: |
+    return $c unless $c->{grav_add};    
+    for my $oc (@$cs) {
+        $oc->{gravity} += $c->{grav_add} 
+    }
   crank: |
     my ($dial, $to) = %$ar;
     exists $G->{$dial} || die "no $dial";
@@ -104,9 +100,9 @@ hooks:
         my $i = 0;
         for my $each (@list) {
             # eddies of lingo
-            my $next_thing = $G->doo(
+            my $next_thing = $fe->{next_thing} ? $G->doo(
                 $fe->{next_thing}, {%$ar, each => $each}
-            );
+            ) : $each;
             my $oc = $c->spawn; # TODO spawn a fresh chain here
             # so W Sline->{i} is nice to look at
             $oc->{travel_this} = $next_thing;
@@ -127,12 +123,12 @@ hooks:
     if (!$some) {
         die "canot figure out ".ki($c);
     }
+    w aft_figureout;
   c_follow_as: |
-    my $as = $c->{as};
-      return $c unless $as;
+    return $c unless $c->{as};
     
-    my @really = $G->grep_chains("K" => $as);
-    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump(@really);
+    my @really = $G->grep_chains("K" => $c->{as});
+    @really == 1 || die "cannot find ref=$c->{as}".ddump($c).ddump([@really]);
     
     my $asc = shift @really;
     my $nc = $asc->spawn;

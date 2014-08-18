@@ -43,6 +43,8 @@ hooks:
     # the gname
     # junction
     # so it's just over yonder in the chain
+  recoded_init: |
+    $O->w('f/⥁');
   go: |
     $G->timer(0.1, sub {
     exists $ar->{append}
@@ -137,13 +139,14 @@ hooks:
     return $t;
   
   make_line: |
-    ref $line eq "HASH" || die  "$G->{name} making notline: ".wdump($line);
+    ref $line eq "HASH"
+    || return $H->error("$G->{name} making notline: $splatname i=$i ".wdump($line));
     
     w line/value; # R <-> B to be tractored
 
     return { _spawn => [ $R, {
-        nospace => 1,
         B => $B,
+        nospace => 1,
         tuxtstyle => 'opacity:1; height:120%;position: relative; float: left;',
         tuxts_to_htmls => sub {
             my $texty = shift;
@@ -388,8 +391,8 @@ hooks:
             $color = "999";
             $s->{style} .= "font-weight: 500;";
             my $v = $t;
-            if (length($v) > 400) {
-                 $v = substr($t, 0, 380)."...";
+            if (length($v) > 2700) {
+                 $v = substr($t, 0, 2680)."...";
             }
             $fs = 9;
             $fs = 14 if length($v) < 30;

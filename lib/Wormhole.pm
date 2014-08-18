@@ -32,32 +32,31 @@ sub CS {
     [@{$self->{script}}]
 }
 sub continues {
-    my ($self, $ghost) = @_; # %
+    my ($W, $G) = @_; # %
 
-    my $line = {
+    my $L = {
         uuid => $H    ->make_uuid,
-        n => $self->{n}++,
+        n => $W->{n}++,
         
-        t => encode_thing($ghost->{t}),
+        t => encode_thing($G->{t}),
         
-        i => $ghost->{i},
-        o => $ghost->{o},
-        T => $ghost->{T},
+        i => $G->{i},
+        o => $G->{o},
+        T => $G->{T},
         
-        e => ($ghost->{etc}),
-        depth => $ghost->{depth},
+        Wname => $W->{G}->{name},
         
-        ghost => $ghost,
+        e => ($G->{etc}),
+        depth => $G->{depth},
+        
+        ghost => $G,
     };
-    for my $o (@{$line->{o}}) {
-        $o->{L} = $line;
-    }
 
-    $self->ob($line);
+    $W->ob($L);
 
-    push @{$self->{script}}, $line;
+    push @{$W->{script}}, $L;
     
-    return $line;
+    return $L;
 }
 sub wormfile_load {
     my $self = shift;

@@ -1,0 +1,31 @@
+name: wormhole surfer
+chains:
+ - K: Wormhole #c
+   arr_if: |
+     $G->{depth} == 0 && ref $thing eq "Wormhole";
+   B_: |
+     $thing
+   foreach_travel:
+     each: grep { $_->{depth} == 0 } @{$thing->{script}}
+   print: |
+        $S->{i}
+ 
+ - K: Line
+   arr_if: |
+     ($G->{i}->{K} eq "Wormhole"
+     || $G->{i}->{K} eq "Line")
+     && ref $thing eq "HASH"
+   foreach_travel:
+     each: map { $_->{Li} } @{$thing->{o}};
+dials:
+hooks:
+  erse_arr: |
+    my $L = $thing;
+    if ($G->{i}->{K} eq "Line") {
+        $G->{depth} = $thing->{depth}; # just for vis...
+    }
+  wayback: |
+    
+    
+  max_depth: 1
+

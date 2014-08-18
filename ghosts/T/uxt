@@ -1,70 +1,22 @@
 name: Styling
-chains:
- - K: Wormhole
-   arr_if: |
-     $G->{depth} == 0 && ref $thing eq "Wormhole";
-   B_: |
-     $thing
-   foreach_travel:
-     each: @{$thing->{script}}
-     next_thing: $each
-   print: |
-        $S->{i}
-        
- - K_K: Wormhole/Line
-   arr_if: |
-     ref $thing eq 'HASH' && $thing->{uuid} && exists $thing->{t}
-   exude: |
-     $thing
-     
- - K_K: Line/Depth
-   arr_if: |
-     exists $thing->{depth};
-   exude: |
-     $thing->{depth}
-     
- - K_K: Line/WaysIn
-   arr_if: |
-     exists $thing->{i}
-   exude: |
-     $thing->{i}
-     
- - K_K: Line/Thing
-   arr_if: |
-     exists $thing->{t}
-   exude: |
-     $thing->{t}
-     
- - K_K: Line/WaysOut
-   arr_if: |
-     exists $thing->{o}
-   exude: |
-     $thing->{o}
-     
- - K_K: Thing/Way
-   arr_if: |
-     ref $thing eq "Way";
-   exude: |
-     $thing->{t}
-     
- - K_K: Thing/Ghost
-   arr_if: |
-     ref $thing eq "Ghost"
-   exude: |
-     $thing
-     
- - K_K: Thing/String
-   arr_if: |
-     ref \$thing eq "SCALAR";
-   exude: |
-     w t;
-styles:
- - K_: Wormhole
 dials:
   max_depth: 7
   form: 42
 hooks:
-  t: |
+  any_init: |
+    $G->{_trail} = [];
+  T_end: |
+    my @om = @{ $G->{o} };
+    # o[ s/...
+    # with i s
+    # make i s... 
+    push @{$G->{_trail}}, join(" ", ("  ")x$G->{depth}, $G->{t}->{depth},"- ",
+        $G->{t}->{i}->{K}, $G->{t}->{t},"     ".(@{$G->{t}->{o}}+0)." -");
+    return unless @{$G->{_trail}} == 20;
+    my $t = join"\n", @{$G->{_trail}};
+    $G->timer(0.2, sub {
+        $O->{O}->w(somewhere=>{thing=>[$G->{t},$t]});
+    }, "bailout");
     
   fresh_init: |
     #etc

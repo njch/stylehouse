@@ -37,7 +37,7 @@ sub T {
     
     $G->Flab("T", $t, $t, $G, $i, $depth);
     
-    my ($line, $o) = $G->haunt($T, $depth, $t, $i);
+    my ($L, $o) = $G->haunt($T, $depth, $t, $i);
 
     my @r = $T->W;
     for my $c (@$o) {
@@ -51,6 +51,7 @@ sub T {
             $H->error("what kind of way out is",$c)
         }
     }
+    $G->w("T_end");
 
     return @r;
 }

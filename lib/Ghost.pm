@@ -388,6 +388,12 @@ sub crank {
     $self->{$dial} = shift;
     return $uncrank;
 }
+sub way_was {
+    my $G = shift;
+    my $what = shift;
+    my $lt = $F[0]->{thing};
+    $lt->[0] eq "D" && $lt->[1] eq $what
+}
 sub haunt { # arrives through here
     my $G = shift;
     my $T = shift; # A
@@ -398,6 +404,7 @@ sub haunt { # arrives through here
     
     $G->ob("haunt", $G);
     
+    
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
         push @$o, $i->spawn()->from({ arr_returns => \@r });
@@ -407,13 +414,22 @@ sub haunt { # arrives through here
         $G->w("arr");
     }
     
-    my $line;
+    my $L;
     if (defined $G->{t}) {
-        $line = $G->W->continues($G); # %
-        $G->ob("continues...", $line);
+        $L = $G->W->continues($G); # %
+        $G->ob("continues...", $L);
     }
+    
+    for my $o (@{$L->{o}}) {
+        $o->{L} = $L;
+        $o->{Lo} = $L; # L heading back out
+    }
+    $i->{Li} && die "reiterate you?" unless $G->way_was("revisit");
+    $i->{Li} = $L; # L heading in
 
-    return ($line, $G->{o});
+    my $o = $G->w("To_ways") || $G->{o};
+
+    return ($L, $o);
 }
 sub chains {
     my $self = shift;
