@@ -66,8 +66,8 @@ hooks:
       my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
       $m /= 100;
       $c /= 100;
-      $H->error("memory usage $m") if $m > .4;
-      w reinit/everything if $m > .66;
+      $H->error("memory usage $m") if $m > 0.4;
+      #w reinit/everything if $m > 0.66;
       $H->error("vitals error: $!") if $!;
       "$u`$pid  m$m  c$c"
     LoC: |
@@ -83,13 +83,10 @@ hooks:
       G TT ->G("H/sky") ->w('flood_init');
       G TT ->G("H/ground") ->w('flood_init');
 
-      
       G mess ->w('flood_init');
 
       $self->menu();
       $self->{floodmenu}->{Ш}->() if $data->{style} eq 'stylehouse';
-
-      return $f
   reinit:
     everything: |
       $H->error("restarting!");
