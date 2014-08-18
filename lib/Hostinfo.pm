@@ -920,9 +920,10 @@ sub keep_throwing {
         $self->JS("\$('#mess').animate({'max-width': '60%'}, 1200);");
     }
     $string = encode_entities($string);
-    $string =~ s/'/\\'/g;
-    $string =~ s/\n/\\n/g;
-    return $self->error("Recusive error messaging, check console")
+    $string =~ s/'/'/g;
+    $string =~ s/\\/&bsol;/g;
+    $string =~ s/\n/&NewLine;/g;
+    return $self->error("Recusive error messaging, check console") && sleep 3
         if $string =~ /amp;amp;amp;/;
     $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
     $self->{throwings}->{$what} = $string;
