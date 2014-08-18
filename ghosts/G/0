@@ -25,6 +25,14 @@ hooks:
     join"",map{"$_\n"}map{
     w $_ print;
     } @$FFF;
+  style: |
+    join "", map { /;$/ ? $_ : "$_;" } $S->w("styles/$K")
+  V: |
+    my $V = View->new($H->intro, $S,  $K,
+          ( $ar->{style} || $G->w(style=>$ar) )
+    );
+    $S->{V}->{$K} = $V;
+    die "$S->{way} $K $V" if $G->{ggggues}++;
   sing: |
     $G->{singing} ||= {};
     return if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
