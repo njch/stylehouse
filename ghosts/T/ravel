@@ -3,7 +3,17 @@ hooks:
   chains: |
     #
   arr: |
-    my @actcs;
+    my $cs = [];
+    my $doing = sub {
+      my $w = shift;
+      my @rc;
+      for my $c (@$cs) {
+            my $rc = $G->w($w, {c=>$c,cs=>$cs});
+          push @rc, $rc if $rc;
+      }
+      @$cs = @rc;
+    };
+    
     for my $c ($G->chains) {
         if ($c->{K_K}) {
             my ($iK, $K) = split '/', $c->{K_K};
@@ -11,45 +21,28 @@ hooks:
             $c->{K} = $K;
         }
         if (w $c arr_if) {
-            push @actcs, $c->spawn;
+            push @$cs, $c->spawn;
         }
-    }
-    my @f;
-    for my $c (@actcs) {
-        push @f, w c_follow_as(+ c => $c);
-    }
-    @actcs = @f;
-    @f = ();
-    
-    
-    for my $c (@actcs) {
-        if ($c->{eat}) {
-            map { $_->{eaten_by} = $c } grep { $_->{K} eq $c->{eat} } @actcs;
-        }
-        else {
-            push @f, $c;
-        }
-    }
-    
-    @actcs = @f;
-    @f = ();
-    
-    for my $c (@actcs) {
-        if (my $a = $c->{grav_add}) {
-            $_->{gravity} += $c for @actcs;
-        }
-        else {
-            push @f, $c;
-        }
-    }
-    
-    @actcs = @f;
-    @f = ();
-            
-    for my $c (@actcs) {
-        w figureout(+ c => $c);
     }
     # all these motions we want to grab finer pictures of eventually
+    
+    $doing->("c_follow_as");    
+    $doing->("c_eat");  
+    $doing->("c_grav_add");
+    $doing->("figureout");
+    
+  c_eat: |
+    return $c unless $c->{eat};
+    for my $oc (@$cs) {
+        if ($oc->{K} eq $c->{eat}) {
+            $oc->{eaten_by} = $c
+        }
+    }
+  c_grav_add: |
+    return $c unless $c->{grav_add};    
+    for my $oc (@$cs) {
+        $oc->{gravity} += $c->{grav_add} 
+    }
   crank: |
     my ($dial, $to) = %$ar;
     exists $G->{$dial} || die "no $dial";
