@@ -1,0 +1,33 @@
+name: wormhole surfer
+chains:
+ - K: 'HASH'#c
+   arr_if: |
+     ref $thing eq 'HASH'
+   foreach_travel:
+     each: sort keys %$thing
+     next_thing: $thing->{$each}
+   print: |
+        $S->{each}
+        
+ - K: 'HASHish'
+   arr_if: |
+     ref $thing && "$thing" =~ /=HASH/
+   foreach_travel:
+     each: |
+       sort keys %$thing;
+     next_thing: $thing->{$each}
+   print: |
+        $S->{each}
+     
+ - K: 'ARRAY'
+   arr_if: ref $thing eq 'ARRAY'
+   foreach_travel:
+     each: @$thing
+     next_thing: $each
+   print: |
+        $S->{i}
+        
+
+dials:
+  max_depth: 1
+
