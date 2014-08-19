@@ -262,7 +262,7 @@ sub T {
 sub Tw {
     my $G = shift;    
     my ($GG, $wp, $war, $thing) = @_;
-    $GG || die "NO Tw GG!";
+    $GG || die "NO Tw GG! $G->{name}        w $wp  ".ki($war);
     
     my $w = $G->nw();
     $w->{arr_hook} = $wp if $wp;
