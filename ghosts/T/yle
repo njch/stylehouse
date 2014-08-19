@@ -18,7 +18,7 @@ chains:
    s:
      div: 4x1
    print: |
-     $S->{K}
+     "$S->{K} $S->{Li}->{t}->{n}"
    exude: |
      $thing
  - K_K: Line/Depth #c     D I Thing O
@@ -45,13 +45,7 @@ chains:
    exude: |
      $thing->{o}
      
- - K_K: Thing/Way    #c     Things
-   arr_if: |
-     ref $thing eq "Way";
-   exude: |
-     $thing->{t}
-     
- - K_K: Thing/NonRef
+ - K_K: Thing/NonRef    #c     Things
    arr_if: |
      !ref $thing
    print: $S->{K}
@@ -67,12 +61,6 @@ chains:
    s:
      conty: |
        ghostlyprinty($Lo->{t});
-     
- - K_K: Thing/String
-   arr_if: |
-     ref \$thing eq "SCALAR";
-   exude: |
-     $thing
 styles:
  - K_: Wormhole
 dials:
