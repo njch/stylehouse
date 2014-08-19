@@ -74,7 +74,13 @@ sub throwlog {
     my $G = shift;
     $H->{G}->w(throwlog => {@_});
 }
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
 sub ghostlyprinty {
+    $gp_inarow++;
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
     if ($_[0] && $_[0] eq "NOHTML") {
         shift;
@@ -84,7 +90,7 @@ sub ghostlyprinty {
     my @t = @_;
     my @s;
     for my $t (@t) {
-        if ($t && ref $t eq "ARRAY") {
+        if ($t && ref $t eq "ARRAY" && $gp_inarow < 5) {
             push @s, map { "[".ghostlyprinty($_) } @$t;
         }
         elsif (ref $t) {
@@ -94,7 +100,7 @@ sub ghostlyprinty {
             push @s, (defined $t ? $t : "~")
         }
     }
-    
+    $gp_inarow--;
     join "  ", @s
 }
 sub Flab {

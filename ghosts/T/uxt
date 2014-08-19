@@ -4,23 +4,24 @@ dials:
   form: 42
 hooks:
   any_init: |
-    $G->{_trail} = [];
+    my $t = $G->{_trail} = [];
+    
+    exit "HEOEOE" if @$t;
   T_end: |
+    my $t = $G->{_trail} ||= [];
+    my $yL = $G->{t};
     my @om = @{ $G->{o} };
     # o[ s/...
     # with i s
     # make i s... 
-    my $t = $G->{_trail} ||= [];
-    my $sL = $G->{t};
-    push @$t, join "\t", $sL->{Wname}, w $sL->{i} print, $sL->{t};
+    push @$t, [$yL->{Wname}, $yL->{i}, $yL->{t}];
     my @no = ();
     
-    return unless @$t == 7;
+    return unless @$t == 5;
     
-    $t = join "\n", @$t;
-    $G->timer(0.2, sub {
-        $O->{O}->w(somewhere=>{thing=>[$G->{t},$t],max_depth=>2});
-    }, "bailout");
+    #$G->timer(0.2, sub {
+    $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
+    #}, "bailout");
     
     
   fresh_init: |
