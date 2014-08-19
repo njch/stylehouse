@@ -218,9 +218,9 @@ __DATA__
     <head>
         <title><%= $title || "stylehouse" %></title>
 
-    %= include 'css'
+    %= include 'thecss'
     %= include 'jquery'
-    %= include 'js'
+    %= include 'thejs'
     %= include 'codemirror'
 
 
@@ -232,8 +232,6 @@ __DATA__
 @@ jquery.html.ep
         <script src="jquery-1.10.2.js"></script>
         <script src="jquery-ui-1.10.4.min.js"></script>
-        <script src="stylehouse.js"></script>
-        <script src="tabby.js"></script>
         <script src="jquery.scrollTo.js"></script>
         <script src="jquery.color.js"></script>
         
@@ -249,7 +247,7 @@ __DATA__
         <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>
 
-@@ css.html.ep
+@@ thecss.html.ep
         <style type="text/css">
 div {
     opacity:0.9;
@@ -430,7 +428,7 @@ div.CodeMirror-lines span {
 } 
         </style>
 
-@@ js.html.ep
+@@ thejs.html.ep
 <script type="text/javascript">
 var ws;
 var fail = 0;
