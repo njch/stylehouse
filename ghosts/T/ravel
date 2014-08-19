@@ -47,16 +47,10 @@ hooks:
     for my $oc (@$cs) {
         $oc->{gravity} += $c->{grav_add} 
     }
-  crank: |
-    my ($dial, $to) = %$ar;
-    exists $G->{$dial} || die "no $dial";
-    my $o = $G->{$dial};
-    my $undo = sub { $G->{$dial} = $o };
-    $G->{$dial} = $to;
-    $undo;
+
   revisit: |
     my $W = $G->RW;
-    my $und = w crank(max_depth => $line->{depth} + $ar->{push_depth});
+    my $und = $G->crank(max_depth => $line->{depth} + $ar->{push_depth});
     
     $G->T($line->{t}, undef, $line->{i}, $line->{depth});
     
