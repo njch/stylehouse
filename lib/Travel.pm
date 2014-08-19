@@ -47,8 +47,11 @@ sub T {
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
         }
+        elsif (exists $c->{s}) {
+            # sweet
+        }
         else {
-            $H->error("what kind of way out is",$c)
+            $H->error("what kind of way out is",Ghost::ki($c))
         }
     }
     $G->w("T_end", {L=>$L});
