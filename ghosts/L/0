@@ -136,6 +136,7 @@ hooks:
     
     my $Cr = G crawl;
     $Cr || die;
+    my $unc = $Cr->crank(max_depth => $ar->{max_depth}) if defined $ar->{max_depth};
     say join"", ("       ẞ           ")x38;
     start_timer();
     
@@ -144,6 +145,8 @@ hooks:
     $G->{thething} = $thing;
     $Cr->T($thing, undef, $G->stackway);
     
+    
+    $unc->() if $unc;
     my $wormhole = $G->{some_W} = $Cr->W;
     my $crawltime = show_delta();
 
