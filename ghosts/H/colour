@@ -15,14 +15,14 @@ tractors:
           sub { int rand 255 },
           sub { 100 + int rand 155 },
       ];
+      w $S set_background if $ar->{set_css_background};
     every_time: |
       w $S change_person if $ar->{e} && $ar->{e}->{C};
-      w $S set_background if $ar->{set_css_background};
       w $S change if $ar->{change};
     set_background: |
       my $colour = w $S wtc;
-      $ar->{t} ||= 50;
-      $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t});");
+      $ar->{t} ||= 0.2;
+      $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t}*1000);");
     change_person: |
       push @$personalities, shift @$personalities;
     person: |

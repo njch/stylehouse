@@ -84,9 +84,6 @@ sub menu {
         "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
-        '≲' => sub {
-            # TODO Floatation device
-        },
     ];
     return { _spawn => [ [], {
         event => { menu => $m },

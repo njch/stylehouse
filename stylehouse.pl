@@ -148,19 +148,7 @@ get '/' => sub {
     my $self = shift;
 
     # TODO log this to find who can't make it to the websocket
-    if ($first) {
-        $first = 0;
-
-        my $ws_location = $self->url_for('stylehouse')->to_abs;
-        say "Updating stylehouse.js for websocket $ws_location";
-
-        my $js = read_file("stylehouse.js");
-        $js =~ s/(new\ WebSocket\(  )  .+?  (  \);)/$1'$ws_location'$2/sx; # invent an e pragma
-        $js =~ m/( WebSocket.+\n)/;
-        say "turned into $1";
-        unlink "public/stylehouse.js";
-        write_file("public/stylehouse.js", $js);
-    }
+    $self->stash(ws_location => $self->url_for('stylehouse')->to_abs);
     
     $self->stash(title => $title);
     $self->render('index');
@@ -233,8 +221,18 @@ __DATA__
     <head>
         <title><%= $title || "stylehouse" %></title>
 
-        <link  href="stylehouse.css" rel="stylesheet">
+    %= include 'css'
+    %= include 'jquery'
+    %= include 'js'
+    %= include 'codemirror'
 
+
+    </head>
+    <body id="body">
+    </body>
+</html>
+
+@@ jquery.html.ep
         <script src="jquery-1.10.2.js"></script>
         <script src="jquery-ui-1.10.4.min.js"></script>
         <script src="stylehouse.js"></script>
@@ -244,7 +242,7 @@ __DATA__
         
         <script src="jquery.transform2d.js"></script>
         <script src="jquery.hoverIntent.js"></script>
-
+@@ codemirror.html.ep
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
         <link href="codemirror/theme/night.css" rel="stylesheet">
@@ -253,8 +251,287 @@ __DATA__
         <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css">
         <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>
-    </head>
-    <body id="body">
-    </body>
-</html>
+
+@@ css.html.ep
+        <style type="text/css">
+div {
+    opacity:0.9;
+}
+//#ground > div { opacity:0.2 }
+#ground > div > div { opacity: 1; z-index:30; }
+#flood:before {
+    background: url(greencush.jpg);
+    background-size: 100%;
+    
+    content: '';
+    position: absolute;
+   
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity:0.5;
+}
+.insplatm {
+    font-size: 15pt;
+    text-shadow: 1px 1px 2px #fc0;
+}
+#Codo:before bollocks {
+    background-image: url(blue-velvet-sofa.jpg);
+    background-size: 100% 300%;
+    
+    content: '';
+    position: absolute;
+   
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity:0.5;
+}
+div div {
+    opacity:0.95;
+}
+div div div {
+    opacity: 1;
+}
+.divlabel {
+    z-index: -5;
+}
+.floated {
+    position: fixed !important;
+    top: 40%;
+    right: 58%;
+    padding: 3px;
+}
+#body {
+    background: rgba(178,140,192,0.8);
+    background-image:url('IMG_3524.JPG');
+    background-size: 100%;
+    font-family: monospace;
+}
+.splat-w {
+    font-size:10pt;
+    background-color:#445;
+    max-height: 3em;
+    word-wrap: break-word; overflow:hidden;
+}
+.inface {
+    position:fixed !important;
+    z-index:100 !important;
+    top: 0.5em!important;
+    right 0.5em!important;
+}
+.hidata:hover {
+    color: white;
+}
+.NE {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+}
+span.en:hover{
+    background-color: #fc6;
+}
+.data {
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+}
+.hear {
+    font-family: serif;
+    font-weight: 600;
+    font-size: 22pt;
+    color: white;
+    opacity: 1;
+}
+.dead {
+    background: #0d0e4d !important;
+    opacity: 0.334;
+}
+.widdle {
+    height: 1em !important;
+    overflow: hidden !important;
+}
+.invis { display:none }
+.widdle * {
+    display: none;
+}
+#mess.widdle {
+    height: 100% !important;
+    width: 1em !important;
+}
+.widel {
+    width: 50em !important;
+}
+.vvvv {
+    position: relative;
+    float: left;
+}
+.abspan > span {
+    position: absolute;
+}
+.view {
+    position: relative;
+    float: left;
+}
+.view > span {
+    position: absolute;
+}
+span.menu {
+    position: relative !important;
+    float: left;
+    cursor: help;
+}
+.lyrics {
+    position: absolute;
+}
+.on {
+    color: white;
+    background: #777;
+}
+.onn {
+    color: black !important;
+    text-shadow:2px 10px 7px #FF33CC !important;
+}
+div.CodeMirror-lines span {
+    #font-family: u0400;
+}
+#Keys {
+    font-size: 30pt;
+}
+.err { color: red; }
+::-webkit-scrollbar {
+    width: 20px;
+}
+#sky::-webkit-scrollbar {
+    width: 40px;
+}
+#sky::-webkit-scrollbar-thumb {
+    background: url(copper_anodes.jpg);
+}
+#Codo::-webkit-scrollbar {
+    width: 40px;
+}
+#Codo::-webkit-scrollbar-thumb {
+    background: url(copper_anodes.jpg);
+    min-height:7em;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 29px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: url(greencush.jpg);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(33,0,55,0.1); 
+} 
+        </style>
+
+@@ js.html.ep
+<script type="text/javascript">
+var ws;
+var fail = 0;
+var db = 0;
+function connect () {
+  ws = new WebSocket('<%= $ws_location %>');
+  ws.onmessage = function(event) {
+  
+        console.log(event.data);
+    try {
+        eval(event.data);
+    } catch (e) {
+        ws.reply({e:e.message, d:event.data});
+    }
+  };
+  ws.onopen = function(e) {
+    fail = 0;
+    $('#body').removeClass('dead');
+  };
+  ws.onclose = function(e) {
+     $(window).off('click', clickyhand);
+    $('#body').addClass('dead');
+    console.log("WebSocket Error: " , e);
+    reconnect();
+  };
+  ws.onerror = function(e) {
+     $(window).off('click', clickyhand);
+    $('#body').addClass('dead');
+    console.log("WebSocket Error: " , e);
+    //reconnect();
+  };
+}
+function reconnect () {
+  fail++;
+  console.log('waiting to retry');
+  if (fail < 20000) {
+      window.setTimeout(connect, 256);
+  }
+  else {
+      window.setTimeout(connect, 25600);
+  }
+}
+WebSocket.prototype.reply = function reply (stuff) {
+
+  console.log(stuff);
+
+  this.send(JSON.stringify(stuff));
+};
+
+function clickon () { $(window).on("click", clickyhand); }
+function clickoff () { $(window).off("click", clickyhand); }
+function clickyhand (event) {
+    var tag = $(event.target);
+    
+    var value = ''+tag.contents();
+    if (!(tag.attr('id') || tag.attr('class'))) {
+        tag = tag.parent();
+    }
+    if (value && value.length >= 640) {
+        value = '';
+    }
+    var data = {
+        id: tag.attr('id'),
+        class: tag.attr('class'),
+        value: value,
+        type: event.type,
+        S: 0+event.shiftKey,
+        C: 0+event.ctrlKey,
+        A: 0+event.altKey,
+        M: 0+event.metaKey,
+        x: event.clientX,
+        y: event.clientY,
+        pagex: window.pageXOffset,
+        pagey: window.pageYOffset,
+    };
+    ws.reply({event: data});
+}
+var nohands = 0;
+var handelay = 10;
+function keyhand (e) {
+    if (nohands) {
+        return;
+    }
+    setTimeout(function () {
+        nohands = 0;
+    }, handelay);
+    nohands = 1;
+    var data = {
+        type: e.type,
+        S: 0+e.shiftKey,
+        C: 0+e.ctrlKey,
+        A: 0+e.altKey,
+        M: 0+e.metaKey,
+        which: e.which,
+        k: String.fromCharCode(e.keyCode),
+    };
+    ws.reply({event: data});
+}
+connect();
+</script>
 

@@ -10,7 +10,7 @@ sub TT { Hostinfo::TT(@_) }
 
 my $i = 0; # sweeps through @{lyrics}
 our $H;
-our $L;
+our $Ly;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -35,14 +35,14 @@ sub new {
 sub stup {
     my $self = shift;
 
-    $Ghost::L = $L = $self->{G} = $H->TT($self)->G();
+    $Ghost::Ly = $Ly = $self->{G} = $H->TT($self)->G();
 }
 sub somewhere {
     my $self = shift;
     
     return say 'NOT SOMEWHERE YET' unless $self->{G};
     
-    $self->{G}->w("somewhere", {thing => \@_});
+    $Ly->w("somewhere", {thing => \@_});
 }
 sub menu {
     my $self = shift;
@@ -50,14 +50,14 @@ sub menu {
         "چ" => sub {
             $self->somewhere(@_);
         },
-        'i' => sub {
+        '≲' => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
             $self->{G}->w("splat_wormholes");
         },
         'Թ' => sub {
-            $L->w('getstarted');
+            $Ly->w('getstarted');
         },
     };
     return { _spawn => [ [ sort keys %$m ], {

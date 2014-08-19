@@ -14,7 +14,7 @@ our $H;
 our @F;
 our @Flab;
 our $G0;
-our $L;
+our $Ly;
 our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
@@ -262,7 +262,7 @@ sub T {
 sub Tw {
     my $G = shift;    
     my ($GG, $wp, $war, $thing) = @_;
-    $GG || die "NO Tw GG!";
+    $GG || die "NO Tw GG! $G->{name}        w $wp  ".ki($war);
     
     my $w = $G->nw();
     $w->{arr_hook} = $wp if $wp;

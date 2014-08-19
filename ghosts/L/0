@@ -55,6 +55,9 @@ hooks:
     [ 'H',            sub {  $H } ],
     [ 'L',             sub { $G } ];
   f:
+    'ccc': |
+      my $deg = -180 + int(rand(360));
+      $H->JS("\$('#body').css('-webkit-filter', 'hue-rotate(${deg}deg)')");
     'ЊϠʝ*': |
       my $thing = {
         'Њ' => w look_for_ghost(name => 'Њ'),
@@ -65,8 +68,7 @@ hooks:
       my $max_depth = 2;
       w somewhere[$thing, $max_depth];
     'L>Ϡ': | #c
-      w somewhere(nothing => $L);
-      
+      w somewhere(nothing => $Ly);
       
     'Ϡ?': |
       $H->Info("Ϡing... ",G ob );
@@ -74,7 +76,7 @@ hooks:
       $sty->{_ob} = G ob;
       $sty->{_ob}->RW();
       eval {
-          w somewhere(nothing => $L);
+          w somewhere(nothing => $Ly);
       };
       $sty->{_ob} = undef;
       $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
@@ -111,8 +113,8 @@ hooks:
         G splat ->w('go', {thing => $G->stackway("Er", "TC")});
   getstarted: |
     $G->unrush('getstarted') || return;
-    w somewhere(thing => w default_somewhere);
-    #$G->w('f/L>Ϡ');
+    #w somewhere(thing => w default_somewhere);
+    $G->w('f/L>Ϡ');
   somewhere: |
     if ($ar->{nothing}) {
         Gf Ϡ Tw arr(%$ar);
