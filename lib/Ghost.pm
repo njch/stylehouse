@@ -75,16 +75,6 @@ sub throwlog {
     $H->{G}->w(throwlog => {@_});
 }
 our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
-our $gp_inarow = 0;
 sub ghostlyprinty {
     $gp_inarow++;
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
