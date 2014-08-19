@@ -35,16 +35,19 @@ hooks:
       $m /= 100;
       $c /= 100;
       $H->error("memory usage $m") if $m > 0.4;
-      #w reinit/everything if $m > 0.66;
+      w re/exec if $m > 0.9; # unlikely to be effective from inside
       $H->error("vitals error: $!") if $!;
       "$u`$pid  m$m  c$c"
     LoC: |
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
+  re:
+    exec: |
+      exec "perl stylehouse.pl";
   init:
     later: |
-      waylay check/vitals;
+      waylay check/vitals
     flood: | #c
       my $house = $H->get('style') eq 'stylehouse';
     
