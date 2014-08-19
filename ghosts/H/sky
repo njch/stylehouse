@@ -14,7 +14,8 @@ hooks:
     };
     $G->{cg}->("arr", set_css_background => "#sky");
     
-    w colours;
+    w ambientness;
+  any_init: |
     w ambientness;
   styles:
     sky: |
@@ -34,16 +35,16 @@ hooks:
           $L->w(  somewhere => {thing => $G->stackway} ) 
       }, "skyrecode;stack"); 
   doof: |
-    $ar->{t} ||= 100;
+    $ar->{t} ||= 0.1;
     $ar->{c} ||= '333';
     w colourchange;
     waylay touch(t=>500);
   ambientness: |
-    my $c = w colourchange(t=>15000);
+    my $c = w colourchange(t=>12);
     throwlog( Ambientness => $c );
-    waylay 19 ambientness;
+    waylay 18 ambientness;
   colourchange: |
-    $ar->{t} ||= 5000;
+    $ar->{t} ||= 5;
     $G->{cg}->("arr", t => $ar->{t}, change => 1);
   getundercontrol: |
     $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '26%'});");
@@ -52,6 +53,6 @@ hooks:
         w getundercontrol;
     }
     $@ = "";
-    $ar->{t} ||= 300;
+    $ar->{t} ||= 0.3;
     Info "sky touch" => w colourchange;
 
