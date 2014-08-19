@@ -60,12 +60,12 @@ hooks:
     $self->{throwings}->{$what} = $string;
     
   event: |
-    my $id = $ar->{e}->{id};
-    if (eval { $ar->{e}->{C} }) {
-        my @id = $id eq "mess" ? qw{Error Info Say} : $id;
+    my $id = $e->{id};
+    if ($e->{C}) {
+        my @id = $id eq "mess" ? ('Er'.'ror','In'.'fo','Sa'.'y'} : $id;
         $H->JS("\$('#$_').empty();") for @id;
     }
-    if (eval { $ar->{e}->{S} }) {
+    if ($e->{S}) {
         $H->JS("\$('#mess').toggleClass('inface');");
     }
     
