@@ -50,7 +50,7 @@ sub menu {
         "چ" => sub {
             $self->somewhere(@_);
         },
-        'i' => sub {
+        '≲' => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
         },
         '⥁' => sub {
