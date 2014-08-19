@@ -148,19 +148,7 @@ get '/' => sub {
     my $self = shift;
 
     # TODO log this to find who can't make it to the websocket
-    if ($first) {
-        $first = 0;
-
-        my $ws_location = $self->url_for('stylehouse')->to_abs;
-        say "Updating stylehouse.js for websocket $ws_location";
-
-        my $js = read_file("stylehouse.js");
-        $js =~ s/(new\ WebSocket\(  )  .+?  (  \);)/$1'$ws_location'$2/sx; # invent an e pragma
-        $js =~ m/( WebSocket.+\n)/;
-        say "turned into $1";
-        unlink "public/stylehouse.js";
-        write_file("public/stylehouse.js", $js);
-    }
+    $self->stash(ws_location => $self->url_for('stylehouse')->to_abs);
     
     $self->stash(title => $title);
     $self->render('index');
@@ -234,7 +222,17 @@ __DATA__
         <title><%= $title || "stylehouse" %></title>
 
     %= include 'css'
+    %= include 'jquery'
+    %= include 'js'
+    %= include 'codemirror'
 
+
+    </head>
+    <body id="body">
+    </body>
+</html>
+
+@@ jquery.html.ep
         <script src="jquery-1.10.2.js"></script>
         <script src="jquery-ui-1.10.4.min.js"></script>
         <script src="stylehouse.js"></script>
@@ -244,7 +242,7 @@ __DATA__
         
         <script src="jquery.transform2d.js"></script>
         <script src="jquery.hoverIntent.js"></script>
-
+@@ codemirror.html.ep
         <script src="codemirror/lib/codemirror.js"></script>
         <link href="codemirror/lib/codemirror.css" rel="stylesheet">
         <link href="codemirror/theme/night.css" rel="stylesheet">
@@ -253,10 +251,6 @@ __DATA__
         <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css">
         <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>
-    </head>
-    <body id="body">
-    </body>
-</html>
 
 @@ css.html.ep
         <style type="text/css">
@@ -438,4 +432,106 @@ div.CodeMirror-lines span {
     background: rgba(33,0,55,0.1); 
 } 
         </style>
+
+@@ js.html.ep
+<script type="text/javascript">
+var ws;
+var fail = 0;
+var db = 0;
+function connect () {
+  ws = new WebSocket('<%= $ws_location %>');
+  ws.onmessage = function(event) {
+  
+        console.log(event.data);
+    try {
+        eval(event.data);
+    } catch (e) {
+        ws.reply({e:e.message, d:event.data});
+    }
+  };
+  ws.onopen = function(e) {
+    fail = 0;
+    $('#body').removeClass('dead');
+  };
+  ws.onclose = function(e) {
+     $(window).off('click', clickyhand);
+    $('#body').addClass('dead');
+    console.log("WebSocket Error: " , e);
+    reconnect();
+  };
+  ws.onerror = function(e) {
+     $(window).off('click', clickyhand);
+    $('#body').addClass('dead');
+    console.log("WebSocket Error: " , e);
+    //reconnect();
+  };
+}
+function reconnect () {
+  fail++;
+  console.log('waiting to retry');
+  if (fail < 20000) {
+      window.setTimeout(connect, 256);
+  }
+  else {
+      window.setTimeout(connect, 25600);
+  }
+}
+WebSocket.prototype.reply = function reply (stuff) {
+
+  console.log(stuff);
+
+  this.send(JSON.stringify(stuff));
+};
+
+function clickon () { $(window).on("click", clickyhand); }
+function clickoff () { $(window).off("click", clickyhand); }
+function clickyhand (event) {
+    var tag = $(event.target);
+    
+    var value = ''+tag.contents();
+    if (!(tag.attr('id') || tag.attr('class'))) {
+        tag = tag.parent();
+    }
+    if (value && value.length >= 640) {
+        value = '';
+    }
+    var data = {
+        id: tag.attr('id'),
+        class: tag.attr('class'),
+        value: value,
+        type: event.type,
+        S: 0+event.shiftKey,
+        C: 0+event.ctrlKey,
+        A: 0+event.altKey,
+        M: 0+event.metaKey,
+        x: event.clientX,
+        y: event.clientY,
+        pagex: window.pageXOffset,
+        pagey: window.pageYOffset,
+    };
+    ws.reply({event: data});
+}
+var nohands = 0;
+var handelay = 10;
+function keyhand (e) {
+    if (nohands) {
+        return;
+    }
+    setTimeout(function () {
+        nohands = 0;
+    }, handelay);
+    nohands = 1;
+    var data = {
+        type: e.type,
+        S: 0+e.shiftKey,
+        C: 0+e.ctrlKey,
+        A: 0+e.altKey,
+        M: 0+e.metaKey,
+        which: e.which,
+        k: String.fromCharCode(e.keyCode),
+    };
+    ws.reply({event: data});
+}
+connect();
+</script>
 
