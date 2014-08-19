@@ -76,6 +76,7 @@ sub menu {
     my $m = $self->{menu} ||= [
         "!style='color:#41DB39;' ܤ" => sub { # they might wanna load new css/js too
             $H->restarting();
+            $H->{G}->w('re/exec');
         },
         "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {
             $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");

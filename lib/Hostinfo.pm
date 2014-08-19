@@ -177,7 +177,8 @@ sub elvis_connects {
     if (scalar(keys %$elviss) > 1) {
         say " Elvis is taking over!";
         $_->{tx} && $_->{tx}->finish for values %$elviss;
-        $self->restarting;
+        say " restarting...";
+        $self->{G}->w('re/exec');
     }
 
     $self->{first_elvis} ||= $new;
@@ -188,10 +189,7 @@ sub elvis_connects {
     return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
-sub restarting {
-    my $self = shift;
-    exec "perl stylehouse.pl";
-}
+
 sub elvis_enters {
     my $self = shift;
     my $sug = shift;
@@ -588,7 +586,7 @@ sub watch_file_streams {
             }
         }
         elsif ($st->{touch_restart} && @diffs) {
-            $self->restarting;
+            $self->{G}->w('re/exec');
         }
         elsif (@diffs) {
             die "something $st->{filename}\n".join("\n", @diffs)."\n\n";
@@ -634,12 +632,12 @@ sub watch_git_diff {
         my $o = delete $od->{$f};
         if (!$o || $n ne $o) {
             say join("  <>  ", ($f)x38);
-            $self->restarting;
+            $self->{G}->w('re/exec');
         }
     }
     for my $f (keys %$od) {
         say join("  <  >  ", ($_)x28) for $f;
-        $self->restarting;
+        $self->{G}->w('re/exec');
     }
     $self->{last_git_diff} = $d;
     # ZIPPING!? accum?
