@@ -191,6 +191,10 @@ sub HIDEHIDEHIDE {
     $self->{hostinfo}->JS($self,
     "css('display', 'none').remove;");
 }
+sub togcl {
+    my ($V, $class) = @_;
+    $V->{hostinfo}->JS($V, "toggleClass('$class');");
+}
 sub resume {
     my $self = shift;
     say "cannot be bothered resuming right now";
@@ -265,20 +269,25 @@ sub unfloat {
     $self->{floated} = 0;
 }
 sub event {
-    my $self = shift;
-    my $event = shift;
-    my $this = shift;
+    my $V = shift;
+    my $e = shift;
+    my $this = shift; # Texty sometimes
+    my $O = $V->owner;
     
-    if ($self->{on_event}) {
-        say "Event in ".$self->label."  h on_event";
-        $self->{on_event}->($self, $event, $this);
+    if ($V->{on_event}) {
+        say "Event in ".$V->label."  h on_event";
+        $V->{on_event}->($V, $e, $this);
         return;
     }
-
-    say "Event in ".$self->label." heading for "
-        .$self->owner.($self->{owner}->{name} ? " ($self->{owner}->{name})" : "");
-
-    $self->owner->event($event, $this, $self);
+    say "Event in ".$V->label." heading for "
+        .$O.($O->{name} ? " ($O->{name})" : "");
+    
+    if (ref $O eq "Ghost") {
+        $Ghost::G0->Tw($O, 'event', {e=>$e,this=>$this,V=>$V});
+    }
+    else {
+        $O->event($e, $this, $V);
+    }
 }
 sub takeover {
     my $self = shift;

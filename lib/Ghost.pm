@@ -427,9 +427,7 @@ sub haunt { # arrives through here
     $i->{Li} && die "reiterate you?" unless $G->way_was("revisit");
     $i->{Li} = $L; # L heading in
 
-    my $o = $G->w("To_ways") || $G->{o};
-
-    return ($L, $o);
+    return ($L, $G->{o});
 }
 sub chains {
     my $self = shift;

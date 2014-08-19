@@ -15,14 +15,15 @@ chains:
      ($G->{i}->{K} eq "Wormhole"
      || $G->{i}->{K} eq "Line")
      && ref $thing eq "HASH"
+     && @{$thing->{o}}
    foreach_travel:
-     each: map { $_->{Li} } @{$thing->{o}};
+     each: grep { defined $_ } map { $_->{Li} } @{$thing->{o}};
    print: |
      my $Li_t_i = $S->{Li}->{t}->{i};
      $S->{K}."(". w $Li_t_i print;
 dials:
 hooks:
-  erse_arr: |
+  aft_arr: |
     my $L = $thing;
     if ($G->{i}->{K} eq "Line") {
         $G->{depth} = $thing->{depth}; # just for vis...

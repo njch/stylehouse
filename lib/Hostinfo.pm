@@ -714,44 +714,13 @@ sub unset {
     delete $data->{$i};
 }
 
-sub arrive {
-    my $self = shift;
-}
-
-
-sub get_view { # TODO rip this out
-    my $self = shift;
-    my $this = shift;
-    my $viewid = shift;
-    my $alias = shift;
-    ($alias, $viewid) = ($viewid, $alias) if $alias;
-
-    my ($divid) = $viewid =~ /^(.+)_?/;
-
-    my $view = $self->create_view($this, $divid, undef, "not-on-object");
-
-    if ($this->can("ports")) {
-        unless ($this->ports) {
-            $this->ports({});
-        }
-        $this->ports->{$viewid} = $view;
-        $this->ports->{$alias} = $view if $alias;
-    }
-}
-
 sub accum {
     my $self = shift;
     my $ere = shift;
     my $at = shift;
     push @{$self->gest($ere, [])}, $at;
 }
-sub deaccum {
-    my $self = shift;
-    my $ere = shift;
-    my $at = shift;
-    #$self->get($ere) || $self->set($ere, []);
-    #push @{$self->get($ere)}, $at;
-}
+
 sub create_view {
     my $self = shift;
     
@@ -974,34 +943,17 @@ sub tv_by_id {
     }
     return;
 }
-sub nah {
-    my $self = shift;
-    my $this = shift;
-    say "DESTROYING EVERYTHING $this STOOD FOR";
-    for my $OO (
-        grep { $_->{O} ? $_->{O} eq $this
-                    : $_->{owner} eq $this }
-        map { @{$_} }
-        map { $self->get($_) } "View", "Travel") {
-        
-        $OO->nah;
-        $self->deaccum($this);
-    }
-}
-    
-    
-# make a number bigger than the universe...
+
 sub make_uuid {
     my $stringuuid = secret();
     $stringuuid =~ s/^(\w+)-.+$/$1/s;
     return $stringuuid;
 }
-sub secret {
+sub secret { # make a number bigger than the universe
     UUID::generate(my $uuid);
     UUID::unparse($uuid, my $stringuuid);
     return $stringuuid;
 }
-
 sub claw {
     my $self = shift;
     my $event = shift;
