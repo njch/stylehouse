@@ -28,6 +28,10 @@ hooks:
   key:
     m: |
         w tog_hmess;
+    n: |
+        w f/noϠ;
+    a: |
+        w f/nos;
     'À': |
         w f/q;
     l: |
@@ -91,8 +95,10 @@ hooks:
       #e t c
     chch: |
       w swap_chains
-    clear: |
-      $H->Gf("T/splat")->w("clear", {splatname => "somewhere"});
+    nos: |
+      $H->Gf("T/splat")->w("get", {splatname => "somewhere"})
+      ->{view}->togcl('invis');
+      
     noϠ: |
       $H->Gf("Ϡ")->{View}->togcl('invis');
       $H->Gf("Ϡ")->{View2}->togcl('invis');
@@ -136,6 +142,7 @@ hooks:
     
     my $Cr = G crawl;
     $Cr || die;
+    my $unc = $Cr->crank(max_depth => $ar->{max_depth}) if defined $ar->{max_depth};
     say join"", ("       ẞ           ")x38;
     start_timer();
     
@@ -144,6 +151,8 @@ hooks:
     $G->{thething} = $thing;
     $Cr->T($thing, undef, $G->stackway);
     
+    
+    $unc->() if $unc;
     my $wormhole = $G->{some_W} = $Cr->W;
     my $crawltime = show_delta();
 
@@ -161,7 +170,8 @@ hooks:
     : w hide_hmess;
   hide_hmess: |
         $G->{_dont_mess_worm} = 1;
-        G splat Tw clear(splatname => 'worm');
+        my $S = G splat Tw get(splatname => 'worm');
+        $S->{view}->fadehtml();
   messworm: |
     return if $G->{_dont_mess_worm};
     $G->_0(sing => {

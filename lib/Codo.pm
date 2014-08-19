@@ -74,8 +74,7 @@ sub new {
 sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= [
-        "!style='color:#41DB39;' ܤ" => sub { # they might wanna load new css/js too
-            $H->restarting();
+        "!style='color:#41DB39;' ܤ" => sub {
             $H->{G}->w('re/exec');
         },
         "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {

@@ -189,7 +189,6 @@ sub elvis_connects {
     return $new
 # handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
 }
-
 sub elvis_enters {
     my $self = shift;
     my $sug = shift;
@@ -266,7 +265,6 @@ sub view_incharge {
     my $old = $self->get('tvs/'.$view->divid.'/top');
     $self->set('tvs/'.$view->divid.'/top', $view);
 }
-
 sub reload_views {
     my $self = shift;
     # state from client?
@@ -730,7 +728,6 @@ sub screen_height {
     $self->set("screen/width" => $sc->{x});
     $self->set("screen/height" => $sc->{y});
 }
-
 sub travel {
     my $self = shift;
     my $thing = shift;
@@ -974,7 +971,6 @@ sub claw_add {
     say "Claw added: $sec";
     return $sec;
 }
-
 sub grap { # joiney thing, the lie that won't die... maybe it checks data and this->{k} they seem parallel
     my $self = shift;
     my $left = shift;

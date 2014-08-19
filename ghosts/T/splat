@@ -100,11 +100,10 @@ hooks:
     
     $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta(), $A)
         unless $splatname eq "worm";
-  clear: |
+  get: |
     my $S = Afind[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);
-    #w go(W => {script => $G->W->CS});
-    $S->{view}->fadehtml();
+    $S
   aWstract: |
     return { script => [@$wormhole] } if ref $wormhole eq "ARRAY";
     $wormhole ne $G->W
