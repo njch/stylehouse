@@ -233,7 +233,7 @@ __DATA__
     <head>
         <title><%= $title || "stylehouse" %></title>
 
-        <link  href="stylehouse.css" rel="stylesheet">
+    %= include 'css'
 
         <script src="jquery-1.10.2.js"></script>
         <script src="jquery-ui-1.10.4.min.js"></script>
@@ -257,4 +257,185 @@ __DATA__
     <body id="body">
     </body>
 </html>
+
+@@ css.html.ep
+        <style type="text/css">
+div {
+    opacity:0.9;
+}
+//#ground > div { opacity:0.2 }
+#ground > div > div { opacity: 1; z-index:30; }
+#flood:before {
+    background: url(greencush.jpg);
+    background-size: 100%;
+    
+    content: '';
+    position: absolute;
+   
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity:0.5;
+}
+.insplatm {
+    font-size: 15pt;
+    text-shadow: 1px 1px 2px #fc0;
+}
+#Codo:before bollocks {
+    background-image: url(blue-velvet-sofa.jpg);
+    background-size: 100% 300%;
+    
+    content: '';
+    position: absolute;
+   
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity:0.5;
+}
+div div {
+    opacity:0.95;
+}
+div div div {
+    opacity: 1;
+}
+.divlabel {
+    z-index: -5;
+}
+.floated {
+    position: fixed !important;
+    top: 40%;
+    right: 58%;
+    padding: 3px;
+}
+#body {
+    background: rgba(178,140,192,0.8);
+    background-image:url('IMG_3524.JPG');
+    background-size: 100%;
+    font-family: monospace;
+}
+.splat-w {
+    font-size:10pt;
+    background-color:#445;
+    max-height: 3em;
+    word-wrap: break-word; overflow:hidden;
+}
+.inface {
+    position:fixed !important;
+    z-index:100 !important;
+    top: 0.5em!important;
+    right 0.5em!important;
+}
+.hidata:hover {
+    color: white;
+}
+.NE {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+}
+span.en:hover{
+    background-color: #fc6;
+}
+.data {
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+}
+.hear {
+    font-family: serif;
+    font-weight: 600;
+    font-size: 22pt;
+    color: white;
+    opacity: 1;
+}
+.dead {
+    background: #0d0e4d !important;
+    opacity: 0.334;
+}
+.widdle {
+    height: 1em !important;
+    overflow: hidden !important;
+}
+.invis { display:none }
+.widdle * {
+    display: none;
+}
+#mess.widdle {
+    height: 100% !important;
+    width: 1em !important;
+}
+.widel {
+    width: 50em !important;
+}
+.vvvv {
+    position: relative;
+    float: left;
+}
+.abspan > span {
+    position: absolute;
+}
+.view {
+    position: relative;
+    float: left;
+}
+.view > span {
+    position: absolute;
+}
+span.menu {
+    position: relative !important;
+    float: left;
+    cursor: help;
+}
+.lyrics {
+    position: absolute;
+}
+.on {
+    color: white;
+    background: #777;
+}
+.onn {
+    color: black !important;
+    text-shadow:2px 10px 7px #FF33CC !important;
+}
+div.CodeMirror-lines span {
+    #font-family: u0400;
+}
+#Keys {
+    font-size: 30pt;
+}
+.err { color: red; }
+::-webkit-scrollbar {
+    width: 20px;
+}
+#sky::-webkit-scrollbar {
+    width: 40px;
+}
+#sky::-webkit-scrollbar-thumb {
+    background: url(copper_anodes.jpg);
+}
+#Codo::-webkit-scrollbar {
+    width: 40px;
+}
+#Codo::-webkit-scrollbar-thumb {
+    background: url(copper_anodes.jpg);
+    min-height:7em;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 29px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: url(greencush.jpg);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(33,0,55,0.1); 
+} 
+        </style>
 
