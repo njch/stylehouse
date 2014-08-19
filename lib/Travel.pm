@@ -51,7 +51,7 @@ sub T {
             $H->error("what kind of way out is",$c)
         }
     }
-    $G->w("T_end");
+    $G->w("T_end", {L=>$L});
 
     return @r;
 }

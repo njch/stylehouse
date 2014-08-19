@@ -14,7 +14,7 @@ our $H;
 our @F;
 our @Flab;
 our $G0;
-our $L;
+our $Ly;
 our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
