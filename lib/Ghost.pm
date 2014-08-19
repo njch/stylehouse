@@ -79,6 +79,12 @@ our $gp_inarow = 0;
 our $gp_inarow = 0;
 our $gp_inarow = 0;
 our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
+our $gp_inarow = 0;
 sub ghostlyprinty {
     $gp_inarow++;
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
@@ -90,7 +96,11 @@ sub ghostlyprinty {
     my @t = @_;
     my @s;
     for my $t (@t) {
-        if ($t && ref $t eq "ARRAY" && $gp_inarow < 5) {
+        if ($t && ref $t eq "ARRAY") {
+            if ($gp_inarow < 5) {
+                push @s, "ghostlyprinty recursion!";
+                next;
+            }
             push @s, map { "[".ghostlyprinty($_) } @$t;
         }
         elsif (ref $t) {
