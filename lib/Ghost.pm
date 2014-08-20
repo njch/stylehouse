@@ -260,7 +260,7 @@ sub idname {
     my $self = shift;
     $self->{id}."-".$self->{name}
 }
-sub T {
+sub T { # TODO funny
     my $self = shift;
     $self->T->T(@_) if @_;
     $self->{T};

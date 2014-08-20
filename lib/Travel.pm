@@ -54,9 +54,9 @@ sub T {
             $H->error("what kind of way out is",Ghost::ki($c))
         }
     }
-    $G->w("T_end", {L=>$L});
+    $G->w("T_end", {L=>$L, r=>\@r});
 
-    return @r;
+    return wantarray ? @r : shift @r;
 }
 sub event {
     my $self = shift;
