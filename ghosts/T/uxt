@@ -9,11 +9,15 @@ hooks:
     my $xL = $L; 
     my $yL = $xL->{t};
     
+    push @$t, [join("",("..")x$xL->{depth}), w $yL->{i} print, $yL->{t}];
+    
     # o[ s/...
     # (re)make i s...
-    push @$t, [w $yL->{i} print, $yL->{t}];
-    my @no = ();
     
+    my $html = "HTML!";
+    if ($xL->{depth} == 0) {
+        @$r = $html;
+    }
     return unless @$t == 10;
     
     $t = {

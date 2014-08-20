@@ -54,7 +54,7 @@ sub T {
             $H->error("what kind of way out is",Ghost::ki($c))
         }
     }
-    $G->w("T_end", {L=>$L});
+    $G->w("T_end", {L=>$L, r=>\@r});
 
     return @r;
 }

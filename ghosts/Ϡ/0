@@ -45,14 +45,15 @@ hooks:
     my @time;
     G uxt ->{_trail} = [];
     G crawl ->{max_depth} = 1;
+    my $out;
     for my $g (@order) {
         my $what = $UP ? $UP->W : $thing;
         $g->RW;
-        $g->T($what);
+        $out = $g->T($what);
         $UP = $g;
         push @time, $g->W->desize()." ".show_delta();
     }
-    Say @time;
+    Say "to awlyluxt: $out",@time;
     
     $G->timer(14, sub {
     $H->Gf("T/splat") Tw Splat(Ϡ1 => G(crawl)->W, view => $G->{View} );
