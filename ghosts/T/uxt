@@ -19,26 +19,30 @@ hooks:
         }
     }
     my $yiw = $yL->{i};
+    if (!$yiw) {
+        $yiw = $G->nw()->from({K=>"WayIn"});
+    }
     my $xiw = $xL->{i};
     
     my $xso = $xiw->{x};
     my $xs = {};
     
-    my $xt;
-    for my $ya (['l',$ylw],['t',$ytw]) {
+    my $xt = {
+        xLDepth => join("",("..")x$xL->{depth}),
+        yLi =>  (ref $yL->{i} eq "Way" ? $yL->{i}->pint : "iww!www: $yL->{i}"),
+        yLt => "$yL->{t}",
+        yL => "$yL",
+    };
+    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
-        for my $w (@$yww) {
-            push @{$xt->{l}||=[]}, "$y ". $w->pint;
-        }
+        $xt->{$y} = [ map { "$y ".
+            (ref $_ eq "Way" ? $_->pint 
+                ." ~ ".ki($_->{s})
+            : "iww!www: $yL->{i}")
+        } @$yww ]
     }
     
     push @$t, $xt;
-    push @$t, {
-        xLDepth => join("",("..")x$xL->{depth}),
-        yLi =>  (ref $yL->{i} eq "Way" ? $yL->{i}->pint : "iww!www: $yL->{i}"),
-        yLt => $yL->{t},
-        yL => $yL,
-    } if 0;
     
     # o[ s/...
     # (re)make i s...
