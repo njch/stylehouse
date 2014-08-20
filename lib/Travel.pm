@@ -47,7 +47,7 @@ sub T {
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
         }
-        elsif (exists $c->{s}) {
+        elsif (exists $c->{B}->{s}) {
             # sweet
         }
         else {
