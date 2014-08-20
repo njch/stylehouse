@@ -436,9 +436,10 @@ sub haunt { # arrives through here
     return ($L, $G->{o});
 }
 sub chains {
-    my $self = shift;
+    my $G = shift;
+    return @{$G->{chains}} if $G->{chains};
     grep { !$_->{_disabled} }
-    map { @{$_->{chains}||[]} } $self->ways
+    map { @{$_->{chains}||[]} } $G->ways
 }
 sub allchains {
     my $self = shift;
