@@ -430,7 +430,7 @@ sub haunt { # arrives through here
         $o->{L} = $L;
         $o->{B}->{Lo} = $L; # L heading back out
     }
-    $i->{B}->{Li} && die "reiterate you?" unless $G->way_was("revisit");
+    $i->{B}->{Li} && $H->Say("reit", $i) && die "reiterate you?" unless $G->way_was("revisit");
     $i->{B}->{Li} = $L; # L heading in
 
     return ($L, $G->{o});
