@@ -89,6 +89,9 @@ hooks:
     my $view = delete $ar->{view};
     my ($splatname, $wormhole) = %$ar;
     start_timer();
+    
+    $H->Say("Splat $splatname...") unless $splatname eq "worm";
+    
     $wormhole = w aWstract[$wormhole];
     return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
@@ -99,7 +102,7 @@ hooks:
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
     $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta(), $A)
-        unless $splatname eq "worm";
+                                    unless $splatname eq "worm";
   get: |
     my $S = Afind[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);

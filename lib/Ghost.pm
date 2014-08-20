@@ -87,7 +87,7 @@ sub ghostlyprinty {
     my @s;
     for my $t (@t) {
         if ($t && ref $t eq "ARRAY") {
-            if ($gp_inarow < 5) {
+            if ($gp_inarow > 5) {
                 push @s, "ghostlyprinty recursion!";
                 next;
             }
