@@ -8,7 +8,10 @@ hooks:
     my $t = $G->{_trail} ||= [];
     my $xL = $L; 
     my $yL = $xL->{t};
+    my $yLo = $yL->{o};
+    my $ylw = [ grep { !$_->{Li} } @$yLo ];
     
+    push @$t, ["ylw", $ylw] if @$ylw;
     push @$t, [
     
     join("",("..")x$xL->{depth}),
@@ -18,7 +21,9 @@ hooks:
     'yL-t:',$yL->{t},
     
     
-    'yL:',$yL];
+    'yL:',$yL,
+    
+    ];
     
     # o[ s/...
     # (re)make i s...
@@ -33,9 +38,9 @@ hooks:
         t => $t,
         G => $G->{name},
     };
-    $G->timer(0.2, sub {
+    G->timer(0.2, sub {
         $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
-    }, "bailout");
+    },"bailout");
     
     
 
