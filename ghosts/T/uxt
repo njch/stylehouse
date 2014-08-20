@@ -11,7 +11,7 @@ hooks:
     my $yL = $xL->{t};
     my ($ytw, $ylw) = ([],[]);
     for my $yw (@{$yL->{o}}) {
-        if ($yw->{Li}) {
+        if ($yw->{B}->{Li}) {
             push @$ytw, $yw
         }
         else {
@@ -27,7 +27,7 @@ hooks:
     my $xso = $xiw->{x};
     my $xs = {};
     
-    my $xt = {
+    my $xt = { 
         xLDepth => join("",("..")x$xL->{depth}),
         yLi =>  (ref $yL->{i} eq "Way" ? $yL->{i}->pint : "iww!www: $yL->{i}"),
         yLt => "$yL->{t}",
@@ -36,9 +36,8 @@ hooks:
     for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
         $xt->{$y} = [ map { "$y ".
-            (ref $_ eq "Way" ? $_->pint 
-                ." ~ ".ki($_->{s})
-            : "iww!www: $yL->{i}")
+            (ref $_ eq "Way" ? $_->pint ." ~ ".ki($_->{s}
+            : "iww!www: $_}")
         } @$yww ]
     }
     

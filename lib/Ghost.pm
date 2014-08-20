@@ -428,10 +428,10 @@ sub haunt { # arrives through here
     
     for my $o (@{$L->{o}}) {
         $o->{L} = $L;
-        $o->{Lo} = $L; # L heading back out
+        $o->{B}->{Lo} = $L; # L heading back out
     }
-    $i->{Li} && die "reiterate you?" unless $G->way_was("revisit");
-    $i->{Li} = $L; # L heading in
+    $i->{B}->{Li} && die "reiterate you?" unless $G->way_was("revisit");
+    $i->{B}->{Li} = $L; # L heading in
 
     return ($L, $G->{o});
 }
