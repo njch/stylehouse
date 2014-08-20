@@ -6,11 +6,11 @@ hooks:
 
   T_end: |
     my $t = $G->{_trail} ||= [];
-    my $yL = $G->{t};
-    my @om = @{ $G->{o} };
+    my $xL = $L; 
+    my $yL = $xL->{t};
+    
     # o[ s/...
-    # with i s
-    # make i s... 
+    # (re)make i s...
     push @$t, [w $yL->{i} print, $yL->{t}];
     my @no = ();
     
@@ -18,10 +18,10 @@ hooks:
     
     $t = {
         t => $t,
-        G => $G,
+        G => $G->{name},
     };
     $G->timer(0.2, sub {
-    $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
+        $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
     }, "bailout");
     
     
