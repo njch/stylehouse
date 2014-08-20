@@ -11,34 +11,33 @@ hooks:
     my $yLo = $yL->{o};
     my $ylw = [ grep { !$_->{Li} } @$yLo ];
     
-    push @$t, ["ylw", $ylw] if @$ylw;
+    push @$t, ["ylw", @$ylw] if @$ylw;
     push @$t, [
     
-    join("",("..")x$xL->{depth}),
-    
-    w $yL->{i} print,
-    
-    'yL-t:',$yL->{t},
-    
-    
-    'yL:',$yL,
+      join("",("..")x$xL->{depth}),
+
+      w $yL->{i} print,
+
+      'yL-t:',$yL->{t},
+
+      'yL:',$yL,
     
     ];
     
     # o[ s/...
     # (re)make i s...
-    
+
+    return unless $xL->{depth} == 0;
+        
     my $html = "HTML!";
-    if ($xL->{depth} == 0) {
-        @$r = $html;
-    }
-    return unless @$t == 10;
+    
+    @$r = $html;
     
     $t = {
         t => $t,
         G => $G->{name},
     };
-    G->timer(0.2, sub {
+    $G->timer(0.2, sub {
         $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
     },"bailout");
     
