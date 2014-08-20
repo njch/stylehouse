@@ -7,22 +7,38 @@ hooks:
   T_end: |
     my $t = $G->{_trail} ||= [];
     my $xL = $L; 
+    
     my $yL = $xL->{t};
-    my $yLo = $yL->{o};
-    my $ylw = [ grep { !$_->{Li} } @$yLo ];
+    my ($ytw, $ylw) = ([],[]);
+    for my $yw (@{$yL->{o}}) {
+        if ($yw->{Li}) {
+            push @$ytw, $yw
+        }
+        else {
+            push @$ylw, $yw
+        }
+    }
+    my $yiw = $yL->{i};
+    my $xiw = $xL->{i};
     
-    push @$t, ["ylw", @$ylw] if @$ylw;
-    push @$t, [
+    my $xso = $xiw->{x};
+    my $xs = {};
     
-      join("",("..")x$xL->{depth}),
-
-      w $yL->{i} print,
-
-      'yL-t:',$yL->{t},
-
-      'yL:',$yL,
+    my $xt;
+    for my $ya (['l',$ylw],['t',$ytw]) {
+        my ($y,$yww) = @$ya;
+        for my $w (@$yww) {
+            push @{$xt->{l}||=[]}, "$y ". $w->pint;
+        }
+    }
     
-    ];
+    push @$t, $xt;
+    push @$t, {
+        xLDepth => join("",("..")x$xL->{depth}),
+        yLi =>  (ref $yL->{i} eq "Way" ? $yL->{i}->pint : "iww!www: $yL->{i}"),
+        yLt => $yL->{t},
+        yL => $yL,
+    } if 0;
     
     # o[ s/...
     # (re)make i s...
@@ -38,7 +54,7 @@ hooks:
         G => $G->{name},
     };
     $G->timer(0.2, sub {
-        $O->{O}->w(somewhere=>{thing=>$t,max_depth=>2});
+        $O->{O}->w(somewhere=>{thing=>$t,max_depth=>3});
     },"bailout");
    
 
