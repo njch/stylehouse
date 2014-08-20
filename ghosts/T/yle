@@ -51,7 +51,6 @@ chains:
  - K_K: Thing/NonRef    #c     Things
    arr_if: |
      !ref $thing
-   print: $S->{K}
    s:
      value: |
        $Lo->{t};
@@ -60,7 +59,6 @@ chains:
  - K_K: Thing/Ref
    arr_if: |
      ref $thing
-   print: $S->{K}
    s:
      conty: |
        ghostlyprinty($Lo->{t});
@@ -70,15 +68,14 @@ dials:
   max_depth: 7
   form: 42
 hooks:
-  fresh_init: |
-    #etc
-    
-    
-    
-    
-    
-    
-    
-    
-    #
+  figure_some_chain: |
+    return 0 unless exists $c->{s} || exists $c->{exude};
+        my $oc = $c->spawn;
+        if (exists $oc->{exude}) {
+            $oc->{travel_this} = $G->doo($oc->{exude}, {%$ar});
+            $oc->{each} = "ex ".$oc->{K};
+            $oc->{print} ||= q{$S->{each}};
+        }
+        push @{$G->{o}}, $oc;
+        return 1;
 
