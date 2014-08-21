@@ -23,16 +23,17 @@ hooks:
     
     my $h = {};
     my $ha = sub {
-        $h->{
+        my ($attr,$y,$w,$thing) = @_;
+        push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
     };
     my $x = {id=>$xL->{uuid}};
     for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
-        for my $w ($yww) {
-            my $s = $w->{B}->{s};
-            
-            my $something = do { w $w B/s/conty; } || do { w $w B/s/value; };
-            $ha->( content => $y,$w, $something ) if defined $something;
+        for my $w (@$yww) {
+            if (defined(my $content = w $w B/s/value)) {
+                $content = encode_entities($content);
+                $ha->( content => $y,$w, $content );
+            }
         }
     }
     
