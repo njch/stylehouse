@@ -24,38 +24,38 @@ hooks:
     }
     my $xiw = $xL->{i};
     
-    my $xso = $xiw->{x};
-    my $xs = {};
+    w zerediag[$xL, $yL, $ylw, $ytw, $yiw, $xiw];
     
-    my @diag = ($xL->{depth}, $yL->{t},);
+    #w zerediag[$xL, $yL, $ylw, $ytw, $yiw, $xiw];
     
-    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
-        my ($y,$yww) = @$ya;
-        push @diag, map {
-            "$y ".
-            (ref $_ eq "Way" ?
-            ($_->pint ." ~ ".ki($_->{B}->{s}))
-            : "iww!www: $_")
-        } @$yww
-    }
-    
-    push @$t, \@diag;
     
     # o[ s/...
     # (re)make i s...
 
     return unless $xL->{depth} == 0;
-        
-    my $html = "HTML!";
-    
-    @$r = $html;
-    
-    $t = {
-        t => $t,
+    @$r = "HTML!";
+    w dumptrail;
+  dumptrail: |
+    my $t = {
+        t => $G->{_trail},
         G => $G->{name},
     };
     $G->timer(0.2, sub {
         $O->{O}->w(somewhere=>{thing=>$t,max_depth=>3});
     },"bailout");
+  zerediag: |
+    my @diag = ($xL->{depth}, $yL->{t});
+    
+    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+        my ($y,$yww) = @$ya;
+        push @diag, map {
+            "!html $y ".
+            (ref $_ eq "Way" ?
+            ($_->pint             .($y ne 't' ?
+                '<t style="color:white;">'.ki($_->{B}->{s}).'</t>' : "") )
+            : "iww!www: $_")
+        } @$yww
+    }
+    push @{ $G->{_trail} }, \@diag;
    
 
