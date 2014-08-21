@@ -283,9 +283,9 @@ hooks:
                 $color = "f66";
                 $name = "{";
                 if ($ref eq "HASH") {
-                    my $k = join " ", sort keys %$t;
+                    my $k = ki($t);
                     $name .= "$k";
-                $fs = 10;
+                    $fs = 10;
                 }
                 else {
                     $fs = 22;
@@ -490,7 +490,7 @@ hooks:
           my @names = @cl;
           return scalar(@cl)." @names";
       }
-      my $l = w $c print;
+      my $l = $c->pint if $c && ref $c eq "Way";
       unless (defined $l) {
           $l = 
           join ", ",
