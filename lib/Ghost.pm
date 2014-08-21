@@ -473,8 +473,14 @@ sub ways {
 sub findway {
     my $G = shift;
     my $point = shift;
-    my @w = map { $_->find($point) } $G->ways;
+    my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
     wantarray ? @w : shift @w;
+}
+sub findways {
+    my $G = shift;
+    my $point = shift;
+    my @w = $G->findway($point);
+    map {@$_} @w;
 }
 sub throwlog {
     my $what = shift;
