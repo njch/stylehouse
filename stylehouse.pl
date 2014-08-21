@@ -8,7 +8,7 @@ use JSON;
 use List::MoreUtils qw"uniq";
 use Storable 'dclone';
 use File::Slurp;
-use Carp 'confess';
+use Carp 'confess', 'verbose';
 use v5.18;
 use FindBin '$Bin';
 binmode(STDOUT, ":utf8");
