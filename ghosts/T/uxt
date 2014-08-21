@@ -26,20 +26,45 @@ hooks:
         my ($attr,$y,$w,$thing) = @_;
         push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
     };
+    
     my $x = {id=>$xL->{uuid}};
+    
     for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
         for my $w (@$yww) {
-            if (defined(my $content = w $w B/s/value)) {
-                $content = encode_entities($content);
-                $ha->( content => $y,$w, $content );
-            }
+            w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $y, $w, $ha];
         }
     }
+    
+    w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $y, $h, $x];
+    
+    my $content = grep { $_->{y} ne 't' } $h->{content};
+    die if @$content > 1;
+    
     
     w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $x];
     return unless $xL->{depth} == 0;
     @$r = "HTML!";
+  
+  up:
+    - h: B/s/value
+      escape_html: 1
+      hh: content
+  u: |
+    my @w = $G->findway('up');
+    for my $wup (@w) {
+        for my $up (@$wup) {
+            my $v = $G->w($up->{h}, {}, $Sway);
+            $v = encode_entities($v) if $up->{html});
+            $ha->( $up->{hh} => $y,$w, $content );
+        }
+    }
+            if (defined(my $content = )) {
+                $ha->( content => $y,$w, $content );
+            }
+            if (defined(my $div = w $w B/s/div)) {
+                $ha->( div => $y,$w, $div );
+            }
   diagontrail: |
     my @diag = (">$xL->{depth}", $yL->{t}, $x);
     
