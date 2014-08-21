@@ -18,33 +18,29 @@ hooks:
             push @$ylw, $yw
         }
     }
-    my $yiw = $yL->{i};
-    if (!$yiw) {
-        $yiw = $G->nw()->from({K=>"TheWayIn"});
-    }
+    my $yiw = $yL->{i} || $G->nw()->from({K=>"notTheWayIn!"});
     my $xiw = $xL->{i};
     
-    w zerediag[$xL, $yL, $ylw, $ytw, $yiw, $xiw];
+    my $h = {};
+    my $ha = sub {
+        $h->{
+    };
+    my $x = {id=>$xL->{uuid}};
+    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+        my ($y,$yww) = @$ya;
+        for my $w ($yww) {
+            my $s = $w->{B}->{s};
+            
+            my $something = do { w $w B/s/conty; } || do { w $w B/s/value; };
+            $ha->( content => $y,$w, $something ) if defined $something;
+        }
+    }
     
-    #w zerediag[$xL, $yL, $ylw, $ytw, $yiw, $xiw];
-    
-    
-    # o[ s/...
-    # (re)make i s...
-
+    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $x];
     return unless $xL->{depth} == 0;
     @$r = "HTML!";
-    w dumptrail;
-  dumptrail: |
-    my $t = {
-        t => $G->{_trail},
-        G => $G->{name},
-    };
-    $G->timer(0.2, sub {
-        $O->{O}->w(somewhere=>{thing=>$t,max_depth=>3});
-    },"bailout");
-  zerediag: |
-    my @diag = ($xL->{depth}, $yL->{t});
+  diagontrail: |
+    my @diag = (">$xL->{depth}", $yL->{t}, $x);
     
     for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
