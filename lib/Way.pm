@@ -120,7 +120,7 @@ sub init_way {
 }
 sub pint {
     my $w = shift;
-    ( $w->{K} ? "$w->{K} " : "" ).$Ghost::G0->w("Fast_G")->w('print',{},$w);
+    ( $w->{K} ? "$w->{K} " : "" ).$Ghost::F[0]->{G}->w('print',{},$w);
 }
 sub find {
     my $self = shift;
