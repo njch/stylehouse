@@ -46,27 +46,13 @@ hooks:
 
 
 
-  hp:
-    - h: B/s/value
-      escape_html: 1
-      hh: content
-      
-    - h: B/s/conty
-      hh: content
-      
-
-
-
-
-    - h: B/s/div
-      hh: div
 
   h: |
-    my @w = $G->findways('up');
+    # grep $h for content, apply whittling...
     for my $up (@w) {
-        my $v = $G->w($up->{h}, {}, $w);
-        $v = encode_entities($v) if $up->{html};
-        $ha->( $up->{hh} => $y,$w, $v );
+        #my $v = $G->w($up->{h}, {}, $w);
+        
+        
     }
     
   up:
@@ -79,6 +65,14 @@ hooks:
       
     - h: B/s/div
       hh: div
+  u: |
+    my @w = $G->findways('up');
+    for my $up (@w) {
+        my $v = $G->w($up->{h}, {}, $w);
+        $v = encode_entities($v) if $up->{html};
+        $ha->( $up->{hh} => $y,$w, $v );
+    }
+    
   diagontrail: |
     my @diag = (">$xL->{depth}", $yL->{t}, $x);
     
