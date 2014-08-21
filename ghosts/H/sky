@@ -20,9 +20,6 @@ hooks:
       }
   flood_init: |
       $H->{sky} = $G->_0(V=>{K=>'sky'});
-      $H->{sky}->{on_event} = sub {
-          w touch(e => [@_]);
-      };
   recoded_init: |
       w doof;
   doof: |
@@ -39,11 +36,10 @@ hooks:
     $G->{cg}->("arr", t => $ar->{t}, change => 1);
   getundercontrol: |
     $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '26%'});");
+  event: |
+    w getundercontrol if $e->{C};
+    Info event => $e;
   touch: |
-    if (eval { $ar->{e}->[1]->{C} }) {
-        w getundercontrol;
-    }
-    $@ = "";
     $ar->{t} ||= 0.3;
-    Info "sky touch" => w colourchange;
+    w colourchange;
 
