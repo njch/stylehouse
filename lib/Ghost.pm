@@ -427,10 +427,8 @@ sub haunt { # arrives through here
     }
     
     for my $o (@{$L->{o}}) {
-        $o->{L} = $L;
-        $o->{B}->{Lo} = $L; # L heading back out
+        $o->{B}->{Lo} = $L; # L heading back out/origin
     }
-    #TODO
     if ($i->{B}->{Li} && !$G->way_was("revisit")) {
         $G->Flab("Funny, end of haunt, way in already had i->B->Li", $i->pint, $i, $L);
     }
