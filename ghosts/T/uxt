@@ -45,6 +45,41 @@ hooks:
     @$r = "HTML!";
   h: |
     # grep $h for content, apply whittling...
+    my $content = $h->{content} || [];
+    $content = [grep { $_->{y} ne 't' } @$content];
+    $content = [
+        (grep { $_->{y} eq 'l' } @$content),
+        (grep { $_->{y} eq 'i' } @$content),
+    ];
+    $H->error("multiple contents", $content) if @$content > 1;
+    
+    if (!@$content && !@$ytw) {
+        @$content = {y=>"?",t=>encode_entities($yL->{t})};
+    }
+    if (@$content && @$ytw) {
+        $H->error("contents & things", $content, $ar);
+        @$content = ();
+    }
+    if (@$content) {
+        $x->{content} = $content->[0]->{t};
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # etc
     
         
     
@@ -68,7 +103,11 @@ hooks:
     }
     
   diagontrail: |
-    my @diag = (">$xL->{depth}", $yL->{t}, $h, $x, "yiw: ".ki($yiw));
+    my $htalk = "";
+    while (my ($attr, $hh) = each %$h) {
+        $htalk .= join("\n", "$attr:", map{"  ".ki($_)} @$hh)."\n";
+    }
+    my @diag = (ghostlyprinty($yL->{t}), $htalk, ki($x),);
     
     for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
@@ -80,6 +119,7 @@ hooks:
             : "iww!www: $_")
         } @$yww
     }
+    @diag = [@diag] for 0..$yL->{depth};
     push @{ $G->{_trail} }, \@diag;
    
 
