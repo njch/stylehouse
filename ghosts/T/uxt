@@ -61,10 +61,25 @@ hooks:
         @$content = ();
     }
     if (@$content) {
-        $x->{content} = $content->[0]->{t};
+        $x->{content} = $content->[0]->{t}; # favour loose style over wayin
     }
     
+    my $div = $h->{div} || [];
+    my $todiv = [ grep { $_->{y} ne 't' } @$div ];
+    my $div = [
+        (grep { $_->{y} eq 'l' } @$div),
+        (grep { $_->{y} eq 'i' } @$div),
+    ];
     
+    if (@$ytw && !@$div) {
+        $H->error("no div & things", $div);
+    }
+    if (@$div) {
+        $H->error("multi div", $div) if @$div > 1;
+        my $v = $div->[0]->{t};
+        my ($X,$Y) = split "x", $v; $v =~/^x/&&die"?";
+        $x->{div} = "$X * $Y";
+    }
     
     
     
@@ -107,19 +122,22 @@ hooks:
     while (my ($attr, $hh) = each %$h) {
         $htalk .= join("\n", "$attr:", map{"  ".ki($_)} @$hh)."\n";
     }
-    my @diag = (ghostlyprinty($yL->{t}), $htalk, ki($x),);
+    my $diag = {
+        "an thing" => ghostlyprinty($yL->{t}),
+        h => $htalk,
+        x => ki($x)
+    };
     
     for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
-        push @diag, map {
+        $diag->{"z $y"} = [ map {
             "!html $y ".
             (ref $_ eq "Way" ?
             ($_->pint             .($y ne 't' ?
                 '<t style="color:white;">'.ki($_->{B}->{s}).'</t>' : "") )
             : "iww!www: $_")
-        } @$yww
+        } @$yww ]
     }
-    @diag = [@diag] for 0..$yL->{depth};
-    push @{ $G->{_trail} }, \@diag;
+    push @{ $G->{_trail} }, $diag;
    
 
