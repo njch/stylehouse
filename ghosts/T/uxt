@@ -29,9 +29,10 @@ hooks:
     
     my $x = {id=>$xL->{uuid}};
     
-    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+    for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
         for my $w (@$yww) {
+            $H->error("$y sez $yL->{t} ".wdump($w)) && next unless $w && ref $w eq "Way";
             w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $y, $w, $ha];
         }
     }
@@ -39,11 +40,12 @@ hooks:
     w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $h, $x];
     
     
-    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $x];
+    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $h, $x];
     return unless $xL->{depth} == 0;
     @$r = "HTML!";
   h: |
     # grep $h for content, apply whittling...
+    
         
     
   up:
@@ -56,19 +58,19 @@ hooks:
       
     - hh: div
   u: |
-    my @w = $G->findways('up');
-    for my $up (@w) {
+    my @wup = $G->findways('up');
+    for my $up (@wup) {
         my $v = $up->{h} 
             ? $G->w("B/s/$up->{h}", {}, $w)
             : $w->find("B/s/$up->{hh}");
-        $v = encode_entities($v) if $up->{html};
-        $ha->( $up->{hh} => $y,$w, $v );
+        $v = encode_entities($v) if $up->{html} && defined $v;
+        $ha->( $up->{hh} => $y,$w, $v ) if defined $v;
     }
     
   diagontrail: |
-    my @diag = (">$xL->{depth}", $yL->{t}, $x);
+    my @diag = (">$xL->{depth}", $yL->{t}, $h, $x, "yiw: ".ki($yiw));
     
-    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+    for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
         push @diag, map {
             "!html $y ".
