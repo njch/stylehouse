@@ -8,7 +8,7 @@ tractors:
     B_: |
       $name
     print: |
-      $S->{K} .": ". $S->{B}->{_}
+      $S->{B}->{_}
 styles:
 hooks:
   styles:
@@ -26,11 +26,10 @@ hooks:
     my $style = $G->_0('style',{K=>'dimen'});
     my $Vf = $G->{floozal} || $H->{sky};
     $G->{View} = $Vf->spawn_floozy($G, "Ϡ1", $style."left: 40em;background:#987");
-    $G->{View2} = $Vf->spawn_floozy($G, "Ϡ2", $style);
-    $G->{View3} = $Vf->spawn_floozy($G, "Ϡ3", $style."left: 55em;background:#334;");
+    $G->{View3} = $Vf->spawn_floozy($G, "Ϡ3", $style);
+    $G->{View2} = $Vf->spawn_floozy($G, "Ϡ2", $style."left: 55em;background:#334;");
   any_child_recoded_init: |
     waylay any_init;
-  any_init: |
     $O->w('f/L>Ϡ');
   arr: |
     my ($name, $thing) = %$ar;
@@ -44,57 +43,43 @@ hooks:
     );
     my $UP;
     my @time;
+    G uxt ->{_trail} = [];
     G crawl ->{max_depth} = 1;
+    my $out;
     for my $g (@order) {
         my $what = $UP ? $UP->W : $thing;
         $g->RW;
-        $g->T($what);
+        $out = $g->T->T($what);
         $UP = $g;
         push @time, $g->W->desize()." ".show_delta();
     }
-    Say @time;
+    Say "awlyluxo: $out",@time;
     
-    $G->timer(4, sub {
-    $H->Gf("T/splat") Tw Splat(Ϡ1 => G(crawl)->W, view => $G->{View} );
-    $H->Gf("T/splat") Tw Splat(Ϡ2 => G(yle)->W,   view => $G->{View2});
-    $H->Gf("T/splat") Tw Splat(Ϡ3 => G(uxt)->W,   view => $G->{View3});
-    }, "in Ϡ splta");
+    waylay dumptrail;
+  dumptrail: |
+    my $t = {};
+    $t->{t} = G uxt ->{_trail};
+    $t->{G} = G uxt ->{name};
     
-    
-    
-    my @W;
-    my $W = G(yle)->W;
-    for my $L (@{ $W->{script} }) {
-        push @W, '!html '.ghostlyprinty($L->{t});
-        next unless $L->{i}->{K} eq "Line";
+    $O->w(somewhere=>{thing=>$t,max_depth=>3});
+
+    for ([ "unxoϠ1", sub {
+            $H->Gf("T/splat") Tw Splat(Ϡ1 => G(crawl)->W, view => $G->{View} );
+      }],[ "unxoϠ2", sub {
+            $H->Gf("T/splat") Tw Splat(Ϡ2 => G(yle)->W,   view => $G->{View2});
+      #}],#[ "unxoϠ3", sub {
+        #    $H->Gf("T/splat") Tw Splat(Ϡ3 => G(uxt)->W,   view => $G->{View3});
+      }]) {
+    $G->_0(sing => { 
+        name => $_->[0],
+        block_for => 7,
+        begin_after => 3,
+        code => $_->[1],
+    });
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #my $nt = $G->{View2}->newtext([@W,"yababbalj","UTJHSGF"]);
-    #$O->w("somewhere", {thing => $nt});
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #
-  
+  views: |
+    $G->{View},$G->{View2},$G->{View3}
+  blur: |
+      my $blur = ++$G->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
+      $H->JS($_, "css('-webkit-filter', '$blur');") for w views;
 

@@ -1,6 +1,6 @@
 name: Styling
 chains:
- - K: Wormhole #c        Wormhole [ Lines
+ - K: yW #c        Wormhole [ Lines
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    B_: |
@@ -8,17 +8,19 @@ chains:
    foreach_travel:
      each: @{$thing->{script}}
    print: |
-     "yW $S->{i}"
-   s:
-     div: x1
+     "$S->{i}"
+   B:
+     s:
+       div: x1
         
- - K_K: Wormhole/Line
+ - K_K: yW/Line
    arr_if: |
      ref $thing eq 'HASH' && $thing->{uuid} && exists $thing->{t}
-   s:
-     div: 4x1
+   B:
+     s:
+       div: 4x1
    print: |
-     "yL $S->{Li}->{t}->{n}"
+     "$Li->{t}->{n}"
    exude: |
      $thing
  - K_K: Line/Depth #c     D I Thing O
@@ -32,6 +34,10 @@ chains:
      exists $thing->{i}
    exude: |
      $thing->{i}
+   B:
+     s:
+       conty: |
+         ghostlyprinty($Lo->{t});
      
  - K_K: Line/Thing
    arr_if: |
@@ -48,34 +54,33 @@ chains:
  - K_K: Thing/NonRef    #c     Things
    arr_if: |
      !ref $thing
-   print: $S->{K}
-   s:
-     value: |
-       $Lo->{t};
+   B:
+     s:
+       value: |
+         $Lo->{t};
        
      
  - K_K: Thing/Ref
    arr_if: |
      ref $thing
-   print: $S->{K}
-   s:
-     conty: |
-       ghostlyprinty($Lo->{t});
+   B:
+     s:
+       conty: |
+         ghostlyprinty($Lo->{t});
 styles:
  - K_: Wormhole
 dials:
   max_depth: 7
   form: 42
 hooks:
-  fresh_init: |
-    #etc
-    
-    
-    
-    
-    
-    
-    
-    
-    #
+  figure_some_chain: |
+    return 0 unless exists $c->{B}->{s} || exists $c->{exude};
+        my $oc = $c->spawn;
+        if (exists $oc->{exude}) {
+            $oc->{travel_this} = $G->doo($oc->{exude}, {%$ar});
+            $oc->{each} = "ex ".$oc->{K};
+            $oc->{print} ||= q{$S->{each}};
+        }
+        push @{$G->{o}}, $oc;
+        return 1;
 

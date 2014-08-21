@@ -74,7 +74,9 @@ sub throwlog {
     my $G = shift;
     $H->{G}->w(throwlog => {@_});
 }
+our $gp_inarow = 0;
 sub ghostlyprinty {
+    $gp_inarow++;
     my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
     if ($_[0] && $_[0] eq "NOHTML") {
         shift;
@@ -85,6 +87,10 @@ sub ghostlyprinty {
     my @s;
     for my $t (@t) {
         if ($t && ref $t eq "ARRAY") {
+            if ($gp_inarow > 5) {
+                push @s, "ghostlyprinty recursion!";
+                next;
+            }
             push @s, map { "[".ghostlyprinty($_) } @$t;
         }
         elsif (ref $t) {
@@ -94,7 +100,7 @@ sub ghostlyprinty {
             push @s, (defined $t ? $t : "~")
         }
     }
-    
+    $gp_inarow--;
     join "  ", @s
 }
 sub Flab {
@@ -254,7 +260,7 @@ sub idname {
     my $self = shift;
     $self->{id}."-".$self->{name}
 }
-sub T {
+sub T { # TODO funny
     my $self = shift;
     $self->T->T(@_) if @_;
     $self->{T};
@@ -421,18 +427,20 @@ sub haunt { # arrives through here
     }
     
     for my $o (@{$L->{o}}) {
-        $o->{L} = $L;
-        $o->{Lo} = $L; # L heading back out
+        $o->{B}->{Lo} = $L; # L heading back out/origin
     }
-    $i->{Li} && die "reiterate you?" unless $G->way_was("revisit");
-    $i->{Li} = $L; # L heading in
+    if ($i->{B}->{Li} && !$G->way_was("revisit")) {
+        $G->Flab("Funny, end of haunt, way in already had i->B->Li", $i->pint, $i, $L);
+    }
+    $i->{B}->{Li} = $L; # L heading in
 
     return ($L, $G->{o});
 }
 sub chains {
-    my $self = shift;
+    my $G = shift;
+    return @{$G->{chains}} if $G->{chains};
     grep { !$_->{_disabled} }
-    map { @{$_->{chains}||[]} } $self->ways
+    map { @{$_->{chains}||[]} } $G->ways
 }
 sub allchains {
     my $self = shift;
@@ -465,8 +473,14 @@ sub ways {
 sub findway {
     my $G = shift;
     my $point = shift;
-    my @w = map { $_->find($point) } $G->ways;
+    my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
     wantarray ? @w : shift @w;
+}
+sub findways {
+    my $G = shift;
+    my $point = shift;
+    my @w = $G->findway($point);
+    map {@$_} @w;
 }
 sub throwlog {
     my $what = shift;
@@ -488,10 +502,10 @@ sub w {
             $talk .= " G";
         }
         elsif (ref $Sway eq 'Way') {
-            @ways = $Sway; #---------------------
+            @ways = $Sway->{ofways} ? @{$Sway->{ofways}} : $Sway; #---------------------
         }
         elsif (ref $Sway eq 'ARRAY') {
-            @ways = @$Sway;
+            die "NO MORE ARRAY WAYS --- $point ".ki($ar)."\n"."$Sway - ".ki($Sway);
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};

@@ -47,16 +47,16 @@ sub T {
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
         }
-        elsif (exists $c->{s}) {
+        elsif (exists $c->{B}->{s}) {
             # sweet
         }
         else {
             $H->error("what kind of way out is",Ghost::ki($c))
         }
     }
-    $G->w("T_end", {L=>$L});
+    $G->w("T_end", {L=>$L, r=>\@r});
 
-    return @r;
+    return wantarray ? @r : shift @r;
 }
 sub event {
     my $self = shift;

@@ -6,7 +6,7 @@ tractors:
     B_: |
       $splatname
     first_time: |
-      my $style = "position:absolute;overflow:hidden;";
+      my $style = "position:absolute;overflow:hidden;pointer-events:none;";
       if ($splatname eq "path") {
           $style .= "top:0px;left:-1em;border:1px solid green;width:11em;z-index:20;"
       }
@@ -26,7 +26,7 @@ tractors:
           $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
       }
       if ($splatname eq "worm") {
-          $style .= "background:#5a8;bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;";
+          $style .= "background:#5a8;bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;pointer-events:initial;";
       }
       $S->{view} = $S->{B}->{view}
           || ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
@@ -89,6 +89,11 @@ hooks:
     my $view = delete $ar->{view};
     my ($splatname, $wormhole) = %$ar;
     start_timer();
+    
+    my $ig = qr/^worm$|Ϡ|land|func|path/;
+    
+    #$H->Say("Splat $splatname...") unless $splatname =~ $ig;
+    
     $wormhole = w aWstract[$wormhole];
     return if $G->{iggysplat}->{$splatname};
     $G->{nona} = 1;
@@ -99,7 +104,7 @@ hooks:
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
     $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta(), $A)
-        unless $splatname eq "worm";
+                                    unless $splatname =~ $ig;
   get: |
     my $S = Afind[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);
@@ -116,6 +121,7 @@ hooks:
     @script = reverse @script if $splatname eq "path";
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};
     for my $line (@script) {
+        next if $i == 0 && !defined $line;
         if($i++ > 100) {
             push @$lines, "more...";
             last;
@@ -128,7 +134,7 @@ hooks:
     my $th = {
         nospace => 1,
         class => 'menu',
-        tuxtstyle => 'width: 100%;',
+        tuxtstyle => 'width: 100%; pointer-events:none;',
     };
     $th->{append} = $ar->{append} if $ar->{append};
     
@@ -146,7 +152,7 @@ hooks:
     return { _spawn => [ $R, {
         B => $B,
         nospace => 1,
-        tuxtstyle => 'opacity:1; height:120%;position: relative; float: left;',
+        tuxtstyle => 'pointer-events:initial; height:120%;position: relative; float: left;',
         tuxts_to_htmls => sub {
             my $texty = shift;
             my $tx = $texty->{tuxts};
@@ -213,7 +219,7 @@ hooks:
         my $menu = [];
         
         my $ineach = $line->{i}->{each};
-        my $inineach = $line->{i}->{L}->{i}->{each};
+        my $inineach = $line->{i}->{B}->{Lo}->{i}->{each};
         return if $inineach && $inineach eq "stack";
         
         
@@ -277,9 +283,9 @@ hooks:
                 $color = "f66";
                 $name = "{";
                 if ($ref eq "HASH") {
-                    my $k = join " ", sort keys %$t;
+                    my $k = ki($t);
                     $name .= "$k";
-                $fs = 10;
+                    $fs = 10;
                 }
                 else {
                     $fs = 22;
@@ -307,7 +313,7 @@ hooks:
                         
                 $name =~ s/^((?:.+?\n){4}).+$/$1/s;
                 $s->{style}.="overflow:hidden";
-                my $parent = $line->{i}->{L}->{t};
+                my $parent = $line->{i}->{B}->{Lo}->{t};
                 if ($parent && ref $parent eq "Ghost") {
                     if ($line->{i}->{each} eq "GG") {
                         $name .= " ";
@@ -325,7 +331,7 @@ hooks:
                 unless (defined $name) {
                     $name = "{".join(" ", sort keys %$t);
                 }
-                $name = substr($name, 0, 300)."..." if length($name) > 320;
+                $name = substr($name, 0, 400)."..." if length($name) > 420;
                 if (my $wf = $t->{_wayfile}) {
                     my ($n) = $wf =~ /^ghosts\/(.+)$/;
                     $name = $inc->("#030" => $n)." ".$name;
@@ -400,7 +406,6 @@ hooks:
             
             $font = "font-family:mono; line-height: 1em;";
             $color = "47B247";
-            #if ($line->{i}->{L}->{i}->{each} eq "stack") {
             
         }
         $s->{value} = $name; #c t ETC         ETC         ETC
@@ -485,7 +490,7 @@ hooks:
           my @names = @cl;
           return scalar(@cl)." @names";
       }
-      my $l = w $c print;
+      my $l = $c->pint if $c && ref $c eq "Way";
       unless (defined $l) {
           $l = 
           join ", ",

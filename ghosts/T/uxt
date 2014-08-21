@@ -3,35 +3,89 @@ dials:
   max_depth: 7
   form: 42
 hooks:
-  any_init: |
-    $G->{_trail} = [];
+
   T_end: |
-    my @om = @{ $G->{o} };
-    # o[ s/...
-    # with i s
-    # make i s... 
     my $t = $G->{_trail} ||= [];
-    my $sL = $G->{t};
-    push @$t, join "\t", $sL->{Wname}, w $sL->{i} print, $sL->{t};
-    my @no = ();
+    my $xL = $L; 
     
-    return unless @$t == 7;
+    my $yL = $xL->{t};
+    my ($ytw, $ylw) = ([],[]);
+    for my $yw (@{$yL->{o}}) {
+        if ($yw->{B}->{Li}) {
+            push @$ytw, $yw
+        }
+        else {
+            push @$ylw, $yw
+        }
+    }
+    my $yiw = $yL->{i} || $G->nw()->from({K=>"notTheWayIn!"});
+    my $xiw = $xL->{i};
     
-    $t = join "\n", @$t;
-    $G->timer(0.2, sub {
-        $O->{O}->w(somewhere=>{thing=>[$G->{t},$t],max_depth=>2});
-    }, "bailout");
+    my $h = {};
+    my $ha = sub {
+        my ($attr,$y,$w,$thing) = @_;
+        push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
+    };
+    
+    my $x = {id=>$xL->{uuid}};
+    
+    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+        my ($y,$yww) = @$ya;
+        for my $w (@$yww) {
+            w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $y, $w, $ha];
+        }
+    }
+    
+    w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $h, $x];
     
     
-  fresh_init: |
-    #etc
+    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $x];
+    return unless $xL->{depth} == 0;
+    @$r = "HTML!";
+
+
+
+
+
+  h: |
+    # grep $h for content, apply whittling...
+    for my $up (@w) {
+        #my $v = $G->w($up->{h}, {}, $w);
+        
+        
+    }
     
+  up:
+    - h: B/s/value
+      escape_html: 1
+      hh: content
+      
+    - h: B/s/conty
+      hh: content
+      
+    - h: B/s/div
+      hh: div
+  u: |
+    my @w = $G->findways('up');
+    for my $up (@w) {
+        my $v = $G->w($up->{h}, {}, $w);
+        $v = encode_entities($v) if $up->{html};
+        $ha->( $up->{hh} => $y,$w, $v );
+    }
     
+  diagontrail: |
+    my @diag = (">$xL->{depth}", $yL->{t}, $x);
     
-    
-    
-    
-    
-    
-    #
+    for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
+        my ($y,$yww) = @$ya;
+        push @diag, map {
+            "!html $y ".
+            (ref $_ eq "Way" ?
+            ($_->pint             .($y ne 't' ?
+                '<t style="color:white;">'.ki($_->{B}->{s}).'</t>' : "") )
+            : "iww!www: $_")
+        } @$yww
+    }
+    push @{ $G->{_trail} }, \@diag;
+   
 

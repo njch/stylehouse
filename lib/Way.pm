@@ -103,7 +103,7 @@ sub init_way {
         $self->{$i} = $w->{$i};
     }
     for my $a ("chains", "tractors") {
-        next unless $self->{$a};
+        next unless $w->{$a};
         my $as = [];
         for my $c (@{$self->{$a}}) {
             $c = $self->spawn($c);
@@ -117,6 +117,10 @@ sub init_way {
             $self->{G}->{$k} = $v;
         }
     }
+}
+sub pint {
+    my $w = shift;
+    ( $w->{K} ? "$w->{K} " : "" ).$Ghost::F[0]->{G}->w('print',{},$w);
 }
 sub find {
     my $self = shift;

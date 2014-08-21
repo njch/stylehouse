@@ -28,14 +28,14 @@ hooks:
   key:
     m: |
         w tog_hmess;
+    N: |
+      G Ϡ ->w('blur');
     n: |
-        w f/noϠ;
+      $_->togcl('invis') for G Ϡ ->w('views');
     a: |
         w f/nos;
     'À': |
         w f/q;
-    l: |
-        $H->Gf('H/sky')->w('touch');
     q: |
         my $thing = w look_for_ghost(name => 'Њ');
         w somewhere[$thing];
@@ -61,7 +61,20 @@ hooks:
   f:
     'ccc': | #ccc
       my $deg = -180 + int(rand(360));
-      $H->JS("\$('#sky').css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
+      $ar->{V} ||= $H->{sky};
+      $H->JS($ar->{V},"css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
+    'ccm': |
+      my $deg = -180 + int(rand(360));
+      $H->JS("\$('#worm').css('-webkit-filter', 'brightness(0.5) saturate(0.6) contrast(1.3) hue-rotate(${deg}deg)')");
+      
+    'comp': |
+      if ($ar->{e}) {
+          w f/ccc;
+      }
+      else {
+          G H w grab/next_click; # recalls  Z with $V, etc.
+      }
+      
     'ЊϠʝ*': |
       my $thing = {
         'Њ' => w look_for_ghost(name => 'Њ'),
@@ -72,7 +85,7 @@ hooks:
       my $max_depth = 2;
       w somewhere[$thing, $max_depth];
     'L>Ϡ': | #c
-      w somewhere(nothing => $Ly);
+      w somewhere(nothing => {Lie=>$Ly,Uhm=>"Yeah"});
       
     'Ϡ?': |
       $H->Info("Ϡing... ",G ob );
@@ -99,10 +112,6 @@ hooks:
       $H->Gf("T/splat")->w("get", {splatname => "somewhere"})
       ->{view}->togcl('invis');
       
-    noϠ: |
-      $H->Gf("Ϡ")->{View}->togcl('invis');
-      $H->Gf("Ϡ")->{View2}->togcl('invis');
-      $H->Gf("Ϡ")->{View3}->togcl('invis');
     '⥁': |
       w splat_wormholes
     futu: |
@@ -157,9 +166,6 @@ hooks:
     my $crawltime = show_delta();
 
     w splat_wormholes;
-    
-    Say "ẞ ".$wormhole->describe_size()." for ".ghostlyprinty($thing)
-    ."\n$crawltime   ".show_delta();
   make_hmess: |
     $G->{_dont_mess_worm} = 0;
     my $wormhole = $H->{G}->Gf('mess')->W;

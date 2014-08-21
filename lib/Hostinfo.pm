@@ -17,6 +17,7 @@ use Digest::SHA;
 use File::Slurp;
 use utf8;
 use Encode qw(encode_utf8 decode_utf8);
+use Data::Dumper;
 use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
@@ -833,11 +834,18 @@ sub keep_throwing {
     my $self = shift;
     my $what = shift;
     my $error = shift;
-    my $string = join("\n\n",
+    
+    my @context = (
         $error->[0],
         join("\n",map { "    - $_" } @{$error->[1]}),
+    );
+    @context = () if $what eq "Say" || $what eq "Info";
+    
+    my $string = join("\n\n",
+        @context,
         @{$error->[2]},
     );
+    $string = "\n$string\n";
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {
@@ -878,8 +886,12 @@ sub ddump {
 }
 sub wdump {
     my $thing = shift;
-    use Data::Dumper;
-    $Data::Dumper::Maxdepth = 3;
+    my $maxdepth = 3;
+    if (@_ && $thing =~ /^\d+$/) {
+        $maxdepth = $thing;
+        $thing = shift;
+    }
+    $Data::Dumper::Maxdepth = $maxdepth;
     return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 sub intro {
