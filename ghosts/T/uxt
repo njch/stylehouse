@@ -42,29 +42,25 @@ hooks:
     w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $x];
     return unless $xL->{depth} == 0;
     @$r = "HTML!";
-
-
-
-
-
   h: |
     # grep $h for content, apply whittling...
         
     
   up:
-    - h: B/s/value
+    - h: value
       escape_html: 1
       hh: content
       
-    - h: B/s/conty
+    - h: conty
       hh: content
       
-    - h: B/s/div
-      hh: div
+    - hh: div
   u: |
     my @w = $G->findways('up');
     for my $up (@w) {
-        my $v = $G->w($up->{h}, {}, $w);
+        my $v = $up->{h} 
+            ? $G->w("B/s/$up->{h}", {}, $w)
+            : $w->find("B/s/$up->{hh}");
         $v = encode_entities($v) if $up->{html};
         $ha->( $up->{hh} => $y,$w, $v );
     }
