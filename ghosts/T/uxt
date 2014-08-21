@@ -20,29 +20,26 @@ hooks:
     }
     my $yiw = $yL->{i};
     if (!$yiw) {
-        $yiw = $G->nw()->from({K=>"WayIn"});
+        $yiw = $G->nw()->from({K=>"TheWayIn"});
     }
     my $xiw = $xL->{i};
     
     my $xso = $xiw->{x};
     my $xs = {};
     
-    my $xt = { 
-        xLDepth => join("",("..")x$xL->{depth}),
-        yLi =>  (ref $yL->{i} eq "Way" ? $yL->{i}->pint : "iww!www: $yL->{i}"),
-        yLt => "$yL->{t}",
-        yL => "$yL",
-    };
+    my @diag = ($xL->{depth}, $yL->{t},);
+    
     for my $ya (['l',$ylw],['t',$ytw],['y',[$yiw]]) {
         my ($y,$yww) = @$ya;
-        $xt->{$y} = [ map { "$y ".
+        push @diag, map {
+            "$y ".
             (ref $_ eq "Way" ?
-                ($_->pint ." ~ ".ki($_->{s}))
+            ($_->pint ." ~ ".ki($_->{B}->{s}))
             : "iww!www: $_")
-        } @$yww ]
+        } @$yww
     }
     
-    push @$t, $xt;
+    push @$t, \@diag;
     
     # o[ s/...
     # (re)make i s...
