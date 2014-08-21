@@ -496,10 +496,10 @@ sub w {
             $talk .= " G";
         }
         elsif (ref $Sway eq 'Way') {
-            @ways = $Sway; #---------------------
+            @ways = $Sway->{ofways} ? @{$Sway->{ofways}} : $Sway; #---------------------
         }
         elsif (ref $Sway eq 'ARRAY') {
-            @ways = @$Sway;
+            die "NO MORE ARRAY WAYS --- $point ".ki($ar)."\n"."$Sway - ".ki($Sway);
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
