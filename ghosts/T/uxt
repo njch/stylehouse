@@ -9,7 +9,8 @@ hooks:
     my $xL = $L; 
     
     my $yL = $xL->{t};
-    my ($ytw, $ylw) = ([],[]);
+    my $ytw = [];
+    my $ylw = [];
     for my $yw (@{$yL->{o}}) {
         if ($yw->{B}->{Li}) {
             push @$ytw, $yw
@@ -17,6 +18,12 @@ hooks:
         else {
             push @$ylw, $yw
         }
+    }
+    my $xtw = [];
+    for my $xw (@{$xL->{o}}) {
+        if ($xw->{B}->{Li}) {
+            push @$xtw, $xw
+        } 
     }
     my $yiw = $yL->{i} || $G->nw()->from({K=>"notTheWayIn!"});
     my $xiw = $xL->{i};
@@ -33,11 +40,11 @@ hooks:
         my ($y,$yww) = @$ya;
         for my $w (@$yww) {
             $H->error("$y sez $yL->{t} ".wdump($w)) && next unless $w && ref $w eq "Way";
-            w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $y, $w, $ha];
+            w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,        $y, $w, $ha];
         }
     }
     
-    w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw,         $h, $x];
+    w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,         $h, $x];
     
     
     w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $h, $x];
