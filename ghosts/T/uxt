@@ -102,12 +102,12 @@ hooks:
             for my $tw (@$ytw) {
                 my $Bs = $tw->{B}->{s} ||= {};
                 if ($parts == 1) {
-                    $Bs->{$iv} = $inc;
+                    $Bs->{"x_$iv"} = $inc;
                 }
                 else {
-                    $Bs->{$side} = $i;
+                    $Bs->{"x_$side"} = $i;
                     $i += $inc;
-                    $Bs->{$iv} = $inc;
+                    $Bs->{"x_$iv"} = $inc;
                 }
             }
         }
@@ -115,18 +115,26 @@ hooks:
     
     my $i = 0;
     for my $tw (@$ytw) {
-        my $Bs = $tw->{B}->{s} ||= {};
-        my $c = {
+        w html(%$ar, tw => $tw);
+        
         #$x->{$i++} = ki($Bs)."\n";
     
         #font-size-adjust: 0.58;
-
-    
-    
     }
     
+    $yiw->{B}->{s}->{x} = $x;
     
     
+  html: |
+    
+        my $Bs = $tw->{B}->{s} ||= {};
+        my $c = $Bs->{x};
+        for (grep { $_ =~ /^x_/ } keys %$Bs) {
+            my ($non) = $_ =~ /^x_(.+)$/;
+            $c->{$non} = $Bs->{$_};
+        }
+        my $attr = {};
+        
     
     
     
