@@ -122,7 +122,7 @@ hooks:
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};
     for my $line (@script) {
         next if $i == 0 && !defined $line;
-        if($i++ > 100) {
+        if($i++ > 200) {
             push @$lines, "more...";
             last;
             
@@ -400,7 +400,8 @@ hooks:
                  $v = substr($t, 0, 2680)."...";
             }
             $fs = 9;
-            $fs = 14 if length($v) < 30;
+            $fs = 15 if length($v) < 90;
+            $fs = 20 if length($v) < 40;
             $fs = 25 if length($v) < 12;
             $name = $v;
             
@@ -449,7 +450,7 @@ hooks:
         
         my $K = $b->{c}->{K};
         
-        my $ilt = $line->{i}->{last_line}->{t};
+        my $ilt = $line->{i}->{B}->{Lo}->{t};
         if ($ilt && ref $ilt
             && "$ilt" =~ "HASH"
             && $ilt->{id}
