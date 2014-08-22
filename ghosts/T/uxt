@@ -129,7 +129,6 @@ hooks:
     
     
   html: |
-    
         my $Bs = $tw->{B}->{s} ||= {};
         my $c = $Bs->{x};
         my $attr = {};
@@ -144,7 +143,8 @@ hooks:
                 push @style, "$a:$v";
             }
         }
-        push @style, "position:absolute;";
+        $attr->{title} = ref ${tw} eq "Way" ? $tw->pint : wdump(2,$tw);
+        #push @style, "position:absolute;";
         if (@style) {
             $attr->{style} = join "; ", @style;
         }
