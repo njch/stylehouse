@@ -201,7 +201,7 @@ sub codolist {
         nospace => 1,
         class => 'menu',
         tuxtstyle => "opacity: 0.9; padding-bottom: 2px; "
-            ."color: #99FF66; font-size: 29pt; background-color: #FF5050; font-weight: 700; "
+            ."color: #99FF66; font-size: 2em; background-color: #FF5050; font-weight: 700; "
             ."text-shadow: 2px 4px 5px #4C0000;",
         
     } ] },
@@ -218,7 +218,7 @@ sub codolist {
 
             $s->{style} .= "font-size: ".(
                 $n=~/Git|Shite|Proc|Ebuge|Form|Keys|Direction/
-                ?"9":length($n) < 4 ? "28":"17")."pt;";
+                ?"0.8":length($n) < 4 ? "3":"1.5")."em;";
                 
                 $s->{style} .= "color:#".(
                     $codon->{is}->{G} ? (
