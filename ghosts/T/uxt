@@ -65,12 +65,11 @@ hooks:
     }
     
     my $div = $h->{div} || [];
-    my $todiv = [ grep { $_->{y} ne 't' } @$div ];
+    my $todiv = [ grep { $_->{y} eq 't' } @$div ];
     my $div = [
         (grep { $_->{y} eq 'l' } @$div),
         (grep { $_->{y} eq 'i' } @$div),
     ];
-    
     if (@$ytw && !@$div) {
         $H->error("no div & things", $div);
     }
@@ -78,6 +77,7 @@ hooks:
         $H->error("multi div", $div) if @$div > 1;
         my $v = $div->[0]->{t};
         my ($X,$Y) = split "x", $v; $v =~/^x/&&die"?";
+        
         $x->{div} = "$X * $Y";
     }
     
