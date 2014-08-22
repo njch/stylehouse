@@ -32,7 +32,7 @@ hooks:
     my $ha = sub {
         my ($attr,$y,$w,$thing) = @_;
         push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
-    };
+    }; 
     
     my $x = {id=>$xL->{uuid}};
     
@@ -49,7 +49,7 @@ hooks:
     
     w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $h, $x];
     return unless $xL->{depth} == 0;
-    @$r = "HTML!";
+    @$r = w html(tw=>$xiw);
   h: |
     # grep $h for content, apply whittling...
     my $content = $h->{content} || [];
@@ -99,7 +99,7 @@ hooks:
             my $inc = 1 / $parts;
             my $side = $iv eq "width" ? "left" : "top";
             my $i = 0;
-            for my $tw (@$ytw) {
+            for my $tw (@$xtw) {
                 my $Bs = $tw->{B}->{s} ||= {};
                 if ($parts == 1) {
                     $Bs->{"x_$iv"} = $inc;
@@ -113,16 +113,15 @@ hooks:
         }
     }
     
-    my $i = 0;
-    for my $tw (@$ytw) {
-        w html(%$ar, tw => $tw);
+    for my $tw (@$xtw) {
+        push @{ $x->{children} ||= [] },
         
-        #$x->{$i++} = ki($Bs)."\n";
+            w html(%$ar, tw => $tw);
     
         #font-size-adjust: 0.58;
     }
     
-    $yiw->{B}->{s}->{x} = $x;
+    $xiw->{B}->{s}->{x} = $x;
     
     
   html: |
@@ -134,8 +133,20 @@ hooks:
             $c->{$non} = $Bs->{$_};
         }
         my $attr = {};
+        for (qw{id}) {
+            $attr->{$_} = $c->{$_} if exists $c->{$_};
+        }
         
-    
+        my $tag = $c->{tag} || "t";
+        my $content = defined $c->{content} ? $c->{content} : "";
+        my $cc = $c->{children};
+        if ($cc && @$cc) {
+            $content && die " $content and ".join "", @{$c->{children}};
+            $content = join "", @{$c->{children}};
+        }
+        
+        return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
+        .$content."</$tag>"
     
     
     
@@ -168,11 +179,13 @@ hooks:
     while (my ($attr, $hh) = each %$h) {
         $htalk .= join("\n", "$attr:", map{"  ".ki($_)} @$hh)."\n";
     }
+    my $xt = join "", map { "$_\n" } @{$x->{children}};
+    $xt .= "  $_:$x->{$_}" for grep { $_ ne 'children'} keys %$x;
     my $diag = {
         "an thing" => ghostlyprinty($yL->{t}),
         "D" => join("",("DDDD")x$yL->{depth}), 
         h => $htalk,
-        x => ki($x)
+        x => $xt,
     };
     
     for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
