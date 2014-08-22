@@ -143,7 +143,12 @@ hooks:
                 push @style, "$a:$v";
             }
         }
-        $attr->{title} = ref ${tw} eq "Way" ? $tw->pint : wdump(2,$tw);
+        if (ref ${tw} eq "Way") {
+            my $innert = $tw->{B}->{Li}->{t};
+            my $ii = $innert->{i};
+            $attr->{title} = $tw->pint
+            ." ~ ".(ref $ii eq 'Way' ? $ii->pint : wdump(2,$ii));
+        }
         #push @style, "position:absolute;";
         if (@style) {
             $attr->{style} = join "; ", @style;
