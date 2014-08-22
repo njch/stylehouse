@@ -275,12 +275,11 @@ sub mind_openness {
             );
         }
     }
-    
-    my @OOO = grep { $_ ne $codon } @{$self->{all_open}};
-    push @OOO, $codon;
+    my @OOO = grep { !$codon || $_ && $_ ne $codon } @{$self->{all_open}};
+    push @OOO, $codon if $codon;
 
     @{$self->{all_open}} = @OOO;
-    my @saveopen = map { [ $_->{name} => $_->{openness} ] } grep { defined $_ } @OOO;
+    my @saveopen = map { [ $_->{name} => $_->{openness} ] } @OOO;
 
     DumpFile("Codo-openness.yml", \@saveopen);
 }
