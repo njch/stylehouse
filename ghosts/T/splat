@@ -120,14 +120,13 @@ hooks:
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};
+    if (@script > 100) {
+        push @$lines, "!style='font-size:50pt;color:white;' ".(@script-100)." more above ...";
+        @script = @script[-100..-1];
+        die unless @script == 100;
+    }
     for my $line (@script) {
         next if $i == 0 && !defined $line;
-        if($i++ > 200) {
-            push @$lines, "more...";
-            last;
-            
-            
-        }
         my ($R, $B) = ([], {});
         push @$lines, w make_line[$splatname, $i, $R, $B, $line];
     }
