@@ -23,23 +23,24 @@ hooks:
     for my $xw (@{$xL->{o}}) {
         if ($xw->{B}->{Li}) {
             push @$xtw, $xw
-        } 
+        }
     }
     my $yiw = $yL->{i} || $G->nw()->from({K=>"notTheWayIn!"});
     my $xiw = $xL->{i};
     
     my $h = {};
-    my $ha = sub {
+    my $ha = sub { 
         my ($attr,$y,$w,$thing) = @_;
         push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
-    };
+    }; 
     
     my $x = {id=>$xL->{uuid}};
-    
+     
     for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
         for my $w (@$yww) {
-            $H->error("$y sez $yL->{t} ".wdump($w)) && next unless $w && ref $w eq "Way";
+            next unless $w && ref $w eq "Way";
+            
             w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,        $y, $w, $ha];
         }
     }
@@ -47,9 +48,11 @@ hooks:
     w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,         $h, $x];
     
     
-    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $h, $x];
+    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw,     $h, $x];
+    
     return unless $xL->{depth} == 0;
-    @$r = "HTML!";
+    
+    @$r = w html(tw=>$xiw);
   h: |
     # grep $h for content, apply whittling...
     my $content = $h->{content} || [];
@@ -78,11 +81,10 @@ hooks:
         (grep { $_->{y} eq 'i' } @$div),
     ];
     if (@$ytw && !@$div) {
-        $H->error("no div & things".wdump(2, $ytw));
+        #$H->error("no div & things".wdump(2, $ytw));
         #exit;
-        
     }
-    if (@$div) {
+    if (@$div) { 
         $H->error("multi div", $div) if @$div > 1;
         my $v = $div->[0]->{t};
         my $vi = {};
@@ -94,48 +96,69 @@ hooks:
             my $inc;
             if ($parts =~ /em$/) {
                 $inc = $parts;
-                $parts == 1;
+                $parts = 1;
             }
             my $inc = 1 / $parts;
             my $side = $iv eq "width" ? "left" : "top";
             my $i = 0;
-            for my $tw (@$ytw) {
+            
+            for my $tw (@$xtw) {
                 my $Bs = $tw->{B}->{s} ||= {};
                 if ($parts == 1) {
-                    $Bs->{"x_$iv"} = $inc;
+                    $Bs->{x}->{$iv} = $inc;
+                    die "$iv = $inc $parts" if $inc =~ /em$/; 
                 }
                 else {
-                    $Bs->{"x_$side"} = $i;
+                    $Bs->{x}->{$side} = $i;
                     $i += $inc;
-                    $Bs->{"x_$iv"} = $inc;
+                    $Bs->{x}->{$iv} = $inc;
                 }
             }
         }
     }
     
-    my $i = 0;
-    for my $tw (@$ytw) {
-        w html(%$ar, tw => $tw);
+    for my $tw (@$xtw) {
+        push @{ $x->{children} ||= [] },
         
-        #$x->{$i++} = ki($Bs)."\n";
+            w html(%$ar, tw => $tw);
     
         #font-size-adjust: 0.58;
     }
     
-    $yiw->{B}->{s}->{x} = $x;
+    $xiw->{B}->{s}->{x} = $x;
     
     
   html: |
     
         my $Bs = $tw->{B}->{s} ||= {};
         my $c = $Bs->{x};
-        for (grep { $_ =~ /^x_/ } keys %$Bs) {
-            my ($non) = $_ =~ /^x_(.+)$/;
-            $c->{$non} = $Bs->{$_};
-        }
         my $attr = {};
+        my @style = ();
+        for my $a (qw{id}) {
+            $attr->{$a} = $c->{$a} if exists $c->{$a};
+        }
+        for my $a (qw{height width left top}) {
+            if (exists $c->{$a}) {
+                my $v = $c->{$a};
+                $v = ($v * 100).'%' if $v !~ /em$/;
+                push @style, "$a:$v";
+            }
+        }
+        push @style, "position:absolute;";
+        if (@style) {
+            $attr->{style} = join "; ", @style;
+        }
         
-    
+        my $tag = $c->{tag} || "te";
+        my $content = defined $c->{content} ? $c->{content} : "";
+        my $cc = $c->{children};
+        if ($cc && @$cc) {
+            $content && die " $content and ".join "", @{$c->{children}};
+            $content = join "", @{$c->{children}};
+        }
+        
+        return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
+        ."\n".ind("  ", $content)."\n"."</$tag>\n"
     
     
     
@@ -168,22 +191,27 @@ hooks:
     while (my ($attr, $hh) = each %$h) {
         $htalk .= join("\n", "$attr:", map{"  ".ki($_)} @$hh)."\n";
     }
+    my $xt = join "", map { "$_\n" } @{$x->{children}};
+    $xt .= "  $_:$x->{$_}" for grep { $_ ne 'children'} keys %$x;
     my $diag = {
-        "an thing" => ghostlyprinty($yL->{t}),
+       #"an thing" => ghostlyprinty($yL->{t}),
         "D" => join("",("DDDD")x$yL->{depth}), 
         h => $htalk,
-        x => ki($x)
+        x => $xt,
+        X => $xiw->{B}->{s}->{x}, 
     };
     
+    my $ytalk = "!html ";
     for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
         my ($y,$yww) = @$ya;
-        $diag->{"z $y"} = [ map {
-            "!html $y ".
+        $ytalk .= join "", map {
+            "$y ".
             (ref $_ eq "Way" ?
             ($_->pint.'<t style="color:white;">'.ki($_->{B} ? $_->{B}->{s} : {}).'</t>')
-            : "iww!www: $_")
-        } @$yww ]
+            : "iww!www: $_")."\n"
+        } @$yww
     }
+    $diag->{ytalk} = $ytalk;
     push @{ $G->{_trail} }, $diag;
    
 

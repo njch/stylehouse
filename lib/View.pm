@@ -298,7 +298,8 @@ sub takeover {
         say " $self->{divid} reload,";
         $html = $self->html;
     }
-    elsif (my $apid = $texty->{hooks}->{append}) {
+    elsif ($texty && $texty->{hooks}->{append}) {
+        my $apid = $texty->{hooks}->{append};
         if ($apid =~ /\w\w/) {
             $self->append_spans("#$apid", $html, "parent().parent().after");
             $self->{hostinfo}->JS("\$('#$apid').parent().parent().remove();");

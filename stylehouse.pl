@@ -385,7 +385,7 @@ span.menu {
     background: #777;
 }
 .onn {
-    color: black !important;
+    -webkit-filter: brightness(1.4) contrast(10) grayscale(0.2) hue-rotate(90deg) invert(0.3) saturate(8.5);
     text-shadow:2px 10px 7px #FF33CC !important;
 }
 div.CodeMirror-lines span {
