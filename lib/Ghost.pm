@@ -257,7 +257,7 @@ sub ki {
     my $s = "";
     for my $k (sort keys %$ar) {
         my $v = $ar->{$k};
-        $v ||= "~";
+        $v = "~" unless defined $v;
         #$v = "( ".gname($v)." )" if ref $v;
         $s .= "   $k=$v";
     }
