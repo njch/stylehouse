@@ -83,24 +83,34 @@ hooks:
         while (my ($iv, $parts) = each %$vi) {
             if (!$parts) {
                 next;
-            }
+            } 
             my $inc = 1 / $parts;
             my $side = $iv eq "width" ? "left" : "top";
             my $i = 0;
-            for my $tw (@$ytw) {
-                $tw->{$side} = $i;
-                $i += $inc;
-                $tw->{$iv} = $i;
+            for my $tw (@$xtw) {
+                my $Bs = $tw->{B}->{s} ||= {};
+                if ($parts == 1) {
+                    $Bs->{$iv} = $inc;
+                }
+                else {
+                    $Bs->{$side} = $i;
+                    $i += $inc;
+                    $Bs->{$iv} = $i;
+                }
             }
         }
-        $x->{div} = ki($vi);
     }
     
+    my $i = 0;
+    for my $tw (@$xtw) {
+        my $Bs = $tw->{B}->{s} ||= {};
+        $x->{$i++} = $tw->pint().ki($Bs);
+    
+        #font-size-adjust: 0.58;
+
     
     
-    
-    
-    
+    }
     
     
     
