@@ -340,7 +340,8 @@ span.en:hover{
 }
 .dead {
     background: #0d0e4d !important;
-    -webkit-filter: blur(5px) brightness(10) contrast(4.9) grayscale(1) hue-rotate(300deg) invert(1);
+    -webkit-filter: blur(4px) brightness(2.8) contrast(4.9) grayscale(0.8) hue-rotate(300deg) invert(0.8) saturate(4.3);
+
 }
 .widdle {
     height: 1em !important;
