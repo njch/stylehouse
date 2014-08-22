@@ -137,9 +137,16 @@ sub waystacken {
         else {
             shift @F;
         }
-        $G->Flab("Stack Return Error", $s, $@) if $@;
+        
+        if ($@) {
+            $G->Flab("Stack Return Error", $s, $@);
+            $s->{Error} = $@;
+        }
         $s->{Flab} = [@Flab];
-        $s->{Error} = $@;
+        
+        if ($s->{_after_do}) {
+            $_->() for @{$s->{_after_do}};
+        }
         
         my $te = $@; $@ = "";
         $G->ob("/", $s);
@@ -485,6 +492,12 @@ sub findways {
 sub throwlog {
     my $what = shift;
     $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+}
+sub susgdb {
+    my $G = shift;
+    my $t = $Ghost::db;
+    push @{$F[0]->{_after_do}}, sub { $Ghost::db = $t };
+    $Ghost::db = -2;
 }
 sub w {
     my $G = shift;
