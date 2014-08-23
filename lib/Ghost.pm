@@ -103,6 +103,7 @@ sub ghostlyprinty {
     $gp_inarow--;
     join "  ", @s
 }
+sub gpty { @_ };
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";

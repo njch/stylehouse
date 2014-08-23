@@ -36,6 +36,7 @@ sub continues {
 
     my $L = {
         uuid => $H    ->make_uuid,
+        name => "Line $W->{n} from ".$W->{G}->{name},
         n => $W->{n}++,
         
         t => encode_thing($G->{t}),
@@ -44,7 +45,6 @@ sub continues {
         o => $G->{o},
         T => $G->{T},
         
-        Wname => $W->{G}->{name},
         
         e => ($G->{etc}),
         depth => $G->{depth},
