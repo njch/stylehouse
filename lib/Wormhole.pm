@@ -34,9 +34,11 @@ sub CS {
 sub continues {
     my ($W, $G) = @_; # %
 
+    my ($namg) = $W->{G}->{name} =~ /\(\S+,?[^\)]*\)$/;
+    $namg = "l-$W->{n} ".join("",("  ")x$G->{depth});
     my $L = {
-        uuid => $H    ->make_uuid,
-        name => "Line $W->{n} from ".$W->{G}->{name},
+        uuid => $H->make_uuid,
+        name => $namg,
         n => $W->{n}++,
         
         t => encode_thing($G->{t}),

@@ -1,7 +1,30 @@
-name: Styling
+name: Styluxyio
 dials:
   max_depth: 7
   form: 42
+chains:
+ - K: xW #c
+   k: ''
+   arr_if: |
+     $G->{depth} == 0 && ref $thing eq "Wormhole";
+   B_: |
+     $thing
+   foreach_travel:
+     each: grep { $_->{depth} == 0 } @{$thing->{script}}
+   print: |
+     "xW.$Lo->{n} $Lo->{t}"
+ 
+ - K: xL
+   k: ''
+   arr_if: |
+     ($G->{i}->{K} eq "xW"
+     || $G->{i}->{K} eq "xL")
+     && ref $thing eq "HASH"
+     && ref $thing->{o} eq "ARRAY"
+   print: |
+     "xL.$S->{each}->{n}"
+   foreach_travel:
+     each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
 hooks:
 
   T_end: |
@@ -143,14 +166,11 @@ hooks:
             }
         }
         if (ref ${tw} eq "Way") {
-            my $innert = $tw->{B}->{Li}->{t};
-            my $ii = $innert->{i};
-            $attr->{title} = $tw->pint
-            ." ~ ".(ref $ii eq 'Way' ? $ii->pint : wdump(2,$ii));
+            my $it = $tw->{B}->{Li}->{t};
+            my $ii = $it->{i};
+            $attr->{title} = pint($tw)." ~ ".($it->{depth} == 0 ? gpty($it->{t}) : pint($ii));
         }
         
-        $attr->{style} = join "; ", @style if @style;
-        $attr->{class} = join " ", @class if @class;
         
         my $tag = $c->{tag} || "te";
         my $content = defined $c->{content} ? $c->{content} : "";
@@ -160,6 +180,8 @@ hooks:
             $content = join "", @{$c->{children}};
             $attr->{style} = join "; ", @style if @style;
         }
+        $attr->{style} = join "; ", @style if @style;
+        $attr->{class} = join " ", @class if @class;
         
         return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
         ."\n".ind("  ", $content)."\n"."</$tag>\n"

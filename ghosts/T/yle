@@ -1,6 +1,7 @@
 name: Styling
 chains:
- - K: yW #c        Wormhole [ Lines
+ - K: Wormhole #c        Wormhole [ Lines
+   k: ''
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    B_: |
@@ -8,19 +9,20 @@ chains:
    foreach_travel:
      each: @{$thing->{script}}
    print: |
-     "$S->{i}"
-   B:
+     "yW.$S->{each}->{n}"
+   B: 
      s:
        div: 1x2em
         
- - K_K: yW/Line
+ - K_K: Wormhole/Line
+   k: ''
    arr_if: |
      ref $thing eq 'HASH' && $thing->{uuid} && exists $thing->{t}
    B:
      s:
        div: 4x1
    print: |
-     "$Li->{t}->{n}"
+     "yW.$Li->{t}->{n} Line"
    exude: |
      $thing
  - K_K: Line/Depth #c     D I Thing O
@@ -78,8 +80,6 @@ hooks:
         my $oc = $c->spawn;
         if (exists $oc->{exude}) {
             $oc->{travel_this} = $G->doo($oc->{exude}, {%$ar});
-            $oc->{each} = "ex ".$oc->{K};
-            $oc->{print} ||= q{$S->{each}};
         }
         push @{$G->{o}}, $oc;
         return 1;

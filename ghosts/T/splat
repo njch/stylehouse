@@ -12,6 +12,7 @@ tractors:
       }
       if ($splatname eq "func") {
           $style .= "bottom:0px;left:-1em;border:1px solid green;width:11em;z-index:30;"
+          ."-webkit-filter: brightness(0.6) contrast(1) drop-shadow(17px 17px 20px black) grayscale(0.1) hue-rotate(150deg) invert(0.3) saturate(5.8);";
       } 
       if ($splatname eq "somewhere") {
           $style .= "top:0px;left:10em; width:80%;"
@@ -26,7 +27,7 @@ tractors:
           $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
       }
       if ($splatname eq "worm") {
-          $style .= "background:#5a8;bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;pointer-events:initial;";
+          $style .= "bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;pointer-events:initial;";
       }
       $S->{view} = $S->{B}->{view}
           || ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
@@ -284,6 +285,9 @@ hooks:
                 if ($ref eq "HASH") {
                     my $k = ki($t);
                     $name .= "$k";
+                    if (exists $t->{t} && $t->{i} && $t->{o}) {
+                        $name = " In: pint($t->{i}\n".gpty($t->{t})."\n".@{$t->{o}}." out - $t->{name}"
+                    }
                     $fs = 10;
                 }
                 else {
