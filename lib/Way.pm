@@ -21,6 +21,7 @@ sub spawn {
     my $from = shift || $self;
     my $nw = $self->{G}->nw();
     $nw->from($from);
+    $nw->{B} = { %{$nw->{B}} } if $nw->{B};
     $nw;
 }
 sub name {
