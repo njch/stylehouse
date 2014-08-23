@@ -137,6 +137,10 @@ sub find {
     }
     return $h
 }
+sub BLi {
+    my $w = shift;
+    return $w->{B}->{Li} if $w->{B} && $w->{B}->{Li};
+}
 sub accum {
     my $self = shift;
     my $ere = shift;
