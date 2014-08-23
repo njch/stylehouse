@@ -1,6 +1,6 @@
 name: wormhole surfer
 chains:
- - K: Wormhole #c
+ - K: Wormherse #c
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    B_: |
@@ -10,12 +10,14 @@ chains:
    print: |
         $S->{i}
  
- - K: Line
+ - K: Linerse
    arr_if: |
-     ($G->{i}->{K} eq "Wormhole"
-     || $G->{i}->{K} eq "Line")
+     ($G->{i}->{K} eq "Wormherse"
+     || $G->{i}->{K} eq "Linerse")
      && ref $thing eq "HASH"
-     && @{$thing->{o}}
+     && ref $thing->{o} eq "ARRAY"
+   print: |
+        $S->BLo->{i}->pint
    foreach_travel:
      each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
 dials:
@@ -26,6 +28,14 @@ hooks:
         $G->{depth} = $yL->{depth}; # just for vis...
     }
     $G->susgdb;
-    Say join("",("    ")x$thing->{depth}).gpty($yL->{i})." ".gpty($yL->{t});
+    Say join("",("    ")x$thing->{depth})
+        ." ERSE(".pint($G->{i}).")\nYLE(".pint($yL->{i}).")\n"
+        
+        ." ".gpty($yL->{t});
+        
+        
+        
+        
+    1;
   max_depth: 1
 

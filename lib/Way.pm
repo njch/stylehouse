@@ -1,5 +1,4 @@
 package Way;
-use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
@@ -140,6 +139,10 @@ sub find {
 sub BLi {
     my $w = shift;
     return $w->{B}->{Li} if $w->{B} && $w->{B}->{Li};
+}
+sub BLo {
+    my $w = shift;
+    return $w->{B}->{Lo} if $w->{B} && $w->{B}->{Lo};
 }
 sub accum {
     my $self = shift;

@@ -70,6 +70,10 @@ sub gname {
     $may;
 }
 sub hitime { Hostinfo::hitime() }
+sub pint {
+    my $w = shift;
+    $w && ref $w eq "Way" ? $w->pint : "EWIRD i: ".wdump(2,$w)
+}
 sub throwlog {
     my $G = shift;
     $H->{G}->w(throwlog => {@_});
