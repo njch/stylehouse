@@ -26,7 +26,50 @@ chains:
    foreach_travel:
      each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
 hooks:
-
+  html: |
+        my $Bs = $tw->{B}->{s} ||= {};
+        my $c = $Bs->{x};
+        my $attr = {};
+        my @style = ();
+        my @class = ();
+        for my $a (qw{id}) {
+            $attr->{$a} = $c->{$a} if exists $c->{$a};
+        }
+        for my $a (qw{height width left top}) {
+            if (exists $c->{$a}) {
+                my $v = $c->{$a};
+                $v = ($v * 100).'%' if $v !~ /em$/;
+                push @style, "$a:$v";
+            }
+        }
+        if ($c->{height} =~ /em$/ && $c->{width} == 1) {
+            push @style, "float:left";
+        }
+        if (exists $c->{left} || exists $c->{top}) {
+            push @style, "position:absolute";
+        }
+        
+        my $tag = $c->{tag} || "te";
+        my $content = defined $c->{content} ? $c->{content} : "";
+        my $cc = $c->{children};
+        if ($cc && @$cc) {
+            $content && die " $content and ".join "", @{$c->{children}};
+            $content = join "", @{$c->{children}};
+            $attr->{style} = join "; ", @style if @style;
+        }
+        $attr->{style} = join "; ", @style if @style;
+        $attr->{class} = join " ", @class if @class;
+        
+        return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
+        ."\n".ind("  ", $content)."\n"."</$tag>\n"
+    
+    
+    
+    
+    # etc
+    
+        
+    
   T_end: |
     my $t = $G->{_trail} ||= [];
     my $xL = $L; 
@@ -75,7 +118,8 @@ hooks:
     
     return unless $xL->{depth} == 0;
     
-    @$r = w html(tw=>$xiw);
+    my $tw = $xiw;
+    @$r = w html[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw, $tw];
   h: |
     # grep $h for content, apply whittling...
     my $content = $h->{content} || [];
@@ -149,57 +193,7 @@ hooks:
     $xiw->{B}->{s}->{x} = $x;
     
     
-  html: |
-        my $Bs = $tw->{B}->{s} ||= {};
-        my $c = $Bs->{x};
-        my $attr = {};
-        my @style = ();
-        my @class = ();
-        for my $a (qw{id}) {
-            $attr->{$a} = $c->{$a} if exists $c->{$a};
-        }
-        for my $a (qw{height width left top}) {
-            if (exists $c->{$a}) {
-                my $v = $c->{$a};
-                $v = ($v * 100).'%' if $v !~ /em$/;
-                push @style, "$a:$v";
-            }
-        }
-        if ($c->{height} =~ /em$/ && $c->{width} == 1) {
-            push @style, "float:left";
-        }
-        if (exists $c->{left} || exists $c->{top}) {
-            push @style, "position:absolute";
-        }
-            
-        if (ref ${tw} eq "Way") {
-            my $it = $tw->{B}->{Li}->{t};
-            my $ii = $it->{i};
-            $attr->{title} = pint($tw)." ~ ".($it->{depth} == 0 ? gpty($it->{t}) : pint($ii));
-        }
-        
-        
-        my $tag = $c->{tag} || "te";
-        my $content = defined $c->{content} ? $c->{content} : "";
-        my $cc = $c->{children};
-        if ($cc && @$cc) {
-            $content && die " $content and ".join "", @{$c->{children}};
-            $content = join "", @{$c->{children}};
-            $attr->{style} = join "; ", @style if @style;
-        }
-        $attr->{style} = join "; ", @style if @style;
-        $attr->{class} = join " ", @class if @class;
-        
-        return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
-        ."\n".ind("  ", $content)."\n"."</$tag>\n"
-    
-    
-    
-    
-    # etc
-    
-        
-    
+
   up:
     - h: value
       escape_html: 1
