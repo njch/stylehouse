@@ -485,7 +485,7 @@ function clickyhand (event) {
     var tag = $(event.target);
     
     var value = ''+tag.contents();
-    if (!(tag.attr('id') || tag.attr('class'))) {
+    while (!(tag.attr('id') || tag.attr('class'))) {
         tag = tag.parent();
     }
     if (value && value.length >= 640) {
@@ -493,6 +493,7 @@ function clickyhand (event) {
     }
     var data = {
         id: tag.attr('id'),
+        Wormhole: tag.closest( "Wormhole" ).attr('id'),
         class: tag.attr('class'),
         value: value,
         type: event.type,
