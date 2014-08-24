@@ -36,7 +36,10 @@ sub T {
     my $depth = shift || 0;
 
     my $flab = $G->Flab("T", $T, $t, $G, $i, $depth);
-    $i ||= $G->nw()->from({K=>'T?',flab=>$flab});
+    if (!$i) {
+        $i = $G->w("T_default_wayin");
+        $i ||= $G->nw()->from({K=>'T?',flab=>$flab});
+    }
     
     my ($L, $o) = $G->haunt($T, $depth, $t, $i);
 
