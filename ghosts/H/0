@@ -81,17 +81,14 @@ hooks:
       $H->error("restarting!");
       `touch stylehouse.pl`;
   on_message: |
+    return unless
+        $H->elvis_enters($elvis, $mojo, $msg);
+        # this'll all be way soon
     
-        return unless $H->elvis_enters($elvis, $mojo, $msg); # this'll all be way soon
-        
-        
-        
-        my $j;
-        eval { $j = w decode_message[$mojo, $msg]; };
-        if ($@) {
-            $H->error("message decode fup", $@);
-            return;
-        }
+    my $j;
+    eval { $j = w decode_message[$mojo, $msg]; };
+    return $H->error("message decode fup", $@) if $@;
+    
         
         
         # all this stuff before they join the stream

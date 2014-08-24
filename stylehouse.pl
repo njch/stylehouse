@@ -255,7 +255,7 @@ div {
 //#ground > div { opacity:0.2 }
 #ground > div > div { opacity: 1; z-index:30; }
 #flood:before {
-    background: url(greencush.jpg);
+    background: url(i/greencush.jpg);
     background-size: 100%;
     
     content: '';
@@ -271,7 +271,7 @@ div {
     text-shadow: 1px 1px 2px #fc0;
 }
 #Codo:before bollocks {
-    background-image: url(blue-velvet-sofa.jpg);
+    background-image: url(i/blue-velvet-sofa.jpg);
     background-size: 100% 300%;
     
     content: '';
@@ -402,13 +402,13 @@ div.CodeMirror-lines span {
     width: 40px;
 }
 #sky::-webkit-scrollbar-thumb {
-    background: url(copper_anodes.jpg);
+    background: url(i/copper_anodes.jpg);
 }
 #Codo::-webkit-scrollbar {
     width: 40px;
 }
 #Codo::-webkit-scrollbar-thumb {
-    background: url(copper_anodes.jpg);
+    background: url(i/copper_anodes.jpg);
     min-height:7em;
 }
 ::-webkit-scrollbar-track {
@@ -421,7 +421,7 @@ div.CodeMirror-lines span {
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background: url(greencush.jpg);
+    background: url(i/greencush.jpg);
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
 ::-webkit-scrollbar-thumb:window-inactive {
