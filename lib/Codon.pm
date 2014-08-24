@@ -201,6 +201,7 @@ CM
     $H->{G}->w("A/colour",
         {name => "Codon/$self->{name}",
         set_css_background => $cmback,
+        force_set => 1,
     });
     $H->JS("\$('$cmback').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
     $H->JS("\$('.CodeMirror').parent().css('width', '99%');");

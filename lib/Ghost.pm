@@ -713,6 +713,7 @@ sub parse_babble {
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
+    $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
     $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;

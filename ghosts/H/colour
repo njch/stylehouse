@@ -15,12 +15,19 @@ tractors:
           sub { int rand 255 },
           sub { 100 + int rand 155 },
       ];
-      w $S set_background if $ar->{set_css_background};
+      Sw set;
     every_time: |
-      w $S change_person if $ar->{e} && $ar->{e}->{C};
-      w $S change if $ar->{change};
+      Sw change_person if $ar->{e} && $ar->{e}->{C};
+      if ($ar->{change}) {
+            Sw change;
+      }
+      else {
+          Sw set if $ar->{force_set}
+      }
+    set: |
+      Sw set_background if $ar->{set_css_background};
     set_background: |
-      my $colour = w $S wtc;
+      my $colour = Sw wtc;
       $ar->{t} ||= 0.2;
       $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t}*1000);");
     change_person: |
@@ -29,17 +36,17 @@ tractors:
       $personalities->[0]
     randomcolour: |
       $B->{personalities} || die "no preson!?";
-      my $as = w $S person;
+      my $as = Sw person;
       my ($rgb) = join", ", map {$as->()} 1 .. 3;
       return $S->{B}->{colour} = "rgb($rgb)";
     change_colour: |
-      $S->{B}->{colour} = $ar->{c} || w $S randomcolour;
+      $S->{B}->{colour} = $ar->{c} || Sw randomcolour;
     change: |
-      w $S change_colour;
-      w $S set_background if $B->{set_css_background};
-      return $S->{B}->{colour};
+      Sw change_colour;
+      Sw set;
+      return Sw wtc;
     wtc: |
-      $B->{colour} ||=  w $S randomcolour;
+      $B->{colour} ||=  Sw randomcolour;
 hooks:
   any_init: |
   have: |
