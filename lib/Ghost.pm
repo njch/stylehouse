@@ -72,7 +72,7 @@ sub gname {
 sub hitime { Hostinfo::hitime() }
 sub pint {
     my $w = shift;
-    $w && ref $w eq "Way" ? $w->pint : "EWIRD i: ".wdump(2,$w)
+    $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
 sub throwlog {
     my $G = shift;

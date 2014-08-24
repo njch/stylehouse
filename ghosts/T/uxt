@@ -71,7 +71,7 @@ hooks:
     w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,         $h, $x];
     
     
-    w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw,     $h, $x];
+    #w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw,     $h, $x];
     
     return unless $xL->{depth} == 0;
     
@@ -165,6 +165,13 @@ hooks:
                 push @style, "$a:$v";
             }
         }
+        if ($c->{height} =~ /em$/ && $c->{width} == 1) {
+            push @style, "float:left";
+        }
+        if ($c->{left} || $c->{top}) {
+            push @style, "position:absolute";
+        }
+            
         if (ref ${tw} eq "Way") {
             my $it = $tw->{B}->{Li}->{t};
             my $ii = $it->{i};

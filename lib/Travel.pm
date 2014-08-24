@@ -34,8 +34,8 @@ sub T {
     my $G = shift || $T->G; # A...
     my $i = shift;
     my $depth = shift || 0;
-    
-    $G->Flab("T", $t, $t, $G, $i, $depth);
+
+    $i ||= $G->Flab("T", $t, $t, $G, $i, $depth);
     
     my ($L, $o) = $G->haunt($T, $depth, $t, $i);
 
