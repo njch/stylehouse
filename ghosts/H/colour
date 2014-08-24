@@ -10,7 +10,7 @@ tractors:
       $S->{K} .": ". $S->{B}->{_}
     first_time: |
       $S->{B}->{personalities} ||= [
-          sub { int rand 88 },
+          sub { int rand 50 },
           sub { int rand 123 },
           sub { int rand 255 },
           sub { 100 + int rand 155 },
@@ -31,6 +31,7 @@ tractors:
       $ar->{t} ||= 0.2;
       $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t}*1000);");
     change_person: |
+      Say "Personality switch del $name";
       push @$personalities, shift @$personalities;
     person: |
       $personalities->[0]

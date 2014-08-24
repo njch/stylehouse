@@ -42,7 +42,7 @@ sub new {
         @ways = $guess;
     };
     my $way = join", ",@ways;
-    $name = "$name`s ($way)";
+    $name = "$name`($way)";
     $self->{name} = $name;
     $self->{way} = $way;
     say "Ghost named $name";
