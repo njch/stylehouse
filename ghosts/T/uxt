@@ -11,6 +11,9 @@ chains:
      $thing
    foreach_travel:
      each: grep { $_->{depth} == 0 } @{$thing->{script}}
+   B:
+     s:
+       class: path
    print: |
      "xW.$Lo->{n} $Lo->{t}"
  
@@ -48,8 +51,18 @@ hooks:
         if (exists $c->{left} || exists $c->{top}) {
             push @style, "position:absolute";
         }
+        if ($c->{class}) {
+            push @class, @{$c->{class}};
+        }
+        $attr->{title} = $tw->{B}->{Lo}->{depth}." ".pint($tw)." ~ ".pint($tw->BLi->{t}->{i});
         
         my $tag = $c->{tag} || "te";
+        if (!defined $tw->{B}->{Lo}->{depth}) {
+            $tag = "Wormhole";
+            my $W = $G->W;
+            $attr->{title} = $G->{name};
+            ($attr->{id}) = $W->{id} =~ /-(\w+)$/;
+        }
         my $content = defined $c->{content} ? $c->{content} : "";
         my $cc = $c->{children};
         if ($cc && @$cc) {
@@ -102,7 +115,7 @@ hooks:
     
     my $x = {id=>$xL->{uuid}};
      
-    for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]]) {
+    for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]],['x',[$xiw]]) {
         my ($y,$yww) = @$ya;
         for my $w (@$yww) {
             next unless $w && ref $w eq "Way";
@@ -122,12 +135,18 @@ hooks:
     @$r = w html[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw, $tw];
   h: |
     # grep $h for content, apply whittling...
-    my $content = $h->{content} || [];
-    $content = [grep { $_->{y} ne 't' } @$content];
-    $content = [
-        (grep { $_->{y} eq 'l' } @$content),
-        (grep { $_->{y} eq 'i' } @$content),
-    ];
+    my $hg = sub {
+        my ($what, $order) = @_;
+        my $got = $h->{$what} || [];
+        my $ok = [];
+        for my $yg (split ',', $order) {
+            for my $t (@$got) {
+                push @$ok, $t if $t->{y} eq $yg;
+            }
+        }
+        $ok;
+    };
+    my $content = $hg->('content', 'l,i');
     $H->error("multiple contents", $content) if @$content > 1;
     
     if (!@$content && !@$ytw) {
@@ -141,12 +160,14 @@ hooks:
         $x->{content} = $content->[0]->{t}; # favour loose style over wayin
     }
     
-    my $div = $h->{div} || [];
-    my $todiv = [ grep { $_->{y} eq 't' } @$div ];
-    my $div = [
-        (grep { $_->{y} eq 'l' } @$div), 
-        (grep { $_->{y} eq 'i' } @$div),
-    ];
+    my $class = $h->{class} || [];
+    for (@$class) {
+        push @{$x->{class}||=[]}, $_->{t}
+    }
+    
+    
+    my $todiv =  $hg->('div', 't');
+    my $div =  $hg->('div', 'l,i');
     if (@$ytw && !@$div) {
         #$H->error("no div & things".wdump(2, $ytw));
         #exit;
@@ -183,6 +204,7 @@ hooks:
         }
     }
     
+    
     for my $tw (@$xtw) {
         my $html =  w html(%$ar, tw => $tw);
         push @{ $x->{children} ||= [] }, $html;
@@ -193,7 +215,6 @@ hooks:
     $xiw->{B}->{s}->{x} = $x;
     
     
-
   up:
     - h: value
       escape_html: 1
@@ -203,6 +224,7 @@ hooks:
       hh: content
       
     - hh: div
+    - hh: class
   u: |
     my @wup = $G->findways('up');
     for my $up (@wup) {
