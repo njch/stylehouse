@@ -39,7 +39,7 @@ hooks:
             if (exists $c->{$a}) {
                 my $v = $c->{$a};
                 $v = ($v * 100).'%' if $v !~ /em$/;
-                push @style, "$a:$v";
+                push @style, "$a:$v"; 
             }
         }
         if ($c->{height} =~ /em$/ && $c->{width} == 1) {
@@ -50,6 +50,12 @@ hooks:
         }
         if ($c->{class}) {
             push @class, @{$c->{class}};
+        }
+        if ($c->{style}) {
+            for my $styley (@{$c->{style}}) {
+                my $styles = [ ref $styley eq "ARRAY" ? @$styley : $styley ];
+                push @style, @$styles;
+            }
         }
         #$attr->{title} = $tw->{B}->{Lo}->{depth}." ".pint($tw)." ~ ".pint($tw->BLi->{t}->{i});
         
@@ -144,24 +150,25 @@ hooks:
         $ok;
     };
     my $content = $hg->('content', 'l,i');
-    $H->error("multiple contents", $content) if @$content > 1;
+     @$content > 1 && die;
     
     if (!@$content && !@$ytw) {
+        #Say "Inventing content... $yL->{i}->{K}";
         @$content = {y=>"?",t=>encode_entities($yL->{t})};
     }
-    if (@$content && @$ytw) {
-        $H->error("contents & things", $content, $ar);
-        @$content = ();
-    }
+    @$content && @$ytw && die;
     if (@$content) {
-        $x->{content} = $content->[0]->{t}; # favour loose style over wayin
+        $x->{content} = $content->[0]->{t}; # favouring loose style over wayin
     }
     
     my $class = $h->{class} || [];
     for (@$class) {
         push @{$x->{class}||=[]}, $_->{t}
     }
-    
+    my $styles = $hg->('style', 'i,l');
+    for (@$styles) {
+        push @{$x->{style}||=[]}, $_->{t}
+    }
     
     my $todiv =  $hg->('div', 't');
     my $div =  $hg->('div', 'l,i');
@@ -170,7 +177,7 @@ hooks:
         #exit;
     }
     if (@$div) { 
-        $H->error("multi div", $div) if @$div > 1;
+        $H->error("multi div", $div, wdump(2, $h->{div}), $yL->{t}->{t}) if @$div > 1;
         my $v = $div->[0]->{t};
         my $vi = {};
         ($vi->{width},$vi->{height}) = split "x", $v; $v =~/^x/&&die"?";
@@ -221,15 +228,21 @@ hooks:
       hh: content
       
     - hh: div
+    - h: y_div
+      hh: div
     - hh: class
+    - hh: style
+    - h: y_style
+      hh: style
   u: |
     my @wup = $G->findways('up');
     for my $up (@wup) {
         my $v = $up->{h} 
             ? $G->w("B/s/$up->{h}", {}, $w)
             : $w->find("B/s/$up->{hh}");
-        $v = encode_entities($v) if $up->{html} && defined $v;
-        $ha->( $up->{hh} => $y,$w, $v ) if defined $v;
+        next unless defined $v;
+        $v = encode_entities($v) if $up->{html};
+        $ha->( $up->{hh} => $y,$w, $v );
     }
     
   diagontrail: |

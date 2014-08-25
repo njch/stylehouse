@@ -40,25 +40,23 @@ hooks:
     
     $style."left: 50%;top:60em;min-height:20em; min-width:30em;");
   any_child_recoded_init: |
+    w andyle if $S->{way} =~ /yle/;
     w anduxt;
     #w dumptrail;
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
     
-    start_timer();
-    my @time;
     G crawl ->{max_depth} = 1;
-    
     G crawl ->RW;
-    my $CW = G crawl ->T->T($thing);
-        push @time, "Crawl: ".$CW->desize()." ".show_delta();
+    G crawl ->T->T($thing);
     
+    w andyle;
+    w anduxt;
+  andyle: |
     G yle ->RW;
+    my $CW = G crawl ->W;
     my $YW = G yle ->T->T($CW);
-        push @time, "Style: ".$YW->desize()." ".show_delta();
-    
-    my $html = w anduxt;
     
     #waylay dumpall;
   anduxt: |
@@ -68,7 +66,6 @@ hooks:
     my $html = G uxt ->T->T($YW);
     
     $G->{View3}->takeover($html);
-    Say $html;
     
     return $html
   dumpall: |

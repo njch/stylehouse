@@ -21,16 +21,14 @@ chains:
    B:
      s:
        div: 4x1
+       y_style: |
+         my $amo = $Li->{t}->{depth};
+         $amo *= 2;
+         return ["border-left:${amo}em dashed black", "position:relative"]
    print: |
      "yL.$Li->{n}.$Li->{t}->{n}"
    exude: |
      $thing
- - K_K: Line/Depth #c     D I Thing O
-   arr_if: |
-     exists $thing->{depth};
-   exude: |
-     $thing->{depth}
-     
  - K_K: Line/WaysIn
    arr_if: |
      exists $thing->{i}
@@ -38,6 +36,8 @@ chains:
      $thing->{i}
    B:
      s:
+       style:
+         - background:rgba(255,50,50,0.2)
        conty: |
          pint($Lo->{t}->{i});
      
@@ -50,6 +50,13 @@ chains:
  - K_K: Line/WaysOut
    arr_if: |
      exists $thing->{o}
+   B:
+     s:
+       style:
+        - 'border-bottom:1px solid #fca'
+       conty: |
+         my $o = $Li->{t};
+         "o[".0+@$o
    exude: |
      $thing->{o}
      
@@ -67,16 +74,26 @@ chains:
      ref $thing
    B:
      s:
+       style:
+        - border-bottom:1px solid blue
        conty: |
          ghostlyprinty($Lo->{t});
-styles:
- - K_: Wormhole
+styelo:
+  - K: Wormhole
 dials:
   max_depth: 7
   form: 42
 hooks:
   T_end: |
-    # apply more styles
+    if ($L->{depth} == 0) {
+        if (!$G->{_stylerun}) {
+            #$G->{_stylerun} = 1;
+            #$G->{chains} = $G->findway('stylerun');
+        }
+        else {
+            delete $G->{_stylerun};
+        }
+    }
   figure_some_chain: |
     return 0 unless exists $c->{B}->{s} || exists $c->{exude};
         my $oc = $c->spawn;
