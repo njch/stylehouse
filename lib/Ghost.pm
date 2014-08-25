@@ -65,6 +65,7 @@ sub gname {
     my $ish = ref $g;
     my $ush = "$g";
     my $may = $g->{name} || $g->{id} if $ish && $ush =~ /HASH/;
+    $may ||= (0+keys %$g)."{" if $ish eq "HASH";
     $may ||= "$g";
     $may =~ s/^(\w+)=HASH.*$/$1\{/;
     $may;
@@ -81,7 +82,7 @@ sub throwlog {
 our $gp_inarow = 0;
 sub ghostlyprinty {
     $gp_inarow++;
-    my $witcolour = sub { '<t style="color:#8f9;">'.shift.'</t>' };
+    my $witcolour = sub { '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>' };
     if ($_[0] && $_[0] eq "NOHTML") {
         shift;
         $witcolour = sub { shift };
@@ -98,6 +99,7 @@ sub ghostlyprinty {
             push @s, map { "[".ghostlyprinty($_) } @$t;
         }
         elsif (ref $t) {
+            push @s, $witcolour->(ref($t), "333;font-size-adjust:0.5");
             push @s, $witcolour->(gname($t));
         }
         else {

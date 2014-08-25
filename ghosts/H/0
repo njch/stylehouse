@@ -103,75 +103,83 @@ hooks:
 
 
         
-        eval { w dostuff[$mojo, $j, $msg]; };
+        eval { w serve/stuff[$mojo, $j, $msg]; };
         if ($@) {
             $H->error("message process fup", $@);
             return;
         }
         
         print Hostinfo::colored(scalar(`figlet '<'`), 'blue');
-  dostuff: |
-    # ongoing stuff
-    if ($j->{claw} && $H->claw($j)) {
-        # done
-    }
-    elsif (my $k = $j->{k}) {
-        my $keys = $H->getapp("Keys");
-        $keys->key($k) if $keys;
-    }
-    elsif ($j->{e}) {
-        die $j->{d} if $H->{JErrors}++ > 3;
-        $H->error("javascript error from client", $j->{d}, $j->{e});
-    }
-    elsif (my $s = $j->{s}) {
-        # the viewport of the browser moves..
-        #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
-        # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
-        # then bringing things back together is the key.... substance... legible shrines to anythings...
-        my $lye = $H->getapp("Lyrico");
-        $lye->scroll($s) if $lye;
-    }
-    elsif (my $event = $j->{event}) {
-        $G->Flab("H dostuff event", $event);
-        
-        if ($event->{type} =~ /^key/) {
-            return unless G keys;
-            G keys Tw arr[$event];
-            return;
-        }
-        
-        my $id = $event->{id};
-        
+  serve:
+    stuff: |
+      # ongoing stuff
+      return w serve/claw if $j->{claw};
+      return w serve/event if $j->{event};
+      return w serve/error if $j->{error}; # change from {e}
+      return w serve/scroll if $j->{scroll};
+      
+    claw: |
+      $H->claw($j);
+      
+    error: |
+      die $j->{d} if $H->{JErrors}++ > 3;
+      $H->error("javascript error from client", $j->{d}, $j->{error});
+      
+    scroll: |
+      my $s = $j->{scroll};
+      # the viewport of the browser moves..
+      #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
+      # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
+      # then bringing things back together is the key.... substance... legible shrines to anythings...
+      my $lye = $H->getapp("Lyrico");
+      $lye->scroll($s) if $lye;
+      
+    event: |
+      my $e = $ar->{e} = $j->{event};
+      $G->Flab("H dostuff event", $e);
+      return w serve/key if $e->{type} =~ /^key/;
+      return w serve/wormhole if $e->{W};
+      return w serve/TV if $e->{id};
+      $H->error("Strange event", $e);
+    key: |
+      return unless G keys;
+      G keys Tw arr[$e];
+      
+    wormhole: |
+      my ($WID) = $e->{W} =~ /^(\w+)$/;
+      return $H->error("Strange wormhole", $e) unless $WID;
+      my ($W) = grep { $_->{id} eq "Wormhole-$WID" } @{ $H->get("Wormhole") };
+      my $id = $e->{id};
+      my ($LID) = $e->{id} =~ /^(\w+)$/;
+      my ($L) = grep { $_->{uuid} eq $LID } @{ $W->{script} } if $LID;
+      $W->{G}->w('event', {e=>$e,L=>$L});
+      
+    TV: |
+      my $id = $e->{id};
+      my $thing = $H->tv_by_id($id) if $id;
 
-        my $thing = $H->tv_by_id($event->{id}) if $id;
+          start_timer();
 
-        start_timer();
+          if ($thing) {
+              $mojo->app->log->info("TV  $thing->{id}");
+              $thing->event($e);
+          }
+          else {
+              my $s = "TV not found".( $id ? ": $id" : ", lacking id");
+              $mojo->app->log->info("$s");
 
-        if ($thing) {
-            $mojo->app->log->info("TV  $thing->{id}");
-            $thing->event($event);
-        }
-        else {
-            my $s = "TV not found".( $id ? ": $id" : ", lacking id");
-            $mojo->app->log->info("$s");
-
-            if (my $catcher = $H->get('clickcatcher')) {
-                $mojo->app->log->info("Event catcher found: $catcher");
-                $catcher->event($event);
-            }
-            else {
-                $mojo->app->log->info("NOTHING");
-                $mojo->send(
-                    "\$('#body').addClass('dead').delay(250).removeClass('dead');"
-                );
-            }
-        }
-        say "event handled in ".show_delta()."\n\n";
-    }
-    else {
-        my $undorf = !defined $msg ? " is~undef~" : "";
-        $H->error("EH!? '$msg'$undorf");
-    }
+              if (my $catcher = $H->get('clickcatcher')) {
+                  $mojo->app->log->info("Event catcher found: $catcher");
+                  $catcher->event($e);
+              }
+              else {
+                  $mojo->app->log->info("NOTHING");
+                  $mojo->send(
+                      "\$('#body').addClass('dead').delay(250).removeClass('dead');"
+                  );
+              }
+          }
+          say "event handled in ".show_delta()."\n\n";
   
   
   decode_message: |

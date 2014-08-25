@@ -493,7 +493,6 @@ function clickyhand (event) {
     }
     var data = {
         id: tag.attr('id'),
-        wormhole: tag.closest( "wormhole" ).attr('id'),
         class: tag.attr('class'),
         value: value,
         type: event.type,
@@ -506,6 +505,10 @@ function clickyhand (event) {
         pagex: window.pageXOffset,
         pagey: window.pageYOffset,
     };
+    var W = tag.closest( "wormhole" ).attr('id');
+    if (W) {
+        data.W = W;
+    }
     ws.reply({event: data});
 }
 var nohands = 0;
