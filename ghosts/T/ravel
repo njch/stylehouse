@@ -13,7 +13,9 @@ hooks:
       @$cs = @rc;
     };
     
-    for my $c ($G->chains) {
+    my @chains = w exact_chains;
+    @chains = $G->chains unless @chains;
+    for my $c (@chains) {
         my $kok = w _K_K[$c];
         if ($kok && w $c arr_if) {
             push @$cs, $c->spawn;
@@ -22,7 +24,7 @@ hooks:
     # all these motions we want to grab finer pictures of eventually
     
     $doing->("c_follow_as");    
-    $doing->("c_eat");  
+    $doing->("c_eat");
     $doing->("c_grav_add");
     $doing->("figureout");
     w aft_arr;
