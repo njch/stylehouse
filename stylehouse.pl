@@ -493,7 +493,7 @@ function clickyhand (event) {
     }
     var data = {
         id: tag.attr('id'),
-        Wormhole: tag.closest( "Wormhole" ).attr('id'),
+        wormhole: tag.closest( "wormhole" ).attr('id'),
         class: tag.attr('class'),
         value: value,
         type: event.type,
