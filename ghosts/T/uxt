@@ -160,13 +160,13 @@ hooks:
         $ok;
     };
     my $content = $hg->('content', 'l,i');
-     @$content > 1 && die;
+     @$content > 1 && die "cont > 1";
     
     if (!@$content && !@$ytw) {
         #Say "Inventing content... $yL->{i}->{K}";
         @$content = {y=>"?",t=>encode_entities($yL->{t})};
     }
-    @$content && @$ytw && die;
+    @$content && @$ytw && die "cont & t";
     if (@$content) {
         $x->{content} = $content->[0]->{t}; # favouring loose style over wayin
     }
@@ -201,7 +201,6 @@ hooks:
                 $parts = 1;
             }
             if ($parts eq "...") {
-                die wdump($xtw) if !@$xtw;
                 $parts = 0+@$xtw;
             }
             if ($parts == 0) {

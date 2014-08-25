@@ -146,7 +146,7 @@ sub waystacken {
         }
         
         if ($@) {
-            $G->Flab("Stack Return Error", $s, $@);
+            #$G->Flab("Stack Return Error", $s, $@);
             $s->{Error} = $@;
         }
         $s->{Flab} = [@Flab];
