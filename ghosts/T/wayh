@@ -1,0 +1,63 @@
+name: wayish data structuring...
+chains:
+ - K: 'WayF'#c
+   cracks:
+     Flab: 1
+     thing: 1
+     F: 1
+     B: 1
+     stack: 0
+     undies: 1
+     waystack: 1
+     timer_from: 1
+   arr_if: | 
+     $S->{cracks}->{$G->{i}->{each}}
+     && ref $G->{i}->{B}->{Lo}->{t} eq "Way"
+   grav_add: 1
+   
+ - K: 'Waym'
+   arr_if: | 
+     my ($lM,$lB) = (
+         $G->{i}->{B}->{Lo}->{i}->{B}->{Lo},
+         $G->{i}->{B}->{Lo},
+     );
+     $lM && ref $lM->{t} eq "Way"
+     && $lB && $lB->{i}->{each} eq "B"
+     && $G->{i}->{each} eq "thing"
+   grav_add: 1
+   
+ - K: 'Wayslim'
+   arr_if: |
+     ref $thing eq "Way"
+   eat: "HASHish"
+   each_ignore: 'id huid print B_ first_time'
+   each_order: 'undies timer_back'
+   
+ - K: 'WayFF'
+   _disabled: 1
+   arr_if: |
+     ref $thing eq "Way" && $thing->{F};
+   foreach_travel:
+     each: @{ $thing->{F} }
+   print: |
+     "WF [ ".$S->{i}
+   
+ - K: 'GsGG'
+   _disabled: 1
+   arr_if: |
+     ref $thing eq "Ghost"
+   foreach_travel:
+     each: @{ $thing->{GG} }
+     next_thing: $each
+   print: |
+     "GG [ ".$S->{i}
+   
+ - K: 'Gslim'
+   arr_if: |
+     ref $thing eq "Ghost"
+   eat: "HASHish"
+   each_ignore: 'id GG huid way T load_ways_count unrush_'
+   each_order: 'name i O'
+dials:
+  max_depth: 1
+
