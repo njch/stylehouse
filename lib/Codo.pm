@@ -152,6 +152,9 @@ sub codolist {
     
     my $m = {
         h => sub {
+            my ($ev, $s) = @_;
+            my $codon = $s->{codon};
+            return $self->load_codon($codon->{name}) if $codon;
             $self->{hostinfo}->{G}->w("A/colour",
                 {name => "Codo",
                 set_css_background => "#Codo",
