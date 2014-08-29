@@ -152,11 +152,11 @@ sub codolist {
     
     my $m = {
         h => sub {
-            my ($ev, $s) = @_;
-            my $codon = $s->{codon};
-            return $self->{hostinfo}->error("No Codon attached to", $s)
-                unless $codon;
-            $self->load_codon($codon->{name});
+            $self->{hostinfo}->{G}->w("A/colour",
+                {name => "Codo",
+                set_css_background => "#Codo",
+                change => 1}
+            );
         },
         ѷ => sub {
             $list->float();
