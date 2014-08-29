@@ -1,0 +1,15 @@
+name: code crawl
+chains:
+ - K: 'Dir'#c
+   k: ''
+   arr_if: |
+     !ref $thing && -d $thing
+   foreach_travel:
+     each: map { s/\n$//s; $_ } capture("ls", "-1", $thing)
+   print: |
+     "/".$S->{each}
+        
+dials:
+  max_depth: 1
+hooks:
+
