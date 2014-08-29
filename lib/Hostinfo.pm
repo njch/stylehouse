@@ -1019,7 +1019,6 @@ sub get_this_it { # find it amongst itselves
 sub slurp {
     my $self = shift;
     my $file = shift;
-    $file = decode_utf8($file);
       open my $f, $file || die "O no $!";
     binmode $f, ':utf8';
     my $m = join "", <$f>;
