@@ -9,6 +9,8 @@ use Way;
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
+sub htmlesc { encode_entities(shift) }
+sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 
 our $H;
 our @F;
@@ -424,6 +426,7 @@ sub haunt { # arrives through here
     
     $G->ob("haunt", $G);
     
+    $G->w("T_begin");
     
     if ($i->{arr_hook}) { # could be moved into a crawl-like chain
         my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
@@ -443,12 +446,28 @@ sub haunt { # arrives through here
     for my $o (@{$L->{o}}) {
         $o->{B}->{Lo} = $L; # L heading back out/origin
     }
-    if ($i->{B}->{Li} && !$G->way_was("revisit")) {
-        $G->Flab("Funny, end of haunt, way in already had i->B->Li", $i->pint, $i, $L);
-    }
     $i->{B}->{Li} = $L; # L heading in
 
-    return ($L, $G->{o});
+
+
+    my @r = $T->W;
+    for my $c (@{$G->{o}}) {
+        if (exists $c->{travel_this}) {
+            $T->T($c->{travel_this}, $G, $c, $G->{depth}+1);
+        }
+        elsif (exists $c->{arr_returns}) {
+            @r = @{$c->{arr_returns}};
+        }
+        elsif (exists $c->{B}->{s}) {
+            # sweet
+        }
+        else {
+            $H->error("what kind of way out is",Ghost::ki($c))
+        }
+    }
+    $G->w("T_end", {L=>$L, r=>\@r});
+  
+    return @r
 }
 sub chains {
     my $G = shift;
@@ -714,6 +733,8 @@ sub parse_babble {
     my $num = qr/(?:(\d+(?:\.\d+)?) )/;
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    
+    $eval =~ s/(\w+)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} split '.', $2/seg;
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;

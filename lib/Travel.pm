@@ -41,24 +41,7 @@ sub T {
         $i ||= $G->nw()->from({K=>'T?',flab=>$flab});
     }
     
-    my ($L, $o) = $G->haunt($T, $depth, $t, $i);
-
-    my @r = $T->W;
-    for my $c (@$o) {
-        if (exists $c->{travel_this}) {
-            $T->T($c->{travel_this}, $G, $c, $depth+1);
-        }
-        elsif (exists $c->{arr_returns}) {
-            @r = @{$c->{arr_returns}};
-        }
-        elsif (exists $c->{B}->{s}) {
-            # sweet
-        }
-        else {
-            $H->error("what kind of way out is",Ghost::ki($c))
-        }
-    }
-    $G->w("T_end", {L=>$L, r=>\@r});
+    my @r = $G->haunt($T, $depth, $t, $i);
 
     return wantarray ? @r : shift @r;
 }
