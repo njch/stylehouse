@@ -4,25 +4,23 @@ dials:
   form: 42
 chains:
  - K: xW #c
-   k: ''
+   dom_depth: 0
    arr_if: |
-     $G->{depth} == 0 && ref $thing eq "Wormhole";
+     ref $thing eq "Wormhole";
    B_: |
      $thing
    foreach_travel:
      each: grep { $_->{depth} == 0 } @{$thing->{script}}
    print: |
-     "xW.$Li->{n}"
+     ".$Li->{n}"
  
  - K: xL
-   k: ''
+   iK: xW|xL
    arr_if: |
-     ($G->{i}->{K} eq "xW"
-     || $G->{i}->{K} eq "xL")
-     && ref $thing eq "HASH"
+     ref $thing eq "HASH"
      && ref $thing->{o} eq "ARRAY"
    print: |
-     "xL.$Li->{n}"
+     ".$Li->{n}"
    foreach_travel:
      each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
 hooks:

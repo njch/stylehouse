@@ -16,8 +16,7 @@ hooks:
     my @chains = w exact_chains;
     @chains = $G->chains unless @chains;
     for my $c (@chains) {
-        my $kok = w _K_K[$c];
-        if ($kok && w $c arr_if) {
+        if (w $c arr_if) {
             push @$cs, $c->spawn;
         }
     }
@@ -28,15 +27,23 @@ hooks:
     $doing->("c_grav_add");
     $doing->("figureout");
     w aft_arr;
-  _K_K: |
-        if ($c->{K_K} || $c->{K_}) {
-            my ($iK, $K) = $c->{K_K} ?
-                split('/', $c->{K_K})
-                : ($c->{K_}, $c->{K});
-            return 0 unless $G->{i}->{K} eq $iK;
-            $c->{K} = $K;
-        }
-        1
+  exact_chains: |
+    my @chains = $G->chains;
+    
+    @chains = grep {
+        !defined $_->{iK} || $G->{i}->{K} =~ /$_->{iK}/
+    } @chains;
+    
+    @chains = grep {
+        !defined $_->{exact_depth} || $_->{exact_depth} == $G->{depth}
+    } @chains;
+    
+    my @dom = grep {
+        defined $_->{dom_depth} && $_->{dom_depth} == $G->{depth}
+    } @chains;
+    @chains = @dom if @dom;
+    
+    @chains
   c_eat: |
     return $c unless $c->{eat};
     for my $oc (@$cs) {

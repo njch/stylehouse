@@ -2,7 +2,7 @@ name: Styling
 chains:
  - K: Wormhole #c        Wormhole [ Lines
    k: ''
-   exact_depth: 0
+   dom_depth: 0
    arr_if: |
      $G->{depth} == 0 && ref $thing eq "Wormhole";
    B_: |
@@ -15,9 +15,10 @@ chains:
      s:
        div: 1x2em
         
- - K_K: Wormhole/Line
+ - K: Line
+   iK: Wormhole
    k: ''
-   exact_depth: 1
+   dom_depth: 1
    arr_if: |
      ref $thing eq 'HASH' && $thing->{uuid} && exists $thing->{t}
    B:
@@ -31,7 +32,9 @@ chains:
      "yL.$Li->{n}.$Li->{t}->{n}"
    exude: |
      $thing
- - K_K: Line/WaysIn
+     
+ - K: WaysIn
+   iK: Line
    arr_if: |
      exists $thing->{i}
    exude: |
@@ -44,13 +47,15 @@ chains:
        conty: |
          pint($Lo->{t}->{i});
      
- - K_K: Line/Thing
+ - K: Thing
+   iK: Line
    arr_if: |
      exists $thing->{t}
    exude: |
      $thing->{t}
      
- - K_K: Line/WaysOut
+ - K: WaysOut
+   iK: Line
    arr_if: |
      exists $thing->{o}
    B:
@@ -59,11 +64,12 @@ chains:
         - 'border-bottom:1px solid #fca'
        conty: |
          my $o = $Li->{t};
-         "o[".0+@$o
+         "o[".(0+@$o)
    exude: |
      $thing->{o}
      
- - K_K: Thing/NonRef    #c     Things
+ - K: NonRef    #c     Things
+   iK: Thing
    arr_if: |
      !ref $thing
    B:
@@ -72,7 +78,8 @@ chains:
          $Lo->{t};
        
      
- - K_K: Thing/Ref
+ - K: Ref
+   iK: Thing
    arr_if: |
      ref $thing
    B:
@@ -87,18 +94,7 @@ dials:
   max_depth: 7
   form: 42
 hooks:
-  exact_chains: |
-    my (@exact, @unsure);
-    for my $c ($G->chains) {
-        if (exists $c->{exact_depth}) {
-            push @exact, $c if $c->{exact_depth} == $G->{depth}
-        }
-        else {
-            push @unsure, $c
-        }
-    }
-    return @exact if @exact;
-    return @unsure;
+
   T_end: |
     if ($L->{depth} == 0) {
         if (!$G->{_stylerun}) {
