@@ -35,8 +35,7 @@ hooks:
         $O Tw arr[$nothing];
     }
   html: |
-        my $Bs = $tw->{B}->{s} ||= {};
-        my $c = $Bs->{x};
+        my $c = w.B.x;
         my $attr = {};
         my @style = ();
         my @class = ();
@@ -50,39 +49,36 @@ hooks:
                 push @style, "$a:$v"; 
             }
         }
-        if ($c->{height} =~ /em$/ && $c->{width} == 1) {
+        if (c.height =~ /em$/ && c.width == 1) {
             push @style, "float:left";
         }
-        if (exists $c->{left} || exists $c->{top}) {
+        if (exists c.left || exists c.top) {
             push @style, "position:absolute";
         }
-        if ($c->{class}) {
-            push @class, @{$c->{class}};
+        if (c.class) {
+            push @class, @{c.class};
         }
-        if ($c->{style}) {
-            for my $styley (@{$c->{style}}) {
-                my $styles = [ ref $styley eq "ARRAY" ? @$styley : $styley ];
+        if (c.style) {
+            for my $styley (@{c.style}) {
+                my $styles = [ flatline($styley) ];
                 push @style, @$styles;
             }
         }
         #$attr->{title} = $tw->{B}->{Lo}->{depth}." ".pint($tw)." ~ ".pint($tw->BLi->{t}->{i});
-        
-        my $tag = $c->{tag} || "te";
-        if (!defined $tw->{B}->{Lo}) {
+         
+        my $tag = c.tag || "te";
+        if (!defined w.B.Lo) {
             $tag = "wormhole";
             my $W = $G->W;
-            $attr->{title} = $G->{name};
-            ($attr->{id}) = $W->{id} =~ /-(\w+)$/;
+            attr.title = G.name;
+            (attr.id) = W.id =~ /-(\w+)$/;
         }
-        my $content = defined $c->{content} ? $c->{content} : "";
-        my $cc = $c->{children};
-        if ($cc && @$cc) {
-            $content && die " $content and ".join "", @{$c->{children}};
-            $content = join "", @{$c->{children}};
-            $attr->{style} = join "; ", @style if @style;
-        }
-        $attr->{style} = join "; ", @style if @style;
-        $attr->{class} = join " ", @class if @class;
+        
+        my $content = c.content if defined c.content;
+        $content = join "\n", @{c.conty} if c.conty;
+        
+        attr.style = join "; ", @style if @style;
+        attr.class = join " ", @class if @class;
         
         return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
         ."\n".ind("  ", $content)."\n"."</$tag>\n"
@@ -95,98 +91,64 @@ hooks:
         
     
   T_end: |
-    my $t = $G->{_trail} ||= [];
-    my $xL = $L; 
-    
-    my $yL = $xL->{t};
-    my $ytw = [];
-    my $ylw = [];
-    for my $yw (@{$yL->{o}}) {
-        if ($yw->{B}->{Li}) {
-            push @$ytw, $yw
-        }
-        else {
-            push @$ylw, $yw
-        }
+    push @{G.Torail||=[]}, $L;
+    w next_phase if G.depth == 0;
+  next_phase: |
+      for my $L (@{G.Torail}) {
+            w style_to_x[$L];
+      }
+      for my $L (@{G.Torail}) {
+            w x_to_h[$L];
+      }
+      my $html = G.i.B.x.conty;
+      Say $html;
+      
+  x_to_h: |
+    my $x = L.i.B.x;
+    for my $w (@{L.o}) {
+        push @{ x.conty ||= [] }, w html[$w];
+        #font-size-adjust: 0.58;
     }
-    my $xtw = [];
-    for my $xw (@{$xL->{o}}) {
-        if ($xw->{B}->{Li}) {
-            push @$xtw, $xw
-        }
-    }
-    my $yiw = $yL->{i} || $G->nw()->from({K=>"notTheWayIn!"});
-    my $xiw = $xL->{i} || $G->nw()->from({K=>"xnotTheWayIn!"});
-    
-    my $h = {};
-    my $ha = sub { 
-        my ($attr,$y,$w,$thing) = @_;
-        push @{$h->{$attr}||=[]}, { y=>$y,w=>$w,t=>$thing };
-    }; 
-    
-    my $x = {id=>$xL->{uuid}};
-     
-    for my $ya (['l',$ylw],['t',$ytw],['i',[$yiw]],['x',[$xiw]]) {
-        my ($y,$yww) = @$ya;
-        for my $w (@$yww) {
-            next unless $w && ref $w eq "Way";
-            
-            w u[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,        $y, $w, $ha];
-        }
-    }
-    
-    w h[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw,         $h, $x];
-    
-    
-    #w diagontrail[$xL, $yL, $ylw, $ytw, $yiw, $xiw,     $h, $x];
-    
-    return unless $xL->{depth} == 0;
-    
-    my $tw = $xiw;
-    @$r = w html[$xL, $yL, $ylw, $ytw, $yiw, $xiw, $xtw, $tw];
-  h: |
-    # grep $h for content, apply whittling...
+  style_to_x: |
+    my $x = L.i.B.x = {};
+    my $yL = L.t;
+    my $got = {
+    l => [ grep { !_.B.Li } @{yL.o} ],
+    t => [ grep { _.B.Li } @{yL.o} ],
+    i => [ @{yL.i} ],
+    };
     my $hg = sub {
         my ($what, $order) = @_;
-        my $got = $h->{$what} || [];
-        my $ok = [];
-        for my $yg (split ',', $order) {
-            for my $t (@$got) {
-                push @$ok, $t if $t->{y} eq $yg;
+        my @R;
+        for my $yg (split '', $order) {
+            for my $w (@{$got->{$yg}}) {
+                if (w.B && w.B.s) {
+                    if (exists w.B.s->{$what}) {
+                        push @R, w.B.s->{$what}
+                    }
+                    if (exists w.B.s->{$what."_D"}) {
+                        push @R, $G->w("B/s/$what", {}, $w)
+                    }
+                }
             }
         }
-        $ok;
+        @R
     };
-    my $content = $hg->('content', 'l,i');
-     @$content > 1 && die "cont > 1";
     
-    if (!@$content && !@$ytw) {
-        #Say "Inventing content... $yL->{i}->{K}";
-        @$content = {y=>"?",t=>encode_entities($yL->{t})};
-    }
-    @$content && @$ytw && die "cont & t";
-    if (@$content) {
-        $x->{content} = $content->[0]->{t}; # favouring loose style over wayin
-    }
     
-    my $class = $h->{class} || [];
-    for (@$class) {
-        push @{$x->{class}||=[]}, $_->{t}
-    }
-    my $styles = $hg->('style', 'i,l');
-    for (@$styles) {
-        push @{$x->{style}||=[]}, $_->{t}
-    }
+    my @content = $hg->(content => 'li');
+    @content > 1             && die "cont > 1";
+    @content && @{got.t}     && die "cont & t";
+    ($x->{content}) = @content if @content;
     
-    my $todiv =  $hg->('div', 't');
-    my $div =  $hg->('div', 'l,i');
-    if (@$ytw && !@$div) {
-        #$H->error("no div & things".wdump(2, $ytw));
-        #exit;
-    }
-    if (@$div) { 
-        $H->error("multi div", $div, wdump(2, $h->{div}), $yL->{t}->{t}) if @$div > 1;
-        my $v = $div->[0]->{t};
+    $x->{class} = [ flatline($hg->(class => 'li')) ];
+    $x->{style} = [ flatline($hg->(style => 'il')) ];
+    $x->{tag} = [ flatline($hg->(tag => 'il')) ];
+    
+    my @div = $hg->(div => 'li');
+    @div > 1                 && die "div > 1";
+    if (@div) {
+        my ($v) = @div;
         my $vi = {};
         ($vi->{width},$vi->{height}) = split "x", $v; $v =~/^x/&&die"?";
         while (my ($iv, $parts) = each %$vi) {
@@ -198,68 +160,27 @@ hooks:
                 $inc = $parts;
                 $parts = 1;
             }
-            if ($parts eq "...") {
-                $parts = 0+@$xtw;
-            }
-            if ($parts == 0) {
-                $parts = 1;
-            }
+            $parts = 0+@$xtw    if $parts eq "...";
+            $parts = 1    if $parts == 0;
             $inc ||= sprintf("%.3f", 1 / $parts);
             my $side = $iv eq "width" ? "left" : "top";
             my $i = 0;
             
-            for my $tw (@$xtw) {
-                my $Bs = $tw->{B}->{s} ||= {};
+            for my $w (@{ L.o }) {
+                die "lower w.B.x not yet" unless w.B.x;
+                my $ox = w.B.x ||= {};
                 if ($parts == 1) {
-                    $Bs->{x}->{$iv} = $inc;
+                    $ox->{$iv} = $inc;
                 }
                 else {
-                    $Bs->{x}->{$side} = $i;
+                    $ox->{$side} = $i;
                     $i += $inc;
-                    $Bs->{x}->{$iv} = $inc;
+                    $ox->{$iv} = $inc;
                 }
             }
         }
     }
     
-    
-    for my $tw (@$xtw) {
-        my $html =  w html(%$ar, tw => $tw);
-        push @{ $x->{children} ||= [] }, $html;
-        
-        #font-size-adjust: 0.58;
-    }
-    
-    $xiw->{B}->{s}->{x} = $x;
-    
-    
-  up:
-    - h: value
-      escape_html: 1
-      hh: content
-      
-    - h: conty
-      hh: content
-      
-    - hh: div
-    - h: y_div
-      hh: div
-    - hh: class
-    - hh: style
-    - h: y_style
-      hh: style
-  u: |
-    my @wup = $G->findways('up');
-    for my $up (@wup) {
-        my $hhhh = $up->{h} || $up->{hh};
-        next unless $w->{B} && $w->{B}->{s} && exists $w->{B}->{s}->{$hhhh};
-        my $v = $up->{h} 
-            ? $G->w("B/s/$up->{h}", {}, $w)
-            : $w->find("B/s/$up->{hh}");
-        next unless defined $v;
-        $v = encode_entities($v) if $up->{html};
-        $ha->( $up->{hh} => $y,$w, $v );
-    }
     
   diagontrail: |
     my $htalk = "";
