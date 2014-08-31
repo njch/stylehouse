@@ -643,11 +643,24 @@ sub doo {
     my ($evs, $sub) = @$Ds;
         
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w);
+    my $theD = $F[0];
     
     my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
+    my $sigstacken = sub {
+        local $@;
+        eval { confess( '' ) };
+        my @stack = split m/\n/, $@;
+        shift @stack for 1..4; # Cover our tracks.
+        my @stackend;
+        push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;\
+        s/\t//g for @stackend;
+        push @{$theD->{SigDieStack}||=[]}, \@stackend;
+    };
+    
     my @return;
     if (ref $sub eq "CODE" && !$@) {
+        local $SIG{__DIE__} = $sigstacken;
         eval { @return = $sub->($ar) }
     }
     
@@ -664,7 +677,7 @@ sub doo {
         $perl ||= $evs;
         
         my $eval = "";
-        $eval .= "at $file\n\n" if $file;
+        $eval .= "$file\n" if $file;
         my @eval = split "\n", $perl;
         my $xx = 0;
         $x -= 3 if $x;
@@ -695,9 +708,19 @@ sub doo {
         my $first = 1 unless $@ =~ /DOOF/;
         
         $DOOF .= "DOOF  $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
-        $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";
-        
-        $DOOF .= "$eval\n"                         if $first;
+        $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";;
+        if ($first) {
+            if (exists $D->{SigDieStack}) {
+                die if @{$D->{SigDieStack}} > 1;
+                $DOOF .= "\n";
+                my $i = "  ";
+                for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                    $DOOF .= "$i↘ $s\n";
+                    $i .= "  ";
+                }
+            }        
+            $DOOF .= "\n$eval\n";
+        }
         $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
         $DOOF .= ind("E   ", "$@")."\n"             if !$first;
         $DOOF .= dooftip()                         if $first;
@@ -734,7 +757,7 @@ sub parse_babble {
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    $eval =~ s/(\w+)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} split '.', $2/seg;
+    $eval =~ s/(?<=\W)([A-Za-z]{1,3})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;

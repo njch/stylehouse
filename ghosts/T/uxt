@@ -92,7 +92,11 @@ hooks:
     
   T_end: |
     push @{G.Torail||=[]}, $L;
-    w next_phase if G.depth == 0;
+    if (G.depth == 0) {
+        my $html = w next_phase;
+        @$r = ($html);
+    }
+        
   next_phase: |
       for my $L (@{G.Torail}) {
             w style_to_x[$L];
@@ -100,7 +104,7 @@ hooks:
       for my $L (@{G.Torail}) {
             w x_to_h[$L];
       }
-      my $html = G.i.B.x.conty;
+      return G.i.B.x.conty;
       Say $html;
       
   x_to_h: |
@@ -160,7 +164,7 @@ hooks:
                 $inc = $parts;
                 $parts = 1;
             }
-            $parts = 0+@$xtw    if $parts eq "...";
+            $parts = 0+@{ L.o }    if $parts eq "...";
             $parts = 1    if $parts == 0;
             $inc ||= sprintf("%.3f", 1 / $parts);
             my $side = $iv eq "width" ? "left" : "top";
