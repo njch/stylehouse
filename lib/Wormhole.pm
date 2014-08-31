@@ -34,8 +34,8 @@ sub CS {
 sub continues {
     my ($W, $G) = @_; # %
 
-    my ($namg) = $W->{G}->{name} =~ /\(\S+,?[^\)]*\)$/;
-    $namg = "l-$W->{n} ".join("",("  ")x$G->{depth});
+    my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
+    $namg = "$W->{G}->{name} ".join("",("  ")x$G->{depth})."l-$W->{n} ";
     my $L = {
         uuid => $H->make_uuid,
         name => $namg,

@@ -34,54 +34,71 @@ hooks:
         my $nothing = $yt;
         $O Tw arr[$nothing];
     }
-  html: |
-        my $c = w.B.x;
-        my $attr = {};
-        my @style = ();
-        my @class = ();
-        for my $a (qw{id}) {
-            $attr->{$a} = $c->{$a} if exists $c->{$a};
-        }
+  x_to_h: |
+    my $x = L.i.B.x;
+    my $h = L.i.B.h = {};
+    my $attr = {};
+    my @style = ();
+    my @class = ();
+    attr.id = x.id          if exists x.id;
+    attr.title = x.title if exists x.title;
+    
         for my $a (qw{height width left top}) {
-            if (exists $c->{$a}) {
-                my $v = $c->{$a};
+            if (exists $x->{$a}) {
+                my $v = $x->{$a};
                 $v = ($v * 100).'%' if $v !~ /em$/;
                 push @style, "$a:$v"; 
             }
         }
-        if (c.height =~ /em$/ && c.width == 1) {
+        if (exists x.height && x.height =~ /em$/ && x.width == 1) {
             push @style, "float:left";
         }
-        if (exists c.left || exists c.top) {
+        if (exists x.left || exists x.top) {
             push @style, "position:absolute";
         }
-        if (c.class) {
-            push @class, @{c.class};
+        if (x.class) {
+            push @class, @{x.class};
         }
-        if (c.style) {
-            for my $styley (@{c.style}) {
+        if (x.style) {
+            for my $styley (@{x.style}) {
                 my $styles = [ flatline($styley) ];
                 push @style, @$styles;
             }
         }
-        #$attr->{title} = $tw->{B}->{Lo}->{depth}." ".pint($tw)." ~ ".pint($tw->BLi->{t}->{i});
          
-        my $tag = c.tag || "te";
-        if (!defined w.B.Lo) {
+        my $tag = x.tag || "uh";
+        if (!defined L.i.B.Lo) {
             $tag = "wormhole";
             my $W = $G->W;
             attr.title = G.name;
             (attr.id) = W.id =~ /-(\w+)$/;
         }
         
-        my $content = c.content if defined c.content;
-        $content = join "\n", @{c.conty} if c.conty;
-        
         attr.style = join "; ", @style if @style;
         attr.class = join " ", @class if @class;
         
-        return "<$tag ".join(" ", map {"$_=\"$attr->{$_}\""} sort keys %$attr).">"
-        ."\n".ind("  ", $content)."\n"."</$tag>\n"
+        h.attr = $attr;
+        h.tag = $tag;
+        h.content = sub { x.content } if defined x.content;
+        h.children = L.o;
+        h.content = sub {
+            if (x.content) {
+                "x content:\nx.content";
+            }
+            elsif (@{h.children}) {
+                "o[".(@{L.o}+0)."\n"
+                .join "", grep {defined}
+                map { _.B.h.ash->() }
+                grep { _.B && _.B.h } @{h.children}
+            }
+            else {
+            " ~ nothing ~ ".wdump(1, h.children);
+            }
+        };
+        h.ash = sub {
+            "<h.tag ".join(" ", map {"$_=\"h.attr->{$_}\""} sort keys %h.attr).">"
+            ."\n".ind("  ", h.content->())."\n"."</h.tag>\n"
+        };
     
     
     
@@ -92,9 +109,12 @@ hooks:
     
   T_end: |
     push @{G.Torail||=[]}, $L;
-    if (G.depth == 0) {
+    if (L.i.K eq "T?") {
         my $html = w next_phase;
         @$r = ($html);
+        Say $html;
+        G.Torail=[];
+        #die wdump($html);
     }
         
   next_phase: |
@@ -104,22 +124,15 @@ hooks:
       for my $L (@{G.Torail}) {
             w x_to_h[$L];
       }
-      return G.i.B.x.conty;
-      Say $html;
+      return L.i.B.h.ash->();
       
-  x_to_h: |
-    my $x = L.i.B.x;
-    for my $w (@{L.o}) {
-        push @{ x.conty ||= [] }, w html[$w];
-        #font-size-adjust: 0.58;
-    }
   style_to_x: |
     my $x = L.i.B.x = {};
     my $yL = L.t;
     my $got = {
     l => [ grep { !_.B.Li } @{yL.o} ],
     t => [ grep { _.B.Li } @{yL.o} ],
-    i => [ @{yL.i} ],
+    i => [ yL.i ],
     };
     my $hg = sub {
         my ($what, $order) = @_;
@@ -145,9 +158,12 @@ hooks:
     @content && @{got.t}     && die "cont & t";
     ($x->{content}) = @content if @content;
     
-    $x->{class} = [ flatline($hg->(class => 'li')) ];
+    $x->{class} = [ flatline($hg->(class => 'il')) ];
     $x->{style} = [ flatline($hg->(style => 'il')) ];
-    $x->{tag} = [ flatline($hg->(tag => 'il')) ];
+    ($x->{tag}) = grep {defined} flatline($hg->(tag => 'li')), "te";
+    $x->{style} = [ flatline($hg->(style => 'il')) ];
+    $x->{id} = L.uuid;
+    $x->{title} = "yL.n yL.depth ".pint(yL.t.i) if ref yL.t eq 'HASH';
     
     my @div = $hg->(div => 'li');
     @div > 1                 && die "div > 1";
@@ -172,7 +188,7 @@ hooks:
             
             for my $w (@{ L.o }) {
                 die "lower w.B.x not yet" unless w.B.x;
-                my $ox = w.B.x ||= {};
+                my $ox = w.B.x;
                 if ($parts == 1) {
                     $ox->{$iv} = $inc;
                 }

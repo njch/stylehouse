@@ -4,7 +4,7 @@ chains:
    k: ''
    dom_depth: 0
    arr_if: |
-     $G->{depth} == 0 && ref $thing eq "Wormhole";
+     ref $thing eq "Wormhole";
    B_: |
      $thing
    foreach_travel:
@@ -89,20 +89,11 @@ chains:
        content_D: |
          ghostlyprinty($Lo->{t});
 dials:
-  max_depth: 7
+  max_depth: 100
   form: 42
 hooks:
 
-  T_end: |
-    if ($L->{depth} == 0) {
-        if (!$G->{_stylerun}) {
-            #$G->{_stylerun} = 1;
-            #$G->{chains} = $G->findway('stylerun');
-        }
-        else {
-            delete $G->{_stylerun};
-        }
-    }
+
   figure_some_chain: |
     return 0 unless exists $c->{B}->{s} || exists $c->{exude};
     my $oc = $c->spawn;

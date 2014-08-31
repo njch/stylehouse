@@ -1,5 +1,4 @@
 package Ghost;
-use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
@@ -11,6 +10,7 @@ sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
+use Carp 'confess';
 
 our $H;
 our @F;
@@ -116,7 +116,8 @@ sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
     say join("",(".") x scalar(@F))."$G->{name}  $_[0]"
-        if (($G->{db}||0) + ($db||0)) > 0;
+        if (($G->{db}||0) + ($db||0)) > 0
+            && $_[0] !~ /^\w Error/;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
@@ -451,9 +452,9 @@ sub haunt { # arrives through here
 
 
     my @r = $T->W;
-    for my $c (@{$G->{o}}) {
+    for my $c (@{$L->{o}}) {
         if (exists $c->{travel_this}) {
-            $T->T($c->{travel_this}, $G, $c, $G->{depth}+1);
+            $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
         }
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
@@ -667,7 +668,7 @@ sub doo {
     my $D = $back->();
     $D->{Returns} = [@return];
     
-    if ($@) {
+    if ($@) { #c     DOO DOO
         my ($x) = $@ =~ /line (\d+)/;
         $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
         my $file = $1 if $@ =~ /at (\S+) line/;
@@ -723,11 +724,12 @@ sub doo {
         }
         $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
         $DOOF .= ind("E   ", "$@")."\n"             if !$first;
+        $DOOF .= ind("ar  ",wdump(1,$ar))             if $first;
         $DOOF .= dooftip()                         if $first;
         
         my $OOF = $G->Flab("D Error $@", $DOOF, $D);
         if ($first) {
-            $H->error($OOF);
+            #$H->error($OOF);
         }
         $D->{Error} = $DOOF;
         $@ = $DOOF;
@@ -757,7 +759,7 @@ sub parse_babble {
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    $eval =~ s/(?<=\W)([A-Za-z]{1,3})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+    $eval =~ s/(?<=\W)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
