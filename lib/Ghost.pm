@@ -452,7 +452,7 @@ sub haunt { # arrives through here
 
 
     my @r = $T->W;
-    for my $c (@{$L->{o}}) {
+    for my $c (@{$G->{o}}) {
         if (exists $c->{travel_this}) {
             $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
         }

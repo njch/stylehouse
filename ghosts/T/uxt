@@ -79,21 +79,12 @@ hooks:
         
         h.attr = $attr;
         h.tag = $tag;
-        h.content = sub { x.content } if defined x.content;
         h.children = L.o;
         h.content = sub {
-            if (x.content) {
-                "x content:\nx.content";
-            }
-            elsif (@{h.children}) {
-                "o[".(@{L.o}+0)."\n"
-                .join "", grep {defined}
+            return x.content if x.content;
+            return join "", grep {defined}
                 map { _.B.h.ash->() }
                 grep { _.B && _.B.h } @{h.children}
-            }
-            else {
-            " ~ nothing ~ ".wdump(1, h.children);
-            }
         };
         h.ash = sub {
             "<h.tag ".join(" ", map {"$_=\"h.attr->{$_}\""} sort keys %h.attr).">"
@@ -144,7 +135,7 @@ hooks:
                         push @R, w.B.s->{$what}
                     }
                     if (exists w.B.s->{$what."_D"}) {
-                        push @R, $G->w("B/s/$what", {}, $w)
+                        push @R, $G->w("B/s/".$what."_D", {}, $w)
                     }
                 }
             }
