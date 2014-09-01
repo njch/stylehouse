@@ -1,14 +1,19 @@
 name: code crawl
 chains:
- - K: 'Dir'#c
-   k: ''
+ - K: 'lib'#c
+   Ki: 'styledir'
    arr_if: |
-     !ref $thing && -d $thing
+     0 && -d $thing."/lib"
    foreach_travel:
-     each: map { s/\n$//s; $_ } capture("ls", "-1", $thing)
-   print: |
-     "/".$S->{each}
-        
+     each: glob $thing."/lib/*"
+     
+ - K: 'ghosts'#c
+   Ki: 'styledir'
+   arr_if: |
+     -d $thing."/ghosts"
+   foreach_travel:
+     each: glob $thing."/ghosts/T/*"
+    
  - K: 'FiEl'
    arr_if: |
      !ref $thing && -f $thing

@@ -400,7 +400,9 @@ sub _0 {
 }
 sub nw {
     my $self = shift;
-    new Way($H->intro, $self);
+    my $w = new Way($H->intro, $self);
+    $w->from({@_}) if @_;
+    $w
 }
 sub crank {
     my $self = shift;

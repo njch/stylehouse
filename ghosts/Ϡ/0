@@ -50,43 +50,38 @@ hooks:
     #w dumptrail;
   gestarted: |
     my $nothing = "ghosts/C";
-    $G->Tsomewhere[$nothing];
+    my $g = G odon;
+    $g->RW;
+    $g->T("/s", undef, $G->nw(K=>"styledir"));
+    w uxtou(g=>$g);
+    
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
-    G crawl ->{max_depth} = 1;
-    G crawl ->RW;
-    G crawl ->T->T($thing);
     
+    my $g = G crawl;
+    $g->{max_depth} = 1;
+    $g->RW;
+    $g->T($thing);
+    
+    w uxtou(g=>$g);
+  uxtou: |
     start_timer();
-    w andyle;
-    say "Yle: ".show_delta();
-    w anduxt;
-    say "uxt: ".show_delta();
-  andyle: |
-    G yle ->RW;
-    my $CW = G odon ->W;
-    my $YW = G yle ->T->T($CW);
     
-    #waylay dumpall;
-  anduxt: |
-    #G uxt ->{_trail} = [];
-    G uxt ->RW;
-    my $YW = G yle ->W;
-    my $html = G uxt ->T->T($YW);
+    my $yG = G yle;
+    $yG->RW;
+    $yG->T(    $g->W );
+    my $uG = G uxt;
+    $uG->RW;
+    my $html = $uG->T->T($yG->W);
+    
+    Say "uxtoun ".show_delta()." fo $g->{name}";
     
     $G->{View3}->takeover($html);
     return $html
   dumpall: |
     #w dumptrail;
     w dumpyleW;
-  dumptrail: |
-    my $t = {};
-    $t->{t} = G uxt ->{_trail};
-    $t->{G} = G uxt ->{name};
-    
-    $O->w(somewhere=>{thing=>$t,max_depth=>7});
-  
   dumpyleW: |
     for ([ "unxoϠ1", sub {
             $H->Gf("T/splat") Tw Splat(Ϡ1 => G(crawl)->W, view => $G->{View} );
