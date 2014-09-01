@@ -18,38 +18,45 @@ hooks:
           -webkit-transform:scale(0.7,0.7)
       }
   fresh_init: |
-    $G->Gc("C/odon", "T/ravel");
-    $G->Gc("T/yle", "T/ravel");
-    $G->Gc("T/uxt", "T/ravel");
-    
-    my $style = $G->_0('style',{K=>'dimen'});
-    my $Vf = $G->{floozal} || $H->{sky};
-    $G->{View} = $Vf->spawn_floozy($G, "Ϡ1",
-    
-    $style."left: 40em;background:#987");
-    
-    $G->{View3} = $Vf->spawn_floozy($G, "Ϡ3",
-    
-    $style."left:3em;top:3em;font-size:24pt;min-height:20em; min-width:30em;");
-    
-    $G->{View2} = $Vf->spawn_floozy($G, "Ϡ2",
-    
-    $style."left:5em;background:#334;");
-    
-    $G->{View4} = $Vf->spawn_floozy($G, "Ϡ4",
-    
-    $style."left: 50%;top:60em;min-height:20em; min-width:30em;");
+    w in/codons;
+    w in/views;
+  in:
+    codons: |
+      $G->Gc("C/odon", "T/ravel");
+      $G->Gc("T/crawl", "T/ravel");
+      $G->Gc("T/yle", "T/ravel");
+      $G->Gc("T/uxt", "T/ravel");
+    views: |
+      my $style = $G->_0('style',{K=>'dimen'});
+      my $Vf = $G->{floozal} || $H->{sky};
+      $G->{View} = $Vf->spawn_floozy($G, "Ϡ1",
+
+      $style."left: 40em;background:#987");
+
+      $G->{View3} = $Vf->spawn_floozy($G, "Ϡ3",
+
+      $style."left:3em;top:3em;font-size:24pt;min-height:20em; min-width:30em;");
+
+      $G->{View2} = $Vf->spawn_floozy($G, "Ϡ2",
+
+      $style."left:5em;background:#334;");
+
+      $G->{View4} = $Vf->spawn_floozy($G, "Ϡ4",
+
+      $style."left: 50%;top:60em;min-height:20em; min-width:30em;");
   any_child_recoded_init: |
     w andyle if $S->{way} =~ /yle/;
     w anduxt;
     #w dumptrail;
+  gestarted: |
+    my $nothing = "ghosts/C";
+    $G->Tsomewhere[$nothing];
   arr: |
     my ($name, $thing) = %$ar;
     my $S = Arr[$name, $thing];
-    
-    G odon ->{max_depth} = 1;
-    G odon ->RW;
-    G odon ->T->T($thing);
+    G crawl ->{max_depth} = 1;
+    G crawl ->RW;
+    G crawl ->T->T($thing);
     
     start_timer();
     w andyle;
@@ -63,13 +70,12 @@ hooks:
     
     #waylay dumpall;
   anduxt: |
-    G uxt ->{_trail} = [];
+    #G uxt ->{_trail} = [];
     G uxt ->RW;
     my $YW = G yle ->W;
     my $html = G uxt ->T->T($YW);
     
     $G->{View3}->takeover($html);
-    say $html;
     return $html
   dumpall: |
     #w dumptrail;
