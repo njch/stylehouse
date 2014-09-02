@@ -441,7 +441,7 @@ sub haunt { # arrives through here
     }
     
     my $L;
-    if (exists $G->{t}) {
+    if (defined $G->{t}) {
         $L = $G->W->continues($G); # %
         $G->ob("continues...", $L);
     }
