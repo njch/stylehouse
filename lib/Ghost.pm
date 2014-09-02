@@ -441,15 +441,17 @@ sub haunt { # arrives through here
     }
     
     my $L;
-    if (defined $G->{t}) {
+    if (exists $G->{t}) {
         $L = $G->W->continues($G); # %
         $G->ob("continues...", $L);
     }
     
     for my $o (@{$L->{o}}) {
         $o->{B}->{Lo} = $L; # L heading back out/origin
+        $o->{Lo} = $L;
     }
     $i->{B}->{Li} = $L; # L heading in
+    $i->{Li} = $L;
 
 
 
@@ -458,14 +460,18 @@ sub haunt { # arrives through here
         if (exists $c->{travel_this}) {
             $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
         }
+        elsif (exists $c->{travel}) {
+            $T->T($c->{travel}, $G, $c, $L->{depth}+1);
+            delete $c->{travel} if !defined $c->{travel};
+        }
         elsif (exists $c->{arr_returns}) {
             @r = @{$c->{arr_returns}};
         }
-        elsif (exists $c->{B}->{s}) {
+        elsif (exists $c->{B}->{s} || exists $c->{O}) {
             # sweet
         }
         else {
-            $H->error("what kind of way out is",Ghost::ki($c))
+            $H->error("what kind of way out is",$G,$c)
         }
     }
     $G->w("T_end", {L=>$L, r=>\@r});
