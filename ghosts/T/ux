@@ -25,21 +25,34 @@ chains:
      each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
 hooks:
   ux: |
+    Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    my $wayfindO = sub {
+        grep { _.O eq $_[0] } @{$_[1]}
+    };
     my @uxs;
-    Say @$Ls." lines from $Ls->[0]->{name}";
-    my @to;
-    for my $L (@{$Ls}) {
-        my ($ux) = grep { _.O eq "ux" } @{L.o}; # find existing
+    for my $Lu (@{$Ls}) { # place ux in Lu.o
+        my ($ux) = $wayfindO->(ux => Lu.o);
         if (!$ux) {
-            $ux = $G->nw(K=>'ux', O=>'ux', Lu=>$L);
-            push @{L.o}, $ux;
+            $ux = $G->nw(K=>'Lu', O=>'ux', Lu=>$Lu);
+            push @{Lu.o}, $ux;
         }
         push @uxs, $ux;
     }
-    
-    my @updated;
-    my @tip;
+     
+    my @loose;
+    my @hupped;
     for my $ux (@uxs) {
+        my $Lu = ux.Lu;
+        my $pLu = Lu.i.Lo;
+        my ($pux) = $wayfindO->(ux => pLu.o);
+        
+        # if $pLu && !$pux # flare could climb further up
+        
+        die wdump(2, 
+            {Lui=>pint(Lu.i),
+            parLui=>pint(pLu.i)},
+        ) if $pLu;
+        
         my ($pa) = grep { _.O eq "ux" } @{ux.Lu.i.Lo.o}; # above ux in origin
         if ($pa) {
             my $exists = grep { $hux eq $_ } @{pa.o};
@@ -50,7 +63,7 @@ hooks:
     }
     
     $G->{M} = "inflate";
-    w travel(i=>$_) for @tip;
+    w travel(i=>$_) for @loose;
     $G->{M} = "map";
     
     
@@ -69,6 +82,7 @@ hooks:
     if ($G->{M} eq "inflate") {
         G.t = ux.Lu;
         for my $hux (@{ux.h||[]}) {
+        die "here";
             my $exists = grep { $hux eq $_ } @{G.o}; # h is the impulse, updateness
             if (!$exists) { 
                 hux.travel = undef;
