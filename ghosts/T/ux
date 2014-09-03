@@ -10,7 +10,7 @@ hooks:
       K: ux
       O: ux
       print: |
-          pint(S.Lu.i)." = ".gpty(S.Lu.t)
+          pint(S.Lu.i)
           
   findO: |    
     my ($k, $o) = %$ar;
@@ -62,7 +62,7 @@ hooks:
     
     my $W = $G->W;
     my ($id) = W.id =~ /-(\w+)$/;
-    return join "\n", '<wormhole id="'.$id.'">', @eh, '</wormhole>';
+    return join "\n", '<wormhole style="position:relative;"id="'.$id.'">', @eh, '</wormhole>';
     
   antop: |
     #$G->w("an/$M", $ar);
@@ -73,12 +73,18 @@ hooks:
         my $uL = cux.Li || die;
         w antop[$X, $uL, $M];
     }
+    my $sty = {
+        te => "border:5px solid black;padding:1em;margin-left:2em;",
+        fullh => 'width:100%; float:left; position:relative; overflow:hidden;',
+        fulw => 'height:100%; width:33.3%; float:left; position:absolute;',
+    };
     my $ohtml = join "\n",
         grep { defined } map { _.html } @uxs;
-    my @html ='<te id="'.uL.uuid.'" style="padding:1em;margin-left:2em;"><hr>';
+    my $tes = $sty->{te}.$sty->{fullh};
+    my @html = '<te id="'.uL.uuid.'" style="'.$tes.'">';
     push @html, '<t style="width:100%;">'.pint(L.i)." = ".gpty(L.t).'</t>';
-    push @html, ind('    ',
-        '<wo style="font-size:7; padding-left:2em;">'."\n"
+    push @html, ind('    ', 
+        '<wo style="font-size:7; padding-left:2em; border: 2px solid pink;">'."\n"
         .$ohtml."\n"
         .'</wo>') if $ohtml;
     push @html, "</te>";
