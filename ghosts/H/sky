@@ -32,12 +32,13 @@ hooks:
     waylay 22 ambientness;
   colourchange: |
     $ar->{t} ||= 5;
-    $G->{cg}->("arr", t => $ar->{t}, change => 1);
+    $ar->{change} ||= 1;
+    $G->{cg}->("arr", %$ar);
   getundercontrol: |
     $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '26%'});");
   event: |
     w getundercontrol if $e->{C};
-    Info event => $e;
+    w touch;
   touch: |
     $ar->{t} ||= 0.3;
     w colourchange;
