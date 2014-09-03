@@ -42,20 +42,21 @@ sub from {
 sub load {
     my $self = shift;
     $self->{_wayfile} = shift if @_;
-    unless ($self->{_wayfile}) {
-        delete $self->{hostinfo};
-        say "$self->{_ghostname} has no wayfile !".Hostinfo::ddump($self);
-    }
-    my $cont = $H->slurp($self->{_wayfile});
-    my $w = eval { Load($cont) };
+    $self->{_wayfile} || die;
+    my $w = load_yaml($self->{_wayfile});
+    $self->init_way($w);
     
-    
+}
+sub load_yaml {
+    my $yamlfile = shift;
+    my $yaml = $H->slurp($yamlfile);
+    my $w = eval { Load($yaml) };
     if ($@ || !$w || ref $w ne 'HASH' || $@) {
         say $@;
         my ($x, $y) = $@ =~
               /parser \(line (\d+), column -?(\d+)\)/;
               
-        my @file = split "\n",  read_file($self->{_wayfile});
+        my @file = split "\n",  $cont;
         my $xx = 1;
         my $vision = SYCK();
         for (@file) {
@@ -70,12 +71,11 @@ sub load {
           }
           $xx++;
         }
-        die "! YAML load $self->{_wayfile} failed: "
+        die "! YAML load $yamlfile failed: "
         .($@ ? $@ : "got: ".($w || "~"))
         ."\n\n".$vision;
     }
-    
-    $self->init_way($w);
+    $w
 }
 
 sub SYCK { <<'';

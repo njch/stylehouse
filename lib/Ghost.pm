@@ -251,7 +251,10 @@ sub stackway {
 }
 sub F_delta {
     my $G = shift;
-    $d = sprintf("%.3f", $H->hitime()-$F[0]->{hitime});
+    my $now = $H->hitime();
+    my $then = $F[0]->{hitime};
+    die if $now < $then;
+    $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
 sub ob {

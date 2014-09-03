@@ -14,12 +14,12 @@ chains:
    foreach_travel:
      each: glob $thing."/ghosts/H/*"
     
- - K: 'FiEl'
+ - K: 'yaml'
    arr_if: |
-     !ref $thing && -f $thing
+     -f $thing && $thing =~ /keys/;
    foreach_travel:
-     each: `cat $thing`
+     each: Way::load_yaml($thing);
 dials:
-  max_depth: 1
+  max_depth: 2
 hooks:
 
