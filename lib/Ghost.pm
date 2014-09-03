@@ -253,7 +253,7 @@ sub F_delta {
     my $G = shift;
     my $now = $H->hitime();
     my $then = $F[0]->{hitime};
-    die if $now < $then;
+    die " $now < $then;".wdump(2,$F[0]) if $now < $then;
     $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
