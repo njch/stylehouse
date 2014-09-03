@@ -52,6 +52,7 @@ hooks:
         spill => [],
         andthen => [],
     };
+    my @eh;
     for my $M (qw{M}) {
         for my $uL (@tops) {
             w antop[$X, $uL, $M];
@@ -59,13 +60,14 @@ hooks:
         }
     }
     
-    [$G, @eh]
+    my $W = $G->W;
+    my ($id) = W.id =~ /-(\w+)$/;
+    return join "\n", '<wormhole id="'.$id.'">', @eh, '</wormhole>';
     
   antop: |
     #$G->w("an/$M", $ar);
     my $ux = uL.i;
-    die "hur:".wdump(1, $uL);
-    my $L = uL.Lu;
+    my $L = ux.Lu;
     my @uxs = w findO(ux => uL.o);
     for my $cux (@uxs) {
         my $uL = cux.Li || die;
@@ -73,12 +75,14 @@ hooks:
     }
     my $ohtml = join "\n",
         grep { defined } map { _.html } @uxs;
-    ux.html = '<te id="'.uL.uuid.'" style="padding:1em;margin-left:2em;">
-        '.uL.i.K.' = '.gpty(L.t).'
-        <wo style="font-size-adjust:0.7">
-        '.ind('   ',$ohtml).'
-        </wo>
-        </te>'
+    my @html ='<te id="'.uL.uuid.'" style="padding:1em;margin-left:2em;"><hr>';
+    push @html, '<t style="width:100%;">'.pint(L.i)." = ".gpty(L.t).'</t>';
+    push @html, ind('    ',
+        '<wo style="font-size:7; padding-left:2em;">'."\n"
+        .$ohtml."\n"
+        .'</wo>') if $ohtml;
+    push @html, "</te>";
+    ux.html = join "\n", @html;
     
     
   T_uxline: |
@@ -151,7 +155,6 @@ hooks:
     
         
     
-
   next_phase: |
       for my $L (@{G.Torail}) {
             w style_to_x[$L];
