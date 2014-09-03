@@ -3,111 +3,89 @@ dials:
   max_depth: 7
   form: 42
 chains:
- - K: xW #c
-   dom_depth: 0
-   arr_if: |
-     ref $thing eq "Wormhole";
-   B_: |
-     $thing
-   foreach_travel:
-     each: grep { $_->{depth} == 0 } @{$thing->{script}}
-   print: |
-     ".$Li->{n}"
- 
- - K: xL
-   iK: xW|xL
-   arr_if: |
-     ref $thing eq "HASH"
-     && ref $thing->{o} eq "ARRAY"
-   print: |
-     ".$Li->{n}"
-   foreach_travel:
-     each: grep { defined $_ } map { $_->{B}->{Li} } @{$thing->{o}};
+
 hooks:
+  ways:
+    ux:
+      K: ux
+      O: ux
+      print: |
+          pint(S.Lu.i)." = ".gpty(S.Lu.t)
+          
+  findO: |    
+    my ($k, $o) = %$ar;
+    grep { _.O eq $k } @$o
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
-    my $wayfindO = sub {
-        grep { _.O eq $_[0] } @{$_[1]}
-    };
     my @uxs;
     for my $Lu (@{$Ls}) { # install ux outways to Lu
-        my ($ux) = $wayfindO->(ux => Lu.o);
+        my ($ux) = w findO(ux => Lu.o);
         if (!$ux) {
-            $ux = $G->nw(K=>'Lu', O=>'ux', Lu=>$Lu);
+            $ux = $G->nw(Lu=>$Lu)->from($G->findway('ways/ux'));
             push @{Lu.o}, $ux;
         }
         push @uxs, $ux;
     }
-     
-    my @loose;
-    my @hupped;
-    my @eh;
+    
+    my @uLs;
     for my $ux (@uxs) {
+        push @uLs, w T_uxline[$ux];
+    }
+    my @tops;
+    for my $uL (@uLs) {    # join uL lines together like the origin
+        my $ux = uL.i;
         my $Lu = ux.Lu;
         # find parent ux via origin W (Lu)
-        my $pLu = Lu.i.Lo;
-        my ($pux) = $wayfindO->(ux => pLu.o) if $pLu;
-        
-        # if $pLu && !$pux # flare ends
-        say "under: ".pint(pLu.i) if $pux;
-        say "  - ".pint(Lu.i);
-        
-        if ($pux) {
-            if (!grep { $ux eq $_ } @{pux.o}) {
-                push @{pux.o}, $ux;
-                say "  brand new ";
-            }
-            else {
-                say "  reux";
-            }
-            push @hupped, $pux; # things to render, add @uxs
+        my $pLu = Lu.i.Lo; # up and over
+        my ($pux) = w findO(ux => pLu.o) if $pLu;
+        if (!$pux) {
+            push @tops, $uL;
         }
         else {
-            say "    loose";
-            push @loose, $ux;
+            $pL = w T_uxline(ux => $pux);
+            push @{pL.o}, $ux;
+            ux.Lo = $pL;
         }
     }
-    my $hup = {};
-    $hup->{"$_"} = $_ for @hupped;
     
-    for my $lux (@loose) {
-        # delete $hup->{"$lux"} for any ux we update,render
-        
-    }
-    # remaining $hup rechild # extra roots of updated things
-        
-        
-    $G->{M} = "inflate";
-    w travel(i=>$_) for @loose;
-    $G->{M} = "map";
-    
-    
-    
-  travel: |
-    if ($G->{M} eq "inflate") {
-        $G->T('aye', undef, $i);
-    }
-    elsif ($G->{M} eq "map") {
-        w arr(ux=>$i);
-    }
-    
-  arr: |
-    my $ux = $ar->{ux} || G.i;
-    ux.O eq "ux" || die wdump(2,$ux);
-    if ($G->{M} eq "inflate") {
-        G.t = ux.Lu;
-        for my $hux (@{ux.h||[]}) {
-        die "here";
-            my $exists = grep { $hux eq $_ } @{G.o}; # h is the impulse, updateness
-            if (!$exists) { 
-                hux.travel = undef;
-                push @{G.o}, $hux;
-            }
+    my $X = {
+        spill => [],
+        andthen => [],
+    };
+    for my $M (qw{M}) {
+        for my $uL (@tops) {
+            w antop[$X, $uL, $M];
+            push @eh, uL.i.html;
         }
     }
-    elsif ($G->{M} =~ /^map/) {
-        ux.Li.o;
+    
+    [$G, @eh]
+    
+  antop: |
+    #$G->w("an/$M", $ar);
+    my $ux = uL.i;
+    die "hur:".wdump(1, $uL);
+    my $L = uL.Lu;
+    my @uxs = w findO(ux => uL.o);
+    for my $cux (@uxs) {
+        my $uL = cux.Li || die;
+        w antop[$X, $uL, $M];
     }
+    my $ohtml = join "\n",
+        grep { defined } map { _.html } @uxs;
+    ux.html = '<te id="'.uL.uuid.'" style="padding:1em;margin-left:2em;">
+        '.uL.i.K.' = '.gpty(L.t).'
+        <wo style="font-size-adjust:0.7">
+        '.ind('   ',$ohtml).'
+        </wo>
+        </te>'
+    
+    
+  T_uxline: |
+    my ($L) = grep { _.i eq $ux } @{$G->W->{script}};
+    return $L if $L;
+    $G->T("uxL: ".pint($ux), undef, $ux);
+    $L = ux.Li || die;
     
   x_to_h: |
     my $x = L.i.B.x;
@@ -173,9 +151,7 @@ hooks:
     
         
     
-  T_end: |
-    @$r = $L
-        
+
   next_phase: |
       for my $L (@{G.Torail}) {
             w style_to_x[$L];

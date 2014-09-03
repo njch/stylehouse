@@ -849,7 +849,7 @@ sub keep_throwing {
 
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
     if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '60%'}, 1200);");
+        $self->JS("\$('#mess').animate({'max-width': '51%'}, 1200);");
     }
     $string = encode_entities($string);
     $string =~ s/'/'/g;

@@ -122,7 +122,7 @@ sub pint {
     my $w = shift;
     ( defined $w->{K} && !defined $w->{k} ? "$w->{K} " : "" )
     
-    .$Ghost::F[0]->{G}->w('print',{},$w);
+    .(defined $w->{print} ? $Ghost::F[0]->{G}->w('print',{},$w) : "")
 }
 sub find {
     my $self = shift;
