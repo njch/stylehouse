@@ -30,7 +30,7 @@ hooks:
         grep { _.O eq $_[0] } @{$_[1]}
     };
     my @uxs;
-    for my $Lu (@{$Ls}) { # place ux in Lu.o
+    for my $Lu (@{$Ls}) { # install ux outways to Lu
         my ($ux) = $wayfindO->(ux => Lu.o);
         if (!$ux) {
             $ux = $G->nw(K=>'Lu', O=>'ux', Lu=>$Lu);
@@ -41,27 +41,38 @@ hooks:
      
     my @loose;
     my @hupped;
+    my @eh;
     for my $ux (@uxs) {
         my $Lu = ux.Lu;
+        # find parent ux via origin W (Lu)
         my $pLu = Lu.i.Lo;
-        my ($pux) = $wayfindO->(ux => pLu.o);
+        my ($pux) = $wayfindO->(ux => pLu.o) if $pLu;
         
-        # if $pLu && !$pux # flare could climb further up
+        # if $pLu && !$pux # flare ends
         
-        die wdump(2, 
-            {Lui=>pint(Lu.i),
-            parLui=>pint(pLu.i)},
-        ) if $pLu;
-        
-        my ($pa) = grep { _.O eq "ux" } @{ux.Lu.i.Lo.o}; # above ux in origin
-        if ($pa) {
-            my $exists = grep { $hux eq $_ } @{pa.o};
+        if ($pux) {
+            if (!grep { $ux eq $_ } @{pux.o}) {
+                push @{pux.o}, $ux;
+                say "  brand new";
+            }
+            else {
+                say "  reux";
+            }
+            push @hupped, $pux; # things to render, add @uxs
         }
         else {
-            push @tip, $ux;
+            push @loose, $ux;
         }
     }
+    my $hup = { map { "$_" => $_, } } @hupped;
     
+    for my $lux (@loose) {
+        # delete $hup->{"$lux"} for any ux we update,render
+        
+    }
+    # remaining $hup rechild # extra roots of updated things
+        
+        
     $G->{M} = "inflate";
     w travel(i=>$_) for @loose;
     $G->{M} = "map";

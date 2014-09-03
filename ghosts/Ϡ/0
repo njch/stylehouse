@@ -42,6 +42,7 @@ hooks:
 
       $style."left:5em;background:#334;");
 
+      return;
       $G->{View4} = $Vf->spawn_floozy($G, "Ϡ4",
 
       $style."left: 50%;top:60em;min-height:20em; min-width:30em;");
@@ -58,13 +59,14 @@ hooks:
     
     my $gux = $G->Gf('ux$');
     $gux->RW;
+    my $eh;
     eval {
-    $gux->w('ux', {Ls=>$g->W->CS});
+    $eh = $gux->w('ux', {Ls=>$g->W->CS});
     };
     $H->error($@) if $@;
     $@ = "";
     
-    $O->w('somewhere', {W => $gux->W});
+    $O->w(somewhere=>{thing=>$eh, md=>2}) if $eh;
     
   arr: |
     my ($name, $thing) = %$ar; 

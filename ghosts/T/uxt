@@ -121,9 +121,10 @@ hooks:
   style_to_x: |
     my $x = L.i.B.x = {};
     my $yL = L.t;
+    my @oo = grep { !_.O } @{yL.o};
     my $got = {
-    l => [ grep { !_.B.Li } @{yL.o} ],
-    t => [ grep { _.B.Li } @{yL.o} ],
+    l => [ grep { !_.B.Li } @oo ],
+    t => [ grep { _.B.Li } @oo ],
     i => [ yL.i ],
     };
     my $hg = sub {
@@ -147,7 +148,7 @@ hooks:
     
     my @content = $hg->(content => 'li');
     @content > 1             && die "cont > 1";
-    @content && @{got.t}     && die "cont & t";
+    #@content && @{got.t}     && die "cont & t";
     ($x->{content}) = @content if @content;
     
     $x->{class} = [ flatline($hg->(class => 'il')) ];
