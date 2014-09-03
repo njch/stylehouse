@@ -619,6 +619,7 @@ sub doo {
         ." ".($point||"")." arar=".$ksmush;
         
     my $ha = Hostinfo::sha1_hex($uuname);
+    die unless length($ha) == 40;
     
     $G->Flab(join("   ", '☺', ($point ? "w $point" : "⊖ $babble"), "$ksmush"));
     

@@ -49,11 +49,13 @@ hooks:
         my ($pux) = $wayfindO->(ux => pLu.o) if $pLu;
         
         # if $pLu && !$pux # flare ends
+        say "under: ".pint(pLu.i) if $pux;
+        say "  - ".pint(Lu.i);
         
         if ($pux) {
             if (!grep { $ux eq $_ } @{pux.o}) {
                 push @{pux.o}, $ux;
-                say "  brand new";
+                say "  brand new ";
             }
             else {
                 say "  reux";
@@ -61,10 +63,12 @@ hooks:
             push @hupped, $pux; # things to render, add @uxs
         }
         else {
+            say "    loose";
             push @loose, $ux;
         }
     }
-    my $hup = { map { "$_" => $_, } } @hupped;
+    my $hup = {};
+    $hup->{"$_"} = $_ for @hupped;
     
     for my $lux (@loose) {
         # delete $hup->{"$lux"} for any ux we update,render
