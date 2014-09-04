@@ -53,7 +53,7 @@ sub new {
     ." z-index:4; opacity: 0.95; height: 100%;"
     ."overflow: scroll;", before => 'flood');
 
-    $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
+    $Codo->spawn_ceiling($self, 'codseal' => 'display:none;');
     $H->{flood}->spawn_floozy($self, codolist =>
         "padding: 1em; width:100%; z-index:3; background: rbga(0,0,90,0.9); color: #afc; opacity: 1; hegith: 8em;");
 
