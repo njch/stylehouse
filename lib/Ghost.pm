@@ -527,6 +527,16 @@ sub ways {
     
     grep { !$_->{_disabled} } @{$self->{ways}}
 }
+sub styles {
+    my ($G, $styles) = @_;
+    
+    my @styles;
+    for my $style (split ' ', $styles) {
+        push @styles,
+            join "", map { /;$/ ? $_ : "$_;" } $G->w("styles/$style");
+    }
+    join ' ', @styles;
+}
 sub findway {
     my $G = shift;
     my $point = shift;

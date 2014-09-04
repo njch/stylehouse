@@ -79,14 +79,10 @@ hooks:
         my $uL = cux.Li || die;
         w antop[$X, $uL, $M];
     }
-    my $sty = {
-        te => "border:5px solid black;padding:1em;margin-left:2em;",
-        fullh => 'width:100%; float:left; position:relative; overflow:hidden;',
-        fulw => 'height:100%; width:33.3%; float:left; position:absolute;',
-        wo => 'font-size:7; padding-left:2em; border: 2px solid pink;',
-    };
-    
-    my @html = '<te id="'.uL.uuid.'" style="'.$sty->{te}.$sty->{fullh}.'">';
+    start_timer();
+    my $tes = $G->styles('te fullh');
+    say "stlsing: ".show_delta();
+    my @html = '<te id="'.uL.uuid.'" style="'.$tes.'">';
     push @html, '  <t style="width:100%;">'.pint(L.i)." = ".gpty(L.t).'</t>';
     
     my $ohtml = join "\n", grep { defined } map { _.html } @uxs;
@@ -96,9 +92,19 @@ hooks:
         .'</wo>' if $ohtml;
         
     push @html, "</te>";
+    say "ux antop ".$G->F_delta();
     ux.html = join "\n", @html;
     
-    
+  styles:
+    te: |
+      q {border-bottom:1px solid black},
+      qw{ padding:0.4em margin-left:2em },
+    fullh: |
+      qw{width:100% float:left position:relative overflow:hidden},
+    fulw: |
+      qw {height:100% float:left position:absolute},
+    wo: |
+      qw{font-size:7 padding-left:2em}, q {border: 2px solid pink},
   T_uxline: |
     my ($L) = grep { _.i eq $ux } @{$G->W->{script}};
     return $L if $L;
