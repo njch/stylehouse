@@ -11,7 +11,7 @@ sub wdump { Hostinfo::wdump(@_) }
 sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 use Carp 'confess';
-
+use Term::ANSIColor;
 our $H;
 our @F;
 our @Flab;
@@ -585,9 +585,9 @@ sub w {
         my $ZZ = $u->();
         die "MISM" unless $Z eq $ZZ;
         $Z->{Returns} = $r;
-          
+           
         if ($@) {
-            my $ne = "Z     $G->{name}    $talk\n";
+            my $ne = "Z\n";
             $ne .= "S: ".ki($Sway)."\n" if $Sway;
             $ne .= "$@";
             $@ = $ne;
