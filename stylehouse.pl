@@ -291,6 +291,8 @@ div div div {
 .divlabel {
     z-index: -5;
 }
+#Codo { direction: rtl; }
+#Codo > * {direction: ltr; }
 .floated {
     position: fixed !important;
     top: 40%;
