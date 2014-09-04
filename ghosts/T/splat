@@ -6,37 +6,45 @@ tractors:
     B_: |
       $splatname
     first_time: |
-      my $style = "position:absolute;overflow:hidden;pointer-events:none;";
-      if ($splatname eq "path") {
-          $style .= "top:0px;left:-1em;border:1px solid green;width:11em;z-index:20;"
-      }
-      if ($splatname eq "func") {
-          $style .= "bottom:0px;left:-1em;border:1px solid green;width:11em;z-index:30;"
-          ."-webkit-filter: brightness(0.6) contrast(1) drop-shadow(17px 17px 20px black) grayscale(0.1) hue-rotate(150deg) invert(0.3) saturate(5.8);";
-      } 
-      if ($splatname eq "somewhere") {
-          $style .= "top:0px;left:10em; width:80%;"
-      }
-      if ($splatname eq "swamp") {
-          $style .= "top:70%;left:10em;"
-      }
-      if ($splatname eq "land") {
-          $style .= "bottom:0px;right:0px;border:1px solid green;width:9em;z-index:20;"
-      }
-      if ($splatname eq "splatW") {
-          $style .= "background:#5a8;bottom:0px;right:30%;border:1px solid green;width:28em;z-index:20;"
-      }
-      if ($splatname eq "worm") {
-          $style .= "bottom:0em;left:10em;border:2px solid #88f;min-width:17em; max-width:60%;z-index:20;pointer-events:initial;";
-      }
       $O->{V}->{$splatname} = $S->{view} = $S->{B}->{view}
-          || ($G->{floozal} || $H->{sky})->spawn_floozy($G, $splatname, $style);
+          || ($G->{floozal} || $H->{sky})
+          ->spawn_floozy($G, $splatname,
+          $O->_0('styles'=>{styles=>"spl $splatname"}));
       
     nonfirst_times: |
       $S->{view}->fadehtml();
     print: |
       $S->{K} .": ". $S->{B}->{_}
 hooks:
+  styles:
+    spl: |
+      qw{ position:absolute overflow:hidden pointer-events:none }
+    path: |
+      qw{ top:0px left:-1em width:11em z-index:20 },
+      q { border:1px solid green },
+    func: |
+      qw{ bottom:0px left:-1em width:11em z-index:30 },
+      q { border:1px solid green },
+      q { -webkit-filter: brightness(0.6) contrast(1) drop-shadow(17px 17px 20px black) grayscale(0.1) hue-rotate(150deg) invert(0.3) saturate(5.8) },
+      
+    somewhere: |
+      qw{ top:0px left:10em width:80% },
+      q { -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black) },
+      
+    swamp: |
+      qw{ top:70% left:10em }
+      
+    land: |
+      qw { bottom:0px right:0px width:9em z-index:20 },
+      q{ border:1px solid green },
+      
+    splatW: |
+      qw { background:#5a8 bottom:0px right:30% width:28em z-index:20 },
+      q { border:1px solid green },
+      
+    worm: |
+      qw{ bottom:0em left:10em min-width:17em max-width:60% z-index:20 pointer-events:initial },
+      q { border:2px solid #88f }
   load_ways_post: |
     #grab A/WS,L,t,
     # nest, styles tied to atom thing
