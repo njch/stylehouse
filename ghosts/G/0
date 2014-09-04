@@ -19,20 +19,40 @@ hooks:
         $g->w("any_child_recoded_init", {S => $S});
     }
   _fresh_init: |
+    $G->{S} = $S;
+    w V/init[$S];
+    w include_init;
     $S->w("fresh_init");
+    delete $G->{S};
+  V: 
+    init: |
+      for my $V ($S->findway('V')) {
+          my $Vf = $S->{floozal} || $H->{sky};
+          
+          while (my ($i, $t) = each %$V) {
+                my $styles = $t->{styles};
+                my $style = w styles[$styles];
+                $G->{V}->{$i} = $Vf->spawn_floozy($G, "$i", $style);
+          }
+      }
+    blur: |
+      my $blur = ++$G->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
+      $H->JS($_, "css('-webkit-filter', '$blur');") for values %{G.V};
 
-  printF: |
-    join"",map{"$_\n"}map{
-    w $_ print;
-    } @$FFF;
+    toginvis: |
+      $_->togcl('invis') for values %{G.V};
+  include_init: |
+    for my $include ($S->anyway('include')) {
+        $G->load_ways(split ' ', $include);
+    }
+  styles: |
+    my @styles;
+    for my $style (split ' ', $styles) {
+          push @styles, w style[$style];
+    }
+    join ' ', @styles;
   style: |
-    join "", map { /;$/ ? $_ : "$_;" } $S->w("styles/$K")
-  V: |
-    my $V = View->new($H->intro, $S,  $K,
-          ( $ar->{style} || $G->w(style=>$ar) )
-    );
-    $S->{V}->{$K} = $V;
-    return $V;
+    join "", map { /;$/ ? $_ : "$_;" } $G->{S}->w("styles/$style")
   sing: |
     $G->{singing} ||= {};
     return say "$name BLOCKED" if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...

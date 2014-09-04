@@ -526,12 +526,12 @@ sub findway {
     my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
     wantarray ? @w : shift @w;
 }
-sub findways {
+sub anyway {
     my $G = shift;
     my $point = shift;
-    my @w = $G->findway($point);
-    map {@$_} @w;
+    map { $_->find($point, 1) } $G->ways
 }
+
 sub throwlog {
     my $what = shift;
     $H->{G}->w(throwlog => {what => $what, thing => [@_]});
@@ -725,7 +725,7 @@ sub doo {
         my $DOOF; 
         my $first = 1 unless $@ =~ /DOOF/;
         
-        $DOOF .= "DOOF  $G->{name}   ".($ar->{S} ? "S=$ar->{S}":"");
+        $DOOF .= "DOOF  $G->{name}   ".($ar->{S} ? "S=".gpty($ar->{S}) :"");
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";;
         if ($first) {
             if (exists $D->{SigDieStack}) {

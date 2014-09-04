@@ -1,6 +1,15 @@
 
 name: the sky
 hooks:
+  V:
+    sky:
+      styles: sky
+  styles:
+    sky: |
+      "height:$O->{horizon}",
+      qw{background:#00248F width:100%
+      position:absolute top:0px left:0px z-index:3
+      }
   fresh_init: |
     # w< ...etc?
     $G->{cg} = sub {
@@ -8,18 +17,8 @@ hooks:
         $G->Tw($G->{gcol}, shift, {name => "#sky", @_});
     };
     $G->{cg}->("arr", set_css_background => "#sky");
-    
+    $H->{sky} = G.V.sky || die;
     w ambientness;
-  styles:
-    sky: |
-      "height:$O->{horizon}",
-      qw{background:#00248F width:100%
-      position:absolute top:0px left:0px z-index:3
-      }
-  flood_init: |
-      $H->{sky} = $G->_0(V=>{K=>'sky'});
-  recoded_init: |
-      w doof;
   doof: |
     $ar->{t} ||= 0.1;
     #$ar->{c} ||= '333';

@@ -129,6 +129,7 @@ sub find {
     my $point = shift;
     my @path = split '/', $point;
     my $h = $self->{hooks} || $self;
+    $h = $self if @_;
     for my $p (@path) {
         $h = $h->{$p};
         unless ($h) {

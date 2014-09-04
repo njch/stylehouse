@@ -8,65 +8,39 @@ tractors:
     B_: |
       $name
     print: |
-      $S->{B}->{_}
+      $S->{B}->{_}      
 hooks:
+  V:
+    ux:
+      styles: cardboard ux
   styles:
-    dimen: |
+    cardboard: |
       qw{
-        position:absolute overflow:hidden
+         position:absolute overflow:hidden
           top:20em left:10em background:#765
-          -webkit-transform:scale(0.7,0.7)
+         -webkit-transform:scale(0.7,0.7)
       }
-    1: |
-      qw{
-        left:40em background:#987
-      }
-    2: |
-      qw{
-        left:5em background:#334
-      }
-        
-    3: |
-      qw{
-        left:0em bottom:1em     font-size:24pt
-        
-        min-height:20em min-width:30em
-      }
-        
-    4: |
-      qw{
-        left: 50% top:60em min-height:20em  min-width:30em
-      }
-  fresh_init: |
-    w in/codons;
-    w in/views;
-  in:
-    codons: |
-      $G->Gc("C/odon", "T/ravel");
-      $G->Gc("T/crawl", "T/ravel");
-      $G->Gc("T/yle", "T/ravel");
-      $G->Gc("T/uxt", "T/ravel");
-      $G->Gc("T/ux");
-    views: |
-      my $s = sub {
-          join " ", map { $G->_0('style',{K=>$_}) } @_
-      };
       
-      my $Vf = $G->{floozal} || $H->{sky};
-      for (1..3) {
-          my $n = $_ == 1 ? "" : $_;
-          $G->{"View$n"} = $Vf->spawn_floozy($G, "Ϡ$_", $s->(dimen => $_));
+    ux: |
+      qw{
+          left:0em bottom:1em     font-size:24pt
+      
+              min-height:20em min-width:30em
       }
+  GG:
+    C/odon: 1
+    T/crawl: 1
+    T/yle: 1
+    T/uxt: 1
+    T/ux: 1
   any_child_recoded_init: |
-    #w andyle if $S->{way} =~ /yle/;
-    #w anduxt;
     w gestarted;
-    #w dumptrail;
-  gestarted: |
+  ux: |
     my $g = G odon;
     $g->RW;
     $g->T("/s", undef, $G->nw(K=>"styledir"));
     
+    $g = w crawl(thing => $g);
     
     my $gux = $G->Gf('ux$');
     $gux->RW;
@@ -77,20 +51,22 @@ hooks:
     $H->error($@) if $@;
     $@ = "";
     
-    $G->{View3}->takeover($eh);
+    G.V.ux ->takeover($eh);
+    
     Info "ux ".$G->F_delta();
     $O->w(somewhere=>{thing=>$gux, md=>2}) if $eh;
-    
   arr: |
     my ($name, $thing) = %$ar; 
     my $S = Arr[$name, $thing];
     
+    my $g = w crawl[$thing];
+    w uxtou(g=>$g);
+  crawl: |
     my $g = G crawl;
-    $g->{max_depth} = 1;
+    g.max_depth = 1;
     $g->RW;
     $g->T($thing);
-    
-    w uxtou(g=>$g);
+    $g;
   uxtou: |
     my $yG = G yle;
     $yG->RW;
@@ -100,32 +76,11 @@ hooks:
     
     my $html = $uG->T->T($yG->W);
     
-    $G->{View3}->takeover($html);
+    G.V.ux ->takeover($html);
     
     Say "uxtoun ".$G->F_delta();
     say $html;
     return $html
-  dumpall: |
-    #w dumptrail;
-    w dumpyleW;
-  dumpyleW: |
-    for ([ "unxoϠ1", sub {
-            $H->Gf("T/splat") Tw Splat(Ϡ1 => G(crawl)->W, view => $G->{View} );
-      }],[ "unxoϠ2", sub {
-            $H->Gf("T/splat") Tw Splat(Ϡ2 => G(yle)->W,   view => $G->{View2});
-      }],[ "unxoϠ4", sub { 
-            $H->Gf("T/splat") Tw Splat(Ϡ4 => G(uxt)->W,   view => $G->{View4});
-      }]) {
-    $G->_0(sing => { 
-        name => $_->[0],
-        block_for => 7,
-        begin_after => 3,
-        code => $_->[1],
-    });
-    }
-  views: |
-    $G->{View},$G->{View2},$G->{View3}
-  blur: |
-      my $blur = ++$G->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
-      $H->JS($_, "css('-webkit-filter', '$blur');") for w views;
+  gestarted: |
+    w ux;
 
