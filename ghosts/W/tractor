@@ -83,9 +83,10 @@ hooks:
     if (my $max = $A->find('populi/max')) {
         shift @$s until @$s <= $max; # off by one for the line about to happen..?
     }
-    if (my $h = $A->find('populi/_hooks')) {
-        for my $he (@$h) {
-            $he->();
+    my $hp = 'populi/hooks';
+    if (my $h = $A->find($hp)) {
+        for my $he (keys %$h) {
+            $G->w("$hp/$he", $ar, $A);
         }
     }
   random: |

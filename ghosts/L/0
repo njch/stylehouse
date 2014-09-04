@@ -2,25 +2,22 @@ name: Lyricoso writoro
 
 hooks:
   fresh_init: |
-    $H->{_future} = 1;
-    G TT ->G("T/splat");
-    G TT ->G("T/crawl", "T/ravel");
-    $G->{that} = G TT ->G("Ϡ");
+    #
+    H.G->w('init/future');
     
-    G TT ->G("L/path");
-    G TT ->G("L/land");
-    G TT ->G("L/func");
-    G TT ->G("L/ob");
-    
-    my $Gmess = $H->{G}->Gf('mess');
-    my ($A) = $Gmess->tractors;
-    die unless $A->{K} eq "mess";
-    $A->accum('populi/_hooks', sub {
-        return if $G->{_dont_mess_worm};
-        waylay messworm;
-    });
+    G.that = G Ϡ;
     
     w getstarted;
+  GG:
+    T/splat: 1
+    T/crawl: 1
+    
+    L/path: 1
+    L/land: 1
+    L/func: 1
+    L/ob: 1
+    
+    Ϡ: 1
   any_init: |
     waylay set_keys;
     waylay set_Gdbs;
@@ -33,7 +30,8 @@ hooks:
     n: |
       G Ϡ ->_0('V/toginvis');
     a: |
-        w f/nos;
+      die wdump(G splat ->{V});
+      G splat ->{V}->{somewhere}->togcl('invis');
     'À': |
         w f/q;
     q: |
@@ -118,9 +116,6 @@ hooks:
       #e t c
     chch: |
       w swap_chains
-    nos: |
-      A splat somewhere;
-      Gf splat ->{G}->{somewhere}->togcl('invis');
       
     '⥁': |
       w splat_wormholes
@@ -185,6 +180,7 @@ hooks:
     : w hide_hmess;
   hide_hmess: |
         $G->{_dont_mess_worm} = 1;
+        die unless G splat;
         my $S = G splat Tw get(splatname => 'worm');
         $S->{view}->fadehtml();
   messworm: |

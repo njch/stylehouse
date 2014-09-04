@@ -20,8 +20,10 @@ hooks:
     }
   _fresh_init: |
     $G->{S} = $S;
+    say "init for $S->{name}";
     w V/init[$S];
     w include_init[$S];
+    w GG_init[$S];
     $S->w("fresh_init");
   V: 
     spawn: |
@@ -49,9 +51,19 @@ hooks:
 
     toginvis: |
       $_->togcl('invis') for values %{G.V};
+      
+  GG_init: |
+    my $GG = $S->findway("GG");
+    while (my ($way, $t) = each %$GG) {
+        my $GG = $H->TT($S)->G($way);
+    }
   include_init: |
-    for my $include ($S->anyway('include')) {
-        $S->load_ways(split ' ', $include);
+    for my $include ($S->findway('include')) {
+        for my $in (split ' ', $include) {
+            next if grep { $_->{_wayfile} =~ /$in/ } $S->ways;
+            $S->{load_ways_count}--;
+            $S->load_ways($in);
+        }
     }
   styles: |
     my @styles;

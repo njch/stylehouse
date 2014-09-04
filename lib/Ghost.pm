@@ -202,7 +202,6 @@ sub comeback {
     $u->();
     if ($@) {
         $H->error($s) if $@;
-        die $@ if 0; # or something?
     }
 }
 sub printF {
@@ -515,6 +514,14 @@ sub tractors {
     grep { !$_->{_disabled} }
     map { @{$_->{tractors}||[]} } $self->ways
 }
+sub A {
+    my $G = shift;
+    my @AA = $G->tractors;
+    for my $K (@_) {
+        @AA = grep { $_->{K} eq $K }  @AA
+    }
+    wantarray ? @AA : shift @AA;
+}
 sub ways {
     my $self = shift;
     
@@ -531,7 +538,6 @@ sub anyway {
     my $point = shift;
     map { $_->find($point, 1) } $G->ways
 }
-
 sub throwlog {
     my $what = shift;
     $H->{G}->w(throwlog => {what => $what, thing => [@_]});
@@ -662,7 +668,6 @@ sub doo {
     my ($evs, $sub) = @$Ds;
         
     my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w);
-    my $theD = $F[0];
     
     my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
@@ -672,9 +677,9 @@ sub doo {
         my @stack = split m/\n/, $@;
         shift @stack for 1..6; # Cover our tracks.
         my @stackend;
-        push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;\
+        push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;
         s/\t//g for @stackend;
-        push @{$theD->{SigDieStack}||=[]}, \@stackend;
+        push @{$F[0]->{SigDieStack}||=[]}, \@stackend;
     };
     
     my @return;
