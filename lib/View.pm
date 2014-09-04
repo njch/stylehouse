@@ -191,9 +191,12 @@ sub HIDEHIDEHIDE {
     $self->{hostinfo}->JS($self,
     "css('display', 'none').remove;");
 }
-sub togcl {
-    my ($V, $class) = @_;
-    $V->{hostinfo}->JS($V, "toggleClass('$class');");
+sub togcl { shift->cl('toggle', shift) }
+sub rmcl { shift->cl('remove', shift) }
+sub addcl { shift->cl('add', shift) }
+sub cl {
+    my ($V, $what, $class) = @_;
+    $V->{hostinfo}->JS($V, "${what}Class('$class');");
 }
 sub resume {
     my $self = shift;
