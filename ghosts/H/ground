@@ -1,6 +1,7 @@
 
 name: the ground
 hooks:
+
   styles:
     ground: |
       "top:$O->{horizon}",
@@ -14,8 +15,13 @@ hooks:
     flood_ceiling: |
       qw{width:100% height:4.20em background:#301a30 color:#afc font-weight:bold}
   flood_init: |
-        $H->{ground} = $G->_0(V=>{K=>'ground'});
-
-        $H->{flood} = $H->{ground}->spawn_floozy($G, "flood", $G->_0(style=>{K=>'flood'})); 
-        $H->{flood}->spawn_ceiling("flood_ceiling", $G->_0(style=>{K=>'flood_ceiling'}));
+    $H->{ground} = $G->_0('V/spawn' =>
+        {name=>'ground', styles => 'ground'}
+    );
+    H.flood = $G->_0('V/spawn' =>
+        {name=>'flood', styles => 'flood', from => H.ground }
+    );
+    H.flood->spawn_ceiling("flood_ceiling",
+        $G->_0(styles=>{styles=>'flood_ceiling'})
+    );
 

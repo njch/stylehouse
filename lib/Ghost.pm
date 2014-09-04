@@ -566,6 +566,7 @@ sub w {
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
         $ar = {%$ar, %$b, S => $Sway};
+        $ar->{S} = $G->{S} if $G->{S};
     }
     else {
         @ways = $G->ways;

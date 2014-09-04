@@ -21,18 +21,26 @@ hooks:
   _fresh_init: |
     $G->{S} = $S;
     w V/init[$S];
-    w include_init;
+    w include_init[$S];
     $S->w("fresh_init");
-    delete $G->{S};
   V: 
+    spawn: |
+      my $V;
+      my $style = w styles[$S, $styles];
+      if ($ar->{from}) {
+          $V = $from->spawn_floozy($S, $name, $style);
+      }
+      else {
+          $V = View->new($H->intro, $S,  $name, $style);
+      }
+      $S->{V}->{$name} = $V;
+      
     init: |
       for my $V ($S->findway('V')) {
-          my $Vf = $S->{floozal} || $H->{sky};
-          
-          while (my ($i, $t) = each %$V) {
+          my $from = $S->{floozal} || $H->{sky};
+          while (my ($name, $t) = each %$V) {
                 my $styles = $t->{styles};
-                my $style = w styles[$styles];
-                $G->{V}->{$i} = $Vf->spawn_floozy($G, "$i", $style);
+                w V/spawn[$S, $name, $styles, $from];
           }
       }
     blur: |
@@ -43,16 +51,16 @@ hooks:
       $_->togcl('invis') for values %{G.V};
   include_init: |
     for my $include ($S->anyway('include')) {
-        $G->load_ways(split ' ', $include);
+        $S->load_ways(split ' ', $include);
     }
   styles: |
     my @styles;
     for my $style (split ' ', $styles) {
-          push @styles, w style[$style];
+          push @styles, w style[$S, $style];
     }
     join ' ', @styles;
   style: |
-    join "", map { /;$/ ? $_ : "$_;" } $G->{S}->w("styles/$style")
+    join "", map { /;$/ ? $_ : "$_;" } $S->w("styles/$style")
   sing: |
     $G->{singing} ||= {};
     return say "$name BLOCKED" if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
