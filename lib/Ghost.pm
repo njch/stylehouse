@@ -669,7 +669,7 @@ sub doo {
     my $sigstacken = sub {
         local $@;
         eval { confess( '' ) };
-        my @stack = split m/n/, $@;
+        my @stack = split m/\n/, $@;
         shift @stack for 1..6; # Cover our tracks.
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;\
