@@ -87,7 +87,7 @@ sub display {
     my $head = '!html <span style="text-shadow: 2px 3px 40px #FFFFFF;color:#66CCFF;font-size:58pt; z-index:20; position: absolute: top:-30px;" id="<<ID>>-Head">'.$name.'</span>';
 
     my $show = $self->{show} ||= do {
-        $codo->{Codo}->spawn_floozy($self, $divid, "width:100%; background:#80182; color:#afc; height:23em;");
+        $codo->{Codo}->spawn_floozy($self, $divid, "width:100%; background:#80182; color:#afc; height:23em;padding-left:2em;");
     };
 
     my $texty = $self->{text} = $show->text;
