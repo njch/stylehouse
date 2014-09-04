@@ -585,9 +585,9 @@ sub w {
         my $ZZ = $u->();
         die "MISM" unless $Z eq $ZZ;
         $Z->{Returns} = $r;
-        
+          
         if ($@) {
-            my $ne = "Z $G->{name}\t$talk\n";
+            my $ne = "Z     $G->{name}    $talk\n";
             $ne .= "S: ".ki($Sway)."\n" if $Sway;
             $ne .= "$@";
             $@ = $ne;
@@ -668,8 +668,8 @@ sub doo {
     my $sigstacken = sub {
         local $@;
         eval { confess( '' ) };
-        my @stack = split m/\n/, $@;
-        shift @stack for 1..4; # Cover our tracks.
+        my @stack = split m/n/, $@;
+        shift @stack for 1..6; # Cover our tracks.
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;\
         s/\t//g for @stackend;
