@@ -26,12 +26,14 @@ hooks:
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     my $uL;
     
-    my $mku = sub {#c
-        my $way = shift;
+    my $mku = sub {#c # make this use Ghost::L for uL, move these codes to G:subs
+        my ($way, $B) = @_;
+        say "mku $way ".ki($B);
         my $w = $G->nw()->from($G->findway(
             'ways/'.$way
-            ))->from({B=>{@_}});
+            ))->from({B=>$B});
         w.Lu = w.B.Lu if w.B.Lu;
+        $w
     };
     my $accum = sub {
         my ($a, $t) = @_;
@@ -58,7 +60,7 @@ hooks:
                 $L = $LL unless $f;
             }
         }
-        return L.i if $L;
+        $L ? L.i : $u;
     };
     my $ul = sub { # look for u way
         my $z = {@_};
@@ -66,6 +68,7 @@ hooks:
         $u = $findu->(z.u)                    unless u.Li;
         $G->T("anu: ".pint($u), undef, $u)    unless u.Li;
         die                                   unless u.Li;
+        die "Aft". wdump($u) if !u.O;
         if (z.p){
             if (u.O eq "ux") {
                 $accum->(z.p.o => $u);
@@ -75,21 +78,20 @@ hooks:
                 $accum->(u.B.Lo, z.p); # .B.Lo many
             }
             else {
-                die wdump($u);
             }
         }
         $u
     };
     
     my @uxs;
-    for my $Lu (@{$Ls}) { # install ux outways to Lu
+    for my $Lu (@{$Ls}) { say "install ux outways to Lu";
         push @uxs, $ul->(
             u => $mku->(ux => {Lu=>$Lu}),
             p => $Lu,
         );
     }
     my @tux;
-    for my $ux (@uxs) {    # join uL lines together like the origin
+    for my $ux (@uxs) {   say "join uL lines together like the origin (ux.Lu.i.K - ux.Lu.t)"; 
         my $Lu = ux.Lu || die;
         my $pLu = Lu.i.Lo; # up and over
         my ($pux) = $G->findO(ux => pLu.o) if $pLu;
@@ -105,7 +107,7 @@ hooks:
     }
     
     
-    my $o_uxs = sub {# c
+    my $o_uxs = sub {
         my $L = shift || $uL;
         $G->findO(ux => L.o);
     };
@@ -140,6 +142,7 @@ hooks:
                 p => $uL,
             );
         };
+        say " u.O  for... ".ki(u.B);
         if (u.O eq "ux") {
             my $Lu = u.Lu || die;
                 # uy # no Lu # recursive uL, compresses ways
@@ -232,6 +235,7 @@ hooks:
     for my $l (0..$stops) {
         $stop = $to = $l;
         for my $uL (@tops) {
+              say "stop - $stop";
             $antop->($uL);
         }
     }

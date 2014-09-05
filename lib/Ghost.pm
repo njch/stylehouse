@@ -1,4 +1,5 @@
 package Ghost;
+use strict;
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
@@ -10,7 +11,7 @@ sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
-sub findO { my ($k, $o) = @_; grep { _.O eq $k } @$o }
+sub findO { my ($k, $o) = @_; grep { $_->{O} eq $k } @$o }
 use Carp 'confess';
 use Term::ANSIColor;
 use File::Find;
@@ -255,7 +256,7 @@ sub F_delta {
     my $now = $H->hitime();
     my $then = $F[0]->{hitime};
     $H->error("F_delta shows $now < $then;", $F[0]) if $now < $then;
-    $d = sprintf("%.3f",$now-$then);
+    my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
 sub ob {
@@ -456,10 +457,8 @@ sub haunt { # arrives through here
     }
     
     for my $o (@{$L->{o}}) {
-        $o->{B}->{Lo} = $L; # L heading back out/origin
         $o->{Lo} = $L;
     }
-    $i->{B}->{Li} = $L; # L heading in
     $i->{Li} = $L;
 
 
