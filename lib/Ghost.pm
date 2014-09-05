@@ -12,6 +12,7 @@ sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 use Carp 'confess';
 use Term::ANSIColor;
+use File::Find;
 our $H;
 our @F;
 our @Flab;

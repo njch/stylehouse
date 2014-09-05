@@ -16,12 +16,13 @@ use Term::ANSIColor;
 use Digest::SHA;
 use File::Slurp;
 use utf8;
-use Encode qw(encode_utf8 decode_utf8);
+use Encode qw(encode_utf8 decode_utf8 is_utf8);
 use Data::Dumper;
 use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
 our $data = {};
+${^WIDE_SYSTEM_CALLS} = 1;
 sub new {
     my $self = bless {}, shift;
     #$self->set('0', $self);
@@ -1015,6 +1016,14 @@ sub get_this_it { # find it amongst itselves
     }
     die "no findo ".ref($this)." i i i i i i $this";
     return undef;
+}
+
+sub fixutf8 {
+  for (@_) {
+    if (!is_utf8($_)) {
+      $_ = decode_utf8($_); 
+    }
+  }
 }
 sub slurp {
     my $self = shift;

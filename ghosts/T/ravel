@@ -1,6 +1,5 @@
 name: Trabambeist
 hooks:
-
   arr: |
     my $cs = [];
     my $doing = sub {
@@ -88,9 +87,21 @@ hooks:
     w aft_figureout;
   figure_foreach_travel: |
         my $fe = $c->{foreach_travel};
-        my @list = $G->doo(
-            $fe->{each}, $ar
-        );
+        my @list;
+        if ($fe->{each}) {
+            @list = $G->doo($fe->{each}, $ar);
+        }
+        elsif ($fe->{find_files}) {
+            my $found = sub {
+                 my $na = $File::Find::name;
+                Hostinfo::fixutf8($na);
+                next unless -f $na;
+                push @list, $na;
+            };
+            my $dir = $G->doo($fe->{find_files}, $ar);
+            File::Find::find($found, $dir);
+        }
+            
         if (my $ei = $c->{eaten_by}->{each_ignore}) {
             @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
         }
