@@ -38,7 +38,7 @@ hooks:
     my $accum = sub {
         my ($a, $t) = @_;
         if (!grep { $_ eq $t } @$a) {
-            push @a, $t
+            push @$a, $t
         }
     };
     
@@ -46,7 +46,7 @@ hooks:
     my $findu = sub {
         my $u = shift;
         my $L;
-        for $LL (@{$G->W->{script}}) {
+        for my $LL (@{$G->W->{script}}) {
             my $i = LL.i;
             if ($i eq $u) {
                 $L = i.Lo;
@@ -100,7 +100,7 @@ hooks:
         }
         else {
             $ul->(
-                u => $uxoLu,
+                u => $ux,
                 p => $pux,
             );
         }
@@ -133,6 +133,7 @@ hooks:
         my $uys;
         $uys = sub {
             my ($n, $y) = @_;
+            return if $Luyon->($n); # uy there
             if (ref $y eq "ARRAY") {
                 $cu_Lu->($_) || $uys->($n, $_) for @$y;
                 return;
@@ -151,15 +152,13 @@ hooks:
                     # may lead somewhere if o.Li or so
                     
 
-            for my $n (qw'a i t o m w') {
-                next if $Luyon->($n); # uy there
-                my $y = $Lu->{$n};
-                $uys->($n, $y);
+            for my $n (qw'a i t o m') {
+                $uys->($n, $Lu->{$n});
             }
         }
         elsif (u.O eq "uy") {
-            if (u.B.i) {
-                $uys->('w', u.B.i);
+            if (u.B.i || u.B.o) {
+                $uys->('w', u.B.i || u.B.o);
             }
         }
         else {
@@ -169,26 +168,22 @@ hooks:
     my $ugto = [ sub {
         my $u = uL.i;
         my $at = {id=>uL.uuid};
-        if (u.K eq 'uy') {
-            die if u.Lu;
-            for (qw'a i t o m') {
-                u.B->{$_} || next;
-                at.tag = at.styles = "L_$_";
-            }
-        }
+        die if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
+        
         if (u.K eq "ux") {
-            $subat->(styles => 'te');
+            at.styles = 'te';
+            at.tag = "L";
         }
         elsif (u.K eq "uy") {
-            $subat->(styles => 'te w?');
+            my @n = grep { /^(a|i|t|o|m)$/ } keys %{u.B};
+            die if @n != 1;
+            (at.tag) = "_$n[0]";
+            at.styles = "uy_$n[0]";
+            
+                at.tag = at.styles = "L_$_";
+            at.styles .= ' rel';
         }
-
-        my $jj = sub {
-            my $a = shift;
-            join " ", $G->(styles => join " ", ) };
-
-
-        my @html = '<te id="'.uL.uuid.'" style="'.$G->styles('te').'">';
+        my @html = '<'.at.tag.' id="'.at.uuid.'" style="'.$G->styles(at.styles).'">'
         push @html, '
 
         <L_i style="'.$G->styles('rel').'">
@@ -212,14 +207,15 @@ hooks:
 
 
 
-        push @html, "</te>";
+        push @html, "</at.tag>";
         say "ux antop ".$G->F_delta();
         ux.html = join "\n", @html;
 
     } ];
     my $grtr = sub { @$ugto > @$ugstop ? @$ugto : @$ugstop };
     
-    my $antop = sub {
+    my $antop;
+    $antop = sub {
         $uL = shift;
         
         $ugstop->[$stop]->() if $ugstop->[$stop];
@@ -229,17 +225,17 @@ hooks:
         $ugto->[$to]->() if $ugto->[$to];
     };
     
-    my @eh;
     my $stops = $grtr->()-1;
     $stop = $to = 0;
     for my $l (0..$stops) {
         $stop = $to = $l;
-        for my $uL (@tops) {
+        for my $uL (@tux) {
               say "stop - $stop";
             $antop->($uL);
         }
     }
-    for my $uL (@tops) {
+    my @eh;
+    for my $uL (@tux) {
         push @eh, uL.i.html;
     }
     
@@ -253,6 +249,7 @@ hooks:
       q {border-bottom:1px solid black},
       qw{ padding:0.4em margin-left:2em },
       qw{width:100% float:left position:relative},
+    
     rel: |
       qw'position:relative'
     topleft: |
@@ -263,8 +260,6 @@ hooks:
       qw'font-size:60%'
     fulw: |
       qw {height:100% float:left position:absolute},
-    wo: |
-      qw{width:30% font-size:7 padding-left:2em}, q {border: 2px solid pink},
   x_to_h: |
     my $x = L.i.B.x;
     my $h = L.i.B.h = {};
