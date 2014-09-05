@@ -1,19 +1,20 @@
 name: code crawl
 include: T/ravel
 chains:
- - K: 'lib'#c
+ - K: 'stylefile'#c
    Ki: 'styledir'
    arr_if: |
-     -d $thing."/lib"
+     -d "$thing/lib" && -d "$thing/ghosts"
    foreach_travel:
-     find_files: $thing."/lib/*"
+     glob: |
+       "$thing/style*", "$thing/not"
+     find_files: |
+       "$thing/lib", "$thing/ghosts"
      
- - K: 'ghosts'
-   Ki: 'styledir'
+ - K: 'ghost'
+   Ki: 'stylefile'
    arr_if: |
-     -d $thing."/ghosts"
-   foreach_travel:
-     find_files: $thing."/ghosts/"
+     0 && $thing =~ /ghosts\// && die 'hoolla';
     
  - K: 'yaml'
    arr_if: |
@@ -21,6 +22,6 @@ chains:
    foreach_travel:
      each: Way::load_yaml($thing);
 dials:
-  max_depth: 2
+  max_depth: 3
 hooks:
 

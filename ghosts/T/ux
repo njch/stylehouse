@@ -11,10 +11,12 @@ hooks:
       O: ux
       print: |
           pint(S.Lu.i)
+    uy:
+      K: uy
+      O: uy
+      print: |
+          ki($B)
           
-  findO: |    
-    my ($k, $o) = %$ar;
-    grep { _.O eq $k } @$o
   event: |
     my $ux = L.i;
     ux.O eq "ux" || $H->error("uxL.i sposed to be ux, L=", $L);
@@ -22,47 +24,203 @@ hooks:
     
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    
+    
+    my $accum = sub {
+        my ($a, $t) = @_
+        if (!grep { $_ eq $t } @$a) {
+            push @a, $t
+        }
+    };
+    
+    my $mku_;
+    my $uL_o_uxs = sub {
+        $G->findO(ux => uL.o)
+    };
+    my $uL_o_Lu_find = sub {
+        my $t = shift;
+        grep { $t eq _.Lu } $uL_o_uxs->();
+    };
+    
+    my $cu_Lu = sub {
+        my $w = shift;
+        w.Li && $uL_o_Lu_find->(w.Li)
+    };
+    my $Luyon = sub {
+        my $n = shift;
+        grep { _.O eq "uy" && exists _.B->{$n} } $uL_o_uxs->();
+    };
+    my $uxguts = sub {
+        # spawn guts
+        for my $o (@{L.o}) {
+            die "ux on L_o not uL_i" if o.O eq "ux" && $o ne $ux;
+        }
+        for my $o (@{L.o}) {
+            next if o.O eq "ux";
+            # makes a non-Lu-having uL O:uy for non-ux ways out
+            # which get B sets of instructions to style & whatever from
+            if ($cu_Lu->($o)) {
+                # line is there
+            }
+            else {
+                # way may lead somewhere if o.Li or some comp changes
+                $mku_->(uy => {B=>{o=>$o}})
+            }
+        }
+        
+        my $i = L.i;
+        for my $n (qw'a i t o m w') {
+            next if $Luyon->($n);
+            my $y = $L->{$n};
+            $mku_->(uy => {B=>{$n=>$y}})
+        }
+    };
+    my $uyguts = sub {
+        if (_.B.i) {
+            unless (grep { _.B.t } @{uL.o}) { # t uy there
+                $mku_->(uy => {B=>{t=>$t}})
+            }
+        }
+    };
+    $mku = sub {#c
+        my $way = shift;
+        $G->nw()->from($G->findway('ways/'.$way))->from({B=>{@_}});
+    };
+    my $findu = sub {
+        my $u = shift;
+        my $L;
+        for $LL (@{$G->W->{script}}) {
+            my $i = LL.i;
+            if ($i eq $u) {
+                push $L, $i;
+                last;
+            }
+            elsif (u.B) {
+                my $f = 0;
+                for my $k (keys %{u.B}) {
+                    $f = 1 unless u.B->{$k} eq i.B->{$k}
+                }
+                $L = $LL unless $f;
+            }
+        }
+        return L.i if $L;
+    };
+    my $ul = sub { # look for u way
+        my $z = {@_};
+        my $u = z.u;
+        $u = $findu->(z.u)                    unless u.Li;
+        $G->T("anu: ".pint($u), undef, $u) unless u.Li;
+        die                                   unless u.Li;
+        if (z.p){
+            $accum->(z.p.o => $u)
+            if (u.O eq "ux") {
+                u.Lo = z.p
+            }
+            elsif (u.O eq "uy") {
+                $accum->(u.B.Lo, $u);
+            }
+            else {
+                die
+            }
+        }
+        $u
+    };
+    
     my @uxs;
     for my $Lu (@{$Ls}) { # install ux outways to Lu
-        my ($ux) = w findO(ux => Lu.o);
-        if (!$ux) {
-            $ux = $G->nw(Lu=>$Lu)->from($G->findway('ways/ux'));
-            push @{Lu.o}, $ux;
-        }
-        push @uxs, $ux;
+        push @uxs, $ul->(
+            u => $mku->(ux => {Lu=>$Lu}),
+            p => $Lu,
+        );
     }
-    
-    my @uLs;
-    for my $ux (@uxs) {
-        push @uLs, w T_uxline[$ux];
-    }
-    my @tops;
-    for my $uL (@uLs) {    # join uL lines together like the origin
-        my $ux = uL.i;
-        my $Lu = ux.Lu;
-        # find parent ux via origin W (Lu)
+    my @tux;
+    for my $ux (@uxs) {    # join uL lines together like the origin
+        my $Lu = ux.Lu || die;
         my $pLu = Lu.i.Lo; # up and over
-        my ($pux) = w findO(ux => pLu.o) if $pLu;
-        if (!$pux) {
-            push @tops, $uL;
+        my ($pux) = $G->findO(ux => pLu.o) if $pLu;
+        unless ($pux) {
+            push @tux, $ux;
         }
         else {
-            $pL = w T_uxline(ux => $pux);
-            push @{pL.o}, $ux;
-            ux.Lo = $pL;
+            $ul->(
+                u => $uxoLu,
+                p => $pux,
+            );
         }
     }
-    
-    my $X = {
-        spill => [],
-        andthen => [],
-    };
-    my @eh;
-    for my $M (qw{M}) {
-        for my $uL (@tops) {
+    my $antop = sub {
+        my $u = uL.i;
+
+        ux.O eq "ux" ?
+            $uxguts->()
+        : ux.O eq "uy" ?
+            $uyguts->()
+        : die;
+
+
+        for my $cu (@{uL.o}) {
+            my $cuL = cu.Li || die;
             w antop[$X, $uL, $M];
-            push @eh, uL.i.html;
         }
+
+        my $at = {};
+
+        at.id = uL.uuid;
+
+        if (u.K eq 'uy') {
+            die if u.Lu;
+            for (qw'a i t o m') {
+                u.B->{$_} || next;
+                at.tag = at.styles = "L_$_";
+            }
+        }
+        if (u.K eq "ux") {
+            $subat->(styles => 'te');
+        }
+        elsif (u.K eq "uy") {
+            $subat->(styles => 'te w?');
+        }
+
+        my $jj = sub {
+            my $a = shift;
+            join " ", $G->(styles => join " ", ) };
+
+
+        my @html = '<te id="'.uL.uuid.'" style="'.$G->styles('te').'">';
+        push @html, '
+
+        <L_i style="'.$G->styles('rel').'">
+
+            <t style="'.$G->styles('topleft white little').'">i:</t>
+            '.pint(L.i)
+        .'</L_i>
+         = <L_t style="'.$G->styles('rel').'">
+
+            <t style="'.$G->styles('topleft white little').'">t:</t>
+            '.gpty(L.t)
+        .'</L_t>
+        ';
+
+        my $ohtml = join "\n", grep { defined } map { _.html } @uxs;
+        push @html, ind '    ', 
+            '<wo style="'.$G->styles('wo').'">'."\n"
+            .$ohtml."\n"
+            .'</wo>' if $ohtml;
+
+
+
+
+        push @html, "</te>";
+        say "ux antop ".$G->F_delta();
+        ux.html = join "\n", @html;
+
+
+    };
+    
+    my @eh;
+    for my $uL (@tops) {
+        $antop->($uL);
+        push @eh, uL.i.html;
     }
     
     my $W = $G->W;
@@ -70,47 +228,23 @@ hooks:
     
     return join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
     
-  antop: |
-    #$G->w("an/$M", $ar);
-    my $ux = uL.i;
-    my $L = ux.Lu;
-    my @uxs = w findO(ux => uL.o);
-    for my $cux (@uxs) {
-        my $uL = cux.Li || die;
-        w antop[$X, $uL, $M];
-    }
-    start_timer();
-    my $tes = $G->styles('te fullh');
-    say "stlsing: ".show_delta();
-    my @html = '<te id="'.uL.uuid.'" style="'.$tes.'">';
-    push @html, '  <t style="width:100%;">'.pint(L.i)." = ".gpty(L.t).'</t>';
-    
-    my $ohtml = join "\n", grep { defined } map { _.html } @uxs;
-    push @html, ind '    ', 
-        '<wo style="'.$sty->{wo}.'">'."\n"
-        .$ohtml."\n"
-        .'</wo>' if $ohtml;
-        
-    push @html, "</te>";
-    say "ux antop ".$G->F_delta();
-    ux.html = join "\n", @html;
-    
   styles:
     te: |
       q {border-bottom:1px solid black},
       qw{ padding:0.4em margin-left:2em },
-    fullh: |
-      qw{width:100% float:left position:relative overflow:hidden},
+      qw{width:100% float:left position:relative},
+    rel: |
+      qw'position:relative'
+    topleft: |
+      qw'position:absolute top:-5px left:-5px'
+    white: |
+      qw'color:white'
+    little: |
+      qw'font-size:60%'
     fulw: |
       qw {height:100% float:left position:absolute},
     wo: |
-      qw{font-size:7 padding-left:2em}, q {border: 2px solid pink},
-  T_uxline: |
-    my ($L) = grep { _.i eq $ux } @{$G->W->{script}};
-    return $L if $L;
-    $G->T("uxL: ".pint($ux), undef, $ux);
-    $L = ux.Li || die;
-    
+      qw{width:30% font-size:7 padding-left:2em}, q {border: 2px solid pink},
   x_to_h: |
     my $x = L.i.B.x;
     my $h = L.i.B.h = {};
