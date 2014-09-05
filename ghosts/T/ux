@@ -24,8 +24,15 @@ hooks:
     
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    my $uL;
     
-    
+    my $mku = sub {#c
+        my $way = shift;
+        my $w = $G->nw()->from($G->findway(
+            'ways/'.$way
+            ))->from({B=>{@_}});
+        w.Lu = w.B.Lu if w.B.Lu;
+    };
     my $accum = sub {
         my ($a, $t) = @_
         if (!grep { $_ eq $t } @$a) {
@@ -33,59 +40,7 @@ hooks:
         }
     };
     
-    my $mku_;
-    my $uL_o_uxs = sub {
-        $G->findO(ux => uL.o)
-    };
-    my $uL_o_Lu_find = sub {
-        my $t = shift;
-        grep { $t eq _.Lu } $uL_o_uxs->();
-    };
-    
-    my $cu_Lu = sub {
-        my $w = shift;
-        w.Li && $uL_o_Lu_find->(w.Li)
-    };
-    my $Luyon = sub {
-        my $n = shift;
-        grep { _.O eq "uy" && exists _.B->{$n} } $uL_o_uxs->();
-    };
-    my $uxguts = sub {
-        # spawn guts
-        for my $o (@{L.o}) {
-            die "ux on L_o not uL_i" if o.O eq "ux" && $o ne $ux;
-        }
-        for my $o (@{L.o}) {
-            next if o.O eq "ux";
-            # makes a non-Lu-having uL O:uy for non-ux ways out
-            # which get B sets of instructions to style & whatever from
-            if ($cu_Lu->($o)) {
-                # line is there
-            }
-            else {
-                # way may lead somewhere if o.Li or some comp changes
-                $mku_->(uy => {B=>{o=>$o}})
-            }
-        }
-        
-        my $i = L.i;
-        for my $n (qw'a i t o m w') {
-            next if $Luyon->($n);
-            my $y = $L->{$n};
-            $mku_->(uy => {B=>{$n=>$y}})
-        }
-    };
-    my $uyguts = sub {
-        if (_.B.i) {
-            unless (grep { _.B.t } @{uL.o}) { # t uy there
-                $mku_->(uy => {B=>{t=>$t}})
-            }
-        }
-    };
-    $mku = sub {#c
-        my $way = shift;
-        $G->nw()->from($G->findway('ways/'.$way))->from({B=>{@_}});
-    };
+
     my $findu = sub {
         my $u = shift;
         my $L;
@@ -109,15 +64,15 @@ hooks:
         my $z = {@_};
         my $u = z.u;
         $u = $findu->(z.u)                    unless u.Li;
-        $G->T("anu: ".pint($u), undef, $u) unless u.Li;
+        $G->T("anu: ".pint($u), undef, $u)    unless u.Li;
         die                                   unless u.Li;
         if (z.p){
-            $accum->(z.p.o => $u)
             if (u.O eq "ux") {
+                $accum->(z.p.o => $u);
                 u.Lo = z.p
             }
             elsif (u.O eq "uy") {
-                $accum->(u.B.Lo, $u);
+                $accum->(u.B.Lo, z.p);
             }
             else {
                 die
@@ -148,19 +103,85 @@ hooks:
             );
         }
     }
-    my $antop = sub {
+    
+    
+    my $o_uxs = sub {# c
+        my $L = shift || $uL;
+        $G->findO(ux => L.o);
+    };
+    my $uL_o_Lu_find = sub {
+        my $t = shift;
+        grep { $t eq _.Lu } $o_uxs->();
+    };
+    
+    my $cu_Lu = sub {
+        my $w = shift;
+        w.Li && $uL_o_Lu_find->(w.Li)
+    };
+    my $Luyon = sub {
+        my $n = shift;
+        grep { _.O eq "uy" && exists _.B->{$n} } $o_uxs->();
+    };
+    my $ugutstop = sub { #c
+        # spawn guts
         my $u = uL.i;
+        if (u.O eq "ux") {
+            my $Lu = u.Lu || die;
+            
+            for my $o (@{Lu.o}) {
+                # uy # no Lu # recursive uL, compresses ways
+                # B into style
+                if () {
+                    # whole line is there
+                }
+                else {
+                    # may lead somewhere if o.Li or so
+                    $ul->(
+                        u => $mku->(uy => {B=>{o=>$o}}),
+                        p => $uL,
+                    );
+                }
+            }
 
-        ux.O eq "ux" ?
-            $uxguts->()
-        : ux.O eq "uy" ?
-            $uyguts->()
-        : die;
-
+            for my $n (qw'a i t o m w') {
+                next if $Luyon->($n); # uy there
+                my $y = $Lu->{$n};
+                my @ys; # do this smoother
+                if ($n eq "o") {
+                    for my $w (@$y) {
+                        next if w.O eq "ux";
+                        next if $n eq "o" && $cu_Lu->($w);
+                        push @ys, $w;
+                    }
+                }
+                else {
+                    push @ys, $y;
+                }
+                for my $y (@ys) {
+                    $ul->(
+                        u => $mku->(uy => {B=>{$n=>$y}}),
+                        p => $uL,
+                    );
+                }
+            }
+        }
+        elsif (u.O eq "uy") {
+            if (u.B.i) {
+                
+            }
+        }
+        else {
+            die
+        }
+    };
+    my $antop = sub {
+        $uL = shift;
+        my $u = uL.i;
+        
+        $ugutstop->();
 
         for my $cu (@{uL.o}) {
-            my $cuL = cu.Li || die;
-            w antop[$X, $uL, $M];
+            $antop->(cu.Li || die);
         }
 
         my $at = {};
