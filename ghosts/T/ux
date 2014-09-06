@@ -10,17 +10,16 @@ hooks:
       K: ux
       O: ux
       print: |
-        pint(S.Lu.i)." \t".gpty(S.Lu.t)
+        "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
     uy:
       K: uy
       O: uy
       print: |
-          join ",  ", map { $_ => gpty(S.B->{$_}) } keys %{S.B}
+        "(".join(",  ", map { "$_ = ".pty(S.B->{$_}) } keys %{S.B}).")"
           
   event: |
     my $ux = L.i;
-    ux.O eq "ux" || $H->error("uxL.i sposed to be ux, L=", $L);
-    $O->{O}->w(somewhere => {thing => ux.Lu});
+    $Ly->w(somewhere => {thing => "hi"});
     
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
@@ -29,11 +28,12 @@ hooks:
     my $mku = sub { # make this use Ghost::L for uL, move these codes to G:subs?
         my ($way, $B) = @_;
         confess "B B".wdump([@_]) if B.B;
-        say "mku $way ".ki($B);
+        say "mku $way   ".join ",  ", map { "$_ = ".pty($B->{$_}) } keys %$B;
         my $w = $G->nw()->from($G->findway(
             'ways/'.$way
             ))->from({B=>$B});
         w.Lu = w.B.Lu if w.B.Lu;
+        die "makedad".wdump($B) if w.Lu && w.O ne "ux";
         $w
     };
     my $accum = sub {
@@ -76,7 +76,8 @@ hooks:
                 u.Lo = z.p
             }
             elsif (u.O eq "uy") {
-                $accum->(u.B.Lo, z.p); # .B.Lo many
+                $accum->(z.p.o => $u);
+                $accum->((u.Loose||=[]), z.p); # .B.Lo many
             }
             else {
             }
@@ -103,8 +104,10 @@ hooks:
             say "joining ".pint($ux).' to '.pint($pux);
             $ul->(
                 u => $ux,
-                p => $pux,
+                p => pux.Li,
             );
+            say "put ".pint($ux)." onto ".pint($pux)."\n\n";
+            die unless grep { $_ eq $ux } @{pux.Li.o};
         }
     }
     
@@ -129,11 +132,15 @@ hooks:
     
     my ($stop,$to); #c
     my $fign = sub {
-        my @n = grep { /^(a|i|t|o|m|te)$/ } keys %{uL.i.B};
-        die if @n != 1;
+        my $t = shift;
+        my @n = grep { /^(a|i|t|o|m|te|w)$/ } keys %{t.B};
+        die join "\n",wdump(2, $t)," has n =",@n if @n != 1;
         shift @n;
     };
+    my $ind = "";
     my $ugstop = [ sub {
+        say ind($ind, "\n\n\nSTOP =--");
+        say ind($ind, pint(uL.i));
         # spawn guts
         my $u = uL.i;
         die wdump(2,$uL) unless u.O =~ /^u[xy]$/;
@@ -142,16 +149,14 @@ hooks:
             my ($n, $y, @etc) = @_;
             return if $Luyon->($n); # uy there
             
-            if (ref $y eq "ARRAY") {
-                $cu_Lu->($_) || $uys->($n, $_) for @$y;
-                return;
-            }
-            $ul->(
+            my $u = $ul->(
                 u => $mku->(uy => {$n=>$y,@etc}),
                 p => $uL,
             );
+            die pty($uL)." not have ".pint($u)
+                unless grep { $_ eq $u } @{uL.o};
+            $u;
         };
-        say " u.O  for... ".ki(u.B);
         if (u.O eq "ux") {
             my $Lu = u.Lu || die;
                 # uy # no Lu # recursive uL, compresses ways
@@ -161,75 +166,95 @@ hooks:
                     
 
             for my $n (qw'a i t o m') {
-                $uys->($n, $Lu->{$n}, styles => 'rel');
+                next unless $n eq "i" || $n eq "t" || $n eq "o";
+                my $y = $Lu->{$n};
+                
+                my $styles = 'rel';
+                if ($n eq "o" && ref $y eq "ARRAY") {
+                    $cu_Lu->($_) 
+                    || $uys->($n, $_, styles=>$styles) for @$y;
+                }
+                else {
+                    $uys->($n, $y, styles=>$styles);
+                }
             }
         }
         elsif (u.O eq "uy") {
             my $n = $fign->($u);
-            $uys->(te => $n, styles => 'topleft white little');
-            $uys->(w => $u, styles => 'rel') if $n =~ /^(i|o)$/;
+            $uys->(te => "$n", styles => 'topleft white little')
+                unless $n eq "te";
+            if ($n eq "i" || $n eq "o") {
+                my $o = $uys->(w => u.B->{$n}, styles => 'rel');
+            }
         }
         else {
             die "topmost... uL=". wdump(2, $u);
         }
     } ];
-
+    
     my $ugto = [ sub {
+        ind($ind, "\n\nUG TOING");
         my $u = uL.i;
         my $at = {id=>uL.uuid};
-        die if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
+        if (u.Lu && !%{u.Lu}) {
+            #die "empty Lu on ".pint($u)."\n".wdump($u);
+            delete u.Lu ;
+        }
+        die wdump(2, $u) if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
         
         my @html;
         
+        say "u: ".pint($u);
         if (u.K eq "ux") {
-            say "uxthing ".pint(u.Lu.i)." \t".gpty(u.Lu.t);
+            die "ux has no ways out" unless @{uL.o};
             at.styles = 'te';
             at.tag = "ux";
         }
         elsif (u.K eq "uy") {
-            say "uything ".pint(u.Lu.i)." \t".gpty(u.Lu.t);
             my $n = $fign->($u);
-            my $pn = $fign->(u.Lo.i);
+            my $pn = $fign->(u.Lo.i) if exists u.Lo && exists u.Lo.i;
             (at.tag) = "y$n";
             at.styles = "y$n";
-            at.styles .= " u.B.styles" if u.B.styles;
-            if ($n eq "w" && !$pn || $pn ne "o"
-                || !grep { $_ eq u.B.w } findO(ux=>uL.o)) {
-                # if o, only if o not ux below
+            at.styles = "u.B.styles at.styles" if u.B.styles;
+            
+            
+            if ($n eq "w" && (!$pn || $pn ne "o"
+                || !grep { $_ eq u.B.w } findO(ux=>uL.o))) {
+                # if o, only not ux below
                 push @html, pint(u.B.w);
             }
             push @html, gpty(u.B.t) if $n eq "t";
             push @html, u.B.te if $n eq "te";
-            say " uy for $n $n $n   @html";
         }
-        unshift @html, '<'.at.tag.' id="'.at.uuid.'" style="'.$G->styles(at.styles).'">';
+        unshift @html, '<'.at.tag.' id="'.at.id.'" style="'.$G->styles(at.styles).'">';
         
-        #die wdump(2, uL.o).wdump(2, uL.i);
-        if (@{uL.o}) {
-            say pint($u)." has o";
-            }
-            else {
-            say pint($u)." has noo";
-            }
-        my $oh = join "\n", grep { defined } map { _.html } @{uL.o};
+        my $s = {};
+        for my $uu (@{uL.o}) {
+            $accum->(($s->{uu.O}||=[]), $uu);
+        }
+        my @ou;
+        push @ou, _.html for @{s.uy};
+        push @ou, _.html for @{s.ux};
+        my $oh = join "\n", grep { defined } @ou;
         if ($oh) {
-            push @html, "\n".$oh."\n"
+            push @html, ind('  ',$oh)
         }
         
         push @html, "</at.tag>";
         u.html = join "\n", @html;
-        say "u.K : u.html";
 
     } ];
     my $grtr = sub { @$ugto > @$ugstop ? @$ugto : @$ugstop };
     
-    my $antop;
+    my $antop;#c
     $antop = sub {
         $uL = shift;
+        $ind = $ind . "  ";
         die "ul is :".wdump(2,$uL)unless uL.i.K =~ /^u[xy]$/; 
         
         $ugstop->[$stop]->() if $ugstop->[$stop];
         
+        my $back = $uL;
         for my $uo (@{uL.o}) {
             ref $uo eq "Way" && uo.Li
                 && uo.Li.i && uo.Li.i.K =~ /^u[xy]$/ && uo.Li.i eq $uo
@@ -237,8 +262,10 @@ hooks:
                 || die "nahrre";
             $antop->(uo.Li);
         }
+        $uL = $back;
         
         $ugto->[$to]->() if $ugto->[$to];
+        $ind =~ s/  $//;
     };
     
     my $stops = $grtr->()-1;
@@ -251,22 +278,34 @@ hooks:
         }
     }
     my @eh;
-    for my $uL (@tux) {
-        push @eh, uL.i.html;
+    for my $ux (@tux) {
+        push @eh, ux.html;
     }
     
     my $W = $G->W;
     my ($id) = W.id =~ /-(\w+)$/;
     
+    my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
+    
     say "ux antop ".$G->F_delta()."\n\n\n";
-    return join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
+    return $html;
     
   styles:
     te: |
-      q {border-bottom:1px solid black},
-      qw{ padding:0.4em margin-left:2em },
-      qw{width:100% float:left position:relative},
-    
+      q'border-bottom:1px solid black',
+      qw' padding:0.4em margin-left:2em
+            width:100% float:left position:relative'
+    yw: |
+        q' margin-left:0.5em '
+    yo: |
+        q' position:absolute; left:30em; border:2px solid #fca;'
+        
+    yi: |
+        q' border:2px solid #ba8; margin-left:0.5em '
+        
+    yt: |
+        q' padding:0.5em; background:rgba(200,80,130,0.5);'
+        
     rel: |
       qw'position:relative'
     topleft: |

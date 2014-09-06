@@ -114,6 +114,7 @@ sub ghostlyprinty {
     $gp_inarow--;
     join "  ", @s
 }
+sub pty { my $t = shift; ref $t eq "Way" ? pint($t) : gpty($t) }
 sub gpty { ghostlyprinty('NOHTML',@_) };
 sub Flab {
     my $G = shift;
