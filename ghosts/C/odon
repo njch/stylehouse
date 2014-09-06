@@ -9,12 +9,15 @@ chains:
      glob: |
        "$thing/style*", "$thing/not"
      find_files: |
-       "$thing/lib"#, "$thing/ghosts"
+       #"$thing/lib",
+       "$thing/ghosts"
+     grep: |
+         !/T|H/
      
  - K: 'ghost'
    Ki: 'stylefile'
    arr_if: |
-     0 && $thing =~ /ghosts\// && die 'hoolla';
+     $thing =~ /ghosts\//;
     
  - K: 'yaml'
    arr_if: |

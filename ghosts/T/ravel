@@ -81,7 +81,7 @@ hooks:
         # sweet
     }
     else {
-        die "canot figure out ".ki($c);
+        say "canot figure out ".ki($c);
     }
     
     w aft_figureout;
@@ -109,7 +109,9 @@ hooks:
             my @dirs = $G->doo($fe->{find_files}, $ar);
             File::Find::find($found, @dirs);
         }
-            
+        if (fe.grep) {
+            @list = grep { $G->doo(fe.grep, {_ => $_}) } @list;
+        }
         if (my $ei = $c->{eaten_by}->{each_ignore}) {
             @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
         }
