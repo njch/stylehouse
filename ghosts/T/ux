@@ -10,12 +10,12 @@ hooks:
       K: ux
       O: ux
       print: |
-          pint(S.Lu.i)
+        pint(S.Lu.i)." \t".gpty(S.Lu.t)
     uy:
       K: uy
       O: uy
       print: |
-          ki($B)
+          join ",  ", map { $_ => gpty(S.B->{$_}) } keys %{S.B}
           
   event: |
     my $ux = L.i;
@@ -28,6 +28,7 @@ hooks:
     
     my $mku = sub { # make this use Ghost::L for uL, move these codes to G:subs?
         my ($way, $B) = @_;
+        confess "B B".wdump([@_]) if B.B;
         say "mku $way ".ki($B);
         my $w = $G->nw()->from($G->findway(
             'ways/'.$way
@@ -99,6 +100,7 @@ hooks:
             push @tux, $ux;
         }
         else {
+            say "joining ".pint($ux).' to '.pint($pux);
             $ul->(
                 u => $ux,
                 p => $pux,
@@ -139,12 +141,13 @@ hooks:
         $uys = sub {
             my ($n, $y, @etc) = @_;
             return if $Luyon->($n); # uy there
+            
             if (ref $y eq "ARRAY") {
                 $cu_Lu->($_) || $uys->($n, $_) for @$y;
                 return;
             }
             $ul->(
-                u => $mku->(uy => {B=>{$n=>$y,@etc}}),
+                u => $mku->(uy => {$n=>$y,@etc}),
                 p => $uL,
             );
         };
@@ -179,20 +182,35 @@ hooks:
         my @html;
         
         if (u.K eq "ux") {
+            say "uxthing ".pint(u.Lu.i)." \t".gpty(u.Lu.t);
             at.styles = 'te';
             at.tag = "ux";
         }
         elsif (u.K eq "uy") {
+            say "uything ".pint(u.Lu.i)." \t".gpty(u.Lu.t);
             my $n = $fign->($u);
+            my $pn = $fign->(u.Lo.i);
             (at.tag) = "y$n";
             at.styles = "y$n";
             at.styles .= " u.B.styles" if u.B.styles;
-            push @html, pint(u.B.w) if $n eq "w";
+            if ($n eq "w" && !$pn || $pn ne "o"
+                || !grep { $_ eq u.B.w } findO(ux=>uL.o)) {
+                # if o, only if o not ux below
+                push @html, pint(u.B.w);
+            }
             push @html, gpty(u.B.t) if $n eq "t";
             push @html, u.B.te if $n eq "te";
+            say " uy for $n $n $n   @html";
         }
-        unshift @html = '<'.at.tag.' id="'.at.uuid.'" style="'.$G->styles(at.styles).'">';
+        unshift @html, '<'.at.tag.' id="'.at.uuid.'" style="'.$G->styles(at.styles).'">';
         
+        #die wdump(2, uL.o).wdump(2, uL.i);
+        if (@{uL.o}) {
+            say pint($u)." has o";
+            }
+            else {
+            say pint($u)." has noo";
+            }
         my $oh = join "\n", grep { defined } map { _.html } @{uL.o};
         if ($oh) {
             push @html, "\n".$oh."\n"
@@ -200,6 +218,7 @@ hooks:
         
         push @html, "</at.tag>";
         u.html = join "\n", @html;
+        say "u.K : u.html";
 
     } ];
     my $grtr = sub { @$ugto > @$ugstop ? @$ugto : @$ugstop };
@@ -207,7 +226,7 @@ hooks:
     my $antop;
     $antop = sub {
         $uL = shift;
-        die unless uL.K =~ /^u[xy]$/; 
+        die "ul is :".wdump(2,$uL)unless uL.i.K =~ /^u[xy]$/; 
         
         $ugstop->[$stop]->() if $ugstop->[$stop];
         
@@ -226,9 +245,9 @@ hooks:
     $stop = $to = 0;
     for my $l (0..$stops) {
         $stop = $to = $l;
-        for my $uL (@tux) {
+        for my $ux (@tux) {
               say "stop - $stop";
-            $antop->($uL);
+            $antop->(ux.Li || die);
         }
     }
     my @eh;
@@ -239,7 +258,7 @@ hooks:
     my $W = $G->W;
     my ($id) = W.id =~ /-(\w+)$/;
     
-    say "ux antop ".$G->F_delta();
+    say "ux antop ".$G->F_delta()."\n\n\n";
     return join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
     
   styles:
