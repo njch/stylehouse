@@ -28,7 +28,7 @@ hooks:
   V: 
     spawn: |
       my $V;
-      my $style = w styles[$S, $styles];
+      my $style = $S->styles($styles);
       if ($ar->{from}) {
           $V = $ar->{from}->spawn_floozy($S, $name, $style);
       }
@@ -65,14 +65,7 @@ hooks:
             $S->load_ways($in);
         }
     }
-  styles: |
-    my @styles;
-    for my $style (split ' ', $styles) {
-          push @styles, w style[$S, $style];
-    }
-    join ' ', @styles;
-  style: |
-    join "", map { /;$/ ? $_ : "$_;" } $S->w("styles/$style")
+
   sing: |
     $G->{singing} ||= {};
     return say "$name BLOCKED" if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
