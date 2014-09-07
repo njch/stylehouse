@@ -795,7 +795,7 @@ sub parse_babble {
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    $eval =~ s/(?<=\W)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
