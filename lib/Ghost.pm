@@ -23,6 +23,7 @@ our $Ly;
 our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
+our $U;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
