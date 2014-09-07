@@ -802,13 +802,13 @@ sub Say {
 }
     
 sub throwlog {
-    my $self = my $H = shift;
+    my $H = shift;
     my $what = shift;
     
     if ($H->{_future}) {
         my $te = $@;
         $@ = "";
-        my $r = $H->{G}->w(throwlog => {what => $what, thing => [@_]});
+        my $r = $H->{G}->mess($what, [@_]);
         $@ = $te;
         if ($r && $r eq "yep") {
             return;
@@ -829,7 +829,7 @@ sub throwlog {
     my $error =
         [ hitime(), $H->stack(2), [@E] ];
     
-    $self->keep_throwing($what, $error);
+    $H->keep_throwing($what, $error);
 }
 sub keep_throwing {
     my $self = shift;

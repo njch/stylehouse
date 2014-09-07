@@ -10,10 +10,7 @@ hooks:
         G colour Tw arr(%$ar);
       });
   
-  sky:
-    doof: |
-      my $sky = G sky;
-      $sky->w('doof');
+
   check:
     vitals: |
       $G->susgdb;
@@ -22,7 +19,7 @@ hooks:
         w check/ps,
         w check/LoC,
       );
-      throwlog("Vitals", @v);
+      $G->mess(Vitals => \@v);
       waylay 60 check/vitals;
     MemAvailable: |
       my ($a) = `cat /proc/meminfo | grep MemAvailable`;
@@ -43,6 +40,10 @@ hooks:
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
+  mess: |
+    my $m = Gf mess;
+    $m || die'no mess!';
+    $m Tw mess(%$ar);
   re:
     exec: |
       exec "perl stylehouse.pl";
@@ -228,8 +229,4 @@ hooks:
           $apps->{$_} = $d->{$_};
       }
       return $apps;
-  throwlog: |
-    die "no mess!" unless G mess;
-    my $yep = G mess Tw throwlog(%$ar);
-    return $yep;
 

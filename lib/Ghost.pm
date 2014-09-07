@@ -81,9 +81,9 @@ sub pint {
     my $w = shift;
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
-sub throwlog {
+sub mess {
     my $G = shift;
-    $H->{G}->w(throwlog => {@_});
+    $H->{G}->w(mess => {what => shift, thing => shift});
 }
 our $gp_inarow = 0;
 sub ghostlyprinty {
@@ -147,7 +147,7 @@ sub waystacken {
                 unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
                 $E .= "from $_->{name}" for shift @FF;
             }
-            $H->error(  $G->Flab($E, $s, [@FF], [@F])  );
+            $G->mess(BATS => $G->Flab($E, $s, [@FF], [@F]));
         }
         else {
             shift @F;
