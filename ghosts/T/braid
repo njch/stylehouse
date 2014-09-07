@@ -1,8 +1,9 @@
 name: spiral braid
 hooks:
   any_init: |
+    say "hi";
     G.U ||= {};
-    G.U.mku = sub { # make this use Ghost::L for uL, move these codes to G:subs?
+    G.U.mku = sub {#c
         my ($way, $B) = @_; 
         confess "B B".wdump([@_]) if B.B;
         say "L ".pint(G.L.i);
@@ -13,13 +14,13 @@ hooks:
         die "makedad".wdump($B) if w.Lu && w.O ne "ux";
         $w
     };
-    G.U.accum = sub {
+    G.U.accum = sub {#c
         my ($a, $t) = @_;
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
         }
     };
-    G.U.findu = sub {
+    G.U.findu = sub {#c
         my $u = shift;
         my $L;
         for my $LL (@{$G->W->{script}}) {
@@ -38,48 +39,43 @@ hooks:
         }
         $L ? L.i : $u;
     };
-
-    G.U.ul = sub { # look for u way
+    G.U.ul = sub {#c # look for u way
         my $z = {@_};
         my $u = z.u;
         $u = G.U.findu->(z.u)                  unless u.Li;
         $G->T("anu: ".pint($u), undef, $u)    unless u.Li;
         die "no Li after T"                   unless u.Li;
-        die "Aft". wdump($u) if !u.O;
+        #die "Aft". wdump($u) if !u.O;
         if (z.p){
-            if (u.O eq "ux") {
-                G.U.accum->(z.p.o => $u);
-                G.u.Lo = z.p
-            }
-            elsif (u.O eq "uy") {
+            if (u.O eq "uy") {
                 G.U.accum->(z.p.o => $u);
                 G.U.accum->((u.Loose||=[]), z.p); # .B.Lo many
             }
             else {
+                G.U.accum->(z.p.o => $u);
+                G.u.Lo = z.p
             }
         }
         $u
     };
-
-    G.U.o_uxs = sub {
+    G.U.o_uxs = sub {#c
         my $L = shift || G.L || die "no L";
         findO(ux => L.o);
     };
-    G.U.uL_o_Lu_find = sub {
+    G.U.uL_o_Lu_find = sub {#c
         my $t = shift;
         grep { $t eq _.Lu } G.U.o_uxs->();
     };
     
-    G.U.cu_Lu = sub {
+    G.U.cu_Lu = sub {#c
         my $w = shift;
         w.Li && G.U.uL_o_Lu_find->(w.Li)
     };
-    G.U.Luyon = sub {
+    G.U.Luyon = sub {#c
         my $n = shift;
         grep { _.O eq "uy" && exists _.B->{$n} } G.U.o_uxs->();
     };
-
-    G.U.uys = sub {
+    G.U.uys = sub {#c
         my ($n, $y, @etc) = @_;
         return if G.U.Luyon->($n); # uy there
 
@@ -91,7 +87,7 @@ hooks:
             unless 1 || grep { $_ eq $u } @{G.L.o};
         $u;
     };
-    G.U.fign = sub {
+    G.U.fign = sub {#c
         my $t = shift;
         my @n = grep { /^(a|i|t|o|m|te|w)$/ } keys %{t.B};
         die join "\n",wdump(2, $t)," has n =",@n if @n != 1;
@@ -208,3 +204,4 @@ hooks:
         u.html = join "\n", @html;
 
     };
+

@@ -1,5 +1,5 @@
-name: code crawl
-include: T/ravel
+name: code
+include: T/ravel T/braid
 chains:
  - K: 'stylefile'#c
    Ki: 'styledir'
@@ -21,14 +21,40 @@ chains:
     
  - K: 'yaml'
    arr_if: |
-     -f $thing && $thing =~ /keys/;
+     -f $thing && $thing =~ /odon/;
    foreach_travel:
      each: Way::load_yaml($thing);
 dials:
   max_depth: 3
 hooks:
-  facts:
-    - K: Codon
+  event: |
+    my $Ei = L.i.K .' y '. uyL.i.B.K;
+    die "nonU " unless G.U;
+    #die wdump(2,G.ways);
+    if ($Ei eq "stylefile y t") {
+        my $u = G.U.ul->( 
+            u => G.U.mku->(Codon => {
+                stylefile=>uyL.i.B.t,
+            }),
+            p => $L,
+        );
+        G.ux->w('ux', {Ls=>$G->W->CS});
+        $Ly->w(somewhere => {thing => [L.i, uyL.i, $Ei, $u]});
+    }
+    if ($Ei eq "stylefile y w") {
+        L.t.="bahlah";
+        Say "Cahgned L.t";
+    }
+    if ($Ei =~ /^Codon/) {
+        $Ly->w(somewhere => {thing => [L.i, uxL.i, uyL.i]});
+        }
+    
+  uxd: |
+    #G.ux->RW;
+    G.ux->w('ux', {Ls=>$G->W->CS});
+  ways:
+    Codon:
+      K: Codon
     
   events:
     - K: Codon
@@ -40,10 +66,4 @@ hooks:
   Earr: |
     # scan events etc.
   
-  event: |
-    my $Ei = L.i.K .' y '. pint(uyL.i);
-    die pint(L.i)."         y    ".pint(uyL.i);# wdump(2,$ar);
-    if ($Ei eq "stylefile y t") {
-        
-    }
 
