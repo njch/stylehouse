@@ -47,10 +47,10 @@ hooks:
       }
     blur: |
       my $blur = ++$G->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
-      $H->JS($_, "css('-webkit-filter', '$blur');") for values %{G.V};
+      $H->JS($_, "css('-webkit-filter', '$blur');") for values %{S.V};
 
     toginvis: |
-      $_->togcl('invis') for values %{G.V};
+      $_->togcl('invis') for values %{S.V};
       
   GG_init: |
     my $GG = $S->findway("GG");
@@ -60,12 +60,15 @@ hooks:
   include_init: |
     for my $include ($S->anyway('include')) {
         for my $in (split ' ', $include) {
-            next if grep { $_->{_wayfile} =~ /$in/ } $S->ways;
-            $S->{load_ways_count}--;
-            $S->load_ways($in);
+            w do_include[$S, $in];
         }
     }
-
+  do_include: |
+    next if grep { $_->{_wayfile} =~ /$in/ } $S->ways;
+    $S->{load_ways_count}--;
+    $S->load_ways($in);
+    
+    
   sing: |
     $G->{singing} ||= {};
     return say "$name BLOCKED" if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
