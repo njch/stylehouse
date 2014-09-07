@@ -51,7 +51,7 @@ sub continues {
         e => ($G->{etc}),
         depth => $G->{depth},
         
-        ghost => $G,
+        G => $G,
     };
 
     $W->ob($L);

@@ -150,13 +150,29 @@ hooks:
       G keys Tw arr[$e];
       
     wormhole: |
-      my ($WID) = $e->{W} =~ /^(\w+)$/;
-      return $H->error("Strange wormhole", $e) unless $WID;
-      my ($W) = grep { $_->{id} eq "Wormhole-$WID" } @{ $H->get("Wormhole") };
-      my $id = $e->{id};
-      my ($LID) = $e->{id} =~ /^(\w+)$/;
-      my ($L) = grep { $_->{uuid} eq $LID } @{ $W->{script} } if $LID;
-      $W->{G}->w('event', {e=>$e,L=>$L});
+      my $E;
+      my $findL = sub {
+        return unless $E->{W};
+        my $id = shift;
+        (grep { $_->{uuid} eq $id } @{ $E->{W}->{script} })[0]
+      };
+      my $id = sub {
+        my $i = shift;
+        return unless $i =~ /^(\w+)$/;
+        $1
+      };
+      
+      my $Wid = $id->($e->{W});
+      ($E->{W}) = grep { $_->{id} eq "Wormhole-$Wid" } @{ $H->get("Wormhole") };
+      
+      my $Lid = $id->($e->{id});
+      $E->{L} = $findL->($Lid);
+      
+      my $uxLid = $id->($e->{ux});
+      $E->{uxL} = $findL->($uxLid);
+      
+      $E->{e} = $e;
+      $E->{W}->{G}->w('event', $E) if $E->{W};
       
     TV: |
       my $id = $e->{id};

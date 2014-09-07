@@ -509,6 +509,10 @@ function clickyhand (event) {
     if (W) {
         data.W = W;
     }
+    var ux = tag.closest( "ux" ).attr('id');
+    if (ux) {
+        data.ux = ux;
+    }
     ws.reply({event: data});
 }
 var nohands = 0;
