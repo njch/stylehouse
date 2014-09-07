@@ -21,8 +21,9 @@ hooks:
     my $ux = L.i;
     $Ly->w(somewhere => {thing => $ux});
   any_init: |
-    $U ||= {};
-    U.mku = sub { # make this use Ghost::L for uL, move these codes to G:subs?
+    say "gushto";
+    G.U ||= {};
+    G.U.mku = sub { # make this use Ghost::L for uL, move these codes to G:subs?
         my ($way, $B) = @_; 
         confess "B B".wdump([@_]) if B.B;
         say "L ".pint(G.L.i);
@@ -33,13 +34,13 @@ hooks:
         die "makedad".wdump($B) if w.Lu && w.O ne "ux";
         $w
     };
-    U.accum = sub {
+    G.U.accum = sub {
         my ($a, $t) = @_;
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
         }
     };
-    U.findu = sub {
+    G.U.findu = sub {
         my $u = shift;
         my $L;
         for my $LL (@{$G->W->{script}}) {
@@ -59,21 +60,21 @@ hooks:
         $L ? L.i : $u;
     };
 
-    U.ul = sub { # look for u way
+    G.U.ul = sub { # look for u way
         my $z = {@_};
         my $u = z.u;
-        $u = U.findu->(z.u)                  unless u.Li;
+        $u = G.U.findu->(z.u)                  unless u.Li;
         $G->T("anu: ".pint($u), undef, $u)    unless u.Li;
         die "no Li after T"                   unless u.Li;
         die "Aft". wdump($u) if !u.O;
         if (z.p){
             if (u.O eq "ux") {
-                U.accum->(z.p.o => $u);
-                u.Lo = z.p
+                G.U.accum->(z.p.o => $u);
+                G.u.Lo = z.p
             }
             elsif (u.O eq "uy") {
-                U.accum->(z.p.o => $u);
-                U.accum->((u.Loose||=[]), z.p); # .B.Lo many
+                G.U.accum->(z.p.o => $u);
+                G.U.accum->((u.Loose||=[]), z.p); # .B.Lo many
             }
             else {
             }
@@ -81,48 +82,48 @@ hooks:
         $u
     };
 
-    U.o_uxs = sub {
+    G.U.o_uxs = sub {
         my $L = shift || G.L || die "no L";
         findO(ux => L.o);
     };
-    U.uL_o_Lu_find = sub {
+    G.U.uL_o_Lu_find = sub {
         my $t = shift;
-        grep { $t eq _.Lu } U.o_uxs->();
+        grep { $t eq _.Lu } G.U.o_uxs->();
     };
     
-    U.cu_Lu = sub {
+    G.U.cu_Lu = sub {
         my $w = shift;
-        w.Li && U.uL_o_Lu_find->(w.Li)
+        w.Li && G.U.uL_o_Lu_find->(w.Li)
     };
-    U.Luyon = sub {
+    G.U.Luyon = sub {
         my $n = shift;
-        grep { _.O eq "uy" && exists _.B->{$n} } U.o_uxs->();
+        grep { _.O eq "uy" && exists _.B->{$n} } G.U.o_uxs->();
     };
 
-    U.uys = sub {
+    G.U.uys = sub {
         my ($n, $y, @etc) = @_;
-        return if U.Luyon->($n); # uy there
+        return if G.U.Luyon->($n); # uy there
 
-        my $u = U.ul->( 
-            u => U.mku->(uy => {$n=>$y,@etc}),
+        my $u = G.U.ul->( 
+            u => G.U.mku->(uy => {$n=>$y,@etc}),
             p => G.L,
         );
         die "shunno".pty(G.L)." not have ".pint($u)
             unless 1 || grep { $_ eq $u } @{G.L.o};
         $u;
     };
-    U.fign = sub {
+    G.U.fign = sub {
         my $t = shift;
         my @n = grep { /^(a|i|t|o|m|te|w)$/ } keys %{t.B};
         die join "\n",wdump(2, $t)," has n =",@n if @n != 1;
         shift @n;
     };
-    U.antop = sub {#c
+    G.U.antop = sub {#c
         my $u = G.L.i;
         my $uL = G.L;
         die "ul is :".wdump(2,$uL)unless uL.i.K =~ /^u[xy]$/; 
         
-        U.ugstop->();
+        G.U.ugstop->();
         
         my $back = G.L;
         for my $uo (@{uL.o}) {
@@ -131,14 +132,14 @@ hooks:
                 && uo.Li.i && uo.Li.i.K =~ /^u[xy]$/ && uo.Li.i eq $uo
                 
                 || die "nahrre";
-            U.antop->();
+            G.U.antop->();
         }
         G.L = $back;
         
-        U.ugto->();
+        G.U.ugto->();
     };
     
-    U.ugstop = sub {#c
+    G.U.ugstop = sub {#c
         my $u = G.L.i;
         my $uL = G.L;
          # B into style
@@ -159,21 +160,21 @@ hooks:
                 if ($n eq "o" && ref $y eq "ARRAY") {
                     for my $o (@$y) {
                         next if o.O eq "ux";
-                        next if U.cu_Lu->($o);
-                        U.uys->($n, $o, styles=>$styles);
+                        next if G.U.cu_Lu->($o);
+                        G.U.uys->($n, $o, styles=>$styles);
                     }
                 }
                 else {
-                    U.uys->($n, $y, styles=>$styles);
+                    G.U.uys->($n, $y, styles=>$styles);
                 }
             }
         }
         elsif (u.O eq "uy") {
-            my $n = U.fign($u);
-            U.uys->(te => "$n", styles => 'topleft white little')
+            my $n = G.U.fign($u);
+            G.U.uys->(te => "$n", styles => 'topleft white little')
                 unless $n eq "te";
             if ($n eq "i" || $n eq "o") {
-                my $o = U.uys->(w => u.B->{$n}, styles => 'rel');
+                my $o = G.U.uys->(w => u.B->{$n}, styles => 'rel');
             }
         }
         else {
@@ -181,7 +182,7 @@ hooks:
         }
     };
     
-    U.ugto = sub {
+    G.U.ugto = sub {
         my $u = G.L.i;
         my $uL = G.L;
         my $at = {id=>uL.uuid};
@@ -200,8 +201,8 @@ hooks:
             at.tag = "ux";
         }
         elsif (u.K eq "uy") {
-            my $n = U.fign->($u);
-            my $pn = U.fign->(u.Lo.i) if exists u.Lo && exists u.Lo.i;
+            my $n = G.U.fign->($u);
+            my $pn = G.U.fign->(u.Lo.i) if exists u.Lo && exists u.Lo.i;
             (at.tag) = "y$n";
             at.styles = "y$n";
             at.styles = "u.B.styles at.styles" if u.B.styles;
@@ -219,7 +220,7 @@ hooks:
         
         my $s = {};
         for my $uu (@{uL.o}) {
-            U.accum->(($s->{uu.O}||=[]), $uu);
+            G.U.accum->(($s->{uu.n}||=[]), $uu);
         }
         my @ou;
         push @ou, _.html for @{s.uy};
@@ -238,8 +239,8 @@ hooks:
     
     my @uxs;
     for my $Lu (@{$Ls}) { say "install ux outways to Lu";
-        push @uxs, U.ul->(
-            u => U.mku->(ux => {Lu=>$Lu}),
+        push @uxs, G.U.ul->(
+            u => G.U.mku->(ux => {Lu=>$Lu}),
             p => $Lu,
         );
     }
@@ -254,7 +255,7 @@ hooks:
         }
         else {
             say "joining ".pint($ux).' to '.pint($pux);
-            U.ul->(
+            G.U.ul->(
                 u => $ux,
                 p => pux.Li,
             );
@@ -266,8 +267,9 @@ hooks:
     
         for my $ux (@tux) {
             G.L = ux.Li || die "no ux Li";
-            U.antop->();
+            G.U.antop->();
         }
+        
     my @eh;
     for my $ux (@tux) {
         push @eh, ux.html;
