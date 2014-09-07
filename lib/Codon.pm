@@ -68,7 +68,7 @@ sub ddump { Hostinfo::ddump(@_) }
 sub open_codefile {
     my $self = shift;
     $self->{lines} = [
-        map { $_ =~ s/\n$//s; $_ }
+        map { s/\n$//s; $_ }
         split "\n",
         $self->readfile($self->{filename})
     ];

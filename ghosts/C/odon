@@ -13,45 +13,50 @@ chains:
        "$thing/ghosts"
      grep: |
          !/T|H/
+   y:
+     w: 
+       event: |
+        L.t.="bahlah";
+        Say "Cahgned L.t";
+     t:
+       event: |
+         G.U.mk->(Codon => { stylefile=>L.t });
      
- - K: 'ghost'
-   Ki: 'stylefile'
+ - K: 'C load'
+   Ki: 'Codon'
    arr_if: |
-     $thing =~ /ghosts\//;
+     G.i.K eq "Codon"
+   D: |
+     my $C = G.i;
+     my $code = $H->slurp(C.B.stylefile) if C.B.stylefile;
+     $code = C.B.code if C.B.code;
+     G.t = [ map { s/\n$//s; $_ } split "\n", $code ];
+   s:
+     yt: 
     
  - K: 'yaml'
    arr_if: |
-     -f $thing && $thing =~ /odon/;
+     -f $thing && $thing =~ /odon/ && 0;
    foreach_travel:
      each: Way::load_yaml($thing);
 dials:
   max_depth: 3
 hooks:
+
   event: |
-    my $Ei = L.i.K .' y '. uyL.i.B.K;
-    die "nonU " unless G.U;
-    #die wdump(2,G.ways);
-    if ($Ei eq "stylefile y t") {
-        my $u = G.U.ul->( 
-            u => G.U.mku->(Codon => {
-                stylefile=>uyL.i.B.t,
-            }),
-            p => $L,
-        );
-        G.ux->w('ux', {Ls=>$G->W->CS});
-        $Ly->w(somewhere => {thing => [L.i, uyL.i, $Ei, $u]});
+    G.L = $L;
+    my $y = uyL.i.B.K;
+    $G->w("y/$y/event", $ar, L.i);
+    w uxd;
+  figure_some_chain: |
+    if (c.D) {
+        $G->doo(c.D, {});
+        return 1;
     }
-    if ($Ei eq "stylefile y w") {
-        L.t.="bahlah";
-        Say "Cahgned L.t";
-    }
-    if ($Ei =~ /^Codon/) {
-        $Ly->w(somewhere => {thing => [L.i, uxL.i, uyL.i]});
-        }
-    
+    return 0;
   uxd: |
-    #G.ux->RW;
     G.ux->w('ux', {Ls=>$G->W->CS});
+    $Ly->w(somewhere => {thing => $ar});
   ways:
     Codon:
       K: Codon
