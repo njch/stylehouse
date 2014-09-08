@@ -26,6 +26,144 @@ hooks:
     E.uyL = $L if $L ne $uxL;
 
     ux.Lu.G->w(event => $E);
+  uyBs:
+   - K: i
+     uys: w
+   - K: t
+   - K: o
+     uys: w
+   - K: w
+     nah: 1
+     K: e
+     styles: topleft white little
+     nah: 1
+  
+   
+  any_init: |
+    G.U.stoops = [ sub {#c
+        my $u = G.L.i;
+        my $uL = G.L;
+         # B into style
+        # spawn guts
+        # ways can compress/Loose (and lookup) via K
+        
+        my $Lu = u.Lu || die;
+        my $old = { map { _.B.K => $_ } findO(uy => uL.o) };
+        G.U.h.ul.creating_that_u = sub {
+            my $uy = shift;
+            $old->{uy.B.K} &&
+            G.U.deaccum($uL, "o", $old->{uy.B.K});
+        };
+        
+        my $uyBs = $G->findway('uyBs');
+        my $uyBsK = sub {
+            my $uyK = shift;
+            (grep { _.K eq $uyK } @$uyBs)[0]
+        };
+        
+        my @fluyB;
+        my $pafly = sub {
+            my $from = shift;
+            push @fluyB, { %$from, @_ }
+        };
+        for my $uyB (@$uyBs) {
+            next if u.O eq "uy";
+            next if uyB.nah;
+            my $n = uyB.n ||= uyB.K;
+            my $y = $Lu->{$n};
+            uyB.styles ||= 'rel';
+            if ($n eq "o" && ref $y eq "ARRAY") {
+                my $i = 0;
+                for my $o (@$y) {
+                    next if o.O eq "ux" || G.U.cu_Lu->($o);
+                    $pafly->(
+                        $uyB,
+                        $n => $o,
+                        K => uyB.K."[".$i++,
+                    );
+                }
+            }
+            else {
+                $pafly->(
+                    $uyB,
+                    $n => $y,
+                );
+            }
+        }
+        if (my $uys = delete u.B.uys) {
+            for my $uyK (split ' ', $uys) {
+                my $uyB = $uyBsK->($uyK);
+                my $n = uyB.n ||= uyB.K;
+                $pafly->(
+                    $uyB,
+                    $n => u.B->{ u.B.n },
+                )
+            }
+        }
+        if (u.O eq "uy") {
+            u.B.n eq "e" || $pafly->($uyBsK->("e"), e => u.B.n);
+        }
+        for my $uyB (@fluyB) {
+            G.U.uys->($uyB);
+        }
+        
+        delete G.U.h.ul.creating_that_u;
+    } ];
+    G.U.toos = [ sub {
+        my $u = G.L.i;
+        my $uL = G.L;
+        my $at = {id=>uL.uuid};
+        if (u.Lu && !%{u.Lu}) {
+            #die "empty Lu on ".pint($u)."\n".wdump($u);
+            delete u.Lu ;
+        }
+        die wdump(2, $u) if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
+        
+        my @html;
+        
+        at.tag = u.K eq "ux" ? "ux" : u.B.K;
+        at.styles = u.K eq "ux" ? "ux" : u.B.K;
+        
+        say "u: ".pint($u);
+        if (u.K eq "ux") {
+            die "ux has no ways out" unless @{uL.o};
+            at.styles = 'te';
+            at.tag = "ux";
+        }
+        elsif (u.K eq "uy") {
+            my $n = G.U.fign->($u);
+            my $pn = G.U.fign->(u.Lo.i) if exists u.Lo && exists u.Lo.i;
+            (at.tag) = "y$n";
+            at.styles = "y$n";
+            at.styles = "u.B.styles at.styles" if u.B.styles;
+            
+            
+            if ($n eq "w" && (!$pn || $pn ne "o"
+                || !grep { $_ eq u.B.w } findO(ux=>uL.o))) {
+                # if o, only not ux below
+                push @html, pint(u.B.w);
+            }
+            push @html, gpty(u.B.t) if $n eq "t";
+            push @html, u.B.te if $n eq "te";
+        }
+        unshift @html, '<'.at.tag.' id="'.at.id.'" style="'.$G->styles(at.styles).'">';
+        
+        my $s = {};
+        for my $uu (@{uL.o}) {
+            G.U.accum->(($s->{uu.O}||=[]), $uu);
+        }
+        my @ou;
+        push @ou, _.html for @{s.uy};
+        push @ou, _.html for @{s.ux};
+        my $oh = join "\n", grep { defined } @ou;
+        if ($oh) {
+            push @html, ind('  ',$oh)
+        }
+        
+        push @html, "</at.tag>";
+        u.html = join "\n", @html;
+
+    } ];
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
