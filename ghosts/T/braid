@@ -20,6 +20,15 @@ hooks:
             push @$a, $t
         }
     };
+    G.U.deaccum = sub {#c
+        my ($S, $ac, $t) = @_;
+        my $a = $S->{$ac};
+        my $i = 0;
+        for (@$a) {
+            return splice(@$a, $i, 1) if $_ eq $t;
+            $i++;
+        }
+    };
     G.U.findu = sub {#c
         my $u = shift;
         my $L;
@@ -43,9 +52,11 @@ hooks:
     
     
     G.U.ul = sub {#c # look for u way
+    say "ul ";
         my $z = {@_};
         my $u = z.u;
         $u = G.U.findu->(z.u)                  unless u.Li;
+        
         if (z.p){
             if (u.O eq "uy") {
                 G.U.accum->(z.p.o => $u);
@@ -56,9 +67,15 @@ hooks:
                 G.u.Lo = z.p
             }
         }
-        $G->T("anu: ".pint($u), undef, $u)    unless u.Li;
+        unless (u.Li) {
+              G.U.h.ul.creating_that_u->($u)
+              if G.U.h.ul.creating_that_u;
+             
+            $G->T("anu: ".pint($u), undef, $u) unless u.Li;
+        }
         die "no Li after T"                   unless u.Li;
-        #die "Aft". wdump($u) if !u.O;
+           
+        G.U.h.ul.done->($u) if G.U.h.ul.done;
         $u
     };
     G.U.mk = sub {#c
@@ -87,7 +104,6 @@ hooks:
     };
     G.U.uys = sub {#c
         my ($n, $y, @etc) = @_;
-        return if G.U.Luyon->($n); # uy there
 
         my $u = G.U.ul->( 
             u => G.U.mku->(uy => {K=>$n,$n=>$y,@etc}),
@@ -128,25 +144,39 @@ hooks:
         
         # ways can compress/Loose
                     
-        die wdump(2,$uL) unless u.O =~ /^u[xy]$/;
+        #die wdump(2,$uL) unless u.O =~ /^u[xy]$/;
         if (u.O eq "ux") {
             
             my $Lu = u.Lu || die;
+            my $old = { map {
+                _.B.K => { u => $_, keep => 0 }
+                } findO(uy => uL.o) };
+            G.U.h.ul.done = sub {
+                my $uy = shift;
+                $old->{uy.B.K}->{keep} = 1;
+            };
             for my $n (qw'a i t o m') {
                 next unless "it" =~ $n;
                 my $y = $Lu->{$n};
                 
                 my $styles = 'rel';
                 if ($n eq "o" && ref $y eq "ARRAY") {
+                    my $i = 0;
                     for my $o (@$y) {
                         next if o.O eq "ux";
                         next if G.U.cu_Lu->($o);
-                        G.U.uys->($n, $o, styles=>$styles);
+                        my $ni = $n."[".$i++;
+                        G.U.uys->($ni, $o, styles=>$styles);
                     }
                 }
                 else {
                     G.U.uys->($n, $y, styles=>$styles);
                 }
+            }
+            delete G.U.h.ul.done;
+            for my $old (grep { !_.keep } values %$old) {
+                G.U.deaccum($uL, "o", old.u);
+                Say "should be throwing out ".wdump(4,[uL.o,$old]);
             }
         }
         elsif (u.O eq "uy") {
