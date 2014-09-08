@@ -52,7 +52,7 @@ hooks:
         G.U.h.ul.creating_that_u = sub {
             my $uy = shift;
             $old->{uy.B.K} &&
-            G.U.deaccum->($uL, "o", $old->{uy.B.K});
+            $G->U(deaccum => $uL, "o", $old->{uy.B.K});
         };
         
         my $uyBs = $G->findway('uyBs');
@@ -101,10 +101,10 @@ hooks:
             }
         }
         if (u.O eq "uy") {
-            u.B.K eq "e" || $pafly->($uyBsK->("e"), e => u.B.n);
+            u.B.K eq "e" || $pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
         }
         for my $uyB (@fluyB) {
-            G.U.uys->($uyB);
+            $G->U(uys => $uyB);
         }
         
         delete G.U.h.ul.creating_that_u;
@@ -114,7 +114,7 @@ hooks:
         my $uL = G.L;
         my $at = {id=>uL.uuid};
         if (u.Lu && !%{u.Lu}) {
-            #die "empty Lu on ".pint($u)."\n".wdump($u);
+            die "empty Lu on ".pint($u)."\n".wdump($u);
             delete u.Lu ;
         }
         die wdump(2, $u) if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
@@ -124,6 +124,8 @@ hooks:
         at.tag = u.K eq "ux" ? "ux" : u.B.K;
         at.styles = u.K eq "ux" ? "ux" : u.B.K;
         
+        #h mhmmmmm
+        
         say "u: ".pint($u);
         if (u.K eq "ux") {
             die "ux has no ways out" unless @{uL.o};
@@ -131,16 +133,16 @@ hooks:
             at.tag = "ux";
         }
         elsif (u.K eq "uy") {
-            my $n = G.U.fign->($u);
-            my $pn = G.U.fign->(u.Lo.i) if exists u.Lo && exists u.Lo.i;
+            my $n = u.B.n;
+            my $pn = u.Lo.i.B.n if exists u.Lo && exists u.Lo.i;
             (at.tag) = "y$n";
             at.styles = "y$n";
             at.styles = "u.B.styles at.styles" if u.B.styles;
             
             # or so
-                       #ope => G.U.cu_Lu->($o)
             if ($n eq "w" && (!$pn || $pn ne "o"
                 || !grep { $_ eq u.B.w } findO(ux=>uL.o))) {
+                # G.U.cu_Lu->($o) # ope may mean either of these < ^ # on-next-line ish. octave lower display & glue?
                 # if o, only not ux below
                 push @html, pint(u.B.w);
             }
