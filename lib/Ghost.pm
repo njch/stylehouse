@@ -81,6 +81,10 @@ sub pint {
     my $w = shift;
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
+sub U {
+    my ($G, $Usub, @etc) = @_;
+    $G->{U}->{$Usub}->(@etc);
+}
 sub mess {
     my $G = shift;
     $H->{G}->w(mess => {what => shift, thing => shift});
