@@ -6,12 +6,15 @@ hooks:
     G.U.mku = sub {#c
         my ($way, $B) = @_; 
         confess "B B".wdump([@_]) if B.B;
+        $B = {%$B};
         say "L ".pint(G.L.i);
         say "mku $way   ".join ",  ", map { "$_ = ".pty($B->{$_}) } keys %$B;
         my $w = $G->nw()->from(
-              $G->findway('ways/'.$way)        )->from({B=>$B});
+            $G->findway('ways/'.$way)
+        )->from({B=>{%$B}});
+        
         w.Lu = w.B.Lu if w.B.Lu;
-        die "makedad".wdump($B) if w.Lu && w.O ne "ux";
+        die "makedad".wdump($w) if w.Lu && w.O ne "ux";
         $w
     };
     G.U.accum = sub {#c

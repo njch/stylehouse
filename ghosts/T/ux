@@ -32,22 +32,22 @@ hooks:
    - K: i
      uys: w
    - K: t
-     D_html: |
-       $t
+     content_D: |
+       gpty($t)
    - K: o
      uys: w
    - K: w
      nah: 1
-     D_html: |
-       U->ups('shlink') if
-           (grep { $_ eq $w } G.L.o) && findO(ux => w.Li.o);
+     content_D: |
+       #U->ups($S, 'shlink') if
+       #    (grep { $_ eq $w } G.L.o) && findO(ux => w.Li.o);
        # ^ w on a line. octave lower display & glue?
        pint($w);
    - K: e
      styles: topleft white little
      nah: 1
-     D_html: |
-       gpty($e)
+     content_D: |
+       $e
   
    
   any_init: |
@@ -80,6 +80,7 @@ hooks:
         for my $uyB (@$uyBs) { # ux spawns uys
             next if u.O eq "uy";
             next if uyB.nah;
+            $uyB = { %$uyB };
             my $n = uyB.n ||= uyB.K;
             my $y = $Lu->{$n};
             uyB.styles ||= 'rel';
@@ -111,8 +112,9 @@ hooks:
                 )
             }
         }
-        if (u.O eq "uy") {
-            u.B.K eq "e" || $pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
+        if (u.O eq "uy" && u.B.K ne "e") {
+            #die wdump(2, $u);
+            $pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
         }
         for my $uyB (@fluyB) {
             $G->U(uys => $uyB);
@@ -120,11 +122,7 @@ hooks:
         
         delete G.U.h.ul.creating_that_u;
     } ];
-    G.U.ups = sub {#c
-        my $u = shift;
-        u.B.styles = U->jgd(u.B.styles, @_);
-    };
-    G.U.jgd = sub { join " ", grep { defined } @_ };
+    G.U.jgd = sub { join " ", grep { defined } @_ }; #c
     G.U.toos = [ sub {
         my $u = G.L.i;
         my $uL = G.L;
@@ -135,38 +133,69 @@ hooks:
         
         say "utoo: ".pint($u);
         my $at;
-        my @html;
         
         at.id = uL.uuid;
-        at.tag = U->jgd(u.B.tag, u.tag);
         at.styles = U->jgd(u.styles);
         
         if (u.K eq "uy") {
             my $n = u.B.n;
             at.tag = "y$n";
-            at.content = $G->w('B/D_html', {}, $u);
+            at.content = $G->w('B/content_D', {}, $u);
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
+        at.tag ||= U->jgd(u.B.tag, u.tag);
         die "no tag" .wdump($u) if !at.tag;
-        push @html, '<'.at.tag.' id="'.at.id.'" style="'.$G->styles(at.styles).'">';
         
-        my $s = {};
-        for my $uu (@{uL.o}) {
-            G.U.accum->(($s->{uu.O}||=[]), $uu);
-        }
-        my $oh = join "\n", grep { defined } map { _.html } @{s.uy}, @{s.ux};
-        if (at.content) {
-            push @html, "\n" if $oh;
-            push @html, at.content;
-        }
-        if ($oh) {
-            push @html, "\n".ind('  ',$oh)."\n"
-        }
+        u.E_at = u.at;
+        u.at = $at;
+        my $tag = sub {
+            my $content = shift || '';
+            my $attr = { %{u.at} };
+            attr.style = $G->styles(delete attr.styles); # or so
+            my $tag = delete attr.tag;
+            my $conty = delete attr.content if exists attr.content;
+            $conty = "" if!defined $conty;
+            
+            $attr = join " ", map {
+                $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
+            "<$tag $attr>$conty$content</$tag>";
+        };
         
-        push @html, "</at.tag>";
-        u.html = join "", @html;
+        my @ontents = $u;
+        
+        my @content = sort {
+            (a.conor || a.B.conor) <=> (b.conor || b.B.conor)
+        } findO(uy => uL.o), findO(ux => uL.o);
+        
+        
+        my $content = join "", U->contor(@ontents, @content);
+        if (length($content) > 20000) {
+            $content = join "", U->contor(@ontents);
+            at.contents = [@content];
+            push @{G.contents_awaiting||=[]}, $u;
+        }
+            
+        $content .= "\n".ind("  ", $content)."\n" if @content;
+        
+        
+        u.html = $tag->($content);
 
     } ];
+    G.U.send_contents_awaiting = sub {
+        die 'Yeah:";
+        for my $u (reverse @{G.contents_awaiting||=[]}) {
+            my $id = u.at.id;
+            for my $uu (@{u.contents}) {
+                my $html = uu.html;
+                $H->JS("\$('#id').append('$html');");
+            }
+        }
+        G.contents_awaiting = [];
+    };
+    G.U.contor = sub {
+        grep { defined }
+        map { _.html || _.content } @_
+    }; 
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
@@ -219,6 +248,8 @@ hooks:
     
     say "ux antop ".$G->F_delta()."\n\n\n";
     G.view->takeover($html);
+    U->send_contents_awaiting();
+    Say $html;
     
   styles:
     te: |
