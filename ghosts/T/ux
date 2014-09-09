@@ -10,6 +10,8 @@ hooks:
     ux:
       K: ux
       O: ux
+      styles: te
+      tag: ux
       print: |
         "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
     uy:
@@ -26,17 +28,26 @@ hooks:
     E.uyL = $L if $L ne $uxL;
 
     ux.Lu.G->w(event => $E);
-  uyBs:
+  uyBs: # TODO ways build up from places like this
    - K: i
      uys: w
    - K: t
+     D_html: |
+       $t
    - K: o
      uys: w
    - K: w
      nah: 1
+     D_html: |
+       U->ups('shlink') if
+           (grep { $_ eq $w } G.L.o) && findO(ux => w.Li.o);
+       # ^ w on a line. octave lower display & glue?
+       pint($w);
    - K: e
      styles: topleft white little
      nah: 1
+     D_html: |
+       gpty($e)
   
    
   any_init: |
@@ -66,7 +77,7 @@ hooks:
             my $from = shift;
             push @fluyB, { %$from, @_ }
         };
-        for my $uyB (@$uyBs) {
+        for my $uyB (@$uyBs) { # ux spawns uys
             next if u.O eq "uy";
             next if uyB.nah;
             my $n = uyB.n ||= uyB.K;
@@ -90,7 +101,7 @@ hooks:
                 );
             }
         }
-        if (my $uys = delete u.B.uys) {
+        if (my $uys = delete u.B.uys) { 
             for my $uyK (split ' ', $uys) {
                 my $uyB = $uyBsK->($uyK);
                 my $n = uyB.n ||= uyB.K;
@@ -109,62 +120,51 @@ hooks:
         
         delete G.U.h.ul.creating_that_u;
     } ];
+    G.U.ups = sub {#c
+        my $u = shift;
+        u.B.styles = U->jgd(u.B.styles, @_);
+    };
+    G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.toos = [ sub {
         my $u = G.L.i;
         my $uL = G.L;
-        my $at = {id=>uL.uuid};
-        if (u.Lu && !%{u.Lu}) {
-            die "empty Lu on ".pint($u)."\n".wdump($u);
-            delete u.Lu ;
-        }
-        die wdump(2, $u) if u.K eq 'uy' && u.Lu || u.K eq 'ux' && !u.Lu;
+        die "empty Lu on ".wdump($u)  if u.Lu && !%{u.Lu};
+        die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.Lu;
+        die "uy Lu".wdump(2, $u)      if u.K eq 'ux' && !u.Lu;
+        die "ux has no ways out"      if u.K eq "ux" && !@{uL.o};
         
+        say "utoo: ".pint($u);
+        my $at;
         my @html;
         
-        at.tag = u.K eq "ux" ? "ux" : u.B.K;
-        at.styles = u.K eq "ux" ? "ux" : u.B.K;
+        at.id = uL.uuid;
+        at.tag = U->jgd(u.B.tag, u.tag);
+        at.styles = U->jgd(u.styles);
         
-        #h mhmmmmm
-        
-        say "u: ".pint($u);
-        if (u.K eq "ux") {
-            die "ux has no ways out" unless @{uL.o};
-            at.styles = 'te';
-            at.tag = "ux";
-        }
-        elsif (u.K eq "uy") {
+        if (u.K eq "uy") {
             my $n = u.B.n;
-            my $pn = u.Lo.i.B.n if exists u.Lo && exists u.Lo.i;
-            (at.tag) = "y$n";
-            at.styles = "y$n";
-            at.styles = "u.B.styles at.styles" if u.B.styles;
-            
-            # or so
-            if ($n eq "w" && (!$pn || $pn ne "o"
-                || !grep { $_ eq u.B.w } findO(ux=>uL.o))) {
-                # G.U.cu_Lu->($o) # ope may mean either of these < ^ # on-next-line ish. octave lower display & glue?
-                # if o, only not ux below
-                push @html, pint(u.B.w);
-            }
-            push @html, gpty(u.B.t) if $n eq "t";
-            push @html, u.B.te if $n eq "te";
+            at.tag = "y$n";
+            at.content = $G->w('B/D_html', {}, $u);
+            at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
-        unshift @html, '<'.at.tag.' id="'.at.id.'" style="'.$G->styles(at.styles).'">';
+        die "no tag" .wdump($u) if !at.tag;
+        push @html, '<'.at.tag.' id="'.at.id.'" style="'.$G->styles(at.styles).'">';
         
         my $s = {};
         for my $uu (@{uL.o}) {
             G.U.accum->(($s->{uu.O}||=[]), $uu);
         }
-        my @ou;
-        push @ou, _.html for @{s.uy};
-        push @ou, _.html for @{s.ux};
-        my $oh = join "\n", grep { defined } @ou;
+        my $oh = join "\n", grep { defined } map { _.html } @{s.uy}, @{s.ux};
+        if (at.content) {
+            push @html, "\n" if $oh;
+            push @html, at.content;
+        }
         if ($oh) {
-            push @html, ind('  ',$oh)
+            push @html, "\n".ind('  ',$oh)."\n"
         }
         
         push @html, "</at.tag>";
-        u.html = join "\n", @html;
+        u.html = join "", @html;
 
     } ];
   ux: |
@@ -235,6 +235,9 @@ hooks:
         
     yt: |
         q' padding:0.5em; background:rgba(200,80,130,0.5);'
+    
+    shlink: |
+        q" transform:rotate(135deg) scale(2,.5); ";
         
     rel: |
       qw'position:relative'

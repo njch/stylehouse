@@ -83,6 +83,7 @@ sub pint {
 }
 sub U {
     my ($G, $Usub, @etc) = @_;
+    $G->{U}->{$Usub} || confess "no U $Usub";
     $G->{U}->{$Usub}->(@etc);
 }
 sub mess {
@@ -798,6 +799,9 @@ sub parse_babble {
     my $num = qr/(?:(\d+(?:\.\d+)?) )/;
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    
+    my $ulooks = 'U->';
+    $eval =~ s/$ulooks(\w+)\(/\$G->U("$1", /sg;
     
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
