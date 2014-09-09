@@ -31,6 +31,7 @@ hooks:
   uyBs: # TODO ways build up from places like this
    - K: i
      uys: w
+     conor: -0.5
    - K: t
      content_D: |
        gpty($t)
@@ -163,19 +164,22 @@ hooks:
             "<$tag $attr>$conty$content</$tag>";
         };
         
-        my @ontents = ($u);
-        
         my @content = 
-        #sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) }
+        sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) }
         (findO(uy => uL.o), findO(ux => uL.o));
+        
         at.contents = [@content];
-        
-        #die wdump($at) if @content > 1;
-        
+                
         my $content_max = 2000;
-        my $content = join "\n", U->contor(@ontents, @content);
+        my $content =
+            (u.content ? u.content : "")
+            .join "\n", U->contor(@content);
+        for my $uu (@content) {
+            say "ANNOY".pint($uu)."    \n".join"\n~\n",U->contor($uu)
+            ."\n\n\n\n\n";
+        }
         if (length($content) > $content_max) {
-            $content = join "", U->contor(@ontents);
+            $content = "";
             @content = ();
             # via travel add: #$uxid > #$id # in case of mid-y splits...
             my $id = u.at.id;
@@ -194,9 +198,13 @@ hooks:
         $content = "\n".ind("  ", $content)."\n" if @content;
         
         u.html = $tag->($content);
-
+ 
     } ];
-    G.U.send_contents_awaiting = sub {
+    G.U.contor = sub {
+        grep { defined }
+        map { _.html || _.content } @_
+    }; 
+    G.U.send_contents_awaiting = sub {#c
         my $awa = G.contents_awaiting ||= [];
         G.fuckery = 0;
         for my $ait (reverse @$awa) {
@@ -211,13 +219,8 @@ hooks:
         }
         G.contents_awaiting = [];
     };
-    G.U.contor = sub {
-        grep { defined }
-        map { _.html || _.content } @_
-    }; 
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
-    
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
         push @uxs, G.U.ul->(
