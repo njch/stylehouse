@@ -34,7 +34,9 @@ hooks:
      conor: -0.5
    - K: t
      content_D: |
-       gpty($t)
+       my $con = gpty($t);
+       $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
+       $con;
    - K: o
      uys: w
      styles: shlink
@@ -134,7 +136,6 @@ hooks:
         die "uy Lu".wdump(2, $u)      if u.K eq 'ux' && !u.Lu;
         die "ux has no ways out"      if u.K eq "ux" && !@{uL.o};
         
-        say "utoo: ".pint($u);
         my $at;
         
         at.id = uL.uuid;
@@ -143,6 +144,7 @@ hooks:
             my $n = u.B.n;
             at.tag = "y$n";
             at.content = $G->w('B/content_D', {}, $u);
+            
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
         at.tag ||= U->jgd(u.B.tag, u.tag);
@@ -174,10 +176,7 @@ hooks:
         my $content =
             (u.content ? u.content : "")
             .join "\n", U->contor(@content);
-        for my $uu (@content) {
-            say "ANNOY".pint($uu)."    \n".join"\n~\n",U->contor($uu)
-            ."\n\n\n\n\n";
-        }
+        
         if (length($content) > $content_max) {
             $content = "";
             @content = ();
@@ -268,10 +267,10 @@ hooks:
     
     my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
     
-    say "ux antop ".$G->F_delta()."\n\n\n";
     G.view->takeover($html);
     U->send_contents_awaiting();
     Say $html;
+    Say "ux antop ".$G->F_delta()."\n\n\n";
     
   styles:
     te: |
