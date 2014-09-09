@@ -28,11 +28,16 @@ chains:
      G.i.K eq "Codon"
    D: |
      my $C = G.i;
-     my $code = $H->slurp(C.B.stylefile) if C.B.stylefile;
+     $_ = C.B.stylefile;
+     my $code = $H->slurp($_) if $_;
+     C.B.name ||= do {
+         /ghosts\// ? (/ghosts\/(.+)$/)[0] :
+        /lib\// ? (/lib\/(.+)\.pm$/)[0] : $_
+     };
      $code = C.B.code if C.B.code;
      G.t = [ map { s/\n$//s; $_ } split "\n", $code ];
-   s:
-     yt: 
+   print: |
+     "etc".S.B.name
     
  - K: 'yaml'
    arr_if: |
