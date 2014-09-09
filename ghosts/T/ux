@@ -167,10 +167,12 @@ hooks:
         
         my @content = 
         #sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) }
-        findO(uy => uL.o), findO(ux => uL.o);
+        (findO(uy => uL.o), findO(ux => uL.o));
         at.contents = [@content];
         
-        my $content_max = 20000;
+        #die wdump($at) if @content > 1;
+        
+        my $content_max = 2000;
         my $content = join "\n", U->contor(@ontents, @content);
         if (length($content) > $content_max) {
             $content = join "", U->contor(@ontents);
@@ -180,6 +182,7 @@ hooks:
             my $uxid = G.last_ux.at.id if G.last_ux;
             my $sel = "#$id";
             $sel = "ux#$uxid > $sel" if $uxid;
+            #die;
             die "thing ".pint(G.last_ux)."\n\n".pint($u)."\n\n $uxid ne $id" if $uxid eq $id;
             push @{G.contents_awaiting||=[]}, {
                 sel => $sel,
@@ -188,7 +191,7 @@ hooks:
         }
             
         #die wdump(3,[u.at, $content]) if u.K eq "ux";
-        $content .= "\n".ind("  ", $content)."\n" if @content;
+        $content = "\n".ind("  ", $content)."\n" if @content;
         
         u.html = $tag->($content);
 
@@ -206,7 +209,7 @@ hooks:
                 $H->JS("\$('$sel').append('$html');");
             }
         }
-        @$awa = ();
+        G.contents_awaiting = [];
     };
     G.U.contor = sub {
         grep { defined }
