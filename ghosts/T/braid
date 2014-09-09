@@ -136,15 +136,21 @@ hooks:
         my $u = G.L.i;
         my $uL = G.L;
         die "ul is :".wdump(2,$uL)unless uL.i.K =~ /^u[xy]$/; 
+        my $prevx = G.last_ux;
+        my $lastx = G.last_ux = $u if u.K eq 'ux';
         
         G.U.stoops->[    G.U.ug_i    ]->();
         
         for my $uo (@{uL.o}) {
             G.L = uo.Li;
             G.U.antop->();
+            G.last_ux = $lastx;
         }
+        G.last_ux = $prevx;
         G.L = u.Li;
         
         G.U.toos->[      G.U.ug_i    ]->();
+        
+        G.last_ux = $prevx;
     };
 

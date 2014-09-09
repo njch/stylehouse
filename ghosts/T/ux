@@ -36,6 +36,8 @@ hooks:
        gpty($t)
    - K: o
      uys: w
+     styles: shlink
+     nah: 1
    - K: w
      nah: 1
      content_D: |
@@ -114,7 +116,7 @@ hooks:
         }
         if (u.O eq "uy" && u.B.K ne "e") {
             #die wdump(2, $u);
-            $pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
+            #$pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
         }
         for my $uyB (@fluyB) {
             $G->U(uys => $uyB);
@@ -136,7 +138,6 @@ hooks:
         
         at.id = uL.uuid;
         at.styles = U->jgd(u.styles);
-        
         if (u.K eq "uy") {
             my $n = u.B.n;
             at.tag = "y$n";
@@ -155,42 +156,57 @@ hooks:
             my $tag = delete attr.tag;
             my $conty = delete attr.content if exists attr.content;
             $conty = "" if!defined $conty;
+            delete attr.contents;
             
             $attr = join " ", map {
                 $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
             "<$tag $attr>$conty$content</$tag>";
         };
         
-        my @ontents = $u;
+        my @ontents = ($u);
         
-        my @content = sort {
-            (a.conor || a.B.conor) <=> (b.conor || b.B.conor)
-        } findO(uy => uL.o), findO(ux => uL.o);
+        my @content = 
+        #sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) }
+        findO(uy => uL.o), findO(ux => uL.o);
+        at.contents = [@content];
         
-        
-        my $content = join "", U->contor(@ontents, @content);
-        if (length($content) > 20000) {
+        my $content_max = 20000;
+        my $content = join "\n", U->contor(@ontents, @content);
+        if (length($content) > $content_max) {
             $content = join "", U->contor(@ontents);
-            at.contents = [@content];
-            push @{G.contents_awaiting||=[]}, $u;
+            @content = ();
+            # via travel add: #$uxid > #$id # in case of mid-y splits...
+            my $id = u.at.id;
+            my $uxid = G.last_ux.at.id if G.last_ux;
+            my $sel = "#$id";
+            $sel = "ux#$uxid > $sel" if $uxid;
+            die "thing ".pint(G.last_ux)."\n\n".pint($u)."\n\n $uxid ne $id" if $uxid eq $id;
+            push @{G.contents_awaiting||=[]}, {
+                sel => $sel,
+                u => $u,
+            };
         }
             
+        #die wdump(3,[u.at, $content]) if u.K eq "ux";
         $content .= "\n".ind("  ", $content)."\n" if @content;
-        
         
         u.html = $tag->($content);
 
     } ];
     G.U.send_contents_awaiting = sub {
-        die 'Yeah:";
-        for my $u (reverse @{G.contents_awaiting||=[]}) {
-            my $id = u.at.id;
-            for my $uu (@{u.contents}) {
-                my $html = uu.html;
-                $H->JS("\$('#id').append('$html');");
+        my $awa = G.contents_awaiting ||= [];
+        G.fuckery = 0;
+        for my $ait (reverse @$awa) {
+            my $u = ait.u;
+            my $sel = ait.sel;
+            my @htmls = U->contor(@{u.at.contents});
+            #die wdump([$u,\@htmls]);
+            for my $html (@htmls) {
+                #next if G.fuckery++ > 7;
+                $H->JS("\$('$sel').append('$html');");
             }
         }
-        G.contents_awaiting = [];
+        @$awa = ();
     };
     G.U.contor = sub {
         grep { defined }
