@@ -407,13 +407,19 @@ sub load_ways {
 our$doneprotolwptimes=[];
 sub _0 {
     my $G = shift;
-    my ($point, $ar) = @_;
-    unless ($G0) { # proto $G0 creation
-        $G->w("load_ways_post") if $point eq "_load_ways_post";
-        return;
+    my ($point, @etc) = @_;
+    return $G->w("load_ways_post")
+        if !$G0 && $point eq "_load_ways_post";
+    if ($point =~ /^U->(.+)$/) {
+        my $Usub = $1;
+        $G0->{U}->{$Usub} || confess "no 0U $Usub";
+        $G0->{U}->{$Usub}->($G, @etc);
     }
-    $ar->{S} = $G;
-    $G0->w($point, $ar);
+    else {
+        my $ar = shift @etc;
+        $ar->{S} = $G;
+        $G0->w($point, $ar);
+    }
 }
 sub nw {
     my $self = shift;
@@ -802,6 +808,7 @@ sub parse_babble {
     
     my $ulooks = 'U->';
     $eval =~ s/$ulooks(\w+)\(/\$G->U("$1", /sg;
+    $eval =~ s/(0->\w+)\(/\$G->_0("$1", /sg;
     
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
