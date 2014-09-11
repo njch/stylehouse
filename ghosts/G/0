@@ -43,6 +43,21 @@ hooks:
                     $A->{B}->{$_->[0]} eq $_->[1]          } @wheres
         }
     };
+    G.U.accum = sub {#c
+        my ($S, $a, $t) = @_;
+        if (!grep { $_ eq $t } @$a) {
+            push @$a, $t
+        }
+    };
+    G.U.deaccum = sub {#c
+        my ($S, $source, $ac, $t) = @_;
+        my $a = $source->{$ac};
+        my $i = 0;
+        for (@$a) {
+            return splice(@$a, $i, 1) if $_ eq $t;
+            $i++;
+        }
+    };
   V: 
     spawn: |
       my $V;

@@ -18,21 +18,7 @@ hooks:
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
         $w
     };
-    G.U.accum = sub {#c
-        my ($a, $t) = @_;
-        if (!grep { $_ eq $t } @$a) {
-            push @$a, $t
-        }
-    };
-    G.U.deaccum = sub {#c
-        my ($S, $ac, $t) = @_;
-        my $a = $S->{$ac};
-        my $i = 0;
-        for (@$a) {
-            return splice(@$a, $i, 1) if $_ eq $t;
-            $i++;
-        }
-    };
+
     G.U.findu = sub {#c
         my $u = shift;
         my $L;
@@ -67,11 +53,11 @@ hooks:
         
         if (z.p){
             if (u.O eq "uy") {
-                G.U.accum->(z.p.o => $u);
-                G.U.accum->((u.Loose||=[]), z.p); # .B.Lo many
+                0->accum(z.p.o => $u);
+                0->accum((u.Loose||=[]), z.p); # .B.Lo many
             }
             else {
-                G.U.accum->(z.p.o => $u);
+                0->accum(z.p.o => $u);
                 G.u.Lo = z.p
             }
         }
