@@ -25,6 +25,24 @@ hooks:
     w include_init[$S];
     w GG_init[$S];
     $S->w("fresh_init");
+  any_init: |
+    G.U.find = sub {
+        my $S = shift;
+        my $ar = shift;
+        my @wheres;
+        while (my ($k, $v) = each %$ar) {
+            push @wheres, [ $k, $v ];
+        }
+        for my $line (@{ $S->W->{script} }) {
+            #$H->info("Line: $line", $O->{name}, $line);
+            next if ref $line eq "ARRAY" && @$line == 0; # wtf case
+            my $A = $line->{t};
+            say "Looking at $_->[0] = $A->{B}->{$_->[0]}  .... $_->[1]";
+            return $A if @wheres == grep {
+                !exists $A->{B}->{$_->[0]} ||
+                    $A->{B}->{$_->[0]} eq $_->[1]          } @wheres
+        }
+    };
   V: 
     spawn: |
       my $V;

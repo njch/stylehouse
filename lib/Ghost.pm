@@ -410,7 +410,7 @@ sub _0 {
     my ($point, @etc) = @_;
     return $G->w("load_ways_post")
         if !$G0 && $point eq "_load_ways_post";
-    if ($point =~ /^U->(.+)$/) {
+    if ($point =~ /^0->(.+)$/) {
         my $Usub = $1;
         $G0->{U}->{$Usub} || confess "no 0U $Usub";
         $G0->{U}->{$Usub}->($G, @etc);
