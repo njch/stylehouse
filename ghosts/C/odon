@@ -16,13 +16,11 @@ chains:
    y:
      t:
        event: |
-         G.U.mk->(Codon => { stylefile => L.t });
+         0->Taf(Codon => { stylefile => L.t });
      
- - K: C load
-   Ki: Codon
-   arr_if: |
-     G.i.K eq "Codon"
+ - K: Codon
    auto_D: |
+     G.t = "yeah!";
      my $C = G.i;
      $_ = C.B.stylefile;
      my $code = $H->slurp($_) if $_;
@@ -34,17 +32,18 @@ chains:
      $code = C.B.code if C.B.code;
      G.t = [ map { s/\n$//s; $_ } split "\n", $code ];
      
-     w andwhen(asap => {oway_D=>"C chunks"});
+     #w andwhen(asap => {oway_D=>"C chunks"});
      
- - K: C chunks
+ - K: Chunks
    Ki: Codon
    arr_if: |
-     1
-   D:
-     my $chunks = 0->mk_or_match(Chunks => { });
-      lines => L.t
-     
-    
+     G.i.K eq "Codon"
+   travels: |
+     #w chunkify;
+   
+   
+   
+
  - K: 'yaml'
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1
@@ -53,15 +52,43 @@ chains:
 dials:
   max_depth: 3
 hooks:
-  ways:
-    Codon:
-      K: Codon
-      print: |
-        S.B.name
-    Chunks:
-      K: Chunks
-      auto_D: |
-        #make chunks
+  chunkify: |
+      my $c = "#c";
+      die ord('#');
+      my $lines = $self->{lines};
+
+      my @stuff = ([]);
+      my @lines = @$lines;
+          while (defined(my $l = shift @lines)) {
+              push @stuff, []
+              if
+              $self->{is}->{G} ?
+                  @{$stuff[-1]} > 0 && $l =~ /^\w+|^  \w+/
+                     || $l =~ /$c/
+            :
+            !$self->{is}->{N} ?
+                $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
+
+                     || $l =~ /$c/
+            : 0;
+            
+            push @{ $stuff[-1] }, $l;
+            
+            if ($self->{is}->{N}) {
+                push @stuff, [] if $l eq '' && $lines[0] ne '';
+            }
+        }
+        my $chunks = [];
+        my $i = 0;
+        for my $s (@stuff) {
+            push @$chunks, {
+                i => $i++,
+                rows => scalar(@$s),
+                lines => $s,
+            };
+        }
+        $self->{chunks} = $chunks;
+    
   event: |
     G.L = $L;
     my $y = "";
@@ -81,6 +108,7 @@ hooks:
   figure_some_chain: |
     $G->doo(c.auto_D, {}) if c.auto_D;
     push @{G.o}, $c;
+    w $c travels if c.travels;
     return 1 # all good ness
   events:
     - K: Codon
