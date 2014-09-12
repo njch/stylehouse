@@ -24,6 +24,7 @@ our $db = 0;
 our $_ob = undef;
 our $MAX_FCURSION = 140;
 our $U;
+our $T;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -444,37 +445,38 @@ sub way_was {
 }
 sub haunt { # arrives through here
     my $G = shift;
-    my $T = shift; # A
-    $G->{depth} = shift;
-    $G->{t} = shift; # thing
-    my $i = $G->{i} = shift; # way in
-    my $o = $G->{o} = []; # way[] out
-    
-    $G->ob("haunt", $G);
-    
-    $G->w("T_begin");
-    
-    if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-        my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
-        push @$o, $i->spawn()->from({ arr_returns => \@r });
-        
-    }
-    else {
-        $G->w("arr");
-    }
-    
-    my $L;
-    if (exists $G->{t}) {
-        $L = $G->W->continues($G); # %
-        $G->ob("continues...", $L);
-    }
-    
-    for my $o (@{$L->{o}}) {
-        $o->{Lo} = $L;
-    }
-    $i->{Li} = $L;
+        my $T = shift; # A
+        $G->{depth} = shift;
+        $G->{t} = shift; # thing
+        my $i = $G->{i} = shift; # way in
+        my $o = $G->{o} = []; # way[] out
+
+        $G->ob("haunt", $G);
+
+        $G->w("T_begin");
+
+        if ($i->{arr_hook}) { # could be moved into a crawl-like chain
+            my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
+            push @$o, $i->spawn()->from({ arr_returns => \@r });
+
+        }
+        else {
+            $G->w("arr");
+        }
+
+        my $L;
+        if (exists $G->{t}) {
+            $L = $G->W->continues($G); # %
+            $G->ob("continues...", $L);
+        }
+
+        for my $o (@{$L->{o}}) {
+            $o->{Lo} = $L;
+        }
+        $i->{Li} = $L;
 
 
+    #$G->_0("0->opo", @_);
 
     my @r = $L;
     for my $c (@{$G->{o}}) {

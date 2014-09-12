@@ -85,34 +85,114 @@ hooks:
             $i++;
         }
     };
-    G.U.Taf = sub {#c
-        G.U.mk->(@_);
+    G.U.Tafu = sub {#c # lightly travel this kinda u
+        my $S = shift;
+        
+        my $uu = G.U.sktcu->($S,@_);
+        my $u = G.U.fu->($S, $uu);
+        !u.Li ? do {
+            G.U.T->(i => $u, e => 0.3);
+        } : do{
+            
+        };
     };
-    G.U.mk = sub {#c
-        G.U.ul->( 
-            u => G.U.mku->(@_),
-            p => G.L,
-        );
+    G.U.sets_any_k = sub {
+        my ($S, $set, $true) = @_;
+        for my $k (keys %$set) {
+            return 1 if $true->{$k};
+        }
     };
-    G.U.mku = sub {#c
-        my ($way, $B) = @_; 
-        confess "B B".wdump([@_]) if B.B;
-        $B = {%$B};
-        #say "L ".pint(G.L.i);
-        #say "mku $way   ".join ",  ",
-        #map { "$_ = ".pty($B->{$_}) } keys %$B;
+    G.U->{T} = sub {
+        my $S = shift;
+        my $t = $T;
+        my $sets = {@_};
+        
+        my $tbl = {map{$_=>1}qw"i o L t"};
+        if (G.U.sets_any_k->($S,$sets, $tbl)) {
+            delete $t->{$_} for keys %$tbl;
+        }
+        $T= $T->spawn();
+        $T->from($sets);
+        T.L ||= T.i ||= G.U
+        # when to replace oeoell with other values...
+        #$G->T
+        
+        
+        
+        
+    };
+    G.U.haunt = sub {
+        my $S = shift;
+        
+        my $tee = shift; # A
+        $G->{depth} = shift;
+        $G->{t} = shift; # thing
+        my $i = $G->{i} = shift; # way in
+        my $o = $G->{o} = []; # way[] out
+
+        $G->ob("haunt", $G);
+
+        $G->w("T_begin");
+
+        if ($i->{arr_hook}) { # could be moved into a crawl-like chain
+            my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
+            push @$o, $i->spawn()->from({ arr_returns => \@r });
+
+        }
+        else {
+            $G->w("arr");
+        }
+
+        my $L;
+        if (exists $G->{t}) {
+            $L = $G->W->continues($G); # %
+            $G->ob("continues...", $L);
+        }
+
+        for my $o (@{$L->{o}}) {
+            $o->{Lo} = $L;
+        }
+        $i->{Li} = $L;
+
+
+
+    my @r = $L;
+    for my $c (@{$G->{o}}) {
+        if (exists $c->{travel_this}) {
+            $tee->T($c->{travel_this}, $G, $c, $L->{depth}+1);
+        }
+        elsif (exists $c->{travel}) {
+            $tee->T($c->{travel}, $G, $c, $L->{depth}+1);
+            delete $c->{travel} if !defined $c->{travel};
+        }
+        elsif (exists $c->{arr_returns}) {
+            @r = @{$c->{arr_returns}};
+        }
+        elsif (exists $c->{B}->{s} || exists $c->{O}) {
+            # sweet
+        }
+        else {
+            $H->error("what kind of way out is",$G,$c)
+        }
+    }
+    $G->w("T_end", {L=>$L, r=>\@r});
+    
+    return @r;
+    };
+    G.U.sktcu = sub {#c
+        my ($S, $way, $B) = @_; 
+        die  "B B" if B.B;
         my $w = $G->nw()->from(
             $G->findway('ways/'.$way)
         )->from({ B => {%$B} });
-        
-        w.Lu = w.B.Lu if w.B.Lu;
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
         $w
     };
     G.U.ul = sub {#c # look for u way
+        my $S = shift;
         my $z = {@_};
         my $u = z.u;
-        $u = G.U.findu->(z.u)                  unless u.Li;
+        $u = G.U.fu->(z.u)                  unless u.Li;
         
         if (z.p){
             if (u.O eq "uy") {
@@ -135,6 +215,25 @@ hooks:
         G.U.h.ul.done->($u) if G.U.h.ul.done;
         $u
     };
+    G.U.fu = sub {#c
+        my $S = shift;
+        my $u = shift;
+        for my $LL (@{$G->W->{script}}) {
+            my $i = LL.i;
+            if ($i eq $u || G.U.B_same($u => $i)) {
+                return LL.i;
+            }
+        }
+    };
+    G.U.B_same = sub {
+        my ($S, $u, $uu) = @_;
+        while (my ($k, $v) = each %{u.B}) {
+            u.B->{$k} eq uu.B->{$k} || return 0;
+        }
+    };
+    
+    
+    
   V: 
     spawn: |
       my $V;
