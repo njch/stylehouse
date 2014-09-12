@@ -121,30 +121,30 @@ hooks:
         
         
     };
-    G.U.haunt = sub {
+    G.U.haunt = sub { # non Li call
         my $S = shift;
+        my $Travel = shift;
+        my $s;
+        s.depth = shift;
+        s.t = shift;
+        s.i = shift;
+        s.o = [];
         
-        my $tee = shift; # A
-        $G->{depth} = shift;
-        $G->{t} = shift; # thing
-        my $i = $G->{i} = shift; # way in
-        my $o = $G->{o} = []; # way[] out
+        $S->{$_} = $s->{$_} for keys %$s;
+        
+        $S->ob("haunt");
+        $S->w("T_begin");
 
-        $G->ob("haunt", $G);
-
-        $G->w("T_begin");
-
-        if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-            my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
-            push @$o, $i->spawn()->from({ arr_returns => \@r });
-
+        i.arr_hook ? do {
+            my @r = $S->w(i.arr_hook, i.arr_ar);
+            i.returns = \@r;
         }
-        else {
-            $G->w("arr");
-        }
+        : do {
+            $S->w("arr");
+        };
 
         my $L;
-        if (exists $G->{t}) {
+        if (exists $S->{t}) {
             $L = $G->W->continues($G); # %
             $G->ob("continues...", $L);
         }
@@ -156,28 +156,29 @@ hooks:
 
 
 
-    my @r = $L;
-    for my $c (@{$G->{o}}) {
-        if (exists $c->{travel_this}) {
-            $tee->T($c->{travel_this}, $G, $c, $L->{depth}+1);
+        my @r = $L;
+        for my $c (@{$G->{o}}) {
+            if (exists $c->{travel_this}) {
+                $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
+            }
+            elsif (exists $c->{travel}) {
+                $T->T($c->{travel}, $G, $c, $L->{depth}+1);
+                delete $c->{travel} if !defined $c->{travel};
+            }
+            elsif (exists $c->{arr_returns}) {
+                @r = @{$c->{arr_returns}};
+            }
+            elsif (exists $c->{B}->{s} || exists $c->{O}) {
+                # sweet
+            }
+            else {
+                $H->error("what kind of way out is",$G,$c)
+            }
         }
-        elsif (exists $c->{travel}) {
-            $tee->T($c->{travel}, $G, $c, $L->{depth}+1);
-            delete $c->{travel} if !defined $c->{travel};
-        }
-        elsif (exists $c->{arr_returns}) {
-            @r = @{$c->{arr_returns}};
-        }
-        elsif (exists $c->{B}->{s} || exists $c->{O}) {
-            # sweet
-        }
-        else {
-            $H->error("what kind of way out is",$G,$c)
-        }
-    }
-    $G->w("T_end", {L=>$L, r=>\@r});
-    
-    return @r;
+        @r = @{i.returns} if i.arr_hook;
+        $G->w("T_end", {L=>$L, r=>\@r});
+
+        return @r
     };
     G.U.sktcu = sub {#c
         my ($S, $way, $B) = @_; 
@@ -220,7 +221,7 @@ hooks:
         my $u = shift;
         for my $LL (@{$G->W->{script}}) {
             my $i = LL.i;
-            if ($i eq $u || G.U.B_same($u => $i)) {
+            if ($i eq $u || i.K eq u.K && G.U.B_same($u => $i)) {
                 return LL.i;
             }
         }

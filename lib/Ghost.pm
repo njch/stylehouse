@@ -445,6 +445,7 @@ sub way_was {
 }
 sub haunt { # arrives through here
     my $G = shift;
+    return $G->_0("0->haunt", @_);
         my $T = shift; # A
         $G->{depth} = shift;
         $G->{t} = shift; # thing
