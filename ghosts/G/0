@@ -85,7 +85,7 @@ hooks:
             $i++;
         }
     };
-    G.U.Tafu = sub {#c # lightly travel this kinda u
+    G.U.Taf = sub {#c # lightly travel this kinda u
         my $S = shift;
         
         my $uu = G.U.sktcu->($S,@_);
@@ -102,46 +102,39 @@ hooks:
             return 1 if $true->{$k};
         }
     };
-    G.U->{T} = sub {
+    G.U.T= sub {
         my $S = shift;
         my $t = $T;
         my $sets = {@_};
         
         my $tbl = {map{$_=>1}qw"i o L t"};
-        if (G.U.sets_any_k->($S,$sets, $tbl)) {
+        if (G.U.sets_any_k->($S, $sets, $tbl)) {
             delete $t->{$_} for keys %$tbl;
         }
+        $T||= $G->nw();
         $T= $T->spawn();
         $T->from($sets);
         T.L ||= T.i ||= G.U
         # when to replace oeoell with other values...
         #$G->T
         
-        
-        
-        
     };
     G.U.haunt = sub { # non Li call
-        my $S = shift;
-        my $Travel = shift;
-        my $s;
-        s.depth = shift;
-        s.t = shift;
-        s.i = shift;
+        my ($s, $S, $Travel);
+        ($S, $Travel, s.depth, s.t, s.i) = @_;
         s.o = [];
-        
         $S->{$_} = $s->{$_} for keys %$s;
         
         $S->ob("haunt");
         $S->w("T_begin");
 
-        s.i.arr_hook ? do {
-            my @r = $S->w(s.i.arr_hook, s.i.arr_ar);
-            s.i.returns = \@r;
+        if (S.i.arr_hook) {
+            my @r = $S->w(S.i.arr_hook, S.i.arr_ar);
+            S.i.returns = \@r;
         }
-        : do {
+        else {
             $S->w("arr");
-        };
+        }
 
         my $L;
         if (exists $S->{t}) {
@@ -149,31 +142,32 @@ hooks:
             $S->ob("continues...", $L);
         }
 
-        for my $o (@{$L->{o}}) {
-            $o->{Lo} = $L;
-        }
-        s.i->{Li} = $L;
+        _.Lo = $L for @{L.o}; # TOO HEAVY
+        
+        L.i.Li = $L; # just right
+        
+        
 
         my @r = $L;
         for my $c (@{$S->{o}}) {
-            if (exists $c->{travel_this}) {
-                $Travel->T($c->{travel_this}, $S, $c, $L->{depth}+1);
+            if (exists c.travel_this) {
+                $Travel->T(c.travel_this, $S, $c, L.depth+1);
             }
-            elsif (exists $c->{travel}) {
-                $Travel->T($c->{travel}, $S, $c, $L->{depth}+1);
-                delete $c->{travel} if !defined $c->{travel};
+            elsif (exists c.travel) {
+                $Travel->T(c.travel, $S, $c, L.depth+1);
+                delete c.travel if !defined c.travel;
             }
-            elsif (exists $c->{arr_returns}) {
-                @r = @{$c->{arr_returns}};
+            elsif (exists c.arr_returns) {
+                @r = @{c.arr_returns};
             }
-            elsif (exists $c->{B}->{s} || exists $c->{O}) {
+            elsif (exists c.B.s || exists c.O) {
                 # sweet
             }
             else {
                 $H->error("what kind of way out is",$S,$c)
             }
         }
-        @r = @{s.i.returns} if s.i.arr_hook;
+        @r = @{S.i.returns} if S.i.arr_hook;
         $S->w("T_end", {L=>$L, r=>\@r});
 
         return @r
