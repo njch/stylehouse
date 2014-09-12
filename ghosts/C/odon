@@ -4,7 +4,7 @@ chains:
  - K: 'stylefile'#c
    Ki: 'styledir'
    arr_if: |
-     -d "$thing/lib" && -d "$thing/ghosts"
+     1 || -d "$thing/lib" && -d "$thing/ghosts"
    foreach_travel:
      glob: |
        "$thing/style*", "$thing/not"
@@ -18,8 +18,8 @@ chains:
        event: |
          G.U.mk->(Codon => { stylefile => L.t });
      
- - K: 'C load'
-   Ki: 'Codon'
+ - K: C load
+   Ki: Codon
    arr_if: |
      G.i.K eq "Codon"
    auto_D: |
@@ -34,7 +34,16 @@ chains:
      $code = C.B.code if C.B.code;
      G.t = [ map { s/\n$//s; $_ } split "\n", $code ];
      
-     w andwhen(asap => {oway_do=>"C chunks"});
+     w andwhen(asap => {oway_D=>"C chunks"});
+     
+ - K: C chunks
+   Ki: Codon
+   arr_if: |
+     1
+   D:
+     my $chunks = 0->mk_or_match(Chunks => { });
+      lines => L.t
+     
     
  - K: 'yaml'
    arr_if: |
@@ -44,7 +53,15 @@ chains:
 dials:
   max_depth: 3
 hooks:
-
+  ways:
+    Codon:
+      K: Codon
+      print: |
+        S.B.name
+    Chunks:
+      K: Chunks
+      auto_D: |
+        #make chunks
   event: |
     G.L = $L;
     my $y = "";
@@ -57,17 +74,7 @@ hooks:
   andwhen: |
     push @{G.andwhen||=[]}, $ar;
   T_end: |
-    for my $and (@{G.andwhen}) {
-        my ($when, $doing) = %$and;
-        $when eq "asap" || die || next;
-        my ($func, $etc) = %$doing;
-        $func eq "oway_do" ? do {
-            my ($w) = grep { _.K eq $etc } @{G.o};
-            $w || die "no such way $etc";
-            $G->doo(w.D, {}) if w.D;
-        } : die;
-        0->deaccum($G, 'andwhen', $and);
-    }
+    0->andwhendo();
   uxd: |
     G.ux->w('ux', {Ls=>$G->W->CS});
     $Ly->w(somewhere => {thing => $ar});
@@ -75,12 +82,6 @@ hooks:
     $G->doo(c.auto_D, {}) if c.auto_D;
     push @{G.o}, $c;
     return 1 # all good ness
-  ways:
-    Codon:
-      K: Codon
-      print: |
-        S.B.name
-    
   events:
     - K: Codon
       Ei: stylefile y t

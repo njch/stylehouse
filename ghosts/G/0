@@ -26,7 +26,17 @@ hooks:
     w GG_init[$S];
     $S->w("fresh_init");
   any_init: |
-    G.U.find = sub {
+    G.U.mk_or_match = sub {
+    
+    };
+    G.U.out_replacement = sub {
+        
+    };
+    G.U.match = sub {
+        my $S = shift;
+        
+    };
+    G.U.findA = sub {#c
         my $S = shift;
         my $ar = shift;
         my @wheres;
@@ -34,13 +44,26 @@ hooks:
             push @wheres, [ $k, $v ];
         }
         for my $line (@{ $S->W->{script} }) {
-            #$H->info("Line: $line", $O->{name}, $line);
             next if ref $line eq "ARRAY" && @$line == 0; # wtf case
             my $A = $line->{t};
             say "Looking at $_->[0] = $A->{B}->{$_->[0]}  .... $_->[1]";
             return $A if @wheres == grep {
                 !exists $A->{B}->{$_->[0]} ||
                     $A->{B}->{$_->[0]} eq $_->[1]          } @wheres
+        }
+    };
+    G.U.andwhendo = sub { #c
+        my $S = shift;
+        for my $and (@{S.andwhen}) {
+            my ($when, $doing) = %$and;
+            $when eq "asap" || die || next;
+            my ($func, $etc) = %$doing;
+            $func eq "oway_do" ? do {
+                my ($w) = grep { _.K eq $etc } @{S.o};
+                $w || die "no such oway K=$etc";
+                $G->doo(w.D, {}) if w.D;
+            } : die;
+            0->deaccum($S, 'andwhen', $and);
         }
     };
     G.U.accum = sub {#c

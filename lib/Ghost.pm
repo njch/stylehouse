@@ -412,7 +412,7 @@ sub _0 {
         if !$G0 && $point eq "_load_ways_post";
     if ($point =~ /^0->(.+)$/) {
         my $Usub = $1;
-        $G0->{U}->{$Usub} || confess "no 0U $Usub";
+        $G0->{U}->{$Usub} || confess "no 0U $Usub\n".wdump(2,$G0);
         $G0->{U}->{$Usub}->($G, @etc);
     }
     else {
