@@ -135,9 +135,9 @@ hooks:
         $S->ob("haunt");
         $S->w("T_begin");
 
-        i.arr_hook ? do {
-            my @r = $S->w(i.arr_hook, i.arr_ar);
-            i.returns = \@r;
+        s.i.arr_hook ? do {
+            my @r = $S->w(s.i.arr_hook, s.i.arr_ar);
+            s.i.returns = \@r;
         }
         : do {
             $S->w("arr");
@@ -145,24 +145,22 @@ hooks:
 
         my $L;
         if (exists $S->{t}) {
-            $L = $G->W->continues($G); # %
-            $G->ob("continues...", $L);
+            $L = $S->W->continues($S); # %
+            $S->ob("continues...", $L);
         }
 
         for my $o (@{$L->{o}}) {
             $o->{Lo} = $L;
         }
-        $i->{Li} = $L;
-
-
+        s.i->{Li} = $L;
 
         my @r = $L;
-        for my $c (@{$G->{o}}) {
+        for my $c (@{$S->{o}}) {
             if (exists $c->{travel_this}) {
-                $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
+                $Travel->T($c->{travel_this}, $S, $c, $L->{depth}+1);
             }
             elsif (exists $c->{travel}) {
-                $T->T($c->{travel}, $G, $c, $L->{depth}+1);
+                $Travel->T($c->{travel}, $S, $c, $L->{depth}+1);
                 delete $c->{travel} if !defined $c->{travel};
             }
             elsif (exists $c->{arr_returns}) {
@@ -172,11 +170,11 @@ hooks:
                 # sweet
             }
             else {
-                $H->error("what kind of way out is",$G,$c)
+                $H->error("what kind of way out is",$S,$c)
             }
         }
-        @r = @{i.returns} if i.arr_hook;
-        $G->w("T_end", {L=>$L, r=>\@r});
+        @r = @{s.i.returns} if s.i.arr_hook;
+        $S->w("T_end", {L=>$L, r=>\@r});
 
         return @r
     };
