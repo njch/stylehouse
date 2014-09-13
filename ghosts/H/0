@@ -41,9 +41,13 @@ hooks:
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
   mess: |
+    say "Out";
+    return say wdump($ar) unless H._future;
     my $m = Gf mess;
     $m || die'no mess!';
+    H._future = 0;
     $m Tw mess(%$ar);
+    H._future = 1;
   re:
     exec: |
       exec "perl stylehouse.pl";
@@ -53,7 +57,7 @@ hooks:
     future: |
       my $A = H.G->Gf('mess')->A;
       die wdump($A) unless $A->{K} eq "mess";
-      $H->{_future} = 1;
+      $H->{_future} = 0;
     flood: | #c
       my $house = $H->get('style') eq 'stylehouse';
     

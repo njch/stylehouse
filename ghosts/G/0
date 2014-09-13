@@ -103,6 +103,7 @@ hooks:
         my $back = T._To;
         #T._figure || G.U.figureT->($S);
         #T._figure->($S);
+        die "Here";
         T._swoop->($S);
         T._wooo->($S);
         my $L = T.L;
@@ -113,6 +114,7 @@ hooks:
         my ($S, $p) = @_;
         my $oldT=$T||=$G->nw();
         $T=$T->spawn;
+        T._To = $oldT;
         if (p.i || p.L) {
             delete $T->{$_} for qw'i L t o';
         }
@@ -120,8 +122,7 @@ hooks:
         T.i ||= T.L.i;
         T.L ||= T.i.Li;
         T.t ||= T.L.t unless exists T.t;
-        T.o ||= T.L.o
-        T._To = $oldT;
+        T.o ||= T.L.o;
         # backwards compat
         $S->{$_} = $T->{$_} for qw'i L t o';
     };
@@ -135,6 +136,7 @@ hooks:
             o => [],
             _swoop => G.U.haunt_swoop,
             _wooo => G.U.haunt_wooo,
+            _Travel => $Travel, # non
         });
         return @{L.i.returns};
     };
@@ -156,17 +158,17 @@ hooks:
 
         _.Lo = T.L for @{T.L.o}; # too heavy for uy
         
-        L.i.Li = T.L; # just right
+        T.L.i.Li = T.L; # just right
     };
     G.U.haunt_wooo = sub {
         my $S = shift;
         my $R = [T.L];
         for my $c (@{T.o}) {
             if (exists c.travel_this) {
-                $Travel->T(c.travel_this, $S, $c, L.depth+1);
+                T._Travel->T(c.travel_this, $S, $c, T.depth+1);
             }
             elsif (exists c.travel) {
-                $Travel->T(c.travel, $S, $c, L.depth+1);
+                T._Travel->T(c.travel, $S, $c, T.depth+1);
                 delete c.travel if !defined c.travel;
             }
             elsif (exists c.arr_returns) { # ded?
@@ -180,7 +182,7 @@ hooks:
             }
         }
         $R = T.i.returns if T.i.arr_hook;
-        $S->w("T_end", {L=>$L, r=>$R});
+        $S->w("T_end", {L=>T.L, r=>$R});
         T.i.returns = $R;
     };
     G.U.sktcu = sub {#c skatch a way + B{
