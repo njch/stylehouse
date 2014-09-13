@@ -447,7 +447,7 @@ sub haunt { # arrives through here
     my $G = shift;
     return $G->_0("0->haunt", @_) if $G0->{_future};
     
-        my $T = shift; # A
+        my $Tr = shift; # A
         $G->{depth} = shift;
         $G->{t} = shift; # thing
         my $i = $G->{i} = shift; # way in
@@ -468,8 +468,10 @@ sub haunt { # arrives through here
 
         my $L;
         if (exists $G->{t}) {
+            $T->{$_} = $G->{$_} for qw'i t o depth';
             $L = $G->W->continues($G); # %
             $G->ob("continues...", $L);
+            $T = {};
         }
 
         for my $o (@{$L->{o}}) {
@@ -483,10 +485,10 @@ sub haunt { # arrives through here
     my @r = $L;
     for my $c (@{$G->{o}}) {
         if (exists $c->{travel_this}) {
-            $T->T($c->{travel_this}, $G, $c, $L->{depth}+1);
+            $Tr->T($c->{travel_this}, $G, $c, $L->{depth}+1);
         }
         elsif (exists $c->{travel}) {
-            $T->T($c->{travel}, $G, $c, $L->{depth}+1);
+            $Tr->T($c->{travel}, $G, $c, $L->{depth}+1);
             delete $c->{travel} if !defined $c->{travel};
         }
         elsif (exists $c->{arr_returns}) {

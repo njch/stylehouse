@@ -41,15 +41,14 @@ sub continues {
         name => $namg,
         n => $W->{n}++,
         
-        t => encode_thing($G->{t}),
+        t => encode_thing($Ghost::T->{t}),
         
-        i => $G->{i},
-        o => $G->{o},
-        T => $G->{T},
+        i => $Ghost::T->{i},
+        o => $Ghost::T->{o},
+        T => $Ghost::T,
         
         
-        e => ($G->{etc}),
-        depth => $G->{depth},
+        depth => $Ghost::T->{depth},
         
         G => $G,
     };

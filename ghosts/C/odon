@@ -19,9 +19,11 @@ chains:
          0->Tafu(Codon => { stylefile => L.t });
      
  - K: Codon
-   auto_D: |
-     G.t = "yeah!";
-     my $C = G.i;
+   flows_D: |
+     T.t = "yeah!";
+     T.i.Li.t = "OHOHOH";
+     my $C = T.i;
+     #die wdump(2,$C);
      $_ = C.B.stylefile;
      my $code = $H->slurp($_) if $_;
      C.B.name ||= do {
@@ -30,15 +32,13 @@ chains:
      };
      C.B.flav = $1 if $1;
      $code = C.B.code if C.B.code;
-     G.t = [ map { s/\n$//s; $_ } split "\n", $code ];
-     
-     #w andwhen(asap => {oway_D=>"C chunks"});
+     T.t = [ map { s/\n$//s; $_ } split "\n", $code ];
      
  - K: Chunks
    Ki: Codon
    arr_if: |
      G.i.K eq "Codon"
-   travels: |
+   flows_D: |
      #w chunkify;
    
    
@@ -106,7 +106,6 @@ hooks:
     G.ux->w('ux', {Ls=>$G->W->CS});
     $Ly->w(somewhere => {thing => $ar});
   figure_some_chain: |
-    $G->doo(c.auto_D, {}) if c.auto_D;
     push @{G.o}, $c;
     w $c travels if c.travels;
     return 1 # all good ness

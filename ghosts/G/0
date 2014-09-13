@@ -85,27 +85,50 @@ hooks:
             $i++;
         }
     };
-    G.U.Tafu = sub {# c # lightly travel this kinda u
+
+    G.U.sktcu = sub {#c skatch a way + B{
+        my ($S, $way, $B) = @_; 
+        die  "B B" if B.B;
+        my $w = G.U.scrape_way($S, $way);
+        $w->from({ B => {%$B} });
+        die "makedad".wdump($w) if w.Lu && w.O ne "ux";
+        $w
+    };
+    G.U.scrape_way = sub {
+        my ($S, $way) = @_;
+        my $nw = $S->nw();
+        my $from = $G->findway('ways/'.$way);
+        $from ||= do {
+            my @chainway = grep { _.K eq $way } $S->chains;
+            shift @chainway
+        };
+        $from || die "no findo way called $way";
+        $nw->from($from);
+        $nw;
+    };
+    G.U.Tafu = sub {#c # lightly travel this kinda u
         my $S = shift;
         
-        my $uu = G.U.sktcu->($S,@_);
+        my $uu = G.U.sktcu->($S, @_);
         my $u = G.U.fu->($S, $uu);
-        !u.Li ? do {
-            G.U.T->(i => $u);
-        } : do{
+        return $u if $u;
+        
+        #!u.Li ? do {
+            G.U.T->($S, {i => $uu});
+        #} : do{
             
-        };
+        #};
     };
+
     G.U.T= sub {
-        my $S = shift;
+        my ($S, $p) = @_;
         my $t = $T;
-        G.U.spnT($S => {@_});
+        G.U.spnT->($S => $p);
         my $back = T._To;
-        #T._figure || G.U.figureT->($S);
-        #T._figure->($S);
-        die "Here";
-        T._swoop->($S);
-        T._wooo->($S);
+        
+        G.U.haunt_swoop->($S);
+        G.U.haunt_wooo->($S);
+        
         my $L = T.L;
         $T= $back;
         return $L;
@@ -113,6 +136,7 @@ hooks:
     G.U.spnT = sub {
         my ($S, $p) = @_;
         my $oldT=$T||=$G->nw();
+        $T=$G->nw() if ref($T) ne "Way";
         $T=$T->spawn;
         T._To = $oldT;
         if (p.i || p.L) {
@@ -123,10 +147,11 @@ hooks:
         T.L ||= T.i.Li;
         T.t ||= T.L.t unless exists T.t;
         T.o ||= T.L.o;
+        T.o ||= [];
         # backwards compat
         $S->{$_} = $T->{$_} for qw'i L t o';
     };
-    G.U.haunt = sub { # non Li call
+    G.U.haunt = sub {
         my $S = shift;
         my $Travel = shift;
         my $L = G.U.T->($S, {
@@ -134,30 +159,21 @@ hooks:
             t => shift,
             i => shift,
             o => [],
-            _swoop => G.U.haunt_swoop,
-            _wooo => G.U.haunt_wooo,
             _Travel => $Travel, # non
         });
         return @{L.i.returns};
     };
-    
     G.U.haunt_swoop = sub {
         my $S = shift;
         $S->ob("haunt");
         $S->w("T_begin");
-        my $i = T.i;
-        if (i.arr_hook) {
-            i.returns = [ $S->w(i.arr_hook, i.arr_ar) ];
-        }
-        else {
-            $S->w("arr");
-        }
-
+        
+        G.U.arr->($S);
+        #G.U.continues->($S);
         T.L = $S->W->continues($S); # %
         $S->ob("continues...", T.L);
-
+        Say "At continues ".wdump(2, [T.t, G.t, T.L.t]);
         _.Lo = T.L for @{T.L.o}; # too heavy for uy
-        
         T.L.i.Li = T.L; # just right
     };
     G.U.haunt_wooo = sub {
@@ -174,26 +190,31 @@ hooks:
             elsif (exists c.arr_returns) { # ded?
                 $R = c.arr_returns;
             }
-            elsif (exists c.B.s || exists c.O) {
+            elsif (exists c.B.s || exists c.O || exists c.flows_D) {
                 # sweet
             }
             else {
-                $H->error("what kind of way out is",$S,$c)
+                $H->error("what kind of way out is",$S,wdump($c))
             }
         }
         $R = T.i.returns if T.i.arr_hook;
         $S->w("T_end", {L=>T.L, r=>$R});
         T.i.returns = $R;
     };
-    G.U.sktcu = sub {#c skatch a way + B{
-        my ($S, $way, $B) = @_; 
-        die  "B B" if B.B;
-        my $w = $G->nw()->from(
-            $G->findway('ways/'.$way)
-        )->from({ B => {%$B} });
-        die "makedad".wdump($w) if w.Lu && w.O ne "ux";
-        $w
+    G.U.arr = sub {
+        my $S = shift;
+        my $i = T.i;
+        if (i.arr_hook) {
+            i.returns = [ $S->w(i.arr_hook, i.arr_ar) ];
+        }
+        else {
+            $S->w("arr");
+        }
+        
+        $G->doo(i.flows_D, {}) if i.flows_D;
+        
     };
+    
     G.U.ul = sub {#c # look for u way
         my $S = shift;
         my $z = {@_};
@@ -226,7 +247,7 @@ hooks:
         my $u = shift;
         for my $LL (@{$G->W->{script}}) {
             my $i = LL.i;
-            if ($i eq $u || i.K eq u.K && G.U.B_same($u => $i)) {
+            if ($i eq $u || i.K eq u.K && G.U.B_same->($S, $u => $i)) {
                 return LL.i;
             }
         }
@@ -236,6 +257,7 @@ hooks:
         while (my ($k, $v) = each %{u.B}) {
             u.B->{$k} eq uu.B->{$k} || return 0;
         }
+        return 1;
     };
     
     
