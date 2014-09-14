@@ -16,35 +16,44 @@ chains:
    y:
      t:
        event: |
-         0->Tafu(Codon => { stylefile => L.t });
+         0->TafuB(Codon => { stylefile => L.t });
      
  - K: Codon
    print: |
      S.B.name;
    flows_D: |
-     T.t = "yeah!";
-     T.i.Li.t = "OHOHOH";
      my $C = T.i;
-     #die wdump(2,$C);
      $_ = C.B.stylefile;
      my $code = $H->slurp($_) if $_;
      C.B.name ||= do {
-         /(ghost)s\// ? (/ghosts\/(.+)$/)[1] :
-        /(lib)\// ? (/lib\/(.+)\.pm$/)[1] : $_
+         /(ghost)s\/(.+)$/ ? $2 :
+         /(lib)\/(.+)\.pm$/ ? $2 : $_
      };
      C.B.flav = $1 if $1;
      $code = C.B.code if C.B.code;
-     T.t = [ map { s/\n$//s; $_ } split "\n", $code ];
+     C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
      
  - K: Chunks
    Ki: Codon
    arr_if: |
      T.i.K eq "Codon"
-   zap_D: |
-     #w chunkify;
-     die "Chonk";
+   travels: 1
+   extract_D: |
+     my $C = T.i.Lo.i;
+     T.t = "!!".wdump($C);
+     my $chunks = w chunkify[$C];
+     for my $chunk (@$chunks) {
+         0->TafuBl(Chunk => $chunk);
+     }
+     #die "Chonk";
    
-   
+ - K: Chunk
+   print: |
+     S.B.name;
+   flows_D: |
+     my $C = T.i;
+     T.t = C.B.lines->[0];
+     T.t||= ki(C.B);
    
 
  - K: 'yaml'
@@ -55,31 +64,28 @@ chains:
 dials:
   max_depth: 3
 hooks:
+  figure_some_chain: |
+    push @{G.o}, $c;
+    w $c travels if c.travels;
+    return 1 # all good ness
   chunkify: |
-      my $c = "#c";
-      die ord('#');
-      my $lines = $self->{lines};
-
-      my @stuff = ([]);
-      my @lines = @$lines;
-          while (defined(my $l = shift @lines)) {
-              push @stuff, []
+       my $c = "#"."c";
+       my @stuff = ([]);
+       my @lines = @{ C.B.lines };
+       while (defined(my $l = shift @lines)) {
+             push @stuff, []
               if
-              $self->{is}->{G} ?
+              C.B.flav eq "ghost" ?
                   @{$stuff[-1]} > 0 && $l =~ /^\w+|^  \w+/
                      || $l =~ /$c/
             :
-            !$self->{is}->{N} ?
+            C.B.flav ne "not" ?
                 $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
 
                      || $l =~ /$c/
             : 0;
             
             push @{ $stuff[-1] }, $l;
-            
-            if ($self->{is}->{N}) {
-                push @stuff, [] if $l eq '' && $lines[0] ne '';
-            }
         }
         my $chunks = [];
         my $i = 0;
@@ -90,7 +96,7 @@ hooks:
                 lines => $s,
             };
         }
-        $self->{chunks} = $chunks;
+        $chunks;
     
   event: |
     G.L = $L;
@@ -108,10 +114,6 @@ hooks:
   uxd: |
     G.ux->w('ux', {Ls=>$G->W->CS});
     $Ly->w(somewhere => {thing => $ar});
-  figure_some_chain: |
-    push @{G.o}, $c;
-    w $c travels if c.travels;
-    return 1 # all good ness
   events:
     - K: Codon
       Ei: stylefile y t

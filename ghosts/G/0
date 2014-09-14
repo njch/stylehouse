@@ -71,21 +71,25 @@ hooks:
         }
     };
     G.U.accum = sub {#c
-        my ($S, $a, $t) = @_;
+        my ($S, $source, $ac, $t) = @_;
+        my $a = $source->{$ac} ||= [];
+        if ($ac eq "Lo" || $ac eq "Li") {
+            $source->{$ac} = $t;
+            return;
+        }
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
         }
     };
     G.U.deaccum = sub {#c
         my ($S, $source, $ac, $t) = @_;
-        my $a = $source->{$ac};
+        my $a = $source->{$ac} ||= [];
         my $i = 0;
         for (@$a) {
             return splice(@$a, $i, 1) if $_ eq $t;
             $i++;
         }
     };
-
     G.U.sktcu = sub {#c skatch a way + B{
         my ($S, $way, $B) = @_; 
         die  "B B" if B.B;
@@ -106,28 +110,37 @@ hooks:
         $nw->from($from);
         $nw;
     };
-    G.U.Tafu = sub {#c # lightly travel this kinda u
+    G.U.TafuB = sub {#c # lightly travel this kinda u
         my $S = shift;
         
         my $uu = G.U.sktcu->($S, @_);
         my $u = G.U.fu->($S, $uu);
         return $u if $u;
-        
-        #!u.Li ? do {
-            G.U.T->($S, {i => $uu});
-        #} : do{
-            
-        #};
+        G.U.T->($S, {i => $uu}) unless $u;
+        return $uu
     };
-
-    G.U.T= sub {
+    G.U.TafuBl = sub {#c # lightly travel this kinda u
+        my $S = shift;
+        my $u = G.U.TafuB->($S, @_);
+        
+        
+        
+        u.Li || die "no u Li";
+        G.U.accum->($S, $u, 'Lo', T.L);
+        G.U.accum->($S, $T, 'o', $u);
+    };
+    G.U.T= sub {#c
         my ($S, $p) = @_;
         my $t = $T;
         G.U.spnT->($S => $p);
         my $back = T._To;
+        die if $back ne $t;
         
         G.U.haunt_swoop->($S);
+        
         G.U.haunt_wooo->($S);
+        
+        $S->doo(T.i.extract_D, {}) if T.i.extract_D;
         
         my $L = T.L;
         $T= $back;
@@ -163,18 +176,25 @@ hooks:
         });
         return @{L.i.returns};
     };
-    G.U.haunt_swoop = sub {
+    G.U.haunt_swoop = sub {#c
         my $S = shift;
+        my $i = T.i;
         $S->ob("haunt");
         $S->w("T_begin");
         
-        G.U.arr->($S);
-        #G.U.continues->($S);
-        T.L = $S->W->continues($S); # %
-        $S->ob("continues...", T.L);
+        G.U.arr->($S) unless T._noarr;
+        
+        $S->doo(i.flows_D, {}) if i.flows_D;
+        
+        G.U.continues->($S);
         
         _.Lo = T.L for @{T.L.o}; # too heavy for uy
         T.L.i.Li = T.L; # just right
+    };
+    G.U.continues = sub {
+        my $S = shift;
+        T.L = $S->W->continues($S); # %
+        $S->ob("continues...", T.L);
     };
     G.U.haunt_wooo = sub {
         my $S = shift;
@@ -190,16 +210,18 @@ hooks:
             elsif (exists c.arr_returns) { # ded?
                 $R = c.arr_returns;
             }
-            elsif (exists c.zap_D) {
+            elsif (exists c.travels) {
                 G.U.T->($S, {i => $c});
             }
             elsif (exists c.B.s || exists c.O) {
                 # sweet
             }
             else {
-                $H->error("what kind of way out is",$S,wdump($c))
+                Say "what kind of way out is
+                S.name \n".wdump(2,$c);
             }
         }
+        
         $R = T.i.returns if T.i.arr_hook;
         $S->w("T_end", {L=>T.L, r=>$R});
         T.i.returns = $R;
@@ -213,9 +235,6 @@ hooks:
         else {
             $S->w("arr");
         }
-        
-        $G->doo(i.zap_D, {}) if i.zap_D;
-        $G->doo(i.flows_D, {}) if i.flows_D;
         
     };
     
