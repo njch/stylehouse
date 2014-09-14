@@ -411,10 +411,11 @@ sub _0 {
     my ($point, @etc) = @_;
     return $G->w("load_ways_post")
         if !$G0 && $point eq "_load_ways_post";
-    if ($point =~ /^0->(.+)$/) {
+    if ($point =~ /^0S?->(.+)$/) {
         my $Usub = $1;
         $G0->{U}->{$Usub} || confess "no 0U $Usub\n".wdump(2,$G0);
-        $G0->{U}->{$Usub}->($G, @etc);
+        unshift @etc, $G unless $point =~ /^0S/;
+        $G0->{U}->{$Usub}->(@etc);
     }
     else {
         my $ar = shift @etc;
@@ -452,6 +453,7 @@ sub haunt { # arrives through here
         $G->{t} = shift; # thing
         my $i = $G->{i} = shift; # way in
         my $o = $G->{o} = []; # way[] out
+        $T->{$_} = $G->{$_} for qw'i t o depth';
 
         $G->ob("haunt", $G);
 
@@ -815,6 +817,7 @@ sub parse_babble {
     my $ulooks = 'U->';
     $eval =~ s/$ulooks(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(0->\w+)\(/\$G->_0("$1", /sg;
+    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     

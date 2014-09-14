@@ -77,6 +77,7 @@ hooks:
             $source->{$ac} = $t;
             return;
         }
+        #die "Gunna...".wdump(2,[@_]);
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
         }
@@ -115,7 +116,7 @@ hooks:
         
         my $uu = G.U.sktcu->($S, @_);
         my $u = G.U.fu->($S, $uu);
-        Say "not foundo".wdump(2,[$uu, $u]);
+        #Say "not foundo".wdump(2,[$uu, $u]);
         return $u if $u;
         G.U.T->($S, {i => $uu}) unless $u;
         return $uu
@@ -123,12 +124,11 @@ hooks:
     G.U.TafuBl = sub {#c # lightly travel this kinda u
         my $S = shift;
         my $u = G.U.TafuB->($S, @_);
-        
-        
-        
         u.Li || die "no u Li";
-        G.U.accum->($S, $u, 'Lo', T.L);
-        G.U.accum->($S, $T, 'o', $u);
+        0S->accum($u, 'Lo', T.L);
+        0S->accum($T, 'o', $u);
+        
+         #die pint($u)."\n\n".wdump(T.o);
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
@@ -146,6 +146,11 @@ hooks:
         my $L = T.L;
         $T= $back;
         return $L;
+    };
+    G.U.L_is = sub {
+        my ($S, $L) = @_;
+        $T->{$_} = $L->{$_} for qw'i t o';
+        T.L = $L;
     };
     G.U.spnT = sub {
         my ($S, $p) = @_;
