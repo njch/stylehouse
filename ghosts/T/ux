@@ -108,7 +108,7 @@ hooks:
                 );
             }
         }
-        if (my $uys = delete u.B.uys) { 
+        if (my $uys = u.B.uys) { 
             for my $uyK (split ' ', $uys) {
                 my $uyB = $uyBsK->($uyK);
                 my $n = uyB.n ||= uyB.K;
@@ -120,7 +120,7 @@ hooks:
         }
         if (u.O eq "uy" && u.B.K ne "e") {
             #die wdump(2, $u);
-            #$pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
+            $pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
         }
         for my $uyB (@fluyB) {
             U->uys($uyB);
@@ -157,6 +157,8 @@ hooks:
             my $content = shift || '';
             my $attr = { %{u.at} };
             attr.style = $G->styles(delete attr.styles); # or so
+            attr.style .= "position:relative;"
+            unless attr.style =~ /position[^\w]+absolute/;
             my $tag = delete attr.tag;
             my $conty = delete attr.content if exists attr.content;
             $conty = "" if!defined $conty;
