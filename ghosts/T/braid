@@ -14,7 +14,10 @@ hooks:
             $G->findway('ways/'.$way)
         )->from({ B => {%$B} });
         
-        w.Lu = w.B.Lu if w.B.Lu;
+        if (w._postsketch) {
+            w $w _postsketch;
+            delete w._postsketch;
+        }
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
         $w
     };
@@ -124,9 +127,8 @@ hooks:
     G.U.antop = sub {#c
         my $u = G.L.i;
         my $uL = G.L;
-        die "ul is :".wdump(2,$uL)unless uL.i.K =~ /^u[xy]$/; 
         my $prevx = G.last_ux;
-        my $lastx = G.last_ux = $u if u.K eq 'ux';
+        my $lastx = G.last_ux = $u if u.O eq 'ux';
         
         G.U.stoops->[    G.U.ug_i    ]->();
         

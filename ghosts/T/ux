@@ -6,12 +6,20 @@ dials:
 chains:
 hooks:
   ways:
+    Wormhole:
+      K: Wormhole
+      O: ux
+      tag: wormhole
+      content_D: |
+        "Wor!".$W->{name}
     ux:
       K: ux
       O: ux
       styles: te
       conor: 1
       tag: ux
+      _postsketch: |
+        S.Lu = S.B.Lu if S.B.Lu;
       print: |
         "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
     uy:
@@ -32,16 +40,19 @@ hooks:
     ux.Lu.G->w(event => $E);
   uyBs: # TODO ways build up from places like this
    - K: i
+     Lu_grab_n: i
      uys: w
      conor: -0.5
      
    - K: t
+     Lu_grab_n: t
      content_D: |
        my $con = gpty($t);
        $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
        $con;
        
    - K: o
+     Lu_grab_n: o
      uys: w
      conor: 0.5
      
@@ -57,23 +68,22 @@ hooks:
      nah: 1
      content_D: |
        $e
-  
+   
    
   any_init: |
+    G.U.Lu_grab_n = sub { #c
+        my ($uyB, $Lu) = @_;
+        my $n = uyB.Lu_grab_n || return;
+        my $y = $Lu->{$n};
+    };
     G.U.stoops = [ sub {#c
         my $u = G.L.i;
         my $uL = G.L;
-        my $Lu = u.Lu || die "no Lu" if u.O eq "ux";
+        my $Lu = u.Lu || die "no Lu" if u.K eq "ux";
          # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
         
-        my $old = { map { _.B.K => $_ } findO(uy => uL.o) };
-        G.U.h.ul.creating_that_u = sub {
-            my $uy = shift;
-            $old->{uy.B.K} &&
-            0->deaccum($uL, "o", $old->{uy.B.K});
-        };
         
         my $uyBs = $G->findway('uyBs');
         my $uyBsK = sub {
@@ -89,7 +99,9 @@ hooks:
         for my $uyB (@$uyBs) { # ux spawns uys
             next if u.O ne "ux";
             next if uyB.nah;
+            
             $uyB = { %$uyB };
+            
             my $n = uyB.n ||= uyB.K;
             my $y = $Lu->{$n};
             if ($n eq "o" && ref $y eq "ARRAY") {
@@ -140,12 +152,13 @@ hooks:
                 die wdump($u);
             }
         }
-        delete G.U.h.ul.creating_that_u;
     } ];
     G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.toos = [ sub { #c
         my $u = G.L.i;
         my $uL = G.L;
+        my $Tlux = G.last_ux;
+        my $Lui = Tlux.Lu.i;
         die "empty Lu on ".wdump($u)  if u.Lu && !%{u.Lu};
         die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.Lu;
         die "uy Lu".wdump(2, $u)      if u.K eq 'ux' && !u.Lu;
@@ -155,16 +168,22 @@ hooks:
         
         at.id = uL.uuid;
         at.styles = U->jgd(u.styles);
-        if (u.K eq "uy") {
+        my $y = u.K eq "uy";
+        if ($y) {
             my $n = u.B.n;
             at.tag = "y$n";
             at.content = w $u B/content_D;
-            #$G->w('B/content_D', {}, $u);
             
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
         at.tag ||= U->jgd(u.B.tag, u.tag);
         die "no tag" .wdump($u) if !at.tag;
+        
+        if ($y && Lui.uxs) {
+            my $path = "uxs/y/u.B.n/at_D";
+            $G->w($path, { at => $at }, $Lui);
+        }
+        
         
         u.E_at = u.at;
         u.at = $at;
@@ -234,14 +253,22 @@ hooks:
         }
         G.contents_awaiting = [];
     };
+    G.U.intro_Lu = sub {
+        
+        # $wu = 0->TafuB(wormhole => {W => $W});
+    };
   ux: |
+    my $incremental = 0;
+    my $Ls;
+    my $Ls = ar.Ls || do {
+        my $W = ar.W;
+        # if before, get new uxs...
+        $W->CS;
+    };
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
-        push @uxs, U->ul(
-            u => U->mku(ux => {Lu=>$Lu}),
-            p => $Lu,
-        );
+        push @uxs, 0->visTp_TafuBl({L=>$Lu}, [ux => {Lu=>$Lu}]);
     }
     # ux could be all new
     # could be (new)ux.uL.i.Lo.ux(old): wedge in
@@ -266,6 +293,14 @@ hooks:
         }
     }
     
+    my $LuWs;
+    for my $ux (@tux) {
+        my $W = ux.Lu.G.W;
+        my $w = $LuWs->{"$W"} ||= do {
+            0->TafuB(Wormhole => {W => $W});
+        };
+        0->accum($w, 'o', $ux);
+    }
     
         for my $ux (@tux) {
             G.L = ux.Li || die "no ux Li";
@@ -297,7 +332,8 @@ hooks:
         q' margin-left:0.5em '
     yo: |
         q' border:2px solid #fca;'
-        
+    20pt: |
+      'font-size:20pt;'
     yi: |
         q' border:2px solid #ba8; margin-left:0.5em '
         

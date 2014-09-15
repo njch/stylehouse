@@ -91,10 +91,18 @@ hooks:
     G.U.sktcu = sub {#c skatch a way + B{
         my ($S, $way, $B) = @_; 
         die  "B contains B:".wdump($B) if B.B;
-        my $w = G.U.scrape_way($S, $way);
+        my $w = 0S->scrape_way($way);
         $w->from({ B => {%$B} });
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
+        0S->wdif(_postsketch => $w);
         $w
+    };
+    G.U.wdif = sub {
+        my ($S, $h, $w) = @_;
+        if ($w->{$h}) {
+            $S->w($h, {}, $w);
+            delete $w->{$h};
+        }
     };
     G.U.scrape_way = sub {
         my ($S, $way) = @_;
@@ -112,25 +120,27 @@ hooks:
         my $S = shift;
         
         my $uu = G.U.sktcu->($S, @_);
-        my $u = G.U.fu->($S, $uu);
         
-        $G->timer(2,sub {
-        my @des = map {
-        "_.K: ".ki(_.B) } $uu, $u;
-        Say wdump(2,[@des]);
-        });
-        #Say "not foundo".wdump(2,[$uu, $u]);
+        my $u = G.U.fu->($S, $uu);
         return $u if $u;
-        G.U.T->($S, {i => $uu}) unless $u;
+        
+        G.U.T->($S, {i => $uu});
         return $uu
     };
     G.U.TafuBl = sub {#c # lightly travel this kinda u
         my $S = shift;
-        my $u = G.U.TafuB->($S, @_);
+        my $u = 0S->TafuB(@_);
         u.Li || die "no u Li";
         0S->accum($u, 'Lo', T.L);
         0S->accum($T, 'o', $u);
         $u
+    };
+    G.U.visTp_TafuBl = sub {#c
+        my ($S, $Tp, $Tc) = @_;
+        0S->spnT($Tp);
+        my $u = 0S->TafuBl(@$Tc);
+        $T= T._To;
+        $u;
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
@@ -151,8 +161,7 @@ hooks:
     };
     G.U.L_is = sub {
         my ($S, $L) = @_;
-        $T->{$_} = $L->{$_} for qw'i t o';
-        T.L = $L;
+        0S->spnT({L=>$L});
     };
     G.U.spnT = sub {
         my ($S, $p) = @_;
@@ -263,10 +272,10 @@ hooks:
         for my $k (@ks) {
             u.B->{$k} eq i.B->{$k} || return 0;
             next if $k eq "Codon";
-            $G->timer(2,sub {
-                Say " u.K B $k same u.B->{$k} eq i.B->{$k} ".wdump(2, u.B);
-            });
         }
+            $G->timer(2,sub {
+            Say " u has no B, mind  you...".ki($u);
+            }) unless keys %{u.B};
         return 1;
     };
     
