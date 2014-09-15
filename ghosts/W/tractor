@@ -102,6 +102,7 @@ hooks:
         #$H->info("Line: $line", $O->{name}, $line);
         next if ref $line eq "ARRAY" && @$line == 0; # wtf case
         my $A = $line->{t};
+        next if ref $A ne "Way";
         return $A if @wheres == grep {
             !exists $A->{B}->{$_->[0]} ||
                 $A->{B}->{$_->[0]} eq $_->[1]          } @wheres
