@@ -113,6 +113,12 @@ hooks:
         
         my $uu = G.U.sktcu->($S, @_);
         my $u = G.U.fu->($S, $uu);
+        
+        $G->timer(2,sub {
+        my @des = map {
+        "_.K: ".ki(_.B) } $uu, $u;
+        Say wdump(2,[@des]);
+        });
         #Say "not foundo".wdump(2,[$uu, $u]);
         return $u if $u;
         G.U.T->($S, {i => $uu}) unless $u;
@@ -253,7 +259,10 @@ hooks:
     G.U.B_same = sub {
         my ($S, $u, $i) = @_;
         while (my ($k, $v) = each %{u.B}) {
-            u.B->{$k} eq i.B->{$k} || return 0;
+            u.B->{$k}.'' eq ''.i.B->{$k} || return 0;
+            $G->timer(2,sub {
+            Say " u.K B_same: u.B->{$k} eq i.B->{$k} ";
+            });
         }
         return 1;
     };

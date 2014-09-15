@@ -30,6 +30,7 @@ chains:
          /(lib)\/(.+)\.pm$/ ? $2 : $_
      };
      C.B.flav = $1 if $1;
+     T.t = C.B.name;
      $code = C.B.code if C.B.code;
      C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
      
@@ -42,10 +43,11 @@ chains:
      my $C = T.i.Lo.i;
      my $chunks = w chunkify[$C];
      0->TafuBl(Chunk => $_) for @$chunks;
+     T.L.t = 0+@$chunks;
    
  - K: Chunk
    print: |
-     S.B.name;
+     S.B.i;
    flows_D: |
      my $C = T.i;
      T.t = C.B.lines->[0] || C.B.lines->[1];
@@ -56,8 +58,9 @@ chains:
          0->TafuBl("CodeMirror");
  
  - K: CodeMirror
-   ux:
-     y
+   uys_long:
+     - K: CodeMirror
+       
 
  - K: 'yaml'
    arr_if: |
@@ -99,8 +102,8 @@ hooks:
                 lines => $s,
             };
         }
-        Say @$chunks." chunks in C.B.name";
-        $chunks;
+        return $chunks;
+        #eturn exit;
     
   event: |
     G.L = $L;
