@@ -22,17 +22,8 @@ chains:
    print: |
      S.B.name;
    flows_D: |
-     my $C = T.i;
-     $_ = C.B.stylefile;
-     my $code = $H->slurp($_) if $_;
-     C.B.name ||= do {
-         /(ghost)s\/(.+)$/ ? $2 :
-         /(lib)\/(.+)\.pm$/ ? $2 : $_
-     };
-     C.B.flav = $1 if $1;
-     T.t = C.B.name;
-     $code = C.B.code if C.B.code;
-     C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
+     my $Codon = T.i;
+     w codonify[$Codon];
      
  - K: Chunks
    Ki: Codon
@@ -40,14 +31,8 @@ chains:
      T.i.K eq "Codon"
    travels: 1
    extract_D: |
-     my $C = T.i.Lo.i;
-     my $chunks = w chunkify[$C];
-     
-     _.Codon = $C for @$chunks; # traction to Codon
-     
-     0->TafuBl(Chunk => $_) for @$chunks;
-     
-     T.L.t = 0+@$chunks;
+     my $Codon = T.i.Lo.i;
+     w chunkify[$Codon];
    
  - K: Chunk
    print: |
@@ -78,37 +63,55 @@ hooks:
     push @{G.o}, $c;
     w $c travels if c.travels;
     return 1 # all good ness
+  codonify: |
+     my $C = $Codon;
+     $_ = C.B.stylefile;
+     my $code = $H->slurp($_) if $_;
+     C.B.name ||= do {
+         /(ghost)s\/(.+)$/ ? $2 :
+         /(lib)\/(.+)\.pm$/ ? $2 : $_
+     };
+     C.B.flav = $1 if /(ghost)s\// || /(lib)\// || /(not)$/;
+     T.t = C.B.name;
+     $code = C.B.code if C.B.code;
+     C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
+  
   chunkify: |
-       my $c = "#"."c";
-       my @stuff = ([]);
-       my @lines = @{ C.B.lines };
-       while (defined(my $l = shift @lines)) {
-             push @stuff, []
-              if
-              C.B.flav eq "ghost" ?
-                  @{$stuff[-1]} > 0 && $l =~ /^\w+|^  \w+/
-                     || $l =~ /$c/
-            :
-            C.B.flav ne "not" ?
-                $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
-
-                     || $l =~ /$c/
-            : 0;
+    my $C = $Codon;
+    my $c = "#"."c";
+    my @stuff = ([]);
+    my $ghost = C.B.flav eq "ghost";
+    my $not = C.B.flav eq "not";
+    for my $l (@{ C.B.lines }) {
+        defined $l || die "no defined l! C.B.name";
+        
+        push @stuff, []
+        
+        if
+              @{$stuff[-1]} > 0
+            && (
+                ($ghost||$not) && $l =~ /^\w+|^  \w+/
+                ||
+                $l =~ /$c/
+                ||
+                !$ghost && $l =~ /^\S+.+ \{(?:\s+\#.+?)?$/gm
+            );
             
-            push @{ $stuff[-1] }, $l;
-        }
-        my $chunks = [];
-        my $i = 0;
-        for my $s (@stuff) {
-            push @$chunks, {
-                i => $i++,
-                rows => scalar(@$s),
-                lines => $s,
-            };
-        }
-        return $chunks;
-        #eturn exit;
-    
+        push @{ $stuff[-1] }, $l;
+    }
+    my $chunks = [];
+    my $i = 0;
+    for my $s (@stuff) {
+        push @$chunks, {
+            i => $i++,
+            rows => scalar(@$s),
+            lines => $s,
+        };
+    }
+    _.Codon = $C for @$chunks; # traction to Codon
+    0->TafuBl(Chunk => $_) for @$chunks;
+    T.L.t = 0+@$chunks;
+    return $chunks;
   event: |
     G.L = $L;
     0->L_is($L);
