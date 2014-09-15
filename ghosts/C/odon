@@ -18,7 +18,7 @@ chains:
        event: |
          0->TafuB(Codon => { stylefile => L.t });
      
- - K: Codon
+ - K: Codon #c
    print: |
      S.B.name;
    flows_D: |
@@ -42,7 +42,11 @@ chains:
    extract_D: |
      my $C = T.i.Lo.i;
      my $chunks = w chunkify[$C];
+     
+     _.Codon = $C for @$chunks; # traction to Codon
+     
      0->TafuBl(Chunk => $_) for @$chunks;
+     
      T.L.t = 0+@$chunks;
    
  - K: Chunk

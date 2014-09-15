@@ -90,7 +90,7 @@ hooks:
     };
     G.U.sktcu = sub {#c skatch a way + B{
         my ($S, $way, $B) = @_; 
-        die  "B B" if B.B;
+        die  "B contains B:".wdump($B) if B.B;
         my $w = G.U.scrape_way($S, $way);
         $w->from({ B => {%$B} });
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
@@ -252,16 +252,19 @@ hooks:
         for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
             if ($i eq $u || i.K eq u.K && 0S->B_same($u => $i)) {
-                return LL.i;
+                return $i;
             }
         }
+        return undef;
     };
     G.U.B_same = sub {
         my ($S, $u, $i) = @_;
-        while (my ($k, $v) = each %{u.B}) {
-            u.B->{$k}.'' eq ''.i.B->{$k} || return 0;
+        my @ks = keys %{u.B};
+        for my $k (@ks) {
+            u.B->{$k} eq i.B->{$k} || return 0;
+            next if $k eq "Codon";
             $G->timer(2,sub {
-            Say " u.K B_same: u.B->{$k} eq i.B->{$k} ";
+                Say " u.K B $k same u.B->{$k} eq i.B->{$k} ".wdump(2, u.B);
             });
         }
         return 1;
