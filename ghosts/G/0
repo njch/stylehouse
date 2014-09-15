@@ -102,7 +102,7 @@ hooks:
     G.U.scrape_way = sub {
         my ($S, $way) = @_;
         my $nw = $S->nw();
-        my $from = $G->findway('ways/'.$way);
+        my $from = $S->findway('ways/'.$way);
         $from ||= do {
             my @chainway = grep { _.K eq $way } $S->chains;
             shift @chainway
@@ -127,8 +127,7 @@ hooks:
         u.Li || die "no u Li";
         0S->accum($u, 'Lo', T.L);
         0S->accum($T, 'o', $u);
-        
-         #die pint($u)."\n\n".wdump(T.o);
+        $u
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
@@ -244,37 +243,10 @@ hooks:
         
     };
     
-    G.U.ul = sub {#c # look for u way
-        my $S = shift;
-        my $z = {@_};
-        my $u = z.u;
-        $u = G.U.fu->(z.u)                  unless u.Li;
-        
-        if (z.p){
-            if (u.O eq "uy") {
-                0->accum(z.p.o => $u);
-                0->accum((u.Loose||=[]), z.p); # .B.Lo many
-            }
-            else {
-                0->accum(z.p.o => $u);
-                G.u.Lo = z.p
-            }
-        }
-        unless (u.Li) {
-              G.U.h.ul.creating_that_u->($u)
-              if G.U.h.ul.creating_that_u;
-             
-            $G->T("anu: ".pint($u), undef, $u) unless u.Li;
-        }
-        die "no Li after T"                   unless u.Li;
-           
-        G.U.h.ul.done->($u) if G.U.h.ul.done;
-        $u
-    };
     G.U.fu = sub {#c
         my $S = shift;
         my $u = shift;
-        for my $LL (@{$G->W->{script}}) {
+        for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
             if ($i eq $u || i.K eq u.K && G.U.B_same->($S, $u => $i)) {
                 return LL.i;
@@ -312,7 +284,7 @@ hooks:
           }
       }
     blur: |
-      my $blur = ++$G->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
+      my $blur = ++$S->{_blur} % 2 ? 'blur(8px) brightness(0.7)' : '';
       $H->JS($_, "css('-webkit-filter', '$blur');") for values %{S.V};
 
     toginvis: |
