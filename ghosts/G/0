@@ -43,17 +43,14 @@ hooks:
     G.U.findA = sub {#c
         my $S = shift;
         my $ar = shift;
-        my @wheres;
-        while (my ($k, $v) = each %$ar) {
-            push @wheres, [ $k, $v ];
-        }
-        for my $line (@{ $S->W->{script} }) {
-            next if ref $line eq "ARRAY" && @$line == 0; # wtf case
-            my $A = $line->{t};
-            say "Looking at $_->[0] = $A->{B}->{$_->[0]}  .... $_->[1]";
-            return $A if @wheres == grep {
-                !exists $A->{B}->{$_->[0]} ||
-                    $A->{B}->{$_->[0]} eq $_->[1]          } @wheres
+        
+        my $u = { B => $ar };
+        for my $LL (@{$S->W->{script}}) {
+            die "wtf case" if ref $LL eq "ARRAY" && @$LL == 0; # wtf case
+            my $t = LL.t;
+            if (0S->B_same($u => $t)) {
+                return $t;
+            }
         }
     };
     G.U.andwhendo = sub { #c
@@ -248,15 +245,15 @@ hooks:
         my $u = shift;
         for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
-            if ($i eq $u || i.K eq u.K && G.U.B_same->($S, $u => $i)) {
+            if ($i eq $u || i.K eq u.K && 0S->B_same($u => $i)) {
                 return LL.i;
             }
         }
     };
     G.U.B_same = sub {
-        my ($S, $u, $uu) = @_;
+        my ($S, $u, $i) = @_;
         while (my ($k, $v) = each %{u.B}) {
-            u.B->{$k} eq uu.B->{$k} || return 0;
+            u.B->{$k} eq i.B->{$k} || return 0;
         }
         return 1;
     };
