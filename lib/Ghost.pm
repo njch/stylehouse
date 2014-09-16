@@ -85,7 +85,10 @@ sub pint {
 sub U {
     my ($G, $Usub, @etc) = @_;
     $G->{U}->{$Usub} || confess "no U $Usub";
-    $G->{U}->{$Usub}->(@etc);
+    my $u = $G->waystacken(U => $Usub, [@etc]);
+    my @R = $G->{U}->{$Usub}->(@etc);
+    $u->();
+    wantarray ? @R : shift @R;
 }
 sub mess {
     my $G = shift;
@@ -614,7 +617,7 @@ sub w {
     for my $w (@ways) {
         my $h = $w->find($point);
         next unless $h;
-        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); 
+        my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
         my ($Z) = @F;
         my $r;
         
