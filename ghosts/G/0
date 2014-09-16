@@ -92,7 +92,8 @@ hooks:
         my ($S, $way, $B) = @_; 
         die  "B contains B:".wdump($B) if B.B;
         my $w = 0S->scrape_way($way);
-        $w->from({ B => {%$B} });
+        die "w_B not hash" if w.B && ref w.B ne "HASH";
+        w.B = { %{w.B||{}}, %$B };
         die "makedad".wdump($w) if w.Lu && w.O ne "ux";
         0S->wdif(_postsketch => $w);
         $w

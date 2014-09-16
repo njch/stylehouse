@@ -17,6 +17,8 @@ hooks:
       O: ux
       styles: te
       conor: 1
+      B:
+        uys: i t o
       tag: ux
       _postsketch: |
         S.Lu = S.B.Lu if S.B.Lu;
@@ -41,14 +43,14 @@ hooks:
   uyBs: # TODO ways build up from places like this
    - K: i
      yBs:
-      - Lu_grab_n: i
-      - n_uys_to_w_n: w
+       Lu_grab_n: i
+       n_uys_to_w_n: w
      uys: w
      conor: -0.5
      
    - K: t
      yBs:
-      - Lu_grab_n: t
+       Lu_grab_n: t
      content_D: |
        die "Yeah" if S.B.raw || S.raw;
        my $con = gpty($t);
@@ -57,18 +59,17 @@ hooks:
        
    - K: o
      yBs:
-      - Lu_grab_n: i
-      - n_uys_to_w_n: w
+       Lu_grab_n: i
+       multi_n: i
+       n_uys_to_w_n: w
      uys: w
      conor: 0.5
      
    - K: w
      nah: 1
      content_D: |
-       #U->ups($S, 'shlink') if
-       #    (grep { $_ eq $w } G.L.o) && findO(ux => w.Li.o);
-       # ^ w on a line. octave lower display & glue?
        pint($w);
+       
    - K: e
      styles: topleft white little
      nah: 1
@@ -77,35 +78,8 @@ hooks:
    
    
   any_init: |
-    G.U.Lu_grab_n = sub { #c
-        my ($uyB, $Lu) = @_;
-        my $n = uyB.Lu_grab_n || return;
-        my $y = $Lu->{$n};
-    };
-    G.U.inject_uyBs = sub {#c
-        my ($u, $uyBs) = @_;
-        return;
-        my $y = u.Lu.i.y if u.Lu && u.Lu.i.y;
-        while (my ($yn, $yt) = %$y) {
-            if (yt.uyB_adjust) {
-                next;
-                my @for = grep { _.K eq $yn } @$uyBs;
-                my $in = yt.uyB_adjust;
-                for my $uy (@for) {
-                    $uy->{$_} = $in->{$_} for keys %$in;
-                    die $_ ." - ish|";
-                }
-            }
-            if (my $is = yt.uyB_is) {
-                die "Isness ... ". wdump($is);
-                push @$uyBs, { %$is };
-            }
-        }
-          #etc
-    };
-    G.U.flying_uyB = sub {
-        
-    };
+
+
     G.U.stoops = [ sub {#c
         my $u = G.L.i;
         my $uL = G.L;
@@ -124,7 +98,9 @@ hooks:
         my $uyBs = $G->findway('uyBs');
         my $uyBsK = sub {
             my $uyK = shift;
-            (grep { _.K eq $uyK } @$uyBs)[0]
+            my ($uyB) = grep { _.K eq $uyK } @$uyBs;
+            $uyB || die "No such uyK $uyK";
+            { %$uyB } 
         };
         my @fluyB;
         my $pafly = sub {
@@ -132,43 +108,38 @@ hooks:
             push @fluyB, { %$from, @_ }
         };
         
-        for my $uyB (@$uyBs) { # ux spawns uys
-            next if u.O ne "ux";
-            next if uyB.nah;
-            
-            $uyB = { %$uyB };
-            
-            my $n = uyB.n ||= uyB.K;
-            my $y = $Lu->{$n};
-            if ($n eq "o" && ref $y eq "ARRAY") {
-                my $i = 0;
-                for my $o (@$y) {
-                    next if o.O eq "ux";
-                    $pafly->(
-                        $uyB,
-                        $n => $o,
-                        K => uyB.K."[".$i++,
-                    );
-                }
-            }
-            else {
-                $pafly->(
-                    $uyB,
-                    $n => $y,
-                );
-                if ($n eq "t") {
-                    
-                }
-            }
-        }
         if (my $uys = u.B.uys) { 
             for my $uyK (split ' ', $uys) {
                 my $uyB = $uyBsK->($uyK);
-                my $n = uyB.n ||= uyB.K;
-                $pafly->(
-                    $uyB,
-                    $n => u.B->{ u.B.n },
-                )
+                
+                if (my $to = u.B.yBs->{"n_uys_to_".uyB.K."_n"}) {
+                    $uyB->{$to} = u.B->{u.B.n};
+                    uyB.n = $to;
+                }
+                if (my $n = uyB.yBs.Lu_grab_n) {
+                    my $y = $Lu->{$n};
+                    $uyB->{$n} = $y;
+                    uyB.n = $n;
+                }
+                my @uyBits = ($uyB);
+                if (my $n = uyB.yBs.multi_n) {
+                    if (my $y = $uyB->{$n}) {
+                        if (ref $y eq "ARRAY") {
+                            @uyBits = ();
+                            my $i = 0;
+                            for my $o (@$y) {
+                                push @uyBits, {
+                                    %$uyB,
+                                    $n => $o,
+                                    K => uyB.K."[".$i++,
+                                };
+                            }
+                        }
+                    }
+                }
+                for my $uyB (@uyBits) {
+                    $pafly->($uyB);
+                }
             }
         }
         for my $uyB (@fluyB) {
@@ -216,7 +187,6 @@ hooks:
             my $path = "uxs/y/u.B.n/at_D";
             $G->w($path, { at => $at }, $Lui);
         }
-        
         
         u.E_at = u.at;
         u.at = $at;
@@ -350,7 +320,7 @@ hooks:
     my ($id) = W.id =~ /-(\w+)$/;
     
     my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
-    
+     
     G.view->takeover($html);
     U->send_contents_awaiting();
     Say $html;
