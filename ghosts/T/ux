@@ -85,16 +85,21 @@ hooks:
     G.U.inject_uyBs = sub {#c
         my ($u, $uyBs) = @_;
         return;
-        my @adj;
         my $y = u.Lu.i.y if u.Lu && u.Lu.i.y;
         while (my ($yn, $yt) = %$y) {
             if (yt.uyB_adjust) {
+                next;
                 my @for = grep { _.K eq $yn } @$uyBs;
                 my $in = yt.uyB_adjust;
                 for my $uy (@for) {
                     $uy->{$_} = $in->{$_} for keys %$in;
                     die $_ ." - ish|";
                 }
+            }
+            if (my $is = yt.uyB_is) {
+            
+                die "Isness ... ". wdump($is);
+                push @$uyBs, { %$is };
             }
         }
           #etc
@@ -110,6 +115,12 @@ hooks:
         # spawn guts
         # ways can compress/Loose (and look UP) via K
         
+        my $old = { map { _.B.K => $_ } findO(uy => uL.o) };
+        G.U.h.ul.creating_that_u = sub {
+            my $uy = shift;
+            $old->{uy.B.K} &&
+            0->deaccum($uL, "o", $old->{uy.B.K});
+        };
         
         my $uyBs = $G->findway('uyBs');
         my $uyBsK = sub {
@@ -161,11 +172,6 @@ hooks:
                 )
             }
         }
-        U->inject_uyBs($u, \@fluyB);
-        if (u.O eq "uy" && u.B.K ne "e") {
-            #die wdump(2, $u);
-            #$pafly->($uyBsK->("e"), n => 'e', e => u.B.n);
-        }
         for my $uyB (@fluyB) {
             if (1) {
                 U->uys($uyB);
@@ -179,6 +185,7 @@ hooks:
                 die wdump($u);
             }
         }
+        delete G.U.h.ul.creating_that_u;
     } ];
     G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.toos = [ sub { #c
