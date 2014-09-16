@@ -51,7 +51,6 @@ sub new {
 
     return $self;
 }
-
 sub nah {
     my $self = shift;
     unless ($self->proc) {
@@ -61,7 +60,6 @@ sub nah {
     $self->proc->nah();
     # TODO delete views
 }
-
 sub connect {
     my $self = shift;
 
@@ -108,7 +106,6 @@ sub connect {
         $self->drawstuff($new);
     });
 }
-
 sub menu {
     my $self = shift;
     my $menu = {};
@@ -121,8 +118,6 @@ sub menu {
     };
     return $menu;
 }
-
-
 sub drawstuff {
     my $self = shift;
     my $output = shift;
@@ -183,10 +178,10 @@ sub trycommand {
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
     say "wandering off...";
 }
-
 sub event {
     my $self = shift;
     my $event = shift;
 }
 
 1;
+

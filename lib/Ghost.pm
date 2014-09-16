@@ -266,7 +266,7 @@ sub F_delta {
     my $G = shift;
     my $now = $H->hitime();
     my $then = $F[0]->{hitime};
-    $H->error("F_delta shows $now < $then;", $F[0]) if $now < $then;
+    #$H->error("F_delta shows $now < $then;", $F[0]) if $now < $then;
     my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
