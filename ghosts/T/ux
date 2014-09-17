@@ -12,7 +12,6 @@ chains:
       print: |
         "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
         
-      eats_Lu: 1
       T_remembers_last: 1
       chainlink: [i, t, o]
       lness:
@@ -68,7 +67,76 @@ hooks:
     E.uyL = $L if $L ne $uxL;
 
     ux.Lu.G->w(event => $E);
+  ux: |
+    Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    0->visTp({
+        i => 0->TafuB(Wormhole => {W => $W}),
+    });
+    my $what = $T;
+    
+    my @uxs;
+    for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
+        push @uxs, 0->visTp_TafuBl({L=>$Lu}, [ux => {Lu=>$Lu}]);
+    }
+    
+    my $_mirror = sub {
+        my $ux = shift;
+        my $Lu = ux.Lu || die "no Lu on ux";
+        my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
+        my ($pux) = findO(ux => pLu.o) if $pLu;
+        $pux;
+    };
+    my $LuWs;
+    my $_wormhole = sub {
+        my $ux = shift;
+        my $W = ux.Lu.G.W;
+        $LuWs->{"$W"} ||= 0->TafuBl(Wormhole => {W => $W});
+    };
+    
+    my @tux;
+    for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.Lu.i.K - ux.Lu.t)";
+        
+        my $ix = $_mirror->($ux) || $_wormhole->($ux);
+        
+        0->visTp_l_u({i=>$ix}, $ux);
+        
+        die "ux not in above ux o" unless
+            ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
+    }
+    
+    # now go antopping from/to T.L (root Wormhole (ux itself))
+    # doing that thing we do...
+    
+        for my $ux (@tux) {
+            G.L = ux.Li || die "no ux Li";
+            U->antop();
+        }
+        
+    my @eh;
+    for my $ux (@tux) {
+        push @eh, ux.html;
+    }
+    #die "hue" if @tux > 1;
+    
+    my $W = $G->W;
+    my ($id) = W.id =~ /-(\w+)$/;
+    
+    my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
+     
+    G.view->takeover($html);
+    U->send_contents_awaiting();
+    Say $html;
+    Say "ux antop ".$G->F_delta()."\n\n\n";
+    
   any_init: |
+    
+    G.U.jgd = sub { join " ", grep { defined } @_ };
+    
+    G.U.jgd = sub { join " ", grep { defined } @_ };
+    
+    G.U.jgd = sub { join " ", grep { defined } @_ };
+    
+    G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.stoops = [ sub {#c
         my $u = G.L.i;
         my $uL = G.L;
@@ -138,7 +206,6 @@ hooks:
             }
         }
     } ];
-    G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.toos = [ sub { #c
         my $u = G.L.i;
         my $uL = G.L;
@@ -241,67 +308,6 @@ hooks:
         
         # $wu = 0->TafuB(wormhole => {W => $W});
     };
-  ux: |
-    Say @$Ls." lines -> ux from $Ls->[0]->{name}";
-    
-    my @uxs;
-    for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
-        my $ux = 0->TafuB(ux => {Lu=>$Lu});
-        push @uxs, 0->visTp_TafuBl({L=>$Lu}, []);
-    }
-    # ux could be all new
-    # could be (new)ux.uL.i.Lo.ux(old): wedge in
-    # 
-    my @tux;
-    for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.Lu.i.K - ux.Lu.t)";
-        G.L = ux.Li;
-        my $Lu = ux.Lu || die;
-        my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
-        my ($pux) = findO(ux => pLu.o) if $pLu;
-        unless ($pux) {
-            push @tux, $ux;
-        }
-        else {
-            #say "joining ".pint($ux).' to '.pint($pux);
-            U->ul(
-                u => $ux,
-                p => pux.Li,
-            );
-            #say "put ".pint($ux)." onto ".pint($pux)."\n\n";
-            die unless grep { $_ eq $ux } @{pux.Li.o};
-        }
-    }
-    
-    my $LuWs;
-    for my $ux (@tux) {
-        my $W = ux.Lu.G.W;
-        my $w = $LuWs->{"$W"} ||= do {
-            0->TafuB(Wormhole => {W => $W});
-        };
-        0->accum($w, 'o', $ux);
-    }
-    
-        for my $ux (@tux) {
-            G.L = ux.Li || die "no ux Li";
-            U->antop();
-        }
-        
-    my @eh;
-    for my $ux (@tux) {
-        push @eh, ux.html;
-    }
-    #die "hue" if @tux > 1;
-    
-    my $W = $G->W;
-    my ($id) = W.id =~ /-(\w+)$/;
-    
-    my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
-     
-    G.view->takeover($html);
-    U->send_contents_awaiting();
-    Say $html;
-    Say "ux antop ".$G->F_delta()."\n\n\n";
-    
   styles:
     te: |
       q'border-bottom:1px solid black',

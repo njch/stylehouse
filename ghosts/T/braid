@@ -108,40 +108,28 @@ hooks:
             unless grep { $_ eq $u } @{G.L.o};
         $u;
     };
-    G.U.braid = sub {#c
-        my $u = G.L.i;
-        my $uL = G.L;
+  braiT: |
+    my $til;
+    for (qw'stoops toos') {
+        my $wa = $G->findway($_);
+        die "no $_ G.name" if !@$wa;
+        die "stoops != toos G.name" if defined $til && $til != @$wa;
+        $til ||= @$wa-1;
+    }
+    for my $bs (0..$til) {
+        G.U.braid_stop = $bs; # on T?
+        w anTop(%$ar);
+    }
+  anTop: |
+        0->visTp({i => ar.i}, "Fun") if ar.i;
+        T.L || die "no Line from i... antop";
         
-        die "no stoops" if !@{G.U.stoops};
-        die "no toos" if !@{G.U.toos};
-        die "toos != stoops" if !@{G.U.stoops} != !@{G.U.toos};
-        my $til = @{G.U.toos}-1;
-        for my $i (0..$til) {
-            G.U.ug_i = $i;
-            
-            G.U.antop->();
-            G.L = $uL;
+        G.U.stoops->[    G.U.braid_stop    ]->();
+        
+        for my $o_u (@{T.L.o}) {
+            w anTop(i => $o_u);
             
         }
-    };
-    G.U.antop = sub {#c
-        my $u = G.L.i;
-        my $uL = G.L;
-        my $prevx = G.last_ux;
-        my $lastx = G.last_ux = $u if u.O eq 'ux';
         
-        G.U.stoops->[    G.U.ug_i    ]->();
-        
-        for my $uo (@{uL.o}) {
-            G.L = uo.Li;
-            G.U.antop->();
-            G.last_ux = $lastx;
-        }
-        G.last_ux = $prevx;
-        G.L = u.Li;
-        
-        G.U.toos->[      G.U.ug_i    ]->();
-        
-        G.last_ux = $prevx;
-    };
+        G.U.toos->[      G.U.braid_stop    ]->();
 

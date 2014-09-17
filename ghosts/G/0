@@ -53,20 +53,7 @@ hooks:
             }
         }
     };
-    G.U.andwhendo = sub { #c
-        my $S = shift;
-        for my $and (@{S.andwhen}) {
-            my ($when, $doing) = %$and;
-            $when eq "asap" || die || next;
-            my ($func, $etc) = %$doing;
-            $func eq "oway_D" ? do {
-                my ($w) = grep { _.K eq $etc } @{S.o};
-                $w || die "no such oway K=$etc";
-                $G->doo(w.D, {}) if w.D;
-            } : die "no func $func";
-            U->deaccum($S, 'andwhen', $and);
-        }
-    };
+
     G.U.accum = sub {#c
         my ($S, $source, $ac, $t) = @_;
         my $a = $source->{$ac} ||= [];
@@ -89,7 +76,7 @@ hooks:
         }
     };
     G.U.sktcu = sub {#c skatch a way + B{
-        my ($S, $way, $B) = @_; 
+        my ($S, $way, $B) = @_;
         die  "B contains B:".wdump($B) if B.B;
         my $w = 0S->scrape_way($way);
         die "w_B not hash" if w.B && ref w.B ne "HASH";
@@ -128,27 +115,35 @@ hooks:
         G.U.T->($S, {i => $uu});
         return $uu
     };
-    G.U.TafuBl = sub {#c # lightly travel this kinda u
+    G.U.TafuBl = sub {#c # slightly travel this kinda u
         my $S = shift;
         my $u = 0S->TafuB(@_);
         u.Li || die "no u Li";
-        0S->accum($u, 'Lo', T.L);
-        0S->accum($T, 'o', $u);
+        0S->l($u);
         $u
     };
-    G.U.visTp_TafuBl = sub {#c
-        my ($S, $Tp, $Tc) = @_;
-        0S->spnT($Tp);
-        my $u = 0S->TafuBl(@$Tc);
-        $T= T._To;
+    G.U.visTp_l_u = sub {#c
+        my ($S, $u, $Tp) = @_;
+        $old = 0S->visTp($Tp);
+        0S->l($u);
+        $T= $old;
+        $u;
+    };
+    G.U.l = sub {#c
+        my ($S, $u) = @_;
+        0S->accum($u, 'Lo', T.L);
+        0S->accum($T, 'o', $u);
+    };
+    G.U.visTp_TafuBl = sub {#c # wrap as a w() arg somehow
+        my ($S, $Tp, $Bp) = @_;
+        $old = 0S->visTp($Tp);
+        my $u = 0S->TafuBl(@$Bp);
+        $T= $old;
         $u;
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
-        my $t = $T;
-        G.U.spnT->($S => $p);
-        my $back = T._To;
-        die if $back ne $t;
+        my $old = 0S->visTp($p);
         
         G.U.haunt_swoop->($S);
         
@@ -160,32 +155,32 @@ hooks:
         $T= $back;
         return $L;
     };
-    G.U.L_is = sub {
-        my ($S, $L) = @_;
-        0S->spnT({L=>$L});
-    };
-    G.U.spnT= sub {
-        my ($S, $p) = @_;
+    G.U.visTp= sub {
+        my ($S, $p, $fun) = @_;
         
         my ($old) = ($T) if $T&&ref($T) eq "Way";
         $T = $S->nw() unless $old;
         $T=$T->spawn;
         T._To = $old if $old;
-    }
+        
         if (p.i || p.L) {
             delete $T->{$_} for qw'i L t o';
         }
         $T->from($p);
         T.i ||= T.L.i;
         T.L ||= T.i.Li;
-        T.t ||= T.L.t unless exists T.t;
+        T.t ||= T.L.t;
         T.o ||= T.L.o;
         T.o ||= [];
         # backwards compat
         $S->{$_} = $T->{$_} for qw'i L t o';
-    };
-    G.U.iT= sub {
-        my ($S, $p) = @_;
+        
+        if ($fun eq "Fun") {
+            push @{ $F[0]->{_after_do} }, sub {
+                $T = $old
+            };
+        }
+        return $old;
     };
     G.U.haunt = sub {
         my $S = shift;
