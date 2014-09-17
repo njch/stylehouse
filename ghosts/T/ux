@@ -1,34 +1,65 @@
 name: Styluxyio
-include: T/braid
+include: T/braid T/ravel
+chains:
+   -  K: Wormhole
+      O: ux
+      
+      
+   -  K: ux
+      O: ux
+      styles: te
+      conor: 1
+      print: |
+        "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
+        
+      eats_Lu: 1
+      T_remembers_last: 1
+      chainlink: [i, t, o]
+      lness:
+        Lo: called Lu if diff_ghost
+
+
+   - K: i
+     in_dos:
+       Lu_grab_n: i
+       n_uys_to_w_n: w
+       
+     chainlink: [w]
+     conor: -0.5
+     
+   - K: t
+     uy_in_dos:
+       Lu_grab_n: t
+       
+     content_D: |
+       die "t content fullity" if S.B.raw || S.raw;
+       my $con = gpty($t);
+       $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
+       $con;
+       
+   - K: o
+     uy_in_dos:
+       Lu_grab_n: i
+       n_uys_to_w_n: w
+       
+     chainlink: [w]
+     conor: 0.5
+     
+   - K: w
+     content_D: |
+       pint($w);
+       
+   - K: e
+     styles: topleft white little
+     content_D: |
+       $e
+   
+   
 dials:
   max_depth: 7
   form: 42
 chains:
 hooks:
-  ways:
-    Wormhole:
-      K: Wormhole
-      O: ux
-    ux:
-      K: ux
-      O: ux
-      styles: te
-      conor: 1
-      B:
-        uys: i t o
-      tag: ux
-      _postsketch: |
-        S.Lu = S.B.Lu if S.B.Lu;
-      print: |
-        "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
-    uy:
-      K: uy
-      O: uy
-      stoop_arr: |
-        $S
-      print: |
-        "(".join(",  ", map { "$_ = ".pty(S.B->{$_}) } keys %{S.B}).")"
-          
   event: |
     my $u = L.i;
     my $ux = uxL.i;
@@ -37,48 +68,6 @@ hooks:
     E.uyL = $L if $L ne $uxL;
 
     ux.Lu.G->w(event => $E);
-  uyBs: # TODO ways build up from places like this
-   - K: i
-     uy_in_dos:
-       Lu_grab_n: i
-       n_uys_to_w_n: w
-     uys: w
-     conor: -0.5
-     
-   - K: t
-     uy_in_dos:
-       Lu_grab_n: t
-     content_D: |
-       die "Yeah" if S.B.raw || S.raw;
-       my $con = gpty($t);
-       $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
-       $con;
-       
-   - K: o
-     uy_in_dos:
-       Lu_grab_n: i
-       multi_n: i
-       n_uys_to_w_n: w
-     uys: w
-     conor: 0.5
-     
-   - K: w
-     nah: 1
-     content_D: |
-       pint($w);
-       
-   - K: e
-     styles: topleft white little
-     nah: 1
-     content_D: |
-       $e
-   
-   
-  stoops:
-    - K: uy spawn
-      taps_o:
-        O: uy
-      
   any_init: |
     G.U.stoops = [ sub {#c
         my $u = G.L.i;
@@ -87,13 +76,6 @@ hooks:
         # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
-        
-        my $old = { map { _.B.K => $_ } findO(uy => uL.o) };
-        G.U.h.ul.creating_that_u = sub {
-            my $uy = shift;
-            $old->{uy.B.K} &&
-            0->deaccum($uL, "o", $old->{uy.B.K});
-        };
         
         my $uyBs = $G->findway('uyBs');
         my $uyBsK = sub {
@@ -155,7 +137,6 @@ hooks:
                 die wdump($u);
             }
         }
-        delete G.U.h.ul.creating_that_u;
     } ];
     G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.toos = [ sub { #c
@@ -261,17 +242,12 @@ hooks:
         # $wu = 0->TafuB(wormhole => {W => $W});
     };
   ux: |
-    my $incremental = 0;
-    my $Ls;
-    my $Ls = ar.Ls || do {
-        my $W = ar.W;
-        # if before, get new uxs...
-        $W->CS;
-    };
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
-        push @uxs, 0->visTp_TafuBl({L=>$Lu}, [ux => {Lu=>$Lu}]);
+        my $ux = 0->TafuB(ux => {Lu=>$Lu});
+        push @uxs, 0->visTp_TafuBl({L=>$Lu}, []);
     }
     # ux could be all new
     # could be (new)ux.uL.i.Lo.ux(old): wedge in

@@ -166,10 +166,12 @@ hooks:
     };
     G.U.spnT= sub {
         my ($S, $p) = @_;
-        my $oldT=$T||=$G->nw();
-        $T=$G->nw() if ref($T) ne "Way";
+        
+        my ($old) = ($T) if $T&&ref($T) eq "Way";
+        $T = $S->nw() unless $old;
         $T=$T->spawn;
-        T._To = $oldT;
+        T._To = $old if $old;
+    }
         if (p.i || p.L) {
             delete $T->{$_} for qw'i L t o';
         }
@@ -181,6 +183,9 @@ hooks:
         T.o ||= [];
         # backwards compat
         $S->{$_} = $T->{$_} for qw'i L t o';
+    };
+    G.U.iT= sub {
+        my ($S, $p) = @_;
     };
     G.U.haunt = sub {
         my $S = shift;
