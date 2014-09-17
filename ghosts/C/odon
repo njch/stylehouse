@@ -12,7 +12,7 @@ chains:
        #"$thing/lib",
        "$thing/ghosts"
      grep: |
-         !/T|H/
+         !/T|H|L/
    y:
      t:
        event: |
@@ -74,6 +74,12 @@ chains:
      -f $thing && $thing =~ /odon/ && 1
    foreach_travel:
      each: Way::load_yaml($thing);
+ - K: 'wc -l'
+   arr_if: |
+     -f $thing;
+   foreach_travel:
+     each: (split /\s+/, `wc -l $thing`)[0];
+     
 dials:
   max_depth: 3
 hooks:
