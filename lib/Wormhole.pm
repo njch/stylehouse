@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
+use Term::ANSIColor;
 use Texty;
 my $json = JSON::XS->new->allow_nonref(1)->allow_unknown(1);
 use HTML::Entities;
@@ -35,7 +36,8 @@ sub continues {
     my ($W, $G) = @_; # %
 
     my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
-    $namg = "$W->{G}->{name} ".join("",("  ")x$Ghost::T->{depth}||1)."l-$W->{n} ";
+    $namg = "$W->{G}->{name} ".
+        join("",("  ")x$Ghost::T->{depth}||1)."l-$W->{n} ";
     my $L = {
         uuid => $H->make_uuid,
         name => $namg,
@@ -55,7 +57,17 @@ sub continues {
 
     $W->ob($L);
     
-    say "Enters the $namg\t\ti:".Ghost::pint($L->{i});
+    
+    print colored("Enters the $namg\t\ti:".Ghost::pint($L->{i})."\n",
+    
+        'black on_magenta');
+        
+    print colored("\t\ti:".Ghost::ki($L->{i})
+        ."\n\t\tB{ ".Ghost::ki($L->{i}->{B})."\n"
+        .($L->{i}->{arr_ar} ? "\t\tarr_ar{ ".Ghost::ki($L->{i}->{arr_ar})."\n" : ""),
+        
+        'bright_red');
+        say "\tt = ".Ghost::gpty($L->{t});
 
     push @{$W->{script}}, $L;
     
