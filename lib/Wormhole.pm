@@ -35,7 +35,7 @@ sub continues {
     my ($W, $G) = @_; # %
 
     my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
-    $namg = "$W->{G}->{name} ".join("",("  ")x$Ghost::T->{depth})."l-$W->{n} ";
+    $namg = "$W->{G}->{name} ".join("",("  ")x$Ghost::T->{depth}||1)."l-$W->{n} ";
     my $L = {
         uuid => $H->make_uuid,
         name => $namg,
@@ -54,6 +54,8 @@ sub continues {
     };
 
     $W->ob($L);
+    
+    say "Enters the $namg\t\ti:".Ghost::pint($L->{i});
 
     push @{$W->{script}}, $L;
     

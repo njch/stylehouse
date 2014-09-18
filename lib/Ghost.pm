@@ -82,6 +82,11 @@ sub pint {
     my $w = shift;
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
+sub sw {
+    my $thing = shift;
+    $Ly->w(somewhere => {thing => $thing});
+    return "Splatted ".gpty($thing);
+}
 sub U {
     my ($G, $Usub, @etc) = @_;
     $G->{U}->{$Usub} || confess "no U $Usub";
