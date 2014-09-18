@@ -72,7 +72,6 @@ sub gname {
     my $ush = "$g";
     my $may = $g->{name} || $g->{id} if ref $g && $ush =~ /HASH/;
     $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
-    $may = pint($g) if ref $g eq "Way";
     $may ||= "$g";
     $may =~ s/^(\w+)=HASH.*$/$1\{/;
     $may;
@@ -84,17 +83,10 @@ sub pint {
 }
 sub sw {
     my $thing = shift;
-    $Ly->w(somewhere => {thing => $thing});
+    $F[0]->{G}->timer(0.1, sub { $Ly->w(somewhere => {thing => $thing}) });
     return "Splatted ".gpty($thing);
 }
-sub U {
-    my ($G, $Usub, @etc) = @_;
-    $G->{U}->{$Usub} || confess "no U $Usub";
-    my $u = $G->waystacken(U => $Usub, [@etc]);
-    my @R = $G->{U}->{$Usub}->(@etc);
-    $u->();
-    wantarray ? @R : shift @R;
-}
+
 sub mess {
     my $G = shift;
     $H->{G}->w(mess => {what => shift, thing => shift});
@@ -417,8 +409,12 @@ our$doneprotolwptimes=[];
 sub _0 {
     my $G = shift;
     my ($point, @etc) = @_;
-    return $G->w("load_ways_post")
-        if !$G0 && $point eq "_load_ways_post";
+    if (!$G0 || ref $G0 ne "Ghost") {
+        if ($point eq "_load_ways_post") {
+            return $G->w("load_ways_post");
+        }
+        die "CABNNOOT call G0, doesn't exist. w $point, @etc\n\n".wdump($G0);
+    }
     if ($point =~ /^0S?->(.+)$/) {
         my $Usub = $1;
         $G0->{U}->{$Usub} || confess "no 0U $Usub\n".wdump(2,$G0);
@@ -430,6 +426,14 @@ sub _0 {
         $ar->{S} = $G;
         $G0->w($point, $ar);
     }
+}
+sub U {
+    my ($G, $Usub, @etc) = @_;
+    $G->{U}->{$Usub} || confess "no U $Usub";
+    my $u = $G->waystacken(U => $Usub, [@etc]);
+    my @R = $G->{U}->{$Usub}->(@etc);
+    $u->();
+    wantarray ? @R : shift @R;
 }
 sub nw {
     my $self = shift;
