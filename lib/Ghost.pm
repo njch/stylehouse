@@ -86,7 +86,6 @@ sub sw {
     $F[0]->{G}->timer(0.1, sub { $Ly->w(somewhere => {thing => $thing}) });
     return "Splatted ".gpty($thing);
 }
-
 sub mess {
     my $G = shift;
     $H->{G}->w(mess => {what => shift, thing => shift});
@@ -458,7 +457,7 @@ sub way_was {
 }
 sub haunt { # arrives through here
     my $G = shift;
-    return $G->_0("0->haunt", @_) if $G0->{_future};
+    return $G->_0("0->haunt", @_) if 1;#$G0->{_future};
     
         my $Tr = shift; # A
         $G->{depth} = shift;
