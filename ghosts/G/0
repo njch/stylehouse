@@ -107,9 +107,9 @@ hooks:
     G.U.TafuB = sub {#c # lightly travel this kinda u
         my $S = shift;
         
-        my $uu = G.U.sktcu->($S, @_);
+        my $uu = 0S->sktcu(@_);
         
-        my $u = G.U.fu->($S, $uu);
+        my $u = 0S->fu($uu);
         return $u if $u;
         
         0S->T({i => $uu});
@@ -124,7 +124,7 @@ hooks:
     };
     G.U.visTp_l_u = sub {#c
         my ($S, $u, $Tp) = @_;
-        $old = 0S->visTp($Tp);
+        my $old = 0S->visTp($Tp);
         0S->l($u);
         $T= $old;
         $u;
@@ -134,9 +134,9 @@ hooks:
         0S->accum($u, 'Lo', T.L);
         0S->accum($T, 'o', $u);
     };
-    G.U.visTp_TafuBl = sub {#c # wrap as a w() arg somehow
+    G.U.visTp_TafuBl = sub {#c
         my ($S, $Tp, $Bp) = @_;
-        $old = 0S->visTp($Tp);
+        my $old = 0S->visTp($Tp);
         my $u = 0S->TafuBl(@$Bp);
         $T= $old;
         $u;
@@ -145,22 +145,22 @@ hooks:
         my ($S, $p) = @_;
         my $old = 0S->visTp($p);
         
-        G.U.haunt_swoop->($S);
+        0S->haunt_swoop();
         
-        G.U.haunt_wooo->($S);
+        0S->haunt_wooo();
         
         $S->doo(T.i.extract_D, {}) if T.i.extract_D;
         
         my $L = T.L;
-        $T= $old;
+        $T = $old;
         return $L;
     };
     G.U.visTp= sub {
         my ($S, $p, $fun) = @_;
         
-        my ($old) = ($T) if $T&&ref($T) eq "Way";
+        my $old = $T if $T && ref $T eq "Way";
         $T = $S->nw() unless $old;
-        $T=$T->spawn;
+        $T = $T->spawn;
         T._To = $old if $old;
         
         if (p.i || p.L) {
@@ -190,14 +190,15 @@ hooks:
     G.U.haunt = sub {
         my $S = shift;
         my $Travel = shift;
-        my $L = G.U.T->($S, {
+        my $L = 0S->T({
             depth => shift,
             t => shift,
             i => shift,
             o => [],
             _Travel => $Travel, # non
         });
-        return @{L.i.returns};
+        return @{L.i.returns} if L.i.returns;
+        return $L;
     };
     G.U.haunt_swoop = sub {#c
         my $S = shift;
@@ -234,7 +235,7 @@ hooks:
                 $R = c.arr_returns;
             }
             elsif (exists c.travels) {
-                G.U.T->($S, {i => $c});
+                0S->T($S, {i => $c});
             }
             elsif (exists c.B.s || exists c.O) {
                 # sweet

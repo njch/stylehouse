@@ -830,7 +830,6 @@ sub parse_babble {
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
     $eval =~ s/Gf (\S+)/\$G->Gf('$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
-    $eval =~ s/T ((?!->)\S+)([ ;\)])/->T($1)$2/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
     
