@@ -53,7 +53,6 @@ hooks:
             }
         }
     };
-
     G.U.accum = sub {#c
         my ($S, $source, $ac, $t) = @_;
         my $a = $source->{$ac} ||= [];
@@ -213,14 +212,17 @@ hooks:
         $S->ob("haunt");
         $S->w("T_begin");
         
-        G.U.arr->($S) unless T._noarr;
+        0S->arr() unless T._noarr;
         
         $S->doo(i.flows_D, {}) if i.flows_D;
         
         G.U.continues->($S);
         
-        _.Lo = T.L for @{T.L.o}; # too heavy for uy
-        T.L.i.Li = T.L; # just right
+        T.L.i eq T.i || "tli not ni!?!?!"
+        
+        # [o  get Lo = L
+        0S->accum($_, 'Lo', T.L) for @{T.L.o};
+        0S->accum(T.L.i, 'Li', T.L); # just right
     };
     G.U.continues = sub {
         my $S = shift;

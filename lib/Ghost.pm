@@ -458,65 +458,6 @@ sub way_was {
 sub haunt { # arrives through here
     my $G = shift;
     return $G->_0("0->haunt", @_) if 1;#$G0->{_future};
-    
-        my $Tr = shift; # A
-        $G->{depth} = shift;
-        $G->{t} = shift; # thing
-        my $i = $G->{i} = shift; # way in
-        my $o = $G->{o} = []; # way[] out
-        $T->{$_} = $G->{$_} for qw'i t o depth';
-
-        $G->ob("haunt", $G);
-
-        $G->w("T_begin");
-
-        if ($i->{arr_hook}) { # could be moved into a crawl-like chain
-            my @r = $G->w($i->{arr_hook}, $i->{arr_ar});
-            push @$o, $i->spawn()->from({ arr_returns => \@r });
-
-        }
-        else {
-            $G->w("arr");
-        }
-
-        my $L;
-        if (exists $G->{t}) {
-            $T->{$_} = $G->{$_} for qw'i t o depth';
-            $L = $G->W->continues($G); # %
-            $G->ob("continues...", $L);
-            $T = {};
-        }
-
-        for my $o (@{$L->{o}}) {
-            $o->{Lo} = $L;
-        }
-        $i->{Li} = $L;
-
-
-    #$G->_0("0->opo", @_);
-
-    my @r = $L;
-    for my $c (@{$G->{o}}) {
-        if (exists $c->{travel_this}) {
-            $Tr->T($c->{travel_this}, $G, $c, $L->{depth}+1);
-        }
-        elsif (exists $c->{travel}) {
-            $Tr->T($c->{travel}, $G, $c, $L->{depth}+1);
-            delete $c->{travel} if !defined $c->{travel};
-        }
-        elsif (exists $c->{arr_returns}) {
-            @r = @{$c->{arr_returns}};
-        }
-        elsif (exists $c->{B}->{s} || exists $c->{O}) {
-            # sweet
-        }
-        else {
-            $H->error("what kind of way out is",$G,$c)
-        }
-    }
-    $G->w("T_end", {L=>$L, r=>\@r});
-  
-    return @r
 }
 sub chains {
     my $G = shift;
@@ -685,7 +626,7 @@ sub doo {
     unless ($Ds) {
         my $eval = $G->parse_babble($babble, $point);
         my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
-        $download .= 'my $thing = $G->{t}; ' unless $ar->{thing};
+        $download .= 'my $thing = $T->{t}; ' unless $ar->{thing};
         $download .= 'my $O = $G->T->{O}; ' unless $ar->{O};
         my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
         

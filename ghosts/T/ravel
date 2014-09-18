@@ -31,30 +31,30 @@ hooks:
     my @chains = $G->chains;
     
     @chains = grep {
-        !defined $_->{iK} || $G->{i}->{K} =~ /$_->{iK}/
+        !defined _.iK || T.i.K =~ /_.iK/
     } @chains;
     
     @chains = grep {
-        !defined $_->{exact_depth} || $_->{exact_depth} == $G->{depth}
+        !defined _.exact_depth || _.exact_depth == T.depth
     } @chains;
     
     my @dom = grep {
-        defined $_->{dom_depth} && $_->{dom_depth} == $G->{depth}
+        defined _.dom_depth && _.dom_depth == T.depth
     } @chains;
     @chains = @dom if @dom;
     
     @chains
   c_eat: |
-    return $c unless $c->{eat};
+    return $c unless c.eat;
     for my $oc (@$cs) {
-        if ($oc->{K} eq $c->{eat}) {
-            $oc->{eaten_by} = $c
+        if (oc.K eq c.eat) {
+            oc.eaten_by = $c
         }
     }
   c_grav_add: |
-    return $c unless $c->{grav_add};    
+    return $c unless c.grav_add;    
     for my $oc (@$cs) {
-        $oc->{gravity} += $c->{grav_add} 
+        oc.gravity += c.grav_add 
     }
   revisit: | # TODO
     my $W = $G->RW;
@@ -74,7 +74,7 @@ hooks:
     my $gravity = $c->{gravity} || $c->{as_from}->{gravity} || 0;
     my $max = $G->{max_depth} + $gravity;
     
-    return if $G->{depth} >= $max;
+    return if $T->{depth} >= $max;
     
     if (my $fe = $c->{foreach_travel}) {
         w figure_foreach_travel;
@@ -108,7 +108,7 @@ hooks:
                 
                 push @list, $na;
             };
-            my @dirs = $G->doo($fe->{find_files}, $ar);
+            my @dirs = $G->doo(fe.find_files, $ar);
             File::Find::find($found, @dirs);
         }
         if (fe.grep) {
@@ -144,7 +144,7 @@ hooks:
             $oc->{i} = $i++;
             $oc->{each} = $each;
             
-            push @{$G->{o}}, $oc;
+            push @{T.o}, $oc;
         }
   c_follow_as: |
     return $c unless $c->{as};
