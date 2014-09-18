@@ -41,7 +41,10 @@ hooks:
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
   mess: |
-    return say wdump(2,$ar) unless H._future;
+    unless (H._future) {
+        warn "Pre future mess... ".ki($ar);
+        return;
+    }
     my $m = Gf mess;
     $m || die'no mess!';
     H._future = 0;

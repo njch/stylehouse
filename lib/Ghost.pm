@@ -154,7 +154,7 @@ sub waystacken {
             }
             else {
                 unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
-                $E .= "from $_->{name}" for shift @FF;
+                $E .= " - from $_->{name}\n" for shift @FF;
             }
             $G->mess(BATS => $G->Flab($E, $s, [@FF], [@F]));
         }
@@ -640,7 +640,7 @@ sub w {
     unless (@returns) {
         $G->Flab("way miss $talk", \@ways, $Sway);
     }
-    return say "Multiple returns from ".($point||'some?where')
+    return warn "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
     return
                             if @returns < 1;
