@@ -94,13 +94,14 @@ hooks:
     };
     G.U.scrape_way = sub {
         my ($S, $way) = @_;
+        die "S not Ghost" unless ref $S eq "Ghost";
         my $nw = $S->nw();
         my $from = $S->findway('ways/'.$way);
         $from ||= do {
             my @chainway = grep { _.K eq $way } $S->chains;
             shift @chainway
         };
-        $from || die "no findo way called $way";
+        $from || die "no findo way called $way (S.name)".wdump($S->findway('chains'));
         $nw->from($from);
         $nw;
     };
@@ -118,7 +119,7 @@ hooks:
     G.U.TafuBl = sub {#c # slightly travel this kinda u
         my $S = shift;
         my $u = 0S->TafuB(@_);
-        u.Li || die "no u Li";
+        u.Li || die "no u Li ".wdump(2,$u);
         0S->l($u);
         $u
     };
@@ -158,8 +159,14 @@ hooks:
     G.U.visTp= sub {
         my ($S, $p, $fun) = @_;
         
-        my $old = $T if $T && ref $T eq "Way";
-        $T = $S->nw() unless $old;
+        my $old;
+        if ($T && ref $T eq "Way") {
+            $old = $T;
+        }
+        else {
+            warn "T was ".wdump($T);
+            $T = $S->nw();
+        }
         $T = $T->spawn;
         T._To = $old if $old;
         

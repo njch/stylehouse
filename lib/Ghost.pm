@@ -69,10 +69,10 @@ sub new {
 sub gname {
     my $g = shift;
     my $si = shift || 0;
-    my $ish = ref $g;
     my $ush = "$g";
-    my $may = $g->{name} || $g->{id} if $ish && $ush =~ /HASH/;
-    $may ||= (0+keys %$g)."{" if $ish eq "HASH";
+    my $may = $g->{name} || $g->{id} if ref $g && $ush =~ /HASH/;
+    $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
+    $may = pint($g) if ref $g eq "Way";
     $may ||= "$g";
     $may =~ s/^(\w+)=HASH.*$/$1\{/;
     $may;
