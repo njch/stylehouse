@@ -131,21 +131,34 @@ hooks:
   any_init: |
     
     G.U.jgd = sub { join " ", grep { defined } @_ };
-    
-    G.U.jgd = sub { join " ", grep { defined } @_ };
-    
-    G.U.jgd = sub { join " ", grep { defined } @_ };
-    
-    G.U.jgd = sub { join " ", grep { defined } @_ };
-    G.U.stoops = [ sub {#c
-        my $u = G.L.i;
-        my $uL = G.L;
+    G.U.send_contents_awaiting = sub {
+        my $awa = G.contents_awaiting ||= [];
+        G.fuckery = 0;
+        for my $ait (reverse @$awa) {
+            my $u = ait.u;
+            my $sel = ait.sel;
+            my @htmls = U->contor(@{u.at.contents});
+            #die wdump([$u,\@htmls]);
+            for my $html (@htmls) {
+                #next if G.fuckery++ > 7;
+                $H->JS("\$('$sel').append('$html');");
+            }
+        }
+        G.contents_awaiting = [];
+    };
+    G.U.contor = sub {
+        grep { defined }
+        map { _.html || _.content } @_
+    };
+  stoops:
+    0: |
+        my $u = T.i
         my $Lu = u.Lu || die "no Lu" if u.K eq "ux";
         # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
         
-        my $uyBs = $G->findway('uyBs');
+        my $uyBs = $G->findway('uyBs'); # THIS THING NEXT  T O D O   T O D O   T O D O   T O D O 
         my $uyBsK = sub {
             my $uyK = shift;
             my ($uyB) = grep { _.K eq $uyK } @$uyBs;
@@ -197,28 +210,25 @@ hooks:
                 U->uys($uyB);
             }
             else {
-                T.L = G.L;
-                T.o = G.L.o;
                 my $u = 0->TafuBl(uy => $uyB);
                 #die "liney" if u.Lo ne G.L;
                 die "miso" if !grep{$_ eq $u}@{G.L.o};
                 die wdump($u);
             }
         }
-    } ];
-    G.U.toos = [ sub { #c
-        my $u = G.L.i;
-        my $uL = G.L;
-        my $Tlux = G.last_ux;
+  toos:
+    0: |
+        my $u = T.i
+        
         my $Lui = Tlux.Lu.i;
         die "empty Lu on ".wdump($u)  if u.Lu && !%{u.Lu};
         die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.Lu;
         die "uy Lu".wdump(2, $u)      if u.K eq 'ux' && !u.Lu;
-        die "ux has no ways out"      if u.K eq "ux" && !@{uL.o};
+        die "ux has no ways out"      if u.K eq "ux" && !@{u.Li.o};
         
         my $at;
         
-        at.id = uL.uuid;
+        at.id = u.Li.uuid;
         at.styles = U->jgd(u.styles);
         my $y = u.K eq "uy";
         if ($y) {
@@ -284,30 +294,6 @@ hooks:
         
         u.html = $tag->($content);
  
-    } ];
-    G.U.contor = sub {
-        grep { defined }
-        map { _.html || _.content } @_
-    }; 
-    G.U.send_contents_awaiting = sub {#c
-        my $awa = G.contents_awaiting ||= [];
-        G.fuckery = 0;
-        for my $ait (reverse @$awa) {
-            my $u = ait.u;
-            my $sel = ait.sel;
-            my @htmls = U->contor(@{u.at.contents});
-            #die wdump([$u,\@htmls]);
-            for my $html (@htmls) {
-                #next if G.fuckery++ > 7;
-                $H->JS("\$('$sel').append('$html');");
-            }
-        }
-        G.contents_awaiting = [];
-    };
-    G.U.intro_Lu = sub {
-        
-        # $wu = 0->TafuB(wormhole => {W => $W});
-    };
   styles:
     te: |
       q'border-bottom:1px solid black',
