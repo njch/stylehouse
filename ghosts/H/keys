@@ -13,10 +13,27 @@ tractors:
     arr_if: |
       $e
     first_time: |
-      $S->{B}->{key} ||= $e->{k};
-      $S->{B}->{key} ||= "Ⲯ";
-      $S->{B}->{key} = lc($S->{B}->{key}) if !$e->{S};
-      $S->{hitime} = hitime();
+      S.B.key ||= e.k;
+      S.B.key ||= "Ⲯ";
+      S.B.key = lc(S.B.key) if !e.S;
+      S.hitime = hitime();
+      
+      my $k = S.B.key;
+      #L ^ here's _, 
+
+      say join($k, (" ")x28) for 1..4;
+
+      $G->_0(sing => { 
+          name => "keytrig $k",
+          block_for => 0.2,
+          begin_after => 0.0000000000000001,
+          code => sub {
+              w trigger[$S];
+          },
+      });
+      $G->timer(0.01, sub  {
+          Info "keypress $k", $S;
+      },"prop keypress Info");
     print: |
       my $and = "";
       for (qw{S C A M}) {
@@ -30,26 +47,6 @@ hooks:
   any_init: |
     $H->JS("handelay = 5;"); 
     $H->JS("\$(window).on('keydown', keyhand);"); 
-  arr: |
-    my $S = w Arr[$e];
-
-    my $k = 
-    $S->{B}->{key};
-    #L ^ here's _, 
-    
-    say join($k, (" ")x28) for 1..4;
-    
-    $G->_0(sing => { 
-        name => "keytrig $k",
-        block_for => 0.2,
-        begin_after => 0.0000000000000001,
-        code => sub {
-            w trigger[$S];
-        },
-    });
-    $G->timer(0.01, sub  {
-        Info "keypress $k", $S;
-    },"prop keypress Info");
   trigger: |
     my $k = $S->{B}->{key};
     for my $g ($H->Gf('L')) {

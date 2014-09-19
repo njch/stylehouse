@@ -139,8 +139,8 @@ hooks:
     $G->unrush('getstarted') || return;
     #w somewhere(thing => w default_somewhere);
     $G->w('f/Lgs') if G Ϡ;
-  splat: |
-    
+  Splat: |
+    G splat ->w(Splat => $ar);
   somewhere: |
     if ($ar->{nothing}) {
         Gf Ϡ ->w(Arr => $ar);
@@ -209,9 +209,6 @@ hooks:
   
   set_land: |
     for my $t (qw'land func') {
-        my $g = $G->Gf($t);
-        $g->RW;
-        
         my @data;
         @data = w lands if $t eq "land";
         @data = do {
@@ -220,11 +217,13 @@ hooks:
                 [ $_ => sub { $G->w("f/$_") } ]
             } sort keys %$w_f
         } if $t eq "func";
+        
+        my $g = $G->Gf($t);
+        $g->RW;
         for my $d (@data) {
-            
-            $g->w('Arr', {name => $d->[0], code => $d->[1]});
+            $g->w(Arr => {name => $d->[0], code => $d->[1]});
         }    
-        G splat ->w('Splat', {$t => $g->W});
+        w Splat($t => $g->W);
         
     }
   default_somewhere: |

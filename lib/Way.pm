@@ -102,7 +102,7 @@ sub init_way {
     for my $i (keys %$w) {
         $self->{$i} = $w->{$i};
     }
-    for my $a ("chains", "tractors") {
+    for my $a ("chains", "tractors") { # TODO leveridge A into way
         next unless $w->{$a};
         my $as = [];
         for my $c (@{$self->{$a}}) {
