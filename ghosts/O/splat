@@ -100,13 +100,9 @@ hooks:
     }
   
   Splat: |
-    my ($splatname, $wormhole) = %$ar;    
-    my $ig = qr/^worm$|Ϡ|land|func|path/;
-    
-    #$H->Say("Splat $splatname...") unless $splatname =~ $ig;
-    
+    my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
-    return if $G->{iggysplat}->{$splatname};
+    
     #$G->{nona} = 1;
     my $A = w Arr[$splatname, $wormhole];
     A.view = delete ar.view if ar.view;
@@ -119,7 +115,7 @@ hooks:
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
     $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta(), $A)
-                                    unless $splatname =~ $ig;
+                               unless $splatname =~ /^worm$|Ϡ|land|func|path/;
   get: |
     my $S = w Afu[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);

@@ -48,7 +48,10 @@ hooks:
     $m || die'no mess!';
     H._future = 0;
     
-    $m ->w(mess => $ar);
+    eval { $m ->w(mess => $ar); };
+    if ($@) {
+        die "Throwing mess mess: $@\n\n\n".wdump($ar);
+    }
     
     H._future = 1;
   re:

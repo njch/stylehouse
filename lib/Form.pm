@@ -95,7 +95,6 @@ sub inject_space {
     }
     # stuff that we do...
 }
-
 sub vastspans {
     my $array_of_spans;
     return map { @$_ } @$array_of_spans;
@@ -108,3 +107,4 @@ sub event {
 }
 
 1;
+
