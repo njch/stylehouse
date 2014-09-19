@@ -26,7 +26,7 @@ hooks:
     m: |
         w tog_hmess;
     M: |
-        my $gmw = $H->{G}->Gf('H/mess')->W;
+        my $gmw = HGf('H/mess')->W;
         w somewhere(wormhole => $gmw);
     N: |
       G Ϡ ->_0('V/blur');
@@ -139,9 +139,11 @@ hooks:
     $G->unrush('getstarted') || return;
     #w somewhere(thing => w default_somewhere);
     $G->w('f/Lgs') if G Ϡ;
+  splat: |
+    
   somewhere: |
     if ($ar->{nothing}) {
-        Gf Ϡ Tw arr(%$ar);
+        Gf Ϡ ->w(Arr => $ar);
         return;
     }
     if ($ar->{wormhole}) {
@@ -149,13 +151,13 @@ hooks:
         return;
     }
     if ($ar->{W}) {
-        G splat Tw Splat(somewhere => $ar->{W});
+        w Splat(somewhere => $ar->{W});
         return;
     }    
     
     $G->timer(0.1, sub {
-        G path Tw arr(%$ar);
-        G splat Tw Splat(path => G(path)->W);
+        G path ->w(Arr => $ar);
+        w Splat(path => G(path)->W);
     }, "splatup path");
     
     my $Cr = G crawl;
@@ -235,11 +237,11 @@ hooks:
   
   splat_wormholes: |
     return unless $G->{some_W};
-    G splat Tw Splat(somewhere => $G->{some_W});
+    w Splat(somewhere => $G->{some_W});
   wormholify: |
-    G splat Tw Splat(worm => $wormhole);
+    w Splat(worm => $wormhole);
   splat_splatW: |
-    G splat Tw Splat(splatW   => {script=>G(splat)->W->CS}   );
+    w Splat(splatW   => {script=>G(splat)->W->CS}   );
     #timer 2.5 { w splat_splatW };
   any_child_recoded_init: |
     return if $S->{name} =~ /Ϡ.../;
