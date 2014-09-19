@@ -51,7 +51,7 @@ hooks:
         } qw{splat keys land path crawl sky colour mess ux ob uxt yle
         };
     for my $g (map { @$_ } @Gdbnah) {
-        $g->{db} = -1;
+        #$g->{db} = -1;
     }
   lands: |
     [ "G*",         sub { $H->data->{Ghost} } ],
@@ -206,28 +206,25 @@ hooks:
     
   
   set_land: |
-    my $GG;
-    my $f = sub {
-        $G->Tw($GG, 'arr', {name => shift, code => shift});
-    };
-    
-    G land ->RW;
-    G func ->RW;
-    
-    $GG = G land;
-    
-    $f->(@$_) for w lands;
-    
-    $GG = G func;
-    
-    my $w_f = $G->findway('f');
-    for my $wf (sort keys %$w_f) {
-         $f->($wf => sub { $G->w("f/$wf") });
+    for my $t (qw'land func') {
+        my $g = $G->Gf($t);
+        $g->RW;
+        
+        my @data;
+        @data = w lands if $t eq "land";
+        @data = do {
+            my $w_f = $G->findway('f');
+            map {
+                [ $_ => sub { $G->w("f/$_") } ]
+            } sort keys %$w_f
+        } if $t eq "func";
+        for my $d (@data) {
+            
+            $g->w('arr', {name => $d->[0], code => $d->[1]});
+        }    
+        G splat ->w('Splat', {$t => $g->W});
+        
     }
-    
-    G splat Tw Splat(land => G(land)->W);
-    
-    G splat Tw Splat(func => G(func)->W);
   default_somewhere: |
       w look_for_ghost(name => 'Ϡ');
   swap_chains: |

@@ -11,6 +11,7 @@ tractors:
           ->spawn_floozy($G, $splatname,
               $O->styles("spl $splatname")
           );
+      say "\n\nAm $S v=S.view\n";
       
     nonfirst_times: |
       $S->{view}->fadehtml();
@@ -96,10 +97,7 @@ hooks:
     }
   
   Splat: |
-    my $view = delete $ar->{view};
-    my ($splatname, $wormhole) = %$ar;
-    start_timer();
-    
+    my ($splatname, $wormhole) = %$ar;    
     my $ig = qr/^worm$|Ϡ|land|func|path/;
     
     #$H->Say("Splat $splatname...") unless $splatname =~ $ig;
@@ -107,8 +105,13 @@ hooks:
     $wormhole = w aWstract[$wormhole];
     return if $G->{iggysplat}->{$splatname};
     #$G->{nona} = 1;
-    my $A = Arr[$splatname, $wormhole, $view];
+    my $A = Arr[$splatname, $wormhole];
+    A.view = delete ar.view if ar.view;
+    
+    $Ghost::db = 5;
+    say "Arr splat! am $A = A.view  or A.B.view";
     w script_out[$A, $splatname, $wormhole];
+    say "\n\nTHAT WAS SCRIPT OUT\n";
     $G->{nona} = 0;
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
@@ -125,7 +128,10 @@ hooks:
         : { script => [@{$wormhole->{script}}] }
   script_out: |
     my $lines = [];
+    $DB::single = 1;
     my $i = 0;
+    Say "Script out: $splatname";
+    sleep 1;
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};

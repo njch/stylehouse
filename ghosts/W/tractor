@@ -10,6 +10,7 @@ hooks:
   wongawonga: |
     die
   rr: |
+    G.W = O.W;
     my @AA;
     for my $A ($O->tractors) {
         if (w $A arr_if) {
@@ -29,22 +30,28 @@ hooks:
         }
     }
     
+    my @AAA;
     for my $A (@AA) {
-        my $r;
-        if (my $Already = w retract[$A]) {
-            $Already->{B} = { %{$Already->{B}}, %{$A->{B}} };
-            $A = $Already;
-            $G->Flab("A retracted     \t".ki($ar), $ar);
-            w $A nonfirst_times;
+        A._fresh = 1;
+        my $a = 0->Tafu($A) || die "WTf";
+        
+        if (a._fresh) {
+            Say "A first  a.K\t".ki(a.B);
+            $H->snooze(400);
+            delete a._fresh;
+            $G->Flab("A first \t", $a);
+            w $a first_time;
         }
         else {
-            $A = $A->spawn;
-            $G->Flab("A               \t".ki($ar), $ar);
-            w $A first_time;
-            $A->{waystack} = $G->stackway;
+            Say "Aretraction <<<< a.K\t".ki(a.B);
+            $H->snooze(400);
+            # in case some non-B_ affecting B{ thing changes
+            a.B = { %{a.B}, %{A.B} };
+            $G->Flab("AAAA    \t", $a);
+            w $a nonfirst_times;
         }
         
-        w $A every_time;
+        w $a every_time;
         $G->_0(sing => {
             name => "populi $G->{name}",
             again_after => 3,
@@ -53,44 +60,19 @@ hooks:
               w populi;
             },
         });
-
-        waylay populi;
             
-        my $p = w $A print;
-        $p ||= "nowame";
-        $A->{name} ||= $p;
-        $G->Flab("A    $p", $A);
+        my $p = w $a print;
+        a.name ||= $p || "nowame";
         
-        T.t = $A;
+        push @AAA, $a;
     }
     
-    return @AA    ;
-  retract: |
-    return unless exists $A->{B}->{_};
-    my @keep;
-    my @found;
-    $O || die "NO tractor O! $G->{name}";
-    for my $line (@{ $O->W->{script} }) {
-        #$H->info("Line: $line", $O->{name}, $line);
-        next if ref $line eq "ARRAY" && @$line == 0; # wtf case
-        next if ref $line->{t} ne "Way";
-        if ($line->{t}->{B}->{_} eq $A->{B}->{_}) { # ar this to W->{G}?
-             push @found, $line;
-        }
-        else {
-            push @keep, $line;
-        }
-    }
-    $O->W->{script} = \@keep;
-    if (!@found) {
-        return;
-    }
-    return $found[0]->{t};
+    return @AAA;
   populi: |
     my ($A) = $O->tractors;
     my $s = $O->W->{script};
     if (my $max = $A->find('populi/max')) {
-        shift @$s until @$s <= $max; # off by one for the line about to happen..?
+        shift @$s until @$s <= $max;
     }
     my $hp = 'populi/hooks';
     if (my $h = $A->find($hp)) {
@@ -101,16 +83,17 @@ hooks:
   random: |
     my $tot = @{ $O->W->{script} }-1;
     my $i = int rand $tot;
-    return $O->W->{script}->[$i]->{t};
+    return $O->W->{script}->[$i]->{i};
   find: |
+    die "NOT EXIST FIND NO MORE";
     my @wheres;
     while (my ($k, $v) = each %$ar) {
         push @wheres, [ $k, $v ];
     }
-    for my $line (@{ $O->W->{script} }) {
+    for my $line (@{ $G->W->{script} }) {
         #$H->info("Line: $line", $O->{name}, $line);
         next if ref $line eq "ARRAY" && @$line == 0; # wtf case
-        my $A = $line->{t};
+        my $A = $line->{i};
         next if ref $A ne "Way";
         return $A if @wheres == grep {
             !exists $A->{B}->{$_->[0]} ||

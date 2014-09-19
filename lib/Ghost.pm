@@ -790,11 +790,9 @@ sub parse_babble {
         undef $spec if $round;
         my $are = $self->parse_babblar($round, $spec);
         
-        my $tw = join ", ", 
-            map { $_ || 'undef' }
-            ("\$G->Gf('tractor')", $wp, $are, undef);
+        my $tractory = "\$G->Gf('tractor')->w($wp, $are)";
 
-        $eval =~ s/\Q$old\E/\$G->Tw($tw)/
+        $eval =~ s/\Q$old\E/$tractory/
             || die "Ca't replace $1\n"
             ." in\n".ind("E ", $eval);
     }

@@ -810,7 +810,13 @@ sub throwlog {
     if ($H->{_future}) {
         my $te = $@;
         $@ = "";
-        my $r = $H->{G}->mess($what, [@_]);
+        my $r = eval { $H->{G}->mess($what, [@_]) };
+        if ($@) {
+            eval { $H->{G}->timer(0.1, sub {
+                $H->error("G mess error while throwing a $what: $@");
+             }) };
+            $@ = '';
+        }
         $@ = $te;
         if ($r && $r eq "yep") {
             return;

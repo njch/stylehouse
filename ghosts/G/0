@@ -104,14 +104,15 @@ hooks:
         $nw->from($from);
         $nw;
     };
-    G.U.TafuB = sub {#c # lightly travel this kinda u
+    G.U.TafuB = sub {#c # lightly travel or retract this kinda u
         my $S = shift;
-        
         my $uu = 0S->sktcu(@_);
-        
+        0S->Tafu($uu);
+    };
+    G.U.Tafu = sub {
+        my ($S, $uu) = @_;
         my $u = 0S->fu($uu);
         return $u if $u;
-        
         0S->T({i => $uu});
         return $uu
     };
@@ -286,6 +287,9 @@ hooks:
     };
     G.U.B_same = sub {
         my ($S, $u, $i) = @_;
+        
+        return 1 if exists u.B._ && exists i.B._ && u.B._ eq i.B._;
+        
         my @ks = keys %{u.B};
         for my $k (@ks) {
             u.B->{$k} eq i.B->{$k} || return 0;

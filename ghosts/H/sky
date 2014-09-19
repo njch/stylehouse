@@ -12,12 +12,13 @@ hooks:
       }
   fresh_init: |
     # w< ...etc?
+    $H->{sky} = G.V.sky || die "There is no sky";
+    #die "HERE". H.sky;
     $G->{cg} = sub {
         $G->{gcol} ||= $H->{G}->Gf("colour") || die;
         $G->Tw($G->{gcol}, shift, {name => "#sky", @_});
     };
     $G->{cg}->("arr", set_css_background => "#sky");
-    $H->{sky} = G.V.sky || die;
     w ambientness;
   doof: |
     $ar->{t} ||= 0.1;
