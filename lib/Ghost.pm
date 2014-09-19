@@ -733,11 +733,12 @@ sub parse_babble {
     my $eval = shift;
     
     my $num = qr/(?:(\d+(?:\.\d+)?) )/;
+    my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
+    
     $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    my $ulooks = 'U->';
-    $eval =~ s/$ulooks(\w+)\(/\$G->U("$1", /sg;
+    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(0->\w+)\(/\$G->_0("$1", /sg;
     $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     

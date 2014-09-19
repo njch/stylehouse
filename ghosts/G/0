@@ -201,7 +201,7 @@ hooks:
         $S->ob("haunt");
         $S->w("T_begin");
         
-        0S->arr() unless T._noarr;
+        $S->w("arr") unless T._noarr;
         
         $S->doo(i.flows_D, {}) if i.flows_D;
         
@@ -246,20 +246,8 @@ hooks:
         
         $S->doo(T.i.extract_D, {}) if T.i.extract_D;
         
-        $R = T.i.returns if T.i.arr_hook;
         $S->w("T_end", {L=>T.L, r=>$R});
         T.i.returns = $R;
-    };
-    G.U.arr = sub {
-        my $S = shift;
-        my $i = T.i;
-        if (i.arr_hook) {
-            i.returns = [ $S->w(i.arr_hook, i.arr_ar) ];
-        }
-        else {
-            $S->w("arr");
-        }
-        
     };
     
     G.U.fu = sub {#c

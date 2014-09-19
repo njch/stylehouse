@@ -63,8 +63,7 @@ sub continues {
         'black on_magenta');
         
     print colored("\t\ti:".Ghost::ki($L->{i})
-        ."\n\t\tB{ ".Ghost::ki($L->{i}->{B})."\n"
-        .($L->{i}->{arr_ar} ? "\t\tarr_ar{ ".Ghost::ki($L->{i}->{arr_ar})."\n" : ""),
+        ."\n\t\tB{ ".Ghost::ki($L->{i}->{B})."\n",
         
         'bright_red');
         say "\tt = ".Ghost::gpty($L->{t});
