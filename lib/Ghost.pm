@@ -54,10 +54,6 @@ sub new {
     $self->{way} = $way;
     say "Ghost named $name";
     $self->load_ways(@ways);
-
-    if ($self->tractors) {
-        $H->TT($self)->G("W/tractor");
-    }
     
     if (ref $self->{T}->{O} eq "Ghost") {
         push @{$self->{T}->{O}->{GG}}, $self;
@@ -781,21 +777,6 @@ sub parse_babble {
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
-    
-    while ($eval =~ /(A(\w+)?\[(.+?)\])/sg) {
-        my ($old, $wp, $spec) = ($1, $2, $3);        
-        $wp ||= "arr";
-        $wp = "'$wp'";
-        my ($round) = $spec =~ /^\((.+)\)$/;
-        undef $spec if $round;
-        my $are = $self->parse_babblar($round, $spec);
-        
-        my $tractory = "\$G->Gf('tractor')->w($wp, $are)";
-
-        $eval =~ s/\Q$old\E/$tractory/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
-    }
     
     # $t->{G} Tw() splatgoes ();
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
