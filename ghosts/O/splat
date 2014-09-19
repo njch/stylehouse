@@ -7,10 +7,12 @@ tractors:
     B_: |
       $splatname
     first_time: |
-      $O->{V}->{$splatname} = $S->{view} = $S->{B}->{view}
-          || ($G->{floozal} || $H->{sky})
+      die "Splatname is $splatname => ".$G->styles("spl $splatname");
+      G.V->{$splatname} = S.view = S.B.view
+          ||
+          (G.floozal || H.sky)
           ->spawn_floozy($G, $splatname,
-              $O->styles("spl $splatname")
+              $G->styles("spl $splatname")
           );
       say "\n\nAm $S v=S.view\n";
       
@@ -187,7 +189,7 @@ hooks:
     value: |
       my @atom = qw[d i t o m]; # TODO combine d+i = a
       if ($splatname =~ /^(path|land|func)$/) {
-          @atom = qw[t];
+          @atom = qw[i];
       }
       @atom = qw"i t" if $splatname eq "worm";
       if ($splatname eq "somewhere" && $G->{nona}) {

@@ -453,19 +453,7 @@ sub unrush {
     
     && delete $self->{_unrush}->{$point}
 }
-sub tractors {
-    my $self = shift;
-    grep { !$_->{_disabled} }
-    map { @{$_->{tractors}||[]} } $self->ways
-}
-sub A {
-    my $G = shift;
-    my @AA = $G->tractors;
-    for my $K (@_) {
-        @AA = grep { $_->{K} eq $K }  @AA
-    }
-    wantarray ? @AA : shift @AA;
-}
+
 sub ways {
     my $self = shift;
     

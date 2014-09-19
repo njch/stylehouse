@@ -6,8 +6,10 @@ hooks:
   Arr: |
     G.W = O.W;
     my @AA;
-    for my $A ($G->tractors) {
+    my @_A = w tractors;
+    for my $A (@_A) {
         if (w $A arr_if) {
+        
             push @AA, $A->spawn();
         }
     }
@@ -62,8 +64,11 @@ hooks:
     }
     
     return @AAA;
+  tractors: 
+    grep { !$_->{_disabled} }
+    map { @{$_->{tractors}||[]} } $G->ways
   populi: |
-    my ($A) = $G->tractors;
+    my ($A) = w tractors;
     my $s = $G->W->{script};
     if (my $max = $A->find('populi/max')) {
         shift @$s until @$s <= $max;

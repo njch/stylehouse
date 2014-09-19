@@ -35,12 +35,14 @@ tractors:
           Info "keypress $k", $S;
       },"prop keypress Info");
     print: |
+      my $k = S.B.k;
+      return "???" unless $k
       my $and = "";
       for (qw{S C A M}) {
           $and .= "$_+" if $e->{$_} 
       }
-      $and = "" if $and eq "S+" && !$key;
-      "key: $and$key"
+      $and = "" if $and eq "S+" && !$k;
+      "k: $and$k"
 hooks:
   first_init: |
     $H->JS("\$(window).on('keydown', keyhand);");
