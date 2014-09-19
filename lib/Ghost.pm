@@ -478,7 +478,7 @@ sub findway {
 sub anyway {
     my $G = shift;
     my $point = shift;
-    map { $_->find($point, 1) } $G->ways
+    grep { defined $_ } map { $_->find($point, 1) } $G->ways
 }
 sub throwlog {
     my $what = shift;

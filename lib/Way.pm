@@ -138,8 +138,6 @@ sub find {
     }
     return $h
 }
-
-
 sub accum {
     my $self = shift;
     my $ere = shift;

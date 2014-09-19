@@ -43,7 +43,7 @@ hooks:
     g: |
         $H->getapp('Git')->spawn_proc('cd ../styleshed && git gui');
   set_Gdbs: |
-    $Ghost::db = 1;
+    $Ghost::db = 4;
     $G->susgdb();
     
     my @Gdbnah = map {
@@ -211,7 +211,9 @@ hooks:
   set_land: |
     for my $t (qw'land func') {
         my @data;
-        @data = w lands if $t eq "land";
+        if ($t eq "land") {
+            @data = w lands;
+        }
         @data = do {
             my $w_f = $G->findway('f');
             map {
@@ -222,6 +224,7 @@ hooks:
         my $g = $G->Gf($t);
         $g->RW;
         for my $d (@data) {
+            die " $t = ".wdump(2,$d) if ref $d->[1] ne "CODE";
             $g->w(Arr => {name => $d->[0], code => $d->[1]});
         }    
         w Splat($t => $g->W);

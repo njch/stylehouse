@@ -1,5 +1,6 @@
 name: Trabambeist
 hooks:
+
   arr: |
     my $cs = [];
     my $doing = sub {
@@ -12,13 +13,12 @@ hooks:
       @$cs = @rc;
     };
     
-    my @chains = w exact_chains;
+    my @chains = w chains;
     for my $c (@chains) {
         if (w $c arr_if) {
             push @$cs, $c->spawn;
         }
     }
-    # all these motions we want to grab finer pictures of eventually
     
     $doing->("c_follow_as");
     $doing->("c_eat");
@@ -27,9 +27,9 @@ hooks:
     w aft_arr;
     
     say "arr ravel ".$G->F_delta();
-  exact_chains: |
-    my @chains = $G->chains;
-    
+  chains: |
+    my @chains = grep { !$_->{_disabled} } map { @{$_} } $G->anyway('chains');
+  
     @chains = grep {
         !defined _.iK || T.i.K =~ /_.iK/
     } @chains;
