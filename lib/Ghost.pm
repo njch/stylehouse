@@ -295,34 +295,12 @@ sub T { # TODO funny
     $self->T->T(@_) if @_;
     $self->{T};
 }
-sub Tw {
-    my $G = shift;    
-    my ($GG, $wp, $war, $thing) = @_;
-    $GG || die "NO Tw GG! $G->{name}        w $wp  ".ki($war);
-    
-    my $w = $G->nw();
-    $w->{arr_hook} = $wp if $wp;
-    $w->{arr_ar} = $war if $war;
-    $w->{thing} = $thing if $thing;
-    $w->{print} = "'$G->{way} ⰱ $wp'";
-    my $u = $G->waystacken("Tw $wp", $GG, $w);
-    $w->{waystack} = $F[0];
-    my @r = $GG->T->T($thing, undef, $w);
-    my $Tw = $u->();
-    $Tw->{Returns} = [@r];
-    
-    return wantarray ? @r : $r[0];
-}
-sub Gf {
-    my $self = shift;    
-    my $way = shift;
 
-    # TODO self or $S etc
+sub Gf {
+    my ($G, $way) = @_;
+    # TODO $G or $S etc A 
     my @Gs =
-        grep { $_->{way} =~ /$way/ } @{ $self->{GG} };
-    
-    #die "Gf = ".scalar(@Gs)." $self->{name}   $way " if @Gs != 1;
-    
+        grep { $_->{way} =~ /$way/ } @{ $G->{GG} };
     shift @Gs;
 }
 sub HGf {
@@ -767,32 +745,12 @@ sub parse_babble {
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
     $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/Gf? ((?!Tw)\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
+    $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
     $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
     $eval =~ s/Gf (\S+)/\$G->Gf('$1')/sg;
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
-    
-    # $t->{G} Tw() splatgoes ();
-    my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
-    my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
-    while ($eval =~ /(($GG_Gf) Tw (\w+)$AR?(?: \((.*?)\))?(?=[ ;\)]))/g) {
-        confess "Tw!";
-        my ($old, $GG, $wp, $sqar, $war, $thing) = ($1, $2, $3, $4, $5, $6);
-        
-        $wp ||= "arr";
-        $wp = "'$wp'";
-        $war = $self->parse_babblar($war, $sqar);
-        
-        my $tw = join ", ", 
-            map { $_ || 'undef' }
-            ($GG, $wp, $war, $thing);
-        
-        $eval =~ s/\Q$old\E/\$G->Tw($tw)/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
-    }
      
     while ($eval =~ /(?<!\$)(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);

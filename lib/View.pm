@@ -287,7 +287,6 @@ sub event {
     
     if (ref $O eq "Ghost") {
         confess "THIS NEVER HAPPENS!?";
-        $Ghost::G0->Tw($O, 'event', {e=>$e,this=>$this,V=>$V});
     }
     else {
         $O->event($e, $this, $V);
