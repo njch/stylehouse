@@ -305,13 +305,6 @@ sub Tw {
     $w->{arr_ar} = $war if $war;
     $w->{thing} = $thing if $thing;
     $w->{print} = "'$G->{way} ⰱ $wp'";
-    # travel to a wp in another ghost
-    # we see this somewhere
-    # so we can interfere case left
-    
-    # here (but not constructed here) is where ways may pool
-    #   for more thinking before travelling
-    #   parallel, streaming...
     my $u = $G->waystacken("Tw $wp", $GG, $w);
     $w->{waystack} = $F[0];
     my @r = $GG->T->T($thing, undef, $w);
@@ -331,6 +324,9 @@ sub Gf {
     #die "Gf = ".scalar(@Gs)." $self->{name}   $way " if @Gs != 1;
     
     shift @Gs;
+}
+sub HGf {
+    $H->{G}->Gf(@_)
 }
 sub Gc { # TODO merge into ^ 
     my $self = shift;
@@ -782,6 +778,7 @@ sub parse_babble {
     my $GG_Gf = qr/\$\S+(?:\(.+?\))?/;
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     while ($eval =~ /(($GG_Gf) Tw (\w+)$AR?(?: \((.*?)\))?(?=[ ;\)]))/g) {
+        confess "Tw!";
         my ($old, $GG, $wp, $sqar, $war, $thing) = ($1, $2, $3, $4, $5, $6);
         
         $wp ||= "arr";
