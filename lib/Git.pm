@@ -510,6 +510,7 @@ sub wire_procs {
 
     if ($style eq $top) {
         for my $y (@rest) {
+            next if $y =~ /stylehut/;
             my $unto = "../$y/proc";
             if (-e $unto) {
                 if (-l $unto) {
