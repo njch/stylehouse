@@ -26,21 +26,16 @@ hooks:
     w GG_init[$S];
     $S->w("fresh_init");
   any_init: |
-    G.U.mk_or_match = sub {
-    
-    };
-    G.U.replace_o = sub {
-        my ($S, $u) = @_;
-        u.Li ? do {
-            
-        } :
-         die;
-    };
-    G.U.match = sub {
+    G.U.sing = sub {#c
         my $S = shift;
-        
+        my $p;
+        p.name = shift;
+        p.code = shift;
+        $p = {%$p, @_};
+        p.again = 0.5 if !defined p.again;
+        p.begin = 0.2 if !defined p.begin;
+        w sing(%$p);
     };
-
     G.U.accum = sub {#c
         my ($S, $source, $ac, $t) = @_;
         my $a = $source->{$ac} ||= [];
@@ -150,7 +145,7 @@ hooks:
             $old = $T;
         }
         else {
-            warn "T was ".wdump($T);
+            warn "T was ".wdump(2,$T);
             $T = $S->nw();
         }
         $T = $T->spawn;
@@ -328,22 +323,22 @@ hooks:
     
     
   sing: |
-    $G->{singing} ||= {};
-    return say "$name BLOCKED" if $G->{singing}->{$name} && $G->{singing}->{$name}++; # ignore sing until...
-    $G->{singing}->{$name} = 1;
-    my $t = $ar->{block_for} || $ar->{again_after} || 0.04;
-    my $d = $ar->{begin_after} || 0.001;
+    G.singing ||= {};
+    return say "\t\t\t\t $name BLOCKED"
+        if G.singing->{$name}
+            && G.singing->{$name}++; # ignore sing until...
+    G.singing->{$name} = 1;
+    my $t = ar.block || ar.again || 0.04;
+    my $d = ar.begin || 0.001;
     $G->timer($d, sub {
         $G->timer($t, sub {
-            my $splatter = delete $G->{singing}->{$name};
-            if ($splatter > 1 && $ar->{again_after}) {
-                $S->Flab("Sig reps $splatter... "
-                    .($ar->{again_after} ? "again!" : ".")
-                    ."  $name");
+            my $splatter = delete G.singing->{$name};
+            if ($splatter > 1 && ar.again) {
+                $G->Flab("Sig reps $splatter... again!  $name");
                 w sing(%$ar);
             }
         }, "sing-block        $name");
-        $G->{singing}->{$name} = 1;
+        G.singing->{$name} = 1;
         $code->();
     }, "pre-sing     $name");
     

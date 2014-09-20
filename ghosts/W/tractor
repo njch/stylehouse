@@ -45,14 +45,12 @@ hooks:
         }
         
         w $a every_time;
-        $G->_0(sing => {
-            name => "populi $G->{name}",
-            again_after => 3,
-            begin_after => 1,
-            code => sub {
-              w populi;
+        0->sing(
+            "populi $G->{name}" => sub {
+                w populi;
             },
-        });
+            again => 2,
+        );
             
         my $p = w $a print;
         a.name ||= $p || "nowame";

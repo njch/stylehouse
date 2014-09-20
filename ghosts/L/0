@@ -194,15 +194,10 @@ hooks:
   messworm: |
     return if $G->{_dont_mess_worm};
     $G->susgdb;
-    $G->_0(sing => {
-        name => "messworm",
-        again_after => 0.5,
-        begin_after => 0.2,
-        code => sub {
-          return if $G->{_dont_mess_worm};
-          $G->susgdb;
-          w make_hmess;
-        },
+    0->sing(messworm => sub {
+        return if $G->{_dont_mess_worm};
+        $G->susgdb;
+        w make_hmess;
     });
   
     

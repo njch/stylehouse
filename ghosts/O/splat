@@ -7,7 +7,6 @@ tractors:
     B_: |
       $splatname
     first_time: |
-      die "Splatname is $splatname => ".$G->styles("spl $splatname");
       G.V->{$splatname} = S.view = S.B.view
           ||
           (G.floozal || H.sky)
@@ -188,17 +187,12 @@ hooks:
           @atom = qw[i];
       }
       @atom = qw"i t" if $splatname eq "worm";
-      if ($splatname eq "somewhere" && $G->{nona}) {
-            @atom = qw'd i' if $i == 1;
-            @atom = qw't o m' if $i == 2;
-      }
       for my $bb (@atom) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
           $v = "!bb=$bb $v" unless ref $v;
           push @$R, $v;
       }
-      # ^ v here's the void; many R come to B, pretty much via Texty::mktuxts
     style: |
         while (my ($bb, $b) = each %$B) {
             $G->w("line/$bb/s",{%$ar,

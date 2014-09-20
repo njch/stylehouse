@@ -23,14 +23,13 @@ tractors:
 
       say join($k, (" ")x28) for 1..4;
 
-      $G->_0(sing => { 
-          name => "keytrig $k",
-          block_for => 0.2,
-          begin_after => 0.0000000000000001,
-          code => sub {
+      0->sing(
+            "keytrig $k" => sub {
               w trigger[$S];
           },
-      });
+          begin => 0.00000000001,
+          block => 0.2,
+      );
       $G->timer(0.01, sub  {
           Info "keypress $k", $S;
       },"prop keypress Info");
