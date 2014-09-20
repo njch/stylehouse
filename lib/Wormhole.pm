@@ -43,7 +43,7 @@ sub continues {
         name => $namg,
         n => $W->{n}++,
         
-        t => encode_thing($Ghost::T->{t}),
+        t => $Ghost::T->{t},
         
         i => $Ghost::T->{i},
         o => $Ghost::T->{o},
@@ -62,11 +62,8 @@ sub continues {
     
         'black on_magenta');
         
-    print colored("\t\ti:".Ghost::ki($L->{i})
-        ."\n\t\tB{ ".Ghost::ki($L->{i}->{B})."\n",
-        
-        'bright_red');
-        say "\tt = ".Ghost::gpty($L->{t});
+    print colored("W: \t\tB{ ".Ghost::ki($L->{i}->{B})."\n", 'bright_red');
+    print colored("   \tt = ".Ghost::gpty($L->{t})."\n", 'bright_blue');
 
     push @{$W->{script}}, $L;
     

@@ -299,6 +299,9 @@ hooks:
                         $name .= "#".$t->{divid};
                     }
                 }
+                if (200 < length $name) {
+                    $name = substr $name, 200, 0;
+                }
                 if ($t->{name}) {
                     $name .= " ".$t->{name};
                 }
@@ -440,9 +443,6 @@ hooks:
             my ($e, $s, $t) = @_;
             $H->JS("\$('.$t->{id}').slideUp();");
         };
-
-
-
     i:  #c i o
       v: |
         $b->{c} = $line->{i};
@@ -465,8 +465,10 @@ hooks:
                 $s->{style}.="border-right:1px solid #$1;";
         }
         
-        $s->{style}.="color: #$_;" for $line->{i}->{K} && $line->{i}->{K} eq 'ARRAY' ?
+        my $color = $line->{i}->{K} && $line->{i}->{K} eq 'ARRAY' ?
                       "0F2E1F" : 'bbb';
+        $s->{style}.="color: #$_;" for $color;
+        s.style .= "font-size:140%;" if s.value !~ /\n/;
             
         $s->{_event} = sub { w go(thing => $line->{i}) }
     o:
