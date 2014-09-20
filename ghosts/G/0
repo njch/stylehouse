@@ -36,14 +36,29 @@ hooks:
         p.begin = 0.2 if !defined p.begin;
         w sing(%$p);
     };
-    G.U.accum = sub {#c
+    G.U.loquate = sub {#c
+        my ($S, $source, $path, $def) = @_;
+        my @moves = split '/', $path;
+        my $s = $source;
+        until (@moves == 1) {
+            my $m = shift @moves;
+            $s = $s->{$m};
+        }
+        my $m = shift @moves;
+        my $thing = $s->{$m} ||= $def;
+        !ref $thing && die "Oh no! $path led to non-ref $thing from $source";
+        return $thing;
+    };
+    G.U.accum = sub {#c # TODO path loquation doesn't stretch far re policy, no prob for now.
         my ($S, $source, $ac, $t) = @_;
-        my $a = $source->{$ac} ||= [];
+                
         if ($ac eq "Lo" || $ac eq "Li") {
             $source->{$ac} = $t;
             return;
         }
-        #die "Gunna...".wdump(2,[@_]);
+        
+        my $a = 0S->loquate($source, $ac, []);
+
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
         }

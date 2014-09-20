@@ -102,19 +102,20 @@ hooks:
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
     
-    #$G->{nona} = 1;
     my $A = w Arr[$splatname, $wormhole];
     A.view = delete ar.view if ar.view;
     
+    my $DONT = $splatname =~ /^worm$|Ϡ|land|func|path/;
+    
     $Ghost::db = 5;
     say "Arr splat! am $A = A.view  or A.B.view";
-    w script_out[$A, $splatname, $wormhole];
+    w script_out[$A, $splatname, $wormhole, $DONT];
     say "\n\nTHAT WAS SCRIPT OUT\n";
     $G->{nona} = 0;
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
-    $H->Say("Splat $splatname ".$wormhole->desize."  ".show_delta(), $A)
-                               unless $splatname =~ /^worm$|Ϡ|land|func|path/;
+    $H->Say("Splat '$splatname' ".$wormhole->desize."  ".show_delta(), $A)
+                               unless $DONT;
   get: |
     my $S = w Afu[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);
@@ -126,10 +127,8 @@ hooks:
         : { script => [@{$wormhole->{script}}] }
   script_out: |
     my $lines = [];
-    $DB::single = 1;
     my $i = 0;
-    Say "Script out: $splatname";
-    sleep 1;
+    $H->Say("Script out: $splatname") unless ar.DONT;
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};

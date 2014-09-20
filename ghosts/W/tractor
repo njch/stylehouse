@@ -67,11 +67,9 @@ hooks:
     if (my $max = $A->find('populi/max')) {
         shift @$s until @$s <= $max;
     }
-    my $hp = 'populi/hooks';
+    my $hp = 'populi/trigs';
     if (my $h = $A->find($hp)) {
-        for my $he (keys %$h) {
-            $G->w("$hp/$he", $ar, $A);
-        }
+        $_->() for @$h;
     }
   Afu: |
     die "FIND DOES EXIST BUT LETS CHECK";
