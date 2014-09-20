@@ -24,7 +24,7 @@ tractors:
       say join($k, (" ")x28) for 1..4;
 
       0->sing(
-            "keytrig $k" => sub {
+          "keytrig $k" => sub {
               w trigger[$S];
           },
           begin => 0.00000000001,
@@ -34,14 +34,14 @@ tractors:
           Info "keypress $k", $S;
       },"prop keypress Info");
     print: |
-      my $k = S.B.k;
+      my $k = S.B.key;
       return "??? ?" unless $k;
       my $and = "";
       for (qw{S C A M}) {
           $and .= "$_+" if $e->{$_} 
       }
       $and = "" if $and eq "S+" && !$k;
-      "k: $and$k"
+      "$and$k"
 hooks:
   first_init: |
     $H->JS("\$(window).on('keydown', keyhand);");
