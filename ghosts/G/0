@@ -314,7 +314,9 @@ hooks:
       $H->JS($_, "css('-webkit-filter', '$blur');") for values %{S.V};
 
     toginvis: |
-      $_->togcl('invis') grep { defined } ar.k ? S.V->{ar.k} : values %{S.V};
+      my @Vs = values %{S.V};
+      @Vs = grep {defined} S.V->{ar.k} if ar.k;
+      $_->togcl('invis') for @Vs;
       
   GG_init: |
     my $GG = $S->findway("GG");
