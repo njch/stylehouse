@@ -105,17 +105,15 @@ hooks:
     my $A = w Arr[$splatname, $wormhole];
     A.view = delete ar.view if ar.view;
     
-    my $DONT = $splatname =~ /^worm$|Ϡ|land|func|path/;
-    
     $Ghost::db = 5;
     say "Arr splat! am $A = A.view  or A.B.view";
-    w script_out[$A, $splatname, $wormhole, $DONT];
+    w script_out[$A, $splatname, $wormhole];
     say "\n\nTHAT WAS SCRIPT OUT\n";
     $G->{nona} = 0;
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;
     
     $H->Say("Splat '$splatname' ".$wormhole->desize."  ".show_delta(), $A)
-                               unless $DONT;
+                               unless $splatname =~ /^worm$|Ϡ|land|func|path/;
   get: |
     my $S = w Afu[$splatname];
     $S || return $H->error("NO findo $splatname", $G->W);
@@ -128,7 +126,6 @@ hooks:
   script_out: |
     my $lines = [];
     my $i = 0;
-    $H->Say("Script out: $splatname") unless ar.DONT;
     my @script = @{$wormhole->{script}};
     @script = reverse @script if $splatname eq "path";
     unshift @script, $script[0] if $splatname eq "somewhere" && $G->{nona};
@@ -182,10 +179,11 @@ hooks:
   line:
     value: |
       my @atom = qw[d i t o m]; # TODO combine d+i = a
-      if ($splatname =~ /^(path|land|func)$/) {
-          @atom = qw[i];
+      if ($splatname =~ /^(path|land|func|worm)$/) {
+            $line = {%$line};
+          line.t = delete line.i;   # do this as a t # alludes to allele layer
+          @atom = qw[t];
       }
-      @atom = qw"i t" if $splatname eq "worm";
       for my $bb (@atom) {
           my $b = $B->{$bb} = {line => $line, bb => $bb};
           my $v = $G->w("line/$bb/v", {%$ar, b=>$b});
