@@ -25,6 +25,7 @@ our $_ob = undef;
 our $MAX_FCURSION = 140;
 our $U;
 our $T;
+our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -720,11 +721,10 @@ sub parse_babble {
     my $self = shift;
     my $eval = shift;
     
-    my $num = qr/(?:(\d+(?:\.\d+)?) )/;
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     
-    $eval =~ s/timer $num? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
-    $eval =~ s/waylay $num?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
     $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(0->\w+)\(/\$G->_0("$1", /sg;

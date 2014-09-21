@@ -3,6 +3,10 @@ include: T/braid T/ravel
 C:
   - K: Wormhole
     O: ux
+    id_D: |
+      my $W = $G->W;
+      my ($id) = W.id =~ /-(\w+)$/;
+      $id
      
   - K: ux
     O: ux
@@ -11,7 +15,7 @@ C:
     print: |
        "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
     T_remembers_last: 1
-    chainlink: [i, t, o]
+    C_n_spawn: [i, t, o]
     lness:
        Lo: called Lu if diff_ghost
        
@@ -20,7 +24,7 @@ C:
       Lu_grab_n: i
       n_uys_to_w_n: w
       
-    chainlink: [w]
+    C_n_spawn: [w]
     conor: -0.5
     
   - K: t
@@ -38,7 +42,7 @@ C:
       Lu_grab_n: i
       n_uys_to_w_n: w
       
-    chainlink: [w]
+    C_n_spawn: [w]
     conor: 0.5
     
   - K: w
@@ -73,8 +77,6 @@ hooks:
         i => $top,
     });
     
-    die "222 way".sw($top);
-    
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
         push @uxs, 
@@ -84,13 +86,11 @@ hooks:
             );
     }
     
-    
     my $parent_ux_via_B_Lu_Lo_o = sub {
         my $ux = shift;
         my $Lu = ux.B.Lu || die "no Lu on ux";
         my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
         my ($pux) = findO(ux => pLu.o) if $pLu;
-        say "PUX!" if $pux;
         $pux;
     };
     my $LuWs;
@@ -105,43 +105,25 @@ hooks:
     };
     
     my @tux;
-    for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.B.Lu.i.K - ux.B.Lu.t)";
-        
+    for my $ux (@uxs) {
+        # join uxLis together like the origin
         my $ix = $parent_ux_via_B_Lu_Lo_o->($ux);
+        
+        # or chuck it under a ux for its ghost
         $ix ||= $parent_ux_links_B_Lu_G_W->($ux);
         
         0->visTp_l_u({i=>$ix}, $ux);
-        die "ixLi".sw(ix.Li);
-        die "ix not Li " unless ix.Li;
-        unless (
-            ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o}
-            ) {
-    
-            
-            die "ux not in above ux o: ".            sw({uxs=>\@uxs,ix=>$ix});
-
-        }
-    }
-    
-    # now go antopping from/to T.L (root Wormhole (ux itself))
-    # doing that thing we do...
-    
-        for my $ux (@tux) {
-            G.L = ux.Li || die "no ux Li";
-            U->antop();
-        }
         
-    my @eh;
-    for my $ux (@tux) {
-        push @eh, ux.html;
+        die "ix not Li " unless ix.Li;
+        die "ux not in above ux o: ".sw({uxs=>\@uxs,ix=>$ix})
+            unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
     }
-    #die "hue" if @tux > 1;
     
-    my $W = $G->W;
-    my ($id) = W.id =~ /-(\w+)$/;
+    # now go from/to the ux for $G->W, which T is at already
+    w braid(Ds => 'uxalot');
+
+    my $html = top.html;
     
-    my $html = join "\n", '<wormhole style="font-size:70%;position:relative;"id="'.$id.'">', @eh, '</wormhole>';
-     
     G.view->takeover($html);
     U->send_contents_awaiting();
     Say $html;
@@ -169,16 +151,16 @@ hooks:
         grep { defined }
         map { _.html || _.content } @_
     };
-  stoops:
-    0: |
-        my $u = T.i
+  uxalot:
+    0.1: | #c
+      my $u = T.i;
         my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
         # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
         
-        my $uyBs = $G->findway('uyBs'); # THIS THING NEXT  T O D O   T O D O   T O D O   T O D O 
-        my $uyBsK = sub {
+        my $uyBs = $G->findway('uyBs');
+        my $uyBsK = sub { 
             my $uyK = shift;
             my ($uyB) = grep { _.K eq $uyK } @$uyBs;
             $uyB || die "No such uyK $uyK";
@@ -235,9 +217,12 @@ hooks:
                 die wdump($u);
             }
         }
-  toos:
-    0: |
-        my $u = T.i
+    0.5: | #c
+      for my $o_u (@{T.L.o}) {
+          w anTop(i => $o_u);
+      }
+    0.6: | #c
+      my $u = T.i
         
         my $Lui = u.B.Lu.i || die " i Lui i"    if u.O eq "ux";
         die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.B.Lu;
