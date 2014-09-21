@@ -33,11 +33,12 @@ C:
     uy_in_dos:
       Lu_grab_n: t
       
-    content_D: |
-      die "t content fullity" if S.B.raw || S.raw;
-      my $con = gpty($t);
-      $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
-      $con;
+    S:
+      content_D: |
+        die "t content fullity" if S.B.raw || S.raw;
+        my $con = gpty($t);
+        $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
+        $con;
       
   - K: o
     uy_in_dos:
@@ -265,8 +266,8 @@ hooks:
             
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
-        at.tag ||= U->jgd(u.B.tag, u.tag);
-        die "no tag" .wdump($u) if !at.tag;
+        at.tag ||= U->jgd(u.B.tag, u.S.tag, u.tag);
+        die "no tag" .sw($u) if !at.tag;
         
         # think about styles
         #
