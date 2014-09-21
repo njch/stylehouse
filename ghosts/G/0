@@ -22,7 +22,6 @@ hooks:
     $G->{S} = $S;
     say "init for $S->{name}";
     w V/init[$S];
-    w include_init[$S];
     w GG_init[$S];
     $S->w("fresh_init");
   any_init: |
@@ -95,7 +94,10 @@ hooks:
         my $nw = $S->nw();
         my $from = $S->findway('ways/'.$way);
         $from ||= do {
-            my @chainway = grep { _.K eq $way } $S->chains;
+            my @chainway = grep { _.K eq $way }
+                map { flatline($_) }
+                map { $S->anyway($_) }
+                qw'chains C';
             shift @chainway
         };
         $from || die "no findo way called $way (S.name)".wdump($S->findway('chains'));
@@ -122,7 +124,7 @@ hooks:
         $u
     };
     G.U.visTp_l_u = sub {#c
-        my ($S, $u, $Tp) = @_;
+        my ($S, $Tp, $u) = @_;
         my $old = 0S->visTp($Tp);
         0S->l($u);
         $T= $old;
@@ -323,18 +325,7 @@ hooks:
     while (my ($way, $t) = each %$GG) {
         my $GG = $H->TT($S)->G($way);
     }
-  include_init: |
-    for my $include ($S->anyway('include')) {
-        for my $in (split ' ', $include) {
-            w do_include[$S, $in];
-        }
-    }
-  do_include: |
-    next if grep { $_->{_wayfile} =~ /$in/ } $S->ways;
-    $S->{load_ways_count}--;
-    $S->load_ways($in);
-    
-    
+
   sing: |
     G.singing ||= {};
     return say "\t\t\t\t $name BLOCKED"

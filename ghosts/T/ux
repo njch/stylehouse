@@ -1,6 +1,6 @@
 name: Styluxyio
 include: T/braid T/ravel
-chains:
+C:
   - K: Wormhole
     O: ux
      
@@ -68,43 +68,59 @@ hooks:
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
     my $top = 0->TafuB(Wormhole => {W => G.W});
+    
     0->visTp({
         i => $top,
     });
     
+    die "222 way".sw($top);
+    
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
-        push @uxs, 0->visTp_TafuBl({L=>$Lu}, [ux => {Lu=>$Lu}]);
+        push @uxs, 
+            0->visTp_TafuBl(
+                {L=>$Lu},
+                [ux => {Lu=>$Lu}],
+            );
     }
     
     
-    return sw([@uxs]);
-    
-    
-    my $_mirror = sub {
+    my $parent_ux_via_B_Lu_Lo_o = sub {
         my $ux = shift;
         my $Lu = ux.B.Lu || die "no Lu on ux";
         my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
         my ($pux) = findO(ux => pLu.o) if $pLu;
+        say "PUX!" if $pux;
         $pux;
     };
     my $LuWs;
-    my $_wormhole = sub {
-        my $ux = shift;
+    my $parent_ux_links_B_Lu_G_W = sub {
+        my $ux = shift; 
         my $W = ux.B.Lu.G.W;
-        $LuWs->{"$W"} ||= 0->TafuBl(Wormhole => {W => $W});
+        $LuWs->{"$W"} ||=
+            0->visTp_TafuBl(
+                {i=>$top},
+                [Wormhole => {W => $W}],
+            );
     };
     
     my @tux;
     for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.B.Lu.i.K - ux.B.Lu.t)";
         
-        my $ix = $_mirror->($ux) || $_wormhole->($ux);
+        my $ix = $parent_ux_via_B_Lu_Lo_o->($ux);
+        $ix ||= $parent_ux_links_B_Lu_G_W->($ux);
         
         0->visTp_l_u({i=>$ix}, $ux);
-        
+        die "ixLi".sw(ix.Li);
         die "ix not Li " unless ix.Li;
-        die "ux not in above ux o: ".sw($ix) unless
-            ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
+        unless (
+            ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o}
+            ) {
+    
+            
+            die "ux not in above ux o: ".            sw({uxs=>\@uxs,ix=>$ix});
+
+        }
     }
     
     # now go antopping from/to T.L (root Wormhole (ux itself))

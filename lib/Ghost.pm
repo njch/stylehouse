@@ -327,12 +327,12 @@ sub load_ways {
     my @ways = @_;
     my $p = shift @ways if ref $ways[0] eq "HASH";
     $p ||= {};
-    my $ws = $self->{ways} ||= [];
-    my $wfs = $self->{wayfiles} ||= [];
+    my $ws = $self->{ways} = [];
+    my $wfs = $self->{wayfiles} = [];
     $self->{load_ways_count}++;
     
     my $ldw = [];
-    for my $name (@ways) {
+    while (defined( my $name = shift @ways )) {
         my @files;
         
         my $base = "ghosts/$name";
@@ -344,24 +344,22 @@ sub load_ways {
         }
         
         for my $file (@files) {
-            my ($ow) = grep { $_->{_wayfile} eq $file } @$ws;
+            @$ws = grep { $_->{_wayfile} ne $file } @$ws;
+            @$wfs = grep { $_ ne $file } @$wfs;
             
-            if ($ow) {
-                $ow->load(); # and the top level hashkeys will not go away without restart
-                push @$ldw, $ow;
-                say "$self->{id} +$self->{load_ways_count}+ ".
-                ($ow->{K}||$ow->{name}||$ow->{id}||"?").": $file";
-                
+            my $nw = $self->nw;
+            $nw->name($name);
+            $nw->load($file);
+            
+            if ($nw->{include}) {
+                for my $name (split ' ', $nw->{include}) {
+                    push @ways, $name unless grep { $_->{name} eq $name } @$ws;
+                }
             }
-            else {
-                my $nw = $self->nw;
-                push @$ldw, $nw;
-                $nw->name($name);
-                $nw->load($file);
-                say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
-                push @$ws, $nw;
-                push @$wfs, $file;
-            }
+            
+            say "G + ".($nw->{K}||$nw->{name}||$nw->{id}||"?").": $file";
+            push @$wfs, $file;
+            push @$ws, $nw;
         }
         
         if (@files) {
@@ -372,7 +370,7 @@ sub load_ways {
         }
     }
     
-    $self->_0('_load_ways_post', {w=>$ldw, %$p});
+    $self->_0('_load_ways_post', {w=>$ws, %$p});
 }
 our$doneprotolwptimes=[];
 sub _0 {
@@ -572,7 +570,9 @@ sub doo {
     die "RECURSION ".@F if @F > $MAX_FCURSION;
     
     my $ksmush = join",",sort keys %$ar;
-    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($babble)
+    my $br = $babble;
+    $br =~ s/\n//sg;
+    my $uuname = "$G->{id} ".Hostinfo::sha1_hex($br)
         ." ".($point||"")." arar=".$ksmush;
         
     my $ha = Hostinfo::sha1_hex($uuname);
