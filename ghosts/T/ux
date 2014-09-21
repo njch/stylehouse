@@ -218,16 +218,17 @@ hooks:
             }
         }
     0.5: | #c
-      for my $o_u (@{T.L.o}) {
-          w anTop(i => $o_u);
+      for my $i (@{T.L.o}) {
+          next if $i eq T.i;
+          w anTop[$i];
       }
     0.6: | #c
-      my $u = T.i
+      my $u = T.i;
         
-        my $Lui = u.B.Lu.i || die " i Lui i"    if u.O eq "ux";
-        die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.B.Lu;
-        die "ux !Lu".wdump(2, $u)      if u.K eq 'ux' && !u.B.Lu;
-        die "ux has no ways out"      if u.K eq "ux" && !@{u.Li.o};
+        my $Lu = u.B.Lu || die " no Lu"    if u.O eq "ux";
+        u.B.Lu && u.K ne "ux" && die "Lu non ux ";
+        die "ux has no ways out, expected SOMETHING!?"
+            if u.K eq "ux" && !@{u.Li.o};
         
         my $at;
         
@@ -243,6 +244,41 @@ hooks:
         }
         at.tag ||= U->jgd(u.B.tag, u.tag);
         die "no tag" .wdump($u) if !at.tag;
+        
+        # think about styles
+        #
+        #       lots     of     fast     EXPR    business
+        #
+        #   various ways to involve Cs
+        #    equations to observe
+        # one of those points in time again
+        # with all the stuff
+        # to be synapses
+        # and string together meaning from a flow of impressions, logic
+        # logic EXPR style EXPR css...
+        #       
+        #   whole braid state should be straight forward
+        #   bendy stuff would work too
+        #   just need to create time in the braid
+        #   which is the separation of 0 and 1
+        #
+        #   how it treats time, also
+        #   state could be a game
+        #   travel could be rhythmic
+        #   
+        #   like painting a family vs painting like drums
+        #
+        #   T._trail.i is some A
+        #   it leads to the whole braid
+        #  
+        # EXPR branches these trails of inquiry logically and however
+        # all along the allele tower
+        # lets logic flow around satellites
+        # 
+        # sifts whatever through meshes of different dimensions
+        # a tour of satellites
+        #   look
+        # then see more in u.o or so
         
         if ($y && Lui.uxs) {
             my $path = "uxs/y/u.B.n/at_D";
@@ -267,9 +303,11 @@ hooks:
             "<$tag $attr>$conty$content</$tag>";
         };
         
-        my @content = 
-        sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) }
+        my @content = grep { _.O =~ /^u[xy]$/ } @{ @content;
         (findO(uy => uL.o), findO(ux => uL.o));
+        
+        
+        @content = sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) } @content;
         
         at.contents = [@content];
                 

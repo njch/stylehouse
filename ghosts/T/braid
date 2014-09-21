@@ -110,15 +110,21 @@ hooks:
 
   braid: |
     # Ds will be spin one day
-    $Ds = $G->findway($Ds) unless ref $Ds eq "HASH";
-    ref $Ds eq "HASH" || die "malformed Ds ".wdump($Ds);
+    my $Ds = ar.Ds || T.Ds || die "No Ds to braid";
+    unless (ref $Ds eq "HASH") {
+        $Ds = $G->findway($Ds);
+        die "malformed Ds ".wdump($Ds)
+            unless ref $Ds eq "HASH";
+    }
+    0->visTp({_trail=>{_no_cirles => 1}});
     for my $k (sort keys %$Ds) {
         # T._braid
         my $D = $Ds->{$k};
         w anTop[$D];
     }
   anTop: |
-    0->visTp({i => ar.i}, "Fun") if ar.i;
+    say "anTop arg ".ki($ar);
+    0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
     T._braid.D = ar.D if ar.D;
     $G->doo(T._braid.D); # or however

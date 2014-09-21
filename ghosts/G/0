@@ -154,7 +154,7 @@ hooks:
         $T = $old;
         return $L;
     };
-    G.U.visTp= sub {
+    G.U.visTp= sub { #c
         my ($S, $p, $fun) = @_;
         
         my $old;
@@ -165,30 +165,51 @@ hooks:
             warn "T was ".wdump(2,$T);
             $T = $S->nw();
         }
-        $T = $T->spawn;
-        T._To = $old if $old;
         
-        if (p.i || p.L) {
+        $T = $T->spawn;
+        
+        my $moved = p.i || p.L;
+        if ($moved) {
             delete $T->{$_} for qw'i L t o';
         }
+        
         $T->from($p);
+        
         T.i ||= T.L.i;
         T.L ||= T.i.Li;
         T.t ||= T.L.t;
         T.o ||= T.L.o;
         T.o ||= [];
+        
+        if ($old) {
+            T._T = $old;
+            
+            push @{old.T_||=[]}, $T;
+            
+            if (old.i.T_remembers_last) {
+                T._last->{old.i.K} = old.i;
+            }
+        }
+        
+        if (my $t = T._trail) {
+            $t = T._trail = {%$t};
+            t.i = [@{t.i||[]}, T.i];
+            t.ih = {%{t.ih||{}}};
+            if ($moved && t.ih->{T.i.id}) {
+                # here before
+                if (t._no_cirles) {
+                    die "not allowed circular travel, "
+                        .sw({here_before => T.i,T=>$T});
+                }
+            }
+            t.ih->{T.i.id} = $T;
+        }
+        
         # backwards compat
         $S->{$_} = $T->{$_} for qw'i L t o';
         
-        # zand
-        if (old.i.T_remembers_last) {
-            T._last->{old.i.K} = old.i
-        }
-        
         if ($fun eq "Fun") {
-            push @{ $F[0]->{_after_do} }, sub {
-                $T = $old
-            };
+            push @{ $F[0]->{_after_do} }, sub { $T = $old }
         }
         return $old;
     };
