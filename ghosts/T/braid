@@ -129,20 +129,25 @@ hooks:
     } sort keys %$Ds;
     
     my $p = {};
-    p._trail._no_cirles = 1;
+    p._trail._no_circles = 1;
     p._braid = {Ds => \@Ds, Di => 0, Y => $Y}; # top level stuff
     0->visTp($p, "Fun");
     
     my $Tbr = T._braid;
+    # we can inject meanwhile into Ds, fractionating complexity
+    # if this was processing a list it could mean wrapping things in maps and sanity
+    # args to anTop may change i from inside the braid for recursion
+    # or Dw if top
+    # T._braid._no_circles catches recursion via _trail.i
+    # and yeah... we are in already and return to from anTop the top of the braid
     while (defined( my $Dw = Tbr.Ds->[Tbr.Di] )) {
         say "Doing Di=Tbr.Di  at Dw.K";
         w anTop[$Dw];
         Tbr.Di++;
-        # and yeah... we are in already and return to from anTop the top of the braid
     }
   anTop: |
     U->yakanTop($ar);
-    0->visTp($ar, "Fun") if %$ar;    # eg. i for changing
+    0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
     $G->doo(T.Dw.D) if T.Dw.K < 0.5;
     $G->doo(T._braid.Y);
