@@ -116,14 +116,16 @@ hooks:
         die "malformed Ds ".wdump($Ds)
             unless ref $Ds eq "HASH";
     }
-    0->visTp({_trail=>{_no_cirles => 1}});
+    say "braid happens";
+    0->visTp({_trail=>{_no_cirles => 1}}, "Fun");
     for my $k (sort keys %$Ds) {
         # T._braid
         my $D = $Ds->{$k};
         w anTop[$D];
     }
   anTop: |
-    say "anTop ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
+    my $ds = join "", ("   ") x 1+@{T._trail.i};
+    say "anTop $ds ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
             $DB::single = 1;
     0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
