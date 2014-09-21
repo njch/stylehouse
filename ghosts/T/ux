@@ -9,7 +9,7 @@ chains:
     styles: te
     conor: 1
     print: |
-       "(".pint(S.Lu.i)." \t".gpty(S.Lu.t).")"
+       "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
     T_remembers_last: 1
     chainlink: [i, t, o]
     lness:
@@ -60,10 +60,10 @@ hooks:
     my $u = L.i;
     my $ux = uxL.i;
     my $E = {%$ar};
-    E.L = ux.Lu;
+    E.L = ux.B.Lu;
     E.uyL = $L if $L ne $uxL;
 
-    ux.Lu.G->w(event => $E);
+    E.L.G->w(event => $E);
   ux: |
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
@@ -83,7 +83,7 @@ hooks:
     
     my $_mirror = sub {
         my $ux = shift;
-        my $Lu = ux.Lu || die "no Lu on ux";
+        my $Lu = ux.B.Lu || die "no Lu on ux";
         my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
         my ($pux) = findO(ux => pLu.o) if $pLu;
         $pux;
@@ -91,12 +91,12 @@ hooks:
     my $LuWs;
     my $_wormhole = sub {
         my $ux = shift;
-        my $W = ux.Lu.G.W;
+        my $W = ux.B.Lu.G.W;
         $LuWs->{"$W"} ||= 0->TafuBl(Wormhole => {W => $W});
     };
     
     my @tux;
-    for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.Lu.i.K - ux.Lu.t)";
+    for my $ux (@uxs) {   #say "join uL lines together like the origin (ux.B.Lu.i.K - ux.B.Lu.t)";
         
         my $ix = $_mirror->($ux) || $_wormhole->($ux);
         
@@ -156,7 +156,7 @@ hooks:
   stoops:
     0: |
         my $u = T.i
-        my $Lu = u.Lu || die "no Lu" if u.K eq "ux";
+        my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
         # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
@@ -223,10 +223,9 @@ hooks:
     0: |
         my $u = T.i
         
-        my $Lui = Tlux.Lu.i;
-        die "empty Lu on ".wdump($u)  if u.Lu && !%{u.Lu};
-        die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.Lu;
-        die "uy Lu".wdump(2, $u)      if u.K eq 'ux' && !u.Lu;
+        my $Lui = u.B.Lu.i || die " i Lui i"    if u.O eq "ux";
+        die "uy Lu".wdump(2, $u)      if u.K eq 'uy' && u.B.Lu;
+        die "ux !Lu".wdump(2, $u)      if u.K eq 'ux' && !u.B.Lu;
         die "ux has no ways out"      if u.K eq "ux" && !@{u.Li.o};
         
         my $at;
