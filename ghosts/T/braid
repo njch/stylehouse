@@ -53,6 +53,7 @@ hooks:
     G.U.ul = sub {#c # look for u way
     #say "ul ";
         my $z = {@_};
+        die "DONT";
         my $u = z.u;
         
         $u = G.U.findu->(z.u)                  unless u.Li;
@@ -60,7 +61,6 @@ hooks:
         
         if (z.p){
             if (u.O eq "uy") {
-                $DB::single = 1;
                 0->accum(z.p, 'o', $u);
                 0->accum($u, 'Loose', z.p); # .B.Lo many
             }
@@ -123,7 +123,8 @@ hooks:
         w anTop[$D];
     }
   anTop: |
-    say "anTop arg ".ki($ar);
+    say "anTop ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
+            $DB::single = 1;
     0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
     T._braid.D = ar.D if ar.D;

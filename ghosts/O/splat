@@ -311,25 +311,19 @@ hooks:
             if ($ref eq "ARRAY") { #c t s
                 $color = "090";
                 $name = 0+@$t.$inc->('black',"[");
+                my @a = @$t;
+                my @snip = splice @a, 36 if @a > 42;
+                push @a, "..".scalar(@snip)." more" if @snip;
                 $name .=
                     $inc->('#fca; font-size:10pt;line-height:8pt;',
                     
-                        join $inc->('black',"["),     @$t
+                        join $inc->('black',"["),     @a
                     )
                         
                         unless @{$line->{o}};
                         
                 $name =~ s/^((?:.+?\n){4}).+$/$1/s;
                 $s->{style}.="overflow:hidden";
-                my $parent = $line->{i}->{B}->{Lo}->{t};
-                if ($parent && ref $parent eq "Ghost") {
-                    if ($line->{i}->{each} eq "GG") {
-                        $name .= " ";
-                        for (@$t) {
-                            $name .= $inc->('black','[G')."$_->{way} ";
-                        }
-                    }
-                }
             }
             if ($ref eq "Way") {  #c t s
                 $name = $t->pint;
