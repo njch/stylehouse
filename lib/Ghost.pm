@@ -677,11 +677,11 @@ sub doo {
         $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";;
         if ($first) {
             if (exists $D->{SigDieStack}) {
-                die if @{$D->{SigDieStack}} > 1;
+                die "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
                 $DOOF .= "\n";
                 my $i = "  ";
                 for my $s ( reverse flatline($D->{SigDieStack}) ) {
-                    $DOOF .= "$i↘ $s\n";
+                    $DOOF .= "$i- $s\n";
                     $i .= "  ";
                 }
             }        

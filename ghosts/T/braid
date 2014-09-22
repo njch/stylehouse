@@ -140,7 +140,7 @@ hooks:
     # args to anTop may change i from inside the braid for recursion
     # or Dw if top
     # T._braid._no_circles catches recursion via _trail.i
-    # and yeah... we are in already and return to from anTop the top of the braid
+    # and yeah... we are in already and return to from anTop the top of the braid 
     while (defined( my $Dw = Tbr.Ds->[Tbr.Di] )) {
         say "Doing Di=Tbr.Di  at Dw.K";
         w anTop[$Dw];
@@ -150,7 +150,14 @@ hooks:
     U->yakanTop($ar);
     0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
-    $G->doo(T.Dw.D) if T.Dw.K < 0.5;
+    if (T.Dw.K < 0.5) {
+        $G->doo(T.Dw.D);
+        Say "Did T.Dw.K";
+    }
+    
     $G->doo(T._braid.Y);
-    $G->doo(T.Dw.D) if T.Dw.K > 0.5;
+    if (T.Dw.K > 0.5) {
+        $G->doo(T.Dw.D);
+        Say "Did T.Dw.K";
+    }
 
