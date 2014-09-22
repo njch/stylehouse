@@ -37,7 +37,7 @@ sub continues {
 
     my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
     $namg = "$W->{G}->{name} ".
-        join("",("  ")x$Ghost::T->{depth}||1)."l-$W->{n} ";
+        join("",("  ")x($Ghost::T->{depth}||1))."l-$W->{n} ";
     my $L = {
         uuid => $H->make_uuid,
         name => $namg,
