@@ -676,8 +676,8 @@ sub doo {
         my $DOOF; 
         my $first = 1 unless $@ =~ /DOOF/;
         
-        $DOOF .= "DOOF  $G->{name}   ".($ar->{S} ? "S=".gpty($ar->{S}) :"");
-        $DOOF .= " \t w $point  ".join(", ", keys %$ar)."\n";;
+        $DOOF .= "DOOF ".sprintf("%-24s", $G->{name}." ".($ar->{S} ? "S=".gpty($ar->{S}) :""));
+        $DOOF .= " w $point  ".join(", ", keys %$ar)."\n";;
         if ($first) {
             if (exists $D->{SigDieStack}) {
                 die "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
