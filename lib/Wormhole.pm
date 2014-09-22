@@ -57,14 +57,14 @@ sub continues {
 
     $W->ob($L);
     
-    
-    print colored("Enters the $namg\t\ti:".Ghost::pint($L->{i})."\n",
-    
-        'black on_magenta');
-        
-    print colored("W: \t\tB{ ".Ghost::ki($L->{i}->{B})."\n", 'bright_red');
-    print colored("   \tt = ".Ghost::gpty($L->{t})."\n", 'bright_blue');
+    if ($G->{db} >= 0) {
+        print colored("Enters the $namg\t\ti:".Ghost::pint($L->{i})."\n",
 
+            'black on_red');
+
+        print colored("W: \t\tB{ ".Ghost::ki($L->{i}->{B})."\n", 'bright_red');
+        print colored("   \tt = ".Ghost::gpty($L->{t})."\n", 'red');
+    }
     push @{$W->{script}}, $L;
     
     return $L;

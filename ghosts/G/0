@@ -81,14 +81,14 @@ hooks:
         0S->wdif(_postsketch => $w);
         $w
     };
-    G.U.wdif = sub {
+    G.U.wdif = sub {#c
         my ($S, $h, $w) = @_;
         if ($w->{$h}) {
             $S->w($h, {}, $w);
             delete $w->{$h};
         }
     };
-    G.U.sway = sub {
+    G.U.sway = sub {#c
         my ($S, $way, $CsK) = @_;
         # CsK optional: C space to look in for K=$way or so
         # qw paths for G:anyway, should be array of ways
@@ -109,7 +109,7 @@ hooks:
         my $uu = 0S->sktcu(@_);
         0S->Tafu($uu);
     };
-    G.U.Tafu = sub {
+    G.U.Tafu = sub {#c
         my ($S, $uu) = @_;
         my $u = 0S->fu($uu);
         return $u if $u;
@@ -220,7 +220,7 @@ hooks:
         }
         return $old;
     };
-    G.U.haunt = sub {
+    G.U.haunt = sub {#c
         my $S = shift;
         my $Travel = shift;
         my $t = {
@@ -245,7 +245,10 @@ hooks:
         
         $S->doo(i.flows_D, {}) if i.flows_D;
         
-        0S->continues();
+        # all this stuff is shaking
+        # catch a braid
+        T.L = $S->W->continues($S); # %
+        $S->ob("continues...", T.L);
         
         T.L.i eq T.i || die "tli not ni!?!?!";
         
@@ -253,12 +256,7 @@ hooks:
         0S->accum($_, 'Lo', T.L) for @{T.L.o};
         0S->accum(T.L.i, 'Li', T.L); # just right
     };
-    G.U.continues = sub {
-        my $S = shift;
-        T.L = $S->W->continues($S); # %
-        $S->ob("continues...", T.L);
-    };
-    G.U.haunt_wooo = sub {
+    G.U.haunt_wooo = sub {#c
         my $S = shift;
         my $R = [T.L];
         for my $c (@{T.o}) {
@@ -301,7 +299,7 @@ hooks:
         }
         return undef;
     };
-    G.U.B_same = sub {
+    G.U.B_same = sub {#c
         my ($S, $u, $i) = @_;
         
         return 1 if exists u.B._ && exists i.B._ && u.B._ eq i.B._;
@@ -356,7 +354,6 @@ hooks:
     while (my ($way, $t) = each %$GG) {
         my $GG = $H->TT($S)->G($way);
     }
-
   sing: |
     G.singing ||= {};
     return say "\t\t\t\t $name BLOCKED"
