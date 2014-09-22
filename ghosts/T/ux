@@ -18,8 +18,6 @@ C:
        "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
     T_remembers_last: 1
     C_n_spawn: [i, t, o]
-    lness:
-       Lo: called Lu if diff_ghost
        
   - K: i
     uy_in_dos:
@@ -50,13 +48,15 @@ C:
     conor: 0.5
     
   - K: w
-    content_D: |
-      pint($w);
+    S:
+      content_D: |
+        pint($w);
       
   - K: e
     styles: topleft white little
-    content_D: |
-      $e
+    S:
+      content_D: |
+        $e
    
    
 dials:
@@ -199,10 +199,10 @@ hooks:
                         @uys = ();
                         my $i = 0;
                         for my $an (@$val) {
+                            next if an.K eq "ux"; # that hangs out in the origin lines o
                             my $anuy = $uy->spawn;
                             anuy.B->{$n} = $an;
                             anuy.K = uy.K."[".$i++;
-                            die sw([$anuy, $n, $an, $val]);
                             push @uys, $anuy;
                         }
                     }
@@ -212,8 +212,6 @@ hooks:
                     0->Taful($uye);
                 }
             }
-            
-                    die sw([u.Li]) if G.tuwhare++ > 5;
         }
     0.5: | #c
       for my $i (@{T.L.o}) {
@@ -245,15 +243,17 @@ hooks:
         # so style vortex creates code
         
         at.styles = U->jgd(u.styles); # coalescing/merging
-        my $y = u.K eq "uy";
-        if ($y) {
+        at.tag ||= U->firstdef(u.B.tag, u.S.tag); # overriding
+        
+        unless (u.O eq 'ex') {
             my $n = u.B.n;
-            at.tag = "y$n";
-            at.content = w $u B/content_D;
+            at.tag ||= "y$n";
+            at.content = w $u S/content_D;
             
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
-        at.tag ||= U->firstdef(u.B.tag, u.S.tag, u.K); # overriding
+        at.tag ||= u.K;
+        
         die "no tag" .sw($u) if !at.tag;
         
         # think about styles
@@ -315,7 +315,7 @@ hooks:
             "<$tag $attr>$conty$content</$tag>";
         };
         
-        my @content = grep { _.O =~ /^u[xy]$/ } @{u.Li.o};
+        my @content = @{u.Li.o};
         
         
         @content = sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) } @content;
