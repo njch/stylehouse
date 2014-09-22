@@ -22,7 +22,7 @@ C:
        Lo: called Lu if diff_ghost
        
   - K: i
-    in_dos:
+    uy_in_dos:
       Lu_grab_n: i
       n_uys_to_w_n: w
       
@@ -42,8 +42,9 @@ C:
       
   - K: o
     uy_in_dos:
-      Lu_grab_n: i
+      Lu_grab_n: o
       n_uys_to_w_n: w
+      n_array: 1
       
     C_n_spawn: [w]
     conor: 0.5
@@ -135,6 +136,7 @@ hooks:
   any_init: |
     
     G.U.jgd = sub { join " ", grep { defined } @_ };
+    G.U.firstdef = sub { (grep { defined } @_)[0] };
     G.U.send_contents_awaiting = sub {
         my $awa = G.contents_awaiting ||= [];
         G.fuckery = 0;
@@ -161,64 +163,57 @@ hooks:
         # B into style
         # spawn guts
         # ways can compress/Loose (and look UP) via K
-        
-        my $uyBs = $G->findway('uyBs');
-        my $uyBsK = sub { 
-            my $uyK = shift;
-            my ($uyB) = grep { _.K eq $uyK } @$uyBs;
-            $uyB || die "No such uyK $uyK";
-            { %$uyB } 
-        };
-        my @fluyB;
-        my $pafly = sub {
-            my $from = shift;
-            push @fluyB, { %$from, @_ }
-        };
-        if (my $uys = u.B.uys) { 
-            for my $uyK (split ' ', $uys) {
-                my $uyB = $uyBsK->($uyK);
-                next if u.K eq "ux";
+        if (my $uyKs = u.C_n_spawn) {
+            # this branching aka CMYKs :O
+            #   TODO invent image format that includes style channels
+            #   you can wedge extra channels into JPEG somehow...
+            #   apropos JPEG transparency hacks
+            # :
+            # it's an unfoldment
+            # M on top of W
+            # bamboo for Y action
+            for my $uy (map { 0->sway($_) } @$uyKs) {
+                uy.B ||= {};
                 
-                if (my $to = u.B.yBs->{"n_uys_to_".uyB.K."_n"}) {
-                    $uyB->{$to} = u.B->{u.B.n};
-                    uyB.n = $to;
+                if (u.uy_in_dos) {
+                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
+                        uy.B->{$ton} = u.B->{u.B.n};
+                        uy.B.n = $ton;
+                    }
                 }
-                if (my $n = uyB.yBs.Lu_grab_n) {
-                    my $y = $Lu->{$n};
-                    $uyB->{$n} = $y;
-                    uyB.n = $n;
+                if (uy.uy_in_dos) {
+                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
+                        uy.B->{$n} = $Lu->{$n};
+                        uy.B.n = $n;
+                    }
                 }
-                my @uyBits = ($uyB);
-                if (my $n = uyB.yBs.multi_n) {
-                    if (my $y = $uyB->{$n}) {
-                        if (ref $y eq "ARRAY") {
-                            @uyBits = ();
-                            my $i = 0;
-                            for my $o (@$y) {
-                                push @uyBits, {
-                                    %$uyB,
-                                    $n => $o,
-                                    K => uyB.K."[".$i++,
-                                };
-                            }
+                
+                my @uys = ($uy);
+                
+                if (u.uy_in_dos) {
+                    if (u.uy_in_dos.n_array) {
+                        my $n = uy.B.n;
+                        my $val = uy.B->{$n};
+                        ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
+                        
+                        @uys = ();
+                        my $i = 0;
+                        for my $an (@$val) {
+                            my $anuy = $uy->spawn;
+                            anuy.B->{$n} = $an;
+                            anuy.K = uy.K."[".$i++;
+                            die sw([$anuy, $n, $an, $val]);
+                            push @uys, $anuy;
                         }
                     }
                 }
-                for my $uyB (@uyBits) {
-                    $pafly->($uyB);
+                
+                for my $uye (@uys) {
+                    0->Taful($uye);
                 }
             }
-        }
-        for my $uyB (@fluyB) {
-            if (1) {
-                U->uys($uyB);
-            }
-            else {
-                my $u = 0->TafuBl(uy => $uyB);
-                #die "liney" if u.Lo ne G.L;
-                die "miso" if !grep{$_ eq $u}@{G.L.o};
-                die wdump($u);
-            }
+            
+                    die sw([u.Li]) if G.tuwhare++ > 5;
         }
     0.5: | #c
       for my $i (@{T.L.o}) {
@@ -228,15 +223,7 @@ hooks:
     0.6: | #c
       my $u = T.i;
         
-        my $Lu;
-        if (u.K eq "ux") {
-            $Lu = u.B.Lu
-                || die " no Lu".sw({" no Lu"=>$u})
-        }
-        else {
-            u.B.Lu && die "Lu non ux ";
-        }
-        
+        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
         die "ux has no ways out, expected SOMETHING!?".sw(u.Li)
         
             if u.K eq "ux" && !@{u.Li.o};
@@ -257,7 +244,7 @@ hooks:
         # pulled out of the unified field 
         # so style vortex creates code
         
-        at.styles = U->jgd(u.styles); # coalescing
+        at.styles = U->jgd(u.styles); # coalescing/merging
         my $y = u.K eq "uy";
         if ($y) {
             my $n = u.B.n;
@@ -266,7 +253,7 @@ hooks:
             
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
-        at.tag ||= U->jgd(u.B.tag, u.S.tag, u.tag);
+        at.tag ||= U->firstdef(u.B.tag, u.S.tag, u.K); # overriding
         die "no tag" .sw($u) if !at.tag;
         
         # think about styles
@@ -302,10 +289,8 @@ hooks:
         # sifts entropy through meshes of different dimensions
         # a tour of satellites
         #   look
-        # then see more in u.o or so
+        # then see more in u.Li.o or so
         
-        # used to say: # at = Doing if Lu S u_O=u.O && u_B_n=u.B.n
-        # so at is a beast
         # and all that remains at the ends is... yeah
         # querying _trail for a path is the A buzz
         # useful for attaching stuff without whole mess around

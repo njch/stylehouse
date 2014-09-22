@@ -74,7 +74,7 @@ hooks:
     G.U.sktcu = sub {#c skatch a way + B{
         my ($S, $way, $B) = @_;
         die  "B contains B:".wdump($B) if B.B;
-        my $w = 0S->scrape_way($way);
+        my $w = 0S->sway($way);
         die "w_B not hash" if w.B && ref w.B ne "HASH";
         w.B = { %{w.B||{}}, %$B };
         die "makedad".wdump($w) if w.B.Lu && w.O ne "ux";
@@ -88,21 +88,21 @@ hooks:
             delete $w->{$h};
         }
     };
-    G.U.scrape_way = sub {
-        my ($S, $way) = @_;
-        die "S not Ghost" unless ref $S eq "Ghost";
-        my $nw = $S->nw();
-        my $from = $S->findway('ways/'.$way);
-        $from ||= do {
-            my @chainway = grep { _.K eq $way }
+    G.U.sway = sub {
+        my ($S, $way, $CsK) = @_;
+        # CsK optional: C space to look in for K=$way or so
+        # qw paths for G:anyway, should be array of ways
+        # the spawn wanders off, gets filled with stuff, etc
+        @{$CsK=[]} = split ' ', ($CsK || 'chains C');
+        
+        my ($from) =
+                grep { _.K eq $way }
                 map { flatline($_) }
-                map { $S->anyway($_) }
-                qw'chains C';
-            shift @chainway
-        };
+                map { $S->anyway($_) } @$CsK;
+                
         $from || die "no findo way called $way (S.name)".wdump($S->findway('chains'));
-        $nw->from($from);
-        $nw;
+        
+        $S->nw(%$from);
     };
     G.U.TafuB = sub {#c # lightly travel or retract this kinda u
         my $S = shift;
@@ -120,6 +120,13 @@ hooks:
         my $S = shift;
         my $u = 0S->TafuB(@_);
         u.Li || die "no u Li ".wdump(2,$u);
+        0S->l($u);
+        $u
+    };
+    G.U.Taful = sub {#c # slightly travel this u
+        my ($S, $uu) = @_;
+        my $u = 0S->Tafu($uu);
+        u.Li || die "no u Li Taful ".wdump(2,$u);
         0S->l($u);
         $u
     };
