@@ -161,7 +161,10 @@ hooks:
         my ($S, $p) = @_;
         my $old = 0S->visTp($p);
         
-        say "HAUNT HAUNT HAUNT ".pint(T.i);
+        if ($S->deeby) {
+            say "Deeby cos S.name \t\t S.db and $db > 0?" for 1..3
+        }
+        say "HAUNT HAUNT HAUNT ".pint(T.i) if $S->deeby;
         0S->haunt_swoop();
         
         0S->haunt_wooo();
@@ -227,6 +230,7 @@ hooks:
         if ($fun eq "Fun") {
             push @{ $F[0]->{_after_do} }, sub { $T = $old }
         }
+        $S->deeby && say "T is nowish ".ki($T);
         return $old;
     };
     G.U.haunt = sub {#c

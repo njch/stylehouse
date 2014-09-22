@@ -123,12 +123,15 @@ sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
     say join("",(".") x scalar(@F))."$G->{name}  $_[0]"
-        if $G->{db} + $db > 0 && $_[0] !~ /^\w Error/;
+        if $G->deeby && $_[0] !~ /^\w Error/;
     $G->ob(@_);
     my $s = $G->stackway(@_);
     unshift @Flab, $s;
     $s->{Flab} = [@Flab];
     $s;
+}
+sub deeby {
+    shift->{db} + $db > 0
 }
 sub waystacken {
     my $G = shift;
