@@ -82,16 +82,8 @@ hooks:
     G.U.sway = sub {#c # sucks way matching $p # only supports matching K for now
         my ($S, $p, $s) = @_;
         
-        # CsK optional: C space to look in for K=$way or so
-        # qw paths for G:anyway, should be array of ways
-        # the spawn wanders off, gets filled with stuff, etc
-        my @CsK = split ' ', (delete(p.CsK) || 'chains C');
-        # CsK shouldn't be in $p, awaits more abstraction
-        
-        die "finish p to sway".sw($p) if !p.K || 1 < keys(%$p);
-        
-        my ($from) = grep { _.K eq p.K } map { flatline($_) } map { $S->anyway($_) } @CsK;
-                
+        p.CsK ||= 'chains C';
+        my ($from) = 0S->CsK($p);
         $from || die "no findo way called p.K (S.name)".wdump($p);
         
         my $w = $S->nw();
@@ -99,6 +91,24 @@ hooks:
         $w->from($s) if $s && %$s; # merges in B
         
         return $w
+    };
+    G.U.CsK = sub {#c # sucks way from space
+        my ($S, $p) = @_;
+        
+        # p.CsK locates the Cs
+        #   qw paths for anyway
+        # p.K maybe greps the Cs for p.K
+        p.CsK || die "pass p.CsK to CsK"; # not sposed $p
+        
+        my @Cs = map { flatline($_) } map { $S->anyway($_) }  split ' ', delete p.CsK;
+        
+        if (p.K) {
+            @Cs = grep { _.K eq p.K } @Cs;
+        }
+        die "more p to CsK".sw($p) if !p.K || 1 < keys(%$p);
+        
+        
+        return @Cs;
     };
     G.U.TafuBl = sub {#c # slightly travel this kinda u
         my $S = shift;

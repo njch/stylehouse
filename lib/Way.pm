@@ -21,7 +21,6 @@ sub spawn {
     my $from = shift || $self;
     my $nw = $self->{G}->nw();
     $nw->from($from);
-    $nw->{B} = { %{$nw->{B}} } if $nw->{B};
     $nw;
 }
 sub name {
@@ -41,7 +40,7 @@ sub from {
         
         $f = { %$t, %$f } if $t && $k eq "B";
         
-        $w->{$i} = $f;
+        $w->{$k} = $f;
     }
     return $w;
 }
