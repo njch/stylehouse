@@ -30,14 +30,20 @@ sub name {
     $self;
 }
 sub from {
-    my $self = shift;
-    my $from = shift;
-    for my $i (keys %$from) {
+    my $w = shift;
+    my $s = shift;
+    for my $k (keys %$s) {
         die "Diff ghost way from ing"
-            if $i eq "G" && $self->{G} ne $from->{G};
-        $self->{$i} = $from->{$i};
+            if $k eq "G" && $w->{G} ne $w->{G};
+        
+        my $t = $w->{$k};
+        my $f = $s->{$k};
+        
+        $f = { %$t, %$f } if $t && $k eq "B";
+        
+        $w->{$i} = $f;
     }
-    $self;
+    return $w;
 }
 sub load {
     my $self = shift;

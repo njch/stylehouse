@@ -71,16 +71,7 @@ hooks:
             $i++;
         }
     };
-    G.U.sktcu = sub {#c skatch a way + B{
-        my ($S, $way, $B) = @_;
-        die  "B contains B:".wdump($B) if B.B;
-        my $w = 0S->sway($way);
-        die "w_B not hash" if w.B && ref w.B ne "HASH";
-        w.B = { %{w.B||{}}, %$B };
-        die "makedad".wdump($w) if w.B.Lu && w.O ne "ux";
-        0S->wdif(_postsketch => $w);
-        $w
-    };
+
     G.U.wdif = sub {#c
         my ($S, $h, $w) = @_;
         if ($w->{$h}) {
@@ -88,25 +79,39 @@ hooks:
             delete $w->{$h};
         }
     };
-    G.U.sway = sub {#c
-        my ($S, $way, $CsK) = @_;
+    G.U.sway = sub {#c # sucks way matching $p # only supports matching K for now
+        my ($S, $p, $s) = @_;
+        
         # CsK optional: C space to look in for K=$way or so
         # qw paths for G:anyway, should be array of ways
         # the spawn wanders off, gets filled with stuff, etc
-        @{$CsK=[]} = split ' ', ($CsK || 'chains C');
+        my @CsK = split ' ', (delete(p.CsK) || 'chains C');
+        # CsK shouldn't be in $p, awaits more abstraction
         
-        my ($from) =
-                grep { _.K eq $way }
-                map { flatline($_) }
-                map { $S->anyway($_) } @$CsK;
+        die "finish p to sway".sw($p) if !p.K || 1 < keys(%$p);
+        
+        my ($from) = grep { _.K eq p.K } map { flatline($_) } map { $S->anyway($_) } @CsK;
                 
-        $from || die "no findo way called $way (S.name)".wdump($S->findway('chains'));
+        $from || die "no findo way called p.K (S.name)".wdump($p);
         
-        $S->nw(%$from);
+        my $w = $S->nw();
+        $w->from($from);
+        $w->from($s) if $s && %$s; # merges in B
+        
+        return $w
+    };
+    G.U.TafuBl = sub {#c # slightly travel this kinda u
+        my $S = shift;
+        my $u = 0S->TafuB(@_);
+        u.Li || die "no u Li ".wdump(2,$u);
+        0S->l($u);
+        $u
     };
     G.U.TafuB = sub {#c # lightly travel or retract this kinda u
         my $S = shift;
-        my $uu = 0S->sktcu(@_);
+        my $p = { K => shift };
+        my $s = { B => shift };
+        my $uu = 0S->sway($p, $s);
         0S->Tafu($uu);
     };
     G.U.Tafu = sub {#c
@@ -116,13 +121,6 @@ hooks:
         0S->T({i => $uu});
         return $uu
     };
-    G.U.TafuBl = sub {#c # slightly travel this kinda u
-        my $S = shift;
-        my $u = 0S->TafuB(@_);
-        u.Li || die "no u Li ".wdump(2,$u);
-        0S->l($u);
-        $u
-    };
     G.U.Taful = sub {#c # slightly travel this u
         my ($S, $uu) = @_;
         my $u = 0S->Tafu($uu);
@@ -130,19 +128,19 @@ hooks:
         0S->l($u);
         $u
     };
-    G.U.visTp_l_u = sub {#c
+    G.U.visTp_l_u = sub {#c get in to a Tp and l u
         my ($S, $Tp, $u) = @_;
         my $old = 0S->visTp($Tp);
         0S->l($u);
         $T= $old;
         $u;
     };
-    G.U.l = sub {#c
+    G.U.l = sub {#c draw arcs
         my ($S, $u) = @_;
         0S->accum($u, 'Lo', T.L);
         0S->accum($T, 'o', $u);
     };
-    G.U.visTp_TafuBl = sub {#c
+    G.U.visTp_TafuBl = sub {#c # get in Tp, 
         my ($S, $Tp, $Bp) = @_;
         my $old = 0S->visTp($Tp);
         my $u = 0S->TafuBl(@$Bp);
@@ -153,6 +151,7 @@ hooks:
         my ($S, $p) = @_;
         my $old = 0S->visTp($p);
         
+        say "HAUNT HAUNT HAUNT ".pint(T.i);
         0S->haunt_swoop();
         
         0S->haunt_wooo();
@@ -242,7 +241,7 @@ hooks:
         $S->w("T_begin");
         
         $S->w("arr") unless T._noarr;
-        
+        # ow
         $S->doo(i.flows_D, {}) if i.flows_D;
         
         # all this stuff is shaking
