@@ -220,9 +220,14 @@ sub codolist {
             $s->{value} =~ s/stylehouse\.?/s҉/;
             $s->{codon} = $codon;
 
-            $s->{style} .= "font-size: ".(
-                $n=~/Git|Shite|Proc|Ebuge|Form|Keys|Direction/
-                ?"0.8":length($n) < 4 ? "3":"1.5")."em;";
+            my $fs = ( # see the spiral of w and v/A... # whereever $_ is safe
+                $n=~/Git|Shite|Proc|Ebuge|Form|Keys|Direction/ ? "0.8"
+                :
+                length($n) < 4 ? "3"
+                : "1.5"
+            );
+            $fs = 2.2 if $n =~ /odon|ux|braid/;
+            $s->{style} .= "font-size: ".$fs."em;";
                 
                 $s->{style} .= "color:#".(
                     $codon->{is}->{G} ? (
