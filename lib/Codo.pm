@@ -240,7 +240,7 @@ sub codolist {
                 :
                                                   "99FF66"
             );
-            $cs = "a5f" if $n =~ /^C\//;
+            $cs = "fff" if $n =~ /^C\//;
             $s->{style} .= "color:#".$cs.";";
             
             $s->{menu} = "h";
