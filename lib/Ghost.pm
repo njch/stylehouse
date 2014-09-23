@@ -1,6 +1,7 @@
 package Ghost;
 use strict;
 use Scriptalicious;
+use feature 'say';
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
@@ -122,7 +123,7 @@ sub gpty { ghostlyprinty('NOHTML',@_) };
 sub Flab {
     my $G = shift;
     ref $G eq "Ghost" || die "send Ghost";
-    say join("",(".") x scalar(@F))."$G->{name}  $_[0]"
+    say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
         if $G->deeby && $_[0] !~ /^\w Error/;
     $G->ob(@_);
     my $s = $G->stackway(@_);
