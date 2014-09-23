@@ -428,7 +428,14 @@ sub way_was {
 }
 sub haunt { # arrives through here
     my $G = shift;
-    return $G->_0("0->haunt", @_) if 1;#$G0->{_future};
+    my $unT = shift;
+    my $p = {
+      depth => shift,
+      t => shift,
+      i => shift,
+    };
+    say " 0ldschool haunt";
+    return $G->_0("0->T", $p);
 }
 sub chains {
     my $G = shift;

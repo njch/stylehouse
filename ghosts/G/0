@@ -24,6 +24,8 @@ hooks:
     w V/init[$S];
     w GG_init[$S];
     $S->w("fresh_init");
+  recoded_init: |
+    H.G->w('re/exec');
   any_init: |
     G.U.sing = sub {#c
         my $S = shift;
@@ -165,9 +167,44 @@ hooks:
             say "Deeby cos S.name \t\t S.db and $db > 0?" for 1..3
         }
         say "HAUNT HAUNT HAUNT ".pint(T.i) if $S->deeby;
-        0S->haunt_swoop();
         
-        0S->haunt_wooo();
+        
+        my $i = T.i;
+        $S->ob("haunt");
+        
+        $S->w("arr") unless T._noarr;
+        # ow
+        $S->doo(i.flows_D, {}) if i.flows_D;
+        
+        # all this stuff is shaking
+        # catch a braid
+        T.L = $S->W->continues($S); # %
+        $S->ob("continues...", T.L);
+        
+        T.L.i eq T.i || die "tli not ni!?!?!";
+        
+        # [o  get Lo = L
+        0S->accum($_, 'Lo', T.L) for @{T.L.o};
+        0S->accum(T.L.i, 'Li', T.L); # just right
+        
+        
+        
+        
+        for my $c (@{T.o}) {
+            if (exists c.travel_this) {
+                my $p = {
+                    depth => T.depth+1,
+                    t => c.travel_this,
+                    i => $c,
+                };
+                say " newT";
+                0S->T($p);
+            }
+        }
+        
+        $S->doo(T.i.extract_D, {}) if T.i.extract_D;
+        
+        #Info "HAUNTED ".sw($T) if $S->{name} =~ /braid|ux|odon/;
         
         my $L = T.L;
         $T = $old;
@@ -233,74 +270,7 @@ hooks:
         $S->deeby && say "T is nowish ".ki($T);
         return $old;
     };
-    G.U.haunt = sub {#c
-        my $S = shift;
-        my $Travel = shift;
-        my $t = {
-            depth => shift,
-            t => shift,
-            i => shift,
-            o => [],
-            _Travel => $Travel, # non
-        };
-        say " 0 haunt  d=t.depth   i=".pint(t.i)."   t=t.t";
-        my $L = 0S->T($t);
-        return @{L.i.returns} if L.i.returns;
-        return $L;
-    };
-    G.U.haunt_swoop = sub {#c
-        my $S = shift;
-        my $i = T.i;
-        $S->ob("haunt");
-        $S->w("T_begin");
-        
-        $S->w("arr") unless T._noarr;
-        # ow
-        $S->doo(i.flows_D, {}) if i.flows_D;
-        
-        # all this stuff is shaking
-        # catch a braid
-        T.L = $S->W->continues($S); # %
-        $S->ob("continues...", T.L);
-        
-        T.L.i eq T.i || die "tli not ni!?!?!";
-        
-        # [o  get Lo = L
-        0S->accum($_, 'Lo', T.L) for @{T.L.o};
-        0S->accum(T.L.i, 'Li', T.L); # just right
-    };
-    G.U.haunt_wooo = sub {#c
-        my $S = shift;
-        my $R = [T.L];
-        for my $c (@{T.o}) {
-            if (exists c.travel_this) {
-                T._Travel->T(c.travel_this, $S, $c, T.depth+1);
-            }
-            elsif (exists c.travel) {
-                T._Travel->T(c.travel, $S, $c, T.depth+1);
-                delete c.travel if !defined c.travel;
-            }
-            elsif (exists c.arr_returns) { # ded?
-                $R = c.arr_returns;
-            }
-            elsif (exists c.travels) {
-                0S->T($S, {i => $c});
-            }
-            elsif (exists c.B.s || exists c.O) {
-                # sweet
-            }
-            else {
-                Say "what kind of way out is
-                S.name \n".wdump(2,$c);
-            }
-        }
-        
-        $S->doo(T.i.extract_D, {}) if T.i.extract_D;
-        
-        $S->w("T_end", {L=>T.L, r=>$R});
-        T.i.returns = $R;
-    };
-    
+
     G.U.fu = sub {#c
         my $S = shift;
         my $u = shift;
