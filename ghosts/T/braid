@@ -26,59 +26,42 @@ hooks:
     p._braid = {};
     0->visTp($p, "Fun");
     
+    # top level stuff - its unification is the D above this
     my $Tbr = T._braid;
     Tbr.Ds = \@Ds;
     Tbr.Di = 0;
-    Tbr.Y = $Y; # top level stuff
+    T.Y = $Y; 
     
-    # we can inject meanwhile into Ds, fractionating complexity
-    # if this was processing a list
-    # it could make dimensional judderbars easier to hop
-    # wrapping maps & greps done nicely
-    # then the Dspace gets Action
-    # that is, language set out across it
-    # to form the meta-process of defining things in it
-    # so things can hook themselves in from ingredients like braid, ux
-    # ux calls braid to process a Ds then
-    
-    # the ux's Ds involved can invoke another braid
-    #   or another anTop
-    # to run different dimensions from a centrifuge with a fractal shape bleeding from T
-    # like the root of $T is now, _braid, _trail, everything running around is deeper
-    # the other end of $T is the unified field
-    
-    # args to anTop may change i from inside the braid for recursion
-    # or Dw if top
-    # T._braid._no_circles catches recursion via _trail.i
-    # and yeah... we are in already and return to from anTop the top of the braid 
     while (defined( my $Dw = Tbr.Ds->[Tbr.Di] )) {
-        say "Doing Di=Tbr.Di  at Dw.K";
+        say "Doing Di=Tbr.Di  at Dw.K" for 1..10;
         w anTop[$Dw];
         Tbr.Di++;
     }
   anTop: |
-    Say "BIG DIME! ".wdump(2,$ar);
-    
-        my $ds = "";
-        #$ds .= "    " for 0..@{T._trail.i};
-        #say "anTop $ds ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
+    my $ds='';
+    if (T._trail && ref T._trail.is eq "ARRAY") {
+        $ds .= "    " for 0..@{T._trail.is||[]} 
+    }
+    my $sets = join "     ",
+        (ar.Dw && "Dw"." -> T.Dw.K"),
+        (ar.i && ref ar.i eq "Way" && "i -> ar.i.K"),
+        ;
         
+    #say "anTop $ds $sets";
     0->visTp($ar, "Fun") if %$ar;
+    
     T.L || die "no Line from i... antop";
-    
-    Say "and so! ".wdump(2,$T);
-    sleep 3 if ar.i;
-    
     if (T.Dw.K < 0.5) {
+        say " - $ds   > T.Dw.K";
         $G->doo(T.Dw.D);
-        Say "Did T.Dw.K";
     }
     
-    my $r = $G->doo(T._braid.Y);
-    Say "Diddle $r";
+    T.Y || die "NO Y";
+    #say " - $ds  Y from T.i.K";
+    my $r = $G->doo(T.Y);
     
     if (T.Dw.K > 0.5) {
+        say " - $ds < T.Dw.K";
         $G->doo(T.Dw.D);
-        Say "Did T.Dw.K";
     }
 
