@@ -228,14 +228,20 @@ sub codolist {
             );
             $fs = 2.2 if $n =~ /odon|ux|braid/;
             $s->{style} .= "font-size: ".$fs."em;";
-                
-                $s->{style} .= "color:#".(
-                    $codon->{is}->{G} ? (
-                        $n =~ /^L/ ? '009900' :
-                        $n =~ /^T/ ? '5C3749' :
-                        "5A5AAF" ) :
-                    $n =~ /Travel|Ghost|Wormhole/ ? '66F' :
-                    "99FF66").";";
+            
+            my $cs = (
+                $codon->{is}->{G} && $n =~ /^L/ ? '009900'
+                :
+                $codon->{is}->{G} && $n =~ /^T/ ? '5C3749'
+                :
+                $codon->{is}->{G}                 ? "5A5AAF"
+                :
+                $n =~ /Travel|Ghost|Wormhole/     ? '66F'
+                :
+                                                  "99FF66"
+            );
+            $cs = "a5f" if $n =~ /^C\//;
+            $s->{style} .= "color:#".$cs.";";
             
             $s->{menu} = "h";
             
