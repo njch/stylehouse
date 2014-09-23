@@ -1,15 +1,9 @@
 name: spiral braid
 hooks:
+  recoded_init: |
+    H.G->w('re/exec');
   any_init: |
     G.U ||= {};
-
-    G.U.yakanTop = sub {#c
-        my $ar = shift;
-        die "I ".ki($ar) if ar.i;
-        my $ds = "";
-        $ds .= "    " for 0..@{T._trail.i};
-        say "anTop $ds ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
-    };
   braid: |
     # do thebusiness from T
     # Ds will be spin one day
@@ -22,18 +16,37 @@ hooks:
     $Ds = {%$Ds};
     
     my $Y = delete $Ds->{0.5} if $Ds->{0.5};
+    
     my @Ds = map {
         { K => $_, D => $Ds->{$_} }
     } sort keys %$Ds;
     
     my $p = {};
     p._trail._no_circles = 1;
-    p._braid = { Ds => \@Ds, Di => 0, Y => $Y }; # top level stuff
+    p._braid = {};
     0->visTp($p, "Fun");
     
     my $Tbr = T._braid;
+    Tbr.Ds = \@Ds;
+    Tbr.Di = 0;
+    Tbr.Y = $Y; # top level stuff
+    
     # we can inject meanwhile into Ds, fractionating complexity
-    # if this was processing a list it could mean wrapping things in maps and sanity
+    # if this was processing a list
+    # it could make dimensional judderbars easier to hop
+    # wrapping maps & greps done nicely
+    # then the Dspace gets Action
+    # that is, language set out across it
+    # to form the meta-process of defining things in it
+    # so things can hook themselves in from ingredients like braid, ux
+    # ux calls braid to process a Ds then
+    
+    # the ux's Ds involved can invoke another braid
+    #   or another anTop
+    # to run different dimensions from a centrifuge with a fractal shape bleeding from T
+    # like the root of $T is now, _braid, _trail, everything running around is deeper
+    # the other end of $T is the unified field
+    
     # args to anTop may change i from inside the braid for recursion
     # or Dw if top
     # T._braid._no_circles catches recursion via _trail.i
@@ -44,16 +57,26 @@ hooks:
         Tbr.Di++;
     }
   anTop: |
-    U->yakanTop($ar);
+    Say "BIG DIME! ".wdump(2,$ar);
+    
+        my $ds = "";
+        #$ds .= "    " for 0..@{T._trail.i};
+        #say "anTop $ds ".join"    - ",map{my $w = $ar->{$_}; "$_ => ".pint($w)} keys %$ar;
+        
     0->visTp($ar, "Fun") if %$ar;
     T.L || die "no Line from i... antop";
+    
+    Say "and so! ".wdump(2,$T);
+    sleep 3 if ar.i;
+    
     if (T.Dw.K < 0.5) {
         $G->doo(T.Dw.D);
         Say "Did T.Dw.K";
     }
     
-    $G->doo(T._braid.Y);
-    Say "Diddle";
+    my $r = $G->doo(T._braid.Y);
+    Say "Diddle $r";
+    
     if (T.Dw.K > 0.5) {
         $G->doo(T.Dw.D);
         Say "Did T.Dw.K";
