@@ -5,8 +5,6 @@ hooks:
   any_init: |
     G.U ||= {};
   braid: |
-    # do thebusiness from T
-    # Ds will be spin one day
     my $Ds = ar.Ds || T.Ds || die "No Ds to braid";
     unless (ref $Ds eq "HASH") {
         $Ds = $G->findway($Ds);
@@ -22,18 +20,17 @@ hooks:
     } sort keys %$Ds;
     
     my $p = {};
-    p._trail._no_circles = 1;
-    p._braid = {};
+        p._trail._no_circles = 1;
+        p._braid = {};
     0->visTp($p, "Fun");
     
-    # top level stuff - its unification is the D above this
     my $Tbr = T._braid;
     Tbr.Ds = \@Ds;
     Tbr.Di = 0;
     T.Y = $Y; 
     
     while (defined( my $Dw = Tbr.Ds->[Tbr.Di] )) {
-        say "Doing Di=Tbr.Di  at Dw.K" for 1..10;
+        say "Doing Di=Tbr.Di  at Dw.K";
         w anTop[$Dw];
         Tbr.Di++;
     }
@@ -52,7 +49,7 @@ hooks:
     
     T.L || die "no Line from i... antop";
     if (T.Dw.K < 0.5) {
-        #say " - $ds   > T.Dw.K T.i.K";
+        say " - $ds   >   T.Dw.K T.i.K";
         $G->doo(T.Dw.D);
     }
     
@@ -61,7 +58,7 @@ hooks:
     my $r = $G->doo(T.Y);
     
     if (T.Dw.K > 0.5) {
-        #say " - $ds < T.Dw.K T.i.K";
+        say " - $ds <       T.Dw.K T.i.K";
         $G->doo(T.Dw.D);
     }
 
