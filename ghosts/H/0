@@ -130,7 +130,7 @@ hooks:
       return w serve/error if $j->{error}; # change from {e}
       return w serve/scroll if $j->{scroll};
       
-    claw: |
+    claw: | #c
       $H->claw($j);
       
     error: |
@@ -146,18 +146,18 @@ hooks:
       my $lye = $H->getapp("Lyrico");
       $lye->scroll($s) if $lye;
       
-    event: |
+    event: | #c
       my $e = $ar->{e} = $j->{event};
       $G->Flab("H dostuff event", $e);
       return w serve/key if $e->{type} =~ /^key/;
       return w serve/wormhole if $e->{W};
       return w serve/TV if $e->{id};
       $H->error("Strange event", $e);
-    key: |
+    key: | #c
       return unless G keys;
       G keys ->w(Arr => {e => $e});
       
-    wormhole: |
+    wormhole: | #c
       my $E;
       my $findL = sub {
         return unless $E->{W};
@@ -188,7 +188,7 @@ hooks:
           Say "Nothing!!!!";
       }
       
-    TV: |
+    TV: | #c
       my $id = $e->{id};
       my $thing = $H->tv_by_id($id) if $id;
 
