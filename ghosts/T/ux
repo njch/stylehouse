@@ -233,8 +233,13 @@ hooks:
       my $u = T.i;
         my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
         
+        
+        my $ds='';
+        if (T._trail && ref T._trail.is eq "ARRAY") {
+            $ds .= "    " for 0..@{T._trail.is||[]} 
+        }
         if (u.K eq "ux") {
-            say "ux - ".pint(u.B.Lu.i);
+            say "$ds ux - ".pint(u.B.Lu.i)."    ".u.B.Lu.t;
         }
         my $news = {};
         if (my $uyKs = u.C_n_spawn) {
@@ -245,12 +250,15 @@ hooks:
                 
                 my @uys = w uytricks/multi[$uy, $u];
                 
-                for my $uye (@uys) {
-                    
-                    my $g0ld = $G0->{db};
-                    $G0->{db} = 5;
-                    0->Taful($uye);
-                    $G0->{db} = $g0ld;
+                for my $uu (@uys) {
+                    my $uy = 0->fu($uu);
+                    if ($uy) {
+                        say "u fu uu.K ".ki(uu.B);
+                        next;
+                    }
+                    say "u not found! uu.K ".ki(uu.B);
+                    $uy = 0->T({i => $uu});
+                    # and $uy is it
                 }
             }
         }
