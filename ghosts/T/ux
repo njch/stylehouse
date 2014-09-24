@@ -79,21 +79,23 @@ hooks:
     E.uyL = $L if $L ne $uxL;
     Say E.L.G.name;
     E.L.G->w(event => $E);
-  RW: |
-    my $p = {};
-    my $K = "_M_";
-    $K = "Wormhole" if ar.top;
-    my $W = ar.top || ar.W;
-    p.i = G.top if !ar.top && G.top;
-    G.RW->{"$W"} ||= # reciprocal buzz
-        0->visTp_TafuBl(
-            $p,
-            [$K => {W => $W}],
-        );
-  make_Lu_G_W: |
+  RW: | # for making the tip, which is a hash anyway
+    my $W = ar.top||ar.W;
+    my $u = 0->visTp_TafuBl(
+        {},
+        [Wormhole => {W => $W}],
+    );
+    G.top = $u if ar.top;
+    return $u
+  RM: | # a tip on the other side, so below our tip but above in space
+    0->visTp_TafuBl(
+        {i => G.top},
+        [M => {W => $W}],
+    );
+  umake_Lu_G_W: |
     my $W = ux.B.Lu.G.W;
     w RW[$W];
-  parent_ux_via_B_Lu_Lo_o: |
+  uparent_ux_via_B_Lu_Lo_o: |
     my $Lu = ux.B.Lu || die "no Lu on ux";
     my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
     my ($pux) = findO(ux => pLu.o) if $pLu;
@@ -104,9 +106,8 @@ hooks:
     $Ls ||= [];
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
-    my $top = $G->W;
-    #$G->RW; # destroyer
-    w RW[$top]; # for the ux ghosts W
+    w RW(top => $G->W);# for the ux ghosts W
+    # $G->RW; # destroyer
     
     0->visTp({ i => G.top });
     
@@ -120,10 +121,10 @@ hooks:
     }
     
     my @tux;
-    for my $ux (@uxs) {
-        my $ix = w parent_ux_via_B_Lu_Lo_o[$ux]; # join uxLis together like the origin
+    for my $ux (@uxs) { # you join via Lu or to G_W
+        my $ix = w uparent_ux_via_B_Lu_Lo_o[$ux]; # join uxLis together like the origin
         
-        $ix ||= w make_Lu_G_W[$ux]; # or chuck it under a ux for its ghost
+        $ix ||= w umake_Lu_G_W[$ux]; # or the ux for its W
         
         0->visTp_l_u({i=>$ix}, $ux);
         
@@ -170,7 +171,7 @@ hooks:
     H.G->w('re/exec');
   croo:
     multi: |
-      
+      #a
   uxalot:
     0.1: | #c
       my $u = T.i;
