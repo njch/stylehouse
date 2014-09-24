@@ -57,7 +57,7 @@ sub continues {
 
     $W->ob($L);
     
-    if ($G->{db} >= 0) {
+    if ($G->deeby) {
         print colored("Enters the $namg\t\ti:".Ghost::pint($L->{i})."\n",
 
             'black on_red');
