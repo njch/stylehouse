@@ -1,5 +1,6 @@
 package Way;
 use Scriptalicious;
+use feature 'say';
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;

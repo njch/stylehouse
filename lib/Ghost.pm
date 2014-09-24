@@ -625,6 +625,7 @@ sub doo {
     my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
     my $sigstacken = sub {
+        say "Got a sig DIE! $@";
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
@@ -632,6 +633,7 @@ sub doo {
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;
         s/\t//g for @stackend;
+        
         push @{$F[0]->{SigDieStack}||=[]}, \@stackend;
     };
     
@@ -688,7 +690,7 @@ sub doo {
         $DOOF .= " w $point  ".join(", ", keys %$ar)."\n";;
         if ($first) {
             if (exists $D->{SigDieStack}) {
-                die "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
+                warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
                 $DOOF .= "\n";
                 my $i = "  ";
                 for my $s ( reverse flatline($D->{SigDieStack}) ) {

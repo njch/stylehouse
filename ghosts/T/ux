@@ -101,21 +101,14 @@ hooks:
     
     w atop;
     
-    # in Lu.o\
-    my $uxec = sub {
-        grep { _.i.K eq "ux" } @{ $G->W->CS };
-    };
+    my $uxec = sub { grep { _.i.K eq "ux" } @{ $G->W->CS } };
     my $uxec_fore = $uxec->();
-    my $g0ld = $G0->{db};
-    $G0->{db} = 5;
+    
+                                # l( @ Lu.o   # fu( via v
     my @uxs = map { 0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}]) } @{$Ls};
-    $G0->{db} = $g0ld;
     
     my $uxec_aft = $uxec->();
     Say " ux numbers  $uxec_fore ->  $uxec_aft";
-    
-    
-    
     
     my @tux;
     for my $ux (@uxs) {
@@ -240,6 +233,10 @@ hooks:
       my $u = T.i;
         my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
         
+        if (u.K eq "ux") {
+            say "ux - ".pint(u.B.Lu.i);
+        }
+        my $news = {};
         if (my $uyKs = u.C_n_spawn) {
             for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
                 uy.B ||= {};
@@ -249,11 +246,31 @@ hooks:
                 my @uys = w uytricks/multi[$uy, $u];
                 
                 for my $uye (@uys) {
-                
+                    
+                    my $g0ld = $G0->{db};
+                    $G0->{db} = 5;
                     0->Taful($uye);
+                    $G0->{db} = $g0ld;
                 }
             }
         }
+           # creates uy bunch, nest these, balance on the tractor beam;
+        # dissect Taful
+        
+        #0S->fu($uu) || 0S->T({i => $uu})
+        #0S->l( 0S->Tafu($uu) ) 
+        
+        # uy found (fu)
+        # uy could be surpassed (!fu, T) (K hits A space)
+        # uy could be no longer
+        # the latter two need deleting
+        # which could be meant from somewhere else
+        # that corner where things multiply without much meaning should go away somewhere
+        # the importance of lambdas is compositing steps into a vortex
+        # it doesn't need to talk like Rodin
+        
+        # eg. TafuBl is a little braid, like a 
+        # grab a copy, mod it, feed into braid is all
         
         
         die "0.1: ux has no ways out, expected SOMETHING!?".sw(u.Li)
