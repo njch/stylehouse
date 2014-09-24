@@ -82,10 +82,8 @@ hooks:
     };
     G.U.sway = sub {#c # sucks way matching $p # only supports matching K for now
         my ($S, $p, $s) = @_;
-        
         p.CsK ||= 'chains C';
-        my $from;
-        ($from) = 0S->CsK($p);
+        my ($from) = 0S->CsK($p);
         $from || die "no findo way called p.K (S.name)".wdump($p);
         
         my $w = $S->nw();
@@ -94,65 +92,39 @@ hooks:
         
         return $w
     };
-    G.U.CsK = sub {#c # sucks way from space
-        my ($S, $p) = @_;
-        
-        # p.CsK locates the Cs
-        #   qw paths for anyway
-        # p.K maybe greps the Cs for p.K
-        p.CsK || die "pass p.CsK to CsK"; # not sposed $p
-        
+    G.U.CsK = sub { my ($S, $p) = @_;   p.CsK || die "pass p.CsK to CsK";
+        # p.CsK locates the Cs, is a qw of paths for anyway
+        # another ghost lurks in the p.K grep
         my @Cs = map { flatline($_) } map { $S->anyway($_) }  split ' ', delete p.CsK;
-        
         if (p.K) {
             @Cs = grep { _.K eq p.K } @Cs;
         }
         die "more p to CsK".sw($p) if !p.K || 1 < keys(%$p);
-        
-        
         return @Cs;
     };
     #cSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
-    G.U.TafuBl = sub {#c # slightly travel this kinda u
-        my $S = shift;
-        my $u = 0S->TafuB(@_);
-        u.Li || die "no u Li ".wdump(2,$u);
-        0S->l($u);
-        $u
+    G.U.TafuBl = sub {my$S=shift;     0S->l( 0S->TafuB(@_) )               #c
+          # slightly travel this kinda u
     };
-    G.U.TafuB = sub {#c # lightly travel or retract this kinda u
-        my $S = shift;
-        0S->Bu(shift, shift);
-        0S->Tafu($uu);
+    G.U.TafuB = sub {my($S,$K,$B)=@_; 0S->Tafu(0S->Bu($K, $B))              #c
     };
-    G.U.Tafu = sub {#c # find exact K & B or this u travelled
-        my ($S, $uu) = @_;
-        my $u = 0S->fu($uu);
-        return $u if $u;
-        0S->T({i => $uu});
-        return $uu
+    G.U.Tafu =sub{my($S,$uu)=@_;  0S->fu($uu) || 0S->T({i => $uu})          #c
     };
-    G.U.Taful = sub {        my ($S, $uu) = @_;#c
-        my $u = 0S->Tafu($uu);
-        u.Li || die "no u Li Taful ".wdump(2,$u);
-        0S->l($u);
-        $u
+    G.U.Taful = sub {my($S,$uu)=@_;   0S->l( 0S->Tafu($uu) )             #c
     };
-    G.U.Bu = sub {     my ($S, $K, $B) = @_; 0S->sway({K=>$K,B=>$B}); #c
+    G.U.Bu = sub {my($S,$K,$B)=@_;   0S->sway({K=>$K},{B=>$B});          #c
     };
     
-    G.U.visTp_TAfuBl = sub {#c AAAAAAA
-        my ($S, $Tp, $Bp) = @_;
-        my $old = 0S->visTp($Tp);
-        
+    G.U.visTp_TafuBlA = sub { my ($S, $Tp, $Bup) = @_; #c
+        my $old = 0S->visTp($Tp); # could be Fun, wire into end
+        my $uu = 0S->Bu(@$Bup); 
+        my $u = 0S->fu($uu) || 0S->T({i => $uu});
         0S->l($u);
-        my $u = 0S->TafuBl(@$Bp);
         $T= $old;
         $u;
         
     };
-    G.U.visTp_l_u = sub {#c get in to a Tp and l u
-        my ($S, $Tp, $u) = @_;
+    G.U.visTp_l_u = sub { my ($S, $Tp, $u) = @_; #c get in to a T place and make links
         my $old = 0S->visTp($Tp);
         0S->l($u);
         $T= $old;
@@ -162,6 +134,7 @@ hooks:
         my ($S, $u) = @_;
         0S->accum($u, 'Lo', T.L);
         0S->accum($T, 'o', $u);
+        $u;
     };
     G.U.visTp_TafuBl = sub {#c # get in Tp, 
         my ($S, $Tp, $Bp) = @_;
@@ -187,10 +160,9 @@ hooks:
         # ow
         $S->doo(i.flows_D, {}) if i.flows_D;
         
-        # all this stuff is shaking
-        # catch a braid
+        # all this stuff is shaking # catch braids
+        
         T.L = $S->W->continues($S); # %
-        $S->ob("continues...", T.L);
         
         T.L.i eq T.i || die "tli not ni!?!?!";
         
@@ -219,7 +191,7 @@ hooks:
         
         my $L = T.L;
         $T = $old;
-        return $L;
+        return L.i;
     };
     G.U.visTp= sub { #c
         my ($S, $p, $fun) = @_;
@@ -250,20 +222,16 @@ hooks:
         
         if ($old) {
             T._T = $old;
-            
             #push @{old.T_||=[]}, $T;
-            
             if (old.i.T_remembers_last) {
                 T._last->{old.i.K} = old.i;
             }
         }
-        
         if (my $t = T._trail) {
             $t = T._trail = {%$t};
             t.is = [@{t.is||[]}, T.is];
             t.ih = {%{t.ih||{}}};
-            if ($moved && t.ih->{T.i.id}) {
-                # here before
+            if ($moved && t.ih->{T.i.id}) { # here before - some 3d? almost a real Trail?
                 if (t._no_circles) {
                     die "not allowed circular travel, "
                         .sw({here_before => T.i,T=>$T});
@@ -271,14 +239,15 @@ hooks:
             }
             t.ih->{T.is.id} = $T;
         }
+        $S->deeby && say "T is nowish ".ki($T);
         
-        # backwards compat
-        #$S->{$_} = $T->{$_} for qw'i L t o';
-        
-        if ($fun eq "Fun") {
+        if (ref $fun eq "CODE") {
+            return $fun->();
+            $T = $old;
+        }
+        elsif ($fun eq "Fun") {
             push @{ $F[0]->{_after_do} }, sub { $T = $old }
         }
-        $S->deeby && say "T is nowish ".ki($T);
         return $old;
     };
     G.U.fu = sub {#c

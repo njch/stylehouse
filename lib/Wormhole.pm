@@ -54,8 +54,6 @@ sub continues {
         
         G => $G,
     };
-
-    $W->ob($L);
     
     if ($G->deeby) {
         print colored("Enters the $namg\t\ti:".Ghost::pint($L->{i})."\n",
@@ -65,7 +63,9 @@ sub continues {
         print colored("W: \t\tB{ ".Ghost::ki($L->{i}->{B})."\n", 'bright_red');
         print colored("   \tt = ".Ghost::gpty($L->{t})."\n", 'red');
     }
+    
     push @{$W->{script}}, $L;
+    $G->ob("continues...", $L);
     
     return $L;
 }
