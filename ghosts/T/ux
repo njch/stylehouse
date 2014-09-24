@@ -6,14 +6,14 @@ C:
     S:
       tag: wormhole
       id_D: |
-        sw($B);
+        Say "os".wdump(2,$S);
         my ($id) = W.id =~ /-(\w+)$/;
         $id
         
-  - K: them
+  - K: _M_
     O: ux
     S:
-      tag: m
+      tag: _M_
      
   - K: ux
     O: ux
@@ -77,19 +77,38 @@ hooks:
     my $E = {%$ar};
     E.L = ux.B.Lu;
     E.uyL = $L if $L ne $uxL;
-
+    Say E.L.G.name;
     E.L.G->w(event => $E);
+  RW: |
+    my $p = {};
+    my $K = "_M_";
+    $K = "Wormhole" if ar.top;
+    my $W = ar.top || ar.W;
+    p.i = G.top if !ar.top && G.top;
+    G.RW->{"$W"} ||= # reciprocal buzz
+        0->visTp_TafuBl(
+            $p,
+            [$K => {W => $W}],
+        );
+  make_Lu_G_W: |
+    my $W = ux.B.Lu.G.W;
+    w RW[$W];
+  parent_ux_via_B_Lu_Lo_o: |
+    my $Lu = ux.B.Lu || die "no Lu on ux";
+    my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
+    my ($pux) = findO(ux => pLu.o) if $pLu;
+    $pux;
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
     $Ls ||= [];
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
     
-    my $top = 0->TafuB(Wormhole => {W => G.W});
+    my $top = $G->W;
+    #$G->RW; # destroyer
+    w RW[$top]; # for the ux ghosts W
     
-    0->visTp({
-        i => $top,
-    });
+    0->visTp({ i => G.top });
     
     my @uxs;
     for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
@@ -100,31 +119,11 @@ hooks:
             );
     }
     
-    my $parent_ux_via_B_Lu_Lo_o = sub {
-        my $ux = shift;
-        my $Lu = ux.B.Lu || die "no Lu on ux";
-        my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
-        my ($pux) = findO(ux => pLu.o) if $pLu;
-        $pux;
-    };
-    my $LuWs;
-    my $parent_ux_links_B_Lu_G_W = sub {
-        my $ux = shift; 
-        my $W = ux.B.Lu.G.W;
-        $LuWs->{"$W"} ||=
-            0->visTp_TafuBl(
-                {i=>$top},
-                [Wormhole => {W => $W}],
-            );
-    };
-    
     my @tux;
     for my $ux (@uxs) {
-        # join uxLis together like the origin
-        my $ix = $parent_ux_via_B_Lu_Lo_o->($ux);
+        my $ix = w parent_ux_via_B_Lu_Lo_o[$ux]; # join uxLis together like the origin
         
-        # or chuck it under a ux for its ghost
-        $ix ||= $parent_ux_links_B_Lu_G_W->($ux);
+        $ix ||= w make_Lu_G_W[$ux]; # or chuck it under a ux for its ghost
         
         0->visTp_l_u({i=>$ix}, $ux);
         
@@ -137,7 +136,7 @@ hooks:
     #which T is at already^
     w braid(Ds => 'uxalot');
 
-    my $html = top.html;
+    my $html = T.i.html;
     
     G.view->takeover($html);
     U->send_contents_awaiting();
@@ -169,6 +168,9 @@ hooks:
     };
   recoded_init: |
     H.G->w('re/exec');
+  croo:
+    multi: |
+      
   uxalot:
     0.1: | #c
       my $u = T.i;
@@ -269,7 +271,7 @@ hooks:
             "<$tag $attr>$conty$content</$tag>";
         };
         
-        my @content = @{u.Li.o};
+        my @content = @{u.Li.o || []};
         
         
         @content = sort { (a.conor || a.B.conor) <=> (b.conor || b.B.conor) } @content;

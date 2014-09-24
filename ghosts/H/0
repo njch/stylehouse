@@ -124,7 +124,7 @@ hooks:
         print Hostinfo::colored(scalar(`figlet '<'`), 'blue');
   serve:
     stuff: |
-      # ongoing stuff
+      # ongoing stuff #c
       return w serve/claw if $j->{claw};
       return w serve/event if $j->{event};
       return w serve/error if $j->{error}; # change from {e}
@@ -170,6 +170,7 @@ hooks:
         $1
       };
       
+      die "Well ".e.W."      \n".join"\n", map {_.id} @{ $H->get("Wormhole") };
       my $Wid = $id->($e->{W});
       ($E->{W}) = grep { $_->{id} eq "Wormhole-$Wid" } @{ $H->get("Wormhole") };
       
@@ -180,7 +181,12 @@ hooks:
       $E->{uxL} = $findL->($uxLid);
       
       $E->{e} = $e;
-      $E->{W}->{G}->w('event', $E) if $E->{W};
+      if (E.W) {
+            $E->{W}->{G}->w('event', $E) if $E->{W};
+      }
+      else {
+          Say "Nothing!!!!";
+      }
       
     TV: |
       my $id = $e->{id};
