@@ -1,19 +1,17 @@
 name: Styluxyio
 include: T/braid
 C:
-  - K: Wormhole # us
+  - K: W # us
     O: ux
     S:
       tag: wormhole
       id_D: |
-        Say "os".wdump(2,$S);
-        my ($id) = W.id =~ /-(\w+)$/;
-        $id
+        ( W.id =~ /-(\w+)$/ )[0]
         
-  - K: _M_
+  - K: M
     O: ux
     S:
-      tag: _M_
+      tag: MMMM
      
   - K: ux
     O: ux
@@ -83,7 +81,7 @@ hooks:
     my $W = ar.top||ar.W;
     my $u = 0->visTp_TafuBl(
         {},
-        [Wormhole => {W => $W}],
+        [W => {W => $W}],
     );
     0->visTp({ i => $u }) if ar.top;
     return $u
@@ -92,10 +90,7 @@ hooks:
         {i => G.top},
         [M => {W => $W}],
     );
-  umake_Lu_G_W: |
-    my $W = ux.B.Lu.G.W;
-    w RW[$W];
-  uparent_ux_via_B_Lu_Lo_o: |
+  ux_above_via_Lu: |
     my $Lu = ux.B.Lu || die "no Lu on ux";
     my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
     my ($pux) = findO(ux => pLu.o) if $pLu;
@@ -108,22 +103,21 @@ hooks:
     
     w RW(top => $G->W);# so event encapsu is whole ux W
     
-    
-    my @uxs;
-    for my $Lu (@{$Ls}) { #say "install ux outways to Lu";
-        push @uxs, 
-            0->visTp_TafuBl(
-                {L=>$Lu},
-                [ux => {Lu=>$Lu}],
-            );
-    }
+    my @uxs = map {
+        0->visTp_TafuBl(
+                {L=>$_}, # in Lu.o
+                [ux => {Lu=>$_}],
+            )
+        } @{$Ls};
     
     my @tux;
     for my $ux (@uxs) { # you join via Lu or to G_W
-        my $ix = w uparent_ux_via_B_Lu_Lo_o[$ux]; # join uxLis together like the origin
+    
+        my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
         
-        $ix ||= w umake_Lu_G_W[$ux]; # or the ux for its W
+        $ix ||= w RM(W => ux.B.Lu.G.W); # or the ux for its W
         
+        # OK. capture command and effect...?
         0->visTp_l_u({i=>$ix}, $ux);
         
         die "ix not Li " unless ix.Li;
@@ -141,7 +135,38 @@ hooks:
     U->send_contents_awaiting();
     Say $html;
     Say "ux antop ".$G->F_delta()."\n\n\n";
+  styles:
+    te: |
+      q'border-bottom:1px solid black',
+      qw' padding:0.4em margin-left:2em
+            width:100% float:left position:relative'
+    yw: |
+        q' margin-left:0.5em '
+    yo: |
+        q' border:2px solid #fca;'
+    20pt: |
+      'font-size:20pt;'
+    yi: |
+        q' border:2px solid #ba8; margin-left:0.5em '
+        
+    yt: |
+        q' padding:0.5em; background:rgba(200,80,130,0.5);'
     
+    shlink: |
+        q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
+        
+    rel: |
+      qw'position:relative'
+    abs: |
+      qw'position:absolute'
+    topleft: |
+      qw'position:absolute top:-5px left:-5px'
+    white: |
+      qw'color:white'
+    little: |
+      qw'font-size:60%'
+    fulw: |
+      qw {height:100% float:left position:absolute},
   any_init: |
     
     G.U.jgd = sub { join " ", grep { defined } @_ };
@@ -167,33 +192,9 @@ hooks:
     };
   recoded_init: |
     H.G->w('re/exec');
-  croo:
-    multi: |
-      #a
-  uxalot:
-    0.1: | #c
-      my $u = T.i;
-        my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
-        
-        if (my $uyKs = u.C_n_spawn) {
-            for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
-                uy.B ||= {};
-                
-                if (u.uy_in_dos) {
-                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
-                        uy.B->{$ton} = u.B->{u.B.n};
-                        uy.B.n = $ton;
-                    }
-                }
-                if (uy.uy_in_dos) {
-                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
-                        uy.B->{$n} = $Lu->{$n};
-                        uy.B.n = $n;
-                    }
-                }
-                
-                my @uys = ($uy);
-                
+  uytricks:
+    multi: | #c
+      my @uys = $uy;
                 if (u.uy_in_dos) {
                     if (u.uy_in_dos.n_array) {
                         my $n = uy.B.n;
@@ -211,6 +212,33 @@ hooks:
                         }
                     }
                 }
+      @uys
+    ngrab: | #c
+                if (u.uy_in_dos) {
+                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
+                        uy.B->{$ton} = u.B->{u.B.n};
+                        uy.B.n = $ton;
+                    }
+                }
+                if (uy.uy_in_dos) {
+                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
+                        uy.B->{$n} = u.B.Lu->{$n};
+                        uy.B.n = $n;
+                    }
+                }
+  uxalot:
+    0.1: | #c
+      my $u = T.i;
+        my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
+        
+        if (my $uyKs = u.C_n_spawn) {
+            for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
+                uy.B ||= {};
+                
+                w uytricks/ngrab[$uy, $u];
+                
+                my @uys = w uytricks/multi[$uy, $u];
+                
                 for my $uye (@uys) {
                     0->Taful($uye);
                 }
@@ -301,36 +329,4 @@ hooks:
         
         u.html = $tag->($content);
  
-  styles:
-    te: |
-      q'border-bottom:1px solid black',
-      qw' padding:0.4em margin-left:2em
-            width:100% float:left position:relative'
-    yw: |
-        q' margin-left:0.5em '
-    yo: |
-        q' border:2px solid #fca;'
-    20pt: |
-      'font-size:20pt;'
-    yi: |
-        q' border:2px solid #ba8; margin-left:0.5em '
-        
-    yt: |
-        q' padding:0.5em; background:rgba(200,80,130,0.5);'
-    
-    shlink: |
-        q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
-        
-    rel: |
-      qw'position:relative'
-    abs: |
-      qw'position:absolute'
-    topleft: |
-      qw'position:absolute top:-5px left:-5px'
-    white: |
-      qw'color:white'
-    little: |
-      qw'font-size:60%'
-    fulw: |
-      qw {height:100% float:left position:absolute},
 
