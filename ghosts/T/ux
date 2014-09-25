@@ -77,22 +77,25 @@ hooks:
     E.L.G->w(event => $E);
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
-    my $u = 0->visTp_TafuBl(
-        {},
-        [W => {W => $W}],
-    );
+    ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
+    my $Bu = [W => {W => $W}];
+    my $u = 0->TafuBl(@$Bu);
     0->visTp({ i => $u }) if ar.top;
+    G.top = $u if ar.top;
     return $u
   RM: | # a tip on the other side, so below our tip but above in space
-    0->visTp_TafuBl(
-        {i => G.top},
-        [M => {W => $W}],
+    ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RM"]);
+    0->TafuBl(
+        M => {W => $W},
     );
   ux_above_via_Lu: |
     my $Lu = ux.B.Lu || die "no Lu on ux";
     my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
     my ($pux) = findO(ux => pLu.o) if $pLu;
     $pux;
+  atop: |
+    w RW(top => G.T.W);# T encapsu is whole ux W
+    
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
@@ -114,7 +117,7 @@ hooks:
     for my $ux (@uxs) {
         my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
         
-        $ix ||= w RM(W => ux.B.Lu.G.W); # or the ux for its W
+        $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
         
         0->visTp_l_u({i=>$ix}, $ux);
         
@@ -134,9 +137,6 @@ hooks:
     Say $html;
     Say "ux antop ".$G->F_delta()."\n\n\n";
   
-  atop: |
-    w RW(top => $G->W);# T encapsu is whole ux W
-      
   styles:
     te: |
       q'border-bottom:1px solid black',

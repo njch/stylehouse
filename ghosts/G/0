@@ -51,14 +51,16 @@ hooks:
         return $thing;
     };
     G.U.accum = sub {#c # TODO path loquation doesn't stretch far re policy, no prob for now.
-        my ($S, $source, $ac, $t) = @_;
+        my ($S, $src, $ac, $t) = @_;
                 
         if ($ac eq "Lo" || $ac eq "Li") {
-            $source->{$ac} = $t;
+            $src->{$ac} = $t;
             return;
         }
         
-        my $a = 0S->loquate($source, $ac, []);
+        my $a = 0S->loquate($src, $ac, []);
+        
+        return if $ac eq 'o' && src.i && src.i eq $t;
 
         if (!grep { $_ eq $t } @$a) {
             push @$a, $t
