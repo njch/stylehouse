@@ -40,6 +40,9 @@ hooks:
     n: |
       Say "TOGIN";
       G Ϡ ->_0('V/toginvis');
+    A+n: |
+      Say "TOGIN!";
+      G splat ->_0('V/toginvis', {k=>'func'}); # ^ v
     a: |
       G splat ->_0('V/toginvis', {k=>'somewhere'});
     'À': |
@@ -59,13 +62,7 @@ hooks:
         $g->{db} = -1;
     }
     G._dont_mess_worm = 1;
-  lands: |
-    [ "G*",         sub { $H->data->{Ghost} } ],
-    [ "wayf",         sub { $G->stackway } ],
-    [ "\@F",           sub { [@F] } ],
-    [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
-    [ 'H',            sub {  $H } ],
-    [ 'L',             sub { $G } ];
+
   f:
     'ccc': | #ccc
       my $deg = -180 + int(rand(360));
@@ -215,7 +212,13 @@ hooks:
     for my $t (qw'land func') {
         my @data;
         if ($t eq "land") {
-            @data = w lands;
+            @data =   
+              [ "G*",         sub { $H->data->{Ghost} } ],
+              [ "wayf",         sub { $G->stackway } ],
+              [ "\@F",           sub { [@F] } ],
+              [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
+              [ 'H',            sub {  $H } ],
+              [ 'L',             sub { $G } ];
         }
         @data = do {
             my $w_f = $G->findway('f');
