@@ -95,17 +95,19 @@ hooks:
         
         return $w
     };
-    G.U.CsK = sub { my ($S, $p) = @_;   p.CsK || die "pass p.CsK to CsK";
+    G.U.CsK = sub { #c
+        my ($S, $p) = @_;
+        p.CsK || die "pass p.CsK to CsK";
         # p.CsK locates the Cs, is a qw of paths for anyway
-        # another ghost lurks in the p.K grep
         my @Cs = map { flatline($_) } map { $S->anyway($_) }  split ' ', delete p.CsK;
+        # another ghost lurks
         if (p.K) {
             @Cs = grep { _.K eq p.K } @Cs;
         }
         die "more p to CsK".sw($p) if !p.K || 1 < keys(%$p);
         return @Cs;
     };
-    G.U.Tind = sub {
+    G.U.Tind = sub {#c
         my ($S, $space) = @_;
         $space = "    " if !defined $space;
         my $mes = T._trail.is if T._trail;
@@ -113,6 +115,19 @@ hooks:
         my $ind = "";
         $ind .= "    " for 0..@$mes; # +1
         return $ind;
+    };
+    G.U.Egypto = sub {#c
+        my ($S, $Egyptian_Fraction) = @_;
+        my $val = 0;
+        for (split / ?\+ ?/, $Egyptian_Fraction) {
+            /^(\d+)\/(\d+)$/ || die "Egypmal";
+            $val += $1 / $2;
+        }
+        $val;
+    };
+    G.U.EgyB = sub {#c
+        my ($S, $B) = @_; # B of the B of the B:
+        return { map { 0->Egypto($_) => $B->{$_} } keys %$B };
     };
         
     #cSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS

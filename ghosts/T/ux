@@ -3,6 +3,15 @@ include: T/braid
 
 B:
   - K: V
+    Y:
+      6/9: |
+        for my $i (@{T.L.o}) {
+            if ($i==T.i) {
+                Say "Infinasm";
+                next;
+            }
+            w anTop[$i];
+        }
     B:
       1/5: |
         w RW(top => G.T.W);# T encapsu is whole ux W
@@ -24,22 +33,29 @@ B:
                 unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
         }
       4/5: |
+        w DooB(K => 'U'); # %
         w braid(Ds => 'uxalot'); # %
       5/5: |
         my $html = T.i.html;
-        G.view->takeover($html);
+        G.O.V.xu->takeover($html);
         U->send_contents_awaiting();
         Say $html;
+        
   - K: U
     Y:
-      2/3: |
+      6/9: |
         for my $i (@{T.L.o}) {
-            next if $i==T.i;
+            if ($i==T.i) {
+                Say "Infinasm";
+                next;
+            }
             w anTop[$i];
         }
     B:
-      1/3: |
-        
+      1/9: |
+        w utricks/spawn(u => T.i);
+      9/9: |
+        w utricks/style(u => T.i);
         
 C:            # W M ux
   - K: W # us
@@ -295,43 +311,8 @@ hooks:
                         uy.B.n = $n;
                     }
                 }
-  uxalot:
-    0.1: | #c
-      my $u = T.i;
-        my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
-        
-        
-        say 0->Tind()." ux - ".pint(u.B.Lu.i)."    ".u.B.Lu.t if u.K eq "ux";
-        w utricks/spawn(u => T.i);
-        # creates uy bunch, nest these, balance on the tractor beam;
-        # dissect Taful
-        
-        #0S->fu($uu) || 0S->T({i => $uu})
-        #0S->l( 0S->Tafu($uu) ) 
-        
-        # uy found (fu)
-        # uy could be surpassed (!fu, T) (K hits A space)
-        # uy could be no longer
-        # the latter two need deleting
-        # which could be meant from somewhere else
-        # that corner where things multiply without much meaning should go away somewhere
-        # the importance of lambdas is compositing steps into a vortex
-        # it doesn't need to talk like Rodin
-        
-        # eg. TafuBl is a little braid, like a 
-        # grab a copy, mod it, feed into braid is all
-        
-        
-        die "0.1: ux has no ways out, expected SOMETHING!?".sw(u.Li)
-        
-            if u.K eq "ux" && !@{u.Li.o};
-    0.5: | #c
-      for my $i (@{T.L.o}) {
-          next if $i==T.i;
-          w anTop[$i];
-      }
-    0.6: | #c
-      my $u = T.i;
+    style: | #c
+        my $u = T.i;
         
         my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
         die "ux has no ways out, expected SOMETHING!?".wdump(u.Li)
@@ -388,7 +369,7 @@ hooks:
             (defined u.content ? u.content : "")
             .join "\n", U->contor(@content);
         
-        if (length($content) > $content_max) {
+        if (length($content) > $content_max) { # sets lies about content so we can send it serpitly (just this once...)
             $content = "";
             @content = ();
             # via travel add: #$uxid > #$id # in case of mid-y splits...
@@ -406,5 +387,24 @@ hooks:
         $content = "\n".ind("  ", $content)."\n" if @content;
         
         u.html = $tag->($content);
+  uxalot:
+    0.1: | #c
+      my $u = T.i;
+        my $Lu = u.B.Lu || die "no Lu" if u.K eq "ux";
+        
+        
+        say 0->Tind()." ux - ".pint(u.B.Lu.i)."    ".u.B.Lu.t if u.K eq "ux";
+        w utricks/spawn(u => T.i);
+        
+        die "0.1: ux has no ways out, expected SOMETHING!?".sw(u.Li)
+        
+            if u.K eq "ux" && !@{u.Li.o};
+    0.5: | #c
+      for my $i (@{T.L.o}) {
+          next if $i==T.i;
+          w anTop[$i];
+      }
+    0.6: | #c
+      w utricks/style(u => T.i);
  
 
