@@ -126,8 +126,8 @@ hooks:
         $val;
     };
     G.U.EgyB = sub {#c
-        my ($S, $B) = @_; # B of the B of the B:
-        return { map { 0->Egypto($_) => $B->{$_} } keys %$B };
+        my ($S, $B) = @_;
+        return { map { 0->Egypto($_) => $_ } keys %$B };
     };
         
     #cSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
@@ -252,21 +252,17 @@ hooks:
         if ($old) {
             T._T = $old;
             #push @{old.T_||=[]}, $T;
-            if (old.i.T_remembers_last) {
-                T._last->{old.i.K} = old.i;
-            }
         }
-        if (my $t = T._trail) {
-            $t = T._trail = {%$t};
-            t.is = [@{t.is||[]}, T.is];
-            t.ih = {%{t.ih||{}}};
-            if ($moved && t.ih->{T.i.id}) { # here before - some 3d? almost a real Trail?
-                if (t._no_circles) {
-                    die "not allowed circular travel, "
-                        .sw({here_before => T.i,T=>$T});
-                }
+        if (my $r = T.r) {
+            $r = T.r = {%$r};
+            r.is = [@{r.is||[]}, T.is];
+            r.ih = {%{r.ih||{}}};
+            if ($moved && r.ih->{T.i.id} && r.noo) {
+                # recursion q factor # can rebraid things to go on forever etc.
+                die "not allowed circular travel, "
+                    .sw({here_before => $T});
             }
-            t.ih->{T.is.id} = $T;
+            r.ih->{T.is.id} = $T;
         }
         $S->deeby && say "T is nowish ".ki($T);
         
