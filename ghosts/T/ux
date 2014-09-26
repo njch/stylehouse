@@ -3,25 +3,17 @@ include: T/braid
 
 B:
   - K: V
-    Y:
-      6/9: |
-        for my $i (@{T.L.o}) {
-            if ($i==T.i) {
-                Say "Infinasm";
-                next;
-            }
-            w anTop[$i];
-        }
     B:
       1/5: |
         w RW(top => G.T.W);# T encapsu is whole ux W
       2/5: |
         # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
                                     # l( @ Lu.o   # fu( via v
-        my @uxs = map { 0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}]) } @{$Ls};
+        ar.uxs = [ map {
+            0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
+        } @{$Ls} ];
       3/5: |
-        my @tux;
-        for my $ux (@uxs) {
+        for my $ux (@$uxs) {
             my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
 
             $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
@@ -29,12 +21,11 @@ B:
             0->visTp_l_u({i=>$ix}, $ux);
 
             die "ix not Li " unless ix.Li;
-            die "ux not in above ux o: ".sw({uxs=>\@uxs,ix=>$ix})
+            die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
                 unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
         }
       4/5: |
         w DooB(K => 'U'); # %
-        w braid(Ds => 'uxalot'); # %
       5/5: |
         my $html = T.i.html;
         G.O.V.xu->takeover($html);
@@ -372,7 +363,6 @@ hooks:
             # via travel add: #$uxid > #$id # in case of mid-y splits...
             my $id = u.at.id;
             my $sel = "#$id";
-            $sel = "ux#$uxid > $sel" if $uxid && $uxid ne $id;
             push @{G.contents_awaiting||=[]}, {
                 sel => $sel,
                 u => $u,

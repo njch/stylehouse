@@ -110,7 +110,7 @@ hooks:
     G.U.Tind = sub {#c
         my ($S, $space) = @_;
         $space = "    " if !defined $space;
-        my $mes = T._trail.is if T._trail;
+        my $mes = T.r.is if T.r;
         $mes ||= [];
         my $ind = "";
         $ind .= "    " for 0..@$mes; # +1
@@ -255,14 +255,14 @@ hooks:
         }
         if (my $r = T.r) {
             $r = T.r = {%$r};
-            r.is = [@{r.is||[]}, T.is];
+            r.is = [@{r.is||[]}, T.i];
             r.ih = {%{r.ih||{}}};
             if ($moved && r.ih->{T.i.id} && r.noo) {
                 # recursion q factor # can rebraid things to go on forever etc.
                 die "not allowed circular travel, "
                     .sw({here_before => $T});
             }
-            r.ih->{T.is.id} = $T;
+            r.ih->{T.i.id} = $T;
         }
         $S->deeby && say "T is nowish ".ki($T);
         

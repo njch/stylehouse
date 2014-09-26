@@ -11,11 +11,14 @@ hooks:
     
   DooB: |
     my $B = 0->sway({CsK => 'B', K => $K}) || die "noK $K";
-    
+    delete ar.K;
+    B.ar = $ar if %$ar;
     for my $d (qw'B Y') {
         my $E = 0->EgyB($B->{$d});
-        $B->{$d.'E'} = $E;
-        $B->{$d.'o'} = [ map { { $_ => $E->{$_} } } sort keys %$E ];
+        
+        $B->{$d.'o'} = [ map {
+            { $_ => { $d => $E->{$_} } }
+        } sort keys %$E ];
     }
     
     0->visTp({
@@ -25,11 +28,13 @@ hooks:
     B.top = $T;
     
     sw($B);
-    T.B.i = 0;
-    while (T.B.Bo->[ T.B.i ]) {
-        ($s, my $Ei) = %$s;
-        #w anTop[$Dw];
-        T.B.i++;
+    T.B.Boi = 0;
+    my $s;
+    while (defined( my $s = T.B.Bo->[ T.B.Boi ] )) {
+        (T.B.Bangle, $s) = %$s;
+        ($s, T.B.BK) = %$s;
+        w anTop[$B];
+        T.B.Boi++;
     }
   braid: |
     my $Ds = ar.Ds || T.Ds || die "No Ds to braid";
@@ -62,30 +67,32 @@ hooks:
         Tbr.Di++;
     }
   anTop: |
-    my $ds='';
-    if (T._trail && ref T._trail.is eq "ARRAY") {
-        $ds .= "    " for 0..@{T._trail.is||[]} 
-    }
-    my $sets = join "     ",
-        (ar.Dw && "Dw"." -> T.Dw.K"),
-        (ar.i && ref ar.i eq "Way" && "i -> ar.i.K"),
-        ;
-        
-    #say "anTop $ds $sets";
+    my $ds = 0->Tind();
+    say "$ds anTop ".join "     ",
+        (ar.B && "BK -> ar.B.BK"),
+        (ar.i && ref ar.i eq "Way" && "i -> ar.i.K");
     0->visTp($ar, "Fun") if %$ar;
     
-    T.L || die "no Line from i... antop";
-    if (T.Dw.K < 0.5) {
-        say " - $ds   >   T.Dw.K T.i.K" if $G->deeby;
-        $G->doo(T.Dw.D);
+    my $B = T.B;
+    my ($for, $aft) = ([], []);
+    my @Ds = ($for, {'B' => T.B.BK}, $aft);
+    for my $Y (@{ T.B.Yo||[] }) {
+        (my $Yangle, $Y) = %$Y;
+        my $to = $Yangle > B.Bangle ? $aft : $for;
+        push @$to, $Y; # {Y => $YK}
     }
     
-    T.Y || die "NO Y";
-    #say " - $ds  Y from T.i.K";
-    my $r = $G->doo(T.Y);
-    
-    if (T.Dw.K > 0.5) {
-        say " - $ds <       T.Dw.K T.i.K" if $G->deeby;
-        $G->doo(T.Dw.D);
+    my $s = "  >";
+    for my $D (flatline(@Ds)) {
+        ($D, my $K) = %$D;
+        my $w = $B->{$D}->{$K};
+        
+        say " - $ds  $s  $D $K T.i.K" if $D eq "B" && $G->deeby;
+        $s = "<  " if $D eq "Y";
+        
+        $G->doo($w, {
+            %{B.ar||{}}, ar=>B.ar,
+            D=>$D,K=>$K,TiK=>T.i.K,
+        });
     }
 
