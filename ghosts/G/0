@@ -254,14 +254,14 @@ hooks:
             #push @{old.T_||=[]}, $T;
         }
         if (my $r = T.r) {
-            $r = T.r = {%$r};
-            r.is = [@{r.is||[]}, T.i];
-            r.ih = {%{r.ih||{}}};
             if ($moved && r.ih->{T.i.id} && r.noo) {
                 # recursion q factor # can rebraid things to go on forever etc.
                 die "not allowed circular travel, "
                     .sw({here_before => $T});
             }
+            $r = T.r = {%$r};
+            r.ih = {%{r.ih||{}}};
+            r.is = [@{r.is||[]}, T.i];
             r.ih->{T.i.id} = $T;
         }
         $S->deeby && say "T is nowish ".ki($T);

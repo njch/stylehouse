@@ -18,7 +18,7 @@ B:
             my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
             $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
             0->visTp_l_u({i=>$ix}, $ux);
-            w sane/ux3[$ux, $ix, $uxs];
+            w sane/V3[$ux, $ix, $uxs];
         }
       4/5: |
         w DooB(K => 'U'); # %
@@ -37,7 +37,9 @@ B:
         }
     B:
       1/9: |
-        w utricks/spawn(u => T.i);
+        my $u = T.i;
+        w utricks/spawn[$u];
+        w sane/U1[$u];
       9/9: |
         w utricks/style(u => T.i);
         
@@ -118,7 +120,7 @@ hooks:
     ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
     my $Bu = [W => {W => $W}];
     my $u = 0->TafuBl(@$Bu);
-    0->visTp({ i => $u }) if ar.top;
+    0->visTp({ i => $u }) if ar.top && T.i ne $u;
     G.top = $u if ar.top;
     return $u
   RM: | # a tip on the other side, so below our tip but above in space
@@ -237,14 +239,16 @@ hooks:
   recoded_init: |
     H.G->w('re/exec');
   sane:
-    ux3: |
+    V3: |
       die "ix not Li " unless ix.Li;
       die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
           unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
+    U1: |
+        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
+        die "ux has no ways out, expected SOMETHING!?".sw(u.Li)
+            if u.K eq "ux" && !@{u.Li.o};
   utricks:
     spawn: | #c
-        die "HEOR";
-        die "OK".sw(T.L) if T.i.K eq "ux";
         if (my $uyKs = u.C_n_spawn) {
             for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
                 uy.B ||= {};
@@ -302,11 +306,6 @@ hooks:
     style: | #c
         my $u = T.i;
         
-        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
-        die "ux has no ways out, expected SOMETHING!?".sw(u.Li)
-        
-            if u.K eq "ux" && !@{u.Li.o};
-        
         my $at; # heres some state
         
         at.id = w $u S/id_D[$at];
@@ -352,7 +351,7 @@ hooks:
         
         at.contents = [@content];
                 
-        my $content_max = 2000;
+        my $content_max = 20000000;
         my $content =
             (defined u.content ? u.content : "")
             .join "\n", U->contor(@content);
@@ -368,10 +367,8 @@ hooks:
                 u => $u,
             };
         }
-            
-        #die wdump(3,[u.at, $content]) if u.K eq "ux";
-        $content = "\n".ind("  ", $content)."\n" if @content;
         
+        $content = "\n".ind("  ", $content)."\n" if @content;
         u.html = $tag->($content);
   uxalot:
     0.1: | #c
@@ -385,9 +382,4 @@ hooks:
         die "0.1: ux has no ways out, expected SOMETHING!?".sw(u.Li)
         
             if u.K eq "ux" && !@{u.Li.o};
-    0.5: | #c
-      for my $i (@{T.L.o}) {
-          next if $i==T.i;
-          w anTop[$i];
-      }
 

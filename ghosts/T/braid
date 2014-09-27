@@ -25,12 +25,14 @@ hooks:
         B => $B,
         r => { noo => 1 },
     }, "Fun");
+    T.B = $B; # not mergey this one time
+    die "BB BB" if T.B ne $B;
     B.top = $T;
     
     
     Say "BRRRRRRRRRAID! $K $K $K";
     
-    T.B.Boi = 0;
+    B.Boi = 0;
     my $s;
     while (defined( my $s = T.B.Bo->[ T.B.Boi ] )) {
         (T.B.Bangle, my $B_K) = %$s;
@@ -41,12 +43,8 @@ hooks:
     }
   anTop: |
     my $ds = 0->Tind();
-    saybl "$ds   anTop ".ki($ar);
-    saybl "$ds  ar.B.K B move -> ar.B.Bangle  ---  ar.B.BK"     if ar.B;
-    saybl "$ds i -> ar.i.K"     if ar.i && ref ar.i eq "Way";
-    saybl "$ds ==== T.i.K ";
-    sayre "$ds GUNNA ".ki($ar) if %$ar;
-    
+    saybl "$ds anTop i->".ar.i.K if ar.i;
+    saybl "$ds anTop B->".ar.B.Bangle if ar.B;
     0->visTp($ar, "Fun") if ar.i; # not if B, loses...
     T.B = ar.B if ar.B;
     
@@ -62,23 +60,20 @@ hooks:
     }
     
     my $s = "  >";
-    my @cop = @Ds;
     for my $D (flatline(@Ds)) {
         (my $d, my $K) = %$D;
         
-        sayyl "$ds Diding a B.K-$d-$K";
-        my $D = $B->{$d}->{$K};
-        saygr "$ds whichis", ind("$ds   ", $D);
-        
-        say " - $ds  $s  B.K-$d-$K T.i.K" if $d eq "B";
+        my $_s = $s;
+        $_s = " - " if $d eq "Y";
+        $_s = " - $ds  $_s  B.K-$d-$K T.i.K";
+        #sayyl($_s) if $d eq "Y";
+        saybl($_s) if $d eq "B";
         $s = "<  " if $d eq "Y";
-        sayyl "$ds Y Y Y Y YY Y Y Y YYY Y YYY " if $d eq 'Y';
-        sayre "B=".ki($B);
+        
+        my $D = $B->{$d}->{$K};
         $G->doo($D, {
             %{B.ar||{}}, ar=>B.ar,
             d=>$d,K=>$K,TiK=>T.i.K,
         });
-        sayre "$ds done B.K-$d-$K    T.i.K";
     }
-    sayre "$ds< back"
 
