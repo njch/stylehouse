@@ -36,12 +36,10 @@ B:
             w anTop[$i];
         }
     B:
-      1/4: |
+      3/9: |
         my $u = T.i;
         w utricks/spawn[$u];
         w sane/U1[$u];
-      2/4: |
-        my $u = T.i;
         
         u._at = u.at;
         my $at = u.at = {}; # heres some state
@@ -55,7 +53,7 @@ B:
         unless (u.O eq 'ux') {
             my $n = u.B.n;
             at.tag ||= "y$n";
-            at.conty = w $u S/content_D;
+            at.conty = w $u S/content_D(e=>'');
             
             at.styles = U->jgd(at.styles, "y$n", u.B.styles);
         }
@@ -67,11 +65,18 @@ B:
         my $at = u.at;
         
         my @content = sort { a.conor <=> b.conor } @{u.Li.o || []};
-        
         at.ooze = [@content];
         
-        my $conty = defined at.conty ? at.conty : "";
-        my $content = join "\n", U->contor(@content);
+        my $attr = { %{u.at} };
+        
+        attr.style = $G->styles(delete attr.styles); # or so
+        attr.style ||= "position:relative;";
+        
+        my $tag = attr.tag;
+        
+        my $conty = defined attr.conty ? attr.conty : "";
+        
+        my $content = join "\n", grep { defined } map { _.html } @content;
         
         if (length($conty.$content) > 20000000) {
             $content = "";
@@ -86,21 +91,10 @@ B:
         }
         
         $content = "\n".ind("  ", $content)."\n" if @content;
-        
-        my $attr = { %{u.at} };
-        
-        attr.style = $G->styles(delete attr.styles); # or so
-        
-        my $tag = delete attr.tag;
-        
-        my $conty = delete attr.conty if exists attr.conty;
-        $conty = "" if!defined $conty;
-        delete attr.ooze;
-        attr.title = "";
-        
-        die "Already got html! u.html" if u.html;
 
+        delete $attr->{$_} for qw'conty ooze tag styles';
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
+        
         u.html = "<$tag $attr>$conty$content</$tag>";
 
         
@@ -182,7 +176,7 @@ hooks:
         for my $ait (reverse @$awa) {
             my $u = ait.u;
             my $sel = ait.sel;
-            my @htmls = U->contor(@{u.at.contents});
+            my @htmls = grep { defined } map { _.html } @{u.at.ooze};
             #die wdump([$u,\@htmls]);
             for my $html (@htmls) {
                 #next if G.fuckery++ > 7;
@@ -250,10 +244,6 @@ hooks:
   any_init: |
     G.U.jgd = sub { join " ", grep { defined } @_ };
     G.U.firstdef = sub { (grep { defined } @_)[0] };
-    G.U.contor = sub {
-        grep { defined }
-        map { _.html || _.content } @_
-    };
   recoded_init: |
     H.G->w('re/exec');
   sane:
