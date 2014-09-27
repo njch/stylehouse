@@ -16,6 +16,7 @@ hooks:
     for my $d (qw'B Y') {
         my $E = 0->EgyB($B->{$d});
         $B->{$d.'o'} = [ map {
+            # 0.6666* => Y => 6/9
             { $_ => { $d => $E->{$_} } }
         } sort keys %$E ];
     }
@@ -34,36 +35,6 @@ hooks:
         w anTop[$B];
         T.B.Boi++;
     }
-  braid: |
-    my $Ds = ar.Ds || T.Ds || die "No Ds to braid";
-    unless (ref $Ds eq "HASH") {
-        $Ds = $G->findway($Ds);
-        die "malformed Ds ".wdump($Ds)
-            unless ref $Ds eq "HASH";
-    }
-    $Ds = {%$Ds};
-    
-    my $Y = delete $Ds->{0.5} if $Ds->{0.5};
-    
-    my @Ds = map {
-        { K => $_, D => $Ds->{$_} }
-    } sort keys %$Ds;
-    
-    my $p = {};
-        p._trail._no_circles = 1;
-        p._braid = {};
-    0->visTp($p, "Fun");
-    
-    my $Tbr = T._braid;
-    Tbr.Ds = \@Ds;
-    Tbr.Di = 0;
-    T.Y = $Y; 
-    
-    while (defined( my $Dw = Tbr.Ds->[Tbr.Di] )) {
-        say "Doing Di=Tbr.Di  at Dw.K";
-        w anTop[$Dw];
-        Tbr.Di++;
-    }
   anTop: |
     my $ds = 0->Tind();
     say "$ds anTop ".join "     ",
@@ -75,10 +46,12 @@ hooks:
     my ($for, $aft) = ([], []);
     my @Ds = ($for, {'B' => T.B.BK}, $aft);
     for my $Y (@{ T.B.Yo||[] }) {
+        my $ye = $Y;
         (my $Yangle, $Y) = %$Y;
         my $to = $Yangle > B.Bangle ? $aft : $for;
+        Say "well theeene  $Yangle > B.Bangle ";
         push @$to, $Y; # {Y => $YK}
-        die "Y $Y" if ref $Y ne "HASH";
+        die "Y $Y ".wdump($ye) if ref $Y ne "HASH";
     }
     
     my $s = "  >";

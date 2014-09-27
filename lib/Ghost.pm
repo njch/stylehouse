@@ -625,7 +625,6 @@ sub doo {
     my $komptalk = $@ ? "nicht kompilieren! nicht kompilieren!\n" : "";
     
     my $sigstacken = sub {
-        say "Got a sig DIE! $@";
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
