@@ -13,22 +13,18 @@ B:
             0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
         } @{$Ls} ];
       3/5: |
+        sayre "UXS: ".@$uxs;
         for my $ux (@$uxs) {
             my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
-
             $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
-
             0->visTp_l_u({i=>$ix}, $ux);
-
-            die "ix not Li " unless ix.Li;
-            die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
-                unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
+            w sane/ux3[$ux, $ix, $uxs];
         }
       4/5: |
         w DooB(K => 'U'); # %
       5/5: |
         my $html = T.i.html;
-        G.O.V.xu->takeover($html);
+        G.O.V.ux->takeover($html);
         U->send_contents_awaiting();
         Say $html;
         
@@ -36,10 +32,7 @@ B:
     Y:
       6/9: |
         for my $i (@{T.L.o}) {
-            if ($i==T.i) {
-                Say "Infinasm";
-                next;
-            }
+            $i==T.i && next Say "Infinasm";
             w anTop[$i];
         }
     B:
@@ -243,8 +236,15 @@ hooks:
     };
   recoded_init: |
     H.G->w('re/exec');
+  sane:
+    ux3: |
+      die "ix not Li " unless ix.Li;
+      die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
+          unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
   utricks:
     spawn: | #c
+        die "HEOR";
+        die "OK".sw(T.L) if T.i.K eq "ux";
         if (my $uyKs = u.C_n_spawn) {
             for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
                 uy.B ||= {};
@@ -303,7 +303,7 @@ hooks:
         my $u = T.i;
         
         my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
-        die "ux has no ways out, expected SOMETHING!?".wdump(u.Li)
+        die "ux has no ways out, expected SOMETHING!?".sw(u.Li)
         
             if u.K eq "ux" && !@{u.Li.o};
         
@@ -390,7 +390,4 @@ hooks:
           next if $i==T.i;
           w anTop[$i];
       }
-    0.6: | #c
-      w utricks/style(u => T.i);
- 
 

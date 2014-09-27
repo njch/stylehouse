@@ -84,6 +84,18 @@ sub sw {
     $F[0]->{G}->timer(0.1, sub { $Ly->w(somewhere => {thing => $thing}) });
     return "Splatted ".gpty($thing);
 }
+sub sayyl {
+    print colored(join("\n", @_,""), 'bright_yellow');
+}
+sub sayre {
+    print colored(join("\n", @_,""), 'red');
+}
+sub saygr {
+    print colored(join("\n", @_,""), 'bright_green');
+}
+sub saybl {
+    print colored(join("\n", @_,""), 'bright_blue');
+}
 sub mess {
     my $G = shift;
     $H->{G}->w(mess => {what => shift, thing => shift});
