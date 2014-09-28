@@ -133,9 +133,7 @@ hooks:
             my $u = ait.u;
             my $sel = ait.sel;
             my @htmls = grep { defined } map { _.html } @{u.at.ooze};
-            #die wdump([$u,\@htmls]);
             for my $html (@htmls) {
-                #next if G.fuckery++ > 7;
                 $H->JS("\$('$sel').append('$html');");
             }
         }
@@ -158,10 +156,6 @@ hooks:
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
         
-        
-        # dodge #c
-        
-        
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
         # # diff at.E_ooze
         my $attr = { %{u.at} };
@@ -169,10 +163,7 @@ hooks:
         # filter styles out to the W stylesheet
         attr.style = $G->styles(delete attr.styles);
         
-        my $tag = attr.tag;
-        
         my $conty = defined attr.conty ? attr.conty : "";
-        
         my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
         
         if (length($conty.$content) > 25) {
@@ -188,21 +179,14 @@ hooks:
         
         $content = "\n".ind("  ", $content)."\n" if $content;
 
+        
+        my $tag = attr.tag;
         delete $attr->{$_} for qw'conty ooze tag styles';
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
         
         
         u.html = "<$tag $attr>$conty$content</$tag>";
         
-        
-        #w update_uhtml[$u];
-  update_uhtml: |
-    if ($u eq G.top) {
-        my $html = u.html;
-        G.O.V.ux->takeover($html);
-        w send_contents_awaiting;
-        Say $html;
-    }
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
     ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
