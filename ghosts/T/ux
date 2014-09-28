@@ -44,8 +44,25 @@ Bs:
         my $u = T.i;
         w compile_style[$u];
     done: |
-      w play_js;
-        
+      w DooB(K => 'J'); # %
+  
+  - K: J #c
+    Y: 
+      6/9: |
+        for my $i (@{T.L.o}) {
+            $i==T.i && next Say "Infinasm";
+            w anTop[$i];
+        }
+    
+    D:
+      3/9: |
+        my $u = T.i;
+        if ($u eq G.top) {
+            my $html = u.html;
+            G.O.V.ux->takeover($html);
+            w send_contents_awaiting;
+            Say $html;
+        }
 C:            # W M ux
   - K: W # us
     O: ux
@@ -119,14 +136,7 @@ hooks:
     Say E.L.G.name;
     E.L.G->w(event => $E);
   
-  play_js: |
-    my $u = T.i;
-    if ($u eq G.top) {
-        my $html = u.html;
-        G.O.V.ux->takeover($html);
-        w send_contents_awaiting;
-        Say $html;
-    }
+
   send_contents_awaiting: |
         my $awa = G.contents_awaiting ||= [];
         for my $ait (reverse @$awa) {
@@ -145,31 +155,30 @@ hooks:
             styles => $j->(u.styles),
             tag => (u.B.tag || u.S.tag),
         };
-        
-        unless (u.O eq 'ux') {
-            my $n = u.B.n;
-            at.tag ||= "y$n";
-            at.conty = w $u S/content_D;
-            
-            at.styles = $j->(at.styles, "y$n", u.B.styles);
+        if (u.O ne 'ux' && u.B.n) {
+            at.styles .= " y".u.B.n;
+            at.tag ||= "y".u.B.n;
         }
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
+        at.conty = w $u S/content_D if u.S.content_D;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
         
         
         # # diff at.E_ooze
-        my $attr = { %{u.at} };
+        my $attr = {};
+        attr.id = at.id;
+        attr.tag = at.tag;
         
         # style/class gets misccss/Wcss
-        attr.style = $G->styles(delete attr.styles);
+        attr.style = $G->styles(at.styles);
         
-        my $conty = defined attr.conty ? attr.conty : "";
-        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
+        my $conty = defined at.conty ? at.conty : "";
         
         # make this a sub so it looks sleeker, attach them things beside .html though
         
+        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
         if (length($conty.$content) > 25) {
             $content = "";
             # via travel add: #$uxid > #$id # in case of mid-y splits...
@@ -226,14 +235,14 @@ hooks:
     yw: |
         q' margin-left:0.5em '
     yo: |
-        q' border:2px solid #fca;'
+        q' color:#bbb'
     20pt: |
       'font-size:20pt;'
     yi: |
-        q' border:2px solid #ba8; margin-left:0.5em '
+        q' margin-left:0.5em '
         
     yt: |
-        q' padding:0.5em; background:rgba(200,80,130,0.5);'
+        qw'font-size:120% '
     
     shlink: |
         q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
