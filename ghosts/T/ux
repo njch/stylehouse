@@ -1,17 +1,17 @@
 name: Styluxyio
 include: T/braid
 
-B:
+Bs:
   - K: V #c
-    B:
+    D:
       1/5: |
         w RW(top => G.T.W);# T encapsu is whole ux W
-      2/5: |
+      2/5: | 
         # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
                                     # l( @ Lu.o   # fu( via v
         ar.uxs = [ map {
             0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
-        } @{$Ls} ];
+        } @{$Ls} ]; 
       3/5: |
         sayre "UXS: ".@$uxs;
         for my $ux (@$uxs) {
@@ -32,7 +32,7 @@ B:
             $i==T.i && next Say "Infinasm";
             w anTop[$i];
         }
-    B:
+    D:
       3/9: |
         my $u = T.i;
         w utricks/spawn[$u];
@@ -43,6 +43,8 @@ B:
       7/9: |
         my $u = T.i;
         w compile_style[$u];
+    done: |
+      w play_js;
         
 C:            # W M ux
   - K: W # us
@@ -117,6 +119,14 @@ hooks:
     Say E.L.G.name;
     E.L.G->w(event => $E);
   
+  play_js: |
+    my $u = T.i;
+    if ($u eq G.top) {
+        my $html = u.html;
+        G.O.V.ux->takeover($html);
+        w send_contents_awaiting;
+        Say $html;
+    }
   send_contents_awaiting: |
         my $awa = G.contents_awaiting ||= [];
         for my $ait (reverse @$awa) {
@@ -131,21 +141,19 @@ hooks:
         }
         G.contents_awaiting = [];
   compile_style: |
-        my $at = u.at = {}; # heres some state
-        
-        at.id = w $u S/id_D[$at] if u.S.id_D;
-        at.id ||= u.Li.uuid;
-        
-        at.styles = U->jgd(u.styles); # coalescing/merging
-        at.styles ||= "rel";
-        at.tag ||= U->firstdef(u.B.tag, u.S.tag); # overriding
+        my $j = sub { join " ", grep { defined } @_ };
+        my $at = u.at = {
+            id => (u.S.id_D ? do {w $u S/id_D;} :  u.Li.uuid),
+            styles => $j->(u.styles),
+            tag => (u.B.tag || u.S.tag),
+        };
         
         unless (u.O eq 'ux') {
             my $n = u.B.n;
             at.tag ||= "y$n";
-            at.conty = w $u S/content_D(e=>'');
+            at.conty = w $u S/content_D;
             
-            at.styles = U->jgd(at.styles, "y$n", u.B.styles);
+            at.styles = $j->(at.styles, "y$n", u.B.styles);
         }
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
@@ -167,7 +175,7 @@ hooks:
         
         my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
         
-        if (length($conty.$content) > 20000000) {
+        if (length($conty.$content) > 25) {
             $content = "";
             # via travel add: #$uxid > #$id # in case of mid-y splits...
             my $id = u.at.id;
@@ -187,7 +195,7 @@ hooks:
         u.html = "<$tag $attr>$conty$content</$tag>";
         
         
-        w update_uhtml[$u];
+        #w update_uhtml[$u];
   update_uhtml: |
     if ($u eq G.top) {
         my $html = u.html;
@@ -254,9 +262,6 @@ hooks:
       qw'font-size:60%'
     fulw: |
       qw {height:100% float:left position:absolute},
-  any_init: |
-    G.U.jgd = sub { join " ", grep { defined } @_ };
-    G.U.firstdef = sub { (grep { defined } @_)[0] };
   recoded_init: |
     H.G->w('re/exec');
     #Say "Booyah";
