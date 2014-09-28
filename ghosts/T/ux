@@ -2,7 +2,7 @@ name: Styluxyio
 include: T/braid
 
 B:
-  - K: V
+  - K: V #c
     B:
       1/5: |
         w RW(top => G.T.W);# T encapsu is whole ux W
@@ -23,12 +23,9 @@ B:
       4/5: |
         w DooB(K => 'U'); # %
       5/5: |
-        my $html = T.i.html;
-        G.O.V.ux->takeover($html);
-        w send_contents_awaiting;
-        Say $html;
+        # yep
         
-  - K: U
+  - K: U #c
     Y:
       6/9: |
         for my $i (@{T.L.o}) {
@@ -40,63 +37,12 @@ B:
         my $u = T.i;
         w utricks/spawn[$u];
         w sane/U1[$u];
-        
-        u._at = u.at;
-        my $at = u.at = {}; # heres some state
-        
-        at.id = w $u S/id_D[$at];
-        at.id ||= u.Li.uuid;
-        
-        at.styles = U->jgd(u.styles); # coalescing/merging
-        at.tag ||= U->firstdef(u.B.tag, u.S.tag); # overriding
-        
-        unless (u.O eq 'ux') {
-            my $n = u.B.n;
-            at.tag ||= "y$n";
-            at.conty = w $u S/content_D(e=>'');
-            
-            at.styles = U->jgd(at.styles, "y$n", u.B.styles);
-        }
-        at.tag ||= u.K;
-        die "no tag" .sw($u) if !at.tag;
       
-      3/4: |
+      # Y
+      
+      7/9: |
         my $u = T.i;
-        my $at = u.at;
-        
-        my @content = sort { a.conor <=> b.conor } @{u.Li.o || []};
-        at.ooze = [@content];
-        
-        my $attr = { %{u.at} };
-        
-        attr.style = $G->styles(delete attr.styles); # or so
-        attr.style ||= "position:relative;";
-        
-        my $tag = attr.tag;
-        
-        my $conty = defined attr.conty ? attr.conty : "";
-        
-        my $content = join "\n", grep { defined } map { _.html } @content;
-        
-        if (length($conty.$content) > 20000000) {
-            $content = "";
-            @content = ();
-            # via travel add: #$uxid > #$id # in case of mid-y splits...
-            my $id = u.at.id;
-            my $sel = "#$id";
-            push @{G.contents_awaiting||=[]}, {
-                sel => $sel,
-                u => $u,
-            };
-        }
-        
-        $content = "\n".ind("  ", $content)."\n" if @content;
-
-        delete $attr->{$_} for qw'conty ooze tag styles';
-        $attr = join " ", map { $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
-        
-        u.html = "<$tag $attr>$conty$content</$tag>";
-
+        w compile_style[$u];
         
 C:            # W M ux
   - K: W # us
@@ -184,6 +130,71 @@ hooks:
             }
         }
         G.contents_awaiting = [];
+  compile_style: |
+        my $at = u.at = {}; # heres some state
+        
+        at.id = w $u S/id_D[$at] if u.S.id_D;
+        at.id ||= u.Li.uuid;
+        
+        at.styles = U->jgd(u.styles); # coalescing/merging
+        at.styles ||= "rel";
+        at.tag ||= U->firstdef(u.B.tag, u.S.tag); # overriding
+        
+        unless (u.O eq 'ux') {
+            my $n = u.B.n;
+            at.tag ||= "y$n";
+            at.conty = w $u S/content_D(e=>'');
+            
+            at.styles = U->jgd(at.styles, "y$n", u.B.styles);
+        }
+        at.tag ||= u.K;
+        die "no tag" .sw($u) if !at.tag;
+        
+        
+        # dodge #c
+        
+        
+        at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
+        # # diff at.E_ooze
+        my $attr = { %{u.at} };
+        
+        # filter styles out to the W stylesheet
+        attr.style = $G->styles(delete attr.styles);
+        
+        my $tag = attr.tag;
+        
+        my $conty = defined attr.conty ? attr.conty : "";
+        
+        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
+        
+        if (length($conty.$content) > 20000000) {
+            $content = "";
+            # via travel add: #$uxid > #$id # in case of mid-y splits...
+            my $id = u.at.id;
+            my $sel = "#$id";
+            push @{G.contents_awaiting||=[]}, {
+                sel => $sel,
+                u => $u,
+            };
+        }
+        
+        $content = "\n".ind("  ", $content)."\n" if $content;
+
+        delete $attr->{$_} for qw'conty ooze tag styles';
+        $attr = join " ", map { $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
+        
+        
+        u.html = "<$tag $attr>$conty$content</$tag>";
+        
+        
+        w update_uhtml[$u];
+  update_uhtml: |
+    if ($u eq G.top) {
+        my $html = u.html;
+        G.O.V.ux->takeover($html);
+        w send_contents_awaiting;
+        Say $html;
+    }
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
     ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
@@ -192,17 +203,19 @@ hooks:
     0->visTp({ i => $u }) if ar.top && T.i ne $u;
     G.top = $u if ar.top;
     return $u
+    
   RM: | # a tip on the other side, so below our tip but above in space
     ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RM"]);
     0->TafuBl(
         M => {W => $W},
     );
+
+
   ux_above_via_Lu: |
     my $Lu = ux.B.Lu || die "no Lu on ux";
     my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
     my ($pux) = findO(ux => pLu.o) if $pLu;
     $pux;
-
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
@@ -246,6 +259,8 @@ hooks:
     G.U.firstdef = sub { (grep { defined } @_)[0] };
   recoded_init: |
     H.G->w('re/exec');
+    #Say "Booyah";
+    
   sane:
     V3: |
       die "ix not Li " unless ix.Li;

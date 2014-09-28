@@ -24,8 +24,12 @@ chains:
      S.B.name;
    flows_D: |
      my $Codon = T.i;
+     Say "Codon FLOWS";
      #@{$G->W->{script}} = grep { _.i.K ne "Codon" || _.i eq $Codon } @{$G->W->{script}};
      w codonify[$Codon];
+     0->TafuBl(Chunks => { Codon => $Codon });
+     Say "Codon FLOWS aray";
+     
    uxs: # proto style C - gets applied fast in ux braid
      y:
        t:
@@ -33,12 +37,9 @@ chains:
            at.style .= " 20pt";
      
  - K: Chunks
-   Ki: Codon
-   arr_if: |
-     T.i.K eq "Codon"
-   travels: 1
-   extract_D: |
-     my $Codon = T.i.Lo.i;
+   flows_D: |
+     my $Codon = S.B.Codon ||= T.i.Lo.i;
+     sw($S);
      w chunkify[$Codon];
    
  - K: Chunk
