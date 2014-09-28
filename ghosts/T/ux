@@ -157,14 +157,18 @@ hooks:
         die "no tag" .sw($u) if !at.tag;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
+        
+        
         # # diff at.E_ooze
         my $attr = { %{u.at} };
         
-        # filter styles out to the W stylesheet
+        # style/class gets misccss/Wcss
         attr.style = $G->styles(delete attr.styles);
         
         my $conty = defined attr.conty ? attr.conty : "";
         my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
+        
+        # make this a sub so it looks sleeker, attach them things beside .html though
         
         if (length($conty.$content) > 25) {
             $content = "";
