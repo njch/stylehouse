@@ -57,12 +57,7 @@ Bs:
     D:
       3/9: |
         my $u = T.i;
-        if ($u eq G.top) {
-            my $html = u.html;
-            G.O.V.ux->takeover($html);
-            w send_contents_awaiting;
-            Say $html;
-        }
+        w jack_style[$u];
 C:            # W M ux
   - K: W # us
     O: ux
@@ -136,7 +131,6 @@ hooks:
     Say E.L.G.name;
     E.L.G->w(event => $E);
   
-
   send_contents_awaiting: |
         my $awa = G.contents_awaiting ||= [];
         for my $ait (reverse @$awa) {
@@ -164,41 +158,44 @@ hooks:
         at.conty = w $u S/content_D if u.S.content_D;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
+        at.style = $G->styles(at.styles);
         
+        # diff bits, attach their imports to u.Lo.i J-dos
         
-        # # diff at.E_ooze
+        w figure_style;
+  figure_style: |
+        my $at = u.at;
+        
         my $attr = {};
         attr.id = at.id;
-        attr.tag = at.tag;
-        
+        attr.style = at.style;
+        attr.class = at.class;
+        my $tag = at.tag;
         # style/class gets misccss/Wcss
-        attr.style = $G->styles(at.styles);
+        $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
+            grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
         
         my $conty = defined at.conty ? at.conty : "";
-        
-        # make this a sub so it looks sleeker, attach them things beside .html though
-        
         my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
         if (length($conty.$content) > 25) {
             $content = "";
-            # via travel add: #$uxid > #$id # in case of mid-y splits...
-            my $id = u.at.id;
-            my $sel = "#$id";
-            push @{G.contents_awaiting||=[]}, {
-                sel => $sel,
-                u => $u,
-            };
+            u.flying_ooze = 1;
         }
         
-        $content = "\n".ind("  ", $content)."\n" if $content;
-
-        
-        my $tag = attr.tag;
-        delete $attr->{$_} for qw'conty ooze tag styles';
-        $attr = join " ", map { $_.'="'.$attr->{$_}.'"' } sort keys %$attr;
-        
-        
         u.html = "<$tag $attr>$conty$content</$tag>";
+        
+  jack_style: |
+        my $at = u.at;
+        
+        
+        # unless exists, then braid everything in...
+        G.O.V.ux->takeover(u.html) if $u eq G.top;
+        if (u.flying_ooze) {
+            # via travel add: #$uxid > #$id # in case of mid-y splits...
+            my $sel = "#".at.id;
+            $H->JS("\$('$sel').append('$_');") for grep { defined } map { _.html } @{ at.ooze };
+        }
+        
         
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
