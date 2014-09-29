@@ -3,9 +3,8 @@ hooks:
   recoded_init: |
     H.G->w('re/exec');
   any_init: |
-  
     G.U ||= {};
-
+    
     
     
     
@@ -48,14 +47,12 @@ hooks:
     0->visTp($ar, "Fun") if ar.i;
     
     my $Bs = T.Bs;
-    my ($for, $aft) = ([], []);
-    my @Ds = ($for, {'D' => Bs.DK}, $aft);
+    
+    my @Ds = ({'D' => Bs.DK});
     for my $s (@{ Bs.Yo||[] }) {
         (my $Yangle, my $Y_K) = %$s;
-        
-        my $to = $Yangle > Bs.Dangle ? $aft : $for;
-        
-        push @$to, $Y_K; # {Y => $YK}
+        push(@Ds, $Y_K), next if $Yangle > Bs.Dangle;
+        unshift @Ds, $Y_K;
     }
     
     my $s = "  >";
@@ -70,9 +67,10 @@ hooks:
         $s = "<  " if $d eq "Y";
         
         my $D = $Bs->{$d}->{$K};
-        $G->doo($D, {
+        my $ar = {
             %{Bs.ar||{}}, ar=>Bs.ar,
             d=>$d,K=>$K,TiK=>T.i.K,
-        });
+        };
+        $G->doo($D, $ar);
     }
 
