@@ -62,7 +62,7 @@ sub load_yaml {
         my ($x, $y) = $@ =~
               /parser \(line (\d+), column -?(\d+)\)/;
               
-        my @file = split "\n",  $cont;
+        my @file = split "\n",  $yaml;
         my $xx = 1;
         my $vision = SYCK();
         for (@file) {
