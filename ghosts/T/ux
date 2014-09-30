@@ -2,29 +2,7 @@ name: Styluxyio
 include: T/braid
 
 Bs:
-  - K: V #c
-    D:
-      1/5: |
-        w RW(top => G.T.W);# T encapsu is whole ux W
-      2/5: | 
-        # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
-                                    # l( @ Lu.o   # fu( via v
-        ar.uxs = [ map {
-            0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
-        } @{$Ls} ]; 
-      3/5: |
-        sayre "UXS: ".@$uxs;
-        for my $ux (@$uxs) {
-            my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
-            $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
-            0->visTp_l_u({i=>$ix}, $ux);
-            w sane/V3[$ux, $ix, $uxs];
-        }
-      4/5: |
-        w DooB(K => 'U'); # %
-      5/5: |
-        # yep
-        
+
   - K: U #c
     Y:
       6/9: |
@@ -54,7 +32,7 @@ Bs:
         }
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
-        at.conty = w $u S/content_D if u.S.content_D;
+        at.conty = w $u S/content_D(e=>'') if u.S.content_D;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
         at.style = $G->styles(at.styles);
@@ -216,7 +194,21 @@ hooks:
     $Ls ||= ar.W->CS if ar.W;
     $Ls ||= [];
     Say @$Ls." lines -> ux from $Ls->[0]->{name}";
-    w DooB(K => "V", Ls => $Ls);
+    
+    w RW(top => G.T.W);# T encapsu is whole ux W
+    # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
+    # l( @ Lu.o   # fu( via v
+    my $uxs = [ map {
+        0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
+    } @{$Ls} ]; 
+    
+    for my $ux (@$uxs) {
+        my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
+        $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
+        0->visTp_l_u({i=>$ix}, $ux);
+        w sane/V3[$ux, $ix, $uxs];
+    }
+    w DooB(K => 'U');
   styles:
     te: |
       q'border-bottom:1px solid black',
