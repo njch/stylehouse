@@ -1,29 +1,5 @@
 name: Styluxyio
-include: T/braid
 
-Bs:
-
-  - K: U #c
-    Y:
-      6/9: |
-        for my $i (@{T.L.o}) {
-            $i==T.i && next Say "Infinasm";
-            w anTop[$i];
-        }
-    D:
-      3/9: |
-        my $u = T.i;
-        w utricks/spawn[$u];
-        w sane/U1[$u];
-      
-      # Y
-      
-      7/9: |
-        my $u = T.i;
-        w compile_figure[$u];
-    done: |
-      w J(e=>'');
-  
 C:            # W M ux
   - K: W # us
     O: ux
@@ -89,23 +65,27 @@ C:            # W M ux
    
 hooks:
   U: |
+    0->visTp($ar, "Fun") if ar.i;
+    
     my $u = T.i;
     w utricks/spawn[$u];
     w sane/U1[$u];
 
     for my $i (@{T.L.o}) {
         $i==T.i && next Say "Infinasm";
-        w anTop[$i];
+        w U[$i];
     }
 
     my $u = T.i;
     w compile_figure[$u];
+    
+    w J if G.top == T.i;
   J: |
     0->visTp($ar, "Fun") if ar.i;
     
     sayre "Yep ". pint(T.i);
-        my $u = T.i;
-        w jack_style[$u];
+    my $u = T.i;
+    w jack_style[$u];
         
     for my $i (@{T.L.o}) {
         $i==T.i && next Say "Infinasm";
@@ -150,7 +130,16 @@ hooks:
         at.style = $G->styles(at.styles);
         
         # diff bits, attach their imports to u.Lo.i J-dos
-        say "compile, figure";
+        say "compile, figure, send";
+        
+        
+        
+        my $conty = defined at.conty ? at.conty : "";
+        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
+        if (length($conty.$content) > 2500) {
+            $content = "";
+            u.flying_ooze = 1;
+        }
         
         my $attr = {
             id => at.id,
@@ -161,20 +150,13 @@ hooks:
         # style/class gets misccss/Wcss
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
-        
-        my $conty = defined at.conty ? at.conty : "";
-        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
-        if (length($conty.$content) > 2500) {
-            $content = "";
-            u.flying_ooze = 1;
-        }
-        
         u.html = "<$tag $attr>$conty$content</$tag>";
+        at.E_ooze = at.ooze;
   jack_style: |
         my $at = u.at;
         # unless exists, then braid everything in...
-        
         G.O.V.ux->takeover(u.html) if $u eq G.top;
+        
         if (u.flying_ooze) {
             # via travel add: #$uxid > #$id # in case of mid-y splits...
             my $sel = "#".at.id;
@@ -220,7 +202,8 @@ hooks:
         0->visTp_l_u({i=>$ix}, $ux);
         w sane/V3[$ux, $ix, $uxs];
     }
-    w DooB(K => 'U');
+    
+    w U;
   styles:
     te: |
       q'border-bottom:1px solid black',
