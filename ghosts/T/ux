@@ -83,7 +83,6 @@ hooks:
   J: |
     0->visTp($ar, "Fun") if ar.i;
     
-    sayre "Yep ". pint(T.i);
     my $u = T.i;
     w jack_style[$u];
         
@@ -97,7 +96,6 @@ hooks:
     my $E = {%$ar};
     E.L = ux.B.Lu;
     E.uyL = $L if $L ne $uxL;
-    Say E.L.G.name;
     E.L.G->w(event => $E);
   
   send_contents_awaiting: |
@@ -115,35 +113,40 @@ hooks:
         my $j = sub { join " ", grep { defined } @_ };
         my $at = u.at = {
             id => (u.S.id_D ? do {w $u S/id_D;} :  u.Li.uuid),
-            styles => $j->(u.styles),
             tag => (u.B.tag || u.S.tag),
         };
+        at.styles = $j->(u.styles);
+        
         if (u.O ne 'ux' && u.B.n) {
             at.styles .= " y".u.B.n;
             at.tag ||= "y".u.B.n;
+        }
+        if (u.K eq 'ux') {
+            at.styles .= " ".u.B.Lu.i.styles
         }
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
         at.conty = w $u S/content_D(e=>'') if u.S.content_D;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
-        at.style = $G->styles(at.styles);
+        
         
         # diff bits, attach their imports to u.Lo.i J-dos
-        say "compile, figure, send";
-        
-        
+        say "compile, figure";
+        if (my $a_ = u._at) {
+            return update_uat[$u];
+        }
         
         my $conty = defined at.conty ? at.conty : "";
         my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
-        if (length($conty.$content) > 2500) {
+        if (length($conty.$content) > 250000) {
             $content = "";
             u.flying_ooze = 1;
         }
         
         my $attr = {
             id => at.id,
-            style => at.style,
+            style => $G->styles(at.styles),
             class => at.class,
         };
         my $tag = at.tag;
@@ -151,7 +154,9 @@ hooks:
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
         u.html = "<$tag $attr>$conty$content</$tag>";
-        at.E_ooze = at.ooze;
+        u._at = $at;
+  update_uat: |
+     
   jack_style: |
         my $at = u.at;
         # unless exists, then braid everything in...
@@ -237,8 +242,8 @@ hooks:
     fulw: |
       qw {height:100% float:left position:absolute},
   recoded_init: |
-    H.G->w('re/exec');
-    #Say "Booyah";
+    #H.G->w('re/exec');
+    Say "Booyah"; 
     
   sane:
     V3: |
