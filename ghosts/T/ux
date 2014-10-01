@@ -2,6 +2,7 @@ name: Styluxyio
 
 C:            # W M ux
   - K: W # us
+    C_n_spawn: [somewhere]
     O: ux
     S:
       tag: wormhole
@@ -34,7 +35,6 @@ C:            # W M ux
   - K: t
     uy_in_dos:
       Lu_grab_n: t
-      
     S:
       content_D: |
         die "t content fullity" if S.B.raw || S.raw;
@@ -47,7 +47,6 @@ C:            # W M ux
       Lu_grab_n: o
       n_uys_to_w_n: w
       n_array: 1
-      
     C_n_spawn: [w]
     conor: 0.5
     
@@ -61,35 +60,16 @@ C:            # W M ux
     S:
       content_D: |
         $e
-   
+  
+  - K: somewhere
+    styles: te
+    S:
+      sendo_init_D: |
+        sayre "Crazy moves!";
+        $H->JS("\$('#somewhere').appendTo('#S.at.id');");
+    
    
 hooks:
-  U: |
-    0->visTp($ar, "Fun") if ar.i;
-    
-    my $u = T.i;
-    w utricks/spawn[$u];
-    w sane/U1[$u];
-
-    for my $i (@{T.L.o}) {
-        $i==T.i && next Say "Infinasm";
-        w U[$i];
-    }
-
-    my $u = T.i;
-    w compile_figure[$u];
-    
-    w J if G.top == T.i;
-  J: |
-    0->visTp($ar, "Fun") if ar.i;
-    
-    my $u = T.i;
-    w jack_style[$u];
-        
-    for my $i (@{T.L.o}) {
-        $i==T.i && next Say "Infinasm";
-        w J[$i];
-    }
   event: |
     my $u = L.i;
     my $ux = uxL.i;
@@ -98,17 +78,28 @@ hooks:
     E.uyL = $L if $L ne $uxL;
     E.L.G->w(event => $E);
   
-  send_contents_awaiting: |
-        my $awa = G.contents_awaiting ||= [];
-        for my $ait (reverse @$awa) {
-            my $u = ait.u;
-            my $sel = ait.sel;
-            my @htmls = grep { defined } map { _.html } @{u.at.ooze};
-            for my $html (@htmls) {
-                $H->JS("\$('$sel').append('$html');");
-            }
-        }
-        G.contents_awaiting = [];
+  U: |
+    0->visTp($ar, "Fun") if ar.i;
+    my $u = T.i;
+    
+    w utricks/spawn[$u];
+    w sane/U1[$u];
+    
+        w U(i=>$_) for @{T.L.o};
+
+    w compile_figure[$u];
+    w wayout_sendo[$u];
+    
+            w J if G.top == T.i;
+  J: |
+    0->visTp($ar, "Fun") if ar.i;
+    my $u = T.i;
+    
+    for my $do (@{u.sendo || []}) {
+        $do->();
+    }
+
+        w J(i=>$_) for @{T.L.o};
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $at = u.at = {
@@ -130,20 +121,48 @@ hooks:
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
         
+  wayout_sendo: |
+        my $at = u.at;
+        my $sendo = u.sendo = [];
+        my $first = !u._at;
         
-        # diff bits, attach their imports to u.Lo.i J-dos
-        say "compile, figure";
-        if (my $a_ = u._at) {
-            return update_uat[$u];
+            my $conty = defined at.conty ? at.conty : "";
+            my @oozs = grep { defined } map { _.html } @{ at.ooze };
+            my $content = join "\n", @oozs;
+            
+        if ($first) {
+            say "First";
+            die "conty and ooze ".pint($u) if $conty && $content;
+
+            if (length($conty.$content) > 250000) {
+                $content = "";
+                push @$sendo, sub {
+                    $H->JS("\$('#at.id').append('$_');") for @oozs
+                };
+            }
+            if (u.S.sendo_init_D) {
+                push @$sendo, sub { w $u S/sendo_init_D(e=>'') };
+            }
+            if ($u eq G.top) {
+                push @$sendo, sub { G.O.V.ux->takeover(u.html) };
+            }
         }
-        
-        my $conty = defined at.conty ? at.conty : "";
-        my $content = join "\n", grep { defined } map { _.html } @{ at.ooze };
-        if (length($conty.$content) > 250000) {
-            $content = "";
-            u.flying_ooze = 1;
+        else {
+            my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
+            my $oze = u._at.ooze;
+            for my $newz (grep { !$ino->($_, $oze) } @{at.ooze}) {
+                say "some newz";
+                # where not in oze ^
+                push @$sendo, sub { $H->JS("\$('#at.id').append('newz.html');") };
+            }
+            for my $gone (grep { !$ino->($_, at.ooze) } @$oze) {
+                push @$sendo, sub { $H->JS("\$('#gone.id').remove();") };
+            }
+            
+            # attr updates
+            
         }
-        
+        # always update html, doesn
         my $attr = {
             id => at.id,
             style => $G->styles(at.styles),
@@ -153,22 +172,9 @@ hooks:
         # style/class gets misccss/Wcss
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
+            
         u.html = "<$tag $attr>$conty$content</$tag>";
         u._at = $at;
-  update_uat: |
-     
-  jack_style: |
-        my $at = u.at;
-        # unless exists, then braid everything in...
-        G.O.V.ux->takeover(u.html) if $u eq G.top;
-        
-        if (u.flying_ooze) {
-            # via travel add: #$uxid > #$id # in case of mid-y splits...
-            my $sel = "#".at.id;
-            $H->JS("\$('$sel').append('$_');") for grep { defined } map { _.html } @{ at.ooze };
-        }
-        
-        
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
     ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
@@ -209,6 +215,9 @@ hooks:
     }
     
     w U;
+    
+    sayre "DONE" for 1..5;
+    sleep 1;
   styles:
     te: |
       q'border-bottom:1px solid black',
@@ -226,6 +235,8 @@ hooks:
     yt: |
         qw'font-size:120% '
     
+    tinyer: |
+        q'-webkit-transform:scale(0.7,0.5)'
     shlink: |
         q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
         
