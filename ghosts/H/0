@@ -192,28 +192,23 @@ hooks:
       my $id = $e->{id};
       my $thing = $H->tv_by_id($id) if $id;
 
-          start_timer();
-
           if ($thing) {
-              $mojo->app->log->info("TV  $thing->{id}");
+              sayyl "TV  $thing->{id}";
               $thing->event($e);
           }
           else {
-              my $s = "TV not found".( $id ? ": $id" : ", lacking id");
-              $mojo->app->log->info("$s");
+              sayyl "TV not found".( $id ? ": $id" : ", lacking id");
+              
 
               if (my $catcher = $H->get('clickcatcher')) {
-                  $mojo->app->log->info("Event catcher found: $catcher");
+                  sayyl "Event catcher found: $catcher";
                   $catcher->event($e);
               }
               else {
-                  $mojo->app->log->info("NOTHING");
-                  $mojo->send(
-                      "\$('#body').addClass('dead').delay(250).removeClass('dead');"
-                  );
+                  sayyl "NOTHING" for 1..4;
               }
           }
-          say "event handled in ".show_delta()."\n\n";
+          sayyl "event handled in ".$G->F_delta()."\n\n";
   
   
   decode_message: |
