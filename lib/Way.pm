@@ -66,7 +66,7 @@ sub load_yaml {
         my $xx = 1;
         my $vision = SYCK();
         for (@file) {
-          if (1 || $x - 8 < $xx && $xx < $x + 5) {
+          if ($x - 8 < $xx && $xx < $x + 5) {
             if ($xx == $x) {
               $vision .= "HERE > $_\n";
               $vision .= "HERE > ".join("", (" ")x$y)."^\n";
@@ -133,7 +133,7 @@ sub pint {
 sub find {
     my $self = shift;
     my $point = shift;
-    my @path = split '/', $point;
+    my @path = split /\/|\./, $point;
     my $h = $self->{hooks} || $self;
     $h = $self if @_;
     for my $p (@path) {
