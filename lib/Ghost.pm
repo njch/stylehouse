@@ -400,7 +400,7 @@ sub _0 {
     }
     if ($point =~ /^0S?->(.+)$/) {
         my $Usub = $1;
-        $G0->{U}->{$Usub} || confess "no 0U $Usub\n".wdump(2,$G0);
+        $G0->{U}->{$Usub} || die "no 0U $Usub\n".wdump(2,$G0);
         unshift @etc, $G unless $point =~ /^0S/;
         $G0->{U}->{$Usub}->(@etc);
     }

@@ -173,41 +173,51 @@ hooks:
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
+        
+        # 1/9
+        
         my $old = 0S->visTp($p); # 1
         
-        if ($S->deeby) {
-            say "Deeby cos S.name \t\t S.db and $db > 0?" for 1..3
-        }
-        say "HAUNT HAUNT HAUNT ".pint(T.i) if $S->deeby;
+        # 2/9
         
+        say "HAUNT HAUNT HAUNT ".pint(T.i) if $S->deeby;
         $G0->{travels_of}->{$S->{name}} ++;
         my $i = T.i;
         $S->ob("haunt");
         
-        $S->w("T/flows");
-        # ow
+        # 3/9
         
+        $S->w("T/flows");
         $S->w('flows_D', {}, T.i) if T.i.flows_D;
         
-        # all this stuff is shaking # catch braids
+        # 4/9
         
         die "No i ".sw($G) unless T.i;
         T.L = $S->W->continues($S); # %
+        0S->fu_cache(T.i);
+        
         $S->w('humms_D', {}, T.i) if T.i.humms_D;
         
+        # 5/9
         
         T.L.i eq T.i || die "tli not ni!?!?!";
-        
-        # [o  get Lo = L
         0S->accum($_, 'Lo', T.L) for @{T.L.o};
         0S->accum(T.L.i, 'Li', T.L); # just right
+        
+        # 6/9
         
         $S->w("T/travels");
         $S->w('travels_D', {}, T.i) if T.i.travels_D;
         
+        # 7/9
+        
         $S->w('extract_D', {}, T.i) if T.i.extract_D;
         
+        # 8/9
+        
         #Info "HAUNTED ".sw($T) if $S->{name} =~ /braid|ux|odon/;
+        
+        # 9/9
         
         my $L = T.L;
         $T = $old;
@@ -268,6 +278,7 @@ hooks:
     G.U.fu = sub {#c
         my $S = shift;
         my $u = shift;
+        return $S->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)};
         for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
             my $yup = $i eq $u
@@ -278,6 +289,11 @@ hooks:
             }
         }
         return undef;
+    };
+    G.U.fu_cache = sub { #c
+        my $S = shift;
+        my $u = shift;
+        $S->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)} = $u;
     };
     G.U.fs_glob = sub {#c
         my ($S, @globs) = @_;
@@ -318,9 +334,9 @@ hooks:
             u.B->{$k} eq i.B->{$k} || return 0;
             next if $k eq "Codon";
         }
-            $G->timer(2,sub {
+        unless (keys %{u.B}) {
             Say " u has no B, mind  you...".ki($u);
-            }) unless keys %{u.B};
+        }
         return 1;
     };
     
