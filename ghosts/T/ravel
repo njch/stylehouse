@@ -1,32 +1,45 @@
 name: Trabambeist
 hooks:
 
-  arr: |
-    my $cs = [];
-    my $doing = sub {
-      my $w = shift;
-      my @rc;
-      for my $c (@$cs) {
-            my $rc = $G->w($w, {c=>$c,cs=>$cs});
-          push @rc, $rc if $rc;
-      }
-      @$cs = @rc;
-    };
-    
-    my @chains = w chains;
-    for my $c (@chains) {
-        if (w $c arr_if) {
-            push @$cs, $c->spawn;
+  T:
+    flows: | #c
+      my $cs = [];
+      my $doing = sub {
+        my $w = shift;
+        my @rc;
+        for my $c (@$cs) {
+              my $rc = $G->w($w, {c=>$c,cs=>$cs});
+            push @rc, $rc if $rc;
         }
-    }
+        @$cs = @rc;
+      };
     
-    $doing->("c_follow_as");
-    $doing->("c_eat");
-    $doing->("c_grav_add");
-    $doing->("figureout");
-    w aft_arr;
-    
-    say "arr ravel G.name\t\t".join("  ", reverse pint(T.i), $G->F_delta());
+      my @chains = w chains;
+      for my $c (@chains) {
+          if (w $c arr_if) {
+              push @$cs, $c->spawn;
+          }
+      }
+
+      $doing->("c_follow_as");
+      $doing->("c_eat");
+      $doing->("c_grav_add");
+      $doing->("figureout");
+      w aft_arr;
+
+      say "arr ravel G.name\t\t".join("  ", reverse pint(T.i), $G->F_delta());
+    travels: | #c
+        for my $c (@{T.o}) {
+            if (exists c.travel_this || c.travels) {
+                my $p = {
+                    depth => T.depth+1, 
+                    t => c.travel_this,
+                    i => $c,
+                };
+                say " newT";
+                0->T($p);
+            }
+        }
   chains: |
     my @chains = grep { !$_->{_disabled} } map { @{$_} } $G->anyway('chains');
   
@@ -92,27 +105,6 @@ hooks:
         my @list;
         if ($fe->{each}) {
             push @list, $G->doo($fe->{each}, $ar);
-        }
-        if ($fe->{glob}) {
-            for my $glob ($G->doo($fe->{glob}, $ar)) {
-                push @list, grep { defined }
-                    grep { Hostinfo::fixutf8($_) || 1 }
-                    grep { -f $_ } glob $glob;
-            }
-        }
-        if ($fe->{find_files}) {
-            my $found = sub {
-                 my $na = $File::Find::name;
-                Hostinfo::fixutf8($na);
-                next unless -f $na;
-                
-                push @list, $na;
-            };
-            my @dirs = $G->doo(fe.find_files, $ar);
-            File::Find::find($found, @dirs);
-        }
-        if (fe.grep) {
-            @list = grep { $G->doo(fe.grep, {_ => $_}) } @list;
         }
         if (my $ei = $c->{eaten_by}->{each_ignore}) {
             @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;

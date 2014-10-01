@@ -173,7 +173,7 @@ hooks:
     };
     G.U.T= sub {#c
         my ($S, $p) = @_;
-        my $old = 0S->visTp($p);
+        my $old = 0S->visTp($p); # 1
         
         if ($S->deeby) {
             say "Deeby cos S.name \t\t S.db and $db > 0?" for 1..3
@@ -184,7 +184,7 @@ hooks:
         my $i = T.i;
         $S->ob("haunt");
         
-        $S->w("arr");
+        $S->w("T/flows");
         # ow
         
         $S->w('flows_D', {}, T.i) if T.i.flows_D;
@@ -192,6 +192,8 @@ hooks:
         # all this stuff is shaking # catch braids
         
         T.L = $S->W->continues($S); # %
+        $S->w('humms_D', {}, T.i) if T.i.humms_D;
+        
         
         T.L.i eq T.i || die "tli not ni!?!?!";
         
@@ -199,20 +201,8 @@ hooks:
         0S->accum($_, 'Lo', T.L) for @{T.L.o};
         0S->accum(T.L.i, 'Li', T.L); # just right
         
-        
-        
-        
-        for my $c (@{T.o}) {
-            if (exists c.travel_this || c.travels) {
-                my $p = {
-                    depth => T.depth+1, 
-                    t => c.travel_this,
-                    i => $c,
-                };
-                say " newT";
-                0S->T($p);
-            }
-        }
+        $S->w("T/travels");
+        $S->w('travels_D', {}, T.i) if T.i.travels_D;
         
         $S->w('extract_D', {}, T.i) if T.i.extract_D;
         
@@ -279,11 +269,36 @@ hooks:
         my $u = shift;
         for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
-            if ($i eq $u || (!exists u.K || i.K eq u.K) && 0S->B_same($u => $i)) {
+            my $yup = $i eq $u
+                || (!exists u.K || i.K eq u.K)
+                && 0S->B_same($u => $i);
+            if ($yup) {
                 return $i;
             }
         }
         return undef;
+    };
+    G.U.fs_glob = sub {#c
+        my ($S, @globs) = @_;
+        my @list;
+        for my $glob (@globs) {
+            push @list, grep { defined }
+                grep { Hostinfo::fixutf8($_) || 1 }
+                grep { -f $_ } glob $glob;
+        }
+        return @list;
+    };
+    G.U.fs_find = sub{#c
+        my ($S, @dirs) = @_;
+        my @list;
+        File::Find::find(sub {
+            my $na = $File::Find::name;
+            Hostinfo::fixutf8($na);
+            next unless -f $na;
+
+            push @list, $na;
+        }, @dirs);
+        return @list;
     };
     G.U.B_same = sub {#c
         my ($S, $u, $i) = @_;

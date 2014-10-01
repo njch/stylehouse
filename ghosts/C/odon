@@ -1,18 +1,20 @@
 name: code
-include: T/ravel
-chains:
- - K: 'stylefile'#c
-   Ki: 'styledir'
-   arr_if: |
-     1 || -d "$thing/lib" && -d "$thing/ghosts"
-   foreach_travel:
-     glob: |
-       "$thing/style*", "$thing/not"
-     find_files: |
-       #"$thing/lib",
-       "$thing/ghosts"
-     grep: |
-         !/T|H|L|not/
+C:
+ - K: styledir
+   flows_D: |
+     T.t = $dir;
+   travels_D: |
+     my @finds = map { 0->fs_glob($_) } "$dir/style*", "$dir/not";
+     push @finds,  map { 0->fs_find($_) } "$dir/ghosts";
+     @finds = grep { !/T|H|L/ } @finds;
+     for my $file (@finds) {
+         0->TafuBl(stylefile => { file => $file });
+     }
+ 
+ - K: stylefile
+   Ki: styledir
+   flows_D: |
+     T.t = $file;
    y:
      t:
        event: |
@@ -86,13 +88,10 @@ chains:
 dials:
   max_depth: 3
 hooks:
-  figure_some_chain: |
-    push @{G.o}, $c;
-    w $c travels if c.travels;
-    return 1 # all good ness
+
   percolate: |
-    $G->T("/s", undef, $G->nw(K=>"styledir"));
-    $G->T("somemmmm", undef, $G->nw(K=>"whatever"));
+    0->TafuB(styledir => {dir => "/s"});
+    
   codonify: |
      my $C = $Codon;
      $_ = C.B.stylefile;
