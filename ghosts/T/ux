@@ -11,8 +11,10 @@ C:            # W M ux
         
   - K: M
     O: ux
-    styles: blubor
-    C_n_spawn: [AM]
+    spawn:
+      - K: h1
+        content_D: |
+          W.G.name
     S:
       tag: MMMM
      
@@ -24,14 +26,17 @@ C:            # W M ux
     conor: 1
     print: |
        "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
-    C_n_spawn: [i, t, o]
+    #C_n_spawn: [i, t, o]
+    spawn:
+      - K: i
+      - K: t
+      - K: o
        
   - K: i     #c uyuyuuyuyyyuyuyuuuuyuuuuyyyuyuyyyuyuuuyuyuyyyyuyuyu
-    uy_in_dos:
-      Lu_grab_n: i
-      n_uys_to_w_n: w
-      
-    C_n_spawn: [w]
+    spawn:
+      - K: w
+        Bset:
+          w: i
     conor: -0.5
     
   - K: t
@@ -71,12 +76,8 @@ C:            # W M ux
         my $css = 'pointer-events:none; -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black); width:60em;';
         $H->JS("\$('#somewhere').attr('style', '$css');");
   
-  - K: AM
-    uy_in_dos:
-      Lu_grab_n: W
-    S:
-      content_D: |
-        wdump($W).sw(S.Lo.i.B)." W.id ... W.G.name";
+  - K: h1
+    styles: blubor
     
    
 hooks:
@@ -169,6 +170,7 @@ hooks:
         }
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
+        at.conty = u.B.content if u.B.content;
         at.conty = w $u S/content_D(e=>'') if u.S.content_D;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
@@ -285,25 +287,34 @@ hooks:
             if u.K eq "ux" && !@{u.Li.o};
   utricks:
     spawn: | #c
+        my @uys;
+        
         if (my $uyKs = u.C_n_spawn) {
-            for my $uy (map { 0->sway({K=>$_}) } @$uyKs) {
-                uy.B ||= {};
-                
+            for my $spK (@$uyKs) {
+                my $uy = 0->sway({K=>$spK}, {B=>{}});
                 w utricks/ngrab[$uy, $u];
                 
-                my @uys = w utricks/multi[$uy, $u];
+                push @uys, w utricks/multi[$uy, $u]; 
                 
-                for my $uu (@uys) {
-                    my $uy = 0->fu($uu);
-                    if ($uy) {
-                        say "u fu uu.K ".ki(uu.B);
-                        next;
-                    }
-                    say "u not found! uu.K ".ki(uu.B);
-                    $uy = 0->T({i => $uu});
-                    0->l($uy);
-                    # and $uy is it
-                }
+            }
+        }
+        if (my $spawn = u.spawn) {
+            for my $sp (@$spawn) {
+                my $aw = 0->sway({K=>sp.K}, {B=>u.B});
+                aw.S.content_D = sp.content_D if sp.content_D;
+                push @uys, $aw;
+            }
+        }
+        
+        for my $uu (@uys) {
+            if (my $uy = 0->fu($uu)) {
+                say "u fu uu.K ".ki(uu.B); # cache
+            }
+            else {
+                say "u not found! uu.K ".ki(uu.B);
+                $uy = 0->T({i => $uu});
+                0->l($uy);
+                # and $uy is it
             }
         }
     multi: | #c
