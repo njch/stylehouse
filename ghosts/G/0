@@ -144,10 +144,17 @@ hooks:
     };
     
     G.U.visTp_TafuBlA = sub { #c
-        my ($S, $Tp, $Bup) = @_;
+        my ($S, $Tp, $Bup, $A) = @_;
         my $old = 0S->visTp($Tp); # could be Fun, wire into end
         my $uu = 0S->Bu(@$Bup); 
-        my $u = 0S->fu($uu) || 0S->T({i => $uu});
+        my $u = 0S->fu($uu);
+        if ($u) {
+            push @{A.fud||=[]}, $u if $A;
+        }
+        else {
+            push @{A.fnu||=[]}, $u if $u && $A;
+            $u = 0S->T({i => $uu});
+        }
         0S->l($u);
         $T= $old;
         $u;
