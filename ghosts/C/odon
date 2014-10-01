@@ -26,11 +26,10 @@ C:
      S.B.name;
    flows_D: |
      my $Codon = T.i;
-     Say "Codon FLOWS";
-     #@{$G->W->{script}} = grep { _.i.K ne "Codon" || _.i eq $Codon } @{$G->W->{script}};
-     w codonify[$Codon];
+     w codonify[$Codon]; # slurp & split
+   travels_D: |
+     my $Codon = T.i;
      0->TafuBl(Chunks => { Codon => $Codon });
-     Say "Codon FLOWS aray";
      
    uxs: # proto style C - gets applied fast in ux braid
      y:
@@ -39,9 +38,7 @@ C:
            at.style .= " 20pt";
      
  - K: Chunks
-   flows_D: |
-     my $Codon = S.B.Codon ||= T.i.Lo.i;
-     sw($S);
+   travels_D: |
      w chunkify[$Codon];
    
  - K: Chunk
@@ -64,9 +61,6 @@ C:
      my $C = CM.Lo.i;
      T.t = join "\n", "y", @{Ch.B.lines};
    y:
-     t:
-       uyB_adjust:
-         raw: 1
      CodeMirror:
        is:
          K: CodeMirror
