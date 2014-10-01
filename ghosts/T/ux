@@ -180,6 +180,7 @@ hooks:
         my $first = !u._at;
         
             my $conty = defined at.conty ? at.conty : "";
+            $conty = encode_entities($conty);
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
             
@@ -204,12 +205,14 @@ hooks:
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             my $oze = u._at.ooze;
             for my $newz (grep { !$ino->($_, $oze) } @{at.ooze}) {
-                say "some newz";
-                # where not in oze ^
-                push @$sendo, sub { $H->JS("\$('#at.id').append('newz.html');") };
+                push @$sendo, sub {
+                    $H->JS("\$('#at.id').append('".0->jsq(newz.html)."');"),
+                };
             }
             for my $gone (grep { !$ino->($_, at.ooze) } @$oze) {
-                push @$sendo, sub { $H->JS("\$('#gone.id').remove();") };
+                push @$sendo, sub {
+                    $H->JS("\$('#gone.id').remove();"),
+                };
             }
             
             # attr updates
