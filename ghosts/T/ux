@@ -2,8 +2,9 @@ name: Styluxyio
 
 C:            # W M ux
   - K: W # us
-    C_n_spawn: [somewhere]
     O: ux
+    spawn:
+      - K: somewhere
     S:
       tag: wormhole
       id_D: |
@@ -20,41 +21,39 @@ C:            # W M ux
      
   - K: ux
     O: ux
+    spawn:
+      - K: i
+      - K: t
+      - K: o
     S:
       tag: ux
     styles: te
     conor: 1
     print: |
        "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
-    #C_n_spawn: [i, t, o]
-    spawn:
-      - K: i
-      - K: t
-      - K: o
        
   - K: i     #c uyuyuuyuyyyuyuyuuuuyuuuuyyyuyuyyyuyuuuyuyuyyyyuyuyu
     spawn:
       - K: w
         Bset:
-          w: i
+          w: Lu.i
     conor: -0.5
     
   - K: t
-    uy_in_dos:
-      Lu_grab_n: t
     S:
       content_D: |
         die "t content fullity" if S.B.raw || S.raw;
-        my $con = gpty($t);
+        my $con = gpty(Lu.t);
         $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
         $con;
       
   - K: o
     uy_in_dos:
-      Lu_grab_n: o
-      n_uys_to_w_n: w
       n_array: 1
-    C_n_spawn: [w]
+    spawn:
+      - K: w
+        Bset:
+          way: Lu.i
     conor: 0.5
     
   - K: w
@@ -294,14 +293,20 @@ hooks:
                 my $uy = 0->sway({K=>$spK}, {B=>{}});
                 w utricks/ngrab[$uy, $u];
                 
-                push @uys, w utricks/multi[$uy, $u]; 
                 
             }
         }
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
-                my $aw = 0->sway({K=>sp.K}, {B=>u.B});
+                my $Bs = {};
+                if (sp.Bset) {
+                    while (my ($k, $v) = each %{sp.Bset}) {
+                        $Bs->{$k} = $u->find("B.$v"); # v=Lu.i
+                    }
+                }
+                my $aw = 0->sway({K=>sp.K}, {B=>$Bs});
                 aw.S.content_D = sp.content_D if sp.content_D;
+                push @uys, w utricks/multi[$uy, $u]; 
                 push @uys, $aw;
             }
         }
