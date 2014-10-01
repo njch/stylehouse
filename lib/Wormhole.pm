@@ -48,11 +48,10 @@ sub continues {
         i => $Ghost::T->{i},
         o => $Ghost::T->{o},
         T => $Ghost::T,
-        
+        G => $G,
+        W => $W,
         
         depth => $Ghost::T->{depth},
-        
-        G => $G,
     };
     
     if ($G->deeby) {

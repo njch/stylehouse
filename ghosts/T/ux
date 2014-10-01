@@ -11,6 +11,8 @@ C:            # W M ux
         
   - K: M
     O: ux
+    styles: blubor
+    C_n_spawn: [AM]
     S:
       tag: MMMM
      
@@ -61,20 +63,67 @@ C:            # W M ux
       content_D: |
         $e
   
-  - K: somewhere
+  - K: somewhere #c
     styles: te
     S:
       sendo_init_D: |
-        sayre "Crazy moves!";
         $H->JS("\$('#somewhere').appendTo('#S.at.id');");
+        my $css = 'pointer-events:none; -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black); width:60em;';
+        $H->JS("\$('#somewhere').attr('style', '$css');");
+  
+  - K: AM
+    uy_in_dos:
+      Lu_grab_n: W
+    S:
+      content_D: |
+        wdump($W).sw(S.Lo.i.B)." W.id ... W.G.name";
     
    
 hooks:
+  styles:
+    blubor: |
+      q'border:3px solid rgba(20,20,255,0.5);';
+    tinyer: |
+        q'-webkit-transform:scale(0.7,0.5)'
+    te: |
+      q'border-bottom:1px solid black',
+      qw' padding:0.4em margin-left:2em
+            width:100% float:left position:relative'
+    yw: |
+        q' margin-left:0.5em '
+    yo: |
+        q' color:#bbb'
+    20pt: |
+      'font-size:20pt;'
+    yi: |
+        q' margin-left:0.5em color:#fff'
+        
+    yt: |
+        qw'font-size:120% '
+    
+    tinyer: |
+        q'-webkit-transform:scale(0.7,0.5)'
+    shlink: |
+        q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
+        
+    rel: |
+      qw'position:relative'
+    abs: |
+      qw'position:absolute'
+    topleft: |
+      qw'position:absolute top:-5px left:-5px'
+    white: |
+      qw'color:white'
+    little: |
+      qw'font-size:60%'
+    fulw: |
+      qw {height:100% float:left position:absolute},
   event: |
     my $u = L.i;
     my $ux = uxL.i;
     my $E = {%$ar};
     E.L = ux.B.Lu;
+    die "no E L " unless E.L;
     E.uyL = $L if $L ne $uxL;
     E.L.G->w(event => $E);
   
@@ -198,7 +247,7 @@ hooks:
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
     $Ls ||= [];
-    Say @$Ls." lines -> ux from $Ls->[0]->{name}";
+    saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
     
     w RW(top => G.T.W);# T encapsu is whole ux W
     # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
@@ -218,40 +267,6 @@ hooks:
     
     sayre "DONE" for 1..5;
     sleep 1;
-  styles:
-    te: |
-      q'border-bottom:1px solid black',
-      qw' padding:0.4em margin-left:2em
-            width:100% float:left position:relative'
-    yw: |
-        q' margin-left:0.5em '
-    yo: |
-        q' color:#bbb'
-    20pt: |
-      'font-size:20pt;'
-    yi: |
-        q' margin-left:0.5em color:#fff'
-        
-    yt: |
-        qw'font-size:120% '
-    
-    tinyer: |
-        q'-webkit-transform:scale(0.7,0.5)'
-    shlink: |
-        q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
-        
-    rel: |
-      qw'position:relative'
-    abs: |
-      qw'position:absolute'
-    topleft: |
-      qw'position:absolute top:-5px left:-5px'
-    white: |
-      qw'color:white'
-    little: |
-      qw'font-size:60%'
-    fulw: |
-      qw {height:100% float:left position:absolute},
   recoded_init: |
     #H.G->w('re/exec');
     Say "Booyah"; 
