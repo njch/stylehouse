@@ -48,12 +48,11 @@ C:            # W M ux
         $con;
       
   - K: o
-    uy_in_dos:
-      n_array: 1
     spawn:
       - K: w
+        multiBy: w
         Bset:
-          way: Lu.i
+          w: Lu.o
     conor: 0.5
     
   - K: w
@@ -288,14 +287,6 @@ hooks:
     spawn: | #c
         my @uys;
         
-        if (my $uyKs = u.C_n_spawn) {
-            for my $spK (@$uyKs) {
-                my $uy = 0->sway({K=>$spK}, {B=>{}});
-                w utricks/ngrab[$uy, $u];
-                
-                
-            }
-        }
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
                 my $Bs = {};
@@ -304,10 +295,12 @@ hooks:
                         $Bs->{$k} = $u->find("B.$v"); # v=Lu.i
                     }
                 }
-                my $aw = 0->sway({K=>sp.K}, {B=>$Bs});
-                aw.S.content_D = sp.content_D if sp.content_D;
-                push @uys, w utricks/multi[$uy, $u]; 
-                push @uys, $aw;
+                else {
+                    $Bs = u.B;
+                }
+                my $uy = 0->sway({K=>sp.K}, {B=>$Bs});
+                uy.S.content_D = sp.content_D if sp.content_D;
+                push @uys, w utricks/multi[$uy, $u, $sp]; 
             }
         }
         
@@ -324,23 +317,19 @@ hooks:
         }
     multi: | #c
       my @uys = $uy;
-                if (u.uy_in_dos) {
-                    if (u.uy_in_dos.n_array) {
-                        my $n = uy.B.n;
-                        my $val = uy.B->{$n};
-                        ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
-                        
-                        @uys = ();
-                        my $i = 0;
-                        for my $an (@$val) {
-                            next if an.K eq "ux"; # that hangs out in the origin lines o
-                            my $anuy = $uy->spawn;
-                            anuy.B->{$n} = $an;
-                            anuy.K = uy.K."[".$i++;
-                            push @uys, $anuy;
-                        }
-                    }
-                }
+      if (my $n = sp.multiBy) {
+            my $val = uy.B->{$n};
+          ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
+          @uys = ();
+          my $i = 0;
+          for my $an (@$val) {
+              next if an.K eq "ux"; # that hangs out in the origin lines o
+              my $anuy = $uy->spawn;
+              anuy.B->{$n} = $an;
+              anuy.K = uy.K."[".$i++;
+              push @uys, $anuy;
+          }
+      }
       @uys
     ngrab: | #c
                 if (u.uy_in_dos) {
