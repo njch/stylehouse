@@ -97,7 +97,7 @@ hooks:
     20pt: |
       'font-size:20pt;'
     yi: |
-        q' margin-left:0.5em color:#fff'
+        q' margin-left:0.5em color:#fca'
         
     yt: |
         qw'font-size:120% '
@@ -123,13 +123,23 @@ hooks:
   event: |
     my $u = L.i;
     my $ux = uxL.i;
+    my $uu = ux.B.Lu.i;
+    my $uy = $u if $u ne $ux;
+    my $E = {
+        e => $e,
+        W => $W,
+        L => uu.Li,
+        u => $uu,
+        ux => $ux,
+        uy => $uy,
+    };
     my $E = {%$ar};
     E.L = ux.B.Lu;
-    unless (E.L) {
-        # come from within something we don't grasp
-        return H.G->w('serve/TV', {e=>E.e});
-    }
-    E.uyL = $L if $L ne $uxL;
+    
+    # come from within something we don't grasp
+    return H.G->w('serve/TV', {e=>E.e}) unless E.L;
+    
+    # TODO make a pattern about y=to match against Eways...
     E.L.G->w(event => $E);
   
   U: |
@@ -240,8 +250,9 @@ hooks:
                 $sendojs->(at.id, q{.text('%s')}, 0->jsq(at.conty));
             }
             while (my ($k, $v) = each %{ at.attr }) {
-                if ($v ne $_t->{$k}) {
-                    
+                if ($v ne _t.attr->{$k}) {
+                    saybl "UPTRIB $k\n -  $_t->{$k}\n +  $v" for 1..2;
+                    $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k), 0->jsq($v));
                 }
             }
             # attr updates

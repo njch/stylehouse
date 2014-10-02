@@ -39,12 +39,12 @@ C:
      
  - K: Chunks #c
    travels_D: |
-     w chunkify[$Codon];
+     my @CBs = w chunkify[$Codon];
+     0->TafuBl(Chunk => $_) for @CBs;
    
  - K: Chunk
-   k: C
    print: |
-     S.B.i;
+     "C S.B.i";
    flows_D: |
      my $C = T.i;
      T.t = C.B.lines->[0] || C.B.lines->[1];
@@ -132,23 +132,23 @@ hooks:
             
         push @{ $stuff[-1] }, $l;
     }
-    my $chunks = [];
+    my $CBs = [];
     my $i = 0;
     for my $s (@stuff) {
-        push @$chunks, {
+        push @$CBs, {
+            Codon => $C,
             i => $i++,
             rows => scalar(@$s),
             lines => $s,
         };
     }
-    _.Codon = $C for @$chunks; # traction to Codon
-    0->TafuBl(Chunk => $_) for @$chunks;
-    T.L.t = 0+@$chunks;
-    return $chunks;
+    T.L.t = "Cx". 0+@$CBs ." lx". 0+@{C.B.lines};
+    return @$CBs;
   event: |
+    sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
     my $y = "";
-    $y = "/".ar.uyL.i.K if ar.uyL;
+    $y = "/".ar.uy.K if ar.uy;
     $G->w("y$y/event", $ar, L.i);
     waylay uxd;
   uxd: |
