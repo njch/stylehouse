@@ -300,7 +300,7 @@ hooks:
                     }
                 }
                 if (200 < length $name) {
-                    $name = substr $name, 200, 0;
+                    $name = join ", ", keys %$t;
                 }
                 if ($t->{name}) {
                     $name .= " ".$t->{name};
@@ -392,12 +392,18 @@ hooks:
             $s->{style} .= "font-weight: 900;";
         }
         else { #c t string string string
+            
             if ($t =~ m/^\w+-\w{5}(\w{3})/) {
                 $s->{style}.="border-left:18px groove #$1;";
             }
             $color = "999";
             $s->{style} .= "font-weight: 500;";
             my $v = $t;
+            $color = "47B247";
+            if (!defined $t) {
+                $v = "~undef";
+                $color = '000';
+            }
             if (length($v) > 2700) {
                  $v = substr($t, 0, 2680)."...";
             }
@@ -408,7 +414,6 @@ hooks:
             $name = $v;
             
             $font = "font-family:mono; line-height: 1em;";
-            $color = "47B247";
             
         }
         $s->{value} = $name; #c t ETC         ETC         ETC

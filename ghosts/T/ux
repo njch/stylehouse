@@ -37,6 +37,7 @@ C:            # W M ux
       - K: w
         Bset:
           w: Lu.i
+        Scc: 1
     conor: -0.5
     
   - K: t
@@ -51,6 +52,7 @@ C:            # W M ux
     spawn:
       - K: w
         multiBy: w
+        Scc: 1
         Bset:
           w: Lu.o
     conor: 0.5
@@ -336,6 +338,7 @@ hooks:
     spawn: | #c
         my @uys;
         my $ui = u.B.Lu.i;
+        u.B.ui = $ui if $ui;
         if (ui.u_from) {
             $u->from(ui.u_from);
         }
@@ -352,6 +355,8 @@ hooks:
                     $Bs = u.B;
                 }
                 my $uy = 0->sway({K=>sp.K}, {B=>$Bs}, {e=>''});
+                
+                $uy->from({S=>u.S}) if delete sp.Scc;
                 
                 $uy->from($sp);
                 

@@ -520,6 +520,7 @@ sub w {
     my @ways;
     
     my $talk = "w $point";
+    my $watch;
     
     if ($Sway) {
         $talk .= " S";
@@ -528,7 +529,23 @@ sub w {
             $talk .= " G";
         }
         elsif (ref $Sway eq 'Way') {
-            @ways = $Sway->{ofways} ? @{$Sway->{ofways}} : $Sway; #---------------------
+            if ($Sway->{ofways}) {
+                @ways = @{$Sway->{ofways}};
+            }
+            elsif ($Sway->{Gw}) {
+                die "no Sway G!?" unless $Sway->{G};
+                if ($G eq $Sway->{G}) {
+                    @ways = $G->ways;
+                    $watch = 1 if $point =~ /^$Sway->{K}/;
+                }
+                else {
+                    $point = "$Sway->{K}/$point";
+                    return $Sway->{G}->w($point, $ar, $Sway); # G pass
+                }
+            }
+            else {
+                @ways = $Sway; #---------------------
+            }
         }
         elsif (ref $Sway eq 'ARRAY') {
             die "NO MORE ARRAY WAYS --- $point ".ki($ar)."\n"."$Sway - ".ki($Sway);
@@ -545,6 +562,7 @@ sub w {
     my @returns;
     for my $w (@ways) {
         my $h = $w->find($point);
+            sw({h=>$h, point=>$point, w=>$w, Sway=>$Sway}) if $watch;
         next unless $h;
         my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
         my ($Z) = @F;

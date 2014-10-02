@@ -39,7 +39,7 @@ C:
         S:
           styles: red h2
           content_D: |
-            "!C S.B.Lu.i.B.name!"
+            "!C ui.B.name!"
      
  - K: Chunks #c
    travels_D: |
@@ -47,28 +47,30 @@ C:
      0->TafuBl(Chunk => $_) for @CBs;
    
  - K: Chunk
-   k: ''
-   print: |
-     "C S.B.i";
+   Gw: 1
    flows_D: |
      my $C = T.i;
      T.t = C.B.lines->[0] || C.B.lines->[1];
      T.t||= ki(C.B);
    u_from:
      spawn:
+      - K: i
+        S:
+          content_D: |
+            "C ui.B.i"
       - K: t
+        S:
+          content_D: |
+            w $ui title;
+            die "Hit title?";
+          ishtml: 1
+            
       - K: code
         S:
-          tag: code
-          class: prettyprint lang-perl
           content_D: |
-            return "Yep" unless S.B.Lu.i.B.i == 3;
-            use Text::VimColor;
-            my $syntax = Text::VimColor->new(
-                string => join("\n", @{S.B.Lu.i.B.lines}),
-                filetype => 'perl',
-            );
-            return '<pre>'.$syntax->html.'</pre>';
+            return "~~~~" unless ui.B.i < 4;
+            my $string = join("\n", @{ui.B.lines});
+            ui.Li.G->w(vimcolor => {string => $string});
           ishtml: 1
    y:
      t:
@@ -111,6 +113,11 @@ C:
 dials:
   max_depth: 3
 hooks:
+  Codon:
+    title: |
+      my $stuff = $lines->[0] || $lines->[1];
+      die "HELEO";
+      return $stuff;
   percolate: |
     0->TafuB(styledir => {dir => "/s"});
     
@@ -162,6 +169,16 @@ hooks:
     }
     T.L.t = "Cx". 0+@CBs ." lx". 0+@{C.B.lines};
     return @CBs;
+  vimcolor: |
+    my $h = Hostinfo::enhash($string);
+    return G.redis->{"vimcolor-$h"} ||= do {
+        use Text::VimColor;
+        my $syntax = Text::VimColor->new(
+            string => $string,
+            filetype => 'perl',
+        );
+        '<pre>'.$syntax->html.'</pre>';
+    };
   event: |
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');

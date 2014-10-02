@@ -21,6 +21,9 @@ use Data::Dumper;
 use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
+#use lib 'zrc/lib';
+#use Mojo::Redis2;
+#our $redis = Mojo::Redis2->new;
 our $data = {};
 ${^WIDE_SYSTEM_CALLS} = 1;
 sub new {
@@ -313,9 +316,8 @@ sub ignorable_mess {
     return 0;
 }
 sub enhash {
-    return sha1_hex(encode_utf8(shift))
+    return sha1_hex(shift)
 }
-
 sub update_app_menu {
     my $self = shift;
     
