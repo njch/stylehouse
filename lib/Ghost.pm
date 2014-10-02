@@ -336,6 +336,7 @@ sub RW {
     my $OW = $self->W->{script};
     $self->W->{script} = [];
     $self->W->{n} = 0;
+    delete $self->W->{ca};
     $OW;
 }
 sub load_ways {
