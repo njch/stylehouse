@@ -428,12 +428,12 @@ div.CodeMirror-lines span {
     background: rgba(33,0,55,0.1); 
 } 
         </style>
-
 @@ thejs.html.ep
 <script type="text/javascript">
 var ws;
 var fail = 0;
 var db = 0;
+var A;
 function connect () {
   ws = new WebSocket('<%= $ws_location %>');
   ws.onmessage = function(event) {
