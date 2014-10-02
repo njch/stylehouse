@@ -39,7 +39,7 @@ sub from {
         my $t = $w->{$k};
         my $f = $s->{$k};
         
-        $f = { %$t, %$f } if $t && $k eq "B";
+        $f = { %$t, %$f } if $t && $k =~ /^(B|S)$/;
         
         $w->{$k} = $f;
     }
