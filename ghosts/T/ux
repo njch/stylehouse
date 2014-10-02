@@ -156,17 +156,28 @@ hooks:
         w J(i=>$_) for @{T.L.o};
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
-        my $at = u.at = {
-            id => (u.S.id_D ? do {w $u S/id_D;} :  u.Li.uuid),
-            tag => (u.B.tag || u.S.tag),
-        };
+        my $Lui = u.B.Lu.i if u.B.Lu;
+        my $at = u.at = {};
+        
+        at.id = u.S.id_D ? do {w $u S/id_D;} :  u.Li.uuid;
+        
+        at.tag = u.B.tag || u.S.tag;
+        
+        at.class = u.B.class || u.S.class || u.B.class;
+        if (u.B.class) {
+            die "LUI!".sw($u);
+        }
+        
         at.styles = $j->(u.styles);
         
-        if (u.O ne 'ux' && u.B.n) {
-            at.styles .= " y".u.B.n;
-            at.tag ||= "y".u.B.n;
+        if (u.O ne 'ux') {
+            at.styles .= " y".u.K;
+            at.tag ||= "y".u.K;
         }
         if (u.K eq 'ux') {
+            if ($Lui && Lui.styles) {
+                die "Lui styles ".sw($Lui);
+            }
             at.styles .= " ".u.B.Lu.i.styles
         }
         at.tag ||= u.K;
@@ -179,6 +190,7 @@ hooks:
         
   wayout_sendo: |
         my $at = u.at;
+        my $Lui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
         my $_t = u._at;
         
@@ -186,6 +198,15 @@ hooks:
             $conty = encode_entities($conty);
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
+            
+            
+        # always update html, doesn
+        
+        my $attr = at.attr = {
+            id => at.id,
+            style => $G->styles(at.styles),
+            class => at.class,
+        };
             
         if (!$_t) {
             die "conty and ooze ".pint($u) if $conty && $content;
@@ -196,12 +217,8 @@ hooks:
                     $H->JS("\$('#at.id').append('$_');") for @oozs
                 };
             }
-            if (u.S.sendo_init_D) {
-                push @$sendo, sub { w $u S/sendo_init_D(e=>'') };
-            }
-            if ($u eq G.top) {
-                push @$sendo, sub { G.O.V.ux->takeover(u.html) };
-            }
+            push @$sendo, sub { w $u S/sendo_init_D(e=>'') } if u.S.sendo_init_D;
+            push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.top;
         }
         else {
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
@@ -230,18 +247,15 @@ hooks:
             # attr updates
             
         }
-        # always update html, doesn
-        my $attr = at.attr = {
-            id => at.id,
-            style => $G->styles(at.styles),
-            class => at.class,
-        };
         my $tag = at.tag;
         # style/class gets misccss/Wcss
         $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
             
         u.html = "<$tag $attr>$conty$content</$tag>";
+        
+        sayyl " Cododnny ".wdump($attr) if $Lui && Lui.K eq "Codon";
+        
         u._at = $at;
   RW: | # for making the tip, which is a hash anyway
     my $W = ar.top||ar.W;
@@ -272,7 +286,7 @@ hooks:
     # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
     # l( @ Lu.o   # fu( via v
     my $uxs = [ map {
-        0->visTp_TafuBl({L=>$_}, [ux => {Lu=>$_}])
+        0->visTp_TafuBlA({L=>$_}, [ux => {Lu=>$_}])
     } @{$Ls} ]; 
     
     for my $ux (@$uxs) {
@@ -284,9 +298,9 @@ hooks:
     
     w U;
     
-    sayyl "Yep ".$G->F_delta();
+    my $es =  "done ".$G->F_delta();
+    sayre "ux -------- $es " for 1..5;
     
-
   sane:
     V3: |
       die "ix not Li " unless ix.Li;
@@ -299,9 +313,9 @@ hooks:
   utricks:
     spawn: | #c
         my @uys;
-        
-        if (u.B.Lu.i.uxy) {
-            $u->from(u.B.Lu.i.uxy);
+        my $ui = u.B.Lu.i;
+        if (ui.S) {
+            $u->from(ui.S);
         }
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
@@ -314,7 +328,7 @@ hooks:
                 else {
                     $Bs = u.B;
                 }
-                my $uy = 0->sway({K=>sp.K}, {B=>$Bs});
+                my $uy = 0->sway({K=>sp.K}, {B=>$Bs}, {e=>''});
                 uy.S.content_D = sp.content_D if sp.content_D;
                 push @uys, w utricks/multi[$uy, $u, $sp]; 
             }
@@ -340,7 +354,7 @@ hooks:
               next if an.K eq "ux"; # that hangs out in the origin lines o
               my $anuy = $uy->spawn;
               anuy.B->{$n} = $an;
-              anuy.K = uy.K."[".$i++;
+              anuy.K ."[".$i++;
               push @uys, $anuy;
           }
       }

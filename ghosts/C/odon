@@ -28,7 +28,8 @@ C:
    travels_D: |
      my $Codon = T.i;
      0->TafuBl(Chunks => { Codon => $Codon });
-   uxy:
+   S:
+     styles: te
      spawn:
       - K: i
       - K: h2
@@ -36,7 +37,7 @@ C:
         content_D: |
           "C S.B.Lu.i.B.name"
      
- - K: Chunks
+ - K: Chunks #c
    travels_D: |
      w chunkify[$Codon];
    
@@ -48,29 +49,36 @@ C:
      my $C = T.i;
      T.t = C.B.lines->[0] || C.B.lines->[1];
      T.t||= ki(C.B);
+   S:
+     spawn:
+      - K: t
    y:
      t:
        event: |
          0->TafuBl("CodeMirror", { Chunk => T.i });
  
- - K: CodeMirror
+ - K: CodeMirror #c
    flows_D: |
      my $CM = T.i;
      my $Ch = CM.B.Chunk;
+     die "YEPO " if S.B.Ch == $Ch;
      my $C = CM.Lo.i;
      T.t = join "\n", "y", @{Ch.B.lines};
-   uxy:
+   S:
      spawn:
-      - K: t
+      - K: div
+        S:
+          class: cm
+      - K: i
+     fresh_sendo_D: |
+       die "Jquery all that";
    y:
      CodeMirror:
        is:
          K: CodeMirror
          js_D: |
-           die "Jquery all that";
        
-
- - K: 'yaml'
+ - K: yaml #c
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1
    foreach_travel:
@@ -85,7 +93,6 @@ C:
 dials:
   max_depth: 3
 hooks:
-
   percolate: |
     0->TafuB(styledir => {dir => "/s"});
     
