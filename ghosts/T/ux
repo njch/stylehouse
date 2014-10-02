@@ -76,14 +76,23 @@ C:            # W M ux
         $H->JS("\$('#somewhere').attr('style', '$css');");
   
   - K: h1
-    styles: blubor
+    styles: h1
+    
   - K: h2
+  
+  - K: script
+    S:
+      no_implied_attr: 1
     
    
 hooks:
   styles:
-    blubor: |
-      q'border:3px solid rgba(20,20,255,0.5);';
+    hugeblurbackname: |
+      qw'color:rgba(255,255,255,0.5)';
+    h1: |
+      qw'font-size:170% color:#77f';
+    h2: |
+      qw'font-size:140% color:#33f font-weight:5';
     tinyer: |
         q'-webkit-transform:scale(0.7,0.5)'
     te: |
@@ -93,11 +102,11 @@ hooks:
     yw: |
         q' margin-left:0.5em '
     yo: |
-        q' color:#a3f'
+        qw' color:#a3f font-size:80%'
     20pt: |
       'font-size:20pt;'
     yi: |
-        q' margin-left:0.5em color:#fca'
+        qw' margin-left:0.5em color:#fca font-size:66%'
         
     yt: |
         qw'font-size:120% '
@@ -139,6 +148,8 @@ hooks:
     
     # TODO make a pattern about y=to match against Eways...
     E.L.G->w(event => $E);
+    
+    sw($E) unless uy.K eq "t";
   
   U: |
     0->visTp($ar, "Fun") if ar.i;
@@ -203,7 +214,7 @@ hooks:
         my $_t = u._at;
         
             my $conty = defined at.conty ? at.conty : "";
-            $conty = encode_entities($conty);
+            $conty = encode_entities($conty) unless u.S.ishtml;
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
             
@@ -227,7 +238,7 @@ hooks:
             }
             push @$sendo, sub { w $u S/sendo_init_D(e=>'') } if u.S.sendo_init_D;
             
-            die "Sendno" if u.sendo_init_D;
+            #die "Sendno" if u.sendo_init_D;
             push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.top;
         }
         else {
@@ -325,11 +336,12 @@ hooks:
     spawn: | #c
         my @uys;
         my $ui = u.B.Lu.i;
-        if (ui.S) {
-            $u->from(ui.S);
+        if (ui.u_from) {
+            $u->from(ui.u_from);
         }
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
+                
                 my $Bs = {};
                 if (sp.Bset) {
                     while (my ($k, $v) = each %{sp.Bset}) {
@@ -340,7 +352,9 @@ hooks:
                     $Bs = u.B;
                 }
                 my $uy = 0->sway({K=>sp.K}, {B=>$Bs}, {e=>''});
-                uy.S.content_D = sp.content_D if sp.content_D;
+                
+                $uy->from($sp);
+                
                 push @uys, w utricks/multi[$uy, $u, $sp]; 
             }
         }

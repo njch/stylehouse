@@ -220,6 +220,7 @@ __DATA__
 
     %= include 'thecss'
     %= include 'jquery'
+    <link rel="stylesheet" type="text/css" href="light.css">
     %= include 'thejs'
     %= include 'codemirror'
 

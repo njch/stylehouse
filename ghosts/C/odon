@@ -30,12 +30,16 @@ C:
      0->TafuBl(Chunks => { Codon => $Codon });
    S:
      styles: te
+   u_from:
      spawn:
       - K: i
+        S:
+          styles: hugeblurbackname
       - K: h2
-        styles: red
-        content_D: |
-          "C S.B.Lu.i.B.name"
+        S:
+          styles: red h2
+          content_D: |
+            "!C S.B.Lu.i.B.name!"
      
  - K: Chunks #c
    travels_D: |
@@ -43,15 +47,29 @@ C:
      0->TafuBl(Chunk => $_) for @CBs;
    
  - K: Chunk
+   k: ''
    print: |
      "C S.B.i";
    flows_D: |
      my $C = T.i;
      T.t = C.B.lines->[0] || C.B.lines->[1];
      T.t||= ki(C.B);
-   S:
+   u_from:
      spawn:
       - K: t
+      - K: code
+        S:
+          tag: code
+          class: prettyprint lang-perl
+          content_D: |
+            return "Yep" unless S.B.Lu.i.B.i == 3;
+            use Text::VimColor;
+            my $syntax = Text::VimColor->new(
+                string => join("\n", @{S.B.Lu.i.B.lines}),
+                filetype => 'perl',
+            );
+            return '<pre>'.$syntax->html.'</pre>';
+          ishtml: 1
    y:
      t:
        event: |
@@ -61,23 +79,23 @@ C:
    flows_D: |
      my $CM = T.i;
      my $Ch = CM.B.Chunk;
-     die "YEPO " if S.B.Ch == $Ch;
+     die "YEPOggg " if S.B.Ch == $Ch;
      my $C = CM.Lo.i;
      T.t = join "\n", "y", @{Ch.B.lines};
    S:
-     spawn:
-      - K: div
-        S:
-          class: cm
-      - K: i
-     S:
-       sendo_init_D: |
+     sendo_init_D: |
          my $cmc = "CodeMirror(document.getElementById('".S.at.id."'), { "
              ."value: 'function myScript(){return 100;}\n', "
             ."mode:  'javascript'"
              ."});";
          $H->JS($cmc);
        
+   u_from:
+     spawn:
+      - K: div
+        S:
+          class: cm
+      - K: i
  - K: yaml #c
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1
@@ -150,7 +168,6 @@ hooks:
     my $y = "";
     $y = "/".ar.uy.K if ar.uy;
     sayyl "IOsa y $y event";
-    sw($ar);
     $G->w("y$y/event", $ar, L.i);
     waylay uxd;
   uxd: |
