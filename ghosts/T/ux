@@ -100,7 +100,8 @@ hooks:
         
     yt: |
         qw'font-size:120% '
-    
+    red: |
+       q' color:red ';
     tinyer: |
         q'-webkit-transform:scale(0.7,0.5)'
     shlink: |
@@ -204,22 +205,22 @@ hooks:
         }
         else {
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
+            my $sendojs = sub {
+                my ($id, $sp, @int) = @_;
+                push @$sendo, sub {
+                    $H->JS("\$('#$id')".sprintf($sp, @int).";")
+                };
+            };
             
             for my $newz (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
-                push @$sendo, sub {
-                    $H->JS("\$('#at.id').append('".0->jsq(newz.html)."');"),
-                };
+                $sendojs->(at.id, q{.append('%s')}, 0->jsq(newz.html));
             }
             for my $gone (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
-                push @$sendo, sub {
-                    $H->JS("\$('#gone.id').remove();"),
-                };
+                $sendojs->(gone.id, q{.remove()});
             }
             if (at.conty ne _t.conty) {
                 saybl "CONTIGITY" for 1..10;
-                push @$sendo, sub {
-                    $H->JS("\$('#at.id').text('".0->jsq(at.conty)."');"),
-                };
+                $sendojs->(at.id, q{.text('%s')}, 0->jsq(at.conty));
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 if ($v ne $_t->{$k}) {
