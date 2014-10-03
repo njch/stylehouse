@@ -38,8 +38,9 @@ C:
       - K: h2
         S:
           styles: red h2
+          tag: yh2
           content_D: |
-            "!C ui.B.name!"
+            "C ui.B.name"
      
  - K: Chunks #c
    S:
@@ -126,18 +127,24 @@ hooks:
   percolate: |
     0->TafuB(styledir => {dir => "/s"});
     
-  codonify: |
-     my $C = $Codon;
-     $_ = C.B.stylefile;
-     my $code = $H->slurp($_) if $_;
-     C.B.name ||= do {
-         /(ghost)s\/(.+)$/ ? $2 :
-         /(lib)\/(.+)\.pm$/ ? $2 : $_
-     };
-     C.B.flav = $1 if /(ghost)s\// || /(lib)\// || /(not)$/;
-     T.t = C.B.name;
-     $code = C.B.code if C.B.code;
-     C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
+  Codon:
+    stylefile_super: |
+      $_ = $stylefile;
+      B.name ||= do {
+          /(ghost)s\/(.+)$/ ? $2 :
+          /(lib)\/(.+)\.pm$/ ? $2 : $_
+      };
+      B.flav = $1 if /(ghost)s\// || /(lib)\// || /(not)$/;
+      S.Li.t = B.name;
+      
+    load_stylefile: |
+       die "no stylefile" unless $stylefile;
+       w $S stylefile_super;
+       B.code = $H->slurp($stylefile);
+       w $S load_code;
+    load_code: |
+       B.code ||= $code;
+       C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
   
   chunkify: |
     my $C = $Codon;
