@@ -194,33 +194,26 @@ hooks:
             my ($w, $ac, $pa) = @_;
             my $f = $w->{$ac};
             return unless $f;
-            return $G->w($w, "$ac/$pa"."_D", $w) if $f->{"$pa"."_D"};
+            return w.G->w("$ac/$pa"."_D", {}, $w) if $f->{"$pa"."_D"};
             $f->{$pa} if $f->{$pa};
         };
-        my $Gw_or_w = sub {      # prefer Gw S things
+        my $Gww = sub {      # prefer Gw S things
             my ($w, @a) = @_;
             my $Gw = w.G->findway(w.K) if w.Gw;
-            $Gw = $tryf($Gw, @a) if $Gw;
-            $Gw || $tryf($w, @a);
+            $Gw = $tryf->($Gw, @a) if $Gw;
+            $Gw || $tryf->($w, @a);
         };
         my $ui_or_u = sub {     # prefer ui S things
-            $Gw_or_w->($ui, @_) || $Gw_or_w->($u, @_)
+            $Gww->($ui, @_) || $Gww->($u, @_)
         };
         
-        at.id = $ui_or_u->(S => id) :  u.Li.uuid;
+        at.id = $ui_or_u->(S => 'id') || u.Li.uuid;
         
-        at.tag = u.B.tag || u.S.tag;
+        at.tag = $ui_or_u->(S => 'tag') || u.K;
         
-        at.ishtml = u.S.ishtml || w $ui S/ishtml;
+        at.ishtml = $ui_or_u->(S => 'ishtml');
         
-        at.class = u.B.class || u.S.class || u.B.class;
-        if (my $ce = w $ui S/class) {
-        
-        }
-        if (u.B.class) {
-            die "LUI!".sw($u);
-        }
-        
+        at.class = $ui_or_u->(S => 'class');
         
         my @styles;
         if (u.O ne 'ux') {
@@ -235,13 +228,9 @@ hooks:
         
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
-        at.conty = u.B.content || $ui && ui.B.content;
-        if (my $eh = w $u S/content_D(e=>'')) {
-            at.conty = $eh;
-        }
-        if (my $eh = w $ui S/content_D(e=>'')) {
-            at.conty = $eh;
-        }
+        
+        at.conty = $ui_or_u->(S => 'content');
+        
         at.conty = "" if !defined at.conty;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
