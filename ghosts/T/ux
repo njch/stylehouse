@@ -89,6 +89,8 @@ C:            # W M ux
    
 hooks:
   styles:
+    bg018: |
+        qw'background:rgba(0,25,200)'
     nottoobig: |
         if (length u.at.conty > 10) {
           qw'font-size:150%';
@@ -219,13 +221,17 @@ hooks:
     # builds up W or M styles from ux or ui.G styles
     my @styles;
     for my $style (split ' ', $styles) {
+        my @bunch = $G->w("styles/$style", $ar);
+        if (!@bunch) {
+            sayyl "style $style from u.K/ui.K is...";
+        }
         push @styles,
-            join "", map { /;$/ ? $_ : "$_;" } $G->w("styles/$style", $ar);
+            join "", map { /;$/ ? $_ : "$_;" } @bunch
     }
     join ' ', @styles;
   wayout_sendo: |
         my $at = u.at;
-        my $Lui = u.B.Lu.i if u.K eq "ux";
+        my $ui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
         my $_t = u._at;
         
@@ -241,7 +247,7 @@ hooks:
             class => at.class,
         };
         my $styles = at.styles;
-        attr.style = w stylezo[$u, $styles];
+        attr.style = w stylezo[$u, $ui, $styles];
             
         if (!$_t) {
             die "conty and ooze ".pint($u) if $conty && $content;
@@ -292,7 +298,7 @@ hooks:
             
         u.html = "<$tag $attr>$conty$content</$tag>";
         
-        sayyl " Cododnny ".wdump($attr) if $Lui && Lui.K eq "Codon";
+        sayyl " Cododnny ".wdump($attr) if $ui && ui.K eq "Codon";
         
         u._at = $at;
   RW: | # for making the tip, which is a hash anyway
