@@ -81,7 +81,8 @@ C:            # W M ux
     styles: h1
     
   - K: h2
-  
+  - K: pre
+    styles: skinny
   - K: script
     S:
       no_implied_attr: 1
@@ -89,6 +90,14 @@ C:            # W M ux
    
 hooks:
   styles:
+    wanderleft3em: |
+      q'left:-3em'
+    antrail: |
+      # blend downwards hamoniously...
+      # q factor
+      q'border-left:8px solid rgba(255,255,255,0.7);';
+    skinny: |
+      q'margin:0.2em'
     bg018: |
         qw'background:rgba(0,25,200)'
     nottoobig: |
@@ -191,16 +200,19 @@ hooks:
         my $wi = ui.G->findway(ui.K) if ui.Gw;
         # 
         my $tryf = sub {         # prefer S thing_Ds
-            my ($w, $ac, $pa) = @_;
-            my $f = $w->{$ac};
+            my ($w, $ac, $pa, $wa) = @_;
+            my $f = $w->{$ac}; # poss. from fragment
             return unless $f;
-            return w.G->w("$ac/$pa"."_D", {}, $w) if $f->{"$pa"."_D"};
+            my $way = $wa || $w; # call non fragment
+            my $some = way.G->w("$ac/$pa"."_D", {}, $way) if $f->{"$pa"."_D"};
+            #die sw([$w, $ac, $f, $f->{$pa}, $pa, $some]) if $wa && $pa =~ /ishtml/;
+            return $some if $some;
             $f->{$pa} if $f->{$pa};
         };
         my $Gww = sub {      # prefer Gw S things
             my ($w, @a) = @_;
             my $Gw = w.G->findway(w.K) if w.Gw;
-            $Gw = $tryf->($Gw, @a) if $Gw;
+            $Gw = $tryf->($Gw, @a, $w) if $Gw;
             $Gw || $tryf->($w, @a);
         };
         my $ui_or_u = sub {     # prefer ui S things
@@ -223,6 +235,8 @@ hooks:
         push @styles, u.styles, u.S.styles;
         push @styles, ui.styles, ui.S.styles if $ui;
         at.styles = $j->(@styles);
+        
+        sayyl "@styles" if $ui && ui.K eq 'Chunk';
         
         
         
@@ -268,7 +282,11 @@ hooks:
         attr.style = w stylezo[$u, $ui, $styles];
             
         if (!$_t) {
-            die "conty and ooze ".pint($u) if $conty && $content;
+            #w sendnew[$u, $ui, $attr, $at, $conty, $content];
+            if ( $conty && $content ){
+                warn "conty and ooze ".sw(["contooz", $u, $conty, $content]);
+                $conty = "";
+            }
 
             if (length($conty.$content) > 25000) {
                 $content = "";
@@ -282,6 +300,7 @@ hooks:
             push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.top;
         }
         else {
+            #w sendnew[$u, $ui, $attr, $at, $conty, $content];
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             my $sendojs = sub {
                 my ($id, $sp, @int) = @_;

@@ -25,8 +25,7 @@ C:
      
  - K: Codon #c
    Gw: 1
-   S:
-     styles: blah
+   styles: blah
    u_from:
      spawn:
       - K: i
@@ -38,14 +37,15 @@ C:
             "C ui.B.name"
      
  - K: Chunks #c
-   S:
-     styles: bg018
+   styles: bg018
    travels_D: |
      my @CBs = w chunkify[$Codon];
      0->TafuBl(Chunk => $_) for @CBs;
    
  - K: Chunk
    Gw: 1
+   S:
+     styles: wanderleft3em antrail
    u_from:
      spawn:
       - K: i
@@ -59,7 +59,14 @@ C:
             w $ui title;
  - K: Code #c
    Gw: 1
-   spawn: []
+   u_from:
+     spawn:
+      - K: pre
+        S:
+          ishtml: 1
+          content_D: |
+            w $ui S/make_lines_html(e=>'');
+           
  - K: CodeMirror #c
    flows_D: |
      my $CM = T.i;
@@ -117,9 +124,7 @@ hooks:
           0->TafuBl("Code", $B);
   Code:
     S:
-      ishtml: 1
-      content_D: |
-        return "~~~~" unless B.i < 4;
+      make_lines_html: |
         my $string = join("\n", @{$lines});
         $G->w(vimcolor => {string => $string});
   Codon:
@@ -191,7 +196,7 @@ hooks:
             string => $string,
             filetype => 'perl',
         );
-        '<pre>'.$syntax->html.'</pre>';
+        $syntax->html;
     };
   event: |
     sayyl "Event relating to ".pint(L.i);
