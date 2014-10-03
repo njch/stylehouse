@@ -22,8 +22,8 @@ use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
 use lib 'zrc/lib';
-use Mojo::Redis2;
-our $redis = Mojo::Redis2->new;
+use Redis;
+
 our $data = {};
 ${^WIDE_SYSTEM_CALLS} = 1;
 sub new {
@@ -31,6 +31,15 @@ sub new {
     #$self->set('0', $self);
     $self->{for_all} = [];
     $self->{name} = 'Њ';
+    my $r = $self->{r} = Redis->new(server => 'localhost:8888');
+    $self->{r}->{gest} = sub {
+        my ($k, $make) = @_;
+        my $c = $r->get($k);
+        return $c if $c;
+        $c = $make->();
+        $r->set($k => $c);
+        return $c;
+    };
     
     $Lyrico::H = $self;
     $Ghost::H = $self;
