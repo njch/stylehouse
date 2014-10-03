@@ -24,12 +24,7 @@ C:
          waylay uxd;
      
  - K: Codon #c
-   flows_D: |
-     my $Codon = T.i;
-     w codonify[$Codon]; # slurp & split
-   travels_D: |
-     my $Codon = T.i;
-     0->TafuBl(Chunks => { Codon => $Codon });
+   Gw: 1
    S:
      styles: blah
    u_from:
@@ -128,6 +123,18 @@ hooks:
     0->TafuB(styledir => {dir => "/s"});
     
   Codon:
+    flows_D: |
+      w $S load_stylefile_lines;
+      
+    travels_D: |
+      0->TafuBl(Chunks => { Codon => $S });
+            
+    load_stylefile_lines: |
+      die "no stylefile" unless $stylefile;
+      w $S stylefile_super;
+      B.code = $H->slurp($stylefile);
+      w $S load_code;
+      
     stylefile_super: |
       $_ = $stylefile;
       B.name ||= do {
@@ -136,15 +143,10 @@ hooks:
       };
       B.flav = $1 if /(ghost)s\// || /(lib)\// || /(not)$/;
       S.Li.t = B.name;
-      
-    load_stylefile: |
-       die "no stylefile" unless $stylefile;
-       w $S stylefile_super;
-       B.code = $H->slurp($stylefile);
-       w $S load_code;
+
     load_code: |
-       B.code ||= $code;
-       C.B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
+      B.code ||= $code;
+      B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
   
   chunkify: |
     my $C = $Codon;
