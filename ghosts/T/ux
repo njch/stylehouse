@@ -185,14 +185,38 @@ hooks:
         w J(i=>$_) for @{T.L.o};
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
-        my $Lui = u.B.Lu.i if u.B.Lu;
+        my $ui = u.B.Lu.i if u.B.Lu;
         my $at = u.at = {};
         
-        at.id = u.S.id_D ? do {w $u S/id_D;} :  u.Li.uuid;
+        my $wi = ui.G->findway(ui.K) if ui.Gw;
+        # 
+        my $tryf = sub {         # prefer S thing_Ds
+            my ($w, $ac, $pa) = @_;
+            my $f = $w->{$ac};
+            return unless $f;
+            return $G->w($w, "$ac/$pa"."_D", $w) if $f->{"$pa"."_D"};
+            $f->{$pa} if $f->{$pa};
+        };
+        my $Gw_or_w = sub {      # prefer Gw S things
+            my ($w, @a) = @_;
+            my $Gw = w.G->findway(w.K) if w.Gw;
+            $Gw = $tryf($Gw, @a) if $Gw;
+            $Gw || $tryf($w, @a);
+        };
+        my $ui_or_u = sub {     # prefer ui S things
+            $Gw_or_w->($ui, @_) || $Gw_or_w->($u, @_)
+        };
+        
+        at.id = $ui_or_u->(S => id) :  u.Li.uuid;
         
         at.tag = u.B.tag || u.S.tag;
         
+        at.ishtml = u.S.ishtml || w $ui S/ishtml;
+        
         at.class = u.B.class || u.S.class || u.B.class;
+        if (my $ce = w $ui S/class) {
+        
+        }
         if (u.B.class) {
             die "LUI!".sw($u);
         }
@@ -204,15 +228,20 @@ hooks:
             at.tag ||= "y".u.K;
         }
         push @styles, u.styles, u.S.styles;
-        push @styles, Lui.styles, Lui.S.styles if $Lui;
+        push @styles, ui.styles, ui.S.styles if $ui;
         at.styles = $j->(@styles);
         
         
         
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
-        at.conty = u.B.content if u.B.content;
-        at.conty = w $u S/content_D(e=>'') if u.S.content_D;
+        at.conty = u.B.content || $ui && ui.B.content;
+        if (my $eh = w $u S/content_D(e=>'')) {
+            at.conty = $eh;
+        }
+        if (my $eh = w $ui S/content_D(e=>'')) {
+            at.conty = $eh;
+        }
         at.conty = "" if !defined at.conty;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
@@ -236,7 +265,7 @@ hooks:
         my $_t = u._at;
         
             my $conty = defined at.conty ? at.conty : "";
-            $conty = encode_entities($conty) unless u.S.ishtml;
+            $conty = encode_entities($conty) unless at.ishtml;
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
             

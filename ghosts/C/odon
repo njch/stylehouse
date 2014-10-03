@@ -15,7 +15,7 @@ C:
    Ki: styledir
    flows_D: |
      T.t = $file;
-     $file =~ /Ϡ/ && $G->timer(3, sub { w $S y/t/event; });
+     $file =~ /Ϡ/ && $G->timer(1, sub { w $S y/t/event; });
    y:
      t:
        event: |
@@ -57,19 +57,8 @@ C:
           styles: brazibro nottoobig
           content_D: |
             w $ui title;
-            
-      - K: code
-        S:
-          content_D: |
-            return "~~~~" unless ui.B.i < 4;
-            my $string = join("\n", @{ui.B.lines});
-            ui.Li.G->w(vimcolor => {string => $string});
-          ishtml: 1
-   y:
-     t:
-       event: |
-         0->TafuBl("CodeMirror", { Chunk => T.i });
- 
+ - K: Code #c
+   Gw: 1
  - K: CodeMirror #c
    flows_D: |
      my $CM = T.i;
@@ -106,6 +95,8 @@ C:
 dials:
   max_depth: 3
 hooks:
+  percolate: |
+    0->TafuB(styledir => {dir => "/s"});
   Chunk:
     title: |
       my $l;
@@ -118,10 +109,18 @@ hooks:
     flows_D: |
       my $C = T.i;
       T.t = C.B.lines->[0] || C.B.lines->[1];
-      T.t||= ki(C.B);
-  percolate: |
-    0->TafuB(styledir => {dir => "/s"});
-    
+      T.t||= ki(C.B);    
+    y:
+      t:
+        event: |
+          0->TafuBl("Code", $B);
+  Code:
+    S:
+      ishtml: 1
+      content_D: |
+        return "~~~~" unless B.i < 4;
+        my $string = join("\n", @{$lines});
+        $G->w(vimcolor => {string => $string});
   Codon:
     flows_D: |
       w $S load_stylefile_lines;
