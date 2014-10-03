@@ -31,7 +31,11 @@ sub new {
     #$self->set('0', $self);
     $self->{for_all} = [];
     $self->{name} = 'Њ';
-    my $r = $self->{r} = Redis->new(server => 'localhost:8888');
+    my $r = $self->{r} = Redis->new(
+        server => 'localhost:8888',
+        reconnect => 7,
+        every => 1_000_000,
+    );
     $self->{r}->{gest} = sub {
         my ($k, $make) = @_;
         my $c = $r->get($k);
