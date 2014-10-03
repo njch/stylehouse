@@ -15,11 +15,13 @@ C:
    Ki: styledir
    flows_D: |
      T.t = $file;
+     $file =~ /Ϡ/ && $G->timer(3, sub { w $S y/t/event; });
    y:
      t:
        event: |
-         Say "In Eveent";
-         0->TafuB(Codon => { stylefile => L.t });
+         Say "In Eveent S.K $file";
+         0->TafuB(Codon => { stylefile => S.Li.t });
+         waylay uxd;
      
  - K: Codon #c
    flows_D: |
@@ -33,8 +35,6 @@ C:
    u_from:
      spawn:
       - K: i
-        S:
-          styles: hugeblurbackname
       - K: h2
         S:
           styles: red h2
@@ -48,10 +48,6 @@ C:
    
  - K: Chunk
    Gw: 1
-   flows_D: |
-     my $C = T.i;
-     T.t = C.B.lines->[0] || C.B.lines->[1];
-     T.t||= ki(C.B);
    u_from:
      spawn:
       - K: i
@@ -60,10 +56,9 @@ C:
             "C ui.B.i"
       - K: t
         S:
+          styles: brazibro nottoobig
           content_D: |
             w $ui title;
-            die "Hit title?";
-          ishtml: 1
             
       - K: code
         S:
@@ -113,11 +108,19 @@ C:
 dials:
   max_depth: 3
 hooks:
-  Codon:
+  Chunk:
     title: |
-      my $stuff = $lines->[0] || $lines->[1];
-      die "HELEO";
-      return $stuff;
+      my $l;
+      my $some=  $lines->[0] || $lines->[1];
+      for ($some) {
+          $l = $1 if /(\w+):[ \|]/;
+      }
+      $l ||= $some;
+      return $l;
+    flows_D: |
+      my $C = T.i;
+      T.t = C.B.lines->[0] || C.B.lines->[1];
+      T.t||= ki(C.B);
   percolate: |
     0->TafuB(styledir => {dir => "/s"});
     

@@ -534,12 +534,11 @@ sub w {
             }
             elsif ($Sway->{Gw}) {
                 die "no Sway G!?" unless $Sway->{G};
+                $point = "$Sway->{K}/$point" unless $point =~ /^$Sway->{K}/;
                 if ($G eq $Sway->{G}) {
-                    @ways = $G->ways;
-                    $watch = 1 if $point =~ /^$Sway->{K}/;
+                    @ways = $G->ways; # ------------------
                 }
                 else {
-                    $point = "$Sway->{K}/$point";
                     return $Sway->{G}->w($point, $ar, $Sway); # G pass
                 }
             }

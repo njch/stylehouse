@@ -89,6 +89,12 @@ C:            # W M ux
    
 hooks:
   styles:
+    nottoobig: |
+        if (length u.at.conty > 10) {
+          qw'font-size:150%';
+        }
+    brazibro: |
+      qw'color:#fff font-size:240%'
     hugeblurbackname: |
       qw'color:rgba(255,255,255,0.5)';
     h1: |
@@ -189,18 +195,18 @@ hooks:
             die "LUI!".sw($u);
         }
         
-        at.styles = $j->(u.styles);
         
+        my @styles;
         if (u.O ne 'ux') {
-            at.styles .= " y".u.K;
+            push @styles, " y".u.K;
             at.tag ||= "y".u.K;
         }
-        if (u.K eq 'ux') {
-            if ($Lui && Lui.styles) {
-                die "Lui styles ".sw($Lui);
-            }
-            at.styles .= " ".u.B.Lu.i.styles
-        }
+        push @styles, u.styles, u.S.styles;
+        push @styles, Lui.styles, Lui.S.styles if $Lui;
+        at.styles = $j->(@styles);
+        
+        
+        
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
         at.conty = u.B.content if u.B.content;
@@ -208,7 +214,15 @@ hooks:
         at.conty = "" if !defined at.conty;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
-        
+  stylezo: |
+    # u at->attribute traslator
+    # builds up W or M styles from ux or ui.G styles
+    my @styles;
+    for my $style (split ' ', $styles) {
+        push @styles,
+            join "", map { /;$/ ? $_ : "$_;" } $G->w("styles/$style", $ar);
+    }
+    join ' ', @styles;
   wayout_sendo: |
         my $at = u.at;
         my $Lui = u.B.Lu.i if u.K eq "ux";
@@ -221,13 +235,13 @@ hooks:
             my $content = join "\n", @oozs;
             
             
-        # always update html, doesn
         
         my $attr = at.attr = {
             id => at.id,
-            style => $G->styles(at.styles),
             class => at.class,
         };
+        my $styles = at.styles;
+        attr.style = w stylezo[$u, $styles];
             
         if (!$_t) {
             die "conty and ooze ".pint($u) if $conty && $content;
