@@ -242,6 +242,7 @@ hooks:
         at.conty = $ui_or_u->(S => 'content');
         
         at.conty = "" if !defined at.conty;
+        at.conty = encode_entities(at.conty) unless at.ishtml;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
   stylezo: |
@@ -264,7 +265,6 @@ hooks:
         my $_t = u._at;
         
             my $conty = defined at.conty ? at.conty : "";
-            $conty = encode_entities($conty) unless at.ishtml;
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
             
@@ -401,7 +401,7 @@ hooks:
                 my $Bs = {};
                 if (sp.Bset) {
                     while (my ($k, $v) = each %{sp.Bset}) {
-                        $Bs->{$k} = $u->find("B.$v"); # v=Lu.i
+                        $Bs->{$k} = $u->find("B.$v"); # i=Lu.i etc
                     }
                 }
                 else {
