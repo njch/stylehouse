@@ -4,7 +4,14 @@ C:            # W M ux
   - K: W # us
     O: ux
     spawn:
-      - K: somewhere
+      - K: style
+        conor: -1.5
+        attrs:
+          scoped: 1
+          type: text/css
+        S:
+          content_D: |
+            w Wstyles;
     S:
       tag: wormhole
       id_D: |
@@ -76,13 +83,13 @@ C:            # W M ux
         $H->JS("\$('#somewhere').appendTo('#S.at.id');");
         my $css = 'pointer-events:none; -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black); width:60em;';
         $H->JS("\$('#somewhere').attr('style', '$css');");
-  
-  - K: h1
+    S:
+      content_D
+  - K: h1 #c
     styles: h1
-    
-  - K: h2
+  - K: h2 
   - K: pre
-    styles: skinny
+    styles: skinny pre
   - K: script
     S:
       no_implied_attr: 1
@@ -197,6 +204,8 @@ hooks:
     }
 
         w J(i=>$_) for @{T.L.o};
+  Wstyles: |
+    q'ux { border:5px solid green;} ';
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
@@ -280,6 +289,7 @@ hooks:
         my $attr = at.attr = {
             id => at.id,
             class => at.class,
+            %{ u.attrs || {} },
         };
         my $styles = at.styles;
         attr.style = w stylezo[$u, $ui, $styles];
