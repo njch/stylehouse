@@ -97,71 +97,76 @@ C:            # W M ux
    
 hooks:
   StyleS:
-    wanderleft3em: |
-      q'left:0em' # && width=calc(100-padding+left)
-    antrail: |
-      # blend downwards hamoniously...
-      # q factor
-      q'border-left:8px solid rgba(255,255,255,0.7);';
-    skinny: |
-      qw'margin:0.2em'
-    pre: |
-      qw'overflow-wrap:break-word'
-    bg018: |
-        qw'background:rgba(0,25,200)'
+    20pt: 
+      - font-size:20pt;
+    abs: 
+      - position:absolute
+    antrail: 
+      - border-left:8px solid rgba(255,255,255,0.7);
+    bg018: 
+      - background:rgba(0,25,200)
+    chtit: 
+      - color:#fff
+      - font-size:240%
+    fulw: 
+      - height:100%
+      - float:left
+      - position:absolute
+    h1: 
+      - font-size:170%
+      - color:#77f
+    h2: 
+      - font-size:200%
+      - color:#55f
+      - font-weight:5
+    hugeblurbackname: 
+      - color:rgba(255,255,255,0.5)
+    little: 
+      - font-size:60%
     nottoobig_D: |
-        if (length u.at.conty > 10) {
-          'z94'
-        }
-    z94:
-      qw'font-size:144.44%';
-    chtit: |
-      qw'color:#fff font-size:240%'
-    hugeblurbackname: |
-      qw'color:rgba(255,255,255,0.5)';
-    h1: |
-      qw'font-size:170% color:#77f';
-    h2: |
-      qw'font-size:200% color:#55f font-weight:5';
-    tinyer: |
-        q'-webkit-transform:scale(0.7,0.5)'
-    te: |
-      q'border-bottom:1px solid black',
-      qw' padding-left:2em
-            float:left position:relative', q'width:calc(100% - 2em)',
-      q'background:rgba(150,100,50,0.1)';
-    yw: |
-        q' margin-left:0.5em '
-    yo: |
-        qw' color:#a3f font-size:80%'
-    20pt: |
-      'font-size:20pt;'
-    yi: |
-        qw' margin-left:0.5em color:#fca font-size:66%'
-        
-    yt: |
-        qw'font-size:120% '
-    red: |
-       q' color:red ';
-    tinyer: |
-        q'-webkit-transform:scale(0.7,0.5)'
-    shlink: |
-        q" -webkit-transform:rotate(45deg) scale(1,0.5); ";
-    z4: |
-        q"font-size:44.44%;";
-      
-    rel: |
-      qw'position:relative'
-    abs: |
-      qw'position:absolute'
-    topleft: |
-      qw'position:absolute top:-5px left:-5px'
-    white: |
-      qw'color:white'
-    little: |
-      qw'font-size:60%'
-    fulw: |
-      qw {height:100% float:left position:absolute},
+      'z94' if length u.at.conty > 10
+    pre: 
+      - overflow-wrap:break-word
+    red: 
+      - " color:red "
+    rel: 
+      - position:relative
+    shlink: 
+      - " -webkit-transform:rotate(45deg) scale(1,0.5); "
+    skinny: 
+      - margin:0.2em
+    te: 
+      - border-bottom:1px solid black
+      - padding-left:2em
+      - float:left
+      - position:relative
+      - width:calc(100% - 2em)
+      - background:rgba(150,100,50,0.1)
+    tinyer: 
+      - -webkit-transform:scale(0.7,0.5)
+    topleft: 
+      - position:absolute
+      - top:-5px
+      - left:-5px
+    wanderleft3em: 
+      - left:0em
+    white: 
+      - color:white
+    yi: 
+      - margin-left:0.5em
+      - color:#fca
+      - font-size:66%
+    yo: 
+      - color:#a3f
+      - font-size:80%
+    yt: 
+      - font-size:120%
+    yw: 
+      - " margin-left:0.5em "
+    z4: 
+      - font-size:44.44%;
+    z94: 
+      - font-size:144.44%
   event: |
     my $u = L.i;
     my $ux = uxL.i;
@@ -268,12 +273,8 @@ hooks:
     # builds up W or M styles from ux or ui.G styles
     #my $W = G.top;
     my $hs = $G->findway('StyleS');
+    die ddump($hs);
     my $h = {};
-    while (my ($k, $v) = each %$hs) {
-        $h->{$k} = [ $G->w("StyleS/$k", $ar) ];
-    }
-    say ddump($h);
-    exit;
     #W.B.hs
     
     my @styles;
