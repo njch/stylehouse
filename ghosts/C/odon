@@ -122,14 +122,23 @@ hooks:
   Code:
     S:
       make_lines_html: |
-        my $string = join("\n", @{$lines});
-        $G->w(vimcolor => {string => $string});
+        $G->w(vimcolor => {string => join("\n", @{$lines})});
+    E:
+      _D: |
+        
   Codon:
     flows_D: |
       w $S load_stylefile_lines;
-      
     travels_D: |
       0->TafuBl(Chunks => { Codon => $S });
+    E:
+      _D: |
+        my $Ch = 0->Ato($S => "Chunks");
+        sw([$S,$Ch]) for 1;
+        Ch.styles = 0->Stytog(Ch.styles => 'z4');
+        # ^ future: A Chunks;.style>tog # means $S/Chunks
+        # or $Codon/Chunks # from non-$S wayspace...
+        # this kinda stuff wants code sitting right across there more closely...
             
     load_stylefile_lines: |
       die "no stylefile" unless $stylefile;
