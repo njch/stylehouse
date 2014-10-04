@@ -6,17 +6,25 @@ C:            # W M ux
     spawn:
       - K: style
         conor: -1.5
-        attrs:
-          scoped: 1
-          type: text/css
-        S:
-          content_D: |
-            w Wstyles;
+        B:
+          SS: pri
+      - K: style
+        conor: -1.4
+        B:
+          SS: tri
     S:
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
         
+  - K: style
+    attrs:
+      scoped: 1
+      type: text/css
+    S:
+      content_D: |
+        w stylesheet(SS => S.B.SS);
+      
   - K: M
     O: ux
     spawn:
@@ -93,10 +101,47 @@ C:            # W M ux
   - K: script
     S:
       no_implied_attr: 1
-    
+
    
 hooks:
-  StyleS:
+  
+
+  any_init: |
+    w styleup;
+  styleup: |
+    my $SS = $G->findway('StyleS');
+    %$SS = ();
+    for my $SSS (qw'pri tri') {
+        my $Sc = $G->findway("SS_$SSS");
+        %$SS = (%$SS, %$Sc);
+    }
+  stylesheet: |
+    $SS = "SS_$SS";
+    $SS = $G->findway($SS);
+    join "\n", map {
+        ".$_ { ". join(";", @{$SS->{$_}}) ." }"
+    } grep { !/_D$/ } sort keys %$SS;
+  StyleS: {}
+  SS_pri:
+    yi: 
+      - margin-left:0.5em
+      - color:#fca
+      - font-size:66%
+    yo: 
+      - color:#a3f
+      - font-size:80%
+    yt: 
+      - font-size:120%
+    yw: 
+      - " margin-left:0.5em "
+    te: 
+      - border-bottom:1px solid black
+      - padding-left:2em
+      - float:left
+      - position:relative
+      - width:calc(100% - 2em)
+      - background:rgba(150,100,50,0.1)
+  SS_tri:
     20pt: 
       - font-size:20pt;
     abs: 
@@ -127,6 +172,7 @@ hooks:
       'z94' if length u.at.conty > 10
     pre: 
       - overflow-wrap:break-word
+      - margin:0em
     red: 
       - " color:red "
     rel: 
@@ -135,13 +181,6 @@ hooks:
       - " -webkit-transform:rotate(45deg) scale(1,0.5); "
     skinny: 
       - margin:0.2em
-    te: 
-      - border-bottom:1px solid black
-      - padding-left:2em
-      - float:left
-      - position:relative
-      - width:calc(100% - 2em)
-      - background:rgba(150,100,50,0.1)
     tinyer: 
       - -webkit-transform:scale(0.7,0.5)
     topleft: 
@@ -152,21 +191,11 @@ hooks:
       - left:0em
     white: 
       - color:white
-    yi: 
-      - margin-left:0.5em
-      - color:#fca
-      - font-size:66%
-    yo: 
-      - color:#a3f
-      - font-size:80%
-    yt: 
-      - font-size:120%
-    yw: 
-      - " margin-left:0.5em "
     z4: 
-      - font-size:44.44%;
+      - font-size:44.44%
     z94: 
       - font-size:144.44%
+  
   event: |
     my $u = L.i;
     my $ux = uxL.i;
@@ -211,8 +240,7 @@ hooks:
     }
 
         w J(i=>$_) for @{T.L.o};
-  Wstyles: |
-    q'ux { border:5px solid green;} ';
+
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
@@ -272,21 +300,22 @@ hooks:
     # u at->attribute traslator
     # builds up W or M styles from ux or ui.G styles
     #my $W = G.top;
-    my $hs = $G->findway('StyleS');
-    die ddump($hs);
-    my $h = {};
-    #W.B.hs
-    
-    my @styles;
-    for my $style (split ' ', $styles) {
-        my @bunch = $G->w("StyleS/$style", $ar);
-        if (!@bunch) {
-            sayyl "style $style from u.K/ui.K is...";
+    my $s = $G->findway('StyleS');
+    my $apply;
+    $apply = sub {
+        my $style = shift;
+        if ($style =~ / /) {
+            return map { $apply->($_) } split ' ', $style
         }
-        push @styles,
-            join "", map { /;$/ ? $_ : "$_;" } @bunch
-    }
-    join ' ', @styles;
+        if ($s->{$style}) {
+            attr.class .= " $style";
+        }
+        elsif ($s->{$style."_D"}) {
+            my $ysty = $G->w("StyleS/".$style."_D", $ar);
+            $apply->($ysty) if $ysty;
+        }
+    };
+    $apply->($styles);
   wayout_sendo: |
         my $at = u.at;
         my $ui = u.B.Lu.i if u.K eq "ux";
@@ -305,7 +334,8 @@ hooks:
             %{ u.attrs || {} },
         };
         my $styles = at.styles;
-        attr.style = w stylezo[$u, $ui, $styles];
+        
+        w stylezo[$u, $ui, $styles, $attr];
             
         if (!$_t) {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];
