@@ -39,7 +39,7 @@ sub new {
     $self->{r}->{gest} = sub {
         my ($k, $make) = @_;
         my $c = $r->get($k);
-        return $c if $c;
+        return ref \$c eq "SCALAR" ? fixutf8($c) : $c if $c;
         $c = $make->();
         $r->set($k => $c);
         return $c;
@@ -1047,6 +1047,7 @@ sub fixutf8 {
       $_ = decode_utf8($_); 
     }
   }
+  return shift if @_ == 1;
 }
 sub slurp {
     my $self = shift;
