@@ -96,7 +96,7 @@ C:            # W M ux
     
    
 hooks:
-  styles:
+  StyleS:
     wanderleft3em: |
       q'left:0em' # && width=calc(100-padding+left)
     antrail: |
@@ -109,10 +109,12 @@ hooks:
       qw'overflow-wrap:break-word'
     bg018: |
         qw'background:rgba(0,25,200)'
-    nottoobig: |
+    nottoobig_D: |
         if (length u.at.conty > 10) {
-          qw'font-size:150%';
+          'z94'
         }
+    z94:
+      qw'font-size:144.44%';
     chtit: |
       qw'color:#fff font-size:240%'
     hugeblurbackname: |
@@ -264,9 +266,19 @@ hooks:
   stylezo: |
     # u at->attribute traslator
     # builds up W or M styles from ux or ui.G styles
+    #my $W = G.top;
+    my $hs = $G->findway('StyleS');
+    my $h = {};
+    while (my ($k, $v) = each %$hs) {
+        $h->{$k} = [ $G->w("StyleS/$k", $ar) ];
+    }
+    say ddump($h);
+    exit;
+    #W.B.hs
+    
     my @styles;
     for my $style (split ' ', $styles) {
-        my @bunch = $G->w("styles/$style", $ar);
+        my @bunch = $G->w("StyleS/$style", $ar);
         if (!@bunch) {
             sayyl "style $style from u.K/ui.K is...";
         }
