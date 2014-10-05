@@ -9,12 +9,17 @@ name: kasplat
 include: W/tractor
 tractors:
   - K: 'Key'
+    #B: $e $key
     max_populi: 10
+    Gw: 1
+    
+hooks:
+  Key:
     arr_if: |
       $e
-    first_time: |
+    first_time: | #c
       S.B.key ||= e.k;
-      S.B.key ||= "Ⲯ";
+      S.B.key ||= "?Ⲯ?";
       S.B.key = lc(S.B.key) if !e.S;
       S.hitime = hitime();
       
@@ -25,7 +30,7 @@ tractors:
 
       0->sing(
           "keytrig $k" => sub {
-              w trigger[$S];
+              w $S keydosubs;
           },
           begin => 0.00000000001,
           block => 0.2,
@@ -33,31 +38,16 @@ tractors:
       $G->timer(0.01, sub  {
           Info "keypress $k", $S;
       },"prop keypress Info");
-    print: |
-      my $k = S.B.key;
-      return "??? ?" unless $k;
+    print: | #c
+      return "??? ?" unless $key;
       my $and = "";
-      for (qw{S C A M}) {
-          $and .= "$_+" if $e->{$_} 
+      $and .= "$_+" for grep { $e->{$_} } qw{S C A M};
+      $and.$key
+    keydosubs: | #c
+      my $k = $S->{B}->{key};
+      for my $g (@{ G.subs }) {
+          $g->w("key/$key", {Key => $S});
       }
-      $and = "" if $and eq "S+" && !$k;
-      "$and$k"
-hooks:
-  first_init: |
-    $H->JS("\$(window).on('keydown', keyhand);");
-  any_init: |
-    $H->JS("handelay = 5;"); 
-    $H->JS("\$(window).on('keydown', keyhand);"); 
-  trigger: |
-    my $k = $S->{B}->{key};
-    for my $g ($H->Gf('L')) {
-        $G->timer(0.000001, sub {
-            my $ago = hitime() - $S->{hitime};
-            $G->Flab("keys ($k) arr..trig time taken: $ago");
-            $g->w("key/$k", {Key => $S});
-        }, "HITKEY!");
-    }
-    
   event: |
     #w throwlog(Event => $e);
     if (eval { $ar->{e}->[1]->{C} }) {
@@ -69,4 +59,10 @@ hooks:
         $H->JS("\$('#mess').toggleClass('inface');");
     }
     
+  first_init: |
+    $H->JS("\$(window).on('keydown', keyhand);");
+    G.ksubs = [$H->Gf('L')];    
+  any_init: |
+    $H->JS("handelay = 5;"); 
+    $H->JS("\$(window).on('keydown', keyhand);"); 
 
