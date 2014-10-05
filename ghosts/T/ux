@@ -1,29 +1,22 @@
 name: Styluxyio
-
-C:            # W M ux
+C:            # W M ux ...
   - K: W # us
     O: ux
     spawn:
       - K: style
-        conor: -1.5
-        B:
-          SS: pri
-      - K: style
-        conor: -1.4
-        B:
-          SS: tri
     S:
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
         
   - K: style
+    conor: -1.5
     attrs:
       scoped: 1
       type: text/css
     S:
       content_D: |
-        w stylesheet(SS => S.B.SS);
+        w stylesheet(GG => Lui.G, A => "S");
       
   - K: M
     O: ux
@@ -109,106 +102,115 @@ hooks:
   any_init: |
     w styleup;
   styleup: |
-    # the various SS, contributors to StyleS
-    #    must be separado because they are hashes
-    #    but styles need some order somewhere, to get away from defaults
-    #     which used to happen in style="" but the stylesheet order is used for class=""
-    # they don't need to be hashes
-    # they should be arrays but also hashes when 'up'
-    # so it's languistic stuff that gets built up by whatever makes ways tick for G
-    # the same old flow, aggregation... map, reduce. write stuff, have chunks. things.
-    # good crazy part of the vortex, use EF numbers
-    # eg hur4; (4/9 = 0.4444) * 360 = 160deg hue rotate
-    # eg fs94; (9/9 = 1) + (4/9 = 0.4444) = 1.4444 * 100 = 144.44% font size
-    # some kind of point (not . which is something on the floor) gets you across
-    # to fractioning $n / 18 or something
-    my $SS = $G->findway('StyleS');
-    %$SS = ();
-    for my $SSS (qw'pri tri') {
-        my $Sc = $G->findway("SS_$SSS");
-        %$SS = (%$SS, %$Sc);
+    my $SS = $G->findway('S_S');
+    G.h = {};
+    for my $S (@$SS) {
+        G.h->{S.K} = $S;
     }
   stylesheet: |
-    $SS = "SS_$SS";
-    $SS = $G->findway($SS);
+      $A ||= "S";
+    $SS = $GG->findway("$S_S") || die "NoiSSSSSSSSSSSSS GG.name";
     join "\n", map {
         ".$_ { ". join(";", @{$SS->{$_}}) ." }"
     } grep { !/_D$/ } sort keys %$SS;
-  StyleS: {}
-  SS_pri:
-    yi: 
-      - margin-left:0.5em
-      - color:#fca
-      - font-size:66%
-    yo: 
-      - color:#a3f
-      - font-size:80%
-    yt: 
-      - font-size:120%
-    yw: 
-      - " margin-left:0.5em "
-    te: 
-      - border-bottom:1px solid black
-      - padding-left:2em
-      - float:left
-      - position:relative
-      - width:calc(100% - 2em)
-      - background:rgba(150,100,50,0.1)
-  SS_tri:
-    20pt: 
-      - font-size:20pt;
-    abs: 
-      - position:absolute
-    antrail: 
-      - border-left:8px solid rgba(255,255,255,0.7);
-    bg018: 
-      - background:rgba(0,25,200)
-    chtit: 
-      - color:#fff
-      - font-size:240%
-    fulw: 
-      - height:100%
-      - float:left
-      - position:absolute
-    h1: 
-      - font-size:170%
-      - color:#77f
-    h2: 
-      - font-size:200%
-      - color:#55f
-      - font-weight:5
-    hugeblurbackname: 
-      - color:rgba(255,255,255,0.5)
-    little: 
-      - font-size:60%
-    nottoobig_D: |
-      'z94' if length u.at.conty > 10
-    pre: 
-      - overflow-wrap:break-word
-      - margin:0em
-    red: 
-      - " color:red "
-    rel: 
-      - position:relative
-    shlink: 
-      - " -webkit-transform:rotate(45deg) scale(1,0.5); "
-    skinny: 
-      - margin:0.2em
-    tinyer: 
-      - -webkit-transform:scale(0.7,0.5)
-    topleft: 
-      - position:absolute
-      - top:-5px
-      - left:-5px
-    wanderleft3em: 
-      - left:0em
-    white: 
-      - color:white
-    z4: 
-      - font-size:44.44%
-    z94: 
-      - font-size:144.44%
-  
+  S_S:
+    - K: 20pt
+      css: 
+        - font-size:20pt;
+    - K: abs
+      css: 
+        - position:absolute
+    - K: antrail
+      css: 
+        - border-left:8px solid rgba(255,255,255,0.7);
+    - K: bg018
+      css: 
+        - background:rgba(0,25,200)
+    - K: chtit
+      css: 
+        - color:#fff
+        - font-size:240%
+    - K: fulw
+      css: 
+        - height:100%
+        - float:left
+        - position:absolute
+    - K: h1
+      css: 
+        - font-size:170%
+        - color:#77f
+    - K: h2
+      css: 
+        - font-size:200%
+        - color:#55f
+        - font-weight:5
+    - K: hugeblurbackname
+      css: 
+        - color:rgba(255,255,255,0.5)
+    - K: little
+      css: 
+        - font-size:60%
+    - K: nottoobig_D
+      css: 
+        - z94
+    - K: pre
+      css: 
+        - overflow-wrap:break-word
+    - K: red
+      css: 
+        - " color:red "
+    - K: rel
+      css: 
+        - position:relative
+    - K: shlink
+      css: 
+        - " -webkit-transform:rotate(45deg) scale(1,0.5); "
+    - K: skinny
+      css: 
+        - margin:0.2em
+    - K: te
+      css: 
+        - border-bottom:1px solid black
+        - padding-left:2em
+        - float:left
+        - position:relative
+        - width:calc(100% - 2em)
+        - background:rgba(150,100,50,0.1)
+    - K: tinyer
+      css: 
+        - -webkit-transform:scale(0.7,0.5)
+    - K: topleft
+      css: 
+        - position:absolute
+        - top:-5px
+        - left:-5px
+    - K: wanderleft3em
+      css: 
+        - left:0em
+    - K: white
+      css: 
+        - color:white
+    - K: yi
+      css: 
+        - margin-left:0.5em
+        - color:#fca
+        - font-size:66%
+    - K: yo
+      css: 
+        - color:#a3f
+        - font-size:80%
+    - K: yt
+      css: 
+        - font-size:120%
+    - K: yw
+      css: 
+        - " margin-left:0.5em "
+    - K: z4
+      css: 
+        - font-size:44.44%;
+    - K: z94
+      css: 
+        - font-size:144.44%
   event: |
     my $u = L.i;
     my $ux = uxL.i;
