@@ -16,10 +16,13 @@ C:            # W M ux ...
       type: text/css
     S:
       content_D: |
-        w stylesheet(GG => Lui.G, A => "S");
+        w stylesheet(GG => S.Lo.i.B.W.G, A => "S"); # under M or W
+        # Lui.B.W might work soon ^
       
   - K: M
     O: ux
+    flows_D: |
+      w styleup(GG => W.G);
     spawn:
       - K: h1
         content_D: |
@@ -100,19 +103,21 @@ hooks:
   
 
   any_init: |
-    w styleup;
-  styleup: |
-    my $SS = $G->findway('S_S');
     G.h = {};
+    map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
+  styleup: |
+    my $SS = $GG->findway('S_S'); # spec: *_S then a tractogram ||= *_S
     for my $S (@$SS) {
+        S.G = $GG;
+        $S = $GG->nw(%$S);
         G.h->{S.K} = $S;
     }
   stylesheet: |
       $A ||= "S";
-    $SS = $GG->findway("$S_S") || die "NoiSSSSSSSSSSSSS GG.name";
-    join "\n", map {
-        ".$_ { ". join(";", @{$SS->{$_}}) ." }"
-    } grep { !/_D$/ } sort keys %$SS;
+      my $_S = $GG->findway($A."_S") || die "NoiSSSS GG.name";
+      join "\n", map {
+          "._.K { ". join(";", @{_.css}) ." }"
+      } grep { _.K !~ /_D$/ } @$_S;
   S_S:
     - K: 20pt
       css: 
@@ -312,22 +317,32 @@ hooks:
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
   stylezo: |
     # u at->attribute traslator
-    # builds up W or M styles from ux or ui.G styles
-    #my $W = G.top;
-    my $s = $G->findway('StyleS');
+    # kind of an argument resolver
+    # everything should be styleup'd to G.h
+    # making this a G1 function we call from ux with the M.W.G
+    # some $style has space, leads through D to other style
+    # speaking of style
+    # which is what these capital letter concepts as individuals speak
+    # which is our language held nicely
+    my $GG = $G;
     my $apply;
     $apply = sub {
         my $style = shift;
-        if ($style =~ / /) {
-            return map { $apply->($_) } split ' ', $style
-        }
-        if ($s->{$style}) {
+        return map { $apply->($_) } split ' ', $style if $style =~ / /;
+        return if $style eq ""; # leading ^
+        
+        my $S = GG.h->{$style};
+        S.css ? do{ 
+            sayyl "Applying $style to u.K";
             u.at.attr.class .= " $style";
-        }
-        elsif ($s->{$style."_D"}) {
-            my $ysty = $G->w("StyleS/".$style."_D", $ar);
+        }:
+        S.D ? do{
+            my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
             $apply->($ysty) if $ysty;
-        }
+        }:
+        do{ 
+            sayre "wtf '$style'";
+        };
     };
     $apply->($styles);
   wayout_sendo: |
@@ -339,8 +354,7 @@ hooks:
             my $conty = defined at.conty ? at.conty : "";
             my @oozs = grep { defined } map { _.html } @{ at.ooze };
             my $content = join "\n", @oozs;
-            
-            
+        
         
         my $attr = at.attr = {
             id => at.id,
@@ -391,7 +405,7 @@ hooks:
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 if ($v ne _t.attr->{$k}) {
-                    saybl "UPTRIB $k\n -  $_t->{$k}\n +  $v" for 1..2;
+                    saybl "@ $k -- $_t->{$k}   ++ $v";
                     $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k), 0->jsq($v));
                 }
             }
