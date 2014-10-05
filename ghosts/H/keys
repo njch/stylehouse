@@ -44,9 +44,14 @@ hooks:
       $and .= "$_+" for grep { $e->{$_} } qw{S C A M};
       $and.$key
     keydosubs: | #c
-      my $k = $S->{B}->{key};
+      my $full = w $S print;
       for my $g (@{ G.subs }) {
-          $g->w("key/$key", {Key => $S});
+            if ($g->findway("key/$full")) {
+              $g->w("key/$full", {Key => $S})
+              }
+              else {
+            $g->w("key/$key", {Key => $S});
+            }
       }
   event: |
     #w throwlog(Event => $e);
