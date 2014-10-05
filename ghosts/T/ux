@@ -314,12 +314,25 @@ hooks:
     # u at->attribute traslator
     # builds up W or M styles from ux or ui.G styles
     #my $W = G.top;
-    my $s = $G->findway('StyleS');
-    my $apply;
-    $apply = sub {
-        my $style = shift;
-        if ($style =~ / /) {
-            return map { $apply->($_) } split ' ', $style
+    my $hs = $G->findway('StyleS');
+    my $h = [];
+    for my $k (sort keys %$hs) {
+        push @$h, {
+            K => $k,
+            css => [ $G->w("StyleS/$k", $ar) ],
+        };
+    }
+    my $y = Dump({hooks => { S_S => $h }});
+    $y =~ s/-\s*\n\s+K: /- K: /sg;
+    write_file('tjhe', $y);
+    exit;
+    #W.B.hs
+    
+    my @styles;
+    for my $style (split ' ', $styles) {
+        my @bunch = $G->w("StyleS/$style", $ar);
+        if (!@bunch) {
+            sayyl "style $style from u.K/ui.K is...";
         }
         if ($s->{$style}) {
             u.at.attr.class .= " $style";
