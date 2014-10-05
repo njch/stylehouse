@@ -15,7 +15,6 @@ C:
    Ki: styledir
    flows_D: |
      T.t = $file;
-     $file =~ /Ϡ/ && $G->timer(3, sub { w $S y/t/event; });
    E:
      _D: |
        Say "In Eveent S.K $file";
@@ -110,6 +109,9 @@ hooks:
       my $some=  $lines->[0] || $lines->[1];
       for ($some) {
           $l = $1 if /(\w+):[ \|]/;
+          $l = $1 if /(G\.U\.\w+) = sub {/;
+          # if G.U.(\w+) split off G.U...subness into the ears, grin $1, stylestylestyle
+          
       }
       $l ||= $some;
       return $l;
