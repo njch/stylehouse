@@ -148,18 +148,9 @@ hooks:
   Splat: |
     G splat ->w(Splat => $ar);
   somewhere: |
-    if ($ar->{nothing}) {
-        Gf Ϡ ->w(Arr => $ar);
-        return;
-    }
-    if ($ar->{wormhole}) {
-        w wormholify;
-        return;
-    }
-    if ($ar->{W}) {
-        w Splat(somewhere => $ar->{W});
-        return;
-    }    
+    return Gf Ϡ ->w(Arr => $ar) if ar.nothing;
+    return w wormholify if ar.wormhole;
+    return w Splat(somewhere => ar.W) if ar.W;
     
     $G->timer(0.1, sub {
         G path ->w(Arr => $ar);
