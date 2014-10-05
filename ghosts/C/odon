@@ -106,14 +106,16 @@ hooks:
   Chunk:
     title: |
       my $l;
-      my $some=  $lines->[0] || $lines->[1];
-      for ($some) {
-          $l = $1 if /(\w+):[ \|]/;
-          $l = $1 if /(G\.U\.\w+) = sub {/;
-          # if G.U.(\w+) split off G.U...subness into the ears, grin $1, stylestylestyle
+      for ($lines->[0] || $lines->[1]) {
+          $l = $1 if
+                 /- K: (.+)$/ms
+              || /(\w+):[ \|]/
+              || /(G\.U\.\w+) = sub {/;
+            
+          $l||=$_;
           
+          s/$HASHC.*$//s, s/:\s*$// for $l;
       }
-      $l ||= $some;
       return $l;
     flows_D: |
       my $C = T.i;

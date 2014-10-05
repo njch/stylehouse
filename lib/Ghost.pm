@@ -27,6 +27,7 @@ our $MAX_FCURSION = 140;
 our $U;
 our $T;
 our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
+our $HASHC = "#"."c";
 sub new {
     my $self = bless {}, shift;
     shift->($self);
