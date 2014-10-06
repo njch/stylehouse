@@ -368,11 +368,11 @@ hooks:
         }
         return 1;
     };
-    G.U.Ato = sub {# c
+    G.U.Ato = sub {#c
         my ($S, $w, $to) = @_;
         (grep { _.K eq $to } @{w.Li.o})[0]
     };
-    G.U.Stytog = sub {# c
+    G.U.Stytog = sub {#c
         my ($S, $styles, $s) = @_;
         my @styles = split /\s+/, $styles;
         if (grep { $_ eq $s } @styles) {
@@ -382,6 +382,16 @@ hooks:
             push @styles, $s;
         }
         return join ' ', @styles;
+    };
+    G.U.wayray = sub {#c
+        my ($S, $SS, $GG) = @_;
+        $GG ||= $S;
+        die sw(\@_) if ref ${GG} ne "Ghost";
+        my $i = 0;
+        for my $wS (@$SS) {
+            $SS->[$i] = $GG->nw(%$wS) unless ref $wS eq "Way";
+            $i++;
+        }
     };
   V: 
     spawn: |

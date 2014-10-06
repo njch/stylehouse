@@ -2,8 +2,9 @@ name: Styluxyio
 C:            # W M ux ...
   - K: W # us
     O: ux
+    _Ss: [u, x]
     flows_D: |
-      w stylespawn[$S, $W];
+      w stylespawn[$S, $W]; # stylesheets to spawn
     S:
       tag: wormhole
       id_D: |
@@ -27,7 +28,7 @@ C:            # W M ux ...
       type: text/css
     S:
       content_D: |
-        my $GG = S.Lo.i.B.W.G; # Lui.B.W might work soon
+        my $GG = S.Lo.i.B.W.G; # G from M or W # Lui.B.W might work
         # something already interroGGd for <styles> here's one:
         my $A = B.A || "S";
         # may need to careful order new appendages too?
@@ -107,11 +108,15 @@ hooks:
 
   any_init: |
     G.h = {};
-    map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
+    #map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
   stylespawn: |
+    my $GG = W.G;
     my $sp = S.spawn ||= [];
-    push @$sp, { K => 'style' };
-    die sw($S);
+    my $As = S._Ss || GG._Ss || [];
+    for my $A (@$As) {
+        push @$sp, { K => 'style', B=>{A => $A} };
+        w styleup[$GG, $A];
+    }
   styleup: |
     =pod
     split S_S to a bunch of *_S that Ms can mix and match
@@ -126,22 +131,22 @@ hooks:
     
     whatever_S - from M, on M...
     =cut
-    my $SS = $GG->findway('S_S'); # spec: *_S, later a tractogram ||= *_S
-    my $i = 0;
+    my $SS = w styleway[$GG, $A];
+    ref $SS eq "ARRAY" || die sw(["style ${A}_S not found", $A, $SS, $GG]);
+    0->wayray($SS, $GG); # hook these up elsewhere
     for my $S (@$SS) {
-        S.G = $GG;
-        $S = $GG->nw(%$S);
         G.h->{S.K} = $S;
-        $SS->[$i] = $S;
-        $i++;
     }
+  styleway: |
+    $GG->findway($A.'_S') || $G->findway($A.'_S');
   stylesheet: |
       $A ||= "S";
-      my $_S = $GG->findway($A."_S") || die "NoiSSSS GG.name";
-      join "\n", map {
-          "._.K { ". join(";",@{_.css}) ." }"
-      } grep { _.css } @$_S;
-  S_S:
+      my $SS = w styleway[$GG, $A];
+      $SS || die "NoiSSSS $A on ux or GG.name";
+      join"\n",map{
+          "."._.K."{".join(";",@{_.css})."}"
+      }grep {_.css} @$SS;
+  u_S:
     - K: yi
       css: 
         - margin-left:0.5em
@@ -165,6 +170,7 @@ hooks:
         - position:relative
         - width:calc(100% - 2em)
         - background:rgba(150,100,50,0.1)
+  x_S:
     - K: 20pt
       css: 
         - font-size:20pt;
