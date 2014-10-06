@@ -56,7 +56,8 @@ hooks:
       w init/flood if H.underworld; # somewhere round here
       
       my $Elvis = $S;
-      w M[$J, $Elvis];
+      my $j = J.B.j;
+      w M[$J, $j, $Elvis];
       
       w $S woosh;
       
@@ -73,7 +74,7 @@ hooks:
       return 0;
       
     leaves: |
-      $H->error("WebSocket closed", $code, $reason, $S);
+      sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
       
     populi: |
       my @all = grep { _.K eq "Elvis" } @{ G.T.W.script }; # way
@@ -110,10 +111,11 @@ hooks:
     my $Elvis = H.who || die "no individual to send $m!";
     w $Elvis send[$J];
   M: |
-    return w serve/claw if $j->{claw};
-    return w serve/event if $j->{event};
-    return w serve/error if $j->{error}; # change from {e}
-    return w serve/scroll if $j->{scroll};
+    # $J and $Elvis doings...
+    return w serve/claw   if j.claw;
+    return w serve/event  if j.event;
+    return w serve/error  if j.error; # change from {e}
+    return w serve/scroll if j.scroll;
     
   A:
     # just for Codon; this jump loses the meaning of the origin
@@ -210,11 +212,11 @@ hooks:
       $H->claw($j);
       
     error: |
-      die $j->{d} if $H->{JErrors}++ > 3;
-      $H->error("javascript error from client", $j->{d}, $j->{error});
+      die j.d if H.JErrors++ > 3;
+      $H->error("javascript error from client", j.d, j.error);
       
     scroll: |
-      my $s = $j->{scroll};
+      my $s = j.scroll;
       # the viewport of the browser moves..
       #Lyrico used to do stuff here, it's a bit crazy but it's got potential...
       # for a bit cloud of colourful chatter that builds up in layers and moves off to new lands etc.
@@ -223,12 +225,13 @@ hooks:
       $lye->scroll($s) if $lye;
       
     event: |
-      my $e = $ar->{e} = $j->{event};
+      my $e = ar.e = j.event;
       $G->Flab("H dostuff event", $e);
-      return w serve/key if $e->{type} =~ /^key/;
-      return w serve/wormhole if $e->{W};
-      return w serve/TV if $e->{id};
+      return w serve/key if e.type =~ /^key/;
+      return w serve/wormhole if e.W;
+      return w serve/TV if e.id;
       $H->error("Strange event", $e);
+      
     key: |
       return unless G keys;
       G keys ->w(Arr => {e => $e});
