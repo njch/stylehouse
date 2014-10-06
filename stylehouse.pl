@@ -88,34 +88,10 @@ say "! enlistening $name $$ @$listen
 ";
 
 my $H = my $hostinfo = new Hostinfo();
-$hostinfo->set('style', $name); # eventually to pick up a wormhole and etc.
-$hostinfo->set('sstyle', $style); # eventually to pick up a wormhole and etc.
-$hostinfo->set('stylelist', $stylelist);
-$hostinfo->{underworld} = 1; # our fate's the most epic shift ever
-# SED name is styleblah, $style as far above is blah. layers peel everywhere.
-
-# get rid of this with Base.pm... or something
 helper 'hostinfo' => sub { $hostinfo };
-# see what's there in all different ways
-# get the language
-# de-particulate
-# roller coaster
-
-# start git torrent
-# do it all
-
-# $0 has become a runtime
-
-
-# it's just about putting enough of it by itself so it makes sense
-# urgh so simple
-# when you stop trying the poetry builds itself into the language
-# almost
-# "I don't want to talk to you so you think"
-# it's not to produce thinking, it's a recognition
-# something more energetic
-
-# hold lots of websocket
+$H->set('style', $name); # eventually to pick up a wormhole and etc.
+$H->set('sstyle', $style); # eventually to pick up a wormhole and etc.
+$H->set('stylelist', $stylelist);
 get '/' => sub {
     my $self = shift;
 

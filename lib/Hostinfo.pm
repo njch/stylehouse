@@ -27,16 +27,16 @@ use Redis;
 our $data = {};
 ${^WIDE_SYSTEM_CALLS} = 1;
 sub new {
-    my $self = bless {}, shift;
+    my $H = bless {}, shift;
     #$self->set('0', $self);
-    $self->{for_all} = [];
-    $self->{name} = 'Њ';
-    my $r = $self->{r} = Redis->new(
+    $H->{for_all} = [];
+    $H->{name} = 'Њ';
+    my $r = $H->{r} = Redis->new(
         server => 'localhost:8888',
         reconnect => 7,
         every => 1_000_000,
     );
-    $self->{r}->{gest} = sub {
+    $H->{r}->{gest} = sub {
         my ($k, $make) = @_;
         my $c = $r->get($k);
         return ref \$c eq "SCALAR" ? fixutf8($c) : $c if $c;
@@ -45,29 +45,55 @@ sub new {
         return $c;
     };
     
-    $Lyrico::H = $self;
-    $Ghost::H = $self;
-    $Travel::H = $self;
-    $Wormhole::H = $self;
-    $Codo::H = $self;
-    $Codon::H = $self;
-    $Git::H = $self;
-    $Way::H = $self;
+    $Lyrico::H =
+    $Ghost::H =
+    $Travel::H =
+    $Wormhole::H =
+    $Codo::H =
+    $Codon::H =
+    $Git::H =
+    $Way::H = $H;
 
 
 
-    $self->{G} = $self->TT($self)->G;
-    $Ghost::G0 = $self->TT("Ghost")->G("G");
+    $H->{G} = $H->TT($H)->G;
+    $Ghost::G0 = $H->TT("Ghost")->G("G");
     $Ghost::G0->w('fresh_init');
     $Ghost::G0->w('any_init');
     
-    push @{ $self->{file_streams} }, {
+    
+    $H->{underworld} = 1; # our fate's the most epic shift ever
+    # SED name is styleblah, $style as far above is blah. layers peel everywhere.
+
+    # get rid of this with Base.pm... or something
+    # see what's there in all different ways
+    # get the language
+    # de-particulate
+    # roller coaster
+
+    # start git torrent
+    # do it all
+
+    # $0 has become a runtime
+
+
+    # it's just about putting enough of it by itself so it makes sense
+    # urgh so simple
+    # when you stop trying the poetry builds itself into the language
+    # almost
+    # "I don't want to talk to you so you think"
+    # it's not to produce thinking, it's a recognition
+    # something more energetic
+
+    # hold lots of websocket
+
+    #jQuery.Color().hsla( array )
+    
+    push @{ $H->{file_streams} }, {
         filename => 'stylehouse.pl',
         touch_restart => 1,
     };
-
-    #jQuery.Color().hsla( array )
-    return $self
+    return $H
 }
 sub TT {
     my $self = shift;

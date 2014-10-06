@@ -34,10 +34,11 @@ hooks:
       # send it out there and get the hair on it
     flows_D: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      B.address = $tx->remote_address;
       Say "Elvis appears from B.address";
       w $S populi;
       H.who = $S;
+      B.sign = scalar(`figlet '<'`);
+      B.address = $tx->remote_address;
       
     humms_D: |
       $H->send($_) for
@@ -52,7 +53,16 @@ hooks:
     speaks: |
       return 0 if w $S mouthfull[$J];
       w $J print_in;
+      w $J decode;
       
+      w init/flood if H.underworld; # ionc
+      
+      my $Elvis = $S;
+      w M[$J, $Elvis];
+      
+      w $S woosh;
+    woosh: |
+      print Hostinfo::colored($sign, 'blue');
     mouthfull: |
       for my $mJ (@{S.mouth}) {
           if (mJ.B.dig eq J.B.dig) { # && time <><>><>@<><@><
@@ -78,6 +88,10 @@ hooks:
     Bu_D: |
       B.dig ||= Hostinfo::enhash(B.m);
       #$G->timer(2, sub { sw($S) });
+    decode: |        
+      my $j;
+      eval { $j = w decode_message[$mojo, $msg]; };
+      return $H->error("message decode fup", $@) if $@;
     print_out: |
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
       print colored("< send S.id\t\t", 'blue');
@@ -183,36 +197,7 @@ hooks:
     everything: |
       $H->error("restarting!");
       `touch stylehouse.pl`;
-  on_message: |
-    return unless
-        $H->elvis_enters($elvis, $mojo, $msg);
-    
-    my $j;
-    eval { $j = w decode_message[$mojo, $msg]; };
-    return $H->error("message decode fup", $@) if $@;
-    
-        
-        
-        # all this stuff before they join the stream
-        if ($mojo->stash('handy')) {
-            $mojo->stash('handy')->($mojo, $j);
-            $mojo->stash('handy') && return;
-            # it beings! not that we don't come through here all the time
-            if ($H->{underworld}) {
-                $H->{G}->w('init/flood');
-                return;
-            }
-        }
-
-
-        
-        eval { w serve/stuff[$mojo, $j, $msg]; };
-        if ($@) {
-            $H->error("message process fup", $@);
-            return;
-        }
-        
-        print Hostinfo::colored(scalar(`figlet '<'`), 'blue');
+ 
   serve:
     stuff: |
       # ongoing stuff #c
