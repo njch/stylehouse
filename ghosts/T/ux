@@ -8,16 +8,6 @@ C:            # W M ux ...
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
-        
-  - K: style
-    conor: -1.5
-    attrs:
-      scoped: 1
-      type: text/css
-    S:
-      content_D: |
-        w stylesheet(GG => S.Lo.i.B.W.G, A => "S"); # under M or W
-        # Lui.B.W might work soon ^
       
   - K: M
     O: ux
@@ -29,6 +19,18 @@ C:            # W M ux ...
           W.G.name
     S:
       tag: MMMM
+        
+  - K: style
+    conor: -1.5
+    attrs:
+      scoped: 1
+      type: text/css
+    S:
+      content_D: |
+        my $GG = S.Lo.i.B.W.G; # Lui.B.W might work soon
+        my $A = "S";
+        w stylesheet[$GG, $A]; # under M or W
+     
      
   - K: ux
     O: ux
@@ -245,8 +247,6 @@ hooks:
 
     w compile_figure[$u];
     w wayout_sendo[$u];
-    
-            w J if G.top == T.i;
   J: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
@@ -377,7 +377,7 @@ hooks:
             push @$sendo, sub { w $u S/sendo_init_D(e=>'') } if u.S.sendo_init_D;
             
             #die "Sendno" if u.sendo_init_D;
-            push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.top;
+            push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.uW; # chain
         }
         else {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];
@@ -418,38 +418,25 @@ hooks:
         sayyl " Cododnny ".wdump($attr) if $ui && ui.K eq "Codon";
         
         u._at = $at;
-  RW: | # for making the tip, which is a hash anyway
-    my $W = ar.top||ar.W;
-    ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RW"]);
-    my $Bu = [W => {W => $W}];
-    my $u = 0->TafuBl(@$Bu);
-    0->visTp({ i => $u }) if ar.top && T.i ne $u;
-    G.top = $u if ar.top;
-    return $u
-    
-  RM: | # a tip on the other side, so below our tip but above in space
-    ref $W eq "Wormhole" || die sw([$W,"Weird wormhole RM"]);
-    0->TafuBl(
-        M => {W => $W},
-    );
-  ux_above_via_Lu: |
-    my $Lu = ux.B.Lu || die "no Lu on ux";
-    my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
-    my ($pux) = findO(ux => pLu.o) if $pLu;
-    $pux;
+  R: |
+    my ($a, $W) = %$ar;
+    ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
+    my $uW = 0->TafuB( $a => {W=>$W} );
+    0->l($uW) unless $a eq "W";
+    return $uW
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
     $Ls ||= [];
-
     saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
-    w RW(top => G.T.W);
+    
+    G.uW = w R(W => G.T.W);
+    0->visTp({i => G.uW});
     
     my $uxs = [];
     my $al = [];
-    
     for my $L (@$Ls) {
-        next unless keys %$L;
+        next unless keys %$L; #wtf
         if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
             push @$al, $alx;
         }
@@ -458,13 +445,14 @@ hooks:
     }
     
     for my $ux (@$uxs) {
-        my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
-        $ix ||= w RM(W => ux.B.Lu.G.T.W); # or the ux for its W
+        my $ix = w utricks/ux_above_via_Lu[$ux]; # join uxLis together like the origin
+        $ix ||= w R(M => ux.B.Lu.G.T.W); # or the ux for its W
         0->visTp_l_u({i=>$ix}, $ux);
         w sane/V3[$ux, $ix, $uxs];
     }
     
-    w U;
+    w U(i => G.uW);
+    w J(i => G.uW);
     
     my $es =  "done ".$G->F_delta();
     sayre "ux -------- $es " for 1..5;
@@ -546,4 +534,9 @@ hooks:
                         uy.B.n = $n;
                     }
                 }
+    ux_above_via_Lu: | #c
+      my $Lu = ux.B.Lu || die "no Lu on ux";
+      my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
+      my ($pux) = findO(ux => pLu.o) if $pLu;
+      $pux;
 

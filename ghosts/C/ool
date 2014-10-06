@@ -1,24 +1,35 @@
 name: psych synth
 C:
- - K: Codon #c
+ - K: Images
    Gw: 1
    styles: blah
+     
+ - K: Image
+   styles: reson
+   S:
+     styles: reson
    u_from:
      spawn:
       - K: i
-      - K: h2
-        S:
-          styles: red h2
-          tag: yh2
-          content_D: |
-            "C ui.B.name"
+   
+ 
  - K: Ooogida
    styles: sativo
 dials:
   max_depth: 3
 hooks:
   percolate: |
-    0->TafuB(Ooogida => {whatcha => "Woogie"})->{Li}->{t} = "~~~~~~~";
+    0->TafuB(Ooogida => {whatcha => "Woogie"});
+    0->TafuB(Images => {dir => '/s/public/i'});
+    
+    # alright so... see styles run around
+    # mod styles to mod waves of stuff
+  Images:
+    flows_D: |
+       my @finds = map { 0->fs_find($_) } $dir;
+       for my $file (@finds) {
+           0->TafuBl(Image => { file => $file });
+       }
   uxd: |
     G.ux->w('ux', {W=>$G->W});
 
