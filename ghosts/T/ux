@@ -2,8 +2,8 @@ name: Styluxyio
 C:            # W M ux ...
   - K: W # us
     O: ux
-    spawn:
-      - K: style
+    flows_D: |
+      w stylespawn[$S, $W];
     S:
       tag: wormhole
       id_D: |
@@ -12,7 +12,7 @@ C:            # W M ux ...
   - K: M
     O: ux
     flows_D: |
-      w styleup(GG => W.G);
+      w stylespawn[$S, $W];
     spawn:
       - K: h1
         content_D: |
@@ -32,7 +32,6 @@ C:            # W M ux ...
         my $A = B.A || "S";
         # may need to careful order new appendages too?
         w stylesheet[$GG, $A];
-     
      
   - K: ux
     O: ux
@@ -109,6 +108,10 @@ hooks:
   any_init: |
     G.h = {};
     map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
+  stylespawn: |
+    my $sp = S.spawn ||= [];
+    push @$sp, { K => 'style' };
+    die sw($S);
   styleup: |
     =pod
     split S_S to a bunch of *_S that Ms can mix and match
@@ -335,14 +338,14 @@ hooks:
     # speaking of style
     # which is what these capital letter concepts as individuals speak
     # which is our language held nicely
-    my $GG = $G;
+    my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
     my $apply;
     $apply = sub {
         my $style = shift;
-        return map { $apply->($_) } split ' ', $style if $style =~ / /;
-        return if $style eq ""; # leading ^
+        return map { $apply->($_) } grep {/./} split ' ', $style if $style =~ / /;
         
         my $S = GG.h->{$style};
+        # lingosa
         S.css ? do{ 
             sayyl "Applying $style to u.K";
             u.at.attr.class .= " $style";
