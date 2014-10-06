@@ -116,8 +116,6 @@ helper 'hostinfo' => sub { $hostinfo };
 # something more energetic
 
 # hold lots of websocket
-
-my $first = 1;
 get '/' => sub {
     my $self = shift;
 
@@ -130,9 +128,6 @@ get '/' => sub {
 websocket '/stylehouse' => sub {
     my $self = shift;
     $hostinfo->{G}->w(websocket => { M => $self });
-        
-
-
 };
 
 

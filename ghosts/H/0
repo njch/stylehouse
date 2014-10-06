@@ -12,11 +12,13 @@ hooks:
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
     my $Elvis = 0->TafuB(Elvis => {tx => $M->tx, M => $M});
+    # they might have $M->stash("Elvis=ae38273" => secret) to resume...
 
     # setup setups # crazy shit!
     $M->on(message => sub {
         my ($M, $m) = @_;
-        w M[$M, $m, $Elvis];
+        my $J = 0->Bu(J => {m=>$m}); # $m
+        w $Elvis speaks[$J];
     });
 
     $M->on(finish => sub {
@@ -32,44 +34,63 @@ hooks:
       # send it out there and get the hair on it
     flows_D: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      # my $max = $tx->max_websocket_size;
       B.address = $tx->remote_address;
-
-      Say "A New Elvis from B.address appears";
-
-      H.who = $S;
+      Say "Elvis appears from B.address";
       w $S populi;
-
-      $self->{first_elvis} ||= $new;
-
-      say "All Elvi:";
-      $self->elvi();
+      H.who = $S;
+      
     humms_D: |
-      $hostinfo->send($_) for
-          "ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
-        "ws.reply({whatsthere: 'too hard'}); \$('body').empty();",
+      $H->send($_) for
+          "ws".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        "ws".".reply({whatsthere: 'too hard'}); \$('body').empty();",
         "\$(window).on('click', clickyhand);"
       # handy stuff...?
+      
+    send: |
+      $tx->send(J.B.m);
+      
+    speaks: |
+      return 0 if w $S mouthfull[$J];
+      w $J print_in;
+      
+    mouthfull: |
+      for my $mJ (@{S.mouth}) {
+          if (mJ.B.dig eq J.B.dig) { # && time <><>><>@<><@><
+              return 1;
+          }
+      }
+      push @{S.mouth}, $J;
+      pop @{S.mouth} if @{S.mouth} > 3;
+      return 0;
+      
     leaves: |
-      $H->error("WebSocket closed", $code, $reason, $Elvis);
+      $H->error("WebSocket closed", $code, $reason, $S);
+      
     populi: |
       my @all = grep { _.K eq "Elvis" } @{ G.T.W.script }; # way
       if (@all > 1) {
           sayre " Elvis is taking over!";
           _.B.tx->finish for @all;
           sayre " restarting...";
-          $self->{G}->w('re/exec');
+          w re/exec;
       }
-    send: |
-      $tx->send(J.B.m)
   J:
-    print: |
-      my $short = length($m) < 200 ? $m : substr($message,0,23*9)." >SNIP<";
+    Bu_D: |
+      B.dig ||= Hostinfo::enhash(B.m);
+      #$G->timer(2, sub { sw($S) });
+    print_out: |
+      my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
       print colored("< send S.id\t\t", 'blue');
       print colored($short, 'bold blue');
       say "";
+    print_in: |
+      print colored("recv >\t\t", 'red');
+      print colored($m, 'bold red');
+      say "";
   send_Elvis: |
     my $J = 0->Bu(J => $ar); # $m
+    w $J print_out;
+    # many ----
     my $Elvis = H.who || die "no individual to send $m!";
     w $Elvis send[$J];
     
@@ -131,7 +152,7 @@ hooks:
       waylay check/vitals;
     future: |
       $H->{_future} = 1;
-    flood: | #c
+    flood: |
       my $house = $H->get('style') eq 'stylehouse';
     
       G TT ->G("H/mess");

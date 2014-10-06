@@ -90,28 +90,6 @@ sub Gf {
     
     shift @Gs;
 }
-sub send {
-    my $self = shift;
-    my $message = shift;
-
-    if (length($message) > ($self->{tx_max} || 300000)) {
-        die "Message is bigger (".length($message).") than max websocket size=".$self->{ts_max}
-        # TODO DOS fixed by visualising {ts} and their sizes
-            ."\n\n".substr($message,0,300)."...";
-    }
-
-    if ($message =~ /\n/) {
-        warn "Message contains \\n";
-    }
-
-
-    # here we want to graph things out real careful because it is how things get around
-    # the one to the many
-    # apps can be multicasting too
-    # none of these workings should be trapped at this level
-    # send it out there and get the hair on it
-    $self->elvis_send($message);
-}
 sub JS {
     my $self = shift;
     my $js = shift;
@@ -125,83 +103,13 @@ sub JS {
     $js =~ s/\n/ /sg;
     $self->send($js);
 }
-sub elvis_send {
+sub send {
     my $self = shift;
-    my $message = shift;
-    my $elvis = shift;
-    $elvis ||= $self->{who};
-    if (!$elvis) {
-        say "NO INDIVIDUAL TO send $message";
+    my $m = shift;
+    if ($m =~ /\n/) {
+        die "Message contains \\n:\n$m\n\n";
     }
-
-    my $short = length($message) < 200 ?
-        $message
-        :
-        '('.substr(enhash($message),0,8).') '
-        .substr($message,0,23*9)." >SNIP<";
-    
-    if (-t STDOUT) {
-        print colored("< send\t\t", 'blue');
-        print colored($short, 'bold blue'), "\n";
-    }
-    else {
-        say "< send\t\t$short";
-    }
-    
-    unless ($elvis->{tx}) {
-        say "All Elvi:";
-        $self->elvi();
-        ($elvis) = grep {$_->{tx}} values %{ $data->{elviss} };
-        
-        if ($elvis) {
-            say "Found a way to $elvis->{address}";
-        }
-        else {
-            say "No way to send to $elvis->{address} anymore!";
-            return;
-        }
-    }
-    $elvis->{tx}->send($message) if $elvis->{tx};
-}
-sub elvi {
-    my $self = shift;
-    map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
-}
-
-sub elvis_enters {
-    my $self = shift;
-    my $sug = shift;
-    my $mojo = shift;
-    my $msg = shift;
-    my $tx = $mojo->tx;
-
-    my $eid = $mojo->stash('elvisid'); 
-    
-    return 0 if $self->ignorable_mess($msg);
-    
-    if (-t STDOUT) {
-        print colored("recv >\t\t", 'red');
-        print colored($msg, 'bold red'), "\n";
-    }
-    else {
-        say "recv >\t\t$msg";
-        $self->Info("recv >", $msg);
-    }
-
-    if (my $elvis = $self->get('elviss')->{$eid}) {
-        if ($elvis ne $sug) {
-            say "Elvis found by stash is not elvis passed: $sug->{address} to $elvis->{address}";
-        }
-        if ($elvis ne $self->{who}) {
-            say "Elvission: $self->{who}->{address} to $elvis->{address}";
-        }
-        $self->{who} = $elvis;
-    }
-    else {
-        die "Cannot find elvis: $eid";
-    }
-    
-    return 1;
+    $self->{G}->w(send_Elvis => {m => $m});
 }
 
 sub hostinfo { shift }
@@ -216,29 +124,6 @@ sub view_incharge {
     my $view = shift;
     my $old = $self->get('tvs/'.$view->divid.'/top');
     $self->set('tvs/'.$view->divid.'/top', $view);
-}
-sub ignorable_mess {
-    my $self = shift;
-    my $mess = shift;
-    my $dig = enhash($mess);
-    my $iggy = $self->gest('ignorable_messs', {});
-
-    if ($iggy->{$dig}) {
-        $self->{G}->_0(sing => {
-            name => "iggyprint",
-            code => sub {
-                print colored(" IGNORE MESS    ", 'red') for 1..5;
-                say "";
-            },
-            block => 0.1,
-        });
-        return 1;
-    }
-
-    $iggy->{$dig} = 1;
-    $self->timer(0.2, sub { delete $iggy->{$dig} });
-
-    return 0;
 }
 sub enhash {
     return sha1_hex(shift)
