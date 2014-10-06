@@ -85,7 +85,7 @@ hooks:
     };
     G.U.sway = sub {#c # sucks way matching $p # only supports matching K for now
         my ($S, $p, $s, $P) = @_;
-        p.CsK ||= 'chains C';
+        p.s ||= 'chains C';
         my ($from) = 0S->CsK($p);
         
         $from || defined P.e || die "no findo way called p.K (S.name)".wdump([$p,$s]);
@@ -104,15 +104,16 @@ hooks:
         $u;
     };
     G.U.CsK = sub { #c
-        my ($S, $p) = @_;
-        p.CsK || die "pass p.CsK to CsK";
+        my ($S, $p, $GG) = @_;
+        $GG ||= $S;
+        p.s ||= 'C';
         # p.CsK locates the Cs, is a qw of paths for anyway
-        my @Cs = map { flatline($_) } map { $S->anyway($_) }  split ' ', delete p.CsK;
+        my @Cs = map { flatline($_) } map { $GG->anyway($_) }  split ' ', delete p.s;
         # another ghost lurks
         if (p.K) {
             @Cs = grep { _.K eq p.K } @Cs;
         }
-        return @Cs;
+        return wantarray ? @Cs : shift @Cs;
     };
     G.U.Tind = sub {#c
         my ($S, $space) = @_;

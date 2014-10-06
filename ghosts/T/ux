@@ -146,6 +146,36 @@ hooks:
       join"\n",map{
           "."._.K."{".join(";",@{_.css})."}"
       }grep {_.css} @$SS;
+  stylezo: |
+    # u at->attribute traslator
+    # kind of an argument resolver
+    # everything should be styleup'd to G.h
+    # making this a G1 function we call from ux with the M.W.G
+    # some $style has space, leads through D to other style
+    # speaking of style
+    # which is what these capital letter concepts as individuals speak
+    # which is our language held nicely
+    my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
+    my $apply;
+    $apply = sub {
+        my $style = shift;
+        return map { $apply->($_) } grep {/./} split ' ', $style if $style =~ / /;
+        
+        my $S = GG.h->{$style};
+        # lingosa
+        S.css ? do{ 
+            sayyl "Applying $style to u.K";
+            u.at.attr.class .= " $style";
+        }:
+        S.D ? do{
+            my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
+            $apply->($ysty) if $ysty;
+        }:
+        do{ 
+            sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
+        };
+    };
+    $apply->($styles);
   u_S:
     - K: yi
       css: 
@@ -335,36 +365,6 @@ hooks:
         at.conty = encode_entities(at.conty) unless at.ishtml;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
-  stylezo: |
-    # u at->attribute traslator
-    # kind of an argument resolver
-    # everything should be styleup'd to G.h
-    # making this a G1 function we call from ux with the M.W.G
-    # some $style has space, leads through D to other style
-    # speaking of style
-    # which is what these capital letter concepts as individuals speak
-    # which is our language held nicely
-    my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
-    my $apply;
-    $apply = sub {
-        my $style = shift;
-        return map { $apply->($_) } grep {/./} split ' ', $style if $style =~ / /;
-        
-        my $S = GG.h->{$style};
-        # lingosa
-        S.css ? do{ 
-            sayyl "Applying $style to u.K";
-            u.at.attr.class .= " $style";
-        }:
-        S.D ? do{
-            my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
-            $apply->($ysty) if $ysty;
-        }:
-        do{ 
-            sayre "wtf '$style'";
-        };
-    };
-    $apply->($styles);
   wayout_sendo: |
         my $at = u.at;
         my $ui = u.B.Lu.i if u.K eq "ux";
