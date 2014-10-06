@@ -106,36 +106,6 @@ hooks:
   percolate: |
     0->TafuB(styledir => {dir => "/s"});
     0->TafuB(Ooogida => {whatcha => "Woogie"})->{Li}->{t} = "~~~~~~~";
-  Chunk:
-    title: |
-      my $l;
-      for ($lines->[0] || $lines->[1]) {
-          $l = $1 if
-                 /- K: (.+)$/ms
-              || /(\w+):[ \|]/
-              || /(G\.U\.\w+) = sub {/;
-            
-          $l||=$_;
-          
-          s/$HASHC.*$//s, s/:\s*$// for $l;
-      }
-      return $l;
-    flows_D: |
-      my $C = T.i;
-      T.t = C.B.lines->[0] || C.B.lines->[1];
-      T.t||= ki(C.B);
-    E:
-      S_D: |
-        S.styles = 0->Stytog(S.styles => 'z4');
-      _D: |
-        0->TafuBl("Code", $B);
-  Code:
-    S:
-      make_lines_html: |
-        $G->w(vimcolor => {string => join("\n", @{$lines})});
-    E:
-      _D: |
-        
   Codon:
     flows_D: |
       w $S load_stylefile_lines;
@@ -169,6 +139,37 @@ hooks:
       B.code ||= $code;
       B.lines = [ map { s/\n$//s; $_ } split "\n", $code ];
   
+  Chunk:
+    title: |
+      my $l;
+      for ($lines->[0] || $lines->[1]) {
+          $l = $1 if
+                 /- K: (.+)$/ms
+              || /(\w+):[ \|]/
+              || /(G\.U\.\w+) = sub {/;
+            
+          $l||=$_;
+          
+          s/$HASHC.*$//s, s/:\s*$// for $l;
+      }
+      return $l;
+    flows_D: |
+      my $C = T.i;
+      T.t = C.B.lines->[0] || C.B.lines->[1];
+      T.t||= ki(C.B);
+    E:
+      S_D: |
+        S.styles = 0->Stytog(S.styles => 'z4');
+      _D: |
+        0->TafuBl("Code", $B);
+  Code:
+    S:
+      make_lines_html: |
+        $G->w(vimcolor => {string => join("\n", @{$lines})});
+    E:
+      _D: |
+        
+
   chunkify: |
     my $C = $Codon;
     my $c = "#"."c";
