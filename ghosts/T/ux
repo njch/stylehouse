@@ -441,14 +441,21 @@ hooks:
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
     $Ls ||= [];
+
     saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
+    w RW(top => G.T.W);
     
-    w RW(top => G.T.W);# T encapsu is whole ux W
-    # interested in grep { _.i.K eq "ux" } @{ $G->W->CS }
-    # l( @ Lu.o   # fu( via v
-    my $uxs = [ map { # brekaup v
-        0->visTp_TafuBlA({L=>$_}, [ux => {Lu=>$_}])
-    } @{$Ls} ];
+    my $uxs = [];
+    my $al = [];
+    
+    for my $L (@$Ls) {
+        next unless keys %$L;
+        if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
+            push @$al, $alx;
+        }
+        push @$uxs,
+            0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}])
+    }
     
     for my $ux (@$uxs) {
         my $ix = w ux_above_via_Lu[$ux]; # join uxLis together like the origin
