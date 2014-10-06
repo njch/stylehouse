@@ -96,10 +96,6 @@ $hostinfo->{underworld} = 1; # our fate's the most epic shift ever
 
 # get rid of this with Base.pm... or something
 helper 'hostinfo' => sub { $hostinfo };
-
-my $hands = {};
-
-
 # see what's there in all different ways
 # get the language
 # de-particulate
@@ -109,26 +105,7 @@ my $hands = {};
 # do it all
 
 # $0 has become a runtime
-$hands = {
-    geometry => [ sub {
-        $hostinfo->send("ws.reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
-    }, sub {
-        $hostinfo->screen_height(shift);
-    } ],
-    whatsthere => [ sub {
-        $hostinfo->send("ws.reply({whatsthere: 'too hard'}); \$('body div').remove();");
-    }, sub {
-        $hostinfo->reload_views();
-    } ],
-    clickyhand => [ sub {
-             $hostinfo->send("\$(window).on('click', clickyhand);");
-    }, undef ],
-    clear => [ sub {
-             $hostinfo->send("\$('div span').fadeOut(100);");
-    }, undef ],
-};
 
-my $handyin;
 
 # it's just about putting enough of it by itself so it makes sense
 # urgh so simple
@@ -152,54 +129,9 @@ get '/' => sub {
 };
 websocket '/stylehouse' => sub {
     my $self = shift;
+    $hostinfo->{G}->w(websocket => { M => $self });
+        
 
-    $self->app->log->info("WebSocket opened");
-    Mojo::IOLoop->stream($self->tx->connection)->timeout(300000);
-
-    # strangers are Elvis until they're not
-    my $elvis = $hostinfo->elvis_connects($self);
-
-    $self->stash(  tx => $self->tx);
-
-    $hostinfo->snooze(30000);
-
-    # setup setups
-    my $handyin = {};
-    while (my ($name, $do) = each %$hands) {
-        my ($first, $last) = @$do;
-        $first->();
-        $handyin->{$name} = $do->[1] if $do->[1];
-    }
-    $self->stash(  handy => sub {
-        my $self = shift; # mojo, should be person or so
-        my $j = shift;
-
-        while (my ($name, $do) = each %$handyin) {
-            if ($j->{$name}) {
-                $do->($j->{$name});
-                delete $handyin->{$name};
-            }
-        }
-        unless (%$handyin) {
-            $self->stash(handy => undef);
-        }
-    });
-$self->on(message => sub {
-        my ($self, $msg) = @_;
-
-        $H->{G}->w('on_message', {
-            mojo => $self,
-            msg => $msg,
-            elvis => $elvis,
-        });
-        #$hostinfo->elvis_leaves($self);
-    });
-
-    $self->on(finish => sub {
-      my ($self, $code, $reason) = @_;
-      $hostinfo->elvis_gone($self, $code, $reason);
-      $self->app->log->debug("WebSocket closed with status $code: ".($reason||"no reason"));
-    });
 
 };
 

@@ -167,48 +167,7 @@ sub elvi {
     my $self = shift;
     map { say " -$_->{i} $_->{id}\t\t$_->{address}" } sort { $a->{i} <=> $b->{i} } values %{ $data->{elviss} };
 }
-sub elvis_connects {
-    my $self = shift;
-    my $mojo = shift;
-    my $tx = $mojo->tx;
-    
-    my $max = $tx->max_websocket_size;
-    $self->{tx_max} ||= $max;
-    unless ($max >= $self->{tx_max}) {
-        $self->{tx_max} = $max; # TODO potential DOS
-    }
 
-    my $elviss = $self->gest(elviss => {});
-
-    my $new = {
-        id => "Elvis-".make_uuid(),
-        address => $tx->remote_address,
-        max => $tx->max_websocket_size,
-        tx => $tx,
-        i => $self->{elvii}++,
-    };
-
-    say "A New Elvis from $new->{address} appears";
-    $elviss->{$new->{id}} = $new;
-    $self->{who} = $new;
-
-    $mojo->stash(elvisid => $new->{id});
-
-    if (scalar(keys %$elviss) > 1) {
-        say " Elvis is taking over!";
-        $_->{tx} && $_->{tx}->finish for values %$elviss;
-        say " restarting...";
-        $self->{G}->w('re/exec');
-    }
-
-    $self->{first_elvis} ||= $new;
-
-    say "All Elvi:";
-    $self->elvi();
-
-    return $new
-# handy stuff shall call review() etc (if the browser can accept that "whatsthere" is "too hard")
-}
 sub elvis_enters {
     my $self = shift;
     my $sug = shift;
@@ -244,33 +203,6 @@ sub elvis_enters {
     
     return 1;
 }
-sub elvis_gone {
-    my $self = shift;
-    say "Elvis is Gone.";
-    $self->elvis_leaves(@_);
-}
-sub elvis_leaves {
-    my $self = shift;
-    my $mojo = shift;
-    my $code = shift;
-    my $reason = shift;
-
-    my $eid = $mojo->stash('elvisid'); 
-    say "Elvis had stash: ".($eid||"undef");
-    if (my $elvis = $self->get('elviss')->{$eid}) {
-        say "Goes $elvis->{address}";
-        delete $elvis->{tx};
-    }
-    else {
-        die "Cannot find elvis: $eid\n"."Remote address: ".$mojo->tx->remote_address;
-    }
-    if ($code || $reason) {
-        say "  reason: ".($code||'?').": ".($reason||'?');
-    }
-    $self->{who} = $self->{first_elvis};
-# could unset $who, demand views specify how to multicast
-# leave it open
-}
 
 sub hostinfo { shift }
 
@@ -284,26 +216,6 @@ sub view_incharge {
     my $view = shift;
     my $old = $self->get('tvs/'.$view->divid.'/top');
     $self->set('tvs/'.$view->divid.'/top', $view);
-}
-sub reload_views {
-    my $self = shift;
-    # state from client?
-
-
-    my $tops = $self->grep('tvs/.+/top');
-    my @tops = values %$tops;
-    my @names = keys %$tops;
-    return say " no existing views" unless @names;
-
-    say " resurrecting views: ".ddump(\@names);
-
-    my ($ploked, $floozal) = ([], []);
-    for my $view (@tops) {
-        push @{ $view->{floozal} ? $floozal : $ploked }, $view;
-    }
-    for my $view (@$ploked, @$floozal) { # is divid its after
-        $view->takeover();
-    }
 }
 sub ignorable_mess {
     my $self = shift;
@@ -740,12 +652,6 @@ sub create_view {
     my $self = shift;
     
     return $self->{ground}->spawn_floozy(@_);
-}
-sub screen_height {
-    my $self = shift;
-    my $sc = shift;
-    $self->set("screen/width" => $sc->{x});
-    $self->set("screen/height" => $sc->{y});
 }
 sub travel {
     my $self = shift;
