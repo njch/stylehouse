@@ -155,18 +155,15 @@ hooks:
     $G->unrush('getstarted') || return;
     #w somewhere(thing => w default_somewhere);
     $G->w('f/Lgs') if G Ϡ;
-  Splat: |
-    G splat ->w(Splat => $ar);
+
   somewhere: |
     return Gf Ϡ ->w(Arr => $ar) if ar.nothing;
     return w wormholify if ar.wormhole;
     return w Splat(somewhere => ar.W) if ar.W;
     
-    $G->timer(0.1, sub {
-        G path ->w(Arr => $ar);
-        my $p = {path => G(path)->W};
-        w Splat(%$p);
-    }, "splatup path");
+    w splatsome;
+  splatsome:
+    waylay splatpath;
     
     my $Cr = G crawl;
     $Cr || die;
@@ -185,6 +182,12 @@ hooks:
     my $crawltime = show_delta();
 
     w splat_wormholes;
+  splatpath: |
+    G path ->w(Arr => $ar);
+        my $p = {path => G(path)->W};
+        w Splat(%$p);
+  Splat: |
+    G splat ->w(Splat => $ar);
   make_hmess: |
     $G->{_dont_mess_worm} = 0;
     my $wormhole = $H->{G}->Gf('mess')->W;
