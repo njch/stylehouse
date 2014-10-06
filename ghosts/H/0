@@ -11,10 +11,9 @@ hooks:
   websocket: |
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
-    my $Elvis = 0->TafuB(Elvis => {tx => $M->tx, M => $M});
     # they might have $M->stash("Elvis=ae38273" => secret) to resume...
+    my $Elvis = 0->TafuB(Elvis => {tx => $M->tx, M => $M});
 
-    # setup setups # crazy shit!
     $M->on(message => sub {
         my ($M, $m) = @_;
         my $J = 0->Bu(J => {m=>$m}); # $m
@@ -54,13 +53,13 @@ hooks:
       return 0 if w $S mouthfull[$J];
       w $J print_in;
       w $J decode;
-      
-      w init/flood if H.underworld; # ionc
+      w init/flood if H.underworld; # somewhere round here
       
       my $Elvis = $S;
       w M[$J, $Elvis];
       
       w $S woosh;
+      
     woosh: |
       print Hostinfo::colored($sign, 'blue');
     mouthfull: |
@@ -90,8 +89,11 @@ hooks:
       #$G->timer(2, sub { sw($S) });
     decode: |        
       my $j;
-      eval { $j = w decode_message[$mojo, $msg]; };
-      return $H->error("message decode fup", $@) if $@;
+      eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
+      die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+      die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+      sayyl "J.id decoded ".$G->F_delta();
+      B.j = $j;
     print_out: |
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
       print colored("< send S.id\t\t", 'blue');
@@ -107,6 +109,11 @@ hooks:
     # many ----
     my $Elvis = H.who || die "no individual to send $m!";
     w $Elvis send[$J];
+  M: |
+    return w serve/claw if $j->{claw};
+    return w serve/event if $j->{event};
+    return w serve/error if $j->{error}; # change from {e}
+    return w serve/scroll if $j->{scroll};
     
   A:
     # just for Codon; this jump loses the meaning of the origin
@@ -197,16 +204,9 @@ hooks:
     everything: |
       $H->error("restarting!");
       `touch stylehouse.pl`;
- 
+  
   serve:
-    stuff: |
-      # ongoing stuff #c
-      return w serve/claw if $j->{claw};
-      return w serve/event if $j->{event};
-      return w serve/error if $j->{error}; # change from {e}
-      return w serve/scroll if $j->{scroll};
-      
-    claw: | #c
+    claw: |
       $H->claw($j);
       
     error: |
@@ -222,18 +222,18 @@ hooks:
       my $lye = $H->getapp("Lyrico");
       $lye->scroll($s) if $lye;
       
-    event: | #c
+    event: |
       my $e = $ar->{e} = $j->{event};
       $G->Flab("H dostuff event", $e);
       return w serve/key if $e->{type} =~ /^key/;
       return w serve/wormhole if $e->{W};
       return w serve/TV if $e->{id};
       $H->error("Strange event", $e);
-    key: | #c
+    key: |
       return unless G keys;
       G keys ->w(Arr => {e => $e});
       
-    wormhole: | #c
+    wormhole: |
       my $E;
       my $findL = sub {
         return unless $E->{W};
@@ -287,23 +287,7 @@ hooks:
           sayyl "event handled in ".$G->F_delta()."\n\n";
   
   
-  decode_message: |
-    
-    my $j;
-    start_timer();
 
-    eval {
-        $j = decode_json(Hostinfo::encode_utf8($msg));
-    };
-    
-    $G->Flab("H message Decode in ".show_delta());
-    die "JSON DECODE FUCKUP: $@\n\nfor $msg\n\n\n\n"
-        if $@;
-
-    die "$msg\n\nJSON decoded to ~undef~" unless defined $j;
-    
-    return $j;
-    
   data:
     get_apps: |
       my $apps = {};
