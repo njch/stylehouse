@@ -45,13 +45,16 @@ hooks:
       $and.$key
     keydosubs: | #c
       my $full = w $S print;
+      Say "Doing $full ... or $key .... ".@{G.subs};
       for my $g (@{ G.subs }) {
-            if ($g->findway("key/$full")) {
+          my $kh = $g->findway("key");
+          say "keying g.name : $key, could be ".ki($kh);
+          if ($kh->{$full}) {
               $g->w("key/$full", {Key => $S})
-              }
-              else {
-            $g->w("key/$key", {Key => $S});
-            }
+          }
+          else {
+              $g->w("key/$key", {Key => $S});
+          }
       }
   event: |
     #w throwlog(Event => $e);
@@ -64,9 +67,9 @@ hooks:
         $H->JS("\$('#mess').toggleClass('inface');");
     }
     
-  first_init: |
+  fresh_init: |
     $H->JS("\$(window).on('keydown', keyhand);");
-    G.ksubs = [$H->Gf('L')];    
+    G.subs = [];    
   any_init: |
     $H->JS("handelay = 5;"); 
     $H->JS("\$(window).on('keydown', keyhand);"); 

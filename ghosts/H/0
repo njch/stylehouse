@@ -12,7 +12,8 @@ hooks:
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
     # they might have $M->stash("Elvis=ae38273" => secret) to resume...
-    my $Elvis = 0->TafuB(Elvis => {tx => $M->tx, M => $M});
+    my $Elvis = 0->TafuB(
+        Elvis => {tx => $M->tx, M => $M});
 
     $M->on(message => sub {
         my ($M, $m) = @_;
@@ -38,6 +39,7 @@ hooks:
       H.who = $S;
       B.sign = scalar(`figlet '<'`);
       B.address = $tx->remote_address;
+      S.mouth = [];
       
     humms_D: |
       $H->send($_) for
@@ -50,7 +52,7 @@ hooks:
       $tx->send(J.B.m);
       
     speaks: |
-      return 0 if w $S mouthfull[$J];
+      return $H->error("mouthfull") if w $S mouthfull[$J];
       w $J print_in;
       w $J decode;
       w init/flood if H.underworld; # somewhere round here
@@ -65,6 +67,7 @@ hooks:
       print Hostinfo::colored($sign, 'blue');
     mouthfull: |
       for my $mJ (@{S.mouth}) {
+      say "mouthfull mJ.B.dig";
           if (mJ.B.dig eq J.B.dig) { # && time <><>><>@<><@><
               return 1;
           }
@@ -233,7 +236,6 @@ hooks:
       $H->error("Strange event", $e);
       
     key: |
-      return unless G keys;
       G keys ->w(Arr => {e => $e});
       
     wormhole: |
