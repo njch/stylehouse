@@ -19,7 +19,11 @@ sub new {
 }
 sub G {
     my $self = shift;
-    $self->{G} ||= new Ghost($H->intro, $self, @_);
+    $self->{G} ||= do {
+        my $GG = new Ghost($H->intro, $self, @_);
+        push @{$H->{G}->{GG}}, $GG;
+        $GG
+    }
 }
 sub W {
     shift->G->W
