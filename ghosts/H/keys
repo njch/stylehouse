@@ -45,13 +45,9 @@ hooks:
       my $full = w $S print;
       Say "Doing $full ... or $key .... ".@{G.subs};
       for my $g (@{ G.subs }) {
-          my $kh = $g->findway("key");
-          if ($kh->{$full}) {
-              $g->w("key/$full", {Key => $S})
-          }
-          else {
-              $g->w("key/$key", {Key => $S});
-          }
+          my $kh = $g->findway("keys");
+          my $pa = "keys/".($kh->{$full} ? $full : $key);
+          $g->w($pa, {Key => $S});
       }
   event: |
     #w throwlog(Event => $e);
