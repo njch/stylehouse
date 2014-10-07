@@ -28,6 +28,7 @@ hooks:
 
       say join($k, (" ")x28) for 1..4;
 
+      # could use Redis to do the news pub sub
       0->sing(
           "keytrig $k" => sub {
               w $S keydosubs;
@@ -35,9 +36,6 @@ hooks:
           begin => 0.00000000001,
           block => 0.2,
       );
-      $G->timer(0.01, sub  {
-          Info "keypress $k", $S;
-      },"prop keypress Info");
     print: | #c
       return "??? ?" unless $key;
       my $and = "";
@@ -48,7 +46,6 @@ hooks:
       Say "Doing $full ... or $key .... ".@{G.subs};
       for my $g (@{ G.subs }) {
           my $kh = $g->findway("key");
-          say "keying g.name : $key, could be ".ki($kh);
           if ($kh->{$full}) {
               $g->w("key/$full", {Key => $S})
           }

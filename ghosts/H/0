@@ -2,6 +2,7 @@
 name: hostinfo
 C: # Elvis, J
   - K: Elvis
+    max_tooth_Hz: 12
     Gw: 1
   - K: J
     Gw: 1
@@ -52,7 +53,7 @@ hooks:
       $tx->send(J.B.m);
       
     speaks: |
-      return $H->error("mouthfull") if w $S mouthfull[$J];
+      return sayyl("MOUTH FULL  ") if w $S mouthfull[$J];
       w $J print_in;
       w $J decode;
       w init/flood if H.underworld; # somewhere round here
@@ -64,16 +65,15 @@ hooks:
       w $S woosh;
       
     woosh: |
-      print Hostinfo::colored($sign, 'blue');
+      print Hostinfo::colored($sign, 'blue on_green');
     mouthfull: |
       for my $mJ (@{S.mouth}) {
-      say "mouthfull mJ.B.dig";
-          if (mJ.B.dig eq J.B.dig) { # && time <><>><>@<><@><
-              return 1;
-          }
+            return 1 if mJ.dig eq J.dig &&
+                (1 / (J.hitime - mJ.hitime))
+              > S.max_tooth_Hz
       }
       push @{S.mouth}, $J;
-      pop @{S.mouth} if @{S.mouth} > 3;
+      shift @{S.mouth} if @{S.mouth} > 3;
       return 0;
       
     leaves: |
@@ -89,8 +89,8 @@ hooks:
       }
   J:
     Bu_D: |
-      B.dig ||= Hostinfo::enhash(B.m);
-      #$G->timer(2, sub { sw($S) });
+      S.dig ||= Hostinfo::enhash(B.m);
+      S.hitime = $F[0]->{hitime};
     decode: |        
       my $j;
       eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
