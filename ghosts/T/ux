@@ -157,12 +157,12 @@ hooks:
     my $apply;
     $apply = sub {
         my $style = shift;
-        return map { $apply->($_) } grep {/./} split ' ', $style if $style =~ / /;
+        return if $style !~ /./;
+        return map { $apply->($_) } split ' ', $style if $style =~ / /;
         
         my $S = GG.h->{$style};
         # lingosa
         S.css ? do{ 
-            #sayyl "Applying $style to u.K";
             u.at.attr.class .= " $style";
         }:
         S.D ? do{
