@@ -24,7 +24,7 @@ C:            # W M ux ...
   - K: style
     conor: -1.5
     attrs:
-      scoped: 1
+      scoped: undef
       type: text/css
     S:
       content_D: |
@@ -32,7 +32,8 @@ C:            # W M ux ...
         # something already interroGGd for <styles> here's one:
         my $A = B.A || "S";
         # may need to careful order new appendages too?
-        w stylesheet[$GG, $A];
+        my $sheet = w stylesheet[$GG, $A];
+        $sheet ? "\n$sheet\n" : "";
      
   - K: ux
     O: ux
@@ -128,15 +129,25 @@ hooks:
     $A ||= "S";
     my $SS = w styleway[$GG, $A];
     $SS || die "NoiSSSS $A on ux or GG.name";
-    my @s;
+    my ($c, @s);
+    my $san = sub {
+        my $props = shift;
+        join ";", map {
+            ref $_ eq "HASH" && die
+                "oi c.K from GG.name's $A _S !"
+                ." css line got YAML-munted into a HASH !"
+                ." remove the space after the colon?";
+            $_
+        } @$props
+    };
     join"\n",map{
-        my $c = $_;
+        $c = $_;
         if (c.css) {
-            ".".c.K."{".join(";",@{c.css})."}"
+            ".".c.K."{".$san->(c.css)."}"
         }
         elsif (c.keif) {
             my $keif = join "\n", map {
-                _.K."{".join(";",@{_.css})."}"
+                _.K."{".$san->(_.css)."}"
             } @{c.keif};
             my $yep = "@"."-webkit-keyframes ".c.K."{\n"
                 .ind('  ', $keif)
@@ -431,8 +442,14 @@ hooks:
             
         }
         my $tag = at.tag;
+        my $mkat = sub {
+            my $a = shift;
+            my $v = $attr->{$a};
+            return $a if $v eq "undef";
+            return $a.'="'.$attr->{$a}.'"'
+        };
         # style/class gets misccss/Wcss
-        $attr = join " ", map { $_.'="'.$attr->{$_}.'"' }
+        $attr = join " ", map { $mkat->($_) }
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
             
         u.html = "<$tag $attr>$conty$content</$tag>";
