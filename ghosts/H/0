@@ -124,7 +124,7 @@ hooks:
     # just for Codon; this jump loses the meaning of the origin
     colour: |
       $G->timer(0.01, sub {
-        G colour ->w(Arr => $ar);
+        G:colour ->w(Arr => $ar);
       });
   
   check:
@@ -160,7 +160,7 @@ hooks:
         warn "Pre future mess... ".ki($ar);
         return;
     }
-    my $m = Gf mess;
+    my $m = G:mess;
     $m || die'no mess!';
     H._future = 0;
     
@@ -181,12 +181,12 @@ hooks:
     flood: |
       my $house = $H->get('style') eq 'stylehouse';
     
-      G TT ->G("H/mess");
-      G TT ->G("H/keys") if !$house;
-      G TT ->G("H/colour");
-      G TT ->G("H/sky") ->w('flood_init');
-      G mess  ->w('flood_init');
-      G TT ->G("H/ground") ->w('flood_init');
+      G!H/mess;
+      G!H/keys if !$house;
+      G!H/colour;
+      G!H/sky ->w('flood_init');
+      G:mess  ->w('flood_init');
+      G!H/ground ->w('flood_init');
       
       waylay init/later;
     
@@ -236,7 +236,7 @@ hooks:
       $H->error("Strange event", $e);
       
     key: |
-      G keys ->w(Arr => {e => $e});
+      G:keys ->w(Arr => {e => $e});
       
     wormhole: |
       my $E;

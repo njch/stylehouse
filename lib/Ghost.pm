@@ -764,6 +764,7 @@ sub parse_babble {
     my $eval = shift;
     
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
+    my $G_name = qr/[\/\w]+/;
     
     $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
@@ -775,10 +776,12 @@ sub parse_babble {
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]{1,4})((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
     $eval =~ s/Sw (?=\w+)/w \$S /sg;
-    $eval =~ s/G TT /\$H->TT(\$G, \$O) /sg;
-    $eval =~ s/Gf? (\w+)(?=[ ;,])/\$G->Gf('$1')/sg;
-    $eval =~ s/G\((\w+)\)/\$G->Gf('$1')/sg;
-    $eval =~ s/Gf (\S+)/\$G->Gf('$1')/sg;
+    
+    my $Gnv = qr/\$?$G_name/;
+    $eval =~ s/G!($Gnv)/\$H->TT(\$G, \$O)->G("$1")/sg;
+    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
+    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+    
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
