@@ -105,7 +105,7 @@ C:            # W M ux ...
    
 hooks:
   any_init: |
-    G.h = {};
+    #G.h = {};
     #map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
   stylespawn: |
     my $GG = W.G;
@@ -116,19 +116,6 @@ hooks:
         w styleup[$GG, $A];
     }
   styleup: |
-    =pod
-    split S_S to a bunch of *_S that Ms can mix and match
-    
-    u_S - the hard wired uxy cardboard y*, te
-        - about joining curve to line
-        - makes things look like primitive wormhole junk of the 'i t o' variety
-        - want to be ignored by non-newspapery Wstyle as it goes in liney directions
-        
-    x_S - random little styles like z4, etcetcetcetc
-        - safe to leave in the background always (on W <style>)
-    
-    whatever_S - from M, on M...
-    =cut
     my $SS = w styleway[$GG, $A];
     ref $SS eq "ARRAY" || die sw(["style ${A}_S not found", $A, $SS, $GG]);
     0->wayray($SS, $GG); # hook these up elsewhere
@@ -138,12 +125,25 @@ hooks:
   styleway: |
     $GG->findway($A.'_S') || $G->findway($A.'_S');
   stylesheet: |
-      $A ||= "S";
-      my $SS = w styleway[$GG, $A];
-      $SS || die "NoiSSSS $A on ux or GG.name";
-      join"\n",map{
-          "."._.K."{".join(";",@{_.css})."}"
-      }grep {_.css} @$SS;
+    $A ||= "S";
+    my $SS = w styleway[$GG, $A];
+    $SS || die "NoiSSSS $A on ux or GG.name";
+    my @s;
+    join"\n",map{
+        my $c = $_;
+        if (c.css) {
+            ".".c.K."{".join(";",@{c.css})."}"
+        }
+        elsif (c.keif) {
+            my $keif = join "\n", map {
+                _.K."{".join(";",@{_.css})."}"
+            } @{c.keif};
+            my $yep = "@"."-webkit-keyframes ".c.K."{\n"
+                .ind('  ', $keif)
+            ."\n}";
+            $yep
+        }
+    } @$SS;
   stylezo: |
     # u at->attribute traslator
     # kind of an argument resolver
@@ -162,7 +162,7 @@ hooks:
         my $S = GG.h->{$style};
         # lingosa
         S.css ? do{ 
-            sayyl "Applying $style to u.K";
+            #sayyl "Applying $style to u.K";
             u.at.attr.class .= " $style";
         }:
         S.D ? do{
@@ -174,7 +174,7 @@ hooks:
         };
     };
     $apply->($styles);
-  u_S:
+  u_S: # styles for wormhole liney primitives
     - K: yi
       css: 
         - margin-left:0.5em
@@ -198,7 +198,7 @@ hooks:
         - position:relative
         - width:calc(100% - 2em)
         - background:rgba(150,100,50,0.1)
-  x_S:
+  x_S: # special effects
     - K: 20pt
       css: 
         - font-size:20pt;
@@ -263,7 +263,7 @@ hooks:
     - K: white
       css: 
         - color:white
-    - K: z4     #c
+    - K: z4
       css: 
         - font-size:44.44%;
     - K: z94
@@ -437,6 +437,7 @@ hooks:
             
         u.html = "<$tag $attr>$conty$content</$tag>";
         
+        saygr "u.html" if $tag =~ /style/;
         sayyl " Cododnny ".wdump($attr) if $ui && ui.K eq "Codon";
         
         u._at = $at;

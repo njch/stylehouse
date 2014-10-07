@@ -803,7 +803,7 @@ sub parse_babblar {
     if (!$are && $square) {
         $square =~ s/^\[|\]$//sg;
         $ape = $square =~ s/^\+//;
-        $are = join ", ", map { (/\$(\w+)/)[0]." => $_" } split /, /, $square;
+        $are = join ", ", map { (/\$(\w+)/)[0]." => $_" } split /, */, $square;
     }
     if ($ape || $are && $are =~ s/^\+ //) {
         $are =~ s/\)$//;
