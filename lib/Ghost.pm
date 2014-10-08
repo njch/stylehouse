@@ -287,7 +287,8 @@ sub inter {
     my $thing = shift;
     my $ki = ki($thing);
     $ki =~ s/^\s+//;
-    $F[1]->{inter} .= "  {".$ki."}";
+    $F[1]->{inter} ||= ".";
+    $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 sub ob {
     my $G = shift;
