@@ -283,9 +283,9 @@ sub F_delta {
 }
 sub inter {
     my $thing = shift;
-    die ki($F[0]);
-    
-    
+    my $ki = ki($thing);
+    $ki =~ s/^\s+//;
+    $F[1]->{inter} .= "  {".$ki."}";
 }
 sub ob {
     my $G = shift;
@@ -584,7 +584,9 @@ sub w {
         $Z->{Returns} = $r;
            
         if ($@) {
-            my $ne = "Z\n";
+            my $ne = "Z";
+            $ne .= $Z->{inter} if $Z->{inter};
+            $ne .= "\n";
             $ne .= "S: ".ki($Sway)."\n" if $Sway;
             $ne .= "$@";
             $@ = $ne;
