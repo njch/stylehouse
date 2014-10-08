@@ -224,9 +224,11 @@ sub comeback {
     $s->{timer_from} = $last;
     $last->{timer_back} = $s;
     eval { $doing->(); };
+    # start serving code and stuff through H/0!
     $u->();
     if ($@) {
-        $H->error($s) if $@;
+        $@ =~ s/^(!   )+Z\n//sgm;
+        sayre(ind("Error ", $@));
     }
 }
 sub printF {
