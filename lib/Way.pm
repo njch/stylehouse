@@ -126,14 +126,13 @@ sub init_way {
 }
 sub pint {
     my $w = shift;
-    ( defined $w->{K} && !defined $w->{k} ? "$w->{K} " : "" )
     
-    .(defined $w->{print} ? $Ghost::F[0]->{G}->w('print',{},$w)
-    
-    : $w->{B} && Ghost::slim(Ghost::ki($w->{B}))
-    )
-    
-    
+    my $K = "$w->{K} "        if defined $w->{K} && !defined $w->{k};
+    my $p = $w->{G}->w('print',{},$w) if defined $w->{print} || $w->{Gw};
+    my $B = Ghost::slim(50,30,Ghost::ki($w->{B}))        if $w->{B};
+    my $s = "$K↯$p↯$B";
+    #$s =~ s/↯/`/g;
+    return $s;
 }
 sub find {
     my $self = shift;
