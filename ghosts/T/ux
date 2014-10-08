@@ -461,9 +461,9 @@ hooks:
   R: |
     my ($a, $W) = %$ar;
     ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
-    my $uW = 0->TafuB( $a => {W=>$W} );
-    0->l($uW) unless $a eq "W";
-    return $uW
+    my $u = 0->TafuB( $a => {W=>$W} );
+    0->l($u) if $a eq "M";
+    return $u
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
@@ -475,8 +475,13 @@ hooks:
     
     my $uxs = [];
     my $al = [];
+    my $Wis;
     for my $L (@$Ls) {
         next unless keys %$L; #wtf
+        my $WiW = L.W;
+        $Wis ||= $WiW;
+        $Wis eq $WiW || die "Wchatf Wis.name WiW.name";
+        
         if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
             push @$al, $alx;
         }
@@ -484,12 +489,16 @@ hooks:
             0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}])
     }
     
+    my $uM = w R(M => $Wis); # the lines' W mirrored
+    
     for my $ux (@$uxs) {
-        my $ix = w utricks/ux_above_via_Lu[$ux]; # join uxLis together like the origin
-        $ix ||= w R(M => ux.B.Lu.G.T.W); # or the ux for its W
+        # ux nests under another ux like origin : tops in M.o
+        my $ix = w utricks/ux_above_via_Lu[$ux] || $uM;
         0->visTp_l_u({i=>$ix}, $ux);
         w sane/V3[$ux, $ix, $uxs];
     }
+    
+    my @tops = G.uW;
     
     w U(i => G.uW);
     w J(i => G.uW);
