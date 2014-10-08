@@ -34,9 +34,6 @@ sub from {
     my $w = shift;
     my $s = shift;
     for my $k (keys %$s) {
-        die "Diff ghost way from ing"
-            if $k eq "G" && $w->{G} ne $w->{G};
-        
         my $t = $w->{$k};
         my $f = $s->{$k};
         

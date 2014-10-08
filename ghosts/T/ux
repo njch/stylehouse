@@ -496,6 +496,7 @@ hooks:
     G.uW = w R(W => G.T.W);
     0->visTp({i => G.uW});
     
+    G.ssp=[];
     my $uxs = [];
     my $al = [];
     my $Wis;
@@ -546,7 +547,9 @@ hooks:
         my $ui = u.B && u.B.Lu && u.B.Lu.i;
         u.B.ui = $ui if $ui;
         
-        $u->from(ui.ux) if $ui && ui.ux && $u eq findO(ux => ui.Li.o);
+        if ($ui && ui.ux && u.K eq "ux") {
+            $u->from(ui.ux);
+        }
         
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
@@ -560,7 +563,34 @@ hooks:
                 else {
                     $Bs = u.B;
                 }
-                my $uy = 0->sway({K=>sp.K}, {B=>$Bs}, {e=>''});
+                my $uy;
+                if (my $uxy = 0->CsK({K=>sp.K})) {
+                        sayyl "uxy found in ui.G: ".ki($uxy);
+                    $uy = 0->sway({from=>$uxy});
+                }
+                if ($ui) {
+                    if (my $xiy = 0->CsK({K=>sp.K}, ui.G)) {
+                        if (xiy.nojo) {
+                            $uy = 0->sway({from=>$xiy});
+                        }
+                        else {
+                            $uy->from($xiy); # G to xiy.G etc B merged
+                        }
+                    }
+                }
+                $uy || die "no thingy sp.K";
+                
+                
+        if ($ui && ui.ux && u.K eq "ux") {
+            push @{G.ssp||=[]}, $uy;
+            0->sing(stylespawn => sub { sw(G.ssp) }, begin => 2);
+            sayyl "STYLESPAWN ui.K";
+        }
+                
+                $uy || die "NOY";
+                
+                inter($Bs);
+                $uy->from({B=>$Bs});
                 
                 $uy->from({S=>u.S}) if delete sp.Scc;
                 
