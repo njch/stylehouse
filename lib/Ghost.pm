@@ -13,6 +13,7 @@ sub wdump { Hostinfo::wdump(@_) }
 sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 sub findO { my ($k, $o) = @_; grep { $_->{O} eq $k } @$o }
+sub slim { my ($f,$t,$c) = shift; $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f; $c }
 use Carp 'confess';
 use Term::ANSIColor;
 use File::Find;

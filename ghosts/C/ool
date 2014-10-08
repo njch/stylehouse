@@ -4,28 +4,17 @@ dials:
   ux_Ss: [x, X]
   _Ss: [ooo]
 C:
- - K: Images
+ - K: Is
+   Gw: 1
+   styles: p1
+   spawn:
+     - K: t
+   
+ - K: I
+   Gw: 1
+   styles: blur3
    print: |
-     $dir
-   flows_D: w suckimages[$dir];
-   u_from:
-     spawn:
-      - K: i
-      - K: t
-      - K: e
-      - K: X
-        styles: []
-        S:
-          content: Hihi!!
-     
- - K: Image
-   styles: p1 blur3
-   print: |
-     $file
-   u_from:
-     spawn:
-      - K: timg
-      - K: i
+     "Yep $file"
       
  - K: timg
    styles: reson
@@ -35,8 +24,18 @@ C:
      
  
  - K: Ooogida
-   styles: sativo reson
+   styles: sativo reson maxw o5
 hooks:
+
+  Is:
+    flows_D: |
+      my @finds = grep { /gif$/ } map { 0->fs_find($_) } $dir;
+      for my $file (@finds) {
+          0->TafuBl(I => { file => $file });
+      }
+  I:
+    flows_D: |
+      say 'Booya';
   ooo_S:
     - K: yi
       css: 
@@ -103,15 +102,11 @@ hooks:
     
   percolate: |
     0->TafuB(Ooogida => {whatcha => "Woogie"});
-    0->TafuB(Images => {dir => '/s/public/i'});
+    0->TafuB(Is => {dir => '/s/public/i'});
     
     # alright so... see styles run around
     # mod styles to mod waves of stuff
-  suckimages: |
-     my @finds = grep { /gif$/ } map { 0->fs_find($_) } $dir;
-     for my $file (@finds) {
-         0->TafuBl(Image => { file => $file });
-     }
+
   uxd: |
     G.ux->w('ux', {W=>$G->W});
 

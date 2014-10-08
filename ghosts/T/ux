@@ -52,6 +52,7 @@ C:            # W M ux ...
        "(".pint(S.B.Lu.i)." \t".gpty(S.B.Lu.t).")"
        
   - K: i     #c uyuyuuyuyyyuyuyuuuuyuuuuyyyuyuyyyuyuuuyuyuyyyyuyuyu
+    tag: yi
     conor: -0.5
     styles: yi
     spawn:
@@ -61,15 +62,14 @@ C:            # W M ux ...
         Scc: 1
     
   - K: t
+    tag: yt
     styles: yt
     S:
       content_D: |
-        die "t content fullity" if S.B.raw || S.raw;
-        my $con = gpty(Lu.t);
-        $con = ($con=~/^(.{30})/s)[0]."..." if length($con) > 50;
-        $con;
+        slim(50,30,gpty(Lu.t));
       
   - K: o
+    tag: yo
     conor: 0.5
     styles: oy
     spawn:
@@ -80,7 +80,8 @@ C:            # W M ux ...
           w: Lu.o
     
   - K: w
-    styles: ow
+    tag: yw
+    styles: w
     S:
       content_D: |
         pint($w);
@@ -544,9 +545,11 @@ hooks:
         my @uys;
         my $ui = u.B.Lu.i;
         u.B.ui = $ui if $ui;
-        if (ui.u_from) {
-            $u->from(ui.u_from);
-        }
+        
+        u.spawn = ui.spawn if ui.spawn;
+        
+        $u->from(ui.u_from) if ui.u_from;
+        
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
                 
