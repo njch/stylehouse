@@ -1,5 +1,6 @@
 package Ghost;
 use strict;
+use utf8;
 use Scriptalicious;
 use feature 'say';
 use File::Slurp;
@@ -15,7 +16,7 @@ sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 sub findO { my ($k, $o) = @_; grep { $_->{O} eq $k } @$o }
 sub slim { my ($f,$t,$c) = @_; $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f; $c }
 use Carp 'confess';
-use Term::ANSIColor;
+use Term::ANSIColor; 
 use File::Find;
 our $H;
 our @F;
@@ -250,8 +251,8 @@ sub stackway {
     else {
         ($from) = $stack->[1] =~ / (\S+::\S+) /;
         $from =~ s/.*Ghost::(Fl|wa).*/$1/;
-        $from =~ s/^Fl$/ᣜ/;
-        $from =~ s/^wa$/ᣝ/;
+        $from =~ s/^Fl$/ᣜ_/;
+        $from =~ s/^wa$/_ᣝ/;
         $from =~ s/Ghost::/G:/;
     }
     $from ||= "stackw $stack->[0]";
@@ -269,7 +270,7 @@ sub stackway {
         print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, ghostlyprinty(@{$S->{thing}})',
     });
     $w->from({Error=>$@}) if $@;
-    $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, ghostlyprinty(@{$w->{thing}});
+    $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
     $w;
 }
 sub F_delta {
@@ -279,6 +280,12 @@ sub F_delta {
     #$H->error("F_delta shows $now < $then;", $F[0]) if $now < $then;
     my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
+}
+sub inter {
+    my $thing = shift;
+    die ki($F[0]);
+    
+    
 }
 sub ob {
     my $G = shift;
