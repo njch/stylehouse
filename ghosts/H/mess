@@ -48,20 +48,7 @@ hooks:
     my $S = w Arr[$thing, $what];
     return "yep" if $what eq "Info" && $thing->[0] =~ /^keypress/;
     return 'yep' if $what !~ /^(say|info|error)$/i;
-  throwthrow: |
-    
-    print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
-    if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '80%'}, 500);");
-    }
-    $string = encode_entities($string);
-    $string =~ s/'/\\'/g;
-    $string =~ s/\n/\\n/g;
-    return $self->error("Recusive error messaging, check console")
-        if $string =~ /amp;amp;amp;/;
-    $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
-    $self->{throwings}->{$what} = $string;
-    
+
   event: |
     my $id = $e->{id};
     if ($e->{C}) {
