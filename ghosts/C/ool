@@ -1,44 +1,73 @@
 name: psych synth
 C:
  - K: Images
-   Gw: 1
-   styles: red sativo
-     
- - K: Image
-   styles: reson blur3
-   S:
-     styles: red
+   styles: reson 
+   print: |
+     $dir
+   flows_D: w suckimages[$dir];
    u_from:
      spawn:
+     
+ - K: Image
+   styles: p1 blur3
+   print: |
+     $file
+   u_from:
+     spawn:
+      - K: X
+        S:
+          content: Blah!
       - K: i
-        styles: red
-   
+      - K: t
+   flows_D: |
+     
  
  - K: Ooogida
    styles: sativo
-dials:
-  max_depth: 3
+
 hooks:
-  ux_receive: |
-    G.ux = $GG;
-    my $uW = 0->CsK({K=>'W'}, G.ux);
-    uW._Ss = [qw'x'];
-    G._Ss = ['ooo'];
-    
-  percolate: |
-    0->TafuB(Ooogida => {whatcha => "Woogie"});
-    0->TafuB(Images => {dir => '/s/public/i'});
-    
-    # alright so... see styles run around
-    # mod styles to mod waves of stuff
   ooo_S:
+    - K: yi
+      css: 
+        - margin-left:0.5em
+        - color:#6f7
+        - font-size:66%
+    - K: yo
+      css: 
+        - color:#a3f
+        - font-size:80%
+        - z-index:5000;
+    - K: yt
+      css: 
+        - font-size:120%
+    - K: yw
+      css: 
+        - margin-left:0.5em
+    - K: te
+      css: 
+        - border-bottom:1px solid black
+        - padding-left:2em
+        - float:left
+        - position:relative
+        - font-size:200%
+        - width:calc(100% - 2em)
+        - background:rgba(150,100,50,0.1)
+        
+    - K: p1
+      css:
+       - border:0.1em solid white
     - K: reson
       css:
        - background:rgba(125,23,55,0.8)
-       - padding:5em
+       - padding:1em
+    - K: blue
+      css:
+       - background:rgba(23,23,125,0.8)
+       - padding:1em
+    
     - K: sativo
       css:
-       - -webkit-filter:brightness(1.2) saturate(3)
+       - -webkit-filter:brightness(1.2) saturate(2)
     - K: blur2
       css: 
        - -webkit-animation:blur 3s infinite;
@@ -50,12 +79,25 @@ hooks:
        - K: 50%
          css:
           - -webkit-filter:blur(10px)
-  Images:
-    flows_D: |
-       my @finds = map { 0->fs_find($_) } $dir;
-       for my $file (@finds) {
-           0->TafuBl(Image => { file => $file });
-       }
+          
+          
+  ux_receive: |
+    G.ux = $GG;
+    my $uW = 0->CsK({K=>'W'}, G.ux);
+    uW._Ss = [qw'x'];
+    G._Ss = ['ooo'];
+    
+  percolate: |
+    0->TafuB(Ooogida => {whatcha => "Woogie"});
+    0->TafuB(Images => {dir => '/s/public/i'});
+    # alright so... see styles run around
+    # mod styles to mod waves of stuff
+  suckimages: |
+     my @finds = grep { /gif$/ } map { 0->fs_find($_) } $dir;
+     for my $file (@finds) {
+         0->TafuBl(Image => { file => $file });
+     }
+
   uxd: |
     G.ux->w('ux', {W=>$G->W});
 
