@@ -49,13 +49,13 @@ sub new {
     #$codoback = "rgba(150,78,50,0.85)" if $ss eq "shed";
     
     my $Codo =
-    $H->{ground}->spawn_floozy($self, Codo => "width:78%; min-width: 600px; background: $codoback; color: #afc; position: absolute;"
+    $H->{ground}->spawn_floozy($self, Codo => "width:78%; min-background: $codoback; color: #afc; position: absolute;"
     ." z-index:4; opacity: 0.95; height: 100%;"
     ."overflow: scroll;", before => 'flood');
 
     $Codo->spawn_ceiling($self, 'codseal' => 'border: 1px solid beige;');
     $H->{flood}->spawn_floozy($self, codolist =>
-        "padding: 1em; width:100%; z-index:3; background: rbga(0,0,90,0.9); color: #afc; opacity: 1; hegith: 8em;");
+        "padding: 1em; width:100%; min-width:159px;z-index:3; background: rbga(0,0,90,0.9); color: #afc; opacity: 1;");
 
     $Codo->spawn_floozy($self, blabs => "width:100%;  background: #301a30; color: #afc; font-weight: bold; height: 2em;");
 
