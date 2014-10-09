@@ -559,7 +559,7 @@ sub w {
             }
         }
         elsif (ref $Sway eq 'ARRAY') {
-            die "NO MORE ARRAY WAYS --- $point ".ki($ar)."\n"."$Sway - ".ki($Sway);
+            die "NO MORE ARRAY WAYS --- $point ".slim(100,80,ki($ar))."\n"."$Sway - ".ki($Sway);
         }
         my $b = {};
         %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
