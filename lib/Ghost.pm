@@ -427,7 +427,7 @@ sub U {
     my ($G, $Usub, @etc) = @_;
     $G->{U}->{$Usub} || confess "no U $Usub";
     my $u = $G->waystacken(U => $Usub, [@etc]);
-    my @R = $G->{U}->{$Usub}->(@etc);
+    my @R = $G->{U}->{$Usub}->(@etc); # bUSINESS BUSINESS
     $u->();
     wantarray ? @R : shift @R;
 }

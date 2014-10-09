@@ -1,6 +1,6 @@
 name: Styluxyio
 dials:
-  _Ss: [u, x]
+
 C:            # W M ux ...
   - K: W # us
     O: ux
@@ -123,6 +123,35 @@ hooks:
   any_init: |
     #G.h = {};
     #map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
+    G.U.tryf = sub {         # prefer S thing_Ds
+        my ($w, $ac, $pa, $wa) = @_;
+        my $f = $w->{$ac}; # poss. from fragment
+        return unless $f;
+        my $way = $wa || $w; # call non fragment
+        my $some = way.G->w("$ac/$pa"."_D", {}, $way) if $f->{"$pa"."_D"};
+        #die sw([$w, $ac, $f, $f->{$pa}, $pa, $some]) if $wa && $pa =~ /ishtml/;
+        return $some if $some;
+        $f->{$pa} if $f->{$pa};
+    };
+    G.U.Gww = sub {           # prefer Gw S things
+        my ($w, @a) = @_;
+        my $Gw = w.G->findway(w.K) if w.Gw;
+        $Gw = U->tryf($Gw, @a, $w) if $Gw;
+        $Gw || U->tryf($w, @a);
+    };
+    G.U.pref_Gww = sub {     # prefer ui S things
+        my ($pref, @etc) = @_;
+        for my $pr (@$pref) {
+            my $x = U->Gww($pr, @etc);
+            return $x if $x
+        }
+    };
+    G.U.uiuS = sub {           # prefer Gw S things
+        my ($u, $wha) = @_;
+        my $ui = u.B.Lu.i if u.B.Lu; # even if below thingy?
+        my $uiu = [$ui, $u];
+        U->pref_Gww($uiu, S => $wha);
+    };
   stylespawn: |
     my $GG = W.G;
     my $sp = S.spawn ||= [];
@@ -350,37 +379,11 @@ hooks:
         my $ui = u.B.Lu.i if u.B.Lu;
         my $at = u.at = {};
         
-        my $wi = ui.G->findway(ui.K) if ui.Gw;
-        # 
-        my $tryf = sub {         # prefer S thing_Ds
-            my ($w, $ac, $pa, $wa) = @_;
-            my $f = $w->{$ac}; # poss. from fragment
-            return unless $f;
-            my $way = $wa || $w; # call non fragment
-            my $some = way.G->w("$ac/$pa"."_D", {}, $way) if $f->{"$pa"."_D"};
-            #die sw([$w, $ac, $f, $f->{$pa}, $pa, $some]) if $wa && $pa =~ /ishtml/;
-            return $some if $some;
-            $f->{$pa} if $f->{$pa};
-        };
-        my $Gww = sub {           # prefer Gw S things
-            my ($w, @a) = @_;
-            my $Gw = w.G->findway(w.K) if w.Gw;
-            $Gw = $tryf->($Gw, @a, $w) if $Gw;
-            $Gw || $tryf->($w, @a);
-        };
-        my $ui_or_u = sub {     # prefer ui S things
-            $Gww->($ui, @_) || $Gww->($u, @_)
-        };
-        
-        # ^ the look-around-for-style-etc vortex v
-        
-        at.id = $ui_or_u->(S => 'id') || u.Li.uuid;
-        
-        at.tag = $ui_or_u->(S => 'tag') || u.tag || u.K;
-        
-        at.ishtml = $ui_or_u->(S => 'ishtml');
-        
-        at.class = $ui_or_u->(S => 'class');
+        # v the look-around-for-style-etc vortex v
+        at.id = U->uiuS($u => 'id') || u.Li.uuid;
+        at.tag = U->uiuS($u => 'tag') || u.tag || u.K;
+        at.ishtml = U->uiuS($u => 'ishtml');
+        at.class = U->uiuS($u => 'class');
         
         my @styles;
         push @styles, u.styles, u.S.styles;
@@ -392,7 +395,7 @@ hooks:
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
         
-        at.conty = $ui_or_u->(S => 'content');
+        at.conty = U->uiuS($u => 'content');
         
         at.conty = "" if !defined at.conty;
         at.conty = encode_entities(at.conty) unless at.ishtml;
