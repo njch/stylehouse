@@ -155,7 +155,7 @@ sub codolist {
             my ($e, $s) = @_;
             my $codon = $s->{codon};
             return $self->load_codon($codon->{name}) if $codon;
-            $self->{hostinfo}->{G}->w("A/colour",
+            $H->{G}->HGf('colour')->w(Arr => 
                 {name => "Codo",
                 set_css_background => "#Codo",
                 change => 1,
