@@ -198,11 +198,13 @@ CM
         }
     }
     my $cmback = ".$texty->{id} > .CodeMirror";
+    $H->{G}->timer(1, sub {
     $H->{G}->HGf('colour')->w(Arr =>
         {name => "Codon/$self->{name}",
         set_css_background => $cmback,
         force_set => 1}
     );
+    });
     $H->JS("\$('$cmback').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
     $H->JS("\$('.CodeMirror').parent().css('width', '99%');");
 
