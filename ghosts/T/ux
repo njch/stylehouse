@@ -122,14 +122,17 @@ hooks:
   any_init: |
     #G.h = {};
     #map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
-    G.U.tryf = sub {         # prefer S thing_Ds
+    G.U.tryf = sub {         # prefer S/thing_D over S/thing
         my ($w, $ac, $pa, $wa) = @_;
         my $f = $w->{$ac}; # poss. from fragment
         return unless $f;
-        my $way = $wa || $w; # call non fragment
+        
+        my $way = $wa || $w; # the Way, not the fragment hooks 
         my $some = way.G->w("$ac/$pa"."_D", {}, $way) if $f->{"$pa"."_D"};
-        #die sw([$w, $ac, $f, $f->{$pa}, $pa, $some]) if $wa && $pa =~ /ishtml/;
+        say "called $ac/${pa}_D on way.K" if $some;
+        #die "Yep ". sw($way) if $pa eq "attr" && way.K eq "Im";
         return $some if $some;
+        
         $f->{$pa} if $f->{$pa};
     };
     G.U.Gww = sub {           # prefer Gw S things
@@ -425,7 +428,7 @@ hooks:
         
         w stylezo[$u, $ui, $styles];
         
-        U->uiuS($u => "styled");
+        U->uiuS($u => "attr");
             
         if (!$_t) {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];
