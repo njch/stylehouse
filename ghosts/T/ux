@@ -453,7 +453,7 @@ hooks:
             my $sendojs = sub {
                 my ($id, $sp, @int) = @_;
                 push @$sendo, sub {
-                    $H->JS("\$('#$id')".sprintf($sp, map { 0->jsq($_) } @int).";")
+                    $H->JS("\$('#$id')".sprintf($sp, @int).";")
                 };
             };
             
@@ -465,18 +465,20 @@ hooks:
             }
             if (at.conty ne _t.conty) {
                 saybl "CONTIGITY" for 1..10;
-                $sendojs->(at.id, q{.text('%s')}, 0->jsq(at.conty));
+                my $s = 0->jsq(at.conty);
+                $s =~ s/\\ \\ n/\n/x;
+                $sendojs->(at.id, q{.text("%s")}, $s);
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 next if $v eq _t.attr->{$k};
                 saybl "@ $k -- $_t->{$k}   ++ $v";
-                $sendojs->(at.id, q{.attr('%s', '%s')}, $k, $v);
+                $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
             }
             if (at.css) {
                 while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     saybl "@ $k -- $_t->{$k}   ++ $v";
-                    $sendojs->(at.id, q{.css('%s', '%s')}, $k, $v);
+                    $sendojs->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
                 }
             }
         }
