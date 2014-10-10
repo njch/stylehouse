@@ -30,68 +30,25 @@ use Travel;
 use Ghost;
 use Wormhole;
 use Way;
-# style {
 
 my ($name) = $Bin =~ m{/(\w+)$};
 my $title = $name;
-my ($pwd) = `pwd` =~ /(.+)\n/;
+my ($pwd) = `pwd`; chomp $pwd;
 die "ain't really here" unless $Bin eq $pwd;
-
-my ($style) = $name =~ /style(\w+)$/;
-$style ||= $name;
+my $style = $name;
 ($title = $style) =~ s/(.)/$1\N{U+0489}/g;
 
-# here's our internet constellation
-# N S E W
-my $stylelist =
-{
-    hut   => ['*', 5000],
-    coast => [undef, 4000],
-    house => [undef, 3000],
-    shed  => [undef, 2000],
-    bucky => [undef, 1000],
-};
-# vertical supports the two degrees of weather you can feed the web
-# horizontal are your stable and unstable private research/life machines
+my $listen = readlink('listen') || "127.0.0.1:3000";
+$listen = "http://$listen" unless $listen =~ /^\w+:\//;
 
-my $listen = readlink('listen');
-
-my $port = $1 if $listen && $listen =~ /:(\d+)$/;
-my $addr = $1 if $listen && $listen =~ /^(?:http:\/\/)?(.+)(?::\d+)?\/?$/;
-
-my $listen_formed = $port && $addr;
-my $sr = $stylelist->{$style};
-if (!$port || !$addr) {
-    $port ||= $sr->[1] if $sr;
-    $port ||= "2000";
-    $addr ||= $sr->[0] if $sr;
-    $addr ||= "127.0.0.1";
-}
-
-$listen = "http://$addr:$port" unless $listen_formed;
 $listen = [ split /, ?/, $listen ];
-# this R doesn't scale its default settings, shrug
-
-say "! enlistening $name $$ @$listen
-
-
-
-
-
-
-
-
-
-
-
+say "! enlistening $name $$ @$listen\n\n\n\n\n\n\n\n\n\n
 
 ";
-
 my $H = my $hostinfo = new Hostinfo();
 helper 'hostinfo' => sub { $hostinfo };
 $H->set('style', $name); # eventually to pick up a wormhole and etc.
-$H->set('sstyle', $style); # eventually to pick up a wormhole and etc.
-$H->set('stylelist', $stylelist);
+$H->set('sstyle', $style); # eventually to pick up a wormhole and etc
 get '/' => sub {
     my $self = shift;
 
@@ -105,9 +62,6 @@ websocket '/stylehouse' => sub {
     my $self = shift;
     $hostinfo->{G}->w(websocket => { M => $self });
 };
-
-
-say " Listen @$listen!?";
 my $daemon = Mojo::Server::Daemon->new(app => app, listen => $listen);
 $daemon->run();
 sub love {
