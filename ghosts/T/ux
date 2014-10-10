@@ -122,39 +122,29 @@ hooks:
   any_init: |
     #G.h = {};
     #map { w styleup(GG => $_); } $G;# map{_.G}grep{_.i.K eq "M"}@{G.T.W.script};
-    G.U.tryf = sub {         # prefer S/thing_D over S/thing
-        my ($w, $ac, $pa, $wa) = @_;
-        my $f = $w->{$ac}; # poss. from fragment
-        return unless $f;
+    G.U.uiuS = sub {
+        my ($u, $b) = @_;
+        my $a = "S";
+        my $ui = u.B.Lu.i if u.B.Lu; # even if below thingy?
         
-        my $way = $wa || $w; # the Way, not the fragment hooks 
-        my $some = way.G->w("$ac/$pa"."_D", {}, $way) if $f->{"$pa"."_D"};
-        say "called $ac/${pa}_D on way.K" if $some;
-        #die "Yep ". sw($way) if $pa eq "attr" && way.K eq "Im";
-        return $some if $some;
-        
-        $f->{$pa} if $f->{$pa};
-    };
-    G.U.Gww = sub {           # prefer Gw S things
-        my ($w, @a) = @_;
-        my $Gw = w.G->findway(w.K) if w.Gw;
-        $Gw = U->tryf($Gw, @a, $w) if $Gw;
-        $Gw || U->tryf($w, @a);
-    };
-    G.U.pref_Gww = sub {     # prefer ui S things
-        my ($pref, @etc) = @_;
-        for my $pr (@$pref) {
-            my $x = U->Gww($pr, @etc);
-            return $x if $x
+        for my $w ($ui, $u) {
+            next if !$w;
+            
+            my $Gw = w.G->findway(w.K) if w.Gw;
+            
+            for my $ww ($Gw, $w) {
+                next if !$ww;
+                next if !$ww->{$a};
+                if ($ww->{$a}->{"${b}_D"}) {
+                    sayre "got a $a $b _D  ".$u->pint;
+                    my $some = w.G->w("$a/${b}_D", {u=>$u}, $w);
+                    return $some if $some;
+                }
+                my $some = $ww->{$a}->{$b};
+                return $some if $some;
+            }
         }
     };
-    G.U.uiuS = sub {           # prefer Gw S things
-        my ($u, $wha) = @_;
-        my $ui = u.B.Lu.i if u.B.Lu; # even if below thingy?
-        my $uiu = [$ui, $u];
-        U->pref_Gww($uiu, S => $wha);
-    };
-    
   GG_receive: |
     G._Ss = GG.ux_Ss if GG.ux_Ss;
   stylespawn: |
