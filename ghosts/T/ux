@@ -28,10 +28,10 @@ C:            # W M ux ...
   - K: style
     conor: -1.5
     ishtml: 1
-    attrs:
-      scoped: undef
-      type: text/css
     S:
+      attr:
+        scoped: undef
+        type: text/css
       content_D: |
         my $GG = S.Lo.i.B.W.G; # G from M or W # Lui.B.W might work
         # something already interroGGd for <styles> here's one:
@@ -412,13 +412,18 @@ hooks:
         my $attr = at.attr = {
             id => at.id,
             class => at.class,
-            %{ u.attrs || {} },
+            %{ U->uiuS($u => "attr") || {} },
         };
-        my $styles = at.styles;
         
+        my $styles = at.styles;
         w stylezo[$u, $ui, $styles];
         
-        U->uiuS($u => "attr");
+        my $s = U->uiuS($u => "style");
+        $s && attr.style && die "got uiu $s\t\tattr.style already";
+        if ($s) {
+            attr.style = shtocss($s);
+        }
+        
             
         if (!$_t) {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];

@@ -10,8 +10,7 @@ C:
       for my $file (@finds) {
           0->TafuBl(Im => { file => $file });
       }
-   print: |
-      $dir;
+   print: $dir
    styles: Ims
    tag: Ims
    ux:
@@ -20,16 +19,12 @@ C:
       - K: t
       
  - K: Im
-   print: |
-     $file;
+   print: $file
    flows_D: |
-     say 'Booya';
-   being: |
-     background-image: url('i/IMG_3524.JPG');
-     background-size: 100%;
+     (B.href) = $file =~ /(i\/.+$)/;
    S:
-    attr_D: |
-      die "Hello11";
+     style_D: |
+       qq {background-image:url('$href'); background-size:30%; }
    styles: Im
    tag: Im
    ux:
@@ -69,10 +64,11 @@ hooks:
     - K: Im #c
       css:
        - border:0.03em solid white
-       - width:calc(30% - 2em)
+       - width:40%
        - background:url(i/mol1.jpg);
-       - background-size:50%
+       - background-size:20% 30%
        - padding:0.8em
+       
        - opacity:1
     - K: Ims
     - K: Ooogida

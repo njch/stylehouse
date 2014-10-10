@@ -15,6 +15,12 @@ sub htmlesc { encode_entities(shift) }
 sub flatline { map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_ }
 sub findO { my ($k, $o) = @_; grep { $_->{O} eq $k } @$o }
 sub slim { my ($f,$t,$c) = @_; $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f; $c }
+sub shtocss {
+    my $s = shift;
+    return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
+    return join ";", @$s if ref $s eq "ARRAY";
+    return $s
+};
 use Carp 'confess';
 use Term::ANSIColor; 
 use File::Find;
