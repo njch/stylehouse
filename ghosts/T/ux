@@ -477,9 +477,22 @@ hooks:
             if (at.css) {
                 while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
-                    saybl "@ $k -- $_t->{$k}   ++ $v";
-                    # Anim
-                    $sendojs->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
+                    my $isa = '++';
+                    # an uiuS for mergins Anim/* ?
+                    if (my $anim = ui.Anim->{$k}) {
+                        my $dur = $anim."00";
+                        my $d = $dur; # leading zeros push into tinyness
+                        $d = $d / 10 for split '', $dur =~ m/^(0+)/;
+                        $d ||= 400;
+                        $isa = "$d.>";
+                        
+                        $sendojs->(at.id, q".animate({'%s':'%s'}, %s)",
+                            0->jsq($k, $v), $d);
+                    }
+                    else {
+                        $sendojs->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
+                    }
+                    saybl "@ $k -- _t.css->{$k}   $isa $v";
                 }
             }
         }
