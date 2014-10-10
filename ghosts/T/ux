@@ -201,6 +201,7 @@ hooks:
     # which is our language held nicely
     my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
     my $apply;
+    my @deply;
     $apply = sub {
         my $style = shift;
         return if $style !~ /./;
@@ -215,11 +216,20 @@ hooks:
             my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
             $apply->($ysty) if $ysty;
         }:
-        do{ 
+        $style =~ /^-(.+)$/ ? do {
+            push @deply, $1;
+        }:
+        do {
             sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
         };
     };
     $apply->($styles);
+    for my $d (@deply) {
+        u.at.attr.class =~ s/$d//;
+    }
+    u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
+    
+    
   u_S: # styles for wormhole liney primitives
     - K: yi
       css: 
