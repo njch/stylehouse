@@ -4,8 +4,7 @@ C:            # W M ux ...
   - K: W # us
     O: ux
     flows_D: |
-      my $W = ar.W;
-      w stylespawn[$S, $W]; # stylesheets to spawn
+      w stylespawn[$S, $W];
     S:
       styles: 1x1 nopoint
       tag: wormhole
@@ -16,7 +15,6 @@ C:            # W M ux ...
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
-      S.styles .= W.G.uM_styles;
     S:
       styles: 1x1 point
       tag: MMMM
@@ -254,12 +252,23 @@ hooks:
             }
         }
     };
+  GG_receive: |
+    for my $WM (qw'W M') {
+        my $wa = 0->CsK({K=>$WM});
+        for my $ss (qw'Ss Z') {
+            my $Sss = $WM.'_Ss';
+            wa.Ss = $w->{$Sss} if $w->{$Sss};
+        }
+    }
+  
   stylespawn: |
     my $GG = W.G;
-    my $sp = S.spawn ||= [];
-    my $As = S._Ss || GG._Ss || [];
+    my $As = S.Ss ||= [];
     for my $A (@$As) {
-        push @$sp, { K => 'style', B=>{A => $A} };
+        push @{S.spawn||=[]}, {
+            K => 'style',
+            B => {A => $A},
+        };
         w styleup[$GG, $A];
     }
   styleup: |
