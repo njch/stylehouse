@@ -6,9 +6,9 @@ dials:
 C:
  - K: Ims
    perc_B:
-     dir: /s/public/i/manyManyMANY/
+     dir: /s/public/i/
    flows_D: |
-      my @finds = grep { /tumblr/ && !/gif$/ } map { 0->fs_find($_) } $dir;
+      my @finds = grep { !/MANY/ && !/gif$/ } map { 0->fs_find($_) } $dir;
       #die sw \@finds;
       for my $file (@finds) {
           0->TafuBl(Im => { file => $file });
@@ -27,12 +27,15 @@ C:
      (B.href) = $file =~ /(i\/.+$)/;
      Sw opa;
    opa: |
-     B.Z.opacity = "0.".int(rand(9));
+     Z.opacity = "0.".int(rand(9));
+   sa: |
+     B.Z->{'padding'} = int(rand 8).'em';
    Anim:
      opacity: 5
    S:
      style_D: |
        Sw opa if int(rand 5) > 2;
+       Sw sa if int(rand 5) > 3;
        { 'background-image',"url('$href')",
          'background-size',"100%",
          %{B.Z||{}} }
@@ -73,8 +76,7 @@ hooks:
       css:
        - border:0.03em solid black
        - width:49%
-       - padding-top:2em
-       - opacity:0.3
+       - padding:2em
     - K: Ims
     - K: Ooogida
       css:
@@ -111,7 +113,20 @@ hooks:
   event: |
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
-    sw ($ar);
+    #sw ($ar);
+    =pod
+    $H->JS(" var hit = [];
+    \$('.Im').filter(function() {
+        return \$(this).offset().left < e.x
+            && \$(this).offset().left + \$(this).width() > e.x
+            && \$(this).offset().top < e.y
+            && \$(this).offset().top + \$(this).height() > e.y
+    }).each(function() {
+        hit."."push(this."."id());
+            });
+            ws".".send({i: hit.join(',')});
+        ") if 0;
+    =cut
     # try and hit E/elabourateness and then blunten until whatever
     if (e.S) {
         w $u zoum;
