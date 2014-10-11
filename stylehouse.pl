@@ -38,7 +38,7 @@ die "ain't really here" unless $Bin eq $pwd;
 my $style = $name;
 ($title = $style) =~ s/(.)/$1\N{U+0489}/g;
 
-my $listen = readlink('listen') || "127.0.0.1:3000";
+my $listen = readlink('listeno') || readlink('listen') || "127.0.0.1:3000";
 $listen = "http://$listen" unless $listen =~ /^\w+:\//;
 
 $listen = [ split /, ?/, $listen ];
