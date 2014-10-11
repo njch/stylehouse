@@ -8,6 +8,7 @@ C:            # W M ux ...
       my $W = ar.W;
       w stylespawn[$S, $W]; # stylesheets to spawn
     S:
+      styles: 1x1 nopoint
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
@@ -16,8 +17,9 @@ C:            # W M ux ...
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
-      S.styles = W.G.uM_styles;
+      S.styles .= W.G.uM_styles;
     S:
+      styles: 1x1 point
       tag: MMMM
         
   - K: style
@@ -259,6 +261,13 @@ hooks:
       css: [ color:white ]
     - K: oogabooga # root of M is above M's stylesheeting
       css: [font-size:500%, background:black]
+    - K: nopoint
+      css: [pointer-events:none]
+    - K: point
+      css: [pointer-events:all]
+    - K: 1x1
+      css: [position:absolute height:100% width:100%]
+    
   x_S: # special effects
     - K: 20pt
       css: 
