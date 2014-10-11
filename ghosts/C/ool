@@ -34,8 +34,8 @@ C:
      opacity: 7
    S:
      style_D: |
-       Sw opa if int(rand 5) > 2;
-       Sw sa if int(rand 5) > 3;
+       #Sw opa if int(rand 5) > 2;
+       #Sw sa if int(rand 5) > 3;
        { 'background-image',"url('$href')",
          %{B.Z||{}} }
    styles: Im -te
@@ -109,18 +109,19 @@ hooks:
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
     #sw ($ar);
-    =pod
     $H->JS(" var hit = [];
     \$('.Im').filter(function() {
         return \$(this).offset().left < e.x
             && \$(this).offset().left + \$(this).width() > e.x
             && \$(this).offset().top < e.y
             && \$(this).offset().top + \$(this).height() > e.y
-    }).each(function() {
-        hit."."push(this."."id());
+    }).remove();");
+    =pod
+    each(function() {
+        hit."."push(this."."id())
             });
-            ws".".send({i: hit.join(',')});
-        ") if 0;
+            console.log(hit);
+        ") if 1;
     =cut
     # try and hit E/elabourateness and then blunten until whatever
     if (e.S) {
