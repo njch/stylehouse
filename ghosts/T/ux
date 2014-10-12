@@ -259,7 +259,6 @@ hooks:
             my $Sss = $WM.'_'.$ss;
              
             $wa->{$ss} = $w->{$Sss} if $w->{$Sss};
-            $G->timer(1,sub{sw($wa)}) if $ss eq "Z" && $w->{$Sss};
         }
     }
   
@@ -359,7 +358,6 @@ hooks:
         u.at.attr.class =~ s/$d//;
     }
     u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
-
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
@@ -512,10 +510,14 @@ hooks:
       $pux;
 
     
-
-  links: |
-    my $u = L.i;
-    u.B.Z = u.Z if u.Z;
+  T:
+    links: |
+      u.B.Z ? do {
+          u.Z = u.B.Z;
+      }:
+      u.Z ? do {
+          u.B.Z = u.Z;
+      }:0;
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
