@@ -363,6 +363,16 @@ hooks:
         u.at.attr.class =~ s/$d//;
     }
     u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
+    
+    if (u.K eq "W") { # class to style="" outside <style> scope 
+        for my $style (split ' ', u.at.attr.class) {
+            my $S = GG.h->{$style};
+            u.at.attr.style .= join "", map{"$_;"} @{S.css};
+        }
+        delete u.at.attr.class;
+    }
+    
+    
   ux: |
     my $Ls = ar.Ls;
     $Ls ||= ar.W->CS if ar.W;
