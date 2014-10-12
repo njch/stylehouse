@@ -21,7 +21,7 @@ sub G {
     my $self = shift;
     $self->{G} ||= do {
         my $GG = new Ghost($H->intro, $self, @_);
-        push @{$H->{G}->{GGG}}, $GG; #/
+        push @{$H->{G}->{GGs}}, $GG; #/
         $GG
     }
 }
