@@ -533,6 +533,7 @@ hooks:
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
+    return unless u.G eq $G; # to skip O=ux plants on nested vortexen (uW{ui=W)
     
     inter({u => u.K});
     
@@ -573,8 +574,11 @@ hooks:
         
         at.conty = "" if !defined at.conty;
         at.conty = encode_entities(at.conty) unless at.ishtml;
-        
-        at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
+        at.ooze = [
+            sort { a.conor <=> b.conor }
+            grep { _.G eq $G }
+            @{u.Li.o || []}
+        ];
   wayout_sendo: |
         my $at = u.at;
         my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
