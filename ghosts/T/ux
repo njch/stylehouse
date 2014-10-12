@@ -373,22 +373,24 @@ hooks:
     
     G.ssp=[];
     my $uxs = [];
-    my $al = [];
-    my $Wis;
+    my $Wis; my $Was = sub { my $WiW = shift; $Wis ||= $WiW; $Wis eq $WiW || die "Wchatf Wis.name WiW.name"; };
     for my $L (@$Ls) {
         next unless keys %$L; #wtf
-        my $WiW = L.W;
-        $Wis ||= $WiW;
-        $Wis eq $WiW || die "Wchatf Wis.name WiW.name";
+        $Was->(L.W);
+        my $y = 'ux';
+        $y = 'uW' if L.i.K eq "W";
         
-        if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
-            push @$al, $alx;
-        }
         push @$uxs,
-            0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}])
+            0->visTp_TafuBlA({L=>$L}, [$y => {Lu=>$L}])
     }
     
-    my $uM = w R(M => $Wis); # the lines' W mirrored
+    my $uM;
+    if (@$uxs == 1 && $uxs->[0]->{K} eq 'uW') {
+        $uM = G.uW;
+    }
+    else {
+        $uM = w R(M => $Wis); # the lines' W mirrored
+    }
     
     for my $ux (@$uxs) {
         # ux nests under another ux like origin : tops in M.o
@@ -540,15 +542,7 @@ hooks:
 
     w compile_figure[$u];
     w wayout_sendo[$u];
-  J: |
-    0->visTp($ar, "Fun") if ar.i;
-    my $u = T.i;
-    
-    for my $do (@{u.sendo || []}) {
-        $do->();
-    }
 
-        w J(i=>$_) for @{T.L.o};
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
@@ -587,9 +581,10 @@ hooks:
         my $sendo = u.sendo = [];
         my $_t = u._at;
         
-        if (u.K eq "uW") {
-            u.at = ui.at;
+        if (u.K eq "uW" && !$_t) {
+            u.html = ui.html;
             
+            push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); };
             return;
         }
         
@@ -617,11 +612,8 @@ hooks:
                 attr.style = shtocss($s);
             }
         }
-        
-        
             
         if (!$_t) {
-            #w sendnew[$u, $ui, $attr, $at, $conty, $content];
             if ( $conty && $content ){
                 warn "conty and ooze ".sw(["contooz", $u, $conty, $content]);
                 $conty = "";
@@ -642,7 +634,6 @@ hooks:
             }
         }
         else {
-            #w sendnew[$u, $ui, $attr, $at, $conty, $content];
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             my $sendojs = sub {
                 my ($id, $sp, @int) = @_;
@@ -708,6 +699,15 @@ hooks:
         sayyl " Cododnny ".wdump($attr) if $ui && ui.K eq "Codon";
         
         u._at = $at;
+  J: |
+    0->visTp($ar, "Fun") if ar.i;
+    my $u = T.i;
+    
+    for my $do (@{u.sendo || []}) {
+        $do->();
+    }
+
+        w J(i=>$_) for @{T.L.o};
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
