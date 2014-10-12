@@ -257,7 +257,9 @@ hooks:
         my $wa = 0->CsK({K=>$WM});
         for my $ss (qw'Ss Z') {
             my $Sss = $WM.'_'.$ss;
+             
             $wa->{$ss} = $w->{$Sss} if $w->{$Sss};
+            $G->timer(1,sub{sw($wa)}) if $ss eq "Z" && $w->{$Sss};
         }
     }
   
@@ -378,6 +380,9 @@ hooks:
     
     # TODO make a pattern about y=to match against Eways...
     E.L.G->w(event => $E);
+  links: |
+    my $u = L.i;
+    u.B.Z = u.Z if u.Z;
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
@@ -449,6 +454,7 @@ hooks:
         
         my $s = U->uiuS($u => "style");
         $s && attr.style && die "got uiu $s\t\tattr.style already";
+        $s ||= {%{u.B.Z}} if !$s && u.B && u.B.Z; # put u.Z and link u.B.Z as flows?
         if ($s) {
             if (ref $s eq 'HASH') {
                 at.css = $s;
