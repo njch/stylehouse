@@ -541,7 +541,6 @@ hooks:
 
     w compile_figure[$u];
     w wayout_sendo[$u];
-
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
@@ -574,16 +573,29 @@ hooks:
         at.conty = encode_entities(at.conty) unless at.ishtml;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
-  attra: |
+  wayout_sendo: |
+        my $at = u.at;
+        my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
+        my $sendo = u.sendo = [];
+        my $_t = u._at;
+        
+        if (u.K eq "uW" && !$_t) {
+            u.html = ui.html;
+            u._at = ui._at;
+            return;
+        }
+        
+        
+        
         my $attr = at.attr = {
             id => at.id,
             class => at.class,
             %{ U->uiuS($u => "attr") || {} },
         };
-        attr.conty = defined at.conty ? at.conty : "";
-        my @oozs = grep { defined } map { _.html } @{ at.ooze };
-        my $content = join "\n", @oozs;
         
+        my $conty = defined at.conty ? at.conty : "";
+        my $oozs = [ grep { defined } map { _.html } @{ at.ooze } ];
+        my $content = join "\n", @$oozs;
         
         my $styles = at.styles;
         w stylezo[$u, $ui, $styles];
@@ -599,33 +611,18 @@ hooks:
                 attr.style = shtocss($s);
             }
         }
-        $attr
-  wayout_sendo: |
-        my $at = u.at;
-        my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
-        my $sendo = u.sendo = [];
-        my $_t = u._at;
         
-        if (u.K eq "uW" && !$_t) {
-            u.html = ui.html;
-            
-            push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); };
-            return;
-        }
         
-        # ATTR v
-        # ATTR ^
             
         if (!$_t) {
             if ( $conty && $content ){
                 warn "conty and ooze ".sw(["contooz", $u, $conty, $content]);
                 $conty = "";
             }
-
-            if (length($conty.$content) > 25000) {
+            if (length($conty . $content) > 25000) {
                 $content = "";
                 push @$sendo, sub {
-                    $H->JS("\$('#at.id').append('$_');") for @oozs
+                    $H->JS("\$('#at.id').append('$_');") for @$oozs
                 };
             }
             if (u.S.sendo_init_D) {
@@ -672,7 +669,7 @@ hooks:
                         my $d = $dur; # leading zeros push into tinyness
                         $d = $d / 10 for split '', $dur =~ m/^(0+)/;
                         $d ||= 400;
-                        $isa = "$d.>";
+                        $isa = "$d>>";
                         
                         $sendojs->(at.id, q".animate({'%s':'%s'}, %s)",
                             0->jsq($k, $v), $d);
