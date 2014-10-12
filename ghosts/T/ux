@@ -15,7 +15,6 @@ C:            # W M ux ...
   - K: uW
     O: ux
     
-  
   - K: M
     O: ux
     flows_D: |
@@ -575,28 +574,16 @@ hooks:
         at.conty = encode_entities(at.conty) unless at.ishtml;
         
         at.ooze = [sort { a.conor <=> b.conor } @{u.Li.o || []}];
-  wayout_sendo: |
-        my $at = u.at;
-        my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
-        my $sendo = u.sendo = [];
-        my $_t = u._at;
-        
-        if (u.K eq "uW" && !$_t) {
-            u.html = ui.html;
-            
-            push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); };
-            return;
-        }
-        
-        my $conty = defined at.conty ? at.conty : "";
-        my @oozs = grep { defined } map { _.html } @{ at.ooze };
-        my $content = join "\n", @oozs;
-        
+  attra: |
         my $attr = at.attr = {
             id => at.id,
             class => at.class,
             %{ U->uiuS($u => "attr") || {} },
         };
+        attr.conty = defined at.conty ? at.conty : "";
+        my @oozs = grep { defined } map { _.html } @{ at.ooze };
+        my $content = join "\n", @oozs;
+        
         
         my $styles = at.styles;
         w stylezo[$u, $ui, $styles];
@@ -612,6 +599,22 @@ hooks:
                 attr.style = shtocss($s);
             }
         }
+        $attr
+  wayout_sendo: |
+        my $at = u.at;
+        my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
+        my $sendo = u.sendo = [];
+        my $_t = u._at;
+        
+        if (u.K eq "uW" && !$_t) {
+            u.html = ui.html;
+            
+            push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); };
+            return;
+        }
+        
+        # ATTR v
+        # ATTR ^
             
         if (!$_t) {
             if ( $conty && $content ){
