@@ -219,16 +219,14 @@ hooks:
       G!H/ground ->w('flood_init');
       
       waylay init/later;
+      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
+      G!Ϡ;
     
-      if (!$house) {
-          #Git->new($H->intro);
-          #Codo->new($H->intro);
-          Lyrico->new($H->intro);
-      }
-      else {
-          Git->new($H->intro);
-          Codo->new($H->intro);
-      }
+      $house ?
+          Git->new($H->intro) && Codo->new($H->intro)
+      :
+          Lyrico->new($H->intro)
+      ;
 
       $H->menu();
       $H->{floodmenu}->{Ш}->() if $house;
