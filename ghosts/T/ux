@@ -11,7 +11,11 @@ C:            # W M ux ...
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
-
+  
+  - K: uW
+    O: ux
+    
+  
   - K: M
     O: ux
     flows_D: |
@@ -402,7 +406,12 @@ hooks:
     
     my $es =  "done ".$G->F_delta();
     sayre "ux -------- $es " for 1..5;
-    
+  R: |
+    my ($a, $W) = %$ar;
+    ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
+    my $u = 0->TafuB( $a => {W=>$W} );
+    0->l($u) if $a eq "M";
+    return $u
   sane:
     V3: |
       die "ix not Li " unless ix.Li;
@@ -545,6 +554,11 @@ hooks:
         my $ui = u.B.Lu.i if u.B.Lu;
         my $at = u.at = {};
         
+        if (u.K eq "uW") {
+            u.at = ui.at;
+            return;
+        }
+        
         # v the look-around-for-style-etc vortex v
         at.id = U->uiuS($u => 'id') || u.Li.uuid;
         at.tag = U->uiuS($u => 'tag') || u.tag || u.K;
@@ -573,10 +587,15 @@ hooks:
         my $sendo = u.sendo = [];
         my $_t = u._at;
         
-            my $conty = defined at.conty ? at.conty : "";
-            my @oozs = grep { defined } map { _.html } @{ at.ooze };
-            my $content = join "\n", @oozs;
+        if (u.K eq "uW") {
+            u.at = ui.at;
+            
+            return;
+        }
         
+        my $conty = defined at.conty ? at.conty : "";
+        my @oozs = grep { defined } map { _.html } @{ at.ooze };
+        my $content = join "\n", @oozs;
         
         my $attr = at.attr = {
             id => at.id,
@@ -598,6 +617,8 @@ hooks:
                 attr.style = shtocss($s);
             }
         }
+        
+        
             
         if (!$_t) {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];
@@ -612,10 +633,13 @@ hooks:
                     $H->JS("\$('#at.id').append('$_');") for @oozs
                 };
             }
-            push @$sendo, sub { w $u S/sendo_init_D(e=>'') } if u.S.sendo_init_D;
+            if (u.S.sendo_init_D) {
+                push @$sendo, sub { w $u S/sendo_init_D(e=>'') };
+            }
             
-            #die "Sendno" if u.sendo_init_D;
-            push @$sendo, sub { G.O.O.V.ux->takeover(u.html) } if $u eq G.uW; # chain
+            if ($u eq G.uW) {
+                push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); }
+            }
         }
         else {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];
@@ -684,12 +708,6 @@ hooks:
         sayyl " Cododnny ".wdump($attr) if $ui && ui.K eq "Codon";
         
         u._at = $at;
-  R: |
-    my ($a, $W) = %$ar;
-    ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
-    my $u = 0->TafuB( $a => {W=>$W} );
-    0->l($u) if $a eq "M";
-    return $u
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
