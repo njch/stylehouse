@@ -46,7 +46,6 @@ sub new {
     my $name = $self->{T}->{name};
     
     $self->{O} = $self->{T}->{O};
-    $self->{GG} = [];
     
     my @ways = @_;
     say "way spec @_";
