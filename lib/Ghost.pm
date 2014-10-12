@@ -333,9 +333,9 @@ sub T { # TODO funny
 sub Gf {
     my ($G, $way) = @_;
     # TODO $G or $S etc A 
-    my @Gs =
+    my @GGs =
         grep { $_->{way} =~ /$way/ } @{ $G->{GGs} };
-    shift @Gs;
+    wantarray ? @GGs : shift @GGs;
 }
 sub HGf {
     $H->{G}->Gf(@_)

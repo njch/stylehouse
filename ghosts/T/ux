@@ -271,12 +271,13 @@ hooks:
     }
   styleup: |
     my $SS = w styleway[$GG, $K];
-    ref $SS eq "ARRAY" || die sw(["style ${A}_S not found", $K, $SS, $GG]);
-    for my $S (@$SS) {
+    $SS || die sw(["style $K not found", $K, $SS, $GG]);
+    for my $S (@{SS.Ss}) { # mix the stylebits together
         G.h->{S.K} = $S;
     }
   styleway: |
     for my $tryG ($GG, $G) {
+        
         my $SS = $tryG->_0("0->CsK", {s=>'S', K=>$K});
         return $SS if $SS;
     }
@@ -311,7 +312,7 @@ hooks:
             ."\n}";
             $yep
         }
-    } @$Ss;
+    } @{SS.Ss};
   stylezo: |
     # u at->attribute traslator
     # kind of an argument resolver
@@ -467,7 +468,7 @@ hooks:
             push @$sendo, sub { w $u S/sendo_init_D(e=>'') } if u.S.sendo_init_D;
             
             #die "Sendno" if u.sendo_init_D;
-            push @$sendo, sub { G.O.V.ux->takeover(u.html) } if $u eq G.uW; # chain
+            push @$sendo, sub { G.O.O.V.ux->takeover(u.html) } if $u eq G.uW; # chain
         }
         else {
             #w sendnew[$u, $ui, $attr, $at, $conty, $content];

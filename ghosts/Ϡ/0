@@ -26,27 +26,24 @@ hooks:
     N: |
       Say "TOGIN";
       G:Ϡ ->_0('V/toginvis');
-  sync: |
-
-    # C did    G.ux = $GG;
-    # ux did    G._Ss = GG.ux_Ss if GG.ux_Ss;
   fresh_init: |
   any_child_recoded_init: |
     w wux;
   recoded_init: |
     w wux;
   ux: |
-    my $GG = G.pG || die "not pGd!?";
-    my $ux = GG.ux;
-    sayre "RWRWRWRW GG.name" for 1..5;
-    $GG->RW;
-    $ux->RW;
-    w sync[$GG, $ux];
-    $GG->w('percolate');
+    for my $GG (@{G.GGs}) { # could ar into GG=$K orso
+        sayre "RWRWRWRW GG.name" for 1..5;
+        for my $ux ($GG->Gf("T/ux")) {
+            $ux->RW;
+        }
+        $GG->RW;
+        $GG->w('percolate');
+    }
     w wux;
     saybl "ux ".$G->F_delta();
   wux: |
-    my $GG = G.pG || die "not pGd!?";
-    
-    $GG->w('uxd');
+    for my $GG (@{G.GGs}) {
+        $GG->w('uxd');
+    }
 
