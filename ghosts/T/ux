@@ -7,7 +7,7 @@ C:            # W M ux ...
       w stylespawn[$S, $W];
     Ss: [u, x, X]
     S:
-      styles: 1x1 nopoint
+      styles: 1x1 nopoi
       tag: wormhole
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
@@ -21,7 +21,7 @@ C:            # W M ux ...
       w stylespawn[$S, $W];
     Ss: *
     S:
-      styles: 1x1 point
+      styles: 1x1 poi
       tag: MMMM
         
   - K: style
@@ -144,20 +144,20 @@ S:
    Ss:
     - K: Helium
       css: [ color:white ]
-    - K: nopoint
+    - K: nopoi
       css: [pointer-events:none]
-    - K: point
+    - K: poi
       css: [pointer-events:all]
     - K: 1x1
-      css: [position:absolute, height:100%, width:100%]
+      styles: ab # delay a check to calc - any left: or whatever applied
+      css: [height:100%, width:100%]
+    - K: ab
+      css: [position:absolute]
  - K: x #c  special effects
    Ss:
     - K: 20pt
       css: 
         - font-size:20pt;
-    - K: abs
-      css: 
-        - position:absolute
     - K: antrail
       css: 
         - border-left:8px solid rgba(35,80,170,0.7);
@@ -341,6 +341,9 @@ hooks:
         
         my $S = GG.h->{$style};
         # lingosa
+        if (S.styles) {
+            $apply->(S.styles);
+        }
         S.css ? do{ 
             u.at.attr.class .= " $style";
         }:
