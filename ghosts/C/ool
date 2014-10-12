@@ -1,8 +1,10 @@
 name: psych synth
-dials:
-  uM_styles: oogabooga
-  ux_Ss: [X]
-  _Ss: [ooo]
+
+GG:
+ - K: xI
+   way: T/ux
+   W_Ss: [X]
+   M_Z: {font-size: 500%}
 C:
  - K: Ims
    perc_B:
@@ -34,22 +36,20 @@ C:
      opacity: 7
    S:
      style_D: |
-       #Sw opa if int(rand 5) > 2;
-       #Sw sa if int(rand 5) > 3;
+       Sw opa if int(rand 5) > 2;
+       Sw sa if int(rand 5) > 3;
        { 'background-image',"url('$href')",
          %{B.Z||{}} }
-   styles: Im -te
+   styles: Im -te resize
    tag: Im
    ux:
      spawn: []
    E:
      _D: |
        Z.opacity -= 0.5 * -1;
-hooks:
-  keys:
-   t: |
-     w uxd;
-  ooo_S:
+S:
+ - K: ooo #c
+   Ss:
     - K: te
       css: 
         - border-bottom:1px solid black
@@ -65,8 +65,13 @@ hooks:
       css: [color:#873, font-size:80%, padding:1em]
     - K: yw
       css: [font-size:60%]
-        
-    - K: Im #c
+      
+    - K: resize
+      css:
+        overflow:hidden
+        -moz-resize:both
+        resize:both
+    - K: Im
       css:
        - border:0.03em solid black
        - width:49%
@@ -75,7 +80,7 @@ hooks:
     - K: Ims
     - K: Ooogida
       css:
-       - width:100%;
+       - width:100%
        
     - K: reson
       css:
@@ -96,7 +101,7 @@ hooks:
        - -webkit-filter:brightness(1.5) saturate(2)
     - K: blur2
       css: 
-       - -webkit-animation:blur 3s infinite;
+       - -webkit-animation:blur 3s infinite
     - K: blur
       keif:
        - K: 0%, 100%
@@ -105,24 +110,28 @@ hooks:
        - K: 50%
          css:
           - -webkit-filter:blur(10px)
+hooks:
+  keys:
+   t: |
+     w uxd;
+  index_clickspace: |
+    my $Mid = G.T.W.uuid;
+    my ($x, $y) = (e.x, e.y);
+    my $what = ar.what || "ux.Im" || "ux";
+    $H->JS(" var hit = [];
+    \$('#$Mid > $what').filter(function() {
+        return \$(this).offset().left < $x
+            && \$(this).offset().left + \$(this).width() > $x
+            && \$(this).offset().top < $y
+            && \$(this).offset().top + \$(this).height() > $y
+    }).each(function() {
+        hit."."push(this."."id())
+    });
+    ws."."send({i=>hit});"); # TODO makes the server hang or something?
   event: |
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
     #sw ($ar);
-    $H->JS(" var hit = [];
-    \$('.Im').filter(function() {
-        return \$(this).offset().left < e.x
-            && \$(this).offset().left + \$(this).width() > e.x
-            && \$(this).offset().top < e.y
-            && \$(this).offset().top + \$(this).height() > e.y
-    }).remove();");
-    =pod
-    each(function() {
-        hit."."push(this."."id())
-            });
-            console.log(hit);
-        ") if 1;
-    =cut
     # try and hit E/elabourateness and then blunten until whatever
     if (e.S) {
         w $u zoum;
@@ -137,10 +146,6 @@ hooks:
         my $up = 0->CsK({K=>i.K});
         $i->from($up);
     }
-  ux_receive: |
-    G.ux = $GG;
-    my $uW = 0->CsK({K=>'W'}, G.ux);
-    
   percolate: |
     my $Cs = $G->anyway('C');
     for my $w (@$Cs) {
@@ -151,6 +156,6 @@ hooks:
     # alright so... see styles run around
     # mod styles to mod waves of stuff
   uxd: |
-    G.ux->w('ux', {W=>$G->W});
+    G.GG.xI->w('ux', {W=>$G->W});
   
 

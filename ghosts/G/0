@@ -31,6 +31,27 @@ hooks:
   ub:
     0: |
       w ub/keys[$S] if $S->findway("keys");
+      w ub/GG[$S] if $S->anyway("GG");
+      w ub/wayrays[$S];
+    wayrays: |
+      for my $s (qw'S C') { # C too?
+          if (my $ws = $S->anyway($s)) {
+              0->wayray($ws, $S);
+          }
+      }
+    GG: |
+      my $GGs = $S->anyway('GG');
+      for my $GG (@$GGs) {
+          my $way = GG.way || GG.K;
+          my $g = $H->TT($S)->G($way);
+          $g || die "no $way? GG $way from S.name = GG.K";
+          g.K = GG.K;
+          S.GG->{g.K} = $g;
+          if ($S->_0("0->CsK", {K=>'GG'})) {
+                $S->_0("0->TafuB", GG => {GG=>$g});
+          }
+          $g->w("GG_in", {w=>$GG});
+      }
     keys: |
       if (my $keys = G:keys) {
         push @{keys.subs}, $S unless
@@ -242,12 +263,15 @@ hooks:
         T.L.i eq T.i || die "tli not ni!?!?!";
         0S->accum($_, 'Lo', T.L) for @{T.L.o};
         0S->accum(T.L.i, 'Li', T.L); # just right
+        $S->w("T/links", {u=>T.i});
+        $S->w('links_D', {}, T.i);
+        
         # rounds_D? replayable when recoded?
         # assume 6/7 will continue the process...
         
         # 6/9
         
-        $S->w("T/travels");
+        $S->w("T/travels", {u=>T.i});
         $S->w('travels_D', {}, T.i);
         
         # 7/9

@@ -46,7 +46,7 @@ sub new {
     my $name = $self->{T}->{name};
     
     $self->{O} = $self->{T}->{O};
-    $self->{GG} = [];
+    $self->{GGs} = [];
     
     my @ways = @_;
     say "way spec @_";
@@ -67,7 +67,7 @@ sub new {
     $self->load_ways(@ways);
     
     if (ref $self->{T}->{O} eq "Ghost") {
-        push @{$self->{T}->{O}->{GG}}, $self;
+        push @{$self->{T}->{O}->{GGs}}, $self;
     }
     
 
@@ -333,9 +333,9 @@ sub T { # TODO funny
 sub Gf {
     my ($G, $way) = @_;
     # TODO $G or $S etc A 
-    my @Gs =
-        grep { $_->{way} =~ /$way/ } @{ $G->{GG} };
-    shift @Gs;
+    my @GGs =
+        grep { $_->{way} =~ /$way/ } @{ $G->{GGs} };
+    wantarray ? @GGs : shift @GGs;
 }
 sub HGf {
     $H->{G}->Gf(@_)
