@@ -359,27 +359,160 @@ hooks:
         u.at.attr.class =~ s/$d//;
     }
     u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
+
+  ux: |
+    my $Ls = ar.Ls;
+    $Ls ||= ar.W->CS if ar.W;
+    $Ls ||= [];
+    saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
+    
+    G.uW = w R(W => G.T.W);
+    0->visTp({i => G.uW});
+    
+    G.ssp=[];
+    my $uxs = [];
+    my $al = [];
+    my $Wis;
+    for my $L (@$Ls) {
+        next unless keys %$L; #wtf
+        my $WiW = L.W;
+        $Wis ||= $WiW;
+        $Wis eq $WiW || die "Wchatf Wis.name WiW.name";
+        
+        if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
+            push @$al, $alx;
+        }
+        push @$uxs,
+            0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}])
+    }
+    
+    my $uM = w R(M => $Wis); # the lines' W mirrored
+    
+    for my $ux (@$uxs) {
+        # ux nests under another ux like origin : tops in M.o
+        my $ix = w utricks/ux_above_via_Lu[$ux] || $uM;
+        0->visTp_l_u({i=>$ix}, $ux);
+        
+        w sane/V3[$ux, $ix, $uxs];
+    }
     
     
-  event: |
-    my $u = L.i; # the clicked id: uy probly.
-    my $ux = uxL.i; # first parent <ux>
-    my $uu = ux.B.Lu.i;
-    my $uy = $u if $u ne $ux;
-    my $E = {
-        e => $e,
-        W => $W,
-        L => uu.Li,
-        u => $uu,
-        ux => $ux,
-        uy => $uy,
-    };
+    my @tops = G.uW;
     
-    # come from within something we don't grasp
-    return H.G->w('serve/TV', {e=>E.e}) unless E.L;
+    w U(i => G.uW);
+    w J(i => G.uW);
     
-    # TODO make a pattern about y=to match against Eways...
-    E.L.G->w(event => $E);
+    my $es =  "done ".$G->F_delta();
+    sayre "ux -------- $es " for 1..5;
+    
+  sane:
+    V3: |
+      die "ix not Li " unless ix.Li;
+      die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
+          unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
+    U1: |
+        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
+        #warn "ux has no ways out: ".$u->pint if u.K eq "ux" && !@{u.Li.o};
+  utricks:
+    spawn: | #c
+        my @uys;
+        my $ui = u.B && u.B.Lu && u.B.Lu.i;
+        u.B.ui = $ui if $ui;
+        
+        if ($ui && ui.ux && u.K eq "ux") {
+            $u->from(ui.ux);
+        }
+        
+        if (my $spawn = u.spawn) {
+            for my $sp (@$spawn) {
+                
+                my $Bs = {};
+                if (sp.Bset) {
+                    while (my ($k, $v) = each %{sp.Bset}) {
+                        $Bs->{$k} = $u->find("B.$v"); # i=Lu.i etc
+                    }
+                }
+                else {
+                    $Bs = u.B;
+                }
+                my $uy;
+                if (my $uxy = 0->CsK({K=>sp.K})) {
+                        sayyl "uxy found in ui.G: ".ki($uxy);
+                    $uy = 0->sway({from=>$uxy});
+                }
+                if ($ui) {
+                    if (my $xiy = 0->CsK({K=>sp.K}, ui.G)) {
+                        if (xiy.nojo) { # nnnnnnnnnnnnn is the other to u
+                            $uy = 0->sway({from=>$xiy});
+                        }
+                        else {
+                            $uy ||= $G->nw();
+                            $uy->from($xiy); # G to xiy.G etc B merged
+                        }
+                    }
+                }
+                $uy || die sw(["no thingy sp.K",
+                
+                $G->anyway('C'),
+                
+                ]);
+                
+                $uy->from({B=>$Bs});
+                
+                $uy->from({S=>u.S}) if delete sp.Scc;
+                
+                $uy->from($sp);
+                
+                push @uys, w utricks/multi[$uy, $u, $sp]; 
+            }
+        }
+        
+        for my $uu (@uys) {
+            if (my $uy = 0->fu($uu)) {
+            }
+            else {
+                sayyl "NEW u ! uu.K ".ki(uu.B);
+                $uy = 0->T({i => $uu});
+                0->l($uy);
+            }
+        }
+    multi: | #c
+      my @uys = $uy;
+      if (my $n = sp.multiBy) {
+            my $val = uy.B->{$n};
+          ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
+          @uys = ();
+          my $i = 0;
+          for my $an (@$val) {
+              next if an.K eq "ux"; # that hangs out in the origin lines o
+              my $anuy = $uy->spawn;
+              anuy.B->{$n} = $an;
+              anuy.K ."[".$i++;
+              push @uys, $anuy;
+          }
+      }
+      @uys
+    ngrab: | #c
+                if (u.uy_in_dos) {
+                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
+                        uy.B->{$ton} = u.B->{u.B.n};
+                        uy.B.n = $ton;
+                    }
+                }
+                if (uy.uy_in_dos) {
+                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
+                        uy.B->{$n} = u.B.Lu->{$n};
+                        uy.B.n = $n;
+                    }
+                }
+    ux_above_via_Lu: | #c
+      my $Lu = ux.B.Lu || die "no Lu on ux";
+      my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
+      my ($pux) = findO(ux => pLu.o) if $pLu;
+      $pux;
+
+    
+
   links: |
     my $u = L.i;
     u.B.Z = u.Z if u.Z;
@@ -555,154 +688,23 @@ hooks:
     my $u = 0->TafuB( $a => {W=>$W} );
     0->l($u) if $a eq "M";
     return $u
-  ux: |
-    my $Ls = ar.Ls;
-    $Ls ||= ar.W->CS if ar.W;
-    $Ls ||= [];
-    saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
+  event: |
+    my $u = L.i; # the clicked id: uy probly.
+    my $ux = uxL.i; # first parent <ux>
+    my $uu = ux.B.Lu.i;
+    my $uy = $u if $u ne $ux;
+    my $E = {
+        e => $e,
+        W => $W,
+        L => uu.Li,
+        u => $uu,
+        ux => $ux,
+        uy => $uy,
+    };
     
-    G.uW = w R(W => G.T.W);
-    0->visTp({i => G.uW});
+    # come from within something we don't grasp
+    return H.G->w('serve/TV', {e=>E.e}) unless E.L;
     
-    G.ssp=[];
-    my $uxs = [];
-    my $al = [];
-    my $Wis;
-    for my $L (@$Ls) {
-        next unless keys %$L; #wtf
-        my $WiW = L.W;
-        $Wis ||= $WiW;
-        $Wis eq $WiW || die "Wchatf Wis.name WiW.name";
-        
-        if (my ($alx) = grep { _.O eq "ux" && _.G eq $G } @{L.o}) {
-            push @$al, $alx;
-        }
-        push @$uxs,
-            0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}])
-    }
-    
-    my $uM = w R(M => $Wis); # the lines' W mirrored
-    
-    for my $ux (@$uxs) {
-        # ux nests under another ux like origin : tops in M.o
-        my $ix = w utricks/ux_above_via_Lu[$ux] || $uM;
-        0->visTp_l_u({i=>$ix}, $ux);
-        
-        w sane/V3[$ux, $ix, $uxs];
-    }
-    
-    
-    my @tops = G.uW;
-    
-    w U(i => G.uW);
-    w J(i => G.uW);
-    
-    my $es =  "done ".$G->F_delta();
-    sayre "ux -------- $es " for 1..5;
-    
-  sane:
-    V3: |
-      die "ix not Li " unless ix.Li;
-      die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
-          unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
-    U1: |
-        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
-        #warn "ux has no ways out: ".$u->pint if u.K eq "ux" && !@{u.Li.o};
-  utricks:
-    spawn: | #c
-        my @uys;
-        my $ui = u.B && u.B.Lu && u.B.Lu.i;
-        u.B.ui = $ui if $ui;
-        
-        if ($ui && ui.ux && u.K eq "ux") {
-            $u->from(ui.ux);
-        }
-        
-        if (my $spawn = u.spawn) {
-            for my $sp (@$spawn) {
-                
-                my $Bs = {};
-                if (sp.Bset) {
-                    while (my ($k, $v) = each %{sp.Bset}) {
-                        $Bs->{$k} = $u->find("B.$v"); # i=Lu.i etc
-                    }
-                }
-                else {
-                    $Bs = u.B;
-                }
-                my $uy;
-                if (my $uxy = 0->CsK({K=>sp.K})) {
-                        sayyl "uxy found in ui.G: ".ki($uxy);
-                    $uy = 0->sway({from=>$uxy});
-                }
-                if ($ui) {
-                    if (my $xiy = 0->CsK({K=>sp.K}, ui.G)) {
-                        if (xiy.nojo) { # nnnnnnnnnnnnn is the other to u
-                            $uy = 0->sway({from=>$xiy});
-                        }
-                        else {
-                            $uy ||= $G->nw();
-                            $uy->from($xiy); # G to xiy.G etc B merged
-                        }
-                    }
-                }
-                $uy || die sw(["no thingy sp.K",
-                
-                $G->anyway('C'),
-                
-                ]);
-                
-                $uy->from({B=>$Bs});
-                
-                $uy->from({S=>u.S}) if delete sp.Scc;
-                
-                $uy->from($sp);
-                
-                push @uys, w utricks/multi[$uy, $u, $sp]; 
-            }
-        }
-        
-        for my $uu (@uys) {
-            if (my $uy = 0->fu($uu)) {
-            }
-            else {
-                sayyl "NEW u ! uu.K ".ki(uu.B);
-                $uy = 0->T({i => $uu});
-                0->l($uy);
-            }
-        }
-    multi: | #c
-      my @uys = $uy;
-      if (my $n = sp.multiBy) {
-            my $val = uy.B->{$n};
-          ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
-          @uys = ();
-          my $i = 0;
-          for my $an (@$val) {
-              next if an.K eq "ux"; # that hangs out in the origin lines o
-              my $anuy = $uy->spawn;
-              anuy.B->{$n} = $an;
-              anuy.K ."[".$i++;
-              push @uys, $anuy;
-          }
-      }
-      @uys
-    ngrab: | #c
-                if (u.uy_in_dos) {
-                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
-                        uy.B->{$ton} = u.B->{u.B.n};
-                        uy.B.n = $ton;
-                    }
-                }
-                if (uy.uy_in_dos) {
-                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
-                        uy.B->{$n} = u.B.Lu->{$n};
-                        uy.B.n = $n;
-                    }
-                }
-    ux_above_via_Lu: | #c
-      my $Lu = ux.B.Lu || die "no Lu on ux";
-      my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
-      my ($pux) = findO(ux => pLu.o) if $pLu;
-      $pux;
+    # TODO make a pattern about y=to match against Eways...
+    E.L.G->w(event => $E);
 
