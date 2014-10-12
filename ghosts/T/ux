@@ -5,6 +5,7 @@ C:            # W M ux ...
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
+    Ss: [u, x, X]
     S:
       styles: 1x1 nopoint
       tag: wormhole
@@ -15,6 +16,7 @@ C:            # W M ux ...
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
+    Ss: *
     S:
       styles: 1x1 point
       tag: MMMM
@@ -262,6 +264,10 @@ hooks:
   stylespawn: |
     my $GG = W.G;
     my $SsKs = S.Ss ||= [];
+    if ($SsKs eq "*") {
+        my $eS = $GG->anyway('S');
+        $SsKs = [ map { _.K } @$eS ];
+    }
     for my $K (@$SsKs) {
         push @{S.spawn||=[]}, {
             K => 'style',
