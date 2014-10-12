@@ -32,12 +32,18 @@ hooks:
     0: |
       w ub/keys[$S] if $S->findway("keys");
       w ub/GG[$S] if $S->anyway("GG");
+      for my $s (qw'S') { # C too?
+          if (my $ws = $S->anyway($s)) {
+              0->wayray($ws, $S);
+          }
+      }
     GG: |
       my $GGs = $S->anyway('GG');
       for my $GG (@$GGs) {
           my $way = GG.way || GG.K;
           my $g = $H->TT($S)->G($way);
           $g || die "no $way? GG $way from S.name = GG.K";
+          die wdump(2,$g);
           g.K = GG.K;
           S.GG->{g.K} = $g;
           if ($S->_0("0->CsK", {K=>'GG'})) {

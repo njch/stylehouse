@@ -28,10 +28,8 @@ C:            # W M ux ...
         type: text/css
       content_D: |
         my $GG = S.Lo.i.B.W.G; # G from M or W # Lui.B.W might work
-        # something already interroGGd for <styles> here's one:
-        my $A = B.A || "S";
+        my $sheet = w stylesheet[$GG, $K];
         # may need to careful order new appendages too?
-        my $sheet = w stylesheet[$GG, $A];
         $sheet ? "\n$sheet\n" : "";
      
   - K: ux
@@ -252,50 +250,53 @@ hooks:
             }
         }
     };
-  GG_receive: |
+  GG_in: |
     for my $WM (qw'W M') {
         my $wa = 0->CsK({K=>$WM});
         for my $ss (qw'Ss Z') {
-            my $Sss = $WM.'_Ss';
-            wa.Ss = $w->{$Sss} if $w->{$Sss};
+            my $Sss = $WM.'_'.$ss;
+            $wa->{$ss} = $w->{$Sss} if $w->{$Sss};
         }
     }
   
   stylespawn: |
     my $GG = W.G;
-    my $As = S.Ss ||= [];
-    for my $A (@$As) {
+    my $SsKs = S.Ss ||= [];
+    for my $K (@$SsKs) {
         push @{S.spawn||=[]}, {
             K => 'style',
-            B => {A => $A},
+            B => {K=>$K},
         };
-        w styleup[$GG, $A];
+        w styleup[$GG, $K];
     }
   styleup: |
-    my $SS = w styleway[$GG, $A];
-    ref $SS eq "ARRAY" || die sw(["style ${A}_S not found", $A, $SS, $GG]);
-    0->wayray($SS, $GG); # hook these up elsewhere
+    my $SS = w styleway[$GG, $K];
+    ref $SS eq "ARRAY" || die sw(["style ${A}_S not found", $K, $SS, $GG]);
     for my $S (@$SS) {
         G.h->{S.K} = $S;
     }
   styleway: |
-    $GG->findway($A.'_S') || $G->findway($A.'_S');
+    for my $tryG ($GG, $G) {
+        my $SS = $tryG->_0("0->CsK", {s=>'S', K=>$K});
+        return $SS if $SS;
+    }
   stylesheet: |
-    $A ||= "S";
-    my $SS = w styleway[$GG, $A];
-    $SS || die "NoiSSSS $A on ux or GG.name";
+    $K ||= "S";
+    my $SS = w styleway[$GG, $K];
+    $SS || die "NoiSSSS $K on ux or GG.name";
+    my $Ss = SS.Ss;
     my ($c, @s);
     my $san = sub {
         my $props = shift;
         join ";", map {
             ref $_ eq "HASH" && die
-                "oi c.K from GG.name's $A _S !"
+                "oi c.K from GG.name's $K _S !"
                 ." css line got YAML-munted into a HASH !"
                 ." remove the space after the colon?";
             $_
         } @$props
     };
-    join"\n",# "// ${A} from GG.name", # breaks first style
+    join"\n",
     map{
         $c = $_;
         if (c.css) {
@@ -310,7 +311,7 @@ hooks:
             ."\n}";
             $yep
         }
-    } @$SS;
+    } @$Ss;
   stylezo: |
     # u at->attribute traslator
     # kind of an argument resolver
@@ -351,7 +352,6 @@ hooks:
     u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
     
     
-
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
