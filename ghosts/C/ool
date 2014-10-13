@@ -35,17 +35,10 @@ C:
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
-     Sw opa;
-   opa: |
-     Z.opacity = "0.".int(rand(9));
-   sa: |
-     B.Z->{'padding'} = int(rand 14).'em';
    Anim:
      opacity: 7
    S:
      style_D: |
-       Sw opa if int(rand 5) > 2;
-       Sw sa if int(rand 5) > 3;
        { 'background-image',"url('$href')",
          %{B.Z||{}} }
      content: ☯
@@ -58,20 +51,22 @@ C:
    perc_B:
      time: {0: 4, 1: 4}
      now: {0: 0, 1: 0}
+   e: |
+     1/9 + 1/16 + 17/46
    Dz:
      _x2: |
        say "2222222222";
      0x0: |
-       say "Something";
-   flows_D: |
+       w f/ra;
+   flows_D: |  #c Ra..
      S.timezs = sub {
          my ($time) = shift;
          join "x", map { $time->{$_} } sort keys %$time;
      };
+     w se/sa[$S];
      Sw lat;
      Sw riv;
    riv: |
-     # Dio
      now.1++;
      if (now.1 == time.1) {
          now.1 = 0;
@@ -80,15 +75,19 @@ C:
              now.0 = 0;
         }
      }
+     
      my $at = S.timezs->($now);
      say "@".$at;
-     for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ }
-                  sort keys %{S.Dz}) {
+     
+     for my $ma (grep {
+         my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/
+            }
+            sort keys %{S.Dz}) {
+            
          Sw Dz/$ma;
      }
-   e: |
-     1/9 + 1/16 + 17/48
    lat: |
+     return if S.dead;
      $G->timer(Sw e, sub { Sw lat; Sw riv; });
 S:
  - K: ooo #c
@@ -179,6 +178,23 @@ hooks:
   keys:
    t: |
      w uxd;
+  se:
+    opa: |
+      S.Z.opacity = "0.".int(rand(9));
+    sa: |
+      S.Z.padding = int(rand 14).'em';
+  
+  f:
+    ra: |
+      my @eis = 0->rei({K=>'Im'});
+      for my $S (@eis[1..3]) {
+          w se/opa[$S];
+      }
+      w uxd;
+    se:
+      opa: |
+        Sw opa if int(rand 5) > 2;
+        Sw sa if int(rand 5) > 3;
   index_clickspace: |
     my $Mid = G.T.W.uuid;
     my ($x, $y) = (e.x, e.y);
@@ -207,7 +223,7 @@ hooks:
     waylay uxd;
     
   recoded_init: |
-    for my $i (map {_.i} 0->scGre) {
+    for my $i (map {_.i} 0->scGre()) {
         my $up = 0->CsK({K=>i.K});
         $i->from($up);
     }
@@ -218,9 +234,15 @@ hooks:
             0->TafuB(w.K => $B);
         }
     }
+    
+    for my $L (0->rei()) {
+        next if rand(1) < 2/9;
+    }
     # alright so... see styles run around
     # mod styles to mod waves of stuff
+    
   uxd: |
-    G.GG.xI->w('ux', {Ls => [ 0->scGre({K=>"Im"}) ]});
+    my @Im = 0->scGre({K=>"Im"});
+    G.GG.xI->w('ux', {Ls => [@Im]});
   
 

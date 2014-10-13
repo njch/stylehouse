@@ -63,10 +63,13 @@ hooks:
       }
   any_init: |
     G.U.scGre = sub {#c
-        my ($S, $p) = @_;
-        my @a = grep { !exists p.K || _.K eq p.K } @{ S.W.script };
-        say ki($p)." got ".@a;
-        wantarray ? @a : shift @a;
+        my ($S, $ip) = @_;
+        my @a = grep { !exists ip.K || _.i.K eq ip.K } @{ $S->W->{script} };
+        @a
+    };
+    G.U.rei = sub {#c
+        my $S = shift;
+        map {_.i} 0S->scGre(@_);
     };
     G.U.sing = sub {#c
         my $S = shift;
