@@ -51,8 +51,6 @@ sub new {
 
     # remember to say :first or :last etc in $where
     $self->get_attached($attach, $where, "'$div'");
-
-    $self->{hostinfo}->send("\$('#$divid').fadeIn(300);");
     $self->wipehtml(); # set label
     $self->takeover();
 
@@ -298,7 +296,6 @@ sub takeover {
     my $texty = shift;
 
     if (!defined $html) {
-        say " $self->{divid} reload,";
         $html = $self->html;
     }
     elsif ($texty && $texty->{hooks}->{append}) {
