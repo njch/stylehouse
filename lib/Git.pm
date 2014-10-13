@@ -94,7 +94,7 @@ sub gitrack {
         `kill -KILL $har[1]`;
     },
     'ܤ' => sub {
-        $self->spawn_proc('cd ../'.$r.' && touch stylehouse.pl');
+        `touch /s/stylehouse.pl`
     },
         ];
         push @m,
