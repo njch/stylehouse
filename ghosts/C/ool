@@ -59,6 +59,8 @@ C:
      time: {0: 4, 1: 4}
      now: {0: 0, 1: 0}
    Dz:
+     _x2: |
+       say "2222222222";
      0x0: |
        say "Something";
    flows_D: |
@@ -79,10 +81,15 @@ C:
         }
      }
      my $at = S.timezs->($now);
-     Sw Dz/$at;
      say "@".$at;
+     for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ }
+                  sort keys %{S.Dz}) {
+         Sw Dz/$ma;
+     }
+   e: |
+     1/9 + 1/16 + 17/48
    lat: |
-     $G->timer(1/9+1/16, sub { Sw lat; Sw riv; });
+     $G->timer(Sw e, sub { Sw lat; Sw riv; });
 S:
  - K: ooo #c
    Ss:
@@ -200,7 +207,7 @@ hooks:
     waylay uxd;
     
   recoded_init: |
-    for my $i (map {_.i} @{G.T.W.script}) {
+    for my $i (map {_.i} 0->scGre) {
         my $up = 0->CsK({K=>i.K});
         $i->from($up);
     }
@@ -214,6 +221,6 @@ hooks:
     # alright so... see styles run around
     # mod styles to mod waves of stuff
   uxd: |
-    G.GG.xI->w('ux', {Ls => [0->usca("Im")]});
+    G.GG.xI->w('ux', {Ls => [0->scGre({K=>"Im"})]});
   
 
