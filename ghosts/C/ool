@@ -35,8 +35,8 @@ C:
      (B.href) = $file =~ /(i\/.+$)/;
      w se/sa[$S];
    Anim:
-     opacity: 6
-     padding: 12
+     opacity: 10
+     padding: 10 # * 100ms = 1s
    S:
      style_D: |
        { 'background-image',"url('$href')",
@@ -69,7 +69,7 @@ C:
          my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/
             }
             sort keys %{S.Dz}) {
-         Sw Dz/$ma;
+         Sw Dz/$ma[$at];
      }
    lat: |
      S.dead && return;
@@ -170,13 +170,17 @@ S:
     - K: invn
       spawns: |
         map { $S->spawn->from({
-            K=>"con$_",
+            K=>"inv$_",
             css=>["-webkit-filter:invert(".($_/10).")"],
         }) } -6, -3, 0, 3, 6, 9
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
 perc_BS:
+  - K: Ims
+    B:
+      dir: /s/public/i/
+      
   - K: Ra
     e: |
      25/9
@@ -185,15 +189,13 @@ perc_BS:
       time: {0: 4, 1: 4}
       now: {0: 0, 1: 0}
     Dz:
-    
-     _x2: |
-       w f/ra;
+     _x2: | 
+       w f/ph;#ase
      0x0: |
-       w f/rs;
-       
-  - K: Ims
-    B:
-      dir: /s/public/i/
+       w f/at;#titude
+    humms_D: |
+      
+    
         
 hooks:
   percolate: |
@@ -209,7 +211,7 @@ hooks:
     
   keys:
     t: |
-      w f/ra;
+      w f/at;
   se: # mod
     opa: |
       S.Z.opacity = "0.".int(rand(9));
@@ -221,6 +223,8 @@ hooks:
       w crank(+ s=>'dak');
     con: |
       w crank(+ s=>'con');
+  mod: |
+    
   crank: |
     S.styles =~ s/$s(-?\d+)//;
     my $d = $1+3;
@@ -233,25 +237,34 @@ hooks:
       my @eis = 0->rei({K=>'Im'});
       push @eis, shift @eis;
       0->reeni({K=>'Im'}, [@eis]);
-    rs: | # phase
-      my @eis = w W/rand;
-      for my $S (@eis[1..5]) {
-          w se/con[$S];
-          w se/sat[$S];
-          next if rand(1) < 4/9;
-          w se/dak[$S];
-          next if rand(1) < 7/9;
-          
-      }
-      waylay uxd;
-    ra: | # attitude
-      my @eis = w W/rand;
-      for my $S (@eis[1..2]) {
-          w se/opa[$S];
-          next if rand(1) < 5/9;
-          w se/pad[$S];
-      }
-      waylay uxd;
+    at: |
+        if (ar.at) {
+            say "Atness: ar.at";
+        }
+        my @eis = w W/rand;
+        for my $S (@eis[1..2]) {
+            w se/con[$S];
+            w se/pad[$S];
+            next if rand(1) < 5/9;
+            w se/opa[$S];
+        }
+        0->sing("G.name uxd", sub { w uxd; });
+    ph: |
+        return;
+        my @eis = w W/rand;
+        for my $S (@eis) {
+            next unless S.phow;
+            
+        }
+        for my $S (@eis[1..1]) {
+            w se/con[$S];
+            w se/sat[$S];
+            next if rand(1) < 4/9;
+            w se/dak[$S];
+            next if rand(1) < 7/9;
+
+        }
+        0->sing("G.name uxd", sub { w uxd; });
   W:
     rand: |
       shuffle(0->rei({K=>'Im'}));
