@@ -56,15 +56,28 @@ C:
  
  - K: Ra
    perc_B:
-     time: 4x4
-     now: 0
+     time: {0: 4, 1: 4}
+     now: {0: 0, 1: 0}
+   BE:
+     
    flows_D: |
+     Sw lat;
      Sw riv;
    riv: |
      # Dio
-     Sw lat;
+     now.1++;
+     if (now.1 == time.1) {
+         now.1 = 0;
+         now.0++;
+        say "sniff";
+        if (now.0 == time.0) {
+            say "burp";
+             now.0 = 0;
+        }
+     }
+     say "times ". ki($time)."            ".ki($now);
    lat: |
-     
+     $G->timer(0.5, sub { Sw lat; Sw riv; });
 S:
  - K: ooo #c
    Ss:

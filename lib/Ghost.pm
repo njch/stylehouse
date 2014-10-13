@@ -44,6 +44,7 @@ sub new {
     $self->{T} = shift;
     
     my $name = $self->{T}->{name};
+    $self->W || die "no Wormhole>?";
     
     $self->{O} = $self->{T}->{O};
     $self->{GGs} = [];
@@ -59,7 +60,7 @@ sub new {
         say " . . guess way is $guess";
         @ways = $guess;
     };
-    my $way = join", ",@ways;
+    my $way = join ", ", @ways;
     $name = "$name`($way)";
     $self->{name} = $name;
     $self->{way} = $way;
@@ -346,8 +347,7 @@ sub Gc { # TODO merge into ^
 }
 sub W {
     my $self = shift;
-    return $self->{W} if $self->{W};
-    $self->{T}->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
+    $self->{T}->{W} = $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
 sub RW {
     my $self = shift;
