@@ -164,7 +164,13 @@ S:
       spawns: |
         map { $S->spawn->from({
             K=>"con$_",
-            css=>["-webkit-filter:contrast($_)"],
+            css=>["-webkit-filter:contrast(".($_*2).")"],
+        }) } -6, -3, 0, 3, 6, 9
+    - K: invn
+      spawns: |
+        map { $S->spawn->from({
+            K=>"con$_",
+            css=>["-webkit-filter:invert(".($_/10).")"],
         }) } -6, -3, 0, 3, 6, 9
     - K: sativo
       css:
@@ -178,10 +184,12 @@ perc_BS:
       time: {0: 4, 1: 4}
       now: {0: 0, 1: 0}
     Dz:
+    
      _x2: |
-       w f/rs;
-     0x0: |
        w f/ra;
+     0x0: |
+       w f/rs;
+       
   - K: Ims
     B:
       dir: /s/public/i/
@@ -210,6 +218,8 @@ hooks:
       w crank(+ s=>'sat');
     dak: |
       w crank(+ s=>'dak');
+    con: |
+      w crank(+ s=>'con');
   crank: |
     S.styles =~ s/$s(-?\d+)//;
     my $d = $1+3;
