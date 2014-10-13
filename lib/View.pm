@@ -38,7 +38,6 @@ sub new {
 
     $self->{hostinfo}->accum('tvs/'.$divid, $self);
 
-    say "Placing $this ->{$divid}";
     $this->{$divid} = $self unless $attach && $attach eq "not-on-this"; # TODO rip out unlessness after get_view
 
     $self->{hostinfo}->view_incharge($self);
