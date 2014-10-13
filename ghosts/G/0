@@ -65,16 +65,17 @@ hooks:
     G.U.scGre = sub {#c
         my ($S, $ip) = @_;
         # or something was somehow, tractioning v
-        my @a = grep { 0S->ip($ip, _.i) } @{ S.W.script };
+        my @a = grep { G.U.ip->($S, $ip, _.i) } @{ S.W.script };
         @a
     };
     G.U.ip = sub {#c
-         my ($S, $ip, $i) = @_;
-        !exists ip.K || i.K eq ip.K
+        my ($S, $ip, $i) = @_;
+        (!exists ip.K || i.K eq ip.K) &&
+        (!exists ip.V || i.V eq ip.V)
     };
     G.U.rei = sub {#c
-        my $S = shift;
-        map {_.i} 0S->scGre(@_);
+        my ($S, $ip) = @_;
+        map {_.i} 0S->scGre($ip);
     };
     G.U.reeni = sub {#c
         my ($S, $ip, @is) = @_;
@@ -461,7 +462,7 @@ hooks:
     };
     G.U.RW = sub {#c
         my $S = shift;
-        _.dead = $F[0] for 0S->rei($S);
+        _.dead = $F[0] for 0S->rei({});
         my $deadscript = S.W.script;
         S.W.script = [];
         S.W.n = 0;

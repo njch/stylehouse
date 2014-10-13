@@ -30,10 +30,12 @@ C:
       - K: t
       
  - K: Im #c
+   V: oom
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
      w se/sa[$S];
+     0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
    Anim:
      opacity: 10
      padding: 10 # * 100ms = 1s
@@ -41,11 +43,21 @@ C:
      style_D: |
        { 'background-image',"url('$href')",
          %{S.Z||{}} }
-     content: ☯
-   styles: Im -te resize
+   styles: Im -te
    tag: Im
    ux:
      spawn: []
+ 
+ - K: Lingos
+   V: oom
+   styles: Im -te
+   S:
+     content_D: $l
+     ishtml: 1
+   ux:
+     spawn: []
+ 
+   
  
  - K: Ra #c
    flows_D: |
@@ -189,7 +201,8 @@ perc_BS:
       time: {0: 4, 1: 4}
       now: {0: 0, 1: 0}
     Dz:
-     _x2: | 
+     _x1: w f/te;
+     _x3: | 
        w f/ph;#ase
      0x0: |
        w f/at;#titude
@@ -235,16 +248,25 @@ hooks:
       my @eis = 0->rei({K=>'Im'});
       push @eis, shift @eis;
       0->reeni({K=>'Im'}, [@eis]);
-    at: |                                            # at _x2
+    at: |                                            # at x2
         Say "Atness: ar.at  = ar.di";
         ar.di ||= 2;
-        for my $S ((w W/rand)[1..ar.di]) {
+        for my $S ((w W/reitropy(K=>"Im"))[1..ar.di]) {
             w se/pad[$S];
             next if rand(1) < 5/9;
             w se/opa[$S];
         }
         0->sing("G.name uxd", sub { w uxd; });
-    ph: |                                            # at 0x0
+    
+    te: | # at x1, x3
+      for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
+          for (S.B.l) {
+              s/☭/☯/ || s/☯/☭/;
+          }
+          S.Z->{'font-size'} = int(rand(5)+1).'00%';
+      }
+      0->sing("G.name uxd", sub { w uxd; });
+    ph: |                                            # at 0x0 #c
         return; # http://css3clickchart.com/#resize
         my @eis = w W/rand;
         for my $S (@eis) {
@@ -261,8 +283,8 @@ hooks:
         }
         0->sing("G.name uxd", sub { w uxd; });
   W:
-    rand: |
-      shuffle(0->rei({K=>'Im'}));
+    reitropy: |
+      shuffle(0->rei({K=>$K}));
   index_clickspace: |
     my $Mid = G.T.W.uuid;
     my ($x, $y) = (e.x, e.y);
@@ -296,7 +318,7 @@ hooks:
         $i->from($up);
     }
   uxd: |
-    my @Im = 0->scGre({K=>"Im"});
+    my @Im = 0->scGre({V=>"oom"});
     G.GG.xI->w('ux', {Ls => [@Im]});
   
 
