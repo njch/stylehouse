@@ -64,12 +64,29 @@ hooks:
   any_init: |
     G.U.scGre = sub {#c
         my ($S, $ip) = @_;
-        my @a = grep { !exists ip.K || _.i.K eq ip.K } @{ $S->W->{script} };
+        # or something was somehow, tractioning v
+        my @a = grep { 0S->ip($ip, _.i) } @{ S.W.script };
         @a
+    };
+    G.U.ip = sub {#c
+         my ($S, $ip, $i) = @_;
+        !exists ip.K || i.K eq ip.K
     };
     G.U.rei = sub {#c
         my $S = shift;
         map {_.i} 0S->scGre(@_);
+    };
+    G.U.reeni = sub {#c
+        my ($S, $ip, @is) = @_;
+        my @sel;
+        my @new = grep {defined} map {
+            if (0S->ip($ip, _.i)) {;
+                push @sel, $_;
+                undef;
+            }
+            else {         $_           }
+        } @{S.W.script};
+        
     };
     G.U.sing = sub {#c
         my $S = shift;
