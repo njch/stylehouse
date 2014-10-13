@@ -50,18 +50,10 @@ C:
      spawn: []
  
  - K: Ra #c
-   perc_B:
-     time: {0: 4, 1: 4}
-     now: {0: 0, 1: 0}
    e: |
      17/9 + 1/16 + 17/46
-   Dz:
-     _x2: |
-       w f/ra;
-       say "S.id 2222222222";
-     0x0: |
-       w f/ra;
    flows_D: |
+     S.Dz = $G->findway("Ra/$name/Dz");
      S.timezs = sub { my ($time) = shift;
                        join "x", map { $time->{$_} } sort keys %$time; };
      Sw lat;
@@ -170,8 +162,22 @@ S:
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
+perc_BS:
+  - K: Ra
+    B:
+      name: Wa
+      time: {0: 4, 1: 4}
+      now: {0: 0, 1: 0}
+    Dz:
+     _x2: |
+       w f/ra;
+       say "S.id 2222222222";
+     0x0: |
+       w f/ra;
+  
         
 hooks:
+
   keys:
     t: |
       w f/ra;
@@ -233,6 +239,11 @@ hooks:
         $i->from($up);
     }
   percolate: |
+    my $BS = $G->anyway('perc_BS');
+    return unless $BS;
+    for my $uS (@$BS) {
+        
+    }
     my $Cs = $G->anyway('C');
     for my $w (@$Cs) {
         if (my $B = w.perc_B) {
