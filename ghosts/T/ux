@@ -393,6 +393,15 @@ hooks:
     G.ssp=[];
     my $uxs = [];
     my $Wis; my $Was = sub { my $WiW = shift; $Wis ||= $WiW; $Wis eq $WiW || die "Wchatf Wis.name WiW.name"; };
+    
+    if (!@$Ls) {
+        die "No lines in lines...";
+    }
+    if (@$Ls == 1) {
+        my ($L) = @$Ls;
+        die "empty line hash..." if !%$L;
+        L.W || die "no W on L";
+    }
     for my $L (@$Ls) {
         next unless keys %$L; #wtf
         $Was->(L.W);
@@ -412,7 +421,7 @@ hooks:
         $uM = G.uW;
     }
     else {
-        $Wis || die "wtf no Gux Waaa?".sw($Ls);
+        $Wis || die sw["wtf no Gux Waaa?",$Ls];
         $uM = w R(M => $Wis); # the lines' W mirrored
     }
     
