@@ -154,6 +154,18 @@ S:
             K=>"sat$_",
             css=>["-webkit-filter:saturate($_)"],
         }) } -6, -3, 0, 3, 6, 9
+    - K: dakn
+      spawns: |
+        map { $S->spawn->from({
+            K=>"dak$_",
+            css=>["-webkit-filter:brightness($_)"],
+        }) } -6, -3, 0, 3, 6, 9
+    - K: conn
+      spawns: |
+        map { $S->spawn->from({
+            K=>"con$_",
+            css=>["-webkit-filter:contrast($_)"],
+        }) } -6, -3, 0, 3, 6, 9
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
@@ -195,12 +207,15 @@ hooks:
     pad: |
       S.Z.padding = int(rand 14).'em';
     sat: |
-      S.styles =~ s/sat(-?\d+)//;
-      my $d = $1+3;
-      $d -= 15 until $d <= 9;
-      say "sat $d";
-      S.styles .= " sat$d";
-      
+      w crank(+ s=>'sat');
+    dak: |
+      w crank(+ s=>'dak');
+  crank: |
+    S.styles =~ s/$s(-?\d+)//;
+    my $d = $1+3;
+    $d -= 15 until $d <= 9;
+    say "$s $d";
+    S.styles .= " $s$d";
   
   f: # flux
     ro: | # order
@@ -210,7 +225,12 @@ hooks:
     rs: | # phase
       my @eis = w W/rand;
       for my $S (@eis[1..8]) {
+          w se/con[$S];
           w se/sat[$S];
+          next if rand(1) < 4/9;
+          w se/dak[$S];
+          next if rand(1) < 7/9;
+          
       }
       waylay uxd;
     ra: | # attitude
