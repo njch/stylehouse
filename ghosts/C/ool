@@ -48,8 +48,6 @@ C:
      spawn: []
  
  - K: Ra #c
-   e: |
-     17/9 + 1/16 + 17/46
    flows_D: |
      S.timezs = sub { my ($time) = shift;
                        join "x", map { $time->{$_} } sort keys %$time; };
@@ -155,12 +153,14 @@ S:
         map { $S->spawn->from({
             K=>"sat$_",
             css=>["-webkit-filter:saturate($_)"],
-        }) } -6, -3, 3, 6, 9
+        }) } -6, -3, 0, 3, 6, 9
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
 perc_BS:
   - K: Ra
+    e: |
+     8/9
     B:
       name: Wa
       time: {0: 4, 1: 4}
@@ -175,6 +175,17 @@ perc_BS:
       dir: /s/public/i/
         
 hooks:
+  percolate: |
+    my $BS = $G->anyway('perc_BS'); # G0
+    return unless $BS;
+    for my $uS (@$BS) {
+        my $u = 0->sway({K=>uS.K}, $uS);
+        0->Tafu($u);
+    }
+    
+    # alright so... see styles run around
+    # mod styles to mod waves of stuff
+    
   keys:
     t: |
       w f/ra;
@@ -183,21 +194,26 @@ hooks:
       S.Z.opacity = "0.".int(rand(9));
     pad: |
       S.Z.padding = int(rand 14).'em';
+    sat: |
+      S.styles =~ s/sat(-?\d+)//;
+      my $d = $1+3;
+      $d -= 15 until $d <= 9;
+      say "sat $d";
+      S.styles .= " sat$d";
       
   
   f: # flux
     ro: | # order
       my @eis = 0->rei({K=>'Im'});
       push @eis, shift @eis;
-      
       0->reeni({K=>'Im'}, [@eis]);
     rs: | # phase
       my @eis = w W/rand;
-      for my $S (@eis[1..5]) {
-            say $S->pint;
+      for my $S (@eis[1..8]) {
+          w se/sat[$S];
       }
       waylay uxd;
-    ra: | # phase
+    ra: | # attitude
       my @eis = w W/rand;
       for my $S (@eis[1..5]) {
           w se/opa[$S];
@@ -225,7 +241,7 @@ hooks:
   event: |
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
-    sw ($ar);
+    #sw ($ar);
     # try and hit E/elabourateness and then blunten until whatever
     if (e.S) {
         w $u zoum;
@@ -240,17 +256,6 @@ hooks:
         my $up = 0->CsK({K=>i.K});
         $i->from($up);
     }
-  percolate: |
-    my $BS = $G->anyway('perc_BS');
-    return unless $BS;
-    for my $uS (@$BS) {
-        my $u = 0->sway({K=>uS.K}, $uS);
-        0->Tafu($u);
-    }
-    
-    # alright so... see styles run around
-    # mod styles to mod waves of stuff
-    
   uxd: |
     my @Im = 0->scGre({K=>"Im"});
     G.GG.xI->w('ux', {Ls => [@Im]});

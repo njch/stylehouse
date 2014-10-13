@@ -283,13 +283,17 @@ hooks:
     $SS || die sw(["style $K not found", $K, $SS, $GG]);
     0->wayray(SS.Ss);
     
-    for my $S (@{SS.Ss}) { # mix the stylebits together
-        G.h->{S.K} = $S;
+    my @SSSs = @{SS.Ss};
+    for my $S (@SSSs) { # mix the stylebits together
         if (S.spawns) {
             for my $w (w $S spawns) {
-                G.h->{w.K} = $w;
+                say "S.K spawns w.K";
+                push @{SS.Ss}, $w unless grep { _.K eq w.K } @{SS.Ss};
             }
         }
+    }
+    for my $S (@{SS.Ss}) { # mix the stylebits together
+        G.h->{S.K} = $S;
     }
   styleway: |
     for my $tryG ($GG, $G) {
@@ -313,7 +317,7 @@ hooks:
             $_
         } @$props
     };
-    join"\n",
+    join "\n",
     map{
         $c = $_;
         if (c.css) {
@@ -329,6 +333,7 @@ hooks:
             $yep
         }
     } @{SS.Ss};
+    
   stylezo: |
     # u at->attribute traslator
     # kind of an argument resolver
