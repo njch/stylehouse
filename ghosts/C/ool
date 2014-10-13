@@ -15,7 +15,7 @@ GG:
    M_Ss: [g]
    M_Z: {font-size: 80%}
 C:
- - K: Ims
+ - K: Ims #c
    perc_B:
      dir: /s/public/i/
    flows_D: |
@@ -31,7 +31,7 @@ C:
       - K: i
       - K: t
       
- - K: Im
+ - K: Im #c
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
@@ -54,13 +54,19 @@ C:
    ux:
      spawn: []
  
- - K: Ra
+ - K: Ra #c
    perc_B:
      time: {0: 4, 1: 4}
      now: {0: 0, 1: 0}
-   BE:
-     
+   Dz:
+     0x0: |
+       say "Something";
+   timezs: |
    flows_D: |
+     S.timezs = sub {
+         my ($time) = shift;
+         join "x", map { $time->{$_} } sort keys %$time;
+     };
      Sw lat;
      Sw riv;
    riv: |
@@ -69,13 +75,13 @@ C:
      if (now.1 == time.1) {
          now.1 = 0;
          now.0++;
-        say "sniff";
         if (now.0 == time.0) {
-            say "burp";
              now.0 = 0;
         }
      }
-     say "times ". ki($time)."            ".ki($now);
+     my $at = S.timezs->($now);
+     Sw Dz/$at;
+     say "@".$at;
    lat: |
      $G->timer(0.5, sub { Sw lat; Sw riv; });
 S:

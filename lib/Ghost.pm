@@ -806,7 +806,7 @@ sub parse_babble {
     $eval =~ s/T (?=->)/->T() /sg;
     
      
-    while ($eval =~ /(?<!\$)(w (\$\S+ )?([\w\/]+)$AR?)/sg) {
+    while ($eval =~ /(?<!\$)(w (\$\S+ )?([\w\$\/]+)$AR?)/sg) {
         my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
         $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
         $gw =~ s/ $//;
