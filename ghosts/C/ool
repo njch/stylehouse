@@ -189,8 +189,14 @@ S:
       spawns: |
         map { $S->spawn->from({
             K=>"inv$_",
-            css=>["-webkit-filter:invert(".($_/10).")"],
-        }) } -6, -3, 0, 3, 6, 9
+            css=>["-webkit-filter:invert(".((1/9)*$_).")"],
+        }) } 1..9
+    - K: huen
+      spawns: |
+        map { $S->spawn->from({
+            K=>"hue$_",
+            css=>["-webkit-filter:invert(".int((360/9)*$_)."deg)"],
+        }) } 1..9
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
@@ -234,6 +240,8 @@ hooks:
       w f/at;
     y: |
       w f/aty;
+    u: |
+      w f/
       
   se: # mod
     opa: |
@@ -254,8 +262,17 @@ hooks:
     S.styles .= " $s$d";
   
   f: # flux
+    drumroll: |
+        my $j;
+        for my $S (w W/reitropy(K=>"Im")) {
+            my $j++;
+            next if rand(1) < 2/9;
+            w se/pad[$S];
+            next if rand(1) < 6/9;
+            w se/opa[$S];
+        }
+        say "Drumyol".join"",('l')x$j;
     aty: |
-      Say "ATY";
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
               say S.K;
             _.Z->{'font-size'} = int(rand(5)+1).'00%'
@@ -267,8 +284,6 @@ hooks:
       push @eis, shift @eis;
       0->reeni({K=>'Im'}, [@eis]);
     at: |                                            # at x2
-      Say "at";
-        Say "Atness: ar.at  = ar.di";
         ar.di ||= 2;
         for my $S ((w W/reitropy(K=>"Im"))[1..ar.di]) {
             w se/pad[$S];
@@ -277,10 +292,8 @@ hooks:
         }
         w uxds;
     te: | # at x1, x3
-      Say "te";
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
           for (S.B.l) {
-              sayyl "switcheroo $_";
               s/☭/☯/ || s/☯/☭/;
           }
           #S.Z->{'font-size'} = int(rand(5)+1).'00%';
