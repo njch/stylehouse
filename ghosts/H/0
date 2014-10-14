@@ -109,9 +109,14 @@ hooks:
       sayyl "J.id decoded ".$G->F_delta();
       B.j = $j;
     print_out: |
-      return if $m =~ /....(worm|mess|path|sky|land|func|appmenu|flood)/;
+      return if $m =~ /\$\('#(worm|mess|sky|somewhere|path|land|func|appmenu|flood)/;
       # ^ trace F, tractoriose
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
+      my $jabber = join"\n", map { _.name } @F;
+      if ($jabber =~ /Ϡ| ux |/) {
+          my $th = G:Ϡ;
+          push @{th.js||=[]}, $m;
+      }
       print colored("< send S.id\t\t", 'blue');
       print colored($short, 'bold blue');
       say "";
