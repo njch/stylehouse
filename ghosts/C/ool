@@ -50,9 +50,11 @@ C:
  
  - K: Lingos
    V: oom
-   styles: Im -te
+   styles: Lingos -te
    S:
      content_D: $l
+     style_D: |
+       { %{S.Z||{}} }
      ishtml: 1
    ux:
      spawn: []
@@ -104,20 +106,24 @@ S:
       css: [color:#873, font-size:80%, padding:1em]
     - K: yw
       css: [font-size:60%]
-      
     - K: resize
       css:
        - overflow:hidden
        - -moz-resize:both
        - resize:both
         
-    - K: Im
+    - K: Im #c
       css:
        - border:0.03em solid black
        - width:49%
        - padding:2em
        - background-size:100%
-       
+     
+    - K: Lingos
+      css:
+       - font-size:600%
+       - z-index:500
+     
     - K: Ims
     - K: Ooogida
       css:
@@ -201,8 +207,8 @@ perc_BS:
       time: {0: 4, 1: 4}
       now: {0: 0, 1: 0}
     Dz:
-     _x1: w f/te;
-     _x3: | 
+     _x3: |
+       w f/te;#textual
        w f/ph;#ase
      0x0: |
        w f/at;#titude
@@ -218,13 +224,17 @@ hooks:
         my $u = 0->sway({K=>uS.K}, $uS);
         0->Tafu($u);
     }
-    w f/at(d=>9);
     # alright so... see styles run around
     # mod styles to mod waves of stuff
+    # start full of shit:
+     w f/drumroll;
     
   keys:
     t: |
       w f/at;
+    y: |
+      w f/aty;
+      
   se: # mod
     opa: |
       S.Z.opacity = "0.".int(rand(9));
@@ -244,11 +254,20 @@ hooks:
     S.styles .= " $s$d";
   
   f: # flux
+    aty: |
+      Say "ATY";
+      for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
+              say S.K;
+            _.Z->{'font-size'} = int(rand(5)+1).'00%'
+      }
+      w f/te;
+        w uxds;
     ro: | # order
       my @eis = 0->rei({K=>'Im'});
       push @eis, shift @eis;
       0->reeni({K=>'Im'}, [@eis]);
     at: |                                            # at x2
+      Say "at";
         Say "Atness: ar.at  = ar.di";
         ar.di ||= 2;
         for my $S ((w W/reitropy(K=>"Im"))[1..ar.di]) {
@@ -256,17 +275,19 @@ hooks:
             next if rand(1) < 5/9;
             w se/opa[$S];
         }
-        0->sing("G.name uxd", sub { w uxd; });
-    
+        w uxds;
     te: | # at x1, x3
+      Say "te";
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
           for (S.B.l) {
+              sayyl "switcheroo $_";
               s/☭/☯/ || s/☯/☭/;
           }
-          S.Z->{'font-size'} = int(rand(5)+1).'00%';
+          #S.Z->{'font-size'} = int(rand(5)+1).'00%';
       }
-      0->sing("G.name uxd", sub { w uxd; });
+      w uxds;
     ph: |                                            # at 0x0 #c
+        sayyl "non ph";
         return; # http://css3clickchart.com/#resize
         my @eis = w W/rand;
         for my $S (@eis) {
@@ -281,7 +302,9 @@ hooks:
             next if rand(1) < 7/9;
 
         }
-        0->sing("G.name uxd", sub { w uxd; });
+        w uxds;
+  uxds: |
+    0->sing("G.name uxd", sub { w uxd; });
   W:
     reitropy: |
       shuffle(0->rei({K=>$K}));
