@@ -1,8 +1,10 @@
 name: Ϡ
 etc: intoraction... magnetic fishing rod, guy playing guitar cave art
 GG:
- - K: ool
-   way: C/ool
+ - K: L
+   way: L/0
+# - K: ool
+#   way: C/ool
  - K: ux
    W_Ss: [X]
    way: T/ux
@@ -31,6 +33,7 @@ hooks:
       G:Ϡ ->_0('V/toginvis');
   fresh_init: |
     w scribe_js;
+    waylay percolations;
   scribe_js: |
     $G->timer(0.3, sub { w scribe_js; });
     
@@ -64,6 +67,7 @@ hooks:
     }
   ux: |
     for my $GG (@{G.GGs}) { # could ar into GG=$K orso
+        next unless GG.K eq "ool";
         sayre "RWRWRWRW GG.name";
         for my $ux ($GG->Gf("T/ux")) {
             0->RW($ux);
@@ -73,6 +77,10 @@ hooks:
     }
     w wux;
     saybl "ux ".$G->F_delta();
+  percolations: |
+    for my $GG (@{G.GGs}) { # could ar into GG=$K orso
+        $GG->w('percolate');
+    }
   wux: |
     for my $GG (@{G.GGs}) {
         $GG->w('uxd');

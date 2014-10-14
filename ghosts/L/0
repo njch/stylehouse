@@ -1,8 +1,65 @@
 name: Lyricoso writoro
-
+GG:
+ - K: lyr
+   way: T/ux
+   W_Z: {top: 20em, width: 5em, background: '#fca', z-index: 10, width: 5em}
+   W_Ss: [X]
+   M_Z: {font-size: 120%}
+   
+C:
+  - K: path
+    V: l
+  - K: land
+    V: l
+    print: $name
+    Z:
+      padding: 0.4em
+      background: white
+    ux:
+      spawn:
+       - K: i
+       - K: button
+    E:
+      _D: |
+        B.code->() if B.code;
+  - K: button
+    flows_D: |
+      sayre ui.B.name 
+    S:
+      content_D: |
+        "B".ui.B.name
+      ishtml: 1
+    tag: yw
+    styles: yw
+      
+S:
+ - K: ooo
+   Ss:
+    - K: te
+      css: 
+        - border-bottom:1px solid black
+        - float:left
+        - position:relative
+        - width:100%
+        - background:rgba(150,100,50,0.7)
+        
+    - K: yi
+      css: [font-size:77%]
+    - K: yo
+      css: [font-size:40%]
+    - K: yt
+      css: [color:#873, font-size:80%, padding:1em]
+    - K: yw
+      css: [font-size:130%]
+        
 hooks:
+  event: |
+    sayyl "Event relating to ".pint(L.i);
+    0->visTp({L=>$L},'Fun');
+    sw ($ar);
+    w $u E/_D;
   fresh_init: |
-    #
+    $Ly = $G;
     H.G->w('init/future');
     
     my ($mess) = G:mess->anyway('tractors');
@@ -22,11 +79,54 @@ hooks:
     G.that = G:Ϡ;
     
     w getstarted;
-  any_init: |
-    waylay set_keys;
-    waylay set_Gdbs;
-    waylay set_land;
+  percolate: |
+    w set_Gdbs;
+    w set_land;
+    w uxing;
+  uxing: |
+    my $xing = ar.xing || $H->make_uuid;
+    return say "uxing killed!" if G.uxing->{$xing} == 2;
+    G.uxing->{$xing} = 1;
+    if (keys %{G.uxing} > 1) {
+        say "something else uxing uxing...";
+        G.uxing = { map { $_ => 2 } keys %{G.uxing} };
+        G.uxing->{$xing} = 1;
+    }
+    my @Im = 0->scGre({V=>"l"});
+    return say "L not uxing", $G->timer(3, sub { w uxing[$xing]; }) unless @Im;
+    say "L UXING!";
+    G.GG.lyr->w(ux => {Ls => \@Im});
+    $G->timer(27, sub { w uxing[$xing]; });
+  set_land: |
+    my $land = {
+       la => [
+              [ "G*",         sub { $H->data->{Ghost} } ],
+              [ "wayf",         sub { $G->stackway } ],
+              [ "\@F",           sub { [@F] } ],
+              [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
+              [ 'H',            sub {  $H } ],
+              [ 'L',             sub { $G } ],
+       ],
+       fa => [do {
+            my $w_f = $G->findway('f');
+            map {
+                my $k = $_;
+                [ $k => sub { $G->w("f/$k") } ]
+            } sort keys %$w_f
+       }],
+    };
+    # Aify {K=land}s so goings away
+    while (my ($sty, $stuff) = each %$land) {
+        my $ty = 0->TafuB(land => {name => $sty});
+        for my $d (@$stuff) {
+            my ($name, $code) = @$d;
+            say "$sty $name";
+            my $st = 0->visTp_TafuBl({i=>$ty}, [land => {name => "$sty/$name"}]);
+            st.B.code = $code;
+        }
+    }
   keys:
+    l: w percolate;
     m: |
         w tog_hmess;
     M: |
@@ -190,34 +290,7 @@ hooks:
     
     
   
-  set_land: |
-    for my $t (qw'land func') {
-        my @data;
-        if ($t eq "land") {
-            @data =   
-              [ "G*",         sub { $H->data->{Ghost} } ],
-              [ "wayf",         sub { $G->stackway } ],
-              [ "\@F",           sub { [@F] } ],
-              [ "Apps",        sub { $H->{G}->w('data/get_apps') } ],
-              [ 'H',            sub {  $H } ],
-              [ 'L',             sub { $G } ];
-        }
-        @data = do {
-            my $w_f = $G->findway('f');
-            map {
-                my $k = $_;
-                [ $k => sub { $G->w("f/$k") } ]
-            } sort keys %$w_f
-        } if $t eq "func";
-        
-        my $g = G:$t;
-        0->RW($g);
-        for my $d (@data) {
-            die " $t = ".wdump(2,$d) if ref $d->[1] ne "CODE";
-            $g->w(Arr => {name => $d->[0], code => $d->[1]});
-        }    
-        w Splat($t => $g->W);
-    }
+
   default_somewhere: |
       w look_for_ghost(name => 'Ϡ');
   swap_chains: |
