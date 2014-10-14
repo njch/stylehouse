@@ -274,11 +274,9 @@ hooks:
     y: |
       w f/aty;
     e: |
-      my ($unI) = w W/reitropy(K=>"Im");
-      for my $ux ($unI->LioO('ux')) {
-          my $uxid = ux.at.id;
-          $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
-      }
+      w f/rotation;
+    E: |
+      w f/tallpaddy;
     u: |
         for my $S (w W/reitropy(K=>"Im")) {
             if (S.resty) {
@@ -288,16 +286,16 @@ hooks:
         }
         my $res = w restyfor(S=>{});
         for my $S (w W/reitropy(K=>"Im")) {
-            next if rand(1) < 4/9;
+            next if rand(1) < 6/9;
             S.resty = $res;
             S.styles .= " $res";
         }
     p: |
-      w f/ph
+      w f/ph;
       
   se: # mod
     opa: S.Z.opacity = "0.".int(rand(9));
-    pad: S.Z.padding = int(rand 12).'em';
+    pad: S.Z.padding = int(rand 9).'em';
     sat: w crank(+ s=>'sat');
     bri: w crank(+ s=>'bri');
     con: w crank(+ s=>'con');
@@ -323,6 +321,18 @@ hooks:
                 position => "fixed",
             };
         }
+    tallpaddy: |
+      for my $S (w W/reitropy(K=>"Im")) {
+          if (S.Z.padding > 7) {
+              w se/pa[$S];
+          }
+      }
+    rotation: |
+      my ($unI) = w W/reitropy(K=>"Im");
+      for my $ux ($unI->LioO('ux')) {
+          my $uxid = ux.at.id;
+          $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+      }
     drumroll: |
       w f/at(di => 420);
       w f/at(di => 420);
@@ -333,7 +343,7 @@ hooks:
       for my $S ((w W/reitropy(K=>"Lingos"))[1..3]) {
             S.Z.padding = int(rand 24).'em';
       }
-    at: |                                            # at x2
+    at: |                                            # at x2 #c
         say "@";
         my $di = ar.di || 2;
         for my $S ((w W/reitropy(K=>"Im"))[1..$di]) {
@@ -341,8 +351,16 @@ hooks:
             w se/pad[$S];
             next if rand(1) < 5/9;
             w se/opa[$S];
+            next if rand(1) < 2/9;
+            S.Z.padding = int(rand 20).'em';
         }
         if (rand(1) < 2/9) {
+            w f/ph;
+            w f/rotation;
+        }
+        if (rand(1) < 1/9) {
+            w f/tallpaddy;
+            w f/ph;
         }
     te: | # at x1, x3
       say 'te';
@@ -359,7 +377,7 @@ hooks:
         }
   restyfor: |
     my @bang = ("sat6 opa2 con2 blr2 inv9", "ref sat9 bri4", 'ref sat9', 'ref blr8 con9 hue3',
-        'inv9 sat9 blr2');
+        'inv9 sat9 blr2 hue8', 'inv4 bri7 blr5 con5', 'inv3 blr2 con1 hue6', );
     my @colar = ("sat9 blr2 inv4 con8", "sat3 blr5 inv9 con9", 'ref sat6 bri3 inv2');
     push @bang, @colar;
     @bang = @colar if S.B.file =~ /art/;
