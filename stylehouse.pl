@@ -19,7 +19,6 @@ use Mojolicious::Lite;
 use lib 'lib';
 use Hostinfo;
 use Texty;
-use Lyrico;
 use Codo;
 use Codon;
 use Git;

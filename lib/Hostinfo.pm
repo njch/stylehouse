@@ -45,7 +45,6 @@ sub new {
         return $c;
     };
     
-    $Lyrico::H =
     $Ghost::H =
     $Travel::H =
     $Wormhole::H =

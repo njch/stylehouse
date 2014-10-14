@@ -53,7 +53,7 @@ sub new {
     say "way spec @_";
     unless (@ways) {
         my $s = { map { $_ => (/^(\w)/)[0] }
-            qw{Ghost Hostinfo Lyrico Travel Wormhole} };
+            qw{Ghost Hostinfo Travel Wormhole} };
         
         my $guess = ref $self->{T}->{O};
         $guess = $s->{$guess} if $s->{$guess};

@@ -20,13 +20,6 @@ C:
       for my $file (@finds[0..3]) {
           0->TafuBl(Im => { file => $file });
       }
-   print: $dir
-   styles: Ims
-   tag: Ims
-   ux:
-     spawn:
-      - K: i
-      - K: t
       
  - K: Im #c
    V: oom
@@ -264,6 +257,7 @@ hooks:
     my $BS = $G->anyway('perc_BS'); # G0
     return unless $BS;
     for my $uS (@$BS) {
+        next if uS.K eq "Ra";
         my $u = 0->sway({K=>uS.K}, $uS);
         0->Tafu($u);
     }
@@ -272,7 +266,7 @@ hooks:
     # start full of shit:
      w f/drumroll;
      
-    G.GG.gI->w('ux', {Ls => [0->scGre({K=>"Ra"})]});
+    G.GG.gI->w('ux', {Ls => [0->scGre({K=>"Ims"})]});
     
   keys:
     t: |
@@ -373,7 +367,8 @@ hooks:
     te: | # at x1, x3
       say 'te';
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
-          (S.B.l) = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ s҉ Ϡ ෙ ᣝ ⍲ ⍲ ⍲ ⍲';
+          my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
+          S.B.l = $o;
       }
     ph: |                                            # at 0x0
         for my $S ((w W/reitropy(K=>"Im"))[1..3]) {
