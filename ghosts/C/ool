@@ -177,10 +177,10 @@ S:
             K=>"sat$_",
             css=>["-webkit-filter:saturate($_)"],
         }) } 1..9
-    - K: dakn
+    - K: brin
       spawns: |
         map { $S->spawn->from({
-            K=>"dak$_",
+            K=>"bri$_",
             css=>["-webkit-filter:brightness($_)"],
         }) } 1..9
     - K: conn
@@ -199,7 +199,7 @@ S:
       spawns: |
         map { $S->spawn->from({
             K=>"hue$_",
-            css=>["-webkit-filter:invert(".int((360/9)*$_)."deg)"],
+            css=>["-webkit-filter:hue-rotate(".int((360/9)*$_)."deg)"],
         }) } 1..9
     - K: blrn
       spawns: |
@@ -207,6 +207,9 @@ S:
             K=>"blr$_",
             css=>["-webkit-filter:blur(".($_*2)."px)"],
         }) } 1..9
+    - K: ref
+      css:
+        - '-webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.3)))'
     - K: sativo
       css:
        - -webkit-filter:brightness(1.5) saturate(2)
@@ -276,20 +279,26 @@ hooks:
           $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
       }
     u: |
-        my $di = 1;
         for my $S (w W/reitropy(K=>"Im")) {
-            next if rand(1) < 5/9;
-            w se/hue[$S, $di];
-            $di++;
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+                delete S.resty;
+            }
+        }
+        my $res = w restyfor(S=>{});
+        for my $S (w W/reitropy(K=>"Im")) {
+            next if rand(1) < 4/9;
+            S.resty = $res;
+            S.styles .= " $res";
         }
     p: |
       w f/ph
       
   se: # mod
     opa: S.Z.opacity = "0.".int(rand(9));
-    pad: S.Z.padding = int(rand 7).'em';
+    pad: S.Z.padding = int(rand 12).'em';
     sat: w crank(+ s=>'sat');
-    dak: w crank(+ s=>'dak');
+    bri: w crank(+ s=>'bri');
     con: w crank(+ s=>'con');
     hue: w crank(+ s=>'hue');
   crank: |
@@ -302,28 +311,22 @@ hooks:
   
   f: # flux
     drumroll: |
-        my $j;
-        for my $S (w W/reitropy(K=>"Im")) {
-            my $j++;
-            next if rand(1) < 2/9;
-            w se/pad[$S];
-            next if rand(1) < 6/9;
-            w se/opa[$S];
-        }
-        say "Drumyol".join"",('l')x$j;
+      w f/at(di => 420);
+      w f/at(di => 420);
+      w f/ph;
+      w f/ph;
+      for my $S ((w W/reitropy(K=>"Lingos"))[1..3]) {
+            S.Z.padding = int(rand 24).'em';
+      }
     aty: |
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
-              say S.K;
-            _.Z->{'font-size'} = int(rand(5)+1).'00%'
+            S.Z->{'font-size'} = int(rand(5)+1).'00%'
       }
       w f/te;
-    ro: | # order
-      my @eis = 0->rei({K=>'Im'});
-      push @eis, shift @eis;
-      0->reeni({K=>'Im'}, [@eis]);
     at: |                                            # at x2
-        ar.di ||= 2;
-        for my $S ((w W/reitropy(K=>"Im"))[1..ar.di]) {
+        my $di = ar.di || 2;
+        for my $S ((w W/reitropy(K=>"Im"))[1..$di]) {
+            next unless $S;
             w se/pad[$S];
             next if rand(1) < 5/9;
             w se/opa[$S];
@@ -336,13 +339,19 @@ hooks:
       }
     ph: |                                            # at 0x0
         for my $S ((w W/reitropy(K=>"Im"))[1..3]) {
-            
-            w se/con[$S];
-            next if rand(1) < 4/9;
-            w se/sat[$S];
-            next if rand(1) < 6/9;
-            w se/dak[$S];
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+            }
+            (S.resty) = grep { !S.resty || $_ ne S.resty } w restyfor[$S];
+            S.styles .= " S.resty";
         }
+  restyfor: |
+    my @bang = ("sat6 opa2 con2 blr2 inv9", "ref sat9 bri4", 'ref sat9', 'ref blr8 con9 hue3',
+        'inv9 sat9 blr2');
+    my @colar = ("sat9 blr2 inv4 con8", "sat3 blr5 inv9 con9", 'ref sat6 bri3 inv2');
+    push @bang, @colar;
+    @bang = @colar if S.B.file =~ /art/;
+    return shuffle(@bang);
   uxds: |
     0->sing("G.name uxd", sub { w uxd; });
     say `uptime`;
