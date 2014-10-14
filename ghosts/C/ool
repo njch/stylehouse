@@ -78,7 +78,7 @@ C:
         }
      }
      my $at = S.timezs->($now);
-     say "S.id @".$at;
+     say "S.id $name @".$at;
      for my $ma (grep {
          my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/
             }
@@ -213,13 +213,29 @@ perc_BS:
       time: {0: 4, 1: 4}
       now: {0: 0, 1: 0}
     Dz:
-     _x3: |
+     0x2: |
        w f/te;#textual
+     1x2: |
        w f/ph;#ase
-     0x0: |
+     2x2: |
        w f/at;#titude
-    humms_D: |
-      
+     _x3: |
+       w uxds;
+     _x1: |
+       w uxds;
+  
+  - K: Ra
+    e: 14/9
+    B:
+      name: Ba
+      time: {0: 2, 1: 3}
+      now: {0: 0, 1: 0}
+    Dz:
+     0x2: |
+       w f/te;#textual
+     1x1: |
+       w f/at;#titude
+  
     
         
 hooks:
@@ -240,8 +256,15 @@ hooks:
       w f/at;
     y: |
       w f/aty;
-    u: |
-      w f/
+    e: |
+      my ($unI) = w W/reitropy(K=>"Im");
+      for my $ux ($unI->LioO('ux')) {
+          my $uxid = ux.at.id;
+          $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+      }
+    o: |
+    p: |
+      w f/ph
       
   se: # mod
     opa: |
@@ -278,7 +301,6 @@ hooks:
             _.Z->{'font-size'} = int(rand(5)+1).'00%'
       }
       w f/te;
-        w uxds;
     ro: | # order
       my @eis = 0->rei({K=>'Im'});
       push @eis, shift @eis;
@@ -290,7 +312,6 @@ hooks:
             next if rand(1) < 5/9;
             w se/opa[$S];
         }
-        w uxds;
     te: | # at x1, x3
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
           for (S.B.l) {
@@ -298,24 +319,14 @@ hooks:
           }
           #S.Z->{'font-size'} = int(rand(5)+1).'00%';
       }
-      w uxds;
-    ph: |                                            # at 0x0 #c
-        sayyl "non ph";
-        return; # http://css3clickchart.com/#resize
-        my @eis = w W/rand;
-        for my $S (@eis) {
-            next unless S.phow;
-            
-        }
-        for my $S (@eis[1..1]) {
+    ph: |                                            # at 0x0
+        for my $S ((w W/reitropy(K=>"Im"))[1..3]) {
             w se/con[$S];
-            w se/sat[$S];
             next if rand(1) < 4/9;
+            w se/sat[$S];
+            next if rand(1) < 6/9;
             w se/dak[$S];
-            next if rand(1) < 7/9;
-
         }
-        w uxds;
   uxds: |
     0->sing("G.name uxd", sub { w uxd; });
   W:

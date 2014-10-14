@@ -146,7 +146,13 @@ sub find {
     }
     return $h
 }
-
+sub LioO {
+    my $w=shift;
+    my $O = shift;
+    die "w.K has no Li!" unless $w->{Li};
+    my @a = Ghost::findO($O => $w->{Li}->{o});
+    wantarray ? @a : shift @a;
+}
 
 1;
 
