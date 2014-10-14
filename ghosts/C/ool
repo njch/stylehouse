@@ -192,7 +192,7 @@ S:
       spawns: |
         map { $S->spawn->from({
             K=>"inv$_",
-            css=>["-webkit-filter:invert(".((1/9)*$_).")"],
+            css=>["-webkit-filter:invert(0.$_)"],
         }) } 1..9
     - K: huen
       spawns: |
@@ -206,6 +206,15 @@ S:
             K=>"blr$_",
             css=>["-webkit-filter:blur(".($_*2)."px)"],
         }) } 1..9
+    - K: gran
+      spawns: |
+        map { $S->spawn->from({
+            K=>"gra$_",
+            css=>["-webkit-filter:grayscale(0.$_)"],
+        }) } 1..9
+    - K: dead
+      css:
+        - background:#0d0e4d
     - K: ref
       css:
         - '-webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.3)))'
@@ -377,7 +386,9 @@ hooks:
         }
   restyfor: |
     my @bang = ("sat6 opa2 con2 blr2 inv9", "ref sat9 bri4", 'ref sat9', 'ref blr8 con9 hue3',
-        'inv9 sat9 blr2 hue8', 'inv4 bri7 blr5 con5', 'inv3 blr2 con1 hue6', );
+        'inv9 sat9 blr2 hue8', 'inv4 bri7 blr5 con5', 'inv3 blr2 con1 hue6', 
+        'blr2 bri3 con5 gra8 hue8 inv8 sat5'
+        );
     my @colar = ("sat9 blr2 inv4 con8", "sat3 blr5 inv9 con9", 'ref sat6 bri3 inv2');
     push @bang, @colar;
     @bang = @colar if S.B.file =~ /art/;
