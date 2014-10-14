@@ -379,7 +379,10 @@ hooks:
     if (u.K eq "W") { # class to style="" outside <style> scope 
         for my $style (split ' ', u.at.attr.class) {
             my $S = GG.h->{$style};
-            u.at.attr.style .= join "", map{"$_;"} @{S.css};
+            for my $css (@{S.css}) {
+                my ($k, $v) = split ":", $css;
+                u.Z->{$k} = $v;
+            }
         }
         delete u.at.attr.class;
     }
