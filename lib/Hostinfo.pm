@@ -677,7 +677,8 @@ sub keep_throwing {
     
     my @context = (
         $error->[0],
-        join("\n",map { "    - $_" } @{$error->[1]}),
+        join("\n",map { "    - $_" }
+        grep { !/Ghost Ghost::__ANON__ | Ghost \(eval\)/ } @{$error->[1]}),
     );
     @context = () if $what eq "Say" || $what eq "Info";
     

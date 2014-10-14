@@ -11,8 +11,6 @@ hooks:
     w _recoded_init if $S->{load_ways_count} != 1;
     $S->w("any_init");
     
-    w ub/0[$S];
-    
   _recoded_init: |
     $S->w("recoded_init");
     my $g = $S;
@@ -25,6 +23,7 @@ hooks:
     $G->{S} = $S;
     say "init for $S->{name}";
     w V/init[$S];
+    w ub/0[$S];
     $S->w("fresh_init");
   recoded_init: |
     H.G->w('re/exec');
@@ -461,13 +460,14 @@ hooks:
         }
     };
     G.U.RW = sub {#c
-        my $S = shift;
-        sayyl "RW RW RW RW RW G.name";
-        _.dead = $F[0] for 0S->rei({});
-        my $deadscript = S.W.script;
-        S.W.script = [];
-        S.W.n = 0;
-        delete S.W.ca;
+        my ($S, $GG) = @_;
+        sayyl "RW RW RW RW RW GG.name\t\t GG.K";
+        _.dead = $F[0] for G.U.rei->($GG, {});
+        my $W = GG.W;
+        my $deadscript = W.script;
+        W.script = [];
+        W.n = 0;
+        delete W.ca;
         $deadscript;
     };
   V: 
