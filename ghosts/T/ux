@@ -287,7 +287,6 @@ hooks:
     for my $S (@SSSs) { # mix the stylebits together
         if (S.spawns) {
             for my $w (w $S spawns) {
-                say "S.K spawns w.K";
                 w._spawns = delete w.spawns;
                 push @{SS.Ss}, $w unless grep { _.K eq w.K } @{SS.Ss};
             }
@@ -692,7 +691,7 @@ hooks:
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 next if $v eq _t.attr->{$k};
-                saybl "@ $k -- $_t->{$k}   ++ $v";
+                saybl "@ $k -- $_t->{$k}   ++ $v" if $G->deeby;
                 $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
             }
             if (at.css) {
