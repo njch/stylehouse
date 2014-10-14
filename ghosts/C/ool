@@ -78,7 +78,6 @@ C:
         }
      }
      my $at = S.timezs->($now);
-     say "S.id $name @".$at;
      for my $ma (grep {
          my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/
             }
@@ -125,8 +124,8 @@ S:
      
     - K: Lingos
       css:
-       - font-size:200%
-       - z-index:500
+       - font-size:222%
+       - z-index:50000
      
     - K: Ims
     - K: Ooogida
@@ -159,7 +158,7 @@ S:
          css:
           - -webkit-filter:blur(10px)
           
- - K: g #c sidey thing
+ - K: g #c sidecar
    Ss:
     - K: te
       css: 
@@ -271,7 +270,7 @@ hooks:
     t: |
       w f/at;
     i: |
-      w f/rose;
+      #w f/rose;
     y: |
       w f/aty;
     e: |
@@ -319,7 +318,10 @@ hooks:
         for (1..2) {
             my $S = 0->TafuB(Lingos => { l => shift @randoms});
             say "S.B.l";
-            S.Z->{'font-size'} = int(rand(5)+1).'00%'
+            S.Z = {%{S.Z||{}},
+                'font-size' => int(rand(5)+1).'00%',
+                position => "fixed",
+            };
         }
     drumroll: |
       w f/at(di => 420);
@@ -331,12 +333,8 @@ hooks:
       for my $S ((w W/reitropy(K=>"Lingos"))[1..3]) {
             S.Z.padding = int(rand 24).'em';
       }
-    aty: |
-      for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
-            S.Z->{'font-size'} = int(rand(5)+1).'00%'
-      }
-      w f/te;
     at: |                                            # at x2
+        say "@";
         my $di = ar.di || 2;
         for my $S ((w W/reitropy(K=>"Im"))[1..$di]) {
             next unless $S;
@@ -344,11 +342,12 @@ hooks:
             next if rand(1) < 5/9;
             w se/opa[$S];
         }
+        if (rand(1) < 2/9) {
+        }
     te: | # at x1, x3
+      say 'te';
       for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
-          for (S.B.l) {
-              s/☭/☯/ || s/☯/☭/;
-          }
+          (S.B.l) = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ s҉ Ϡ ෙ ᣝ ⍲ ⍲ ⍲ ⍲';
       }
     ph: |                                            # at 0x0
         for my $S ((w W/reitropy(K=>"Im"))[1..3]) {
