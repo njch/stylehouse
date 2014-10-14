@@ -78,7 +78,8 @@ sub menu {
             $H->{G}->w('re/exec');
         },
         "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {
-            $H->JS("\$('#mess').toggleClass('widdle').animate({'max-width': '39%'});");
+          my $deg = -180 + int(rand(360));
+          $H->JS($H->{sky},"css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
         },
     ];
     return { _spawn => [ [], {
