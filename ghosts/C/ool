@@ -262,9 +262,9 @@ hooks:
     my $BS = $G->anyway('perc_BS'); # G0
     return unless $BS;
     for my $uS (@$BS) {
-        next if uS.K eq "Ra";
         my $u = 0->sway({K=>uS.K}, $uS);
-        0->Tafu($u);
+        $u = 0->Tafu($u);
+        
     }
     # alright so... see styles run around
     # mod styles to mod waves of stuff
@@ -275,31 +275,13 @@ hooks:
     w uxd;
     
   keys:
-    t: |
-      w f/at;
-    i: |
-      #w f/rose;
-    y: |
-      w f/aty;
-    e: |
-      w f/rotation;
-    E: |
-      w f/tallpaddy;
-    u: |
-        for my $S (w W/reitropy(K=>"Im")) {
-            if (S.resty) {
-                S.styles =~ s/$_// for split ' ', S.resty;
-                delete S.resty;
-            }
-        }
-        my $res = w restyfor(S=>{});
-        for my $S (w W/reitropy(K=>"Im")) {
-            next if rand(1) < 6/9;
-            S.resty = $res;
-            S.styles .= " $res";
-        }
-    p: |
-      w f/ph;
+    t: w f/at;
+    i: #w f/rose;
+    y: w f/aty;
+    e: w f/rotation;
+    E: w f/tallpaddy;
+    u: w f/restysets;
+    p: w f/ph;
       
   se: # mod
     opa: S.Z.opacity = "0.".int(rand(9));
@@ -317,6 +299,19 @@ hooks:
     S.styles .= " $s$d";
   
   f: # flux
+    restysets: |
+        for my $S (w W/r(qw'K Im')) {
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+                delete S.resty;
+            }
+        }
+        my $res = w restyfor(S=>{});
+        for my $S (w W/r(qw'K Im')) {
+            next if rand(1) < 6/9;
+            S.resty = $res;
+            S.styles .= " $res";
+        }
     rose: |
        my @rose = read_file("trampled_rose_lyrics");
        my @randoms = shuffle( grep { /\w/ } @rose );
@@ -330,16 +325,16 @@ hooks:
             };
         }
     tallpaddy: |
-      for my $S (w W/reitropy(K=>"Im")) {
-          if (S.Z.padding > 7) {
-              w se/pa[$S]; 
-          }
+      for my $S (w W/r(qw'K Im')) {
+          _.Z.padding > 7 || next;
+          w se/pa[$S];
       }
     rotation: |
-      my ($unI) = w W/reitropy(K=>"Im");
-      for my $ux ($unI->LioO('ux')) {
-          my $uxid = ux.at.id;
-          $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+      for my $Im (w W/r(qw'K Im for 1')) {
+          for my $ux ($Im->LioO('ux')) {
+              my $uxid = ux.at.id;
+              $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+          }
       }
     drumroll: |
       w f/at(di => 420);
@@ -348,19 +343,17 @@ hooks:
       w f/ph;
       w f/lingpa;
     lingpa: |
-      for my $S ((w W/reitropy(K=>"Lingos"))[1..3]) {
+      for my $S (w W/r(qw'K Lingos for 1..3')) {
             S.Z.padding = int(rand 24).'em';
       }
     at: |                                            # at x2 #c
         say "@";
         my $di = ar.di || 2;
-        for my $S ((w W/reitropy(K=>"Im"))[1..$di]) {
+        for my $S (w W/r(qw'K Im for', "1..$di")) {
             next unless $S;
             w se/pad[$S];
-            next if rand(1) < 5/9;
-            w se/opa[$S];
-            next if rand(1) < 2/9;
-            S.Z.padding = int(rand 20).'em';
+            w se/opa[$S] if rand(1) < 5/9;
+            S.Z.padding = int(rand 20).'em' if rand(1) < 2/9;
         }
         if (rand(1) < 2/9) {
             w f/ph;
@@ -372,12 +365,14 @@ hooks:
         }
     te: | # at x1, x3
       say 'te';
-      for my $S ((w W/reitropy(K=>"Lingos"))[1..4]) {
+      for my $S (w W/r(qw'K Lingos for 1..4')) {
           my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
-          S.B.l = $o;
+          my $in = S.B;
+          say "in.l => $o";
+          in.l = $o;
       }
     ph: |                                            # at 0x0
-        for my $S ((w W/reitropy(K=>"Im"))[1..3]) {
+        for my $S (w W/r(qw'K Im for 1..3')) {
             if (S.resty) {
                 S.styles =~ s/$_// for split ' ', S.resty;
             }
@@ -397,8 +392,15 @@ hooks:
     0->sing("G.name uxd", sub { w uxd; });
     say `uptime`;
   W:
-    reitropy: |
-      shuffle(0->rei({K=>$K}));
+    r: |
+      my @a=shuffle(0->rei({K=>$K}));
+      if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
+          my $from = $1 || 0;
+          my $to = $2 || $3-1;
+          @a = grep {defined} @a[$from..$to];
+      }
+      @a
+      
   index_clickspace: |
     my $Mid = G.T.W.uuid;
     my ($x, $y) = (e.x, e.y);
