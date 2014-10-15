@@ -167,57 +167,34 @@ S:
         
  - K: tr #c y-toro
    Ss:
-    - K: satn
-      spawns: |
-        map { $S->spawn->from({
-            K=>"sat$_",
-            css=>["-webkit-filter:saturate($_)"],
+    - K: sat_n
+      D: |
+        u.Z->{flit}->{saturate} = $n;
+    - K: bri_n
+      D: |
+        u.Z->{flit}->{brightness} = $n;
+    - K: con_n
+      D: |
+        u.Z->{flit}->{contrast} = $n*2;
+    - K: inv_n
+      D: |
+        u.Z->{flit}->{invert} = "0.$n";
+    - K: hue_n
+      D: |
+        u.Z->{flit}->{'hue-rotate'} = int((360/9)*$n)."deg";
+    - K: blr_n
+      D: |
+        u.Z->{flit}->{'blur'} = ($n*2)."px";
         }) } 1..9
-    - K: brin
-      spawns: |
-        map { $S->spawn->from({
-            K=>"bri$_",
-            css=>["-webkit-filter:brightness($_)"],
-        }) } 1..9
-    - K: conn
-      spawns: |
-        map { $S->spawn->from({
-            K=>"con$_",
-            css=>["-webkit-filter:contrast(".($_*2).")"],
-        }) } 1..9
-    - K: invn
-      spawns: |
-        map { $S->spawn->from({
-            K=>"inv$_",
-            css=>["-webkit-filter:invert(0.$_)"],
-        }) } 1..9
-    - K: huen
-      spawns: |
-        map { $S->spawn->from({
-            K=>"hue$_",
-            css=>["-webkit-filter:hue-rotate(".int((360/9)*$_)."deg)"],
-        }) } 1..9
-    - K: blrn
-      spawns: |
-        map { $S->spawn->from({
-            K=>"blr$_",
-            css=>["-webkit-filter:blur(".($_*2)."px)"],
-        }) } 1..9
-    - K: gran
-      spawns: |
-        map { $S->spawn->from({
-            K=>"gra$_",
-            css=>["-webkit-filter:grayscale(0.$_)"],
-        }) } 1..9
+    - K: gra_n
+      D: |
+        u.Z->{flit}->{'grayscale'} = "0.$n";
     - K: dead
       css:
         - background:#0d0e4d
     - K: ref
       css:
         - '-webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.3)))'
-    - K: sativo
-      css:
-       - -webkit-filter:brightness(1.5) saturate(2)
 perc_BS:
   - K: Ims
     B:

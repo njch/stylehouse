@@ -319,7 +319,7 @@ hooks:
             $_
         } @$props
     };
-    join "\n",
+    join "\n", grep {defined}
     map{
         $c = $_;
         if (c.css) {
@@ -354,6 +354,7 @@ hooks:
         return map { $apply->($_) } split ' ', $style if $style =~ / /;
         
         my $S = GG.h->{$style};
+        say "no ifndo $style" unless $S;
         # lingosa
         if (S.styles) {
             $apply->(S.styles);
