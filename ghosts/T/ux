@@ -255,6 +255,8 @@ hooks:
             }
         }
     };
+  recoded_init: |
+      G.O->w(uxd=>{});
   GG_in: |
     for my $WM (qw'W M') {
         my $wa = 0->CsK({K=>$WM});
@@ -419,6 +421,12 @@ hooks:
         push @$uxs,
             0->visTp_TafuBlA({L=>$L}, [$y => {Lu=>$L}])
     }
+    for my $ux (@$uxs) {
+        if (my $ui = ux.B.Lu.i) {
+            ux.B.ui = $ui; #set up
+            die "non Way way in" if ref $ui ne "Way";
+        }
+    }
     
     
     my $uM;
@@ -479,16 +487,14 @@ hooks:
   utricks:
     spawn: | #c
         my @uys;
-        my $ui = u.B && u.B.Lu && u.B.Lu.i;
-        u.B.ui = $ui if $ui;
-        
+        my $ui = u.B.ui if u.B.ui;
+        die G.sdjjkhrg++ || sw[nonWayui=>$u] if $ui && ref $ui ne "Way";
         if ($ui && ui.ux && u.K eq "ux") {
             $u->from(ui.ux);
         }
         
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
-                
                 my $Bs = {};
                 if (sp.Bset) {
                     while (my ($k, $v) = each %{sp.Bset}) {
@@ -515,11 +521,8 @@ hooks:
                         }
                     }
                 }
-                $uy || die sw(["no thingy sp.K",
                 
-                $G->anyway('C'),
-                
-                ]);
+                $uy || die sw(["no thingy sp.K", $G->anyway('C')]);
                 
                 $uy->from({B=>$Bs});
                 
@@ -531,14 +534,21 @@ hooks:
             }
         }
         
+        my $old = { map { _.uuid => $_ } @{u.Li.o} };
         for my $uu (@uys) {
-            if (my $uy = 0->fu($uu)) {
+            my $uy;
+            if ($uy = 0->fu($uu)) {
             }
             else {
                 sayyl "NEW u ! uu.K ".ki(uu.B);
                 $uy = 0->T({i => $uu});
                 0->l($uy);
             }
+            delete $old->{uy.uuid};
+        }
+        if (keys %$old) {
+            say $u->pint."  has old stuff under...";
+            say $_->pint for values %$old;
         }
     multi: | #c
       my @uys = $uy;
@@ -574,11 +584,10 @@ hooks:
       my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
       my ($pux) = findO(ux => pLu.o) if $pLu;
       $pux;
-
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
-    return unless u.G eq $G || u.G eq G.O;
+    return say "skipping cos u.G.name ne here" unless u.G eq $G || u.G eq G.O;
     # to skip O=ux plants on nested vortexen (uW{ui=W) # but go into uy spawned from G.O Clange
     
     inter({u => u.K});
@@ -586,7 +595,9 @@ hooks:
     w utricks/spawn[$u];
     w sane/U1[$u];
     
-    w U(i=>$_) for w dook;
+    for my $i (w dook) {
+        w U[$i];
+    }
     
     w compile_figure[$u];
     w wayout_sendo[$u];
@@ -622,7 +633,7 @@ hooks:
         at.conty = encode_entities(at.conty) unless at.ishtml;
         at.ooze = [
             sort { a.conor <=> b.conor }
-            grep { _.G eq $G }
+            grep { !_.dead }
             @{u.Li.o || []}
         ];
   wayout_sendo: |
@@ -757,7 +768,9 @@ hooks:
         $do->();
     }
 
-    w J(i=>$_) for w dook;
+    for my $i (w dook) {
+        w J[$i];
+    }
   dook: |
     my @o;
     my $L = T.L;
@@ -766,6 +779,7 @@ hooks:
         if (u.dead || u.B.ui && u.B.ui.dead) {
             sayre "DEAD DEAD DEAD u.K removing from G.K ux";
             0->deaccum($L, 'o', $u);
+            next;
         }
         push @o, $u;
     }

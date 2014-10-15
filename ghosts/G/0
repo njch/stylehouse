@@ -2,31 +2,38 @@
 name: Ghost
 include: T/0
 hooks:
-  recoded_init: |
+  recoded_init: | # G/0 recode
     H.G->w('re/exec');
-  _load_ways_post: |
+  _load_ways_post: | # G/0 manages some other G's way startup ripples
     $S->w("load_ways_post");
     $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
         join" , ", map { $_->{_wayfile} } @$w);
     
-    w _fresh_init if $S->{load_ways_count} == 1;
-    w _recoded_init if $S->{load_ways_count} != 1;
+    if ($S->{load_ways_count} == 1) {
+        w _init/fresh;
+    }
+    else {
+        w _init/recoded;
+    }
+      
     $S->w("any_init");
     
-  _recoded_init: |
-    $S->w("recoded_init");
-    my $g = $S;
-    while ($g->{O} && ref $g->{O} eq "Ghost") {
-        $g->w("child_recoded_init", {S => $S}) if $g eq $S;
-        $g = $g->{O};
-        $g->w("any_child_recoded_init", {S => $S});
-    }
-  _fresh_init: |
-    $G->{S} = $S;
-    say "init for $S->{name}";
-    w V/init[$S];
-    w ub/0[$S];
-    $S->w("fresh_init");
+  _init:
+    recoded: |
+        w ub/wayrays[$S];
+        $S->w("recoded_init");
+        my $g = $S;
+        while ($g->{O} && ref $g->{O} eq "Ghost") {
+            $g->w("child_recoded_init", {S => $S}) if $g eq $S;
+            $g = $g->{O};
+            $g->w("any_child_recoded_init", {S => $S});
+        }
+    fresh: |
+      w ub/0[$S];
+      $G->{S} = $S;
+      say "init for $S->{name}";
+      w V/init[$S];
+      $S->w("fresh_init");
   ub:
     0: |
       w ub/keys[$S] if $S->findway("keys");
