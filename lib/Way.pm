@@ -129,7 +129,7 @@ sub pint {
     my $p = $w->{G}->w('print',{},$w) if defined $w->{print} || $w->{Gw};
     my $B = Ghost::slim(50,30,Ghost::ki($w->{B}))        if $w->{B} && !$p;
     
-    my $s = "$K↯$p↯$B";
+    my $s = "$K↯$p".($B?"↯$B":"");
     return $s;
 }
 sub find {

@@ -1,28 +1,15 @@
 name: wormhole splatter
-include: W/tractor
-tractors:
-  - K: 'Tsplatthing'
-    arr_if: |
-      $splatname =~ /\w+/ && ref $wormhole->{script} eq "ARRAY";
-    B_: |
-      $splatname
-    first_time: |
-      G.V->{$splatname} = S.view = S.B.view
-          ||
-          (G.floozal || H.sky)
-          ->spawn_floozy($G, $splatname,
-              $G->styles("spl $splatname")
-          );
-    nonfirst_times: |
-      $S->{view}->fadehtml();
-    print: |
-      $S->{K} .": ". $S->{B}->{_}
+
+C:
+  - K: splatting
+    flows_D: |
+      G.V->{$name} = S.view = H.sky->spawn_floozy($G, $name, $G->styles("spl $name"));
 hooks:
   styles:
     spl: |
       qw{ position:absolute overflow:hidden pointer-events:none }
     path: |
-      qw{ top:0px left:-1em width:11em z-index:20 },
+      qw{ top:0px left:10em width:11em z-index:20 },
       q { border:1px solid green },
     func: |
       qw{ bottom:0px left:-5em width:11em z-index:30 },
@@ -46,7 +33,7 @@ hooks:
       
     worm: |
       qw{ bottom:0em left:10em min-width:17em max-width:60% z-index:20 pointer-events:initial },
-      q { border:2px solid #88f }
+      q { border:2px solid #88f; background: rgba(22,22,22,0.4) }
   load_ways_post: |
     #grab A/WS,L,t,
     # nest, styles tied to atom thing
@@ -61,7 +48,7 @@ hooks:
     exists $ar->{append}
       ? $G->w('open_line', $ar)
       : $O->w('somewhere', $ar)
-    }, "splat\go");
+    }, "splatgo");
   
   open_line: |
     my $CG = $O->Gf("crawl") || die "no O G crawl";
@@ -71,7 +58,7 @@ hooks:
     
     my $wormhole = { script => $NS };
     
-    my $A = w Afu[$splatname];
+    my $A = 0->TafuB(splatting => {name => $splatname});
     unless ($A) {
         #die "no such splatname: $splatname";
         my $wayout = $G->stackway("No mo $splatname!?", $G->W->CS );
@@ -79,29 +66,13 @@ hooks:
         return;
     }
     w script_out[$A, $wormhole, $splatname, $append];
-  lcodon: |
-    my @files;
-    my $t = $line->{t};
-    if (ref $t eq "Ghost") {
-        @files = @{ $t->{wayfiles} };
-    }
-    else { die "get codes from $t"; }
-    
-    for my $file (@files) {
-        my $c = Codon->new($H->intro,
-            { codo => $H->getapp("Codo"),
-            filename => $file }
-        );
-        $c->{show} = $S->{view}->spawn_floozy($G, "codon-del-$line->{uuid}",  "width:89%; background:#80182; color:#afc; height:23em;", after => $A->{C}->{Line}->{S}->{id});
-        $c->display();
-    }
-  
   Splat: |
     my ($splatname, $wormhole) = %$ar;
     $wormhole = w aWstract[$wormhole];
     
     my $A = w Arr[$splatname, $wormhole];
-    A.view = delete ar.view if ar.view;
+    my $A = 0->TafuB(splatting => {name => $splatname});
+    A.B.W = $wormhole;
     
     w script_out[$A, $splatname, $wormhole];
     $H->{G}->w('sky/doof') if $splatname =~ /some|no/;

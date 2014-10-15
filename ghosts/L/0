@@ -1,4 +1,4 @@
-name: Lyricoso writoro
+name: language crux
 GG:
  - K: lyr
    way: T/ux
@@ -9,12 +9,21 @@ GG:
 C:
   - K: path
     V: l
+    print: |
+      my ($what, $for) = %$B;
+      die "too many" if %$B > 2;
+      ($what ne "thing" ? "$what: " : "").gpty($for);
+    E:
+      _D: |
+        w somewhere(%$B);
+    ux:
+      spawn:
+       - K: i
+       - K: button
   - K: land
     V: l
     print: $name
-    Z:
-      padding: 0.4em
-      background: white
+    styles: land
     ux:
       spawn:
        - K: i
@@ -35,6 +44,13 @@ C:
 S:
  - K: ooo
    Ss:
+    - K: land
+      css: 
+        - padding: 0.4em
+        - background: white
+        - max-width: 15em
+        - overflow: hidden
+        - color: black
     - K: te
       css: 
         - border-bottom:1px solid black
@@ -44,7 +60,7 @@ S:
         - background:rgba(150,100,50,0.7)
         
     - K: yi
-      css: [font-size:77%]
+      css: [font-size:100%]
     - K: yo
       css: [font-size:40%]
     - K: yt
@@ -70,18 +86,16 @@ hooks:
     
     G!O/splat;
     G!T/crawl;
-    G!L/path;
-    G!L/land;
-    G!L/func;
     G!L/ob;
     
     G.that = G:Ϡ;
-    
-    w getstarted;
   percolate: |
+    0->RW($G);
+    0->RW(G.GG.lyr);
     w set_Gdbs;
     w set_land;
     w uxing;
+    w f/Lgs;
   uxing: |
     my $xing = ar.xing || $H->make_uuid;
     return say "uxing killed!" if G.uxing->{$xing} == 2;
@@ -91,11 +105,13 @@ hooks:
         G.uxing = { map { $_ => 2 } keys %{G.uxing} };
         G.uxing->{$xing} = 1;
     }
-    my @Im = 0->scGre({V=>"l"});
-    return say "L not uxing", $G->timer(3, sub { w uxing[$xing]; }) unless @Im;
+    my $Ls = [0->scGre({V=>"l"})];
+    return say "L not uxing", $G->timer(3, sub { w uxing[$xing]; }) unless @$Ls;
     say "L UXING!";
-    G.GG.lyr->w(ux => {Ls => \@Im});
+    w wux[$Ls];
     $G->timer(27, sub { w uxing[$xing]; });
+  wux: |
+    G.GG.lyr->w(ux => $ar);
   set_land: |
     my $land = {
        la => [
@@ -129,10 +145,8 @@ hooks:
     m: |
         w tog_hmess;
     M: |
-      my $spla = G:splat;
-      spla.V.worm->fadehtml();
+      G:splat ->_0('V/toginvis', {k=>'worm'});
     A+n: |
-      Say "TOGIN!";
       G:splat ->_0('V/toginvis', {k=>'func'}); # ^ v
     a: |
       G:splat ->_0('V/toginvis', {k=>'somewhere'});
@@ -182,7 +196,6 @@ hooks:
       w somewhere[$nothing];
     'Lgs': |
       w somewhere(thing => "Hello");
-      G:Ϡ ->w('ux');
     wux: |
       G:Ϡ ->w('wux');
     'Ϡ?': |
@@ -223,10 +236,6 @@ hooks:
       die "ETC";
     herenow: |
         G:splat ->w('go', {thing => $G->stackway("Er", "TC")});
-  getstarted: |
-    $G->unrush('getstarted') || return;
-    #w somewhere(thing => w default_somewhere);
-    $G->w('f/Lgs') if G:Ϡ;
   youtube: |
     my $video_id = shift || "PSNPpssruFY"; # Fats Waller - Aint Misbehavin
     my $iframe = '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/'
@@ -238,8 +247,13 @@ hooks:
     return w Splat(somewhere => ar.W) if ar.W;
     
     w splatsome;
+  a:
+    path: |
+      my $i = 0->TafuB(path => $ar);
+      w wux[$i];
+      
   splatsome:
-    waylay splatpath;
+    waylay a/path;
     
     my $Cr = G:crawl;
     $Cr || die;

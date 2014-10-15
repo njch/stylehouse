@@ -390,11 +390,10 @@ hooks:
     
   ux: |
     my $Ls = ar.Ls;
-    $Ls ||= ar.W->CS if ar.W;
-    $Ls ||= [];
-    saybl @$Ls." lines -> ux from $Ls->[0]->{name}";
+    die "no W to ux G.K" if ar.W;
+    $Ls = [ map { _.Li || die "noLi" } ar.i || @{ar.is||[]} ] if ar.i || ar.is;
+    saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
     
-    G.W || die "wtf no Gux W?".sw($G);
     inter({G_K=>G.K});
     G.uW = w R(W => G.W);
     0->visTp({i => G.uW});
@@ -408,7 +407,7 @@ hooks:
     }
     if (@$Ls == 1) {
         my ($L) = @$Ls;
-        die "empty line hash..." if !%$L;
+        die "empty line hash...".wdump(2, $Ls) if !keys %$L;
         L.W || die "no W on L";
     }
     for my $L (@$Ls) {
@@ -443,10 +442,21 @@ hooks:
     }
     
     
-    my @tops = G.uW;
-    
-    w U(i => G.uW);
-    w J(i => G.uW);
+    my @flatly = ();
+    my @recur = G.uW;
+    if (ar.i) {
+        my $it = $uxs->[0];
+        @recur = ($it);
+        @flatly = (it.Lo.i);
+    }
+    for my $u (@recur) {
+        w U(i => $u);
+        w J(i => $u);
+    }
+    for my $u (@flatly) {
+        w U(i => $u, flatly => 1);
+        w J(i => $u, flatly => 1);
+    }
     
     sayre "ux -------- done ".$G->F_delta();;
   R: |
@@ -572,8 +582,10 @@ hooks:
     w utricks/spawn[$u];
     w sane/U1[$u];
     
-        w U(i=>$_) for reverse @{T.L.o};
-
+    w U(i=>$_) for
+    grep {!ar.flatly || _.O ne "ux"}
+    reverse @{T.L.o};
+    
     w compile_figure[$u];
     w wayout_sendo[$u];
   compile_figure: |
@@ -743,7 +755,9 @@ hooks:
         $do->();
     }
 
-        w J(i=>$_) for @{T.L.o};
+    w J(i=>$_) for
+    grep {!ar.flatly || _.O ne "ux"}
+    @{T.L.o};
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
