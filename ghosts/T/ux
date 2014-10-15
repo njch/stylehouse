@@ -598,6 +598,7 @@ hooks:
     my $u = T.i;
     
     inter({u => u.K});
+    say "U on u.K from...";
     
     w utricks/spawn[$u];
     w sane/U1[$u];
@@ -731,6 +732,13 @@ hooks:
             }
             if (at.css) {
                 while (my($k,$v) = each %{at.css}) {
+                    if (ref $v eq 'HASH') {
+                        delete at.css->{flit} if at.css->{flit};
+                        at.css->{'-webkit-filter'} = join " ",
+                        map{ "$_($v->{$_})" } keys %$v;
+                    }
+                }
+                while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
@@ -787,7 +795,7 @@ hooks:
         unless (u.G eq $G || u.G eq G.O) {
             # to skip O=ux plants on nested vortexen (uW{ui=W)
             # uy maybe spawned from M G Clange
-            $G->Flab("skipping u.K u.uuid on T.i.K cos u.G.name ne here", $u, T.i);
+            say "skipping u.K u.uuid on T.i.K cos u.G.name ne here", $u, T.i;
             next;
         }
         # to skip O=ux plants on nested vortexen (uW{ui=W) # but go into uy spawned from G.O Clange
