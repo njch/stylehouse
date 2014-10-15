@@ -448,7 +448,7 @@ hooks:
     if (ar.i || ar.is) {
         @recur = @$uxs;
         @flatly = uniq( map{_.Lo.i} @recur );
-        $desc = 0+@flatly." x ".@recur+0;
+        $desc = (0+@flatly)." x ".(@recur+0);
     }
     $desc ||= "all";
     
@@ -578,16 +578,15 @@ hooks:
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
-    return unless u.G eq $G; # to skip O=ux plants on nested vortexen (uW{ui=W)
+    return unless u.G eq $G || u.G eq G.O;
+    # to skip O=ux plants on nested vortexen (uW{ui=W) # but go into uy spawned from G.O Clange
     
     inter({u => u.K});
     
     w utricks/spawn[$u];
     w sane/U1[$u];
     
-    w U(i=>$_) for
-    grep {!ar.flatly || _.O ne "ux"}
-    reverse @{T.L.o};
+    w U(i=>$_) for w dook;
     
     w compile_figure[$u];
     w wayout_sendo[$u];
@@ -758,9 +757,19 @@ hooks:
         $do->();
     }
 
-    w J(i=>$_) for
-    grep {!ar.flatly || _.O ne "ux"}
-    @{T.L.o};
+    w J(i=>$_) for w dook;
+  dook: |
+    my @o;
+    my $L = T.L;
+    for my $u (@{L.o}) {
+        next if ar.flatly && u.O ne 'ux';
+        if (u.dead || u.B.ui && u.B.ui.dead) {
+            sayre "DEAD DEAD DEAD u.K removing from G.K ux";
+            0->deaccum($L, 'o', $u);
+        }
+        push @o, $u;
+    }
+    @o;
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
