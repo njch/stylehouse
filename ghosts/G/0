@@ -2,6 +2,8 @@
 name: Ghost
 include: T/0
 hooks:
+  recoded_init: |
+    H.G->w('re/exec');
   _load_ways_post: |
     $S->w("load_ways_post");
     $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
@@ -25,8 +27,6 @@ hooks:
     w V/init[$S];
     w ub/0[$S];
     $S->w("fresh_init");
-  recoded_init: |
-    H.G->w('re/exec');
   ub:
     0: |
       w ub/keys[$S] if $S->findway("keys");

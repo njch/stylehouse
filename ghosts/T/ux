@@ -444,11 +444,14 @@ hooks:
     
     my @flatly = ();
     my @recur = G.uW;
-    if (ar.i) {
-        my $it = $uxs->[0];
-        @recur = ($it);
-        @flatly = (it.Lo.i);
+    my $desc;
+    if (ar.i || ar.is) {
+        @recur = @$uxs;
+        @flatly = uniq( map{_.Lo.i} @recur );
+        $desc = 0+@flatly." x ".@recur+0;
     }
+    $desc ||= "all";
+    
     for my $u (@recur) {
         w U(i => $u);
         w J(i => $u);
@@ -458,7 +461,7 @@ hooks:
         w J(i => $u, flatly => 1);
     }
     
-    sayre "ux -------- done ".$G->F_delta();;
+    sayre "ux -------- $desc done ".$G->F_delta();;
   R: |
     my ($a, $W) = %$ar;
     ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);

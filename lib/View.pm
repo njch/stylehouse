@@ -336,7 +336,6 @@ sub append_spans {
     }
     else {
         my @htmls = split /(?<=<\/span>)/, $html;
-        say "html span chunks number: ".@htmls;
         my @Bs = ("");
         while (@htmls) {
             if (length($Bs[-1]) + length($htmls[0]) >= $Bmax) {
@@ -344,13 +343,9 @@ sub append_spans {
             }
             $Bs[-1] .= shift @htmls;
         }
-        say "batchified appends heading for $sel from ".$self->owner.":";
         for my $B (@Bs) {
             my $M = "  \$('$sel').$attach('$B');";
-            say " M ".length($M).' ('.substr(Hostinfo::sha1_hex($M),0,8).')';
-            say "";
             $self->{hostinfo}->send($M);
-            say "";
             usleep 50000;
         }
 

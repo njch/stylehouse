@@ -9,6 +9,7 @@ use YAML::Syck;
 use HTML::Entities;
 use Way;
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
+use List::MoreUtils 'uniq';
 sub ddump { Hostinfo::ddump(@_) }
 sub wdump { Hostinfo::wdump(@_) }
 sub htmlesc { encode_entities(shift) }
@@ -114,8 +115,10 @@ our $gp_inarow = 0;
 sub ghostlyprinty {
     $gp_inarow++;
     my $witcolour = sub { '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>' };
+    my $nohtml;
     if ($_[0] && $_[0] eq "NOHTML") {
         shift;
+        $nohtml = 1;
         $witcolour = sub { shift };
     }
     
@@ -127,7 +130,7 @@ sub ghostlyprinty {
                 push @s, "ghostlyprinty recursion!";
                 next;
             }
-            push @s, map { "[".ghostlyprinty($_) } @$t;
+            push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
         }
         elsif (ref $t) {
             push @s, $witcolour->(ref($t), "333;font-size-adjust:0.5");
@@ -174,7 +177,7 @@ sub waystacken {
                 unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
                 $E .= " - from $_->{name}\n" for shift @FF;
             }
-            $G->mess(BATS => $G->Flab($E, $s, [@FF], [@F]));
+            $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
         }
         else {
             shift @F;
