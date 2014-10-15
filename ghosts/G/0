@@ -21,7 +21,15 @@ hooks:
   _init:
     recoded: |
         w ub/wayrays[$S];
+        w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');
         $S->w("recoded_init");
+        w _init/recoded_care_parents[$S];
+    recoded_Cways: |
+      for my $i (map {_.i} G.U.scGre->($S)) {
+          my $up = G.U.CsK->($S,{K=>i.K});
+          $i->from($up);
+      }
+    recoded_care_parents: |
         my $g = $S;
         while ($g->{O} && ref $g->{O} eq "Ghost") {
             $g->w("child_recoded_init", {S => $S}) if $g eq $S;

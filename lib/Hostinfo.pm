@@ -523,7 +523,7 @@ sub get {
     my ($self, $i) = @_;
     
     if ($i =~ /^(\w+)-(........)$/) {
-        return grep { $_->{huid} eq $2 } @{$self->get($1)};
+        return grep { $_->{uuid} eq $2 } @{$self->get($1)};
     }
     
     $data->{$i};
@@ -751,7 +751,7 @@ sub duction {
     
     $this->{hostinfo} = $self;
 
-    $this->{huid} = make_uuid();
+    $this->{uuid} = make_uuid();
     my $ref = ref $this;
     $self->accum($ref, $this);
 
@@ -764,7 +764,7 @@ sub duction {
         $ref = "$ref-".(ref $this->{owner});
     }
 
-    $this->{id} = "$ref-$this->{huid}";
+    $this->{id} = "$ref-$this->{uuid}";
 
     return $self;
 }
