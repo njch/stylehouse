@@ -6,9 +6,8 @@ GG:
    In:
      C:
        W:
-         Ss: [X]
          S:
-           styles: poi
+           styles: poi ab
          Z: {border: 5px solid white, background: url(i/greencush.jpg), margin: 8em, height: calc(100% - 16em), width: calc(100% - 16em)}
        M:
          Ss: [ooo, tr]
@@ -26,18 +25,28 @@ GG:
          Z: {font-size: 80%}
 C:
  - K: Ims #c
+   V: gI
    flows_D: |
       my @finds = grep { !/MANY/ && !/gif$/ } map { 0->fs_find($_) } $dir;
       for my $file (@finds[0..9]) {
           0->TafuBl(Im => { file => $file });
+          0->TafuBl(mooj => { file => $file }) if rand(1) < 4/9;
       }
       
+ - K: mooj #c
+   V: xI
+   flows_D: |
+     (B.href) = $file =~ /(i\/.+$)/;
+   S:
+     style_D: |
+       { 'background-image',"url('$href')",
+         %{S.Z||{}} }
+      
  - K: Im #c
-   V: oom
+   V: xI
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
-     w se/sa[$S];
      0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
    Anim:
      opacity: 10
@@ -52,7 +61,7 @@ C:
      spawn: []
  
  - K: Lingos #c
-   V: oom
+   V: xI
    styles: Lingos -te
    S:
      content_D: $l
@@ -70,13 +79,13 @@ C:
 
  
  - K: Ra #c
+   e: 8/9
    flows_D: |
      S.timezs = sub { my ($time) = shift;
                        join "x", map { $time->{$_} } sort keys %$time; };
      Sw lat;
      Sw riv;
-   e: 8/9
-   riv: | #c riv
+   riv: |
      now.1++;
      if (now.1 == time.1) {
          now.1 = 0;
@@ -86,10 +95,7 @@ C:
         }
      }
      my $at = S.timezs->($now);
-     for my $ma (grep {
-         my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/
-            }
-            sort keys %{S.Dz}) {
+     for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ } sort keys %{S.Dz}) {
          Sw Dz/$ma[$at];
      }
    lat: |
@@ -259,7 +265,7 @@ hooks:
     # start full of shit:
      w f/drumroll;
      
-    G.GG.gI->w('ux', {Ls => [0->scGre({K=>"Ims"})]});
+    G.GG.gI->w('ux', {Ls => [0->scGre({V=>"gI"})]});
     w uxd;
     
   keys:
@@ -416,9 +422,8 @@ hooks:
     }
     waylay uxd;
     
-
   uxd: |
-    my @Im = 0->scGre({V=>"oom"});
+    my @Im = 0->scGre({V=>"xI"});
     G.GG.xI->w('ux', {Ls => [@Im]});
 recoded_Cways: 1
 
