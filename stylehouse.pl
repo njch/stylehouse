@@ -134,9 +134,6 @@ __DATA__
     z-index: -1;
     opacity:0.5;
 }
-#ground > div {
-    opacity:0.9;
-}
 
 .divlabel {
     z-index: -5;
@@ -355,7 +352,7 @@ function clickyhand (event) {
         pagex: window.pageXOffset,
         pagey: window.pageYOffset,
     };
-    var W = tag.closest( "div" ).attr('id');
+    var W = tag.closest( "ww" ).attr('id');
     if (W) {
         data.W = W;
     }
