@@ -106,7 +106,6 @@ __DATA__
 
 @@ thecss.html.ep
         <style type="text/css">
-
 #flood:before {
     background: url(i/greencush.jpg);
     background-size: 100%;
@@ -356,7 +355,7 @@ function clickyhand (event) {
         pagex: window.pageXOffset,
         pagey: window.pageYOffset,
     };
-    var W = tag.closest( "wormhole" ).attr('id');
+    var W = tag.closest( "div" ).attr('id');
     if (W) {
         data.W = W;
     }
