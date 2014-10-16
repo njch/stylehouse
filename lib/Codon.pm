@@ -199,7 +199,7 @@ CM
     }
     my $cmback = ".$texty->{id} > .CodeMirror";
     $H->{G}->timer(1, sub {
-    $H->{G}->HGf('colour')->w(Arr =>
+    $H->{G}->HGf('H/colour')->w(Arr =>
         {name => "Codon/$self->{name}",
         set_css_background => $cmback,
         force_set => 1}
