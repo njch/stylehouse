@@ -34,7 +34,7 @@ sub from {
     my $w = shift;
     my $s = shift;
     for my $k (keys %$s) {
-        next if $k eq "uuid" || $k eq "G"; # or Li or Lo or who knows what # SCHEMAS
+        next if $k eq "uuid" || $k eq "G"; # or Li or Lo or who knows what # SCHEMAS # MERGINESS
         my $t = $w->{$k};
         my $f = $s->{$k};
         

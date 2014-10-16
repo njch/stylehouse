@@ -11,6 +11,33 @@ C: # Elvis, J
 dials:
   horizon: 95%
 hooks:
+  init:
+    flood: |
+      my $house = $H->get('style') eq 'stylehouse';
+    
+      G!H/mess;
+      G!H/keys if !$house;
+      G!H/colour;
+      G!H/sky ->w('flood_init');
+      G:mess  ->w('flood_init');
+      G!H/ground ->w('flood_init');
+      
+      waylay check/vitals;
+      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
+    
+      if ($house) {
+          Git->new($H->intro);
+          Codo->new($H->intro);
+      }
+      else {
+          G!Ϡ
+      }
+
+      $H->menu();
+      $H->{floodmenu}->{Ш}->() if $house;
+
+      $H->update_app_menu();
+      $H->{underworld} = 0;
   websocket: |
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
@@ -210,33 +237,6 @@ hooks:
   re:
     exec: |
       exec "perl stylehouse.pl";
-  init:
-    later: |
-      waylay check/vitals;
-    flood: |
-      my $house = $H->get('style') eq 'stylehouse';
-    
-      G!H/mess;
-      G!H/keys if !$house;
-      G!H/colour;
-      G!H/sky ->w('flood_init');
-      G:mess  ->w('flood_init');
-      G!H/ground ->w('flood_init');
-      
-      waylay init/later;
-      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
-    
-      $house ?
-          Git->new($H->intro) && Codo->new($H->intro)
-      :
-          G!Ϡ
-      ;
-
-      $H->menu();
-      $H->{floodmenu}->{Ш}->() if $house;
-
-      $H->update_app_menu();
-      $H->{underworld} = 0;
   reinit:
     everything: |
       $H->error("restarting!");
