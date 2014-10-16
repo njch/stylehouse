@@ -20,8 +20,6 @@ sub new {
 
     $self->wormfile_load(shift);
 
-    say $self->describe_size;
-
     return $self;
 }
 sub ob {
