@@ -346,7 +346,12 @@ hooks:
         return map { $apply->($_) } split ' ', $style if $style =~ / /;
         
         my $S = GG.h->{$style};
-        say "no ifndo $style" unless $S;
+        if (!$S) {
+            if ($style =~ /^-(.+)$/) {
+                return push @deply, $1;
+            }
+            return warn "no ifndo $style";
+        }
         # lingosa
         if (S.styles) {
             $apply->(S.styles);
@@ -357,9 +362,6 @@ hooks:
         S.D ? do{
             my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
             $apply->($ysty) if $ysty;
-        }:
-        $style =~ /^-(.+)$/ ? do {
-            push @deply, $1;
         }:
         do {
             sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
@@ -589,7 +591,6 @@ hooks:
     my $u = T.i;
     
     inter({u => u.K});
-    say "U on u.K from..." if G.K eq 'xI';
     
     w utricks/spawn[$u];
     w sane/U1[$u];

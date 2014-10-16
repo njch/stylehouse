@@ -681,6 +681,10 @@ sub keep_throwing {
         grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]}),
     );
     @context = () if $what eq "Say" || $what eq "Info";
+    my @f = @Ghost::F;
+    for my $c (@context) {
+        say "$c ======== ". Ghost::ki(shift @f);
+    }
     
     my $string = join("\n\n",
         @context,

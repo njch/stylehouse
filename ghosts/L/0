@@ -16,6 +16,7 @@ C:
   - K: path
     V: l
     k: ""
+    styles: land path
     print: |
       my ($what, $for) = %$B;
       die "too many" if %$B > 2;
@@ -24,12 +25,13 @@ C:
       _D: w somewhere(%$B);
     ux:
       spawn:
-       - K: i
-         Z: {font-size: 150%}
+       - K: button
          
   - K: land
     V: l
     print: $name
+    flows_D: |
+      S.S.styles .= ' '.($name =~ /^fa/ ? "redish" : "bluish");
     styles: land
     ux:
       spawn:
@@ -39,11 +41,10 @@ C:
         B.code->() if B.code;
         
   - K: button
-    flows_D: |
-      sayre ui.B.name 
     S:
       content_D: |
-        "B".ui.B.name
+        return gpty(ui.B.thing) if ui.B.thing;
+        return (split '/', ui.B.name)[-1];
       ishtml: 1
     tag: butt
     styles: butt
@@ -51,24 +52,26 @@ C:
 S:
  - K: ooo
    Ss:
-    - K: butt
-      css: 
-        - color:black
-        - word-wrap:break-word
+    - K: redish
+      css:
+        - color:rgb(250,100,150)
+    - K: bluish
+      css:
+        - color:rgb(50,50,204)
+    - K: path
+      css:
+        - color:rgb(50,50,255)
     - K: land
       css: 
         - padding:0.1em
-        - max-width:15em
-    - K: path
-      css: 
-        - padding:0.1em
-        - max-width:15em
+        - max-width:5em
     - K: le
       css: 
         - border-bottom:1px solid black
         - float:left
         - position:relative
         - width:100%
+        - text-shadow:2px 2px 4px rgb(0,0,255);
         - background:rgba(150,100,50,0.7)
     - K: yi
       css: [font-size:400%]
@@ -92,7 +95,7 @@ hooks:
     ($mess) = @$mess;
     mess.K eq "mess" || die "some mess";
     0->accum($mess, 'populi/trigs', sub {
-        waylay messworm;
+        waylay hm/messworm;
     });
     
     G!O/splat;
@@ -100,6 +103,9 @@ hooks:
     G!L/ob;
     
     G.that = G:Ϡ;
+  recoded_init: |
+    w set_land;
+    w uxing;
   percolate: |
     0->RW($G);
     0->RW(G.GG.lyr);
@@ -109,10 +115,10 @@ hooks:
     w f/Lgs;
   uxing: |
     my $xing = ar.xing || $H->make_uuid;
-    return say "uxing killed!" if G.uxing->{$xing} == 2;
+    return say "killed dupe uxing on G.name!" if G.uxing->{$xing} == 2;
     G.uxing->{$xing} = 1;
     if (keys %{G.uxing} > 1) {
-        say "something else uxing uxing...";
+        say "killing other uxings on G.name...";
         G.uxing = { map { $_ => 2 } keys %{G.uxing} };
         G.uxing->{$xing} = 1;
     }
@@ -161,7 +167,7 @@ hooks:
   keys:
     l: w percolate;
     m: |
-        w tog_hmess;
+        w hm/tog;
     M: |
       G:splat ->_0('V/toginvis', {k=>'worm'});
     A+n: |
@@ -184,7 +190,7 @@ hooks:
     for my $g (map { @$_ } @Gdbnah) {
         $g->{db} = -1;
     }
-    G._dont_mess_worm = 1;
+    G.donthmess = 1;
   f:
     'ccc': |
       my $deg = -180 + int(rand(360));
@@ -222,6 +228,8 @@ hooks:
     return w Splat(somewhere => ar.W) if ar.W;
     
     w splatsome;
+  wormholify: |
+    w Splat(worm => $wormhole);
   a:
     path: |
       my $i = 0->TafuB(path => $ar);
@@ -244,7 +252,6 @@ hooks:
     
     $unc->() if $unc;
     my $wormhole = $G->{some_W} = $Cr->W;
-    my $crawltime = show_delta();
 
     w splat_wormholes;
   splatpath: |
@@ -253,54 +260,37 @@ hooks:
         w Splat(%$p);
   Splat: |
     G:splat ->w(Splat => $ar);
-  make_hmess: |
-    $G->{_dont_mess_worm} = 0;
-    my $wormhole = G:mess->W;
-    w somewhere[$wormhole];
-  tog_hmess: |
-    $G->{_dont_mess_worm}
-    ? w make_hmess
-    : w hide_hmess;
-  hide_hmess: |
-        $G->{_dont_mess_worm} = 1;
-        my $gs = G:splat;
-        $gs ||die;
-        gs.V.worm && gs.V.worm->fadehtml();
-  messworm: |
-    return if $G->{_dont_mess_worm};
-    $G->susgdb;
-    0->sing(messworm => sub {
-        return if $G->{_dont_mess_worm};
-        $G->susgdb;
-        w make_hmess;
-    });
-  
-    
-    
-  
+  hm:
+    tog: |
+      return w hm/make if G.donthmess;
+      w hm/hide;
+    make: |
+      G.donthmess = 0;
+      my $wormhole = G:mess->W;
+      w somewhere[$wormhole];
+    hide: |
+      G.donthmess = 1;
+      my $gs = G:splat;
+      $gs ||die;
+      gs.V.worm && gs.V.worm->fadehtml();
+    messworm: |
+      return if G.donthmess;
+      $G->susgdb;
+      0->sing(messworm => sub {
+          return if G.donthmess;
+          $G->susgdb;
+          w hm/make;
+      });
 
-  default_somewhere: |
-      w look_for_ghost(name => 'Ϡ');
-  swap_chains: |
-    $_->{_disabled} = !$_->{_disabled} for G:crawl ->allchains;
-    $G->timer(0.1, sub {
-        w somewhere(thing => $G->{thething});
-    });
+    
+    
   
   splat_wormholes: |
     return unless $G->{some_W};
     w Splat(somewhere => $G->{some_W});
-  wormholify: |
-    w Splat(worm => $wormhole);
   splat_splatW: |
     w Splat(splatW   => {script=>G:splat->W->CS}   );
     #timer 2.5 { w splat_splatW };
-  any_child_recoded_init: |
-    return if $S->{name} =~ /Ϡ.../;
-    w set_land;
-    if ($ar->{S}->{way} =~ /crawl/) {
-        w getstarted;
-    }
   look_for_ghost: |
     [ grep {
       (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
