@@ -106,11 +106,7 @@ __DATA__
 
 @@ thecss.html.ep
         <style type="text/css">
-div {
-    opacity:0.9;
-}
-//#ground > div { opacity:0.2 }
-#ground > div > div { opacity: 1; z-index:30; }
+
 #flood:before {
     background: url(i/greencush.jpg);
     background-size: 100%;
@@ -139,12 +135,10 @@ div {
     z-index: -1;
     opacity:0.5;
 }
-div div {
-    opacity:0.95;
+#ground > div {
+    opacity:0.9;
 }
-div div div {
-    opacity: 1;
-}
+
 .divlabel {
     z-index: -5;
 }
