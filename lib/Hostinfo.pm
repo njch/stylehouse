@@ -94,6 +94,8 @@ sub new {
     };
     return $H
 }
+
+sub la { (`uptime` =~ /load average: (\S+),/)[0] }
 sub TT {
     my $self = shift;
     my @from = @_;

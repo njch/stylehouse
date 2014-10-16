@@ -8,10 +8,16 @@ GG:
        W:
          S:
            styles: poi ab
-         Z: {border: 5px solid white, background: url(i/greencush.jpg), margin: 8em, height: calc(100% - 16em), width: calc(100% - 16em)}
+         Z:
+           border: 5px solid white
+           background: url(i/greencush.jpg)
+           margin: 8em
+           height: calc(100% - 16em)
+           width: calc(100% - 16em)
        M:
          Ss: [ooo, tr]
-         Z: {font-size: 500%}
+         Z:
+           font-size: 500%
    
  - K: gI
    way: T/ux
@@ -19,10 +25,14 @@ GG:
      C:
        W:
          Ss: [X]
-         Z: {width: 5em, background: blue, z-index: 5}
+         Z:
+           width: 5em
+           background: blue
+           z-index: 5
        M:
          Ss: [g]
-         Z: {font-size: 80%}
+         Z:
+           font-size: 80%
 C:
  - K: Ims #c
    V: gI
@@ -37,7 +47,10 @@ C:
    V: xI
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
+   ux: {spawn: []}
    S:
+     content_D: |
+       "Y". S.B.href
      styles: -te mooj
      style_D: |
        { 'background-image',"url('$href')",
@@ -101,7 +114,7 @@ C:
      }
    lat: |
      S.dead && return;
-     if (G.maxloadav && (`uptime` =~ /load average: (\S+),/)[0] > G.maxloadav) {
+     if (G.maxloadav && $H->la > G.maxloadav) {
          sayre "load average is $1, sleep for 5...";
          sleep 5;
      }
@@ -389,7 +402,6 @@ hooks:
     return shuffle(@bang);
   uxds: |
     0->sing("G.name uxd", sub { w uxd; });
-    say `uptime`;
   uxd: |
     my @Im = 0->scGre({V=>"xI"});
     G.GG.xI->w('ux', {Ls => [@Im]});

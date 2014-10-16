@@ -397,19 +397,11 @@ hooks:
     
     G.ssp=[];
     my $uxs = [];
-    my $Wis; my $Was = sub { my $WiW = shift; $Wis ||= $WiW; $Wis eq $WiW || die "Wchatf Wis.name WiW.name"; };
     
-    if (!@$Ls) {
-        die "No lines in lines...";
-    }
-    if (@$Ls == 1) {
-        my ($L) = @$Ls;
-        die "empty line hash...".wdump(2, $Ls) if !keys %$L;
-        L.W || die "no W on L";
-    }
+    w sane/Ls[$Ls];
+    my $Wis = w sane/getW[$Ls];
     for my $L (@$Ls) {
         next unless keys %$L; #wtf
-        $Was->(L.W);
         my $y = 'ux';
         $y = 'uW' if L.i.K eq "W";
         
@@ -463,7 +455,7 @@ hooks:
         w J(i => $u, flatly => 1);
     }
     
-    sayre "ux -------- $desc done ".$G->F_delta();;
+    sayre "ux -------- G.K $desc done ".$G->F_delta()."  load ".$H->la;
   R: |
     my ($a, $W) = %$ar;
     ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
@@ -471,6 +463,17 @@ hooks:
     0->l($u) if $a eq "M";
     return $u
   sane:
+    getW: |
+      my $W;
+      for my $L (@$Ls) {
+            $W ||= L.W;
+          die "L_W changed along lines W.name L.W.name etc etc" if $W ne L.W;
+      }
+      $W;
+    Ls: |
+      die "No lines in lines..." if !@$Ls;
+      die "one line, empty hash...".wdump(2, $Ls) if @$Ls == 1 && !keys %{$Ls->[0]};
+      die "one line, no W on line...".wdump(2, $Ls) if @$Ls == 1 && !$Ls->[0]->{W};
     V3: |
       die "ix not Li " unless ix.Li;
       die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
