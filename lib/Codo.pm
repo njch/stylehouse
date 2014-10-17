@@ -158,7 +158,7 @@ sub codolist {
             return $self->load_codon($codon->{name}) if $codon;
 
             $H->{G}->timer(1, sub {
-            $H->{G}->HGf('colour')->w(Arr => 
+            Ghost::HGf('colour')->w(Arr => 
                 {name => "Codo",
                 set_css_background => "#Codo",
                 change => 1,

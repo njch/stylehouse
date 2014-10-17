@@ -199,7 +199,7 @@ CM
     }
     my $cmback = ".$texty->{id} > .CodeMirror";
     $H->{G}->timer(1, sub {
-    $H->{G}->HGf('H/colour')->w(Arr =>
+    Ghost::HGf('H/colour')->w(Arr =>
         {name => "Codon/$self->{name}",
         set_css_background => $cmback,
         force_set => 1}
@@ -266,7 +266,7 @@ sub event {
     elsif ($id =~ /^(.+)-Colour-(\d+)$/) {
         my ($tid, $cid) = ($1, $2);
         my $fid = "$tid-".($cid+1);
-        $H->{G}->HGf('colour')->w(Arr =>
+        Ghost::HGf('colour')->w(Arr =>
             {name => "Codon/$self->{name}", change => 'change', e => $e},
         );
         #my $colour = random_colour($e->{C});
