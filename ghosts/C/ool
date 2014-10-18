@@ -43,9 +43,9 @@ C:
    flows_D: |
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
       
-      0->TafuBl(mooj => { file => $_ }) for (shuffle @finds)[0..3];
+      #0->TafuBl(mooj => { file => $_ }) for (shuffle @finds)[0..3];
       
-      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0..6];
+      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0..9];
       
  - K: mooj #c
    V: xI
@@ -208,7 +208,7 @@ perc_BS: # pre wormhole load
       dir: /s/public/i/
       
   - K: Ra
-    e: 1
+    e: 3
     B: {name: Wa}
     time: 6x1
     Dz:
@@ -217,7 +217,7 @@ perc_BS: # pre wormhole load
        w uxd_lite;
       
   - K: Ra
-    e: 2.5
+    e: 5
     B: {name: Fa}
     time: 2x3
     Dz: 
@@ -243,7 +243,7 @@ hooks:
   recoded_init: |
     #G.O->w('ux');
   Anims: |
-    $k =~ /height|width||left|right|top|bottom|padding|opacity/ ? 20 : 0;
+    $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
   highload: |
      my $la = $H->la;
      if (G.maxloadav && $la > G.maxloadav) {
@@ -332,9 +332,12 @@ hooks:
             S.Z.padding = int(rand 24).'em';
       }
     at: |                                            # at x2 #c
-        for my $S (w W/r(qw'K mooj for 0..3')) {
+        for my $S (w W/r(qw'K Im for 0..7')) {
             w se/pad[$S];
             w se/opa[$S];
+            if (rand(1) < 0.1) {
+                G.GG.xI.uW.Z.background = "url(S.B.href)";
+            }
         }
         if (rand(1) < 2/9) {
             w f/ph;
@@ -352,7 +355,7 @@ hooks:
           in.l = $o;
       }
     ph: |                                            # at 0x0
-        for my $S (w W/r(qw'K mooj for 0..3')) {
+        for my $S (w W/r(qw'K Im for 0..3')) {
             if (S.resty) {
                 S.styles =~ s/$_// for split ' ', S.resty;
             }
