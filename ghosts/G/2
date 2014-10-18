@@ -7,31 +7,38 @@ hooks:
   any_init: |
 
     G.U.ing = sub { #c
-        my ($S, $time, $ing) = @_;
+        my ($S, $time, $ing, $w) = @_;
         $time && $ing || die " time&ing";
         
-        my $id = $H->make_uuid;
-        my $ingd = S.ing->{$ing} ||= {};
-        for my $did (keys %$ingd) {
-            $ingd->{$did} = undef;
-            say "un ing G.name $ing $did";
-        }
-        $ingd->{$id} = $time;
-        OS->($ing, $id);
+        my $name = $ing;
+        $name .= $w->pint if $w;
+        my $ingw = $S->nw(
+            K=>"ing",
+            name => $name,
+            ing => $ing,
+            time => $time,
+        );
+        say "create ingw.G.name ingw.name $time";
+        ingw.w = $w if $w;
+        my $inga = S.ing->{$name} ||= {};
+        _.dead = 1 for values %$inga;
+        $inga->{ingw.id} = $ingw;
+        0S->ingo($ingw);
     };
     
     G.U.ingo = sub { #c
-        my ($S, $ing, $id) = @_;
+        my ($S, $ingw) = @_;
+        return say "ing ingw.name ingw.id deduped" if ingw.dead;
         
-        my $ingd = S.ing->{$ing} ||= {};
-        if (exists $ingd->{$id} && !defined $ingd->{$id}) {
-            return say "uningd ing G.name $ing $id";
-        }
-        my $time = $ingd->{$id};
-        $S->w($ing);
+        $S->w(ingw.ing, {}, ingw.w);
+        
+        my $time = ingw.w.e if ingw.w && ingw.w.e;
+        $time ||= ingw.time;
+        say "time ingw.G.name ingw.name $time";
+        die sw[$ingw] if ingw.name eq "uxing";
         $S->timer($time, sub {
-            0S->ingo($ing, $id);
-        }, "ing $ing $id");
+            0S->ingo($ingw);
+        }, "ing ingw.name ingw.id");
     };
     
 

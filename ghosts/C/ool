@@ -11,9 +11,10 @@ GG:
          Z:
            border: 5px solid white
            background: url(i/greencush.jpg)
-           margin: 8em
-           height: calc(100% - 16em)
-           width: calc(100% - 16em)
+           background-size: 100%
+           margin: 6em
+           height: calc(100% - 12em)
+           width: calc(100% - 12em)
        M:
          Ss: [ooo, tr]
          Z:
@@ -40,11 +41,11 @@ C:
  - K: Ims #c
    V: gI
    flows_D: |
-      my @finds = grep { !/MANY/ && !/gif$/ } map { 0->fs_find($_) } $dir;
-      for my $file (@finds[0..9]) {
-          #0->TafuBl(Im => { file => $file });
-          0->TafuBl(mooj => { file => $file }) if rand(1) < 4/9;
-      }
+      my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
+      
+      0->TafuBl(mooj => { file => $_ }) for (shuffle @finds)[0..3];
+      
+      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0];
       
  - K: mooj #c
    V: xI
@@ -66,8 +67,8 @@ C:
      (B.href) = $file =~ /(i\/.+$)/;
      0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
    Anim:
-     opacity: 10
-     padding: 10 # * 100ms = 1s
+     opacity: 40
+     padding: 40 # * 100ms = 1s
    S:
      style_D: |
        { 'background-image',"url('$href')",
@@ -102,10 +103,14 @@ C:
  - K: Ra #c
    e: 8/9
    flows_D: |
-     S.timezs = sub { my ($time) = shift;
-                       join "x", map { $time->{$_} } sort keys %$time; };
-     Sw lat;
-     Sw riv;
+     S.timezs = sub {
+         my ($time) = shift;
+         join "x", map { $time->{$_} } sort keys %$time;
+     };
+     0->ing(6, lat => $S);
+   lat: |
+     return if w highload;
+     w riv;
    riv: |
      now.1++;
      if (now.1 == time.1) {
@@ -116,17 +121,10 @@ C:
         }
      }
      my $at = S.timezs->($now);
+     say "$name $at" if S.db;
      for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ } sort keys %{S.Dz}) {
          Sw Dz/$ma[$at];
      }
-   lat: |
-     S.dead && return;
-     my $la = $H->la;
-     if (G.maxloadav && $la > G.maxloadav) {
-         sayre "load average is $la, sleep for 5...";
-         return $G->timer(5, sub { Sw lat; });
-     }
-     $G->timer(Sw e, sub { Sw lat; Sw riv; });
 S:
  - K: ooo
    Ss:
@@ -177,28 +175,30 @@ S:
         
  - K: tr #c y-toro
    Ss:
+    - K: opa_n
+      D: |
+        Z.opacity = "0.$n";
     - K: sat_n
       D: |
-        u.Z->{flit}->{saturate} = $n;
+        Z.flit.saturate = $n;
     - K: bri_n
       D: |
-        u.Z->{flit}->{brightness} = $n;
+        Z.flit.brightness = $n;
     - K: con_n
       D: |
-        u.Z->{flit}->{contrast} = $n*2;
+        Z.flit.contrast = $n*2;
     - K: inv_n
       D: |
-        u.Z->{flit}->{invert} = "0.$n";
+        Z.flit.invert = "0.$n";
     - K: hue_n
       D: |
-        u.Z->{flit}->{'hue-rotate'} = int((360/9)*$n)."deg";
+        Z.flit->{'hue-rotate'} = int((360/9)*$n)."deg";
     - K: blr_n
       D: |
-        u.Z->{flit}->{'blur'} = ($n*2)."px";
-        }) } 1..9
+        Z.flit.blur = ($n*2)."px";
     - K: gra_n
       D: |
-        u.Z->{flit}->{'grayscale'} = "0.$n";
+        Z.flit.grayscale = "0.$n";
     - K: dead
       css:
         - background:#0d0e4d
@@ -212,24 +212,19 @@ perc_BS:
       dir: /s/public/i/
       
   - K: Ra
-    e: |
-     25/2
+    e: 1
     B:
       name: Wa
-      time: {0: 4, 1: 4}
+      time: {0: 6, 1: 1}
       now: {0: 0, 1: 0}
     Dz:
-     0x2: |
-       w f/te;#textual
-     1x2: |
-       w f/ph;#ase
-     2x2: |
-       w f/at;#titude
-     _x3: |
-       w uxds;
-     _x1: |
-       w uxds;
-  
+     _x0: |
+       w f/te;say"te";
+     1x0: |
+       w f/ph;say"ph";
+     2x1: |
+       w f/at;say"at";
+else:
   - K: Ra
     e: 14/2
     B:
@@ -245,22 +240,25 @@ perc_BS:
        w f/rotation;
 hooks:
   any_init: |
-    $G->timer(22, sub { Say "turning on maxloadav"; G.maxloadav = 2.4; });
+    $G->timer(10, sub { Say "turning on maxloadav"; G.maxloadav = 2; });
+  highload: |
+     my $la = $H->la;
+     if (G.maxloadav && $la > G.maxloadav) {
+         sayre "load average is $la";
+         return 1;
+     }
   percolate: |
     my $BS = $G->anyway('perc_BS'); # G0
     return unless $BS;
     for my $uS (@$BS) {
         my $u = 0->sway({K=>uS.K}, $uS);
         $u = 0->Tafu($u);
-        
     }
-    # alright so... see styles run around
-    # mod styles to mod waves of stuff
-    # start full of shit:
-     w f/drumroll;
+    w f/at; w f/at;
+    w f/ph; w f/ph;
      
     G.GG.gI->w('ux', {Ls => [0->scGre({V=>"gI"})]});
-    w uxd;
+    0->ing(3, "uxd");
     
   keys:
     t: w f/at;
@@ -272,8 +270,8 @@ hooks:
     p: w f/ph;
       
   se: # mod
-    opa: S.Z.opacity = "0.".int(rand(9));
-    pad: S.Z.padding = int(rand 9).'em';
+    pad: S.Z.padding = int(rand 4).'em';
+    opa: w crank(+ s=>'opa');
     sat: w crank(+ s=>'sat');
     bri: w crank(+ s=>'bri');
     con: w crank(+ s=>'con');
@@ -324,24 +322,14 @@ hooks:
               $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
           }
       }
-    drumroll: |
-      w f/at(di => 420);
-      w f/at(di => 420);
-      w f/ph;
-      w f/ph;
-      w f/lingpa;
     lingpa: |
-      for my $S (w W/r(qw'K Lingos for 1..3')) {
+      for my $S (w W/r(qw'K Lingos for 0..2')) {
             S.Z.padding = int(rand 24).'em';
       }
-    at: |                                            # at x2
-        say "@";
-        my $di = ar.di || 2;
-        for my $S (w W/r(qw'K Im for', "1..$di")) {
-            next unless $S;
+    at: |                                            # at x2 #c
+        for my $S (w W/r(qw'K mooj for 0..3')) {
             w se/pad[$S];
-            w se/opa[$S] if rand(1) < 5/9;
-            S.Z.padding = int(rand 20).'em' if rand(1) < 2/9;
+            w se/opa[$S];
         }
         if (rand(1) < 2/9) {
             w f/ph;
@@ -352,15 +340,14 @@ hooks:
             w f/ph;
         }
     te: | # at x1, x3
-      say 'te';
-      for my $S (w W/r(qw'K Lingos for 1..4')) {
+      for my $S (w W/r(qw'K Lingos for 0..4')) {
           my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
           my $in = S.B;
-          say "in.l => $o";
+          #say "in.l => $o";
           in.l = $o;
       }
     ph: |                                            # at 0x0
-        for my $S (w W/r(qw'K Im for 1..3')) {
+        for my $S (w W/r(qw'K mooj for 0..3')) {
             if (S.resty) {
                 S.styles =~ s/$_// for split ' ', S.resty;
             }
@@ -376,12 +363,11 @@ hooks:
     push @bang, @colar;
     @bang = @colar if S.B.file =~ /art/;
     return shuffle(@bang);
-  uxds: |
-    0->sing("G.name uxd", sub { w uxd; });
   uxd: |
     my @Im = 0->scGre({V=>"xI"});
-    #sw[@F]; 
     G.GG.xI->w('ux', {Ls => [@Im]});
+  uxdr: |
+    
   W:
     r: |
       my @a=shuffle(0->rei({K=>$K}));

@@ -347,25 +347,34 @@ hooks:
         
         my $S = GG.h->{$style};
         if (!$S) {
-            if ($style =~ /^-(.+)$/) {
-                return push @deply, $1;
+            return push @deply, $1 if $style =~ /^-(.+)$/;
+            my $DS = GG.h->{$1."_n"} if $style =~ /^(\w+)(\d+)$/;
+            if ($DS) {
+                DS.D || die sw["D found style not have D", $DS];
+                my $rr = {n => $2, u => $u, ui => ui.B.ui};
+                rr.Z = rr.ui.Z ||= {};
+                $G->w(D => $rr, $DS);
             }
-            return warn "no ifndo $style";
+            else {
+                 warn "no ifndo $style";
+            }
         }
-        # lingosa
-        if (S.styles) {
-            $apply->(S.styles);
+        else {
+            # lingosa
+            if (S.styles) {
+                $apply->(S.styles);
+            }
+            S.css ? do{ 
+                u.at.attr.class .= " $style";
+            }:
+            S.D ? do{
+                my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
+                $apply->($ysty) if $ysty;
+            }:
+            do {
+                sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
+            };
         }
-        S.css ? do{ 
-            u.at.attr.class .= " $style";
-        }:
-        S.D ? do{
-            my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
-            $apply->($ysty) if $ysty;
-        }:
-        do {
-            sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
-        };
     };
     $apply->($styles);
     for my $d (@deply) {
@@ -389,7 +398,7 @@ hooks:
     my $Ls = ar.Ls;
     die "no W to ux G.K" if ar.W;
     $Ls = [ map { _.Li || die "noLi" } ar.i || @{ar.is||[]} ] if ar.i || ar.is;
-    saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
+    #saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
     
     inter({G_K=>G.K});
     G.uW = w R(W => G.W);
@@ -455,7 +464,7 @@ hooks:
         w J(i => $u, flatly => 1);
     }
     
-    sayre "ux -------- G.K $desc done ".$G->F_delta()."  load ".$H->la;
+    sayre "ux -------- G.K $desc done\t".@$Ls." lines\t".$G->F_delta()."  load ".$H->la;
   R: |
     my ($a, $W) = %$ar;
     ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
@@ -640,7 +649,7 @@ hooks:
         ];
   wayout_sendo: |
         my $at = u.at;
-        my $ui = u.B.Lu.i if u.K eq "ux"; # comes as constellation kinda thing (FUTURE)
+        my $ui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
         my $_t = u._at;
         

@@ -370,8 +370,6 @@ sub watch_file_streams {
         
         if (@diffs) {
             $self->Say("$st->{filename} CHANGED: ".join("   ", @diffs));
-            say "$st->{filename} has been REPLACED or something:";
-            say "    $_" for @diffs;
         }
         
         if ($st->{lines}) {
@@ -678,17 +676,16 @@ sub keep_throwing {
     my $error = shift;
     
     my @context = (
-        $error->[0],
-        join("\n",map { "    - $_" }
-        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]}),
+        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]},
     );
     @context = () if $what eq "Say" || $what eq "Info";
     my @f = @Ghost::F;
     for my $c (@context) {
-        say "$c ======== ". Ghost::ki(shift @f);
+        my $f = shift @f;
+        say "$c ======== ". Ghost::gpty($f->{thing});
     }
     
-    my $string = join("\n\n",
+    my $string = join("\n",
         @context,
         @{$error->[2]},
     );

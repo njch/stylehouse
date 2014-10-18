@@ -109,28 +109,17 @@ hooks:
     
     G.that = G:Ϡ;
   recoded_init: |
-    w set_land;
-    w uxing;
+    waylay set_land;
   percolate: |
     0->RW($G);
     0->RW(G.GG.lyr);
     w set_Gdbs;
     w set_land;
-    w uxing;
+    $G->timer(4, sub { 0->ing(26, "uxing"); });
     w f/Lgs;
   uxing: |
-    my $xing = ar.xing || $H->make_uuid;
-    return say "killed dupe uxing on G.name!" if G.uxing->{$xing} == 2;
-    G.uxing->{$xing} = 1;
-    if (keys %{G.uxing} > 1) {
-        say "killing other uxings on G.name...";
-        G.uxing = { map { $_ => 2 } keys %{G.uxing} };
-        G.uxing->{$xing} = 1;
-    }
     my $Ls = [0->scGre({V=>"l"})];
-    return say "L not uxing", $G->timer(3, sub { w uxing[$xing]; }) unless @$Ls;
     w wux[$Ls];
-    $G->timer(27, sub { w uxing[$xing]; });
   wux: |
     G.GG.lyr->w(ux => $ar);
   set_land: |
@@ -155,7 +144,6 @@ hooks:
         my $ty = 0->TafuB(land => {name => $sty});
         for my $d (@$stuff) {
             my ($name, $code) = @$d;
-            say "$sty $name";
             my $st = 0->visTp_TafuBl({i=>$ty}, [land => {name => "$sty/$name"}]);
             st.B.code = $code;
         }
