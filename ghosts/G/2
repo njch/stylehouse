@@ -1,10 +1,37 @@
 
 name: Ghost 2ish
-include: G/2
+
 hooks:
   recoded_init: | # G/0 recode
     H.G->w('re/exec');
   any_init: |
 
-    G.U.scGre = sub {#c
+    G.U.ing = sub { #c
+        my ($S, $time, $ing) = @_;
+        $time && $ing || die " time&ing";
+        
+        my $id = $H->make_uuid;
+        my $ingd = S.ing->{$ing} ||= {};
+        for my $did (keys %$ingd) {
+            $ingd->{$did} = undef;
+            say "un ing G.name $ing $did";
+        }
+        $ingd->{$id} = $time;
+        OS->($ing, $id);
     };
+    
+    G.U.ingo = sub { #c
+        my ($S, $ing, $id) = @_;
+        
+        my $ingd = S.ing->{$ing} ||= {};
+        if (exists $ingd->{$id} && !defined $ingd->{$id}) {
+            return say "uningd ing G.name $ing $id";
+        }
+        my $time = $ingd->{$id};
+        $S->w($ing);
+        $S->timer($time, sub {
+            0S->ingo($ing, $id);
+        }, "ing $ing $id");
+    };
+    
+
