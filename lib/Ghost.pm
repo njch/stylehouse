@@ -156,6 +156,9 @@ sub Flab {
     $s->{Flab} = [@Flab];
     $s;
 }
+sub fla {
+    $F[0]->{G}->Flab(@_);
+}
 sub deeby {
     shift->{db} + $db > 0
 }
@@ -308,7 +311,7 @@ sub ob {
     my $te = $@; $@ = "";
      my $to = $_ob; $_ob = undef;
       
-      $ob->T($s);
+      $ob->w(ob=>{s=>$s});
       
      $_ob = $to;
     $@ = $te;
@@ -462,7 +465,6 @@ sub haunt { # arrives through here
       t => shift,
       i => shift,
     };
-    say " 0ldschool haunt";
     return $G->_0("0->T", $p);
 }
 sub chains {

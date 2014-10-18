@@ -1,20 +1,10 @@
 
 name: entrail littered savannah
-include: W/tractor
-tractors:
-  - K: ob
-    arr_if: |
-      1
-    first_time: |
-      T.L.depth = 0+@F;
-      my $t = $thing->{thing};
-      w stitch_stack;
-      my $s = $t->[1];
-      my $p = w $s print if ref $s eq "Way";
-      $t->[0] .= " $p" if $p;
-      
-hooks:
 
+hooks:
+  ob: |
+    ref $s eq "Way" || die;
+    0->T({i=>$s});
   stitch_stack: |
     # etc
     

@@ -731,7 +731,6 @@ hooks:
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 next if $v eq _t.attr->{$k};
-                saybl "@ $k -- $_t->{$k}   ++ $v" if $G->deeby;
                 $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
             }
             if (at.css) {
@@ -746,7 +745,8 @@ hooks:
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
-                    if (my $anim = ui.Anim->{$k}) {
+                    my $anim = ui.Anim->{$k} || ui.G->w('Anims', {k=>$k});
+                    if ($anim) {
                         my $dur = $anim."00";
                         my $d = $dur; # leading zeros push into tinyness
                         $d = $d / 10 for split '', $dur =~ m/^(0+)/;
@@ -759,7 +759,6 @@ hooks:
                     else {
                         $sendojs->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
                     }
-                    saybl "@ $k -- _t.css->{$k}   $isa $v";
                 }
             }
         }

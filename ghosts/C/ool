@@ -66,9 +66,6 @@ C:
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
      0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
-   Anim:
-     opacity: 40
-     padding: 40 # * 100ms = 1s
    S:
      style_D: |
        { 'background-image',"url('$href')",
@@ -101,16 +98,19 @@ C:
 
  
  - K: Ra #c
-   e: 8/9
+   e: 1
    flows_D: |
      S.timezs = sub {
          my ($time) = shift;
          join "x", map { $time->{$_} } sort keys %$time;
      };
-     0->ing(6, lat => $S);
+     my $ti=0;
+     S.B.time = {map {$ti++=>$_} split 'x', S.time};
+     S.B.now = {0,0,1,0};
+     0->ing(6, lat => $S); 
    lat: |
      return if w highload;
-     w riv;
+     Sw riv;
    riv: |
      now.1++;
      if (now.1 == time.1) {
@@ -121,7 +121,6 @@ C:
         }
      }
      my $at = S.timezs->($now);
-     say "$name $at" if S.db;
      for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ } sort keys %{S.Dz}) {
          Sw Dz/$ma[$at];
      }
@@ -205,7 +204,7 @@ S:
     - K: ref
       css:
         - '-webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.3)))'
-perc_BS:
+perc_BS: # pre wormhole load
 #  - K: YouTube
   - K: Ims
     B:
@@ -213,17 +212,22 @@ perc_BS:
       
   - K: Ra
     e: 1
-    B:
-      name: Wa
-      time: {0: 6, 1: 1}
-      now: {0: 0, 1: 0}
+    B: {name: Wa}
+    time: 6x1
     Dz:
      _x0: |
-       w f/te;say"te";
-     1x0: |
-       w f/ph;say"ph";
-     2x1: |
-       w f/at;say"at";
+       return w uxd if $at =~ /^0/;
+       w uxd_lite;
+      
+  - K: Ra
+    e: 2.5
+    B: {name: Fa}
+    time: 2x3
+    Dz: 
+     _x0: w f/at;
+     _x1: w f/ph;
+     1x1: w f/bg;
+       
 else:
   - K: Ra
     e: 14/2
@@ -239,12 +243,15 @@ else:
        w f/at;#titude
        w f/rotation;
 hooks:
-  any_init: |
-    $G->timer(10, sub { Say "turning on maxloadav"; G.maxloadav = 2; });
+  recoded_init: |
+    #G.O->w('ux');
+  Anims: |
+    $k =~ /height|width|padding|opacity/ ? 70 : 0;
   highload: |
      my $la = $H->la;
      if (G.maxloadav && $la > G.maxloadav) {
          sayre "load average is $la";
+         $H->snooze;
          return 1;
      }
   percolate: |
@@ -254,11 +261,13 @@ hooks:
         my $u = 0->sway({K=>uS.K}, $uS);
         $u = 0->Tafu($u);
     }
+    
     w f/at; w f/at;
     w f/ph; w f/ph;
      
     G.GG.gI->w('ux', {Ls => [0->scGre({V=>"gI"})]});
-    0->ing(3, "uxd");
+    
+    $G->timer(10, sub { G.maxloadav = 2.5; });
     
   keys:
     t: w f/at;
@@ -281,7 +290,6 @@ hooks:
     my $d = $1+1;
     $d += ar.di - 1 if ar.di;
     $d -= 9 until $d <= 9;
-    say "$s $d";
     S.styles .= " $s$d";
   
   f: # flux
@@ -366,8 +374,12 @@ hooks:
   uxd: |
     my @Im = 0->scGre({V=>"xI"});
     G.GG.xI->w('ux', {Ls => [@Im]});
-  uxdr: |
-    
+  uxd_lite: |
+    my $chi = G.Vu.xI;
+    G.Vu.xI = [];
+    return unless $chi && @$chi;
+    say "part uxd ".@$chi;
+    G.GG.xI->w('ux', {is => $chi});
   W:
     r: |
       my @a=shuffle(0->rei({K=>$K}));
@@ -376,6 +388,7 @@ hooks:
           my $to = $2 || $3-1;
           @a = grep {defined} @a[$from..$to];
       }
+      push @{G.Vu.xI||=[]}, @a;
       @a
       
   index_clickspace: |
