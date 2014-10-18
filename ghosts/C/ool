@@ -45,43 +45,40 @@ C:
       
       0->TafuBl(mooj => { file => $_ }) for (shuffle @finds)[0..3];
       
-      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0];
+      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0..6];
       
  - K: mooj #c
    V: xI
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
-   ux: {spawn: []}
+   
+   styles: -te mooj
    S:
      content_D: |
        "Y". S.B.href
-     styles: -te mooj
-     style_D: |
-       { 'background-image',"url('$href')",
-         %{S.Z||{}} }
+     Z_D: |
+       { 'background-image',"url('$href')" }
       
+   ux: {spawn: []}
  - K: Im #c
    V: xI
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
      0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
-   S:
-     style_D: |
-       { 'background-image',"url('$href')",
-         %{S.Z||{}} }
+     
    styles: Im -te
-   tag: Im
-   ux:
-     spawn: []
+   S:
+     Z_D: |
+       { 'background-image',"url('$href')" }
+   
+   ux: {spawn: []}
  
  - K: Lingos #c
    V: xI
    styles: Lingos -te
    S:
      content_D: $l
-     style_D: |
-       { %{S.Z||{}} }
      ishtml: 1
    ux:
      spawn: []
@@ -172,32 +169,32 @@ S:
         - width:100%
         - background:rgba(150,100,50,0.7)
         
- - K: tr #c y-toro
+ - K: tr #c y-toro # Z is a loose hash being vortexed, it merges with ui.Z or ui..style_D (Z)
    Ss:
     - K: opa_n
       D: |
-        Z.opacity = "0.$n";
+        at.Z.opacity = "0.$n";
     - K: sat_n
       D: |
-        Z.flit.saturate = $n;
+        at.Z.flit.saturate = $n;
     - K: bri_n
       D: |
-        Z.flit.brightness = $n;
+        at.Z.flit.brightness = $n;
     - K: con_n
       D: |
-        Z.flit.contrast = $n*2;
+        at.Z.flit.contrast = $n*2;
     - K: inv_n
       D: |
-        Z.flit.invert = "0.$n";
+        at.Z.flit.invert = "0.$n";
     - K: hue_n
       D: |
-        Z.flit->{'hue-rotate'} = int((360/9)*$n)."deg";
+        at.Z.flit->{'hue-rotate'} = int((360/9)*$n)."deg";
     - K: blr_n
       D: |
-        Z.flit.blur = ($n*2)."px";
+        at.Z.flit.blur = ($n*2)."px";
     - K: gra_n
       D: |
-        Z.flit.grayscale = "0.$n";
+        at.Z.flit.grayscale = "0.$n";
     - K: dead
       css:
         - background:#0d0e4d
@@ -246,7 +243,7 @@ hooks:
   recoded_init: |
     #G.O->w('ux');
   Anims: |
-    $k =~ /height|width|padding|opacity/ ? 70 : 0;
+    $k =~ /height|width||left|right|top|bottom|padding|opacity/ ? 20 : 0;
   highload: |
      my $la = $H->la;
      if (G.maxloadav && $la > G.maxloadav) {

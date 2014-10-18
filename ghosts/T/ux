@@ -351,9 +351,7 @@ hooks:
             my $DS = GG.h->{$1."_n"} if $style =~ /^(\w+)(\d+)$/;
             if ($DS) {
                 DS.D || die sw["D found style not have D", $DS];
-                my $rr = {n => $2, u => $u, ui => ui.B.ui};
-                rr.Z = rr.ui.Z ||= {};
-                $G->w(D => $rr, $DS);
+                $G->w(D => {%$ar, n => $2}, $DS);
             }
             else {
                  warn "no ifndo $style";
@@ -365,7 +363,7 @@ hooks:
                 $apply->(S.styles);
             }
             S.css ? do{ 
-                u.at.attr.class .= " $style";
+                at.attr.class .= " $style";
             }:
             S.D ? do{
                 my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
@@ -378,19 +376,19 @@ hooks:
     };
     $apply->($styles);
     for my $d (@deply) {
-        u.at.attr.class =~ s/$d//;
+        at.attr.class =~ s/$d//;
     }
-    u.at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
+    at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
     
     if (u.K eq "W") { # class to style="" outside <style> scope 
         for my $style (split ' ', u.at.attr.class) {
             my $S = GG.h->{$style};
             for my $css (@{S.css}) {
                 my ($k, $v) = split ":", $css;
-                u.Z->{$k} ||= $v;
+                at.Z->{$k} ||= $v;
             }
         }
-        delete u.at.attr.class;
+        delete at.attr.class;
     }
     
     
@@ -671,20 +669,27 @@ hooks:
         my $oozs = [ grep { defined } map { _.html } @{ at.ooze } ];
         my $content = join "\n", @$oozs;
         
-        my $styles = at.styles;
-        w stylezo[$u, $ui, $styles];
+        at.Z = {}; # zip v
         
-        my $s = U->uiuS($u => "style");
-        $s && attr.style && die "got uiu $s\t\tattr.style already";
-        $s ||= {%{u.Z}} if !$s && u.Z;
-        if ($s) {
-            if (ref $s eq 'HASH') {
-                at.css = $s;
-            }
-            else {
-                attr.style = shtocss($s);
+        at.Z = { %{at.Z}, %{u.Z} } if u.Z; # from u
+        
+        my $styles = at.styles;
+        w stylezo[$u, $ui, $styles, $at];
+        
+        my $Z = U->uiuS($u => "Z"); # from ui S/Z(_D)
+        at.Z = { %{at.Z}, %$Z } if $Z;
+        
+        $Z && attr.style && die "got uiu $Z\t\tattr.style already";
+        
+        at.css = at.Z;
+        while (my($k,$v) = each %{at.css}) {
+            if (ref $v eq 'HASH') {
+                delete at.css->{flit} if at.css->{flit};
+                at.css->{'-webkit-filter'} = join " ",
+                    map{ "$_($v->{$_})" } keys %$v;
             }
         }
+        
         
         if (u.K eq "W") {
             attr.title = "G.O.name    G.way    G.K";
@@ -735,17 +740,11 @@ hooks:
             }
             if (at.css) {
                 while (my($k,$v) = each %{at.css}) {
-                    if (ref $v eq 'HASH') {
-                        delete at.css->{flit} if at.css->{flit};
-                        at.css->{'-webkit-filter'} = join " ",
-                        map{ "$_($v->{$_})" } keys %$v;
-                    }
-                }
-                while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
-                    my $anim = ui.Anim->{$k} || ui.G->w('Anims', {k=>$k});
+                    my $anim = $ui && ui.Anim->{$k};
+                    $anim = G.O->w('Anims', {k=>$k}) if !defined $anim;
                     if ($anim) {
                         my $dur = $anim."00";
                         my $d = $dur; # leading zeros push into tinyness
