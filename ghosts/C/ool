@@ -121,9 +121,10 @@ C:
      }
    lat: |
      S.dead && return;
-     if (G.maxloadav && $H->la > G.maxloadav) {
-         sayre "load average is $1, sleep for 5...";
-         sleep 5;
+     my $la = $H->la;
+     if (G.maxloadav && $la > G.maxloadav) {
+         sayre "load average is $la, sleep for 5...";
+         return $G->timer(5, sub { Sw lat; });
      }
      $G->timer(Sw e, sub { Sw lat; Sw riv; });
 S:
@@ -205,7 +206,7 @@ S:
       css:
         - '-webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.3)))'
 perc_BS:
-  - K: YouTube
+#  - K: YouTube
   - K: Ims
     B:
       dir: /s/public/i/
@@ -379,6 +380,7 @@ hooks:
     0->sing("G.name uxd", sub { w uxd; });
   uxd: |
     my @Im = 0->scGre({V=>"xI"});
+    #sw[@F]; 
     G.GG.xI->w('ux', {Ls => [@Im]});
   W:
     r: |
