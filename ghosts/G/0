@@ -78,6 +78,42 @@ hooks:
           $G->timer(0.5 => sub { w keyub[$S]; });
       }
   any_init: |
+    G.U.ing = sub { #c
+        my ($S, $time, $ing, $w) = @_;
+        $time && $ing || die " time&ing";
+        
+        my $name = $ing;
+        $name .= $w->pint if $w;
+        my $ingw = $S->nw(
+            K=>"ing",
+            name => $name,
+            ing => $ing,
+            time => $time,
+        );
+        say "create ingw.G.name ingw.name $time";
+        ingw.w = $w if $w;
+        my $inga = S.ing->{$name} ||= {};
+        _.dead = 1 for values %$inga;
+        $inga->{ingw.id} = $ingw;
+        0S->ingo($ingw);
+    };
+    
+    G.U.ingo = sub { #c
+        my ($S, $ingw) = @_;
+        return say "ing ingw.name ingw.id deduped" if ingw.dead;
+        return sayre "ing ingw.name ingw.id ui dead" if ingw.w && ingw.w.dead;
+        
+        $S->w(ingw.ing, {}, ingw.w);
+        
+        my $time = ingw.w.e if ingw.w && ingw.w.e;
+        $time ||= ingw.time;
+        fla "time ingw.G.name ingw.name $time";
+        die sw[$ingw] if ingw.name eq "uxing";
+        $S->timer($time, sub {
+            0S->ingo($ingw);
+        }, "ing ingw.name ingw.id");
+    };
+    
     G.U.scGre = sub {#c
         my ($S, $ip) = @_;
         # or something was somehow, tractioning v
