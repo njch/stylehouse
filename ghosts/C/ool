@@ -8,12 +8,13 @@ GG:
        W:
          S:
            styles: poi ab
+         Ss: []
          Z:
            border: 5px solid white
            background: url(i/greencush.jpg)
            background-size: 100%
-           margin: 6em
-           height: calc(100% - 6em)
+           top: 12em
+           height: calc(100% - 12em)
            width: calc(100% - 12em)
        M:
          Ss: [ooo, tr]
@@ -29,7 +30,7 @@ GG:
          Z:
            width: 5em
            background: blue
-           z-index: 5
+           z-index: 500
        M:
          Ss: [g]
          Z:
@@ -40,34 +41,23 @@ W:
 C:
  - K: Ims #c
    V: gI
-   flows_D: |
+   ux: {spawn: [K: i]}
+   flows_D: | 
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
+      S.finds = [shuffle @finds];
+      0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
+      Sw E/_D;
+   E:
+     _D: |
+       0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
       
-      #0->TafuBl(mooj => { file => $_ }) for (shuffle @finds)[0..3];
-      
-      0->TafuBl(Im => { file => $_ })     for (shuffle @finds)[0..9];
-      
- - K: mooj #c
-   V: xI
-   flows_D: |
-     (B.href) = $file =~ /(i\/.+$)/;
-   
-   styles: -te mooj
-   S:
-     content_D: |
-       "Y". S.B.href
-     Z_D: |
-       { 'background-image',"url('$href')" }
-      
-   ux: {spawn: []}
  - K: Im #c
    V: xI
    print: $file
    flows_D: |
      (B.href) = $file =~ /(i\/.+$)/;
-     0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
-     
-   styles: Im -te
+     #0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
+   styles: Im -te ab
    S:
      Z_D: |
        { 'background-image',"url('$href')" }
@@ -255,7 +245,7 @@ else:
        w f/rotation;
 hooks:
   recoded_init: |
-    #G.O->w('ux');
+    G.O->w('ux');
   Anims: |
     $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
   highload: |
@@ -290,7 +280,7 @@ hooks:
     p: w f/ph;
       
   se: # mod
-    pad: S.Z.padding = int(rand 7).'em';
+    pad: S.Z.height = int(rand 9).'0%';
     opa: w crank(+ s=>'opa');
     sat: w crank(+ s=>'sat');
     bri: w crank(+ s=>'bri');
