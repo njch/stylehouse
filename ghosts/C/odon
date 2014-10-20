@@ -7,64 +7,125 @@ GG:
        W:
          Ss: [u, x, X]
        M:
-         Z: {font-size: 50%, background: black}
+         Ss: [oud]
+         Z: {background: rgba(0,100,50,0.4), overflow: scroll, width: 30%, height: 100%, position: absolute}
+       ux:
+         styles: tc
+         spawn:
+           - K: Codw
+S:
+ - K: oud #c sidecar
+   Ss:
+    - K: codwide
+      css:
+        - width:30%
+    - K: tc
+      css: 
+        - border-bottom:1px solid black
+        - padding-left:2em
+        - float:left
+        - position:relative
+        - width:calc(100% - 2em)
+        - background:rgba(150,100,50,0.1)
 C:
- - K: styledir
+ - K: Sources
+   styles: -tc
+   S:
+     Z:
+       width: 20em
+   travels_D: |
+     0->TafuBl(Dir => {dir => "/s"});
+   
+ - K: Dir
    flows_D: |
-     T.t = $dir;
+     S.name = "dir=$dir";
    travels_D: |
      my @finds = map { 0->fs_glob($_) } "$dir/style*", "$dir/not";
      push @finds,  map { 0->fs_find($_) } "$dir/ghosts";
      @finds = grep { !/T|H|L/ } @finds;
      for my $file (@finds) {
-         0->TafuBl(stylefile => { file => $file });
+         0->TafuBl(File => { file => $file });
      }
  
- - K: stylefile
-   Ki: styledir
+ - K: File
    flows_D: |
-     T.t = $file;
+     $G->timer(0.1, sub { Sw E/_D; w uxd; }) if $file =~ /Ϡ/;
    E:
      _D: |
        Say "In Eveent S.K $file";
-       0->TafuB(Codon => { stylefile => S.Li.t });
+       my $ou = 0->TafuB(Oud => { oud => S.Lo.i }); # of Dir or so
+       w $ou Codon[$file];
+       
+ - K: Oud
+   flows_D: |
+     # some some
+   Codon: |
      
- - K: Codon #c
+     0->visTp_TafuBlA({i=>$S}, [Codon => { file => $file }]);
+       
+ - K: Codw
+   S:
+     content_D: |
+       my $pri = lc ui.K;
+       my $db = {%{ui.B}};
+       my $s = ui.K;
+       $s .= "(".gpty($_).")" for grep{defined} delete $db->{$pri};
+       if (defined db.name) {
+           $s .= "(db.name)";
+           $db = {};
+       }
+       delete $db->{ui.Li.i.K};
+       $s .= ki($db) if %$db && S.q < 3;
+       return $s;
+       
+ - K: Tital
+   S:
+     content_D: |
+       "ui.title"
+       
+
+ - K: Codon
    Gw: 1
-   styles: blah
    ux:
      spawn:
-      - K: i
       - K: h2
         S:
           styles: red h2
           tag: yh2
           content_D: |
-            "C ui.B.name"
+            "C ar.ui.B.name";
      
- - K: Chunks #c
+ - K: Chunks
    styles: bg018
    travels_D: |
      my @CBs = w chunkify[$Codon];
      0->TafuBl(Chunk => $_) for @CBs;
+   ux:
+     spawn:
+      - K: Codw
+        q: 3
    
  - K: Chunk
-   Gw: 1
+   flows_D: |
+     my $C = T.i;
+     B.name = B.i;
+     S.title = w Chunk/title[$S];
+   E:
+     S_D: |
+          S.styles = 0->Stytog(S.styles => 'z4');
+     _D: |
+       0->TafuBl("Code", $B);
    S:
      styles: wanderleft3em antrail
    ux:
      spawn:
-      - K: i
-        S:
-          content_D: |
-            "C ui.B.i"
-      - K: t
-        S:
-          styles: codon h2 contrim
-          content_D: |
-            w $ui title;
+      - K: Codw
+      - K: Tital
+        styles: codon h2 contrim
  - K: Code #c
-   Gw: 1
+   S:
+     make_lines_html: |
+       $G->w(vimcolor => {string => join("\n", @{$lines})});
    ux:
      spawn:
       - K: pre
@@ -111,12 +172,11 @@ C:
    styles: sativo
 hooks:
   percolate: |
-    0->TafuB(styledir => {dir => "/s"});
-    0->TafuB(Ooogida => {whatcha => "Woogie"})->{Li}->{t} = "~~~~~~~";
+    0->TafuB(Sources => {});
     waylay uxd;
   Codon:
     flows_D: |
-      w $S load_stylefile_lines;
+      w $S load_file_lines;
     travels_D: |
       0->TafuBl(Chunks => { Codon => $S });
     E:
@@ -128,14 +188,14 @@ hooks:
         # or $Codon/Chunks # from non-$S wayspace...
         # this kinda stuff wants code sitting right across there more closely...
             
-    load_stylefile_lines: |
-      die "no stylefile" unless $stylefile;
+    load_file_lines: |
+      die "no stylefile" unless $file;
       w $S stylefile_super;
-      B.code = $H->slurp($stylefile);
+      B.code = $H->slurp($file);
       w $S load_code;
       
     stylefile_super: |
-      $_ = $stylefile;
+      $_ = $file;
       B.name ||= do {
           /(ghost)s\/(.+)$/ ? $2 :
           /(lib)\/(.+)\.pm$/ ? $2 : $_
@@ -149,6 +209,7 @@ hooks:
   
   Chunk:
     title: |
+      my $lines = S.B.lines;
       my $l;
       for ($lines->[0] || $lines->[1]) {
           $l = $1 if
@@ -161,22 +222,6 @@ hooks:
           s/$HASHC.*$//s, s/:\s*$// for $l;
       }
       return $l;
-    flows_D: |
-      my $C = T.i;
-      T.t = C.B.lines->[0] || C.B.lines->[1];
-      T.t||= ki(C.B);
-    E:
-      S_D: |
-        S.styles = 0->Stytog(S.styles => 'z4');
-      _D: |
-        0->TafuBl("Code", $B);
-  Code:
-    S:
-      make_lines_html: |
-        $G->w(vimcolor => {string => join("\n", @{$lines})});
-    E:
-      _D: |
-        
   chunkify: |
     my $C = $Codon;
     my $c = "#"."c";
@@ -226,7 +271,7 @@ hooks:
   event: |
     sayyl "Event relating to ".pint(L.i);
     0->visTp({L=>$L},'Fun');
-    sw ($ar);
+    sw ($ar) if e.S;
     # try and hit E/elabourateness and then blunten until whatever
     if (e.S) {
         w $u zoum;
@@ -236,5 +281,16 @@ hooks:
     }
     waylay uxd;
   uxd: |
-    G.GG.xC->w('ux', {Ls=>[0->scGre({})]});
+    my @o = 0->scGre({});
+    my @new;
+    for my $oo (reverse @o) {
+        if (findO('ux', oo.i.o)) {
+            last if @new;
+        }
+        else {
+            push @new, oo.i;
+        }
+    }
+    #my $how = @new ? {is=>\@new} : ;
+    G.GG.xC->w('ux', {Ls=>\@o});
 
