@@ -668,13 +668,6 @@ sub throwlog {
     my $error =
         [ hitime(), $H->stack(2), [@E] ];
     
-    $H->keep_throwing($what, $error);
-}
-sub keep_throwing {
-    my $self = shift;
-    my $what = shift;
-    my $error = shift;
-    
     my @context = (
         grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]},
     );
@@ -690,30 +683,11 @@ sub keep_throwing {
         @{$error->[2]},
     );
     $string = "\n$string\n";
-
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
-    if ($string =~ /DOOF/) {
-        $self->JS("\$('#mess').animate({'max-width': '51%'}, 1200);");
-    }
-    $string = encode_entities($string);
-    $string =~ s/'/'/g;
-    $string =~ s/\\/&bsol;/g;
-    $string =~ s/\n/&NewLine;/g;
-    return $self->error("Recusive error messaging, check console") && sleep 3
-        if $string =~ /amp;amp;amp;/;
-    $self->{throwings}->{$what} || $self->timer(0.1, sub { $self->throwlog_throw });
-    $self->{throwings}->{$what} = $string;
 }
-sub throwlog_throw {
-    my $self = shift;
-    my $th = delete $self->{throwings};
-    while (my ($what, $string) = each %$th) {
-        $self->JS("\$('#mess').removeClass('widdle');"
-        ."\$('#$what').removeClass('widdle').fadeOut(30).html('$string')"
-        .".fadeIn(70).scrollTo({top:'100%',left:'0%'}, 30);");
-    }
+sub ind {
+    "$_[0]".join "\n$_[0]", split "\n", $_[1]
 }
-sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
 sub ddump {
     my $thing = shift;
     my $ind;

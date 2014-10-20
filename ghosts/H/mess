@@ -26,36 +26,9 @@ tractors:
     print: |
       join " ", $S->{K}, ghostlyprinty($thing);
 hooks:
-  fresh_init: |
-  flood_init: |
-      my $messborder = "border: 2px solid rgb(64,150,227);";
-      my $m = $H->{sky}->spawn_floozy($G, mess => "max-width:39%; right:0px; bottom:0px;"
-          ."position:absolute; overflow: scroll; height:100%;"
-          ."$messborder z-index: -10; background: rgba(175,160,47, 0.5); color: #030; font-weight: bold; ");
 
-      $m->spawn_floozy(
-          Error => "width:100%; $messborder background: rgba(16,0,50, 0.7); color: rgba(178,71,0, 0.7); font-weight: bold; overflow-x: scroll; white-space: pre; word-wrap: break-word; max-height: 100%;",
-      );
-
-      $m->spawn_floozy(
-          'Info' => "width: 100%; overflow: scroll; $messborder  background: #44ag39; font-weight: bold; color: #66c339; opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
-      );
-
-      $m->spawn_floozy(
-          'Say' => "width: 100%; overflow: scroll; $messborder background: rgba(102,255,102, 0.7); color: #030;  font-weight: bold;  opacity: 0.7; z-index: 50; white-space: pre; word-wrap: break-word; max-height: 100%;",
-      );
   mess: |
     my $S = w Arr[$thing, $what];
     return "yep" if $what eq "Info" && $thing->[0] =~ /^keypress/;
     return 'yep' if $what !~ /^(say|info|error)$/i;
-  event: |
-    my $id = $e->{id};
-    if ($e->{C}) {
-        my @id = $id eq "mess" ? ('Er'.'ror','In'.'fo','Sa'.'y') : $id;
-        $H->JS("\$('#$_').empty();") for @id;
-    }
-    if ($e->{S}) {
-        $H->JS("\$('#mess').toggleClass('inface');");
-    }
-    
 
