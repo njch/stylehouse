@@ -16,6 +16,9 @@ GG:
 S:
  - K: oud #c sidecar
    Ss:
+    - K: CodeMirror
+      css:
+        - height:auto
     - K: codwide
       css:
         - width:30%
@@ -27,6 +30,9 @@ S:
         - position:relative
         - width:calc(100% - 2em)
         - background:rgba(150,100,50,0.1)
+    - K: nonpadl
+      css:
+        - padding-left:0em
 C:
  - K: Sources
    styles: -tc
@@ -85,6 +91,7 @@ C:
        
 
  - K: Codon
+   styles: nonpadl
    Gw: 1
    ux:
      spawn:
@@ -96,7 +103,7 @@ C:
             "C ar.ui.B.name";
      
  - K: Chunks
-   styles: bg018
+   styles: bg018 nonpadl
    travels_D: |
      my @CBs = w chunkify[$Codon];
      0->TafuBl(Chunk => $_) for @CBs;
@@ -116,7 +123,7 @@ C:
      _D: |
        0->TafuBl("CodeMirror", {C => $S});
    S:
-     styles: wanderleft3em antrail
+     styles: wanderleft3em antrail nonpadl
    ux:
      spawn:
       - K: Codw
@@ -142,16 +149,11 @@ C:
    S:
      sendo_init_D: |
          my $ux = $S->LioO('ux');
-         die sw[tryingto => ux.at.id];
          my $cmc = "CodeMirror(document.getElementById('".ux.at.id."'), { "
-             ."value: 'function myScript(){return 100;}\n', "
-            ."mode:  'javascript'"
+             ."value: '".0->jsq(join "\n", @{C.B.lines})."', "
+            ."mode:  'perl'"
              ."});";
          $H->JS($cmc);
-   ux:
-     spawns:
-       - K: div
- - K: div
  - K: yaml #c
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1
