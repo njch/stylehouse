@@ -114,7 +114,7 @@ C:
      S_D: |
           S.styles = 0->Stytog(S.styles => 'z4');
      _D: |
-       0->TafuBl("Code", $B);
+       0->TafuBl("CodeMirror", {C => $S});
    S:
      styles: wanderleft3em antrail
    ux:
@@ -125,7 +125,7 @@ C:
  - K: Code #c
    S:
      make_lines_html: |
-       $G->w(vimcolor => {string => join("\n", @{$lines})});
+       S.G->w(vimcolor => {string => join("\n", @{$lines})});
    ux:
      spawn:
       - K: pre
@@ -137,25 +137,21 @@ C:
            
  - K: CodeMirror #c
    flows_D: |
-     my $CM = T.i;
-     my $Ch = CM.B.Chunk;
-     die "YEPOggg " if S.B.Ch == $Ch;
-     my $C = CM.Lo.i;
-     T.t = join "\n", "y", @{Ch.B.lines};
+     #die sw($S);
+     T.t = join "\n", "y", @{C.B.lines};
    S:
      sendo_init_D: |
-         my $cmc = "CodeMirror(document.getElementById('".S.at.id."'), { "
+         my $ux = $S->LioO('ux');
+         die sw[tryingto => ux.at.id];
+         my $cmc = "CodeMirror(document.getElementById('".ux.at.id."'), { "
              ."value: 'function myScript(){return 100;}\n', "
             ."mode:  'javascript'"
              ."});";
          $H->JS($cmc);
-       
    ux:
-     spawn:
-      - K: div
-        S:
-          class: cm
-      - K: i
+     spawns:
+       - K: div
+ - K: div
  - K: yaml #c
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1

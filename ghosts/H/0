@@ -46,7 +46,11 @@ hooks:
     $M->on(message => sub {
         my ($M, $m) = @_;
         my $J = 0->Bu(J => {m=>$m}); # $m
+        eval {
         w $Elvis speaks[$J];
+        };
+        say "$@" if $@;
+        $@ = "";
     });
 
     $M->on(finish => sub {
