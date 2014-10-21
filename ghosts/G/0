@@ -522,6 +522,25 @@ hooks:
         delete W.ca;
         $deadscript;
     };
+    G.U.from = sub {#c
+        my ($S, $seek, $doing) = @_;
+        if (ref $seek ne "Way") {
+            my @i = 0S->rei({K=>$seek});
+            die "multi i from" if @i > 1;
+            $seek = shift @i;
+            die "no seek" unless ref $seek eq "Way";
+        }
+        my $old = 0S->visTp({i=>$seek});
+        $doing->();
+        $T = $old;
+    };
+    G.U.delete = sub {#c
+        my ($S, $seek) = @_;
+        if ($seek && $seek =~ /\/\*/) {
+            return 0S->from($_, sub { 0S->delete() }) for @{T.o}
+        }
+        T.i.dead = 1;
+    };
   V: 
     spawn: |
       my $V;
