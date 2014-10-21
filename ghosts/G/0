@@ -354,6 +354,7 @@ hooks:
         
         # 7/9
         
+        $S->w("T/traction", {u=>T.i});
         $S->w('extract_D', {}, T.i);
         
         # 8/9
@@ -537,10 +538,18 @@ hooks:
     G.U.delete = sub {#c
         my ($S, $seek) = @_;
         if ($seek && $seek =~ /\/\*/) {
-            return 0S->from($_, sub { 0S->delete() }) for @{T.o}
+            0S->from($_, sub { 0S->delete() }) for 0->Io(T.i);
+            return
         }
+        Say "deleting ".T.i->pint;
         T.i.dead = 1;
     };
+    
+    G.U.Io = sub {#c
+        my ($S, $u) = @_;
+        grep { _.G eq $S } @{u.Li.o};
+    };
+    
   V: 
     spawn: |
       my $V;
