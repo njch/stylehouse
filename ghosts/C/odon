@@ -47,11 +47,12 @@ C:
    styles: -tc
    S:
      Z:
-       width: 20em
+       -webkit-column-count: 2;
    travels_D: |
      0->TafuBl(Dir => {dir => "/s"});
+     0->TafuBl(Ghosts => {});
    
- - K: Dir
+ - K: Dir #c
    styles: padl
    flows_D: |
      S.name = "dir=$dir";
@@ -65,20 +66,34 @@ C:
  
  - K: File
    styles: padl
-   flows_D: |
-     $G->timer(0.1, sub { Sw E/_D; w uxd; }) if $file =~ /Ϡ/;
    E:
      _D: |
        Say "In Eveent S.K $file";
        my $ou = 0->TafuB(Oud => { oud => S.Lo.i }); # of Dir or so
        w $ou Codon[$file];
        
+ - K: Ghosts #c
+   styles: padl
+   flows_D: |
+     for my $GG (@{ $H->data->{Ghost} }) {
+         0->TafuBl(Ghost => { GG => $GG });
+     }
+   
+   
+ - K: Ghost
+   styles: padl
+   E:
+     _D: |
+       my $ou = 0->TafuB(Oud => { oud => S.Lo.i }); # of Dir or so
+       w $ou Ghost[$GG];
+       
  - K: Oud
    flows_D: |
      # some some
    Codon: |
-     
      0->visTp_TafuBlA({i=>$S}, [Codon => { file => $file }]);
+   Ghost: |
+     0->visTp_TafuBlA({i=>$S}, [GG => { GG => $GG }]);
        
  - K: Codw
    S:
