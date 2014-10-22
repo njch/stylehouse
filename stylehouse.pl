@@ -328,6 +328,8 @@ WebSocket.prototype.reply = function reply (stuff) {
 
 function clickon () { $(window).on("click", clickyhand); }
 function clickoff () { $(window).off("click", clickyhand); }
+function keyon () { $(window).on("keydown", keyhand); }
+function keyoff () { $(window).off("keydown", keyhand); }
 function clickyhand (event) {
     var tag = $(event.target);
     

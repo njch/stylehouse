@@ -9,7 +9,7 @@ GG:
          Ss: [u, x, X]
        M:
          Ss: [oud]
-         Z: {background: rgba(0,100,50,0.4), overflow: scroll, width: 30%, height: 100%, position: absolute}
+         Z: {background: rgba(0,100,50,0.4), overflow: scroll, width: 30%, height: 100%, position: absolute, left: 5%}
        ux:
          styles: tc
          spawn:
@@ -23,13 +23,16 @@ S:
     - K: codwide
       css:
         - width:30%
+    - K: wid5
+      css:
+        - width:50%
     - K: tc
       css: 
         - border-bottom:1px solid black
         - padding-left:2em
         - float:left
         - position:relative
-        - width:calc(100% - 2em)
+        - width:calc(100%)
         - background:rgba(150,100,50,0.1)
     - K: nonpadl
       css:
@@ -120,14 +123,18 @@ C:
      S.title = w Chunk/title[$S];
    E:
      S_D: |
-          S.styles = 0->Stytog(S.styles => 'z4');
+          S.styles = 0->Stytog(S.styles => 'z4 wid5');
+          die "Hello";
+          grep {_.K eq "CodeMirror"} @{S.Li.o};
      _D: |
+       if (e.C) {
+           return 0->delfrom($S);
+       }
        0->TafuBl("CodeMirror", {C => $S});
    S:
      styles: wanderleft3em antrail nonpadl
    ux:
      spawn:
-      - K: Codw
       - K: Tital
         styles: h2 contrim
  - K: Code #c
@@ -148,13 +155,15 @@ C:
      #die sw($S);
      T.t = join "\n", "y", @{C.B.lines};
    S:
+     styles: nonpadl
      sendo_init_D: |
          my $ux = $S->LioO('ux');
          my $cmc = "CodeMirror(document.getElementById('".ux.at.id."'), { "
              ."value: '".0->jsq(join "\n", @{C.B.lines})."', "
             ."mode:  'perl'"
              ."});";
-         $H->JS($cmc);
+             $G->timer(0.1,sub{$H->JS($cmc);});
+   ux: {spawn: []}
  - K: yaml #c
    arr_if: |
      -f $thing && $thing =~ /odon/ && 1
@@ -173,8 +182,7 @@ hooks:
   recoded_init: |
     my @a = 0->rei({K=>"Chunk"});
     my $s = $a[3];
-    sw[$a[3]];
-    s.title .= "blook";
+    #sw[$a[3]];
     w uxd; 
   percolate: |
     0->TafuB(Sources => {});
@@ -286,16 +294,20 @@ hooks:
     }
     waylay uxd;
   uxd: |
-    my @o = 0->scGre({});
-    my @new;
-    for my $oo (reverse @o) {
-        if (findO('ux', oo.i.o)) {
-            last if @new;
-        }
-        else {
-            push @new, oo.i;
-        }
+    my $chi = G.Vu.xC;
+    G.Vu.xC = [];
+    if ($chi && @$chi) {
+        say "part uxd ".@$chi;
+        G.GG.xC->w('ux', {is => $chi});
     }
-    #my $how = @new ? {is=>\@new} : ;
-    G.GG.xC->w('ux', {Ls=>\@o});
+    else {
+        my @o = 0->scGre({});
+        0->sing(alluxd => sub { G.GG.xC->w('ux', {Ls=>\@o}); });
+    }
+  v:
+    ch: |
+      push @{G.Vu.xC||return}, $u if u.G eq $G;
+  T:
+    traction: |
+      w v/ch[$u];
 
