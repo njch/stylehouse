@@ -130,7 +130,8 @@ C:
        if (e.C) {
            return 0->delfrom($S);
        }
-       0->TafuBl("CodeMirror", {C => $S});
+       return 0->TafuBl("CodeMirror", {C => $S});
+       return 0->TafuBl("Code", {C => $S});
    S:
      styles: wanderleft3em antrail nonpadl
    ux:
@@ -138,6 +139,8 @@ C:
       - K: Tital
         styles: h2 contrim
  - K: Code #c
+   flows_D: |
+     B.lines = C.B.lines;
    S:
      make_lines_html: |
        S.G->w(vimcolor => {string => join("\n", @{$lines})});
@@ -161,6 +164,7 @@ C:
          my $cmc = "var cm = CodeMirror(document.getElementById('".ux.at.id."'), { "
              ."value:'".0->jsq(join "\n", @{C.B.lines})."', "
             ."mode:'perl',"
+            ."theme:'base16-dark',"
             ."});"
             ."cm".".on('focus', function(){ clickoff();keyoff(); });"
             ."cm".".on('blur', function(){ clickon();keyon(); });";
