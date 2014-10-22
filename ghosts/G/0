@@ -256,7 +256,7 @@ hooks:
     G.U.TafuB = sub {
         my($S,$K,$B)=@_;
         my $ca = $S->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
-        if ($ca) {
+        if ($ca && !ca.dead) {
             return $ca;
         }
         0S->Tafu(0S->Bu($K, $B))
@@ -380,6 +380,7 @@ hooks:
         
         $T = $T->spawn;
         
+        $p = {i=>$p} if ref $p eq "Way";
         my $moved = p.i || p.L;
         if ($moved) {
             delete $T->{$_} for qw'i L t o';
@@ -422,7 +423,12 @@ hooks:
         my $S = shift;
         my $u = shift;
         
-        return $S->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)};
+        my $fo = $S->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)};
+        if ($fo && fo.dead) {
+            say "u.K found but dead";
+            $fo = undef;
+        }
+        return $fo if $fo;
         
         for my $LL (@{$S->W->{script}}) {
             my $i = LL.i;
@@ -430,6 +436,7 @@ hooks:
                 || (!exists u.K || i.K eq u.K)
                 && 0S->B_same($u => $i);
             if ($yup) {
+               say "found i.K in script";
                 return $i;
             }
         }
@@ -531,7 +538,7 @@ hooks:
             $seek = shift @i;
             die "no seek" unless ref $seek eq "Way";
         }
-        my $old = 0S->visTp({i=>$seek});
+        my $old = 0S->visTp($seek);
         $doing->();
         $T = $old;
     };
@@ -539,10 +546,18 @@ hooks:
         my ($S, $seek) = @_;
         if ($seek && $seek =~ /\/\*/) {
             0S->from($_, sub { 0S->delete() }) for 0->Io(T.i);
-            return
+            return;
         }
+        my $u = T.i;
+        my $L = T.L;
         Say "deleting ".T.i->pint;
+        
+        0S->deaccum(u.Lo, 'o', $u);
+        die sw[u.Li.W];
+        0S->deaccum(u.Li.W, 'script', $u);
+        delete u.Li;
         T.i.dead = 1;
+        
     };
     
     G.U.Io = sub {#c
