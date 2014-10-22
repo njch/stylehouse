@@ -23,20 +23,25 @@ S:
     - K: codwide
       css:
         - width:30%
-    - K: wid5
-      css:
-        - width:50%
     - K: tc
       css: 
         - border-bottom:1px solid black
-        - padding-left:2em
         - float:left
         - position:relative
         - width:calc(100%)
         - background:rgba(150,100,50,0.1)
-    - K: nonpadl
+    - K: padl
       css:
-        - padding-left:0em
+        - padding-left:2em
+    - K: wid5
+      css:
+        - width:50%
+    - K: wid2
+      css:
+        - width:20%
+    - K: disnon
+      css:
+        - display:none
 C:
  - K: Sources
    styles: -tc
@@ -47,6 +52,7 @@ C:
      0->TafuBl(Dir => {dir => "/s"});
    
  - K: Dir
+   styles: padl
    flows_D: |
      S.name = "dir=$dir";
    travels_D: |
@@ -58,6 +64,7 @@ C:
      }
  
  - K: File
+   styles: padl
    flows_D: |
      $G->timer(0.1, sub { Sw E/_D; w uxd; }) if $file =~ /Ϡ/;
    E:
@@ -95,7 +102,6 @@ C:
        
 
  - K: Codon
-   styles: nonpadl
    Gw: 1
    ux:
      spawn:
@@ -107,7 +113,7 @@ C:
             "C ar.ui.B.name";
      
  - K: Chunks
-   styles: bg018 nonpadl
+   styles: bg018
    travels_D: |
      my @CBs = w chunkify[$Codon];
      0->TafuBl(Chunk => $_) for @CBs;
@@ -122,10 +128,6 @@ C:
      B.name = B.i;
      S.title = w Chunk/title[$S];
    E:
-     S_D: |
-          S.styles = 0->Stytog(S.styles => 'z4 wid5');
-          die "Hello";
-          grep {_.K eq "CodeMirror"} @{S.Li.o};
      _D: |
        if (e.C) {
            return 0->delfrom($S);
@@ -133,7 +135,7 @@ C:
        return 0->TafuBl("CodeMirror", {C => $S});
        return 0->TafuBl("Code", {C => $S});
    S:
-     styles: wanderleft3em antrail nonpadl
+     styles: wanderleft3em antrail
    ux:
      spawn:
       - K: Tital
@@ -154,11 +156,7 @@ C:
             w $ui S/make_lines_html(e=>'');
            
  - K: CodeMirror #c
-   flows_D: |
-     #die sw($S);
-     T.t = join "\n", "y", @{C.B.lines};
    S:
-     styles: nonpadl
      sendo_init_D: |
          my $ux = $S->LioO('ux');
          my $cmc = "var cm = CodeMirror(document.getElementById('".ux.at.id."'), { "
@@ -200,9 +198,20 @@ hooks:
       0->TafuBl(Chunks => { Codon => $S });
     E:
       _D: |
-        my $Ch = 0->Ato($S => "Chunks");
-        sw([$S,$Ch]) for 1;
-        Ch.styles = 0->Stytog(Ch.styles => 'z4');
+        if (e.C) {
+            return 0->delfrom($S);
+        }
+        my @ch = 0->Ato($S => "Chunks");
+        unless (@ch) {
+            return Sw travels_D;
+        }
+        for (@ch) {
+            0->Stytog($_ => 'z4');
+            for (map { 0->Ato($_ => "Code.*") } 0->Ato($_ => "Chunk")) {
+                0->Stytog($_ => 'disnon');
+            }
+        }
+        0->Stytog($S => 'wid2');
         # ^ future: A Chunks;.style>tog # means $S/Chunks
         # or $Codon/Chunks # from non-$S wayspace...
         # this kinda stuff wants code sitting right across there more closely...

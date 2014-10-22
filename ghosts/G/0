@@ -496,18 +496,19 @@ hooks:
     };
     G.U.Ato = sub {#c
         my ($S, $w, $to) = @_;
-        (    grep { _.K eq $to } @{w.Li.o}    )[0]
+        grep { _.K =~ /^$to$/ } @{w.Li.o}
     };
     G.U.Stytog = sub {#c
-        my ($S, $styles, $s) = @_;
-        my @styles = split /\s+/, $styles;
+        my ($S, $u, $s) = @_;
+        my @styles = split /\s+/, u.styles;
         if (grep { $_ eq $s } @styles) {
             @styles = grep { $_ ne $s } @styles
         }
         else {
             push @styles, $s;
         }
-        return join ' ', @styles;
+        u.styles = join ' ', @styles;
+        $S->w('v/ch', {u=>$u});
     };
     G.U.wayray = sub {#c
         my ($S, $SS, $GG) = @_;
