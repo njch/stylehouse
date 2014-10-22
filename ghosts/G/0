@@ -530,34 +530,23 @@ hooks:
         delete W.ca;
         $deadscript;
     };
-    G.U.from = sub {#c
-        my ($S, $seek, $doing) = @_;
-        if (ref $seek ne "Way") {
-            my @i = 0S->rei({K=>$seek});
-            die "multi i from" if @i > 1;
-            $seek = shift @i;
-            die "no seek" unless ref $seek eq "Way";
+
+    G.U.delfrom = sub {#c
+        my ($S, $u) = @_;
+        for my $uu (0S->Io($u)) {
+            0S->del($uu);
         }
-        my $old = 0S->visTp($seek);
-        $doing->();
-        $T = $old;
     };
-    G.U.delete = sub {#c
-        my ($S, $seek) = @_;
-        if ($seek && $seek =~ /\/\*/) {
-            0S->from($_, sub { 0S->delete() }) for 0->Io(T.i);
-            return;
-        }
-        my $u = T.i;
-        my $L = T.L;
-        Say "deleting ".T.i->pint;
-        
+    G.U.del = sub {#c
+        my ($S, $u) = @_;
+        my $L = u.Li || die "wasnt";
+        Say "deleting ".$u->pint;
+
         0S->deaccum(u.Lo, 'o', $u);
-        die sw[u.Li.W];
-        0S->deaccum(u.Li.W, 'script', $u);
-        delete u.Li;
-        T.i.dead = 1;
-        
+        0S->deaccum(u.Li.W, 'script', $L);
+        u.dead = 1;
+
+        0S->del($_) for @{u.Li.o};
     };
     
     G.U.Io = sub {#c
