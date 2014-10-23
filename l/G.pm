@@ -5,9 +5,6 @@ use base 'Ghost';
 
 sub new {
     my $G = shift;
-    my $G = bless {}, shift;
-    shift->($G); delete $self->{hostinfo};
-    
     my ($name, $O, @ways) = @_;
     
     $G->{GGs} = []
@@ -24,7 +21,21 @@ sub new {
     
     push @{$G->{O}->{GGs}}, $G if ref $G->{O} =~ /^G/;
     
-    return $self;
+    return $G;
+}
+
+sub A {
+    my $G = shift;
+    my $u = bless {}, shift;
+    $G->{A}->t($u);
+    $H->intro->($u);
+    delete $u->{hostinfo};
+    $u->new(@_);
+}
+
+sub W {
+    my $G = shift;
+    $G->{W} ||= $G->A('W')
 }
 
 'stylehouse'

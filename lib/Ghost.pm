@@ -357,7 +357,6 @@ sub W {
     my $self = shift;
     $self->{T}->{W} = $self->{W} ||= Wormhole->new($H->intro, $self, "wormholes/$self->{name}/0");
 }
-
 sub load_ways {
     my $self = shift;
     my @ways = @_;
