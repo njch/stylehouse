@@ -7,7 +7,7 @@ sub new {
     my $G = shift;
     my ($name, $O, @ways) = @_;
     
-    $G->{GGs} = []
+    $G->{GGs} = [];
     $G->{O} = $O; # TODO A
     
     $G->W || die "no Wormhole?";
