@@ -1,7 +1,11 @@
 package G;
+our $H;
 use strict;
+use warnings;
 use utf8;
+use lib 'lib';
 use base 'Ghost';
+use feature 'say';
 
 sub new {
     my $G = shift;
@@ -10,7 +14,7 @@ sub new {
     $G->{GGs} = [];
     $G->{O} = $O; # TODO A
     
-    $G->W || die "no Wormhole?";
+    $G->{W} ||= $G->A('W') || die "no Wormhole?";
     
     my $way = join ", ", @ways;
     $G->{name} = "$name`($way)";
@@ -21,21 +25,18 @@ sub new {
     
     push @{$G->{O}->{GGs}}, $G if ref $G->{O} =~ /^G/;
     
-    return $G;
+    $G
 }
 
 sub A {
     my $G = shift;
-    my $u = bless {}, shift;
-    $G->{A}->t($u);
-    $H->intro->($u);
+    my $nb = shift;
+    my $u = bless {}, $nb;
+    $nb::H = $H;
+    $G->{A}->t($u) if $G->{A}; # installs $u->{A}
+    $H->intro->($u); # which replaces that
     delete $u->{hostinfo};
     $u->new(@_);
-}
-
-sub W {
-    my $G = shift;
-    $G->{W} ||= $G->A('W')
 }
 
 'stylehouse'

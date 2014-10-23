@@ -150,7 +150,7 @@ sub pty { my $t = shift; ref $t eq "Way" ? pint($t) : gpty($t) }
 sub gpty { ghostlyprinty('NOHTML',@_) };
 sub Flab {
     my $G = shift;
-    ref $G eq "Ghost" || die "send Ghost";
+    $G->isa("Ghost") || die "send Ghost";
     say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
         if $G->deeby && $_[0] !~ /^\w Error/;
     $G->ob(@_);

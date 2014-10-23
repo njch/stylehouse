@@ -2,12 +2,9 @@
 name: other stuff...
 G:
   - K: head
-    styles: bare
     D: |
-      package G;
-      use strict;
-      use utf8;
       use base 'Ghost';
+      use feature 'say';
       
   - K: new
     D: |
@@ -16,7 +13,7 @@ G:
       G.GGs = [];
       G.O = $O; # TODO A
       
-      $G->W || die "no Wormhole?";
+      G.W ||= $G->A('W') || die "no Wormhole?";
 
       my $way = join ", ", @ways;
       G.name = "$name`($way)";
@@ -26,46 +23,56 @@ G:
       $G->load_ways(@ways);
 
       push @{G.O.GGs}, $G if ref G.O =~ /^G/;
-      
-      return $G;
   
   - K: A
-    de: tractory, making perl objects
+    de: |
+      tractory, making perl objects from Ghost
+      H pretends to be A singularity to boot
     D: |
-      my $u = bless {}, shift;
-      G.A->t($u);
-      $H->intro->($u);
+      my $nb = shift;
+      my $u = bless {}, $nb;
+      $nb::H = $H;
+      G.A->t($u) if G.A; # installs u.A
+      $H->intro->($u); # which replaces that
       delete u.hostinfo;
       $u->new(@_);
-      
-  - K: W
+W:
+  - K: head
     D: |
-      G.W ||= $G->A('W')
+      use Set::Object 'set';
+  - K: new
+    D: |
+      W.name = W.A.O.name;
+      W.s = set();
 hooks:
   any_init: |
-    for my $nb (qw'A C G T') {
+    my $w = G.ways->[0];
+    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
         my $co = $G->anyway($nb);
         next unless $co;
-        my @code;
+        my @code = (
+            join "\n",
+            "package $nb;",
+            "our \$H;",
+            map { "use $_;" }
+                "strict", "warnings", "utf8", "lib 'lib'"
+        );
         for my $ch (@$co) {
             my $D = $G->parse_babble(ch.D);
+            ch.styles .= "bare" if ch.K eq "head";
             unless (ch.styles =~ /bare/) {
                 $D = "my \$$nb = shift;\n$D" unless ch.styles =~ /func/;
+                $D = "$D\n\$$nb"              if ch.K eq "new";
                 $D = ind('    ', $D);
                 $D = "sub ch.K {\n$D\n}\n";
             }
             push @code, $D;
         }
         push @code, "'stylehouse'";
-        write_file("l/${nb}.pm", join("\n", @code));
-            
-            
+        my $file = "l/${nb}.pm";
+        write_file($file, join("\n", @code));
         
-        
-        
-        
-        
-        
+        run "perl -c $file";
         
     }
 
