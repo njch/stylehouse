@@ -285,7 +285,7 @@ sub stackway {
         F => [@F],
         depth => 0+@F,
         thing => $thing,
-        print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, ghostlyprinty(@{$S->{thing}})',
+        print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, gpty(@{$S->{thing}})',
     });
     $w->from({Error=>$@}) if $@;
     $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
