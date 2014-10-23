@@ -90,7 +90,7 @@ C:
      S.B.now = {0,0,1,0};
      0->ing(6, lat => $S); 
    lat: |
-     return if w highload;
+     return if w highload[$S];
      return if w paused;
      Sw riv;
    riv: |
@@ -229,15 +229,17 @@ hooks:
     G.O->w('ux');
   Anims: |
     $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
-  highload: |
-     my $la = $H->la;
-     if (G.maxloadav && $la > G.maxloadav) {
-         sayre "load average is $la";
-         $H->snooze;
-         return 1;
-     }
-  paused: |
-    G.paused
+  r:
+    highload: |
+       my $la = $H->la;
+       if (G.maxloadav && $la > G.maxloadav) {
+           sayre "load average is $la"
+           (ar.S ? " ar.S.K" : "");
+           $H->snooze;
+           return 1;
+       }
+    paused: |
+      G.paused
   percolate: |
     my $BS = $G->anyway('perc_BS'); # G0
     return unless $BS;
@@ -250,7 +252,7 @@ hooks:
     w f/ph; w f/ph;
     w uxd;
     
-    $G->timer(10, sub { G.maxloadav = 2.5; });
+    $G->timer(10, sub { G.maxloadav = 1.2; });
     
   keys:
     t: w f/at;
