@@ -42,9 +42,12 @@ sub new {
     shift->($self);
     delete $self->{hostinfo}; # TODO put this back once travelling feels right
 
-    $self->{T} = shift;
+    my $name = shift;
+    if (ref $name eq "Travel") {
+        $self->{T} = $name;
+        $name = $name->{name};
+    }
     
-    my $name = $self->{T}->{name};
     $self->W || die "no Wormhole>?";
     
     $self->{O} = $self->{T}->{O};
@@ -336,7 +339,6 @@ sub T { # TODO funny
     $self->T->T(@_) if @_;
     $self->{T};
 }
-
 sub Gf {
     my ($G, $way) = @_;
     # TODO $G or $S etc A 

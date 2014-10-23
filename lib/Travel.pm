@@ -45,6 +45,7 @@ sub T {
         $i ||= $G->nw()->from({K=>'T?',flab=>$flab});
     }
     
+    say "Some Kind Of Oldschoolery $G->{name}" for 1..10;
     my @r = $G->haunt($T, $depth, $t, $i);
 
     return wantarray ? @r : shift @r;
