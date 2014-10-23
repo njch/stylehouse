@@ -1,4 +1,3 @@
-
 package G;
 use strict;
 use utf8;
@@ -28,4 +27,4 @@ sub new {
     return $self;
 }
 
-1;
+'stylehouse'

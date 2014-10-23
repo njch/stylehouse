@@ -38,7 +38,7 @@ hooks:
     for my $nb (qw'A C G T') {
         my $co = $G->anyway($nb);
         next unless $co;
-        my @code
+        my @code;
         for my $ch (@$co) {
             my $D = $G->parse_babble(ch.D);
             unless (ch.styles =~ /bare/) {
@@ -46,10 +46,10 @@ hooks:
                 $D = ind('    ', $D);
                 $D = "sub ch.K {\n$D\n}\n";
             }
-            $code .= "\n$D";
+            push @code, $D;
         }
-        $code .= "\n1;\n";
-        write_file("l/${nb}.pm", $code);
+        push @code, "'stylehouse'";
+        write_file("l/${nb}.pm", join("\n", @code));
             
             
         
