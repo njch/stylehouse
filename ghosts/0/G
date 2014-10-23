@@ -1,7 +1,8 @@
 
-name: G
-chunks: |
+name: other stuff...
+G:
   - K: head
+    styles: bare
     D: |
       package G;
       use strict;
@@ -34,3 +35,29 @@ chunks: |
    
 hooks:
   any_init: |
+    for my $nb (qw'A C G T') {
+        my $co = $G->anyway($nb);
+        next unless $co;
+        my @code
+        for my $ch (@$co) {
+            my $D = $G->parse_babble(ch.D);
+            unless (ch.styles =~ /bare/) {
+                $D = "my \$$nb = shift;\n$D" unless ch.styles =~ /func/;
+                $D = ind('    ', $D);
+                $D = "sub ch.K {\n$D\n}\n";
+            }
+            $code .= "\n$D";
+        }
+        $code .= "\n1;\n";
+        write_file("l/${nb}.pm", $code);
+            
+            
+        
+        
+        
+        
+        
+        
+        
+    }
+
