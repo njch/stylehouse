@@ -7,7 +7,6 @@ use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
 use HTML::Entities;
-use Way;
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 use List::MoreUtils 'uniq';
 sub ddump { Hostinfo::ddump(@_) }
