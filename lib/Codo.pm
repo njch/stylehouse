@@ -167,7 +167,8 @@ sub codolist {
             });
         },
         ѷ => sub {
-            $list->float();
+            my $deg = -180 + int(rand(360));
+            $H->JS("\$('body').css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
         },
         ɷ => sub {
             $_->away for @{ $self->{all_open} };
