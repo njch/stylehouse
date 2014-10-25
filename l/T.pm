@@ -8,9 +8,23 @@ use feature 'say';
 sub new {
     my $T = shift;
     $T->{i} = $T->{A}->{u}->{i};
-    die sw($T->{i});
+    $T->commit(@_);
     
     $T
+}
+
+sub commit {
+    my $T = shift;
+    push @{$T->{hist}||=[]}, $T->copi;
+}
+
+sub copi {
+    my $T = shift;
+    my $i = shift || $T->{i};
+    my $c = {};
+    for my $k (keys %$i) {
+    
+    }
 }
 
 'stylehouse'

@@ -157,7 +157,21 @@ T:
   - K: new
     D: |
       T.i = T.A.u.i;
-      die sw(T.i);
+      $T->commit(@_);
+  
+  - K: commit
+    D: |
+      push @{T.hist||=[]}, $T->copi;
+  
+  - K: copi
+    D: |
+      my $i = shift || T.i;
+      my $c = {};
+      for my $k (keys %$i) {
+            
+      }
+  
+      
 W:
   - K: head
     D: |

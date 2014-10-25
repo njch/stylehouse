@@ -239,11 +239,14 @@ hooks:
         }
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' };
-        my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:29pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
+        my $emb = sub { $inc->("rgba(255,200,200,0.0);font-size:33pt;position:absolute;left:-1em;top:-7px;", encode_entities(shift)) };
         my $contrail = sub {
             my $curve = shift;
             my $S = shift;
             $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>'
+        };
+        my $leftsub = sub {
+            $inc->("rgba(255,255,255,0.8);font-size:10pt;position:absolute;left:1em;bottom:3px;", shift)
         };
         my $color;
         my $name = "$t";
@@ -311,7 +314,12 @@ hooks:
                 $name =~ s/(rgba?\([\d, .]+\))/<t style="background:$1;">$1<\/t>/;
                 $name = $emb->($ref eq 'C' ? 'ල' : 'ϖ').$name;
             }
-            if ($ref =~ /^(T|G|W)/ && $ref ne "Way") { #c t s
+            if ($ref eq "T") {  #c t s
+                $name = "T for ".gpty(t.i);
+                my $size = scalar @{t.hist||[]};
+                $name = $leftsub->($size).$emb->('ඈ').$name;
+            }
+            if ($ref =~ /^(Travel|G|W)/ && $ref ne "Way") { #c t s
                 my $ty = $1;
                 my ($nb, $nl);
                 my $W;
