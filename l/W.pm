@@ -10,7 +10,7 @@ use base 'Wormhole';
 sub new {
     my $W = shift;
     $W->{name} = "$W->{A}->{u}->{i}->{name}"; # TODO A tract mixinout naming
-    $W->{G} = shift;
+    $W->{G} = $W->{A}->{u}->{i};
     $W->{n} = 0;
     $W->wormfile_load(shift);
     
