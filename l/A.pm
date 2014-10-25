@@ -10,4 +10,9 @@ sub new {
     $A
 }
 
+sub spawn0 {
+    my $A = shift;
+    $H
+}
+
 'stylehouse'

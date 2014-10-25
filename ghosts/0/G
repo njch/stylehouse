@@ -1,14 +1,30 @@
 
 name: other stuff...
-
 H:
+  - K: head
+    D: |
+        use Ghost;
+        sub wdump{Ghost::wdump(@_);}
+    
   - K: new
     D: |
-      # yeah!
+      die wdump($H); 
+  
+  - K: spawn0
+    D: |
+      my $nb = shift;
+      my $u = bless {}, $nb;
+      $nb::H = $H;
 A:
   - K: new
   
+  - K: spawn0
+    D: |
+      $H
 C:
+  - K: head
+    D: |
+      use base 'Way';
   - K: new
 G:
   - K: head
@@ -19,19 +35,13 @@ G:
   - K: new
     D: |
       my (@ways) = @_;
-      
-      G.W ||= $G->Av('W') || die "no Wormhole?";
-
-      my $way = join ", ", @ways;
-      G.name = "$name`($way)";
-      G.way = $way;
-      say "Ghost named G.name";
-      
       $G->load_ways(@ways);
-
-      push @{G.A.^.GGs}, $G if ref G.O =~ /^G/;
-  
-  - K: A
+      
+      G.W ||= G.A->spawn0('W');
+      G.name ||= G.A->path(name => 'G');
+      
+      
+  - K: Av
     de: |
       tractory, making perl objects from Ghost
       H pretends to be A singularity to boot ze Objs
@@ -53,34 +63,12 @@ W:
       W.name = W.A.O.name;
       W.s = set();
 hooks:
-  any_init: |
-    my $w = G.ways->[0];
-    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
-        my $co = $G->anyway($nb);
-        next unless $co;
-        my @code = (
-            join "\n",
-            "package $nb;",
-            "our \$H;",
-            map { "use $_;" }
-                "strict", "warnings", "utf8", "lib 'lib'"
-        );
-        for my $ch (@$co) {
-            my $D = $G->parse_babble(ch.D);
-            ch.styles .= "bare" if ch.K eq "head";
-            unless (ch.styles =~ /bare/) {
-                $D = "my \$$nb = shift;\n$D" unless ch.styles =~ /func/;
-                $D = "$D\n\$$nb"              if ch.K eq "new";
-                $D = ind('    ', $D);
-                $D = "sub ch.K {\n$D\n}\n";
-            }
-            push @code, $D;
-        }
-        push @code, "'stylehouse'";
-        my $file = "l/${nb}.pm";
-        write_file($file, join("\n", @code));
-        
-        run "perl -c $file";
-        
-    }
+
+  try: |
+    use lib 'l';
+    use H;
+    my $nH = H->new();
+    my $nG = $nH->spawn0( G => 'E/h' );
+      
+    die sw($nG->A('G'));
 

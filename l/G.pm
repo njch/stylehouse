@@ -9,26 +9,16 @@ use feature 'say';
 
 sub new {
     my $G = shift;
-    my ($name, $O, @ways) = @_;
-    
-    $G->{GGs} = [];
-    $G->{O} = $O; # TODO A
-    
-    $G->{W} ||= $G->A('W') || die "no Wormhole?";
-    
-    my $way = join ", ", @ways;
-    $G->{name} = "$name`($way)";
-    $G->{way} = $way;
-    say "Ghost named $G->{name}";
-    
+    my (@ways) = @_;
     $G->load_ways(@ways);
     
-    push @{$G->{O}->{GGs}}, $G if ref $G->{O} =~ /^G/;
+    $G->{W} ||= $G->{A}->spawn0('W');
+    $G->{name} ||= $G->{A}->path(name => 'G');
     
     $G
 }
 
-sub A {
+sub Av {
     my $G = shift;
     my $nb = shift;
     my $u = bless {}, $nb;
@@ -37,6 +27,10 @@ sub A {
     $H->intro->($u); # which replaces that
     delete $u->{hostinfo};
     $u->new(@_);
+}
+
+sub G {
+    my $G = shift;
 }
 
 'stylehouse'
