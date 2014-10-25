@@ -4,20 +4,42 @@ H:
   - K: head
     libglob: 'l/?.pm'
     D: |
+        use UUID;
         sub wdump{Ghost::wdump(@_);}
     
   - K: new
     D: |
-      $H = bless {}, $H;
+      $H = $H->spawn0('H');
       ___LIBGLOBETC
-      die wdump($A::H);
+      H.A = $H->spawn0('A');
       
-  
+      
+      
+  - K: spawn
+    D: |
+      my $uu = shift;
+      my $u = $H->spawn0(@_);
+      uu.A->
+      
   - K: spawn0
     D: |
       my $nb = shift;
       my $u = bless {}, $nb;
       $nb::H = $H;
+      u.id = mkuid(); # LEG .uuid
+      $u;
+  #Hmisc #c
+  - K: mkuid # H wide unique id
+    style: func
+    D: |
+        (mkuuid() =~ /^(\w+)-.+$/)[0];
+        
+  - K: mkuuid # make a number bigger than the universe
+    style: func
+    D: |
+      UUID::generate(my $i);
+      UUID::unparse($i, my $s);
+      $s
 A:
   - K: new
   
@@ -123,9 +145,8 @@ hooks:
     my $oh = $H;
     
     my $nH = H->new();
-    die "Hello";
     my $nG = $nH->spawn0( G => 'E/h' );
     
     $H = $oh;
-    die sw($nG->A('G'));
+    die sw($nG);
 

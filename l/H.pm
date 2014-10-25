@@ -10,19 +10,27 @@ use C;
 use G;
 use H;
 use W;
+use UUID;
 sub wdump{Ghost::wdump(@_);}
 
 sub new {
     my $H = shift;
-    $H = bless {}, $H;
+    $H = $H->spawn0('H');
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
     $W::H = $H;
-    die wdump($A::H);
+    $H->{A} = $H->spawn0('A');
     
     $H
+}
+
+sub spawn {
+    my $H = shift;
+    my $uu = shift;
+    my $u = $H->spawn0(@_);
+    $uu->{A}->
 }
 
 sub spawn0 {
@@ -30,6 +38,20 @@ sub spawn0 {
     my $nb = shift;
     my $u = bless {}, $nb;
     $nb::H = $H;
+    $u->{id} = mkuid(); # LEG .uuid
+    $u;
+}
+
+sub mkuid {
+    my $H = shift;
+    (mkuuid() =~ /^(\w+)-.+$/)[0];
+}
+
+sub mkuuid {
+    my $H = shift;
+    UUID::generate(my $i);
+    UUID::unparse($i, my $s);
+    $s
 }
 
 'stylehouse'
