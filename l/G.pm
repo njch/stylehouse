@@ -13,8 +13,10 @@ sub new {
     
     $G->{name} ||= $G->{A}->path(name => 'G');
     
-    $G->{W} ||= $G->{A}->spawn0('W');
+    die Ghost::sw($G);
+    $G->{W} ||= $G->{A}->spawn('W');
     
+    die Ghost::sw($G);
     $G->load_ways(@ways);
     
     $G

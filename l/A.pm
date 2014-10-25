@@ -15,7 +15,25 @@ sub new {
 
 sub spawn {
     my $A = shift;
-    $H->spawn(@_);
+    my $uu = $H->spawn(@_);
+    $A->{u}->{A}->An($uu);
+    $uu
+}
+
+sub An {
+    my $A = shift;
+    my $n = shift;
+    push @{$A->{n}}, $n;
+}
+
+sub path {
+    my $A = shift;
+    my $up;$up = sub {
+        my $u = shift;
+        return $u, $up->($u->{A}->{u}) if $u->{A} && $u->{A}->{u} && $u ne $u->{A}->{u};
+    };
+    my @path = reverse $up->($A->{u});
+    return join "/", map { ref $_ } @path;
 }
 
 'stylehouse'

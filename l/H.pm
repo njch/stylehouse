@@ -33,8 +33,10 @@ sub spawn {
     my $H = shift;
     my $uu = shift;
     my $u = $H->spawn0(@_);
-    ref $u ne 'A' &&
-        $H->spawn($u, 'A');
+    
+        $H->spawn($u, 'A') if ref $u ne 'A';
+        return $u->new($uu, @_) if ref $u eq 'A';
+    
     $u->new(@_);
 }
 

@@ -20,8 +20,10 @@ H:
     D: |
       my $uu = shift;
       my $u = $H->spawn0(@_);
-      ref $u ne 'A' &&
-          $H->spawn($u, 'A');
+      
+          $H->spawn($u, 'A') if ref $u ne 'A';
+          return $u->new($uu, @_) if ref $u eq 'A';
+          
       $u->new(@_);
       
       
@@ -53,7 +55,24 @@ A:
       
   - K: spawn
     D: |
-      $H->spawn(@_);
+      my $uu = $H->spawn(@_);
+      A.u.A->An($uu);
+      $uu
+      
+  - K: An
+    D: |
+      my $n = shift;
+      push @{A.n}, $n;
+      
+  - K: path
+    D: |
+      my $up;$up = sub {
+          my $u = shift;
+          return $u, $up->(u.A.u) if u.A && u.A.u && $u ne u.A.u;
+      };
+      my @path = reverse $up->(A.u);
+      return join "/", map { ref $_ } @path;
+      
       
     
 C:
@@ -73,8 +92,10 @@ G:
       
       G.name ||= G.A->path(name => 'G');
       
-      G.W ||= G.A->spawn0('W');
+      die Ghost::sw($G);
+      G.W ||= G.A->spawn('W');
       
+      die Ghost::sw($G);
       $G->load_ways(@ways);
       
   - K: Av
@@ -82,8 +103,7 @@ G:
 W:
   - K: new
     D: |
-      W.name = W.A.O.name;
-      W.s = set();
+      W.name = W.A.u.name;
 hooks:
 
   any_init: |
