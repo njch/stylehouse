@@ -22,13 +22,6 @@ sub new {
 
 sub Av {
     my $G = shift;
-    my $nb = shift;
-    my $u = bless {}, $nb;
-    $nb::H = $H;
-    $G->{A}->t($u) if $G->{A}; # installs $u->{A}
-    $H->intro->($u); # which replaces that
-    delete $u->{hostinfo};
-    $u->new(@_);
 }
 
 'stylehouse'

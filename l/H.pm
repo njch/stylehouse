@@ -22,9 +22,9 @@ sub new {
     $H::H = $H;
     $W::H = $H;
     
-    $H->spawn0('A')->new($H);
+    $H->spawn0('A')->new($H); 
     
-    $H->{G} = $H->spawn($H, 'G');
+    $H->{G} = $H->{A}->spawn($H, 'G');
     
     $H
 }
@@ -33,7 +33,9 @@ sub spawn {
     my $H = shift;
     my $uu = shift;
     my $u = $H->spawn0(@_);
-    $uu->{A}->spawn($u);
+    ref $u ne 'A' &&
+        $H->spawn($u, 'A');
+    $u->new(@_);
 }
 
 sub spawn0 {
@@ -42,7 +44,7 @@ sub spawn0 {
     my $u = bless {}, $nb;
     $nb::H = $H;
     $u->{id} = mkuid(); # LEG .uuid
-    $u;
+    $u
 }
 
 sub mkuid {
