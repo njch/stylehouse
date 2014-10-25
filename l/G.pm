@@ -10,10 +10,12 @@ use feature 'say';
 sub new {
     my $G = shift;
     my (@ways) = @_;
-    $G->load_ways(@ways);
+    
+    $G->{name} ||= $G->{A}->path(name => 'G');
     
     $G->{W} ||= $G->{A}->spawn0('W');
-    $G->{name} ||= $G->{A}->path(name => 'G');
+    
+    $G->load_ways(@ways);
     
     $G
 }
@@ -27,10 +29,6 @@ sub Av {
     $H->intro->($u); # which replaces that
     delete $u->{hostinfo};
     $u->new(@_);
-}
-
-sub G {
-    my $G = shift;
 }
 
 'stylehouse'

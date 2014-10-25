@@ -61,6 +61,38 @@ W:
       W.s = set();
 hooks:
 
+  any_init: |
+    my $w = G.ways->[0];
+    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
+        my $co = $G->anyway($nb);
+        next unless $co;
+        my @code = (
+            join "\n",
+            "package $nb;",
+            "our \$H;",
+            map { "use $_;" }
+                "strict", "warnings", "utf8", "lib 'lib'"
+        );
+        for my $ch (@$co) {
+            my $D = $G->parse_babble(ch.D);
+            ch.styles .= "bare" if ch.K eq "head";
+            unless (ch.styles =~ /bare/) {
+                $D = "my \$$nb = shift;\n$D" unless ch.styles =~ /func/;
+                $D = "$D\n\$$nb"              if ch.K eq "new";
+                $D = ind('    ', $D);
+                $D = "sub ch.K {\n$D\n}\n";
+            }
+            push @code, $D;
+        }
+        push @code, "'stylehouse'";
+        my $file = "l/${nb}.pm";
+        write_file($file, join("\n", @code));
+        
+        run "perl -c $file";
+        
+    }
+
+  
   try: |
     use lib 'l';
     use H;

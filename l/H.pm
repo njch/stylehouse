@@ -9,7 +9,7 @@ sub wdump{Ghost::wdump(@_);}
 
 sub new {
     my $H = shift;
-    die wdump($H); 
+    die wdump($H);
     
     $H
 }
