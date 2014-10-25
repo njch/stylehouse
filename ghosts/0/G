@@ -9,7 +9,8 @@ H:
   - K: new
     D: |
       $H = bless {}, $H;
-      die wdump($H);
+      ___LIBGLOBETC
+      die wdump($A::H);
       
   
   - K: spawn0
@@ -75,15 +76,28 @@ hooks:
             map { "use $_;" }
                 "strict", "warnings", "utf8", "lib 'lib'"
         );
+        my $btw = {};
         for my $ch (@$co) {
             my $D = $G->parse_babble(ch.D || ch.SD);
             
-            
-            ch.styles .= "bare"     if ch.K eq "head";
+            if (ch.K eq "head") {
+                ch.styles .= "bare";
+                if (my $lg = ch.libglob) {
+                    my @l = map { /\/(.+?)\.pm$/ } glob $lg;
+                    my ($l) = $lg =~ /^(.+)\/.+?$/;
+                    push @code, "use lib '$l';";
+                    push @code, "use $_;" for @l;
+                    btw.s.___LIBGLOBETC = join "\n",
+                        map { "\$${_}::H = \$H;" } @l;
+                }
+            }
             
             if (ch.styles !~ /bare/) {
+                $D =~ s/$_/btw.s->{$_}/seg for keys %{btw.s};
+                
                 # setup self
                 $D = "my \$$nb = shift;\n$D" if ch.styles !~ /func/;
+                
                 # return self
                 $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
                 
