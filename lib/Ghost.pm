@@ -751,7 +751,7 @@ sub doo {
         $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
         $DOOF .= ind("!   ", "$@")."\n"             if !$first;
         $DOOF .= ind("ar  ",wdump(1,$ar))             if $first;
-        $DOOF .= dooftip()                         if $first;
+        #$DOOF .= dooftip()                         if $first;
         
         my $OOF = $G->Flab("D Error $@", $DOOF, $D);
         if ($first) {

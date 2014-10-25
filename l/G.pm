@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use lib 'lib';
+use feature 'say';
 use base 'Ghost';
 use feature 'say';
 
@@ -13,10 +14,9 @@ sub new {
     
     $G->{name} ||= $G->{A}->path(name => 'G');
     
-    die Ghost::sw($G);
     $G->{W} ||= $G->{A}->spawn('W');
     
-    die Ghost::sw($G);
+    return $G;
     $G->load_ways(@ways);
     
     $G

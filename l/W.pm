@@ -4,9 +4,10 @@ use strict;
 use warnings;
 use utf8;
 use lib 'lib';
+use feature 'say';
 sub new {
     my $W = shift;
-    $W->{name} = $W->{A}->{u}->{name};
+    $W->{name} = "Wormhole!";
     
     $W
 }

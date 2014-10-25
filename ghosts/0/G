@@ -5,7 +5,7 @@ H:
     libglob: 'l/?.pm'
     D: |
         use UUID;
-        sub wdump{Ghost::wdump(@_);}
+        sub wdump{Ghost::wdump(@_)}
     
   - K: new
     D: |
@@ -14,15 +14,23 @@ H:
       
       $H->spawn0('A')->new($H); 
       
-      H.G = H.A->spawn($H, 'G');
+      #H.G = H.A->spawn($H, 'G');
       
   - K: spawn
     D: |
-      my $uu = shift;
-      my $u = $H->spawn0(@_);
+      my $a = shift;
+      my $u = $H->spawn0(@{a.r});
       
-          $H->spawn($u, 'A') if ref $u ne 'A';
-          return $u->new($uu, @_) if ref $u eq 'A';
+      say "H spawn!";
+      if (ref $u eq 'A') {
+          return $u->new(a.i);
+      }
+      else {
+          say "spinnn A for $u";
+          $H->spawn({i=>$u, r=>['A']});
+          say "spun A for $u";
+          a.uA->An($u);
+      }
           
       $u->new(@_);
       
@@ -30,10 +38,13 @@ H:
   - K: spawn0
     D: |
       my $nb = shift;
+      say "Spawn0 $nb";
+      die Ghost::sw($nb) if ref $nb;
       my $u = bless {}, $nb;
       $nb::H = $H;
-      u.id = mkuid(); # LEG .uuid
+      u.id = mkuid();
       $u
+      
   #Hmisc #c
   - K: mkuid # H wide unique id
     style: func
@@ -47,19 +58,17 @@ H:
       UUID::unparse($i, my $s);
       $s
 A:
-  - K: new
+  - K: new # link the thing A in
     D: |
-      my $u = shift;
-      A.u = $u;
-      u.A = $A;
+      my $i = shift;
+      A.i = $i;
+      i.A = $A;
       
-  - K: spawn
+  - K: spawn # make down
     D: |
-      my $uu = $H->spawn(@_);
-      A.u.A->An($uu);
-      $uu
+      $H->spawn({uA => $A, r=>[@_]});
       
-  - K: An
+  - K: An # link down
     D: |
       my $n = shift;
       push @{A.n}, $n;
@@ -92,10 +101,9 @@ G:
       
       G.name ||= G.A->path(name => 'G');
       
-      die Ghost::sw($G);
       G.W ||= G.A->spawn('W');
       
-      die Ghost::sw($G);
+      return $G;
       $G->load_ways(@ways);
       
   - K: Av
@@ -103,9 +111,19 @@ G:
 W:
   - K: new
     D: |
-      W.name = W.A.u.name;
+      W.name = "Wormhole!";
 hooks:
 
+  try: |
+    use lib 'l';
+    use H;
+    my $oh = $H;
+    
+    my $nH = H->new();
+    my $nG = $nH->spawn0( G => 'E/h' );
+    
+    $H = $oh;
+    die sw(nH.G->hi);
   any_init: |
       $G->timer(0.2,sub{waylay code;});
   code: |
@@ -118,7 +136,7 @@ hooks:
             "package $nb;",
             "our \$H;",
             map { "use $_;" }
-                "strict", "warnings", "utf8", "lib 'lib'"
+                "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
         );
         my $btw = {};
         for my $ch (@$co) {
@@ -161,14 +179,4 @@ hooks:
     waylay try;
 
   
-  try: |
-    use lib 'l';
-    use H;
-    my $oh = $H;
-    
-    my $nH = H->new();
-    my $nG = $nH->spawn0( G => 'E/h' );
-    
-    $H = $oh;
-    die sw(nH.G->hi);
 

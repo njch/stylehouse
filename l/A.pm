@@ -4,20 +4,19 @@ use strict;
 use warnings;
 use utf8;
 use lib 'lib';
+use feature 'say';
 sub new {
     my $A = shift;
-    my $u = shift;
-    $A->{u} = $u;
-    $u->{A} = $A;
+    my $i = shift;
+    $A->{i} = $i;
+    $i->{A} = $A;
     
     $A
 }
 
 sub spawn {
     my $A = shift;
-    my $uu = $H->spawn(@_);
-    $A->{u}->{A}->An($uu);
-    $uu
+    $H->spawn({uA => $A, r=>[@_]});
 }
 
 sub An {
