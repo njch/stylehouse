@@ -4,11 +4,11 @@ use strict;
 use warnings;
 use utf8;
 use lib 'lib';
-use Ghost;
 sub wdump{Ghost::wdump(@_);}
 
 sub new {
     my $H = shift;
+    $H = bless {}, $H;
     die wdump($H);
     
     $H

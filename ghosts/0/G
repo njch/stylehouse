@@ -2,13 +2,15 @@
 name: other stuff...
 H:
   - K: head
+    libglob: 'l/?.pm'
     D: |
-        use Ghost;
         sub wdump{Ghost::wdump(@_);}
     
   - K: new
     D: |
+      $H = bless {}, $H;
       die wdump($H);
+      
   
   - K: spawn0
     D: |
@@ -74,11 +76,17 @@ hooks:
                 "strict", "warnings", "utf8", "lib 'lib'"
         );
         for my $ch (@$co) {
-            my $D = $G->parse_babble(ch.D);
-            ch.styles .= "bare" if ch.K eq "head";
-            unless (ch.styles =~ /bare/) {
-                $D = "my \$$nb = shift;\n$D" unless ch.styles =~ /func/;
-                $D = "$D\n\$$nb"              if ch.K eq "new";
+            my $D = $G->parse_babble(ch.D || ch.SD);
+            
+            
+            ch.styles .= "bare"     if ch.K eq "head";
+            
+            if (ch.styles !~ /bare/) {
+                # setup self
+                $D = "my \$$nb = shift;\n$D" if ch.styles !~ /func/;
+                # return self
+                $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
+                
                 $D = ind('    ', $D);
                 $D = "sub ch.K {\n$D\n}\n";
             }
@@ -98,9 +106,12 @@ hooks:
   try: |
     use lib 'l';
     use H;
+    my $oh = $H;
+    
     my $nH = H->new();
     die "Hello";
     my $nG = $nH->spawn0( G => 'E/h' );
-      
+    
+    $H = $oh;
     die sw($nG->A('G'));
 
