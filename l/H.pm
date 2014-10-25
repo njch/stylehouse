@@ -22,6 +22,16 @@ sub new {
     $G::H = $H;
     $H::H = $H;
     $W::H = $H;
+    if (0) {
+    $G::G0 = $Ghost::G0;
+    @G::F = ();
+    @G::Flab = ();
+    $G::Ly = $Ghost::Ly;
+    $G::db = 0;
+    $G::MAX_FCURSION = 140;
+    $G::U = {};
+    $G::T = {};
+    }
     
     $H->spawn0('A')->new($H); 
     

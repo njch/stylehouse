@@ -644,8 +644,8 @@ sub doo {
     unless ($Ds) {
         my $eval = $G->parse_babble($babble, $point);
         my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
-        $download .= 'my $thing = $T->{t}; ' unless $ar->{thing};
-        $download .= 'my $O = $G->T->{O}; ' unless $ar->{O};
+        $download .= 'my $thing = $T->{t}; ' unless !exists($T->{t}) || $ar->{thing};
+        $download .= 'my $O = $G->{O}; ' unless $ar->{O};
         my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
         
         my @warnings = ("no warnings 'experimental';");
