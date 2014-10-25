@@ -10,6 +10,7 @@ use A;
 use C;
 use G;
 use H;
+use T;
 use W;
 use UUID;
 sub wdump{Ghost::wdump(@_)}
@@ -21,6 +22,7 @@ sub new {
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
+    $T::H = $H;
     $W::H = $H;
     
     $H->spawn0('A')->new($H); 

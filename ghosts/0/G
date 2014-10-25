@@ -107,6 +107,12 @@ G:
       G.W ||= G.A->spawn('W');
       
       $G->load_ways(@ways);
+
+  - K: nw
+    D: |
+      my $C = G.A->spawn('C');
+      $C->from({@_}) if @_;
+      $C
       
   - K: load_ways
     D: |
@@ -147,12 +153,11 @@ G:
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
-
-  - K: nw
+T:
+  - K: new
     D: |
-      my $C = G.A->spawn('C');
-      $C->from({@_}) if @_;
-      $C
+      T.i = T.A.u.i;
+      die sw(T.i);
 W:
   - K: head
     D: |
@@ -164,7 +169,6 @@ W:
       W.n = 0;
       $W->wormfile_load(shift);
 hooks:
-
   try: |
     use lib 'l';
     use H;
@@ -176,7 +180,6 @@ hooks:
     
     $H = $oh;
     my $E = nH.G->w(En => {M=>H.who.B.M});
-    my $d = {"" => {etc=>"Blah"}, d=>"G"};
     die sw($nG);
   any_init: |
       $G->timer(0.2,sub{waylay code;});

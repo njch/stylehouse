@@ -19,6 +19,13 @@ sub new {
     $G
 }
 
+sub nw {
+    my $G = shift;
+    my $C = $G->{A}->spawn('C');
+    $C->from({@_}) if @_;
+    $C
+}
+
 sub load_ways {
     my $G = shift;
     my @ways = @_;
@@ -58,13 +65,6 @@ sub load_ways {
     }
     
     $G->_0('_load_ways_post', {w=>$G->{ways}});
-}
-
-sub nw {
-    my $G = shift;
-    my $C = $G->{A}->spawn('C');
-    $C->from({@_}) if @_;
-    $C
 }
 
 'stylehouse'
