@@ -200,13 +200,14 @@ hooks:
             
         push @$menu, 'Ϡ' => sub { w go( nothing => $t ) };
         push @$menu, 'Ώ' => sub { w go( wormhole => $t ) }
-            if ref $t =~ /^W(?!ay)/;
-            
+           if ref $t eq "W" || ref $t eq "Wormhole";
+            # WTF DOESNT WORK if ref $t =~ /^(W|Wormhole)$/;
+
         push @$menu, 'Ώ' => sub { w go( wormhole => $t) }
         if $ineach && $ineach eq 'crawl_W_S';
             
-        push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
-            if ref $t =~ /^G/;
+        push @$menu, 'Ώ' => sub { w go( wormhole => t.W ) }
+            if ref $t eq "G" || ref $t eq "Ghost";
         #push @$menu, '⊟' => sub { w lcodon[$line] } if ref $t =~ /^[CG]/;
         push @$menu, '⊟' => sub { my $res = [$t->()]; w go(thing => $res) }
             if ref $t eq "CODE";
