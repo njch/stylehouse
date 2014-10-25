@@ -21,6 +21,51 @@ sub new {
 
 sub load_ways {
     my $G = shift;
+    my @ways = @_;
+    $G->{ways} ||= [];
+    $G->{wayfiles} ||= [];
+    $G->{load_ways_count}++;
+    
+    my $ldw = [];
+    while (defined( my $name = shift @ways )) {
+        my @files;
+    
+        my $base = "ghosts/$name";
+        if (-f $base) {
+            push @files, $base;
+        }
+        else {
+            push @files, grep { /\/\d+$/ } glob "$base/*";
+        }
+    
+        for my $file (@files) {
+            @$ws = grep { $_->{_wayfile} ne $file } @$ws;
+            @$wfs = grep { $_ ne $file } @$wfs;
+    
+            my $nw = $G->nw(name=>$name);
+            $nw->load($file);
+    
+            if (my $inc = $nw->{include}) {
+                for my $name (split ' ', $inc) {
+                    next if grep { $_->{name} eq $name } @{$G->{ways}};
+                    push @ways, $name;
+                }
+            }
+    
+            say "G $G->{name} w+ $nw->{name}";
+            push {$G->{wayfiles}}, $file;
+            push {$G->{ways}}, $nw;
+        }
+    
+        if (@files) {
+            $H->watch_ghost_way($self, $name, \@files);
+        }
+        else {
+            $H->error("No way! $name");
+        }
+    }
+    
+    $self->_0('_load_ways_post', {w=>$ws, %$p});
 }
 
 'stylehouse'
