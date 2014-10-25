@@ -119,16 +119,14 @@ G:
             my @files;
 
             my $base = "ghosts/$name";
-            if (-f $base) {
-                push @files, $base;
-            }
-            else {
-                push @files, grep { /\/\d+$/ } glob "$base/*";
-            }
+            push @files, glob($base),
+                grep { /\/\d+$/ } glob("$base/*");
+            die "$base -> ".join", ", @files;
 
             for my $file (@files) {
-                @$ws = grep { _._wayfile ne $file } @$ws;
-                @$wfs = grep { $_ ne $file } @$wfs;
+                # TODO pass an If object to 0->accum
+                @{G.ways} = grep { _._wayfile ne $file } @{G.ways};
+                @{G.wayfiles} = grep { $_ ne $file } @{G.wayfiles};
 
                 my $nw = $G->nw(name=>$name);
                 $nw->load($file);
@@ -141,23 +139,23 @@ G:
                 }
 
                 say "G G.name w+ nw.name";
-                push {G.wayfiles}, $file;
-                push {G.ways}, $nw;
+                push @{G.wayfiles}, $file;
+                push @{G.ways}, $nw;
             }
 
             if (@files) {
-                $H->watch_ghost_way($self, $name, \@files);
+                $H->watch_ghost_way($G, $name, \@files);
             }
             else {
                 $H->error("No way! $name");
             }
         }
 
-        $self->_0('_load_ways_post', {w=>$ws, %$p});
+        $G->_0('_load_ways_post', {w=>G.ways});
 W:
   - K: new
     D: |
-      W.name = "W.A.u.i.name"; # A tract mixinout naming
+      W.name = "W.A.u.i.name"; # TODO A tract mixinout naming
 hooks:
 
   try: |
