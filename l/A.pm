@@ -25,6 +25,13 @@ sub An {
     push @{$A->{n}}, $n;
 }
 
+sub Au {
+    my $A = shift;
+    my $u = shift;
+    die if $A->{u};
+    $A->{u} = $u;
+}
+
 sub path {
     my $A = shift;
     my $up;$up = sub {

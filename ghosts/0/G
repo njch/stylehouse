@@ -14,31 +14,29 @@ H:
       
       $H->spawn0('A')->new($H); 
       
-      #H.G = H.A->spawn($H, 'G');
+      H.G = H.A->spawn(G => 'H');
       
   - K: spawn
     D: |
       my $a = shift;
       my $u = $H->spawn0(@{a.r});
       
-      say "H spawn!";
+      say "H spawning $u";
       if (ref $u eq 'A') {
           return $u->new(a.i);
       }
       else {
-          say "spinnn A for $u";
           $H->spawn({i=>$u, r=>['A']});
-          say "spun A for $u";
           a.uA->An($u);
+          u.A->Au(a.uA);
       }
-          
-      $u->new(@_);
+      shift @{a.r};
+      $u->new(@{a.r});
       
       
   - K: spawn0
     D: |
       my $nb = shift;
-      say "Spawn0 $nb";
       die Ghost::sw($nb) if ref $nb;
       my $u = bless {}, $nb;
       $nb::H = $H;
@@ -73,6 +71,12 @@ A:
       my $n = shift;
       push @{A.n}, $n;
       
+  - K: Au # link up
+    D: |
+      my $u = shift;
+      die if A.u;
+      A.u = $u;
+      
   - K: path
     D: |
       my $up;$up = sub {
@@ -93,25 +97,22 @@ G:
   - K: head
     D: |
       use base 'Ghost';
-      use feature 'say';
       
   - K: new
     D: |
       my (@ways) = @_;
-      
-      G.name ||= G.A->path(name => 'G');
+      G.name = join "+", @ways;
       
       G.W ||= G.A->spawn('W');
       
-      return $G;
       $G->load_ways(@ways);
       
-  - K: Av
-    de: |
+  - K: load_ways
+    D: |
 W:
   - K: new
     D: |
-      W.name = "Wormhole!";
+      W.name = "Wormhole for W.A.u.i.name";
 hooks:
 
   try: |
@@ -123,7 +124,7 @@ hooks:
     my $nG = $nH->spawn0( G => 'E/h' );
     
     $H = $oh;
-    die sw(nH.G->hi);
+    die sw($nH);
   any_init: |
       $G->timer(0.2,sub{waylay code;});
   code: |

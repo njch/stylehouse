@@ -7,7 +7,7 @@ use lib 'lib';
 use feature 'say';
 sub new {
     my $W = shift;
-    $W->{name} = "Wormhole!";
+    $W->{name} = "Wormhole for $W->{A}->{u}->{i}->{name}";
     
     $W
 }

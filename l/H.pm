@@ -25,7 +25,7 @@ sub new {
     
     $H->spawn0('A')->new($H); 
     
-    #$H->{G} = $H->{A}->spawn($H, 'G');
+    $H->{G} = $H->{A}->spawn(G => 'H');
     
     $H
 }
@@ -35,24 +35,22 @@ sub spawn {
     my $a = shift;
     my $u = $H->spawn0(@{$a->{r}});
     
-    say "H spawn!";
+    say "H spawning $u";
     if (ref $u eq 'A') {
         return $u->new($a->{i});
     }
     else {
-        say "spinnn A for $u";
         $H->spawn({i=>$u, r=>['A']});
-        say "spun A for $u";
         $a->{uA}->An($u);
+        $u->{A}->Au($a->{uA});
     }
-    
-    $u->new(@_);
+    shift @{$a->{r}};
+    $u->new(@{$a->{r}});
 }
 
 sub spawn0 {
     my $H = shift;
     my $nb = shift;
-    say "Spawn0 $nb";
     die Ghost::sw($nb) if ref $nb;
     my $u = bless {}, $nb;
     $nb::H = $H;
