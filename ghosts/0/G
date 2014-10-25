@@ -8,7 +8,7 @@ H:
     
   - K: new
     D: |
-      die wdump($H); 
+      die wdump($H);
   
   - K: spawn0
     D: |
@@ -35,11 +35,12 @@ G:
   - K: new
     D: |
       my (@ways) = @_;
-      $G->load_ways(@ways);
       
-      G.W ||= G.A->spawn0('W');
       G.name ||= G.A->path(name => 'G');
       
+      G.W ||= G.A->spawn0('W');
+      
+      $G->load_ways(@ways);
       
   - K: Av
     de: |
@@ -53,10 +54,6 @@ G:
       $H->intro->($u); # which replaces that
       delete u.hostinfo;
       $u->new(@_);
-      
-  - K: G
-    D: |
-      
 W:
   - K: new
     D: |
@@ -68,6 +65,7 @@ hooks:
     use lib 'l';
     use H;
     my $nH = H->new();
+    die "Hello";
     my $nG = $nH->spawn0( G => 'E/h' );
       
     die sw($nG->A('G'));
