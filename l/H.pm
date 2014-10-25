@@ -21,7 +21,10 @@ sub new {
     $G::H = $H;
     $H::H = $H;
     $W::H = $H;
-    $H->{A} = $H->spawn0('A');
+    
+    $H->spawn0('A')->new($H);
+    
+    $H->{G} = $H->spawn($H, 'G');
     
     $H
 }
@@ -30,7 +33,7 @@ sub spawn {
     my $H = shift;
     my $uu = shift;
     my $u = $H->spawn0(@_);
-    $uu->{A}->
+    $uu->{A}->spawn($u);
 }
 
 sub spawn0 {

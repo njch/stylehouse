@@ -11,15 +11,16 @@ H:
     D: |
       $H = $H->spawn0('H');
       ___LIBGLOBETC
-      H.A = $H->spawn0('A');
       
+      $H->spawn0('A')->new($H);
       
+      H.G = $H->spawn($H, 'G');
       
   - K: spawn
     D: |
       my $uu = shift;
       my $u = $H->spawn0(@_);
-      uu.A->
+      uu.A->spawn($u);
       
   - K: spawn0
     D: |
@@ -43,7 +44,7 @@ H:
 A:
   - K: new
   
-  - K: spawn0
+  - K: spawn
     D: |
       $H
 C:

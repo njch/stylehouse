@@ -10,7 +10,7 @@ sub new {
     $A
 }
 
-sub spawn0 {
+sub spawn {
     my $A = shift;
     $H
 }
