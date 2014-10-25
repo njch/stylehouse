@@ -206,8 +206,8 @@ hooks:
         if $ineach && $ineach eq 'crawl_W_S';
             
         push @$menu, 'Ώ' => sub { w go( wormhole => $t->W ) }
-            if ref $t eq "Ghost" || ref $t eq "Travel";
-        #push @$menu, '⊟' => sub { w lcodon[$line] } if "$t" =~ /Codon|Ghost/;
+            if ref $t =~ /^G/;
+        #push @$menu, '⊟' => sub { w lcodon[$line] } if ref $t =~ /^[CG]/;
         push @$menu, '⊟' => sub { my $res = [$t->()]; w go(thing => $res) }
             if ref $t eq "CODE";
         
@@ -294,7 +294,7 @@ hooks:
                 $name =~ s/^((?:.+?\n){4}).+$/$1/s;
                 $s->{style}.="overflow:hidden";
             }
-            if ($ref eq "Way") {  #c t s
+            if ($ref eq "Way" || $ref eq 'C') {  #c t s
                 $name = $t->pint;
                 $fs = 12 if $t->{K} =~ /^m/;
                 $fs = 14 if length($name) > 20;
@@ -310,7 +310,7 @@ hooks:
                 $name =~ s/(rgba?\([\d, .]+\))/<t style="background:$1;">$1<\/t>/;
                 $name = $emb->('ϖ').$name;
             }
-            if ($ref =~ /(T|G|W)(host|ravel|ormhole)/) { #c t s
+            if ($ref =~ /^(T|G|W)/ && $ref ne "Way") { #c t s
                 my $ty = $1;
                 my ($nb, $nl);
                 my $W;
@@ -467,7 +467,7 @@ hooks:
           my @names = @cl;
           return scalar(@cl)." @names";
       }
-      my $l = $c->pint if $c && ref $c eq "Way";
+      my $l = $c->pint if $c && ref $c eq "Way";# =~ /^(Way|C)$/; # fucks it?
       unless (defined $l) {
           $l = 
           join ", ",

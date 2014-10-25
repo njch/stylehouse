@@ -31,7 +31,7 @@ hooks:
       }
     recoded_care_parents: |
         my $g = $S;
-        while ($g->{O} && ref $g->{O} eq "Ghost") {
+        while ($g->{O} && ref $g->{O} =~ /^G/) {
             $g->w("child_recoded_init", {S => $S}) if $g eq $S;
             $g = $g->{O};
             $g->w("any_child_recoded_init", {S => $S});
@@ -371,7 +371,7 @@ hooks:
         my ($S, $p, $fun) = @_;
         
         my $old;
-        if ($T && ref $T eq "Way") {
+        if ($T && ref $T =~ /^(Way|C)$/) {
             $old = $T;
         }
         else {
@@ -380,7 +380,7 @@ hooks:
         
         $T = $T->spawn;
         
-        $p = {i=>$p} if ref $p eq "Way";
+        $p = {i=>$p} if ref $p =~ /^(Way|C)$/;
         my $moved = p.i || p.L;
         if ($moved) {
             delete $T->{$_} for qw'i L t o';
@@ -513,10 +513,10 @@ hooks:
     G.U.wayray = sub {#c
         my ($S, $SS, $GG) = @_;
         $GG ||= $S;
-        die sw(\@_) if ref ${GG} ne "Ghost";
+        die sw(\@_) if ref ${GG} !~ /^G/;
         my $i = 0;
         for my $wS (@$SS) {
-            $SS->[$i] = $GG->nw(%$wS) unless ref $wS eq "Way";
+            $SS->[$i] = $GG->nw(%$wS) unless ref $wS =~ /^(Way|C)$/;
             $i++;
         }
     };

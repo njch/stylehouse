@@ -51,7 +51,6 @@ sub spawn {
 sub spawn0 {
     my $H = shift;
     my $nb = shift;
-    die Ghost::sw($nb) if ref $nb;
     my $u = bless {}, $nb;
     $nb::H = $H;
     $u->{id} = mkuid();
