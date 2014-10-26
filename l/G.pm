@@ -76,6 +76,7 @@ sub du {
     my $s = $a->{s} ||= dus();
     my $i = $a->{i};
     my $n = $a->{n};
+    $a->{e} ||= 2;
 
     my $c = {};
 
@@ -84,10 +85,17 @@ sub du {
     $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
     $is ||= $s->{default} || return {};
 
-    my @j = $is->{it}->($i);
-    for my $j (@j) {
-        $c->{$j->{k}} = $j->{v};
+    $a->{e} -= $is->{oh} || 1;
 
+    for my $j ($is->{it}->($i)) {
+        $c->{"$j->{k}"} = $j->{v};
+
+        if ($a->{e} >= 1) {
+            my $cu = du({%$a, i => $j->{v}});
+            while (my ($k, $v) = each %$cu) {
+                $c->{"$j->{k}".$k} = $v;
+            }
+        }
     }
 
 
@@ -98,14 +106,15 @@ sub dus {
     {
       ARRAY => {
         it => sub {
+          my $h = shift;
           my $i = 0;
-          map { { k => "[".$i++, v => $_ } } @{$_[0]}
+          map { { k => "[".$i++, v => $_ } } @$h
         },
       },
       HASH => {
         it => sub {
-          my $i = 0;
-          map { { k => "{".$_, v => $_ } } sort keys %{$_[0]}
+          my $h = shift;
+          map { { k => "{".$_, v => $h->{$_} } } sort keys %$h
         },
       },
     }
