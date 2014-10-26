@@ -7,6 +7,7 @@ use lib 'lib';
 use feature 'say';
 use base 'Ghost';
 sub wdump { Ghost::wdump(@_) };
+sub gpty { Ghost::wdump(@_) };
 sub sw { Ghost::sw(@_) };
 use YAML::Syck;
 
@@ -76,12 +77,13 @@ sub du {
     my $s = $a->{s} ||= dus();
     my $i = $a->{i};
     my $n = $a->{n};
-    $a->{e} ||= 2;
+    $a->{e} = 2 if !exists $a->{e};
 
     my $c = {};
     push @{$a->{as}||=[]}, $a;
-    return {} if @{$a->{as}} > 9 || 1 < grep {ref $_->{i} && $_->{i} eq $i} @{$a->{as}};
+    return {} if @{$a->{as}} > 9 || 2 < grep {ref $_->{i} && $_->{i} eq $i} @{$a->{as}};
 
+    die "undow ".sw($a) if !defined $a->{e};
     my $ref = ref $i;
     my $is = $s->{$ref} || $s->{default};
     $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
@@ -97,20 +99,24 @@ sub du {
         $j = {%$is, %$j};
         my $an = {%$a, i => $v};
 
-        $an->{e} -= $j->{oh} || 0.5; # ohms
-        say "$k j oh $j->{oh}\t-> $an->{e}" if $j->{oh};
+        my $ohms = defined $j->{oh} ? $j->{oh} : 1;
+        $an->{e} -= $ohms;
 
+
+        say Ghost::gpty($i).join("", ("  ") x scalar(@{$a->{as}}))
+            ." $a->{e} - $ohms  $k\t $an->{e} ";
 
         if ($an->{e} >= 1) {
             my $cu = du($an);
-            # may someday zip into dus again for fractions
-            # to display only 2
+            # may someday zip into dus again for HASH key importance
+            # data as fractions of energy that enlightens what kus
             # $an->{s} can be modded from above as meaning builds up
-            # then lookup which kus to grab all the way up to $an->{e}
             while (my ($ku, $vu) = each %$cu) {
                 $c->{$k.$ku} = $vu;
             }
         }
+
+        $c->{$k.'   e'} = $an->{e};
     }
 
 
@@ -137,7 +143,7 @@ sub dus {
       oh => 2.8,
     };
     $h->{Ghost} = { it => $h->{HASH}->{it},
-      oh => 2.8,
+      oh => 0.6,
     };
     $h
 }

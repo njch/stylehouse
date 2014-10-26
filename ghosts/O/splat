@@ -231,12 +231,9 @@ hooks:
             # means we want bring $t->{filename} to the surface and show here
             # organicness just around the corner.....
         }
-        "$t";
+        "$t"; # done over once style
       s: |
         my $t = $line->{t};
-        if ($splatname eq "path") {
-            $t = $t->{B}->{thing};
-        }
         die $s->{value} if ref $s->{value};
         my $inc = sub { $s->{html}=1;'<t style="color:'.shift.';">'.shift.'</t>' }; 
         my $emb = sub { 
@@ -391,7 +388,7 @@ hooks:
             my $v = $t;
             $color = "47B247";
             if (!defined $t) {
-                $v = "~undef";
+                $v = "~undef!";
                 $color = '000';
             }
             if (length($v) > 2700) {
@@ -444,7 +441,11 @@ hooks:
         .(($line->{depth}) * 5 + 3)."em;"
             if $line->{depth} > 0;
         
-        s.style .= "text-align:left;" if s.value =~ /\{\{/;
+        if (s.value =~ /\{\{/) {
+            my $width = 0;
+            while (s.value =~ /\{/g) { $width++ };
+            s.style .= "text-align:left;padding-left:".$width."0em;";
+        }
         my $K = $b->{c}->{K};
         
         my $ilt = $line->{i}->{B}->{Lo}->{t};
