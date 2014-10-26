@@ -72,24 +72,50 @@ sub load_ways {
 
 sub du {
     my $a = shift;
-    die "\n\n yepy yep". Ghost::wdump($a);
     # ho$G->w("to", { %$ar }) get around the Objs' data
-    my $du = dus();
-
+    my $s = $a->{s} ||= dus();
     my $i = $a->{i};
+    my $n = $a->{n};
+
     my $c = {};
+
+    my $ref = ref $i;
+    my $is = $s->{$ref} || $s->{default};
+    $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
+    $is ||= $s->{default} || return {};
+
+    my @j = $is->{it}->($i);
+    for my $j (@j) {
+        $c->{$j->{k}} = $j->{v};
+
+    }
+
+
     for my $k (keys %$i) {
-        $c->{$k} = $i->{$k};
+        my $v = $c->{$k} = $i->{$k};
+        if (ref $v eq "ARRAY") {
+            my $cu = du({%$a, i => $v});
+
+        }
     }
     $c
 }
 
 sub dus {
-    Load(<<"");
-      G:
-        - lead to W which leads to Wsize
-
-    #
+    {
+      ARRAY => {
+        it => sub {
+          my $i = 0;
+          map { { k => "[".$i++, v => $_ } } @{$_[0]}
+        },
+      },
+      HASH => {
+        it => sub {
+          my $i = 0;
+          map { { k => "{".$_, v => $_ } } sort keys %{$_[0]}
+        },
+      },
+    }
 }
 
 'stylehouse'
