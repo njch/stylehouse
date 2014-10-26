@@ -98,13 +98,15 @@ sub du {
         my $an = {%$a, i => $v};
 
         $an->{e} -= $j->{oh} || 0.5; # ohms
-        say "$k j oh\$tj->{oh}\t-> $an->{e}" if $j->{oh};
+        say "$k j oh $j->{oh}\t-> $an->{e}" if $j->{oh};
 
 
         if ($an->{e} >= 1) {
             my $cu = du($an);
             # may someday zip into dus again for fractions
             # to display only 2
+            # $an->{s} can be modded from above as meaning builds up
+            # then lookup which kus to grab all the way up to $an->{e}
             while (my ($ku, $vu) = each %$cu) {
                 $c->{$k.$ku} = $vu;
             }
@@ -131,8 +133,10 @@ sub dus {
         },
       },
     };
-    $h->{A} = {
-      it => $h->{HASH}->{it},
+    $h->{A} = { it => $h->{HASH}->{it},
+      oh => 2.8,
+    };
+    $h->{Ghost} = { it => $h->{HASH}->{it},
       oh => 2.8,
     };
     $h
