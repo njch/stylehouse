@@ -91,13 +91,6 @@ sub du {
     }
 
 
-    for my $k (keys %$i) {
-        my $v = $c->{$k} = $i->{$k};
-        if (ref $v eq "ARRAY") {
-            my $cu = du({%$a, i => $v});
-
-        }
-    }
     $c
 }
 
