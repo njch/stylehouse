@@ -168,10 +168,11 @@ G:
       a.e = 2 if !exists a.e;
       
       my $c = {};
-      push @{a.as||=[]}, $a;
-      return {} if @{a.as} > 9 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
+      a.as ||= [];
+      push @{a.as}, $a;
       
-      die "undow ".sw($a) if !defined a.e;
+      return {} if @{a.as} > 24 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
+      
       my $ref = ref $i;
       my $is = $s->{$ref} || $s->{default};
       $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
@@ -191,8 +192,8 @@ G:
           an.e -= $ohms;
           
           
-          say Ghost::gpty($i).join("", ("  ") x scalar(@{a.as}))
-              ." a.e - $ohms  $k\t an.e ";
+          say join("", ("  ") x scalar(@{a.as}))
+              ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($i);
           
           if (an.e >= 1) {
               my $cu = du($an);
