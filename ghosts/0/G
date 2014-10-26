@@ -182,14 +182,16 @@ G:
       
       # may someday zip into dus again for HASH key importance
       # data as fractions of energy that enlightens what kus
-      # an.s can be modded from above as meaning builds up
-      my $mustb = map { $_ => 1 } @{s.mustb} if s.mustb;
+      # an.s can be modded as meaning builds down
+      my $mustb = { map { $_ => 1 } split ',', is.mustb } if is.mustb;
       
       for my $j (is.it->($i)) {
           my $k = delete j.k;
           my $v = delete j.v;
           
-          $c->{$k} = $v;
+          #$c->{$k} = $v;
+          my $rk = $k." e=a.e";
+          $c->{$rk} = $v;
           
           next if !ref $v;
           
@@ -200,21 +202,24 @@ G:
           
           an.e -= $ohms;
           
+          delete $c->{$rk};
+          $rk .".. an.e";
+          $c->{$rk} = $v;
+          
           say join("", ("  ") x scalar(@{a.ds}))
               ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($i);
                     
-          delete $c->{$k};       
-          $c->{$k." e=an.e"} = $v;
-          
           if (an.e >= 1) {
               my $cu = du($an);
               while (my ($ku, $vu) = each %$cu) {
                   $c->{$k.$ku} = $vu;
               }
           }
-          elsif (an.e > 0 && a.e < 1 && $mustb && !$mustb->{$k}) {
-              delete $c->{$k};
+          elsif (an.e > 0 && a.e < 1 && $mustb){# && !$mustb->{$k}) {
+              $c->{$rk} = '-------';
+              die sw( $mustb);
           }
+              die sw( $mustb) if $mustb;
       }
       
       
