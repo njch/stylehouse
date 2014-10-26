@@ -8,6 +8,7 @@ use feature 'say';
 sub new {
     my $T = shift;
     $T->{i} = $T->{A}->{u}->{i};
+    $T->{i}->{T} = $T;
     $T->name(shift);
     $T->commit(shift);
 
