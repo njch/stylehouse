@@ -8,21 +8,29 @@ use feature 'say';
 sub new {
     my $T = shift;
     $T->{i} = $T->{A}->{u}->{i};
-    $T->commit(@_);
+    $T->name(shift);
+    $T->commit(shift);
 
     $T
 }
 
-sub commit {
+sub name {
     my $T = shift;
-    push @{$T->{L}||=[]}, {
-        B => G::du({ O=>$T, 
-        name => [@_],
-    };
+    $T->{name} = shift || Ghost::gpty($T->{A}->{u}->{i});
 }
 
-sub copi {
+sub commit {
     my $T = shift;
+    my $mes = shift;
+    $T->{L} ||= [];
+    $mes ||= "init" if !@{$T->{L}};
+    $mes ||= "?";
+    my $L = {
+        B => G::du({ O=>$T, i=>$T->{A}->{u}->{i} }),
+        mes => $mes,
+    };
+    push @{$T->{L}||=[]}, $L;
+    $T->{HEAD} = $T->{L}->[-1];
 }
 
 'stylehouse'

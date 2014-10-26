@@ -60,12 +60,10 @@ sub spawn0 {
 }
 
 sub mkuid {
-    my $H = shift;
     (mkuuid() =~ /^(\w+)-.+$/)[0];
 }
 
 sub mkuuid {
-    my $H = shift;
     UUID::generate(my $i);
     UUID::unparse($i, my $s);
     $s

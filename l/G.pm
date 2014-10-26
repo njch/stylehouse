@@ -6,6 +6,8 @@ use utf8;
 use lib 'lib';
 use feature 'say';
 use base 'Ghost';
+sub wdump { Ghost::wdump(@_) };
+sub sw { Ghost::sw(@_) };
 use YAML::Syck;
 
 sub new {
@@ -69,22 +71,20 @@ sub load_ways {
 }
 
 sub du {
-    my $G = shift;
-    my $d = shift;
+    my $a = shift;
+    die "\n\n yepy yep". Ghost::wdump($a);
     # ho$G->w("to", { %$ar }) get around the Objs' data
     my $du = dus();
 
-    my $i = $_[0] || $T->{i};
+    my $i = $a->{i};
     my $c = {};
     for my $k (keys %$i) {
         $c->{$k} = $i->{$k};
     }
     $c
-    say "ETc";
 }
 
 sub dus {
-    my $G = shift;
     Load(<<"");
       G:
         - lead to W which leads to Wsize

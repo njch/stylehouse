@@ -98,6 +98,8 @@ G:
   - K: head
     D: |
       use base 'Ghost';
+      sub wdump { Ghost::wdump(@_) };
+      sub sw { Ghost::sw(@_) };
       use YAML::Syck;
       
   - K: new
@@ -158,6 +160,7 @@ G:
     style: func
     D: |
       my $a = shift;
+      die "\n\n yepy yep". Ghost::wdump($a);
       # how to get around the Objs' data
       my $du = dus();
       
@@ -181,18 +184,26 @@ T:
   - K: new
     D: |
       T.i = T.A.u.i;
-      $T->commit(@_);
+      $T->name(shift);
+      $T->commit(shift);
+      
+  - K: name
+    D: |
+      T.name = shift || Ghost::gpty(T.A.u.i);
   
   - K: commit
     D: |
-      push @{T.L||=[]}, {
-          B => G::du({ O=>$T, 
-          name => [@_],
+      my $mes = shift;
+      T.L ||= [];
+      $mes ||= "init" if !@{T.L};
+      $mes ||= "?";
+      my $L = {
+          B => G::du({ O=>$T, i=>T.A.u.i }),
+          mes => $mes,
       };
-  
-  - K: copi
-    D: |
-  
+      push @{T.L||=[]}, $L;
+      T.HEAD = T.L->[-1];
+      
       
 W:
   - K: head
@@ -237,7 +248,7 @@ hooks:
             my $D = $G->parse_babble(ch.D || ch.SD);
             
             if (ch.K eq "head") {
-                ch.styles .= "bare";
+                ch.style .= "bare";
                 if (my $lg = ch.libglob) {
                     my @l = map { /\/(.+?)\.pm$/ } glob $lg;
                     my ($l) = $lg =~ /^(.+)\/.+?$/;
@@ -248,11 +259,11 @@ hooks:
                 }
             }
             
-            if (ch.styles !~ /bare/) {
+            if (ch.style !~ /bare/) {
                 $D =~ s/$_/btw.s->{$_}/seg for keys %{btw.s};
                 
                 # setup self
-                $D = "my \$$nb = shift;\n$D" if ch.styles !~ /func/;
+                $D = "my \$$nb = shift;\n$D" if ch.style !~ /func/;
                 
                 # return self
                 $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
