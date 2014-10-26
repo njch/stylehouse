@@ -180,20 +180,36 @@ G:
       $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
       $is ||= $s->{default} || return {};
       
-      # may someday zip into dus again for HASH key importance
-      # data as fractions of energy that enlightens what kus
-      # an.s can be modded as meaning builds down
+      # $mustb
+      # does HASH key importance if 0>e<1
+      # travels every thing      if e>=1
+      #                also      if 0.5<e<1
+      # since it must want to know links by then
+      
+      # there's some more flipping around: TODO
+      # an e mod possibly coming from mustb (missing part)
+      # so some mustb key can e above 0.5 and see travel
+      
+      # could return somehow weighted graph, hmm
+      # oldworld really doesn't like that idea
+      # maybe if du was grabbed as more abstract chunks with A action
+      # driving the new codons basically...
+      
+      # snapping branches off the concept of ^ for now
+      
+      # we sculpt data as fractions of energy that enlightens the 1-9 meanings
+      # fuck binary
+      
+      # an.s, etc can be modded as meaning builds down
+      # but only for 
+      # (separado until much future brings everything together)
+      
       my $mustb = { map { $_ => 1 } split ',', is.mustb } if is.mustb;
       
       for my $j (is.it->($i)) {
           my $k = delete j.k;
+          my $K = delete j.K;
           my $v = delete j.v;
-          
-          #$c->{$k} = $v;
-          my $rk = $k." e=a.e";
-          $c->{$rk} = $v;
-          
-          next if !ref $v;
           
           $j = {%$is, %$j};
           my $an = {%$a, i => $v};
@@ -202,24 +218,21 @@ G:
           
           an.e -= $ohms;
           
-          delete $c->{$rk};
-          $rk .".. an.e";
+          my $rk .= "$k e=a.e .. an.e";
           $c->{$rk} = $v;
           
           say join("", ("  ") x scalar(@{a.ds}))
-              ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($i);
+              ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($v);
                     
-          if (an.e >= 1) {
+          if (an.e >= 1 && ref an.i) {
               my $cu = du($an);
               while (my ($ku, $vu) = each %$cu) {
                   $c->{$k.$ku} = $vu;
               }
           }
-          elsif (an.e > 0 && an.e < 1 && $mustb){# && !$mustb->{$k}) {
-              $c->{$rk} = '-------';
-              die sw($mustb);
+          elsif (an.e > 0 && an.e < 1 && $mustb && !$mustb->{$K}) {
+              delete $c->{$rk};
           }
-              die sw([$mustb, an.e]) if $mustb;
       }
       
       
@@ -240,7 +253,7 @@ G:
           HASH => {
             it => sub {
               my $h = shift;
-              map { { k => "{".$_, v => $h->{$_} } } sort keys %$h
+              map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
             },
           },
         };
@@ -249,10 +262,10 @@ G:
             my $i = $h->{$k} ||= {it => h.HASH.it};
             %$i = (%$i, @_);
         };
-        $an->(qw'A oh 2.8');
+        $an->(qw'A oh 0.8');
         $an->(qw'Ghost oh 0.8');
         $an->(qw'G oh 0.8');
-        $an->(qw'W oh 0.8 mustb id,hash,file,G');
+        $an->(qw'W oh 0.8 mustb','id,hash,file,G');
         $h
       
 T:
@@ -354,9 +367,9 @@ hooks:
         my $file = "l/${nb}.pm";
         write_file($file, join("\n", @code));
         
-        run "perl -c $file";
         
     }
+    run "perl -c l/H*";
     
     waylay try;
 
