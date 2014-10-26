@@ -24,11 +24,11 @@ sub new {
     $H::H = $H;
     $T::H = $H;
     $W::H = $H;
-    
+
     $H->spawn0('A')->new($H); 
-    
+
     $H->{G} = $H->{A}->spawn(G => 'H');
-    
+
     $H
 }
 
@@ -36,7 +36,7 @@ sub spawn {
     my $H = shift;
     my $a = shift;
     my $u = $H->spawn0(@{$a->{r}});
-    
+
     say "H spawning $u";
     if (ref $u eq 'A') {
         return $u->new($a->{i});

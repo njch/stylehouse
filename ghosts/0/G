@@ -98,6 +98,7 @@ G:
   - K: head
     D: |
       use base 'Ghost';
+      use YAML::Syck;
       
   - K: new
     D: |
@@ -153,6 +154,22 @@ G:
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
+  - K: du #c
+    D: |
+      my $d = shift;
+      # how to get around the Objs' data
+      my $du = $G->dus;
+      
+      say "ETc";
+      
+  - K: dus
+    D: |
+      Load(<<"");
+        G:
+          - lead to W which leads to Wsize
+      
+      #
+      
 T:
   - K: new
     D: |
@@ -161,15 +178,16 @@ T:
   
   - K: commit
     D: |
-      push @{T.hist||=[]}, $T->copi;
+      push @{T.B||=[]}, $T->copi;
   
   - K: copi
     D: |
-      my $i = shift || T.i;
+      my $i = $_[0] || T.i;
       my $c = {};
       for my $k (keys %$i) {
-            
+          $c->{$k} = $i->{$k};
       }
+      $c
   
       
 W:
@@ -194,7 +212,8 @@ hooks:
     
     $H = $oh;
     my $E = nH.G->w(En => {M=>H.who.B.M});
-    die sw($nG);
+    my $t = nG.A->spawn('T');
+    die sw($t);
   any_init: |
       $G->timer(0.2,sub{waylay code;});
   code: |
@@ -235,6 +254,7 @@ hooks:
                 $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
                 
                 $D = ind('    ', $D);
+                $D =~  s/^    $//sgm;
                 $D = "sub ch.K {\n$D\n}\n";
             }
             push @code, $D;

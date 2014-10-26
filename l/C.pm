@@ -10,7 +10,7 @@ use base 'Way';
 sub new {
     my $C = shift;
     $C->{G} = $C->{A}->{u}->{i};
-    
+
     $C
 }
 

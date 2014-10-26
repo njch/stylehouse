@@ -13,7 +13,7 @@ sub new {
     $W->{G} = $W->{A}->{u}->{i};
     $W->{n} = 0;
     $W->wormfile_load(shift);
-    
+
     $W
 }
 

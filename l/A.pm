@@ -10,7 +10,7 @@ sub new {
     my $i = shift;
     $A->{i} = $i;
     $i->{A} = $A;
-    
+
     $A
 }
 
