@@ -165,47 +165,56 @@ G:
       my $s = a.s ||= dus();
       my $i = a.i;
       my $n = a.n;
-      a.e = 2 if !exists a.e;
+      a.e = 2 if !defined a.e;
       
       my $c = {};
       a.as ||= [];
+      die sw($a) if !defined a.i;
       push @{a.as}, $a;
+      a.ds = [@{a.ds||[]}, $a];
       
-      return {} if @{a.as} > 24 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
+      return {} if @{a.ds} > 12 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
       
       my $ref = ref $i;
       my $is = $s->{$ref} || $s->{default};
       $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
       $is ||= $s->{default} || return {};
       
+      # may someday zip into dus again for HASH key importance
+      # data as fractions of energy that enlightens what kus
+      # an.s can be modded from above as meaning builds up
+      my $mustb = map { $_ => 1 } @{s.mustb} if s.mustb;
+      
       for my $j (is.it->($i)) {
-            die if !$j;
           my $k = delete j.k;
           my $v = delete j.v;
           
           $c->{$k} = $v;
           
+          next if !ref $v;
+          
           $j = {%$is, %$j};
           my $an = {%$a, i => $v};
           
           my $ohms = defined j.oh ? j.oh : 1;
+          
           an.e -= $ohms;
           
-          
-          say join("", ("  ") x scalar(@{a.as}))
+          say join("", ("  ") x scalar(@{a.ds}))
               ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($i);
+                    
+          delete $c->{$k};       
+          $c->{$k." e=an.e"} = $v;
           
           if (an.e >= 1) {
               my $cu = du($an);
-              # may someday zip into dus again for HASH key importance
-              # data as fractions of energy that enlightens what kus
-              # an.s can be modded from above as meaning builds up
               while (my ($ku, $vu) = each %$cu) {
                   $c->{$k.$ku} = $vu;
               }
           }
-
-          $c->{$k.'   e'} = an.e;
+          elsif (an.e > 0 && a.e < 1 && $mustb && !$mustb->{$k}) {
+              delete $c->{$k};
+          }
       }
       
       
@@ -221,6 +230,7 @@ G:
               my $i = 0;
               map { { k => "[".$i++, v => $_ } } @$h
             },
+            oh => 0,
           },
           HASH => {
             it => sub {
@@ -229,12 +239,15 @@ G:
             },
           },
         };
-        h.A = { it => h.HASH.it,
-          oh => 2.8,
+        my $an = sub {
+            my $k = shift;
+            my $i = $h->{$k} ||= {it => h.HASH.it};
+            %$i = (%$i, @_);
         };
-        h.Ghost = { it => h.HASH.it,
-          oh => 0.6,
-        };
+        $an->(qw'A oh 2.8');
+        $an->(qw'Ghost oh 0.8');
+        $an->(qw'G oh 0.8');
+        $an->(qw'W oh 0.8 mustb id,hash,file,G');
         $h
       
 T:
