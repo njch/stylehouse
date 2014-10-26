@@ -72,8 +72,14 @@ sub du {
     my $G = shift;
     my $d = shift;
     # ho$G->w("to", { %$ar }) get around the Objs' data
-    my $du = $G->dus;
+    my $du = dus();
 
+    my $i = $_[0] || $T->{i};
+    my $c = {};
+    for my $k (keys %$i) {
+        $c->{$k} = $i->{$k};
+    }
+    $c
     say "ETc";
 }
 

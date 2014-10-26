@@ -15,17 +15,14 @@ sub new {
 
 sub commit {
     my $T = shift;
-    push @{$T->{B}||=[]}, $T->copi;
+    push @{$T->{L}||=[]}, {
+        B => G::du({ O=>$T, 
+        name => [@_],
+    };
 }
 
 sub copi {
     my $T = shift;
-    my $i = $_[0] || $T->{i};
-    my $c = {};
-    for my $k (keys %$i) {
-        $c->{$k} = $i->{$k};
-    }
-    $c
 }
 
 'stylehouse'
