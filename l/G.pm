@@ -79,21 +79,34 @@ sub du {
     $a->{e} ||= 2;
 
     my $c = {};
+    push @{$a->{as}||=[]}, $a;
+    return {} if @{$a->{as}} > 9 || 1 < grep {ref $_->{i} && $_->{i} eq $i} @{$a->{as}};
 
     my $ref = ref $i;
     my $is = $s->{$ref} || $s->{default};
     $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
     $is ||= $s->{default} || return {};
 
-    $a->{e} -= $is->{oh} || 1;
-
     for my $j ($is->{it}->($i)) {
-        $c->{"$j->{k}"} = $j->{v};
+          die if !$j;
+        my $k = delete $j->{k};
+        my $v = delete $j->{v};
 
-        if ($a->{e} >= 1) {
-            my $cu = du({%$a, i => $j->{v}});
-            while (my ($k, $v) = each %$cu) {
-                $c->{"$j->{k}".$k} = $v;
+        $c->{$k} = $v;
+
+        $j = {%$is, %$j};
+        my $an = {%$a, i => $v};
+
+        $an->{e} -= $j->{oh} || 0.5; # ohms
+        say "$k j oh\$tj->{oh}\t-> $an->{e}" if $j->{oh};
+
+
+        if ($an->{e} >= 1) {
+            my $cu = du($an);
+            # may someday zip into dus again for fractions
+            # to display only 2
+            while (my ($ku, $vu) = each %$cu) {
+                $c->{$k.$ku} = $vu;
             }
         }
     }
@@ -103,7 +116,7 @@ sub du {
 }
 
 sub dus {
-    {
+    my $h = {
       ARRAY => {
         it => sub {
           my $h = shift;
@@ -117,7 +130,12 @@ sub dus {
           map { { k => "{".$_, v => $h->{$_} } } sort keys %$h
         },
       },
-    }
+    };
+    $h->{A} = {
+      it => $h->{HASH}->{it},
+      oh => 2.8,
+    };
+    $h
 }
 
 'stylehouse'
