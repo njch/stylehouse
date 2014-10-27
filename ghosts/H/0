@@ -47,9 +47,12 @@ hooks:
 
       $H->menu();
       $H->{floodmenu}->{Ш}->() if $house;
-
+      
       $H->update_app_menu();
-      $H->{underworld} = 0;
+      
+      H.notunderworld = 1; # our fate's the most epic shift ever
+      # TODO lose this whole sub
+      # must be invoked on first Elvis/speaks for now because things ->send
   websocket: |
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
@@ -127,7 +130,7 @@ hooks:
       }
       w $J print_in;
       w $J decode;
-      w flood_init if H.underworld; # somewhere round here
+      w flood_init unless H.notunderworld; # somewhere round here
       
       my $Elvis = $S;
       my $j = J.B.j;

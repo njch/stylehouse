@@ -48,7 +48,6 @@ sub new {
     $Ghost::G0->w('any_init');
     
     
-    $H->{underworld} = 1; # our fate's the most epic shift ever
     # SED name is styleblah, $style as far above is blah. layers peel everywhere.
 
     # get rid of this with Base.pm... or something
