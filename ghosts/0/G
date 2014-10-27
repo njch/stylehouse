@@ -6,12 +6,17 @@ H:
     D: |
         use UUID;
         use Redis;
+        use File::Slurp;
         sub wdump{Ghost::wdump(@_)}
     
   - K: new
     D: |
       $H = $H->spawn0('H');
       ___LIBGLOBETC
+      
+      use lib 'lib';
+      use Hostinfo;
+      Hostinfo::lib_perc_H($H);
       
       $H->spawn0('A')->new($H);
       H.G = H.A->spawn(G => 'H');
@@ -33,7 +38,6 @@ H:
       shift @{a.r};
       $u->new(@{a.r});
       
-      
   - K: spawn0
     D: |
       my $nb = shift;
@@ -41,6 +45,38 @@ H:
       $nb::H = $H;
       u.id = mkuid();
       $u
+      
+      
+  - K: spawn0
+    D: |
+      sub hitime {
+          my $self = shift;
+          return join ".", time, (gettimeofday())[1];
+      }
+  - K: stack #c
+    D: |
+      my $b = shift;
+      $b = 1 unless defined $b;
+      my @from;
+      while (my $f = join " ", (caller($b))[0,3,2]) {
+          last unless defined $f;
+          my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
+              || $f =~ m/^Mojo::IOLoop/
+              || $f =~ m/^Mojolicious::Controller/;
+          $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
+          push @from, $f;
+          last if $surface; 
+          $b++;
+      }
+      return [@from];
+      
+  - K: slurp
+    D: |
+      scalar read_file(shift);
+      
+  - K: spurt
+    D: |
+      write_file(shift, shift);
       
   #Hmisc #c
   - K: mkuid # H wide unique id
