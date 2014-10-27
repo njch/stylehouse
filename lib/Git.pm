@@ -93,6 +93,11 @@ sub gitrack {
         my @har = split /\s+/, pop @hmm;
         `kill -KILL $har[1]`;
     },
+    '᎒' => sub {
+        my @hmm = grep /ghosts/, `ps faux | grep ghost`;
+        my @har = split /\s+/, pop @hmm;
+        `kill -KILL $har[1]`;
+    },
     'ܤ' => sub {
         `touch /s/stylehouse.pl`
     },
