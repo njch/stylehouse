@@ -30,6 +30,7 @@ package S;
     # This action will render a template
     websocket '/ws' => sub {
         my $mojo = shift;
+        
         eval { 
         # MOVE some old stuff tries to ->send stuff on init, ux saves..
         $H = H->new();
@@ -55,7 +56,9 @@ __DATA__
     <script type="text/javascript">
     var conn;
     var C;
-    $(document).ready(function(){
+    var fail = 0;
+    
+    function connect() {
        conn = new WebSocket('<%= $ws_location %>');
 
        conn.onmessage = function  (event) {
@@ -66,8 +69,22 @@ __DATA__
        };
        conn.onclose = function () {
           $('#msgs').append("closed.\n");
+          reconnect();
        };
-    });
+    };
+    function reconnect () {
+      fail++;
+      console.log('waiting to retry');
+      if (fail < 20000) {
+          window.setTimeout(connect, 256);
+      }
+      else {
+          window.setTimeout(connect, 25600);
+      }
+    }
+
+    
+    $(document).ready(connect);
     </script>
 
     <a href="/pub">pub</a>

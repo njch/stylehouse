@@ -15,6 +15,8 @@ use W;
 use UUID;
 use Redis;
 use File::Slurp;
+use Time::HiRes 'gettimeofday', 'usleep';
+
 sub wdump{Ghost::wdump(@_)}
 
 sub new {
@@ -30,6 +32,7 @@ sub new {
     use lib 'lib';
     use Hostinfo;
     Hostinfo::lib_perc_H($H);
+
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
 
@@ -63,12 +66,9 @@ sub spawn0 {
     $u
 }
 
-sub spawn0 {
+sub hitime {
     my $H = shift;
-    sub hitime {
-        my $self = shift;
-        return join ".", time, (gettimeofday())[1];
-    }
+    return join ".", time, (gettimeofday())[1];
 }
 
 sub stack {

@@ -7,6 +7,8 @@ H:
         use UUID;
         use Redis;
         use File::Slurp;
+        use Time::HiRes 'gettimeofday', 'usleep';
+
         sub wdump{Ghost::wdump(@_)}
     
   - K: new
@@ -45,14 +47,51 @@ H:
       $nb::H = $H;
       u.id = mkuid();
       $u
-      
-      
-  - K: spawn0
+  #c bits and stuff
+  - K:
     D: |
-      sub hitime {
-          my $self = shift;
-          return join ".", time, (gettimeofday())[1];
-      }
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+  - K:
+    D: |
+      
+    
+      
+  - K: hitime
+    D: |
+      return join ".", time, (gettimeofday())[1];
   - K: stack #c
     D: |
       my $b = shift;
@@ -361,6 +400,8 @@ hooks:
         );
         my $btw = {};
         for my $ch (@$co) {
+            next say "skipping a blank K in $nb" if !ch.K;
+            
             my $D = $G->parse_babble(ch.D || ch.SD);
             
             if (ch.K eq "head") {
