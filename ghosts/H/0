@@ -23,8 +23,7 @@ hooks:
         H.r->set($k => $c);
         return $c;
     };
-  init:
-    flood: |
+  flood_init: |
       my $house = $H->get('style') eq 'stylehouse';
     
       G!H/mess;
@@ -51,14 +50,10 @@ hooks:
 
       $H->update_app_menu();
       $H->{underworld} = 0;
-  En: |
-    return 0->TafuB( j => {O=>"you" });
-    0->TafuB(
-        Elvis => {tx => $M->tx, M => $M});
   websocket: |
     Say "WQbSocket opened";
     # strangers are Elvis until they're not
-    # they might have $M->stash("Elvis=ae38273" => secret) to resume...
+    # $M has authication somehow
     my $Elvis = 0->TafuB(
         Elvis => {tx => $M->tx, M => $M});
 
@@ -66,7 +61,7 @@ hooks:
         my ($M, $m) = @_;
         my $J = 0->Bu(J => {m=>$m}); # $m
         eval {
-        w $Elvis speaks[$J];
+          w $Elvis speaks[$J];
         };
         say "$@" if $@;
         $@ = "";
@@ -76,6 +71,25 @@ hooks:
         my ($M, $code, $reason) = @_;
         w $Elvis leaves[$code, $reason];
     });
+  getbusy: |
+    
+
+       my $ws = $self->tx;
+       $ws->send('hello');
+
+       my $pubsub = Mojo::Redis->new;
+       $pubsub->protocol_redis("Protocol::Redis::XS");
+       $pubsub->timeout(180);
+
+       $self->stash(pubsub_redis => $pubsub);
+       $pubsub->subscribe('g' => sub{
+             my ($redis, $event) = @_;
+             $ws->send($event->[0]);
+             say @$event;
+          });
+       Mojo::IOLoop->recurring(10 => sub{
+             $ws->send('hello');
+          });
   Elvis:
       # here we want to graph things out real careful
       # because it is how things get around
@@ -113,7 +127,7 @@ hooks:
       }
       w $J print_in;
       w $J decode;
-      w init/flood if H.underworld; # somewhere round here
+      w flood_init if H.underworld; # somewhere round here
       
       my $Elvis = $S;
       my $j = J.B.j;
@@ -211,7 +225,6 @@ hooks:
     return w serve/error  if j.error; # change from {e}
     return w serve/scroll if j.scroll;
     
-
   check:
     vitals: |
       $G->susgdb;
