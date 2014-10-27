@@ -32,16 +32,8 @@ sub new {
     $H->{for_all} = [];
     $H->{name} = 'Њ';
     
-    $Ghost::H =
-    $Travel::H =
-    $Wormhole::H =
-    $Codo::H =
-    $Codon::H =
-    $Git::H =
-    $Way::H = $H;
-
-
-
+    lib_perc_H($H);
+    
     $H->{G} = $H->TT($H)->G;
     $Ghost::G0 = $H->TT("Ghost")->G("G");
     $Ghost::G0->w('fresh_init');
@@ -79,6 +71,16 @@ sub new {
         touch_restart => 1,
     };
     return $H
+}
+sub lib_perc_H {
+    my $h = shift;
+    $Ghost::H =
+    $Travel::H =
+    $Wormhole::H =
+    $Codo::H =
+    $Codon::H =
+    $Git::H =
+    $Way::H = $h;
 }
 
 sub la { (`uptime` =~ /load average: (\S+),/)[0] }
