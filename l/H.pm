@@ -13,6 +13,7 @@ use H;
 use T;
 use W;
 use UUID;
+use Redis;
 sub wdump{Ghost::wdump(@_)}
 
 sub new {
@@ -25,8 +26,7 @@ sub new {
     $T::H = $H;
     $W::H = $H;
 
-    $H->spawn0('A')->new($H); 
-
+    $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
 
     $H

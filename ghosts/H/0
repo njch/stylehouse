@@ -9,6 +9,21 @@ C: # Elvis, J
   - K: j
     Gw: 1
 hooks:
+  fresh_init: |
+    H.r = Redis->new(
+        server => 'localhost:8888',
+        reconnect => 1,
+        every => 10000,
+    );
+    H.r.gest = sub {
+        my ($k, $make) = @_;
+        my $c = H.r->get($k);
+        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
+        $c = $make->();
+        H.r->set($k => $c);
+        return $c;
+    };
+    
   init:
     flood: |
       my $house = $H->get('style') eq 'stylehouse';

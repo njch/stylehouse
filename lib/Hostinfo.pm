@@ -31,19 +31,6 @@ sub new {
     #$self->set('0', $self);
     $H->{for_all} = [];
     $H->{name} = 'Њ';
-    my $r = $H->{r} = Redis->new(
-        server => 'localhost:8888',
-        reconnect => 7,
-        every => 1_000_000,
-    );
-    $H->{r}->{gest} = sub {
-        my ($k, $make) = @_;
-        my $c = $r->get($k);
-        return ref \$c eq "SCALAR" ? fixutf8($c) : $c if $c;
-        $c = $make->();
-        $r->set($k => $c);
-        return $c;
-    };
     
     $Ghost::H =
     $Travel::H =
