@@ -23,7 +23,7 @@ sub new {
     $G
 }
 
-sub pint {
+sub pi {
     my $G = shift;
     "G ".$G->{name};
 }

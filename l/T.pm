@@ -7,17 +7,17 @@ use lib 'lib';
 use feature 'say';
 sub new {
     my $T = shift;
-    $T->{i} = $T->{A}->{u}->{i};
+    $T->{i} = $T->{A}->{u}->{i}; # MAINT
     $T->{i}->{T} = $T;
-    $T->name(shift);
+    $T->{name} = shift;
     $T->commit(shift);
 
     $T
 }
 
-sub name {
+sub pi {
     my $T = shift;
-    $T->{name} = shift || Ghost::gpty($T->{A}->{u}->{i});
+    "T $T->{name} x".scalar(@{$T->{L}})." ".$T->{i}->pi(); 
 }
 
 sub commit {
@@ -27,7 +27,7 @@ sub commit {
     $mes ||= "init" if !@{$T->{L}};
     $mes ||= "?";
     my $L = {
-        B => G::du({ O=>$T, i=>$T->{A}->{u}->{i} }),
+        B => G::du({ O=>$T, i=>$T->{i} }),
         mes => $mes,
     };
     push @{$T->{L}||=[]}, $L;

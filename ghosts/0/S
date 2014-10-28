@@ -7,6 +7,21 @@ package S;
     use H;
     our $H;
     
+    use POSIX ();
+    use FindBin ();
+    use File::Basename ();
+    use File::Spec::Functions;
+    $| = 1;
+    # make the daemon cross-platform, so exec always calls the script
+    # itself with the right path, no matter how the script was invoked.
+    my $script = File::Basename::basename($0);
+    my $SELF  = catfile($FindBin::Bin, $script);
+    # POSIX unmasks the sigprocmask properly
+    $SIG{HUP} = sub {
+        print "got SIGHUP\n";
+        exec("perl ".$SELF, @ARGV)        || die "$0: couldn't restart: $!";
+    };
+    
     my $listen = readlink('listen');
         my ($host,$port, $wa) = split ':', $listen;
         die "too much listen" if $wa;

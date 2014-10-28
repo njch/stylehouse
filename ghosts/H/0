@@ -26,6 +26,18 @@ hooks:
         return $c;
     };
     $r
+  kill: |
+    my $sig = ar.sig || "KILL";
+    my $grep = "grep '$grepps'";
+    my @ps = 
+    #grep {!/\Q$grep\A/} 
+    `ps faux | $grep`;
+    sw \@ps;
+    Say "LO::!|";
+    die "no matches on ps grep $grepps" if !@ps;
+    my @proc = split /\s+/, pop @ps;
+    my $pid = $proc[1];
+    `kill -$sig $pid`;
   flood_init: |
       my $house = $H->get('style') eq 'stylehouse';
     

@@ -25,7 +25,7 @@ sub wdump{Ghost::wdump(@_)}
 
 sub new {
     my $H = shift;
-    $H = $H->spawn0('H');
+    $H = $H->spawn0('H'); 
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
@@ -33,7 +33,7 @@ sub new {
     $T::H = $H;
     $W::H = $H;
 
-    use lib 'lib';
+    use lib 'lib'; 
     use Hostinfo;
     Hostinfo::lib_perc_H($H);
 
