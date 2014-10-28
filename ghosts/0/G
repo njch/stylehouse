@@ -8,6 +8,10 @@ H:
         use Redis;
         use File::Slurp;
         use Time::HiRes 'gettimeofday', 'usleep';
+        use YAML::Syck;
+        use Data::Dumper;
+        use Term::ANSIColor;
+        
 
         sub wdump{Ghost::wdump(@_)}
     
@@ -48,24 +52,122 @@ H:
       u.id = mkuid();
       $u
   #c bits and stuff
-  - K:
+  - K: snooze
     D: |
-      
-  - K:
+          return Time::HiRes::usleep(shift || 5000);
+  - K: Say #c
     D: |
-      
-  - K:
+       $H->throwlog("Say", @_);
+
+  - K: Err
     D: |
-      
-  - K:
+       $H->throwlog("Err", @_);
+  - K: error
     D: |
-      
-  - K:
+       $H->throwlog("Err", @_);
+
+  - K: Info
     D: |
-      
-  - K:
+       $H->throwlog("Info", @_);
+  - K: info
     D: |
-      
+       $H->throwlog("Info", @_);
+
+  - K: throwlog
+    D: |
+      my $what = shift;
+
+      if ($H->{_future}) {
+          my $te = $@;
+          $@ = "";
+          my $r = eval { $H->{G}->mess($what, [@_]) };
+          if ($@) {
+              eval { $H->{G}->timer(0.1, sub {
+                  $H->error("G mess error while throwing a $what: $@");
+               }) };
+              $@ = '';
+          }
+          $@ = $te;
+          if ($r && $r eq "yep") {
+              return;
+          }
+      }
+
+      my @E;
+      for my $b (@_) {
+          if (ref $b eq "Way") {
+              push @E, "Way: $b->{name}";
+              push @E, ( map { " ` ".Ghost::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
+              push @E, $b->{Error} if $b->{Error};
+          }
+          else {
+              push @E, Ghost::ghostlyprinty("NOHTML", $b)
+          }
+      }
+      my $error =
+          [ hitime(), $H->stack(2), [@E] ];
+
+      my @context = (
+          grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]},
+      );
+      @context = () if $what eq "Say" || $what eq "Info";
+      my @f = @Ghost::F;
+      for my $c (@context) {
+          my $f = shift @f;
+          say "$c ======== ". Ghost::gpty($f->{thing});
+      }
+      my $string = join("\n",
+          @context,
+          @{$error->[2]},
+      );
+      $string = "\n$string\n";
+      print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  - K: ind #c
+    D: |
+      "$_[0]".join "\n$_[0]", split "\n", $_[1]
+
+  - K:ddump
+    D: |
+      my $thing = shift;
+      my $ind;
+      return
+          join "\n",
+          grep {
+              1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
+              ...
+              do { /^$ind\S/ } )
+          }
+          "",
+          grep !/^       /,
+          split "\n", Dump($thing);
+
+  - K: wdump
+    D: |
+      my $thing = shift;
+      my $maxdepth = 3;
+      if (@_ && $thing =~ /^\d+$/) {
+          $maxdepth = $thing;
+          $thing = shift;
+      }
+      $Data::Dumper::Maxdepth = $maxdepth;
+      return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+
   - K:
     D: |
       
@@ -400,7 +502,7 @@ hooks:
         );
         my $btw = {};
         for my $ch (@$co) {
-            next say "skipping a blank K in $nb" if !ch.K;
+            say "skipping a blank K in $nb" && next if !ch.K;
             
             my $D = $G->parse_babble(ch.D || ch.SD);
             

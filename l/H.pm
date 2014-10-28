@@ -16,6 +16,10 @@ use UUID;
 use Redis;
 use File::Slurp;
 use Time::HiRes 'gettimeofday', 'usleep';
+use YAML::Syck;
+use Data::Dumper;
+use Term::ANSIColor;
+
 
 sub wdump{Ghost::wdump(@_)}
 
@@ -64,6 +68,104 @@ sub spawn0 {
     $nb::H = $H;
     $u->{id} = mkuid();
     $u
+}
+
+sub snooze {
+    my $H = shift;
+    return Time::HiRes::usleep(shift || 5000);
+}
+
+sub Say {
+    my $H = shift;
+    $H->throwlog("Say", @_);
+}
+
+sub Err {
+    my $H = shift;
+    $H->throwlog("Err", @_);
+}
+
+sub error {
+    my $H = shift;
+    $H->throwlog("Err", @_);
+}
+
+sub Info {
+    my $H = shift;
+    $H->throwlog("Info", @_);
+}
+
+sub info {
+    my $H = shift;
+    $H->throwlog("Info", @_);
+}
+
+sub throwlog {
+    my $H = shift;
+    my $what = shift;
+
+    if ($H->{_future}) {
+        my $te = $@;
+        $@ = "";
+        my $r = eval { $H->{G}->mess($what, [@_]) };
+        if ($@) {
+            eval { $H->{G}->timer(0.1, sub {
+                $H->error("G mess error while throwing a $what: $@");
+             }) };
+            $@ = '';
+        }
+        $@ = $te;
+        if ($r && $r eq "yep") {
+            return;
+        }
+    }
+
+    my @E;
+    for my $b (@_) {
+        if (ref $b eq "Way") {
+            push @E, "Way: $b->{name}";
+            push @E, ( map { " ` ".Ghost::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
+            push @E, $b->{Error} if $b->{Error};
+        }
+        else {
+            push @E, Ghost::ghostlyprinty("NOHTML", $b)
+        }
+    }
+    my $error =
+        [ hitime(), $H->stack(2), [@E] ];
+
+    my @context = (
+        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]},
+    );
+    @context = () if $what eq "Say" || $what eq "Info";
+    my @f = @Ghost::F;
+    for my $c (@context) {
+        my $f = shift @f;
+        say "$c ======== ". Ghost::gpty($f->{thing});
+    }
+    my $string = join("\n",
+        @context,
+        @{$error->[2]},
+    );
+    $string = "\n$string\n";
+    print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+}
+
+sub ind {
+    my $H = shift;
+    "$_[0]".join "\n$_[0]", split "\n", $_[1]
+}
+
+sub wdump {
+    my $H = shift;
+    my $thing = shift;
+    my $maxdepth = 3;
+    if (@_ && $thing =~ /^\d+$/) {
+        $maxdepth = $thing;
+        $thing = shift;
+    }
+    $Data::Dumper::Maxdepth = $maxdepth;
+    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 
 sub hitime {
