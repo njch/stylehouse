@@ -410,7 +410,7 @@ our$doneprotolwptimes=[];
 sub _0 {
     my $G = shift;
     my ($point, @etc) = @_;
-    if (!$G0 || ref $G0 ne "Ghost") {
+    if (!$G0 || !(ref $G0 eq "Ghost" || ref $G0 eq "G")) {
         if ($point eq "_load_ways_post") {
             return $G->w("load_ways_post");
         }
@@ -541,11 +541,11 @@ sub w {
     
     if ($Sway) {
         $talk .= " S";
-        if (ref $Sway eq 'Ghost') {
+        if (ref $Sway eq 'Ghost' || ref $Sway eq "G") {
             @ways = $Sway->ways;
             $talk .= " G";
         }
-        elsif (ref $Sway eq 'Way') {
+        elsif (ref $Sway eq 'Way' || ref $Sway eq "C") {
             if ($Sway->{ofways}) {
                 @ways = @{$Sway->{ofways}};
             }
@@ -788,7 +788,7 @@ sub parse_babble {
     $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
     $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
-    $eval =~ s/(0->\w+)\(/\$G->_0("$1", /sg;
+    $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
     $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;

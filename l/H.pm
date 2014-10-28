@@ -39,6 +39,12 @@ sub new {
 
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
+    $H->{G}->w('fresh_init');
+
+    # is either G->subs or vortexed way, not a "root ghost" anymore but...
+    $Ghost::G0 = $H->{A}->spawn(G => 'G');
+    $Ghost::G0->w('fresh_init');
+    $Ghost::G0->w('any_init');
 
     $H
 }
@@ -166,6 +172,13 @@ sub wdump {
     }
     $Data::Dumper::Maxdepth = $maxdepth;
     return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+}
+
+sub send {
+    my $H = shift;
+    my $m = shift;
+    die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
+    $H->{G}->w(send_Elvis => {m => $m});
 }
 
 sub hitime {

@@ -26,6 +26,13 @@ H:
       
       $H->spawn0('A')->new($H);
       H.G = H.A->spawn(G => 'H');
+      H.G->w('fresh_init');
+      
+      # is either G->subs or vortexed way, not a "root ghost" anymore but...
+      $Ghost::G0 = H.A->spawn(G => 'G');
+      $Ghost::G0->w('fresh_init');
+      $Ghost::G0->w('any_init');
+
       
   - K: spawn
     D: |
@@ -138,6 +145,19 @@ H:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
   - K: ind #c
     D: |
       "$_[0]".join "\n$_[0]", split "\n", $_[1]
@@ -168,9 +188,12 @@ H:
       $Data::Dumper::Maxdepth = $maxdepth;
       return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 
-  - K:
+  - K: send
     D: |
-      
+      my $m = shift;
+      die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
+      H.G->w(send_Elvis => {m => $m});
+    
   - K:
     D: |
       

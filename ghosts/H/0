@@ -10,12 +10,14 @@ C: # Elvis, J
     Gw: 1
 hooks:
   fresh_init: |
-    H.r = Redis->new(
+    H.r = w enRedis;
+  enRedis: |
+    my $r = Redis->new(
         server => 'localhost:8888',
         reconnect => 1,
         every => 10000,
     );
-    H.r.gest = sub {
+    r.gest = sub { # do a R::edis module
         my ($k, $make) = @_;
         my $c = H.r->get($k);
         return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
@@ -23,6 +25,7 @@ hooks:
         H.r->set($k => $c);
         return $c;
     };
+    $r
   flood_init: |
       my $house = $H->get('style') eq 'stylehouse';
     
@@ -75,23 +78,23 @@ hooks:
         w $Elvis leaves[$code, $reason];
     });
   getbusy: |
+    $H->send("Hello");
     
-
-       my $ws = $self->tx;
-       $ws->send('hello');
-
-       my $pubsub = Mojo::Redis->new;
-       $pubsub->protocol_redis("Protocol::Redis::XS");
-       $pubsub->timeout(180);
-
-       $self->stash(pubsub_redis => $pubsub);
-       $pubsub->subscribe('g' => sub{
-             my ($redis, $event) = @_;
-             $ws->send($event->[0]);
-             say @$event;
-          });
+       # in future, E is a collection of energies from Elvis...
+       # maybe global global... nah not quite, just wide as tower
+       #$self->stash(pubsub_redis => $pubsub);
+       my $r = w enRedis;
+       $r->subscribe('g' => sub{
+           my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
+           #die wdump[$top, $sutop, $m];
+           $H->send($m);
+           #say @$event;
+       });
+       Mojo::IOLoop->recurring(0.3 => sub{
+           $r->wait_for_messages(0.02);
+       });
        Mojo::IOLoop->recurring(10 => sub{
-             $ws->send('hello');
+             $H->send('hello!');
           });
   Elvis:
       # here we want to graph things out real careful

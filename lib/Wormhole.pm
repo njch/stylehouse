@@ -37,7 +37,7 @@ sub continues {
     $namg = "$W->{G}->{name} ".
         join("",("  ")x($Ghost::T->{depth}||1))."l-$W->{n} ";
     my $L = {
-        uuid => $H->make_uuid,
+        uuid => (ref $H eq "H" ? $H->mkuid : $H->make_uuid),
         name => $namg,
         n => $W->{n}++,
         
