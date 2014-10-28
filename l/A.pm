@@ -14,6 +14,11 @@ sub new {
     $A
 }
 
+sub pi {
+    my $A = shift;
+    "A $A->{uid} ".$A->{i}->pint();
+}
+
 sub spawn {
     my $A = shift;
     $H->spawn({uA => $A, r=>[@_]});

@@ -14,4 +14,9 @@ sub new {
     $C
 }
 
+sub pi {
+    my $C = shift;
+    "C ".$C->pint();
+}
+
 'stylehouse'

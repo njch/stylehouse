@@ -261,6 +261,10 @@ A:
       A.i = $i;
       i.A = $A;
       
+  - K: pi
+    D: |
+      "A A.uid ".A.i->pi();
+      
   - K: spawn # make down
     D: |
       $H->spawn({uA => $A, r=>[@_]});
@@ -294,6 +298,10 @@ C:
   - K: new
     D: |
       C.G = C.A.u.i;
+      
+  - K: pi
+    D: |
+      "C ".$C->pint();
 G:
   - K: head
     D: |
@@ -312,7 +320,11 @@ G:
       
       $G->load_ways(@ways);
 
-  - K: nw
+      
+  - K: pi
+    D: |
+      "G ".G.name;
+  - K: nw #c G ways
     D: |
       my $C = G.A->spawn('C');
       $C->from({@_}) if @_;
@@ -357,7 +369,7 @@ G:
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
-  - K: du #c the style grab
+  - K: du #c G style grab
     style: func
     D: |
       my $a = shift;
@@ -439,7 +451,7 @@ G:
       
       $c
       
-  - K: dus #c the style schema
+  - K: dus #c G style schema
     style: func
     D: |
         my $h = {
@@ -472,14 +484,14 @@ G:
 T:
   - K: new
     D: |
-      T.i = T.A.u.i;
+      T.i = T.A.u.i; # MAINT
       T.i.T = $T;
-      $T->name(shift);
+      T.name = shift;
       $T->commit(shift);
       
-  - K: name
+  - K: pi
     D: |
-      T.name = shift || Ghost::gpty(T.A.u.i);
+    "T T.name x".scalar(@{T.L})." ".T.i->pi();
   
   - K: commit
     D: |
@@ -488,7 +500,7 @@ T:
       $mes ||= "init" if !@{T.L};
       $mes ||= "?";
       my $L = {
-          B => G::du({ O=>$T, i=>T.A.u.i }),
+          B => G::du({ O=>$T, i=>T.i }),
           mes => $mes,
       };
       push @{T.L||=[]}, $L;

@@ -23,6 +23,11 @@ sub new {
     $G
 }
 
+sub pint {
+    my $G = shift;
+    "G ".$G->{name};
+}
+
 sub nw {
     my $G = shift;
     my $C = $G->{A}->spawn('C');
