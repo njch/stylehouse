@@ -28,16 +28,17 @@ hooks:
     $r
   kill: |
     my $sig = ar.sig || "KILL";
-    my $cmd = "ps faux | grep $grepps";
-    my @ps = 
-    grep {!/\Q$cmd\A/} 
-    `$cmd`;
-    sw [$cmd => @ps];
+    my $grep = "grep $grepps";
+    my $cmd = "ps faux | $grep";
+    my @ps = `$cmd`;
+    my @psg = grep {!/\Q$grep\E/} @ps;
     Say "LO::!|";
     die "no matches on ps grep $grepps" if !@ps;
     my @proc = split /\s+/, pop @ps;
     my $pid = $proc[1];
-    `kill -$sig $pid`;
+    my $kill = "kill -$sig $pid";
+    run $kill;
+    sw [$kill, proc => @proc];
   flood_init: |
       my $house = $H->get('style') eq 'stylehouse';
     
