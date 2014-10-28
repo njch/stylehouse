@@ -1,5 +1,69 @@
 
 name: other stuff...
+hooks:
+  try: |
+    Say 'Restarting S';
+    H.G->w(kill => {sig => 'HUP', grepps => 'perl.*ghosts/0/S'});
+    
+  any_init: |
+      $G->timer(0.2,sub{waylay code;});
+  code: |
+    my $w = G.ways->[0];
+    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
+        my $co = $G->anyway($nb);
+        next unless $co;
+        my @code = (
+            join "\n",
+            "package $nb;",
+            "our \$H;",
+            map { "use $_;" }
+                "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
+        );
+        my $btw = {};
+        for my $ch (@$co) {
+            say "skipping a blank K in $nb" && next if !ch.K;
+            
+            my $D = $G->parse_babble(ch.D || ch.SD);
+            
+            if (ch.K eq "head") {
+                ch.style .= "bare";
+                if (my $lg = ch.libglob) {
+                    my @l = map { /\/(.+?)\.pm$/ } glob $lg;
+                    my ($l) = $lg =~ /^(.+)\/.+?$/;
+                    push @code, "use lib '$l';";
+                    push @code, "use $_;" for @l;
+                    btw.s.___LIBGLOBETC = join "\n",
+                        map { "\$${_}::H = \$H;" } @l;
+                }
+            }
+            
+            if (ch.style !~ /bare/) {
+                $D =~ s/$_/btw.s->{$_}/seg for keys %{btw.s};
+                
+                # setup self
+                $D = "my \$$nb = shift;\n$D" if ch.style !~ /func/;
+                
+                # return self
+                $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
+                
+                $D = ind('    ', $D);
+                $D =~  s/^    $//sgm;
+                $D = "sub ch.K {\n$D\n}\n";
+            }
+            push @code, $D;
+        }
+        push @code, "'stylehouse'";
+        my $file = "l/${nb}.pm";
+        write_file($file, join("\n", @code));
+        
+        
+    }
+    run "perl -c l/H*";
+    
+    waylay try;
+
+  
+
 H:
   - K: head
     libglob: 'l/?.pm'
@@ -517,67 +581,3 @@ W:
       W.G = W.A.u.i;
       W.n = 0;
       $W->wormfile_load(shift);
-hooks:
-  try: |
-    Say 'Restarting S';
-    H.G->w(kill => {sig => 'HUP', grepps => 'perl.*ghosts/0/S'});
-    
-  any_init: |
-      $G->timer(0.2,sub{waylay code;});
-  code: |
-    my $w = G.ways->[0];
-    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
-        my $co = $G->anyway($nb);
-        next unless $co;
-        my @code = (
-            join "\n",
-            "package $nb;",
-            "our \$H;",
-            map { "use $_;" }
-                "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
-        );
-        my $btw = {};
-        for my $ch (@$co) {
-            say "skipping a blank K in $nb" && next if !ch.K;
-            
-            my $D = $G->parse_babble(ch.D || ch.SD);
-            
-            if (ch.K eq "head") {
-                ch.style .= "bare";
-                if (my $lg = ch.libglob) {
-                    my @l = map { /\/(.+?)\.pm$/ } glob $lg;
-                    my ($l) = $lg =~ /^(.+)\/.+?$/;
-                    push @code, "use lib '$l';";
-                    push @code, "use $_;" for @l;
-                    btw.s.___LIBGLOBETC = join "\n",
-                        map { "\$${_}::H = \$H;" } @l;
-                }
-            }
-            
-            if (ch.style !~ /bare/) {
-                $D =~ s/$_/btw.s->{$_}/seg for keys %{btw.s};
-                
-                # setup self
-                $D = "my \$$nb = shift;\n$D" if ch.style !~ /func/;
-                
-                # return self
-                $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
-                
-                $D = ind('    ', $D);
-                $D =~  s/^    $//sgm;
-                $D = "sub ch.K {\n$D\n}\n";
-            }
-            push @code, $D;
-        }
-        push @code, "'stylehouse'";
-        my $file = "l/${nb}.pm";
-        write_file($file, join("\n", @code));
-        
-        
-    }
-    run "perl -c l/H*";
-    
-    waylay try;
-
-  
-
