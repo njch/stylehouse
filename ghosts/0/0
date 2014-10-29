@@ -11,6 +11,7 @@ hooks:
   fresh_init: |
     push @{G0.recoded_cbs}, sub { w try; };
   code: |
+    my @ched;
     for my $w ($G->anyway('0')) {
         my ($nb, $co) = %$w;
         
@@ -64,10 +65,9 @@ hooks:
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
         my $file = "l/${nb}.pm";
         write_file($file, join("\n", @code));
-        
-        
+        push @ched, $file;
     }
     run "perl -c l/H*";
     
-    waylay try;
+    waylay try unless grep {$_ =~ /^l\/S\.pm/} @ched;
 
