@@ -6,21 +6,18 @@
 
 
 name: kasplat
-include: W/tractor
-tractors:
+
+C:
   - K: 'Key'
-    #B: $e $key
-    max_populi: 10
     Gw: 1
     
 hooks:
   Key:
-    arr_if: |
-      $e
-    first_time: | #c
-      S.B.key ||= e.k;
-      S.B.key ||= "?Ⲯ?";
-      S.B.key = lc(S.B.key) if !e.S;
+    flows_D: |
+      B.key ||= e.k;
+       say wdump(ar.e);
+      B.key ||= "?Ⲯ?";
+      B.key = lc(B.key) if !e.S;
       S.hitime = hitime();
       
       my $k = S.B.key;
@@ -29,6 +26,8 @@ hooks:
       say join($k, (" ")x28) for 1..4;
 
       # could use Redis to do the news pub sub
+      # nah thats for higher level stuff, a keystroke is low level energy
+      # that must be built up to something more somewhere to ...
       0->sing(
           "keytrig $k" => sub {
               w $S keydosubs;
@@ -36,12 +35,14 @@ hooks:
           begin => 0.00000000001,
           block => 0.2,
       );
-    print: | #c
-      return "??? ?" unless $key;
+      
+    print: |
+      return "??? ?" unless ar.key;
       my $and = "";
       $and .= "$_+" for grep { $e->{$_} } qw{S C A M};
-      $and.$key
-    keydosubs: | #c
+      $and. ar.key
+      
+    keydosubs: |
       my $full = w $S print;
       sayyl "Doing $full ... or $key .... ".@{G.subs};
       for my $g (@{ G.subs }) {
@@ -49,6 +50,9 @@ hooks:
           my $pa = "keys/".($kh->{$full} ? $full : $key);
           $g->w($pa, {Key => $S});
       }
+  Arr: |
+    my $a = {e=>ar.e, r=>rand().$H->hitime};
+    my $u = 0->TafuB(Key => $a);
   event: |
     #w throwlog(Event => $e);
     if (eval { $ar->{e}->[1]->{C} }) {
