@@ -18,20 +18,22 @@ hooks:
         w check/vitals;
     });
     
-    G.A->spawn(G => 'H/mess');
+    my $s = w styled;
+    die wdump($s);
+    
   
   stylehut:
     in: |
-      *Ghost::sw = sub { G::sw(@_) };
-      sw [H.G->HGf('mess')]; 
-    
-      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
+      G.A->spawn(G => 'H/mess');
     play: |
+      *Ghost::sw = sub { G::sw(@_) };
+      sw [H.G->HGf('mess')];
+      
+      die "yeah!";
+      
       $H->send("Hello");
       H._future = 1;
-      # in future, E is a collection of energies from Elvis...
-      # maybe global global... nah not quite, just wide as tower
-      #$self->stash(pubsub_redis => $pubsub);
+      
       my $r = w enRedis;
       $r->subscribe('g' => sub{
           my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
@@ -39,17 +41,24 @@ hooks:
           $H->send($m);
           #say @$event;
       }); 
+      
       Mojo::IOLoop->recurring(0.3 => sub{
           $r->wait_for_messages(0.02);
       });
+      
       Mojo::IOLoop->recurring(10 => sub{
           $H->send('hello!');
       });
+      
+      
   styleshed:
     in: |
-      #
+      G!H/mess; # due to spawn syntax
     play: |
       G!H/keys;
+  styleshed:
+    in: |
+      G!H/mess; # due to spawn syntax
   wtf: |
     # TODO combine with check, fractionating importantness into time
         my $script = $0;
@@ -75,23 +84,29 @@ hooks:
         return $c;
     };
     $r
-  flood_init: |
-      my $style = $H->get('style');
-      my $house = $style eq 'stylehouse';
-      my $shed = $style eq 'styleshed';
+  styled: |
+      my $s;s.style = $H->get('style');
+      s.house = 1 if s.style eq 'stylehouse';
+      s.shed = 1 if s.style eq 'styleshed';
+      s.hut = 1 if !s.style;
+      $s
     
+  flood_init: |
+      my $s = w styled;
+      
+      # ghosts/0/S + H.pm calls fresh_init
+      # stylehouse.pl + Hostinfo.pm calls flood_init
       die 'only stylehouse floods?' unless $0 eq 'stylehouse.pl';
       
-      w styleshed/play if $shed;
-      w stylehouse/play if $house;
+      w styleshed/play if s.shed;
+      w stylehouse/play if s.house;
       
       G!H/colour;
       G!H/sky ->w('flood_init');
-      G!H/mess; 
       G!H/ground ->w('flood_init');
       
     
-      if ($house) {
+      if (s.house) {
           Git->new($H->intro);
           Codo->new($H->intro);
           $H->JS("\$('#sky').stop().slideUp();");
@@ -101,7 +116,7 @@ hooks:
       }
 
       $H->menu();
-      $H->{floodmenu}->{Ш}->() if $house;
+      $H->{floodmenu}->{Ш}->() if s.house;
       
       $H->update_app_menu();
       
