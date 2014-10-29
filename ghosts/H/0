@@ -22,19 +22,6 @@ hooks:
     
     $G->w("H.style/in");
     
-  sub: |
-      
-      my $r = w enRedis;
-      $r->subscribe($topic => sub{
-          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
-          #die wdump[$top, $sutop, $m];
-          $H->send($m);
-          #say @$event;
-      }); 
-      
-      Mojo::IOLoop->recurring(0.3 => sub{
-          $r->wait_for_messages(0.02);
-      });
   stylehut:
     in: |
       my $u = G.A->spawn(G => 'H/mess');
@@ -83,6 +70,19 @@ hooks:
         return $c;
     };
     $r
+  suRedis: |
+      my $r = w enRedis;
+      
+      $r->subscribe($topic => sub{
+          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
+          #die wdump[$top, $sutop, $m];
+          $H->send($m);
+          #say @$event;
+      }); 
+      
+      Mojo::IOLoop->recurring(0.3 => sub{
+          $r->wait_for_messages(0.02);
+      });
   styled: |
       my $s;s.style = $H->get('style');
       s.house = 1 if s.style eq 'stylehouse';
@@ -141,7 +141,7 @@ hooks:
         my ($M, $code, $reason) = @_;
         w $Elvis leaves[$code, $reason];
     });
-  Elvis:
+  Elvis: #
       # here we want to graph things out real careful
       # because it is how things get around
       # the one to the many
@@ -209,7 +209,7 @@ hooks:
           sayre " restarting...";
           w re/exec;
       }
-  J:
+  J: # 
     Bu_D: |
       #B.m = Hostinfo::encode_utf8(B.m);
       S.dig ||= Hostinfo::enhash(B.m);
@@ -237,8 +237,9 @@ hooks:
       print colored("recv >\t\t", 'red');
       print colored($m, 'bold red');
       say "";
-  j: # god object
+  j: #
     D: |
+      # god object
       # bit that rattles around from here
       # that is from Elvis talk held in J
       # so J is the still meaning of the activity
@@ -305,7 +306,8 @@ hooks:
       "$tot lines"
   mess: |
     unless (H._future) {
-        warn "Pre future mess... ".ki($ar) for 1..8;
+        warn "Pre future mess... ar.what  = ".
+        join"  ", map {gpty($_)} flatline(ar.thing);
         return;
     }
     my $m = G:mess;
