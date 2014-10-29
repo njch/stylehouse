@@ -10,11 +10,14 @@ hooks:
   fresh_init: |
     push @{G0.recoded_cbs}, sub { w try; };
   code: |
-    my $w = G.ways->[0];
+    my @w = $G->anyway('0');
+    die wdump([@w]);
     for my $nb (grep { /^[A-Z]$/ } keys %$w) {
         my $co = $G->anyway($nb);
         $DB::single = 1;
+        
         die sw['etc',$co, $nb] unless ref $co eq "ARRAY";
+        
         next unless $co;
         my @code = (
             join "\n",

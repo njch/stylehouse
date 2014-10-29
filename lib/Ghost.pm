@@ -377,7 +377,8 @@ sub load_ways {
             push @files, $base;
         }
         else {
-            push @files, grep { /\/\d+$/ } glob "$base/*";
+             my $num = $name =~ /^\d+$/;
+            push @files, grep { $num || /\/\d+$/ } glob "$base/*";
         }
         
         for my $file (@files) {
