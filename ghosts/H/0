@@ -16,7 +16,7 @@ hooks:
     Mojo::IOLoop->recurring(0.4 => sub{
         w wtf;
     });
-    Mojo::IOLoop->recurring(8 => sub{
+    Mojo::IOLoop->recurring(3 => sub{
         w check/vitals;
     });
     
@@ -150,7 +150,6 @@ hooks:
       # send it out there and get the hair on it
     flows_D: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      Say "Elvis appears from B.address";
       w $S populi;
       H.who = $S;
       B.sign = scalar(`figlet '<<<<'`);
@@ -158,6 +157,7 @@ hooks:
       B.sign =~ s/\n$//s;
       B.address = $tx->remote_address;
       S.mouth = [];
+      Say "Elvis appears from B.address";
       
     humms_D: |
       $H->send($_) for
@@ -285,7 +285,6 @@ hooks:
         w check/LoC,
       );
       $G->mess(Vitals => \@v);
-      waylay 8 check/vitals;
     MemAvailable: |
       my ($a) = `cat /proc/meminfo | grep MemAvailable`;
       ($a) = $a =~ /(\d+) kB/;

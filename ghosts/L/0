@@ -94,12 +94,10 @@ hooks:
   fresh_init: |
     $Ly = $G;
     
-    my ($mess) = G:mess->anyway('tractors');
-    ($mess) = @$mess;
-    mess.K eq "mess" || die "some mess";
-    0->accum($mess, 'populi/trigs', sub {
+    my $mess = G:mess;
+    $mess ->w(atrig => {D => sub {
         waylay hm/messworm;
-    });
+        }});
     
     G!O/splat;
     G!T/crawl;

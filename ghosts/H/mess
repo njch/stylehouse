@@ -6,18 +6,11 @@
 
 
 name: kasplat
-include: W/tractor
-tractors:
+
+C:
   - K: 'mess'
     populi:
       max: 10
-    B_: |
-      for (qw{Vitals Ambientness}) {
-          return $_ if $what eq $_ ;
-      }
-      return $thing;
-    arr_if: |
-      $thing && $what
     first_time: |
       S.K="m$what";
       S.Flab = $G->Flab($S);
@@ -28,8 +21,15 @@ tractors:
 hooks:
   fresh_init: |
     H._future = 1;
+    G.trigs = [];
+  atrig: |
+    push @{G.trigs}, $D;
   mess: |
-    my $S = w Arr[$thing, $what];
+    my $S = 0->TafuB(mess => [thing => $thing, what => $what, a => rand().$H->hitime]);
+    w $S first_time;
+    
+    $_->($S) for @{G.trigs};
+    
     return "yep" if $what eq "Info" && $thing->[0] =~ /^keypress/;
     return 'yep' if $what !~ /^(say|info|error)$/i;
 
