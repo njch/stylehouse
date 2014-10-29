@@ -15,9 +15,10 @@ sub new {
     my $G = shift;
     my (@ways) = @_;
     $G->{name} = join "+", @ways;
+    $G->{way} = $G->{name};
 
     $G->{GGs} = [];
-    push @{$H->{GGs}}, $G;
+    push @{$H->{G}->{GGs}}, $G;
 
     $G->{W} ||= $G->{A}->spawn('W');
 

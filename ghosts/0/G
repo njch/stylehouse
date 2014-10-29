@@ -83,9 +83,9 @@ H:
   - K: new
     D: |
       my $p = shift;
+      $H = $H->spawn0('H');
+      $H->{$_} = $p->{$_} for keys %$p;
       
-      $DB::single = 1;
-      $H = $H->spawn0('H', $p);
       ___LIBGLOBETC
        
       use lib 'lib'; 
@@ -128,8 +128,7 @@ H:
   - K: spawn0
     D: |
       my $nb = shift;
-      my $p = shift || {};
-      my $u = bless {%$p}, $nb;
+      my $u = bless {}, $nb;
       $nb::H = $H;
       u.id = mkuid();
       $u
@@ -369,9 +368,10 @@ G:
     D: |
       my (@ways) = @_;
       G.name = join "+", @ways;
+      G.way = G.name;
       
       G.GGs = [];
-      push @{H.GGs}, $G;
+      push @{H.G.GGs}, $G;
       
       G.W ||= G.A->spawn('W');
       

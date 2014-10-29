@@ -26,9 +26,9 @@ sub wdump{Ghost::wdump(@_)}
 sub new {
     my $H = shift;
     my $p = shift;
+    $H = $H->spawn0('H');
+    $H->{$_} = $p->{$_} for keys %$p;
 
-    $DB::single = 1;
-    $H = $H->spawn0('H', $p);
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
@@ -81,8 +81,7 @@ sub spawn {
 sub spawn0 {
     my $H = shift;
     my $nb = shift;
-    my $p = shift || {};
-    my $u = bless {%$p}, $nb;
+    my $u = bless {}, $nb;
     $nb::H = $H;
     $u->{id} = mkuid();
     $u
