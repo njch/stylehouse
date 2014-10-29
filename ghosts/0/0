@@ -13,10 +13,12 @@ hooks:
     my $w = G.ways->[0];
     for my $nb (grep { /^[A-Z]$/ } keys %$w) {
         my $co = $G->anyway($nb);
+        $DB::single = 1;
+        die sw['etc',$co, $nb] unless ref $co eq "ARRAY";
         next unless $co;
         my @code = (
             join "\n",
-            "package $nb;",
+            "package $nb;", 
             "our \$H;",
             map { "use $_;" }
                 "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
