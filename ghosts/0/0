@@ -3,20 +3,18 @@ name: other stuff...
 hooks:
   try: |
     Say 'Restarting S';
-    `touch ghosts/0/S`;
+    my $pm = ".pm";
+    `touch l/S$pm`;
     
   any_init: |
       $G->timer(0.2,sub{waylay code;}); 
   fresh_init: |
     push @{G0.recoded_cbs}, sub { w try; };
   code: |
-    my @w = $G->anyway('0');
-    die wdump([@w]);
-    for my $nb (grep { /^[A-Z]$/ } keys %$w) {
-        my $co = $G->anyway($nb);
-        $DB::single = 1;
+    for my $w ($G->anyway('0')) {
+        my ($nb, $co) = %$w;
         
-        die sw['etc',$co, $nb] unless ref $co eq "ARRAY";
+        #die sw['etc',$co, $nb] unless ref $co eq "ARRAY";
         
         next unless $co;
         my @code = (
@@ -32,13 +30,16 @@ hooks:
             
             my $D = $G->parse_babble(ch.D || ch.SD);
             
-            if (ch.K eq "head") {
+            if (ch.K eq "head" || ch.K eq "everything") {
+                if (ch.K eq "everything") {
+                    @code = ();
+                }
                 ch.style .= "bare";
                 if (my $lg = ch.libglob) {
                     my @l = map { /\/(.+?)\.pm$/ } glob $lg;
                     my ($l) = $lg =~ /^(.+)\/.+?$/;
                     push @code, "use lib '$l';";
-                    push @code, "use $_;" for @l;
+                    push @code, "use $_;" for grep {$_ ne 'S'} @l;
                     btw.s.___LIBGLOBETC = join "\n",
                         map { "\$${_}::H = \$H;" } @l;
                 }

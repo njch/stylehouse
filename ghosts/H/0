@@ -14,9 +14,10 @@ hooks:
     
     H.r = w enRedis;
     
-    Mojo::IOLoop->recurring(0.4 => sub { w wtf; });
+    Mojo::IOLoop->recurring(0.4 => sub { w wtf(way => 'wtf'); });
     
-    Mojo::IOLoop->recurring(8   => sub { w check/vitals; });
+    w wtf(div => 1, way => 'check/script');
+    w wtf(div => 17, way => 'check/vitals');
     
     $G->w("H.style/in");
     
@@ -41,20 +42,67 @@ hooks:
     play: |
       G!H/keys;
       
-      Mojo::IOLoop->recurring(3 => sub {G:sky ->w('ambientness'); });
+      my $a = {div => 26, way => 'sky amb'};
+      a.D = sub {G:sky ->w('ambientness'); };
+      w wtf(%$a);
+      
+      
   stylehouse:
     in: |
       G!H/mess; # due to spawn syntax
   wtf: |
     # TODO combine with check, fractionating importantness into time
-        my $script = $0;
-        my $nc = (stat $script)[10];
-        die "no ctime?" unless $nc;
-        if (H.Sctime && $nc ne H.Sctime) {
-            Say "Rwestarting! ctime changeon $script";
-            exec "perl $script";
+    if (ar.way && ar.div) {
+        my $a = { %$ar, now => 0 };
+        $H->{ar.riv||'wtf'}->{ar.way} = $a;
+        return;
+    }
+    my $riv = $H->{ar.way} ||= {};
+    while (my ($way,$R) = each %$riv) {
+        R.now++;
+        if (R.now >= R.div) {
+            R.now = 0;
+            say "hit R.way";
+            return R.D->() if R.D;
+            $G->w("$way");
         }
-        H.Sctime = $nc;
+    }
+  check:
+    script: |
+      my $script = $0;
+      my $nc = (stat $script)[10];
+      die "no ctime?" unless $nc;
+      if (H.Sctime && $nc ne H.Sctime) {
+          Say "Rwestarting! ctime changeon $script";
+          exec "perl $script";
+      }
+      H.Sctime = $nc;
+    vitals: |
+      $G->susgdb;
+      my @v = (
+          w check/MemAvailable,
+        w check/ps,
+        w check/LoC,
+      );
+      $G->mess(Vitals => \@v);
+    MemAvailable: |
+      my ($a) = `cat /proc/meminfo | grep MemAvailable`;
+      ($a) = $a =~ /(\d+) kB/;
+      $a = int($a / 1024);
+      kill 'KILL', $$         if !$a || $a < 50 || $! ;
+      $a < 500 ? "MemAvail: ${a}mB" : ()
+    ps: |     
+      my @ps = `ps -p$$ fu`;
+      my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
+      $m /= 100;
+      $c /= 100;
+      sayre "memory usage $m" if $m > 0.4;
+      w re/exec if $m > 0.9; # unlikely to be effective from inside
+      "$u`$pid  m$m  c$c"
+    LoC: |
+      my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
+      ($tot) = $tot =~ /(\d+) total/;
+      "$tot lines"
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -276,33 +324,7 @@ hooks:
     return w serve/error  if j.error; # change from {e}
     return w serve/scroll if j.scroll;
     
-  check:
-    vitals: |
-      $G->susgdb;
-      my @v = (
-          w check/MemAvailable,
-        w check/ps,
-        w check/LoC,
-      );
-      $G->mess(Vitals => \@v);
-    MemAvailable: |
-      my ($a) = `cat /proc/meminfo | grep MemAvailable`;
-      ($a) = $a =~ /(\d+) kB/;
-      $a = int($a / 1024);
-      kill 'KILL', $$         if !$a || $a < 50 || $! ;
-      $a < 500 ? "MemAvail: ${a}mB" : ()
-    ps: |     
-      my @ps = `ps -p$$ fu`;
-      my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
-      $m /= 100;
-      $c /= 100;
-      sayre "memory usage $m" if $m > 0.4;
-      w re/exec if $m > 0.9; # unlikely to be effective from inside
-      "$u`$pid  m$m  c$c"
-    LoC: |
-      my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
-      ($tot) = $tot =~ /(\d+) total/;
-      "$tot lines"
+
   mess: |
     unless (H._future) {
         # between H.G being here and G:mess being here

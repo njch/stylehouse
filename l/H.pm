@@ -33,6 +33,7 @@ sub new {
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
+    $S::H = $H;
     $T::H = $H;
     $W::H = $H;
 
