@@ -13,15 +13,43 @@ hooks:
     H.r = w enRedis;
     Mojo::IOLoop->recurring(0.2 => sub{
         w wtf;
-        
     });
     Mojo::IOLoop->recurring(8 => sub{
         w check/vitals;
     });
     
-      G!H/mess; 
+    G.A->spawn(G => 'H/mess');
+  
+  stylehut:
+    in: |
+      *Ghost::sw = sub { G::sw(@_) };
+      sw [H.G->HGf('mess')]; 
     
       # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
+    play: |
+      $H->send("Hello");
+      H._future = 1;
+      # in future, E is a collection of energies from Elvis...
+      # maybe global global... nah not quite, just wide as tower
+      #$self->stash(pubsub_redis => $pubsub);
+      my $r = w enRedis;
+      $r->subscribe('g' => sub{
+          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
+          #die wdump[$top, $sutop, $m];
+          $H->send($m);
+          #say @$event;
+      }); 
+      Mojo::IOLoop->recurring(0.3 => sub{
+          $r->wait_for_messages(0.02);
+      });
+      Mojo::IOLoop->recurring(10 => sub{
+          $H->send('hello!');
+      });
+  styleshed:
+    in: |
+      #
+    play: |
+      G!H/keys;
   wtf: |
     # TODO combine with check, fractionating importantness into time
         my $script = $0;
@@ -48,9 +76,15 @@ hooks:
     };
     $r
   flood_init: |
-      my $house = $H->get('style') eq 'stylehouse';
+      my $style = $H->get('style');
+      my $house = $style eq 'stylehouse';
+      my $shed = $style eq 'styleshed';
     
-      G!H/keys if !$house;
+      die 'only stylehouse floods?' unless $0 eq 'stylehouse.pl';
+      
+      w styleshed/play if $shed;
+      w stylehouse/play if $house;
+      
       G!H/colour;
       G!H/sky ->w('flood_init');
       G!H/mess; 
@@ -95,26 +129,6 @@ hooks:
         my ($M, $code, $reason) = @_;
         w $Elvis leaves[$code, $reason];
     });
-  getbusy: |
-    $H->send("Hello");
-    H._future = 1;
-    
-       # in future, E is a collection of energies from Elvis...
-       # maybe global global... nah not quite, just wide as tower
-       #$self->stash(pubsub_redis => $pubsub);
-       my $r = w enRedis;
-       $r->subscribe('g' => sub{
-           my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
-           #die wdump[$top, $sutop, $m];
-           $H->send($m);
-           #say @$event;
-       });
-       Mojo::IOLoop->recurring(0.3 => sub{
-           $r->wait_for_messages(0.02);
-       });
-       Mojo::IOLoop->recurring(10 => sub{
-             $H->send('hello!');
-          });
   Elvis:
       # here we want to graph things out real careful
       # because it is how things get around

@@ -39,7 +39,8 @@ sub new {
 
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
-    $H->{G}->w('fresh_init');
+
+    $H->{G}->w('fresh_init'); # art
 
     # is either G->subs or vortexed way, not a "root ghost" anymore but...
     $Ghost::G0 = $H->{A}->spawn(G => 'G');
@@ -47,11 +48,6 @@ sub new {
     $Ghost::G0->w('any_init');
 
     $H
-}
-
-sub TT {
-    my $H = shift;
-    die wdump([@_]);
 }
 
 sub pi {
@@ -170,7 +166,9 @@ sub throwlog {
 
 sub ind {
     my $H = shift;
-    "$_[0]".join "\n$_[0]", split "\n", $_[1]
+    my ($in, $thing) = @_;
+    $thing = "" unless defined $thing;
+    join "\n", map { "$in$_" } split "\n", $thing
 }
 
 sub wdump {

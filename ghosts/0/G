@@ -6,7 +6,7 @@ hooks:
     `touch ghosts/0/S`;
     
   any_init: |
-      $G->timer(0.2,sub{waylay code;});
+      $G->timer(0.2,sub{waylay code;}); 
   fresh_init: |
     push @{G0.recoded_cbs}, sub { w try; };
   code: |
@@ -91,17 +91,14 @@ H:
       
       $H->spawn0('A')->new($H);
       H.G = H.A->spawn(G => 'H');
-      H.G->w('fresh_init');
+      
+      H.G->w('fresh_init'); # art
       
       # is either G->subs or vortexed way, not a "root ghost" anymore but...
       $Ghost::G0 = H.A->spawn(G => 'G');
       $Ghost::G0->w('fresh_init');
       $Ghost::G0->w('any_init');
 
-  - K: TT
-    D: |
-      die wdump([@_]);
-      
   - K: pi
     D: |
       "H ! ";
@@ -206,7 +203,9 @@ H:
     
   - K: ind #c
     D: |
-      "$_[0]".join "\n$_[0]", split "\n", $_[1]
+      my ($in, $thing) = @_;
+      $thing = "" unless defined $thing;
+      join "\n", map { "$in$_" } split "\n", $thing
 
   - K:ddump
     D: |
@@ -366,9 +365,20 @@ G:
       my (@ways) = @_;
       G.name = join "+", @ways;
       
+      G.GGs = [];
+      push @{H.GGs}, $G;
+      
       G.W ||= G.A->spawn('W');
       
+      
       $G->load_ways(@ways);
+
+  - K: sw
+    D: |
+      my $thing = @_==1 ? shift : [@_];
+      my $stuff = wdump($thing);
+      H.r->publish('sw', $stuff);
+      "published wdump to sw";
 
       
   - K: pi

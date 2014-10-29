@@ -16,11 +16,23 @@ sub new {
     my (@ways) = @_;
     $G->{name} = join "+", @ways;
 
+    $G->{GGs} = [];
+    push @{$H->{GGs}}, $G;
+
     $G->{W} ||= $G->{A}->spawn('W');
+
 
     $G->load_ways(@ways);
 
     $G
+}
+
+sub sw {
+    my $G = shift;
+    my $thing = @_==1 ? shift : [@_];
+    my $stuff = wdump($thing);
+    $H->{r}->publish('sw', $stuff);
+    "published wdump to sw";
 }
 
 sub pi {

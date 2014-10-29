@@ -4,7 +4,6 @@ name: Ghost
 hooks:
   recoded_init: | # G/0 recode
     H.G->w('re/exec');
-    _->() for @{G.recoded_cbs};
   _load_ways_post: | # G/0 manages some other G's way startup ripples
     $S->w("load_ways_post");
     $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
@@ -18,6 +17,8 @@ hooks:
     }
       
     $S->w("any_init");
+    
+    $_->() for @{G.recoded_cbs};
     
   _init:
     recoded: |

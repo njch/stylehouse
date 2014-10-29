@@ -94,6 +94,7 @@ sub pint {
 }
 sub sw {
     my $thing = shift;
+    $DB::single = 1;
     $F[0]->{G}->timer(0.1, sub { $Ly->w(somewhere => {thing => $thing}) });
     return "Splatted ".gpty($thing);
 }
