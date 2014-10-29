@@ -319,7 +319,10 @@ hooks:
         
         # 1/9
         
+        my $giu = T.i;
         my $old = 0S->visTp($p); # 1
+        T.i || die " no way in! ".wdump($p);
+        
         0S->fu_cache(T.i);
         my $beg = T.i;
         
@@ -336,12 +339,18 @@ hooks:
         say "splkf ".T.i->pint if S.name !~ /mess/;
         
         # 4/9
+        die "Lost i somewhere before 4... "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
         
-        die "No i ".wdump($T) unless T.i;
         T.L = $S->W->continues($S); # %
+        die "Lost i in wormhole "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
         
         $S->w('humms_D', {}, T.i);
         $S->w("T/humms");
+        
+        die "Lost i somewhere before 5... "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
         
         # 5/9
         
@@ -355,8 +364,12 @@ hooks:
         
         # 6/9
         
+        die "Lost i somewhere before 6... "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
         $S->w("T/travels", {u=>T.i});
         $S->w('travels_D', {}, T.i);
+        die "Lost i somewhere before 7... "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
         
         # 7/9
         
@@ -369,9 +382,12 @@ hooks:
         
         # 9/9
         
-        die "Lost i somewhere... ".wdump([$beg, T.i]) unless T.i eq $beg;
+        die "Lost i somewhere before 9... "
+        .wdump(2, [$beg, T.i])unless T.i eq $beg;
+        
         my $L = T.L;
         $T = $old;
+        die "dumb" unless T.i eq $giu;
         return L.i;
     };
     G.U.visTp= sub { #c
@@ -452,6 +468,7 @@ hooks:
     G.U.fu_cache = sub { #c
         my $S = shift;
         my $u = shift;
+        u.B ||= {};
         $S->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)} = $u;
     };
     G.U.fs_glob = sub {#c
