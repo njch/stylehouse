@@ -1,0 +1,36 @@
+
+A:
+  - K: new # link the thing A in
+    D: |
+      my $i = shift;
+      A.i = $i;
+      i.A = $A;
+      
+  - K: pi
+    D: |
+      "A A.id ".A.i->pi();
+      
+  - K: spawn # make down
+    D: |
+      $H->spawn({uA => $A, r=>[@_]});
+      
+  - K: An # link down
+    D: |
+      my $n = shift;
+      push @{A.n}, $n;
+      
+  - K: Au # link up
+    D: |
+      my $u = shift;
+      die if A.u;
+      A.u = $u;
+      
+  - K: path
+    D: |
+      my $up;$up = sub {
+          my $u = shift;
+          return $u, $up->(u.A.u) if u.A && u.A.u && $u ne u.A.u;
+      };
+      my @path = reverse $up->(A.u);
+      return join "/", map { ref $_ } @path;
+

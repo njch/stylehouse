@@ -1,0 +1,27 @@
+      
+T:
+  - K: new
+    D: |
+      T.i = T.A.u.i; # MAINT
+      T.i.T = $T;
+      T.name = shift;
+      $T->commit(shift);
+      
+  - K: pi
+    D: |
+      "T T.name x".scalar(@{T.L})." ".T.i->pi(); 
+  
+  - K: commit
+    D: |
+      my $mes = shift;
+      T.L ||= [];
+      $mes ||= "init" if !@{T.L};
+      $mes ||= "?";
+      my $L = {
+          B => G::du({ O=>$T, i=>T.i }),
+          mes => $mes,
+      };
+      push @{T.L||=[]}, $L;
+      T.HEAD = T.L->[-1];
+      
+
