@@ -28,7 +28,8 @@ hooks:
         for my $ch (@$co) {
             say "skipping a blank K in $nb" && next if !ch.K;
             
-            my $D = $G->parse_babble(ch.D || ch.SD);
+            my $D = ch.D || ch.SD;
+            $D = $G->parse_babble($D) unless ch.style =~ /nonbabble/;
             
             if (ch.K eq "head" || ch.K eq "everything") {
                 if (ch.K eq "everything") {
@@ -60,7 +61,7 @@ hooks:
             }
             push @code, $D;
         }
-        push @code, "'stylehouse'";
+        push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : '');
         my $file = "l/${nb}.pm";
         write_file($file, join("\n", @code));
         

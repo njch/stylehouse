@@ -47,10 +47,10 @@ websocket '/ws' => sub {
 app->start('daemon', '--listen' => "$listen");
 
 __DATA__
-@@ws_page.$html->{ep}
+@@ws_page.html.ep
 <!DOCTYPE html>
 <html><head>
-<script src="//$ajax->{googleapis}->{com}/ajax/libs/jquery/1.8.0/jquery.$min->{js}" type="text/javascript"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
 </head><body style="background: url('i/greencush.jpg'); background: black; color: #0f2;">
 
     <h1>websocket.</h1>
@@ -62,15 +62,15 @@ __DATA__
     var fail = 0;
 
     function connect() {
-       conn = ne$G->w("WebSocket", { '<%= $ws_location %>' });
+       conn = new WebSocket('<%= $ws_location %>');
 
-       $conn->{onmessage} = function  (event) {
+       conn.onmessage = function  (event) {
           $('#msgs').append('msg: '+event.data +"<br />");
        };
-       $conn->{onopen} = function () {
+       conn.onopen = function () {
           $('#msgs').append("connected.\n");
        };
-       $conn->{onclose} = function () {
+       conn.onclose = function () {
           $('#msgs').append("closed.\n");
           reconnect();
        };
@@ -95,4 +95,3 @@ __DATA__
 
     </body></html>
 
-'stylehouse'
