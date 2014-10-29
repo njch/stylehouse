@@ -545,7 +545,7 @@ sub wire_procs {
             }
         }
         else {
-            die "procs not wired"
+            warn "procs not wired\n\n\n\n"
         }
     }
 }
