@@ -27,16 +27,23 @@ use Redis;
 our $data = {};
 ${^WIDE_SYSTEM_CALLS} = 1;
 sub new {
-    my $H = bless {}, shift;
+    my $pa = shift;
+    my $p = shift;
+    my $H = bless {%$p}, $pa;
     #$self->set('0', $self);
     $H->{for_all} = [];
     $H->{name} = 'Њ';
     
     lib_perc_H($H);
     
+     #ouble
+    $H->set('style', $H->{name}); # eventually to pick up a wormhole and etc.
+    $H->set('sstyle', $H->{style}); # eventually to pick up a wormhole and etc
+    
     $H->{G} = $H->TT($H)->G;
     $H->{G}->w('fresh_init');
     $H->{G}->w('any_init');
+    
     $Ghost::G0 = $H->TT("Ghost")->G("G");
     $Ghost::G0->w('fresh_init');
     $Ghost::G0->w('any_init');

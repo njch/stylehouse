@@ -25,7 +25,10 @@ sub wdump{Ghost::wdump(@_)}
 
 sub new {
     my $H = shift;
-    $H = $H->spawn0('H');
+    my $p = shift;
+
+    $DB::single = 1;
+    $H = $H->spawn0('H', $p);
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
@@ -41,6 +44,7 @@ sub new {
     $H->{G} = $H->{A}->spawn(G => 'H');
 
     $H->{G}->w('fresh_init'); # art
+    $H->{G}->w('any_init'); # art
 
     # is either G->subs or vortexed way, not a "root ghost" anymore but...
     $Ghost::G0 = $H->{A}->spawn(G => 'G');
@@ -77,7 +81,8 @@ sub spawn {
 sub spawn0 {
     my $H = shift;
     my $nb = shift;
-    my $u = bless {}, $nb;
+    my $p = shift || {};
+    my $u = bless {%$p}, $nb;
     $nb::H = $H;
     $u->{id} = mkuid();
     $u

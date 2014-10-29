@@ -44,10 +44,8 @@ $listen = [ split /, ?/, $listen ];
 say "! enlistening $name $$ @$listen\n\n\n\n\n\n\n\n\n\n
 
 ";
-my $H = my $hostinfo = new Hostinfo();
+my $H = my $hostinfo = new Hostinfo({name => $name, style => $style});
 helper 'hostinfo' => sub { $hostinfo };
-$H->set('style', $name); # eventually to pick up a wormhole and etc.
-$H->set('sstyle', $style); # eventually to pick up a wormhole and etc
 get '/' => sub {
     my $self = shift;
 

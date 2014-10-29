@@ -11,31 +11,19 @@ C: # Elvis, J
 hooks:
   fresh_init: |
     H.r = w enRedis;
-    Mojo::IOLoop->recurring(0.2 => sub{
+    Mojo::IOLoop->recurring(0.4 => sub{
         w wtf;
     });
     Mojo::IOLoop->recurring(8 => sub{
         w check/vitals;
     });
     
-    my $s = w styled;
-    die wdump($s);
+    $G->w("H.style/in");
     
-  
-  stylehut:
-    in: |
-      G.A->spawn(G => 'H/mess');
-    play: |
-      *Ghost::sw = sub { G::sw(@_) };
-      sw [H.G->HGf('mess')];
-      
-      die "yeah!";
-      
-      $H->send("Hello");
-      H._future = 1;
+  sub: |
       
       my $r = w enRedis;
-      $r->subscribe('g' => sub{
+      $r->subscribe($topic => sub{
           my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
           #die wdump[$top, $sutop, $m];
           $H->send($m);
@@ -45,6 +33,15 @@ hooks:
       Mojo::IOLoop->recurring(0.3 => sub{
           $r->wait_for_messages(0.02);
       });
+  stylehut:
+    in: |
+      G.A->spawn(G => 'H/mess');
+    play: |
+      *Ghost::sw = sub { G::sw(@_) };
+      sw [H.G->HGf('mess')];
+      
+      $H->send("Hello");
+      H._future = 1;
       
       Mojo::IOLoop->recurring(10 => sub{
           $H->send('hello!');
@@ -92,21 +89,19 @@ hooks:
       $s
     
   flood_init: |
-      my $s = w styled;
-      
       # ghosts/0/S + H.pm calls fresh_init
       # stylehouse.pl + Hostinfo.pm calls flood_init
-      die 'only stylehouse floods?' unless $0 eq 'stylehouse.pl';
+      die 'only stylehouse floodsrigh?' unless $0 eq 'stylehouse.pl';
       
-      w styleshed/play if s.shed;
-      w stylehouse/play if s.house;
+      w styleshed/play if H.style =~ /shed/;
+      w stylehouse/play if H.style =~ /house/;
       
       G!H/colour;
       G!H/sky ->w('flood_init');
       G!H/ground ->w('flood_init');
       
     
-      if (s.house) {
+      if (H.style =~ /house/) {
           Git->new($H->intro);
           Codo->new($H->intro);
           $H->JS("\$('#sky').stop().slideUp();");
@@ -116,7 +111,7 @@ hooks:
       }
 
       $H->menu();
-      $H->{floodmenu}->{Ш}->() if s.house;
+      $H->{floodmenu}->{Ш}->() if H.style =~ /house/;
       
       $H->update_app_menu();
       
