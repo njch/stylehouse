@@ -1,62 +1,56 @@
 
 name: H colour
-include: W/tractor
-tractors:
-  - K: 'H/colour'
-    arr_if: |
-      $name || die;
-    B_: |
-      $name
-    print: |
-      $S->{K} .": ". $S->{B}->{_}
-    first_time: |
-      $S->{B}->{personalities} ||= [
-          sub { int rand 50 },
-          sub { int rand 123 },
-          sub { int rand 255 },
-          sub { 100 + int rand 155 },
+
+C:
+  - K: 'colour'
+    Gw: 1
+hooks:
+  colour:
+    flows_D: |
+      B.personalities ||= [
+          sub { int rand 50 }, sub { int rand 123 },
+          sub { int rand 255 }, sub { 100 + int rand 155 },
       ];
+      B.cssid ||= ar.name if ar.name =~ /^\#/;
       Sw set;
+      
     every_time: |
-      Sw change_person if $ar->{e} && $ar->{e}->{C};
-      if ($ar->{change}) {
-            Sw change;
-      }
-      else {
-          Sw set if $ar->{force_set}
-      }
-    set: |
-      Sw set_background if $ar->{set_css_background};
-    set_background: |
-      my $colour = Sw wtc;
-      $ar->{t} ||= 0.2;
-      $H->JS("\$('$set_css_background').stop().animate({backgroundColor: '$colour'}, $ar->{t}*1000);");
-    change_person: |
-      Say "Personality switch del $name";
-      push @$personalities, shift @$personalities;
-    person: |
-      $personalities->[0]
-    randomcolour: |
-      $B->{personalities} || die "no preson!?";
-      my $as = Sw person;
-      my ($rgb) = join", ", map {$as->()} 1 .. 3;
-      return $S->{B}->{colour} = "rgb($rgb)";
-    change_colour: |
-      $S->{B}->{colour} = $ar->{c} || Sw randomcolour;
+      Sw change_person if ar.e && ar.e.C;
+      Sw change if ar.change;
+      
     change: |
       Sw change_colour;
       Sw set;
       return Sw wtc;
+      
+    change_colour: |
+      S.B.colour = $ar->{c} || Sw randomcolour;
+      
+    set: |
+      return Sw set_background if ar.cssid;
+      
+    set_background: |
+      my $colour = Sw wtc;
+      ar.t ||= 0.2;
+      $H->JS("\$('$cssid').stop().animate("
+          ."{backgroundColor: '$colour'}, ar.t*1000);");
+        
+    change_person: |
+      Say "Personality switch del $name";
+      push @$personalities, shift @$personalities;
+      
+    randomcolour: |
+      @$personalities || die "no preson!?";
+      my $as = Sw person;
+      my ($rgb) = join", ", map {$personalities->[0]->()} 1 .. 3;
+      B.colour = "rgb($rgb)";
+      B.colour;
+      
     wtc: |
-      $B->{colour} ||=  Sw randomcolour;
-hooks:
-  any_init: |
-  have: |
-    die;
-  randomcolour: |
-    my $S = w Afu[$name];
-    return w $S randomcolour(%$ar);
-  change_person: |
-    my $S = w Afu[$name];
-    return w $S change_person;
+      B.colour ||=  Sw randomcolour;
+  Arr: |
+    my $a = {name=>ar.name};
+    a.cssid = ar.cssid if ar.cssid;
+    my $u = 0->TafuB(colour => $a);
+    w $u every_time;
 

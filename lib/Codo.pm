@@ -159,8 +159,7 @@ sub codolist {
 
             $H->{G}->timer(1, sub {
             Ghost::HGf('colour')->w(Arr => 
-                {name => "Codo",
-                set_css_background => "#Codo",
+                {name => "#Codo",
                 change => 1,
                 e => $e}
             );

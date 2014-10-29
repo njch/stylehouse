@@ -200,9 +200,10 @@ CM
     my $cmback = ".$texty->{id} > .CodeMirror";
     $H->{G}->timer(1, sub {
     Ghost::HGf('H/colour')->w(Arr =>
+
         {name => "Codon/$self->{name}",
-        set_css_background => $cmback,
-        force_set => 1}
+        cssid => $cmback,
+        change => 1}
     );
     });
     $H->JS("\$('$cmback').css('width', '100%').css('height', 'auto').css('overflow', 'visible');");
@@ -267,7 +268,7 @@ sub event {
         my ($tid, $cid) = ($1, $2);
         my $fid = "$tid-".($cid+1);
         Ghost::HGf('colour')->w(Arr =>
-            {name => "Codon/$self->{name}", change => 'change', e => $e},
+            {name => "Codon/$self->{name}", change => 1, e => $e},
         );
         #my $colour = random_colour($e->{C});
         #$H->JS("\$('#$fid > div').animate({backgroundColor: '$colour'}, 200);");

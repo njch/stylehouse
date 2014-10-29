@@ -12,10 +12,11 @@ hooks:
   fresh_init: |
     $H->{sky} = G.V.sky || die "There is no sky";
     
-    w changesky(set_css_background => "#sky");
+    w changesky;
+    
     w ambientness;
   changesky: |
-    G:colour->w(Arr => {name => "#sky", %$ar});
+    G:colour->w(Arr => {name => "#sky", %$ar, change => 1});
   doof: |
     $ar->{t} ||= 0.1;
     #$ar->{c} ||= '333';
@@ -26,8 +27,6 @@ hooks:
     my $c = w colourchange(t=>5);
     w light;
     $G->mess(Ambientness => $c);
-    
-    waylay 22 ambientness;
   light: |
     # some angles
   colourchange: |

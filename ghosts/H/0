@@ -40,6 +40,10 @@ hooks:
       G!H/mess; # due to spawn syntax
     play: |
       G!H/keys;
+      
+      
+      
+      Mojo::IOLoop->recurring(3 => sub {G:sky ->w('ambientness'); });
   stylehouse:
     in: |
       G!H/mess; # due to spawn syntax
@@ -93,13 +97,12 @@ hooks:
       # stylehouse.pl + Hostinfo.pm calls flood_init
       die 'only stylehouse floodsrigh?' unless $0 eq 'stylehouse.pl';
       
-      w styleshed/play if H.style =~ /shed/;
-      w stylehouse/play if H.style =~ /house/;
-      
       G!H/colour;
       G!H/sky ->w('flood_init');
       G!H/ground ->w('flood_init');
       
+      w styleshed/play if H.style =~ /shed/;
+      w stylehouse/play if H.style =~ /house/;
     
       if (H.style =~ /house/) {
           Git->new($H->intro);
