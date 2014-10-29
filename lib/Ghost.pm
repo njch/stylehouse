@@ -322,6 +322,9 @@ sub ob {
 sub ki {
     my $ar = shift;
     my $s = "";
+    if (!ref $ar || "$ar" !~ /HASH/) {
+        confess "NOT HASH: $ar";
+    }
     for my $k (sort keys %$ar) {
         my $v = $ar->{$k};
         $v = "~" unless defined $v;

@@ -25,10 +25,13 @@ hooks:
   atrig: |
     push @{G.trigs}, $D;
   mess: |
-    my $S = 0->TafuB(mess => [thing => $thing, what => $what, a => rand().$H->hitime]);
+    my $S = 0->TafuB(mess => {thing => $thing, what => $what, a => rand().$H->hitime});
     w $S first_time;
     
     $_->($S) for @{G.trigs};
+    
+    say "trigless mess... $what =   ".
+        join"  ", map {gpty($_)} flatline($thing);
     
     return "yep" if $what eq "Info" && $thing->[0] =~ /^keypress/;
     return 'yep' if $what !~ /^(say|info|error)$/i;
