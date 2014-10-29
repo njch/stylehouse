@@ -41,13 +41,13 @@ sub new {
     $H->set('sstyle', $H->{style}); # eventually to pick up a wormhole and etc
     
     $H->{G} = $H->TT($H)->G;
-    $H->{G}->w('fresh_init');
-    $H->{G}->w('any_init');
     
     $Ghost::G0 = $H->TT("Ghost")->G("G");
     $Ghost::G0->w('fresh_init');
     $Ghost::G0->w('any_init');
     
+    $H->{G}->w('fresh_init');
+    $H->{G}->w('any_init');
     
     # SED name is styleblah, $style as far above is blah. layers peel everywhere.
 
