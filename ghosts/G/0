@@ -321,6 +321,7 @@ hooks:
         
         my $giu = T.i;
         my $old = 0S->visTp($p); # 1
+        die "no old!".wdump($T) if !$old;
         T.i || die " no way in! ".wdump($p);
         
         0S->fu_cache(T.i);
@@ -387,21 +388,24 @@ hooks:
         
         my $L = T.L;
         $T = $old;
-        die "dumb" unless T.i eq $giu;
+        die "dumb".wdump([$T, $old, $giu]) unless T.i eq $giu;
         return L.i;
     };
     G.U.visTp= sub { #c
         my ($S, $p, $fun) = @_;
         
-        my $old;
-        if ($T && ref $T =~ /^(Way|C)$/) {
-            $old = $T;
-        }
-        else {
+        my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
+        my $old = $T;
+        if (!$tish) {
             $T = $S->nw();
         }
-        
-        $T = $T->spawn;
+        elsif (T.G ne $S) {
+            # loses hair? we never care?
+            $T = $S->nw();
+        }
+        else {
+            $T = $T->spawn;
+        }
         
         $p = {i=>$p} if ref $p =~ /^(Way|C)$/;
         my $moved = p.i || p.L;
