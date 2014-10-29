@@ -11,6 +11,27 @@ C: # Elvis, J
 hooks:
   fresh_init: |
     H.r = w enRedis;
+    Mojo::IOLoop->recurring(0.2 => sub{
+        w wtf;
+        
+    });
+    Mojo::IOLoop->recurring(8 => sub{
+        w check/vitals;
+    });
+    
+      G!H/mess; 
+    
+      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
+  wtf: |
+    # TODO combine with check, fractionating importantness into time
+        my $script = $0;
+        my $nc = (stat $script)[10];
+        die "no ctime?" unless $nc;
+        if (H.Sctime && $nc ne H.Sctime) {
+            Say "Rwestarting! ctime changeon $script";
+            exec "perl $script";
+        }
+        H.Sctime = $nc;
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -26,31 +47,15 @@ hooks:
         return $c;
     };
     $r
-  kill: |
-    my $sig = ar.sig || "KILL";
-    my $grep = "grep $grepps";
-    my $cmd = "ps faux | $grep";
-    my @ps = `$cmd`;
-    my @psg = grep {!/\Q$grep\E/} @ps;
-    Say "LO::!|";
-    die "no matches on ps grep $grepps" if !@ps;
-    my @proc = split /\s+/, pop @ps;
-    my $pid = $proc[1];
-    my $kill = "kill -$sig $pid";
-    run $kill;
-    sw [$kill, proc => @proc];
   flood_init: |
       my $house = $H->get('style') eq 'stylehouse';
     
-      G!H/mess;
       G!H/keys if !$house;
       G!H/colour;
       G!H/sky ->w('flood_init');
-      G:mess  ->w('flood_init');
+      G!H/mess; 
       G!H/ground ->w('flood_init');
       
-      waylay check/vitals;
-      # so ll that stuff is vague happens as it happens stuff built near 0 anyway ^
     
       if ($house) {
           Git->new($H->intro);
@@ -92,6 +97,7 @@ hooks:
     });
   getbusy: |
     $H->send("Hello");
+    H._future = 1;
     
        # in future, E is a collection of energies from Elvis...
        # maybe global global... nah not quite, just wide as tower

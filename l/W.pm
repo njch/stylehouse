@@ -9,12 +9,17 @@ use base 'Wormhole';
 
 sub new {
     my $W = shift;
-    $W->{name} = "$W->{A}->{u}->{i}->{name}";
     $W->{G} = $W->{A}->{u}->{i};
+    $W->{name} = "$W->{G}->{name}";
     $W->{n} = 0;
     $W->wormfile_load(shift);
 
     $W
+}
+
+sub pi {
+    my $W = shift;
+    "W $W->{name}";
 }
 
 'stylehouse'

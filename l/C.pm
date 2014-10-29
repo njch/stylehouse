@@ -16,7 +16,11 @@ sub new {
 
 sub pi {
     my $C = shift;
-    "C ".$C->pint();
+    my $some = "C ".$C->pint();
+    unless (length($some) > 5) {
+        $some .= " ".Ghost::ki($C);
+    }
+    $some
 }
 
 'stylehouse'

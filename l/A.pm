@@ -16,7 +16,7 @@ sub new {
 
 sub pi {
     my $A = shift;
-    "A $A->{uid} ".$A->{i}->pi();
+    "A $A->{id} ".$A->{i}->pi();
 }
 
 sub spawn {

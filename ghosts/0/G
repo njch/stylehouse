@@ -3,10 +3,12 @@ name: other stuff...
 hooks:
   try: |
     Say 'Restarting S';
-    H.G->w(kill => {sig => 'HUP', grepps => 'perl.*ghosts/0/S'});
+    `touch ghosts/0/S`;
     
   any_init: |
       $G->timer(0.2,sub{waylay code;});
+  fresh_init: |
+    push @{G0.recoded_cbs}, sub { w try; };
   code: |
     my $w = G.ways->[0];
     for my $nb (grep { /^[A-Z]$/ } keys %$w) {
@@ -63,7 +65,6 @@ hooks:
     waylay try;
 
   
-
 H:
   - K: head
     libglob: 'l/?.pm'
@@ -81,7 +82,7 @@ H:
     
   - K: new
     D: |
-      $H = $H->spawn0('H'); 
+      $H = $H->spawn0('H');
       ___LIBGLOBETC
        
       use lib 'lib'; 
@@ -97,23 +98,31 @@ H:
       $Ghost::G0->w('fresh_init');
       $Ghost::G0->w('any_init');
 
+  - K: TT
+    D: |
+      die wdump([@_]);
+      
+  - K: pi
+    D: |
+      "H ! ";
       
   - K: spawn
     D: |
       my $a = shift;
       my $u = $H->spawn0(@{a.r});
       
-      say "H spawning $u";
       if (ref $u eq 'A') {
-          return $u->new(a.i);
+          $u = $u->new(a.i);
       }
       else {
           $H->spawn({i=>$u, r=>['A']});
           a.uA->An($u);
           u.A->Au(a.uA);
+          shift @{a.r};
+          $u = $u->new(@{a.r});
       }
-      shift @{a.r};
-      $u->new(@{a.r});
+      say "H spawning ".$u->pi unless ref $u eq 'A' || ref $u eq 'C';
+      $u
       
   - K: spawn0
     D: |
@@ -300,7 +309,7 @@ A:
       
   - K: pi
     D: |
-      "A A.uid ".A.i->pi();
+      "A A.id ".A.i->pi();
       
   - K: spawn # make down
     D: |
@@ -338,7 +347,11 @@ C:
       
   - K: pi
     D: |
-      "C ".$C->pint();
+      my $some = "C ".$C->pint();
+      unless (length($some) > 5) {
+          $some .= " ".Ghost::ki($C);
+      }
+      $some
 G:
   - K: head
     D: |
@@ -550,8 +563,12 @@ W:
       use base 'Wormhole';
   - K: new
     D: |
-      W.name = "W.A.u.i.name";
       W.G = W.A.u.i;
+      W.name = "W.G.name";
       W.n = 0;
       $W->wormfile_load(shift);
+
+  - K: pi
+    D: |
+      "W W.name";
 

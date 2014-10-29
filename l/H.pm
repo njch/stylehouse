@@ -25,7 +25,7 @@ sub wdump{Ghost::wdump(@_)}
 
 sub new {
     my $H = shift;
-    $H = $H->spawn0('H'); 
+    $H = $H->spawn0('H');
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
@@ -49,22 +49,33 @@ sub new {
     $H
 }
 
+sub TT {
+    my $H = shift;
+    die wdump([@_]);
+}
+
+sub pi {
+    my $H = shift;
+    "H ! ";
+}
+
 sub spawn {
     my $H = shift;
     my $a = shift;
     my $u = $H->spawn0(@{$a->{r}});
 
-    say "H spawning $u";
     if (ref $u eq 'A') {
-        return $u->new($a->{i});
+        $u = $u->new($a->{i});
     }
     else {
         $H->spawn({i=>$u, r=>['A']});
         $a->{uA}->An($u);
         $u->{A}->Au($a->{uA});
+        shift @{$a->{r}};
+        $u = $u->new(@{$a->{r}});
     }
-    shift @{$a->{r}};
-    $u->new(@{$a->{r}});
+    say "H spawning ".$u->pi unless ref $u eq 'A' || ref $u eq 'C';
+    $u
 }
 
 sub spawn0 {

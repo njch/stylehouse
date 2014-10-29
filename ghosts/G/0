@@ -4,6 +4,7 @@ name: Ghost
 hooks:
   recoded_init: | # G/0 recode
     H.G->w('re/exec');
+    _->() for @{G.recoded_cbs};
   _load_ways_post: | # G/0 manages some other G's way startup ripples
     $S->w("load_ways_post");
     $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
@@ -78,6 +79,8 @@ hooks:
           $G->timer(0.5 => sub { w keyub[$S]; });
       }
   any_init: |
+    G.recoded_cbs||=[];
+    
     G.U.ing = sub { #c
         my ($S, $time, $ing, $w) = @_;
         $time && $ing || die " time&ing";

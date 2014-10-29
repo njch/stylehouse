@@ -457,6 +457,7 @@ sub watch_git_diff {
     $od = { %$od };
     while (my ($f, $n) = each %$d) {
         my $o = delete $od->{$f};
+        next if $f =~ /^l\//;
         if (!$o || $n ne $o) {
             say join("  <>  ", ($f)x38);
             $self->{G}->w('re/exec');
