@@ -29,9 +29,9 @@ sub new {
 }
 
 sub sw {
-    my $G = shift;
-    my $thing = @_==1 ? shift : [@_];
-    my $stuff = wdump($thing);
+
+    my $stuff = wdump(@_>1?\@_:@_);
+    say "wdump:$stuff";
     $H->{r}->publish('sw', $stuff);
     "published wdump to sw";
 }

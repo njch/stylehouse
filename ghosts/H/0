@@ -26,12 +26,15 @@ hooks:
     in: |
       my $u = G.A->spawn(G => 'H/mess');
     play: |
-      *Ghost::sw = sub { G::sw(@_) };
-      say sw [H.G->HGf('mess')];
+      *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
+      
+      #say sw [H.G->HGf('mess')]; 
       
       $H->send(sprintf "version is v%vd", $^V);
       
-      Mojo::IOLoop->recurring(5 => sub{ $H->send('...hi...'); });
+      Mojo::IOLoop->recurring(5 => sub{ w stylehut/yup; });
+    yup: |
+      say sw([qw'kia ora']);
       
       
   styleshed:
@@ -76,7 +79,8 @@ hooks:
     my $ord = H.redisco ||= {};
     for my $k (sort keys %$ord) {
         for my $t (@{$ord->{$k}}) {
-            t.r->wait_all_responses($k); # ooh the key
+            say "redis $k t.r.wassubbedto";
+            t.r->wait_for_messages($k); # ooh the key
         }
     }
   suRedis: |
@@ -87,6 +91,7 @@ hooks:
     };
     a.r = w enRedis;
     a.r->subscribe($topic => $D);
+    a.r.wassubbedto = $topic;
     a.riv = 'redission';
     H.redission->{a.way} = $a;
     
