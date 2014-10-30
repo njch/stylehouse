@@ -14,14 +14,15 @@ hooks:
     
     H.r = w enRedis;
     
-    Mojo::IOLoop->recurring(0.4 => sub { w wtf(way => 'wtf'); });
+    Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
     
     w wtf(div => 1, way => 'check/script');
-    w wtf(div => 1, way => 'check/redis');
+    w wtf(div => 1, way => 'redission');
     w wtf(div => 17, way => 'check/vitals');
     
     $G->w("H.style/in");
     
+
   stylehut:
     in: |
       my $u = G.A->spawn(G => 'H/mess');
@@ -29,12 +30,9 @@ hooks:
       *Ghost::sw = sub { G::sw(@_) };
       sw [H.G->HGf('mess')];
       
-      $H->send("HI!");
-      H._future = 1;
+      $H->send(sprintf "version is v%vd", $^V);
       
-      Mojo::IOLoop->recurring(5 => sub{
-          $H->send('...hi...'); 
-      });
+      Mojo::IOLoop->recurring(5 => sub{ $H->send('...hi...'); });
       
       
   styleshed:
@@ -43,13 +41,13 @@ hooks:
     play: |
       G!H/keys;
       
-      my $a = {
-          div => 26, way => 'sky amb',
-          D => sub {G:sky ->w('ambientness'); }
-      };
-      w wtf(%$a);
+      my $Dambi = sub {G:sky ->w('ambientness'); };
+      w wtf(div => 26, way => 'sky amb', D => $Dambi);
       
-      
+      my $Dsw = sub { my ($m, $top, $sutop) = @_;
+          $H->send($m); say $m; };
+          
+      w suRedis(div => 7, topic => "sw", D => $Dsw);
   stylehouse:
     in: |
       G!H/mess; # due to spawn syntax
@@ -60,7 +58,8 @@ hooks:
         $H->{ar.riv||'wtf'}->{ar.way} = $a;
         return;
     }
-    my $riv = $H->{ar.way} ||= {};
+    my $riv = $H->{ar.riv} ||= {};
+    my @to;
     while (my ($way,$R) = each %$riv) {
         R.now++;
         if (R.now >= R.div) {
@@ -71,6 +70,47 @@ hooks:
             });
         }
     }
+  redission: |
+    my $ord = H.redisco ||= {};
+    for my $k (sort keys %$ord) {
+        for my $t (@{$ord->{$k}}) {
+            t.r->wait_all_responses($k); # ooh the key
+            say "waits $k for t.way";
+        }
+    }
+  suRedis: |
+    my $a = {
+        div => (ar.div || 3),
+        way => $topic." D=$D",#CODE=uniq
+        D => $D,
+    };
+    a.r = w enRedis;
+    a.r->subscribe($topic => $D);
+    a.riv = 'redission';
+    H.redission->{a.way} = $a;
+    
+    my $riv = H.redission ||= {};
+    my @to = values %$riv;
+    H.redisco = w waits(to => \@to, towait => 0.1);
+  waits: |
+    my $towait = ar.towait || 1;
+    my $to = ar.to;
+    
+    my $max = max map { _.div } @$to;
+    _.span = $max / _.div for @$to;
+    
+    my $tot = sum map { _.span } @$to;
+    my $one = $towait / $tot;
+    
+    my $ord = {};
+    for my $t (@$to) {
+        my $waits = $one * t.span;
+        $waits = sprintf("%.7f", $waits);
+        t.waits = $waits;
+        push @{ $ord->{$waits} ||= [] }, $t
+    }
+    return $ord;
+    
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -86,19 +126,6 @@ hooks:
         return $c;
     };
     $r
-  suRedis: |
-      my $r = w enRedis;
-      
-      $r->subscribe($topic => sub{
-          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
-          #die wdump[$top, $sutop, $m];
-          $H->send($m);
-          #say @$event;
-      }); 
-      
-      Mojo::IOLoop->recurring(0.3 => sub{
-          $r->wait_for_messages(0.02);
-      });
   check:
     script: |
       my $script = $0;
