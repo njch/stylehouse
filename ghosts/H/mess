@@ -9,26 +9,28 @@ name: kasplat
 
 C:
   - K: 'mess'
-    populi:
-      max: 10
-    first_time: |
-      S.K="m$what";
-      S.Flab = $G->Flab($S);
+    # Gw: 1 # TODO cannot handle?
+    print: |
+      ref $thing eq "Way" || ref $thing eq "C" ? $thing->pint : ghostlyprinty($thing);
     wheresplain: |
       $S->{waystack} ? w $S->{waystack} wheresplain : "";
-    print: |
-      join " ", $S->{K}, ghostlyprinty($thing);
+      "roar!";
 hooks:
   fresh_init: |
     H._future = 1;
     G.trigs = [];
+    G.populi.max = 10;
   atrig: |
     push @{G.trigs}, $D;
-  mess: |
-    my $S = 0->TafuB(mess => {thing => $thing, what => $what, a => rand().$H->hitime});
-    w $S first_time;
+  Arr: |
+    my $S = 0->TB(mess => {thing => $thing, what => $what});
+    S.K="m$what";
+    S.Flab = $G->Flab($S);
     
     $_->($S) for @{G.trigs};
+    
+    my $s = G.W.script;
+    shift @$s until @$s <= 10;
     
     say "trigless mess... $what =   ".
         join"  ", map {gpty($_)} flatline($thing);

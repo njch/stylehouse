@@ -65,11 +65,12 @@ hooks:
         R.now++;
         if (R.now >= R.div) {
             R.now = 0;
-            return R.D->() if R.D;
-            $G->w("$way");
+            $G->timer(0, sub {
+                return R.D->() if R.D;
+                $G->w("$way");
+            });
         }
     }
-
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -338,7 +339,7 @@ hooks:
     $m || die'no mess!';
     H._future = 0;
     
-    eval { $m ->w(mess => $ar); };
+    eval { $m ->w(Arr => $ar); };
     if ($@) {
         die "Throwing mess mess: $@\n\n\n".wdump($ar);
     }

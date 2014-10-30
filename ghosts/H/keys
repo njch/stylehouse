@@ -15,7 +15,6 @@ hooks:
   Key:
     flows_D: |
       B.key ||= e.k;
-       say wdump(ar.e);
       B.key ||= "?Ⲯ?";
       B.key = lc(B.key) if !e.S;
       S.hitime = hitime();
@@ -24,6 +23,7 @@ hooks:
       #L ^ here's _, 
 
       say join($k, (" ")x28) for 1..4;
+       
 
       # could use Redis to do the news pub sub
       # nah thats for higher level stuff, a keystroke is low level energy
@@ -31,6 +31,7 @@ hooks:
       0->sing(
           "keytrig $k" => sub {
               w $S keydosubs;
+              $G->mess(Key => $S);
           },
           begin => 0.00000000001,
           block => 0.2,
@@ -48,11 +49,11 @@ hooks:
       for my $g (@{ G.subs }) {
           my $kh = $g->findway("keys");
           my $pa = "keys/".($kh->{$full} ? $full : $key);
-          $g->w($pa, {Key => $S});
+          $G->timer(0, sub { $g->w($pa, {Key => $S}) });
       }
   Arr: |
-    my $a = {e=>ar.e, r=>rand().$H->hitime};
-    my $u = 0->TafuB(Key => $a);
+    my $a = {e=>ar.e};
+    my $u = 0->TB(Key => $a);
   event: |
     #w throwlog(Event => $e);
     if (eval { $ar->{e}->[1]->{C} }) {

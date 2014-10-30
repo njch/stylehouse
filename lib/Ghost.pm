@@ -135,8 +135,9 @@ sub ghostlyprinty {
             push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
         }
         elsif (ref $t) {
-            push @s, $witcolour->(ref($t), "333;font-size-adjust:0.5");
-            push @s, $witcolour->(gname($t));
+            push @s, $witcolour->(ref($t), "333;font-size:50%");
+            my $name = gname($t);
+            push @s, $witcolour->($name);
         }
         else {
             push @s, (defined $t ? $t : "~")
