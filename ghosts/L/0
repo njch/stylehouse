@@ -97,6 +97,12 @@ hooks:
     my $mess = G:mess;
     $mess ->w(atrig => {D => sub { waylay hm/messworm; }});
     
+    H.G->w(suRedis => {div => 7, topic => "sw", D => sub {
+        my $m = shift;
+        w swthrow[$m];
+    }});
+
+    
     G!O/splat;
     G!T/crawl;
     G!L/ob;
@@ -204,6 +210,11 @@ hooks:
       $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
       $@ = ""         if $@;
       w f/Gob;
+  swthrow: |
+    Say "Got sw! $m";
+    my $thing = eval "my \$VAR1; $m";
+    if ($@) { Say "OH NO! $@"; $@ = ""; return; }
+    w somewhere[$thing];
   somewhere: |
     return G:Ϡ ->w(Arr => $ar) if ar.nothing;
     return w wormholify if ar.wormhole;
