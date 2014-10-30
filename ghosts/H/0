@@ -17,6 +17,7 @@ hooks:
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(way => 'wtf'); });
     
     w wtf(div => 1, way => 'check/script');
+    w wtf(div => 1, way => 'check/redis');
     w wtf(div => 17, way => 'check/vitals');
     
     $G->w("H.style/in");
@@ -42,8 +43,10 @@ hooks:
     play: |
       G!H/keys;
       
-      my $a = {div => 26, way => 'sky amb'};
-      a.D = sub {G:sky ->w('ambientness'); };
+      my $a = {
+          div => 26, way => 'sky amb',
+          D => sub {G:sky ->w('ambientness'); }
+      };
       w wtf(%$a);
       
       
@@ -62,11 +65,39 @@ hooks:
         R.now++;
         if (R.now >= R.div) {
             R.now = 0;
-            say "hit R.way";
             return R.D->() if R.D;
             $G->w("$way");
         }
     }
+
+  enRedis: |
+    my $r = Redis->new(
+        server => 'localhost:8888',
+        reconnect => 1,
+        every => 10000,
+    );
+    r.gest = sub { # do a R::edis module
+        my ($k, $make) = @_;
+        my $c = H.r->get($k);
+        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
+        $c = $make->();
+        H.r->set($k => $c);
+        return $c;
+    };
+    $r
+  suRedis: |
+      my $r = w enRedis;
+      
+      $r->subscribe($topic => sub{
+          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
+          #die wdump[$top, $sutop, $m];
+          $H->send($m);
+          #say @$event;
+      }); 
+      
+      Mojo::IOLoop->recurring(0.3 => sub{
+          $r->wait_for_messages(0.02);
+      });
   check:
     script: |
       my $script = $0;
@@ -103,34 +134,6 @@ hooks:
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
-  enRedis: |
-    my $r = Redis->new(
-        server => 'localhost:8888',
-        reconnect => 1,
-        every => 10000,
-    );
-    r.gest = sub { # do a R::edis module
-        my ($k, $make) = @_;
-        my $c = H.r->get($k);
-        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
-        $c = $make->();
-        H.r->set($k => $c);
-        return $c;
-    };
-    $r
-  suRedis: |
-      my $r = w enRedis;
-      
-      $r->subscribe($topic => sub{
-          my ($m, $top, $sutop) = @_; # topic it is, subscribed topic
-          #die wdump[$top, $sutop, $m];
-          $H->send($m);
-          #say @$event;
-      }); 
-      
-      Mojo::IOLoop->recurring(0.3 => sub{
-          $r->wait_for_messages(0.02);
-      });
   styled: |
       my $s;s.style = $H->get('style');
       s.house = 1 if s.style eq 'stylehouse';
