@@ -94,7 +94,7 @@ sub gitrack {
         `kill -KILL $har[1]`;
     },
     '᎒' => sub {
-        my @hmm = grep /ghosts/, `ps faux | grep ghost`;
+        my @hmm = grep /S\.pm/, `ps faux | grep perl l/S.p`;
         my @har = split /\s+/, pop @hmm;
         `kill -KILL $har[1]`;
     },
