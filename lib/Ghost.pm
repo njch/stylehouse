@@ -792,65 +792,83 @@ sub dooftip {<<"";
 
 }
 sub parse_babble {
-    my $self = shift;
+    my $G = shift;
     my $eval = shift;
     
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     my $G_name = qr/[\/\w]+/;
-    
-    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
-    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    my $Gnv = qr/\$?$G_name/;
     
     $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
     $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     
+    # 5/9
+    
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
-    $eval =~ s/Sw (?=\w+)/w \$S /sg;
-    
-    my $Gnv = qr/\$?$G_name/;
-    $eval =~ s/G!($Gnv)/\$H->TT(\$G, \$O)->G("$1")/sg;
-    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
-    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+    $eval =~ s/(Sw|ws) (?=\w+)/w \$S /sg;
     
     $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
     $eval =~ s/T (?=->)/->T() /sg;
     
      
-    while ($eval =~ /(?<!\$)(w (\$\S+ )?([\w\$\/]+)$AR?)/sg) {
-        my ($old, $gw, $path, $square, $are) = ($1, $2, $3, $4, $5);
-        $gw = $gw ? ", $gw" : "";# way (chain) (motionless subway)
-        $gw =~ s/ $//;
-        $are = $self->parse_babblar($are, $square);
-        $H->snooze(0.1);
-        $eval =~ s/\Q$old\E/\$G->w("$path", $are$gw)/
-            || die "Ca't replace $1\n"
-            ." in\n".ind("E ", $eval);
+    # 6/9 - motionless subway
+    
+    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    
+    my $point = qr/[\w\$\/\->\{\}]+/;
+    
+    my $poing = qr/$point|G:\w+/;
+    
+    my $sqar = qr/\[.+?\]|\(.+?\)/;
+    
+    while ($eval =~ /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar| ?$point(?>!if ))?)/sg) {
+        my ($old, $g, $u, $p, $a) = ($1, $2, $3, $4, $5);
+        
+        $_ = $a;
+        $g ||= '$G';
+        
+        my $en = join ", ", grep {defined} (
+            "'$p'",
+            (
+            map { "{$_}" } join ", ", grep {$_} 
+                (s/^\+ ?//
+                    &&
+                    '%$ar'
+                ),
+                (s/^\[|\]$//sg
+                    &&
+                    $a
+                ),
+                (s/^\(|\)$//sg
+                    &&
+                    map { my($l)=/\$(\w+)/;"$l => $_" }
+                         split /, */, $a
+                ),
+            ),
+            $u
+        );
+        
+        my $ar = $g."->w(".$en.")";
+        
+        say " $old \t=>\t$ar";
+        $eval =~ s/\Q$old\E/$ar/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
+    
+    # 8/9
+    
+    $eval =~ s/G!($Gnv)/\$H->TT(\$G, \$O)->G("$1")/sg;
+    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
+    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+    
     $eval;
 }
 sub parse_babblar {
-    my $self = shift;
-    my $are = shift;
-    my $square = shift;
-    my $ape;
-    if (!$are && $square) {
-        $square =~ s/^\[|\]$//sg;
-        $ape = $square =~ s/^\+//;
-        $are = join ", ", map { (/\$(\w+)/)[0]." => $_" } split /, */, $square;
-    }
-    if ($ape || $are && $are =~ s/^\+ //) {
-        $are =~ s/\)$//;
-        $are = '{ %$ar, '.$are.'}';
-    }
-    elsif ($are) {
-        $are = "{ $are }";
-    }
-    else {
-        $are = '{ %$ar }';
-    }
-    return $are;
+    my $G = shift;
+    my $p = shift;
+    my $a = shift;
 }
     
 sub grep_chains {
