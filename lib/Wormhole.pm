@@ -16,6 +16,7 @@ sub new {
     delete $self->{hostinfo};
     
     $self->{G} = shift;
+    $self->{name} = $self->{G}->{name};
     $self->{n} = 0;
 
     $self->wormfile_load(shift);
@@ -117,11 +118,16 @@ sub encode_thing {
 # which is the whole stylehouse deal.
 # it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
 # Form is a well-known bunch of Ghost
-sub describe_size {
-    my $self = shift;
-    "W $self->{n}x".scalar(@{$self->{script}});
+sub uhigh {
+    my $W = shift;
+    my $n = $W->{n};
+    my $u = scalar(@{W.script});
+    ($u ne $n ? $n : '')."x$u"; # acquire north, get high
 }
-sub desize { shift->describe_size }
+sub pi {
+    my $W = shift;
+    "W ".$W->{name}." ".$W->uhigh
+}
 sub way_out {
     my $self = shift;
     if (my $T = $self->{G}->{T}) {

@@ -133,6 +133,10 @@ sub pint {
     my $s = "$K↯$p".($B?"↯$B":"");
     return $s;
 }
+sub pi {
+    my $w = shift;
+    $w->pint
+}
 sub find {
     my $self = shift;
     my $point = shift;
