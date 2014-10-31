@@ -29,7 +29,7 @@ sub new {
 }
 
 sub sw {
-    my $stuff = wdump(@_>1?\@_:@_);
+    my $stuff = wdump(5, @_>1?\@_:@_);
     $H->{r}->publish('sw', $stuff);
     "published wdump to sw";
 }

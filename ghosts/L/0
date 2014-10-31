@@ -97,10 +97,22 @@ hooks:
     my $mess = G:mess;
     $mess ->w(atrig => {D => sub { waylay hm/messworm; }});
     
-    H.G->w(suRedis => {div => 7, topic => "sw", D => sub {
-        my $m = shift;
-        w swthrow[$m];
-    }});
+  channel: |
+    0->su($top, sub {
+        w sw(top=>$top, m=>shift);
+    }, 7);
+  sw: |
+    Say "Got sw $top!";
+    use lib 'l';
+    use H;
+    my $thing = eval "my \$VAR1; $m";
+    
+    if ($@) { Say "OH NO! $@"; $@ = ""; return; }
+    if (G.iggggsw) { Say "igsw"; return; }
+    
+    w somewhere[$thing];
+    
+    Say "swthrow ".$G->F_delta;
 
     
     G!O/splat;
@@ -210,18 +222,6 @@ hooks:
       $H->error("EϠ EϠ EϠ EϠ", $@) if $@;
       $@ = ""         if $@;
       w f/Gob;
-  swthrow: |
-    Say "Got sw!";
-    use lib 'l';
-    use H;
-    my $thing = eval "my \$VAR1; $m";
-    
-    if ($@) { Say "OH NO! $@"; $@ = ""; return; }
-    if (G.iggggsw) { Say "igsw"; return; }
-    
-    w somewhere[$thing];
-    
-    Say "swthrow ".$G->F_delta;
   somewhere: |
     return G:Ϡ ->w(Arr => $ar) if ar.nothing;
     return w wormholify if ar.wormhole;
@@ -246,7 +246,7 @@ hooks:
     };
     $G->Flab(asplat => $a);
     
-    my $Cr = G:crawl || die;
+    my $Cr = G:crawl || return $H->error("splat too early to see...");
     0->RW($Cr);
     $Cr->crank(maxd => ar.maxd) if exists ar.maxd;
     say join" ", ("       ẞ           ")x38;
