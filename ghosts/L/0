@@ -235,19 +235,18 @@ hooks:
   splatsome:
     waylay a/path;
     
-    my $Cr = G:crawl;
-    $Cr || die;
-    my $unc = $Cr->crank(max_depth => $ar->{max_depth}) if defined $ar->{max_depth};
+    my $a = {t=>$thing, i=>$i};
+    
+    my $Cr = G:crawl || die;
+    0->RW($Cr);
+    $Cr->crank(max_depth => $ar->{max_depth}) if defined $ar->{max_depth};
     whisper join"", ("       ẞ           ")x38;
     start_timer();
     
-    0->RW($Cr);
 
     $G->{thething} = $thing;
-    $Cr->w(crawl => {t=>$thing});
+    $Cr->w(crawl => );
     
-    
-    $unc->() if $unc;
     my $wormhole = $G->{some_W} = $Cr->W;
 
     w splat_wormholes;

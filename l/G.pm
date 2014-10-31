@@ -29,9 +29,7 @@ sub new {
 }
 
 sub sw {
-
     my $stuff = wdump(@_>1?\@_:@_);
-    say "wdump:$stuff";
     $H->{r}->publish('sw', $stuff);
     "published wdump to sw";
 }
@@ -115,6 +113,12 @@ sub du {
     # travels every thing      if e>=1
     #                also      if 0.5<e<1
     # since it must want to kno$G->w("links", { %$ar }) by then
+    # overthinking must be reached somehow
+    # going over a line
+    # at 5
+    # ho$G->w("much", { %$ar }) is happened
+    # s$G->w("is", { %$ar }) a channel
+    # the way in the splat...
 
     # there's some more flipping around: TODO
     # an e mod possibly coming from mustb (missing part)
