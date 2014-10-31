@@ -447,10 +447,19 @@ sub nw {
     $w->from({@_}) if @_;
     $w
 }
+sub crankFun {
+    my ($G,$dial) = @_;
+    my $origin = $G->{$dial};
+    # so a synapse would snake through something...
+    # directly looking at a concept and exuding its energy pathway
+    
+    $G->Flab("crankFun", ($G->{$dial} = shift), $origin);
+    
+    push @{ $F[0]->{_after_do} }, sub { $G->{$dial} = $origin };
+    return
+}
 sub crank {
-    my $self = shift;
-    my $dial = shift;
-    #die "no $dial on $self->{name}" unless exists $self->{$dial};
+    my ($self,$dial) = @_;
     my $original = $self->{$dial};
     my $uncrank = sub { $self->{$dial} = $original };
     $self->{$dial} = shift;
