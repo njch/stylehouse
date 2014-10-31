@@ -827,18 +827,20 @@ sub parse_babble {
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
     
     my $sur = qr/ if| unless| for/;
-    my $suro = qr/(?:$sur)*/;
+    my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
+    my $suro = qr/(?:$sur|!$sur)/;
     
     while ($eval =~
-    /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)/sg) {
+    /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar|$surn ?$point|))($suro)/sg) {
         my ($old, $g, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
         
         $g ||= '$G';
         
-        if ($a =~ $suro) {
-            ($un) = (;
-            $un =~ s/$suro+/$suro/sg;
-            say "doing something...";
+        say "\n\n";
+        if ($a =~ /^($sur)+/) {
+            say "suro was $a -> $1";
+            ($un) = $1;
+            say "later ... $un";
         }
         
         my @n;
@@ -862,7 +864,7 @@ sub parse_babble {
         
         my $ar = $g."->w(".$en.")";
         
-        my $new = "$ar$un";
+        my $new = "$ar,,$un";
         
         say " $old \t=>\t$ar \t\t\t$g \t$u";
         
