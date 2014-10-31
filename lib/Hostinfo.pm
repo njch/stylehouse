@@ -133,7 +133,8 @@ sub send {
     if ($m =~ /\n/) {
         die "Message contains \\n:\n$m\n\n";
     }
-    $self->{G}->w(send_Elvis => {m => $m});
+    my $cb = shift;
+    $self->{G}->w(send_Elvis => {m => $m, cb => $cb});
 }
 
 sub hostinfo { shift }

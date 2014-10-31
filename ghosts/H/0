@@ -32,7 +32,7 @@ hooks:
       
       $H->send(sprintf "version is v%vd", $^V);
       
-      Mojo::IOLoop->recurring(5 => sub{ w stylehut/yup; });
+      Mojo::IOLoop->recurring(9 => sub{ w stylehut/yup; });
       w stylehut/yup;
     yup: |
       say sw(G:mess);
@@ -73,7 +73,6 @@ hooks:
     my $ord = H.redisco ||= {};
     for my $k (sort keys %$ord) {
         for my $t (@{$ord->{$k}}) {
-            say "redis $k t.r.wassubbedto";
             t.r->wait_for_messages($k); # ooh the key
         }
     }
@@ -245,7 +244,7 @@ hooks:
       # handy stuff...?
       
     send: |
-      $tx->send(J.B.m);
+      $tx->send(J.B.m, J.B.cb);
       
     speaks: |
       if (w $S mouthfull[$J]) {
@@ -300,7 +299,7 @@ hooks:
       whisper "J.id decoded ".$G->F_delta();
       B.j = $j;
     print_out: |
-      return if $m =~ /\$\('#(worm|mess|sky|somewhere|path|land|func|appmenu|flood)/;
+      return if $m =~ /\$\('#(worm|mess|sky|path|land|func|appmenu|flood)/;
       # ^ trace F, tractoriose
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
       my $jabber = join"\n", map { _.name } @F;

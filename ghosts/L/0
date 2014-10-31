@@ -8,7 +8,7 @@ GG:
          Z:
            bottom: 0%
            width: 5.5%
-           max-height: 66%
+           max-height: 90%
            z-index: 10
          Ss: [X]
        M:
@@ -176,14 +176,14 @@ hooks:
     }
     G.donthmess = 1;
   f:
-    'ccc': |
+    ccc: |
       my $deg = -180 + int(rand(360));
       $ar->{V} ||= $H->{sky};
       $H->JS($ar->{V},"css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
-    'ccm': |
+    ccm: |
       my $deg = -180 + int(rand(360));
       $H->JS("\$('#worm').css('-webkit-filter', 'brightness(0.5) saturate(0.6) contrast(1.3) hue-rotate(${deg}deg)')");
-    'Lgs': |
+    Lgs: |
       w somewhere(thing => "Hello");
     Rux: |
       G:Ϡ ->w('ux');
@@ -211,16 +211,20 @@ hooks:
       $@ = ""         if $@;
       w f/Gob;
   swthrow: |
-    Say "Got sw! $m";
+    Say "Got sw!";
     my $thing = eval "my \$VAR1; $m";
     if ($@) { Say "OH NO! $@"; $@ = ""; return; }
+    if (G.iggggsw) { Say "igsw"; return; }
     w somewhere[$thing];
+    Say "swthrow ".$G->F_delta;
   somewhere: |
     return G:Ϡ ->w(Arr => $ar) if ar.nothing;
     return w wormholify if ar.wormhole;
     return w Splat(somewhere => ar.W) if ar.W;
     
+    $H->send("\$('#somewhere > *').rollDown(700);", sub {
     w splatsome;
+    });
   wormholify: |
     w Splat(worm => $wormhole);
   a:
@@ -247,6 +251,9 @@ hooks:
     my $wormhole = $G->{some_W} = $Cr->W;
 
     w splat_wormholes;
+    
+    
+    Say "splatsome ".$G->F_delta;
   Splat: |
     G:splat ->w(Splat => $ar);
   hm:
