@@ -818,43 +818,55 @@ sub parse_babble {
     $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    my $point = qr/[\w\$\/\->\{\}]+/;
+    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\}]+/;
+    
+    my $alive = qr/[\w\$\/\->\{\}]*[\w\$\/\->\}]+/;
     
     my $poing = qr/$point|G:\w+/;
     
-    my $sqar = qr/\[.+?\]|\(.+?\)/;
+    my $sqar = qr/\[.+?\]|\(.+?\)/; 
     
-    while ($eval =~ /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar| ?$point(?>!if ))?)/sg) {
-        my ($old, $g, $u, $p, $a) = ($1, $2, $3, $4, $5);
+    my $sur = qr/ if| unless| for/;
+    my $suro = qr/(?:$sur)*/;
+    
+    while ($eval =~
+    /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)/sg) {
+        my ($old, $g, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
         
-        $_ = $a;
         $g ||= '$G';
         
-        my $en = join ", ", grep {defined} (
-            "'$p'",
-            (
-            map { "{$_}" } join ", ", grep {$_} 
-                (s/^\+ ?//
-                    &&
-                    '%$ar'
-                ),
-                (s/^\[|\]$//sg
-                    &&
-                    $a
-                ),
-                (s/^\(|\)$//sg
-                    &&
-                    map { my($l)=/\$(\w+)/;"$l => $_" }
-                         split /, */, $a
-                ),
-            ),
-            $u
-        );
+        if ($a =~ $suro) {
+            ($un) = (;
+            $un =~ s/$suro+/$suro/sg;
+            say "doing something...";
+        }
+        
+        my @n;
+        $_ = $a;
+        say "arc", push @n, '%$ar' if s/^\+ ?// || !$a;
+        
+        say "round", push @n, $_     if s/^\(|\)$//sg;
+        ;
+        say say "square", push @n, 
+            map { my($l)=/\$(\w+)/;"$l => $_" } split /, */, $_
+                                     
+                                     if s/^\[|\]$//sg;
+        
+        say "un '$a' => '$un'";
+        
+        my @e;
+        push @e, "'$p'";
+        push @e, "{".join(", ",@n)."}";
+        push @e, $u if $u;
+        my $en = join ", ", @e;
         
         my $ar = $g."->w(".$en.")";
         
-        say " $old \t=>\t$ar";
-        $eval =~ s/\Q$old\E/$ar/          || die "Ca't replace $1\n\n in\n\n$eval";
+        my $new = "$ar$un";
+        
+        say " $old \t=>\t$ar \t\t\t$g \t$u";
+        
+        $eval =~ s/\Q$old\E/$new/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
     
     # 8/9

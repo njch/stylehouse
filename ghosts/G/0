@@ -22,7 +22,7 @@ hooks:
     
   _init:
     recoded: |
-        w ub/wayrays[$S];
+        w _init/wayrays[$S];
         w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');
         $S->w("recoded_init");
         w _init/recoded_care_parents[$S];
@@ -39,22 +39,21 @@ hooks:
             $g->w("any_child_recoded_init", {S => $S});
         }
     fresh: |
-      w ub/0[$S];
-      $G->{S} = $S;
+      w _init/keys[$S] if $S->findway("keys");
+      w _init/GG[$S] if $S->anyway("GG");
+      w _init/wayrays[$S];
+      G.S = $S; # at
       say "init for $S->{name}";
       w V/init[$S];
       $S->w("fresh_init");
-  ub:
-    0: |
-      w ub/keys[$S] if $S->findway("keys");
-      w ub/GG[$S] if $S->anyway("GG");
-      w ub/wayrays[$S];
+
     wayrays: |
       for my $s (qw'S C') { # C too?
           if (my $ws = $S->anyway($s)) {
               0->wayray($ws, $S);
           }
       }
+      
     GG: |
       my $GGs = $S->anyway('GG');
       for my $GG (@$GGs) {
@@ -70,9 +69,10 @@ hooks:
               }
           }
       }
+      
     keys: |
       if (my $keys = G:keys) {
-        push @{keys.subs}, $S unless
+          push @{keys.subs}, $S unless
             grep {$_ eq $S} @{keys.subs};
       }
       else {
