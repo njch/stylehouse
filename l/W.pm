@@ -17,9 +17,16 @@ sub new {
     $W
 }
 
+sub uhigh {
+    my $W = shift;
+    my $n = $W->{n};
+    my $u = scalar(@{$W->{script}});
+    ($u ne $n ? $n : '')."x$u"; # acquire north, get high
+}
+
 sub pi {
     my $W = shift;
-    "W $W->{name}";
+    "W $W->{name} ".$W->uhigh;
 }
 
 'stylehouse'

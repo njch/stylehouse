@@ -1,18 +1,23 @@
  
 0:
  W:
-  - K: head
+  - K: head #c
     D: |
       use base 'Wormhole';
-
-  - K: new
+  - K: new #c
     D: |
       W.G = W.A.u.i;
       W.name = "W.G.name";
       W.n = 0;
       $W->wormfile_load(shift);
-
-  - K: pi
+      
+  - K: uhigh #c
     D: |
-      "W W.name";
+      my $n = $W->{n};
+      my $u = scalar(@{$W->{script}});
+      ($u ne $n ? $n : '')."x$u"; # acquire north, get high
+      
+  - K: pi #c
+    D: |
+      "W W.name ".$W->uhigh;
 

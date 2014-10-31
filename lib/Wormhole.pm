@@ -121,7 +121,7 @@ sub encode_thing {
 sub uhigh {
     my $W = shift;
     my $n = $W->{n};
-    my $u = scalar(@{W.script});
+    my $u = scalar(@{$W->{script}});
     ($u ne $n ? $n : '')."x$u"; # acquire north, get high
 }
 sub pi {
