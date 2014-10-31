@@ -734,7 +734,7 @@ sub doo {
                 elsif ($xx == $x) {
                     $eval .= ind("⊘  ", $_)."\n";
                     my $bab = (split"\n",$babble)[$x -1];
-                    if (!$file && $bab ne $_) {
+                    if ($bab ne $_) {
                         $eval .= ind("⊖r ", $bab)."\n";
                     }
                 }

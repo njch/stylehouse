@@ -643,7 +643,7 @@ sub throwlog {
         my $r = eval { $H->{G}->mess($what, [@_]) };
         if ($@) {
             eval { $H->{G}->timer(0.1, sub {
-                $H->error("G mess error while throwing a $what: $@");
+                say "G mess error while throwing a $what: $@";
              }) };
             $@ = '';
         }
