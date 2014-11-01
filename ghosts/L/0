@@ -183,7 +183,7 @@ hooks:
         w f/q;
     g: |
         qx'cd ../styleshed && git gui'
-  set_Gdbs: |
+  set_Gdbs: | # vortex->logmessages intensity/thresholds # TODO R
     $Ghost::db = 1;
     $G->susgdb();
     my @Gdbnah = map { w look_for_ghost(name => $_) }
@@ -238,13 +238,6 @@ hooks:
     $H->send("\$('#somewhere > *').delay(400).fadeOut(400);", sub {
         w splatsome;
     });
-  wormholify: |
-    w Splat(worm => $wormhole);
-  a:
-    path: |
-      my $i = 0->TafuB(path => $ar);
-      w wux[$i];
-      
   splatsome:
     waylay a/path;
     
@@ -253,7 +246,6 @@ hooks:
         t => $thing,
         i => ar.i || $G->Flab,
     };
-    $G->Flab(asplat => $a);
     
        my $Cr = G:crawl || return $H->error("splat too early to see...");
     0->RW($Cr);
@@ -262,12 +254,20 @@ hooks:
     say join" ", ("       ẞ           ")x38;
           $Cr->w(crawl => $a);
     
+    $G->Flab(asplat => $a);
     my $wormhole = $G->{some_W} = $Cr->W;
 
     w splat_wormholes;
     
     
     Say "splatsome ".$G->F_delta;
+  wormholify: |
+    w Splat(worm => $wormhole);
+  a:
+    path: |
+      my $i = 0->TafuB(path => $ar);
+      w wux[$i];
+      
   Splat: |
     G:splat ->w(Splat => $ar);
   hm:
@@ -298,9 +298,6 @@ hooks:
   splat_wormholes: |
     return unless $G->{some_W};
     w Splat(somewhere => $G->{some_W});
-  splat_splatW: |
-    w Splat(splatW   => {script=>G:splat->W->CS}   );
-    #timer 2.5 { w splat_splatW };
   look_for_ghost: |
     [ grep {
       (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
