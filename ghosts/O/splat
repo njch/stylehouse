@@ -358,7 +358,11 @@ hooks:
                     $W = $inc->("rgba(255,255,255,0.8);font-size:10pt;"
                         ."position:absolute;left:-3em;"
                         ."bottom:3px;",
-                          $W->uhigh,
+                        (ref $W eq "W" || ref $W eq "Wormhole" ? $W->uhigh :
+                        do {
+                        Say "Weird, $W ifsnt blessed or so?";
+                        "????"
+                        }),
                     );
                 }
                 else {
