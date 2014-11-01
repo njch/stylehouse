@@ -820,39 +820,43 @@ sub parse_babble {
     
     my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\}]+/;
     
-    my $alive = qr/[\w\$\/\->\{\}]*[\w\$\/\->\}]+/;
+    my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     
-    my $poing = qr/$point|G:\w+/;
+    my $poing = qr/$alive|G:\w+/;
     
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
     
     my $sur = qr/ if| unless| for/;
-    my $suro = qr/(?:$sur)*/;
+    my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
+    my $suro = qr/(?:$sur|(?>!$sur))/;
     
     while ($eval =~
-    /((?<!\$)(?:($poing) )?w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)/sg) {
+    /((?<!\$)(?:($poing) )?(?<!\$)w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)?/sg) {
         my ($old, $g, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
         
         $g ||= '$G';
-        
-        if ($a =~ $suro) {
-            ($un) = (;
-            $un =~ s/$suro+/$suro/sg;
-            say "doing something...";
-        }
+
+        say "\n";
+        say "    - $old";
+        say " g=$g";
+        say " u=$u";
+        say " p=$p";
+        say " a qq {$a}";
+        say " aft qq {$un}";
+        $H->snooze;
+        sayyl "y";
+        $H->snooze;
         
         my @n;
         $_ = $a;
-        say "arc", push @n, '%$ar' if s/^\+ ?// || !$a;
+        push @n, '%$ar' if s/^\+ ?// || !$a;
         
-        say "round", push @n, $_     if s/^\(|\)$//sg;
-        ;
-        say say "square", push @n, 
+        push @n, $_     if s/^\(|\)$//sg;
+        
+        push @n, 
             map { my($l)=/\$(\w+)/;"$l => $_" } split /, */, $_
-                                     
-                                     if s/^\[|\]$//sg;
-        
-        say "un '$a' => '$un'";
+
+                        if s/^\[|\]$//sg;
         
         my @e;
         push @e, "'$p'";
@@ -860,13 +864,13 @@ sub parse_babble {
         push @e, $u if $u;
         my $en = join ", ", @e;
         
-        my $ar = $g."->w(".$en.")";
+        my $wa = $g."->w(".$en.")";
+        $wa .= $a if $a =~ /^$sur$/;
         
-        my $new = "$ar$un";
         
-        say " $old \t=>\t$ar \t\t\t$g \t$u";
+        say " $old \t=>\t$wa \t\t\t$g \t$u";
         
-        $eval =~ s/\Q$old\E/$new/          || die "Ca't replace $1\n\n in\n\n$eval";
+        $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
     
     # 8/9
