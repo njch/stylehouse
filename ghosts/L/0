@@ -196,7 +196,7 @@ hooks:
   f:
     r: |
       G.iggggsw = !G.iggggsw
-    ccc: |
+    ccc: | # TODO R
       my $deg = -180 + int(rand(360));
       $ar->{V} ||= $H->{sky};
       $H->JS($ar->{V},"css('-webkit-filter', 'brightness(0.8) saturate(1.2) contrast(1.3) hue-rotate(${deg}deg)')");
@@ -240,7 +240,7 @@ hooks:
     });
   splatsome:
     waylay a/path;
-    
+    start_timer();
     
     my $a = G.asplat = {
         t => $thing,
@@ -250,7 +250,7 @@ hooks:
        my $Cr = G:crawl || return $H->error("splat too early to see...");
     0->RW($Cr);
           $Cr->crank(maxd => ar.maxd) if exists ar.maxd;
-          
+    a.W = $Cr->W;      
     say join" ", ("       ẞ           ")x38;
           $Cr->w(crawl => $a);
     
@@ -260,7 +260,10 @@ hooks:
     w splat_wormholes;
     
     
-    Say "splatsome ".$G->F_delta;
+    Say "splatsome ".show_delta();
+  splat_wormholes: |
+    return unless $G->{some_W};
+    w Splat(somewhere => $G->{some_W});
   wormholify: |
     w Splat(worm => $wormhole);
   a:
@@ -269,7 +272,7 @@ hooks:
       w wux[$i];
       
   Splat: |
-    G:splat ->w(Splat => $ar);
+    G:splat ->w(Arr => $ar);
   hm:
     tog: |
       return w hm/make if G.donthmess;
@@ -295,9 +298,6 @@ hooks:
     
     
   
-  splat_wormholes: |
-    return unless $G->{some_W};
-    w Splat(somewhere => $G->{some_W});
   look_for_ghost: |
     [ grep {
       (!$ar->{name} || $_->{name} =~ /$ar->{name}/)
