@@ -107,17 +107,6 @@ sub encode_thing {
     return $thing;
 }
 
-# here's a tube for reflecting this wormhole into Texty so development can basically see it without Travel
-# Form would Ghost all sorts of data type munging and humanisation through geometric arrangements of thought process
-# also space bending etc.
-# it can help make a lot of tractograms under the smooth curve of the human show.
-# here we call another branch of thought in Ghost Ghost
-
-# this whole procedure should be mapped/plumbed, all the way out to the View, Elvi, etc
-# and usable as a flowing with nice triggers and invisible but well organised complications.
-# which is the whole stylehouse deal.
-# it's the call stack/circuit fish tank, from state tube to layers & lingo tricks to items in a Texty.
-# Form is a well-known bunch of Ghost
 sub uhigh {
     my $W = shift;
     my $n = $W->{n};

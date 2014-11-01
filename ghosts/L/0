@@ -171,8 +171,6 @@ hooks:
     "Apps": $H->{G}->w('data/get_apps')
   keys:
     l: w percolate;
-    r: |
-      G.iggggsw = !G.iggggsw
     m: |
         w hm/tog;
     M: |
@@ -196,6 +194,8 @@ hooks:
     }
     G.donthmess = 1;
   f:
+    r: |
+      G.iggggsw = !G.iggggsw
     ccc: |
       my $deg = -180 + int(rand(360));
       $ar->{V} ||= $H->{sky};
@@ -248,17 +248,19 @@ hooks:
   splatsome:
     waylay a/path;
     
+    
     my $a = G.asplat = {
         t => $thing,
         i => ar.i || $G->Flab,
     };
     $G->Flab(asplat => $a);
     
-    my $Cr = G:crawl || return $H->error("splat too early to see...");
+       my $Cr = G:crawl || return $H->error("splat too early to see...");
     0->RW($Cr);
-    $Cr->crank(maxd => ar.maxd) if exists ar.maxd;
+          $Cr->crank(maxd => ar.maxd) if exists ar.maxd;
+          
     say join" ", ("       ẞ           ")x38;
-    $Cr->w(crawl => $a);
+          $Cr->w(crawl => $a);
     
     my $wormhole = $G->{some_W} = $Cr->W;
 
