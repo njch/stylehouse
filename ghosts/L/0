@@ -215,7 +215,7 @@ hooks:
       my $W = G:E/h ->W;
       w somewhere(wormhole => $W);
     '⥁': |
-      w splat_wormholes
+      G:splat w Arr(somewhere => G.asplat.W);
   laterer:
     Gob: w somewhere(W => G:ob->W);
     'Ϡ?': |
@@ -231,9 +231,14 @@ hooks:
       $@ = ""         if $@;
       w f/Gob;
   somewhere: |
-    return G:Ϡ ->w(Arr => $ar) if ar.nothing;
-    return w wormholify if ar.wormhole;
-    return w Splat(somewhere => ar.W) if ar.W;
+    return G:Ϡ w Arr
+        if ar.nothing;
+    
+    return G:splat w Arr(worm => ar.wormhole)
+        if ar.wormhole;
+    
+    return G:splat w Arr(somewhere => ar.W)
+        if ar.W;
     
     $H->send("\$('#somewhere > *').delay(400).fadeOut(400);", sub {
         w splatsome;
@@ -255,24 +260,15 @@ hooks:
           $Cr->w(crawl => $a);
     
     $G->Flab(asplat => $a);
-    my $wormhole = $G->{some_W} = $Cr->W;
-
-    w splat_wormholes;
     
+    G:splat w Arr(somewhere => a.W);
     
     Say "splatsome ".show_delta();
-  splat_wormholes: |
-    return unless $G->{some_W};
-    w Splat(somewhere => $G->{some_W});
-  wormholify: |
-    w Splat(worm => $wormhole);
   a:
     path: |
       my $i = 0->TafuB(path => $ar);
       w wux[$i];
       
-  Splat: |
-    G:splat ->w(Arr => $ar);
   hm:
     tog: |
       return w hm/make if G.donthmess;
