@@ -10,6 +10,7 @@ sub wdump { Ghost::wdump(@_) };
 sub gpty { Ghost::wdump(@_) };
 sub sw { Ghost::sw(@_) };
 use YAML::Syck;
+our $swdepth = 5;
 
 sub new {
     my $G = shift;
@@ -29,7 +30,7 @@ sub new {
 }
 
 sub sw {
-    my $stuff = wdump(5, @_>1?\@_:@_);
+    my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
     $H->{r}->publish('sw', $stuff);
     "published wdump to sw";
 }
