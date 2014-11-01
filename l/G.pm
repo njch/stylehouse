@@ -6,9 +6,8 @@ use utf8;
 use lib 'lib';
 use feature 'say';
 use base 'Ghost';
-sub wdump { Ghost::wdump(@_) };
+sub wdump { H::wdump(@_) };
 sub gpty { Ghost::wdump(@_) };
-sub sw { Ghost::sw(@_) };
 use YAML::Syck;
 our $swdepth = 5;
 

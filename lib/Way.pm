@@ -6,7 +6,6 @@ use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
 $YAML::Syck::ImplicitUnicode = 1;
-use Texty;
 
 our $H;
 sub new {

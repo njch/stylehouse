@@ -20,9 +20,6 @@ use YAML::Syck;
 use Data::Dumper;
 use Term::ANSIColor;
 
-
-sub wdump{Ghost::wdump(@_)}
-
 sub new {
     my $H = shift;
     my $p = shift;

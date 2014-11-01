@@ -1,7 +1,6 @@
 package Hostinfo;
 use strict;
 use warnings;
-use Mojo::Base 'Mojolicious::Controller';
 use Mojo::ByteStream 'b';
 use Scriptalicious;
 use Mojo::IOLoop;
@@ -11,7 +10,6 @@ use HTML::Entities;
 use UUID;
 use Scalar::Util 'weaken';
 use Time::HiRes 'gettimeofday', 'usleep';
-use View;
 use Term::ANSIColor;
 use Digest::SHA;
 use File::Slurp;

@@ -1,10 +1,8 @@
 package Wormhole;
-use Mojo::Base 'Mojolicious::Controller';
 use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use Term::ANSIColor;
-use Texty;
 my $json = JSON::XS->new->allow_nonref(1)->allow_unknown(1);
 use HTML::Entities;
 sub ddump { Hostinfo::ddump(@_) }
