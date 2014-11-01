@@ -846,9 +846,17 @@ sub parse_babble {
         $H->snooze;
         sayyl "y";
         $H->snooze;
-        
+        my $ne = ""; # hidden reverse
+
         my @n;
         $_ = $a;
+        if (/^$sur$/) {
+            # caught a bit of conditional syntax
+            $ne = $a;
+            $a = "";
+        }
+
+
         push @n, '%$ar' if s/^\+ ?// || !$a;
         
         push @n, $_     if s/^\(|\)$//sg;
@@ -858,14 +866,14 @@ sub parse_babble {
 
                         if s/^\[|\]$//sg;
         
+
         my @e;
         push @e, "'$p'";
         push @e, "{".join(", ",@n)."}";
         push @e, $u if $u;
         my $en = join ", ", @e;
         
-        my $wa = $g."->w(".$en.")";
-        $wa .= $a if $a =~ /^$sur$/;
+        my $wa = $g."->w(".$en.")".$ne;
         
         
         say " $old \t=>\t$wa \t\t\t$g \t$u";
