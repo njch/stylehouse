@@ -9,6 +9,7 @@ our $H;
 binmode(STDOUT, ":utf8");
 binmode(STDERR, ":utf8");
 binmode(STDIN, ":utf8");
+say '' for 1..9;
 
 my $listen = readlink('listen');
     my ($host,$port, $wa) = split ':', $listen;
