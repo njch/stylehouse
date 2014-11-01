@@ -836,25 +836,12 @@ sub parse_babble {
         
         $g ||= '$G';
 
-        say "\n";
-        say "    - $old";
-        say " g=$g";
-        say " u=$u";
-        say " p=$p";
-        say " a qq {$a}";
-        say " aft qq {$un}";
-        $H->snooze;
-        sayyl "y";
-        $H->snooze;
-        my $ne = ""; # hidden reverse
 
         my @n;
         $_ = $a;
-        if (/^$sur$/) {
-            # caught a bit of conditional syntax
-            $ne = $a;
-            $a = "";
-        }
+        my $ne = ""; # hidden reverse
+        ($ne, $a) = ($a, "") if /^$sur$/;
+        # ^ caught a bit of conditional syntax after w expr
 
 
         push @n, '%$ar' if s/^\+ ?// || !$a;
