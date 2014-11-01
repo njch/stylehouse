@@ -46,8 +46,9 @@ hooks:
       
       G!Ϡ;
       
-      sw[ G:L ];
-      G:L w channel(top=>'sw');
+      G:L/0 w channel(top=>'sw');
+      
+      sw[ G.L/0 ];
       
       my $Dambi = sub { G:sky w ambientness; };
       w wtf(div => 26, way => 'sky amb', D => $Dambi);
@@ -99,15 +100,16 @@ hooks:
             say "redission t.way $k";
         }
     }
-  suRedis: |
-    my $a = {
-        div => (ar.div || 3),
-        way => $topic." D=$D",#CODE=uniq
-        D => $D,
-    };
+  su: |
+    my $a = {%$ar};
+    a.div ||= 3;
+    a.top || die "no su top";
+    my $D = a.cb || die "no su cb";
+    a.way ||= $top." D=$D"; # uniq
+    
     a.r = w enRedis;
-    a.r->subscribe($topic => $D);
-    a.r.wassubbedto = $topic;
+    a.r->subscribe($top => $D);
+    a.r.wassubbedto = $top;
     a.riv = 'redission';
     H.redission->{a.way} = $a;
     

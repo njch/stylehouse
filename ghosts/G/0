@@ -592,18 +592,11 @@ hooks:
         grep { _.G eq $S } @{u.Li.o};
     };
     G.U.su = sub {#c
-        my $S = shift;
-        my $a = {
-            top => shift,
-            cb => shift,
-            div => shift,
-        };
-        H.G->w(suRedis => sub {
-            $G->Flab("suback", $a);
-            a.cb->();
-        });
+        my ($S, $a) = @_;
+        my $D = a.cb;
+        a.cb = sub { $S->Flab("a su cb a.top", $a, @_); $D->(@_); };
+        H.G->w(su => $a);
     };
-    
   V: 
     spawn: |
       my $V;

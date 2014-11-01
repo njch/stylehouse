@@ -105,11 +105,15 @@ hooks:
     G.that = G:Ϡ;
     
   channel: |
-    Say "In Channel...";
-    0->su($top, sub {
+    Say "In Channel... $top";
+    ar.cb = sub {
         Say "Got a $top";
-        w sw(top=>$top, m=>shift);
-    }, 7);
+        my $m = shift;
+        w sw(top=>$top, m=>$m);
+    };
+    ar.div ||= 7;
+    0->su($ar);
+    
   sw: |
     Say "Got sw $top!";
     

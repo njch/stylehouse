@@ -552,6 +552,7 @@ sub w {
     my $Sway = shift;
     my @ways;
     
+    die "What do you MEAN $G->{name} $point $ar $Sway !?  ".wdump($ar) if defined $ar && ref $ar ne "HASH";
     my $talk = "w $point";
     my $watch;
     
@@ -824,7 +825,7 @@ sub parse_babble {
     
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     
-    my $poing = qr/$alive|G:\w+/;
+    my $poing = qr/$alive|G:$point/;
     
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
     
