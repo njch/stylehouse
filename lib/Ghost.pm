@@ -829,9 +829,9 @@ sub parse_babble {
     my $sur = qr/ if| unless| for/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
     my $suro = qr/(?:$sur|(?>!$sur))/;
-    
+     
     while ($eval =~
-    /((?<!\$)(?:($poing) )?(?<!\$)w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)?/sg) {
+    /((?<!\$)($poing |(?<!\w))(?<!\$)w(?: ($poing))? ($point)( ?$sqar| ?$point|))($suro)?/sg) {
         my ($old, $g, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
         
         $g ||= '$G';

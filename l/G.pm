@@ -89,7 +89,7 @@ sub load_ways {
 
 sub du {
     my $a = shift;
-    # ho$G->w("to", { %$ar }) get around the Objs' data
+    # how to get around the Objs' data
     my $s = $a->{s} ||= dus();
     my $i = $a->{i};
     my $n = $a->{n};
@@ -112,22 +112,22 @@ sub du {
     # does HASH key importance if 0>e<1
     # travels every thing      if e>=1
     #                also      if 0.5<e<1
-    # since it must want to kno$G->w("links", { %$ar }) by then
+    # since it must want to know links by then
     # overthinking must be reached somehow
     # going over a line
     # at 5
-    # ho$G->w("much", { %$ar }) is happened
-    # s$G->w("is", { %$ar }) a channel
+    # how much is happened
+    # sw is a channel
     # the way in the splat...
 
     # there's some more flipping around: TODO
     # an e mod possibly coming from mustb (missing part)
     # so some mustb key can e above 0.5 and see travel
 
-    # could return someho$G->w("weighted", { %$ar }) graph, hmm
+    # could return somehow weighted graph, hmm
     # oldworld really doesn't like that idea
     # maybe if du was grabbed as more abstract chunks with A action
-    # driving the ne$G->w("codons", { %$ar }) basically...
+    # driving the new codons basically...
 
     # snapping branches off the concept of ^ for now
 
