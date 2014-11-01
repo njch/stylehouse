@@ -107,23 +107,20 @@ hooks:
   
   
   channel: |
-    Say "In Channel... $top";
     ar.cb = sub {
-        Say "Got a $top";
         my $m = shift;
-        w sw(top=>$top, m=>$m);
+        $G->timer(0.1, sub { w sw(top=>$top, m=>$m); });
+        return;
     };
     ar.div ||= 7;
     0->su($ar);
     
   sw: |
-    Say "Got sw $top!";
-    
     use lib 'l';
     use H;
     my $thing = eval "my \$VAR1; $m";
+    die $@ if $@;
     
-    if ($@) { Say "OH NO! $@"; $@ = ""; return; }
     if (G.iggggsw) { Say "igsw"; return; }
     
     w somewhere[$thing];
@@ -174,6 +171,8 @@ hooks:
     "Apps": $H->{G}->w('data/get_apps')
   keys:
     l: w percolate;
+    r: |
+      G.iggggsw = !G.iggggsw
     m: |
         w hm/tog;
     M: |
