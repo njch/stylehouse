@@ -45,6 +45,7 @@ websocket '/ws' => sub {
     say "Eerror\n\n$@" if $@;
     $@ = "";
 };
+app->secrets([readlink 'msecret']);
 app->start('daemon', '--listen' => "$listen");
 
 __DATA__
