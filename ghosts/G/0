@@ -71,12 +71,7 @@ hooks:
           $g || die "no $way? GG $way from S.name = GG.K";
           g.K = GG.K;
           S.GG->{g.K} = $g;
-          while (my ($s, $etc) = each %{GG.In||{}}) {
-              while (my ($K, $win) = each %$etc) {
-                  my $C = G.U.CsK->($g, {K=>$K, s=>$s});
-                  $C->from($win);
-              }
-          }
+          0S->InjC($g, GG.In) if GG.In;
       }
       
     keys: |
@@ -91,7 +86,15 @@ hooks:
       }
   any_init: |
     G.recoded_cbs||=[];
-    
+    G.U.InjC = sub {#c
+        my ($S, $g, $In) = @_;
+        while (my ($s, $etc) = each %$In) {
+            while (my ($K, $win) = each %$etc) {
+                my $C = G.U.CsK->($g, {K=>$K, s=>$s});
+                $C->from($win);
+            }
+        }
+    };
     G.U.ing = sub { #c
         my ($S, $time, $ing, $w) = @_;
         $time && $ing || die " time&ing";
