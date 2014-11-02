@@ -296,7 +296,9 @@ hooks:
                 $s->{style}.="overflow:hidden";
             }
             if ($ref eq "Way" || $ref eq 'C') {  #c t s
-                $name = $t->pint;
+                $name = eval { $t->pint };
+                $name = "t.K eval!!" if $@;
+                $@ = "";
                 $fs = 12 if $t->{K} =~ /^m/;
                 $fs = 14 if length($name) > 20;
                 $color = "fc0";
