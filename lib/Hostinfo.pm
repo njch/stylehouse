@@ -151,111 +151,11 @@ sub view_incharge {
 sub enhash {
     return sha1_hex(shift)
 }
-sub update_app_menu {
-    my $self = shift;
-    
-    unless ($self->{appmenu}) {
-        $self->{flood}->{ceiling}->spawn_floozy($self, "appmenu",
-            "width:100%; background: #555; padding: 5px; color: #afc; font-family: serif; height: 4em;", undef, undef, 'menu'
-        );
-        $self->{appmenu}->text->add_hooks({
-            class => 'menu',
-            nospace => 1,
-        });
-    }
-    
-    my @fings = grep /^[A-Z]\w+$/ && !/View/ , keys %$data;
-    my @items = $self;
-    for my $f (@fings) {
-        my $a = $self->get($f);
-        $a = [$a] unless ref $a eq "ARRAY";
-        for my $app (@$a) {
-            next if $app->{avoid_app_menu};
-            if ($app->can('menu')) {
-                push @items, $app;
-            }
-        }
-    }
-    
-    my @lines;
-    for my $i (@items) {
-        if ($i->can('menu')) {
-            my $m = $i->menu();
-            if (my $s = $m->{_spawn}) {
-                $s->[1]->{class} ||= 'menu';
-                $s->[1]->{nospace} ||= 1;
-                push @lines, $m;
-            }
-            else {
-                die "Oldskool menu: $i\n".ddump($m);
-            }
-        }
-    }
-
-    $self->{appmenu}->{extra_label} = "appmenu";
-    $self->{appmenu}->text->replace([@lines]);
-}
-sub menu {
-    my $self = shift;
-    my $m = $self->{floodmenu} = {
-        Ш => sub {
-            $self->JS(
-                "\$.scrollTo(\$('#ground').offset().top, 360);"
-                ."\$('#ground').scrollTo(0, 360);"
-            );
-        },
-        "ܤ" => sub {
-            `touch /s/stylehouse.pl`;
-        },
-    };
-
-    return { _spawn => [
-        [ sort keys %$m ], {
-            event => {menu => $m},
-            tuxtstyle => sub {
-                my ($v, $s) = @_;
-                $s->{style} .= "padding 5px; font-size: 35pt; "
-                ."text-shadow: 2px 4px 5px #4C0000;"
-            },
-        }
-    ] };
-}
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
 }
-sub event {
-    my $self = shift;
-    my $ev = shift;
-    $self->info("Hostinfo nothing todo with", $ev);
-    #$self->info("hostinfo event, don't know what to do: $id", [$id, $id]);
-}
-# this is where human attention is (before this text was in the wrong place)
-# it's a place things flow into sporadically now
-# but it's a beautiful picture of the plays of whatever
-# thanks to the high perfect babel of the #perl
-# I think my drug is hash and perl and everything
-sub get_goya {
-    my $self = shift;
-
-    my $stuff = $self->grep('tvs');
-
-    my @goya;
-    for my $k (keys %$stuff) {
-        my $views = $stuff->{$k};
-        for my $view (@$views) {
-            if (exists $view->{text}) {
-                my $text = $view->{text};
-                push @goya, { view => $view, thing => $text, span => $text->tuxts };
-            }
-            else {
-                say "something other than text has popped up"
-            }
-        }
-    }
-    return \@goya;
-}
-
+sub event { die "Hostinfo sub event!"; }
 sub grep {
     my $self = shift;
     my $regex = shift;
@@ -407,6 +307,7 @@ sub watch_file_streams {
 
         push @diffs, "Size: $size > > >  $st->{size}" if $size > $st->{size};
         
+        say "USING WATCH FILESTERAMMO" for 1..7;
         if (my $gs = $st->{ghosts}) {
             if (@diffs) {
                 my $gr = $self->{ghosts_to_reload} ||= do {
