@@ -108,8 +108,9 @@ hooks:
     H._future = 1;
   redission: |
     my $ord = H.redisco ||= {};
-    for my $k (sort keys %$ord) {
-        for my $t (@{$ord->{$k}}) {
+    for my $k (sort keys %$ord) { # numbers wall timespace
+        my $int = $ord->{$k}; # a time
+        for my $t (@$int) { # in time
             t.r->wait_for_messages($k); # ooh the key
         }
     }
