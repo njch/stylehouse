@@ -12,10 +12,9 @@ C:            # W M ux ...
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
   
-  - K: uW
-    O: ux
-    
-  - K: M
+  - K: M # themmmmmmm (singular for now)
+      # could many to combine layers of style chemistry for the O...?
+    # or maybe that is keep out
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
@@ -413,6 +412,7 @@ hooks:
         next unless keys %$L; #wtf
         my $y = 'ux';
         $y = 'uW' if L.i.K eq "W";
+        die "y=uW" if $y eq "uW";
         
         push @$uxs, 0->visTp_TafuBlA({L=>$L}, [$y => {Lu=>$L}]);
     }
@@ -428,6 +428,7 @@ hooks:
     my ($ux1) = @$uxs if @$uxs == 1;
     if ($ux1 && ux1.K eq 'uW') {
         my $ui = ux1.B.Lu.i;
+        die "ux1 = uW";
         sayyl "G.name uxd a uW - ux1.K from ui.K ui.G.name";
         $uM = G.uW;
     }
@@ -459,12 +460,10 @@ hooks:
     for my $u (@recur) {
         my $a = {i => $u, j => $j};
         w U(%$a);
-        #w J(%$a);
     }
     for my $u (@flatly) {
         my $a = {i => $u, j => $j, flatly => 1};
         w U(%$a);
-        #w J(%$a);
     }
     
     G:Ϡ ->w('aj' => { j => $j });
@@ -682,15 +681,7 @@ hooks:
         };
         my $_t = u._at;
         
-        if (u.K eq "uW" && !$_t) { # TODO gone
-            $ui = u.B.ui;
-            die "ui Lu i swi" unless $ui eq u.B.Lu.i;
-            u.html = ui.html;
-            u._at = ui._at;
-            return;
-        }
-        
-        my $attr = at.attr = { #c callamity
+        my $attr = at.attr = {
             id => at.id,
             class => at.class,
             %{ U->uiuS($u => "attr") || {} },
