@@ -18,10 +18,12 @@ hooks:
       
     $S->w("any_init");
     
-    $_->() for @{G.recoded_cbs};
-    
   _init:
     recoded: |
+        for my $cb (@{G.recoded_cbs}) {
+            $cb->($S);
+        }
+        
         w _init/wayrays[$S];
         
         w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');

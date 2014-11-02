@@ -5,11 +5,17 @@ hooks:
     Say 'Restarting S';
     my $pm = ".pm";
     `touch l/S$pm`;
-    
+  coins: |
+    # etc
+    Say "Got reinitn on S.name";
+    w try;
   any_init: |
-      $G->timer(0.2,sub{waylay code;}); 
+      $G->timer(0.2, sub{ waylay code; }); 
   fresh_init: |
-    push @{G0.recoded_cbs}, sub { w try; };
+    push @{G0.recoded_cbs}, sub {
+        my $S = shift;
+        w coins[$S];
+    };
   code: |
     my @ched;
     Say "Cioding 0";
