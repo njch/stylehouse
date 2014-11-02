@@ -296,7 +296,10 @@ hooks:
                 $s->{style}.="overflow:hidden";
             }
             if ($ref eq "Way" || $ref eq 'C') {  #c t s
-                $name = $t->pint;
+                $name = eval { $t->pint };
+                $name = "t.K eval!!" if $@;
+                sayre "Way/C kaboom looking at ".ki($t).": \n$@";
+                $@ = "";
                 $fs = 12 if $t->{K} =~ /^m/;
                 $fs = 14 if length($name) > 20;
                 $color = "fc0";
@@ -316,6 +319,12 @@ hooks:
                 my $size = scalar @{t.B||[]};
                 $name = $leftsub->($size).$emb->('ඈ').$name;
             }
+            if ($ref eq "A") {#c
+                $name = eval { $t->pi };
+                $name = "A kaboom! ".ki($t) if $@;
+                $@ = "";
+            }
+                
             if ($ref =~ /^(Travel|G|W)/ && $ref ne "Way") { #c t s
                 my $ty = $1;
                 my ($nb, $nl);
@@ -352,8 +361,9 @@ hooks:
                     : /^(#.+)$/ #divid
                     ? $inc->('#af1;font-size:14pt', $1)
                     : $inc->('#111;font-size:10pt', $_) } split '`s ', $nb;
-                    
-                if ($W && ref W.script eq "ARRAY") {
+                
+                my $refWish = sub { ref $_[0] eq "W" || ref $_[0] eq "Wormhole" };
+                if ($W && $refWish->($W) && ref W.script eq "ARRAY") {
                     # totals
                     $W = $inc->("rgba(255,255,255,0.8);font-size:10pt;"
                         ."position:absolute;left:-3em;"

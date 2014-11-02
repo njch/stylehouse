@@ -31,7 +31,7 @@ get '/pub' => sub{
 };
 
 # MOVE some old stuff tries to ->send stuff on init, ux saves..
-$H = H->new({name => 'S', style => 'stylehut'});
+$H = H->new({name => 'S', style => 'stylehut', listen => $listen});
 
 # This action will render a template
 websocket '/ws' => sub {

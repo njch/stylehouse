@@ -31,7 +31,7 @@ sub new {
 sub sw {
     my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
     $H->{r}->publish('sw', $stuff);
-    "published wdump to sw";
+    "published wdump to sw    $G::swdepth x ".length($stuff);
 }
 
 sub pi {
