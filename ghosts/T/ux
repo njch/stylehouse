@@ -455,14 +455,19 @@ hooks:
     }
     $desc ||= "all";
     
+    my $j = $G->nw(K=>'j', s=>[]);
     for my $u (@recur) {
-        w U(i => $u);
-        w J(i => $u);
+        my $a = {i => $u, j => $j};
+        w U(%$a);
+        w J(%$a);
     }
     for my $u (@flatly) {
-        w U(i => $u, flatly => 1);
-        w J(i => $u, flatly => 1);
+        my $a = {i => $u, j => $j, flatly => 1};
+        w U(%$a);
+        w J(%$a);
     }
+    
+    G:Ϡ ->w('aj' => { j => $j });
     
     sayre "ux -------- G.K $desc done\t".@$Ls." lines\t".$G->F_delta()."  load ".$H->la;
   R: |
@@ -608,11 +613,24 @@ hooks:
     w sane/U1[$u];
     
     for my $i (w dook) {
-        w U[$i];
+        my $a = {%$ar};
+        a.i = $i;
+        w U(%$a);
     }
     
     w compile_figure[$u];
-    w wayout_sendo[$u];
+    w wayout_sendo[$u, $j];
+  J: |
+    0->visTp($ar, "Fun") if ar.i;
+    my $u = T.i;
+    
+    for my $do (@{u.sendo || []}) {
+        $do->();
+    }
+
+    for my $i (w dook) {
+        w J[$i];
+    }
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
@@ -651,6 +669,11 @@ hooks:
         my $at = u.at;
         my $ui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
+        my $sdo = sub {
+            my $cb = shift;
+            push @$sendo, $cb;
+            push @{j.s}, $cb;
+        };
         my $_t = u._at;
         
         if (u.K eq "uW" && !$_t) {
@@ -661,7 +684,7 @@ hooks:
             return;
         }
         
-        my $attr = at.attr = {
+        my $attr = at.attr = { #c callamity
             id => at.id,
             class => at.class,
             %{ U->uiuS($u => "attr") || {} },
@@ -697,35 +720,38 @@ hooks:
             attr.title = "G.O.name    G.way    G.K";
         }
             
-        if (!$_t) {
+        if (!$_t) { #c suqundo
             if ( $conty && $content ){
                 warn "conty and ooze ".$u->pint;#sw(["contooz", $u, $conty, $content]);
                 $conty = ",";
             }
             if (length($conty . $content) > 25000) {
                 $content = "";
-                push @$sendo, sub {
+                $sdo->(sub {
                     $H->JS("\$('#at.id').append('$_');") for @$oozs
-                };
+                });
             }
             if (u.S.sendo_init_D) {
-                push @$sendo, sub { w $u S/sendo_init_D(e=>'') };
+                $sdo->(sub { w $u S/sendo_init_D(e=>'') });
             }
             if ($ui && ui.S.sendo_init_D) {
-                push @$sendo, sub { w $ui S/sendo_init_D(e=>'') };
+                $sdo->(sub { w $ui S/sendo_init_D(e=>'') });
             }
             
             if ($u eq G.uW) { # holding of this T/ux Wormhole
-                push @$sendo, sub { G:Ϡ ->w(uW => {u=>$u}); }
+                $sdo->(sub { G:Ϡ ->w(uW => {u=>$u}); });
+                j._ && die "Already unified!?";
+                j._ = $u; # wants to attach html=<ww... under #ux
+                # after U - direct to tape instead of catching JS in H
             }
         }
         else {
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             my $sendojs = sub {
                 my ($id, $sp, @int) = @_;
-                push @$sendo, sub {
+                $sdo->(sub {
                     $H->JS("\$('#$id')".sprintf($sp, @int).";")
-                };
+                });
             };
             
             for my $newu (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
@@ -781,17 +807,7 @@ hooks:
         u.html = "<$tag $attr>$conty$content</$tag>";
         
         u._at = $at;
-  J: |
-    0->visTp($ar, "Fun") if ar.i;
-    my $u = T.i;
-    
-    for my $do (@{u.sendo || []}) {
-        $do->();
-    }
 
-    for my $i (w dook) {
-        w J[$i];
-    }
   dook: |
     my @o;
     my $L = ar.u.Li || T.L;
