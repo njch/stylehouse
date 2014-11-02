@@ -459,12 +459,12 @@ hooks:
     for my $u (@recur) {
         my $a = {i => $u, j => $j};
         w U(%$a);
-        w J(%$a);
+        #w J(%$a);
     }
     for my $u (@flatly) {
         my $a = {i => $u, j => $j, flatly => 1};
         w U(%$a);
-        w J(%$a);
+        #w J(%$a);
     }
     
     G:Ϡ ->w('aj' => { j => $j });
@@ -674,9 +674,15 @@ hooks:
             push @$sendo, $cb;
             push @{j.s}, $cb;
         };
+        my $sendojs = sub {
+            my ($id, $sp, @int) = @_;
+            $sdo->(sub {
+                $H->JS("\$('#$id')".sprintf($sp, @int).";")
+            });
+        };
         my $_t = u._at;
         
-        if (u.K eq "uW" && !$_t) {
+        if (u.K eq "uW" && !$_t) { # TODO gone
             $ui = u.B.ui;
             die "ui Lu i swi" unless $ui eq u.B.Lu.i;
             u.html = ui.html;
@@ -738,21 +744,16 @@ hooks:
                 $sdo->(sub { w $ui S/sendo_init_D(e=>'') });
             }
             
-            if ($u eq G.uW) { # holding of this T/ux Wormhole
-                $sdo->(sub { G:Ϡ ->w(uW => {u=>$u}); });
+            if ($u eq G.uW) { # unified field of this W
+                $sdo->(sub {
+                    $H->JS("\$('#ux').append('".0->jsq(u.html)."');");
+                });
                 j._ && die "Already unified!?";
-                j._ = $u; # wants to attach html=<ww... under #ux
-                # after U - direct to tape instead of catching JS in H
+                j._ = $u; # TODO diffy for the J
             }
         }
         else {
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
-            my $sendojs = sub {
-                my ($id, $sp, @int) = @_;
-                $sdo->(sub {
-                    $H->JS("\$('#$id')".sprintf($sp, @int).";")
-                });
-            };
             
             for my $newu (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
                 $sendojs->(at.id, q{.append('%s')}, 0->jsq(newu.html));
@@ -807,7 +808,6 @@ hooks:
         u.html = "<$tag $attr>$conty$content</$tag>";
         
         u._at = $at;
-
   dook: |
     my @o;
     my $L = ar.u.Li || T.L;
