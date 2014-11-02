@@ -402,13 +402,6 @@ sub load_ways {
             push @$wfs, $file;
             push @$ws, $nw;
         }
-        
-        if (@files) {
-            $H->watch_ghost_way($self, $name, \@files);
-        }
-        else {
-            $H->error("No way! $name");
-        }
     }
     
     $self->_0('_load_ways_post', {w=>$ws, %$p});
