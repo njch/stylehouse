@@ -258,7 +258,6 @@ hooks:
     };
   recoded_init: |
       G.O->w(uxd=>{});
-
   stylespawn: |
     my $GG = W.G;
     my $SsKs = S.Ss ||= [];
@@ -400,21 +399,19 @@ hooks:
     #saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
     
     inter({G_K=>G.K});
-    G.uW = w R(W => G.W);
+    G.uW = w caW(W => G.W); # TODO or fresh_init
     0->visTp({i => G.uW});
     
     G.ssp=[];
-    my $uxs = [];
     
     w sane/Ls[$Ls];
     my $Wis = w sane/getW[$Ls];
+    
+    my $uxs = [];
     for my $L (@$Ls) {
-        next unless keys %$L; #wtf
-        my $y = 'ux';
-        $y = 'uW' if L.i.K eq "W";
-        die "y=uW" if $y eq "uW";
-        
-        push @$uxs, 0->visTp_TafuBlA({L=>$L}, [$y => {Lu=>$L}]);
+        die "empty L" unless keys %$L; #wtf
+        # dirty uplinking, use A
+        push @$uxs, 0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}]);
     }
     for my $ux (@$uxs) {
         if (my $ui = ux.B.Lu.i) {
@@ -424,18 +421,8 @@ hooks:
     }
     
     
-    my $uM;
-    my ($ux1) = @$uxs if @$uxs == 1;
-    if ($ux1 && ux1.K eq 'uW') {
-        my $ui = ux1.B.Lu.i;
-        die "ux1 = uW";
-        sayyl "G.name uxd a uW - ux1.K from ui.K ui.G.name";
-        $uM = G.uW;
-    }
-    else {
-        $Wis || die sw["wtf no Gux Waaa?",$Ls];
-        $uM = w R(M => $Wis); # the lines' W mirrored
-    }
+    my $uM = w caW(M => $Wis); # the lines' W mirrored
+    $Wis || die sw["wtf no Gux Waaa?",$Ls];
     
     for my $ux (@$uxs) {
         # ux nests under another ux like origin : tops in M.o
@@ -446,30 +433,32 @@ hooks:
     }
     
     
-    my @flatly = ();
     my @recur = G.uW;
-    my $desc;
+    my @flatly = ();
+    my $desc = "all";
+    
     if (ar.i || ar.is) {
         @recur = @$uxs;
-        @flatly = uniq( map{_.Lo.i} @recur );
+        @flatly = uniq( map{_.Lo.i} @recur ); # doubling up?
         $desc = (0+@flatly)." x ".(@recur+0);
     }
-    $desc ||= "all";
     
     my $j = $G->nw(K=>'j', s=>[]);
-    for my $u (@recur) {
-        my $a = {i => $u, j => $j};
-        w U(%$a);
-    }
-    for my $u (@flatly) {
-        my $a = {i => $u, j => $j, flatly => 1};
+    my $jack = sub {
+         @_
+    };
+    my @as =
+        (map { { j => $j, i => $_ } } @recur),
+        (map { { j => $j, i => $_, flatly => 1 } } @flatly);
+        
+    for my $a (@as) {
         w U(%$a);
     }
     
     G:Ϡ ->w('aj' => { j => $j });
     
     sayre "ux -------- G.K $desc done\t".@$Ls." lines\t".$G->F_delta()."  load ".$H->la;
-  R: |
+  caW: |
     my ($a, $W) = %$ar;
     ref $W eq "Wormhole" || die sw(["Weird wormhole R $a", $ar]);
     my $u = 0->TafuB( $a => {W=>$W} );
