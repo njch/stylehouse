@@ -72,11 +72,6 @@ sub new {
     # hold lots of websocket
 
     #jQuery.Color().hsla( array )
-    
-    push @{ $H->{file_streams} }, {
-        filename => 'stylehouse.pl',
-        touch_restart => 1,
-    };
     return $H
 }
 sub lib_perc_H {
@@ -166,175 +161,12 @@ sub grep {
     };
 }
 
-sub tail_file { shift->stream_file(@_, "just_tail") }
-sub stream_file {
-    my $self = shift;
-
-    my $st = {
-        filename => shift,
-        linehook => shift,
-        lines => [],
-    };
-    my $tail = shift;
-    $st->{tail} = $tail if defined $tail;
-    $st->{hook_diffs} = sub {
-        my ($diffs, $st) = @_;
-        my ($ino, $ctime, $size) =
-            (stat $st->{filename})[1,10,7];
-        
-        my $fh = $st->{handle}; # try finish off the old one
-        while (<$fh>) {
-            my $l = clean_text($_);
-            push @{$st->{lines}}, $l;
-            $st->{linehook}->($l);
-        }
-        close $fh;
-        my $samei = 0;
-        if ($size > $st->{size}) {
-            my @whole = `cat $st->{filename}`;
-            my $whole = join "", @whole;
-            my $new = join("", @{$st->{lines}});
-            if ($whole ne $new) {
-                $samei = scalar @whole;
-            }
-        }
-
-        open(my $anfh, '<', $st->{filename})
-            or die "cannot open $st->{filename}: $!";
-
-        my $i = 0;
-        while (<$anfh>) {
-            if ($samei == 0) {
-                my $mark = "==== ~!";
-                $st->{linehook}->($mark);
-            }
-            unless ($samei-- > 0) {
-                my $l = clean_text($_);
-                push @{$st->{lines}}, $l;
-                $st->{linehook}->($l);
-            }
-        }
-
-        $st->{handle} = $anfh;
-        ($st->{ino}, $st->{ctime}, $st->{size}) = 
-            (stat $st->{filename})[1,10,7];
-    };
-    push @{$self->{file_streams} ||= []}, $st;
-
-    $self->watch_files();
-    
-    return $st;
-}
 sub clean_text {
     my $self = shift;
     my $l = shift;
     return b($l)->encode("UTF-8");
 }
-sub watch_files {
-    my $self = shift;
-    my $forever = shift;
-
-    if ($forever || !$self->{watching_files_aleady}) {
-        $self->{watching_files_aleady} = 1;
-        $self->timer(0.5, sub {
-            $self->watch_files("forever!");
-        });
-    }
-    
-    $self->watch_file_streams();
-    $self->watch_git_diff();
-}
-sub watch_file_streams {
-    my $self = shift;
-    for my $st (@{ $self->{file_streams} }) {
-        my ($ino, $ctime, $mtime, $size) =
-        (stat $st->{filename})[1,10,9,7];
-
-        my @diffs;
-        if (!defined $st->{size}) {
-            $st->{size} = $size;
-            $st->{ctime} = $ctime;
-            $st->{mtime} = $mtime;
-            $st->{ino} = $ino;
-        }
-        else {
-            push @diffs, "Size: $size < $st->{size}" if $size < $st->{size};
-            push @diffs, "ctime: $ctime != $st->{ctime}" if $ctime != $st->{ctime};
-            push @diffs, "modif time: $mtime != $st->{mtime}" if $mtime != $st->{mtime};
-            push @diffs, "inode: $ino != $st->{ino}" if $ino != $st->{ino};
-        }
-        
-        if (@diffs) {
-            $self->Say("$st->{filename} CHANGED: ".join("   ", @diffs));
-        }
-        
-        if ($st->{lines}) {
-            
-            unless ($st->{handle}) {
-                open(my $fh, '<', $st->{filename})
-                    or die "cannot open $st->{filename}: $!";
-                # TODO tail number of lines $st->{tail}
-                while (<$fh>) {
-                    unless (defined $st->{tail}) {
-                        my $l = clean_text($_);
-                        push @{$st->{lines}}, $l;
-                        $st->{linehook}->($l);
-                    }
-                }
-                $st->{handle} = $fh;
-            }
-            
-            if (@diffs) {
-                $st->{hook_diffs}->(\@diffs, $st);
-            }
-            
-            if ($size > $st->{size}) {
-                say "$st->{filename} has GROWTH";
-                my $fh = $st->{handle};
-                while (<$fh>) {
-                    my $l = clean_text($_);
-                    push @{$st->{lines}}, $l;
-                    $st->{linehook}->($l);
-                }
-                $st->{size} = (stat $st->{filename})[7];
-            }
-            elsif ($size == $st->{size}) {
-            }
-            else {# size < $st->size means file was re-read for @diffs
-            }
-            
-        }
-
-        push @diffs, "Size: $size > > >  $st->{size}" if $size > $st->{size};
-        
-        say "USING WATCH FILESTERAMMO" for 1..7;
-        if (my $gs = $st->{ghosts}) {
-            if (@diffs) {
-                my $gr = $self->{ghosts_to_reload} ||= do {
-                    $self->timer(0.3, sub { $self->reload_ghosts });
-                    {};
-                };
-                while (my ($gid, $gw) = each %$gs) {
-                    for my $wn (keys %$gw) {
-                        $gr->{$gid}->{$wn} = 1;
-                    }
-                }
-            }
-        }
-        elsif ($st->{touch_restart} && @diffs) {
-            $self->{G}->w('re/exec');
-        }
-        elsif (@diffs) {
-            die "something $st->{filename}\n".join("\n", @diffs)."\n\n";
-        }
-        
-        
-        $st->{size} = $size;
-        $st->{ctime} = $ctime;
-        $st->{mtime} = $mtime;
-        $st->{ino} = $ino;
-    }
-}
+# WANT    $self->watch_git_diff();
 sub watch_git_diff {
     my $self = shift;
     
@@ -390,32 +222,6 @@ sub reload_ghosts {
         die "NO Ghostys" unless $ghost;
         $ghost->load_ways(keys %$gw);
     }
-}
-sub watch_ghost_way {
-    my $self = shift;
-    my $ghost = shift;
-    my $name = shift;
-    my $files = shift;
-    my $f = { map { $_ => 1 } @$files };
-    
-    #say "Going to watch $name for $ghost->{id}";
-    
-    for my $est (@{$self->{file_streams}}) {
-        if (delete $f->{$est->{filename}}) {
-            my $ghosts = $est->{ghosts};
-            my $gw = $ghosts->{$ghost->{id}} ||= {};
-            $gw->{$name} = 1;
-        }
-    }
-    for my $file (keys %$f) {
-        my $st = {
-            filename => $file,
-            ghosts => { $ghost->{id} => { $name => 1 } },
-        };
-        push @{$self->{file_streams}}, $st;
-    }
-    
-    $self->watch_files();
 }
 sub get {
     my ($self, $i) = @_;
