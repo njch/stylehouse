@@ -851,7 +851,7 @@ sub parse_babble {
         # ^ caught a bit of conditional syntax after w expr
 
 
-        push @n, '%$ar' if s/^\+ ?// || !$a;
+        push @n, '%$ar' if s/^[\(\[]\+ ?// || !$a;
         
         push @n, $_     if s/^\(|\)$//sg;
         
@@ -870,7 +870,7 @@ sub parse_babble {
         my $wa = $g."->w(".$en.")".$ne;
         
         
-        #saygr " $old \t=>\t$wa \t\t\t$g \t$u \t$p \t$a \t$un";
+        #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
         
         $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
