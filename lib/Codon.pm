@@ -93,7 +93,7 @@ sub display {
     my $texty = $self->{text} = $show->text;
 
     my $temp = $codo->{temp} ||= $self->{hostinfo}->{flood}->spawn_floozy($self,
-        temp => "width:89%; height:1em; background: #0c8; color: #362;",
+        temp => "width:89%; height:1px; background: #0c8; color: #362;",
     )
         if grep { $self->{openness}->{$_} eq "Open" } keys %{ $self->{openness} };
 
