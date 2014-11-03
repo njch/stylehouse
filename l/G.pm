@@ -10,6 +10,9 @@ sub wdump { H::wdump(@_) };
 sub gpty { Ghost::wdump(@_) };
 use YAML::Syck;
 our $swdepth = 5;
+our $T; # allele tower... not like so, again R above
+our @F; # is Ring re subs from below
+# ^ curves should optimise away, accordion
 
 sub new {
     my $G = shift;
@@ -239,13 +242,13 @@ sub ingo {
     my $G = shift;
     my ($S, $ingw) = @_;
     return say "ing $ingw->{name} $ingw->{id} deduped" if $ingw->{dead};
-    return sayre "ing $ingw->{name} $ingw->{id} ui dead" if $ingw->{w} && $ingw->{w}->{dead};
+    return say "ing $ingw->{name} $ingw->{id} ui dead" if $ingw->{w} && $ingw->{w}->{dead};
 
     $S->w($ingw->{ing}, {}, $ingw->{w});
 
     my $time = $ingw->{w}->{e} if $ingw->{w} && $ingw->{w}->{e};
     $time ||= $ingw->{time};
-    fla "time $ingw->{G}->{name} $ingw->{name} $time";
+    say "time $ingw->{G}->{name} $ingw->{name} $time";
     $S->timer($time, sub {
         $G->_0("0S->ingo", $S, $ingw);
     }, "ing $ingw->{name} $ingw->{id}");
@@ -379,7 +382,8 @@ sub Bu {
     my $G = shift;
     my($S,$K,$B)=@_;
     my $u = $G->_0("0S->sway", $S, {K=>$K},{B=>$B});
-    $S ->w('Bu_D', {%$ar}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
+    my $a = {};
+    $S ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
     $u;
 }
 
@@ -534,7 +538,7 @@ sub T {
     # 2/9
 
     say "HAUNT HAUNT HAUNT ".pint($T->{i}) if $S->deeby;
-    $G0->{travels_of}->{$S->{name}} ++;
+    #$G0->{travels_of}->{$S->{name}} ++;
     $S->ob("haunt");
     # so crawl is like an expanding awareness thing
     # see the whole structure
@@ -771,7 +775,7 @@ sub wayray {
 sub RW {
     my $G = shift;
     my ($S, $GG) = @_;
-    sayyl "RW RW RW RW RW $GG->{name}\t\t $GG->{K}";
+    say "RW RW RW RW RW $GG->{name}\t\t $GG->{K}";
     $_->{dead} = $F[0] for $G->{U}->{rei}->($GG, {});
     my $W = $GG->{W};
     delete $GG->{Vu}; # vortex will start over
