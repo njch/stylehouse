@@ -19,6 +19,8 @@ use Data::Dumper;
 use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
+sub enhash { sha1_hex(shift) }
+sub dig { enhash(shift) }
 use lib 'zrc/lib';
 use Redis;
 
@@ -143,9 +145,6 @@ sub view_incharge {
     my $old = $self->get('tvs/'.$view->divid.'/top');
     $self->set('tvs/'.$view->divid.'/top', $view);
 }
-sub enhash {
-    return sha1_hex(shift)
-}
 sub random_colour_background {
     my ($rgb) = join", ", map int rand 255, 1 .. 3;
     return "background: rgb($rgb);";
@@ -165,51 +164,6 @@ sub clean_text {
     my $self = shift;
     my $l = shift;
     return b($l)->encode("UTF-8");
-}
-# WANT    $self->watch_git_diff();
-sub watch_git_diff {
-    my $self = shift;
-    
-    my @diff = `git diff`;
-    my $d = {};
-    my $f;
-    for (@diff) {
-        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = $1;
-        }
-        else {
-            $d->{$f} .= $_
-        }
-    }
-    while (my ($f, $D) = each %$d) {
-        $d->{$f} = enhash($D);
-    }
-    for my $f (keys %$d) {
-        delete $d->{$f}
-            if $f =~ /^ghosts/;
-    }
-    unless (exists $self->{last_git_diff}) {
-        say "H watch_git_diff first time";
-        $self->{last_git_diff} = $d;
-        return;
-    }
-    
-    my $od = $self->{last_git_diff} ||= {};
-    $od = { %$od };
-    while (my ($f, $n) = each %$d) {
-        my $o = delete $od->{$f};
-        next if $f =~ /^l\//;
-        if (!$o || $n ne $o) {
-            say join("  <>  ", ($f)x38);
-            $self->{G}->w('re/exec');
-        }
-    }
-    for my $f (keys %$od) {
-        say join("  <  >  ", ($_)x28) for $f;
-        $self->{G}->w('re/exec');
-    }
-    $self->{last_git_diff} = $d;
-    # ZIPPING!? accum?
 }
 sub reload_ghosts {
     my $self = shift;

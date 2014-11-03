@@ -20,6 +20,7 @@ hooks:
     
     w wtf(div => 1, way => 'check/script');
     w wtf(div => 1, way => 'redission');
+    w wtf(div => 1, way => 'gitdission');
     w wtf(div => 17, way => 'check/vitals');
     
     $G->w("H.style/in");
@@ -114,6 +115,64 @@ hooks:
             t.r->wait_for_messages($k); # ooh the key
         }
     }
+  gitdission: |
+    my @diff = `git diff`;
+    my $f;
+    my $d = {};
+    for (@diff) {
+        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
+            $f = $1;
+        }
+        else {
+            $d->{$f} .= $_
+        }
+    }
+    
+    while (my ($f, $D) = each %$d) {
+        $d->{$f} = {
+            D => $D,
+            dig => $H->dig($D),
+        };
+    }
+    
+    return G.last_git_diff = $d if !G.last_git_diff;
+    
+    my $od = {%{G.last_git_diff}};
+    
+    my $Gd;
+    while (my ($f, $n) = each %$d) { 
+        my $o = delete $od->{$f};
+        
+        # TODO $H->dig hashing is rubbish at uniq?
+        my $change = !$o || n.D ne o.D;
+        
+        next unless $change;
+        
+        if ($f =~ /^ghosts/) {
+            n.o = $o;
+            $Gd->{$f} = $n;
+        }
+        elsif ($f =~ /^l\//) {
+            # compilato del shed iggy
+        }
+        else {
+            say join("  <>  ", ($f)x38);
+            w re/exec;
+        }
+    }
+    
+    # to undiffering, did HEAD change?
+    for my $f (keys %$od) {
+        say join("  <  >  ", ($f)x28);
+        w re/exec;
+    }
+    
+    G.last_git_diff = $d;
+    
+    if (keys %$Gd) { 
+        say "Ghost changes ".join", ", keys %$Gd; 
+        $G0 w _gitdission[$Gd]; 
+    }
   suRedis: |
     my $a = {%$ar};
     a.div ||= 3;
@@ -200,7 +259,6 @@ hooks:
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
-
   flood_init: |
       # ghosts/0/S + H.pm calls fresh_init
       # stylehouse.pl + Hostinfo.pm calls flood_init
