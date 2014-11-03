@@ -203,4 +203,620 @@ sub dus {
     $h
 }
 
+sub InjC {
+    my $G = shift;
+    my ($S, $g, $In) = @_;
+    while (my ($s, $etc) = each %$In) {
+        while (my ($K, $win) = each %$etc) {
+            my $C = $G->{U}->{CsK}->($g, {K=>$K, s=>$s});
+            $C->from($win);
+        }
+    }
+}
+
+sub ing {
+    my $G = shift;
+    my ($S, $time, $ing, $w) = @_;
+    $time && $ing || die " time&ing";
+
+    my $name = $ing;
+    $name .= $w->pint if $w;
+    my $ingw = $S->nw(
+        K=>"ing",
+        name => $name,
+        ing => $ing,
+        time => $time,
+    );
+    say "create $ingw->{G}->{name} $ingw->{name} $time";
+    $ingw->{w} = $w if $w;
+    my $inga = $S->{ing}->{$name} ||= {};
+    $_->{dead} = 1 for values %$inga;
+    $inga->{$ingw->{id}} = $ingw;
+    $G->_0("0S->ingo", $S, $ingw);
+}
+
+sub ingo {
+    my $G = shift;
+    my ($S, $ingw) = @_;
+    return say "ing $ingw->{name} $ingw->{id} deduped" if $ingw->{dead};
+    return sayre "ing $ingw->{name} $ingw->{id} ui dead" if $ingw->{w} && $ingw->{w}->{dead};
+
+    $S->w($ingw->{ing}, {}, $ingw->{w});
+
+    my $time = $ingw->{w}->{e} if $ingw->{w} && $ingw->{w}->{e};
+    $time ||= $ingw->{time};
+    fla "time $ingw->{G}->{name} $ingw->{name} $time";
+    $S->timer($time, sub {
+        $G->_0("0S->ingo", $S, $ingw);
+    }, "ing $ingw->{name} $ingw->{id}");
+}
+
+sub scGre {
+    my $G = shift;
+    my ($S, $ip) = @_;
+    # or something was somehow, tractioning v
+    my @a = grep { $G->{U}->{ip}->($S, $ip, $_->{i}) } @{ $S->{W}->{script} };
+    @a
+}
+
+sub ip {
+    my $G = shift;
+    my ($S, $ip, $i) = @_;
+    (!exists $ip->{K} || $i->{K} eq $ip->{K}) &&
+    (!exists $ip->{V} || $i->{V} eq $ip->{V})
+}
+
+sub rei {
+    my $G = shift;
+    my ($S, $ip) = @_;
+    map {$_->{i}} $G->_0("0S->scGre", $S, $ip);
+}
+
+sub reeni {
+    my $G = shift;
+    my ($S, $ip, @is) = @_;
+    my @sel;
+    my @new = grep {defined} map {
+        if ($G->_0("0S->ip", $S, $ip, $_->{i})) {;
+            push @sel, $_;
+            undef;
+        }
+        else {         $_           }
+    } @{$S->{W}->{script}};
+    # etc
+}
+
+sub sing {
+    my $G = shift;
+    my $S = shift;
+    my $p;
+    $p->{name} = shift;
+    $p->{code} = shift;
+    $p = {%$p, @_};
+    $p->{again} = 0.5 if !defined $p->{again};
+    $p->{begin} = 0.2 if !defined $p->{begin};
+    $G->w('sing', {%$p});
+}
+
+sub loquate {
+    my $G = shift;
+    my ($S, $source, $path, $def) = @_;
+    my @moves = split '/', $path;
+    my $s = $source;
+    until (@moves == 1) {
+        my $m = shift @moves;
+        $s = $s->{$m};
+    }
+    my $m = shift @moves;
+    my $thing = $s->{$m} ||= $def;
+    !ref $thing && die "Oh no! $path led to non-ref $thing from $source";
+    return $thing;
+}
+
+sub accum {
+    my $G = shift;
+    # TODO path loquation doesn't stretch far re policy, no prob for now.
+    my ($S, $src, $ac, $t) = @_;
+
+    if ($ac eq "Lo" || $ac eq "Li") {
+        $src->{$ac} = $t;
+        return;
+    }
+
+    my $a = $G->_0("0S->loquate", $S, $src, $ac, []);
+
+    return if $ac eq 'o' && $src->{i} && $src->{i} eq $t;
+
+    if (!grep { $_ eq $t } @$a) {
+        push @$a, $t
+    }
+}
+
+sub deaccum {
+    my $G = shift;
+    my ($S, $source, $ac, $t) = @_;
+    my $a = $source->{$ac} ||= [];
+    my $i = 0;
+    for (@$a) {
+        return splice(@$a, $i, 1) if $_ eq $t;
+        $i++;
+    }
+}
+
+sub wdif {
+    my $G = shift;
+    my ($S, $h, $w) = @_;
+    if ($w->{$h}) {
+        $S->w($h, {}, $w);
+        delete $w->{$h};
+    }
+}
+
+sub u {
+    my $G = shift;
+    my ($S, $K, $s) = @_;
+    $G->_0("0S->sway", $S, {K=>$K}, $s);
+}
+
+sub sway {
+    my $G = shift;
+    # sucks way matching $p # only supports matching K for now
+    my ($S, $p, $s, $P) = @_;
+    $p->{s} ||= 'chains C';
+    my ($from) = $p->{from} || $G->_0("0S->CsK", $S, $p);
+
+    $from || defined $P->{e} || die "no findo way called $p->{K} ($S->{name})".wdump([$p,$s]);
+
+    my $w = $S->nw();
+    $w->from($from) if $from;
+    $w->from($p) unless $from;
+    $w->from($s) if $s && %$s; # merges in B :D
+
+    return $w
+}
+
+sub Bu {
+    my $G = shift;
+    my($S,$K,$B)=@_;
+    my $u = $G->_0("0S->sway", $S, {K=>$K},{B=>$B});
+    $S ->w('Bu_D', {%$ar}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
+    $u;
+}
+
+sub CsK {
+    my $G = shift;
+    my ($S, $p, $GG) = @_;
+    $GG ||= $S;
+    $p->{s} ||= 'C';
+    # $p->{CsK} locates the Cs, is a qw of paths for anyway
+    my @Cs = map { flatline($_) } map { $GG->anyway($_) }  split ' ', delete $p->{s};
+    # another ghost lurks
+    if ($p->{K}) {
+        @Cs = grep { $_->{K} eq $p->{K} } @Cs;
+    }
+    return wantarray ? @Cs : shift @Cs;
+}
+
+sub Tind {
+    my $G = shift;
+    my ($S, $space) = @_;
+    $space = "    " if !defined $space;
+    my $mes = $T->{r}->{is} if $T->{r};
+    $mes ||= [];
+    my $ind = "";
+    $ind .= "    " for 0..@$mes; # +1
+    return $ind;
+}
+
+sub Egypto {
+    my $G = shift;
+    my ($S, $Egyptian_Fraction) = @_;
+    my $val = 0;
+    for (split / ?\+ ?/, $Egyptian_Fraction) {
+        /^(\d+)\/(\d+)$/ || die "Egypmal";
+        $val += $1 / $2;
+    }
+    $val;
+}
+
+sub EgyB {
+    my $G = shift;
+    my ($S, $B) = @_;
+    return { map { $G->_0("0->Egypto", $_) => $_ } keys %$B };
+}
+
+sub TafuBl {
+    my $G = shift;
+    #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
+    my$S=shift;
+    $G->_0("0S->l", $S,  $G->_0("0S->TafuB", $S, @_) );
+}
+
+sub TafuB {
+    my $G = shift;
+    my($S,$K,$B)=@_;
+    my $ca = $S->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
+    if ($ca && !$ca->{dead}) {
+        return $ca;
+    }
+    $G->_0("0S->Tafu", $S, $G->_0("0S->Bu", $S, $K, $B))
+}
+
+sub TB {
+    my $G = shift;
+    my ($S, $K, $B) = @_;
+    my $u = $G->_0("0S->Bu", $S, $K, $B);
+    $G->_0("0S->T", $S, {i=>$u});
+}
+
+sub Tafu {
+    my $G = shift;
+    my($S,$uu)=@_;
+    $G->_0("0S->fu", $S, $uu) || $G->_0("0S->T", $S, {i => $uu});
+}
+
+sub Taful {
+    my $G = shift;
+    my($S,$uu)=@_;
+    $G->_0("0S->l", $S,  $G->_0("0S->Tafu", $S, $uu) );
+}
+
+sub visTp_TafuBlA {
+    my $G = shift;
+    my ($S, $Tp, $Bup, $A) = @_;
+    my $old = $G->_0("0S->visTp", $S, $Tp); # could be Fun, wire into end
+    my $uu = $G->_0("0S->Bu", $S, @$Bup); 
+    my $u = $G->_0("0S->fu", $S, $uu);
+
+    $A->{old} ||= [] if $A;
+    $A->{new} ||= [] if $A;
+    if ($u) {
+        push @{$A->{old}}, $u if $A;
+    }
+    else {
+        push @{$A->{new}}, $u if $A;
+        $u = $G->_0("0S->T", $S, {i => $uu});
+    }
+
+    $G->_0("0S->l", $S, $u);
+    $T= $old;
+    $u;
+}
+
+sub visTp_l_u {
+    my $G = shift;
+    my ($S, $Tp, $u) = @_; #c get in to a T place and make links
+    my $old = $G->_0("0S->visTp", $S, $Tp);
+    $G->_0("0S->l", $S, $u);
+    $T= $old;
+    $u;
+}
+
+sub l {
+    my $G = shift;
+    my ($S, $u) = @_;
+    $G->_0("0S->accum", $S, $u, 'Lo', $T->{L});
+    $G->_0("0S->accum", $S, $T, 'o', $u);
+    $u;
+}
+
+sub visTp_TafuBl {
+    my $G = shift;
+    my ($S, $Tp, $Bp) = @_;
+    my $old = $G->_0("0S->visTp", $S, $Tp);
+    my $u = $G->_0("0S->TafuBl", $S, @$Bp);
+    $T= $old;
+    $u;
+}
+
+sub T {
+    my $G = shift;
+    my ($S, $p) = @_;
+
+    # 1/9
+
+    my $giu = $T->{i};
+    my $old = $G->_0("0S->visTp", $S, $p); # 1
+    die "no old!".wdump($T) if !$old;
+    $T->{i} || die " no way in! ".wdump($p);
+
+    $G->_0("0S->fu_cache", $S, $T->{i});
+
+    # set up this dimension - allele tower
+    # maths stapler - clown shoes - RNA
+
+    my $beg = $T->{i};
+    my $sge = sub {
+        die "Lost i somewhere before ".shift."... "
+        .wdump(2, [$beg, $T->{i}]) unless $T->{i} eq $beg;
+    };
+
+    # 2/9
+
+    say "HAUNT HAUNT HAUNT ".pint($T->{i}) if $S->deeby;
+    $G0->{travels_of}->{$S->{name}} ++;
+    $S->ob("haunt");
+    # so crawl is like an expanding awareness thing
+    # see the whole structure
+
+    # 3/9
+     $S->w("T/flows");
+       $S->w('flows_D', {}, $T->{i});
+    $G->Flab("flows ", $T);
+      $sge->("flows");
+    # 4/9
+    $T->{L} = $S->W->continues($S); # %
+      $sge->("humms W being"); # eg travelling sw eval
+     $S->w("T/humms");
+       $S->w('humms_D', {}, $T->{i});
+    $G->Flab("humms", $T);
+      $sge->("humms");
+    # 5/9
+    $T->{L}->{i} eq $T->{i} || die "tli not ni!?!?!";
+    $G->_0("0S->accum", $S, $T->{L}->{i}, 'Li', $T->{L}); # just right
+
+     $S->w("T/links", {u=>$T->{i}});
+       $S->w('links_D', {}, $T->{i});
+    $G->Flab("links", $T);
+      $sge->("links");
+    # rounds_D? replayable when recoded?
+    # assume 6/7 will continue the process...
+    # 6/9
+     $S->w("T/travels");
+       $S->w('travels_D', {}, $T->{i});
+    $G->Flab("travels", $T);
+      $sge->("travels");
+    die "Lost i somewhere before 7... "
+    .wdump(2, [$beg, $T->{i}])unless $T->{i} eq $beg;
+
+    # 7/9
+
+    $S->w("T/traction", {u=>$T->{i}});
+    $S->w('traction_D', {}, $T->{i});
+    $G->Flab("travels", $T);
+      $sge->("travels");
+
+    # 8/9
+
+    #$H->Info("HAUNTED ".sw($T)) if $S->{name} =~ /braid|ux|odon/;
+
+    # 9/9
+
+    die "Lost i somewhere before 9... "
+    .wdump(2, [$beg, $T->{i}])unless $T->{i} eq $beg;
+
+    my $L = $T->{L};
+    $T = $old;
+    die "dumb".wdump([$T, $old, $giu]) unless $T->{i} eq $giu;
+    return $L->{i};
+}
+
+sub visTp {
+    my $G = shift;
+    my ($S, $p, $fun) = @_;
+
+    my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
+    my $old = $T;
+    if (!$tish) {
+        $T = $S->nw();
+    }
+    elsif ($T->{G} ne $S) {
+        # loses hair? we never care?
+        $T = $S->nw();
+    }
+    else {
+        $T = $T->spawn;
+    }
+
+    $p = {i=>$p} if ref $p =~ /^(Way|C)$/;
+    my $moved = $p->{i} || $p->{L};
+    if ($moved) {
+        delete $T->{$_} for qw'i L t o';
+    }
+
+    $T->from($p);
+
+    $T->{i} ||= $T->{L}->{i};
+    $T->{L} ||= $T->{i}->{Li};
+    $T->{t} ||= $T->{L}->{t};
+    $T->{o} ||= $T->{L}->{o};
+    $T->{o} ||= [];
+
+    if ($old) {
+        $T->{_T} = $old;
+        #push @{$old->{T_}||=[]}, $T;
+    }
+    if (my $r = $T->{r}) {
+        if ($moved && $r->{ih}->{$T->{i}->{id}} && $r->{noo}) {
+            # recursion q factor # can rebraid things to go on forever etc.
+            die "not allowed circular travel, "
+                .sw({here_before => $T});
+        }
+        $r = $T->{r} = {%$r};
+        $r->{ih} = {%{$r->{ih}||{}}};
+        $r->{is} = [@{$r->{is}||[]}, $T->{i}];
+        $r->{ih}->{$T->{i}->{id}} = $T;
+    }
+
+    if (ref $fun eq "CODE") {
+        return $fun->();
+        $T = $old;
+    }
+    elsif ($fun eq "Fun") {
+        push @{ $F[0]->{_after_do} }, sub { $T = $old }
+    }
+    return $old;
+}
+
+sub fu {
+    my $G = shift;
+    my $S = shift;
+    my $u = shift;
+
+    my $fo = $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})};
+    if ($fo && $fo->{dead}) {
+        say "$u->{K} found but dead";
+        $fo = undef;
+    }
+    return $fo if $fo;
+
+    for my $LL (@{$S->W->{script}}) {
+        my $i = $LL->{i};
+        my $yup = $i eq $u
+            || (!exists $u->{K} || $i->{K} eq $u->{K})
+            && $G->_0("0S->B_same", $S, $u => $i);
+        if ($yup) {
+           say "found $i->{K} in script";
+            return $i;
+        }
+    }
+    return undef;
+}
+
+sub fu_cache {
+    my $G = shift;
+    my $S = shift;
+    my $u = shift;
+    $u->{B} ||= {};
+    $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})} = $u;
+}
+
+sub fs_glob {
+    my $G = shift;
+    my ($S, @globs) = @_;
+    my @list;
+    for my $glob (@globs) {
+        push @list, grep { defined }
+            grep { Hostinfo::fixutf8($_) || 1 }
+            grep { -f $_ } glob $glob;
+    }
+    return @list;
+}
+
+sub fs_find {
+    my $G = shift;
+    my ($S, @dirs) = @_;
+    my @list;
+    File::Find::find(sub {
+        my $na = $File::Find::name;
+        Hostinfo::fixutf8($na);
+        next unless -f $na;
+
+        push @list, $na;
+    }, @dirs);
+    return @list;
+}
+
+sub jsq {
+    my $G = shift;
+    my $S = shift;
+    my @a = @_;
+    for (@a) {
+        s/\\/\\\\/g;
+        s/'/\\'/g;
+        s/\n/\\n/g;
+    }
+    wantarray ? @a : shift @a;
+}
+
+sub B_same {
+    my $G = shift;
+    my ($S, $u, $i) = @_;
+
+    return 1 if exists $u->{B}->{_} && exists $i->{B}->{_} && $u->{B}->{_} eq $i->{B}->{_};
+
+    my @ks = keys %{$u->{B}};
+    for my $k (@ks) {
+        $u->{B}->{$k} eq $i->{B}->{$k} || return 0;
+        next if $k eq "Codon";
+    }
+    unless (keys %{$u->{B}}) {
+        $H->Say(" u has no B, mind  you...".ki($u));
+    }
+    return 1;
+}
+
+sub Ato {
+    my $G = shift;
+    my ($S, $w, $to) = @_;
+    grep { $_->{K} =~ /^$to$/ } @{$w->{Li}->{o}}
+}
+
+sub Stytog {
+    my $G = shift;
+    my ($S, $u, $s) = @_;
+    my @styles = split /\s+/, $u->{styles};
+    if (grep { $_ eq $s } @styles) {
+        @styles = grep { $_ ne $s } @styles
+    }
+    else {
+        push @styles, $s;
+    }
+    $u->{styles} = join ' ', @styles;
+    $S->w('v/ch', {u=>$u});
+}
+
+sub wayray {
+    my $G = shift;
+    my ($S, $SS, $GG) = @_;
+    $GG ||= $S;
+    die sw(\@_) if ref ${GG} !~ /^G/;
+    my $i = 0;
+    for my $wS (@$SS) {
+        $SS->[$i] = $GG->nw(%$wS) unless ref $wS =~ /^(Way|C)$/;
+        $i++;
+    }
+}
+
+sub RW {
+    my $G = shift;
+    my ($S, $GG) = @_;
+    sayyl "RW RW RW RW RW $GG->{name}\t\t $GG->{K}";
+    $_->{dead} = $F[0] for $G->{U}->{rei}->($GG, {});
+    my $W = $GG->{W};
+    delete $GG->{Vu}; # vortex will start over
+    my $deadscript = $W->{script};
+    $W->{script} = [];
+    $W->{n} = 0;
+    delete $W->{ca};
+    $deadscript;
+}
+
+sub delfrom {
+    my $G = shift;
+    my ($S, $u) = @_;
+    for my $uu ($G->_0("0S->Io", $S, $u)) {
+        $G->_0("0S->del", $S, $uu);
+    }
+}
+
+sub del {
+    my $G = shift;
+    my ($S, $u) = @_;
+    my $L = $u->{Li} || die "wasnt";
+    $H->Say("deleting ".$u->pint);
+    $S->w('v/ch'=>{u=>$u});
+
+    $G->_0("0S->deaccum", $S, $u->{Lo}, 'o', $u);
+    $G->_0("0S->deaccum", $S, $u->{Li}->{W}, 'script', $L);
+    $u->{dead} = 1;
+
+    $G->_0("0S->del", $S, $_) for @{$u->{Li}->{o}};
+}
+
+sub Io {
+    my $G = shift;
+    my ($S, $u) = @_;
+    grep { $_->{G} eq $S } @{$u->{Li}->{o}};
+}
+
+sub su {
+    my $G = shift;
+    my ($S, $a) = @_;
+    my $D = $a->{cb}; 
+    $a->{cb} = sub { $G->Flab("a su top=$a->{top}", $a); $D->(@_); };
+
+    $H->{G}->w(suRedis => $a);
+}
+
 'stylehouse'
