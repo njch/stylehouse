@@ -75,10 +75,6 @@ sub get_attached {
     $self->{oattachment} ||= [$attach, $where];
     $self->{attachment} = [$attach, $where];
 }
-
-# right so here we have an arc of stuff, going from motive to static
-# menu items to text
-# here's a travel too, that's kind of a mirage.
 sub newtext {
     my $self = shift;
     delete $self->{text};
@@ -216,9 +212,7 @@ sub label {
 }
 sub default_html {
     my $self = shift;
-       '<span class="'.$self->{id} .' divlabel'
-       .'" style="position: absolute; right:0px; opacity: 0.1;">'
-       .$self->label.'</span>'
+    '';
 }
 sub html {
     my $self = shift;
