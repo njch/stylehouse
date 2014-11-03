@@ -63,7 +63,7 @@ sub new {
         say " . . guess way is $guess";
         @ways = $guess;
     };
-    my $way = join ", ", @ways;
+    my $way = join "+", @ways;
     $name = "$name`($way)";
     $self->{name} = $name;
     $self->{way} = $way;

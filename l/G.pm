@@ -14,8 +14,8 @@ our $swdepth = 5;
 sub new {
     my $G = shift;
     my (@ways) = @_;
-    $G->{name} = join "+", @ways;
-    $G->{way} = $G->{name};
+    $G->{way} = join "+", @ways;
+    $G->{name} = $G->{way};
 
     $G->{GGs} = [];
     push @{$H->{G}->{GGs}}, $G;
