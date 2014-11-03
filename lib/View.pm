@@ -212,7 +212,7 @@ sub label {
 }
 sub default_html {
     my $self = shift;
-    '';
+    '<a></a>';
 }
 sub html {
     my $self = shift;
