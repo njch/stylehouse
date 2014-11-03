@@ -121,10 +121,9 @@ hooks:
     my $d = {};
     for (@diff) {
         if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = "$1";
-            $f = Hostinfo::fixutf8($f);
-            
-            say "gdf: $f";
+            $f = $1;
+            $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
+            die "how to git diff unicode?" if $f =~ /\\\d+/;
         }
         else {
             $d->{$f} .= $_
