@@ -116,14 +116,15 @@ hooks:
         }
     }
   gitdission: |
-    ${^WIDE_SYSTEM_CALLS} = 1;
     my @diff = `git diff`;
     my $f;
     my $d = {};
     for (@diff) {
-        $_ = Hostinfo::fixutf8($_);
         if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = $1;
+            $f = "$1";
+            $f = Hostinfo::fixutf8($f);
+            
+            say "gdf: $f";
         }
         else {
             $d->{$f} .= $_
