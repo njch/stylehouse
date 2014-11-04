@@ -85,36 +85,6 @@ sub spawn0 {
     $u
 }
 
-sub snooze {
-    my $H = shift;
-    return Time::HiRes::usleep(shift || 5000);
-}
-
-sub Say {
-    my $H = shift;
-    $H->throwlog("Say", @_);
-}
-
-sub Err {
-    my $H = shift;
-    $H->throwlog("Err", @_);
-}
-
-sub error {
-    my $H = shift;
-    $H->throwlog("Err", @_);
-}
-
-sub Info {
-    my $H = shift;
-    $H->throwlog("Info", @_);
-}
-
-sub info {
-    my $H = shift;
-    $H->throwlog("Info", @_);
-}
-
 sub throwlog {
     my $H = shift;
     my $what = shift;
@@ -164,6 +134,36 @@ sub throwlog {
     );
     $string = "\n$string\n";
     print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+}
+
+sub Say {
+    my $H = shift;
+    $H->throwlog("Say", @_);
+}
+
+sub Err {
+    my $H = shift;
+    $H->throwlog("Err", @_);
+}
+
+sub error {
+    my $H = shift;
+    $H->throwlog("Err", @_);
+}
+
+sub Info {
+    my $H = shift;
+    $H->throwlog("Info", @_);
+}
+
+sub info {
+    my $H = shift;
+    $H->throwlog("Info", @_);
+}
+
+sub snooze {
+    my $H = shift;
+    return Time::HiRes::usleep(shift || 5000);
 }
 
 sub ind {
@@ -233,6 +233,15 @@ sub mkuuid {
     UUID::generate(my $i);
     UUID::unparse($i, my $s);
     $s
+}
+
+sub dig {
+    UUID::generate(my $i);
+    UUID::unparse($i, my $s);
+    $s
+    sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
+    sub enhash { sha1_hex(shift) }
+    sub dig { enhash(shift) }
 }
 
 'stylehouse'

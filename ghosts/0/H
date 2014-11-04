@@ -64,29 +64,10 @@
       $nb::H = $H;
       u.id = mkuid();
       $u
-  #c bits and stuff
-  - K: snooze
-    D: |
-          return Time::HiRes::usleep(shift || 5000);
-  - K: Say #c
-    D: |
-       $H->throwlog("Say", @_);
 
-  - K: Err
-    D: |
-       $H->throwlog("Err", @_);
-  - K: error
-    D: |
-       $H->throwlog("Err", @_);
 
-  - K: Info
-    D: |
-       $H->throwlog("Info", @_);
-  - K: info
-    D: |
-       $H->throwlog("Info", @_);
 
-  - K: throwlog
+  - K: throwlog #c
     D: |
       my $what = shift;
 
@@ -136,7 +117,27 @@
       $string = "\n$string\n";
       print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
 
-    
+  - K: Say
+    D: |
+       $H->throwlog("Say", @_);
+
+  - K: Err
+    D: |
+       $H->throwlog("Err", @_);
+  - K: error
+    D: |
+       $H->throwlog("Err", @_);
+
+  - K: Info
+    D: |
+       $H->throwlog("Info", @_);
+  - K: info
+    D: |
+       $H->throwlog("Info", @_);
+  - K: snooze #c
+    D: |
+          return Time::HiRes::usleep(shift || 5000);
+
   - K: ind #c
     D: |
       my ($in, $thing) = @_;
@@ -223,7 +224,7 @@
     D: |
       write_file(shift, shift);
       
-  #Hmisc #c
+
   - K: mkuid # H wide unique id
     style: func
     D: |
@@ -236,4 +237,13 @@
       UUID::unparse($i, my $s);
       $s
     
+  - K: dig #c make a unique art exubertique (same exube for same art) (hash function)
+    style: func
+    D: |
+      UUID::generate(my $i);
+      UUID::unparse($i, my $s);
+      $s
+      sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
+      sub enhash { sha1_hex(shift) }
+      sub dig { enhash(shift) }
 
