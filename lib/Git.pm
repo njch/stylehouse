@@ -90,7 +90,7 @@ sub gitrack {
     'ܤ' => sub {
         `touch /s/stylehouse.pl`
     },
-    'ܤ' => sub {
+    'r' => sub {
         `touch /s/l/S.pm`
     },
         ];
