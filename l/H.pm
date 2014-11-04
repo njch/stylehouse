@@ -29,6 +29,7 @@ sub new {
         warn$ing unless $ing =~ /^Use of uninitialized/;
     };
     $H = $H->spawn0('H');
+    $H->{h} = 1;
     $H->{$_} = $p->{$_} for keys %$p;
 
     $A::H = $H;

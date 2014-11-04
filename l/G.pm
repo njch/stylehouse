@@ -789,7 +789,7 @@ sub fs_find {
     File::Find::find(sub {
         my $na = $File::Find::name;
         Hostinfo::fixutf8($na);
-        next unless -f $na;
+        return unless -f $na;
 
         push @list, $na;
     }, @dirs);
