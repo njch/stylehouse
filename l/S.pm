@@ -3,6 +3,9 @@ package S;
 use Mojolicious::Lite;
 use common::sense;
 
+use Mojolicious::Static;
+my $static = Mojolicious::Static->new;
+push @{$static->paths}, '/home/s/styleshed/public';
 use lib 'l';
 use H;
 our $H;
