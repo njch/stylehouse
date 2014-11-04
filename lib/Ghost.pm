@@ -94,7 +94,9 @@ sub pint {
 }
 sub sw {
     my $thing = shift;
-    $F[0]->{G}->timer(0.1, sub { $Ly->w(somewhere => {thing => $thing}) });
+    return $F[0]->{G}->_0("0->sing", "sw", sub {
+        $Ly->w(somewhere => {thing => $thing});
+    });
     return "Splatted ".gpty($thing);
 }
 sub sayyl {
