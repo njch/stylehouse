@@ -105,7 +105,7 @@ sub babblethehut {
 
     $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
-    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \/sg;
+    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", /sg;
 
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
