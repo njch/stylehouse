@@ -19,6 +19,7 @@ use Time::HiRes 'gettimeofday', 'usleep';
 use YAML::Syck;
 use Data::Dumper;
 use Term::ANSIColor;
+use Encode qw(encode_utf8 decode_utf8 is_utf8);
 
 sub new {
     my $H = shift;
@@ -81,8 +82,15 @@ sub spawn0 {
     my $nb = shift;
     my $u = bless {}, $nb;
     $nb::H = $H;
-    $u->{id} = mkuid();
+    $u->{id} = $H->mkuid();
     $u
+}
+
+sub send {
+    my $H = shift;
+    my $m = shift;
+    die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
+    $H->{G}->w(send_Elvis => {m => $m});
 }
 
 sub throwlog {
@@ -185,13 +193,6 @@ sub wdump {
     return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 
-sub send {
-    my $H = shift;
-    my $m = shift;
-    die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
-    $H->{G}->w(send_Elvis => {m => $m});
-}
-
 sub hitime {
     my $H = shift;
     return join ".", time, (gettimeofday())[1];
@@ -226,22 +227,20 @@ sub spurt {
 }
 
 sub mkuid {
+    my $H = shift;
     (mkuuid() =~ /^(\w+)-.+$/)[0];
 }
 
 sub mkuuid {
+    my $H = shift;
     UUID::generate(my $i);
     UUID::unparse($i, my $s);
     $s
 }
 
 sub dig {
-    UUID::generate(my $i);
-    UUID::unparse($i, my $s);
-    $s
-    sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
-    sub enhash { sha1_hex(shift) }
-    sub dig { enhash(shift) }
+    my $H = shift;
+    Digest::SHA::sha1_hex(encode_utf8(shift))
 }
 
 'stylehouse'

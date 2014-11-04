@@ -53,10 +53,11 @@ __DATA__
 <!DOCTYPE html>
 <html><head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+  <script src="//h:3000/jquery.scrollTo.js"></script>
 </head><body style="background: url('i/greencush.jpg'); background: black; color: #0f2;">
 
     <h1>websocket.</h1>
-    <div id='msgs'> </div>
+    <div id='msgs' style="whitespace: pre;"> </div>
 
     <script type="text/javascript">
     var conn;
@@ -68,6 +69,7 @@ __DATA__
 
        conn.onmessage = function  (event) {
           $('#msgs').append('msg: '+event.data +"<br />");
+          $('body').scrollTo('100%', 360);
        };
        conn.onopen = function () {
           $('#msgs').append("connected.\n");

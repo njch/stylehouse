@@ -11,6 +11,7 @@
         use YAML::Syck;
         use Data::Dumper;
         use Term::ANSIColor;
+        use Encode qw(encode_utf8 decode_utf8 is_utf8);
     
   - K: new
     D: |
@@ -62,11 +63,15 @@
       my $nb = shift;
       my $u = bless {}, $nb;
       $nb::H = $H;
-      u.id = mkuid();
+      u.id = $H->mkuid();
       $u
 
-
-
+  - K: send
+    D: |
+      my $m = shift;
+      die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
+      H.G->w(send_Elvis => {m => $m});
+    
   - K: throwlog #c
     D: |
       my $what = shift;
@@ -138,7 +143,7 @@
     D: |
           return Time::HiRes::usleep(shift || 5000);
 
-  - K: ind #c
+  - K: ind
     D: |
       my ($in, $thing) = @_;
       $thing = "" unless defined $thing;
@@ -170,12 +175,6 @@
       $Data::Dumper::Maxdepth = $maxdepth;
       return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 
-  - K: send
-    D: |
-      my $m = shift;
-      die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
-      H.G->w(send_Elvis => {m => $m});
-    
   - K:
     D: |
       
@@ -193,13 +192,12 @@
       
   - K:
     D: |
-      
-    
       
   - K: hitime
     D: |
       return join ".", time, (gettimeofday())[1];
-  - K: stack #c
+      
+  - K: stack
     D: |
       my $b = shift;
       $b = 1 unless defined $b;
@@ -226,24 +224,17 @@
       
 
   - K: mkuid # H wide unique id
-    style: func
     D: |
         (mkuuid() =~ /^(\w+)-.+$/)[0];
         
   - K: mkuuid # make a number bigger than the universe
-    style: func
     D: |
       UUID::generate(my $i);
       UUID::unparse($i, my $s);
       $s
     
-  - K: dig #c make a unique art exubertique (same exube for same art) (hash function)
-    style: func
+  - K: dig # make a unique art exubertique
+      # same exube for same art) (string hash function
     D: |
-      UUID::generate(my $i);
-      UUID::unparse($i, my $s);
-      $s
-      sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
-      sub enhash { sha1_hex(shift) }
-      sub dig { enhash(shift) }
+      Digest::SHA::sha1_hex(encode_utf8(shift))
 

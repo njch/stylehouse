@@ -98,7 +98,7 @@ __DATA__
         <link href="codemirror/theme/night.css" rel="stylesheet">
         <link href="codemirror/theme/midnight.css" rel="stylesheet">
         <link href="codemirror/theme/base16-dark.css" rel="stylesheet">
-        <link rel="stylesheet" href="codemirror/addon/display/fullscreen.css">
+        <link href="codemirror/addon/display/fullscreen.css" rel="stylesheet">
         <script src="codemirror/addon/display/fullscreen.js"></script>
         <script src="codemirror/mode/perl/perl.js"></script>
 
