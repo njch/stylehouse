@@ -97,20 +97,19 @@ sub throwlog {
     my $H = shift;
     my $what = shift;
 
-    if ($H->{_future}) {
+    if (!$H->{mezthrowing}) {
         my $te = $@;
         $@ = "";
+        $H->{mezthrowing} = 1;
         my $r = eval { $H->{G}->mess($what, [@_]) };
+        undef $H->{mezthrowing};
         if ($@) {
-            eval { $H->{G}->timer(0.1, sub {
-                $H->error("G mess error while throwing a $what: $@");
-             }) };
+            my $s = "G mess error while throwing a $what: $@";
+            eval { $H->{G}->timer(0.1, sub { $H->error($s); }) };
             $@ = '';
         }
         $@ = $te;
-        if ($r && $r eq "yep") {
-            return;
-        }
+        return if $r && $r eq "yep";
     }
 
     my @E;
