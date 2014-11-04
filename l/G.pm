@@ -253,7 +253,7 @@ sub ing {
 
     my $name = $ing;
     $name .= $w->pint if $w;
-    my $ingw = $S->nw(
+    my $ingw = $G->nw(
         K=>"ing",
         name => $name,
         ing => $ing,
@@ -273,12 +273,12 @@ sub ingo {
     return say "ing $ingw->{name} $ingw->{id} deduped" if $ingw->{dead};
     return say "ing $ingw->{name} $ingw->{id} ui dead" if $ingw->{w} && $ingw->{w}->{dead};
 
-    $S->w($ingw->{ing}, {}, $ingw->{w});
+    $G->w($ingw->{ing}, {}, $ingw->{w});
 
     my $time = $ingw->{w}->{e} if $ingw->{w} && $ingw->{w}->{e};
     $time ||= $ingw->{time};
     say "time $ingw->{G}->{name} $ingw->{name} $time";
-    $S->timer($time, sub {
+    $G->timer($time, sub {
         $G->_0("0S->ingo", $S, $ingw);
     }, "ing $ingw->{name} $ingw->{id}");
 }
@@ -320,7 +320,6 @@ sub reeni {
 
 sub sing {
     my $G = shift;
-    my $S = shift;
     my $p;
     $p->{name} = shift;
     $p->{code} = shift;
@@ -379,7 +378,7 @@ sub wdif {
     my $G = shift;
     my ($h, $w) = @_;
     if ($w->{$h}) {
-        $S->w($h, {}, $w);
+        $G->w($h, {}, $w);
         delete $w->{$h};
     }
 }
@@ -399,7 +398,7 @@ sub sway {
 
     $from || defined $P->{e} || die "no findo way called $p->{K} ($S->{name})".wdump([$p,$s]);
 
-    my $w = $S->nw();
+    my $w = $G->nw();
     $w->from($from) if $from;
     $w->from($p) unless $from;
     $w->from($s) if $s && %$s; # merges in B :D
@@ -412,14 +411,14 @@ sub Bu {
     my($K,$B)=@_;
     my $u = $G->_0("0S->sway", $S, {K=>$K},{B=>$B});
     my $a = {};
-    $S ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
+    $G ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
     $u;
 }
 
 sub CsK {
     my $G = shift;
     my ($p, $GG) = @_;
-    $GG ||= $S;
+    $GG ||= $G;
     $p->{s} ||= 'C';
     # $p->{CsK} locates the Cs, is a qw of paths for anyway
     my @Cs = map { flatline($_) } map { $GG->anyway($_) }  split ' ', delete $p->{s};
@@ -461,14 +460,13 @@ sub EgyB {
 sub TafuBl {
     my $G = shift;
     #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
-    my$S=shift;
     $G->_0("0S->l", $S,  $G->_0("0S->TafuB", $S, @_) );
 }
 
 sub TafuB {
     my $G = shift;
     my($K,$B)=@_;
-    my $ca = $S->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
+    my $ca = $G->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
     if ($ca && !$ca->{dead}) {
         return $ca;
     }
@@ -566,37 +564,37 @@ sub T {
 
     # 2/9
 
-    say "HAUNT HAUNT HAUNT ".pint($T->{i}) if $S->deeby;
-    #$G0->{travels_of}->{$S->{name}} ++;
-    $S->ob("haunt");
+    say "HAUNT HAUNT HAUNT ".pint($T->{i}) if $G->deeby;
+    #$G0->{travels_of}->{$G->{name}} ++;
+    $G->ob("haunt");
     # so crawl is like an expanding awareness thing
     # see the whole structure
 
     # 3/9
-     $S->w("T/flows");
-       $S->w('flows_D', {}, $T->{i});
+     $G->w("T/flows");
+       $G->w('flows_D', {}, $T->{i});
     $G->Flab("flows ", $T);
       $sge->("flows");
     # 4/9
-    $T->{L} = $S->W->continues($S); # %
+    $T->{L} = $G->W->continues($G); # %
       $sge->("humms W being"); # eg travelling sw eval
-     $S->w("T/humms");
-       $S->w('humms_D', {}, $T->{i});
+     $G->w("T/humms");
+       $G->w('humms_D', {}, $T->{i});
     $G->Flab("humms", $T);
       $sge->("humms");
     # 5/9
     $T->{L}->{i} eq $T->{i} || die "tli not ni!?!?!";
     $G->_0("0S->accum", $S, $T->{L}->{i}, 'Li', $T->{L}); # just right
 
-     $S->w("T/links", {u=>$T->{i}});
-       $S->w('links_D', {}, $T->{i});
+     $G->w("T/links", {u=>$T->{i}});
+       $G->w('links_D', {}, $T->{i});
     $G->Flab("links", $T);
       $sge->("links");
     # rounds_D? replayable when recoded?
     # assume 6/7 will continue the process...
     # 6/9
-     $S->w("T/travels");
-       $S->w('travels_D', {}, $T->{i});
+     $G->w("T/travels");
+       $G->w('travels_D', {}, $T->{i});
     $G->Flab("travels", $T);
       $sge->("travels");
     die "Lost i somewhere before 7... "
@@ -604,14 +602,14 @@ sub T {
 
     # 7/9
 
-    $S->w("T/traction", {u=>$T->{i}});
-    $S->w('traction_D', {}, $T->{i});
+    $G->w("T/traction", {u=>$T->{i}});
+    $G->w('traction_D', {}, $T->{i});
     $G->Flab("travels", $T);
       $sge->("travels");
 
     # 8/9
 
-    #$H->Info("HAUNTED ".sw($T)) if $S->{name} =~ /braid|ux|odon/;
+    #$H->Info("HAUNTED ".sw($T)) if $G->{name} =~ /braid|ux|odon/;
 
     # 9/9
 
@@ -631,11 +629,11 @@ sub visTp {
     my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
     my $old = $T;
     if (!$tish) {
-        $T = $S->nw();
+        $T = $G->nw();
     }
-    elsif ($T->{G} ne $S) {
+    elsif ($T->{G} ne $G) {
         # loses hair? we never care?
-        $T = $S->nw();
+        $T = $G->nw();
     }
     else {
         $T = $T->spawn;
@@ -685,14 +683,14 @@ sub fu {
     my $G = shift;
     my $u = shift;
 
-    my $fo = $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})};
+    my $fo = $G->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})};
     if ($fo && $fo->{dead}) {
         say "$u->{K} found but dead";
         $fo = undef;
     }
     return $fo if $fo;
 
-    for my $LL (@{$S->W->{script}}) {
+    for my $LL (@{$G->W->{script}}) {
         my $i = $LL->{i};
         my $yup = $i eq $u
             || (!exists $u->{K} || $i->{K} eq $u->{K})
@@ -709,7 +707,7 @@ sub fu_cache {
     my $G = shift;
     my $u = shift;
     $u->{B} ||= {};
-    $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})} = $u;
+    $G->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})} = $u;
 }
 
 sub fs_glob {
@@ -783,13 +781,13 @@ sub Stytog {
         push @styles, $s;
     }
     $u->{styles} = join ' ', @styles;
-    $S->w('v/ch', {u=>$u});
+    $G->w('v/ch', {u=>$u});
 }
 
 sub wayray {
     my $G = shift;
     my ($SS, $GG) = @_;
-    $GG ||= $S;
+    $GG ||= $G;
     die sw(\@_) if ref ${GG} !~ /^G/;
     my $i = 0;
     for my $wS (@$SS) {
@@ -825,7 +823,7 @@ sub del {
     my ($u) = @_;
     my $L = $u->{Li} || die "wasnt";
     $H->Say("deleting ".$u->pint);
-    $S->w('v/ch'=>{u=>$u});
+    $G->w('v/ch'=>{u=>$u});
 
     $G->_0("0S->deaccum", $S, $u->{Lo}, 'o', $u);
     $G->_0("0S->deaccum", $S, $u->{Li}->{W}, 'script', $L);
@@ -837,7 +835,7 @@ sub del {
 sub Io {
     my $G = shift;
     my ($u) = @_;
-    grep { $_->{G} eq $S } @{$u->{Li}->{o}};
+    grep { $_->{G} eq $G } @{$u->{Li}->{o}};
 }
 
 sub su {
