@@ -427,6 +427,7 @@ hooks:
         (map { { j => $j, i => $_, flatly => 1 } } @flatly);
         
     for my $a (@as) {
+        saygr "Top level U is a ".a.i->pint()."   fl=a.flatly";
         w U(%$a);
     }
     
@@ -569,13 +570,16 @@ hooks:
   U: |
     0->visTp($ar, "Fun") if ar.i;
     my $u = T.i;
+    die "wtf" unless ar.i eq $u;
     
     inter({u => u.K});
     
     w utricks/spawn[$u];
     w sane/U1[$u];
-    
-    for my $i (w dook) {
+    say "an u at u.K";
+    my @wo = w dook;
+    saygr "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@wo;
+    for my $i (@wo) {
         my $a = {%$ar};
         a.i = $i;
         w U(%$a);
@@ -775,7 +779,7 @@ hooks:
         unless (u.G eq $G || u.G eq G.O) {
             # to skip O=ux plants on nested vortexen (uW{ui=W)
             # uy maybe spawned from G.O Cs
-            #say "skipping u.K u.uuid on T.i.K cos u.G.name ne here", $u, T.i;
+            sayg "skipping u.K u.uuid on T.i.K cos u.G.name ne here", $u, T.i;
             next;
         }
         # to skip O=ux plants on nested vortexen (uW{ui=W) # but go into uy spawned from G.O Clange
@@ -786,6 +790,7 @@ hooks:
         }
         push @o, $u;
     }
+    say L.i->pint()." leads to ".@o;
     @o;
   event: |
     my $u = L.i; # the clicked id: uy probly.

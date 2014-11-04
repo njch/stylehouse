@@ -242,7 +242,9 @@ hooks:
         if ar.W;
     
     $H->send("\$('#somewhere > *').delay(400).fadeOut(400);", sub {
-        w splatsome;
+        eval { w splatsome; };
+        sayre "splat didn't go well: $@" if $@;
+        $@ = "";
     });
   splatsome: |
     0->TafuB(path => $ar);

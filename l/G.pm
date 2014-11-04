@@ -694,6 +694,8 @@ sub visTp {
     my $G = shift;
     my ($p, $fun) = @_;
 
+    # are in Ghost right now?
+    $T = $G::T if $H->{h};
     my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
     my $old = $T;
     if (!$tish) {
