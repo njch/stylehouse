@@ -105,7 +105,7 @@ sub babblethehut {
 
     $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
-    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
+    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \/sg;
 
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
@@ -230,7 +230,7 @@ sub dus {
 
 sub InjC {
     my $G = shift;
-    my ($S, $g, $In) = @_;
+    my ($g, $In) = @_;
     while (my ($s, $etc) = each %$In) {
         while (my ($K, $win) = each %$etc) {
             my $C = $G->{U}->{CsK}->($g, {K=>$K, s=>$s});
@@ -241,14 +241,14 @@ sub InjC {
 
 sub GAK {
     my $G = shift;
-    my ($S, $K, $g) = @_;
+    my ($K, $g) = @_;
     $g->{K} = $K;
     $S->{GG}->{$g->{K}} = $g;
 }
 
 sub ing {
     my $G = shift;
-    my ($S, $time, $ing, $w) = @_;
+    my ($time, $ing, $w) = @_;
     $time && $ing || die " time&ing";
 
     my $name = $ing;
@@ -269,7 +269,7 @@ sub ing {
 
 sub ingo {
     my $G = shift;
-    my ($S, $ingw) = @_;
+    my ($ingw) = @_;
     return say "ing $ingw->{name} $ingw->{id} deduped" if $ingw->{dead};
     return say "ing $ingw->{name} $ingw->{id} ui dead" if $ingw->{w} && $ingw->{w}->{dead};
 
@@ -285,28 +285,28 @@ sub ingo {
 
 sub scGre {
     my $G = shift;
-    my ($S, $ip) = @_;
+    my ($ip) = @_;
     # or something was somehow, tractioning v
-    my @a = grep { $G->{U}->{ip}->($S, $ip, $_->{i}) } @{ $S->{W}->{script} };
+    my @a = grep { $G->{U}->{ip}->($ip, $_->{i}) } @{ $S->{W}->{script} };
     @a
 }
 
 sub ip {
     my $G = shift;
-    my ($S, $ip, $i) = @_;
+    my ($ip, $i) = @_;
     (!exists $ip->{K} || $i->{K} eq $ip->{K}) &&
     (!exists $ip->{V} || $i->{V} eq $ip->{V})
 }
 
 sub rei {
     my $G = shift;
-    my ($S, $ip) = @_;
+    my ($ip) = @_;
     map {$_->{i}} $G->_0("0S->scGre", $S, $ip);
 }
 
 sub reeni {
     my $G = shift;
-    my ($S, $ip, @is) = @_;
+    my ($ip, @is) = @_;
     my @sel;
     my @new = grep {defined} map {
         if ($G->_0("0S->ip", $S, $ip, $_->{i})) {;
@@ -332,7 +332,7 @@ sub sing {
 
 sub loquate {
     my $G = shift;
-    my ($S, $source, $path, $def) = @_;
+    my ($source, $path, $def) = @_;
     my @moves = split '/', $path;
     my $s = $source;
     until (@moves == 1) {
@@ -348,7 +348,7 @@ sub loquate {
 sub accum {
     my $G = shift;
     # TODO path loquation doesn't stretch far re policy, no prob for now.
-    my ($S, $src, $ac, $t) = @_;
+    my ($src, $ac, $t) = @_;
 
     if ($ac eq "Lo" || $ac eq "Li") {
         $src->{$ac} = $t;
@@ -366,7 +366,7 @@ sub accum {
 
 sub deaccum {
     my $G = shift;
-    my ($S, $source, $ac, $t) = @_;
+    my ($source, $ac, $t) = @_;
     my $a = $source->{$ac} ||= [];
     my $i = 0;
     for (@$a) {
@@ -377,7 +377,7 @@ sub deaccum {
 
 sub wdif {
     my $G = shift;
-    my ($S, $h, $w) = @_;
+    my ($h, $w) = @_;
     if ($w->{$h}) {
         $S->w($h, {}, $w);
         delete $w->{$h};
@@ -386,14 +386,14 @@ sub wdif {
 
 sub u {
     my $G = shift;
-    my ($S, $K, $s) = @_;
+    my ($K, $s) = @_;
     $G->_0("0S->sway", $S, {K=>$K}, $s);
 }
 
 sub sway {
     my $G = shift;
     # sucks way matching $p # only supports matching K for now
-    my ($S, $p, $s, $P) = @_;
+    my ($p, $s, $P) = @_;
     $p->{s} ||= 'chains C';
     my ($from) = $p->{from} || $G->_0("0S->CsK", $S, $p);
 
@@ -409,7 +409,7 @@ sub sway {
 
 sub Bu {
     my $G = shift;
-    my($S,$K,$B)=@_;
+    my($K,$B)=@_;
     my $u = $G->_0("0S->sway", $S, {K=>$K},{B=>$B});
     my $a = {};
     $S ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
@@ -418,7 +418,7 @@ sub Bu {
 
 sub CsK {
     my $G = shift;
-    my ($S, $p, $GG) = @_;
+    my ($p, $GG) = @_;
     $GG ||= $S;
     $p->{s} ||= 'C';
     # $p->{CsK} locates the Cs, is a qw of paths for anyway
@@ -432,7 +432,7 @@ sub CsK {
 
 sub Tind {
     my $G = shift;
-    my ($S, $space) = @_;
+    my ($space) = @_;
     $space = "    " if !defined $space;
     my $mes = $T->{r}->{is} if $T->{r};
     $mes ||= [];
@@ -443,7 +443,7 @@ sub Tind {
 
 sub Egypto {
     my $G = shift;
-    my ($S, $Egyptian_Fraction) = @_;
+    my ($Egyptian_Fraction) = @_;
     my $val = 0;
     for (split / ?\+ ?/, $Egyptian_Fraction) {
         /^(\d+)\/(\d+)$/ || die "Egypmal";
@@ -454,7 +454,7 @@ sub Egypto {
 
 sub EgyB {
     my $G = shift;
-    my ($S, $B) = @_;
+    my ($B) = @_;
     return { map { $G->_0("0->Egypto", $_) => $_ } keys %$B };
 }
 
@@ -467,7 +467,7 @@ sub TafuBl {
 
 sub TafuB {
     my $G = shift;
-    my($S,$K,$B)=@_;
+    my($K,$B)=@_;
     my $ca = $S->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
     if ($ca && !$ca->{dead}) {
         return $ca;
@@ -477,26 +477,26 @@ sub TafuB {
 
 sub TB {
     my $G = shift;
-    my ($S, $K, $B) = @_;
+    my ($K, $B) = @_;
     my $u = $G->_0("0S->Bu", $S, $K, $B);
     $G->_0("0S->T", $S, {i=>$u});
 }
 
 sub Tafu {
     my $G = shift;
-    my($S,$uu)=@_;
+    my($uu)=@_;
     $G->_0("0S->fu", $S, $uu) || $G->_0("0S->T", $S, {i => $uu});
 }
 
 sub Taful {
     my $G = shift;
-    my($S,$uu)=@_;
+    my($uu)=@_;
     $G->_0("0S->l", $S,  $G->_0("0S->Tafu", $S, $uu) );
 }
 
 sub visTp_TafuBlA {
     my $G = shift;
-    my ($S, $Tp, $Bup, $A) = @_;
+    my ($Tp, $Bup, $A) = @_;
     my $old = $G->_0("0S->visTp", $S, $Tp); # could be Fun, wire into end
     my $uu = $G->_0("0S->Bu", $S, @$Bup); 
     my $u = $G->_0("0S->fu", $S, $uu);
@@ -518,7 +518,7 @@ sub visTp_TafuBlA {
 
 sub visTp_l_u {
     my $G = shift;
-    my ($S, $Tp, $u) = @_; #c get in to a T place and make links
+    my ($Tp, $u) = @_; #c get in to a T place and make links
     my $old = $G->_0("0S->visTp", $S, $Tp);
     $G->_0("0S->l", $S, $u);
     $T= $old;
@@ -527,7 +527,7 @@ sub visTp_l_u {
 
 sub l {
     my $G = shift;
-    my ($S, $u) = @_;
+    my ($u) = @_;
     $G->_0("0S->accum", $S, $u, 'Lo', $T->{L});
     $G->_0("0S->accum", $S, $T, 'o', $u);
     $u;
@@ -535,7 +535,7 @@ sub l {
 
 sub visTp_TafuBl {
     my $G = shift;
-    my ($S, $Tp, $Bp) = @_;
+    my ($Tp, $Bp) = @_;
     my $old = $G->_0("0S->visTp", $S, $Tp);
     my $u = $G->_0("0S->TafuBl", $S, @$Bp);
     $T= $old;
@@ -544,7 +544,7 @@ sub visTp_TafuBl {
 
 sub T {
     my $G = shift;
-    my ($S, $p) = @_;
+    my ($p) = @_;
 
     # 1/9
 
@@ -626,7 +626,7 @@ sub T {
 
 sub visTp {
     my $G = shift;
-    my ($S, $p, $fun) = @_;
+    my ($p, $fun) = @_;
 
     my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
     my $old = $T;
@@ -683,7 +683,6 @@ sub visTp {
 
 sub fu {
     my $G = shift;
-    my $S = shift;
     my $u = shift;
 
     my $fo = $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})};
@@ -708,7 +707,6 @@ sub fu {
 
 sub fu_cache {
     my $G = shift;
-    my $S = shift;
     my $u = shift;
     $u->{B} ||= {};
     $S->W->{ca}->{K}->{$u->{K}}->{B_ki}->{ki($u->{B})} = $u;
@@ -716,7 +714,7 @@ sub fu_cache {
 
 sub fs_glob {
     my $G = shift;
-    my ($S, @globs) = @_;
+    my (@globs) = @_;
     my @list;
     for my $glob (@globs) {
         push @list, grep { defined }
@@ -728,7 +726,7 @@ sub fs_glob {
 
 sub fs_find {
     my $G = shift;
-    my ($S, @dirs) = @_;
+    my (@dirs) = @_;
     my @list;
     File::Find::find(sub {
         my $na = $File::Find::name;
@@ -742,7 +740,6 @@ sub fs_find {
 
 sub jsq {
     my $G = shift;
-    my $S = shift;
     my @a = @_;
     for (@a) {
         s/\\/\\\\/g;
@@ -754,7 +751,7 @@ sub jsq {
 
 sub B_same {
     my $G = shift;
-    my ($S, $u, $i) = @_;
+    my ($u, $i) = @_;
 
     return 1 if exists $u->{B}->{_} && exists $i->{B}->{_} && $u->{B}->{_} eq $i->{B}->{_};
 
@@ -771,13 +768,13 @@ sub B_same {
 
 sub Ato {
     my $G = shift;
-    my ($S, $w, $to) = @_;
+    my ($w, $to) = @_;
     grep { $_->{K} =~ /^$to$/ } @{$w->{Li}->{o}}
 }
 
 sub Stytog {
     my $G = shift;
-    my ($S, $u, $s) = @_;
+    my ($u, $s) = @_;
     my @styles = split /\s+/, $u->{styles};
     if (grep { $_ eq $s } @styles) {
         @styles = grep { $_ ne $s } @styles
@@ -791,7 +788,7 @@ sub Stytog {
 
 sub wayray {
     my $G = shift;
-    my ($S, $SS, $GG) = @_;
+    my ($SS, $GG) = @_;
     $GG ||= $S;
     die sw(\@_) if ref ${GG} !~ /^G/;
     my $i = 0;
@@ -803,7 +800,7 @@ sub wayray {
 
 sub RW {
     my $G = shift;
-    my ($S, $GG) = @_;
+    my ($GG) = @_;
     say "RW RW RW RW RW $GG->{name}\t\t $GG->{K}";
     $_->{dead} = $F[0] for $G->{U}->{rei}->($GG, {});
     my $W = $GG->{W};
@@ -817,7 +814,7 @@ sub RW {
 
 sub delfrom {
     my $G = shift;
-    my ($S, $u) = @_;
+    my ($u) = @_;
     for my $uu ($G->_0("0S->Io", $S, $u)) {
         $G->_0("0S->del", $S, $uu);
     }
@@ -825,7 +822,7 @@ sub delfrom {
 
 sub del {
     my $G = shift;
-    my ($S, $u) = @_;
+    my ($u) = @_;
     my $L = $u->{Li} || die "wasnt";
     $H->Say("deleting ".$u->pint);
     $S->w('v/ch'=>{u=>$u});
@@ -839,13 +836,13 @@ sub del {
 
 sub Io {
     my $G = shift;
-    my ($S, $u) = @_;
+    my ($u) = @_;
     grep { $_->{G} eq $S } @{$u->{Li}->{o}};
 }
 
 sub su {
     my $G = shift;
-    my ($S, $a) = @_;
+    my ($a) = @_;
     my $D = $a->{cb}; 
     $a->{cb} = sub { $G->Flab("a su top=$a->{top}", $a); $D->(@_); };
 
