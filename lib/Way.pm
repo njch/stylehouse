@@ -126,9 +126,15 @@ sub pint {
     my $w = shift;
     
     my $K = $w->{K}        if defined $w->{K} && !defined $w->{k};
-    my $p = $w->{G}->w('print',{},$w) if defined $w->{print} || $w->{Gw};
-    my $B = Ghost::slim(50,30,Ghost::ki($w->{B}))        if $w->{B} && !$p;
-    
+    my $p = $w->{G}->w('print',{},$w)
+        if (defined $w->{print} || $w->{Gw}) && Ghost::wish(G=>$w->{G});
+    my $B;
+    if ($w->{B} && !$p) {
+        if (join(",", sort keys %{$w->{B}}) eq "Lu,ui") {
+            $B = "Lui*=(".$w->{B}->{ui}->pint();
+        }
+        $B ||= Ghost::slim(50,30,Ghost::ki($w->{B}))        
+    }
     my $s = "$K↯$p".($B?"↯$B":"");
     return $s;
 }

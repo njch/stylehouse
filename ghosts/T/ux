@@ -6,6 +6,8 @@ C:            # W M ux ...
     flows_D: |
       w stylespawn[$S, $W];
     Ss: [u, x, X]
+    print: |
+      "W=".W.G.name #Bthing, u is $S
     S:
       styles: OxO nopoi
       tag: ww 
@@ -18,6 +20,8 @@ C:            # W M ux ...
     O: ux
     flows_D: |
       w stylespawn[$S, $W];
+    print: |
+      "MMMM=".W.G.name
     Ss: *
     S:
       styles: OxO poi
@@ -419,9 +423,6 @@ hooks:
     }
     
     my $j = $G->nw(K=>'j', s=>[]);
-    my $jack = sub {
-         @_
-    };
     my @as =
         (map { { j => $j, i => $_ } } @recur),
         (map { { j => $j, i => $_, flatly => 1 } } @flatly);
@@ -575,13 +576,14 @@ hooks:
     
     w utricks/spawn[$u];
     w sane/U1[$u];
-    say "an u at u.K";
-    my @wo = w dook;
-    saygr "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@wo;
-    for my $i (@wo) {
+    
+    my @o = w dook;
+    saygr join"",("  " x scalar(@F)), "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@o;
+    
+    for my $i (@o) {
         my $a = {%$ar};
         a.i = $i;
-        sayg "  heading ".$i->pint();
+        #sayg "  heading ".$i->pint();
         w U(%$a);
     }
     
@@ -790,7 +792,7 @@ hooks:
         }
         push @o, $u;
     }
-    say L.i->pint()." leads to ".@o;
+    #say L.i->pint()." leads to ".@o;
     @o;
   event: |
     my $u = L.i; # the clicked id: uy probly.

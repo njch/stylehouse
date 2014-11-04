@@ -48,14 +48,14 @@ websocket '/ws' => sub {
 app->secrets([readlink '/home/s/stylehouse/msecret']);
 say "\n\n        listen to $listen\n";
 app->start('daemon', '--listen' => "$listen");
-
+ #c
 __DATA__
 @@ws_page.html.ep
 <!DOCTYPE html>
 <html><head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
   <script src="//h:3000/jquery.scrollTo.js"></script>
-</head><body style="background: url('i/greencush.jpg'); background: black; color: #0f2;">
+</head><body style="background: url('i/greencush.jpg'); background: black; color: #0f2; overflow-x: hidden;">
 
     <p>web.</p>
     <div id='msgs' style="white-space: pre;"> </div>
