@@ -422,7 +422,7 @@ hooks:
         $desc = (0+@flatly)." x ".(@recur+0);
     }
     
-    my $j = $G->nw(K=>'j', s=>[]);
+    my $j = $G->nw(K=>'j', s=>[], c=>[]);
     my @as =
         (map { { j => $j, i => $_ } } @recur),
         (map { { j => $j, i => $_, flatly => 1 } } @flatly);
@@ -637,17 +637,15 @@ hooks:
         my $at = u.at;
         my $ui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
-        my $s = [];
-        my $sdo = sub {
-            my $cb = shift;
-            push @$s, $cb;
-        };
-        my $sendojs = sub {
+        my ($s,$c) = ([],[]);
+        my $do_S = sub { push @$s, shift };
+        my $doj_S = sub {
             my ($id, $sp, @int) = @_;
-            $sdo->(sub {
-                $H->JS("\$('#$id')".sprintf($sp, @int).";")
-            });
+            $do_S->("\$('#$id')".sprintf($sp, @int).";");
         };
+        my $do_C = sub { push @$c, shift };
+        # S is innards, C is complete (send all S before all C)
+        # further thinking running on wholeness
         my $_t = u._at;
         
         my $attr = at.attr = {
@@ -680,34 +678,25 @@ hooks:
                     map{ "$_($v->{$_})" } sort keys %$v;
             }
         }
-        
-        
-        if (u.K eq "W") {
-            attr.title = "G.O.name    G.way    G.K";
-        }
-            
-        if (!$_t) { #c suqundo
+        attr.title = "G.O.name    G.way    G.K" if u.K eq "W";
+        if (!$_t) {
             if ( $conty && $content ){
-                warn "conty and ooze ".$u->pint;#sw(["contooz", $u, $conty, $content]);
+                warn "conty and ooze ".$u->pint;
+                #sw(["contooz", $u, $conty, $content]);
                 $conty = ",";
             }
             if (length($conty . $content) > 25000) {
                 $content = "";
-                $sdo->(sub {
-                    $H->JS("\$('#at.id').append('$_');") for @$oozs
-                });
+                $do_S->("\$('#at.id').append('$_');") for @$oozs;
             }
-            if (u.S.sendo_init_D) {
-                $sdo->(sub { w $u S/sendo_init_D(e=>'') });
-            }
-            if ($ui && ui.S.sendo_init_D) {
-                $sdo->(sub { w $ui S/sendo_init_D(e=>'') });
+            for my $i ($u, $ui) {
+                next unless $i && i.S.sendo_init_D;
+                my $Ce = w $u S/sendo_init_D(e=>'');
+                $do_C->($Ce) if $Ce;
             }
             
             if ($u eq G.uW) { # unified field of this W
-                $sdo->(sub {
-                    $H->JS("\$('#ux').append('".0->jsq(u.html)."');");
-                });
+                $do_S->("\$('#ux').append('".0->jsq(u.html)."');");
                 j._ && die "Already unified!?";
                 j._ = $u; # TODO diffy for the J
             }
@@ -716,19 +705,19 @@ hooks:
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             
             for my $newu (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
-                $sendojs->(at.id, q{.append('%s')}, 0->jsq(newu.html));
+                $doj_S->(at.id, q{.append('%s')}, 0->jsq(newu.html));
             }
             for my $gonu (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
-                $sendojs->(gonu.at.id, q{.remove()});
+                $doj_S->(gonu.at.id, q{.remove()});
             }
             if (at.conty ne _t.conty) {
                 my $s = 0->jsq(at.conty);
                 $s =~ s/\\ \\ n/\n/x;
-                $sendojs->(at.id, q{.text("%s")}, $s);
+                $doj_S->(at.id, q{.text("%s")}, $s);
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 next if $v eq _t.attr->{$k};
-                $sendojs->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
+                $doj_S->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
             }
             if (at.css) {
                 while (my($k,$v) = each %{at.css}) {
@@ -744,11 +733,11 @@ hooks:
                         $d ||= 400;
                         $isa = "$d>>";
                         
-                        $sendojs->(at.id, q".animate({'%s':'%s'}, %s)",
+                        $doj_S->(at.id, q".animate({'%s':'%s'}, %s)",
                             0->jsq($k, $v), $d);
                     }
                     else {
-                        $sendojs->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
+                        $doj_S->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
                     }
                 }
             }
@@ -770,6 +759,7 @@ hooks:
         u._at = $at;
         
         push @{j.s}, reverse @$s;
+        push @{j.c}, reverse @$c;
   dook: |
     my @o;
     my $L = ar.u.Li || die "pass u with .Li";

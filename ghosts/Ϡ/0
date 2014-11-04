@@ -44,7 +44,11 @@ hooks:
   aj: |
     j._ && saygr "j.G.name unified field! see for ".@{j.s};
     
-    $_->() for reverse @{j.s};
+    
+    for my $l (reverse @{j.s}, reverse @{j.c}) {
+        ref $l && die "reff $l";
+        $H->send($l);
+    }
     # after U - direct to tape instead of catching JS in H
     
   scribe_js: |
