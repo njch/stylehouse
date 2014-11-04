@@ -3,9 +3,6 @@ package S;
 use Mojolicious::Lite;
 use common::sense;
 
-use Mojolicious::Static;
-my $static = Mojolicious::Static->new;
-push @{$static->paths}, '/home/s/styleshed/public';
 use lib 'l';
 use H;
 our $H;
@@ -50,6 +47,7 @@ websocket '/ws' => sub {
 };
 app->secrets([readlink '/home/s/stylehouse/msecret']);
 say "\n\n        listen to $listen\n";
+push @{app->static->paths}, '/home/s/styleshed/public';
 app->start('daemon', '--listen' => "$listen");
  #c
 __DATA__
@@ -70,6 +68,7 @@ __DATA__
     var fail = 0;
     var a = {};
     a.e = function(e) {
+        console.log("xut "+e);
         eval(e);
     };
     a.m = function(e) {

@@ -679,6 +679,7 @@ hooks:
             }
         }
         attr.title = "G.O.name    G.way    G.K" if u.K eq "W";
+        my $late = [];
         if (!$_t) {
             if ( $conty && $content ){
                 warn "conty and ooze ".$u->pint;
@@ -696,7 +697,9 @@ hooks:
             }
             
             if ($u eq G.uW) { # unified field of this W
-                $do_S->("\$('#ux').append('".0->jsq(u.html)."');");
+                push @$late, sub {
+                    $do_S->("\$('#ux').append('".0->jsq(u.html)."');");
+                };
                 j._ && die "Already unified!?";
                 j._ = $u; # TODO diffy for the J
             }
@@ -755,6 +758,7 @@ hooks:
             grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
             
         u.html = "<$tag $attr>$conty$content</$tag>";
+        $_->() for @$late; # what needs u.html
         
         u._at = $at;
         
