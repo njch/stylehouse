@@ -24,6 +24,10 @@ use Encode qw(encode_utf8 decode_utf8 is_utf8);
 sub new {
     my $H = shift;
     my $p = shift;
+    $SIG{__WARN__} = sub {
+        my $ing = shift;
+        warn$ing unless $ing =~ /^Use of uninitialized/;
+    };
     $H = $H->spawn0('H');
     $H->{$_} = $p->{$_} for keys %$p;
 

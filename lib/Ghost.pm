@@ -692,7 +692,7 @@ sub doo {
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
-        shift @stack for 1..6; # Cover our tracks.
+        shift @stack for 1..3; # hide above this sub, Ghost eval & '  at Ghost...';
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /Ghost::doo/ || !@stack && die;
         s/\t//g for @stackend;

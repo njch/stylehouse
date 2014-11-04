@@ -260,12 +260,37 @@ sub flatline {
     Ghost::flatline(@_)
 }
 
+sub uiuS {
+    my $G = shift;
+    my ($u, $b) = @_;
+    my $a = "S";
+    my $ui = $u->{B}->{Lu}->{i} if $u->{B}->{Lu}; # even if below thingy?
+
+    for my $w ($ui, $u) {
+        next if !$w;
+
+        my $Gw = $w->{G}->findway($w->{K}) if $w->{Gw};
+
+        for my $ww ($Gw, $w) {
+            next if !$ww;
+            next if !$ww->{$a};
+            if ($ww->{$a}->{"${b}_D"}) {
+                $G->Flab("got a $a $b _D  ", $u);
+                my $some = $w->{G}->w("$a/${b}_D", {u=>$u}, $w);
+                return $some if $some;
+            }
+            my $some = $ww->{$a}->{$b};
+            return $some if $some;
+        }
+    }
+}
+
 sub InjC {
     my $G = shift;
     my ($g, $In) = @_;
     while (my ($s, $etc) = each %$In) {
         while (my ($K, $win) = each %$etc) {
-            my $C = $G->_0("0->CsK", {K=>$K, s=>$s});
+            my $C = $g->CsK({K=>$K, s=>$s});
             $C->from($win);
         }
     }

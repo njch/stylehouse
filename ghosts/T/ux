@@ -230,32 +230,7 @@ S:
         - font-size:144.44%
  
 hooks:
-  any_init: |
-    #G.h = {};
-    #map { w styleup(GG => _.G); } 0->scGre({K,'M'})
-    G.U.uiuS = sub {
-        my ($u, $b) = @_;
-        my $a = "S";
-        my $ui = u.B.Lu.i if u.B.Lu; # even if below thingy?
-        
-        for my $w ($ui, $u) {
-            next if !$w;
-            
-            my $Gw = w.G->findway(w.K) if w.Gw;
-            
-            for my $ww ($Gw, $w) {
-                next if !$ww;
-                next if !$ww->{$a};
-                if ($ww->{$a}->{"${b}_D"}) {
-                    $G->Flab("got a $a $b _D  ", $u);
-                    my $some = w.G->w("$a/${b}_D", {u=>$u}, $w);
-                    return $some if $some;
-                }
-                my $some = $ww->{$a}->{$b};
-                return $some if $some;
-            }
-        }
-    };
+
   recoded_init: |
       G.O->w(uxd=>{});
   stylespawn: |
@@ -630,10 +605,10 @@ hooks:
         }
         
         # v the look-around-for-style-etc vortex v
-        at.id = U->uiuS($u => 'id') || u.Li.uuid;
-        at.tag = U->uiuS($u => 'tag') || u.tag || u.K;
-        at.ishtml = U->uiuS($u => 'ishtml');
-        at.class = U->uiuS($u => 'class');
+        at.id = 0->uiuS($u => 'id') || u.Li.uuid;
+        at.tag = 0->uiuS($u => 'tag') || u.tag || u.K;
+        at.ishtml = 0->uiuS($u => 'ishtml');
+        at.class = 0->uiuS($u => 'class');
         
         my @styles;
         push @styles, u.styles, u.S.styles;
@@ -645,7 +620,7 @@ hooks:
         at.tag ||= u.K;
         die "no tag" .sw($u) if !at.tag;
         
-        at.conty = U->uiuS($u => 'content');
+        at.conty = 0->uiuS($u => 'content');
         
         at.conty = "" if !defined at.conty;
         at.conty = encode_entities(at.conty) unless at.ishtml;
@@ -673,7 +648,7 @@ hooks:
         my $attr = at.attr = {
             id => at.id,
             class => at.class,
-            %{ U->uiuS($u => "attr") || {} },
+            %{ 0->uiuS($u => "attr") || {} },
         };
         
         my $conty = defined at.conty ? at.conty : "";
@@ -687,7 +662,7 @@ hooks:
         my $styles = at.styles;
         w stylezo[$u, $ui, $styles, $at];
         
-        my $Z = U->uiuS($u => "Z"); # from ui S/Z(_D)
+        my $Z = 0->uiuS($u => "Z"); # from ui S/Z(_D)
         at.Z = { %{at.Z}, %$Z } if $Z;
         
         $Z && attr.style && die "got uiu $Z\t\tattr.style already";
