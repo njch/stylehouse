@@ -76,8 +76,9 @@
     D: |
       my ($m, $cb) = @_;
       die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
-      say "Got callback!" if $cb;
-      H.G->w(send_Elvis => {m => $m, cb => $cb});
+      my $a = {m => $m};
+      a.cb = $cb if $cb;
+      H.G->w(send_Elvis => $a);
     
   - K: throwlog #c
     D: |

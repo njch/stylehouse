@@ -96,8 +96,9 @@ sub send {
     my $H = shift;
     my ($m, $cb) = @_;
     die "Message contains \\n:\n$m\n\n" if $m =~ /\n/;
-    say "Got callback!" if $cb;
-    $H->{G}->w(send_Elvis => {m => $m, cb => $cb});
+    my $a = {m => $m};
+    $a->{cb} = $cb if $cb;
+    $H->{G}->w(send_Elvis => $a);
 }
 
 sub throwlog {
