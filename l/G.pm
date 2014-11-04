@@ -23,6 +23,8 @@ sub new {
     $G->{GGs} = [];
     push @{$H->{G}->{GGs}}, $G;
 
+    $G->timer(1, sub {sw($G->{A}->{u}->{u}->{i})}) if $G->{way} =~ /ux/;
+
     $G->{W} ||= $G->{A}->spawn('W');
 
 
@@ -235,6 +237,13 @@ sub InjC {
             $C->from($win);
         }
     }
+}
+
+sub GAK {
+    my $G = shift;
+    my ($S, $K, $g) = @_;
+    $g->{K} = $K;
+    $S->{GG}->{$g->{K}} = $g;
 }
 
 sub ing {
