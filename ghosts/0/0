@@ -19,6 +19,10 @@ hooks:
   code: |
     my @ched;
     Say "Cioding 0";
+    use lib 'l';
+    use G;
+    my $eg = bless {}, "G";
+    
     for my $w ($G->anyway('0')) {
         my ($nb, $co) = %$w;
         
@@ -37,7 +41,7 @@ hooks:
             say "skipping a blank K in $nb" && next if !ch.K;
             
             my $D = ch.D || ch.SD;
-            $D = $G->parse_babble($D) unless ch.style =~ /nonbabble/;
+            $D = $eg->parse_babble($D) unless ch.style =~ /nonbabble/;
             
             if (ch.K eq "head" || ch.K eq "everything") {
                 if (ch.K eq "everything") {
