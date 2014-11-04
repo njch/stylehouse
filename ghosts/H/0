@@ -26,6 +26,8 @@ hooks:
     $G->w("H.style/in");
     
   stylehut:
+    reexec: |
+      exec "perl l/S.pm";
     in: |
       G.A->spawn(G => 'H/mess');
     play: |
@@ -52,6 +54,8 @@ hooks:
       
       
   styleshed:
+    reexec: |
+      exec "perl stylehouse.pl SHED";
     in: |
       G!H/mess; # due to spawn syntax
     play: |
@@ -65,6 +69,8 @@ hooks:
       w wtf(div => 26, way => 'sky amb', D => $Dambi);
       
   stylehouse:
+    reexec: |
+      exec "perl stylehouse.pl HOUSE";
     in: |
       G!H/mess; # due to spawn syntax
     play: |
@@ -234,7 +240,7 @@ hooks:
       die "no ctime?" unless $nc;
       if (H.Sctime && $nc ne H.Sctime) {
           Say "Rwestarting! ctime changeon $script";
-          exec "perl $script";
+          w re/exec;
       }
       H.Sctime = $nc;
     vitals: |
@@ -440,7 +446,7 @@ hooks:
     
   re:
     exec: |
-      exec "perl stylehouse.pl";
+      $G->w("H.style/reexec");
   reinit:
     everything: |
       $H->error("restarting!");
