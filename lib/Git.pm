@@ -73,17 +73,6 @@ sub gitrack {
         next unless $r =~ /shed/;
         my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
         my $menu = [
-    '↰' => sub {
-        my $rbe = $self->rbe(up => $r);
-        if ($rbe) {
-            $self->spawn_proc('cd ../'.$rbe
-            .' && git pull '.$sh->($r).' conty');
-        }
-        else {
-            $self->spawn_proc('cd ../'.$r
-            .' && git push');
-        }
-    },
     '⏚' => sub {
         say" HEading to $r";
         $self->spawn_proc('cd ../'.$r.' && git gui');
@@ -100,6 +89,9 @@ sub gitrack {
     },
     'ܤ' => sub {
         `touch /s/stylehouse.pl`
+    },
+    'ܤ' => sub {
+        `touch /s/l/S.pm`
     },
         ];
         push @m,
