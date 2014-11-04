@@ -81,7 +81,7 @@ sub gname {
     my $g = shift;
     my $si = shift || 0;
     my $ush = "$g";
-    my $may = $g->{name} || $g->{id} if ref $g && $ush =~ /HASH/;
+    my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
     $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
     $may ||= "$g";
     $may =~ s/^(\w+)=HASH.*$/$1\{/;
