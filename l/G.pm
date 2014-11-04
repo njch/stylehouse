@@ -261,7 +261,7 @@ sub ing {
     );
     say "create $ingw->{G}->{name} $ingw->{name} $time";
     $ingw->{w} = $w if $w;
-    my $inga = $S->{ing}->{$name} ||= {};
+    my $inga = $G->{ing}->{$name} ||= {};
     $_->{dead} = 1 for values %$inga;
     $inga->{$ingw->{id}} = $ingw;
     $G->_0("0S->ingo", $ingw);
@@ -287,7 +287,7 @@ sub scGre {
     my $G = shift;
     my ($ip) = @_;
     # or something was somehow, tractioning v
-    my @a = grep { $G->{U}->{ip}->($ip, $_->{i}) } @{ $S->{W}->{script} };
+    my @a = grep { $G->{U}->{ip}->($ip, $_->{i}) } @{ $G->{W}->{script} };
     @a
 }
 
@@ -314,7 +314,7 @@ sub reeni {
             undef;
         }
         else {         $_           }
-    } @{$S->{W}->{script}};
+    } @{$G->{W}->{script}};
     # etc
 }
 
@@ -396,7 +396,7 @@ sub sway {
     $p->{s} ||= 'chains C';
     my ($from) = $p->{from} || $G->_0("0S->CsK", $p);
 
-    $from || defined $P->{e} || die "no findo way called $p->{K} ($S->{name})".wdump([$p,$s]);
+    $from || defined $P->{e} || die "no findo way called $p->{K} ($G->{name})".wdump([$p,$s]);
 
     my $w = $G->nw();
     $w->from($from) if $from;
