@@ -62,28 +62,41 @@ __DATA__
 
     <p>web.</p>
     <div id='msgs' style="white-space: pre;"> </div>
+    <div id='ux' style="position:absolute;right:0px;width:50%;height:100%;"> </div>
 
     <script type="text/javascript">
     var conn;
     var C;
     var fail = 0;
     var a = {};
-    a.ch = function(m) {
-        $('#msgs').append(m);
-      $('body').scrollTo('100%', 0);
+    a.e = function(e) {
+        eval(e);
+    };
+    a.m = function(e) {
+          a.c('msg: '+ e +"<br />");
+    };
+    a.c = function(e) {
+        $('#msgs').append(e);
+        $('body').scrollTo('100%', 0);
     };
 
     function connect() {
        conn = new WebSocket('<%= $ws_location %>');
 
        conn.onmessage = function  (event) {
-          a.ch('msg: '+event.data +"<br />");
+           var e = event.data;
+          if (e.substr(0,1) == " ") {
+              a.e(e);
+          }
+          else {
+              a.c(e);
+          }
        };
        conn.onopen = function () {
-          a.ch("connected.\n");
+          a.c("connected.\n");
        };
        conn.onclose = function () {
-          a.ch("closed.\n");
+          a.c("closed.\n");
           reconnect();
        };
     };
