@@ -39,6 +39,7 @@ sub new {
     use Hostinfo;
     Hostinfo::lib_perc_H($H);
 
+    $G::T = {};
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
 

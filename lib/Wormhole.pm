@@ -31,6 +31,8 @@ sub CS {
 }
 sub continues {
     my ($W, $G) = @_; # %
+    
+    $Ghost::T = $G::T if ref $G eq "G";
 
     my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
     $namg = "$W->{G}->{name} ".

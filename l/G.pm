@@ -265,7 +265,7 @@ sub InjC {
     my ($g, $In) = @_;
     while (my ($s, $etc) = each %$In) {
         while (my ($K, $win) = each %$etc) {
-            my $C = $G->{U}->{CsK}->($g, {K=>$K, s=>$s});
+            my $C = $G->_0("0->CsK", {K=>$K, s=>$s});
             $C->from($win);
         }
     }
@@ -319,7 +319,7 @@ sub scGre {
     my $G = shift;
     my ($ip) = @_;
     # or something was somehow, tractioning v
-    my @a = grep { $G->{U}->{ip}->($ip, $_->{i}) } @{ $G->{W}->{script} };
+    my @a = grep { $G->_0("0->ip", $ip, $_->{i}) } @{ $G->{W}->{script} };
     @a
 }
 
@@ -607,6 +607,7 @@ sub T {
        $G->w('flows_D', {}, $T->{i});
     $G->Flab("flows ", $T);
       $sge->("flows");
+
     # 4/9
     $T->{L} = $G->W->continues($G); # %
       $sge->("humms W being"); # eg travelling sw eval
@@ -614,8 +615,9 @@ sub T {
        $G->w('humms_D', {}, $T->{i});
     $G->Flab("humms", $T);
       $sge->("humms");
+
     # 5/9
-    $T->{L}->{i} eq $T->{i} || die "tli not ni!?!?!";
+    $T->{L}->{i} eq $T->{i} || die "5 eye swamp gone wrong".sw($T);
     $G->_0("0S->accum", $T->{L}->{i}, 'Li', $T->{L}); # just right
 
      $G->w("T/links", {u=>$T->{i}});
@@ -832,7 +834,7 @@ sub RW {
     my $G = shift;
     my ($GG) = @_;
     say "RW RW RW RW RW $GG->{name}\t\t $GG->{K}";
-    $_->{dead} = $F[0] for $G->{U}->{rei}->($GG, {});
+    $_->{dead} = $F[0] for $G->_0("0->rei", $GG, {});
     my $W = $GG->{W};
     delete $GG->{Vu}; # vortex will start over
     my $deadscript = $W->{script};
