@@ -205,6 +205,11 @@ sub JS {
     $H->send($js);
 }
 
+sub la {
+    my $H = shift;
+    (`uptime` =~ /load average: (\S+),/)[0]
+}
+
 sub hitime {
     my $H = shift;
     return join ".", time, (gettimeofday())[1];

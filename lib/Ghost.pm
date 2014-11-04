@@ -92,6 +92,13 @@ sub pint {
     my $w = shift;
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
+sub wish {
+    my $w = shift;
+    my $i = shift;
+    $w eq "W" ? ref $i eq "Wormhole" || ref $i eq "W" :
+    $w eq "w" ? ref $i eq "Way" || ref $i eq "C" :
+    $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
+}
 sub sw {
     my $thing = shift;
     return $F[0]->{G}->_0("0->sing", "sw", sub {

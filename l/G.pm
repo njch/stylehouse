@@ -22,9 +22,11 @@ sub new {
     $G->{name} = $G->{way};
 
     $G->{GGs} = [];
+    push @{$G->{A}->{u}->{i}->{GGs}}, $G;
     push @{$H->{G}->{GGs}}, $G;
 
-    $G->timer(1, sub {sw($G->{A}->{u}->{u}->{i})}) if $G->{way} =~ /ux/;
+
+    #$G->timer(1, sub {sw($G->{A}->{u}->{u}->{i})}) if $G->{way} =~ /ux/;
 
     $G->{W} ||= $G->{A}->spawn('W');
 
@@ -37,7 +39,7 @@ sub new {
 sub sw {
     my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
     $H->{r}->publish('sw', $stuff);
-    "published wdump to sw    $G::swdepth x ".length($stuff);
+    say "published wdump to sw from   $G::swdepth x ".length($stuff);
 }
 
 sub pi {
@@ -126,7 +128,6 @@ sub _0 {
     if ($point =~ /^0S?->(.+)$/) {
         my $Usub = $1;
         $G->can($Usub) || die "no 0U $Usub\n".wdump(2,$G0);
-        say "s $point @etc" if $point =~ /^0S/;
         $G->$Usub(@etc);
     }
     else {

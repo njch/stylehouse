@@ -8,6 +8,7 @@ hooks:
   coins: |
     # etc
     sayg "Got reinitn on S.name";
+    return if $S eq $G;
     w try;
   any_init: |
       $G->timer(0.2, sub{ waylay code; }); 
@@ -18,7 +19,7 @@ hooks:
     };
   code: |
     my @ched;
-    Say "Cioding 0";
+    saygr "Cioding 0";
     use lib 'sal';
     use G;
     my $eg = bless {}, "G";
@@ -79,6 +80,11 @@ hooks:
         push @ched, $file;
     }
     run "perl -c l/H*";
+    run "cp l/* sal/";
+    my $ch = "updated sal" if capture("cd sal; git diff");
+    $ch && run("cd sal; git add *; git commit -m 'somewhere...'");
+    $ch ||= "no changes";
+    sayg "compiled, $ch ".$G->F_delta();
     
     waylay try unless grep {$_ =~ /^l\/S\.pm/} @ched;
 
