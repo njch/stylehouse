@@ -243,7 +243,7 @@ sub GAK {
     my $G = shift;
     my ($K, $g) = @_;
     $g->{K} = $K;
-    $S->{GG}->{$g->{K}} = $g;
+    $G->{GG}->{$g->{K}} = $g;
 }
 
 sub ing {
@@ -264,7 +264,7 @@ sub ing {
     my $inga = $S->{ing}->{$name} ||= {};
     $_->{dead} = 1 for values %$inga;
     $inga->{$ingw->{id}} = $ingw;
-    $G->_0("0S->ingo", $S, $ingw);
+    $G->_0("0S->ingo", $ingw);
 }
 
 sub ingo {
@@ -279,7 +279,7 @@ sub ingo {
     $time ||= $ingw->{time};
     say "time $ingw->{G}->{name} $ingw->{name} $time";
     $G->timer($time, sub {
-        $G->_0("0S->ingo", $S, $ingw);
+        $G->_0("0S->ingo", $ingw);
     }, "ing $ingw->{name} $ingw->{id}");
 }
 
@@ -301,7 +301,7 @@ sub ip {
 sub rei {
     my $G = shift;
     my ($ip) = @_;
-    map {$_->{i}} $G->_0("0S->scGre", $S, $ip);
+    map {$_->{i}} $G->_0("0S->scGre", $ip);
 }
 
 sub reeni {
@@ -309,7 +309,7 @@ sub reeni {
     my ($ip, @is) = @_;
     my @sel;
     my @new = grep {defined} map {
-        if ($G->_0("0S->ip", $S, $ip, $_->{i})) {;
+        if ($G->_0("0S->ip", $ip, $_->{i})) {;
             push @sel, $_;
             undef;
         }
@@ -354,7 +354,7 @@ sub accum {
         return;
     }
 
-    my $a = $G->_0("0S->loquate", $S, $src, $ac, []);
+    my $a = $G->_0("0S->loquate", $src, $ac, []);
 
     return if $ac eq 'o' && $src->{i} && $src->{i} eq $t;
 
@@ -386,7 +386,7 @@ sub wdif {
 sub u {
     my $G = shift;
     my ($K, $s) = @_;
-    $G->_0("0S->sway", $S, {K=>$K}, $s);
+    $G->_0("0S->sway", {K=>$K}, $s);
 }
 
 sub sway {
@@ -394,7 +394,7 @@ sub sway {
     # sucks way matching $p # only supports matching K for now
     my ($p, $s, $P) = @_;
     $p->{s} ||= 'chains C';
-    my ($from) = $p->{from} || $G->_0("0S->CsK", $S, $p);
+    my ($from) = $p->{from} || $G->_0("0S->CsK", $p);
 
     $from || defined $P->{e} || die "no findo way called $p->{K} ($S->{name})".wdump([$p,$s]);
 
@@ -409,7 +409,7 @@ sub sway {
 sub Bu {
     my $G = shift;
     my($K,$B)=@_;
-    my $u = $G->_0("0S->sway", $S, {K=>$K},{B=>$B});
+    my $u = $G->_0("0S->sway", {K=>$K},{B=>$B});
     my $a = {};
     $G ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
     $u;
@@ -460,7 +460,7 @@ sub EgyB {
 sub TafuBl {
     my $G = shift;
     #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
-    $G->_0("0S->l", $S,  $G->_0("0S->TafuB", $S, @_) );
+    $G->_0("0S->l",  $G->_0("0S->TafuB", @_) );
 }
 
 sub TafuB {
@@ -470,34 +470,34 @@ sub TafuB {
     if ($ca && !$ca->{dead}) {
         return $ca;
     }
-    $G->_0("0S->Tafu", $S, $G->_0("0S->Bu", $S, $K, $B))
+    $G->_0("0S->Tafu", $G->_0("0S->Bu", $K, $B))
 }
 
 sub TB {
     my $G = shift;
     my ($K, $B) = @_;
-    my $u = $G->_0("0S->Bu", $S, $K, $B);
-    $G->_0("0S->T", $S, {i=>$u});
+    my $u = $G->_0("0S->Bu", $K, $B);
+    $G->_0("0S->T", {i=>$u});
 }
 
 sub Tafu {
     my $G = shift;
     my($uu)=@_;
-    $G->_0("0S->fu", $S, $uu) || $G->_0("0S->T", $S, {i => $uu});
+    $G->_0("0S->fu", $uu) || $G->_0("0S->T", {i => $uu});
 }
 
 sub Taful {
     my $G = shift;
     my($uu)=@_;
-    $G->_0("0S->l", $S,  $G->_0("0S->Tafu", $S, $uu) );
+    $G->_0("0S->l",  $G->_0("0S->Tafu", $uu) );
 }
 
 sub visTp_TafuBlA {
     my $G = shift;
     my ($Tp, $Bup, $A) = @_;
-    my $old = $G->_0("0S->visTp", $S, $Tp); # could be Fun, wire into end
-    my $uu = $G->_0("0S->Bu", $S, @$Bup); 
-    my $u = $G->_0("0S->fu", $S, $uu);
+    my $old = $G->_0("0S->visTp", $Tp); # could be Fun, wire into end
+    my $uu = $G->_0("0S->Bu", @$Bup); 
+    my $u = $G->_0("0S->fu", $uu);
 
     $A->{old} ||= [] if $A;
     $A->{new} ||= [] if $A;
@@ -506,10 +506,10 @@ sub visTp_TafuBlA {
     }
     else {
         push @{$A->{new}}, $u if $A;
-        $u = $G->_0("0S->T", $S, {i => $uu});
+        $u = $G->_0("0S->T", {i => $uu});
     }
 
-    $G->_0("0S->l", $S, $u);
+    $G->_0("0S->l", $u);
     $T= $old;
     $u;
 }
@@ -517,8 +517,8 @@ sub visTp_TafuBlA {
 sub visTp_l_u {
     my $G = shift;
     my ($Tp, $u) = @_; #c get in to a T place and make links
-    my $old = $G->_0("0S->visTp", $S, $Tp);
-    $G->_0("0S->l", $S, $u);
+    my $old = $G->_0("0S->visTp", $Tp);
+    $G->_0("0S->l", $u);
     $T= $old;
     $u;
 }
@@ -526,16 +526,16 @@ sub visTp_l_u {
 sub l {
     my $G = shift;
     my ($u) = @_;
-    $G->_0("0S->accum", $S, $u, 'Lo', $T->{L});
-    $G->_0("0S->accum", $S, $T, 'o', $u);
+    $G->_0("0S->accum", $u, 'Lo', $T->{L});
+    $G->_0("0S->accum", $T, 'o', $u);
     $u;
 }
 
 sub visTp_TafuBl {
     my $G = shift;
     my ($Tp, $Bp) = @_;
-    my $old = $G->_0("0S->visTp", $S, $Tp);
-    my $u = $G->_0("0S->TafuBl", $S, @$Bp);
+    my $old = $G->_0("0S->visTp", $Tp);
+    my $u = $G->_0("0S->TafuBl", @$Bp);
     $T= $old;
     $u;
 }
@@ -547,11 +547,11 @@ sub T {
     # 1/9
 
     my $giu = $T->{i};
-    my $old = $G->_0("0S->visTp", $S, $p); # 1
+    my $old = $G->_0("0S->visTp", $p); # 1
     die "no old!".wdump($T) if !$old;
     $T->{i} || die " no way in! ".wdump($p);
 
-    $G->_0("0S->fu_cache", $S, $T->{i});
+    $G->_0("0S->fu_cache", $T->{i});
 
     # set up this dimension - allele tower
     # maths stapler - clown shoes - RNA
@@ -584,7 +584,7 @@ sub T {
       $sge->("humms");
     # 5/9
     $T->{L}->{i} eq $T->{i} || die "tli not ni!?!?!";
-    $G->_0("0S->accum", $S, $T->{L}->{i}, 'Li', $T->{L}); # just right
+    $G->_0("0S->accum", $T->{L}->{i}, 'Li', $T->{L}); # just right
 
      $G->w("T/links", {u=>$T->{i}});
        $G->w('links_D', {}, $T->{i});
@@ -694,7 +694,7 @@ sub fu {
         my $i = $LL->{i};
         my $yup = $i eq $u
             || (!exists $u->{K} || $i->{K} eq $u->{K})
-            && $G->_0("0S->B_same", $S, $u => $i);
+            && $G->_0("0S->B_same", $u => $i);
         if ($yup) {
            say "found $i->{K} in script";
             return $i;
@@ -813,8 +813,8 @@ sub RW {
 sub delfrom {
     my $G = shift;
     my ($u) = @_;
-    for my $uu ($G->_0("0S->Io", $S, $u)) {
-        $G->_0("0S->del", $S, $uu);
+    for my $uu ($G->_0("0S->Io", $u)) {
+        $G->_0("0S->del", $uu);
     }
 }
 
@@ -825,11 +825,11 @@ sub del {
     $H->Say("deleting ".$u->pint);
     $G->w('v/ch'=>{u=>$u});
 
-    $G->_0("0S->deaccum", $S, $u->{Lo}, 'o', $u);
-    $G->_0("0S->deaccum", $S, $u->{Li}->{W}, 'script', $L);
+    $G->_0("0S->deaccum", $u->{Lo}, 'o', $u);
+    $G->_0("0S->deaccum", $u->{Li}->{W}, 'script', $L);
     $u->{dead} = 1;
 
-    $G->_0("0S->del", $S, $_) for @{$u->{Li}->{o}};
+    $G->_0("0S->del", $_) for @{$u->{Li}->{o}};
 }
 
 sub Io {
