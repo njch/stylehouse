@@ -99,6 +99,27 @@
       $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
       $eval
+  - K: _0 #c
+    D: |
+      my $G = shift;
+      my ($point, @etc) = @_;
+      if (!$G0 || !(ref $G0 eq "Ghost" || ref $G0 eq "G")) {
+          if ($point eq "_load_ways_post") {
+              return $G->w("load_ways_post");
+          }
+          die "CABNNOOT call G0, doesn't exist. w $point, @etc\n\n".wdump($G0);
+      }
+      if ($point =~ /^0S?->(.+)$/) {
+          my $Usub = $1;
+          $G0->{U}->{$Usub} || die "no 0U $Usub\n".wdump(2,$G0);
+          unshift @etc, $G unless $point =~ /^0S/;
+          $G0->{U}->{$Usub}->(@etc);
+      }
+      else {
+          my $ar = shift @etc;
+          $ar->{S} = $G;
+          $G0->w($point, $ar);
+      }
   - K: du #c G style grab
     style: func
     D: |
