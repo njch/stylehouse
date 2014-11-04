@@ -103,8 +103,11 @@ sub sayyl {
 sub sayre {
     print colored(join("\n", @_,""), 'red');
 }
-sub saygr {
+sub sayg {
     print colored(join("\n", @_,""), 'bright_green');
+}
+sub saygr {
+    print colored(join("\n", @_,""), 'green');
 }
 sub saybl {
     print colored(join("\n", @_,""), 'bright_blue');
