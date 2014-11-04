@@ -346,10 +346,12 @@ sub ki {
     return $s;
 }
 sub idname {
+    die "TODO";
     my $self = shift;
     $self->{id}."-".$self->{name}
 }
 sub T { # TODO funny
+    die "TODO";
     my $self = shift;
     $self->T->T(@_) if @_;
     $self->{T};
@@ -367,6 +369,7 @@ sub HGf {
     $H->{G}->Gf(@_)
 }
 sub Gc { # TODO merge into ^ 
+     die "TODO";
     my $self = shift;
     $H->TT($self)->G(@_);
 }
@@ -393,7 +396,8 @@ sub load_ways {
         }
         else {
              my $num = $name =~ /^\d+$/;
-            push @files, grep { $num || /\/\d+$/ } glob "$base/*";
+            push @files, map { Hostinfo::fixutf8($_) }
+                grep { $num || /\/\d+$/ } glob "$base/*";
         }
         
         for my $file (@files) {

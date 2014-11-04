@@ -22,7 +22,10 @@ sub new {
     $G->{name} = $G->{way};
 
     $G->{GGs} = [];
-    push @{$G->{A}->{u}->{i}->{GGs}}, $G;
+    my $ui = $G->{A}->{u}->{i};
+    wish(G => $ui) || $ui eq $H || die "not G above? $G->{name} ".$ui->pi;
+    $G->{O} = $ui;
+    push @{$ui->{GGs}}, $G;
     push @{$H->{G}->{GGs}}, $G;
 
 
@@ -67,7 +70,8 @@ sub load_ways {
 
         my $base = "ghosts/$name";
         push @files, $base if -f $base;
-        push @files, grep { /\/\d+$/ } glob("$base/*");
+        push @files, map { Hostinfo::fixutf8($_) }
+            grep { /\/\d+$/ } glob("$base/*");
 
         for my $file (@files) {
             # TODO pass an If object selector to 0->deaccum
@@ -259,6 +263,10 @@ sub ki {
 
 sub flatline {
     Ghost::flatline(@_)
+}
+
+sub wish {
+    Ghost::wish(@_);
 }
 
 sub uiuS {

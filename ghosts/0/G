@@ -20,7 +20,10 @@
       G.name = G.way;
       
       G.GGs = [];
-      push @{G.A.u.i.GGs}, $G;
+      my $ui = G.A.u.i;
+      wish(G => $ui) || $ui eq $H || die "not G above? G.name ".$ui->pi;
+      G.O = $ui;
+      push @{ui.GGs}, $G;
       push @{H.G.GGs}, $G;
       
       
@@ -58,7 +61,8 @@
 
             my $base = "ghosts/$name";
             push @files, $base if -f $base;
-            push @files, grep { /\/\d+$/ } glob("$base/*");
+            push @files, map { Hostinfo::fixutf8($_) }
+                grep { /\/\d+$/ } glob("$base/*");
 
             for my $file (@files) {
                 # TODO pass an If object selector to 0->deaccum
@@ -239,8 +243,7 @@
         $an->(qw'G oh 0.8');
         $an->(qw'W oh 0.8 mustb','id,hash,file,G');
         $h
-
-  - K: ki
+  - K: ki #c
     style: func
     D: |
       Ghost::ki(@_)
@@ -250,9 +253,11 @@
     D: |
       Ghost::flatline(@_)
     
-  - K:
+  - K: wish
+    style: func
     D: |
-    
+      Ghost::wish(@_);
+      
   - K:
     D: |
     
