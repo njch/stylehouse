@@ -147,6 +147,8 @@ __DATA__
     background-image:url('i/IMG_3524.JPG');
     background-size: 100%;
     font-family: monospace;
+    overflow: hidden;
+    margin: 0px;
 }
 .splat-w {
     font-size:10pt;
