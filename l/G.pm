@@ -12,6 +12,7 @@ use YAML::Syck;
 our $swdepth = 5;
 our $T; # allele tower... not like so, again R above
 our @F; # is Ring re subs from below
+our $G0;
 # ^ curves should optimise away, accordion
 
 sub new {
@@ -110,6 +111,29 @@ sub babblethehut {
     $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
     $eval
+}
+
+sub _0 {
+    my $G = shift;
+    my ($point, @etc) = @_;
+    if (!$G0 || !(ref $G0 eq "Ghost" || ref $G0 eq "G")) {
+        if ($point eq "_load_ways_post") {
+            return $G->w("load_ways_post");
+        }
+        die "CABNNOOT call G0, doesn't exist. "
+            ." $point, @etc\n\n".wdump($G0);
+    }
+    if ($point =~ /^0S?->(.+)$/) {
+        my $Usub = $1;
+        $G->can($Usub) || die "no 0U $Usub\n".wdump(2,$G0);
+        say "s $point @etc" if $point =~ /^0S/;
+        $G->$Usub(@etc);
+    }
+    else {
+        my $ar = shift @etc;
+        $ar->{S} = $G;
+        $G0->w($point, $ar);
+    }
 }
 
 sub du {
@@ -226,6 +250,14 @@ sub dus {
     $an->(qw'G oh 0.8');
     $an->(qw'W oh 0.8 mustb','id,hash,file,G');
     $h
+}
+
+sub ki {
+    Ghost::ki(@_)
+}
+
+sub flatline {
+    Ghost::flatline(@_)
 }
 
 sub InjC {
