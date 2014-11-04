@@ -8,7 +8,7 @@ use H;
 our $H;
 binmode(STDOUT, ":utf8");
 binmode(STDERR, ":utf8");
-binmode(STDIN, ":utf8");
+binmode(STDIN, ":utf8"); 
 say '' for 1..9;
 
 my $listen = readlink('listen');
@@ -46,6 +46,7 @@ websocket '/ws' => sub {
     $@ = "";
 };
 app->secrets([readlink '/home/s/stylehouse/msecret']);
+say "\n\n        listen to $listen\n";
 app->start('daemon', '--listen' => "$listen");
 
 __DATA__
@@ -56,26 +57,30 @@ __DATA__
   <script src="//h:3000/jquery.scrollTo.js"></script>
 </head><body style="background: url('i/greencush.jpg'); background: black; color: #0f2;">
 
-    <h1>websocket.</h1>
-    <div id='msgs' style="whitespace: pre;"> </div>
+    <p>web.</p>
+    <div id='msgs' style="white-space: pre;"> </div>
 
     <script type="text/javascript">
     var conn;
     var C;
     var fail = 0;
+    var a = {};
+    a.ch = function(m) {
+        $('#msgs').append(m);
+      $('body').scrollTo('100%', 0);
+    };
 
     function connect() {
        conn = new WebSocket('<%= $ws_location %>');
 
        conn.onmessage = function  (event) {
-          $('#msgs').append('msg: '+event.data +"<br />");
-          $('body').scrollTo('100%', 360);
+          a.ch('msg: '+event.data +"<br />");
        };
        conn.onopen = function () {
-          $('#msgs').append("connected.\n");
+          a.ch("connected.\n");
        };
        conn.onclose = function () {
-          $('#msgs').append("closed.\n");
+          a.ch("closed.\n");
           reconnect();
        };
     };
