@@ -695,7 +695,6 @@ sub visTp {
     my ($p, $fun) = @_;
 
     # are in Ghost right now?
-    $T = $G::T if $H->{h};
     my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
     my $old = $T;
     if (!$tish) {
@@ -708,6 +707,7 @@ sub visTp {
     else {
         $T = $T->spawn;
     }
+    $Ghost::T = $T;
 
     $p = {i=>$p} if ref $p =~ /^(Way|C)$/;
     my $moved = $p->{i} || $p->{L};
@@ -742,9 +742,13 @@ sub visTp {
     if (ref $fun eq "CODE") {
         return $fun->();
         $T = $old;
+        $Ghost::T = $T;
     }
     elsif ($fun eq "Fun") {
-        push @{ $F[0]->{_after_do} }, sub { $T = $old }
+        push @{ $F[0]->{_after_do} }, sub {
+            $T = $old;
+            $Ghost::T = $T;
+        }
     }
     return $old;
 }
