@@ -90,6 +90,26 @@ sub load_ways {
     $G->_0('_load_ways_post', {w=>$G->{ways}});
 }
 
+sub babblethehut {
+    my $G = shift;
+    my $eval = shift;
+
+    my $G_name = qr/[\/\w]+/;
+    my $Gnv = qr/\$?$G_name/;
+
+    $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
+    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
+    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+
+    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
+    $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
+    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
+
+    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+
+    $eval
+}
+
 sub du {
     my $a = shift;
     # how to get around the Objs' data

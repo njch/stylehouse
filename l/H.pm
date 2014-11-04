@@ -192,6 +192,14 @@ sub wdump {
     return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 
+sub JS {
+    my $H = shift;
+    my $js = shift;
+    die "jno more ref to view" if ref $js;
+    $js =~ s/\n/ /sg;
+    $H->send($js);
+}
+
 sub hitime {
     my $H = shift;
     return join ".", time, (gettimeofday())[1];

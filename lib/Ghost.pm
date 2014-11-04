@@ -800,13 +800,7 @@ sub parse_babble {
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
     
-    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
-    $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
-    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
-    
     # 5/9
-    
-    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
     
     $eval =~ s/(Sw|ws) (?=\w+)/w \$S /sg;
     
@@ -875,11 +869,27 @@ sub parse_babble {
     
     # 8/9
     
+    $eval = $G->babblethehut($eval);
+    
+    $eval;
+}
+sub babblethehut {
+    my ($G, $eval) = @_;
+    
+    my $G_name = qr/[\/\w]+/;
+    my $Gnv = qr/\$?$G_name/;
+    
     $eval =~ s/G!($Gnv)/\$H->TT(\$G, \$O)->G("$1")/sg;
     $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
     $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+
+    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
+    $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
+    $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     
-    $eval;
+    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+    
+    $eval
 }
 sub parse_babblar {
     my $G = shift;
