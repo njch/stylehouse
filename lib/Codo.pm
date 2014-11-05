@@ -66,8 +66,6 @@ sub new {
     my $ao = $self->{all_open} = [];
     $self->re_openness();
 
-    $self->load_codon("Lyrico") unless @$ao;
-
     return $self;
 }
 sub menu {
