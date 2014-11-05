@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use feature 'say';
 use Scriptalicious;
+use File::Slurp;
 use utf8;
 
 our $H;
@@ -11,62 +12,18 @@ sub new {
     my $self = bless {}, shift;
     shift->($self);
 
-    my $repos = $H->set("Git/repos", [ map { "style$_" } qw{ house shed bucky hut } ]);
-    $H->set("Git/repo=stylehouse/aka", '⭅');
-    $H->set("Git/repo=styleshed/aka", '⭆');
-    $H->set("Git/repo=stylebucky/aka", 'ც');
-    $H->set("Git/repo=stylehut/aka", 'Ѧ');
-    for my $r (@$repos) {
-        $H->set("Git/repos/$r", {});
-    }
     $self->wire_procs();
-
-  #  return $self if $H->get('style') ne "stylehouse";
 
     my $G = $H->{flood}->spawn_floozy($self, Git => "width:100%;  background: #352035; color: #aff;");
     $G->spawn_ceiling($self, gitrack => "width:98%; background: #2E0F00; color: #afc; font-weight: bold; margin:1em;", undef, undef, "menu");
 
     $self->gitrack();
-    
 
     return $self;
-}
-sub init {
-    my $self = shift; 
-    
-    unless ($self->{Gitshow}) {
-        my $G = $self->{Git};
-        my $PS = $G->spawn_floozy($self, Procshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
-        $PS->text->replace(['!class=hear Procshow']);
-
-        my $GS = $G->spawn_floozy($self, Gitshow => "width:96%; background: #301a30; color: #afc; font-weight: bold; padding-top: 3em;");
-        $GS->text->replace(['!class=hear Gitshow']);
-
-        $GS->spawn_floozy($self, proclistwatch =>
-            "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-        $GS->spawn_floozy($self, procstartwatch =>
-            "width:97%; height: 38em; border: 3px solid gold; background: #301a30; color: #afc; font-size: 8pt; overflow: scroll;");
-        $GS->spawn_floozy($self, pswatch =>
-            "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-        $GS->spawn_floozy($self, repos =>
-            "width:96%; background: #301a30; color: #afc; font-weight: bold; height: 2em;");
-    }
-    
-    $self->gitrack();
-
-    $self->pswatch();
-    
-    $self->proclistwatch();
-
-    $self->procstartwatch();
-
-    $self->repos();
 }
 sub gitrack {
     my $self = shift;
     
-    my $rs = $H->get("Git/repos");
-    my $sh = sub { ($_[0] =~ /style(\w+)/)[0] };
     my $ps = sub {
         my $cmd = shift;
         $cmd = "$$: $cmd\n";
@@ -74,9 +31,7 @@ sub gitrack {
     };
     
     my @m;
-    for my $r (@$rs) {
-        next unless $r =~ /shed/;
-        my $aka = $H->get("Git/repo=$r/aka") || $sh->($r);
+    for my $r ('styleshed') {
         my $menu = [
     '⏚' => sub {
         say" HEading to $r";
@@ -477,50 +432,10 @@ sub rbe {
 }
 sub wire_procs {
     my $self = shift;
-    my $repos = $H->get('Git/repos');
-    my ($top, @rest) = @$repos;
-    my $style = $H->get("style");
-    
     my $tower = "/h/proc";
     die "proc tower $tower not exist"                                   unless -e $tower;
     die "proc tower $tower is a link somewhere else: ".readlink($tower) if -l $tower;
     die "proc tower $tower not directory" unless -d $tower;
-
-    if ($style eq $top) {
-        for my $y (@rest) {
-            next if $y =~ /stylehut/;
-            my $unto = "../$y/proc";
-            if (-e $unto) {
-                if (-l $unto) {
-                    my $lw = readlink $unto;
-                    if ($lw ne $tower) {
-                        say "remote proc $unto already wired to $lw instead of $tower"
-                    }
-                    else { # sweet
-                    }
-                }
-                else {
-                    die "remote proc $unto is something else:\n".`ls -lh $unto`
-                }
-            }
-            else {
-                `ln -s $tower $unto`
-            }
-        }
-    }
-    else {
-        if (-l 'proc') {
-            my $procto = readlink 'proc';
-            if ($procto ne $tower) {
-                say "proc already wired to $procto instead of $tower"
-            }
-            else { # sweet
-            }
-        }
-        else {
-            warn "procs not wired\n\n\n\n"
-        }
-    }
 }
 
 1;
