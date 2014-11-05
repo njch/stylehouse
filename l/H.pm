@@ -87,7 +87,7 @@ sub spawn0 {
     my $H = shift;
     my $nb = shift;
     my $u = bless {}, $nb;
-    $nb::H = $H;
+    #$nb::H = $H;#TODO
     $u->{id} = $H->mkuid();
     $u
 }
