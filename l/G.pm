@@ -916,7 +916,12 @@ sub su {
     my $G = shift;
     my ($a) = @_;
     my $D = $a->{cb}; 
-    $a->{cb} = sub { $G->Flab("a su top=$a->{top}", $a); $D->(@_); };
+    $a->{cb} = sub {
+        $G->timer(0.1, sub { 
+            $G->Flab("a su top=$a->{top}", $a);
+            $D->(@_);
+        });
+    };
 
     $H->{G}->w(suRedis => $a);
 }

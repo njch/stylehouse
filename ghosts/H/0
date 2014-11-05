@@ -78,7 +78,17 @@ hooks:
       
       G!Ϡ;
       
-      G:L/0 w channel(top=>'sw');
+      0->su({
+          top => 'sw',
+        div => 7,
+        cb => sub {
+            my $m = shift;
+                G:L/0 ->w(sw=>{top=>'sw',m=>$m});
+            return;
+        },
+      });
+
+
       
       my $Dambi = sub { G:sky w ambientness; };
       w wtf(div => 26, way => 'sky amb', D => $Dambi);
@@ -136,14 +146,7 @@ hooks:
     }
     
     H._future = 1;
-  redission: |
-    my $ord = H.redisco ||= {};
-    for my $k (sort keys %$ord) { # numbers wall timespace
-        my $int = $ord->{$k}; # a time
-        for my $t (@$int) { # in time
-            t.r->wait_for_messages($k); # ooh the key
-        }
-    }
+
   gitdission: |
     my @diff = `git diff`;
     my $f;
@@ -221,6 +224,29 @@ hooks:
     my $riv = H.redission ||= {};
     my @to = values %$riv;
     H.redisco = w waits(to => \@to, towait => 0.1);
+  redission: |
+    my $ord = H.redisco ||= {};
+    for my $k (sort keys %$ord) { # numbers wall timespace
+        my $int = $ord->{$k}; # a time
+        for my $t (@$int) { # in time
+            t.r->wait_for_messages($k); # ooh the key
+        }
+    }
+  enRedis: |
+    my $r = Redis->new(
+        server => 'localhost:8888',
+        reconnect => 1,
+        every => 10000,
+    );
+    r.gest = sub { # do a R::edis module
+        my ($k, $make) = @_;
+        my $c = H.r->get($k);
+        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
+        $c = $make->();
+        H.r->set($k => $c);
+        return $c;
+    };
+    $r
   waits: |
     my $towait = ar.towait || 1;
     my $to = ar.to;
@@ -240,21 +266,7 @@ hooks:
     }
     return $ord;
     
-  enRedis: |
-    my $r = Redis->new(
-        server => 'localhost:8888',
-        reconnect => 1,
-        every => 10000,
-    );
-    r.gest = sub { # do a R::edis module
-        my ($k, $make) = @_;
-        my $c = H.r->get($k);
-        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
-        $c = $make->();
-        H.r->set($k => $c);
-        return $c;
-    };
-    $r
+
   check:
     script: |
       my $script = $0;
