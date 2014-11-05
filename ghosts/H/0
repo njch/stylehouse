@@ -16,6 +16,16 @@ hooks:
     
     H.r = w enRedis;
     
+    my $listen = readlink('listen');
+        my ($host,$port, $wa) = split ':', $listen;
+        die "too much listen" if $wa;
+        ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+        $port ||= 2000;
+        $host ||= '127.0.0.1';
+        $port += 1; # TODO H before websocket, find soul via redis
+    H.listen_http = "http://$host:$port";
+    H.listen_ws = "ws://$host:$port/ws";
+    
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
     
     w wtf(div => 1, way => 'check/script');
@@ -25,6 +35,9 @@ hooks:
     
     $G->w("H.style/in");
     
+  websocket: |
+    sayg "strangers are Elvis until they're not";
+    0->TafuB(Elvis => {tx => $M->tx, M => $M});
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
@@ -35,6 +48,10 @@ hooks:
         " w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
         #"w".".reply({whatsthere: 'too hard'}); \$('body').empty();",
         " clon();"
+      
+      H.notunderworld = 1;
+      H.G->w('stylehut/play');
+      
       # handy stuff...?
     play: |
       H._future = 1;
@@ -285,8 +302,6 @@ hooks:
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
   flood_init: |
-      # ghosts/0/S + H.pm calls fresh_init
-      # stylehouse.pl + Hostinfo.pm calls flood_init
       die 'only stylehouse floodsrigh?'
           unless $0 eq 'stylehouse.pl' || $0 eq "hed";
       
@@ -302,27 +317,6 @@ hooks:
       # our fate's the most epic shift ever
       # TODO lose this whole sub
       # must be invoked on first Elvis/speaks for now because things ->send
-  websocket: |
-    Say "WQbSocket opened";
-    # strangers are Elvis until they're not
-    # $M has authication somehow
-    my $Elvis = 0->TafuB(
-        Elvis => {tx => $M->tx, M => $M});
-
-    $M->on(message => sub {
-        my ($M, $m) = @_;
-        my $J = 0->Bu(J => {m=>$m}); # $m
-        eval {
-          w $Elvis speaks[$J];
-        };
-        say "$@" if $@;
-        $@ = "";
-    });
-
-    $M->on(finish => sub {
-        my ($M, $code, $reason) = @_;
-        w $Elvis leaves[$code, $reason];
-    });
   send_Elvis: |
     my $J = 0->Bu(J => $ar); # $m
     w $J print_out;
@@ -341,6 +335,22 @@ hooks:
       w $S populi;
       H.who = $S;
       Sw sign;
+      
+      $M->on(message => sub {
+          my ($M, $m) = @_;
+          my $J = 0->Bu(J => {m=>$m}); # $m
+          eval {
+            Sw speaks[$J];
+          };
+          say "$@" if $@;
+          $@ = "";
+      });
+
+      $M->on(finish => sub {
+          my ($M, $code, $reason) = @_;
+          Sw leaves[$code, $reason];
+      });
+      
       B.address = $tx->remote_address;
       S.mouth = [];
       say "Elvis appears from B.address";

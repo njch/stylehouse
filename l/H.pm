@@ -59,6 +59,16 @@ sub new {
     $H
 }
 
+sub enwebsocket {
+    my $H = shift;
+    my $mojo = shift;
+    eval { 
+      $H->{G}->w(websocket => { M => $mojo });
+    };
+        say "Eerror\n\n$@" if $@;
+    $@ = "";
+}
+
 sub pi {
     my $H = shift;
     "H ! ";

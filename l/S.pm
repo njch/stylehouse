@@ -11,15 +11,6 @@ binmode(STDERR, ":utf8");
 binmode(STDIN, ":utf8"); 
 say '' for 1..9;
 
-my $listen = readlink('listen');
-    my ($host,$port, $wa) = split ':', $listen;
-    die "too much listen" if $wa;
-    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
-    $port ||= 2000;
-    $host ||= '127.0.0.1';
-    $port += 1; # TODO H before websocket, find soul via redis
-$listen = "http://$host:$port";
-
 get '/' => sub{ 
    my $self = shift;
    $self->stash(ws_location => $self->url_for('ws')->to_abs);
@@ -27,20 +18,16 @@ get '/' => sub{
 };
 
 # MOVE post transport leveling
-$H = H->new({name => 'S', style => 'stylehut', listen => $listen});
+$H = H->new({name => 'S', style => 'stylehut'});
+
 websocket '/ws' => sub {
     my $mojo = shift;
-    eval { 
-        $H->{G}->w(websocket => { M => $mojo });
-        $H->{G}->w('stylehut/play'); # MOVE
-    };
-    say "Eerror\n\n$@" if $@;
-    $@ = "";
+    $H->enwebsocket($mojo);
 };
 push @{app->static->paths}, '/home/s/styleshed/public';
 app->secrets([readlink '/home/s/stylehouse/msecret']);
 
-my $listen = $H->{G}->w('listen_http');
+my $listen = $H->{listen_http};
 say "\n\n        listen to $listen\n";
 app->start('daemon', '--listen' => "$listen");
 
