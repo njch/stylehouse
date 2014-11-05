@@ -13,7 +13,6 @@ has 'started';
 use Mojo::UserAgent;
 use JSON::XS;
 use File::Slurp;
-
 sub new {
     my $self = bless {}, shift;
     shift->($self);
@@ -28,7 +27,6 @@ sub new {
     say "Made keys";
     return $self;
 }
-
 sub start {
     my $self = shift;
     
@@ -48,7 +46,6 @@ sub stop {
 sub gr {
     my $self = shift;
 }
-
 sub menu {
     my $self = shift;
     my $menu = {
@@ -74,10 +71,10 @@ sub key {
     # always able to hit space
     # tap out a vibe id :O
 }
-
 sub event {
     my $self = shift;
     my $event = shift;
 }
 
 1;
+
