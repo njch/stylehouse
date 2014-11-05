@@ -68,6 +68,7 @@ __DATA__
       a.e = function(e) {
           console.log("xut "+e);
           eval(e);
+          a.m(".", e);
       };
       a.m = function(e) {
           var d = e.substr(0,1);
@@ -90,7 +91,15 @@ __DATA__
       function clof () { $(window).off("click", a.cl); }
       function keon () { $(window).on("keydown", a.ke); }
       function keof () { $(window).off("keydown", a.ke); }
+      var keyjam = 0;
+      var keyjamfor = 10;
       a.cl = function(ev, ws) {
+          if (keyjam) {
+              return;
+          }
+          setTimeout(function () { keyjam = 0; }, keyjamfor);
+          keyjam = 1;
+
           var d = {};
           a.dscam(d,ev);
 
@@ -119,15 +128,6 @@ __DATA__
           }
           ws.reply({event: d});
       };
-      a.dscam = function(d,ev) {
-          d.type = ev.type;
-          d.S = 0+ev.shiftKey;
-          d.C = 0+ev.ctrlKey;
-          d.A = 0+ev.altKey;
-          d.M = 0+ev.metaKey;
-      };
-      var keyjam = 0;
-      var keyjamfor = 10;
       a.ke = function(ev, ws) {
           if (keyjam) {
               return;
@@ -144,6 +144,13 @@ __DATA__
               ws = w;
           }
           ws.reply({event: d});
+      };
+      a.dscam = function(d,ev) {
+          d.type = ev.type;
+          d.S = 0+ev.shiftKey;
+          d.C = 0+ev.ctrlKey;
+          d.A = 0+ev.altKey;
+          d.M = 0+ev.metaKey;
       };
       a.valblag = function(tag) {
           var value = ''+tag.contents();

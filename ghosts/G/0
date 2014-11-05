@@ -668,10 +668,11 @@ hooks:
         a.top && a.cb || die "wtf";
         my $D = a.cb; 
         a.cb = sub {
-            $G->timer(0.1, sub { 
-                $G->Flab("a su top=a.top", $a);
-                my $da = {m => shift, top => shift, sutop => shift};
-                $D->($da);
+            my $d = {};
+            (d.m, d.top, d.sutop) = @_;
+            $G->timer(0.1, sub {
+                $G->Flab("a su d.top from d.sutop", $d, $a);
+                $D->($d);
             });
         };
         
