@@ -30,6 +30,12 @@ hooks:
       exec "perl l/S".".pm";
     in: |
       G.A->spawn(G => 'H/mess');
+    elvibe: |
+      $H->send($_) for 
+        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        #"w".".reply({whatsthere: 'too hard'}); \$('body').empty();",
+        "clon();"
+      # handy stuff...?
     play: |
       H._future = 1;
       
@@ -62,6 +68,11 @@ hooks:
       exec "perl stylehouse.pl SHED";
     in: |
       G!H/mess; # due to spawn syntax
+    elvibe: |
+      $H->send($_) for 
+        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        "\$('body').empty();", # or not...
+        "clon();";
     play: |
       G!H/keys;
       
@@ -77,6 +88,11 @@ hooks:
       exec "perl stylehouse.pl HOUSE";
     in: |
       G!H/mess; # due to spawn syntax
+    elvibe: |
+      $H->send($_) for 
+        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        "\$('body').empty();", # or not...
+        "clon();";
     play: |
       G!H/ground ->w('flood_init');
       Git->new($H->intro);
@@ -339,11 +355,7 @@ hooks:
       say "Elvis appears from B.address";
       
     humms_D: |
-      $H->send($_) for 
-        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
-        #"w".".reply({whatsthere: 'too hard'}); \$('body').empty();",
-        "clon();"
-      # handy stuff...?
+      $G->w("H.style/elvibe");
       
     send: |
       $tx->send(J.B.m, J.B.cb);
