@@ -896,7 +896,7 @@ sub del {
     my $G = shift;
     my ($u) = @_;
     my $L = $u->{Li} || die "wasnt";
-    $H->Say("deleting ".$u->pint);
+    say "deleting ".$u->pint;
     $G->w('v/ch'=>{u=>$u});
 
     $G->_0("0S->deaccum", $u->{Lo}, 'o', $u);
