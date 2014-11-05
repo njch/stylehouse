@@ -915,11 +915,18 @@ sub Io {
 sub su {
     my $G = shift;
     my ($a) = @_;
+    if (@_ > 1) {
+        $a = {top => shift};
+        $a->{cb} = pop;
+        $a->{div} = shift || 7;
+    }
+    $a->{top} && $a->{cb} || die "wtf";
     my $D = $a->{cb}; 
     $a->{cb} = sub {
         $G->timer(0.1, sub { 
             $G->Flab("a su top=$a->{top}", $a);
-            $D->(@_);
+            my $da = {m => shift, top => shift, sutop => shift};
+            $D->($da);
         });
     };
 

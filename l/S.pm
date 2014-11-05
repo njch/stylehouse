@@ -17,7 +17,7 @@ my $listen = readlink('listen');
     ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
     $port ||= 2000;
     $host ||= '127.0.0.1';
-    $port += 1; # TODO
+    $port += 1; # TODO H before websocket, find soul via redis
 $listen = "http://$host:$port";
 
 get '/' => sub{ 
