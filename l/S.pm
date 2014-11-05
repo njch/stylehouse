@@ -68,6 +68,27 @@ __DATA__
       var a = {};
       var C = {};
 
+      // splat #c
+      a.e = function(e) {
+          console.log("xut "+e);
+          eval(e);
+      };
+      a.m = function(e) {
+          var d = e.substr(0,1);
+          if (d == " ") {
+            a.e(e);
+          }
+          else {
+            if (d == ".") {
+              e = '<span style="font-size:66%">'+e+'</span>';
+            }
+            a.c(e);
+          }
+      };
+      a.c = function(e) {
+          $('#msgs').append(e+"\n");
+          //$('body').scrollTo('100%', 0);
+      };
       // click, keys #c
       function clickon () { clon() }
       function clickoff () { clof() }
@@ -77,7 +98,7 @@ __DATA__
       function clof () { $(window).off("click", a.cl); }
       function keon () { $(window).on("keydown", a.ke); }
       function keof () { $(window).off("keydown", a.ke); }
-      a.cl = function(ev) {
+      a.cl = function(ev, ws) {
           var d = {};
           a.dscam(d,ev);
 
@@ -98,7 +119,10 @@ __DATA__
               d.ux = ux;
           }
 
-          w.reply({event: data});
+          if (!ws) {
+              ws = w;
+          }
+          ws.reply({event: data});
       };
       a.dscam = function(d,ev) {
           d.type = ev.type;
@@ -109,7 +133,7 @@ __DATA__
       };
       var keyjam = 0;
       var keyjamfor = 10;
-      a.ke = function(ev) {
+      a.ke = function(ev, ws) {
           if (keyjam) {
               return;
           }
@@ -121,7 +145,10 @@ __DATA__
           d.which = e.which;
           d.k = String.fromCharCode(ev.keyCode);
 
-          w.reply({event: data});
+          if (!ws) {
+              ws = w;
+          }
+          ws.reply({event: data});
       };
       a.tagblag = function(tag) {
           while (!(tag.attr('id') || tag.attr('class'))) {
