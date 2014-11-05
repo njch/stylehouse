@@ -25,14 +25,10 @@ get '/' => sub{
    $self->stash(ws_location => $self->url_for('ws')->to_abs);
    $self->render(template=>'ws_page')
 };
-get '/pub' => sub{
-   $H->{r}->publish(g => 'foo');
-   shift->render(text=>'published')
-};
 
 # MOVE post transport leveling
 $H = H->new({name => 'S', style => 'stylehut', listen => $listen});
-websocket '/ws' => sub { #c
+websocket '/ws' => sub {
     my $mojo = shift;
     eval { 
         $H->{G}->w(websocket => { M => $mojo });
@@ -41,9 +37,11 @@ websocket '/ws' => sub { #c
     say "Eerror\n\n$@" if $@;
     $@ = "";
 };
-app->secrets([readlink '/home/s/stylehouse/msecret']);
-say "\n\n        listen to $listen\n";
 push @{app->static->paths}, '/home/s/styleshed/public';
+app->secrets([readlink '/home/s/stylehouse/msecret']);
+
+my $listen = $H->{G}->w('listen_http');
+say "\n\n        listen to $listen\n";
 app->start('daemon', '--listen' => "$listen");
 
 __DATA__

@@ -32,9 +32,9 @@ hooks:
       G.A->spawn(G => 'H/mess');
     elvibe: |
       $H->send($_) for 
-        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        " w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
         #"w".".reply({whatsthere: 'too hard'}); \$('body').empty();",
-        "clon();"
+        " clon();"
       # handy stuff...?
     play: |
       H._future = 1;
@@ -43,7 +43,7 @@ hooks:
       
       $H->send(sprintf "version is v%vd", $^V);
       
-      Mojo::IOLoop->recurring(8 => sub{ w stylehut/yup; });
+      Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
       #w stylehut/yup;
       #0->accum(G:mess, trigs=>sub{saygr T.i->pint});
@@ -51,7 +51,7 @@ hooks:
       H.h = G.A->spawn(G => 'Ϡ');
       
     honk: |
-      $H->send('.'.join".", ("  ")x int(rand 12)."!!!");
+      $H->send('.'. (("  ")x int(2 + rand 10))."!!!");
     yup: |
       $G::swdepth = 10;
       say "yup: ".sw("styleh00t ".sprintf('%.5f',rand()));
@@ -340,9 +340,7 @@ hooks:
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
       w $S populi;
       H.who = $S;
-      B.sign = scalar(`figlet '<<<<'`);
-      B.sign = substr(B.sign, length(B.sign)*(7/9));
-      B.sign =~ s/\n$//s;
+      Sw sign;
       B.address = $tx->remote_address;
       S.mouth = [];
       say "Elvis appears from B.address";
@@ -371,12 +369,11 @@ hooks:
       w $S woosh;
       
     woosh: |
-      print Hostinfo::colored($sign, 'blue on_green');
+      saygr $sign;
     mouthfull: |
       for my $mJ (@{S.mouth}) {
             return 1 if mJ.dig eq J.dig &&
-                (1 / (J.hitime - mJ.hitime))
-              > S.max_tooth_Hz
+                (1 / (J.hitime - mJ.hitime)) > S.max_tooth_Hz
       }
       push @{S.mouth}, $J;
       shift @{S.mouth} if @{S.mouth} > 3;
@@ -384,7 +381,14 @@ hooks:
       
     leaves: |
       sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
-      
+    
+    sign: |
+      B.sign ||= do {
+          my $s = join "", (`figlet '<<<<'`)[-1,-2,-3];
+          chomp $s;
+          $s
+      };
+    
     populi: |
       my @all = 0->scGre({K=>"Elvis"});
       if (@all > 1) {
