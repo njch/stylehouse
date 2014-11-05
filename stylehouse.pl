@@ -378,62 +378,62 @@ div.CodeMirror-lines span {
                 value;
             };
             
-  // websockety #c
-  a.con = function(c) {
-     var conin = c.conin;
-     c = new WebSocket(conin);
-     c.conin = conin;
-
-     C[conin] = c;
-     if (w.conin === conin) {
-             w = c;
-     }
-
-     c.onmessage = function (ev) {
-         a.m(ev.data);
-     };
-     c.onopen = function () {
-        a.alive(c);
-     };
-     c.onclose = function () {
-        a.dead(c);
-        a.recon(c);
-     };
-  };
-  a.dead = function (c) {
-      if (c != w) {
-          return;
-      }
-      a.c("closed "+c.conin);
-      $('body').stop().animate({opacity: 0.6}, 200);
-  };
-  a.alive = function (c) {
-      if (c != w) {
-          return;
-      }
-      a.c("connected "+c.conin);
-      $('body').stop().animate({opacity: 1}, 200);
-  };
-  a.recon = function (c) {
-    fail++;
-    var t = 25600;
-    if (fail < 20000) {
-        t = 256;
-    }
-    window.setTimeout(function(){
-        a.con(c);
-    }, t);
-  }
-  WebSocket.prototype.reply = function reply (stuff) {
-        this.send(JSON.stringify(stuff));
-  };
-  WebSocket.prototype.r = function r (stuff) {
-        this.send(JSON.stringify(stuff));
-  };
-
-  $(document).ready(function(){
-      a.c("ello");
-      a.con(w);
-  });
-</script>
+            // websockety #c
+            a.con = function(c) {
+               var conin = c.conin;
+               c = new WebSocket(conin);
+               c.conin = conin;
+               
+               C[conin] = c;
+               if (w.conin === conin) {
+                       w = c;
+               }
+               
+               c.onmessage = function (ev) {
+                   a.m(ev.data);
+               };
+               c.onopen = function () {
+                  a.alive(c);
+               };
+               c.onclose = function () {
+                  a.dead(c);
+                  a.recon(c);
+               };
+            };
+            a.dead = function (c) {
+                if (c != w) {
+                    return;
+                }
+                a.c("closed "+c.conin);
+                $('body').stop().css('-webkit-filter', 'brightness(0.5)');
+            };
+            a.alive = function (c) {
+                if (c != w) {
+                    return;
+                }
+                a.c("connected "+c.conin);
+                $('body').stop().css('-webkit-filter', '');
+            };
+            a.recon = function (c) {
+              fail++;
+              var t = 25600;
+              if (fail < 20000) {
+                  t = 256;
+              }
+              window.setTimeout(function(){
+                  a.con(c);
+              }, t);
+            }
+            WebSocket.prototype.reply = function reply (stuff) {
+                  this.send(JSON.stringify(stuff));
+            };
+            WebSocket.prototype.r = function r (stuff) {
+                  this.send(JSON.stringify(stuff));
+            };
+    
+            $(document).ready(function(){
+                a.c("ello");
+                a.con(w);
+            });
+          </script>
 

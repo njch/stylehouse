@@ -187,14 +187,14 @@ __DATA__
               return;
           }
           a.c("closed "+c.conin);
-          $('body').stop().animate({opacity: 0.6}, 200);
+          $('body').stop().css('-webkit-filter', 'brightness(0.5)');
       };
       a.alive = function (c) {
           if (c != w) {
               return;
           }
           a.c("connected "+c.conin);
-          $('body').stop().animate({opacity: 1}, 200);
+          $('body').stop().css('-webkit-filter', '');
       };
       a.recon = function (c) {
         fail++;
