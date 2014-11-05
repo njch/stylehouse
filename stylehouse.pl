@@ -304,74 +304,80 @@ div.CodeMirror-lines span {
       $('#msgs').append(e+"\n");
       //$('body').scrollTo('100%', 0);
   };
-  // click, keys #c
-  function clon () { $(window).on("click", a.cl); }
-  function clof () { $(window).off("click", a.cl); }
-  function keon () { $(window).on("keydown", a.ke); }
-  function keof () { $(window).off("keydown", a.ke); }
-  a.cl = function(ev, ws) {
-      var d = {};
-      a.dscam(d,ev);
-      
-      
-      var tag = $(ev.target);
-      //d.value = a.valblag(d.tag); // drapes
-      while (!(tag.attr('id') || tag.attr('class'))) {
-          tag = tag.parent();
-      }
-      d.id = tag.attr('id');
-      d.class = tag.attr('class');
-      d.x = ev.clientX;
-      d.y = ev.clientY;
-      d.pagex = window.pageXOffset;
-      d.pagey = window.pageYOffset;
-      var W = tag.closest( "ww" ).attr('id');
-      if (W) {
-          d.W = W;
-      }
-      var ux = tag.closest( "ux" ).attr('id');
-      if (ux) {
-          d.ux = ux;
-      }
-
-      if (!ws) {
-          ws = w;
-      }
-      ws.reply({event: d});
-  };
-  a.dscam = function(d,ev) {
-      d.type = ev.type;
-      d.S = 0+ev.shiftKey;
-      d.C = 0+ev.ctrlKey;
-      d.A = 0+ev.altKey;
-      d.M = 0+ev.metaKey;
-  };
-  var keyjam = 0;
-  var keyjamfor = 10;
-  a.ke = function(ev, ws) {
-      if (keyjam) {
-          return;
-      }
-      setTimeout(function () { keyjam = 0; }, keyjamfor);
-      keyjam = 1;
-
-      var d = {};
-      a.dscam(d,ev);
-      d.which = ev.which;
-      d.k = String.fromCharCode(ev.keyCode);
-
-      if (!ws) {
-          ws = w;
-      }
-      ws.reply({event: d});
-  };
-  a.valblag = function(tag) {
-      var value = ''+tag.contents();
-      if (value && value.length >= 640) {
-          value = '';
-      }
-      value;
-  };
+            // click, keys #c
+            function clon () { $(window).on("click", a.cl); }
+            function clof () { $(window).off("click", a.cl); }
+            function keon () { $(window).on("keydown", a.ke); }
+            function keof () { $(window).off("keydown", a.ke); }
+            var keyjam = 0;
+            var keyjamfor = 10;
+            a.cl = function(ev, ws) {
+                if (keyjam) {
+                    return;
+                }
+                setTimeout(function () { keyjam = 0; }, keyjamfor);
+                keyjam = 1;
+                
+                var d = {};
+                a.dscam(d,ev);
+                
+                var tag = $(ev.target);
+                //d.value = a.valblag(d.tag); // drapes
+                while (!(tag.attr('id') || tag.attr('class'))) {
+                      tag = tag.parent();
+                }
+                d.id = tag.attr('id');
+                d.class = tag.attr('class');
+                d.x = ev.clientX;
+                d.y = ev.clientY;
+                d.pagex = window.pageXOffset;
+                d.pagey = window.pageYOffset;
+                var W = tag.closest( "ww" ).attr('id');
+                if (W) {
+                    d.W = W;
+                }
+                var ux = tag.closest( "ux" ).attr('id');
+                if (ux) {
+                    d.ux = ux;
+                }
+                
+                if (!ws) {
+                    ws = w;
+                }
+                ws.reply({event: d});
+            };
+            a.ke = function(ev, ws) {
+                if (keyjam) {
+                    return;
+                }
+                setTimeout(function () { keyjam = 0; }, keyjamfor);
+                keyjam = 1;
+                
+                var d = {};
+                a.dscam(d,ev);
+                d.which = ev.which;
+                d.k = String.fromCharCode(ev.keyCode);
+                
+                if (!ws) {
+                    ws = w;
+                }
+                ws.reply({event: d});
+            };
+            a.dscam = function(d,ev) {
+                d.type = ev.type;
+                d.S = 0+ev.shiftKey;
+                d.C = 0+ev.ctrlKey;
+                d.A = 0+ev.altKey;
+                d.M = 0+ev.metaKey;
+            };
+            a.valblag = function(tag) {
+                var value = ''+tag.contents();
+                if (value && value.length >= 640) {
+                    value = '';
+                }
+                value;
+            };
+            
   // websockety #c
   a.con = function(c) {
      var conin = c.conin;
