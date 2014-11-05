@@ -47,9 +47,10 @@ __DATA__
       var w = {conin: '<%= $ws_location %>'};
       var fail = 0;
       var a = {};
+      var ws;
       var C = {};
 
-      // splat #c
+      // splate #c
       a.e = function(e) {
           console.log("xut "+e);
           eval(e);
@@ -157,6 +158,7 @@ __DATA__
          }
 
          c.onmessage = function (ev) {
+             ws = c;
              a.m(ev.data);
          };
          c.onopen = function () {

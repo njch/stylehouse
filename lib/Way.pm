@@ -142,6 +142,12 @@ sub pi {
     my $w = shift;
     $w->pint
 }
+sub send {
+    my ($w, $m, $cb) = @_;
+    $m =~ /\n/ && die "Message contains \\n:\n$m\n\n";
+    say "way sending $w->{K}";
+    $H->{G}->w(send_Elvis => {m => $m, cb => $cb, Elvis => $w});
+}
 sub find {
     my $self = shift;
     my $point = shift;

@@ -92,6 +92,15 @@ sub pint {
     my $w = shift;
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
 }
+sub djson {
+    my $G = shift;
+    my $m = shift;
+    my $j;
+    eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
+    die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+    die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+    $j;
+}
 sub wish {
     my $w = shift;
     my $i = shift;

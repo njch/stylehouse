@@ -47,15 +47,19 @@ hooks:
       exec "perl l/S".".pm";
     in: |
       G.A->spawn(G => 'H/mess');
+      waylay stylehut/play;
+      
+    play: |
+      H.h = G.A->spawn(G => 'Ϡ');
+      
     elvibe: |
       $H->send($_) for 
-        " w".".reply({});",
+          " w\.r('wsy '+ w\.conin +' '+ ws\.conin);",
         " clon();";
       
       H.notunderworld = 1;
-      H.G->w('stylehut/play');
       
-    play: |
+    singul: |
       H._future = 1;
       
       *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
@@ -66,8 +70,6 @@ hooks:
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
       #w stylehut/yup;
       #0->accum(G:mess, trigs=>sub{saygr T.i->pint});
-      
-      H.h = G.A->spawn(G => 'Ϡ');
       
     honk: |
       $H->send('.'. (("  ")x int(2 + rand 10))."!!!");
@@ -320,11 +322,12 @@ hooks:
       # TODO lose this whole sub
       # must be invoked on first Elvis/speaks for now because things ->send
   send_Elvis: |
-    my $J = 0->Bu(J => $ar); # $m
-    w $J print_out;
-    # many ----
-    my $Elvis = H.who || die "no individual to send $m!";
+    my $Elvis = ar.Elvis || H.who || die "no infiduvial? $m";
+    my $J = 0->Bu(J => {m => ar.m, cb => ar.cb});
+    w $J print_out(pi => $Elvis->pi);
     w $Elvis send[$J];
+  Elvi: |
+      0->rei({K=>"Elvis"});
   Elvis: #
       # here we want to graph things out real careful
       # because it is how things get around
@@ -380,8 +383,9 @@ hooks:
       
       w $S woosh;
       
-    woosh: |
+    woosh: | #c
       saygr $sign;
+      
     mouthfull: |
       for my $mJ (@{S.mouth}) {
             return 1 if mJ.dig eq J.dig &&
@@ -411,26 +415,18 @@ hooks:
       };
   J: # 
     Bu_D: |
-      #B.m = Hostinfo::encode_utf8(B.m);
-      S.dig ||= Hostinfo::enhash(B.m);
+      B.m =~ s/\n?$/\n/s;
+      S.dig ||= $H->dig(B.m);
       S.hitime = $F[0]->{hitime};
-    decode: |        
-      my $j;
-      eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
-      die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
-      die "$m\n\nJSON decoded to ~undef~" unless defined $j;
-      whisper "S.id decoded ".$G->F_delta();
-      B.j = $j;
+    decode: |
+      B.j = $G->djson($m);
+      
     print_out: |
       return if $m =~ /\$\('#(worm|mess|sky|path|land|func|somewhere|flood)/;
+      my $pi = ar.pi || S.id;
       # ^ trace F, tractoriose
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
-      my $jabber = join"\n", map { _.name } @F;
-      if ($jabber =~ /Ϡ| ux |/) {
-          my $th = G:Ϡ;
-          push @{th.js||=[]}, $m;
-      }
-      print colored("< send S.id\t\t", 'blue');
+      print colored("< send $pi\t\t", 'blue');
       print colored($short, 'bold blue');
       say "";
     print_in: |
