@@ -16,7 +16,7 @@ hooks:
     
     H.r = w enRedis;
     
-    w conf;
+    w config;
     
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
     
@@ -33,7 +33,9 @@ hooks:
         ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
         $port ||= 2000;
         $host ||= '127.0.0.1';
-        $port += 1; # TODO H before websocket, find soul via redis
+        
+        $port += 1; # TODO find soul via redis
+        
     H.listen_http = "http://$host:$port";
     H.listen_ws = "ws://$host:$port/ws";
     
@@ -53,7 +55,6 @@ hooks:
       H.notunderworld = 1;
       H.G->w('stylehut/play');
       
-      # handy stuff...?
     play: |
       H._future = 1;
       
