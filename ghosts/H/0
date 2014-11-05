@@ -112,10 +112,10 @@ hooks:
     # TODO combine with check, fractionating importantness into time
     if (ar.way && ar.div) {
         my $a = { %$ar, now => 0 };
-        $H->{ar.riv||'wtf'}->{ar.way} = $a;
+        $G->{ar.riv||'wtf'}->{ar.way} = $a;
         return;
     }
-    my $riv = $H->{ar.riv} ||= {};
+    my $riv = $G->{ar.riv} ||= {};
     my @to;
     while (my ($way,$R) = each %$riv) {
         R.now++;
@@ -219,13 +219,13 @@ hooks:
     a.r->subscribe($top => $D);
     a.r.wassubbedto = $top;
     a.riv = 'redission';
-    H.redission->{a.way} = $a;
+    G.redission->{a.way} = $a;
     
-    my $riv = H.redission ||= {};
+    my $riv = G.redission ||= {};
     my @to = values %$riv;
-    H.redisco = w waits(to => \@to, towait => 0.1);
+    G.redisco = w waits(to => \@to, towait => 0.1);
   redission: |
-    my $ord = H.redisco ||= {};
+    my $ord = G.redisco ||= {};
     for my $k (sort keys %$ord) { # numbers wall timespace
         my $int = $ord->{$k}; # a time
         for my $t (@$int) { # in time
@@ -266,7 +266,6 @@ hooks:
     }
     return $ord;
     
-
   check:
     script: |
       my $script = $0;
