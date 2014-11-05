@@ -67,6 +67,11 @@ sub gitrack {
     
     my $rs = $H->get("Git/repos");
     my $sh = sub { ($_[0] =~ /style(\w+)/)[0] };
+    my $ps = sub {
+        my $cmd = shift;
+        $cmd = "$$: $cmd\n";
+        write_file("proc/start", {append => 1}, $cmd);
+    };
     
     my @m;
     for my $r (@$rs) {
@@ -75,7 +80,7 @@ sub gitrack {
         my $menu = [
     '⏚' => sub {
         say" HEading to $r";
-        $self->spawn_proc('cd ../'.$r.' && git gui');
+        $ps->("cd ../$r && git gui");
     },
     'ⵘ' => sub {
         my @hmm = grep /stylehouse\.pl/, `ps faux | grep stylehouse`;
@@ -103,30 +108,6 @@ sub gitrack {
         S_attr => { style => "font-size:36pt;"},
         };
     }
-    my $gitm = [
-        '♖' => sub {
-            $self->pswatch("once");
-        },
-        '⚙' => sub {
-            $self->init();
-        },
-        '♘' => sub {
-            $H->info("Bucky rip");
-            run('cd ../stylebucky && git reset --hard');
-        },
-        '⚚' => sub {
-            $self->reprocserv();
-        },
-    ];
-    unshift @m, 
-        { _spawn => [ [], {
-        nospace => 1,
-        event => { menu => $gitm },
-        class => 'menu',
-        }]
-        }
-        if "sudden" eq "future";
-
     my $rt = $self->{gitrack}->text([@m], {
         tuxtstyle => sub {
             my ($v, $s) = @_;
