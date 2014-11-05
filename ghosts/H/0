@@ -42,17 +42,28 @@ hooks:
   websocket: |
     sayg "strangers are Elvis until they're not";
     0->TafuB(Elvis => {tx => $M->tx, M => $M});
-  Teeth: |
-      saygr $Elvis->pi;
-      w $J decode;
-      w flood_init unless H.notunderworld; # somewhere round here
 
-      my $j = J.B.j;
-      # $J and  doings...
-      return w serve/claw   if j.claw;
-      return w serve/event  if j.event;
-      return w serve/error  if j.error; # change from {e}
-      return w serve/scroll if j.scroll;
+  Teeth: |
+    w $J print_in(pi => $Elvis->pi);
+    my $m = J.B.m;
+    w flood_init unless H.notunderworld; # somewhere round here
+    w $J decode;
+    my $j = J.B.j;
+    if (ref $j eq "HASH") {
+        w serve/hash[$j];
+    }
+    elsif (!ref $j) {
+        if ($j =~ /^([\w\/]+) (.+)$/) {
+            saygr "sez $1 $2";
+            $G->w("S/$1", {m => $2});
+        }
+        else {
+            die "wei tet '$j'";
+        }
+    }
+    else {
+        die "weird shit: '$m'";
+    }
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
@@ -93,8 +104,9 @@ hooks:
     in: |
       G!H/mess; # due to spawn syntax
     elvibe: |
+      say "Elvibin";
       $H->send($_) for 
-        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
+        " w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
         "\$('body').empty();", # or not...
         "clon();";
     play: |
@@ -158,7 +170,6 @@ hooks:
     }
     
     H._future = 1;
-
   gitdission: |
     my @diff = `git diff`;
     my $f;
@@ -382,7 +393,6 @@ hooks:
           sayyl "elvis losing teeth ".$S->pi;
           return; # more stim than stamp
       }
-      w $J print_in;#4/5
       w Teeth[$J, $Elvis];#...
       Sw woosh;#9
       
@@ -423,18 +433,23 @@ hooks:
       S.dig ||= $H->dig(B.m);
       S.hitime = $F[0]->{hitime};
     decode: |
-      B.j = $G->djson($m);
+      if ($m =~ /^"(.+)"\n$/s) {
+          B.j = $1;
+      }
+      else {
+          B.j = $G->djson($m);
+      }
       
     print_out: |
       return if $m =~ /\$\('#(worm|mess|sky|path|land|func|somewhere|flood)/;
-      my $pi = ar.pi || S.id;
       # ^ trace F, tractoriose
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
       print colored("< send $pi\t\t", 'blue');
       print colored($short, 'bold blue');
       say "";
     print_in: |
-      print colored("recv >\t\t", 'red');
+      my $pi = ar.pi || S.id;
+      print colored("recv > $pi\t\t", 'red');
       print colored($m, 'bold red');
       say "";
   j: #
@@ -464,7 +479,6 @@ hooks:
       
       
       
-
   re:
     exec: |
       $G->w("H.style/reexec");
@@ -495,6 +509,11 @@ hooks:
       `touch stylehouse.pl`;
   
   serve:
+    hash: |
+        return w serve/claw   if j.claw;
+        return w serve/event  if j.event;
+        return w serve/error  if j.error; # change from {e}
+        return w serve/scroll if j.scroll;
     claw: |
       $H->claw($j);
       
