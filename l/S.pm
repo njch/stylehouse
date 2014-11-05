@@ -30,17 +30,13 @@ get '/pub' => sub{
    shift->render(text=>'published')
 };
 
-# MOVE some old stuff tries to ->send stuff on init, ux saves..
+# MOVE post transport leveling
 $H = H->new({name => 'S', style => 'stylehut', listen => $listen});
-
-# This action will render a template
-websocket '/ws' => sub {
+websocket '/ws' => sub { #c
     my $mojo = shift;
-
     eval { 
-    $H->{G}->w(websocket => { M => $mojo });
-
-    $H->{G}->w('stylehut/play');
+        $H->{G}->w(websocket => { M => $mojo });
+        $H->{G}->w('stylehut/play'); # MOVE
     };
     say "Eerror\n\n$@" if $@;
     $@ = "";
@@ -62,7 +58,7 @@ __DATA__
     <div id='ux' style="position:absolute;right:0em;width:88%;height:100%; overflow:hidden;"> </div>
 
     <script type="text/javascript">
-      // default, top level
+      // default, top level #c
       var w = {conin: '<%= $ws_location %>'};
       var fail = 0;
       var a = {};
@@ -193,6 +189,7 @@ __DATA__
             t = 256;
         }
         window.setTimeout(function(){
+            if (
             a.con(c);
         }, t);
       }
