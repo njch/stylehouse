@@ -16,15 +16,7 @@ hooks:
     
     H.r = w enRedis;
     
-    my $listen = readlink('listen');
-        my ($host,$port, $wa) = split ':', $listen;
-        die "too much listen" if $wa;
-        ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
-        $port ||= 2000;
-        $host ||= '127.0.0.1';
-        $port += 1; # TODO H before websocket, find soul via redis
-    H.listen_http = "http://$host:$port";
-    H.listen_ws = "ws://$host:$port/ws";
+    w conf;
     
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
     
@@ -34,6 +26,16 @@ hooks:
     w wtf(div => 17, way => 'check/vitals');
     
     $G->w("H.style/in");
+  config: |
+    my $listen = readlink('listen');
+        my ($host,$port, $wa) = split ':', $listen;
+        die "too much listen" if $wa;
+        ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+        $port ||= 2000;
+        $host ||= '127.0.0.1';
+        $port += 1; # TODO H before websocket, find soul via redis
+    H.listen_http = "http://$host:$port";
+    H.listen_ws = "ws://$host:$port/ws";
     
   websocket: |
     sayg "strangers are Elvis until they're not";
