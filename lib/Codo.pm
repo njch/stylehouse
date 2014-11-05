@@ -5,7 +5,6 @@ use Scriptalicious;
 use YAML::Syck;
 use Texty;
 use Codon;
-use Proc;
 use utf8 'all';
 =pod
 
@@ -225,7 +224,7 @@ sub codolist {
             $s->{codon} = $codon;
 
             my $fs = ( # see the spiral of w and v/A... # whereever $_ is safe
-                $n=~/Git|Shite|Proc|Ebuge|Form|Keys|Direction/ ? "0.8"
+                $n=~/Git|Ebuge|Form/ ? "0.8"
                 :
                 length($n) < 4 ? "2.7"
                 : "1.5"

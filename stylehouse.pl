@@ -23,8 +23,6 @@ use Codo;
 use Codon;
 use Git;
 use View;
-use Proc;
-use Keys;
 use Travel;
 use Ghost;
 use Wormhole;
