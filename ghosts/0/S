@@ -1,7 +1,5 @@
 0:
  S: #c
-  - K:
-    D: |
       
   - K: everything #c
     style: nonbabble
@@ -76,31 +74,76 @@
             var a = {};
             var C = {};
             
-            // doing, splatting
-            a.e = function(e) {
-                console.log("xut "+e);
-                eval(e);
-            };
-            a.m = function(e) {
-                var d = e.substr(0,1);
-                if (d == " ") {
-                  a.e(e);
+            // click, keys #c
+            function clickon () { clon() }
+            function clickoff () { clof() }
+            function keyon () { keon() }
+            function keyoff () { keof() }
+            function clon () { $(window).on("click", a.cl); }
+            function clof () { $(window).off("click", a.cl); }
+            function keon () { $(window).on("keydown", a.ke); }
+            function keof () { $(window).off("keydown", a.ke); }
+            a.cl = function(ev) {
+                var d = {};
+                a.dscam(d,ev);
+                
+                d.tag = a.tagblag($(ev.target));
+                //d.value = a.valblag(d.tag);
+                d.id = tag.attr('id');
+                d.class = tag.attr('class');
+                d.x = ev.clientX;
+                d.y = ev.clientY;
+                d.pagex = window.pageXOffset;
+                d.pagey = window.pageYOffset;
+                var W = tag.closest( "ww" ).attr('id');
+                if (W) {
+                    d.W = W;
                 }
-                else {
-                  if (d == ".") {
-                    e = '<span style="font-size:66%">'+e+'</span>';
+                var ux = tag.closest( "ux" ).attr('id');
+                if (ux) {
+                    d.ux = ux;
+                }
+                
+                w.reply({event: data});
+            };
+            a.dscam = function(d,ev) {
+                d.type = ev.type;
+                d.S = 0+ev.shiftKey;
+                d.C = 0+ev.ctrlKey;
+                d.A = 0+ev.altKey;
+                d.M = 0+ev.metaKey;
+            };
+            var keyjam = 0;
+            var keyjamfor = 10;
+            a.ke = function(ev) {
+                if (keyjam) {
+                    return;
+                }
+                setTimeout(function () { keyjam = 0; }, keyjamfor);
+                keyjam = 1;
+                
+                var d = {};
+                a.dscam(d,ev);
+                d.which = e.which;
+                d.k = String.fromCharCode(ev.keyCode);
+                
+                w.reply({event: data});
+            };
+            a.tagblag = function(tag) {
+                while (!(tag.attr('id') || tag.attr('class'))) {
+                      tag = tag.parent();
                   }
-                  a.c(e);
+                tag
+            };
+            a.valblag = function(tag) {
+                var value = ''+tag.contents();
+                if (value && value.length >= 640) {
+                    value = '';
                 }
-            };
-            a.c = function(e) {
-                $('#msgs').append(e+"\n");
-                //$('body').scrollTo('100%', 0);
+                value;
             };
             
-            
-            
-            // websockety
+            // websockety #c
             a.con = function(c) {
                var conin = c.conin;
                c = new WebSocket(conin);
@@ -111,9 +154,8 @@
                        w = c;
                }
                
-               c.onmessage = function (event) {
-                   var e = event.data;
-                   a.m(e);
+               c.onmessage = function (ev) {
+                   a.m(ev.data);
                };
                c.onopen = function () {
                    a.c("connected "+conin);
@@ -130,7 +172,7 @@
                   t = 256;
               }
               window.setTimeout(function(){
-                  a.w.con(c);
+                  a.con(c);
               }, t);
             }
             WebSocket.prototype.reply = function reply (stuff) {
