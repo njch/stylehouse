@@ -70,59 +70,69 @@
           <div id='ux' style="position:absolute;right:0em;width:88%;height:100%; overflow:hidden;"> </div>
 
           <script type="text/javascript">
-          var conn;
-          var C;
-          var fail = 0;
-          var a = {};
-          a.e = function(e) {
-              console.log("xut "+e);
-              eval(e);
-          };
-          a.m = function(e) {
-              var c = e.substr(0,1);
-              if (c == " ") {
+            var C;
+            var w = {conin: '<%= $ws_location %>'};
+            var fail = 0;
+            var a = {};
+            a.e = function(e) {
+                console.log("xut "+e);
+                eval(e);
+            };
+            a.m = function(e) {
+                var d = e.substr(0,1);
+                if (d == " ") {
                   a.e(e);
-              }
-              else {
-                if (c == ".") {
-                  e = '<span style="font-size:66%">'+e+'</span>';
                 }
+                else {
+                  if (d == ".") {
+                    e = '<span style="font-size:66%">'+e+'</span>';
+                  }
                   a.c(e);
+                }
+            };
+            a.c = function(e) {
+                $('#msgs').append(e+"\n");
+                //$('body').scrollTo('100%', 0);
+            };
+            a.w.con = function(c) {
+               var conin = c.conin;
+               c = new WebSocket(conin);
+               c.conin = conin;
+               
+               C.[conin] = c;
+               if (w.conin == conin) {
+                       w = c;
+               }
+               
+               c.onmessage = function (event) {
+                   var e = event.data;
+                   a.m(e);
+               };
+               c.onopen = function () {
+                   a.c("connected.");
+               };
+               c.onclose = function () {
+                  a.c("closed.");
+                  a.w.recon(c);
+               };
+            };
+            a.w.recon = function (c) {
+              fail++;
+              var t = 25600;
+              if (fail < 20000) {
+                  t = 256;
               }
-          };
-          a.c = function(e) {
-              $('#msgs').append(e+"\n");
-              //$('body').scrollTo('100%', 0);
-          };
-
-          function connect() {
-             conn = new WebSocket('<%= $ws_location %>');
-
-             conn.onmessage = function  (event) {
-                 var e = event.data;
-                 a.m(e);
-             };
-             conn.onopen = function () {
-                a.c("connected.\n");
-             };
-             conn.onclose = function () {
-                a.c("closed.\n");
-                reconnect();
-             };
-          };
-          function reconnect () {
-            fail++;
-            console.log('waiting to retry');
-            if (fail < 20000) {
-                window.setTimeout(connect, 256);
+              window.setTimeout(function(){
+                  a.w.con(c);
+              }, t);
             }
-            else {
-                window.setTimeout(connect, 25600);
-            }
-          }
-
-
-          $(document).ready(connect);
+            WebSocket.prototype.reply = function reply (stuff) {
+                  this.send(JSON.stringify(stuff));
+            };
+    
+            $(document).ready(function(){
+                a.w.con(w);
+            });
           </script>
 
 
