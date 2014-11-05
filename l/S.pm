@@ -71,7 +71,16 @@ __DATA__
         eval(e);
     };
     a.m = function(e) {
-          a.c('msg: '+ e +"<br />");
+        var c = e.substr(0,1);
+        if (c == " ") {
+            a.e(e);
+        }
+        else {
+          if (c == ".") {
+            e = '<span style="font-size:66%">'+e+'</span>';
+          }
+            a.c(e);
+        }
     };
     a.c = function(e) {
         $('#msgs').append(e+"\n");
@@ -83,12 +92,7 @@ __DATA__
 
        conn.onmessage = function  (event) {
            var e = event.data;
-          if (e.substr(0,1) == " ") {
-              a.e(e);
-          }
-          else {
-              a.c(e);
-          }
+           a.m(e);
        };
        conn.onopen = function () {
           a.c("connected.\n");
@@ -116,3 +120,4 @@ __DATA__
 
     </body></html>
 
+'stylehouse'
