@@ -392,7 +392,7 @@ sub sing {
     $p = {%$p, @_};
     $p->{again} = 0.5 if !defined $p->{again};
     $p->{begin} = 0.2 if !defined $p->{begin};
-    $G->w('sing', {%$p});
+    $H->{G}->w(sing => $p);
 }
 
 sub loquate {

@@ -453,6 +453,27 @@ hooks:
   re:
     exec: |
       $G->w("H.style/reexec");
+  sing: |
+    G.singing ||= {};
+    return $G->Flab("\t\t\t\t $name BLOCKED")
+        if G.singing->{$name}
+            && G.singing->{$name}++; # ignore sing until...
+    G.singing->{$name} = 1;
+    my $t = ar.block || ar.again || 0.04;
+    my $d = ar.begin || 0.001;
+    $G->timer($d, sub {
+        $G->timer($t, sub {
+            my $splatter = delete G.singing->{$name};
+            if ($splatter > 1 && ar.again) {
+                $G->Flab("Sig reps $splatter... again!  $name");
+                w sing(%$ar);
+            }
+        }, "sing-block        $name");
+        G.singing->{$name} = 1;
+        $code->();
+    }, "pre-sing     $name");
+    
+    
   reinit:
     everything: |
       $H->error("restarting!");
