@@ -49,7 +49,7 @@ app->secrets([readlink '/home/s/stylehouse/msecret']);
 say "\n\n        listen to $listen\n";
 push @{app->static->paths}, '/home/s/styleshed/public';
 app->start('daemon', '--listen' => "$listen");
- #c
+
 __DATA__
 @@ws_page.html.ep
 <!DOCTYPE html>
@@ -62,10 +62,13 @@ __DATA__
     <div id='ux' style="position:absolute;right:0em;width:88%;height:100%; overflow:hidden;"> </div>
 
     <script type="text/javascript">
-      var C;
+      // default, top level
       var w = {conin: '<%= $ws_location %>'};
       var fail = 0;
       var a = {};
+      var C = {};
+
+      // doing, splatting
       a.e = function(e) {
           console.log("xut "+e);
           eval(e);
@@ -86,13 +89,17 @@ __DATA__
           $('#msgs').append(e+"\n");
           //$('body').scrollTo('100%', 0);
       };
-      a.w.con = function(c) {
+
+
+
+      // websockety
+      a.con = function(c) {
          var conin = c.conin;
          c = new WebSocket(conin);
          c.conin = conin;
 
-         C.[conin] = c;
-         if (w.conin == conin) {
+         C[conin] = c;
+         if (w.conin === conin) {
                  w = c;
          }
 
@@ -101,14 +108,14 @@ __DATA__
              a.m(e);
          };
          c.onopen = function () {
-             a.c("connected.");
+             a.c("connected "+conin);
          };
          c.onclose = function () {
-            a.c("closed.");
-            a.w.recon(c);
+            a.c("closed "+conin);
+            a.recon(c);
          };
       };
-      a.w.recon = function (c) {
+      a.recon = function (c) {
         fail++;
         var t = 25600;
         if (fail < 20000) {
@@ -121,9 +128,13 @@ __DATA__
       WebSocket.prototype.reply = function reply (stuff) {
             this.send(JSON.stringify(stuff));
       };
+      WebSocket.prototype.r = function r (stuff) {
+            this.send(JSON.stringify(stuff));
+      };
 
       $(document).ready(function(){
-          a.w.con(w);
+          a.c("ello");
+          a.con(w);
       });
     </script>
 
