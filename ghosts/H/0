@@ -335,16 +335,14 @@ hooks:
     flows_D: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
       w $S populi;
+      
       H.who = $S;
       Sw sign;
       
       $M->on(message => sub {
           my ($M, $m) = @_;
-          my $J = 0->Bu(J => {m=>$m}); # $m
-          eval {
-            Sw speaks[$J];
-          };
-          say "$@" if $@;
+          eval { Sw speaks[$m]; };
+          $H->error("$@") if $@;
           $@ = "";
       });
 
@@ -355,6 +353,7 @@ hooks:
       
       B.address = $tx->remote_address;
       S.mouth = [];
+      
       say "Elvis appears from B.address";
       
     humms_D: |
@@ -364,6 +363,7 @@ hooks:
       $tx->send(J.B.m, J.B.cb);
       
     speaks: |
+      my $J = 0->Bu(J => {m=>$m}); # $m
       if (w $S mouthfull[$J]) {
           # elvis losing teeth means more samples than processed
           # these lingos chew on data anyway
@@ -419,7 +419,7 @@ hooks:
       eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
       die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
       die "$m\n\nJSON decoded to ~undef~" unless defined $j;
-      whisper "J.id decoded ".$G->F_delta();
+      whisper "S.id decoded ".$G->F_delta();
       B.j = $j;
     print_out: |
       return if $m =~ /\$\('#(worm|mess|sky|path|land|func|somewhere|flood)/;
