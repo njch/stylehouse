@@ -408,7 +408,6 @@ div.CodeMirror-lines span {
         t = 256;
     }
     window.setTimeout(function(){
-        if (
         a.con(c);
     }, t);
   }

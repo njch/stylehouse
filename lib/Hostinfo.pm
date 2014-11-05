@@ -129,7 +129,7 @@ sub send {
         die "Message contains \\n:\n$m\n\n";
     }
     my $cb = shift;
-    $self->{G}->w(send_Elvis => {m => $m, cb => $cb});
+    $self->{G}->w(send_Elvis => {m => " $m", cb => $cb});
 }
 
 sub hostinfo { shift }
