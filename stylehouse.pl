@@ -277,114 +277,151 @@ div.CodeMirror-lines span {
         </style>
 @@ thejs.html.ep
 <script type="text/javascript">
-var ws;
-var fail = 0;
-var db = 0;
-var A;
-function connect () {
-  ws = new WebSocket('<%= $ws_location %>');
-  ws.onmessage = function(event) {
-  
-        console.log(event.data);
-    try {
-        eval(event.data);
-    } catch (e) {
-        ws.reply({e:e.message, d:event.data});
+  // default, top level #c
+  var w = {conin: '<%= $ws_location %>'};
+  var fail = 0;
+  var a = {};
+  var C = {};
+
+  // splat #c
+  a.e = function(e) {
+      console.log("xut "+e);
+      eval(e);
+  };
+  a.m = function(e) {
+      var d = e.substr(0,1);
+      if (d == " ") {
+        a.e(e);
+      }
+      else {
+        if (d == ".") {
+          e = '<span style="font-size:66%">'+e+'</span>';
+        }
+        a.c(e);
+      }
+  };
+  a.c = function(e) {
+      $('#msgs').append(e+"\n");
+      //$('body').scrollTo('100%', 0);
+  };
+  // click, keys #c
+  function clickon () { clon() }
+  function clickoff () { clof() }
+  function keyon () { keon() }
+  function keyoff () { keof() }
+  function clon () { $(window).on("click", a.cl); }
+  function clof () { $(window).off("click", a.cl); }
+  function keon () { $(window).on("keydown", a.ke); }
+  function keof () { $(window).off("keydown", a.ke); }
+  a.cl = function(ev, ws) {
+      var d = {};
+      a.dscam(d,ev);
+
+      d.tag = a.tagblag($(ev.target));
+      //d.value = a.valblag(d.tag);
+      d.id = tag.attr('id');
+      d.class = tag.attr('class');
+      d.x = ev.clientX;
+      d.y = ev.clientY;
+      d.pagex = window.pageXOffset;
+      d.pagey = window.pageYOffset;
+      var W = tag.closest( "ww" ).attr('id');
+      if (W) {
+          d.W = W;
+      }
+      var ux = tag.closest( "ux" ).attr('id');
+      if (ux) {
+          d.ux = ux;
+      }
+
+      if (!ws) {
+          ws = w;
+      }
+      ws.reply({event: data});
+  };
+  a.dscam = function(d,ev) {
+      d.type = ev.type;
+      d.S = 0+ev.shiftKey;
+      d.C = 0+ev.ctrlKey;
+      d.A = 0+ev.altKey;
+      d.M = 0+ev.metaKey;
+  };
+  var keyjam = 0;
+  var keyjamfor = 10;
+  a.ke = function(ev, ws) {
+      if (keyjam) {
+          return;
+      }
+      setTimeout(function () { keyjam = 0; }, keyjamfor);
+      keyjam = 1;
+
+      var d = {};
+      a.dscam(d,ev);
+      d.which = e.which;
+      d.k = String.fromCharCode(ev.keyCode);
+
+      if (!ws) {
+          ws = w;
+      }
+      ws.reply({event: data});
+  };
+  a.tagblag = function(tag) {
+      while (!(tag.attr('id') || tag.attr('class'))) {
+            tag = tag.parent();
+        }
+      tag
+  };
+  a.valblag = function(tag) {
+      var value = ''+tag.contents();
+      if (value && value.length >= 640) {
+          value = '';
+      }
+      value;
+  };
+
+  // websockety #c
+  a.con = function(c) {
+     var conin = c.conin;
+     c = new WebSocket(conin);
+     c.conin = conin;
+
+     C[conin] = c;
+     if (w.conin === conin) {
+             w = c;
+     }
+
+     c.onmessage = function (ev) {
+         a.m(ev.data);
+     };
+     c.onopen = function () {
+         a.c("connected "+conin);
+     };
+     c.onclose = function () {
+        a.c("closed "+conin);
+        a.recon(c);
+     };
+  };
+  a.recon = function (c) {
+    fail++;
+    var t = 25600;
+    if (fail < 20000) {
+        t = 256;
     }
-  };
-  ws.onopen = function(e) {
-    fail = 0;
-    $('#body').removeClass('dead');
-  };
-  ws.onclose = function(e) {
-     $(window).off('click', clickyhand);
-    $('#body').addClass('dead');
-    console.log("WebSocket Error: " , e);
-    reconnect();
-  };
-  ws.onerror = function(e) {
-     $(window).off('click', clickyhand);
-    $('#body').addClass('dead');
-    console.log("WebSocket Error: " , e);
-    //reconnect();
-  };
-}
-function reconnect () {
-  fail++;
-  console.log('waiting to retry');
-  if (fail < 20000) {
-      window.setTimeout(connect, 256);
+    window.setTimeout(function(){
+        if (
+        a.con(c);
+    }, t);
   }
-  else {
-      window.setTimeout(connect, 25600);
-  }
-}
-WebSocket.prototype.reply = function reply (stuff) {
+  WebSocket.prototype.reply = function reply (stuff) {
+        this.send(JSON.stringify(stuff));
+  };
+  WebSocket.prototype.r = function r (stuff) {
+        this.send(JSON.stringify(stuff));
+  };
 
-  console.log(stuff);
-
-  this.send(JSON.stringify(stuff));
-};
-
-function clickon () { $(window).on("click", clickyhand); }
-function clickoff () { $(window).off("click", clickyhand); }
-function keyon () { $(window).on("keydown", keyhand); }
-function keyoff () { $(window).off("keydown", keyhand); }
-function clickyhand (event) {
-    var tag = $(event.target);
-    
-    var value = ''+tag.contents();
-    while (!(tag.attr('id') || tag.attr('class'))) {
-        tag = tag.parent();
-    }
-    if (value && value.length >= 640) {
-        value = '';
-    }
-    var data = {
-        id: tag.attr('id'),
-        class: tag.attr('class'),
-        value: value,
-        type: event.type,
-        S: 0+event.shiftKey,
-        C: 0+event.ctrlKey,
-        A: 0+event.altKey,
-        M: 0+event.metaKey,
-        x: event.clientX,
-        y: event.clientY,
-        pagex: window.pageXOffset,
-        pagey: window.pageYOffset,
-    };
-    var W = tag.closest( "ww" ).attr('id');
-    if (W) {
-        data.W = W;
-    }
-    var ux = tag.closest( "ux" ).attr('id');
-    if (ux) {
-        data.ux = ux;
-    }
-    ws.reply({event: data});
-}
-var nohands = 0;
-var handelay = 10;
-function keyhand (e) {
-    if (nohands) {
-        return;
-    }
-    setTimeout(function () {
-        nohands = 0;
-    }, handelay);
-    nohands = 1;
-    var data = {
-        type: e.type,
-        S: 0+e.shiftKey,
-        C: 0+e.ctrlKey,
-        A: 0+e.altKey,
-        M: 0+e.metaKey,
-        which: e.which,
-        k: String.fromCharCode(e.keyCode),
-    };
-    ws.reply({event: data});
-}
-connect();
+  $(document).ready(function(){
+      a.c("ello");
+      a.con(w);
+  });
 </script>
 
