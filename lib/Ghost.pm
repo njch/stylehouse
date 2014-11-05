@@ -848,20 +848,19 @@ sub parse_babble {
         }
 
         my @n;
-        $_ = $a;
         my $ne = ""; # hidden reverse
-        ($ne, $a) = ($a, "") if /^$sur$/;
+        ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
         # ^ caught a bit of conditional syntax after w expr
 
 
-        push @n, '%$ar' if s/^[\(\[]\+ ?// || !$a;
+        push @n, '%$ar' if $a =~ s/^[\(\[]\+ ?// || !$a;
         
-        push @n, $_     if s/^\(|\)$//sg;
+        push @n, $a     if $a =~ s/^\(|\)$//sg;
         
         push @n, 
-            map { my($l)=/\$(\w+)/;"$l => $_" } split /, */, $_
+            map { my($l)=/\$(\w+)/;"$l => $_" } split /, */, $a
 
-                        if s/^\[|\]$//sg;
+                        if $a =~ s/^\[|\]$//sg;
         
 
         my @e;

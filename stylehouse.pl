@@ -312,9 +312,13 @@ div.CodeMirror-lines span {
   a.cl = function(ev, ws) {
       var d = {};
       a.dscam(d,ev);
-
-      d.tag = a.tagblag($(ev.target));
-      //d.value = a.valblag(d.tag);
+      
+      
+      var tag = $(ev.target);
+      //d.value = a.valblag(d.tag); // drapes
+      while (!(tag.attr('id') || tag.attr('class'))) {
+          tag = tag.parent();
+      }
       d.id = tag.attr('id');
       d.class = tag.attr('class');
       d.x = ev.clientX;
@@ -333,7 +337,7 @@ div.CodeMirror-lines span {
       if (!ws) {
           ws = w;
       }
-      ws.reply({event: data});
+      ws.reply({event: d});
   };
   a.dscam = function(d,ev) {
       d.type = ev.type;
@@ -353,19 +357,13 @@ div.CodeMirror-lines span {
 
       var d = {};
       a.dscam(d,ev);
-      d.which = e.which;
+      d.which = ev.which;
       d.k = String.fromCharCode(ev.keyCode);
 
       if (!ws) {
           ws = w;
       }
-      ws.reply({event: data});
-  };
-  a.tagblag = function(tag) {
-      while (!(tag.attr('id') || tag.attr('class'))) {
-            tag = tag.parent();
-        }
-      tag
+      ws.reply({event: d});
   };
   a.valblag = function(tag) {
       var value = ''+tag.contents();
