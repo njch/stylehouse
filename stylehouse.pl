@@ -305,10 +305,6 @@ div.CodeMirror-lines span {
       //$('body').scrollTo('100%', 0);
   };
   // click, keys #c
-  function clickon () { clon() }
-  function clickoff () { clof() }
-  function keyon () { keon() }
-  function keyoff () { keof() }
   function clon () { $(window).on("click", a.cl); }
   function clof () { $(window).off("click", a.cl); }
   function keon () { $(window).on("keydown", a.ke); }
@@ -378,7 +374,6 @@ div.CodeMirror-lines span {
       }
       value;
   };
-
   // websockety #c
   a.con = function(c) {
      var conin = c.conin;
