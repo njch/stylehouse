@@ -186,12 +186,12 @@ sub display {
         "Esc": function(cm) {
           if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
           cm.save();
-          ws.reply({event:{id:"$texty->{id}-Save-$i"}})
+          w.reply({event:{id:"$texty->{id}-Save-$i"}})
         }
     }
 });
  cm.setSize(579, $he);
- cm.on('blur', function() { cm.save(); ws.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });
+ cm.on('blur', function() { cm.save(); w.reply({event:{id:\"$texty->{id}-Save-$i\"}}) });
 
 CM
             );
@@ -339,7 +339,7 @@ sub save_chunk {
     } );
 
     $self->{hostinfo}->send(
-         "  ws.reply({claw: '$sec', code: \$('#$textid').val()}); "
+         "  w.reply({claw: '$sec', code: \$('#$textid').val()}); "
     );
 }
 sub update_chunk {
