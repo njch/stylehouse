@@ -387,12 +387,26 @@ div.CodeMirror-lines span {
          a.m(ev.data);
      };
      c.onopen = function () {
-         a.c("connected "+conin);
+        a.alive(c);
      };
      c.onclose = function () {
-        a.c("closed "+conin);
+        a.dead(c);
         a.recon(c);
      };
+  };
+  a.dead = function (c) {
+      if (c != w) {
+          return;
+      }
+      a.c("closed "+c.conin);
+      $('body').stop().animate({opacity: 0.6}, 200);
+  };
+  a.alive = function (c) {
+      if (c != w) {
+          return;
+      }
+      a.c("connected "+c.conin);
+      $('body').stop().animate({opacity: 1}, 200);
   };
   a.recon = function (c) {
     fail++;
