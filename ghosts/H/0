@@ -141,7 +141,7 @@ hooks:
       sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
     
   S:
-    wsy: |
+    wsy: | #c
       my $C = G.conz ||= {};
       my ($w, $s) = split ' ', $m;
       if (my $EE = $C->{$w}) {
@@ -159,6 +159,38 @@ hooks:
       E.singul = 1;
       H.who = $E;
       w H.style/singul;
+    W: | #c
+      my $id = sub {
+        my $i = shift;
+        return unless $i =~ /^(\w+)$/;
+        $1
+      };
+      my $W;
+      my $findL = sub {
+        return unless $W;
+        my $id = shift || return;
+        my ($L) = grep { _.uuid eq $id } @{W.script||[]};
+        $L;
+      };
+      
+      my $Wid = $id->(e.W);
+      
+      if (H.h) {
+            $W = H.G.A.W->{$Wid}
+      }
+      else {
+            $W = grep { $_->{id} eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
+      }
+      
+      my $E = {};
+      E.W = $W;
+      E.L   = $findL->($id->(e.id));
+      E.uxL = $findL->($id->(e.ux));
+      E.e = $e;
+      
+      return sayyl "not W here ... $Wid" unless E.W;
+      
+      E.W.G->w('event', $E) if E.W;
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
@@ -550,7 +582,7 @@ hooks:
       say ki($e);
       say "e ki is";
       return w serve/key if e.type =~ /^key/;
-      return w serve/wormhole if e.W;
+      return w S/W if e.W;
       
       sayyl "STRANGE:" for 1..3;
       return w serve/TV if e.id;
@@ -560,41 +592,6 @@ hooks:
     key: |
       G:keys ->w(Arr => {e => $e});
       
-    wormhole: |
-      my $E;
-      my $findL = sub {
-        return unless E.W;
-        my $id = shift;
-        (grep { $_->{uuid} eq $id } @{ E.W.script })[0]
-      };
-      my $id = sub {
-        my $i = shift;
-        return unless $i =~ /^(\w+)$/;
-        $1
-      };
-      
-      my $Wid = $id->(e.W);
-      
-      if (H.h) {
-            E.W = H.G.A.W->{$Wid}
-      }
-      else {
-            E.W = grep { $_->{id} eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
-      }
-      
-      my $Lid = $id->($e->{id});
-      $E->{L} = $findL->($Lid);
-      
-      my $uxLid = $id->($e->{ux});
-      $E->{uxL} = $findL->($uxLid);
-      
-      $E->{e} = $e;
-      if (E.W) {
-            E.W.G->w('event', $E) if E.W;
-      }
-      else {
-          sayyl "$Lid not W here ... $Wid"
-      }
       
     TV: | #c
       my $id = $e->{id};
