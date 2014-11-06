@@ -51,8 +51,12 @@ hooks:
       waylay percolations;
   elvac: |
     saygr "H.style`elvac $top $m";
+    my ($style, $name, $id, $ws) = split ' ', $m;
+    say " $m means conin $ws";
+    $H->send(" a\.con({conin: '$ws'});");
+    
   envac: |
-    H.r->publish("elvac", "H.style H.name H.id = H.wslisten");
+    H.r->publish("elvac", "H.style H.name H.id H.listen_ws");
   elvis_enters: |
     # j for j
     saygr "busk to elvis ".$E->pi;
