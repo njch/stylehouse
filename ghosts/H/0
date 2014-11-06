@@ -44,29 +44,26 @@ hooks:
     0->TafuB(Elvis => {tx => $M->tx, M => $M});
 
   Teeth: |
-    w $J print_in(pi => $Elvis->pi);
+    w $J print_in(pi => $E->pi);
     my $m = J.B.m;
     w flood_init unless H.notunderworld; # somewhere round here
     w $J decode;
     my $j = J.B.j;
     
-    if (ref $j eq "HASH") {
-        w serve/hash[$j];
-    }
-    elsif (!ref $j) {
-        if ($j =~ /^([\w\/]+) (.+)$/) {
-            saygr "sez $1 $2";
-            $ar = {m => $2, E => $Elvis}; #J?
-            w S/$1; # < or v
-            w H.style/S/$1;
-        }
-        else {
-            die "wei tet '$j'";
-        }
+    return w serve/hash[$j] if ref $j eq "HASH";
+    
+    die "weird shit: '$m'" if ref $j;
+    
+    if ($j =~ /^([\w\/]+) (.+)$/) {
+        $ar = {m => $2, E => $E}; #J?
+        w S/$1; # < or v
+        w H.style/S/$1;
     }
     else {
-        die "weird shit: '$m'";
+        die "wei tet '$j'";
     }
+    
+    w $E swoosh;#9
   S:
     wsy: |
       my ($w, $ws) = split ' ', $m;
@@ -406,17 +403,16 @@ hooks:
       $tx->send(J.B.m, J.B.cb);
       
     speaks: |      
-      my $Elvis = $S;#1
+      my $E = $S;#1
       my $J = 0->Bu(J => {m=>$m});#2
       if (w $S mouthfull[$J]) {#3 pyramid full
           sayyl "elvis losing teeth ".$S->pi;
           return; # more stim than stamp
       }
-      w Teeth[$J, $Elvis];#...
-      Sw woosh;#9
+      w Teeth[$J, $E];#...
       
       
-    woosh: | #c
+    swoosh: | #c
       saygr $sign;
       
     mouthfull: |
