@@ -383,30 +383,27 @@ hooks:
       # send it out there and get the hair on it
     flows_D: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      B.address = $tx->remote_address;
-      S.mouth = [];
-      
-      w $S populi if ! H.h; # dodge
-      
-      H.who = $S; # hut later
-      
-      B.elvii = ++H.elvii;
-      
-      Sw sign;
-      
       $M->on(message => sub {
           my ($M, $m) = @_;
           eval { Sw speaks[$m]; };
           $H->error("$@") if $@;
           $@ = "";
       });
-
       $M->on(finish => sub {
           my ($M, $code, $reason) = @_;
           Sw leaves[$code, $reason];
       });
-      
+      B.address = $tx->remote_address;
       say "Elvis appears from B.address";
+      S.mouth = [];
+      
+      Sw populi if ! H.h; # dodge
+      H.who = $S if ! H.h; # hut later
+      B.elvii = ++H.elvii;
+      B.sign ||= join "", (`figlet '<<<<'`)[-2]; chomp B.sign;
+      
+    swoosh: |
+      saygr $sign;
       
     humms_D: |
       w H.style/elvibe;
@@ -429,8 +426,6 @@ hooks:
     disconecktie: |
       $EE->send(" C[s\.conin] = s;");
       $tx->finish;
-    swoosh: | #c
-      saygr $sign;
       
     mouthfull: |
       for my $mJ (@{S.mouth}) {
@@ -453,12 +448,6 @@ hooks:
     leaves: |
       sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
     
-    sign: |
-      B.sign ||= do {
-          my $s = join "", (`figlet '<<<<'`)[-2];
-          chomp $s;
-          $s
-      };
   J: # 
     Bu_D: |
       B.m =~ s/\n?$/\n/s;
