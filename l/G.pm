@@ -269,6 +269,26 @@ sub wish {
     Ghost::wish(@_);
 }
 
+sub sayyl {
+    print colored(join("\n", @_,""), 'bright_yellow');
+}
+
+sub sayre {
+    print colored(join("\n", @_,""), 'red');
+}
+
+sub sayg {
+    print colored(join("\n", @_,""), 'bright_green');
+}
+
+sub saygr {
+    print colored(join("\n", @_,""), 'green');
+}
+
+sub saybl {
+    print colored(join("\n", @_,""), 'bright_blue');
+}
+
 sub uiuS {
     my $G = shift;
     my ($u, $b) = @_;
