@@ -53,6 +53,13 @@ hooks:
     my $j = J.B.j;
     
     return w serve/hash[$j] if ref $j eq "HASH";
+    if (ref $j eq "HASH") {
+        if (keys %$j != 1) {
+            die "hash wide/skinny ".wdump($j);
+        }
+        my ($uno) = keys %$j;
+        w Sha/$uno[$j];
+    }
     
     die "weird shit: '$m'" if ref $j;
     
@@ -234,7 +241,7 @@ hooks:
             $W = H.G.A.W->{$Wid}
       }
       else {
-            $W = grep { _.id eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
+            ($W) = grep { _.id eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
       }
       
       my $E = {};
