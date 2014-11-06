@@ -32,7 +32,7 @@ sub new {
     my $H = bless {%$p}, $pa;
     #$self->set('0', $self);
     $H->{for_all} = [];
-    $H->{name} = 'Њ';
+    $H->{id} = make_uuid();
     
     lib_perc_H($H);
     
@@ -49,31 +49,6 @@ sub new {
     $H->{G}->w('fresh_init');
     $H->{G}->w('any_init');
     
-    # SED name is styleblah, $style as far above is blah. layers peel everywhere.
-
-    # get rid of this with Base.pm... or something
-    # see what's there in all different ways
-    # get the language
-    # de-particulate
-    # roller coaster
-
-    # start git torrent
-    # do it all
-
-    # $0 has become a runtime
-
-
-    # it's just about putting enough of it by itself so it makes sense
-    # urgh so simple
-    # when you stop trying the poetry builds itself into the language
-    # almost
-    # "I don't want to talk to you so you think"
-    # it's not to produce thinking, it's a recognition
-    # something more energetic
-
-    # hold lots of websocket
-
-    #jQuery.Color().hsla( array )
     return $H
 }
 sub lib_perc_H {

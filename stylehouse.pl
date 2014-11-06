@@ -28,37 +28,31 @@ use Ghost;
 use Wormhole;
 use Way;
 
-my ($name) = $Bin =~ m{/(\w+)$};
-my $title = $name;
+my ($style) = $Bin =~ m{/(\w+)$};
 my ($pwd) = `pwd`; chomp $pwd;
-die "ain't really here" unless $Bin eq $pwd;
-my $style = $name;
-($title = $style) =~ s/(.)/$1\N{U+0489}/g;
-
-my $listen = readlink('listeno') || readlink('listen') || "127.0.0.1:3000";
-$listen = "http://$listen" unless $listen =~ /^\w+:\//;
-
-$listen = [ split /, ?/, $listen ];
-say "! enlistening $name $$ @$listen\n\n\n\n\n\n\n\n\n\n
-
-";
-my $H = my $hostinfo = new Hostinfo({name => $name, style => $style});
+die "ain't really in styledir...?" unless $Bin eq $pwd;
+(my $title = $style) =~ s/(.)/$1\N{U+0489}/g;
+my $name = 'Њ';
+my $H = my $hostinfo = new Hostinfo({style => $style, name => $name});
+my $listen = $H->{listen_http};
 helper 'hostinfo' => sub { $hostinfo };
 get '/' => sub {
     my $self = shift;
 
     # TODO log this to find who can't make it to the websocket
-    $self->stash(ws_location => $self->url_for('stylehouse')->to_abs);
+    $self->stash(ws_location => $self->url_for('s')->to_abs);
     
     $self->stash(title => $title);
     $self->render('index');
 };
-websocket '/stylehouse' => sub {
+websocket '/s' => sub {
     my $self = shift;
     $hostinfo->{G}->w(websocket => { M => $self });
 };
-my $daemon = Mojo::Server::Daemon->new(app => app, listen => $listen);
-$daemon->run();
+say "! enlistening $style $name $$ @$listen\n\n\n\n\n\n\n\n\n\n
+
+";
+app->start('daemon', '--listen' => "$listen");
 sub love {
     
 }
