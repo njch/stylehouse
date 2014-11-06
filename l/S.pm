@@ -190,7 +190,7 @@ __DATA__
             t = 256;
         }
         window.setTimeout(function(){
-            if (C[c.conin]) { # still
+            if (C[c.conin] == c) { # still
                 a.con(c);
             }
         }, t);
