@@ -278,7 +278,7 @@ __DATA__
   // default, top level #c
   var w = {conin: '<%= $ws_location %>'};
   var fail = 0;
-  var ws;
+  var s;
   var a = {};
   var C = {};
   // splat #c
