@@ -158,7 +158,7 @@ __DATA__
          }
 
          c.onmessage = function (ev) {
-             ws = c;
+             s = c;
              a.m(ev.data);
          };
          c.onopen = function () {
