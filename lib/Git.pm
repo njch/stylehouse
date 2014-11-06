@@ -53,6 +53,7 @@ sub gitrack {
     'r' => sub {
         `touch /s/l/S.pm`
     },
+    '.' => sub { `touch stylehouse.pl` },
         ];
         push @m,
         { _spawn => [ [], {
