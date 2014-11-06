@@ -833,7 +833,7 @@ sub parse_babble {
     $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
     $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
     
-    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\}]+/;
+    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+/;
     
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     
@@ -873,7 +873,7 @@ sub parse_babble {
         
 
         my @e;
-        push @e, "'$p'";
+        push @e, qq["$p"];
         push @e, "{".join(", ",@n)."}";
         push @e, $u if $u;
         my $en = join ", ", @e;

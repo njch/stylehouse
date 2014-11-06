@@ -49,13 +49,16 @@ hooks:
     w flood_init unless H.notunderworld; # somewhere round here
     w $J decode;
     my $j = J.B.j;
+    
     if (ref $j eq "HASH") {
         w serve/hash[$j];
     }
     elsif (!ref $j) {
         if ($j =~ /^([\w\/]+) (.+)$/) {
             saygr "sez $1 $2";
-            $G->w("S/$1", {m => $2});
+            $ar = {m => $2, E => $Elvis}; #J?
+            w S/$1; # < or v
+            w H.style/S/$1;
         }
         else {
             die "wei tet '$j'";
@@ -64,33 +67,47 @@ hooks:
     else {
         die "weird shit: '$m'";
     }
+  S:
+    wsy: |
+      my ($w, $ws) = split ' ', $m;
+      if ($w eq $ws) {
+          w H.style/singul;
+      }
+      else {
+          w H.style/elvus;
+      }
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
     in: |
-      G.A->spawn(G => 'H/mess');
+      G!H/mess;
       waylay stylehut/play;
       
     play: |
-      H.h = G.A->spawn(G => 'Ϡ');
+      H.h = G!Ϡ;
+    
+    elvus: |
+      sarg "elvission modio";
       
+      G:Ϡ w elvis_enters;
+    
     elvibe: |
-      $H->send($_) for 
-          " w\.r('wsy '+ w\.conin +' '+ ws\.conin);",
-        " clon();";
-      
       H.notunderworld = 1;
+      $H->send(" w\.r('wsy '+ w\.conin +' '+ ws\.conin);");
       
     singul: |
+      sayg "sSingu mode";
+      
+      G:Ϡ w elvis_enters;
+      
+      $H->send(" clon();");
+      
       *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
       
       $H->send(sprintf "version is v%vd", $^V);
       
       Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
-      #w stylehut/yup;
-      #0->accum(G:mess, trigs=>sub{saygr T.i->pint});
-      
     honk: |
       $H->send('.'. (("  ")x int(2 + rand 10))."!!!");
     yup: |

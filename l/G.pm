@@ -477,7 +477,7 @@ sub Bu {
     my($K,$B)=@_;
     my $u = $G->_0("0S->sway", {K=>$K},{B=>$B});
     my $a = {};
-    $G ->w('Bu_D', {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
+    $G ->w("Bu_D", {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
     $u;
 }
 
