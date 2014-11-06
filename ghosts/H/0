@@ -14,6 +14,8 @@ hooks:
   fresh_init: |
     say "     H Fresh init H.style";
     
+    
+    
     H.r = w enRedis;
     
     w config;
@@ -150,21 +152,18 @@ hooks:
       $C->{$w} = $E;
       (E.c->{w}, E.c.s) = ($w, $s);
       saygr $E->pi." E.c.w, E.c.s \n\n";
-      if ($w eq $s) {
-          saygr "is eq";
-          E.singul = 1;
-          H.who = $E;
-          w H.style/singul;
-      }
-      else {
-          w H.style/elvus;
-      }
+      
+      w H.style/elvus if $w ne $s;
+      
+      saygr "is eq";
+      E.singul = 1;
+      H.who = $E;
+      w H.style/singul;
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
     in: |
       G!H/mess;
-      sleep 2;
       waylay stylehut/play;
       
     play: |
@@ -548,10 +547,14 @@ hooks:
       
     event: |
       my $e = ar.e = j.event;
-      $G->Flab("H dostuff event", $e);
+      say ki($e);
+      say "e ki is";
       return w serve/key if e.type =~ /^key/;
       return w serve/wormhole if e.W;
+      
+      sayyl "STRANGE:" for 1..3;
       return w serve/TV if e.id;
+      
       $H->error("Strange event", $e);
       
     key: |
@@ -560,9 +563,9 @@ hooks:
     wormhole: |
       my $E;
       my $findL = sub {
-        return unless $E->{W};
+        return unless E.W;
         my $id = shift;
-        (grep { $_->{uuid} eq $id } @{ $E->{W}->{script} })[0]
+        (grep { $_->{uuid} eq $id } @{ E.W.script })[0]
       };
       my $id = sub {
         my $i = shift;
@@ -570,8 +573,14 @@ hooks:
         $1
       };
       
-      my $Wid = $id->($e->{W});
-      ($E->{W}) = grep { $_->{id} eq "Wormhole-$Wid" } @{ $H->get("Wormhole") };
+      my $Wid = $id->(e.W);
+      
+      if (H.h) {
+            E.W = H.G.A.W->{$Wid}
+      }
+      else {
+            E.W = grep { $_->{id} eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
+      }
       
       my $Lid = $id->($e->{id});
       $E->{L} = $findL->($Lid);
@@ -581,11 +590,10 @@ hooks:
       
       $E->{e} = $e;
       if (E.W) {
-            $E->{W}->{G}->w('event', $E) if $E->{W};
+            E.W.G->w('event', $E) if E.W;
       }
       else {
-          Say "Nothing!!!! from $Lid\n"
-          ."Well ".e.W."      \n".join"\n", map {_.id} @{ $H->get("Wormhole") };
+          sayyl "$Lid not W here ... $Wid"
       }
       
     TV: | #c

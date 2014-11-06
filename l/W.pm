@@ -58,6 +58,7 @@ sub continues {
 sub uhigh {
     my $W = shift;
     my $n = $W->{n};
+    return "!!" if ref $W->{script} ne "ARRAY";
     my $u = scalar(@{$W->{script}});
     ($u ne $n ? $n : '')."x$u"; # acquire north, get high
 }

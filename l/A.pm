@@ -11,6 +11,9 @@ sub new {
     $A->{i} = $i;
     $i->{A} = $A;
 
+    # return if dark
+    # links() injects, via accum, itself
+
     $A
 }
 

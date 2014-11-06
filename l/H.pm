@@ -30,6 +30,7 @@ sub new {
     };
     $H = $H->spawn0('H');
     $H->{h} = 1;
+    $H->{dark} = 1;
     $H->{$_} = $p->{$_} for keys %$p;
 
     $A::H = $H;
@@ -48,13 +49,15 @@ sub new {
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
 
-    $H->{G}->w('fresh_init'); # art
-    $H->{G}->w('any_init'); # art
-
     # is either G->subs or vortexed way, not a "root ghost" anymore but...
     $G::G0 = $Ghost::G0 = $H->{A}->spawn(G => 'G');
     $Ghost::G0->w('fresh_init');
     $Ghost::G0->w('any_init');
+
+    delete $H->{dark};
+
+    $H->{G}->w('fresh_init'); # art
+    $H->{G}->w('any_init'); # art
 
     $H
 }
@@ -78,6 +81,7 @@ sub spawn {
     my $H = shift;
     my $a = shift;
     my $u = $H->spawn0(@{$a->{r}});
+    say "H spa $u->{id} ".$u->pi unless ref $u eq 'A' || ref $u eq 'C';
 
     if (ref $u eq 'A') {
         $u = $u->new($a->{i});
@@ -89,7 +93,7 @@ sub spawn {
         shift @{$a->{r}};
         $u = $u->new(@{$a->{r}});
     }
-    say "H spawning ".$u->pi unless ref $u eq 'A' || ref $u eq 'C';
+
     $u
 }
 
