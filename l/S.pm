@@ -49,6 +49,7 @@ __DATA__
       var a = {};
       var ws;
       var C = {};
+      var W = {};
 
       // splate #c
       a.e = function(e) {

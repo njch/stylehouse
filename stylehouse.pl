@@ -281,6 +281,7 @@ __DATA__
   var s;
   var a = {};
   var C = {};
+  var W = {};
   // splat #c
   a.e = function(e) {
       console.log("xut "+e);
