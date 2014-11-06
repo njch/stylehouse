@@ -49,7 +49,7 @@ websocket '/s' => sub {
     my $self = shift;
     $hostinfo->{G}->w(websocket => { M => $self });
 };
-say "! enlistening $style $name $$ @$listen\n\n\n\n\n\n\n\n\n\n
+say "! enlistening $style $name $$ $listen\n\n\n\n\n\n\n\n\n\n
 
 ";
 app->start('daemon', '--listen' => "$listen");

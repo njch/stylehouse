@@ -13,14 +13,14 @@ say '' for 1..9;
 
 get '/' => sub{ 
    my $self = shift;
-   $self->stash(ws_location => $self->url_for('ws')->to_abs);
+   $self->stash(ws_location => $self->url_for('s')->to_abs);
    $self->render(template=>'ws_page')
 };
 
 # MOVE post transport leveling
 $H = H->new({name => 'S', style => 'stylehut'});
 
-websocket '/ws' => sub {
+websocket '/s' => sub {
     my $mojo = shift;
     $H->enwebsocket($mojo);
 };
