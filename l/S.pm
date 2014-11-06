@@ -49,9 +49,11 @@ __DATA__
       var a = {};
       var ws;
       var C = {};
-      var W = {};
+      var conz = {};
 
-      // splate #c
+
+      // splate
+
       a.e = function(e) {
           console.log("xut "+e);
           eval(e);
@@ -73,7 +75,10 @@ __DATA__
           $('#msgs').append(e+"\n");
           //$('body').scrollTo('100%', 0);
       };
-      // click, keys #c
+
+
+      // click, keys
+
       function clon () { $(window).on("click", a.cl); }
       function clof () { $(window).off("click", a.cl); }
       function keon () { $(window).on("keydown", a.ke); }
@@ -104,6 +109,10 @@ __DATA__
           var W = tag.closest( "ww" ).attr('id');
           if (W) {
               d.W = W;
+              var conin = conz[W];
+              if (conin) {
+                  ws = C[conin];
+              }
           }
           var ux = tag.closest( "ux" ).attr('id');
           if (ux) {

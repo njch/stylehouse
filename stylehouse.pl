@@ -275,35 +275,42 @@ __DATA__
         </style>
 @@ thejs.html.ep
 <script type="text/javascript">
-  // default, top level #c
-  var w = {conin: '<%= $ws_location %>'};
-  var fail = 0;
-  var s;
-  var a = {};
-  var C = {};
-  var W = {};
-  // splat #c
-  a.e = function(e) {
-      console.log("xut "+e);
-      eval(e);
-  };
-  a.m = function(e) {
-      var d = e.substr(0,1);
-      if (d == " ") {
-        a.e(e);
-      }
-      else {
-        if (d == ".") {
-          e = '<span style="font-size:66%">'+e+'</span>';
-        }
-        a.c(e);
-      }
-  };
-  a.c = function(e) {
-      $('#msgs').append(e+"\n");
-      //$('body').scrollTo('100%', 0);
-  };
-            // click, keys #c
+            // default, top level #c
+            var w = {conin: '<%= $ws_location %>'};
+            var fail = 0;
+            var a = {};
+            var ws;
+            var C = {};
+            var conz = {};
+            
+            
+            // splate
+            
+            a.e = function(e) {
+                console.log("xut "+e);
+                eval(e);
+                a.m(".", e);
+            };
+            a.m = function(e) {
+                var d = e.substr(0,1);
+                if (d == " ") {
+                  a.e(e);
+                }
+                else {
+                  if (d == ".") {
+                    e = '<span style="font-size:66%">'+e+'</span>';
+                  }
+                  a.c(e);
+                }
+            };
+            a.c = function(e) {
+                $('#msgs').append(e+"\n");
+                //$('body').scrollTo('100%', 0);
+            };
+            
+            
+            // click, keys
+            
             function clon () { $(window).on("click", a.cl); }
             function clof () { $(window).off("click", a.cl); }
             function keon () { $(window).on("keydown", a.ke); }
@@ -334,6 +341,10 @@ __DATA__
                 var W = tag.closest( "ww" ).attr('id');
                 if (W) {
                     d.W = W;
+                    var conin = conz[W];
+                    if (conin) {
+                        ws = C[conin];
+                    }
                 }
                 var ux = tag.closest( "ux" ).attr('id');
                 if (ux) {
