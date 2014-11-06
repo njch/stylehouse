@@ -25,7 +25,7 @@ hooks:
     w wtf(div => 1, way => 'gitdission');
     w wtf(div => 17, way => 'check/vitals');
     
-    $G->w("H.style/in");
+    w H.style/in;
   config: |
     my $listen = readlink('listen');
         my ($host,$port, $wa) = split ':', $listen;
@@ -66,9 +66,15 @@ hooks:
     w $E swoosh;#9
   S:
     wsy: |
-      my ($w, $ws) = split ' ', $m;
-      E.rws = $ws;
-      if ($w eq $ws) {
+      my $C = G.conz ||= {};
+      (E.c.w, E.c.s) = split ' ', $m;
+      if (my $EE = $C->{E.c.w}) {
+            sayre "Already on E.c.w ".$EE->pi."  disco necktie ".$E->pi;
+          w $E disconecktie[$EE];
+          return;
+      }
+      $C->{E.c.w} = $E;
+      if (E.c.w eq E.c.s) {
           E.singul;
           w H.style/singul;
       }
@@ -80,6 +86,7 @@ hooks:
       exec "perl l/S".".pm";
     in: |
       G!H/mess;
+      sleep 1;
       waylay stylehut/play;
       
     play: |
@@ -172,7 +179,7 @@ hooks:
         # TODO move mess into H, it's just one C
         # tractor to allow trig subs to each K
         # between H.G being here and G:mess being here
-        saygr "Pre future mess... ar.what  = ".
+        saygr "prefut ar.what  = ".
         join"  ", map {gpty($_)} flatline(ar.thing);
         return;
     }
@@ -380,6 +387,8 @@ hooks:
       
       H.who = $S; # hut later
       
+      B.elvii = ++H.elvii;
+      
       Sw sign;
       
       $M->on(message => sub {
@@ -397,8 +406,11 @@ hooks:
       say "Elvis appears from B.address";
       
     humms_D: |
-      $G->w("H.style/elvibe");
-      
+      w H.style/elvibe;
+    
+    print: |
+      "$elvii $elvii === $address";
+    
     send: |
       $tx->send(J.B.m, J.B.cb);
       
@@ -411,7 +423,9 @@ hooks:
       }
       w Teeth[$J, $E];#...
       
-      
+    disconecktie: |
+      $EE->send(" C[s\.conin] = s;");
+      $tx->finish;
     swoosh: | #c
       saygr $sign;
       
@@ -459,11 +473,14 @@ hooks:
       return if $m =~ /\$\('#(worm|mess|sky|path|land|func|somewhere|flood)/;
       # ^ trace F, tractoriose
       my $short = length($m) < 200 ? $m : substr($m,0,23*9)." >SNIP<";
+      chomp $short;
       print colored("< send $pi\t\t", 'blue');
       print colored($short, 'bold blue');
       say "";
     print_in: |
       my $pi = ar.pi || S.id;
+      my $m = $m;
+      chomp $m;
       print colored("recv > $pi\t\t", 'red');
       print colored($m, 'bold red');
       say "";
