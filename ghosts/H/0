@@ -28,13 +28,13 @@ hooks:
       
   config: |
     my $listen = readlink('listen');
-        my ($host,$port, $wa) = split ':', $listen;
-        die "too much listen" if $wa;
-        ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
-        $port ||= 2000;
-        $host ||= '127.0.0.1';
-        
-        $port += w H.style/minorport; # TODO find soul via redis
+    my ($host,$port, $wa) = split ':', $listen;
+    die "too much listen" if $wa;
+    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+    $port ||= 2000;
+    $host ||= '127.0.0.1';
+
+    $port += w H.style/minorport;
         
     H.listen_http = "http://$host:$port";
     H.listen_ws = "ws://$host:$port/s";
