@@ -140,6 +140,61 @@ hooks:
     leaves: |
       sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
     
+  serve:
+    hash: |
+      write_file("hash_servee", {append => 1}, ki($j));
+        return w serve/claw   if j.claw;
+        return w serve/event  if j.event;
+        return w serve/error  if j.error; # change from {e}
+        return w serve/scroll if j.scroll;
+    claw: |
+      $H->claw($j);
+      
+    error: |
+      die j.d if H.JErrors++ > 3;
+      $H->error("javascript error from client", j.d, j.error);
+      
+    event: |
+      my $e = ar.e = j.event;
+      say ki($e);
+      say "e ki is";
+      return w serve/key if e.type =~ /^key/;
+      return w S/W if e.W;
+      
+      sayyl "STRANGE:" for 1..3;
+      return w serve/TV if e.id;
+      
+      $H->error("Strange event", $e);
+      
+    key: |
+      G:keys ->w(Arr => {e => $e});
+      
+      
+    TV: |
+      my $id = $e->{id};
+      my $thing = $H->tv_by_id($id) if $id;
+
+          if ($thing) {
+              sayyl "TV  $thing->{id}";
+              $thing->event($e);
+          }
+          else {
+              sayyl "TV not found".( $id ? ": $id" : ", lacking id");
+              
+
+              if (my $catcher = $H->get('clickcatcher')) {
+                  sayyl "Event catcher found: $catcher";
+                  $catcher->event($e);
+              }
+              else {
+                  sayyl "NOTHING" for 1..4;
+              }
+          }
+          sayyl "event handled in ".$G->F_delta()."\n\n";
+  
+  
+
+  
   S:
     wsy: | #c
       my $C = G.conz ||= {};
@@ -179,7 +234,7 @@ hooks:
             $W = H.G.A.W->{$Wid}
       }
       else {
-            $W = grep { $_->{id} eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
+            $W = grep { _.id eq "Wormhole-$Wid" } @{$H->get("Wormhole")}
       }
       
       my $E = {};
@@ -566,6 +621,7 @@ hooks:
   
   serve:
     hash: |
+      write_file("hash_servee", {append => 1}, ki($j));
         return w serve/claw   if j.claw;
         return w serve/event  if j.event;
         return w serve/error  if j.error; # change from {e}
@@ -593,7 +649,7 @@ hooks:
       G:keys ->w(Arr => {e => $e});
       
       
-    TV: | #c
+    TV: |
       my $id = $e->{id};
       my $thing = $H->tv_by_id($id) if $id;
 
