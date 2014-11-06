@@ -52,13 +52,14 @@ hooks:
     w $J decode;
     my $j = J.B.j;
     
-    return w serve/hash[$j] if ref $j eq "HASH";
     if (ref $j eq "HASH") {
         if (keys %$j != 1) {
             die "hash wide/skinny ".wdump($j);
         }
         my ($uno) = keys %$j;
         w Sha/$uno[$j];
+        # hit or not? see post 6 with r
+        return;
     }
     
     die "weird shit: '$m'" if ref $j;
@@ -147,13 +148,7 @@ hooks:
     leaves: |
       sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
     
-  serve:
-    hash: |
-      write_file("hash_servee", {append => 1}, ki($j));
-        return w serve/claw   if j.claw;
-        return w serve/event  if j.event;
-        return w serve/error  if j.error; # change from {e}
-        return w serve/scroll if j.scroll;
+  Sha:
     claw: |
       $H->claw($j);
       
