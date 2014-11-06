@@ -278,9 +278,9 @@ div.CodeMirror-lines span {
   // default, top level #c
   var w = {conin: '<%= $ws_location %>'};
   var fail = 0;
+  var ws;
   var a = {};
   var C = {};
-
   // splat #c
   a.e = function(e) {
       console.log("xut "+e);
@@ -388,6 +388,7 @@ div.CodeMirror-lines span {
                }
                
                c.onmessage = function (ev) {
+                   ws = c;
                    a.m(ev.data);
                };
                c.onopen = function () {
