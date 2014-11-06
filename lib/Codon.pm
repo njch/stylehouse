@@ -334,12 +334,12 @@ sub save_chunk {
     my $textid = $self->{text}->{id}."-Text-$i";
 
     my $sec = $self->{hostinfo}->claw_add( sub {
-        my $e = shift;
-        $self->update_chunk($i => decode_entities($e->{code}));
+        my $clj = shift;
+        $self->update_chunk($i => decode_entities($clj->{code}));
     } );
 
     $self->{hostinfo}->send(
-         "  s.reply({claw: '$sec', code: \$('#$textid').val()}); "
+         "  s.reply({claw:{sec:'$sec', code:\$('#$textid').val()}}); "
     );
 }
 sub update_chunk {

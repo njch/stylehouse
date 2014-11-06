@@ -440,13 +440,15 @@ sub secret { # make a number bigger than the universe
 sub claw {
     my $self = shift;
     my $event = shift;
+    my $clj = $event->{claw};
+    my $sec = $clj->{sec};
     say "Claw!";
-    return 0 unless exists $self->{claws}->{$event->{claw}};
+    return 0 unless exists $self->{claws}->{$sec};
     say "Claw exists";
     
-    my $sub = delete $self->{claws}->{$event->{claw}};
+    my $sub = delete $self->{claws}->{$sec};
     say "Doing Claw";
-    $sub->($event);
+    $sub->($clj);
     say "Claw Done!";
     return 1;
 }
