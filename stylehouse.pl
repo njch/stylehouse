@@ -102,176 +102,176 @@ __DATA__
 
 @@ thecss.html.ep
         <style type="text/css">
-#flood:before {
-    background: url(i/greencush.jpg);
-    background-size: 100%;
-    
-    content: '';
-    position: absolute;
-   
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity:0.5;
-}
-.insplatm {
-    font-size: 15pt;
-    text-shadow: 1px 1px 2px #fc0;
-}
-#Codo:before bollocks {
-    background-image: url(i/blue-velvet-sofa.jpg);
-    background-size: 100% 300%;
-    
-    content: '';
-    position: absolute;
-   
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity:0.5;
-}
+    #flood:before {
+        background: url(i/greencush.jpg);
+        background-size: 100%;
+        
+        content: '';
+        position: absolute;
+       
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity:0.5;
+    }
+    .insplatm {
+        font-size: 15pt;
+        text-shadow: 1px 1px 2px #fc0;
+    }
+    #Codo:before bollocks {
+        background-image: url(i/blue-velvet-sofa.jpg);
+        background-size: 100% 300%;
+        
+        content: '';
+        position: absolute;
+       
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity:0.5;
+    }
 
-.divlabel {
-    z-index: -5;
-}
-.floated {
-    position: fixed !important;
-    top: 40%;
-    right: 58%;
-    padding: 3px;
-}
-#body {
-    background: rgba(178,140,192,0.8);
-    background-image:url('i/IMG_3524.JPG');
-    background-size: 100%;
-    font-family: monospace;
-    overflow: hidden;
-    margin: 0px;
-}
-.splat-w {
-    font-size:10pt;
-    background-color:#445;
-    max-height: 3em;
-    word-wrap: break-word; overflow:hidden;
-}
-.inface {
-    position:fixed !important;
-    z-index:100 !important;
-    top: 0.5em!important;
-    right 0.5em!important;
-}
-.hidata:hover {
-    color: white;
-}
-.NE {
-    position: fixed;
-    right: 0px;
-    top: 0px;
-}
-span.en:hover{
-    background-color: #fc6;
-}
-.data {
-    position: absolute;
-    white-space: pre;
-    cursor: text;
-}
-.hear {
-    font-family: serif;
-    font-weight: 600;
-    font-size: 22pt;
-    color: white;
-    opacity: 1;
-}
-.dead {
-    background: #0d0e4d !important;
-    -webkit-filter: blur(4px) brightness(2.8) contrast(4.9) grayscale(0.8) hue-rotate(300deg) invert(0.8) saturate(4.3);
+    .divlabel {
+        z-index: -5;
+    }
+    .floated {
+        position: fixed !important;
+        top: 40%;
+        right: 58%;
+        padding: 3px;
+    }
+    #body {
+        background: rgba(178,140,192,0.8);
+        background-image:url('i/IMG_3524.JPG');
+        background-size: 100%;
+        font-family: monospace;
+        overflow: hidden;
+        margin: 0px;
+    }
+    .splat-w {
+        font-size:10pt;
+        background-color:#445;
+        max-height: 3em;
+        word-wrap: break-word; overflow:hidden;
+    }
+    .inface {
+        position:fixed !important;
+        z-index:100 !important;
+        top: 0.5em!important;
+        right 0.5em!important;
+    }
+    .hidata:hover {
+        color: white;
+    }
+    .NE {
+        position: fixed;
+        right: 0px;
+        top: 0px;
+    }
+    span.en:hover{
+        background-color: #fc6;
+    }
+    .data {
+        position: absolute;
+        white-space: pre;
+        cursor: text;
+    }
+    .hear {
+        font-family: serif;
+        font-weight: 600;
+        font-size: 22pt;
+        color: white;
+        opacity: 1;
+    }
+    .dead {
+        background: #0d0e4d !important;
+        -webkit-filter: blur(4px) brightness(2.8) contrast(4.9) grayscale(0.8) hue-rotate(300deg) invert(0.8) saturate(4.3);
 
-}
-.widdle {
-    height: 1em !important;
-    overflow: hidden !important;
-}
-.invis { display:none }
-.widdle * {
-    display: none;
-}
-#mess.widdle {
-    height: 100% !important;
-    width: 1em !important;
-}
-.widel {
-    width: 50em !important;
-}
-.vvvv {
-    position: relative;
-    float: left;
-}
-.abspan > span {
-    position: absolute;
-}
-.view {
-    position: relative;
-    float: left;
-}
-.view > span {
-    position: absolute;
-}
-span.menu {
-    position: relative !important;
-    float: left;
-    cursor: help;
-}
-.lyrics {
-    position: absolute;
-}
-.on {
-    color: white;
-    background: #777;
-}
-.onn {
-    -webkit-filter: brightness(1.4) contrast(10) grayscale(0.2) hue-rotate(140deg) invert(0.3) saturate(8.5);
-    text-shadow:2px 10px 7px #FF33CC !important;
-}
-div.CodeMirror-lines span {
-    #font-family: u0400;
-}
-#Keys {
-    font-size: 30pt;
-}
-.err { color: red; }
-::-webkit-scrollbar {
-    width: 20px;
-}
-#sky::-webkit-scrollbar {
-    width: 40px;
-}
-#sky::-webkit-scrollbar-thumb {
-    background: url(i/copper_anodes.jpg);
-}
-#Codo::-webkit-scrollbar {
-    width: 40px;
-}
-#Codo::-webkit-scrollbar-thumb {
-    background: url(i/copper_anodes.jpg);
-    min-height:7em;
-}
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    -webkit-border-radius: 10px;
-    border-radius: 29px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: url(i/greencush.jpg);
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-}
-::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(33,0,55,0.1); 
-} 
+    }
+    .widdle {
+        height: 1em !important;
+        overflow: hidden !important;
+    }
+    .invis { display:none }
+    .widdle * {
+        display: none;
+    }
+    #mess.widdle {
+        height: 100% !important;
+        width: 1em !important;
+    }
+    .widel {
+        width: 50em !important;
+    }
+    .vvvv {
+        position: relative;
+        float: left;
+    }
+    .abspan > span {
+        position: absolute;
+    }
+    .view {
+        position: relative;
+        float: left;
+    }
+    .view > span {
+        position: absolute;
+    }
+    span.menu {
+        position: relative !important;
+        float: left;
+        cursor: help;
+    }
+    .lyrics {
+        position: absolute;
+    }
+    .on {
+        color: white;
+        background: #777;
+    }
+    .onn {
+        -webkit-filter: brightness(1.4) contrast(10) grayscale(0.2) hue-rotate(140deg) invert(0.3) saturate(8.5);
+        text-shadow:2px 10px 7px #FF33CC !important;
+    }
+    div.CodeMirror-lines span {
+        #font-family: u0400;
+    }
+    #Keys {
+        font-size: 30pt;
+    }
+    .err { color: red; }
+    ::-webkit-scrollbar {
+        width: 20px;
+    }
+    #sky::-webkit-scrollbar {
+        width: 40px;
+    }
+    #sky::-webkit-scrollbar-thumb {
+        background: url(i/copper_anodes.jpg);
+    }
+    #Codo::-webkit-scrollbar {
+        width: 40px;
+    }
+    #Codo::-webkit-scrollbar-thumb {
+        background: url(i/copper_anodes.jpg);
+        min-height:7em;
+    }
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+        -webkit-border-radius: 10px;
+        border-radius: 29px;
+    }
+     
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: url(i/greencush.jpg);
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    }
+    ::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(33,0,55,0.1); 
+    } 
         </style>
 @@ thejs.html.ep
 <script type="text/javascript">
@@ -388,7 +388,7 @@ div.CodeMirror-lines span {
                }
                
                c.onmessage = function (ev) {
-                   ws = c;
+                   s = c;
                    a.m(ev.data);
                };
                c.onopen = function () {
@@ -420,7 +420,9 @@ div.CodeMirror-lines span {
                   t = 256;
               }
               window.setTimeout(function(){
+                  if (C[c.conin]( { # undone
                   a.con(c);
+                }
               }, t);
             }
             WebSocket.prototype.reply = function reply (stuff) {
