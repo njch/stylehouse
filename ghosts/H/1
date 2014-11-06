@@ -3,6 +3,7 @@ name: osts
 hooks:
   fresh_init: |
     say "     H 2 ! init H.style H.name";
+    G!H/mess; # due to spawn syntax
     
   z:
     getgeometry: |
@@ -11,16 +12,19 @@ hooks:
       $H->send("\$('body').empty();");
     clon: |
       $H->send("clon();");
-        
+    hitground: |
+      $H->JS("\$('#sky').stop().slideUp();");
+    conz: |
+      $E->send(" s\.reply({conz:conz});");
+    wzy: |
+      $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
     minorport: |
       1
     in: |
-      G!H/mess;
-      waylay stylehut/play;
-      
+      waylay stylehut/play; # get going right away
     play: |
       H.h = G!Ϡ;
     
@@ -30,23 +34,18 @@ hooks:
       G:Ϡ w elvis_enters;
     
     elvibe: |
-      H.notunderworld = 1;
-      $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
-      # get clicked out of spaces:
-      $E->send(" s\.reply({conz:conz});");
-      # shed empties body, hehe
+      w z/wzy;
+      w z/conz;
       
     singul: |
       sayg "sSingu mode";
       
       G:Ϡ w elvis_enters;
       
-      $H->send(" clon();");
+      w z/clon;
       
       *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
-      
-      $H->send(sprintf "version is v%vd", $^V);
-      
+
       Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
     honk: |
@@ -59,13 +58,9 @@ hooks:
   styleshed:
     reexec: |
       exec "perl stylehouse.pl SHED";
-    in: |
-      G!H/mess; # due to spawn syntax
     elvibe: |
-      say "Elvibin";
-      w z/getgeometry;
-      w z/empty_body;
-      w z/clon;
+      w stylehouse/flood;
+      w styleshed/play;
     play: |
       G!H/keys;
       
@@ -77,20 +72,22 @@ hooks:
   stylehouse:
     reexec: |
       exec "perl stylehouse.pl HOUSE";
-    in: |
-      G!H/mess; # due to spawn syntax
     elvibe: |
-      $H->send($_) for 
-        "w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});",
-        "\$('body').empty();", # or not...
-        "clon();";
-      w H.style/play;
-      G!H/colour; # TODO R
+      w stylehouse/flood;
+      w stylehouse/play;
+    flood: |
+      w z/getgeometry;
+      w z/empty_body;
+      w z/clon;
       
+      G!H/colour; # TODO R
       G!H/sky ->w('flood_init');
+      
+      H.notunderworld = 1;
     play: |
       G!H/ground ->w('flood_init');
       Git->new($H->intro);
       Codo->new($H->intro);
-      $H->JS("\$('#sky').stop().slideUp();");
+      w z/hitground;
+      
 
