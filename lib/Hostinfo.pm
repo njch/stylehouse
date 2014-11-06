@@ -19,8 +19,8 @@ use Data::Dumper;
 use YAML::Syck;
 use JSON::XS;
 sub sha1_hex { Digest::SHA::sha1_hex(encode_utf8(shift)) }
-sub enhash { sha1_hex(shift) }
-sub dig { enhash(shift) }
+sub enhash { Digest::SHA::sha1_hex(encode_utf8(shift)) }
+sub dig { shift; Digest::SHA::sha1_hex(encode_utf8(shift)) }
 use lib 'zrc/lib';
 use Redis;
 
