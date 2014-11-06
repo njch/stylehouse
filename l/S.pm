@@ -190,9 +190,9 @@ __DATA__
             t = 256;
         }
         window.setTimeout(function(){
-            if (C[c.conin]( { # undone
-            a.con(c);
-          }
+            if (C[c.conin]) { # still
+                a.con(c);
+            }
         }, t);
       }
       WebSocket.prototype.reply = function reply (stuff) {
