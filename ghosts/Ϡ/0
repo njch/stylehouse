@@ -57,12 +57,13 @@ hooks:
         $v = {way => $v} if !ref $v;
         my $w = v.way || $k;
         my $ug = 0->GAK($k => G!$w);
-        die "ug nok ug.name" if !ug.K;
+        die "ug nok ug.name" if !defined ug.K;
     }
   percs: |
     #die sw($G);
     for my $g (@{G.GGs}) {
-        my $K = g.K || die "no K? g.name".sw($G);
+        my $K = g.K;
+        defined $K || die "no K? g.name".sw($G);
         my $BS = G.am->{"${K}s"};
         saygr "to perc ".gpty($g)."   ".gpty($BS);
         sayre "found no percos via g.K\s in G.name G.am" if !$BS;

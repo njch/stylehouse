@@ -67,7 +67,7 @@ sub new {
     $name = "$name`($way)";
     $self->{name} = $name;
     $self->{way} = $way;
-    saygr("Ghost\t\tnamed\t\t$name");
+    saygr("Ghost \t \t $name");
     $self->load_ways(@ways);
     
     if (ref $self->{T}->{O} eq "Ghost") {
