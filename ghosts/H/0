@@ -109,7 +109,6 @@ hooks:
         }
   S:
     W: |
-    
         for (qw'id ux W') {
             delete $e->{$_} unless $e->{$_} =~ /^\w+$/;
         }
@@ -149,12 +148,14 @@ hooks:
       
       w z/conz;
       
-      return w H.style/elvus if $w ne $s;
-      
-      saygr "is eq";
-      E.singul = 1;
-      H.who = $E;
-      w H.style/singul;
+      E.singul = 1 if $w ne $s;
+      if (E.singul) {
+          H.who = $E;
+          w H.style/singul;
+      }
+      else {
+          return w H.style/elvus;
+      }
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -170,7 +171,7 @@ hooks:
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
   elvibe: |
     w H.style/elvibe;
-      w z/wzy; # conz, swim
+    w z/wzy; # conz, swim
     
   stylehut:
     reexec: |
@@ -181,25 +182,22 @@ hooks:
       say "Sport: $p";
       $p;
     in: |
+      *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
       waylay stylehut/play; # get going right away
     play: |
       H.h = G!Ϡ;
     
-    elvus: |
-      sayg "elvission modio";
-      
-      G:Ϡ w elvis_enters;
-    
     elvibe: |
       
+    elvus: |
+      sayg "elvission modio";
+    
     singul: |
       sayg "sSingu mode";
       
       G:Ϡ w elvis_enters;
       
       w z/clon;
-      
-      *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
 
       Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
