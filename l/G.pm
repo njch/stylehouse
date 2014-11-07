@@ -380,8 +380,11 @@ sub scGre {
 sub ip {
     my $G = shift;
     my ($ip, $i) = @_;
-    (!exists $ip->{K} || $i->{K} eq $ip->{K}) &&
-    (!exists $ip->{V} || $i->{V} eq $ip->{V})
+    my $pass = 1;
+    for my $I (keys %$ip) {
+        $pass-- if $ip->{$I} ne $i->{$I};
+    }
+    $pass == 1
 }
 
 sub rei {
