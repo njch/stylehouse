@@ -9,24 +9,30 @@ name: kasplat
 
 C:
   - K: 'mess'
-    # Gw: 1 # TODO cannot handle?
+    Gw: 1 # TODO cannot handle?
     print: |
-      ref $thing eq "Way" || ref $thing eq "C" ? $thing->pint : ghostlyprinty($thing);
+        "m S.m".
+        wish(w => $thing) ? $thing->pint : ghostlyprinty($thing);
     wheresplain: |
       $S->{waystack} ? w $S->{waystack} wheresplain : "";
       "roar!";
 hooks:
+  
+  
   fresh_init: |
     H._future = 1;
     G.trigs = [];
     G.populi.max = 10;
   Arr: |
     my $S = 0->TB(mess => {thing => $thing, what => $what});
-    S.K="m$what";
+    S.m = $what;
     S.Flab = $G->Flab($S);
     
-    
     $_->($S) for @{G.trigs};
+    
+    if (S.m =~ /^(Ambientness|Vitals)$/) {
+        $_ ne $S && 0->del($_) for 0->rei({qw'K mess m', $1})
+    }
     
     my $s = G.W.script;
     shift @$s until @$s <= 10;
