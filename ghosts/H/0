@@ -34,7 +34,7 @@ hooks:
     $host ||= '127.0.0.1';
 
     $port += w H.style/minorport;
-        
+    
     H.listen_http = "http://$host:$port";
     H.listen_ws = "ws://$host:$port/s";
     
@@ -176,7 +176,10 @@ hooks:
     reexec: |
       exec "perl l/S".".pm";
     minorport: |
-      1
+      my $p = ord(H.name);
+      $p += 8000;
+      say "Sport: $p";
+      $p;
     in: |
       waylay stylehut/play; # get going right away
     play: |

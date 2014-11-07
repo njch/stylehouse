@@ -18,7 +18,9 @@ get '/' => sub{
 };
 
 # MOVE post transport leveling
-$H = H->new({name => 'S', style => 'stylehut'});
+my $name = join(' ', @ARGV);
+$name ||= 'S';
+$H = H->new({name => $name, style => 'stylehut'});
 
 websocket '/s' => sub {
     my $mojo = shift;
