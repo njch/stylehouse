@@ -25,7 +25,8 @@ hooks:
       };
       $H->JS(qq{\$('#sky').append('<div id="ux" style="$style"></div>');});
     coninto: |
-      $H->send(" a\.con({conin: '$ws'});");
+      Say "CONING IN $conin";
+      $H->send(" a\.con({conin: '$conin'});");
   busk:
     styleshed: |
       Say "SttyleSHEDing        H.name";
@@ -55,13 +56,15 @@ hooks:
         saygr "to make $k";
         $v = {way => $v} if !ref $v;
         my $w = v.way || $k;
-        0->GAK(v.k => G!$w);
+        0->GAK($k => G!$w);
     }
   percs: |
-    saygr "percs for ".sw($G);
     for my $g (@{G.GGs}) {
-        my $BS = G.am->{g.K.'s'} if g.K;
-        saygr "to perc g.K ".gpty($BS);
+        my $K = g.K || die "no K? G.name";
+        my $BS = G.am->{"${K}s"};
+        saygr "to perc ".gpty($g)."   ".gpty($BS);
+        die "found no g.K"."s in ".ki(G.am) if !$BS;
+        #g.name =~ /ool/ && die sw[$G,$g];
         $g w percolate[$BS];
     }
   reperc: |
@@ -72,16 +75,19 @@ hooks:
         L: {}
         0: {}
         ool: C/ool
+        ools: 
+          - K: Ims
+            B:
+              dir: /s/public/i
         #E # brack wall # cake?
 
     stylehut:
       S:
-        background: C/ool
         bacg: C/ool
         bacgs: 
           - K: Ims
             B:
-              dir: /s/public/i
+              dir: /s/public/il
       O:
         ood: C/odon
         oods:
@@ -96,9 +102,8 @@ hooks:
                   bottom: 20%
                   position: absolute
   elvac: |
-    saygr "H.style`elvac $top $m";
+    saygr "H.style/H.name\t\t`elvac\t\t$top\t\t$m";
     my ($style, $name, $id, $conin) = split ' ', $m;
-    say " $m means conin $conin";
     w z/coninto[$conin];
     
   envac: |
