@@ -53,7 +53,7 @@ sub new {
     $self->{GGs} = [];
     
     my @ways = @_;
-    say "way spec @_";
+    whisper "way spec @_";
     unless (@ways) {
         my $s = { map { $_ => (/^(\w)/)[0] }
             qw{Ghost Hostinfo Travel Wormhole} };

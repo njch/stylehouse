@@ -67,7 +67,7 @@ sub TT {
     my $self = shift;
     my @from = @_;
     @from || die "WTF H::TT NO FROM";
-    say "H Making Travel ". join ", ", map { Ghost::gpty($_) } @from;
+    whisper "H Making Travel ". join ", ", map { Ghost::gpty($_) } @from;
     return Travel->new($self->intro, @from);
 }
 sub Gf {

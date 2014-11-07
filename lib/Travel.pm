@@ -14,7 +14,7 @@ sub new {
     my $O = $self->{O} = shift || die "no O";
     $self->{from} = [$O, @_];
     $self->{name} = Ghost::gname($O);
-    say "+T $self->{name}";
+    whisper "+T $self->{name}";
     return $self;
 }
 sub G {
