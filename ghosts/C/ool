@@ -173,9 +173,6 @@ S:
         - '-webkit-box-reflect: below -15px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.5)))'
 perc_BS: # pre wormhole load
 #  - K: YouTube
-  - K: Ims
-    B:
-      dir: /s/public/i
 perc_else:
   - K: Ra
     e: 10
@@ -240,10 +237,8 @@ hooks:
        }
     paused: |
       G.paused
-  percolate: |
-    my $BS = ar.BS || $G->anyway('perc_BS'); # G0
-    
-    return unless $BS;
+  percs: |
+    die "nothing to do" unless $BS;
     for my $uS (@$BS) {
         my $u = 0->sway({K=>uS.K}, $uS);
         $u = 0->Tafu($u);

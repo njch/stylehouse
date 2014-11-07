@@ -16,8 +16,6 @@ hooks:
     $G->w("busk/H.style");
   recoded_init: |
     w reperc;
-  any_init: |
-    $H->send("whatever"); 
   z:
     uxsky: |
       $H->JS("\$('#sky').css('overflow', 'hidden');");
@@ -26,55 +24,66 @@ hooks:
           width:100% height:100% font-size:10pt pointer-events:none
       };
       $H->JS(qq{\$('#sky').append('<div id="ux" style="$style"></div>');});
-      
+    coninto: |
+      $H->send(" a\.con({conin: '$ws'});");
   busk:
     styleshed: |
       Say "SttyleSHEDing        H.name";
       
-      w z/uxsky;
+      w z/uxsky; # make a thing (huts have #ux in page);
       
-      0->GAK(L =>     G!L/0); # lyrico
+      w transam;
       
-      0->GAK(0 =>     G!0); # compiler
+      0->su(sw => sub { G:L/0 ->w(sw => $_[0]); }); # suck splats
       
-      0->GAK(ool => G!C/ool); # pretty
-      
-      #0->GAK(Eh => G!E/h); # brick wall
-      
-      0->su(sw => sub { G:L/0 ->w(sw => $_[0]); });
-      0->su(elvac => sub { w elvac(%{$_[0]}); });
-      
-      waylay percolations;
+      0->su(elvac => sub { w elvac(%{$_[0]}); }); # deal elvi
       
     stylehut: |
       # H w/conz reconzoiters existing conz with H w z/conz
       # looks up stuff
-      my $s = $G->findway("am/H.style/H.name");
-      w stylo[$s];
+      w transam;
+      
       w envac; # chase down elvis
-      waylay perco[$s];
+  transam: |
+    G.am = $G->findway("am/H.style/H.name")
+        || die "what $s? H.style/H.name";
+    w stylo;
+    waylay perco;
   stylo: |
-    wish(C=>$s) || die "what $s?";
-    for my $g (@{ s.GG||[] }) {
-        
-        0->GAK(g.K => G!g.way);
-    
+    while (my ($k, $v) = each %{G.am}) {
+        next if $k =~ /s$/;
+        saygr "to perc $k";
+        $v = {way => $v} if !ref $v;
+        my $w = v.way || $k;
+        0->GAK(v.k => G!$w);
     }
-  perco: |
-    for my $g (@{ s.GG||[] }) {
-    
+  percs: |
+    while (my ($k, $v) = each %{G.am}) {
+        next if $k !~ /s$/;
+        saygr "to perc $k";
+        $GG->w('percolate');
     }
-  am: #c
+  reperc: |
+    # diff/inject/retravel above percolations
+  am:
+    styleshed:
+      Њ:
+        L: {}
+        0: {}
+        ool: C/ool
+        #E # brack wall # cake?
+
     stylehut:
-      S: #c stylehut
-        GG:
-          - K: background
-            way: C/ool
-      O: #c stylehut
-        GG:
-          - K: ood
-            way: C/odon
-            perc:
+      S:
+        background: C/ool
+        bacg: C/ool
+        bacgs: 
+          - K: Ims
+            B:
+              dir: /s/public/i
+      O:
+        ood: C/odon
+        oods:
             - K: IF
               B:
                 href: http://s:2001
@@ -87,9 +96,9 @@ hooks:
                   position: absolute
   elvac: |
     saygr "H.style`elvac $top $m";
-    my ($style, $name, $id, $ws) = split ' ', $m;
-    say " $m means conin $ws";
-    $H->send(" a\.con({conin: '$ws'});");
+    my ($style, $name, $id, $conin) = split ' ', $m;
+    say " $m means conin $conin";
+    w z/coninto[$conin];
     
   envac: |
     H.r->publish("elvac", "H.style H.name H.id H.listen_ws");
@@ -147,12 +156,6 @@ hooks:
     }
     w wux;
     saybl "ux ".$G->F_delta();
-  percolations: |
-    for my $GG (@{G.GGs}) { # could ar into GG=$K orso
-        saygr "to perc GG.name";
-        $GG->w('percolate');
-        
-    }
   wux: |
     for my $GG (@{G.GGs}) { # could ar into GG=$K orso
         $GG->w('uxd');
