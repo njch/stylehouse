@@ -191,9 +191,6 @@ hooks:
           }
           sayyl "event handled in ".$G->F_delta()."\n\n";
   
-  
-
-  
   S:
     wsy: |
       my $C = G.conz ||= {};
@@ -238,6 +235,92 @@ hooks:
         E.e = $e;
       
           E.W.G->w('event', $E);
+
+  z:
+    getgeometry: |
+      $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
+    empty_body: |
+      $H->send("\$('body').empty();");
+    clon: |
+      $H->send("clon();");
+    hitground: |
+      $H->JS("\$('#sky').stop().slideUp();");
+    conz: |
+      $E->send(" s\.reply({conz:conz});");
+    wzy: |
+      $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
+  stylehut:
+    reexec: |
+      exec "perl l/S".".pm";
+    minorport: |
+      1
+    in: |
+      waylay stylehut/play; # get going right away
+    play: |
+      H.h = G!Ϡ;
+    
+    elvus: |
+      sayg "elvission modio";
+      
+      G:Ϡ w elvis_enters;
+    
+    elvibe: |
+      w z/wzy;
+      w z/conz;
+      
+    singul: |
+      sayg "sSingu mode";
+      
+      G:Ϡ w elvis_enters;
+      
+      w z/clon;
+      
+      *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
+
+      Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
+      Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
+    honk: |
+      $H->send('.'. (("  ")x int(2 + rand 10))."!!!");
+    yup: |
+      $G::swdepth = 10;
+      say "yup: ".sw("styleh00t ".sprintf('%.5f',rand()));
+      
+      
+  styleshed:
+    reexec: |
+      exec "perl stylehouse.pl SHED";
+    elvibe: |
+      w stylehouse/flood;
+      w styleshed/play;
+    play: |
+      G!H/keys;
+      
+      G!Ϡ;
+      
+      my $Dambi = sub { G:sky w ambientness; };
+      w wtf(div => 26, way => 'sky amb', D => $Dambi);
+      
+  stylehouse:
+    reexec: |
+      exec "perl stylehouse.pl HOUSE";
+    elvibe: |
+      w stylehouse/flood;
+      w stylehouse/play;
+    flood: |
+      w z/getgeometry;
+      w z/empty_body;
+      w z/clon;
+      
+      G!H/colour; # TODO R
+      G!H/sky ->w('flood_init');
+      
+      H.notunderworld = 1;
+    play: |
+      G!H/ground ->w('flood_init');
+      Git->new($H->intro);
+      Codo->new($H->intro);
+      w z/hitground;
+
   wtf: |
     # TODO combine with check, fractionating importantness into time
     if (ar.way && ar.div) {
