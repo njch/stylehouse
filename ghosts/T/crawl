@@ -37,5 +37,12 @@ hooks:
     my $depth = ar.depth || 0;
     my $i = ar.i || $G->Flab();
     my $t = ar.t || undef;
+    G.thingness = 0;
     0->T({i=>$i, t=>$t, depth=>$depth});
+  T:
+    flows: |
+      G.thingness++;
+    links: |
+      return if G.thingness < 6;
+      _.dont = 1 for @{T.o} 
 

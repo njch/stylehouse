@@ -28,16 +28,17 @@ hooks:
       w aft_arr;
     travels: | #c
         for my $c (@{T.o}) {
-            if (exists c.travel_this || c.travels) {
-                my $p = {
-                    depth => T.depth+1, 
-                    t => c.travel_this,
-                    i => $c,
-                };
-                my $for = T.i;
-                0->T($p);
-                die "Argh!~!" unless $for eq T.i;
-            }
+            next if c.dont;
+            next unless exists c.travel_this || c.travels;
+            
+            my $p = {
+              depth => T.depth+1, 
+              t => c.travel_this,
+              i => $c,
+            };
+            my $for = T.i;
+            0->T($p);
+            die "Argh!~!" unless $for eq T.i;
         }
   chains: |
     my @chains = grep { !$_->{_disabled} } map { @{$_} } $G->anyway('chains');

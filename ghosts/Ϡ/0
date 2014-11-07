@@ -64,10 +64,12 @@ hooks:
     for my $g (@GGs) {
         my $K = g.K;
         defined $K || die "no K? g.name".sw($G);
-        my $BS = G.am->{"${K}s"};
+        my $BS = G.am->{"${K}s"} || do {
+            sayre "no percos a g.K\s in G.name G.am";
+            [];
+        };
         saygr "to perc ".gpty($g)."   ".gpty($BS);
-        sayre "found no percos via g.K\s in G.name G.am" if !$BS;
-        #g.name =~ /ool/ && die sw[$G,$g];
+        
         $g w percolate[$BS];
     }
   reperc: |
@@ -92,7 +94,7 @@ hooks:
         L: {}
         0: {}
         ool: C/ool
-        ools: 
+        ools:
           - K: Ims
             B:
               dir: /s/public/i
