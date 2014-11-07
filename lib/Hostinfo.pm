@@ -301,14 +301,22 @@ sub throwlog {
     my $error =
         [ hitime(), $H->stack(2), [@E] ];
     
-    my @context = (
-        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ } @{$error->[1]},
-    );
-    @context = () if $what eq "Say" || $what eq "Info";
+    my @context =
+        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ }
+            @{$error->[1]}
+    
+    unless $what eq "Say" || $what eq "Info";
+    
+    my @wrap = ();
     my @f = @Ghost::F;
     for my $c (@context) {
-        my $f = shift @f;
-        say "$c ======== ". Ghost::gpty($f->{thing});
+        if ($c =~ /(G)host::(doo|w) (\d+)/) {
+            my $f = shift @f;
+            push @wrap, "$1 $2\t$3\t ". Ghost::gpty($f->{thing});
+        }
+        else {
+            push @wrap, $c;
+        }
     }
     
     my $string = join("\n",
