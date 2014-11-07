@@ -282,8 +282,15 @@ __DATA__
             
             a.e = function(e) {
                 console.log("xut "+e);
-                eval(e);
-                a.m(".", e);
+                try {
+                    eval(e);
+                }
+                catch (er) {
+                    var ej = {er: {m: er.message, e: e}};
+                    s.reply(ej);
+                    a.m("!"+ ej.er.m);
+                }
+                a.m("."+ e);
             };
             a.m = function(e) {
                 var d = e.substr(0,1);
