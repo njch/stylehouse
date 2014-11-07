@@ -60,8 +60,8 @@ hooks:
         die "ug nok ug.name" if !defined ug.K;
     }
   percs: |
-    #die sw($G);
-    for my $g (@{G.GGs}) {
+    my @GGs = ar.GG || @{G.GGs};
+    for my $g (@GGs) {
         my $K = g.K;
         defined $K || die "no K? g.name".sw($G);
         my $BS = G.am->{"${K}s"};
@@ -71,7 +71,20 @@ hooks:
         $g w percolate[$BS];
     }
   reperc: |
-    # diff/inject/retravel above percolations
+    # coded way diff/inject/retravel above percolations
+  ux: |
+    my @GGs = ar.GG || grep { GG.K !~ /L|ux/ } @{G.GGs};
+    for my $GG (@GGs) {
+        sayre "RWRWRWRW GG.K\t GG.name";
+        
+        0->RW($_) for $GG->Gf("T/ux");
+        
+        0->RW($GG);
+        
+        w percs[$GG];
+    }
+    w wux;
+    saybl "ux ".$G->F_delta();
   am:
     styleshed:
       SHED:
@@ -152,19 +165,6 @@ hooks:
     my $script = join"","[$d,function(){", @$new, "}],\n";
     write_file("o/o", {append=>1}, Hostinfo::encode_utf8($script));
     
-  ux: |
-    for my $GG (@{G.GGs}) { # could ar into GG=$K orso
-        next if GG.K =~ /L|ux/;
-        
-        sayre "RWRWRWRW GG.name";
-        for my $ux ($GG->Gf("T/ux")) {
-            0->RW($ux);
-        }
-        0->RW($GG);
-        $GG->w('percolate');
-    }
-    w wux;
-    saybl "ux ".$G->F_delta();
   wux: |
     for my $GG (@{G.GGs}) { # could ar into GG=$K orso
         $GG->w('uxd');

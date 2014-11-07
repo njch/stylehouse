@@ -13,6 +13,8 @@ C: # Elvis, J
 hooks:
   fresh_init: |
     say "     H Fresh init H.style";
+    G!H/mess;
+    
     H.r = w enRedis;
     w config;
     
@@ -46,7 +48,6 @@ hooks:
   Teeth: |
     w $J print_in(pi => $E->pi);
     my $m = J.B.m;
-    w flood_init unless H.notunderworld; # somewhere round here
     w $J decode;
     my $j = J.B.j;
     
@@ -124,6 +125,7 @@ hooks:
     disconecktie: |
       $EE->send(" C[s\.conin] = s;");
       $tx->finish;
+      S.disco = 1;
       
     mouthfull: |
       for my $mJ (@{S.mouth}) {
@@ -144,7 +146,7 @@ hooks:
       }
       
     leaves: |
-      sayre "WebSocket closed: $address - $code, $reason";#, $code, $reason, $S);
+      sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
     
   Sha:
     claw: |
@@ -196,8 +198,9 @@ hooks:
     wsy: |
       my $C = G.conz ||= {};
       my ($w, $s) = split ' ', $m;
-      if (my $EE = $C->{$w}) {
-            sayre "Already on $w ".$EE->pi."  disco necktie ".$E->pi;
+      my $EE = $C->{$w};
+      if ($EE && !EE.disco) {
+            sayre "Already on $w ".$EE->pi."  disco necktie ing => ".$E->pi;
           w $E disconecktie[$EE];
           return;
       }
