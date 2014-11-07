@@ -53,7 +53,13 @@ hooks:
             die "hash wide/skinny ".wdump($j);
         }
         my ($uno) = keys %$j;
-        w Sha/$uno[$j];
+        saygr "cuno $uno";
+        my $a = {
+            j => $j,
+            $uno => $j->{$uno},
+            E => $E,
+        };
+        w c/$uno(%$a);
         # hit or not? see post 6 with r
         return;
     }
@@ -71,7 +77,7 @@ hooks:
     
     w $E swoosh;#9
     
-  Sha:
+  c:
     claw: |
       $H->claw($j);
       
@@ -81,60 +87,29 @@ hooks:
       
     event: |
       my $e = ar.e = j.event;
-      return w Sha/key if e.type =~ /^key/;
+      
+      return w c/key if e.type =~ /^key/;
+      
       return w S/W if e.W;
       
-      return w Sha/TV if e.id;
+      return w c/TV if e.id;
       
       $H->error("Strange event", $e);
       
     key: |
       G:keys ->w(Arr => {e => $e});
-      
     TV: |
-      my $id = $e->{id};
-      return sayyl "avoiding TV" if H.h;
-      my $thing = $H->tv_by_id($id) if $id;
-      
-          if ($thing) {
-              sayyl "TV  $thing->{id}";
-              $thing->event($e);
-          }
-          else {
-              sayyl "TV not found".( $id ? ": $id" : ", lacking id");
-              
-
-              if (my $catcher = $H->get('clickcatcher')) {
-                  sayyl "Event catcher found: $catcher";
-                  $catcher->event($e);
-              }
-              else {
-                  sayyl "NOTHING" for 1..4;
-              }
-          }
-          sayyl "event handled in ".$G->F_delta()."\n\n";
-  
+      w duu/TV;
+    
+    conz: |
+        while (my ($id, $conin) = each %$conz) {
+            next unless $conin eq H.listen_ws; # ours
+            next if H.G.A.W->{$id}; # current # lookup (into the unified)
+            $E->send(" delete conz['$id']; \$('#$id').fadeOut(2000);");
+        }
   S:
-    wsy: |
-      my $C = G.conz ||= {};
-      my ($w, $s) = split ' ', $m;
-      my $EE = $C->{$w};
-      if ($EE && !EE.disco) {
-            sayre "Already on $w ".$EE->pi."  disco necktie ing => ".$E->pi;
-          w $E disconecktie[$EE];
-          return;
-      }
-      $C->{$w} = $E;
-      (E.c->{w}, E.c.s) = ($w, $s);
-      saygr $E->pi." E.c.w, E.c.s \n\n";
-      
-      return w H.style/elvus if $w ne $s;
-      
-      saygr "is eq";
-      E.singul = 1;
-      H.who = $E;
-      w H.style/singul;
     W: |
+    
         for (qw'id ux W') {
             delete $e->{$_} unless $e->{$_} =~ /^\w+$/;
         }
@@ -159,6 +134,27 @@ hooks:
       
           E.W.G->w('event', $E);
 
+    wsy: |
+      my $C = G.conz ||= {};
+      my ($w, $s) = split ' ', $m;
+      my $EE = $C->{$w};
+      if ($EE && !EE.disco) {
+            sayre "Already on $w ".$EE->pi."  disco necktie ing => ".$E->pi;
+          w $E disconecktie[$EE];
+          return;
+      }
+      $C->{$w} = $E;
+      (E.c->{w}, E.c.s) = ($w, $s);
+      saygr $E->pi." E.c.w, E.c.s \n\n";
+      
+      w z/conz;
+      
+      return w H.style/elvus if $w ne $s;
+      
+      saygr "is eq";
+      E.singul = 1;
+      H.who = $E;
+      w H.style/singul;
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -172,6 +168,10 @@ hooks:
       $E->send(" s\.reply({conz:conz});");
     wzy: |
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
+  elvibe: |
+    w H.style/elvibe;
+      w z/wzy; # conz, swim
+    
   stylehut:
     reexec: |
       exec "perl l/S".".pm";
@@ -188,8 +188,6 @@ hooks:
       G:Ϡ w elvis_enters;
     
     elvibe: |
-      w z/wzy;
-      w z/conz;
       
     singul: |
       sayg "sSingu mode";
@@ -539,4 +537,28 @@ hooks:
           $apps->{$_} = $d->{$_};
       }
       return $apps;
+  duu:
+    TV: |
+      my $id = $e->{id};
+      return sayyl "avoiding TV" if H.h;
+      my $thing = $H->tv_by_id($id) if $id;
+      
+          if ($thing) {
+              sayyl "TV  $thing->{id}";
+              $thing->event($e);
+          }
+          else {
+              sayyl "TV not found".( $id ? ": $id" : ", lacking id");
+              
+
+              if (my $catcher = $H->get('clickcatcher')) {
+                  sayyl "Event catcher found: $catcher";
+                  $catcher->event($e);
+              }
+              else {
+                  sayyl "NOTHING" for 1..4;
+              }
+          }
+          sayyl "event handled in ".$G->F_delta()."\n\n";
+  
 
