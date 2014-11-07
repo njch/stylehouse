@@ -32,7 +32,10 @@ my ($style) = $Bin =~ m{/(\w+)$};
 my ($pwd) = `pwd`; chomp $pwd;
 die "ain't really in styledir...?" unless $Bin eq $pwd;
 (my $title = $style) =~ s/(.)/$1\N{U+0489}/g;
-my $name = 'Њ';
+my $name =
+    join('',@ARGV) 
+    || uc(($style =~ /(style)?(\w+)$/)[1]);
+    
 my $H = my $hostinfo = new Hostinfo({style => $style, name => $name});
 my $listen = $H->{listen_http};
 helper 'hostinfo' => sub { $hostinfo };
