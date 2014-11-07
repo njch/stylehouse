@@ -312,7 +312,7 @@ sub throwlog {
     for my $c (@context) {
         if ($c =~ /(G)host::(doo|w) (\d+)/) {
             my $f = shift @f;
-            push @wrap, "$1 $2\t$3\t ". Ghost::gpty($f->{thing});
+            push @wrap, "$1 $2\t$3\t ". $f->pi;
         }
         else {
             push @wrap, $c;
@@ -320,7 +320,7 @@ sub throwlog {
     }
     
     my $string = join("\n",
-        @context,
+        @wrap,
         @{$error->[2]},
     );
     $string = "\n$string\n";
