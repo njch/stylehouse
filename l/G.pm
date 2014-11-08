@@ -7,7 +7,8 @@ use lib 'lib';
 use feature 'say';
 use base 'Ghost';
 sub wdump { H::wdump(@_) };
-sub gpty { Ghost::wdump(@_) };
+sub gpty { Ghost::gpty(@_) };
+sub pint { Ghost::pint(@_) };
 use YAML::Syck;
 our $swdepth = 5;
 our $T; # allele tower... not like so, again R above
@@ -110,7 +111,6 @@ sub babblethehut {
     $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
     $eval =~ s/G:($Gnv)/HGf("$1")/sg;
 
-    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
     $eval =~ s/(0S->\w+)\(/\$G->_0("$1", /sg;
 

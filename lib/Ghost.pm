@@ -453,14 +453,7 @@ sub _0 {
         $G0->w($point, $ar);
     }
 }
-sub U {
-    my ($G, $Usub, @etc) = @_;
-    $G->{U}->{$Usub} || confess "no U $Usub";
-    my $u = $G->waystacken(U => $Usub, [@etc]);
-    my @R = $G->{U}->{$Usub}->(@etc); # bUSINESS BUSINESS
-    $u->();
-    wantarray ? @R : shift @R;
-}
+
 sub nw {
     my $self = shift;
     my $w = new Way($H->intro, $self);
@@ -902,7 +895,6 @@ sub babblethehut {
     $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
     $eval =~ s/G:($Gnv)/HGf("$1")/sg;
 
-    $eval =~ s/U->(\w+)\(/\$G->U("$1", /sg;
     $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
     $eval =~ s/(0S->\w+)\(/\$G->_0("$1", \$S, /sg;
     
