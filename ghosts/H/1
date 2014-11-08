@@ -12,18 +12,7 @@ hooks:
       # none of these workings should be trapped at this level
       # send it out there and get the hair on it
     flows_D: |
-      Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      $M->on(message => sub {
-          my ($M, $m) = @_;
-          eval { Sw speaks[$m]; };
-          $H->error("$@") if $@;
-          $@ = "";
-      });
-      $M->on(finish => sub {
-          my ($M, $code, $reason) = @_;
-          Sw leaves[$code, $reason];
-      });
-      B.address = $tx->remote_address;
+      Sw tx_uglies;
       say "Elvis appears from B.address";
       S.mouth = [];
       
@@ -79,4 +68,17 @@ hooks:
     leaves: |
       sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
     
+    tx_uglies: |
+      Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+      $M->on(message => sub {
+          my ($M, $m) = @_;
+          eval { Sw speaks[$m]; };
+          $H->error("$@") if $@;
+          $@ = "";
+      });
+      $M->on(finish => sub {
+          my ($M, $code, $reason) = @_;
+          Sw leaves[$code, $reason];
+      });
+      B.address = $tx->remote_address;
 
