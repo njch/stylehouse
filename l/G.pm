@@ -73,13 +73,15 @@ sub w {
                 @ways = @{$Sway->{ofways}};
             }
             elsif ($Sway->{Gw}) {
-                die "no Sway G!?" unless $Sway->{G};
-                $point = "$Sway->{K}/$point" unless $point =~ /^$Sway->{K}/;
-                if ($G eq $Sway->{G}) {
+                my $SG = $Sway->{G} || die "no Sway G!?";
+                my $CodeK = $Sway->{Gw};
+                $CodeK = $Sway->{K} if $CodeK eq "1";
+                $point = "$CodeK/$point" unless $point =~ /^$CodeK/;
+                if ($G eq $SG) {
                     @ways = $G->ways; # ------------------
                 }
                 else {
-                    return $Sway->{G}->w($point, $ar, $Sway); # G pass
+                    return $SG->w($point, $ar, $Sway); # G pass
                 }
             }
             else {

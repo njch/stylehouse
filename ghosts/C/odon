@@ -29,14 +29,18 @@ S:
     - K: disnon
       css:
         - display:none
+
+ - K: Action
+   Ss:
+    - K: sources
 C:
- - K: Sources
-   styles: -tc
+ - K: Sources #c
+   styles: -tc blagga
    S:
      Z:
        -webkit-column-count: 2
    travels_D: |
-     0->TafuBl(Dir => {dir => "/s"});
+     0->TafuBl(Dir => {dir => "/s/ghosts"});
      0->TafuBl(Ghosts => {});
    
  - K: Dir #c
@@ -44,13 +48,9 @@ C:
    flows_D: |
      S.name = "dir=$dir";
    travels_D: |
-     my @finds = #map { 0->fs_glob($_) } "$dir/style*", "$dir/not";
-     #push @finds,  
-     grep { /\/s\// }
-     map { 0->fs_find($_) } "$dir/ghosts";
-     #@finds = grep { !/T|H|L/ } @finds; 
+     my @finds = sort map { 0->fs_find($_) } $dir; 
      for my $file (@finds) {
-         0->TafuBl(File => { file => $file });
+         0->TafuBl(File => { file => $file });  
      }
  
  - K: File
@@ -78,6 +78,7 @@ C:
      aZ: {background: '#044'}
    E:
      _D: |
+       sw($GG);
        S.Ve+=e.C?0.25:-0.5;
        
  - K: Oud
@@ -200,14 +201,10 @@ hooks:
              spawn:
                - K: Codw
   recoded_init: |
-    my @a = 0->rei({K=>"Chunk"});
-    my $s = $a[3]; #WETF
     say sw(achunk=>0->rei({K=>'Dir'}));
-    saygr "Yep";
     G.O w ux(GG=>$G);
-    die "hi";
     delete G.Vu;  
-    w uxd; 
+    #w uxd; 
   percolate: |
     0->TafuB(Sources => {});
     saygr "perc Codon to uxd";

@@ -830,7 +830,8 @@ sub parse_babble {
     
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     
-    my $poing = qr/$alive|G:$point/;
+    my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+    my $poing = qr/$alive|G:$point|$dotha/;
     
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
     

@@ -90,6 +90,14 @@
       a.cb = $cb if $cb;
       H.G->w(send_Elvis => $a);
     
+  - K: fixutf8 #c
+    D: |
+      for (@_) {
+        if (!is_utf8($_)) {
+          $_ = decode_utf8($_); 
+        }
+      }
+      return shift if @_ == 1
   - K: throwlog #c
     D: |
       my $what = shift;

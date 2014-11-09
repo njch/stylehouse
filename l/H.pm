@@ -115,6 +115,16 @@ sub send {
     $H->{G}->w(send_Elvis => $a);
 }
 
+sub fixutf8 {
+    my $H = shift;
+    for (@_) {
+      if (!is_utf8($_)) {
+        $_ = decode_utf8($_); 
+      }
+    }
+    return shift if @_ == 1
+}
+
 sub throwlog {
     my $H = shift;
     my $what = shift;
