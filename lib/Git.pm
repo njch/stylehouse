@@ -38,7 +38,7 @@ sub gitrack {
         $ps->("cd ../$r && git gui");
     },
     'ⵘ' => sub {
-        my @hmm = grep /stylehouse\.pl/, `ps faux | grep stylehouse`;
+        my @hmm = grep /stylehouse\.pl SHED/, `ps faux | grep stylehouse`;
         my @har = split /\s+/, pop @hmm;
         `kill -KILL $har[1]`;
     },
