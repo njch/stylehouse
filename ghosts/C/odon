@@ -15,11 +15,16 @@ S:
         - float:left
         - position:relative
         - width:calc(100%)
-    - K: brick
+    - K: brick3
       css:
-        - width:30%
+        - width:33%
+    - K: brick8
+      css:
+        - width:12%
     - K: fs8
       css: [font-size:180%] 
+    - K: fs5
+      css: [font-size:125%] 
     - K: padl
       css:
         - padding-left:0.5em
@@ -56,8 +61,8 @@ C:
          0->TafuBl(File => { file => $file });  
      }
  
- - K: File
-   styles: brick fs8
+ - K: File #c
+   styles: brick3 fs8
    print: |
      return $1 if $file =~ /\/ghosts\/(.+)/;
    E:
@@ -74,7 +79,7 @@ C:
      }
    
    
- - K: Ghost
+ - K: Ghost #c
    styles: padl
    flows_D: |
      S.Ve ||= 1;
@@ -85,6 +90,19 @@ C:
      _D: |
        sw($GG);
        S.Ve+=e.C?0.25:-0.5;
+       
+
+   
+   
+ - K: Do #c
+   Bs: name D
+   print: |
+     "D $name";
+   S:
+     aZ: {background: '#044'}
+   E:
+     _D: |
+       $D->();
        
  - K: Oud #c
    flows_D: |
@@ -208,12 +226,23 @@ hooks:
              spawn:
                - K: Codlue
   recoded_init: |
-    say sw(achunk=>0->rei({K=>'Dir'}));
-    G.O w ux(GG=>$G);
+    say sw[achunk=>0->rei({K=>'Dir'})];
     delete G.Vu;  
-    #w uxd; 
+    w uxd; 
   percolate: |
     0->TafuB(Sources => {});
+    0->TafuB(Do => { name => "bricksize",
+     D => sub {
+         for (0->rei({K=>"File"})) {
+             _.styles =~ s/fs8/fs5/ || _.styles =~ s/fs5/fs8/;
+             _.styles =~ s/brick8/brick3/ || _.styles =~ s/brick3/brick8/;
+        }
+     } });
+     
+    0->TafuB(Do => { name => "G.name RW",
+     D => sub {
+            G.O w ux(GG=>$G);
+     } });
     saygr "perc Codon to uxd";
     waylay uxd;
   Codon:
