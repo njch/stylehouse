@@ -168,6 +168,16 @@ hooks:
     w z/wzy; # conz, swim
   elvac: |
     sayyl "We could connect to $style, $name, $id, $conin";
+    $ua->websocket('ws://example.com/echo.json' => sub {
+      my ($ua, $tx) = @_;
+      say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
+      $tx->on(json => sub {
+        my ($tx, $hash) = @_;
+        say "WebSocket message via JSON: $hash->{msg}";
+        $tx->finish;
+      });
+      $tx->send({json => {msg => 'Hello World!'}});
+    });
   stylehut:
     minorport: |
       my $p = ord(H.name);
@@ -209,6 +219,7 @@ hooks:
     elvibe: |
       w stylehouse/flood;
       w styleshed/play;
+      G:Ϡ w elvis_enters;
       
     play: |
       G!H/keys;
