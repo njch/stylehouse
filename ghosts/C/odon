@@ -25,6 +25,10 @@ S:
       css:
         - width:33%
         - font-size:160%
+    - K: brick4
+      css:
+        - width:25%
+        - font-size:145%
     - K: brick8
       css:
         - width:12%
@@ -99,8 +103,8 @@ C:
    
    
  - K: Do #c
-   Bs: name D
-   styles: brick3
+   BcS: name D
+   styles: brick4
    print: |
      "D $name";
    S:
@@ -118,7 +122,7 @@ C:
  - K: Codlue #c
    S:
      content_D: |
-       return w $ui print if ui.K eq "File";
+       return w $ui print if ui.K =~ /File|Do/;
        
        my $pri = lc ui.K;
        my $db = {%{ui.B}};
@@ -132,7 +136,7 @@ C:
        $s .= ki($db) if %$db && S.q < 3;
        return $s;
        
- - K: Tital
+ - K: Tital #c
    S: {content_D: "ui.title"}
        
  - K: Codon #c
@@ -147,7 +151,7 @@ C:
           content_D: |
             "C ar.ui.B.name";
      
- - K: Chunks
+ - K: Chunks #c
    styles: bg018
    travels_D: |
      my @CBs = w chunkify[$Codon];
@@ -157,8 +161,8 @@ C:
       - K: Codlue
         q: 3
    
- - K: Chunk
-   styles: brick3
+ - K: Chunk #c
+   styles: brick4
    flows_D: |
      my $C = T.i;
      B.name = B.i;
@@ -234,6 +238,8 @@ hooks:
   recoded_init: |
     delete G.Vu;  
     w uxd; 
+  any_init: |
+    G.db = 5;
   percolate: |
     0->TafuB(Sources => {});
     0->TafuB(Do => {
@@ -249,6 +255,14 @@ hooks:
      D => sub {
             G.O w ux(GG=>$G);
      } });
+     
+     
+    0->TafuB(Do => {
+     name => "uxd",
+     D => sub {
+            w uxd;
+     } });
+     
     saygr "perc Codon to uxd";
     waylay uxd;
   Codon:
@@ -382,7 +396,7 @@ hooks:
     }
   v:
     ch: |
-      push @{G.Vu.U||return}, $u if u.G eq $G;
+      push @{G.Vu.U||=[]}, $u if u.G eq $G;
   T:
     traction: |
       w v/ch[$u];

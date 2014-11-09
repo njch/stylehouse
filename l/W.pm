@@ -41,7 +41,7 @@ sub continues {
     };
 
     if ($G->deeby) {
-        say "Enters the $namg\t\ti:".Ghost::pint($L->{i});
+        say "Enters the $namg\t\ti:".$L->{i}->pi;
         say "W: \t\tB{ ".Ghost::ki($L->{i}->{B});
         say "   \tt = ".Ghost::gpty($L->{t});
     }
