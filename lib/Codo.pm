@@ -72,7 +72,7 @@ sub menu {
     my $self = shift;
     my $m = $self->{menu} ||= [
         "!style='color:#41DB39;' ܤ" => sub {
-            $H->{G}->w('re/exec');
+            $H->{G}->w('reexec');
         },
         "!style='color:rgba(178,71,0, 0.7);' Ꮉ" => sub {
           my $deg = -180 + int(rand(360));

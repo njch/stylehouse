@@ -24,6 +24,7 @@ hooks:
     # $0 has become a runtime
     waylay H.style/in;
       
+
   config: |
     my $listen = readlink('listen');
     my ($host,$port, $wa) = split ':', $listen;
@@ -148,8 +149,6 @@ hooks:
     w z/wzy; # conz, swim
     
   stylehut:
-    reexec: |
-      exec "perl l/S".".pm H.name";
     minorport: |
       my $p = ord(H.name);
       $p += 8000;
@@ -183,8 +182,6 @@ hooks:
       
       
   styleshed:
-    reexec: |
-      exec "perl stylehouse.pl SHED";
     in:
       w wtf(div => 1, way => 'gitdission');
       
@@ -201,8 +198,6 @@ hooks:
       w wtf(div => 26, way => 'sky amb', D => $Dambi);
       
   stylehouse:
-    reexec: |
-      exec "perl stylehouse.pl HOUSE";
     elvibe: |
       w stylehouse/flood;
       w stylehouse/play;
@@ -220,7 +215,6 @@ hooks:
       Git->new($H->intro);
       Codo->new($H->intro);
       w z/hitground;
-
   wtf: |
     # TODO combine with check, fractionating importantness into time
     if (ar.way && ar.div) {
@@ -303,7 +297,7 @@ hooks:
         }
         else {
             say join("  <>  ", ($f)x38);
-            w re/exec;
+            w reexec;
         }
     }
     
@@ -383,7 +377,7 @@ hooks:
       die "no ctime?" unless $nc;
       if (H.Sctime && $nc ne H.Sctime) {
           Say "Rwestarting! ctime changeon $script";
-          w re/exec;
+          w reexec;
       }
       H.Sctime = $nc;
     vitals: |
@@ -406,7 +400,7 @@ hooks:
       $m /= 100;
       $c /= 100;
       sayre "memory usage $m" if $m > 0.4;
-      w re/exec if $m > 0.9; # unlikely to be effective from inside
+      w reexec if $m > 0.9; # unlikely to be effective from inside
       "$u`$pid  m$m  c$c"
     LoC: |
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
@@ -475,9 +469,8 @@ hooks:
       
       
       
-  re:
-    exec: |
-      $G->w("H.style/reexec");
+  reexec: |
+      exec "perl $0 @ARGV";
   sing: |
     G.singing ||= {};
     return $G->Flab("\t\t\t\t $name BLOCKED")
@@ -504,7 +497,6 @@ hooks:
       $H->error("restarting!");
       `touch stylehouse.pl`;
   
-
   data:
     get_apps: |
       my $apps = {};
