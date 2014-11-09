@@ -43,6 +43,97 @@
   - K: pi #c
     D: |
       "G ".G.name;
+  
+  - K: w #c
+    style: nonbabble
+    D: |
+      my $point = shift;
+      my $ar = shift;
+      my $Sway = shift;
+      my @ways;
+
+      die "What do you MEAN $G->{name} $point $ar $Sway !?  ".wdump($ar) if defined $ar && ref $ar ne "HASH";
+      my $talk = "w $point";
+      my $watch;
+
+      if ($Sway) {
+          $talk .= " S";
+          if (ref $Sway eq 'Ghost' || ref $Sway eq "G") {
+              @ways = $Sway->ways;
+              $talk .= " G";
+          }
+          elsif (ref $Sway eq 'Way' || ref $Sway eq "C") {
+              if ($Sway->{ofways}) {
+                  @ways = @{$Sway->{ofways}};
+              }
+              elsif ($Sway->{Gw}) {
+                  die "no Sway G!?" unless $Sway->{G};
+                  $point = "$Sway->{K}/$point" unless $point =~ /^$Sway->{K}/;
+                  if ($G eq $Sway->{G}) {
+                      @ways = $G->ways; # ------------------
+                  }
+                  else {
+                      return $Sway->{G}->w($point, $ar, $Sway); # G pass
+                  }
+              }
+              else {
+                  @ways = $Sway; #---------------------
+              }
+          }
+          elsif (ref $Sway eq 'ARRAY') {
+              die "NO MORE ARRAY WAYS --- $point ".slim(100,80,ki($ar))."\n"."$Sway - ".ki($Sway);
+          }
+          my $b = {};
+          %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
+          $ar = {%$ar, %$b, S => $Sway};
+          $ar->{S} = $G->{S} if $G->{S};
+      }
+      else {
+          @ways = $G->ways;
+      }
+
+      my @returns;
+      for my $w (@ways) {
+          my $h = $w->find($point);
+              sw({h=>$h, point=>$point, w=>$w, Sway=>$Sway}) if $watch;
+          next unless $h;
+          my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
+          my ($Z) = @Ghost::F;
+          my $r;
+
+          eval { $r = [ $G->doo($h, $ar, $point, $Sway, $w, $Z) ] };
+
+          push @returns, $r;
+          my $ZZ = $u->();
+          die "MISM" unless $Z eq $ZZ;
+          $Z->{Returns} = $r;
+
+          if ($@) {
+              my $ne = "Z";
+              $ne .= $Z->{inter} if $Z->{inter};
+              $ne .= "\n";
+              $ne .= "S: ".ki($Sway)."\n" if $Sway;
+              $ne .= "$@";
+              $@ = $ne;
+              $G->Flab("Z Error $@");
+              die $@;
+          }
+      }
+      unless (@returns) {
+          $G->Flab("way miss $talk", \@ways, $Sway);
+      }
+      return warn "Multiple returns from ".($point||'some?where')
+                              if @returns > 1;    
+      return
+                              if @returns < 1;
+      my @return = @{$returns[0]};
+      if (wantarray) {
+          return @return
+      }
+      else {
+          my $one = shift @return;
+          return $one;
+      }
   - K: nw #c G ways
     D: |
       my $C = G.A->spawn('C');
