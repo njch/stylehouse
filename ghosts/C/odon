@@ -15,16 +15,17 @@ S:
         - float:left
         - position:relative
         - width:calc(100%)
+    - K: bgblack
+      css:
+        - background:black
     - K: brick3
       css:
         - width:33%
+        - font-size:160%
     - K: brick8
       css:
         - width:12%
-    - K: fs8
-      css: [font-size:180%] 
-    - K: fs5
-      css: [font-size:125%] 
+        - font-size:font-size:125%
     - K: padl
       css:
         - padding-left:0.5em
@@ -130,9 +131,9 @@ C:
  - K: Tital
    S: {content_D: "ui.title"}
        
-
- - K: Codon
+ - K: Codon #c
    Gw: 1
+   styles: bgblack
    ux:
      spawn:
       - K: h2
@@ -149,7 +150,7 @@ C:
      0->TafuBl(Chunk => $_) for @CBs;
    ux:
      spawn:
-      - K: Codw
+      - K: Codlue
         q: 3
    
  - K: Chunk
@@ -231,7 +232,8 @@ hooks:
     w uxd; 
   percolate: |
     0->TafuB(Sources => {});
-    0->TafuB(Do => { name => "bricksize",
+    0->TafuB(Do => {
+     name => "bake",
      D => sub {
          for (0->rei({K=>"File"})) {
              _.styles =~ s/fs8/fs5/ || _.styles =~ s/fs5/fs8/;
@@ -239,7 +241,8 @@ hooks:
         }
      } });
      
-    0->TafuB(Do => { name => "G.name RW",
+    0->TafuB(Do => {
+     name => "G.name RW",
      D => sub {
             G.O w ux(GG=>$G);
      } });
