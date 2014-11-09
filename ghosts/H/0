@@ -35,7 +35,7 @@ hooks:
       w elvibe(E=>$S);
     
     print: |
-      "$elvii $elvii === $address";
+      "$elvii $elvii =B.style=B.name=B.id B.conin $address";
     
     send: |
       $tx->send(J.B.m, J.B.cb);
@@ -88,7 +88,6 @@ hooks:
           Sw leaves[$code, $reason];
       });
       B.address = $tx->remote_address;
-
   fresh_init: |
     say "     H Fresh init H.style";
     push @{G.GGs||=[]}, $G; # H self
@@ -130,8 +129,20 @@ hooks:
     H.listen_http = "http://$host:$port";
     H.listen_ws = "ws://$host:$port/s";
     
-  websocket: |
+  websocket: | # Mojo throws connection over here
     0->TafuB(Elvis => {tx => $M->tx, M => $M});
+  websockout: | # we make websockets out # BROKE
+    Say "Ws out $conin";
+    use Mojo::UserAgent;
+    my $ua = Mojo::UserAgent->new;
+    $ua->websocket($conin => sub {
+      my ($ua, $tx) = @_;
+      die "HELLO!";
+      die "WebSocket handshake failed! $conin" and return unless $tx->is_websocket;
+      Say "Connecto!";
+      0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
+    });
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   Teeth: |
     w $J print_in(pi => $E->pi);
     my $m = J.B.m;
@@ -245,20 +256,16 @@ hooks:
     H.who = $E;
     w H.style/singul;
   elvibe: |
+    Say "En nnnn Elvis ?? J | ".$E->pi;
+    if (E.B.style) {
+        Say "Elvis got it ".$E->pi;
+        return;
+    }
     w H.style/elvibe;
     w z/wzy; # conz, swim
   elvac: |
     sayyl "We could connect to $style, $name, $id, $conin";
-    $ua->websocket('ws://example.com/echo.json' => sub {
-      my ($ua, $tx) = @_;
-      say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
-      $tx->on(json => sub {
-        my ($tx, $hash) = @_;
-        say "WebSocket message via JSON: $hash->{msg}";
-        $tx->finish;
-      });
-      $tx->send({json => {msg => 'Hello World!'}});
-    });
+    my $E = w websockout;
   stylehut:
     minorport: |
       my $p = ord(H.name);
