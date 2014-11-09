@@ -128,7 +128,7 @@ sub w {
         }
     }
     unless (@returns) {
-        $G->Flab("way miss $talk", \@ways, $Sway);
+        $G->Flab("way miss $talk", \@ways, $Sway) if $G->deeby > 3;
     }
     return warn "Multiple returns from ".($point||'some?where')
                             if @returns > 1;    
