@@ -698,7 +698,7 @@ sub visTp_TafuBlA {
 
 sub visTp_l_u {
     my $G = shift;
-    my ($Tp, $u) = @_; #c get in to a T place and make links
+    my ($Tp, $u) = @_; # get in to a T place and make links
     my $old = $G->_0("0S->visTp", $Tp);
     $G->_0("0S->l", $u);
     $T= $old;
