@@ -10,21 +10,32 @@ C:
 hooks:
   fresh_init: |
     say "     H Fresh init H.style";
+    push @{G.GGs||=[]}, $G; # H self
     G!H/mess;
     
     H.r = w enRedis;
     w config;
     
+    0->su(S => sub {
+        my $a = shift;
+        Say "got S: a.m";
+        if (a.m =~ /^([\w\/]+) (.+)$/) {
+            $ar = {m => $2};
+            w S/$1;
+        }
+        else {die "wtf iS a.m ???"} 
+    });
+            
+    
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
-    w wtf(div => 1, way => 'check/script');
+    w wtf(div => 1, way => 'check/script'); 
     w wtf(div => 1, way => 'redission');
-    w wtf(div => 17, way => 'check/vitals');
+    w wtf(div => 17, way => 'check/vitals'); 
     # start git torrent
     # do it all
     # $0 has become a runtime
     waylay H.style/in;
       
-
   config: |
     my $listen = readlink('listen');
     my ($host,$port, $wa) = split ':', $listen;
@@ -110,27 +121,22 @@ hooks:
     wsy: |
       my $C = G.conz ||= {};
       my ($w, $s) = split ' ', $m;
-      my $EE = $C->{$w};
-      if ($EE && !EE.disco) {
-          # ping older?
-            sayre "Already on $w ".$EE->pi."  disco necktie ing => ".$E->pi;
-          w $E disconecktie[$EE];
+      # check the tip for dup
+      my $EE = G.conz->{$w};
+      if ($EE && !EE.disco) {    
+          w elvash[$E, $EE];
           return;
       }
-      $C->{$w} = $E;
+      G.conz->{$w} = $E;
       (E.c->{w}, E.c.s) = ($w, $s);
-      saygr $E->pi." E.c.w, E.c.s \n\n";
+      E.singul = 1 if $w eq $s; 
       
       w z/conz;
-      
-      E.singul = 1 if $w eq $s;
-      if (E.singul) {
-          H.who = $E;
-          w H.style/singul;
-      }
-      else {
-          return w H.style/elvus;
-      }
+      w elvjs;
+    ghostchanges: |
+      my $Gd = {map { $_ => 1 } split ', ', $m};
+      Say "Hep %$Gd"; 
+      $G0 w _gitdission[$Gd]; 
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -144,6 +150,19 @@ hooks:
       $E->send(" s\.reply({conz:conz});");
     wzy: |
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
+  conisin: |
+     
+  elvash: |
+    # close older one? closes newer, $E
+    sayre "Already on $w ".$EE->pi."  disco necktie ing => ".$E->pi;
+    w $E disconecktie[$EE];
+  elvjs: | # elvis swam through wsy, is js client
+    saygr $E->pi." E.c.w, E.c.s \n\n";
+    
+    return w H.style/elvus if !E.singul;
+    
+    H.who = $E;
+    w H.style/singul;
   elvibe: |
     w H.style/elvibe;
     w z/wzy; # conz, swim
@@ -184,6 +203,7 @@ hooks:
   styleshed:
     in:
       w wtf(div => 1, way => 'gitdission');
+      
       
     elvibe: |
       w stylehouse/flood;
@@ -309,8 +329,8 @@ hooks:
     G.last_git_diff = $d;
     
     if (keys %$Gd) { 
-        say "Ghost changes ".join", ", keys %$Gd; 
-        $G0 w _gitdission[$Gd]; 
+        say "Ghost changes ".join", ", keys %$Gd;
+        H.r->publish(S => "ghostchanges ".join", ", keys %$Gd);
     }
   suRedis: |
     my $a = {%$ar};
@@ -406,7 +426,6 @@ hooks:
       my $tot = (`wc -l lib/* ghosts/*/* stylehouse.*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
-
   send_Elvis: |
     my $Elvis = ar.Elvis || H.who || die "no infiduvial? $m";
     my $J = 0->Bu(J => {m => ar.m, cb => ar.cb});
