@@ -89,7 +89,7 @@ sub spawn {
     else {
         $H->spawn({i=>$u, r=>['A']});
         $a->{uA}->An($u);
-        $u->{A}->Au($a->{uA});
+        $u->{A}->Au($a->{uA}, "1");
         shift @{$a->{r}};
         $u = $u->new(@{$a->{r}});
     }

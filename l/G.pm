@@ -691,7 +691,7 @@ sub visTp_TafuBlA {
         $u = $G->_0("0S->T", {i => $uu});
     }
 
-    $G->_0("0S->l", $u);
+    $G->_0("0->l", $u);
     $T= $old;
     $u;
 }
@@ -700,7 +700,7 @@ sub visTp_l_u {
     my $G = shift;
     my ($Tp, $u) = @_; # get in to a T place and make links
     my $old = $G->_0("0S->visTp", $Tp);
-    $G->_0("0S->l", $u);
+    $G->_0("0->l", $u);
     $T= $old;
     $u;
 }
@@ -708,8 +708,10 @@ sub visTp_l_u {
 sub l {
     my $G = shift;
     my ($u) = @_;
-    $G->_0("0S->accum", $u, 'Lo', $T->{L});
-    $G->_0("0S->accum", $T, 'o', $u);
+    $u->{A}->An($u);
+    $u->{A}->Au($T->{i});
+    $G->_0("0->accum", $u, 'Lo', $T->{L});
+    $G->_0("0->accum", $T, 'o', $u);
     $u;
 }
 

@@ -35,9 +35,25 @@ sub An {
 
 sub Au {
     my $A = shift;
-    my $u = shift;
-    die if $A->{u};
+    my $u = $A->fiA(shift);
+    my $t = shift;
+    die "KNow ".G::ki($A->{ut})."  ". G::sw($A->{u}->{i}) if $A->{u};
+    $A->{ut}->{$t} = $u;
     $A->{u} = $u;
+}
+
+sub fiA {
+    my $A = shift;
+    my $u = shift;
+    $u = $u->{A} if ref $u ne 'A';
+    die "no A finding" if ref $u ne 'A';
+    $u
+}
+
+sub to {
+    my $A = shift;
+    my $to = shift;
+    grep { $_->{K} =~ /^$to$/ } @{$A->{n}}
 }
 
 sub path {
