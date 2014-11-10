@@ -755,7 +755,7 @@ sub T {
     # 3/9
      $G->w("T/flows");
        $G->w('flows_D', {}, $T->{i});
-    $G->Flab("flows ", $T);
+    #$G->Flab("flows ", $T);
       $sge->("flows");
 
     # 4/9
@@ -763,7 +763,7 @@ sub T {
       $sge->("humms W being"); # eg travelling sw eval
      $G->w("T/humms");
        $G->w('humms_D', {}, $T->{i});
-    $G->Flab("humms", $T);
+    #$G->Flab("humms", $T);
       $sge->("humms");
 
     # 5/9
@@ -772,14 +772,14 @@ sub T {
 
      $G->w("T/links", {u=>$T->{i}});
        $G->w('links_D', {}, $T->{i});
-    $G->Flab("links", $T);
+    #$G->Flab("links", $T);
       $sge->("links");
     # rounds_D? replayable when recoded?
     # assume 6/7 will continue the process...
     # 6/9
      $G->w("T/travels");
        $G->w('travels_D', {}, $T->{i});
-    $G->Flab("travels", $T);
+    #$G->Flab("travels", $T);
       $sge->("travels");
     die "Lost i somewhere before 7... "
     .wdump(2, [$beg, $T->{i}])unless $T->{i} eq $beg;
@@ -788,7 +788,7 @@ sub T {
 
     $G->w("T/traction", {u=>$T->{i}});
     $G->w('traction_D', {}, $T->{i});
-    $G->Flab("travels", $T);
+    #$G->Flab("travels", $T);
       $sge->("travels");
 
     # 8/9

@@ -200,6 +200,7 @@ C:
    S:
      sendo_init_D: |
          my $ux = $S->LioO('ux');
+         die "HI";
          "var cm = CodeMirror(document.getElementById('".ux.at.id."'), { "
              ."value:'".0->jsq(join "\n", @{C.B.lines})."', "
             ."mode:'perl',"
@@ -269,7 +270,7 @@ hooks:
      } });
      
     Say "perc Codon to uxd";
-    w uxd;
+    w uxd(full=>1)
   Codon:
     flows_D: |
       w $S load_file_lines;
@@ -302,12 +303,13 @@ hooks:
       w $S load_code;
       
     stylefile_super: |
-      $_ = $file;
+      for ($file) {
       B.name ||= do {
           /(ghost)s\/(.+)$/ ? $2 :
           /(lib)\/(.+)\.pm$/ ? $2 : $_
       };
       B.flav = $1 if /(ghost)s\// || /(lib)\// || /(not)$/;
+      }
       S.Li.t = B.name;
 
     load_code: |
@@ -388,12 +390,12 @@ hooks:
   uxd: |
     my $chi = G.Vu.U;
     G.Vu.U = [];
-    if ($chi && @$chi) {
-        my @i = uniq map { _.Lo } @$chi;
-        sw[i=>@i];
-         #@$chi = uniq @$chi, @i;
+    if (!ar.full && $chi && @$chi) {
+        my @i = uniq grep { defined } map { _.Lo && _.Lo.i } @$chi;
+        sw[i=>@i, U=>@$chi];
         say "part uxd ".@$chi;
-        #say "abode : ".$_->pi for @i;
+        @$chi = uniq grep { defined } @$chi, @i;
+        say "abode : ".$_->pi for @i;
         G.GG.U->w('ux', {is => $chi});
     }
     else {
