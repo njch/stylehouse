@@ -6,7 +6,7 @@ use utf8;
 use lib 'lib';
 use feature 'say';
 use base 'Ghost';
-sub wdump { $H->error("wdump @_"); H::wdump(@_) };
+sub wdump { H::wdump(@_) };
 sub gpty { Ghost::gpty(@_) };
 sub pint { Ghost::pint(@_) };
 use YAML::Syck;
