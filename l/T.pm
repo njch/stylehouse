@@ -27,7 +27,7 @@ sub commit {
     $mes ||= "init" if !@{$T->{L}};
     $mes ||= "?";
     my $L = {
-        B => G::du({ O=>$T, i=>$T->{i} }),
+        B => $T->{A}->fiu('G')->du({ O=>$T, i=>$T->{i} }),
         mes => $mes,
     };
     push @{$T->{L}||=[]}, $L;

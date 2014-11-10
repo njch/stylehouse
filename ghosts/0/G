@@ -220,11 +220,10 @@
           $G0->w($point, $ar);
       }
   - K: du #c G style grab
-    style: func
     D: |
       my $a = shift;
       # how to get around the Objs' data
-      my $s = a.s ||= dus();
+      my $s = a.s ||= $G->dus();
       my $i = a.i;
       my $n = a.n;
       a.e = 2 if !defined a.e;
@@ -294,7 +293,7 @@
               ." a.e - $ohms  $k\t an.e \t\t ".Ghost::gpty($v);
                     
           if (an.e >= 1 && ref an.i) {
-              my $cu = du($an);
+              my $cu = $G->du($an);
               while (my ($ku, $vu) = each %$cu) {
                   $c->{$k.$ku} = $vu;
               }
@@ -308,7 +307,6 @@
       $c
       
   - K: dus #c G style schema
-    style: func
     D: |
         my $h = {
           ARRAY => {

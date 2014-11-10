@@ -73,7 +73,7 @@ C:
  - K: File #c
    styles: brick3 fw7
    print: |
-     return $1 if $file =~ /\/ghosts\/(.+)/;
+     return $1 if B.file =~ /\/ghosts\/(.+)/;
    E:
      _D: |
        Say "In Eveent S.K $file";
@@ -252,46 +252,42 @@ hooks:
     
     w uxd; 
   any_init: |
-    G.db = 1;
+    G.db = 0;
   percolate: |
-    0->TafuB(Sources => {});
-    0->TafuB(Do => {
-     name => "bake",
-     D => sub {
+    my $s = 0->TafuB(Sources => {});
+    my $Dos = $G->findway("per_Do");
+    for my $k (sort keys %$Dos) {
+        say "gun $k";
+        0->TafuB(Do => {
+            name => $k, D => sub { w per_Do/$k; },
+        });
+    }
+    
+    my $duff = $G->du({i=>s.A});
+    my $stuff = join "\n", map { " - $_   = $duff->{$_}" } keys %$duff;
+    sw($stuff);
+    Say "perc Codon to uxd";
+    w uxd(full=>1)
+  per_Do:
+    bake: |
        Say "Awaits";
        G.envsub = sub {
          my $u = shift;
-         for (@{ u.Li.o }) {
+         sw(u.A->path);
+         for (@{ u.A.n }) {
              _.styles =~ s/brick8/brick3/ || _.styles =~ s/brick3/brick8/;
          }
        };
-     } });
-     
-    0->TafuB(Do => {
-     name => "RW",
-     D => sub {
-            G.O w ux(GG=>$G);
-     } });
-     
-     
-    0->TafuB(Do => {
-     name => "uxd",
-     D => sub {
-            w uxd;
-     } });
-     
-    0->TafuB(Do => {
-     name => "J",
-     D => sub {
+    RW: |
+       G.O w ux(GG=>$G);
+    uxd: |
+       w uxd;
+    J: |
        for my $j (0->rei({K=>"J"})) {
            0->del($j);
        }
        0->TafuB(J => {});
-     } });
-     
-     
-    Say "perc Codon to uxd";
-    w uxd(full=>1)
+      
   Codon:
     flows_D: |
       w $S load_file_lines;

@@ -37,9 +37,19 @@ sub Au {
     my $A = shift;
     my $u = $A->fiA(shift);
     my $t = shift;
-    die "KNow ".G::ki($A->{ut})."  ". G::sw($A->{u}->{i}) if $A->{u};
-    $A->{ut}->{$t} = $u;
+    #$A->sag("Au changes from ", $A->{u}, $u) if $A->{u};
+    $A->{u_t}->{$t} = $u;
     $A->{u} = $u;
+}
+
+sub p {
+    my $A = shift;
+    $A->{i}->{K} || $A->{i}->{name}
+}
+
+sub sag {
+    my $A = shift;
+    say $A->p ." ".shift(@_)." ".join"   > ",map {$_->p} @_;
 }
 
 sub fiA {
@@ -48,6 +58,18 @@ sub fiA {
     $u = $u->{A} if ref $u ne 'A';
     die "no A finding" if ref $u ne 'A';
     $u
+}
+
+sub fiu {
+    my $A = shift;
+    my $sh = shift;
+    my $a = $A;
+    until (ref $a->{i} eq $sh) {
+        die "no finding $sh" unless $a->{u} && $a->{u} ne $a;
+        $a = $a->{u};
+        ref $a eq "A" || die "atrain malt";
+    }
+    $a->{i}
 }
 
 sub to {
@@ -59,11 +81,11 @@ sub to {
 sub path {
     my $A = shift;
     my $up;$up = sub {
-        my $u = shift;
-        return $u, $up->($u->{A}->{u}) if $u->{A} && $u->{A}->{u} && $u ne $u->{A}->{u};
+        my $a = shift;
+        return $a, $up->($a->{u}) if $a->{u} && $a->{u} ne $a;
     };
-    my @path = reverse $up->($A->{u});
-    return join "/", map { ref $_ } @path;
+    my @path = reverse $up->($A);
+    #return join "/", map { ref $_ } @path;
 }
 
 'stylehouse'

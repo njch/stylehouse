@@ -235,9 +235,10 @@ sub _0 {
 }
 
 sub du {
+    my $G = shift;
     my $a = shift;
     # how to get around the Objs' data
-    my $s = $a->{s} ||= dus();
+    my $s = $a->{s} ||= $G->dus();
     my $i = $a->{i};
     my $n = $a->{n};
     $a->{e} = 2 if !defined $a->{e};
@@ -307,7 +308,7 @@ sub du {
             ." $a->{e} - $ohms  $k\t $an->{e} \t\t ".Ghost::gpty($v);
 
         if ($an->{e} >= 1 && ref $an->{i}) {
-            my $cu = du($an);
+            my $cu = $G->du($an);
             while (my ($ku, $vu) = each %$cu) {
                 $c->{$k.$ku} = $vu;
             }
@@ -322,6 +323,7 @@ sub du {
 }
 
 sub dus {
+    my $G = shift;
     my $h = {
       ARRAY => {
         it => sub {
