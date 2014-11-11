@@ -718,12 +718,19 @@ sub visTp_l_u {
 
 sub l {
     my $G = shift;
-    my ($u) = @_;
-    $u->{A}->An($u);
-    $u->{A}->Au($T->{i});
-    $G->_0("0->accum", $u, 'Lo', $T->{L});
-    $G->_0("0->accum", $T, 'o', $u);
-    $u;
+    my ($n) = @_;
+    my $u = $T->{i}; # up;
+    $G->L($n, $u);
+    $G->_0("0->accum", $n, 'Lo', $T->{L});
+    $G->_0("0->accum", $T, 'o', $n);
+    $n;
+}
+
+sub L {
+    my $G = shift;
+    my ($n, $u) = @_;
+    $u->{A}->An($n);
+    $n->{A}->Au($u);
 }
 
 sub visTp_TafuBl {

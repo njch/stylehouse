@@ -205,10 +205,15 @@ C:
           qq{$_    <span style="color:white;">$de</span>} 
           }  sort keys %$d);
       B.lines = \@stuff;
+      Say "lines ".(0+@stuff);
+      my $t = {};
       for my $k (sort keys %$d) {
-          my $de = gp($d->{$_});
+          my ($fit) = $k =~ /^(\W\w+)/;
+          my $ft = $t->{$fit} = 0->TafuB(Code => {fit=>$fit,lines=>[]});
+          $G->L($S, $ft);
+          my $de = gp($d->{$k});
           my $l = qq{$k    <span style="color:white;">$de</span>} ;
-          0->TafuB(Code => {lines => $l});
+          ;
           
       }
       
