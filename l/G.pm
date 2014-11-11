@@ -487,6 +487,13 @@ sub rei {
     map {$_->{i}} $G->_0("0S->scGre", $ip);
 }
 
+sub ei {
+    my $G = shift;
+    my $ip = {};
+    $ip->{K} = shift; # lookup BcS for more, we could want to create
+    map {$_->{i}} $G->_0("0S->scGre", $ip);
+}
+
 sub reeni {
     my $G = shift;
     my ($ip, @is) = @_;
