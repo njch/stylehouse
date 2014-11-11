@@ -175,14 +175,37 @@ C:
       - K: Codlue
         q: 3
    
-
  - K: Code #c
    styles: blubo;
    flows_D: |
      B.lines ||= B.C.B.lines; # aba codon?
      B.lines = [split "\n", B.lines] unless ref B.lines eq 'ARRAY';
+   some: |
+       return join("\n", @{$lines}[0..130]);
    S:
      make_lines_html: |
+       return Sw some;
+       return join("\n", @{$lines});
+       S.G->w(vimcolor => {string => join("\n", @{$lines})});
+   ux:
+     spawn:
+      - K: pre
+        S:
+          ishtml: 1
+          styles: cos5
+          content_D: |
+            w $ui S/make_lines_html(e=>'');
+           
+ - K: KV #c
+   styles: blubo;
+   flows_D: |
+     B.lines ||= B.C.B.lines; # aba codon?
+     B.lines = [split "\n", B.lines] unless ref B.lines eq 'ARRAY';
+   some: |
+       return join("\n", @{$lines}[0..130]);
+   S:
+     make_lines_html: |
+       return Sw some;
        return join("\n", @{$lines});
        S.G->w(vimcolor => {string => join("\n", @{$lines})});
    ux:
@@ -239,20 +262,32 @@ hooks:
     delete G.Vu;  
     w S/duthis;
     
-    w uxd; 
+    w uxd(full=>1); 
   any_init: |
     G.db = 0;
   S:
     duthis: |
-      my $s = $G->dus();
-      s.A.oh = 0.2;
       my $u = ar.u || G.ulast;
-      G.ulast = $u;
-      my $duff = $G->du({i=>$u, s=>$s, e=>2});
-      my $stuff = join "\n",
-      map { "$_    $duff->{$_}" } reverse sort keys %$duff;
+      G.ulast = $u; 
+      $u = u.Li;
+      my $d = w S/duff[$u];
+      w S/ducode[$d, $u];
+      
+    ducode: |
+      my $stuff = join "\n", "for <h2>".gp($u)."</h2>",
+      map {
+          my $de = gp($d->{$_});
+          qq{$_    <span style="color:white;">$de</span>} 
+          }  sort keys %$d;
+          
       0->del($_) for 0->ei("Code");
       0->TafuB(Code => {lines=>$stuff});
+      
+    duff: |
+      my $s = $G->dus();
+      s.A.oh = 0.2;
+      s.G.oh = 1;
+      $G->du({i=>$u, s=>$s, e=>2});
   percolate: |
     my $s = 0->TafuB(Sources => {});
     my $Dos = $G->findway("per_Do");

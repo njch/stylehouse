@@ -77,6 +77,10 @@ sub new {
 
     return $self;
 }
+
+
+sub gp { my $u = shift; length(ref $u)==1 ? $u->pi : gpty($u) }
+
 sub gname {
     my $g = shift;
     my $si = shift || 0;

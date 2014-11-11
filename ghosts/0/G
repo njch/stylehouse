@@ -6,6 +6,7 @@
       use base 'Ghost';
       sub wdump { H::wdump(@_) };
       sub gpty { Ghost::gpty(@_) };
+      sub gp { my $u = shift; ref $u && $u->can('pi') ? $u->pi : gpty($u) };
       sub pint { Ghost::pint(@_) };
       use YAML::Syck;
       our $swdepth = 5;
@@ -294,7 +295,9 @@
           if (an.e >= 1 && ref an.i) {
               my $cu = $G->du($an);
               while (my ($ku, $vu) = each %$cu) {
-                  $c->{$k.$ku} = $vu;
+                  my $nk = $k.$ku;
+                  next if grep { $_->($_, $an, $cu) } @{s.notZ||[]};
+                  $c->{$nk} = $vu;
               }
           }
           elsif (an.e > 0 && an.e < 1 && $mustb && !$mustb->{$K}) {
