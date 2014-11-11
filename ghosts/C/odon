@@ -45,6 +45,9 @@ S:
     - K: disnon
       css:
         - display:none
+    - K: blubo
+      css:
+        - border:3px solid blue
 
  - K: Action
    Ss:
@@ -191,10 +194,13 @@ C:
       - K: Tital
         styles: h2 contrim
  - K: Code #c
+   styles: blubo;
    flows_D: |
-     B.lines = C.B.lines;
+     B.lines ||= B.C.B.lines; # aba codon?
+     B.lines = [split "\n", B.lines] unless ref B.lines eq 'ARRAY';
    S:
      make_lines_html: |
+       return join("\n", @{$lines});
        S.G->w(vimcolor => {string => join("\n", @{$lines})});
    ux:
      spawn:
@@ -263,9 +269,11 @@ hooks:
         });
     }
     
-    my $duff = $G->du({i=>s.A});
+    my $duff = $G->du({i=>$s});
     my $stuff = join "\n", map { " - $_   = $duff->{$_}" } keys %$duff;
-    sw($stuff);
+    #sw($stuff);
+    0->TafuB(Code => {lines=>$stuff});
+    
     Say "perc Codon to uxd";
     w uxd(full=>1)
   per_Do:
@@ -384,9 +392,9 @@ hooks:
     T.L.t = "Cx". 0+@CBs ." lx". 0+@{C.B.lines};
     return @CBs;
   vimcolor: |
-    my $h = Hostinfo::enhash($string);
+    my $h = $H->dig($string);
     my $k = "vimcolor-$h";
-    H.G.r.gest->($k, sub {
+    H.r.gest->($k, sub {
         use Text::VimColor;
         my $syntax = Text::VimColor->new(
             string => $string,

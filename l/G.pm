@@ -300,8 +300,7 @@ sub du {
 
         $an->{e} -= $ohms;
 
-        my $rk = $k;
-        $rk .= "$k -$ohms = $an->{e}";
+        my $rk = "$k $an->{e}";
         $c->{$rk} = $v;
 
         say join("", ("  ") x scalar(@{$a->{ds}}))
@@ -345,7 +344,7 @@ sub dus {
         my $i = $h->{$k} ||= {it => $h->{HASH}->{it}};
         %$i = (%$i, @_);
     };
-    $an->(qw'A oh 0.8');
+    $an->(qw'A oh 0.2');
     $an->(qw'Ghost oh 0.8');
     $an->(qw'G oh 0.8');
     $an->(qw'W oh 0.8 mustb','id,hash,file,G');
