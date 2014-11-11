@@ -42,12 +42,18 @@ S:
     - K: wid2
       css:
         - width:20%
-    - K: disnon
-      css:
-        - display:none
     - K: blubo
       css:
         - 'border:1em solid blue'
+    - K: disnon
+      css:
+        - display:none
+    - K: adir
+      css:
+        - background:rgba(255,44,100,0.3)
+    - K: ado
+      css:
+        - background:rgba(55,44,255,0.3)
 
  - K: Action
    Ss:
@@ -60,11 +66,11 @@ C:
        -webkit-column-count: 2
    travels_D: |
      0->TafuBl(Dir => {dir => "/s/ghosts/C"});
-     0->TafuBl(Dir => {dir => "/s/ghosts/S"});
-     0->TafuBl(Ghosts => {});
+     0->TafuBl(Dir => {dir => "/s/ghosts/U"});
+     #0->TafuBl(Ghosts => {});
    
  - K: Dir #c
-   styles: padl
+   styles: padl adir
    flows_D: |
      S.name = "dir=$dir";
    travels_D: |
@@ -118,7 +124,7 @@ C:
    
  - K: Do #c
    BcS: name D
-   styles: brick4
+   styles: brick4 ado
    print: |
      "D $name";
    S:
@@ -192,7 +198,6 @@ C:
       - K: pre
         S:
           ishtml: 1
-          styles: cos5
           content_D: |
             w $ui S/make_lines_html(e=>'');
            
@@ -206,6 +211,7 @@ C:
           }  sort keys %$d);
       B.lines = \@stuff;
       Say "lines ".(0+@stuff);
+      return;
       my $t = {};
       for my $k (sort keys %$d) {
           my ($fit) = $k =~ /^(\W\w+)/;
@@ -215,7 +221,6 @@ C:
           my $l = qq{$k    <span style="color:white;">$de</span>} ;
           push @{ft.B.lines}, $l;
       }
-      sw[ scalar(uniq @{S.A.n}) ." _- ".scalar(@{S.A.n}) ];
       
    some: |
        return join("\n", @{$lines}[0..130]);
@@ -223,6 +228,11 @@ C:
    ux:
      spawn:
       - K: Codlue
+      - K: pre
+        S:
+          ishtml: 1
+          content_D: |
+            w $ui some;
            
  - K: CodeMirror #c
    S:
@@ -267,7 +277,7 @@ hooks:
                - K: Codlue
   recoded_init: |
     delete G.Vu;  
-    w S/duthis;
+    #w S/duthis;
     
     w uxd(full=>1); 
   any_init: |
@@ -300,10 +310,19 @@ hooks:
     }
     
     #sw($stuff);
-    w S/duthis(u=>$s);
+    #w S/duthis(u=>$s);
     Say "perc Codon to uxd";
     w uxd(full=>1)
   per_Do:
+    swek: |
+      Say "Awaits";
+      G.envsub = sub {
+        my $u = shift;
+        my @fa = ();
+        push @fa, $_->pi for @{u.A.n};
+        sw[ $u, @fa ];
+      };
+      
     du: |
       w S/duthis;
     seek: |
@@ -444,9 +463,9 @@ hooks:
         G.envsub && do { say "envsub"; delete(G.envsub)->($u), next };
         e.S && do { w $u zoum; next };
         w $u E/_D;
+        waylay uxd;
     }
     sw (ar.u) if e.S;
-    waylay uxd;
   uxd: |
     my $chi = G.Vu.U;
     G.Vu.U = [];
@@ -461,7 +480,7 @@ hooks:
     else {
         my @o = 0->scGre({});
         saygr "Codon full uxd";
-        0->sing(alluxd => sub { Say "BACK!"; G.GG.U->w('ux', {Ls=>\@o}); });
+        0->sing(alluxd => sub { Say "uxing..."; G.GG.U->w('ux', {Ls=>\@o}); });
     }
   v:
     ch: |
