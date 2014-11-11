@@ -66,7 +66,6 @@ __DATA__
               s.reply(ej);
               a.m("!"+ ej.er.m);
           }
-          a.m("."+ e);
       };
       a.m = function(e) {
           var d = e.substr(0,1);
