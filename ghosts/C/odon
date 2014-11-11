@@ -47,7 +47,7 @@ S:
         - display:none
     - K: blubo
       css:
-        - border:3px solid blue
+        - 'border:1em solid blue'
 
  - K: Action
    Ss:
@@ -237,7 +237,7 @@ hooks:
                - K: Codlue
   recoded_init: |
     delete G.Vu;  
-    
+    w S/duthis;
     
     w uxd; 
   any_init: |
@@ -245,10 +245,12 @@ hooks:
   S:
     duthis: |
       my $s = $G->dus();
-      s.A.oh = 0.3;
-      my $duff = $G->du({i=>$u, s=>$s});
+      s.A.oh = 0.2;
+      my $u = ar.u || G.ulast;
+      G.ulast = $u;
+      my $duff = $G->du({i=>$u, s=>$s, e=>2});
       my $stuff = join "\n",
-      map { "$_    $duff->{$_}" } sort keys %$duff;
+      map { "$_    $duff->{$_}" } reverse sort keys %$duff;
       0->del($_) for 0->ei("Code");
       0->TafuB(Code => {lines=>$stuff});
   percolate: |
@@ -267,7 +269,7 @@ hooks:
     w uxd(full=>1)
   per_Do:
     du: |
-      w S/duthis(u=>G.ulast);
+      w S/duthis;
     seek: |
        Say "Awaits";
        G.envsub = sub {
