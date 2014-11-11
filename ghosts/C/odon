@@ -197,17 +197,23 @@ C:
             w $ui S/make_lines_html(e=>'');
            
  - K: KV #c
-   styles: blubo;
-   flows_D: |
-     B.lines ||= B.C.B.lines; # aba codon?
-     B.lines = [split "\n", B.lines] unless ref B.lines eq 'ARRAY';
+   styles: blubo
+   eadu: |
+      my @stuff = ("for <h2>".gp($u)."</h2>",
+      map {
+          my $de = gp($d->{$_});
+          qq{$_    <span style="color:white;">$de</span>} 
+          }  sort keys %$d);
+      B.lines = \@stuff;
+      for my $k (sort keys %$d) {
+          my $de = gp($d->{$_});
+          my $l = qq{$k    <span style="color:white;">$de</span>} ;
+          0->TafuB(Code => {lines => $l});
+          
+      }
+      
    some: |
        return join("\n", @{$lines}[0..130]);
-   S:
-     make_lines_html: |
-       return Sw some;
-       return join("\n", @{$lines});
-       S.G->w(vimcolor => {string => join("\n", @{$lines})});
    ux:
      spawn:
       - K: pre
@@ -215,7 +221,7 @@ C:
           ishtml: 1
           styles: cos5
           content_D: |
-            w $ui S/make_lines_html(e=>'');
+            w $ui some;
            
  - K: CodeMirror #c
    S:
@@ -269,19 +275,13 @@ hooks:
     duthis: |
       my $u = ar.u || G.ulast;
       G.ulast = $u; 
-      $u = u.Li;
+      $u = $u;
       my $d = w S/duff[$u];
       w S/ducode[$d, $u];
       
     ducode: |
-      my $stuff = join "\n", "for <h2>".gp($u)."</h2>",
-      map {
-          my $de = gp($d->{$_});
-          qq{$_    <span style="color:white;">$de</span>} 
-          }  sort keys %$d;
-          
-      0->del($_) for 0->ei("Code");
-      0->TafuB(Code => {lines=>$stuff});
+      my $KV = $G->TafuB(KV => {});
+      w $KV eadu[$d, $u];
       
     duff: |
       my $s = $G->dus();

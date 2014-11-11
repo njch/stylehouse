@@ -126,8 +126,9 @@ sub pint {
     my $w = shift;
     
     my $K = $w->{K}        if defined $w->{K} && !defined $w->{k};
-    my $p = $w->{G}->w('print',{},$w)
+    my $p = eval { $w->{G}->w('print',{},$w) }
         if (defined $w->{print} || $w->{Gw}) && Ghost::wish(G=>$w->{G});
+    $@ = "" if $@;
     my $B;
     if ($w->{B} && !$p) {
         if (join(",", sort keys %{$w->{B}}) eq "Lu,ui") {
