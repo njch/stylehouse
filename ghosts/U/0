@@ -373,8 +373,7 @@ hooks:
     
     
 
-  J:
-    
+
   Aux: |
     
     my $Ls = ar.Ls;
@@ -494,9 +493,11 @@ hooks:
     my @as =
         (map { { j => $j, i => $_ } } @recur),
         (map { { j => $j, i => $_, flatly => 1 } } @flatly);
-        
+    
+    my $i={};
     for my $a (@as) {
-        #saygr "Top level U is a ".a.i->pint()."   fl=a.flatly";
+        next if $i->{a.i.id}++;
+        saygr "Top level U is a ".a.i->pint()."   fl=a.flatly";
         w U(%$a);
     }
     
@@ -643,6 +644,7 @@ hooks:
     inter({u => u.K});
     
     w utricks/spawn[$u];
+    say gpty($u) ."  spawnd".$G->F_delta();
     w sane/U1[$u];
     
     my @o = w dook[$u];
