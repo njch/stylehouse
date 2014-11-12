@@ -13,7 +13,6 @@ C:
  
  - K: Do #c
    BcS: name D
-   styles: brick4 ado
    print: |
      $name
    S:
@@ -59,7 +58,38 @@ C:
        delete $db->{ui.Li.i.K};
        $s .= ki($db) if %$db && S.q < 3;
        return $s;
-
+ - K: KV #c
+   eadu: |
+      my @stuff = ("for <h2>".gp($u)."</h2>",
+      map {
+          my $de = gp($d->{$_});
+          qq{$_    <span style="color:white;">$de</span>} 
+          }  sort keys %$d);
+      B.lines = \@stuff;
+      Say "lines ".(0+@stuff);
+      return;
+      my $t = {};
+      for my $k (sort keys %$d) {
+          my ($fit) = $k =~ /^(\W\w+)/;
+          my $ft = $t->{$fit} ||= 0->TafuB(Code => {fit=>$fit,lines=>[]});
+          $G->L($ft, $S);
+          my $de = gp($d->{$k});
+          my $l = qq{$k    <span style="color:white;">$de</span>} ;
+          push @{ft.B.lines}, $l;
+      }
+      
+   some: |
+       return join("\n", @{$lines}[0..130]);
+   
+   ux:
+     spawn:
+      - K: Codlue
+      - K: pre
+        S:
+          ishtml: 1
+          content_D: |
+            w $ui some;
+           
 hooks:
   fresh_init: |
     0->GAK(U => G!U);
@@ -68,7 +98,7 @@ hooks:
            W:
              Ss: [u, x, X]
            M:
-             Z: {background: rgba(150,100,50,0.4), overflow-y: scroll, overflow: visible, width: 30%, height: 100%, position: absolute, left: 10%}
+             Z: {background: rgba(100,66,33,0.4), overflow-y: scroll, overflow: visible, width: 60%, height: 100%, position: absolute, left: 10%}
            ux:
              spawn:
                - K: Codlue
@@ -162,7 +192,8 @@ hooks:
     sayyl "Event relating to ".$u->pi;
     0->visTp({L=>$L},'Fun');
     for (1) {
-        G.envsub && do { say "envsub"; delete(G.envsub)->($u), next };
+        G.envsub && do { say "envsub"; delete(G.envsub)->($u); next };
+        say "stillgoing";
         e.S && do { w $u zoum; next };
         w $u E/_D;
         waylay uxd;
