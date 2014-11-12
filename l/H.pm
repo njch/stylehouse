@@ -10,6 +10,7 @@ use A;
 use C;
 use G;
 use H;
+use R;
 use T;
 use W;
 use UUID;
@@ -37,6 +38,7 @@ sub new {
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
+    $R::H = $H;
     $S::H = $H;
     $T::H = $H;
     $W::H = $H;
