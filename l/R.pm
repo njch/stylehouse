@@ -7,14 +7,20 @@ use lib 'lib';
 use feature 'say';
 sub new {
     my $R = shift;
-    $R->inj;
+    $R->{name} = shift;
 
     $R
+}
+
+sub pi {
+    my $R = shift;
+    "R $R->{name}"
 }
 
 sub du {
     my $R = shift;
     my $a = shift;
+    die G::sw($a) if !defined $a->{i};
     # how to get around the Objs' data
     my $s = $a->{s} ||= $R->dus();
     my $i = $a->{i};
@@ -23,7 +29,6 @@ sub du {
 
     my $c = {};
     $a->{as} ||= [];
-    die sw($a) if !defined $a->{i};
     push @{$a->{as}}, $a;
     $a->{ds} = [@{$a->{ds}||[]}, $a];
 
@@ -34,31 +39,12 @@ sub du {
     $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
     $is ||= $s->{default} || return {};
 
-    # $mustb
-    # does HASH key importance if 0>e<1
-    # travels every thing      if e>=1
-    #                also      if 0.5<e<1
-    # since it must want to know links by then
-    # overthinking must be reached somehow
-    # going over a line
-    # at 5
-    # how much is happened
     # sw is a channel
     # the way in the splat...
-
-    # there's some more flipping around: TODO
-    # an e mod possibly coming from mustb (missing part)
-    # so some mustb key can e above 0.5 and see travel
-
-    # could return somehow weighted graph, hmm
-    # oldworld really doesn't like that idea
-    # maybe if du was grabbed as more abstract chunks with A action
-    # driving the new codons basically...
 
     # snapping branches off the concept of ^ for now
 
     # we sculpt data as fractions of energy that enlightens the 1-9 meanings
-    # fuck binary
 
     # $an->{s}, etc can be modded as meaning builds down
     # but only for 
