@@ -29,7 +29,7 @@ sub spawn {
 
 sub An {
     my $A = shift;
-    my $n = shift;
+    my $n = $A->fiA(shift);
     push @{$A->{n}}, $n unless grep { $_ eq $n } @{$A->{n}};
 }
 
