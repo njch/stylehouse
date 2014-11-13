@@ -106,7 +106,6 @@ hooks:
     delete G.Vu;  
     #w S/duthis;
     
-    w uxd(full=>1); 
   any_init: |
     G.db = 0;
   S:
@@ -135,7 +134,7 @@ hooks:
     my $dos = 0->TafuB(Dos => {});
     my $Dos = $G->findway("per_Do");
     say wdump $r->du({i=>$Dos});
-    
+    #$Dos = {};
     for my $k (sort keys %$Dos) {
         say "gun $k";
         my $d  = 0->TafuB(Do => {
@@ -157,9 +156,7 @@ hooks:
       Say "Awaits";
       G.envsub = sub {
         my $u = shift;
-        my @fa = ();
-        push @fa, $_->pi for @{u.A.n};
-        sw[ $u, @fa ];
+        sw[ $u, map { $_->pi } @{u.A.n} ];
       };
       
     du: |
@@ -193,10 +190,9 @@ hooks:
     0->visTp({L=>$L},'Fun');
     for (1) {
         G.envsub && do { say "envsub"; delete(G.envsub)->($u); next };
-        say "stillgoing";
         e.S && do { w $u zoum; next };
         w $u E/_D;
-        waylay uxd;
+        #waylay uxd;
     }
     sw (ar.u) if e.S;
   uxd: |
