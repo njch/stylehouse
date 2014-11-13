@@ -145,7 +145,7 @@ sub pi {
 }
 sub send {
     my ($w, $m, $cb) = @_;
-    $m =~ /\n/ && die "Message contains \\n:\n$m\n\n";
+    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $H->{G}->w(send_Elvis => {m => $m, cb => $cb, Elvis => $w});
 }
 sub find {

@@ -101,7 +101,7 @@ sub send {
     my $self = shift;
     my $m = shift;
     if ($m =~ /\n/) {
-        die "Message contains \\n:\n$m\n\n";
+        say "Hositinfo Message contains \\n:\n$m\n\n";
     }
     my $cb = shift;
     $self->{G}->w(send_Elvis => {m => " $m", cb => $cb});
