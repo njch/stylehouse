@@ -332,7 +332,7 @@ sub ind {
 sub ddump {
     my $thing = shift;
     my $ind;
-    return
+    my $s =
         join "\n",
         grep {
             1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
@@ -342,6 +342,8 @@ sub ddump {
         "",
         grep !/^       /,
         split "\n", Dump($thing);
+    $s =~ s/^\s*---\s*//s;
+    $s
 }
 sub wdump {
     my $thing = shift;
