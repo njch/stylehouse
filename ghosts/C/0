@@ -93,6 +93,10 @@ C:
    S:
      ishtml: 1
      content_D: |
+       if (B.Dm) {
+         B.m = B.Dm->();
+         say B.m;
+       }
        "S.K <pre>B.m</pre>"
 hooks:
   fresh_init: |
@@ -102,7 +106,7 @@ hooks:
            W:
              Ss: [u, x, X]
            M:
-             Z: {background: rgba(100,66,33,0.4), overflow-y: scroll, overflow: visible, width: 60%, height: 100%, position: absolute, left: 10%}
+             Z: {background: rgba(100,66,33,0.4), width: 60%, height: 100%, position: absolute}
            ux:
              spawn: []
   recoded_init: |
@@ -111,7 +115,12 @@ hooks:
     
   any_init: |
     G.db = 0;
-    
+  vAK: |
+    my $j;
+    for my $k (@{G.A.n}) {
+        $j->{k.i.K}++
+    }
+    $j = ddump($j);
   S:
     duthis: |
       my $u = ar.u || G.ulast;
@@ -129,8 +138,11 @@ hooks:
       s.A.oh = 0.2;
       s.G.oh = 1;
       $G->du({i=>$u, s=>$s, e=>2});
+  anD: |
+    0->TafuB(D=>$ar);
   percolate: |
-    0->TafuB(D=>{m=>"Hi $_"}) for 1..4;
+    w anD(m=>"HI $_") for 1..2;
+    w anD(Dm=>sub { w vAK; });
     
     my $Dos = $G->findway("per_Do");
     for my $k (sort keys %$Dos) {
@@ -204,9 +216,13 @@ hooks:
             G.GG.U->w('ux', {Ls=>\@o});
         }, begin => 0.001);
     }
+  chang: |
+      push @{G.Vu.U||=[]}, $u if u.G eq $G;
+      0->sing(uxd => sub { w uxd; });
+    
   v:
     ch: |
-      push @{G.Vu.U||=[]}, $u if u.G eq $G;
+      w chang;
   T:
     traction: |
       w v/ch[$u];

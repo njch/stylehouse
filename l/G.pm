@@ -952,7 +952,17 @@ sub jsq {
     for (@a) {
         s/\\/\\\\/g;
         s/'/\\'/g;
-        s/\n/\\n/g;
+    }
+    wantarray ? @a : shift @a;
+}
+
+sub jssq {
+    my $G = shift;
+    my @a = @_;
+    for (@a) {
+        s/\\/\\\\/g;
+        s/"/\\"/g;
+        #s/\\n/\n/g;
     }
     wantarray ? @a : shift @a;
 }
