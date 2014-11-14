@@ -41,8 +41,8 @@ __DATA__
   <script src="//h:3000/jquery.scrollTo.js"></script>
 </head><body style="background: url('i/greencush.jpg'); background: black; position:absolute; color: #0f2; overflow:hidden; height:100%; width:100%;">
 
-    <div id='msgs' style="white-space: pre;position:absolute;left:0em;bottom:0em;width:44%;min-height:100%; overflow:hidden;padding:0.2em;"> </div>
-    <div id='ux' style="position:absolute;right:0em;width:96%;height:100%; overflow:hidden;"> </div>
+    <div id='msgs' style="white-space: pre;position:absolute;left:0em;bottom:0em;width:44%;height:30%; overflow:hidden;padding:0.2em;color:black;"> </div>
+    <div id='ux' style="position:absolute;right:0em;width:100%;height:100%; overflow:hidden;"> </div>
 
     <script type="text/javascript">
       // default, top level #c

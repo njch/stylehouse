@@ -383,7 +383,7 @@ hooks:
         if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
             $f = $1;
             $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
-            die "how to git diff unicode?" if $f =~ /\\\d+/;
+            die "how to git diff unicode? $f" if $f =~ /\\\d+/;
         }
         else {
             $d->{$f} .= $_
@@ -433,6 +433,7 @@ hooks:
     if (keys %$Gd) { 
         say "Ghost changes ".join", ", keys %$Gd;
         H.r->publish(S => "ghostchanges ".join", ", keys %$Gd);
+        
     }
   suRedis: |
     my $a = {%$ar};
