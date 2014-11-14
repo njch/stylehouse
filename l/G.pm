@@ -8,7 +8,6 @@ use feature 'say';
 use base 'Ghost';
 sub wdump { H::wdump(@_) };
 sub gpty { Ghost::gpty(@_) };
-sub gp { my $u = shift; ref $u && $u->can('pi') ? $u->pi : gpty($u) };
 sub pint { Ghost::pint(@_) };
 use YAML::Syck;
 our $swdepth = 5;
@@ -39,6 +38,13 @@ sub new {
     $G->load_ways(@ways);
 
     $G
+}
+
+sub gp {
+    my $u = shift;
+    return $u->pi if ref $u && ref $u ne 'HASH'
+        && ref $u ne 'ARRAY' && $u->can('pi');
+    gpty($u);
 }
 
 sub sw {
@@ -147,9 +153,12 @@ sub w {
 
 sub nw {
     my $G = shift;
-    my $C = $G->{A}->spawn('C');
+    my $C = $G->{A}->spawn('C');  
+
+
     $C->from({@_}) if @_;
-    $C
+    # etc
+    $C 
 }
 
 sub load_ways {
@@ -166,7 +175,7 @@ sub load_ways {
         my $base = "ghosts/$name";
         push @files, $base if -f $base;
         push @files, map { Hostinfo::fixutf8($_) }
-            grep { /\/\d+$/ } glob("$base/*");
+            grep { $name eq '0' || /\/\d+$/ } glob("$base/*");
 
         for my $file (@files) {
             # TODO pass an If object selector to 0->deaccum
@@ -352,6 +361,18 @@ sub dus {
     $an->(qw'G oh 0.8');
     $an->(qw'W oh 0.8 mustb','id,hash,file,G');
     $h
+}
+
+sub duSom {
+    my $G = shift;
+    my $a = shift;
+    my $d = $G->du($a);
+    $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
+    join "\n", "for ".gp($a->{i}),
+      map {
+        my $de = gp($d->{$_});
+        qq{$_    <span style="color:white;">$de</span>} 
+      }  sort keys %$d;
 }
 
 sub ki {
@@ -1074,7 +1095,6 @@ sub su {
         my $d = {};
         ($d->{m}, $d->{top}, $d->{sutop}) = @_;
         $G->timer(0.1, sub {
-            say "a su $d->{top} from $d->{sutop}";
             $D->($d);
         });
     };

@@ -6,7 +6,6 @@
       use base 'Ghost';
       sub wdump { H::wdump(@_) };
       sub gpty { Ghost::gpty(@_) };
-      sub gp { my $u = shift; ref $u && $u->can('pi') ? $u->pi : gpty($u) };
       sub pint { Ghost::pint(@_) };
       use YAML::Syck;
       our $swdepth = 5;
@@ -35,6 +34,13 @@
       
       
       $G->load_ways(@ways);
+  - K: gp #c
+    style: func
+    D: |
+      my $u = shift;
+      return $u->pi if ref $u && ref $u ne 'HASH'
+          && ref $u ne 'ARRAY' && $u->can('pi');
+      gpty($u);
   - K: sw #c
     style: func
     D: |
@@ -139,7 +145,7 @@
       }
   - K: nw #c G ways
     D: |
-      my $C = G.A->spawn('C');
+      my $C = G.A->spawn('C');  
       
       
       $C->from({@_}) if @_;
@@ -160,7 +166,7 @@
             my $base = "ghosts/$name";
             push @files, $base if -f $base;
             push @files, map { Hostinfo::fixutf8($_) }
-                grep { /\/\d+$/ } glob("$base/*");
+                grep { $name eq '0' || /\/\d+$/ } glob("$base/*");
 
             for my $file (@files) {
                 # TODO pass an If object selector to 0->deaccum
@@ -339,6 +345,16 @@
         $an->(qw'G oh 0.8');
         $an->(qw'W oh 0.8 mustb','id,hash,file,G');
         $h
+  - K: duSom #c
+    D: |
+      my $a = shift;
+      my $d = $G->du($a);
+      $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
+      join "\n", "for ".gp(a.i),
+        map {
+          my $de = gp($d->{$_});
+          qq{$_    <span style="color:white;">$de</span>} 
+        }  sort keys %$d;
   - K: ki #c
     style: func
     D: |
