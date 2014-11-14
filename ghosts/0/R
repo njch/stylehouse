@@ -34,16 +34,22 @@
   - K: popJtrav #c
     D: |
       R.J.trav =~ s/\W\w+$//;
-  - K: duSome #c style splat
+  - K: S #c style splat
     D: |
       my $a = shift;
+      a.e ||= R.S.e || die;
+      a.i ||= $R->uni;
+      
       my $d = $R->du($a);
-      $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
-      join "\n", "for ".G::gp(a.i),
+      my $title = "for ".G::gp(a.i);
+      my @or = sort keys %$d;
+      
+      join "\n", $title,
         map {
           my $de = G::gp($d->{$_});
+          $de =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($de) > 100;
           qq{$_    <span style="color:white;">$de</span>} 
-        }  sort keys %$d;
+        } @or; 
   - K: du #c style grab
     D: |
       my $a = shift;
