@@ -76,13 +76,16 @@ hooks:
             push @code, $D;
         }
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
-        my $file = "l/${nb}.pm";
+        my $file = "li/${nb}.pm";
         write_file($file, join("\n", @code));
     }
-    run "perl -c l/H*";
-    run "cp l/* sal/";
+    run "perl -c li/H*";
+    run "cp li/* sal/";
     my $ch = "updated sal" if capture("cd sal; git diff");
-    $ch && run("cd sal; git add *; git commit -m 'somewhere...'");
+    if ($ch) {
+        run("cd sal; git add *; git commit -m 'somewhere...'");
+        run("cd l; git pull");
+    }
     $ch ||= "no changes";
     sayg "compiled, $ch ".$G->F_delta();
     return if $ch eq "no changes";

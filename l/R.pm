@@ -17,6 +17,42 @@ sub pi {
     "R $R->{name}"
 }
 
+sub uni {
+    my $R = shift;
+    my $J = $R->{J} || die;
+    my $i = $J->{from} || die;
+    my $t = $J->{trav} || die;
+    #  from => $H,
+    #  trav => "{G{GGs",
+    while ($t =~ m/(\W)(\w+)/sg) {
+        say "Snapped $i       $1 $2";
+        last if $1 eq " ";
+        $i = $i->{$2} if $1 eq "{";
+        $i = $i->[$2] if $1 eq "[";
+    }
+    if ($t =~ m/^.+? (.+)$/) {
+        say "Had some more: $1";
+    }
+    $i
+}
+
+sub popJtrav {
+    my $R = shift;
+    $R->{J}->{trav} =~ s/\W\w+$//;
+}
+
+sub duSome {
+    my $R = shift;
+    my $a = shift;
+    my $d = $R->du($a);
+    $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
+    join "\n", "for ".G::gp($a->{i}),
+      map {
+        my $de = G::gp($d->{$_});
+        qq{$_    <span style="color:white;">$de</span>} 
+      }  sort keys %$d;
+}
+
 sub du {
     my $R = shift;
     my $a = shift;

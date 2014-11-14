@@ -13,7 +13,38 @@
    
  
   
-  - K: du #c G style grab
+  - K: uni #c
+    D: |
+      my $J = R.J || die;
+      my $i = J.from || die;
+      my $t = J.trav || die;
+      #  from => $H,
+      #  trav => "{G{GGs",
+      while ($t =~ m/(\W)(\w+)/sg) {
+          say "Snapped $i       $1 $2";
+          last if $1 eq " ";
+          $i = $i->{$2} if $1 eq "{";
+          $i = $i->[$2] if $1 eq "[";
+      }
+      if ($t =~ m/^.+? (.+)$/) {
+          say "Had some more: $1";
+      }
+      $i
+      
+  - K: popJtrav #c
+    D: |
+      R.J.trav =~ s/\W\w+$//;
+  - K: duSome #c style splat
+    D: |
+      my $a = shift;
+      my $d = $R->du($a);
+      $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
+      join "\n", "for ".G::gp(a.i),
+        map {
+          my $de = G::gp($d->{$_});
+          qq{$_    <span style="color:white;">$de</span>} 
+        }  sort keys %$d;
+  - K: du #c style grab
     D: |
       my $a = shift;
       die G::sw($a) if !defined a.i;
