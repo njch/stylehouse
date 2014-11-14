@@ -153,10 +153,11 @@ hooks:
                      width: 10%
                      top: 40%
                      transform: rotate(7deg);
-  elvac: |
+  elvac: | # head seeks the headless
     if (!G.elvacu++) {
         say "dealing elvi";
-        0->su(elvac => sub { w elvac(a => shift); }); # deal elvi
+        0->su(elvac => sub { w elvac(a => shift); });
+        # H.r->publish("S", "elvac"); # come round again... etc TODO
         return;
     }  
     saygr "H.style/H.name\t\t`elvac\t\t a.top\t\t a.m";
@@ -164,7 +165,7 @@ hooks:
     w z/coninto[$conin];
     H.G w elvac[$style, $name, $id, $conin];
     
-  envac: |
+  envac: | # the headless seeks heads
     H.r->publish("elvac", "H.style H.name H.id H.listen_ws");
   elvis_enters: |
     saygr "jump on the j train ".$E->pi;
