@@ -363,18 +363,6 @@ sub dus {
     $h
 }
 
-sub duSom {
-    my $G = shift;
-    my $a = shift;
-    my $d = $G->du($a);
-    $d =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($d) > 100;
-    join "\n", "for ".gp($a->{i}),
-      map {
-        my $de = gp($d->{$_});
-        qq{$_    <span style="color:white;">$de</span>} 
-      }  sort keys %$d;
-}
-
 sub ki {
     Ghost::ki(@_)
 }
