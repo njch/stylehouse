@@ -97,7 +97,7 @@ hooks:
     
     0->su(S => sub {
         my $a = shift;
-        Say "got S: a.m";
+        sayyl "got S: a.m";
         if (a.m =~ /^([\w\/]+) (.+)$/) {
             $ar = {m => $2};
             w S/$1;
@@ -225,9 +225,10 @@ hooks:
       w z/conz;
       w elvjs;
     ghostchanges: |
+      return if H.G.wtf.gitdission;
       say "S ghostchanges";
       my $Gd = {map { $_ => 1 } split ', ', $m};
-      $G0 w _gitdission[$Gd]; 
+      $G0 w _gitdission[$Gd];
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -235,6 +236,8 @@ hooks:
       $H->send("\$('body').empty();");
     clon: |
       $H->send(" clon();");
+    keon: |
+      $H->send(" keon();");
     hitground: |
       $H->JS("\$('#sky').stop().slideUp();");
     conz: |
@@ -272,7 +275,7 @@ hooks:
       say "Sport: $p";
       $p;
     in: |
-      *Ghost::sw = sub { say "switching to G::sw @_";G::sw(@_) };
+      *Ghost::sw = sub { G::sw(@_) };
       waylay stylehut/play; # get going right away
     play: |
       H.h = G!Ϡ;
@@ -291,14 +294,11 @@ hooks:
       w wtf(div => 1, way => 'gitdission');
       
       w z/clon;
+      G!H/keys;
 
-      Mojo::IOLoop->recurring(32 => sub{ w stylehut/yup; });
       Mojo::IOLoop->recurring(6 => sub{ w stylehut/honk; });
     honk: |
       $H->send('.'. (("  ")x int(2 + rand 3))."!!!");
-    yup: |
-      $G::swdepth = 10;
-      say "yup: ".sw("styleh00t ".sprintf('%.5f',rand()));
       
       
   styleshed:
@@ -431,9 +431,10 @@ hooks:
     G.last_git_diff = $d;
     
     if (keys %$Gd) { 
-        say "Ghost changes ".join", ", keys %$Gd;
-        H.r->publish(S => "ghostchanges ".join", ", keys %$Gd);
-        
+        my $m = join", ", keys %$Gd;
+        say "Ghost changes $m";
+        H.r->publish(S => "ghostchanges $m");
+        $G0 w _gitdission[$Gd];
     }
   suRedis: |
     my $a = {%$ar};
