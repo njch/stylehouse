@@ -42,9 +42,9 @@ sub new {
     
     $H->{G} = $H->TT($H)->G;
     
-    $Ghost::G0 = $H->TT("Ghost")->G("G");
-    $Ghost::G0->w('fresh_init');
-    $Ghost::G0->w('any_init');
+    $G::G0 = $H->TT("Ghost")->G("G");
+    $G::G0->w('fresh_init');
+    $G::G0->w('any_init');
     
     $H->{G}->w('fresh_init');
     $H->{G}->w('any_init');
@@ -67,7 +67,7 @@ sub TT {
     my $self = shift;
     my @from = @_;
     @from || die "WTF H::TT NO FROM";
-    whisper "H Making Travel ". join ", ", map { Ghost::gpty($_) } @from;
+    whisper "H Making Travel ". join ", ", map { G::gpty($_) } @from;
     return Travel->new($self->intro, @from);
 }
 sub Gf {
@@ -291,24 +291,24 @@ sub throwlog {
     for my $b (@_) {
         if (ref $b eq "Way") {
             push @E, "Way: $b->{name}";
-            push @E, ( map { " ` ".Ghost::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
+            push @E, ( map { " ` ".G::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
             push @E, $b->{Error} if $b->{Error};
         }
         else {
-            push @E, Ghost::ghostlyprinty("NOHTML", $b)
+            push @E, G::ghostlyprinty("NOHTML", $b)
         }
     }
     my $error =
         [ hitime(), $H->stack(2), [@E] ];
     
     my @context =
-        grep { !/Ghost Ghost::__ANON__ |Ghost \(eval\)/ }
+        grep { !/G G::__ANON__ |G \(eval\)/ }
             @{$error->[1]}
     
     unless $what eq "Say" || $what eq "Info";
     
     my @wrap = ();
-    my @f = @Ghost::F;
+    my @f = @G::F;
     for my $c (@context) {
         if ($c =~ /(G)host::(doo|w) (\d+)/) {
             my $f = shift @f;

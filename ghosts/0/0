@@ -79,7 +79,7 @@ hooks:
         }
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
         my $file = "il/l/${nb}.pm";
-        write_file($file, join("\n", @code));
+        $H->spurt($file, H::encode_utf8(join("\n", @code)));
     }
     
     for my $file (qw"H* S*") {
@@ -96,7 +96,7 @@ hooks:
     my $dif = capture("cd sal; git diff");
     saybl $dif if $dif;
     my $ch = "updated sal" if $dif;
-    if ($ch) {
+    if ($ch && 0) {
         run("cd sal; git add *; git commit -m 'somewhere...'");
         run("cd l; git pull");
     } 

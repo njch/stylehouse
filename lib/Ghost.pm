@@ -192,6 +192,7 @@ sub deeby {
 }
 sub waystacken {
     my $G = shift;
+    #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
     my $s = $G->stackway(@_);
     push @{ $F[0]->{undies} ||= [] }, $s if @F;
     unshift @F, $s;
