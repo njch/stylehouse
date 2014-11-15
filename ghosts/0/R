@@ -3,22 +3,32 @@
  R:
   - K: head #c
     D: |
-      our $fo = {};
+      our $f = {};
   - K: new #c
     D: |
       R.name = shift;
-   
+      $R->instyle;
  
-  
+  - K: instyle
+    D: |
+      f.fs150 = "font-size:150%;";
+      f.fs120 = "font-size:120%;";
+      f.fs80 = "font-size:80%;";
+      f.fs60 = "font-size:60%;";
+      f.white = "color:white;";
+      f.blue = "color:blue;";
+      f.lightblue = "color:#44f;";
+      f.black = "color:black;";
   - K: pi #c
     D: |
       "R R.name"
    
   - K: f #c
     D: |
-      
-      qq{<span style="color:white;">$_->[2]</span>
-  
+      my @styles = split "_", shift;
+      my $t = shift;
+      @styles = map { $f->{$_} || die "no style $_" } @styles;
+      qq{<span style="@styles">$t</span>};
   - K: uni #c
     D: |
       my $J = R.J || die;
@@ -42,10 +52,11 @@
       R.J.trav =~ s/\W\w+$//;
   - K: intJtrav #c
     D: |
-      my $i = shift;
-      return $R->popJtrav if $i == 0;
+      my $k = shift;
+      return $R->popJtrav if $k == 0;
+      my $i = $k - 1;
       die "no $i" unless exists R.J.at->[$i];
-      my $r = R.J.at->[$i-1];
+      my $r = R.J.at->[$i];
       my ($hop) = $r->[0] =~ /^(\W\w+)/;
       R.J.trav .= $hop;
   - K: upi #c
@@ -62,8 +73,7 @@
       
       
       my $d = $R->du($a);
-      my $title = "= ".G::gp(a.i);
-      $title = qq{<span style="font-size:150%">$title</span>};
+      my $title = $R->f(fs150 => "= ".G::gp(a.i));
       my $Jpi = "J ".G::gp(R.J.from)."  R.J.trav";
       
       my @or = sort keys %$d;
@@ -73,15 +83,13 @@
       
       my $i = 1;
       my @rows = map {
-          $R->f(fs80_blue => $i++)
-          .
-          $R->f(lightblue => $_->[0])
-          .
-          $R->f(fs120_white => $_->[2])
+          join "  ",
+          $R->f(fs60_blue => $i++),
+          $R->f(black => $_->[0]),
+          $R->f(fs120_white => $_->[2]),
       } @or;
       
-      join "\n", $Jpi, $title,
-          @rows;
+      join "\n", $Jpi, $title, @rows;
   - K: du #c style grab
     D: |
       my $a = shift;
