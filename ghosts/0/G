@@ -45,6 +45,89 @@
         our $MAX_FCURSION = 140;
         our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
         our $HASHC = "#"."c";
+        
+        sub waystacken {
+            my $G = shift;
+            #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
+            my $s = $G->stackway(@_);
+            push @{ $F[0]->{undies} ||= [] }, $s if @F;
+            unshift @F, $s;
+            $s->{F} = [@F],
+            $G->ob("\\", $s);
+            my $unway = sub {
+                my @FF;
+                if ($F[0] ne $s) {
+                    my $E = "BATS ";
+                    if (!grep {$_ eq $s} @F) {
+                        $E .= "self nowhere in \@F"
+                    }
+                    else {
+                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
+                        $E .= " - from $_->{name}\n" for shift @FF;
+                    }
+                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
+                }
+                else {
+                    shift @F;
+                }
+                
+                if ($@) {
+                    #$G->Flab("Stack Return Error", $s, $@);
+                    $s->{Error} = $@;
+                }
+                $s->{Flab} = [@Flab];
+                
+                if ($s->{_after_do}) {
+                    $_->() for @{$s->{_after_do}};
+                }
+                
+                my $te = $@; $@ = "";
+                $G->ob("/", $s);
+                $@ = $te;
+                @Flab = ();
+                $s
+            };
+            wantarray ? ($unway, $s) : $unway;
+        }
+        sub stackway {
+            my $G = shift;
+            my $thing = [@_];
+            my $w = $G->nw;
+            my $stack = $H->stack(1);
+            my $from;
+            # FUZZ!
+            if ($stack->[0] =~ /Ghost::timer/) {
+                $from = "time"
+            }
+            elsif ($stack->[1] =~ /Ghost.+eval.+/
+                && $stack->[2] =~ /Ghost::doo/) {
+                $from = "some doing..."
+            }
+            else {
+                ($from) = $stack->[1] =~ / (\S+::\S+) /;
+                $from =~ s/.*Ghost::(Fl|wa).*/$1/;
+                $from =~ s/^Fl$/ᣜ_/;
+                $from =~ s/^wa$/_ᣝ/;
+                $from =~ s/Ghost::/G:/;
+            }
+            $from ||= "stackw $stack->[0]";
+            shift @$stack;
+            
+            $w->from({
+                K => "$from",
+                G => $G,
+                hitime => $H->hitime(),
+                stack => $stack,
+                Flab => [@Flab],
+                F => [@F],
+                depth => 0+@F,
+                thing => $thing,
+                print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, gpty(@{$S->{thing}})',
+            });
+            $w->from({Error=>$@}) if $@;
+            $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
+            $w;
+        }
         sub gname {
             my $g = shift;
             my $si = shift || 0;
@@ -115,6 +198,7 @@
         sub deeby {
             shift->{db} + $db > 0
         }
+
         sub waystacken {
             my $G = shift;
             #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
@@ -139,17 +223,17 @@
                 else {
                     shift @F;
                 }
-                
+
                 if ($@) {
                     #$G->Flab("Stack Return Error", $s, $@);
                     $s->{Error} = $@;
                 }
                 $s->{Flab} = [@Flab];
-                
+
                 if ($s->{_after_do}) {
                     $_->() for @{$s->{_after_do}};
                 }
-                
+
                 my $te = $@; $@ = "";
                 $G->ob("/", $s);
                 $@ = $te;
@@ -158,7 +242,26 @@
             };
             wantarray ? ($unway, $s) : $unway;
         }
-        sub timur {
+        sub comeback {
+            my $G = shift;
+            my $last = shift;
+            my $doings = shift;
+            my $doing = shift;
+            my @saying = @{ $last->{thing} };
+            $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
+            my ($u, $s) = $G->waystacken(@saying, @_);
+            $s->{doings} = $doings;
+            $s->{timer_from} = $last;
+            $last->{timer_back} = $s;
+            eval { $doing->(); };
+            # start serving code and stuff through H/0!
+            $u->();
+            if ($@) {
+                $@ =~ s/^(!   )+Z\n//sgm;
+                sayre(ind("Error ", $@));
+            }
+        }
+        sub timur { #c
             if ($G0) {
                 $G0->timer(@_);
             }
@@ -202,45 +305,6 @@
             my $G= shift;
             my $F = [@F];
             $G->_0(printF => {FFF=>$F});
-        }
-        sub stackway { #c to dry
-            my $G = shift;
-            my $thing = [@_];
-            my $w = $G->nw;
-            my $stack = $H->stack(1);
-            my $from;
-            # FUZZ!
-            if ($stack->[0] =~ /G::timer/) {
-                $from = "time"
-            }
-            elsif ($stack->[1] =~ /G.+eval.+/
-                && $stack->[2] =~ /G::doo/) {
-                $from = "some doing..."
-            }
-            else {
-                ($from) = $stack->[1] =~ / (\S+::\S+) /;
-                $from =~ s/.*G::(Fl|wa).*/$1/;
-                $from =~ s/^Fl$/ᣜ_/;
-                $from =~ s/^wa$/_ᣝ/;
-                $from =~ s/G::/G:/;
-            }
-            $from ||= "stackw $stack->[0]";
-            shift @$stack;
-            
-            $w->from({
-                K => "$from",
-                G => $G,
-                hitime => $H->hitime(),
-                stack => $stack,
-                Flab => [@Flab],
-                F => [@F],
-                depth => 0+@F,
-                thing => $thing,
-                print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, gpty(@{$S->{thing}})',
-            });
-            $w->from({Error=>$@}) if $@;
-            $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
-            $w;
         }
         sub F_delta {
             my $G = shift;
@@ -975,6 +1039,86 @@
       $u->from({Error=>$@}) if $@;
       u.name = join " ", grep {defined $_} u.G.way, u.K, gpty(@{u.thing});
       $u
+  - K: waystacken #c
+    D: |
+            #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
+            my $s = $G->stackway(@_);
+            push @{ $F[0]->{undies} ||= [] }, $s if @F;
+            unshift @F, $s;
+            $s->{F} = [@F],
+            $G->ob("\\", $s);
+            my $unway = sub {
+                my @FF;
+                if ($F[0] ne $s) {
+                    my $E = "BATS ";
+                    if (!grep {$_ eq $s} @F) {
+                        $E .= "self nowhere in \@F"
+                    }
+                    else {
+                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
+                        $E .= " - from $_->{name}\n" for shift @FF;
+                    }
+                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
+                }
+                else {
+                    shift @F;
+                }
+                
+                if ($@) {
+                    #$G->Flab("Stack Return Error", $s, $@);
+                    $s->{Error} = $@;
+                }
+                $s->{Flab} = [@Flab];
+                
+                if ($s->{_after_do}) {
+                    $_->() for @{$s->{_after_do}};
+                }
+                
+                my $te = $@; $@ = "";
+                $G->ob("/", $s);
+                $@ = $te;
+                @Flab = ();
+                $s
+            };
+            wantarray ? ($unway, $s) : $unway;
+  - K: stackway # to dry
+    D: |
+            my $thing = [@_];
+            my $w = $G->nw;
+            my $stack = $H->stack(1);
+            my $from;
+            # FUZZ!
+            if ($stack->[0] =~ /G::timer/) {
+                $from = "time"
+            }
+            elsif ($stack->[1] =~ /G.+eval.+/
+                && $stack->[2] =~ /G::doo/) {
+                $from = "some doing..."
+            }
+            else {
+                ($from) = $stack->[1] =~ / (\S+::\S+) /;
+                $from =~ s/.*G::(Fl|wa).*/$1/;
+                $from =~ s/^Fl$/ᣜ_/;
+                $from =~ s/^wa$/_ᣝ/;
+                $from =~ s/G::/G:/;
+            }
+            $from ||= "stackw $stack->[0]";
+            shift @$stack;
+            
+            $w->from({
+                K => "$from",
+                G => $G,
+                hitime => $H->hitime(),
+                stack => $stack,
+                Flab => [@Flab],
+                F => [@F],
+                depth => 0+@F,
+                thing => $thing,
+                print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, gpty(@{$S->{thing}})',
+            });
+            $w->from({Error=>$@}) if $@;
+            $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
+            $w        
   - K: _0 #c
     D: |
       my ($point, @etc) = @_;

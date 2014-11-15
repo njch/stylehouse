@@ -166,7 +166,7 @@ sub LioO {
     my $w=shift;
     my $O = shift;
     die "w.K has no Li!" unless $w->{Li};
-    my @a = Ghost::findO($O => $w->{Li}->{o});
+    my @a = G::findO($O => $w->{Li}->{o});
     wantarray ? @a : shift @a;
 }
 
