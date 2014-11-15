@@ -20,8 +20,9 @@ hooks:
     
   _init:
     recoded: |
+        say "Recode calles ".@{G.recoded_cbs};
         for my $cb (@{G.recoded_cbs}) {
-            $cb->($S);
+            $G->timer(0.1, sub { say "Balllgej!"; $cb->($S) });
         }
         
         w _init/wayrays[$S];
@@ -90,11 +91,14 @@ hooks:
     sayyl "0 0 0 dission fo ".join" ", keys %$Gd;
     my @rG;
     for my $S (@$ghosts) {
+        say "Is it in S.name ........ @{S.wayfiles}";
         my $in = [grep{$Gd->{$_}} @{S.wayfiles}];
         next unless @$in;
+        push @rG, $S;
         # sort stream to avoid small before big?
         waylay recode_ways[$S, $in];
     }
+    say " Recoded: ".join"\t\t", map { $_->pi } @rG;
   recode_ways: |
     sayyl "recoding S.id S.name";
     eval {

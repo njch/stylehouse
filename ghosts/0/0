@@ -2,9 +2,9 @@
 name: other stuff...
 hooks:
   try: |
-    saygr 'Restarting S';
+    saygr 'NOT Restarting S' for 1..3;
     my $pm = ".pm";
-    `touch l/S$pm`;
+    #`touch l/S$pm`;
   coins: |
     # etc
     return saygr "igginit S.name" if S.name =~ /C\/|Ϡ/;
@@ -76,11 +76,12 @@ hooks:
             push @code, $D;
         }
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
-        my $file = "li/${nb}.pm";
+        my $file = "il/${nb}.pm";
         write_file($file, join("\n", @code));
     }
-    run "perl -c li/H*";
-    run "cp li/* sal/";
+    run "perl -c il/H*";
+    say "Error check: ". capture "perl -c il/H*";
+    run "cp il/* sal/";
     my $ch = "updated sal" if capture("cd sal; git diff");
     if ($ch) {
         run("cd sal; git add *; git commit -m 'somewhere...'");
