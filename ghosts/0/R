@@ -1,6 +1,9 @@
 
 0:
  R:
+  - K: head #c
+    D: |
+      our $fo = {};
   - K: new #c
     D: |
       R.name = shift;
@@ -11,7 +14,10 @@
     D: |
       "R R.name"
    
- 
+  - K: f #c
+    D: |
+      
+      qq{<span style="color:white;">$_->[2]</span>
   
   - K: uni #c
     D: |
@@ -37,8 +43,9 @@
   - K: intJtrav #c
     D: |
       my $i = shift;
+      return $R->popJtrav if $i == 0;
       die "no $i" unless exists R.J.at->[$i];
-      my $r = R.J.at->[$i];
+      my $r = R.J.at->[$i-1];
       my ($hop) = $r->[0] =~ /^(\W\w+)/;
       R.J.trav .= $hop;
   - K: upi #c
@@ -55,7 +62,8 @@
       
       
       my $d = $R->du($a);
-      my $title = "== ".G::gp(a.i);
+      my $title = "= ".G::gp(a.i);
+      $title = qq{<span style="font-size:150%">$title</span>};
       my $Jpi = "J ".G::gp(R.J.from)."  R.J.trav";
       
       my @or = sort keys %$d;
@@ -63,10 +71,17 @@
       $_->[2] = $R->upi($_->[1]) for @or;
       R.J.at = \@or;
       
+      my $i = 1;
+      my @rows = map {
+          $R->f(fs80_blue => $i++)
+          .
+          $R->f(lightblue => $_->[0])
+          .
+          $R->f(fs120_white => $_->[2])
+      } @or;
+      
       join "\n", $Jpi, $title,
-        map {
-          qq{$_->[0]    <span style="color:white;">$_->[2]</span>} 
-        } @or; 
+          @rows;
   - K: du #c style grab
     D: |
       my $a = shift;
