@@ -70,11 +70,10 @@
       my $a = shift;
       a.e ||= R.S.e || die;
       a.i ||= $R->uni;
+      a.rowlimit = 9*3;
       
       
       my $d = $R->du($a);
-      my $title = $R->f(fs150 => "= ".G::gp(a.i));
-      my $Jpi = "J ".G::gp(R.J.from)."  R.J.trav";
       
       my @or = sort keys %$d;
       @or = map {[ $_, $d->{$_} ]} @or;
@@ -84,10 +83,14 @@
       my $i = 1;
       my @rows = map {
           join "  ",
-          $R->f(fs60_blue => $i++),
+          $R->f(blue_fs60 => $i++),
           $R->f(black => $_->[0]),
-          $R->f(fs120_white => $_->[2]),
+          $R->f(white_fs120 => $_->[2]),
       } @or;
+      
+      my $title = "= ".$R->f(white_fs150 => G::gp(a.i));
+      my $Jpi = "J ".$R->f(white => G::gp(R.J.from))
+          ."  ".$R->f(black => R.J.trav);
       
       join "\n", $Jpi, $title, @rows;
   - K: du #c style grab
