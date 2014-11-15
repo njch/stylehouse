@@ -17,7 +17,7 @@
     D: |
       my $J = R.J || die;
       my $i = J.from || die;
-      my $t = J.trav || die;
+      my $t = J.trav || "";
       #  from => $H,
       #  trav => "{G{GGs",
       while ($t =~ m/(\W)(\w+)/sg) {
@@ -36,7 +36,17 @@
       R.J.trav =~ s/\W\w+$//;
   - K: intJtrav #c
     D: |
-      R.J.trav =~ s/\W\w+$//;
+      my $i = shift;
+      die "no $i" unless exists R.J.at->[$i];
+      my $r = R.J.at->[$i];
+      my ($hop) = $r->[0] =~ /^(\W\w+)/;
+      R.J.trav .= $hop;
+  - K: upi #c
+    D: |
+      my $u = shift;
+      my $de = G::gp($u);
+      $de =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($de) > 100;
+      $de
   - K: S #c style splat
     D: |
       my $a = shift;
@@ -47,13 +57,15 @@
       my $d = $R->du($a);
       my $title = "== ".G::gp(a.i);
       my $Jpi = "J ".G::gp(R.J.from)."  R.J.trav";
+      
       my @or = sort keys %$d;
-      @or = map {[ $_, $d->{$_},
+      @or = map {[ $_, $d->{$_} ]} @or;
+      $_->[2] = $R->upi($_->[1]) for @or;
+      R.J.at = \@or;
+      
       join "\n", $Jpi, $title,
         map {
-          my $de = G::gp($d->{$_});
-          $de =~ s/^(.{100})(.*)$/"$1 ..".length($2)/se if length($de) > 100;
-          qq{$_    <span style="color:white;">$de</span>} 
+          qq{$_->[0]    <span style="color:white;">$_->[2]</span>} 
         } @or; 
   - K: du #c style grab
     D: |
