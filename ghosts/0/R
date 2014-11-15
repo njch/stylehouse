@@ -70,7 +70,7 @@
       my $a = shift;
       a.e ||= R.S.e || die;
       a.i ||= $R->uni;
-      a.rowlimit = 9*3;
+      a.tr.rowlimit = 9*3;
       
       
       my $d = $R->du($a);
@@ -142,6 +142,8 @@
           
           my $rk = "$k an.e";
           $c->{$rk} = $v;
+          a.tr.rows++;
+          last if a.tr.rowlimit && a.tr.rows >= a.tr.rowlimit;
           
           if (an.e >= 1 && ref an.i) {
               my $cu = $R->du($an);
