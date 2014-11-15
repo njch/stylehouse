@@ -383,6 +383,7 @@ hooks:
     for (@diff) {
         if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
             $f = $1;
+            next if -d $f; # git submodeul
             $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
             die "how to git diff unicode? $f" if $f =~ /\\\d+/;
         }
