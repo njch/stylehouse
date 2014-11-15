@@ -37,14 +37,10 @@ hooks:
       w transam;
       
       0->su(sw => sub { G.GG.L->w(sw => $_[0]); }); # suck splats
-      
-      w elvac;
     stylehut: |
       # H w/conz reconzoiters existing conz with H w z/conz
       # looks up stuff
       w transam;
-      
-      w envac; # chase down elvis
   transam: |
     G.am = $G->findway("am/H.style/H.name")
         || die "what am? H.style/H.name";
@@ -153,20 +149,16 @@ hooks:
                      width: 10%
                      top: 40%
                      transform: rotate(7deg);
-  elvac: | # head seeks the headless
-    if (!G.elvacu++) {
-        say "dealing elvi";
-        0->su(elvac => sub { w elvac(a => shift); });
-        # H.r->publish("S", "elvac"); # come round again... etc TODO
-        return;
-    }  
-    saygr "H.style/H.name\t\t`elvac\t\t a.top\t\t a.m";
+
+  pull_conin: | # head receives the headless
+    saygr "H.style/H.name        pulls conin     a.m";
     my ($style, $name, $id, $conin) = split ' ', a.m;
-    die "mal elvac 'a.m'" if !$conin;
+    die "mal cone push: 'a.m'" if !$conin;
     w z/coninto[$conin];
     
-  envac: | # the headless seeks heads
-    H.r->publish("elvac", "H.style H.name H.id H.listen_ws");
+  push_conin: | # the headless seeks heads
+    saygr "H.style/H.name        pushes conin";
+    H.r->publish("S", "push_conin H.style H.name H.id H.listen_ws");
   elvis_enters: |
     saygr "jump on the j train ".$E->pi;
     push @{G.Es}, $E;
