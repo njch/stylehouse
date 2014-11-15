@@ -89,6 +89,15 @@
       a.cb = $cb if $cb;
       H.G->w(send_Elvis => $a);
     
+  - K: djson #c
+    D: |
+      my $G = shift;
+      my $m = shift;
+      my $j;
+      eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
+      die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+      die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+      $j
   - K: fixutf8 #c
     D: |
       for (@_) {

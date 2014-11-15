@@ -55,48 +55,9 @@
             $may =~ s/^(\w+)=HASH.*$/$1\{/;
             $may;
         }
-        sub hitime { H::hitime() }
-        sub pint {
-            my $w = shift;
+        sub pint { 
+            my $w = shift; 
             $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
-        }
-        sub djson {
-            my $G = shift;
-            my $m = shift;
-            my $j;
-            eval { $j = decode_json(Hostinfo::encode_utf8($m)) };
-            die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
-            die "$m\n\nJSON decoded to ~undef~" unless defined $j;
-            $j;
-        }
-        sub wish {
-            my $w = shift;
-            my $i = shift;
-            $w eq "W" ? ref $i eq "Wormhole" || ref $i eq "W" :
-            $w eq "w" ? ref $i eq "Way" || ref $i eq "C" :
-            $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
-        }
-        sub sw {
-            my $thing = shift;
-            return $F[0]->{G}->_0("0->sing", "sw", sub {
-                $Ly->w(somewhere => {thing => $thing});
-            });
-            return "Splatted ".gpty($thing);
-        }
-        sub sayyl {
-            print colored(join("\n", @_,""), 'bright_yellow');
-        }
-        sub sayre {
-            print colored(join("\n", @_,""), 'red');
-        }
-        sub sayg {
-            print colored(join("\n", @_,""), 'bright_green');
-        }
-        sub saygr {
-            print colored(join("\n", @_,""), 'green');
-        }
-        sub saybl {
-            print colored(join("\n", @_,""), 'bright_blue');
         }
         sub mess {
             my $G = shift;
