@@ -2,9 +2,9 @@
 name: other stuff...
 hooks:
   try: |
-    saygr 'NOT Restarting S' for 1..3;
+    saygr 'Restarting S' for 1..3;
     my $pm = ".pm";
-    #`touch l/S$pm`;
+    `touch l/S$pm`;
   coins: |
     # etc
     return saygr "igginit S.name" if S.name =~ /C\/|Ϡ/;
@@ -76,18 +76,30 @@ hooks:
             push @code, $D;
         }
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
-        my $file = "il/${nb}.pm";
+        my $file = "il/l/${nb}.pm";
         write_file($file, join("\n", @code));
     }
-    run "perl -c il/H*";
-    say "Error check: ". capture "perl -c il/H*";
-    run "cp il/* sal/";
-    my $ch = "updated sal" if capture("cd sal; git diff");
+    
+    for my $file (qw"H* S*") {
+        my $check = "cd il/; perl -I ../lib -c l/$file";
+
+        my ($rc, @out) = capture_err $check;
+        my $st = ($rc ? "FAILELDIDL!!!" : "compiled")
+            ." $file == $rc\n".join("",map {"  $_"}@out);
+        return sayre $st if $rc;
+        sayyl $st;
+    }
+    
+    run "cp il/l/* sal/";
+    my $dif = capture("cd sal; git diff");
+    saybl $dif if $dif;
+    my $ch = "updated sal" if $dif;
     if ($ch) {
         run("cd sal; git add *; git commit -m 'somewhere...'");
         run("cd l; git pull");
-    }
+    } 
     $ch ||= "no changes";
+    
     sayg "compiled, $ch ".$G->F_delta();
     return if $ch eq "no changes";
     waylay try;

@@ -25,7 +25,7 @@
       wish(G => $ui) || $ui eq $H || die "not G above? G.name ".$ui->pi;
       G.O = $ui;
       push @{ui.GGs}, $G;
-      push @{H.G.GGs}, $G;
+      push @{H.G.GGs}, $G unless $ui eq H.G;
       
       
       #$G->timer(1, sub {sw(G.A.u.u.i)}) if G.way =~ /ux/;
@@ -173,7 +173,9 @@
                 @{G.ways} = grep { _._wayfile ne $file } @{G.ways};
                 @{G.wayfiles} = grep { $_ ne $file } @{G.wayfiles};
 
-                my $nw = $G->nw(name=>$name);
+                my ($wn) = $file =~ /ghosts\/(.+)$/;
+                $wn ||= $file;
+                my $nw = $G->nw(name=>$wn);
                 $nw->load($file);
 
                 if (my $inc = nw.include) {
@@ -181,7 +183,7 @@
                         next if grep { _.name eq $name } @{G.ways};
                         push @ways, $name;
                     }
-                }
+                } 
 
                 say "G G.name w+ nw.name";
                 push @{G.wayfiles}, $file;
