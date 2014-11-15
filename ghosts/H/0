@@ -95,15 +95,7 @@ hooks:
     H.r = w enRedis;
     w config;
     
-    0->su(S => sub {
-        my $a = shift;
-        sayyl "got S: a.m";
-        if (a.m =~ /^([\w\/]+) (.+)$/) {
-            $ar = {m => $2};
-            w S/$1;
-        }
-        else {die "wtf iS a.m ???"} 
-    });
+    0->su(S => sub { w hand_S(a => shift); });
             
     
     Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
@@ -206,11 +198,19 @@ hooks:
             next if H.G.A.W->{$id}; # current # lookup (into the unified)
             $E->send(" delete conz['$id']; \$('#$id').remove();");
         }
+  hand_S: |
+    sayyl "got S: a.m";
+    if (a.m =~ /^([\w\/]+)(?: (.+))?$/) {
+        w S/$1(m=>$2);
+    }
+    else {die "wtf iS a.m ???"} 
   S:
     W: |
       w duu/W;
     push_conin: |
-      G:Ϡ pull_conin[$m] if 
+      G:Ϡ w pull_conin if H.singul;
+    please_push_conin: |
+      G:Ϡ w push_conin if !H.singul;
     wsy: |
       my $C = G.conz ||= {};
       my ($w, $s) = split ' ', $m;
@@ -254,10 +254,17 @@ hooks:
   elvjs: | # elvis swam through wsy, is js client
     saygr $E->pi." E.c.w, E.c.s \n\n";
     
-    return w H.style/elvus if !E.singul;
-    
-    H.who = $E;
-    w H.style/singul;
+    say "Elvis swims     ".(E.singul ? "SINGULARLY":"");
+    if (E.singul) {
+        H.who = $E;
+        die if defined H.singul && !H.singul;
+        H.singul = 1;
+        w H.style/singul;
+    }
+    else {
+        H.singul = 0;
+        w H.style/elvus;
+    }
   elvibe: |
     Say "En nnnn Elvis ?? J | ".$E->pi;
     if (E.B.style) {
@@ -279,17 +286,13 @@ hooks:
     play: |
       H.h = G!Ϡ;
     
-    elvibe: |
-      
     elvus: |
       sayg "elvission modio";
       G:Ϡ w elvis_enters;
-      G:Ϡ w envac;
     
     singul: |
       sayg "sSingu mode";
       G:Ϡ w elvis_enters;
-      G:Ϡ w be_elvac;
       
       w wtf(div => 1, way => 'gitdission');
       

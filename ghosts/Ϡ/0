@@ -15,6 +15,8 @@ hooks:
     w scribe_js;
     
     $G->w("busk/H.style");
+    
+    $G->timer(1,sub{ w push_conin if !H.singul });
   recoded_init: |
     w reperc;
   z:
@@ -151,9 +153,9 @@ hooks:
                      transform: rotate(7deg);
 
   pull_conin: | # head receives the headless
-    saygr "H.style/H.name        pulls conin     a.m";
-    my ($style, $name, $id, $conin) = split ' ', a.m;
-    die "mal cone push: 'a.m'" if !$conin;
+    saygr "H.style/H.name        pulls conin     $m";
+    my ($style, $name, $id, $conin) = split ' ', $m;
+    die "mal cone push: '$m'" if !$conin;
     w z/coninto[$conin];
     
   push_conin: | # the headless seeks heads
@@ -161,6 +163,9 @@ hooks:
     H.r->publish("S", "push_conin H.style H.name H.id H.listen_ws");
   elvis_enters: |
     saygr "jump on the j train ".$E->pi;
+    if (H.singul) {
+        H.r->publish("S", "please_push_conin");
+    }
     push @{G.Es}, $E;
     for my $j (@{G.Js}) {
         w sEnj[$E, $j];
