@@ -199,69 +199,6 @@
         sub deeby {
             shift->{db} + $db > 0
         }
-
-        sub waystacken {
-            my $G = shift;
-            #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
-            my $s = $G->stackway(@_);
-            push @{ $F[0]->{undies} ||= [] }, $s if @F;
-            unshift @F, $s;
-            $s->{F} = [@F],
-            $G->ob("\\", $s);
-            my $unway = sub {
-                my @FF;
-                if ($F[0] ne $s) {
-                    my $E = "BATS ";
-                    if (!grep {$_ eq $s} @F) {
-                        $E .= "self nowhere in \@F"
-                    }
-                    else {
-                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
-                        $E .= " - from $_->{name}\n" for shift @FF;
-                    }
-                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
-                }
-                else {
-                    shift @F;
-                }
-
-                if ($@) {
-                    #$G->Flab("Stack Return Error", $s, $@);
-                    $s->{Error} = $@;
-                }
-                $s->{Flab} = [@Flab];
-
-                if ($s->{_after_do}) {
-                    $_->() for @{$s->{_after_do}};
-                }
-
-                my $te = $@; $@ = "";
-                $G->ob("/", $s);
-                $@ = $te;
-                @Flab = ();
-                $s
-            };
-            wantarray ? ($unway, $s) : $unway;
-        }
-        sub comeback {
-            my $G = shift;
-            my $last = shift;
-            my $doings = shift;
-            my $doing = shift;
-            my @saying = @{ $last->{thing} };
-            $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
-            my ($u, $s) = $G->waystacken(@saying, @_);
-            $s->{doings} = $doings;
-            $s->{timer_from} = $last;
-            $last->{timer_back} = $s;
-            eval { $doing->(); };
-            # start serving code and stuff through H/0!
-            $u->();
-            if ($@) {
-                $@ =~ s/^(!   )+Z\n//sgm;
-                sayre(ind("Error ", $@));
-            }
-        }
         sub timur { #c
             if ($G0) {
                 $G0->timer(@_);
@@ -781,7 +718,7 @@
   - K: w #c
     style: nonbabble
     D: |
-      my $point = shift;
+      my $point = shift; 
       my $ar = shift;
       my $Sway = shift;
       my @ways;
