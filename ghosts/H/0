@@ -151,7 +151,7 @@ hooks:
             $uno => $j->{$uno},
             E => $E,
         };
-        w c/$uno(%$a);
+        w S/$uno(%$a);
         # hit or not? see post 6 with r
         return;
     }
@@ -169,7 +169,15 @@ hooks:
     
     w $E swoosh;#9
     
-  c:
+  hand_S: |
+    sayyl "got S: a.m";
+    my $m = a.m;
+    w reS[$m];
+  reS: |
+    sayyl "S > $m";
+    $m =~ /^(\S+) ?(.+)?$/ ? do{    w S/$1(m=>$2); } : die "wtf iS $m ???";
+  S:
+    # these are data structurey aliens to S but just to keep together
     claw: |
       $H->claw($j);
     er: |
@@ -178,16 +186,18 @@ hooks:
     event: |
       my $e = ar.e = j.event;
       
-      return w c/key if e.type =~ /^key/;
+      return w S/key if e.type =~ /^key/;
       
       return w S/W if e.W;
       
-      return w c/TV if e.id;
+      return w S/TV if e.id;
       
       $H->error("Strange event", $e);
       
     key: |
       return H.keydo->($e) if H.keydo;
+      G.keys ||= G:keys;
+      G.keys || die "no keys!";
       G:keys ->w(Arr => {e => $e});
     TV: |
       w duu/TV;
@@ -198,13 +208,11 @@ hooks:
             next if H.G.A.W->{$id}; # current # lookup (into the unified)
             $E->send(" delete conz['$id']; \$('#$id').remove();");
         }
-  hand_S: |
-    sayyl "got S: a.m";
-    if (a.m =~ /^([\w\/]+)(?: (.+))?$/) {
-        w S/$1(m=>$2);
-    }
-    else {die "wtf iS a.m ???"} 
-  S:
+  
+    # from redis or so, published to S is "push_conin $style $name $id $conin"
+    # so happens everywhere unless you:
+    On: |
+      "H.style/H.name" =~ $m && $m =~ s/^\S+ // && w reS[$m];
     W: |
       w duu/W;
     push_conin: |
@@ -245,7 +253,6 @@ hooks:
       $E->send(" s\.reply({conz:conz});");
     wzy: |
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
-
   elvash: |
     # close older one? closes newer, $E
     ($E, $EE) = ($EE, $E);
@@ -416,7 +423,7 @@ hooks:
             n.o = $o;
             $Gd->{$f} = $n;
         }
-        elsif ($f =~ /^l\//) {
+        elsif ($f =~ /^l\//) { 
             # compilato del shed iggy
         }
         else {

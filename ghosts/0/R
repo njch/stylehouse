@@ -29,6 +29,25 @@
       my $t = shift;
       @styles = map { $f->{$_} || die "no style $_" } @styles;
       qq{<span style="@styles">$t</span>};
+  - K: key #c
+    D: |
+        my $k = shift;
+        
+        if (R.keysuc) {
+            push @{R.keysuc}, $k;
+            $R->keysucd if $k eq '';
+        }
+        else {
+            $R->popJtrav        if $k eq '-';
+            $R->intJtrav($k)    if $k =~ /[0-9]/;
+            R.keysuc = [$k]     if $k eq '"';
+        }
+  - K: keysucd #c
+    D: |
+      my $op = shift @{R.keysuc};
+      my $s = join"",@{delete R.keysuc};
+      
+  
   - K: uni #c
     D: |
       my $J = R.J || die;
