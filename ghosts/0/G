@@ -45,7 +45,24 @@
         our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
         our $HASHC = "#"."c";
         
-        
+        sub Flab { #c to dry
+            my $G = shift;
+            wish(G=>$G) || die "send G";
+            say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
+                if $G->deeby && $_[0] !~ /^\w Error/;
+            $G->ob(@_);
+            my $s = $G->stackway(@_);
+            unshift @Flab, $s;
+            $s->{Flab} = [@Flab];
+            $s;
+        }
+        sub fla {
+            $F[0]->{G}->Flab(@_);
+        }
+        sub deeby {
+            shift->{db} + $db > 0
+        }
+
         sub gname {
             my $g = shift;
             my $si = shift || 0;
@@ -99,23 +116,6 @@
         }
         sub pty { my $t = shift; ref $t eq "Way" ? pint($t) : gpty($t) }
         sub gpty { ghostlyprinty('NOHTML',@_) };
-        sub Flab { #c to dry
-            my $G = shift;
-            wish(G=>$G) || die "send G";
-            say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-                if $G->deeby && $_[0] !~ /^\w Error/;
-            $G->ob(@_);
-            my $s = $G->stackway(@_);
-            unshift @Flab, $s;
-            $s->{Flab} = [@Flab];
-            $s;
-        }
-        sub fla {
-            $F[0]->{G}->Flab(@_);
-        }
-        sub deeby {
-            shift->{db} + $db > 0
-        }
         sub timur { #c
             if ($G0) {
                 $G0->timer(@_);
@@ -681,7 +681,7 @@
           my ($Z) = @F;
           my $r;
 
-          eval { $r = [ $G->doo($h, $ar, $point, $Sway, $w, $Z) ] };
+          eval { $r = [ $G->D($h, $ar, $point, $Sway, $w, $Z) ] };
 
           push @returns, $r;
           my $ZZ = $u->();

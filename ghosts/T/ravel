@@ -104,7 +104,7 @@ hooks:
         my $fe = $c->{foreach_travel};
         my @list;
         if ($fe->{each}) {
-            push @list, $G->doo($fe->{each}, $ar);
+            push @list, $G->D($fe->{each}, $ar);
         }
         if (my $ei = $c->{eaten_by}->{each_ignore}) {
             @list = grep { my $on = $_; !grep { $on eq $_ } split ' ', $ei } @list;
@@ -127,7 +127,7 @@ hooks:
         my $i = 0;
         for my $each (@list) {
             # eddies of lingo
-            my $next_thing = $fe->{next_thing} ? $G->doo(
+            my $next_thing = $fe->{next_thing} ? $G->D(
                 $fe->{next_thing}, {%$ar, each => $each}
             ) : $each;
             my $oc = $c->spawn; # TODO spawn a fresh chain here
