@@ -51,7 +51,7 @@
             say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
                 if $G->deeby && $_[0] !~ /^\w Error/;
             $G->ob(@_);
-            my $s = $G->stackway(@_);
+            my $s = $G->pyramid(@_);
             unshift @Flab, $s;
             $s->{Flab} = [@Flab];
             $s;
@@ -180,7 +180,7 @@
             my $G = shift;
             my $ob = $G->{_ob}||$_ob;
             return unless $ob;
-            my $s = $G->stackway(@_);
+            my $s = $G->pyramid(@_);
             my $te = $@; $@ = "";
              my $to = $_ob; $_ob = undef;
               
@@ -689,14 +689,15 @@
 
         $G->_0('_load_ways_post', {w=>G.ways});
 
-  - K: pyramidi #c
+  - K: pyramid #c
     D: |
       say "Neustackenway";
       my $thing = [@_];
       my $u = $G->nw;
       my $stack = $H->stack(1);
-      my $from;
-      # FUZZ!
+      
+      my $from; # FUZZ!
+      
       if ($stack->[0] =~ /G::timer/) {
           $from = "time"
       }
@@ -706,9 +707,9 @@
       }
       else {
           ($from) = $stack->[1] =~ / (\S+::\S+) /;
-          $from =~ s/.*G::(Fl|wa).*/$1/;
-          $from =~ s/^Fl$/ᣜ_/;
-          $from =~ s/^wa$/_ᣝ/; 
+          $from =~ s/^wa$/_ᣝ/ ||
+          $from =~ s/^Fl$/ᣜ_/ ||
+          $from =~ s/.*G::(Fl|wa).*/$1/ ||
           $from =~ s/G::/G\:/;
       }
       $from ||= "stackw\ $stack->[0]";
@@ -731,8 +732,7 @@
   - K: waystacken #c
     style: nonbabble
     D: |
-            #my $s = ref $G eq "G" ? $G->pyramidi(@_) : $G->stackway(@_);
-            my $s = $G->stackway(@_);
+            my $s = $G->pyramid(@_);
             push @{ $F[0]->{undies} ||= [] }, $s if @F;
             unshift @F, $s;
             $s->{F} = [@F],
