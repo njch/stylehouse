@@ -691,7 +691,7 @@
 
   - K: pyramid #c
     D: |
-      say "Neustackenway";
+      #say "Neustackenway";
       my $thing = [@_];
       my $u = $G->nw;
       my $stack = $H->stack(1);
@@ -771,45 +771,6 @@
                 $s
             };
             wantarray ? ($unway, $s) : $unway;
-  - K: stackway #c to dry
-    style: nonbabble
-    D: |
-            my $thing = [@_];
-            my $w = $G->nw;
-            my $stack = $H->stack(1);
-            my $from;
-            # FUZZ!
-            if ($stack->[0] =~ /G::timer/) {
-                $from = "time"
-            }
-            elsif ($stack->[1] =~ /G.+eval.+/
-                && $stack->[2] =~ /G::doo/) {
-                $from = "some doing..."
-            }
-            else {
-                ($from) = $stack->[1] =~ / (\S+::\S+) /;
-                $from =~ s/.*G::(Fl|wa).*/$1/;
-                $from =~ s/^Fl$/ᣜ_/;
-                $from =~ s/^wa$/_ᣝ/;
-                $from =~ s/G::/G:/;
-            }
-            $from ||= "stackw $stack->[0]";
-            shift @$stack;
-            
-            $w->from({
-                K => "$from",
-                G => $G,
-                hitime => $H->hitime(),
-                stack => $stack,
-                Flab => [@Flab],
-                F => [@F],
-                depth => 0+@F,
-                thing => $thing,
-                print => 'join " ", grep {defined $_} $S->{G}->{way}, $S->{K}, gpty(@{$S->{thing}})',
-            });
-            $w->from({Error=>$@}) if $@;
-            $w->{name} = join " ", grep {defined $_} $w->{G}->{way}, $w->{K}, gpty(@{$w->{thing}});
-            $w        
   - K: parse_babble #c
     style: nonbabble
     D: |
