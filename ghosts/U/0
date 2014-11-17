@@ -151,7 +151,7 @@ S:
       css: [ color:white ]
  - K: x #c  special effects
    Ss:
-   # outer
+   # outer #c
     - K: nopoi
       css: [pointer-events:none]
     - K: poi
@@ -169,7 +169,10 @@ S:
         - position:relative
         - width:100%
         - height:100%
-    # inner
+    - K: z
+      css: []
+      classy: meaning it should always show up in class=""
+    # inner #c
     - K: 20pt
       css: 
         - font-size:20pt;
@@ -363,19 +366,20 @@ hooks:
     at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
     
     if (u.K eq "W") { # class to style="" outside <style> scope 
-        for my $style (split ' ', u.at.attr.class) {
+        my $clastyle = delete at.attr.class;
+        for my $style (split ' ', $clastyle) {
             my $S = GG.h->{$style};
             for my $css (@{S.css}) {
                 my ($k, $v) = split ":", $css;
                 at.Z->{$k} ||= $v;
             }
+            if (!@{S.css} || S.classy) {
+                at.attr.class .= " $style"; # secret meaning
+            }
         }
-        delete at.attr.class;
     }
     
     
-
-
   Aux: |
     
     my $Ls = ar.Ls;
