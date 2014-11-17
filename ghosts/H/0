@@ -136,6 +136,11 @@ hooks:
       0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
     });
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+  jaw: |
+    my $s = mkuuid();
+    G.jaws->{$s} = $cb; # TODO a Z awaits, sucks $m
+    my $JS = "clawe return < eval $js";
+    $H->send("var e = function(){ $js }; var m = e(); s.reply({jaw:{s:'$s',e:m}}); ",$js, $cb);
   Teeth: |
     w $J print_in(pi => $E->pi);
     my $m = J.B.m;
@@ -177,9 +182,14 @@ hooks:
     w reS[$m];
   reS: |
     sayyl "S > $m";
-    $m =~ /^(\S+) ?(.+)?$/ ? do{    w S/$1(m=>$2); } : die "wtf iS $m ???";
+    $m =~ /^(\S+) ?(.+)?$/ ? do{    w S/$1(%$ar,m=>$2); } : die "wtf iS $m ???";
   S:
     # these are data structurey aliens to S but just to keep together
+    jaw: |
+      $j = j.jaw;
+      my $s = j.s || die "no s";
+      my $cb = G.jaws->{$s} || die "no such jaw $s";
+      $cb->(j.e); # TODO Z sucktion
     claw: |
       $H->claw($j);
     er: |
