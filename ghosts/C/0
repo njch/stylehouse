@@ -115,32 +115,30 @@ hooks:
            ux:
              spawn: []
   retile: |
-    my $js = qq{ $('#ux > #ww[class*="z"]').attr('id').join(' and ') };
-    my $cb = sub { w divide(M=>[@_]); };
+    my $js =
+    " var e = []; \$('#ux > ww[class*=".'"z"'
+    ."]').each(function(){"
+        ."e\.push(\$(this).attr('id'));" # could take more clues
+    ."});"
+    ."return e\.join(' + ');";
+    my $cb = sub { my $m = shift; w divide[$m] };
     H.G w jaw[$js, $cb];
   divide: |
+    my @m = split / \+ /, $m;
+    say "We are ".wdump(\@m);
     
-    my @div = $hg->(div => 'li');
-    @div > 1                 && die "div > 1";
-    if (@div) {
-        my ($v) = @div;
-        my $vi = {};
-        ($vi->{width},$vi->{height}) = split "x", $v; $v =~/^x/&&die"?";
-        while (my ($iv, $parts) = each %$vi) {
-            if (!$parts) {
-                next;
-            }
-            my $inc;
-            if ($parts =~ /em$/) {
-                $inc = $parts;
-                $parts = 1;
-            }
-            $parts = 0+@{ L.o }    if $parts eq "...";
-            $parts = 1    if $parts == 0;
-            $inc ||= sprintf("%.3f", 1 / $parts);
-            my $side = $iv eq "width" ? "left" : "top";
-            my $i = 0;
-            
+    my $div = {
+        'width:left' => 3,
+        'height:top' => 3,
+    };
+    
+    my $grid = {};
+    while (my ($iv, $parts) = each %$vi) {
+        next unless $parts;
+        my ($mags, $ax) = split ':', $iv;
+        my $in = sprintf("%.3f", 1 / $parts);
+        my $i = 0;
+        
             for my $w (@{ L.o }) {
                 die "lower w.B.x not yet" unless w.B.x;
                 my $ox = w.B.x;

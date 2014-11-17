@@ -137,10 +137,13 @@ hooks:
     });
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   jaw: |
-    my $s = mkuuid();
+    my $s = $H->mkuuid();
     G.jaws->{$s} = $cb; # TODO a Z awaits, sucks $m
-    my $JS = "clawe return < eval $js";
-    $H->send("var e = function(){ $js }; var m = e(); s.reply({jaw:{s:'$s',e:m}}); ",$js, $cb);
+    $H->send(
+        " var e = function(){ $js };"
+        ."var m = e();"
+        ."s\.reply({jaw:{s:'$s',e:m}});"
+    );
   Teeth: |
     w $J print_in(pi => $E->pi);
     my $m = J.B.m;
