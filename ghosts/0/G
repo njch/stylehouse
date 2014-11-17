@@ -370,6 +370,7 @@
     style: func
     D: |
       my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
+      return say "too early rto publich" if ! H.r;
       H.r->publish('sw', $stuff);
       say "published wdump to sw from   $G::swdepth x ".length($stuff);
   
@@ -641,7 +642,6 @@
     D: |
       my $C = G.A->spawn('C');  
       
-      
       $C->from({@_}) if @_;
       # etc
       $C 
@@ -691,13 +691,17 @@
 
   - K: pyramid #c
     D: |
-      #say "Neustackenway";
       my $thing = [@_];
-      my $u = $G->nw;
-      my $stack = $H->stack(1);
+      
+      my $u;
+      my ($last) = @F;
+      $u = last.A->spawn('C') if $last;
+      $u ||= G.A->spawn('C');
+      # TODO ^ set A u words to 'pyramid'
+      
+      my $stack = $H->stack(2,12);# short
       
       my $from; # FUZZ!
-      
       if ($stack->[0] =~ /G::timer/) {
           $from = "time"
       }
@@ -706,12 +710,15 @@
           $from = "some doing..."
       }
       else {
-          ($from) = $stack->[1] =~ / (\S+::\S+) /;
-          $from =~ s/^wa$/_ᣝ/ ||
-          $from =~ s/^Fl$/ᣜ_/ ||
-          $from =~ s/.*G::(Fl|wa).*/$1/ ||
-          $from =~ s/G::/G\:/;
+          ($from) = $stack->[0] =~ / (\S+::\S+) /;
+          $from =~ s/.*G::(Fl|wa).*/$1/ && do {
+              $from =~ s/^wa$/_ᣝ/ ||
+              $from =~ s/^Fl$/ᣜ_/
+          }
+          || $from =~ s/G::/G\:/;
       }
+      my $dir = ($last ? "last.id>" : "").u.id;
+      #say "pyra $dir $from  $thing->[0]";
       $from ||= "stackw\ $stack->[0]";
       shift @$stack;
 

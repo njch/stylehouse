@@ -172,7 +172,7 @@
   - K: info
     D: |
        $H->throwlog("Info", @_);
-  - K: snooze #c
+  - K: snooze #c                   \/\/\////\/\\\/\/\//\/\\\\\/\/////\/\///\\\
     D: |
           return Time::HiRes::usleep(shift || 5000);
 
@@ -236,6 +236,7 @@
   - K: stack
     D: |
       my $b = shift;
+      my $for = shift || 1024;
       $b = 1 unless defined $b;
       my @from;
       while (my $f = join " ", (caller($b))[0,3,2]) {
@@ -245,7 +246,8 @@
               || $f =~ m/^Mojolicious::Controller/;
           $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
           push @from, $f;
-          last if $surface; 
+          last if $surface;
+          last if !--$for;
           $b++;
       }
       return [@from];
