@@ -208,4 +208,44 @@
         $an->(qw'G oh 0.8');
         $an->(qw'W oh 0.8 mustb','id,hash,file,G');
         $h
+  - K: loadup #c du in reverse
+    D: |
+      my ($a, $k, $v) = @_;
+      my $s = $R->snapple($k); # chunks {G{GG{etc 3
+      s.e = $v;
+      my $i = $R->suets($a, $s);
+      
+  
+  - K: suets
+    D: |
+      my ($i, $s) = @_;
+      my @s = @{s.s};
+      my $end = pop @s if exists s.e;
+      my $last;
+      while (1) {
+            my $ac = shift @s || do {exists s.e || last; $last=1; $end};
+          $ac =~ /^(\W)(\w+)$/ || die;
+          if (!$last) { # TODO know about insto hash or array...
+              $i = $i->{$2} ||= {} if $1 eq "{";
+              $i = $i->[$2] ||= {} if $1 eq "[";
+          }
+          else {
+              $i->{$2} = s.e if $1 eq "{";
+              $i->[$2] = s.e if $1 eq "[";
+              last;
+          }
+      }
+  - K: snapple
+    D: |
+      my $k = shift;
+      $DB::single = 1;
+      ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
+      my $a = {k => $k, v => $v};
+      my @s;
+      while ($k =~ m/(\W\w+)/sg) {
+            push @s, $1;
+      }
+      a.s = \@s;
+      $a
+      
 
