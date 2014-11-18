@@ -146,7 +146,7 @@ hooks:
     H.r->publish("S", "push_conin H.style H.name H.id H.listen_ws");
   elvis_enters: |
     saygr "jump on the j train ".$E->pi;
-    push @{G.Es}, $E;
+    0->accum($G, 'Es', $E);
     
     if (H.singul) {
         H.r->publish("S", "please_push_conin");
@@ -168,11 +168,13 @@ hooks:
     
     0->accum($G, Js => $j);
     
-    my @Es = @{G.Es};
+    my @Es = w Es;
     for my $E (@Es) {
         w sEnj[$E, $j];
     }
     sayg "j to the ".@Es;
+  Es: |
+    uniq @{G.Es};
   sEnj: |
     my @lot = reverse @{j.s};
     push @lot, reverse @{j.c};
