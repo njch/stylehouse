@@ -127,29 +127,43 @@ hooks:
     my @m = split / \+ /, $m;
     say "We are ".wdump(\@m);
     
-    my $div = {
-        'width:left' => 3,
-        'height:top' => 3,
-    };
+    my $div = Load(<<''); # hmm
+        - width:left 3
+        - height:top 3
     
     my $grid = {};
-    while (my ($iv, $parts) = each %$vi) {
-        next unless $parts;
+    for my $p (@$div) {
+        my ($iv, $parts) = split ' ', $p;
         my ($mags, $ax) = split ':', $iv;
+        # magnitudes of width
+        # axed from unified by left, etc.
         my $in = sprintf("%.3f", 1 / $parts);
-        my $i = 0;
         
-            for my $w (@{ L.o }) {
-                die "lower w.B.x not yet" unless w.B.x;
-                my $ox = w.B.x;
-                if ($parts == 1) {
-                    $ox->{$iv} = $inc;
-                }
-                else {
-                    $ox->{$side} = $i;
-                    $i += $inc;
-                    $ox->{$iv} = $inc;
-                }
+        my $grnd = $grid;
+        my $pole = [];
+        $grid = {};
+        
+        my $here = 0; # in accum
+        for my $i (1..$parts) {
+            my $ox = {};
+            ox.part = $i;
+            $ox->{$ax} = $here;
+            $here += $in;
+            $ox->{$mags} = $in;
+            push @$pole, $ox;
+        }
+        
+        my @gs = map { [$_ => $grnd->{$_} ] } sort keys %$grnd;
+        push @gs, [] if !@gs;
+        
+        die wdump([$grnd, $pole]) if G.adsuih++;
+        
+        for my $g (@gs) {
+            my ($k, $v) = @$g;
+            $v ||= {};
+            for my $ox (@$pole) {
+                my $K = (defined $k?"$k ":""). delete ox.part;
+                $grid->{$K} = {%$v, $ox};
             }
         }
     }
