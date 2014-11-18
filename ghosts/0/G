@@ -1217,18 +1217,12 @@
             return splice(@$a, $i, 1) if $_ eq $t;
             $i++;
         }
-  - K: wdif #c
-    D: |
-        my ($h, $w) = @_;
-        if ($w->{$h}) {
-            $G->w($h, {}, $w);
-            delete $w->{$h};
-        }
-  - K: u #c
+
+  - K: u #c u, sway, Bu
     D: |
         my ($K, $s) = @_;
         0S->sway({K=>$K}, $s);
-  - K: sway #c
+  - K: sway
     D: |
         # sucks way matching $p # only supports matching K for now
         my ($p, $s, $P) = @_;
@@ -1243,7 +1237,7 @@
         $w->from($s) if $s && %$s; # merges in B :D
         
         return $w
-  - K: Bu #c
+  - K: Bu
     D: |
         my($K,$B)=@_;
         my $u = 0S->sway({K=>$K},{B=>$B});
@@ -1262,33 +1256,13 @@
             @Cs = grep { _.K eq p.K } @Cs;
         }
         return wantarray ? @Cs : shift @Cs;
-  - K: Tind #c
-    D: |
-        my ($space) = @_;
-        $space = "    " if !defined $space;
-        my $mes = T.r.is if T.r;
-        $mes ||= [];
-        my $ind = "";
-        $ind .= "    " for 0..@$mes; # +1
-        return $ind;
-  - K: Egypto #c
-    D: |
-        my ($Egyptian_Fraction) = @_;
-        my $val = 0;
-        for (split / ?\+ ?/, $Egyptian_Fraction) {
-            /^(\d+)\/(\d+)$/ || die "Egypmal";
-            $val += $1 / $2;
-        }
-        $val;
-  - K: EgyB #c
-    D: |
-        my ($B) = @_;
-        return { map { 0->Egypto($_) => $_ } keys %$B };
-  - K: TafuBl #c
+
+
+  - K: TafuBl #c TafuBl, TafuB, TB, Tafu, Taful
     D: |
         #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
         0S->l( 0S->TafuB(@_) );
-  - K: TafuB #c
+  - K: TafuB
     D: |
         my($K,$B)=@_;
         my $ca = $G->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
@@ -1296,16 +1270,16 @@
             return $ca;
         }
         0S->Tafu(0S->Bu($K, $B))
-  - K: TB #c
+  - K: TB
     D: |
         my ($K, $B) = @_;
         my $u = 0S->Bu($K, $B);
         0S->T({i=>$u});
-  - K: Tafu #c
+  - K: Tafu
     D: |
         my($uu)=@_;
         0S->fu($uu) || 0S->T({i => $uu});
-  - K: Taful #c
+  - K: Taful
     D: |
         my($uu)=@_;
         0S->l( 0S->Tafu($uu) );

@@ -239,8 +239,13 @@ hooks:
     my $Dos = $G->findway("per_Do");
     for my $k (sort keys %$Dos) {
         say "gun $k";
+        my $v = $Dos->{$k};
+        my $wk = $k;
+        $wk = "D/$wk" if ref $k;
+        # + indject scraps from $v into the T
+        my $way = "per_Do/$wk";
         0->TafuB(Do => {
-            name => $k, D => sub { w per_Do/$k; },
+            name => $k, D => sub { w $way; },
         });
     }
     w uxd(full=>1);
@@ -253,8 +258,11 @@ hooks:
        w uxd;
     keon: |
        H.G w z/keon;
-    tile: |
-       w retile;
+    tile:
+      D: |
+        w retile;
+      links_D: |
+        $G->wayb(H.G => $S->s(K => "S/retile", Dish => $S));
   puur:
     swek: |
       Say "Awaits";
