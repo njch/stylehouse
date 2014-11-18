@@ -115,7 +115,7 @@ hooks:
            ux:
              spawn: []
   recoded_init:
-    w retile;
+    #w retile;
   retile: |
     my $js =
     " var e = []; \$('#ux > ww[class*=".'"z"'
@@ -123,8 +123,10 @@ hooks:
         ."e\.push(\$(this).attr('id'));" # could take more clues
     ."});"
     ."return e\.join(' + ');";
-    my $cb = sub { my $m = shift; w divide[$m] };
-    H.G w jaw[$js, $cb];
+    for my $E (@{G.O.Es}) {
+        my $cb = sub { my $m = shift; w divide[$m]; };
+        H.G w jaw[$js, $cb];
+    }
   divide: |
     my @m = split / \+ /, $m;
     say "We are ".wdump(\@m);
@@ -174,7 +176,7 @@ hooks:
         my $o = $grid->{$h};
         my $cssset = ".animate({".join(",", map {
             "'$_':'".($o->{$_} * 100)."%'"
-            } keys %$o)."}, 400)";
+            } sort keys %$o)."}, 400)";
         $H->send(" \$('#$n')$cssset;");
     }
   
@@ -263,7 +265,8 @@ hooks:
        H.G w z/keon;
     tile:
       D: |
-        w retile;
+        0->sing(retile => sub { w retile; });
+        
       links_D: |
         $G->wayb(H.G => $S->s(K => "Disc", way => "S/retile", Dish => $S));
   puur:
