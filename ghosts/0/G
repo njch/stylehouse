@@ -1170,7 +1170,7 @@
             return splice(@$a, $i, 1) if $_ eq $t;
             $i++;
         }
-  - K: ip #c TODO Tish/R maths logics, heat mapping
+  - K: ip #c TODO Tish/R maths logics, heat mapping, see also CsK vortex reading
     D: |
         my ($ip, $i) = @_;
         my $pass = 1;
@@ -1178,15 +1178,6 @@
             $pass-- if $ip->{$I} ne $i->{$I};
         }
         $pass == 1
-  - K: CsK #c TODO C vortex reading
-    D: |
-        my ($p, $GG) = @_;
-        $GG ||= $G;
-        p.s ||= 'C';
-        my @topK = split ' ', delete p.s;
-        my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
-        @Cs = grep { 0->ip($ip, $_) } @Cs if %$p;
-        return wantarray ? @Cs : shift @Cs;
   - K: scGre #c TODO A sess # scGre, rei, ei
     D: |
         my ($ip) = @_;
@@ -1242,6 +1233,28 @@
         my $u = shift;
         u.B ||= {};
         $G->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)} = $u;
+  - K: TRub #c top level inGector
+    D: |
+      my $a = {};
+      my $R = G.R ||= G.A->spawn("R");
+      # like du, vectors space out after $k
+      #   for increment spacing over the braid
+      
+      # nah just chuck stuff in $a
+      # everything should have more meaning than that
+      while (@_) {
+          my ($k, $v) = (shift, shift);
+          $R->loadup($a, $k, $v);
+      }
+      
+      # 1
+      
+      # find u from K and B?
+      my $u = 0->CsK({K=>a.i.K});
+      $u->from(a.i);
+      
+      
+      die wdump($u);
   - K: u #c u, sway, Bu # 
     D: |
         my ($K, $s) = @_;
@@ -1250,10 +1263,9 @@
     D: |
         # sucks way matching $p # only supports matching K for now
         my ($p, $s, $P) = @_;
-        p.s ||= 'chains C';
         my ($from) = p.from || 0S->CsK($p);
         
-        $from || defined P.e || die "no findo way called p.K (G.name)".wdump([$p,$s]);
+        $from || defined P.e || die "no C: p.K (G.name)".wdump([$p,$s]);
         
         my $w = $G->nw();
         $w->from($from) if $from;
@@ -1267,7 +1279,16 @@
         my $u = 0S->sway({K=>$K},{B=>$B});
         my $a = {};
         $G w $u Bu_D[$a] if u.Gw || u.Bu_D;#opopopopop
-        $u;
+        $u
+  - K: CsK #c TODO C vortex reading
+    D: |
+        my ($p, $GG) = @_;
+        $GG ||= $G;
+        p.s ||= 'C';
+        my @topK = split ' ', delete p.s;
+        my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
+        @Cs = grep { 0->ip($p, $_) } @Cs if %$p;
+        return wantarray ? @Cs : shift @Cs;
   - K: TafuBl #c TafuBl, TafuB, TB, Tafu, Taful
     D: |
         #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS

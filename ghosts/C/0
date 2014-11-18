@@ -241,12 +241,15 @@ hooks:
         say "gun $k";
         my $v = $Dos->{$k};
         my $wk = $k;
-        $wk = "D/$wk" if ref $k;
+        $wk = "D/$wk" if ref $v;
         # + indject scraps from $v into the T
         my $way = "per_Do/$wk";
-        0->TafuB(Do => {
-            name => $k, D => sub { w $way; },
-        });
+        # TRub or _0 itself can Route
+        0->TRub(
+            'i{K' => 'Do',
+            'i{B' => { name => $k, D => sub { w $way; } },
+            (ref $v ? ('i' => $v) : ()),
+        );
     }
     w uxd(full=>1);
   elvibe: |
