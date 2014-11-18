@@ -3,6 +3,8 @@ name: other stuff...
 C:
   - K: Nonpm
     Gw: 1
+  - K: Stat
+    Gw: 1
   
 hooks:
   fresh_init: |
@@ -50,6 +52,8 @@ hooks:
       $old ne B.sum;
     print: |
       "for $file";
+  codedis: |
+    say wdump($say);
   try: |
     saygr 'Restarting S' for 1..3;
     my $pm = ".pm";
@@ -65,6 +69,7 @@ hooks:
       say "COCOCOO" for 1..8;
   code: |
     waylay uxd;
+    my $say = {};
     
     my @nonpms = grep{!/\d$/} glob "ghosts/0/*";
     # re-create
@@ -73,39 +78,50 @@ hooks:
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
     # and link further, 
     # the 4 ^ createds the 5 v
-    sayyl "some code? ".(0+@nonpms)." some code ".(0+@chpms);
-    my $wfh = {map{_._wayfile=>$_}@{G.ways}};
+    say.coded = sayyl "some code? ".(0+@nonpms)." some code ".(0+@chpms);
+    my $wfh = {map{_._wayfile=>$_}@{G.ways}}; # must be loaded in here
     for my $c (@chpms) {
         my $way = $wfh->{c.B.file} || die "not loaded c.B.file";
         my @name = split '/', way.name;
         shift @name if $name[0] eq '0';
         my $nb = join "::", @name;
         my $co = $way->find("0/$nb");
-        say "Way : @name  $nb $co";
+        0->accum($say, dup => saygr "Way : @name  $nb $co");
         w coden[$nb, $co];
     }
     
+    my $bug;
     for my $file (qw"H* S*") {
         my $check = "cd il/; perl -I ../lib -c l/$file";
 
-        my ($rc, @out) = capture_err $check;
-        my $st = ($rc ? "FAILELDIDL!!!" : "compiled")
-            ." $file == $rc\n".join("",map {"  $_"}@out);
-        return sayre $st if $rc;
-        sayyl $st;
+        ($bug, my @out) = capture_err $check;
+        my $st = ($bug ? "FAILELDIDL!!!" : "compiled")
+            ." $file == $bug\n".join("",map {"  $_"}@out);
+        $bug ? sayre $st
+        : sayyl $st;
+        say.compile = $st;
     }
+    
+    
     
     run "cp il/l/* sal/";
     my $dif = capture("cd sal; git diff");
-    saybl $dif if $dif;
-    my $ch = "updated sal" if $dif;
-    if ($ch && 1) {
-        run("cd sal; git add *; git commit -m 'somewhere...'");
-        run("cd l; git pull");
-    } 
-    $ch ||= "no changes";
+    say.diff = saybl $dif if $dif;
+    my $ch;
+    if ($bug) {
+        $ch = "buggered";
+    }
+    else {
+        $ch = "updated safe" if $dif;
+        if ($ch && 1) {
+            run("cd sal; git add *; git commit -m 'somewhere...'");
+            run("cd l; git pull");
+        } 
+        $ch ||= "no changes";
+    }
     
-    sayg "compiled, $ch ".$G->F_delta();
+    say.end = sayg "compiled, $ch ".$G->F_delta();
+    waylay codedis[$say];
     return if $ch eq "no changes";
     waylay try;
   coden: |
