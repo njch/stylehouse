@@ -450,9 +450,9 @@
 
       my @returns;
       for my $w (@ways) {
-          my $h = $w->find($point);
-              sw({h=>$h, point=>$point, w=>$w, Sway=>$Sway}) if $watch;
-          next unless $h;
+      
+          my $h = $w->find($point) || next;
+          
           my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
           my ($Z) = @F;
           my $r;
@@ -505,6 +505,16 @@
             die "RECURSION ".@F if @F > $MAX_FCURSION;
             
             my $ksmush = join",",sort keys %$ar;
+            
+            
+            if (ref $babble eq "C") {
+                my $b = $babble;
+                die unless $b->{K} eq "Disc";
+                my $d = $b->{Dish};
+                say "Doing a $d->{K} thing! in $G->{name}" for 1..10;
+                return $d->{G}->w('D', $ar, $d);
+            }
+            
             my $br = $babble;
             $br =~ s/\n//sg;
             my $uuname = "$G->{id} ".$H->dig($br)
@@ -691,7 +701,10 @@
   - K: wayb #c
     D: |
       my ($GG, $atu) = @_;
-      die "Attaching to GG.name the ".wdump($atu);
+      my $suway = join "", map {"{$_"} split /\//, atu.way;
+      G.R->loadup($atu, "{hooks$suway", $atu);
+      push @{GG.ways}, $atu; # A etc
+      
   - K: pyramid #c
     D: |
       my $thing = [@_];
