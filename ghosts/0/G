@@ -694,7 +694,8 @@
                 push @{G.ways}, $nw;
             }
             
-            die "no wayfiles from $name" unless @files;
+            G.name =~ s/\+$name// && warn "no wayfiles from $name" || die
+            unless @files; # ^ dies if was first way name
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
