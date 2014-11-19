@@ -4,7 +4,7 @@
   - K: head #c
     D: |
        use YAML::Syck;
-       use base "Way";
+       use base 'Way';
   - K: new
     D: |
       C.G = C.A->fiu('G');
@@ -39,13 +39,13 @@
             my $Elvis = $C;
             $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
             H.G w send_Elvis[$m, $cb, $Elvis];
-  - K: s
+  - K: s #c
     D: |
       my $s = C.A->spawn("C");
       $s->from({@_}) if @_;
       $s
 
-  - K: spawn
+  - K: spawn #c
     D: |
       my $from = shift || $C;
       my $u = C.G->nw();
@@ -71,6 +71,20 @@
                     C.G->{$k} = $v;
                 }
             }
+  - K: from #c
+    D: |
+      my $s = shift;
+      for my $k (keys %$s) {
+      #               unless modulating v 
+          next if $k eq "uuid" || $k eq "id" || $k eq "G"; # or Li or Lo or who knows what # SCHEMAS # MERGINESS
+          my $t = $C->{$k};
+          my $f = $s->{$k};
+
+          $f = { %$t, %$f } if $t && $k =~ /^(B|S)$/;
+
+          $C->{$k} = $f;
+      }
+      return $C;
   - K: load #c
     D: |
             C._wayfile = shift if @_;
@@ -81,7 +95,7 @@
   - K: load_file #c
     D: |
             my $yamlfile = shift;
-            die "no C._wayfile ". unless $yamlfile;
+            die "no C._wayfile " unless $yamlfile;
             my $yaml = $H->slurp($yamlfile);
             my $w = eval { Load($yaml) };
             if ($@ || !$w || ref $w ne 'HASH' || $@) {
@@ -142,7 +156,7 @@
                 }
             }
             return $h
-  - K: LioO # wants to be goner $c
+  - K: LioO #c wants to be goner $c
     D: |
             my $O = shift;
             die "C.K has no Li!" unless C.Li;
