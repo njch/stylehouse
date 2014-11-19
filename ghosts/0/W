@@ -3,7 +3,6 @@
  W:
   - K: head #c
     D: |
-      use base 'Wormhole';
   - K: new #c
     D: |
       W.G = W.A.u.i;
@@ -15,8 +14,8 @@
     D: |
       my $G = shift; # %
 
-      my ($namg) = $W->{G}->{name} =~ /\(\S+[^\)]*\)$/;
-      $namg = "$W->{G}->{name} ".
+      my ($namg) = W.G.name =~ /\(\S+[^\)]*\)$/;
+      $namg = "W.G.name ".
           join("",("  ")x($G::T->{depth}||1))."l-$W->{n} ";
       my $L = {
           uuid => (ref $H eq "H" ? $H->mkuid : $H->make_uuid),
@@ -38,7 +37,7 @@
           Say "Enters the $namg\t\ti:".L.i->pi;
       }
 
-      push @{$W->{script}}, $L;
+      push @{W.script}, $L;
       $G->ob("continues...", $L);
 
       return $L;
@@ -49,6 +48,41 @@
       my $u = scalar(@{W.script});
       ($u ne $n ? $n : '')."x$u"; # acquire north, get high
       
+  - K: pi #c
+    D: |
+      "W W.name ".$W->uhigh;
+  - K: ob #c
+    D: |
+        W.G->ob(@_);
+  - K: CS #c
+    D: |
+        [@{W.script}]
+  - K: wormfile_load #c
+    D: |
+        W.file = shift;
+        if (W.file && -e W.file) {
+            my $s = W.script = LoadFile(Hostinfo::encode_utf8(W.file));
+            die " script (loaded from W.file) ne ARRAYref: ".($s||"~undef~")
+                unless ref $s && $s eq "ARRAY";
+            say "W W.file loaded";
+        }
+        else {
+            W.script = [];
+        }
+  - K: wormfile_check #c
+    D: |
+        my $file = W.file;
+        unless (-e $file) {
+            say "no $file";
+            my ($wom) = $file =~ qr{(wormholes/.+)/};
+            unless (-e $wom) {
+                mkdir $wom;
+            }
+            `touch $file`;
+        }
+  - K: pi #c
+    D: |
+      "W W.name ".$W->uhigh;
   - K: pi #c
     D: |
       "W W.name ".$W->uhigh;
