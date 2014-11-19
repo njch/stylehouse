@@ -1040,12 +1040,12 @@
       }
       $s
       
-  - K: flatline
+  - K: flatline #c
     style: func
     D: |
       map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_
     
-  - K: wish
+  - K: wish #c
     style: func
     D: |
       my $w = shift;
@@ -1054,30 +1054,40 @@
       $w eq "w" ? ref $i eq "Way" || ref $i eq "C" :
       $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
 
+
+
+
+  - K: saycol #c sayyl sayre sayg saygr saybl
+    style: func
+    D: |
+        my $colour = shift;
+        print colored(join("\n", @_,""), $colour);
+        wantarray ? @_ : shift @_
   - K: sayyl
     style: func
     D: |
-        print colored(join("\n", @_,""), 'bright_yellow');
+        saycol(bright_yellow => @_)
 
   - K: sayre
     style: func
     D: |
-        print colored(join("\n", @_,""), 'red');
+        saycol(red => @_)
 
   - K: sayg
     style: func
     D: |
-        print colored(join("\n", @_,""), 'bright_green');
+        saycol(bright_green => @_)
 
   - K: saygr
     style: func
     D: |
-        print colored(join("\n", @_,""), 'green');
+        saycol(green => @_)
 
   - K: saybl
     style: func
     D: |
-        print colored(join("\n", @_,""), 'bright_blue');
+        saycol(bright_blue => @_) 
+
 
   - K:
     D: |
