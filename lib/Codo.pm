@@ -343,7 +343,7 @@ sub load_codon {
     my $dont = shift;
 
     my ($codon) =  ref $codon_s ? $codon_s : $self->codon_by_name($codon_s);
-    $codon || die "Can't load codon: $codon_s";
+    $codon || return warn "Can't load codon: $codon_s";
     say "Codo load $codon->{name}";
 
     if ((caller(1))[3] ne "Codo::re_openness") {
