@@ -1,22 +1,44 @@
 
 0:
  C:
-  - K: head
+  - K: head #c
     D: |
-      use base 'Way';
        use YAML::Syck;
+       use base "Way";
   - K: new
     D: |
       C.G = C.A->fiu('G');
-      die G::sw(["non G : C.A.u.i", $C, C.A]) unless C.G && ref C.G eq "G";
+      die "waying non G : C.A.u.i", $C, C.A unless C.G && ref C.G eq "G";
       
-  - K: pi
+  - K: pi #c
     D: |
       my $some = "C ".$C->pint();
       unless (length($some) > 5) {
           $some .= " ".G::ki($C);
       }
       $some
+  - K: pint #c
+    D: |
+            my $K = C.K        if defined C.K && !defined C.k;
+            my $p = eval { C.G->w(print => {}, $C); }
+            
+                if (defined C.print || C.Gw) && G::wish(G=>C.G);
+            $@ = "" if $@;
+            my $B;
+            if (C.B && !$p) {
+                if (join(",", sort keys %{C.B}) eq "Lu,ui") {
+                    $B = "ui=(".C.B.ui->pint();
+                }
+                $B ||= G::slim(50,30,G::ki(C.B))        
+            } 
+            my $s = "$K↯$p".($B?"↯$B":"");
+            return $s;
+  - K: send #c
+    D: |
+            my ($m, $cb) = @_;
+            my $Elvis = $C;
+            $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
+            H.G w send_Elvis[$m, $cb, $Elvis];
   - K: s
     D: |
       my $s = C.A->spawn("C");
@@ -33,32 +55,33 @@
     D: |
             C.name = shift;
             $C;
-  - K: from
+  - K: init_way #c
     D: |
-            my $s = shift;
-            for my $k (keys %$s) {
-                next if $k eq "id" || $k eq "G";
-                my $t = $w->{$k};
-                my $f = $s->{$k};
-                
-                 # # SCHEMAS # MERGINESS
-                $f = { %$t, %$f } if $t && $k =~ /^(B|S)$/;
-                
-                $w->{$k} = $f;
+            my $d = shift;
+
+            # merge the ways into us
+            for my $i (keys %$d) {
+                $C->{$i} = $d->{$i};
             }
-            return $w;
-  - K: load
+            # TODO leveridge A into way
+            
+            for my $d ("dials") {
+                next unless $C->{$d};
+                while (my ($k, $v) = each %{$C->{$d}}) {
+                    C.G->{$k} = $v;
+                }
+            }
+  - K: load #c
     D: |
             C._wayfile = shift if @_;
             C._wayfile || die;
-            $C->load_file;
-            my $data = delete C._wayfiledata # could hang, could come back
+            $C->load_file(C._wayfile);
+            my $data = delete C._wayfiledata; # could hang, could come back
             $C->init_way($data);
-            
-        }
-  - K: load_file
+  - K: load_file #c
     D: |
-            my $yamlfile = shift; 
+            my $yamlfile = shift;
+            die "no C._wayfile ". unless $yamlfile;
             my $yaml = $H->slurp($yamlfile);
             my $w = eval { Load($yaml) };
             if ($@ || !$w || ref $w ne 'HASH' || $@) {
@@ -85,10 +108,10 @@
                 .($@ ? $@ : "got: ".($w || "~"))
                 ."\n\n".$vision;
             }
-            $w
+            C._wayfiledata = $w;
   - K: SYCK #c
+    style: nonbabble
     D: |
-
         <<'';
                                      _..._                   
                                   .-'_..._''.                
@@ -98,64 +121,15 @@
                  \ \      / / | |            <    |          
                _  \ \    / /  | |             |   | ____     
              .' |  \ \  / /   . '             |   | \ .'     
-            .   | / \ `  /     \ '.          .|   |/  .      
+            .   | / \ `  /     \ '.          .|   |/  .       
           .'.'| |//  \  /       '. `._____.-'/|    /\  \     
         .'.'.-'  /   / /          `-.______ / |   |  \  \    
         .'   \_.'|`-' /                    `  '    \  \  \   
                   '..'                       '------'  '---' 
-
-  - K: init_way #c
-    D: |
-            my $data = shift;
-
-            # merge the ways into $self
-            for my $i (keys %$w) {
-                $self->{$i} = $w->{$i};
-            }
-            for my $a ("chains", "tractors") { # TODO leveridge A into way
-                next unless $w->{$a};
-                my $as = [];
-                for my $c (@{$self->{$a}}) {
-                    $c = $self->spawn($c);
-                    push @$as, $c;
-                }
-                $self->{$a} = $as;
-            }
-            for my $d ("dials") {
-                next unless $self->{$d};
-                while (my ($k, $v) = each %{$self->{$d}}) {
-                    $self->{G}->{$k} = $v;
-                }
-            }
-        }
-  - K: pint
-    D: |
-
-            my $w = shift;
-            
-            my $K = $w->{K}        if defined $w->{K} && !defined $w->{k};
-            my $p = eval { $w->{G}->w('print',{},$w) }
-                if (defined $w->{print} || $w->{Gw}) && G::wish(G=>$w->{G});
-            $@ = "" if $@;
-            my $B;
-            if ($w->{B} && !$p) {
-                if (join(",", sort keys %{$w->{B}}) eq "Lu,ui") {
-                    $B = "Lui*=(".$w->{B}->{ui}->pint();
-                }
-                $B ||= G::slim(50,30,G::ki($w->{B}))        
-            }
-            my $s = "$K↯$p".($B?"↯$B":"");
-            return $s;
-        }
-  - K: send
-    D: |
-
-            my ($m, $cb) = @_;
-            my $Elvis = $C;
-            $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
-            H.G w send_Elvis[$m, $cb, $C];
-        }
-  - K: find
+                  
+        
+        # etc
+  - K: find #c
     D: |
             my $point = shift;
             my @path = split /\/|\./, $point;
@@ -170,27 +144,8 @@
             return $h
   - K: LioO # wants to be goner $c
     D: |
-            my $w=shift;
             my $O = shift;
-            die "w.K has no Li!" unless $w->{Li};
-            my @a = G::findO($O => $w->{Li}->{o});
+            die "C.K has no Li!" unless C.Li;
+            my @a = G::findO($O => C.Li.o);
             wantarray ? @a : shift @a;
-        }
-
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
-  - K: dryup
-    D: |
 
