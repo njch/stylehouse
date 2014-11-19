@@ -212,7 +212,9 @@ hooks:
         my $cssset = ".animate({".join(",", map {
             "'$_':'".($o->{$_} * 100)."%'"
             } sort keys %$o)."}, 400)";
-        $H->send(" \$('#$n')$cssset".".removeClass('NZ');");
+        my $E = H.who;
+        $E->send(" \$('#$n')$cssset".";");
+        $G->timer(0.4, sub { $E->send(" \$('#$n').removeClass('NZ');"); });
     }
   
   wux: |
