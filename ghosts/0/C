@@ -63,7 +63,10 @@ Ds:
             }
             # TODO should be in G or so as we thrust down many ways to here
             # leveridge A into way
-            
+            if (my $i = C.Oi) {
+                i.includome || die"?";
+                push @{C.Ds}, $C->s->load("ghosts/i.includome")->{Ds};
+            }
             for my $d ("dials") {
                 next unless $C->{$d};
                 while (my ($k, $v) = each %{$C->{$d}}) {
@@ -92,6 +95,7 @@ Ds:
             my $data = delete C._wayfiledata; # could hang, could come back
             C.name ||= (C._wayfile =~ /ghosts\/(.+)/)[0] || C._wayfile;
             $C->init_way($data);
+            $C
   - K: load_file #c
     D: |
             my $yamlfile = shift;
