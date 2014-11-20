@@ -1,4 +1,89 @@
 Ds:
+  - K: load_ways #c
+    D: |
+        my @ways = @_;
+        G.ways ||= [];
+        G.wayfiles ||= [];
+        G.load_ways_count++;
+
+        my $ldw = [];
+        while (defined( my $name = shift @ways )) {
+            my @files;
+
+            my $base = "ghosts/$name";
+            push @files, $base if -f $base;
+            push @files, grep { /\/\d+$/ }
+                map { Hostinfo::fixutf8($_) } glob("$base/*");
+
+            for my $file (@files) {
+                # TODO pass an If object selector to 0->deaccum
+                @{G.ways} = grep { _._wayfile ne $file } @{G.ways};
+                @{G.wayfiles} = grep { $_ ne $file } @{G.wayfiles};
+
+                my ($wn) = $file =~ /ghosts\/(.+)$/;
+                $wn ||= $file;
+                my $nw = $G->nw(name=>$wn);
+                $nw->load($file);
+
+                if (my $inc = nw.include) {
+                    for my $name (split ' ', $inc) {
+                        next if grep { _.name eq $name } @{G.ways};
+                        push @ways, $name;
+                    }
+                } 
+
+                say "G G.name w+ nw.name";
+                push @{G.wayfiles}, $file;
+                push @{G.ways}, $nw;
+            }
+            
+            G.name =~ s/\+$name// && warn "no wayfiles from $name" || die
+            unless @files; # ^ dies if was first way name
+        }
+
+        $G->_0('_load_ways_post', {w=>G.ways});
+
+
+  - K: timer #c coming, going
+    D: |
+            my $time = shift || 0.001;
+            my $doing = shift;
+            my $st = " ".$_[0] if $_[0] && !ref $_[0];
+            $st ||= "";
+            my $last = $G->Flab("G Timer$st", @_);
+            
+            my $doings;
+            $doings = sub { $G->comeback($last, $doings, $doing, @_); };
+            Mojo::IOLoop->timer( $time, $doings );
+            return $last
+  - K: comeback
+    D: |
+            my $last = shift;
+            my $doings = shift;
+            my $doing = shift;
+            my @saying = @{ $last->{thing} };
+            $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
+            my ($u, $s) = $G->waystacken(@saying, @_);
+            $s->{doings} = $doings;
+            $s->{timer_from} = $last;
+            $last->{timer_back} = $s;
+            eval { $doing->(); };
+            # start serving code and stuff through H/0!
+            $u->();
+            if ($@) {
+                $@ =~ s/^(!   )+Z\n//sgm;
+                sayre(ind("Error ", $@));
+            }
+  - K: wayb #c # TODO way bending, other G stuff
+    D: |
+      my ($GG, $atu) = @_;
+      my $suway = join "", map {"{$_"} split /\//, atu.way;
+      G.R->loadup($atu, "{hooks$suway", $atu);
+      
+      
+      push @{GG.ways}, $atu; # A etc
+      
+
   - K: w #c
     style: nonbabble
     D: |
@@ -91,4 +176,95 @@ Ds:
           my $one = shift @return;
           return $one;
       }
+
+
+  - K: pyramid #c
+    D: |
+      my $thing = [@_];
       
+      my $u;
+      my ($last) = @F;
+      $u = last.A->spawn('C') if $last;
+      $u ||= G.A->spawn('C');
+      # TODO ^ set A u words to 'pyramid'
+      
+      my $stack = $H->stack(2,12);# short
+      
+      my $from; # FUZZ!
+      if ($stack->[0] =~ /G::timer/) {
+          $from = "time"
+      }
+      elsif ($stack->[1] =~ /G.+eval.+/
+          && $stack->[2] =~ /G::doo/) {
+          $from = "some doing..."
+      }
+      else {
+          ($from) = $stack->[0] =~ / (\S+::\S+) /;
+          $from =~ s/.*G::(Fl|wa).*/$1/ && do {
+              $from =~ s/^wa$/_ᣝ/ ||
+              $from =~ s/^Fl$/ᣜ_/
+          }
+          || $from =~ s/G::/G\:/;
+      }
+      my $dir = ($last ? "last.id>" : "").u.id;
+      #say "pyra $dir $from  $thing->[0]";
+      $from ||= "stackw\ $stack->[0]";
+      shift @$stack;
+
+      $u->from({
+          K => "$from",
+          G => $G,
+          hitime => $H->hitime(),
+          stack => $stack,
+          Flab => [@Flab],
+          F => [@F],
+          depth => 0+@F,
+          thing => $thing,
+          print => 'S.name;',
+      });
+      $u->from({Error=>$@}) if $@;
+      u.name = join " ", grep {defined $_} u.G.way, u.K, gpty(@{u.thing});
+      $u
+      
+  - K: waystacken #c
+    style: nonbabble
+    D: |
+            my $s = $G->pyramid(@_);
+            push @{ $F[0]->{undies} ||= [] }, $s if @F;
+            unshift @F, $s;
+            $s->{F} = [@F],
+            $G->ob("\\", $s);
+            my $unway = sub {
+                my @FF;
+                if ($F[0] ne $s) {
+                    my $E = "BATS ";
+                    if (!grep {$_ eq $s} @F) {
+                        $E .= "self nowhere in \@F"
+                    }
+                    else {
+                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
+                        $E .= " - from $_->{name}\n" for shift @FF;
+                    }
+                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
+                }
+                else {
+                    shift @F;
+                }
+                
+                if ($@) {
+                    #$G->Flab("Stack Return Error", $s, $@);
+                    $s->{Error} = $@;
+                }
+                $s->{Flab} = [@Flab];
+                
+                if ($s->{_after_do}) {
+                    $_->() for @{$s->{_after_do}};
+                }
+                
+                my $te = $@; $@ = "";
+                $G->ob("/", $s);
+                $@ = $te;
+                @Flab = ();
+                $s
+            };
+            wantarray ? ($unway, $s) : $unway;
