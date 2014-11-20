@@ -69,9 +69,9 @@ hooks:
     sw (ar.u) if e.S;
   Nonpm:
     is_changed: | # TODO T and if {B{sum changes
-      my $old = B.sum;
+      B.sum_old = B.sum;
       B.sum = `md5sum $file`;
-      S.changed || $old ne B.sum;
+      S.changed || B.sum_old ne B.sum;
     reload: |
       S.way =  $S->s;
       S.way->load($file);
@@ -88,7 +88,9 @@ hooks:
       content_D: |
         '<pre>'
         .join("\n",
-        '<span style="color:black">'.join("\n",B.coded, B.end).'</span>',
+        '<span style="color:black">'.join("\n",B.coded).'</span>',
+        (B.ghod ? '<span style="color:black">'.join("\n",B.ghod).'</span>' : ""),
+        '<span style="color:black">'.join("\n",B.end).'</span>',
         '<span style="color:#0aa">'.join("\n",@{B.dup||[]}).'</span>',
         '<span style="color:#03a">'.join("\n",B.compile).'</span>',
         '<span style="color:#0a3">'.join("\n",B.diff).'</span>')
@@ -102,13 +104,17 @@ hooks:
     `touch l/S$pm`; 
   coins: |
     # etc
-    for (keys %$Gd) {
-        /ghosts\/(R|G)/ && do {
-        _.changed = 1 for 0->fu({K=>'Nonpm',B=>{file =>"ghosts/0/$1"}})
-        };
+    for my $gf (keys %$Gd) {
+        if ($gf =~ /ghosts\/(R|G)/) {
+            my $fu = {K=>'Nonpm',B=>{file =>"ghosts/0/$1"}};
+            for my $c (0->fu($fu)) {
+                $c || next;
+                sayyl "domey reticulation unto $gf  ($1)  ".$c->pi;
+                c.changed = 1;
+            }
+        }
     }
-    saygr wdump($Gd);
-    w code;
+    w code[$Gd];
   any_init: |
       waylay code;   
       say "COCOCOO" for 1..8;
@@ -119,7 +125,9 @@ hooks:
         grep{!/\d$/} glob "ghosts/0/*";
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
     
-    say.coded = sayyl "some code? ".(0+@nonpms)." some code ".(0+@chpms);
+    say.coded = sayyl "coding?? ".(0+@chpms)." of ".(0+@nonpms);
+    say.ghod = sayre "   g0ings: ".join ", ", sort keys %{ar.Gd} if ar.Gd;
+    
     
     for my $c (@chpms) {
         delete c.way;
@@ -127,7 +135,8 @@ hooks:
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         w coden[$way];
-        0->accum($say, dup => saygr "c.B.file");
+        
+        0->accum($say, dup => saygr "c.B.file ");
     }
     
     my $bug;
