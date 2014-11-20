@@ -45,23 +45,27 @@ Ds:
         my $k = shift;
         
         if (R.keysuc) {
-            push @{R.keysuc}, $k;
-            $R->keysucd if $k eq '';
+            if ($k eq "\r") {
+                $R->keysucd;
+            }
+            else {
+                push @{R.keysuc}, $k;
+            }
         }
         else {
             $R->popJtrav        if $k eq '-';
             $R->intJtrav($k)    if $k =~ /[0-9]/;
-            R.keysuc = [$k]     if $k eq '"';
+            R.keysuc = []     if $k eq 'À'; # tilde key
+
         }
         say "Key sucked! $k"; 
   - K: keysucd #c
     D: |
-      my $op = shift @{R.keysuc};
       my $s = join"",@{delete R.keysuc};
-      my ($w) = $s =~ /^"(.+)$/;
+      my ($w) = $s =~ /^(.+)$/;
       say "KEYS SUCKED: $w";
-      return $R->intJtrav($1) if $w =~ /^\d+$/;
-      die "sucked in whatnow? $s";
+      return $R->intJtrav($1) if $w =~ /^(\d+)$/;
+      die "sucked in whatnow? '$s'";
       
   
   - K: uni #c
@@ -75,7 +79,7 @@ Ds:
           say "Snapped $i       $1 $2";
           last if $1 eq " ";
           $i = $i->{$2} if $1 eq "{";
-          $i = $i->[$2] if $1 eq "[";
+          $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
       }
       if ($t =~ m/^.+? (.+)$/) {
           say "Had some more: $1";
@@ -118,7 +122,7 @@ Ds:
       my $i = 1;
       my @rows = map {
           join "  ",
-          $R->f(blue_fs60 => $_->[0]),
+          $R->f(blue_fs60 => $i++),
           $R->f(black => $_->[0]),
           $R->f(white_fs120 => $_->[2]),
       } @or;
