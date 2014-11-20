@@ -53,7 +53,10 @@ hooks:
     disconecktie: |
       $EE->send(" C[s\.conin] = s;");
       $tx->finish;
+      Sw disco;
+    disco: |
       S.disco = 1;
+      G:Ϡ w elvis_leaves(E=>$S) if G:Ϡ;
       
     mouthfull: |
       for my $mJ (@{S.mouth}) {
@@ -75,7 +78,7 @@ hooks:
       
     leaves: |
       sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
-      G:Ϡ w elvis_leaves(E=>$S);
+      Sw disco;
     
     tx_uglies: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
