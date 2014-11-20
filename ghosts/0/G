@@ -206,30 +206,6 @@ Ds:
             };
             return $G->_0("0->T", $p);
         }
-        sub chains {
-            my $G = shift;
-            return @{$G->{chains}} if $G->{chains};
-            grep { !$_->{_disabled} }
-            map { @{$_->{chains}||[]} } $G->ways
-        }
-        sub allchains {
-            my $self = shift;
-            map { @{$_->{chains}||[]} } $self->ways
-        }
-        sub unrush {
-            my $self = shift;
-            my $point = shift;
-            unless ($self->{_unrush}->{$point}) {
-                $self->timer(0.2, sub {
-                    $self->{_unrush}->{$point} = 2;
-                    $self->w($point);
-                }, "unrush $point");
-                $self->{_unrush}->{$point} = 1
-            }
-            $self->{_unrush}->{$point} == 2
-            
-            && delete $self->{_unrush}->{$point}
-        }
 
         sub ways {
             my $self = shift;
@@ -270,30 +246,6 @@ Ds:
         }
 
         my %D_cache;
-        sub dooftip {<<""; #c
-             .-'''-.     
-           '   _    \   
-         /   /` '.   \  
-        .   |     \  '  
-        |   '      |  ' 
-        \    \     / /  
-         `.   ` ..' /   
-            '-...-'`    
-
-        }
-        sub grep_chains {
-            my $self = shift;
-            my %s = @_;
-            my @go;
-            for my $c ($self->chains) {
-                while (my ($k, $v) = each %s) {
-                    if ((!$k || exists $c->{$k}) && (!$v || $c->{$k} =~ $v)) {
-                        push @go, $c;
-                    }
-                }
-            }
-            return @go;
-        }
   - K: new #c
     D: |
       my (@ways) = @_;
@@ -497,7 +449,6 @@ Ds:
                 $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
                 $DOOF .= ind("!   ", "$@")."\n"             if !$first;
                 $DOOF .= ind("ar  ",wdump(1,$ar))             if $first;
-                #$DOOF .= dooftip()                         if $first;
                 
                 my $OOF = $G->Flab("D Error $@", $DOOF, $D);
                 if ($first) {
@@ -509,7 +460,6 @@ Ds:
             }
             
             return wantarray ? @return : shift @return
-
   - K: nw #c G ways
     D: |
       my $C = G.A->spawn('C');  
