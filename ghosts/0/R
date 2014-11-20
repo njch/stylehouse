@@ -24,7 +24,7 @@
   - K: from #c
     D: |
       my $u = shift;
-      # merge into us
+      # merge  into us     
       # if is C, setup A saying this happened
   
   - K: instyle #c
@@ -54,10 +54,15 @@
             $R->intJtrav($k)    if $k =~ /[0-9]/;
             R.keysuc = [$k]     if $k eq '"';
         }
+        sayyl "Key sucked! $k";
   - K: keysucd #c
     D: |
       my $op = shift @{R.keysuc};
       my $s = join"",@{delete R.keysuc};
+      my ($w) = $s =~ /^"(.+)$/;
+      sayyl "KEYS SUCKED: $w";
+      return $R->intJtrav($1) if $w =~ /^\d+$/;
+      die "sucked in whatnow? $s";
       
   
   - K: uni #c
@@ -114,7 +119,7 @@
       my $i = 1;
       my @rows = map {
           join "  ",
-          $R->f(blue_fs60 => $i++),
+          $R->f(blue_fs60 => $_->[0]),
           $R->f(black => $_->[0]),
           $R->f(white_fs120 => $_->[2]),
       } @or;

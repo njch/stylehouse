@@ -28,8 +28,8 @@ C:
 hooks:
   fresh_init: |
     push @{G0.recoded_cbs}, sub {
-        my $S = shift;
-        w coins[$S]; 
+        my $Gd = shift;
+        w coins[$Gd]; 
     };
 
     0->GAK(U => G!U);
@@ -100,35 +100,30 @@ hooks:
     `touch l/S$pm`; 
   coins: |
     # etc
-    return saygr "igginit S.name" if S.name =~ /C\/|Ϡ/;
-    saygr "Got reinitn on S.name";
-    return if $S eq $G;
-    #w try;
+    saygr wdump($Gd);
+    w code;
   any_init: |
       waylay code;   
       say "COCOCOO" for 1..8;
   code: |
     waylay uxd;
     my $say = {};
-    
-    my @nonpms = grep{!/\d$/} glob "ghosts/0/*";
-    # TODO data load separately?
-    # the coins hook should still let us know when sources
-    # re-create
-    @nonpms = map { 0->TafuB(Nonpm => {file => $_}) } @nonpms;
-    # re-sonate
+    my @nonpms = map { 0->TafuB(Nonpm => {file => $_}) }
+        grep{!/\d$/} glob "ghosts/0/*";
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
-    w $_ reload for @chpms;
-    # and link further, 
-    # the 4 ^ createds the 5 v
+    
     say.coded = sayyl "some code? ".(0+@nonpms)." some code ".(0+@chpms);
+    
     for my $c (@chpms) {
+        delete c.way;
+        w $c reload;
         my $way = c.way;
+        way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         my @name = split '/', way.name;
         shift @name if $name[0] eq '0';
         my $nb = join "::", @name;
         my $co = $way->find("0/$nb");
-        0->accum($say, dup => saygr "Way : @name  $nb $co");
+        0->accum($say, dup => saygr "c.B.file");
         w coden[$nb, $co];
     }
     

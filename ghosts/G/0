@@ -19,11 +19,6 @@ hooks:
     
   _init:
     recoded: |
-        say "Recode calles ".@{G.recoded_cbs};
-        for my $cb (@{G.recoded_cbs}) {
-            $G->timer(0.1, sub { say "Balllgej!"; $cb->($S) });
-        }
-        
         w _init/wayrays[$S];
         
         w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');
@@ -74,6 +69,10 @@ hooks:
         push @rG, $S;
         # sort stream to avoid small before big?
         waylay recode_ways[$S, $in];
+    }
+    say "Recode calles ".@{G.recoded_cbs};
+    for my $cb (@{G.recoded_cbs}) {
+        $G->timer(0.1, sub { $cb->($Gd) });
     }
     say " Recoded: ".join"\t\t", map { $_->pi } @rG;
   recode_ways: |
