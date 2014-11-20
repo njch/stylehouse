@@ -71,7 +71,7 @@ hooks:
     is_changed: | # TODO T and if {B{sum changes
       my $old = B.sum;
       B.sum = `md5sum $file`;
-      $old ne B.sum;
+      S.changed || $old ne B.sum;
     reload: |
       S.way =  $S->s;
       S.way->load($file);
@@ -102,6 +102,11 @@ hooks:
     `touch l/S$pm`; 
   coins: |
     # etc
+    for (keys %$Gd) {
+        /ghosts\/(R|G)/ && do {
+            _.changed = 1 for 0->fu(Nonpm => {file =>"ghosts/0/$1"})
+        };
+    }
     saygr wdump($Gd);
     w code;
   any_init: |
