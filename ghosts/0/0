@@ -119,12 +119,8 @@ hooks:
         w $c reload;
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
-        my @name = split '/', way.name;
-        shift @name if $name[0] eq '0';
-        my $nb = join "::", @name;
-        my $co = $way->find("0/$nb");
+        w coden[$way];
         0->accum($say, dup => saygr "c.B.file");
-        w coden[$nb, $co];
     }
     
     my $bug;
@@ -162,19 +158,19 @@ hooks:
     return if $ch eq "no changes";
     waylay try;
   coden: |
-    use lib 'sal'; # safe lib updates on compiles
+    use lib 'sal';
+    use G;
+    my $eg = bless {}, "G"; # safe lib updates on compiles
     # TODO so 0 doesn't have to restart on babble changes?
     # make a script that just loads G and pipes babble in out?
     # do it twice if babble changes so final code has new parsed babble
-    use G;
-    my $eg = bless {}, "G";
+    my @name = split '/', way.name;
+    shift @name if $name[0] eq '0';
+    my $nb = join "::", @name;
     
-    for my $w ($G->anyway('0')) {
-        my ($nb, $co) = %$w;
-        
-        #die sw['etc',$co, $nb] unless ref $co eq "ARRAY";
-        
-        next unless $co;
+    my $co = $way->find("Ds");
+    $co ||do{ warn "No Domes si ".$way->pi; next };
+    
         my @code = (
             join "\n",
             "package $nb;", 
@@ -220,8 +216,7 @@ hooks:
             push @code, $D;
         }
         push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
-        my $file = "il/l/${nb}.pm";
+        my $file = "il/l/${nb}.pm"; # TODO ::->/
         $H->spurt($file, H::encode_utf8(join("\n", @code)));
-    }
     
 
