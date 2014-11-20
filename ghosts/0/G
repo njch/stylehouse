@@ -45,78 +45,8 @@ Ds:
         our $MAX_FCURSION = 140;
         our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
         our $HASHC = "#"."c";
-        
-        sub Flab { #c to dry
-            my $G = shift;
-            wish(G=>$G) || die "send G";
-            say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-                if $G->deeby && $_[0] !~ /^\w Error/;
-            $G->ob(@_);
-            my $s = $G->pyramid(@_);
-            unshift @Flab, $s;
-            $s->{Flab} = [@Flab];
-            $s;
-        }
-        sub fla {
-            $F[0]->{G}->Flab(@_);
-        }
-        sub deeby {
-            shift->{db} + $db > 0
-        }
-
-        sub gname {
-            my $g = shift;
-            my $si = shift || 0;
-            my $ush = "$g";
-            my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
-            $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
-            $may ||= "$g";
-            $may =~ s/^(\w+)=HASH.*$/$1\{/;
-            $may;
-        }
-        sub pint { 
-            my $w = shift; 
-            $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
-        }
-        sub mess {
-            my $G = shift;
-            $H->{G}->w(mess => {what => shift, thing => shift});
-        }
         our $gp_inarow = 0;
-        sub ghostlyprinty {
-            $gp_inarow++;
-            my $witcolour = sub { '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>' };
-            my $nohtml;
-            if ($_[0] && $_[0] eq "NOHTML") {
-                shift;
-                $nohtml = 1;
-                $witcolour = sub { shift };
-            }
-            
-            my @t = @_;
-            my @s;
-            for my $t (@t) {
-                if ($t && ref $t eq "ARRAY") {
-                    if ($gp_inarow > 5) {
-                        push @s, "ghostlyprinty recursion!";
-                        next;
-                    }
-                    push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
-                }
-                elsif (ref $t) {
-                    push @s, $witcolour->(ref($t), "333;font-size:50%");
-                    my $name = gname($t);
-                    push @s, $witcolour->($name);
-                }
-                else {
-                    push @s, (defined $t ? $t : "~")
-                }
-            }
-            $gp_inarow--;
-            join "  ", @s
-        }
-        sub pty { my $t = shift; ref $t eq "Way" ? pint($t) : gpty($t) }
-        sub gpty { ghostlyprinty('NOHTML',@_) };
+        
         sub way_was {
             my $G = shift;
             my $what = shift;
@@ -193,6 +123,7 @@ Ds:
       
       
       $G->load_ways(@ways);
+      
   - K: gp #c
     style: func
     D: |
@@ -200,6 +131,7 @@ Ds:
       return $u->pi if ref $u && ref $u ne 'HASH' && ref $u ne 'CODE'
           && ref $u ne 'ARRAY' && $u->can('pi');
       gpty($u);
+      
   - K: sw #c
     style: func
     D: |
@@ -211,6 +143,76 @@ Ds:
   - K: pi #c
     D: |
       "G ".G.name;
+  
+  - K: deeby #c TODO... more pi about thing printing, how much interest (db)
+    D: |
+        G.db + $db > 0
+
+  - K: gname # goner?
+    D: |
+        my $g = shift;
+        my $si = shift || 0;
+        my $ush = "$g";
+        my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
+        $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
+        $may ||= "$g";
+        $may =~ s/^(\w+)=HASH.*$/$1\{/;
+        $may;
+   
+  - K: pint
+    style: func
+    D: |
+        my $w = shift; 
+        $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
+   
+  - K: mess
+    D: |
+        H.G->w(mess => {what => shift, thing => shift}); # TODO say*
+   
+  - K: ghostlyprinty
+    style: func
+    D: |
+        $gp_inarow++;
+        my $witcolour = sub { '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>' };
+        my $nohtml;
+        if ($_[0] && $_[0] eq "NOHTML") {
+            shift;
+            $nohtml = 1;
+            $witcolour = sub { shift };
+        }
+        
+        my @t = @_;
+        my @s;
+        for my $t (@t) {
+            if ($t && ref $t eq "ARRAY") {
+                if ($gp_inarow > 5) {
+                    push @s, "ghostlyprinty recursion!";
+                    next;
+                }
+                push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
+            }
+            elsif (ref $t) {
+                push @s, $witcolour->(ref($t), "333;font-size:50%");
+                my $name = gname($t);
+                push @s, $witcolour->($name);
+            }
+            else {
+                push @s, (defined $t ? $t : "~")
+            }
+        }
+        $gp_inarow--;
+        join "  ", @s
+        
+  - K: pty
+    style: func
+    D: |
+        my $t = shift;
+        ref $t eq "Way" ? pint($t) : gpty($t)
+        
+  - K: gpty
+    style: func
+    D: |
+        ghostlyprinty('NOHTML',@_)
   
   - K: di #c
     style: func
