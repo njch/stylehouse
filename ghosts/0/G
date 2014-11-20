@@ -64,43 +64,6 @@ Ds:
             return $G->_0("0->T", $p);
         }
 
-        sub ways {
-            my $self = shift;
-            
-            grep { !$_->{_disabled} } @{$self->{ways}}
-        }
-        sub styles {
-            my ($G, $styles) = @_;
-            
-            my @styles;
-            for my $style (split ' ', $styles) {
-                push @styles,
-                    join "", map { /;$/ ? $_ : "$_;" } $G->w("styles/$style");
-            }
-            join ' ', @styles;
-        }
-        sub findway {
-            my $G = shift;
-            my $point = shift;
-            my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
-            wantarray ? @w : shift @w;
-        }
-        sub anyway {
-            my $G = shift;
-            my $point = shift;
-            my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
-            wantarray ? @a : shift @a
-        }
-        sub throwlog {
-            my $what = shift;
-            $H->{G}->w(throwlog => {what => $what, thing => [@_]});
-        }
-        sub susgdb {
-            my $G = shift;
-            my $t = $db;
-            push @{$F[0]->{_after_do}}, sub { $db = $t };
-            $db = -2;
-        }
 
         my %D_cache;
   - K: new #c
@@ -147,8 +110,20 @@ Ds:
   - K: deeby #c TODO... more pi about thing printing, how much interest (db)
     D: |
         G.db + $db > 0
-
-  - K: gname # goner?
+        
+  - K: throwlog
+    styles: func
+    D: |
+        my $what = shift;
+        H.G->w(throwlog => {what => $what, thing => [@_]});
+        
+  - K: susgdb
+    D: |
+        my $t = $db;
+        push @{$F[0]->{_after_do}}, sub { $db = $t };
+        $db = -2;
+        
+  - K: gname # goner? 
     D: |
         my $g = shift;
         my $si = shift || 0;
@@ -245,7 +220,7 @@ Ds:
             my $Sway = shift;
             my $w = shift;
             my $Z = shift;
-            die "RECURSION ".@F if @F > $MAX_FCURSION;
+            die "RECURSION ".@F if @F > $MAX_FCURSION; 
             
             my $ksmush = join",",sort keys %$ar;
             

@@ -3,15 +3,33 @@ Ds:
     D: |
         wish(G=>$G) || die "send G";
         say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-            if $G->deeby && $_[0] !~ /^\w Error/;
+            if $G->deeby && $_[0] !~ /^\w\ Error/;
         $G->ob(@_);
         my $s = $G->pyramid(@_);
         unshift @Flab, $s;
         $s->{Flab} = [@Flab];
         $s;
+        
   - K: fla
     D: |
         $F[0]->{G}->Flab(@_);
+        
+  - K: ways
+    D: |
+        grep { !$_->{_disabled} } @{$G->{ways}}
+    
+  - K: findway
+    D: |
+        my $point = shift;
+        my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
+        wantarray ? @w : shift @w;
+        
+  - K: anyway
+    D: |
+        my $point = shift;
+        my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
+        wantarray ? @a : shift @a
+        
   - K: load_ways #c
     D: |
         my @ways = @_;
