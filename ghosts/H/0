@@ -96,15 +96,15 @@ hooks:
     G!H/mess;
     
     H.r = w enRedis;
-    w config;
+    w figure_port;
     
     0->su(S => sub { w hand_S(a => shift); });
     0->su("S/H.style/H.name" => sub { w hand_S(a => shift); });
     
-    $G->timer(60*4+(20 * rand 4),
+    $G->timer(60*9+(20 * rand 4),
         sub { sayre "voluntary reexec" for 1..13; w reexec; });        
     
-    Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
+    H.wtfriv = Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
     w wtf(div => 1, way => 'check/script') if H.name !~ /O|Z/;
     w wtf(div => 1, way => 'redission');
     w wtf(div => 17, way => 'check/vitals'); 
@@ -113,7 +113,7 @@ hooks:
     # $0 has become a runtime
     waylay H.style/in;
       
-  config: |
+  figure_port: |
     my $listen = readlink('listen');
     my ($host,$port, $wa) = split ':', $listen;
     die "too much listen" if $wa;
@@ -300,7 +300,7 @@ hooks:
     w z/wzy; # conz, swim
 
   wtf: |
-    # TODO combine with check, fractionating importantness into time
+    # TODO combine with check, fractionating importantness into spacetime
     if (ar.way && ar.div) {
         my $a = { %$ar, now => 0 };
         $G->{ar.riv||'wtf'}->{ar.way} = $a;
@@ -308,12 +308,12 @@ hooks:
     }
     my $riv = $G->{ar.riv} ||= {};
     my @to;
-    while (my ($way,$R) = each %$riv) {
-        R.now++;
-        if (R.now >= R.div) {
-            R.now = 0;
+    while (my ($way,$r) = each %$riv) {
+        r.now++;
+        if (r.now >= r.div) {
+            r.now = 0;
             $G->timer(0, sub {
-                return R.D->() if R.D;
+                return r.D->() if r.D;
                 $G->w("$way");
             });
         }
