@@ -1,0 +1,132 @@
+Ds:
+  - K: TafuBl #c TafuBl, TafuB, TB, Tafu, Taful
+    D: |
+        #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
+        0S->l( 0S->TafuB(@_) );
+  - K: TafuB
+    D: |
+        my($K,$B)=@_;
+        my $ca = $G->W->{ca}->{K}->{$K}->{B_ki}->{ki($B)};
+        if ($ca && !ca.dead) {
+            return $ca;
+        }
+        0S->Tafu(0S->Bu($K, $B))
+  - K: TB
+    D: |
+        my ($K, $B) = @_;
+        my $u = 0S->Bu($K, $B);
+        0S->T({i=>$u});
+  - K: Tafu
+    D: |
+        my($uu)=@_;
+        0S->fu($uu) || 0S->T({i => $uu});
+  - K: Taful
+    D: |
+        my($uu)=@_;
+        0S->l( 0S->Tafu($uu) );
+  - K: visTp_TafuBlA #c
+    D: |
+        my ($Tp, $Bup, $A) = @_;
+        my $old = 0S->visTp($Tp); # could be Fun, wire into end
+        my $uu = 0S->Bu(@$Bup); 
+        my $u = 0S->fu($uu);
+        
+        A.old ||= [] if $A;
+        A.new ||= [] if $A;
+        if ($u) {
+            push @{A.old}, $u if $A;
+        }
+        else {
+            push @{A.new}, $u if $A;
+            $u = 0S->T({i => $uu});
+        }
+        
+        0->l($u);
+        $T= $old;
+        $u;
+  - K: visTp_l_u #c
+    D: |
+        my ($Tp, $u) = @_; # get in to a T place and make links
+        my $old = 0S->visTp($Tp);
+        0->l($u);
+        $T= $old;
+        $u;
+  - K: visTp_TafuBl # get in Tp,  #c
+    D: |
+        my ($Tp, $Bp) = @_;
+        my $old = 0S->visTp($Tp);
+        my $u = 0S->TafuBl(@$Bp);
+        $T= $old;
+        $u;
+  - K: visTp #c
+    D: |
+        my ($p, $fun) = @_;
+        
+        # are in Ghost right now?
+        my $tish = $T && (ref $T eq 'Way' || ref $T eq 'C');
+        my $old = $T;
+        if (!$tish) {
+            $T = $G->nw();
+        }
+        elsif (T.G ne $G) {
+            # loses hair? we never care?
+            $T = $G->nw();
+        }
+        else {
+            $T = $T->spawn;
+        }
+        
+        $p = {i=>$p} if ref $p =~ /^(Way|C)$/;
+        my $moved = p.i || p.L;
+        if ($moved) {
+            delete $T->{$_} for qw'i L t o';
+        }
+        
+        $T->from($p);
+        
+        T.i ||= T.L.i;
+        T.L ||= T.i.Li;
+        T.t ||= T.L.t;
+        T.o ||= T.L.o;
+        T.o ||= [];
+        
+        if ($old) {
+            T._T = $old;
+            #push @{old.T_||=[]}, $T;
+        }
+        if (my $r = T.r) {
+            if ($moved && r.ih->{T.i.id} && r.noo) {
+                # recursion q factor # can rebraid things to go on forever etc.
+                die "not allowed circular travel, "
+                    .sw({here_before => $T});
+            }
+            $r = T.r = {%$r};
+            r.ih = {%{r.ih||{}}};
+            r.is = [@{r.is||[]}, T.i];
+            r.ih->{T.i.id} = $T;
+        }
+        
+        if (ref $fun eq "CODE") {
+            return $fun->();
+            $T = $old;
+        }
+        elsif ($fun eq "Fun") {
+            push @{ $F[0]->{_after_do} }, sub {
+                $T = $old;
+            }
+        }
+        return $old;
+  - K: l # draw arcs #c
+    D: |
+        my ($n) = @_;
+        my $u = T.i; # up;
+        $G->L($n, $u);
+        0->accum($n, 'Lo', T.L);
+        0->accum($T, 'o', $n);
+        $n;
+  - K: L #c
+    D: |
+      my ($n, $u) = @_;
+      u.A->An($n);
+      n.A->Au($u);
+      
