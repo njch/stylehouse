@@ -171,44 +171,6 @@
             $F[1]->{inter} ||= ".";
             $F[1]->{inter} .= "\n -{".$ki."}\n";
         }
-        sub ob {
-            my $G = shift;
-            my $ob = $G->{_ob}||$_ob;
-            return unless $ob;
-            my $s = $G->pyramid(@_);
-            my $te = $@; $@ = "";
-             my $to = $_ob; $_ob = undef;
-              
-              $ob->w(ob=>{s=>$s});
-              
-             $_ob = $to;
-            $@ = $te;
-        }
-        sub idname {
-            die "TODO";
-            my $self = shift;
-            $self->{id}."-".$self->{name}
-        }
-        sub Gf {
-            my ($G, $way) = @_;
-            # TODO $G or $S etc A 
-            my @GGs =
-                #sort { length($a->{way}) <=> length($b->{way}) } # cerated
-                grep { $_->{way} =~ /$way/ } @{ $G->{GGs} };
-            
-            wantarray ? @GGs : shift @GGs;
-        }
-        sub HGf {
-            $H->{G}->Gf(@_)
-        }
-        sub Gc { # TODO merge into ^ 
-             die "TODO";
-            my $self = shift;
-            $H->TT($self)->G(@_);
-        }
-        sub W {
-            shift->{W};   
-        }
         sub crankFun {
             my ($G,$dial) = @_;
             my $origin = $G->{$dial};
@@ -691,7 +653,7 @@
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
-  - K: wayb #c
+  - K: wayb #c # TODO way smushing
     D: |
       my ($GG, $atu) = @_;
       my $suway = join "", map {"{$_"} split /\//, atu.way;
@@ -700,6 +662,34 @@
       
       push @{GG.ways}, $atu; # A etc
       
+  - K: ob #c make lookee
+    D: |
+      my $ob = G._ob}||$_ob||return;
+      
+      my $s = $G->pyramid(@_);
+      
+      my $te = $@; $@ = "";
+      my $to = $_ob; $_ob = undef;
+
+      $ob->w(ob=>{s=>$s});
+
+      $_ob = $to;
+      $@ = $te;
+  - K: Gf #c
+    D: |
+        my $way = shift;
+        # TODO $G or $S etc A 
+        my @GGs =
+          #sort { length($a->{way}) <=> length($b->{way}) } # cerated
+          grep { $_->{way} =~ /$way/ } @{ $G->{GGs} };
+        
+        wantarray ? @GGs : shift @GGs;
+  - K: HGf #c
+    D: |
+      H.G->Gf(@_)
+  - K: W #c
+    D: |
+      G.W
   - K: pyramid #c
     D: |
       my $thing = [@_];
