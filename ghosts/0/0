@@ -7,13 +7,24 @@ C:
       spawn: []
   - K: Nonpm
     styles: brick4
-    S:
-      Z:
-        font-size: 80%
     Gw: 1
   - K: Stat
     Gw: 1
-  
+    
+  - K: Do
+    BcS: name D
+    styles: brick4
+    ux:
+      spawn: []
+    print: |
+       $name
+    S:
+      Z: {background: '#044'}
+      content_D: |
+        "Ze: $name ()";
+    E:
+      _D: |
+        $D->();
 hooks:
   fresh_init: |
     push @{G0.recoded_cbs}, sub {
@@ -29,13 +40,14 @@ hooks:
              S:
                styles: OxO z NZ
              Z:
+               font-size: 42%
                background: rgba(100,66,33,0.6)
            ux:
              spawn:
                - K: i
   percolate: |
     # HI for 1..2
-    
+    $G->TafuB(Do => {D => sub{waylay code;}, name=>"code"});
     w uxd;
   uxd: |
     my @o = 0->scGre({});
@@ -58,11 +70,19 @@ hooks:
       my $old = B.sum;
       B.sum = `md5sum $file`;
       $old ne B.sum;
+    reload: |
+      c.way =  #
+       #c my $way = $wfh->{c.B.file} || die "not loaded c.B.file";
     print: |
       "for $file";
   Sources:
     S:
+      Z:
+        font-size: 125%
       ishtml: 1
+      sendo_init_D: |
+        # wants to flash on update... 
+        # " \$('#u.at.id').delay(300).fadeOut().fadeIn();";
       content_D: |
         '<pre>'
         .join("\n",
@@ -98,12 +118,13 @@ hooks:
     @nonpms = map { 0->TafuB(Nonpm => {file => $_}) } @nonpms;
     # re-sonate
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
+    w $_ reload for @chpms;
     # and link further, 
     # the 4 ^ createds the 5 v
     say.coded = sayyl "some code? ".(0+@nonpms)." some code ".(0+@chpms);
     my $wfh = {map{_._wayfile=>$_}@{G.ways}}; # must be loaded in here
     for my $c (@chpms) {
-        my $way = $wfh->{c.B.file} || die "not loaded c.B.file";
+        my $way = c.way;
         my @name = split '/', way.name;
         shift @name if $name[0] eq '0';
         my $nb = join "::", @name;
