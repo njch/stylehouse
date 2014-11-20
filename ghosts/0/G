@@ -156,11 +156,6 @@
                 sayre(ind("Error ", $@));
             }
         }
-        sub printF {
-            my $G= shift;
-            my $F = [@F];
-            $G->_0(printF => {FFF=>$F});
-        }
         sub F_delta {
             my $G = shift;
             my $now = $H->hitime();
@@ -666,8 +661,8 @@
 
             my $base = "ghosts/$name";
             push @files, $base if -f $base;
-            push @files, map { Hostinfo::fixutf8($_) }
-                grep { $name eq '0' || /\/\d+$/ } glob("$base/*");
+            push @files, grep { /\/\d+$/ }
+                map { Hostinfo::fixutf8($_) } glob("$base/*");
 
             for my $file (@files) {
                 # TODO pass an If object selector to 0->deaccum
