@@ -28,8 +28,6 @@ Ds:
       
       ___LIBGLOBETC
       
-      Hostinfo::lib_perc_H($H);
-      
       $G::T = {};
       $H->spawn0('A')->new($H);
       H.G = H.A->spawn(G => 'H', 'S', "S/p.style", "S/p.style/p.name");
@@ -159,8 +157,7 @@ Ds:
       );
       $string = "\n$string\n";
       print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
-
-  - K: Say # TODO babble to $G->mess(...)
+  - K: Say #c TODO babble to $G->mess(...) sa*
     D: |
        $H->throwlog("Say", @_);
 
@@ -180,14 +177,13 @@ Ds:
   - K: snooze #c                   \/\/\////\/\\\/\/\//\/\\\\\/\/////\/\///\\\
     D: |
           return Time::HiRes::usleep(shift || 5000);
-
-  - K: ind
+  - K: ind #c
     D: |
       my ($in, $thing) = @_;
       $thing = "" unless defined $thing;
       join "\n", map { "$in$_" } split "\n", $thing
-
-  - K: ddump
+  - K: ddump #c
+    style: func
     D: |
       my $thing = shift;
       my $ind;
@@ -201,8 +197,8 @@ Ds:
           "",
           grep !/^       /,
           split "\n", Dump($thing);
-
-  - K: wdump
+  - K: wdump #c
+    style: func
     D: |
       my $thing = shift;
       my $maxdepth = 3;
@@ -228,11 +224,14 @@ Ds:
   - K:
     D: |
       
-  - K: hitime
+  - K: hitime #c
     D: |
       return join ".", time, (gettimeofday())[1];
       
-  - K: stack
+  - K: enlogform #c
+    D: |
+      return [ hitime(), $self->stack(3), [@_] ];
+  - K: stack #c
     D: |
       my $b = shift;
       my $for = shift || 1024;
@@ -251,20 +250,20 @@ Ds:
       }
       return [@from];
       
-  - K: slurp
+  - K: slurp #c
     D: |
       scalar read_file(shift);
       
-  - K: spurt
+  - K: spurt #c
     D: |
       write_file(shift, shift);
       
 
-  - K: mkuid # H wide unique id
+  - K: mkuid #c H wide unique id
     D: |
         (mkuuid() =~ /^(\w+)-.+$/)[0];
         
-  - K: mkuuid # make a number bigger than the universe
+  - K: mkuuid #c make a number bigger than the universe
     D: |
       UUID::generate(my $i);
       UUID::unparse($i, my $s);

@@ -51,18 +51,9 @@ sub new {
     
     return $H
 }
-sub lib_perc_H {
-    my $h = shift;
-    $Ghost::H =
-    $Travel::H =
-    $Wormhole::H =
-    $Codo::H =
-    $Codon::H =
-    $Git::H =
-    $Way::H = $h;
+sub la {
+    (`uptime` =~ /load average: (\S+),/)[0]
 }
-
-sub la { (`uptime` =~ /load average: (\S+),/)[0] }
 sub timer {
     my $self = shift;
     my $time = shift || 0.2;
@@ -170,32 +161,6 @@ sub throwlog {
 sub ind {
     "$_[0]".join "\n$_[0]", split "\n", $_[1]
 }
-sub ddump {
-    my $thing = shift;
-    my $ind;
-    my $s =
-        join "\n",
-        grep {
-            1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
-            ...
-            do { /^$ind\S/ } )
-        }
-        "",
-        grep !/^       /,
-        split "\n", Dump($thing);
-    $s =~ s/^\s*---\s*//s;
-    $s
-}
-sub wdump {
-    my $thing = shift;
-    my $maxdepth = 3;
-    if (@_ && $thing =~ /^\d+$/) {
-        $maxdepth = $thing;
-        $thing = shift;
-    }
-    $Data::Dumper::Maxdepth = $maxdepth;
-    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
-}
 sub intro {
     my $self = shift;
     return sub {
@@ -203,9 +168,6 @@ sub intro {
         $self->duction($other);
     };
 }
-
-# as a chain, this is a new object coming into the web
-# might want to spawn some intuition...
 sub duction {
     my $self = shift;
     my $this = shift;
