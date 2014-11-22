@@ -207,10 +207,10 @@ hooks:
                 }
                 ch.style .= "bare";
                 if (my $lg = ch.libglob) {
+                    my ($ldir) = $lg =~ /^(.+)\/.+?$/;
                     my @l = map { /\/(.+?)\.pm$/ } glob $lg;
-                    my ($l) = $lg =~ /^(.+)\/.+?$/;
-                    push @code, "use lib '$l';";
-                    push @code, "use $_;" for grep {$_ ne 'S'} @l;
+                    push @code, "use lib '$ldir';";
+                    push @code, "use $_;" for grep {$_ ne $nb && $_ ne 'S'} @l;
                     btw.s.___LIBGLOBETC = join "\n",
                         map { "\$${_}::H = \$H;" } @l;
                 }
