@@ -212,7 +212,7 @@ hooks:
                     push @code, "use lib '$ldir';";
                     push @code, "use $_;" for grep {$_ ne $nb && $_ ne 'S'} @l;
                     btw.s.___LIBGLOBETC = join "\n",
-                        map { "\$${_}::H = \$H;" } @l;
+                    map { "\$${_}::H = \$H;" } grep {$_ ne 'S'} @l;
                 }
             }
             
@@ -231,7 +231,7 @@ hooks:
             }
             push @code, $D;
         }
-        push @code, ($co->[0]->{K} ne "everything" ? "'stylehouse'" : ''); ##
+        push @code, ($co->[0]->{K} ne "everything" ? "9" : ''); ##
         my $file = "il/l/${nb}.pm"; # TODO ::->/
         $H->spurt($file, H::encode_utf8(join("\n", @code)));
     
