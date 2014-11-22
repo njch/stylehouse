@@ -435,7 +435,7 @@ hooks:
     r.gest = sub { # do a R::edis module
         my ($k, $make) = @_;
         my $c = H.r->get($k);
-        return ref \$c eq "SCALAR" ? Hostinfo::fixutf8($c) : $c if $c;
+        return ref \$c eq "SCALAR" ? $H->fixutf8($c) : $c if $c;
         $c = $make->();
         H.r->set($k => $c);
         return $c;

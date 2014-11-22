@@ -61,7 +61,7 @@ Ds:
     D: |
         W.file = shift;
         if (W.file && -e W.file) {
-            my $s = W.script = LoadFile(Hostinfo::encode_utf8(W.file));
+            my $s = W.script = Load($H->slurp(W.file));
             die " script (loaded from W.file) ne ARRAYref: ".($s||"~undef~")
                 unless ref $s && $s eq "ARRAY";
             say "W W.file loaded";
