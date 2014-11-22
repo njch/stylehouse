@@ -54,51 +54,7 @@ sub new {
 sub la {
     (`uptime` =~ /load average: (\S+),/)[0]
 }
-sub timer {
-    my $self = shift;
-    my $time = shift || 0.2;
-    Mojo::IOLoop->timer( $time, @_ );
-}
-sub enlogform {
-    my $self = shift;
 
-    return [ hitime(), $self->stack(3), [@_] ];
-}
-sub stack {
-    my $self = shift;
-    my $b = shift;
-    $b = 1 unless defined $b;
-    
-    my @from;
-    while (my $f = join " ", (caller($b))[0,3,2]) {
-        last unless defined $f;
-        my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
-            || $f =~ m/^Mojo::IOLoop/
-            || $f =~ m/^Mojolicious::Controller/;
-        $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
-        push @from, $f;
-        last if $surface; 
-        $b++;
-    }
-    return [@from];
-}
-sub info {
-    my $self = shift;
-    $self->throwlog("Info", @_);
-}
-sub Info { 
-    my $self = shift;
-    $self->throwlog("Info", @_);}
-sub error {
-    my $self = shift;
-    $self->throwlog("Error", @_);
-}
-sub Err { shift->error(@_) }
-sub Say {
-    my $self = shift;
-    $self->throwlog("Say", @_);
-}
-    
 sub throwlog {
     my $H = shift;
     my $what = shift;
