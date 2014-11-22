@@ -88,6 +88,12 @@ Ds:
       my $a = {m => $m};
       a.cb = $cb if $cb;
       H.G->w(send_Elvis => $a);
+  - K: JS
+    D: |
+      my $js = shift;
+      die "jno more ref to view" if ref $js;
+      $js =~ s/\n/ /sg;
+      $H->send($js);
     
   - K: djson #c
     D: |
@@ -207,12 +213,6 @@ Ds:
       $Data::Dumper::Maxdepth = $maxdepth;
       return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 
-  - K: JS
-    D: |
-      my $js = shift;
-      die "jno more ref to view" if ref $js;
-      $js =~ s/\n/ /sg;
-      $H->send($js);
   - K: la
     D: |
       (`uptime` =~ /load average: (\S+),/)[0]

@@ -63,27 +63,8 @@ sub lib_perc_H {
 }
 
 sub la { (`uptime` =~ /load average: (\S+),/)[0] }
-sub TT {
-    my $self = shift;
-    my @from = @_;
-    @from || die "WTF H::TT NO FROM";
-    whisper "H Making Travel ". join ", ", map { G::gpty($_) } @from;
-    return Travel->new($self->intro, @from);
-}
-sub Gf {
-    my $self = shift;
-    my $way = shift;
-    # TODO
-    my @Gs =
-        grep { $_->{way} eq "$way" }
-        
-        @{$self->get('Ghost')};
-        
-    die "H::Gf 1<".scalar(@Gs)."   w $way" if @Gs > 1;
-    $self->Say("\nH::Gf NOTHING nothing!   w $way") unless @Gs;
-    
-    shift @Gs;
-}
+
+
 sub JS {
     my $self = shift;
     my $js = shift;
@@ -110,80 +91,17 @@ sub send {
 sub hostinfo { shift }
 
 sub data { $data }
-sub dkeys {
-    return map { "$_ => ".(ref $data->{$_}) } keys %$data;
-}
 
-sub view_incharge {
-    my $self = shift;
-    my $view = shift;
-    my $old = $self->get('tvs/'.$view->divid.'/top');
-    $self->set('tvs/'.$view->divid.'/top', $view);
-}
-sub random_colour_background {
-    my ($rgb) = join", ", map int rand 255, 1 .. 3;
-    return "background: rgb($rgb);";
-}
-sub event { die "Hostinfo sub event!"; }
-sub grep {
-    my $self = shift;
-    my $regex = shift;
-    return {
-        map { $_ => $data->{$_} }
-        grep /$regex/,
-        keys %$data
-    };
-}
 
-sub clean_text {
-    my $self = shift;
-    my $l = shift;
-    return b($l)->encode("UTF-8");
-}
-sub reload_ghosts {
-    my $self = shift;
-    my $gr = delete $self->{ghosts_to_reload};
-    
-    while (my ($gid, $gw) = each %$gr) {
-        my ($ghost) = grep { $_->{id} eq $gid }
-            @{$self->get("Ghost")};
-        say "reload ghost: $ghost->{name}";
-        die "NO Ghostys" unless $ghost;
-        $ghost->load_ways(keys %$gw);
-    }
-}
-sub get {
-    my ($self, $i) = @_;
-    
-    if ($i =~ /^(\w+)-(........)$/) {
-        return grep { $_->{uuid} eq $2 } @{$self->get($1)};
-    }
-    
-    $data->{$i};
-}
-sub gest {
-    my $self = shift;
-    my ($k, $v) = @_;
-    $data->{$k} ||= $v;
-}
-sub getapp {
-    my ($self, $i) = @_;
-    my $as = $self->get($i);
-    warn "no such app: $i" if !$as;
-    $as->[0] if $as;
-}
-sub set {
-    my ($self, $i, $d) = @_;
-#    $self->app->log->info("Hosting info: $i -> ".($d||"~"));
-    $data->{$i} = $d;
-    return $d;
-}
+
+
+
+
 sub unset {
     my ($self, $i) = @_;
     $self->app->log->info("Deleting info: $i (".($data->{$i}||"~").")");
     delete $data->{$i};
 }
-
 sub accum {
     my $self = shift;
     my $ere = shift;
