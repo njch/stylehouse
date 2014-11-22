@@ -215,6 +215,36 @@ Ds:
       
       
       
+  - K: R #c needle extRange
+    D: |
+      G.A->spawn(R => @_);
+  
+  - K: TRub #c top level inGector
+    D: |
+      my $a = {};
+      my $R = G.R ||= G.A->spawn("R");
+      # like du, vectors space out after $k
+      #   for increment spacing over the braid
+      
+      # nah just chuck stuff in $a
+      # everything should have more meaning than that
+      my @a = @_;
+      while (@a) {
+          my ($k, $v) = (shift(@a), shift(@a));
+          $R->loadup($a, $k, $v);
+      }
+      
+      # 1
+      
+      # find u from K and B?
+      my $u = 0->CsK({K=>a.i.K});
+      die "Not leading anywhere: ". wdump($a) unless $u;
+      $u->from(a.i);
+      
+      sayyl "Travelling ".$u->pi;
+      
+      # etc
+      0S->T({i => $u});
   - K: D #c
     style: nonbabble
     D: |
@@ -887,39 +917,6 @@ Ds:
         my $u = shift;
         u.B ||= {};
         $G->W->{ca}->{K}->{u.K}->{B_ki}->{ki(u.B)} = $u;
-
-  - K: R #c needle extRange
-    D: |
-      G.A->spawn(R => @_);
-  
-  - K: TRub #c top level inGector
-    D: |
-      my $a = {};
-      my $R = G.R ||= G.A->spawn("R");
-      # like du, vectors space out after $k
-      #   for increment spacing over the braid
-      
-      # nah just chuck stuff in $a
-      # everything should have more meaning than that
-      my @a = @_;
-      while (@a) {
-          my ($k, $v) = (shift(@a), shift(@a));
-          $R->loadup($a, $k, $v);
-      }
-      
-      # 1
-      
-      # find u from K and B?
-      my $u = 0->CsK({K=>a.i.K});
-      die "Not leading anywhere: ". wdump($a) unless $u;
-      $u->from(a.i);
-      
-      
-      
-      # etc
-      0S->T({i => $u});
-      
-      
   - K: u #c u, sway, Bu # 
     D: |
         my ($K, $s) = @_;
