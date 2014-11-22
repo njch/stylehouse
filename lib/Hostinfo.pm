@@ -26,47 +26,14 @@ use Redis;
 
 our $data = {};
 ${^WIDE_SYSTEM_CALLS} = 1;
-sub new {
-    my $pa = shift;
-    my $p = shift;
-    my $H = bless {%$p}, $pa;
-    #$self->set('0', $self);
-    $H->{for_all} = [];
-    $H->{id} = make_uuid();
-    
-    lib_perc_H($H);
-    
-     #ouble
-    $H->set('style', $H->{name}); # eventually to pick up a wormhole and etc.
-    $H->set('sstyle', $H->{style}); # eventually to pick up a wormhole and etc
-    
-    $H->{G} = $H->TT($H)->G;
-    
-    $G::G0 = $H->TT("Ghost")->G("G");
-    $G::G0->w('fresh_init');
-    $G::G0->w('any_init');
-    
-    $H->{G}->w('fresh_init');
-    $H->{G}->w('any_init');
-    
-    return $H
-}
+
 sub la {
     (`uptime` =~ /load average: (\S+),/)[0]
 }
-
-
 sub ind {
     "$_[0]".join "\n$_[0]", split "\n", $_[1]
 }
-sub fixutf8 {
-  for (@_) {
-    if (!is_utf8($_)) {
-      $_ = decode_utf8($_); 
-    }
-  }
-  return shift if @_ == 1;
-}
+
 sub slurp {
     my $self = shift;
     my $file = shift;
