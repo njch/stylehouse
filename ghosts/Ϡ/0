@@ -36,7 +36,7 @@ hooks:
     G.am = $G->findway("H.style/S/H.name")
         || die "what am? H.style/H.name";
         
-    while (my ($k, $v) = each %{G.am}) {
+    while (my ($k, $v) = each %{G.am}) { # above G0 for nowish
         next if $k =~ /s$/;
         saygr "to make $k";
         $v = {way => $v} if !ref $v;
@@ -51,13 +51,27 @@ hooks:
     for my $g (@GGs) {
         my $K = g.K;
         defined $K || die "no K? g.name".sw($G);
-        my $BS = G.am->{"${K}s"} || do {
-            sayre "no percos a g.K\s in G.name G.am";
-            [];
-        };
-        saygr "to perc ".gpty($g)."   ".gpty($BS);
         
-        $g w percolate[$BS];
+        my $P = G.am->{"${K}s"} || []; # from S/0
+        if (my $wP = $g->anyway('P')) {
+            push @$P, @$wP;
+        }
+        saygr "to perc ".$g->pi."   ".wdump($P);
+        
+        for my $s (@$P) { # to percolate a G
+            if (s.K) { # perc u
+                my $u = $g->sway({K=>s.K}, $s);
+                $u = $g->Tafu($u);
+            }
+            elsif (s.GG) { # set into GG made already in $g fresh_init 
+                my $GG = g.GG->{s.GG} || die "no GG s.GG";
+                if (s.InC) {
+                    $g->InjC($GG => {C => s.InC});
+                }
+            }
+            else {die sw[wtf=>$s]};
+        }
+        $g w percolate;
     }
   reperc: |
     # coded way diff/inject/retravel above percolations
@@ -81,7 +95,6 @@ hooks:
     }
     w wux;
     saybl "ux ".$G->F_delta();
-
   pull_conin: | # head receives the headless
     saygr "H.style/H.name        pulls conin     $m";
     my ($style, $name, $id, $conin) = split ' ', $m;
@@ -137,7 +150,7 @@ hooks:
     
     if (j._) {
         saygr "j.G.name unified field hits tiles!";
-        H.r->publish("S/stylehut/C", "retile");
+        H.r->publish("S/stylehut/O", "retile");
     }
     # after U - direct to tape instead of catching JS in H
     
