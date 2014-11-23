@@ -62,7 +62,7 @@ Ds:
     D: |
       my $u = shift; 
       my $de = G::gp($u); 
-      $de =~ s/^(.{42})(.*)$/"$1 ..".length($2)/se if length($de) > 48;
+      $de =~ s/^(.{80})(.*)$/"$1 ..".length($2)/se if length($de) > 96;
       $de
   - K: S #c style splat
     D: |
@@ -92,4 +92,16 @@ Ds:
           ."  ".$R->f(black => R.J.trav);
       
       join "\n", $Jpi, $title, @rows;
+  - K: dust #c style text
+    D: |
+      my $a = {i=>shift, e=>3};
+      
+      my $d = $R->du($a);
+      
+      my @or = sort keys %$d;
+      @or = map {[ $_, $d->{$_} ]} @or;
+      $_->[2] = $R->upi($_->[1]) for @or;
+      my @rows = map { join "  ", $_->[0], $_->[2] } @or;
+      
+      return join "\n", @rows;
 

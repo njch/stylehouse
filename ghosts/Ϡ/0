@@ -36,39 +36,31 @@ hooks:
     G.am = $G->findway("H.style/S/H.name")
         || die "what am? H.style/H.name";
 
+    waylay percs;
+  percs: |
     sayyl wdump(G.am);
     for my $per (@{G.am}) {
-        if (per.GAK) {
+        my $g;
+        if (defined per.GAK) {
             my ($k, @w) = split ' ', per.GAK;
             my $w = join ' ', @w;
             $w ||= $k;
-
-    exit;
-    while (my ($k, $v) = each %{G.am}) { # above G0 for nowish
-        next if $k =~ /s$/;
-        saygr "to make $k";
-        $v = {way => $v} if !ref $v;
-        my $w = v.way || $k;
-        my $ug = 0->GAK($k => G!$w);
-        die "ug nok ug.name" if !defined ug.K;
-    }
-    
-    waylay percs;
-  percs: |
-    my @GGs = ar.GG || @{G.GGs};
-    for my $g (@GGs) {
-        my $K = g.K;
-        defined $K || die "no K? g.name".sw($G);
-        
-        my $P = G.am->{"${K}s"} || []; # from S/0
-        if (my $wP = $g->anyway('P')) {
-            push @$P, @$wP;
+            
+            next if ar.GG && ar.GG.K ne $k; # singlt
+            
+            $G->GAK($k, G!$w) unless G.GG->{$k};
+            $g = G.GG->{$k} || die;
         }
-        saygr "to perc ".$g->pi."   ".wdump($P);
+        my $P = [];
+        push @$P, $_ for @{ per.P || [] };
+        push @$P, $_ for @{ $g->anyway('P') || [] };
+        
+        saygr "to perc ".$g->pi."   ".G.R->dust($P);
         
         for my $s (@$P) { # to percolate a G
             if (s.K) { # perc u
                 my $u = $g->sway({K=>s.K}, $s);
+                saybl "Making ".$u->pi;
                 $u = $g->Tafu($u);
             }
             elsif (s.GG) { # set into GG made already in $g fresh_init 
@@ -158,8 +150,7 @@ hooks:
     
     if (j._) {
         saygr "j.G.name unified field hits tiles!";
-        H.r->publish("S/stylehut/O", "retile");
-        H.r->publish("S/stylehut/C", "retile");
+        w retile[$E];
     }
     # after U - direct to tape instead of catching JS in H
     
@@ -183,12 +174,13 @@ hooks:
     ."});"
     ."return e\.join(' + ');";
     my @Es = w Es;
+    @Es = ar.E if ar.E;
     for my $E (@Es) {
         my $cb = sub { my $m = shift; w divide[$m]; };
         H.G w jaw[$js, $cb];
     }
   divide: |
-    my @m = split / \+ /, $m;
+    my @m = sort split / \+ /, $m;
     
     my $div = Load(<<''); # hmm
         - width:left 1
