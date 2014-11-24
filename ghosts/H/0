@@ -10,6 +10,8 @@ C:
   - K: Elvis
     max_tooth_Hz: 12
     Gw: 1
+R:
+ - K: ivm
 hooks:
   Elvis: #
       # here we want to graph things out real careful
@@ -96,7 +98,8 @@ hooks:
   fresh_init: |
     say "     H Fresh init H.style";
     push @{G.GGs||=[]}, $G; # H self
-    G!H/mess;
+    
+    0->GAK(Hm => G!H/mess);
     
     H.r = w enRedis;
     w figure_port;
@@ -109,8 +112,13 @@ hooks:
         sub { sayre "voluntary reexec" for 1..13; w reexec; })
         if H.name !~ /Z/;
     
-    
+    G.rivm = $G->R(ivm => {timer => 0.4});
     H.wtfriv = Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
+    if (0) {
+    G.rivm->wtf({div => 1, way => 'check/script'}) if H.name !~ /O|Z/;
+    G.rivm->wtf({div => 1, way => 'redission'});
+    G.rivm->wtf({div => 17, way => 'check/vitals'});
+    }
     w wtf(div => 1, way => 'check/script') if H.name !~ /O|Z/;
     w wtf(div => 1, way => 'redission');
     w wtf(div => 17, way => 'check/vitals'); 
@@ -238,14 +246,14 @@ hooks:
       "H.style/H.name" =~ $m && $m =~ s/^\S+ // && w reS[$m];
     W: |
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
-        m
+        
         my $a = {};
-        a.W = H.G.A.W->{e.W} || die
+        a.W = H.G.A.W->{e.W} || die;
         a.L = a.W->findL(e.id);
         a.uxL = a.W->findL(e.ux);
         a.e = $e;
 
-        W.G w event(%$we);
+        a.W.G w event(%$a);
     push_conin: |
       G:Ϡ w pull_conin if H.singul;
     please_push_conin: |

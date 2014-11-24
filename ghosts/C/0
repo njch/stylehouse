@@ -94,7 +94,7 @@ C:
        if (B.R) {
          B.m = w vAK[$R];
        }
-       "<pre>B.m</pre>"
+       qq{<pre style="background: rgba(80,50,22,0.2);">B.m</pre>}
 Rs:
   - K: surfboard
 P:
@@ -106,7 +106,9 @@ P:
    flows_D: |
      B.name = "H.style H.name ! open C";
      #$G->wayb(H.G => $S->s(K => "Disc", way => "S/retile", Dish => $S));
-     
+ 
+ - Do Z: |
+     G:Ϡ w retile;
  - Do RW: |
        G.O w ux(GG=>$G);
        
@@ -130,7 +132,6 @@ P:
            M:
              S:
                styles: OxO
-             Z: {background: rgba(80,50,22,1)}
            ux:
              spawn: []
 hooks:
@@ -145,15 +146,16 @@ hooks:
     $u;
   key: |
     my $k = e.k;
-    sayyl join"  ", ($k) x 13 for 1..4;
     
+    sayyl join"  ", ($k) x 13 for 1..4;
+    saybl wdump($e);
     # call w R/e without $R but with $e for $G->$R hop
     my $D = w a(D=>"");
     my $R = D.B.R;
     say "Found ".$D->pi;
     
     # call w $R key
-    $R->key($k);
+    $R->key($k, $e);
   vAK: |
     R.J ||= {
         from => $H,
