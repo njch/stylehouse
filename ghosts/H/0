@@ -106,7 +106,8 @@ hooks:
     0->su("S/H.style/H.name" => $reS);
     
     $G->timer(60*9+(20 * rand 4),
-        sub { sayre "voluntary reexec" for 1..13; w reexec; });        
+        sub { sayre "voluntary reexec" for 1..13; w reexec; })
+        if H.name !~ /Z/;
     
     
     H.wtfriv = Mojo::IOLoop->recurring(0.4 => sub { w wtf(riv => 'wtf'); });
@@ -188,10 +189,7 @@ hooks:
     
     w $E swoosh;#9
     
-  hand_S: |
-    sayyl "got S: a.m";
-    my $m = a.m;
-    w reS[$m];
+
   reS: |
     sayyl "S > $m";
     $m =~ /^(\S+) ?(.+)?$/ ? do{    w S/$1(%$ar,m=>$2); } : die "wtf iS $m ???";
@@ -220,6 +218,7 @@ hooks:
       
     key: |
       return H.keydo->($e) if H.keydo;
+      
       G.keys ||= G:keys;
       G.keys || die "no keys!";
       G:keys ->w(Arr => {e => $e});
@@ -238,7 +237,15 @@ hooks:
     On: |
       "H.style/H.name" =~ $m && $m =~ s/^\S+ // && w reS[$m];
     W: |
-      w duu/W;
+        $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
+        m
+        my $a = {};
+        a.W = H.G.A.W->{e.W} || die
+        a.L = a.W->findL(e.id);
+        a.uxL = a.W->findL(e.ux);
+        a.e = $e;
+
+        W.G w event(%$we);
     push_conin: |
       G:Ϡ w pull_conin if H.singul;
     please_push_conin: |
@@ -277,6 +284,8 @@ hooks:
       $E->send(" s\.reply({conz:conz});");
     wzy: |
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
+    coninto: |
+      $H->send(" a\.con({conin: '$conin'});");
   elvash: |
     # close older one? closes newer, $E
     ($E, $EE) = ($EE, $E);
@@ -598,31 +607,6 @@ hooks:
       }
       return $apps;
   duu:
-    W: |
-        for (qw'id ux W') {
-            delete $e->{$_} unless $e->{$_} =~ /^\w+$/;
-        }
-        my $W;
-        my $findL = sub {
-          my $id = shift || return;
-          my ($L) = grep { _.uuid eq $id } @{W.script||[]};
-          $L;
-        };
-          return sayyl "bung w... not words" if !e.W;
-      
-        $W = H.G.A.W->{e.W} if H.h;
-        ($W) = grep { _.id eq "Wormhole-e.W" } @{$H->get("Wormhole")}
-            if !H.h;
-      
-        return sayyl "not W here ... e.W" unless $W;
-        
-        my $we = {};
-        we.W = $W;
-        we.L   = $findL->(e.id);
-        we.uxL = $findL->(e.ux);
-        we.e = $e;
-        
-          W.G w event(%$we);
     TV: |
       my $id = $e->{id};
       if ($id eq "ux") {
