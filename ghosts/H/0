@@ -320,7 +320,6 @@ hooks:
     }
     w H.style/elvibe;
     w z/wzy; # conz, swim
-
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
     if (ar.way && ar.div) {
@@ -359,68 +358,7 @@ hooks:
     }
     
     H._future = 1;
-  gitdission: |
-    my @diff = `git diff`;
-    my $f;
-    my $d = {};
-    for (@diff) {
-        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = $1;
-            next if -d $f; # git submodeul
-            $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
-            die "how to git diff unicode? $f" if $f =~ /\\\d+/;
-        }
-        else {
-            $d->{$f} .= $_
-        }
-    }
-    
-    while (my ($f, $D) = each %$d) {
-        $d->{$f} = {
-            f => $f,
-            D => $D,
-            dig => $H->dig($D),
-        };
-    }
-    
-    return G.last_git_diff = $d if !G.last_git_diff;
-    
-    my $od = {%{G.last_git_diff}};
-    
-    my $Gd;
-    while (my ($f, $n) = each %$d) { 
-        my $o = delete $od->{$f};
-        
-        my $change = !$o || n.D ne o.D;
-        
-        next unless $change;
-        
-        if ($f =~ /^ghosts/) {
-            n.o = $o;
-            $Gd->{$f} = $n;
-        }
-        elsif ($f =~ /^l\//) { 
-            # compilato del shed iggy
-        }
-        else {
-            say join("  <>  ", ($f)x38);
-            w reexec;
-        }
-    }
-    
-    # to undiffering, was commit? whatever
-    for my $f (keys %$od) {
-        next;
-    }
-    
-    G.last_git_diff = $d;
-    
-    if (keys %$Gd) { 
-        my $m = join", ", keys %$Gd;
-        say "Ghost changes $m";
-        H.r->publish(S => "ghostchanges $m");
-        $G0 w _gitdission[$Gd];
-    }
+
   suRedis: |
     my $a = {%$ar};
     a.div ||= 3;
