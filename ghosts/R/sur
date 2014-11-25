@@ -3,6 +3,7 @@ Ds:
   - K: key #c
     D: |
         my $k = shift;
+        my $e = shift;
         
         if (R.keysuc) {
             if ($k eq "\r") {
@@ -13,8 +14,10 @@ Ds:
             }
         }
         else {
-            $R->popJtrav        if $k eq '-'; # look R.A.upwards...
-            $R->intJtrav($k)    if $k =~ /[0-9]/;
+            $R->popJtrav        if $k eq '-' && !e.S; # look R.A.upwards... 
+            $R->adef             if $k eq '1' && e.S;
+            $R->afrom             if $k eq '-' && e.S;
+            $R->intJtrav($k)    if $k =~ /[0-9]/ && !e.S;
             R.keysuc = []     if $k eq 'À'; # tilde key
 
         }
@@ -45,7 +48,14 @@ Ds:
           say "Had some more: $1";
       }
       $i
-      
+  - K: afrom #c
+    D: |
+      R.J.from = R.a.i;
+      R.J.trav = "";
+  - K: adef #c
+    D: |
+      R.J.from = H.G.GGs;
+      R.J.trav = "";
   - K: popJtrav #c
     D: |
       R.J.trav =~ s/\W\w+$//;
@@ -54,8 +64,8 @@ Ds:
       my $k = shift;
       return $R->popJtrav if $k == 0;
       my $i = $k - 1;
-      die "no $i" unless exists R.J.at->[$i];
-      my $r = R.J.at->[$i];
+      die "no $i" unless exists R.a.r->[$i];
+      my $r = R.a.r->[$i];
       my ($hop) = $r->[0] =~ /^(\W\w+)/;
       R.J.trav .= $hop;
 
@@ -69,33 +79,34 @@ Ds:
     D: |
       my $r = R.a.r;
       $_->[2] = G::slim(96,80,G::gp($_->[1])) for @$r;
-      # could fork after glimpse ^ and do more style, sends parent S,7 new @or
       @$r;
       
   - K: S #c style splat
     D: |
-      R.a = my $a = shift;
+      R.a = my $a = shift || {};
       # 2
       a.e ||= R.S.e || die;
       a.i ||= $R->uni;
       a.tr.rowlimit = 9*3;
       # 3
-      a.d = $R->du($a);
-      say wdump(a.d); 
+      $R->du;
+      die "nod" unless a.d; 
       # 4
       $R->durows;
       # 5
-      my @or = $R->dustill; 
-      # 6
-      R.J.at = \@or; 
-      
+      $R->dustill;
+      # 6 ?
+      # fork sends travel back later with more depth to $R w S,7
+      # 7
+      # reflect style injection round corner
+      # throw style into ux recipe
       my $i = 1;
       my @rows = map {
           join "  ",
           $R->f(blue_fs60 => $i++),
           $R->f(black => $_->[0]),
           $R->f(white_fs120 => $_->[2]),
-      } @or;
+      } @{R.a.r};
       
       my $title = "= ".$R->f(white_fs150 => G::gp(a.i));
       my $Jpi = "J ".$R->f(white => G::gp(R.J.from))
