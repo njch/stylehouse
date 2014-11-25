@@ -14,11 +14,17 @@ Ds:
             }
         }
         else {
-            $R->popJtrav        if $k eq '-' && !e.S; # look R.A.upwards... 
-            $R->adef             if $k eq '1' && e.S;
-            $R->afrom             if $k eq '-' && e.S;
-            $R->intJtrav($k)    if $k =~ /[0-9]/ && !e.S;
-            R.keysuc = []     if $k eq 'À'; # tilde key
+            if (!e.S) {
+                $R->popJtrav       if $k eq '-'; # look R.A.upwards... 
+                $R->intJtrav($k)  if $k =~ /[0-9]/;
+                R.keysuc = []     if $k eq 'À'; # tilde key
+            }
+            else {
+                $R->adef          if $k eq '1';
+                $R->instyle('def')   if $k eq '2';
+                $R->instyle('ways')   if $k eq '3';
+                $R->afrom         if $k eq '0';
+            }
 
         }
         say "Key sucked! $k";
