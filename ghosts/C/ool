@@ -12,11 +12,13 @@ C:
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
       S.finds = [shuffle @finds];
       
-      0->TafuBl(Im => { file => shift @{S.finds} }) for 1..(S.flo||1);
+      Sw add for 1..(S.flo||1);
       Sw E/_D;
+   add: |
+     0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
    E:
      _D: |
-       0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
+       Sw add;
       
  - K: Im #c
    V: U
@@ -243,6 +245,11 @@ hooks:
     
     $G->timer(10, sub { G.maxloadav = 1.2; });
     
+  M:
+    add: |
+      my ($I) = 0->rei({K=>"Ims"});
+      w $I add;
+    
   keys:
     t: w f/at;
     i: #w f/rose;
@@ -259,7 +266,6 @@ hooks:
     (Z.height, Z.width) = map{$_."0%"}shuffle @he;
     
     
-    #c
   se: # mod
     pad: S.Z.height = int(rand 9).'0%';
     opa: w crank(+ s=>'opa');
@@ -367,6 +373,9 @@ hooks:
     return unless $chi && @$chi;
     say "part uxd ".@$chi;
     G.GG.U->w('ux', {is => $chi});
+
+
+
   W:
     r: |
       my @a=grep { _.K ne "IF" } shuffle(0->rei({V=>'U'}));

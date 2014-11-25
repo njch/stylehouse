@@ -58,25 +58,45 @@ Ds:
       my $r = R.J.at->[$i];
       my ($hop) = $r->[0] =~ /^(\W\w+)/;
       R.J.trav .= $hop;
-  - K: upi #c 
+
+
+  - K: durows
     D: |
-      my $u = shift; 
-      my $de = G::gp($u); 
-      $de =~ s/^(.{80})(.*)$/"$1 ..".length($2)/se if length($de) > 96;
-      $de
+      my @or = sort keys %$d;
+      @or = map {[ $_, $d->{$_} ]} @or;
+
+  - K: durows
+    D: |
+      my $d = shift;
+      map {[ $_, $d->{$_} ]} sort keys %$d;
+  - K: dustill
+    D: |
+      
+  - K: durows
+    D: |
+      my $d = shift;
+      map {[ $_, $d->{$_} ]} sort keys %$d;
+  - K: dustill
+    D: |
+      my @or = @_;
+      $_->[2] = G::slim(96,80,G::gp($_->[1])) for @or;
+      # could fork after glimpse ^ and do more style, sends parent S,7 new @or
+      @or;
+      
   - K: S #c style splat
     D: |
-      my $a = shift;
+      R.a = my $a = shift;
       a.e ||= R.S.e || die;
       a.i ||= $R->uni;
       a.tr.rowlimit = 9*3;
       
-      
+      # 3
       my $d = $R->du($a);
-      
-      my @or = sort keys %$d;
-      @or = map {[ $_, $d->{$_} ]} @or;
-      $_->[2] = $R->upi($_->[1]) for @or;
+      # 4
+      my @or = $R->durows($d);
+      # 5
+      my @or = $R->dustill(@or);
+      # 6
       R.J.at = \@or;
       
       my $i = 1;
@@ -100,7 +120,7 @@ Ds:
       
       my @or = sort keys %$d;
       @or = map {[ $_, $d->{$_} ]} @or;
-      $_->[2] = $R->upi($_->[1]) for @or;
+      $_->[2] = G::slim(96,80,G::gp($_->[1])) for @or;
       my @rows = map { join "  ", $_->[0], $_->[2] } @or;
       
       return join "\n", @rows;
