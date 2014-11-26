@@ -21,17 +21,15 @@ Ds:
   - K: An # link down
     D: |
       my $n = $A->fiA(shift);
-      my $l = $A->mklt(u => @_);
-        return $s->{$ac} = $t if $ac eq "u";
-        
+      my $l = $A->mklt(n => @_);
       $A->accum($A, $l, $n);
       
   - K: Au # link up
     D: |
       my $u = $A->fiA(shift);
       my $l = $A->mklt(u => @_);
-      
-      A.u = $u;
+      return A.u = $u if $l eq "u";
+      $A->accum($A, $l, $u);
       
   - K: mklt # link line thinger
     D: |
@@ -39,16 +37,16 @@ Ds:
       
   - K: umv
     D: |
+      my ($f, $t) = @_;
       my ($nf, $nt) = map { $A->mklt(n=>$_) } @_;
       my ($uf, $ut) = map { $A->mklt(u=>$_) } @_;
       my $Au = A.u;
       $Au->deaccum($Au, $nf, $A);
-      $Au->accum($Au, $nt, $A);
-      die "not" unless grep { $A eq $_ } @{$Au->{$nt}};
-      
-      #$A->deaccum($A, $uf, $Au);
-      $A->accum($A, $ut, $Au);
-      say "gonna move $nf  $nt   $uf to $ut   -- ".$A->pi;
+      $Au->An($A, $t);
+      #$Au->accum($Au, $nt, $A);
+      # u constant
+      $A->Au($Au, $t);
+      #say "gonna move $nf  $nt   $uf to $ut   -- ".$A->pi;
       
   - K: accum
     D: |
