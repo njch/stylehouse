@@ -21,15 +21,53 @@ Ds:
   - K: An # link down
     D: |
       my $n = $A->fiA(shift);
-      push @{A.n}, $n unless grep { $_ eq $n } @{A.n};
+      my $l = $A->mklt(u => @_);
+        return $s->{$ac} = $t if $ac eq "u";
+        
+      $A->accum($A, $l, $n);
       
   - K: Au # link up
     D: |
       my $u = $A->fiA(shift);
-      my $t = shift;
-      #$A->sag("Au changes from ", A.u, $u) if A.u;
-      A.u_t->{$t} = $u;
+      my $l = $A->mklt(u => @_);
+      
       A.u = $u;
+      
+  - K: mklt # link line thinger
+    D: |
+      return join "_", grep /./, @_;
+      
+  - K: umv
+    D: |
+      my ($nf, $nt) = map { $A->mklt(n=>$_) } @_;
+      my ($uf, $ut) = map { $A->mklt(u=>$_) } @_;
+      my $Au = A.u;
+      $Au->deaccum($Au, $nf, $A);
+      $Au->accum($Au, $nt, $A);
+      die "not" unless grep { $A eq $_ } @{$Au->{$nt}};
+      
+      #$A->deaccum($A, $uf, $Au);
+      $A->accum($A, $ut, $Au);
+      say "gonna move $nf  $nt   $uf to $ut   -- ".$A->pi;
+      
+  - K: accum
+    D: |
+        my ($s, $ac, $t) = @_;
+        
+        my $a = $s->{$ac} ||= [];
+        die "ac looks $ac, got  $a " unless ref $a eq "ARRAY";
+        return if grep { $_ eq $t } @$a;
+        push @$a, $t;
+        
+  - K: deaccum
+    D: |
+        my ($s, $ac, $t) = @_;
+        my $a = $s->{$ac} ||= [];
+        my $i = 0;
+        for (@$a) {
+            return splice(@$a, $i, 1) if $_ eq $t;
+            $i++;
+        }
 
   - K: p
     D: |

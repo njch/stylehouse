@@ -44,15 +44,22 @@ C:
        return $s;
  - K: D #c
    flows_D: |
-     B.R = $G->R(B.R||die);
+     $R = B.R = $G->R($R||die);
+     R.J ||= {
+       from => $H,
+       trav => "{G{GGs[4{A",
+     };
+     R.S ||= {
+         e => 0.3,
+     };
    S:
      styles: -te tu
      ishtml: 1
-     content_D: |
+     content_D: | 
        if (B.R) {
          B.m = w vAK[$R];
        }
-       qq{<pre style="background: rgba(80,50,22,0.3);">B.m</pre>}
+       B.m;
 P:
  - K: Do #c
    B:
@@ -113,13 +120,6 @@ hooks:
     # call w $R key
     $R->key($k, $e);
   vAK: |
-    R.J ||= {
-        from => $H,
-        trav => "{G{GGs",
-    };
-    R.S ||= {
-        e => 0.3,
-    };
     
     my $j;
     for my $k (@{G.A.n}) {
@@ -127,7 +127,21 @@ hooks:
     }
     $j = {};
     
-    $R->S;
+    my $html = $R->S;
+    
+       my $lines = split /\n/, $html;
+       my $o = 12;
+       my $fs;
+       if ($lines > $o) {
+           $fs = 100 * $o / $lines;
+           $fs *= -1 if $fs < 0;
+           $fs = "font-size:".$fs."%;";
+           sayre "$lines become $fs";
+           
+       }
+       sayre "$lines lines" for 1..5;
+       
+       qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
   elvibe: |
     H.G w z/keon;
     

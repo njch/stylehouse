@@ -13,7 +13,9 @@ Ds:
     D: |
       my $some = "C ".$C->pint();
       unless (length($some) > 5) {
-          $some .= " ".G::ki($C);
+          my $ki = G::ki($C);
+          $ki =~ s/(_wayfile\S+\s*)/^$1/;
+          $some .= " $ki";
       }
       $some
   - K: pint #c
@@ -23,6 +25,7 @@ Ds:
             
                 if (defined C.print || C.Gw) && G::wish(G=>C.G);
             $@ = "" if $@;
+            $p = C.B.name if C.B.name;
             my $B;
             if (C.B && !$p) {
                 if (join(",", sort keys %{C.B}) eq "Lu,ui") {
