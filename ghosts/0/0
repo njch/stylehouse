@@ -68,6 +68,8 @@ hooks:
     }
     sw (ar.u) if e.S;
   Nonpm:
+    flows_D: |
+      S.A->spawn('T');
     is_changed: | # TODO T and if {B{sum changes
       B.sum_old = B.sum;
       B.sum = `md5sum $file`;
@@ -75,6 +77,12 @@ hooks:
     reload: |
       S.way =  $S->s;
       S.way->load($file);
+      my $Dh = S.Dh = {};
+      for my $Ds (@{S.way->find("Ds")}) {
+          $Dh->{Ds.K} = $H->dig(Ds.D);
+      }
+
+
     print: |
       "for $file";
   Sources:
@@ -134,6 +142,7 @@ hooks:
         w $c reload;
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
+        
         w coden[$way];
         
         0->accum($say, dup => saygr "c.B.file ");
@@ -146,8 +155,8 @@ hooks:
         ($bug, my @out) = capture_err $check;
         my $st = ($bug ? "FAILELDIDL!!!" : "compiled")
             ." $file == $bug\n".join("",map {"  $_"}@out);
-        $bug ? sayre $st
-        : sayyl $st;
+            
+        $bug ? sayre $st : sayyl $st;
         say.compile .= $st;
     }
     
@@ -167,11 +176,15 @@ hooks:
             run("cd l; git pull");
         } 
         $ch ||= "no changes";
+        
     }
     
     say.end = sayg "compiled, $ch ".$G->F_delta();
+    
     waylay codedis[$say];
+    
     return if $ch eq "no changes";
+    
     waylay try;
   coden: |
     use lib 'sal';
