@@ -14,7 +14,8 @@ Ds:
       my $some = "C ".$C->pint();
       unless (length($some) > 5) {
           my $ki = G::ki($C);
-          $ki =~ s/(_wayfile\S+\s*)/^$1/;
+          my ($wf) = $ki =~ s/(_wayfile\S+\s*)//;
+          $ki = "$wf$ki" if $wf;
           $some .= " $ki";
       }
       $some

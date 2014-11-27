@@ -132,7 +132,7 @@ hooks:
 
     $port += w H.style/minorport;
     
-    H.listen_http = "http://$host:$port";
+    H.listen_http = "http://$host:$port";   
     H.listen_ws = "ws://$host:$port/s";
     
   websocket: | # Mojo throws connection over here
@@ -572,7 +572,9 @@ hooks:
       
       
   reexec: |
-      exec "nice perl $0 @ARGV";
+      #exec "nice perl $0 @ARGV";
+      say "non restart!";
+      require 'l/R.pm';
   sing: |
     G.singing ||= {};
     return sayre "\t\t\t\t $name BLOCKED"

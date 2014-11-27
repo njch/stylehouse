@@ -37,23 +37,7 @@ Ds:
       die "sucked in whatnow? '$s'";
       
   
-  - K: uni #c
-    D: |
-      my $J = R.J || die;
-      my $i = J.from || die;
-      my $t = J.trav || "";
-      #  from => $H,
-      #  trav => "{G{GGs",
-      while ($t =~ m/(\W)(\w+)/sg) {
-          say "Snapped $i       $1 $2";
-          last if $1 eq " ";
-          $i = $i->{$2} if $1 eq "{";
-          $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
-      }
-      if ($t =~ m/^.+? (.+)$/) {
-          say "Had some more: $1";
-      }
-      $i
+
   - K: afrom #c
     D: |
       R.J.from = R.a.i;
@@ -76,6 +60,23 @@ Ds:
       R.J.trav .= $hop;
 
       
+  - K: uni #c
+    D: |
+      my $J = R.J || die;
+      my $i = J.from || die;
+      my $t = J.trav || "";
+      #  from => $H,
+      #  trav => "{G{GGs",
+      while ($t =~ m/(\W)(\w+)/sg) {
+          say "Snapped $i       $1 $2";
+          last if $1 eq " ";
+          $i = $i->{$2} if $1 eq "{";
+          $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
+      }
+      if ($t =~ m/^.+? (.+)$/) {
+          say "Had some more: $1";
+      }
+      $i
   - K: durows #c 4 
     D: |
       my $d = R.a.d;
@@ -121,6 +122,17 @@ Ds:
           ."  ".$R->f(black => R.J.trav);
       
       join "\n", $Jpi, $title, @rows;
+  - K: gp #c pi bender
+    D: |
+      my $u = shift;
+      my $v = shift;
+      my $piok = ref $u && ref $u ne 'HASH' && ref $u ne 'CODE'
+          && ref $u ne 'ARRAY' && $u->can('pi');
+          
+      return $u->pi if $piok;
+      
+      ghostlyprinty('NOHTML',@_);
+      
   - K: dust #c style text
     D: |
       my $a = {i=>shift, e=>3};
