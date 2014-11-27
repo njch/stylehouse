@@ -108,7 +108,6 @@ Ds:
       
       push @{GG.ways}, $atu; # A etc
       
-
   - K: w #c
     style: nonbabble
     D: |
@@ -210,10 +209,15 @@ Ds:
       my $u;
       my ($last) = @F;
       $u = last.A->spawn('C') if $last;
-      $u ||= G.A->spawn('C');
+      
+      $u = G.A->spawn('C') if !$u;
+      
+      G.A->An($u, 'pyramid');
+      G.A->An($u, 'pyramid_tip') if !$last;
+      
       # TODO ^ set A u words to 'pyramid'
       
-      my $stack = $H->stack(2,12);# short
+      my $stack = $H->stack(2,7);# short
       
       my $from; # FUZZ!
       if ($stack->[0] =~ /G::timer/) {
@@ -248,7 +252,7 @@ Ds:
           print => 'S.name;',
       });
       $u->from({Error=>$@}) if $@;
-      u.name = join " ", grep {defined $_} u.G.way, u.K, gpty(@{u.thing});
+      u.name = join " ", grep {defined $_} u.G.name, u.K, gpty(@{u.thing});
       $u
       
   - K: waystacken #c
