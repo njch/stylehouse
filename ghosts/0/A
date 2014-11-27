@@ -23,13 +23,24 @@ Ds:
       my $n = $A->fiA(shift);
       my $l = $A->mklt(n => @_);
       $A->accum($A, $l, $n);
-      
   - K: Au # link up
     D: |
       my $u = $A->fiA(shift);
       my $l = $A->mklt(u => @_);
       return A.u = $u if $l eq "u";
       $A->accum($A, $l, $u);
+            
+  - K: rAn # unlink down
+    D: |
+      my $n = $A->fiA(shift);
+      my $l = $A->mklt(n => @_);
+      $A->deaccum($A, $l, $n);
+  - K: rAu # unlink up
+    D: |
+      my $u = $A->fiA(shift);
+      my $l = $A->mklt(u => @_);
+      return A.u = $u if $l eq "u";
+      $A->deaccum($A, $l, $u);
       
   - K: mklt # link line thinger
     D: |
@@ -38,15 +49,19 @@ Ds:
   - K: umv
     D: |
       my ($f, $t) = @_;
-      my ($nf, $nt) = map { $A->mklt(n=>$_) } @_;
-      my ($uf, $ut) = map { $A->mklt(u=>$_) } @_;
       my $Au = A.u;
-      $Au->deaccum($Au, $nf, $A);
+      $Au->rAn($A, $f);
       $Au->An($A, $t);
-      #$Au->accum($Au, $nt, $A);
-      # u constant
+      $A->rAu($Au, $f);
       $A->Au($Au, $t);
-      #say "gonna move $nf  $nt   $uf to $ut   -- ".$A->pi;
+      
+  - K: umk
+    D: |
+      my ($u, $t) = @_;
+      my $Au = $A->fiA($u);
+      $Au->An($A, $t);
+      $A->Au($Au, $t);
+      say "Uplinking to ".$u->pi." the $t of ".$A->pi;
       
   - K: accum
     D: |

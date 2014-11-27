@@ -8,26 +8,11 @@ C:
  - K: Ims #c
    V: gI
    ux: {spawn: [K: i]}
-   flows_D: | 
-      my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
-      S.finds = [shuffle @finds];
-      
-      Sw add for 1..(S.flo||1);
-      Sw E/_D;
-   add: |
-     0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
-   E:
-     _D: |
-       Sw add;
+   Gw: 1
       
  - K: Im #c
+   Gw: 1
    V: U
-   print: $file
-   flows_D: |
-     (B.href) = $file =~ /(i\/.+$)/;
-     #0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
-   humms_D: |
-     S.S.Z->{'background-image'} = "url('$href')";
    styles: Im -te ab
    
    ux: {spawn: []}
@@ -223,6 +208,25 @@ hooks:
   recoded_init: |
     G.O->w('ux', {GG=>$G}); 
 
+  Im:
+   print: $file
+   flows_D: |
+     (B.href) = $file =~ /(i\/.+$)/;
+     #0->TafuBl(Lingos => {l => '☯', hmm => rand(1)});
+   humms_D: |
+     S.S.Z->{'background-image'} = "url('$href')";
+  Ims:
+   flows_D: | 
+      my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
+      S.finds = [shuffle @finds];
+      
+      Sw add for 1..(S.flo||1);
+      Sw E/_D;
+   add: |
+     0->TafuBl(Im => { file => $_ }) for shift @{S.finds};
+   E:
+     _D: |
+       Sw add;
   Anims: |
     $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
   r:

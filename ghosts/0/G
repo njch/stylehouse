@@ -722,8 +722,6 @@ Ds:
       $w eq "W" ? ref $i eq "Wormhole" || ref $i eq "W" :
       $w eq "w" ? ref $i eq "Way" || ref $i eq "C" :
       $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
-
-
   - K: saycol #c sayyl sayre sayg saygr saybl
     style: func
     D: |
@@ -1104,14 +1102,21 @@ Ds:
         }
         u.styles = join ' ', @styles;
         $G->w('v/ch', {u=>$u});
-  - K: wayray #c
+  - K: wayray #c TODO percolate ish
     D: |
-        my ($SS, $GG) = @_;
-        $GG ||= $G;
-        die sw(\@_) if ref ${GG} !~ /^G/;
+        my $ws = shift;
+        my $way = shift;
         my $i = 0;
-        for my $wS (@$SS) {
-            $SS->[$i] = $GG->nw(%$wS) unless ref $wS =~ /^(Way|C)$/;
+        for my $a (@$ws) {
+            if (ref $a eq "C") {
+                # travel inject
+                die "already";
+            }
+            else {
+                my $c = $ws->[$i] = $G->nw(%$a);
+                c.A->umv('', 'wayray');
+                way.A->umk($c, 'wayray') if $way;
+            }
             $i++;
         }
   - K: RW #c

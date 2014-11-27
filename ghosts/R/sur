@@ -108,10 +108,12 @@ Ds:
       # throw style into ux recipe
       my $i = 1;
       my @rows = map {
-          join "  ",
-          $R->f(blue_fs60 => $i++),
-          $R->f(black => $_->[0]),
-          $R->f(white_fs120 => $_->[2]),
+          my ($ac, $li, $pi) = @$_;
+          $ac =~ s/\s+/ /g;
+          join "  ", map { $R->f(@$_) }
+              [ black => $ac ],
+            [ blue_fs80 => $i++ ],
+            [ white_fs120 => $pi ],
       } @{R.a.r};
       
       my $title = "= ".$R->f(white_fs150 => G::gp(a.i));

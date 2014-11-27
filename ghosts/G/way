@@ -49,19 +49,14 @@ Ds:
             for my $file (@files) {
                 # TODO pass an If object selector to 0->deaccum
                 @{G.ways} = grep { _._wayfile ne $file } @{G.ways};
-                @{G.wayfiles} = grep { $_ ne $file } @{G.wayfiles};
+                $G->deaccum($G, wayfiles => $file);
+                
+                my ($w) = grep { _._wayfile eq $file } @{G.ways};
 
                 my ($wn) = $file =~ /ghosts\/(.+)$/;
                 $wn ||= $file;
                 my $nw = $G->nw(name=>$wn);
                 $nw->load($file);
-
-                if (my $inc = nw.include) {
-                    for my $name (split ' ', $inc) {
-                        next if grep { _.name eq $name } @{G.ways};
-                        push @ways, $name;
-                    }
-                } 
 
                 say "G G.name w+ nw.name";
                 push @{G.wayfiles}, $file;

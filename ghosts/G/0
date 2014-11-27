@@ -9,6 +9,8 @@ hooks:
     $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
         join" , ", map { $_->{_wayfile} } @$w);
     
+    $_ && $S->wayray($_) for $S->anyway('C');
+    
     if (S.load_ways_count == 1) {
         w _init/fresh;
     }
@@ -20,7 +22,6 @@ hooks:
     
   _init:
     recoded: |
-        w _init/wayrays[$S];
         
         w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');
         
@@ -39,19 +40,10 @@ hooks:
       
       w _init/GG[$S];
       
-      w _init/wayrays[$S];
-      
       S.R ||= $S->R; # or R: perc somewhere here
       
       $S->w("fresh_init");
 
-    wayrays: |
-      for my $s (qw'S C') { # C too?
-          if (my $ws = $S->anyway($s)) {
-              0->wayray($ws, $S);
-          }
-      }
-      
     keys: | # TODO goner
       return unless $S->findway("keys");
       if (my $keys = G:keys) {
