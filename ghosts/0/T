@@ -4,12 +4,17 @@ Ds:
     D: |
       T.i = T.A.u.i; # MAINT
       T.i.T = $T;
+      T.R = T.A->fiu('G')->{R};
       T.name = shift;
       $T->commit(shift);
       
   - K: pi
     D: |
       "T T.name x".scalar(@{T.L})." ".T.i->pi(); 
+  
+  - K: b
+    D: |
+        T.R->du({ O=>$T, i=>T.i })
   
   - K: commit
     D: |
@@ -18,10 +23,44 @@ Ds:
       $mes ||= "init" if !@{T.L};
       $mes ||= "?";
       my $L = {
-          B => T.A->fiu('G')->{R}->du({ O=>$T, i=>T.i }),
+          B => $T->b,
           mes => $mes,
       };
       push @{T.L||=[]}, $L;
       T.HEAD = T.L->[-1];
+      # reduce between L
+      
+  - K: diff
+    D: |
+        my $lim = shift;
+        my $N = $T->b;
+        my $Z = {%{T.HEAD.B}};
+        my $d = {};
+        while (my ($k, $Nv) = each %$N) {
+            my $not = !exists $Z->{$k};
+            my $Zv = delete $Z->{$k};
+            
+            next unless $k =~ /^\Q$lim\E\S/;
+
+            if ($not) {
+                d.create->{$k} = $Nv;
+            }
+            elsif ($Zv ne $Nv) {
+                d.dif->{$k} = $Nv;
+            }
+        }
+        d.left = $Z;
+        d.new = {%{d.create||{}},%{d.dif||{}}};
+        while (my ($kh, $h) = each %$d) {
+            my $b = {};
+            for my $k (keys %$h) {
+                my ($lk) = $k =~ /^\Q$lim\E(.+)/;
+                $lk || die " sip $k";
+                $b->{$lk} = $h->{$k};
+            }
+            $d->{$kh} = $b;
+        }
+        $d;
+      
       
 

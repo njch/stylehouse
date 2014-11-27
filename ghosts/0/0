@@ -81,6 +81,9 @@ hooks:
       for my $Ds (@{S.way->find("Ds")}) {
           $Dh->{Ds.K} = $H->dig(Ds.D);
       }
+      my $dh = S.T->diff('{Dh');
+      sayyl "Redoming: ".wdump($dh);
+      S.T->commit('reload');
 
 
     print: |
@@ -143,10 +146,12 @@ hooks:
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         
+        next if H.name eq "C";
         w coden[$way];
         
         0->accum($say, dup => saygr "c.B.file ");
     }
+    return if H.name eq "C";
     
     my $bug;
     for my $file (qw"H* S*") {
