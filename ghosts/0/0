@@ -75,34 +75,44 @@ hooks:
       B.sum = `md5sum $file`;
       S.changed || B.sum_old ne B.sum;
     reload: |
-      S.way =  $S->s;
-      S.way->load($file);
-      my $Dh = S.Dh = {};
-      for my $Ds (@{S.way->find("Ds")}) {
-          $Dh->{Ds.K} = $H->dig(Ds.D);
-      }
-      S.Dd = {};
-      if (@{S.T.L} > 1) {
-          my $dh = S.T->diff('{Dh');
-          my $new = dh.new;
-          for my $k (keys %$new) {
-              my $v = $new->{$k};
-              $k =~ /^\{(\S+)/;
-              S.Dd->{$1} = 1;
-          }
-      }
-      sayyl "Redoming: ".wdump(S.Dd);
-      S.T->commit('reload');
+        S.way =  $S->s;
+        S.way->load($file);
+        my $Dh = S.Dh = {};
+        for my $Ds (@{S.way->find("Ds")}) {
+            $Dh->{Ds.K} = $H->dig(Ds.D);
+        }
+        S.Dd = {};
+        if (@{S.T.L} > 1) {
+        my $lim = '{Dh';
+            my $d = S.T->diff('{Dh');
+            
+            for my $h (values %$d) {
+                for my $k (keys %$h) {
+                    my $hk = $k;
+                    $k =~ s/^\Q$lim\E(\S)/$1/;
+                    die "$k not from $hk" unless $k;
+                    $h->{$k} = delete $h->{$hk};
+                }
+            }
+
+            my $new = d.new;
+            for my $k (keys %$new) {
+                my $v = $new->{$k};
+                $k =~ /^\{(\S+)/;
+                S.Dd->{$1} = 1;
+            }
+        }
+        sayyl "Redoming: ".wdump(S.Dd);
+        S.T->commit('reload');
     codif: |
         S.Dc = [];
         while (my ($k, $v) = each %{S.Dd}) {
             my $km = $k.'_'.$H->dig($v);
-            $v =~ s/^sub $k \{/sub $hm \{/ || die;
+            $v =~ s/^sub $k \{/sub $km \{/ || die;
             
-            my $code = '*'.S.nb.'::'.$k.' = sub { '.$hm.' };'
+            my $code = '*'.S.nb.'::'.$k.' = sub { '.$km.'(@_) };'
             ."\n$v\n";
             push @{S.Dc}, $code;
-            say "Turning $k into $code";
         }
         return S.codif = '' if !@{S.Dc};
         S.codif = join "\n", "package S.nb;\n", @{S.Dc};
@@ -175,14 +185,16 @@ hooks:
         0->accum($say, dup => saygr "c.B.file ");
     }
     my @cdifs = grep { _.codif } @chpms;
-    my @codifs = map { _.codif } @cdifs;
-    my $upnb = join "_", map {_.nb} @cdifs;
-    my $update = join "\n", @codifs, "1";
-    my $hash = $H->dig($update);
-    my $name = join "__", $upnb, $hash;
-    
-    $H->spurt("zl/$name", $update);
-    $G0 w zl[$name];
+    if (@cdifs) {
+        my @codifs = map { _.codif } @cdifs;
+        my $upnb = join "_", map {_.nb} @cdifs;
+        my $update = join "\n", @codifs, "1";
+        my $hash = $H->dig($update);
+        my $name = join "__", $upnb, $hash;
+
+        $H->spurt("zl/$name", $update);
+        $G0 w zl[$name];
+     }
     
     return if H.name eq "C";
     
