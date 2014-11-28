@@ -81,10 +81,31 @@ hooks:
       for my $Ds (@{S.way->find("Ds")}) {
           $Dh->{Ds.K} = $H->dig(Ds.D);
       }
-      my $dh = S.T->diff('{Dh');
-      sayyl "Redoming: ".wdump($dh);
+      S.Dd = {};
+      if (@{S.T.L} > 1) {
+          my $dh = S.T->diff('{Dh');
+          my $new = dh.new;
+          for my $k (keys %$new) {
+              my $v = $new->{$k};
+              $k =~ /^\{(\S+)/;
+              S.Dd->{$1} = 1;
+          }
+      }
+      sayyl "Redoming: ".wdump(S.Dd);
       S.T->commit('reload');
-
+    codif: |
+        S.Dc = [];
+        while (my ($k, $v) = each %{S.Dd}) {
+            my $km = $k.'_'.$H->dig($v);
+            $v =~ s/^sub $k \{/sub $hm \{/ || die;
+            
+            my $code = '*'.S.nb.'::'.$k.' = sub { '.$hm.' };'
+            ."\n$v\n";
+            push @{S.Dc}, $code;
+            say "Turning $k into $code";
+        }
+        return S.codif = '' if !@{S.Dc};
+        S.codif = join "\n", "package S.nb;\n", @{S.Dc};
 
     print: |
       "for $file";
@@ -147,10 +168,22 @@ hooks:
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         
         next if H.name eq "C";
-        w coden[$way];
+        w coden[$c, $way];
+        
+        w $c codif;
         
         0->accum($say, dup => saygr "c.B.file ");
     }
+    my @cdifs = grep { _.codif } @chpms;
+    my @codifs = map { _.codif } @cdifs;
+    my $upnb = join "_", map {_.nb} @cdifs;
+    my $update = join "\n", @codifs, "1";
+    my $hash = $H->dig($update);
+    my $name = join "__", $upnb, $hash;
+    
+    $H->spurt("zl/$name", $update);
+    $G0 w zl[$name];
+    
     return if H.name eq "C";
     
     my $bug;
@@ -192,18 +225,19 @@ hooks:
     
     waylay try;
   coden: |
-    use lib 'sal';
-    use G;
-    my $eg = bless {}, "G"; # safe lib updates on compiles
-    # TODO so 0 doesn't have to restart on babble changes?
-    # make a script that just loads G and pipes babble in out?
-    # do it twice if babble changes so final code has new parsed babble
-    my @name = split '/', way.name;
-    shift @name if $name[0] eq '0';
-    my $nb = join "::", @name;
-    
-    my $co = $way->find("Ds");
-    $co ||do{ warn "No Domes si ".$way->pi; next };
+        use lib 'sal';
+        use G;
+        my $eg = bless {}, "G"; # safe lib updates on compiles
+        # TODO so 0 doesn't have to restart on babble changes?
+        # make a script that just loads G and pipes babble in out?
+        # do it twice if babble changes so final code has new parsed babble
+        my @name = split '/', way.name;
+        shift @name if $name[0] eq '0';
+        my $nb = join "::", @name;
+        c.nb = $nb;
+
+        my $co = $way->find("Ds");
+        $co ||do{ warn "No Domes si ".$way->pi; next };
     
         my @code = (
             join "\n",
@@ -247,10 +281,15 @@ hooks:
                 $D =~  s/^    $//sgm;
                 $D = "sub ch.K {\n$D\n}\n";
             }
+            if (c.Dd->{ch.K}) {
+                c.Dd->{ch.K} = $D;
+            }
             push @code, $D;
         }
         push @code, ($co->[0]->{K} ne "everything" ? "9" : ''); ##
         my $file = "il/l/${nb}.pm"; # TODO ::->/
         $H->spurt($file, H::encode_utf8(join("\n", @code)));
+        
+            
     
 
