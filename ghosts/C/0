@@ -120,7 +120,6 @@ hooks:
     # call w $R key
     $R->key($k, $e);
     w kvAK[$R, $k, $e];
-
   kvAK: |
     if (e.S) {
         if ($k eq 2) {
@@ -130,30 +129,39 @@ hooks:
   vAK: |
    
     
-    my $html = $R->S;
+    my $html = $R->S; # 4
     
-      # 5
-      $R->dustill;
-      # 6 ?
-      # fork sends travel back later with more depth to $R w S,7
-      # 7
-      # reflect style injection round corner
-      # throw style into ux recipe
-      my $i = 1;
-      my @rows = map {
-          my ($ac, $li, $pi) = @$_;
-          $ac =~ s/\s+/ /g;
-          join "  ", map { $R->f(@$_) }
-              [ black => $ac ],
-            [ blue_fs80 => $i++ ],
-            [ white_fs120 => $pi ],
-      } @{R.a.r};
-      
-      my $title = "= ".$R->f(white_fs150 => G::gp(R.a.i));
-      my $Jpi = "@!@".$R->f(white => G::gp(R.J.from))
-          ."  ".$R->f(black => R.J.trav);
-      
-      my $html = join "\n", $Jpi, $title, @rows;
+
+        # 5
+        # quick style synapse
+        my @rows;
+        my $i = 1;
+        for my $r (@{R.a.r}) {
+            my $lev = G::gp($r->[1]);
+            $lev = G::slim(96,80,$lev);
+            push @$r, $lev;
+            my ($ac, $li, $pi) = @$r;
+            $ac =~ s/\s+/ /g;
+            
+            push @rows,
+            join "  ", map { $R->f(@$_) }
+                [ black => $ac ],
+              [ blue_fs80 => $i++ ],
+              [ white_fs120 => $pi ],
+        }
+
+        # 6
+        # TODO more style synapse rejoins after delib fork exp
+
+        # 7
+        # reflect style injection round corner
+        # throw style into ux recipe
+
+        my $title = "= ".$R->f(white_fs150 => G::gp(R.a.i));
+        my $Jpi = "@!@".$R->f(white => G::gp(R.J.from))
+            ."  ".$R->f(black => R.J.trav);
+
+        my $html = join "\n", $Jpi, $title, @rows;
 
       # 8
     
