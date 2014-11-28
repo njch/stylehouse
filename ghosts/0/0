@@ -177,13 +177,13 @@ hooks:
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         
-        next if H.name eq "C";
         w coden[$c, $way];
         
         w $c codif;
         
         0->accum($say, dup => saygr "c.B.file ");
     }
+    
     my @cdifs = grep { _.codif } @chpms;
     if (@cdifs) {
         my @codifs = map { _.codif } @cdifs;
@@ -193,10 +193,9 @@ hooks:
         my $name = join "__", $upnb, $hash;
 
         $H->spurt("zl/$name", $update);
-        $G0 w zl[$name];
-     }
+        $H->pub("S", "zl $name"); #more id?
+    }
     
-    return if H.name eq "C";
     
     my $bug;
     for my $file (qw"H* S*") {
