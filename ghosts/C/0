@@ -179,27 +179,34 @@ hooks:
         }
         elsif (c.HASH) { #c
             my $v = {%$u};
-            my @ks;
-            push @ks, "K" && delete v.K if v.K;
-            push @ks, sort keys %$v;
-            # like sorting the hashy du planet rows
-            # all about dividing lines to the length
-            my @kv;
-            my $vcv = $cv - 0.2;
-            for my $k (@ks) {
-                my $uu = $u->{$k};
-                my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
-                push @kv, '' if @kv;
-                push @kv,
-                    $wit->($k, "acf"),':',
-                    $wt->($v, "font-size:75%"), 
+            if ($cv <= 0.1) {
+                @s = '{}';
             }
-            # wrap? tabul? frond?
-            @s = (
-                "{",
-                @kv,
-            );
+            else {
             
+                my @ks;
+                push @ks, "K" && delete v.K if v.K;
+                push @ks, sort keys %$v;
+                # like sorting the hashy du planet rows
+                # all about dividing lines to the length
+                my @kv;
+                my $vcv = $cv - 0.2;
+                for my $k (@ks) {
+                    my $uu = $u->{$k};
+                    if ($vcv > 0.2) {
+                        my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
+                        push @kv, ',' if @kv;
+                        push @kv, $wit->($k, "acf");
+                        push @kv, ':'
+                            $wt->($v, "font-size:75%") if $vcv > 0.1;
+                    }
+                }
+                # wrap? tabul? frond?
+                @s = (
+                    "{",
+                    @kv,
+                );
+            }
         }
         elsif (c.ref) { # weird ref
             # looks for patterns from anywhere for clues
@@ -238,12 +245,24 @@ hooks:
             push @s, $line;
         }
         else {
-            # something we know #c
-            if (c.canpi) {
+            # something we know
+            if (c.canpi) { #c
                 my $r = ref $u;
+                my $a = {cv=>$cv};
                 my $pi = $r eq "G" ? do {
-                    
-                    "G ".u.name;
+                    my @s = 'G';
+                    my $vos = {
+                        0.1 => { name => u.name },
+                        0.2 => { K => u.K },
+                        0.3 => sub {
+                            # G.A find n of here
+                        },
+                        0.4 => {},
+                        0.5 => {},
+                    };
+                    push @s, u.name if $cv >= 0.1;
+                    push @s, u.K if $cv >= 0.2;
+                    join ' ', @s;
                 } : $u->pi;
                 if ($pi =~ s/^$r //) {
                     push @s, $wit->($r, "cfa");
