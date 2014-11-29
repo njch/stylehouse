@@ -184,6 +184,32 @@ hooks:
         elsif (c.undef) {
             @s = '~';
         }
+        else {
+            my $line = $u;
+            #c these resistances to content
+            # width enthusiasm
+            # q factor
+            # squeeze into space, less stuff as we q away from here
+            # so layers inside {d{u 0.4 $u make for easy ux peeling, decay
+            # after we made it up, quickly as we are making up new stuff
+            
+            my $adhow;
+            if (c.lin > 1) {
+                $line = join ' \n ', split /\n/, $u;
+                $adhow = 1;
+            }
+            my $tev = $cv * 125; # 0.4 = 100
+            my $howad = ".c.lin".".c.len".".c.b";
+            my $trev = $tev - length($howad);
+            
+            if (length($line) > $tev) {
+                $line = ($line=~/^(.{$trev})/s)[0];
+                $adhow = 1;
+            }
+
+            push @s, $witcolour->($howad, "333;font-size:50%") if $adhow;
+            push @s, $line;
+        }
         
         R.gp_inarow--;
 
@@ -209,10 +235,13 @@ hooks:
             else {
                 if (ref \$u eq 'SCALAR') {
                     c.text = 1;
-                    my $n = length($u);
-                    my $l = scalar split /\n/, $u;
-                    
+                    c.len = length($u);
+                    c.lin = scalar split /\n/, $u;
+                    c.b = scalar split /\n\n/, $u;
+                    c.number = $u =~ /^(?:\d+\.)?\d+$/;
+                    c.wordy = $u =~ /\w+/;
                 }
+                else { die "wtf is $u" };
             }
         }
         $c
