@@ -160,6 +160,21 @@ hooks:
   any_init: |
       waylay code;   
       say "COCOCOO" for 1..8;
+  codifs: |
+    my @cdifs = grep { _.codif } @$chpms;
+    if (@cdifs) {
+        my @codifs = map { _.codif } @cdifs;
+        my $upnb = join "_", map {_.nb} @cdifs;
+        my $update = join "\n", @codifs, "1";
+        my $hash = $H->dig($update);
+        my $name = join "__", $upnb, $hash;
+
+        $H->spurt("zl/$name", $update);
+        $H->pub("S", "zl $name");
+        # TODO more id? change may be R/G0 way braiding, fed domey
+        my @zeal = glob "zl/*";
+        $H->timer(222, sub { `rm @zeal` });
+    }
   code: |
     waylay uxd;
     my $say = {};
@@ -184,18 +199,7 @@ hooks:
         0->accum($say, dup => saygr "c.B.file ");
     }
     
-    my @cdifs = grep { _.codif } @chpms;
-    if (@cdifs) {
-        my @codifs = map { _.codif } @cdifs;
-        my $upnb = join "_", map {_.nb} @cdifs;
-        my $update = join "\n", @codifs, "1";
-        my $hash = $H->dig($update);
-        my $name = join "__", $upnb, $hash;
-
-        $H->spurt("zl/$name", $update);
-        $H->pub("S", "zl $name");
-        # TODO more id? change may be R/G0 way braiding, fed domey
-    }
+    w codifs(chpms => \@chpms);
     
     
     my $bug;
