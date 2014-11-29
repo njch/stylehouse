@@ -160,7 +160,8 @@ hooks:
         
         my @s;
         my $c = w vAK/cgp(u=>$u);
-        if (c.ARRAY) {
+        
+        if (c.ARRAY) { #c
             if (!@$u) {
                 @s = "[]";
             }
@@ -168,7 +169,10 @@ hooks:
                 my $vcv = $cv / @$u;
                 @s = (
                     $wit->(scalar(@$u), "fff;font-size:50%"),
-                    (map { "[". w vAK/gp(R=>$R, u=>$_, cv=>$vcv); } @$u),
+                    '[',
+                    join(', ', map {
+                        w vAK/gp(R=>$R, u=>$_, cv=>$vcv);
+                    } @$u),
                     ']',
                 );
             }
@@ -185,6 +189,7 @@ hooks:
             for my $k (@ks) {
                 my $uu = $u->{$k};
                 my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
+                push @kv, '' if @kv;
                 push @kv,
                     $wit->($k, "acf"),':',
                     $wt->($v, "font-size:75%"), 
@@ -300,8 +305,6 @@ hooks:
             my ($a, $cv) = split /\s+/, $ac;
             
             my $pi = w vAK/gp(%$agp, u => $li, cv => $cv);
-            
-            $pi = G::slim(96,80,$pi); #not? 
             
             $ac =~ s/\s+/ /g;
             
