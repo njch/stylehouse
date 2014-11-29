@@ -108,7 +108,7 @@ hooks:
         S.Dc = [];
         while (my ($k, $v) = each %{S.Dd}) {
             my $km = $k.'_'.$H->dig($v);
-            $v =~ s/^sub $k \{/sub $km \{/ || die;
+            $v =~ s/^sub $k \{/sub $km \{/ || next;
             
             my $code = '*'.S.nb.'::'.$k.' = sub { '.$km.'(@_) };'
             ."\n$v\n";

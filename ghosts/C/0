@@ -107,7 +107,6 @@ hooks:
     my $k = e.k;
     my $R = w vAK/are;
     w vAK/key[$R, $k, $e];
-
   vAK:
     are: | # chang->queue U xing
       my ($u) = 0->rei({K=>'D'});
@@ -152,6 +151,7 @@ hooks:
                 $R->afrom         if $k eq '0';
       }
     gp: | #c vAK gp
+      
         G::gp($u);
         
         
@@ -165,16 +165,19 @@ hooks:
         my @rows;
         my $i = 1;
         for my $r (@{R.a.r}) {
-            my $rowthing = $r->[1];
-            my $lev = w vAK/gp(u => $rowthing);
-            $lev = G::slim(96,80,$lev);
-            push @$r, $lev;
-            my ($ac, $li, $pi) = @$r;
+            my ($ac, $li) = @$r;
+            my ($a, $cv) = split /\s+/, $ac;
+            
+            my $pi = w vAK/gp(u => $li, cv => $cv);
+            
+            $pi = G::slim(96,80,$pi); #not? 
+            
             $ac =~ s/\s+/ /g;
             
             push @rows,
             join "  ", map { $R->f(@$_) }
-                [ black => $ac ],
+                [ black => $a ],
+              [ red_fs80 => $cv ],
               [ blue_fs80 => $i++ ],
               [ white_fs120 => $pi ],
         }
@@ -184,9 +187,10 @@ hooks:
         # reflect style injection round corner
         # throw style into ux recipe
 
-        my $title = "= ".$R->f(white_fs150 => w vAK/gp(u => R.a.i));
         my $Jpi = "@!@".$R->f(white => w vAK/gp(u => R.J.from))
             ."  ".$R->f(black => R.J.trav);
+            
+        my $title = "R.S.e = ".$R->f(white_fs150 => w vAK/gp(u => R.a.i));
 
         my $html = join "\n", $Jpi, $title, @rows;
 
