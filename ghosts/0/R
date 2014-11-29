@@ -27,9 +27,20 @@ Ds:
     D: |
       my $u = shift; 
       # merge  into us
-      say "R become ". G::wdump(1, $u);    
-      
-  
+      say "R become ". G::wdump(1, $R);
+      sleep 5;
+
+      # adopted from C::from, wants to do du/S inject for non-1 indentity...
+      for my $k (keys %$u) {
+          next if $k eq "uuid" || $k eq "id" || $k eq "G" || $k eq "A" || $k eq "T";
+          my $t = $R->{$k};
+          my $f = $u->{$k};
+
+          $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
+
+          $R->{$k} = $f;
+      }
+      return $R;
   - K: instyle #c  
     D: |
       return unless @_;
