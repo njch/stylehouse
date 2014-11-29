@@ -94,8 +94,8 @@ P:
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
-  any_init: |
-    
+  recoded_init: |
+    w vAK/are;
   percolate: |
     w uxd;
   a: |
@@ -123,10 +123,14 @@ hooks:
     key: |
       sayyl join"  ", ($k) x 13 for 1..4;
       $R->key($k, $e);
+      my $letter = $k =~ /^[A-Z]$/;
+      my $number = $k =~ /^[0-9]+$/;
       if (!e.S) {
-          if ($k =~ /^[A-Z]$/) {
-        # some instyle hooks letters to apply
-        }
+          if ($letter) {
+                # some instyle hooks letters to apply
+              my $do = R.S.key->{$k};
+              if ($do && R.w->find(
+          }
       }
       else {
                 $R->adef          if $k eq '1';
@@ -170,6 +174,7 @@ hooks:
 
       # 8
     
+       # shrink this webbing into a space in our webbing
        my $lines = split /\n/, $html;
        my $o = 12;
        my $fs;
@@ -178,9 +183,8 @@ hooks:
            $fs *= -1 if $fs < 0;
            $fs = "font-size:".$fs."%;";
            sayre "$lines become $fs";
-           
        }
-       sayre "$lines lines" for 1..5;
+       #sayre "$lines lines" for 1..5;
        
        qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
   elvibe: |
