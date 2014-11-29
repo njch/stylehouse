@@ -233,14 +233,17 @@ hooks:
             push @s, $line;
         }
         else {
-            # something we know
+            # something we know #c
             if (c.canpi) {
-                if (ref $u eq 'G') {
-                    push @s, "manpi:".$u->pi;
+                my $r = ref $u;
+                my $pi = $r eq "G" ? do {
+                    
+                    "G ".u.name;
+                } : $u->pi;
+                if ($pi =~ s/^$r //) {
+                    push @s, $wit->($r, "cfa");
                 }
-                else {
-                    push @s, $u->pi;
-                }
+                push @s, $pi;
             }
             else {
                 push @s, "know $u";
