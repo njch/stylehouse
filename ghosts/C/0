@@ -196,7 +196,7 @@ hooks:
         if (!defined $u){
             c.undef = 1;
         } else {
-            if (my $ref = ref $t) {
+            if (my $ref = ref $u) {
                 c.ARRAY = $ref eq "ARRAY";
                 c.HASH = $ref eq "HASH";
                 c.CODE = $ref eq "CODE";
@@ -204,32 +204,37 @@ hooks:
                 for (qw'A C G T     R') {
                       $c->{$_} = 1 if $ref eq $_;
                 }
-                %$c || c.ref = $ref;
+                c.ref = $ref if !%$c;
             }
             else {
+                if (ref \$u eq 'SCALAR') {
+                    c.text = 1;
+                    my $n = length($u);
+                    my $l = scalar split /\n/, $u;
+                    
+                }
             }
-            elsif (ref $t) {
-            }
-            else {
-                push @s, (defined $t ? $t : "~")
-            }
+        }
+        $c
+            
       
         
         
         
     S: | #c vAK S
-      my $html = $R->S; # 4
+        $R->S; # 1-4
     
 
         # 5
         # quick style synapse
         my @rows;
         my $i = 1;
+        my $agp = {R=>$R, cv=>1};
         for my $r (@{R.a.r}) {
             my ($ac, $li) = @$r;
             my ($a, $cv) = split /\s+/, $ac;
             
-            my $pi = w vAK/gp(R=>$R, u => $li, cv => $cv);
+            my $pi = w vAK/gp(%$agp, u => $li, cv => $cv);
             
             $pi = G::slim(96,80,$pi); #not? 
             
@@ -243,12 +248,13 @@ hooks:
               [ white_fs120 => $pi ],
         }
 
-        my $abopi = w vAK/gp(R=>$R, u => R.J.from);
+        my $frompi = w vAK/gp(%$agp,  u => R.J.from);
+        my $topi = w vAK/gp(%$agp, u => R.a.i);
 
-        my $Jpi = "@!@".$R->f(white => )
+        my $Jpi = "@!@".$R->f(white => $frompi)
             ."  ".$R->f(black => R.J.trav);
             
-        my $title = "R.S.e = ".$R->f(white_fs150 => w vAK/gp(R=>$R, u => R.a.i));
+        my $title = "R.S.e = ".$R->f(white_fs150 => $topi);
 
         my $html = join "\n", $Jpi, $title, @rows;
 
@@ -257,21 +263,21 @@ hooks:
         # reflect style injection round corner
         # throw style into ux recipe
         
-      # 8
-    
-       # shrink this webbing into a space in our webbing
-       my $lines = split /\n/, $html;
-       my $o = 12;
-       my $fs;
-       if ($lines > $o) {
-           $fs = 100 * $o / $lines;
-           $fs *= -1 if $fs < 0;
-           $fs = "font-size:".$fs."%;";
-           sayre "$lines become $fs";
-       }
-       #sayre "$lines lines" for 1..5;
-       
-       qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
+        # 8
+
+        # shrink this webbing into a space in our webbing
+        my $lines = split /\n/, $html;
+        my $o = 12;
+        my $fs;
+        if ($lines > $o) {
+            $fs = 100 * $o / $lines;
+            $fs *= -1 if $fs < 0;
+            $fs = "font-size:".$fs."%;";
+            sayre "$lines become $fs";
+        }
+        #sayre "$lines lines" for 1..5;
+
+        qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
   elvibe: |
     H.G w z/keon;
     
