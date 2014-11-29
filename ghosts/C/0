@@ -119,37 +119,33 @@ hooks:
         };
         R.S.e ||= 0.6;
         R.S.w = R.A->spawn('C');
-        R.S.w.hooks.Vit = Load(<<'');
-          up: |
-              R.S.e += 0.1;
-          down: |
-              R.S.e -= 0.1;
+        R.S.w->from(Load(<<''));
+          Vit:
+            up: |
+                R.S.e += 0.1;
+            down: |
+                R.S.e -= 0.1;
+          gp:
+            newtg: |
+                
+                R.S.gpnew = !R.S.gpnew;
 
         R.S.key = Load(<<'');
           E: Vit/up
           R: Vit/down
+          T: gp/newtg
             
          
 
     key: |
       sayyl join"  ", ($k) x 13 for 1..4;
       $R->key($k, $e);
-      my $letter = $k =~ /^[A-Z]$/;
-      my $number = $k =~ /^[0-9]+$/;
-      if (!e.S) {
-          if ($letter) {
-              # some instyle hooks letters to apply
-              my $do = R.S.key->{$k};
-              say "lettering $k => $do";
-              R.G w R.S.w $do if $do;
-          }
-      }
-      else {
-                $R->adef          if $k eq '1';
-                $R->instyle('def')   if $k eq '2';
-                $R->instyle('ways')   if $k eq '3';
-                $R->afrom         if $k eq '0';
-      }
+      my $key = "$k";
+      $key = "S$key" if e.S;
+      # some instyle hooks letters to apply
+      my $do = R.S.key->{$key};
+      say "lettering $key => $do";
+      R.G w R.S.w $do if $do;
     gp: | #c vAK gp
         #return $u->pi if u can pi # braid wants bit of pi somewhere too
         # gpty: 
@@ -213,7 +209,7 @@ hooks:
         
         R.gp_inarow--;
 
-
+        saygr "gpnew is R.S.gpnew";
 
         R.S.gpnew ? join("  ", @s) : G::gp($u);
     cgp: | #c data guess chart
