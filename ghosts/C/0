@@ -151,8 +151,11 @@ hooks:
         # gpty: 
         
         R.gp_inarow++;
-        my $witcolour = sub {
+        my $wit = sub {
             '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>'
+        };
+        my $wt = sub {
+            '<t style="'.$_[1].'">'.shift.'</t>'
         };
         
         my @s;
@@ -164,25 +167,48 @@ hooks:
             else {
                 my $vcv = $cv / @$u;
                 @s = (
-                    $witcolour->(scalar(@$u), "333;font-size:50%"),
+                    $wit->(scalar(@$u), "fff;font-size:50%"),
                     (map { "[". w vAK/gp(R=>$R, u=>$_, cv=>$vcv); } @$u),
                     ']',
                 );
             }
         }
-        elsif (c.ref) { # other ref
+        elsif (c.HASH) { #c
+            my $v = {%$u};
+            my @ks;
+            push @ks, "K" && delete v.K if v.K;
+            push @ks, sort keys %$v;
+            # like sorting the hashy du planet rows
+            # all about dividing lines to the length
+            my @kv;
+            my $vcv = $cv - 0.2;
+            for my $k (@ks) {
+                my $uu = $u->{$k};
+                my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
+                push @kv,
+                    $wit->($k, "acf"),':',
+                    $wt->($v, "font-size:75%"), 
+            }
+            # wrap? tabul? frond?
+            @s = (
+                "{",
+                @kv,
+            );
+            
+        }
+        elsif (c.ref) { # weird ref
             # looks for patterns from anywhere for clues
             @s = (
-                $witcolour->(ref($u), "333;font-size:50%"),
-                $witcolour->(gname($u)),
+                $wit->(ref($u), "333;font-size:50%"),
+                $wit->(gname($u)),
             ),
         }
         elsif (c.undef) {
             @s = '~';
         }
-        else {
+        elsif (c.text) { #c
             my $line = $u;
-            #c these resistances to content
+            # these resistances to content
             # width enthusiasm
             # q factor
             # squeeze into space, less stuff as we q away from here
@@ -203,25 +229,37 @@ hooks:
                 $adhow = 1;
             }
 
-            push @s, $witcolour->($howad, "333;font-size:50%") if $adhow;
+            push @s, $wit->($howad, "333;font-size:50%") if $adhow;
             push @s, $line;
+        }
+        else {
+            # something we know
+            if (c.canpi) {
+                if (ref $u eq 'G') {
+                    push @s, "manpi:".$u->pi;
+                }
+                else {
+                    push @s, $u->pi;
+                }
+            }
+            else {
+                push @s, "know $u";
+            }
         }
         
         R.gp_inarow--;
 
-        saygr "gpnew is R.S.gpnew";
-
-        R.S.gpnew ? join("  ", @s) : G::gp($u);
+        R.S.gpnew ? join("", @s) : G::gp($u);
     cgp: | #c data guess chart
         my $c = {};
         if (!defined $u){
             c.undef = 1;
         } else {
             if (my $ref = ref $u) {
-                c.ARRAY = $ref eq "ARRAY";
-                c.HASH = $ref eq "HASH";
-                c.CODE = $ref eq "CODE";
-                c.canpi = $u->can('pi') if !%$c;
+                c.ARRAY = 1 if $ref eq "ARRAY";
+                c.HASH = 1 if $ref eq "HASH";
+                c.CODE = 1 if $ref eq "CODE";
+                c.canpi = 1 if !%$c && $u->can('pi');
                 for (qw'A C G T     R') {
                       $c->{$_} = 1 if $ref eq $_;
                 }
