@@ -266,9 +266,9 @@ hooks:
             if (c.canpi) { #c
                 my $r = ref $u;
                 my $a = {cv=>$cv}; # traveller
-                my $pi = $r =~/^(G|Ae)$/ ? do {
+                my $pi = $r =~/^(G|A)$/ ? do {
                     my $vos = {
-                        0 => { thi => 'G' },
+                        0 => { thi => ref $u },
                         0.1 => { name => u.name },
                         0.2 => { K => u.K },
                         0.3 => sub {
@@ -277,6 +277,10 @@ hooks:
                         0.4 => {},
                         0.5 => {},
                     };
+                    if ($r eq "A") {
+                        $vos->{0.1} = { id => u.id };
+                        $vos->{0.2} = sub{{ for => ">".u.i->pi() }};
+                    }
                     for my $vo (sort keys %$vos) {
                         if ($cv >= $vo) {
                             my $d = $vos->{$vo};
@@ -295,7 +299,7 @@ hooks:
                     }
                     join ' ', @s;
                 } : $u->pi;
-                if (a.o && 0 ) { #c
+                if (a.o) { #c
                     for my $vo (sort keys %{a.o}) {
                         my $v = a.o->{$vo};
                         for my $vk (sort keys %$v) {
