@@ -127,8 +127,7 @@ hooks:
                 R.S.e -= 0.1;
           gp:
             newtg: |
-                
-                R.S.gpnew = !R.S.gpnew;
+                sayyl "gpnew going ".(R.S.gpnew = !R.S.gpnew);
 
         R.S.key = Load(<<'');
           E: Vit/up
@@ -193,11 +192,11 @@ hooks:
                 my $vcv = $cv - 0.2;
                 for my $k (@ks) {
                     my $uu = $u->{$k};
-                    if ($vcv > 0.2) {
+                    if ($vcv >= 0.2) {
                         my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
                         push @kv, ',' if @kv;
                         push @kv, $wit->($k, "acf");
-                        push @kv, ':'
+                        push @kv, ':',
                             $wt->($v, "font-size:75%") if $vcv > 0.1;
                     }
                 }
@@ -248,26 +247,57 @@ hooks:
             # something we know
             if (c.canpi) { #c
                 my $r = ref $u;
-                my $a = {cv=>$cv};
+                my $a = {cv=>$cv}; # traveller
                 my $pi = $r eq "G" ? do {
-                    my @s = 'G';
                     my $vos = {
+                        0 => { thi => 'G' },
                         0.1 => { name => u.name },
                         0.2 => { K => u.K },
                         0.3 => sub {
-                            # G.A find n of here
+                            # { spawn => Abbal }
                         },
                         0.4 => {},
                         0.5 => {},
                     };
-                    push @s, u.name if $cv >= 0.1;
-                    push @s, u.K if $cv >= 0.2;
+                    for my $vo (sort keys %$vos) {
+                        if ($cv >= $vo) {
+                            my $d = $vos->{$vo};
+                            $d = $d->() if ref $d eq 'CODE';
+                            a.o->{$vo} = $d;
+                        }
+                    }
+                    my @s;
+                    for my $vo (sort keys %{a.o}) {
+                        my $v = a.o->{$vo};
+                        for my $vk (sort keys %$v) {
+                            next if $vk =~ /^_/;
+                            my $s = $v->{$vk};
+                            push @s, $s;
+                        }
+                    }
                     join ' ', @s;
                 } : $u->pi;
-                if ($pi =~ s/^$r //) {
-                    push @s, $wit->($r, "cfa");
+                if (a.o && 0 ) { #c
+                    for my $vo (sort keys %{a.o}) {
+                        my $v = a.o->{$vo};
+                        for my $vk (sort keys %$v) {
+                            next if $vk =~ /^_/;
+                            my $w;
+                            $w = "cfa" if $vk eq 'thi';
+                            $w = "ca6" if $vk eq 'name';
+                            my $s = $v->{$vk};
+                            next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
+                            $s = $wit->($s, $w) if $w;
+                            push @s, $s;
+                        }
+                    }
+                    
+                } else {
+                    if ($pi =~ s/^$r //) {
+                        push @s, $wit->($r, "cfa");
+                        push @s, $pi;
+                    }
                 }
-                push @s, $pi;
             }
             else {
                 push @s, "know $u";
