@@ -155,6 +155,7 @@ hooks:
         #return $u->pi if u can pi # braid wants bit of pi somewhere too
         # gpty: 
         R.gp_inarow++;
+        $cv = 0.1 if $cv < 0.1;
         my $wit = sub {
             '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>'
         };
@@ -176,7 +177,7 @@ hooks:
                     $wit->($si, "fff;font-size:50%"),
                 );
                 if ($vcv <= 0.1) {
-                    push @s, "[...]";
+                    push @s, "[]";
                 }
                 else {
                     push @s,  '[';
@@ -195,18 +196,18 @@ hooks:
         }
         elsif (c.HASH) { #c
             my $v = {%$u};
-            if ($cv <= 0.1) {
-                @s = '{}';
-            }
-            else {
-            
+            my $si = keys %$v;
+            @s = (
+                $wit->($si, "fff;font-size:50%"),
+            );
+            my $vcv = $cv - 0.2;
+            if ($vcv >= 0.2) {
                 my @ks;
                 push @ks, "K" && delete v.K if v.K;
                 push @ks, sort keys %$v;
                 # like sorting the hashy du planet rows
                 # all about dividing lines to the length
                 my @kv;
-                my $vcv = $cv - 0.2;
                 for my $k (@ks) {
                     my $uu = $u->{$k};
                     if ($vcv >= 0.2) {
@@ -218,10 +219,14 @@ hooks:
                     }
                 }
                 # wrap? tabul? frond?
-                @s = (
+                push @s,
                     "{",
                     @kv,
-                );
+                    "}",
+            }
+            else {
+                push @s,
+                    "{}",
             }
         }
         elsif (c.ref) { # weird ref
@@ -245,7 +250,7 @@ hooks:
             
             my $adhow;
             if (c.lin > 1) {
-                $line = join ' \n ', split /\n/, $u; 
+                $line = join '↯', split /\n/, $u; 
                 $adhow = 1;
             }
             my $tev = $cv * 125; # 0.4 = 100
@@ -257,7 +262,7 @@ hooks:
                 $adhow = 1;
             }
 
-            push @s, $wit->($howad, "333;font-size:50%") if $adhow;
+            push @s, $wit->($howad, "88b;font-size:60%") if $adhow;
             $line = $wit->($line, "3f3");
             push @s, $line;
         }
@@ -273,11 +278,11 @@ hooks:
                         0.2 => { K => u.K },
                     };
                     if ($r eq "A") {
-                        $vos->{0.1} = { id => u.id };
+                        #$vos->{0.1} = { id => u.id };
                         $vos->{0.2} = sub{{ for => ">".u.i->pi(), _u => u.i }};
                     }
                     if ($r eq "C") {
-                        $vos->{0.1} = { id => u.id };
+                        #$vos->{0.1} = { id => u.id };
                         my $C = $u;
                         
                         my $K = C.K;
@@ -288,6 +293,8 @@ hooks:
                         $@ = "" if $@;
 
                         $p = C.B.name if C.B.name;
+                        $p ||= C.name if exists C.name;
+                        #$p = join ' - ', grep {defined} C.K, $p if exists C.K;
 
                         my $B;
                         if (C.B && !$p) {
@@ -296,7 +303,7 @@ hooks:
                             }
                             $B ||= G::slim(50,30,G::ki(C.B))        
                         } 
-                        my $s = "↯$p".($B?"↯$B":"");
+                        my $s = "$K↯$p".($B?"↯B:$B":"");
                         $vos->{0.2} = {name=>$s};
                     }
                     for my $vo (sort keys %$vos) {
@@ -327,6 +334,7 @@ hooks:
                             my $w;
                             $w = "cfa" if $vk eq 'thi';
                             $w = "ca6" if $vk eq 'name';
+                            $w = "000;font-size:30%" if $vk eq 'id';
                             my $s = $v->{$vk};
                             # if v._u, $vk=for, has pi string worked out
                             # but we want to get more of ourself in there
