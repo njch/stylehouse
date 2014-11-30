@@ -266,7 +266,7 @@ hooks:
             if (c.canpi) { #c
                 my $r = ref $u;
                 my $a = {cv=>$cv}; # traveller
-                my $pi = $r =~/^(G|A)$/ ? do {
+                my $pi = $r =~/^(G|A|C)$/ ? do {
                     my $vos = {
                         0 => { thi => ref $u },
                         0.1 => { name => u.name },
@@ -278,6 +278,26 @@ hooks:
                     }
                     if ($r eq "C") {
                         $vos->{0.1} = { id => u.id };
+                        my $C = $u;
+                        
+                        my $K = C.K;
+
+                        my $p;
+                        $p = eval { C.G->w(print => {}, $C); }
+                            if (defined C.print || C.Gw) && G::wish(G=>C.G);
+                        $@ = "" if $@;
+
+                        $p = C.B.name if C.B.name;
+
+                        my $B;
+                        if (C.B && !$p) {
+                            if (join(",", sort keys %{C.B}) eq "Lu,ui") {
+                                $B = "ui=(".C.B.ui->pint();
+                            }
+                            $B ||= G::slim(50,30,G::ki(C.B))        
+                        } 
+                        my $s = "↯$p".($B?"↯$B":"");
+                        $vos->{0.2} = {name=>$s};
                     }
                     for my $vo (sort keys %$vos) {
                         if ($cv >= $vo) {
