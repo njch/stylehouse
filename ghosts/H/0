@@ -10,9 +10,41 @@ C:
   - K: Elvis
     max_tooth_Hz: 12
     Gw: 1
+  - K: mess  # j?
+    print: |
+        "m S.m".
+        G::gp($thing); # R gp
 R:
  - K: ivm
 hooks:
+  mess: |
+    # TODO R should handle incoming
+    # and outgoing subs, pubs
+    # in between is quiet Accumessing
+    unless (H._future) {
+        # circular or pre-G:H # R catch
+        saygr "prefut ar.what  = ".
+            join"  ", map {gpty($_)} flatline(ar.thing);
+        return;
+    }
+    my $S = 0->TB(mess => {thing => $thing, what => $what});
+    S.m = $what;
+    S.Flab = $G->Flab($S);
+    
+    $_->($S) for @{G.messtrigs||=[]}; # way?
+    
+    if (S.m =~ /^(Ambientness|Vitals)$/) {
+        # keep only 5?
+        my @ze = 0->rei({K=>'mess', m=>$1});
+        shift @ze for 1..5;
+        $_ ne $S && 0->del($_) for @ze;
+    }
+    my @ze = 0->rei({K=>'mess'});
+    shift @ze for 1..50;
+    $_ ne $S && 0->del($_) for @ze;
+
+    
+    H._future = 1;
   Elvis: #
       # here we want to graph things out real careful
       # because it is how things get around
@@ -336,25 +368,6 @@ hooks:
             });
         }
     }
-  mess: |
-    unless (H._future) { # TODO delete _future after burning SHED
-        # TODO move mess into H, it's just one C
-        # tractor to allow trig subs to each K
-        # between H.G being here and G:mess being here
-        saygr "prefut ar.what  = ".
-        join"  ", map {gpty($_)} flatline(ar.thing);
-        return;
-    }
-    my $m = G:mess;
-    $m || die'no mess!';
-    H._future = 0;
-    
-    eval { $m ->w(Arr => $ar); };
-    if ($@) {
-        die "Throwing mess mess: $@\n\n\n".wdump($ar);
-    }
-    
-    H._future = 1;
   gitdission: |
     my @diff = `git diff`;
     my $f;
