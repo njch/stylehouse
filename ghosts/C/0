@@ -148,7 +148,7 @@ hooks:
     gp: | #c vAK gp
         #return $u->pi if u can pi # braid wants bit of pi somewhere too
         # gpty: 
-        
+        sayyl "gp! R.gp_inarow ".gp($u);
         R.gp_inarow++;
         my $wit = sub {
             '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>'
@@ -175,14 +175,18 @@ hooks:
                     push @s, "[...]";
                 }
                 else {
-                    push @s, 
-                    '['.$vcv,
+                    push @s,  '['.$vcv;
                     my $i = 0;
-                    for my
-                        join(', ', map {
-                            w vAK/gp(R=>$R, u=>$_, cv=>$vcv);
-                        } @$u),
-                    ']',
+                    my @us;
+                    while (exists $u->[$i]) {
+                        my $ui = $u->[$i];
+                        push @us,
+                            w vAK/gp(R=>$R, u=>$ui, cv=>$vcv);
+                        last if $i++ > 9;
+                    }
+                    push @s, join(', ', @us),
+                    ']';
+                }
             }
         }
         elsif (c.HASH) { #c
@@ -202,7 +206,8 @@ hooks:
                 for my $k (@ks) {
                     my $uu = $u->{$k};
                     if ($vcv >= 0.2) {
-                        my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
+                        saybl "going $k";
+                        my $v = "$uu";#w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
                         push @kv, ',' if @kv;
                         push @kv, $wit->($k, "acf");
                         push @kv, ':',
@@ -358,6 +363,7 @@ hooks:
         my @rows;
         my $i = 1;
         my $agp = {R=>$R, cv=>1};
+        sayyl "Rows: ".@{R.a.r};
         for my $r (@{R.a.r}) {
             my ($ac, $li) = @$r;
             my ($a, $cv) = split /\s+/, $ac;
