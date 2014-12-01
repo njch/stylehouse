@@ -40,6 +40,13 @@ Ds:
             # Li or Lo? TODO gonerism and schemas dusly
             my $t = $u->{$k};
             my $f = $s->{$k};
+            
+            if ($k =~ /^(.+)!(.+)$/) {
+                $k = $1;
+                my $uu = R.A->spawn($2);
+                $uu->from($f);
+                $f = $uu;
+            }
 
             $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
 
