@@ -81,7 +81,7 @@ Ds:
             $doings = sub { $G->comeback($last, $doings, $doing, @_); };
             Mojo::IOLoop->timer( $time, $doings );
             return $last
-  - K: comeback
+  - K: comeback #c
     D: |
             my $last = shift;
             my $doings = shift;
@@ -99,14 +99,25 @@ Ds:
                 $@ =~ s/^(!   )+Z\n//sgm;
                 sayre(ind("Error ", $@));
             }
-  - K: wayb #c # TODO way bending, other G stuff
+  - K: nw #c G ways
+    D: |
+      my $C = G.A->spawn('C');  
+      
+      $C->from({@_}) if @_;
+      # etc
+      $C 
+      
+  - K: wayb #c TODO way bending, other G stuff
     D: |
       my ($GG, $atu) = @_;
+      
       my $suway = join "", map {"{$_"} split /\//, atu.way;
+      
       G.R->loadup($atu, "{hooks$suway", $atu);
       
-      
       push @{GG.ways}, $atu; # A etc
+      # A drop old G+K+name
+      # replay dep on perc state of origin $G
       
   - K: w #c
     style: nonbabble
