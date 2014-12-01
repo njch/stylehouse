@@ -146,13 +146,36 @@ hooks:
         #
         my ($li) = $l =~ m/^E  (.+)/;
         my ($ug, $file, $line, $near) = 
-            $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+)(.*)$/;
+            $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+) (.*)$/;
         my ($space) =
             $li =~ /^(\s+.+)$/;
         
-        push @nl, "was in $file on $line" if $file && $line;
-        push @nl, $l;
+        if ($file && $line) {
+            my $perl = $f->{$file} ||= [ split "\n", $H->slurp($file) ];
+            # seek backwards for sub $K {
+            my $sub;
+            my $wai = $line;
+            while (!$sub && $wai > 0) {
+                $wai--;
+                $sub = "$1.".($line - $wai) if $perl->[$wai] =~ /^sub (\w+) \{/;
+            }
+            # width for syntaxey
+            my @code;
+            my $i = $line - 1;
+            push @code, $perl->[$_] while $i++ && $i < $line + 1;
+            
+            my $code = join"\n", @code;
+            push @nl, G.R->f(white => "CODE: ".$code);
+            push @nl, "D: K=$sub  $ug";
+            push @nl, $near if $near;
+            push @nl, $l;
+        }
+        else {
+            push @nl, $l;
+        }
     }
+    say.compile = join "\n", @nl;
+    
     s.B = $say;
   try: |
     saygr 'Restarting S' for 1..3;
