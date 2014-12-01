@@ -246,8 +246,6 @@ Ds:
   - K: Dm #c
     style: nonbabble
     D: |
-        my $ksmush = 
-            
         my $uuname = join " ",
             $G->{id},
             $H->dig(a.bab),
@@ -259,31 +257,40 @@ Ds:
             
         my $Ds = $D_cache{$ha};
         return $Ds if $Ds;
-          my $eval = $G->parse_babble($babble, $point);
-          my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
-          $download .= 'my $thing = $T->{t}; ' unless !exists($T->{t}) || $ar->{thing};
-          $download .= 'my $O = $G->{O}; ' unless $ar->{O};
-          my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
-          my @warnings = ("no warnings 'experimental';");
+        
+        my $eval = $G->parse_babble(a.bab, a.point);
+        
+        my $ar = a.ar || {};
+        my $download = join("", map {
+            'my$'.$_.'=$ar->{'.$_."}; "
+            } keys %$ar)
+            if %$ar;
+        my $upload = join("", map {
+            '$ar->{'.$_.'}=$'.$_."; "
+            } keys %$ar)
+            if %$ar;
+           there is
+        my @warnings = ("no warnings 'experimental';");
 
-          my $sub = "bollox";
+        my $sub = "bollox";
+        my $evs = '$sub = sub { my $ar = shift; '.
+        "@warnings $download\n".
 
-          my $evs = '$sub = sub { my $ar = shift; '.
-          "@warnings $download\n".
+        "my \@doo_return = (sub { \n\n$eval\n })->();\n"
 
-          "my \@doo_return = (sub { \n\n$eval\n })->();\n"
+        ."$upload"
+        .'return @doo_return };';
 
-          ."$upload"
-          .'return @doo_return };';
+        eval $evs;
 
-          eval $evs;
-
-          $Ds = [ $evs, $sub ];
-          if (!$@ && ref $sub eq "CODE") {
-          $D_cache{$ha} = $Ds;
-          }
-          }
-          $Ds
+        $Ds = [ $evs, $sub ];
+        if (!$@ && ref $sub eq "CODE") {
+            $D_cache{$ha} = $Ds;
+        }
+        else {
+            a.bungeval = $evs;
+        }
+        $Ds
   - K: D #c
     D: |
             my $a = {};
@@ -293,7 +300,8 @@ Ds:
             a.Sway = my $Sway = shift;
             my $w = shift;
             my $Z = shift;
-            die "yes" if $w || $Z || @_;;
+            die "yes" if $w || $Z || @_;
+            
             die "RECURSION ".@F if @F > $MAX_FCURSION; 
             
             

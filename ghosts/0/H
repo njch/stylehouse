@@ -181,9 +181,13 @@ Ds:
           return Time::HiRes::usleep(shift || 5000);
   - K: ind #c
     D: |
-      my ($in, $thing) = @_;
-      $thing = "" unless defined $thing;
-      join "\n", map { "$in$_" } split "\n", $thing
+      my $in = shift;
+      my $thing = [@_]; # TODO flatline?
+      join "\n",
+           map { "$in$_" }
+        map { split "\n" }
+          map { defined $_ || "" }
+        @$thing
   - K: ddump #c
     style: func
     D: |
