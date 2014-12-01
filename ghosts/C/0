@@ -170,9 +170,7 @@ hooks:
         R.S.rowlimit = 2*9; 
         R.S.e ||= 0.6;
         #w R.S.w $_/in({}) for keys %{R.S.w};
-
-
-    key: |
+    key: | #c
       sayyl join"  ", ($k) x 13 for 1..4;
       $R->key($k, $e);
       my $key = "$k";
@@ -439,12 +437,9 @@ hooks:
         
         
         
-    S: | #c vAK S
-        $R->S; # 1-4
-    
-
-        # 5
-        # quick style synapse
+    S_5_D: | #c dataey synapse
+        wdump(1, R.a.i);
+    S_5_S: | #c quick style synapse
         my @rows;
         my $i = 1;
         my $agp = {R=>$R, cv=>1};
@@ -464,8 +459,16 @@ hooks:
               [ blue_fs80 => $i++ ],
               [ white_fs120 => $pi ],
         }
+        @rows;
+    S: | #c void vAKcess
+        my $agp = {R=>$R, cv=>1};
+        # 1-4
+        $R->S;
         
-        @rows = wdump(1, R.a.i) if R.S.rowing eq "D";
+        # 5
+        my $way = "S_5_".(R.S.rowing||"S");
+        my @rows = w vAK/$way;
+        # 5
 
         my $frompi = w vAK/gp(%$agp,  u => R.J.from);
         my $topi = w vAK/gp(%$agp, u => R.a.i);
