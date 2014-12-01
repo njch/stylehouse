@@ -244,7 +244,6 @@ Ds:
       # etc
       0S->T({i => $u});
   - K: Dm #c
-    style: nonbabble
     D: |
         my $uuname = join " ",
             $G->{id},
@@ -269,7 +268,7 @@ Ds:
             '$ar->{'.$_.'}=$'.$_."; "
             } keys %$ar)
             if %$ar;
-           there is
+          # there is
         my @warnings = ("no warnings 'experimental';");
 
         my $sub = "bollox";
@@ -298,9 +297,7 @@ Ds:
             a.ar = my $ar = shift || {};
             a.point = my $point = shift;
             a.Sway = my $Sway = shift;
-            my $w = shift;
-            my $Z = shift;
-            die "yes" if $w || $Z || @_;
+            die "yes".wdump[@_] if @_;
             
             die "RECURSION ".@F if @F > $MAX_FCURSION; 
             
@@ -381,7 +378,7 @@ Ds:
                 my $first = 1 unless $@ =~ /DOOF/;
                 
                 $DOOF .= "DOOF ".sprintf("%-24s", $G->{name}." ".($ar->{S} ? "S=".gpty($ar->{S}) :""));
-                $DOOF .= " w $point  ".join(", ", keys %$ar)."\n";;
+                $DOOF .= " w"." $point  ".join(", ", keys %$ar)."\n";;
                 if ($first) {
                     if (exists $D->{SigDieStack}) {
                         warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;

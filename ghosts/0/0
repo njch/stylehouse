@@ -149,35 +149,46 @@ hooks:
             $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+)(.*)$/;
         my ($space) =
             $li =~ /^(\s+.+)$/;
+        undef $near if $near eq ".";
         
         $file = "il/$file"; # TODO suitcase
         
         if ($file && $line) {
             my $perl = $f->{$file} ||= [ split "\n", $H->slurp($file) ];
+            my $lii = $line - 1;
+            my $lie = $perl->[$lii];
+            
             # seek backwards for sub $K {
             my $sub;
-            my $wai = $line;
+            my $wai = $lii;
             my $spot; # in the chunk from sub
             while (!$sub && $wai > 0) {
                 $wai--;
                 if ($perl->[$wai] =~ /^sub (\w+) \{/) {
                     $sub = $1;
-                    $spot = $line - $wai;
+                    $spot = $lii - $wai;  
                 }
             }
+            $sub ||= $perl->[$wai];
+            
             # width for syntaxey
             my @code;
-            my $i = $line - 1;
+            my ($fore, $aft) = (1, 2); # 4 lines
+            ($fore, $aft) = (0, 0) if $perl->[$lii] =~ /use \S+;/;
+            my $i = $lii - $fore;
             $i = 0 if $i < 0;
-            while ($i < $line + 2) {
-                next if !exists $perl->[$i];
+            while ($i <= $lii + $aft) {
+                last if !exists $perl->[$i];
                 push @code, $perl->[$i];
                 $i++;
             }
-            $R::f->{fs40} = "font-size:40%;";
             
-            if ($perl->[$line] =~ /^\s*\}\s*$/) {
-                @code = $perl->[$line]." ! end of block";
+            $R::f->{fs40} = "font-size:40%;";
+            $R::f->{liblue} = "color:#88f;";
+            say wdump($R::f);
+            
+            if ($lie =~ /^\s*\}\s*$/) {
+                @code = $lie.G.R->f(liblue_fs80 => " ! end of block");
             }
             
             push @nl, G.R->f(white => "C $_") for @code;
