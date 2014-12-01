@@ -144,12 +144,14 @@ hooks:
     my @nl;
     for my $l (@cl)  {
         #
-    
-    
-    
-    
-    
-    
+        my ($li) = $l =~ m/^E  (.+)/;
+        my ($ug, $file, $line, $near) = 
+            $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+)(.*)$/;
+        my ($space) =
+            $li =~ /^(\s+.+)$/;
+        
+        push @nl, "was in $file on $line" if $file && $line;
+        push @nl, $l;
     }
     s.B = $say;
   try: |
