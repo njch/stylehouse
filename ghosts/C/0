@@ -94,7 +94,11 @@ P:
 R:
  - K: surfboard
    in_R:
+     
      S: 
+       gpnew: 1
+       rowlimit: 18
+       e: 0.6
        key:
           E: Vit/up
           R: Vit/down
@@ -158,7 +162,6 @@ hooks:
       u.B.R
     setup: |
         $R->from(delete R.in_R) if R.in_R;
-        say "Made ".$R->pi;
         R.J ||= {
             from => $R,
         };
@@ -166,9 +169,7 @@ hooks:
             from => $H,
             trav => "{G{GGs",
         };
-        R.S.gpnew = 1;
-        R.S.rowlimit = 2*9; 
-        R.S.e ||= 0.6;
+        say "Made ".$R->pi;
         #w R.S.w $_/in({}) for keys %{R.S.w};
     key: | #c
       sayyl join"  ", ($k) x 13 for 1..4;
@@ -439,7 +440,7 @@ hooks:
         
     S_5_D: | #c dataey synapse
         wdump(1, R.a.i);
-    S_5_S: | #c quick style synapse
+    S_5_S: | #c quick ROWING on the style synapse
         my @rows;
         my $i = 1;
         my $agp = {R=>$R, cv=>1};
@@ -448,7 +449,7 @@ hooks:
             my ($ac, $li) = @$r;
             my ($a, $cv) = split /\s+/, $ac;
             
-            my $pi = w vAK/gp(%$agp, u => $li, cv => $cv);
+            my $pi = $cv."v". w vAK/gp(%$agp, u => $li, cv => $cv);
             
             $ac =~ s/\s+/ /g;
             
@@ -460,25 +461,45 @@ hooks:
               [ white_fs120 => $pi ],
         }
         @rows;
-    S: | #c void vAKcess
+    S: | #c void vAKcess R::S heist
+        # 1
+        R.a = my $a = shift || {};
+        R.s = $R->dus;
+        R.s.HASH.oh = 0.2;
         my $agp = {R=>$R, cv=>1};
-        # 1-4
-        $R->S;
+        # 2
+        a.e ||= R.S.e || die;
+        a.i ||= $R->uni;
+        a.tr.rowlimit = R.S.rowlimit || 9*3;
+        # TODO ^ tunes the rowiness
+        # which is the first variable to other distortions
+        # so basically chomps produced Style after yay many Whats
+        # the v is Vaults, decaying energy
+        # there'd be a gravity somewhere
+        # Amps can be when style uniqness raised?
+        # 3
+        $R->du;
+        die "nod" unless a.d; 
+        # 4
+        $R->durows;
         
-        # 5
+        # 5 in space # TODO forkstyles & ongoingness
         my $way = "S_5_".(R.S.rowing||"S");
         my @rows = w vAK/$way;
-        # 5
+        
+        
+        # 6 on sphere
+        my $frompi = w vAK/gp(%$agp, cv => 0.2, u => R.J.from);
+        my $topi   = w vAK/gp(%$agp, cv => 0.2, u => R.a.i);
 
-        my $frompi = w vAK/gp(%$agp,  u => R.J.from);
-        my $topi = w vAK/gp(%$agp, u => R.a.i);
-
-        my $Jpi = "@!@".$R->f(white => $frompi)
-            ."  ".$R->f(black => R.J.trav);
+        # 7
+        my $html = join "\n",
+             "@!@".$R->f(white => $frompi)
+            ."  ".$R->f(black => R.J.trav),
             
-        my $title = "R.S.e = ".$R->f(white_fs150 => $topi);
-
-        my $html = join "\n", $Jpi, $title, @rows;
+            "R.S.e = ".$R->f(white_fs150 => $topi),
+            
+            @rows;
 
         # 6
         # TODO more style synapse rejoins after delib fork exp

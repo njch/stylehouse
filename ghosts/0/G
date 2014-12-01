@@ -243,19 +243,58 @@ Ds:
       
       # etc
       0S->T({i => $u});
-  - K: D #c
+  - K: Dm #c
     style: nonbabble
     D: |
-           
-            my $babble = shift;
-            my $ar = shift || {};
-            my $point = shift;
-            my $Sway = shift;
+        my $ksmush = 
+            
+        my $uuname = join " ",
+            $G->{id},
+            $H->dig(a.bab),
+            a.point,
+            " ar%".join(",",sort keys %{a.ar}),
+        ;        
+        my $ha = $H->dig($uuname);
+        die unless length($ha) == 40;
+            
+        my $Ds = $D_cache{$ha};
+        return $Ds if $Ds;
+          my $eval = $G->parse_babble($babble, $point);
+          my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
+          $download .= 'my $thing = $T->{t}; ' unless !exists($T->{t}) || $ar->{thing};
+          $download .= 'my $O = $G->{O}; ' unless $ar->{O};
+          my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
+  my @warnings = ("no warnings 'experimental';");
+
+  my $sub = "bollox";
+
+  my $evs = '$sub = sub { my $ar = shift; '.
+  "@warnings $download\n".
+
+  "my \@doo_return = (sub { \n\n$eval\n })->();\n"
+
+  ."$upload"
+  .'return @doo_return };';
+
+  eval $evs;
+
+  $Ds = [ $evs, $sub ];
+  if (!$@ && ref $sub eq "CODE") {
+  $D_cache{$ha} = $Ds;
+  }
+  }
+  $Ds
+  - K: D #c
+    D: |
+            my $a = {};
+            a.bab = my $babble = shift;
+            a.ar = my $ar = shift || {};
+            a.point = my $point = shift;
+            a.Sway = my $Sway = shift;
             my $w = shift;
             my $Z = shift;
+            die "yes" if $w || $Z || @_;;
             die "RECURSION ".@F if @F > $MAX_FCURSION; 
-            
-            my $ksmush = join",",sort keys %$ar;
             
             
             if (ref $babble eq "C") {
@@ -264,42 +303,8 @@ Ds:
                 my $d = $b->{Dish};
                 return $d->{G}->w('D', $ar, $d);
             }
-            
-            my $br = $babble;
-            $br =~ s/\n//sg;
-            my $uuname = "$G->{id} ".$H->dig($br)
-                ." ".($point||"")." arar=".$ksmush;
-                
-            my $ha = $H->dig($uuname);
-            die unless length($ha) == 40;
 
-            my $Ds = $D_cache{$ha};
-            unless ($Ds) {
-                my $eval = $G->parse_babble($babble, $point);
-                my $download = $ar?join("", map { 'my$'.$_.'=$ar->{'.$_."}; " } keys %$ar):"";
-                $download .= 'my $thing = $T->{t}; ' unless !exists($T->{t}) || $ar->{thing};
-                $download .= 'my $O = $G->{O}; ' unless $ar->{O};
-                my $upload = $ar?join("", map { '$ar->{'.$_.'}=$'.$_."; "    } keys %$ar):"";
-                
-                my @warnings = ("no warnings 'experimental';");
-            
-                my $sub = "bollox";
-                
-                my $evs = '$sub = sub { my $ar = shift; '.
-                                        "@warnings $download\n".
-                                        
-                    "my \@doo_return = (sub { \n\n$eval\n })->();\n"
-                    
-                                        ."$upload"
-                .'return @doo_return };';
-                
-                eval $evs;
-                
-                $Ds = [ $evs, $sub ];
-                if (!$@ && ref $sub eq "CODE") {
-                    $D_cache{$ha} = $Ds;
-                }
-            };
+            my $Ds = $G->Dm($a);
             my ($evs, $sub) = @$Ds;
                 
             my $back = $G->waystacken(D => $point, $G, $ar, $Sway, $w);
