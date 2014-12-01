@@ -323,8 +323,23 @@ Ds:
             my $komptalk = "nicht kompilieren! nicht kompilieren!\n $@" if $@;
             
             
+            H.sigstackend ||= sub {
+                local $@;
+                eval { confess( '' ) };
+                my @stack = split m/\n/, $@;
+                shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
+                my @stackend;
+                push @stackend, shift @stack until $stack[0] =~ /G::D/ || !@stack && die;
+                s/\t//g for @stackend;
+
+                # write on the train thats about to derail
+                my $wall = $G::F[0]->{SigDieStack}||=[];
+
+                push @$wall, \@stackend;
+            };
             my @return;
             if (ref $sub eq "CODE" && !$@) {
+                local $SIG{__DIE__} = H.sigstackend;
                 eval { @return = $sub->(a.ar) }
             }
             
