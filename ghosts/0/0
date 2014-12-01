@@ -134,7 +134,7 @@ hooks:
         (B.ghod ? '<span style="color:black">'.B.ghod.'</span>' : ""),
         '<span style="color:black">'.B.end.'</span>',
         '<span style="color:#0aa">'.join("\n",@{B.dup||[]}).'</span>',
-        '<span style="color:#03a">'.B.compile.'</span>',
+        '<span style="color:#500;background:rgba(244,230,200);">'.B.compile.'</span>',
         '<span style="color:#0a3">'.(length(B.diff) > 900 ? "HUGE DIFF": B.diff).'</span>')
         .'</pre>';
   codedis: | 
@@ -146,29 +146,43 @@ hooks:
         #
         my ($li) = $l =~ m/^E  (.+)/;
         my ($ug, $file, $line, $near) = 
-            $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+) (.*)$/;
+            $li =~ /^(\S.+) at ((?:\w+\/)*[\w\.]+) line (\d+)(.*)$/;
         my ($space) =
             $li =~ /^(\s+.+)$/;
+        
+        $file = "il/$file"; # TODO suitcase
         
         if ($file && $line) {
             my $perl = $f->{$file} ||= [ split "\n", $H->slurp($file) ];
             # seek backwards for sub $K {
             my $sub;
             my $wai = $line;
+            my $spot; # in the chunk from sub
             while (!$sub && $wai > 0) {
                 $wai--;
-                $sub = "$1.".($line - $wai) if $perl->[$wai] =~ /^sub (\w+) \{/;
+                if ($perl->[$wai] =~ /^sub (\w+) \{/) {
+                    $sub = $1;
+                    $spot = $line - $wai;
+                }
             }
             # width for syntaxey
             my @code;
             my $i = $line - 1;
-            push @code, $perl->[$_] while $i++ && $i < $line + 1;
+            $i = 0 if $i < 0;
+            while ($i < $line + 2) {
+                next if !exists $perl->[$i];
+                push @code, $perl->[$i];
+                $i++;
+            }
+            $R::f->{fs40} = "font-size:40%;";
             
-            my $code = join"\n", @code;
-            push @nl, G.R->f(white => "CODE: ".$code);
-            push @nl, "D: K=$sub  $ug";
+            if ($perl->[$line] =~ /^\s*\}\s*$/) {
+                @code = $perl->[$line]." ! end of block";
+            }
+            
+            push @nl, G.R->f(white => "C $_") for @code;
+            push @nl, "D: $sub  line $spot\t$ug   ".G.R->f(fs60 => "$file:$line");
             push @nl, $near if $near;
-            push @nl, $l;
         }
         else {
             push @nl, $l;
