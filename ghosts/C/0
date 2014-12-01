@@ -105,6 +105,36 @@ R:
           D: Spl/D
           F: Spl/F
           G: Spl/G
+       w!C:
+          Vit:
+            up: |
+                R.S.e += 0.1;
+            down: |
+                R.S.e -= 0.1;
+          gp:
+            tognew: |
+                sayyl "gpnew going ".(R.S.gpnew = !R.S.gpnew);
+          Chew:
+            in: |
+              die "hi!";
+              # make rows tally uniqs of small voltages
+              # for either this set or all the sets of n_what in A
+              # line up similar
+              # all this boxing in
+          Spl:
+            G: |
+              # to ghost from here
+            F: |
+              # F junk?
+            D: |
+              # to data dump
+              R.S.rowing = "D";
+            S: |
+              # to styley
+              R.S.rowing = "S";
+            A: |
+              # heredity
+        
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
@@ -148,35 +178,6 @@ hooks:
         R.S.w = R.A->spawn('C');
         
         R.S.w->from(Load(<<''));
-          Vit:
-            up: |
-                R.S.e += 0.1;
-            down: |
-                R.S.e -= 0.1;
-          gp:
-            tognew: |
-                sayyl "gpnew going ".(R.S.gpnew = !R.S.gpnew);
-          Chew:
-            in: |
-              die "hi!";
-              # make rows tally uniqs of small voltages
-              # for either this set or all the sets of n_what in A
-              # line up similar
-              # all this boxing in
-          Spl:
-            G: |
-              # to ghost from here
-            F: |
-              # F junk?
-            D: |
-              # to data dump
-              R.S.rowing = "D";
-            S: |
-              # to styley
-              R.S.rowing = "S";
-            A: |
-              # heredity
-        
         #w R.S.w $_/in({}) for keys %{R.S.w};
         
         R.S.key = Load(<<'');
