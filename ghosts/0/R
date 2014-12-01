@@ -43,12 +43,19 @@ Ds:
             
             if ($k =~ /^(.+)!(.+)$/) {
                 $k = $1;
+                say $R->pi." spawning $2 to go in $1";
                 my $uu = R.A->spawn($2);
                 $uu->from($f);
+                say "Kup: ".G::ki($uu);
                 $f = $uu;
             }
-
-            $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
+            elsif ($f && $k =~ /^(B|S)$/) {
+                $t ||= {};
+                ref $t eq "HASH" || die;
+                say "Merging for $k: ".G::wdump(2, [$t, $f]);
+                $R->dfrom({u=>$t, s=>$f});
+                $f = $t;
+            }
 
             $u->{$k} = $f;
         }
