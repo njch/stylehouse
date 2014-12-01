@@ -20,19 +20,32 @@ Ds:
       
   - K: from #c
     D: |
-      my $u = shift;
-
-      # adopted from C::from, wants to do du/S inject for non-1 indentity...
-      for my $k (keys %$u) {
-          next if $k eq "uuid" || $k eq "id" || $k eq "G" || $k eq "A" || $k eq "T";
-          my $t = $R->{$k};
-          my $f = $u->{$k};
-
-          $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
-
-          $R->{$k} = $f;
-      }
+      my $s = shift;
+      my $a = shift;
+      my $u = $R;
+      $u = $u->{$_} if $_=a.trav; # like du
+      $R->dfrom({u=>$R, s=>$s});
       return $R;
+  - K: dfrom #c
+    D: |
+        my $a = shift;
+        my $u = a.u;
+        my $s = a.s;
+
+        my $sk = {map{$_=>1}qw"uuid id G A T"};
+        my $axi = ref $u ne "HASH"; # on ACGTR or so
+
+        for my $k (keys %$s) {
+            next if $axi && $sk->{$k};
+            # Li or Lo? TODO gonerism and schemas dusly
+            my $t = $u->{$k};
+            my $f = $s->{$k};
+
+            $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
+
+            $u->{$k} = $f;
+        }
+        return $u;
   - K: instyle #c  
     D: |
       return unless @_;

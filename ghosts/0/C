@@ -85,17 +85,29 @@ Ds:
   - K: from #c
     D: |
       my $s = shift;
-      for my $k (keys %$s) {
-      #               unless modulating v 
-          next if $k eq "uuid" || $k eq "id" || $k eq "G" || $k eq "A" || $k eq "T"; # or Li or Lo or who knows what # SCHEMAS # MERGINESS
-          my $t = $C->{$k};
-          my $f = $s->{$k};
-
-          $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
-
-          $C->{$k} = $f;
-      }
+      
+      $C->dfrom({u=>$C, s=>$s});
       return $C;
+  - K: dfrom #c
+    D: |
+        my $a = shift;
+        my $u = a.u;
+        my $s = a.s;
+
+        my $sk = {map{$_=>1}qw"uuid id G A T"};
+        my $axi = ref $u ne "HASH"; # on ACGTR or so
+
+        for my $k (keys %$s) {
+            next if $axi && $sk->{$k};
+            # Li or Lo? TODO gonerism and schemas dusly
+            my $t = $u->{$k};
+            my $f = $s->{$k};
+
+            $f = { %$t, %$f } if $t && $f && $k =~ /^(B|S)$/;
+
+            $u->{$k} = $f;
+        }
+        return $u;
   - K: load #c
     D: |
             C._wayfile = shift if @_;

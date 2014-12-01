@@ -91,6 +91,20 @@ P:
                styles: OxO
            ux:
              spawn: []
+R:
+ - K: surfboard
+   in_R:
+     S: 
+       key:
+          E: Vit/up
+          R: Vit/down
+          T: gp/tognew
+          Y: Chew/in
+          A: Spl/A
+          S: Spl/S
+          D: Spl/D
+          F: Spl/F
+          G: Spl/G
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
@@ -113,6 +127,17 @@ hooks:
       w chang[$u];
       u.B.R
     setup: |
+        for my $k (keys %$R) {
+            if ($k =~ /^in_R$/) {
+                $R->from(delete($R->{$k}));
+            }
+            say wdump(2,$R);
+
+            # TODO $R->up
+        }
+        R.J ||= {
+            from => $R,
+        };
         R.J ||= {
             from => $H,
             trav => "{G{GGs",
@@ -155,15 +180,6 @@ hooks:
         #w R.S.w $_/in({}) for keys %{R.S.w};
         
         R.S.key = Load(<<'');
-          E: Vit/up
-          R: Vit/down
-          T: gp/tognew
-          Y: Chew/in
-          A: Spl/A
-          S: Spl/S
-          D: Spl/D
-          F: Spl/F
-          G: Spl/G
         
 
     key: |
