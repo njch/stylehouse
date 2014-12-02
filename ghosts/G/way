@@ -144,7 +144,8 @@ Ds:
             my ($evs, $sub) = @$Ds;
                 
             # TODO rewayen
-            my $back = $G->Doming(D => a.point, $G, a.ar, a.Sway);
+            a.name = "D";
+            my $D = $G->Doming($a);
             
             my $komptalk = "nicht kompilieren! nicht kompilieren!\n $@" if $@;
             
@@ -169,8 +170,8 @@ Ds:
                 eval { @return = $sub->(a.ar) }
             }
             
-            my $D = $back->();
-            $D->{Returns} = [@return];
+            $G->Done($D);
+            D.Returns = [@return];
             
             if ($@) { #     DOO DOO # # TODO di, 0ish
                 my ($x) = $@ =~ /line (\d+)/;
@@ -244,60 +245,42 @@ Ds:
             return wantarray ? @return : shift @return
   - K: Doming #c
     D: |
-            my $s = $G->pyramid(@_);
-            
-            unshift @F, $s;
-            s.F = [@F];
-            
-            return $s;
+        my $a = shift;
+        die if @_;
+        
+        my $s = $G->pyramid($a);
+
+        unshift @F, $s;
+        s.F = [@F];
+
+        return $s;
   - K: Done #c
     D: |
-        my $s = shift;
+        my $D = shift;
+        sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
+        D.Error = $@ if $@;
         
-                my @FF;
-                if ($F[0] ne $s) {
-                    my $E = "BATS ";
-                    if (!grep {$_ eq $s} @F) {
-                        $E .= "self nowhere in \@F"
-                    }
-                    else {
-                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
-                        $E .= " - from $_->{name}\n" for shift @FF;
-                    }
-                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
-                }
-                else {
-                    shift @F;
-                }
-                
-                if ($@) {
-                    #$G->Flab("Stack Return Error", $s, $@);
-                    $s->{Error} = $@;
-                }
-                $s->{Flab} = [@Flab];
-                
-                if ($s->{_after_do}) {
-                    $_->() for @{$s->{_after_do}};
-                }
-                
-                my $te = $@; $@ = "";
-                $G->ob("/", $s);
-                $@ = $te;
-                @Flab = ();
-                $s
+        if (D._after_do) {
+            $_->() for @{D._after_do};
+        }
+        @Flab = ();
+        $D
   - K: timer #c coming, going
     D: |
             my $time = shift || 0.001;
             my $D = shift;
             my $a;
-            a.name = "G>timer";
+            a.name = "t";
+            a.time = $time;
+            a.D = $D; # maybe sub or Disc like thing
+            a.stuff = [@_];
+            my $Dome = $G->Doming($a);
             
-            my $last = $G->Flab("G Timer$st", @_);
+            Mojo::IOLoop->timer( $time, sub { $G->comeback($last, $doings, $doing, @_); }; );
             
-            my $doings;
-            $doings = sub { $G->comeback($last, $doings, $doing, @_); };
-            Mojo::IOLoop->timer( $time, $doings );
-            return $last
+            $G->Done($Dome);
+            
+            return $Dome;
   - K: comeback #c
     D: |
             my $last = shift;
@@ -482,20 +465,18 @@ Ds:
       }
   - K: pyramid #c
     D: |
-      my $thing = [@_];
-      
+      my $a = shift if @_ == 1;
+      if (!ref $a) {
+          a.name = $a;
+          a.stuff = [@_];
+      }
       my $u;
       my ($last) = @F;
-      
       # spawn the shadows of actions
       # could want more complexity per G
       # A hooks?
-      if ($last) {
-          $u = last.A->spawn('C');
-      }
-      else {
-          $u = G.A->spawn('C');
-      }
+      $u = last.A->spawn('C') if $last;
+      $u ||= G.A->spawn('C');
       u.G = $G if $G ne u.G;
       
       G.A->An($u, 'pyramid');

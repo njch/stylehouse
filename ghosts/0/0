@@ -83,6 +83,10 @@ hooks:
     reload: |
         S.way =  $S->s;
         S.way->load($file);
+        Sw codif/diff;
+        S.T->commit('reload');
+    codif:
+      diff: |
         my $Dh = S.Dh = {};
         for my $Ds (@{S.way->find("Ds")}) {
             $Dh->{Ds.K} = $H->dig(Ds.D);
@@ -109,7 +113,6 @@ hooks:
             }
         }
         sayyl "Redoming: ".wdump(S.Dd) if %{S.Dd};
-        S.T->commit('reload');
     codif: |
         S.Dc = [];
         while (my ($k, $v) = each %{S.Dd}) {
