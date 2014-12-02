@@ -253,18 +253,25 @@ hooks:
         grep{!/\d$/} glob "ghosts/0/*";
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
     
+    
+    sayyl "Coding: ".join"   ,   ", map { _.B.file } @chpms;
+    if (!@chpms) {
+        sayre "Nothing change 0/0";
+        return;
+    }
+    
     say.coded = sayyl "coding?? ".(0+@chpms)." of ".(0+@nonpms);
     say.ghod = sayre "   g0ings: ".join ", ", sort keys %{ar.Gd} if ar.Gd;
     
     
-    for my $c (@chpms) {
+    for my $c (@chpms) { 
         delete c.way;
         w $c reload;
         my $way = c.way;
         way.name ||= (way._wayfile =~ /ghosts\/(.+)/)[0] || way._wayfile;
         
         w coden[$c, $way];
-        sayyl "compile way.name".$G->F_delta();
+        sayyl "compile way.name".$G->F_delta(); 
         
         #w $c codif;
         

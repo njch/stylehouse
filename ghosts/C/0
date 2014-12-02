@@ -321,47 +321,14 @@ hooks:
                         0.2 => { K => u.K },
                     };
                     if ($r eq "A") {
-                        #$vos->{0.1} = { id => u.id };
-                        $vos->{0.2} = sub{{ for => ">".u.i->pi(), _u => u.i }};
+                        #$vos->{0.1} = { id => u.id }; 
+                        $vos->{0.2} = sub{ 
+                            my $pi = w vAK/gp(R=>$R, u=>u.i, cv=>$cv-0.1);
+                            { for => ">$pi", _u => u.i }  
+                        };
                     }
                     if ($r eq "C") {
-                        #$vos->{0.1} = { id => u.id };
-                        my $C = $u;
-                        
-                        
-                        my $two = $vos->{0.2}; # has u.K
-                        # it's like C$name↯$K ...
-                        two.aa = "↯"; # put 
-                        if (C.B && C.B.name) {
-                            two.maa = "Bname:";
-                            two.mame = C.B.name;
-                        }
-                        
-                        
-                        my $print;
-                        if ((defined C.print || C.Gw) && G::wish(G=>C.G)) {
-                            eval { $print = C.G w $C print({}); };
-                            $@ = "" if $@;
-                        }
-
-                        my $B;
-                        
-                        if (C.B) {
-                            if (a.cv > 0.2) {
-                                if (join(",", sort keys %{C.B}) eq "Lu,ui") {
-                                    $B = "ui=(".C.B.ui->pint();
-                                }
-                                $B ||= G::slim(50,30,G::ki(C.B))        
-                            }
-                        }
-                        $vos->{0.3} = sub{
-                              my $b = {};
-                            if (C.B) {
-                                b.B = "B:$B";
-                                b._u = C.B;
-                            }
-                            $b;
-                        };
+                        w vAK/gp_pi_C[$R, $u, $vos, $a];
                     }
                     for my $vo (sort keys %$vos) {
                         if ($cv >= $vo) {
@@ -390,6 +357,7 @@ hooks:
                             next if $vk =~ /^_/;
                             my $w;
                             $w = "cfa" if $vk eq 'thi';
+                            $w = "3f3" if $vk eq 'K';
                             $w = "ca6" if $vk =~ /ame$/;
                             $w = "000;font-size:30%" if $vk eq 'id';
                             my $s = $v->{$vk};
@@ -398,7 +366,9 @@ hooks:
                             # so vakgp...
                             $s = w vAK/gp(R=>$R, u=>v._u, cv=>$vcv) if
                                 v._u && $vcv >= $vo;
+                                
                             next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
+                            
                             $s = $wit->($s, $w) if $w;
                             push @s, $s;
                         }
