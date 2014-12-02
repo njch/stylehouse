@@ -170,7 +170,7 @@ Ds:
                 eval { @return = $sub->(a.ar) }
             }
             
-            $G->Done($D);
+            $G->Done($D); #c D
             D.Returns = [@return];
             
             if ($@) { #     DOO DOO # # TODO di, 0ish
@@ -276,21 +276,24 @@ Ds:
             a.stuff = [@_];
             my $Dome = $G->Doming($a);
             
-            Mojo::IOLoop->timer( $time, sub { $G->comeback($last, $doings, $doing, @_); }; );
+            Mojo::IOLoop->timer($time, sub {
+                $G->comeback($Dome);
+            });
             
             $G->Done($Dome);
             
             return $Dome;
   - K: comeback #c
     D: |
-            my $last = shift;
-            my $doings = shift;
-            my $doing = shift;
-            my @saying = @{ $last->{thing} };
-            $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
-            my ($u, $s) = $G->waystacken(@saying, @_); #c
-            $s->{doings} = $doings;
-            $s->{timer_from} = $last;
+        my $Dome = shift;
+        my $a;
+        a.name = Dome.name;
+        a.name eq 't' || die 'wei';
+        a.name = 'r';
+        a.from = $dome;
+        
+        my $Doing = $G->Doming($a);
+        
             $last->{timer_back} = $s;
             eval { $doing->(); };
             # start serving code and stuff through H/0!

@@ -83,7 +83,7 @@ hooks:
     reload: |
         S.way =  $S->s;
         S.way->load($file);
-        Sw codif/diff;
+        Sw codif/diff if 0;
         S.T->commit('reload');
     codif:
       diff: |
@@ -276,10 +276,14 @@ hooks:
         my $check = "cd il/; perl -I ../lib -c l/$file";
 
         ($bug, my @out) = capture_err $check;
+        my $talk = join "", @out;
         my $st = ($bug ? "FAILELDIDL!!!" : "compiled")
-            ." $file == $bug\n".$H->ind("E  ", join"", @out);
-            
-        $bug ? sayre $st : sayyl $st;
+            ." $file == $bug\n".$H->ind("E  ", $talk); 
+        
+        sayre $talk;
+         
+        my $sh = slim(600,600,$st);
+        $bug ? sayre $sh : sayyl $sh;
         say.compile .= $st;
     }
     
@@ -287,7 +291,9 @@ hooks:
     
     run "cp il/l/* sal/";
     my $dif = capture("cd sal; git diff");
-    say.diff = saybl $dif if $dif;
+    say.diff = $dif;
+    my $dhf = slim(600,600,$dif);
+    saybl $dhf;
     my $ch;
     if ($bug) {
         $ch = "buggered";
