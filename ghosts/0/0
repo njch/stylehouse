@@ -172,11 +172,11 @@ hooks:
             my $wai = $lii;
             my $spot; # in the chunk from sub
             while (!$sub && $wai > 0) {
-                $wai--;
                 if ($perl->[$wai] =~ /^sub (\w+) \{/) {
                     $sub = $1;
                     $spot = $lii - $wai;  
                 }
+                $wai--;
             }
             $sub ||= $perl->[$wai];
             
@@ -196,12 +196,15 @@ hooks:
             $R::f->{liblue} = "color:#88f;";
             
             if ($lie =~ /^\s*\}\s*$/) {
-                @code = $lie.G.R->f(liblue_fs80 => " ! end of block");
+                @code = "$lie".G.R->f(liblue_fs80 => " ! end of block");
             }
             
-            push @nl, G.R->f(white => "C $_") for @code;
-            push @nl, G.R->f(fs120_liblue => "D: $sub  line $spot")
-                ."\t$ug   ".G.R->f(fs60 => "$file:$line");
+            push @nl, G.R->f(fs120_liblue => "D: $sub  line $spot");
+            for (@code) {
+                my $sty = $_ eq $lie ? "red" : "white";
+                push @nl, G.R->f($sty => "C $_");
+            }
+            push @nl, "\t$ug   ".G.R->f(fs60 => "$file:$line");
             push @nl, $near if $near;
         }
         else {
@@ -278,10 +281,8 @@ hooks:
         ($bug, my @out) = capture_err $check;
         my $talk = join "", @out;
         my $st = ($bug ? "FAILELDIDL!!!" : "compiled")
-            ." $file == $bug\n".$H->ind("E  ", $talk); 
+            ." $file == $bug\n".ind("E  ", $talk); 
         
-        sayre $talk;
-         
         my $sh = slim(600,600,$st);
         $bug ? sayre $sh : sayyl $sh;
         say.compile .= $st;

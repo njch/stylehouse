@@ -1,30 +1,37 @@
 Ds:
-  - K: Flab #c too dry
+  - K: Flab #c
     D: |
         wish(G=>$G) || die "send G";
-        say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-            if $G->deeby && $_[0] !~ /^\w\ Error/;
-        $G->ob(@_);
-        my $s = $G->pyramid(@_);
-        unshift @Flab, $s;
-        $s->{Flab} = [@Flab];
-        $s;
         
-  - K: fla
+        # like sa*
+        # throws up little con tent # F jointed sa*
+        # also like di, has this db vector
+        # for punching out with helpful quality
+        
+        say join("", "G.db + $db", ("_") x scalar(@F))."G.name  $_[0]"
+            if $G->deeby && $_[0] !~ /^\w\ Error/;
+            
+        my $a;
+        a.name = "f";
+        a.stuff = [@_];
+        a.igGA = 1;
+        
+        $G->pyramid($a);
+  - K: fla #c
     D: |
         $F[0]->{G}->Flab(@_);
         
-  - K: ways
+  - K: ways #c
     D: |
         grep { !$_->{_disabled} } @{$G->{ways}}
     
-  - K: findway
+  - K: findway #c
     D: |
         my $point = shift;
         my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
         wantarray ? @w : shift @w;
         
-  - K: anyway
+  - K: anyway #c
     D: |
         my $point = shift;
         my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
@@ -269,6 +276,7 @@ Ds:
     D: |
             my $time = shift || 0.001;
             my $D = shift;
+            
             my $a;
             a.name = "t";
             a.time = $time;
@@ -286,17 +294,18 @@ Ds:
   - K: comeback #c
     D: |
         my $Dome = shift;
-        my $a;
-        a.name = Dome.name;
-        a.name eq 't' || die 'wei';
-        a.name = 'r';
-        a.from = $dome;
         
+        my $a;
+        a.name = 'r';
+        a.from = $Dome;
         my $Doing = $G->Doming($a);
         
-        $G->D({D=>a.from.D, toplevel=>1});
+        $G->D({D=>Dome.D, toplevel=>1});
         
         $G->Done($Doing);
+        
+        sayre $@ if $@;
+        $@ = "";
         
   - K: waystacken #c # TODO going in favour of flablessness, Rish sa*
     style: nonbabble
@@ -363,7 +372,6 @@ Ds:
       # replay dep on perc state of origin $G
       
   - K: w #c
-    style: nonbabble
     D: |
       my $point = shift; 
       my $ar = shift;
@@ -371,7 +379,7 @@ Ds:
       my @ways;
 
       die "What do you MEAN $G->{name} $point $ar $Sway !?  ".wdump($ar) if defined $ar && ref $ar ne "HASH";
-      my $talk = "w $point";
+      my $talk = "w\ $point";
       my $watch;
 
       if ($Sway) {
@@ -424,8 +432,8 @@ Ds:
             ar => $ar,
             point => $point,
             Sway => $Sway,
-            w => $w,
           };
+          a.w=$w;
           
           my $Z = $G->Doming($a);
           
@@ -442,7 +450,7 @@ Ds:
 
           if ($@) {
               my $ne = "Z";
-              $ne .= Z.inter} if Z.inter;
+              $ne .= Z.inter if Z.inter;
               $ne .= "\n";
               $ne .= "S: ".ki($Sway)."\n" if $Sway;
               $ne .= "$@";
@@ -466,62 +474,30 @@ Ds:
       return wantarray ? @r : shift @r;
   - K: pyramid #c
     D: |
-      my $a = shift if @_ == 1;
-      if (!ref $a) {
-          a.name = $a;
-          a.stuff = [@_];
-      }
-      my $u;
+      my $a = shift;
+      
       my ($last) = @F;
       # spawn the shadows of actions
       # could want more complexity per G
       # A hooks?
-      $u = last.A->spawn('C') if $last;
+      my $u = last.A->spawn('C') if $last;
       $u ||= G.A->spawn('C');
       u.G = $G if $G ne u.G;
+      
+      confess "Ba" if !ref $a;
+      
+      $u->from($a);
+      u.K = u.name || die;
+      u.K .= 'ᣝ';
+      u.hitime = $H->hitime();
+      u.stack = $H->stack(2,7);
+      u.F = [@F];
+      u.depth = 0+@F;
+      u.Error = $@ if $@; #?
       
       G.A->An($u, 'pyramid');
       G.A->An($u, 'pyramid_tip') if !$last;
       
-      # TODO ^ set A u words to 'pyramid'
-      
-      my $stack = $H->stack(2,7);# short
-      
-      
-      
-      my $from; # FUZZ!
-      if ($stack->[0] =~ /G::timer/) {
-          $from = "time"
-      }
-      elsif ($stack->[1] =~ /G.+eval.+/
-          && $stack->[2] =~ /G::doo/) {
-          $from = "some doing..."
-      }
-      else {
-          ($from) = $stack->[0] =~ / (\S+::\S+) /;
-          $from =~ s/.*G::(Fl|wa).*/$1/ && do {
-              $from =~ s/^wa$/Dᣝ/ ||
-              $from =~ s/^Fl$/ᣜD/
-          }
-          || $from =~ s/G::/G\:/;
-      }
-      my $dir = ($last ? "last.id>" : "").u.id;
-      #say "pyra $dir $from  $thing->[0]";
-      $from ||= "stackw\ $stack->[0]";
-      shift @$stack;
-
-      $u->from({
-          K => "$from",
-          hitime => $H->hitime(),
-          stack => $stack,
-          Flab => [@Flab],
-          F => [@F],
-          depth => 0+@F,
-          thing => $thing,
-       #   print => 'S.name;',
-      });
-      $u->from({Error=>$@}) if $@;
-      #u.name = join " ", grep {defined $_} u.G.name, u.K, gpty(@{u.thing});
       $u
       
 
