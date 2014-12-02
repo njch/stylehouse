@@ -31,7 +31,7 @@ hooks:
     # TODO T diff new ways to get InC etc changes
     @$P = sort { !defined _.GAK } @$P;
     for my $p (@$P) {
-        if (defined p.D) {
+        if (defined p.D && !defined p.K) {
             $G->D(p.D);
         } elsif (defined p.GAK) {
             my ($k, @w) = split ' ', p.GAK;
@@ -43,10 +43,13 @@ hooks:
                 sayyl "Put ".GG.GG->{$k}->pi." down";
             }
             
+            my $oGG = $GG;
             my $GG = GG.GG->{$k} || die;
             my $P = [];
             push @$P, $_ for @{ p.P || [] };
-            push @$P, $_ for @{ $GG->anyway('P') || [] };
+            my @onG = @{ $GG->anyway('P') || [] };
+            sayre @onG." on oGG.name perc GG.name ! perc";
+            push @$P, $_ for @onG;
             
             if (my $d = p.InC) {
                 $GG->InjC($GG => {C => $d});
