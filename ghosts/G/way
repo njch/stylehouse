@@ -72,6 +72,12 @@ Ds:
   - K: Dm #c
     D: |
         my $a = shift;
+        
+        if (a.D) {
+            die unless ref a.D eq "CODE";
+            return ["???", a.D];
+        }
+        
         my $uuname = join " ",
             $G->{id},
             $H->dig(a.bab),
@@ -120,20 +126,12 @@ Ds:
   - K: D #c
     D: |
             my $a;
-            $a = shift if @_ == 1 && ref $_[0] eq "HASH";
-            $a || do {
-                a.bab = shift;
-                a.ar = shift || {};
-                a.point = shift;
-                a.Sway = shift;
-                # also $w indi from above w findway
-                # and $Z the pyramid from above
-            };
-            my $ar = a.ar;
+            $a = shift;
+            my $ar = a.ar || {};
             
             die "RECURSION ".@F if @F > $MAX_FCURSION; 
             
-            
+            # also a.D can be CODE, $Ds viv
             if (ref a.bab eq "C") {
                 my $b = a.bab;
                 die unless b.K eq "Disc";
@@ -148,7 +146,6 @@ Ds:
             my $D = $G->Doming($a);
             
             my $komptalk = "nicht kompilieren! nicht kompilieren!\n $@" if $@;
-            
             
             H.sigstackend ||= sub {
                 local $@;
@@ -263,7 +260,10 @@ Ds:
         if (D._after_do) {
             $_->() for @{D._after_do};
         }
+        
         @Flab = ();
+        shift @F;
+        
         $D
   - K: timer #c coming, going
     D: |
@@ -294,14 +294,10 @@ Ds:
         
         my $Doing = $G->Doming($a);
         
-            $last->{timer_back} = $s;
-            eval { $doing->(); };
-            # start serving code and stuff through H/0!
-            $u->();
-            if ($@) {
-                $@ =~ s/^(!   )+Z\n//sgm;
-                sayre(ind("Error ", $@));
-            }
+        $G->D({D=>a.from.D, toplevel=>1});
+        
+        $G->Done($Doing);
+        
   - K: waystacken #c # TODO going in favour of flablessness, Rish sa*
     style: nonbabble
     D: |
@@ -416,33 +412,37 @@ Ds:
           @ways = $G->ways;
       }
 
-      my @returns;
+      my $l = [];
       for my $w (@ways) {
       
           my $h = $w->find($point) || next;
           
-          my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); #c
-          my ($Z) = @F;#c
           my $a = {
-              bab => $h,
+            name => "Z",
+            stuff => [$talk],
+            bab => $h,
             ar => $ar,
             point => $point,
             Sway => $Sway,
             w => $w,
-            Z => $Z,
           };
+          
+          my $Z = $G->Doming($a);
+          
+          Z.l = $l;
+          push @$l, $Z;
+          
           my $r;
           
           eval { $r = [ $G->D($a) ] };
 
-          push @returns, $r;
-          my $ZZ = $u->();
-          die "MISM" unless $Z eq $ZZ;
-          $Z->{Returns} = $r;
+          Z.r = $r;
+          
+          $G->Done($Z);
 
           if ($@) {
               my $ne = "Z";
-              $ne .= $Z->{inter} if $Z->{inter};
+              $ne .= Z.inter} if Z.inter;
               $ne .= "\n";
               $ne .= "S: ".ki($Sway)."\n" if $Sway;
               $ne .= "$@";
@@ -451,21 +451,19 @@ Ds:
               die $@;
           }
       }
-      unless (@returns) {
+      
+      if (!@$l) {
           $G->Flab("way miss $talk", \@ways, $Sway) if $G->deeby > 3;
+          return;
       }
-      return warn "Multiple returns from ".($point||'some?where')
-                              if @returns > 1;    
-      return
-                              if @returns < 1;
-      my @return = @{$returns[0]};
-      if (wantarray) {
-          return @return
+      
+      if (@$l > 1) {
+            warn "multiple returns from $point";
       }
-      else {
-          my $one = shift @return;
-          return $one;
-      }
+      
+      my ($z) = @$l;
+      my @r = @{z.r};
+      return wantarray ? @r : shift @r;
   - K: pyramid #c
     D: |
       my $a = shift if @_ == 1;
