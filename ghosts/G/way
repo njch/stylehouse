@@ -72,9 +72,10 @@ Ds:
   - K: timer #c coming, going
     D: |
             my $time = shift || 0.001;
-            my $doing = shift;
-            my $st = " ".$_[0] if $_[0] && !ref $_[0];
-            $st ||= "";
+            my $D = shift;
+            my $a;
+            a.name = "G>timer";
+            
             my $last = $G->Flab("G Timer$st", @_);
             
             my $doings;
@@ -88,7 +89,7 @@ Ds:
             my $doing = shift;
             my @saying = @{ $last->{thing} };
             $saying[0] =~ s/G Timer/G remiT/ || unshift @saying, "G remiT";
-            my ($u, $s) = $G->waystacken(@saying, @_);
+            my ($u, $s) = $G->waystacken(@saying, @_); #c
             $s->{doings} = $doings;
             $s->{timer_from} = $last;
             $last->{timer_back} = $s;
@@ -99,6 +100,48 @@ Ds:
                 $@ =~ s/^(!   )+Z\n//sgm;
                 sayre(ind("Error ", $@));
             }
+  - K: waystacken #c # TODO going in favour of flablessness, Rish sa*
+    style: nonbabble
+    D: |
+            my $s = $G->pyramid(@_);
+            push @{ $F[0]->{undies} ||= [] }, $s if @F;
+            unshift @F, $s;
+            $s->{F} = [@F],
+            $G->ob("\\", $s);
+            my $unway = sub {
+                my @FF;
+                if ($F[0] ne $s) {
+                    my $E = "BATS ";
+                    if (!grep {$_ eq $s} @F) {
+                        $E .= "self nowhere in \@F"
+                    }
+                    else {
+                        unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
+                        $E .= " - from $_->{name}\n" for shift @FF;
+                    }
+                    $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
+                }
+                else {
+                    shift @F;
+                }
+                
+                if ($@) {
+                    #$G->Flab("Stack Return Error", $s, $@);
+                    $s->{Error} = $@;
+                }
+                $s->{Flab} = [@Flab];
+                
+                if ($s->{_after_do}) {
+                    $_->() for @{$s->{_after_do}};
+                }
+                
+                my $te = $@; $@ = "";
+                $G->ob("/", $s);
+                $@ = $te;
+                @Flab = ();
+                $s
+            };
+            wantarray ? ($unway, $s) : $unway;
   - K: nw #c G ways
     D: |
       my $C = G.A->spawn('C');  
@@ -176,8 +219,8 @@ Ds:
       
           my $h = $w->find($point) || next;
           
-          my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h');
-          my ($Z) = @F;
+          my $u = $G->waystacken(Z => "$talk", $G, $w, $Sway, bless {h=>$h}, 'h'); #c
+          my ($Z) = @F;#c
           my $a = {
               bab => $h,
             ar => $ar,
@@ -227,9 +270,17 @@ Ds:
       
       my $u;
       my ($last) = @F;
-      $u = last.A->spawn('C') if $last;
       
-      $u = G.A->spawn('C') if !$u;
+      # spawn the shadows of actions
+      # could want more complexity per G
+      # A hooks?
+      if ($last) {
+          $u = last.A->spawn('C');
+      }
+      else {
+          $u = G.A->spawn('C');
+      }
+      u.G = $G if $G ne u.G;
       
       G.A->An($u, 'pyramid');
       G.A->An($u, 'pyramid_tip') if !$last;
@@ -237,6 +288,8 @@ Ds:
       # TODO ^ set A u words to 'pyramid'
       
       my $stack = $H->stack(2,7);# short
+      
+      
       
       my $from; # FUZZ!
       if ($stack->[0] =~ /G::timer/) {
@@ -249,8 +302,8 @@ Ds:
       else {
           ($from) = $stack->[0] =~ / (\S+::\S+) /;
           $from =~ s/.*G::(Fl|wa).*/$1/ && do {
-              $from =~ s/^wa$/_ᣝ/ ||
-              $from =~ s/^Fl$/ᣜ_/
+              $from =~ s/^wa$/Dᣝ/ ||
+              $from =~ s/^Fl$/ᣜD/
           }
           || $from =~ s/G::/G\:/;
       }
@@ -261,28 +314,22 @@ Ds:
 
       $u->from({
           K => "$from",
-          G => $G,
           hitime => $H->hitime(),
           stack => $stack,
           Flab => [@Flab],
           F => [@F],
           depth => 0+@F,
           thing => $thing,
-          print => 'S.name;',
+       #   print => 'S.name;',
       });
       $u->from({Error=>$@}) if $@;
-      u.name = join " ", grep {defined $_} u.G.name, u.K, gpty(@{u.thing});
+      #u.name = join " ", grep {defined $_} u.G.name, u.K, gpty(@{u.thing});
       $u
       
-  - K: waystacken #c
-    style: nonbabble
+  - K: Done #c
     D: |
-            my $s = $G->pyramid(@_);
-            push @{ $F[0]->{undies} ||= [] }, $s if @F;
-            unshift @F, $s;
-            $s->{F} = [@F],
-            $G->ob("\\", $s);
-            my $unway = sub {
+        my $s = shift;
+        
                 my @FF;
                 if ($F[0] ne $s) {
                     my $E = "BATS ";
@@ -314,6 +361,4 @@ Ds:
                 $@ = $te;
                 @Flab = ();
                 $s
-            };
-            wantarray ? ($unway, $s) : $unway;
 
