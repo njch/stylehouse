@@ -32,8 +32,24 @@ hooks:
     @$P = sort { !defined _.GAK } @$P;
     for my $p (@$P) {
         if (defined p.D && !defined p.K) {
+        
             $G->D(p.D);
+            
         } elsif (defined p.GAK) {
+        
+            w perc_z/GAK[$p, $GG];
+            sayyl "back from ".$GG->pi;
+            
+        }
+        else {
+        
+            w perc_z/carb[$p, $GG];
+            
+        }
+    }
+    $GG w percolate unless $GG eq $G;
+  perc_z:
+    GAK: | #c
             my ($k, @w) = split ' ', p.GAK;
             my $w = join ' ', @w;
             $w ||= $k;
@@ -57,25 +73,25 @@ hooks:
             
             w percs[$GG, $P];
             sayyl "back from ".$GG->pi;
+    carb: | #c
+        # translate compression
+        if (keys %$p == 1 && (keys %$p)[0] =~ /^(\w+) (.+)$/) {
+            my $c = $GG->CsK({K=>$1});
+            die "no BcS for $1" unless c.BcS;
+            my @parc = ($2, values %$p);
+            $p = {};
+            p.K = $1;
+            p.B->{$_} = shift @parc for split ' ', c.BcS;
+        }
+            
+        if (p.K) { # perc u
+            my $u = $GG->sway({K=>p.K}, $p);
+            saybl "Making ".$u->pi;
+            $u = $GG->Tafu($u);
         }
         else {
-            if (keys %$p == 1 && (keys %$p)[0] =~ /^(\w+) (.+)$/) {
-                my $c = $GG->CsK({K=>$1});
-                die "no BcS for $1" unless c.BcS;
-                my @parc = ($2, values %$p);
-                $p = {};
-                p.K = $1;
-                p.B->{$_} = shift @parc for split ' ', c.BcS;
-            }
-            if (p.K) { # perc u
-                my $u = $GG->sway({K=>p.K}, $p);
-                saybl "Making ".$u->pi;
-                $u = $GG->Tafu($u);
-            }
-            else {die " wtf=>".ki($p)};
+            die " wtf=>".ki($p)
         }
-    }
-    $GG w percolate unless $GG eq $G;
   reperc: |
     # coded way diff/inject/retravel above percolations
   ux: |
