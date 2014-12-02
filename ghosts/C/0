@@ -369,6 +369,7 @@ hooks:
                                 
                             next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
                             
+                            $w .= '" title="'.$vk;
                             $s = $wit->($s, $w) if $w;
                             push @s, $s;
                         }
@@ -413,18 +414,23 @@ hooks:
                         my @or = qw'name point timer';
                         delete $s{id};
                         push @or, keys %s;
+                        my $c;
                         my $b;
                         for my $k (@or) {
                             next if !$k;
                             next if !exists $C->{$k};
                             my $t = $C->{$k};
-                            say "Found $k $t";
                             next if !defined $t;
                             next if ref $t;
                             next if $t =~ /\n/; 
-                            $b->{$k} = "$k:".slim(20,20,$t);
+                            my $slim = slim(20,20,$t);
+                            $b->{$k} = $slim;
+                            $c->{$k} = $slim if $k eq "point";
                         }
-                        $vos->{0.4} = $b;
+                        
+                        c.B = "B:". w vAK/gp(R=>$R, u=>C.B, cv=>0.2) if C.B;
+                        $vos->{0.3} = $c;
+                        $vos->{0.4} = $b; 
                         
 
                         my $B;
@@ -437,14 +443,6 @@ hooks:
                                 $B ||= G::slim(50,30,G::ki(C.B))        
                             }
                         }
-                        $vos->{0.3} = sub {
-                            my $b = {};
-                            if (C.B) {
-                                b.B = "B:". w vAK/gp(R=>$R, u=>C.B, cv=>0.2);
-                                b._u = C.B;
-                            }
-                            $b
-                        };
     cgp: | #c data guess chart
         my $c = {};
         if (!defined $u){
