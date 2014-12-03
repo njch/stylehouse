@@ -18,36 +18,41 @@ Ds:
     D: |
       $H->spawn({uA => $A, r=>[@_]});
       
-  - K: An # link down
+  - K: An #c link down
     D: |
       my $n = $A->fiA(shift);
       my $l = $A->mklt(n => @_);
       $A->accum($A, $l, $n);
-  - K: Au # link up
+      
+  - K: Au #c link up
     D: |
       my $u = $A->fiA(shift);
       my $l = $A->mklt(u => @_);
       return A.u = $u if $l eq "u";
       $A->accum($A, $l, $u);
             
-  - K: rAn # unlink down
+  - K: rAn #c unlink down
     D: |
       my $n = $A->fiA(shift);
       my $l = $A->mklt(n => @_);
       $A->deaccum($A, $l, $n);
-  - K: rAu # unlink up
+  - K: rAu #c unlink up
     D: |
       my $u = $A->fiA(shift);
       my $l = $A->mklt(u => @_);
       return A.u = $u if $l eq "u";
       $A->deaccum($A, $l, $u);
       
-  - K: mklt # link line thinger
+  - K: mklt #c link line thinger
     D: |
       return join "_", grep /./, @_;
       
-  - K: umv
+  - K: umv #c rewire from origin to new origin
     D: |
+      # say if we don't want to clutter the G this spawned from
+      # as a tidy up
+      # and things that don't get tidied up
+      # must want more attention
       my ($f, $t) = @_;
       my $Au = A.u;
       $Au->rAn($A, $f);
