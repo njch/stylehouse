@@ -7,10 +7,18 @@ Ds:
     D: |
       use YAML::Syck;
       use Scriptalicious;
+      # use Mojo::IOLoop::ForkCall; # see para
       our $swdepth = 5;
       our $T; # allele tower... not like so, again R above
       our @F; # is Ring re subs from below 
       our $G0;
+      our $db = 0;
+      our $MAX_FCURSION = 140;
+      our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
+      our $HASHC = "#"."c";
+      our $gp_inarow = 0;
+      my %D_cache;
+
       # ^ curves should optimise away, accordion
       
       #c to dry up
@@ -45,32 +53,7 @@ Ds:
 
         our @Flab;
         our $Ly;
-        our $db = 0;
         our $_ob = undef;
-        our $MAX_FCURSION = 140;
-        our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
-        our $HASHC = "#"."c";
-        our $gp_inarow = 0;
-        
-        sub way_was {
-            my $G = shift;
-            my $what = shift;
-            my $lt = $F[0]->{thing};
-            $lt->[0] eq "D" && $lt->[1] eq $what
-        }
-        sub haunt { # arrives through here #c
-            my $G = shift;
-            my $unT = shift;
-            my $p = {
-              depth => shift,
-              t => shift,
-              i => shift,
-            };
-            return $G->_0("0->T", $p);
-        }
-
-
-        my %D_cache;
   - K: new #c
     D: |
       my (@ways) = @_;
