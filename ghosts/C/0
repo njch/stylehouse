@@ -336,7 +336,7 @@ hooks:
                 my $gppi = $G->findway('vAK/gp_pi');
                 $gppi->{$r} || die "not $r equip";
                 
-                w vAK/gp_pi/$r(%$ar);
+                w vAK/gp_pi/$r(%$arr);
                 
                 my $vos = a.bb;
                 
@@ -402,25 +402,27 @@ hooks:
         R.gp_inarow--;
 
         R.S.gpnew ? join("", @s) : G::gp($u);
-    gp_pi_C: | #c
-    gp_pi:
-      A: |
+
+    gp_pi: #c
+      A: | #c
+        my $cv = a.cv ||= 0.3;
         a.bb = {
             0 => { thi => ref $u },
             0.1 => { name => u.name },
             0.2 => { K => u.K },
         };
         a.bb->{0.2} = sub { 
-            my $pi = w vAK/gp(R=>$R, u=>A.i, cv=>$cv-0.2);
+            my $pi = w vAK/gp(%$a, u=>A.i, cv=>$cv-0.2);
             { for => ">$pi", _u => A.i }  
         };
-      G: |
+      G: | #c
         $G->pi;
-      T: |
+      T: | #c
         $T->pi;
-      R: |
+      R: | #c
         $R->pi;
       C: | #c
+        my $cv = a.cv ||= 0.3;
                         #$vos->{0.1} = { id => u.id };
                         my $C = $u;
                         
