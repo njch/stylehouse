@@ -336,18 +336,18 @@ hooks:
                 my $gppi = $G->findway('vAK/gp_pi');
                 $gppi->{$r} || die "not $r equip";
                 
-                w vAK/gp_pi/$r(%$arr);
+                my $pi = w vAK/gp_pi/$r(%$arr);
                 
-                my $vos = a.bb;
-                
-                    for my $vo (sort keys %$vos) {
-                        if ($cv >= $vo) {
-                            my $d = $vos->{$vo};
-                            $d = $d->() if ref $d eq 'CODE';
-                            a.o->{$vo} = $d;
-                        }
+                if (my $vos = a.bb) {
+                    # grep up to our voltage
+                    for my $vo (sort keys %{a.bb}) {
+                        next if $vo > $cv;
+                        my $d = a.bb->{$vo};
+                        $d = $d->() if ref $d eq 'CODE';
+                        a.o->{$vo} = $d;
                     }
                     
+                    # sort out...
                     my @s;
                     for my $vo (sort keys %{a.o}) {
                         my $v = a.o->{$vo};
@@ -357,8 +357,8 @@ hooks:
                             push @s, $s;
                         }
                     }
-                    
-                my $pi = join ' ', @s;
+                    $pi = join ' ', @s;
+                }
                     
                 if (a.o) { #c
                     my $vcv = $cv - 0.2;
@@ -402,7 +402,6 @@ hooks:
         R.gp_inarow--;
 
         R.S.gpnew ? join("", @s) : G::gp($u);
-
     gp_pi: #c
       A: | #c
         my $cv = a.cv ||= 0.3;
@@ -425,17 +424,18 @@ hooks:
         $W->pi;
       C: | #c
         my $cv = a.cv ||= 0.3;
-        #$vos->{0.1} = { id => u.id };
-        my $C = $u;
-        
-        
-        my $two = $vos->{0.2}; # has u.K 
+        a.bb = {
+            0 => { thi => ref $u },
+            0.1 => { name => u.name },
+            0.2 => { K => u.K },
+        };
+        my $two = a.bb->{0.2}; # has u.K 
         # it's like C$name↯$K ...
         two.aa = "↯"; # put 
         if (C.B && C.B.name) {
             two.maa = "Bname:";
             two.mame = C.B.name;
-        }C    0    
+        }
         
         
         
@@ -464,9 +464,9 @@ hooks:
             say wdump($c) if $k eq "point";
         }
         
-        c.B = "B:". w vAK/gp(R=>$R, u=>C.B, cv=>0.2) if C.B;
-        $vos->{0.3} = $c;
-        $vos->{0.4} = $b;
+        c.B = "B:". w vAK/gp(%$a, u=>C.B, cv=>0.2) if C.B;
+        a.bb->{0.3} = $c;
+        a.bb->{0.4} = $b;
         
         my $B;
         
