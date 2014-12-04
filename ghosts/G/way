@@ -293,11 +293,11 @@ Ds:
             return $Dome;
   - K: para #c
     D: |
-          die "install it";
+        die "install it";
         # TODO get better paraphernalia
         # ram and cpus
         # new OS to get latest mojo things working in
-        # such as this and Redis2 for better eventing of sub
+        # such as this and Mojo::Redis2 for better eventing of sub
         my $fc = Mojo::IOLoop::ForkCall->new;
         $fc->run(
            sub {},
@@ -388,46 +388,47 @@ Ds:
     D: |
       my $point = shift; 
       my $ar = shift;
-      my $Sway = shift;
+      my $S = shift; # some kinda C subject
       my @ways;
-
-      die "What do you MEAN $G->{name} $point $ar $Sway !?  ".wdump($ar) if defined $ar && ref $ar ne "HASH";
+      
+      die wdump($ar) if $ar && ref $ar ne 'HASH';
+      
       my $talk = "w\ $point";
       my $watch;
 
-      if ($Sway) {
+      if ($S) {
           $talk .= " S";
-          if (ref $Sway eq 'Ghost' || ref $Sway eq "G") {
-              @ways = $Sway->ways;
+          if (ref $S eq "G") {
+              die "haps";
+              @ways = $S->ways;
               $talk .= " G";
           }
-          elsif (ref $Sway eq 'Way' || ref $Sway eq "C") {
-              if ($Sway->{ofways}) {
-                  @ways = @{$Sway->{ofways}};
+          elsif (ref $S eq "C") {
+              if (my $of = S.ofways) { # TODO 
+                  @ways = @$of;
               }
-              elsif ($Sway->{Gw}) {
-                  my $SG = $Sway->{G} || die "no Sway G!?";
-                  my $CodeK = $Sway->{Gw};
-                  $CodeK = $Sway->{K} if $CodeK eq "1";
+              elsif (S.Gw) {
+                  my $SG = S.G || die "no way G!?";
+                  my $CodeK = S.Gw;
+                  $CodeK = S.K if $CodeK eq "1";
                   $point = "$CodeK/$point" unless $point =~ /^$CodeK/;
                   if ($G eq $SG) {
                       @ways = $G->ways; # ------------------
                   }
                   else {
-                      return $SG->w($point, $ar, $Sway); # G pass
+                      return $SG->w($point, $ar, $S); # G pass
                   }
               }
               else {
-                  @ways = $Sway; #---------------------
+                  @ways = $S; #---------------------
               }
           }
-          elsif (ref $Sway eq 'ARRAY') {
-              die "NO MORE ARRAY WAYS --- $point ".slim(100,80,ki($ar))."\n"."$Sway - ".ki($Sway);
+          
+          if (my $B = S.B) {
+              # we dont upload variables from B, change B.whatever to set, good verboz
+              %$ar = (%$ar, %$B, B => $B);
           }
-          my $b = {};
-          %$b = (%{$Sway->{B}}, B => $Sway->{B}) if $Sway->{B};
-          $ar = {%$ar, %$b, S => $Sway};
-          $ar->{S} = $G->{S} if $G->{S};
+          ar.S = $S;
       }
       else {
           @ways = $G->ways;
@@ -444,9 +445,9 @@ Ds:
             bab => $h,
             ar => $ar,
             point => $point,
-            Sway => $Sway,
+            way => $S,
           };
-          a.w=$w;
+          a.w = $w;
           
           my $Z = $G->Doming($a);
           
@@ -465,7 +466,7 @@ Ds:
               my $ne = "Z";
               $ne .= Z.inter if Z.inter;
               $ne .= "\n";
-              $ne .= "S: ".ki($Sway)."\n" if $Sway;
+              $ne .= "S: ".ki($S)."\n" if $S;
               $ne .= "$@";
               $@ = $ne;
               $G->Flab("Z Error $@");
@@ -474,7 +475,7 @@ Ds:
       }
       
       if (!@$l) {
-          $G->Flab("way miss $talk", \@ways, $Sway) if $G->deeby > 3;
+          $G->Flab("way miss $talk", \@ways, $S) if $G->deeby > 3;
           return;
       }
       
