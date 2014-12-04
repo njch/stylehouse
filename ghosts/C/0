@@ -321,23 +321,25 @@ hooks:
             # something we know
             if (c.canpi) { #c
                 my $r = ref $u;
-                my $a = {cv=>$cv}; # traveller - magnetic fishing rod
-                my $pi = $r =~/^(G|A|C)$/ ? do {
-                    my $vos = {
-                        0 => { thi => ref $u },
-                        0.1 => { name => u.name },
-                        0.2 => { K => u.K },
-                    };
-                    if ($r eq "A") {
-                        #$vos->{0.1} = { id => u.id }; 
-                        $vos->{0.2} = sub{ 
-                            my $pi = w vAK/gp(R=>$R, u=>u.i, cv=>$cv-0.1);
-                            { for => ">$pi", _u => u.i }  
-                        };
-                    }
-                    if ($r eq "C") {
-                        w vAK/gp_pi_C[$R, $u, $vos, $a];
-                    }
+                
+                my $a = { # traveller - magnetic fishing rod
+                    # receives a.bb - abdomin, core/whole, inside details poke outwards
+                    cv => $cv,
+                    R => $R,
+                };
+                my $arr = {
+                    a => $a, # @_
+                    $r => $u, # $self
+                    u => $u,
+                };
+                
+                my $gppi = $G->findway('vAK/gp_pi');
+                $gppi->{$r} || die "not $r equip";
+                
+                w vAK/gp_pi/$r(%$ar);
+                
+                my $vos = a.bb;
+                
                     for my $vo (sort keys %$vos) {
                         if ($cv >= $vo) {
                             my $d = $vos->{$vo};
@@ -345,6 +347,7 @@ hooks:
                             a.o->{$vo} = $d;
                         }
                     }
+                    
                     my @s;
                     for my $vo (sort keys %{a.o}) {
                         my $v = a.o->{$vo};
@@ -354,8 +357,9 @@ hooks:
                             push @s, $s;
                         }
                     }
-                    join ' ', @s;
-                } : $u->pi;
+                    
+                my $pi = join ' ', @s;
+                    
                 if (a.o) { #c
                     my $vcv = $cv - 0.2;
                     # modification of the above %{a.o} chunk...
@@ -399,6 +403,24 @@ hooks:
 
         R.S.gpnew ? join("", @s) : G::gp($u);
     gp_pi_C: | #c
+    gp_pi:
+      A: |
+        a.bb = {
+            0 => { thi => ref $u },
+            0.1 => { name => u.name },
+            0.2 => { K => u.K },
+        };
+        a.bb->{0.2} = sub { 
+            my $pi = w vAK/gp(R=>$R, u=>A.i, cv=>$cv-0.2);
+            { for => ">$pi", _u => A.i }  
+        };
+      G: |
+        $G->pi;
+      T: |
+        $T->pi;
+      R: |
+        $R->pi;
+      C: | #c
                         #$vos->{0.1} = { id => u.id };
                         my $C = $u;
                         
@@ -441,9 +463,6 @@ hooks:
                         $vos->{0.3} = $c;
                         $vos->{0.4} = $b;
                         
-                        say wdump($b) if G.sghgg_ui++ == 4;
-                        
-
                         my $B;
                         
                         if (C.B) {
