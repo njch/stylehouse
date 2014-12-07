@@ -318,81 +318,81 @@ hooks:
             push @s, $line;
         }
         elsif (c.canpi) { #c
-                my $r = ref $u;
-                
-                my $a = { # traveller - magnetic fishing rod
-                    # receives a.bb - abdomin, core/whole, inside details poke outwards
-                    cv => $cv,
-                    R => $R,
-                };
-                my $arr = {
-                    a => $a, # @_
-                    $r => $u, # $self
-                    u => $u,
-                };
-                
-                my $gppi = $G->findway('vAK/gp_pi');
-                $gppi->{$r} || die "not $r equip";
-                
-                my $pi = w vAK/gp_pi/$r(%$arr);
-                
-                if (my $vos = a.bb) {
-                    # grep up to our voltage
-                    for my $vo (sort keys %{a.bb}) {
-                        next if $vo > $cv;
-                        my $d = a.bb->{$vo};
-                        $d = $d->() if ref $d eq 'CODE';
-                        a.o->{$vo} = $d;
-                    }
-                    
-                    # sort out...
-                    my @s;
-                    for my $vo (sort keys %{a.o}) {
-                        my $v = a.o->{$vo};
-                        for my $vk (sort keys %$v) {
-                            next if $vk =~ /^_/;
-                            my $s = $v->{$vk};
-                            push @s, $s;
-                        }
-                    }
-                    $pi = join ' ', @s;
+            my $r = ref $u;
+            
+            my $a = { # traveller - magnetic fishing rod
+                # receives a.bb - abdomin, core/whole, inside details poke outwards
+                cv => $cv,
+                R => $R,
+            };
+            my $arr = {
+                a => $a, # @_
+                $r => $u, # $self
+                u => $u,
+            };
+            
+            my $gppi = $G->findway('vAK/gp_pi');
+            $gppi->{$r} || die "not $r equip";
+            
+            my $pi = w vAK/gp_pi/$r(%$arr);
+            
+            if (my $vos = a.bb) {
+                # grep up to our voltage
+                for my $vo (sort keys %{a.bb}) {
+                    next if $vo > $cv;
+                    my $d = a.bb->{$vo};
+                    $d = $d->() if ref $d eq 'CODE';
+                    a.o->{$vo} = $d;
                 }
-                    
-                if (a.o) {
-                    my $vcv = $cv - 0.2;
-                    # modification of the above %{a.o} chunk...
-                    for my $vo (sort keys %{a.o}) {
-                        my $v = a.o->{$vo};
-                        for my $vk (sort keys %$v) {
-                            next if $vk =~ /^_/;
-                            my $w;
-                            $w = "cfa" if $vk eq 'thi';
-                            $w = "3f3" if $vk eq 'K';
-                            $w = "ca6" if $vk =~ /ame$/;
-                            $w = "000;font-size:30%" if $vk eq 'id';
-                            my $s = $v->{$vk};
-                            # if v._u, $vk=for, has pi string worked out
-                            # but we want to get more of ourself in there
-                            # so vakgp...
-                            $s = w vAK/gp(R=>$R, u=>v._u, cv=>$vcv) if
-                                v._u && $vcv >= $vo;
-                                
-                            next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
+                
+                # sort out...
+                my @s;
+                for my $vo (sort keys %{a.o}) {
+                    my $v = a.o->{$vo};
+                    for my $vk (sort keys %$v) {
+                        next if $vk =~ /^_/;
+                        my $s = $v->{$vk};
+                        push @s, $s;
+                    }
+                }
+                $pi = join ' ', @s;
+            }
+                
+            if (a.o) {
+                my $vcv = $cv - 0.2;
+                # modification of the above %{a.o} chunk...
+                for my $vo (sort keys %{a.o}) {
+                    my $v = a.o->{$vo};
+                    for my $vk (sort keys %$v) {
+                        next if $vk =~ /^_/;
+                        my $w;
+                        $w = "cfa" if $vk eq 'thi';
+                        $w = "3f3" if $vk eq 'K';
+                        $w = "ca6" if $vk =~ /ame$/;
+                        $w = "000;font-size:30%" if $vk eq 'id';
+                        my $s = $v->{$vk};
+                        # if v._u, $vk=for, has pi string worked out
+                        # but we want to get more of ourself in there
+                        # so vakgp...
+                        $s = w vAK/gp(R=>$R, u=>v._u, cv=>$vcv) if
+                            v._u && $vcv >= $vo;
                             
-                            $w .= '" title="'.$vk;
-                            $s = $wit->($s, $w) if $w;
-                            push @s, $s;
-                        }
-                    }
-                    
-                } else {
-                    if ($pi =~ s/^$r //) {
-                        push @s, $wit->($r, "cfa");
-                        push @s, $pi;
+                        next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
+                        
+                        $w .= '" title="'.$vk;
+                        $s = $wit->($s, $w) if $w;
+                        push @s, $s;
                     }
                 }
+                
+            } else {
+                if ($pi =~ s/^$r //) {
+                    push @s, $wit->($r, "cfa");
+                    push @s, $pi;
+                }
+            }
         else { #c unknown
-                push @s, "know $u";
+            push @s, "know $u";
         }
         
         R.gp_inarow--;
