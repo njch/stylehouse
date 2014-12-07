@@ -75,8 +75,16 @@ P:
  - Do keon: |
        H.G w z/keon;
        
+ - Do switch: |
+       G.whichr = !G.whichr;
  - K: D #c sur
    B: 
+     name: one
+     R: surfboard
+    
+ - K: D #c sur
+   B: 
+     name: twofer
      R: surfboard
     
  - GAK: U #c
@@ -167,11 +175,13 @@ hooks:
     my $R = w vAK/are;
     w vAK/key[$R, $k, $e];
   vAK:
-    are: | # chang->queue U xing
-      my ($u) = 0->rei({K=>'D'});
+    are: | #c chang->queue U xing
+      my (@us) = 0->rei({K=>'D'});
+      @us = reverse @us if G.whichr;
+      my $u = shift @us;
       w chang[$u];
       u.B.R
-    setup: |
+    setup: | #c
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
             from => $R,
@@ -416,7 +426,7 @@ hooks:
         };
         a.bb->{0.2} = sub { 
             my $pi = w vAK/gp(%$a, u=>A.i, cv=>$cv-0.2);
-            { for => ">$pi", _u => A.i }  
+            { for => "ߑ$pi", _u => A.i }  
         };
       G: | #c
         $G->pi;
