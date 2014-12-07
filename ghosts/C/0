@@ -261,12 +261,16 @@ hooks:
                 my @kv;
                 for my $k (@ks) {
                     my $uu = $u->{$k};
-                    if ($vcv >= 0.2) {
+                    if ($vcv >= 0.3) {
                         my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
                         push @kv, ',' if @kv;
                         push @kv, $wit->($k, "acf");
                         push @kv, ':',
                             $wt->($v, "font-size:75%") if $vcv > 0.1;
+                    }
+                    elsif ($vcv >= 0.2) {
+                        push @kv, ',' if @kv;
+                        push @kv, $wit->($k, "acf");
                     }
                 }
                 # wrap? tabul? frond?
@@ -280,14 +284,14 @@ hooks:
                     "{}",
             }
         }
-        elsif (c.ref) { # weird ref
+        elsif (c.ref) { #c weird ref
             # looks for patterns from anywhere for clues
             @s = (
                 $wit->(ref($u), "333;font-size:50%"),
                 $wit->(gname($u)),
             ),
         }
-        elsif (c.undef) {
+        elsif (c.undef) { #c
             @s = '~';
         }
         elsif (c.text) { #c
@@ -391,6 +395,7 @@ hooks:
                     push @s, $pi;
                 }
             }
+        }
         else { #c unknown
             push @s, "know $u";
         }
