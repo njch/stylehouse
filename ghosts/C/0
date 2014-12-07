@@ -252,23 +252,26 @@ hooks:
                 $wit->($si, "fff;font-size:50%"),
             );
             my $vcv = $cv - 0.2;
-            if ($vcv >= 0.2) {
+            if ($vcv >= 0.1) {
                 my @ks;
                 push @ks, "K" && delete v.K if v.K;
                 push @ks, sort keys %$v;
                 # like sorting the hashy du planet rows
                 # all about dividing lines to the length
+                # so after a simple voltage rolloff occurs
+                # you might like to realise how much induction was got
+                # and bend voltages up slightly so everything looks yay infoey
                 my @kv;
                 for my $k (@ks) {
                     my $uu = $u->{$k};
-                    if ($vcv >= 0.3) {
+                    if ($vcv >= 0.2) {
                         my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
                         push @kv, ',' if @kv;
                         push @kv, $wit->($k, "acf");
                         push @kv, ':',
                             $wt->($v, "font-size:75%") if $vcv > 0.1;
                     }
-                    elsif ($vcv >= 0.2) {
+                    elsif ($vcv >= 0.1) {
                         push @kv, ',' if @kv;
                         push @kv, $wit->($k, "acf");
                     }
