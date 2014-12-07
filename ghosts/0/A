@@ -47,7 +47,7 @@ Ds:
     D: |
       return join "_", grep /./, @_;
       
-  - K: umv #c rewire from origin to new origin
+  - K: umv #c rewire from origin (n|u) to (n|u)_name
     D: |
       # say if we don't want to clutter the G this spawned from
       # as a tidy up
@@ -60,7 +60,7 @@ Ds:
       $A->rAu($Au, $f);
       $A->Au($Au, $t);
       
-  - K: umk
+  - K: umk #c
     D: |
       my ($u, $t) = @_;
       my $Au = $A->fiA($u);
@@ -68,7 +68,7 @@ Ds:
       $A->Au($Au, $t);
       say "Uplinking to ".$u->pi." the $t of ".$A->pi;
       
-  - K: accum
+  - K: accum #c
     D: |
         my ($s, $ac, $t) = @_;
         
@@ -77,7 +77,7 @@ Ds:
         return if grep { $_ eq $t } @$a;
         push @$a, $t;
         
-  - K: deaccum
+  - K: deaccum #c
     D: |
         my ($s, $ac, $t) = @_;
         my $a = $s->{$ac} ||= [];
@@ -86,23 +86,22 @@ Ds:
             return splice(@$a, $i, 1) if $_ eq $t;
             $i++;
         }
-
-  - K: p
+  - K: p #c
     D: |
       A.i.K || A.i.name
       
-  - K: sag
+  - K: sag #c
     D: |
       say $A->p ." ".shift(@_)." ".join"   > ",map {$_->p} @_;
       
-  - K: fiA
+  - K: fiA #c
     D: |
       my $u = shift;
       $u = u.A if ref $u ne 'A';
       die "no A finding" if ref $u ne 'A';
       $u
       
-  - K: fiu
+  - K: fiu #c
     D: |
       my $sh = shift;
       my $a = $A;
@@ -117,8 +116,7 @@ Ds:
     D: |
       my $to = shift;
       grep { _.K =~ /^$to$/ } @{A.n}
-
-  - K: path
+  - K: path #c
     D: |
       my $up;$up = sub {
           my $a = shift;
