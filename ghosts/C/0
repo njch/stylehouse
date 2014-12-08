@@ -629,16 +629,21 @@ hooks:
     
     durows: | #c
       my $d = R.a.d;
+      die wdump(1, $a);
       my @r = sort keys %$d if $d;
       if (grep { /^\[/ } @r) {
            my $by = { map {
                my ($i) = /^\[(\d+)/;
                $i+0 => $_;
            } @r };
-           say "well: ".4 > 3;
-           say wdump[ sort  7..12 ]; #keys %$by ];
+           say "well: ".(4 > 3);
+           die wdump(1,$a) if $a;
+           say wdump[ sort {
+               say "$a vs $b";
+               $a > $b ? 1 : $b < $a ? -1 : 0
+           } 7..12 ]; #keys %$by ];
            @r = map { $by->{$_} } sort keys %$by;
-           say "well: ".4 > 3;
+           say "well: ".(11 > 3);
       }
       R.a.r = [map {[ $_, $d->{$_} ]} @r ];
 
