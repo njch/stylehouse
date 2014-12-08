@@ -249,7 +249,7 @@ hooks:
         # but only 
         #return $u->pi if u can pi # braid wants bit of pi somewhere too
         # gpty: 
-        R.gp_inarow++;
+        G.gp_inarow++;
         $cv = 0.1 if $cv < 0.1;
         G.wit = sub {
             '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>'
@@ -259,14 +259,13 @@ hooks:
         };
         
         
+        my $c = w vAK/cgp[$u];
+        
         my $a = { # traveller - magnetic fishing rod - plumbing
             # receives a.bb - abdomin, core/whole, inside details poke outwards
             cv => $cv,
             R => $R,
         };
-
-        my $c = w vAK/cgp[$u];
-        
         my $arr = {
             a => $a, # @_
             u => $u,
@@ -293,13 +292,15 @@ hooks:
 
         my $pi = w vAK/gp_pi/$wa(%$arr);
         
+        arr.pi = $pi;
         my @s = w vAK/makaout(%$arr);
         
-        R.gp_inarow--;
+        saygr "The S: @s $pi";
+        
+        G.gp_inarow--;
 
         R.S.gpnew ? join("", @s) : G::gp($u);
     makaout: | #c
-            my $pi;
             my @s;
             if (my $vos = a.bb) {
                 # grep up to our voltage
@@ -311,6 +312,7 @@ hooks:
                 }
                 
                 # sort out...
+                # stringing outing should start working around here
                 my @s;
                 for my $vo (sort keys %{a.o}) {
                     my $v = a.o->{$vo};
@@ -322,7 +324,9 @@ hooks:
                 }
                 $pi = join ' ', @s;
             }
-                
+            
+             
+            sayyl "from ".G::gp($u)." got a.o and a.bb";
             if (a.o) {
                 my $vcv = a.cv - 0.2;
                 # modification of the above %{a.o} chunk...
@@ -351,9 +355,11 @@ hooks:
                 }
                 
             } else {
+                
                 my $r = ref $u;
                 if ($pi =~ s/^$r //) {
-                    push @s, G.wit->($r, "cfa");
+                    $r = G.wit->($r, "cfa") if G.wit;
+                    push @s, $r;
                     push @s, $pi;
                 }
             }
