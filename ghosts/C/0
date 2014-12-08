@@ -176,6 +176,7 @@ R:
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
+    G.anp = [1..23];
  
   recoded_init: |
     w vAK/are; 
@@ -211,7 +212,7 @@ hooks:
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
             from => $R,
-            trav => '{G',
+            trav => '{G{anp',
         };
         R.J ||= {
             from => $H,
@@ -337,7 +338,6 @@ hooks:
             
             if (a.o) {
                 my $vcv = a.cv - 0.2;
-                sayyl "pi a..o is ".join "\n",keys %{a.o};
                 # modification of the above %{a.o} chunk...
                 for my $vo (sort keys %{a.o}) {
                     my $v = a.o->{$vo};
@@ -625,9 +625,27 @@ hooks:
             push @rows, j.row;
         }
         @rows
+
+    
+    durows: | #c
+      my $d = R.a.d;
+      my @r = sort keys %$d if $d;
+      if (grep { /^\[/ } @r) {
+           my $by = { map {
+               my ($i) = /^\[(\d+)/;
+               $i+0 => $_;
+           } @r };
+           say "well: ".4 > 3;
+           say wdump[ sort  7..12 ]; #keys %$by ];
+           @r = map { $by->{$_} } sort keys %$by;
+           say "well: ".4 > 3;
+      }
+      R.a.r = [map {[ $_, $d->{$_} ]} @r ];
+
+    
     S: | #c void vAKcess R::S heist
         # 1
-        R.a = my $a = shift || {};
+        R.a = shift || {};
         
         # s messed by R plumbing, sure
         R.s = $R->dus; 
@@ -635,9 +653,9 @@ hooks:
             
         my $agp = {R=>$R, cv=>1};
         # 2
-        a.e ||= R.S.e || die;
-        a.i ||= $R->uni;
-        a.tr.rowlimit = R.S.rowlimit || 9*3;
+        R.a.e ||= R.S.e || die;
+        R.a.i ||= $R->uni;
+        R.a.tr.rowlimit = R.S.rowlimit || 9*4;
         # TODO ^ tunes the rowiness
         # which is the first variable to other distortions
         # like furthering voltiness until yay many Whats of pi
@@ -645,9 +663,9 @@ hooks:
         # Amps can be when style uniqness raised?
         # 3
         $R->du;
-        warn "nod" unless a.d; 
+        warn "nod" unless R.a.d; 
         # 4
-        $R->durows;
+        w vAK/durows[$R];
         
         # 5 in space # TODO forkstyles & ongoingness
         my $way = "S_5_".(R.S.rowing||"S");
