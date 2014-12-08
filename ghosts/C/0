@@ -87,12 +87,12 @@ P:
  - K: D #c sur
    B: 
      name: one
-     R: surfboard
+     R: surf
     
  - K: D #c sur
    B: 
      name: twofer
-     R: surfboard
+     R: surf
     
  - GAK: U #c
    InC:
@@ -106,7 +106,7 @@ P:
        ux:
          spawn: []
 R:
- - K: surfboard
+ - K: surf
    in_R:
      
      S: 
@@ -294,9 +294,8 @@ hooks:
         my @spi = w vAK/gp_pi/$wa(%$arr);
         
         arr.spi = \@spi;
-        my @s = w vAK/makaout(%$arr);
         
-        saygr "The S: @s @spi ";
+        my @s = w vAK/makaout(%$arr); 
         
         G.gp_inarow--;
 
@@ -304,17 +303,16 @@ hooks:
     makaout: | #c
             my @s;
             if (!a.bb) {
-                sayre "pi a..o not from ".G::gp($u);
                 my $r = ref $u;
-                if ($spi =~ s/^$r //) {
+                if ($spi->[0] =~ s/^$r //) {
                     $r = G.wit->($r, "cfa") if G.wit;
-                    push @s, $r;
-                    push @s, $spi;
+                    unshift @$spi, $r;
                 }
-                return @s;
+                return @$spi;
             }
             
             if (my $vos = a.bb) {
+                sayyl "GOT BB ".G::gp($u);
                 # grep up to our voltage
                 for my $vo (sort keys %{a.bb}) {
                     next if $vo > a.cv; # TODO in the middle
@@ -339,7 +337,7 @@ hooks:
             
             if (a.o) {
                 my $vcv = a.cv - 0.2;
-                sayyl "pi a..o is ".keys %{a.o};
+                sayyl "pi a..o is ".join "\n",keys %{a.o};
                 # modification of the above %{a.o} chunk...
                 for my $vo (sort keys %{a.o}) {
                     my $v = a.o->{$vo};
@@ -367,6 +365,7 @@ hooks:
             } else {
                 die "bb then no o?";
             }
+            
             @s
     gp_pi: #c
       wtf: | #c
