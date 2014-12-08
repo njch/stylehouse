@@ -162,12 +162,12 @@ R:
               }
               return $R->popJtrav
             in: |
-              say "VAKeyint" for 1..5;
 
               R.ksuc .= $k;
               my $j = R.a.ro->{R.ksuc};
-
-              return say "no j ye for R.ksuc" if !$j;
+              
+              $j || return sayre "no j ye for R.ksuc";
+              sayyl "got j for R.ksuc";
 
               R.ksuc = "";
 
@@ -236,7 +236,6 @@ hooks:
       R.G w R.S.w $do if $do;
       
       
-
     sudden_i: | #c ebrace flying embryo J
       R.J = { from => a.i };
     gp: | #c vAK gp
@@ -569,48 +568,8 @@ hooks:
         my $agp = {R=>$R, cv=>1};
         my @rows;
         
-        my @i;
-        # TODO draw out $i within 9 
         my $si = @{R.a.r};
-        if ($si <= 9) {
-            @i = 1..$si;
-        }
-        else {
-            my $wind = $si - 9;
-            my $from = 6;
-            my $for = 3;
-            my $la = $wind / $for;
-            my $za = int $la;
-            
-            my $tri;
-            my @wind = 1..$wind;
-            my @ys = $from..$from+$for-1;
-            my $yi = 0;
-            while (@wind) {
-                my $win = shift @wind;
-                
-                my $at = $ys[$yi];
-                $tri->{$at}++;
-                
-                $yi++;
-                $yi = 0 if !exists $ys[$yi];
-            }
-            
-            for my $wi (1..9) {
-                
-                if (my $la = $tri->{$wi}) {
-                    my @la = 1..$la+1;
-                    for my $pl (@la) {
-                        push @i, "$wi$pl";
-                    }
-                }
-                else {
-                    push @i, $wi;
-                }
-            }
-            
-            #push @i, $i++ for 1..$si;
-        }
+        my @i = w wind[$si];
             say "$si > 9 wound: @i";
         sayyl "============" for 1..4;
         
@@ -702,6 +661,48 @@ hooks:
         #sayre "$lines lines" for 1..5;
 
         qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
+  wind: | #c
+    my $s = 9;
+    return 1..$s if $si <= $s;
+    my $wind = $si - 9;
+    my $from = 6;
+    my $for = 3;
+    
+      my @i;
+    
+            my $la = $wind / $for;
+            my $za = int $la;
+            
+            my $y;
+            my @wind = 1..$wind;
+            my @ys = $from..$from+$for-1;
+            my $yi = 0;
+            while (@wind) {
+                my $win = shift @wind;
+                
+                my $at = $ys[$yi];
+                $y->{$at}++;
+                
+                $yi++;
+                $yi = 0 if !exists $ys[$yi];
+            }
+            
+            for my $wi (1..$s) {
+                
+                if (my $la = $y->{$wi}) {
+                    my @la = 1..$la+1;
+                    for my $pl (@la) {
+                        push @i, "$wi$pl";
+                    }
+                }
+                else {
+                    push @i, $wi;
+                }
+            }
+            
+            @i
+            
+  
   elvibe: |
     H.G w z/keon;
     
