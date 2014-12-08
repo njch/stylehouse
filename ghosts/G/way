@@ -76,6 +76,27 @@ Ds:
         }
 
         $G->_0('_load_ways_post', {w=>G.ways});
+  - K: di #c
+    style: func
+    D: |
+      # attaches meaning and dies
+      
+      # throwing back to D hopefully enriching
+      
+      # @_:
+      #   bunch of vectors to topiarise the explotion
+      #   bunch of data/messages
+      
+      my @vec;
+      push @vec, shift while $_[0] =~ /^[\.\d]+$/;
+      my $a = $F[0]->{di} = {};
+      (a.mag, a.dir, a.etc) = @vec;
+      a.tip = [@_];
+      die @_;
+      
+      
+      
+      
   - K: Dm #c
     D: |
         my $a = shift;
@@ -174,9 +195,18 @@ Ds:
 
                 push @$wall, \@stackend;
             };
+            H.sigstackwa ||= sub {
+                return 1 if $_[0] =~ /^Use of uninitialized value/;
+                my @loc = caller(1);
+                sayre join "\n", "warn from ".$F[0]->{G}->{name}
+                    ."  way $F[0]->{point}"
+                    ."       at line $loc[2] in $loc[1]:", @_;
+                return 1;
+            };
             my @return;
             if (ref $sub eq "CODE" && !$@) {
                 local $SIG{__DIE__} = H.sigstackend;
+                local $SIG{__WARN__} = H.sigstackwa;
                 eval { @return = $sub->(a.ar) }
             }
             
