@@ -112,7 +112,7 @@ Ds:
         my @warnings = ("no warnings 'experimental';");
 
         my $sub = "bollox";
-        my $evs = '$sub = sub { my $ar = shift; '.
+        my $evs = 'sub { my $ar = shift; '.
         "@warnings $download\n".
 
         "my \@doo_return = (sub { \n\n$eval\n })->();\n"
@@ -120,7 +120,7 @@ Ds:
         ."$upload"
         .'return @doo_return };';
 
-        eval $evs;
+        $sub = $G->Doe($evs, $ar);
 
         $Ds = [ $evs, $sub ];
         if (!$@ && ref $sub eq "CODE") {
@@ -130,8 +130,11 @@ Ds:
             a.bungeval = $evs;
         }
         $Ds
-  - K: Do #c
+  - K: Doe #c
     D: |
+      my $D_eval_string = shift;
+      my $ar = shift;
+      return eval $D_eval_string;
       
   - K: D #c
     D: |
@@ -149,7 +152,7 @@ Ds:
             }
 
             my $Ds = $G->Dm($a);
-            my ($evs, $sub) = @$Ds;
+            my ($evs, $sub) = @$Ds; 
                 
             # TODO rewayen
             a.name = "D";
