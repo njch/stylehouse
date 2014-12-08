@@ -251,10 +251,10 @@ hooks:
         # gpty: 
         R.gp_inarow++;
         $cv = 0.1 if $cv < 0.1;
-        my $wit = sub {
+        G.wit = sub {
             '<t style="color:#'.($_[1] || '8f9').';">'.shift.'</t>'
         };
-        my $wt = sub {
+        G.wt = sub {
             '<t style="'.$_[1].'">'.shift.'</t>'
         };
         
@@ -271,8 +271,8 @@ hooks:
             a => $a, # @_
             u => $u,
             c => $c,
+            R => $R,
         };
-        
         
         my @bpi = qw'ARRAY HASH ref undef text canpi';
         my $wa = "wtf";
@@ -282,24 +282,29 @@ hooks:
                 last;
             }
         }
-        $wa = ref $u if $wa eq "canpi";
+        if ($wa eq "canpi") {
+            $wa = ref $u;
+            $arr->{$wa} = $u;
+        }
 
         my $gppi = $G->findway('vAK/gp_pi');
-        $gppi->{$wa} || die "not $r equip";
+        $gppi->{$wa} || die "not $wa equip";
 
 
-        my $pi = w vAK/gp_pi/$r(%$arr);
+        my $pi = w vAK/gp_pi/$wa(%$arr);
         
-        my @s = w vAK/makaout[$a];
+        my @s = w vAK/makaout(%$arr);
         
         R.gp_inarow--;
 
         R.S.gpnew ? join("", @s) : G::gp($u);
     makaout: | #c
+            my $pi;
+            my @s;
             if (my $vos = a.bb) {
                 # grep up to our voltage
                 for my $vo (sort keys %{a.bb}) {
-                    next if $vo > $cv;
+                    next if $vo > a.cv; # TODO in the middle
                     my $d = a.bb->{$vo};
                     $d = $d->() if ref $d eq 'CODE';
                     a.o->{$vo} = $d;
@@ -319,7 +324,7 @@ hooks:
             }
                 
             if (a.o) {
-                my $vcv = $cv - 0.2;
+                my $vcv = a.cv - 0.2;
                 # modification of the above %{a.o} chunk...
                 for my $vo (sort keys %{a.o}) {
                     my $v = a.o->{$vo};
@@ -340,20 +345,21 @@ hooks:
                         next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
                         
                         $w .= '" title="'.$vk;
-                        $s = $wit->($s, $w) if $w;
+                        $s = G.wit->($s, $w) if $w;
                         push @s, $s;
                     }
                 }
                 
             } else {
+                my $r = ref $u;
                 if ($pi =~ s/^$r //) {
-                    push @s, $wit->($r, "cfa");
+                    push @s, G.wit->($r, "cfa");
                     push @s, $pi;
                 }
             }
             @s
-    gp_pi:
-      wtrf: | #c
+    gp_pi: #c
+      wtf: | #c
         "know $u"
       ARRAY: | #c
             my @s;
@@ -361,10 +367,10 @@ hooks:
                 @s = "[]";
             }
             else {
-                my $vcv = $cv - 0.2; # TODO another sort of decay
+                my $vcv = a.cv - 0.2; # TODO another sort of decay
                 my $si = @$u;
                 @s = (
-                    $wit->($si, "fff;font-size:50%"),
+                    G.wit->($si, "fff;font-size:50%"),
                 );
                 if ($vcv <= 0.1) {
                     push @s, "[]";
@@ -388,9 +394,9 @@ hooks:
             my $v = {%$u};
             my $si = keys %$v;
             my @s = (
-                $wit->($si, "fff;font-size:50%"),
+                G.wit->($si, "fff;font-size:50%"),
             );
-            my $vcv = $cv - 0.2;
+            my $vcv = a.cv - 0.2;
             if ($vcv >= 0.1) {
                 my @ks;
                 push @ks, "K" && delete v.K if v.K;
@@ -406,13 +412,13 @@ hooks:
                     if ($vcv >= 0.2) {
                         my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
                         push @kv, ',' if @kv;
-                        push @kv, $wit->($k, "acf");
+                        push @kv, G.wit->($k, "acf");
                         push @kv, ':',
-                            $wt->($v, "font-size:75%") if $vcv > 0.1;
+                            G.wt->($v, "font-size:75%") if $vcv > 0.1;
                     }
                     elsif ($vcv >= 0.1) {
                         push @kv, ',' if @kv;
-                        push @kv, $wit->($k, "acf");
+                        push @kv, G.wit->($k, "acf");
                     }
                 }
                 # wrap? tabul? frond?
@@ -448,7 +454,7 @@ hooks:
                 $line = join '↯', split /\n/, $u; 
                 $adhow = 1;
             }
-            my $tev = $cv * 125; # 0.4 = 100
+            my $tev = a.cv * 125; # 0.4 = 100
             my $howad = ".c.lin".".c.len".".c.b";
             my $trev = $tev - length($howad);
             
@@ -457,8 +463,8 @@ hooks:
                 $adhow = 1;
             }
 
-            push @s, $wit->($howad, "88b;font-size:60%") if $adhow;
-            $line = $wit->($line, "3f3");
+            push @s, G.wit->($howad, "88b;font-size:60%") if $adhow;
+            $line = G.wit->($line, "3f3");
             push @s, $line;
             @s
       A: | #c
