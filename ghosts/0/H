@@ -150,17 +150,15 @@ Ds:
           grep { !/G G::__ANON__ |G \(eval\)/ } @{$error->[1]},
       );
       @context = () if $what eq "Say" || $what eq "Info";
-      my @f = @G::F;
-      for my $c (@context) {
-          my $f = shift @f;
-          say "$c ======== ". G::gpty($f->{thing});
-      }
+      
       my $string = join("\n",
           @context,
-          @{$error->[2]},
+          @E,
       );
       $string = "\n$string\n";
-      print colored(ind("$what  ", $string)."\n", $what eq "Error"?'red':'green');
+      $string = $H->ind("$what  ", $string)."\n";
+      my $color = $what eq "Error"?'red':'green';
+      print colored($string, $color);
   - K: Say #c TODO babble to $G->mess(...) sa*
     D: |
        $H->throwlog("Say", @_);

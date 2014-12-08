@@ -207,6 +207,29 @@ hooks:
       my $do = R.S.key->{$key};
       say "lettering $key => $do";
       R.G w R.S.w $do if $do;
+      sayre "Rksuc: R.ksuc$k" for 1..3;
+      if ($key =~ /[0-9]/) {
+            say "Doing number $k" for 1..2;
+            w vAK/key_int;
+      }
+    key_int: | #c
+      say "VAKeyint" for 1..5;
+      if ($k eq "0") {
+          if (R.ksuc && $k eq "0") {
+              return R.ksuc = ""
+          }
+          return $R->popJtrav
+      }
+      
+      R.ksuc .= $k;
+      my $j = R.a.ro->{R.ksuc};
+      
+      return say "no j ye for R.ksuc" if !$j;
+      
+      R.ksuc = "";
+      
+      my ($hop) = j.ac =~ /^(\W\w+)/;
+      R.J.trav .= $hop;
     sudden_i: | #c ebrace flying embryo J
       R.J = { from => a.i };
     gp: | #c vAK gp
@@ -539,36 +562,80 @@ hooks:
         my $agp = {R=>$R, cv=>1};
         my @rows;
         
-        my $i = 1;
         my @i;
         # TODO draw out $i within 9 
         my $si = @{R.a.r};
-        if ($si > 9) {
-            push @i, $i++ for 1..$si;
+        if ($si <= 9) {
+            @i = 1..$si;
         }
-        sayyl wdump(\@i);
+        else {
+            my $wind = $si - 9;
+            my $from = 6;
+            my $for = 3;
+            my $la = $wind / $for;
+            my $za = int $la;
+            
+            my $tri;
+            my @wind = 1..$wind;
+            my @ys = $from..$from+$for-1;
+            my $yi = 0;
+            while (@wind) {
+                my $win = shift @wind;
+                
+                my $at = $ys[$yi];
+                $tri->{$at}++;
+                
+                $yi++;
+                $yi = 0 if !exists $ys[$yi];
+            }
+            
+            for my $wi (1..9) {
+                
+                if (my $la = $tri->{$wi}) {
+                    my @la = 1..$la+1;
+                    for my $pl (@la) {
+                        push @i, "$wi$pl";
+                    }
+                }
+                else {
+                    push @i, $wi;
+                }
+            }
+            
+            #push @i, $i++ for 1..$si;
+        }
+            say "$si > 9 wound: @i";
+        sayyl "============" for 1..4;
         
         
         
-        sayyl "Rows: ".@{R.a.r};
-        $i = 1;
+        sayyl "Rows: ".@{R.a.r}; #c
+        sayyl "Is: ".@i;
+        my $i = 1;
         # folding styles in
+        my $ro = R.a.ro = {};
+        
+        my @rows;
         for my $r (@{R.a.r}) {
-            my ($ac, $li) = @$r;
-            my ($a, $cv) = split /\s+/, $ac;
+            my $li = shift @i || die "out of eyes".wdump(2, [@i, $ro]);;
+            my $j = $ro->{$li} = {};
+            j.li = $li;
+            (j.ac, j.u) = @$r;
+            (j.t, j.cv) = split /\s+/, j.ac;
             
-            my $pi = w vAK/gp(%$agp, u => $li, cv => $cv);
+            # plumbs a ripple of the dus action that got the rows for R
+            # close to the thing
+            j.pi = w vAK/gp(%$agp, u => j.u, cv => j.cv);
             
-            $ac =~ s/\s+/ /g;
-            
-            push @rows,
-            join "  ", map { $R->f(@$_) }
-                [ black => $a ],
-              [ red_fs80 => $cv ],
-              [ blue_fs80 => $i++ ],
-              [ white_fs120 => $pi ],
+            j.row = 
+            join "  ",                 map { $R->f(@$_) }
+              [ black =>         j.t  ],
+              [ red_fs80 =>     j.cv ],
+              [ blue_fs120 =>     j.li ],
+              [ white_fs120 =>     j.pi ],;
+            push @rows, j.row;
         }
-        @rows;
+        @rows
     S: | #c void vAKcess R::S heist
         # 1
         R.a = my $a = shift || {};

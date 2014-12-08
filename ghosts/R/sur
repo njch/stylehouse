@@ -33,7 +33,7 @@ Ds:
         }
         else {
             if (!e.S) {
-                $R->intJtrav($k)  if $k =~ /[0-9]/; # 0 = popJtrav
+                #$R->intJtrav($k)  if $k =~ /[0-9]/; # 0 = popJtrav
                 R.keysuc = []     if $k eq 'À'; # tilde key
             }
             else {
@@ -56,11 +56,20 @@ Ds:
   - K: intJtrav #c
     D: |
       my $k = shift;
-      return $R->popJtrav if $k == 0;
-      my $i = $k - 1;
-      die "no $i" unless exists R.a.r->[$i];
-      my $r = R.a.r->[$i];
-      my ($hop) = $r->[0] =~ /^(\W\w+)/;
+      if ($k eq "0") {
+            if (R.ksuc && $k eq "0") {
+              return R.ksuc = ""
+          }
+          return $R->popJtrav
+      }
+      
+      my $j = R.a.ro->{$k};
+      if (!$j) {
+            return R.ksuc .= $k
+      }
+      R.ksuc = "";
+      
+      my ($hop) = j.ac =~ /^(\W\w+)/;
       R.J.trav .= $hop;
 
       
