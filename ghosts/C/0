@@ -157,7 +157,22 @@ R:
               # heredity
           Num:
             out: |
+              if (R.ksuc && $k eq "0") {
+                  return R.ksuc = ""
+              }
+              return $R->popJtrav
             in: |
+              say "VAKeyint" for 1..5;
+
+              R.ksuc .= $k;
+              my $j = R.a.ro->{R.ksuc};
+
+              return say "no j ye for R.ksuc" if !$j;
+
+              R.ksuc = "";
+
+              my ($hop) = j.ac =~ /^(\W\w+)/;
+              R.J.trav .= $hop; 
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
@@ -213,32 +228,15 @@ hooks:
       my $do = R.S.key->{$key};
       if (!$do) {
             # looser
-          
+          my $or = "number" if $key =~ /[0-9]/;
+          $do = R.S.key->{$or} if $or;
       }
       say "lettering $key => $do";
+      
       R.G w R.S.w $do if $do;
-      if ($key =~ /[0-9]/) {
-            say "Doing number $k" for 1..2;
-            w vAK/key_int;
-      }
-    key_int: | #c
-      say "VAKeyint" for 1..5;
-      if ($k eq "0") {
-          if (R.ksuc && $k eq "0") {
-              return R.ksuc = ""
-          }
-          return $R->popJtrav
-      }
       
-      R.ksuc .= $k;
-      my $j = R.a.ro->{R.ksuc};
       
-      return say "no j ye for R.ksuc" if !$j;
-      
-      R.ksuc = "";
-      
-      my ($hop) = j.ac =~ /^(\W\w+)/;
-      R.J.trav .= $hop;
+
     sudden_i: | #c ebrace flying embryo J
       R.J = { from => a.i };
     gp: | #c vAK gp
