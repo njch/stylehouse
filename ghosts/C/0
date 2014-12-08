@@ -290,18 +290,30 @@ hooks:
         $gppi->{$wa} || die "not $wa equip";
 
 
-        my $pi = w vAK/gp_pi/$wa(%$arr);
         
-        arr.pi = $pi;
+        my @spi = w vAK/gp_pi/$wa(%$arr);
+        
+        arr.spi = \@spi;
         my @s = w vAK/makaout(%$arr);
         
-        saygr "The S: @s $pi";
+        saygr "The S: @s @spi ";
         
         G.gp_inarow--;
 
         R.S.gpnew ? join("", @s) : G::gp($u);
     makaout: | #c
             my @s;
+            if (!a.bb) {
+                sayre "pi a..o not from ".G::gp($u);
+                my $r = ref $u;
+                if ($spi =~ s/^$r //) {
+                    $r = G.wit->($r, "cfa") if G.wit;
+                    push @s, $r;
+                    push @s, $spi;
+                }
+                return @s;
+            }
+            
             if (my $vos = a.bb) {
                 # grep up to our voltage
                 for my $vo (sort keys %{a.bb}) {
@@ -322,13 +334,12 @@ hooks:
                         push @s, $s;
                     }
                 }
-                $pi = join ' ', @s;
+                $spi = join ' ', @s;
             }
             
-             
-            sayyl "from ".G::gp($u)." got a.o and a.bb";
             if (a.o) {
                 my $vcv = a.cv - 0.2;
+                sayyl "pi a..o is ".keys %{a.o};
                 # modification of the above %{a.o} chunk...
                 for my $vo (sort keys %{a.o}) {
                     my $v = a.o->{$vo};
@@ -353,15 +364,8 @@ hooks:
                         push @s, $s;
                     }
                 }
-                
             } else {
-                
-                my $r = ref $u;
-                if ($pi =~ s/^$r //) {
-                    $r = G.wit->($r, "cfa") if G.wit;
-                    push @s, $r;
-                    push @s, $pi;
-                }
+                die "bb then no o?";
             }
             @s
     gp_pi: #c
