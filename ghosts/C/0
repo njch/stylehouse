@@ -4,7 +4,7 @@ C:
  - K: Do #c
    BcS: name D
    print: |
-     $name
+     "$name S.on";
    S:
      styles: -te
      Z: {background: '#044'}
@@ -80,7 +80,10 @@ P:
        H.G w z/keon;
        
  - Do switch: |
-       G.whichr = !G.whichr;
+       G.ri++;
+       my $r = w vAK/are;
+       S.on = r.name;
+       w chang(u=>$S);
  - K: D #c sur
    B: 
      name: one
@@ -111,6 +114,8 @@ R:
        rowlimit: 18
        e: 0.6
        key:
+          0: Num/out
+          number: Num/in
           E: Vit/up
           R: Vit/down
           T: gp/tognew
@@ -150,7 +155,9 @@ R:
               R.S.rowing = "S";
             A: |
               # heredity
-        
+          Num:
+            out: |
+            in: |
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
@@ -181,9 +188,8 @@ hooks:
   vAK:
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
-      
-      @us = reverse @us if G.whichr;
-      my $u = shift @us;
+      G.ri = 0 if !exists $us[G.ri];
+      my $u = $us[G.ri];
       w chang[$u];
       u.B.R
     setup: | #c
@@ -205,9 +211,12 @@ hooks:
       $key = "S$key" if e.S;
       # some instyle hooks letters to apply
       my $do = R.S.key->{$key};
+      if (!$do) {
+            # looser
+          
+      }
       say "lettering $key => $do";
       R.G w R.S.w $do if $do;
-      sayre "Rksuc: R.ksuc$k" for 1..3;
       if ($key =~ /[0-9]/) {
             say "Doing number $k" for 1..2;
             w vAK/key_int;
