@@ -558,46 +558,51 @@ hooks:
             @s
       HASH: | #c
             my $v = {%$u};
-            my $si = keys %$v;
-            my @s = (
-                G.wit->($si, "fff;font-size:50%"),
-            );
-            my $vcv = a.cv - 0.2;
-            if ($vcv >= 0.1) {
-                my @ks;
-                push @ks, "K" && delete v.K if v.K;
-                push @ks, sort keys %$v;
-                # like sorting the hashy du planet rows
-                # all about dividing lines to the length
-                # so after a simple voltage rolloff occurs
-                # you might like to realise how much induction was got
-                # and bend voltages up slightly so everything looks yay infoey
-                my @kv;
-                for my $k (@ks) {
-                    my $uu = $u->{$k};
-                    if ($vcv >= 0.2) {
-                        my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
-                        push @kv, ',' if @kv;
-                        push @kv, G.wit->($k, "acf");
-                        push @kv, ':',
-                            G.wt->($v, "font-size:75%") if $vcv > 0.1;
-                    }
-                    elsif ($vcv >= 0.1) {
-                        push @kv, ',' if @kv;
-                        push @kv, G.wit->($k, "acf");
-                    }
+            my $cv = a.cv ||= 0.3;
+            a.bb = {};
+            my @r = sort keys %$v;
+            my $si = @r;
+            
+            a.bb->{'si 0.1'} = $si;
+            a.bb->{'si%wit 0.1'} = "fff;font-size:50%";
+            a.bb->{'openb 0.1 0.11'} = '{';
+            a.bb->{'openb 0.1 0.9'} = '}';
+            
+            return if $cv < 0.2;
+            
+            
+            my @ks;
+            push @ks, "K" && delete v.K if v.K;
+            push @ks, sort keys %$v;
+            
+            # like sorting the hashy du planet rows
+            # all about dividing lines to the length
+            # so after a simple voltage rolloff occurs
+            # you might like to realise how much induction was got
+            # and bend voltages up slightly so everything looks yay infoey
+            
+            my $ki = 0;
+            for my $k (@ks) {
+                my $uu = $u->{$k};
+                
+                if ($ki > 0) {
+                    a.bb->{"[$ki 0.2"} = ',';
+                    $ki++;
                 }
-                # wrap? tabul? frond?
-                push @s,
-                    "{",
-                    @kv,
-                    "}",
+                a.bb->{"[$ki 0.2"} = $k; # could this be ${ki}_a?
+                a.bb->{"[$ki\%wit 0.2"} = "acf";
+                my $keyi = $ki;
+                $ki++;
+                my $vcv = a.cv - 0.2; # dus bend for $k
+                if ($vcv >= 0.2) {
+                    my $v = w vAK/gp(R=>$R, u=>$uu, cv=>$vcv);
+                    # how nesting of v vs its $a pipe.
+                    # long waves come along as $a trav lays off ways
+                    a.bb->{"[${keyi}_isto 0.2"} = ':';
+                    a.bb->{"[${ki}_v 0.2"} = $v;
+                    a.bb->{"[${ki}_v%wt 0.2"} = "font-size:75%";
+                }
             }
-            else {
-                push @s,
-                    "{}",
-            }
-            @s
       ref: | #c weird ref
             # looks for patterns from anywhere for clues
             (
