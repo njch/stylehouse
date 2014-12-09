@@ -513,7 +513,7 @@ hooks:
             for my $thl (@int) {
                 my $j = $th->{$thl} || next;
                 my $o = delete $ap->{$thl};
-                my $l = j.j;
+                my $l = j.l;
                 my $s = j.s;
                 
                 # top volt for thing selection: # whattage
@@ -549,6 +549,7 @@ hooks:
                 $s = "<t $at>$s</t>" if $s;
                 push @s, $s;
             }
+            sayyl "turn into @s";
             
             
             die "nose?" if !@s;
@@ -575,12 +576,12 @@ hooks:
             while (exists $u->[$ki]) {
                 my $uu = $u->[$ki];
                 if ($ki > 0) {
-                    a.bb->{"[$ki 0.2"} = ',';
+                    $ki++;
+                    a.bb->{"[${ki}#then 0.2"} = ',';
                     $ki++;
                 }
-                a.bb->{"[$ki 0.2"} = $ki; # could this be ${ki}_a?
+                a.bb->{"[$ki 0.2"} = $i; # could this be ${ki}_a?
                 a.bb->{"[$ki\%css 0.2"} = "color:acf";
-                my $keyi = $ki;
                 $ki++;
                 
                 my $vcv = a.cv - 0.2; # dus bend for $k
@@ -589,12 +590,18 @@ hooks:
                     my $v = w vAK/gp(a => $gp);
                     # how nesting of gp vs its $a pipe.
                     # long waves come along as $a trav lays off ways
-                    a.bb->{"[${keyi}_isto 0.2"} = ':';
+                    a.bb->{"[${ki}#isto 0.2"} = ':';
+                    $ki++;
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
                     a.bb->{"[${ki}_v%gp 0.2"} = $gp;
                 }
-                last if ++$i > 9;
+                if ($i >= 4) {
+                    $ki++;
+                    a.bb->{"[${ki}#more 0.2"} = (@us - $i);
+                    last;
+                }
+                $i++;
             }
       HASH: | #c
             my $v = {%$u};
@@ -604,7 +611,8 @@ hooks:
             my $si = @r;
             
             a.bb->{'si 0.1'} = $si;
-            a.bb->{'si%css 0.1'} = "color:fff;font-size:50%";
+            a.bb->{'si%css 0.1'} = "color:#fff;font-size:50%";
+            
             a.bb->{'Bo 0.1 0.11'} = '{';
             a.bb->{'oB 0.1 0.9'} = '}';
             
@@ -630,7 +638,7 @@ hooks:
                     $ki++;
                 }
                 a.bb->{"[$ki 0.2"} = $k; # could this be ${ki}_a?
-                a.bb->{"[$ki\%css 0.2"} = "color:acf";
+                a.bb->{"[$ki\%css 0.2"} = "color:#acf";
                 my $keyi = $ki;
                 $ki++;
                 my $vcv = a.cv - 0.2; # dus bend for $k
@@ -676,11 +684,11 @@ hooks:
             
             if ($adhow) {
                 a.bb->{"howad 0.2"} = $howad;
-                a.bb->{"howad%css 0.2"} = "color:88b;font-size:60%";
+                a.bb->{"howad%css 0.2"} = "color:#88b;font-size:60%";
             }
             
             a.bb->{"line 0.2"} = $line;
-            a.bb->{"line%css 0.2"} = "color:3f3";
+            a.bb->{"line%css 0.2"} = "color:#3f3";
       A: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
@@ -705,11 +713,16 @@ hooks:
         my $cv = a.cv ||= 0.3;
         a.bb = {};
         a.bb->{"thi 0"} = ref $u;
+        a.bb->{"thi%css 0"} = "color:#9fa"; # TODO chunk by hash c space
         return if $cv < 0.1;
         a.bb->{"name 0.1"} = u.name;
+        a.bb->{"name%css 0.1"} = "color:#ff3";
+        
         return if $cv < 0.2;
         
         a.bb->{"K 0.2"} = u.K;
+        a.bb->{"K%css 0.2"} = "color:#3f3";
+        
         if (C.B && C.B.name) {
             a.bb->{"maa 0.2"} = "Bname:";
             a.bb->{"mame 0.2"} = C.B.name;
