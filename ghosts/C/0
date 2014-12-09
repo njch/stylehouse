@@ -449,6 +449,13 @@ hooks:
                 return @$spi;
             }
             
+            # scan a.bb and add more styles././
+            for my $k (%{a.bb}) {
+                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
+                    a.bb->{"$1\%css $2"} = "color:black";
+                }
+            }
+            
             my @r = w stylekeysort(d=>a.bb);
             
             a.o = {}; # by voltage, peel
@@ -584,7 +591,7 @@ hooks:
                     my $v = w vAK/gp(a => $gp);
                     # how nesting of gp vs its $a pipe.
                     # long waves come along as $a trav lays off ways
-                    a.bb->{"[${ki}#isto 0.2"} = ':';
+                    a.bb->{"[${ki}_Bi 0.2"} = ':';
                     $ki++;
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
@@ -634,7 +641,7 @@ hooks:
                 if ($vcv >= 0.2) {
                     my $gp = {R=>$R, u=>$uu, cv=>$vcv};
                     my $v = w vAK/gp(a => $gp);
-                    a.bb->{"[${ki}_isto 0.2"} = ':'; # could be more "on" the _k
+                    a.bb->{"[${ki}_Bi 0.2"} = ':'; # could be more "on" the _k
                     $ki++;
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
@@ -662,28 +669,29 @@ hooks:
                 $adhow = 1;
             }
             my $tev = a.cv * 125; # 0.4 = 100
-            
-            my $howad = ".c.lin".".c.len".".c.b";
-            my $trev = $tev - length($howad);
+            my $trev = $tev;
+            saygr "trev $trev";
             
             my $si = length($line);
-            if (length($line) > $tev) {
+            if ($si > $tev) {
                 $line = ($line=~/^(.{$trev})/s)[0];
                 $si = length($line)."/$si";
+            }
+            else {
+                undef $si;
             }
             
             my $zi = c.lin if c.lin > 1;
             $zi .= "&c.b" if c.b > 1;
             
-            a.bb->{'si 0.1'} = $zi;
-            a.bb->{'si%css 0.1'} = "color:#b89;font-size:50%";
+            if ($si) {
+                a.bb->{'si 0.1'} = $si;
+                a.bb->{'si%css 0.1'} = "color:#b89;font-size:50%";
+            }
             
-            a.bb->{'siz 0.1'} = $si;
-            a.bb->{'siz%css 0.1'} = "color:#fff;font-size:50%";
-            
-            if ($adhow) {
-                a.bb->{"howad 0.2"} = $howad;
-                a.bb->{"howad%css 0.2"} = "color:#38f;font-size:60%";
+            if ($zi) {
+                a.bb->{'siz 0.1'} = $zi;
+                a.bb->{'siz%css 0.1'} = "color:#fff;font-size:50%";
             }
             
             a.bb->{"line 0.2"} = $line;
@@ -697,7 +705,11 @@ hooks:
         return if $cv < 0.2;
         a.bb->{"K 0.2"} = u.K;
         
-        a.bb->{"i 0.2"} = w vAK/gp(%$a, u=>A.i, cv=>$cv-0.2);
+        my $vcv = $cv - 0.2;
+        my $gp = {R=>$R, u=>A.i, cv=>$vcv};
+        my $v = w vAK/gp(a => $gp);
+        a.bb->{"i 0.2"} = $v;
+        a.bb->{"i%gp 0.2"} = $gp;
       G: | #c
         $G->pi;
       T: | #c
