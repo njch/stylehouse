@@ -416,7 +416,10 @@ hooks:
         my $c = w vAK/cgp[$u];
         
         my $a = { # traveller - magnetic fishing rod - plumbing
-            # receives a.bb - abdomin, core/whole, inside details poke outwards
+            # receives a.bb style like du outs
+            # - abdomin, core/whole, inside details poke outwards
+            # styles are appearance and thingness tree
+            # . one can find the other.
             cv => $cv,
             R => $R,
         };
@@ -435,7 +438,7 @@ hooks:
                 last;
             }
         }
-        if ($wa eq "canpi") {
+        if ($wa eq "canpi") { # supply $self
             $wa = ref $u;
             $arr->{$wa} = $u;
         }
@@ -465,59 +468,60 @@ hooks:
                 return @$spi;
             }
             
-            if (my $vos = a.bb) {
-                sayyl "GOT BB ".G::gp($u);
-                # grep up to our voltage
-                for my $vo (sort keys %{a.bb}) {
-                    next if $vo > a.cv; # TODO in the middle
-                    my $d = a.bb->{$vo};
-                    $d = $d->() if ref $d eq 'CODE';
-                    a.o->{$vo} = $d;
+            my @r = sort keys %{a.bb};
+            sayyl "GOT BB $u style * ".(0+@r);
+            sayyl $H->ind("  ",join "\n",@r);
+            a.o = {}; # by voltage
+            
+            
+            for my $r (@r) {
+                my ($l, $vo) = split /\s+/, $r; # split style, vectory
+                
+                if ($vo > a.cv) { # fuzz rebend, dus connective
+                    saygr "igggy $l $vo > a.cv";
+                    next;
                 }
                 
-                # sort out...
-                # stringing outing should start working around here
-                my @s;
-                for my $vo (sort keys %{a.o}) {
-                    my $v = a.o->{$vo};
-                    for my $vk (sort keys %$v) {
-                        next if $vk =~ /^_/;
-                        my $s = $v->{$vk};
-                        push @s, $s;
-                    }
-                }
-                $spi = join ' ', @s;
+                my $o = a.o->{$vo} ||= [];
+                push @$o, $r;
             }
             
-            if (a.o) {
-                my $vcv = a.cv - 0.2;
-                # modification of the above %{a.o} chunk...
-                for my $vo (sort keys %{a.o}) {
-                    my $v = a.o->{$vo};
-                    for my $vk (sort keys %$v) {
-                        next if $vk =~ /^_/;
-                        my $w;
-                        $w = "cfa" if $vk eq 'thi';
-                        $w = "3f3" if $vk eq 'K';
-                        $w = "ca6" if $vk =~ /ame$/;
-                        $w = "000;font-size:30%" if $vk eq 'id';
-                        my $s = $v->{$vk};
-                        # if v._u, $vk=for, has pi string worked out
-                        # but we want to get more of ourself in there
-                        # so vakgp...
-                        $s = w vAK/gp(R=>$R, u=>v._u, cv=>$vcv) if
-                            v._u && $vcv >= $vo;
-                            
-                        next if $vk eq 'K' && $s eq a.o->{0.1}->{name};
-                        
-                        $w .= '" title="'.$vk;
-                        $s = G.wit->($s, $w) if $w;
-                        push @s, $s;
-                    }
+            my $vcv = a.cv - 0.2; # dus bend
+            # modification of the above %{a.o} chunk...
+            
+            my $knocl = { # style layer sweeping around
+                thi => 'cfa',
+                K => '3f3',
+                id => '000;font-size:30%',
+            };
+            
+            for my $vo (sort keys %{a.o}) {
+                 my $o = a.o->{$vo};
+                 for my $r (sort @$o) {
+                     my $s = a.bb->{$r};
+                     my ($l, $vo) = split /\s+/, $r; # split style, vectory
+                     ($l, my $style) = split '%', $l;
+                     die "ooh style" if $style;
+                     die "reffy $s in $r" if ref $s;
+                     
+                     my $w; # magnestism
+                     $w = $knocl->{$l} if $knocl->{$l};
+                     $w = "ca6" if $l =~ /ame$/;
+                     
+                     #$s = w vAK/gp(R=>$R, u=>v._u, cv=>$vcv) if
+                     #    v._u && $vcv >= $vo;
+                     
+                     # top volt for thing selection:
+                     next if $l eq 'K' && $s eq a.bb->{"name 0.1"};
+                     
+                     $w .= '" title="'.$l;
+                     
+                     $s = G.wit->($s, $w) if $w;
+                     push @s, $s;
                 }
-            } else {
-                die "bb then no o?";
             }
+            
+            die "nose?" if !@s;
             
             @s
     gp_pi: #c
@@ -631,15 +635,14 @@ hooks:
             @s
       A: | #c
         my $cv = a.cv ||= 0.3;
-        a.bb = {
-            0 => { thi => ref $u },
-            0.1 => { name => u.name },
-            0.2 => { K => u.K },
-        };
-        a.bb->{0.2} = sub { 
-            my $pi = w vAK/gp(%$a, u=>A.i, cv=>$cv-0.2);
-            { for => $pi, _u => A.i }  
-        };
+        a.bb = {};
+        a.bb->{"thi 0"} = ref $u;
+        return if $cv < 0.1;
+        a.bb->{"name 0.1"} = u.name;
+        return if $cv < 0.2;
+        a.bb->{"K 0.2"} = u.K;
+        
+        a.bb->{"i 0.2"} = w vAK/gp(%$a, u=>A.i, cv=>$cv-0.2);
       G: | #c
         $G->pi;
       T: | #c
@@ -652,19 +655,21 @@ hooks:
         "W W.K W.G.name ".$W->uhigh;
       C: | #c
         my $cv = a.cv ||= 0.3;
-        a.bb = {
-          "thi 0" => ref $u,
-          "name 0.1" => u.name,
-          "K 0.2" => u.K,
-        };
-        my $two = a.bb->{0.2}; # has u.K 
-        # it's like C$name↯$K ...
+        a.bb = {};
+        a.bb->{"thi 0"} = ref $u;
+        return if $cv < 0.1;
+        a.bb->{"name 0.1"} = u.name;
+        return if $cv < 0.2;
+        
+        a.bb->{"K 0.2"} = u.K;
         if (C.B && C.B.name) {
             a.bb->{"maa 0.2"} = "Bname:";
             a.bb->{"mame 0.2"} = C.B.name;
         }
         
-        if ((defined C.print || C.Gw) && C.G)) {
+        return if $cv < 0.3;
+        
+        if (C.G && (defined C.print || C.Gw)) {
             my $p = C.G->w('print' => {}, $C, {nodie=>1});
             a.bb->{"print 0.3"} = $p if defined $p;
         }
@@ -677,32 +682,23 @@ hooks:
         my $c;
         my $b;
         for my $k (@or) {
-            next if !$k;
+            next if !defined $k;
             next if !exists $C->{$k};
             my $t = $C->{$k};
             next if !defined $t;
             next if ref $t;
             next if $t =~ /\n/; 
             my $slim = slim(20,20,$t);
-            $b->{$k} = $slim;
-            $c->{$k} = $slim if $k eq "point";
-            say wdump($c) if $k eq "point";
+            
+            a.bb->{"$k 0.4"} = $slim if $cv >= 0.4; # also a dus fuzz away
+            
+            a.bb->{"$k 0.3"} = $slim if $k eq "point"; # pyramid
         }
-        
-        c.B = "B:". w vAK/gp(%$a, u=>C.B, cv=>0.2) if C.B;
-        a.bb->{0.3} = $c;
-        a.bb->{0.4} = $b;
-        
-        my $B;
         
         if (C.B) {
-            if (a.cv > 0.2) {
-                if (join(",", sort keys %{C.B}) eq "Lu,ui") {
-                    $B = "ui=(".C.B.ui->pint();
-                }
-                $B ||= G::slim(50,30,G::ki(C.B))        
-            }
+            a.bb->{"B 0.3"} = w vAK/gp(%$a, u=>C.B, cv=>0.2) if C.B;
         }
+        # should return text if no $a...
     cgp: | #c data guess chart
         my $c = {};
         if (!defined $u){
