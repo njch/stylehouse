@@ -132,12 +132,16 @@ Ds:
           $j = {%$is, %$j};
           my $an = {%$a, i => $v};
           
-          my $ohms = defined j.oh ? j.oh : 1;
+          my $ohms = defined j.oh ? j.oh
+              : defined is.oh ? is.oh
+            : 1;
           
           an.e -= $ohms;
           
-          my $rk = "$k \t an.e";
+          my $rk = join "\t", $k, an.e;
+          
           $c->{$rk} = $v;
+          
           a.tr.rows++;
           last if a.tr.rowlimit && a.tr.rows >= a.tr.rowlimit;
           

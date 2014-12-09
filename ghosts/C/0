@@ -115,7 +115,7 @@ R:
        gpnew: 1
        rowlimit: 24
        e: 0.6
-       key:
+       key: #c
           0: Num/out
           number: Num/in
           E: Vit/up
@@ -128,12 +128,25 @@ R:
           F: Spl/F
           G: Spl/G
           W: Rock/way
-       w!C:
+       ss_Ds: #c
+         n: |
+             n.HASH = {};
+         Ai: |
+             Ai.A = {};
+         Gi: |
+           my $likes = {map{$_=>1}qw{G ways}};
+           Gi.HASH = {
+              it => sub {
+                my $h = shift;
+                my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
+              },
+           };
+       w!C: #c
           Rock:
             way: |
               R.J = {
                   from => $R,
-                trav => '{S',
+                  trav => '{S{w',
               };
             igloo: |
               R.J = {
@@ -222,12 +235,19 @@ hooks:
             from => $R,
             trav => '{G',
         };
+        
+        if (my $ssDs = delete R.S.ss_Ds) {
+            for my $k (sort keys %$ssDs) { # or K array who knows
+                my $u = R.S.ss->{$k} = $R->dus;
+                my $D = $ssDs->{$k};
+                $G->D({bab=>$D, ar=>{$k=>$u}});
+            }
+        }
+        
         say "Made ".$R->pi;
         #w R.S.w $_/in({}) for keys %{R.S.w};
     key: | #c
       sayyl join"  ", ($k) x 13 for 1..2;
-      
-      $R->key($k, $e);
       
       my $key = "$k";
       $key = "S$key" if e.S;
@@ -266,25 +286,27 @@ hooks:
         # 1
         R.a = shift || {};
         
+        R.a.e ||= R.S.e || die;
+        R.a.i ||= w vAK/uni[$R]; # find tip along the trav
+        
         # s messed by R plumbing, sure
-        R.s = $R->dus; 
-        R.s.HASH.oh = 0.2;
+        R.s = R.S.s || $R->dus;
             
         my $agp = {R=>$R, cv=>1};
         # 2
-        R.a.e ||= R.S.e || die;
         
-        R.a.i ||= w vAK/uni[$R]; # find tip along the trav
         
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         
         # 3
         $R->du;
         warn "nod" unless R.a.d;
+        
         # 4
         w vAK/durows[$R];
         
-        # 5 in space # TODO forkstyles & ongoingness
+        # 5 style in space
+        # links through gps/pis and their orientation zipper
         my $way = "S_5_".(R.S.rowing||"S");
         my @rows = w vAK/$way;
         
@@ -323,6 +345,13 @@ hooks:
 
         qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
       
+    durows: | #c
+      my $d = R.a.d;
+      my @r = w stylekeysort(d=>$d);
+      
+      R.a.r = [map {[ $_, $d->{$_} ]} @r ];
+
+    
     S_5_D: | #c dataey synapse
         wdump(1, R.a.i);
     S_5_S: | #c quick ROWING on the style synapse
@@ -333,11 +362,8 @@ hooks:
         my $si = @{R.a.r};
         my @i = w wind[$si];
             say "$si > 9 wound: @i";
-        sayyl "============" for 1..4;
         
-        
-        
-        sayyl "Rows: ".@{R.a.r}; #c
+        sayyl "Rows: ".@{R.a.r};
         sayyl "Is: ".@i;
         my $i = 1;
         # folding styles in
@@ -364,13 +390,6 @@ hooks:
             push @rows, j.row;
         }
         @rows
-
-    
-    durows: | #c
-      my $d = R.a.d;
-      my @r = w stylekeysort(d=>$d);
-      
-      R.a.r = [map {[ $_, $d->{$_} ]} @r ];
 
     
     gp: | #c vAK gp
@@ -593,7 +612,7 @@ hooks:
             # after we made it up, quickly as we are making up new stuff
             my @s;
             my $adhow;
-            if (c.lin > 1) {
+            if ($line =~ /\n/) {
                 $line = join '↯', split /\n/, $u; 
                 $adhow = 1;
             }
@@ -630,31 +649,28 @@ hooks:
       R: | #c
         $R->pi;
       W: | #c
-        $W->pi;
+        "W W.K W.G.name ".$W->uhigh;
       C: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {
-            0 => { thi => ref $u },
-            0.1 => { name => u.name },
-            0.2 => { K => u.K },
+          "thi 0" => ref $u,
+          "name 0.1" => u.name,
+          "K 0.2" => u.K,
         };
         my $two = a.bb->{0.2}; # has u.K 
         # it's like C$name↯$K ...
-        two.aa = "↯"; # put 
         if (C.B && C.B.name) {
-            two.maa = "Bname:";
-            two.mame = C.B.name;
+            a.bb->{"maa 0.2"} = "Bname:";
+            a.bb->{"mame 0.2"} = C.B.name;
         }
         
-        
-        
-        my $print;
-        if ((defined C.print || C.Gw) && G::wish(G=>C.G)) {
-            eval { $print = C.G w $C print({}); };
-            $@ = "" if $@;
+        if ((defined C.print || C.Gw) && C.G)) {
+            my $p = C.G->w('print' => {}, $C, {nodie=>1});
+            a.bb->{"print 0.3"} = $p if defined $p;
         }
         
-        my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$C; 
+        # dusseldorf
+        my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$C;
         delete $s{id};
         my @or = qw'name point timer', keys %s;
         

@@ -425,6 +425,7 @@ Ds:
       my $point = shift; 
       my $ar = shift;
       my $S = shift; # some kinda C subject
+      my $a = shift;
       my @ways;
       
       die wdump($ar) if $ar && ref $ar ne 'HASH';
@@ -508,7 +509,8 @@ Ds:
               $ne .= "$@";
               $@ = $ne;
               $G->Flab("Z Error $@");
-              die $@;
+              die $@ unless a.nodie;
+              $@ = "";
           }
       }
       
