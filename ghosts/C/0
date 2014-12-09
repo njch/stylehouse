@@ -470,21 +470,23 @@ hooks:
             
             my @r = sort keys %{a.bb};
             sayyl "GOT BB $u style * ".(0+@r);
-            sayyl $H->ind("  ",join "\n",@r);
-            a.o = {}; # by voltage
+            sayyl $H->ind("  ",join "\n",map { "$_ \t\t ".a.bb->{$_} } @r);
             
-            
+            a.o = {}; # by voltage, peel
             for my $r (@r) {
-                my ($l, $vo) = split /\s+/, $r; # split style, vectory
+                my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
                 
                 if ($vo > a.cv) { # fuzz rebend, dus connective
                     saygr "igggy $l $vo > a.cv";
                     next;
                 }
                 
-                my $o = a.o->{$vo} ||= [];
+                $or = $vo if !defined $or;
+                
+                my $o = a.o->{$or} ||= []; 
                 push @$o, $r;
             }
+            
             
             my $vcv = a.cv - 0.2; # dus bend
             # modification of the above %{a.o} chunk...
@@ -494,6 +496,8 @@ hooks:
                 K => '3f3',
                 id => '000;font-size:30%',
             };
+            
+            die wdump(a.o);
             
             for my $vo (sort keys %{a.o}) {
                  my $o = a.o->{$vo};
