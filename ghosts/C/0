@@ -656,12 +656,8 @@ hooks:
       text: | #c
             my $line = $u;
             a.bb = {};
-            my $si = @$u;
-            
-            a.bb->{'si 0.1'} = $si;
-            a.bb->{'si%css 0.1'} = "color:fff;font-size:50%";
-            a.bb->{'Bo 0.1 0.11'} = '[';
-            a.bb->{'oB 0.1 0.9'} = ']';
+            a.bb->{'Bo 0.1 0.11'} = "'";
+            a.bb->{'oB 0.1 0.9'} = "'";
             
             my @s;
             my $adhow;
@@ -677,11 +673,14 @@ hooks:
                 $line = ($line=~/^(.{$trev})/s)[0];
                 $adhow = 1;
             }
-
-            push @s, G.wit->($howad, "88b;font-size:60%") if $adhow;
-            $line = G.wit->($line, "3f3");
-            push @s, $line;
-            @s
+            
+            if ($adhow) {
+                a.bb->{"howad 0.2"} = $howad;
+                a.bb->{"howad%css 0.2"} = "color:88b;font-size:60%";
+            }
+            
+            a.bb->{"line 0.2"} = $line;
+            a.bb->{"line%css 0.2"} = "color:3f3";
       A: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
