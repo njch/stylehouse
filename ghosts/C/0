@@ -95,7 +95,7 @@ P:
      name: twofer
      R: surf
    flot_D: |
-     R.J.from = $H;
+     R.J = { from => $R, trav => '{S{w' };
  - GAK: U #c
    InC:
        W:
@@ -449,9 +449,7 @@ hooks:
                 return @$spi;
             }
             
-            my @r = sort keys %{a.bb};
-            sayyl "GOT BB $u style * ".(0+@r);
-            sayyl $H->ind("  ",join "\n",map { "$_ \t\t ".a.bb->{$_} } @r);
+            my @r = w stylekeysort(d=>a.bb);
             
             a.o = {}; # by voltage, peel
             for my $r (@r) {
@@ -473,13 +471,14 @@ hooks:
             # modification of the above %{a.o} chunk...
             
             
-            my $th = {}; # thingness of thing #c
-            my $ap = {}; # appearance of thing
+            #thingness_appearance #c
+            my $th = {};
+            my $ap = {};
             my @int;
             for my $ov (sort keys %{a.o}) {
                  my $o = a.o->{$ov};
                  
-                 for my $r (sort @$o) {
+                 for my $r (@$o) {
                      my $s = a.bb->{$r};
                      my ($l, $vo) = split /\s+/, $r; # split style, vectory
                      ($l, my $style) = split '%', $l;
@@ -505,11 +504,9 @@ hooks:
                 }
             }
             
-            my $knocl = { # style layer sweeping around # prop out
-                thi => 'cfa',
-                K => '3f3',
-                id => '000;font-size:30%',
-            };
+            say "\n\n yo : $u \t\t ".(0+@r);
+            
+            
             for my $thl (@int) {
                 my $j = $th->{$thl} || next;
                 my $o = delete $ap->{$thl};
@@ -520,15 +517,12 @@ hooks:
                 next if $l eq 'K' && $s eq a.bb->{"name 0.1"};
                 
                 die "reffy $s in $l" if ref $s;
-                
-                my $w; # magnestism
-                $w = $knocl->{$l} if $knocl->{$l};
-                $w = "ca6" if $l =~ /ame$/;
+                sayyl "for the $l\t\t$s j.vo";
                 
                 my $ishtml;
                 my $css = [];
                 for my $oj (@$o) {
-                    saybl "        sdtyle! oj.style oj.s";
+                    saybl "        sdtyle! oj.style oj.s"; 
                     if (oj.style eq "css") {
                         push @$css, oj.s;
                     }
@@ -544,12 +538,12 @@ hooks:
                 my $at;
                 at.style = join ';', @$css;
                 at.title = $l;
-                $at = join " ", map { $_.'="'.$at->{$_}.'"' } sort keys %$at;
+                $at = join " ", map { $_.'="'.$at->{$_}.'"' } 
+                    grep { $at->{$_} } sort keys %$at;
                 $s = encode_entities($s) unless $ishtml;
                 $s = "<t $at>$s</t>" if $s;
                 push @s, $s;
             }
-            sayyl "turn into @s";
             
             
             die "nose?" if !@s;
@@ -564,7 +558,7 @@ hooks:
             my $si = @$u;
             
             a.bb->{'si 0.1'} = $si;
-            a.bb->{'si%css 0.1'} = "color:fff;font-size:50%";
+            a.bb->{'si%css 0.1'} = "color:#fff;font-size:50%";
             a.bb->{'Bo 0.1 0.11'} = '[';
             a.bb->{'oB 0.1 0.9'} = ']';
             
@@ -581,7 +575,7 @@ hooks:
                     $ki++;
                 }
                 a.bb->{"[$ki 0.2"} = $i; # could this be ${ki}_a?
-                a.bb->{"[$ki\%css 0.2"} = "color:acf";
+                a.bb->{"[$ki\%css 0.2"} = "color:#acf";
                 $ki++;
                 
                 my $vcv = a.cv - 0.2; # dus bend for $k
@@ -623,31 +617,25 @@ hooks:
             push @ks, "K" && delete v.K if v.K;
             push @ks, sort keys %$v;
             
-            # like sorting the hashy du planet rows
-            # all about dividing lines to the length
-            # so after a simple voltage rolloff occurs
-            # you might like to realise how much induction was got
-            # and bend voltages up slightly so everything looks yay infoey
-            
             my $ki = 0;
             for my $k (@ks) {
                 my $uu = $u->{$k};
                 
                 if ($ki > 0) {
+                    $ki++;
                     a.bb->{"[$ki 0.2"} = ',';
                     $ki++;
                 }
-                a.bb->{"[$ki 0.2"} = $k; # could this be ${ki}_a?
-                a.bb->{"[$ki\%css 0.2"} = "color:#acf";
+                a.bb->{"[${ki}_k 0.2"} = $k; # could this be ${ki}_a?
+                a.bb->{"[${ki}\%css 0.2"} = "color:#acf";
                 my $keyi = $ki;
                 $ki++;
                 my $vcv = a.cv - 0.2; # dus bend for $k
                 if ($vcv >= 0.2) {
                     my $gp = {R=>$R, u=>$uu, cv=>$vcv};
                     my $v = w vAK/gp(a => $gp);
-                    # how nesting of gp vs its $a pipe.
-                    # long waves come along as $a trav lays off ways
-                    a.bb->{"[${keyi}_isto 0.2"} = ':';
+                    a.bb->{"[${ki}_isto 0.2"} = ':'; # could be more "on" the _k
+                    $ki++;
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
                     a.bb->{"[${ki}_v%gp 0.2"} = $gp;
@@ -674,17 +662,28 @@ hooks:
                 $adhow = 1;
             }
             my $tev = a.cv * 125; # 0.4 = 100
+            
             my $howad = ".c.lin".".c.len".".c.b";
             my $trev = $tev - length($howad);
             
+            my $si = length($line);
             if (length($line) > $tev) {
                 $line = ($line=~/^(.{$trev})/s)[0];
-                $adhow = 1;
+                $si = length($line)."/$si";
             }
+            
+            my $zi = c.lin if c.lin > 1;
+            $zi .= "&c.b" if c.b > 1;
+            
+            a.bb->{'si 0.1'} = $zi;
+            a.bb->{'si%css 0.1'} = "color:#b89;font-size:50%";
+            
+            a.bb->{'siz 0.1'} = $si;
+            a.bb->{'siz%css 0.1'} = "color:#fff;font-size:50%";
             
             if ($adhow) {
                 a.bb->{"howad 0.2"} = $howad;
-                a.bb->{"howad%css 0.2"} = "color:#88b;font-size:60%";
+                a.bb->{"howad%css 0.2"} = "color:#38f;font-size:60%";
             }
             
             a.bb->{"line 0.2"} = $line;
@@ -794,13 +793,17 @@ hooks:
         
         
   stylekeysort: |
-      my @r = sort keys %$d;
+      my $d = ar.d;
+      my $r = ar.r;
+      my @r = $r ? @$r : sort keys %$d;
+      
       if (grep { /^\[/ } @r) { 
-           my $by = { map {
-               my ($i) = /^\[(\d+)/;
-               $i+0 => $_;
+          my $by = { map {
+              my $p = $_;
+              $p =~ s/^\[(\d+)/'['.sprintf('%08d', $1)/e;
+              $p => $_
            } @r };
-           @r = map { $by->{$_} } sort { $a<=>$b } keys %$by;
+           @r = map { $by->{$_} } sort keys %$by;
       }
       @r
   wind: | #c
