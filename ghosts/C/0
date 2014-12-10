@@ -158,10 +158,10 @@ R:
               w seetry;
             D: |
               # to data dump
-              R.S.rowing = "D";   
+              R.S.rowding = !R.S.rowding;   
             S: |
               # to styley
-              R.S.rowing = "S";
+              #R.S.rowing = "S";
             A: |
               # heredity
           Num:
@@ -297,16 +297,11 @@ hooks:
         
         # 3
         $R->du;
-        warn "nod" unless R.a.d;
         
         # 4
-        my $d = R.a.d;
-        my @r = w stylekeysort(d=>$d);
-        R.a.r = [map {[ $_, $d->{$_} ]} @r ];
-        
-        # 5 style in space
-        # links through gps/pis and their orientation zipper
-        my @rows = w vAK/S_5;
+        w vAK/S_4;
+        my @rows = w vAK/S_5 if !R.S.rowding;
+        @rows = wdump(1, R.a.i) if R.S.rowding;
         
         
         # 6 on sphere
@@ -345,6 +340,14 @@ hooks:
         my $sty = join ";", @sty; 
         qq{<div style="$sty"><span>$html<span></div>}
       
+    S_4: | #c
+        my $d = R.a.d;
+        my @r = w stylekeysort(d=>$d);
+        
+        R.a.r = [map {[ $_, $d->{$_} ]} @r ];
+        
+        # 5 style in space
+        # links through gps/pis and their orientation zipper
     S_5: | #c quick ROWING on the style synapse
         # this and the rows' $a is plumbed up...
         my $agp = {R=>$R, cv=>1};
