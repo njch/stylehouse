@@ -285,17 +285,11 @@ hooks:
     S: | #c void vAKcess R::S heist
         # 1
         R.a = shift || {};
-        
         R.a.e ||= R.S.e || die;
         R.a.i ||= w vAK/uni[$R]; # find tip along the trav
-        
         # s messed by R plumbing, sure
         R.s = R.S.s || $R->dus;
-            
         my $agp = {R=>$R, cv=>1};
-        # 2
-        
-        
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         
         # 3
@@ -303,7 +297,9 @@ hooks:
         warn "nod" unless R.a.d;
         
         # 4
-        w vAK/durows[$R];
+        my $d = R.a.d;
+        my @r = w stylekeysort(d=>$d);
+        R.a.r = [map {[ $_, $d->{$_} ]} @r ];
         
         # 5 style in space
         # links through gps/pis and their orientation zipper
@@ -334,24 +330,19 @@ hooks:
         # shrink this webbing into a space in our webbing
         my $lines = split /\n/, $html;
         my $o = 12;
+        my @sty;
         my $fs;
         if ($lines > $o) {
             $fs = 100 * $o / $lines;
             $fs *= -1 if $fs < 0;
-            $fs = "font-size:".$fs."%;";
-            sayre "$lines become $fs";
+            push @sty, "font-size:$fs%";
         }
-        #sayre "$lines lines" for 1..5;
-
-        qq{<pre style="$fs;background: rgba(80,50,22,0.3);">$html</pre>}
+        push @sty, "background:rgba(80,50,22,0.3)"; 
+        push @sty, "white-space:pre";
+        push @sty, "font-family:mono";
+        my $sty = join ";", @sty; 
+        qq{<div style="$sty"><span>$html<span></div>}
       
-    durows: | #c
-      my $d = R.a.d;
-      my @r = w stylekeysort(d=>$d);
-      
-      R.a.r = [map {[ $_, $d->{$_} ]} @r ];
-
-    
     S_5_D: | #c dataey synapse
         wdump(1, R.a.i);
     S_5_S: | #c quick ROWING on the style synapse
@@ -382,10 +373,10 @@ hooks:
             j.pi = w vAK/gp(%$agp, u => j.u, cv => j.cv);
             
             j.row = 
-            join "  ",                 map { $R->f(@$_) }
+            join "  ",                 map { $R->f(@$_) } 
+              [ blue_fs120 =>     j.li ],
               [ black =>         j.t  ],
               [ red_fs80 =>     j.cv ],
-              [ blue_fs120 =>     j.li ],
               [ white_fs120 =>     j.pi ],;
             push @rows, j.row;
         }
@@ -638,7 +629,7 @@ hooks:
                     $ki++;
                 }
                 a.bb->{"[${ki}_k 0.2"} = $k; # could this be ${ki}_a?
-                a.bb->{"[${ki}\%css 0.2"} = "color:#acf";
+                a.bb->{"[${ki}_k\%css 0.2"} = "color:#acf";
                 my $keyi = $ki;
                 $ki++;
                 my $vcv = a.cv - 0.2; # dus bend for $k
@@ -661,45 +652,55 @@ hooks:
       undef: | #c
             '~'
       text: | #c
-            my $line = $u;
+            my $text = $u;
             a.bb = {};
-            a.bb->{'Bo 0.1 0.11'} = "'";
-            a.bb->{'oB 0.1 0.9'} = "'";
             
             my @s;
             my $adhow;
-            if ($line =~ /\n/) {
-                $line = join '↯', split /\n/, $u; 
+            if ($text =~ /\n/) {
+                $text = join '↯', split /\n/, $u; 
                 $adhow = 1;
             }
             my $tev =  a.cv * 125; # 0.4 = 100
             my $trev = int $tev;
             saygr "trev $trev";
             
-            my $si = length($line);
+            my $si = length($text);
             if ($si > $tev) {
-                $line = ($line=~/^(.{$trev})/s)[0];
-                $si = length($line)."/$si";
+                $text = ($text=~/^(.{$trev})/s)[0];
             }
             else {
                 undef $si;
             }
             
-            my $zi = c.lin if c.lin > 1;
-            $zi .= "&c.b" if c.b > 1;
+            my $ni = c.lin if c.lin > 1;
+            my $bi = c.b if c.b > 1;
             
             if ($si) {
-                a.bb->{'si 0.1'} = $si;
-                a.bb->{'si%css 0.1'} = "color:#b89;font-size:50%";
+                # was trucated
+                a.bb->{'Bo 0.1 0.11'} = "'";
+                a.bb->{'oB 0.1 0.9'} = "'";
+            }
+            if ($si) {    
+                a.bb->{'si/l 0.1'} = "$si";
+                a.bb->{'si/l%css 0.1'} =
+                "color:#b89;font-size:50%;position:absolute";
+            }
+            if ($ni) {
+                a.bb->{'si/n 0.1'} = "$ni";
+                a.bb->{'si/n%css 0.1'} = 
+                "color:#fff;font-size:50%;position:absolute;margin-top:1.4em;";
+            }
+            if ($bi && 0) {
+                a.bb->{'si/b 0.1'} = "b$bi";
+                a.bb->{'si/b%css 0.1'} = 
+                "color:#f89;font-size:50%;float:left;left:-1em";
             }
             
-            if ($zi) {
-                a.bb->{'siz 0.1'} = $zi;
-                a.bb->{'siz%css 0.1'} = "color:#fff;font-size:50%";
-            }
+            a.bb->{"line 0.2"} = $text;
+            a.bb->{"line%css 0.2"} =
+            "background:rgba(200,30,80,0.3);color:#3f3;font-size:70%";
             
-            a.bb->{"line 0.2"} = $line;
-            a.bb->{"line%css 0.2"} = "color:#3f3";
       A: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
