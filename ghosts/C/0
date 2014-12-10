@@ -120,7 +120,6 @@ R:
           number: Num/in
           E: Vit/up
           R: Vit/down
-          T: gp/tognew
           Y: Chew/in
           A: Spl/A
           S: Spl/S
@@ -128,19 +127,7 @@ R:
           F: Spl/F
           G: Spl/G
           W: Rock/way
-       ss_Ds: #c
-         n: |
-             n.HASH = {};
-         Ai: |
-             Ai.A = {};
-         Gi: |
-           my $likes = {map{$_=>1}qw{G ways}};
-           Gi.HASH = {
-              it => sub {
-                my $h = shift;
-                my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
-              },
-           };
+
        w!C: #c
           Rock:
             way: |
@@ -195,6 +182,19 @@ R:
 
               my ($hop) = j.ac =~ /^(\W\w+)/;
               R.J.trav .= $hop; 
+       ss_Ds: #c
+         n: |
+             n.HASH = {};
+         Ai: |
+             Ai.A = {};
+         Gi: |
+           my $likes = {map{$_=>1}qw{G ways}};
+           Gi.HASH = {
+              it => sub {
+                my $h = shift;
+                my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
+              },
+           };
 hooks:
   fresh_init: |
     H.keydo = sub { w key(e=>shift); };
@@ -272,7 +272,11 @@ hooks:
       my $t = J.trav || "";
       #  from => $H,
       #  trav => "{G{GGs",
-      while ($t =~ m/(\W)(\w+)/sg) {
+      my @tr = $t =~ m/(\W\w+)/sg;
+      
+      
+      for (@tr) {
+          /^(.)(.+)$/;
           say "Snapped $i       $1 $2";
           last if $1 eq " ";
           $i = $i->{$2} if $1 eq "{";
@@ -303,8 +307,7 @@ hooks:
         
         # 5 style in space
         # links through gps/pis and their orientation zipper
-        my $way = "S_5_".(R.S.rowing||"S");
-        my @rows = w vAK/$way;
+        my @rows = w vAK/S_5;
         
         
         # 6 on sphere
@@ -343,9 +346,7 @@ hooks:
         my $sty = join ";", @sty; 
         qq{<div style="$sty"><span>$html<span></div>}
       
-    S_5_D: | #c dataey synapse
-        wdump(1, R.a.i);
-    S_5_S: | #c quick ROWING on the style synapse
+    S_5: | #c quick ROWING on the style synapse
         # this and the rows' $a is plumbed up...
         my $agp = {R=>$R, cv=>1};
         my @rows;
@@ -502,7 +503,7 @@ hooks:
                 }
             }
             
-            say "\n\n yo : $u \t\t ".(0+@r);
+            #say "\n\n yo : $u \t\t ".(0+@r);
             
             
             for my $thl (@int) {
@@ -515,12 +516,12 @@ hooks:
                 next if $l eq 'K' && $s eq a.bb->{"name 0.1"};
                 
                 die "reffy $s in $l" if ref $s;
-                sayyl "for the $l\t\t$s j.vo";
+                #sayyl "for the $l\t\t$s j.vo";
                 
                 my $ishtml;
                 my $css = [];
                 for my $oj (@$o) {
-                    saybl "        sdtyle! oj.style oj.s"; 
+                    #saybl "        sdtyle! oj.style oj.s"; 
                     if (oj.style eq "css") {
                         push @$css, oj.s;
                     }
@@ -548,9 +549,9 @@ hooks:
             }
             
             
-            die "nose?" if !@s;
+            die "nose? $u" if !@s;
             
-            @s
+            join("", @s);
     gp_pi: #c
       wtf: | #c
         "know $u"
@@ -568,7 +569,6 @@ hooks:
             
             my $ki = 0;
             my $i = 0;
-            my @us;
             while (exists $u->[$ki]) {
                 my $uu = $u->[$ki];
                 if ($ki > 0) {
@@ -576,25 +576,18 @@ hooks:
                     a.bb->{"[${ki}#then 0.2"} = ',';
                     $ki++;
                 }
-                a.bb->{"[$ki 0.2"} = $i; # could this be ${ki}_a?
-                a.bb->{"[$ki\%css 0.2"} = "color:#acf";
-                $ki++;
                 
                 my $vcv = a.cv - 0.2; # dus bend for $k
                 if ($vcv >= 0.2) {
                     my $gp = {R=>$R, u=>$uu, cv=>$vcv};
                     my $v = w vAK/gp(a => $gp);
-                    # how nesting of gp vs its $a pipe.
-                    # long waves come along as $a trav lays off ways
-                    a.bb->{"[${ki}_Bi 0.2"} = ':';
-                    $ki++;
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
                     a.bb->{"[${ki}_v%gp 0.2"} = $gp;
                 }
                 if ($i >= 4) {
                     $ki++;
-                    a.bb->{"[${ki}#more 0.2"} = (@us - $i);
+                    a.bb->{"[${ki}#more 0.2"} = (@$u - $i);
                     last;
                 }
                 $i++;
@@ -629,7 +622,7 @@ hooks:
                     $ki++;
                 }
                 a.bb->{"[${ki}_k 0.2"} = $k; # could this be ${ki}_a?
-                a.bb->{"[${ki}_k\%css 0.2"} = "color:#acf";
+                a.bb->{"[${ki}_k\%css 0.2"} = "color:#acf;font-size:80%";
                 my $keyi = $ki;
                 $ki++;
                 my $vcv = a.cv - 0.2; # dus bend for $k
@@ -663,7 +656,6 @@ hooks:
             }
             my $tev =  a.cv * 125; # 0.4 = 100
             my $trev = int $tev;
-            saygr "trev $trev";
             
             my $si = length($text);
             if ($si > $tev) {
