@@ -716,11 +716,20 @@ hooks:
         return if $cv < 0.2;
         a.bb->{"K 0.2"} = u.K;
         
-        my $vcv = $cv - 0.2;
-        my $gp = {R=>$R, u=>A.i, cv=>$vcv};
-        my $v = w vAK/gp(a => $gp);
-        a.bb->{"i 0.2"} = $v;
-        a.bb->{"i%gp 0.2"} = $gp;
+        do {
+            my $gp = {R=>$R, u=>A.i, cv=>0.2};
+            my $v = w vAK/gp(a => $gp);
+            a.bb->{"i 0.2"} = $v;
+            a.bb->{"i%gp 0.2"} = $gp;
+        };
+        return if $cv < 0.3;
+        
+        do {
+            my $gp = {R=>$R, u=>A.i, cv=>0.2};
+            my $v = w vAK/gp(a => $gp);
+            a.bb->{"i 0.2"} = $v;
+            a.bb->{"i%gp 0.2"} = $gp;
+        };
       G: | #c
         $G->pi;
       T: | #c
