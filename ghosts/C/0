@@ -438,7 +438,7 @@ hooks:
             a.bb->{"${li}_s 0.3 0.3${li}4"} = $v;
             a.bb->{"${li}_s%sf 0.3 0.3${li}4"} = 'white_fs120';
             a.bb->{"${li}_s%gp 0.3 0.3${li}4"} = $gp;
-            $i++;
+            $i++; 
         }
     gp: | #c vAK gp
         
@@ -539,7 +539,7 @@ hooks:
                 }
             }
             
-            say "\n\n yo : ar.u \t\t ".(0+@r) if ar.db;
+            say "yo : ar.u \t\t ".(0+@r);
             
             
             for my $thl (@int) {
@@ -605,10 +605,10 @@ hooks:
             a.bb = {};
             my $si = @$u;
             
-            a.bb->{'si 0.1'} = $si;
-            a.bb->{'si%css 0.1'} = "color:#fff;font-size:50%";
-            a.bb->{'Bo 0.1 0.11'} = '[';
-            a.bb->{'oB 0.1 0.9'} = ']';
+            my $as = w vAK/as(bb=>a.bb);
+            $as->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
+            $as->('Bo 0.1 0.11' => '[');
+            $as->('oB 0.1 0.9' => ']');
             
             return if $cv < 0.2;
             
@@ -623,16 +623,19 @@ hooks:
                 }
                 
                 my $vcv = a.cv - 0.2; # dus bend for $k
-                if ($vcv >= 0.1) {
+                $vcv = 0.1 if $vcv < 0.1;
+                if (1) {
                     my $gp = {R=>$R, u=>$uu, cv=>$vcv};
                     my $v = w vAK/gp(a => $gp);
                     a.bb->{"[${ki}_v 0.2"} = $v;
                     a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
                     a.bb->{"[${ki}_v%gp 0.2"} = $gp;
-                }
-                if ($i >= 14) {
                     $ki++;
-                    a.bb->{"[${ki}#more 0.2"} = "..".(@$u - $i);
+                }
+                if ($i >= 8) {
+                    $ki++;
+                    a.bb->{"[${ki}#more 0.2"} = "@";
+                    a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
                     last;
                 }
                 $i++;
@@ -755,19 +758,22 @@ hooks:
         };
         return if $cv < 0.3;
         do {
-            my $un = { map { $_ => $A->{$_} } grep { /^(u|n)/ } keys %$A };
+            my $un;
+            map { push @{$un->{_.un}||=[]}, $A->{_.k} }
+            grep { /^(u|n)/ && do { $_ = {un=>$1, k=>$_} } } keys %$A;
             my $gp = {R=>$R, u=>$un, cv=>0.4};
             my $v = w vAK/gp(a => $gp);
+            
             a.bb->{"un 0.3"} = $v;
             a.bb->{"un%gp 0.3"} = $gp;
         };
       G: | #c
-        my $cv = 0.2;#a.cv ||= 0.3;
-        a.bb = {}; 
+        my $cv = a.cv ||= 0.3;
+        a.bb = {};
         a.bb->{"thi 0"} = ref $u;
         return if $cv < 0.1;
         a.bb->{"name 0.1"} = u.name;
-        return if $cv < 0.2; 
+        return if $cv < 0.2;
         a.bb->{"K 0.2"} = u.K;
         
       T: | #c
