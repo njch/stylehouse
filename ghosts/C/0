@@ -445,39 +445,20 @@ hooks:
         $html =~ s/\n//;
         G.gp_inarow--;
         $html
-    maka_3: | #c # scan a.bb and add more styles././
-            for my $k (%{a.bb}) {
-                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
-                    a.bb->{"$1\%css $2"} = "color:black";
-                }
-                if ($k =~ /^thi\s+(.+)$/) {
-                    a.bb->{"thi\%css"} = "text-decoration:underline";
-                }
-                if ($k =~ /^name\s+(.+)$/) {
-                    a.bb->{"name\%css"} = "color:#f93";
-                }
-            }
     makaout: | #c
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
         
-            my @s;
-            if (!a.bb) {
-                my $spi = ar.spi || die;
-                my $r = ref ar.u;
-                if ($spi->[0] =~ s/^$r //) {
-                    $r = G.wit->($r, "cfa") if G.wit;
-                    unshift @$spi, $r;
-                }
-                return @$spi;
-            }
-            
-            w vAK/maka_3;
-            
-            my @r = w stylekeysort(d=>a.bb);
-            
-            a.o = {}; # by voltage, peel
-            for my $r (@r) {
+        return w vAK/maka_nobb if !a.bb;
+        
+        my @s;
+
+        w vAK/maka_3;
+
+        my @r = w stylekeysort(d=>a.bb);
+
+        a.o = {}; # by voltage, peel
+        for my $r (@r) {
                 my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
                 
                 saygr "igggy $l $vo > a.cv" && next if $cv && $vo > $cv;
@@ -486,12 +467,11 @@ hooks:
                 
                 my $o = a.o->{$or} ||= []; 
                 push @$o, $r;
-            }
+        }
+        # modification of the above %{a.o} chunk...
             
-            # modification of the above %{a.o} chunk...
             
-            
-            #thingness_appearance #c
+            #thingness_appearance
             my $th = {};
             my $ap = {};
             my @int;
@@ -850,6 +830,28 @@ hooks:
             }
         }
         $c
+    maka_3: | #c # scan a.bb and add more styles././
+            for my $k (%{a.bb}) {
+                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
+                    a.bb->{"$1\%css $2"} = "color:black";
+                }
+                if ($k =~ /^thi\s+(.+)$/) {
+                    a.bb->{"thi\%css"} = "text-decoration:underline";
+                }
+                if ($k =~ /^name\s+(.+)$/) {
+                    a.bb->{"name\%css"} = "color:#f93";
+                }
+            }
+    maka_nobb: | #c
+                my $spi = ar.spi || die;
+                my $r = ref ar.u;
+                if ($spi->[0] =~ s/^$r //) {
+                    $r = G.wit->($r, "cfa") if G.wit;
+                    unshift @$spi, $r;
+                }
+                return join "", @$spi;
+      
+
             
       
         
