@@ -285,6 +285,49 @@ hooks:
           say "Had some more: $1";
       }
       $i
+    
+    
+    shj: | #c
+      my $j;
+      j.r = $r;
+      j.s = $d->{$r};
+      (j.t, j.cv) = split /\s+/, j.r, 2;
+      (j.cv, my @e) = split /\s+/, j.cv;
+      j.ev = \@e if @e;
+      $j
+    
+    
+    as: | #c
+        my $j = {};
+        my $do;
+        $do = sub {
+            my $j = {%$j};
+            my $ad = [@_];
+            w vAK/floto[$j,$ad,$bb];
+            sub{$do->(%$j, @_)}
+        };
+        $do
+    floto: | #c
+        my %j = %$j;
+            while (@$ad) {
+                my ($k, $v) = (shift @$ad, shift @$ad);
+                
+                my $comp = $k =~ /^(%|\+)/;
+                my $j = {%j} if $comp;
+                if ($comp) {
+                    $k =~ s/^\+// if $comp;
+                    j.t .= $k if $comp;
+                }
+                else {
+                    (j.t, j.cv) = split /\s+/, $k;
+                    %j = %$j;
+                }
+                j.cv || die;
+                j.r = "j.t j.cv";
+                j.s = $v;
+                $bb->{j.r} = j.s;
+            }
+
     S: | #c void vAKcess R::S heist
         # 1
         R.a = shift || {};
@@ -292,7 +335,6 @@ hooks:
         R.a.i ||= w vAK/uni[$R]; # find tip along the trav
         # s messed by R plumbing, sure
         R.s = R.S.s || $R->dus;
-        my $agp = {R=>$R, cv=>1};
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         R.a.bb = {};
         
@@ -303,29 +345,32 @@ hooks:
         w vAK/S_4;
         my $a = R.a;
         
+        my $as = w vAK/as(bb=>a.bb);
+        
         do {
             my $gp = {R=>$R, u=>$R, cv=>0.2};
             my $v = w vAK/gp(a => $gp);
             
-            a.bb->{"R 0.11"} = $v;
-            a.bb->{"R%gp 0.11"} = $gp;
-            a.bb->{"R_fro 0.11"} = "!@";
+            $as->("R 0.11" => $v,
+                '%gp' => $gp,
+                '+_fro' => '!@');
         };
         
         do {
             my $gp = {R=>$R, u=>R.J.from, cv=>0.2};
             my $v = w vAK/gp(a => $gp);
             
-            a.bb->{"R_J_from 0.12"} = $v;
-            a.bb->{"R_J_from%sf 0.12"} = 'white';
-            a.bb->{"R_J_from%gp 0.12"} = $gp;
+            $as->('R_J_from 0.12'=>$v,
+            '%gp' => $gp,
+            '%sf' =>  'white');
             
         };
+        do {
+            $as->('R_J_trav 0.13'=>R.J.trav,
+            '%sf' =>  'black');
+        };
         
-        a.bb->{"R_J_trav 0.13"} = R.J.trav;
-        a.bb->{"R_J_trav%sf 0.13"} = 'black';
-        
-        a.bb->{"R_S_e 0.2"} = R.S.e;
+        $as->('R_S_e 0.2'=>R.S.e);
         
         do {
             my $gp = {R=>$R, u=>R.a.i, cv=>a.e};
@@ -364,15 +409,6 @@ hooks:
         my $sty = join ";", @sty; 
         qq{<div style="$sty"><span>$html<span></div>}
       
-    shj: | #c
-      my $j;
-      j.r = $r;
-      j.s = $d->{$r};
-      
-      (j.t, j.cv) = split /\s+/, j.r, 2;
-      (j.cv, my @e) = split /\s+/, j.cv;
-      j.ev = \@e if @e;
-      $j
     S_4: | #c
         my $a = R.a;
         my $d = a.d; # from du
@@ -532,7 +568,8 @@ hooks:
                         $ishtml = 1;
                     }
                     elsif (oj.style eq "sf") {
-                        push @$css, map { $R::f->{$_} || die "no style $_"} split '_', oj.s;
+                        push @$css, map { $R::f->{$_} || 
+                        die "no style $_"} split '_', oj.s;
                     }
                     else {
                         die "style oj.style = oj.s \t for $l";
