@@ -164,7 +164,7 @@ R:
               #R.S.rowing = "S";
             A: |
               # heredity
-          Num:
+          Num: #c
             out: |
               if (R.ksuc && $k eq "0") {
                   return R.ksuc = ""
@@ -181,7 +181,7 @@ R:
 
               my ($hop) = j.ac =~ /^(\W\w+)/;
               R.J.trav .= $hop; 
-       ss_Ds: #c
+       ss_Ds: #c schematic
          n: |
              n.HASH = {};
          Ai: |
@@ -294,15 +294,17 @@ hooks:
         R.s = R.S.s || $R->dus;
         my $agp = {R=>$R, cv=>1};
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
+        R.a.bb = {};
         
         # 3
         $R->du;
         
         # 4
         w vAK/S_4;
-        my @rows = w vAK/S_5 if !R.S.rowding;
-        @rows = wdump(1, R.a.i) if R.S.rowding;
-        
+        my @rows =  w vAK/makaout(R=>$R, a=>R.a, db=>1);
+        #my @rows = w vAK/S_5 if !R.S.rowding;
+        #@rows = wdump(1, R.a.i) if R.S.rowding;
+        #
         
         # 6 on sphere
         my $frompi = w vAK/gp(%$agp, cv => 0.2, u => R.J.from);
@@ -340,52 +342,53 @@ hooks:
         my $sty = join ";", @sty; 
         qq{<div style="$sty"><span>$html<span></div>}
       
+    shj: | #c
+      my $j;
+      j.r = $r;
+      j.s = $d->{$r};
+      
+      (j.t, j.cv) = split /\s+/, j.r, 2;
+      (j.cv, my @e) = split /\s+/, j.cv;
+      j.ev = \@e if @e;
+      $j
     S_4: | #c
-        my $d = R.a.d;
-        my @r = w stylekeysort(d=>$d);
+        my $a = R.a;
+        my $d = a.d; # from du
         
-        R.a.r = [map {[ $_, $d->{$_} ]} @r ];
+        my @r = w stylekeysort[$d];
+        my $si = @r;
+        my @i = w wind[$si];
+        my $ro = R.a.ro = {}; # wind round
+        my $i = 0;
+        for my $r (@r) {
+            my $j = w vAK/shj[$r, $d];
+            my $li = j.li = shift @i || die;
+            $ro->{$li} = $j;
+            if ($i > 0) {
+                a.bb->{"Bs 0.3 0.3${li}0"} = "\n";
+            }
+            a.bb->{"${li}_li 0.3 0.3${li}1"} = j.li;
+            a.bb->{"${li}_li%sf 0.3 0.3${li}1"} = 'blue_fs120';
+            a.bb->{"${li}_k 0.3 0.3${li}2"} = j.t;
+            a.bb->{"${li}_k%sf 0.3 0.3${li}2"} = 'black';
+            
+            a.bb->{"${li}_cv 0.3 0.3${li}3"} = j.v;
+            a.bb->{"${li}_cv%sf 0.3 0.3${li}3"} = 'red_fs80';
+            
+            my $gp = {R=>$R, u=>j.s, cv=>j.cv};
+            my $v = w vAK/gp(a => $gp);
+            
+            a.bb->{"${li}_s 0.3 0.3${li}4"} = $v;
+            a.bb->{"${li}_s%sf 0.3 0.3${li}4"} = 'white_fs120';
+            a.bb->{"${li}_s%gp 0.3 0.3${li}4"} = $gp;
+            $i++;
+        }
         
+        
+        #a.r = [map {[ $_, $d->{$_} ]} @r ];
         # 5 style in space
         # links through gps/pis and their orientation zipper
-    S_5: | #c quick ROWING on the style synapse
-        # this and the rows' $a is plumbed up...
-        my $agp = {R=>$R, cv=>1};
-        my @rows;
-        
-        my $si = @{R.a.r};
-        my @i = w wind[$si];
-            say "$si > 9 wound: @i";
-        
-        sayyl "Rows: ".@{R.a.r};
-        sayyl "Is: ".@i;
-        my $i = 1;
-        # folding styles in
-        my $ro = R.a.ro = {};
-        
-        my @rows;
-        for my $r (@{R.a.r}) {
-            my $li = shift @i || die "out of eyes".wdump(2, [@i, $ro]);;
-            my $j = $ro->{$li} = {};
-            j.li = $li;
-            (j.ac, j.u) = @$r;
-            (j.t, j.cv) = split /\s+/, j.ac;
-            
-            # plumbs a ripple of the dus action that got the rows for R
-            # close to the thing
-            j.pi = w vAK/gp(%$agp, u => j.u, cv => j.cv);
-            
-            j.row = 
-            join "  ",                 map { $R->f(@$_) } 
-              [ blue_fs120 =>     j.li ],
-              [ black =>         j.t  ],
-              [ red_fs80 =>     j.cv ],
-              [ white_fs120 =>     j.pi ],;
-            push @rows, j.row;
-        }
-        @rows
 
-    
     gp: | #c vAK gp
         
         G.gp_inarow++;
@@ -396,7 +399,7 @@ hooks:
         a.cv = 0.1 if a.cv < 0.1;
         my $u = a.u;
         
-        my $c = w vAK/cgp[$u];
+        my $c = w vAK/cgp[$u]; # guesses
         
         my $arr = {
             a => $a, # @_
@@ -435,7 +438,8 @@ hooks:
     makaout: | #c
             my @s;
             if (!a.bb) {
-                my $r = ref $u;
+                my $spi = ar.spi || die;
+                my $r = ref ar.u;
                 if ($spi->[0] =~ s/^$r //) {
                     $r = G.wit->($r, "cfa") if G.wit;
                     unshift @$spi, $r;
@@ -456,17 +460,14 @@ hooks:
             for my $r (@r) {
                 my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
                 
-                if ($vo > a.cv) { # fuzz rebend, dus connective
-                    saygr "igggy $l $vo > a.cv";
-                    next;
-                }
+                saygr "igggy $l $vo > a.cv" && next if a.cv && $vo > a.cv;
                 
                 $or = $vo if !defined $or;
                 
+                say "or: $or is being $r" if ar.db;
                 my $o = a.o->{$or} ||= []; 
                 push @$o, $r;
             }
-            
             
             my $vcv = a.cv - 0.2; # dus bend
             # modification of the above %{a.o} chunk...
@@ -505,7 +506,7 @@ hooks:
                 }
             }
             
-            #say "\n\n yo : $u \t\t ".(0+@r);
+            say "\n".wdump(2, a.o)."\n yo : ar.u \t\t ".(0+@r) if ar.db;
             
             
             for my $thl (@int) {
@@ -518,18 +519,21 @@ hooks:
                 next if $l eq 'K' && $s eq a.bb->{"name 0.1"};
                 
                 die "reffy $s in $l" if ref $s;
-                #sayyl "for the $l\t\t$s j.vo";
+                sayyl "for the $l\t\t$s j.vo" if ar.db;
                 
                 my $ishtml;
                 my $css = [];
                 for my $oj (@$o) {
-                    #saybl "        sdtyle! oj.style oj.s"; 
+                    saybl "        sdtyle! oj.style oj.s" if ar.db; 
                     if (oj.style eq "css") {
                         push @$css, oj.s;
                     }
                     elsif (oj.style eq "gp") {
                         # has a way to $a the gp action within...
                         $ishtml = 1;
+                    }
+                    elsif (oj.style eq "sf") {
+                        push @$css, map { $R::f->{$_} || die "no style $_"} split '_', oj.s;
                     }
                     else {
                         die "style oj.style = oj.s \t for $l";
