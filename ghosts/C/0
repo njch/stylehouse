@@ -175,11 +175,11 @@ R:
               my $j = R.a.ro->{R.ksuc};
               
               $j || return sayre "no j ye for R.ksuc";
-              sayyl "got j for R.ksuc";
+              sayyl "got $j j.t j.cv for R.ksuc";
 
               R.ksuc = "";
 
-              my ($hop) = j.ac =~ /^(\W\w+)/;
+              my ($hop) = j.t =~ /^(\W\w+)/;
               R.J.trav .= $hop; 
        ss_Ds: #c schematic
          n: |
@@ -384,8 +384,8 @@ hooks:
             a.bb->{"${li}_k 0.3 0.3${li}2"} = j.t;
             a.bb->{"${li}_k%sf 0.3 0.3${li}2"} = 'black';
             
-            a.bb->{"${li}_cv 0.3 0.3${li}3"} = j.v;
-            a.bb->{"${li}_cv%sf 0.3 0.3${li}3"} = 'red_fs80';
+            a.bb->{"${li}_cv 0.3 0.3${li}22"} = j.cv;
+            a.bb->{"${li}_cv%sf 0.3 0.3${li}22"} = 'red_fs80';
             
             my $gp = {R=>$R, u=>j.s, cv=>j.cv};
             my $v = w vAK/gp(a => $gp);
@@ -436,12 +436,14 @@ hooks:
         
         arr.spi = \@spi;
         
-        my @s = w vAK/makaout(%$arr); 
-        
+        my $html = w vAK/makaout(%$arr);
+        $html =~ s/\n//;
         G.gp_inarow--;
-
-        join("", @s);
+        $html
     makaout: | #c
+        my $cv = ar.cv;
+        $cv = a.cv if !defined $cv;
+        
             my @s;
             if (!a.bb) {
                 my $spi = ar.spi || die;
@@ -466,7 +468,7 @@ hooks:
             for my $r (@r) {
                 my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
                 
-                saygr "igggy $l $vo > a.cv" && next if a.cv && $vo > a.cv;
+                saygr "igggy $l $vo > a.cv" && next if $cv && $vo > $cv;
                 
                 $or = $vo if !defined $or;
                 
@@ -474,7 +476,6 @@ hooks:
                 push @$o, $r;
             }
             
-            my $vcv = a.cv - 0.2; # dus bend
             # modification of the above %{a.o} chunk...
             
             
@@ -662,7 +663,7 @@ hooks:
             my @s;
             my $adhow;
             if ($text =~ /\n/) {
-                $text = join '↯', split /\n/, $u; 
+                $text = join '↯', split /\n/, $text; 
                 $adhow = 1;
             }
             my $tev =  a.cv * 125; # 0.4 = 100
@@ -700,7 +701,9 @@ hooks:
                 "color:#f89;font-size:50%;float:left;left:-1em";
             }
             
-            a.bb->{"line 0.2"} = $text;
+            #$text =~ s/\\n/\\\\n/g;
+            
+            a.bb->{"line 0.2"} = encode_entities($text);
             a.bb->{"line%css 0.2"} =
             "background:rgba(200,30,80,0.3);color:#3f3;font-size:70%";
             
@@ -776,7 +779,11 @@ hooks:
         }
         
         if (C.B) {
-            a.bb->{"B 0.3"} = w vAK/gp(%$a, u=>C.B, cv=>0.2) if C.B;
+            my $gp = {R=>$R, u=>C.B, cv=>0.2};
+            my $v = w vAK/gp(a => $gp);
+            
+            a.bb->{"B 0.3"} = $v;
+            a.bb->{"B%gp 0.3"} = $gp;
         }
         # should return text if no $a...
     cgp: | #c data guess chart
