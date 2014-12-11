@@ -306,41 +306,31 @@ hooks:
         do {
             a.bb->{"Jfro 0.1"} = "@!@";
             
-            my $gp = {R=>$R, u=>R.J.from, cv=>0.4};
+            my $gp = {R=>$R, u=>R.J.from, cv=>0.2};
             my $v = w vAK/gp(a => $gp);
             
-            a.bb->{"Jfrom 0.1"} = $v;
-            a.bb->{"Jfrom%sf 0.1"} = 'white';
-            a.bb->{"Jfrom%gp 0.1"} = $gp;
+            a.bb->{"R_J_from 0.1"} = $v;
+            a.bb->{"R_J_from%sf 0.1"} = 'white';
+            a.bb->{"R_J_from%gp 0.1"} = $gp;
             
-            a.bb->{"Jfrom_s 0.1"} = R.J.trav;
-            a.bb->{"Jfrom_s%sf 0.1"} = 'black';
+            a.bb->{"R_J_trav 0.1"} = R.J.trav;
+            a.bb->{"R_J_trav%sf 0.1"} = 'black';
         };
         do {
-            my $gp = {R=>$R, u=>R.a.i, cv=>0.4};
+            my $gp = {R=>$R, u=>R.a.i, cv=>0.2};
             my $v = w vAK/gp(a => $gp);
             
-            
-            a.bb->{"Se 0.2"} = R.S.e;
-            a.bb->{"Jfrom 0.2"} = $v;
-            a.bb->{"Jfrom%sf 0.2"} = 'white';
-            a.bb->{"Jfrom%gp 0.2"} = $gp;
+            a.bb->{"R_S_e 0.2"} = R.S.e;
+            a.bb->{"R_a_i 0.2"} = $v;
+            a.bb->{"R_a_i%sf 0.2"} = 'white';
+            a.bb->{"R_a_i%gp 0.2"} = $gp;
         };
         a.bb->{"Js 0.29"} = "\n";
-        #die wdump([sort keys %{a.bb}]);
-        # 6 on sphere
-        #my $frompi = w vAK/gp(%$agp, cv => 0.2, u => R.J.from);
-        #my $topi   = w vAK/gp(%$agp, cv => 0.2, u => R.a.i);
-
+        
+        say a.bb->{"R_J_from 0.1"} ." trav: ". a.bb->{"R_J_trav 0.1"} ." thing: ".a.bb->{"R_a_i 0.2"};
         # 7
-        my @rows =  w vAK/makaout(R=>$R, a=>R.a, db=>1);
-        my $html = join "\n",
-         #    "@!@".$R->f(white => $frompi)
-        #    ."  ".$R->f(black => R.J.trav),
-         #   " = ".$R->f(white_fs150 => $topi),
-            
-            @rows;
-
+        my $html = w vAK/makaout(R=>$R, a=>R.a);
+        
         # 6
         # TODO more style synapse rejoins after delib fork exp
         # reflect style injection round corner
@@ -387,7 +377,7 @@ hooks:
             my $li = j.li = shift @i || die;
             $ro->{$li} = $j;
             if ($i > 0) {
-                a.bb->{"Bs 0.3 0.3${li}0"} = "\n";
+                 a.bb->{"${li}0_Bs 0.3 0.3${li}0"} = "\n";
             }
             a.bb->{"${li}_li 0.3 0.3${li}1"} = j.li;
             a.bb->{"${li}_li%sf 0.3 0.3${li}1"} = 'blue_fs120';
@@ -480,7 +470,6 @@ hooks:
                 
                 $or = $vo if !defined $or;
                 
-                say "or: $or is being $r" if ar.db;
                 my $o = a.o->{$or} ||= []; 
                 push @$o, $r;
             }
