@@ -327,14 +327,14 @@ hooks:
                 j.s = $v;
                 $bb->{j.r} = j.s;
             }
-
     S: | #c void vAKcess R::S heist
         # 1
         R.a = shift || {};
         R.a.e ||= R.S.e || die;
         R.a.i ||= w vAK/uni[$R]; # find tip along the trav
         # s messed by R plumbing, sure
-        R.s = R.S.s || $R->dus;
+        R.a.s = R.S.s || $R->dus;
+        R.a.s.HASH.oh = 0.2;
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         R.a.bb = {};
         
@@ -352,8 +352,8 @@ hooks:
             my $v = w vAK/gp(a => $gp);
             
             $as->("R 0.11" => $v,
-                '%gp' => $gp,
-                '+_fro' => '!@');
+                  '%gp' => $gp,
+                  '+_fro' => '!@');
         };
         
         do {
@@ -361,28 +361,27 @@ hooks:
             my $v = w vAK/gp(a => $gp);
             
             $as->('R_J_from 0.12'=>$v,
-            '%gp' => $gp,
-            '%sf' =>  'white');
+                  '%gp' => $gp,
+                  '%sf' =>  'white');
             
         };
         do {
             $as->('R_J_trav 0.13'=>R.J.trav,
-            '%sf' =>  'black');
+                  '%sf' =>  'black');
         };
         
-        $as->('R_S_e 0.2'=>R.S.e);
+        $as->('R_S_e 0.2' => R.S.e);
         
         do {
             my $gp = {R=>$R, u=>R.a.i, cv=>a.e};
             my $v = w vAK/gp(a => $gp);
             
-            a.bb->{"R_a_i 0.2"} = $v;
-            a.bb->{"R_a_i%sf 0.2"} = 'white';
-            a.bb->{"R_a_i%gp 0.2"} = $gp;
+            $as->('R_a_i 0.21'=>$v,
+                  '%sf' => 'white',
+                  '%gp' => $gp);
         };
         a.bb->{"Js 0.29"} = "\n";
         
-        say a.bb->{"R_J_from 0.1"} ." trav: ". a.bb->{"R_J_trav 0.1"} ." thing: ".a.bb->{"R_a_i 0.2"};
         # 7
         my $html = w vAK/makaout(R=>$R, a=>R.a, cv => 0);
         
@@ -624,7 +623,7 @@ hooks:
                 }
                 
                 my $vcv = a.cv - 0.2; # dus bend for $k
-                if ($vcv >= 0.2) {
+                if ($vcv >= 0.1) {
                     my $gp = {R=>$R, u=>$uu, cv=>$vcv};
                     my $v = w vAK/gp(a => $gp);
                     a.bb->{"[${ki}_v 0.2"} = $v;
@@ -633,7 +632,7 @@ hooks:
                 }
                 if ($i >= 14) {
                     $ki++;
-                    a.bb->{"[${ki}#more 0.2"} = (@$u - $i);
+                    a.bb->{"[${ki}#more 0.2"} = "..".(@$u - $i);
                     last;
                 }
                 $i++;
