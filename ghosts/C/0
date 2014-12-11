@@ -301,21 +301,43 @@ hooks:
         
         # 4
         w vAK/S_4;
-        my @rows =  w vAK/makaout(R=>$R, a=>R.a, db=>1);
-        #my @rows = w vAK/S_5 if !R.S.rowding;
-        #@rows = wdump(1, R.a.i) if R.S.rowding;
-        #
+        my $a = R.a;
         
+        do {
+            a.bb->{"Jfro 0.1"} = "@!@";
+            
+            my $gp = {R=>$R, u=>R.J.from, cv=>0.4};
+            my $v = w vAK/gp(a => $gp);
+            
+            a.bb->{"Jfrom 0.1"} = $v;
+            a.bb->{"Jfrom%sf 0.1"} = 'white';
+            a.bb->{"Jfrom%gp 0.1"} = $gp;
+            
+            a.bb->{"Jfrom_s 0.1"} = R.J.trav;
+            a.bb->{"Jfrom_s%sf 0.1"} = 'black';
+        };
+        do {
+            my $gp = {R=>$R, u=>R.a.i, cv=>0.4};
+            my $v = w vAK/gp(a => $gp);
+            
+            
+            a.bb->{"Se 0.2"} = R.S.e;
+            a.bb->{"Jfrom 0.2"} = $v;
+            a.bb->{"Jfrom%sf 0.2"} = 'white';
+            a.bb->{"Jfrom%gp 0.2"} = $gp;
+        };
+        a.bb->{"Js 0.29"} = "\n";
+        #die wdump([sort keys %{a.bb}]);
         # 6 on sphere
-        my $frompi = w vAK/gp(%$agp, cv => 0.2, u => R.J.from);
-        my $topi   = w vAK/gp(%$agp, cv => 0.2, u => R.a.i);
+        #my $frompi = w vAK/gp(%$agp, cv => 0.2, u => R.J.from);
+        #my $topi   = w vAK/gp(%$agp, cv => 0.2, u => R.a.i);
 
         # 7
+        my @rows =  w vAK/makaout(R=>$R, a=>R.a, db=>1);
         my $html = join "\n",
-             "@!@".$R->f(white => $frompi)
-            ."  ".$R->f(black => R.J.trav),
-            
-            "R.S.e = ".$R->f(white_fs150 => $topi),
+         #    "@!@".$R->f(white => $frompi)
+        #    ."  ".$R->f(black => R.J.trav),
+         #   " = ".$R->f(white_fs150 => $topi),
             
             @rows;
 
@@ -383,12 +405,6 @@ hooks:
             a.bb->{"${li}_s%gp 0.3 0.3${li}4"} = $gp;
             $i++;
         }
-        
-        
-        #a.r = [map {[ $_, $d->{$_} ]} @r ];
-        # 5 style in space
-        # links through gps/pis and their orientation zipper
-
     gp: | #c vAK gp
         
         G.gp_inarow++;
@@ -506,7 +522,7 @@ hooks:
                 }
             }
             
-            say "\n".wdump(2, a.o)."\n yo : ar.u \t\t ".(0+@r) if ar.db;
+            say "\n\n yo : ar.u \t\t ".(0+@r) if ar.db;
             
             
             for my $thl (@int) {
