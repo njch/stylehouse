@@ -303,12 +303,7 @@ hooks:
         $do = sub {
             my $j = {%$j};
             my $ad = [@_];
-            w vAK/floto[$j,$ad,$bb];
-            sub{$do->(%$j, @_)}
-        };
-        $do
-    floto: | #c
-        my %j = %$j;
+            my %j = %$j;
             while (@$ad) {
                 my ($k, $v) = (shift @$ad, shift @$ad);
                 
@@ -327,6 +322,10 @@ hooks:
                 j.s = $v;
                 $bb->{j.r} = j.s;
             }
+            sub{$do->(%$j, @_)}
+        };
+        $do
+
     S: | #c void vAKcess R::S heist
         # 1
         R.a = shift || {};
