@@ -200,8 +200,7 @@ hooks:
     G.arp = [1..1024];
   recoded_init: |
     w vAK/are; 
-  trythis: |
-    "one thing";
+
   seetry: |
     saygr "Trying!!!!" for 1..5;
     my @lot = w trythis;
@@ -232,7 +231,7 @@ hooks:
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
             from => $G,
-            trav => '',
+            trav => '{ways[0',
         };
         
         if (my $ssDs = delete R.S.ss_Ds) {
@@ -333,6 +332,10 @@ hooks:
         # s messed by R plumbing, sure
         R.a.s = R.S.s || $R->dus;
         R.a.s.HASH.oh = 0.2;
+        R.a.s.SCALAR.it = sub {
+            my $i = 0;
+            map { { k => $i++, v=> $_ } } split "\n\n", shift;
+        };
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         
         my $a = R.a;
@@ -545,8 +548,6 @@ hooks:
                      }
                 }
             }
-            
-            say "yo : ar.u \t\t ".(0+@r);
             
             
             for my $thl (@int) {

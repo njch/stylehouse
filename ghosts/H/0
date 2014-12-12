@@ -17,116 +17,6 @@ C:
 R:
  - K: ivm
 hooks:
-  mess: |
-    # TODO R should handle incoming
-    # and outgoing subs, pubs
-    # in between is quiet Accumessing
-    unless (H._future) {
-        # circular or pre-G:H # R catch
-        saygr "prefut ar.what  = ".
-            join"  ", map {gpty($_)} flatline(ar.thing);
-        return;
-    }
-    my $S = 0->TB(mess => {thing => $thing, what => $what});
-    S.m = $what;
-    S.Flab = $G->Flab($S);
-    
-    $_->($S) for @{G.messtrigs||=[]}; # way?
-    
-    if (S.m =~ /^(Ambientness|Vitals)$/) {
-        # keep only 5?
-        my @ze = 0->rei({K=>'mess', m=>$1});
-        shift @ze for 1..5;
-        $_ ne $S && 0->del($_) for @ze;
-    }
-    my @ze = 0->rei({K=>'mess'});
-    shift @ze for 1..50;
-    $_ ne $S && 0->del($_) for @ze;
-
-    
-    H._future = 1;
-  Elvis: #
-      # here we want to graph things out real careful
-      # because it is how things get around
-      # the one to the many
-      # apps can be multicasting too
-      # none of these workings should be trapped at this level
-      # send it out there and get the hair on it
-    flows_D: |
-      Sw tx_uglies;
-      S.mouth = [];
-      
-      Sw populi if ! H.h; # dodge
-      H.who = $S if ! H.h; # hut later
-      B.elvii = ++H.elvii;
-      B.sign ||= join "", (`figlet '<<<<'`)[-2]; chomp B.sign;
-      
-    swoosh: |
-      saygr $sign;
-      
-    humms_D: |
-      w elvibe(E=>$S);
-    
-    print: |
-      "$elvii $elvii =B.style=B.name=B.id B.conin $address";
-    
-    send: |
-      $tx->send(J.B.m, J.B.cb);
-      
-    speaks: |      
-      my $E = $S;#1
-      my $J = 0->Bu(J => {m=>$m});#2
-      if (w $S mouthfull[$J]) {#3 pyramid full
-          sayyl "elvis losing teeth ".$S->pi;
-          return; # more stim than stamp
-      }
-      H.who = $E;
-      w Teeth[$J, $E];#...
-      
-      
-    disconecktie: |
-      $EE->send(" C[s\.conin] = s;");
-      $tx->finish;
-      Sw disco;
-    disco: |
-      S.disco = 1;
-      G:Ϡ w elvis_leaves(E=>$S) if G:Ϡ;
-      
-    mouthfull: |
-      for my $mJ (@{S.mouth}) {
-            return 1 if mJ.dig eq J.dig &&
-                (1 / (J.hitime - mJ.hitime)) > S.max_tooth_Hz
-      }
-      push @{S.mouth}, $J;
-      shift @{S.mouth} if @{S.mouth} > 3;
-      return 0;
-    
-    populi: |
-      my @all = 0->rei({K=>"Elvis"});
-      if (@all > 1) {
-          sayre " Elvis is taking over!";
-          _.B.tx->finish for @all;
-          sayre " restarting...";
-          w reexec;
-      }
-      
-    leaves: |
-      sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
-      Sw disco;
-    
-    tx_uglies: |
-      Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      $M->on(message => sub {
-          my ($M, $m) = @_;
-          eval { Sw speaks[$m]; };
-          $H->error("$@") if $@;
-          $@ = "";
-      });
-      $M->on(finish => sub {
-          my ($M, $code, $reason) = @_;
-          Sw leaves[$code, $reason];
-      });
-      B.address = $tx->remote_address;
   fresh_init: |
     say "     H Fresh init H.style H.name";
     H._future = 1;
@@ -138,6 +28,7 @@ hooks:
     my $reS = sub { w reS(m => shift->{m}); };
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
+    
     
     $G->timer(60*9+(20 * rand 4),
         sub { sayre "voluntary reexec" for 1..13; w reexec; })
@@ -151,35 +42,8 @@ hooks:
     # start git torrent
     # do it all
     # $0 has become a runtime
-    waylay H.style/in;
+    waylay in;
       
-  figure_port: |
-    my $listen = readlink('listen');
-    my ($host,$port, $wa) = split ':', $listen;
-    die "too much listen" if $wa;
-    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
-    $port ||= 2000;
-    $host ||= '127.0.0.1';
-
-    $port += w H.style/minorport;
-    
-    H.listen_http = "http://$host:$port";   
-    H.listen_ws = "ws://$host:$port/s";
-    
-  websocket: | # Mojo throws connection over here
-    0->TafuB(Elvis => {tx => $M->tx, M => $M});
-  websockout: | # we make websockets out # BROKE
-    Say "Ws out $conin";
-    use Mojo::UserAgent;
-    my $ua = Mojo::UserAgent->new;
-    $ua->websocket($conin => sub {
-      my ($ua, $tx) = @_;
-      die "HELLO!";
-      die "WebSocket handshake failed! $conin" and return unless $tx->is_websocket;
-      Say "Connecto!";
-      0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
-    });
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -189,41 +53,6 @@ hooks:
         ."var m = e();"
         ."s\.reply({jaw:{s:'$s',e:m}});";
     w send_Elvis;
-  Teeth: |
-    w $J print_in(pi => $E->pi);
-    my $m = J.B.m;
-    w $J decode;
-    my $j = J.B.j;
-    
-    if (ref $j eq "HASH") {
-        if (keys %$j != 1) {
-            die "hash wide/skinny ".wdump($j);
-        }
-        my ($uno) = keys %$j;
-        saygr "cuno $uno";
-        my $a = {
-            j => $j,
-            $uno => $j->{$uno},
-            E => $E,
-        };
-        w S/$uno(%$a);
-        # hit or not? see post 6 with r
-        return;
-    }
-    
-    die "weird shit: '$m'" if ref $j;
-    
-    if ($j =~ /^([\w\/]+) (.+)$/) {
-        $ar = {m => $2, E => $E}; #J?
-        w S/$1; # < or v
-        w H.style/S/$1;
-    }
-    else {
-        die "wei tet '$j'";
-    }
-    
-    w $E swoosh;#9
-    
 
   reS: |
     sayyl "S > $m";
@@ -254,23 +83,20 @@ hooks:
     key: |
       return H.keydo->($e) if H.keydo;
       
-      G.keys ||= G:keys;
-      G.keys || die "no keys!";
-      G:keys ->w(Arr => {e => $e});
     TV: |
       w duu/TV;
-    
-    conz: |
-        while (my ($id, $conin) = each %$conz) {
-            next unless $conin eq H.listen_ws; # ours
-            next if H.G.A.W->{$id}; # current # lookup (into the unified)
-            $E->send(" delete conz['$id']; \$('#$id').remove();");
-        }
   
-    # from redis or so, published to S is "push_conin $style $name $id $conin"
-    # so happens everywhere unless you:
+    ghostchanges: |
+      return if H.G.wtf.gitdission;
+      say "S ghostchanges";
+      my $Gd = {map { $_ => 1 } split ', ', $m};
+      $G0 w _gitdission[$Gd];
+      
+    zl: |
+      say "yeah well $m";
+      
     On: |
-      "H.style/H.name" =~ $m && $m =~ s/^\S+ // && w reS[$m];
+      $m =~ s/^H.style\/H.name // && w reS[$m];
     W: |
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
@@ -281,74 +107,6 @@ hooks:
         a.e = $e;
 
         a.W.G w event(%$a);
-    push_conin: |
-      G:Ϡ w pull_conin if H.singul;
-    please_push_conin: |
-      G:Ϡ w push_conin if !H.singul;
-    wsy: |
-      my $C = G.conz ||= {};
-      my ($w, $s) = split ' ', $m;
-      # check the tip for dup
-      my $EE = G.conz->{$w};
-      if ($EE && !EE.disco) {
-          w elvash[$E, $EE];
-      }
-      G.conz->{$w} = $E;
-      (E.c->{w}, E.c.s) = ($w, $s);
-      E.singul = 1 if $w eq $s; 
-      
-      w z/conz;
-      w elvjs;
-    ghostchanges: |
-      return if H.G.wtf.gitdission;
-      say "S ghostchanges";
-      my $Gd = {map { $_ => 1 } split ', ', $m};
-      $G0 w _gitdission[$Gd];
-    zl: |
-      say "yeah well $m";
-  z:
-    getgeometry: |
-      $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
-    empty_body: |
-      $H->send("\$('body').empty();");
-    clon: |
-      $H->send(" clon();");
-    keon: |
-      $H->send(" keon();");
-    hitground: |
-      $H->JS("\$('#sky').stop().slideUp();");
-    conz: |
-      $E->send(" s\.reply({conz:conz});");
-    wzy: |
-      $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
-    coninto: |
-      $H->send(" a\.con({conin: '$conin'});");
-  elvash: |
-    # close older one? closes newer, $E
-    ($E, $EE) = ($EE, $E);
-    sayre "Already on ".$EE->pi."  disco necktie ing => ".$E->pi;
-    w $E disconecktie[$EE];
-  elvjs: | # elvis swam through wsy, is js client
-    saygr $E->pi." E.c.w, E.c.s \n\n";
-    
-    say "Elvis swims     ".(E.singul ? "SINGULARLY":"");
-    if (E.singul) {
-        H.who = $E;
-        H.singul = 1;
-        w H.style/singul;
-    }
-    else {
-        H.singul = 0;
-        w H.style/elvus;
-    }
-  elvibe: |
-    Say "En nnnn Elvis ?? J | ".$E->pi;
-    if (E.B.style) {
-        Say "Elvis got it ".$E->pi;
-        return;
-    }
-    w H.style/elvibe;
-    w z/wzy; # conz, swim
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
     if (ar.way && ar.div) {
@@ -524,15 +282,6 @@ hooks:
       my $tot = (`wc -l lib/* ghosts/*/*`)[-1];
       ($tot) = $tot =~ /(\d+) total/;
       "$tot lines"
-  send_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who || die "no infiduvial? $m";
-    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
-    $m =~ s/\n//g;
-    my $J = 0->Bu(J => {m => ar.m, cb => ar.cb});
-    w $J print_out(pi => $Elvis->pi);
-    w $Elvis send[$J];
-  Elvi: |
-    grep { !_.disco } 0->rei({K=>"Elvis"});
   J: # 
     Bu_D: |
       B.m =~ s/\n?$/\n/s;

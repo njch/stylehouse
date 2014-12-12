@@ -107,7 +107,7 @@ Ds:
       
       return {} if @{a.ds} > 12 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
       
-      my $ref = ref $i;
+      my $ref = ref $i || 'SCALAR';
       my $is = $s->{$ref} || $s->{default};
       $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
       $is ||= $s->{default} || return {};
