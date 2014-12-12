@@ -196,7 +196,9 @@ hooks:
     a.way ||= $top." D=$D"; # uniq
     
     a.r = w enRedis;
-    a.r->subscribe($top => $D);
+    my $s = 'subscribe';
+    $s = "p$s" if $top =~ /\*/;
+    a.r->$s($top => $D);
     a.r.wassubbedto = $top;
     a.riv = 'redission';
     G.redission->{a.way} = $a;
@@ -204,6 +206,7 @@ hooks:
     my $riv = G.redission ||= {};
     my @to = values %$riv;
     G.redisco = w waits(to => \@to, towait => 0.1);
+    sayyl "Subbed to a.top";
   redission: |
     my $ord = G.redisco ||= {};
     for my $k (sort keys %$ord) { # numbers wall timespace

@@ -5,10 +5,19 @@ hooks:
   node: #c
       O:
        - D: |
+           H.r->ping() || die "no redids?";
            $G->su("Elvis*", sub {
-             my $m = shift->{m};
+             my $a = shift;
+             sayyl "sub a.top ".(a.m =~ /^(.{,50})/)[0];
+             my $m = a.m;
              H.G w send_Elvis[$m];
+             if (a.m =~ /^(.{0,30}ux').append/) {
+                my $E = H.who;
+                0->sing(retile => sub { G:Ϡ w retile[$E]; }, begin => 0.8);
+             }
+             1;
            });
+           
       Z:
        - GAK: 0
       C:
@@ -292,17 +301,27 @@ hooks:
         H.singul = 0;
         w elvus;
     }
+    w elvibium;
   elvibe: |
     Say "En nnnn Elvis ?? J | ".$E->pi;
     if (E.B.style) {
         Say "Elvis got it ".$E->pi;
         return;
     }
-    w elvibium;
     w z/wzy; # conz, swim
-    
+  elvibium: |
+    if (my $Js = delete H.awaJ) {
+        for my $m (@$Js) {
+            w send_Elvis[$E, $m];
+        }
+    }
   send_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who || die "no infiduvial? $m";
+    my $Elvis = ar.Elvis || ar.E || H.who;
+    if (!$Elvis) {
+        warn "no individual?";
+        push @{H.awaJ||=[]}, $m;
+        return;
+    }
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
     my $J = 0->Bu(J => {m => ar.m, cb => ar.cb});
