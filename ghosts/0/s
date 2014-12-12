@@ -4,7 +4,8 @@ Ds:
     D: |
       #!/usr/bin/env perl
       package S;
-      use Mojolicious::Lite;
+      use Mojo::IOLoop;
+      
       use common::sense;
       
       use lib 'l';
@@ -20,7 +21,8 @@ Ds:
       $name ||= 'S';
       $H = H->new({name => $name, style => 'stylehut'});
       
-      app->secrets([readlink '/home/s/stylehouse/msecret']);
+      $H = H->new({name => $name, style => 'hut'});
       
-      app->start();
+      Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
       
+
