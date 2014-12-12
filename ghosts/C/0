@@ -231,8 +231,8 @@ hooks:
     setup: | #c
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
-            from => $H,
-            trav => '{G{GGs',
+            from => $G,
+            trav => '',
         };
         
         if (my $ssDs = delete R.S.ss_Ds) {
@@ -424,22 +424,27 @@ hooks:
             my $li = j.li = shift @i || die;
             $ro->{$li} = $j;
             if ($i > 0) {
-                 a.bb->{"${li}0_Bs 0.3 0.3${li}0"} = "\n";
+                 $as->("${li}0_Bs 0.3 0.3${li}0" => "\n");
             }
-            a.bb->{"${li}_li 0.3 0.3${li}1"} = j.li;
-            a.bb->{"${li}_li%sf 0.3 0.3${li}1"} = 'blue_fs120';
-            a.bb->{"${li}_k 0.3 0.3${li}2"} = j.t;
-            a.bb->{"${li}_k%sf 0.3 0.3${li}2"} = 'black';
-            
-            a.bb->{"${li}_cv 0.3 0.3${li}22"} = j.cv;
-            a.bb->{"${li}_cv%sf 0.3 0.3${li}22"} = 'red_fs80';
+            $as->("${li}_li 0.3 0.3${li}1", j.li,
+                '%sf', 'blue_fs120');
+                
+            my $t = j.t;
+            $t .= join("", (" ") x (6 - length($t))) if length($t) < 6;
+            $as->("${li}_k 0.3 0.3${li}2", $t,
+                '%sf', 'black');
+           
+            my $cv = j.cv;
+            $cv =~ s/^0//;
+            $as->("${li}_cv 0.3 0.3${li}22", $cv,
+                '%sf', 'red_fs80');
             
             my $gp = {R=>$R, u=>j.s, cv=>j.cv};
             my $v = w vAK/gp(a => $gp);
             
-            a.bb->{"${li}_s 0.3 0.3${li}4"} = $v;
-            a.bb->{"${li}_s%sf 0.3 0.3${li}4"} = 'white_fs120';
-            a.bb->{"${li}_s%gp 0.3 0.3${li}4"} = $gp;
+            $as->("${li}_s 0.3 0.3${li}4", $v,
+                '%gp' => $gp,
+                '%sf', 'white_fs120');
             $i++; 
         }
     gp: | #c vAK gp

@@ -777,9 +777,10 @@ hooks:
         $Z && attr.style && die "got uiu $Z\t\tattr.style already";
         
         at.css = at.Z;
-        while (my($k,$v) = each %{at.css}) {
+        for my $k (keys %{at.css}) {
+            my $v = at.css->{$k};
             if (ref $v eq 'HASH') {
-                delete at.css->{flit} if at.css->{flit};
+                delete at.css->{flit} if $k eq 'flit';
                 at.css->{'-webkit-filter'} = join " ",
                     map{ "$_($v->{$_})" } sort keys %$v;
             }
