@@ -28,6 +28,7 @@ hooks:
     my $reS = sub { w reS(m => shift->{m}); };
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
+    0->su("S/H.style/H.name/H.id" => $reS);
     
     
     $G->timer(60*9+(20 * rand 4),
@@ -43,7 +44,7 @@ hooks:
     # do it all
     # $0 has become a runtime
     waylay in;
-  recElvis: |
+  pubbedElvis: | # message for elvis via redis
       sayre "su a.top ".slim(30,30,a.m);
       my $m = a.m;
 
@@ -59,6 +60,37 @@ hooks:
       }
 
       H.G w send_Elvis[$m];
+  Teeth: |
+    w $J print_in;
+    my ($m, $j) = w $J decode;
+    
+    if (ref $j eq "HASH") {
+        if (keys %$j != 1) {
+            die "hash wide/skinny ".wdump($j);
+        }
+        my ($uno) = keys %$j;
+        saygr "cuno $uno";
+        my $a = {
+            j => $j,
+            m => $m,
+            $uno => $j->{$uno},
+        };
+        a.E = ar.E if ar.E;
+        w S/$uno(%$a);
+        # hit or not? see post 6 with r
+        return;
+    }
+    
+    die "weird shit: '$m'" if ref $j;
+    
+    if ($j =~ /^([\w\/]+) (.+)$/) {
+        my $a = {m => $2};
+        a.E = ar.E if ar.E;
+        w S/$1(%$a);
+    }
+    else {
+        die "wei tet '$j'";
+    }
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -68,12 +100,17 @@ hooks:
         ."var m = e();"
         ."s\.reply({jaw:{s:'$s',e:m}});";
     w send_Elvis;
-
   reS: |
     sayyl "S > $m";
-    $m =~ /^(\S+) ?(.+)?$/ ? do{    w S/$1(%$ar,m=>$2); } : die "wtf iS $m ???";
+    my ($way, $am) = split /\s+/, $m, 2;
+    $way || die "wtf $m";
+    w S/$way(%$ar,m=>$am);
   S:
     # these are data structurey aliens to S but just to keep together
+    speaks: | # concealed elvis input
+      my $J = 0->Bu(J => {m=>$m});#2
+      w Teeth[$J];
+      
     jaw: |
       $j = j.jaw;
       my $s = j.s || die "no s";
@@ -111,6 +148,7 @@ hooks:
       say "yeah well $m";
       
     On: |
+      die "!";
       $m =~ s/^H.style\/H.name // && w reS[$m];
     W: |
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
@@ -125,7 +163,7 @@ hooks:
         }
         else {
             my $hold = H.r->get("Ws/e.W") || die "no such e.W";
-            die $hold;
+            $H->pub("S/$hold", "speaks $m");
         }
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
@@ -317,6 +355,7 @@ hooks:
       else {
           B.j = $H->djson($m);
       }
+      (B.m, B.j)
       
     print_out: |
       return if $m =~ /\$\('#(worm|mess|sky|path|land|func|somewhere|flood)/;
@@ -328,6 +367,7 @@ hooks:
       say "";
     print_in: |
       my $pi = ar.pi || S.id;
+      $pi = ar.E->pi if ar.E;
       my $m = $m;
       chomp $m;
       print colored("recv > $pi\t\t", 'red');
@@ -389,7 +429,6 @@ hooks:
       $H->error("restarting!");
       `touch stylehouse.pl`;
   
-
   duu:
     TV: |
       my $id = $e->{id};

@@ -9,7 +9,7 @@ hooks:
            sayyl "Subbing Elvis*";
            $G->su("Elvis*", sub {
              my $a = shift;
-             H.G w recElvis[$a];
+             H.G w pubbedElvis[$a];
            });
            sayyl "Do:";
            
@@ -113,6 +113,7 @@ hooks:
       }
       H.who = $E;
       w Teeth[$J, $E];#...
+      Sw swoosh; #9
       
       
     disconecktie: |
@@ -186,39 +187,7 @@ hooks:
     });
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
     
-  Teeth: |
-    w $J print_in(pi => $E->pi);
-    my $m = J.B.m;
-    w $J decode;
-    my $j = J.B.j;
-    
-    if (ref $j eq "HASH") {
-        if (keys %$j != 1) {
-            die "hash wide/skinny ".wdump($j);
-        }
-        my ($uno) = keys %$j;
-        saygr "cuno $uno";
-        my $a = {
-            j => $j,
-            $uno => $j->{$uno},
-            E => $E,
-        };
-        w S/$uno(%$a);
-        # hit or not? see post 6 with r
-        return;
-    }
-    
-    die "weird shit: '$m'" if ref $j;
-    
-    if ($j =~ /^([\w\/]+) (.+)$/) {
-        $ar = {m => $2, E => $E}; #J?
-        w S/$1;
-    }
-    else {
-        die "wei tet '$j'";
-    }
-    
-    w $E swoosh;#9
+
   S:
     push_conin: |
       G:Ϡ w pull_conin if H.singul;
