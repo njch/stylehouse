@@ -1,5 +1,6 @@
 hooks:
   in: |
+      H.r->set("Hs/H.style/H.name/H.id" => $H->hitime);
       H.h = G.A->spawn(G => "Ϡ", 'S', "S/H.style", "S/H.style/H.name");
   node:
     C:
@@ -31,18 +32,30 @@ hooks:
     
   # heisto thing
   aj: |
-    if (j._) { # TODO extra uni out to O and for way back in:
-        saygr j.G->pi." unified field! see for ".@{j.s};
+    my $uW = j.G.uW;
+    my $ww = uW.at.id;
+    my $to = $ww;
+    if (j._) {
+        saygr j.G->pi." unified field!";
+        $to .= "/_";
+        # ww homing
+        H.r->set("Ws/$ww" => "H.style/H.name/H.id");
+        # ww meta (tiling)
+        if (uW.at.styles =~ /\bNZ\b/) {
+            saygr "Rel NZ";
+            H.r->set("Ws/$ww/NZ" => 1);
+        }
         H.G.A.W->{j._.at.id} = j.G.W;
     }
     
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
+    @lot = join " ", @lot;
     
-    for my $l (@lot) {
-        ref $l && die "reff $l";
-        $l = " $l";
-        H.G w send_Elvis(m=>$l); 
+    for my $m (@lot) {
+        ref $m && die;
+        $m = " $m";
+        H.G w send_Elvis[$m, $to]; 
     }
     
     if (j._) { # TODO on O
@@ -51,9 +64,7 @@ hooks:
     }
     
   send_Elvis: |
-    $H->pub("Elvis/H.style/H.name", ar.m);
-    # Jid?
-    # the id that unified fields of things pour out at
-    # receiver to spool randoms for a while as forked may complete before parent
-    
+    my $to = "Elvis/H.style/H.name";
+    $to .= "/ar.to" if ar.to;
+    $H->pub($to, ar.m);
 

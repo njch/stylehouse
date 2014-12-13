@@ -43,7 +43,22 @@ hooks:
     # do it all
     # $0 has become a runtime
     waylay in;
-      
+  recElvis: |
+      sayre "su a.top ".slim(30,30,a.m);
+      my $m = a.m;
+
+      my ($El, $st, $na, $ww, $uni) = split '/', a.top;
+      if ($uni) {
+            # meta
+          sayyl "unifid $st $na $ww !";
+          if (H.r->get("Ws/$ww/NZ")) {
+              my $E = H.who;
+              sayyl "Retiling";
+              0->sing(retile => sub { G:Ϡ w retile[$E]; }, begin => 0.8);
+          }
+      }
+
+      H.G w send_Elvis[$m];
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -101,12 +116,17 @@ hooks:
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
         my $a = {};
-        a.W = H.G.A.W->{e.W} || die;
-        a.L = a.W->findL(e.id);
-        a.uxL = a.W->findL(e.ux);
-        a.e = $e;
+        if (a.W = H.G.A.W->{e.W}) {
+            a.L = a.W->findL(e.id);
+            a.uxL = a.W->findL(e.ux);
+            a.e = $e;
 
-        a.W.G w event(%$a);
+            a.W.G w event(%$a);
+        }
+        else {
+            my $hold = H.r->get("Ws/e.W") || die "no such e.W";
+            die $hold;
+        }
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
     if (ar.way && ar.div) {
