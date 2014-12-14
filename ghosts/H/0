@@ -44,10 +44,11 @@ hooks:
     Mojo::IOLoop->recurring(0.1 => sub {
         H.sur->wait_for_messages(0.07);
     });
-    Mojo::IOLoop->recurring(0.4*17 => sub {
-        say "Cehck";
-        w check/vitals;
+    Mojo::IOLoop->recurring(8 => sub {
         w hostinfo;
+    });
+    Mojo::IOLoop->recurring(2 => sub {
+        H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
     });
     Mojo::IOLoop->recurring(0.4 => sub {
         w gitdission;
@@ -58,7 +59,14 @@ hooks:
     # $0 has become a runtime
     waylay in;
   hostinfo: |
-    H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
+    my @ps = `ps -p$$ fu`;
+    my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
+    $_ = $_ / 100 for $c, $m;
+    
+    #my ($tot) = (`wc -l lib/* ghosts/*/*`)[-1]  =~ /(\d+) total/;
+    my $info = "$c $m";
+    $H->pub("hostinfo/H.style/H.name/H.id" => $info);
+      
   mess: |
     # TODO sa* all over
     # by voltage!
@@ -266,7 +274,6 @@ hooks:
         $G0 w _gitdission[$Gd];
     }
   suRedis: |
-    
     my $s = 'subscribe';
     $s = "p$s" if $top =~ /\*/;
     
@@ -280,8 +287,9 @@ hooks:
     };
     
     H.sur->$s($top => $D);
+    push @{H.sur_subbed||=[]}, $top;
     
-    sayyl "Subbed to a.top";
+    sayyl "Subbed to $top";
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -316,41 +324,6 @@ hooks:
     }
     return $ord;
     
-  check:
-    script: |
-      my $script = $0;
-      my $nc = (stat $script)[10];
-      die "no ctime?" unless $nc;
-      if (H.Sctime && $nc ne H.Sctime) {
-          Say "Rwestarting! ctime changeon $script";
-          w reexec;
-      }
-      H.Sctime = $nc;
-    vitals: |
-      $G->susgdb;
-      my @v = (
-          w check/MemAvailable,
-        w check/ps,
-        w check/LoC,
-      );
-      $G->mess(Vitals => \@v);
-    MemAvailable: |
-      my ($a) = `cat /proc/meminfo | grep MemAvailable`;
-      ($a) = $a =~ /(\d+) kB/;
-      $a = int($a / 1024);
-      kill 'KILL', $$         if !$a || $a < 50 || $! ;
-      $a < 500 ? "MemAvail: ${a}mB" : ()
-    ps: |     
-      my @ps = `ps -p$$ fu`;
-      my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
-      $_ = $_ / 100 for $c, $m;
-      sayre "memory usage $m" if $m > 0.4;
-      w reexec if $m > 0.9; # unlikely to be effective from inside
-      "$u`$pid  m$m  c$c"
-    LoC: |
-      my $tot = (`wc -l lib/* ghosts/*/*`)[-1];
-      ($tot) = $tot =~ /(\d+) total/;
-      "$tot lines"
   J: # 
     Bu_D: |
       B.m =~ s/\n?$/\n/s;
