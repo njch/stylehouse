@@ -1,6 +1,5 @@
 hooks:
   in: |
-      H.r->set("Hs/H.style/H.name/H.id" => $H->hitime);
       H.h = G.A->spawn(G => "Ϡ", 'S', "S/H.style", "S/H.style/H.name");
   node:
     C:
@@ -36,9 +35,11 @@ hooks:
         saygr j.G->pi." unified field!";
         $to .= "/_";
         # ww homing
-        H.r->set("Ws/$ww/H" => "H.style/H.name/H.id");
-        # ww meta (tiling)
-        H.r->set("Ws/$ww/NZ" => 1) if uW.at.styles =~ /\bNZ\b/;
+        my $hol = "H.style/H.name/H.id";
+        my $etc = 1 if uW.at.styles =~ /\bNZ\b/;
+        my $hold = join ' ', $hol, $etc;
+        H.r->set("W/$ww" => $hold);
+        H.r->set("V/H.id/$ww" => 1);
         
         H.G.A.W->{j._.at.id} = j.G.W;
     }

@@ -1,28 +1,45 @@
 hooks:
   in: |
       H.h = G.A->spawn(G => "Ϡ", 'S', "S/H.style", "S/H.style/H.name");
-      
+  Hi: |
+      saygr "Hello to a.top ! a.m";
+      my @a = split '/', a.top;
+      my @olds = H.r->keys("H/$a[1]/$a[2]*");
+      for my $oth (@olds) {
+          my @b = split '/', $oth;
+          sayre "o $oth";
+          if ($b[3] eq $a[3]) {
+              sayyl " haf self";
+            next;
+          }
+          my $hol = join '/', @b[2..4];
+          for my $vh (H.r->keys("V/$b[3]*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $H->send(" \$('#ux > #$ww').remove();");
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          H.r->del($oth);
+      }
+  any_init: |
+    sayre sort H.r->keys("*") if $G eq H.G;  
   node: #c
       O:
        - D: |
            H.r->ping() || die "no redids?";
-           sayyl "Subbing Elvis*";
            $G->su("Elvis*", sub {
              my $a = shift;
              H.G w pubbedElvis[$a];
            });
-           sayyl "Do:";
            
       Z:
        - GAK: 0
-  any_init: |
-    sayre join "  ", H.r->keys("*"); 
   minorport: |
       my $p = ord(H.name);
       $p += 8000;
       say "Sport: $p";
       $p;
-
   elvus: |
       sayg "elvission modio";
       G:Ϡ w elvis_enters;
@@ -247,17 +264,24 @@ hooks:
         H.singul = 0;
         w elvus;
     }
+  elvibium: |
+    if (H.Jels) {
+        $H->send($_) for @{H.Jels};
+    }
   elvibe: |
     Say "En nnnn Elvis ?? J | ".$E->pi;
     if (E.B.style) {
         Say "Elvis got it ".$E->pi;
         return;
     }
-    w elvibium;
     w z/wzy; # conz, swim
     
   send_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who || die "no infiduvial? $m";
+    my $Elvis = ar.Elvis || ar.E || H.who;
+    if (!$Elvis) {
+        warn "no infiduvial? $m";
+        push @{H.Jels||=[]}, $m;
+    }
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
     my $J = 0->Bu(J => {m => ar.m, cb => ar.cb});

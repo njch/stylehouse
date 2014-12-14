@@ -25,11 +25,18 @@ hooks:
     H.r = w enRedis;
     w figure_port;
     
-    my $reS = sub { w reS(m => shift->{m}); };
+    
+      0->su('H*' => sub {
+          my $a = shift;
+          w Hi[$a];
+      }) if H.name eq "O";
+    my $reS = sub { w reS(m => shift->{m}); }; 
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
     0->su("S/H.style/H.name/H.id" => $reS);
+    H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
     $H->pub("H/H.style/H.name/H.id/init" => $$);
+    
     
     
     $G->timer(60*9+(20 * rand 4),
@@ -55,7 +62,10 @@ hooks:
       if ($uni) {
             # meta
           sayyl "unifid $st $na $ww !";
-          if (H.r->get("Ws/$ww/NZ")) {
+          
+          my $hold = H.r->get("W/$ww") || die "no such $ww";
+          my ($hol, $etc) = split /\s+/, $hold, 2;
+          if ($etc) {
               my $E = H.who;
               sayyl "Retiling";
               0->sing(retile => sub { G:Ϡ w retile[$E]; }, begin => 0.8);
@@ -169,9 +179,10 @@ hooks:
             a.W.G w event(%$a);
         }
         else {
-            my $hold = H.r->get("Ws/e.W/H") || die "no such e.W";
-            $H->pub("S/$hold", "speaks $m");
-            G.keysto = $hold;
+            my $hold = H.r->get("W/e.W") || die "no such e.W";
+            my ($hol, $etc) = split /\s+/, $hold, 2;
+            $H->pub("S/$hol", "speaks $m");
+            G.keysto = $hol;
         }
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
