@@ -65,35 +65,7 @@ hooks:
     $H->pub("S", "push_conin H.style H.name H.id H.listen_ws");   
 
       
-  mess: |
-    # TODO R should handle incoming
-    # and outgoing subs, pubs
-    # in between is quiet Accumessing
-    unless (H._future) {
-        # circular or pre-G:H # R catch
-        saygr "prefut ar.what  = ".
-            join"  ", map {gpty($_)} flatline(ar.thing);
-        return;
-    }
-    my $S = 0->TB(mess => {thing => $thing, what => $what});
-    S.m = $what;
-    S.Flab = $G->Flab($S);
-    
-    $_->($S) for @{G.messtrigs||=[]}; # way?
-    
-    if (S.m =~ /^(Ambientness|Vitals)$/) {
-        # keep only 5?
-        my @ze = 0->rei({K=>'mess', m=>$1});
-        shift @ze for 1..5;
-        $_ ne $S && 0->del($_) for @ze;
-    }
-    my @ze = 0->rei({K=>'mess'});
-    shift @ze for 1..50;
-    $_ ne $S && 0->del($_) for @ze;
 
-    
-    H._future = 1;
-    
   Elvis: #
       # here we want to graph things out real careful
       # because it is how things get around
