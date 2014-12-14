@@ -29,15 +29,18 @@ hooks:
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
     0->su("S/H.style/H.name/H.id" => $reS);
+    $H->pub("H/H.style/H.name/H.id/init" => $$);
     
     
     $G->timer(60*9+(20 * rand 4),
         sub { sayre "voluntary reexec" for 1..13; w reexec; })
         if H.name !~ /Z/;
     
+    
+    Mojo::IOLoop->recurring(0.05 => sub { w redission; });
     G.rivm = $G->R(ivm => {timer => 0.4});
     G.rivm->wtf({div => 1, way => 'check/script'}) if H.name !~ /S|O|Z/;
-    G.rivm->wtf({div => 1, way => 'redission'});
+    #G.rivm->wtf({div => 1, way => 'redission'});
     G.rivm->wtf({div => 1, way => 'gitdission'}) if H.name =~ /Z/;
     G.rivm->wtf({div => 17, way => 'check/vitals'});
     # start git torrent
@@ -106,18 +109,15 @@ hooks:
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
-    # these are data structurey aliens to S but just to keep together
     speaks: | # concealed elvis input
       my $J = 0->Bu(J => {m=>$m});#2
       w Teeth[$J];
       
-    jaw: |
+    jaw: | # TODO route with H.id
       $j = j.jaw;
       my $s = j.s || die "no s";
       my $cb = G.jaws->{$s} || die "no such jaw $s";
       $cb->(j.e); # TODO Z sucktion
-    claw: |
-      $H->claw($j);
     er: |
       die "much JS error..." if H.JErrors++ > 3;
       $H->error("javascript error from client", j.m, j.e);
@@ -133,7 +133,14 @@ hooks:
       $H->error("Strange event", $e);
       
     key: |
-      return H.keydo->($e) if H.keydo;
+      # if key is ww switcher...
+      if (H.name eq "O") {
+            G.keysto || die "no key subber";
+          $H->pub("S/G.keysto" => "speaks $m");
+      }
+      else {
+          return H.keydo->($e) if H.keydo;
+      }
       
     TV: |
       w duu/TV;
@@ -164,6 +171,7 @@ hooks:
         else {
             my $hold = H.r->get("Ws/e.W") || die "no such e.W";
             $H->pub("S/$hold", "speaks $m");
+            G.keysto = $hold;
         }
   wtf: |
     # TODO combine with check, fractionating importantness into spacetime
@@ -263,7 +271,7 @@ hooks:
     
     my $riv = G.redission ||= {};
     my @to = values %$riv;
-    G.redisco = w waits(to => \@to, towait => 0.1);
+    G.redisco = w waits(to => \@to, towait => 0.04);
     sayyl "Subbed to a.top";
   redission: |
     my $ord = G.redisco ||= {};
