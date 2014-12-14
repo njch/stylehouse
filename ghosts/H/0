@@ -26,16 +26,14 @@ hooks:
     w figure_port;
     
     
-      0->su('H*' => sub {
-          my $a = shift;
-          w Hi[$a];
-      }) if H.name eq "O";
+    0->su('H*' => sub { w Hi(a=>shift); }) if H.name eq "O";
+      
     my $reS = sub { w reS(m => shift->{m}); }; 
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
     0->su("S/H.style/H.name/H.id" => $reS);
     H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
-    $H->pub("H/H.style/H.name/H.id/init" => $$);
+    $H->pub("H/H.style/H.name/H.id" => $$);
     
     
     
@@ -45,6 +43,7 @@ hooks:
     
     
     Mojo::IOLoop->recurring(0.05 => sub { w redission; });
+    
     G.rivm = $G->R(ivm => {timer => 0.4});
     G.rivm->wtf({div => 1, way => 'check/script'}) if H.name !~ /S|O|Z/;
     #G.rivm->wtf({div => 1, way => 'redission'});
