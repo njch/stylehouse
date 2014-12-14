@@ -23,6 +23,7 @@ hooks:
     push @{G.GGs||=[]}, $G; # H self
     
     H.r = w enRedis;
+    H.sur = w enRedis;
     w figure_port;
     
     
@@ -36,13 +37,14 @@ hooks:
     $H->pub("H/H.style/H.name/H.id" => $$);
     
     
-    
     $G->timer(60*9+(20 * rand 4),
         sub { sayre "voluntary reexec" for 1..13; w reexec; })
         if H.name !~ /Z/;
     
     
-    Mojo::IOLoop->recurring(0.05 => sub { w redission; });
+    Mojo::IOLoop->recurring(0.1 => sub {
+        H.sur->wait_for_messages(0.07);
+     });
     
     G.rivm = $G->R(ivm => {timer => 0.4});
     G.rivm->wtf({div => 1, way => 'check/script'}) if H.name !~ /S|O|Z/;
@@ -265,32 +267,23 @@ hooks:
         $G0 w _gitdission[$Gd];
     }
   suRedis: |
-    my $a = {%$ar};
-    a.div ||= 3;
-    a.top || die "no su top";
-    my $D = a.cb || die "no su cb";
-    a.way ||= $top." D=$D"; # uniq
     
-    a.r = H.sur ||= w enRedis;
     my $s = 'subscribe';
     $s = "p$s" if $top =~ /\*/;
-    a.r->$s($top => $D);
-    a.r.wassubbedto = $top;
-    a.riv = 'redission';
-    G.redission->{a.way} = $a;
     
-    my $riv = G.redission ||= {};
-    my @to = values %$riv;
-    G.redisco = w waits(to => \@to, towait => 0.04);
+    my $D = sub {
+      my $d = {};
+      (d.m, d.top, d.sutop) = map { $H->fixutf8($_) } @_;
+      $G->timer(0.00001, sub {
+            $cb->($d);
+      });
+      1;
+    };
+    
+    H.sur->$s($top => $D);
+    
     sayyl "Subbed to a.top";
-  redission: |
-    my $ord = G.redisco ||= {};
-    for my $k (sort keys %$ord) { # numbers wall timespace
-        my $int = $ord->{$k}; # a time
-        for my $t (@$int) { # in time
-            t.r->wait_for_messages($k); # ooh the key
-        }
-    }
+
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -352,8 +345,7 @@ hooks:
     ps: |     
       my @ps = `ps -p$$ fu`;
       my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
-      $m /= 100;
-      $c /= 100;
+      $_ = $_ / 100 for $c, $m;
       sayre "memory usage $m" if $m > 0.4;
       w reexec if $m > 0.9; # unlikely to be effective from inside
       "$u`$pid  m$m  c$c"

@@ -45,6 +45,7 @@ C:
  - K: D #c
    flows_D: |
      $R = B.R = $G->R($R||die);
+     R.theD = $S;
      R.name .= " S.B.name";
      R.A->umv("", "Rand");
      S.A->umk($R, "Doer");
@@ -174,7 +175,10 @@ R:
               R.ksuc .= $k;
               my $j = R.a.ro->{R.ksuc};
               
-              $j || return sayre "no j ye for R.ksuc";
+              if (!$j) {
+                    return sayre "no j ye for R.ksuc";
+                  0->deaccum(G.Vu, 'U', R.theD);
+              }
               sayyl "got $j j.t j.cv for R.ksuc";
 
               R.ksuc = "";
@@ -231,7 +235,7 @@ hooks:
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
             from => $H,
-            trav => '{G{redisco',
+            trav => '{G',
         };
         
         if (my $ssDs = delete R.S.ss_Ds) {
@@ -409,6 +413,7 @@ hooks:
         push @sty, "white-space:pre";
         push @sty, "font-family:mono";
         push @sty, "display:block";
+        push @sty, "overflow-wrap:break-word";
         my $sty = join ";", @sty; 
         qq{<span style="$sty"><span>$html<span></span>}
       
@@ -451,7 +456,6 @@ hooks:
             $i++; 
         }
     gp: | #c vAK gp
-        
         G.gp_inarow++;
         my $a = ar.a || {};
         a.cv = ar.cv if ar.cv;
