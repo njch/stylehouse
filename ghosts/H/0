@@ -271,7 +271,7 @@ hooks:
     my $D = a.cb || die "no su cb";
     a.way ||= $top." D=$D"; # uniq
     
-    a.r = w enRedis;
+    a.r = H.sur ||= w enRedis;
     my $s = 'subscribe';
     $s = "p$s" if $top =~ /\*/;
     a.r->$s($top => $D);
@@ -297,7 +297,7 @@ hooks:
         reconnect => 1,
         every => 10000,
     );
-    r.gest = sub { # do a R::edis module
+    r.gest = sub {
         my ($k, $make) = @_;
         my $c = H.r->get($k);
         return ref \$c eq "SCALAR" ? $H->fixutf8($c) : $c if $c;
