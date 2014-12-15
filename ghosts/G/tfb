@@ -2,7 +2,7 @@ Ds:
   - K: TafuBl #c TafuBl, TafuB, TB, Tafu, Taful
     D: |
         #STICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKSSTICKS
-        0S->l( 0S->TafuB(@_) );
+        0->l( 0->TafuB(@_) );
   - K: TafuB
     D: |
         my($K,$B)=@_;
@@ -10,26 +10,26 @@ Ds:
         if ($ca && !ca.dead) {
             return $ca;
         }
-        0S->Tafu(0S->Bu($K, $B))
+        0->Tafu(0->Bu($K, $B))
   - K: TB
     D: |
         my ($K, $B) = @_;
-        my $u = 0S->Bu($K, $B);
-        0S->T({i=>$u});
+        my $u = 0->Bu($K, $B);
+        0->T({i=>$u});
   - K: Tafu
     D: |
         my($uu)=@_;
-        0S->fu($uu) || 0S->T({i => $uu});
+        0->fu($uu) || 0->T({i => $uu});
   - K: Taful
     D: |
         my($uu)=@_;
-        0S->l( 0S->Tafu($uu) );
+        0->l( 0->Tafu($uu) );
   - K: visTp_TafuBlA #c
     D: |
         my ($Tp, $Bup, $A) = @_;
-        my $old = 0S->visTp($Tp); # could be Fun, wire into end
-        my $uu = 0S->Bu(@$Bup); 
-        my $u = 0S->fu($uu);
+        my $old = 0->visTp($Tp); # could be Fun, wire into end
+        my $uu = 0->Bu(@$Bup); 
+        my $u = 0->fu($uu);
         
         A.old ||= [] if $A;
         A.new ||= [] if $A;
@@ -38,7 +38,7 @@ Ds:
         }
         else {
             push @{A.new}, $u if $A;
-            $u = 0S->T({i => $uu});
+            $u = 0->T({i => $uu});
         }
         
         0->l($u);
@@ -47,15 +47,15 @@ Ds:
   - K: visTp_l_u #c
     D: |
         my ($Tp, $u) = @_; # get in to a T place and make links
-        my $old = 0S->visTp($Tp);
+        my $old = 0->visTp($Tp);
         0->l($u);
         $T= $old;
         $u;
   - K: visTp_TafuBl # get in Tp,  #c
     D: |
         my ($Tp, $Bp) = @_;
-        my $old = 0S->visTp($Tp);
-        my $u = 0S->TafuBl(@$Bp);
+        my $old = 0->visTp($Tp);
+        my $u = 0->TafuBl(@$Bp);
         $T= $old;
         $u;
   - K: visTp #c
