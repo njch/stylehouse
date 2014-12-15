@@ -102,79 +102,8 @@ R:
    in_R:
      
      S: 
-       gpnew: 1
        rowlimit: 24
        e: 0.6
-       key: #c
-          0: Num/out
-          number: Num/in
-          E: Vit/up
-          R: Vit/down
-          Y: Chew/in
-          A: Spl/A
-          S: Spl/S
-          D: Spl/D
-          F: Spl/F
-          G: Spl/G
-          W: Q/way
-          SR: Q/Redisy
-       w!C: #c
-          Q:
-            way: |
-              R.J = {
-                  from => $R,
-                  trav => '{S{w',
-              };
-            Redisy: |
-              R.J = {
-                from => [sort H.r->keys("*")],
-                trav => '',
-              }
-          Vit:
-            up: |
-                R.S.e += 0.1;
-            down: |
-                R.S.e -= 0.1;
-          gp:
-            tognew: |
-                sayyl "gpnew going ".(R.S.gpnew = !R.S.gpnew);
-          Chew:
-            in: |
-              die "hi!";
-          Spl:
-            G: |
-              # to ghost from here
-            F: |
-              # F junk?
-              w seetry;
-            D: |
-              # to data dump
-              R.S.rowding = !R.S.rowding;   
-            S: |
-              # to styley
-              #R.S.rowing = "S";
-            A: |
-              # heredity
-          Num: #c
-            out: |
-              if (R.ksuc && $k eq "0") {
-                  return R.ksuc = ""
-              }
-              return $R->popJtrav
-            in: |
-              R.ksuc .= $k;
-              my $j = R.a.ro->{R.ksuc};
-              
-              if (!$j) {
-                    return sayre "no j ye for R.ksuc";
-                  0->deaccum(G.Vu, 'U', R.theD);
-              }
-              sayyl "got $j j.t j.cv for R.ksuc";
-
-              R.ksuc = "";
-
-              my ($hop) = split /(?=\{|\[)/, j.t;
-              R.J.trav .= $hop; 
        ss_Ds: #c schematic
          n: |
              n.HASH = {};
@@ -213,7 +142,92 @@ hooks:
   key: |
     my $k = e.k;
     my $R = w R_sur/are;
-    w R_sur/key[$R, $k, $e];
+      sayyl join"  ", ($k) x 13 for 1..2;
+      
+      my $key = "$k";
+      $key = "S$key" if e.S;
+      # some instyle hooks letters to apply
+      my $cuz = $G->findway("R_n/key");
+      my $do = $cuz->{$key};
+      
+      $do ||= do {
+          my $or = "number" if $key =~ /[0-9]/;
+          $cuz->{$or} if $or;
+      };
+      $do ||= "wtf";
+      
+      sayyl join"  ", ($do) x 13 for 1..2;
+      
+      R.G w R_n/$do[$R, $k, $e];
+      
+  R_n: #c       
+        key:
+          0: Num/out
+          number: Num/in
+          E: Vit/up
+          R: Vit/down
+          Y: Chew/in
+          A: Spl/A
+          S: Spl/S
+          D: Spl/D
+          F: Spl/F
+          G: Spl/G
+          W: Q/way
+          SR: Q/Redisy
+        Q:
+            way: |
+              R.J = {
+                  from => $R,
+                  trav => '{S{w',
+              };
+            Redisy: |
+              R.J = {
+                from => [sort H.r->keys("*")],
+                trav => '',
+              }
+        Vit:
+            up: |
+                R.S.e += 0.1;
+            down: |
+                R.S.e -= 0.1;
+        gp:
+            tognew: |
+                sayyl "gpnew going ".(R.S.gpnew = !R.S.gpnew);
+        Chew:
+            in: |
+              die "hi!";
+        Spl:
+            G: |
+              # to ghost from here
+            F: |
+              # F junk?
+              w seetry;
+            D: |
+              # to data dump
+              R.S.rowding = !R.S.rowding;   
+            S: |
+              # to styley
+              #R.S.rowing = "S";
+            A: |
+              # heredity
+        Num:
+            out: |
+              return R.ksuc = "" if R.ksuc && $k eq "0";
+              return $R->popJtrav
+            in: |
+              R.ksuc .= $k;
+              my $j = R.a.ro->{R.ksuc};
+              
+              if (!$j) {
+                    return sayre "no j ye for R.ksuc";
+                  0->deaccum(G.Vu, 'U', R.theD);
+              }
+              sayyl "got $j j.t j.cv for R.ksuc";
+
+              R.ksuc = "";
+
+              my ($hop) = split /(?=\{|\[)/, j.t;
+              R.J.trav .= $hop; 
   R_sur:
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
@@ -238,23 +252,7 @@ hooks:
         
         say "Made ".$R->pi;
         #w R.S.w $_/in({}) for keys %{R.S.w};
-    key: | #c
-      sayyl join"  ", ($k) x 13 for 1..2;
-      
-      my $key = "$k";
-      $key = "S$key" if e.S;
-      # some instyle hooks letters to apply
-      my $do = R.S.key->{$key};
-      $do ||= do {
-          my $or = "number" if $key =~ /[0-9]/;
-          R.S.key->{$or} if $or;
-      };
-      $do ||= "wtf";
-      
-      sayyl join"  ", ($do) x 13 for 1..2;
-      
-      R.G w R.S.w $do;
-      
+
     sudden_i: | #c ebrace flying embryo J
       R.J = { from => a.i };
     
