@@ -95,30 +95,9 @@ hooks:
     }
     return $ord;
     
-
   reexec: |
       exec "nice perl $0 @ARGV";
-  sing: |
-    G.singing ||= {};
-    # where from?
-    return #sayre "\t\t\t\t $name BLOCKED"
-        if G.singing->{$name}
-            && G.singing->{$name}++; # ignore sing until...
-    G.singing->{$name} = 1;
-    my $t = ar.block || ar.again || 0.04;
-    my $d = ar.begin || 0.001;
-    $G->timer($d, sub {
-        $G->timer($t, sub {
-            my $splatter = delete G.singing->{$name};
-            if ($splatter > 1 && ar.again) {
-                $G->Flab("Sig reps $splatter... again!  $name");
-                w sing(%$ar);
-            }
-        }, "sing-block        $name");
-        G.singing->{$name} = 1;
-        $code->();
-    }, "pre-sing     $name");
-    
+
   retile: | # TODO client side js data inter
     my $js = 
     " var e = []; \$('#ux > ww[class*=".'"z"'

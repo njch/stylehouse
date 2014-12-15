@@ -567,12 +567,28 @@ Ds:
   - K: sing #c sing ing ingo
     D: |
         my $p;
-        p.name = shift;
+        p.name = G.id."/".shift;
         p.code = shift;
         $p = {%$p, @_};
         p.again = 0.5 if !defined p.again;
         p.begin = 0.2 if !defined p.begin;
-        H.G->w(sing => $p);
+        
+        my $si = H.G.singing ||= {};
+        return if $si->{$name} && $si->{$name}++;
+        $si->{$name} = 1;
+        my $after = p.block || p.again || 0.04;
+        my $d = p.begin || 0.001;
+        $G->timer($d, sub {
+            $G->timer($after, sub {
+                my $splatter = delete $si->{$name};
+                if ($splatter > 1) {
+                    $G->Flab("Sig reps $splatter... again!  $name");
+                    w sing(%$ar);
+                }
+            }, "sing-block        $name");
+            $si->{$name} = 1;
+            $code->();
+        }, "pre-sing     $name");
   - K: ing
     D: |
         my ($time, $ing, $w) = @_;
