@@ -1,1 +1,144 @@
+C:
+  - K: Elvis
+    max_tooth_Hz: 12
+    Gw: 1
 hooks:
+  mess: |
+    # TODO sa* all over
+    # by voltage!
+    $H->pub("S/H.style/H.name/sa", "$what: @$thing");
+  pubbedElvis: | # message for elvis via redis
+      sayre "su a.top ".slim(30,30,a.m);
+      my $m = a.m;
+
+      my ($El, $st, $na, $ww, $uni) = split '/', a.top;
+      if ($uni) {
+            # meta
+          sayyl "unifid $st $na $ww !";
+          
+          my $hold = H.r->get("W/$ww") || die "no such $ww";
+          say "was from $hold";
+          my ($hol, $etc) = split /\s+/, $hold, 2;
+          if ($etc) {
+              my $E = H.who;
+              sayyl "Retiling";
+              0->sing(retile => sub { H.G w retile[$E]; }, begin => 0.8);
+          }
+      }
+
+      H.G w send_Elvis[$m];
+
+  Hi: |
+      saygr "Hello to a.top ! a.m";
+      my @a = split '/', a.top; 
+      my @olds = H.r->keys("H/$a[1]/$a[2]*");
+      for my $oth (@olds) {
+          my @b = split '/', $oth;
+          sayre "o $oth";
+          if ($b[3] eq $a[3]) {
+              sayyl " haf self";
+            next;
+          }
+          my $hol = join '/', @b[2..4];
+          for my $vh (H.r->keys("V/$b[3]*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $H->send(" \$('#ux > #$ww').remove();");
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          H.r->del($oth);
+      }
+  Teeth: |
+    saybl " > ".slim(30,30,$m);
+    my $j = $H->djson($m);
+    
+    if (ref $j eq "HASH") {
+        if (keys %$j != 1) {
+            die "hash wide/skinny ".wdump($j);
+        }
+        my ($uno) = keys %$j;
+        saygr "cuno $uno";
+        my $a = {
+            j => $j,
+            m => $m,
+            $uno => $j->{$uno},
+        };
+        a.E = ar.E if ar.E;
+        w S/$uno(%$a);
+        # hit or not? see post 6 with r
+        return;
+    }
+    
+    die "weird shit: '$m'" if ref $j;
+    
+    if ($j =~ /^([\w\/]+) (.+)$/) {
+        my $a = {m => $2};
+        a.E = ar.E if ar.E;
+        w S/$1(%$a);
+    }
+    else {
+        die "wei tet '$j'";
+    }
+  reS: |
+    my ($way, $am) = split /\s+/, $m, 2;
+    sayyl "$top > $m" if $way ne 'hostinfo/ack';
+    $way || die "wtf $m";
+    w S/$way(%$ar,m=>$am);
+  S:
+    speaks: | # concealed elvis input
+      w Teeth[$m];
+      
+    jaw: | # TODO route with H.id
+      $j = j.jaw;
+      my $s = j.s || die "no s";
+      my $cb = G.jaws->{$s} || die "no such jaw $s";
+      $cb->(j.e); # TODO Z sucktion
+    er: |
+      die "much JS error..." if H.JErrors++ > 3;
+      $H->error("javascript error from client", j.m, j.e);
+    event: |
+      my $e = ar.e = j.event;
+      
+      return w S/key if e.type =~ /^key/;
+      
+      return w S/W if e.W;
+      
+      return w S/TV if e.id;
+      
+      $H->error("Strange event", $e);
+      
+    key: |
+      # if key is ww switcher...
+      if (H.name eq "O") {
+            G.keysto || die "no key subber";
+          $H->pub("S/G.keysto" => "speaks $m");
+      }
+      else {
+          return H.keydo->($e) if H.keydo;
+      }
+      
+    TV: |
+      w duu/TV;
+  
+    On: |
+      die "!";
+      $m =~ s/^H.style\/H.name // && w reS[$m];
+    W: |
+        $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
+        
+        my $a = {};
+        if (a.W = H.G.A.W->{e.W}) {
+            a.L = a.W->findL(e.id);
+            a.uxL = a.W->findL(e.ux);
+            a.e = $e;
+
+            a.W.G w event(%$a);
+        }
+        else {
+            my $hold = H.r->get("W/e.W") || die "no such e.W";
+            my ($hol, $etc) = split /\s+/, $hold, 2;
+            $H->pub("S/$hol", "speaks $m");
+            G.keysto = $hol;
+        }
+
