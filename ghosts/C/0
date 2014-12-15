@@ -119,8 +119,10 @@ R:
              };
 hooks:
   fresh_init: |
-    H.keydo = sub { w key(e=>shift); };
+    w ikey;
     G.arp = [1..1024];
+  ikey: |
+    H.keydo = sub { w key(e=>shift); };
   recoded_init: |
     w R_sur/are; 
   seetry: |
@@ -316,9 +318,25 @@ hooks:
             sub{$do->(%$j, @_)}
         };
         $do
+    gpfro: | #c
+      my ($R, $aser, $l, $u, $cv, @etc) = @$a;
+      
+      my $gp = {R=>$R, u=>$u, cv=>$cv};
+      my $v = w R_sur/gp(a => $gp);
+            
+      $aser->($l => $v,
+          '%gp' => $gp,
+          @etc,
+      );
+    phat: | #c
+        a.bz = w R_sur/as(bb=>a.bb);
+        a.gpfro = sub {
+            my $fro = [$R, a.bz, @_];
+            w R_sur/gpfro(a=>$fro);
+        };
     S: | #c void R_surcess R::S heist
         # 1
-        R.a = shift || {};
+        my $a = ar.a = R.a = shift || {};
         R.a.e ||= R.S.e || die;
         R.a.i ||= w R_sur/uni[$R]; # find tip along the trav
         # s messed by R plumbing, sure
@@ -330,10 +348,9 @@ hooks:
         };
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
         
-        my $a = R.a;
+        w R_sur/phat;
         
         a.bb = {};
-        my $as = w R_sur/as(bb=>a.bb);
         
         # 3
         $R->du;
@@ -341,42 +358,23 @@ hooks:
         # 4
         w R_sur/S_4;
         
-        $as->("on 0.1" => "H.name H.style", '%sf' => 'fs60');
+        $as->("on 0.01" => "H.name H.style", '%sf' => 'fs60');
         
-        do {
-            my $gp = {R=>$R, u=>$R, cv=>0.2};
-            my $v = w R_sur/gp(a => $gp);
-            
-            $as->("R 0.11" => $v,
-                  '%gp' => $gp,
-                  '+_fro' => '@');
-        };
+        my $fro = [$R, $as, 'R 0.11' => $R, 0.2, '+_fro' => '@'];
+        w R_sur/gpfro(a=>$fro);
         
-        do {
-            my $gp = {R=>$R, u=>R.J.from, cv=>0.2};
-            my $v = w R_sur/gp(a => $gp);
-            
-            $as->('R_J_from 0.12'=>$v,
-                  '%gp' => $gp,
-                  '%sf' =>  'white');
-            
-        };
-        do {
-            $as->('R_J_trav 0.13'=>R.J.trav,
-                  '%sf' =>  'black');
-        };
+        my $fro = [$R, $as, 'R_J_from 0.12' => R.J.from, 0.2];
+        w R_sur/gpfro(a=>$fro);
+        
+        my $fro = [$R, $as, 'R_J_trav 0.13' => R.J.trav, 0.2];
+        
         
         $as->('R_S_e 0.2' => R.S.e);
         
-        do {
-            my $gp = {R=>$R, u=>R.a.i, cv=>a.e};
-            my $v = w R_sur/gp(a => $gp);
-            
-            $as->('R_a_i 0.21'=>$v,
-                  '%sf' => 'white',
-                  '%gp' => $gp);
-        };
-        a.bb->{"Js 0.29"} = "\n";
+        my $fro = [$R, $as, 'R_J_trav 0.21' => R.a.i, 0.2, '+_fro' => '@'];
+        w R_sur/gpfro(a=>$fro);
+        
+        $as->("Js 0.29" => "\n");
         
         # 7
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
@@ -961,7 +959,8 @@ hooks:
     H.G w z/keon;
     
   event: |
-    sayyl "Event relating to ".$u->pi;
+    saybl $G->pi."    EEEEEE ".$u->pi;
+    w ikey;
     0->visTp({L=>$L},'Fun');
     for (1) {
         G.envsub && do { say "envsub"; delete(G.envsub)->($u); next };
