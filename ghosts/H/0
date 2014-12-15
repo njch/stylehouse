@@ -26,12 +26,12 @@ hooks:
     H.sur = w enRedis;
     w figure_port;
     
-    0->su('H*' => sub { w Hi(a=>shift); }) if H.name eq "O";
+    $G->su('H*' => sub { w Hi(a=>shift); }) if H.name eq "O";
       
     my $reS = sub { my $a = shift; w reS(%$a); }; 
-    0->su(S => $reS);
-    0->su("S/H.style/H.name" => $reS);
-    0->su("S/H.style/H.name/H.id" => $reS);
+    $G->su(S => $reS);
+    $G->su("S/H.style/H.name" => $reS);
+    $G->su("S/H.style/H.name/H.id" => $reS);
     
     
     $G->timer(60*9+(20 * rand 4),
@@ -39,12 +39,9 @@ hooks:
         if H.name !~ /Z/;
     
     
-    Mojo::IOLoop->recurring(0.02 => sub {
+    $G->recur(0.02 => sub {
         H.sur->wait_for_messages(0.01618);
     });
-    Mojo::IOLoop->recurring(0.4 => sub {
-        w gitdission;
-    }) if H.name eq 'Z';
     
     # start git torrent
     # do it all
@@ -156,15 +153,6 @@ hooks:
     TV: |
       w duu/TV;
   
-    ghostchanges: |
-      return if H.G.wtf.gitdission;
-      say "S ghostchanges";
-      my $Gd = {map { $_ => 1 } split ', ', $m};
-      $G0 w _gitdission[$Gd];
-      
-    zl: |
-      say "yeah well $m";
-      
     On: |
       die "!";
       $m =~ s/^H.style\/H.name // && w reS[$m];
@@ -185,77 +173,6 @@ hooks:
             $H->pub("S/$hol", "speaks $m");
             G.keysto = $hol;
         }
-  gitdission: |
-    my $some = 0;
-    for my $f ($G->fs_find('/home/s/styleshed/ghosts')) {
-        next if $f =~ /\/\./;
-        my $mt = (stat $f)[9];
-        $some = 1 if
-        G.gitdissmt->{$f} ne $mt;
-        G.gitdissmt->{$f} = $mt;
-    }
-    return unless $some;
-    my @diff = `git diff`; 
-    my $f;
-    my $d = {};
-    for (@diff) {
-        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = $1;
-            next if -d $f; # git submodeul
-            $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
-            die "how to git diff unicode? $f" if $f =~ /\\\d+/;
-        }
-        else {
-            $d->{$f} .= $_
-        }
-    }
-    
-    while (my ($f, $D) = each %$d) {
-        $d->{$f} = {
-            f => $f,
-            D => $D,
-            dig => $H->dig($D),
-        };
-    }
-    
-    return G.last_git_diff = $d if !G.last_git_diff;
-    
-    my $od = {%{G.last_git_diff}};
-    
-    my $Gd;
-    while (my ($f, $n) = each %$d) { 
-        my $o = delete $od->{$f};
-        
-        my $change = !$o || n.D ne o.D;
-        
-        next unless $change;
-        
-        if ($f =~ /^ghosts/) {
-            n.o = $o;
-            $Gd->{$f} = $n;
-        }
-        elsif ($f =~ /^l\//) { 
-            # compilato del shed iggy
-        }
-        else {
-            say join("  <>  ", ($f)x38);
-            w reexec;
-        }
-    }
-    
-    # to undiffering, was commit? whatever
-    for my $f (keys %$od) {
-        next;
-    }
-    
-    G.last_git_diff = $d;
-    
-    if (keys %$Gd) { 
-        my $m = join", ", keys %$Gd;
-        say "Ghost changes $m";
-        $H->pub(S => "ghostchanges $m");
-        $G0 w _gitdission[$Gd];
-    }
   suRedis: |
     my $s = 'subscribe';
     $s = "p$s" if $top =~ /\*/;
