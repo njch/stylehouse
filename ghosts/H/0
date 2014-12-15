@@ -28,7 +28,7 @@ hooks:
     
     0->su('H*' => sub { w Hi(a=>shift); }) if H.name eq "O";
       
-    my $reS = sub { w reS(m => shift->{m}); }; 
+    my $reS = sub { my $a = shift; w reS(%$a); }; 
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
     0->su("S/H.style/H.name/H.id" => $reS);
@@ -64,7 +64,7 @@ hooks:
     $_ = $_ / 100 for $cpu, $mem;
     #my ($tot) = (`wc -l lib/* ghosts/*/*`)[-1]  =~ /(\d+) total/;
     my $info = "$cpu $mem ".$H->hitime;
-    $H->pub("hostinfo/H.style/H.name/H.id" => $info);
+    $H->pub("hostinfo/H.style/H.name/H.id" => $info, 'ig');
     G.hostinfo_waits++;
     if (G.hostinfo_waits > 1) {
         sayre "hostinfo uncollected";
@@ -134,16 +134,19 @@ hooks:
         ."s\.reply({jaw:{s:'$s',e:m}});";
     w send_Elvis;
   reS: |
-    sayyl "S > $m";
     my ($way, $am) = split /\s+/, $m, 2;
+    sayyl "S > $m" if $way ne 'hostinfo/ack';
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
     hostinfo:
       ack: |
         my (@s) = split /\s+/, $m;
-        sayyl "out there! lag: ".sprintf('%.3f',$H->hitime - $s[-1]);
-        G.hostinfo_waits = 0;;
+        if (rand(5) > 1) {
+            my $lag = (1000*sprintf('%.3f',$H->hitime - $s[-1])).'ms';
+            sayyl "out there! lag: $lag";
+        }
+        G.hostinfo_waits = 0;
     speaks: | # concealed elvis input
       my $J = 0->Bu(J => {m=>$m});#2
       w Teeth[$J];
