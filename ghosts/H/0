@@ -62,8 +62,11 @@ hooks:
     my @ps = `ps -p$$ fu`;
     my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
     $_ = $_ / 100 for $cpu, $mem;
-    #my ($tot) = (`wc -l lib/* ghosts/*/*`)[-1]  =~ /(\d+) total/;
-    my $info = "$cpu $mem ".$H->hitime;
+    my $tot
+    #= ((`wc -l ghosts/*/*`)[-1]  =~ /(\d+) total/)[0]
+    ;
+    my $info = "$tot $cpu $mem ".$H->hitime;
+    saygr $info if rand(5) > 4;
     $H->pub("hostinfo/H.style/H.name/H.id" => $info, 'ig');
     G.hostinfo_waits++;
     if (G.hostinfo_waits > 1) {
