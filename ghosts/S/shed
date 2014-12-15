@@ -2,7 +2,25 @@ hooks:
 
   Hi: |
       saygr "Hello to a.top ! a.m";
-      my @a = split '/', a.top;
+      my @a = split '/', a.top; 
+      my @olds = H.r->keys("H/$a[1]/$a[2]*");
+      for my $oth (@olds) {
+          my @b = split '/', $oth;
+          sayre "o $oth";
+          if ($b[3] eq $a[3]) {
+              sayyl " haf self";
+            next;
+          }
+          my $hol = join '/', @b[2..4];
+          for my $vh (H.r->keys("V/$b[3]*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $H->send(" \$('#ux > #$ww').remove();");
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          H.r->del($oth);
+      }
   non: |
       my @olds = H.r->keys("H/$a[1]/$a[2]*");
       for my $oth (@olds) {
@@ -29,6 +47,11 @@ hooks:
              my $a = shift;
              H.G w pubbedElvis[$a];
            });
+           $G->su('H*' => sub {
+             my $a = shift;
+                w Hi[$a];
+           });
+      
            
       Z:
        - GAK: 0
