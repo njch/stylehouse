@@ -79,6 +79,40 @@ Ds:
         return $G->w("load_ways_post") if !$G0;
         
         $G0 w _load_ways_post(S=>$G,w=>G.ways);
+  - K: u #c u, sway, Bu # 
+    D: |
+        my ($K, $s) = @_;
+        0->sway({K=>$K}, $s);
+  - K: sway #c
+    D: |
+        # sucks way matching $p # only supports matching K for now
+        my ($p, $s, $P) = @_;
+        my ($from) = p.from || 0->CsK($p);
+        
+        $from || defined P.e || die "no C: p.K (G.name)".wdump([$p,$s]);
+        
+        my $w = $G->nw();
+        $w->from($from) if $from;
+        $w->from($p) unless $from;
+        $w->from($s) if $s && %$s; # merges in B :D
+        
+        return $w
+  - K: Bu #c
+    D: |
+        my($K,$B)=@_;
+        my $u = 0->sway({K=>$K},{B=>$B});
+        my $a = {};
+        $G w $u Bu_D[$a] if u.Gw || u.Bu_D;#opopopopop
+        $u
+  - K: CsK #c TODO C vortex reading # TODO
+    D: |
+        my ($p, $GG) = @_;
+        $GG ||= $G;
+        p.s ||= 'Cs C';
+        my @topK = split ' ', delete p.s;
+        my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
+        @Cs = grep { 0->ip($p, $_) } @Cs if %$p;
+        return wantarray ? @Cs : shift @Cs;
   - K: di #c
     style: func
     D: |
