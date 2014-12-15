@@ -32,8 +32,6 @@ hooks:
     0->su(S => $reS);
     0->su("S/H.style/H.name" => $reS);
     0->su("S/H.style/H.name/H.id" => $reS);
-    w hostinfo;
-    $H->pub("H/H.style/H.name/H.id" => $$);
     
     
     $G->timer(60*9+(20 * rand 4),
@@ -44,12 +42,6 @@ hooks:
     Mojo::IOLoop->recurring(0.02 => sub {
         H.sur->wait_for_messages(0.01618);
     });
-    Mojo::IOLoop->recurring(8 => sub {
-        w hostinfo;
-    });
-    Mojo::IOLoop->recurring(2 => sub {
-        H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
-    });
     Mojo::IOLoop->recurring(0.4 => sub {
         w gitdission;
     }) if H.name eq 'Z';
@@ -59,21 +51,6 @@ hooks:
     # $0 has become a runtime
     w in;
     waylay transam; # 3
-  hostinfo: |
-    my @ps = `ps -p$$ fu`;
-    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
-    $_ = $_ / 100 for $cpu, $mem;
-    my $tot
-    #= ((`wc -l ghosts/*/*`)[-1]  =~ /(\d+) total/)[0]
-    ;
-    my $info = "$tot $cpu $mem ".$H->hitime;
-    saygr $info if rand(5) > 4;
-    $H->pub("hostinfo/H.style/H.name/H.id" => $info, 'ig');
-    G.hostinfo_waits++;
-    if (G.hostinfo_waits > 1) {
-        sayre "hostinfo uncollected";
-    }
-      
   mess: |
     # TODO sa* all over
     # by voltage!
@@ -143,14 +120,6 @@ hooks:
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
-    hostinfo:
-      ack: |
-        my (@s) = split /\s+/, $m;
-        if (rand(5) > 1) {
-            my $lag = (1000*sprintf('%.3f',$H->hitime - $s[-1])).'ms';
-            sayyl "out there! lag: $lag";
-        }
-        G.hostinfo_waits = 0;
     speaks: | # concealed elvis input
       my $J = 0->Bu(J => {m=>$m});#2
       w Teeth[$J];
