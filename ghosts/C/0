@@ -329,8 +329,9 @@ hooks:
           @etc,
       );
     phat: | #c
+        a.bb = {};
         a.bz = w R_sur/as(bb=>a.bb);
-        a.gpfro = sub {
+        a.fro = sub {
             my $fro = [$R, a.bz, @_];
             w R_sur/gpfro(a=>$fro);
         };
@@ -350,31 +351,25 @@ hooks:
         
         w R_sur/phat;
         
-        a.bb = {};
-        
         # 3
         $R->du;
         
         # 4
         w R_sur/S_4;
         
-        $as->("on 0.01" => "H.name H.style", '%sf' => 'fs60');
+        a.bz->("on 0.01" => "H.name H.style", '%sf' => 'fs60');
         
-        my $fro = [$R, $as, 'R 0.11' => $R, 0.2, '+_fro' => '@'];
-        w R_sur/gpfro(a=>$fro);
+        a.fro->('R 0.11' => $R, 0.2, '+_fro' => '@');
         
-        my $fro = [$R, $as, 'R_J_from 0.12' => R.J.from, 0.2];
-        w R_sur/gpfro(a=>$fro);
+        a.fro->('R_J_from 0.12' => R.J.from, 0.2);
         
-        my $fro = [$R, $as, 'R_J_trav 0.13' => R.J.trav, 0.2];
+        a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
         
+        a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
         
-        $as->('R_S_e 0.2' => R.S.e);
+        a.fro->('R_a_i 0.21' => R.a.i, 0.2);
         
-        my $fro = [$R, $as, 'R_J_trav 0.21' => R.a.i, 0.2, '+_fro' => '@'];
-        w R_sur/gpfro(a=>$fro);
-        
-        $as->("Js 0.29" => "\n");
+        a.bz->("Js 0.29" => "\n");
         
         # 7
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
