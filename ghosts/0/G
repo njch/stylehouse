@@ -205,7 +205,7 @@ Ds:
       $u->from(a.i);
       
       # etc
-      0S->T({i => $u});
+      0->T({i => $u});
 
   - K: ob #c make lookee
     D: |
@@ -319,8 +319,7 @@ Ds:
             $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
             $eval =~ s/G:($Gnv)/HGf("$1")/sg;
 
-            $eval =~ s/(?<!G)(0->\w+)\(/\$G->_0("$1", /sg;
-            $eval =~ s/(0S->\w+)\(/\$G->_0("$1", /sg;
+            $eval =~ s/(?<!G)(0->\w+)\(/\$G->$1(/sg;
 
             $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
@@ -336,7 +335,7 @@ Ds:
           die "CABNNOOT call G0, doesn't exist. "
               ." $point, @etc\n\n".wdump($G0);
       }
-      if ($point =~ /^0S?->(.+)$/) {
+      if ($point =~ /^0?->(.+)$/) {
           my $Usub = $1;
           $G->can($Usub) || die "no 0U $Usub\n".wdump(2,$G0);
           $G->$Usub(@etc);
@@ -610,7 +609,7 @@ Ds:
         my $inga = G.ing->{$name} ||= {};
         _.dead = 1 for values %$inga;
         $inga->{ingw.id} = $ingw;
-        0S->ingo($ingw);
+        0->ingo($ingw);
     
   - K: ingo
     D: |
@@ -624,7 +623,7 @@ Ds:
         $time ||= ingw.time;
         say "time ingw.G.name ingw.name $time";
         $G->timer($time, sub {
-            0S->ingo($ingw);
+            0->ingo($ingw);
         }, "ing ingw.name ingw.id");
   - K: accum #c TODO C vortex i/o
     D: | 
@@ -636,7 +635,7 @@ Ds:
             return;
         }
         
-        my $a = 0S->loquate($src, $ac, []);
+        my $a = 0->loquate($src, $ac, []);
         
         return if $ac eq 'o' && src.i && src.i eq $t;
 
@@ -669,12 +668,12 @@ Ds:
   - K: rei
     D: |
         my ($ip) = @_;
-        map {_.i} 0S->scGre($ip);
+        map {_.i} 0->scGre($ip);
   - K: ei
     D: |
         my $ip = {};
         ip.K = shift; # lookup BcS for more, we could want to create
-        map {_.i} 0S->scGre($ip);
+        map {_.i} 0->scGre($ip);
   - K: loquate #c TODO A sess with vectory text
     D: |
         my ($source, $path, $def) = @_;
@@ -703,7 +702,7 @@ Ds:
             my $i = LL.i;
             my $yup = $i eq $u
                 || (!exists u.K || i.K eq u.K)
-                && 0S->B_same($u => $i);
+                && 0->B_same($u => $i);
             if ($yup) {
                say "found i.K in script";
                 return $i;
@@ -718,12 +717,12 @@ Ds:
   - K: u #c u, sway, Bu # 
     D: |
         my ($K, $s) = @_;
-        0S->sway({K=>$K}, $s);
+        0->sway({K=>$K}, $s);
   - K: sway
     D: |
         # sucks way matching $p # only supports matching K for now
         my ($p, $s, $P) = @_;
-        my ($from) = p.from || 0S->CsK($p);
+        my ($from) = p.from || 0->CsK($p);
         
         $from || defined P.e || die "no C: p.K (G.name)".wdump([$p,$s]);
         
@@ -736,7 +735,7 @@ Ds:
   - K: Bu
     D: |
         my($K,$B)=@_;
-        my $u = 0S->sway({K=>$K},{B=>$B});
+        my $u = 0->sway({K=>$K},{B=>$B});
         my $a = {};
         $G w $u Bu_D[$a] if u.Gw || u.Bu_D;#opopopopop
         $u
@@ -756,11 +755,11 @@ Ds:
         # 1/9
         
         my $giu = T.i;
-        my $old = 0S->visTp($p); # 1
+        my $old = 0->visTp($p); # 1
         die "no old!".wdump($T) if !$old;
         T.i || die " no way in! ".wdump($p);
         
-        0S->fu_cache(T.i);
+        0->fu_cache(T.i);
         
         # set up this dimension - allele tower
         # maths stapler - clown shoes - RNA
@@ -798,7 +797,7 @@ Ds:
           
         # 5/9
         T.L.i eq T.i || die "5 eye swamp gone wrong".sw($T);
-        0S->accum(T.L.i, 'Li', T.L); # just right
+        0->accum(T.L.i, 'Li', T.L); # just right
         
          $G->w("T/links", {u=>T.i});
            $G->w('links_D', {}, T.i);
@@ -938,8 +937,8 @@ Ds:
   - K: delfrom #c
     D: |
         my ($u) = @_;
-        for my $uu (0S->Io($u)) {
-            0S->del($uu);
+        for my $uu (0->Io($u)) {
+            0->del($uu);
         }
   - K: del #c
     D: |
@@ -948,11 +947,11 @@ Ds:
         #say "deleting ".$u->pint;
         $G->w('v/ch'=>{u=>$u});
 
-        0S->deaccum(u.Lo, 'o', $u);
-        0S->deaccum(u.Li.W, 'script', $L);
+        0->deaccum(u.Lo, 'o', $u);
+        0->deaccum(u.Li.W, 'script', $L);
         u.dead = 1;
 
-        0S->del($_) for @{u.Li.o};
+        0->del($_) for @{u.Li.o};
     
   - K: Io #c
     D: |
