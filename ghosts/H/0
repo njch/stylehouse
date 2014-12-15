@@ -60,11 +60,10 @@ hooks:
     waylay in;
   hostinfo: |
     my @ps = `ps -p$$ fu`;
-    my ($u, $pid, $m, $c) = (split /\s+/, $ps[1])[0,1,2,3];
-    $_ = $_ / 100 for $c, $m;
-    
+    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
+    $_ = $_ / 100 for $cpu, $mem;
     #my ($tot) = (`wc -l lib/* ghosts/*/*`)[-1]  =~ /(\d+) total/;
-    my $info = "$c $m";
+    my $info = "$cpu $mem ".$H->hitime;
     $H->pub("hostinfo/H.style/H.name/H.id" => $info);
       
   mess: |
@@ -136,6 +135,9 @@ hooks:
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
+    hostinfo:
+      ack: |
+        sayyl "out there! $m";
     speaks: | # concealed elvis input
       my $J = 0->Bu(J => {m=>$m});#2
       w Teeth[$J];
@@ -201,7 +203,6 @@ hooks:
             $H->pub("S/$hol", "speaks $m");
             G.keysto = $hol;
         }
-
   gitdission: |
     my $some = 0;
     for my $f ($G->fs_find('/home/s/styleshed/ghosts')) {
@@ -471,3 +472,4 @@ hooks:
         $G->timer(0.4, sub { $E->send(" \$('#$n').removeClass('NZ');"); });
     }
   
+
