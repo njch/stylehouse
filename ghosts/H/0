@@ -41,8 +41,8 @@ hooks:
         if H.name !~ /Z/;
     
     
-    Mojo::IOLoop->recurring(0.1 => sub {
-        H.sur->wait_for_messages(0.07);
+    Mojo::IOLoop->recurring(0.02 => sub {
+        H.sur->wait_for_messages(0.01618);
     });
     Mojo::IOLoop->recurring(8 => sub {
         w hostinfo;
@@ -65,6 +65,10 @@ hooks:
     #my ($tot) = (`wc -l lib/* ghosts/*/*`)[-1]  =~ /(\d+) total/;
     my $info = "$cpu $mem ".$H->hitime;
     $H->pub("hostinfo/H.style/H.name/H.id" => $info);
+    G.hostinfo_waits++;
+    if (G.hostinfo_waits > 1) {
+        sayre "hostinfo uncollected";
+    }
       
   mess: |
     # TODO sa* all over
@@ -137,7 +141,9 @@ hooks:
   S:
     hostinfo:
       ack: |
-        sayyl "out there! $m";
+        my (@s) = split /\s+/, $m;
+        sayyl "out there! lag: ".sprintf('%.3f',$H->hitime - $s[-1]);
+        G.hostinfo_waits = 0;;
     speaks: | # concealed elvis input
       my $J = 0->Bu(J => {m=>$m});#2
       w Teeth[$J];
