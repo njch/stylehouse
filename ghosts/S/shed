@@ -103,7 +103,6 @@ hooks:
       
       
     disconecktie: |
-      $EE->send(" C[s\.conin] = s;");
       $tx->finish;
       Sw disco;
     disco: |
@@ -183,22 +182,14 @@ hooks:
       my ($w, $s) = split ' ', $m;
       # check the tip for dup
       my $EE = G.conz->{$w};
-      if ($EE && !EE.disco) {
+      if ($EE && !EE.disco && 0) {
           w elvash[$E, $EE];
       }
       G.conz->{$w} = $E;
       (E.c->{w}, E.c.s) = ($w, $s);
       E.singul = 1 if $w eq $s; 
       
-      w z/conz;
       w elvjs;
-    
-    conz: |
-        while (my ($id, $conin) = each %$conz) {
-            next unless $conin eq H.listen_ws; # ours
-            next if H.G.A.W->{$id}; # current # lookup (into the unified)
-            $E->send(" delete conz['$id']; \$('#$id').remove();");
-        }
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -210,17 +201,15 @@ hooks:
       $H->send(" keon();");
     hitground: |
       $H->JS("\$('#sky').stop().slideUp();");
-    conz: |
-      $E->send(" s\.reply({conz:conz});");
     wzy: |
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
     coninto: |
       $H->send(" a\.con({conin: '$conin'});");
   elvash: |
-    # close older one
+    sayre "A new ".$E->pi."  closing => ".$EE->pi;
+    w $EE disconecktie;
+    $EE->send(" C[s\.conin] = s;");
     H.who = $E;
-    sayre "Already on ".$EE->pi."  disco necktie ing => ".$E->pi;
-     $E disconecktie[$EE];
   elvjs: | # elvis swam through wsy, is js client
     if (E.singul) {
         H.who = $E;
@@ -295,11 +284,6 @@ hooks:
     
     if (H.singul) {
         $H->pub("S", "please_push_conin");
-    }
-    
-    my @GGs = ar.GG || @{G.GGs};
-    for my $g (@GGs) {
-        $g w elvibe;
     }
     
     for my $j (@{G.Js}) {
