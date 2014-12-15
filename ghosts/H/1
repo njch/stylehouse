@@ -6,10 +6,9 @@ hooks:
     
     $S->w("load_ways_post");
     
-    $G->Flab("$S->{name} +$S->{load_ways_count}+   ".
-        join" , ", map { $_->{_wayfile} } @$w);
-    
-    $_ && $S->wayray($_) for $S->anyway('C');
+    for my $wa ($S->anyway('C')) {
+        w wayray[$wa];
+    }
     
     if (S.load_ways_count == 1) {
         w _init/fresh;
@@ -20,6 +19,20 @@ hooks:
       
     $S->w("any_init");
     
+  wayray: | # raise Cs from the dead. pass array of them from the to-be-live C data
+    return unless ref $wa eq "ARRAY";
+    my $i = 0;
+    for my $a (@$wa) {
+        if (ref $a eq "C") {
+            # travel inject
+            die "already";
+        }
+        else {
+            my $c = $wa->[$i] = $G->nw(%$a);
+            c.A->umv('', 'wayray');
+        }
+        $i++;
+    }
   _init:
     recoded: |
         
@@ -27,33 +40,17 @@ hooks:
         
         $S->w("recoded_init");
         
-        w _init/recoded_care_parents[$S];
-        
     recoded_Cways: | # TODO reinject
       for my $i (map {_.i} $S->scGre()) {
+          saygr "Reinjecting i.K ...";
           my $up = $S->CsK({K=>i.K});
           $i->from($up);
       }
         
     fresh: |
-      w _init/keys[$S];
-      
-      w _init/GG[$S];
-      
       S.R ||= $S->R; # or R: perc somewhere here
       
       $S->w("fresh_init");
-
-    keys: | # TODO goner
-      return unless $S->findway("keys");
-      if (my $keys = G:keys) {
-          push @{keys.subs}, $S unless
-            grep {$_ eq $S} @{keys.subs};
-      }
-      else {
-          sayre "G L Waiting for G keys";
-          $G->timer(0.5 => sub { w keyub[$S]; });
-      } 
   ghostchanges: |
     my $ghosts = H.G.GGs;
     my @rG;
