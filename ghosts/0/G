@@ -570,26 +570,30 @@ Ds:
         p.name = G.id."/".shift;
         p.code = shift;
         $p = {%$p, @_};
-        p.again = 0.5 if !defined p.again;
-        p.begin = 0.2 if !defined p.begin;
+        my $name = p.name;
+        my $code = p.code;
         
         my $si = H.G.singing ||= {};
         return if $si->{$name} && $si->{$name}++;
         $si->{$name} = 1;
-        my $after = p.block || p.again || 0.04;
-        my $d = p.begin || 0.001;
-        $G->timer($d, sub {
+        
+        my $after = p.block || p.again || 0.2;
+        my $init = p.begin || 0.001;
+        
+        $G->timer($init, sub {
+        
             $G->timer($after, sub {
                 my $splatter = delete $si->{$name};
-                if ($splatter > 1) {
+                if ($splatter > 1 && p.again) {
                     $G->Flab("Sig reps $splatter... again!  $name");
-                    w sing(%$ar);
+                    $G->sing($name, $code, %$p);
                 }
             }, "sing-block        $name");
+            
             $si->{$name} = 1;
             $code->();
         }, "pre-sing     $name");
-  - K: ing
+  - K: ing #c
     D: |
         my ($time, $ing, $w) = @_;
         $time && $ing || die " time&ing";
@@ -609,7 +613,7 @@ Ds:
         $inga->{ingw.id} = $ingw;
         0->ingo($ingw);
     
-  - K: ingo
+  - K: ingo #c
     D: |
         my ($ingw) = @_;
         return say "ing ingw.name ingw.id deduped" if ingw.dead;
