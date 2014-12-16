@@ -122,8 +122,7 @@ hooks:
     w ikey;
     G.arp = [1..1024];
 
-  recoded_init: |
-    w R_sur/are; 
+
   recoded_init: |
     w R_wayray;
   percolate: |
@@ -157,6 +156,9 @@ hooks:
     my $a = {i => $i};
     w R_n/Sud/in[$R, $a];
   R_wayray: |
+    my $a = {};
+    my $R = w R_sur/are; 
+    w R_sur/phat[$R,$a];
     # 
     my @rsurs = map {
         my @rw;
@@ -168,19 +170,36 @@ hooks:
     
     push @rsurs, flatline $G->findway('R_zs');
     
-    my $sortbyk = sub {
-        
-        sort { a.K cmp b.K } 
-    };
     
-    my $r;
+    my $way;
     for my $wa (@rsurs) {
-        push @{r.Ds||=[]}, $wa if wa.D;
-          push @{r.babz||=[]}, $wa if wa.babz;
+        $way->{wa.K} && die "dup wa.K";
+        $way->{wa.K} = $wa;
     }
     
-    
-    w ave(i=>\@rsurs);
+    my @do;
+    for my $D (grep{_.D} map{$way->{$_}} sort keys %$way) {
+        next unless D.K eq "S";
+        my $i = 0.001;
+        my @cs;
+        my $up = sub { a.bz->("D.K 0.3 $i" => join "\n", @cs) if @cs };
+        for my $l (split "\n", D.D) {
+            if ($l =~ /^\s*# (\d\S*)/) {
+                my $ni = $1;
+                $up->();
+                @cs = ();
+                $i = $ni;
+            }
+            push @cs, $l;
+        }
+        $up->();
+        push @do, $D;
+    }
+    for my $D (grep{_.babz} map{$way->{$_}}sort keys %$way) {
+        push @do, $D;
+    }
+    #die wdump(a.bb);
+    w ave(i=>a.bb);
     
     
     
@@ -195,7 +214,7 @@ hooks:
   R_zs:
     - K: Aun
       babz:
-        S/unifromA 1.16: |
+        'S#unifromA 1.16': |
           R.a.i ||= w R_sur/uni[$R]; # find tip along the trav
           # and like
           sayre "YEYEYEYYE" for 1..9;
@@ -382,8 +401,8 @@ hooks:
         
         # 1.16
         my $unifro = {
-            i => J.from || die,
-            t => J.trav || "",
+            i => R.J.from || die,
+            t => R.J.trav || "",
         };
         R.a.i ||= w R_sur/uni(%$unifro);
         

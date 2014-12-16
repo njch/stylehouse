@@ -43,15 +43,13 @@ Ds:
       R.J.trav .= $hop;
 
       
-  - K: uni #c TODO embryonics
+  - K: uni #c TODO embryonics i->t, difinitive teat
     D: |
-      my $J = R.J || die;
-      my $i = J.from || die;
-      my $t = J.trav || "";
-      #  from => $H,
-      #  trav => "{G{GGs",
-      while ($t =~ m/(\W)(\w+)/sg) {
-          #say "Snapped $i       $1 $2";
+      my ($i, $t) = @_;
+      my @tr = split /(?=\{|\[)/, $t;
+      
+      for (@tr) {
+          /^(.)(.+)$/;
           last if $1 eq " ";
           $i = $i->{$2} if $1 eq "{";
           $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
@@ -60,6 +58,7 @@ Ds:
           say "Had some more: $1";
       }
       $i
+    
   - K: durows #c 4 TODO VAKd
     D: |
       my $d = R.a.d;
