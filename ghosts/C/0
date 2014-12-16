@@ -174,7 +174,6 @@ hooks:
     
     my @do;
     for my $D (grep{_.D} map{$way->{$_}} sort keys %$way) {
-        next unless D.K eq "S";
         my $i = 0.001;
         my @cs;
         my $up = sub { a.bz->("D.K $i" => join "\n", @cs) if @cs };
@@ -207,10 +206,31 @@ hooks:
         push @do, $D;
     }
     
+    
+    my $Dz;
+    my @r = w stylekeysort(d=>a.bb);
+    for my $r (@r) {
+        my $b = a.bb->{$r};
+        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
+        if ($com) {
+            exists $Dz->{$l}->{$vo} || die;
+            my $v = $Dz->{$l}->{$vo};
+            $com = "# $vo $com".($b ? " $b" : "");
+            $v = "$com\n$v";
+            $Dz->{$l}->{$vo} = $v;
+        }
+        else {
+            $Dz->{$l}->{$vo} = $b;
+        }
+    }
     my $bb = {map {my $v = a.bb->{$_}; s/ /_/g; $_=>$v } keys %{a.bb}};
     
-    #die wdump($bb);
-    w ave(i=>$bb);
+    
+    my $R_ne = 0->anyway('hooks')->{R_ne} = {};
+    while (my ($K, $bz) = each %$Dz) {
+        $R_ne->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
+    }
+    w ave(i=>$R_ne);
     
     
     
@@ -508,6 +528,7 @@ hooks:
                 '%sf', 'blue_fs120');
                 
             my $t = j.t;
+            $t =~ s/_/ /g;
             $t .= join("", (" ") x (6 - length($t))) if length($t) < 6;
             $as->("${li}_k 0.3 0.3${li}2", $t,
                 '%sf', 'black');
