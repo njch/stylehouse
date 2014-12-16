@@ -121,26 +121,16 @@ hooks:
   fresh_init: |
     w ikey;
     G.arp = [1..1024];
-  ikey: |
-    H.keydo = sub { w key(e=>shift); };
+
   recoded_init: |
     w R_sur/are; 
-  seetry: |
-    saygr "Trying!!!!" for 1..5;
-    my @lot = w trythis;
-    my $f = $F[0];
-    my $R = w R_sur/are;
-    my $a = {i=>$f};
-    w R_n/Sud/in[$R, $a];
-    sayyl "Trithings: $_ " for @lot;
+  recoded_init: |
+    w R_wayray;
   percolate: |
+    w R_wayray;
     w uxd;
-  a: |
-    die;
-    my ($k,$etc) = %$ar;
-    my ($u) = 0->rei({K=>$k});
-    w chang[$u];
-    $u;
+  ikey: | # $G assumes keydo
+    H.keydo = sub { w key(e=>shift); };
   key: |
     my $k = e.k;
     my $R = w R_sur/are;
@@ -162,6 +152,41 @@ hooks:
       
       R.G w R_n/$do[$R, $k, $e];
       
+  ave: |
+    my $R = w R_sur/are;
+    my $a = {i => $i};
+    w R_n/Sud/in[$R, $a];
+  R_wayray: |
+    # 
+    my @rsurs = map {
+        my @rw;
+        while (my ($K, $D) = each %$_) {
+            push @rw, {K => $K,D => $D};
+        }
+        @rw
+    } $G->findway('R_sur');
+    
+    push @rsurs, flatline $G->findway('R_zs');
+    
+    w ave(i=>\@rsurs);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #
+  R_zs:
+    - K: Aun
+      babz:
+        S/unifromA 1.16: |
+          R.a.i ||= w R_sur/uni[$R]; # find tip along the trav
+          # and like
+          sayre "YEYEYEYYE" for 1..9;
   R_n: #c       
         key: #c
           0: Num/out
@@ -199,7 +224,13 @@ hooks:
             G: |
               # to ghost from here
             F: | #c # F junk?
-              w seetry;
+              saygr "Trying!!!!" for 1..5;
+              my @lot = w trythis;
+              my $f = $F[0];
+              my $R = w R_sur/are;
+              my $a = {i=>$f};
+              w R_n/Sud/in[$R, $a];
+              sayyl "Trithings: $_ " for @lot;
             D: | #c
                 sayre "Yeahp";
                 my $P = Load(<<'');
