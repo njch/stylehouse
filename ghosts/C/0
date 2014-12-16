@@ -251,8 +251,8 @@ hooks:
               my $j = R.a.ro->{R.ksuc};
               
               if (!$j) {
-                    return sayre "no j ye for R.ksuc";
                   0->deaccum(G.Vu, 'U', R.theD);
+                  return sayre "no j ye for R.ksuc";
               }
               sayyl "got $j j.t j.cv for R.ksuc";
 
@@ -364,6 +364,7 @@ hooks:
             my $fro = [$R, a.bz, @_];
             w R_sur/gpfro(a=>$fro);
         };
+        # TODO see pyramid, delete bz+fro at F end
     S: | #c void R_surcess R::S heist
         # 1
         my $a = ar.a = R.a = shift || {};
@@ -631,13 +632,12 @@ hooks:
         "know $u"
       ARRAY: | #c
             my $cv = a.cv ||= 0.3;
-            a.bb = {};
-            my $si = @$u;
+            w R_sur/phat[$R, $a];
             
-            my $as = w R_sur/as(bb=>a.bb);
-            $as->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
-            $as->('Bo 0.1 0.11' => '[');
-            $as->('oB 0.1 0.9' => ']');
+            my $si = @$u;
+            a.bz->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
+            a.bz->('Bo 0.1 0.11' => '[');
+            a.bz->('oB 0.1 0.9' => ']');
             
             return if $cv < 0.2;
             
@@ -654,43 +654,43 @@ hooks:
                 my $vcv = a.cv - 0.2; # dus bend for $k
                 $vcv = 0.1 if $vcv < 0.1;
                 if (1) {
-                    my $gp = {R=>$R, u=>$uu, cv=>$vcv};
-                    my $v = w R_sur/gp(a => $gp);
-                    a.bb->{"[${ki}_v 0.2"} = $v;
-                    a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
-                    a.bb->{"[${ki}_v%gp 0.2"} = $gp;
+                    a.fro->("[${ki}_v 0.2", $uu, $vcv,
+                    
+                        "%css" => "font-size:75%");
                     $ki++;
                 }
-                if ($i >= 8) {
-                    $ki++;
-                    a.bb->{"[${ki}#more 0.2"} = "@";
-                    a.bb->{"[${ki}#more%sf 0.2"} = "blue";
+                
+                $i++;
+                if ($i >= 5) {
+                    a.bz->("more 0.2 0.886" => "@",
+                    
+                        '%sf' => "blue");
                     last;
                 }
-                $i++;
             }
       HASH: | #c
             my $v = {%$u};
             my $cv = a.cv ||= 0.3;
-            a.bb = {};
-            my @r = sort keys %$v;
+            w R_sur/phat[$R, $a];
+            
+            my @r = keys %$v;
             my $si = @r;
+            a.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
             
-            a.bb->{'si 0.1'} = $si;
-            a.bb->{'si%css 0.1'} = "color:#fff;font-size:50%";
             
-            a.bb->{'Bo 0.1 0.11'} = '{';
-            a.bb->{'oB 0.1 0.9'} = '}';
+            
+            a.bz->('Bo 0.1 0.11' => '{');
+            a.bz->('oB 0.1 0.9' => '}');
             
             return if $cv < 0.2;
             
-            
-            my @ks;
-            push @ks, "K" && delete v.K if v.K;
-            push @ks, sort keys %$v;
+            @r = sort @r;
+            for my $be ('K', 'name') {
+                unshift @r, $be if $G->deaccum({u=>\@r},u=>$be);
+            }
             
             my $ki = 0;
-            for my $k (@ks) {
+            for my $k (@r) {
                 my $uu = $u->{$k};
                 
                 if ($ki > 0) {
@@ -698,19 +698,25 @@ hooks:
                     a.bb->{"[${ki}_Bs 0.2"} = ',';
                     $ki++;
                 }
-                a.bb->{"[${ki}_k 0.2"} = $k; # could this be ${ki}_a?
-                a.bb->{"[${ki}_k\%css 0.2"} = "color:#acf;font-size:80%";
+                a.bz->("[${ki}_k 0.2" => $k,
+                    
+                    "\%css 0.2" => "color:#acf;font-size:80%");
+                    
+                    
                 my $keyi = $ki;
                 $ki++;
                 my $vcv = a.cv - 0.2; # dus bend for $k
+                
                 if ($vcv >= 0.2) {
-                    my $gp = {R=>$R, u=>$uu, cv=>$vcv};
-                    my $v = w R_sur/gp(a => $gp);
-                    a.bb->{"[${ki}_Bi 0.2"} = ':'; # could be more "on" the _k
+                
+                    a.bz->("[${ki}_Bi 0.2" => ':');
+                    
                     $ki++;
-                    a.bb->{"[${ki}_v 0.2"} = $v;
-                    a.bb->{"[${ki}_v%css 0.2"} = "font-size:75%";
-                    a.bb->{"[${ki}_v%gp 0.2"} = $gp;
+                    
+                    a.fro->("[${ki}_v 0.2" => $uu, $vcv,
+                    
+                        '%css 0.2' => "font-size:75%");
+
                 }
             }
       ref: | #c weird ref
@@ -719,7 +725,7 @@ hooks:
             '~'
       text: | #c
             my $text = $u;
-            a.bb = {};
+            w R_sur/phat[$R,$a];
             
             my @s;
             my $adhow;
@@ -742,29 +748,25 @@ hooks:
             my $bi = a.c.b if a.c.b > 1;
             
             if ($si) {
-                # was trucated
-                a.bb->{'Bo 0.1 0.11'} = "'";
-                a.bb->{'oB 0.1 0.9'} = "'";
-            }
-            if ($si) {    
-                a.bb->{'si/l 0.1'} = "$si";
-                a.bb->{'si/l%css 0.1'} =
-                "color:#b89;font-size:50%;position:absolute";
-            }
-            if ($ni) {
-                a.bb->{'si/n 0.1'} = "$ni";
-                a.bb->{'si/n%css 0.1'} = 
-                "color:#fff;font-size:50%;position:absolute;margin-top:1.4em;";
-            }
-            if ($bi && 0) {
-                a.bb->{'si/b 0.1'} = "b$bi";
-                a.bb->{'si/b%css 0.1'} = 
-                "color:#f89;font-size:50%;float:left;left:-1em";
+                a.bz->("#more 0.9" => "@",
+
+                    "%sf" => "blue");
             }
             
-            a.bb->{"line 0.2"} = $text;
-            a.bb->{"line%css 0.2"} =
-            "background:rgba(200,30,80,0.3);color:#3f3;font-size:70%";
+                a.bz->("si/l 0.1" => "$si",
+                    '%css' => "color:#b89;font-size:50%;position:absolute") if $si;
+                a.bz->('si/n 0.1' => "$ni",
+                    '%css' =>
+                        "color:#fff;font-size:50%;"
+                        ."position:absolute;margin-top:1.4em;") if $ni;
+                a.bz->('si/b 0.1' => "b$bi",
+                    '%css' =>
+                        "color:#f89;font-size:50%;"
+                        ."float:left;left:-1em") if $bi;
+            
+            a.bz->('line 0.2' => $text,
+                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
+                    ."font-size:70%");
             
       A: | #c
         my $cv = a.cv ||= 0.3;
