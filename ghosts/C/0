@@ -168,6 +168,18 @@ hooks:
     
     push @rsurs, flatline $G->findway('R_zs');
     
+    my $sortbyk = sub {
+        
+        sort { a.K cmp b.K } 
+    };
+    
+    my $r;
+    for my $wa (@rsurs) {
+        push @{r.Ds||=[]}, $wa if wa.D;
+          push @{r.babz||=[]}, $wa if wa.babz;
+    }
+    
+    
     w ave(i=>\@rsurs);
     
     
@@ -289,9 +301,6 @@ hooks:
         say "Made ".$R->pi;
         #w R.S.w $_/in({}) for keys %{R.S.w};
     uni: | #c
-      my $J = R.J || die;
-      my $i = J.from || die;
-      my $t = J.trav || "";
       #  from => $H,
       #  trav => "{G{GGs",
       my @tr = split /(?=\{|\[)/, $t;
@@ -371,7 +380,12 @@ hooks:
         
         R.a.e ||= R.S.e || die;
         
-        R.a.i ||= w R_sur/uni[$R]; # find tip along the trav
+        # 1.16
+        my $unifro = {
+            i => J.from || die,
+            t => J.trav || "",
+        };
+        R.a.i ||= w R_sur/uni(%$unifro);
         
         # s messed by R plumbing, sure
         R.a.s = R.S.s || $R->dus;
