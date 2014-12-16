@@ -148,13 +148,15 @@ hooks:
       
   ave: |
     my $R = w R_sur/are;
-    my $a = {i => $i};
+    my $a = {%$ar};
     w R_n/Sud/in[$R, $a];
   R_wayray: |
+    # 1
     my $a = {};
     my $R = w R_sur/are; 
     w R_sur/phat[$R,$a];
-    # 
+    
+    # 2
     my @rsurs = map {
         my @rw;
         while (my ($K, $D) = each %$_) {
@@ -162,16 +164,16 @@ hooks:
         }
         @rw
     } $G->findway('R_sur');
-    
     push @rsurs, flatline $G->findway('R_zs');
     
-    
+    # 3
     my $way;
     for my $wa (@rsurs) {
         $way->{wa.K} && die "dup wa.K";
         $way->{wa.K} = $wa;
     }
     
+    # 4
     my @do;
     for my $D (grep{_.D} map{$way->{$_}} sort keys %$way) {
         my $i = 0.001;
@@ -189,6 +191,8 @@ hooks:
         $up->();
         push @do, $D;
     }
+    
+    # 5
     for my $D (grep{_.babz} map{$way->{$_}}sort keys %$way) {
         for my $ba (keys %{D.babz}) {
             my $b = D.babz->{$ba};
@@ -206,7 +210,7 @@ hooks:
         push @do, $D;
     }
     
-    
+    # 6
     my $Dz;
     my @r = w stylekeysort(d=>a.bb);
     for my $r (@r) {
@@ -225,12 +229,14 @@ hooks:
     }
     my $bb = {map {my $v = a.bb->{$_}; s/ /_/g; $_=>$v } keys %{a.bb}};
     
-    
+    # 7
     my $R_ne = 0->anyway('hooks')->{R_ne} = {};
     while (my ($K, $bz) = each %$Dz) {
         $R_ne->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
-    w ave(i=>$R_ne);
+    
+    # 8
+    w ave(i=>$R_ne, t=>'{S'); 
     
     
     
@@ -333,7 +339,7 @@ hooks:
         Sud: #c
            in: |    #c ebrace flying embryo J
                 R.J = { from => a.i };
-                R.J.trav = ar.t if ar.t;
+                R.J.trav = a.t if a.t;
     
   R_sur: #c
     are: | #c chang->queue U xing
