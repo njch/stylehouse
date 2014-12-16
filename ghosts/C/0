@@ -80,12 +80,7 @@ P:
      name: u
      R: surf
     
-# - K: D #c sur
-#   B: 
-#     name: twofer
-#     R: surf
-#   flot_D: |
-#     R.J = { from => $R, trav => '{G{ways' };
+
  - GAK: U #c
    InC:
        W:
@@ -182,7 +177,7 @@ hooks:
         next unless D.K eq "S";
         my $i = 0.001;
         my @cs;
-        my $up = sub { a.bz->("D.K 0.3 $i" => join "\n", @cs) if @cs };
+        my $up = sub { a.bz->("D.K $i" => join "\n", @cs) if @cs };
         for my $l (split "\n", D.D) {
             if ($l =~ /^\s*# (\d\S*)/) {
                 my $ni = $1;
@@ -196,10 +191,23 @@ hooks:
         push @do, $D;
     }
     for my $D (grep{_.babz} map{$way->{$_}}sort keys %$way) {
+        for my $ba (keys %{D.babz}) {
+            my $b = D.babz->{$ba};
+            if (ref $b) {
+                b.from # style grab
+            }
+            else {
+                
+                a.bz->($ba => $b);
+            }
+        }
         push @do, $D;
     }
-    #die wdump(a.bb);
-    w ave(i=>a.bb);
+    
+    my $bb = {map {my $v = a.bb->{$_}; s/ /_/g; $_=>$v } keys %{a.bb}};
+    
+    #die wdump($bb);
+    w ave(i=>$bb);
     
     
     
@@ -269,8 +277,11 @@ hooks:
 
                 H.G w percs[$P]; 
             S: |
-              # to styley
-              #R.S.rowing = "S";
+                my $a;
+                my $R = w R_sur/are;
+                my ($GG) = grep { $_ ne $G && _.name eq "C" } @{H.G.GGs};
+                a.i = $GG w R_sur/are;
+                w R_n/Sud/in[$R, $a];
             A: |
               # heredity
         Num: #c
@@ -294,6 +305,7 @@ hooks:
         Sud: #c
            in: |    #c ebrace flying embryo J
                 R.J = { from => a.i };
+                R.J.trav = ar.t if ar.t;
     
   R_sur: #c
     are: | #c chang->queue U xing
@@ -712,7 +724,7 @@ hooks:
             
             
             
-            a.bz->('Bo 0.1 0.11' => '{');
+            a.bz->('Bo#$cv 0.1 0.11' => '{');
             a.bz->('oB 0.1 0.9' => '}');
             
             return if $cv < 0.2;
