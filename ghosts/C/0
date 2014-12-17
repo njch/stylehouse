@@ -82,7 +82,7 @@ hooks:
     w ikey;
     G.arp = [1..1024];
     
-  recoded_init: |
+  any_init: |
     w R_wayray;
   
   percolate: |
@@ -119,13 +119,12 @@ hooks:
   R_wayray: |
     sayyl "Re sur";
     # 2
-    my $Ds = [map {
-        my @rw;
+    my $Ds = [];
+    for ($G->findway('R_sur')) {
         while (my ($K, $D) = each %$_) {
-            push @rw, {K => $K,D => $D};
+            push @$Ds, {K => $K,D => $D};
         }
-        @rw
-    } $G->findway('R_sur')];
+    }
     
     push @$Ds, flatline $G->findway('R_zs'); # to begin
     
@@ -134,7 +133,8 @@ hooks:
     w RZ_Ds[$Ds, $In];
 
     # 9
-    w ave(i=>$In);
+    #w ave(i=>$In);
+    sayyl "wayrays ".$G->F_delta;
   RZ_Ds: |
     # 1
     my $a = ar.a || {};
@@ -416,13 +416,6 @@ hooks:
           '%gp' => $gp,
           @etc,
       );
-    phat: | #c
-        a.bb = {};
-        a.bz = w R_sur/as(bb=>a.bb);
-        a.fro = sub {
-            my $fro = [$R, a.bz, @_];
-            w R_sur/gpfro(a=>$fro);
-        };
     S: | #c void R_surcess R::S heist
         # 0.1
         my $a = R.a = ar.a ||= {};
@@ -1009,6 +1002,13 @@ hooks:
         
         
         
+  phat: |
+        a.bb = {};
+        a.bz = w R_sur/as(bb=>a.bb);
+        a.fro = sub {
+            my $fro = [$R, a.bz, @_];
+            w R_sur/gpfro(a=>$fro);
+        };
   stylekeysort: |
       my @r = sort keys %$d;
       
