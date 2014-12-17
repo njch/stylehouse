@@ -116,6 +116,7 @@ hooks:
     my $R = w R_sur/are;
     my $a = {%$ar};
     w R_n/Sud/in[$R, $a];
+ 
   R_wayray: |
     # 1
     my $a = {};
@@ -133,60 +134,25 @@ hooks:
     push @rsurs, flatline $G->findway('R_zs');
     
     # 3
-    my $R_way = 0->findway('R_way'); # which C?
-    %$R_way = ();
+    a.wy = {};
     
     my $wz;
-    for my $wa (@rsurs) {
-        $wz->{wa.K} && die "dup wa.K";
-        $wz->{wa.K} = $wa;
+    for (@rsurs) {
+        $wz->{_.K} && die "dup _.K";
+        $wz->{_.K} = $_;
     }
     
     # 4
-    my @zs = map{$wz->{$_}} sort keys %$wz; # TODO no need to sort?
-    my @do;
-    for my $D (grep {_.D} @zs) {
-        if (ref D.D eq "HASH") {
-            $R_way->{D.K} = D.D; # wants to be shoved down du
-            next;
-        }
-        my $i = 0.001;
-        my @cs;
-        my $up = sub {
-            a.bz->("D.K $i" => join "\n", @cs) if @cs;
-            @cs = ();
-        };
-        for my $l (split "\n", D.D) {
-            if ($l =~ /^\s*# (\d\S*)/) {
-                my $ni = $1;
-                $up->();
-                $i = $ni;
-            }
-            push @cs, $l;
-        }
-        $up->();
-        push @do, $D;
+    for my $D (grep {_.D} @rsurs) {
+        w RZ_D[$a, $D];
     }
     
-    # 5
-    for my $D (grep{_.babz} @zs) {
-        for my $ba (keys %{D.babz}) {
-            my $b = D.babz->{$ba};
-            my $l = $ba;
-            if ($l =~ s/(\#\S+)//) {
-                a.bz($ba => undef)
-            }
-            if (ref $b) {
-                b.from # style grab
-            }
-            else {
-                a.bz->($l => $b);
-            }
-        }
-        push @do, $D;
+    for my $D (grep {_.babz} @rsurs) {
+    # order may spas out for mod mods. two phase for now
+        w RZ_bab[$a, $D];
     }
     
-    # 6
+    # 7
     my $Dz;
     my @r = w stylekeysort(d=>a.bb);
     for my $r (@r) {
@@ -207,13 +173,49 @@ hooks:
     
     # 7
     while (my ($K, $bz) = each %$Dz) {
-        $R_way->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
+        a.wy->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
+    my $sur = 0->findway('R_sur'); # which C?
+    #%$sur = %$way;
     
     # 8
-    my $wA = 0->findway('R_way');
-    w ave(i=>$wA); 
+    my $wA = [$sur, a.wy];
+    #w ave(i=>$wA); 
     
+  RZ_D: |
+        if (ref D.D eq "HASH") {
+            a.wy->{D.K} = D.D; # wants to be shoved down du
+            next;
+        }
+        my $i = 0.001;
+        my @cs;
+        my $up = sub {
+            a.bz->("D.K $i" => join "\n", @cs) if @cs;
+            @cs = ();
+        };
+        for my $l (split "\n", D.D) {
+            if ($l =~ /^\s*# (\d\S*)/) {
+                my $ni = $1;
+                $up->();
+                $i = $ni;
+            }
+            push @cs, $l;
+        }
+        $up->();
+  RZ_bab: |
+        for my $ba (keys %{D.babz}) {
+            my $b = D.babz->{$ba};
+            my $l = $ba;
+            if ($l =~ s/(\#\S+)//) {
+                a.bz($ba => undef)
+            }
+            if (ref $b) {
+                b.from # style grab
+            }
+            else {
+                a.bz->($l => $b);
+            }
+        }
   R_zs:
     - K: Aun
       babz:
@@ -224,8 +226,7 @@ hooks:
               t => R.J.trav || "",
           };
           R.a.i ||= w R_sur/uni(%$unifro);
-  R_way:
-    def: alt
+
   R_n: #c       
         key: #c
           0: Num/out
@@ -319,11 +320,11 @@ hooks:
     setup: | #c
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
-            from => $G0,
-            trav => '{W',
+            from => $G,
         };
         R.S.rowlimit = 24;
         R.S.e = 0.6;
+        
         R.S.ss_Ds = Load(<<'');
                   n: |
                      n.HASH = {};
@@ -451,7 +452,7 @@ hooks:
         $R->du;
         
         # 4
-        w R_way/S_4;
+        w R_sur/S_4;
         
         # 4.1
         a.fro->('H 0.01' => $H, 0.2);
