@@ -61,26 +61,11 @@ C:
        }
        B.m;
 P:
- - Do RW: |
-       G.O w ux(GG=>$G);
-       
- - Do uxd: |
-       w uxd; 
-       
- - Do keon: |
-       H.G w z/keon;
-       
- - Do switch: |
-       G.ri++;
-       my $r = w R_sur/are;
-       S.on = r.name;
-       w chang(u=>$S);
  - K: D #c sur
    B: 
      name: u
      R: surf
     
-
  - GAK: U #c
    InC:
        W:
@@ -167,23 +152,33 @@ hooks:
     push @rsurs, flatline $G->findway('R_zs');
     
     # 3
-    my $way;
+    my $R_way = 0->findway('R_way'); # which C?
+    %$R_way = ();
+    
+    my $wz;
     for my $wa (@rsurs) {
-        $way->{wa.K} && die "dup wa.K";
-        $way->{wa.K} = $wa;
+        $wz->{wa.K} && die "dup wa.K";
+        $wz->{wa.K} = $wa;
     }
     
     # 4
+    my @zs = map{$wz->{$_}} sort keys %$wz; # TODO no need to sort?
     my @do;
-    for my $D (grep{_.D} map{$way->{$_}} sort keys %$way) {
+    for my $D (grep {_.D} @zs) {
+        if (ref D.D eq "HASH") {
+            $R_way->{D.K} = D.D; # wants to be shoved down du
+            next;
+        }
         my $i = 0.001;
         my @cs;
-        my $up = sub { a.bz->("D.K $i" => join "\n", @cs) if @cs };
+        my $up = sub {
+            a.bz->("D.K $i" => join "\n", @cs) if @cs;
+            @cs = ();
+        };
         for my $l (split "\n", D.D) {
             if ($l =~ /^\s*# (\d\S*)/) {
                 my $ni = $1;
                 $up->();
-                @cs = ();
                 $i = $ni;
             }
             push @cs, $l;
@@ -193,7 +188,7 @@ hooks:
     }
     
     # 5
-    for my $D (grep{_.babz} map{$way->{$_}}sort keys %$way) {
+    for my $D (grep{_.babz} @zs) {
         for my $ba (keys %{D.babz}) {
             my $b = D.babz->{$ba};
             my $l = $ba;
@@ -227,16 +222,16 @@ hooks:
             $Dz->{$l}->{$vo} = $b;
         }
     }
-    my $bb = {map {my $v = a.bb->{$_}; s/ /_/g; $_=>$v } keys %{a.bb}};
+    my $bb = {map {my $v = a.bb->{$_}; s/ /Ꮻ/g; $_=>$v } keys %{a.bb}};
     
     # 7
-    my $R_ne = 0->anyway('hooks')->{R_ne} = {};
     while (my ($K, $bz) = each %$Dz) {
-        $R_ne->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
+        $R_way->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
     
     # 8
-    w ave(i=>$R_ne, t=>'{S');
+    my $wA = 0->findway('R_way');
+    w ave(i=>$wA); 
     
   R_zs:
     - K: Aun
@@ -248,8 +243,8 @@ hooks:
               t => R.J.trav || "",
           };
           R.a.i ||= w R_sur/uni(%$unifro);
-  R_ne: | #c Rwayray replaces with likes of R_n
-    # 
+  R_way:
+    def: alt
   R_n: #c       
         key: #c
           0: Num/out
@@ -284,8 +279,10 @@ hooks:
             in: |
               die "hi!";
         Spl: #c
-            G: |
-              # to ghost from here
+            G: | #c to ghost from here
+              my $R = w R_sur/are;
+              my $a = {i=>$R};
+              w R_n/Sud/in[$R, $a];
             F: | #c # F junk?
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;
@@ -300,13 +297,13 @@ hooks:
                  - GAK: deadC C
 
                 H.G w percs[$P]; 
-            S: |
+            S: | #c
                 my $a;
                 my $R = w R_sur/are;
                 my ($GG) = grep { $_ ne $G && _.name eq "C" } @{H.G.GGs};
                 a.i = $GG w R_sur/are;
                 w R_n/Sud/in[$R, $a];
-            A: |
+            A: | #c
               # heredity
         Num: #c
             out: |
@@ -317,7 +314,7 @@ hooks:
               my $j = R.a.ro->{R.ksuc};
               
               if (!$j) {
-                  0->deaccum(G.Vu, 'U', R.theD);
+                    w unchanged[$R];
                   return sayre "no j ye for R.ksuc";
               }
               sayyl "got $j j.t j.cv for R.ksuc";
@@ -458,7 +455,7 @@ hooks:
         $R->du;
         
         # 4
-        w R_sur/S_4;
+        w R_way/S_4;
         
         a.bz->('on 0.01' => "H.name H.style", '%sf' => 'fs60');
         
@@ -475,23 +472,23 @@ hooks:
         
         a.bz->('Js 0.29' => "\n");
         
-        # 7
+        # 6
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
         
-        # 6
         # TODO more style synapse rejoins after delib fork exp
         # reflect style injection round corner
-        # throw style into ux recipe
+        # fits
+        # throw style into ux light
         
         # 8
 
-        # shrink this webbing into a space in our webbing
-        my $lines = split /\n/, $html;
-        my $o = 12;
+        # proto fits: shrink this webbing into a space in our webbing
         my @sty;
-        my $fs;
+        
+        my $o = 12;
+        my $lines = split /\n/, $html;
         if ($lines > $o) {
-            $fs = 100 * $o / $lines;
+            my $fs = 100 * $o / $lines;
             $fs *= -1 if $fs < 0;
             push @sty, "font-size:$fs%";
         }
@@ -506,7 +503,6 @@ hooks:
     S_4: | #c
         my $a = R.a;
         my $d = a.d; # from du
-        my $as = w R_sur/as(bb=>a.bb);
         
         my @r = w stylekeysort[$d];
         my $si = @r;
@@ -518,27 +514,22 @@ hooks:
             my $li = j.li = shift @i || die;
             $ro->{$li} = $j;
             if ($i > 0) {
-                 $as->("${li}0_Bs 0.3 0.3${li}0" => "\n");
+                 a.bz->("${li}0_Bs 0.3 0.3${li}0" => "\n");
             }
-            $as->("${li}_li 0.3 0.3${li}1", j.li,
+            a.bz->("${li}_li 0.3 0.3${li}1", j.li,
                 '%sf', 'blue_fs120');
                 
             my $t = j.t;
-            $t =~ s/_/ /g;
             $t .= join("", (" ") x (6 - length($t))) if length($t) < 6;
-            $as->("${li}_k 0.3 0.3${li}2", $t,
+            a.bz->("${li}_k 0.3 0.3${li}2", $t,
                 '%sf', 'black');
            
             my $cv = j.cv;
             $cv =~ s/^0//;
-            $as->("${li}_cv 0.3 0.3${li}22", $cv,
+            a.bz->("${li}_cv 0.3 0.3${li}22", $cv,
                 '%sf', 'red_fs80');
             
-            my $gp = {R=>$R, u=>j.s, cv=>j.cv};
-            my $v = w R_sur/gp(a => $gp);
-            
-            $as->("${li}_s 0.3 0.3${li}4", $v,
-                '%gp' => $gp,
+            a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
                 '%sf', 'white_fs120');
             $i++; 
         }
@@ -750,7 +741,7 @@ hooks:
             
             
             
-            a.bz->("Bo#$cv 0.1 0.11" => '{');
+            a.bz->("Bo 0.1 0.11" => '{');
             a.bz->('oB 0.1 0.9' => '}');
             
             return if $cv < 0.2;
@@ -1069,7 +1060,7 @@ hooks:
     H.G w z/keon;
     
   event: |
-    saybl $G->pi."    EEEEEE ".$u->pi;
+    saybl $G->pi." G.K   EEEEEE ".$u->pi;
     w ikey;
     0->visTp({L=>$L},'Fun');
     for (1) {
@@ -1103,7 +1094,10 @@ hooks:
       push @{G.Vu.U||=[]}, $u if u.G eq $G;
       die "WEIRD u.G.name on u.K " if u.G ne $G;
       0->sing(uxd => sub { w uxd; });
-    
+  unchanged: |
+      my ($u) = values %$ar;
+      $u = u.theD || die if ref $u ne 'C';
+        0->deaccum(G.Vu, 'U', $u);
   v:
     ch: |
       die "V who?";
