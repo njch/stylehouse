@@ -63,8 +63,7 @@ C:
 P:
  - K: D #c sur
    B: 
-     name: u
-     R: surf
+     R: sur
     
  - GAK: U #c
    InC:
@@ -118,6 +117,7 @@ hooks:
     w R_n/Sud/in[$R, $a];
  
   R_wayray: |
+    sayyl "Re sur";
     # 2
     my $Ds = [map {
         my @rw;
@@ -129,12 +129,16 @@ hooks:
     
     push @$Ds, flatline $G->findway('R_zs'); # to begin
     
+    my $In = 0->findway('R_sur');
     
-    w RZ_Ds[$Ds];
+    w RZ_Ds[$Ds, $In];
+
+    # 9
+    w ave(i=>$In);
   RZ_Ds: |
     # 1
-    my $a = {};
-    my $R = w R_sur/are; 
+    my $a = ar.a || {};
+    my $R = G.sur;
     w R_sur/phat[$R,$a];
     
     # 2
@@ -148,14 +152,7 @@ hooks:
     }
     
     # 4
-    for my $D (grep {_.D} @$Ds) {
-        w RZ_D[$a, $D];
-    }
-    
-    for my $D (grep {_.babz} @$Ds) {
-    # order may spas out for mod mods. two phase for now
-        w RZ_bab[$a, $D];
-    }
+    w RZ_Ds_humm[$a, $Ds];
     
     # 7
     my $Dz;
@@ -180,17 +177,13 @@ hooks:
     while (my ($K, $bz) = each %$Dz) {
         a.wy->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
-    my $sur = 0->findway('R_sur'); # which C?
-    %$sur = %{a.wy};
+    %$In = %{a.wy};
     
-    # 9
-    my $wA = [$sur, a.wy];
-    w ave(i=>$wA); 
-    
-  RZ_D: |
+  RZ_Ds_humm: |
+      for my $D (grep {_.D} @$Ds) {
         if (ref D.D eq "HASH") {
             a.wy->{D.K} = D.D; # TODO wants to be shoved down du
-            return;
+            next;
         }
         my $i = 0.001;
         my @cs;
@@ -207,7 +200,10 @@ hooks:
             push @cs, $l;
         }
         $up->();
-  RZ_bab: |
+      }
+
+
+      for my $D (grep {_.babz} @$Ds) {
         for my $ba (keys %{D.babz}) {
             my $b = D.babz->{$ba};
             my $l = $ba;
@@ -221,6 +217,7 @@ hooks:
                 a.bz->($l => $b);
             }
         }
+      }
   R_zs:
     - K: Aun
       babz:
@@ -231,7 +228,6 @@ hooks:
               t => R.J.trav || "",
           };
           R.a.i ||= w R_sur/uni(%$unifro);
-
   R_n: #c       
         key: #c
           0: Num/out
@@ -430,7 +426,7 @@ hooks:
         # TODO see pyramid, delete bz+fro at F end
     S: | #c void R_surcess R::S heist
         # 0.1
-        my $a = ar.a = R.a = shift || {};
+        my $a = R.a = ar.a ||= {};
         w R_sur/phat;
         
         # 0.2
@@ -506,7 +502,6 @@ hooks:
         qq{<span style="$sty"><span>$html<span></span>}
       
     S_4: | #c
-        my $a = R.a;
         my $d = a.d; # from du
         
         my @r = w stylekeysort[$d];
