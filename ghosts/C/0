@@ -124,13 +124,13 @@ hooks:
     # on init, collect sources to reway from otherwise
     my $Ds; # like a T at 1
     
-    # passing phase
     my $Rsur = 0->findway('R_sur');
+    # passing phase, should beam in
     push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
     die unless @$Ds;
     
     # beaming in
-    my @zs = flatline $G->findway('R_zs'); # to begin
+    my @zs = flatline $G->findway('R_zs'),  $G->findway('R_zurs'); # to begin
     push @$Ds, @zs;
     
     G.R_waycomo = $Ds;
@@ -251,8 +251,31 @@ hooks:
             }
         }
       }
+  R_zurs: #c Dish Rsurs
+    - K: prot_fits
+      babz:
+        'S#proto_fits 8': |
+          sayyl "NWE NEW NEW " for 1..3;
+          # proto fits: shrink this webbing into a space in our webbing
+          my @sty;
+
+          my $o = 12;
+          my $lines = split /\n/, $html;
+          if ($lines > $o) {
+              my $fs = 100 * $o / $lines;
+              $fs *= -1 if $fs < 0;
+              push @sty, "font-size:$fs%";
+          }
+          push @sty, "background:rgba(80,50,22,0.3)"; 
+          push @sty, "white-space:pre";
+          push @sty, "font-family:mono";
+          push @sty, "display:block";
+          push @sty, "overflow-wrap:break-word";
+          my $sty = join ";", @sty; 
+          qq{<span style="$sty"><span>$html<span></span>}
+      
   R_zs: #c
-    - K: Aun
+    - K: Aun #c
       babz:
         'S#unifromA 1.16': |
           sayre "YEYEYEYYE" for 1..9;
@@ -328,7 +351,7 @@ hooks:
               my $j = R.a.ro->{R.ksuc};
               
               if (!$j) {
-                    w unchanged[$R];
+                  w unchanged[$R];
                   return sayre "no j ye for R.ksuc";
               }
               sayyl "got $j j.t j.cv for R.ksuc";
@@ -504,31 +527,6 @@ hooks:
         # 6
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
         
-        # TODO more style synapse rejoins after delib fork exp
-        # reflect style injection round corner
-        # fits
-        # throw style into ux light
-        
-        # 8
-
-        # proto fits: shrink this webbing into a space in our webbing
-        my @sty;
-        
-        my $o = 12;
-        my $lines = split /\n/, $html;
-        if ($lines > $o) {
-            my $fs = 100 * $o / $lines;
-            $fs *= -1 if $fs < 0;
-            push @sty, "font-size:$fs%";
-        }
-        push @sty, "background:rgba(80,50,22,0.3)"; 
-        push @sty, "white-space:pre";
-        push @sty, "font-family:mono";
-        push @sty, "display:block";
-        push @sty, "overflow-wrap:break-word";
-        my $sty = join ";", @sty; 
-        qq{<span style="$sty"><span>$html<span></span>}
-      
     S_4: | #c
         my $d = a.d;
         my @r = w stylekeysort[$d];
