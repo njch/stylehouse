@@ -118,36 +118,41 @@ hooks:
     w R_n/Sud/in[$R, $a];
  
   R_wayray: |
+    # 2
+    my $Ds = [map {
+        my @rw;
+        while (my ($K, $D) = each %$_) {
+            push @rw, {K => $K,D => $D};
+        }
+        @rw
+    } $G->findway('R_sur')];
+    
+    push @$Ds, flatline $G->findway('R_zs'); # to begin
+    
+    
+    w RZ_Ds[$Ds];
+  RZ_Ds: |
     # 1
     my $a = {};
     my $R = w R_sur/are; 
     w R_sur/phat[$R,$a];
     
     # 2
-    my @rsurs = map {
-        my @rw;
-        while (my ($K, $D) = each %$_) {
-            push @rw, {K => $K,D => $D};
-        }
-        @rw
-    } $G->findway('R_sur');
-    push @rsurs, flatline $G->findway('R_zs');
-    
-    # 3
     a.wy = {};
     
+    # 3
     my $wz;
-    for (@rsurs) {
+    for (@$Ds) {
         $wz->{_.K} && die "dup _.K";
         $wz->{_.K} = $_;
     }
     
     # 4
-    for my $D (grep {_.D} @rsurs) {
+    for my $D (grep {_.D} @$Ds) {
         w RZ_D[$a, $D];
     }
     
-    for my $D (grep {_.babz} @rsurs) {
+    for my $D (grep {_.babz} @$Ds) {
     # order may spas out for mod mods. two phase for now
         w RZ_bab[$a, $D];
     }
@@ -171,21 +176,21 @@ hooks:
     }
     my $bb = {map {my $v = a.bb->{$_}; s/ /Ꮻ/g; $_=>$v } keys %{a.bb}};
     
-    # 7
+    # 8
     while (my ($K, $bz) = each %$Dz) {
         a.wy->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
     my $sur = 0->findway('R_sur'); # which C?
-    #%$sur = %$way;
+    %$sur = %{a.wy};
     
-    # 8
+    # 9
     my $wA = [$sur, a.wy];
-    #w ave(i=>$wA); 
+    w ave(i=>$wA); 
     
   RZ_D: |
         if (ref D.D eq "HASH") {
-            a.wy->{D.K} = D.D; # wants to be shoved down du
-            next;
+            a.wy->{D.K} = D.D; # TODO wants to be shoved down du
+            return;
         }
         my $i = 0.001;
         my @cs;
