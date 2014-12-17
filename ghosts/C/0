@@ -151,12 +151,12 @@ hooks:
   R_waycoma: |
     my $Ds = [];
     my $which = G.R_waych ||=
-        { map { _.K => {} } grep {!_.spesh && _.n_D} @{G.R_waycomo} };
-    
+        { map { _.K => {} } grep {!_.spesh && _.n_D || _.n } @{G.R_waycomo} };
     for my $D (@{G.R_waycomo}) {
         next if D.n_D && !$which->{D.K};
         push @$Ds, $D;
     }
+    say "R_waycoma: ".join " + ", sort keys %$which;
     $Ds
   RZ_Ds: |
     # 1
@@ -230,7 +230,6 @@ hooks:
       }
       
       for my $D (grep {_.n_D} @$Ds) {
-          sayyl "Doing D.K";
           a.Rn->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
           a.Rn->{D.K} = D.n_D;
       }
@@ -499,6 +498,8 @@ hooks:
         
         a.bz->('Js 0.29' => "\n");
         
+        say sort keys %{a.bb};
+        
         # 6
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
         
@@ -528,8 +529,7 @@ hooks:
         qq{<span style="$sty"><span>$html<span></span>}
       
     S_4: | #c
-        my $d = a.d; # from du
-        
+        my $d = a.d;
         my @r = w stylekeysort[$d];
         my $si = @r;
         my @i = w wind[$si];
@@ -557,7 +557,10 @@ hooks:
             
             a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
                 '%sf', 'white_fs120');
+            
+            sayyl "Done $i => $li   ".$G->F_delta;
             $i++; 
+            
         }
     gp: | #c R_sur gp
         G.gp_inarow++;
