@@ -118,15 +118,18 @@ hooks:
  
   R_wayray: |
     sayyl "Re sur";
-    # 2
+    # 2 # have just been way init, relay origins
     my $Ds = [];
     for ($G->findway('R_sur')) {
         while (my ($K, $D) = each %$_) {
             push @$Ds, {K => $K,D => $D};
         }
     }
+    my $surDs = $G->findway('R_sur_Ds');
+    @$surDs = @$Ds;
     
-    push @$Ds, flatline $G->findway('R_zs'); # to begin
+    my @zs = flatline $G->findway('R_zs'); # to begin
+    
     
     my $In = 0->findway('R_sur');
     
@@ -151,6 +154,7 @@ hooks:
         $wz->{_.K} = $_;
     }
     
+    
     # 4
     w RZ_Ds_humm[$a, $Ds];
     
@@ -171,7 +175,6 @@ hooks:
             $Dz->{$l}->{$vo} = $b;
         }
     }
-    my $bb = {map {my $v = a.bb->{$_}; s/ /Ꮻ/g; $_=>$v } keys %{a.bb}};
     
     # 8
     while (my ($K, $bz) = each %$Dz) {
@@ -211,7 +214,7 @@ hooks:
                 a.bz->($ba => undef)
             }
             if (ref $b) {
-                b.from # style grab
+                #b.from # style grab, additive
             }
             else {
                 a.bz->($l => $b);
@@ -311,6 +314,7 @@ hooks:
                 R.J = { from => a.i };
                 R.J.trav = a.t if a.t;
     
+  R_sur_Ds: [] #c holds origin R_sur while R_n is complicated into R_sur
   R_sur: #c
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
