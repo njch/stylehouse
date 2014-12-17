@@ -84,6 +84,7 @@ hooks:
     
   recoded_init: |
     w R_wayray;
+    w uxd;
   
   percolate: |
     w R_wayray;
@@ -498,7 +499,7 @@ hooks:
         
         a.bz->('Js 0.29' => "\n");
         
-        say sort keys %{a.bb};
+        say join "\n", grep { !/\%/ } sort keys %{a.bb};
         
         # 6
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
@@ -570,6 +571,9 @@ hooks:
         a.u = ar.u if ar.u;
         a.cv = 0.1 if a.cv < 0.1;
         my $u = a.u;
+        
+        my $R = a.R;
+        w phat[$R, $a]; # zippur
         
         my $c = w R_sur/cgp[$u]; # guesses
         
@@ -762,7 +766,6 @@ hooks:
       HASH: | #c
             my $v = {%$u};
             my $cv = a.cv ||= 0.3;
-            w phat[$R, $a];
             
             my @r = keys %$v;
             my $si = @r;
