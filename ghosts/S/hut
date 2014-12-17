@@ -37,7 +37,7 @@ hooks:
         # ww homing
         my $hol = "H.style/H.name/H.id";
         my $etc = 1 if uW.at.styles =~ /\bNZ\b/;
-        my $hold = join ' ', $hol, $etc;
+        my $hold = join ' ', $hol, $etc, $H->hitime;
         H.r->set("W/$ww" => $hold);
         H.r->set("V/H.id/$ww" => 1);
         
@@ -47,7 +47,7 @@ hooks:
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
     
-    return sayre "empty J aj" unless @lot;
+    return sayre "empty J aj" unless @lot; 
     
     @lot = join " ", @lot;
     for my $m (@lot) {

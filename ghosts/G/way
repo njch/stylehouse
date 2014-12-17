@@ -337,9 +337,7 @@ Ds:
         sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
         D.Error = $@ if $@;
         
-        if (D._after_do) {
-            $_->() for @{D._after_do};
-        }
+        $_->() for @{D._after_do||[]};
         
         @Flab = ();
         shift @F;

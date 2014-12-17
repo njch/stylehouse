@@ -107,12 +107,8 @@ hooks:
         ."e\.push(\$(this).attr('id'));" # could take more clues
     ."});"
     ."return e\.join(' + ');";
-    my @Es = w Es;
-    @Es = ar.E if ar.E;
-    for my $E (@Es) {
         my $cb = sub { my $m = shift; w divide[$m]; };
         H.G w jaw[$js, $cb];
-    }
   divide: |
     my @m = sort split / \+ /, $m;
     
@@ -163,8 +159,8 @@ hooks:
             "'$_':'".($o->{$_} * 100)."%'"
             } sort keys %$o)."}, 0)";
         my $E = H.who;
-        $E->send(" \$('#$n')$cssset".";");
-        $G->timer(0.4, sub { $E->send(" \$('#$n').removeClass('NZ');"); });
+        my $unhide = ".removeClass('NZ')";
+        $E->send(" \$('#$n')$cssset$unhide".";");
     }
   
 
