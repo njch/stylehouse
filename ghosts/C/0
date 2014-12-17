@@ -99,6 +99,7 @@ hooks:
       $key = "S$key" if e.S;
       # some instyle hooks letters to apply
       my $cuz = $G->findway("R_n/key");
+      
       my $do = $cuz->{$key};
       
       $do ||= do {
@@ -118,26 +119,45 @@ hooks:
  
   R_wayray: |
     sayyl "Re sur";
-    # 2 # have just been way init, relay origins
-    my $Ds = [];
-    for ($G->findway('R_sur')) {
-        while (my ($K, $D) = each %$_) {
-            push @$Ds, {K => $K,D => $D};
-        }
-    }
-    my $surDs = $G->findway('R_sur_Ds');
-    @$surDs = @$Ds;
     
+    # on init, collect sources to reway from otherwise
+    my $Ds; # like a T at 1
+    
+    # passing phase
+    my $Rsur = 0->findway('R_sur');
+    push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+    die unless @$Ds;
+    
+    # beaming in
     my @zs = flatline $G->findway('R_zs'); # to begin
+    push @$Ds, @zs;
+    
+    G.R_waycomo = $Ds;
+    
+    w R_waycomo;
+  R_waycomo: |
+    my $Ds = w R_waycoma; # dynamic set
+    
+    # eventually hosted here and here
+    my $Rsur = 0->findway('R_sur');
+    ref $Rsur eq 'HASH' || die;
+    my $Rn = 0->findway('R_n');
+    ref $Rn eq 'HASH' || die;
     
     
-    my $In = 0->findway('R_sur');
-    
-    w RZ_Ds[$Ds, $In];
+    w RZ_Ds[$Ds, $Rsur, $Rn];
 
-    # 9
-    #w ave(i=>$In);
     sayyl "wayrays ".$G->F_delta;
+  R_waycoma: |
+    my $Ds = [];
+    my $which = G.R_waych ||=
+        { map { _.K => {} } grep {!_.spesh && _.n_D} @{G.R_waycomo} };
+    
+    for my $D (@{G.R_waycomo}) {
+        next if D.n_D && !$which->{D.K};
+        push @$Ds, $D;
+    }
+    $Ds
   RZ_Ds: |
     # 1
     my $a = ar.a || {};
@@ -145,7 +165,8 @@ hooks:
     w phat[$R,$a];
     
     # 2
-    a.wy = {};
+    a.Rsur = {};
+    a.Rn = {};
     
     # 3
     my $wz;
@@ -178,14 +199,17 @@ hooks:
     
     # 8
     while (my ($K, $bz) = each %$Dz) {
-        a.wy->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
+        a.Rsur->{$K} = join "\n", map {$bz->{$_}} sort keys %$bz
     }
-    %$In = %{a.wy};
+    
+    # 9
+    %$Rsur = %{a.Rsur};
+    %$Rn = %{a.Rn};
     
   RZ_Ds_humm: |
       for my $D (grep {_.D} @$Ds) {
         if (ref D.D eq "HASH") {
-            a.wy->{D.K} = D.D; # TODO wants to be shoved down du
+            a.Rsur->{D.K} = D.D; # TODO wants to be shoved down du
             next;
         }
         my $i = 0.001;
@@ -204,6 +228,12 @@ hooks:
         }
         $up->();
       }
+      
+      for my $D (grep {_.n_D} @$Ds) {
+          sayyl "Doing D.K";
+          a.Rn->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
+          a.Rn->{D.K} = D.n_D;
+      }
 
 
       for my $D (grep {_.babz} @$Ds) {
@@ -221,7 +251,7 @@ hooks:
             }
         }
       }
-  R_zs:
+  R_zs: #c
     - K: Aun
       babz:
         'S#unifromA 1.16': |
@@ -231,45 +261,37 @@ hooks:
               t => R.J.trav || "",
           };
           R.a.i ||= w R_sur/uni(%$unifro);
-  R_n: #c       
-        key: #c
-          0: Num/out
-          number: Num/in
-          E: Vit/up
-          R: Vit/down
-          Y: Chew/in
-          A: Spl/A
-          S: Spl/S
-          D: Spl/D
-          F: Spl/F
-          G: Spl/G
-          W: Q/way
-          SR: Q/Redisy
-        Q: #c
+    - K: Q #c
+      key:
+        W: way
+      n_D:
             way: |
               R.J = {
-                  from => $R,
-                  trav => '{S{w',
+                  from => [$G->findway('R_sur'), $G->findway('R_n')],
               };
             Redisy: |
               R.J = {
                 from => [sort H.r->keys("*")],
                 trav => '',
               }
-        Vit: #c
+    - K: Vit #c
+      key: {E: up, R: down}
+      n_D:
             up: |
                 R.S.e += 0.1;
             down: |
                 R.S.e -= 0.1;
-        Chew: #c
-            in: |
-              die "hi!";
-        Spl: #c
-            G: | #c to ghost from here
+    - K: Gho #c # to ghost from here
+      key: {G: G}
+      n_D:
+            G: |
               my $R = w R_sur/are;
               my $a = {i=>$R};
               w R_n/Sud/in[$R, $a];
-            F: | #c # F junk?
+    - K: Fau #c # F junket
+      key: {F: F}
+      n_D:
+            F: |
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;
               my $f = $F[0];
@@ -277,21 +299,27 @@ hooks:
               my $a = {i=>$f};
               w R_n/Sud/in[$R, $a];
               sayyl "Trithings: $_ " for @lot;
-            D: | #c
+    - K: Dawn #c
+      key: {D: D}
+      n_D:
+            D: |
                 sayre "Yeahp";
                 my $P = Load(<<'');
                  - GAK: deadC C
 
                 H.G w percs[$P];
-            S: | #c
+    - K: Swim #c
+      key: {S: S}
+      n_D:
+            S: |
                 my $a;
                 my $R = w R_sur/are;
                 my ($GG) = grep { $_ ne $G && _.name eq "C" } @{H.G.GGs};
                 a.i = $GG w R_sur/are;
                 w R_n/Sud/in[$R, $a];
-            A: | #c
-              # heredity
-        Num: #c
+    - K: Num #c
+      key: {0: out, number: in}
+      n_D:
             out: |
               return R.ksuc = "" if R.ksuc && $k eq "0";
               return $R->popJtrav
@@ -309,11 +337,13 @@ hooks:
 
               my ($hop) = split /(?=\{|\[)/, j.t;
               R.J.trav .= $hop; 
-        Sud: #c
-           in: |    #c ebrace flying embryo J
+    - K: Sud #c
+      n_D:
+            in: |    # ebrace flying embryo J
                 R.J = { from => a.i };
                 R.J.trav = a.t if a.t;
     
+  R_n: {}#c       
   R_sur_Ds: [] #c holds origin R_sur while R_n is complicated into R_sur
   R_sur: #c
     are: | #c chang->queue U xing
