@@ -10,6 +10,7 @@ hooks:
   pubbedElvis: | # message for elvis via redis
       sayre "su a.top ".slim(30,30,a.m);
       my $m = a.m;
+      my $cb;
 
       my ($El, $st, $na, $ww, $uni) = split '/', a.top;
       if ($uni) {
@@ -22,11 +23,12 @@ hooks:
           if ($etc) {
               my $E = H.who;
               sayyl "Retiling";
-              0->sing(retile => sub { H.G w retile; }, begin => 0.8);
+              $cb = sub { w retile; };
           }
       }
 
-      H.G w send_Elvis[$m];
+      H.G w send_Elvis[$m, $cb];
+      sayyl "pubbed elvis ".$G->F_delta;
   Hi: |
       saygr "Hello to a.top ! a.m";
       my @a = split '/', a.top; 

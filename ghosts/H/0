@@ -100,17 +100,10 @@ hooks:
     reexec: w reexec;
     retile: w retile;
     
-  retile: | # TODO client side js data inter
-    my $js = 
-    " var e = []; \$('#ux > ww[class*=".'"z"'
-    ."]').each(function(){"
-        ."e\.push(\$(this).attr('id'));" # could take more clues
-    ."});"
-    ."return e\.join(' + ');";
-        my $cb = sub { my $m = shift; w divide[$m]; };
-        H.G w jaw[$js, $cb];
-  divide: |
-    my @m = sort split / \+ /, $m;
+  retile: |
+    my @m = map { /W\/(\S+) / } 
+    grep { /^\S+ \S+ 1/ }
+    map { $_." ".H.r->get($_) } H.r->keys("W/*");
     
     my $div = Load(<<''); # hmm
         - width:left 2
