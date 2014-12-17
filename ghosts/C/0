@@ -77,34 +77,15 @@ P:
            styles: OxO
        ux:
          spawn: []
-R:
- - K: surf
-   in_R:
-     
-     S: 
-       rowlimit: 24
-       e: 0.6
-     ss_Ds: #c schematic
-          n: |
-             n.HASH = {};
-          Ai: |
-             Ai.A = {};
-          Gi: |
-             my $likes = {map{$_=>1}qw{G ways}};
-             Gi.HASH = {
-              it => sub {
-                my $h = shift;
-                my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
-              },
-             };
+
 hooks:
   fresh_init: |
     w ikey;
     G.arp = [1..1024];
-
-
+    
   recoded_init: |
     w R_wayray;
+  
   percolate: |
     w R_wayray;
     w uxd;
@@ -341,6 +322,21 @@ hooks:
             from => $G0,
             trav => '{W',
         };
+        R.S.rowlimit = 24;
+        R.S.e = 0.6;
+        R.S.ss_Ds = Load(<<'');
+                  n: |
+                     n.HASH = {};
+                  Ai: |
+                     Ai.A = {};
+                  Gi: |
+                     my $likes = {map{$_=>1}qw{G ways}};
+                     Gi.HASH = {
+                      it => sub {
+                        my $h = shift;
+                        my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
+                      },
+                     };
         
         if (my $ssDs = delete R.S.ss_Ds) {
             for my $k (sort keys %$ssDs) { # or K array who knows
@@ -457,11 +453,14 @@ hooks:
         # 4
         w R_way/S_4;
         
-        a.bz->('on 0.01' => "H.name H.style", '%sf' => 'fs60');
+        # 4.1
+        a.fro->('H 0.01' => $H, 0.2);
         
-        a.fro->('R 0.11' => $R, 0.2, '+_fro' => '@');
+        a.fro->('G 0.02' => $G, 0.2, '+_fro' => ' ');
         
-        # 4.16
+        a.fro->('R 0.11' => $R, 0.2, '+_fro' => ' ');
+        
+        # 4.2
         a.fro->('R_J_from 0.12' => R.J.from, 0.2);
         
         a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
@@ -882,7 +881,13 @@ hooks:
       T: | #c
         $T->pi;
       H: | #c
-        $H->pi;
+        w R_sur/phat[$R,$a];
+        a.bz->('thi 0.01' => 'H');
+        a.bz->("name 0.06" => H.style,
+            '%css' => "color:white;font-size:40%;margin-left:-1.5em;position:absolute;");
+        a.bz->("K 0.1" => H.name,
+            '%css' => "color:black;font-size:80%;margin-left:-0.667em;position:absolute;");
+        
       R: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
