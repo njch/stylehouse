@@ -101,13 +101,16 @@ hooks:
     retile: w retile;
     
   retile: |
-    my @m = map { /W\/(\S+) / } 
-    grep { /^\S+ \S+ 1/ }
-    map { $_." ".H.r->get($_) } H.r->keys("W/*");
+    my @m = grep { /^\S+ \S+ 1/ }
+        map { $_." ".H.r->get($_) } H.r->keys("W/*");
+    @m = map { join " ", reverse  /W\/(\S+) (\S+)/ } @m;
+    @m = map { /\S+ (\S+)/ } sort @m;
     
-    my $div = Load(<<''); # hmm
-        - width:left 2
-        - height:top 2
+    
+    my $space = 2;
+    $space++ until $space * $space > @m;
+    my $div = ["width:left $space", "height:top $space"];
+    
     
     my $grid = {};
     for my $p (@$div) {
