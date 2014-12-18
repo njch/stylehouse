@@ -156,7 +156,7 @@ hooks:
           grep {!_.spesh && (_.n_D || _.n) } @{G.R_waycomo} };
     
     for my $D (@{G.R_waycomo}) {
-        next if D.n_D || D.spesh && !$which->{D.K};
+        next if (D.n_D || D.spesh) && !$which->{D.K};
         push @$Ds, $D;
     }
     say "R_waycoma: ".join " + ", sort keys %$which;
@@ -177,7 +177,6 @@ hooks:
         $wz->{_.K} && die "dup _.K";
         $wz->{_.K} = $_;
     }
-    
     
     # 4
     w RZ_Ds_humm[$a, $Ds];
@@ -253,7 +252,6 @@ hooks:
             }
         }
       }
-
   R_zs: #c
     - K: maka_styley #c
       babz:
@@ -399,8 +397,7 @@ hooks:
                 R.J = { from => a.i };
                 R.J.trav = a.t if a.t;
     
-  R_n: {}#c       
-
+  R_n: {} #c
   R_sur: #c
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
@@ -411,7 +408,8 @@ hooks:
     setup: | #c
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
-            from => $G->findway("R_n"),
+            from => H.G,
+            trav => '{GGs',
         };
         R.S.rowlimit = 24;
         R.S.e = 0.6;
@@ -458,7 +456,6 @@ hooks:
       $i
     
     
-
     shj: | #c
       my $j;
       j.r = $r;
@@ -527,7 +524,7 @@ hooks:
         R.a.s.HASH.oh = 0.2;
         R.a.s.SCALAR.it = sub {
             my $i = 0;
-            map { { k => $i++, v=> $_ } } split "\n\n", shift;
+            map { { k => $i++, v=> $_, oh => 0.2 } } split "\n\n", shift;
         };
         
         R.a.tr.rowlimit = R.S.rowlimit || 9*2;
