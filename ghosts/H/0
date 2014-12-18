@@ -27,12 +27,13 @@ hooks:
         H.sur->wait_for_messages(0.01618);
     });
     
+    $G->recur(5 => sub { H.r->ping || die "not redis?" });
+    
     # start git torrent
     # do it all
     # $0 has become a runtime
     w in;
     waylay transam; # 3
-
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;

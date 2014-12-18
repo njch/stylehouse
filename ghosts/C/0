@@ -99,7 +99,7 @@ hooks:
       my $key = "$k";
       $key = "S$key" if e.S;
       # some instyle hooks letters to apply
-      my $cuz = $G->findway("R_n/key");
+      my $cuz = $G->findway("R_n/key")||die;
       
       my $do = $cuz->{$key};
       
@@ -270,19 +270,23 @@ hooks:
                 }
             }
     - K: forkpi #c
-      spesh: 1
+      spesh: 0
       babz:
         'gp 5': |
-          my $p = fork();
-          a.cv = 0.2 if $p;
+            my $p = 1;# fork();
+            if (a.cv > 0.1) {
+                my $lyt = a.R.layert ||= [];
+                push @$lyt, $a;
+            }
+            a.cv = 0.1 if $p;
+            #exit if !$p;
         'gp 8': |
-          $H->snooze if !$p;
           if (!$p) {
-              sayre "Theng: for $u $html";
-              exit;
+              sayre "Theng: for $u ".length $html;
+              #exit;
           }
           else {
-                saygr "This: for $u $html";
+              #saygr "This: for $u ".length $html;
           }
     - K: prot_fits #c
       babz:
@@ -407,7 +411,7 @@ hooks:
     setup: | #c
         $R->from(delete R.in_R) if R.in_R;
         R.J ||= { 
-            from => $G,
+            from => $G->findway("R_n"),
         };
         R.S.rowlimit = 24;
         R.S.e = 0.6;
@@ -556,6 +560,7 @@ hooks:
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
         
         # 9
+        saygr " S --- ".F_delta;
         $html
     S_4: | #c
         my $d = a.d;
@@ -587,7 +592,7 @@ hooks:
             a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
                 '%sf', 'white_fs120');
             
-            sayyl "Done $i => $li   ".$G->F_delta;
+            #sayyl " S_4[$i => $li   ".$G->F_delta;
             $i++; 
             
         }
@@ -609,7 +614,6 @@ hooks:
         my $arr = {
             a => $a, # @_
             u => $u,
-           # c => $c,
             R => a.R,
         };
         
@@ -622,6 +626,8 @@ hooks:
             $arr->{$wa} = $u if $wa ne 'G';
         }
         $G->findway("R_sur/gp_pi/$wa") || die "not $wa equip";
+        
+        # 5
 
         # 6
         w R_sur/gp_pi/$wa(%$arr);
@@ -634,7 +640,7 @@ hooks:
         # 9
         G.gp_inarow--;
         my $ind = join "", ("  ") x scalar @F;
-        sayyl "$ind Done gp for $u ".F_delta;
+        #sayyl "$ind Done gp for $u ".F_delta;
         $html
     makaout: | #c
         my $cv = ar.cv;
