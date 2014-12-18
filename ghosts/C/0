@@ -255,6 +255,35 @@ hooks:
       }
 
   R_zs: #c
+    - K: maka_styley #c
+      babz:
+        'makaout 0.31': |
+            for my $k (%{a.bb}) {
+                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
+                    a.bb->{"$1\%css $2"} = "color:black";
+                }
+                if ($k =~ /^thi\s+(.+)$/) {
+                    a.bb->{"thi\%css $1"} = "text-decoration:underline";
+                }
+                if ($k =~ /^name\s+(.+)$/) {
+                    a.bb->{"name\%css $1"} = "color:#f93";
+                }
+            }
+    - K: forkpi #c
+      spesh: 1
+      babz:
+        'gp 5': |
+          my $p = fork();
+          a.cv = 0.2 if $p;
+        'gp 8': |
+          $H->snooze if !$p;
+          if (!$p) {
+              sayre "Theng: for $u $html";
+              exit;
+          }
+          else {
+                saygr "This: for $u $html";
+          }
     - K: prot_fits #c
       babz:
         'S#proto_fits 8': |
@@ -569,6 +598,7 @@ hooks:
         a.cv = 0.1 if a.cv < 0.1;
         my $u = a.u;
         
+        # 3
         my $R = a.R;
         w R_sur/phat[$R, $a]; # zippur
         
@@ -581,6 +611,7 @@ hooks:
             R => a.R,
         };
         
+        # 4
         my ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
         $wa ||= 'wtf';
         
@@ -588,49 +619,29 @@ hooks:
             $wa = ref $u;
             $arr->{$wa} = $u if $wa ne 'G';
         }
-
         $G->findway("R_sur/gp_pi/$wa") || die "not $wa equip";
 
-
+        # 6
         w R_sur/gp_pi/$wa(%$arr);
         
+        # 7
         my $html = w R_sur/makaout(%$arr);
         
-        #$html =~ s/\n//;
+        # 8
+        
+        # 9
         G.gp_inarow--;
+        my $ind = join "", ("  ") x scalar @F;
+        sayyl "$ind Done gp for $u ".F_delta;
         $html
-    maka_3: | #c # scan a.bb and add more styles././
-        #return;
-            for my $k (%{a.bb}) {
-                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
-                    a.bb->{"$1\%css $2"} = "color:black";
-                }
-                if ($k =~ /^thi\s+(.+)$/) {
-                    a.bb->{"thi\%css $1"} = "text-decoration:underline";
-                }
-                if ($k =~ /^name\s+(.+)$/) {
-                    a.bb->{"name\%css $1"} = "color:#f93";
-                }
-            }
-      
-
-            
-      
-            
-      
-        
-        
-        
     makaout: | #c
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
         
-        # 3
-        w R_sur/maka_3; # apply styles ...
-        
         # 4
         my @r = w stylekeysort(d=>a.bb);
         
+        # 4.1
         a.o = {}; # by voltage, peel
         for my $r (@r) {
                 my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
@@ -642,7 +653,6 @@ hooks:
                 my $o = a.o->{$or} ||= []; 
                 push @$o, $r;
         }
-        # modification of the above %{a.o} chunk...
         
         # 4.2
             
