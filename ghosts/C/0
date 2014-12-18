@@ -121,11 +121,12 @@ hooks:
     sayyl "Re sur";
     
     # on init, collect sources to reway from otherwise
-    my $Ds; # like a T at 1
+    my $Ds=[]; # like a T at 1
     
-    my $Rsur = 0->findway('R_sur');
-    # passing phase, should beam in
-    push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+    for my $Rsur (0->findway('R_sur'), 0->findway('R_surs')) {
+        # passing phase, should beam in
+        push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+    }
     die unless @$Ds;
     
     # beaming in
@@ -139,10 +140,11 @@ hooks:
     my $Ds = w R_waycoma; # dynamic set
     
     # eventually hosted here and here
-    my $Rsur = 0->findway('R_sur');
-    ref $Rsur eq 'HASH' || die;
-    my $Rn = 0->findway('R_n');
-    ref $Rn eq 'HASH' || die;
+    
+    my ($Rsur, $ohno) = 0->findway('R_sur');
+    ref $Rsur eq 'HASH' && !$ohno || die;
+    my ($Rn, $hono)  = 0->findway('R_n');
+    ref $Rn eq 'HASH' && !$hono  || die;
     
     
     w RZ_Ds[$Ds, $Rsur, $Rn];
@@ -164,7 +166,8 @@ hooks:
     # 1
     my $a = ar.a || {};
     my $R = G.sur;
-    w R_sur/phat[$R,$a];
+    
+    w R_sur/phat[$R,$a]; # is what, J
     
     # 2
     a.Rsur = {};
@@ -397,6 +400,7 @@ hooks:
                 R.J.trav = a.t if a.t;
     
   R_n: {} #c
+
   R_sur: #c
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
