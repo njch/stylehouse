@@ -24,6 +24,7 @@ hooks:
                 a.isJid = la.replaceJid = $H->mkuid;
                 my $lyt = a.R.layert ||= [];
                 push @$lyt, $la;
+                a.forking = $la;
             }
         'S#forkpi 8.8': |
             if (my $pias = delete R.layert) {
@@ -32,6 +33,7 @@ hooks:
         'gp 8.3': |
             if (my $Jid = a.isJid || a.replaceJid) {
                 $html = qq{<span id="$Jid">$html</span>};
+                a.forking.wash = $H->dig($html) if a.forking;
             }
       n_D:
         pias: |
@@ -41,7 +43,8 @@ hooks:
             my $group = 2;
             for my $a (@$pias) {
                 my $html = w R_sur/gp[$a];
-                my $id = a.replaceJid||die;
+                sayre("dup ") && next if a.wash eq $H->dig($html);
+                my $id = a.replaceJid || die;
                 my $js = qq{ \$('#$id').replaceWith('$html');};
                 push @js, $js;
                 if (@js >= $group) {

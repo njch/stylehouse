@@ -155,24 +155,21 @@ hooks:
             my $text = $u;
             
             my @s;
-            my $adhow;
-            if ($text =~ /\n/) {
-                $text = join '↯', split /\n/, $text; 
-                $adhow = 1;
-            }
-            my $tev =  a.cv * 125; # 0.4 = 100
-            my $trev = int $tev;
+            my $adhow = $text =~ s/\n/↯/;
+            
+            my $tev = int(a.cv * 125); # 0.4 = 100
             
             my $si = length($text);
             if ($si > $tev) {
-                $text = ($text=~/^(.{$trev})/s)[0];
+                $text = ($text=~/^(.{$tev})/s)[0];
             }
             else {
                 undef $si;
             }
             
-            my $ni = a.c.lin if a.c.lin > 1;
-            my $bi = a.c.b if a.c.b > 1;
+            a.bz->('line 0.1' => $text,
+                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
+                    ."font-size:70%");
             
             if ($si) {
                 a.bz->("#more 0.9" => "@",
@@ -180,20 +177,22 @@ hooks:
                     "%sf" => "blue");
             }
             
-                a.bz->("si/l 0.1" => "$si",
+            return if a.cv < 0.2;
+            
+            my $ni = a.c.lin if a.c.lin > 1;
+            my $bi = a.c.b if a.c.b > 1;
+            
+                a.bz->("si/l 0.2" => "$si",
                     '%css' => "color:#b89;font-size:50%;position:absolute") if $si;
-                a.bz->('si/n 0.1' => "$ni",
+                a.bz->('si/n 0.2' => "$ni",
                     '%css' =>
                         "color:#fff;font-size:50%;"
                         ."position:absolute;margin-top:1.4em;") if $ni;
-                a.bz->('si/b 0.1' => "b$bi",
+                a.bz->('si/b 0.2' => "b$bi",
                     '%css' =>
                         "color:#f89;font-size:50%;"
                         ."float:left;left:-1em") if $bi;
             
-            a.bz->('line 0.2' => $text,
-                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
-                    ."font-size:70%");
             
       A: | #c
         my $cv = a.cv ||= 0.3;
