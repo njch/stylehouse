@@ -130,7 +130,7 @@ hooks:
     die unless @$Ds;
     
     # beaming in
-    my @zs = flatline $G->findway('R_zs'),  $G->findway('R_zurs'); # to begin
+    my @zs = flatline $G->findway('R_zs'); # to begin
     push @$Ds, @zs;
     
     G.R_waycomo = $Ds;
@@ -152,9 +152,11 @@ hooks:
   R_waycoma: |
     my $Ds = [];
     my $which = G.R_waych ||=
-        { map { _.K => {} } grep {!_.spesh && _.n_D || _.n } @{G.R_waycomo} };
+        { map { _.K => {} }
+          grep {!_.spesh && (_.n_D || _.n) } @{G.R_waycomo} };
+    
     for my $D (@{G.R_waycomo}) {
-        next if D.n_D && !$which->{D.K};
+        next if D.n_D || D.spesh && !$which->{D.K};
         push @$Ds, $D;
     }
     say "R_waycoma: ".join " + ", sort keys %$which;
@@ -251,11 +253,11 @@ hooks:
             }
         }
       }
-  R_zurs: #c Dish Rsurs
-    - K: prot_fits
+
+  R_zs: #c
+    - K: prot_fits #c
       babz:
         'S#proto_fits 8': |
-          sayyl "NWE NEW NEW " for 1..3;
           # proto fits: shrink this webbing into a space in our webbing
           my @sty;
 
@@ -274,11 +276,9 @@ hooks:
           my $sty = join ";", @sty; 
           qq{<span style="$sty"><span>$html<span></span>}
       
-  R_zs: #c
     - K: Aun #c
       babz:
         'S#unifromA 1.16': |
-          sayre "YEYEYEYYE" for 1..9;
           my $unifro = {
               i => R.J.from || die,
               t => R.J.trav || "",
@@ -287,7 +287,7 @@ hooks:
     - K: Q #c
       key:
         SW: way
-        SR: Redisy 
+        SR: Redisy
       n_D:
             way: |
               R.J = {
@@ -425,6 +425,7 @@ hooks:
       $i
     
     
+
     shj: | #c
       my $j;
       j.r = $r;
@@ -522,8 +523,6 @@ hooks:
         
         a.bz->('Js 0.29' => "\n");
         
-        say join "\n", grep { !/\%/ } sort keys %{a.bb};
-        
         # 6
         my $html = w R_sur/makaout(R=>$R, a=>R.a, cv => 0);
         
@@ -573,7 +572,7 @@ hooks:
         my $R = a.R;
         w R_sur/phat[$R, $a]; # zippur
         
-        my $c = w R_sur/cgp[$u]; # guesses
+        my $c = w R_sur/cgp[$u]; # schemer guesses
         
         my $arr = {
             a => $a, # @_
@@ -590,29 +589,46 @@ hooks:
             $arr->{$wa} = $u if $wa ne 'G';
         }
 
-        my $gppi = $G->findway('R_sur/gp_pi');
-        $gppi->{$wa} || die "not $wa equip";
+        $G->findway("R_sur/gp_pi/$wa") || die "not $wa equip";
 
 
-        
-        my @spi = w R_sur/gp_pi/$wa(%$arr);
-        
-        arr.spi = \@spi;
+        w R_sur/gp_pi/$wa(%$arr);
         
         my $html = w R_sur/makaout(%$arr);
-        $html =~ s/\n//;
+        
+        #$html =~ s/\n//;
         G.gp_inarow--;
         $html
+    maka_3: | #c # scan a.bb and add more styles././
+        #return;
+            for my $k (%{a.bb}) {
+                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
+                    a.bb->{"$1\%css $2"} = "color:black";
+                }
+                if ($k =~ /^thi\s+(.+)$/) {
+                    a.bb->{"thi\%css $1"} = "text-decoration:underline";
+                }
+                if ($k =~ /^name\s+(.+)$/) {
+                    a.bb->{"name\%css $1"} = "color:#f93";
+                }
+            }
+      
+
+            
+      
+            
+      
+        
+        
+        
     makaout: | #c
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
         
-        return w R_sur/maka_nobb if !a.bb;
-        
-        my @s;
-
+        # 3
         w R_sur/maka_3; # apply styles ...
         
+        # 4
         my @r = w stylekeysort(d=>a.bb);
         
         a.o = {}; # by voltage, peel
@@ -627,9 +643,10 @@ hooks:
                 push @$o, $r;
         }
         # modification of the above %{a.o} chunk...
+        
+        # 4.2
             
-            
-            #thingness_appearance
+            #thingness <-> appearance
             my $th = {};
             my $ap = {};
             my @int;
@@ -662,7 +679,8 @@ hooks:
                 }
             }
             
-            
+        # 7
+        my @s;
             for my $thl (@int) {
                 my $j = $th->{$thl} || next;
                 my $o = delete $ap->{$thl};
@@ -722,7 +740,7 @@ hooks:
             join("", @s);
     gp_pi: #c
       wtf: | #c
-        "know $u"
+        a.bz->('know 0.1', "$u");
       ARRAY: | #c
             my $cv = a.cv ||= 0.3;
             
@@ -820,11 +838,11 @@ hooks:
                 }
             }
       ref: | #c weird ref
-            ">?$u"
+        a.bz->('knowref 0.1', ">?$u");
       code: | #c
-        "CODE";
+        a.bz->('know 0.1', "CODE");
       undef: | #c
-            '~'
+        a.bz->('know 0.1', '~');
       text: | #c
             my $text = $u;
             
@@ -882,10 +900,22 @@ hooks:
         return if $cv < 0.3;
         
         my $un;
-        map { push @{$un->{_.un}||=[]}, $A->{_.k} }
-        grep { /^(u|n)/ && do { $_ = {un=>$1, k=>$_} } } keys %$A;
-        
-        a.fro->('un 0.3', $un, 0.4);
+        for my $nuk (keys %$A) {
+            next if $nuk !~ /^(u|n)/;
+            my $v = $A->{$nuk};
+            my $tot = ref $v eq "ARRAY" ? @$v : $v;
+            $tot = tot.i->pi if ref $tot eq "A";
+            $un->{$1}->{$nuk} = $tot;
+            my $lv = $1 eq "u" ? 1 : 2;
+            
+            a.bz->("un/$1/${nuk}_nuk 0.3$lv", "$nuk:",
+                    
+                    "\%css" => "color:#acf;font-size:80%");
+            
+            a.bz->("un/$1/${nuk}_t 0.3$lv", "$tot",
+                    
+                    "\%css" => "color:#fca;font-size:80%");
+        }
         
       G: | #c
         my $cv = a.cv ||= 0.3;
@@ -896,7 +926,7 @@ hooks:
         a.bb->{"K 0.2"} = u.K;
         
       T: | #c
-        $T->pi;
+        a.bz->('pi 0.1', $u->pi);
       H: | #c
         a.bz->('thi 0.01' => 'H');
         a.bz->("name 0.06" => H.style,
@@ -913,7 +943,7 @@ hooks:
         a.bb->{"K 0.2"} = u.K;
         
       W: | #c
-        "W W.K W.G.name ".$W->uhigh;
+        a.bz->('pi 0.1', "W W.K W.G.name ".$W->uhigh);
       C: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
@@ -989,34 +1019,7 @@ hooks:
             }
         }
         $c
-    maka_3: | #c # scan a.bb and add more styles././
-            for my $k (%{a.bb}) {
-                if ($k =~ /^(\S*(?:oB|Bo|Bi))\s+(.+)$/) {
-                    a.bb->{"$1\%css $2"} = "color:black";
-                }
-                if ($k =~ /^thi\s+(.+)$/) {
-                    a.bb->{"thi\%css"} = "text-decoration:underline";
-                }
-                if ($k =~ /^name\s+(.+)$/) {
-                    a.bb->{"name\%css"} = "color:#f93";
-                }
-            }
-    maka_nobb: | #c
-                my $spi = ar.spi || die;
-                my $r = ref ar.u;
-                if ($spi->[0] =~ s/^$r //) {
-                    $r = G.wit->($r, "cfa") if G.wit;
-                    unshift @$spi, $r;
-                }
-                return join "", @$spi;
-      
-
-            
-      
-        
-        
-        
-    phat: |
+    phat: | #c
         a.bb = {};
         a.bz = w R_sur/as(bb=>a.bb);
         a.fro = sub {
