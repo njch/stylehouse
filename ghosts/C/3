@@ -17,7 +17,7 @@ hooks:
     - K: forkpi #c
       spesh: 0
       babz:
-        'gp#forkpi 5.6': |
+        'gp#fork_layert 5.6': |
             if (a.cv > 0.2 && !a.replaceJid) {
                 my $la = {%$a};
                 a.cv = 0.1;
@@ -26,18 +26,26 @@ hooks:
                 push @$lyt, $la;
                 a.forking = $la;
             }
-        'S#forkpi 8.8': |
+        'S#waylayert_pias 8.8': |
             if (my $pias = delete R.layert) {
-                waylay R_n/forkpi/pias[$pias];
+                waylay R_n/forkpi/pias[$R, $pias];
             }
         'gp 8.3': |
             if (my $Jid = a.isJid || a.replaceJid) {
                 $html = qq{<span id="$Jid">$html</span>};
                 a.forking.wash = $H->dig($html) if a.forking;
             }
+        'S#tidy 0.113': |
+            if (my $tokill = delete R.S_forkpi_tokill) {
+                kill 'KILL', $_ for @$tokill;
+            }
       n_D:
         pias: |
-            return if fork();
+            if (my $pid = fork()) {
+                my $Sftk = R.S_forkpi_tokill ||= [];
+                push @$Sftk, $pid;
+                return
+            }
             sayyl "pier Forked... ";
             my @js;
             my $group = 2;
