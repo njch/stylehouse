@@ -9,10 +9,10 @@ hooks:
     $H->pub("S/H.style/H.name/sa", "$what: @$thing");
   pubbedElvis: | # message for elvis via redis
       sayre "su a.top ".slim(30,30,a.m);
-      my $m = a.m;
       my $cb;
-
-      my ($El, $st, $na, $ww, $uni) = split '/', a.top;
+      
+      my ($meta, $m) = split ' ', a.m, 2;
+      my ($st, $na, $ww, $uni) = split '/', $meta;
       if ($uni) {
             # meta
           sayyl "unifid $st $na $ww !";
@@ -26,30 +26,9 @@ hooks:
               $cb = sub { w retile; };
           }
       }
-
+      $m = " $m";
       H.G w send_Elvis[$m, $cb];
-      sayyl "pubbed elvis ".$G->F_delta;
-  Hi: |
-      saygr "Hello to a.top ! a.m";
-      my @a = split '/', a.top; 
-      my @olds = H.r->keys("H/$a[1]/$a[2]*");
-      for my $oth (@olds) {
-          my @b = split '/', $oth;
-          sayre "o $oth";
-          if ($b[3] eq $a[3]) {
-              sayyl " haf self";
-            next;
-          }
-          my $hol = join '/', @b[2..4];
-          for my $vh (H.r->keys("V/$b[3]*")) {
-              my (@v) = split '/', $vh;
-              my $ww = $v[2];
-              $H->send(" \$('#ux > #$ww').remove();");
-              H.r->del($vh);
-              H.r->del("W/$ww");
-          }
-          H.r->del($oth);
-      }
+      sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
   Teeth: |
     saybl " > ".slim(30,30,$m);
     my $j = $H->djson($m);
@@ -83,7 +62,7 @@ hooks:
     }
   reS: |
     my ($way, $am) = split /\s+/, $m, 2;
-    sayyl "$top > $m" if $way ne 'hostinfo/ack';
+    sayyl "$top >> $m" if $way ne 'hostinfo/ack';
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:

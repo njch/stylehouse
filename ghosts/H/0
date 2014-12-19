@@ -9,7 +9,21 @@ hooks:
     push @{G.GGs||=[]}, $G; # H self
     
     H.r = w enRedis;
-    H.sur = w enRedis;
+    
+    H.pg = Mojo::Pg->new('postgresql://s@/s');
+    H.db = H.pg->db;
+    
+    H.db->on(notification => sub {
+        my ($db,$name,$pid,$payload) = @_;
+        my $d = {};
+        (d.top, d.m) = map { $H->fixutf8($_) } $name, $payload;
+        sayyl "got $name ".slim(30,30,$payload);
+        for my $cb (@{H.subscr->{$name}}) {
+            $G->timer(0.00001, sub { $cb->($d); });
+        }
+    });
+    
+
     w figure_port;
     
     my $reS = sub { my $a = shift; w reS(%$a); }; 
@@ -23,10 +37,6 @@ hooks:
         if H.name !~ /Z/;
     
     
-    $G->recur(0.02 => sub {
-        H.sur->wait_for_messages(0.01618);
-    });
-    
     $G->recur(5 => sub { H.r->ping || die "not redis?" });
     
     # start git torrent
@@ -34,6 +44,13 @@ hooks:
     # $0 has become a runtime
     w in;
     waylay transam; # 3
+  subsc: |
+    my $tos = H.subscr->{$top} ||= [];
+    push @$tos, $cb;
+    
+    H.db->listen($top);
+    
+    sayyl "Subbed to $top";
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -43,23 +60,6 @@ hooks:
         ."var m = e();"
         ."s\.reply({jaw:{s:'$s',e:m}});";
     w send_Elvis;
-  suRedis: |
-    my $s = 'subscribe';
-    $s = "p$s" if $top =~ /\*/;
-    
-    my $D = sub {
-      my $d = {};
-      (d.m, d.top, d.sutop) = map { $H->fixutf8($_) } @_;
-      $G->timer(0.00001, sub {
-            $cb->($d);
-      });
-      1;
-    };
-    
-    H.sur->$s($top => $D);
-    push @{H.sur_subbed||=[]}, $top;
-    
-    sayyl "Subbed to $top";
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',

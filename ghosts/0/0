@@ -54,14 +54,17 @@ hooks:
         my $Gd = shift;
         w coins[$Gd]; 
     };
-    0->su('hostinfo*' => sub {
+    $G->su('Hi' => sub {
         my $a = shift;
-        my ($huh, $hol) = split '/', a.top, 2;
-        my @s = split /\s+/, a.m;
-        #saygr   "hostinfo from a.top: ".sprintf('%.3f',$H->hitime - $s[-1]);
-        $H->pub("S/$hol", "hostinfo/ack a.m", 'ig');
+        sayyl "he G.name a.m";
+        w Hi[$a];
+    });
+    0->su('Hostinfo' => sub {
+        my $a = shift;
+        my ($hol, $inf) = split ' ', a.m, 2;
+        $H->pub("S/$hol", "hostinfo/ack", 'ig');
         G.hostinfo->{$hol} = {
-            info => a.m,
+            info => $inf,
             when => $H->hitime,
         };
         w handleinfo[$a];
@@ -85,6 +88,27 @@ hooks:
         #waylay uxd;
     }
     sw (ar.u) if e.S;
+  Hi: |
+      saygr "Hello to a.top ! a.m";
+      my @a = split '/', a.top; 
+      my @olds = H.r->keys("H/$a[1]/$a[2]*");
+      for my $oth (@olds) {
+          my @b = split '/', $oth;
+          sayre "o $oth";
+          if ($b[3] eq $a[3]) {
+              sayyl " haf self";
+            next;
+          }
+          my $hol = join '/', @b[2..4];
+          for my $vh (H.r->keys("V/$b[3]*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $H->send(" \$('#ux > #$ww').remove();");
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          H.r->del($oth);
+      }
   Nonpm:
     flows_D: |
       S.A->spawn('T');
