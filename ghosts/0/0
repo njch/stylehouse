@@ -56,7 +56,6 @@ hooks:
     };
     $G->su('Hi' => sub {
         my $a = shift;
-        sayyl "he G.name a.m";
         w Hi[$a];
     });
     0->su('Hostinfo' => sub {
@@ -69,6 +68,29 @@ hooks:
         };
         w handleinfo[$a];
     });
+  Hi: |
+      saygr "Hello to a.top ! a.m";
+      my ($hol, $m) = split ' ', a.m, 2;
+      my @a = split '/', $hol;
+      my @olds = H.r->keys("H/$a[1]/$a[2]*");
+      sayyl "OOOOLIES", @olds;
+      for my $oth (@olds) {
+          my @b = split '/', $oth;
+          sayre "o $oth";
+          if ($b[3] eq $a[3]) {
+              sayyl " haf self";
+            next;
+          }
+          my $hol = join '/', @b[2..4];
+          for my $vh (H.r->keys("V/$b[3]*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $H->send(" \$('#ux > #$ww').remove();");
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          H.r->del($oth);
+      }
   any_init: |
       waylay code;   
       sayyl " - c - o - d - e - " for 1..3;
@@ -88,27 +110,7 @@ hooks:
         #waylay uxd;
     }
     sw (ar.u) if e.S;
-  Hi: |
-      saygr "Hello to a.top ! a.m";
-      my @a = split '/', a.top; 
-      my @olds = H.r->keys("H/$a[1]/$a[2]*");
-      for my $oth (@olds) {
-          my @b = split '/', $oth;
-          sayre "o $oth";
-          if ($b[3] eq $a[3]) {
-              sayyl " haf self";
-            next;
-          }
-          my $hol = join '/', @b[2..4];
-          for my $vh (H.r->keys("V/$b[3]*")) {
-              my (@v) = split '/', $vh;
-              my $ww = $v[2];
-              $H->send(" \$('#ux > #$ww').remove();");
-              H.r->del($vh);
-              H.r->del("W/$ww");
-          }
-          H.r->del($oth);
-      }
+
   Nonpm:
     flows_D: |
       S.A->spawn('T');

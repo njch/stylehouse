@@ -17,7 +17,6 @@ hooks:
         my ($db,$name,$pid,$payload) = @_;
         my $d = {};
         (d.top, d.m) = map { $H->fixutf8($_) } $name, $payload;
-        sayyl "got $name ".slim(30,30,$payload);
         for my $cb (@{H.subscr->{$name}}) {
             $G->timer(0.00001, sub { $cb->($d); });
         }
