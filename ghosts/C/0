@@ -135,7 +135,8 @@ hooks:
     die unless @$Ds;
     
     # beaming in
-    my @zs = flatline $G->findway('R_zs'); # to begin
+    my @zs = map { _.mozs ||= 1; $_} flatline $G->findway('R_mozs'); # modulations, spesh on/off
+    push @zs, map { _.zs ||= 1; $_} flatline $G->findway('R_zs'); # 
     push @$Ds, @zs;
     
     G.R_waycomo = $Ds;
@@ -145,27 +146,28 @@ hooks:
     my $Ds = w R_waycoma; # dynamic set
     
     # eventually hosted here and here
+    # domey pyrimaris R_sur
+    # keys & mods gown R_n
     
     my ($Rsur, $ohno) = 0->findway('R_sur');
     ref $Rsur eq 'HASH' && !$ohno || die;
     my ($Rn, $hono)  = 0->findway('R_n');
     ref $Rn eq 'HASH' && !$hono  || die;
     
-    
     w RZ_Ds[$Ds, $Rsur, $Rn];
 
     sayyl "wayrays ".$G->F_delta;
   R_waycoma: |
     my $Ds = [];
-    my $which = G.R_waych ||=
-        { map { _.K => {} }
-          grep {!_.spesh && (_.n_D || _.n) } @{G.R_waycomo} };
+    # by default all non spesh R_mozs
+    my $def = { map { _.K => {} } grep {_.mozs && !_.spesh} @{G.R_waycomo} };
+    my $which = G.R_waych ||= $def;
     
     for my $D (@{G.R_waycomo}) {
-        next if D.spesh != 0 && (D.n_D || D.spesh) && !$which->{D.K};
+        next if (D.spesh || D.mozs) && !$which->{D.K};
         push @$Ds, $D;
     }
-    say "R_waycoma: ".join " + ", sort keys %$which;
+    say "R_waycoma: ".join " + ", sort keys %$which; 
     $Ds
   RZ_Ds: |
     # 1
