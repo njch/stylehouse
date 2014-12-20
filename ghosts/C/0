@@ -95,7 +95,6 @@ hooks:
     w uxd;
   ikey: | # $G assumes keydo
     H.keydo = sub { w R_sur/key(e=>shift); };
-
   ave: |
     my $R = w R_sur/are;
     my $a = {%$ar};
@@ -246,23 +245,24 @@ hooks:
     key: | #c
       my $k = e.k;
       my $R = w R_sur/are;
+      
         sayyl join"  ", ($k) x 13 for 1..2;
 
         my $key = "$k";
         $key = "S$key" if e.S;
         # some instyle hooks letters to apply
         my $cuz = $G->findway("R_n/key")||die;
-
         my $do = $cuz->{$key};
-
         $do ||= do {
             my $or = "number" if $key =~ /[0-9]/;
             $cuz->{$or} if $or;
         };
+        # 5
+        # 5.9
         $do ||= "wtf";
-
+        w unchanged[$R] if $do eq "wtf";
         sayyl join"  ", ($do) x 13 for 1..2;
-
+        # 6
         R.G w R_n/$do[$R, $k, $e];
     are: | #c chang->queue U xing
       my (@us) = 0->rei({K=>'D'});
