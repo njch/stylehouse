@@ -67,6 +67,9 @@ hooks:
             when => $H->hitime,
         };
     });
+    
+    H.G w hostinfo(withHi=>1);
+    
   Hi: |
       saygr "Hello to a.top ! a.m";
       my ($hol, $m) = split ' ', a.m, 2;
@@ -90,6 +93,27 @@ hooks:
           }
           H.r->del($oth);
       }
+      0->sing("Hiwtidy", sub {w Hiwtidy;}, begin=>4);
+  Hiwtidy: |
+    sayre "YEP";
+
+    my $js = 
+    " var e = []; \$('#ux > ww[class*=".'"z"'
+    ."]').each(function(){"
+        ."e\.push(\$(this).attr('id'));" # could take more clues
+    ."});"
+    ."return e\.join(' ');";
+    my $cb = sub { my $m = shift; w Hiwtidy_ja[$m]; };
+    H.G w jaw[$js, $cb];
+  Hiwtidy_ja: |
+    my $wild = {map { $_ => 1 } split ' ', $m};
+    my @Ws = H.r->keys("W/*");
+    delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
+    for (keys %$wild) {
+        $H->send(" \$('#ux > #$_').remove();");
+    }
+    
+    
   any_init: |
       waylay code;   
       sayyl " - c - o - d - e - " for 1..3;

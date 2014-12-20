@@ -31,6 +31,16 @@ hooks:
       $m = " $m";
       H.G w send_Elvis[$m, $cb];
       sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
+  jaw: |
+    my $s = $H->mkuuid();
+    ($s) = reverse split '-', $s;
+    G.jaws->{$s} = delete ar.cb; # TODO a Z awaits, sucks $m
+    ar.m = 
+        " var e = function(){ $js };"   
+        ."var m = e();"
+        ."s\.reply({jaw:{h:'H.ol',s:'$s',e:m}});";
+    sayyl "jaw $s ".slim(30,30,$js);
+    w send_Elvis;
   Teeth: |
     saybl " > ".slim(30,30,$m);
     my $j = $H->djson($m);
@@ -74,8 +84,14 @@ hooks:
     jaw: | # TODO route with H.id
       $j = j.jaw;
       my $s = j.s || die "no s";
-      my $cb = G.jaws->{$s} || die "no such jaw $s";
-      $cb->(j.e); # TODO Z sucktion
+      my $hol = j.h || die;
+      if (H.ol eq $hol) {
+          my $cb = G.jaws->{$s} || die "no such jaw $s";
+          $cb->(j.e); # TODO Z sucktion
+      }
+      else {
+          $H->pub("S/$hol", "speaks $m");
+      }
     er: |
       die "much JS error..." if H.JErrors++ > 3;
       $H->error("javascript error from client", j.m, j.e);

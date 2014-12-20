@@ -1,22 +1,25 @@
 hooks:
   in: |
     w hostinfo;
-    $H->pub("Hi" => "H.style/H.name/H.id $$");
     $G->recur(9 => sub {
         w hostinfo;
-    });
-    $G->recur(6 => sub {
-        H.r->set("H/H.style/H.name/H.id" => $H->hitime); # TODO lots
     });
   hostinfo: |
     my @ps = `ps -p$$ fu`;
     my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
     $_ = $_ / 100 for $cpu, $mem;
+    my $now = $H->hitime;
     
-    my $info = "H.style/H.name/H.id $cpu $mem ".$H->hitime;
+    my $hol = H.ol ||= "H.style/H.name/H.id";
+    my $info = "$cpu $mem $now";
     
     saygr "hostinfo: $info " if rand(1) > 0.7;
-    $H->pub("Hostinfo" => $info, 'ig');
+    H.r->set("H/$hol", $info);
+    
+    $H->pub("Hostinfo" => "$hol $info", 'ig');
+    
+    $H->pub("Hi" => $hol) if !H.lastinfo || ar.withHi;
+    H.lastinfo = $now;
     
     G.hostinfo_waits++;
     if (G.hostinfo_waits > 1) {
@@ -27,7 +30,6 @@ hooks:
     hostinfo:
       ack: |
         my (@s) = split /\s+/, $m;
-        saygr "hostinfo ack: $m";
         if (rand(1) > 0) {
             my $lag = (1000*sprintf('%.3f',$H->hitime - $s[-1])).'ms';
             sayyl "out there! lag: $lag";
