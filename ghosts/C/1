@@ -17,36 +17,101 @@ hooks:
       }
       $i
     
+    du: | #c style grab
+      $a || die;
+      my $R = a.R;
+      defined a.i || die;
+      # how to get around the Objs' data
+      my $s = a.s ||= $R->dus();
+      my $i = a.i;
+      my $n = a.n;
+      a.e = 2 if !defined a.e;
+      
+      my $c = {};
+      a.as ||= [];
+      push @{a.as}, $a;
+      a.ds = [@{a.ds||[]}, $a];
+      
+      return {} if @{a.ds} > 12 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
+      
+      my $ref = ref $i || 'SCALAR';
+      my $is = $s->{$ref} || $s->{default};
+      $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
+      $is ||= $s->{default} || return {};
+      
+      my $mustb = { map { $_ => 1 } split ',', is.mustb } if is.mustb;
+      
+      for my $j (is.it->($i)) {
+          my $k = delete j.k;
+          my $K = delete j.K;
+          my $v = delete j.v;
+          
+          $j = {%$is, %$j};
+          my $an = {%$a, i => $v};
+          
+          my $ohms = defined j.oh ? j.oh
+              : defined is.oh ? is.oh
+            : 1;
+          
+          an.e -= $ohms;
+          
+          my $rk = join "\t", $k, an.e;
+          
+          $c->{$rk} = $v;
+          
+          a.tr.rows++;
+          last if a.tr.rowlimit && a.tr.rows >= a.tr.rowlimit;
+          
+          if (an.e >= 1 && ref an.i) {
+              my $cu = $R->du($an);
+              while (my ($ku, $vu) = each %$cu) {
+                  my $nk = $k.$ku;
+                  next if grep { $_->($_, $an, $cu) } @{s.notZ||[]};
+                  $c->{$nk} = $vu;
+              }
+          }
+          elsif (an.e > 0 && an.e < 1 && $mustb && !$mustb->{$K}) {
+              delete $c->{$rk};
+          }
+      }
+      
+      if (R.a == $a) {
+          R.a.d = $c;
+      }
+      
+      # this is about a 4 - material for links
+      $c
+      
     S: | #c void R_surcess R::S heist
         # 0.1
         my $a = R.a = ar.a ||= {};
+        a.R = $R;
         w R_sur/phat;
         
         # 0.2
-        R.a.e ||= R.S.e || die;
+        a.e ||= R.S.e || die;
         
         # 1.16
         my $unifro = {
             i => R.J.from || die,
             t => R.J.trav || "",
         };
-        R.a.i ||= w R_sur/uni(%$unifro);
+        a.i ||= w R_sur/uni(%$unifro);
         
         # 2 s messed by R plumbing, sure
-        R.a.s = R.S.s || $R->dus;
-        R.a.s.HASH.oh = 0.2;
-        R.a.s.SCALAR.it = sub {
+        a.s = R.S.s || $R->dus;
+        a.s.HASH.oh = 0.2;
+        a.s.SCALAR.it = sub {
             my $i = 0;
             map { { k => $i++, v=> $_, oh => 0.2 } } split "\n\n", shift;
         };
         
-        R.a.tr.rowlimit = R.S.rowlimit || 9*2;
+        a.tr.rowlimit = R.S.rowlimit || 9*2;
         
         # 3
-        $R->du;
         
         # 4
-        w R_sur/S_4;
+        
         
         # 4.1
         a.fro->('H 0.01' => $H, 0.2);
@@ -74,40 +139,6 @@ hooks:
         # 9
         saygr " S --- ".F_delta;
         $html
-    S_4: | #c
-        my $d = a.d;
-        my @r = w stylekeysort[$d];
-        my $si = @r;
-        my @i = w wind[$si];
-        my $ro = R.a.ro = {}; # wind round
-        my $i = 0;
-        for my $r (@r) {
-            my $j = w R_sur/shj[$r, $d];
-            my $li = j.li = shift @i || die;
-            $ro->{$li} = $j;
-            if ($i > 0) {
-                 a.bz->("${li}0_Bs 0.3 0.3${li}0" => "\n");
-            }
-            a.bz->("${li}_li 0.3 0.3${li}1", j.li,
-                '%sf', 'blue_fs120');
-                
-            my $t = j.t;
-            $t .= join("", (" ") x (6 - length($t))) if length($t) < 6;
-            a.bz->("${li}_k 0.3 0.3${li}2", $t,
-                '%sf', 'black');
-           
-            my $cv = j.cv;
-            $cv =~ s/^0//;
-            a.bz->("${li}_cv 0.3 0.3${li}22", $cv,
-                '%sf', 'red_fs80');
-            
-            a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
-                '%sf', 'white_fs120');
-            
-            #sayyl " S_4[$i => $li   ".$G->F_delta;
-            $i++; 
-            
-        }
     makaout: | #c
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
