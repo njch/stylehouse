@@ -77,8 +77,8 @@ hooks:
   Hi: |
       saygr "a.top to a.m";
       my ($hol, $m) = split ' ', a.m, 2;
-      my @a = split '/', $hol;
-      my @olds = H.r->keys("H/$a[0]/$a[1]*");
+      (my $sn = $hol) =~ s/\/\w+$//;
+      my @olds = H.r->keys("H/$sn*");
       for my $oth (@olds) {
           $oth =~ s/^H\///;
           my ($Hid) = reverse split '/', $oth;
@@ -91,12 +91,12 @@ hooks:
           for my $vh (H.r->keys("V/$Hid*")) {
               my (@v) = split '/', $vh;
               my $ww = $v[2];
-              $js .= " \$('#ux > #$ww').fadeOut(30000);";
+              $js .= " \$('#ux > #$ww').fadeOut(10000);";
               H.r->del($vh);
               H.r->del("W/$ww");
           }
           $H->send($js) if $js;
-          H.r->del($oth);
+          H.r->del("H/$oth");
       }
   Hiwtidy: |
     my $js = 
