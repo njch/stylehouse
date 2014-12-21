@@ -133,10 +133,13 @@ sub codefiles {
     say "Code dir $dir";
     
     map { Hostinfo::decode_utf8($_) }
-        grep { !$dir || s/^$dir// } (
+        grep { -f $_ && (!$dir || s/^$dir//) } (
             glob($dir.'stylehouse.*'),
             glob($dir.'lib/*.pm'),
             glob($dir.'ghosts/*/*'),
+            glob($dir.'ghosts/*/*/*'),
+            glob($dir.'ghosts/*/*/*/*'),
+            glob($dir.'ghosts/*/*/*/*/*'),
         );
 }
 sub codolist {
