@@ -1,6 +1,7 @@
 hooks:
 
-
+  fresh_init: |
+    H.who = [];
   recoded_init: |
     w retile;
   non: |
@@ -78,7 +79,7 @@ hooks:
       
     speaks: |      
       my $E = $S;#1
-      H.who = $E;
+      H.elvis = $E;
       w Teeth[$m, $E];#...
       Sw swoosh; #9
       
@@ -153,24 +154,6 @@ hooks:
     });
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
     
-  S:
-    push_conin: |
-      w pull_conin if H.singul;
-    please_push_conin: |
-      w push_conin if !H.singul;
-    wsy: |
-      my $C = G.conz ||= {};
-      my ($w, $s) = split ' ', $m;
-      # check the tip for dup
-      my $EE = G.conz->{$w};
-      if ($EE && !EE.disco && 0) {
-          w elvash[$E, $EE];
-      }
-      G.conz->{$w} = $E;
-      (E.c->{w}, E.c.s) = ($w, $s);
-      E.singul = 1 if $w eq $s; 
-      
-      w elvjs;
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -186,37 +169,24 @@ hooks:
       $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
     coninto: |
       $H->send(" a\.con({conin: '$conin'});");
-  elvash: |
-    sayre "A new ".$E->pi."  closing => ".$EE->pi;
-    w $EE disconecktie;
-    $EE->send(" C[s\.conin] = s;");
-    H.who = $E;
-  elvjs: | # elvis swam through wsy, is js client
-    if (E.singul) {
-        H.who = $E;
-        H.singul = 1;
-        w singul;
-    }
-    else {
-        H.singul = 0;
-        w elvus;
-    }
-  elvibium: |
-    if (H.Jels) {
-        $H->send($_) for @{H.Jels};
-    }
-  elvibe: |
-    Say "En nnnn Elvis ?? J | ".$E->pi;
-    if (E.B.style) {
-        Say "Elvis got it ".$E->pi;
-        return;
-    }
-    w z/wzy; # conz, swim
     
+  elvibe: |
+    sayyl "elvibe ?? jjj | ".$E->pi;
+    
+    my $js = " elvis; "; # random number
+    my $cb = sub{ w elvibium(e => shift, E=>$E); };
+    w jaw[$js,$cb,$E];
+  elvibium: |
+    say wdump(2,$ar);
+    0->accum($H,'who',$E);
+    for my $m (@{H.Jels}) {
+        w $E send[$m];
+    }
+        
   send_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
     my $cb = ar.cb;
-    if (!$Elvis) {
+    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
         saybl "no infiduvia ----- will spring on .... ".slim($m);
         push @{H.Jels||=[]}, $m;
         return;
@@ -224,7 +194,9 @@ hooks:
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
     saybl " < ".slim(30,30,$m);
-    w $Elvis send[$m, $cb];
+    for my $Elvis (ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis) {
+        w $Elvis send[$m, $cb];
+    }
 
  #heisto thing
  

@@ -23,7 +23,6 @@ hooks:
           say "was from $hold";
           my ($hol, $etc) = split /\s+/, $hold, 2;
           if ($etc) {
-              my $E = H.who;
               sayyl "Retiling";
               $cb = sub { w retile; };
           }
@@ -39,10 +38,11 @@ hooks:
         " var e = function(){ $js };"   
         ."var m = e();"
         ."s\.reply({jaw:{h:'H.ol',s:'$s',e:m}});";
-    sayyl "jaw $s ".slim(30,30,$js);
+    sayyl "jaw $s ".($E && $E->pi)."  ".slim(30,30,$js);
+    sayyl ki $ar;
     w send_Elvis;
   Teeth: |
-    saybl " > ".slim(30,30,$m);
+    saybl " > ".slim(75,80,$m);
     my $j = $H->djson($m);
     
     if (ref $j eq "HASH") {
@@ -78,6 +78,18 @@ hooks:
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
+    jaw: | #c TODO route with H.id
+      $j = j.jaw;
+      my $s = j.s || die "no s";
+      my $hol = j.h || die;
+      if (H.ol eq $hol) {
+          my $cb = G.jaws->{$s} || die "no such jaw $s";
+          saygr "Jaw doing $s ... ";
+          $cb->(j.e); # TODO Z sucktion
+      }
+      else {
+          $H->pub("S/$hol", "speaks $m");
+      }
     speaks: | # concealed elvis input
       w Teeth[$m];
       
@@ -128,17 +140,6 @@ hooks:
             $H->pub("S/$hol", "speaks $m");
             G.keysto = $hol;
         }
-    jaw: | #c TODO route with H.id
-      $j = j.jaw;
-      my $s = j.s || die "no s";
-      my $hol = j.h || die;
-      if (H.ol eq $hol) {
-          my $cb = G.jaws->{$s} || die "no such jaw $s";
-          $cb->(j.e); # TODO Z sucktion
-      }
-      else {
-          $H->pub("S/$hol", "speaks $m");
-      }
     
     reextet: | #c
       $G->timer(1, sub{
