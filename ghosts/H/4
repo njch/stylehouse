@@ -81,17 +81,6 @@ hooks:
     speaks: | # concealed elvis input
       w Teeth[$m];
       
-    jaw: | # TODO route with H.id
-      $j = j.jaw;
-      my $s = j.s || die "no s";
-      my $hol = j.h || die;
-      if (H.ol eq $hol) {
-          my $cb = G.jaws->{$s} || die "no such jaw $s";
-          $cb->(j.e); # TODO Z sucktion
-      }
-      else {
-          $H->pub("S/$hol", "speaks $m");
-      }
     er: |
       die "much JS error..." if H.JErrors++ > 3;
       $H->error("javascript error from client", j.m, j.e);
@@ -122,7 +111,7 @@ hooks:
     On: |
       die "!";
       $m =~ s/^H.style\/H.name // && w reS[$m];
-    W: |
+    W: | #c
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
         my $a = {};
@@ -139,4 +128,21 @@ hooks:
             $H->pub("S/$hol", "speaks $m");
             G.keysto = $hol;
         }
+    jaw: | #c TODO route with H.id
+      $j = j.jaw;
+      my $s = j.s || die "no s";
+      my $hol = j.h || die;
+      if (H.ol eq $hol) {
+          my $cb = G.jaws->{$s} || die "no such jaw $s";
+          $cb->(j.e); # TODO Z sucktion
+      }
+      else {
+          $H->pub("S/$hol", "speaks $m");
+      }
+    
+    reextet: | #c
+      $G->timer(1, sub{
+      $H->pub("S/hut/$_", "reexec") for qw'S C';
+      w reexec;
+      });
 

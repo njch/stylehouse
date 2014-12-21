@@ -72,32 +72,33 @@ hooks:
     
     H.G w hostinfo(withHi=>1);
     
+    $G->timer(8, sub{w Hiwtidy;});
+    
   Hi: |
       saygr "a.top to a.m";
       my ($hol, $m) = split ' ', a.m, 2;
       my @a = split '/', $hol;
-      say "$hol ---------- $m";
       my @olds = H.r->keys("H/$a[0]/$a[1]*");
       for my $oth (@olds) {
-          my @b = split '/', $oth;
+          $oth =~ s/^H\///;
+          my ($Hid) = reverse split '/', $oth;
           sayre "o $oth";
-          if ($b[3] eq $a[3]) {
+          if ($oth eq $hol) {
               sayyl " haf self";
-            next;
+                next;
           }
-          my $hol = join '/', @b[2..4];
-          for my $vh (H.r->keys("V/$b[3]*")) {
+          my $js;
+          for my $vh (H.r->keys("V/$Hid*")) {
               my (@v) = split '/', $vh;
               my $ww = $v[2];
-              $H->send(" \$('#ux > #$ww').remove();");
+              $js .= " \$('#ux > #$ww').fadeOut(30000);";
               H.r->del($vh);
               H.r->del("W/$ww");
           }
+          $H->send($js) if $js;
           H.r->del($oth);
       }
   Hiwtidy: |
-    sayre "YEP";
-
     my $js = 
     " var e = []; \$('#ux > ww[class*=".'"z"'
     ."]').each(function(){"
@@ -110,13 +111,17 @@ hooks:
     my $wild = {map { $_ => 1 } split ' ', $m};
     my @Ws = H.r->keys("W/*");
     delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
+    my $js;
     for (keys %$wild) {
-        $H->send(" \$('#ux > #$_').remove();");
+        $js .= " \$('#ux > #$_').remove();";
     }
+    $H->send($js) if $js;
     
   reextet: |
+    my @also = grep { s/^H\/// } H.r->keys("H/*");
     H.r->del($_) for H.r->keys("*");
-    $H->pub('S', 'reexec');
+    $H->pub('S/shed/O', "reextet ".join",",@also);
+    H.G w reexec;
   any_init: |
       waylay code;   
       sayyl " - c - o - d - e - " for 1..3;
