@@ -1,0 +1,74 @@
+
+name: o
+C:
+  - K: Hi
+hooks:
+  fresh_init: |
+    $G->su('Hi' => sub {
+        my $a = shift;
+        w Hi[$a];
+    });
+    0->su('Hostinfo' => sub {
+        my $a = shift;
+        my ($hol, $inf) = split ' ', a.m, 2;
+        $H->pub("S/$hol", "hostinfo/ack a.m", 'ig');
+        G.hostinfo->{$hol} = {
+            info => $inf,
+            when => $H->hitime,
+        };
+    });
+    
+    H.G w hostinfo(withHi=>1);
+    
+    $G->timer(6, sub{w Hiwtidy;});
+    
+  Hi: |
+      saygr "a.top to a.m";
+      my ($hol, $m) = split ' ', a.m, 2;
+      (my $sn = $hol) =~ s/\/\w+$//;
+      my @olds = H.r->keys("H/$sn*");
+      for my $oth (@olds) {
+          $oth =~ s/^H\///;
+          my ($Hid) = reverse split '/', $oth;
+          sayre "o $oth";
+          if ($oth eq $hol) {
+              sayyl " haf self";
+                next;
+          }
+          my $js;
+          for my $vh (H.r->keys("V/$Hid*")) {
+              my (@v) = split '/', $vh;
+              my $ww = $v[2];
+              $js .= " \$('#ux > #$ww').fadeOut(10000);";
+              H.r->del($vh);
+              H.r->del("W/$ww");
+          }
+          $H->send($js) if $js;
+          H.r->del("H/$oth");
+      }
+  Hiwtidy: |
+    my $js = 
+    " var e = []; \$('#ux > ww[class*=".'"z"'
+    ."]').each(function(){"
+        ."e\.push(\$(this).attr('id'));" # could take more clues
+    ."});"
+    ."return e\.join(' ');";
+    my $cb = sub { my $m = shift; w Hiwtidy_ja[$m]; };
+    H.G w jaw[$js, $cb];
+  Hiwtidy_ja: |
+    my $wild = {map { $_ => 1 } split ' ', $m};
+    my @Ws = H.r->keys("W/*");
+    delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
+    my $js;
+    for (keys %$wild) {
+        $js .= " \$('#ux > #$_').remove();";
+    }
+    $H->send($js) if $js;
+    
+  reextet: |
+    my @also = uniq map { /^H\/(.+)\/.+?$/ } H.r->keys("H/*");
+    H.r->del($_) for H.r->keys("*");
+    $H->pub('S/shed/O', "reextet ".join",",@also);
+    H.G w reexec;
+    
+
