@@ -84,13 +84,6 @@ hooks:
       Sw swoosh; #9
       
       
-    disconecktie: |
-      $tx->finish;
-      Sw disco;
-    disco: |
-      S.disco = 1;
-      w elvis_leaves(E=>$S);
-      
     mouthfull: |
       for my $mJ (@{S.mouth}) {
             return 1 if mJ.dig eq J.dig &&
@@ -112,6 +105,12 @@ hooks:
     leaves: |
       sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
       Sw disco;
+    disconecktie: |
+      $tx->finish;
+      Sw disco;
+    disco: |
+      S.disco = 1;
+      w elvis_leaves(E=>$S);
     
     tx_uglies: |
       Mojo::IOLoop->stream($tx->connection)->timeout(300000);
@@ -150,10 +149,9 @@ hooks:
       die "HELLO!";
       die "WebSocket handshake failed! $conin" and return unless $tx->is_websocket;
       Say "Connecto!";
-      0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
+      ua.Elvis = 0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
     });
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-    
+    $ua;
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
@@ -173,11 +171,12 @@ hooks:
   elvibe: |
     sayyl "elvibe ?? jjj | ".$E->pi;
     
-    my $js = " elvis; "; # random number
+    my $js = " return elvis "; # random number
     my $cb = sub{ w elvibium(e => shift, E=>$E); };
     w jaw[$js,$cb,$E];
+    
   elvibium: |
-    say wdump(2,$ar);
+    E.e = $e; 
     0->accum($H,'who',$E);
     for my $m (@{H.Jels}) {
         w $E send[$m];
@@ -197,51 +196,6 @@ hooks:
     for my $Elvis (ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis) {
         w $Elvis send[$m, $cb];
     }
-
- #heisto thing
- 
-  aj: | 
-    if (j._) {
-        saygr j.G->pi." unified field! see for ".@{j.s};
-        H.G.A.W->{j._.at.id} = j.G.W;
-    }
-    
-    0->accum($G, Js => $j);
-    
-    my @Es = w Es;
-    for my $E (@Es) {
-        w sEnj[$E, $j];
-    }
-    sayg "j to the ".@Es;
-  sEnj: |
-    my @lot = reverse @{j.s};
-    push @lot, reverse @{j.c};
-    saygr scalar(@lot)." ->->->-> ".$E->pi;
-    
-    for my $l (@lot) {
-        ref $l && die "reff $l";
-        $E->send(" ".$l);
-    }
-    
-    if (j._) {
-        saygr "j.G.name unified field hits tiles!";
-        0->sing(retile => sub { H.G w retile[$E]; }, begin => 0.8);
-    }
-    # after U - direct to tape instead of catching JS in H
-    
-  Es: |
-    uniq @{G.Es};
-  elvis_enters: |
-    saygr "jump on the j train ".$E->pi;
-    0->accum($G, 'Es', $E);
-    
-    if (H.singul) {
-        $H->pub("S", "please_push_conin");
-    }
-    
-    for my $j (@{G.Js}) {
-        w sEnj[$E, $j];
-    }
   elvis_leaves: |
-    0->deaccum($G => Es => $E);
+    0->deaccum($H,'who',$E);
 
