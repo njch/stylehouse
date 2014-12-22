@@ -90,7 +90,11 @@ hooks:
     return $ord;
     
   reexec: |
-      exec "nice perl $0 @ARGV";
+        for my $E (@{H.who||[]}) {
+            w $E disconecktie;
+        }
+        sayre "finish!";
+        exec "nice perl $0 @ARGV";
   S:
     reexec: w reexec;
     retile: w retile;
