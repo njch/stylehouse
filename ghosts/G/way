@@ -493,6 +493,9 @@ Ds:
                   @ways = $S; #---------------------
               }
           }
+          elsif (ref $S eq "R") {
+              @ways = S.way;
+          }
           
           if (my $B = S.B) {
               # we dont upload variables from B
@@ -500,7 +503,8 @@ Ds:
               # good verboz code clarity for scheming
               %$ar = (%$ar, %$B, B => $B);
           }
-          ar.S = $S;
+          my $uu = ref $S eq 'R' ? 'R' : 'S';
+          $ar->{$uu} = $S;
       }
       else {
           @ways = $G->ways;
@@ -583,7 +587,6 @@ Ds:
       u.Error = $@ if $@; #?
       
       G.A->An($u, 'pyramid');
-      G.A->An($u, 'pyramid_tip') if !$last;
       
       $u
       
