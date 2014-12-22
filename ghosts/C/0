@@ -48,7 +48,7 @@ C:
      ishtml: 1
 R:
  - K: sur
-   Rway:
+   Rways:
      
 P:
  - K: D #c sur
@@ -106,11 +106,12 @@ hooks:
  
   R_wayray: |
     sayyl "Re sur";
+    # on init
     
     # on init, collect sources to reway from otherwise
     my $Ds=[]; # like a T at 1
     
-    for my $Rsur (0->findway('R_sur'), 0->findway('R_surs')) {
+    for my $Rsur (0->findway('R_surs')) {
         # passing phase, should beam in
         push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
     }
@@ -130,20 +131,16 @@ hooks:
     # domey pyrimaris R_sur
     # keys & mods gown R_n
     
-    my ($Rsur, $ohno) = 0->findway('R_sur');
-    ref $Rsur eq 'HASH' && !$ohno || die;
-    my ($Rn, $hono)  = 0->findway('R_n');
-    ref $Rn eq 'HASH' && !$hono  || die;
-    
     my $a = {};
-    w RZ_Ds[$Ds, $Rsur, $Rn];
+    w RZ_Ds[$a, $Ds];
     
     my $R = G.theR;
     R.way ||= R.A->spawn('C');
     R.way.name = "G.name comp ";
-    my @kes = keys %$Rsur, keys %$Rn;
-    die if uniq(@kes) != @kes;
-    R.way->from({hooks=>{%$Rsur,%$Rn}});
+    R.way->from({hooks=>a.Dh});
+    
+    %{ $G->findway("R_sur") } = %{a.Dh};
+    %{ $G->findway("R_n") } = %{a.Dh};
     
 
     sayyl "wayrays ".$G->F_delta;
@@ -164,8 +161,7 @@ hooks:
     a.bb = {};
     
     # 2
-    a.Rsur = {};
-    a.Rn = {};
+    a.Dh = {};
     
     # 3
     my $wz;
@@ -201,12 +197,11 @@ hooks:
         
         my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
         
-        $R->loadup(a.Rsur, $ac, $babble);
+        $R->loadup(a.Dh, $ac, $babble);
     }
     
     # 9
-    %$Rsur = %{a.Rsur};
-    %$Rn = %{a.Rn};
+    a.Dh
     
   RZ_Ds_humm: |
         @$Ds = map { 
@@ -235,8 +230,8 @@ hooks:
         }
 
         for my $D (grep {_.n_D} @$Ds) {
-            a.Rn->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
-            a.Rn->{D.K} = D.n_D;
+            a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
+            a.Dh->{D.K} = D.n_D;
         }
 
 
