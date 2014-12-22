@@ -11,10 +11,10 @@ hooks:
     }
     
     if (S.load_ways_count == 1) {
-        w _init/fresh;
+        w _init_fresh;
     }
     else {
-        w _init/recoded;
+        w _init_recoded;
     }
       
     $S->w("any_init");
@@ -33,21 +33,20 @@ hooks:
         }
         $i++;
     }
-  _init:
-    recoded: |
+  _init_recoded: |
         
-        w _init/recoded_Cways[$S] if $S->anyway('recoded_Cways');
+        w _init_recoded_Cways[$S] if $S->anyway('recoded_Cways');
         
         $S->w("recoded_init");
         
-    recoded_Cways: | # TODO reinject
+  _init_recoded_Cways: | # TODO reinject
       for my $i (map {_.i} $S->scGre()) {
           saygr "Reinjecting i.K ...";
           my $up = $S->CsK({K=>i.K});
           $i->from($up);
       }
         
-    fresh: |
+  _init_fresh: |
       S.R ||= $S->R; # or R: perc somewhere here
       
       $S->w("fresh_init");

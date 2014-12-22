@@ -3,9 +3,10 @@ name: o
 C:
   - K: Hi
 hooks:
-  fresh_init: |
+  pre_in: | # sub hostinfos before w in does our hostinfo
     $G->su('Hi' => sub {
         my $a = shift;
+        sayyl "got hi a.m";
         w Hi[$a];
     });
     0->su('Hostinfo' => sub {
@@ -17,11 +18,21 @@ hooks:
             when => $H->hitime,
         };
     });
-    
-    H.G w hostinfo(withHi=>1);
-    
+    $G->recur(12, sub {
+        my @files = $G->fs_find("ghosts");
+        say @files;
+        saygr "lies: ".((`wc -l @files`)[-1]  =~ /(\d+) total/)[0];
+    });
+
+  in: |
     $G->timer(6, sub{w Hiwtidy;});
-    
+  node:
+    o: []
+    n:
+      - GAK: C
+  S:
+    Hiwtidy: w Hiwtidy;
+    reextet: w reextet;
   Hi: |
       saygr "a.top to a.m";
       my ($hol, $m) = split ' ', a.m, 2;

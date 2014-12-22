@@ -29,12 +29,12 @@ hooks:
             $wa = ref $u;
             $arr->{$wa} = $u if $wa ne 'G';
         }
-        $G->findway("R_sur/gp_pi/$wa") || die "not $wa equip";
+        $G->findway("R_sur/pi/$wa") || die "not $wa equip";
         
         # 5
 
         # 6
-        w R_sur/gp_pi/$wa(%$arr);
+        w R_sur/pi/$wa(%$arr);
         
         # 7
         my $html = w R_sur/makaout(%$arr);
@@ -46,7 +46,7 @@ hooks:
         my $ind = join "", ("  ") x scalar @F;
         #sayyl "$ind Done gp for $u ".F_delta;
         $html
-    gp_pi: #c
+    pi: #c
       wtf: | #c
         a.bz->('know 0.1', "$u");
       ARRAY: | #c
@@ -233,6 +233,13 @@ hooks:
         
       T: | #c
         a.bz->('pi 0.1', $u->pi);
+      J: | #c
+        my $cv = a.cv ||= 0.3;
+        a.bb->{"thi 0"} = ref $u;
+        return if $cv < 0.1;
+        a.bb->{"name 0.1"} = $H->ejson(u.B) if u.B;
+        return if $cv < 0.2;
+        a.fro->('i 0.2', u.A.i, 0.1);
       H: | #c
         a.bz->('thi 0.01' => 'H');
         a.bz->("name 0.06" => H.style,
