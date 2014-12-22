@@ -20,14 +20,12 @@ hooks:
     });
     $G->recur(3, sub { saygr " Yep" });
     $G->recur(12, sub {
-        my @files = $G->fs_find("ghosts");
-        say @files;
-        saygr "lies: ".((`wc -l @files`)[-1]  =~ /(\d+) total/)[0];
+        #my @files = $G->fs_find("ghosts");
+        #say @files;
+        #saygr "lies: ".((`wc -l @files`)[-1]  =~ /(\d+) total/)[0];
     });
-    G.db = 3;
-    $SIG{INT} = sub { die "HERE" };
   in: |
-    $G->timer(6, sub{w Hiwtidy;});
+    $G->timer(9, sub{w Hiwtidy;});
   node:
     o: []
     n:
@@ -81,6 +79,7 @@ hooks:
     
   reextet: |
     my @also = uniq map { /^H\/(.+)\/.+?$/ } H.r->keys("H/*");
+    @also = grep {$_ ne "H.style/H.name"} @also;
     H.r->del($_) for H.r->keys("*");
     $H->pub('S/shed/O', "reextet ".join",",@also);
     H.G w reexec;
