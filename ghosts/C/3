@@ -33,7 +33,9 @@ hooks:
                 # TODO they come back out of order of attachment 
                 # fork only the top level pi, not pi within pi?
                 # promise pi, makaout executes?
-                waylay R_n/forkpi/pias[$R, $pias];
+                $G->timer(0, sub {
+                    w $R forkpi/pias[$pias];
+                });
             }
         'gp 8.3': |
             if (my $Jid = a.isJid || a.replaceJid) {
@@ -56,7 +58,7 @@ hooks:
             my @js;
             my $group = 2;
             for my $a (@$pias) {
-                my $html = w R_sur/gp[$a];
+                my $html = w $R gp[$a];
                 next if a.wash eq $H->dig($html);
                 my $id = a.replaceJid || die;
                 my $js = qq{ \$('#$id').replaceWith('$html');};
@@ -103,9 +105,9 @@ hooks:
     - K: adu #c
       babz:
         'S 3.1': |
-          my $d = w R_sur/du;
+          my $d = w $R du;
         'S#aduhummings 4.01': |
-          w R_n/adu/humms[$a, $R, $d];
+          w $R adu/humms[$a, $d];
       n_D:
         humms: |
           my @r = w stylekeysort[$d];
@@ -114,7 +116,7 @@ hooks:
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
-              my $j = w R_sur/shj[$r, $d];
+              my $j = w $R shj[$r, $d];
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
               if ($i > 0) {
@@ -147,7 +149,7 @@ hooks:
               i => R.J.from || die,
               t => R.J.trav || "",
           };
-          a.i ||= w R_sur/uni(%$unifro);
+          a.i ||= w $R uni(%$unifro);
         'S 2.1004': |
           a.s = R.S.s || $R->dus;
           a.s.HASH.oh = 0.2;
@@ -159,22 +161,20 @@ hooks:
           a.tr.rowlimit = R.S.rowlimit || 9*2;
     - K: Aun #c
       babz:
-        'S#unifromA 1.16': |
+        'S#unifromA 1.0134': |
           my $unifro = {
               i => R.J.from || die,
               t => R.J.trav || "",
           };
-          R.a.i ||= w R_sur/uni(%$unifro);
+          R.a.i ||= w $R uni(%$unifro);
     - K: Q #c
       key:
         W: way
       n_D:
             way: |
               R.J = {
-                  from => {
-                  R_sur => $G->findway('R_sur'),
-                  R_n => $G->findway('R_n'),
-                }
+                  from => $R,
+                  trav => '{way',
               };
     - K: Redis #c
       key:
@@ -195,19 +195,15 @@ hooks:
       key: {G: G}
       n_D:
             G: |
-              my $R = w R_sur/are;
-              my $a = {i=>$R};
-              w R_n/Sud/in[$R, $a];
-    - K: Fau #c # F junket
+              w $R Sud/in(i=>$R);
+    - K: Fau #c # F junket # TODO wants more complex suds ins
       key: {F: F}
       n_D:
             F: |
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;
               my $f = $F[0];
-              my $R = w R_sur/are;
-              my $a = {i=>$f};
-              w R_n/Sud/in[$R, $a];
+              w $R Sud/in(i=>$f);
               sayyl "Trithings: $_ " for @lot;
     - K: Dawn #c
       key: {D: D}
@@ -222,11 +218,10 @@ hooks:
       key: {S: S}
       n_D:
             S: |
-                my $a;
-                my $R = w R_sur/are;
                 my ($GG) = grep { $_ ne $G && _.name eq "C" } @{H.G.GGs};
-                a.i = $GG w R_sur/are;
-                w R_n/Sud/in[$R, $a];
+                die "No other G named 'C'" unless $GG;
+                my $otheR = $GG w are;
+                w $R Sud/in(i=>$otheR);
     - K: Num #c
       key: {0: out, number: in}
       n_D:
@@ -250,6 +245,7 @@ hooks:
     - K: Sud #c
       n_D:
             in: |    # ebrace flying embryo J
+                my $a = ar.a || $ar;
                 R.J = { from => a.i };
                 R.J.trav = a.t if a.t;
     
