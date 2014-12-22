@@ -45,6 +45,43 @@ hooks:
             }
         }
         $c
+    dus: | #c
+        my $h = {
+          ARRAY => {
+            it => sub {
+              my $h = shift;
+              my $i = 0;
+              map { { k => "[".$i++, v => $_ } } @$h
+            },
+            oh => 0,
+          },
+          HASH => {
+            it => sub {
+              my $h = shift;
+              map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
+            },
+          },
+        };
+        my $an = sub {
+            my $k = shift;
+            my $i = $h->{$k} ||= {it => h.HASH.it};
+            %$i = (%$i, @_);
+        };
+        # make so 1.2 means if e>=0.5 traverse with e-=0.2
+        # drops 1 every traversal too...
+        # cept for sometimes when there's a deeper number in e
+        # saying from above via style schema how to curle around
+        # the 1-9, wherever
+        # then anomalies are mapped with names & meaning in stylegrab 78
+        
+        $an->(qw'A oh 0.2');
+        $an->(qw'C oh 0.2');
+        $an->(qw'G oh 0.2');
+        $an->(qw'T oh 0.2');
+        $an->(qw'R oh 0.2');
+
+        $an->(qw'W oh 0.2 mustb','id,hash,file,G');
+        $h
     du: | #c style grab
       $a || die;
       my $R = a.R;
