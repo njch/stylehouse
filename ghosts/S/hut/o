@@ -3,7 +3,7 @@ name: o
 C:
   - K: Hi
 hooks:
-  pre_in: | # sub hostinfos before w in does our hostinfo
+  in_listenings: | # sub hostinfos before w in does our hostinfo
     $G->su('Hi' => sub {
         my $a = shift;
         sayyl "got hi a.m";
@@ -18,12 +18,14 @@ hooks:
             when => $H->hitime,
         };
     });
+    $G->recur(3, sub { saygr " Yep" });
     $G->recur(12, sub {
         my @files = $G->fs_find("ghosts");
         say @files;
         saygr "lies: ".((`wc -l @files`)[-1]  =~ /(\d+) total/)[0];
     });
-
+    G.db = 3;
+    $SIG{INT} = sub { die "HERE" };
   in: |
     $G->timer(6, sub{w Hiwtidy;});
   node:
@@ -75,6 +77,7 @@ hooks:
         $js .= " \$('#ux > #$_').remove();";
     }
     $H->send($js) if $js;
+    say "Done";
     
   reextet: |
     my @also = uniq map { /^H\/(.+)\/.+?$/ } H.r->keys("H/*");
