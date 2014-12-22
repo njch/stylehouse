@@ -170,9 +170,14 @@ hooks:
         }
     
     reextet: | #c
-      
-      $G->timer(1, sub{
-          $H->pub("S/$_", "reexec") for split ',', $m;
-          w reexec;
-      });
+        my @m = grep { $_ ne "H.style/H.name" } split ',', $m;
+        $G->timer(1.3, sub {
+               if (H.name eq "O") {
+                $H->pub("S/hut/Z", "reextet ".join',',@m);
+            }
+            elsif (H.name eq "Z") {
+                $H->pub("S/$_", "reexec") for @m;
+            }
+            w reexec;
+        });
 
