@@ -11,7 +11,7 @@ hooks:
     }
     
     for my $wa ($S->anyway('R')) {
-        w Rwayray[$wa];
+        w Rwayray[$S,$wa];
     }
     
     if (S.load_ways_count == 1) {
@@ -23,20 +23,6 @@ hooks:
       
     $S->w("any_init");
     
-  wayray: | # raise Cs from the dead. pass array of them from the to-be-live C data
-    return unless ref $wa eq "ARRAY";
-    my $i = 0;
-    for my $a (@$wa) {
-        if (ref $a eq "C") {
-            # travel inject
-            die "already";
-        }
-        else {
-            my $c = $wa->[$i] = $G->nw(%$a);
-            c.A->umv('', 'wayray');
-        }
-        $i++;
-    }
   _init_recoded: |
         
         w _init_recoded_Cways[$S] if $S->anyway('recoded_Cways');
@@ -80,47 +66,84 @@ hooks:
     say " - $_" for @$in; 
         
         
+
+  wayray: | # raise Cs from the dead. pass array of them from the to-be-live C data
+    # should use GG after U styleup refact
+    # so GG->nw ...
+    return unless ref $wa eq "ARRAY";
+    my $i = 0;
+    for my $a (@$wa) {
+        if (ref $a eq "C") {
+            # travel inject
+            die "already";
+        }
+        else {
+            my $c = $wa->[$i] = $G->nw(%$a);
+            c.A->umv('', 'Cw');
+        }
+        $i++;
+    }
+  Rwayray: |
+    my $GG = $S;
+    return unless ref $wa eq "ARRAY";
+    my $i = 0;
+    for my $a (@$wa) {
+        if (ref $a eq "C") {
+            # travel inject
+            die "already";
+        }
+        else {
+            my $Rw = $wa->[$i] = $GG->nw(%$a);
+            Rw.A->umv('', 'R_w');
+            # we create lots of these ^ 
+            # but only the one in wa (anyway 'C') is the now
+            w _in_Rw[$Rw, $GG];
+        }
+        $i++;
+    }
+    for my $Rw (map{_.i}@{GG.A.n_Rw||[]}) {
+        my $R = Rw.A.u.i;
+        w _init_R[$R];
+    }
   _init_R: |
     my $GG = R.G;
     my $Rw = $GG->CsK({s=>'R',K=>R.name});
-    R.way = $Rw->spawn;
-  Rwayray: |
-  R_wayray: |
-    my $S; # the R: - source Rway thing rayed
-    my $GG = $G;
-    my $source = "R_sur";
-    my $a = {};
+    return warn "no Rw for R.name" if !$Rw;
     
-    my $Ds=[];
-    for my $Rsur (0->findway("${source}s")) {
-        # passing phase, should beam in
-        push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
-    }
-    die unless @$Ds;
-    
-    my @zs = flatline $G->findway("${source}z");
-    push @$Ds, @zs;
-    @$Ds = grep { !_.spesh } @$Ds;
-    
-    a.Ds = $Ds;
-    a.Dh = {};
-    a.Dz = {};
+    my $a = Rw.rwa;
      # have setting somewhere for whatever
     # fan out all style poss behind the source name
     # then wild R cranking + speshness distill their source from this pool
-    
-    w RZ_Ds_humm[$a];
-    
-    
-    my $R = G.R; # should be the R by now
-    w RZ_Ds_traction[$a, $R, $GG];
+    w RZ_Ds_traction[$a, $R];
     
     R.way ||= R.A->spawn('C');
     R.way.name = "Rw!";
     R.way->from({hooks=>a.Dh});
     
-
+    R.way.A->umk(R.G, 'Rw');
+    
     sayyl "wayrays ".$G->F_delta;
+    
+  _in_Rw: |
+    my $source = Rw.findway;
+    my $a = {};
+    Rw.rwa = $a;
+    
+    my $Ds=[];
+    for my $Rsur ($GG->findway("${source}s")) {
+        # passing phase, should beam in
+        push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+    }
+    push @$Ds, flatline $GG->findway("${source}z");
+    @$Ds = grep { !_.spesh } @$Ds;
+    
+    a.Ds = $Ds;
+    a.Dh = {};
+    a.Dz = {};
+    
+    w RZ_Ds_humm[$a];
+    
+    
   RZ_Ds_humm: |
     a.bb = {};
     my $Ds = a.Ds;
@@ -181,7 +204,7 @@ hooks:
     
     # 7
     my $Dz = a.Dz;
-    my @r = w stylekeysort(d=>a.bb);
+    my @r = R.G w stylekeysort(d=>a.bb);
     for my $r (@r) {
         my $b = a.bb->{$r};
         my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
