@@ -140,40 +140,6 @@ hooks:
     
 
     sayyl "wayrays ".$G->F_delta;
-  RZ_Ds_traction: |
-    # pool the style of code together for this R crazy
-    # look at each $r in the source style way dimension
-    
-    # 7
-    my $Dz = a.Dz;
-    my @r = w stylekeysort(d=>a.bb);
-    for my $r (@r) {
-        my $b = a.bb->{$r};
-        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
-        if ($com) {
-            # should just attach them near the style
-            # with one more phase of comment joining
-            # also non-replace mode, maybe something of z D namespace
-            exists $Dz->{$l}->{$vo} || die;
-            my $v = $Dz->{$l}->{$vo};
-            $com = "# $vo $com".($b ? " $b" : "");
-            $v = "$com\n$v";
-            $Dz->{$l}->{$vo} = $v;
-        }
-        else {
-            $Dz->{$l}->{$vo} = $b;
-        }
-    }
-    
-    # 8
-    my $Dh = a.Dh;
-    while (my ($l, $bz) = each %$Dz) {
-        my $ac = join'',map{"{$_"}split'/',$l;
-        
-        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
-        
-        $R->loadup($Dh, $ac, $babble);
-    }
   RZ_Ds_humm: |
     a.bb = {};
     my $Ds = a.Ds;
@@ -228,6 +194,41 @@ hooks:
               } 
           }
         }
+  RZ_Ds_traction: |
+    # pool the style of code together for this R crazy
+    # look at each $r in the source style way dimension
+    
+    # 7
+    my $Dz = a.Dz;
+    my @r = w stylekeysort(d=>a.bb);
+    for my $r (@r) {
+        my $b = a.bb->{$r};
+        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
+        if ($com) {
+            # should just attach them near the style
+            # with one more phase of comment joining
+            # also non-replace mode, maybe something of z D namespace
+            exists $Dz->{$l}->{$vo} || die;
+            my $v = $Dz->{$l}->{$vo};
+            $com = "# $vo $com".($b ? " $b" : "");
+            $v = "$com\n$v";
+            $Dz->{$l}->{$vo} = $v;
+        }
+        else {
+            $Dz->{$l}->{$vo} = $b;
+        }
+    }
+    
+    # 8
+    my $Dh = a.Dh;
+    while (my ($l, $bz) = each %$Dz) {
+        my $ac = join'',map{"{$_"}split'/',$l;
+        
+        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
+        
+        $R->loadup($Dh, $ac, $babble);
+    }
+
   stylekeysort: |
       my @r = sort keys %$d;
       
