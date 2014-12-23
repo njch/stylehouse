@@ -75,14 +75,14 @@ hooks:
          }
          B.m;
     flows_D: |
-       $R = B.R = G.theR;
-       R.theD = $S;
-       R.A->umv("", "R");
-       S.A->umk($R, "Doer");
+      G.theR = $G->R('sur');
+      $R = B.R = G.theR;
+      R.theD = $S;
+      R.A->umv("", "R");
+      S.A->umk($R, "Doer");
        
-       w $R setup;
+      w $R setup;
   fresh_init: |
-    G.theR = $G->R('sur');
     w ikey;
   any_init: |
     w R_wayray;
@@ -105,129 +105,8 @@ hooks:
     my $a = {%$ar};
     w $R Sud/in[$a];
  
-  R_wayray: |
-    my $S; # the R: - source Rway thing rayed
-    my $GG = $G;
-    my $R = G.theR;
-    my $source = "R_sur";
-    my $a = {};
-    
-    my $Ds=[];
-    for my $Rsur (0->findway("${source}s")) {
-        # passing phase, should beam in
-        push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
-    }
-    die unless @$Ds;
-    
-    my @zs = flatline $G->findway("${source}z");
-    push @$Ds, @zs;
-    @$Ds = grep { !_.spesh } @$Ds;
-    
-    a.Ds = $Ds;
-    a.Dh = {};
-    a.Dz = {};
-     # have setting somewhere for whatever
-    # fan out all style poss behind the source name
-    # then wild R cranking + speshness distill their source from this pool
-    
-    w RZ_Ds_humm[$a];
-    
-    w RZ_Ds_traction[$a, $R, $GG];
-    
-    R.way ||= R.A->spawn('C');
-    R.way.name = "Rw!";
-    R.way->from({hooks=>a.Dh});
-    
-
-    sayyl "wayrays ".$G->F_delta;
-  RZ_Ds_humm: |
-    a.bb = {};
-    my $Ds = a.Ds;
-    
-        @$Ds = map { 
-            my $D = $_;
-            !ref D.D ? $D : do {
-                my $_K = D.K;
-                map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D}
-            }
-        } @$Ds;
-        
-        die "durp" if @$Ds != uniq map {_.K} @$Ds;
-        
-        for my $D (grep {_.D} @$Ds) {
-            my $i = 0.001;
-            my @cs;
-            my $up = sub {
-                a.bb->{"D.K $i"} = join "\n", @cs if @cs;
-                @cs = ();
-            };
-            for my $l (split "\n", D.D) {
-                if ($l =~ /^\s*# (\d\S*)/) {
-                    my $ni = $1;
-                    $up->();
-                    $i = $ni;
-                }
-                push @cs, $l;
-            }
-            $up->();
-        }
-
-        for my $D (grep {_.n_D} @$Ds) {
-            # TODO want to be R centric, make style for these.....
-            a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
-            a.Dh->{D.K} = D.n_D;
-        }
 
 
-        for my $D (grep {_.babz} @$Ds) {
-          for my $ba (keys %{D.babz}) {
-              my $b = D.babz->{$ba};
-              my $l = $ba;
-              if ($l =~ s/(\#\S+)//) {
-                  a.bb->{$ba} = undef;
-              }
-              if (ref $b) {
-                  #b.from # style grab, additive
-              }
-              else {
-                  a.bb->{$l} = $b;
-              } 
-          }
-        }
-  RZ_Ds_traction: |
-    # pool the style of code together for this R crazy
-    # look at each $r in the source style way dimension
-    
-    # 7
-    my $Dz = a.Dz;
-    my @r = w stylekeysort(d=>a.bb);
-    for my $r (@r) {
-        my $b = a.bb->{$r};
-        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
-        if ($com) {
-            # should just attach them near the style
-            # with one more phase of comment joining
-            # also non-replace mode, maybe something of z D namespace
-            exists $Dz->{$l}->{$vo} || die;
-            my $v = $Dz->{$l}->{$vo};
-            $com = "# $vo $com".($b ? " $b" : "");
-            $v = "$com\n$v";
-            $Dz->{$l}->{$vo} = $v;
-        }
-        else {
-            $Dz->{$l}->{$vo} = $b;
-        }
-    }
-    
-    # 8
-    my $Dh = a.Dh;
-    while (my ($l, $bz) = each %$Dz) {
-        my $ac = join'',map{"{$_"}split'/',$l;
-        
-        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
-        
-        $R->loadup($Dh, $ac, $babble);
-    }
 
   stylekeysort: |
       my @r = sort keys %$d;
