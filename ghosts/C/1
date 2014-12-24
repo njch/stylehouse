@@ -62,7 +62,7 @@ hooks:
       my $j;
       j.r = $r;
       j.s = $d->{$r};
-      (j.t, j.cv) = split /\s+/, j.r, 2;
+      (j.t, j.cv) = j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2) : split /\s+/, j.r, 2;
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
@@ -141,10 +141,10 @@ hooks:
                 c.HASH = 1 if $ref eq "HASH";
                 c.CODE = 1 if $ref eq "CODE";
                 c.canpi = 1 if !%$c && $u->can('pi');
-                for (qw'A C G T     R') {
+                for (qw'A C G T     R   J') {
                       $c->{$_} = 1 if $ref eq $_;
                 }
-                c.ref = $ref if !%$c;
+                c.ref = $ref;
             }
             else {
                 if (ref \$u eq 'SCALAR') {
@@ -218,20 +218,18 @@ hooks:
       $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
       $is ||= $s->{default} || return {};
       
-      my $mustb = { map { $_ => 1 } split ',', is.mustb } if is.mustb;
-      
       for my $j (is.it->($i)) {
           my $k = delete j.k;
           my $K = delete j.K;
           my $v = delete j.v;
           
           $j = {%$is, %$j};
-          my $an = {%$a, i => $v};
           
           my $ohms = defined j.oh ? j.oh
               : defined is.oh ? is.oh
             : 1;
           
+          my $an = {%$a, i => $v};
           an.e -= $ohms;
           
           my $rk = join "\t", $k, an.e;
@@ -249,13 +247,6 @@ hooks:
                   $c->{$nk} = $vu;
               }
           }
-          elsif (an.e > 0 && an.e < 1 && $mustb && !$mustb->{$K}) {
-              delete $c->{$rk};
-          }
-      }
-      
-      if (R.a == $a) {
-          R.a.d = $c;
       }
       
       # this is about a 4 - material for links
