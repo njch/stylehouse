@@ -32,11 +32,10 @@ hooks:
     waylay H_created;
   pur_GAK: | #c
             my ($k, @w) = split ' ', p.GAK;
-            my $w = join ' ', @w;
-            $w ||= $k;
+            @w = $k if !@w;
             
             if (!GG.GG->{$k}) {
-                $GG->GAK($k, GG.A->spawn(G=>$w));
+                $GG->GAK($k, GG.A->spawn(G=>@w));
                 sayyl "Put ".GG.GG->{$k}->pi." down";
             }
             
