@@ -105,23 +105,25 @@ hooks:
     - K: adu #c
       babz:
         'S 3.1': | 
+          #a.i = [a.i->anyway('hooks')];
           my $d = w $R du;
         'S#aduhummings 4.01': |
           w $R adu/humms[$a, $d];
       n_D:
         humms: |
-          my @r = w stylekeysort[$d]; 
+          my @r = w stylekeysort[$d];
           my $si = @r;
           my @i = w wind[$si];
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
               my $j = w $R shj[$r, $d];
+              
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
-              if ($i > 0) {
-                   a.bz->("${li}_Bs 0.3 0.3${li}0" => "\n");
-              }
+              
+              a.bz->("${li}_Bs 0.3 0.3${li}0" => "\n") if $i > 0;
+                   
               a.bz->("${li}_li 0.3 0.3${li}1", j.li,
                   '%sf', 'blue_fs120');
 
@@ -142,6 +144,39 @@ hooks:
               $i++; 
 
           }
+    - K: sur0 #c
+      babz:
+         'S 4.1': |
+            a.fro->('H 0.01' => $H, 0.2);
+
+            a.fro->('G 0.02' => $G, 0.2);
+
+            a.fro->('R 0.11' => $R, 0.2);
+
+            # 4.2
+            a.fro->('R_J_from 0.12' => R.J.from, 0.2);
+
+            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
+
+            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
+
+            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
+
+            a.bz->('Js 0.29' => "\n");
+            
+    - K: chr0 #c
+      spesh: 0
+      babz:
+         'S 4.01': |
+           for my $i (1..10) {
+               my $c;
+               for my $ii (1..25) {
+                   $c = ($i * 100) + $ii;
+                   my $ch = eval '"\x{'.$c.'}"';
+                   a.bz->("ch_$c 3.011" , $ch);
+               }
+               a.bz->("ch_${c}_nl 3.011" => "\n");
+           }
     - K: piu #c
       babz:
         'S#piuni 4.02': |
@@ -191,12 +226,10 @@ hooks:
 
         D: |
                 sayre "Yeahp";
-                my $P = Load(<<'');
-                 - GAK: deadC C C/nv
-
-                H.G w percs[$P];
+                my $with = "C/nv";
+                $H->pub("S/hut/C", "percC $with");
         S: |
-                my ($GG) = grep { $_ ne $G && _.name eq "C" } @{H.G.GGs};
+                my ($GG) = grep { $_ ne $G && _.name =~ /^C(?!\/)/} @{H.G.GGs};
                 die "No other G named 'C'" unless $GG;
                 my $otheR = $GG w are;
                 w $R Sud/in(i=>$otheR);
