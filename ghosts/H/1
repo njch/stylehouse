@@ -7,7 +7,7 @@ hooks:
     $S->w("load_ways_post");
     
     for my $wa ($S->anyway('C')) {
-        w wayray[$wa];
+        w wayray[$S,$wa];
     }
     
     for my $wa ($S->anyway('R')) {
@@ -64,8 +64,8 @@ hooks:
     say " - $_" for @$in; 
         
         
-
-  wayray: | # raise Cs from the dead. pass array of them from the to-be-live C data
+  wayray: | # raise Cs from the dead
+    # pass the each C: array of them from the way
     # should use GG after U styleup refact
     # so GG->nw ...
     return unless ref $wa eq "ARRAY";
@@ -76,7 +76,7 @@ hooks:
             die "already";
         }
         else {
-            my $c = $wa->[$i] = $G->nw(%$a);
+            my $c = $wa->[$i] = $S->nw(%$a);
             c.A->umv('', 'Cw');
         }
         $i++;
@@ -104,12 +104,13 @@ hooks:
         w _init_R[$R];
     }
   _init_R: |
+    return if !R.name;
     my $GG = R.G;
     my $Rw = $GG->CsK({s=>'R',K=>R.name});
     return warn "no Rw for R.name" if !$Rw;
     
     my $a = Rw.rwa;
-     # have setting somewhere for whatever
+    # have setting somewhere for whatever
     # fan out all style poss behind the source name
     # then wild R cranking + speshness distill their source from this pool
     w RZ_Ds_traction[$a, $R];
