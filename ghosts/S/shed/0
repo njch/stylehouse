@@ -155,7 +155,12 @@ hooks:
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
     saybl " < ".slim(30,30,$m);
-    for my $Elvis (ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis) {
+    
+    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
+    $e[-1]->[1] = $cb if $cb;
+    
+    for my $e (@e) {
+        my ($Elvis,$cb) = @$e;
         w $Elvis send[$m, $cb];
     }
   elvis_leaves: |
