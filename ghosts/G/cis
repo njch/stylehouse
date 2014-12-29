@@ -9,4 +9,22 @@ Ds:
                 $C->from($win);
             }
         }
+  - K: D_to_style #c
+    D: |
+      my ($D, $bb) = @_;
+            my $i = 0.001;
+            my @cs;
+            my $up = sub {
+                $bb->{"D.K $i"} = join "\n", @cs if @cs;
+                @cs = ();
+            };
+            for my $l (split "\n", D.D) {
+                if ($l =~ /^\s*# (\d\S*)/) {
+                    my $ni = $1;
+                    $up->();
+                    $i = $ni;
+                }
+                push @cs, $l;
+            }
+            $up->();
 

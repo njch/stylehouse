@@ -124,7 +124,17 @@ hooks:
           #a.i = [a.i->anyway('hooks')];
           a.e ||= R.S.e || die;
           my $d = w $R du;
-          $d->{'_ 0.8'} = wdump(a.i);
+          if (!%$d) {
+            if (!ref a.i) {
+              my $sd = {};
+              $G->D_to_style({K=>"s",D=>a.i}, $sd);
+              for my $k (keys %$sd) {
+                my $v = $sd->{$k};
+                my ($ind) = $k =~ /^s (.+)$/;
+                $d->{"^$ind 0.2"} = $v;
+              }
+            }
+          }
         'S#aduhummings 4.01': |
           w $R adu/humms[$a, $d];
       n_D:
@@ -185,28 +195,21 @@ hooks:
     - K: Q #c
       key:
         SR: Redisy
-        W: way
+        W: W
         G: G
         F: F
         D: D
         S: S
       n_D:
         G: |
-              w $R Sud/in(i=>$R);
+          w $R Sud/in(i=>$R,t=>'{way{hooks{S');
         Redisy: |
               R.J = {
                 from => [reverse sort H.r->keys("*")],
               }
-        way: |
-          use Unicode::UCD 'charinfo';
-          my $n = 8036;
-          my $h = sprintf("%x", $n);
-          R.J = { from => {it => eval '"\\x{'.$h.'}"', in => charinfo($n)}};
-          return;
-              R.J = {
-                  from => $R,
-                  trav => '{way',
-              };
+        W: |
+          my $n = int rand 30000;
+          R.J = { from => [unico($n,1)]};
         F: |
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;

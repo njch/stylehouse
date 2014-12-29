@@ -165,21 +165,7 @@ hooks:
         die "durp" if @$Ds != uniq map {_.K} @$Ds;
         
         for my $D (grep {_.D} @$Ds) {
-            my $i = 0.001;
-            my @cs;
-            my $up = sub {
-                a.bb->{"D.K $i"} = join "\n", @cs if @cs;
-                @cs = ();
-            };
-            for my $l (split "\n", D.D) {
-                if ($l =~ /^\s*# (\d\S*)/) {
-                    my $ni = $1;
-                    $up->();
-                    $i = $ni;
-                }
-                push @cs, $l;
-            }
-            $up->();
+            $G->D_to_style($D, a.bb);
         }
 
         for my $D (@$Ds) {
