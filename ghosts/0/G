@@ -6,9 +6,14 @@ Ds:
     style: nonbabble
     D: |
       use YAML::Syck;
-      use Scriptalicious;
       use Mojo::Pg;
       use List::MoreUtils 'natatime';
+      use File::Slurp;
+      use JSON::XS;
+      use YAML::Syck;
+      use HTML::Entities;
+      use List::Util qw(first max maxstr min minstr reduce shuffle sum);
+      use List::MoreUtils qw(natatime uniq);
       # use Mojo::IOLoop::ForkCall; # see para
       our $swdepth = 5;
       our $T; # allele tower... not like so, again R above
@@ -24,12 +29,6 @@ Ds:
       # ^ curves should optimise away, accordion
       
       #c to dry up
-        use File::Slurp;
-        use JSON::XS;
-        use YAML::Syck;
-        use HTML::Entities;
-        use List::Util qw(first max maxstr min minstr reduce shuffle sum);
-        use List::MoreUtils 'uniq';
         
         sub ddump { H::ddump(@_) }
         sub wdump { H::wdump(@_) }
