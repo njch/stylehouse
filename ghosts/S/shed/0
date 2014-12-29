@@ -18,20 +18,6 @@ hooks:
       $p += 8000;
       say "Sport: $p";
       $p;
-  honk: |
-      $H->send('.'. (("  ")x int(2 + rand 3))."!!!");
-       
-  pull_conin: | # head receives the headless
-    saygr "H.style/H.name        pulls conin     $m";
-    my ($style, $name, $id, $conin) = split ' ', $m;
-    die "mal cone push: '$m'" if !$conin;
-    H.G w z/coninto[$conin];
-    
-  push_conin: | # the headless seeks heads
-    saygr "H.style/H.name        pushes conin";
-    $H->pub("S", "push_conin H.style H.name H.id H.listen_ws");   
-
-      
 
   Elvis: #
       # here we want to graph things out real careful
@@ -124,18 +110,7 @@ hooks:
     
   websocket: | # Mojo throws connection over here
     0->TafuB(Elvis => {tx => $M->tx, M => $M});
-  websockout: | # we make websockets out # BROKE
-    Say "Ws out $conin";
-    use Mojo::UserAgent;
-    my $ua = Mojo::UserAgent->new;
-    $ua->websocket($conin => sub {
-      my ($ua, $tx) = @_;
-      die "HELLO!";
-      die "WebSocket handshake failed! $conin" and return unless $tx->is_websocket;
-      Say "Connecto!";
-      ua.Elvis = 0->TafuB(Elvis => {tx => $tx, M => $tx, %$ar});
-    });
-    $ua;
+
   z:
     getgeometry: |
       $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");

@@ -339,7 +339,6 @@ Ds:
         
         $_->() for @{D._after_do||[]};
         
-        @Flab = ();
         shift @F;
         
         $D
@@ -420,7 +419,6 @@ Ds:
                     #$G->Flab("Stack Return Error", $s, $@);
                     $s->{Error} = $@;
                 }
-                $s->{Flab} = [@Flab];
                 
                 if ($s->{_after_do}) {
                     $_->() for @{$s->{_after_do}};
@@ -429,7 +427,6 @@ Ds:
                 my $te = $@; $@ = "";
                 $G->ob("/", $s);
                 $@ = $te;
-                @Flab = ();
                 $s
             };
             wantarray ? ($unway, $s) : $unway;
