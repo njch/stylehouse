@@ -102,16 +102,51 @@ hooks:
         'S#keybas 3.32': |
           a.bz->('keybas 3.32', "Yogo R.thedoings!");
       
+
+    - K: self_Jness #c
+      babz:
+         'S 4.1': |
+            a.fro->('H 0.01' => $H, 0.2);
+
+            a.fro->('G 0.02' => $G, 0.2);
+
+            a.fro->('R 0.11' => $R, 0.2);
+         'S 4.2': |
+            a.fro->('R_J_from 0.12' => R.J.from, 0.2);
+
+            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
+
+            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
+
+            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
+
+            a.bz->('Js 0.29' => "\n");
+            
+    - K: Jto #c
+      babz:
+        'S#unifromA 1.0134': |
+          my $unifro = {
+              i => R.J.from || die,
+              t => R.J.trav || "",
+          };
+          R.a.i ||= w $R uni(%$unifro);
+    - K: dusmatic #c
+      babz:
+        'S 2.1004': |
+          a.s = R.S.s || w $R dus;
+          a.s.HASH.oh = 0.2;
+          a.tr.rowlimit = R.S.rowlimit || 9*4;
     - K: adu #c
       babz:
         'S 3.1': | 
           #a.i = [a.i->anyway('hooks')];
+          a.e ||= R.S.e || die;
           my $d = w $R du;
         'S#aduhummings 4.01': |
           w $R adu/humms[$a, $d];
       n_D:
         humms: |
-          my @r = w stylekeysort[$d];
+          my @r = w stylekeysort[$d]; 
           my $si = @r;
           my @i = w wind[$si];
           my $ro = R.a.ro = {}; # wind round
@@ -121,6 +156,7 @@ hooks:
               
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
+              #my $z = a.bz->("$li 
               
               a.bz->("${li}_Bs 0.3 0.3${li}0" => "\n") if $i > 0;
                    
@@ -144,59 +180,6 @@ hooks:
               $i++; 
 
           }
-    - K: sur0 #c
-      babz:
-         'S 4.1': |
-            a.fro->('H 0.01' => $H, 0.2);
-
-            a.fro->('G 0.02' => $G, 0.2);
-
-            a.fro->('R 0.11' => $R, 0.2);
-
-            # 4.2
-            a.fro->('R_J_from 0.12' => R.J.from, 0.2);
-
-            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
-
-            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
-
-            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
-
-            a.bz->('Js 0.29' => "\n");
-            
-    - K: chr0 #c
-      spesh: 0
-      babz:
-         'S 4.01': |
-           for my $i (1..10) {
-               my $c;
-               for my $ii (1..25) {
-                   $c = ($i * 100) + $ii;
-                   my $ch = unico($c);
-                   a.bz->("ch_$c 3.011" , $ch);
-               }
-               a.bz->("ch_${c}_nl 3.011" => "\n");
-           }
-    - K: piu #c
-      babz:
-        'S#piuni 4.02': |
-          my $i_pi = {R=>$R, u=>a.i, cv=>0.4};
-          w $R gp(a => $i_pi);
-          a.bb->{'000_ley%gp 0.01'} = $i_pi;
-    - K: sea #c
-      babz:
-        'S 2.1004': |
-          a.s = R.S.s || w $R dus;
-          a.s.HASH.oh = 0.2;
-          a.tr.rowlimit = R.S.rowlimit || 9*4;
-    - K: Aun #c
-      babz:
-        'S#unifromA 1.0134': |
-          my $unifro = {
-              i => R.J.from || die,
-              t => R.J.trav || "",
-          };
-          R.a.i ||= w $R uni(%$unifro);
     - K: Q #c
       key:
         SR: Redisy
@@ -238,6 +221,19 @@ hooks:
                 die "No other G named 'C'" unless $GG;
                 my $otheR = $GG w are;
                 w $R Sud/in(i=>$otheR);
+    - K: chr0 #c
+      spesh: 1
+      babz:
+         'S 4.01': |
+           for my $i (1..10) {
+               my $c;
+               for my $ii (1..25) {
+                   $c = 250 + ($i * 100) + $ii;
+                   my $ch = unico($c);
+                   a.bz->("ch_$c 3.011" , $ch);
+               }
+               a.bz->("ch_${c}_nl 3.011" => "\n");
+           }
     - K: Vit #c
       key: {E: up, R: down}
       n_D:
@@ -269,7 +265,7 @@ hooks:
     - K: Sud #c
       n_D:
             in: |    # ebrace flying embryo J
-                my $a = ar.a || $ar;
+                my $a = $ar;
                 R.J = { from => a.i };
                 R.J.trav = a.t if a.t;
     
