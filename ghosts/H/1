@@ -99,30 +99,11 @@ hooks:
         }
         $i++;
     }
+    sayyl "Cot here";
     for my $Rw (map{_.i}@{GG.A.n_Rw||[]}) {
         my $R = Rw.A.u.i;
         w _init_R[$R];
     }
-  _init_R: |
-    return if !R.name;
-    my $GG = R.G;
-    my $Rw = $GG->CsK({s=>'R',K=>R.name});
-    return warn "no Rw for R.name" if !$Rw;
-    
-    my $a = Rw.rwa;
-    # have setting somewhere for whatever
-    # fan out all style poss behind the source name
-    # then wild R cranking + speshness distill their source from this pool
-    w RZ_Ds_traction[$a, $R];
-    
-    R.way ||= R.A->spawn('C');
-    R.way.name = "Rw!R.name";
-    R.way->from({hooks=>a.Dh});
-    
-    R.way.A->umk(R.G, 'Rw');
-    
-    sayyl "wayrays ".$G->F_delta;
-    
   _in_Rw: |
     my $source = Rw.findway;
     my $a = {};
@@ -143,6 +124,27 @@ hooks:
     w RZ_Ds_humm[$a];
     
     
+  _init_R: |
+    return if !R.name;
+    my $GG = R.G;
+    my $Rw = $GG->CsK({s=>'R',K=>R.name});
+    return warn "no Rw for R.name" if !$Rw;
+    
+    my $a = Rw.rwa;
+    # have setting somewhere for whatever
+    # fan out all style poss behind the source name
+    # then wild R cranking + speshness distill their source from this pool
+    w RZ_Ds_traction[$a, $R];
+    
+    R.way ||= R.A->spawn('C');
+    R.way.name = "Rw!R.name";
+    saybl "RE waying ".$R->pi;
+    R.way->from({hooks=>a.Dh});
+    
+    R.way.A->umk(R.G, 'Rw');
+    
+    sayyl "wayrays ".$G->F_delta;
+    
   RZ_Ds_humm: |
     a.bb = {};
     my $Ds = a.Ds;
@@ -152,6 +154,12 @@ hooks:
             !ref D.D ? $D : do {
                 my $_K = D.K;
                 map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D}
+            }
+        } map { 
+            my $D = $_;
+            !D.n_D ? $D : do {
+                my $_K = D.K;
+                $D, map { { K=>"$_K/$_", D=>D.n_D->{$_} } } keys %{D.n_D}
             }
         } @$Ds;
         
@@ -175,10 +183,8 @@ hooks:
             $up->();
         }
 
-        for my $D (grep {_.n_D} @$Ds) {
-            # TODO want to be R centric, make style for these.....
+        for my $D (@$Ds) {
             a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
-            a.Dh->{D.K} = D.n_D;
         }
 
 

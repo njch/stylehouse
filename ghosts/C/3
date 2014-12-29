@@ -165,14 +165,14 @@ hooks:
             a.bz->('Js 0.29' => "\n");
             
     - K: chr0 #c
-      spesh: 1
+      spesh: 0
       babz:
          'S 4.01': |
            for my $i (1..10) {
                my $c;
                for my $ii (1..25) {
                    $c = ($i * 100) + $ii;
-                   my $ch = eval '"\x{'.$c.'}"';
+                   my $ch = unico($c);
                    a.bz->("ch_$c 3.011" , $ch);
                }
                a.bz->("ch_${c}_nl 3.011" => "\n");
@@ -214,7 +214,10 @@ hooks:
               }
         way: |
           use Unicode::UCD 'charinfo';
-          R.J = { from => {it => "\x{102a}", in => charinfo(0x105a)}};
+          my $n = 8036;
+          my $h = sprintf("%x", $n);
+          R.J = { from => {it => eval '"\\x{'.$h.'}"', in => charinfo($n)}};
+          return;
               R.J = {
                   from => $R,
                   trav => '{way',

@@ -15,6 +15,7 @@ Ds:
       use HTML::Entities;
       use List::Util qw(first max maxstr min minstr reduce shuffle sum);
       use List::MoreUtils qw(natatime uniq);
+      use Unicode::UCD 'charinfo';
       # use Mojo::IOLoop::ForkCall; # see para
       our $swdepth = 5;
       our $T; # allele tower... not like so, again R above
@@ -487,6 +488,17 @@ Ds:
           $s .= "   $k=$v";
       }
       $s
+      
+  - K: unico #c
+    style: func
+    D: |
+      my ($int, $wantinfo) = @_;
+      my $h = sprintf("%x", $int);
+      my @s = eval '"\\x{'.$h.'}"';
+      push @s, charinfo($int) if $wantinfo;
+      wantarray ? @s : shift @s
+      
+      
       
   - K: flatline #c
     style: func
