@@ -335,13 +335,21 @@ Ds:
     D: |
         my $D = shift;
         sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
-        D.Error = $@ if $@;
+        
+        my $e = $G->Duck($D, $@) if $@;
         
         $_->() for @{D._after_do||[]};
         
         shift @F;
         
+        die $e if $e;
+        
         $D
+  - K: Duck #c
+    D: |
+        my ($D,$dolat) = @_;
+        
+        
   - K: timer #c coming, going
     D: |
             my $time = shift || 0.001;
