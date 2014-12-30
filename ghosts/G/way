@@ -140,7 +140,7 @@ Ds:
         
         if (a.D) {
             die unless ref a.D eq "CODE";
-            return ["???", a.D];
+            return {evs=>"?????????????????", sub=>a.D};
         }
         
         my $uuname = join " ",
@@ -152,7 +152,7 @@ Ds:
         my $ha = $H->dig($uuname);
         die unless length($ha) == 40;
             
-        my $Ds = $D_cache{$ha};
+        my $Ds = G0.Dscache->{$ha};
         return $Ds if $Ds;
         
         my $eval = $G->parse_babble(a.bab, a.point);
@@ -179,10 +179,13 @@ Ds:
         .'return @doo_return };';
 
         $sub = $G->Doe($evs, $ar);
+            
+        $@ = "nicht kompilieren!\n\n$@" if $@;
+        
+        $Ds = {evs=>$evs, sub=>$sub, ha=>$ha};
 
-        $Ds = [ $evs, $sub ];
         if (!$@ && ref $sub eq "CODE") {
-            $D_cache{$ha} = $Ds;
+            G0.Dscache->{$ha} = $Ds;
         }
         else {
             a.bungeval = $evs;
@@ -210,13 +213,12 @@ Ds:
             }
 
             my $Ds = $G->Dm($a);
-            my ($evs, $sub) = @$Ds; 
+            a.Ds = $Ds;
+            my ($evs, $sub) = (Ds.evs, Ds.sub);
                 
             # TODO rewayen
             a.name = "D";
             my $D = $G->Doming($a);
-            
-            my $komptalk = "nicht kompilieren! nicht kompilieren!\n $@" if $@;
             
             H.sigstackend ||= sub {
                 local $@;
@@ -247,77 +249,9 @@ Ds:
                 eval { @return = $sub->(a.ar) }
             }
             
-            $G->Done($D); #c D
+            $G->Done($D); # Ducks
             D.r = [@return];
             
-            if ($@) { #     DOO DOO # # TODO di, 0ish
-                my ($x) = $@ =~ /line (\d+)/;
-                $x = $1 if $@ =~ /syntax error .+ line (\d+), near/;
-                my $file = $1 if $@ =~ /at (\S+) line/;
-                undef $file if $file && $file =~ /\(eval \d+\)/;
-                undef $file if $file && !-f $file;
-                my $perl = $H->slurp($file) if $file;
-                $perl ||= $evs;
-                
-                my $eval = "";
-                $eval .= "$file\n" if $file;
-                my @eval = split "\n", $perl;
-                my $xx = 0;
-                $x -= 3 if $x;
-                shift @eval for 1..3;
-                pop @eval for 1..3;
-                my $whole = @eval < 20;
-                for (@eval) {
-                    $xx++;
-                    
-                        if (!defined $x) {
-                            $eval .= ind("⊘  ", $_)."\n"
-                        }
-                        elsif ($xx == $x) {
-                            $eval .= ind("⊘  ", $_)."\n";
-                            my $bab = (split"\n",a.bab)[$x -1];
-                            if ($bab ne $_) {
-                                $eval .= ind("⊖r ", $bab)."\n";
-                            }
-                        }
-                        elsif (!$whole && $xx > $x-5 && $xx < $x+5) {
-                            $eval .= ind("|  ", $_)."\n"
-                        }
-                        elsif ($whole) {
-                            $eval .= ind("|  ", $_)."\n"
-                        }
-                }
-                my $DOOF; 
-                my $first = 1 unless $@ =~ /DOOF/;
-                
-                $DOOF .= "DOOF ".sprintf("%-24s",
-                    $G->{name}." ".(ar.S ? "S=".gpty(ar.S) :"")
-                );
-                $DOOF .= " w"." a.point  ".join(", ", keys %$ar)."\n";;
-                if ($first) {
-                    if (exists $D->{SigDieStack}) {
-                        warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
-                        $DOOF .= "\n";
-                        my $i = "  ";
-                        for my $s ( reverse flatline($D->{SigDieStack}) ) {
-                            $DOOF .= "$i- $s\n";
-                            $i .= "  ";
-                        }
-                    }        
-                    $DOOF .= "\n$eval\n";
-                }
-                $DOOF .= ind("E    ", "\n$komptalk$@\n\n")."\n\n"     if $first;
-                $DOOF .= ind("!   ", "$@")."\n"             if !$first;
-                $DOOF .= ind("ar  ",wdump(1,$ar))             if $first;
-                
-                my $OOF = $G->Flab("D Error $@", $DOOF, $D);
-                if ($first) {
-                    #$H->error($OOF);
-                }
-                $D->{Error} = $DOOF;
-                $@ = $DOOF;
-                die "$@";
-            }
             
             return wantarray ? @return : shift @return
   - K: Doming #c
@@ -335,21 +269,119 @@ Ds:
     D: |
         my $D = shift;
         sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
-        
-        my $e = $G->Duck($D, $@) if $@;
+        D.dolat = $@ if $@;
         
         $_->() for @{D._after_do||[]};
         
         shift @F;
         
-        die $e if $e;
+        $G->Duck($D) if $@;
+        $_->() for @{G0._aft_err_do||[]};
+        
         
         $D
   - K: Duck #c
     D: |
-        my ($D,$dolat) = @_;
+        my $D = shift;
+        my $evs = D.Ds.evs;
+        my $ar = D.ar;
+                
+                
+                my $DOOF; 
+                my $first = 1 unless $@ =~ /DOOF/;
+                
+                $DOOF .= "DOOF ".sprintf("%-24s",
+                    $G->{name}." ".(ar.S ? "S=".gpty(ar.S) :"")
+                );
+                $DOOF .= " w"." a.point  ".join(", ", keys %$ar)."\n";
+                
+                
+                if ($first) {
+                    my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+                        || $@ =~ /line (\d+)/;
+
+                    my $file = $1 if $@ =~ /at (\S+) line/;
+
+                    undef $file if $file && $file =~ /\(eval \d+\)/;
+                    undef $file if $file && !-f $file;
+
+                    my $code = $file ? $H->slurp($file) : $evs;
+                    
+                    my $eval = $G->Duckling($x, $code) if $first;
+                    
+                    if (exists $D->{SigDieStack}) {
+                        warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
+                        $DOOF .= "\n";
+                        my $i = "  ";
+                        for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                            $DOOF .= "$i- $s\n";
+                            $i .= "  ";
+                        }
+                    }        
+                    $DOOF .= "\n$eval\n";
+                }
+                
+                if ($first) {
+                    $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+                }
+                
+                if (!$first) {
+                    $DOOF .= ind("!   ", "$@")."\n";
+                }
+                if ($first) {
+                    $DOOF .= ind("ar  ",wdump(1,$ar));
+                }
+                
+                D.Error = $DOOF;
+                $@ = $DOOF;
+                
+                if (@F == 1) {
+                    sayyl "At top!";
+                    # send it away
+                    sayre $@;
+                    $_->() for @{G0._aft_err_do||[]};
+                }
+                
+                die $@;
+  - K: Duckling #c
+    D: |
+        my ($line, $code) = @_;
+        
+        my $diag = "";
+        my @code = split "\n", $code;
+        my $whole = @code < 30;
         
         
+        #        $line -= 3 if $line;
+        #        shift @eval for 1..3;
+        #        pop @eval for 1..3;
+        sayre $code if $whole;
+        
+        
+        my $xx = 0;
+        for (@code) {
+            $xx++;
+            if (!defined $line) {
+                $diag .= ind("⊘  ", $_)."\n"
+            }
+            elsif ($xx == $line) {
+                $diag .= ind("⊘  ", $_)."\n";
+                
+                my $bab = (split"\n",a.bab)[$line -1];
+                if ($bab ne $_) {
+                    $diag .= ind("⊖r ", $bab)."\n";
+                }
+            }
+            elsif (!$whole && $xx > $line-5 && $xx < $line+5) {
+                $diag .= ind("|  ", $_)."\n"
+            }
+            elsif ($whole) {
+                $diag .= ind("|  ", $_)."\n"
+            }
+        }
+        
+        $diag
+      
   - K: timer #c coming, going
     D: |
             my $time = shift || 0.001;

@@ -56,8 +56,9 @@ hooks:
             H.db = H.pg->db;
             # child must exit, after reporting error
             # so nothing else can happen. listening db handle gone anyway?
-            0->accum(G, _after_do => sub{ exit });
+            0->accum($G0, _aft_err_do => sub{ saygr "yep"; sleep 2; exit });
             sayyl "pier Forked... ";
+            
             
             my @js;
             my $group = 2;
@@ -72,8 +73,10 @@ hooks:
                     @js = ();
                 }
             }
+            sayyl "RAR";
             $H->send(join '', @js) if @js;
             saygr "pier done ".F_delta;
+            exit;
             
     - K: prot_fits #c
       babz:
