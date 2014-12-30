@@ -43,7 +43,19 @@ hooks:
       my ($meta, $Jid) = split ' ', a.m, 2;
       my ($st, $na, $ww, $uni) = split '/', $meta;
       my $m = H.r->get("J/$Jid") || die "a.m .... $Jid";
-      H.r->del("J/$Jid");
+      
+      if (length $m > 140) {
+          saybl "================";
+          saybl $m =~ /^.{40}(.{100})/;
+          $H->fixutf8($m);
+          saybl $m =~ /^.{40}(.{100})/;
+          saybl "=======獟=========";
+      }
+      else {
+          saybl "short one: $m";
+      }
+      
+      $G->timer(5, sub{H.r->del("J/$Jid")});
       if ($uni) {
           # meta
           sayyl "unifid $st $na $ww !";
