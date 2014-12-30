@@ -27,4 +27,17 @@ Ds:
                 push @cs, $l;
             }
             $up->();
+  - K: vimcolor #c
+    D: |
+      my $string = shift;
+      my $h = $H->dig($string);
+      my $k = "vimcolor-$h";
+      H.r.gest->($k, sub {
+          use Text::VimColor;
+          my $syntax = Text::VimColor->new(
+              string => $string,
+              filetype => 'perl',
+          );
+          return $syntax->html;
+      });
 

@@ -21,6 +21,7 @@ hooks:
             if (a.cv > 0.2 && !a.replaceJid) {
                 my $la = {%$a};
                 la.origin_inarow = G.gp_inarow;
+                ^m.isJid = 
                 a.isJid = la.replaceJid = $H->mkuid;
                 my $lyt = a.R.layert ||= [];
                 push @$lyt, $la;
@@ -54,7 +55,11 @@ hooks:
                 return
             }
             H.db = H.pg->db;
+            # child must exit, after reporting error
+            # so nothing else can happen. listening db handle gone anyway?
+            0->accum(G, _after_do => sub{ exit });
             sayyl "pier Forked... ";
+            
             my @js;
             my $group = 2;
             for my $a (@$pias) {
@@ -70,7 +75,6 @@ hooks:
             }
             $H->send(join '', @js) if @js;
             saygr "pier done ".F_delta;
-            exit;
             
     - K: prot_fits #c
       babz:
@@ -133,6 +137,8 @@ hooks:
                 my ($ind) = $k =~ /^s (.+)$/;
                 $d->{"^$ind 0.2"} = $v;
               }
+              my $inter = 4.01;
+              $d->{"^$inter 0.7"} = delete $d->{"^$inter 0.2"};
             }
           }
         'S#aduhummings 4.01': |
@@ -209,7 +215,7 @@ hooks:
               }
         W: |
           my $n = int rand 30000;
-          R.J = { from => [unico($n,1)]};
+          R.J = { from => [$n,unico($n,1)]};
         F: |
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;
