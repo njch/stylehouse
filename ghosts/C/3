@@ -39,7 +39,7 @@ hooks:
             }
         'gp 8.3': |
             if (my $Jid = a.isJid || a.replaceJid) {
-                $html = qq{<span id="$Jid">$html</span>};
+                $html = qq{<nnn id="$Jid">$html</nnn>};
                 a.forking.wash = $H->dig($html) if a.forking;
             }
         'S#tidy 0.113': |
@@ -56,7 +56,7 @@ hooks:
             H.db = H.pg->db;
             # child must exit, after reporting error
             # so nothing else can happen. listening db handle gone anyway?
-            my $bail = sub{ saygr "yep"; sleep 2; exit };
+            my $bail = sub{ exit };
             $G->accum($G0, _aft_err_do => $bail);
             $G->accum($F[0], _aft_etc_do => $bail);
             
@@ -77,7 +77,6 @@ hooks:
             }
             $H->send(join '', @js) if @js;
             saygr "pier done ".F_delta;
-            exit;
             
     - K: prot_fits #c
       babz:
@@ -209,7 +208,11 @@ hooks:
         F: F
         D: D
         S: S
+        Q: Q
       n_D:
+        Q: |
+          my $g = G:C/ool;
+          w $R Sud/in(i=>$g);
         G: |
           w $R Sud/in(i=>$R,t=>'{way{hooks{S');
         Redisy: |

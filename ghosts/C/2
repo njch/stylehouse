@@ -87,30 +87,25 @@ hooks:
                 }
             }
       HASH: | #c
-            my $v = {%$u};
             my $cv = a.cv ||= 0.3;
             
-            my @r = keys %$v;
-            my $si = @r;
+            my $si = keys %$u;
             a.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
-            
-            
             
             a.bz->("Bo 0.1 0.11" => '{');
             a.bz->('oB 0.1 0.9' => '}');
             
             return if $cv < 0.2;
             
-            @r = sort @r;
-            for my $be ('K', 'name') {
-                unshift @r, $be if $G->deaccum({u=>\@r},u=>$be);
-            }
+            # 3
+            my $r = {map{$_=>1} sort keys %$u};
+            my @r = grep { delete $r->{$_} } qw'K name';
+            push @r, sort keys %$r;
             
             my $ki = 0;
             my $i = 0;
             for my $k (@r) {
-                my $uu = $u->{$k};
-                
+                my $v = $u->{$k};
                 
                 if ($ki > 0) {
                     $ki++;
@@ -132,7 +127,7 @@ hooks:
                     
                     $ki++;
                     
-                    a.fro->("[${ki}_v 0.2" => $uu, $vcv,
+                    a.fro->("[${ki}_v 0.2" => $v, $vcv,
                     
                         '%css 0.2' => "font-size:75%");
 
@@ -195,10 +190,13 @@ hooks:
                         ."float:left;left:-1em") if $bi;
                         
             return if a.cv < 0.7;
+            
             my $col = $G->vimcolor($u);
-            $col =~ s/\n/\\n/g;
+            $col =~ s/\\n/\\\\n/g;
+            $col =~ s/\n/\\n/g; 
             $col =~ s/'/\\'/g;
-            a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1});
+            a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
+                '%css' => "font-size:40%");
             
       A: | #c
         my $cv = a.cv ||= 0.3;
