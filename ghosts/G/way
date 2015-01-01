@@ -358,11 +358,9 @@ Ds:
         
         if ($code =~ /^sub \{ my \$ar = shift/
             && $code =~ /return \@doo_return \};/) {
-            saygr "oldl $code";
-            $line -= 2R if $line;
+            $line -= 2 if $line;
             shift @code for 1..2;
             pop @code for 1..2;
-            sayyl "oldl $line\n\n".join "\n",@code;
         }
         
         
@@ -617,7 +615,10 @@ Ds:
       # could want more complexity per G
       # A hooks?
       my $u = last.A->spawn('C') if $last;
-      $u ||= G.A->spawn('C');
+      if (!$u) {
+            $u = G.A->spawn('C');
+          u.A->umv('','pyramid');
+      }
       u.G = $G if $G ne u.G;
       
       confess "Ba" if !ref $a;
