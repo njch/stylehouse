@@ -291,10 +291,12 @@ Ds:
                 my $DOOF; 
                 my $first = 1 unless $@ =~ /DOOF/;
                 
-                $DOOF .= "DOOF ".sprintf("%-24s",
-                    $G->{name}." ".(ar.S ? "S=".gpty(ar.S) :"")
+                $DOOF .= "DOOF D.K".sprintf("%-24s",
+                    $G->{name}."  D.K  ".(ar.S ? "S=".gpty(ar.S) :"")
                 );
-                $DOOF .= " w"." a.point  ".join(", ", keys %$ar)."\n";
+                $DOOF .= " w"." D.point  ".join(", ", keys %$ar)."\n";
+                
+                $DOOF = "D.K\n" if D.K ne 'Dᣝ';
                 
                 
                 if ($first) {
@@ -308,7 +310,7 @@ Ds:
 
                     my $code = $file ? $H->slurp($file) : $evs;
                     
-                    my $eval = $G->Duckling($x, $code) if $first;
+                    my $eval = $G->Duckling($x, $code, $D);
                     
                     if (exists $D->{SigDieStack}) {
                         warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
@@ -327,7 +329,8 @@ Ds:
                 }
                 
                 if (!$first) {
-                    $DOOF .= ind("!   ", "$@")."\n";
+                    my $in = D.K eq 'Dᣝ' ? "!   " : "";
+                    $DOOF .= ind($in, "$@")."\n";
                 }
                 if ($first) {
                     $DOOF .= ind("ar  ",wdump(1,$ar));
@@ -346,17 +349,21 @@ Ds:
                 die $@;
   - K: Duckling #c
     D: |
-        my ($line, $code) = @_;
+        my ($line, $code, $D) = @_;
         
         my $diag = "";
         my @code = split "\n", $code;
         my $whole = @code < 30;
         
         
-        #        $line -= 3 if $line;
-        #        shift @eval for 1..3;
-        #        pop @eval for 1..3;
-        sayre $code if $whole;
+        if ($code =~ /^sub \{ my \$ar = shift/
+            && $code =~ /return \@doo_return \};/) {
+            saygr "oldl $code";
+            $line -= 2R if $line;
+            shift @code for 1..2;
+            pop @code for 1..2;
+            sayyl "oldl $line\n\n".join "\n",@code;
+        }
         
         
         my $xx = 0;
@@ -368,7 +375,7 @@ Ds:
             elsif ($xx == $line) {
                 $diag .= ind("⊘  ", $_)."\n";
                 
-                my $bab = (split"\n",a.bab)[$line -1];
+                my $bab = (split"\n",D.bab)[$line-2];
                 if ($bab ne $_) {
                     $diag .= ind("⊖r ", $bab)."\n";
                 }

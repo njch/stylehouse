@@ -261,70 +261,7 @@ hooks:
     }
     
     
-  Aux: |
-    
-    my $Ls = ar.Ls;
-    die "no W to ux G.K" if ar.W;
-    $Ls = [ map { _.Li || die "noLi" } ar.i || @{ar.is||[]} ] if ar.i || ar.is;
-    #saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
-    
-    G.uW = w caW(W => G.W); # TODO or fresh_init
-    0->visTp({i => G.uW});
-    
-    G.ssp=[];
-    
-    w sane/Ls[$Ls];
-    my $Wis = w sane/getW[$Ls];
-    
-    my $uxs = [];
-    for my $L (@$Ls) {
-        die "empty L" unless keys %$L; #wtf
-        # dirty uplinking, use A
-        push @$uxs, 0->visTp_TafuBlA({L=>$L}, [ux => {Lu=>$L}]);
-    }
-    for my $ux (@$uxs) {
-        if (my $ui = ux.B.Lu.i) {
-            ux.B.ui = $ui; #set up
-            die "non Way way in" if !wish(w => $ui);
-        }
-    }
-    
-    
-    my $uM = w caW(M => $Wis); # the lines' W mirrored
-    $Wis || die sw["wtf no Gux Waaa?",$Ls];
-    
-    for my $ux (@$uxs) {
-        # ux nests under another ux like origin : tops in M.o
-        my $ix = w utricks/ux_above_via_Lu[$ux] || $uM;
-        0->visTp_l_u({i=>$ix}, $ux);
-        
-        w sane/V3[$ux, $ix, $uxs];
-    }
-    
-    
-    my @recur = G.uW;
-    my @flatly = ();
-    my $desc = "all";
-    
-    if (ar.i || ar.is) {
-        @recur = @$uxs;
-        @flatly = uniq( map{_.Lo.i} @recur ); # doubling up?
-        $desc = (0+@flatly)." x ".(@recur+0);
-    }
-    
-    my $j = $G->nw(K=>'j', s=>[], c=>[]);
-    my @as =
-        (map { { j => $j, i => $_ } } @recur),
-        (map { { j => $j, i => $_, flatly => 1 } } @flatly);
-        
-    for my $a (@as) {
-        #saygr "Top level U is a ".a.i->pint()."   fl=a.flatly";
-        w U(%$a);
-    }
-    
-    H.G w aj[$j];
-    
-    sayre "ux -------- G.K $desc done\t".@$Ls." lines\tjs=".scalar(@{j.s})."\t".$G->F_delta()."  load ".$H->la;
+
   ux: |
     my $Ls = ar.Ls;
     die "no W to ux G.K" if ar.W;
