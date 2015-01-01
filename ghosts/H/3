@@ -12,9 +12,11 @@ hooks:
     
   percs: |
     my $P = ar.P || G.am;
-    my $GG = ar.GG || $G; # starting from magnetic fishing rod
-    #saygr "to perc ".$GG->pi."   ".wdump($P);
-    # TODO T diff new ways to get InC etc changes
+    my $GG = ar.GG || $G;
+    # ^ starting from magnetic fishing rod
+    # is kind of like J
+    # may want to sweep startup ripples across many G
+    
     @$P = sort { !defined _.GAK } @$P;
     for my $p (@$P) {
         if (p.D && !p.K) {
@@ -68,7 +70,7 @@ hooks:
         if (p.K) { # perc u
             my $u = $GG->sway({K=>p.K}, $p);
             saybl "Making ".$u->pi;
-            $u = $GG->Tafu($u);
+            $u = w GG.R Tafu[$u];
         }
         else {
             die " wtf=>".ki($p)
@@ -92,6 +94,5 @@ R:
 R_nonz:
   - K: Tafu #c
     D: |
-        my($uu)=@_;
-        0->fu($uu) || 0->T({i => $uu});
+        0->fu($u) || 0->T({i => $u});
 
