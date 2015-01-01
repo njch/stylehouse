@@ -108,11 +108,11 @@ hooks:
     Rw.rwa = $a;
     
     my $Ds=[];
-    for my $Rsur ($GG->findway("${source}s")) {
+    for my $Rsur ($GG->anyway("${source}s")) {
         # passing phase, should beam in
         push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
     }
-    push @$Ds, flatline $GG->findway("${source}z");
+    push @$Ds, flatline $GG->anyway("${source}z");
     @$Ds = grep { !_.spesh } @$Ds;
     
     a.Ds = $Ds;
@@ -123,11 +123,17 @@ hooks:
     
     
   _init_R: |
-    return sayyl "_init_R no name, no way" if !R.name;
-    saybl "_init_R waying ".$R->pi;
     my $GG = R.G;
-    my $Rw = $GG->CsK({s=>'R',K=>R.name});
-    return warn "no Rw for R.name" if !$Rw;
+    my $Rw;
+    if (!R.name) {
+        sayyl "_init_R no name";
+        $Rw = $G->CsK({s=>'R',K=>'non'});
+    }
+    else {
+        saybl "_init_R waying ".$R->pi;
+        $Rw = $GG->CsK({s=>'R',K=>R.name});
+    }
+    die "no Rw for R.name" if !$Rw;
     
     my $a = Rw.rwa;
     # have setting somewhere for whatever
@@ -138,6 +144,9 @@ hooks:
     if (!R.way) {
         R.way = R.A->spawn('C');
         R.way.A->umv('', 'way');
+        if (!R.name) {
+            R.way.A->umk($G,'Rnon');
+        }
         R.way.name = "Rw!R.name";
     }
     R.way->from({hooks=>a.Dh});
