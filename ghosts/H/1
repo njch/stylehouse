@@ -99,7 +99,9 @@ hooks:
         }
         $i++;
     }
-    for my $R (map{_.i}@{GG.A.n_R||[]}) {
+    my @R = map{_.i}@{GG.A.n_R||[]};
+    #push @R, map{_.i}@{GG.A.n_Rnon||[]} if $G eq $GG; # from G0
+    for my $R (@R) {
         w _init_R[$R];
     }
   _in_Rw: |
@@ -108,11 +110,18 @@ hooks:
     Rw.rwa = $a;
     
     my $Ds=[];
-    for my $Rsur ($GG->anyway("${source}s")) {
-        # passing phase, should beam in
-        push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
-    }
-    push @$Ds, flatline $GG->anyway("${source}z");
+    my $sours = sub {
+        my $g = shift;
+        for my $Rsur ($g->anyway("${source}s")) {
+            # passing phase, should beam in
+            push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+        }
+        push @$Ds, flatline $g->anyway("${source}z");
+    };
+    
+    $sours->($G) if $GG ne $G && Rw.K eq 'non';
+    $sours->($GG);
+    
     @$Ds = grep { !_.spesh } @$Ds;
     
     a.Ds = $Ds;
