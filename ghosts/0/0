@@ -150,7 +150,8 @@ hooks:
         '<span style="color:#0a3">'.(length(B.diff) > 900 ? "HUGE DIFF": B.diff).'</span>')
         .'</pre>';
   codedis: | 
-    my $s = 0->TafuB(Sources => {});
+    my $Sou = {K => 'Sources'};
+    my $s = w G.R fuu(u=>$Sou);
     my $f = {};
     my @cl = split "\n", say.compile;
     my @nl;
@@ -252,8 +253,11 @@ hooks:
   code: |
     waylay uxd;
     my $say = {};
-    my @nonpms = map { 0->TafuB(Nonpm => {file => $_}) }
-        grep{!/\d$/} glob "ghosts/0/*";
+    my @nonpms = map {
+        my $u = {K => 'Nonpm', B => {file => $_}};
+        w G.R fuu[$u];
+        }
+        grep {!/\d$/} glob "ghosts/0/*";
     my @chpms = grep { ar.full || w $_ is_changed; } @nonpms;
     
     
