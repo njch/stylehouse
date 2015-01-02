@@ -151,11 +151,12 @@ hooks:
     
     if (!R.way) {
         R.way = R.A->spawn('C');
+        R.way.R = $R;
         R.way.A->umv('', 'way');
         R.way.name = "Rw!R.name";
     }
     R.way->from({hooks=>a.Dh});
-    die wdump
+    warn "nothing in ".R.way->pi if !keys %{a.Dh};
     
   RZ_Ds_humm: |
     a.bb = {};
@@ -208,7 +209,7 @@ hooks:
     
     # 7
     my $Dz = a.Dz;
-    my @r = R.G w stylekeysort(d=>a.bb);
+    my @r = $G->stylekeysort(a.bb);
     for my $r (@r) {
         my $b = a.bb->{$r};
         my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;

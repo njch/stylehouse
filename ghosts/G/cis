@@ -27,6 +27,21 @@ Ds:
                 push @cs, $l;
             }
             $up->();
+  - K: stylekeysort #c
+    D: |
+      my $d = shift;
+      my @r = sort keys %$d;
+      
+      if (grep { /^\[/ } @r) { 
+          my $by = { map {
+              my $p = $_;
+              $p =~ s/^\[(\d+)/'['.sprintf('%08d', $1)/e;
+              $p => $_
+           } @r };
+           @r = map { $by->{$_} } sort keys %$by;
+      }
+      @r
+      
   - K: vimcolor #c
     D: |
       my $string = shift;
