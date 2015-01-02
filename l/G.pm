@@ -865,48 +865,6 @@ sub load_ways {
     $G0 ->w("_load_ways_post", {S=>$G,w=>$G->{ways}});
 }
 
-sub u {
-    my $G = shift;
-    my ($K, $s) = @_;
-    $G->sway({K=>$K}, $s);
-}
-
-sub sway {
-    my $G = shift;
-    # sucks way matching $p # only supports matching K for now
-    my ($p, $s, $P) = @_;
-    my ($from) = $p->{from} || $G->CsK($p);
-
-    $from || defined $P->{e} || die "no C: $p->{K} ($G->{name})".wdump([$p,$s]);
-
-    my $w = $G->nw();
-    $w->from($from) if $from;
-    $w->from($p) unless $from;
-    $w->from($s) if $s && %$s; # merges in B :D
-
-    return $w
-}
-
-sub Bu {
-    my $G = shift;
-    my($K,$B)=@_;
-    my $u = $G->sway({K=>$K},{B=>$B});
-    my $a = {};
-    $G ->w("Bu_D", {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
-    $u
-}
-
-sub CsK {
-    my $G = shift;
-    my ($p, $GG) = @_;
-    $GG ||= $G;
-    $p->{s} ||= 'Cs C';
-    my @topK = split ' ', delete $p->{s};
-    my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
-    @Cs = grep { $G->ip($p, $_) } @Cs if %$p;
-    return wantarray ? @Cs : shift @Cs;
-}
-
 sub di {
     # attaches meaning and dies
 
@@ -1132,7 +1090,8 @@ sub Duck {
                 $DOOF .= ind($in, "$@")."\n";
             }
             if ($first) {
-                $DOOF .= ind("ar  ",wdump(1,$ar));
+                $DOOF .= $H->ind('ar.', join "\n",
+                    map{"$_ = ".gp($ar->{$_})}keys %$ar);
             }
 
             $D->{Error} = $DOOF;
@@ -1288,7 +1247,7 @@ sub waystacken {
 
 sub nw {
     my $G = shift;
-    my $C = $G->{A}->spawn('C');  
+    my $C = $G->{A}->spawn('C');
 
     $C->from({@_}) if @_;
     # etc
@@ -1450,6 +1409,42 @@ sub pyramid {
     $G->{A}->An($u, 'pyramid');
 
     $u
+}
+
+sub sway {
+    my $G = shift;
+    # sucks way matching $p # only supports matching K for now
+    my ($p, $s, $P) = @_;
+    my ($from) = $p->{from} || $G->CsK($p);
+
+    $from || defined $P->{e} || die "no C: $p->{K} ($G->{name})".wdump([$p,$s]);
+
+    my $w = $G->nw();
+    $w->from($from) if $from;
+    $w->from($p) unless $from;
+    $w->from($s) if $s && %$s; # merges in B :D
+
+    return $w
+}
+
+sub Bu {
+    my $G = shift;
+    my($K,$B)=@_;
+    my $u = $G->sway({K=>$K},{B=>$B});
+    my $a = {};
+    $G ->w("Bu_D", {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
+    $u
+}
+
+sub CsK {
+    my $G = shift;
+    my ($p, $GG) = @_;
+    $GG ||= $G;
+    $p->{s} ||= 'Cs C';
+    my @topK = split ' ', delete $p->{s};
+    my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
+    @Cs = grep { $G->ip($p, $_) } @Cs if %$p;
+    return wantarray ? @Cs : shift @Cs;
 }
 
 sub TafuBl {
