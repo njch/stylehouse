@@ -110,7 +110,7 @@ hooks:
     $way || die "wtf $m";
     w S/$way(%$ar,m=>$am);
   S:
-    percC: |
+    percC: | #c
         my $way = "C".($m?" $m":"");
         my $n = H.nn++;
         my $P = [{GAK => "C$n $way"}];
@@ -127,13 +127,13 @@ hooks:
       else {
           $H->pub("S/$hol", "speaks $m");
       }
-    speaks: | # concealed elvis input
+    speaks: | #c concealed elvis input
       w Teeth[$m];
       
-    er: |
+    er: | #c
       die "much JS error..." if H.JErrors++ > 3;
       $H->error("javascript error from client", j.m, j.e);
-    event: |
+    event: | #c
       my $e = ar.e = j.event;
       
       return w S/key if e.type =~ /^key/;
@@ -144,15 +144,15 @@ hooks:
       
       $H->error("Strange event", $e);
       
-    key: |
+    key: | #c
       # if key is ww switcher...
       if (H.name eq "O") {
-            G.keysto || die "no key subber";
-          $H->pub("S/G.keysto" => "speaks $m");
+          G.keysto || die "no key subber";
+          if (G.keysto ne H.ol) {
+                return $H->pub("S/G.keysto" => "speaks $m");
+          }
       }
-      else {
-          return H.keydo->($e) if H.keydo;
-      }
+      return H.keydo->($e) if H.keydo;
       
     TV: |
       w duu/TV;
@@ -163,6 +163,11 @@ hooks:
     W: | #c
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
+        my $hold = H.r->get("W/e.W") || die "no such e.W but also H.G.A.W->{e.W}";
+        my ($hol, $etc) = split /\s+/, $hold, 2; # JJJ
+        
+        G.keysto = $hol;
+        
         my $a = {};
         if (a.W = H.G.A.W->{e.W}) {
             a.L = a.W->findL(e.id);
@@ -171,11 +176,9 @@ hooks:
 
             a.W.G w event(%$a);
         }
-        else {
-            my $hold = H.r->get("W/e.W") || die "no such e.W";
-            my ($hol, $etc) = split /\s+/, $hold, 2;
+        elsif ($hol ne H.ol) {
+            sayyl "$hol ne H.ol";
             $H->pub("S/$hol", "speaks $m");
-            G.keysto = $hol;
         }
     
     reextet: | #c
