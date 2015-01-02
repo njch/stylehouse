@@ -6,8 +6,6 @@ hooks:
     
     $S->w("load_ways_post");
     
-    S.R ||= $S->R;
-    
     for my $wa ($S->anyway('C')) {
         w wayray[$S,$wa];
     }
@@ -15,6 +13,8 @@ hooks:
     for my $wa ($S->anyway('R')) {
         w Rwayray[$S,$wa];
     }
+    
+    S.R ||= $S->R;
     
     if (S.load_ways_count == 1) {
         w _init_fresh;
@@ -100,7 +100,7 @@ hooks:
         $i++;
     }
     my @R = map{_.i}@{GG.A.n_R||[]};
-    #push @R, map{_.i}@{GG.A.n_Rnon||[]} if $G eq $GG; # from G0
+    push @R, map{_.i}@{GG.A.n_Rnon||[]} if $G eq $GG; # from G0
     for my $R (@R) {
         w _init_R[$R];
     }
@@ -108,8 +108,9 @@ hooks:
     my $source = Rw.findway;
     my $a = {};
     Rw.rwa = $a;
+    saybl "_in_Rw Recipe ".$G->pi."   ".$Rw->pi;
     
-    my $Ds=[];
+    my $Ds = [];
     my $sours = sub {
         my $g = shift;
         for my $Rsur ($g->anyway("${source}s")) {
@@ -119,7 +120,7 @@ hooks:
         push @$Ds, flatline $g->anyway("${source}z");
     };
     
-    $sours->($G) if $GG ne $G && Rw.K eq 'non';
+    $sours->($G), sayyl "YENON" if $GG ne $G && Rw.K eq 'non';
     $sours->($GG);
     
     @$Ds = grep { !_.spesh } @$Ds;
@@ -134,15 +135,13 @@ hooks:
   _init_R: |
     my $GG = R.G;
     my $Rw;
-    if (!R.name) {
-        sayyl "_init_R no name";
-        $Rw = $G->CsK({s=>'R',K=>'non'});
-    }
-    else {
-        saybl "_init_R waying ".$R->pi;
-        $Rw = $GG->CsK({s=>'R',K=>R.name});
-    }
-    die "no Rw for R.name" if !$Rw;
+    R.name ||= 'non';
+    R.A->umk($G,'Rnon') if R.name eq 'non';
+    saybl "_init_R waying ".$G->pi."    ".$R->pi;
+    $Rw = $GG->CsK({s=>'R',K=>R.name});
+    $Rw ||= $G->CsK({s=>'R',K=>R.name});
+    
+    $Rw || die "no Rw for R.name";
     
     my $a = Rw.rwa;
     # have setting somewhere for whatever
@@ -153,14 +152,10 @@ hooks:
     if (!R.way) {
         R.way = R.A->spawn('C');
         R.way.A->umv('', 'way');
-        if (!R.name) {
-            R.way.A->umk($G,'Rnon');
-        }
         R.way.name = "Rw!R.name";
     }
     R.way->from({hooks=>a.Dh});
-    
-    sayyl "wayrays ".$G->F_delta;
+    die wdump
     
   RZ_Ds_humm: |
     a.bb = {};
