@@ -1091,7 +1091,11 @@ sub Duck {
             }
             if ($first) {
                 $DOOF .= $H->ind('ar.', join "\n",
-                    map{"$_ = ".gp($ar->{$_})}keys %$ar);
+                    map{
+                    "$_ = ".
+                    #gp()
+                    $ar->{$_}
+                    }keys %$ar);
             }
 
             $D->{Error} = $DOOF;
