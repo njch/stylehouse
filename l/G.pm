@@ -74,11 +74,6 @@ sub new {
     push @{$H->{G}->{GGs}}, $G unless $ui eq $H->{G}; # OGG
 
 
-    #$G->timer(1, sub {sw($G->{A}->{u}->{u}->{i})}) if $G->{way} =~ /ux/;
-
-    $G->{W} ||= $G->{A}->spawn('W'); # OGG
-
-
     $G->load_ways(@ways);
 
     $G
@@ -1766,13 +1761,9 @@ sub B_same {
 
     return 1 if exists $u->{B}->{_} && exists $i->{B}->{_} && $u->{B}->{_} eq $i->{B}->{_};
 
-    my @ks = keys %{$u->{B}};
+    my @ks = keys %{$u->{B}||{}};
     for my $k (@ks) {
         $u->{B}->{$k} eq $i->{B}->{$k} || return 0;
-        next if $k eq "Codon";
-    }
-    unless (keys %{$u->{B}}) {
-        $H->Say(" u has no B, mind  you...".ki($u));
     }
     return 1;
 }

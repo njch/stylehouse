@@ -1,26 +1,26 @@
 
 C:            # W M ux ...
-  - K: W # us
+  - K: W #c us
     O: ux
     flows_D: |
+      my $W = S.W;
       w stylespawn[$S, $W];
     Ss: [u, x, X]
     print: |
-      "W=".W.G.name #Bthing, u is $S
+      "W=".S.W.G.name #Bthing, u is $S
     S:
       styles: OxO nopoi
       tag: ww 
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
   
-  - K: M # themmmmmmm (singular for now)
-      # could many to combine layers of style chemistry for the O...?
-    # or maybe that is keep out
+  - K: M #c themmmmmmm from an R
     O: ux
     flows_D: |
+      my $W = S.W;
       w stylespawn[$S, $W];
     print: |
-      "MMMM=".W.G.name
+      "MMMM=".S.W.G.name
     Ss: *
     S:
       styles: OxO poi
@@ -34,8 +34,10 @@ C:            # W M ux ...
         scoped: undef
         type: text/css
       content_D: |
-        my $GG = S.Lo.i.B.W.G; # G from M or W # Lui.B.W might work
+        my ($WM) = map{_.i} @{S.A.u_y};
+        my $GG = WM.W.G;
         my $sheet = w stylesheet[$GG, $K];
+        die "GG.name has style $K ? " unless length($sheet);
         # may need to careful order new appendages too?
         $sheet ? "\n$sheet\n" : "";
      
@@ -47,15 +49,15 @@ C:            # W M ux ...
     styles: te
     conor: 1
     print: |
-       "(".S.B.Lu.i->pint." \t".gpty(S.B.Lu.t).")"
+       "S.K S.id  (".S.i->pi
        
-  - K: w #c like pi
+  - K: i #c like pi
     tag: yw
     styles: yw
     S:
       content_D: |
-        my $w = S.
-        wish(w=>$w) ? $w->pi : pint($w);
+        my $w = S.i;
+        "PIE".(wish(w=>$w) ? $w->pi : pint($w))
       ishtml: 1
       
   - K: e #c like style noise
@@ -95,6 +97,7 @@ hooks:
   stylespawn: |
     my $GG = W.G;
     my $SsKs = S.Ss ||= [];
+    
     if ($SsKs eq "*") {
         my $eS = $GG->anyway('S');
         $SsKs = [ map { _.K } @$eS ];
@@ -110,6 +113,8 @@ hooks:
     my $SS = w styleway[$GG, $K];
     $SS || die sw(["style $K not found", $K, $SS, $GG]);
     H.G w wayray(wa => SS.Ss, S=>$G);
+    
+    sayre "style up GG.name $K  got ".@{SS.Ss};;
     
     my @SSSs = @{SS.Ss};
     for my $S (@SSSs) { # mix the stylebits together
@@ -229,10 +234,10 @@ hooks:
     }
     
     
-
   spawn: |
         my @uys;
         
+        ##say wdump(2, $u) if u.K eq 'M';
         if (u.K eq 'ux' && u.i) {
             $u->from(u.i.ux); # DOOR how spawn comes through
         }
@@ -243,36 +248,34 @@ hooks:
                 if (my $uxy = 0->CsK({K=>sp.K})) {
                     $uy = 0->sway({from=>$uxy});
                 }
-                if (u.K eq 'ux' && u.i) {
-                    if (my $xiy = 0->CsK({K=>sp.K}, u.i.G)) {
+                if (u.K eq 'ux' && u.i || u.K eq 'M') {
+                    my $GG = u.K eq 'M' ? u.W.G : u.i.G;
+                    sayyl "sp GG.name";
+                    if (my $xiy = $GG->CsK({K=>sp.K})) {
                         $G->Flab("u.i.G.name hemisphere uxy: ", $uy, $xiy);
 
-                        $uy ||= $G->nw();
+                        $uy ||= $GG->nw();
                         $uy->from($xiy); # G to xiy.G etc B merged
                     }
                 }
                 
-                $uy || die sw(["no thingy sp.K", $G->anyway('C')]);
+                $uy || die wdump(3,["no thingy sp.K", $G->anyway('C')]);
                 
                 uy.i = u.i;
                 
                 $uy->from($sp);
                 
+                sayre "an uy from u.K  uy.K".$uy->pi if uy.K eq "style";
                 push @uys, $uy;
             }
         }
         
-        if (G.O.K ne 'C' && G.sdufh++ == 6) {
-            $G->timer(4,sub{
-                my ($g) = grep{_.K  eq 'C'}G:C;
-                $g w ave(i=>$u);
-            });
-        }
-        
-        my $old = { map { _.id => $_ } @{u.A.n_y||[]} };
+        my $old = { map { _.id => $_ } map{_.i} @{u.A.n_y||[]} };
         my @spun;
-        for my $u (@uys) {
-            my $y = w G.R fuu[$u];
+        for my $uy (@uys) {
+            say "try to ".$uy->pi;
+            my $y = w G.R Tafu(u=>$uy);
+            say "made ".$y->pi;
             push @spun, $y;
             y.A->umk($u, 'y');
             delete $old->{y.id};
@@ -292,13 +295,13 @@ hooks:
     
     return warn "no lines" unless @is;
     
-    my $uWa = {K => 'W', B=>{W => G.R}};
+    my $uWa = {K => 'W', W => G.R};
     G.W = w G.R fuu(u => $uWa); # the unified into wormhole
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
     
-    my $uMa = {K => 'M', B=>{W => G.O.R}};
+    my $uMa = {K => 'M', W => G.O.R};
     my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
     uM.A->umk(G.W, 'M');
     
@@ -347,12 +350,12 @@ hooks:
     my @down = w Udown;
     ar.d++;
     my $in = sub{ $H->ind(join('',("    ") x ar.d), join"\n",@_) };
-    #sayyl $in->("\\".$i->pi, map { " - ".$_->pi} @down);
+    sayyl $in->("\\".$i->pi, map { " - ".$_->pi} @down);
     
     for my $d (@down) {
         w U(j=>$j, i=>$d, d=>ar.d);
     }
-    sayyl $in->("/i.id ". $i->pi);
+    sayyl $in->("/". $i->pi);
     
     w compile_figure;
     w wayout_sendo;
@@ -550,26 +553,24 @@ hooks:
         push @{j.s}, reverse @$s;
         push @{j.c}, reverse @$c;
   event: |
-    my $u = L.i; # the clicked id: uy probly.
-    my $ux = uxL.i; # first parent <ux>
-    my $uu = ux.B.Lu.i;
-    my $uy = $u if $u ne $ux;
+    my $uy = $i if $i ne $ux;
+    my $i = ux.i if $ux;
+    $i = undef if !$ux;
     my $E = {
         e => $e,
         W => $W,
-        L => uu.Li,
-        u => $uu,
+        i => $i,
         ux => $ux,
         uy => $uy,
     };
     
-    #sw($E);
-    
-    # come from within something we don't grasp?
-    return saygr "ungrasped line" unless E.L;
+    saybl " UX ". $ux->pi if $ux;
+    saybl " Uy ". $uy->pi if $uy;
+    return saygr "ungrasped line" unless $i;
+    saybl " i ". $i->pi;
     
     # TODO make a pattern about y=to match against Eways...
-    E.L.G->w(event => $E);
+    i.G w event(%$E);
 dials:
   db: -3
 
