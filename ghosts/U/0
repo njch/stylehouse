@@ -233,56 +233,40 @@ hooks:
 
   ux: |
     my $Ls = ar.Ls;
-    die "no W to ux G.K" if ar.W;
-    $Ls = [ map { _.Li || die "noLi" } ar.i || @{ar.is||[]} ] if ar.i || ar.is;
-    #saybl @$Ls." lines -> ux G.K from $Ls->[0]->{name}";
+    my @is = map { _.Li || die 'noli' } @$Ls;
     
-    return warn "no lines" unless @$Ls;
+    return warn "no lines" unless @is;
     
-    inter({G_K=>G.K});
-    G.uW = w caW(W => G.W); # TODO or fresh_init
-    0->visTp({i => G.uW});
+    my $uWa = {K => 'W', W => G.R};
+    G.uW = w G.R fuu(u => $uWa); # the unified into wormhole
     
-    G.ssp=[];
+    # the W is what we propagate, where ux
+    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
     
-    w sane/Ls[$Ls];
-    my $Wis = w sane/getW[$Ls];
+    my $uMa = {K => 'M', W => G.O.R};
+    my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
     
-    my $uxs = [];
-    for my $L (@$Ls) {
-        die "empty L" unless keys %$L; #wtf
-        # dirty uplinking, use A
-        push @$uxs, 0->visTp_TafuBl({L=>$L}, [ux => {Lu=>$L}]);
-    }
-    for my $ux (@$uxs) {
-        if (my $ui = ux.B.Lu.i) {
-            ux.B.ui = $ui; #set up
-            die "non Way way in" if !wish(w => $ui);
+    
+    my @ba = map {
+        my $uxa = {K => 'ux', i => $_};
+        my $u = w G.R fuu(u => $uxa);
+        u.A->umk($uM, 'M');
+        $u;
+    } @is;
+    
+    
+    for my $ux (@ba) {
+        # ux nests under another ux like origin
+        for my $uS (@{ux.i.A.u_S||[]}) {
+            next unless grep {_.i eq $uS} @{uM.A.n_M||[]};
+            ux.A->umk($uS, 'uS');
         }
     }
     
+    my @tops = grep { !_.u_S } @{uM.A.n_M||[]};
+    @tops = @{uM.A.n_M||[]} if !@tops;
+    die "notops" if !@tops;
     
-    my $uM = w caW(M => $Wis); # the lines' W mirrored
-    $Wis || die sw["wtf no Gux Waaa?",$Ls];
-    
-    for my $ux (@$uxs) {
-        # ux nests under another ux like origin : tops in M.o
-        my $ix = w utricks/ux_above_via_Lu[$ux] || $uM;
-        0->visTp_l_u({i=>$ix}, $ux);
-        
-        w sane/V3[$ux, $ix, $uxs];
-    }
-    
-    
-    my @recur = G.uW;
-    my @flatly = ();
-    my $desc = "all";
-    
-    if (ar.i || ar.is) {
-        @recur = @$uxs;
-        @flatly = uniq( map{_.Lo.i} @recur ); # doubling up?
-        $desc = (0+@flatly)." x ".(@recur+0);
-    }
     
     my $j = $G->nw(K=>'j', s=>[], c=>[]);
     my @as =
@@ -299,31 +283,26 @@ hooks:
     H.G w aj[$j];
     
     sayre "ux -------- G.K $desc done\t".@$Ls." lines\tjs=".scalar(@{j.s})."\t".$G->F_delta()."  load ".$H->la;
-  caW: |
-    my ($a, $W) = %$ar;
-    wish(W => $W) || die sw(["Weird wormhole R $a", $ar]);
-    my $u = 0->TafuB( $a => {W=>$W} );
-    0->l($u) if $a eq "M";
-    return $u
-  sane:
-    getW: |
-      my $W;
-      for my $L (@$Ls) {
-            $W ||= L.W;
-          die "L_W changed along lines W.name L.W.name etc etc".sw[$W,ne=>L.W] if $W ne L.W;
-      }
-      $W;
-    Ls: |
-      die "No lines in lines..." if !@$Ls;
-      die "one line, empty hash...".wdump(2, $Ls) if @$Ls == 1 && !keys %{$Ls->[0]};
-      die "one line, no W on line...".wdump(2, $Ls) if @$Ls == 1 && !$Ls->[0]->{W};
-    V3: |
-      die "ix not Li " unless ix.Li;
-      die "ux not in above ux o: ".sw({uxs=>$uxs,ix=>$ix})
-          unless ix.O ne "ux" || grep { $_ eq $ux } @{ix.Li.o};
-    U1: |
-        my $Lu = u.B.Lu || die "no Lu".sw({" no Lu"=>$u}) if u.K eq "ux";
-        #warn "ux has no ways out: ".$u->pint if u.K eq "ux" && !@{u.Li.o};
+  U: |
+    0->visTp($ar, "Fun") if ar.i;
+    my $u = T.i;
+    die "uh" unless $u eq T.L.i;
+    
+    w utricks/spawn[$u];
+    #say gpty($u) ."  spawnd".$G->F_delta();
+    w sane/U1[$u];
+    
+    my @o = w dook[$u];
+    #saygr join"",("  " x scalar(@F)), "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@o;
+    
+    for my $i (@o) {
+        my $a = {%$ar};
+        a.i = $i;
+        w U(%$a);
+    }
+    
+    w compile_figure[$u];
+    w wayout_sendo[$u, $j];
   utricks:
     spawn: | #c
         my @uys;
@@ -335,15 +314,7 @@ hooks:
         
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
-                my $Bs = {};
-                if (sp.Bset) {
-                    while (my ($k, $v) = each %{sp.Bset}) {
-                        $Bs->{$k} = $u->find("B.$v"); # i=Lu.i etc
-                    }
-                }
-                else {
-                    $Bs = u.B;
-                }
+                my $Bs = u.B;
                 my $uy;
                 if (my $uxy = 0->CsK({K=>sp.K})) {
                     $uy = 0->sway({from=>$uxy});
@@ -365,15 +336,17 @@ hooks:
                 
                 $uy->from($sp);
                 
-                push @uys, w utricks/multi[$uy, $u, $sp]; 
+                push @uys, $uy;
             }
         }
+        
         if (G.O.K ne 'C' && G.sdufh++ == 6) {
             $G->timer(4,sub{
                 my ($g) = grep{_.K  eq 'C'}G:C;
                 $g w ave(i=>$u);
             });
         }
+        
         my $old = { map { _.uuid => $_ } grep { _.O ne "ux" } @{u.Li.o} };
         my @spun;
         for my $uu (@uys) {
@@ -398,22 +371,6 @@ hooks:
                 o.dead = 1;
             }
         }
-    multi: | #c
-      my @uys = $uy;
-      if (my $n = sp.multiBy) {
-            my $val = uy.B->{$n};
-          ref $val eq "ARRAY" || die "was promised $n would be array, is $val ".wdump($uy);
-          @uys = ();
-          my $i = 0;
-          for my $an (@$val) {
-              next if an.K eq "ux"; # that hangs out in the origin lines o
-              my $anuy = $uy->spawn;
-              anuy.B->{$n} = $an;
-              anuy.K ."[".$i++;
-              push @uys, $anuy;
-          }
-      }
-      @uys
     ngrab: | #c
                 if (u.uy_in_dos) {
                     if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
@@ -427,31 +384,7 @@ hooks:
                         uy.B.n = $n;
                     }
                 }
-    ux_above_via_Lu: | #c
-      my $Lu = ux.B.Lu || die "no Lu on ux";
-      my $pLu = Lu.i.Lo if exists Lu.i.Lo; # up and over
-      my ($pux) = findO(ux => pLu.o) if $pLu;
-      $pux if pux.G eq $G;
-  U: |
-    0->visTp($ar, "Fun") if ar.i;
-    my $u = T.i;
-    die "uh" unless $u eq T.L.i;
-    
-    w utricks/spawn[$u];
-    #say gpty($u) ."  spawnd".$G->F_delta();
-    w sane/U1[$u];
-    
-    my @o = w dook[$u];
-    #saygr join"",("  " x scalar(@F)), "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@o;
-    
-    for my $i (@o) {
-        my $a = {%$ar};
-        a.i = $i;
-        w U(%$a);
-    }
-    
-    w compile_figure[$u];
-    w wayout_sendo[$u, $j];
+
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
