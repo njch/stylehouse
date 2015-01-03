@@ -156,6 +156,9 @@ R_surs:
             my $tev = int(a.cv * 200); # 0.4 = 100
             
             my $si = length($text);
+            if (!$si) {
+                a.bz->('length 0.1', "''", '%sf', 'blue');
+            }
             if ($si > $tev) {
                 $text = ($text=~/^(.{$tev})/s)[0];
             }
@@ -166,6 +169,7 @@ R_surs:
             a.bz->('line 0.1' => $text,
                 '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
                     ."font-size:70%");
+            
             
             if ($si) {
                 a.bz->("#more 0.9" => "@",
