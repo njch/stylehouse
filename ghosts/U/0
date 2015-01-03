@@ -281,22 +281,25 @@ hooks:
         .@is." lines\t"
         ."js=".scalar(@{j.s})."\t"
         .$G->F_delta()."  load ".$H->la;
+
   U: |
-    w utricks/spawn(u=>$i);
+    j.seenid->{i.id} = $i;
     
-    my @o = w dook[$u];
-    #saygr join"",("  " x scalar(@F)), "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@o;
+    w spawn(u=>$i);
     
-    for my $i (@o) {
-        my $a = {%$ar};
-        a.i = $i;
-        w U(%$a);
+    my @down = w Udown;
+    for my $i (@down) {
+        w U[$j, $i];
     }
     
-    w compile_figure[$u];
-    w wayout_sendo[$u, $j];
-  utricks:
-    spawn: | #c
+    w compile_figure;
+    w wayout_sendo;
+  Udown: |
+    my @down = grep {!j.seenid->{_.id}} map{_.i} @{i.A.n_S||[]}, @{i.A.n_y||[]};
+    die if grep {_.dead} @down;
+    @down;
+    
+  spawn: |
         my @uys;
         
         if (u.K eq 'ux' && u.i) {
@@ -353,31 +356,21 @@ hooks:
                 w G.R del(u => $o);
             }
         }
-    ngrab: | #c
-                if (u.uy_in_dos) {
-                    if (my $ton = u.uy_in_dos->{"n_uys_to_".uy.K."_n"}) {
-                        uy.B->{$ton} = u.B->{u.B.n};
-                        uy.B.n = $ton;
-                    }
-                }
-                if (uy.uy_in_dos) {
-                    if (my $n = uy.uy_in_dos.Lu_grab_n) {
-                        uy.B->{$n} = u.B.Lu->{$n};
-                        uy.B.n = $n;
-                    }
-                }
+
   compile_figure: |
-        my $j = sub { join " ", grep { defined } @_ };
-        my $ui = u.B.Lu.i if u.B.Lu;
+          my $u = $i;
+        $ui = u.i if u.i;
+        
         my $at = u.at = {};
         
         if (u.K eq "uW") {
             u.at = ui.at;
+            sayre $ui->pi." wtf wtf ".$u->pi;
             return;
         }
         
         # v the look-around-for-style-etc vortex v
-        at.id = 0->uiuS($u => 'id') || u.Li.uuid; # probly... rest good to T
+        at.id = 0->uiuS($u => 'id'); # probly... rest good to T
         at.tag = 0->uiuS($u => 'tag') || u.tag || u.K;
         at.ishtml = 0->uiuS($u => 'ishtml');
         at.class = 0->uiuS($u => 'class');
@@ -386,7 +379,7 @@ hooks:
         push @styles, u.styles, u.S.styles;
         push @styles, ui.styles, ui.S.styles if $ui;
         
-        at.styles = $j->(@styles);
+        at.styles = join " ", grep {defined} @styles;
         
         
         at.tag ||= u.K;
@@ -396,15 +389,17 @@ hooks:
         
         at.conty = "" if !defined at.conty;
         at.conty = encode_entities(at.conty) unless at.ishtml;
-        at.ooze = [
-            sort { a.conor <=> b.conor }
-            w dook[$u]
-        ];
+        
+        my @down = sort { a.conor <=> b.conor } w Udown;
+        at.ooze = \@down;
   wayout_sendo: |
+        my $u = $i;
+        $ui = u.i if u.i && u.K eq 'ux';
+        
         my $at = u.at;
-        my $ui = u.B.Lu.i if u.K eq "ux";
         my $sendo = u.sendo = [];
         my ($s,$c) = ([],[]);
+        
         my $do_S = sub { push @$s, shift };
         my $doj_S = sub {
             my ($id, $sp, @int) = @_;
@@ -413,6 +408,7 @@ hooks:
         my $do_C = sub { push @$c, shift };
         # S is innards, C is complete (send all S before all C)
         # further thinking running on wholeness
+        # order important
         my $_t = u._at;
         
         my $attr = at.attr = {
@@ -447,7 +443,7 @@ hooks:
             }
         }
         attr.title = "H.style/H.name/H.id" if u.K eq "W";
-        my $late = [];
+        my $late = []; #c
         if (!$_t) {
             if ( $conty && $content ){
                 warn "conty and ooze ".$u->pint;
@@ -539,29 +535,6 @@ hooks:
         
         push @{j.s}, reverse @$s;
         push @{j.c}, reverse @$c;
-  dook: |
-    my @o;
-    my $L = ar.u.Li || die "pass u with .Li";
-    for my $u (@{L.o}) {
-        next if ar.flatly && u.O ne 'ux';
-        die "leads back" if $u eq L.i;
-        
-        unless (u.G eq $G || u.G eq G.O) {
-            # to skip O=ux plants on nested vortexen (uW{ui=W)
-            # uy maybe spawned from G.O Cs
-            sayg "skipping u.K u.uuid on T.i.K cos u.G.name ne here", $u, T.i;
-            next;
-        }
-        # to skip O=ux plants on nested vortexen (uW{ui=W) # but go into uy spawned from G.O Clange
-        if (u.dead || u.B.ui && u.B.ui.dead) {
-            sayre "DEAD DEAD DEAD u.K removing from G.K ux ". u.B.ui->pint();
-            0->deaccum($L, 'o', $u);
-            next;
-        }
-        push @o, $u;
-    }
-    #say L.i->pint()." leads to ".@o;
-    @o;
   event: |
     my $u = L.i; # the clicked id: uy probly.
     my $ux = uxL.i; # first parent <ux>
