@@ -112,4 +112,22 @@ R_nonz:
             u.A->umk(ar.S, 'S');
       }
       $u
+  - K: del #c
+    D: |
+        return if u.dead;
+        u.dead = 1;
+        
+        for my $Ak (grep { /^u.*$/ }, keys %{u.A}) {
+            my $uk = $Ak;
+            $uk =~ s/^u/n/;
+            for my $uA (@{u.A->{$Ak}||[]}) {
+                0->deaccum($uA, $uk, u.A);
+            }
+        }
+        
+        for my $Ak (grep { /^n.*$/ }, keys %{u.A}) {
+            for my $n (map {_.i} @{u.A->{$Ak}||[]}) {
+                w $R del(u => $n);
+            }
+        }
 

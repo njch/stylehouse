@@ -49,7 +49,6 @@ C:            # W M ux ...
     print: |
        "(".S.B.Lu.i->pint." \t".gpty(S.B.Lu.t).")"
        
-
   - K: w #c like pi
     tag: yw
     styles: yw
@@ -233,22 +232,22 @@ hooks:
 
   ux: |
     my $Ls = ar.Ls;
-    my @is = map { _.Li || die 'noli' } @$Ls;
+    my @is = map { _.i || die 'noli' } @$Ls;
     
     return warn "no lines" unless @is;
     
-    my $uWa = {K => 'W', W => G.R};
+    my $uWa = {K => 'W', B=>{W => G.R}};
     G.uW = w G.R fuu(u => $uWa); # the unified into wormhole
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
     
-    my $uMa = {K => 'M', W => G.O.R};
+    my $uMa = {K => 'M', B=>{W => G.O.R}};
     my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
     
     
     my @ba = map {
-        my $uxa = {K => 'ux', i => $_};
+        my $uxa = {K => 'ux', i => $_, B=>{i=>$_}};
         my $u = w G.R fuu(u => $uxa);
         u.A->umk($uM, 'M');
         $u;
@@ -265,32 +264,25 @@ hooks:
     
     my @tops = grep { !_.u_S } @{uM.A.n_M||[]};
     @tops = @{uM.A.n_M||[]} if !@tops;
+    @tops = map { _.i } @tops;
     die "notops" if !@tops;
     
-    
     my $j = $G->nw(K=>'j', s=>[], c=>[]);
-    my @as =
-        (map { { j => $j, i => $_ } } @recur),
-        (map { { j => $j, i => $_, flatly => 1 } } @flatly);
     
-    my $i={};
-    for my $a (@as) {
-        next if $i->{a.i.id}++;
-        saygr "Top level U is a ".a.i->pint()."   fl=a.flatly";
-        w U(%$a);
+    for my $i (@tops) {
+        saygr "Top level U is a ".$i->pint();
+        
+        w U[$j, $i];
     }
     
     H.G w aj[$j];
     
-    sayre "ux -------- G.K $desc done\t".@$Ls." lines\tjs=".scalar(@{j.s})."\t".$G->F_delta()."  load ".$H->la;
+    sayre "ux -------- G.K done\t"
+        .@is." lines\t"
+        ."js=".scalar(@{j.s})."\t"
+        .$G->F_delta()."  load ".$H->la;
   U: |
-    0->visTp($ar, "Fun") if ar.i;
-    my $u = T.i;
-    die "uh" unless $u eq T.L.i;
-    
-    w utricks/spawn[$u];
-    #say gpty($u) ."  spawnd".$G->F_delta();
-    w sane/U1[$u];
+    w utricks/spawn(u=>$i);
     
     my @o = w dook[$u];
     #saygr join"",("  " x scalar(@F)), "     G.name ".$u->pint()." leads to ".join'  ',map{_.K}@o;
@@ -306,22 +298,20 @@ hooks:
   utricks:
     spawn: | #c
         my @uys;
-        my $ui = u.B.ui if u.B.ui;
-        die sw[nonWayui=>$u] if $ui && !wish(w=>$ui);
-        if ($ui && ui.ux && u.K eq "ux") {
-            $u->from(ui.ux);
+        
+        if (u.K eq 'ux' && u.i) {
+            $u->from(u.i.ux); # DOOR how spawn comes through
         }
         
         if (my $spawn = u.spawn) {
             for my $sp (@$spawn) {
-                my $Bs = u.B;
                 my $uy;
                 if (my $uxy = 0->CsK({K=>sp.K})) {
                     $uy = 0->sway({from=>$uxy});
                 }
-                if ($ui) {
-                    if (my $xiy = 0->CsK({K=>sp.K}, ui.G)) {
-                        $G->Flab("ui.G.name hemisphere uxy: ", $uy, $xiy);
+                if (u.K eq 'ux' && u.i) {
+                    if (my $xiy = 0->CsK({K=>sp.K}, u.i.G)) {
+                        $G->Flab("u.i.G.name hemisphere uxy: ", $uy, $xiy);
 
                         $uy ||= $G->nw();
                         $uy->from($xiy); # G to xiy.G etc B merged
@@ -330,9 +320,7 @@ hooks:
                 
                 $uy || die sw(["no thingy sp.K", $G->anyway('C')]);
                 
-                $uy->from({B=>$Bs});
-                
-                $uy->from({S=>u.S}) if delete sp.Scc;
+                uy.i = u.i;
                 
                 $uy->from($sp);
                 
@@ -347,28 +335,22 @@ hooks:
             });
         }
         
-        my $old = { map { _.uuid => $_ } grep { _.O ne "ux" } @{u.Li.o} };
+        my $old = { map { _.id => $_ } @{u.A.n_y||[]} };
         my @spun;
-        for my $uu (@uys) {
-            my $uy;
-            if ($uy = 0->fu($uu)) {
-            }
-            else {
-                #sayg "NEW u ! uu.K ".ki(uu.B).(uu.B.ui && uu.B.ui.K ? " uu.B.ui.K":'');
-                $uy = 0->T({i => $uu});
-                0->l($uy);
-            }
-            push @spun, $uy;
-            delete $old->{uy.uuid};
+        for my $u (@uys) {
+            my $y = w G.R fuu[$u];
+            push @spun, $y;
+            y.A->umk($u, 'y');
+            delete $old->{y.id};
         }
+        
         if (keys %$old) {
             say $u->pint."  has old stuff under...";
             say $_->pint for values %$old;
             say "NEW STUFF:";
             say $_->pint for @spun;
             for my $o (values %$old) {
-                0->deaccum(u.Li, 'o', $o);
-                o.dead = 1;
+                w G.R del(u => $o);
             }
         }
     ngrab: | #c
@@ -384,7 +366,6 @@ hooks:
                         uy.B.n = $n;
                     }
                 }
-
   compile_figure: |
         my $j = sub { join " ", grep { defined } @_ };
         my $ui = u.B.Lu.i if u.B.Lu;
