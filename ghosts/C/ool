@@ -290,14 +290,14 @@ hooks:
     pause: |
       G.paused = !G.paused;
     restysets: |
-        for my $S (w W/r(qw'K Im')) {
+        for my $S (w W/r(qw'K Im for 1')) {
             if (S.resty) {
                 S.styles =~ s/$_// for split ' ', S.resty;
                 delete S.resty;
             }
         }
         my $res = w restyfor(S=>{});
-        for my $S (w W/r(qw'K Im')) {
+        for my $S (w W/r(qw'K Im for 1')) {
             next if rand(1) < 6/9;
             S.resty = $res;
             S.styles .= " $res";
@@ -322,6 +322,7 @@ hooks:
       }
     rotation: |
       for my $Im (w W/r(qw'K Im for 1')) {
+           next;
           for my $ux ($Im->LioO('ux')) {
               my $uxid = ux.at.id;
               $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
@@ -382,7 +383,7 @@ hooks:
     G.GG.U w ux(is => $chi);
   W:
     r: |
-      my @a=grep { _.K ne "IF" } shuffle(0->rei({V=>'U'}));
+      my @a=grep { _.K ne "IF" } shuffle w G.R fi(f=>{V=>'U'});
       if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
           my $from = $1 || 0;
           my $to = $2 || $3-1;
