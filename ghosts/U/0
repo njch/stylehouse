@@ -230,75 +230,6 @@ hooks:
     
     
 
-  ux: |
-    my $Ls = ar.Ls;
-    my @is = map { _.i || die 'noli' } @$Ls;
-    
-    return warn "no lines" unless @is;
-    
-    my $uWa = {K => 'W', B=>{W => G.R}};
-    G.uW = w G.R fuu(u => $uWa); # the unified into wormhole
-    
-    # the W is what we propagate, where ux
-    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
-    
-    my $uMa = {K => 'M', B=>{W => G.O.R}};
-    my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
-    
-    
-    my @ba = map {
-        my $uxa = {K => 'ux', i => $_, B=>{i=>$_}};
-        my $u = w G.R fuu(u => $uxa);
-        u.A->umk($uM, 'M');
-        $u;
-    } @is;
-    
-    
-    for my $ux (@ba) {
-        # ux nests under another ux like origin
-        for my $uS (@{ux.i.A.u_S||[]}) {
-            next unless grep {_.i eq $uS} @{uM.A.n_M||[]};
-            ux.A->umk($uS, 'uS');
-        }
-    }
-    
-    my @tops = grep { !_.u_S } @{uM.A.n_M||[]};
-    @tops = @{uM.A.n_M||[]} if !@tops;
-    @tops = map { _.i } @tops;
-    die "notops" if !@tops;
-    
-    my $j = $G->nw(K=>'j', s=>[], c=>[]);
-    
-    for my $i (@tops) {
-        saygr "Top level U is a ".$i->pint();
-        
-        w U[$j, $i];
-    }
-    
-    H.G w aj[$j];
-    
-    sayre "ux -------- G.K done\t"
-        .@is." lines\t"
-        ."js=".scalar(@{j.s})."\t"
-        .$G->F_delta()."  load ".$H->la;
-
-  U: |
-    j.seenid->{i.id} = $i;
-    
-    w spawn(u=>$i);
-    
-    my @down = w Udown;
-    for my $i (@down) {
-        w U[$j, $i];
-    }
-    
-    w compile_figure;
-    w wayout_sendo;
-  Udown: |
-    my @down = grep {!j.seenid->{_.id}} map{_.i} @{i.A.n_S||[]}, @{i.A.n_y||[]};
-    die if grep {_.dead} @down;
-    @down;
-    
   spawn: |
         my @uys;
         
@@ -356,21 +287,100 @@ hooks:
                 w G.R del(u => $o);
             }
         }
-
+  ux: |
+    my $Ls = ar.Ls;
+    my @is = map { _.i || die 'noli' } @$Ls;
+    
+    return warn "no lines" unless @is;
+    
+    my $uWa = {K => 'W', B=>{W => G.R}};
+    G.uW = w G.R fuu(u => $uWa); # the unified into wormhole
+    
+    # the W is what we propagate, where ux
+    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    
+    my $uMa = {K => 'M', B=>{W => G.O.R}};
+    my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
+    uM.A->umk(G.uW, 'M');
+    
+    
+    my @ba = map {
+        my $uxa = {K => 'ux', i => $_, B=>{i=>$_}};
+        my $u = w G.R fuu(u => $uxa);
+        u.A->umk($uM, 'ux');
+        $u;
+    } @is;
+    
+    
+    for my $ux (@ba) {
+        # ux nests under another ux like origin
+        for my $uS (@{ux.i.A.u_S||[]}) {
+            next unless grep {_.i eq $uS} @{uM.A.n_M||[]};
+            ux.A->umk($uS, 'uS');
+        }
+    }
+    
+    my @tops = grep { !_.u_S } @{uM.A.n_ux||[]};
+    @tops = @{uM.A.n_ux||[]} if !@tops;
+    @tops = map { _.i } @tops;
+    #die "notops" if !@tops;
+    @tops = G.uW;
+    
+    my $j = $G->nw(K=>'j', s=>[], c=>[]);
+    
+    for my $i (@tops) {
+        saygr "Top level U is a ".$i->pint();
+        
+        w U[$j, $i];
+    }
+    
+    H.G w aj[$j];
+    
+    sayre "ux -------- G.K done\t"
+        .@is." lines\t"
+        ."js=".scalar(@{j.s})."\t"
+        .$G->F_delta()."  load ".$H->la;
+  U: |
+    j.seenid->{i.id} = $i;
+    
+    w spawn(u=>$i);
+    
+    my @down = w Udown;
+    ar.d++;
+    my $in = sub{ $H->ind(join('',("    ") x ar.d), join"\n",@_) };
+    sayyl $in->("\\".$i->pi, map { " - ".$_->pi} @down);
+    
+    for my $d (@down) {
+        w U(j=>$j, i=>$d, d=>ar.d);
+    }
+    sayyl $in->("/". $i->pi);
+    
+    w compile_figure;
+    w wayout_sendo;
+  Udown: |
+    # W->M->uxs, then uxs S amongst, y projects
+    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
+    my @ks = grep { $okn->{$_} } keys %{i.A};
+    my @As = map { @{i.A->{$_}||[]} } @ks;
+    my @down = map{_.i} @As;
+    @down = grep {!j.seenid->{_.id}} @down unless ar.allseeing;
+    die if grep {_.dead} @down;
+    uniq @down;
+    
   compile_figure: |
-          my $u = $i;
-        $ui = u.i if u.i;
+        my $u = $i;
+        my $ui = u.i if u.i;
         
         my $at = u.at = {};
         
         if (u.K eq "uW") {
             u.at = ui.at;
-            sayre $ui->pi." wtf wtf ".$u->pi;
+            sayre $ui->pi." wtf wtf ".$u->pi for 1..5;
             return;
         }
         
         # v the look-around-for-style-etc vortex v
-        at.id = 0->uiuS($u => 'id'); # probly... rest good to T
+        at.id = 0->uiuS($u => 'id') || u.id; # probly... rest good to T
         at.tag = 0->uiuS($u => 'tag') || u.tag || u.K;
         at.ishtml = 0->uiuS($u => 'ishtml');
         at.class = 0->uiuS($u => 'class');
@@ -390,11 +400,16 @@ hooks:
         at.conty = "" if !defined at.conty;
         at.conty = encode_entities(at.conty) unless at.ishtml;
         
-        my @down = sort { a.conor <=> b.conor } w Udown;
+        
+        my @down = w Udown(+ allseeing => 1);
+        my $in = sub{ $H->ind(join('',("    ") x ar.d), join"\n",@_) };
+        sayyl $in->("In ".$i->pi, map { " - ".$_->pi} @down);
+        
+        @down = sort { a.conor <=> b.conor } @down;
         at.ooze = \@down;
   wayout_sendo: |
         my $u = $i;
-        $ui = u.i if u.i && u.K eq 'ux';
+        my $ui = u.i if u.i && u.K eq 'ux';
         
         my $at = u.at;
         my $sendo = u.sendo = [];

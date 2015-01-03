@@ -564,7 +564,7 @@ sub uiuS {
     my $G = shift;
     my ($u, $b) = @_;
     my $a = "S";
-    my $ui = $u->{B}->{Lu}->{i} if $u->{B}->{Lu}; # even if below thingy?
+    my $ui = $u->{i} if $u->{i};
 
     for my $w ($ui, $u) {
         next if !$w;
