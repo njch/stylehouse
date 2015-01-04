@@ -655,37 +655,6 @@ sub ingo {
     }, "ing $ingw->{name} $ingw->{id}");
 }
 
-sub accum {
-    my $G = shift;
-    # TODO path loquation doesn't stretch far re policy, no prob for now.
-    my ($src, $ac, $t) = @_;
-
-    if ($ac eq "Lo" || $ac eq "Li") {
-        $src->{$ac} = $t;
-        return;
-    }
-
-    my $a = $G->loquate($src, $ac, []);
-
-    return if $ac eq 'o' && $src->{i} && $src->{i} eq $t;
-
-    if (!grep { $_ eq $t } @$a) {
-        push @$a, $t
-    }
-}
-
-sub deaccum {
-    my $G = shift;
-    my ($source, $ac, $t) = @_; # takes ip ish $t maybe
-    my $a = $source->{$ac} ||= [];
-    my $i = 0;
-    for (@$a) {
-        return 1, splice(@$a, $i, 1) if $_ eq $t;
-        $i++;
-    }
-    return 0;
-}
-
 sub ip {
     my $G = shift;
     my ($ip, $i) = @_;
@@ -1410,22 +1379,6 @@ sub pyramid {
     $u
 }
 
-sub sway {
-    my $G = shift;
-    # sucks way matching $p # only supports matching K for now
-    my ($p, $s, $P) = @_;
-    my ($from) = $p->{from} || $G->CsK($p);
-
-    $from || defined $P->{e} || die "no C: $p->{K} ($G->{name})".wdump([$p,$s]);
-
-    my $w = $G->nw();
-    $w->from($from) if $from;
-    $w->from($p) unless $from;
-    $w->from($s) if $s && %$s; # merges in B :D
-
-    return $w
-}
-
 sub Bu {
     my $G = shift;
     my($K,$B)=@_;
@@ -1433,17 +1386,6 @@ sub Bu {
     my $a = {};
     $G ->w("Bu_D", {a => $a}, $u) if $u->{Gw} || $u->{Bu_D};#opopopopop
     $u
-}
-
-sub CsK {
-    my $G = shift;
-    my ($p, $GG) = @_;
-    $GG ||= $G;
-    $p->{s} ||= 'Cs C';
-    my @topK = split ' ', delete $p->{s};
-    my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
-    @Cs = grep { $G->ip($p, $_) } @Cs if %$p;
-    return wantarray ? @Cs : shift @Cs;
 }
 
 sub TafuBl {
@@ -1586,6 +1528,7 @@ sub visTp {
 
 sub l {
     my $G = shift;
+    die "HERE";
     my ($n) = @_;
     my $u = $T->{i}; # up;
     $G->L($n, $u);
@@ -1596,6 +1539,7 @@ sub l {
 
 sub L {
     my $G = shift;
+    die "HERE";
     my ($n, $u) = @_;
     $u->{A}->An($n);
     $n->{A}->Au($u);
@@ -1620,21 +1564,6 @@ sub ei {
     my $ip = {};
     $ip->{K} = shift; # lookup BcS for more, we could want to create
     map {$_->{i}} $G->scGre($ip);
-}
-
-sub loquate {
-    my $G = shift;
-    my ($source, $path, $def) = @_;
-    my @moves = split '/', $path;
-    my $s = $source;
-    until (@moves == 1) {
-        my $m = shift @moves;
-        $s = $s->{$m};
-    }
-    my $m = shift @moves;
-    my $thing = $s->{$m} ||= $def;
-    !ref $thing && die "Oh no! $path led to non-ref $thing from $source";
-    return $thing;
 }
 
 sub fu {
@@ -1671,6 +1600,7 @@ sub fu_cache {
 sub T {
     my $G = shift;
     my ($p) = @_;
+    die "hi";
 
     # 1/9
 
@@ -1877,6 +1807,79 @@ sub vimcolor {
         );
         return $syntax->html;
     });
+}
+
+sub CsK {
+    my $G = shift;
+    my ($p, $GG) = @_;
+    $GG ||= $G;
+    $p->{s} ||= 'Cs C';
+    my @topK = split ' ', delete $p->{s};
+    my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
+    @Cs = grep { $G->ip($p, $_) } @Cs if %$p;
+    return wantarray ? @Cs : shift @Cs;
+}
+
+sub sway {
+    my $G = shift;
+    # sucks way matching $p # only supports matching K for now
+    my ($p, $s, $P) = @_;
+    my ($from) = $p->{from} || $G->CsK($p);
+
+    $from || defined $P->{e} || die "no C: $p->{K} ($G->{name})".wdump([$p,$s]);
+
+    my $w = $G->nw();
+    $w->from($from) if $from;
+    $w->from($p) unless $from;
+    $w->from($s) if $s && %$s; # merges in B :D
+
+    return $w
+}
+
+sub loquate {
+    my $G = shift;
+    my ($source, $path, $def) = @_;
+    my @moves = split '/', $path;
+    my $s = $source;
+    until (@moves == 1) {
+        my $m = shift @moves;
+        $s = $s->{$m};
+    }
+    my $m = shift @moves;
+    my $thing = $s->{$m} ||= $def;
+    !ref $thing && die "Oh no! $path led to non-ref $thing from $source";
+    return $thing;
+}
+
+sub accum {
+    my $G = shift;
+    # TODO path loquation doesn't stretch far re policy, no prob for now.
+    my ($src, $ac, $t) = @_;
+
+    if ($ac eq "Lo" || $ac eq "Li") {
+        $src->{$ac} = $t;
+        return;
+    }
+
+    my $a = $G->loquate($src, $ac, []);
+
+    return if $ac eq 'o' && $src->{i} && $src->{i} eq $t;
+
+    if (!grep { $_ eq $t } @$a) {
+        push @$a, $t
+    }
+}
+
+sub deaccum {
+    my $G = shift;
+    my ($source, $ac, $t) = @_; # takes ip ish $t maybe
+    my $a = $source->{$ac} ||= [];
+    my $i = 0;
+    for (@$a) {
+        return 1, splice(@$a, $i, 1) if $_ eq $t;
+        $i++;
+    }
+    return 0;
 }
 
 9

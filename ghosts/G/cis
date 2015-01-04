@@ -55,4 +55,67 @@ Ds:
           );
           return $syntax->html;
       });
+  - K: CsK #c TODO C vortex reading # TODO
+    D: |
+        my ($p, $GG) = @_;
+        $GG ||= $G;
+        p.s ||= 'Cs C';
+        my @topK = split ' ', delete p.s;
+        my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
+        @Cs = grep { 0->ip($p, $_) } @Cs if %$p;
+        return wantarray ? @Cs : shift @Cs;
+  - K: sway #c
+    D: |
+        # sucks way matching $p # only supports matching K for now
+        my ($p, $s, $P) = @_;
+        my ($from) = p.from || 0->CsK($p);
+        
+        $from || defined P.e || die "no C: p.K (G.name)".wdump([$p,$s]);
+        
+        my $w = $G->nw();
+        $w->from($from) if $from;
+        $w->from($p) unless $from;
+        $w->from($s) if $s && %$s; # merges in B :D
+        
+        return $w
+  - K: loquate #c TODO A sess with vectory text
+    D: |
+        my ($source, $path, $def) = @_;
+        my @moves = split '/', $path;
+        my $s = $source;
+        until (@moves == 1) {
+            my $m = shift @moves;
+            $s = $s->{$m};
+        }
+        my $m = shift @moves;
+        my $thing = $s->{$m} ||= $def;
+        !ref $thing && die "Oh no! $path led to non-ref $thing from $source";
+        return $thing;
+  - K: accum #c TODO C vortex i/o
+    D: | 
+        # TODO path loquation doesn't stretch far re policy, no prob for now.
+        my ($src, $ac, $t) = @_;
+                
+        if ($ac eq "Lo" || $ac eq "Li") {
+            $src->{$ac} = $t;
+            return;
+        }
+        
+        my $a = 0->loquate($src, $ac, []);
+        
+        return if $ac eq 'o' && src.i && src.i eq $t;
+
+        if (!grep { $_ eq $t } @$a) {
+            push @$a, $t
+        }
+  - K: deaccum #c
+    D: |
+        my ($source, $ac, $t) = @_; # takes ip ish $t maybe
+        my $a = $source->{$ac} ||= [];
+        my $i = 0;
+        for (@$a) {
+            return 1, splice(@$a, $i, 1) if $_ eq $t;
+            $i++;
+        }
+        return 0;
 
