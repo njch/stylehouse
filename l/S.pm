@@ -54,10 +54,11 @@ __DATA__
       }
   </style>
   <link href="light.css" rel="stylesheet"></link>
-</head><body style="background: url('i/greencush.jpg'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;">
+</head><body style="margin: 0px; background: url('i/greencush.jpg'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;">
 
     <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;"> </div>
-    <div id='ux' style="position:absolute;top:0.5em;
+
+    <div id='ux' style="position:absolute;top:0em;
     right:0em;width:100%;height:100%; overflow:hidden;"> </div>
 
     <script type="text/javascript">
