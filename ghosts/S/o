@@ -3,7 +3,7 @@ name: o
 C:
   - K: Hi
 hooks:
-  in_listenings: | # sub hostinfos before w in does our hostinfo
+  fresh_init: | # sub hostinfos before w in does our hostinfo
     $G->su('Hi' => sub {
         my $a = shift;
         w Hi[$a];
@@ -24,13 +24,11 @@ hooks:
         $fi =~ s/\n/ /g;
         saygr "lies: ".((`wc -l $fi`)[-1]  =~ /(\d+) total/)[0];
     });
+    
+    w hostinfo;
+    
   in: |
     $G->timer(9, sub{w Hiwtidy;});
-  node:
-    o: []
-  S:
-    Hiwtidy: w Hiwtidy;
-    reextet: w reextet;
   Hi: |
       saygr "a.top to a.m";
       my ($hol, $m) = split ' ', a.m, 2;
