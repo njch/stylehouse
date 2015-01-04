@@ -19,10 +19,10 @@ hooks:
         };
     });
     $G->recur(3, sub { saygr " Yep" });
-    $G->recur(12, sub {
-        #my @files = $G->fs_find("ghosts");
-        #say @files;
-        #saygr "lies: ".((`wc -l @files`)[-1]  =~ /(\d+) total/)[0];
+    $G->recur(10, sub {
+        my $fi = `find ghosts -type f`;
+        $fi =~ s/\n/ /g;
+        saygr "lies: ".((`wc -l $fi`)[-1]  =~ /(\d+) total/)[0];
     });
   in: |
     $G->timer(9, sub{w Hiwtidy;});
