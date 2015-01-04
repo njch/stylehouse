@@ -12,7 +12,6 @@ use G;
 use J;
 use R;
 use T;
-use W;
 use UUID;
 use Redis;
 use File::Slurp;
@@ -43,10 +42,7 @@ sub new {
     $J::H = $H;
     $R::H = $H;
     $T::H = $H;
-    $W::H = $H;
 
-
-    $G::T = {};
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H', 'S', "S/$p->{style}", "S/$p->{style}/$p->{name}");
 
@@ -192,7 +188,7 @@ sub throwlog {
         @E,
     );
     $string = "\n$string\n";
-    $string = $H->ind("$what  ", $string)."\n";
+    $string = G::ind("$what  ", $string)."\n";
     my $color = $what eq "Error"?'red':'green';
     print colored($string, $color);
 }

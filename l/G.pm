@@ -16,9 +16,11 @@ use HTML::Entities;
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 use List::MoreUtils qw(natatime uniq);
 use Unicode::UCD 'charinfo';
+use Carp 'confess';
+use Term::ANSIColor; 
+use File::Find;
 # use Mojo::IOLoop::ForkCall; # see para
 our $swdepth = 5;
-our $T; # allele tower... not like so, again R above
 our @F; # is Ring re subs from below 
 our $G0;
 our $db = 0;
@@ -26,7 +28,7 @@ our $MAX_FCURSION = 140;
 our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
 our $HASHC = "#"."c";
 our $gp_inarow = 0;
-my %D_cache;
+
 
 # ^ curves should optimise away, accordion
 
@@ -51,9 +53,6 @@ my %D_cache;
       return $s
   }
   sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
-  use Carp 'confess';
-  use Term::ANSIColor; 
-  use File::Find;
 
   our $Ly;
   our $_ob = undef;
