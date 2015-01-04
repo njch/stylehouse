@@ -1205,7 +1205,7 @@ sub w {
     }
 
     if (!@$l) {
-        $G->Flab("way miss $talk", \@ways, $S) if $G->deeby > 3;
+        sayre $G->pi."    way miss $talk";
         return;
     }
 

@@ -3,8 +3,8 @@ hooks:
   fresh_init: |
     say "     H Fresh init H.style H.name";
 
-    H._future = 1;
     push @{G.GGs||=[]}, $G; # H self
+    H.who = [];
     
     H.r = w enRedis;
     
@@ -44,6 +44,23 @@ hooks:
     w pre_in;
     w in;
     waylay transam; # 3
+  websocket: |
+    my $g = G:S/O;
+    $g || die "no SO!?";
+    $g w websocket;
+  send_Elvis: |
+    if (H.name eq "O") {
+        my $g = G:S/O;
+        $g || die "no SO";
+        return $g w send_Elvis;
+    }
+    
+    my $to = "H.style/H.name";
+    $to .= "/ar.to" if ar.to;
+    my $Jid = $H->mkuid;
+    H.r->set("J/$Jid", $m);
+    saybl "pub Elvis $to $Jid\t*".slim(180,180,$m);
+    $H->pub('Elvis', "$to $Jid", 'ig');
   figure_port: |
     my $listen = readlink('listen');
     my ($host,$port, $wa) = split ':', $listen;

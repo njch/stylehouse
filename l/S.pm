@@ -20,7 +20,7 @@ get '/' => sub{
 # MOVE post transport leveling
 my $name = join(' ', @ARGV);
 $name ||= 'S';
-$H = H->new({name => $name, style => 'shed'});
+$H = H->new({name => $name, style => 'hut'});
 
 websocket '/s' => sub {
     my $mojo = shift;
