@@ -243,6 +243,7 @@ sub HGf {
 
 sub W {
     my $G = shift;
+    die "Hi";
     $G->{W}
 }
 

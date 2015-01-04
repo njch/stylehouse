@@ -23,6 +23,7 @@ sub pi {
 
 sub b {
     my $T = shift;
+    die "HELLO!!";
     $T->{R}->du({ O=>$T, i=>$T->{i} })
 }
 
