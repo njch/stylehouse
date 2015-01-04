@@ -1,6 +1,6 @@
 
 Oi:
-  includome: R/sur R/ivm
+  includome: R/ivm
 Ds:
   - K: head #c
     D: |
@@ -58,72 +58,7 @@ Ds:
     D: |
       "R R.name"  
    
-  - K: du #c style grab
-    D: |
-      my $a = shift || R.a;
-      $a || die;
-      defined a.i || die;
-      # how to get around the Objs' data
-      my $s = a.s ||= $R->dus();
-      my $i = a.i;
-      my $n = a.n;
-      a.e = 2 if !defined a.e;
-      
-      my $c = {};
-      a.as ||= [];
-      push @{a.as}, $a;
-      a.ds = [@{a.ds||[]}, $a];
-      
-      return {} if @{a.ds} > 12 || 2 < grep {ref _.i && _.i eq $i} @{a.as};
-      
-      my $ref = ref $i || 'SCALAR';
-      my $is = $s->{$ref} || $s->{default};
-      $is ||= $s->{HASH} if "$i" =~ /^\w+=HASH\(/;
-      $is ||= $s->{default} || return {};
-      
-      my $mustb = { map { $_ => 1 } split ',', is.mustb } if is.mustb;
-      
-      for my $j (is.it->($i)) {
-          my $k = delete j.k;
-          my $K = delete j.K;
-          my $v = delete j.v;
-          
-          $j = {%$is, %$j};
-          my $an = {%$a, i => $v};
-          
-          my $ohms = defined j.oh ? j.oh
-              : defined is.oh ? is.oh
-            : 1;
-          
-          an.e -= $ohms;
-          
-          my $rk = join "\t", $k, an.e;
-          
-          $c->{$rk} = $v;
-          
-          a.tr.rows++;
-          last if a.tr.rowlimit && a.tr.rows >= a.tr.rowlimit;
-          
-          if (an.e >= 1 && ref an.i) {
-              my $cu = $R->du($an);
-              while (my ($ku, $vu) = each %$cu) {
-                  my $nk = $k.$ku;
-                  next if grep { $_->($_, $an, $cu) } @{s.notZ||[]};
-                  $c->{$nk} = $vu;
-              }
-          }
-          elsif (an.e > 0 && an.e < 1 && $mustb && !$mustb->{$K}) {
-              delete $c->{$rk};
-          }
-      }
-      
-      if (R.a == $a) {
-          R.a.d = $c;
-      }
-      
-      # this is about a 4 - material for links
-      $c
-      
+
   - K: f #c
     D: |
       my @styles = split "_", shift;
@@ -143,44 +78,7 @@ Ds:
       f.red = "color:#fca;";
       f.lightblue = "color:#44f;";
       f.black = "color:black;";
-  - K: dus #c G style schema
-    D: |
-        my $h = {
-          ARRAY => {
-            it => sub {
-              my $h = shift;
-              my $i = 0;
-              map { { k => "[".$i++, v => $_ } } @$h
-            },
-            oh => 0,
-          },
-          HASH => {
-            it => sub {
-              my $h = shift;
-              map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
-            },
-          },
-        };
-        my $an = sub {
-            my $k = shift;
-            my $i = $h->{$k} ||= {it => h.HASH.it};
-            %$i = (%$i, @_);
-        };
-        # make so 1.2 means if e>=0.5 traverse with e-=0.2
-        # drops 1 every traversal too...
-        # cept for sometimes when there's a deeper number in e
-        # saying from above via style schema how to curle around
-        # the 1-9, wherever
-        # then anomalies are mapped with names & meaning in stylegrab 78
-        
-        $an->(qw'A oh 0.2');
-        $an->(qw'C oh 0.2');
-        $an->(qw'G oh 0.2');
-        $an->(qw'T oh 0.2');
-        $an->(qw'R oh 0.2');
 
-        $an->(qw'W oh 0.2 mustb','id,hash,file,G');
-        $h
   - K: loadup #c du in reverse
     D: |
       my ($i, $k, $v) = @_;
