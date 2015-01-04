@@ -1,7 +1,4 @@
-C:
-  - K: Elvis
-    max_tooth_Hz: 12
-    Gw: 1
+
 hooks:
   mess: |
     # TODO sa* all over
@@ -35,32 +32,7 @@ hooks:
         $m = " $m"; # two spaces, tells js to eval
         H.G w send_Elvis[$m, $to]; 
     }
-  pubbedElvis: | # message for elvis via redis
-      sayre "su a.top ".slim(30,30,a.m);
-      my $cb;
-      
-      my ($meta, $Jid) = split ' ', a.m, 2;
-      my ($st, $na, $ww, $uni) = split '/', $meta;
-      my $m = H.r->get("J/$Jid") || die "a.m .... $Jid";
-      
-      $H->fixutf8($m);
-      
-      $G->timer(5, sub{H.r->del("J/$Jid")});
-      if ($uni) {
-          # meta
-          sayyl "unifid $st $na $ww !";
-          
-          my $hold = H.r->get("W/$ww") || die "no such $ww";
-          say "was from $hold";
-          my ($hol, $etc) = split /\s+/, $hold, 2;
-          if ($etc) {
-              sayyl "Retiling";
-              $cb = sub { w retile; };
-          }
-      }
-      $m = " $m";
-      H.G w send_Elvis[$m, $cb];
-      sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
+
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;

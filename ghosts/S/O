@@ -1,0 +1,255 @@
+
+C:
+  - K: Elvis
+    max_tooth_Hz: 12
+    Gw: 1
+hooks:
+  in_listenings: |
+    saygr "freshly H.ol ".`fig O`;
+    
+    w figure_port;
+    
+    H.r->ping() || die "no redids?";
+    $G->su("Elvis", sub {
+       my $a = shift;
+       w pubbedElvis[$a];
+    });
+  Teeth: |
+    H.G w Teeth;
+  pubbedElvis: | # message for elvis via redis
+      sayre "su a.top ".slim(30,30,a.m);
+      my $cb;
+      
+      my ($meta, $Jid) = split ' ', a.m, 2;
+      my ($st, $na, $ww, $uni) = split '/', $meta;
+      my $m = H.r->get("J/$Jid") || die "a.m .... $Jid";
+      
+      $H->fixutf8($m);
+      
+      $G->timer(5, sub{H.r->del("J/$Jid")});
+      if ($uni) {
+          # meta
+          sayyl "unifid $st $na $ww !";
+          
+          my $hold = H.r->get("W/$ww") || die "no such $ww";
+          say "was from $hold";
+          my ($hol, $etc) = split /\s+/, $hold, 2;
+          if ($etc) {
+              sayyl "Retiling";
+              $cb = sub { w retile; };
+          }
+      }
+      $m = " $m";
+      w send_Elvis[$m, $cb];
+      sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
+  websocket: | # Mojo throws connection over here
+    my $u = { K=>'Elvis', B=>{tx => $M->tx, M => $M}};
+    w G.R fuu[$u];
+  elvibe: |
+    sayyl "elvibe ?? jjj | ".$E->pi;
+    
+    my $js = " return elvis "; # random number
+    my $cb = sub{ w elvibium(e => shift, E=>$E); };
+    w jaw[$js,$cb,$E];
+    
+  elvibium: |
+    E.e = $e; 
+    0->accum($H,'who',$E);
+    for my $m (@{H.Jels}) {
+        w $E send[$m];
+    }
+    w z/clon;
+    w z/keon;
+
+        
+  elvis_leaves: |
+    0->deaccum($H,'who',$E);
+    sayre "Finash";
+  send_Elvis: |
+    my $Elvis = ar.Elvis || ar.E || H.who;
+    my $cb = ar.cb;
+    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
+        saybl "no infiduvia ----- will spring on .... ".slim($m);
+        push @{H.Jels||=[]}, $m;
+        return;
+    }
+    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
+    $m =~ s/\n//g;
+    saybl " < ".slim(60,90,$m);
+    
+    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
+    $e[-1]->[1] = $cb if $cb;
+    
+    for my $e (@e) {
+        my ($Elvis,$cb) = @$e;
+        w $Elvis send[$m, $cb];
+    }
+  z:
+    getgeometry: |
+      $H->send(" w".".reply({geometry: {x: screen.availWidth, y: screen.availHeight}});");
+    empty_body: |
+      $H->send("\$('body').empty();");
+    clon: |
+      $H->send(" clon();");
+    keon: |
+      $H->send(" keon();");
+    hitground: |
+      $H->JS("\$('#sky').stop().slideUp();");
+    wzy: |
+      $E->send(" s\.r('wsy '+ w\.conin +' '+ s\.conin );");
+    coninto: |
+      $H->send(" a\.con({conin: '$conin'});");
+    
+  Elvis: #
+      # here we want to graph things out real careful
+      # because it is how things get around
+      # the one to the many
+      # apps can be multicasting too
+      # none of these workings should be trapped at this level
+      # send it out there and get the hair on it
+    flows_D: |
+      Sw tx_uglies;
+      S.mouth = [];
+      
+      B.elvii = ++H.elvii;
+      B.sign ||= "eeeeeeeeeeeeeeeeeeeeee";
+      
+    swoosh: |
+      saygr $sign;
+      
+    humms_D: |
+      w elvibe(E=>$S);
+    
+    print: |
+      "$elvii $elvii =B.style=B.name=B.id B.conin $address";
+    
+    send: |
+      my $cb = ar.cb;
+      $tx->send($m, $cb);
+      
+    speaks: |      
+      my $E = $S;#1
+      H.elvis = $E;
+      w Teeth[$m, $E];#...
+      Sw swoosh; #9
+      
+      
+    mouthfull: |
+      for my $mJ (@{S.mouth}) {
+            return 1 if mJ.dig eq J.dig &&
+                (1 / (J.hitime - mJ.hitime)) > S.max_tooth_Hz
+      }
+      push @{S.mouth}, $J;
+      shift @{S.mouth} if @{S.mouth} > 3;
+      return 0;
+    
+    populi: |
+      my @all = w G.R fi(f=>{K=>"Elvis"});
+      if (@all > 1) {
+          sayre " Elvis is taking over!";
+          _.B.tx->finish for @all;
+          sayre " restarting...";
+          w reexec;
+      }
+      
+    leaves: |
+      sayre "Elvis leaves: ".$S->pi."  $address - $code, $reason";
+      Sw disco;
+    disconecktie: |
+      $tx->finish;
+      sayyl "Dsicog ".$S->pi;
+      Sw disco;
+    disco: |
+      S.disco = 1;
+      w elvis_leaves(E=>$S);
+    
+    tx_uglies: |
+      Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+      $M->on(message => sub {
+          my ($M, $m) = @_;
+          eval { Sw speaks[$m]; };
+          $H->error("$@") if $@;
+          $@ = "";
+      });
+      $M->on(finish => sub {
+          my ($M, $code, $reason) = @_;
+          Sw leaves[$code, $reason];
+      });
+      B.address = $tx->remote_address;
+  retile: |
+    my @m = grep { /^\S+ \S+ 1/ }
+        map { $_." ".H.r->get($_) } H.r->keys("W/*");
+    @m = map { join " ", reverse  /W\/(\S+) (\S+)/ } @m;
+    @m = map { /\S+ (\S+)/ } sort @m;
+    
+    
+    my $space = 2;
+    $space++ until $space * $space >= @m;
+    my $div = ["width:left $space", "height:top $space"];
+    
+    
+    my $grid = {};
+    for my $p (@$div) {
+        my ($iv, $parts) = split ' ', $p;
+        my ($mags, $ax) = split ':', $iv;
+        # magnitudes of width
+        # axed from unified by left, etc.
+        my $in = sprintf("%.3f", 1 / $parts);
+        
+        my @ground = map { [$_ => $grid->{$_} ] } sort keys %$grid;
+        @ground = [] if !@ground;
+        my $pole = [];
+        $grid = {};
+        
+        my $here = 0; # in accum
+        for my $i (1..$parts) {
+            my $ox = {};
+            ox.part = $i;
+            $ox->{$ax} = $here;
+            $here += $in;
+            $ox->{$mags} = $in;
+            push @$pole, $ox;
+        }
+        
+        for my $g (@ground) {
+            my ($k, $v) = @$g;
+            $v ||= {};
+            for my $ox (@$pole) {
+                my $K = (defined $k?"$k ":"") . ox.part;
+                my $x = $grid->{$K} = {%$v, %$ox};
+                delete x.part;
+            }
+        }
+    }
+    
+    my @holes = sort keys %$grid;
+    say "Got ".@m." pegs for ".@holes." holes";
+    for my $n (@m) {
+        my $h = shift @holes;
+        my $o = $grid->{$h};
+        my $cssset = ".animate({".join(",", map {
+            "'$_':'".($o->{$_} * 100)."%'"
+            } sort keys %$o)."}, 0)";
+        my $unhide = ".removeClass('NZ')";
+        $H->send(" \$('#$n')$cssset$unhide".";");
+    }
+  waits: |
+    my $towait = ar.towait || 1;
+    my $to = ar.to;
+    
+    my $max = max map { _.div } @$to;
+    _.span = $max / _.div for @$to;
+    
+    my $tot = sum map { _.span } @$to;
+    my $one = $towait / $tot;
+    
+    my $ord = {};
+    for my $t (@$to) {
+        my $waits = $one * t.span;
+        $waits = sprintf("%.7f", $waits);
+        t.waits = $waits;
+        push @{ $ord->{$waits} ||= [] }, $t
+    }
+    return $ord;
+    
+

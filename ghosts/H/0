@@ -20,15 +20,15 @@ hooks:
         }
     });
     
-
     w figure_port;
     
     my $reS = sub { my $a = shift; w reS(%$a); }; 
     $G->su(S => $reS);
     $G->su("S/H.style/H.name" => $reS);
     $G->su("S/H.style/H.name/H.id" => $reS);
-    w in_listenings;
     
+    w in_listenings;
+    # S/* mods ^
     
     $G->timer(60*9+(20 * rand 4),
         sub { sayre "voluntary reexec" for 1..13; w reexec; })
@@ -37,12 +37,26 @@ hooks:
     
     $G->recur(5 => sub { H.r->ping || die "not redis?" });
     
+    
     # start git torrent
     # do it all
     # $0 has become a runtime
     w pre_in;
     w in;
     waylay transam; # 3
+  figure_port: |
+    my $listen = readlink('listen');
+    my ($host,$port, $wa) = split ':', $listen;
+    die "too much listen" if $wa;
+    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+    $port ||= 2000;
+    $host ||= '127.0.0.1';
+
+    $port += ord(H.name) + 8000;
+    
+    H.listen_http = "http://$host:$port";   
+    H.listen_ws = "ws://$host:$port/s";
+    
   subsc: |
     my $tos = H.subscr->{$top} ||= [];
     push @$tos, $cb;
@@ -50,7 +64,6 @@ hooks:
     H.db->listen($top);
     
     sayyl "Subbed to $top";
-
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
@@ -66,25 +79,6 @@ hooks:
         return $c;
     };
     $r
-  waits: |
-    my $towait = ar.towait || 1;
-    my $to = ar.to;
-    
-    my $max = max map { _.div } @$to;
-    _.span = $max / _.div for @$to;
-    
-    my $tot = sum map { _.span } @$to;
-    my $one = $towait / $tot;
-    
-    my $ord = {};
-    for my $t (@$to) {
-        my $waits = $one * t.span;
-        $waits = sprintf("%.7f", $waits);
-        t.waits = $waits;
-        push @{ $ord->{$waits} ||= [] }, $t
-    }
-    return $ord;
-    
   reexec: |
         for my $E (@{H.who||[]}) {
             w $E disconecktie;
@@ -96,61 +90,8 @@ hooks:
     retile: w retile;
     
   retile: |
-    my @m = grep { /^\S+ \S+ 1/ }
-        map { $_." ".H.r->get($_) } H.r->keys("W/*");
-    @m = map { join " ", reverse  /W\/(\S+) (\S+)/ } @m;
-    @m = map { /\S+ (\S+)/ } sort @m;
-    
-    
-    my $space = 2;
-    $space++ until $space * $space >= @m;
-    my $div = ["width:left $space", "height:top $space"];
-    
-    
-    my $grid = {};
-    for my $p (@$div) {
-        my ($iv, $parts) = split ' ', $p;
-        my ($mags, $ax) = split ':', $iv;
-        # magnitudes of width
-        # axed from unified by left, etc.
-        my $in = sprintf("%.3f", 1 / $parts);
-        
-        my @ground = map { [$_ => $grid->{$_} ] } sort keys %$grid;
-        @ground = [] if !@ground;
-        my $pole = [];
-        $grid = {};
-        
-        my $here = 0; # in accum
-        for my $i (1..$parts) {
-            my $ox = {};
-            ox.part = $i;
-            $ox->{$ax} = $here;
-            $here += $in;
-            $ox->{$mags} = $in;
-            push @$pole, $ox;
-        }
-        
-        for my $g (@ground) {
-            my ($k, $v) = @$g;
-            $v ||= {};
-            for my $ox (@$pole) {
-                my $K = (defined $k?"$k ":"") . ox.part;
-                my $x = $grid->{$K} = {%$v, %$ox};
-                delete x.part;
-            }
-        }
-    }
-    
-    my @holes = sort keys %$grid;
-    say "Got ".@m." pegs for ".@holes." holes";
-    for my $n (@m) {
-        my $h = shift @holes;
-        my $o = $grid->{$h};
-        my $cssset = ".animate({".join(",", map {
-            "'$_':'".($o->{$_} * 100)."%'"
-            } sort keys %$o)."}, 0)";
-        my $unhide = ".removeClass('NZ')";
-        $H->send(" \$('#$n')$cssset$unhide".";");
-    }
+    my $g = G:S/O;
+    $g || die "no S/O ghost!";
+    $g w retile;
   
 
