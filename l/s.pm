@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 package S;
 use Mojo::IOLoop;
-
 use common::sense;
 
 use lib 'l';

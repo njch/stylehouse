@@ -4,7 +4,7 @@ Ds:
     D: |
       #!/usr/bin/env perl
       package S;
-      use Mojolicious::Lite;
+      use Mojo::IOLoop;
       use common::sense;
       
       use lib 'l';
@@ -15,20 +15,22 @@ Ds:
       binmode(STDIN, ":utf8"); 
       say '' for 1..9;
 
-      get '/' => sub{ 
-         my $self = shift;
-         $self->stash(ws_location => $self->url_for('s')->to_abs);
-         $self->render(template=>'ws_page')
-      };
 
       # MOVE post transport leveling
       my $name = join(' ', @ARGV);
       $name ||= 'S';
       $H = H->new({name => $name, style => 'hut'});
       
+      if ($name eq 'O') {
+      use Mojolicious::Lite;
       websocket '/s' => sub {
           my $mojo = shift;
           $H->enwebsocket($mojo);
+      };
+      get '/' => sub{ 
+         my $self = shift;
+         $self->stash(ws_location => $self->url_for('s')->to_abs);
+         $self->render(template=>'ws_page')
       };
       push @{app->static->paths}, '/home/s/styleshed/public';
       app->secrets([readlink '/home/s/stylehouse/msecret']);
@@ -36,6 +38,9 @@ Ds:
       my $listen = $H->{listen_http};
       say "\n\n        listen to $listen\n";
       app->start('daemon', '--listen' => "$listen");
+      }else{
+      Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+      }
       
       __DATA__
       @@ws_page.html.ep

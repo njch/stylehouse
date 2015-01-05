@@ -315,4 +315,5 @@ sub dig {
     Digest::SHA::sha1_hex(encode_utf8($msg))
 }
 
-9
+9;
+
