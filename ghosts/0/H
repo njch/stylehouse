@@ -110,69 +110,7 @@ Ds:
         }
       }
       return shift if @_ == 1
-  - K: throwlog #c
-    D: |
-      my $what = shift;
 
-      if (!H.mezthrowing) {
-          my $te = $@;
-          $@ = "";
-          H.mezthrowing = 1;
-          my $r = eval { H.G->mess($what, [@_]) };
-          undef H.mezthrowing;
-          if ($@) {
-              my $s = "G mess error while throwing a $what: $@";
-              eval { H.G->timer(0.1, sub { $H->error($s); }) };
-              $@ = '';
-          }
-          $@ = $te;
-          return if $r && $r eq "yep";
-      }
-
-      my @E;
-      for my $b (@_) {
-          if (ref $b eq "Way") {
-              push @E, "Way: $b->{name}";
-              push @E, ( map { " ` ".G::ghostlyprinty("NOHTML", $_) } @{$b->{thing}});
-              push @E, $b->{Error} if $b->{Error};
-          }
-          else {
-              push @E, G::ghostlyprinty("NOHTML", $b)
-          }
-      }
-      my $error =
-          [ hitime(), $H->stack(2), [@E] ];
-
-      my @context = (
-          grep { !/G G::__ANON__ |G \(eval\)/ } @{$error->[1]},
-      );
-      @context = () if $what eq "Say" || $what eq "Info";
-      
-      my $string = join("\n",
-          @context,
-          @E,
-      );
-      $string = "\n$string\n";
-      $string = G::ind("$what  ", $string)."\n";
-      my $color = $what eq "Error"?'red':'green';
-      print colored($string, $color);
-  - K: Say #c TODO babble to $G->mess(...) sa*
-    D: |
-       $H->throwlog("Say", @_);
-
-  - K: Err
-    D: |
-       $H->throwlog("Err", @_);
-  - K: error
-    D: |
-       $H->throwlog("Err", @_);
-
-  - K: Info
-    D: |
-       $H->throwlog("Info", @_);
-  - K: info
-    D: |
-       $H->throwlog("Info", @_);
   - K: snooze #c                   \/\/\////\/\\\/\/\//\/\\\\\/\/////\/\///\\\
     D: |
           return Time::HiRes::usleep(shift || 5000);

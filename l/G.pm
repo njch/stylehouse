@@ -102,12 +102,6 @@ sub deeby {
     $G->{db} + $db > 0
 }
 
-sub throwlog {
-    my $G = shift;
-    my $what = shift;
-    $H->{G}->w(throwlog => {what => $what, thing => [@_]});
-}
-
 sub susgdb {
     my $G = shift;
     my $t = $db;

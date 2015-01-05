@@ -98,19 +98,13 @@ Ds:
     D: |
         G.db + $db > 0
         
-  - K: throwlog
-    styles: func
-    D: |
-        my $what = shift;
-        H.G->w(throwlog => {what => $what, thing => [@_]});
-        
-  - K: susgdb
+  - K: susgdb #c
     D: |
         my $t = $db;
         push @{$F[0]->{_after_do}}, sub { $db = $t };
         $db = -2;
         
-  - K: gname # goner? 
+  - K: gname #c goner? 
     D: |
         my $g = shift;
         my $si = shift || 0;
@@ -121,17 +115,17 @@ Ds:
         $may =~ s/^(\w+)=HASH.*$/$1\{/;
         $may;
    
-  - K: pint
+  - K: pint #c
     style: func
     D: |
         my $w = shift; 
         $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
    
-  - K: mess
+  - K: mess #c
     D: |
         H.G->w(mess => {what => shift, thing => shift}); # TODO say*
    
-  - K: ghostlyprinty
+  - K: ghostlyprinty #c
     style: func
     D: |
         $gp_inarow++;
@@ -165,18 +159,17 @@ Ds:
         $gp_inarow--;
         join "  ", @s
         
-  - K: pty
+  - K: pty #c
     style: func
     D: |
         my $t = shift;
         ref $t eq "Way" ? pint($t) : gpty($t)
         
-  - K: gpty
+  - K: gpty #c
     style: func
     D: |
         ghostlyprinty('NOHTML',@_)
   
-
   - K: R #c needle extRange
     D: |
       G.A->spawn(R => @_);
@@ -574,7 +567,6 @@ Ds:
         }
         u.styles = join ' ', @styles;
         $G->w('v/ch', {u=>$u});
-
   - K: su #c
     D: |
         my ($a) = @_;
