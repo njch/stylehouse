@@ -18,24 +18,24 @@ $name ||= 'S';
 $H = H->new({name => $name, style => 'hut'});
 
 if ($name eq 'O') {
-use Mojolicious::Lite;
-websocket '/s' => sub {
-    my $mojo = shift;
-    $H->enwebsocket($mojo);
-};
-get '/' => sub{ 
-   my $self = shift;
-   $self->stash(ws_location => $self->url_for('s')->to_abs);
-   $self->render(template=>'ws_page')
-};
-push @{app->static->paths}, '/home/s/styleshed/public';
-app->secrets([readlink '/home/s/stylehouse/msecret']);
+    use Mojolicious::Lite;
+    push @{app->static->paths}, '/home/s/styleshed/public';
+    app->secrets([readlink '/home/s/stylehouse/msecret']);
 
-my $listen = $H->{listen_http};
-say "\n\n        listen to $listen\n";
-app->start('daemon', '--listen' => "$listen");
+    websocket '/s' => sub {
+        my $mojo = shift;
+        $H->enwebsocket($mojo);
+    };
+    get '/' => sub{ 
+       my $self = shift;
+       $self->stash(ws_location => $self->url_for('s')->to_abs);
+       $self->render(template=>'ws_page')
+    };
+
+    my $listen = $H->{listen_http};
+    app->start('daemon', '--listen' => "$listen");
 }else{
-Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+      Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 
 __DATA__

@@ -44,7 +44,7 @@ sub new {
     $T::H = $H;
 
     $H->spawn0('A')->new($H);
-    $H->{G} = $H->{A}->spawn(G => 'H', 'S', "S/$p->{style}", "S/$p->{style}/$p->{name}");
+    $H->{G} = $H->{A}->spawn(G => 'H');
 
     # is either G->subs or vortexed way, not a "root ghost" anymore but...
     $G::G0 = $H->{G};
