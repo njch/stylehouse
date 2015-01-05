@@ -159,15 +159,20 @@ hooks:
         }
     
     reextet: | #c
+        if (H.name eq 'o') {
+            my $g = G:S/o || die;
+            $g w reextet;
+            return;
+        }
         my @m = grep { $_ ne "H.style/H.name" } split ',', $m;
+                sayyl "on H.name!\n\n";
+                sayyl "for m: ".wdump[@m];
         $G->timer(1.3, sub {
-            if (H.name eq "o") {
-                $H->pub("S/hut/O", "reextet ".join',',@m);
-            }
-            elsif (H.name eq "O") {
+            if (H.name eq "O") {
                 $H->pub("S/hut/Z", "reextet ".join',',@m);
             }
             elsif (H.name eq "Z") {
+                sleep 1;
                 $H->pub("S/$_", "reexec") for @m;
             }
             w reexec;
