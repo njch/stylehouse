@@ -1,317 +1,96 @@
-
 hooks:
+  node:
+    O: #c
+      - GAK: S/O
+    o: #c
+      - GAK: S/o
+    C: #c
+      - GAK: C
+    #S2: #c
+      - GAK: sul C/ool
+        P:
+            - K: Ims
+              flo: 4
+              B:
+                dir: /s/public/i
+            - GAK: U
+              InC:
+                   W:
+                     styles: OxO z NZ
+                     Z:
+                       z-index: 5
+                       overflow: hidden
+                       background: url(i/aloe-vera-1045_640.jpg)
+    S: #c
+       - GAK: bacg C/ool
+         P:
+          - K: Ims
+            flo: 2
+            B:
+              dir: /s/public/i
+          - GAK: U
+            InC:
+                 W:
+                   Z:
+                     z-index: -1
+                     background: url(i/greencush.jpg)
+    s: #c
+       - GAK: sl C/ool
+         P:
+          - K: Ims
+            flo: 2
+            B:
+              dir: /s/public/i
+          - GAK: U
+            InC:
+                 W:
+                   styles: OxO z NZ
+                   Z:
+                     z-index: -1
+                     background: url(i/greencush.jpg)
+    Z: #c
+      - GAK: 0
+      - D: |
+          $G->recur(0.4, sub {
+              w gitdission;  
+          });
 
-  _load_ways_post: |
-    G0.recoded_cbs||=[];
-    
-    $S->w("load_ways_post");
-    
-    for my $wa ($S->anyway('C')) {
-        w wayray[$S,$wa];
+  in: |
+    if (H.name ne 'o') {
+        w hostinfo;
     }
+    $G->recur(9 => sub {
+        w hostinfo;
+    });
+  hostinfo: |
+    my @ps = `ps -p$$ fu`;
+    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
+    $_ = $_ / 100 for $cpu, $mem;
+    my $now = $H->hitime;
     
-    for my $wa ($S->anyway('R')) {
-        w Rwayray[$S,$wa];
-    }
+    my $hol = H.ol ||= "H.style/H.name/H.id";
+    my $info = "$cpu $mem $now";
     
-    S.R ||= $S->R;
+    saygr "hostinfo: $info " if rand(1) > 0.7;
+    H.r->set("H/$hol", $info);
     
-    if (S.load_ways_count == 1) {
-        w _init_fresh;
-    }
-    else {
-        w _init_recoded;
+    $H->pub("Hostinfo" => "$hol $info", 'ig');
+    
+    $H->pub("Hi" => $hol) if !H.lastinfo || ar.withHi;
+    H.lastinfo = $now;
+    
+    G.hostinfo_waits++;
+    if (G.hostinfo_waits > 1) {
+        sayre "hostinfo uncollected";
     }
       
-    $S->w("any_init");
-    
-  _init_recoded: |
-    w _init_recoded_Cways[$S] if $S->anyway('recoded_Cways');
-    $S->w("recoded_init");
-        
-  _init_recoded_Cways: | # TODO reinject
-      my @p = w S.R fi(f=>{});
-      for my $i (@p) {
-          saygr "Reinjecting i.K ...";
-          my $up = $S->CsK({K=>i.K});
-          $i->from($up);
-      }
-        
-  _init_fresh: |
-      $S->w("fresh_init");
-  ghostchanges: |
-    my $ghosts = H.G.GGs;
-    my @rG;
-    for my $S (@$ghosts) {
-        my $in = [grep{$Gd->{$_}} @{S.wayfiles}];
-        next unless @$in;
-        push @rG, $S;
-        # sort stream to avoid small before big?
-        waylay recode_ways[$S, $in];
-    }
-    for my $cb (@{G.recoded_cbs}) {
-        $G->timer(0.1, sub { $cb->($Gd) });
-    }
-  recode_ways: |
-    sayyl "recoding S.id S.name";
-    eval {
-        $S->load_ways(split /\+/, S.way); # TODO all ways on any recoded or..?
-    };
-    if ($@) {
-        sayre "Load ways fuckup: $@";
-        return $@ = "";
-    }
-    say "S.name !  ! ! ! S.id recoded  S.way, intersects git diffage at:";
-    say " - $_" for @$in; 
-        
-        
-  wayray: | # raise Cs from the dead
-    # pass the each C: array of them from the way
-    # should use GG after U styleup refact
-    # so GG->nw ...
-    return unless ref $wa eq "ARRAY";
-    my $i = 0;
-    for my $a (@$wa) {
-        if (ref $a eq "C") {
-            # travel inject
-            die "already";
-        }
-        else {
-            my $c = $wa->[$i] = $S->nw(%$a);
-            c.A->umv('', 'Cw');
-        }
-        $i++;
-    }
-  Rwayray: |
-    my $GG = $S;
-    return unless ref $wa eq "ARRAY";
-    my $i = 0;
-    for my $a (@$wa) {
-        if (ref $a eq "C") {
-            # travel inject
-            die "already";
-        }
-        else {
-            my $Rw = $wa->[$i] = $GG->nw(%$a);
-            Rw.A->umv('', 'Rsource');
-            # we create lots of these ^ 
-            # but only the one in wa (anyway 'C') is the now
-            w _in_Rw[$Rw, $GG];
-        }
-        $i++;
-    }
-    my @R = map{_.i}@{GG.A.n_R||[]};
-    push @R, map{_.i}@{GG.A.n_Rnons||[]} if $G eq $GG; # from G0
-    for my $R (@R) {
-        w _init_R[$R];
-    }
-  _in_Rw: |
-    my $source = Rw.findway;
-    my $a = {};
-    Rw.rwa = $a;
-    saybl "_in_Rw Recipe ".$G->pi."   ".$Rw->pi;
-    
-    my $Ds = [];
-    my $sours = sub {
-        my $g = shift;
-        for my $Rsur ($g->anyway("${source}s")) {
-            # passing phase, should beam in
-            push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
-        }
-        push @$Ds, flatline $g->anyway("${source}z");
-    };
-    
-    $sours->($G) if $GG ne $G && Rw.K eq 'non';
-    $sours->($GG);
-    
-    @$Ds = grep { !_.spesh } @$Ds;
-    
-    a.Ds = $Ds;
-    a.Dh = {};
-    a.Dz = {};
-    
-    w RZ_Ds_humm[$a];
-    
-    
-  _init_R: |
-    my $GG = R.G;
-    my $Rw;
-    R.name ||= 'non';
-    R.A->umk($G,'Rnons') if R.name eq 'non'; # like Gs
-    saybl "_init_R waying ".$G->pi."    ".$R->pi;
-    $Rw = $GG->CsK({s=>'R',K=>R.name});
-    $Rw ||= $G->CsK({s=>'R',K=>R.name});
-    
-    $Rw || die "no Rw for R.name";
-    
-    my $a = Rw.rwa;
-    # have setting somewhere for whatever
-    # fan out all style poss behind the source name
-    # then wild R cranking + speshness distill their source from this pool
-    w RZ_Ds_traction[$a, $R];
-    
-    if (!R.way) {
-        R.way = R.A->spawn('C');
-        R.way.R = $R;
-        R.way.A->umv('', 'way');
-        R.way.name = "Rw!R.name";
-    }
-    R.way->from({hooks=>a.Dh});
-    warn "nothing in ".R.way->pi if !keys %{a.Dh};
-    
-  RZ_Ds_humm: |
-    a.bb = {};
-    my $Ds = a.Ds;
-    
-        @$Ds = map { 
-            my $D = $_;
-            !ref D.D ? $D : do {
-                my $_K = D.K;
-                map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D}
-            }
-        } map { 
-            my $D = $_;
-            !D.n_D ? $D : do {
-                my $_K = D.K;
-                $D, map { { K=>"$_K/$_", D=>D.n_D->{$_} } } keys %{D.n_D}
-            }
-        } @$Ds;
-        
-        die "durp" if @$Ds != uniq map {_.K} @$Ds;
-        
-        for my $D (grep {_.D} @$Ds) {
-            $G->D_to_style($D, a.bb);
-        }
-
-        for my $D (@$Ds) {
-            a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
-        }
-
-
-        for my $D (grep {_.babz} @$Ds) {
-          for my $ba (keys %{D.babz}) {
-              my $b = D.babz->{$ba};
-              my $l = $ba;
-              if ($l =~ s/(\#\S+)//) {
-                  sayyl "Re $l  --- $ba  --- D.K";
-                  a.bb->{$ba} = undef;
-              }
-              if (ref $b) {
-                  #b.from # style grab, additive
-              }
-              else {
-                  a.bb->{$l} = $b;
-              } 
-          }
-        }
-  RZ_Ds_traction: |
-    # pool the style of code together for this R crazy
-    # look at each $r in the source style way dimension
-    
-    # 7
-    my $Dz = a.Dz;
-    my @r = $G->stylekeysort(a.bb);
-    for my $r (@r) {
-        my $b = a.bb->{$r};
-        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
-        if ($com) {
-            # should just attach them near the style
-            # with one more phase of comment joining
-            # also non-replace mode, maybe something of z D namespace
-            exists $Dz->{$l}->{$vo} || die;
-            my $v = $Dz->{$l}->{$vo};
-            $com = "# $vo $com".($b ? " $b" : "");
-            $v = "$com\n$v";
-            $Dz->{$l}->{$vo} = $v;
-        }
-        else {
-            $Dz->{$l}->{$vo} = $b;
-        }
-    }
-    
-    # 8
-    my $Dh = a.Dh;
-    while (my ($l, $bz) = each %$Dz) {
-        my $ac = join'',map{"{$_"}split'/',$l;
-        
-        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
-        
-        $R->loadup($Dh, $ac, $babble);
-    }
-  gitdission: | # look for ghostchanges
-    my $some = 0;
-    for my $f ($G->fs_find('/home/s/styleshed/ghosts')) {
-        next if $f =~ /\/\./;
-        my $mt = (stat $f)[9];
-        $some = 1 if
-        G.gitdissmt->{$f} ne $mt;
-        G.gitdissmt->{$f} = $mt;
-    }
-    return unless $some;
-    my @diff = `git diff`; 
-    my $f;
-    my $d = {};
-    for (@diff) {
-        if (/^diff --git "?a\/(.+?)"? "?b\/.+"?/) {
-            $f = $1;
-            next if -d $f; # git submodeul
-            $f =~ s/^ghosts\/\\317\\240/ghosts\/Ϡ/sg;
-            die "how to git diff unicode? $f" if $f =~ /\\\d+/;
-        }
-        else {
-            $d->{$f} .= $_
-        }
-    }
-    
-    while (my ($f, $D) = each %$d) {
-        $d->{$f} = {
-            f => $f,
-            D => $D,
-            dig => $H->dig($D),
-        };
-    }
-    
-    return G.last_git_diff = $d if !G.last_git_diff;
-    
-    my $od = {%{G.last_git_diff}};
-    
-    my $Gd;
-    while (my ($f, $n) = each %$d) { 
-        my $o = delete $od->{$f};
-        
-        my $change = !$o || n.D ne o.D;
-        
-        next unless $change;
-        
-        if ($f =~ /^ghosts/) {
-            n.o = $o;
-            $Gd->{$f} = $n;
-        }
-        elsif ($f =~ /^l\//) { 
-            # compilato del shed iggy
-        }
-        else {
-            say join("  <>  ", ($f)x38);
-            w reexec;
-        }
-    }
-    
-    # to undiffering, was commit? whatever
-    for my $f (keys %$od) {
-        next;
-    }
-    
-    G.last_git_diff = $d;
-    
-    if (keys %$Gd) { 
-        my $m = join", ", keys %$Gd;
-        say "Ghost changes $m";
-        $H->pub(S => "ghostchanges $m");
-    }
   S:
-    ghostchanges: | #c
-      my $Gd = {map { $_ => 1 } split ', ', $m};
-      $G0 w ghostchanges[$Gd];
-      
-      
+    hostinfo: #c
+      ack: | #c
+        my (@s) = split /\s+/, $m;
+        if (rand(1) > 0) {
+            my $lag = (1000*sprintf('%.3f',$H->hitime - $s[-1])).'ms';
+            sayyl "out there! lag: $lag";
+        }
+        G.hostinfo_waits = 0;
 
