@@ -7,12 +7,8 @@ use lib 'lib';
 use feature 'say';
 sub new {
     my $J = shift;
-    $J->{R} = $J->{A}->{u}->{i};
-    if (ref $J->{R} eq "G") {
-        $J->{R} = $J->{R}->{G}->{R};
-        $J->{G} = $J->{R}->{G};
-    }
-    #$J->{R}->dfrom($J, {B=>shift});
+    $J->{R} = $J->{A}->fiu('R');
+    $J->{G} = $J->{A}->fiu('G');
 
     $J
 }

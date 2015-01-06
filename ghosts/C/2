@@ -4,13 +4,11 @@ R_surs:
         G.gp_inarow++;
         my $a = ar.a || {};
         a.cv = ar.cv if ar.cv;
-        a.R = ar.R if ar.R;
         a.u = ar.u if ar.u;
         a.cv = 0.1 if a.cv < 0.1;
         my $u = a.u;
         
         # 3
-        my $R = a.R;
         w $R phat[$a]; # zippur
         
         my $c = w $R cgp[$u]; # schemer guesses
@@ -18,16 +16,22 @@ R_surs:
         my $arr = {
             a => $a, # @_
             u => $u,
-            R => a.R,
         };
         
         # 4
-        my ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
-        $wa ||= 'wtf';
+        my $wa;
+        if ($wa = a.wa) {
+            # yep
+        }
+        else {
+            ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
+            $wa = ref $u if $wa eq 'canpi';
+            $wa ||= 'wtf';
+        }
         
-        if ($wa eq "canpi") { # supply $self
-            $wa = ref $u;
-            $arr->{$wa} = $u if $wa ne 'G';
+        if (c.canpi) { # supply $self
+            my $ref = ref $u;
+            $arr->{$ref} = $u if $ref ne 'G' && $ref ne 'R';
         }
         R.way->find("pi/$wa") || die "not $wa equip";
         
@@ -46,6 +50,7 @@ R_surs:
         my $ind = join "", ("  ") x scalar @F;
         #sayyl "$ind Done gp for $u ".F_delta;
         $html
+        
     pi: #c
       wtf: | #c
         a.bz->('know 0.1', "$u");
@@ -247,7 +252,38 @@ R_surs:
         return if $cv < 0.1;
         a.bb->{"name 0.1"} = $H->ejson(u.B) if u.B;
         return if $cv < 0.2;
-        a.fro->('i 0.2', u.A.i, 0.1);
+        a.fro->('i 0.2', $u, 0.1);
+        # 3
+        
+      up: | #c
+            my $r = {map{$_=>1} sort keys %$u};
+            
+            my $ordy = {
+                A => 0,
+                id => 11,
+                K => 12,
+                name => 13,
+                G => 14,
+                R => 14,
+                W => 2,
+            };
+            my $ydro = {};
+            push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
+            my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
+            
+            my @r = grep { delete $r->{$_} } @order;
+            push @r, sort keys %$r;
+            
+            my $ki = 0;
+            my $i = 0;
+            for my $k (@r) {
+                my $v = $u->{$k};
+                
+                my $ord = $ordy->{$k} || 4;
+                a.bz->("$k\t".'0.4 0.'.$ord => ''.$v);
+                
+                $i++;
+            }
       H: | #c
         a.bz->('thi 0.01' => 'H');
         a.bz->("name 0.06" => H.style,
@@ -263,7 +299,6 @@ R_surs:
         return if $cv < 0.2; 
         a.bb->{"K 0.2"} = u.K;
         
-
       C: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};
