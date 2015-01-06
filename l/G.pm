@@ -1292,6 +1292,11 @@ sub stylekeysort {
     @r
 }
 
+sub chuntr {
+    my $G = shift;
+    split /(?=\{|\[|\^)/, shift;
+}
+
 sub vimcolor {
     my $G = shift;
     my $string = shift;
