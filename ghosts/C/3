@@ -87,6 +87,7 @@ R_surz: #c
           my $o = 12;
           my $lines = split /\n/, $html;
           if ($lines > $o) {
+              $lines = 17 if $lines > 17;
               my $fs = 100 * $o / $lines;
               $fs *= -1 if $fs < 0;
               push @sty, "font-size:$fs%";
@@ -134,6 +135,22 @@ R_surz: #c
           a.s = R.S.s || w $R dus;
           a.s.HASH.oh = 0.2;
           a.tr.rowlimit = R.S.rowlimit || 9*2;
+    - K: stringlook #c
+      babz:
+        'S#string 3.14': |
+          if (!%$d) {
+            if (!ref a.i) {
+              sayre "SDoing something else";
+              my $sd = {};
+              $G->D_to_style({K=>"s",D=>a.i}, $sd);
+              for my $k (keys %$sd) {
+                my $v = $sd->{$k};
+                my ($ind) = $k =~ /^s (.+)$/;
+                $v = join "\n", (split /\n/, $v)[0];
+                $d->{"^$ind 0.2"} = $v;
+              }
+            }
+          }
     - K: adu #c
       babz:
         'S 3.1': | 
@@ -144,19 +161,8 @@ R_surz: #c
           w $R gp(a=>$an);
           a.i = an.bb if R.double;
           $d = w $R du;
+          # 3.14
           
-          if (!%$d) {
-            if (!ref a.i) {
-              sayre "SDoing something else";
-              my $sd = {};
-              $G->D_to_style({K=>"s",D=>a.i}, $sd);
-              for my $k (keys %$sd) {
-                my $v = $sd->{$k};
-                my ($ind) = $k =~ /^s (.+)$/;
-                $d->{"^$ind 0.2"} = $v;
-              }
-            }
-          }
         'S#aduhummings 4.01': |
           w $R adu/humms[$a, $d];
       n_D:
@@ -235,7 +241,11 @@ R_surz: #c
         J: J
         K: K
         N: N
+        M: M
       n_D:
+        M: |
+          my $hw = R.way.hooks;
+          R.J = {from=>$hw};
         N: |
           R.double = !R.double;
         K: |
@@ -279,7 +289,7 @@ R_surz: #c
             my $K = "C".H.nn++;
             my $P = [{GAK => "$K $way"}];
             my $g = H.G w percs[$P];
-            #cmy $g = G:$K;
+            #my $g = G:$K;
             $g w ave(i=>$R);
             return;
             # make C elsewhere...

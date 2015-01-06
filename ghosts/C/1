@@ -351,6 +351,7 @@ R_surs:
                 sayyl "for the $l\t\t$s j.vo" if ar.db;
                 
                 my $ishtml;
+                my $gp;
                 my $css = [];
                 for my $oj (@$o) {
                     saybl "        sdtyle! oj.style oj.s" if ar.db; 
@@ -359,6 +360,7 @@ R_surs:
                     }
                     elsif (oj.style eq "gp") {
                         # has a way to $a the gp action within...
+                        $gp = oj.s;
                         $ishtml = 1;
                     }
                     elsif (oj.style eq "sf") {
@@ -381,7 +383,13 @@ R_surs:
                     $s =~ s/\\n/\n/g;
                     die if $s =~ /\\n/;
                 }
-                $s = "<añ $at>$s</añ>" if $s; 
+                my $tag = "añ";
+                if ($gp) {
+                    if (gp.vimcolor) {
+                        $tag = 'pre';
+                    }
+                }
+                $s = "<$tag $at>$s</$tag>" if $s; 
                 push @s, $s;
             }
             
