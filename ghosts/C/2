@@ -252,6 +252,7 @@ R_surs:
         a.bb->{"name 0.1"} = $H->ejson(u.B) if u.B;
         return if $cv < 0.2;
         a.fro->('i 0.2', $u, 0.1);
+        return if $cv < 0.3;
         # 3
         
       up: | #c
@@ -279,7 +280,7 @@ R_surs:
                 my $v = $u->{$k};
                 
                 my $ord = $ordy->{$k} || 4;
-                a.bz->("$k\t".'0.'.$ord => ''.$v);
+                a.bb->{"$k\t".'0.'.$ord} = ''.$v;
                 
                 $i++;
             }
@@ -338,8 +339,6 @@ R_surs:
             my $slim = slim(20,20,$t);
             
             a.bb->{"$k 0.4"} = $slim if $cv >= 0.4; # also a dus fuzz away
-            
-            a.bb->{"$k 0.3"} = $slim if $k eq "point"; # pyramid
         }
         
         if (C.B && %{C.B}) {
