@@ -110,15 +110,56 @@ R_surz: #c
           a.bz->('keybas 3.32', "Yogo R.thedoings!");
       
 
+    - K: Num #c
+      key: {0: out, number: in}
+      n_D:
+            out: |
+              return R.ksuc = "" if R.ksuc && $k eq "0";
+              R.J.trav =~ s/\W\w+$//;
+            in: |
+              R.ksuc .= $k;
+              my $j = R.a.ro->{R.ksuc};
+              
+              if (!$j) {
+                  w unchanged[$R];
+                  sayre "no j ye for R.ksuc" for 1..5;
+                  return;
+              }
+              sayyl "got $j j.t j.cv for R.ksuc";
 
+
+              R.ksuc = "";
+
+              my ($hop) = split /(?=\{|\[|\^)/, j.t;
+              R.J.trav .= $hop; 
     - K: Jtwo #c
       babz:
         'S#unifromA 1.0134': |
-          my $unifro = {
-              i => R.J.from || die,
-              t => R.J.trav || "",
-          };
-          R.a.i ||= w $R uni(%$unifro);
+            w $R Jtwo/uni;
+      n_D:
+        uni: |
+            my $i = R.J.from || die;
+            my $t = R.J.from || '';
+              my @tr = split /(?=\{|\[)/, $t;
+
+            for (@tr) {
+                /^(.)(.+)$/;
+                say "Sapped $i       $1 $2";
+                last if $1 eq " ";
+                $i = $i->{$2} if $1 eq "{";
+                $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
+            }
+            if ($t =~ m/^.+? (.+)$/) {
+                say "Had some more: $1";
+            }
+            R.a.i = $i;
+    - K: Sud #c
+      n_D:
+            in: |    # ebrace flying embryo J
+                my $a = $ar;
+                R.J = { from => a.i };
+                R.J.trav = a.t if a.t;
+    
     - K: dusmatic #c
       babz:
         'S 2.1004': |
@@ -145,6 +186,7 @@ R_surz: #c
       babz:
         'S 3.1': | 
           a.e ||= R.S.e || die;
+          defined a.i || die;
           
           my $d;
           my $an = {u=>a.i, cv=>0.4};
@@ -304,6 +346,7 @@ R_surz: #c
                }
                a.bz->("ch_${c}_nl 3.011" => "\n");
            }
+
     - K: Vit #c
       key: {E: up, R: down}
       n_D:
@@ -311,33 +354,4 @@ R_surz: #c
                 R.S.e += 0.1;
             down: |
                 R.S.e -= 0.1;
-    - K: Num #c
-      key: {0: out, number: in}
-      n_D:
-            out: |
-              return R.ksuc = "" if R.ksuc && $k eq "0";
-              R.J.trav =~ s/\W\w+$//;
-            in: |
-              R.ksuc .= $k;
-              my $j = R.a.ro->{R.ksuc};
-              
-              if (!$j) {
-                  w unchanged[$R];
-                  sayre "no j ye for R.ksuc" for 1..5;
-                  return;
-              }
-              sayyl "got $j j.t j.cv for R.ksuc";
-
-
-              R.ksuc = "";
-
-              my ($hop) = split /(?=\{|\[)/, j.t;
-              R.J.trav .= $hop; 
-    - K: Sud #c
-      n_D:
-            in: |    # ebrace flying embryo J
-                my $a = $ar;
-                R.J = { from => a.i };
-                R.J.trav = a.t if a.t;
-    
 
