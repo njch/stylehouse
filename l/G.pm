@@ -1262,7 +1262,7 @@ sub D_to_style {
           my $i = 0.001;
           my @cs;
           my $up = sub {
-              $bb->{"$D->{K} $i"} = join "\n", @cs if @cs;
+              $bb->{"$D->{K}\t$i"} = join "\n", @cs if @cs;
               @cs = ();
           };
           for my $l (split "\n", $D->{D}) {

@@ -182,9 +182,13 @@ hooks:
         for my $D (grep {_.D} @$Ds) {
             my $b = {};
             $G->D_to_style($D, $b);
-            #$_ =~ 
-            
-            a.bb->{$_} = $b->{$_} for keys %$b;
+            for my $k (keys %$b) {
+                my ($t, $v) = split /\t/, $k;
+                my $com = "$t#D.K\t$v";
+                a.bb->{$com} = undef;
+                #sayyl "$k      $com";
+                a.bb->{$k} = $b->{$k};
+            }
         }
         #    die wdump a.bb;
 
@@ -196,11 +200,14 @@ hooks:
         for my $D (grep {_.babz} @$Ds) {
           for my $ba (keys %{D.babz}) {
               my $b = D.babz->{$ba};
-              my $l = $ba;
-              if ($l =~ s/(\#\S+)//) {
-                  sayyl "Re $l  --- $ba  --- D.K";
-                  a.bb->{$ba} = undef;
-              }
+              my ($t, $v) = $ba =~ /^(.+)\s(.+)$/;
+              my $l = $t;
+              my $comcom = $1 if $l =~ s/(\#\S+)$//;
+              my $com = "#D.K$comcom";
+              my $comba = "$l$com\t$v";
+              $l = "$l\t$v";
+              #sayyl "Re $l  =-==== $com";
+              a.bb->{$comba} = undef;
               if (ref $b) {
                   #b.from # style grab, additive
               }
@@ -218,7 +225,7 @@ hooks:
     my @r = $G->stylekeysort(a.bb);
     for my $r (@r) {
         my $b = a.bb->{$r};
-        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)? (.+)$/;
+        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)?\s(.+)$/;
         if ($com) {
             # should just attach them near the style
             # with one more phase of comment joining
