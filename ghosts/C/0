@@ -179,14 +179,13 @@ hooks:
             w $i E/_D;
         }
   uxd: |
-    my $chi = G.Vu.U;
-    G.Vu.U = [];
+    my $chi = G.Vu.U; G.Vu.U = [];
+    my $ig = G.Vu.ig; G.Vu.ig = [];
     if (!ar.full && $chi && @$chi) {
-        my @i = uniq grep { defined } map { _.Lo && _.Lo.i } @$chi;
-        #sw[i=>@i, U=>@$chi];
-        say "part uxd ".@$chi;
-        @$chi = uniq grep { defined } @$chi, @i;
-        say "abode : ".$_->pi for @i;
+        @$chi = uniq grep {defined}
+            grep { my $i = $_; !grep { $_ eq $i } @$ig } @$chi;
+        return sayyl "iggy uxd" if !@$chi;
+        say "ux parti : ".$_->pi for @$chi;
         G.GG.U w ux(part => $chi);
     }
     else {
@@ -206,7 +205,7 @@ hooks:
   unchanged: |
       my ($u) = values %$ar;
       $u = u.theD || die if ref $u ne 'C';
-      0->deaccum(G.Vu, 'U', $u);
+      0->accum(G.Vu => ig => $u);
   v:
     ch: |
       die "V who?";
