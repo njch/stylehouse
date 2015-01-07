@@ -156,5 +156,49 @@ sub wtf {
     }
 }
 
+sub cgp {
+    my $R = shift;
+    my $u = shift;
+      my $c = {};
+      if (!defined $u){
+          $c->{undef} = 1;
+      } else {
+          if (my $ref = ref $u) {
+              $c->{ARRAY} = 1 if $ref eq "ARRAY";
+              $c->{HASH} = 1 if $ref eq "HASH";
+              $c->{CODE} = 1 if $ref eq "CODE";
+              $c->{canpi} = 1 if !%$c && $u->can('pi');
+              for (qw'A C G T     R   J') {
+                    $c->{$_} = 1 if $ref eq $_;
+              }
+              $c->{ref} = $ref;
+          }
+          else {
+              if (ref \$u eq 'SCALAR') {
+                  $c->{text} = 1;
+                  $c->{len} = length($u);
+                  $c->{lin} = scalar split /\n/, $u;
+                  $c->{b} = scalar split /\n\n/, $u;
+                  $c->{number} = $u =~ /^(?:\d+\.)?\d+$/;
+                  $c->{wordy} = $u =~ /\w+/;
+              }
+              else { die "wtf is $u" };
+          }
+      }
+      $c
+}
+
+sub phat {
+    my $R = shift;
+    my $a = shift;
+     $a->{bb} = {};
+     $a->{ord} = [];
+     $a->{bz} = $R->{G} ->w("as", {bb=>$a->{bb}, ord=>$a->{ord}}, $R);
+     $a->{fro} = sub {
+         my $fro = [$R, $a->{bz}, @_];
+         $R->{G} ->w("gpfro", {a=>$fro}, $R);
+     };
+}
+
 9;
 
