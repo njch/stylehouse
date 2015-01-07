@@ -42,6 +42,11 @@ R_surz: #c
             R.a.pis->{a.isJid} = $a;
         'gp 7.1': |
             a.forking.wash = $H->dig($html) if a.forking;
+            
+        'gp 8.9': |
+            use Time::HiRes 'CLOCK_MONOTONIC';
+            sayyl F_delta;
+            #sayyl Time::HiRes::clock_gettime(CLOCK_MONOTONIC);
         'S#tidy 0.113': |
             if (my $tokill = delete R.S_forkpi_tokill) {
                 kill 'KILL', $_ for @$tokill;
@@ -67,8 +72,9 @@ R_surz: #c
             for my $a (@$pias) {
                 my $html = w $R gp[$a];
                 next if a.wash eq $H->dig($html);
+                my $set = $H->ejson($html);
                 my $id = a.replaceJid || die;
-                my $js = qq{ \$('#$id').replaceWith('$html');};
+                my $js = qq{ \$('#$id').replaceWith($set);};
                 push @js, $js;
                 if (@js >= $group) {
                     $H->send(join '', @js);
@@ -195,10 +201,6 @@ R_surz: #c
           }
         'pi/text 7': |
             my $col = $G->vimcolor($u);
-            #die encode_entities('\\');
-            $col =~ s/\\n/\ n/g;
-            $col =~ s/\n/\\n/g; 
-            $col =~ s/'/'/g;
             
             my $lim = ";height:5em;overflow-y:scroll" if a.c.lin > 8;
             $lim .= ";background:rgba(30,30,60,0.9)" if a.cv > 0.7;

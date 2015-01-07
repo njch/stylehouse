@@ -127,12 +127,22 @@ sub djson {
     my $H = shift;
     my $m = shift;
     my $j;
-    $H->{json} = JSON::XS->new->allow_nonref;
 
-    eval { $j = $H->{json}->decode(H::encode_utf8($m)) };
+    eval { $j = $H->json->decode(H::encode_utf8($m)) };
     die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
     die "$m\n\nJSON decoded to ~undef~" unless defined $j;
     $j
+}
+
+sub ejson {
+    my $H = shift;
+    my $m = shift;
+    $H->json->encode($m);
+}
+
+sub json {
+    my $H = shift;
+    $H->{json} ||= JSON::XS->new->allow_nonref;
 }
 
 sub fixutf8 {

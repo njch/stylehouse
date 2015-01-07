@@ -96,12 +96,18 @@ Ds:
     D: |
       my $m = shift;
       my $j;
-      H.json = JSON::XS->new->allow_nonref;
 
-      eval { $j = H.json->decode(H::encode_utf8($m)) };
+      eval { $j = $H->json->decode(H::encode_utf8($m)) };
       die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
       die "$m\n\nJSON decoded to ~undef~" unless defined $j;
       $j
+  - K: ejson #c
+    D: |
+      my $m = shift;
+      $H->json->encode($m);
+  - K: json #c
+    D: |
+      H.json ||= JSON::XS->new->allow_nonref;
   - K: fixutf8 #c
     D: |
       for (@_) {
