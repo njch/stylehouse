@@ -15,7 +15,7 @@ R_surz: #c
                 }
             }
     - K: forkpi #c
-      spesh: 1
+      spesh: 0
       babz:
         'gp#fork_layert 5.6': | 
             if (a.cv > 0.2 && !a.replaceJid) {
@@ -115,7 +115,9 @@ R_surz: #c
       n_D:
             out: |
               return R.ksuc = "" if R.ksuc && $k eq "0";
-              R.J.trav =~ s/\W\w+$//;
+              my @trav = $G->chuntr(R.J.trav);
+              pop @trav;
+              R.J.trav = join '', @trav;
             in: |
               R.ksuc .= $k;
               my $j = R.a.ro->{R.ksuc};
@@ -129,6 +131,9 @@ R_surz: #c
 
 
               R.ksuc = "";
+              if (R.a.travly) {
+                  R.J.trav =~ s/\^.+?$// || die;
+              }
 
               my ($hop) = $G->chuntr(j.t);
               R.J.trav .= $hop; 
@@ -148,6 +153,10 @@ R_surz: #c
                 last if $1 eq " ";
                 $i = $i->{$2} if $1 eq "{";
                 $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
+                if ($1 eq '^') {
+                    R.a.travly = $2;
+                    last;
+                }
             }
             if ($t =~ m/^.+? (.+)$/) {
                 say "Had some more: $1";
@@ -156,9 +165,8 @@ R_surz: #c
     - K: Sud #c
       n_D:
             in: |    # ebrace flying embryo J
-                my $a = $ar;
-                R.J = { from => a.i };
-                R.J.trav = a.t if a.t;
+                R.J = { from => ar.i };
+                R.J.trav = ar.t if ar.t;
     
     - K: dusmatic #c
       babz:
@@ -175,16 +183,19 @@ R_surz: #c
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
               for my $k (keys %$sd) {
-                my $v = $sd->{$k};
+                my $s = $sd->{$k};
                 my ($ind) = $k =~ /^s\t(.+)$/;
-                $v = join "\n", (split /\n/, $v)[0];
-                $d->{"^$ind 0.2"} = $v;
+                my $v = $ind eq R.a.travly ? 0.7 : do {
+                    $s = join "\n", (split /\n/, $s)[0];
+                    R.a.e - 0.2;
+                };
+                $d->{"^$ind\t$v"} = $s;
               }
             }
           }
     - K: adu #c
       babz:
-        'S 3.1': | 
+        'S#du 3.1': | 
           a.e ||= R.S.e || die;
           defined a.i || die;
           
@@ -197,6 +208,7 @@ R_surz: #c
           
         'S#aduhummings 4.01': |
           w $R adu/humms[$a, $d];
+          a.bz->('sheer 0.7565' => "travly:".R.a.travly);
       n_D:
         humms: |
           my @r = w stylekeysort[$d]; 

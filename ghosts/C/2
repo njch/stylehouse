@@ -34,11 +34,12 @@ R_surs:
             $arr->{$ref} = $u if $ref ne 'G' && $ref ne 'R';
         }
         R.way->find("pi/$wa") || die "not $wa equip";
+        my $ping = 1;
         
         # 5
 
         # 6
-        w $R pi/$wa(%$arr);
+        w $R pi/$wa(%$arr) if $ping;
         
         # 7
         my $html = w $R makaout(%$arr);
@@ -200,11 +201,12 @@ R_surs:
             return if a.cv < 0.7;
             
             my $col = $G->vimcolor($u);
-            $col =~ s/\\n/\\\\n/g;
-            #$col =~ s/\n/\\n/g; 
-            $col =~ s/'/\\'/g;
+            #die encode_entities('\\');
+            $col =~ s/\\n/∇/g;
+            $col =~ s/\n/\\n/g; 
+            $col =~ s/'/'/g;
             a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
-                '%css' => "font-size:40%;height:5em;overflow:hidden");
+                '%css' => "height:5em;overflow-y:scroll");
             
       A: | #c
         my $cv = a.cv ||= 0.3;
