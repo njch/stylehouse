@@ -147,6 +147,7 @@ R_surs:
         a.u = ar.u if ar.u;
         a.cv = 0.1 if a.cv < 0.1;
         a.isJid = a.replaceJid || $H->mkuid;
+        undef a.isJid if G.gp_inarow > 1;
         my $u = a.u;
         
         # 3
@@ -446,7 +447,7 @@ R_surs:
             say wdump(2, a.bb) if !@s;
             my $html = join("", @s);
             
-            $html = "<pi id=\"a.isJid\">$html</pi>";
+            $html = "<pi id=\"a.isJid\">$html</pi>" if a.isJid;
             
             #die "nose? $u" if !@s;
             #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
