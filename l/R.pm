@@ -200,5 +200,17 @@ sub phat {
      };
 }
 
+sub shj {
+    my $R = shift;
+    my ($r, $d) = @_;
+    my $j;
+    $j->{r} = $r;
+    $j->{s} = $d->{$r};
+    ($j->{t}, $j->{cv}) = $j->{r} =~ /^(.+)\t(.+?)$/ ? ($1, $2) : split /\s+/, $j->{r}, 2;
+    ($j->{cv}, my @e) = split /\s+/, $j->{cv};
+    $j->{ev} = \@e if @e;
+    $j
+}
+
 9;
 

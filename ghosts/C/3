@@ -178,9 +178,11 @@ R_surz: #c
     - K: stringlook #c
       babz:
         'S#string 3.14': |
+          R.a.humm = 'adu';
           if (!%$d) {
             if (!ref a.i) {
               sayre "SDoing something else";
+              #R.a.humm = 'stringlook';
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
               my @ksd = keys %$sd;
@@ -188,8 +190,8 @@ R_surz: #c
                 my $s = $sd->{$k};
                 my ($ind) = $k =~ /^s\t(.+)$/;
                 my $v = $ind eq R.a.travly ? 0.8 : do {
-                    #$s = join "\n", (split /\n/, $s)[0];
-                    @ksd < 9 ? 0.7 : R.a.e;
+                    $s = join "\n", (split /\n/, $s)[0];
+                    @ksd < 9 ? 0.7 : R.a.e - 0.4;
                 };
                 $d->{"^$ind\t$v"} = $s;
               }
@@ -203,6 +205,27 @@ R_surz: #c
             
             a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
                 '%css' => "margin:0em;background:rgba(0,0,50,0.9);font-size:82%;-webkit-filter:hue-rotate(200deg) brightness(3) contrast(0.8);$lim");
+      n_D:
+        humms: | #c
+          my @r = w stylekeysort[$d]; 
+          my $si = @r;
+          my @i = w wind[$si];
+          my $ro = R.a.ro = {}; # wind round
+          my $i = 0;
+          for my $r (@r) {
+              my $j = $R->shj($r, $d);
+              
+              my $li = j.li = shift @i || die;
+              $ro->{$li} = $j;
+              #my $z = a.bz->("$li 
+              a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
+                  '%sf', 'white_fs120');
+              
+              a.bz->("${li}_z 0.3 0.3${li}5", "\n") if j.cv < 0.7;
+              $i++; 
+          }
+              
+          
     - K: adu #c
       babz:
         'S#du 3.1': | 
@@ -218,7 +241,8 @@ R_surz: #c
           # 3.14
           
         'S#aduhummings 4.01': |
-          w $R adu/humms[$a, $d];
+          my $humm = R.a.humm;
+          w $R $humm/humms[$a, $d];
           a.bz->('sheer 0.7565' => "travly:".R.a.travly);
       n_D:
         humms: |
@@ -228,7 +252,7 @@ R_surz: #c
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
-              my $j = w $R shj[$r, $d];
+              my $j = $R->shj($r, $d);
               
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
