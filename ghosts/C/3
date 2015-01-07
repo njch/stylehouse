@@ -183,12 +183,13 @@ R_surz: #c
               sayre "SDoing something else";
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
-              for my $k (keys %$sd) {
+              my @ksd = keys %$sd;
+              for my $k (@ksd) {
                 my $s = $sd->{$k};
                 my ($ind) = $k =~ /^s\t(.+)$/;
                 my $v = $ind eq R.a.travly ? 0.8 : do {
-                    $s = join "\n", (split /\n/, $s)[0];
-                    0.6; # R.a.e - 0.4;
+                    #$s = join "\n", (split /\n/, $s)[0];
+                    @ksd < 5 ? 0.7 : R.a.e;
                 };
                 $d->{"^$ind\t$v"} = $s;
               }
@@ -201,12 +202,13 @@ R_surz: #c
             $lim .= ";background:rgba(30,30,60,0.9)" if a.cv > 0.7;
             
             a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
-                '%css' => "margin:0em;background:rgba(0,0,50,0.9);font-size:75%;-webkit-filter:hue-rotate(200deg) brightness(3) contrast(0.8);$lim");
+                '%css' => "margin:0em;background:rgba(0,0,50,0.9);font-size:82%;-webkit-filter:hue-rotate(200deg) brightness(3) contrast(0.8);$lim");
     - K: adu #c
       babz:
         'S#du 3.1': | 
           a.e ||= R.S.e || die;
           defined a.i || die;
+          a.e = a.e + 2;
           
           my $d;
           my $an = {u=>a.i, cv=>0.4};
