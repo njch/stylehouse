@@ -6,6 +6,7 @@ R_surs:
         a.cv = ar.cv if ar.cv;
         a.u = ar.u if ar.u;
         a.cv = 0.1 if a.cv < 0.1;
+        a.isJid = a.replaceJid || $H->mkuid;
         my $u = a.u;
         
         # 3
@@ -197,16 +198,9 @@ R_surs:
                     '%css' =>
                         "color:#f89;font-size:50%;"
                         ."float:left;left:-1em") if $bi;
-                        
+                   
             return if a.cv < 0.7;
-            
-            my $col = $G->vimcolor($u);
-            #die encode_entities('\\');
-            $col =~ s/\\n/∇/g;
-            $col =~ s/\n/\\n/g; 
-            $col =~ s/'/'/g;
-            a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
-                '%css' => "height:5em;overflow-y:scroll");
+            # 7
             
       A: | #c
         my $cv = a.cv ||= 0.3;

@@ -26,7 +26,7 @@ R_surz: #c
                 push @$lyt, $la;
                 a.forking = $la;
                 a.cv = 0.1;
-                $ping = 0;
+                $ping = 1;
             }
         'S#waylayert_pias 8.8': |
             if (my $pias = delete R.layert) {
@@ -38,11 +38,10 @@ R_surz: #c
                     w $R forkpi/pias[$pias];
                 });
             }
-        'gp 8.3': |
-            if (my $Jid = a.isJid || a.replaceJid) {
-                $html = qq{<nnn id="$Jid">$html</nnn>};
-                a.forking.wash = $H->dig($html) if a.forking;
-            }
+        'gp 6.2': |
+            R.a.pis->{a.isJid} = $a;
+        'gp 7.1': |
+            a.forking.wash = $H->dig($html) if a.forking;
         'S#tidy 0.113': |
             if (my $tokill = delete R.S_forkpi_tokill) {
                 kill 'KILL', $_ for @$tokill;
@@ -150,7 +149,7 @@ R_surz: #c
 
             for (@tr) {
                 /^(.)(.+)$/;
-                say "Sapped $i       $1 $2";
+                say "Sapped ".slim($i)."       $1 $2";
                 last if $1 eq " ";
                 $i = $i->{$2} if $1 eq "{";
                 $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
@@ -174,7 +173,7 @@ R_surz: #c
         'S 2.1004': |
           a.s = R.S.s || w $R dus;
           a.s.HASH.oh = 0.2;
-          a.tr.rowlimit = R.S.rowlimit || 9*2;
+          a.tr.rowlimit = R.S.rowlimit || 9*4;
     - K: stringlook #c
       babz:
         'S#string 3.14': |
@@ -186,14 +185,26 @@ R_surz: #c
               for my $k (keys %$sd) {
                 my $s = $sd->{$k};
                 my ($ind) = $k =~ /^s\t(.+)$/;
-                my $v = $ind eq R.a.travly ? 0.7 : do {
+                my $v = $ind eq R.a.travly ? 0.8 : do {
                     $s = join "\n", (split /\n/, $s)[0];
-                    R.a.e - 0.2;
+                    0.6; # R.a.e - 0.4;
                 };
                 $d->{"^$ind\t$v"} = $s;
               }
             }
           }
+        'pi/text 7': |
+            my $col = $G->vimcolor($u);
+            #die encode_entities('\\');
+            $col =~ s/\\n/\ n/g;
+            $col =~ s/\n/\\n/g; 
+            $col =~ s/'/'/g;
+            
+            my $lim = ";height:5em;overflow-y:scroll" if a.c.lin > 8;
+            $lim .= ";background:rgba(30,30,60,0.9)" if a.cv > 0.7;
+            
+            a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
+                '%css' => "margin:0em;background:rgba(0,0,50,0.9);font-size:75%;-webkit-filter:hue-rotate(200deg) brightness(3) contrast(0.8);$lim");
     - K: adu #c
       babz:
         'S#du 3.1': | 

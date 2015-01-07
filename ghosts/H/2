@@ -183,11 +183,13 @@ hooks:
             my $b = {};
             $G->D_to_style($D, $b);
             for my $k (keys %$b) {
+                my $s = $b->{$k};
                 my ($t, $v) = split /\t/, $k;
                 my $com = "$t#D.K\t$v";
+                say "unto: ".join"\n",(split /\n/, $s)[0,1];
                 a.bb->{$com} = undef;
                 #sayyl "$k      $com";
-                a.bb->{$k} = $b->{$k};
+                a.bb->{$k} = $s;
             }
         }
         #    die wdump a.bb;

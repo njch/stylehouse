@@ -257,6 +257,20 @@ R_surs:
         # 9
         saygr " S --- ".F_delta;
         $html
+    E: | #c event
+      #ay wdump(2, $ar);
+      my $id = e.id;
+      sayyl "ID: $id";
+      my $pi = R.a.pis->{$id};
+      my ($gpl) = grep {R.a.bb->{$_} eq $pi} keys %{R.a.bb};
+      sayyl wdump(2, $gpl);
+      my $k = $1 if $gpl =~ /^(\d+)/;
+      $k || return sayre "nothing to";
+      w are;
+      w $R Num/in[$k];
+      
+      
+      
     makaout: | #c
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
@@ -353,6 +367,8 @@ R_surs:
                 my $at;
                 at.style = join ';', @$css;
                 G.shtuuyle->{at.style}++;
+                # 7.6
+                # 7.7
                 #at.title = $l;
                 $at = join " ", map { $_.'="'.$at->{$_}.'"' }
                     grep { $at->{$_} } sort keys %$at;
@@ -376,10 +392,14 @@ R_surs:
             }
             
             @s = "nose? ".@r if !@s;
-            say wdump(2, a.bb) if !@s; 
+            say wdump(2, a.bb) if !@s;
+            my $html = join("", @s);
+            
+            $html = "<pi id=\"a.isJid\">$html</pi>";
+            
             #die "nose? $u" if !@s;
+            #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
+            $html;
             
-            sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
             
-            join("", @s);
 
