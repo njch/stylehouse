@@ -175,6 +175,21 @@ R_surz: #c
           a.s = R.S.s || w $R dus;
           a.s.HASH.oh = 0.2;
           a.tr.rowlimit = R.S.rowlimit || 9*4;
+          
+          a.fro->('Rl 0.01' => [$H,R.G,$R], {cv=>0.2});
+          #a.fro->('H 0.01' => $H, 0.2);
+          #a.fro->('G 0.02' => R.G, 0.2);
+          #a.fro->('R 0.11' => $R, 0.2);
+          
+            a.fro->('R_J_from 0.12' => R.J.from, 0.2, '%css' => 'border:2px solid pink;');
+
+            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
+
+            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
+
+            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
+
+            a.bz->('Js 0.29' => "\n");
     - K: stringlook #c
       babz:
         'S#string 3.14': |
@@ -190,7 +205,7 @@ R_surz: #c
                 my $s = $sd->{$k};
                 my ($ind) = $k =~ /^s\t(.+)$/;
                 my $v = $ind eq R.a.travly ? 0.8 : do {
-                    $s = join "\n", (split /\n/, $s)[0];
+                    #$s = join "\n", (split /\n/, $s)[0];
                     @ksd < 9 ? 0.8 : 0.2;
                 };
                 $d->{"^$ind\t$v"} = $s;
@@ -209,7 +224,7 @@ R_surz: #c
         humms: | #c
           my @r = w stylekeysort[$d]; 
           my $si = @r;
-          my @i = w wind[$si];
+          my @i = w $R wind[$si];
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
@@ -246,17 +261,20 @@ R_surz: #c
           a.bz->('sheer 0.7565' => "travly:".R.a.travly);
       n_D:
         humms: |
-          my @r = w stylekeysort[$d]; 
+          my @r = w stylekeysort[$d];
+          
           my $si = @r;
-          my @i = w wind[$si];
+          my @i = w $R wind[$si];
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
+                sayyl " - $r";
               my $j = $R->shj($r, $d);
               
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
               #my $z = a.bz->("$li 
+              
               
               a.bz->("${li}_Bs 0.3 0.3${li}0" => "\n") if $i > 0;
                    
@@ -288,29 +306,21 @@ R_surz: #c
 
           }
     - K: self_Jness #c
+      spesh: 1
       babz:
          'S 4.1': |
             a.fro->('H 0.01' => $H, 0.2);
-
             a.fro->('G 0.02' => $G, 0.2);
-
             a.fro->('R 0.11' => $R, 0.2);
          'S 4.2': |
-            a.fro->('R_J_from 0.12' => R.J.from, 0.2, '%css' => 'border:2px solid pink;');
-
-            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
-
-            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
-
-            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
-
-            a.bz->('Js 0.29' => "\n");
+            # spesh
             
     - K: goto #c
       key:
         J: J
         M: RwS
         SM: SM
+        SN: SN
         F: F
         H: H
         W: W
@@ -329,6 +339,8 @@ R_surz: #c
           R.J = {from=>$R,trav=>'{way{hooks'};
         SM: |
           R.J = {from=>$R,trav=>'{way{hooks{goto'};
+        SN: |
+          R.J = {from=>R.a.i,trav=>'{ways[0{hooks'};
         J: |
           my $J = a.i = R.A->spawn('J');
           J.W = G.GG.U.W;
