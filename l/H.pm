@@ -235,12 +235,11 @@ sub spurt {
 }
 
 sub mkuid {
-    my $H = shift;
-    (mkuuid() =~ /^(\w+)-.+$/)[0];
+    (mkuuid() =~ /^(\w+)-.+$/)[0]
+    . $H->{gdijji}++
 }
 
 sub mkuuid {
-    my $H = shift;
     UUID::generate(my $i);
     UUID::unparse($i, my $s);
     $s

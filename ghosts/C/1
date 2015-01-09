@@ -20,7 +20,7 @@ R_surs:
         # 5
         # 5.9
         $do ||= "wtf";
-        w unchanged[$R] if $do eq "wtf";
+        #w unchanged[$R] if $do eq "wtf";
         sayyl join"  ", ($do) x 13 for 1..2;
         # 6
         w $R $do[$k, $e];
@@ -338,21 +338,7 @@ R_surs:
         a.R = $R;
         w $R phat;
         
-        # 1.16
-        
-        # 2
-        
-        # 3
-        
-        # 4
-        
-        # 6
-        
-        my $html = w $R makaout(R=>$R, a=>R.a, cv => 0);
-        
-        # 8
-        
-        # 9
+        # 9.9
         saygr " S --- ".F_delta;
         $html
     E: | #c event
@@ -373,6 +359,9 @@ R_surs:
         my $cv = ar.cv;
         $cv = a.cv if !defined $cv;
         
+        if (my $id = a.isJid || a.replaceJid) {
+            a.bz->('/%id 0.1', $id);
+        }
         # 4
         my @r = w stylekeysort(d=>a.bb);
         
@@ -399,60 +388,38 @@ R_surs:
                  my $o = a.o->{$ov};
                  
                  for my $r (@$o) {
-                     my $s = a.bb->{$r};
-                     my ($l, $vo) = split /\s+/, $r; # split style, vectory
-                     ($l, my $style) = split '%', $l;
+                     my $j = $R->shj($r, a.bb);
+                     (j.l, my $style) = split '%', j.t;
                      
-                     my $in = $style ? $ap : $th;
-                     my $j = {
-                         l => $l,
-                         s => $s,
-                         vo => $vo,
-                     };
-                     if ($style) {
-                         my $o = $ap->{$l} ||= [];
+                     $style ? do {
                          j.style = $style;
-                         push @$o, $j
-                     }
-                     else {
-                         if (exists $in->{$l}) {
-                             warn "replacemont $l $vo";
-                         }
-                         $th->{$l} = $j;
-                         push @int, $l;
+                         push @{$ap->{j.l} ||= []}, $j;
+                     } : do {
+                          warn "replacemont j.l " if exists $th->{j.l};
+                         $th->{j.l} = $j;
+                         push @int, j.l;
                      }
                 }
             }
             
         # 7
         my $apl = sub {
-            my $l = shift;
+            my ($l, $s) = @_;
             
-        };
-        my @s;
-            for my $thl (@int) {
-                my $j = $th->{$thl} || next;
-                my $o = delete $ap->{$thl};
-                #say "$thl ".wdump($o) if !G.gp_inarow;
-                my $l = j.l;
-                my $s = j.s;
-                # top volt for thing selection: # whattage
-                next if $l eq 'K' && a.bb->{"name 0.1"} =~ $s;
-                next if $l eq 'name' && a.bb->{"K 0.2"} =~ $s
-                    && $s ne a.bb->{"K 0.2"};
-                    
-                #my $s = $apl->($thl);
-                #push @s, $s if $s;
+                my $o = delete $ap->{$l};
                 
                 
                 die "reffy $s in $l" if ref $s;
                 sayyl "for the $l\t\t$s" if ar.db;
                 
-                my $ishtml;
+                my $ishtml = $l eq '/';
                 my $gp;
+                my $at = {};
+                my $tag = "añ";
                 my $css = [];
                 for my $oj (@$o) {
                     saybl "        sdtyle! oj.style oj.s" if ar.db; 
+                    
                     if (oj.style eq "css") {
                         push @$css, oj.s;
                     }
@@ -461,16 +428,21 @@ R_surs:
                         $gp = oj.s;
                         $ishtml = 1;
                     }
+                    elsif (oj.style eq 'id') {
+                        at.id = oj.s;
+                    }
                     elsif (oj.style eq "sf") {
                         push @$css, map { $R::f->{$_} || 
                         die "no style $_"} split '_', oj.s;
+                    }
+                    elsif (oj.style eq 'tag') {
+                        $tag = oj.s;
                     }
                     else {
                         die "style oj.style = oj.s \t for $l";
                     }
                 }
                 
-                my $at;
                 at.style = join ';', @$css;
                 G.shtuuyle->{at.style}++;
                 # 7.6
@@ -483,25 +455,32 @@ R_surs:
                     $s =~ s/\\n/\n/g;
                     die if $s =~ /\\n/;
                 }
-                my $tag = "añ";
-                if ($gp) {
-                    if (gp.vimcolor) {
-                        $tag = 'pre';
-                    }
-                }
-                $s = "<$tag $at>$s</$tag>" if $s; 
-                push @s, $s;
+                $s = "<$tag $at>$s</$tag>" if defined $s;
+                $s
+        };
+        my @s;
+            for my $thl (@int) {
+                my $j = $th->{$thl} || next;
+                #say "$thl ".wdump($o) if !G.gp_inarow;
+                my $l = j.l;
+                my $s = j.s;
+                die "$l  -- $thl" if $thl ne $l;
+                
+                # top volt for thing selection: # whattage
+                next if $l eq 'K' && a.bb->{"name 0.1"} =~ $s;
+                next if $l eq 'name' && a.bb->{"K 0.2"} =~ $s
+                    && $s ne a.bb->{"K 0.2"};
+                    
+                push @s, $apl->($l, $s);
             }
+            
+            @s = "no?" if !@s;
+            my $html = $apl->('/', join '', @s);
+            
             
             if (%$ap) {
                 sayre "Extr a appearance: ".wdump($ap);
             }
-            
-            @s = "nose? ".@r if !@s;
-            say wdump(2, a.bb) if !@s;
-            my $html = join("", @s);
-            
-            $html = "<pi id=\"a.isJid\">$html</pi>" if a.isJid;
             
             #die "nose? $u" if !@s;
             #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;

@@ -90,22 +90,31 @@ Ds:
   - K: suets #c
     D: |
       my ($i, $s) = @_;
+      $s = {s=>[R.G->chuntr($s)]} if !ref $s;
       my @s = @{s.s};
       my $end = pop @s if exists s.e;
       my $last;
       while (1) {
             my $ac = shift @s || do {exists s.e || last; $last=1; $end};
-          $ac =~ /^(\W)(\w+)$/ || die;
+          $ac =~ /^(\W)(\w+)$/ || die "$ac !".G::wdump($s);
           if (!$last) { # TODO know about insto hash or array...
-              $i = $i->{$2} ||= {} if $1 eq "{";
-              $i = $i->[$2] ||= {} if $1 eq "[";
+               $i = $1 eq "{" ?
+               do { $i = $i->{$2} ||= {} }
+               :
+               $1 eq "[" ?
+               do { $i->[$2] ||= {} }
+               :
+               die "je seuits $1?";
           }
           else {
-              $i->{$2} = s.e if $1 eq "{";
-              $i->[$2] = s.e if $1 eq "[";
+              if (exists s.e) {
+                  $i->{$2} = s.e if $1 eq "{";
+                  $i->[$2] = s.e if $1 eq "[";
+              }
               last;
           }
       }
+      $i
   - K: snapple #c
     D: |
       my $k = shift;

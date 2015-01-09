@@ -70,7 +70,6 @@ R_surz: #c
                 my $set = $H->ejson($html);
                 my $id = a.replaceJid || die;
                 my $js = qq{ \$('#$id').replaceWith($set);};
-                saygr "replaco $id";
                 push @js, $js;
                 if (@js >= $group) {
                     $H->send(join('', @js));
@@ -142,68 +141,47 @@ R_surz: #c
     - K: Jtwo #c
       babz:
         'S#unifromA 1.0134': |
-            w $R Jtwo/uni;
-      n_D:
-        uni: |
             my $i = R.J.from || die;
             my $t = R.J.trav || '';
-            my @tr = $G->chuntr($t);
-
-            for (@tr) {
-                /^(.)(.+)$/;
-                say "Sapped ".slim($i)."       $1 $2";
-                last if $1 eq " ";
-                $i = $i->{$2} if $1 eq "{";
-                $i = $i->[$2] if $1 eq "[" && (ref $i eq 'ARRAY' || die "NOT!");
-                if ($1 eq '^') {
-                    R.a.travly = $2;
-                    last;
-                }
-            }
-            if ($t =~ m/^.+? (.+)$/) {
-                say "Had some more: $1";
-            }
-            R.a.i = $i;
-    - K: JJJ #c
-      babz:
-        'S#du 3.1': | 
-          a.e ||= R.S.e || die;
-          defined a.i || die;
-          #a.e = a.e + 2;
-          
-          my $d;
-          my $an = {u=>a.i, cv=>0.4};
-          w $R gp(a=>$an);
-          a.i = an.bb if R.double;
-          $d = w $R du;
-      
-    - K: Sud #c
-      n_D:
-            in: |    # ebrace flying embryo J
-                R.J = { from => ar.i };
-                R.J.trav = ar.t if ar.t;
-    
-    - K: dusmatic #c
-      babz:
+            ($t, R.a.travly) = split /\^/, $t, 2;
+            R.a.i = $R->suets($i, $t);
         'S 2.1004': |
           a.s = R.S.s || w $R dus;
           a.s.HASH.oh = 0.2;
           a.tr.rowlimit = R.S.rowlimit || 9*4;
           
           a.fro->('Rl 0.01' => [$H,R.G,$R], {cv=>0.2});
-          #a.fro->('H 0.01' => $H, 0.2);
-          #a.fro->('G 0.02' => R.G, 0.2);
-          #a.fro->('R 0.11' => $R, 0.2);
           
-            a.fro->('R_J_from 0.12' => R.J.from, 0.2, '%css' => 'border:2px solid pink;');
+          a.fro->('R_J_from 0.12' => R.J.from, 0.2, '%css' => 'border:2px solid pink;');
 
-            a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
+          a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
 
-            a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
+          a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
 
-            a.fro->('R_a_i 0.21' => R.a.i, 0.2);
+          a.fro->('R_a_i 0.21' => R.a.i, 0.2);
 
-            a.bz->('Js 0.29' => "\n");
+          a.bz->('Js 0.29' => "\n");
+    - K: Jbuild #c
+      babz:
+        'S#du 3.1': | 
+          a.e ||= R.S.e || die;
+          defined a.i || die;
+          my $d;
+          #my $an = {u=>a.i, cv=>0.4};
+          #w $R gp(a=>$an);
+          #a.i = an.bb if R.double;
+          
+          $d = w $R du;
+    - K: maka #c
+      babz:
+        'S 7': |
+          my $html = w $R makaout(R=>$R, a=>R.a, cv => 0);
+    - K: Sud #c
+      n_D:
+            in: |    # ebrace flying embryo J
+                R.J = { from => ar.i };
+                R.J.trav = ar.t if ar.t;
+    
     - K: stringlook #c
       babz:
         'S#string 3.14': |
@@ -214,26 +192,66 @@ R_surz: #c
               R.a.humm = 'stringlook';
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
-              my @ksd = keys %$sd;
-              for my $k (@ksd) {
-                my $s = $sd->{$k};
-                my ($ind) = $k =~ /^s\t(.+)$/;
-                my $v = $ind eq R.a.travly ? 0.8 : do {
-                    #$s = join "\n", (split /\n/, $s)[0];
-                    @ksd < 19 ? 0.8 : 0.2;
-                };
-                $d->{"^$ind\t$v"} = $s;
+              my @ksd = sort keys %$sd;
+              my $on;
+              my @j = map { G.R->shj($_, $sd) } @ksd;
+              ($on) = map { _.cv } grep { _.cv eq R.a.travly } @j;
+              saygr "Was R.a.travly";
+              for my $j (@j) {
+                  my $k = j.t;
+                  my $v = j.cv;
+                  my $s = j.s;
+                  my $sec = 0;
+                  
+                  if ($on) {
+                      my $dist = $on - j.cv;
+                      #say "$1 for $k";
+                      $dist *= -1 if $dist < 0;
+                      $sec = $dist;
+                      $sec =
+                      $sec == 0 ? 7
+                      :
+                      $sec < 1 ? 3
+                      :
+                      $sec < 2 ? 2
+                      :
+                      $sec < 3 ? 1
+                      :
+                      0;
+                      sayyl " $on <> j.cv \t $sec $dist";
+                  }
+                  
+                  my $vo = $sec eq 0 ? 0.8 : (0.7 + ($sec/100));
+                  
+                  #    @ksd < 19 ? 0.7 + $sec : 0.2;
+                  #};
+                  $d->{"^j.cv\t$vo"} = $s;
               }
             }
           }
         'pi/text 7': |
-            my $col = $G->vimcolor($u);
+            my $s = $u;
+            my $s = $G->vimcolor($s);
+            
+            if (a.cv > 0.7 && a.cv < 0.8) {
+                my $sens = (a.cv - 0.7) * 10;
+                my @new;
+                for (split /\n/, $s) {
+                    push @new, $_ if 0;
+                }
+                $s = join "\n", @new;
+            }
+            
+            #$col = join "\n", ()[0], '' if a.cv < 0.8;
+            
+            $s =~ s/^(<span) (class="synComment">.+?<\/span>)/$1 style="font-size:170%;" $2/;
+            
             
             my $lim = ";height:5em;overflow-y:scroll" if a.c.lin > 4;
-            $lim .= ";background:rgba(30,30,60,0.9)" if a.cv > 0.7;
+            $lim .= ";background:rgba(70,40,0,1);" if a.cv > 0.7;
             
-            a.bz->("line 0.1" => $col, '%gp'=>{vimcolor=>1},
-                '%css' => "margin:0.2em;background:rgba(0,0,50,0.9);font-size:82%;-webkit-filter:hue-rotate(200deg) brightness(3) contrast(0.8);$lim");
+            a.bz->("line 0.1" => $s, '%tag'=>'pre','%gp'=>{vimcolor=>1},
+                '%css' => "margin:0.2em;background:rgba(30,30,60,1);font-size:50%;-webkit-filter:hue-rotate(80deg);$lim");
       n_D:
         humms: | #c
           my @r = w stylekeysort[$d]; 
@@ -253,7 +271,7 @@ R_surz: #c
               a.bz->("${li}_z 0.3 0.3${li}5", "\n") if j.cv < 0.7;
               $i++; 
           }
-          a.bz->("/%css 0.1", 'background:rgba(10,10,0,1)');
+          #a.bz->("/%css 0.1", 'background:rgba(10,10,0,1)');
               
           
     - K: adu #c
