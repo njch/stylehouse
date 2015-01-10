@@ -115,15 +115,15 @@ R_surz: #c
       n_D:
             out: |
               return R.ksuc = "" if R.ksuc && $k eq "0";
-              my @trav = $G->chuntr(R.J.trav);
+              my @trav = $G->chuntr(S.J.trav);
               pop @trav;
-              R.J.trav = join '', @trav;
+              S.J.trav = join '', @trav;
             in: |
               R.ksuc .= $k;
               my $j = R.a.ro->{R.ksuc};
               
               if (!$j) {
-                  w unchanged[$R];
+                  w unchanged[$S];
                   sayre "no j ye for R.ksuc" for 1..5;
                   return;
               }
@@ -132,16 +132,16 @@ R_surz: #c
 
               R.ksuc = "";
               if (R.a.travly) {
-                  R.J.trav =~ s/\^.+?$// || die;
+                  S.J.trav =~ s/\^.+?$// || die;
               }
 
               my ($hop) = j.t;
-              R.J.trav .= $hop; 
+              S.J.trav .= $hop; 
     - K: Sud #c
       n_D:
             in: |    # ebrace flying embryo J
-                R.J = { from => ar.i };
-                R.J.trav = ar.t if ar.t;
+                S.J = { from => ar.i };
+                S.J.trav = ar.t if ar.t;
     
     - K: stringlook #c
       babz:
@@ -270,11 +270,11 @@ R_surz: #c
         H: |
           w $R Sud/in(i=>H.G.GGs);
         RwS: |
-          R.J = {from=>$R,trav=>'{way{hooks'};
+          S.J = {from=>$R,trav=>'{way{hooks'};
         SM: |
-          R.J = {from=>$R,trav=>'{way{hooks{goto'};
+          S.J = {from=>$R,trav=>'{way{hooks{goto'};
         SN: |
-          R.J = {from=>R.a.i,trav=>'{ways[0{hooks'};
+          S.J = {from=>R.a.i,trav=>'{ways[0{hooks'};
         J: |
           my $J = a.i = R.A->spawn('J');
           J.W = G.GG.U.W;
@@ -286,7 +286,7 @@ R_surz: #c
           w $R Sud/in(i=>$J);
         W: |
           my $n = int rand 30000;
-          R.J = { from => [$n,unico($n,1)]};
+          S.J = { from => [$n,unico($n,1)]};
         F: |
               saygr "Trying!!!!" for 1..5;
               my @lot = w trythis;
@@ -314,7 +314,7 @@ R_surz: #c
           my $g = G:C/ool;
           w $R Sud/in(i=>$g);
         Redisy: |
-              R.J = {
+              S.J = {
                 from => [reverse sort H.r->keys("*")],
               };
         D: |
