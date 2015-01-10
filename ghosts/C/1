@@ -467,9 +467,12 @@ R_surs:
                 die "$l  -- $thl" if $thl ne $l;
                 
                 # top volt for thing selection: # whattage
-                next if $l eq 'K' && a.bb->{"name 0.1"} =~ $s;
-                next if $l eq 'name' && a.bb->{"K 0.2"} =~ $s
-                    && $s ne a.bb->{"K 0.2"};
+                if ($l eq 'K' && a.bb->{"name 0.1"} =~ $s
+                 || $l eq 'name' && a.bb->{"K 0.2"} =~ $s
+                 && $s ne a.bb->{"K 0.2"}) {
+                    delete $ap->{$l};
+                    next;
+                }
                     
                 push @s, $apl->($l, $s);
             }
