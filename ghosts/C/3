@@ -110,7 +110,6 @@ R_surz: #c
         'S#keybas 3.32': |
           a.bz->('keybas 3.32', "Yogo R.thedoings!");
       
-
     - K: Num #c
       key: {0: out, number: in}
       n_D:
@@ -169,6 +168,7 @@ R_surz: #c
           my $mod = "";
           if (R.J.trav eq  '{way{hooks') {
               a.e += 2;
+            $mod = "hooklook";
           }
           my $d;
           #my $an = {u=>a.i, cv=>0.4};
@@ -176,6 +176,15 @@ R_surz: #c
           #a.i = an.bb if R.double;
           
           $d = w $R du;
+          
+          if ($mod eq 'hooklook') {
+              for my $k (keys %$d) {
+                  my $v = delete $d->{$k};
+                  next if ref $v;
+                  $k =~ s/(?<=\t)(.+?)$/0.4/;
+                  $d->{$k} = $v;
+              }
+          }
     - K: maka #c
       babz:
         'S 7': |

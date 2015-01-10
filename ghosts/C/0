@@ -49,10 +49,7 @@ R:
    findway: R_sur
      
 P:
- - K: D #c sur
-   B: 
-     R: sur
-    
+
  - GAK: U #c
    InC:
        W:
@@ -77,22 +74,19 @@ P_sud:
  - Do Or: $H->pub('S/hut/O', 'reexec');
  - Do Cr: $H->pub('S/hut/C', 'reexec');
  - Do Sr: $H->pub('S/hut/S', 'reexec');
+ - Do D: w makeD;
 hooks:
   D:
     S: 
       content_D: | 
-        B.m = w $R S[$u];
+        w G.theR S[$S, $u];
       ishtml: 1
     E:
       _D: |
-        w $R E;
+        G.theD = $S;
+        w G.theR E[$S, $e];
     flows_D: |
-      G.theR = $G->R('sur');
-      $R = B.R = G.theR;
-      R.theD = $S;
-      S.A->umk($R, "Doer");
-       
-      w $R setup;
+      w G.theR setup[$S];
   fresh_init: |
     w ikey;
   any_init: |
@@ -104,16 +98,24 @@ hooks:
     w uxd;
   
   percolate: |
+    G.theR = $G->R('sur');
+    w makeD;
+    w makeD;
     w uxd(full=>1);
+  makeD: |
+    my $name = "J".G.Jnumb++;
+    my $u = {K=>'D',name=>$name};
+    my $D = w G.R fuu[$u];
+    sayyl "made ++ ".$D->pi;
+    G.theD = $D;
   are: | #c chang->queue U xing
     my $R = G.theR;
-    if (my $u = R.theD) {
+    if (my $u = G.theD) {
         w chang[$u];
     }
     $R
   ikey: | # $G assumes keydo
-    my $R = G.theR;
-    H.keydo = sub { w $R keys(e=>shift); };
+    H.keydo = sub { my $e = shift; my $S = G.theD; w G.theR keys[$e, $S]; };
   ave: |
     my $R = w are;
     w $R Sud/in;
@@ -130,7 +132,6 @@ hooks:
            @r = map { $by->{$_} } sort keys %$by;
       }
       @r
-
   event: |
     saybl $G->pi." G.K   EEEEEE ".$i->pi;
     w ikey;
@@ -158,6 +159,7 @@ hooks:
         0->sing(alluxd => sub {
             sayyl "uxing...";
             my @is = w G.R fi(f=>{});
+            saygr "uxing ".$_->pi for @is;
             my $is = \@is;
             G.GG.U w ux[$is];
         }, begin => 0.001);
@@ -168,7 +170,7 @@ hooks:
       0->sing(uxd => sub { w uxd; }, again=>1);
   unchanged: |
       my ($u) = values %$ar;
-      $u = u.theD || die if ref $u ne 'C';
+      $u = G.theD || die $u if ref $u ne 'C';
       0->accum(G.Vu => ig => $u);
   v:
     ch: |
