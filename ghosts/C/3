@@ -154,7 +154,7 @@ R_surz: #c
           
           a.fro->('R_J_from 0.12' => R.J.from, 0.2, '%css' => 'border:2px solid pink;');
 
-          a.fro->('R_J_trav 0.13' => R.J.trav, 0.2, '%sf' => 'black_fs120'); 
+          a.bz->('R_J_trav 0.13' => R.J.trav, '%sf' => 'black_fs120'); 
 
           a.bz->('R_S_e 0.2' => R.S.e, '%sf' => 'white');
 
@@ -203,13 +203,13 @@ R_surz: #c
                   my $s = j.s;
                   my $sec = 0;
                   
-                  my $vo = 0.3;
+                  my $vo = 0.7;
                   
                   if ($on && $on eq j.cv) {
                       $vo = 0.8;
                       sayyl "\t\t$on  j.cv";
                   }
-                  elsif ($on) {
+                  elsif ($on && 0) {
                       my $dist = $on - j.cv;
                       $dist *= -1 if $dist < 0;
                       $sec = $dist;
@@ -221,13 +221,9 @@ R_surz: #c
                       $sec < 3 ? 1
                       :
                       0;
-                      if ($sec) {
+                      
                           $sec = $sec*0.01;
                           $vo = 0.7 + $sec;
-                      }
-                      else {
-                          $vo = 0.4
-                      }
                       
                       #sayyl " j.cv \t $sec\t\t$vo";
                   }
@@ -240,31 +236,32 @@ R_surz: #c
             my $s = $u;
             my $s = $G->vimcolor($s);
             
-            my @new;
-            if (a.cv > 0.7 && a.cv < 0.8) {
+            my @old = split /\n/, $s;
+            my @new = @old;
+            my $com;
+            if (a.cv >= 0.7 && a.cv < 0.8) {
                 my $sens = (a.cv - 0.7) * 10;
-                my $cu = ($sens * 10 * 3);
-                say qq:sendse $sens  $cu:;
-                for (split /\n/, $s) {
+                my $cu = int($sens * 10 * 3);
+                say "sendse $sens  $cu";
+                my $i = 1;
+                @new = ();
+                push @new, shift @old;
+                for (@old) {
                     
-                    my $cut = a.cv>0.73 ? 7
-                    :
-                    a.cv>0.72 ? 4
-                    :
-                    a.cv>0.71 ? 2 : 1;
-                    sayyl "$cu cut";
-                    push @new, $_ if @new < $cut;
+                    push @new, $_ if @new < $cu && (/^#/ || /R\./ || /\-\>/ || /w\ /);
+                    $i++;
                 }
-                $s = join "\n", @new;
+                my $more = $i - @new;
+                $com = $more ? "$more@" : "";
             }
-            
             #$col = join "\n", ()[0], '' if a.cv < 0.8;
-            
-            $s =~ s/^(<span) (class="synComment">.+?<\/span>)/$1 style="font-size:170%;" $2/;
+            $s = join "\n", @new;
+            $com = "  $com";
+            $s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
             
             
             saygr "aw a.cv";
-            my $lim = ";height:5em;overflow-y:scroll" if a.c.lin > 4;
+            my $lim = ";height:19em;overflow-y:scroll" if @new > 19;
             $lim .= ";background:rgba(70,40,0,1);" if a.cv >= 0.8;
             
             a.bz->("line 0.1" => $s, '%tag'=>'pre','%gp'=>{vimcolor=>1},
@@ -447,7 +444,6 @@ R_surz: #c
                }
                a.bz->("ch_${c}_nl 3.011" => "\n");
            }
-
     - K: Vit #c
       key: {E: up, R: down}
       n_D:
