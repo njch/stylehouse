@@ -1199,7 +1199,8 @@ sub w {
     }
 
     if (!@$l) {
-        sayre $G->pi."    way miss $talk";
+        sayre $G->pi."    way miss $talk"
+            unless $talk =~ /^w\ (print|humms_D|flows_D)/;
         return;
     }
 

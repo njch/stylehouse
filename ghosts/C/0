@@ -77,6 +77,8 @@ P_sud:
  - Do D: w makeD;
 hooks:
   D:
+    print: |
+        "S.K S.name";
     S: 
       content_D: | 
         w G.theR S[$S, $u];
@@ -84,6 +86,7 @@ hooks:
     E:
       _D: |
         G.theD = $S;
+        sayyl "To ".$S->pi;
         w G.theR E[$S, $e];
     flows_D: |
       w G.theR setup[$S];
@@ -100,7 +103,6 @@ hooks:
   percolate: |
     G.theR = $G->R('sur');
     w makeD;
-    w makeD;
     w uxd(full=>1);
   makeD: |
     my $name = "J".G.Jnumb++;
@@ -108,6 +110,8 @@ hooks:
     my $D = w G.R fuu[$u];
     sayyl "made ++ ".$D->pi;
     G.theD = $D;
+    w are;
+    $D;
   are: | #c chang->queue U xing
     my $R = G.theR;
     if (my $u = G.theD) {
@@ -115,7 +119,12 @@ hooks:
     }
     $R
   ikey: | # $G assumes keydo
-    H.keydo = sub { my $e = shift; my $S = G.theD; w G.theR keys[$e, $S]; };
+    H.keydo = sub {
+        my $e = shift; 
+        my $S = G.theD;
+        sayyl "To ".$S->pi;
+        w G.theR keys[$e, $S];
+    };
   ave: |
     my $R = w are;
     ar.S = G.theD;

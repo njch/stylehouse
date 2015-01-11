@@ -318,15 +318,23 @@ hooks:
         }
     }
     
+    my $j = $G->nw(K=>'j', s=>[], c=>[]);
+    
+    
     my @tops = grep { !_.u_S } @{uM.A.n_ux||[]};
     @tops = @{uM.A.n_ux||[]} if !@tops;
     @tops = map { _.i } @tops;
-    #die "notops" if !@tops;
+    die "notops" if !@tops;
     @tops = G.W;
     
-    @tops = @ba if ar.part; # DODGE
-    
-    my $j = $G->nw(K=>'j', s=>[], c=>[]);
+    if (ar.part) {
+        my $want = { map { _.id => 1 } @ba };
+        saygr "Want+\n".ind(' +  ', join("\n", map {$_->pi} @ba));
+        for my $i (map{_.i}@{uM.A.n_ux||[]}) {
+            say (($want->{i.id} ? " +" : " -")."  ".$i->pi);
+            j.seenid->{i.id} = 1 unless $want->{i.id};
+        }
+    }
     
     for my $i (@tops) {
         saygr "Top level U is a ".$i->pint();
@@ -344,6 +352,7 @@ hooks:
     j.seenid->{i.id} = $i;
     
     w spawn(u=>$i);
+    sayyl "+ i.id";
     
     my @down = w Udown;
     ar.d++;
