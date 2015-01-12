@@ -38,18 +38,38 @@ R_surz:
           }
           my $d;
           if (#ref a.i eq 'R' && 
-          R.double) {
+          S.mod.double) {
           
               my $an = {u=>a.i, cv=>0.8, q=>1};
               w $R gp(a=>$an);
               
-              my $anH = {u=>a.i, cv=>0.8, q=>1, wa=>'HASH'};
+              my $anH = {u=>a.i, cv=>0.8, q=>1, wa=>'HASH2'};
               w $R gp(a=>$anH);
               
-              a.i = { %{an.bb}, %{anH.bb} };
+              a.i = {# %{an.bb},
+              %{anH.bb}
+              };
           }
           
           $d = w $R du;
+          
+          if (3 == grep { $_ =~ /^.+ .+\d\t.+$/ } (shuffle keys %$d)[0,1,2]) {
+              sayyl "Looks like style";
+              # looks like style
+              my $l;
+              for my $k (keys %$d) {
+                  my $j = $R->shj($k, $d);
+                  sayre j.t;
+                  my $t = j.t;
+                  my $st = $1 if $t =~ s/(%\S+)//;
+                  $st ||= 'ž';
+                  my $lt = "$t\t"."0.4";
+                  exists $l->{$lt}->{$st} && die "$t    $st";
+                  $l->{$lt}->{$st} = j.s;
+              }
+              $d = $l;
+              S.a.treemood = "styley";
+          }
           
           if ($mod eq 'hooklook') {
               for my $k (keys %$d) {
@@ -72,7 +92,6 @@ R_surz:
       n_D:
         humms: |
           my @r = w stylekeysort[$d];
-          
           my $si = @r;
           my @i = w $R wind[$si];
           my $ro = R.a.ro = {}; # wind round
@@ -80,6 +99,7 @@ R_surz:
           for my $r (@r) {
                 sayyl " - $r";
               my $j = $R->shj($r, $d);
+              #sayre wdump($j);
               
               my $li = j.li = shift @i || die;
               $ro->{$li} = $j;
@@ -100,6 +120,7 @@ R_surz:
               $cv =~ s/^0//;
               a.bz->("${li}_cv 0.3 0.3${li}22", $cv,
                   '%sf', 'red_fs80');
+
 
               a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
                   '%sf', 'white_fs120');
