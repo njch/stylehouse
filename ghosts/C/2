@@ -101,52 +101,41 @@ R_surs:
             my $si = keys %$u;
             a.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
             
-            a.bz->("Bo 0.1 0.11" => '{');
-            a.bz->('oB 0.1 0.9' => '}');
+            a.bz->("B:Bo 0.1 0.11" => '{');
+            a.bz->('B:oB 0.1 0.9' => '}');
             
             return if $cv < 0.2;
             
             # 3
-            my $r = {map{$_=>1} sort keys %$u};
+            my $r = {map{$_=>1} keys %$u};
             my @r = grep { delete $r->{$_} } qw'K name';
             push @r, sort keys %$r;
             
             my $ki = 0;
             my $i = 0;
+            a.bz->('B:Bs 0.2', ',');
+            a.bz->('B:Bi 0.3', ':');
+            
             for my $k (@r) {
                 my $v = $u->{$k};
-                
-                if ($ki > 0) {
-                    $ki++;
-                    a.bb->{"[${ki}_Bs 0.2"} = ',';
-                    $ki++;
-                }
-                a.bz->("[${ki}_k 0.2" => $k,
-                    
-                    "\%css" => "color:#acf;font-size:80%");
-                    
-                    
-                my $keyi = $ki;
-                $ki++;
-                my $vcv = a.cv - 0.2; # dus bend for $k
-                
-                if ($vcv >= 0.2) {
-                
-                    a.bz->("[${ki}_Bi 0.2" => ':');
-                    
-                    $ki++;
-                    
-                    a.fro->("[${ki}_v 0.2" => $v, $vcv,
-                        '%css' => "font-size:75%");
-
-                }
-                
                 $i++;
                 if ($i >= 5) {
-                    a.bz->("more 0.2 0.886" => "@",
-                    
-                        '%sf' => "blue");
+                    a.bz->("more 0.2 0.886" => "@", '%sf' => "blue");
                     last;
+                }
+                
+                my $ii = sprintf('%04d', $i);
+                
+                a.bz->('B/'.$ii.'/k 0.2', $k,
+                
+                    '%css' => 'color:#acf;font-size:80%');
+                
+                
+                my $vcv = a.cv - 0.2; # dus bend for $k
+                if ($vcv >= 0.2) {
+                    a.fro->('B/'.$ii.'/v 0.3', $v, $vcv,
+
+                        '%css' => 'font-size:75%');
                 }
             }
       ref: | #c weird ref
