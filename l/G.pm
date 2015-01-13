@@ -68,7 +68,10 @@ sub new {
     wish(G => $ui) || $ui eq $H || die "not G above? $G->{name} ".$ui->pi;
     $G->{O} = $ui;
     $G->{A}->umv('', 'G');
-    $G->{A}->umk($H->{G}, 'Gs') if $H->{G};
+    my $h = $H->{G};
+    $h ||= $G if $G->{name} eq 'H'; # TODO $G->{K}
+    $h || die "nogh";
+    $G->{A}->umk($h, 'Gs');
     push @{$ui->{GGs}}, $G; # OGG
     push @{$H->{G}->{GGs}}, $G unless $ui eq $H->{G}; # OGG
 
@@ -217,10 +220,15 @@ sub ob {
 sub Gf {
     my $G = shift;
     my $way = shift;
-    # TODO $G or $S etc A 
-    my @GGs =
-      #sort { length($a->{way}) <=> length($b->{way}) } # cerated
-      grep { $_->{way} =~ /$way/ } @{ $G->{GGs} };
+    my $Gs = [map{$_->{i}}@{$H->{G}->{A}->{n_Gs}}];
+
+    my @GGs = grep { $_->{K} eq $way } @$Gs;
+    if (!@GGs) {
+        # never did much of this but from before was like
+        @GGs = grep { $_->{way} =~ /$way/ } @$Gs;
+          # which complicates as vague:
+        #sort { length($a->{way}) <=> length($b->{way}) } # cerated
+    }
 
     wantarray ? @GGs : shift @GGs;
 }

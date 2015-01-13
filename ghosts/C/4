@@ -37,16 +37,16 @@ R_surz:
       babz:
         'S#moo 3.1': | 
           S.mod = {%{S.mood||{}}};
-          # 3.2 is noticing whats mods to apply
+          if (my $onetime = delete S.monod) {
+              S.mod = {%{S.mod}, %$onetime};
+          }
         'S#du 3.3': |
           $d = w $R du;
-          # 3.4 is massaging $d
-          
-    - K: adu #c
-      babz:
-        'S#aduhummings 4.01': |
+        'S#hum 4': |
           my $humm = S.mod.humm || 'adu';
           w $R $humm/humms[$a, $d];
+          
+    - K: adu #c
       n_D:
         humms: |
           my @r = w stylekeysort[$d];
@@ -55,7 +55,7 @@ R_surz:
           my $ro = R.a.ro = {}; # wind round
           my $i = 0;
           for my $r (@r) {
-                sayyl " - $r";
+              #  sayyl " - $r";
               my $j = $R->shj($r, $d);
               #sayre wdump($j);
               

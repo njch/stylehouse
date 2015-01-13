@@ -105,9 +105,9 @@ hooks:
     w makeD;
     w uxd(full=>1);
   makeD: |
-    my $name = "J".G.Jnumb++;
+    my $name = ar.name || "J".G.Jnumb++;
     my $u = {K=>'D',name=>$name};
-    my $D = w G.R fuu[$u];
+    my $D = w G.R fuu[$u]; 
     sayyl "made ++ ".$D->pi;
     G.theD = $D;
     w are;
@@ -123,6 +123,10 @@ hooks:
         w G.theR keys[$e, $S];
     };
   ave: |
+    if (ar.Dname) {
+       (G.theD) = grep {_.K eq 'D' && _.name eq ar.Dname} @{G.R.A.n_C};
+       G.theD ||= w makeD(name => ar.Dname);
+    }
     my $R = w are;
     ar.S = G.theD;
     sayyl join "\t", $G->pi, $R->pi, ar.S->pi, ar.i;
@@ -131,7 +135,7 @@ hooks:
     my $g = G:$K;
     
     saybl "DAVING" for 1..3;
-    
+    #return;
     if (!$g) {
         saybl "NOT FOUND G $K";
         ar.way = join ' ', 'C', (ar.way||'C/nv');
@@ -177,7 +181,7 @@ hooks:
         my $full = ar.full ? "FULL":"full";
         saygr "Codon $full uxd";
         0->sing(alluxd => sub {
-            sayyl "uxing...";
+            sayyl "uxing... G.name G.K";
             my @is = w G.R fi(f=>{});
             saygr "uxing ".$_->pi for @is;
             my $is = \@is;
