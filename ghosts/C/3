@@ -144,14 +144,40 @@ R_surz: #c
                 S.J.trav = ar.t if ar.t;
                 sayyl "suddenly ".gp(ar.i);
     
+    - K: playn #c
+      babz:
+        'S 3.214': |
+          if (S.J.trav eq  '{way{hooks') {
+              a.e += 2;
+              S.mod.hooklook = 1;
+          }
+          if (S.mod.double) {
+              my $an = {u=>a.i, cv=>0.8, q=>1};
+              w $R gp(a=>$an);
+              
+              my $anH = {u=>a.i, cv=>0.8, q=>1, wa=>'HASH2'};
+              w $R gp(a=>$anH);
+              
+              a.i = {
+                  #%{an.bb},
+                  %{anH.bb}
+              };
+              
+              w Dave(K=>"Cm1",way=>"C/nv",i=>a.i);
+              
+              #S.mod.humm = 'null';
+              #R.a.bb = $d;
+              #my $ht = w $R makaout(a=>R.a, cv => 0);
+              #$d->{'{zzz 0.97'} = 
+          }
     - K: stringlook #c
       babz:
-        'S#string 3.14': | #c
+        'S#string 3.44': |
           S.mod.humm = 'adu';
           if (!%$d) {
             if (!ref a.i) {
               sayre "SDoing something else";
-              S.mod.humm = 'stringlook';
+              S.mod.humm = 'simphumm';
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
               my @ksd = sort keys %$sd;
@@ -194,42 +220,9 @@ R_surz: #c
               }
             }
           }
-        'pi/text 7': | #c
-            my $s = $u;
-            my $s = $G->vimcolor($s);
-            
-            my @old = split /\n/, $s;
-            my @new = @old;
-            my $com;
-            if (a.cv >= 0.7 && a.cv < 0.8) {
-                my $sens = (a.cv - 0.7) * 10;
-                my $cu = int($sens * 10 * 3);
-                say "sendse $sens  $cu";
-                my $i = 1;
-                @new = ();
-                push @new, shift @old;
-                for (@old) {
-                    
-                    push @new, $_ if @new < $cu && (/^#/ || /R\./ || /\-\>/ || /w\ /);
-                    $i++;
-                }
-                my $more = $i - @new;
-                $com = $more ? "$more@" : "";
-            }
-            #$col = join "\n", ()[0], '' if a.cv < 0.8;
-            $s = join "\n", @new;
-            $com = "  $com";
-            $s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
-            
-            
-            saygr "aw a.cv";
-            my $lim = ";height:19em;overflow-y:scroll" if @new > 19;
-            $lim .= ";background:rgba(70,40,0,1);" if a.cv >= 0.8;
-            
-            a.bz->("line 0.1" => $s, '%tag'=>'pre','%gp'=>{vimcolor=>1},
-                '%css' => "margin:0.2em;background:rgba(30,30,60,1);font-size:50%;-webkit-filter:hue-rotate(80deg);$lim");
+    - K: simphumm #c
       n_D:
-        humms: | #c
+        humms: |
           my @r = w stylekeysort[$d]; 
           my $si = @r;
           my @i = w $R wind[$si];
@@ -249,6 +242,37 @@ R_surz: #c
           }
           #a.bz->("/%css 0.1", 'background:rgba(10,10,0,1)');
               
+          
+    - K: stylook #c
+      babz:
+        'S 3.4145': |
+          if (3 == grep { $_ =~ /^.+ .+\d\t.+$/ } (shuffle keys %$d)[0,1,2]) {
+              my $l;
+              for my $k (keys %$d) {
+                  my $j = $R->shj($k, $d);
+                  sayre j.t;
+                  my $t = j.t;
+                  my $st = $1 if $t =~ s/(%\S+)//;
+                  $st ||= 'ž';
+                  my $lt = "$t\t"."0.4";
+                  exists $l->{$lt}->{$st} && die "$t    $st";
+                  $l->{$lt}->{$st} = j.s;
+              }
+              $d = $l;
+              S.a.treemood = "styley";
+          }
+    - K: hookok #c
+      babz:
+        'S 3.4146': |
+          if (S.mod.hooklook) {
+              for my $k (keys %$d) {
+                  my $v = delete $d->{$k};
+                  next if ref $v;
+                  $k =~ s/(?<=\t)(.+?)$/0.4/;
+                  $d->{$k} = $v;
+              }
+          }
+
           
     - K: goto #c
       key:
