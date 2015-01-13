@@ -197,8 +197,7 @@ R_surs:
             }
             return if a.cv < 0.7;
             # 7
-            my $s = $u;
-            my $s = $G->vimcolor($s);
+            my $s = $G->vimcolor($u);
             
             my @old = split /\n/, $s;
             my @new = @old;
@@ -206,7 +205,6 @@ R_surs:
             if (a.cv >= 0.7 && a.cv < 0.8) {
                 my $sens = (a.cv - 0.7) * 10;
                 my $cu = int($sens * 10 * 3);
-                say "sendse $sens  $cu";
                 my $i = 1;
                 @new = ();
                 push @new, shift @old;
@@ -224,7 +222,6 @@ R_surs:
             $s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
             
             
-            saygr "aw a.cv";
             my $lim = ";height:19em;overflow-y:scroll" if @new > 19;
             $lim .= ";background:rgba(70,40,0,1);" if a.cv >= 0.8;
             
