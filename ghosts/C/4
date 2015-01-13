@@ -2,15 +2,16 @@
 R_surz:
     - K: Jtwo #c
       babz:
-        'S#unifromA 1.0134': |
+        'S#unifromA 2.3': |
             R.lastS = $S;
             S.K eq "D" || die || "D?";
-            sayyl "Doing S.K S.name hmmmmmmmm S.J.from S.J.trav";
+            sayyl "Doing S.K S.name hmmmmmmmm S.J.from S.J.trav"; 
             my $i = S.J.from || die;
             my $t = S.J.trav || '';
             ($t, R.a.travly) = split /\^/, $t, 2;
+            
             R.a.i = $R->suets($i, $t);
-        'S 2.1004': |
+        'S 2.4': |
           a.s = R.S.s || w $R dus;
           a.s.HASH.oh = 0.2;
           a.tr.rowlimit = R.S.rowlimit || 9*4;
@@ -31,10 +32,10 @@ R_surz:
         'S#du 3.1': | 
           a.e ||= R.S.e || die;
           defined a.i || die;
-          my $mod = "";
+          S.mod = {%{S.mood||{}}};
           if (S.J.trav eq  '{way{hooks') {
               a.e += 2;
-            $mod = "hooklook";
+              S.mod.hooklook = 1;
           }
           my $d;
           if (S.mod.double) {
@@ -77,7 +78,7 @@ R_surz:
               S.a.treemood = "styley";
           }
           
-          if ($mod eq 'hooklook') {
+          if (S.mod.hooklook) {
               for my $k (keys %$d) {
                   my $v = delete $d->{$k};
                   next if ref $v;
@@ -85,11 +86,6 @@ R_surz:
                   $d->{$k} = $v;
               }
           }
-    - K: maka #c
-      babz:
-        'S 7': |
-          my $html = w $R makaout(R=>$R, a=>R.a, cv => 0);
-    
     - K: adu #c
       babz:
         'S#aduhummings 4.01': |
@@ -142,6 +138,12 @@ R_surz:
               $i++; 
 
           }
+    - K: maka #c
+      babz:
+        'S 7': |
+          my $html = w $R makaout(R=>$R, a=>R.a, cv => 0);
+    
+
     - K: self_Jness #c
       spesh: 1
       babz:
