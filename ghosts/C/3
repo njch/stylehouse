@@ -35,21 +35,21 @@ R_surz: #c
                 # fork only the top level pi, not pi within pi?
                 # promise pi, makaout executes?
                 $G->timer(0, sub {
-                    w $R forkpi/pias[$pias];
+                    w $R forkpi/pias[$S, $pias];
                 });
             }
         'gp 6.2': |
-            R.a.pis->{a.isJid} = $a;
+            S.a.pis->{a.isJid} = $a;
         'gp 7.1': |
             a.forking.wash = $H->dig($html) if a.forking;
         'S#tidy 0.113': |
-            if (my $tokill = delete R.S_forkpi_tokill) {
+            if (my $tokill = delete S.forkpi_tokill) {
                 kill 'KILL', $_ for @$tokill;
             }
       n_D:
         pias: |
             if (my $pid = fork()) {
-                my $Sftk = R.S_forkpi_tokill ||= [];
+                my $Sftk = S.forkpi_tokill ||= [];
                 push @$Sftk, $pid;
                 return
             }
@@ -115,24 +115,24 @@ R_surz: #c
       key: {0: out, number: in}
       n_D:
             out: |
-              return R.ksuc = "" if R.ksuc && $k eq "0";
+              return S.ksuc = "" if S.ksuc && $k eq "0";
               my @trav = $G->chuntr(S.J.trav);
               pop @trav;
               S.J.trav = join '', @trav;
             in: |
-              R.ksuc .= $k;
-              my $j = R.a.ro->{R.ksuc};
+              S.ksuc .= $k;
+              my $j = S.a.ro->{S.ksuc};
               
               if (!$j) {
                   w unchanged[$S];
-                  sayre "no j ye for R.ksuc" for 1..5;
+                  sayre "no j ye for S.ksuc" for 1..5;
                   return;
               }
-              sayyl "got $j j.t j.cv for R.ksuc";
+              sayyl "got $j j.t j.cv for S.ksuc";
 
 
-              R.ksuc = "";
-              if (R.a.travly) {
+              S.ksuc = "";
+              if (S.a.travly) {
                   S.J.trav =~ s/\^.+?$// || die;
               }
 
@@ -167,8 +167,8 @@ R_surz: #c
               w Dave(K=>"Cm1",way=>"C/nv",Dname=>"hd",i=>$something);
               
               #S.mod.humm = 'null';
-              #R.a.bb = $d;
-              #my $ht = w $R makaout(a=>R.a, cv => 0);
+              #S.a.bb = $d;
+              #my $ht = w $R makaout(a=>S.a, cv => 0);
               #$d->{'{zzz 0.97'} = 
           }
     - K: stringlook #c
@@ -184,8 +184,8 @@ R_surz: #c
               my @ksd = sort keys %$sd;
               my $on;
               my @j = map { G.R->shj($_, $sd) } @ksd;
-              ($on) = map { _.cv } grep { _.cv eq R.a.travly } @j;
-              saygr "Was R.a.travly";
+              ($on) = map { _.cv } grep { _.cv eq S.a.travly } @j;
+              saygr "Was S.a.travly";
               for my $j (@j) {
                   my $k = j.t;
                   my $v = j.cv;
@@ -282,7 +282,7 @@ R_surz: #c
         SM: |
           S.J = {from=>$R,trav=>'{way{hooks{goto'};
         SN: |
-          S.J = {from=>R.a.i,trav=>'{ways[0{hooks'};
+          S.J = {from=>S.a.i,trav=>'{ways[0{hooks'};
         J: |
           my $J = a.i = R.A->spawn('J');
           J.W = G.GG.U.W;
@@ -373,7 +373,7 @@ R_surz: #c
       key: {E: up, R: down}
       n_D:
             up: |
-                R.S.e += 0.1;
+                S.S.e += 0.1;
             down: |
-                R.S.e -= 0.1;
+                S.S.e -= 0.1;
 
