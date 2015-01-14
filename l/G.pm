@@ -176,21 +176,6 @@ sub gpty {
     ghostlyprinty('NOHTML',@_)
 }
 
-sub R {
-    my $G = shift;
-    $G->{A}->spawn(R => @_);
-}
-
-sub a {
-    my $G = shift;
-    my $k = shift;
-    my $s = shift;
-    my $lot = $G->{A}->{"n_$k"};
-    die unless @$lot;
-    die "make s" if $s;
-    wantarray ? @$lot : shift @$lot;
-}
-
 sub TRub {
     my $G = shift;
     my $a = {};
@@ -1182,27 +1167,38 @@ sub parse_babble {
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
 
-    # 5/9
-
-    $eval =~ s/(Sw|ws) (?=\w+)/w \$S /sg;
-
-    $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
-    $eval =~ s/T (?=->)/->T() /sg;
 
 
-    # 6/9 - motionless subway
-
-    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
-    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
-
+    # word or scalar
     my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+/;
 
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
-
+    # a.b.c
     my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+
     my $poing = qr/$alive|G:$point|$dotha/;
 
+    # [...]
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
+
+
+
+    # Sw
+
+    $eval =~ s/(Sw|ws) (?=\w+)/w \$S /sg;
+
+    # timer
+
+    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+
+    # waylay
+
+    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+
+
+
+
+    # wholeness
 
     my $sur = qr/ if| unless| for/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
@@ -1251,6 +1247,11 @@ sub parse_babble {
 
     # 8/9
 
+    # a
+
+    $eval =~ s/a ($point)(?::($point));/\$G->a("$1","$2");/sg;
+
+    # 
     $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
     $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
     $eval =~ s/G:($Gnv)/HGf("$1")/sg;
@@ -1261,6 +1262,21 @@ sub parse_babble {
 
 
     $eval;
+}
+
+sub R {
+    my $G = shift;
+    $G->{A}->spawn(R => @_);
+}
+
+sub a {
+    my $G = shift;
+    my $k = shift;
+    my $s = shift;
+    my $lot = $G->{A}->{"n_$k"};
+    die unless @$lot;
+    die "make s" if $s;
+    wantarray ? @$lot : shift @$lot;
 }
 
 sub InjC {

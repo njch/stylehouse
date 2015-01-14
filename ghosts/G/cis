@@ -10,18 +10,17 @@ Ds:
             my $Gnv = qr/\$?$G_name/;
             
             
+            
             # word or scalar
             my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+/;
             
             my $alive = qr/\$[\w]*[\w\->\{\}]+/;
-            
-            my $poing = qr/$alive|G:$point|$dotha/;
-            
             # a.b.c
             my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
             
-            # [...]
+            my $poing = qr/$alive|G:$point|$dotha/;
             
+            # [...]
             my $sqar = qr/\[.+?\]|\(.+?\)/; 
             
             
@@ -92,7 +91,7 @@ Ds:
             
             # a
             
-            $eval =~ s/a ($point)(?::$point));/\$G->a("$1","$2");/sg;
+            $eval =~ s/a ($point)(?::($point));/\$G->a("$1","$2");/sg;
             
             # 
             $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
@@ -105,6 +104,17 @@ Ds:
 
 
             $eval;
+  - K: R #c needle extRange
+    D: |
+      G.A->spawn(R => @_);
+  - K: a #c actuator
+    D: |
+      my $k = shift;
+      my $s = shift;
+      my $lot = G.A->{"n_$k"};
+      die unless @$lot;
+      die "make s" if $s;
+      wantarray ? @$lot : shift @$lot;
   - K: InjC #c
     D: |
         my ($g, $In) = @_;
