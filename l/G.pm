@@ -1173,6 +1173,96 @@ sub pyramid {
     $u
 }
 
+sub parse_babble {
+    my $G = shift;
+
+    my $eval = shift;
+
+    my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
+    my $G_name = qr/[\/\w]+/;
+    my $Gnv = qr/\$?$G_name/;
+
+    # 5/9
+
+    $eval =~ s/(Sw|ws) (?=\w+)/w \$S /sg;
+
+    $eval =~ s/(Say|Info|Err) (([^;](?! if ))+)/\$H->$1($2)/sg;
+    $eval =~ s/T (?=->)/->T() /sg;
+
+
+    # 6/9 - motionless subway
+
+    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+
+    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+/;
+
+    my $alive = qr/\$[\w]*[\w\->\{\}]+/;
+
+    my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+    my $poing = qr/$alive|G:$point|$dotha/;
+
+    my $sqar = qr/\[.+?\]|\(.+?\)/; 
+
+    my $sur = qr/ if| unless| for/;
+    my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
+    my $suro = qr/(?:$sur|(?>!$sur))/;
+
+    while ($eval =~
+    /\${0}($poing )?((?<![\$\w])w(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
+        my ($g, $old, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
+
+        if (!$g) {
+            $g = '$G';
+        }
+        else {
+            $g = ""
+        }
+
+        my @n;
+        my $ne = ""; # hidden reverse
+        ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
+        # ^ caught a bit of conditional syntax after w expr
+
+
+        push @n, '%$ar' if $a =~ s/^[\(\[]\+ ?// || !$a;
+
+        push @n, $a     if $a =~ s/^\(|\)$//sg;
+
+        push @n, 
+            map { my($l)=/\$(\w+)/;"$l => $_" } split /, */, $a
+
+                        if $a =~ s/^\[|\]$//sg;
+
+
+        my @e;
+        push @e, qq["$p"];
+        push @e, "{".join(", ",@n)."}";
+        push @e, $u if $u;
+        my $en = join ", ", @e;
+
+        my $wa = $g."->w(".$en.")".$ne;
+
+
+        #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
+
+        $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
+    }
+
+    # 8/9
+
+    $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
+    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
+    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
+
+    $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
+
+    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+
+
+    $eval;
+}
+
 sub InjC {
     my $G = shift;
     my ($g, $In) = @_;
