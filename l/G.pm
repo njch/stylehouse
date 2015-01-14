@@ -16,7 +16,7 @@ use HTML::Entities;
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 use List::MoreUtils qw(natatime uniq);
 use Unicode::UCD 'charinfo';
-use Carp 'confess';
+use Carp;
 use Term::ANSIColor; 
 use File::Find;
 # use Mojo::IOLoop::ForkCall; # see para
@@ -1249,7 +1249,11 @@ sub parse_babble {
 
     # a
 
-    $eval =~ s/ a ($point)(?::($point))?;/ \$G->a("$1","$2");/sg;
+    $eval =~ s/ a ($point)(?::($point))?/ \$G->a("$1","$2")/sg;
+
+    # K
+
+    $eval =~ s/ K ($point)(?::($point))?/ \$G->K("$1","$2")/sg;
 
     # 
     $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
@@ -1271,11 +1275,29 @@ sub R {
 
 sub a {
     my $G = shift;
-    my $k = shift;
+    my $n = shift;
     my $s = shift;
-    my $lot = $G->{A}->{"n_$k"};
-    die unless @$lot;
-    die "make s" if $s;
+
+    my $lot = $G->{A}->{"n_$n"} || croak "no A\ $n";
+    croak "no n_$n" unless @$lot;
+    die "make s" if $s; # TODO continue along a path
+    wantarray ? @$lot : shift @$lot;
+}
+
+sub K {
+    my $G = shift;
+    my $n = shift;
+    my $K = shift;
+    if (!$K) {
+        $K = $n;
+        $n = "Rnon";
+    }
+
+    my $lot = $G->{A}->{"n_$n"} || croak "no A\ $n";
+
+    $lot = [@$lot];
+    @$lot = grep { $_->{K} eq $K } @$lot;
+
     wantarray ? @$lot : shift @$lot;
 }
 

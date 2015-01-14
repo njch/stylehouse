@@ -91,7 +91,11 @@ Ds:
             
             # a
             
-            $eval =~ s/ a ($point)(?::($point))?;/ \$G->a("$1","$2");/sg;
+            $eval =~ s/ a ($point)(?::($point))?/ \$G->a("$1","$2")/sg;
+            
+            # K
+            
+            $eval =~ s/ K ($point)(?::($point))?/ \$G->K("$1","$2")/sg;
             
             # 
             $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
@@ -109,11 +113,27 @@ Ds:
       G.A->spawn(R => @_);
   - K: a #c actuator
     D: |
-      my $k = shift;
+      my $n = shift;
       my $s = shift;
-      my $lot = G.A->{"n_$k"};
-      die unless @$lot;
-      die "make s" if $s;
+      
+      my $lot = G.A->{"n_$n"} || croak "no A\ $n";
+      croak "no n_$n" unless @$lot;
+      die "make s" if $s; # TODO continue along a path
+      wantarray ? @$lot : shift @$lot;
+  - K: K #c komprende
+    D: |
+      my $n = shift;
+      my $K = shift;
+      if (!$K) {
+          $K = $n;
+          $n = "Rnon";
+      }
+      
+      my $lot = G.A->{"n_$n"} || croak "no A\ $n";
+      
+      $lot = [@$lot];
+      @$lot = grep { _.K eq $K } @$lot;
+      
       wantarray ? @$lot : shift @$lot;
   - K: InjC #c
     D: |
