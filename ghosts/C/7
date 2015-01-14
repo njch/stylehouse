@@ -1,4 +1,106 @@
 R_surz:
+    - K: maka #c
+      babz:
+        'S 7': |
+          my $html = w $R makaout(R=>$R, a=>S.a, cv => 0);
+    
+    - K: makaout #c
+      D: |
+        my $cv = ar.cv;
+        $cv = a.cv if !defined $cv;
+        
+        if (my $id = a.isJid || a.replaceJid) {
+            a.bz->('/%id 0.1', $id);
+        }
+            
+        # 7
+        my $apl = sub {
+            my ($l, $s) = @_;
+            
+                my $o = delete $ap->{$l};
+                
+                
+                die "reffy $s in $l" if ref $s;
+                sayyl "for the $l\t\t$s" if ar.db;
+                
+                my $ishtml = $l eq '/';
+                my $gp;
+                my $at = {};
+                my $tag = "añ";
+                my $css = [];
+                for my $oj (@$o) {
+                    saybl "        sdtyle! oj.style oj.s" if ar.db; 
+                    
+                    if (oj.style eq "css") {
+                        push @$css, oj.s;
+                    }
+                    elsif (oj.style eq "gp") {
+                        # has a way to $a the gp action within...
+                        $gp = oj.s;
+                        $ishtml = 1;
+                    }
+                    elsif (oj.style eq 'id') {
+                        at.id = oj.s;
+                    }
+                    elsif (oj.style eq "sf") {
+                        push @$css, map { $R::f->{$_} || 
+                        die "no style $_"} split '_', oj.s;
+                    }
+                    elsif (oj.style eq 'tag') {
+                        $tag = oj.s;
+                    }
+                    else {
+                        die "style oj.style = oj.s \t for $l";
+                    }
+                }
+                
+                at.style = join ';', @$css;
+                ##G.shtuuyle->{at.style}++;
+                # 7.6
+                # 7.7
+                #at.title = $l;
+                $at = join " ", map { $_.'="'.$at->{$_}.'"' }
+                    grep { $at->{$_} } sort keys %$at;
+                if (!$ishtml) {
+                    $s = encode_entities($s);
+                    $s =~ s/\\n/\n/g;
+                    die if $s =~ /\\n/;
+                }
+                $s = "<$tag $at>$s</$tag>" if defined $s;
+                $s
+        };
+        my @s;
+            for my $thl (@int) {
+                my $j = $th->{$thl} || next;
+                #say "$thl ".wdump($o) if !G.gp_inarow;
+                my $l = j.l;
+                my $s = j.s;
+                die "$l  -- $thl" if $thl ne $l;
+                
+                # top volt for thing selection: # whattage
+                if ($l eq 'K' && a.bb->{"name 0.1"} =~ $s
+                 || $l eq 'name' && a.bb->{"K 0.2"} =~ $s
+                 && $s ne a.bb->{"K 0.2"}) {
+                    delete $ap->{$l};
+                    next;
+                }
+                    
+                push @s, $apl->($l, $s);
+            }
+            
+            @s = "no?" if !@s;
+            my $html = $apl->('/', join '', @s);
+            
+            
+            if (%$ap) {
+                sayre "Extr a appearance: ".join", ",sort keys %$ap;#.wdump($ap);
+            }
+            
+            #die "nose? $u" if !@s;
+            #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
+            $html;
+            
+            
     - K: maka_styley #c
       babz:
         'makaout 0.31': |
@@ -13,4 +115,26 @@ R_surz:
                     a.bb->{"name\%css $1"} = "color:#f93";
                 }
             }
+    - K: prot_fits #c
+      babz:
+        'S#proto_fits 8.7': |
+          # proto fits: shrink this webbing into a space in our webbing
+          my @sty;
+
+          my $o = 12;
+          my $lines = split /\n/, $html;
+          if ($lines > $o) {
+              $lines = 17 if $lines > 17;
+              my $fs = 100 * $o / $lines;
+              $fs *= -1 if $fs < 0;
+              push @sty, "font-size:$fs%";
+          }
+          push @sty, "background:rgba(80,50,22,0.3)"; 
+          push @sty, "white-space:pre";
+          push @sty, "font-family:mono";
+          push @sty, "display:block";
+          push @sty, "overflow-wrap:break-word";
+          my $sty = join ";", @sty; 
+          $html = qq{<span style="$sty"><span>$html<span></span>};
+      
 
