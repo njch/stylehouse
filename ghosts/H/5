@@ -1,0 +1,171 @@
+hooks:
+  Rwayray: |
+    my $GG = $S;
+    return unless ref $wa eq "ARRAY";
+    my $i = 0;
+    for my $a (@$wa) {
+        if (ref $a eq "C") {
+            # travel inject
+            die "already";
+        }
+        else {
+            my $Rw = $wa->[$i] = $GG->nw(%$a);
+            Rw.A->umv('', 'Rsource');
+            # we create lots of these ^ 
+            # but only the one in wa (anyway 'C') is the now
+            w _in_Rw[$Rw, $GG];
+        }
+        $i++;
+    }
+    my @R = map{_.i}@{GG.A.n_R||[]};
+    push @R, map{_.i}@{GG.A.n_Rnons||[]} if $G eq $GG; # from G0
+    for my $R (@R) {
+        w _init_R[$R];
+    }
+  _in_Rw: |
+    my $source = Rw.findway;
+    my $a = {};
+    Rw.rwa = $a;
+    saybl "_in_Rw Recipe ".$G->pi."   ".$Rw->pi;
+    
+    my $Ds = [];
+    my $sours = sub {
+        my $g = shift;
+        for my $Rsur ($g->anyway("${source}s")) {
+            # passing phase, should beam in
+            push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
+        }
+        push @$Ds, flatline $g->anyway("${source}z");
+    };
+    
+    $sours->($G) if $GG ne $G && Rw.K eq 'non';
+    $sours->($GG);
+    
+    @$Ds = grep { !_.spesh } @$Ds;
+    
+    a.Ds = $Ds;
+    a.Dh = {};
+    a.Dz = {};
+    
+    w RZ_Ds_humm[$a];
+    
+    
+  _init_R: |
+    my $GG = R.G;
+    my $Rw;
+    R.name ||= 'non';
+    R.A->umk($G,'Rnons') if R.name eq 'non'; # like Gs
+    saybl "_init_R waying ".$G->pi."    ".$R->pi;
+    $Rw = $GG->CsK({s=>'R',K=>R.name});
+    $Rw ||= $G->CsK({s=>'R',K=>R.name});
+    
+    $Rw || die "no Rw for R.name";
+    
+    my $a = Rw.rwa;
+    # have setting somewhere for whatever
+    # fan out all style poss behind the source name
+    # then wild R cranking + speshness distill their source from this pool
+    w RZ_Ds_traction[$a, $R];
+    
+    if (!R.way) {
+        R.way = R.A->spawn('C');
+        R.way.R = $R;
+        R.way.A->umv('', 'way');
+        R.way.name = "Rw!R.name";
+    }
+    R.way->from({hooks=>a.Dh});
+    warn "nothing in ".R.way->pi if !keys %{a.Dh};
+    
+  RZ_Ds_humm: |
+    a.bb = {};
+    my $Ds = a.Ds;
+    
+        @$Ds = map { 
+            my $D = $_;
+            !ref D.D ? $D : do {
+                my $_K = D.K;
+                map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D}
+            }
+        } map { 
+            my $D = $_;
+            !D.n_D ? $D : do {
+                my $_K = D.K;
+                $D, map { { K=>"$_K/$_", D=>D.n_D->{$_} } } keys %{D.n_D}
+            }
+        } @$Ds;
+        
+        die "durp" if @$Ds != uniq map {_.K} @$Ds;
+        
+        for my $D (grep {_.D} @$Ds) {
+            my $b = {};
+            $G->D_to_style($D, $b);
+            for my $k (keys %$b) {
+                my $s = $b->{$k};
+                my ($t, $v) = split /\t/, $k;
+                my $com = "$t#D.K\t$v";
+                a.bb->{$com} = undef;
+                #sayyl "$k      $com";
+                a.bb->{$k} = $s;
+            }
+        }
+        #    die wdump a.bb;
+
+        for my $D (@$Ds) {
+            a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
+        }
+
+
+        for my $D (grep {_.babz} @$Ds) {
+          for my $ba (keys %{D.babz}) {
+              my $b = D.babz->{$ba};
+              my ($t, $v) = $ba =~ /^(.+)\s(.+)$/;
+              my $l = $t;
+              my $comcom = $1 if $l =~ s/(\#\S+)$//;
+              my $com = "#D.K$comcom";
+              my $comba = "$l$com\t$v";
+              $l = "$l\t$v";
+              #sayyl "Re $l  =-==== $com";
+              a.bb->{$comba} = undef;
+              if (ref $b) {
+                  #b.from # style grab, additive
+              }
+              else {
+                  a.bb->{$l} = $b;
+              } 
+          }
+        }
+  RZ_Ds_traction: |
+    # pool the style of code together for this R crazy
+    # look at each $r in the source style way dimension
+    
+    # 7
+    my $Dz = a.Dz;
+    my @r = $G->stylekeysort(a.bb);
+    for my $r (@r) {
+        my $b = a.bb->{$r};
+        my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)?\s(.+)$/;
+        if ($com) {
+            # should just attach them near the style
+            # with one more phase of comment joining
+            # also non-replace mode, maybe something of z D namespace
+            exists $Dz->{$l}->{$vo} || die;
+            my $v = $Dz->{$l}->{$vo};
+            $com = "# $vo $com".($b ? " $b" : "");
+            $v = "$com\n$v";
+            $Dz->{$l}->{$vo} = $v;
+        }
+        else {
+            $Dz->{$l}->{$vo} = $b;
+        }
+    }
+    
+    # 8
+    my $Dh = a.Dh;
+    while (my ($l, $bz) = each %$Dz) {
+        my $ac = join'',map{"{$_"}split'/',$l;
+        
+        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
+        
+        $R->loadup($Dh, $ac, $babble);
+    }
+
