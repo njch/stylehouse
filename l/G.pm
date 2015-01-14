@@ -1249,11 +1249,11 @@ sub parse_babble {
 
     # a
 
-    $eval =~ s/ a ($point)(?::($point))?/ \$G->a("$1","$2")/sg;
+    $eval =~ s/ a ($point)(?::($point))?;/ \$G->a("$1","$2");/sg;
 
     # K
 
-    $eval =~ s/ K ($point)(?::($point))?/ \$G->K("$1","$2")/sg;
+    $eval =~ s/ K ($point)(?::($point))?;/ \$G->K("$1","$2");/sg;
 
     # 
     $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
