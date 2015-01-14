@@ -1243,7 +1243,7 @@ sub parse_babble {
         #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
 
         $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
-    }
+    } 
 
     # 8/9
 
