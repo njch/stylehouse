@@ -235,7 +235,7 @@ R_surz:
         return if $cv < 0.2;
         a.bb->{"K 0.2"} = u.K;
         
-        a.fro->('i 0.2', A.i, 0.2);
+        a.fro->('i 0.2', u.i, 0.2);
         
         return if $cv < 0.3;
         
@@ -349,12 +349,12 @@ R_surz:
         return if $cv < 0.3;
         
         if (u.G && (defined u.print || u.Gw)) {
-            my $p = u.G->w('print' => {}, $C, {nodie=>1});
+            my $p = u.G->w('print' => {}, $u, {nodie=>1});
             a.bb->{"print 0.3"} = $p if defined $p;
         }
         
         # dusseldorf
-        my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$C;
+        my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$u;
         delete $s{id};
         my @or = qw'name point timer', keys %s; 
         
@@ -362,8 +362,8 @@ R_surz:
         my $b; 
         for my $k (@or) {
             next if !defined $k;
-            next if !exists $C->{$k};
-            my $t = $C->{$k};
+            next if !exists $u->{$k};
+            my $t = $u->{$k};
             next if !defined $t;
             next if ref $t;
             next if $t =~ /\n/; 
