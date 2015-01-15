@@ -48,6 +48,43 @@ hooks:
     my $g = G:S/O;
     $g || die "no SO!?";
     $g w websocket;
+  mess: |
+    # TODO sa* all over
+    # by voltage!
+    my $mess = "$what: @$thing";
+    $mess = slim(500,500,$mess);
+    $H->pub("S/H.style/H.name/sa", $mess);
+  Teeth: |
+    my $Eb = ar.E->pi."-" if ar.E;
+    saybl ."$Eb > ".slim(75,80,$m);
+    my $j = $H->djson($m);
+    
+    if (ref $j eq "HASH") {
+        if (keys %$j != 1) {
+            die "hash wide/skinny ".wdump($j);
+        }
+        my ($uno) = keys %$j;
+        my $a = {
+            j => $j,
+            m => $m,
+            $uno => $j->{$uno},
+        };
+        a.E = ar.E if ar.E;
+        w S/$uno(%$a);
+        # hit or not? see post 6 with r 
+        return;
+    }
+    
+    die "weird shit: '$m'" if ref $j; 
+    
+    if ($j =~ /^([\w\/]+) (.+)$/) {
+        my $a = {m => $2};
+        a.E = ar.E if ar.E;
+        w S/$1(%$a);
+    }
+    else {
+        die "wei tet '$j'";
+    }
   aj: |
     my $W = j.G.W;
     my $ww = W.at.id;
@@ -74,6 +111,18 @@ hooks:
         $m = " $m"; # two spaces, tells js to eval
         H.G w send_Elvis[$m, $to]; 
     }
+  jaw: |
+    my $s = $H->mkuuid();
+    ($s) = reverse split '-', $s;
+    G.jaws->{$s} = delete ar.cb; # TODO a Z awaits, sucks $m
+    ar.m = 
+        " var e = function(){ $js };"   
+        ."var m = e();"
+        ."s\.reply({jaw:{h:'H.ol',s:'$s',e:m}});";
+    my $pi = ar.E->pi if ar.E;
+    sayyl "jaw $s $pi  ".slim(30,30,$js);
+    sayyl ki $ar;
+    w send_Elvis;
   send_Elvis: |
     if (H.name eq "O") {
         my $g = G:S/O;
@@ -87,51 +136,112 @@ hooks:
     H.r->set("J/$Jid", $m);
     saybl "pub Elvis $to $Jid\t*".slim(80,80,$m) unless H.isforked;
     $H->pub('Elvis', "$to $Jid", 'ig');
-  figure_port: |
-    my $listen = readlink('listen');
-    my ($host,$port, $wa) = split ':', $listen;
-    die "too much listen" if $wa;
-    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
-    $port ||= 2000;
-    $host ||= '127.0.0.1';
+  reS: |
+    my ($way, $am) = split /\s+/, $m, 2;
+    sayyl "$top >> $m" if $way ne 'hostinfo/ack';
+    $way || die "wtf $m";
+    w S/$way(%$ar,m=>$am);
+  S: #c
+    percC: | #c
+        my $way = "C".($m?" $m":"");
+        my $n = H.nn++;
+        my $P = [{GAK => "C$n $way"}];
+        H.G w percs[$P];
+    
+    jaw: | #c TODO route with H.id
+      $j = j.jaw;
+      my $s = j.s || die "no s";
+      my $hol = j.h || die;
+      if (H.ol eq $hol) {
+          my $cb = G.jaws->{$s} || die "no such jaw $s";
+          saygr "Jaw doing $s ... ";
+          $cb->(j.e); # TODO Z sucktion
+      }
+      else {
+          $H->pub("S/$hol", "speaks $m");
+      }
+    speaks: | #c concealed elvis input
+      w Teeth[$m];
+      
+    er: | #c
+      die "much JS error..." if H.JErrors++ > 3;
+      sayre "javascript error from client", j.m, j.e;
+    event: | #c
+      my $e = ar.e = j.event;
+      
+      return w S/key if e.type =~ /^key/;
+      
+      return w S/W if e.W;
+      
+      return w S/TV if e.id;
+      
+      sayre "Strange event", $e;
+      
+    key: | #c
+      # if key is ww switcher...
+      if (H.name eq "O") {
+          G.keysto || die "no key subber";
+          if (G.keysto ne H.ol) {
+                return $H->pub("S/G.keysto" => "speaks $m");
+          }
+      }
+      return H.keydo->($e) if H.keydo;
+      
+    TV: |
+      w duu/TV;
+  
+    On: |
+      die "!";
+      $m =~ s/^H.style\/H.name // && w reS[$m];
+    W: | #c
+        $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
+        
+        my $hold = H.r->get("W/e.W") || die "no such e.W but also H.G.A.W->{e.W}";
+        my ($hol, $etc) = split /\s+/, $hold, 2; # JJJ
+        
+        G.keysto = $hol;
+        
+        my $a = {};
+        if (my $W = G0.Wh->{e.W}) {
+            my $find = sub {
+                w W.W fi(f => {id => shift});
+            };
+            a.W = $W;
+            a.i = $find->(e.id);
+            a.ux = $find->(e.ux);
+            a.e = $e;
+            
+            say "to ".W.G->pi."    ".W.W.G->pi;
 
-    $port += ord(H.name) + 8000;
-    
-    H.listen_http = "http://$host:$port";   
-    H.listen_ws = "ws://$host:$port/s";
-    
-  subsc: |
-    my $tos = H.subscr->{$top} ||= [];
-    push @$tos, $cb;
-    
-    H.db->listen($top);
-    
-    sayyl "Subbed to $top";
-  enRedis: |
-    my $r = Redis->new(
-        server => 'localhost:8888',
-        reconnect => 1,
-        every => 10000,
-    );
-    r.gest = sub {
-        my ($k, $make) = @_;
-        my $c = H.r->get($k);
-        return ref \$c eq "SCALAR" ? $H->fixutf8($c) : $c if $c;
-        $c = $make->();
-        H.r->set($k => $c);
-        return $c;
-    };
-    $r
-  reexec: |
-        for my $E (@{H.who||[]}) {
-            w $E disconecktie;
+            W.G w event(%$a);
         }
-        sayre "finish!";
-        exec "nice perl $0 @ARGV";
-  S:
-    reexec: w reexec;
-    retile: w retile;
-    Hiwtidy: w Hiwtidy;
+        elsif ($hol ne H.ol) {
+            sayyl "$hol ne H.ol";
+            $H->pub("S/$hol", "speaks $m");
+        }
+    
+    reextet: | #c
+        if (H.name eq 'o') {
+            my $g = G:S/o || die;
+            $g w reextet;
+            return;
+        }
+        my @m = grep { $_ ne "H.style/H.name" } split ',', $m;
+        $G->timer(1.3, sub {
+            if (H.name eq "O") {
+                $H->pub("S/hut/Z", "reextet ".join',',@m);
+            }
+            elsif (H.name eq "Z") {
+                sleep 1;
+                $H->pub("S/$_", "reexec") for @m;
+            }
+            w reexec;
+        });
+
+
+    reexec: w reexec; #c
+    retile: w retile; #c
+    Hiwtidy: w Hiwtidy; #c
 
     
   retile: |

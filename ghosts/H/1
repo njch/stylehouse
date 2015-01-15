@@ -114,7 +114,49 @@ hooks:
     if (G.hostinfo_waits > 1) {
         sayre "hostinfo uncollected";
     }
-      
+
+  figure_port: |
+    my $listen = readlink('listen');
+    my ($host,$port, $wa) = split ':', $listen;
+    die "too much listen" if $wa;
+    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+    $port ||= 2000;
+    $host ||= '127.0.0.1';
+
+    $port += ord(H.name) + 8000;
+    
+    H.listen_http = "http://$host:$port";   
+    H.listen_ws = "ws://$host:$port/s";
+    
+  subsc: |
+    my $tos = H.subscr->{$top} ||= [];
+    push @$tos, $cb;
+    
+    H.db->listen($top);
+    
+    sayyl "Subbed to $top";
+  enRedis: |
+    my $r = Redis->new(
+        server => 'localhost:8888',
+        reconnect => 1,
+        every => 10000,
+    );
+    r.gest = sub {
+        my ($k, $make) = @_;
+        my $c = H.r->get($k);
+        return ref \$c eq "SCALAR" ? $H->fixutf8($c) : $c if $c;
+        $c = $make->();
+        H.r->set($k => $c);
+        return $c;
+    };
+    $r
+  reexec: |
+        for my $E (@{H.who||[]}) {
+            w $E disconecktie;
+        }
+        sayre "finish!";
+        exec "nice perl $0 @ARGV";
+     
   S:
     hostinfo: #c
       ack: | #c
