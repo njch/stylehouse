@@ -64,7 +64,7 @@ R_surz:
                 
                 if ($ki > 0) {
                     $ki++;
-                    a.bb->{"[${ki}_Bs 0.2"} = ',';
+                    a.bb->{"[${ki}_Bs 0.2"} = ', ';
                     $ki++;
                 }
                 a.bz->("[${ki}_k 0.2" => $k,
@@ -78,7 +78,7 @@ R_surz:
                 
                 if ($vcv >= 0.2) {
                 
-                    a.bz->("[${ki}_Bi 0.2" => ':');
+                    a.bz->("[${ki}_Bi 0.2" => ':', '%css' => "font-size:40%");
                     
                     $ki++;
                     
@@ -240,9 +240,9 @@ R_surz:
         return if $cv < 0.3;
         
         my $un;
-        for my $nuk (keys %$A) {
+        for my $nuk (keys %$u) {
             next if $nuk !~ /^(u|n)/;
-            my $v = $A->{$nuk};
+            my $v = $u->{$nuk};
             my $tot = ref $v eq "ARRAY" ? @$v : $v;
             $un->{$1}->{$nuk} = $tot;
             my $lv = $1 eq "u" ? 1 : 2;
@@ -313,9 +313,9 @@ R_surz:
             }
       H: | #c
         a.bz->('thi 0.01' => 'H');
-        a.bz->("name 0.06" => H.style,
+        a.bz->("name 0.06" => u.style,
             '%css' => "color:white;font-size:120%;margin-left:-1.5em;position:absolute;");
-        a.bz->("K 0.1" => H.name,
+        a.bz->("K 0.1" => u.name,
             '%css' => "color:black;font-size:120%;margin-left:-0.67em;position:absolute;");
         
       R: | #c
@@ -325,7 +325,11 @@ R_surz:
         a.bb->{"name 0.1"} = u.name;
         return if $cv < 0.2; 
         a.bb->{"K 0.2"} = u.K;
-        
+        return if $cv < 0.3;
+        a.fro->('G 0.3', u.G, 0.2, '%css'=>"font-size:80%"); # TODO relative down
+        return if $cv < 0.4;
+        a.fro->('A 0.4', u.A, 0.8, '%css'=>"font-size:60%"); # TODO relative down
+        a.fro->('R 0.5', $u, 0.2, '%css'=>"font-size:40%"); # TODO relative down
       C: | #c
         my $cv = a.cv ||= 0.3;
         a.bb = {};

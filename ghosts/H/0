@@ -48,6 +48,32 @@ hooks:
     my $g = G:S/O;
     $g || die "no SO!?";
     $g w websocket;
+  aj: |
+    my $W = j.G.W;
+    my $ww = W.at.id;
+    my $to = $ww;
+    if (j._) {
+        $to .= "/_";
+        # ww homing
+        my $hol = "H.style/H.name/H.id";
+        my $etc = 1 if W.at.styles =~ /\bNZ\b/;
+        my $hold = join ' ', $hol, $etc, $H->hitime;
+        H.r->set("W/$ww" => $hold);
+        H.r->set("V/H.id/$ww" => 1);
+        G0.Wh->{$ww} = $W; # TODO move Wh to A.h_W auto index
+    }
+    
+    my @lot = reverse @{j.s}; # until whole
+    push @lot, reverse @{j.c}; # from whole
+    
+    return sayre "empty J aj" unless @lot; 
+    
+    @lot = join " ", @lot;
+    for my $m (@lot) {
+        ref $m && die;
+        $m = " $m"; # two spaces, tells js to eval
+        H.G w send_Elvis[$m, $to]; 
+    }
   send_Elvis: |
     if (H.name eq "O") {
         my $g = G:S/O;
