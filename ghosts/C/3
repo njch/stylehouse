@@ -35,9 +35,12 @@ R_surz: #c
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
               my @ksd = sort keys %$sd;
+              
+              # how near or how far
               my $on;
               my @j = map { G.R->shj($_, $sd) } @ksd;
               ($on) = map { _.cv } grep { _.cv eq S.a.travly } @j;
+              
               saygr "Was S.a.travly";
               for my $j (@j) {
                   my $k = j.t;
@@ -51,23 +54,20 @@ R_surz: #c
                       $vo = 0.8;
                       sayyl "\t\t$on  j.cv";
                   }
-                  elsif ($on && 0) {
+                  elsif ($on) {
                       my $dist = $on - j.cv;
                       $dist *= -1 if $dist < 0;
-                      $sec = $dist;
-                      $sec =
-                      $sec < 1 ? 3
-                      :
-                      $sec < 2 ? 2
-                      :
-                      $sec < 3 ? 1
-                      :
-                      0;
+                      if ($dist > 5) {
+                          $sec = 0;
+                      }
+                      else {
+                          $sec = -$dist + 5;
+                      }
                       
                           $sec = $sec*0.01;
                           $vo = 0.7 + $sec;
                       
-                      #sayyl " j.cv \t $sec\t\t$vo";
+                      sayyl " j.cv \t $sec\t\t$vo";
                   }
                   say "^j.cv\t$vo";
                   $d->{"^j.cv\t$vo"} = $s;

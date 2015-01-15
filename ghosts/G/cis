@@ -116,9 +116,11 @@ Ds:
       my $n = shift;
       my $s = shift;
       
-      my $lot = G.A->{"n_$n"} || croak "no A\ $n";
-      croak "no n_$n" unless @$lot;
+      my $lot = G.A->{"n_$n"} || die "no A\ $n";
+      die "empty n_$n" unless @$lot;
+      $lot = [@$lot];
       die "make s" if $s; # TODO continue along a path
+      @$lot = map{_.i}@$lot;
       wantarray ? @$lot : shift @$lot;
   - K: K #c komprende
     D: |
@@ -129,9 +131,10 @@ Ds:
           $n = "Rnon";
       }
       
-      my $lot = G.A->{"n_$n"} || croak "no A\ $n";
+      my $lot = G.A->{"n_$n"} || die "no A\ $n";
       
       $lot = [@$lot];
+      @$lot = map{_.i}@$lot;
       @$lot = grep { _.K eq $K } @$lot;
       
       wantarray ? @$lot : shift @$lot;

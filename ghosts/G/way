@@ -67,7 +67,7 @@ Ds:
                 nw.A->umv('', 'way');
                 $nw->load($file);
 
-                say "G G.name w+ nw.name";
+                push @$ldw, $nw;
                 push @{G.wayfiles}, $file;
                 push @{G.ways}, $nw;
             }
@@ -75,11 +75,12 @@ Ds:
             G.name =~ s/\+$name// && warn "no wayfiles from $name" || die
             unless @files; # ^ dies if was first way name
         }
+        
+        say "G G.name w+ ".join"  ", map{_.name}@$ldw;
 
         return $G->w("load_ways_post") if !$G0;
         
         $G0 w _load_ways_post(S=>$G,w=>G.ways);
-
   - K: di #c
     style: func
     D: |

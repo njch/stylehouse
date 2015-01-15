@@ -592,7 +592,7 @@ sub load_ways {
             $nw->{A}->umv('', 'way');
             $nw->load($file);
 
-            say "G $G->{name} w+ $nw->{name}";
+            push @$ldw, $nw;
             push @{$G->{wayfiles}}, $file;
             push @{$G->{ways}}, $nw;
         }
@@ -600,6 +600,8 @@ sub load_ways {
         $G->{name} =~ s/\+$name// && warn "no wayfiles from $name" || die
         unless @files; # ^ dies if was first way name
     }
+
+    say "G $G->{name} w+ ".join"  ", map{$_->{name}}@$ldw;
 
     return $G->w("load_ways_post") if !$G0;
 
@@ -1278,9 +1280,11 @@ sub a {
     my $n = shift;
     my $s = shift;
 
-    my $lot = $G->{A}->{"n_$n"} || croak "no A\ $n";
-    croak "no n_$n" unless @$lot;
+    my $lot = $G->{A}->{"n_$n"} || die "no A\ $n";
+    die "empty n_$n" unless @$lot;
+    $lot = [@$lot];
     die "make s" if $s; # TODO continue along a path
+    @$lot = map{$_->{i}}@$lot;
     wantarray ? @$lot : shift @$lot;
 }
 
@@ -1293,9 +1297,10 @@ sub K {
         $n = "Rnon";
     }
 
-    my $lot = $G->{A}->{"n_$n"} || croak "no A\ $n";
+    my $lot = $G->{A}->{"n_$n"} || die "no A\ $n";
 
     $lot = [@$lot];
+    @$lot = map{$_->{i}}@$lot;
     @$lot = grep { $_->{K} eq $K } @$lot;
 
     wantarray ? @$lot : shift @$lot;

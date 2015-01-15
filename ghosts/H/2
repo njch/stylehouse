@@ -150,7 +150,15 @@ hooks:
     if (keys %$Gd) { 
         my $m = join", ", keys %$Gd;
         say "Ghost changes $m";
-        $H->pub(S => "ghostchanges $m");
+        w prop_ghostchanges[$m];
+    }
+  prop_ghostchanges: |
+    my @n = sort map { "S/".(split '/', $_, 2)[1] } H.r->keys("H/*");
+    my $i = 0;
+    for my $t (@n) {
+        $H->pub($t => "ghostchanges $m");    
+        $H->snooze(240000) if $i++ < 3;      
+        $H->snooze(240000) if $i < 6; 
     }
   S:
     ghostchanges: | #c

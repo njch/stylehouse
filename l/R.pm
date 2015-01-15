@@ -141,6 +141,19 @@ sub snapple {
     $a
 }
 
+sub a {
+    my $R = shift;
+    my $n = shift;
+    my $s = shift;
+
+    my $lot = $R->{A}->{"n_$n"} || die "no A\ $n";
+    die "empty n_$n" unless @$lot;
+    $lot = [@$lot];
+    die "make s" if $s; # TODO continue along a path
+    @$lot = map{$_->{i}}@$lot;
+    wantarray ? @$lot : shift @$lot;
+}
+
 sub wtf {
     my $R = shift;
     my $a = shift;
