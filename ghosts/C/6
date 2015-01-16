@@ -332,7 +332,6 @@ R_surz:
         #a.fro->('R 0.5', $u, 0.2, '%css'=>"font-size:40%"); # TODO relative down
       C: | #c
         my $cv = a.cv ||= 0.3;
-        a.bb = {};
         a.bb->{"thi 0"} = ref $u;
         return if $cv < 0.1;
         a.bb->{"name 0.1"} = u.name;
@@ -342,9 +341,18 @@ R_surz:
         a.bb->{"K 0.2"} = u.K;
         a.bb->{"K%css 0.2"} = "color:#3f3";
         
-        if (u.B && u.B.name) {
-            a.bz->("B_name 0.2", u.B.name, '%css' => "color:#3f3"); 
+        if (u.B && u.B.name) { # B aetc
+            a.bz->("B_name 0.23", u.B.name); 
         }
+        
+        if (u.S && %{u.S}) {
+            a.fro->('S 0.4', u.S, 0.8);
+            a.fro->('SZ 0.5', u.S.Z, 0.8) if u.S.Z;
+            
+            a.bz->('Sz 0.55', "u.S.Z: ".join',',sort keys %{u.S.Z});
+        }
+        
+        
         
         return if $cv < 0.3;
         
@@ -352,6 +360,7 @@ R_surz:
             my $p = u.G->w('print' => {}, $u, {nodie=>1});
             a.bb->{"print 0.3"} = $p if defined $p;
         }
+        
         
         # dusseldorf
         my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$u;
@@ -372,7 +381,7 @@ R_surz:
             a.bb->{"$k 0.4"} = $slim if $cv >= 0.4; # also a dus fuzz away
         }
         
-        if (u.B && %{u.B}) {
-            a.fro->('B 0.3', u.B, 0.2);
+        if (u.Z && %{u.Z}) {
+            a.fro->('Z 0.5', u.Z, 0.4);
         }
 
