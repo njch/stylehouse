@@ -215,11 +215,45 @@ sub phat {
     my $a = shift;
      $a->{bb} = {};
      $a->{ord} = [];
-     $a->{bz} = $R->{G} ->w("as", {bb=>$a->{bb}, ord=>$a->{ord}}, $R);
+     $a->{bz} = $R->as($a->{bb}, $a->{ord});
      $a->{fro} = sub {
          my $fro = [$a->{bz}, @_];
          $R->{G} ->w("gpfro", {a=>$fro}, $R);
      };
+}
+
+sub as {
+    my $R = shift;
+    my $bb = shift;
+    my $ord = shift;
+    my $j = {};
+    my $do;
+    $do = sub {
+        my $j = {%$j};
+        my $ad = [@_];
+        my %j = %$j;
+        while (@$ad) {
+            my ($k, $v) = (shift @$ad, shift @$ad);
+
+            my $comp = $k =~ /^(%|\+)/;
+            my $j = {%j} if $comp;
+            if ($comp) {
+                $k =~ s/^\+// if $comp;
+                $j->{t} .= $k if $comp;
+            }
+            else {
+                ($j->{t}, $j->{cv}) = split /\s+/, $k, 2;
+                %j = %$j;
+            }
+            $j->{cv} || die;
+            $j->{r} = "$j->{t} $j->{cv}";
+            $j->{s} = $v;
+            $bb->{$j->{r}} = $j->{s};
+            push @$ord, $j if $ord;
+        }
+        sub{$do->(%$j, @_)}
+    };
+    $do
 }
 
 sub shj {

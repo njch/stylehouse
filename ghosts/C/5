@@ -1,3 +1,11 @@
+hooks:
+  any_init: |
+    # phi...
+    $G->timer(2,sub{
+    my $R = w are;
+    w $R Q/K;
+    w $R phi/P;
+    });
 R_surz:
     - K: phi #c
       key:
@@ -5,37 +13,52 @@ R_surz:
       n_D:
         P: |
           my @Dos = w G.R fi(f=>{K=>'Do'});
-          sayyl "ON PHI";
-          sayre $_->pi for @Dos;
           
           my $n = @Dos;
           
           my @xys;
           my $width = 20;
-          my $height = 20;
+          my $height = 60; 
           my $cx = $width / 2;
           my $cy = $height / 2;
-          my $lg_diam = $width * .85;
+          my $lg_diam = $width * 0.85;
           my $lg_rad = $lg_diam / 2;
+          my $outer_rad = $width*0.45;
+          my $angle_incr = 0.6;
+          $angle_incr + 0.1 if ar.not;
+          
           
           for my $i (1..$n) {
+              my $ratio = $i/$n;
+              my $spiral_rad = $ratio * $outer_rad;
+              my $angle = $i*$angle_incr;
+              my $x = $cx + cos($angle) * $spiral_rad;
+              my $y = $cy + sin($angle) * $spiral_rad;
+              
+              push @xys, [$angle, $x, $y];
+              next;
+              
               my $angle = $i * pi2 / $n;
+              $angle += 4;
               my $x = $cx + cos($angle) * $lg_rad;
               my $y = $cy + sin($angle) * $lg_rad;
-              push @xys, [$x, $y];
           }
           my $i = [@Dos];
           
-          for (@Dos) {
+          for my $u (@Dos) {
               my $co = shift @xys;
-              my ($x, $y) = @$co;
-              _.S.Z.position = 'absolute';
-              _.S.Z.top = $y.'em';
-              _.S.Z.left = $x.'em';
-              sayyl "Better be: _.S.Z.top _.S.Z.left";
+              my ($a, $x, $y) = @$co;
+              u.S.Z.position = 'absolute';
+              u.S.Z.top = $y.'em';
+              $x += 60;
+              u.S.Z.left = $x.'em';
+              my $v = 5; # U level to
+              w chang[$u, $v];
           }
           
-          w ave[$i];
+          ar.not = !ar.not;
+          0->sing(phi=>sub{ w phi(%$ar); });
+          
     - K: Q #c
       key:
         SR: Redisy

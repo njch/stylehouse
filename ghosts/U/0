@@ -516,26 +516,27 @@ hooks:
                 $doj_S->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
             }
             if (at.css) {
+                my $anima;
                 while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
-                    my $anim = $ui && ui.Anim->{$k};
-                    $anim = G.O->w('Anims', {k=>$k}) if !defined $anim;
+                    
+                    my $anim = ui.K eq 'Do' && $k eq 'left' || $k eq 'top';
                     if ($anim) {
-                        my $dur = $anim."00";
-                        my $d = $dur; # leading zeros push into tinyness
-                        $d = $d / 10 for split '', $dur =~ m/^(0+)/;
-                        $d ||= 400;
+                        #my $anim = $ui && ui.Anim->{$k};
+                        #$anim = G.O->w('Anims', {k=>$k})
+                        $anim = 20.3;
                         $isa = "$d>>";
-                        
                         $doj_S->(at.id, q".animate({'%s':'%s'}, %s)",
-                            0->jsq($k, $v), $d);
+                            0->jsq($k, $v), 400);
+                        #push @anim, [$k, $v];
                     }
                     else {
                         $doj_S->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
                     }
                 }
+                
             }
         }
         attr.style .= shtocss(at.css) if at.css;

@@ -341,17 +341,23 @@ R_surz:
         a.bb->{"K 0.2"} = u.K;
         a.bb->{"K%css 0.2"} = "color:#3f3";
         
-        if (u.B && u.B.name) { # B aetc
+        my $B = u.B if u.B && ref u.B eq 'HASH';
+        if (B.name) { # B aetc
             a.bz->("B_name 0.23", u.B.name); 
         }
         
-        if (u.S && %{u.S}) {
-            a.fro->('S 0.4', u.S, 0.8);
-            a.fro->('SZ 0.5', u.S.Z, 0.8) if u.S.Z;
-            
-            a.bz->('Sz 0.55', "u.S.Z: ".join',',sort keys %{u.S.Z});
+        my $S = u.S if u.S && ref u.S eq 'HASH';
+        if ($S && %$S) {
+            a.fro->('S 0.4', $S, 0.4);
+            a.fro->('SZ 0.5', S.Z, 0.4) if u.S.Z;
+            a.bz->('SZ 0.5', "$S S.Z u.S.Z.left S.Z.top", '%css','font-size:50%') if S.Z;
         }
         
+        my $Z = u.Z if u.Z && ref u.Z eq 'HASH';
+        if ($Z && %$Z) {
+            a.fro->('Z 0.5', u.Z, 0.4);
+        }
+
         
         
         return if $cv < 0.3;
@@ -381,7 +387,4 @@ R_surz:
             a.bb->{"$k 0.4"} = $slim if $cv >= 0.4; # also a dus fuzz away
         }
         
-        if (u.Z && %{u.Z}) {
-            a.fro->('Z 0.5', u.Z, 0.4);
-        }
 
