@@ -289,6 +289,9 @@ hooks:
         }
   ux: |
     my $is = ar.is || ar.part;
+    if (ar.TV) {
+        $is = [values %{ar.TV}];
+    }
     my @is = @$is;
     
     return warn "no lines" unless @is;
@@ -302,10 +305,14 @@ hooks:
     uM.A->umk(G.O.R,'W');
     
     my @ba = map {
-        my $uxa = {K => 'ux', i => $_};
-            uxa.B.i = uxa.i;
-            
-        my $u = w G.R fuu(u => $uxa);
+        my $i = $_;
+        my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
+        !$u || u.i eq $i || die;
+        $u ||= do {
+            my $uxa = {K => 'ux', i => $i};
+                uxa.B.i = uxa.i;
+            w G.R fuu(u => $uxa);
+        };
         u.A->umk($uM, 'ux');
         u.A->umk(u.i, 'U');
         $u;
@@ -322,6 +329,14 @@ hooks:
     
     my $j = $G->nw(K=>'j', s=>[], c=>[]);
     
+    if (ar.TV) {
+        for my $i (@ba) {
+            w compile_figure[$j, $i];
+            w wayout_sendo[$j, $i];
+            sayyl "YYY";
+        }
+    }
+    else {
     
     my @tops = grep { !_.u_S } @{uM.A.n_ux||[]};
     @tops = @{uM.A.n_ux||[]} if !@tops;
@@ -345,6 +360,8 @@ hooks:
         saygr "Top level U is a ".$i->pint();
         
         w U[$j, $i];
+    }
+    
     }
     
     H.G w aj[$j];
@@ -522,21 +539,18 @@ hooks:
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
                     
-                    my $anim = ui.K eq 'Do' && $k eq 'left' || $k eq 'top';
+                    my $anim = ui.K eq 'Do' && ($k eq 'left' || $k eq 'top');
                     if ($anim) {
-                        #my $anim = $ui && ui.Anim->{$k};
-                        #$anim = G.O->w('Anims', {k=>$k})
-                        $anim = 20.3;
-                        $isa = "$d>>";
-                        $doj_S->(at.id, q".animate({'%s':'%s'}, %s)",
-                            0->jsq($k, $v), 400);
-                        #push @anim, [$k, $v];
+                        $anima->{$k} = $v; # BB
                     }
                     else {
                         $doj_S->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
                     }
                 }
-                
+                if ($anima && %$anima) {
+                    $anima = $H->ejson($anima);
+                    $doj_S->(at.id, q".animate(%s, %s)", $anima, 400);
+                }
             }
         }
         attr.style .= shtocss(at.css) if at.css;

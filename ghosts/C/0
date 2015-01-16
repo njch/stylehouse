@@ -177,14 +177,23 @@ hooks:
         }
   uxd: |
     my $chi = G.Vu.U; G.Vu.U = [];
-    my $ig = G.Vu.ig; G.Vu.ig = [];
-    
+    my $TV = {%{G.TV.bb}};
     say wdump(2,G.TV);
     G.R->phat(G.TV);
     
+    
+    my $ment = { map{_.id=>1} values %$TV };
+    @$chi = grep { !$ment->{_.id} } @$chi;
+    if (%$ment) {
+        G.GG.U w ux[$TV];
+        return unless @$chi || ar.full;
+    }
+    
+    saygr "CHi now: ".@$chi;
+    G.R->phat(G.TV);
+    
     if (!ar.full && $chi && @$chi) {
-        @$chi = uniq grep {defined}
-            grep { my $i = $_; !grep { $_ eq $i } @$ig } @$chi;
+        @$chi = uniq @$chi;
         return sayyl "iggy uxd" if !@$chi;
         say "ux parti : ".$_->pi for @$chi;
         G.GG.U w ux(part => $chi);

@@ -4,7 +4,7 @@ hooks:
     $G->timer(2,sub{
     my $R = w are;
     w $R Q/K;
-    w $R phi/P;
+    $G->timer(3, sub { w $R phi/P; });
     });
 R_surz:
     - K: phi #c
@@ -17,15 +17,18 @@ R_surz:
           my $n = @Dos;
           
           my @xys;
-          my $width = 20;
-          my $height = 60; 
+          my $width = 50;
+          my $height = 40; 
           my $cx = $width / 2;
           my $cy = $height / 2;
           my $lg_diam = $width * 0.85;
-          my $lg_rad = $lg_diam / 2;
+          my $lg_rad = $lg_diam / 2; 
           my $outer_rad = $width*0.45;
-          my $angle_incr = 0.6;
-          $angle_incr + 0.1 if ar.not;
+          G.which||=1;
+          my $angle_incr = G.which / @Dos;
+          G.which += 0.2;
+          
+          $angle_incr += 0.1 if ar.not;
           
           
           for my $i (1..$n) {
@@ -43,9 +46,8 @@ R_surz:
               my $co = shift @xys;
               my ($a, $x, $y) = @$co;
               u.S.Z.position = 'absolute';
-              u.S.Z.top = $y.'em';
-              $x += 60;
-              u.S.Z.left = $x.'em';
+              u.S.Z.top = $y.'%';
+              u.S.Z.left = $x.'%';
               my $v = 5; # U level to
               w chang[$u, $v];
           }
@@ -53,11 +55,12 @@ R_surz:
           ar.not = !ar.not;
           
           $G->timer(0.4, sub {
-          sayyl "Back round...\n\n\n";
-          0->sing(phi=>sub{ saygr "YEPI\n\n\n"; return; w $R phi/P(%$ar); }, begin => 3);
+          0->sing(phi=>sub{ w $R phi/P(%$ar); }, begin => 4);
           
 
           });
+          my $i = [@Dos];
+          #w ave[$i];
     - K: Q #c
       key:
         SR: Redisy
