@@ -35,6 +35,9 @@ R_surz: #c
           a.fro->('S_a_i 0.21' => S.a.i, 0.2);
 
           a.bz->('Js 0.29' => "\n");
+          if (S.mod && %{S.mod}) {
+              a.bz->('mod 0.31' => $H->ejson(S.mod)."\n");
+          }
     - K: Jbuild #c
       babz:
         'S#moodz 1.8': | 
@@ -51,6 +54,12 @@ R_surz: #c
           
     - K: playn #c
       babz:
+        'S 3.1131': |
+          if (S.mod.outlike) {
+              a.bz->('a 4' => a.i, '%ishtml'=>1);
+              #$R->dfrom({u=>a.bb, s=>a.i});
+              last Sguts;
+          }
         'S 2.514333': |
           if (S.mod.double) { # 
               saybl "YEYEYE";
@@ -84,8 +93,9 @@ R_surz: #c
               w Dave(%$an);
               
               my $bn = {%{$an}};
-              bn.name = $name.'2';
+              bn.Dname = $name.'2';
               bn.i = $j;
+              bn.Sup = {mood=>{outlike=>1}};
               
               w Dave(%$bn); # TODO +mood
           }
@@ -101,7 +111,6 @@ R_surz: #c
               
               # how near or how far
               my $ip = {cv=>S.a.travly} if S.a.travly;
-              saygr wdump($ip);
               my $on = $R->Jshonj($sd, $ip);
               
               saygr "Was S.a.travly";
