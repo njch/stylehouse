@@ -200,11 +200,13 @@ R_surz:
             # 7
             my @tex = split /\n/, $u;
             #my $s = $G->vimcolor($u);
+            #$s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
             $tex[0] .= " #a.cv";
             
             my $surge = 0.7 - a.cv;
             # add interesting o to tex 0.7ishs as surge goes
-            ($tex[0], my @o) = @tex if a.cv < 0.8;
+            (my $one, my @o) = @tex if a.cv < 0.8;
+            @tex = $one if @o;
             for (@o) {
                 last if @tex > $surge;
                 push @tex, $_ if /^#/
@@ -212,7 +214,6 @@ R_surz:
                     || /\-\>/
                     || /w\ /;
             }
-            #$s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
             
             
             my $lim = ";height:19em;overflow-y:scroll" if @tex > 19;
