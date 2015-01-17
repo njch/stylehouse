@@ -268,5 +268,29 @@ sub shj {
     $j
 }
 
+sub Jshonj {
+    my $R = shift;
+    my ($bb, $on) = shift;
+    my @ksd = sort keys %$bb;
+    my @j = map { R->shj($_, $bb) } @ksd;
+
+    if ($on) {
+        my @on = sort { $a->{cv} <=> $a->{cv} } grep { $R->{G}->ip($on, $_) } @j;
+        $on = {min => $on[0]->{cv}, max => $on[-1]->{cv}};
+    }
+    my $ji = 0;
+    sub {
+        my $j = $j[$ji++] || return;
+        my $sec = 0;
+        if ($on) {
+            my $slike = $j->{cv} < $on->{min} ? $on->{min} : $on->{max};
+            my $dist = $slike - $j->{cv};
+            $dist *= -1 if $dist < 0;
+            $sec = $dist > 5 ? 0 : -$dist + 5;
+        }
+        ($j, $sec);
+    }
+}
+
 9;
 

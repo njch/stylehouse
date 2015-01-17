@@ -44,7 +44,7 @@ R_surz: #c
           }
         'S#du 3.3': |
           $d = w $R du;
-        'S#hum 4': |
+        'S#hum 4.444': |
           my $humm = S.mod.humm || 'adu';
           w $R $humm/humms[$S, $a, $d];
           
@@ -66,9 +66,8 @@ R_surz: #c
               S.mod.hooklook = 1;
           }
           if (S.mod.double) { # 
-              my $an = {u=>a.i, cv=>0.8, q=>1};
-              w $R gp(a=>$an);
-              
+              #my $an = {u=>a.i, cv=>0.8, q=>1};
+              #w $R gp(a=>$an);
               my $anH = {u=>a.i, cv=>0.8, q=>1, wa=>'HASH2'};
               my $j = w $R gp(a=>$anH);
               
@@ -78,63 +77,46 @@ R_surz: #c
               };
               
               my $name = S.name.".";
-              my $an = {K=>"Cm1",way=>"C/nv",
-                  Dname=>$name.'1',i=>$something};
-                
+              my $an = {
+                  K=>"Cm1", way=>"C/nv",
+                  Dname=>$name.'1', i=>$something
+              };
+              w Dave(%$an);
+              
               my $bn = {%{$an}};
               bn.name = $name.'2';
               bn.i = $j;
               
-              w Dave(%$an);
-              w Dave(%$bn);
+              w Dave(%$bn); # TODO +mood
           }
     - K: stringlook #c
       babz:
         'S 3.424': |
-          S.mod.humm = 'adu';
-          saybl "||";
           if (!%$d) {
             if (!ref a.i) {
               sayre "SDoing something else";
               S.mod.humm = 'simphumm';
               my $sd = {};
               $G->D_to_style({K=>"s",D=>a.i}, $sd);
-              my @ksd = sort keys %$sd;
               
               # how near or how far
-              my $on;
-              my @j = map { G.R->shj($_, $sd) } @ksd;
-              ($on) = map { _.cv } grep { _.cv eq S.a.travly } @j;
+              my $ip = {cv=>S.a.travly} if S.a.travly;
+              my $on = $R->Jshonj($sd, $ip);
               
               saygr "Was S.a.travly";
-              for my $j (@j) {
+              while (my ($j, $sec) = $on->()) {
+                  last if !$j;
                   my $k = j.t;
                   my $v = j.cv;
                   my $s = j.s;
                   my $sec = 0;
                   
-                  my $vo = 0.7;
+                  # sec runs 0,1-5, so 5 doubled down
+                  # into 0.7 make 0.8 for the onness
                   
-                  if ($on && $on eq j.cv || @j == 1) {
-                      $vo = 0.8;
-                      sayyl "\t\t$on  j.cv";
-                  }
-                  elsif ($on) {
-                      my $dist = $on - j.cv;
-                      $dist *= -1 if $dist < 0;
-                      if ($dist > 5) {
-                          $sec = 0;
-                      }
-                      else {
-                          $sec = -$dist + 5;
-                      }
-                      
-                          $sec = $sec*0.01;
-                          $vo = 0.7 + $sec;
+                  my $vo = 0.7 + $sec*0.02;
                       
                       sayyl " j.cv \t $sec\t\t$vo";
-                  }
-                  say "^j.cv\t$vo";
                   $d->{"^j.cv\t$vo"} = $s;
               }
             }
