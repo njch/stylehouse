@@ -204,12 +204,15 @@ R_surz:
             
             #$tex[0] .= " #a.cv";
             
-            my $surge = a.cv - 0.7;
+            my $surge = int(100 * (a.cv - 0.7));
             # add interesting o to tex 0.7ishs as surge goes
             (my $one, my @o) = @tex if a.cv < 0.8;
             @tex = $one if @o;
+            my $urge = $surge / 2;
+            $urge = 0; # TODO colours and
             for (@o) {
-                last if @tex > $surge;
+                say @tex." vs $urge";
+                last if @tex >= $urge;
                 push @tex, $_ if /^#/
                     || /R\./
                     || /\-\>/
@@ -220,7 +223,7 @@ R_surz:
             my $lim = ";height:19em;overflow-y:scroll" if @tex > 19;
             $lim .= ";background:rgba(70,40,0,1);" if a.cv >= 0.8;
             
-            my $fs = int(50 + $surge * 700);
+            my $fs = int(50 + $surge * 7);
             $fs = "font-size:$fs%;";
             say "surge seems $fs $surge";
             
