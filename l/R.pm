@@ -249,7 +249,7 @@ sub as {
             $j->{r} = "$j->{t} $j->{cv}";
             $j->{s} = $v;
             $bb->{$j->{r}} = $j->{s};
-            push @$ord, $j if $ord;
+            push @$ord, {%$j} if $ord;
         }
         sub{$do->(%$j, @_)}
     };

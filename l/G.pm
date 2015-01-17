@@ -536,7 +536,6 @@ sub Flab {
     my $a;
     $a->{name} = "f";
     $a->{stuff} = [@_];
-    $a->{igGA} = 1;
 
     $G->pyramid($a);
 }

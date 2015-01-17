@@ -1,13 +1,42 @@
 hooks:
-  any_init: |
+  fresh_init: |
     # phi...
     $G->timer(2,sub{
-    my $R = w are;
-    w $R Q/K;
-    $G->timer(3, sub { w $R phi/P; });
+        my $R = w are;
+        w $R Q/K;
+        $G->timer(3, sub { w $R phits/P; });
     });
+  recoded_init: |
+    my $R = G.theR;
+    w $R phits/P; 
 R_surz:
     - K: phi #c
+      D: |
+          my $n = ar.n || 9;
+          my $width = 100;
+          my $height = 100;
+          my $cx = $width / 2;
+          my $cy = $height / 2;
+          my $lg_diam = $width * 0.85;
+          my $lg_rad = $lg_diam / 2; 
+          my $outer_rad = $width*0.45;
+          my $angle_incr = ar.ai || 9 / $n;
+          
+          my $xy = [];
+          for my $i (1..$n) {
+              my $ratio = $i/$n;
+              my $spiral_rad = $ratio * $outer_rad;
+              my $angle = 1+$i*$angle_incr;
+              my $x = $cx + cos($angle) * $spiral_rad;
+              my $y = $cy + sin($angle) * $spiral_rad;
+              push @$xy, {
+                  angle => sprintf('%.3f', $angle),
+                  x => sprintf('%.3f', $x),
+                  y => sprintf('%.3f', $y),
+              };
+          }
+          $xy
+    - K: phits #c
       key:
         P: P
       n_D:
@@ -15,52 +44,41 @@ R_surz:
           my @Dos = w G.R fi(f=>{K=>'Do'});
           
           my $n = @Dos;
+          G.which ||= 2;
+          my $ai = G.which / $n;
+          G.which += 0.3;
           
-          my @xys;
-          my $width = 50;
-          my $height = 40; 
-          my $cx = $width / 2;
-          my $cy = $height / 2;
-          my $lg_diam = $width * 0.85;
-          my $lg_rad = $lg_diam / 2; 
-          my $outer_rad = $width*0.45;
-          G.which||=1;
-          my $angle_incr = G.which / @Dos;
-          G.which += 0.2;
+          my $xy = w $R phi[$n, $ai];
           
-          $angle_incr += 0.1 if ar.not;
-          
-          
-          for my $i (1..$n) {
-              my $ratio = $i/$n;
-              my $spiral_rad = $ratio * $outer_rad;
-              my $angle = $i*$angle_incr;
-              my $x = $cx + cos($angle) * $spiral_rad;
-              my $y = $cy + sin($angle) * $spiral_rad;
-              
-              push @xys, [$angle, $x, $y];
-          }
-          my $i = [@Dos];
+          saybl "G.which ".F_delta;
           
           for my $u (@Dos) {
-              my $co = shift @xys;
-              my ($a, $x, $y) = @$co;
+              my $co = shift @$xy;
+              
+              co.x += 90;
+              co.y += 50;
+              
               u.S.Z.position = 'absolute';
-              u.S.Z.top = $y.'%';
-              u.S.Z.left = $x.'%';
-              my $v = 5; # U level to
+              u.S.Z.top = co.x.'%';
+              u.S.Z.left = co.y.'%';
+              u.S.Z->{'font-size'} = '60%';
+              u.B.name =~ s/(,.+)?$/,co.angle/;
+              
+              my $v = 5; # U level to rezoom from
               w chang[$u, $v];
           }
           
           ar.not = !ar.not;
           
           $G->timer(0.4, sub {
-          0->sing(phi=>sub{ w $R phi/P(%$ar); }, begin => 4);
+          0->sing(phi=>sub{ w $R phits/P(%$ar); }, begin => 12);
           
 
           });
           my $i = [@Dos];
           #w ave[$i];
+        J: |
+          die "here";
     - K: Q #c
       key:
         SR: Redisy
