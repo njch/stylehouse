@@ -7,6 +7,7 @@ use lib 'lib';
 use feature 'say';
 our $f = {};
 fstyles();
+use POSIX 'ceil';
 
 sub new {
     my $R = shift;
@@ -270,7 +271,7 @@ sub shj {
 
 sub Jshonj {
     my $R = shift;
-    my ($bb, $on) = shift;
+    my ($bb, $on) = @_;
     my @ksd = sort keys %$bb;
     my @j = map { R->shj($_, $bb) } @ksd;
 
@@ -286,6 +287,7 @@ sub Jshonj {
             my $slike = $j->{cv} < $on->{min} ? $on->{min} : $on->{max};
             my $dist = $slike - $j->{cv};
             $dist *= -1 if $dist < 0;
+            $dist = ceil($dist);
             $sec = $dist > 5 ? 0 : -$dist + 5;
         }
         ($j, $sec);
