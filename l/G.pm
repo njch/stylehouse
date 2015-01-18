@@ -311,6 +311,9 @@ sub wish {
 
 sub saycol {
     my $colour = shift;
+    if ($colour eq "bright_yellow") {
+        say $F[0]->pi;
+    }
     print colored(join("\n", @_,""), $colour);
     wantarray ? @_ : shift @_
 }
