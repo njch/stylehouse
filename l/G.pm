@@ -40,9 +40,6 @@ our $gp_inarow = 0;
   sub ddump { H::ddump(@_) }
   sub wdump { H::wdump(@_) }
 
-  # to go
-  sub findO { my ($k, $o) = @_; grep { $_->{O} eq $k } @$o }
-
   sub slim {
       my ($f,$t,$c) = @_;
       ($f,$t,$c) = (40,40,$f) if !$t && !$c;
