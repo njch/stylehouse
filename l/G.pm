@@ -311,8 +311,10 @@ sub wish {
 
 sub saycol {
     my $colour = shift;
-    if ($colour eq "bright_yellow") {
-        say $F[0]->pi;
+    if ($colour eq "bright_yellow" && $db) {
+        my $D = $F[0];
+        my $ind = join"", ("  ")x@F;
+        say "$ind $D->{G}->{name}:$D->{G}->{K} $D->{id}:$D->{K}   $D->{point}";
     }
     print colored(join("\n", @_,""), $colour);
     wantarray ? @_ : shift @_

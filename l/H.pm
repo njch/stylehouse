@@ -201,7 +201,7 @@ sub la {
 
 sub hitime {
     my $H = shift;
-    return join ".", time, (gettimeofday())[1];
+    return join ".", gettimeofday();
 }
 
 sub stack {

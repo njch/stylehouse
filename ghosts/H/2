@@ -154,6 +154,7 @@ hooks:
     }
   prop_ghostchanges: |
     my @n = sort map { "S/".(split '/', $_, 2)[1] } H.r->keys("H/*");
+    @n = grep { /Z/ } @n if $m =~ /^ghosts\/0\/\w$/;
     my $i = 0;
     for my $t (@n) {
         $H->pub($t => "ghostchanges $m");    
