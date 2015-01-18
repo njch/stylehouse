@@ -16,7 +16,7 @@ sub new {
     $R->{A}->umv("", "R");
     $R->{A}->umk($G::F[0], 'spawn');
     $R->{etcarg} = [@_] if @_;
-    $H->{G} ->w("_init_R", {R => $R});
+    $H->{G} ->w("_init_R", {R => $R}); # TODO sets K somewhere
 
     $R
 }

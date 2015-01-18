@@ -1175,7 +1175,7 @@ sub parse_babble {
 
 
     # word or scalar
-    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+/;
+    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+|\*/;
 
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     # a.b.c
@@ -1252,13 +1252,7 @@ sub parse_babble {
 
     # 8/9
 
-    # a
-
-    $eval =~ s/ a ($point)(?::($point))?;/ \$G->a("$1","$2");/sg;
-
-    # K
-
-    $eval =~ s/ K ($point)(?::($point))?;/ \$G->K("$1","$2");/sg;
+    $eval =~ s/ K ($point)(?::($point))?(;| )/ \$G->K("$1","$2")$3/sg;
 
     # 
     $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
@@ -1278,33 +1272,29 @@ sub R {
     $G->{A}->spawn(R => @_);
 }
 
-sub a {
-    my $G = shift;
-    my $n = shift;
-    my $s = shift;
-
-    my $lot = $G->{A}->{"n_$n"} || die "no A\ $n";
-    die "empty n_$n" unless @$lot;
-    $lot = [@$lot];
-    die "make s" if $s; # TODO continue along a path
-    @$lot = map{$_->{i}}@$lot;
-    wantarray ? @$lot : shift @$lot;
-}
-
 sub K {
     my $G = shift;
     my $n = shift;
     my $K = shift;
     if (!$K) {
         $K = $n;
-        $n = "Rnon";
+        $n = "R/non/C";
+    }
+    my $A = $G->{A};
+    if ($n =~ /^(\w+)\/(\w+)\/(\w+)$/) {
+        $n = $3;
+        my $o = $G->K($1,$2);
+        $o || die "not finding $o $1 $2\n".wdump(2,$o)
+        ."only: ".join(" ",sort keys %{$G->{A}})."\n"
+        .join"\n"," And: ",map{$_->pi} @{$G->{A}->{n_R}};
+        $A = $o->{A};
     }
 
-    my $lot = $G->{A}->{"n_$n"} || die "no A\ $n";
+    my $lot = $A->{"n_$n"} || die "no A n_$n: ".$A->pi;
 
-    $lot = [@$lot];
-    @$lot = map{$_->{i}}@$lot;
-    @$lot = grep { $_->{K} eq $K } @$lot;
+    $lot = [map{$_->{i}}@$lot];
+    @$lot = grep { $_->{K} eq $K } @$lot if $K ne '*';
+
 
     wantarray ? @$lot : shift @$lot;
 }
