@@ -66,7 +66,6 @@ sub new {
     $G->{GGs} = [];
     my $ui = $G->{A}->{u}->{i};
     wish(G => $ui) || $ui eq $H || die "not G above? $G->{name} ".$ui->pi;
-    $G->{O} = $ui;
     $G->{A}->umv('', 'G');
     my $h = $H->{G};
     $h ||= $G if $G->{name} eq 'H'; # TODO $G->{K}
