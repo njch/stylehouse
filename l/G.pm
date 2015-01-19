@@ -1217,7 +1217,7 @@ sub parse_babble {
             $g = '$G';
         }
         else {
-            $g = ""
+            $g = "" # is over there already
         }
 
         my @n;
@@ -1252,7 +1252,9 @@ sub parse_babble {
 
     # 8/9
 
-    $eval =~ s/ K ($point)(?::($point))?(;| )/ \$G->K("$1","$2")$3/sg;
+    $eval =~ s/\${0}($poing)? K ($point)(?::($point))?(;| )/
+    ($1 || '$G')
+    .qq {->K("$2","$3")$4}/seg;
 
     # 
     $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
