@@ -46,7 +46,6 @@ hooks:
           # is test # could be more meta over there
           my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
           
-          saybl "meta: ".wdump($hmm);
           if (meta.styles =~ /\bNZ\b/) {
               
               $cb = sub {
@@ -57,7 +56,6 @@ hooks:
       $m = " $m"; 
       w send_Elvis[$m, $cb];
       
-      sayyl "pubbed Elvis ".$G->F_delta."   '".slim(30,30,$m);
   mux: |
     ar.as ||= '?';
     push @{G.muxis||=[]}, ar.as;
@@ -76,7 +74,7 @@ hooks:
     }
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
-    saybl " < ".slim(60,90,$m);
+    saybl " < ".slim(60,90,$m) if $db;
     
     my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
     $e[-1]->[1] = $cb if $cb;
@@ -203,7 +201,12 @@ hooks:
       B.address = $tx->remote_address;
   retile: |
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
-    my @w = map { H.r->get("W/$_") } @m;
+    @m = map { $H->djson(H.r->get("W/$_")) } @m;
+    my @dead = grep { _.dead } @m;
+    H.G w Whack(meta=>$_) for @dead;
+    @m = grep { !_.dead } @m;
+    @m = grep { _.styles =~ /\bNZ\b/ } @m;
+    @m = sort { a.hol cmp b.hol } @m;
     
     my $space = 1;
     $space += 1.5 until $space * $space >= @m;
@@ -249,7 +252,7 @@ hooks:
     
     my @holes = sort keys %$grid;
     say "Got ".@m." pegs for ".@holes." holes";
-    for my $n (@m) {
+    for my $meta (@m) {
         my $h = shift @holes;
         my $o = {%{$grid->{$h}}};
         
@@ -257,7 +260,8 @@ hooks:
         
         my $cssset = ".animate(".$H->ejson($o).", 0)";
         my $unhide = ".removeClass('NZ')";
-        $H->send(" \$('#$n')$cssset$unhide".";");
+        
+        $H->send(" \$('#".meta.Wid."')$cssset$unhide".";");
     }
   waits: |
     my $towait = ar.towait || 1;

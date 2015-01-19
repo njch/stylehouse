@@ -298,11 +298,12 @@ hooks:
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    my $W = G.W;
     
-    my $uMa = {K => 'M', W => G.A.u.i.R};
-    my $uM =  w G.R fuu(u => $uMa); # the lines' W mirrored
-    uM.A->umk(G.W, 'M');
-    uM.A->umk(G.A.u.i.R,'W');
+    my $Ma = {K => 'M', W => G.A.u.i.R}; # above G.R? channel muxes meta
+    my $M =  w G.R fuu(u => $Ma); # the lines' W mirrored
+    M.A->umk($W, 'M');
+    M.A->umk(G.A.u.i.R,'W');
     
     my @ba = map {
         my $i = $_;
@@ -313,8 +314,8 @@ hooks:
                 uxa.B.i = uxa.i;
             w G.R fuu(u => $uxa);
         };
-        u.A->umk($uM, 'ux');
-        u.A->umk(u.i, 'U');
+        u.A->umk($M, 'ux');
+        u.A->umk(u.i, 'U'); # into alien space
         $u;
     } @is;
     
@@ -322,12 +323,12 @@ hooks:
     for my $ux (@ba) {
         # ux nests under another ux like origin
         for my $uS (@{ux.i.A.u_S||[]}) {
-            next unless grep {_.i eq $uS} @{uM.A.n_M||[]};
+            next unless grep {_.i eq $uS} @{M.A.n_M||[]};
             ux.A->umk($uS, 'uS');
         }
     }
     
-    my $j = $G->nw(K=>'j', s=>[], c=>[]);
+    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
     
     if (ar.TV) {
         for my $i (@ba) {
@@ -338,15 +339,15 @@ hooks:
     }
     else {
     
-    my @tops = grep { !_.u_S } @{uM.A.n_ux||[]};
-    @tops = @{uM.A.n_ux||[]} if !@tops;
+    my @tops = grep { !_.u_S } @{M.A.n_ux||[]};
+    @tops = @{M.A.n_ux||[]} if !@tops;
     @tops = map { _.i } @tops;
     die "notops" if !@tops;
     @tops = G.W;
     
     if (ar.part) {
         my $want = { map { _.id => 1 } @ba };
-        for my $i (map{_.i}@{uM.A.n_ux||[]}) {
+        for my $i (map{_.i}@{M.A.n_ux||[]}) {
             say (($want->{i.id} ? " +" : " -")."  ".$i->pi);
             j.seenid->{i.id} = 1 unless delete $want->{i.id};
         }
