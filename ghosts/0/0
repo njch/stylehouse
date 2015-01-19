@@ -61,15 +61,29 @@ hooks:
         my $Gd = shift;
         w coins[$Gd]; 
     };
+    w timerestart;
+  timerestart: |
+    my $now = $H->hitime;
+    my $sinze = $now - G.lastupdate if G.lastupdate;
+    if ($sinze > 9*60) {
+        H.G w reexec;
+    }
+    
+    sayre "restart later - changed ".int($sinze)."s ago";
+    $G->sing(timerestart => sub {
+        w timerestart;
+    }, begin => 6*30);
   any_init: |
       waylay code;   
-      sayyl " - c - o - d - e - " for 1..3;
+      sayyl " - c - o - d - e - " for 1..3; 
   percolate: |
     w uxd;
   uxd: |
+    sayre "uxd from ".$F[2]->pi;
+    my $U = K G:U;
     my $is = [grep{_.K eq 'Do'} do { w G.R fi; }];
     return saygr "Zero uxd" if !@$is;
-    G.GG.U w ux[$is];
+    $U w ux[$is];
   event: |
     saybl $G->pi." G.K   EEEEEE ".$i->pi;
     w $i E/_D;
@@ -314,6 +328,7 @@ hooks:
     }
     else {
         $ch = "updated safe" if $dif;
+        G.lastupdate = $H->hitime;
         if ($ch && 1) {
             run("cd sal; git add *; git commit -m 'somewhere...'");
             run("cd l; git pull");

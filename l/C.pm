@@ -19,7 +19,7 @@ sub new {
 sub pi {
     my $C = shift;
     my $some = "C ".$C->pint();
-    unless (length($some) > 5) {
+    if (length($some) < 6) {
         my $ki = G::ki($C);
         my ($wf) = $ki =~ s/(_wayfile\S+\s*)//;
         $ki = "$wf$ki" if $wf;
@@ -38,6 +38,10 @@ sub pint {
     $@ = "" if $@;
 
     $p = $C->{B}->{name} if $C->{B}->{name};
+
+    if ($C->{name} eq 'D') {
+        $p = $C->{G}->pi." $C->{K} $C->{point} % ".join' ', sort keys %{$C->{ar}};
+    }
 
     my $B;
     if ($C->{B} && !$p) {

@@ -179,15 +179,17 @@ hooks:
             w $i E/_D;
         }
   uxd: |
-    my $chi = G.Vu.U; G.Vu.U = [];
+    my $U = K G:U;
+    
+    my $chi = G.Vu.U;
+    G.Vu.U = [];
     my $TV = {%{G.TV.bb}};
     G.R->phat(G.TV);
-    
     
     my $ment = { map{_.id=>1} values %$TV };
     @$chi = grep { !$ment->{_.id} } @$chi;
     if (%$ment) {
-        G.GG.U w ux[$TV];
+        $U w ux[$TV];
         return unless @$chi || ar.full;
     }
     
@@ -198,7 +200,8 @@ hooks:
         @$chi = uniq @$chi;
         return sayyl "iggy uxd" if !@$chi;
         say "ux parti : ".$_->pi for @$chi;
-        G.GG.U w ux(part => $chi);
+        my $U = K G:U;
+        $U w ux(part => $chi);
     }
     else {
         my $full = ar.full ? "FULL":"full";
@@ -208,7 +211,7 @@ hooks:
             my @is = w G.R fi(f=>{});
             saygr "uxing ".$_->pi for @is;
             my $is = \@is;
-            G.GG.U w ux[$is];
+            $U w ux[$is];
         }, begin => 0.001);
     }
   Tux: |

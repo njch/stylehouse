@@ -187,7 +187,7 @@ sub TRub {
 
     # 1
 
-    # find u from $G->K("and","") B?
+    # find u from$G->K("and","") B?
     my $u = $G->CsK({K=>$a->{i}->{K}});
     die "Not leading anywhere: ". wdump($a) unless $u;
     $u->from($a->{i});
@@ -1382,7 +1382,7 @@ sub CsK {
 
 sub sway {
     my $G = shift;
-    # sucks way matching $p # only supports matching $G->K("for","") now
+    # sucks way matching $p # only supports matching$G->K("for","") now
     my ($p, $s, $P) = @_;
     my ($from) = $p->{from} || $G->CsK($p);
 
