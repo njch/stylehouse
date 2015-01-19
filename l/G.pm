@@ -21,7 +21,7 @@ use Term::ANSIColor;
 use File::Find;
 use Math::Trig 'pi2';
 use Storable 'dclone';
-use POSIX 'ceil';
+use POSIX qw'ceil floor';
 # use Mojo::IOLoop::ForkCall; # see para
 our $swdepth = 5;
 our @F; # is Ring re subs from below 
