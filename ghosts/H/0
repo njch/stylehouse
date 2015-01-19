@@ -87,30 +87,29 @@ hooks:
     }
   aj: |
     my $W = j.G.W;
-    my $ww = W.at.id;
-    my $to = $ww;
+    
+    my $meta = {};
+    meta.hol = "H.style/H.name/H.id";
+    meta.Wid = W.at.id;
     if (j._) {
-        $to .= "/_";
-        # ww homing
-        my $hol = "H.style/H.name/H.id";
-        my $etc = 1 if W.at.styles =~ /\bNZ\b/;
-        my $hold = join ' ', $hol, $etc, $H->hitime;
-        H.r->set("W/$ww" => $hold);
-        H.r->set("V/H.id/$ww" => 1);
-        G0.Wh->{$ww} = $W; # TODO move Wh to A.h_W auto index
+        meta.unified = 1;
+        # W homing
+        meta.styles = W.at.styles;
+        meta.hitime = $H->hitime;
+        
+        H.r->set("W/meta.Wid" => $H->ejson($meta));
+        H.r->set("V/H.id/meta.Wid" => 1);
+        G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index
     }
     
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
     
-    return sayre "empty J aj" unless @lot; 
+    return sayre "empty J aj" unless @lot;
     
-    @lot = join " ", @lot;
-    for my $m (@lot) {
-        ref $m && die;
-        $m = " $m"; # two spaces, tells js to eval
-        H.G w send_Elvis[$m, $to]; 
-    }
+    my $m = join" ", @lot;
+    $m = " $m"; # two spaces, tells js to eval
+    H.G w send_Elvis[$m, $meta];
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -124,18 +123,22 @@ hooks:
     saygr "jaw $s $Epi $Gpi js:".slim(30,30,$js);
     w send_Elvis;
   send_Elvis: |
+    my $meta = ar.meta ||= {};
+    meta.hol ||= "H.style/H.name/H.id";
     if (H.name eq "O") {
         my $g = G:S/O;
         $g || die "no SO";
-        return $g w send_Elvis;
+        return $g w send_Elvis; # no emanation, socket right here
     }
+    # we are now a line, W->J revelation sheds from W which is also J
+    meta.Jid = $H->mkuid;
+    H.r->set("J/meta.Jid", $m);
     
-    my $to = "H.style/H.name";
-    $to .= "/ar.to" if ar.to;
-    my $Jid = $H->mkuid;
-    H.r->set("J/$Jid", $m);
-    saybl "pub Elvis $to $Jid\t*".slim(280,280,$m) unless H.isforked;
-    $H->pub('Elvis', "$to $Jid", 'ig');
+    $m = $H->ejson($meta);
+    
+    saybl "pub Elvis $meta\t*".slim(280,280,$m) unless H.isforked;
+    
+    $H->pub('Elvis', $m, 'ig');
   reS: |
     my ($way, $am) = split /\s+/, $m, 2;
     sayyl "$top >> $m" if $way ne 'hostinfo/ack';

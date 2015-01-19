@@ -19,30 +19,35 @@ hooks:
   Teeth: |
     H.G w Teeth;
   pubbedElvis: | # message for elvis via redis
-      sayre "su a.top ".slim(30,30,a.m);
       my $cb;
-      
-      my ($meta, $Jid) = split ' ', a.m, 2;
-      my ($st, $na, $ww, $uni) = split '/', $meta;
-      my $m = H.r->get("J/$Jid") || die "a.m .... $Jid";
+      my $meta = $H->djson($m);
+            meta.hol = "H.style/H.name/H.id";
+      meta.Wid = W.at.id;
+      if (j._) {
+          meta.unified = 1;
+          
+      my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
       
       $H->fixutf8($m);
       
-      $G->timer(5, sub{H.r->del("J/$Jid")});
-      if ($uni) {
+      $G->timer(5, sub{H.r->del("J/meta.Jid")});
+      
+      if (meta.unified) {
           # meta
-          sayyl "unifid $st $na $ww !";
+          sayyl "unifid meta.hol \t meta.Wid \t meta.styles";
           
-          my $hold = H.r->get("W/$ww") || die "no such $ww";
-          say "was from $hold";
-          my ($hol, $etc) = split /\s+/, $hold, 2;
-          if ($etc) {
+          # is test # could be more meta over there
+          H.r->get("W/meta.Wid") || die "no such meta.Wid";
+          
+          if (meta.styles =~ /\bNZ\b/) {
               sayyl "Retiling";
               $cb = sub { w retile; };
           }
       }
       $m = " $m";
       w send_Elvis[$m, $cb];
+      
+      sayre "su a.top ".slim(30,30,a.m);
       sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
   send_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
@@ -193,6 +198,7 @@ hooks:
     my $r = ceil $space;
     my $div = ["width:left $l", "height:top $r"];
     
+    say "needed ".@m." so $space is $l $r";
     
     my $grid = {};
     for my $p (@$div) {
