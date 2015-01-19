@@ -214,8 +214,8 @@ perc_else:
        w f/rotation;
 hooks:
   recoded_init: |
-    G.A.u.i->w('ux', {GG=>$G}); 
-    w f/at; 
+    w f/at;
+    w uxd;
   Im:
    print: $file
    flows_D: |
@@ -297,53 +297,31 @@ hooks:
     $d += ar.di - 1 if ar.di;
     $d -= 9 until $d <= 9;
     S.styles .= " $s$d";
-  
+  F: |
+    ar.a = {};
+    # scan r for styles, anything that maps across the flux field
+    w f/mus if ar.us;
+    
+    
+  W:
+    r: |
+      my @a=grep { _.K ne "IF" } shuffle w G.R fi(f=>{V=>'U'});
+      if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
+          my $from = $1 || 0;
+          my $to = $2 || $3-1;
+          @a = grep {defined} @a[$from..$to];
+      }
+      push @{G.Vu.U||=[]}, @a;
+      @a
+      
   f: # flux
-    pause: |
-      G.paused = !G.paused;
-    restysets: |
-        for my $S (w W/r(qw'K Im for 1')) {
-            if (S.resty) {
-                S.styles =~ s/$_// for split ' ', S.resty;
-                delete S.resty;
-            }
-        }
-        my $res = w restyfor(S=>{});
-        for my $S (w W/r(qw'K Im for 1')) {
-            next if rand(1) < 6/9;
-            S.resty = $res;
-            S.styles .= " $res";
-        }
-    rose: |
-       my @rose = read_file("trampled_rose_lyrics");
-       my @randoms = shuffle( grep { /\w/ } @rose );
-       
-        for (1..2) {
-            my $u = {K => 'Lingos', B => { l => shift @randoms}};
-            my $S = w G.R fuu[$u];
-            say "ingos S.B.l";
-            S.Z = {%{S.Z||{}},
-                'font-size' => int(rand(5)+1).'00%',
-                position => "fixed",
-            };
-        }
-    tallpaddy: |
-      for my $S (w W/r(qw'K Im')) {
-          S.Z.padding > 7 || next;
-          w se/pa[$S];
-      }
-    rotation: |
-      for my $Im (w W/r(qw'K Im for 1')) {
-           next;
-          for my $ux ($Im->LioO('ux')) {
-              my $uxid = ux.at.id;
-              $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
-          }
-      }
-    lingpa: |
-      for my $S (w W/r(qw'K Lingos for 0..2')) {
-            S.Z.padding = int(rand 24).'em';
-      }
+    mus: |
+      my ($K,$for) = ar.us =~ /^(?:(\S+))? ?(?:for (\S+))?$/ || die;
+      my $b = {};
+      b.K = $K if $K;
+      b.for = $for if $for;
+      my @us = w W/r(%$b);
+      a.us = [@us];
     at: |                                            # at x2 #c
         for my $S (w W/r(qw'K Im for 0..7')) {
             w arrange[$S];
@@ -360,14 +338,14 @@ hooks:
             w f/tallpaddy;
             w f/ph;
         }
-    te: | # at x1, x3
+    te: | #c at x1, x3
       for my $S (w W/r(qw'K Lingos for 0..4')) {
           my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
           my $in = S.B;
           #say "in.l => $o";
           in.l = $o;
       }
-    ph: |                                            # at 0x0
+    ph: |                                            #c at 0x0
         for my $S (w W/r(qw'K Im for 0..3')) {
             if (S.resty) {
                 S.styles =~ s/$_// for split ' ', S.resty;
@@ -375,6 +353,51 @@ hooks:
             (S.resty) = grep { !S.resty || $_ ne S.resty } w restyfor[$S];
             S.styles .= " S.resty";
         }
+    pause: | #c
+      G.paused = !G.paused;
+    restysets: | #c
+        for my $S (w W/r(qw'K Im for 1')) {
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+                delete S.resty;
+            }
+        }
+        my $res = w restyfor(S=>{});
+        for my $S (w W/r(qw'K Im for 1')) {
+            next if rand(1) < 6/9;
+            S.resty = $res;
+            S.styles .= " $res";
+        }
+    rose: | #c
+       my @rose = read_file("trampled_rose_lyrics");
+       my @randoms = shuffle( grep { /\w/ } @rose );
+       
+        for (1..2) {
+            my $u = {K => 'Lingos', B => { l => shift @randoms}};
+            my $S = w G.R fuu[$u];
+            say "ingos S.B.l";
+            S.Z = {%{S.Z||{}},
+                'font-size' => int(rand(5)+1).'00%',
+                position => "fixed",
+            };
+        }
+    tallpaddy: | #c
+      for my $S (w W/r(qw'K Im')) {
+          S.Z.padding > 7 || next;
+          w se/pa[$S];
+      }
+    rotation: | #c
+      for my $Im (w W/r(qw'K Im for 1')) {
+           next;
+          for my $ux ($Im->LioO('ux')) {
+              my $uxid = ux.at.id;
+              $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+          }
+      }
+    lingpa: | #c
+      for my $S (w W/r(qw'K Lingos for 0..2')) {
+            S.Z.padding = int(rand 24).'em';
+      }
   restyfor: |
     my @bang = ("sat6 opa2 con2 blr2 inv9", "ref sat9 bri4", 'ref sat9', 'ref blr8 con9 hue3',
         'inv9 sat9 blr2 hue8', 'inv4 bri7 blr5 con5', 'inv3 blr2 con1 hue6', 
@@ -395,17 +418,7 @@ hooks:
     return unless $chi && @$chi;
     say "part uxd ".@$chi;
     $U w ux(part => $chi);
-  W:
-    r: |
-      my @a=grep { _.K ne "IF" } shuffle w G.R fi(f=>{V=>'U'});
-      if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
-          my $from = $1 || 0;
-          my $to = $2 || $3-1;
-          @a = grep {defined} @a[$from..$to];
-      }
-      push @{G.Vu.U||=[]}, @a;
-      @a
-      
+
   index_clickspace: |
     my $Mid = G.W.uuid;
     my ($x, $y) = (e.x, e.y);
