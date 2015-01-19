@@ -16,39 +16,57 @@ hooks:
     });
   recoded_init: |
     w retile;
+    # $H->pub('S/hut/o', 'reextet');
+    $H->pub('S/hut/o', 'Hiwtidy');
   Teeth: |
     H.G w Teeth;
   pubbedElvis: | # message for elvis via redis
       my $cb;
-      my $meta = $H->djson($m);
-            meta.hol = "H.style/H.name/H.id";
-      meta.Wid = W.at.id;
-      if (j._) {
-          meta.unified = 1;
-          
+      my $meta = $H->djson(a.m);
+      my $talk = "pubbed Elvis   meta.Jid";
+      $talk .= "   meta.hol" if meta.hol;
+      $talk .= "   meta.Wid" if meta.Wid;
+      $talk .= "   meta.unified" if meta.unified;
+      
+      saybl $talk;
+      
+        
       my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
       
       $H->fixutf8($m);
       
+      # J pubbing around will always be below the J of the W itself
       $G->timer(5, sub{H.r->del("J/meta.Jid")});
+      # thing may contain more J structure we don't know about but it's art
+      # it may throw Emissive Js through from Building Js
+      # possibly without traces of U the W fab in the middle
       
       if (meta.unified) {
-          # meta
-          sayyl "unifid meta.hol \t meta.Wid \t meta.styles";
+          saygr "unifid styles: meta.styles";
           
           # is test # could be more meta over there
           H.r->get("W/meta.Wid") || die "no such meta.Wid";
           
+          saybl "meta: ".wdump($meta);
           if (meta.styles =~ /\bNZ\b/) {
-              sayyl "Retiling";
-              $cb = sub { w retile; };
+              
+              $cb = sub {
+                w mux(as=>"unified meta.Wid ( meta.hol");
+              };
           }
       }
-      $m = " $m";
+      $m = " $m"; 
       w send_Elvis[$m, $cb];
       
-      sayre "su a.top ".slim(30,30,a.m);
-      sayyl "pubbed elvis ".$G->F_delta."   '".slim(30,30,$m);
+      sayyl "pubbed Elvis ".$G->F_delta."   '".slim(30,30,$m);
+  mux: |
+    ar.as ||= '?';
+    push @{G.muxis||=[]}, ar.as;
+    0->sing(retile => sub {
+        sayyl "mux after: ".join"\n , ",@{G.muxis};
+        G.muxis = [];
+        w retile;
+    }, begin => 0.4);
   send_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
     my $cb = ar.cb;
@@ -185,9 +203,9 @@ hooks:
       });
       B.address = $tx->remote_address;
   retile: |
-    my @m = grep { /^\S+ \S+ 1/ }
-        map { $_." ".H.r->get($_) } H.r->keys("W/*");
-    
+    my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
+    my @w = map { 
+    my @w = map { _.Wid } @m;
     @m = map { join " ", reverse  /W\/(\S+) (\S+)/ } @m;
     @m = map { /\S+ (\S+)/ } sort @m;
     
