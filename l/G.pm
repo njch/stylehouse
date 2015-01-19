@@ -506,7 +506,7 @@ sub Stytog {
         push @styles, $s;
     }
     $u->{styles} = join ' ', @styles;
-    $G->w('v/ch', {u=>$u});
+    $G->w('chang', {humm=>$u});
 }
 
 sub su {

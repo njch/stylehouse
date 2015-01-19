@@ -23,14 +23,7 @@ hooks:
   pubbedElvis: | # message for elvis via redis
       my $cb;
       my $meta = $H->djson(a.m);
-      my $talk = "pubbed Elvis   meta.Jid";
-      $talk .= "   meta.hol" if meta.hol;
-      $talk .= "   meta.Wid" if meta.Wid;
-      $talk .= "   meta.unified" if meta.unified;
       
-      saybl $talk;
-      
-        
       my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
       $H->fixutf8($m);
       
@@ -54,7 +47,7 @@ hooks:
           }
       }
       $m = " $m"; 
-      w send_Elvis[$m, $cb];
+      w send_Elvis[$m, $meta, $cb];
       
   mux: |
     ar.as ||= '?';
@@ -74,7 +67,16 @@ hooks:
     }
     $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
-    saybl " < ".slim(60,90,$m) if $db;
+    
+    my $talk = "Elvis";
+    
+    if (my $m = ar.meta) {
+        $talk .= " meta.hol meta.Jid";
+        $talk .= " meta.Wid" if meta.Wid;
+        $talk .= " meta.unified" if meta.unified;
+    }
+
+    saybl " < $talk ".slim(60,90,$m);
     
     my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
     $e[-1]->[1] = $cb if $cb;

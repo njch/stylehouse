@@ -182,22 +182,29 @@ hooks:
         else {
             w $i E/_D;
         }
-  mux: |
-    0->sing(uxd => sub { w uxd; }, again=>1);
+
   uxd: |
     my $U = K G:U;
-    
-    my $chi = G.Vu.U;
-    G.Vu.U = [];
     my $TV = {%{G.TV.bb}};
+    
+    say wdump(2, G.TV);
     G.R->phat(G.TV);
     
-    my $ment = { map{_.id=>1} values %$TV };
-    @$chi = grep { !$ment->{_.id} } @$chi;
-    if (%$ment) {
-        $U w ux[$TV];
-        return unless @$chi || ar.full;
+    my $m = {};
+    for my $k (keys %$TV) {
+        my $j = G.R->shj($k, $TV);
+        j.t =~ /i\/(.+)/ ? do {
+        $m->{"j.t"} = 
+        } : j.t eq 'W' ? do {
+            
+        } : 1;
+        
+        die wdump(2, $j);
     }
+    
+    my $iw = values %$TV;
+    
+    $U w ux[$TV];
     
     saygr "CHi now: ".@$chi;
     G.R->phat(G.TV);
@@ -211,22 +218,37 @@ hooks:
     }
     else {
         my $full = ar.full ? "FULL":"full";
-        saygr "Codon $full uxd";
-        0->sing(alluxd => sub {
-            sayyl "uxing... G.name G.K";
-            my @is = w G.R fi(f=>{});
-            saygr "uxing ".$_->pi for @is;
-            my $is = \@is;
-            $U w ux[$is];
-        }, begin => 0.001);
+        saygr "C $full uxd";
+        
+        sayyl "uxing... ".$G->pi;
+        
+        my @is = w G.R fi(f=>{});
+        my $is = \@is;
+        
+        saygr "uxing ".$_->pi for @is;
+        
+        $U w ux[$is, $full];
     }
+  mux: |
+    push @{G.muxis||=[]}, $ar;
+    0->sing(uxd => sub { w uxd; }, again=>1);
   chang: |
+      my ($u) = values %$ar;
+      my ($k) = keys %$ar; 
+      die if keys %$ar > 1;
+      
+      $k = 'humm' if $k eq 'u';
+      
+      my $v = ar.v || H.nnn->{$k};
+      
+      die "no $k" if !defined $v;
+      
+      saybl "changd $k $v ".$u->pi
+       
       die "u.G.name ! " if u.G ne $G;
       
-      my $v = ar.v || 1;
-      G.TV.bz->("u.id $v", $u);
+      G.TV.bz->("i/u.id $v", $u);
       
-      push @{G.Vu.U||=[]}, $u if u.G eq $G;
       die "WEIRD u.G.name on u.K " if u.G ne $G;
       w mux;
   unchanged: |
