@@ -32,7 +32,6 @@ hooks:
       
         
       my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
-      
       $H->fixutf8($m);
       
       # J pubbing around will always be below the J of the W itself
@@ -45,9 +44,9 @@ hooks:
           saygr "unifid styles: meta.styles";
           
           # is test # could be more meta over there
-          H.r->get("W/meta.Wid") || die "no such meta.Wid";
+          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
           
-          saybl "meta: ".wdump($meta);
+          saybl "meta: ".wdump($hmm);
           if (meta.styles =~ /\bNZ\b/) {
               
               $cb = sub {
@@ -204,11 +203,7 @@ hooks:
       B.address = $tx->remote_address;
   retile: |
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
-    my @w = map { 
-    my @w = map { _.Wid } @m;
-    @m = map { join " ", reverse  /W\/(\S+) (\S+)/ } @m;
-    @m = map { /\S+ (\S+)/ } sort @m;
-    
+    my @w = map { H.r->get("W/$_") } @m;
     
     my $space = 1;
     $space += 1.5 until $space * $space >= @m;
