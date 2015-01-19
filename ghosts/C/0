@@ -188,7 +188,7 @@ hooks:
     my $TV = {%{G.TV.bb}};
     G.R->phat(G.TV);
     
-    say wdump 2, $TV;
+    die wdump(2, $TV);
     $U w ux[$TV];
   some: |
     if (!ar.full && $chi && @$chi) {
@@ -211,12 +211,9 @@ hooks:
         
         $U w ux[$is, $full];
     }
-  mux: |
-  
-    push @{G.muxis||=[]}, $ar;
-    0->sing(uxd => sub { w uxd; }, again=>1);
   chang: |
       w mux;
+  mux: |
       my ($u) = values %$ar;
       my ($k) = keys %$ar; 
       die if keys %$ar > 1;
@@ -234,7 +231,8 @@ hooks:
       G.TV.bz->("i/u.id $v", $u);
       
       die "WEIRD u.G.name on u.K " if u.G ne $G;
-      w mux;
+      
+      0->sing(uxd => sub { w uxd; }, again=>1);
   unchanged: |
       my ($u) = values %$ar;
       $u = G.theD || die $u if ref $u ne 'C';
