@@ -288,48 +288,59 @@ hooks:
             }
         }
   ux: |
+    my $c = {};
     my $m = {};
     for my $k (keys %$TV) {
         my $j = G.R->shj($k, $TV);
-        j.t =~ /i\/.+/ ? do {
-        $m->{j.t} = 
-        $m->{"j.t"} = 
-        } : j.t eq 'W' ? do {
-            
-        } : 1;
+        my ($to) = j.t =~ /^(\w+)/;
+        j.to = $to;
         
-        die wdump(2, $j);
+        my $v =
+        $to eq 'W' ? 1 :
+        $to eq 'M' ? 2 :
+        $to eq 'i' ? 3 : die "to $to?";
+        
+        $c->{"j.r $v"} = $j;
+        
     }
-    
-    
-    if (ar.TV) {
-        $is = [values %{ar.TV}];
-    }
-    my @is = @$is;
-    
-    return warn "no lines" unless @is;
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    
     my $W = G.W;
+    $c->{"W 1 1"} ||= G.R->shj("W 1",$W) if !W.at;
     
-    my $Ma = {K => 'M', W => G.A.u.i.R}; # above G.R? channel muxes meta
-    my $M =  w G.R fuu(u => $Ma); # the lines' W mirrored
+    
+    # we may already have this
+    # for the R sourcing us this M stuff (us)
+    # M is Jish
+    # 
+    my $MW = G.A.u.i.R; # or so
+    my $Ma = {K => 'M', W => $MW};
+    
+    my $M = w G.R fuu(u => $Ma); # the lines' W mirrored
+    
     M.A->umk($W, 'M');
-    M.A->umk(G.A.u.i.R,'W');
+    M.A->umk($MW,'W'); # our grasp of the origin W (R/J)
     
+    $c->{"M 1 2"} ||= G.R->shj("M 1",$M) if !M.at;
+    
+    my @is = grep { _.to eq 'i' } values %$c;
+    
+    # could make a tree
+    # let U wander off with certain things (n_y) for now instead.
     my @ba = map {
-        my $i = $_;
+        my $i = _.s;
         my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
         !$u || u.i eq $i || die;
         $u ||= do {
             my $uxa = {K => 'ux', i => $i};
-                uxa.B.i = uxa.i;
+            uxa.B.i = uxa.i;
             w G.R fuu(u => $uxa);
         };
         u.A->umk($M, 'ux');
         u.A->umk(u.i, 'U'); # into alien space
-        $u;
+        _.u = $u;
     } @is;
     
     
@@ -342,6 +353,17 @@ hooks:
     }
     
     my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
+    
+    my $v = {}; # voltage peel
+    for my $r (keys %$c) {
+        my ($l, $vo, $or) = split /\s+/, $r;
+        die unless $vo && $or;
+        push @{$v->{$or}||=[]}, $r;
+    }
+    
+    for my $r (@{$v->{1}}) {
+        
+    }
     
     if (ar.TV) {
         for my $i (@ba) {
