@@ -40,7 +40,7 @@ sub pint {
     $p = $C->{B}->{name} if $C->{B}->{name};
 
     if ($C->{name} eq 'D') {
-        $p = $C->{G}->pi." $C->{K} $C->{point} % ".join' ', sort keys %{$C->{ar}};
+        $p = $C->{G}->pi." $C->{point} % ".join' ', sort keys %{$C->{ar}};
     }
 
     my $B;
