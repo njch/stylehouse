@@ -91,6 +91,9 @@ C:            # W M ux ...
   
 hooks:
 
+  fresh_init: |
+    G.TV = {};
+    G.R->phat(G.TV);
   percolate: |
     my $uWa = {K => 'W', W => G.R};
     G.W = w G.R fuu(u => $uWa); # the unified into wormhole
@@ -287,28 +290,106 @@ hooks:
                 w G.R del(u => $o);
             }
         }
+  mux: |
+      my $M = w Mr[$MR];
+      my $TV = G.TV;
+      
+      my $us = [ref $u eq 'ARRAY' ? @$u : $u];
+      
+      $a = {k=>$a} if !ref $a;
+      
+      TV.bz->('W 4', G.W) if a.full;
+      
+      TV.bz->('M 6', $M);
+      
+      my $v = a.v if defined a.v;
+      $v ||= 4;
+      # 1-9 -> humm/links/etc
+      
+      for my $u (@$us) {
+          TV.bz->("i/u.id $v", $u);
+          TV.bz->("i/u.id%M $v", $M); # two divides - then M can optimise 7
+      }
+      
+      die "WEIRD u.G.name on u.K " if u.G ne MR.G;
+      
+      0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
+  dontmux: |
+    my $TV = G.TV;
+    my ($goner) = grep { _.s eq $u } w JV[$TV];
+    delete TV.bb->{goner.r};
+  uxd: |
+    my $TV = G.TV;
+    G.TV = {};
+    G.R->phat(G.TV);
+    
+    w ux[$TV];
+  Mr: |
+      my $Ma = {K => 'M', W => $MR};
+      my $M = w G.R fuu(u => $Ma); # the lines' W mirrored
+      M.A->umk(G.W, 'M');
+      M.A->umk($MR,'W'); # our long wave of the origin W (R/J)
+      $M
+  JV: |
+    my @J;
+    my $bb = TV.bb;
+    for my $k (keys %$bb) {
+        my $j = $bb->{$k};
+        undef $j unless ref $j eq 'HASH' && j.t; # go round
+        $j ||= $bb->{$k} = G.R->shj($k, $bb);
+        
+        (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
+        
+        j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
+        
+        if (ar.les) {
+            if (ar.les eq '*') {
+                next if !defined j.l;
+            }
+            else {
+                next if ar.les ne j.l;
+            }
+        }
+        else {
+            next if defined j.l;
+        }
+        
+        push @J, $j;
+    }
+    @J
   ux: |
     my $c = {};
     my $m = {};
-    for my $k (keys %$TV) {
-        my $j = G.R->shj($k, $TV);
-        my ($to) = j.t =~ /^(\w+)/;
-        j.to = $to;
-        
-        my $v =
-        $to eq 'W' ? 1 :
-        $to eq 'M' ? 2 :
-        $to eq 'i' ? 3 : die "to $to?";
-        
-        $c->{"j.r $v"} = $j;
-        
-    }
+    
+    my $W = G.W;
+    
+    TV.bz->("W 1", $W) if !W.at;
+    
+    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV];
+    
+    # if W and M is @ we can travel to M
+    
+    
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    my @MJ = grep{_.to eq 'M'} w JV[$TV];
     
-    my $W = G.W;
-    $c->{"W 1 1"} ||= G.R->shj("W 1",$W) if !W.at;
+    for my $M (@MJ) {
+        say "$M";
+    }
+    
+    my $wandering = my $jw = {};
+    G.R->phat($jw);
+    
+    
+    
+    sayre wdump(2,[@MJ, "vs ".keys %{TV.bb}]);
+        exit;
+    # kind of duping sanity as %M exists too
+    
+    
+    
     
     
     # we may already have this
@@ -360,6 +441,9 @@ hooks:
         die unless $vo && $or;
         push @{$v->{$or}||=[]}, $r;
     }
+    
+    sayyl wdump(TV.bb);
+    exit;
     
     for my $r (@{$v->{1}}) {
         

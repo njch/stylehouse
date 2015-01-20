@@ -262,11 +262,8 @@ sub shj {
     my ($r, $d) = @_;
     my $j;
     $j->{r} = $r;
-    $j->{s} = ref $d eq 'HASH' ? $d->{$r} : $d; # carbon in
-    ($j->{t}, $j->{cv}) =
-        $j->{r} =~ /^(.+)\t(.+?)$/ ? ($1, $2)
-        :
-        split /\s+/, $j->{r}, 2;
+    $j->{s} = $d->{$r};
+    ($j->{t}, $j->{cv}) = $j->{r} =~ /^(.+)\t(.+?)$/ ? ($1, $2) : split /\s+/, $j->{r}, 2;
     ($j->{cv}, my @e) = split /\s+/, $j->{cv};
     $j->{ev} = \@e if @e;
     $j
@@ -276,7 +273,7 @@ sub Jshonj {
     my $R = shift;
     my ($bb, $on) = @_;
     my @ksd = sort keys %$bb;
-    my @j = map { $R->shj($_, $bb) } @ksd;
+    my @j = map { R->shj($_, $bb) } @ksd;
 
     if ($on) {
         my @on = sort { $a->{cv} <=> $a->{cv} } grep { $R->{G}->ip($on, $_) } @j;
