@@ -362,72 +362,84 @@ hooks:
         push @J, $j;
     }
     @J
+  orde: |
+    my ($k, $v) = %$ar;
+    my @m = sort uniq map { $_->{$k} } @$v;
+    my $mi = 0;
+    sub {
+        my $t = $m[$mi++];
+        return if !defined $t;
+        
+        my @mm = grep {$_->{$k} eq $t } @$v;
+        @mm = sort { a.cv <=> b.cv } @mm;
+        
+        return \@mm;
+    };
   ux: |
-    my $c = {};
-    my $m = {};
-    
     my $W = G.W;
+    my $V = G.V;
     
     TV.bz->("W 1", $W) if !W.at;
     
-    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV];
+    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
+    
+    V.bz->(_.r, _.s) for grep{_.to eq 'W'} w JV[$TV]; # upload vector
+    
+    
+    
+    
     
     # the W is what we propagate, where ux
-    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    # the M is Random input grouper (an upstream W or so - cAn C everything we might) 
     
     my @MJ = grep{_.to eq 'M'} w JV[$TV];
-    @MJ || die;
-    for my $M (@MJ) {
-        TV.bz->("M/M.id 1", $M) if !M.at;
+    
+    !_.s.at && TV.bz->("M/_.s.id 1", _.s) for @MJ;
+    
+    
+    
+    @MJ = grep{_.to eq 'M'} w JV[$TV];
+    my $em = w orde(t=>\@MJ);
+    
+    while (defined(my $mm = $em->())) {
+        my ($low) = @$mm;
+        V.bz->(low.r => low.s); # most emergent phase
     }
-    die if !@MJ; # would have come from mux
     
-    my @MJ = grep{_.to eq 'M'} w JV[$TV];
-    for my $M (sort { _.cv <=> _.cv } @MJ) {
-        
+    
+    
+    
+    
+    
+    my @ii = grep{_.to eq 'i'} w JV[$TV];
+    my $eu = w orde(t=>\@ii);
+    
+    while (defined(my $mu = $eu->())) { # for each i, add to V
+        my ($low) = @$mu;
+        !low.s.at && low.r =~ s/(\d+\.)?\d+$/1/; # sat in
+        V.bz->(low.r => low.s);
     }
     
-    my $wandering = my $jw = {};
-    G.R->phat($jw);
     
     
-    my $les = '';
-    my @ii = grep{_.to eq 'i'} w JV[$TV, $les];
+    my @V = w JV[$V];
     
     
-    # v very left of the dome, heading into micro peaks
-    # J lying down right stick on left
-    # embeds like
-    # 1 W 1: $W
-    # 1 W%b 4: {abb
-    # 2   M1 1: $M
-    # 2   M1%b 4: {abb
-    # 3     ux12
     
-    
-    sayre wdump(2,[@MJ, "vs ".keys %{TV.bb}]);
+    sayre wdump(3,[V.bb, "vs ".keys %{TV.bb}]);
         exit;
     # kind of duping sanity as %M exists too
     
     
+    my $M;
     
     
+    # very left of the dome, heading into micro peaks
+    my $wandering = my $jw = {};
+    G.R->phat($jw); # embed abb in W%c #!
     
-    # we may already have this
-    # for the R sourcing us this M stuff (us)
-    # M is Jish
-    # 
-    my $MW = G.A.u.i.R; # or so
-    my $Ma = {K => 'M', W => $MW};
     
-    my $M = w G.R fuu(u => $Ma); # the lines' W mirrored
-    
-    M.A->umk($W, 'M');
-    M.A->umk($MW,'W'); # our grasp of the origin W (R/J)
-    
-    $c->{"M 1 2"} ||= G.R->shj("M 1",$M) if !M.at;
-    
-    my @is = grep { _.to eq 'i' } values %$c;
+    my @is = ();
     
     # could make a tree
     # let U wander off with certain things (n_y) for now instead.
@@ -456,19 +468,9 @@ hooks:
     
     my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
     
-    my $v = {}; # voltage peel
-    for my $r (keys %$c) {
-        my ($l, $vo, $or) = split /\s+/, $r;
-        die unless $vo && $or;
-        push @{$v->{$or}||=[]}, $r;
-    }
-    
     sayyl wdump(TV.bb);
     exit;
     
-    for my $r (@{$v->{1}}) {
-        
-    }
     
     if (ar.TV) {
         for my $i (@ba) {
