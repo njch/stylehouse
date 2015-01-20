@@ -397,13 +397,18 @@ hooks:
     !_.s.at && TV.bz->("M/_.s.id 1", _.s) for @MJ;
     
     
-    
-    @MJ = grep{_.to eq 'M'} w JV[$TV];
-    my $em = w orde(t=>\@MJ);
-    
+    my $les = '*';
+    @MJ = grep{_.to eq 'M'} w JV[$TV, $les];
+    my @MM = grep {!_.l} @MJ;
+    my $em = w orde(t=>\@MM);
+    saybl wdump(TV.bb);
     while (defined(my $mm = $em->())) {
         my ($low) = @$mm;
         V.bz->(low.r => low.s); # most emergent phase
+        for my $ma (grep {_.l && _.t eq low.t } @MJ) {
+            sayre wdump($ma);
+        }
+        
     }
     
     
@@ -426,7 +431,7 @@ hooks:
     
     
     
-    sayre wdump(3,[V.bb, "vs ".keys %{TV.bb}]);
+    sayyl "FIN ".wdump(3,[V.bb, "vs ".keys %{TV.bb}]);
         exit;
     # kind of duping sanity as %M exists too
     
