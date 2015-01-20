@@ -366,16 +366,22 @@ hooks:
         push @J, $j;
     }
     @J
-  orde: |
+  orde: | # group by t or so ($k) and sort in by voltage
     my ($k, $v) = %$ar;
-    my @m = sort uniq map { $_->{$k} } @$v;
+    my $by = {};
+    $by->{"$_->{$k}"}->{_.r} = $_ for @$v;
+    my @m = sort keys %$by;
     my $mi = 0;
     sub {
         my $t = $m[$mi++];
         return if !defined $t;
+        $t = $by->{$t};
         
-        my @mm = grep {$_->{$k} eq $t } @$v;
-        @mm = sort {say "a.r \t b.r     is b.cv a.cv"; a.cv cmp b.cv } @mm;
+        # and bab clone withsorting cv over T # already grouped by t or so
+        # should come out same as style flows round that %ish place: /
+        my @mm = sort { a.r cmp b.r } values %$t;
+        
+        saybl "sort hop: _.r" for @mm;
         
         return \@mm;
     };
@@ -396,14 +402,15 @@ hooks:
             :
             push(@WW, $_);
         }
+        sayyl "$to lives: _.r => "._.s->pi for @WW;
+        saygr "$to styles: _.r => "._.s->pi for @WSW;
+        
         # 4 # response curves near
         my ($low) = @WW;
         my $cv = low.cv;
-        $cv = 1 if !low.s.at;
+        $cv = 1 if !low.s.at; # sat in
         V.bz->(low.T."\t".$cv => low.s); # most emergent phase
         
-        sayyl "$to possible lives: ".wdump(\@WW);
-        saygr "$to possible styles: ".wdump(\@WSW);
         # 5
         for (@WSW) {
             V.bz->(_.r => _.s); # styles, all of them
@@ -412,36 +419,61 @@ hooks:
     warn "$to is $win" if $win != 1;
     
   Th: |
-    # 1
     my $les = '*';
-    my @J = w JV[$TV, $les];
+    my @J = w JV[$V, $les];
     my @WJ = grep{_.to eq $to} @J;
     my $ew = w orde(t=>\@WJ);
     
+    my $win=0;
+    while (defined(my $mw = $ew->())) {
+        $win++;
+        my (@WW,@WSW);
+        for (@$mw) {
+            _.l ? push(@WSW, $_)
+            :
+            push(@WW, $_);
+        }
+        sayyl "$to lives: _.r => "._.s->pi for @WW;
+        saygr "$to styles: _.r => "._.s->pi for @WSW;
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # 2
+        # 4 # response curves near
+        my ($low) = @WW; # the only t
+        my $cv = low.cv;
+        if ($cv < 3) {
+            # 5
+            if (0) {}
+            # 5.1
+            elsif ($to eq 'W') {
+            
+            }
+            # 5.2
+            elsif ($to eq 'M') {
+            
+            }
+            # 5.3
+            elsif ($to eq 'i') {
+            
+            }
+            $cv = 3;
+        }
+        
+        # 6 most emergent phase
+        V.bz->(low.T."\t".3 => low.s);
+        
+        my @JJ = w JV[$V, $les];
+        say "low.T low.cv now has: ".join' ', sort map { _.cv } grep{_.T eq low.T} @JJ;
+        
+        # count loWT ^
+        # and delete lower
+            delete V.bb->{low.r};
+            
+        my @JJJ = w JV[$V, $les];
+        say "low.T low.cv now has: ".join' ', sort map { _.cv } grep{_.T eq low.T} @JJJ;
+        
+        # 5
+        # styles stay, all of them
+    }
+    warn "$to is $win" if $win != 1;
   ux: |
     # 1
     my $W = G.W; # just a default
@@ -450,29 +482,23 @@ hooks:
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
     # 2
-    
     w Tw(TV=>$TV, to=>'W', V=>$V);
-    
     # the W is what we propagate, where ux
     # the M is Random input grouper (an upstream W or so - cAn C everything we might) 
-    
     w Tw(TV=>$TV, to=>'M', V=>$V);
-    
     w Tw(TV=>$TV, to=>'i', V=>$V);
     
-    
-    my $les = '*';
-    my @V = w JV[$V, $les];
-    saybl wdump(2, \@V);
-    
-    sayre wdump(2, V.bb);
-    
-    for my $Wj (grep {!_.l && _.to eq 'W'} @V) {
-        sayyl wdump(2, $Wj);
-    }
+    say "\n";
+    # 3
+    w Th(to => 'W', V=>$V);
+    say "\n";
+    w Th(to => 'M', V=>$V);
+    say "\n";
+    w Th(to => 'i', V=>$V);
     
     sleep 4;
     H.G w reexec;
+    
     
     
     
