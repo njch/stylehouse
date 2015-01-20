@@ -112,7 +112,7 @@ Ds:
     D: |
         my $n = shift;
         my $K = shift;
-        if (!$K) {
+        if (!defined $K) {
             $K = $n;
             $n = "R/non/C";
         }
@@ -125,9 +125,11 @@ Ds:
             .join"\n"," And: ",map{$_->pi} @{G.A.n_R};
             $A = o.A;
         }
-
-        my $lot = $A->{"n_$n"} || die "no A n_$n: ".$A->pi;
-
+        
+        my $lot = $A->{"n_$n"};
+        warn "no A n_$n: ".$A->pi."  ".join("  ", sort keys %$A) if !$lot;
+        $lot ||= [];
+        
         $lot = [map{_.i}@$lot];
         @$lot = grep { _.K eq $K } @$lot if $K ne '*';
         

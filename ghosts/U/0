@@ -377,16 +377,9 @@ hooks:
         return \@mm;
     };
   Tw: |
-    
-  ux: |
-    my $W = G.W; # just a default
-    my $V = G.V;
-    
-    # 1.1
-    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     # 1.2
     my $les = '*';
-    my @WJ = grep{_.to eq 'W'} w JV[$TV, $les];
+    my @WJ = grep{_.to eq $to} w JV[$TV, $les];
     my $ew = w orde(t=>\@WJ);
     # 1.3
     my $win=0;
@@ -405,8 +398,8 @@ hooks:
         $cv = 1 if !low.s.at;
         V.bz->(low.T."\t".$cv => low.s); # most emergent phase
         
-        sayyl "Wpossible lives: ".wdump(\@WW);
-        saygr "Wpossible styles: ".wdump(\@WSW);
+        sayyl "$to possible lives: ".wdump(\@WW);
+        saygr "$to possible styles: ".wdump(\@WSW);
         # 2.5
         for (@WSW) {
             # 1.8
@@ -414,48 +407,25 @@ hooks:
         }
         # 1.84
     }
-    # 1.85 makes patterns
-    # 1.9
     die if $win != 1;
+    
+  ux: |
+    my $W = G.W; # just a default
+    my $V = G.V;
+    
+    # 1.1
+    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
+    # 1.2
+    w Tw(TV=>$TV, to=>'W', V=>$V);
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (an upstream W or so - cAn C everything we might) 
     
-    # 2.1
-    $les = '*';
-    my @MJ = grep{_.to eq 'M'} w JV[$TV,$les];
-    die if !@MJ; # what here for
-    
-    say "Got MJ = ".@MJ;
     # 2.2
-    $les = '*';
-    @MJ = grep{_.to eq 'M'} w JV[$TV, $les];
-    my $em = w orde(t=>\@MJ);
-    # 2.3
-    my $min= 0;
-    while (defined(my $mm = $em->())) {
-        $min++;
-        # 2.33 all of a t
-        my (@MM,@MSM);
-        _.l ? push(@MSM, $_) 
-        : push(@MM, $_) for @$mm;
-        # 2.4
-        my ($low) = @MM;
-        my $cv = low.cv;
-        $cv = 1 if !low.s.at;
-        V.bz->(low.T."\t".$cv => low.s); # most emergent phase
-        
-        sayyl "Mpossible lives: ".wdump(2,\@MM);
-        saygr "Mpossible styles: ".wdump(2,\@MSM);
-        # 2.5
-        for (@MSM) { # What Style Whantts upside down here
-            # 2.8
-            V.bz->(_.r => _.s); # styles, all of them
-        }
-        # 2.84 # and 1.82 would ^ per-(W).t
-    }
+    w Tw(TV=>$TV, to=>'M', V=>$V);
     
-    my @V = w JV[$V];
+    
+    my @V = w JV[$V, $les];
     saybl wdump(2, \@V);
     
     sayre wdump(2, V.bb);

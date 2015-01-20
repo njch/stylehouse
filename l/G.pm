@@ -1292,7 +1292,9 @@ sub K {
         $A = $o->{A};
     }
 
-    my $lot = $A->{"n_$n"} || die "no A n_$n: ".$A->pi;
+    my $lot = $A->{"n_$n"};
+    warn "no A n_$n: ".$A->pi.wdump(2,[sort keys %$A]) if !$lot;
+    $lot ||= [];
 
     $lot = [map{$_->{i}}@$lot];
     @$lot = grep { $_->{K} eq $K } @$lot if $K ne '*';

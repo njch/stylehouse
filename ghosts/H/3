@@ -17,10 +17,12 @@ hooks:
     # is kind of like J
     # may want to sweep startup ripples across many G
     
-    @$P = sort { !defined _.GAK } @$P;
+    @$P = sort { defined a.GAK <=> defined b.GAK } @$P;
     my $lg;
+    sayyl wdump(2,[@$P]);
+    
     for my $p (@$P) {
-        if (p.D && !p.K) {
+        if (p.D && !exists p.K) {
         
             $GG->D({bab => p.D});
         } elsif (defined p.GAK) {
@@ -37,13 +39,18 @@ hooks:
             my ($k, @w) = split ' ', p.GAK;
             @w = $k if !@w;
             
+            
             if (!GG.GG->{$k}) {
+                
                 $GG->GAK($k, GG.A->spawn(G=>@w));
                 sayyl "Put ".GG.GG->{$k}->pi." down";
             }
             
+            say "bout $k";
             my $oGG = $GG;
-            my $GG = $GG K G:$k;
+            say "from ".$oGG->pi;
+            $GG = $oGG K G:$k;
+            sayyl "is $GG";
             die "$k from oGG.name == $GG" if !$GG;
             my $P = [];
             push @$P, $_ for @{ p.P || [] };
