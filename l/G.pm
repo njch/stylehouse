@@ -1278,7 +1278,7 @@ sub K {
     my $G = shift;
     my $n = shift;
     my $K = shift;
-    if (!$K) {
+    if (!defined $K) {
         $K = $n;
         $n = "R/non/C";
     }
