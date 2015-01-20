@@ -94,6 +94,8 @@ hooks:
   fresh_init: |
     G.TV = {};
     G.R->phat(G.TV);
+    G.V = {};
+    G.R->phat(G.V);
   percolate: |
     my $uWa = {K => 'W', W => G.R};
     G.W = w G.R fuu(u => $uWa); # the unified into wormhole
@@ -300,7 +302,7 @@ hooks:
       
       TV.bz->('W 4', G.W) if a.full;
       
-      TV.bz->('M 6', $M);
+      TV.bz->("M/M.id 6", $M);
       
       my $v = a.v if defined a.v;
       $v ||= 4;
@@ -332,6 +334,7 @@ hooks:
       $M
   JV: |
     my @J;
+    my $TV = ar.TV || ar.V;
     my $bb = TV.bb;
     for my $k (keys %$bb) {
         my $j = $bb->{$k};
@@ -344,6 +347,8 @@ hooks:
         
         if (ar.les) {
             if (ar.les eq '*') {
+            }
+            elsif (ar.les eq '%') {
                 next if !defined j.l;
             }
             else {
@@ -367,21 +372,37 @@ hooks:
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV];
     
-    # if W and M is @ we can travel to M
-    
-    
-    
     # the W is what we propagate, where ux
     # the M is Random input grouper (upstream W or so - cAn C everything we might) 
-    my @MJ = grep{_.to eq 'M'} w JV[$TV];
     
+    my @MJ = grep{_.to eq 'M'} w JV[$TV];
+    @MJ || die;
     for my $M (@MJ) {
-        say "$M";
+        TV.bz->("M/M.id 1", $M) if !M.at;
+    }
+    die if !@MJ; # would have come from mux
+    
+    my @MJ = grep{_.to eq 'M'} w JV[$TV];
+    for my $M (sort { _.cv <=> _.cv } @MJ) {
+        
     }
     
     my $wandering = my $jw = {};
     G.R->phat($jw);
     
+    
+    my $les = '';
+    my @ii = grep{_.to eq 'i'} w JV[$TV, $les];
+    
+    
+    # v very left of the dome, heading into micro peaks
+    # J lying down right stick on left
+    # embeds like
+    # 1 W 1: $W
+    # 1 W%b 4: {abb
+    # 2   M1 1: $M
+    # 2   M1%b 4: {abb
+    # 3     ux12
     
     
     sayre wdump(2,[@MJ, "vs ".keys %{TV.bb}]);
