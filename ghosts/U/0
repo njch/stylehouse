@@ -309,7 +309,7 @@ hooks:
       # 1-9 -> humm/links/etc
       
       for my $u (@$us) {
-          TV.bz->("i/u.id $v", $u);
+          TV.bz->("i/u.id $v", $u); # v maybe subtle
           TV.bz->("i/u.id%M $v", $M); # two divides - then M can optimise 7
       }
       
@@ -340,7 +340,7 @@ hooks:
         my $j = $bb->{$k};
         undef $j unless ref $j eq 'HASH' && j.t; # go round
         $j ||= $bb->{$k} = G.R->shj($k, $bb);
-        
+        j.T ||= j.t;
         (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
         
         j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
@@ -371,7 +371,7 @@ hooks:
         return if !defined $t;
         
         my @mm = grep {$_->{$k} eq $t } @$v;
-        @mm = sort { a.cv <=> b.cv } @mm;
+        @mm = sort {say "a.r \t b.r     is b.cv a.cv"; a.cv cmp b.cv } @mm;
         
         return \@mm;
     };
@@ -379,38 +379,80 @@ hooks:
     my $W = G.W;
     my $V = G.V;
     
+    # 1.1
     TV.bz->("W 1", $W) if !W.at;
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
-    
-    V.bz->(_.r, _.s) for grep{_.to eq 'W'} w JV[$TV]; # upload vector
-    
-    
-    
-    
+    #1.2
+    my $les = '*';
+    my @WJ = grep{_.to eq 'W'} w JV[$TV, $les];
+    my $ew = w orde(t=>\@WJ);
+    #1.3
+    my $win=0;
+    while (defined(my $mw = $ew->())) {
+        $win++;
+        my (@WW,@WSW);
+        for (@$mw) {
+            _.l ? push(@WSW, $_)
+            :
+            push(@WW, $_);
+        }
+        
+        my ($low) = @WW;
+        sayyl "possible lives: ".wdump(\@WW);
+        saygr "possible styles: ".wdump(\@WSW);
+        # 1.6
+        V.bz->(low.r, low.s); # the required W # probly a 6 too, init 1
+        
+        for (@WSW) {
+            # 1.8
+            V.bz->(_.r => _.s); # styles, all of them
+        }
+    }
+    # 1.9
+    die if $win != 1;
     
     # the W is what we propagate, where ux
     # the M is Random input grouper (an upstream W or so - cAn C everything we might) 
     
-    my @MJ = grep{_.to eq 'M'} w JV[$TV];
+    # 2.1
+    my $les = '*';
+    my @MJ = grep{_.to eq 'M'} w JV[$TV,$les];
     
-    !_.s.at && TV.bz->("M/_.s.id 1", _.s) for @MJ;
-    
-    
+    # 2.2
     my $les = '*';
     @MJ = grep{_.to eq 'M'} w JV[$TV, $les];
-    my @MM = grep {!_.l} @MJ;
-    my $em = w orde(t=>\@MM);
-    saybl wdump(TV.bb);
+    my $em = w orde(t=>\@MJ);
+    # 2.3
+    my $min= 0;
     while (defined(my $mm = $em->())) {
-        my ($low) = @$mm;
+        $min++;
+        # all of a t
+        
+        my (@MM,@MSM);
+        _.l ? push(@MSM, $_) 
+        : push(@MM, $_) for @$mm;
+        
+        my ($low) = @MM;
+        
+        if ($low) {
+        !_.s.at && TV.bz->("M/_.s.id 1", _.s) for @MJ;
+        sayyl "possible lives: ".wdump(\@MM);
+        saygr "possible styles: ".wdump(\@MSM);
+        
         V.bz->(low.r => low.s); # most emergent phase
-        for my $ma (grep {_.l && _.t eq low.t } @MJ) {
-            sayre wdump($ma);
+        for (@MSM) { # What Styles What upside down here
+            # 1.8
+            V.bz->(_.r => _.s); # styles, all of them
+            sayre wdump($_);
         }
         
     }
     
+    saybl wdump(TV.bb);
+    
+    sayre wdump(V.bb);
+    exit;
     
     
     
