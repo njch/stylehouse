@@ -411,7 +411,7 @@ hooks:
         $cv = 1 if !low.s.at; # sat in
         V.bz->(low.T."\t".$cv => low.s); # most emergent phase
         
-        # 5
+        # 8
         for (@WSW) {
             V.bz->(_.r => _.s); # styles, all of them
         }
@@ -439,45 +439,40 @@ hooks:
         # 4 # response curves near
         my ($low) = @WW; # the only t
         my $cv = low.cv;
+        # 5.3
         if ($cv < 3) {
-            # 5
             if (0) {}
-            # 5.1
+            # 5.31
             elsif ($to eq 'W') {
             
             }
-            # 5.2
+            # 5.32
             elsif ($to eq 'M') {
             
             }
-            # 5.3
+            # 5.33
             elsif ($to eq 'i') {
             
             }
+            # 5.4
             $cv = 3;
         }
+        # 6 was dialed in 5.3?
         
-        # 6 most emergent phase
-        V.bz->(low.T."\t".3 => low.s);
-        
-        my @JJ = w JV[$V, $les];
-        say "low.T low.cv now has: ".join' ', sort map { _.cv } grep{_.T eq low.T} @JJ;
-        
-        # count loWT ^
+        # 7 most emergent phase
+        V.bz->(low.T."\t".$cv => low.s);
         # and delete lower
-            delete V.bb->{low.r};
-            
-        my @JJJ = w JV[$V, $les];
-        say "low.T low.cv now has: ".join' ', sort map { _.cv } grep{_.T eq low.T} @JJJ;
+        delete V.bb->{low.r};
         
-        # 5
-        # styles stay, all of them
+        # 8
+        # styles stay
     }
     warn "$to is $win" if $win != 1;
   ux: |
     # 1
     my $W = G.W; # just a default
     my $V = G.V;
+    my $les = '*';
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
@@ -495,37 +490,12 @@ hooks:
     w Th(to => 'M', V=>$V);
     say "\n";
     w Th(to => 'i', V=>$V);
-    
+      
+        my @JJJ = w JV[$V, $les];
+        say "_.T _.cv now" for @JJJ;
+        
     sleep 4;
     H.G w reexec;
-    
-    
-    
-    
-    
-    
-    my @ii = grep{_.to eq 'i'} w JV[$TV];
-    my $eu = w orde(t=>\@ii);
-    
-    while (defined(my $mu = $eu->())) { # for each i, add to V
-        my ($low) = @$mu;
-        !low.s.at && low.r =~ s/(\d+\.)?\d+$/1/; # sat in
-        V.bz->(low.r => low.s);
-    }
-    
-    
-    
-    my @V = w JV[$V];
-    
-    
-    
-    sayyl "FIN ".wdump(3,[V.bb, "vs ".keys %{TV.bb}]);
-        exit;
-    # kind of duping sanity as %M exists too
-    
-    
-    my $M;
-    
     
     # very left of the dome, heading into micro peaks
     my $wandering = my $jw = {};
