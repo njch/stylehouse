@@ -1,21 +1,20 @@
 
 C:            # W M ux ...
   - K: W #c us
-    O: ux
     flows_D: |
       my $W = S.W;
       w stylespawn[$S, $W];
     Ss: [u, x, X]
     print: |
       "W=".S.W.G.name #Bthing, u is $S
-    S:
+    S: # TODO with Gw S things we go w.S.t_D then w.S.t then Gw.S.t_D then Gw.S.t
+    # maybe just change it haphazard when other tests pass?
       styles: OxO nopoi
       tag: ww 
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
   
   - K: M #c themmmmmmm from an R
-    O: ux
     flows_D: |
       my $W = S.W;
       w stylespawn[$S, $W];
@@ -317,10 +316,14 @@ hooks:
       die "WEIRD u.G.name on u.K " if u.G ne MR.G;
       
       0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
-  dontmux: |
+  remux: |
     my $TV = G.TV;
     my ($goner) = grep { _.s eq $u } w JV[$TV];
-    delete TV.bb->{goner.r};
+    my $s = delete TV.bb->{goner.r};
+    $s eq $goner || die;
+    my $v = ar.v;
+    $v ||= 9;
+    TV.bz->(goner.T."\t".$v => goner.s);
   uxd: |
     my $TV = G.TV;
     G.TV = {};
@@ -406,15 +409,47 @@ hooks:
             V.bz->(_.r => _.s); # styles, all of them
         }
     }
-    die if $win != 1;
+    warn "$to is $win" if $win != 1;
     
+  Th: |
+    # 1
+    my $les = '*';
+    my @J = w JV[$TV, $les];
+    my @WJ = grep{_.to eq $to} @J;
+    my $ew = w orde(t=>\@WJ);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # 2
   ux: |
+    # 1
     my $W = G.W; # just a default
     my $V = G.V;
     
-    # 1.1
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
-    # 1.2
+    
+    # 2
     
     w Tw(TV=>$TV, to=>'W', V=>$V);
     
@@ -423,12 +458,21 @@ hooks:
     
     w Tw(TV=>$TV, to=>'M', V=>$V);
     
+    w Tw(TV=>$TV, to=>'i', V=>$V);
+    
+    
     my $les = '*';
     my @V = w JV[$V, $les];
     saybl wdump(2, \@V);
     
     sayre wdump(2, V.bb);
-    exit;
+    
+    for my $Wj (grep {!_.l && _.to eq 'W'} @V) {
+        sayyl wdump(2, $Wj);
+    }
+    
+    sleep 4;
+    H.G w reexec;
     
     
     
