@@ -47,7 +47,6 @@ R:
    findway: R_sur
      
 P:
-
  - GAK: U #c
    InC:
        W:
@@ -91,6 +90,8 @@ hooks:
       w G.theR setup[$S];
   fresh_init: |
     w ikey;
+    G.TV = {};
+    G.R->phat(G.TV);
   any_init: |
     my $js = " return {el:elvis, x: screen.width, y: screen.height} ";
     my $cb = sub { saygr wdump(2,shift) };
@@ -109,7 +110,8 @@ hooks:
   beD: |
         my $W = K G:U ->K('W');
         W.Z->{'background-color'} = '#fca';
-        w mux(u=>$W,v=>4);
+        # TODO # w mux(u=>$W,v=>4);
+        w uxd(full=>1);
         w ave(i=>$W);
   makeD: |
     my $name = ar.name || "J".G.Jnumb++;
@@ -121,7 +123,8 @@ hooks:
     $D;
   are: | #c chang->queue U xing
     w makeD(ur=>'f') unless G.theD;
-    w mux(u=>G.theD, v=>3); # or 2 to up code?
+    # TODO # w mux(u=>G.theD, v=>3); # or 2 to up code?
+    w chang(u=>G.theD);
     G.theR;
   ikey: | # $G assumes keydo
     H.keydo = sub {
@@ -183,8 +186,22 @@ hooks:
 
   uxd: |
     my $U = K G:U;
-    $U w uxd;
-  some: |
+    
+    my $chi = G.Vu.U;
+    G.Vu.U = [];
+    my $TV = {%{G.TV.bb}};
+    G.R->phat(G.TV);
+    
+    my $ment = { map{_.id=>1} values %$TV };
+    @$chi = grep { !$ment->{_.id} } @$chi;
+    if (%$ment) {
+        $U w ux[$TV];
+        return unless @$chi || ar.full;
+    }
+    
+    saygr "CHi now: ".@$chi;
+    G.R->phat(G.TV);
+    
     if (!ar.full && $chi && @$chi) {
         @$chi = uniq @$chi;
         return sayyl "iggy uxd" if !@$chi;
@@ -194,16 +211,14 @@ hooks:
     }
     else {
         my $full = ar.full ? "FULL":"full";
-        saygr "C $full uxd";
-        
-        sayyl "uxing... ".$G->pi;
-        
-        my @is = w G.R fi(f=>{});
-        my $is = \@is;
-        
-        saygr "uxing ".$_->pi for @is;
-        
-        $U w ux[$is, $full];
+        saygr "Codon $full uxd";
+        0->sing(alluxd => sub {
+            sayyl "uxing... G.name G.K";
+            my @is = w G.R fi(f=>{});
+            saygr "uxing ".$_->pi for @is;
+            my $is = \@is;
+            $U w ux[$is];
+        }, begin => 0.001);
     }
 
   mux: |
@@ -220,7 +235,7 @@ hooks:
     my $u = delete a.u;
     my $MR = G.R;
     $U w remux[$MR,$a,$u];
-  olchang: |
+  chang: |
       die "u.G.name ! " if u.G ne $G;
       
       my $v = ar.v || 1;
@@ -229,5 +244,8 @@ hooks:
       push @{G.Vu.U||=[]}, $u if u.G eq $G;
       die "WEIRD u.G.name on u.K " if u.G ne $G;
       w mux;
-   
+  unchanged: |
+      my ($u) = values %$ar;
+      $u = G.theD || die $u if ref $u ne 'C';
+      0->accum(G.Vu => ig => $u);
 
