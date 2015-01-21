@@ -316,7 +316,7 @@ hooks:
       die "WEIRD u.G.name on u.K " if u.G ne MR.G;
       
       0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
-  remux: |
+  remux: | # upgrading the rubble
     my $TV = G.TV;
     my ($goner) = grep { _.s eq $u } w JV[$TV];
     my $s = delete TV.bb->{goner.r};
@@ -385,34 +385,41 @@ hooks:
         
         return \@mm;
     };
-  Tw: | # awa
-    # 1
-    my $les = '*';
-    my @J = w JV[$TV, $les];
-    my @WJ = grep{_.to eq $to} @J;
-    my $ew = w orde(t=>\@WJ);
-    # 2
-    my $win=0;
-    while (defined(my $mw = $ew->())) {
-        $win++;
-        # 3
+  ordey: |
+    my $ew = w orde;
+    sub {
+        my $mw = $ew->() || return;
+        
         my (@WW,@WSW);
         for (@$mw) {
             _.l ? push(@WSW, $_)
             :
             push(@WW, $_);
         }
-        sayyl "$to lives: _.r => "._.s->pi for @WW;
-        saygr "$to styles: _.r => "._.s->pi for @WSW;
+        
+        { m => $mw, t => \@WW, l => \@WSW }
+    }
+  Tw: | # awa
+    # 1
+    my $les = '*';
+    my @J = w JV[$TV, $les];
+    my @WJ = grep{_.to eq $to} @J;
+    my $ew = w ordey(t=>\@WJ);
+    # 2
+    my $win=0;
+    while (defined(my $m = $ew->())) {
+        $win++;
+        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
+        saygr "$to styles: _.r => "._.s->pi for @{m.l};
         
         # 4 # response curves near
-        my ($low) = @WW;
+        my ($low) = @{m.t};
         my $cv = low.cv;
         $cv = 1 if !low.s.at; # sat in
         V.bz->(low.T."\t".$cv => low.s); # most emergent phase
         
         # 8
-        for (@WSW) {
+        for (@{m.l}) {
             V.bz->(_.r => _.s); # styles, all of them
         }
     }
@@ -422,22 +429,17 @@ hooks:
     my $les = '*';
     my @J = w JV[$V, $les];
     my @WJ = grep{_.to eq $to} @J;
-    my $ew = w orde(t=>\@WJ);
+    my $ew = w ordey(t=>\@WJ);
     
-    my $win=0;
-    while (defined(my $mw = $ew->())) {
+    my @uxes;
+    my $win;
+    while (defined(my $m = $ew->())) {
         $win++;
-        my (@WW,@WSW);
-        for (@$mw) {
-            _.l ? push(@WSW, $_)
-            :
-            push(@WW, $_);
-        }
-        sayyl "$to lives: _.r => "._.s->pi for @WW;
-        saygr "$to styles: _.r => "._.s->pi for @WSW;
+        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
+        saygr "$to styles: _.r => "._.s->pi for @{m.l};
     
         # 4 # response curves near
-        my ($low) = @WW; # the only t
+        my ($low) = @{m.t}; # lowest volt of this here
         my $cv = low.cv;
         # 5.3
         if ($cv < 3) {
@@ -452,7 +454,34 @@ hooks:
             }
             # 5.33
             elsif ($to eq 'i') {
-                sayre "creating i...";
+                my $i = low.s;
+                say "WSW: _.l - "._.r for @{m.l};
+                my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
+                
+                # ^ to make to multiple M, maybe if we were Collabing
+                # from several other modulators food into this modulation
+                # so things can be injected into each others space in here
+                
+                # look in V?
+                my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
+                # also in M n_ux
+                # also fuu might find the sway-identity (.K & .B) and return it
+                say "Found u~! ".$u->pi if $u;
+                if ($u) {
+                    u.i eq $i || die;
+                }
+                else {
+                    # add C.Bs override for little B schemas not in .B.?
+                    my $uxa = {K => 'ux', i => $i};
+                    uxa.B.i = uxa.i;
+                    $u = w G.R fuu(u => $uxa);
+                }
+                sayyl "and the $u";
+                push @uxes, $u; # for 374 coil
+                u.A->umk($M, 'ux');
+                u.A->umk(u.i, 'U'); # into alien space
+
+                sayre "creating i...". $u->pi;
                 sayre "creating i...";
             }
             # 5.4
@@ -467,6 +496,16 @@ hooks:
         
         # 8
         # styles stay
+    }
+    my @ba;
+    my $M;
+    for my $ux (@uxes) {
+        # ux nests under another ux like origin
+        die wdump(2, ux.A.u_ux);
+        for my $uS (@{ux.i.A.u_S||[]}) {
+            next unless grep {_.i eq $uS} @{M.A.n_M||[]};
+            ux.A->umk($uS, 'uS');
+        }
     }
     warn "$to is $win" if $win != 1;
   Tl: | # lines make humm
@@ -521,27 +560,40 @@ hooks:
     warn "$to is $win" if $win != 1;
   ux: |
     # 1
+    # very left of the dome, heading into micro peaks
+    # we get more likely to fork
+    #   as we go out along things that already exist
+    #   they humm back to themselves at 8s
+    #     where we can either switch to it as master
+    #     or drop it if the thing wants a new 4 or so already
     sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
-    my $W = G.W; # just a default
+    my $W = G.W; # not really singular, crazy patchwork though
     my $V = G.V;
     my $les = '*';
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
+    # the W is what we propagate, where ux # slight singley for now
+    # the M is Random input grouper - upstream patch panel to C
+    # the i is a sack of i, somewhere under M
+    
     
     # 2
+    saybl "\n\n# 2";
     w Tw(TV=>$TV, to=>'W', V=>$V);
-    # the W is what we propagate, where ux
-    # the M is Random input grouper (an upstream W or so - cAn C everything we might) 
     w Tw(TV=>$TV, to=>'M', V=>$V);
     w Tw(TV=>$TV, to=>'i', V=>$V);
     
-    say "\n";
     # 3
+    saybl "\n\n# 3";
     w Th(to => 'W', V=>$V);
-    say "\n";
     w Th(to => 'M', V=>$V);
-    say "\n";
     w Th(to => 'i', V=>$V);
+    
+    # 4
+    saybl "\n\n# 4";
+    w Tl(to => 'W', V=>$V);
+    w Tl(to => 'M', V=>$V);
+    w Tl(to => 'i', V=>$V);
       
         my @JJJ = w JV[$V];
         say "_.T _.cv now" for @JJJ;
@@ -550,12 +602,6 @@ hooks:
     H.G w reexec;
     
     my $M;
-    # very left of the dome, heading into micro peaks
-    # we get more likely to fork
-    #   as we go out along things that already exist
-    #   they humm back to themselves at 8s
-    #     where we can either switch to it as master
-    #     or drop it if the thing wants a new 4 or so already
     # 
     
     # by the time we get to 
@@ -568,34 +614,13 @@ hooks:
     
     # could make a tree
     # let U wander off with certain things (n_y) for now instead.
-    my @ba = map {
-        my $i = _.s;
-        my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
-        !$u || u.i eq $i || die;
-        $u ||= do {
-            my $uxa = {K => 'ux', i => $i};
-            uxa.B.i = uxa.i;
-            w G.R fuu(u => $uxa);
-        };
-        u.A->umk($M, 'ux');
-        u.A->umk(u.i, 'U'); # into alien space
-        _.u = $u;
-    } @is;
     
-    
-    for my $ux (@ba) {
-        # ux nests under another ux like origin
-        for my $uS (@{ux.i.A.u_S||[]}) {
-            next unless grep {_.i eq $uS} @{M.A.n_M||[]};
-            ux.A->umk($uS, 'uS');
-        }
-    }
+    my @ba;
     
     my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
     
     sayyl wdump(TV.bb);
     exit;
-    
     
     if (ar.TV) {
         for my $i (@ba) {
