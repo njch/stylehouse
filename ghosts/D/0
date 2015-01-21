@@ -1,21 +1,20 @@
 
 C:            # W M ux ...
   - K: W #c us
-    O: ux
     flows_D: |
       my $W = S.W;
       w stylespawn[$S, $W];
     Ss: [u, x, X]
     print: |
       "W=".S.W.G.name #Bthing, u is $S
-    S:
+    S: # TODO with Gw S things we go w.S.t_D then w.S.t then Gw.S.t_D then Gw.S.t
+    # maybe just change it haphazard when other tests pass?
       styles: OxO nopoi
       tag: ww 
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
   
   - K: M #c themmmmmmm from an R
-    O: ux
     flows_D: |
       my $W = S.W;
       w stylespawn[$S, $W];
@@ -91,10 +90,16 @@ C:            # W M ux ...
   
 hooks:
 
+  fresh_init: |
+    G.TV = {};
+    G.R->phat(G.TV);
+    G.V = {};
+    G.R->phat(G.V);
   percolate: |
     my $uWa = {K => 'W', W => G.R};
     G.W = w G.R fuu(u => $uWa); # the unified into wormhole
   recoded_init: |
+      H.G w reexec;
       G.A.u.i->w(uxd=>{});
   stylespawn: |
     my $GG = W.G;
@@ -287,48 +292,334 @@ hooks:
                 w G.R del(u => $o);
             }
         }
-  ux: |
-    my $is = ar.is || ar.part;
-    if (ar.TV) {
-        $is = [values %{ar.TV}];
+  mux: |
+      my $M = w Mr[$MR];
+      my $TV = G.TV;
+      my $u = ar.u || [];
+      
+      my $us = [ref $u eq 'ARRAY' ? @$u : $u];
+      
+      $a = {k=>$a} if !ref $a;
+      
+      TV.bz->('W 4', G.W) if a.full;
+      
+      TV.bz->("M/M.id 6", $M);
+      
+      my $v = a.v if defined a.v;
+      $v ||= 4;
+      # 1-9 -> humm/links/etc
+      
+      for my $u (@$us) {
+          TV.bz->("i/u.id $v", $u); # v maybe subtle
+          TV.bz->("i/u.id%M $v", $M); # two divides - then M can optimise 7
+      }
+      
+      0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
+  remux: | # upgrading the rubble
+    my $TV = G.TV;
+    my ($goner) = grep { _.s eq $u } w JV[$TV];
+    my $s = delete TV.bb->{goner.r};
+    $s eq $goner || die;
+    my $v = ar.v;
+    $v ||= 9;
+    TV.bz->(goner.T."\t".$v => goner.s);
+  uxd: |
+    my $TV = G.TV;
+    G.TV = {};
+    G.R->phat(G.TV);
+    
+    w ux[$TV];
+  Mr: |
+      my $Ma = {K => 'M', W => $MR};
+      my $M = w G.R fuu(u => $Ma); # the lines' W mirrored
+      M.A->umk(G.W, 'M');
+      M.A->umk($MR,'W'); # our long wave of the origin W (R/J)
+      $M
+  JV: |
+    my @J;
+    my $TV = ar.TV || ar.V;
+    my $bb = TV.bb;
+    for my $k (keys %$bb) {
+        my $j = $bb->{$k};
+        undef $j unless ref $j eq 'HASH' && j.t; # go round
+        $j ||= $bb->{$k} = G.R->shj($k, $bb);
+        j.T ||= j.t;
+        (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
+        
+        j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
+        
+        if (ar.les) {
+            if (ar.les eq '*') {
+            }
+            elsif (ar.les eq '%') {
+                next if !defined j.l;
+            }
+            else {
+                next if ar.les ne j.l;
+            }
+        }
+        else {
+            next if defined j.l;
+        }
+        
+        push @J, $j;
     }
-    my @is = @$is;
+    @J
+  orde: | # group by t or so ($k) and sort in by voltage
+    my ($k, $v) = %$ar;
+    my $by = {};
+    $by->{"$_->{$k}"}->{_.r} = $_ for @$v;
+    my @m = sort keys %$by;
+    my $mi = 0;
+    sub {
+        my $t = $m[$mi++];
+        return if !defined $t;
+        $t = $by->{$t};
+        
+        # and bab clone withsorting cv over T # already grouped by t or so
+        # should come out same as style flows round that %ish place: /
+        my @mm = sort { a.r cmp b.r } values %$t;
+        
+        #saybl "sort hop: _.r" for @mm;
+        
+        return \@mm;
+    };
+  ordey: |
+    my $ew = w orde;
+    sub {
+        my $mw = $ew->() || return;
+        
+        my (@WW,@WSW);
+        for (@$mw) {
+            _.l ? push(@WSW, $_)
+            :
+            push(@WW, $_);
+        }
+        
+        { m => $mw, t => \@WW, l => \@WSW }
+    }
+  Tw: | # awa
+    # 1
+    my $les = '*';
+    my @J = w JV[$TV, $les];
+    my @WJ = grep{_.to eq $to} @J;
+    my $ew = w ordey(t=>\@WJ);
+    # 2
+    my $win=0;
+    while (defined(my $m = $ew->())) {
+        $win++;
+        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
+        saygr "$to styles: _.r => "._.s->pi for @{m.l};
+        
+        # 4 # response curves near
+        my ($low) = @{m.t};
+        my $cv = low.cv;
+        $cv = 1 if !low.s.at; # sat in
+        V.bz->(low.T."\t".$cv => low.s); # most emergent phase
+        
+        # 8
+        for (@{m.l}) {
+            V.bz->(_.r => _.s); # styles, all of them
+        }
+    }
+    warn "$to is $win" if $win != 1;
     
-    return warn "no lines" unless @is;
+  Th: | # the Creation
+    my $les = '*';
+    my @J = w JV[$V, $les];
+    my @WJ = grep{_.to eq $to} @J;
+    my $ew = w ordey(t=>\@WJ);
     
-    # the W is what we propagate, where ux
-    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
-    my $W = G.W;
+    my @uxes;
+    my $win;
+    while (defined(my $m = $ew->())) {
+        $win++;
+        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
+        saygr "$to styles: _.r => "._.s->pi for @{m.l};
     
-    my $Ma = {K => 'M', W => G.A.u.i.R}; # above G.R? channel muxes meta
-    my $M =  w G.R fuu(u => $Ma); # the lines' W mirrored
-    M.A->umk($W, 'M');
-    M.A->umk(G.A.u.i.R,'W');
-    
-    my @ba = map {
-        my $i = $_;
-        my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
-        !$u || u.i eq $i || die;
-        $u ||= do {
-            my $uxa = {K => 'ux', i => $i};
-                uxa.B.i = uxa.i;
-            w G.R fuu(u => $uxa);
-        };
-        u.A->umk($M, 'ux');
-        u.A->umk(u.i, 'U'); # into alien space
-        $u;
-    } @is;
-    
-    
-    for my $ux (@ba) {
+        # 4 # response curves near
+        my ($low) = @{m.t}; # lowest volt of this here
+        my $cv = low.cv;
+        # 5.3
+        if ($cv < 3) {
+            if (0) {}
+            # 5.31
+            elsif ($to eq 'W') {
+            
+            }
+            # 5.32
+            elsif ($to eq 'M') {
+            
+            }
+            # 5.33
+            elsif ($to eq 'i') {
+                my $i = low.s;
+                say "WSW: _.l - "._.r for @{m.l};
+                my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
+                
+                # ^ to make to multiple M, maybe if we were Collabing
+                # from several other modulators food into this modulation
+                # so things can be injected into each others space in here
+                
+                # look in V?
+                my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
+                # also in M n_ux
+                # also fuu might find the sway-identity (.K & .B) and return it
+                say "Found u~! ".$u->pi if $u;
+                if ($u) {
+                    u.i eq $i || die;
+                }
+                else {
+                    # add C.Bs override for little B schemas not in .B.?
+                    my $uxa = {K => 'ux', i => $i};
+                    uxa.B.i = uxa.i;
+                    $u = w G.R fuu(u => $uxa);
+                }
+                sayyl "and the $u";
+                push @uxes, $u; # for 374 coil
+                u.A->umk($M, 'ux');
+                u.A->umk(u.i, 'U'); # into alien space
+
+                sayre "creating i...". $u->pi;
+                sayre "creating i...";
+            }
+            # 5.4
+            $cv = 3;
+        }
+        # 6 was dialed in 5.3?
+        
+        # 7 most emergent phase
+        V.bz->(low.T."\t".$cv => low.s);
+        # and delete lower
+        delete V.bb->{low.r};
+        
+        # 8
+        # styles stay
+    }
+    my @ba;
+    my $M;
+    for my $ux (@uxes) {
         # ux nests under another ux like origin
+        die wdump(2, ux.A.u_ux);
         for my $uS (@{ux.i.A.u_S||[]}) {
             next unless grep {_.i eq $uS} @{M.A.n_M||[]};
             ux.A->umk($uS, 'uS');
         }
     }
+    warn "$to is $win" if $win != 1;
+  Tl: | # lines make humm
+    my $les = '*';
+    my @J = w JV[$V, $les];
+    my @WJ = grep{_.to eq $to} @J;
+    my $ew = w orde(t=>\@WJ);
+    
+    my $win=0;
+    while (defined(my $mw = $ew->())) {
+        $win++;
+        my (@WW,@WSW);
+        for (@$mw) {
+            _.l ? push(@WSW, $_)
+            :
+            push(@WW, $_);
+        }
+        sayyl "$to lives: _.r => "._.s->pi for @WW;
+        saygr "$to styles: _.r => "._.s->pi for @WSW;
+    
+        # 4 # response curves near
+        my ($low) = @WW; # the only t
+        my $cv = low.cv;
+        # 5.3
+        if ($cv < 3) {
+            if (0) {}
+            # 5.31
+            elsif ($to eq 'W') {
+            
+            }
+            # 5.32
+            elsif ($to eq 'M') {
+            
+            }
+            # 5.33
+            elsif ($to eq 'i') {
+            
+            }
+            # 5.4
+            $cv = 3;
+        }
+        # 6 was dialed in 5.3?
+        
+        # 7 most emergent phase
+        V.bz->(low.T."\t".$cv => low.s);
+        # and delete lower
+        delete V.bb->{low.r};
+        
+        # 8
+        # styles stay
+    }
+    warn "$to is $win" if $win != 1;
+  ux: |
+    # 1
+    # very left of the dome, heading into micro peaks
+    # we get more likely to fork
+    #   as we go out along things that already exist
+    #   they humm back to themselves at 8s
+    #     where we can either switch to it as master
+    #     or drop it if the thing wants a new 4 or so already
+    sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
+    my $W = G.W; # not really singular, crazy patchwork though
+    my $V = G.V;
+    my $les = '*';
+    
+    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
+    # the W is what we propagate, where ux # slight singley for now
+    # the M is Random input grouper - upstream patch panel to C
+    # the i is a sack of i, somewhere under M
+    
+    
+    # 2
+    saybl "\n\n# 2";
+    w Tw(TV=>$TV, to=>'W', V=>$V);
+    w Tw(TV=>$TV, to=>'M', V=>$V);
+    w Tw(TV=>$TV, to=>'i', V=>$V);
+    
+    # 3
+    saybl "\n\n# 3";
+    w Th(to => 'W', V=>$V);
+    w Th(to => 'M', V=>$V);
+    w Th(to => 'i', V=>$V);
+    
+    # 4
+    saybl "\n\n# 4";
+    w Tl(to => 'W', V=>$V);
+    w Tl(to => 'M', V=>$V);
+    w Tl(to => 'i', V=>$V);
+      
+        my @JJJ = w JV[$V];
+        say "_.T _.cv now" for @JJJ;
+        
+    sleep 4;
+    H.G w reexec;
+    
+    my $M;
+    # 
+    
+    # by the time we get to 
+    # we may be able 
+    my $wandering = my $jw = {};
+    G.R->phat($jw); # embed abb in W%c #!
+    
+    
+    my @is = ();
+    
+    # could make a tree
+    # let U wander off with certain things (n_y) for now instead.
+    
+    my @ba;
     
     my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
+    
+    sayyl wdump(TV.bb);
+    exit;
     
     if (ar.TV) {
         for my $i (@ba) {
@@ -535,6 +826,7 @@ hooks:
             }
             if (at.css) {
                 my $anima;
+                saybl $u->pi."    ".wdump(at.css) if %{at.css};
                 while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
