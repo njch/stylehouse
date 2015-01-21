@@ -111,16 +111,18 @@ hooks:
     H.G w jaw[$js, $cb];
     $H->pub('S/hut/O', 'retile');
   recoded_init: |
+    die "Say: ". K D;
     w mux;
   
   percolate: |
     G.theR = $G->R('sur');
-    w makeD unless G.way =~ /C\/\D/ || w G.R fi(f=>{K=>'D'});
+    w makeD unless w G.R fi(f=>{K=>'D'});
+    w makeD(name=>'RD1');
+    w makeD(name=>'RD2');
     if (H.name eq 'D') {
         waylay 1 beD;
     }
-    w uxd(full=>1);
-    waylay jmux(u=>G.theD);
+    waylay uxd(full=>1);
   beD: |
         my $W = K G:U ->K('W');
         W.Z->{'background-color'} = '#fca';
@@ -151,8 +153,9 @@ hooks:
     if (ar.Dname) {
         my @Ds = grep {_.K eq 'D' && _.name eq ar.Dname} @{G.R.A.n_C};
         (G.theD) = @Ds;
-        sayyl "ave - has ar.Dname - ".G.theD->pi if G.theD;
-        sayyl "ave - MAKING ar.Dname" if !G.theD;
+        G.theD ? 
+        sayyl "ave - has ar.Dname - ".G.theD->pi :
+        sayyl "ave - MAKING ar.Dname";
         G.theD ||= w makeD(name => ar.Dname);
     }
     my $R = w are;
@@ -238,6 +241,7 @@ hooks:
   mux: |
     my $u = ar.u;
     w chang[$u] if $u;
+    sayre "MUX MUX MUX" for 1..5;
     w jmux;
   jmux: |
     my $D = K G:D;
@@ -260,7 +264,8 @@ hooks:
       push @{G.Vu.U||=[]}, $u if u.G eq $G;
       die "WEIRD u.G.name on u.K " if u.G ne $G;
       #w mux; # is:
-      0->sing(uxd => sub { w uxd; }, again=>1);
+      
+      0->sing(uxd => sub { w uxd(not=>1); }, again=>1);
   unchanged: |
       my ($u) = values %$ar;
       $u = G.theD || die $u if ref $u ne 'C';

@@ -99,8 +99,8 @@ hooks:
     my $uWa = {K => 'W', W => G.R};
     G.W = w G.R fuu(u => $uWa); # the unified into wormhole
   recoded_init: |
-      H.G w reexec;
-      G.A.u.i->w(uxd=>{});
+      #H.G w reexec;
+      #G.A.u.i->w(uxd=>{});
   stylespawn: |
     my $GG = W.G;
     my $SsKs = S.Ss ||= [];
@@ -391,7 +391,10 @@ hooks:
     sub {
         my $mw = $ew->() || return;
         my $am = {m=>$mw,t=>[],l=>[]};
-        push @{ (_.l ? am.l : am.t) }, $_ for @$mw;
+        for my $m (@$mw) {
+            my $at = m.l ? am.l : am.t;
+            push @$at, $m;
+        }
         $am;
     }
   Tw: | # awa
@@ -432,9 +435,15 @@ hooks:
         $win++;
         sayyl "$to lives: _.r => "._.s->pi for @{m.t};
         saygr "$to styles: _.r => "._.s->pi for @{m.l};
+        
+        if (!@{m.t}) {
+            warn "^ no things, next";
+            next;
+        }
     
         # 4 # response curves near
         my ($low) = @{m.t}; # lowest volt of this here
+        
         my $cv = low.cv;
         # 5.3
         if ($cv < 3) {
@@ -450,6 +459,9 @@ hooks:
             # 5.33
             elsif ($to eq 'i') {
                 my $i = low.s;
+                if (!$i) {
+                    die wdump($low);
+                }
                 say "WSW: _.l - "._.r for @{m.l};
                 my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
                 
@@ -472,13 +484,9 @@ hooks:
                     uxa.B.i = uxa.i;
                     $u = w G.R fuu(u => $uxa);
                 }
-                sayyl "and the $u";
                 push @uxes, $u; # for 374 coil
                 u.A->umk($M, 'ux');
                 u.A->umk(u.i, 'U'); # into alien space
-
-                sayre "creating i...". $u->pi;
-                sayre "creating i...";
             }
             # 5.4
             $cv = 3;
@@ -497,7 +505,6 @@ hooks:
     my $M;
     for my $ux (@uxes) {
         # ux nests under another ux like origin
-        w pv(i=>ux.A.u_ux);
         for my $uS (@{ux.i.A.u_S||[]}) {
             next unless grep {_.i eq $uS} @{M.A.n_M||[]};
             ux.A->umk($uS, 'uS');
@@ -556,14 +563,10 @@ hooks:
     warn "$to is $win" if $win != 1;
   pv: |
     G.pr || die;
-    
-              my $name = "RD.";
-              my $an = {
-                  K=>"C",
-                  Dname=>$name.'1', i=>$i,
-              };
-              sayre "            Flying over to $i" for 1..5;
-              G.pr.G w Dave(%$an);
+    my $n = ar.n || 1;
+    my $name = "RD$n";
+    sayre "            Daving over to $i" for 1..2;
+    G.pr.G w Dave(K=>"C",Dname=>$name,i=>$i);
               
     
   ux: |
@@ -574,6 +577,11 @@ hooks:
     #   they humm back to themselves at 8s
     #     where we can either switch to it as master
     #     or drop it if the thing wants a new 4 or so already
+    
+    # the W is what we propagate, where ux # slight singley for now
+    # the M is Random input grouper - upstream patch panel to C
+    # the i is a sack of i, somewhere under M
+    
     sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
     my $W = G.W; # not really singular, crazy patchwork though
     my $V = G.V;
@@ -583,9 +591,10 @@ hooks:
         
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
-    # the W is what we propagate, where ux # slight singley for now
-    # the M is Random input grouper - upstream patch panel to C
-    # the i is a sack of i, somewhere under M
+    
+        my @JJJJ = w JV[$V];
+        my $abb = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+        w pv(i=>$abb, n=>2);
     
     
     # 2
@@ -600,14 +609,18 @@ hooks:
     w Th(to => 'M', V=>$V);
     w Th(to => 'i', V=>$V);
     
+        my @JJJ = w JV[$V];
+        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+        w pv(i=>$ab);
+    
     # 4
     saybl "\n\n# 4";
-    w Tl(to => 'W', V=>$V);
-    w Tl(to => 'M', V=>$V);
-    w Tl(to => 'i', V=>$V);
+    #w Tl(to => 'W', V=>$V);
+    #w Tl(to => 'M', V=>$V);
+    #w Tl(to => 'i', V=>$V);
       
-        my @JJJ = w JV[$V];
-        say "_.T _.cv now" for @JJJ;
+        #my @JJJ = w JV[$V];
+        #say "_.T _.cv now" for @JJJ;
         
     say "BAILING" for 1..5; 
     return;
