@@ -1278,9 +1278,9 @@ sub K {
     my $G = shift;
     my $n = shift;
     my $K = shift;
-    if (!defined $K) {
+    if (!length $K) {
         $K = $n;
-        $n = "R/non/C";
+        $n = "R/non/C"; 
     }
     my $A = $G->{A};
     if ($n =~ /^(\w+)\/(\w+)\/(\w+)$/) {
@@ -1293,7 +1293,7 @@ sub K {
     }
 
     my $lot = $A->{"n_$n"};
-    warn "no A n_$n: ".$A->pi.wdump(2,[sort keys %$A]) if !$lot;
+    warn "no A n_$n: ".$A->pi."  ".join("  ", sort keys %$A) if !$lot;
     $lot ||= [];
 
     $lot = [map{$_->{i}}@$lot];
