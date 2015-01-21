@@ -60,6 +60,19 @@ P:
            styles: OxO
        ux:
          spawn: []
+ - GAK: D #c
+   InC:
+       W:
+         Ss: [u, x, X]
+         S:
+           styles: OxO z NZ
+         Z:
+           background-color: black
+       M:
+         S:
+           styles: OxO
+       ux:
+         spawn: []
 P_sud:
  - Do code: waylay code;
  - Do uxd: w uxd;
@@ -107,6 +120,7 @@ hooks:
         waylay 1 beD;
     }
     w uxd(full=>1);
+    waylay jmux(u=>G.theD);
   beD: |
         my $W = K G:U ->K('W');
         W.Z->{'background-color'} = '#fca';
@@ -134,17 +148,19 @@ hooks:
         w G.theR keys[$e, $S];
     };
   ave: |
-    sayre "ave k: ".join' ', keys %$ar;
     if (ar.Dname) {
-       (G.theD) = grep {_.K eq 'D' && _.name eq ar.Dname} @{G.R.A.n_C};
-       G.theD ||= w makeD(name => ar.Dname);
+        my @Ds = grep {_.K eq 'D' && _.name eq ar.Dname} @{G.R.A.n_C};
+        (G.theD) = @Ds;
+        sayyl "ave - has ar.Dname - ".G.theD->pi if G.theD;
+        sayyl "ave - MAKING ar.Dname" if !G.theD;
+        G.theD ||= w makeD(name => ar.Dname);
     }
     my $R = w are;
     ar.S = G.theD;
     if (ar.Sup) {
         $R->dfrom({u=>ar.S, s=>ar.Sup}); # passes moods, anything
     }
-    sayyl join "\t", $G->pi, $R->pi, ar.S->pi, ar.i;
+    sayyl "ave into: ". join "\t", $G->pi, $R->pi, ar.S->pi, ar.i;
     w $R Sud/in;
   Dave: |
     my $g = G:$K;
@@ -183,7 +199,6 @@ hooks:
         else {
             w $i E/_D;
         }
-
   uxd: |
     my $U = K G:U;
     
@@ -222,14 +237,14 @@ hooks:
     }
   mux: |
     my $u = ar.u;
-    sayre "Skipping MUXALITO ".($u && $u->pi) for 1..5;
     w chang[$u] if $u;
-    return;
-    my $U = K G:U;
+    w jmux;
+  jmux: |
+    my $D = K G:D;
     my $a = {%$ar};
     my $u = delete a.u;
     my $MR = G.R;
-    $U w mux[$MR,$a,$u];
+    $D w mux[$MR,$a,$u];
   remux: |
     my $U = K G:U;
     my $a = {%$ar};
@@ -238,7 +253,7 @@ hooks:
     $U w remux[$MR,$a,$u];
   chang: |
       die "u.G.name ! " if u.G ne $G;
-      
+      saybl "CHANG ".$u->pi;
       my $v = ar.v || 1;
       G.TV.bz->("u.id $v", $u);
       
