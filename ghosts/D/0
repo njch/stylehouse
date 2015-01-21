@@ -1,0 +1,597 @@
+
+C:            # W M ux ...
+  - K: W #c us
+    O: ux
+    flows_D: |
+      my $W = S.W;
+      w stylespawn[$S, $W];
+    Ss: [u, x, X]
+    print: |
+      "W=".S.W.G.name #Bthing, u is $S
+    S:
+      styles: OxO nopoi
+      tag: ww 
+      id_D: |
+        ( W.id =~ /-(\w+)$/ )[0]
+  
+  - K: M #c themmmmmmm from an R
+    O: ux
+    flows_D: |
+      my $W = S.W;
+      w stylespawn[$S, $W];
+    print: |
+      "MMMM=".S.W.G.name
+    Ss: *
+    S:
+      styles: OxO poi
+      tag: MMMM
+        
+  - K: style #c redis
+    conor: -1.5
+    ishtml: 1
+    S:
+      attr:
+        scoped: undef
+        type: text/css
+      content_D: |
+        my ($WM) = map{_.i} @{S.A.u_y};
+        my $GG = WM.W.G;
+        my $sheet = w stylesheet[$GG, $K];
+        die "GG.name has style $K ? " unless length($sheet);
+        # may need to careful order new appendages too?
+        $sheet ? "\n$sheet\n" : "";
+     
+  - K: ux #c
+    O: ux
+    spawn: []
+    S:
+      tag: ux
+    styles: te
+    conor: 1
+    print: |
+       "S.K S.id  (".S.i->pi
+       
+  - K: i #c like pi
+    tag: yw
+    styles: yw
+    S:
+      content_D: |
+        my $w = S.i;
+        "PIE".(wish(w=>$w) ? $w->pi : pint($w))
+      ishtml: 1
+      
+  - K: e #c like style noise
+    styles: topleft white little
+    flows_D: |
+      B.e ||= "Lu.i.K";
+    S:
+      content_D: |
+        $e
+  
+  - K: somewhere #c
+    styles: te
+    S:
+      sendo_init_D: |
+        return;
+        $H->JS("\$('#somewhere').appendTo('#S.at.id');");
+        my $css = 'pointer-events:none; -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black); width:60em;';
+        $H->JS("\$('#somewhere').attr('style', '$css');");
+    S:
+      content_D
+  - K: h1 #c
+    styles: h1
+  - K: h2 
+  - K: pre
+    styles: skinny pre
+  - K: script
+    S:
+      no_implied_attr: 1
+  - K: X
+    styles: X
+  
+hooks:
+
+  percolate: |
+    my $uWa = {K => 'W', W => G.R};
+    G.W = w G.R fuu(u => $uWa); # the unified into wormhole
+  recoded_init: |
+      G.A.u.i->w(uxd=>{});
+  stylespawn: |
+    my $GG = W.G;
+    my $SsKs = S.Ss ||= [];
+    
+    if ($SsKs eq "*") {
+        my $eS = $GG->anyway('S');
+        $SsKs = [ map { _.K } @$eS ];
+    }
+    for my $K (@$SsKs) {
+        push @{S.spawn||=[]}, {
+            K => 'style',
+            B => {K=>$K},
+        };
+        w styleup[$GG, $K];
+    }
+  styleup: |
+    my $SS = w styleway[$GG, $K];
+    $SS || die sw(["style $K not found", $K, $SS, $GG]);
+    H.G w wayray(wa => SS.Ss, S=>$G);
+    
+    #sayre "style up GG.name $K  got ".@{SS.Ss};;
+    
+    my @SSSs = @{SS.Ss};
+    for my $S (@SSSs) { # mix the stylebits together
+        if (S.spawns) {
+            for my $w (w $S spawns) {
+                w._spawns = delete w.spawns;
+                push @{SS.Ss}, $w unless grep { _.K eq w.K } @{SS.Ss};
+            }
+        }
+    }
+    for my $S (@{SS.Ss}) { # mix the stylebits together
+        G.h->{S.K} = $S;
+    }
+  styleway: |
+    for my $tryG ($GG, $G) {
+        my $SS = $tryG->CsK({s=>'S', K=>$K});
+        return $SS if $SS;
+    }
+  stylesheet: |
+    $K ||= "S";
+    my $SS = w styleway[$GG, $K];
+    $SS || die "NoiSSSS $K on ux or GG.name";
+    my $Ss = SS.Ss;
+    my ($c, @s);
+    my $san = sub {
+        my $props = shift;
+        join ";", map {
+            ref $_ eq "HASH" && die
+                "oi c.K from GG.name's $K _S !"
+                ." css line got YAML-munted into HASH !"
+                ." remove the space after the colon?";
+            $_
+        } @$props
+    };
+    join "\n", grep {defined}
+    map{
+        $c = $_;
+        if (c.css) {
+            ".".c.K."{".$san->(c.css)."}"
+        }
+        elsif (c.keif) {
+            my $keif = join "\n", map {
+                _.K."{".$san->(_.css)."}"
+            } @{c.keif};
+            my $yep = "@"."-webkit-keyframes ".c.K."{\n"
+                .ind('  ', $keif)
+            ."\n}";
+            $yep
+        }
+    } @{SS.Ss};
+    
+  stylezo: |
+    # u at->attribute traslator
+    # kind of an argument resolver
+    # everything should be styleup'd to G.h
+    # making this a G1 function we call from ux with M's W.G
+    # some $style has space(s), leads through D to other style
+    # speaking of style
+    # which is what these capital letter concepts as individuals speak
+    # which is our language held nicely
+    my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
+    my $apply;
+    my @deply;
+    $apply = sub {
+        my $style = shift;
+        return if $style !~ /./;
+        return map { $apply->($_) } split ' ', $style if $style =~ / /;
+        
+        my $S = GG.h->{$style};
+        if (!$S) {
+            return push @deply, $1 if $style =~ /^-(.+)$/;
+            my $DS = GG.h->{$1."_n"} if $style =~ /^(\w+)(\d+)$/;
+            if ($DS) {
+                DS.D || die sw["D found style not have D", $DS];
+                $G->w(D => {%$ar, n => $2}, $DS);
+            }
+            else {
+                 warn "no ifndo $style";
+            }
+        }
+        else {
+            # lingosa
+            if (S.styles) {
+                $apply->(S.styles);
+            }
+            S.css ? do{ 
+                at.attr.class .= " $style";
+            }:
+            S.D ? do{
+                my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
+                $apply->($ysty) if $ysty;
+            }:
+            do {
+                sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
+            };
+        }
+    };
+    $apply->($styles);
+    for my $d (@deply) {
+        at.attr.class =~ s/$d//;
+    }
+    at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
+    
+    if (u.K eq "W") { # class to style="" outside <style> scope 
+        my $clastyle = delete at.attr.class;
+        for my $style (split ' ', $clastyle) {
+            my $S = GG.h->{$style};
+            for my $css (@{S.css}) {
+                my ($k, $v) = split ":", $css;
+                at.Z->{$k} ||= $v;
+            }
+            if (!@{S.css} || S.classy) {
+                at.attr.class .= " $style"; # secret meaning
+            }
+        }
+    }
+    
+    
+  spawn: |
+        my @uys;
+        
+        ##say wdump(2, $u) if u.K eq 'M';
+        if (u.K eq 'ux' && u.i) {
+            $u->from(u.i.ux); # DOOR how spawn comes through
+        }
+        
+        if (my $spawn = u.spawn) {
+            for my $sp (@$spawn) {
+                my $uy;
+                if (my $uxy = 0->CsK({K=>sp.K})) {
+                    $uy = 0->sway({from=>$uxy});
+                }
+                if (u.K eq 'ux' && u.i || u.K eq 'M') {
+                    my $GG = u.K eq 'M' ? u.W.G : u.i.G;
+                    if (my $xiy = $GG->CsK({K=>sp.K})) {
+                        $G->Flab("u.i.G.name hemisphere uxy: ", $uy, $xiy);
+
+                        $uy ||= $GG->nw();
+                        $uy->from($xiy); # G to xiy.G etc B merged
+                    }
+                }
+                
+                $uy || die wdump(3,["no thingy sp.K", $G->anyway('C')]);
+                
+                uy.i = u.i;
+                
+                $uy->from($sp);
+                
+                push @uys, $uy;
+            }
+        }
+        
+        my $old = { map { _.id => $_ } map{_.i} @{u.A.n_y||[]} };
+        my @spun;
+        for my $uy (@uys) {
+            my $y = w G.R Tafu(u=>$uy);
+            push @spun, $y;
+            y.A->umk($u, 'y');
+            delete $old->{y.id};
+        }
+        
+        if (keys %$old) {
+            say $u->pint."  has old stuff under...";
+            say $_->pint for values %$old;
+            say "NEW STUFF:";
+            say $_->pint for @spun;
+            for my $o (values %$old) {
+                w G.R del(u => $o);
+            }
+        }
+  ux: |
+    my $is = ar.is || ar.part;
+    if (ar.TV) {
+        $is = [values %{ar.TV}];
+    }
+    my @is = @$is;
+    
+    return warn "no lines" unless @is;
+    
+    # the W is what we propagate, where ux
+    # the M is Random input grouper (upstream W or so - cAn C everything we might) 
+    my $W = G.W;
+    
+    my $Ma = {K => 'M', W => G.A.u.i.R}; # above G.R? channel muxes meta
+    my $M =  w G.R fuu(u => $Ma); # the lines' W mirrored
+    M.A->umk($W, 'M');
+    M.A->umk(G.A.u.i.R,'W');
+    
+    my @ba = map {
+        my $i = $_;
+        my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
+        !$u || u.i eq $i || die;
+        $u ||= do {
+            my $uxa = {K => 'ux', i => $i};
+                uxa.B.i = uxa.i;
+            w G.R fuu(u => $uxa);
+        };
+        u.A->umk($M, 'ux');
+        u.A->umk(u.i, 'U'); # into alien space
+        $u;
+    } @is;
+    
+    
+    for my $ux (@ba) {
+        # ux nests under another ux like origin
+        for my $uS (@{ux.i.A.u_S||[]}) {
+            next unless grep {_.i eq $uS} @{M.A.n_M||[]};
+            ux.A->umk($uS, 'uS');
+        }
+    }
+    
+    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
+    
+    if (ar.TV) {
+        for my $i (@ba) {
+            w compile_figure[$j, $i];
+            w wayout_sendo[$j, $i];
+            sayyl "YYYYY";
+        }
+    }
+    else {
+    
+    my @tops = grep { !_.u_S } @{M.A.n_ux||[]};
+    @tops = @{M.A.n_ux||[]} if !@tops;
+    @tops = map { _.i } @tops;
+    die "notops" if !@tops;
+    @tops = G.W;
+    
+    if (ar.part) {
+        my $want = { map { _.id => 1 } @ba };
+        for my $i (map{_.i}@{M.A.n_ux||[]}) {
+            say (($want->{i.id} ? " +" : " -")."  ".$i->pi);
+            j.seenid->{i.id} = 1 unless delete $want->{i.id};
+        }
+        if (%$want) {
+            sayre "Wanted but not found in n_ux: \n"
+                .ind(' +  ', join("\n", map {$_->pi} values %$want));
+        }
+    }
+    
+    for my $i (@tops) {
+        saygr "Top level U is a ".$i->pint();
+        
+        w U[$j, $i];
+    }
+    
+    }
+    
+    H.G w aj[$j];
+    
+    sayre "ux -------- G.K done\t".(join ' ', keys %$ar)."  "
+        .@is." lines\t"
+        ."js=".scalar(@{j.s})."\t"
+        .$G->F_delta()."  load ".$H->la;
+  U: |
+    j.seenid->{i.id} = $i;
+    
+    w spawn(u=>$i);
+    
+    my @down = w Udown;
+    ar.d++;
+    
+    for my $d (@down) {
+        w U(j=>$j, i=>$d, d=>ar.d);
+    }
+    
+    w compile_figure;
+    w wayout_sendo;
+  Udown: |
+    # W->M->uxs, then uxs S amongst, y projects
+    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
+    my @ks = grep { $okn->{$_} } keys %{i.A};
+    my @As = map { @{i.A->{$_}||[]} } @ks;
+    my @down = map{_.i} @As;
+    @down = grep {!j.seenid->{_.id}} @down unless ar.allseeing;
+    die if grep {_.dead} @down;
+    uniq @down;
+    
+  compile_figure: |
+        my $u = $i;
+        my $ui = u.i if u.i;
+        
+        my $at = u.at = {};
+        
+        if (u.K eq "uW") {
+            u.at = ui.at;
+            sayre $ui->pi." wtf wtf ".$u->pi for 1..5;
+            return;
+        }
+        
+        # v the look-around-for-style-etc vortex v
+        at.id = u.id; # probly... rest good to T
+        at.tag = 0->uiuS($u => 'tag') || u.tag || u.K;
+        at.ishtml = 0->uiuS($u => 'ishtml');
+        at.class = 0->uiuS($u => 'class');
+        
+        my @styles;
+        push @styles, u.styles, u.S.styles;
+        push @styles, ui.styles, ui.S.styles if $ui;
+        
+        at.styles = join " ", grep {defined} @styles;
+        
+        
+        at.tag ||= u.K;
+        die "no tag" .sw($u) if !at.tag;
+        
+        at.conty = 0->uiuS($u => 'content');
+        
+        at.conty = "" if !defined at.conty;
+        at.conty = encode_entities(at.conty) unless at.ishtml;
+        
+        
+        my @down = w Udown(+ allseeing => 1);
+        @down = sort { a.conor <=> b.conor } @down;
+        at.ooze = \@down;
+  wayout_sendo: |
+        my $u = $i;
+        my $ui = u.i if u.i && u.K eq 'ux';
+        
+        my $at = u.at;
+        my $sendo = u.sendo = [];
+        
+        my ($s,$c) = ([],[]);
+        my $do_S = sub { push @$s, shift };
+        my $doj_S = sub {
+            my ($id, $sp, @int) = @_;
+            $do_S->("\$('#$id')".sprintf($sp, @int).";");
+        };
+        my $do_C = sub { push @$c, shift };
+        # S is innards, C is complete (send all S before all C)
+        # further thinking running on wholeness
+        # order important
+        my $_t = u._at;
+        
+        my $attr = at.attr = {
+            id => at.id,
+            class => at.class,
+            %{ 0->uiuS($u => "attr") || {} },
+        };
+        
+        my $conty = defined at.conty ? at.conty : "";
+        my $oozs = [ grep { defined } map { _.html } @{ at.ooze } ];
+        my $content = join "\n", @$oozs;
+        
+        at.Z = {}; # zip v
+        
+        at.Z = { %{at.Z}, %{u.Z} } if u.Z; # from u
+        
+        my $styles = at.styles;
+        w stylezo[$u, $ui, $styles, $at];
+        
+        my $Z = 0->uiuS($u => "Z"); # from ui S/Z(_D)
+        at.Z = { %{at.Z}, %$Z } if $Z;
+        
+        $Z && attr.style && die "got uiu $Z\t\tattr.style already";
+        
+        at.css = at.Z;
+        for my $k (keys %{at.css}) {
+            my $v = at.css->{$k};
+            if (ref $v eq 'HASH') {
+                delete at.css->{flit} if $k eq 'flit';
+                at.css->{'-webkit-filter'} = join " ",
+                    map{ "$_($v->{$_})" } sort keys %$v;
+            }
+        }
+        attr.title = "H.style/H.name/H.id" if u.K eq "W";
+        my $late = []; #c
+        if (!$_t) {
+            if ( $conty && $content ){
+                warn "conty and ooze ".$u->pint;
+                #sw(["contooz", $u, $conty, $content]);
+                $conty = ",";
+            }
+            if (length($conty . $content) > 25000) {
+                $content = "";
+                $do_S->("\$('#at.id').append('$_');") for @$oozs;
+            }
+            for my $i ($u, $ui) {
+                next unless $i && (i.S.sendo_init_D || i.Gw);
+                #say "Snedoing ".$i->pi;
+                my $Ce = w $i S/sendo_init_D[$u];
+                $do_C->($Ce) if $Ce;
+            }
+            
+            if ($u eq G.W) { # unified field of this W
+                push @$late, sub {
+                    $do_S->(
+                        "\$('#ux > #at.id').remove();"
+                    );
+                    $do_S->(
+                        "\$('#ux').append('".0->jsq(u.html)."');"
+                    );
+                };
+                
+                j._ && die "Already unified!?";
+                j._ = $u; # TODO diffy for the J
+            }
+        }
+        else {
+            my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
+            
+            for my $newu (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
+                $doj_S->(at.id, q{.append('%s')}, 0->jsq(newu.html));
+            }
+            for my $gonu (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
+                $doj_S->(gonu.at.id, q{.remove()});
+            }
+            if (at.conty ne _t.conty) {
+                my $s = 0->jsq(at.conty);
+                $s =~ s/\\ \\ n/\n/x;
+                $doj_S->(at.id, q{.html("%s")}, 0->jssq($s));
+            }
+            while (my ($k, $v) = each %{ at.attr }) {
+                next if $v eq _t.attr->{$k};
+                $doj_S->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
+            }
+            if (at.css) {
+                my $anima;
+                while (my($k,$v) = each %{at.css}) {
+                    next if $v eq _t.css->{$k};
+                    my $isa = '++';
+                    # an uiuS for mergins Anim/* ?
+                    
+                    my $anim = 1;#ui.K eq 'Do' && ($k eq 'left' || $k eq 'top');
+                    if ($anim) {
+                        $anima->{$k} = $v; # BB
+                    }
+                    else {
+                        $doj_S->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
+                    }
+                }
+                if ($anima && %$anima) {
+                    $anima = $H->ejson($anima);
+                    $doj_S->(at.id, q".animate(%s, %s)", $anima, 2000);
+                }
+            }
+        }
+        attr.style .= shtocss(at.css) if at.css;
+        my $tag = at.tag;
+        my $mkat = sub {
+            my $a = shift;
+            my $v = $attr->{$a};
+            return $a if $v eq "undef";
+            return $a.'="'.$attr->{$a}.'"'
+        };
+        # style/class gets misccss/Wcss
+        $attr = join " ", map { $mkat->($_) }
+            grep { defined $attr->{$_} && $attr->{$_} ne "" } sort keys %$attr;
+            
+        u.html = "<$tag $attr>$conty$content</$tag>";
+        $_->() for @$late; # what needs u.html
+        
+        u._at = $at;
+        
+        push @{j.s}, reverse @$s;
+        push @{j.c}, reverse @$c;
+  event: |
+    my $uy = $i if $i ne $ux;
+    my $i = ux.i if $ux;
+    $i = undef if !$ux;
+    my $E = {
+        e => $e,
+        W => $W,
+        i => $i,
+        ux => $ux,
+        uy => $uy,
+    };
+    
+    saybl " UX ". $ux->pi if $ux;
+    saybl " Uy ". $uy->pi if $uy;
+    return saygr "ungrasped line" unless $i;
+    saybl " i ". $i->pi;
+    
+    # TODO make a pattern about y=to match against Eways...
+    i.G w event(%$E);
+dials:
+  db: -3
+
