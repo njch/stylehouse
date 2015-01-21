@@ -55,8 +55,7 @@ hooks:
       }
   Hiwtidy: |
     my $js = 
-    " var e = []; \$('#ux > ww[class*=".'"z"'
-    ."]').each(function(){"
+    " var e = []; \$('#ux > ww').each(function(){"
         ."e\.push(\$(this).attr('id'));" # could take more clues
     ."});"
     ."return e\.join(' ');";
@@ -64,6 +63,7 @@ hooks:
     H.G w jaw[$js, $cb];
   Hiwtidy_ja: |
     my $wild = {map { $_ => 1 } split ' ', $m};
+    say "Wild:".join"\n - ",keys %$wild;
     my @Ws = H.r->keys("W/*");
     delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
     my $js;
