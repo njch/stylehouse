@@ -316,7 +316,7 @@ hooks:
           die wdump($u) unless ref $u eq 'C';
           say "casual $v ".$u->pi;
           TV.bz->("i/u.id $v", $u); # v maybe subtle
-          TV.bz->("i/u.id%M $v", $M); # two divides - then M can optimise 7
+          TV.bz->("i/u.id%M 4", $M); # two divides - then M can optimise 7
       }
       
       0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
@@ -505,23 +505,31 @@ hooks:
                 # ux nests under another ux like origin
                 # and M must humm after (reversal after 3
                 my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
-                my $M = (V.bb->{low.t.'%M 4'} || die)->{s};
-                V.bb->{"M/M.id 4"} = $M;
+                my $M = (V.bb->{low.t.'%M 4'} || die "no low.t.'%M 4'")->{s};
+                push @{M.tohu||=[]}, $ux;
+                TV.bb->{"M/M.id 4"} = $M;
                 for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
                     my $u = (V.bb->{"i/iu.id%u 3"} || next)->{s};
                     die if $iu ne u.i;
-                    V.bb->{"i/iu.id 5"} = $iu; # must go through to get here
+                    TV.bb->{"i/iu.id 5"} = $iu; # must go through to get here
                     ux.A->umk($u, 'uS'); # relatable
                 }
             }
             elsif ($to eq 'M') {
                 my $M = low.s;
-                my $j = {};
-                my $jp = w Usurf(j=>$j, i=>$M);
-                my $vom = {reverse %$jp};
-                keys %$jp == keys %$vom
-                || die wdump[[sort keys %$jp], [sort values %$vom]];
-                V.bz->("M/M.id%vom 4" => $vom);
+                my $got = (V.bb->{"M/M.id%vom 4"}||{})->{s};
+                my $needmore = 0;
+                for my $ux (@{M.tohu||[]}) {
+                    $needmore = 1 if !$got->{ux.id};
+                }
+                if ($needmore) {
+                    my $j = {};
+                    my $jp = w Usurf(j=>$j, i=>$M);
+                    my $vom = {reverse %$jp};
+                    keys %$jp == keys %$vom
+                    || die wdump[[sort keys %$jp], [sort values %$vom]];
+                    V.bz->("M/M.id%vom 4" => $vom);
+                }
                 V.bz->("M/M.id%tom 5" => {}); # < ^ others 5s put moves forth
             }
             $cv = 4;
