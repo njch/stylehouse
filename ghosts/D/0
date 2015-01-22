@@ -487,6 +487,8 @@ hooks:
                 push @uxes, $u; # for 374 coil
                 u.A->umk($M, 'ux');
                 u.A->umk(u.i, 'U'); # into alien space
+                
+                V.bz->("M/M.id/u/u.id 4" => $u);
             }
             # 5.4
             $cv = 3;
@@ -494,9 +496,11 @@ hooks:
         # 6 was dialed in 5.3?
         
         # 7 most emergent phase
-        V.bz->(low.T."\t".$cv => low.s);
-        # and delete lower
+        my $newer = join "\n", low.T, $cv;
+        warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
         delete V.bb->{low.r};
+        V.bz->($newer => low.s);
+        # and delete lower
         
         # 8
         # styles stay
@@ -506,7 +510,7 @@ hooks:
     for my $ux (@uxes) {
         # ux nests under another ux like origin
         for my $uS (@{ux.i.A.u_S||[]}) {
-            next unless grep {_.i eq $uS} @{M.A.n_M||[]};
+            next unless grep {_.i eq $uS} @{M.A.n_ux||[]};
             ux.A->umk($uS, 'uS');
         }
     }
@@ -515,29 +519,29 @@ hooks:
     my $les = '*';
     my @J = w JV[$V, $les];
     my @WJ = grep{_.to eq $to} @J;
-    my $ew = w orde(t=>\@WJ);
+    my $ew = w ordey(t=>\@WJ);
     
     my $win=0;
-    while (defined(my $mw = $ew->())) {
+    while (defined(my $m = $ew->())) {
         $win++;
-        my (@WW,@WSW);
-        for (@$mw) {
-            _.l ? push(@WSW, $_)
-            :
-            push(@WW, $_);
+        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
+        saygr "$to styles: _.r => "._.s->pi for @{m.l};
+        
+        if (!@{m.t}) {
+            warn "^ no things, next";
+            next;
         }
-        sayyl "$to lives: _.r => "._.s->pi for @WW;
-        saygr "$to styles: _.r => "._.s->pi for @WSW;
     
         # 4 # response curves near
-        my ($low) = @WW; # the only t
+        my ($low) = @{m.t}; # lowest volt of this here
+        
         my $cv = low.cv;
         # 5.3
-        if ($cv < 3) {
+        if ($cv <= 4) {
             if (0) {}
             # 5.31
             elsif ($to eq 'W') {
-            
+                
             }
             # 5.32
             elsif ($to eq 'M') {
@@ -545,7 +549,7 @@ hooks:
             }
             # 5.33
             elsif ($to eq 'i') {
-            
+                
             }
             # 5.4
             $cv = 3;
