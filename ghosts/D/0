@@ -530,7 +530,7 @@ hooks:
         my ($low) = @{m.t}; # lowest volt of this here
         my $cv = low.cv;
         # 5.3
-        if ($cv <= 5) {
+        if ($cv <= 7) {
             if ($to eq 'i') {
                 my $i = low.s;
                 my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
@@ -679,6 +679,9 @@ hooks:
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
+    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+    w pv(i=>$abb,n=>2);
+    
     
     # 2
     saybl "\n\n# 2";
@@ -722,6 +725,7 @@ hooks:
     my @JJJ = w JV[$V];
     my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
     w pv(i=>$ab,n=>1);
+    
     say wdump($j);
     H.G w aj[$j];
     
