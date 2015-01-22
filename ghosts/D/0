@@ -472,75 +472,117 @@ hooks:
                 V.bz->("low.t%u 3", $u);
             }
             $cv = 3;
+            # 7 most emergent phase
+            my $newer = join "\t", low.T, $cv;
+            warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
+            delete V.bb->{low.r};
+            sayre "low.r\t->\t $newer";
+            V.bz->($newer => low.s);
         }
-        # 6 was dialed in 5.3?
-        
-        # 7 most emergent phase
-        my $newer = join "\t", low.T, $cv;
-        warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
-        delete V.bb->{low.r};
-        sayre "low.r\t->\t $newer";
-        V.bz->($newer => low.s);
-        
         # 8 styles hang around
     }
   Tl: | # lines make humm
-    my $les = '*';
-    my @J = w JV[$V, $les];
-    my @WJ = grep{_.to eq $to} @J;
-    my $ew = w ordey(t=>\@WJ);
-    
-    my $win=0;
-    while (defined(my $m = $ew->())) {
-        $win++;
-        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
-        saygr "$to styles: _.r => "._.s->pi for @{m.l};
-        
-        if (!@{m.t}) {
-            warn "^ no things, next";
-            next;
-        }
-    
+    my $e = w orderv(%$ar);
+    my $up;
+    while (defined(my $m = e.ew->())) {
         # 4 # response curves near
         my ($low) = @{m.t}; # lowest volt of this here
-        
         my $cv = low.cv;
         # 5.3
-        if ($cv < 4) {
-            if (0) {}
-            # 5.31
-            elsif ($to eq 'W') {
-                
-            }
-            # 5.32
-            elsif ($to eq 'M') {
-                
-            }
-            # 5.33
-            elsif ($to eq 'i') {
+        if ($cv <= 4) {
+            if ($to eq 'i') {
                 # the 374 coil, ux set must be complete
                 # ux nests under another ux like origin
+                # and M must humm after (reversal after 3
                 my $ux = V.bb->{low.t.'%u 3'} || die;
+                $ux = ux.s;
                 my $M = V.bb->{low.t.'%M 4'} || die;
+                $M = M.s;
+                V.bb->{"M/M.id 4"} = $M;
                 for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
-                    my ($iux) = map{_.s}grep { _.T eq "i/iu.id%u 3" } @WJ;
-                    ux.A->umk($iu, 'uS');
+                    my $u = V.bb->{"i/iu.id%u 3"} || next;
+                    $u = u.s;
+                    V.bb->{"i/iu.id 5"} = $iu; # must go through to get here
+                    ux.A->umk($u, 'uS'); # relatable
                 }
             }
-            # 5.4
+            elsif ($to eq 'M') {
+                my $M = low.s;
+                my $j = {};
+                my $jp = w Usurf(j=>$j, i=>$M);
+                M.mov = $jp;
+                M.vom = {reverse %$jp};
+                %{M.mov} == %{M.vom} || die;
+            }
             $cv = 4;
+            # 7 most emergent phase
+            V.bz->(low.T."\t".$cv => low.s);
+            delete V.bb->{low.r};
         }
-        # 6 was dialed in 5.3?
-        
-        # 7 most emergent phase
-        #V.bz->(low.T."\t".$cv => low.s);
-        # and delete lower
-        #delete V.bb->{low.r};
-        
         # 8
         # styles stay
     }
-    warn "$to is $win" if $win != 1;
+    
+  Tt: | # lines have depth, make link
+    my $e = w orderv(%$ar);
+    my $up;
+    while (defined(my $m = e.ew->())) {
+        # 4 # response curves near
+        my ($low) = @{m.t}; # lowest volt of this here
+        my $cv = low.cv;
+        # 5.3
+        if ($cv <= 5) {
+            if ($to eq 'i') {
+                my $i = low.s;
+                my $ux = V.bb->{low.t.'%u 3'} || die;
+                $ux = ux.s;
+                my $M = V.bb->{low.t.'%M 4'} || die;
+                $M = M.s;
+                
+                my $vm = M.vom;
+                my $mv = $vm->{ux.id} || die;
+                M.mvs->{$mv} = $ux;
+                say "for ".$ux->pi." has top go through $mv";
+            }
+            $cv = 5;
+            # 7 most emergent phase
+            V.bz->(low.T."\t".$cv => low.s);
+            delete V.bb->{low.r};
+        }
+        # 8
+        # styles stay
+    }
+    
+  Tr: | # lines are de
+    my $e = w orderv(%$ar);
+    my $up;
+    while (defined(my $m = e.ew->())) {
+        # 4 # response curves near
+        my ($low) = @{m.t}; # lowest volt of this here
+        my $cv = low.cv;
+        # 5.3
+        if ($cv <= 6) {
+            if ($to eq 'M') {
+                my $i = low.s;
+                my $ux = V.bb->{low.t.'%u 3'} || die;
+                $ux = ux.s;
+                my $M = V.bb->{low.t.'%M 4'} || die;
+                $M = M.s;
+                
+                my $vm = M.vom;
+                my $mv = $vm->{ux.id} || die;
+                M.mvs->{$mv} = $ux;
+                say "for ".$ux->pi." has top go through $mv";
+            }
+            $cv = 5;
+            # 7 most emergent phase
+            V.bz->(low.T."\t".$cv => low.s);
+            delete V.bb->{low.r};
+        }
+        # 8
+        # styles stay
+    }
+    
   pv: |
     G.pr || die;
     my $n = ar.n || 1;
@@ -572,10 +614,6 @@ hooks:
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
-        my @JJJJ = w JV[$V];
-        my $abb = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-        w pv(i=>$abb, n=>2);
-    
     
     # 2
     saybl "\n\n# 2";
@@ -591,9 +629,19 @@ hooks:
     
     # 4
     saybl "\n\n# 4";
-    w Tl(to => 'W', V=>$V);
-    w Tl(to => 'M', V=>$V);
     w Tl(to => 'i', V=>$V);
+    w Tl(to => 'M', V=>$V);
+    w Tl(to => 'W', V=>$V);
+    
+    # 5
+    saybl "\n\n# 5";
+    w Tt(to => 'i', V=>$V);
+    w Tt(to => 'M', V=>$V);
+    w Tt(to => 'W', V=>$V);
+    
+    
+    
+    
       
         my @JJJ = w JV[$V];
         my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
@@ -666,6 +714,28 @@ hooks:
         .@is." lines\t"
         ."js=".scalar(@{j.s})."\t"
         .$G->F_delta()."  load ".$H->la;
+  Usurf: |
+    j.seenid->{i.id} = $i;
+    my $jp = j.p ||= {};
+    $j = {%$j};
+    j.p = {};
+    my $here = "i.id";
+    $jp->{$here} = $here;
+    my @down = w Udown;
+    ar.d++;
+    die if ar.d > 10;
+    for my $d (@down) {
+        my $jpp = w Usurf(j=>$j, i=>$d, d=>ar.d);
+        for my $k (keys %$jpp) {
+            $jp->{"$here/$k"} = $jpp->{$k};
+        }
+    }
+    $jp;
+    
+    
+    
+    
+    
   U: |
     j.seenid->{i.id} = $i;
     
