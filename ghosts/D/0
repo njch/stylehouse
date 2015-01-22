@@ -387,92 +387,75 @@ hooks:
         return \@mm;
     };
   ordey: |
+    my $to = delete ar.to;
     my $ew = w orde;
-    sub {
+    my $or;
+    $or = sub {
         my $mw = $ew->() || return;
         my $am = {m=>$mw,t=>[],l=>[]};
         for my $m (@$mw) {
             my $at = m.l ? am.l : am.t;
             push @$at, $m;
         }
+        sayyl "$to lives: _.r => "._.s->pi for @{am.t};
+        saygr "$to styles: _.r => "._.s->pi for @{am.l};
+        if (!@{am.t}) {
+            warn "^ no things, next";
+            return $or->();
+        }
+    
         $am;
     }
-  Tw: | # awa
-    # 1
+  orderv: |
+    my $TV = ar.TV || ar.V;
     my $les = '*';
     my @J = w JV[$TV, $les];
     my @WJ = grep{_.to eq $to} @J;
-    my $ew = w ordey(t=>\@WJ);
-    # 2
-    my $win=0;
-    while (defined(my $m = $ew->())) {
-        $win++;
-        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
-        saygr "$to styles: _.r => "._.s->pi for @{m.l};
-        
+    my $ew = w ordey(t=>\@WJ, to=>$to);
+    return { ew => $ew, wj => \@WJ };
+  Tw: | # copy vertices and drop voltages accordingly
+    my $e = w orderv(%$ar);
+    while (defined(my $m = e.ew->())) {
         # 4 # response curves near
         my ($low) = @{m.t};
+        my $s = low.s;
         my $cv = low.cv;
-        $cv = 1 if !low.s.at; # sat in
-        V.bz->(low.T."\t".$cv => low.s); # most emergent phase
+        
+        $cv = 1 if $cv <= 3; # non hummed drops?
+        if (s.to eq 'i') {
+            my $u = V.bb->{"i/s.id%u 3"};
+            $cv = 1 if !$u || !u.s.at; # sat in
+        }
+        else {
+            $cv = 1 if !low.s.at; # sat in
+        }
+        
+        my $newer = low.T."\t".$cv;
+        sayre "low.r\t->\t $newer";
+        V.bz->($newer => low.s); # most emergent phase
         
         # 8
-        for (@{m.l}) {
-            V.bz->(_.r => _.s); # styles, all of them
-        }
+        V.bz->(_.r => _.s) for @{m.l}; # styles, all of them
     }
-    warn "$to is $win" if $win != 1;
     
   Th: | # the Creation
-    my $les = '*';
-    my @J = w JV[$V, $les];
-    my @WJ = grep{_.to eq $to} @J;
-    my $ew = w ordey(t=>\@WJ);
-    
-    my @uxes;
-    my $win;
-    while (defined(my $m = $ew->())) {
-        $win++;
-        sayyl "$to lives: _.r => "._.s->pi for @{m.t};
-        saygr "$to styles: _.r => "._.s->pi for @{m.l};
-        
-        if (!@{m.t}) {
-            warn "^ no things, next";
-            next;
-        }
-    
+    my $e = w orderv(%$ar);
+    while (defined(my $m = e.ew->())) {
         # 4 # response curves near
         my ($low) = @{m.t}; # lowest volt of this here
-        
         my $cv = low.cv;
         # 5.3
-        if ($cv < 3) {
-            if (0) {}
-            # 5.31
-            elsif ($to eq 'W') {
-            
-            }
-            # 5.32
-            elsif ($to eq 'M') {
-            
-            }
-            # 5.33
-            elsif ($to eq 'i') {
-                my $i = low.s;
-                if (!$i) {
-                    die wdump($low);
-                }
+        if ($cv <= 3) {
+            if ($to eq 'i') {
+                my $i = low.s || die wdump($low);
                 say "WSW: _.l - "._.r for @{m.l};
                 my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
                 
-                # ^ to make to multiple M, maybe if we were Collabing
-                # from several other modulators food into this modulation
-                # so things can be injected into each others space in here
-                
                 # look in V?
-                my ($u) = grep { _.G eq $G } map { _.i } @{i.A.n_U||[]};
+                  my $u = V.bb->{"i/i.id%u 3"};
+                $u = u.s if $u;
                 # also in M n_ux
-                # also fuu might find the sway-identity (.K & .B) and return it
+                # also fuu might find the swaying identity (.K & .B) and return it
                 say "Found u~! ".$u->pi if $u;
                 if ($u) {
                     u.i eq $i || die;
@@ -484,37 +467,23 @@ hooks:
                     uxa.B.i = uxa.i;
                     $u = w G.R fuu(u => $uxa);
                 }
-                push @uxes, $u; # for 374 coil
                 u.A->umk($M, 'ux');
                 u.A->umk(u.i, 'U'); # into alien space
-                
-                V.bz->("M/M.id/u/u.id 4" => $u);
+                V.bz->("low.t%u 3", $u);
             }
-            # 5.4
             $cv = 3;
         }
         # 6 was dialed in 5.3?
         
         # 7 most emergent phase
-        my $newer = join "\n", low.T, $cv;
+        my $newer = join "\t", low.T, $cv;
         warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
         delete V.bb->{low.r};
+        sayre "low.r\t->\t $newer";
         V.bz->($newer => low.s);
-        # and delete lower
         
-        # 8
-        # styles stay
+        # 8 styles hang around
     }
-    my @ba;
-    my $M;
-    for my $ux (@uxes) {
-        # ux nests under another ux like origin
-        for my $uS (@{ux.i.A.u_S||[]}) {
-            next unless grep {_.i eq $uS} @{M.A.n_ux||[]};
-            ux.A->umk($uS, 'uS');
-        }
-    }
-    warn "$to is $win" if $win != 1;
   Tl: | # lines make humm
     my $les = '*';
     my @J = w JV[$V, $les];
@@ -537,7 +506,7 @@ hooks:
         
         my $cv = low.cv;
         # 5.3
-        if ($cv <= 4) {
+        if ($cv < 4) {
             if (0) {}
             # 5.31
             elsif ($to eq 'W') {
@@ -545,21 +514,28 @@ hooks:
             }
             # 5.32
             elsif ($to eq 'M') {
-            
+                
             }
             # 5.33
             elsif ($to eq 'i') {
-                
+                # the 374 coil, ux set must be complete
+                # ux nests under another ux like origin
+                my $ux = V.bb->{low.t.'%u 3'} || die;
+                my $M = V.bb->{low.t.'%M 4'} || die;
+                for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
+                    my ($iux) = map{_.s}grep { _.T eq "i/iu.id%u 3" } @WJ;
+                    ux.A->umk($iu, 'uS');
+                }
             }
             # 5.4
-            $cv = 3;
+            $cv = 4;
         }
         # 6 was dialed in 5.3?
         
         # 7 most emergent phase
-        V.bz->(low.T."\t".$cv => low.s);
+        #V.bz->(low.T."\t".$cv => low.s);
         # and delete lower
-        delete V.bb->{low.r};
+        #delete V.bb->{low.r};
         
         # 8
         # styles stay
@@ -613,16 +589,16 @@ hooks:
     w Th(to => 'M', V=>$V);
     w Th(to => 'i', V=>$V);
     
+    # 4
+    saybl "\n\n# 4";
+    w Tl(to => 'W', V=>$V);
+    w Tl(to => 'M', V=>$V);
+    w Tl(to => 'i', V=>$V);
+      
         my @JJJ = w JV[$V];
         my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
         w pv(i=>$ab);
     
-    # 4
-    saybl "\n\n# 4";
-    #w Tl(to => 'W', V=>$V);
-    #w Tl(to => 'M', V=>$V);
-    #w Tl(to => 'i', V=>$V);
-      
         #my @JJJ = w JV[$V];
         #say "_.T _.cv now" for @JJJ;
         
