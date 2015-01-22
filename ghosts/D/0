@@ -397,8 +397,8 @@ hooks:
             my $at = m.l ? am.l : am.t;
             push @$at, $m;
         }
-        sayyl "$to lives: _.r => "._.s->pi for @{am.t};
-        saygr "$to styles: _.r => "._.s->pi for @{am.l};
+        sayyl "$to lives: _.r => ".(ref _.s eq 'C' ? _.s->pi : _.s) for @{am.t};
+        saygr "$to styles: _.r => ".(ref _.s eq 'C' ? _.s->pi : _.s) for @{am.l};
         if (!@{am.t}) {
             warn "^ no things, next";
             return $or->();
@@ -422,12 +422,12 @@ hooks:
         my $cv = low.cv;
         
         $cv = 1 if $cv <= 3; # non hummed drops?
-        if (s.to eq 'i') {
+        if ($to eq 'i') {
             my $u = V.bb->{"i/s.id%u 3"};
             $cv = 1 if !$u || !u.s.at; # sat in
         }
         else {
-            $cv = 1 if !low.s.at; # sat in
+            $cv = 1 if !s.at; # sat in
         }
         
         my $newer = low.T."\t".$cv;
@@ -450,33 +450,34 @@ hooks:
                 my $i = low.s || die wdump($low);
                 say "WSW: _.l - "._.r for @{m.l};
                 my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
-                
+                ref $i eq 'C' || wdump[$i,$low];
+                say "3 ".$i->pi;
                 # look in V?
-                  my $u = V.bb->{"i/i.id%u 3"};
-                $u = u.s if $u;
+                my $u = V.bb->{"i/i.id%u 3"};
+                my $ux = u.s if $u;
                 # also in M n_ux
                 # also fuu might find the swaying identity (.K & .B) and return it
-                say "Found u~! ".$u->pi if $u;
-                if ($u) {
-                    u.i eq $i || die;
+                say "Found u~! ".$ux->pi if $ux;
+                if ($ux) {
+                    ux.i eq $i || die;
                 }
                 else {
                     # add C.Bs override for little B schemas not in .B.?
                     my $uxa = {K => 'ux', i => $i};
                     sayyl "got a of ".$i->pi;
                     uxa.B.i = uxa.i;
-                    $u = w G.R fuu(u => $uxa);
+                    $ux = w G.R fuu(u => $uxa);
                 }
-                u.A->umk($M, 'ux');
-                u.A->umk(u.i, 'U'); # into alien space
-                V.bz->("low.t%u 3", $u);
+                ux.A->umk($M, 'ux');
+                ux.A->umk(ux.i, 'U'); # into alien space
+                V.bz->("low.t%u 3", $ux);
             }
             $cv = 3;
             # 7 most emergent phase
             my $newer = join "\t", low.T, $cv;
             warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
-            delete V.bb->{low.r};
             sayre "low.r\t->\t $newer";
+            delete V.bb->{low.r};
             V.bz->($newer => low.s);
         }
         # 8 styles hang around
@@ -494,14 +495,12 @@ hooks:
                 # the 374 coil, ux set must be complete
                 # ux nests under another ux like origin
                 # and M must humm after (reversal after 3
-                my $ux = V.bb->{low.t.'%u 3'} || die;
-                $ux = ux.s;
-                my $M = V.bb->{low.t.'%M 4'} || die;
-                $M = M.s;
+                my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
+                my $M = (V.bb->{low.t.'%M 4'} || die)->{s};
                 V.bb->{"M/M.id 4"} = $M;
                 for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
-                    my $u = V.bb->{"i/iu.id%u 3"} || next;
-                    $u = u.s;
+                    my $u = (V.bb->{"i/iu.id%u 3"} || next)->{s};
+                    die if $iu ne u.i;
                     V.bb->{"i/iu.id 5"} = $iu; # must go through to get here
                     ux.A->umk($u, 'uS'); # relatable
                 }
@@ -510,14 +509,16 @@ hooks:
                 my $M = low.s;
                 my $j = {};
                 my $jp = w Usurf(j=>$j, i=>$M);
-                M.mov = $jp;
-                M.vom = {reverse %$jp};
-                %{M.mov} == %{M.vom} || die;
+                my $vom = {reverse %$jp};
+                keys %$jp == keys %$vom
+                || die wdump[[sort keys %$jp], [sort values %$vom]];
+                V.bz->("M/M.id%vom 4" => $vom);
+                V.bz->("M/M.id%tom 5" => {}); # < ^ others 5s put moves forth
             }
             $cv = 4;
             # 7 most emergent phase
-            V.bz->(low.T."\t".$cv => low.s);
             delete V.bb->{low.r};
+            V.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -534,20 +535,19 @@ hooks:
         if ($cv <= 5) {
             if ($to eq 'i') {
                 my $i = low.s;
-                my $ux = V.bb->{low.t.'%u 3'} || die;
-                $ux = ux.s;
-                my $M = V.bb->{low.t.'%M 4'} || die;
-                $M = M.s;
+                my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
+                my $M = (V.bb->{low.t.'%M 4'} || die)->{s};
+                my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
+                my $tom = (V.bb->{"M/M.id%tom 5"})->{s};
                 
-                my $vm = M.vom;
-                my $mv = $vm->{ux.id} || die;
-                M.mvs->{$mv} = $ux;
-                say "for ".$ux->pi." has top go through $mv";
+                my $mv = $vom->{ux.id} || die;
+                $tom->{$mv} = $ux;
+                #say "for ".$ux->pi." has top go through $mv";
             }
             $cv = 5;
             # 7 most emergent phase
-            V.bz->(low.T."\t".$cv => low.s);
             delete V.bb->{low.r};
+            V.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -563,18 +563,14 @@ hooks:
         # 5.3
         if ($cv <= 6) {
             if ($to eq 'M') {
-                my $i = low.s;
-                my $ux = V.bb->{low.t.'%u 3'} || die;
-                $ux = ux.s;
-                my $M = V.bb->{low.t.'%M 4'} || die;
-                $M = M.s;
+                my $M = low.s;
+                my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
+                my $to = (V.bb->{"M/M.id%tom 5"})->{s};
                 
-                my $vm = M.vom;
-                my $mv = $vm->{ux.id} || die;
-                M.mvs->{$mv} = $ux;
-                say "for ".$ux->pi." has top go through $mv";
+                #w pv(i=>M.mvs,n=>2);
+                #say "for ".$ux->pi." has top go through $mv";
             }
-            $cv = 5;
+            $cv = 6;
             # 7 most emergent phase
             V.bz->(low.T."\t".$cv => low.s);
             delete V.bb->{low.r};
@@ -604,6 +600,9 @@ hooks:
     # the M is Random input grouper - upstream patch panel to C
     # the i is a sack of i, somewhere under M
     
+        my @JJJ = w JV[$V];
+        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+        w pv(i=>$ab);
     sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
     my $W = G.W; # not really singular, crazy patchwork though
     my $V = G.V;
@@ -617,10 +616,11 @@ hooks:
     
     # 2
     saybl "\n\n# 2";
-    w Tw(TV=>$TV, to=>'W', V=>$V);
-    w Tw(TV=>$TV, to=>'M', V=>$V);
-    w Tw(TV=>$TV, to=>'i', V=>$V);
+    w Tw(to=>'W', V=>$V, TV=>$TV);
+    w Tw(to=>'M', V=>$V, TV=>$TV);
+    w Tw(to=>'i', V=>$V, TV=>$TV);
     
+      
     # 3
     saybl "\n\n# 3";
     w Th(to => 'W', V=>$V);
@@ -639,13 +639,17 @@ hooks:
     w Tt(to => 'M', V=>$V);
     w Tt(to => 'W', V=>$V);
     
+    # 6
+    saybl "\n\n# 6";
+    w Tr(to => 'W', V=>$V);
+    w Tr(to => 'M', V=>$V);
+    # ^ handles i
     
     
-    
-      
         my @JJJ = w JV[$V];
         my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-        w pv(i=>$ab);
+        w pv(i=>$ab,n=>1);
+    
     
         #my @JJJ = w JV[$V];
         #say "_.T _.cv now" for @JJJ;
