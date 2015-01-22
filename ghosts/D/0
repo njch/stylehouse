@@ -451,7 +451,6 @@ hooks:
                 say "WSW: _.l - "._.r for @{m.l};
                 my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
                 ref $i eq 'C' || wdump[$i,$low];
-                say "3 ".$i->pi;
                 # look in V?
                 my $u = V.bb->{"i/i.id%u 3"};
                 my $ux = u.s if $u;
@@ -476,7 +475,6 @@ hooks:
             # 7 most emergent phase
             my $newer = join "\t", low.T, $cv;
             warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
-            sayre "low.r\t->\t $newer";
             delete V.bb->{low.r};
             V.bz->($newer => low.s);
         }
@@ -555,30 +553,100 @@ hooks:
     
   Tr: | # lines are de
     my $e = w orderv(%$ar);
-    my $up;
+    my @mm;
+    my $fo;
     while (defined(my $m = e.ew->())) {
         # 4 # response curves near
         my ($low) = @{m.t}; # lowest volt of this here
         my $cv = low.cv;
         # 5.3
         if ($cv <= 6) {
+            if ($to eq 'W') {
+                push @mm, low.s;
+            }
             if ($to eq 'M') {
                 my $M = low.s;
+                push @mm, $M;
+                
                 my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
                 my $to = (V.bb->{"M/M.id%tom 5"})->{s};
-                
-                #w pv(i=>M.mvs,n=>2);
-                #say "for ".$ux->pi." has top go through $mv";
+                my $pat = [];
+                for my $k (sort keys %$to) {
+                    push @mm, $to->{$k};
+                    push @$pat, {k=>$k, ux=>$to->{$k}};
+                }
+                V.bb->{"M/M.id%pat 6"} = $pat;
             }
             $cv = 6;
             # 7 most emergent phase
-            V.bz->(low.T."\t".$cv => low.s);
             delete V.bb->{low.r};
+            V.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
     }
+    for my $i (@mm) {
+        sayyl "SPAWN ".$i->pi;
+        w spawn(u=>$i);
+    }
     
+  Ta: | # lines are back
+    my $e = w orderv(%$ar);
+    my @mm;
+    while (defined(my $m = e.ew->())) {
+        # 4 # response curves near
+        my ($low) = @{m.t}; # lowest volt of this here
+        my $cv = low.cv;
+        # 5.3
+        if ($cv <= 7) {
+            my $i = low.s;
+            if ($to eq 'W') {
+                push @mm, low.s;
+            }
+            
+            if ($to eq 'M') {
+                my $M = low.s;
+                
+                my $pat = (V.bb->{"M/M.id%pat 6"})->{s};
+                
+                push @mm, map {_.ux} reverse @$pat;
+                
+                push @mm, $M; # after desc lines come back
+            }
+            $cv = 7;
+            # 7 most emergent phase
+            delete V.bb->{low.r};
+            V.bz->(low.T."\t".$cv => low.s);
+        }
+        # 8
+        # styles stay
+    }
+    for my $i (@mm) {
+        sayyl "ARR ".$i->pi;
+        if (i.K eq 'ux') {
+            if (my $ii = delete V.bb->{"i/i.i.id 6"}) {
+                $ii = ii.s;
+                die unless $ii eq i.i;
+                V.bz->("i/i.i.id 7" => $ii);
+            }
+        }
+        w compile_figure[$i, $j];
+        w wayout_sendo[$i, $j];
+    }
+  Uben: |
+    j.seenid->{i.id} = $i;
+    
+    w spawn(u=>$i);
+    
+    my @down = w Udown;
+    ar.d++;
+    
+    for my $d (@down) {
+        w U(j=>$j, i=>$d, d=>ar.d);
+    }
+    
+    w compile_figure;
+    w wayout_sendo;
   pv: |
     G.pr || die;
     my $n = ar.n || 1;
@@ -600,9 +668,6 @@ hooks:
     # the M is Random input grouper - upstream patch panel to C
     # the i is a sack of i, somewhere under M
     
-        my @JJJ = w JV[$V];
-        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-        w pv(i=>$ab);
     sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
     my $W = G.W; # not really singular, crazy patchwork though
     my $V = G.V;
@@ -610,6 +675,7 @@ hooks:
     
     (G.pr) = map {_.s.W} grep {_.to eq 'M'} w JV[$TV];
         
+    W.Z->{'background-color'} = '#f4f';  
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
@@ -641,83 +707,30 @@ hooks:
     
     # 6
     saybl "\n\n# 6";
-    w Tr(to => 'W', V=>$V);
-    w Tr(to => 'M', V=>$V);
-    # ^ handles i
+    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>G.pr);
     
+    w Tr(to => 'W', V=>$V, j=>$j);
+    w Tr(to => 'M', V=>$V, j=>$j);
+    w Tr(to => 'i', V=>$V, j=>$j);
+    # ^ M handles i
     
-        my @JJJ = w JV[$V];
-        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-        w pv(i=>$ab,n=>1);
+    # 7
+    saybl "\n\n# 7";
+    w Ta(to => 'M', V=>$V, j=>$j);
+    w Ta(to => 'W', V=>$V, j=>$j);
+    
+    my @JJJ = w JV[$V];
+    my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+    w pv(i=>$ab,n=>1);
+    say wdump($j);
+    H.G w aj[$j];
     
     
         #my @JJJ = w JV[$V];
         #say "_.T _.cv now" for @JJJ;
-        
-    say "BAILING" for 1..5; 
-    return;
-    my $M;
-    # 
-    
-    # by the time we get to 
-    # we may be able 
-    my $wandering = my $jw = {};
-    G.R->phat($jw); # embed abb in W%c #!
     
     
-    my @is = ();
-    
-    # could make a tree
-    # let U wander off with certain things (n_y) for now instead.
-    
-    my @ba;
-    
-    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
-    
-    sayyl wdump(TV.bb);
-    exit;
-    
-    if (ar.TV) {
-        for my $i (@ba) {
-            w compile_figure[$j, $i];
-            w wayout_sendo[$j, $i];
-            sayyl "YYYYY";
-        }
-    }
-    else {
-    
-    my @tops = grep { !_.u_S } @{M.A.n_ux||[]};
-    @tops = @{M.A.n_ux||[]} if !@tops;
-    @tops = map { _.i } @tops;
-    die "notops" if !@tops;
-    @tops = G.W;
-    
-    if (ar.part) {
-        my $want = { map { _.id => 1 } @ba };
-        for my $i (map{_.i}@{M.A.n_ux||[]}) {
-            say (($want->{i.id} ? " +" : " -")."  ".$i->pi);
-            j.seenid->{i.id} = 1 unless delete $want->{i.id};
-        }
-        if (%$want) {
-            sayre "Wanted but not found in n_ux: \n"
-                .ind(' +  ', join("\n", map {$_->pi} values %$want));
-        }
-    }
-    
-    for my $i (@tops) {
-        saygr "Top level U is a ".$i->pint();
-        
-        w U[$j, $i];
-    }
-    
-    }
-    
-    H.G w aj[$j];
-    
-    sayre "ux -------- G.K done\t".(join ' ', keys %$ar)."  "
-        .@is." lines\t"
-        ."js=".scalar(@{j.s})."\t"
-        .$G->F_delta()."  load ".$H->la;
+    sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
   Usurf: |
     j.seenid->{i.id} = $i;
     my $jp = j.p ||= {};
@@ -760,7 +773,7 @@ hooks:
     my @ks = grep { $okn->{$_} } keys %{i.A};
     my @As = map { @{i.A->{$_}||[]} } @ks;
     my @down = map{_.i} @As;
-    @down = grep {!j.seenid->{_.id}} @down unless ar.allseeing;
+    @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
     die if grep {_.dead} @down;
     uniq @down;
     
@@ -910,7 +923,7 @@ hooks:
                     my $isa = '++';
                     # an uiuS for mergins Anim/* ?
                     
-                    my $anim = 1;#ui.K eq 'Do' && ($k eq 'left' || $k eq 'top');
+                    my $anim = 0;#ui.K eq 'Do' && ($k eq 'left' || $k eq 'top');
                     if ($anim) {
                         $anima->{$k} = $v; # BB
                     }
