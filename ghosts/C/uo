@@ -1,0 +1,449 @@
+
+W:
+  - K: Im
+    B: {href: http://24.media.tumblr.com/tumblr_lzsfutEA3G1rop013o1_1280.jpg}
+C:
+ - K: Ims #c
+   V: gI
+   ux: {spawn: [K: i]}
+   Gw: 1
+      
+ - K: Im #c
+   Gw: 1
+   V: U
+   styles: Im -te ab
+   
+   ux: {spawn: []}
+ 
+ - K: Lingos #c
+   V: U
+   styles: Lingos -te
+   S:
+     content_D: |
+       "$l"
+     ishtml: 1
+   ux:
+     spawn: []
+ - K: YouTube #c B{vid=PSNPpssruFY
+   V: U
+   ux: {spawn: []}
+   S:
+     ishtml: 1
+     content_D: |
+       my $yus = join '.', qw'youtube com';
+       my $vid = ar.vid || "PSNPpssruFY"; # Fats Waller - Aint Misbehavin
+       qq {<iframe class="youtube-player" type="text/html" width="640" height="385"}
+       .qq { src="http://$yus/embed/$vid?autoplay=1" allowfullscreen frameborder="0"></iframe>};
+
+ 
+ - K: IF #c B{vid=PSNPpssruFY
+   V: U
+   ux: {spawn: []}
+   styles: -te OxO
+   S:
+     ishtml: 1
+     tag: iframe
+     attr:
+       type: text/html
+     Z_D:
+       u.at.attr.src = $href;
+       undef;
+
+ 
+ - K: Ra #c
+   e: 1
+   flows_D: |
+     S.timezs = sub {
+         my ($time) = shift;
+         join "x", map { $time->{$_} } sort keys %$time;
+     };
+     my $ti=0;
+     S.B.time = {map {$ti++=>$_} split 'x', S.time};
+     S.B.now = {0,0,1,0};
+     0->ing(6, lat => $S); 
+   lat: |
+     return if w highload[$S];
+     return if w paused;
+     Sw riv;
+   riv: |
+     now.1++;
+     if (now.1 == time.1) {
+         now.1 = 0;
+         now.0++;
+        if (now.0 == time.0) {
+             now.0 = 0;
+        }
+     }
+     my $at = S.timezs->($now);
+     for my $ma (grep { my $u = $_; $u =~ s/_/./g; $at =~ /^$u$/ } sort keys %{S.Dz}) {
+         Sw Dz/$ma[$at];
+     }
+S:
+ - K: ooo
+   Ss:
+    - K: Im
+      css:
+       - border:0.03em solid black
+       - width:49%
+       - padding:2em
+       - background-size:100%
+       
+    - K: mooj
+      css:
+       - text-shadow:2px 2px 4px rgb(0,0,255)
+       - background-size:100%
+     
+    - K: Lingos
+      css:
+       - font-size:222%
+       - z-index:50000
+     
+    - K: Ims
+    
+    - K: Ooogida
+      css:
+       - width:100%
+    
+    - K: blur2
+      css: 
+       - -webkit-animation:blur 3s infinite
+    - K: blur
+      keif:
+       - K: 0%, 100%
+         css:
+          - -webkit-filter:blur(0px)
+       - K: 50%
+         css:
+          - -webkit-filter:blur(10px)
+          
+ - K: g #c sidecar
+   Ss:
+    - K: te
+      css: 
+        - border-bottom:1px solid black
+        - float:left
+        - position:relative
+        - width:100%
+        - background:rgba(150,100,50,0.7)
+        
+ - K: tr #c y-toro # Z is a loose hash being vortexed, it merges with ui.Z or ui..style_D (Z)
+   Ss:
+    - K: opa_n
+      D: |
+        at.Z.opacity = "0.$n";
+    - K: sat_n
+      D: |
+        at.Z.flit.saturate = $n;
+    - K: bri_n
+      D: |
+        at.Z.flit.brightness = $n;
+    - K: con_n
+      D: |
+        at.Z.flit.contrast = $n*2;
+    - K: inv_n
+      D: |
+        at.Z.flit.invert = "0.$n";
+    - K: hue_n
+      D: |
+        at.Z.flit->{'hue-rotate'} = int((360/9)*$n)."deg";
+    - K: blr_n
+      D: |
+        at.Z.flit.blur = ($n*2)."px";
+    - K: gra_n
+      D: |
+        at.Z.flit.grayscale = "0.$n";
+    - K: dead
+      css:
+        - background:#0d0e4d
+    - K: ref
+      css:
+        - '-webkit-box-reflect: below -15px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.5)))'
+P:
+ - GAK: D
+   InC:
+           W:
+             S:
+               styles: poi OxO
+             Z:
+               background: url(i/greencush.jpg)
+               background-size: 100%
+               z-index: -30
+           M:
+             Ss: [ooo, tr]
+             Z:
+               left: 50%
+               width: 50%
+ - K: Lingos
+   B:
+     l: ᒊ
+   S:
+     Z:
+       font-size: 700%
+perc_else:
+  - K: Ra
+    e: 10
+    B: {name: Wa}
+    time: 6x1
+    Dz:
+     _x0: |
+       return w uxd if $at =~ /^0/;
+       w uxd_lite;
+      
+  - K: Ra
+    e: 5
+    B: {name: Fa}
+    time: 2x3
+    Dz: 
+     _x0: w f/at;
+     _x1: w f/ph;
+     1x1: w f/bg;
+       
+
+  - K: Ra
+    e: 14/2
+    B:
+      name: Ba
+      time: {0: 2, 1: 3}
+      now: {0: 0, 1: 0}
+    Dz:
+     0x2: |
+       w f/te;#textual
+       w f/rotation;
+     1x1: |
+       w f/at;#titude
+       w f/rotation;
+hooks:
+  recoded_init: |
+    w f/at;
+  humms_D: |
+    waylay mux;
+  mux: |
+    my $D = K G:D;
+    my $a = {%$ar};
+    my $u = delete a.u;
+    my $MR = G.R;
+    $D w mux[$MR,$a,$u];
+  Im:
+   print: $file
+   flows_D: |
+     (B.href) = $file =~ /(i\/.+$)/;
+     my $u = {K => 'Lingos', B=>{l => '☯', hmm => rand(1)}};
+     #w G.R fuu[$S, $u];
+   humms_D: |
+     S.S.Z->{'background-image'} = "url('$href')";
+   E:
+     _D: |
+       my $s = S.A.u_S->[0]->{i};
+       w $s add;
+       w f/at;
+       sayyl "from ".$S->pi." to ".$s->pi;
+  Ims:
+   flows_D: | 
+      my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
+      S.finds = [shuffle @finds];
+      
+      Sw add for 1..(S.flo||1);
+      Sw E/_D;
+   add: |
+     my $f = shift @{S.finds};
+     my $u = {K => 'Im', B => {file => $f}};
+     w G.R fuu[$S, $u];
+   E:
+     _D: |
+       Sw add;
+  Anims: |
+    $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
+  r:
+    highload: |
+       my $la = $H->la;
+       if (G.maxloadav && $la > G.maxloadav) {
+           sayre "load average is $la"
+           (ar.S ? " ar.S.K" : "");
+           $H->snooze;
+           return 1;
+       }
+    paused: |
+      G.paused
+  percolate: |
+    w f/at; w f/at;
+    w f/ph; w f/ph;
+    w mux;
+    
+    $G->timer(10, sub { G.maxloadav = 1.2; });
+    
+  M:
+    add: |
+      my ($I) = 0->rei({K=>"Ims"});
+      w $I add;
+    
+  keys:
+    t: w f/at;
+    i: #w f/rose;
+    y: w f/aty;
+    e: w f/rotation;
+    E: w f/tallpaddy;
+    u: w f/restysets;
+    p: w f/ph;
+  arrange: |
+    my $Z = S.S.Z ||= {};
+    
+    my @he = (1,2,4,8,7,5,10,10,10,10,10,10);
+    (Z.height, Z.width) = map{$_."0%"}shuffle @he;
+    
+    
+  se: # mod
+    pad: S.Z.height = int(rand 9).'0%';
+    opa: w crank(+ s=>'opa');
+    sat: w crank(+ s=>'sat');
+    bri: w crank(+ s=>'bri');
+    con: w crank(+ s=>'con');
+    hue: w crank(+ s=>'hue');
+  crank: |
+    S.styles =~ s/$s(-?\d+)//;
+    my $d = $1+1;
+    $d += ar.di - 1 if ar.di;
+    $d -= 9 until $d <= 9;
+    S.styles .= " $s$d";
+  F: |
+    ar.a = {};
+    # scan r for styles, anything that maps across the flux field
+    w f/mus if ar.us;
+    
+    
+  W:
+    r: |
+      my @a=grep { _.K ne "IF" } shuffle w G.R fi(f=>{V=>'U'});
+      if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
+          my $from = $1 || 0;
+          my $to = $2 || $3-1;
+          @a = grep {defined} @a[$from..$to];
+      }
+      w mux(u=>$_) for @a;
+      @a
+      
+  f: # flux
+    mus: |
+      my ($K,$for) = ar.us =~ /^(?:(\S+))? ?(?:for (\S+))?$/ || die;
+      my $b = {};
+      b.K = $K if $K;
+      b.for = $for if $for;
+      my @us = w W/r(%$b);
+      a.us = [@us];
+    at: |                                            # at x2 #c
+        for my $S (w W/r(qw'K Im for 0..7')) {
+            w arrange[$S];
+            w se/opa[$S];
+            if (rand(1) < 0.1) {
+                G.GG.U.uW.Z.background = "url(S.B.href)";
+            }
+        }
+        if (rand(1) < 2/9) {
+            w f/ph;
+            w f/rotation;
+        }
+        if (rand(1) < 1/9) {
+            w f/tallpaddy;
+            w f/ph;
+        }
+    te: | #c at x1, x3
+      for my $S (w W/r(qw'K Lingos for 0..4')) {
+          my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
+          my $in = S.B;
+          #say "in.l => $o";
+          in.l = $o;
+      }
+    ph: |                                            #c at 0x0
+        for my $S (w W/r(qw'K Im for 0..3')) {
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+            }
+            (S.resty) = grep { !S.resty || $_ ne S.resty } w restyfor[$S];
+            S.styles .= " S.resty";
+        }
+    pause: | #c
+      G.paused = !G.paused;
+    restysets: | #c
+        for my $S (w W/r(qw'K Im for 1')) {
+            if (S.resty) {
+                S.styles =~ s/$_// for split ' ', S.resty;
+                delete S.resty;
+            }
+        }
+        my $res = w restyfor(S=>{});
+        for my $S (w W/r(qw'K Im for 1')) {
+            next if rand(1) < 6/9;
+            S.resty = $res;
+            S.styles .= " $res";
+        }
+    rose: | #c
+       my @rose = read_file("trampled_rose_lyrics");
+       my @randoms = shuffle( grep { /\w/ } @rose );
+       
+        for (1..2) {
+            my $u = {K => 'Lingos', B => { l => shift @randoms}};
+            my $S = w G.R fuu[$u];
+            say "ingos S.B.l";
+            S.Z = {%{S.Z||{}},
+                'font-size' => int(rand(5)+1).'00%',
+                position => "fixed",
+            };
+        }
+    tallpaddy: | #c
+      for my $S (w W/r(qw'K Im')) {
+          S.Z.padding > 7 || next;
+          w se/pa[$S];
+      }
+    rotation: | #c
+      for my $Im (w W/r(qw'K Im for 1')) {
+           next;
+          for my $ux ($Im->LioO('ux')) {
+              my $uxid = ux.at.id;
+              $H->JS("var p = \$('#$uxid').parent(); \$('#$uxid').detach().appendTo(p);");
+          }
+      }
+    lingpa: | #c
+      for my $S (w W/r(qw'K Lingos for 0..2')) {
+            S.Z.padding = int(rand 24).'em';
+      }
+  restyfor: |
+    my @bang = ("sat6 opa2 con2 blr2 inv9", "ref sat9 bri4", 'ref sat9', 'ref blr8 con9 hue3',
+        'inv9 sat9 blr2 hue8', 'inv4 bri7 blr5 con5', 'inv3 blr2 con1 hue6', 
+        'blr2 bri3 con5 gra8 hue8 inv8 sat5'
+        );
+    my @colar = ("sat9 blr2 inv4 con8", "sat3 blr5 inv9 con9", 'ref sat6 bri3 inv2');
+    push @bang, @colar;
+    @bang = @colar if S.B.file =~ /art/;
+    return shuffle(@bang);
+  uxd: |
+    die
+  uxd_lite: |
+    die
+  index_clickspace: |
+    my $Mid = G.W.uuid;
+    my ($x, $y) = (e.x, e.y);
+    my $what = ar.what || "ux.Im" || "ux";
+    $H->JS(" var hit = [];
+    \$('#$Mid > $what').filter(function() {
+        return \$(this).offset().left < $x
+            && \$(this).offset().left + \$(this).width() > $x
+            && \$(this).offset().top < $y
+            && \$(this).offset().top + \$(this).height() > $y
+    }).each(function() {
+        hit."."push(this."."id())
+    });
+    ws."."send({i=>hit});"); # TODO makes the server hang or something?
+  event: |
+    sayyl $G->pi." G.K   EEEEEE ".$i->pi;
+    
+    
+        if (e.S) {
+            w $i zoum;
+        }
+        else {
+            w $i E/_D;
+        }
+
+    w mux;
+    
+recoded_Cways: 1
+

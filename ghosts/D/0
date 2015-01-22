@@ -312,6 +312,8 @@ hooks:
       # 1-9 -> humm/links/etc
       
       for my $u (@$us) {
+          next unless defined $u;
+          die wdump($u) unless ref $u eq 'C';
           TV.bz->("i/u.id $v", $u); # v maybe subtle
           TV.bz->("i/u.id%M $v", $M); # two divides - then M can optimise 7
       }
@@ -458,7 +460,7 @@ hooks:
                 # also fuu might find the swaying identity (.K & .B) and return it
                 say "Found u~! ".$ux->pi if $ux;
                 if ($ux) {
-                    ux.i eq $i || die;
+                    ux.i eq $i || die "ux.i eq $i   -".ux.i->pi."\n eq ".$i->pi;
                 }
                 else {
                     # add C.Bs override for little B schemas not in .B.?
@@ -648,11 +650,11 @@ hooks:
     w compile_figure;
     w wayout_sendo;
   pv: |
-    G.pr || die;
     my $n = ar.n || 1;
     my $name = "RD$n";
     sayre "            Daving $name => ".gp($i) for 1..2;
-    G.pr.G w Dave(K=>"C",Dname=>$name,i=>$i);
+    my $dg = H.G K G:C;
+    $dg w Dave(K=>"C",Dname=>$name,i=>$i);
               
     
   ux: |
@@ -679,15 +681,15 @@ hooks:
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
-    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-    w pv(i=>$abb,n=>2);
-    
     
     # 2
     saybl "\n\n# 2";
     w Tw(to=>'W', V=>$V, TV=>$TV);
     w Tw(to=>'M', V=>$V, TV=>$TV);
     w Tw(to=>'i', V=>$V, TV=>$TV);
+    
+    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+    w pv(i=>$abb,n=>2);
     
       
     # 3
