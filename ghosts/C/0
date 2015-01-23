@@ -47,19 +47,7 @@ R:
    findway: R_sur
      
 P:
- - GAK: U #c
-   InC:
-       W:
-         Ss: [u, x, X]
-         S:
-           styles: OxO z NZ
-         Z:
-           overflow-y: scroll
-       M:
-         S:
-           styles: OxO
-       ux:
-         spawn: []
+
  - GAK: D #c
    InC:
        W:
@@ -103,6 +91,15 @@ hooks:
     w ikey;
     G.TV = {};
     G.R->phat(G.TV);
+  humms_D: |
+    waylay mux(u=>$u);
+  mux: |
+    my $D = K G:D;
+    my $a = {%$ar};
+    my $u = delete a.u;
+    my $MR = G.R;
+    a.v ||= 7;
+    $D w mux[$MR,$a,$u];
   any_init: |
     my $js = " return {el:elvis, x: screen.width, y: screen.height} ";
     my $cb = sub { saygr wdump(2,shift) };
@@ -115,17 +112,13 @@ hooks:
   percolate: |
     G.theR = $G->R('sur');
     w makeD unless K D;
-    w makeD(name=>'RD1');
-    w makeD(name=>'RD2');
     if (H.name eq 'D') {
         waylay 1 beD;
     }
-    waylay uxd(full=>1);
   beD: |
         my $W = K G:U ->K('W');
         W.Z->{'background-color'} = '#fca';
         # TODO # w mux(u=>$W,v=>4);
-        w uxd(full=>1);
         w ave(i=>$W);
   makeD: |
     my $name = ar.name || "J".G.Jnumb++;
@@ -138,7 +131,7 @@ hooks:
   are: | #c chang->queue U xing
     w makeD(ur=>'f') unless G.theD;
     # TODO # w mux(u=>G.theD, v=>3); # or 2 to up code?
-    w chang(u=>G.theD);
+    w mux(u=>G.theD);
     G.theR;
   ikey: | # $G assumes keydo
     H.keydo = sub {
@@ -164,14 +157,12 @@ hooks:
     sayyl "ave into: ". join "\t", $G->pi, $R->pi, ar.S->pi, ar.i;
     w $R Sud/in;
   Dave: |
-    my $g = G:$K;
-    
+    my $g = $G;
     saybl "DAVING ar.Dname";
     if (!$g) {
-        saybl "NOT FOUND G $K";
-        ar.way = join ' ', 'C', (ar.way||'C/nv');
-        my $P = [{GAK => "$K ar.way"}];
-        $g = H.G w percs[$P];
+        #ar.way = join ' ', 'C', (ar.way||'C/nv');
+        #my $P = [{GAK => "$K ar.way"}];
+        #$g = H.G w percs[$P];
     }
     
     sayre "Okay now Dave is ".$g->pi;
@@ -199,70 +190,13 @@ hooks:
         else {
             w $i E/_D;
         }
-  uxd: |
-    my $U = K G:U;
-    
-    my $chi = G.Vu.U;
-    G.Vu.U = [];
-    my $TV = {%{G.TV.bb}};
-    G.R->phat(G.TV);
-    
-    my $ment = { map{_.id=>1} values %$TV };
-    @$chi = grep { !$ment->{_.id} } @$chi;
-    if (%$ment) {
-        $U w ux[$TV];
-        return unless @$chi || ar.full;
-    }
-    
-    saygr "CHi now: ".@$chi;
-    G.R->phat(G.TV);
-    
-    if (!ar.full && $chi && @$chi) {
-        @$chi = uniq @$chi;
-        return sayyl "iggy uxd" if !@$chi;
-        say "ux parti : ".$_->pi for @$chi;
-        my $U = K G:U;
-        $U w ux(part => $chi);
-    }
-    else {
-        my $full = ar.full ? "FULL":"full";
-        saygr "Codon $full uxd";
-        0->sing(alluxd => sub {
-            sayyl "uxing... G.name G.K";
-            my @is = w G.R fi(f=>{});
-            saygr "uxing ".$_->pi for @is;
-            my $is = \@is;
-            $U w ux[$is];
-        }, begin => 0.001);
-    }
-  mux: |
-    my $u = ar.u;
-    w chang[$u] if $u;
-    sayre "MUX MUX MUX" for 1..5;
-    w jmux;
-  jmux: |
-    my $D = K G:D;
-    my $a = {%$ar};
-    my $u = delete a.u;
-    my $MR = G.R;
-    $D w mux[$MR,$a,$u];
+
   remux: |
     my $U = K G:U;
     my $a = {%$ar};
     my $u = delete a.u;
     my $MR = G.R;
     $U w remux[$MR,$a,$u];
-  chang: |
-      die "u.G.name ! " if u.G ne $G;
-      saybl "CHANG ".$u->pi;
-      my $v = ar.v || 1;
-      G.TV.bz->("u.id $v", $u);
-      
-      push @{G.Vu.U||=[]}, $u if u.G eq $G;
-      die "WEIRD u.G.name on u.K " if u.G ne $G;
-      #w mux; # is:
-      
-      0->sing(uxd => sub { w uxd(not=>1); }, again=>1);
   unchanged: |
       my ($u) = values %$ar;
       $u = G.theD || die $u if ref $u ne 'C';
