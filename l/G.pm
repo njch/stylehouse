@@ -63,7 +63,6 @@ sub new {
     $G->{way} = join "+", @ways;
     $G->{name} = $G->{way};
 
-    $G->{GGs} = [];
     my $ui = $G->{A}->{u}->{i};
     wish(G => $ui) || $ui eq $H || die "not G above? $G->{name} ".$ui->pi;
     $G->{A}->umv('', 'G');
@@ -71,8 +70,6 @@ sub new {
     $h ||= $G if $G->{name} eq 'H'; # TODO $G->{K}
     $h || die "nogh";
     $G->{A}->umk($h, 'Gs');
-    push @{$ui->{GGs}}, $G; # OGG
-    push @{$H->{G}->{GGs}}, $G unless $ui eq $H->{G}; # OGG
 
 
     $G->load_ways(@ways);
@@ -359,13 +356,6 @@ sub uiuS {
             return $some if $some;
         }
     }
-}
-
-sub GAK {
-    my $G = shift;
-    my ($K, $g) = @_;
-    $g->{K} = $K;
-    $G->{GG}->{$g->{K}} = $g;
 }
 
 sub sing {
