@@ -207,8 +207,6 @@ hooks:
       my $TV = G.TV;
       my $u = ar.u || [];
       
-      sayre "MUXALITO ";
-      
       my $us = [ref $u eq 'ARRAY' ? @$u : $u];
       
       $a = {k=>$a} if !ref $a;
@@ -224,7 +222,7 @@ hooks:
       for my $u (@$us) {
           next unless defined $u;
           die wdump($u) unless ref $u eq 'C';
-          say "casual $v ".$u->pi;
+          say "mux $v ".$u->pi;
           TV.bz->("i/u.id $v", $u); # v maybe subtle
           TV.bz->("i/u.id%M 4", $M); # two divides - then M can optimise 7
       }
@@ -373,7 +371,7 @@ hooks:
             # add C.Bs override for little B schemas not in .B.?
             my $uxa = {K => 'ux', i => $i};
             uxa.B.i = uxa.i;
-            $ux = w G.R fuu(u => $uxa);
+            $ux = w G.R fuu(u => $uxa, q=>1);
         }
         ux.A->umk($M, 'ux');
         ux.A->umk(ux.i, 'U'); # into alien space
@@ -403,7 +401,6 @@ hooks:
                 my $needmore = 0;
                 for my $ux (@{M.tohu||[]}) {
                     next if $got->{ux.id};
-                    sayyl "Need to make path to ".$ux->pi;
                     $needmore = 1;
                 }
                 if ($needmore) {
@@ -448,9 +445,8 @@ hooks:
                 M.pat = $pat;
             }
     for my $i (@mm) {
-        next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
-        sayyl "SPAWN ".$i->pi;
-        w spawn(u=>$i);
+        #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
+        #sayyl "SPAWN ".$i->pi;
     }
   seven: |
     my @mm;
@@ -520,15 +516,43 @@ hooks:
     my $V = G.V;
     my $les = '*';
     
-    my ($M) = map {_.s.W} grep {_.to eq 'M'} w JV[$TV];
+    my @ONTV = w JV[$TV];
+    my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
         
     W.Z->{'background-color'} = '#334';  
     
-    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
+    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
     
     my $p = {};
     # 2
     saybl "\n\n# 2";
+    if (0) {
+    @ONTV = w JV[$TV];
+    for my $j (@ONTV) {
+        my $to = j.to;
+        my $s = j.s;
+        my $cv = j.cv;
+        # 4 # response curves near
+        
+        $cv = 1 if $cv <= 3; # non hummed drops?
+        if ($to eq 'i') {
+            my $u = V.bb->{"i/s.id%u 3"};
+            if (s.dead) {
+                w G.R del[$u];
+                delete V.bb->{"i/s.id%u 3"};
+                sayre "SOMETHING DIED: ".$u->pi;
+            }
+            $cv = 1 if !$u || !u.s.at; # sat in
+        }
+        else {
+            $cv = 1 if !s.at; # sat in
+        }
+        
+        $p->{$cv}->{"$to/s.id"} = $s;
+        sayre "j.r\t->\t [ $cv";
+    }
+    }
+    
     w Tw(to=>'W', V=>$V, TV=>$TV, p=>$p);
     w Tw(to=>'M', V=>$V, TV=>$TV, p=>$p);
     w Tw(to=>'i', V=>$V, TV=>$TV, p=>$p);
@@ -559,8 +583,6 @@ hooks:
     while (defined(my $r = $sixes->())) {
         w six(%$r, j=>$j);
     }
-                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-                    w pv(i=>$p,n=>2);
                     
     my $sevens = w pto(%$tvp, lcv => 6);
     while (defined(my $r = $sevens->())) {
@@ -570,11 +592,13 @@ hooks:
     H.G w aj[$j];
     
     sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
-
+    if (0) {
+                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+                    w pv(i=>$p,n=>2);
     my @JJJ = w JV[$V];
     my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
     w pv(i=>$ab,n=>1);
-    
+    }
     G.TV;
     G.R->phat(G.TV);
     
@@ -822,6 +846,4 @@ hooks:
     
     # TODO make a pattern about y=to match against Eways...
     i.G w event(%$E);
-dials:
-  db: -3
 
