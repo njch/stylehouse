@@ -350,7 +350,6 @@ hooks:
         $j ||= $bb->{$k} = G.R->shj($k, $bb);
         j.T ||= j.t;
         (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
-        
         j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
         
         if (ar.les) {
@@ -435,13 +434,11 @@ hooks:
         
         my $newer = low.T."\t".$cv;
         sayre "low.r\t->\t $newer";
-        V.bz->($newer => low.s); # most emergent phase
+        TV.bz->($newer => low.s); # most emergent phase
         
-        # 8
-        V.bz->(_.r => _.s) for @{m.l}; # styles, all of them
     }
     
-  Th: | # the Creation
+  Th: | # the Creation - stablish V i/i.id%u 3 = ux(i), slide TVs up to 3
     my $e = w orderv(%$ar);
     while (defined(my $m = e.ew->())) {
         # 4 # response curves near
@@ -485,9 +482,9 @@ hooks:
             $cv = 3;
             # 7 most emergent phase
             my $newer = join "\t", low.T, $cv;
-            warn "'$newer' exists: ".wdump(V.bb->{$newer}) if V.bb->{$newer};
-            delete V.bb->{low.r};
-            V.bz->($newer => low.s);
+            warn "'$newer' exists: ".wdump(TV.bb->{$newer}) if TV.bb->{$newer};
+            delete TV.bb->{low.r};
+            TV.bz->($newer => low.s);
         }
         # 8 styles hang around
     }
@@ -505,7 +502,7 @@ hooks:
                 # ux nests under another ux like origin
                 # and M must humm after (reversal after 3
                 my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
-                my $M = (V.bb->{low.t.'%M 4'} || die "no low.t.'%M 4'")->{s};
+                my $M = (TV.bb->{low.t.'%M 4'} || die "no low.t.'%M 4'")->{s};
                 push @{M.tohu||=[]}, $ux;
                 TV.bb->{"M/M.id 4"} = $M;
                 for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
@@ -517,10 +514,12 @@ hooks:
             }
             elsif ($to eq 'M') {
                 my $M = low.s;
-                my $got = (V.bb->{"M/M.id%vom 4"}||{})->{s};
+                my $got = (V.bb->{"M/M.id%vom 4"}||{})->{s}; # before
                 my $needmore = 0;
                 for my $ux (@{M.tohu||[]}) {
-                    $needmore = 1 if !$got->{ux.id};
+                    next if $got->{ux.id};
+                    sayyl "Need to make path to ".$ux->pi;
+                    $needmore = 1;
                 }
                 if ($needmore) {
                     my $j = {};
@@ -530,12 +529,12 @@ hooks:
                     || die wdump[[sort keys %$jp], [sort values %$vom]];
                     V.bz->("M/M.id%vom 4" => $vom);
                 }
-                V.bz->("M/M.id%tom 5" => {}); # < ^ others 5s put moves forth
+                V.bz->("M/M.id%tom 5" => {}); # < ^ others 5s put moves forth to 6
             }
             $cv = 4;
             # 7 most emergent phase
-            delete V.bb->{low.r};
-            V.bz->(low.T."\t".$cv => low.s);
+            delete TV.bb->{low.r};
+            TV.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -553,7 +552,7 @@ hooks:
             if ($to eq 'i') {
                 my $i = low.s;
                 my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
-                my $M = (V.bb->{low.t.'%M 4'} || die)->{s};
+                my $M = (TV.bb->{low.t.'%M 4'} || die)->{s};
                 my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
                 my $tom = (V.bb->{"M/M.id%tom 5"})->{s};
                 
@@ -563,8 +562,8 @@ hooks:
             }
             $cv = 5;
             # 7 most emergent phase
-            delete V.bb->{low.r};
-            V.bz->(low.T."\t".$cv => low.s);
+            delete TV.bb->{low.r};
+            TV.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -594,12 +593,12 @@ hooks:
                     push @mm, $to->{$k};
                     push @$pat, {k=>$k, ux=>$to->{$k}};
                 }
-                V.bb->{"M/M.id%pat 6"} = $pat;
+                TV.bb->{"M/M.id%pat 6"} = $pat;
             }
             $cv = 6;
             # 7 most emergent phase
-            delete V.bb->{low.r};
-            V.bz->(low.T."\t".$cv => low.s);
+            delete TV.bb->{low.r};
+            TV.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -626,7 +625,7 @@ hooks:
             if ($to eq 'M') {
                 my $M = low.s;
                 
-                my $pat = (V.bb->{"M/M.id%pat 6"})->{s};
+                my $pat = (TV.bb->{"M/M.id%pat 6"})->{s};
                 
                 push @mm, map {_.ux} reverse @$pat;
                 
@@ -634,8 +633,8 @@ hooks:
             }
             $cv = 8;
             # 7 most emergent phase
-            delete V.bb->{low.r};
-            V.bz->(low.T."\t".$cv => low.s);
+            delete TV.bb->{low.r};
+            TV.bz->(low.T."\t".$cv => low.s);
         }
         # 8
         # styles stay
@@ -643,10 +642,10 @@ hooks:
     for my $i (@mm) {
         sayyl "ARR ".$i->pi;
         if (i.K eq 'ux') {
-            if (my $ii = delete V.bb->{"i/i.i.id 6"}) {
+            if (my $ii = delete TV.bb->{"i/i.i.id 6"}) {
                 $ii = ii.s;
                 die unless $ii eq i.i;
-                V.bz->("i/i.i.id 8" => $ii);
+                TV.bz->("i/i.i.id 8" => $ii);
             }
         }
         w compile_figure[$i, $j];
@@ -692,15 +691,12 @@ hooks:
     my $V = G.V;
     my $les = '*';
     
-    (G.pr) = map {_.s.W} grep {_.to eq 'M'} w JV[$TV];
+    my ($M) = map {_.s.W} grep {_.to eq 'M'} w JV[$TV];
         
     W.Z->{'background-color'} = '#334';  
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
-                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-                    w pv(i=>$abb,n=>2);
-
     
     # 2
     saybl "\n\n# 2";
@@ -711,42 +707,40 @@ hooks:
       
     # 3
     saybl "\n\n# 3";
-    w Th(to => 'W', V=>$V);
-    w Th(to => 'M', V=>$V);
-    w Th(to => 'i', V=>$V);
+    w Th(to => 'W', V=>$V, TV=>$TV);
+    w Th(to => 'M', V=>$V, TV=>$TV);
+    w Th(to => 'i', V=>$V, TV=>$TV);
     
+    w JV[$V];
     # 4
     saybl "\n\n# 4";
-    w Tl(to => 'i', V=>$V);
-    w Tl(to => 'M', V=>$V);
-    w Tl(to => 'W', V=>$V);
+    w Tl(to => 'i', V=>$V, TV=>$TV);
+    w Tl(to => 'M', V=>$V, TV=>$TV);
+    w Tl(to => 'W', V=>$V, TV=>$TV);
     
+    w JV[$V];
     # 5
     saybl "\n\n# 5";
-    w Tt(to => 'i', V=>$V);
-    w Tt(to => 'M', V=>$V);
-    w Tt(to => 'W', V=>$V);
+    w Tt(to => 'i', V=>$V, TV=>$TV);
+    w Tt(to => 'M', V=>$V, TV=>$TV);
+    w Tt(to => 'W', V=>$V, TV=>$TV);
     
     # 6
     saybl "\n\n# 6";
-    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>G.pr);
+    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
     
-    w Tr(to => 'W', V=>$V, j=>$j);
-    w Tr(to => 'M', V=>$V, j=>$j);
-    w Tr(to => 'i', V=>$V, j=>$j);
+    w Tr(to => 'W', V=>$V, j=>$j, TV=>$TV);
+    w Tr(to => 'M', V=>$V, j=>$j, TV=>$TV);
+    w Tr(to => 'i', V=>$V, j=>$j, TV=>$TV);
     # ^ M handles i
     
     # 7
     saybl "\n\n# 7";
-    w Ta(to => 'M', V=>$V, j=>$j);
-    w Ta(to => 'W', V=>$V, j=>$j);
+    w Ta(to => 'M', V=>$V, j=>$j, TV=>$TV);
+    w Ta(to => 'W', V=>$V, j=>$j, TV=>$TV);
     
     G.TV;
     G.R->phat(G.TV);
-    
-    my @JJJ = w JV[$V];
-    my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-    w pv(i=>$ab,n=>1);
     
     H.G w aj[$j];
     
@@ -756,6 +750,14 @@ hooks:
     
     
     sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
+
+    my @JJJ = w JV[$V];
+                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+                    w pv(i=>$abb,n=>2);
+
+    my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+    w pv(i=>$ab,n=>1);
+    
   Usurf: |
     j.seenid->{i.id} = $i;
     my $jp = j.p ||= {};
@@ -942,7 +944,7 @@ hooks:
             }
             if (at.css) {
                 my $anima;
-                saybl $u->pi."    ".wdump(at.css) if %{at.css};
+                #saybl $u->pi."    ".wdump(at.css) if %{at.css};
                 while (my($k,$v) = each %{at.css}) {
                     next if $v eq _t.css->{$k};
                     my $isa = '++';
