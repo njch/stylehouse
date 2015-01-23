@@ -415,6 +415,15 @@ hooks:
     my @WJ = grep{_.to eq $to} @J;
     my $ew = w ordey(t=>\@WJ, to=>$to);
     return { ew => $ew, wj => \@WJ };
+
+  pv: |
+    my $n = ar.n || 1;
+    my $name = "RD$n";
+    sayre "            Daving $name => ".gp($i) for 1..2;
+    my $dg = H.G K G:C;
+    $dg w Dave(K=>"C",Dname=>$name,i=>$i);
+              
+    
   Tw: | # copy vertices and drop voltages accordingly
     my $e = w orderv(%$ar);
     while (defined(my $m = e.ew->())) {
@@ -432,83 +441,56 @@ hooks:
             $cv = 1 if !s.at; # sat in
         }
         
-        my $newer = low.T."\t".$cv;
-        sayre "low.r\t->\t $newer";
-        TV.bz->($newer => low.s); # most emergent phase
-        
+        $p->{$cv}->{"$to/s.id"} = $s;
+        sayre "low.r\t->\t [ $cv";
     }
     
-  Th: | # the Creation - stablish V i/i.id%u 3 = ux(i), slide TVs up to 3
-    my $e = w orderv(%$ar);
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t}; # lowest volt of this here
-        my $cv = low.cv;
-        # 5.3
-        if ($cv <= 3) {
-            if ($to eq 'i') {
-                my $i = low.s || die wdump($low);
-                say "WSW: _.l - "._.r for @{m.l};
-                my ($M) = map{_.s} grep{_.l eq '%M'} @{m.l};
-                ref $i eq 'C' || wdump[$i,$low];
-                # look in V?
-                my $u = (V.bb->{"i/i.id%u 3"}||{})->{s};
-                # also in M n_ux
-                # also fuu might find the swaying identity (.K & .B) and return it
-                say "for i i.id ".$i->pi;
-                my $ux;
-                if ($u) {
-                    say "Found u~! u.i.id ".$u->pi if $u;
-                    die if u.i ne $i;
-                    $ux = $u;
-                }
-                if (!$ux) {
-                    # add C.Bs override for little B schemas not in .B.?
-                    my $uxa = {K => 'ux', i => $i};
-                    sayyl "got a of ".$i->pi;
-                    uxa.B.i = uxa.i;
-                    $ux = w G.R fuu(u => $uxa);
-                }
-                ux.A->umk($M, 'ux');
-                ux.A->umk(ux.i, 'U'); # into alien space
-                V.bz->("i/i.id%u 3", $ux);
-            }
-            $cv = 3;
-            # 7 most emergent phase
-            my $newer = join "\t", low.T, $cv;
-            warn "'$newer' exists: ".wdump(TV.bb->{$newer}) if TV.bb->{$newer};
-            delete TV.bb->{low.r};
-            TV.bz->($newer => low.s);
+  three: |
+    if ($to eq 'i') {
+        my $i = $s;
+        ref $s eq 'C' || die $s;
+        my $M = (TV.bb->{"i/i.id%M 4"}||die)->{s};
+        my $ux = (V.bb->{"i/i.id%u 3"}||{})->{s};
+        $p->{4}->{"M/M.id"} = $M;
+        # also in M n_ux
+        # also fuu might find the swaying identity (.K & .B) and return it
+        say "for i i.id ".$i->pi;
+        if ($ux) {
+            say "Found u~! ux.i.id ".$ux->pi if $ux;
+            die if ux.i ne $i;
         }
-        # 8 styles hang around
+        else {
+            # add C.Bs override for little B schemas not in .B.?
+            my $uxa = {K => 'ux', i => $i};
+            sayyl "got a of ".$i->pi;
+            uxa.B.i = uxa.i;
+            $ux = w G.R fuu(u => $uxa);
+        }
+        ux.A->umk($M, 'ux');
+        ux.A->umk(ux.i, 'U'); # into alien space
+        V.bz->("i/i.id%u 3", $ux);
     }
-  Tl: | # lines make humm
-    my $e = w orderv(%$ar);
-    my $up;
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t}; # lowest volt of this here
-        my $cv = low.cv;
-        # 5.3
-        if ($cv <= 4) {
+  four: |
             if ($to eq 'i') {
+                saybl "Four i";
                 # the 374 coil, ux set must be complete
                 # ux nests under another ux like origin
                 # and M must humm after (reversal after 3
-                my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
-                my $M = (TV.bb->{low.t.'%M 4'} || die "no low.t.'%M 4'")->{s};
+                my $ux = (V.bb->{"i/s.id%u 3"} || die)->{s};
+                my $M = (TV.bb->{"i/s.id%M 4"} || die "no i/s.id.'%M 4'")->{s};
+                
                 push @{M.tohu||=[]}, $ux;
-                TV.bb->{"M/M.id 4"} = $M;
+                
                 for my $iu (@{ux.i.A.u_S||[]}) { # or whatever
                     my $u = (V.bb->{"i/iu.id%u 3"} || next)->{s};
                     die if $iu ne u.i;
-                    TV.bb->{"i/iu.id 5"} = $iu; # must go through to get here
+                    $p->{5}->{"i/iu.id"} = $iu; # must go through to get here
                     ux.A->umk($u, 'uS'); # relatable
                 }
             }
             elsif ($to eq 'M') {
-                my $M = low.s;
-                my $got = (V.bb->{"M/M.id%vom 4"}||{})->{s}; # before
+                my $M = $s;
+                my $got = M.vom; # before
                 my $needmore = 0;
                 for my $ux (@{M.tohu||[]}) {
                     next if $got->{ux.id};
@@ -521,152 +503,95 @@ hooks:
                     my $vom = {reverse %$jp};
                     keys %$jp == keys %$vom
                     || die wdump[[sort keys %$jp], [sort values %$vom]];
-                    V.bz->("M/M.id%vom 4" => $vom);
+                    M.vom = $vom;
                 }
-                V.bz->("M/M.id%tom 5" => {}); # < ^ others 5s put moves forth to 6
+                M.tom = {}; # < ^ others 5s put moves forth to 6
             }
-            $cv = 4;
-            # 7 most emergent phase
-            delete TV.bb->{low.r};
-            TV.bz->(low.T."\t".$cv => low.s);
-        }
-        # 8
-        # styles stay
-    }
-    
-  Tt: | # lines have depth, make link
-    my $e = w orderv(%$ar);
-    my $up;
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t}; # lowest volt of this here
-        my $cv = low.cv;
-        # 5.3
-        if ($cv <= 7) {
+  five: |
+  
             if ($to eq 'i') {
-                my $i = low.s;
-                my $ux = (V.bb->{low.t.'%u 3'} || die)->{s};
-                my $M = (TV.bb->{low.t.'%M 4'} || die)->{s};
-                my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
-                my $tom = (V.bb->{"M/M.id%tom 5"})->{s};
+                my $i = $s;
+                my $ux = (V.bb->{"i/s.id%u 3"} || die)->{s};
+                my $M = (TV.bb->{"i/s.id%M 4"} || die)->{s};
+                my $vom = M.vom;
+                my $tom = M.tom;
                 
                 my $mv = $vom->{ux.id} || die;
                 $tom->{$mv} = $ux;
                 #say "for ".$ux->pi." has top go through $mv";
             }
-            $cv = 5;
-            # 7 most emergent phase
-            delete TV.bb->{low.r};
-            TV.bz->(low.T."\t".$cv => low.s);
-        }
-        # 8
-        # styles stay
-    }
-    
-  Tr: | # lines are de
-    my $e = w orderv(%$ar);
+  six: |
     my @mm;
-    my $fo;
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t}; # lowest volt of this here
-        my $cv = low.cv;
-        # 5.3
-        if ($cv <= 6) {
             if ($to eq 'W') {
-                push @mm, low.s;
+                push @mm, $s;
             }
             if ($to eq 'M') {
-                my $M = low.s;
+                my $M = $s;
                 push @mm, $M;
                 
-                my $vom = (V.bb->{"M/M.id%vom 4"})->{s};
-                my $to = (V.bb->{"M/M.id%tom 5"})->{s};
+                my $vom = M.vom;
+                my $to = M.tom;
                 my $pat = [];
                 for my $k (sort keys %$to) {
                     push @mm, $to->{$k};
                     push @$pat, {k=>$k, ux=>$to->{$k}};
                 }
-                TV.bb->{"M/M.id%pat 6"} = $pat;
+                M.pat = $pat;
             }
-            $cv = 6;
-            # 7 most emergent phase
-            delete TV.bb->{low.r};
-            TV.bz->(low.T."\t".$cv => low.s);
-        }
-        # 8
-        # styles stay
-    }
     for my $i (@mm) {
         sayyl "SPAWN ".$i->pi;
         w spawn(u=>$i);
     }
-    
-  Ta: | # lines are back
-    my $e = w orderv(%$ar);
+  seven: |
     my @mm;
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t}; # lowest volt of this here
-        my $cv = low.cv;
-        # 5.3
-        if ($cv <= 7) {
-            my $i = low.s;
             if ($to eq 'W') {
-                push @mm, low.s;
+                push @mm, $s;
             }
             
             if ($to eq 'M') {
-                my $M = low.s;
+                my $M = $s;
                 
-                my $pat = (TV.bb->{"M/M.id%pat 6"})->{s};
+                my $pat = M.pat;
                 
                 push @mm, map {_.ux} reverse @$pat;
                 
                 push @mm, $M; # after desc lines come back
             }
-            $cv = 8;
-            # 7 most emergent phase
-            delete TV.bb->{low.r};
-            TV.bz->(low.T."\t".$cv => low.s);
-        }
-        # 8
-        # styles stay
-    }
     for my $i (@mm) {
         sayyl "ARR ".$i->pi;
-        if (i.K eq 'ux') {
-            if (my $ii = delete TV.bb->{"i/i.i.id 6"}) {
-                $ii = ii.s;
-                die unless $ii eq i.i;
-                TV.bz->("i/i.i.id 8" => $ii);
-            }
-        }
         w compile_figure[$i, $j];
         w wayout_sendo[$i, $j];
     }
-  Uben: |
-    j.seenid->{i.id} = $i;
-    
-    w spawn(u=>$i);
-    
-    my @down = w Udown;
-    ar.d++;
-    
-    for my $d (@down) {
-        w U(j=>$j, i=>$d, d=>ar.d);
+  pto: |
+    my @m;
+    for my $cv (sort keys %$p) {
+        if ($cv <= $lcv) {
+            my @ere = sort keys %{$p->{$cv}};
+            @ere = reverse @ere if ar.rev;
+            for my $el (@ere) {
+                my ($to) = split '/', $el;
+                my $s = $p->{$cv}->{$el};
+                push @m, {
+                    r=>{p=>$p,V=>$V,TV=>$TV,s=>$s,to=>$to}, # to do
+                    aft=>{cv=>$cv,lcv=>(ar.rcv||$lcv),el=>$el,s=>$s}, # to move
+                };
+            }
+        }
     }
-    
-    w compile_figure;
-    w wayout_sendo;
-  pv: |
-    my $n = ar.n || 1;
-    my $name = "RD$n";
-    sayre "            Daving $name => ".gp($i) for 1..2;
-    my $dg = H.G K G:C;
-    $dg w Dave(K=>"C",Dname=>$name,i=>$i);
-              
-    
+    my $i=0;
+    sub {
+        my $r = ($m[$i]||{})->{r};
+        if ($i>0) {
+            my $aft = $m[$i-1]->{aft};
+            if (aft.lcv < 9) {
+                delete $p->{aft.cv}->{aft.el};
+                $p->{aft.lcv}->{aft.el} = aft.s;
+            }
+        }
+        return undef unless $r;
+        $i++;
+        return $r;
+    };
   ux: |
     # 1
     # very left of the dome, heading into micro peaks
@@ -691,66 +616,57 @@ hooks:
     
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} w JV[$TV]; # W always there
     
-    
+    my $p = {};
     # 2
     saybl "\n\n# 2";
-    w Tw(to=>'W', V=>$V, TV=>$TV);
-    w Tw(to=>'M', V=>$V, TV=>$TV);
-    w Tw(to=>'i', V=>$V, TV=>$TV);
+    w Tw(to=>'W', V=>$V, TV=>$TV, p=>$p);
+    w Tw(to=>'M', V=>$V, TV=>$TV, p=>$p);
+    w Tw(to=>'i', V=>$V, TV=>$TV, p=>$p);
     
-      
-    # 3
-    saybl "\n\n# 3";
-    w Th(to => 'W', V=>$V, TV=>$TV);
-    w Th(to => 'M', V=>$V, TV=>$TV);
-    w Th(to => 'i', V=>$V, TV=>$TV);
+    my $tvp = { V=>$V, TV=>$TV, p=>$p };
     
-    w JV[$V];
-    # 4
-    saybl "\n\n# 4";
-    w Tl(to => 'i', V=>$V, TV=>$TV);
-    w Tl(to => 'M', V=>$V, TV=>$TV);
-    w Tl(to => 'W', V=>$V, TV=>$TV);
+    my $threes = w pto(%$tvp, lcv => 3);
+    while (defined(my $r = $threes->())) {
+        w three(%$r);
+    }
     
-    w JV[$V];
-    # 5
-    saybl "\n\n# 5";
-    w Tt(to => 'i', V=>$V, TV=>$TV);
-    w Tt(to => 'M', V=>$V, TV=>$TV);
-    w Tt(to => 'W', V=>$V, TV=>$TV);
+    w JV[$V]; # V ups for %u 3
     
-    # 6
-    saybl "\n\n# 6";
+    my $fours = w pto(%$tvp, lcv => 4, rev=>1);
+    while (defined(my $r = $fours->())) {
+        w four(%$r);
+    }
+    
+
+    my $fives = w pto(%$tvp, lcv => 7, rcv=>5);
+    while (defined(my $r = $fives->())) {
+        w five(%$r);
+    }
+    
     my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
     
-    w Tr(to => 'W', V=>$V, j=>$j, TV=>$TV);
-    w Tr(to => 'M', V=>$V, j=>$j, TV=>$TV);
-    w Tr(to => 'i', V=>$V, j=>$j, TV=>$TV);
-    # ^ M handles i
-    
-    # 7
-    saybl "\n\n# 7";
-    w Ta(to => 'M', V=>$V, j=>$j, TV=>$TV);
-    w Ta(to => 'W', V=>$V, j=>$j, TV=>$TV);
-    
-    G.TV;
-    G.R->phat(G.TV);
+    my $sixes = w pto(%$tvp, lcv => 6);
+    while (defined(my $r = $sixes->())) {
+        w six(%$r, j=>$j);
+    }
+                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+                    w pv(i=>$p,n=>2);
+                    
+    my $sevens = w pto(%$tvp, lcv => 6);
+    while (defined(my $r = $sevens->())) {
+        w seven(%$r, j=>$j);
+    }
     
     H.G w aj[$j];
-    
-    
-        #my @JJJ = w JV[$V];
-        #say "_.T _.cv now" for @JJJ;
-    
     
     sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
 
     my @JJJ = w JV[$V];
-                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-                    w pv(i=>$abb,n=>2);
-
     my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
     w pv(i=>$ab,n=>1);
+    
+    G.TV;
+    G.R->phat(G.TV);
     
   Usurf: |
     j.seenid->{i.id} = $i;
