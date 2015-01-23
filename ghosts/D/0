@@ -50,46 +50,7 @@ C:            # W M ux ...
     print: |
        "S.K S.id  (".S.i->pi
        
-  - K: i #c like pi
-    tag: yw
-    styles: yw
-    S:
-      content_D: |
-        my $w = S.i;
-        "PIE".(wish(w=>$w) ? $w->pi : pint($w))
-      ishtml: 1
-      
-  - K: e #c like style noise
-    styles: topleft white little
-    flows_D: |
-      B.e ||= "Lu.i.K";
-    S:
-      content_D: |
-        $e
-  
-  - K: somewhere #c
-    styles: te
-    S:
-      sendo_init_D: |
-        return;
-        $H->JS("\$('#somewhere').appendTo('#S.at.id');");
-        my $css = 'pointer-events:none; -webkit-filter: brightness(1.2) saturate(3) drop-shadow(10px 0px 30px black); width:60em;';
-        $H->JS("\$('#somewhere').attr('style', '$css');");
-    S:
-      content_D
-  - K: h1 #c
-    styles: h1
-  - K: h2 
-  - K: pre
-    styles: skinny pre
-  - K: script
-    S:
-      no_implied_attr: 1
-  - K: X
-    styles: X
-  
 hooks:
-
   fresh_init: |
     G.TV = {};
     G.R->phat(G.TV);
@@ -240,58 +201,7 @@ hooks:
     }
     
     
-  spawn: |
-        my @uys;
-        
-        ##say wdump(2, $u) if u.K eq 'M';
-        if (u.K eq 'ux' && u.i) {
-            $u->from(u.i.ux); # DOOR how spawn comes through
-        }
-        
-        if (my $spawn = u.spawn) {
-            for my $sp (@$spawn) {
-                my $uy;
-                if (my $uxy = 0->CsK({K=>sp.K})) {
-                    $uy = 0->sway({from=>$uxy});
-                }
-                if (u.K eq 'ux' && u.i || u.K eq 'M') {
-                    my $GG = u.K eq 'M' ? u.W.G : u.i.G;
-                    if (my $xiy = $GG->CsK({K=>sp.K})) {
-                        $G->Flab("u.i.G.name hemisphere uxy: ", $uy, $xiy);
 
-                        $uy ||= $GG->nw();
-                        $uy->from($xiy); # G to xiy.G etc B merged
-                    }
-                }
-                
-                $uy || die wdump(3,["no thingy sp.K", $G->anyway('C')]);
-                
-                uy.i = u.i;
-                
-                $uy->from($sp);
-                
-                push @uys, $uy;
-            }
-        }
-        
-        my $old = { map { _.id => $_ } map{_.i} @{u.A.n_y||[]} };
-        my @spun;
-        for my $uy (@uys) {
-            my $y = w G.R Tafu(u=>$uy);
-            push @spun, $y;
-            y.A->umk($u, 'y');
-            delete $old->{y.id};
-        }
-        
-        if (keys %$old) {
-            say $u->pint."  has old stuff under...";
-            say $_->pint for values %$old;
-            say "NEW STUFF:";
-            say $_->pint for @spun;
-            for my $o (values %$old) {
-                w G.R del(u => $o);
-            }
-        }
   mux: |
       my $M = w Mr[$MR];
       my $TV = G.TV;
@@ -462,7 +372,6 @@ hooks:
         else {
             # add C.Bs override for little B schemas not in .B.?
             my $uxa = {K => 'ux', i => $i};
-            sayyl "got a of ".$i->pi;
             uxa.B.i = uxa.i;
             $ux = w G.R fuu(u => $uxa);
         }
@@ -539,6 +448,7 @@ hooks:
                 M.pat = $pat;
             }
     for my $i (@mm) {
+        next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
         sayyl "SPAWN ".$i->pi;
         w spawn(u=>$i);
     }
@@ -814,7 +724,7 @@ hooks:
                 $do_S->("\$('#at.id').append('$_');") for @$oozs;
             }
             for my $i ($u, $ui) {
-                next unless $i && (i.S.sendo_init_D || i.Gw);
+                next unless 0;#$i && (i.S.sendo_init_D || i.Gw);
                 #say "Snedoing ".$i->pi;
                 my $Ce = w $i S/sendo_init_D[$u];
                 $do_C->($Ce) if $Ce;
