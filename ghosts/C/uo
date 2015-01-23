@@ -211,7 +211,15 @@ perc_else:
        w f/rotation;
 hooks:
   recoded_init: |
-    w f/at;
+    #w f/at;
+  fresh_init: |
+    w add;
+    0->recur(3, sub {
+        if (G.next_add < $H->hitime) {
+            sayyl "Caught up thing";
+            w add;
+        }
+    });
   humms_D: |
     waylay mux(u=>$u);
   mux: |
@@ -233,18 +241,30 @@ hooks:
      _D: |
        w add;
   add: |
-       my @I = shuffle K Im;
-       while (@I > 9 && rand(5) > 2) {
-           my $u = shift @I;
-           $u || last;
-           w G.R del[$u];
+       my $new;
+       if (rand 5 > 3) {
+           my @I = shuffle K Im;
+           while (@I > 9 && rand(5) > 2) {
+               my $u = shift @I;
+               $u || last;
+               w G.R del[$u];
+           }
+           my $s = K Ims;
+           $new = w $s add;
        }
+       w f/at[$new];
        
-       my $s = K Ims;
-       w $s add;
-       
-       w f/at;
-       sayyl "from ".$S->pi." to ".$s->pi;
+       sayyl "from ";
+       my $t = 3 + int(rand 12);
+       $t *= 0.82;
+       G.next_add = $H->hitime + $t;
+       sayre "Back in $t / la: ".$H->la;
+       0->sing(ADD => sub { sayyl "Didn need extra timer"; w add; }, begin => $t);
+  aj: |
+    say wdump(2,$j);
+    my @lot = reverse @{j.s}; # until whole
+    push @lot, reverse @{j.c}; # from whole
+    
   Ims:
    flows_D: | 
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;
@@ -341,14 +361,6 @@ hooks:
             w arrange[$S];
             w se/opa[$S];
         }
-        if (rand(1) < 2/9) {
-            w f/ph;
-            w f/rotation;
-        }
-        if (rand(1) < 1/9) {
-            w f/tallpaddy;
-            w f/ph;
-        }
     te: | #c at x1, x3
       for my $S (w W/r(qw'K Lingos for 0..4')) {
           my $o = shuffle qw'☯ ☯ ☯ ☯ ᣜ ☭ Ϡ ᣝ ⍲ ⍲ ⍲ ⍲', " s҉", "ෙ";
@@ -418,10 +430,6 @@ hooks:
     push @bang, @colar;
     @bang = @colar if S.B.file =~ /art/;
     return shuffle(@bang);
-  uxd: |
-    die
-  uxd_lite: |
-    die
   index_clickspace: |
     my $Mid = G.W.uuid;
     my ($x, $y) = (e.x, e.y);
