@@ -267,16 +267,17 @@ hooks:
     
     my $b = G.jbunch||=[];
     my $m = { j => \@lot };
-    my $hitime = $H->hitime - $b->[-1]->{hitime} if @$b;
-    m.hitime = $hitime || 0;
+    my $dt = G.lastWa ? ($H->hitime - G.lastWa) : 0;
+    G.lastWa = $H->hitime;
+    m.dt = $dt;
     push @$b, $m;
-    if (@$b / 20 == int(@$b / 20)) {
+    if ((@$b / 2) == int(@$b / 2)) {
         sayyl " A FIFTH" for 1..5;
-        my $ju = $H->ejson($b);
+        my $ju = $H->ejson([@$b, {dt=>10,j=>["\$('#ux > #j.W.id').remove();"]}]);
         write_file("W/j.W.id", $ju);
     }
     else {
-    sayyl "NOT A FIFTH: ". @$b;
+        sayyl "NOT A FIFTH: ". @$b;
     }
     
   Ims:
