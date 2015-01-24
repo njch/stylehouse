@@ -230,6 +230,9 @@ hooks:
     my $MR = G.R;
     a.v ||= 7;
     $D w mux[$MR,$a,$u];
+  changeWback: |
+        my $im = K Im;
+        j.W.Z.background = "url(im.B.href)";
   Im:
    print: $file
    flows_D: |
@@ -262,25 +265,34 @@ hooks:
        sayre "Back in $t / la: ".$H->la;
        0->sing(ADD => sub { sayyl "Didn need extra timer"; w add; }, begin => $t);
   aj: |
-    say wdump(2,[j.s, j.c]);
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
     
     my $b = G.jbunch||=[];
-    my $m = { j => \@lot };
     my $dt = G.lastWa ? ($H->hitime - G.lastWa) : 0;
     G.lastWa = $H->hitime;
-    m.dt = $dt;
+    my $m = { j => \@lot, m => $dt };
     push @$b, $m;
+    
     if ((@$b / 2) == int(@$b / 2)) {
-        sayyl " A FIFTH" for 1..5;
-        my $ju = $H->ejson([@$b, {dt=>10,j=>["\$('#ux > #j.W.id').remove();"]}]);
+        sayyl " A FIFTH" for 1..15;
+        my $ju = join "", map {"$_,\n"} map { $H->ejson($_) }
+            @$b, {m=>10,j=>["\$('#ux > #j.W.id').remove();"]};
+        $ju = "drip([\n$ju\n]);";
         write_file("W/j.W.id", $ju);
+        
+        H.G w reexec if @$b >= 420;
+        w changeWback;
     }
     else {
         sayyl "NOT A FIFTH: ". @$b;
     }
-    
+        
+        w Windex;
+  Windex: |
+    my @W = glob "W/*";
+    my $in = $H->ejson(\@W);
+    write_file("W/i", "gete(randl($in));");
   Ims:
    flows_D: | 
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;

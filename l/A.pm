@@ -90,7 +90,9 @@ sub accum {
 
     my $a = $s->{$ac} ||= [];
     die "ac looks $ac, got  $a " unless ref $a eq "ARRAY";
-    return if grep { $_ eq $t } @$a;
+    if (ref $s eq 'A' && $ac eq 'n_pyramid') {
+        return if grep { $_ eq $t } @$a;
+    }
     push @$a, $t;
 }
 
