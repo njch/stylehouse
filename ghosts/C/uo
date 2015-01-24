@@ -265,6 +265,20 @@ hooks:
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
     
+    my $b = G.jbunch||=[];
+    my $m = { j => \@lot };
+    my $hitime = $H->hitime - $b->[-1]->{hitime} if @$b;
+    m.hitime = $hitime || 0;
+    push @$b, $m;
+    if (@$b / 20 == int(@$b / 20)) {
+        sayyl " A FIFTH" for 1..5;
+        my $ju = $H->ejson($b);
+        write_file("W/j.W.id", $ju);
+    }
+    else {
+    sayyl "NOT A FIFTH: ". @$b;
+    }
+    
   Ims:
    flows_D: | 
       my @finds = grep { !/art|MANY|gif$/ } map { 0->fs_find($_) } $dir;

@@ -36,9 +36,11 @@ hooks:
     w in_listenings; 
     # S/* mods ^
     
-    $G->timer(60*9+(20 * rand 4),
-        sub { sayre "voluntary reexec" for 1..13; w reexec; })
-        if H.name !~ /Z/;
+    $G->timer(60*9+(20 * rand 4), sub {
+        return if H.nosuddendeath;
+        sayre "voluntary reexec" for 1..13;
+        w reexec;
+    });
     
     
     $G->recur(5 => sub { H.r->ping || die "not redis?" });
