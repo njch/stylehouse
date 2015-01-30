@@ -52,6 +52,7 @@ websocket '/s' => sub {
     my $self = shift;
     $hostinfo->{G}->w(websocket => { M => $self });
 };
+$listen = "http://s:2000";
 say "! enlistening $style $name $$ $listen\n\n\n\n\n\n\n\n\n\n
 
 ";
