@@ -262,14 +262,16 @@ hooks:
            my $s = K Ims;
            $new = w $s add;
        }
+       sayre "add in ".F_delta;
        w f/at[$new];
-       
+       sayre "add wo ".F_delta;
        my $t = 3 + int(rand 12);
        $t *= 0.82;
        G.next_add = $H->hitime + $t;
        
-       sayre "Back in $t / la: ".$H->la;
        0->sing(ADD => sub { sayyl "Didn need extra timer" for 1..5; w add; }, begin => $t);
+       
+       sayre "add done ".F_delta."  back in ${t}s   load ".$H->la;
   aj: |
     return unless G.dubbing;
     
@@ -313,17 +315,7 @@ hooks:
        Sw add;
   Anims: |
     $k =~ /height|width|left|right|top|bottom|padding|opacity/ ? 20 : 0;
-  r:
-    highload: |
-       my $la = $H->la;
-       if (G.maxloadav && $la > G.maxloadav) {
-           sayre "load average is $la"
-           (ar.S ? " ar.S.K" : "");
-           $H->snooze;
-           return 1;
-       }
-    paused: |
-      G.paused
+
   changeWback: |
         my $im = K Im;
         my $W = K G:D ->K("W");
@@ -367,8 +359,15 @@ hooks:
     w f/mus if ar.us;
     
     
-  W:
-    r: |
+  f: # flux
+    mus: | #c
+      my ($K,$for) = ar.us =~ /^(?:(\S+))? ?(?:for (\S+))?$/ || die;
+      my $b = {};
+      b.K = $K if $K;
+      b.for = $for if $for;
+      my @us = w W/r(%$b);
+      a.us = [@us];
+    muzi: | #c
       my @a=grep { _.K ne "IF" } shuffle w G.R fi(f=>{V=>'U'});
       if (ar.for && ar.for =~ /^(?:(\d+)\.\.(\d+)|(\d+))$/) {
           my $from = $1 || 0;
@@ -377,16 +376,8 @@ hooks:
       }
       w mux(u=>$_) for @a;
       @a
-      
-  f: # flux
-    mus: |
-      my ($K,$for) = ar.us =~ /^(?:(\S+))? ?(?:for (\S+))?$/ || die;
-      my $b = {};
-      b.K = $K if $K;
-      b.for = $for if $for;
-      my @us = w W/r(%$b);
-      a.us = [@us];
     at: |                                            # at x2 #c
+      ar.us ||= w f/mus(us=>"Im for 3");
         for my $S (w W/r(qw'K Im for 0..2')) {
             w arrange[$S];
             w se/opa[$S];
@@ -460,6 +451,20 @@ hooks:
     push @bang, @colar;
     @bang = @colar if S.B.file =~ /art/;
     return shuffle(@bang);
+  highload: |
+       my $la = $H->la;
+       if (G.maxloadav && $la > G.maxloadav) {
+           sayre "load average is $la"
+           (ar.S ? " ar.S.K" : "");
+           $H->snooze;
+           return 1;
+       }
+  paused: |
+      G.paused
+  W:
+    r: |
+      w muzi;
+      
   index_clickspace: |
     my $Mid = G.W.uuid;
     my ($x, $y) = (e.x, e.y);
