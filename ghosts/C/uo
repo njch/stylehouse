@@ -220,6 +220,12 @@ hooks:
             w add;
         }
     });
+  percolate: |
+    w f/at; w f/at;
+    w f/ph; w f/ph;
+    w changeWback;
+    $G->timer(10, sub { G.maxloadav = 1.2; });
+    
   humms_D: |
     waylay mux(u=>$u);
   mux: |
@@ -230,10 +236,6 @@ hooks:
     my $MR = G.R;
     a.v ||= 7;
     $D w mux[$MR,$a,$u];
-  changeWback: |
-        my $im = K Im;
-        my $W = K G:D ->K("W");
-        W.Z.background = "url(im.B.href)";
   Im:
    print: $file
    flows_D: |
@@ -322,12 +324,10 @@ hooks:
        }
     paused: |
       G.paused
-  percolate: |
-    w f/at; w f/at;
-    w f/ph; w f/ph;
-    w changeWback;
-    $G->timer(10, sub { G.maxloadav = 1.2; });
-    
+  changeWback: |
+        my $im = K Im;
+        my $W = K G:D ->K("W");
+        W.Z.background = "url(im.B.href)";
   M:
     add: |
       my ($I) = 0->rei({K=>"Ims"});
