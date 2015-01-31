@@ -213,10 +213,13 @@ hooks:
   recoded_init: |
     #w f/at;
   fresh_init: |
+    G.dubbing = 0;
+    # the additive rhythm
     w add;
+    # timer insurance
     0->recur(3, sub {
         if (G.next_add < $H->hitime) {
-            sayyl "Caught up thing";
+            saybl "Needed extra timer";
             w add;
         }
     });
@@ -266,9 +269,10 @@ hooks:
        G.next_add = $H->hitime + $t;
        
        sayre "Back in $t / la: ".$H->la;
-       0->sing(ADD => sub { sayyl "Didn need extra timer"; w add; }, begin => $t);
+       0->sing(ADD => sub { sayyl "Didn need extra timer" for 1..5; w add; }, begin => $t);
   aj: |
-    #return unless G.dubbing;
+    return unless G.dubbing;
+    
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
     
@@ -279,7 +283,6 @@ hooks:
     push @$b, $m;
     
     if ((@$b / 2) == int(@$b / 2)) {
-        sayyl " A FIFTH" for 1..15;
         my $ju = join "", map {"$_,\n"} map { $H->ejson($_) }
             @$b, {m=>10,j=>["\$('#ux > #j.W.id').remove();"]};
         $ju = "drip([\n$ju\n]);";
@@ -287,12 +290,9 @@ hooks:
         
         H.G w reexec if @$b >= 420;
         w changeWback;
-    }
-    else {
-        sayyl "NOT A FIFTH: ". @$b;
-    }
         
         w Windex;
+    }
   Windex: |
     my @W = glob "W/*";
     my $in = $H->ejson(\@W);
