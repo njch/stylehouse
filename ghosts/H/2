@@ -17,28 +17,16 @@ hooks:
     S.R ||= $S->R;
     
     if (S.load_ways_count == 1) {
-        w _init_fresh;
+        $S->w("fresh_init");
     }
     else {
-        w _init_recoded;
+        $S->w("recoded_init");
     }
       
     $S->w("any_init");
     
-  _init_recoded: |
-    w _init_recoded_Cways[$S] if $S->anyway('recoded_Cways');
-    $S->w("recoded_init");
-        
-  _init_recoded_Cways: | # TODO reinject
-      my @p = w S.R fi(f=>{});
-      for my $i (@p) {
-          saygr "Reinjecting i.K ..." for 1..15;
-          my $up = $S->CsK({K=>i.K});
-          $i->from($up);
-      }
-        
-  _init_fresh: |
-      $S->w("fresh_init");
+
+
   ghostchanges: |
     my @ghosts = H.G K Gs:*;
     my @rG;
