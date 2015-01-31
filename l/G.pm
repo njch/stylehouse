@@ -1107,7 +1107,7 @@ sub w {
     }
 
     if (!@$l) {
-        sayre $G->pi."    way miss $talk"
+        warn $G->pi."    way miss $talk"
             unless $talk =~ /^w\ (print|humms_D|flows_D)/;
         return;
     }
