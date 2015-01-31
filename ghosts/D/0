@@ -743,7 +743,7 @@ hooks:
                         "\$('#ux > #at.id').remove();"
                     );
                     $do_S->(
-                        "\$('#ux').append('".0->jsq(u.html)."');"
+                        "\$('#ux').append(".$H->ejson(u.html).");"
                     );
                 };
                 
@@ -755,19 +755,25 @@ hooks:
             my $ino = sub { my ($u, $in) = @_; grep { $_ eq $u } @$in; };
             
             for my $newu (grep { !$ino->($_, u._at.ooze) } @{at.ooze}) {
-                $doj_S->(at.id, q{.append('%s')}, 0->jsq(newu.html));
+            
+                $doj_S->(at.id, '.append(%s)', $H->ejson(newu.html));
+                
             }
             for my $gonu (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
-                $doj_S->(gonu.at.id, q{.remove()});
+            
+                $doj_S->(gonu.at.id, '.remove()');
+                
             }
             if (at.conty ne _t.conty) {
-                my $s = 0->jsq(at.conty);
-                $s =~ s/\\ \\ n/\n/x;
-                $doj_S->(at.id, q{.html("%s")}, 0->jssq($s));
+            
+                $doj_S->(at.id, '.html(%s)', $H->ejson(at.conty));
+                
             }
             while (my ($k, $v) = each %{ at.attr }) {
                 next if $v eq _t.attr->{$k};
-                $doj_S->(at.id, q{.attr('%s', '%s')}, 0->jsq($k, $v));
+                
+                $doj_S->(at.id, '.attr(%s, %s)', $H->ejson($k), $H->ejson($v));
+                
             }
             if (at.css) {
                 my $anima;
@@ -783,7 +789,7 @@ hooks:
                         $anima->{$k} = $v; # BB
                     }
                     else {
-                        $doj_S->(at.id, q{.css('%s', '%s')}, 0->jsq($k, $v));
+                        $doj_S->(at.id, '.css(%s, %s)', $H->ejson($k), $H->ejson($v));
                     }
                 }
                 if ($anima && %$anima) {
