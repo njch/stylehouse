@@ -7,12 +7,15 @@ C:            # W M ux ...
     Ss: [u, x, X]
     print: |
       "W=".S.W.G.name #Bthing, u is $S
-    S: # TODO with Gw S things we go w.S.t_D then w.S.t then Gw.S.t_D then Gw.S.t
+    S:
       styles: OxO nopoi
       tag: ww 
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
-  
+    flows_D: |
+      die "W flows!";
+      G.R->phat(S.TV = {}); # G.R should be Jish for this M etc etc.
+      G.R->phat(S.V = {});
   - K: M #c themmmmmmm from an R
     flows_D: |
       my $W = S.W;
@@ -89,32 +92,42 @@ R:
    findway: R_M
      
 hooks:
-  fresh_init: |
-    G.TV = {};
-    G.R->phat(G.TV);
-    G.V = {};
-    G.R->phat(G.V);
   percolate: |
     # Rushing: sets up the default R:M, could be many
     G.theM = $G->R('M');
+    # ^ for holding this whole M business together
+    G.theM.Wo = $G->R('non');
+    # ^ for holding the C:W, C:Ms, C:uxs
     
-    my $uWa = {K => 'W', W => G.R};
-    G.theM.W = w G.R fuu(u => $uWa); # the unified into wormhole
+    my $uWa = {K => 'W', W => G.R}; # as default, could me more G.Rs
+    G.theM.W = w G.theM.Wo fuu(u => $uWa); # the unified into wormhole
     # ^ hardlink
     # all before perc_late makes things humm/mux
   mux: |
-    
+    my $M = G.theM;
+    my $MR = G.R; # default is the non of the whole G
+    # the W side is R:M.Wo (G.theM.Wo)
+    my $a = {%$ar};
+    my $u = delete a.u;
+    a.v ||= 7; 
+    w $M mux[$MR,$a,$u];
+  remux: |
+    my $M = G.theM;
+    my $MR = G.R;
+    my $a = {%$ar};
+    my $u = delete a.u;
+    w $M remux[$MR,$a,$u];
 R_Ms:
   mux: |
-      my $M = w Mr[$MR];
-      my $TV = G.TV;
+      my $M = w $R Mr[$MR]; # not G.theM, which is now $R
+      my $TV = R.W.TV; # R.W is the C:W
       my $u = ar.u || [];
       
       my $us = [ref $u eq 'ARRAY' ? @$u : $u];
       
       $a = {k=>$a} if !ref $a;
       
-      TV.bz->('W 4', G.W) if a.full;
+      TV.bz->('W 4', R.W) if a.full;
       
       TV.bz->("M/M.id 6", $M);
       
@@ -130,25 +143,23 @@ R_Ms:
           TV.bz->("i/u.id%M 4", $M); # two divides - then M can optimise 7
       }
       
-      0->sing(uxd => sub { w uxd; }, again=>1, begin=>0.2);
-  remux: | # upgrading the rubble
-    my $TV = G.TV;
-    my ($goner) = grep { _.s eq $u } w JV[$TV];
+      0->sing(uxd => sub { w $R uxd; }, again=>1, begin=>0.2);
+  remux: | # upgrading the rubble before life arrives
+    my $TV = R.W.TV;
+    my ($goner) = grep { _.s eq $u } w $R JV[$TV];
     my $s = delete TV.bb->{goner.r};
     $s eq $goner || die;
     my $v = ar.v;
-    $v ||= 9;
+    $v ||= 9; # TODO naw
     TV.bz->(goner.T."\t".$v => goner.s);
   uxd: |
-    my $TV = G.TV;
-    G.TV = {};
-    G.R->phat(G.TV);
-    
-    w ux[$TV];
+    my $TV = R.W.TV;
+    G.R->phat(R.W.TV = {}); # flush
+    w $R ux[$TV];
   Mr: |
       my $Ma = {K => 'M', W => $MR};
-      my $M = w G.R fuu(u => $Ma, q=>1); # the lines' W mirrored
-      M.A->umk(G.W, 'M');
+      my $M = w $R fuu(u => $Ma, q=>1); # the lines' W mirrored
+      M.A->umk(R.W, 'M');
       M.A->umk($MR,'W'); # our long wave of the origin W (R/J)
       $M
   JV: |
@@ -158,7 +169,7 @@ R_Ms:
     for my $k (keys %$bb) {
         my $j = $bb->{$k};
         undef $j unless ref $j eq 'HASH' && j.t; # go round
-        $j ||= $bb->{$k} = G.R->shj($k, $bb);
+        $j ||= $bb->{$k} = $R->shj($k, $bb);
         j.T ||= j.t;
         (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
         j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
@@ -193,6 +204,7 @@ R_Ms:
         
         # and bab clone sorting cv over T # already grouped by t or so
         # should come out same as style flows round that %ish place: /
+        # note string compare, fractions most success, the structure of decimal is a lie
         my @mm = sort { a.r cmp b.r } values %$t;
         
         #saybl "sort hop: _.r" for @mm;
@@ -201,7 +213,7 @@ R_Ms:
     };
   ordey: |
     my $to = delete ar.to;
-    my $ew = w orde;
+    my $ew = w $R orde;
     my $or;
     $or = sub {
         my $mw = $ew->() || return;
@@ -222,11 +234,10 @@ R_Ms:
   orderv: |
     my $TV = ar.TV || ar.V;
     my $les = '*';
-    my @J = w JV[$TV, $les];
+    my @J = w $R JV[$TV, $les];
     my @WJ = grep{_.to eq $to} @J;
-    my $ew = w ordey(t=>\@WJ, to=>$to);
+    my $ew = w $R ordey(t=>\@WJ, to=>$to);
     return { ew => $ew, wj => \@WJ };
-
   pv: |
     my $n = ar.n || 1;
     my $name = "RD$n";
@@ -235,27 +246,7 @@ R_Ms:
     $dg w Dave(K=>"C",Dname=>$name,i=>$i);
               
     
-  Tw: | # copy vertices and drop voltages accordingly
-    my $e = w orderv(%$ar);
-    while (defined(my $m = e.ew->())) {
-        # 4 # response curves near
-        my ($low) = @{m.t};
-        my $s = low.s;
-        my $cv = low.cv;
-        
-        $cv = 1 if $cv <= 3; # non hummed drops?
-        if ($to eq 'i') {
-            my $u = V.bb->{"i/s.id%u 3"};
-            $cv = 1 if !$u || !u.s.at; # sat in
-        }
-        else {
-            $cv = 1 if !s.at; # sat in
-        }
-        
-        $p->{$cv}->{"$to/s.id"} = $s;
-        sayre "low.r\t->\t [ $cv";
-    }
-    
+
   three: |
     if ($to eq 'i') {
         my $i = $s;
