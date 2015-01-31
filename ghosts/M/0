@@ -84,6 +84,10 @@ S: # sssssssssssss
     - K: z
       css: []
       classy: to bring into the web
+R:
+ - K: M
+   findway: R_M
+     
 hooks:
   fresh_init: |
     G.TV = {};
@@ -91,151 +95,16 @@ hooks:
     G.V = {};
     G.R->phat(G.V);
   percolate: |
+    # Rushing: sets up the default R:M, could be many
+    G.theM = $G->R('M');
+    
     my $uWa = {K => 'W', W => G.R};
-    G.W = w G.R fuu(u => $uWa); # the unified into wormhole
-  recoded_init: |
-      #H.G w reexec;
-      #G.A.u.i->w(uxd=>{});
-  stylespawn: |
-    my $GG = W.G;
-    my $SsKs = S.Ss ||= [];
+    G.theM.W = w G.R fuu(u => $uWa); # the unified into wormhole
+    # ^ hardlink
+    # all before perc_late makes things humm/mux
+  mux: |
     
-    if ($SsKs eq "*") {
-        my $eS = $GG->anyway('S');
-        $SsKs = [ map { _.K } @$eS ];
-    }
-    for my $K (@$SsKs) {
-        push @{S.spawn||=[]}, {
-            K => 'style',
-            B => {K=>$K},
-        };
-        w styleup[$GG, $K];
-    }
-  styleup: |
-    my $SS = w styleway[$GG, $K];
-    $SS || die sw(["style $K not found", $K, $SS, $GG]);
-    H.G w wayray(wa => SS.Ss, S=>$G);
-    
-    #sayre "style up GG.name $K  got ".@{SS.Ss};;
-    
-    my @SSSs = @{SS.Ss};
-    for my $S (@SSSs) { # mix the stylebits together
-        if (S.spawns) {
-            for my $w (w $S spawns) {
-                w._spawns = delete w.spawns;
-                push @{SS.Ss}, $w unless grep { _.K eq w.K } @{SS.Ss};
-            }
-        }
-    }
-    for my $S (@{SS.Ss}) { # mix the stylebits together
-        G.h->{S.K} = $S;
-    }
-  styleway: |
-    for my $tryG ($GG, $G) {
-        my $SS = $tryG->CsK({s=>'S', K=>$K});
-        return $SS if $SS;
-    }
-  stylesheet: |
-    $K ||= "S";
-    my $SS = w styleway[$GG, $K];
-    $SS || die "NoiSSSS $K on ux or GG.name";
-    my $Ss = SS.Ss;
-    my ($c, @s);
-    my $san = sub {
-        my $props = shift;
-        join ";", map {
-            ref $_ eq "HASH" && die
-                "oi c.K from GG.name's $K _S !"
-                ." css line got YAML-munted into HASH !"
-                ." remove the space after the colon?";
-            $_
-        } @$props
-    };
-    join "\n", grep {defined}
-    map{
-        $c = $_;
-        if (c.css) {
-            ".".c.K."{".$san->(c.css)."}"
-        }
-        elsif (c.keif) {
-            my $keif = join "\n", map {
-                _.K."{".$san->(_.css)."}"
-            } @{c.keif};
-            my $yep = "@"."-webkit-keyframes ".c.K."{\n"
-                .ind('  ', $keif)
-            ."\n}";
-            $yep
-        }
-    } @{SS.Ss};
-    
-  stylezo: |
-    # u at->attribute traslator
-    # kind of an argument resolver
-    # everything should be styleup'd to G.h
-    # making this a G1 function we call from ux with M's W.G
-    # some $style has space(s), leads through D to other style
-    # speaking of style
-    # which is what these capital letter concepts as individuals speak
-    # which is our language held nicely
-    my $GG = $G; # having said G1 etc we shove it all into G(ux) for now
-    my $apply;
-    my @deply;
-    $apply = sub {
-        my $style = shift;
-        return if $style !~ /./;
-        return map { $apply->($_) } split ' ', $style if $style =~ / /;
-        
-        my $S = GG.h->{$style};
-        if (!$S) {
-            return push @deply, $1 if $style =~ /^-(.+)$/;
-            my $DS = GG.h->{$1."_n"} if $style =~ /^(\w+)(\d+)$/;
-            if ($DS) {
-                DS.D || die sw["D found style not have D", $DS];
-                $G->w(D => {%$ar, n => $2}, $DS);
-            }
-            else {
-                 warn "no ifndo $style";
-            }
-        }
-        else {
-            # lingosa
-            if (S.styles) {
-                $apply->(S.styles);
-            }
-            S.css ? do{ 
-                at.attr.class .= " $style";
-            }:
-            S.D ? do{
-                my $ysty = $G->w("D", $ar, $S); # ux or whatever models joints here
-                $apply->($ysty) if $ysty;
-            }:
-            do {
-                sayre "wtf '$style'" unless $style =~ /^(yi|te)$/;
-            };
-        }
-    };
-    $apply->($styles);
-    for my $d (@deply) {
-        at.attr.class =~ s/$d//;
-    }
-    at.attr.class =~ s/^\s+|\s+$|\s\s+//sg;
-    
-    if (u.K eq "W") { # class to style="" outside <style> scope 
-        my $clastyle = delete at.attr.class;
-        for my $style (split ' ', $clastyle) {
-            my $S = GG.h->{$style};
-            for my $css (@{S.css}) {
-                my ($k, $v) = split ":", $css;
-                at.Z->{$k} ||= $v;
-            }
-            if (!@{S.css} || S.classy) {
-                at.attr.class .= " $style"; # secret meaning
-            }
-        }
-    }
-    
-    
-
+R_Ms:
   mux: |
       my $M = w Mr[$MR];
       my $TV = G.TV;
