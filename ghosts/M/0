@@ -246,7 +246,6 @@ R_Ms:
     $dg w Dave(K=>"C",Dname=>$name,i=>$i);
               
     
-
   three: |
     if ($to eq 'i') {
         my $i = $s;
@@ -265,7 +264,7 @@ R_Ms:
             # add C.Bs override for little B schemas not in .B.?
             my $uxa = {K => 'ux', i => $i};
             uxa.B.i = uxa.i;
-            $ux = w G.R fuu(u => $uxa, q=>1);
+            $ux = w R.Wo fuu(u => $uxa, q=>1);
         }
         ux.A->umk($M, 'ux');
         ux.A->umk(ux.i, 'U'); # into alien space
@@ -299,7 +298,7 @@ R_Ms:
                 }
                 if ($needmore) {
                     my $j = {};
-                    my $jp = w Usurf(j=>$j, i=>$M);
+                    my $jp = w $R Usurf(j=>$j, i=>$M);
                     my $vom = {reverse %$jp};
                     keys %$jp == keys %$vom
                     || die wdump[[sort keys %$jp], [sort values %$vom]];
@@ -359,8 +358,8 @@ R_Ms:
             }
     for my $i (@mm) {
         sayyl "ARR ".$i->pi;
-        w compile_figure[$i, $j];
-        w wayout_sendo[$i, $j];
+        w $R compile_figure[$i, $j];
+        w $R wayout_sendo[$i, $j];
     }
   pto: |
     my @m;
@@ -405,12 +404,20 @@ R_Ms:
     # the M is Random input grouper - upstream patch panel to C
     # the i is a sack of i, somewhere under M
     
+    # so fitting into RNAs those things are
+    
+    # G.R is R, the wormhole C:M muxes
+    # G.theM is this R:M
+    # aka R in here
+    # R.W is C, the wormhole we are unifying
+    # R.Wo is R:non, the wormhole of this RNA
+    
     sayyl "\n ixomg ".$G->pi."    ".G.W->pi;
-    my $W = G.W; # not really singular, crazy patchwork though
-    my $V = G.V;
+    my $W = R.W; # not really singular, crazy patchwork though
+    my $V = R.W.V;
     my $les = '*';
     
-    my @ONTV = w JV[$TV];
+    my @ONTV = w $R JV[$TV];
     my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
         
     TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
@@ -418,7 +425,7 @@ R_Ms:
     my $p = {};
     # 2
     saybl "\n\n# 2";
-    @ONTV = w JV[$TV];
+    @ONTV = w $R JV[$TV];
     for my $j (@ONTV) {
         my $to = j.to;
         my $s = j.s;
@@ -430,7 +437,7 @@ R_Ms:
             my $u = V.bb->{"i/s.id%u 3"};
             $u = u.s if ref $u eq 'HASH';
             if (s.dead) {
-                w G.R del[$u];
+                w R.Wo del[$u];
                 delete V.bb->{"i/s.id%u 3"};
                 sayre "SOMETHING DIED: ".$u->pi;
             }
@@ -446,66 +453,63 @@ R_Ms:
     
     my $tvp = { V=>$V, TV=>$TV, p=>$p };
     
-    my $threes = w pto(%$tvp, lcv => 3);
+    my $threes = w $R pto(%$tvp, lcv => 3);
     while (defined(my $r = $threes->())) {
-        w three(%$r);
+        w $R three(%$r);
     }
     
-    w JV[$V]; # V ups for %u 3
+    w $R JV[$V]; # V ups for %u 3
     
-    my $fours = w pto(%$tvp, lcv => 4, rev=>1);
+    my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
     while (defined(my $r = $fours->())) {
-        w four(%$r);
+        w $R four(%$r);
     }
     
 
-    my $fives = w pto(%$tvp, lcv => 7, rcv=>5);
+    my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
     while (defined(my $r = $fives->())) {
-        w five(%$r);
+        w $R five(%$r);
     }
     
-    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M);
+    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
     
-    my $sixes = w pto(%$tvp, lcv => 6);
+    my $sixes = w $R pto(%$tvp, lcv => 6);
     while (defined(my $r = $sixes->())) {
-        w six(%$r, j=>$j);
+        w $R six(%$r, j=>$j);
     }
                     
-    my $sevens = w pto(%$tvp, lcv => 6);
+    my $sevens = w $R pto(%$tvp, lcv => 6);
     while (defined(my $r = $sevens->())) {
-        w seven(%$r, j=>$j);
+        w $R seven(%$r, j=>$j);
     }
     
     H.G w aj[$j];
     
     sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
     
-    my $ou = G.A.u.i;
-    $ou w aj[$j];
+    w aj[$j];
     
     if (0) {
-                    my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-                    w pv(i=>$p,n=>2);
-    my @JJJ = w JV[$V];
-    my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-    w pv(i=>$ab,n=>1);
+        my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+        w $R pv(i=>$p,n=>2);
+
+        my @JJJ = w $R JV[$V];
+        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+        w $R pv(i=>$ab,n=>1);
     }
     
-    G.TV;
-    G.R->phat(G.TV);
-    
-  Usurf: |
+  Usurf: | # TODO wants to climb up from extremity for speed, joining onto M pathways
     j.seenid->{i.id} = $i;
     my $jp = j.p ||= {};
     $j = {%$j};
     j.p = {};
     my $here = "i.id";
     $jp->{$here} = $here;
-    my @down = w Udown;
+    my @down = w $R Udown;
     ar.d++;
     die if ar.d > 10;
     for my $d (@down) {
-        my $jpp = w Usurf(j=>$j, i=>$d, d=>ar.d);
+        my $jpp = w $R Usurf(j=>$j, i=>$d, d=>ar.d);
         for my $k (keys %$jpp) {
             $jp->{"$here/$k"} = $jpp->{$k};
         }
@@ -560,7 +564,7 @@ R_Ms:
         at.conty = encode_entities(at.conty) unless at.ishtml;
         
         
-        my @down = w Udown(+ allseeing => 1);
+        my @down = w $R Udown(+ allseeing => 1);
         @down = sort { a.conor <=> b.conor } @down;
         at.ooze = \@down;
   wayout_sendo: |
@@ -597,7 +601,10 @@ R_Ms:
         at.Z = { %{at.Z}, %{u.Z} } if u.Z; # from u
         
         my $styles = at.styles;
-        w stylezo[$u, $ui, $styles, $at];
+        w $R stylezo[$u, $ui, $styles, $at]; # ye, wants to zip down Z too/
+        # TODO widerly, the Z devolves into styles
+        # and they're both about the same, Z translates and complicated styles
+        # buzzing around here somewhere.
         
         my $Z = 0->uiuS($u => "Z"); # from ui S/Z(_D)
         at.Z = { %{at.Z}, %$Z } if $Z;
@@ -632,7 +639,7 @@ R_Ms:
                 $do_C->($Ce) if $Ce;
             }
             
-            if ($u eq G.W) { # unified field of this W
+            if ($u eq R.W) { # unified field of this W
                 push @$late, sub {
                     $do_S->(
                         "\$('#ux > #at.id').remove();"
@@ -721,9 +728,11 @@ R_Ms:
         W => $W,
         i => $i,
         ux => $ux,
-        uy => $uy,
+        uy => $uy, # something with ID beyond the ux, may be grasped...
+        # TODO liesy after styley tagname anarchy
     };
     
+    saybl " W ". $W->pi if $W;
     saybl " UX ". $ux->pi if $ux;
     saybl " Uy ". $uy->pi if $uy;
     return saygr "ungrasped line" unless $i;
