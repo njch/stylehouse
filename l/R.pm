@@ -11,7 +11,8 @@ use POSIX 'ceil';
 
 sub new {
     my $R = shift;
-    $R->{name} = shift;
+    $R->{name} = shift || 'non';
+    $R->{K} = shift || $R->{name};
     $R->{G} = $R->{A}->fiu('G');
     $R->{A}->umv("", "R");
     $R->{A}->umk($G::F[0], 'spawn');
