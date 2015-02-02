@@ -16,15 +16,10 @@ hooks:
     
     S.R ||= $S->R;
     
-    if (S.load_ways_count == 1) {
-        $S w fresh_init;
-    }
-    else {
-        $S w recoded_init;
-    }
-      
+    # TODO recode_ways is above?
+    my $wayin = (S.load_ways_count != 1 ? "recoded" : "fresh")."_init";
+    $S w $wayin;
     $S w any_init;
-    
   ghostchanges: |
     my @ghosts = H.G K Gs:*;
     my @rG;

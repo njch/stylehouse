@@ -21,7 +21,8 @@ hooks:
     my @R = map{_.i}@{GG.A.n_R||[]};
     push @R, map{_.i}@{GG.A.n_Rnons||[]} if $G eq $GG; # from G0
     for my $R (@R) {
-        w _init_R[$R];
+        my $recoded = 1;
+        w _init_R[$R, $recoded];
     }
   _init_R: |
     my $GG = R.G;
@@ -47,6 +48,11 @@ hooks:
     }
     R.way->from({hooks=>a.Dh});
     warn "nothing in ".R.way->pi if !keys %{a.Dh};
+    
+    my $wayin = (ar.recoded ? "recoded" : "fresh")."_init";
+    w $R $wayin;
+    w $R any_init;
+    
     
   RZ_Ds_traction: |
     # pool the style of code together for this R crazy
