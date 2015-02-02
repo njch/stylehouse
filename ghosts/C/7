@@ -100,6 +100,9 @@ R_surz:
                         elsif (oj.style eq 'id') {
                             at.id = oj.s;
                         }
+                        elsif (oj.style eq 'tt') {
+                            at.title = oj.s;
+                        }
                         elsif (oj.style eq "sf") {
                             push @$css, map { $R::f->{$_} || 
                             die "no style $_"} split '_', oj.s;
@@ -112,9 +115,9 @@ R_surz:
                         }
                     }
 
-                    at.style = join ';', @$css;
+                     at.style = join ';', grep {$_} @$css;
                     G.shtuuyle->{at.style}++;
-                    at.title = $l;
+                    at.title = $l.(at.title ? " at.title" : "");
                     $at = join " ", map { $_.'="'.$at->{$_}.'"' }
                         grep { $at->{$_} } sort keys %$at;
                     if (!$ishtml) {
