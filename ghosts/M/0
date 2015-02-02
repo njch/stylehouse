@@ -58,18 +58,10 @@ R:
      
 hooks:
   percolate_R: |
-    # Rushing: sets up the default R:M, could be many
-    G.theM = $G->R('M');
-    # ^ for holding this whole M business together
-    G.theM.Wo = G.theM.A->spawn(R => 'non'); # $G->R();
-    G.theM.Wo.K = "WoM"; # TODO
-    
-    # ^ for holding the C:W, C:Ms, C:uxs
-    
-    my $uWa = {K => 'W', W => G.theM.Wo, R => G.theM};
-    G.theM.W = w G.theM.Wo fuu(u => $uWa); # the unified into wormhole
-    # ^ hardlink
-    # all before perc_late makes things humm/mux
+    w Puur unless K R:M;
+  Puur: |
+    G.theM = $G->R('M', ar.K);
+    w G.theM setup;
   mux: |
     my $K = ar.K || "M";
     my $M = K R:$K;
@@ -87,6 +79,16 @@ hooks:
     my $u = delete a.u;
     w $M remux[$MR,$a,$u];
 R_Ms:
+  stupnon: |
+    G.theM.Wo = G.theM.A->spawn(R => 'non'); # $G->R();
+    G.theM.Wo.K = "WoM"; # TODO
+    
+    # ^ for holding the C:W, C:Ms, C:uxs
+    
+    my $uWa = {K => 'W', W => G.theM.Wo, R => G.theM};
+    G.theM.W = w G.theM.Wo fuu(u => $uWa); # the unified into wormhole
+    # ^ hardlink
+    # all before perc_late makes things humm/mux
   mux: |
       my $M = w $R Mr[$MR]; # not G.theM, which is now $R
       my $TV = R.W.TV; # R.W is the C:W
