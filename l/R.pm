@@ -108,7 +108,7 @@ sub suets {
     my $last;
     while (1) {
           my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
-        $ac =~ /^(\W)(.+)$/ || die "$ac !".G::wdump($s);
+        $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
         if (!$last) { # TODO know about insto hash or array...
              $i = $1 eq "{" ?
              do { $i = $i->{$2} ||= {} }

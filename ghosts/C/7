@@ -13,36 +13,6 @@ R_surz:
         if (my $id = a.isJid || a.replaceJid) {
             a.bb->{'/%id 0.1'} = $id;
         }
-            
-        # 7
-        my @s;
-            for my $thl (@int) {
-                my $j = $th->{$thl} || next;
-                #say "$thl ".wdump($o) if !G.gp_inarow;
-                my $l = j.l;
-                my $s = j.s;
-                die "$l  -- $thl" if $thl ne $l;
-                
-                # top volt for thing selection: # whattage
-                if ($l eq 'K' && a.bb->{"name 0.1"} =~ $s
-                 || $l eq 'name' && a.bb->{"K 0.2"} =~ $s
-                 && $s ne a.bb->{"K 0.2"}) {
-                    delete $ap->{$l};
-                    next;
-                }
-                    
-                push @s, $apl->($l, $s);
-            }
-            
-            @s = "no?" if !@s;
-            my $html = $apl->('/', join '', @s);
-            
-                sayre "Extr a appearance: ".
-                join", ",sort keys %$ap if %$ap;
-            
-            #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
-            $html;
-            
     - K: styley #c extra stylepliers
       babz:
         'maka 2.5': |
@@ -144,19 +114,45 @@ R_surz:
 
                     at.style = join ';', @$css;
                     G.shtuuyle->{at.style}++;
-                    # 7.6
-                    # 7.7
                     at.title = $l;
                     $at = join " ", map { $_.'="'.$at->{$_}.'"' }
                         grep { $at->{$_} } sort keys %$at;
                     if (!$ishtml) {
                         $s = encode_entities($s);
-                        $s =~ s/\\n/\n/g;
-                        die if $s =~ /\\n/;
                     }
                     $s = "<$tag $at>$s</$tag>" if defined $s;
                     $s
             };
+    - K: sinter #c
+      babz:
+        'maka 7': |
+            my @s;
+            for my $thl (@int) {
+                my $j = $th->{$thl} || next;
+                my $l = j.l;
+                my $s = j.s;
+                die "$l  -- $thl" if $thl ne $l;
+                
+                # top volt for thing selection: # whattage
+                if ($l eq 'K' && a.bb->{"name 0.1"} =~ $s
+                 || $l eq 'name' && a.bb->{"K 0.2"} =~ $s
+                 && $s ne a.bb->{"K 0.2"}) {
+                    delete $ap->{$l};
+                    next;
+                }
+                    
+                push @s, $apl->($l, $s);
+            }
+            
+            @s = "no?" if !@s;
+            my $html = $apl->('/', join '', @s);
+            
+                sayre "Extr a appearance: ".
+                join", ",sort keys %$ap if %$ap;
+            
+            #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
+            $html;
+            
     - K: prot_fits #c
       babz:
         'S#proto_fits 8.7': |
