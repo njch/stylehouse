@@ -32,13 +32,17 @@ hooks:
             w pur_carb[$p, $GG];
         }
     }
-    $GG w percolate unless $GG eq $G;
+    
+    unless ($GG eq $G) {
+        $GG w percolate_R;
+        $GG w percolate;
+    }
     $lg;
   pur_GAK: | #c
             my ($k, @w) = split ' ', p.GAK;
             @w = $k if !@w;
             
-            my $g = $GG->K(G=>$k) if GG.A.n_G; # fresh
+            my $g = $GG->K(G=>$k);
             if (!$g) {
                 $g = GG.A->spawn(G=>@w);
                 g.K = $k;
