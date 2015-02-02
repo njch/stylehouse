@@ -1107,8 +1107,12 @@ sub w {
     }
 
     if (!@$l) {
+        my ($wa) = $talk =~ /^w\ (\w+)/;
+
         warn $G->pi."    way miss $talk"
-            unless $talk =~ /^w\ (print|humms_D|flows_D)/;
+        if !($H->{misslesswa} ||= {map{$_=>1}
+            qw'print humms_D flows_D fresh_init any_init recoded_init'}
+          )->{$wa};
         return;
     }
 
