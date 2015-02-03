@@ -567,7 +567,7 @@ sub load_ways {
 
     my $Awns = join '+', sort map{$_->{name}}@Aways;
     my $Gwns = join '+', sort map{$_->{name}}@{$G->{ways}};
-    $Awns eq $Gwns || die "$Awns !===== $Gwns";
+    $Awns eq $Gwns || warn "funny looking A n_way <-> G ways:\n  A: $Awns\n  G: $Gwns";
 
     my $Aways = {map{$_->{name}=>$_}@Aways};
 
