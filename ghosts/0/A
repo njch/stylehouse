@@ -72,8 +72,9 @@ Ds:
         my ($s, $ac, $t) = @_;
         
         my $a = $s->{$ac} ||= [];
-        die "ac looks $ac, got  $a " unless ref $a eq "ARRAY";
-        if (ref $s eq 'A' && $ac eq 'n_pyramid') {
+        ref $a eq "ARRAY" || die "ac looks $ac, got  $a from $s";
+        my $rush = ref $s eq 'A' && $ac eq 'n_pyramid';
+        if (!$rush) { # dedupe
             return if grep { $_ eq $t } @$a;
         }
         push @$a, $t;

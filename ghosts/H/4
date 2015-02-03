@@ -2,6 +2,7 @@ hooks:
   Rwayray: |
     my $GG = $S;
     return unless ref $wa eq "ARRAY";
+    saybl "Rwayraying: ".$GG->pi;
     my $i = 0;
     for my $a (@$wa) {
         if (ref $a eq "C") {
@@ -18,17 +19,29 @@ hooks:
         }
         $i++;
     }
+  ReinitRs: |
+    my $GG = $S;
     my @R = map{_.i}@{GG.A.n_R||[]};
     push @R, map{_.i}@{GG.A.n_Rnons||[]} if $G eq $GG; # from G0
+    saybl "even G " if $G eq $GG;
+    @R = uniq @R;
+    my $don = {};
+    my $recoded = 1;
     for my $R (@R) {
-        my $recoded = 1;
-        w _init_R[$R, $recoded];
+        if ($don->{R.id}) {
+            sayre "already ".$don->{R.id}->pi;
+            next;
+        }
+        $don->{R.id} = $R;
+        w _init_R[$R, $recoded]; 
     }
   _init_R: |
     my $GG = R.G;
     my $Rw;
     R.A->umk($G,'Rnons') if R.name eq 'non'; # like Gs
-    saybl "_init_R waying ".$G->pi."    ".$R->pi;
+    
+    saybl "_init_R waying ".$GG->pi."    ".$R->pi;
+    
     $Rw = $GG->CsK({s=>'Ray',K=>R.name});
     $Rw ||= $G->CsK({s=>'Ray',K=>R.name});
     
@@ -38,16 +51,16 @@ hooks:
     # have setting somewhere for whatever
     # fan out all style poss behind the source name
     # then wild R cranking + speshness distill their source from this pool
-    w RZ_Ds_traction[$a, $R];
+    w RZ_Ds_traction[$a, $R]; 
     
     if (!R.way) {
         R.way = R.A->spawn('C');
         R.way.R = $R;
         R.way.A->umv('', 'way');
-        R.way.name = "Rw!R.name";
+        R.way.name = "Rw!R.name"; 
     }
     R.way->from({hooks=>a.Dh});
-    warn "nothing in ".R.way->pi."\n on".wdump(2,$R) if !keys %{a.Dh};
+    warn "nothing in ".R.way->pi."\n on".wdump(2,[$R]) if !keys %{a.Dh};
     
     my $wayin = (ar.recoded ? "recoded" : "fresh")."_init";
     w $R $wayin;
@@ -106,7 +119,7 @@ hooks:
     }
     
     @$Ds = grep { !(
-        _.spesh || _.spesh_D && do { w $_ spesh_D; }
+        _.spesh || (_.spesh_D && do { sayyl wdump(2,[haspech=>$_]); w $_ spesh_D; })
     ) } @$Ds;
     
     a.Ds = $Ds;
