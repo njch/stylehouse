@@ -1128,7 +1128,7 @@ sub w {
 
         warn $G->pi."    way miss $talk"
         if !($H->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init'}
+            qw'print humms_D flows_D fresh_init any_init recoded_init load_ways_post'}
           )->{$wa};
         return;
     }
