@@ -72,7 +72,7 @@ sub new {
     $G->{A}->umk($h, 'Gs');
 
 
-    $G->load_ways(@ways);
+    $G->load_ways();
 
     $G
 }
@@ -558,30 +558,48 @@ sub anyway {
 
 sub load_ways {
     my $G = shift;
-    my @ways = @_;
+    my @ways = split /\+/, $G->{way};
+
+    my $base = 'ghosts';
+    $base = "$G->{stylebase}/$base" if $G->{stylebase};
+
+    my @Aways = map{$_->{i}}@{$G->{A}->{n_way}};
+
+    my $Awns = join '+', sort map{$_->{name}}@Aways;
+    my $Gwns = join '+', sort map{$_->{name}}@{$G->{ways}};
+    $Awns eq $Gwns || die "$Awns !===== $Gwns";
+
+    my $Aways = {map{$_->{name}=>$_}@Aways};
+
     $G->{ways} ||= [];
     $G->{wayfiles} ||= [];
     $G->{load_ways_count}++;
-
     my $ldw = [];
-    while (defined( my $name = shift @ways )) {
+    for my $ghost (@ways) {
         my @files;
 
-        my $base = "ghosts/$name";
-        push @files, $base if -f $base;
+        my $where = "$base/$ghost";
+        push @files, $where if -f $where;
         push @files, grep { /\/\d+$/ }
-            map { $H->fixutf8($_) } glob("$base/*");
+        # only glob numbery, so C/name will file further than C ways
+            map { $H->fixutf8($_) }
+            grep {-f $_}
+            glob("$where/*") if -d $where;
 
         for my $file (@files) {
-            # TODO pass an If object selector to 0->deaccum
-            @{$G->{ways}} = grep { $_->{_wayfile} ne $file } @{$G->{ways}};
+            my ($name) = $file =~ /ghosts\/(.+)$/;
+
+            @{$G->{ways}} = grep { $_->{name} ne $name } @{$G->{ways}}; # TOGO
+            if (my $old = $Aways->{$name}) {
+                $G->deaccum($G->{A}, 'n_way', $old);
+                $G->timer(2, sub{ $G->w("del", {u=>$old}, $G->{R}); }); # held by pyramid...
+            }
+
             $G->deaccum($G, wayfiles => $file);
 
             my ($w) = grep { $_->{_wayfile} eq $file } @{$G->{ways}};
 
-            my ($wn) = $file =~ /ghosts\/(.+)$/;
-            $wn ||= $file;
-            my $nw = $G->nw(name=>$wn);
+            my $nw = $G->nw(name=>$name);
             $nw->{A}->umv('', 'way');
             $nw->load($file);
 
@@ -590,8 +608,7 @@ sub load_ways {
             push @{$G->{ways}}, $nw;
         }
 
-        $G->{name} =~ s/\+$name// && warn "no wayfiles from $name" || die
-        unless @files; # ^ dies if was first way name
+        die "no wayfiles from $ghost" unless @files;
     }
 
     say "G $G->{name} w+ ".join"  ", map{$_->{name}}@$ldw;
