@@ -66,7 +66,7 @@ sub dfrom {
 
 sub pi {
     my $R = shift;
-    "R $R->{K} $R->{name}"  
+    join ' ', grep{defined} "R", $R->{K}, $R->{name}
 }
 
 sub f {

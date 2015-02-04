@@ -91,7 +91,7 @@ sub sw {
 
 sub pi {
     my $G = shift;
-    "G $G->{K} $G->{name}"
+    join ' ', grep{defined} "G", $G->{K}, $G->{name}
 }
 
 sub deeby {
