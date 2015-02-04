@@ -23,6 +23,19 @@ R_Jz:
   - K: phat #c
     D: |
       # etc 
+  - K: shj #c pronounce $j{r,s,t,cv,ev} from given $r and $d
+    D: |
+      my ($r, $d) = @_;
+      my $j;
+      j.r = $r;
+      j.s = ref $d eq 'HASH' ? $d->{$r} : $d; # carbon in
+      (j.t, j.cv) =
+          j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
+          :
+          split /\s+/, j.r, 2;
+      (j.cv, my @e) = split /\s+/, j.cv;
+      j.ev = \@e if @e;
+      $j
 R_surz:
     - K: Jaction #c
       key:
