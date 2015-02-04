@@ -66,7 +66,7 @@ sub dfrom {
 
 sub pi {
     my $R = shift;
-    "R $R->{name}"  
+    "R $R->{K} $R->{name}"  
 }
 
 sub f {

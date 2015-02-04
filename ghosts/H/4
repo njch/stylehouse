@@ -12,9 +12,11 @@ hooks:
         else {
             my $Rw = $wa->[$i] = $GG->nw(%$a);
             
-            Rw.A->umv('', 'RDs'); # ART
-            # we create lots of these ^ 
-            # but only the one in R.way (or Cs, otherways) is the here & now
+            0->deaccum(G.A, 'n_RDw', $_) for grep {_.i.K eq Rw.K} @{G.A.n_RDw};
+            Rw.A->umv('', 'RDw'); # ART
+            # we create lots of these ^
+            # and tract G <RDw Rw <Rw R.way (or Cs, otherways) is the here & now 
+            # is a A sucking J
             w _in_Rw[$Rw, $GG];
         }
         $i++;
@@ -45,22 +47,23 @@ hooks:
     $Rw = $GG->CsK({s=>'Ray',K=>R.name});
     $Rw ||= $G->CsK({s=>'Ray',K=>R.name});
     
-    $Rw || die "no Rw for R.name";
+    $Rw || die "no Rw for R.name ".wdump($R);
     
-    my $a = Rw.rwa;
+    my $a = Rw.a;
     # have setting somewhere for whatever
     # fan out all style poss behind the source name
     # then wild R cranking + speshness distill their source from this pool
-    w RZ_Ds_traction[$a, $R]; 
+    w RZ_Ds_traction[$a, $R];
+    warn "nothing in Rway ".$R->pi."\n on".wdump(2,[$a,$R]) if !keys %{a.Dh};
     
     if (!R.way) {
         R.way = R.A->spawn('C');
         R.way.R = $R;
         R.way.A->umv('', 'way');
+        R.way.A->umk($Rw, 'Rw');
         R.way.name = "Rw!R.name"; 
     }
     R.way->from({hooks=>a.Dh});
-    warn "nothing in ".R.way->pi."\n on".wdump(2,[$R]) if !keys %{a.Dh};
     
     my $wayin = (ar.recoded ? "recoded" : "fresh")."_init";
     w $R $wayin;
@@ -102,34 +105,45 @@ hooks:
         $R->loadup($Dh, $ac, $babble);
     }
   _in_Rw: |
-    my $source = Rw.findway;
-    my $a = {};
-    Rw.rwa = $a;
-    saybl "_in_Rw Recipe ".$G->pi."   ".$Rw->pi;
+    saybl "_in_Rw Recipe ".$Rw->pi;
+    Rw.a = {};
+    Rw.a.Ds = [];
+    Rw.a.Dh = {};
+    Rw.a.Dz = {};
     
-    my $Ds = [];
+    my $source = Rw.findway;
+    # form of from wayt ^ moves v
+    my $Ds = Rw.a.Ds;
+    # ghotov
     my @gs = $GG;
     push @gs, $G if $GG ne $G && Rw.K eq 'non';
+    
     for my $g (@gs) {
-        
         for my $Rsur (flatline $g->anyway("${source}s")) { # shubby
             push @$Ds, map { { K=>$_, D=>$Rsur->{$_} } } keys %$Rsur;
         }
         push @$Ds, flatline $g->anyway("${source}z");
     }
     
-    @$Ds = grep { !(
-        _.spesh || (_.spesh_D && do { sayyl wdump(2,[haspech=>$_]); w $_ spesh_D; })
-    ) } @$Ds;
+    # per R (traction) this kinda thing layer
+    # TODO when this is natively Jish all the way along...
+    my @Ks;
+    @$Ds = grep {
+        my $sp = _.spesh;
+        if (!$sp && exists _.spesh_D) {
+            $sp = $G->D({bab=>_.spesh_D});
+        }
+        push @Ks, _.K if !$sp;
+        !$sp
+    } @$Ds;
+    #sayyl " -- in Rw: ".$Rw->pi.": ". join '  ', sort @Ks;
     
-    a.Ds = $Ds;
-    a.Dh = {};
-    a.Dz = {};
     
-    w RZ_Ds_humm[$a];
+    w RZ_Ds_humm[$Rw];
     
     
   RZ_Ds_humm: |
+    my $a = Rw.a;
     a.bb = {};
     my $Ds = a.Ds;
     

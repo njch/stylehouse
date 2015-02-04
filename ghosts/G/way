@@ -72,7 +72,7 @@ Ds:
                 @{G.ways} = grep { _.name ne $name } @{G.ways}; # TOGO
                 if (my $old = $Aways->{$name}) {
                     0->deaccum(G.A, 'n_way', $old);
-                    0->timer(2, sub{ w G.R del(u=>$old); }); # held by pyramid...
+                    # w G.R del(u=>$old) if G.R; # held by pyramid...
                 }
                 
                 $G->deaccum($G, wayfiles => $file);
@@ -590,7 +590,7 @@ Ds:
           
           warn $G->pi."    way miss $talk"
           if !(H.misslesswa ||= {map{$_=>1}
-              qw'print humms_D flows_D fresh_init any_init recoded_init load_ways_post'}
+              qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post'}
             )->{$wa};
           return;
       }

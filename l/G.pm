@@ -85,6 +85,8 @@ sub gp {
 }
 
 sub sw {
+    return sayre "BEFORE SWA" if !$H->{swa};
+    return $H->{swa}->(@_);
     my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
     return say "too early rto publich" if ! $H->{r};
     $H->{r}->publish('sw', $stuff);
@@ -93,7 +95,7 @@ sub sw {
 
 sub pi {
     my $G = shift;
-    "G ".$G->{name};
+    "G $G->{K} $G->{name}"
 }
 
 sub deeby {
@@ -592,7 +594,7 @@ sub load_ways {
             @{$G->{ways}} = grep { $_->{name} ne $name } @{$G->{ways}}; # TOGO
             if (my $old = $Aways->{$name}) {
                 $G->deaccum($G->{A}, 'n_way', $old);
-                $G->timer(2, sub{ $G->w("del", {u=>$old}, $G->{R}); }); # held by pyramid...
+                # $G->w("del", {u=>$old}, $G->{R}) if $G->{R}; # held by pyramid...
             }
 
             $G->deaccum($G, wayfiles => $file);
@@ -1128,7 +1130,7 @@ sub w {
 
         warn $G->pi."    way miss $talk"
         if !($H->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init load_ways_post'}
+            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post'}
           )->{$wa};
         return;
     }

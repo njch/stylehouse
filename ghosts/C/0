@@ -7,9 +7,8 @@ C:
      Z: {background: '#044'}
      content_D: |
        $name;
-   E: 
-     _D: |
-       Sw B/D;
+   E: |
+     Sw B/D;
  - K: Emb #c
    Z:
       color: rgba(255,200,200,0.4) 
@@ -68,16 +67,18 @@ hooks:
     print: |
         "S.K S.name";
     S: 
+      ishtml: 1
       content_D: | 
         w G.theR S[$S, $u];
-      ishtml: 1
     E:
       _D: |
-        G.theD = $S;
+        G.theD = $S; # funny singu
         sayyl "To ".$S->pi;
         w G.theR E[$S, $e];
     flows_D: |
-      w G.theR setup[$S];
+      w G.theR setup[$S]; # J level
+    i: |
+      w G.theR Sud/in[$S,$i]; # Jab level
   fresh_init: |
     w ikey;
     H.nosuddendeath = 1;
@@ -89,7 +90,12 @@ hooks:
     G.theR = $G->R('sur');
     
   percolate: |
-    w makeD unless K D; 
+    w makeD unless K D;
+    H.swa = sub {
+        my $i = @_ > 1 ? [@_] : shift;
+        my $Dname = 'J0';
+        w Dave[$i,$Dname];
+    };
   makeD: |
     my $name = ar.name || "J".G.Jnumb++; # additively
     my $u = {K=>'D',name=>$name};
