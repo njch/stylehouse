@@ -11,8 +11,14 @@ Ray:
    findway: R_Js
 hooks:
   percolate_R: | # ! R
-    G.JsR = $G->R('Js'); 
+    G.theJsR = $G->R('Js');
 R_Js:
+  makeJ: |
+    my $name = ar.name || "J".G.Jnumb++; # additively
+    my $u = {K=>'J',name=>$name};
+    my $J = w G.R fuu[$u]; 
+    sayyl "made ++ ".$J->pi;
+    $J;
   - K: phat #c
     D: |
       # etc 
@@ -20,8 +26,9 @@ R_surz:
     - K: Jaction #c
       key:
         J: J
-      n_D: |
+      n_D:
         J: |
+          w makeJ;
           my $J = a.i = R.A->spawn('J');
           J.W = K G:D ->{W};
           J.hol = "H.style/H.name/H.id";
