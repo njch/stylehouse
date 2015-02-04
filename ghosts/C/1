@@ -50,57 +50,6 @@ R_surs:
         say "Made ".$R->pi;
         #w R.S.w $_/in({}) for keys %{R.S.w};
     
-    bacup: | #c SCHEMA
-        my $ss_Ds = R.S.ss_Ds = Load(<<'');
-                  n: |
-                     n.HASH = {};
-                  Ai: |
-                     Ai.A = {};
-                  Gi: |
-                     my $likes = {map{$_=>1}qw{G ways}};
-                     Gi.HASH = {
-                      it => sub {
-                        my $h = shift;
-                        my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
-                      },
-                     };
-        
-        for my $k (sort keys %$ss_Ds) { # or K array who knows
-            my $u = R.S.ss->{$k} = w $R dus;
-            my $D = $ss_Ds->{$k};
-            $G->D({bab=>$D, ar=>{$k=>$u}});
-        }
-        
-    as: | #c
-        my $j = {};
-        my $ord = ar.ord;
-        my $do;
-        $do = sub {
-            my $j = {%$j};
-            my $ad = [@_];
-            my %j = %$j;
-            while (@$ad) {
-                my ($k, $v) = (shift @$ad, shift @$ad);
-                
-                my $comp = $k =~ /^(%|\+)/;
-                my $j = {%j} if $comp;
-                if ($comp) {
-                    $k =~ s/^\+// if $comp;
-                    j.t .= $k if $comp;
-                }
-                else {
-                    (j.t, j.cv) = split /\s+/, $k, 2;
-                    %j = %$j;
-                }
-                j.cv || die;
-                j.r = "j.t j.cv";
-                j.s = $v;
-                $bb->{j.r} = j.s;
-                push @$ord, $j if $ord;
-            }
-            sub{$do->(%$j, @_)}
-        };
-        $do
     gpfro: | #c
       my ($aser, $l, $u, $cv, @etc) = @$a;
       
@@ -116,50 +65,22 @@ R_surs:
           @etc,
       );
     
-    phat: | #c
-        a.bb = {};
-        a.ord = [];
-        a.bz = w $R as(bb=>a.bb, ord=>a.ord);
-        a.fro = sub {
-            my $fro = [a.bz, @_];
-            w $R gpfro(a=>$fro);
-        };
-    cgp: | #c data guess chart
-        my $c = {};
-        if (!defined $u){
-            c.undef = 1;
-        } else {
-            if (my $ref = ref $u) {
-                c.ARRAY = 1 if $ref eq "ARRAY";
-                c.HASH = 1 if $ref eq "HASH";
-                c.CODE = 1 if $ref eq "CODE";
-                c.canpi = 1 if !%$c && $u->can('pi');
-                for (qw'A C G T     R   J') {
-                      $c->{$_} = 1 if $ref eq $_;
-                }
-                c.ref = $ref;
-            }
-            else {
-                if (ref \$u eq 'SCALAR') {
-                    c.text = 1;
-                    c.len = length($u);
-                    c.lin = scalar split /\n/, $u;
-                    c.b = scalar split /\n\n/, $u;
-                    c.number = $u =~ /^(?:\d+\.)?\d+$/;
-                    c.wordy = $u =~ /\w+/;
-                }
-                else { die "wtf is $u" };
-            }
-        }
-        $c
+
+    # cgp in R/ivm #c data guess chart
     gp: | #c R_sur gp
         G.gp_inarow++;
         my $a = ar.a || {};
         a.cv = ar.cv if ar.cv;
-        a.u = ar.u if ar.u;
         a.cv = 0.1 if a.cv < 0.1;
+        a.u = ar.u if ar.u;
         a.isJid = a.replaceJid || $H->mkuid;
-        undef a.isJid if G.gp_inarow > 1;
+        if (G.gp_inarow > 1) {
+            undef a.isJid;
+            sayre join"", ("  " x G.gp_inarow), "INNER";
+        }
+        else {
+            saygr "OUter: a.cv a.u";
+        }
         my $u = a.u;
         
         # 3
@@ -238,7 +159,7 @@ R_surs:
 
         $an->(qw'W oh 0.2 mustb','id,hash,file,G');
         $h
-    du: | #c style grab
+    du: | #c style grab # goner
       $a || die;
       my $R = a.R;
       defined a.i || die;
