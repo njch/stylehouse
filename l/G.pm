@@ -85,12 +85,8 @@ sub gp {
 }
 
 sub sw {
-    return sayre "BEFORE SWA" if !$H->{swa};
+    return warn "BEFORE SWA" if !$H->{swa};
     return $H->{swa}->(@_);
-    my $stuff = wdump($G::swdepth, @_>1?\@_:@_);
-    return say "too early rto publich" if ! $H->{r};
-    $H->{r}->publish('sw', $stuff);
-    say "published wdump to sw from   $G::swdepth x ".length($stuff);
 }
 
 sub pi {
@@ -630,7 +626,8 @@ sub di {
     #   bunch of data/messages
 
     my @vec;
-    push @vec, shift while $_[0] =~ /^[\.\d]+$/;
+    push @vec, shift while !ref $_[0] && $_[0] =~ /^[\.\d]+$/;
+
     my $a = $F[0]->{di} = {};
     ($a->{mag}, $a->{dir}, $a->{etc}) = @vec;
     $a->{tip} = [@_];

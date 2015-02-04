@@ -108,7 +108,8 @@ Ds:
       #   bunch of data/messages
       
       my @vec;
-      push @vec, shift while $_[0] =~ /^[\.\d]+$/;
+      push @vec, shift while !ref $_[0] && $_[0] =~ /^[\.\d]+$/;
+      
       my $a = $F[0]->{di} = {};
       (a.mag, a.dir, a.etc) = @vec;
       a.tip = [@_];
