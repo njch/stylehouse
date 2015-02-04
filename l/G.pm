@@ -1398,7 +1398,7 @@ sub sway {
     my ($p, $s, $P) = @_;
     my ($from) = $p->{from} || $G->CsK($p);
 
-    $from || defined $P->{e} || die "no C: $p->{K} ($G->{name})".wdump([$p,$s]);
+    $from || defined $P->{e} || return undef;
 
     my $w = $G->nw();
     $w->from($from) if $from;
