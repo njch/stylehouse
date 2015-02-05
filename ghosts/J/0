@@ -13,17 +13,18 @@ Ray:
    findway: R_J 
 hooks:
   J:
+    print: |
+      " JHayaja Shiva Shakary"
     flows_D: |
-      w G.theJ setup[$S]; # J level
+      #w G.theJ setup[$S]; # J level
     S: 
       ishtml: 1
       content_D: | 
-        w G.theR S[$S, $u];
+        "Wup"
     E:
       _D: |
-        G.theD = $S; # funny singu
         sayyl "To ".$S->pi;
-        w G.theR E[$S, $e];
+        #w G.theR E[$S, $e];
   percolate_R: | # capow! R
     G.theJ = $G->R('J');
   
@@ -55,23 +56,39 @@ R_Jz:
             my $fro = [a.bz, @_];
             w $R gpfro(a=>$fro);
         };
-  - K: gpfro #c
+  - K: as #c get abulator
     D: |
-      my ($aser, $l, $u, $cv, @etc) = @$a;
-      
-      my $gp = {u=>$u, cv=>$cv};
-      if (ref gp.cv) {
-          my $mcv = delete gp.cv;
-          %$gp = (%$gp, %$mcv);
-      }
-      my $v = w $R gp(a => $gp);
-            
-      $aser->($l => $v,
-          '%gp' => $gp,
-          @etc,
-      );
-    
-  - K: shj #c pronounce $j{r,s,t,cv,ev} from given $r and $d
+        #my $bb = shift;
+        #my $ord = shift;
+        my $j = {};
+        my $do;
+        $do = sub {
+            my $j = {%$j};
+            my $ad = [@_];
+            my %j = %$j;
+            while (@$ad) {
+                my ($k, $v) = (shift @$ad, shift @$ad);
+                
+                my $comp = $k =~ /^(%|\+)/;
+                my $j = {%j} if $comp;
+                if ($comp) {
+                    $k =~ s/^\+// if $comp;
+                    j.t .= $k if $comp;
+                }
+                else {
+                    (j.t, j.cv) = split /\s+/, $k, 2;
+                    %j = %$j;
+                }
+                j.cv || die;
+                j.r = "j.t j.cv";
+                j.s = $v;
+                $bb->{j.r} = j.s;
+                push @$ord, {%$j} if $ord;
+            }
+            sub{$do->(%$j, @_)}
+        };
+        $do
+  - K: shj #c pronounce $j{r,s,t,cv,ev} from given $r and $d # post abulator but similar
     D: |
       my ($r, $d) = @_;
       my $j;
@@ -84,6 +101,20 @@ R_Jz:
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
+  - K: gpfro #c fatten by 
+    D: |
+      my ($aser, $l, $u, $cv, @etc) = @$a;
+      
+      my $gp = {u=>$u, cv=>$cv};
+      %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
+      
+      my $v = w $R gp(a => $gp);
+            
+      $aser->($l => $v,
+          '%gp' => $gp,
+          @etc,
+      );
+    
   - K: bacup #c SCHEMA
     D: |
         my $ss_Ds = R.S.ss_Ds = Load(<<'');
