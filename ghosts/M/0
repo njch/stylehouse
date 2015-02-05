@@ -165,9 +165,6 @@ R_Ms:
         push @J, $j;
     }
     @J
-
-
-
   pv: |
     my $n = ar.n || 1;
     my $name = "RD$n";
@@ -228,8 +225,6 @@ R_Ms:
     
     
     
-
-
   Udown: |
     # W->M->uxs, then uxs S amongst, y projects
     my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
@@ -262,6 +257,116 @@ R_Ms:
     # TODO make a pattern about y=to match against Eways...
     i.G w event(%$E);
 R_Mz:
+  - K: ux #c
+    D: |
+      # 1
+      # very left of the dome, heading into micro peaks
+      # we get more likely to fork
+      #   as we go out along things that already exist
+      #   they humm back to themselves at 8s
+      #     where we can either switch to it as master
+      #     or drop it if the thing wants a new 4 or so already
+
+      # the W is what we propagate, where ux # slight singley for now
+      # the M is Random input grouper - upstream patch panel to C
+      # the i is a sack of i, somewhere under M
+
+      # so fitting into RNAs those things are
+
+      # G.R is R, the wormhole C:M muxes
+      # G.theM is this R:M
+      # aka R in here
+      # R.W is C, the wormhole we are unifying
+      # R.Wo is R:non, the wormhole of this RNA
+
+      sayyl "\n ixomg ".$G->pi."    ".R.W->pi;
+      my $W = R.W; # not really singular, crazy patchwork though
+      my $V = R.W.V;
+      my $les = '*';
+
+      my @ONTV = w $R JV[$TV];
+      my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
+
+      TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
+
+      my $p = {};
+      # 2.3
+      # 2.4
+      my $tvp = { V=>$V, TV=>$TV, p=>$p };
+
+      my $threes = w $R pto(%$tvp, lcv => 3);
+      while (defined(my $r = $threes->())) {
+          w $R three(%$r);
+      }
+
+      w $R JV[$V]; # V ups for %u 3
+
+      my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
+      while (defined(my $r = $fours->())) {
+          w $R four(%$r);
+      }
+
+
+      my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
+      while (defined(my $r = $fives->())) {
+          w $R five(%$r);
+      }
+
+      my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
+
+      my $sixes = w $R pto(%$tvp, lcv => 6);
+      while (defined(my $r = $sixes->())) {
+          w $R six(%$r, j=>$j);
+      }
+
+      my $sevens = w $R pto(%$tvp, lcv => 6);
+      while (defined(my $r = $sevens->())) {
+          w $R seven(%$r, j=>$j);
+      }
+
+      H.G w aj[$j];
+
+      sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
+
+      w aj[$j];
+
+      if (0) {
+          my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+          w $R pv(i=>$p,n=>2);
+
+          my @JJJ = w $R JV[$V];
+          my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+          w $R pv(i=>$ab,n=>1);
+      }
+    
+  - K: two #c
+    babz:
+      'ux 2.3': |
+        saybl "\n\n# 2";
+        @ONTV = w $R JV[$TV];
+        for my $j (@ONTV) {
+            my $to = j.to;
+            my $s = j.s;
+            my $cv = j.cv;
+
+            $cv = 1 if $cv <= 3; # non hummed drops?
+            if ($to eq 'i') {
+                my $u = V.bb->{"i/s.id%u 3"};
+                $u = u.s if ref $u eq 'HASH';
+                if (s.dead) {
+                    w R.Wo del[$u];
+                    delete V.bb->{"i/s.id%u 3"};
+                    sayre "SOMETHING DIED: ".$u->pi;
+                }
+                $cv = 1 if !$u || !u.at; # sat in
+            }
+            else {
+                $cv = 1 if !s.at; # sat in
+            }
+
+            $p->{$cv}->{"$to/s.id"} = $s;
+            sayre "j.r\t->\t [ $cv";
+        }
   - K: three #c
     D: |
       if ($to eq 'i') {
@@ -382,114 +487,7 @@ R_Mz:
           w $R compile_figure[$i, $j];
           w $R wayout_sendo[$i, $j];
       }
-  - K: ux #c
-    D: |
-      # 1
-      # very left of the dome, heading into micro peaks
-      # we get more likely to fork
-      #   as we go out along things that already exist
-      #   they humm back to themselves at 8s
-      #     where we can either switch to it as master
-      #     or drop it if the thing wants a new 4 or so already
 
-      # the W is what we propagate, where ux # slight singley for now
-      # the M is Random input grouper - upstream patch panel to C
-      # the i is a sack of i, somewhere under M
-
-      # so fitting into RNAs those things are
-
-      # G.R is R, the wormhole C:M muxes
-      # G.theM is this R:M
-      # aka R in here
-      # R.W is C, the wormhole we are unifying
-      # R.Wo is R:non, the wormhole of this RNA
-
-      sayyl "\n ixomg ".$G->pi."    ".R.W->pi;
-      my $W = R.W; # not really singular, crazy patchwork though
-      my $V = R.W.V;
-      my $les = '*';
-
-      my @ONTV = w $R JV[$TV];
-      my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
-
-      TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
-
-      my $p = {};
-      # 2
-      saybl "\n\n# 2";
-      @ONTV = w $R JV[$TV];
-      for my $j (@ONTV) {
-          my $to = j.to;
-          my $s = j.s;
-          my $cv = j.cv;
-          # 4 # response curves near
-
-          $cv = 1 if $cv <= 3; # non hummed drops?
-          if ($to eq 'i') {
-              my $u = V.bb->{"i/s.id%u 3"};
-              $u = u.s if ref $u eq 'HASH';
-              if (s.dead) {
-                  w R.Wo del[$u];
-                  delete V.bb->{"i/s.id%u 3"};
-                  sayre "SOMETHING DIED: ".$u->pi;
-              }
-              $cv = 1 if !$u || !u.at; # sat in
-          }
-          else {
-              $cv = 1 if !s.at; # sat in
-          }
-
-          $p->{$cv}->{"$to/s.id"} = $s;
-          sayre "j.r\t->\t [ $cv";
-      }
-
-      my $tvp = { V=>$V, TV=>$TV, p=>$p };
-
-      my $threes = w $R pto(%$tvp, lcv => 3);
-      while (defined(my $r = $threes->())) {
-          w $R three(%$r);
-      }
-
-      w $R JV[$V]; # V ups for %u 3
-
-      my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
-      while (defined(my $r = $fours->())) {
-          w $R four(%$r);
-      }
-
-
-      my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
-      while (defined(my $r = $fives->())) {
-          w $R five(%$r);
-      }
-
-      my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
-
-      my $sixes = w $R pto(%$tvp, lcv => 6);
-      while (defined(my $r = $sixes->())) {
-          w $R six(%$r, j=>$j);
-      }
-
-      my $sevens = w $R pto(%$tvp, lcv => 6);
-      while (defined(my $r = $sevens->())) {
-          w $R seven(%$r, j=>$j);
-      }
-
-      H.G w aj[$j];
-
-      sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
-
-      w aj[$j];
-
-      if (0) {
-          my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-          w $R pv(i=>$p,n=>2);
-
-          my @JJJ = w $R JV[$V];
-          my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-          w $R pv(i=>$ab,n=>1);
-      }
-    
   - K: compile_figure #c
     D: |
         my $u = $i;
