@@ -1,10 +1,9 @@
 
 R_surz:
-    - K: stringlook #c
+    - K: stringlook #c S 3424
       babz:
         'S 3.424': |
-          if (!%$d) {
-            if (!ref a.i) {
+          if (!%$d && !ref a.i) {
               sayre "SDoing something else";
               S.mod.humm = 'simphumm';
               my $sd = {};
@@ -27,14 +26,13 @@ R_surz:
                   my $vo = 0.7 + $sec*0.02;
                   $vo = 0.73 if !$ip;
                       
-                      sayyl " j.cv \t $sec\t\t$vo";
+                  sayyl " j.cv \t $sec\t\t$vo";
                   $d->{"^j.cv\t$vo"} = $s;
               }
-            }
           }
-    - K: stylook #c compress style slightly # TODO
+    - K: stylook #c S 34145 # compress style slightly # TODO
       babz:
-        'S 3.4145': |
+        'S 3.4145': | 
           if (3 == grep { $_ =~ /^.+ .+\d\t.+$/ } (shuffle keys %$d)[0,1,2]) {
               my $l;
               for my $k (keys %$d) {
@@ -55,10 +53,33 @@ R_surz:
               
               $d = $l;
           }
+    - K: simphumm #c
+      n_D:
+        humms: |
+          my @r = $G->stylekeysort($d);
+          my $si = @r;
+          my @i = w $R wind[$si];
+          my $ro = S.a.ro = {}; # wind round
+          my $i = 0;
+          for my $r (@r) {
+              my $j = $R->shj($r, $d);
+              
+              my $li = j.li = shift @i || die;
+              $ro->{$li} = $j;
+              #my $z = a.bz->("$li 
+              a.fro->("${li}_s 0.3 0.3${li}4", j.s, j.cv,
+                  '%sf', 'white_fs120');
+              
+              a.bz->("${li}_z 0.3 0.3${li}5", "\n") if j.cv < 0.7;
+              $i++; 
+          }
+          #a.bz->("/%css 0.1", 'background:rgba(10,10,0,1)');
+              
+          
     - K: adu #c
       n_D:
         humms: |
-          my @r = w stylekeysort[$d];
+          my @r = $G->stylekeysort($d);
           my $si = @r;
           my @i = w $R wind[$si];
           my $ro = S.a.ro = {}; # wind round
