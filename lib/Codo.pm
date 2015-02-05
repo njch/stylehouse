@@ -236,7 +236,7 @@ sub codolist {
             my $cs = (
                 $codon->{is}->{G} && $n =~ /^L/ ? '009900'
                 :
-                $codon->{is}->{G} && $n =~ /^T/ ? '5C3749'
+                $codon->{is}->{G} && $n =~ /^J/ ? '5C3749'
                 :
                 $codon->{is}->{G}                 ? "5A5AAF"
                 :
