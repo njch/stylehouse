@@ -18,47 +18,57 @@ R_surz: #c
           }
 
           
-    - K: wind #c
-      D: |
-        my $s = 9;
-        return 1..$s if $si <= $s;
-        my $wind = $si - 9;
-        my $from = 6;
-        my $for = 3;
-
-        my @i;
-    
-            my $la = $wind / $for;
-            my $za = int $la;
-            
-            my $y;
-            my @wind = 1..$wind;
-            my @ys = $from..$from+$for-1;
-            my $yi = 0;
-            while (@wind) {
-                my $win = shift @wind;
-                
-                my $at = $ys[$yi];
-                $y->{$at}++;
-                
-                $yi++;
-                $yi = 0 if !exists $ys[$yi];
-            }
-            
-            for my $wi (1..$s) {
-                
-                if (my $la = $y->{$wi}) {
-                    my @la = 1..$la+1;
-                    for my $pl (@la) {
-                        push @i, "$wi$pl";
-                    }
-                }
-                else {
-                    push @i, $wi;
-                }
-            }
-            
-            @i
-            
-  
+    - K: stringlook #c S 3424
+      babz:
+        'S 3.424': |
+          if (!%$d && !ref a.i) {
+              sayre "SDoing something else";
+              S.mod.humm = 'simphumm';
+              my $sd = {};
+              $G->D_to_style({K=>"s",D=>a.i}, $sd);
+              
+              # how near or how far
+              my $ip = {cv=>S.a.travly} if S.a.travly;
+              my $on = $R->Jshonj($sd, $ip);
+              
+              saygr "Was S.a.travly";
+              while (my ($j, $sec) = $on->()) {
+                  last if !$j;
+                  my $k = j.t;
+                  my $v = j.cv;
+                  my $s = j.s;
+                  
+                  # sec runs 0,1-5, so 5 doubled down
+                  # into 0.7 make 0.8 for the onness
+                  
+                  my $vo = 0.7 + $sec*0.02;
+                  $vo = 0.73 if !$ip;
+                      
+                  sayyl " j.cv \t $sec\t\t$vo";
+                  $d->{"^j.cv\t$vo"} = $s;
+              }
+          }
+    - K: stylook #c S 34145 # compress style slightly # TODO
+      babz:
+        'S 3.4145': | 
+          if (3 == grep { $_ =~ /^.+ .+\d\t.+$/ } (shuffle keys %$d)[0,1,2]) {
+              my $l;
+              for my $k (keys %$d) {
+                  my $j = $R->shj($k, $d);
+                  #sayre j.t;
+                  my $t = j.t;
+                  my $st = $1 if $t =~ s/(%\S+)//;
+                  $st ||= 'ž';
+                  my $lt = "$t\t"."0.4";
+                  exists $l->{$lt}->{$st} && die "$t    $st";
+                  $l->{$lt}->{$st} = j.s;
+              }
+              
+              my $be = { bb=>$d };
+              # chuck from afar straight into 7
+              #my $sly = w $R maka(a=>$be);
+              #a.bz->("something 0.6", $sly, '%ishtml'=>1);
+              
+              $d = $l;
+          }
 

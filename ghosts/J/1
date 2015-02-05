@@ -1,21 +1,35 @@
 R_Jz:
-  - K: setup #c
+  - K: setup #c sets up $a with bb-domin & accessors
     D: |
-      my $a = S.a = {};
-      w $R phat[$a];
-  - K: phat #c sets up $a with bb-domin & accessors
-    D: |
-        a.bb = {};
-        a.ord = [];
-        a.bz = w $R as(bb=>a.bb, ord=>a.ord);
-        a.fro = sub {
-            my $fro = [a.bz, @_];
-            w $R gpfro(a=>$fro);
+      S.bb = {};
+      S.ord = [];
+      S.bz = w $R as(bb=>S.bb, ord=>S.ord);
+      
+      # 3
+      
+  - K: gp #c fatten, by # cv maybe  hash, etc is more for bz
+    babz:
+      'setup 3.67': |
+        S.fro = sub {
+            my $fro = [S.bz, @_];
+            w $R gp/fro(a=>$fro);
         };
+    n_D:
+      fro: |
+        my ($bz, $l, $u, $cv, @etc) = @$a;
+
+        my $gp = {u=>$u, cv=>$cv};
+        %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
+
+        my $v = w $R gp(a => $gp);
+
+        $bz->($l => $v,
+            '%gp' => $gp,
+            @etc,
+        );
+    
   - K: as #c get abulator
     D: |
-        #my $bb = shift;
-        #my $ord = shift;
         my $j = {};
         my $do;
         $do = sub {
@@ -36,8 +50,9 @@ R_Jz:
                     %j = %$j;
                 }
                 j.cv || die;
-                j.r = "j.t j.cv";
+                j.r = j.t."\t".j.cv;
                 j.s = $v;
+                
                 $bb->{j.r} = j.s;
                 push @$ord, {%$j} if $ord;
             }
@@ -57,18 +72,4 @@ R_Jz:
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
-  - K: gpfro #c fatten, by
-    D: |
-      my ($aser, $l, $u, $cv, @etc) = @$a;
-      
-      my $gp = {u=>$u, cv=>$cv};
-      %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
-      
-      my $v = w $R gp(a => $gp);
-            
-      $aser->($l => $v,
-          '%gp' => $gp,
-          @etc,
-      );
-    
 
