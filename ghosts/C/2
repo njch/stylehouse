@@ -1,5 +1,12 @@
 
 R_surz:
+  - K: Vit #c
+    key: {E: up, R: down}
+    n_D:
+            up: |
+                S.S.e += 0.1;
+            down: |
+                S.S.e -= 0.1;
   - K: Num #c
     key: {0: out, number: in}
     n_D:
@@ -32,12 +39,27 @@ R_surz:
       in: |    # ebrace flying embryo J
         S.J = { from => ar.i };
         S.J.trav = ar.t if ar.t;
-        sayyl $S->pi."\tsuddenly ".gp(ar.i);
         S.monod = ar.monod if ar.monod;
+        
+        sayyl $S->pi."\tsuddenly ".gp(ar.i);
     
-  - K: Jtwo #c
+  - K: Jmood #c + du + humms
     babz:
-        'S#unifromA 2.3': |
+        'S 1.8': | 
+          S.mod = {%{S.mood||{}}};
+          if (my $onetime = delete S.monod) {
+              S.mod = {%{S.mod}, %$onetime};
+          }
+        'S#du 3.3': |
+          $d = w $R du;
+        'S#hum 4.444': |
+          my $humm = S.mod.humm || 'adu';
+          w $R $humm/humms[$S, $a, $d];
+          
+          
+  - K: Jmoves #c
+    babz:
+        'S 2.3': |
             R.lastS = $S;
             S.K eq "D" || die || "D?";
             
@@ -58,7 +80,8 @@ R_surz:
             defined a.i || die;
             my $d = {};
             
-            
+  - K: Jtwo #c
+    babz: 
         'S 2.4': |
           
           a.fro->('Rl 0.01' => [$H,R.G,$R,$S], {cv=>0.4});
