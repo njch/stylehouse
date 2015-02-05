@@ -176,31 +176,119 @@ R_Ms:
     $dg w Dave(K=>"C",Dname=>$name,i=>$i);
               
     
-  three: |
-    if ($to eq 'i') {
-        my $i = $s;
-        ref $s eq 'C' || die $s;
-        my $M = (TV.bb->{"i/i.id%M 4"}||die)->{s};
-        my $ux = (V.bb->{"i/i.id%u 3"}||{})->{s};
-        $p->{4}->{"M/M.id"} = $M;
-        # also in M n_ux
-        # also fuu might find the swaying identity (.K & .B) and return it
-        say "for i i.id ".$i->pi;
-        if ($ux) {
-            say "Found u~! ux.i.id ".$ux->pi if $ux;
-            die if ux.i ne $i;
+  pto: |
+    my @m;
+    for my $cv (sort keys %$p) {
+        if ($cv <= $lcv) {
+            my @ere = sort keys %{$p->{$cv}};
+            @ere = reverse @ere if ar.rev;
+            for my $el (@ere) {
+                my ($to) = split '/', $el;
+                my $s = $p->{$cv}->{$el};
+                push @m, {
+                    r=>{p=>$p,V=>$V,TV=>$TV,s=>$s,to=>$to}, # to do
+                    aft=>{cv=>$cv,lcv=>(ar.rcv||$lcv),el=>$el,s=>$s}, # to move
+                };
+            }
         }
-        else {
-            # add C.Bs override for little B schemas not in .B.?
-            my $uxa = {K => 'ux', i => $i};
-            uxa.B.i = uxa.i;
-            $ux = w R.Wo fuu(u => $uxa, q=>1);
-        }
-        ux.A->umk($M, 'ux');
-        ux.A->umk(ux.i, 'U'); # into alien space
-        V.bz->("i/i.id%u 3", $ux);
     }
-  four: |
+    my $i=0;
+    sub {
+        my $r = ($m[$i]||{})->{r};
+        if ($i>0) {
+            my $aft = $m[$i-1]->{aft};
+            if (aft.lcv < 9) {
+                delete $p->{aft.cv}->{aft.el};
+                $p->{aft.lcv}->{aft.el} = aft.s;
+            }
+        }
+        return undef unless $r;
+        $i++;
+        return $r;
+    };
+  Usurf: | # TODO wants to climb up from extremity for speed, joining onto M pathways
+    j.seenid->{i.id} = $i;
+    my $jp = j.p ||= {};
+    $j = {%$j};
+    j.p = {};
+    my $here = "i.id";
+    $jp->{$here} = $here;
+    my @down = w $R Udown;
+    ar.d++;
+    die if ar.d > 10;
+    for my $d (@down) {
+        my $jpp = w $R Usurf(j=>$j, i=>$d, d=>ar.d);
+        for my $k (keys %$jpp) {
+            $jp->{"$here/$k"} = $jpp->{$k};
+        }
+    }
+    $jp;
+    
+    
+    
+    
+    
+
+
+  Udown: |
+    # W->M->uxs, then uxs S amongst, y projects
+    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
+    my @ks = grep { $okn->{$_} } keys %{i.A};
+    my @As = map { @{i.A->{$_}||[]} } @ks;
+    my @down = map{_.i} @As;
+    @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
+    die if grep {_.dead} @down;
+    uniq @down;
+    
+  event: |
+    my $uy = $i if $i ne $ux;
+    my $i = ux.i if $ux;
+    $i = undef if !$ux;
+    my $E = {
+        e => $e,
+        W => $W,
+        i => $i,
+        ux => $ux,
+        uy => $uy, # something with ID beyond the ux, may be grasped...
+        # TODO liesy after styley tagname anarchy
+    };
+    
+    saybl " W ". $W->pi if $W;
+    saybl " UX ". $ux->pi if $ux;
+    saybl " Uy ". $uy->pi if $uy;
+    return saygr "ungrasped line" unless $i;
+    saybl " i ". $i->pi;
+    
+    # TODO make a pattern about y=to match against Eways...
+    i.G w event(%$E);
+R_Mz:
+  - K: three #c
+    D: |
+      if ($to eq 'i') {
+          my $i = $s;
+          ref $s eq 'C' || die $s;
+          my $M = (TV.bb->{"i/i.id%M 4"}||die)->{s};
+          my $ux = (V.bb->{"i/i.id%u 3"}||{})->{s};
+          $p->{4}->{"M/M.id"} = $M;
+          # also in M n_ux
+          # also fuu might find the swaying identity (.K & .B) and return it
+          say "for i i.id ".$i->pi;
+          if ($ux) {
+              say "Found u~! ux.i.id ".$ux->pi if $ux;
+              die if ux.i ne $i;
+          }
+          else {
+              # add C.Bs override for little B schemas not in .B.?
+              my $uxa = {K => 'ux', i => $i};
+              uxa.B.i = uxa.i;
+              $ux = w R.Wo fuu(u => $uxa, q=>1);
+          }
+          ux.A->umk($M, 'ux');
+          ux.A->umk(ux.i, 'U'); # into alien space
+          V.bz->("i/i.id%u 3", $ux);
+      }
+  - K: four #c
+    D: |
             if ($to eq 'i') {
                 saybl "Four i";
                 # the 374 coil, ux set must be complete
@@ -236,7 +324,8 @@ R_Ms:
                 }
                 M.tom = {}; # < ^ others 5s put moves forth to 6
             }
-  five: |
+  - K: five #c
+    D: |
   
             if ($to eq 'i') {
                 my $i = $s;
@@ -249,218 +338,160 @@ R_Ms:
                 $tom->{$mv} = $ux;
                 #say "for ".$ux->pi." has top go through $mv";
             }
-  six: |
-    my @mm;
-            if ($to eq 'W') {
-                push @mm, $s;
-            }
-            if ($to eq 'M') {
-                my $M = $s;
-                push @mm, $M;
-                
-                my $vom = M.vom;
-                my $to = M.tom;
-                my $pat = [];
-                for my $k (sort keys %$to) {
-                    push @mm, $to->{$k};
-                    push @$pat, {k=>$k, ux=>$to->{$k}};
-                }
-                M.pat = $pat;
-            }
-    for my $i (@mm) {
-        #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
-        #sayyl "SPAWN ".$i->pi;
-    }
-  seven: |
-    my @mm;
-            if ($to eq 'W') {
-                push @mm, $s;
-            }
-            
-            if ($to eq 'M') {
-                my $M = $s;
-                
-                my $pat = M.pat;
-                
-                push @mm, map {_.ux} reverse @$pat;
-                
-                push @mm, $M; # after desc lines come back
-            }
-    for my $i (@mm) {
-        sayyl "ARR ".$i->pi;
-        w $R compile_figure[$i, $j];
-        w $R wayout_sendo[$i, $j];
-    }
-  pto: |
-    my @m;
-    for my $cv (sort keys %$p) {
-        if ($cv <= $lcv) {
-            my @ere = sort keys %{$p->{$cv}};
-            @ere = reverse @ere if ar.rev;
-            for my $el (@ere) {
-                my ($to) = split '/', $el;
-                my $s = $p->{$cv}->{$el};
-                push @m, {
-                    r=>{p=>$p,V=>$V,TV=>$TV,s=>$s,to=>$to}, # to do
-                    aft=>{cv=>$cv,lcv=>(ar.rcv||$lcv),el=>$el,s=>$s}, # to move
-                };
-            }
-        }
-    }
-    my $i=0;
-    sub {
-        my $r = ($m[$i]||{})->{r};
-        if ($i>0) {
-            my $aft = $m[$i-1]->{aft};
-            if (aft.lcv < 9) {
-                delete $p->{aft.cv}->{aft.el};
-                $p->{aft.lcv}->{aft.el} = aft.s;
-            }
-        }
-        return undef unless $r;
-        $i++;
-        return $r;
-    };
-  ux: |
-    # 1
-    # very left of the dome, heading into micro peaks
-    # we get more likely to fork
-    #   as we go out along things that already exist
-    #   they humm back to themselves at 8s
-    #     where we can either switch to it as master
-    #     or drop it if the thing wants a new 4 or so already
-    
-    # the W is what we propagate, where ux # slight singley for now
-    # the M is Random input grouper - upstream patch panel to C
-    # the i is a sack of i, somewhere under M
-    
-    # so fitting into RNAs those things are
-    
-    # G.R is R, the wormhole C:M muxes
-    # G.theM is this R:M
-    # aka R in here
-    # R.W is C, the wormhole we are unifying
-    # R.Wo is R:non, the wormhole of this RNA
-    
-    sayyl "\n ixomg ".$G->pi."    ".R.W->pi;
-    my $W = R.W; # not really singular, crazy patchwork though
-    my $V = R.W.V;
-    my $les = '*';
-    
-    my @ONTV = w $R JV[$TV];
-    my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
-        
-    TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
-    
-    my $p = {};
-    # 2
-    saybl "\n\n# 2";
-    @ONTV = w $R JV[$TV];
-    for my $j (@ONTV) {
-        my $to = j.to;
-        my $s = j.s;
-        my $cv = j.cv;
-        # 4 # response curves near
-        
-        $cv = 1 if $cv <= 3; # non hummed drops?
-        if ($to eq 'i') {
-            my $u = V.bb->{"i/s.id%u 3"};
-            $u = u.s if ref $u eq 'HASH';
-            if (s.dead) {
-                w R.Wo del[$u];
-                delete V.bb->{"i/s.id%u 3"};
-                sayre "SOMETHING DIED: ".$u->pi;
-            }
-            $cv = 1 if !$u || !u.at; # sat in
-        }
-        else {
-            $cv = 1 if !s.at; # sat in
-        }
-        
-        $p->{$cv}->{"$to/s.id"} = $s;
-        sayre "j.r\t->\t [ $cv";
-    }
-    
-    my $tvp = { V=>$V, TV=>$TV, p=>$p };
-    
-    my $threes = w $R pto(%$tvp, lcv => 3);
-    while (defined(my $r = $threes->())) {
-        w $R three(%$r);
-    }
-    
-    w $R JV[$V]; # V ups for %u 3
-    
-    my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
-    while (defined(my $r = $fours->())) {
-        w $R four(%$r);
-    }
-    
+  - K: six #c
+    D: |
+      my @mm;
+              if ($to eq 'W') {
+                  push @mm, $s;
+              }
+              if ($to eq 'M') {
+                  my $M = $s;
+                  push @mm, $M;
 
-    my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
-    while (defined(my $r = $fives->())) {
-        w $R five(%$r);
-    }
-    
-    my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
-    
-    my $sixes = w $R pto(%$tvp, lcv => 6);
-    while (defined(my $r = $sixes->())) {
-        w $R six(%$r, j=>$j);
-    }
-                    
-    my $sevens = w $R pto(%$tvp, lcv => 6);
-    while (defined(my $r = $sevens->())) {
-        w $R seven(%$r, j=>$j);
-    }
-    
-    H.G w aj[$j];
-    
-    sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
-    
-    w aj[$j];
-    
-    if (0) {
-        my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
-        w $R pv(i=>$p,n=>2);
+                  my $vom = M.vom;
+                  my $to = M.tom;
+                  my $pat = [];
+                  for my $k (sort keys %$to) {
+                      push @mm, $to->{$k};
+                      push @$pat, {k=>$k, ux=>$to->{$k}};
+                  }
+                  M.pat = $pat;
+              }
+      for my $i (@mm) {
+          #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
+          #sayyl "SPAWN ".$i->pi;
+      }
+  - K: seven #c
+    D: |
+      my @mm;
+              if ($to eq 'W') {
+                  push @mm, $s;
+              }
 
-        my @JJJ = w $R JV[$V];
-        my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
-        w $R pv(i=>$ab,n=>1);
-    }
+              if ($to eq 'M') {
+                  my $M = $s;
+
+                  my $pat = M.pat;
+
+                  push @mm, map {_.ux} reverse @$pat;
+
+                  push @mm, $M; # after desc lines come back
+              }
+      for my $i (@mm) {
+          sayyl "ARR ".$i->pi;
+          w $R compile_figure[$i, $j];
+          w $R wayout_sendo[$i, $j];
+      }
+  - K: ux #c
+    D: |
+      # 1
+      # very left of the dome, heading into micro peaks
+      # we get more likely to fork
+      #   as we go out along things that already exist
+      #   they humm back to themselves at 8s
+      #     where we can either switch to it as master
+      #     or drop it if the thing wants a new 4 or so already
+
+      # the W is what we propagate, where ux # slight singley for now
+      # the M is Random input grouper - upstream patch panel to C
+      # the i is a sack of i, somewhere under M
+
+      # so fitting into RNAs those things are
+
+      # G.R is R, the wormhole C:M muxes
+      # G.theM is this R:M
+      # aka R in here
+      # R.W is C, the wormhole we are unifying
+      # R.Wo is R:non, the wormhole of this RNA
+
+      sayyl "\n ixomg ".$G->pi."    ".R.W->pi;
+      my $W = R.W; # not really singular, crazy patchwork though
+      my $V = R.W.V;
+      my $les = '*';
+
+      my @ONTV = w $R JV[$TV];
+      my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
+
+      TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
+
+      my $p = {};
+      # 2
+      saybl "\n\n# 2";
+      @ONTV = w $R JV[$TV];
+      for my $j (@ONTV) {
+          my $to = j.to;
+          my $s = j.s;
+          my $cv = j.cv;
+          # 4 # response curves near
+
+          $cv = 1 if $cv <= 3; # non hummed drops?
+          if ($to eq 'i') {
+              my $u = V.bb->{"i/s.id%u 3"};
+              $u = u.s if ref $u eq 'HASH';
+              if (s.dead) {
+                  w R.Wo del[$u];
+                  delete V.bb->{"i/s.id%u 3"};
+                  sayre "SOMETHING DIED: ".$u->pi;
+              }
+              $cv = 1 if !$u || !u.at; # sat in
+          }
+          else {
+              $cv = 1 if !s.at; # sat in
+          }
+
+          $p->{$cv}->{"$to/s.id"} = $s;
+          sayre "j.r\t->\t [ $cv";
+      }
+
+      my $tvp = { V=>$V, TV=>$TV, p=>$p };
+
+      my $threes = w $R pto(%$tvp, lcv => 3);
+      while (defined(my $r = $threes->())) {
+          w $R three(%$r);
+      }
+
+      w $R JV[$V]; # V ups for %u 3
+
+      my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
+      while (defined(my $r = $fours->())) {
+          w $R four(%$r);
+      }
+
+
+      my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
+      while (defined(my $r = $fives->())) {
+          w $R five(%$r);
+      }
+
+      my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
+
+      my $sixes = w $R pto(%$tvp, lcv => 6);
+      while (defined(my $r = $sixes->())) {
+          w $R six(%$r, j=>$j);
+      }
+
+      my $sevens = w $R pto(%$tvp, lcv => 6);
+      while (defined(my $r = $sevens->())) {
+          w $R seven(%$r, j=>$j);
+      }
+
+      H.G w aj[$j];
+
+      sayre "ux -------- G.K done\t\t".F_delta."  load ".$H->la;
+
+      w aj[$j];
+
+      if (0) {
+          my $abb = { map { $_ => TV.bb->{$_}->{s} } keys %{TV.bb} };
+          w $R pv(i=>$p,n=>2);
+
+          my @JJJ = w $R JV[$V];
+          my $ab = { map { $_ => V.bb->{$_}->{s} } keys %{V.bb} };
+          w $R pv(i=>$ab,n=>1);
+      }
     
-  Usurf: | # TODO wants to climb up from extremity for speed, joining onto M pathways
-    j.seenid->{i.id} = $i;
-    my $jp = j.p ||= {};
-    $j = {%$j};
-    j.p = {};
-    my $here = "i.id";
-    $jp->{$here} = $here;
-    my @down = w $R Udown;
-    ar.d++;
-    die if ar.d > 10;
-    for my $d (@down) {
-        my $jpp = w $R Usurf(j=>$j, i=>$d, d=>ar.d);
-        for my $k (keys %$jpp) {
-            $jp->{"$here/$k"} = $jpp->{$k};
-        }
-    }
-    $jp;
-    
-    
-    
-    
-    
-  Udown: |
-    # W->M->uxs, then uxs S amongst, y projects
-    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
-    my @ks = grep { $okn->{$_} } keys %{i.A};
-    my @As = map { @{i.A->{$_}||[]} } @ks;
-    my @down = map{_.i} @As;
-    @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
-    die if grep {_.dead} @down;
-    uniq @down;
-    
-  compile_figure: |
+  - K: compile_figure #c
+    D: |
         my $u = $i;
         my $ui = u.i if u.i;
         
@@ -497,7 +528,8 @@ R_Ms:
         my @down = w $R Udown(+ allseeing => 1);
         @down = sort { a.conor <=> b.conor } @down;
         at.ooze = \@down;
-  wayout_sendo: |
+  - K: wayout_sendo #c
+    D: |
         my $u = $i;
         my $ui = u.i if u.i && u.K eq 'ux';
         
@@ -649,25 +681,4 @@ R_Ms:
         
         push @{j.s}, reverse @$s;
         push @{j.c}, reverse @$c;
-  event: |
-    my $uy = $i if $i ne $ux;
-    my $i = ux.i if $ux;
-    $i = undef if !$ux;
-    my $E = {
-        e => $e,
-        W => $W,
-        i => $i,
-        ux => $ux,
-        uy => $uy, # something with ID beyond the ux, may be grasped...
-        # TODO liesy after styley tagname anarchy
-    };
-    
-    saybl " W ". $W->pi if $W;
-    saybl " UX ". $ux->pi if $ux;
-    saybl " Uy ". $uy->pi if $uy;
-    return saygr "ungrasped line" unless $i;
-    saybl " i ". $i->pi;
-    
-    # TODO make a pattern about y=to match against Eways...
-    i.G w event(%$E);
 
