@@ -165,53 +165,9 @@ R_Ms:
         push @J, $j;
     }
     @J
-  orde: | # group by t or so ($k) and sort in by voltage
-    my ($k, $v) = %$ar;
-    my $by = {};
-    $by->{"$_->{$k}"}->{_.r} = $_ for @$v;
-    my @m = sort keys %$by;
-    my $mi = 0;
-    sub {
-        my $t = $m[$mi++];
-        return if !defined $t;
-        $t = $by->{$t};
-        
-        # and bab clone sorting cv over T # already grouped by t or so
-        # should come out same as style flows round that %ish place: /
-        # note string compare, fractions most success, the structure of decimal is a lie
-        my @mm = sort { a.r cmp b.r } values %$t;
-        
-        #saybl "sort hop: _.r" for @mm;
-        
-        return \@mm;
-    };
-  ordey: |
-    my $to = delete ar.to;
-    my $ew = w $R orde;
-    my $or;
-    $or = sub {
-        my $mw = $ew->() || return;
-        my $am = {m=>$mw,t=>[],l=>[]};
-        for my $m (@$mw) {
-            my $at = m.l ? am.l : am.t;
-            push @$at, $m;
-        }
-        #sayyl "$to lives: _.r => ".(ref _.s eq 'C' ? _.s->pi : _.s) for @{am.t};
-        #saygr "$to styles: _.r => ".(ref _.s eq 'C' ? _.s->pi : _.s) for @{am.l};
-        if (!@{am.t}) {
-            warn "^ no things, next";
-            return $or->();
-        }
-    
-        $am;
-    }
-  orderv: |
-    my $TV = ar.TV || ar.V;
-    my $les = '*';
-    my @J = w $R JV[$TV, $les];
-    my @WJ = grep{_.to eq $to} @J;
-    my $ew = w $R ordey(t=>\@WJ, to=>$to);
-    return { ew => $ew, wj => \@WJ };
+
+
+
   pv: |
     my $n = ar.n || 1;
     my $name = "RD$n";
