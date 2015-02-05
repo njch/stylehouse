@@ -1,26 +1,15 @@
 
 C:            # W M ux ...
   - K: W #c us
-    flows_D: |
-      my $W = S.W;
-      w stylespawn[$S, $W];
+    Gw: 1
     Ss: [u, x, X]
-    print: |
-      "W=".S.W.G.name #Bthing, u is $S
     S:
       styles: OxO nopoi ab z NZ
       tag: ww 
       id_D: |
         ( W.id =~ /-(\w+)$/ )[0]
-    flows_D: |
-      G.R->phat(S.TV = {}); # G.R should be Jish for this M etc etc.
-      G.R->phat(S.V = {});
   - K: M #c themmmmmmm from an R
-    flows_D: |
-      my $W = S.W;
-      w stylespawn[$S, $W];
-    print: |
-      "MMMM=".S.W.G.name
+    Gw: 1
     Ss: *
     S:
       styles: OxO poi
@@ -42,21 +31,36 @@ C:            # W M ux ...
         $sheet ? "\n$sheet\n" : "";
      
   - K: ux #c
-    O: ux
-    spawn: []
+    Gw: 1
     S:
       tag: ux
     styles: te
-    conor: 1
-    print: |
-       "S.K S.id  (".S.i->pi
+    conor: 1 # TODO
        
-
 Ray:
  - K: M
    findway: R_M
      
 hooks:
+  W:
+    flows_D: |
+      my $W = S.W;
+      w stylespawn[$S, $W];
+    flows_D: |
+      G.R->phat(S.TV = {}); # G.R should be Jish for this M etc etc.
+      G.R->phat(S.V = {});
+    print: |
+      "W=".S.W.G.name #Bthing, u is $S
+  M:
+    flows_D: |
+      my $W = S.W;
+      w stylespawn[$S, $W];
+    print: |
+      "MMMM=".S.W.G.name
+  ux:
+    print: |
+       "S.K S.id  (".S.i->pi
+  
   percolate_R: |
     w Puur unless K R:M;
   Puur: | # default percolation, creating R:M
@@ -167,7 +171,7 @@ R_Ms:
     @J
   pv: |
     my $n = ar.n || 1;
-    my $name = "RD$n";
+    my $name = "RD$n"; # TODO good naming aspect
     sayre "            Daving $name => ".gp($i) for 1..2;
     my $dg = H.G K G:C;
     $dg w Dave(K=>"C",Dname=>$name,i=>$i);
@@ -268,8 +272,8 @@ R_Mz:
       #     or drop it if the thing wants a new 4 or so already
 
       # the W is what we propagate, where ux # slight singley for now
-      # the M is Random input grouper - upstream patch panel to C
-      # the i is a sack of i, somewhere under M
+      # the M is Random input grouper - upstream patch panel to Cs
+      # the i is a sack of Cs, somewhere under M, ux mirrors of source W Cs
 
       # so fitting into RNAs those things are
 
@@ -294,8 +298,12 @@ R_Mz:
       # 2.4
       my $tvp = { V=>$V, TV=>$TV, p=>$p };
 
+      my $noth = 0;
       my $threes = w $R pto(%$tvp, lcv => 3);
       while (defined(my $r = $threes->())) {
+          if (!$noth++) {
+              w $R pv(i=>$r,n=>2);
+          }
           w $R three(%$r);
       }
 
