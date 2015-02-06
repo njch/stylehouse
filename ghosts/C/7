@@ -117,15 +117,18 @@ R_surz:
                             die "style oj.style = oj.s \t for $l";
                         }
                     }
-
-                     at.style = join ';', grep {$_} @$css;
+                    at.style = join '', map{"$_;"}
+                        grep{defined} map { split ';' } @$css;
                     G.shtuuyle->{at.style}++;
+                    if (my $class = G.shtdc->{at.style}) {
+                        delete at.style;
+                        at.class = $class;
+                    }
                     at.title = $l.(at.title ? " at.title" : "");
                     $at = join " ", map { $_.'="'.$at->{$_}.'"' }
                         grep { $at->{$_} } sort keys %$at;
-                    if (!$ishtml) {
-                        $s = encode_entities($s);
-                    }
+                    
+                    $s = encode_entities($s) if !$ishtml;
                     $s = "<$tag $at>$s</$tag>" if defined $s;
                     $s
             };
