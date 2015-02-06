@@ -127,11 +127,12 @@ R_surz:
                         at.class = $class;
                     }
                     at.title = $l.(at.title ? " at.title" : "");
-                    $at = join " ", map { $_.'="'.$at->{$_}.'"' }
+                    $at = join " ", $tag,
+                        map { $_.'="'.$at->{$_}.'"' } # attra
                         grep { $at->{$_} } sort keys %$at;
                     
                     $s = encode_entities($s) if !$ishtml;
-                    $s = "<$tag $at>$s</$tag>" if defined $s;
+                    $s = "<$at>$s</$tag>" if defined $s;
                     $s
             };
     - K: sinter #c
