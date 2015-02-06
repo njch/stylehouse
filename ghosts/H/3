@@ -84,18 +84,7 @@ hooks:
         else {
             die " wtf=>".ki($p)
         }
-  scribe_js: |
-    my $new = G.js || [];
-    return unless @$new;
-    G.js = [];
-    
-    my $now = $H->hitime();
-    G.jslast ||= $now;
-    my $d = sprintf("%.3f",$now - G.jslast);
-    G.jslast = $now;
-    
-    my $script = join"","[$d,function(){", @$new, "}],\n";
-    write_file("o/o", {append=>1}, H::encode_utf8($script));
+
 Ray:
   - K: non
     findway: R_non

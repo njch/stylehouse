@@ -65,11 +65,11 @@ hooks:
   mux: | # wandering way... bit vaggue, you'd lign up yer beams better than...
     my $K = ar.K || "M";
     my $M = K R:$K;
-    my $MR = G.R; # default is the non of the whole G
+    my $MR = G.R; # default is the non of the whole G...
     # the W side is R:M.Wo (G.theM.Wo)
     my $a = {%$ar};
     my $u = delete a.u;
-    saybl "Muxing UUUU ".$M->pi."     via ".$MR->pi."      with ".$u->pi;
+    saybl "Muxing ".$G->pi."   ".$M->pi."     via ".$MR->pi."      with ".$u->pi;
     a.v ||= 7; 
     w $M mux[$MR,$a,$u];
   remux: |
@@ -272,7 +272,7 @@ R_Mz:
       # R.W is C, the wormhole we are unifying
       # R.Wo is R:non, the wormhole of this RNA
 
-      sayyl "\n ixomg ".$G->pi."    ".R.W->pi;
+      sayyl "\n ixomg ".$G->pi."    ".R.W->pi."\n\n";
       my $W = R.W; # not really singular, crazy patchwork though
       my $V = R.W.V;
       my $les = '*';
@@ -286,13 +286,17 @@ R_Mz:
       # 2.3
       # 2.4
       my $tvp = { V=>$V, TV=>$TV, p=>$p };
+      
+      my ($nong) = grep { _.K =~ /^C/ && $_ ne $G } H.G K Gs:*;
+      
+      if (G.K eq 'C2') {
+          $nong w pv(i=>TV.bb,n=>8);
+      }
 
+      
       my $noth = 0;
       my $threes = w $R pto(%$tvp, lcv => 3);
       while (defined(my $r = $threes->())) {
-          if (!$noth++) {
-              w $R pv(i=>$r,n=>2);
-          }
           w $R three(%$r);
       }
 
@@ -306,6 +310,8 @@ R_Mz:
 
       my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
       while (defined(my $r = $fives->())) {
+          saygr "TOTOTALLY THREEEEEE r.to ".r.s->pi if G.K eq 'C2';
+          saygr "totally ".wdump(2,$r) if r.to eq 'i' && G.K eq 'C2';
           w $R five(%$r);
       }
 
@@ -339,7 +345,6 @@ R_Mz:
   - K: two #c
     babz:
       'ux 2.3': |
-        saybl "\n\n# 2";
         @ONTV = w $R JV[$TV];
         for my $j (@ONTV) {
             my $to = j.to;
@@ -362,7 +367,7 @@ R_Mz:
             }
 
             $p->{$cv}->{"$to/s.id"} = $s;
-            sayre "j.r\t->\t [ $cv";
+            sayre sprintf '%22s%s', j.r, " [ $cv";
         }
   - K: three #c
     D: |
@@ -460,6 +465,7 @@ R_Mz:
                   M.pat = $pat;
               }
       for my $i (@mm) {
+          sayyl "Six? ".$i->pi;
           #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
           #sayyl "SPAWN ".$i->pi;
       }
@@ -480,11 +486,10 @@ R_Mz:
                   push @mm, $M; # after desc lines come back
               }
       for my $i (@mm) {
-          sayyl "ARR ".$i->pi;
+          sayyl "Seven! ".$i->pi;
           w $R compile_figure[$i, $j];
           w $R wayout_sendo[$i, $j];
       }
-
   - K: compile_figure #c
     D: |
         my $u = $i;
