@@ -193,7 +193,7 @@ R_surz:
                     G.shtuuyle->{at.style}++;
                     if (my $class = G.shtdc->{at.style}) {
                         delete at.style;
-                        at.class = $class;
+                        $tag = $class;
                     }
       n_D:
         komp: |
@@ -210,7 +210,8 @@ R_surz:
                 my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
                 next unless $sty;
                 my ($heex) = $H->dig($sty) =~ /^(...)/;
-                $sd->{"dc".$heex} = $sty;
+                # TODO pack hex into unibabl
+                $sd->{"a".$heex} = $sty;
             }
             G.shtdc = {reverse %$sd};
 
@@ -219,7 +220,7 @@ R_surz:
 
             my $as = {K=>'style', B=>{am=>'styleyo'}};
             my $st = w G.R fuu(u=>$as);
-            st.sheet = join "\n", map { ".$_ { $sd->{$_} }" } keys %$sd;
+            st.sheet = join "\n", map { "$_ { $sd->{$_} }" } keys %$sd;
             w mux(u=>$st);
 
       
