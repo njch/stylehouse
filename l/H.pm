@@ -236,6 +236,7 @@ sub spurt {
 
 sub mkuid {
     (mkuuid() =~ /^(\w+)-.+$/)[0]
+    .$H->{sdghih}++
 }
 
 sub mkuuid {
