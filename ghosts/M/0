@@ -287,44 +287,44 @@ R_Mz:
       # 2.4
       my $tvp = { V=>$V, TV=>$TV, p=>$p };
       
-      my ($nong) = grep { _.K =~ /^C/ && $_ ne $G } H.G K Gs:*;
-      
-      if (G.K eq 'C2') {
-          $nong w pv(i=>TV.bb,n=>8);
-      }
-
-      
-      my $noth = 0;
       my $threes = w $R pto(%$tvp, lcv => 3);
       while (defined(my $r = $threes->())) {
-          w $R three(%$r);
+          my $p = r.p; my $s = r.s; my $to = r.to;
+          # 3
+          # 3.9
       }
 
       w $R JV[$V]; # V ups for %u 3
 
       my $fours = w $R pto(%$tvp, lcv => 4, rev=>1);
       while (defined(my $r = $fours->())) {
-          w $R four(%$r);
+          my $p = r.p; my $s = r.s; my $to = r.to;
+          # 4
+          # 4.9
       }
 
 
       my $fives = w $R pto(%$tvp, lcv => 7, rcv=>5);
       while (defined(my $r = $fives->())) {
-          saygr "TOTOTALLY THREEEEEE r.to ".r.s->pi if G.K eq 'C2';
-          saygr "totally ".wdump(2,$r) if r.to eq 'i' && G.K eq 'C2';
-          w $R five(%$r);
+          my $p = r.p; my $s = r.s; my $to = r.to;
+          # 5
+          # 5.9
       }
 
       my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
 
       my $sixes = w $R pto(%$tvp, lcv => 6);
       while (defined(my $r = $sixes->())) {
-          w $R six(%$r, j=>$j);
+          my $p = r.p; my $s = r.s; my $to = r.to;
+          # 6
+          # 6.9
       }
 
       my $sevens = w $R pto(%$tvp, lcv => 6);
       while (defined(my $r = $sevens->())) {
-          w $R seven(%$r, j=>$j);
+          my $p = r.p; my $s = r.s; my $to = r.to;
+          # 7
+          # 7.9
       }
 
       H.G w aj[$j];
@@ -370,32 +370,34 @@ R_Mz:
             sayre sprintf '%22s%s', j.r, " [ $cv";
         }
   - K: three #c
-    D: |
-      if ($to eq 'i') {
-          my $i = $s;
-          ref $s eq 'C' || die $s;
-          my $M = (TV.bb->{"i/i.id%M 4"}||die)->{s};
-          my $ux = (V.bb->{"i/i.id%u 3"}||{})->{s};
-          $p->{4}->{"M/M.id"} = $M;
-          # also in M n_ux
-          # also fuu might find the swaying identity (.K & .B) and return it
-          say "for i i.id ".$i->pi;
-          if ($ux) {
-              say "Found u~! ux.i.id ".$ux->pi if $ux;
-              die if ux.i ne $i;
-          }
-          else {
-              # add C.Bs override for little B schemas not in .B.?
-              my $uxa = {K => 'ux', i => $i};
-              uxa.B.i = uxa.i;
-              $ux = w R.Wo fuu(u => $uxa, q=>1);
-          }
-          ux.A->umk($M, 'ux');
-          ux.A->umk(ux.i, 'U'); # into alien space
-          V.bz->("i/i.id%u 3", $ux);
-      }
+    babz:
+      'ux 3': |
+        if ($to eq 'i') {
+            my $i = $s;
+            ref $s eq 'C' || die $s;
+            my $M = (TV.bb->{"i/i.id%M 4"}||die)->{s};
+            my $ux = (V.bb->{"i/i.id%u 3"}||{})->{s};
+            $p->{4}->{"M/M.id"} = $M;
+            # also in M n_ux
+            # also fuu might find the swaying identity (.K & .B) and return it
+            say "for i i.id ".$i->pi;
+            if ($ux) {
+                say "Found u~! ux.i.id ".$ux->pi if $ux;
+                die if ux.i ne $i;
+            }
+            else {
+                # add C.Bs override for little B schemas not in .B.?
+                my $uxa = {K => 'ux', i => $i};
+                uxa.B.i = uxa.i;
+                $ux = w R.Wo fuu(u => $uxa, q=>1);
+            }
+            ux.A->umk($M, 'ux');
+            ux.A->umk(ux.i, 'U'); # into alien space
+            V.bz->("i/i.id%u 3", $ux);
+        }
   - K: four #c
-    D: |
+    babz:
+      'ux 4': |
             if ($to eq 'i') {
                 saybl "Four i";
                 # the 374 coil, ux set must be complete
@@ -432,8 +434,8 @@ R_Mz:
                 M.tom = {}; # < ^ others 5s put moves forth to 6
             }
   - K: five #c
-    D: |
-  
+    babz:
+      'ux 5': |
             if ($to eq 'i') {
                 my $i = $s;
                 my $ux = (V.bb->{"i/s.id%u 3"} || die)->{s};
@@ -446,8 +448,9 @@ R_Mz:
                 #say "for ".$ux->pi." has top go through $mv";
             }
   - K: six #c
-    D: |
-      my @mm;
+    babz:
+      'ux 6': |
+          my @mm;
               if ($to eq 'W') {
                   push @mm, $s;
               }
@@ -464,14 +467,15 @@ R_Mz:
                   }
                   M.pat = $pat;
               }
-      for my $i (@mm) {
-          sayyl "Six? ".$i->pi;
-          #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
-          #sayyl "SPAWN ".$i->pi;
-      }
+          for my $i (@mm) {
+              sayyl "Six? ".$i->pi;
+              #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
+              #sayyl "SPAWN ".$i->pi;
+          }
   - K: seven #c
-    D: |
-      my @mm;
+    babz:
+      'ux 7': |
+          my @mm;
               if ($to eq 'W') {
                   push @mm, $s;
               }
@@ -485,11 +489,11 @@ R_Mz:
 
                   push @mm, $M; # after desc lines come back
               }
-      for my $i (@mm) {
-          sayyl "Seven! ".$i->pi;
-          w $R compile_figure[$i, $j];
-          w $R wayout_sendo[$i, $j];
-      }
+              for my $i (@mm) {
+                  sayyl "Seven! ".$i->pi;
+                  w $R compile_figure[$i, $j];
+                  w $R wayout_sendo[$i, $j];
+              }
   - K: compile_figure #c
     D: |
         my $u = $i;
