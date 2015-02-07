@@ -12,7 +12,8 @@ hooks:
     H.r->ping() || die "no redids?";
     $G->su("Elvis", sub {
        my $a = shift;
-       w pubbedElvis[$a];
+       my $m = a.m;
+       w pubbedElvis[$m];
     });
   recoded_init: |
     w retile;
@@ -20,15 +21,39 @@ hooks:
     $H->pub('S/hut/o', 'Hiwtidy');
   Teeth: |
     H.G w Teeth;
+  Jungl: | # juggle Jungle, Jid message queue keeps monorailing?
+    while (!0) {
+        my $m = H.r->lpop("Jungle");
+        last unless $m;
+        $H->fixutf8($m);
+        my $meta = $H->djson($m);
+        next if H.Jungle->{meta.Jid};
+      
+        if (H.Jungle->{meta.Jid}) {
+            sayre "Vungle! ! ar.m";
+        }
+        w pubbedElvis[$m];
+    }
   pubbedElvis: | # message for elvis via redis
       my $cb;
-      my $meta = $H->djson(a.m);
+      my $meta = $H->djson($m);
       
       my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
       $H->fixutf8($m);
       
       # J pubbing around will always be below the J of the W itself
-      $G->timer(5, sub{H.r->del("J/meta.Jid")});
+      timer 0.05 {
+          w Jungl;
+          timer 0.4 { w Jungl; };
+          timer 5 { H.r->del("J/meta.Jid"); };
+          timer 7 { delete H.Jungle->{meta.Jid}; };
+      };
+      
+      if (H.Jungle->{meta.Jid}) {
+          sayre "AAAAAAAAAAAAAAA Judder! ar.m";
+      }
+      H.Jungle->{meta.Jid} = 1;
+      
       # thing may contain more J structure we don't know about but it's art
       # it may throw Emissive Js through from Building Js
       # possibly without traces of U the W fab in the middle

@@ -1204,7 +1204,7 @@ sub parse_babble {
 
     # timer
 
-    $eval =~ s/timer $NUM? \{(.+?)\}/\$G->timer($1, sub { $3 })/sg;
+    $eval =~ s/timer $NUM\{/timer \$G, $1, sub{/sg;
 
     # waylay
 
