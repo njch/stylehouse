@@ -28,7 +28,6 @@ our @F; # is Ring re subs from below
 our $G0;
 our $db = 0;
 our $MAX_FCURSION = 140;
-our $NUM = qr/(?:(\d+(?:\.\d+)?) )/;
 our $HASHC = "#"."c";
 our $gp_inarow = 0;
 
@@ -1175,12 +1174,12 @@ sub pyramid {
 
 sub parse_babble {
     my $G = shift;
-
     my $eval = shift;
 
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
+      my $NUM = qr/\d+(?:\.\d+)?/;
 
 
 
@@ -1204,11 +1203,11 @@ sub parse_babble {
 
     # timer
 
-    $eval =~ s/timer $NUM\{/timer \$G, $1, sub{/sg;
+    $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
 
     # waylay
 
-    $eval =~ s/waylay $NUM?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+    #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
 
 
 
@@ -1220,8 +1219,8 @@ sub parse_babble {
     my $suro = qr/(?:$sur|(?>!$sur))/;
 
     while ($eval =~
-    /\${0}($poing )?((?<![\$\w])w(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
-        my ($g, $old, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6);
+    /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
+        my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
 
         if (!$g) {
             $g = '$G';
@@ -1253,6 +1252,14 @@ sub parse_babble {
         my $en = join ", ", @e;
 
         my $wa = $g."->w(".$en.")".$ne;
+
+        if ($delay) {
+            saygr "ol: $old\nDeeelay: $delay";
+            $delay =~ /aylay ($NUM)/;
+            $delay = $1 || "";
+            $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
+            saygr "Deeewow: $wa";
+        }
 
 
         #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
