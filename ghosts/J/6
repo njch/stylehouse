@@ -17,9 +17,10 @@ R_Jz:
       
       w $R up(%$arr);
       
-      J.bz->("dot$_"."\t"."0.".(60 + $_) => '.') for 1..20;
+      J.bz->("dot$_"."\t"."0.".(60 + $_) => '...') for 1..20;
+      J.bz->("000000000_$_/s"."\t"."0.$_" => $_, '%css' => 'color:red') for 1..9;
       
-      w $R round(%$arr);  
+      w $R round(%$arr);   
       
       
       my $html = w G.theR maka(%$arr); # stuff of 7
@@ -31,12 +32,14 @@ R_Jz:
    D: |
      my $tvs;
      
+     my $phi_n;
+     
      # sort by voltage
-     map { push @{$tvs->{_.cv}||=[]}, $_ }
+     map { $phi_n++; push @{$tvs->{_.cv}||=[]}, $_ }
        grep{ _.t eq _.l } map{ w $R shj(r=>$_,d=>a.bb); }
        $G->stylekeysort(a.bb);
      
-     my $phia = {n=>G.phiasn++};
+     my $phia = {n=>$phi_n};
      my $where = w $R phi(%$phia);
        
        sayyl "\n\n\n\n";
@@ -50,6 +53,7 @@ R_Jz:
                'position:absolute;'
                .'top:'.whe.x.'%;'
                .'left:'.whe.y.'%;'
+               .'-webkit-transform:rotate('.whe.angle.'rad);'
              );
              # + font-size fit + whe.angle
          }
@@ -76,9 +80,9 @@ R_Jz:
               my $x = $cx + cos($angle) * $spiral_rad;
               my $y = $cy + sin($angle) * $spiral_rad;
               push @$xy, {
-                  angle => sprintf('%.3f', $angle),
-                  x => sprintf('%.3f', $x),
-                  y => sprintf('%.3f', $y),
+                  angle => sprintf('%.1f', $angle),
+                  x => sprintf('%.2f', $x),
+                  y => sprintf('%.2f', $y),
               };
           }
           $xy
