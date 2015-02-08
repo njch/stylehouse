@@ -17,7 +17,7 @@ R_Jz:
       
       w $R up(%$arr);
       
-      J.bz->("dot$_"."\t"."0.".(60 + $_) => '...') for 1..20;
+      J.bz->("dot$_"."\t"."0.".(60 + $_) => 'Steev') for 1..20;
       J.bz->("000000000_$_/s"."\t"."0.$_" => $_, '%css' => 'color:red') for 1..9;
       
       w $R round(%$arr);   
@@ -32,7 +32,7 @@ R_Jz:
    D: |
      my $tvs;
      
-     my $phi_n;
+     my $phi_n = 1;
      
      # sort by voltage
      map { $phi_n++; push @{$tvs->{_.cv}||=[]}, $_ }
@@ -40,8 +40,12 @@ R_Jz:
        $G->stylekeysort(a.bb);
      
      my $phia = {n=>$phi_n};
+     phia.ai = 0.26;
+     phia.modi = {
+         map { $_ => 0.3 } 18..$phi_n
+     };
      my $where = w $R phi(%$phia);
-       
+     
        sayyl "\n\n\n\n";
        
      for my $jkv (sort keys %$tvs) { 
@@ -76,7 +80,9 @@ R_Jz:
           for my $i (1..$n) {
               my $ratio = $i/$n;
               my $spiral_rad = $ratio * $outer_rad;
-              my $angle = 1+$i*$angle_incr;
+              my $angi = $angle_incr;
+              $angi *= ar.modi->{$i} if ar.modi->{$i};
+              my $angle = 1+$i*$angi;
               my $x = $cx + cos($angle) * $spiral_rad;
               my $y = $cy + sin($angle) * $spiral_rad;
               push @$xy, {
