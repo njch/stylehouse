@@ -35,19 +35,18 @@ R_surz:
         'maka 4': |
           my @r = $G->stylekeysort(a.bb);
 
-        'maka 4.1': |
           a.o = {}; # by voltage, peel
           for my $r (@r) {
                   my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
 
                   saygr "igggy $l $vo > a.cv" && next if $cv && $vo > $cv;
-
+                  
                   $or = $vo if !defined $or;
 
                   my $o = a.o->{$or} ||= []; 
                   push @$o, $r;
           }
-        'maka 4.2': |
+          
               #thingness <-> appearance
               my $th = {};
               my $ap = {};
@@ -61,7 +60,9 @@ R_surz:
                        j.style ? do {
                            push @{$ap->{j.l} ||= []}, $j;
                        } : do {
-                            warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) if exists $th->{j.l};
+                           if (exists $th->{j.l} && j.l ne 'name') {
+                               warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) 
+                           }
                            $th->{j.l} = $j;
                            push @int, j.l;
                        }

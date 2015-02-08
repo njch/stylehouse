@@ -59,16 +59,21 @@ R_Jz:
             sub{$do->(%$j, @_)} # TODO fucked, get some weed and fix it
         };
         $do
-  - K: shj #c pronounce $j{r,s,t,cv,ev} from given $r and $d # post abulator but similar
+  - K: shj #c pronounce $j{r,s,t,l,com?,style?,cv,ev?} # to cache or something, is phasey
     D: |
-      my ($r, $d) = @_;
       my $j;
       j.r = $r;
-      j.s = ref $d eq 'HASH' ? $d->{$r} : $d; # carbon in
+      j.s = ar.C || ar.d->{$r}; # carbon in, or from abdomin
       (j.t, j.cv) =
           j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
           :
           split /\s+/, j.r, 2;
+          
+      my $t = j.t; # sep orthoogabooga
+      j.com = $1 if $t =~ s/#(.+)$//;
+      j.style = $1 if $t =~ s/%(.+)$//;
+      j.l = $t;
+      
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
