@@ -57,10 +57,15 @@ R_surz:
 
                    for my $r (@$o) {
                        my $j = $R->shj($r, a.bb);
+                       #my $style = j.style;
+                       my $wal = j.l;
                        (j.l, my $style) = split '%', j.t;
+                       die "j.l ne $wal!:". wdump($j) if j.l ne $wal;
+                       $style =~ s/#(.+)$// && sayre "STYLE+COM \nstyle reads: $1 from $style  ". wdump($j);
+                       die "$style vs j.style  ". wdump($j) if $style ne j.style;
 
                        $style ? do {
-                           j.style = $style;
+                           #saygr "Style: $style  ". wdump($j) if G.K eq 'C2';
                            push @{$ap->{j.l} ||= []}, $j;
                        } : do {
                             warn "replacemont j.l " if exists $th->{j.l};

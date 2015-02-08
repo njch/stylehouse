@@ -115,6 +115,12 @@ Ds:
           j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
           :
           split /\s+/, j.r, 2;
+          
+      my $t = j.t; # sep orthoogabooga
+      j.com = $1 if $t =~ s/#(.+)$//;
+      j.style = $1 if $t =~ s/%(.+)$//;
+      #j.l = $t;
+      
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
