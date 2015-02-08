@@ -145,27 +145,14 @@ R_Ms:
         undef $j unless ref $j eq 'HASH' && j.t; # go round
         $j ||= $bb->{$k} = $R->shj($k, $bb);
         j.T ||= j.t;
-        (j.t,j.l) = ($1,$2) if j.t =~ /^(.+?)(%.+)$/;# pooling pull of lingo
         j.to ||= (j.t =~ /^(\w+)/)[0]; # ^
         
-        if (ar.les) {
-            if (ar.les eq '*') {
-            }
-            elsif (ar.les eq '%') {
-                next if !defined j.l;
-            }
-            else {
-                next if ar.les ne j.l;
-            }
-        }
-        else {
-            next if defined j.l;
-        }
+        
+        next if defined j.style;
         
         push @J, $j;
     }
     @J
-
   pto: |
     my @m;
     for my $cv (sort keys %$p) {

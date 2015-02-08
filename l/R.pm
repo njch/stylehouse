@@ -272,7 +272,7 @@ sub shj {
     my $t = $j->{t}; # sep orthoogabooga
     $j->{com} = $1 if $t =~ s/#(.+)$//;
     $j->{style} = $1 if $t =~ s/%(.+)$//;
-    $j->{lt} = $t;
+    $j->{l} = $t;
 
     ($j->{cv}, my @e) = split /\s+/, $j->{cv};
     $j->{ev} = \@e if @e;

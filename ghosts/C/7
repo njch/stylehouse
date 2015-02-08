@@ -13,21 +13,21 @@ R_surz:
         if (my $id = a.isJid || a.replaceJid) {
             a.bb->{'/%id 0.1'} = $id;
         }
-    - K: styley #c extra stylepliers TODO without clobbering other %css... comment?
+    - K: styley #c extra stylepliers
       babz:
         'maka 2.5': |
             for my $k (%{a.bb}) {
                 if ($k =~ /^(\S*(?:oB|Bo|Bi|Bs))\s+(.+)$/) {
-                    a.bb->{"$1\%css\t$2"} = "color:black";
+                    a.bb->{"$1\%css#maka25\t$2"} = "color:black";
                 }
                 if ($k =~ /^thi\s+(.+)$/) {
-                    a.bb->{"thi\%css\t$1"} = "text-decoration:underline";
+                    a.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
                 }
                 if ($k =~ /^name\s+(.+)$/) {
-                    a.bb->{"name\%css\t$1"} = "color:#f93;font-size:77%";
+                    a.bb->{"name\%css#maka25\t$1"} = "color:#f93;font-size:77%";
                 }
                 if ($k =~ /^K\s+(.+)$/) {
-                    a.bb->{"K%css\t$1"} = "color:#3f3";
+                    a.bb->{"K%css#maka25\t$1"} = "color:#3f3";
                 }
             }
     - K: t___a #c thingness <-> appearance
@@ -57,18 +57,11 @@ R_surz:
 
                    for my $r (@$o) {
                        my $j = $R->shj($r, a.bb);
-                       #my $style = j.style;
-                       my $wal = j.lt;
-                       (j.l, my $style) = split '%', j.t;
-                       die "j.l ne $wal!:". wdump($j) if j.l ne $wal;
-                       $style =~ s/#(.+)$// && sayre "STYLE+COM \nstyle reads: $1 from $style  ". wdump($j);
-                       die "$style vs j.style  ". wdump($j) if $style ne j.style;
-
-                       $style ? do {
-                           #saygr "Style: $style  ". wdump($j) if G.K eq 'C2';
+                       
+                       j.style ? do {
                            push @{$ap->{j.l} ||= []}, $j;
                        } : do {
-                            warn "replacemont j.l " if exists $th->{j.l};
+                            warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) if exists $th->{j.l};
                            $th->{j.l} = $j;
                            push @int, j.l;
                        }
