@@ -42,7 +42,7 @@ R_Jz:
      my $phia = {n=>$phi_n};
      phia.ai = 0.16;
      phia.modi = {
-     #   map { $_ => 0.5 } 18..$phi_n
+        map { $_ => 0.5 } 18..$phi_n
      };
      my $where = w $R phi(%$phia);
      
@@ -54,12 +54,12 @@ R_Jz:
              sayyl "    It's j.t !";
              my $whe = shift @$where;
              $whe || die "out of spiral!";
-             my $ang = sprintf '%.2f', atan2(whe.x - 50, whe.y - 50);
+             
              J.bz->(j.t."%css#phi"."\t".j.cv =>
                'position:absolute;'
                .'top:'.whe.x.'%;'
                .'left:'.whe.y.'%;'
-               .'-webkit-transform:rotate('.$ang.'rad);'
+               .'-webkit-transform:rotate('.whe.angle.'rad);'
                .'transform-origin:-10% -10%;' # animate that bit
              ); 
              J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
@@ -90,6 +90,7 @@ R_Jz:
               my $x = $cx + cos($angle) * $spiral_rad;
               my $y = $cy + sin($angle) * $spiral_rad;
               push @$xy, {
+                  radial => sprintf('%.2f', atan2($x - $cx, $y - $cy)),
                   angle => sprintf('%.3f', $angle),
                   x => sprintf('%.2f', $x),
                   y => sprintf('%.2f', $y),
