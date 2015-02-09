@@ -230,10 +230,12 @@ hooks:
     saygr 'Restarting S' for 1..3;
     my $pm = ".pm";
     `touch l/S$pm`; 
-  coins: |
+  coins: | # non 0/* (self) things to code
     # etc
+    my $ya = 0;
     for my $gf (keys %$Gd) {
         if ($gf =~ /ghosts\/(R|G)/) {
+            $ya = 1;
             my $f = {K=>'Nonpm',B=>{file =>"ghosts/0/$1"}};
             my @p = w G.R fi[$f];
             for my $c (@p) {
@@ -243,7 +245,7 @@ hooks:
             }
         }
     }
-    w code[$Gd];
+    w code[$Gd] if $ya;
   codifs: |
     my @cdifs = grep { _.codif } @$chpms;
     if (@cdifs) {
