@@ -77,11 +77,19 @@ R_Jz:
       (j.cv, my @e) = split /\s+/, j.cv;
       j.ev = \@e if @e;
       $j
-  - K: ytv #c sort by voltage
+  - K: ytv #c sort by voltage making cityscape, things only
     D: |
       my $tvs;
-      map { push @{$tvs->{_.cv}||=[]}, $_ }
-        grep{ _.t eq _.l } map{ w $R shj(r=>$_,d=>J.bb); }
-        $G->stylekeysort(J.bb);
+      map{ push @{$tvs->{_.cv}||=[]}, $_ }
+        grep{ _.t eq _.l }
+        sort{ a.r cmp b.r }
+        map{ w $R shj(r=>$_,d=>J.bb); }
+        keys %{J.bb};
       $tvs;
+  - K: tvo #c sort by voltage making cv,r ordered list
+    D: |
+      sort { a.cv <=> b.cv }
+        sort{ a.r cmp b.r }
+        map{ w $R shj(r=>$_,d=>J.bb); }
+        keys %{J.bb};
 
