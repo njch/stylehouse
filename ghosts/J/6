@@ -26,60 +26,32 @@ R_Jz:
       
       my $html = w G.theR maka(%$arr); # stuff of 7
       
-      saybl "hissings:\n$html\n";
+      saybl "hissings:\n".slim(50,$html)."\n";
       return $html
         
  - K: jitterbug #c depasoi
    D: |
-     return w $R dolphy;
      my $tvs = w $R ytv[$J];
      
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
+     
+     J.geo.bz->(@$_) for
+         ["lean\t"."0.1" => "left"],
+         ["curve\t"."0.3" => "1rad / 0.2"];
+         
+     w $R geocache(J=>J.geo);
      # map onto geoloJn
      say wdump 2, w $R phairo[$J, $tvs];
- - K: dolphy #c
-   D: |
-     my $tvs = w $R ytv[$J];
-     my $where = w $R phiro[$J, $tvs];
-     
-       sayyl "!\n";
-       
-     for my $jkv (sort keys %$tvs) { 
-         sayyl "at $jkv";
-         for my $j (@{$tvs->{$jkv}}) {
-             #sayyl "    It's j.t !";
-             my $whe = shift @$where;
-             $whe || die "out of spiral!";
-             
-             J.bz->(j.t."%css#phi"."\t".j.cv =>
-               'position:absolute;'
-               .'top:'.whe.x.'%;'
-               .'left:'.whe.y.'%;'
-               .'-webkit-transform:rotate('.whe.radial.'rad);'
-               .'transform-origin:-10% -10%;' # animate that bit
-             ); 
-             J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
-             # + font-size fit + whe.angle
-         }
-     }
-       sayyl "!\n";
- 
  - K: phairo #c
    D: |
      my $phi_n = 1;
      map { $phi_n++ } map { @$_ } values %$tvs; # flatly
      
-     for (
-         ["lean\t"."0.1" => "left"],
-         ["curve\t"."0.3" => "1rad / 0.2"],
-        ) {
-     J.geo.bz->(@$_);
-     }
      
      say $_ for @{J.geo.ord};
      
      
-     return;
+     return J.geo;
      
      for my $jkv (sort keys %$tvs) { 
          # compute curve for j ns within
