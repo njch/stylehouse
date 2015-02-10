@@ -80,9 +80,12 @@ R_Jz:
   - K: ytv #c sort by voltage making cityscape, things only
     D: |
       my $tvs;
-      map{ push @{$tvs->{_.cv}||=[]}, $_ }
-        grep{ _.t eq _.l }
+      map{
+          push @{ar.ord}, $_ if ar.ord;
+            push @{$tvs->{_.cv}||=[]}, $_
+        }
         sort{ a.r cmp b.r }
+        grep{ _.t eq _.l } # things onlyness
         map{ w $R shj(r=>$_,d=>J.bb); }
         keys %{J.bb};
       $tvs;

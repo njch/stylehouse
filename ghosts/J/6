@@ -36,19 +36,49 @@ R_Jz:
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
      
      J.geo.bz->(@$_) for
-         ["lean\t"."0.1" => "left"],
-         ["curve\t"."0.3" => "1rad / 0.2"];
+         ["curve\t"."0.28" => "1rad / 0.2"];
          
      w $R geolo(J=>J.geo);
      # map onto geoloJn
      w $R phairo[$J, $tvs];
  - K: geolo #c begin digging
    D: |
-     my @o = w $R tvo[$J];
-     for my $j (@o) {
-         saybl "yep j.r          j.s";
+     my $tvs = w $R ytv[$J];
+     sayyl '.' for 1..5;
+     my $tr = {};
+     for my $jkv (sort keys %$tvs) { 
+         # compute curve for j ns within
+         sayyl "at $jkv";
+         for my $j (@{$tvs->{$jkv}}) {
+             $tr->{$jkv}->{j.t} = j.s;
+             saybl "yep j.r          j.s";
+         }
      }
      
+     my @br = map{$_ * 0.1} 1..9;
+     @br = uniq @br, keys %$tr;
+     my $lestr = {};
+     for my $b (sort @br) {
+         my $plug = $tr->{$b} ? $tr->{$b} : {};
+         $lestr = { %$lestr, %$plug };
+         J.bz->("b%tr\t".$b => $lestr);
+     }
+     
+     my @be = w $R tvo[$J];
+     for my $bj (@be) {
+         next unless bj.style;
+         say wdump($bj);
+     }
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     # etc
  - K: phairo #c
    D: |
      my $phi_n = 1;
