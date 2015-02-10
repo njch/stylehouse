@@ -1,7 +1,6 @@
 R_Jz:
  - K: hiss #c esque pingas
    D: |
-      my $J = $S;
       my $u = {
           id => "not",
           name => "ches",
@@ -17,10 +16,12 @@ R_Jz:
       
       w $R up(%$arr);
       
-      J.bz->("dot$_"."\t"."0.".(60 + $_) => '.') for 1..20;
-      J.bz->("000000000_$_/s"."\t"."0.$_" => $_."-------", '%css' => 'color:red') for 1..9;
+      #J.bz->("dot$_"."\t"."0.".(60 + $_) => '.') for 1..20;
+      J.bz->("000000000_$_/s"."\t"."0.$_" => $_."-------", '%css' => 'color:red') for 1..3;
       
-      w $R round(%$arr);   
+      J.spiral || die;
+      sayre "Spiral del J.spiral";
+      w $R J.spiral(%$arr);
       
       
       my $html = w G.theR maka(%$arr); # stuff of 7
@@ -28,24 +29,25 @@ R_Jz:
       saybl "hissings:\n$html\n";
       return $html
         
- - K: round #c
+ - K: jitterbug #c depasoi
    D: |
-     my $tvs;
+     return w $R dolphy;
+     my $tvs = w $R ytv[$J];
      
-     # sort by voltage
-     map { push @{$tvs->{_.cv}||=[]}, $_ }
-       grep{ _.t eq _.l } map{ w $R shj(r=>$_,d=>a.bb); }
-       $G->stylekeysort(a.bb);
-     
+     J.geo = w G.theJ makeJ(name=>J.name.'-geo');
      # map onto geoloJn
-     my $where = w $R phiro[$tvs];
+     say wdump 2, w $R phairo[$J, $tvs];
+ - K: dolphy #c
+   D: |
+     my $tvs = w $R ytv[$J];
+     my $where = w $R phiro[$J, $tvs];
      
-       sayyl "\n\n\n\n";
+       sayyl "!\n";
        
      for my $jkv (sort keys %$tvs) { 
          sayyl "at $jkv";
          for my $j (@{$tvs->{$jkv}}) {
-             sayyl "    It's j.t !";
+             #sayyl "    It's j.t !";
              my $whe = shift @$where;
              $whe || die "out of spiral!";
              
@@ -60,9 +62,90 @@ R_Jz:
              # + font-size fit + whe.angle
          }
      }
-       sayyl "\n\n\n\n";
+       sayyl "!\n";
  
-
+ - K: phairo #c
+   D: |
+     my $phi_n = 1;
+     map { $phi_n++ } map { @$_ } values %$tvs; # flatly
+     
+     for (
+         ["lean\t"."0.1" => "left"],
+         ["curve\t"."0.3" => "1rad / 0.2"],
+        ) {
+     J.geo.bz->(@$_);
+     }
+     
+     say $_ for @{J.geo.ord};
+     
+     
+     return;
+     
+     for my $jkv (sort keys %$tvs) { 
+         # compute curve for j ns within
+         sayyl "at $jkv";
+         for my $j (@{$tvs->{$jkv}}) {
+             my $phia = {n=>$phi_n};
+             phia.ai = 0.16;
+             phia.modi = { map { $_ => 0.5 } 18..$phi_n };
+             w $R phi(%$phia);
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+         }
+     }
+     
+ - K: phism #c re/progressive proJammable petalis
+   D: |
+          my $n = ar.n || 9;
+          my $width = 100;
+          my $height = 100;
+          my $cx = $width / 2;
+          my $cy = $height / 2;
+          my $lg_diam = $width * 0.85;
+          my $lg_rad = $lg_diam / 2; 
+          my $outer_rad = $width*0.45;
+          my $angle_incr = ar.ai || 9 / $n;
+          
+          my $xy = [];
+          for my $i (1..$n) {
+              my $ratio = $i/$n;
+              my $spiral_rad = ($ratio *1.3) * $outer_rad;
+              my $angi = $angle_incr + 0.15;
+              $angi *= ar.modi->{$i} if ar.modi->{$i};
+              my $angle = 1.2+$i*$angi;
+              my $x = $cx + cos($angle) * $spiral_rad;
+              my $y = $cy + sin($angle) * $spiral_rad;
+              push @$xy, {
+                  radial => sprintf('%.2f', atan2($x - $cx, $y - $cy)),
+                  angle => sprintf('%.3f', $angle),
+                  x => sprintf('%.2f', $x),
+                  y => sprintf('%.2f', $y),
+              };
+          }
+          $xy
  - K: up #c
    D: |
             my $r = {map{$_=>1} sort keys %$u};
