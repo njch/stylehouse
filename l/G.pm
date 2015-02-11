@@ -22,6 +22,7 @@ use File::Find;
 use Math::Trig 'pi2';
 use Storable 'dclone';
 use POSIX qw'ceil floor';
+use feature 'switch';
 # use Mojo::IOLoop::ForkCall; # see para
 our $swdepth = 5;
 our @F; # is Ring re subs from below 
@@ -1126,7 +1127,7 @@ sub w {
 
         warn $G->pi."    way miss $talk"
         if !($H->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj'}
+            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D'}
           )->{$wa};
         return;
     }

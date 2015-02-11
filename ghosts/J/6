@@ -26,28 +26,27 @@ R_Jz:
       
       my $html = w G.theR maka(%$arr); # stuff of 7
       
-      saybl "hissings:\n".slim(250,250,$html)."\n";
+      saybl "hissings";#:\n".slim(250,250,$html)."\n";
       return $html
         
  - K: jitterbug #c depasoi
    D: |
-     my $tvs = w $R ytv[$J];
-     
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
      
-     J.geo.bz->(@$_) for
-         ["curve\t"."0.28" => "1rad / 0.2"];
-         
-     w $R geolo(J=>J.geo);
-     # map onto geoloJn
-     w $R phairo[$J, $tvs];
- - K: geolo #c begin digging
+     J.geo.bz->(@$_) for ["curve\t"."0.28" => 0.5]; # rad per 0.1cv? who knows
+     
+     # set up archeology site, anything you want
+     w $R geolo[$J];
+     # map what you got onto geoloJn, perhaps unwholy, resolving around poles
+     w $R phairo[$J];
+ - K: geolo #c begin digging - smiling egg cup
    D: |
-     my $tvs = w $R ytv[$J];
+     my $Jeo = J.geo; # woo
      sayyl '.' for 1..5;
+     
+     my $tvs = w $R ytv(J=>J.geo);
      my $tr = {};
      for my $jkv (sort keys %$tvs) { 
-         # compute curve for j ns within
          sayyl "at $jkv";
          for my $j (@{$tvs->{$jkv}}) {
              $tr->{$jkv}->{j.t} = j.s;
@@ -57,62 +56,70 @@ R_Jz:
      
      my @br = map{$_ * 0.1} 1..9;
      @br = uniq @br, keys %$tr;
-     my $lestr = {};
      for my $b (sort @br) {
-         my $plug = $tr->{$b} ? $tr->{$b} : {};
-         $lestr = { %$lestr, %$plug };
-         J.bz->("b%tr\t".$b => $lestr);
+         J.geo.bz->("b%tr\t".$b => $tr->{$b} || {});
      }
      
-     my @be = w $R tvo[$J];
-     for my $bj (@be) {
-         next unless bj.style;
-         say wdump($bj);
+     my @be = w $R tvo(J=>J.geo);
+     my $last = {x=>0.5, y=>0, cv=>0, rad=>0};
+     for my $j (@be) { # will be first order...
+         next if !j.style;
+         say "j.r                 ".$H->ejson(j.s);
+         
+         my $here = {%{j.s}};
+         
+         w $R atom[$j, $here, $last];
+         here.cv = j.cv;
+         
+         saygr "going     ".ki($here);
+         J.bz->("b%ge\t".j.cv => $here);
+         $last = $here;
      }
-     
-     
-     
-     
-     
-     
-     
-     
      
      # etc
+ - K: atom #c 
+   D: |
+         # spacin
+         here.dist = here.cv - last.cv;
+         # twistin
+         here.rad = last.rad; # + 
+         if (here.curve) {
+             sayyl "got here.curve";
+             here.rad += here.curve; # + complic
+         }
+         # move
+         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+         
  - K: phairo #c
    D: |
-     my $phi_n = 1;
-     map { $phi_n++ } map { @$_ } values %$tvs; # flatly
+     my @d = w $R tvo[$J];
+     my @be = w $R tvo(J=>J.geo);
      
-     
-     say $_ for @{J.geo.ord};
-     
-     
-     return J.geo;
-     
-     for my $jkv (sort keys %$tvs) { 
-         # compute curve for j ns within
-         sayyl "at $jkv";
+     my ($left,$right) = (undef,shift @be);
+     my $being = sub {
+         my $j = shift;
+         if (j.cv > $right->{cv}) {
+             # end $left
+             $left = $right;
+             $right = shift @be;
+             # start $right
+         }
+         
+     };
+     for my $j (@d) {
+         sayyl "at j.cv";
+         $being->($j);
+         my $here = {%{j.s}};
+         my $last = $left;
+         w $R atom($here, $last);
+         J.bz->(
+     }
          for my $j (@{$tvs->{$jkv}}) {
              my $phia = {n=>$phi_n};
              phia.ai = 0.16;
              phia.modi = { map { $_ => 0.5 } 18..$phi_n };
              w $R phi(%$phia);
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
      
      
      
