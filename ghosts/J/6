@@ -34,12 +34,15 @@ R_Jz:
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
      
      J.geo.bz->(@$_) for
-          ["curve\t"."0.28" => 0.5],
+         ["curve\t"."0.28" => 0.5],
          ["curve\t"."0.28" => -0.2],
      ; # rad per 0.1cv? who knows
      
      # set up archeology site, anything you want
      w $R geolo[$J];
+     
+     J.pha = w G.theJ makeJ(name=>J.name.'-pha');
+     
      # map what you got onto geoloJn, perhaps unwholy, resolving around poles
      w $R phairo[$J];
  - K: geolo #c begin digging - smiling egg cup
@@ -47,48 +50,62 @@ R_Jz:
      my $Jeo = J.geo; # woo
      sayyl '.' for 1..5;
      
-     my $tvs = w $R ytv(J=>J.geo);
-     my $tr = {};
-     for my $jkv (sort keys %$tvs) { 
-         sayyl "at $jkv";
-         for my $j (@{$tvs->{$jkv}}) {
-             $tr->{$jkv}->{j.t} = j.s;
-             saybl "yep j.r          j.s";
-         }
+     for my $j (do { grep { !_.style } w $R tvo(J=>J.geo); }) {
+         my $w = "b%tr\t".j.cv;
+         my $tr = J.geo.bb->{$w} || {};
+         saybl "               ^^^^ yep j.r          j.s ";
+         $tr = {%{$tr}, j.t => j.s};
+         J.geo.bz->($w => $tr); # ^aggregatev
      }
      
-     my @br = map{$_ * 0.1} 1..9;
-     @br = uniq @br, keys %$tr;
-     for my $b (sort @br) {
-         J.geo.bz->("b%tr\t".$b => $tr->{$b} || {});
+     for my $pcv (map{$_ * 0.1} 1..9) {
+         my $w = "b%tr\t".$pcv;
+         J.geo.bz->($w => {}) if !J.geo.bb->{$w};
+         # extra stick pole, sparsitor to trace by, blank as tr(ansf)
      }
      
-     my @be = w $R tvo(J=>J.geo);
+     # and lay out
      my $last = {x=>0.5, y=>0, cv=>0, rad=>0};
-     for my $j (@be) { # will be first order...
-         next if !j.style;
-         say "j.r                 ".$H->ejson(j.s);
+     for my $j (do { grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
+         sayyl "               vvvv yep j.r          ".ki j.s;
          
-         my $here = {%{j.s}};
-         
-         w $R atom[$j, $here, $last];
+         my $here = {};
          here.cv = j.cv;
          here.rad = here.curve if here.curve;
          
-         saygr "going     ".ki($here);
-         J.geo.bz->("b%ge\t".j.cv => $here);
+         w $R atom[$j, $here, $last];
+         
+         J.geo.bz->("b%ve\t".j.cv => $here);
          $last = $here;
      }
-     
      # etc
  - K: phairo #c
    D: |
-     my @d = w $R tvo[$J];
-     my @be = grep { _.style eq 'ge' } w $R tvo(J=>J.geo);
+     my @d = grep { !_.style } w $R tvo[$J];
+     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo);
      
      my ($left,$right) = (undef,shift @be);
      my $being = sub {
          my ($j, $here) = @_;
+         # mids
+     };
+     #return if G.flip && G.flip-- || G.flip++;
+     
+     
+     
+     for my $j (do { grep { !_.style } w $R tvo(J=>J.geo); }) {
+         my $w = "b%tr\t".j.cv;
+         my $tr = J.geo.bb->{$w} || {};
+         saybl "               ^^^^ yep j.r          j.s ";
+         $tr = {%{$tr}, j.t => j.s};
+         J.geo.bz->($w => $tr); # ^aggregatev
+     }
+     
+     for my $j (@d) {
+         next if j.t ne j.l;
+         #sayyl "at j.r       = j.s";
+         
+         my $here = {};
          here.cv = j.cv;
          if (here.cv > $right->{cv}) {
              # end $left
@@ -96,16 +113,10 @@ R_Jz:
              $right = shift @be;
              # start $right
          }
-         # mids
-     };
-     #return if G.flip && G.flip-- || G.flip++;
-     for my $j (@d) {
-         next if j.t ne j.l;
-         sayyl "at j.r       = j.s";
-         my $here = {};
-         $being->($j, $here);
-         say "left is left.r           = left.s";
+         
+         #say "left is left.r           = left.s";
          my $last = left.s || {};
+         sayre " left: ".ki $last;
          w $R atom[$here, $last];
          #say "j: ".ki($j);
          #saybl "last: ".ki($last); 
@@ -120,6 +131,7 @@ R_Jz:
              x => sprintf('%.2f', here.x),
              y => sprintf('%.2f', here.y),
          };
+         sayre "               <<<< yep j.r          j.s\t\t ere.x!ere.y   * ere.radial";
          J.geo.bz->(j.r => $here); 
          #J.geo.bz->("j.t%here\t".j.cv, $here);
          #J.geo.bz->("j.t%ere\t".j.cv, $ere);
