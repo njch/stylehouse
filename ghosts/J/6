@@ -142,7 +142,7 @@ R_Jz:
          my $here = {};
          here.cv = j.cv;
          
-         if (here.cv >= $right->{cv} && @be ) { # adjust to poli
+         if ($right && here.cv >= $right->{cv} ) { # adjust to poli
              # mix a pool of ways, magnetic fishing rods
              # end $left
              $left = $right;
@@ -154,18 +154,17 @@ R_Jz:
          w $R atom[$here, $last];
          
          # unwind
-         #here.rad -= $RADIAN*4 until here.rad < $RADIAN*4;
+         my $swish = $RADIAN*4;
+         $swish *= -1 if here.rad < 0;
+         # coil something something
+         here.rad -= $swish until here.rad < $swish;
          # random angle like L
          my $rad = here.rad;
-         my $radleg = $RADIAN;
+         my $radleg = -$RADIAN;
          # from O- is it in the left hemisphere
-         $radleg *= -1 unless $rad > -$RADIAN && $rad < $RADIAN;
-         $rad += $radleg;
+         $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
+         $rad -= $radleg; 
          
-         #here.rad -= $RADIAN*2 - here.rad  if here.rad > $RADIAN*2;
-         # ^ unwind v flip out
-         my $radi = $RADIAN;
-         $radi *= -1 if here.rad > $RADIAN && $RADIAN < here.rad;
          
          my $ere = {
              left => $left,
@@ -199,8 +198,11 @@ R_Jz:
          # spacin
          here.dist = here.cv - last.cv;
          # twistin
-         say "ar.j.t here.rad is to last.rad over here.dist";
-         here.rad += last.rad * (here.dist * 10);
+         say "twist: here.cv ".(here.dist * 10)."  from last.cv";
+         here.rad *= (here.dist * 10);
+         here.rad += last.rad; # last real poli
+         #* (here.dist * 10);
+         say "add here.dist of last.rad to here.rad   or";
          # move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
