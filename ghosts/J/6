@@ -33,7 +33,10 @@ R_Jz:
    D: |
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
      
-     J.geo.bz->(@$_) for ["curve\t"."0.28" => 0.5]; # rad per 0.1cv? who knows
+     J.geo.bz->(@$_) for
+          ["curve\t"."0.28" => 0.5],
+         ["curve\t"."0.28" => -0.2],
+     ; # rad per 0.1cv? who knows
      
      # set up archeology site, anything you want
      w $R geolo[$J];
@@ -70,69 +73,68 @@ R_Jz:
          
          w $R atom[$j, $here, $last];
          here.cv = j.cv;
+         here.rad = here.curve if here.curve;
          
          saygr "going     ".ki($here);
-         J.bz->("b%ge\t".j.cv => $here);
+         J.geo.bz->("b%ge\t".j.cv => $here);
          $last = $here;
      }
      
      # etc
- - K: atom #c 
-   D: |
-         # spacin
-         here.dist = here.cv - last.cv;
-         # twistin
-         here.rad = last.rad; # + 
-         if (here.curve) {
-             sayyl "got here.curve";
-             here.rad += here.curve; # + complic
-         }
-         # move
-         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
-         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
-         
  - K: phairo #c
    D: |
      my @d = w $R tvo[$J];
-     my @be = w $R tvo(J=>J.geo);
+     my @be = grep { _.style eq 'ge' } w $R tvo(J=>J.geo);
      
      my ($left,$right) = (undef,shift @be);
      my $being = sub {
-         my $j = shift;
-         if (j.cv > $right->{cv}) {
+         my ($j, $here) = @_;
+         here.cv = j.cv;
+         if (here.cv > $right->{cv}) {
              # end $left
              $left = $right;
              $right = shift @be;
              # start $right
          }
-         
+         # mids
      };
+     #return if G.flip && G.flip-- || G.flip++;
      for my $j (@d) {
-         sayyl "at j.cv";
-         $being->($j);
-         my $here = {%{j.s}};
-         my $last = $left;
-         w $R atom($here, $last);
-         J.bz->(
+         next if j.t ne j.l;
+         sayyl "at j.r       = j.s";
+         my $here = {};
+         $being->($j, $here);
+         say "left is left.r           = left.s";
+         my $last = left.s || {};
+         w $R atom[$here, $last];
+         #say "j: ".ki($j);
+         #saybl "last: ".ki($last); 
+         #sayre "here: ".ki($here); 
+         #say wdump(3,[$j, $last,$here]);
+         
+         my $rad = 1.57079633;
+         
+         my $ere = {
+             radial => sprintf('%.3f', here.rad + 1.),
+             angle => sprintf('%.3f', here.rad),
+             x => sprintf('%.2f', here.x),
+             y => sprintf('%.2f', here.y),
+         };
+         J.geo.bz->(j.r => $here); 
+         #J.geo.bz->("j.t%here\t".j.cv, $here);
+         #J.geo.bz->("j.t%ere\t".j.cv, $ere);
      }
-         for my $j (@{$tvs->{$jkv}}) {
-             my $phia = {n=>$phi_n};
-             phia.ai = 0.16;
-             phia.modi = { map { $_ => 0.5 } 18..$phi_n };
-             w $R phi(%$phia);
      
-     
-     
-     
-     
-     
-     
-     
-     
-     
-         }
-     }
-     
+ - K: atom #c 
+   D: |
+         # spacin
+         here.dist = here.cv - last.cv;
+         # twistin
+         here.rad += last.rad;
+         # move
+         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+         
  - K: phism #c re/progressive proJammable petalis
    D: |
           my $n = ar.n || 9;

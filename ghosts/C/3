@@ -49,9 +49,18 @@ R_surz: #c
               }
           }
     - K: stylook #c S 34145 # compress stylestyle slightly # TODO
+      key:
+        B: orsc
+      n_D:
+        orsc: |
+          !S.mood.nostyleinstyle ? 
+          S.mood.nostyleinstyle = 1 :
+          delete S.mood.nostyleinstyle
       babz:
         'S 3.4145': |
-          if (3 == grep { $_ =~ /^.+\s+.+\d\t.+$/ } (shuffle keys %$d)[0,1,2]) {
+          if (!S.mood.nostyleinstyle &&
+              3 == grep { $_ =~ /^.+\s+.+\d\t.+$/ } 
+                (shuffle keys %$d)[0,1,2]) {
               S.mod.styleinstyle = 1;
               my $l;
               for my $k (keys %$d) {
