@@ -17,11 +17,15 @@ R_Jz:
       w $R up(%$arr);
       
       #J.bz->("dot$_"."\t"."0.".(60 + $_) => '.') for 1..20;
-      J.bz->("000000000_$_/s"."\t"."0.$_" => $_."-------", '%css' => 'color:red') for 1..3;
+      J.bz->("0000_$_/s"."\t"."0.$_" =>
+          $_."-------",
+          '%css' => 'color:red') for 1..3;
       
       J.spiral || die;
       sayre "Spiral del J.spiral";
-      w $R J.spiral(%$arr);
+      w $R J.spiral(%$arr); # jitterbug
+      
+      
       
       
       my $html = w G.theR maka(%$arr); # stuff of 7
@@ -32,28 +36,30 @@ R_Jz:
  - K: jitterbug #c depasoi
    D: |
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
+     # make fat scrollbars long triangles, behind box of stuff
      
      J.geo.bz->(@$_) for
          ["curve\t"."0.28" => 0.5],
-         ["curve\t"."0.28" => -0.2],
+         ["curve\t"."0.38" => -0.2],
      ; # rad per 0.1cv? who knows
      
      # set up archeology site, anything you want
      w $R geolo[$J];
      
      J.pha = w G.theJ makeJ(name=>J.name.'-pha');
-     
      # map what you got onto geoloJn, perhaps unwholy, resolving around poles
      w $R phairo[$J];
+     
+     
  - K: geolo #c begin digging - smiling egg cup
    D: |
      my $Jeo = J.geo; # woo
      sayyl '.' for 1..5;
      
-     for my $j (do { grep { !_.style } w $R tvo(J=>J.geo); }) {
+     for my $j (do{ grep { !_.style } w $R tvo(J=>J.geo); }) {
          my $w = "b%tr\t".j.cv;
          my $tr = J.geo.bb->{$w} || {};
-         saybl "               ^^^^ yep j.r          j.s ";
+         saybl "               ^^^^ yep j.cv j.t          j.s ";
          $tr = {%{$tr}, j.t => j.s};
          J.geo.bz->($w => $tr); # ^aggregatev
      }
@@ -65,13 +71,13 @@ R_Jz:
      }
      
      # and lay out
-     my $last = {x=>0.5, y=>0, cv=>0, rad=>0};
-     for my $j (do { grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
-         sayyl "               vvvv yep j.r          ".ki j.s;
+     my $last = {x=>0.5, y=>0, cv=>0, rad=>$RADIAN}; # downy
+     for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
+         sayyl "               <<<< yep j.cv j.t          ".ki j.s;
          
          my $here = {};
          here.cv = j.cv;
-         here.rad = here.curve if here.curve;
+         here.rad = j.s.curve if j.s.curve; # on the level
          
          w $R atom[$j, $here, $last];
          
@@ -81,33 +87,16 @@ R_Jz:
      # etc
  - K: phairo #c
    D: |
-     my @d = grep { !_.style } w $R tvo[$J];
-     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo);
+     my @d = grep { _.t eq _.l } w $R tvo[$J]; # not style or com
+     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
      
      my ($left,$right) = (undef,shift @be);
-     my $being = sub {
-         my ($j, $here) = @_;
-         # mids
-     };
-     #return if G.flip && G.flip-- || G.flip++;
-     
-     
-     
-     for my $j (do { grep { !_.style } w $R tvo(J=>J.geo); }) {
-         my $w = "b%tr\t".j.cv;
-         my $tr = J.geo.bb->{$w} || {};
-         saybl "               ^^^^ yep j.r          j.s ";
-         $tr = {%{$tr}, j.t => j.s};
-         J.geo.bz->($w => $tr); # ^aggregatev
-     }
      
      for my $j (@d) {
-         next if j.t ne j.l;
-         #sayyl "at j.r       = j.s";
-         
          my $here = {};
          here.cv = j.cv;
-         if (here.cv > $right->{cv}) {
+         
+         if (here.cv >= $right->{cv}) { # adjust to poli
              # end $left
              $left = $right;
              $right = shift @be;
@@ -116,27 +105,35 @@ R_Jz:
          
          #say "left is left.r           = left.s";
          my $last = left.s || {};
-         sayre " left: ".ki $last;
+         #sayre " left: ".ki $last;
          w $R atom[$here, $last];
          #say "j: ".ki($j);
          #saybl "last: ".ki($last); 
          #sayre "here: ".ki($here); 
          #say wdump(3,[$j, $last,$here]);
          
-         my $rad = 1.57079633;
-         
          my $ere = {
-             radial => sprintf('%.3f', here.rad + 1.),
+             radial => sprintf('%.3f', here.rad + $RADIAN),
              angle => sprintf('%.3f', here.rad),
-             x => sprintf('%.2f', here.x),
-             y => sprintf('%.2f', here.y),
+             x => sprintf('%.4f', here.x),
+             y => sprintf('%.4f', here.y),
          };
-         sayre "               <<<< yep j.r          j.s\t\t ere.x!ere.y   * ere.radial";
-         J.geo.bz->(j.r => $here); 
+         sayre "               >>>> yep "
+             .sprintf('%-4s', j.cv)." "
+             .sprintf('%-16s', j.t)."   "
+             .sprintf('%-19s', j.s)."   "
+            ." ere.x!ere.y   * ere.radial";
+         J.pha.bz->(j.r => $here);
+         J.bz->("j.t%css#pha\t".j.cv => 
+             'top:'.(here.y * 100).'%;'
+             .'left:'.(here.x * 100).'%;'
+             .'position:absolute;'
+               .'-webkit-transform:rotate('.here.radial.'rad);'
+               .'transform-origin:-10% -10%;' # animate that bit
+         );
          #J.geo.bz->("j.t%here\t".j.cv, $here);
          #J.geo.bz->("j.t%ere\t".j.cv, $ere);
      }
-     
  - K: atom #c 
    D: |
          # spacin

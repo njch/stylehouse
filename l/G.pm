@@ -23,14 +23,15 @@ use Math::Trig 'pi2';
 use Storable 'dclone';
 use POSIX qw'ceil floor';
 use feature 'switch';
-# use Mojo::IOLoop::ForkCall; # see para
-our $swdepth = 5;
 our @F; # is Ring re subs from below 
+
+our $swdepth = 5;
 our $G0;
 our $db = 0;
 our $MAX_FCURSION = 140;
 our $HASHC = "#"."c";
 our $gp_inarow = 0;
+our $RADIAN = 1.57079633;
 
 
 # ^ curves should optimise away, accordion
@@ -930,6 +931,9 @@ sub timer {
 
 sub para {
     my $G = shift;
+    # we can guess what to do and do it before the user
+    #    has to squeeze right in there...
+    # use Mojo::IOLoop::ForkCall;
     die "install it";
     # TODO get better paraphernalia
     # ram and cpus
