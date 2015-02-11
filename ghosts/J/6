@@ -119,7 +119,7 @@ R_Jz:
      # and lay out
      my $last = {x=>0.5, y=>0, cv=>0, rad=>$RADIAN}; # downy
      for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
-         sayyl "               <<<< yep j.cv j.t          ".ki j.s;
+         sayyl "       <<<< yep j.cv j.t          ".ki j.s;
          
          my $here = {};
          here.cv = j.cv;
@@ -142,7 +142,8 @@ R_Jz:
          my $here = {};
          here.cv = j.cv;
          
-         if (here.cv >= $right->{cv}) { # adjust to poli
+         if (here.cv >= $right->{cv} && @be ) { # adjust to poli
+             # mix a pool of ways, magnetic fishing rods
              # end $left
              $left = $right;
              $right = shift @be;
@@ -153,7 +154,7 @@ R_Jz:
          w $R atom[$here, $last];
          
          # unwind
-         here.rad -= $RADIAN*4 until here.rad < $RADIAN*4;
+         #here.rad -= $RADIAN*4 until here.rad < $RADIAN*4;
          # random angle like L
          my $rad = here.rad;
          my $radleg = $RADIAN;
@@ -168,17 +169,17 @@ R_Jz:
          
          my $ere = {
              left => $left,
-             radial => sprintf('%.3f', $rad),
-             angle => sprintf('%.3f', here.rad),
+             radial => sprintf('%.4f', $rad),
+             angle => sprintf('%.4f', here.rad),
              x => sprintf('%.4f', here.x),
              y => sprintf('%.4f', here.y),
          };
          
-         sayre "               >>>> yep "
+         sayre ">>>> yep "
              .sprintf('%-4s', j.cv)." "
              .sprintf('%-16s', j.t)."   "
              .sprintf('%-19s', j.s)."   "
-            ." ere.x!ere.y   * ere.radial";
+            ." ere.x!ere.y   * ere.radial  ere.angle here.dist";
          
          J.pha.bz->(j.r => $here);
          
@@ -198,7 +199,8 @@ R_Jz:
          # spacin
          here.dist = here.cv - last.cv;
          # twistin
-         here.rad += last.rad;
+         say "ar.j.t here.rad is to last.rad over here.dist";
+         here.rad += last.rad * (here.dist * 10);
          # move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
