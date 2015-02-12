@@ -5,8 +5,10 @@ use warnings;
 use utf8;
 use lib 'lib';
 use feature 'say';
+# two annoying dependencies
 use Redis;
 use Mojo::Pg;
+use Scriptalicious;
 
 use File::Slurp;
 use JSON::XS;
