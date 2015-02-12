@@ -13,7 +13,6 @@ use J;
 use R;
 use T;
 use UUID;
-use Redis;
 use File::Slurp;
 use Time::HiRes 'gettimeofday', 'usleep';
 use YAML::Syck;
@@ -33,8 +32,6 @@ sub new {
         warn$ing unless $ing =~ /^Use of uninitialized/;
     };
     $H = $H->spawn0('H');
-    $H->{h} = 1;
-    $H->{dark} = 1;
     $H->{$_} = $p->{$_} for keys %$p;
 
     $A::H = $H;
@@ -50,8 +47,6 @@ sub new {
 
     # is either G->subs or vortexed way, not a "root ghost" anymore but...
     $G::G0 = $H->{G};
-
-    delete $H->{dark};
 
     $H->{G} ->w("_load_ways_post", {S=>$H->{G}});
 

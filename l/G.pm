@@ -5,13 +5,14 @@ use warnings;
 use utf8;
 use lib 'lib';
 use feature 'say';
+use Redis;
 use Mojo::Pg;
+
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
 use Data::Dumper;
 use Storable 'dclone';
-use Scriptalicious;
 use Carp;
 
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
