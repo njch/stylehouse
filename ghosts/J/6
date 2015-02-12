@@ -35,56 +35,6 @@ R_Jz:
       saybl "hissings";#:\n".slim(250,250,$html)."\n";
       return $html
         
- - K: up #c
-   D: |
-            my $r = {map{$_=>1} sort keys %$u};
-            
-            my $ordy = {
-                A => 1,
-                id => 11,
-                K => 12,
-                name => 13,
-                G => 14,
-                R => 14,
-                W => 24,
-                B => 23,
-                more => 4,
-                stuff1 => 47,
-                stuff2 => 52,
-                stuff3 => 57,
-                stuff4 => 60,
-                stuff42 => 62,
-                stuff44 => 64,
-                stuff45 => 65,
-                stuff46 => 66,
-                stuff48 => 68,
-                stuff5 => 65,
-                stuff6 => 72,
-                stuff7 => 79,
-            };
-            my $ydro = {};
-            push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
-            my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
-            
-            my @r = grep { delete $r->{$_} } @order;
-            push @r, sort keys %$r;
-            
-            my $ki = 0;
-            my $i = 0;
-            for my $k (@r) {
-                my $v = $u->{$k};
-                
-                my $ord = $ordy->{$k} || 4;
-                
-                my $tee = "$k\t".'0.'.$ord;
-                a.bz->($tee, ''.$v);
-                
-                if ($k eq 'name') {
-                    a.bb->{"$k%css#wa\t"."0.$ord"} = 'border-bottom: 3px solid white';
-                }
-                
-                $i++;
-            }
  - K: jitterbug #c depasoi
    D: |
      J.geo = w G.theJ makeJ(name=>J.name.'-geo');
@@ -92,7 +42,7 @@ R_Jz:
      J.geo.bz->(@$_) for
          ["curve\t"."0.2" => 0.12],
          ["curve\t"."0.3" => 0.82 ],
-         ["curve\t"."0.5" => -0.92 ],
+         ["curve\t"."0.5" => -0.90 ],
          ["faster\t"."0.6" => 0.32 ], # this'll cuvre tighter and tigher
          # redistribute from/with the shap of the = as upside down T
          # 1 circle and another kinda axis thing, making a dynamic
@@ -121,11 +71,12 @@ R_Jz:
      sayyl '.' for 1..5;
      
      for my $j (do{ grep { !_.style } w $R tvo(J=>J.geo); }) {
-         my $w = "b%tr\t".j.cv;
-         my $tr = J.geo.bb->{$w} || {};
          saybl "               ^^^^ yep j.cv j.t          j.s ";
-         $tr = {%{$tr}, j.t => j.s};
-         J.geo.bz->($w => $tr); # ^aggregatev
+         
+         J.geo.bz->("b%tr\t".j.cv => {
+             %{J.geo.bb->{"b%tr\t".j.cv} || {}}, # compile trs
+            j.t => j.s,
+         });
      }
      
      for my $pcv (map{$_ * 0.1} 1..9) {
@@ -164,7 +115,7 @@ R_Jz:
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
          
- - K: phairo #c re/progressive proJammable petalis
+ - K: phairo #c re/progressive proJammable petalis, frequency convogation
    D: |
      my @d = grep { _.t eq _.l } w $R tvo[$J]; # not style or com
      my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
@@ -192,7 +143,9 @@ R_Jz:
          # coil something something
          here.rad -= $swish until here.rad < $swish;
          
-         # random angle like L
+         # random angle like L, find the \ direction at least
+         # its mass would be good too
+         # share space with curves
          my $rad = here.rad;
          my $radleg = -$RADIAN;
          # from O- is it in the left hemisphere etc
@@ -210,8 +163,8 @@ R_Jz:
          sayre ">>>> yep "
              .sprintf('%-4s', j.cv)." "
              .sprintf('%-16s', j.t)."   "
-             .sprintf('%-19s', j.s)."   "
-            ." * ere.radial  ere.angle here.dist"; 
+             .sprintf('%-19s', " * ere.radial  ere.angle here.dist")
+             ." ".slim(j.s);
          
          J.pha.bz->(j.r => $here);
          
