@@ -81,7 +81,7 @@ R_surz:
 
 
                     die "reffy $s in $l" if ref $s;
-                    sayyl "for the $l\t\t$s" if ar.db;
+                    #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
 
                     my $ishtml = $l eq '/';
                     my $gp;
@@ -92,33 +92,40 @@ R_surz:
                         saybl "        sdtyle! oj.style oj.s" if ar.db;
                         
                         # TODO here Jung Cs have injected langauge to grab themselves by...
-
-                        if (oj.style eq "css") {
-                            push @$css, oj.s;
-                        }
-                        elsif (oj.style eq "gp") {
-                            # has a way to $a the gp action within...
-                            $gp = oj.s;
-                            $ishtml = 1;
-                        }
-                        elsif (oj.style eq 'ishtml') {
-                            $ishtml = 1;
-                        }
-                        elsif (oj.style eq 'id') {
-                            at.id = oj.s;
-                        }
-                        elsif (oj.style eq 'tt') {
-                            at.title = oj.s;
-                        }
-                        elsif (oj.style eq "sf") {
-                            push @$css, map { $R::f->{$_} || 
-                            die "no style $_"} split '_', oj.s;
-                        }
-                        elsif (oj.style eq 'tag') {
-                            $tag = oj.s;
-                        }
-                        else {
-                            die "style oj.style = oj.s \t for $l";
+                        for (oj.style) {
+                            
+                            # < >< >< >?
+                            # < >< >< >?
+                            # < >< >< >?
+                            # < >< >< >?
+                            # < >< >< >?
+                            # < >< >< >?
+                            when ('gp') {
+                                # has a way to $a the gp action within...
+                                $gp = oj.s;
+                                $ishtml = 1;
+                            }
+                            when ('sf') {
+                                push @$css, map { $R::f->{$_} || 
+                                die "no style $_"} split '_', oj.s;
+                            }
+                            when ('css') {
+                                push @$css, oj.s;
+                            }
+                            
+                            
+                            
+                            $ishtml = 1 when 'ishtml';
+                            
+                            at.id = oj.s when 'id';
+                            
+                            at.title = oj.s when 'tt';
+                            
+                            $tag = oj.s when 'tag';
+                            
+                            default {
+                                die "style oj.style = oj.s \t for $l";
+                            }
                         }
                     }
                     at.style = join '', map{"$_;"}
