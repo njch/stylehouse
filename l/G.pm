@@ -5,23 +5,24 @@ use warnings;
 use utf8;
 use lib 'lib';
 use feature 'say';
-use YAML::Syck;
 use Mojo::Pg;
-use List::MoreUtils 'natatime';
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
+use Data::Dumper;
+use Storable 'dclone';
 use Scriptalicious;
-use HTML::Entities;
+use Carp;
+
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 use List::MoreUtils qw(natatime uniq);
+use POSIX qw'ceil floor';
+use Math::Trig 'pi2';
+
+use HTML::Entities;
 use Unicode::UCD 'charinfo';
-use Carp;
 use Term::ANSIColor; 
 use File::Find;
-use Math::Trig 'pi2';
-use Storable 'dclone';
-use POSIX qw'ceil floor';
 use feature 'switch';
 our @F; # is Ring re subs from below 
 
@@ -774,7 +775,7 @@ sub Duck {
                 $DOOF .= ind($in, "$@")."\n";
             }
             if ($first) {
-                $DOOF .= $H->ind('ar.', join "\n",
+                $DOOF .= ind('ar.', join "\n",
                     map{
                     "$_ = ".
                     #gp()

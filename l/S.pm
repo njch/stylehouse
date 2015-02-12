@@ -24,7 +24,7 @@ if ($name eq 'O') {
 
     websocket '/s' => sub {
         my $mojo = shift;
-        $H->enwebsocket($mojo);
+        $H->{G}->w(websocket => { M => $mojo });
     };
     get '/' => sub{ 
        my $self = shift;

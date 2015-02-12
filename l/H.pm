@@ -22,6 +22,8 @@ use Data::Dumper;
 use Term::ANSIColor;
 use Encode qw(encode_utf8 decode_utf8 is_utf8);
 use Carp 'confess';
+sub ddump { H::ddump(@_) }
+sub wdump { H::wdump(@_) }
 
 sub new {
     my $H = shift;
@@ -54,16 +56,6 @@ sub new {
     $H->{G} ->w("_load_ways_post", {S=>$H->{G}});
 
     $H
-}
-
-sub enwebsocket {
-    my $H = shift;
-    my $mojo = shift;
-    eval { 
-      $H->{G}->w(websocket => { M => $mojo });
-    };
-        say "Eerror\n\n$@" if $@;
-    $@ = "";
 }
 
 sub pi {
@@ -166,32 +158,6 @@ sub ind {
     my $s = shift;
     join "\n",
          map { "$in$_" } split "\n", $s;
-}
-
-sub ddump {
-    my $thing = shift;
-    my $ind;
-    return
-        join "\n",
-        grep {
-            1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
-            ...
-            do { /^$ind\S/ } )
-        }
-        "",
-        grep !/^       /,
-        split "\n", Dump($thing);
-}
-
-sub wdump {
-    my $thing = shift;
-    my $maxdepth = 3;
-    if (@_ && $thing =~ /^\d+$/) {
-        $maxdepth = $thing;
-        $thing = shift;
-    }
-    $Data::Dumper::Maxdepth = $maxdepth;
-    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 }
 
 sub la {
