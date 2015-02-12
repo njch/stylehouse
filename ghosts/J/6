@@ -21,7 +21,7 @@ R_Jz:
       #J.bz->("dot$_"."\t"."0.".(60 + $_) => '.') for 1..20;
       J.bz->("0000_$_/s"."\t"."0.$_" =>
           $_."-------",
-          '%css' => 'color:red') for 1..3;
+          '%css' => 'color:red') for 1..7;
       
       J.spiral || die;
       sayre "Spiral del J.spiral";
@@ -91,17 +91,21 @@ R_Jz:
      # make fat scrollbars long triangles, behind box of stuff
      
      J.geo.bz->(@$_) for
-         ["curve\t"."0.12" => 0.12],
-         ["curve\t"."0.4" => 0.32 ],
+         ["curve\t"."0.2" => 0.12],
+         ["curve\t"."0.4" => 0.22 ],
      ; # rad per 0.1cv? who knows
      
      # set up archeology site, anything you want
      w $R geolo[$J];
      
+     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
+     for my $j (@be) {
+         J.bz->("being".j.cv."\t".j.cv => "             ".ki(j.s), '%css'=>'white-space:pre;');
+     }
+     
      J.pha = w G.theJ makeJ(name=>J.name.'-pha');
      # map what you got onto geoloJn, perhaps unwholy, resolving around poles
      w $R phairo[$J];
-     
      
  - K: geolo #c begin digging - smiling egg cup
    D: |
@@ -130,6 +134,7 @@ R_Jz:
          my $here = {};
          here.cv = j.cv;
          here.spin = j.s.curve if j.s.curve; # on the level
+         here.bytw = ki j.s;
          
          w $R atom[$j, $here, $last];
          
@@ -147,9 +152,7 @@ R_Jz:
          here.rad = here.spin * here.dist * 10;
          # builds rad on rad
          here.rad += last.rad;
-         # cv change from last poli
-         say "deal: ".sprintf('%.4f', here.rad);
-         # move
+         # and move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
          
@@ -184,10 +187,9 @@ R_Jz:
          # random angle like L
          my $rad = here.rad;
          my $radleg = -$RADIAN;
-         # from O- is it in the left hemisphere
+         # from O- is it in the left hemisphere etc
          $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
          $rad -= $radleg; 
-         
          
          my $ere = {
              left => $left,

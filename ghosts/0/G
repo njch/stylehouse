@@ -87,42 +87,56 @@ Ds:
     D: |
       return warn "BEFORE SWA" if !H.swa;
       return H.swa->(@_);
+  - K: saycol #c sayyl sayre sayg saygr saybl TODO TODO
+    style: func
+    D: |
+        my $colour = shift;
+        if ($colour eq "bright_yellow" && $db) {
+            my $D = $F[0];
+            my $ind = join"", ("  ")x@F;
+            say "$ind D.G.name:D.G.K D.id:D.K   D.point";
+        }
+        print colored(join("\n", @_,""), $colour);
+        wantarray ? @_ : shift @_
+  - K: sayyl
+    style: func
+    D: |
+        saycol(bright_yellow => @_)
+
+  - K: sayre
+    style: func
+    D: |
+        saycol(red => @_)
+
+  - K: sayg
+    style: func
+    D: |
+        saycol(bright_green => @_)
+
+  - K: saygr
+    style: func
+    D: |
+        saycol(green => @_)
+
+  - K: saybl
+    style: func
+    D: |
+        saycol(bright_blue => @_) 
+    
   - K: pi #c
     D: |
       join ' ', grep{defined} "G", G.K, G.name
   
-  - K: deeby #c TODO... more pi about thing printing, how much interest (db)
-    D: |
-        G.db + $db > 0
-        
-  - K: susgdb #c
-    D: |
-        my $t = $db;
-        push @{$F[0]->{_after_do}}, sub { $db = $t };
-        $db = -2;
-        
-  - K: gname #c goner? 
-    D: |
-        my $g = shift;
-        my $si = shift || 0;
-        my $ush = "$g";
-        my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
-        $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
-        $may ||= "$g";
-        $may =~ s/^(\w+)=HASH.*$/$1\{/;
-        $may;
-   
+
+
+
   - K: pint #c
     style: func
     D: |
         my $w = shift; 
         $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
    
-  - K: mess #c
-    D: |
-        H.G->w(mess => {what => shift, thing => shift}); # TODO say*
-   
-  - K: ghostlyprinty #c
+  - K: ghostlyprinty #c gone ish
     style: func
     D: |
         $gp_inarow++;
@@ -167,26 +181,17 @@ Ds:
     D: |
         ghostlyprinty('NOHTML',@_)
   
-
-  - K: TRub #c top level inGector
+  - K: gname #c goner? 
     D: |
-      my $a = {};
-      my $R = G.R ||= G.A->spawn("R");
-      my @a = @_;
-      while (@a) {
-          my ($k, $v) = (shift(@a), shift(@a));
-          $R->loadup($a, $k, $v);
-      }
-      
-      # 1
-      
-      # find u from K and B?
-      my $u = 0->CsK({K=>a.i.K});
-      die "Not leading anywhere: ". wdump($a) unless $u;
-      $u->from(a.i);
-      
-      # etc
-      0->T({i => $u});
+        my $g = shift;
+        my $si = shift || 0;
+        my $ush = "$g";
+        my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
+        $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
+        $may ||= "$g";
+        $may =~ s/^(\w+)=HASH.*$/$1\{/;
+        $may;
+   
   - K: ob #c make lookee
     D: |
       my $ob = G._ob || $_ob || return;
@@ -219,51 +224,19 @@ Ds:
     D: |
       H.G->Gf(@_)
 
-  - K: F_delta #c
-    style: func
-    D: |
-            my $now = $H->hitime();
-            my $then = $F[0]->{hitime};
-            my $d = sprintf("%.3f",$now-$then);
-            $d = $d<1 ? ($d*1000).'ms' : $d.'s';
-  - K: inter #c
-    style: func
-    D: |
-            
-            my $thing = shift;
-            my $ki = ki($thing);
-            $ki =~ s/^\s+//;
-            $F[1]->{inter} ||= ".";
-            $F[1]->{inter} .= "\n -{".$ki."}\n";
-  - K: crankFun #c
-    D: |
-            my $un = $G->crank(@_);
-            # so a synapse would snake through something...
-            # directly looking at a concept and exuding its energy pathway
-            push @{ $F[0]->{_after_do} }, $un;
-            return
-  - K: crank #c
-    D: |
-            my ($dial,$v) = @_;
-            my $original = $G->{$dial};
-            $G->{$dial} = $v;
-            
-            sub { $G->{$dial} = $original };
+
   - K: ki #c
     style: func
     D: |
       my $ar = shift;
-      my $s = "";
       if (!ref $ar || "$ar" !~ /HASH/) {
           confess "NOT HASH: $ar";
       }
-      for my $k (sort keys %$ar) {
-          my $v = $ar->{$k};
+      join ' ', map {
+          my $v = $ar->{$_};
           $v = "~" unless defined $v;
-          #$v = "( ".gname($v)." )" if ref $v;
-          $s .= "   $k=$v";
-      }
-      $s
+          "$_=$v"
+      } sort keys %$ar;
       
   - K: unico #c
     style: func
@@ -292,42 +265,6 @@ Ds:
       $w eq "W" ? ref $i eq "Wormhole" || ref $i eq "W" :
       $w eq "w" || $w eq "C" ? ref $i eq "Way" || ref $i eq "C" :
       $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
-  - K: saycol #c sayyl sayre sayg saygr saybl
-    style: func
-    D: |
-        my $colour = shift;
-        if ($colour eq "bright_yellow" && $db) {
-            my $D = $F[0];
-            my $ind = join"", ("  ")x@F;
-            say "$ind D.G.name:D.G.K D.id:D.K   D.point";
-        }
-        print colored(join("\n", @_,""), $colour);
-        wantarray ? @_ : shift @_
-  - K: sayyl
-    style: func
-    D: |
-        saycol(bright_yellow => @_)
-
-  - K: sayre
-    style: func
-    D: |
-        saycol(red => @_)
-
-  - K: sayg
-    style: func
-    D: |
-        saycol(bright_green => @_)
-
-  - K: saygr
-    style: func
-    D: |
-        saycol(green => @_)
-
-  - K: saybl
-    style: func
-    D: |
-        saycol(bright_blue => @_) 
-    
   - K: uiuS #c U ventrickles
     D: |
         my ($u, $b) = @_;
@@ -351,7 +288,6 @@ Ds:
                 return $some if $some;
             }
         }
-
   - K: sing #c sing ing ingo
     D: |
         my $p;
@@ -415,8 +351,6 @@ Ds:
         $G->timer($time, sub {
             0->ingo($ingw);
         }, "ing ingw.name ingw.id");
-
-
   - K: ip #c TODO Tish/R maths logics, heat mapping, see also CsK vortex reading
     D: |
         my ($ip, $i) = @_;

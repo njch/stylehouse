@@ -90,43 +90,45 @@ sub sw {
     return $H->{swa}->(@_);
 }
 
+sub saycol {
+    my $colour = shift;
+    if ($colour eq "bright_yellow" && $db) {
+        my $D = $F[0];
+        my $ind = join"", ("  ")x@F;
+        say "$ind $D->{G}->{name}:$D->{G}->{K} $D->{id}:$D->{K}   $D->{point}";
+    }
+    print colored(join("\n", @_,""), $colour);
+    wantarray ? @_ : shift @_
+}
+
+sub sayyl {
+    saycol(bright_yellow => @_)
+}
+
+sub sayre {
+    saycol(red => @_)
+}
+
+sub sayg {
+    saycol(bright_green => @_)
+}
+
+sub saygr {
+    saycol(green => @_)
+}
+
+sub saybl {
+    saycol(bright_blue => @_) 
+}
+
 sub pi {
     my $G = shift;
     join ' ', grep{defined} "G", $G->{K}, $G->{name}
 }
 
-sub deeby {
-    my $G = shift;
-    $G->{db} + $db > 0
-}
-
-sub susgdb {
-    my $G = shift;
-    my $t = $db;
-    push @{$F[0]->{_after_do}}, sub { $db = $t };
-    $db = -2;
-}
-
-sub gname {
-    my $G = shift;
-    my $g = shift;
-    my $si = shift || 0;
-    my $ush = "$g";
-    my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
-    $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
-    $may ||= "$g";
-    $may =~ s/^(\w+)=HASH.*$/$1\{/;
-    $may;
-}
-
 sub pint {
     my $w = shift; 
     $w && ref $w eq "Way" ? $w->pint : "ww:".join"",map { s/\s//sg; $_ } wdump(2,$w)
-}
-
-sub mess {
-    my $G = shift;
-    $H->{G}->w(mess => {what => shift, thing => shift}); # TODO say*
 }
 
 sub ghostlyprinty {
@@ -171,25 +173,16 @@ sub gpty {
     ghostlyprinty('NOHTML',@_)
 }
 
-sub TRub {
+sub gname {
     my $G = shift;
-    my $a = {};
-    my $R = $G->{R} ||= $G->{A}->spawn("R");
-    my @a = @_;
-    while (@a) {
-        my ($k, $v) = (shift(@a), shift(@a));
-        $R->loadup($a, $k, $v);
-    }
-
-    # 1
-
-    # find u from$G->K("and","") B?
-    my $u = $G->CsK({K=>$a->{i}->{K}});
-    die "Not leading anywhere: ". wdump($a) unless $u;
-    $u->from($a->{i});
-
-    # etc
-    $G->T({i => $u});
+    my $g = shift;
+    my $si = shift || 0;
+    my $ush = "$g";
+    my $may = $g->{name} || $g->{K} || $g->{id} if ref $g && $ush =~ /HASH/;
+    $may ||= (0+keys %$g)."{" if ref $g eq "HASH";
+    $may ||= "$g";
+    $may =~ s/^(\w+)=HASH.*$/$1\{/;
+    $may;
 }
 
 sub ob {
@@ -227,53 +220,16 @@ sub HGf {
     $H->{G}->Gf(@_)
 }
 
-sub F_delta {
-    my $now = $H->hitime();
-    my $then = $F[0]->{hitime};
-    my $d = sprintf("%.3f",$now-$then);
-    $d = $d<1 ? ($d*1000).'ms' : $d.'s';
-}
-
-sub inter {
-
-    my $thing = shift;
-    my $ki = ki($thing);
-    $ki =~ s/^\s+//;
-    $F[1]->{inter} ||= ".";
-    $F[1]->{inter} .= "\n -{".$ki."}\n";
-}
-
-sub crankFun {
-    my $G = shift;
-    my $un = $G->crank(@_);
-    # so a synapse would snake through something...
-    # directly looking at a concept and exuding its energy pathway
-    push @{ $F[0]->{_after_do} }, $un;
-    return
-}
-
-sub crank {
-    my $G = shift;
-    my ($dial,$v) = @_;
-    my $original = $G->{$dial};
-    $G->{$dial} = $v;
-
-    sub { $G->{$dial} = $original };
-}
-
 sub ki {
     my $ar = shift;
-    my $s = "";
     if (!ref $ar || "$ar" !~ /HASH/) {
         confess "NOT HASH: $ar";
     }
-    for my $k (sort keys %$ar) {
-        my $v = $ar->{$k};
+    join ' ', map {
+        my $v = $ar->{$_};
         $v = "~" unless defined $v;
-        #$v = "( ".gname($v)." )" if ref $v;
-        $s .= "   $k=$v";
-    }
-    $s
+        "$_=$v"
+    } sort keys %$ar;
 }
 
 sub unico {
@@ -299,37 +255,6 @@ sub wish {
     $w eq "W" ? ref $i eq "Wormhole" || ref $i eq "W" :
     $w eq "w" || $w eq "C" ? ref $i eq "Way" || ref $i eq "C" :
     $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
-}
-
-sub saycol {
-    my $colour = shift;
-    if ($colour eq "bright_yellow" && $db) {
-        my $D = $F[0];
-        my $ind = join"", ("  ")x@F;
-        say "$ind $D->{G}->{name}:$D->{G}->{K} $D->{id}:$D->{K}   $D->{point}";
-    }
-    print colored(join("\n", @_,""), $colour);
-    wantarray ? @_ : shift @_
-}
-
-sub sayyl {
-    saycol(bright_yellow => @_)
-}
-
-sub sayre {
-    saycol(red => @_)
-}
-
-sub sayg {
-    saycol(bright_green => @_)
-}
-
-sub saygr {
-    saycol(green => @_)
-}
-
-sub saybl {
-    saycol(bright_blue => @_) 
 }
 
 sub uiuS {
@@ -522,18 +447,14 @@ sub Flab {
     # for punching out with helpful quality
 
     say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-        if $G->deeby && $_[0] !~ /^\w\ Error/;
+        if $G->{db} + $db > 0
+        && $_[0] !~ /^\w\ Error/;
 
     my $a;
-    $a->{name} = "f";
+    $a->{name} = "flab";
     $a->{stuff} = [@_];
 
     $G->pyramid($a);
-}
-
-sub fla {
-    my $G = shift;
-    $F[0]->{G}->Flab(@_);
 }
 
 sub ways {
@@ -1175,6 +1096,21 @@ sub pyramid {
     $G->{A}->An($u, 'pyramid');
 
     $u
+}
+
+sub F_delta {
+    my $now = $H->hitime();
+    my $then = $F[0]->{hitime};
+    my $d = sprintf("%.3f",$now-$then);
+    $d = $d<1 ? ($d*1000).'ms' : $d.'s';
+}
+
+sub inter {
+    my $thing = shift;
+    my $ki = ki($thing);
+    $ki =~ s/^\s+//;
+    $F[1]->{inter} ||= ".";
+    $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 
 sub parse_babble {
