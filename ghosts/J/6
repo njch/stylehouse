@@ -123,15 +123,13 @@ R_Jz:
      }
      
      # and lay out
-     my $last = {x=>0.5, y=>0, cv=>0, rad=>$RADIAN}; # downy
-     last.off = last.rad;
+     my $last = {x=>0.5, y=>0, cv=>0, rad=>$RADIAN, spin=>0}; # downy
      for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
          sayyl "       <<<< yep j.cv j.t          ".ki j.s;
          
          my $here = {};
          here.cv = j.cv;
-         here.rad = j.s.curve if j.s.curve; # on the level above sane rad integ
-         here.off = exists last.off ? last.off : last.rad; # trail norm
+         here.spin = j.s.curve if j.s.curve; # on the level
          
          w $R atom[$j, $here, $last];
          
@@ -144,15 +142,13 @@ R_Jz:
          # spacin
          here.dist = here.cv - last.cv;
          # twistin
-         say "twist: last.cv ~ here.cv === here.dist";
-         here.rad += last.rad; # last poli + local change (if poli)
-         # cv change from last poli
-         # distorts spin (local rad slip)
+         # distorts spin (local rad envelope)
          # builds onto poli rad
-         # last.off is vague lie, will want bassline notspin of rad?
-         my $radort = (here.rad - last.off) * here.dist; # local-local change
-         say "fracshim: ".sprintf('%.4f', here.rad)." * here.dist = ".sprintf('%.4f', $radort);
-         here.rad += $radort;
+         say "twist: last.cv ~ here.cv is (here.spin + last.spin) * here.dist";
+         here.spin += last.spin; # here.spin may = 0
+         here.rad = here.spin * here.dist * 10; # scale local-local change
+         here.rad += last.rad; # join twisti 
+         # cv change from last poli
          say "deal: ".sprintf('%.4f', here.rad);
          # move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
