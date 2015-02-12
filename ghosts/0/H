@@ -13,6 +13,10 @@ Ds:
         use Term::ANSIColor;
         use Encode qw(encode_utf8 decode_utf8 is_utf8);
         use Carp 'confess';
+        sub ddump { H::ddump(@_) }
+        sub wdump { H::wdump(@_) }
+
+
     
   - K: new #c
     D: |
@@ -126,48 +130,10 @@ Ds:
       my $s = shift;
       join "\n",
            map { "$in$_" } split "\n", $s;
-  - K: ddump #c
-    style: func
-    D: |
-      my $thing = shift;
-      my $ind;
-      return
-          join "\n",
-          grep {
-              1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
-              ...
-              do { /^$ind\S/ } )
-          }
-          "",
-          grep !/^       /,
-          split "\n", Dump($thing);
-  - K: wdump #c
-    style: func
-    D: |
-      my $thing = shift;
-      my $maxdepth = 3;
-      if (@_ && $thing =~ /^\d+$/) {
-          $maxdepth = $thing;
-          $thing = shift;
-      }
-      $Data::Dumper::Maxdepth = $maxdepth;
-      return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
 
-  - K: la
+  - K: la #c
     D: |
       (`uptime` =~ /load average: (\S+),/)[0]
-  - K:
-    D: |
-      
-  - K:
-    D: |
-      
-  - K:
-    D: |
-      
-  - K:
-    D: |
-      
   - K: hitime #c
     D: |
       return join ".", gettimeofday();
@@ -212,9 +178,8 @@ Ds:
       UUID::unparse($i, my $s);
       $s
     
-  - K: dig # make a unique art exubertique
+  - K: dig #c make a unique art exubertique
       # same exube for same art) (string hash function
     D: |
-      my $msg = shift;
-      Digest::SHA::sha1_hex(encode_utf8($msg))
+      Digest::SHA::sha1_hex(encode_utf8(shift))
 

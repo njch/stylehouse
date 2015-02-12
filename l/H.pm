@@ -247,8 +247,7 @@ sub mkuuid {
 
 sub dig {
     my $H = shift;
-    my $msg = shift;
-    Digest::SHA::sha1_hex(encode_utf8($msg))
+    Digest::SHA::sha1_hex(encode_utf8(shift))
 }
 
 9;

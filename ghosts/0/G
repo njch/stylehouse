@@ -25,38 +25,50 @@ Ds:
       use feature 'switch';
       our @F; # is Ring re subs from below 
       
-      our $swdepth = 5;
-      our $G0;
-      our $db = 0;
       our $MAX_FCURSION = 140;
       our $HASHC = "#"."c";
-      our $gp_inarow = 0;
       our $RADIAN = 1.57079633;
       
-
-      # ^ curves should optimise away, accordion
+      # going...
+      our $db = 0;
+      our $gp_inarow = 0;
+      our $swdepth = 5;
+      our $G0;
+      our $Ly;
+      our $_ob = undef;
       
-      #c to dry up
+      
+      # ^ curves should optimise away, accord ion
+      
+      # to dry up
         
-        sub ddump { H::ddump(@_) }
-        sub wdump { H::wdump(@_) }
         
-        sub slim {
-            my ($f,$t,$c) = @_;
-            ($f,$t,$c) = (40,40,$f) if !$t && !$c;
-            $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
-            $c
-        }
-        sub shtocss { 
-            my $s = shift;
-            return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
-            return join ";", @$s if ref $s eq "ARRAY";
-            return $s
-        }
-        sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
-
-        our $Ly;
-        our $_ob = undef;
+  - K: ddump #c
+    style: func
+    D: |
+      my $thing = shift;
+      my $ind;
+      return
+          join "\n",
+          grep {
+              1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
+              ...
+              do { /^$ind\S/ } )
+          }
+          "",
+          grep !/^       /,
+          split "\n", Dump($thing);
+  - K: wdump #
+    style: func
+    D: |
+      my $thing = shift;
+      my $maxdepth = 3;
+      if (@_ && $thing =~ /^\d+$/) {
+          $maxdepth = $thing;
+          $thing = shift;
+      }
+      $Data::Dumper::Maxdepth = $maxdepth;
+      return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
   - K: new #c
     D: |
       my (@ways) = @_;
@@ -127,9 +139,6 @@ Ds:
     D: |
       join ' ', grep{defined} "G", G.K, G.name
   
-
-
-
   - K: pint #c
     style: func
     D: |

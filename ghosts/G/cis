@@ -1,5 +1,7 @@
 Ds:
 
+
+
   - K: parse_babble #c
     style: nonbabble
     D: |
@@ -275,4 +277,24 @@ Ds:
             $i++;
         }
         return 0;
+  - K: slim #c
+    style: func
+    D: |
+      my ($f,$t,$c) = @_;
+      ($f,$t,$c) = (40,40,$f) if !$t && !$c;
+      $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
+      $c
+      
+  - K: shtocss #c
+    style: func
+    D: |
+      my $s = shift;
+      return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
+      return join ";", @$s if ref $s eq "ARRAY";
+      return $s
+      
+  - K: ind #c
+    style: func
+    D: |
+      "$_[0]".join "\n$_[0]", split "\n", $_[1]
 

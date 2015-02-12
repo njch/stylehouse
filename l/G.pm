@@ -25,38 +25,48 @@ use POSIX qw'ceil floor';
 use feature 'switch';
 our @F; # is Ring re subs from below 
 
-our $swdepth = 5;
-our $G0;
-our $db = 0;
 our $MAX_FCURSION = 140;
 our $HASHC = "#"."c";
-our $gp_inarow = 0;
 our $RADIAN = 1.57079633;
 
+# going...
+our $db = 0;
+our $gp_inarow = 0;
+our $swdepth = 5;
+our $G0;
+our $Ly;
+our $_ob = undef;
 
-# ^ curves should optimise away, accordion
 
-#c to dry up
+# ^ curves should optimise away, accord ion
 
-  sub ddump { H::ddump(@_) }
-  sub wdump { H::wdump(@_) }
+# to dry up
 
-  sub slim {
-      my ($f,$t,$c) = @_;
-      ($f,$t,$c) = (40,40,$f) if !$t && !$c;
-      $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
-      $c
-  }
-  sub shtocss { 
-      my $s = shift;
-      return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
-      return join ";", @$s if ref $s eq "ARRAY";
-      return $s
-  }
-  sub ind { "$_[0]".join "\n$_[0]", split "\n", $_[1] }
+sub ddump {
+    my $thing = shift;
+    my $ind;
+    return
+        join "\n",
+        grep {
+            1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
+            ...
+            do { /^$ind\S/ } )
+        }
+        "",
+        grep !/^       /,
+        split "\n", Dump($thing);
+}
 
-  our $Ly;
-  our $_ob = undef;
+sub wdump {
+    my $thing = shift;
+    my $maxdepth = 3;
+    if (@_ && $thing =~ /^\d+$/) {
+        $maxdepth = $thing;
+        $thing = shift;
+    }
+    $Data::Dumper::Maxdepth = $maxdepth;
+    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+}
 
 sub new {
     my $G = shift;
@@ -1413,6 +1423,24 @@ sub deaccum {
         $i++;
     }
     return 0;
+}
+
+sub slim {
+    my ($f,$t,$c) = @_;
+    ($f,$t,$c) = (40,40,$f) if !$t && !$c;
+    $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
+    $c
+}
+
+sub shtocss {
+    my $s = shift;
+    return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
+    return join ";", @$s if ref $s eq "ARRAY";
+    return $s
+}
+
+sub ind {
+    "$_[0]".join "\n$_[0]", split "\n", $_[1]
 }
 
 9;
