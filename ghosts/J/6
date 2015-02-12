@@ -9,6 +9,7 @@ R_Jz:
           Bee => "stuff",
       };
       $u->{'stuff'.$_} = "$_ stuff $_" for 1..7;
+      $u->{'stuff4'.$_} = "$_ -------- $_" for 2,4..6,8;
       my $arr = {
           a => $J,
           J => $J,
@@ -52,6 +53,11 @@ R_Jz:
                 stuff2 => 52,
                 stuff3 => 57,
                 stuff4 => 60,
+                stuff42 => 62,
+                stuff44 => 64,
+                stuff45 => 65,
+                stuff46 => 66,
+                stuff48 => 68,
                 stuff5 => 65,
                 stuff6 => 72,
                 stuff7 => 79,
@@ -133,6 +139,25 @@ R_Jz:
          $last = $here;
      }
      # etc
+ - K: atom #c may +atomb? without compare you are dead
+   D: |
+         # spacin
+         here.dist = here.cv - last.cv;
+         # twistin
+         say "twist: last.cv ~ here.cv === here.dist";
+         here.rad += last.rad; # last poli + local change (if poli)
+         # cv change from last poli
+         # distorts spin (local rad slip)
+         # builds onto poli rad
+         # last.off is vague lie, will want bassline notspin of rad?
+         my $radort = (here.rad - last.off) * here.dist; # local-local change
+         say "fracshim: ".sprintf('%.4f', here.rad)." * here.dist = ".sprintf('%.4f', $radort);
+         here.rad += $radort;
+         say "deal: ".sprintf('%.4f', here.rad);
+         # move
+         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+         
  - K: phairo #c
    D: |
      my @d = grep { _.t eq _.l } w $R tvo[$J]; # not style or com
@@ -190,31 +215,13 @@ R_Jz:
              .'left:'.(ere.x * 100).'%;'
              .'position:absolute;'
                .'-webkit-transform:rotate('.ere.radial.'rad);'
-               .'transform-origin:-10% -10%;' # animate that bit
+               .'transform-origin:0% 50%;' # animate that bit
          );
          J.bz->("j.t%tt\t".j.cv =>  # concert per emportar
              "*".ere.radial
          );
      }
- - K: atom #c may +atomb? without compare you are dead
-   D: |
-         # spacin
-         here.dist = here.cv - last.cv;
-         # twistin
-         say "twist: last.cv ~ here.cv === here.dist";
-         here.rad += last.rad; # last poli + local change (if poli)
-         # cv change from last poli
-         # distorts spin (local rad slip)
-         # builds onto poli rad
-         # last.off is vague lie, will want bassline notspin of rad?
-         my $radort = (here.rad - last.off) * here.dist; # local-local change
-         say "fracshim: ".sprintf('%.4f', here.rad)." * here.dist = ".sprintf('%.4f', $radort);
-         here.rad += $radort;
-         say "deal: ".sprintf('%.4f', here.rad);
-         # move
-         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
-         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
-         
+
  - K: phism #c re/progressive proJammable petalis
    D: |
           my $n = ar.n || 9;
