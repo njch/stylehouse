@@ -91,8 +91,8 @@ R_Jz:
      # make fat scrollbars long triangles, behind box of stuff
      
      J.geo.bz->(@$_) for
-         ["curve\t"."0.28" => 0.12],
-         ["curve\t"."0.6" => 0.51 ],
+         ["curve\t"."0.12" => 0.12],
+         ["curve\t"."0.4" => 0.32 ],
      ; # rad per 0.1cv? who knows
      
      # set up archeology site, anything you want
@@ -141,20 +141,19 @@ R_Jz:
    D: |
          # spacin
          here.dist = here.cv - last.cv;
-         # twistin
-         # distorts spin (local rad envelope)
-         # builds onto poli rad
-         say "twist: last.cv ~ here.cv is (here.spin + last.spin) * here.dist";
-         here.spin += last.spin; # here.spin may = 0
-         here.rad = here.spin * here.dist * 10; # scale local-local change
-         here.rad += last.rad; # join twisti 
+         # twistin spin inherit
+         here.spin += last.spin;
+         # scale local-local change
+         here.rad = here.spin * here.dist * 10;
+         # builds rad on rad
+         here.rad += last.rad;
          # cv change from last poli
          say "deal: ".sprintf('%.4f', here.rad);
          # move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
          
- - K: phairo #c
+ - K: phairo #c re/progressive proJammable petalis
    D: |
      my @d = grep { _.t eq _.l } w $R tvo[$J]; # not style or com
      my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
@@ -217,34 +216,4 @@ R_Jz:
              "*".ere.radial
          );
      }
-
- - K: phism #c re/progressive proJammable petalis
-   D: |
-          my $n = ar.n || 9;
-          my $width = 100;
-          my $height = 100;
-          my $cx = $width / 2;
-          my $cy = $height / 2;
-          my $lg_diam = $width * 0.85;
-          my $lg_rad = $lg_diam / 2; 
-          my $outer_rad = $width*0.45;
-          my $angle_incr = ar.ai || 9 / $n;
-          
-          my $xy = [];
-          for my $i (1..$n) {
-              my $ratio = $i/$n;
-              my $spiral_rad = ($ratio *1.3) * $outer_rad;
-              my $angi = $angle_incr + 0.15;
-              $angi *= ar.modi->{$i} if ar.modi->{$i};
-              my $angle = 1.2+$i*$angi;
-              my $x = $cx + cos($angle) * $spiral_rad;
-              my $y = $cy + sin($angle) * $spiral_rad;
-              push @$xy, {
-                  radial => sprintf('%.2f', atan2($x - $cx, $y - $cy)),
-                  angle => sprintf('%.3f', $angle),
-                  x => sprintf('%.2f', $x),
-                  y => sprintf('%.2f', $y),
-              };
-          }
-          $xy
 
