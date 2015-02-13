@@ -22,7 +22,7 @@ R_Jz:
      my $html = w G.theR maka; # stuff of 7 with 8 -> 1
      
      $html
- - K: inness #c soy packets everywhere
+ - K: inness #c soy packets everywhere # THINGNESS
    D: |
       J.on = w $R makeJ(name=>J.name.'-on'); # babble
       
@@ -36,7 +36,7 @@ R_Jz:
       };
       
       # the throat
-      $u->{'stuff'.$_} = "$_~~~~~~$_" for 1..70;
+      $u->{'stuff'.$_} = "$_~~~~~~$_" for 1..400;
       # TODO babble like u.stuff$_ so \w+#\w+
       $u->{'stuff4'.$_} = "$_ ~~~ $_" for 2,4..6,8;
       
@@ -69,26 +69,26 @@ R_Jz:
        
        push @r, sort keys %$r;
        
+       for (@r) {
+            my $v = $u->{$_};
+            
+            my $cv = $1 if /^stuff(\d+)/;
+            $cv ||= $ordy->{$_};
+            $cv ||= 4;
 
-       my $ki = 0;
-       my $i = 0;
-       for my $k (@r) {
-            my $v = $u->{$k};
-
-            my $ord = $ordy->{$k} || do {
-                $k =~ /^stuff(\d+)/ ? $1
-                # < >< >
-                : 4
-            };
-
-            my $tee = "$k\t".'0.'.$ord;
-            J.bz->($tee, ''.$v);
-
-            if ($k eq 'name') {
-                J.bb->{"$k%css#wa\t"."0.$ord"} = 'border-bottom: 3px solid white';
-            }
-
-            $i++;
+            # TODO grab l cursor and style
+            # and what kind of cursor, fro delays/syncs
+            J.bz->("$_\t"."0.$cv" => ''.$v);
+            
+            J.bz->("$_%css#uff\t"."0.$cv" =>
+                #'border-bottom: 2px solid white'
+                'opacity:0.3;'
+                )
+                if /^stuff(\d+)/;
+            
+            $_ eq 'name' &&
+            J.bz->("$_%css#wa\t"."0.$cv" =>
+                'border-bottom: 3px solid white');
        }
  - K: howge #c
    D: |
@@ -97,7 +97,7 @@ R_Jz:
      J.geo.bz->(@$_) for
          ["curve\t"."0.2" => 0.12],
          ["curve\t"."0.3" => 0.82 ],
-         ["curve\t"."0.5" => -0.90 ],
+         ["curve\t"."0.5" => -0.30 ],
          ["faster\t"."0.6" => 0.32 ], # this'll cuvre tighter and tigher
          # redistribute from/with the shap of the = as upside down T
          # 1 circle and another kinda axis thing, making a dynamic
@@ -105,16 +105,19 @@ R_Jz:
          # pulling aspects out of the braid bed, 
      ; # rad per 0.1cv? who knows
      
- - K: vg #c
-   D: |
-     
-      J.bz->("dot$_"."\t"."0.".sprintf('%03d',$_) => '.') for 1..10;
-      J.bz->("0000_$_/s"."\t"."0.$_" =>
-          $_."-------",
-          '%css' => 'color:red') for 1..7;
-      
  - K: geoves #c dpaw
    D: |
+     # make .......................
+     J.bz->(
+        "dot$_"."\t"."0.".sprintf('%03d',$_) =>
+        '.')
+        for 1..10;
+     J.bz->(
+         "0000_$_/s"."\t"."0.$_" =>
+         $_."-------",
+         '%css' => 'color:red')
+         for 1..9;
+      
      my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
      for my $j (@be) {
          my $makaz = {"/%css#jit\t"."0.1" => 'left:10em;position:absolute'}; 
@@ -210,9 +213,13 @@ R_Jz:
          # share space with curves
          my $rad = here.rad;
          my $radleg = -$RADIAN;
+         
          # from O- is it in the left hemisphere etc
-         #$radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
+         $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
          $rad -= $radleg; 
+         
+         ''.$H->hitime =~ /(\d)(\d)(\d)\.(\d)(\d)/;
+         my @ent = reverse ($1,$2,$3,$4,$5);
          
          my $ere = {
              left => $left,
@@ -222,7 +229,7 @@ R_Jz:
              y => sprintf('%.4f', here.y),
          };
          
-         sayre ">>>> yep "
+         sayre ">>>> yep @ent "
              .sprintf('%-4s', j.cv)." "
              .sprintf('%-16s', j.t)."   "
          #    .sprintf('%-19s', " * ere.radial  ere.angle here.dist")
