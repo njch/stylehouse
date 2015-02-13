@@ -33,16 +33,59 @@ R_Jz:
          $in += ar.over;
         $thi += ar.over;
      }
+     ar.css ||= [];
      
      J.bz->("$t$_\t0.".sprintf('%03d',$_) =>
-         (ar.c ? ar.c->($_) : ar.s),
+         (ar.c ? ar.c->($_, $ar) : ar.s),
         @{ar.css}
         )
         for
         map {  int($_ * (999/$thi)) } # THE TIR
         $in..$thi
+ - K: e #c
+   D: |
+                my @gl = map{
+                    my $num = $i.'0' + 2250;
+                    
+                    my $v = $i / (ar.thi / 999 - ar.in);
+                    
+                    #$v *= $v * (9 %% $i);
+                    
+                    push @{ar.css},
+                        '%css#egy' => 'font-size:'.($v * 0.003 ).'%;';
+                    
+                    ar.s = unico($num+$_*10);
+                   # ar.s .= "\n" if !(7 %% $i );
+                    ar.s
+                    
+                } 1..64;
+                # add style tio 
+                "@@".join' ',
+                #    wdump(2,{@{$_[1]->{css}}}),
+                    @gl;
+     
  - K: geoves #c dpaw
    D: |
+     for (
+          {
+            thi => 10, t=>'sq', c => sub{
+                my ($i, $ar)  = @_;
+                w $R e(i=>$i, %$ar);
+             },
+            css=> ['%css' => 'color:#acf;opacity:0.2;'],
+          },
+          {
+            thi => 30, t=>'sqw', s => '~~~',
+            css=> ['%css' => 'color:blue;font-size:500%;-webkit-filter:blur(7px);'],
+          },
+          {
+            thi => 123, t=>'dots', s => '.',
+              
+          }
+         )
+         {
+         w $R mod(J=>$J, %$_);
+     }
      # make .......................
      # the throat
       # doubling circuit starts to 6
@@ -56,21 +99,6 @@ R_Jz:
      #(B.href) = $file =~ /(i\/.+$)/;
      #S.S.Z->{'background-image'} = "url('$href')";
      
-     for (
-          {
-            thi => 10, t=>'sq', c => sub{
-                "@@@@@".join'',map{unico($_[0]+10000+$_)} 1..40
-             },
-            css=> ['%css' => 'color:red;font-size:900%'],
-          },
-          {
-            thi => 30, t=>'sqw', s => '~~~',
-            css=> ['%css' => 'color:blue;font-size:500%;-webkit-filter:blur(7px);'],
-          },
-         )
-         {
-         w $R mod(J=>$J, %$_);
-     }
          
      my $thin = 233;
      J.bz->(
