@@ -228,12 +228,13 @@ hooks:
           Sw leaves[$code, $reason];
       });
       B.address = $tx->remote_address;
-  retile: |
+  retile: | # TODO use J
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
     @m = map { $H->djson(H.r->get("W/$_")) } @m;
-    my @dead = grep { _.dead } @m;
-    H.G w Whack(meta=>$_) for @dead;
+    
+    H.G w TODOWhack(meta=>$_) for grep { _.dead } @m;
     @m = grep { !_.dead } @m;
+    
     @m = grep { _.styles =~ /\bNZ\b/ } @m;
     @m = sort { a.hol cmp b.hol } @m;
     
@@ -286,6 +287,9 @@ hooks:
         my $o = {%{$grid->{$h}}};
         
         $o->{$_} = ($o->{$_} * 100)."%" for keys %$o;
+        
+        meta.ces = $o;
+        H.r->set("W/meta.Wid" => $H->ejson($meta));
         
         my $cssset = ".animate(".$H->ejson($o).", 0)";
         my $unhide = ".removeClass('NZ')";
