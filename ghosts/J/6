@@ -59,8 +59,7 @@ R_Jz:
      my ($left,$right) = (undef,shift @be);
      
      for my $j (@d) {
-         my $here = {};
-         here.cv = j.cv;
+         my $here = {cv => j.cv};
          
          if ($right && here.cv >= $right->{cv} ) { # adjust to poli
              # mix a pool of ways, magnetic fishing rods
@@ -70,9 +69,20 @@ R_Jz:
              # start $right
          }
          
+         here.left = $left;
+         here.right = $right; # <^ follow jagging rad, spaces within
+         
          my $last = left.s || {};
          w $R atom[$here, $last];
          
+         J.pha.bz->(j.r => $here);
+     }
+     
+ - K: outhere #c out
+   D: |
+     my @d = grep { _.t eq _.l } w $R tvo(J=>J.pha); # !style||com
+     
+     for my $j (@d) {
          # unwind # TODO wind blowing crazy
          my $swish = $RADIAN*4;
          $swish *= -1 if here.rad < 0;
@@ -84,9 +94,9 @@ R_Jz:
          # share space with curves
          my $rad = here.rad;
          my $radleg = -$RADIAN;
-         
+         # and pan to hemisphere...#
          # from O- is it in the left hemisphere etc
-         $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
+         #$radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
          $rad -= $radleg; 
          
          ''.$H->hitime =~ /(\d)(\d)(\d)\.(\d)(\d)/;
@@ -102,8 +112,6 @@ R_Jz:
          
          #sayre ">>>> yep @ent  j.cv    ". j.t;
          
-         J.pha.bz->(j.r => $here);
-         
          J.bz->("j.t%css#pha\t".j.cv =>  # concert per emportar
              'top:'.(ere.y * 100).'%;'
              .'left:'.(ere.x * 100).'%;'
@@ -114,6 +122,6 @@ R_Jz:
          J.bz->("j.t%tt\t".j.cv =>  # concert per emportar
              "*".ere.radial
          );
-     }
-     sayre join " ", (">") x scalar(@d);
+      }
+      sayre join " ", (">") x scalar(@d);
 
