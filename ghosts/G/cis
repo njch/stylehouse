@@ -40,25 +40,49 @@ Ds:
             
             #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
             
-            
+            #Rw makeJ geo
+            while ($eval =~ /(?:= |^\s*)($poing )?((Rw(yl(?: $NUM)?)?(?: ($poing))? ($point)(?: (.+?))?($sur)?)/gsm) {
+                my ($r, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
+                # my then it'll be,.. over there
+                $r = $r ? "" : '$R'; # not in $old, over there already
+                
+                my @n;
+                my $ne = ""; # hidden reverse
+                ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
+
+                my @m;
+                for (split /\,| |\, /$a) {
+                    push @m, $_
+                        given /^\w+$/;
+                    # sweet little pool... $J:geo etc
+                    push @n, "$1 => $_"
+                        given /^\$(\w+\S+)$/;
+                }
+                # could use ^ here # edpeak?
+                push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']' if @m;
+                
+                my @e;
+                push @e, '"'.$p.'"';
+                push @e, "{".join(", ",@n)."}";
+                push @e, $u if $u;
+                my $en = join ", ", @e;
+                
+                my $wa = $r."->w(".$en.")".$ne;
+                
+                
+            }
             
             
             # wholeness
             
-            my $sur = qr/ if| unless| for/;
+            my $sur = qr/ if| unless| for| when/;
             my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
             my $suro = qr/(?:$sur|(?>!$sur))/;
             
-            while ($eval =~
+            while ($eval =~ 
             /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
                 my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-                
-                if (!$g) {
-                    $g = '$G';
-                }
-                else {
-                    $g = "" # is over there already
-                }
+                $g = $g ? "" : '$G'; # not in $old, over there already
 
                 my @n;
                 my $ne = ""; # hidden reverse
@@ -77,7 +101,7 @@ Ds:
                 
 
                 my @e;
-                push @e, qq["$p"];
+                push @e, '"'.$p.'"';
                 push @e, "{".join(", ",@n)."}";
                 push @e, $u if $u;
                 my $en = join ", ", @e;

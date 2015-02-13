@@ -83,6 +83,7 @@ R_Jz:
      my @d = grep { _.t eq _.l } w $R tvo(J=>J.pha); # !style||com
      
      for my $j (@d) {
+         my $here = j.s;
          # unwind # TODO wind blowing crazy
          my $swish = $RADIAN*4;
          $swish *= -1 if here.rad < 0;
@@ -103,7 +104,7 @@ R_Jz:
          my @ent = reverse ($1,$2,$3,$4,$5);
          
          my $ere = {
-             left => $left,
+             left => here.left,
              radial => sprintf('%.4f', $rad),
              angle => sprintf('%.4f', here.rad),
              x => sprintf('%.4f', here.x),
@@ -112,14 +113,16 @@ R_Jz:
          
          #sayre ">>>> yep @ent  j.cv    ". j.t;
          
-         J.bz->("j.t%css#pha\t".j.cv =>  # concert per emportar
+         J.bz->(
+             "j.t%css#pha\t".j.cv =>  # concert per emportar
              'top:'.(ere.y * 100).'%;'
              .'left:'.(ere.x * 100).'%;'
              .'position:absolute;'
                .'-webkit-transform:rotate('.ere.radial.'rad);'
                .'transform-origin:0% 50%;' # animate that bit
          );
-         J.bz->("j.t%tt\t".j.cv =>  # concert per emportar
+         J.bz->(
+             "j.t%tt\t".j.cv =>  # concert per emportar
              "*".ere.radial
          );
       }
