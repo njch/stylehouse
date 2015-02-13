@@ -451,45 +451,6 @@ sub su {
     $H->{G}->w(subsc => $a); 
 }
 
-sub Flab {
-    my $G = shift;
-    wish(G=>$G) || die "send G";
-
-    # like sa*
-    # throw $S up little con tent # F jointed sa*
-    # also like di, has this db vector
-    # for punching out with helpful quality
-
-    say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-        if $G->{db} + $db > 0
-        && $_[0] !~ /^\w\ Error/;
-
-    my $a;
-    $a->{name} = "flab";
-    $a->{stuff} = [@_];
-
-    $G->pyramid($a);
-}
-
-sub ways {
-    my $G = shift;
-    grep { !$_->{_disabled} } @{$G->{ways}}
-}
-
-sub findway {
-    my $G = shift;
-    my $point = shift;
-    my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
-    wantarray ? @w : shift @w;
-}
-
-sub anyway {
-    my $G = shift;
-    my $point = shift;
-    my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
-    wantarray ? @a : shift @a
-}
-
 sub load_ways {
     my $G = shift;
     my @ways = split /\+/, $G->{way};
@@ -550,6 +511,45 @@ sub load_ways {
     return $G->w("load_ways_post") if !$G0;
 
     $G0 ->w("_load_ways_post", {S=>$G,w=>$G->{ways}});
+}
+
+sub Flab {
+    my $G = shift;
+    wish(G=>$G) || die "send G";
+
+    # like sa*
+    # throw $S up little con tent # F jointed sa*
+    # also like di, has this db vector
+    # for punching out with helpful quality
+
+    say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
+        if $G->{db} + $db > 0
+        && $_[0] !~ /^\w\ Error/;
+
+    my $a;
+    $a->{name} = "flab";
+    $a->{stuff} = [@_];
+
+    $G->pyramid($a);
+}
+
+sub ways {
+    my $G = shift;
+    grep { !$_->{_disabled} } @{$G->{ways}}
+}
+
+sub findway {
+    my $G = shift;
+    my $point = shift;
+    my @w = grep { defined $_ } map { $_->find($point) } $G->ways;
+    wantarray ? @w : shift @w;
+}
+
+sub anyway {
+    my $G = shift;
+    my $point = shift;
+    my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
+    wantarray ? @a : shift @a
 }
 
 sub di {
