@@ -44,50 +44,47 @@ R_surs:
           @etc,
       );
     
-    # cgp in R/ivm #c data guess chart
     gp: | #c R_sur gp
         G.gp_inarow++;
         my $a = ar.a || {};
-        # usuall comes in on a:
         a.cv = ar.cv if ar.cv;
-        a.cv = 0.1 if a.cv < 0.1;
         a.u = ar.u if ar.u;
+        # usuall comes in on a:
+        %$a = (%$a, %{delete a.cv}) if ref a.cv; # sneak params in
+        a.cv = 0.1 if a.cv < 0.1;
         
-        a.isJid = a.replaceJid || $H->mkuid;
-        undef a.isJid if G.gp_inarow > 1;
         my $u = a.u;
+        my $arr = {a => $a, u => $u};
+        
         
         # 3
         $R->phat($a);
+        
+        a.isJid = a.replaceJid || $H->mkuid;
+        undef a.isJid if G.gp_inarow > 1;
+        
         my $c = $R->cgp($u);
         
-        my $arr = {
-            a => $a, # @_
-            u => $u,
-        };
-        
         # 4
-        my $wa;
-        if ($wa = a.wa) {
-            # yep
-        }
-        else {
-            ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
+        my $wa = a.wa || do {
+            my ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
             $wa = ref $u if $wa eq 'canpi';
             $wa ||= 'wtf';
-        }
-        
-        
+            $wa
+        };
         R.way->find("pi/$wa") || die "not $wa equip";
         
         # 5
 
         # 6
         #saybl wdump(2, $arr);
-        w $R pi/$wa(%$arr);
+        w $R pi/$wa[$a,$u];
         
         # 7
-        my $html = w $R maka(%$arr);
+        my $html = w $R maka[$a,$u];
+        # don't need to close it up right now...
+        # top down injection gos
+        
         
         # 8
         
