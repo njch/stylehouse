@@ -1,6 +1,51 @@
 hooks:
 
 R_surz:
+    - K: occie #c style komerp # occasional (page) global aggregate
+      key: 
+        Y: komp
+      babz:
+        'maka 6.56': |
+                    G.shtuuyle->{at.style}++;
+                    if (my $class = G.shtdc->{at.style}) {
+                        delete at.style;
+                        $tag = $class;
+                    }
+      n_D:
+        komp: |
+            my $dc = G.shtuuyle;
+            my $sd;
+            my @all;
+            while (my ($sty,$uses) = each %$dc) {
+                push @all, {sty=>$sty,uses=>$uses};
+            }
+            @all = sort { _.uses <=> _.uses } @all;
+            my $limit = 50;
+            for my $a (@all) {
+                last if $limit-- <= 1;
+                my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
+                next unless $sty;
+                my ($heex) = $H->dig($sty) =~ /^(...)/;
+                # TODO pack hex into unibabl
+                $sd->{"a".$heex} = $sty;
+            }
+            G.shtdc = {reverse %$sd};
+
+            # ^ to maka
+            # v to elvis
+
+            my $as = {K=>'style', B=>{am=>'styleyo'}};
+            my $st = w G.R fuu(u=>$as);
+            my $was = st.sheet;
+            st.sheet = join "\n", map { "$_ { $sd->{$_} }" } sort keys %$sd;
+            # TODO style order massively important
+            # for regrouping s;t;y;l;e into sma;ll;er st;yles
+            # need well oiled J to do it right
+            # also may compress sheet updates with text append...
+            # and many sheets at levels of holiness
+            w mux(u=>$st) if st.sheet ne $was;
+
+      
     - K: phi #c
       D: |
           my $n = ar.n || 9;
@@ -181,48 +226,4 @@ R_surz:
           $H->pub('S/hut/S', 'reexec');
       
     
-    - K: occie #c style komerp # occasional (page) global aggregate
-      key: 
-        Y: komp
-      babz:
-        'maka 6.56': |
-                    G.shtuuyle->{at.style}++;
-                    if (my $class = G.shtdc->{at.style}) {
-                        delete at.style;
-                        $tag = $class;
-                    }
-      n_D:
-        komp: |
-            my $dc = G.shtuuyle;
-            my $sd;
-            my @all;
-            while (my ($sty,$uses) = each %$dc) {
-                push @all, {sty=>$sty,uses=>$uses};
-            }
-            @all = sort { _.uses <=> _.uses } @all;
-            my $limit = 50;
-            for my $a (@all) {
-                last if $limit-- <= 1;
-                my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
-                next unless $sty;
-                my ($heex) = $H->dig($sty) =~ /^(...)/;
-                # TODO pack hex into unibabl
-                $sd->{"a".$heex} = $sty;
-            }
-            G.shtdc = {reverse %$sd};
-
-            # ^ to maka
-            # v to elvis
-
-            my $as = {K=>'style', B=>{am=>'styleyo'}};
-            my $st = w G.R fuu(u=>$as);
-            st.sheet = join "\n", map { "$_ { $sd->{$_} }" } sort keys %$sd;
-            # TODO style order massively important
-            # for regrouping s;t;y;l;e into sma;ll;er st;yles
-            # need well oiled J to do it right
-            # also may compress sheet updates with text append...
-            # and many sheets at levels of holiness
-            w mux(u=>$st);
-
-      
 

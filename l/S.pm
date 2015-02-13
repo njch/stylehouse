@@ -24,7 +24,11 @@ if ($name eq 'O') {
 
     websocket '/s' => sub {
         my $mojo = shift;
+        eval {
         $H->{G}->w(websocket => { M => $mojo });
+        };
+        G::sayre $@ if $@;
+        $@ = '';
     };
     get '/' => sub{ 
        my $self = shift;
