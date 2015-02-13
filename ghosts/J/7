@@ -1,14 +1,71 @@
 R_Jz:
-    - K: stylestylekeysort #c comp-ression 
-      D: |
-        my @r = sort keys %$d;
-        my $by = { map {
-            my @w = split "\t", $_;
-            warn " Oi '$_' not stylestyle or not using tabs proply" if @w != 3;
-            my $s = join"\t", $w[1], $w[0], $w[2]; # scv, st, cv
-            $s => $_;
-        } @r };
-        @r = map { $by->{$_} } sort keys %$by;
+
+  retile: | # TODO use J
+    my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
+    @m = map { $H->djson(H.r->get("W/$_")) } @m;
+    
+    H.G w TODOWhack(meta=>$_) for grep { _.dead } @m;
+    @m = grep { !_.dead } @m;
+    
+    @m = grep { _.styles =~ /\bNZ\b/ } @m;
+    @m = sort { a.hol cmp b.hol } @m;
+    
+    my $space = 1;
+    $space += 0.5 until $space * $space >= @m;
+    my $r = floor $space;
+    my $l = ceil $space;
+    my $div = ["width:left $l", "height:top $r"];
+    
+    say "needed ".@m." so $space is $l $r";
+    
+    my $grid = {};
+    for my $p (@$div) {
+        my ($iv, $parts) = split ' ', $p;
+        my ($mags, $ax) = split ':', $iv;
+        # magnitudes of width
+        # axed from unified by left, etc.
+        my $in = sprintf("%.3f", 1 / $parts);
         
-        @r
+        my @ground = map { [$_ => $grid->{$_} ] } sort keys %$grid;
+        @ground = [] if !@ground;
+        my $pole = [];
+        $grid = {};
+        
+        my $here = 0; # in accum
+        for my $i (1..$parts) {
+            my $ox = {};
+            ox.part = $i;
+            $ox->{$ax} = $here;
+            $here += $in;
+            $ox->{$mags} = $in;
+            push @$pole, $ox;
+        }
+        
+        for my $g (@ground) {
+            my ($k, $v) = @$g;
+            $v ||= {};
+            for my $ox (@$pole) {
+                my $K = (defined $k?"$k ":"") . ox.part;
+                my $x = $grid->{$K} = {%$v, %$ox};
+                delete x.part;
+            }
+        }
+    }
+    
+    my @holes = sort keys %$grid;
+    say "Got ".@m." pegs for ".@holes." holes: ".wdump[@m];
+    for my $meta (@m) {
+        my $h = shift @holes;
+        my $o = {%{$grid->{$h}}};
+        
+        $o->{$_} = ($o->{$_} * 100)."%" for keys %$o;
+        
+        meta.ces = $o;
+        H.r->set("W/meta.Wid" => $H->ejson($meta));
+        
+        my $cssset = ".animate(".$H->ejson($o).", 0)";
+        my $unhide = ".removeClass('NZ')";
+        
+        $H->send(" \$('#".meta.Wid."')$cssset$unhide".";");
+    }
 
