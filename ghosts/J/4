@@ -34,6 +34,10 @@ R_Jz:
          (d.t, d.thi, d.s, d.c, d.css, d.and) = @$m;
          %$d = (%$d, @{d.and}) if d.and;
      }
+     if (!ref d.c) {
+         d.css = d.c; # m
+         delete d.c;
+     }
      d.css ||= [];
      d.css = ['%css', d.css] if !ref d.css;
      
@@ -45,6 +49,7 @@ R_Jz:
      
      if (d.c) {
          my $c = d.c;
+         $c = {} if !ref $c;
          d.c = sub {
              my ($i)  = @_;
              my $v = $i / (999 - d.in);

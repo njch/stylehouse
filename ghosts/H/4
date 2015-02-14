@@ -84,7 +84,7 @@ hooks:
             # should just attach them near the style
             # with one more phase of comment joining
             # also non-replace mode, maybe something of z D namespace
-            exists $Dz->{$l}->{$vo} || die;
+            exists $Dz->{$l}->{$vo} || die " the $l $vo is already , not $r";
             my $v = $Dz->{$l}->{$vo};
             $com = "# $vo $com".($b ? " $b" : "");
             $v = "$com\n$v";
@@ -182,7 +182,7 @@ hooks:
         }
 
 
-        for my $D (grep {_.babz} @$Ds) {
+        for my $D (grep {_.babz || grep { /^babz .+/ } keys %$_ } @$Ds) {
           for my $ba (keys %{D.babz}) {
               my $b = D.babz->{$ba};
               my ($t, $v) = $ba =~ /^(.+)\s(.+)$/;
