@@ -28,62 +28,60 @@ R_Jz:
        }
  - K: mod #c make pool
    D: |
-     ar.in = 1;
-     if (ar.over) {
-         ar.in += ar.over;
-         ar.thi += ar.over;
+     a.in = 1;
+     if (a.over) {
+         a.in += a.over;
+         a.thi += a.over;
      }
-     ar.css ||= [];
+     a.css ||= [];
      
-     J.bz->("$t$_\t0.".sprintf('%03d',$_) =>
-         (ar.c ? ar.c->($_, $ar) : ar.s),
-        @{ar.css}
+     J.bz->(a.t."$_\t0.".sprintf('%03d',$_) =>
+         (a.c ? a.c->($_, $ar) : a.s),
+         @{a.css||=[]}
         )
         for
-        map {  int($_ * (999/ar.thi)) } # THE TIR
-        ar.in..ar.thi;
+        map {  int($_ * (999/a.thi)) } # THE TIR
+        a.in..a.thi;
  - K: e #c
    D: |
-                my @gl = map{
-                    my $num = $i.'0' + 1250;
-                    my $v = $i / (ar.thi / (300 - ar.in));
-                    
-                    push @{ar.css}, '%css#egy' =>
-                        'font-size:'.($v * 0.006 + 200).'%;';
-                    
-                    ar.s = unico($num+$_*10);
-                    sayre "ar s: ar.s";
-                    my $od = $_ / 4;
-                    
-                    ar.s .= "\n" if int($od) == $od;
-                    ar.s
-                    
-                } 1..16;
+     my $num = $i.'0' + 1250;
+     my $v = $i / (a.thi / (300 - a.in));
+     
+     my @gl = map{
+         unico($num+$_*10)
+         .(rand(5) > 4 ? "\n" : "");
+     } 1..4;
+     
+     my $col = (/(\d)$/)[0].''.J.ent.2.''.J.ent.3;
+                    #die wdump(2,$J);
+                    push @{a.css}, '%css#egy' =>
+                        'font-size:'.($v * 0.006 + 200).'%;',
+                        '%css#olo' =>
+                        'color:#'.$col.';';
                 # add style tio 
-                "@@".join' ',
-                    @gl;
+                "@!@".join' ', @gl;
      
  - K: geoves #c dpaw
    D: |
      for (
           {
-            thi => 10, t=>'sq', c => sub{
+            thi => 6, t=>'sq', c => sub{
                 my ($i, $ar)  = @_;
                 w $R e(i=>$i, %$ar);
              },
-            css=> ['%css' => 'color:#acf;opacity:0.2;'],
+             css=>[],
           },
           {
             thi => 30, t=>'sqw', s => '~~~',
-            css=> ['%css' => 'color:blue;font-size:500%;-webkit-filter:blur(3px);'],
+            css=> ['%css' => 'color:blue;font-size:200%;-webkit-filter:blur(3px);'],
           },
           {
             thi => 123, t=>'dots', s => '.',
-              
+            css => ['%css' => 'color:yellow'],
           }
          )
          {
-         w $R mod(J=>$J, %$_);
+         w $R mod(J=>$J, a=>$_);
      }
      # make .......................
      # the throat
@@ -98,21 +96,6 @@ R_Jz:
      #(B.href) = $file =~ /(i\/.+$)/;
      #S.S.Z->{'background-image'} = "url('$href')";
      
-         
-     my $thin = 233;
-     J.bz->(
-        "dot$_"."\t"."0.".sprintf('%03d',$_) =>
-        '.',
-         '%css' => 'color:blue')
-        for
-        map { int($_ * (999/$thin)) }
-        1..$thin;
-     J.bz->(
-         "0000_$_/s"."\t"."0.$_" =>
-         $_."-------",
-         '%css' => 'color:red')
-         for 1..9;
-      
      # GP PHATNESS
      my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
      for my $j (@be) {

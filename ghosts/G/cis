@@ -42,24 +42,31 @@ Ds:
             
             #Rw makeJ geo
             while ($eval =~ /(?:= |^\s*)($poing )?((Rw(yl(?: $NUM)?)?(?: ($poing))? ($point)(?: (.+?))?($sur)?)/gsm) {
-                my ($r, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-                # my then it'll be,.. over there
-                $r = $r ? "" : '$R'; # not in $old, over there already
+                my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
+                $g ||= $u.'->{G}' if $u;
+                $g ||= '$G';
+                $u ||= '$R';
                 
                 my @n;
+                my @m;
                 my $ne = ""; # hidden reverse
                 ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
 
-                my @m;
+                push @n, '%$ar' if $a =~ s/^\+ ?// || !$a;
                 for (split /\,| |\, /$a) {
-                    push @m, $_
-                        given /^\w+$/;
                     # sweet little pool... $J:geo etc
+                    
+                    push @m, $_
+                    
+                        given /^\w+$/;
                     push @n, "$1 => $_"
+                    
                         given /^\$(\w+\S+)$/;
                 }
+                
                 # could use ^ here # edpeak?
-                push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']' if @m;
+                push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
+                    if @m;
                 
                 my @e;
                 push @e, '"'.$p.'"';
@@ -67,9 +74,19 @@ Ds:
                 push @e, $u if $u;
                 my $en = join ", ", @e;
                 
-                my $wa = $r."->w(".$en.")".$ne;
+                my $wa = $g.'->w('.$en.')'.$ne;
                 
+                if ($delay) {
+                    saygr "ol: $old\nDeeelay: $delay";
+                    $delay =~ /aylay ($NUM)/;
+                    $delay = $1 || "";
+                    $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
+                    saygr "Deeewow: $wa";
+                }
                 
+                #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
+                
+                $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
             }
             
             
