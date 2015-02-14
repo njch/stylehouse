@@ -33,8 +33,9 @@ R_Jz:
          $d = {};
          (d.t, d.thi, d.s, d.c, d.css, d.and) = @$m;
          %$d = (%$d, @{d.and}) if d.and;
-          d.css = ['%css', d.css]if !ref d.css;
      }
+     d.css ||= [];
+     d.css = ['%css', d.css] if !ref d.css;
      
      d.in = 1;
      if (d.over) {
@@ -46,14 +47,16 @@ R_Jz:
          my $c = d.c;
          d.c = sub {
              my ($i)  = @_;
-             my $v = $i / (d.thi / (999 - d.in));
+             my $v = $i / (999 - d.in);
              my $num = $i * $v + 300;
-             saygr "nuym $num";
+             $num = sprintf '%.3d',$num;
+             saygr "nuym $num    ";
              
              my $lastnumber = ($i =~ /(\d)$/)[0];
              my $col = join'',$lastnumber,J.ent.2,J.ent.3;
 
-             my @gl = $v;
+             my @gl = $num;
+             # 3.3
              if (c.unico) { # some J to mod from 9
                  push @gl, ' zqeq';
                  push @gl, map{
@@ -67,8 +70,9 @@ R_Jz:
              if (c.fs) {
                  
                  push @{d.css}, '%css#egy' =>
-                     'font-size:'.($num * 0.016 + 40).'%;',
+                     'font-size:'.($num / 4 + 100).'%;',
              }
+             # 3.4
              @gl = d.s if !@gl;
 
              #die wdump(2,$J);
@@ -82,14 +86,14 @@ R_Jz:
      
      my @is = map { int($_ * (999/d.thi)) } d.in..d.thi;
      
-     my $dcss = d.css || [];
+     my $dcss = d.css;
      for my $i (@is){ # THE TIR
          d.css = [@{$dcss}];
          d.s = d.c ? d.c->($i, $d) : d.s;
          
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          
-         J.bz->($r => d.s, @{d.css});
+         J.bz->($r => d.s, @{d.css}, '%css#awl', 'text-shadow:2px 2px 7px rgb(0,0,205)');
      }
  - K: geoves #c dpaw
    D: |
@@ -97,8 +101,8 @@ R_Jz:
      # 3.24
      [zqeq => 6,  '', {unico => 1, fs=>3}],
      [sq   => 6,  '~~~'],
-     [sqw  => 12, '   ~~ ~   ~ ~', '', 'color:#95d;font-size:1200%;-webkit-filter:blur(1px);'],
-     [sqww => 13, '~~   ~~', '',         'color:#8ff;font-size:1300%;-webkit-filter:blur(1px);'],
+     [sqw  => 12, '   ~~ ~   ~ ~', '', 'color:#95d;font-size:400%;-webkit-filter:blur(1px);'],
+     [sqww => 13, '~~   ~~', '',         'color:#8ff;font-size:300%;-webkit-filter:blur(1px);'],
      [dots => 14, '.', '', 'color:yellow'],
      [dotz => 22, ' z', '', 'color:black;opacity:0.4;white-space:pre;font-size:3900%;font-family:serif;'],
      # 3.3
