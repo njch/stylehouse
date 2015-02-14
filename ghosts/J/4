@@ -28,12 +28,16 @@ R_Jz:
        }
  - K: mod #c make pool, synth space, want arches
    D: |
+     if (ref $d eq 'ARRAY') {
+         my $m = $d;
+         $d = {};
+         (d.t, d.thi, d.s, d.css, d.c, d.and) = @$m;
+     }
      d.in = 1;
      if (d.over) {
          d.in += d.over;
          d.thi += d.over;
      }
-     d.css ||= [];
      
      if (d.c) {
          my $c = d.c;
@@ -46,16 +50,19 @@ R_Jz:
              
              my $col = join'',$lastnumber,J.ent.2,J.ent.3;
 
-             my @gl = map{
-                 unico($num+$_*10)
-                 .(rand(7) > 5 ? "\n".join("", (" ") x $_ ) : "");
-             } 1..14;
+             my @gl;
+             if (c.unico) { # some J to mod from 9
+                 push @gl, map{
+                     unico($num+$_*10)
+                     .(rand(7) > 5 ? "\n".join("", (" ") x $_ ) : "");
+                 } 1..14;
+             }
+             @gl = d.s if !@gl;
 
              #die wdump(2,$J);
              push @{d.css},
                 '%tt#ee' => "JAMTHATFUELTANK",
                  '%css#egy' => 'font-size:'.($v * 0.016 + 100).'%;',
-
                 '%css#olo' => 'color:#'.$col.';white-space:pre;',
                 ;
              # add style tio 
@@ -63,22 +70,21 @@ R_Jz:
          };
      }
      
-     my @is = map { int($_ * (999/a.thi)) } a.in..a.thi;
+     my @is = map { int($_ * (999/d.thi)) } d.in..d.thi;
      
+     my $dcss = d.css || [];
      for my $i (@is){ # THE TIR
-         a.s = a.c ? a.c->($_, $d) : a.s;
+         d.css = [@{$dcss}];
+         d.s = d.c ? d.c->($_, $d) : d.s;
          
-         my $r = a.t."$i\t0.".sprintf('%03d',$_);
+         my $r = d.t."$i\t0.".sprintf('%03d',$i);
          
-         J.bz->($r => a.s, @{a.css});
+         J.bz->($r => d.s, @{d.css});
      }
  - K: geoves #c dpaw
    D: |
-     do { w $R mod(J=>$J, d=>$_); } for
-          {
-          thi => 6, t=>'sq', c => {},
-             css=>[],
-             },
+     for my $d (
+          { thi => 6, t=>'sq', c => {}, css=>[], },
           {
             thi => 30, t=>'sqw', s => '~~~',
             css=> ['%css' => 'color:blue;font-size:200%;-webkit-filter:blur(3px);'],
@@ -86,9 +92,15 @@ R_Jz:
           {
             thi => 123, t=>'dots', s => '.',
             css => ['%css' => 'color:yellow'],
+          },
+          {
+            thi => 123, t=>'dotsg', s => ' z',
+            css => ['%css' => 'color:black;opacity:0.4;white-space:pre;font-size:1900%;font-family:serif;'],
           }
           # 3.3 # is goni^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-         ;
+          ) {
+          w $R mod[$J, $d];
+     }
      # make .......................
      # the throat
       # doubling circuit starts to 6
