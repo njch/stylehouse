@@ -26,12 +26,14 @@ R_Jz:
              # start culture
              # the middle
        }
+
  - K: mod #c make pool, synth space, want arches
    D: |
      if (ref $d eq 'ARRAY') {
          my $m = $d;
          $d = {};
          (d.t, d.thi, d.s, d.css, d.c, d.and) = @$m;
+         %$d = (%$d, @{d.and}) if d.and;
      }
      d.in = 1;
      if (d.over) {
@@ -47,7 +49,6 @@ R_Jz:
              my $v = $i / (d.thi / (300 - d.in));
              
              my $lastnumber = ($i =~ /(\d)$/)[0];
-             
              my $col = join'',$lastnumber,J.ent.2,J.ent.3;
 
              my @gl;
@@ -57,12 +58,17 @@ R_Jz:
                      .(rand(7) > 5 ? "\n".join("", (" ") x $_ ) : "");
                  } 1..14;
              }
+             if (c.jamit) {
+                 push @{d.css}, '%tt#ee' => "JAMTHATFUELTANK"
+             }
+             if (c.fs) {
+                 push @{d.css}, '%css#egy' =>
+                     'font-size:'.($v * 0.016 + 100).'%;',
+             }
              @gl = d.s if !@gl;
 
              #die wdump(2,$J);
              push @{d.css},
-                '%tt#ee' => "JAMTHATFUELTANK",
-                 '%css#egy' => 'font-size:'.($v * 0.016 + 100).'%;',
                 '%css#olo' => 'color:#'.$col.';white-space:pre;',
                 ;
              # add style tio 
@@ -75,7 +81,7 @@ R_Jz:
      my $dcss = d.css || [];
      for my $i (@is){ # THE TIR
          d.css = [@{$dcss}];
-         d.s = d.c ? d.c->($_, $d) : d.s;
+         d.s = d.c ? d.c->($i, $d) : d.s;
          
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          
@@ -86,7 +92,7 @@ R_Jz:
      for my $d (
           { thi => 6, t=>'sq', c => {}, css=>[], },
           {
-            thi => 30, t=>'sqw', s => '~~~',
+            thi => 30, t=>'sqw', s => '~~~~~~~~~~~~~~~~~',
             css=> ['%css' => 'color:blue;font-size:200%;-webkit-filter:blur(3px);'],
           },
           {
