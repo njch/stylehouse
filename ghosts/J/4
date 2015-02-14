@@ -33,6 +33,7 @@ R_Jz:
          $d = {};
          (d.t, d.thi, d.s, d.c, d.css, d.and) = @$m;
          %$d = (%$d, @{d.and}) if d.and;
+          d.css = ['%css', d.css]if !ref d.css;
      }
      
      d.in = 1;
@@ -45,14 +46,16 @@ R_Jz:
          my $c = d.c;
          d.c = sub {
              my ($i)  = @_;
-             my $num = $i.'0' + 1250;
-             my $v = $i / (d.thi / (300 - d.in));
+             my $v = $i / (d.thi / (999 - d.in));
+             my $num = $i * $v + 300;
+             saygr "nuym $num";
              
              my $lastnumber = ($i =~ /(\d)$/)[0];
              my $col = join'',$lastnumber,J.ent.2,J.ent.3;
 
-             my @gl;
+             my @gl = $v;
              if (c.unico) { # some J to mod from 9
+                 push @gl, ' zqeq';
                  push @gl, map{
                      unico($num+$_*10)
                      .(rand(7) > 5 ? "\n".join("", (" ") x $_ ) : "");
@@ -62,8 +65,9 @@ R_Jz:
                  push @{d.css}, '%tt#ee' => "JAMTHATFUELTANK"
              }
              if (c.fs) {
+                 
                  push @{d.css}, '%css#egy' =>
-                     'font-size:'.($v * 0.016 + 500).'%;',
+                     'font-size:'.($num * 0.016 + 40).'%;',
              }
              @gl = d.s if !@gl;
 
@@ -72,7 +76,7 @@ R_Jz:
                 '%css#olo' => 'color:#'.$col.';white-space:pre;',
                 ;
              # add style tio 
-             d.s = " ~".join'', @gl;
+             d.s = join'', @gl;
          };
      }
      
@@ -89,27 +93,17 @@ R_Jz:
      }
  - K: geoves #c dpaw
    D: |
-     for my $d (
-     #(d.t, d.thi, d.s, d.css, d.c, d.and)
-     
-         [zqeq => 6, undef, {unico => 1}],
-         
-         [sq => 6, '~~~', {}, ['%css'=>'color:#f5d;font-size:1700%;']],
-         [sqw => 26, '   ~~ ~   ~ ~', undef, ['%css' => 'color:#f5d;font-size:1700%;-webkit-filter:blur(1px);'],],
-          {
-            thi => 30, t=>'sqw', s => '~~~~~~~~',
-            css=> ['%css' => 'color:#8ff;font-size:600%;-webkit-filter:blur(1px);'],
-          },
-          {
-            thi => 123, t=>'dots', s => '.',
-            css => ['%css' => 'color:yellow'],
-          },
-          {
-            thi => 120, t=>'dotsg', s => ' z',
-            css => ['%css' => 'color:black;opacity:0.4;white-space:pre;font-size:1900%;font-family:serif;'],
-          }
-          # 3.3 # is goni^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-          ) {
+     J.yy.gemod = [
+     # 3.24
+     [zqeq => 6,  '', {unico => 1, fs=>3}],
+     [sq   => 6,  '~~~'],
+     [sqw  => 12, '   ~~ ~   ~ ~', '', 'color:#95d;font-size:1200%;-webkit-filter:blur(1px);'],
+     [sqww => 13, '~~   ~~', '',         'color:#8ff;font-size:1300%;-webkit-filter:blur(1px);'],
+     [dots => 14, '.', '', 'color:yellow'],
+     [dotz => 22, ' z', '', 'color:black;opacity:0.4;white-space:pre;font-size:3900%;font-family:serif;'],
+     # 3.3
+     ];
+     for my $d (@{J.yy.gemod}) {
           w $R mod[$J, $d];
      }
      # make .......................
