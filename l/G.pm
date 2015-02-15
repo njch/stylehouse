@@ -1170,30 +1170,28 @@ sub parse_babble {
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
     my $suro = qr/(?:$sur|(?>!$sur))/;
 
+    my $_m = qr/(?: (.+))?/;
     my $_u = qr/(?: ($poing))?/;
     my $ylay = qr/(yl(?: $NUM)?)?/;
     my $_g = qr/($poing )?/;
     my $mwall = qr/(?:= |^\s*)/m;
-    my $_m = qr/(?: (.+))?/;
 
-    while ($eval =~ /$mwall()(Rw$ylay() ((?:\*\/)?$point)$_m?)$/gsm) {
+    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-        say wdump[($1, $2, $3, $4, $5, $6, $7)];
+        #say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;
         $g ||= '$G';
         $u ||= '$R';
 
-        my @n;
-        my @m;
         my $ne = ""; # hidden reverse
         $ne = $1 if $a =~ s/($sur)$//;
 
-        saygr "nbe $ne, a $a";
-
-        push @n, '%$ar' if $a =~ s/^\+ ?// || !$a;
+        my @n;
+        my @m;
+        my $wanr = $a =~ s/^\+ ?//;
         for (split /\,| |\, /, $a) {
             # sweet little pool... $J:geo etc
-            if (/^\$((\w+:)?\w+\S*)$/) {
+            if (/^\$((\w+:)?\S+)$/) {
                 my ($na, $fa) = ($1, $2);
                 if (!$fa) { # fake name, to ar
                     $fa = $na;
@@ -1209,13 +1207,11 @@ sub parse_babble {
                 push @m, $_;
             }
         }
+        push @n, '%$ar' if !@n || $wanr; 
 
         # could use ^ here # edpeak?
         push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
             if @m;
-
-
-        saygr "N being: ".wdump[@n];
 
         my @e;
         push @e, '"'.$p.'"';
@@ -1233,7 +1229,7 @@ sub parse_babble {
             saygr "Deeewow: $wa";
         }
 
-        saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
+        #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
 
         $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
     }

@@ -211,10 +211,14 @@ sub find {
     for my $p (@path) {
         $h = $h->{$p};
         unless ($h) {
-            return undef;
+            undef $h;
+            last;
         }
     }
-    return $h
+    return $h if defined $h;
+
+    return undef unless $point =~ /\*/;
+    die "sat rs findy $point";
 }
 
 9;

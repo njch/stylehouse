@@ -43,8 +43,8 @@ hooks:
     w G.theR Jaction/J;
     #timer 0.2 { w G.theR Jaction/J; };
   any_init: |
-    #w G.theR Jaction/J;
-    w G.theJ poke;
+    w G.theR Jaction/J;
+    waylay 2 G.theJ poke;
   peev: | # look
     my @a = K J;
     push @a, K R:J;
@@ -74,46 +74,67 @@ R_Jz:
     D: |
           #Rw */flam zzz;
           my $p = '*/curves';
-          my @w = Rw */curves etet;
-          #sayre "Wu: ".wdump[@w]; 
+          my @w = Rw findl $p:_ for $p;
+          
+          my @wo = 
+          map { w $R $_; } Rw fi */curves;
+           
+          push @w, "Would:", @wo;
+          my $w = [
+          Rw suck */curves,
+          ];
+          
+          push @w, Rw suck */curves;
+          
           w pv(i=>\@w);
+  - K: suck #c
+    D: |
+      my @ps = Rw fi +;
+      my @wo;
+      for my $p (@ps) {
+          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
+          next if ar.J && ar.J.yt->{$dp};
+          push @wo, w $R $p;
+      }
+      @wo
+      
+  - K: fi #c
+    D: |
+      my %wo = Rw findl +;
+      map { s/^\///; say $_; $_ } keys %wo; 
+      
   - K: findl #c
     D: |
-            my $point = $p;
-            sayre "FINNNNNNNNNNNNNNNNNNNNNNNNNNNN"; 
+            my $point = ar.p || ar.m->[0];
             my @path = split /\/|\./, $point;
-            my $h = R.way;
+            my $h = ar.h || R.way;
             $h = h.hooks if h.hooks;
             
             my $doig;
             $doig = sub {
-                my ($p,$h) = @_;
+                my ($p,$h,$s) = @_;
                 my @a = @$p;
-                say "at   @a  === ".slim(34,$h);
-                return $h if !@a; 
+                
+                return $s => $h if !@a; 
+                
                 ($p) = shift @a;
                 
                 return undef if !ref $h;
-                say "looking in ".join(" ", sort keys %$h)."   ";
                 
                 if (exists $h->{$p}) { 
                     $h = $h->{$p};
-                    say "Likine $p ... ".slim(40, $h);
-                    return $doig->([@a],$h);
+                    return $doig->([@a],$h,"$s/$p");
                 }
                 else {
                     if ($p =~ /^(.*)\*(.*)$/) {
-                        say "LIKETHIS";
                         my ($l,$r) = ($1, $2);
                         my $ma = join '.+', split /\*/, $p;
                         my @ke = grep { /^$l.+$r$/ } keys %$h;
                         my @wu;
                         for my $tk (@ke) {
-                            saygr " Trying $tk ";
-                            push @wu, $doig->([@a], $h->{$tk});
+                            push @wu, $doig->([@a], $h->{$tk}, "$s/$tk");
                         }
                         @wu = grep {defined} @wu;
-                        #die wdump \@wu if @wu > 1;
                         return @wu;
                     }
                     else {
@@ -122,7 +143,7 @@ R_Jz:
                 }
             };
             
-            grep {defined} $doig->([@path], $h);
+            grep {defined} $doig->([@path], $h, '');
   - K: bacup #c SCHEMA
     D: |
         my $ss_Ds = R.S.ss_Ds = Load(<<'');
