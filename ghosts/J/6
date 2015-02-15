@@ -20,13 +20,19 @@ R_Jz:
      }
      
      # and lay out
-     my $last = {x=>0.5, y=>0, cv=>0, rad=>$RADIAN, spin=>0}; # downy
+     my $last = {x=>0.6, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
      for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
          sayyl "       <<<< yep j.cv j.t          ".ki j.s;
          
          my $here = {};
          here.cv = j.cv;
+         
          here.spin = j.s.curve if j.s.curve; # on the level
+         
+         here.rad = 4*$RADIAN * j.s.spun if j.s.spun;
+         
+         here.zoom = 4*$RADIAN * j.s.zoom if j.s.zoom;
+         
          here.creatin = j.s;#$H->ejson(j.s);
          
          w $R atom[$j, $here, $last];
@@ -42,9 +48,12 @@ R_Jz:
          # twistin spin inherit
          here.spin += last.spin;
          # scale local-local change
-         here.rad = here.spin * here.dist * 10;
+         here.rad += here.spin * here.dist * 10;
          # builds rad on rad
          here.rad += last.rad;
+         # distort space
+         here.zoom += last.zoom;
+         here.dist *= here.zoom if here.zoom;
          # and move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;

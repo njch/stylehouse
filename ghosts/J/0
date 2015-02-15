@@ -3,7 +3,7 @@ C:
  - K: J #c fit in Ds later, which are Js too.
    Gw: 1
    S:
-     jsrm: fadeOut(1000)
+     jsrm: fadeOut(1000, function() { $(this).remove(); }); 
    
    
  - K: yep #c impulsive little geometers
@@ -29,11 +29,11 @@ hooks:
         w G.theJ hiss(J=>$S); # sixer
       Z:
         position: fixed
-        height: 22em
-        width: 22em
-        left: 30%
-        top: 20%
-        background: black
+        height: 62em
+        width: 62em
+        left: 10%
+        top: 10%
+        border: 1em solid rgba(0,0,0,0.7)
         
     E:
       _D: |
@@ -44,7 +44,9 @@ hooks:
   percolate: | # waft R
     w G.theR Jaction/J;
     #timer 0.2 { w G.theR Jaction/J; };
-    recur 3 { say($H->la) < 2 && w jak; };
+    recur 7 {
+    say "LOad av ".$H->la;
+    $H->la < 2 && w jak; };
   any_init: |
     w jak;
     waylay 2 G.theJ poke;
