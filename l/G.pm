@@ -1164,25 +1164,77 @@ sub parse_babble {
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
 
-
-
-
     # wholeness
 
-    my $sur = qr/ if| unless| for/;
+    my $sur = qr/ if| unless| for| when|,\s*$|;/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
     my $suro = qr/(?:$sur|(?>!$sur))/;
 
-    while ($eval =~
+    my $_u = qr/(?: ($poing))?/;
+    my $ylay = qr/(yl(?: $NUM)?)?/;
+    my $_g = qr/($poing )?/;
+    my $mwall = qr/(?:= |^\s*)/m;
+    my $_m = qr/(?: (.+))?/;
+
+    while ($eval =~ /$mwall()(Rw$ylay() ($point)$_m)$/gsm) {
+        my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
+        say wdump[($1, $2, $3, $4, $5, $6, $7)];
+        $g ||= $u.'->{G}' if $u;
+        $g ||= '$G';
+        $u ||= '$R';
+
+        my @n;
+        my @m;
+        my $ne = ""; # hidden reverse
+        ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
+
+        $ne = ',' if $a =~ s/,$//;
+
+        saygr "nbe $ne, a $a";
+
+        push @n, '%$ar' if $a =~ s/^\+ ?// || !$a;
+        for (split /\,| |\, /, $a) {
+            # sweet little pool... $J:geo etc
+            if (/^\$(\w+\S+)$/) {
+                push @n, "$1 => $_" ; # also avail a listy position
+            }
+            else {
+                push @m, $_;
+            }
+        }
+
+        # could use ^ here # edpeak?
+        push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
+            if @m;
+
+
+        saygr "N being: ".wdump[@n];
+
+        my @e;
+        push @e, '"'.$p.'"';
+        push @e, "{".join(", ",@n)."}";
+        push @e, $u if $u;
+        my $en = join ", ", @e;
+
+        my $wa = $g.'->w('.$en.')'.$ne;
+
+        if ($delay) {
+            saygr "Deeelaying Rw: $old\nDeeelay: $delay";
+            $delay =~ /aylay ($NUM)/;
+            $delay = $1 || "";
+            $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
+            saygr "Deeewow: $wa";
+        }
+
+        saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
+
+        $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
+    }
+
+    while ($eval =~ 
     /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-
-        if (!$g) {
-            $g = '$G';
-        }
-        else {
-            $g = "" # is over there already
-        }
+        $g = $g ? "" : '$G'; # not in $old, over there already
 
         my @n;
         my $ne = ""; # hidden reverse
@@ -1201,7 +1253,7 @@ sub parse_babble {
 
 
         my @e;
-        push @e, qq["$p"];
+        push @e, '"'.$p.'"';
         push @e, "{".join(", ",@n)."}";
         push @e, $u if $u;
         my $en = join ", ", @e;
