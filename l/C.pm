@@ -217,13 +217,5 @@ sub find {
     return $h
 }
 
-sub LioO {
-    my $C = shift;
-    my $O = shift;
-    die "$C->{K} has no Li!" unless $C->{Li};
-    my @a = G::findO($O => $C->{Li}->{o});
-    wantarray ? @a : shift @a;
-}
-
 9;
 

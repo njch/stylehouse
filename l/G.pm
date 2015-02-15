@@ -1139,7 +1139,7 @@ sub parse_babble {
 
 
     # word or scalar
-    my $point = qr/[\w\$\/\->\{\}]*[\w\$\/\->\.\}]+|\*/;
+    my $point = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
 
     my $alive = qr/\$[\w]*[\w\->\{\}]+/;
     # a.b.c
@@ -1176,7 +1176,7 @@ sub parse_babble {
     my $mwall = qr/(?:= |^\s*)/m;
     my $_m = qr/(?: (.+))?/;
 
-    while ($eval =~ /$mwall()(Rw$ylay() ($point)$_m?)$/gsm) {
+    while ($eval =~ /$mwall()(Rw$ylay() ((?:\*\/)?$point)$_m?)$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
         say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;
