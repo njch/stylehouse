@@ -27,15 +27,18 @@ R_Jz:
        sayre "YEp fLan";
    babz:
      'mod#nuym 3.12345': |
-             my $num = $i * $v + 200;
+             my $num = $i * $v + 5;
              $num = sprintf '%.3d',$num;
              #saygr "nuym $v   \t\t d.s ";
  - K: fs #c
    babz:
      'mod#fs 3.532332': |
              if (c.fs) {
-                 push @{d.css}, '%css#egy' =>
-                     'font-size:'.(c.fs * 99 - $num / 4).'%;',
+                 my $mod = $1 if c.fs =~ s/_(\d+)$//;
+                 c.fs =~ s/^0(\d+)/0.$1/; # leading zeroes, etc ssquihs
+                 my $siz = c.fs * 9;
+                 $siz -= $num / $mod if $mod;
+                 push @{d.css}, '%css#egy' => 'font-size:'.$siz.'%;';
              }
  - K: shtackedo #c
    babz:
@@ -51,17 +54,17 @@ R_Jz:
  - K: unico #c UNICO
    babz:
      'geoves#unico 3.233': |
-       [zqeq => 56, J.ent.2, {unico => 1, fs=>3}],
+       [zqeq => 20, J.ent.2, {unico => {thi=>10}, fs=>6_4}],
      'mod#wt 3.32344': |
-             if (c.unico) { # some J to mod from 9
-                 my $ent = d.s;
+             if (my $un = c.unico) { # some J to mod from 9
+                 $un = {} if !ref $un;
+                 my $ent = d.s =~ /^(d+)$/ ? $1 : J.ent.2;
                  push @gl, $ent;
-                 for my $i (1..34) {
+                 for my $i (1..(un.thi||24)) {
                      my $entoi = $1 if ($ent * $i) =~ /(\d)$/;
-                     saygr $entoi;
-                     my $b =
-                         unico($num+$i* 100 * $entoi)
-                         .($entoi > 7 ?"  ": ""); 
+                     my ($b, $d) = unico($num+$i* 100 * $entoi, 1);
+                     #die wdump($d) TODO
+                     $b .= "  " if $entoi > 7;
                      push @gl, $b;
                  } 1..34;
              }
@@ -71,11 +74,20 @@ R_Jz:
              if (c.jamit) {
                  push @{d.css}, '%tt#ee' => "JAMTHATFUELTANK"
              }
-
+ - K: squaga #c ~~~~~~~~~~~~~~~~
+   spesh: 0
+   babz:
+     'geoves#squa 3.2433': |
+       [sq   => 9,  '~~~'],
+       
+       #Rw tout + sqw variat ~~fs1600%s3,
+       
+       #Rw squi qw,
  - K: moogafoog #c
+   spesh: 1
    babz:
      'geoves#moo 3.2': |
-       [dotz => 22, ' z', '', 'color:black;opacity:0.4;white-space:pre;font-size:3900%;font-family:serif;'],
+       [dotz => 22, ' z', '', 'color:black;opacity:0.4;white-space:pre;font-size:1000%;font-family:serif;'],
        [dots => 10, '.', '', 'color:yellow;font-size:300%;opacity:0.5'],
        [dots => 11, '___', '', 'color:blue;font-size:300%;opacity:0.5'],
  - K: jextr #c 
@@ -115,16 +127,8 @@ R_Jz:
           -webkit-marquee-repetition:6;
           font-size:1.4em;
           ';
- - K: squaga #c ~~~~~~~~~~~~~~~~
-   spesh: 0
-   babz:
-     'geoves#squa 3.2433': |
-       [sq   => 9,  '~~~'],
-       
-       Rw tout + sqw variat ~~fs1600%s3,
-       
-       Rw squi qw,
  - K: squi #c ~~~~~~~~~~~~~
+   spesh: 1
    D: |
        [sqw  => 25, '~~`, ~',
        'color:#59d;font-size:1400%;-webkit-filter:blur(3px);white-space:pre;'],
