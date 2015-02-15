@@ -1186,9 +1186,7 @@ sub parse_babble {
         my @n;
         my @m;
         my $ne = ""; # hidden reverse
-        ($ne, $a) = ($a, "") if $a =~ /^$sur$/;
-
-        $ne = ',' if $a =~ s/,$//;
+        $ne = $1 if $a =~ s/($sur)$//;
 
         saygr "nbe $ne, a $a";
 
