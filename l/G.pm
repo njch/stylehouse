@@ -1345,7 +1345,7 @@ sub InjC {
 sub D_to_style {
     my $G = shift;
     my ($D, $bb) = @_;
-          my $i = 0.001;
+          my $i = 0.01;
           my @cs;
           my $up = sub {
               $bb->{"$D->{K}\t$i"} = join "\n", @cs if @cs;
