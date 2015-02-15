@@ -2,19 +2,59 @@ R_Jz:
  - K: geote #c CURVE curver
    n_D:
      curves: |
-         ["spun\t"."0.1" => 0.25],
-         ["curve\t"."0.2" => -0.22], 
-         ["zoom\t"."0.6" => 0.13 ], 
+         #["curve\t"."0.1" => -1.5], 
+         ["zoom\t"."0.001" => -0.311 ], 
+         ["zoom\t"."0.1" => 0.251 ], 
+         ["curve\t"."0.21" => 0.011], 
+         
+         ["curve\t"."0.512" => -0.25], 
+         #["curve\t"."0.3" => -2.4],
+         ["zoom\t"."0.3" => -0.12 ], 
+         #["zoom\t"."0.4" => -0.126 ], 
+     murph: |
+         (map { 
+         ["curve\t"."0.".$_ => 0.2],
+         ["curve\t"."0.".$_."5" => -0.2],
+         } 4..9),
          #["curve\t"."0.7" => -0.45 ],
          #["curve\t"."0.8" => 0.22 ],
          #["faster\t"."0.6" => 0.32 ], # this'll cuvre tighter and tigher
      mods: |
-       [zqeq => 20, J.ent.2, {unico => {thi=>10}, fs=>6_4}],
+       [zqeq => 9, J.ent.2, {unico => {thi=>9}, fs=>1_2}],
+       #[zqeq => 8 * J.ent.4, J.ent.3, {unico => {thi=>3}, fs=>4_3}],
        [sq   => 9,  '~~~'],
+       [sq   => 64,  '^'],
+       #Rw tout + sqw variat ~~fs1600%s3, mod even more
+       Rw squi qw,
+ - K: geotey #c CURVE curver
+   n_D:
+     curves: |
+         #["spun\t"."0.001" => 0.252],
+         ["curve\t"."0.001" => -0.211], 
+         #["curve\t"."0.1" => -1.5], 
+         ["zoom\t"."0.001" => 0.151 ], 
+         
+         ["curve\t"."0.512" => -0.25], 
+         #["curve\t"."0.3" => -2.4],
+         #["zoom\t"."0.3" => -0.4 ], 
+         #["zoom\t"."0.4" => -0.126 ], 
+     murph: |
+         (map { 
+         ["curve\t"."0.".$_ => 0.2],
+         ["curve\t"."0.".$_."5" => -0.2],
+         } 4..9),
+         #["curve\t"."0.7" => -0.45 ],
+         #["curve\t"."0.8" => 0.22 ],
+         #["faster\t"."0.6" => 0.32 ], # this'll cuvre tighter and tigher
+     mods: |
+       [zqeq => 9, J.ent.2, {unico => {thi=>9}, fs=>1_2}],
+       #[zqeq => 8 * J.ent.4, J.ent.3, {unico => {thi=>3}, fs=>4_3}],
+       [sq   => 9,  '~~~'],
+       [sq   => 64,  '^'],
        #Rw tout + sqw variat ~~fs1600%s3, mod even more
        Rw squi qw,
  - K: squi #c ~~~~~~~~~~~~~
-   spesh: 0
+   spesh: 1
    D: |
        [sqw  => 25, '~~`, ~',
        'color:#59d;font-size:1400%;-webkit-filter:blur(3px);white-space:pre;'],
@@ -60,13 +100,15 @@ R_Jz:
              if (my $un = c.unico) { # some J to mod from 9
                  $un = {} if !ref $un;
                  my $ent = d.s =~ /^(d+)$/ ? $1 : J.ent.2;
-                 push @gl, $ent;
+                 #push @gl, $ent;
+                 # TODO abundance
                  for my $i (1..(un.thi||24)) {
                      my $entoi = $1 if ($ent * $i) =~ /(\d)$/;
+                     
                      my ($b, $d) = unico($num+$i* 100 * $entoi, 1);
                      #die wdump($d) TODO
-                     $b .= "  " if $entoi > 7;
-                     push @gl, $b;
+                     my $pa = $entoi > 7 ? "  " : $entoi > 3 ? " " : "";
+                     push @gl, $pa.$b;
                  } 1..34;
              }
  - K: fs #c
