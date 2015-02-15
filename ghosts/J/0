@@ -43,7 +43,8 @@ hooks:
     w G.theR Jaction/J;
     #timer 0.2 { w G.theR Jaction/J; };
   any_init: |
-    w G.theR Jaction/J;
+    #w G.theR Jaction/J;
+    w G.theJ poke;
   peev: | # look
     my @a = K J;
     push @a, K R:J;
@@ -71,10 +72,56 @@ R_Jz:
       $J
   - K: poke #c
     D: |
-          my @wat = G.theJ.way->find("*/flam");
-          w pv(i=>\@wat);
-          Rw */flam zzz;
-          die;
+          #Rw */flam zzz;
+          my $p = '*/flam';
+          my @w = Rw findl $p;
+          #sayre "Wu: ".wdump[@w]; 
+          w pv(i=>\@w);
+  - K: findl #c
+    D: |
+            my $point = $p;
+            sayre "FINNNNNNNNNNNNNNNNNNNNNNNNNNNN"; 
+            my @path = split /\/|\./, $point;
+            my $h = R.way;
+            $h = h.hooks if h.hooks;
+            
+            my $doig;
+            $doig = sub {
+                my ($p,$h) = @_;
+                my @a = @$p;
+                say "at   @a  === ".slim(34,$h);
+                return $h if !@a; 
+                ($p) = shift @a;
+                
+                return undef if !ref $h;
+                say "looking in ".join(" ", sort keys %$h)."   ";
+                
+                if (exists $h->{$p}) { 
+                    $h = $h->{$p};
+                    say "Likine $p ... ".slim(40, $h);
+                    return $doig->([@a],$h);
+                }
+                else {
+                    if ($p =~ /\*/) {
+                        say "LIKETHIS";
+                        my $ma = join '.+', split /\*/, $p;
+                        my @ke = grep { qr/$ma/ } keys %$h;
+                        my @wu;
+                        for my $tk (@ke) {
+                            saygr " Trying $tk ";
+                            push @wu, $doig->([@a], $h->{$tk});
+                        }
+                        @wu = grep {defined} @wu;
+                        #die wdump \@wu if @wu > 1;
+                        return shift @wu;
+                    }
+                    else {
+                        return undef;
+                    }
+                }
+            };
+            
+            grep {defined} $doig->([@path], $h);
   - K: bacup #c SCHEMA
     D: |
         my $ss_Ds = R.S.ss_Ds = Load(<<'');

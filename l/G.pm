@@ -1193,8 +1193,17 @@ sub parse_babble {
         push @n, '%$ar' if $a =~ s/^\+ ?// || !$a;
         for (split /\,| |\, /, $a) {
             # sweet little pool... $J:geo etc
-            if (/^\$(\w+\S+)$/) {
-                push @n, "$1 => $_" ; # also avail a listy position
+            if (/^\$((\w+:)?\w+\S*)$/) {
+                my ($na, $fa) = ($1, $2);
+                if (!$fa) { # fake name, to ar
+                    $fa = $na;
+                }
+                else {
+                    $na =~ s/^\Q$fa\E//;
+                    $fa =~ s/:$//;
+                }
+                $na = '$'.$na;
+                push @n, "$fa => $na" ; # also avail a listy position
             }
             else {
                 push @m, $_;
