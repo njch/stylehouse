@@ -73,8 +73,8 @@ R_Jz:
   - K: poke #c
     D: |
           #Rw */flam zzz;
-          my $p = '*/flam';
-          my @w = Rw findl $p;
+          my $p = '*/curves';
+          my @w = Rw */curves etet;
           #sayre "Wu: ".wdump[@w]; 
           w pv(i=>\@w);
   - K: findl #c
@@ -102,10 +102,11 @@ R_Jz:
                     return $doig->([@a],$h);
                 }
                 else {
-                    if ($p =~ /\*/) {
+                    if ($p =~ /^(.*)\*(.*)$/) {
                         say "LIKETHIS";
+                        my ($l,$r) = ($1, $2);
                         my $ma = join '.+', split /\*/, $p;
-                        my @ke = grep { qr/$ma/ } keys %$h;
+                        my @ke = grep { /^$l.+$r$/ } keys %$h;
                         my @wu;
                         for my $tk (@ke) {
                             saygr " Trying $tk ";
@@ -113,7 +114,7 @@ R_Jz:
                         }
                         @wu = grep {defined} @wu;
                         #die wdump \@wu if @wu > 1;
-                        return shift @wu;
+                        return @wu;
                     }
                     else {
                         return undef;
