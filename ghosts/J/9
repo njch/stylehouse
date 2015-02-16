@@ -60,10 +60,8 @@ R_Jz:
             $cv ||= y.ordy->{$r};
             $cv ||= 4;
             
-            say "$r to $cv";
-
            #J.bz->("$r\t"."0.$cv".0 => $r);
-           J.fro->("$r/\t"."0.$cv" => $v,
+           J.lum.fro->("$r/\t"."0.$cv" => $v,
                {cv=>0.2, makaz=>{ # hooky
                   "/%css#jit\t"."0.1" => 'padding-left:4em;white-space:pre;max-width:10em',
                }},
@@ -76,21 +74,71 @@ R_Jz:
              # start culture
              # the middle
        }
-       Rw suck */roundness;
-     roundness: | #c regroup
+       Rw suck */round;
+     round: | #c regroup
        # J.lum -> $J
        
-       my @be = Rw tvo $J;
-       
+       my @be = Rw tvo $J:J.lum;
        my $jit; # cv / l / t / $j
+       my $ji = {map{$_=>[]}0..9};
+       ; # cvbit @s $j
        for my $j (@be) {
+           $jit->{j.cv}->{j.l}->{j.t} && die;
            $jit->{j.cv}->{j.l}->{j.t} = $j;
+           next unless j.l eq j.t; # just deal thing spines
+           j.cv =~ /^0\.(\d)/ || die;
+           say "j.r";
+           my $cvb = $1;
+           push @{$ji->{$cvb}}, $j;
        }
        
-       for my $cv (sort keys %$jit) {
-           saygr " @ $cv   ".scalar( keys %{$jit->{$cv}});
-           my ($cvb) = $cv =~ /^(0\.(\d)/ || die;
+       # wavesmush
+       my $id = 6;
+       for my $i (0..9) {
+           my $lo = $ji->{$i-1};
+           my $no = $ji->{$i};
+           my $ro = $ji->{$i+1};
            
+           my $bulg = @$no - $id if @$no > $id;
+           if ($bulg > 0 && $lo && @$lo < $id) {
+               my $idspacl = $id - @$lo;
+               push @$lo, map { shift @$no } 1..$idspacl;
+           }
+           
+           $bulg = 0;
+           $bulg = @$no - $id if @$no > $id;
+           if ($bulg > 0 && $ro) { # without varing  && @$ro < $id
+               unshift @$ro, map { shift @$no } 1..$bulg;
+           }
+           elsif ($bulg > 0) {
+               die 'backflip';
+               # flip everything around, raise $id,
+               # slosh back toward the middle again
+               # very painterly
+           }
+           
+       }
+       
+       
+       # measure $ji, mod up locations for things
+       # give original j.cv if poss
+       for my $cvb (sort keys %$ji) {
+           my $no = $ji->{$cvb};
+           my @cvs = map{_.cv}@$no;
+           die if join(":",@cvs) ne join(":", sort @cvs);
+           
+           if (@cvs != uniq @cvs) {
+               @cvs = map { "0.".$cvb.$_ } 1..@$no; # wind for thi like in mod
+           }
+           
+           for my $j (@$no) {
+               my $ncv = shift @cvs;
+               my $ts = $jit->{j.cv}->{j.l};
+               for my $k (sort keys %$ts) {
+                   my $tj = $ts->{$k};
+                   J.bz->(tj.t."\t".$ncv, tj.s);
+               }
+           }
        }
        #say "_.l _.r    ".slim(30,_.s) for @be;
        
