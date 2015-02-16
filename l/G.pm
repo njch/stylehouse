@@ -1200,7 +1200,8 @@ sub parse_babble {
                     $na =~ s/^\Q$fa\E//;
                     $fa =~ s/:$//;
                 }
-                $na = '$'.$na;
+                $na = '$'.$na unless $na =~ /\S\.\S/;
+                saygr "from: $a          na: $na";
                 push @n, "$fa => $na" ; # also avail a listy position
             }
             else {
@@ -1234,6 +1235,7 @@ sub parse_babble {
         $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
 
+    #c way
     while ($eval =~ 
     /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
