@@ -1487,7 +1487,7 @@ sub deaccum {
 sub slim {
     my ($f,$t,$c) = @_;
     ($f,$t,$c) = (40,40,$f) if $f && !$t && !$c;
-    ($f,$t,$c) = ($f,$f,$c) if $t && $f && !$c;
+    ($f,$t,$c) = ($f,$f,$t) if $t && $f && !$c;
     $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
     $c
 }
