@@ -8,8 +8,8 @@ R_Jz:
      if (ref $d eq 'ARRAY') {
          my $m = $d;
          $d = {};
-         (d.t, d.thi, d.s, d.c, d.css, d.and) = @$m;
-         %$d = (%$d, @{d.and}) if d.and;
+         (d.t, d.thi, d.s, d.c, d.css, my @etc) = @$m;
+         %$d = (%$d, @etc) if @etc;
      }
      if (!ref d.c) {
          d.css = d.c; # m
@@ -18,7 +18,7 @@ R_Jz:
      d.css ||= [];
      d.css = ['%css', d.css] if !ref d.css;
      
-     d.in = 1;
+     d.in ||= 1;
      if (d.over) {
          d.in += d.over;
          d.thi += d.over;

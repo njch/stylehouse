@@ -1,8 +1,6 @@
 R_Jz:
  - K: uphere #c curve curver
    n_D:
-     defauJ: |
-       'geote';
      makeJ: |
        my @style = (
            'thesurf',
@@ -27,7 +25,9 @@ R_Jz:
          ["curve 0.712" => -0.05],
      mods: |
        [sq   => 10,  '~~~'],
-       [sqat   => 20,  '^', 'color:blue'],
+       [sqat   => 20,  '^', {}, 'color:blue',
+       in => 5,
+       ],
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      inness: | #c soy packets everywhere # THINGNESS
@@ -94,13 +94,12 @@ R_Jz:
        my @be = Rw tvo $J:J.lum;
        my $jit; # cv / l / t / $j
        my $ji = {map{$_=>[]}0..9};
-       ; # cvbit @s $j
+       
        for my $j (@be) {
            $jit->{j.cv}->{j.l}->{j.t} && die;
            $jit->{j.cv}->{j.l}->{j.t} = $j;
            next unless j.l eq j.t; # just deal thing spines
            j.cv =~ /^0\.(\d)/ || die;
-           say "j.r";
            my $cvb = $1;
            push @{$ji->{$cvb}}, $j;
        }
@@ -134,14 +133,17 @@ R_Jz:
        
        
        # measure $ji, mod up locations for things
-       # give original j.cv if poss
+       # give original j.cv if the $cvb/ set is same
        for my $cvb (sort keys %$ji) {
            my $no = $ji->{$cvb};
            my @cvs = map{_.cv}@$no;
            die if join(":",@cvs) ne join(":", sort @cvs);
            
            if (@cvs != uniq @cvs) {
-               @cvs = map { "0.".$cvb.$_ } 1..@$no; # wind for thi like in mod
+               
+               my $warp = @$no;
+               @cvs = map { "0.".$cvb.$_ } Rw cv/oe $v:warp;
+               # wind for thi like in mod
            }
            
            for my $j (@$no) {
@@ -151,11 +153,25 @@ R_Jz:
                    my $tj = $ts->{$k};
                    J.bz->(tj.t."\t".$ncv, tj.s);
                }
+               J.bz->(j.l."%origin\t".$ncv, $j); # subtlest A-tion
            }
        }
-       #say "_.l _.r    ".slim(30,_.s) for @be;
        
        
+ - K: cv #cove
+   n_D:
+     oe: |
+       my $v = ar.v || 9;
+       my $wi = length($v);
+       my $thi = join '', ('9') x $wi;
+       
+       my @is = map { sprintf '%0'.$wi.'d', $_  }
+       map { int($_ * ($thi / $v)) } 1..$v;
+       
+       die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
+       @is;
+       
+     
  - K: fLan #c LOCAL AETA NETWORK
    n_D:
      flam: |
