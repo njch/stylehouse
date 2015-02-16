@@ -1,5 +1,49 @@
 R_Jz:
 
+ - K: geolo #c begin digging - smiling egg cup - most reentrant part
+     # set up archeology site, anything you want
+   D: |
+     my $Jeo = J.geo; # woo
+     sayyl '.' for 1..5;
+     
+     for my $j (do{ grep { !_.style } w $R tvo(J=>J.geo); }) {
+         saybl "               ^^^^ yep j.cv j.t          j.s ";
+         
+         J.geo.bz->("b%tr\t".j.cv => {
+             %{J.geo.bb->{"b%tr\t".j.cv} || {}}, # compile trs
+            j.t => j.s,
+         });
+     }
+     
+     for my $pcv (map{$_ * 0.1} 1..9) {
+         my $w = "b%tr\t".$pcv;
+         J.geo.bz->($w => {}) if !J.geo.bb->{$w};
+         # extra stick pole, sparsitor to trace by, blank as tr(ansf)
+     }
+     
+     # and lay out
+     my $last = {x=>0, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
+     for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
+         sayyl "       <<<< yep j.cv j.t          ".ki j.s;
+         
+         my $here = {};
+         here.cv = j.cv;
+         
+         here.spin = j.s.curve if exists j.s.curve; # on the level
+         
+         here.rad = 4*$RADIAN * j.s.spun if exists j.s.spun;
+         
+         here.zoom = 4*$RADIAN * j.s.zoom if defined j.s.zoom;
+         here.zoom = undef if exists j.s.zoom && !defined j.s.zoom;
+         
+         here.creatin = j.s;#$H->ejson(j.s);
+         
+         w $R atom[$j, $here, $last];
+         
+         J.geo.bz->("b%ve\t".j.cv => $here);
+         $last = $here;
+     }
+     # etc
  - K: atom #c may +atomb? without compare you are dead
    D: |
          # spacin
@@ -17,82 +61,4 @@ R_Jz:
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
          
- - K: phairo #c re/progressive proJammable petalis, frequency convogation
-   D: |
-     J.pha = w $R makeJ(name=>J.name.'-pha'); # TODO replace last
-     
-     my @d = grep { _.t eq _.l } w $R tvo[$J]; # dump J things into space
-     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
-     
-     my ($left,$right) = (undef,shift @be);
-     $left ||= $right;
-     
-     for my $j (@d) {
-         my $here = {cv => j.cv};
-         
-         if ($right && here.cv >= $right->{cv} ) { # adjust to poli
-             # mix a pool of ways, magnetic fishing rods
-             # end $left
-             $left = $right;
-             $right = shift @be;
-             # start $right
-         }
-         
-         here.left = $left;
-         here.right = $right; # <^ follow jagging rad, spaces within
-         
-         my $last = left.s || {};
-         w $R atom[$here, $last];
-         
-         J.pha.bz->(j.r => $here);
-     }
-     
-     saygr "J pha @ ".keys %{J.pha.bb};
-     
- - K: outhere #c out
-   D: |
-     my @d = grep { _.t eq _.l } w $R tvo(J=>J.pha); # !style||com
-     
-     for my $j (@d) {
-         my $here = j.s;
-         # unwind # TODO wind blowing crazy
-         my $swish = $RADIAN*4;
-         $swish *= -1 if here.rad < 0;
-         # coil something something
-         here.rad -= $swish until here.rad < $RADIAN*4;
-         
-         # random angle like L, find the \ direction at least
-         # its mass would be good too
-         # share space with curves
-         my $rad = here.rad;
-         my $radleg = -$RADIAN;
-         # and pan to hemisphere...#
-         # from O- is it in the left hemisphere etc
-          $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
-         $rad -= $radleg; 
-         
-         my $ere = {
-             left => here.left,
-             radial => sprintf('%.5f', $rad),
-             angle => sprintf('%.5f', here.rad),
-             x => sprintf('%.5f', here.x),
-             y => sprintf('%.5f', here.y),
-         };
-         
-         #sayre ">>>> yep @ent  j.cv    ". j.t;
-         
-         J.bz->(
-             "j.t%css#pha\t".j.cv =>  # concert per emportar
-             'top:'.(ere.y * 100).'%;'
-             .'left:'.(ere.x * 100).'%;'
-             .'position:absolute;'
-               .'-webkit-transform:rotate('.ere.radial.'rad);'
-               .'transform-origin:0% 0%;' # animate that bit
-         );
-         J.bz->(
-             "j.t%tt\t".j.cv =>  # concert per emportar
-             "*".ere.radial
-         );
-      }
-      sayre join " ", (">") x scalar(@d);
 
