@@ -19,6 +19,75 @@ R_surz:
                 a.bz->($_ => $tod->{$_})
             }
         }
+        
+        # 6.5 #c
+        my $apl = sub {
+            my ($l, $s, $j) = @_;
+
+            my $o = delete $ap->{$l};
+
+
+            die "reffy $s in $l" if ref $s;
+            #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
+
+            my $ishtml = $l eq '/';
+            my $gp;
+            my $at = {};
+            my $tag = "añ";
+            my $css = [];
+            for my $oj (@$o) {
+                saybl "        sdtyle! oj.style oj.s" if ar.db;
+                
+                # TODO here Jung Cs have injected langauge to grab themselves by...
+                for (oj.style) {
+                    
+                    # < >< >< >?
+                    # < >< >< >?
+                    # < >< >< >?
+                    # < >< >< >?
+                    # < >< >< >?
+                    # < >< >< >?
+                    when ('gp') {
+                        # has a way to $a the gp action within...
+                        $gp = oj.s;
+                        $ishtml = 1;
+                    }
+                    when ('sf') {
+                        push @$css, map { $R::f->{$_} || die "no style $_"}
+                            split '_', oj.s;
+                    }
+                    when ('css') {
+                        push @$css, oj.s;
+                    }
+                    $ishtml = 1 when 'ishtml';
+                    
+                    at.id = oj.s when 'id';
+                    
+                    at.title = oj.s when 'tt';
+                    
+                    $tag = oj.s when 'tag';
+                    
+                    1 when 'path';
+                    1 when 'origin';
+                    default {
+                        die "style oj.style = oj.s \t for $l";
+                    }
+                }
+            }
+            at.style = join '', map{"$_;"}
+                grep{defined} map { split ';' } @$css;
+        # 6.6 #c
+          
+            # hooch
+            at.title = "j.cv $l".(at.title ? " at.title" : "");
+            $at = join " ", $tag,
+                map { $_.'="'.$at->{$_}.'"' } # attra
+                grep { $at->{$_} } sort keys %$at;
+            
+            $s = encode_entities($s) if !$ishtml;
+            $s = "<$at>$s</$tag>" if defined $s;
+            $s
+        };
     - K: styley #c extra stylepliers
       babz:
         'maka 2.5': |
@@ -74,75 +143,7 @@ R_surz:
                        }
                   }
               }
-    - K: element #c APLY THE STYLES
-      babz:
-         'maka 6.5': |
-            my $apl = sub {
-                my ($l, $s, $j) = @_;
 
-                    my $o = delete $ap->{$l};
-
-
-                    die "reffy $s in $l" if ref $s;
-                    #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
-
-                    my $ishtml = $l eq '/';
-                    my $gp;
-                    my $at = {};
-                    my $tag = "añ";
-                    my $css = [];
-                    for my $oj (@$o) {
-                        saybl "        sdtyle! oj.style oj.s" if ar.db;
-                        
-                        # TODO here Jung Cs have injected langauge to grab themselves by...
-                        for (oj.style) {
-                            
-                            # < >< >< >?
-                            # < >< >< >?
-                            # < >< >< >?
-                            # < >< >< >?
-                            # < >< >< >?
-                            # < >< >< >?
-                            when ('gp') {
-                                # has a way to $a the gp action within...
-                                $gp = oj.s;
-                                $ishtml = 1;
-                            }
-                            when ('sf') {
-                                push @$css, map { $R::f->{$_} || die "no style $_"}
-                                    split '_', oj.s;
-                            }
-                            when ('css') {
-                                push @$css, oj.s;
-                            }
-                            $ishtml = 1 when 'ishtml';
-                            
-                            at.id = oj.s when 'id';
-                            
-                            at.title = oj.s when 'tt';
-                            
-                            $tag = oj.s when 'tag';
-                            
-                            1 when 'path';
-                            1 when 'origin';
-                            default {
-                                die "style oj.style = oj.s \t for $l";
-                            }
-                        }
-                    }
-                    at.style = join '', map{"$_;"}
-                        grep{defined} map { split ';' } @$css;
-         'maka 6.6': |
-            # hooch
-                    at.title = "j.cv $l".(at.title ? " at.title" : "");
-                    $at = join " ", $tag,
-                        map { $_.'="'.$at->{$_}.'"' } # attra
-                        grep { $at->{$_} } sort keys %$at;
-                    
-                    $s = encode_entities($s) if !$ishtml;
-                    $s = "<$at>$s</$tag>" if defined $s;
-                    $s
-            };
     - K: sinter #c
       babz:
         'maka 7': |
