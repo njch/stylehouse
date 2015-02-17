@@ -56,7 +56,11 @@ R_surz:
                             split '_', oj.s;
                     }
                     when ('css') {
-                        push @$css, oj.s;
+                        my $cs = oj.s;
+                        $cs = join ';', map{"$_:$cs->{$_}"}
+                            sort keys %$cs
+                            if ref $cs;
+                        push @$css, $cs;
                     }
                     $ishtml = 1 when 'ishtml';
                     
