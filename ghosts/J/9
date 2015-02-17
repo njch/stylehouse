@@ -25,13 +25,44 @@ R_Jz:
          if (my ($Joint) = grep{_.style eq 'Joint'} @sjs) {
              my @jcss = grep{_.style eq 'css' && _.com =~ /^pha/} @sjs;
              my $J2 = $Joint->{s};
+             
              Rw oven $J $J2;
+             
+             # J2 now disposed to a part of J, all within L
+             
+             my ($Z, $N);
+             for my $N (@jcss) {
+                 $Z->{$_} = $N->{$_} for keys %$N;
+             }
+             J2.S.Z = $Z;
              say "YES". wdump 2,[tj.r, $Joint->{s}, map { "   _.r" } @jcss];
          }
      }
      
      #J.bz->("j.t%css#pha-$_->[0]\t".j.cv => $_->[1]); # concert per emportar
      #sayyl wdump(2,\@things);
+ - K: oven #c
+   D: |
+     J.L ||= Rw JL $J;
+     
+     w mux(u=>J.L);
+     for my $k (grep {/^K/} keys %$ar) {
+         my $JJ = $ar->{$k};
+         JJ.A->umk(J.L => 'S');
+         # does that tidy^ TODO
+         w mux(u=>$JJ);
+     }
+     
+     w pv(i=>$J);
+     
+ - K: JL #c
+   D: |
+      my $u = {K=>'L',%{ar.r || {}}}; 
+      u.name ||= "L:J.name:".G.Lnumb++; # additively
+      my $q = 1;
+      my $L = w G.R fuu[$u, $q];
+      sayyl "made ++ ".$L->pi;
+      $L
  - K: hiJ #c
    D: |
      my $r;
