@@ -4,11 +4,19 @@ R_Jz:
       my $J = Rw hiJ below ship;
       my $J2 = Rw hiJ bollox sur;
       
-      Rw fitin $J $J2 2-4;
+      Rw fitin $J $J2;
       
       $J
  - K: fitin #c
    D: |
+     my @so = sort grep {/^J.+/} keys %$ar;
+     my $J = ar.J;
+     for (sort keys %$ar) {
+         /^J(\d+)$/ || next;
+         my $cvb = $1;
+         my $Jo = $ar->{$_};
+         J.bz->(Jo.name."\t"."0.".$cvb => '>:D', '%Joint' => $Jo);
+     }
      sayyl wdump($ar);
  - K: hiJ #c
    D: |
@@ -24,14 +32,13 @@ R_Jz:
      w mux(u=>$J);
      
      $J
-     
  - K: makeJ #c
    D: |
       my $r = ar.r || $ar;
       my $u = {K=>'J',%$r}; 
       u.name ||= "J".G.Jnumb++; # additively
-      
-      my $J = w G.R fuu[$u];
+      my $q = 1;
+      my $J = w G.R fuu[$u, $q];
       
       sayyl "made ++ ".$J->pi;
       $J
