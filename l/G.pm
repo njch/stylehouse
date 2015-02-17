@@ -1189,6 +1189,7 @@ sub parse_babble {
         my @n;
         my @m;
         my $wanr = $a =~ s/^\+ ?//;
+        $wanr = 'stick' if $a =~ s/^- ?//;
         for (split /\,| |\, /, $a) {
             # sweet little pool... $J:geo etc
             if (/^\$((\w+:)?\S+)$/) {
@@ -1208,7 +1209,7 @@ sub parse_babble {
                 push @m, $_;
             }
         }
-        push @n, '%$ar' if !@n || $wanr; 
+        push @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
 
         # could use ^ here # edpeak?
         push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'

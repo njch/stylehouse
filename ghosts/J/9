@@ -1,29 +1,59 @@
 R_Jz:
  - K: hijack #c hit J
    D: |
-      my $J = w G.theJ makeJ;
+      my $J = Rw hiJ below ship;
+      my $J2 = Rw hiJ bollox sur;
       
-       my @style = (
-           'thesurf',
-          # 'geophat',
-           'sur',
-       # 'unicrowd',
-        #'squi',
-        #'mooz', 
-       ); # J.something -> something ^ -> that
-       J.yt = { map{$_=>1} @style};
-       
-      w mux(u=>$J);
+      Rw fitin $J $J2 2-4;
+      
       $J
+ - K: fitin #c
+   D: |
+     sayyl wdump($ar);
+ - K: hiJ #c
+   D: |
+     my $r;
+     r.name = shift @$m;
+     r.name .=  "-J".G.Jnumb++; # additively, paranoid
+     r.style = [@$m];
+     
+     my $J = Rw makeJ $r;
+     
+     Rw Jup $J;
+     
+     w mux(u=>$J);
+     
+     $J
+     
  - K: makeJ #c
    D: |
-      my $name = ar.name || "J".G.Jnumb++; # additively
-      my $u = {K=>'J',name=>$name}; 
+      my $r = ar.r || $ar;
+      my $u = {K=>'J',%$r}; 
+      u.name ||= "J".G.Jnumb++; # additively
+      
       my $J = w G.R fuu[$u];
       
-      Rw uphere/makeJ $J;
       sayyl "made ++ ".$J->pi;
       $J
+ - K: Jup #c
+   D: |
+     my $style = J.style;
+     my @style = map {
+         saygr "J.name seeking $_...";
+         Rw suck - */styJup/$_;
+        } @$style;
+     saygr "J.name styJupd: @style";
+     
+      J.yt = { map{$_=>1} @style};
+       
+     "J".G.Jnumb++; # additively
+ - K: various #c top level style adoptor
+   n_D:
+     styJup:
+       sur: |
+         'thesurf', 'sur'
+       ship: |
+         'hull',
  - K: thesurf #c CURVE curver
    n_D:
      curves: |
@@ -42,6 +72,18 @@ R_Jz:
        [sqat   => 20,  'v', {}, 'color:blue',
          out => 10,
        ],
+ - K: hull #c whole screen iraga
+   n_D:
+     curves: |
+         ["spun 0" => 0.025],
+         ["curve 0" => -0.211],
+         ["zoom 0" => 0.2],
+         ["zoom 0.21" => -0.09],
+         ["curve 0.3" => 0.11],
+         
+         ["curve 0.712" => -0.05],
+     mods: |
+       [sq   => 40,  '.', {}, 'color:blue'],
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      inness: | #c soy packets everywhere # THINGNESS
@@ -103,7 +145,8 @@ R_Jz:
        }
        Rw suck */round;
      round: | #c regroup
-       # J.lum -> $J
+       # J.lum -5> $J
+       # could multiple J sources and exits, provide roundness, generally...
        
        my @be = Rw tvo $J:J.lum;
        my $jit; # cv / l / t / $j
