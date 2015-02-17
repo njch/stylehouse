@@ -1,10 +1,11 @@
 R_Jz:
- - K: uphere #c curve curver
-   n_D:
-     makeJ: |
+ - K: hijack #c hit J
+   D: |
+      my $J = w G.theJ makeJ;
+      
        my @style = (
            'thesurf',
-         #  'geophat',
+          # 'geophat',
            'sur',
        # 'unicrowd',
         #'squi',
@@ -12,21 +13,34 @@ R_Jz:
        ); # J.something -> something ^ -> that
        J.yt = { map{$_=>1} @style};
        
-    
+      w mux(u=>$J);
+      $J
+ - K: makeJ #c
+   D: |
+      my $name = ar.name || "J".G.Jnumb++; # additively
+      my $u = {K=>'J',name=>$name}; 
+      my $J = w G.R fuu[$u];
+      
+      Rw uphere/makeJ $J;
+      sayyl "made ++ ".$J->pi;
+      $J
  - K: thesurf #c CURVE curver
    n_D:
      curves: |
          ["spun 0" => 0.025],
          ["curve 0" => -0.211],
          ["zoom 0" => 0.2],
-         ["curve 0.31" => 0.41],
          ["zoom 0.21" => -0.09],
+         ["curve 0.3" => 0.11],
          
          ["curve 0.712" => -0.05],
      mods: |
        [sq   => 10,  '~~~'],
        [sqat   => 20,  '^', {}, 'color:blue',
-       in => 5,
+         in => 10,
+       ],
+       [sqat   => 20,  'v', {}, 'color:blue',
+         out => 10,
        ],
  - K: sur #c SURish rondo: on -> square ->
    n_D:

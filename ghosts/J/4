@@ -19,10 +19,7 @@ R_Jz:
      d.css = ['%css', d.css] if !ref d.css;
      
      d.in ||= 1;
-     if (d.over) {
-         d.in += d.over;
-         d.thi += d.over;
-     }
+     d.out ||= d.thi;
      
      if (d.c) {
          my $c = d.c;
@@ -42,7 +39,7 @@ R_Jz:
          };
      }
      
-     my @is = map { int($_ * (999/d.thi)) } d.in..d.thi;
+     my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
      
      my $dcss = d.css;
      for my $i (@is){ # THE TIR
