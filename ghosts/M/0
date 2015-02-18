@@ -208,12 +208,15 @@ R_Ms:
     
   Udown: |
     # W->M->uxs, then uxs S amongst, y projects
-    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux S y' };
+    my $okn = { map {$_=>1} map {"n_$_"} qw'M ux uS y' };
     my @ks = grep { $okn->{$_} } keys %{i.A};
     my @As = map { @{i.A->{$_}||[]} } @ks;
     my @down = map{_.i} @As;
     @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
-    die if grep {_.dead} @down;
+    my @al = grep {!_.dead} @down;
+    my @de = grep {_.dead} @down;
+    my $sit = {al=>\@al, de=>\@de, i=>$i};
+    w pv(i=>$sit) if @de;
     uniq @down;
     
   event: |
@@ -299,7 +302,7 @@ R_Mz:
           # 5.9
       }
 
-      my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R);
+      my $j = $G->nw(K=>'j', s=>[], c=>[], W=>$W, M=>$M, R=>$R, V=>$V, TV=>$V);
 
       my $sixes = w $R pto(%$tvp, lcv => 6);
       while (defined(my $r = $sixes->())) {
@@ -313,6 +316,14 @@ R_Mz:
           my $p = r.p; my $s = r.s; my $to = r.to;
           # 7
           # 7.9
+      }
+      
+      for my $u (values %{$p->{9}}) {     # goners
+          sayyl "deleting ".$u->pi;
+          sayyl "  yup: ".u.i.dead;
+          w R.Wo del[$u];
+          delete V.bb->{"i/u.i.id%u 3"};
+          # scrape all the u/i out of the vortex ^
       }
 
       H.G w aj[$j];
@@ -344,9 +355,9 @@ R_Mz:
                 my $u = V.bb->{"i/s.id%u 3"};
                 $u = u.s if ref $u eq 'HASH';
                 if (s.dead) {
-                    w R.Wo del[$u];
-                    delete V.bb->{"i/s.id%u 3"};
-                    sayre "SOMETHING DIED: ".($u ? $u->pi : "already~undef~");
+                    sayyl "died: ".$s->pi;
+                    sayyl "diedux: ".$u->pi;
+                    $p->{9}->{"$to/s.id"} = $u;
                 }
                 $cv = 1 if !$u || !u.at; # sat in
             }
@@ -376,12 +387,12 @@ R_Mz:
             else {
                 # add C.Bs override for little B schemas not in .B.?
                 my $uxa = {K => 'ux', i => $i};
-                uxa.B.i = uxa.i;
+                uxa.B.i = uxa.i; # B = index
                 $ux = w R.Wo fuu(u => $uxa, q=>1);
                 w ux.i uxyou_D[$ux, $M];
             }
             ux.A->umk($M, 'ux');
-            ux.A->umk(ux.i, 'U'); # into alien space
+            ux.i.A->umk($ux, 'U'); # into alien space as u so del not wreck zipper
             V.bz->("i/i.id%u 3", $ux);
         }
   - K: four #c
@@ -418,9 +429,12 @@ R_Mz:
                 if ($needmore) {
                     my $j = {};
                     my $jp = w $R Usurf(j=>$j, i=>$M);
-                    my $vom = {reverse %$jp};
-                    keys %$jp == keys %$vom
-                    || die wdump[[sort keys %$jp], [sort values %$vom]];
+                    
+                    my $vom = {};
+                    for my $k (sort keys %$jp) {
+                        my $v = $jp->{$k};
+                        $vom->{$v} = $k; # replaces lesser uSdness
+                    };
                     M.vom = $vom;
                 }
                 M.tom = {}; # < ^ others 5s put moves forth to 6
@@ -437,7 +451,13 @@ R_Mz:
                 
                 my $mv = $vom->{ux.id} || die;
                 $tom->{$mv} = $ux;
-                #say "for ".$ux->pi." has top go through $mv";
+                
+                #sayyl "VOMITY" for 1..3;
+                say "for ".$ux->pi;
+                sayyl " has top go through $mv";
+                #sayyl $ux->pi;
+                sayre "ux is ".(ux.dead ? "DEAD" : "A L I V E")
+                ."      i is ".(ux.i.dead ? "DEAD" : "A L I V E");
             }
   - K: six #c
     babz:
@@ -454,12 +474,16 @@ R_Mz:
                   my $to = M.tom;
                   my $pat = [];
                   for my $k (sort keys %$to) {
-                      push @mm, $to->{$k};
-                      push @$pat, {k=>$k, ux=>$to->{$k}};
+                      sayyl "To $k";
+                      sayyl "tooooooooooooooooooooooooooooooo ".$to->{$k}->pi;
+                      push @$pat, {k=>$k, M=>$M, i=>$to->{$k}}; # TODO k reduntd?
                   }
+                  # has no M i=$M in it until..
+                  push @mm, @$pat;
                   M.pat = $pat;
               }
-          for my $i (@mm) {
+          for my $p (@mm) {
+              my $i = p.i;
               #sayyl "Six? ".$i->pi;
               #next if i.K eq 'ux' && !$p->{5}->{"i/i.i.id"};
               #sayyl "SPAWN ".$i->pi;
@@ -469,22 +493,28 @@ R_Mz:
       'ux 7': |
           my @mm;
               if ($to eq 'W') {
-                  push @mm, $s;
+                  push @mm, {i=>$s};
               }
 
               if ($to eq 'M') {
                   my $M = $s;
 
                   my $pat = M.pat;
-
-                  push @mm, map {_.ux} reverse @$pat;
-
-                  push @mm, $M; # after desc lines come back
+                  push @mm, reverse @$pat;
+                  # self on top as moves are only fived for is
+                  # future 5ishness ends with that reverse ^
+                  push @mm, {M=>$M, i=>$M};
               }
-              for my $i (@mm) {
-                  #sayyl "Seven! ".$i->pi;
-                  w $R compile_figure[$i, $j];
-                  w $R wayout_sendo[$i, $j];
+              for my $p (@mm) {
+                  my $i = p.i;
+                  my $M = p.M;
+                  sayyl "Seven! i.i.dead ".$i->pi;
+                  if (i.i.dead) {
+                      sayre "DEAD, NEXT";
+                    next;
+                  }
+                  w $R compile_figure[$i, $j, $M];
+                  w $R wayout_sendo[$i, $j, $M];
               }
   - K: compile_figure #c
     D: |
@@ -522,6 +552,20 @@ R_Mz:
         
         
         my @down = w $R Udown(+ allseeing => 1);
+        @down = grep {
+            _.K ne 'ux' || do {
+                my $d = $_;
+                my $M = ar.M || die;
+                my $vom = M.vom;
+                my $where = $vom->{d.id};
+                my @wh = split /\//, $where;
+                my $should = $wh[-2] eq u.id;
+                $should
+           }
+        } @down;
+        @down = grep { !_.i.dead } @down;
+        
+        saybl "Hanging off ".$u->pi.":\n",ind "  ", join"\n",map{$_->pi} @down;
         @down = sort { a.conor <=> b.conor } @down;
         at.ooze = \@down;
   - K: wayout_sendo #c
@@ -620,6 +664,8 @@ R_Mz:
                 
             }
             for my $gonu (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
+                sayyl "SSSSSSSSSSSSSSSSSSSSSSSsrm ".$gonu->pi;
+                sayyl " was gonu.i.dead";
                 my $way = gonu.i.S.jsrm || 'remove()';
                 $doj_S->(gonu.at.id, '.'.$way); # one grain of sand
                 
