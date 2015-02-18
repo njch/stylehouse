@@ -11,6 +11,115 @@ R_Jz:
          w G.theR gpfro(a=>$fro,also=>$also);
      };
      
+ - K: gpfro #c .fro(...) -> Rw gp $a
+   D: |
+      my ($aser, $l, $u, $cv, @etc) = @$a;
+      
+      my $gp = {u=>$u, cv=>$cv};
+      %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
+      %$gp = (%$gp, %{ar.also}) if ar.also;
+      
+      my $v = w $R gp(a => $gp);
+            
+      $aser->($l => $v,
+          '%gp' => $gp,
+          @etc,
+      );
+    
+ - K: gp #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
+   D: |
+        G.gp_inarow++;
+        my $a = ar.a || die;
+        # usuall comes in on a:
+        die "ref cv stilla t gp" if ref a.cv;
+        %$a = (%$a, %{delete a.cv}) if ref a.cv; # sneak params in...
+        a.cv = 0.1 if a.cv < 0.1;
+        
+        my $u = a.u;
+        
+        # 3
+        $R->phat($a);
+        
+        a.isJid = a.replaceJid || $H->mkuid;
+        undef a.isJid if G.gp_inarow > 1;
+        
+        my $c = $R->cgp($u);
+        
+        # 4
+        my $wa = a.wa || do {
+            my ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
+            $wa = ref $u if $wa eq 'canpi';
+            $wa ||= 'wtf';
+            $wa
+        };
+        R.way->find("pi/$wa") || die "not $wa equip";
+        
+        # 5
+
+        # 6
+        w $R pi/$wa[$a,$u];
+        
+        # 7
+        my $html = w $R maka[$a,$u];
+        # don't need to close it up right now...
+        # top down injection gos
+        
+        
+        # 8
+        
+        # 9
+        G.gp_inarow--;
+        my $ind = join "", ("  ") x scalar @F;
+        #sayyl "$ind Done gp for $u ".F_delta;
+        $html
+        
+ - K: hiJ #c
+   D: |
+     my $r;
+     r.name = shift @$m;
+     r.name .=  "-J".G.Jnumb++; # additively, paranoid
+     r.style = [@$m];
+     
+     my $J = Rw makeJ $r;
+     
+     Rw Jup $J;
+     
+     waylay mux(u=>$J);
+     
+     $J
+ - K: makeJ #c
+   D: |
+      my $r = ar.r || $ar;
+      my $u = {K=>'J',%$r}; 
+      u.name ||= "J".G.Jnumb++; # additively
+      my $q = 1;
+      my $J = w G.R fuu[$u, $q];
+      
+      sayyl "made ++ ".$J->pi;
+      $J
+ - K: Jup #c
+   D: |
+     my $style = J.style;
+     my @style = map {
+         saygr "J.name seeking $_...";
+         my $p = "$_/styJup";
+         Rw suck - $p,
+         #Rw suck - */styJup/$_,
+        } @$style;
+     saygr "J.name styJupd: @style";
+     
+      J.yt = { map{$_=>1} @style};
+       
+     "J".G.Jnumb++; # additively
+
+ - K: JL #c make L bracket
+   D: |
+      my $u = {K=>'L',%{ar.r || {}}}; 
+      u.name ||= "L:J.name:".G.Lnumb++; # additively
+      my $q = 1;
+      my $L = w G.R fuu[$u, $q];
+      sayyl "made ++ ".$L->pi;
+      $L
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
    D: |
        my $j = {};
@@ -95,42 +204,4 @@ R_Jz:
           push @things, $thing;
       }
       @things
- - K: hiJ #c
-   D: |
-     my $r;
-     r.name = shift @$m;
-     r.name .=  "-J".G.Jnumb++; # additively, paranoid
-     r.style = [@$m];
-     
-     my $J = Rw makeJ $r;
-     
-     Rw Jup $J;
-     
-     waylay mux(u=>$J);
-     
-     $J
- - K: makeJ #c
-   D: |
-      my $r = ar.r || $ar;
-      my $u = {K=>'J',%$r}; 
-      u.name ||= "J".G.Jnumb++; # additively
-      my $q = 1;
-      my $J = w G.R fuu[$u, $q];
-      
-      sayyl "made ++ ".$J->pi;
-      $J
- - K: Jup #c
-   D: |
-     my $style = J.style;
-     my @style = map {
-         saygr "J.name seeking $_...";
-         my $p = "$_/styJup";
-         Rw suck - $p,
-         #Rw suck - */styJup/$_,
-        } @$style;
-     saygr "J.name styJupd: @style";
-     
-      J.yt = { map{$_=>1} @style};
-       
-     "J".G.Jnumb++; # additively
 
