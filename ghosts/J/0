@@ -55,7 +55,13 @@ hooks:
         
   dies_D: |
     if (u.K eq 'L') {
-       #w G.R del[
+        # let go of the grabbed # some other set can figure it out
+        # likely to be gone too via Jassacre pre hijack
+        # BEFORE non del cascades delete through n_S
+        my @gra = grep {_.L ne $u} map{_.i} @{u.A.n_S||[]};
+        0->deaccum(u.A, 'n_S', _.a) for @gra;
+        
+        #w G.R del[
     }
     if (u.K eq 'J') {
         if (my $l = u.L) {
