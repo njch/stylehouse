@@ -22,19 +22,24 @@ R_Jz:
      my @things = Rw tvy $J;
      for my $thing (@things) {
          my ($tj, @sjs) = @$thing;
-         if (my ($Joint) = grep{_.style eq 'Joint'} @sjs) {
+         if (my ($Joi) = grep{_.style eq 'Joint'} @sjs) {
              my @jcss = grep{_.style eq 'css' && _.com =~ /^pha/} @sjs;
-             my $J2 = $Joint->{s};
+             my $J2 = $Joi->{s};
              
              Rw oven $J $J2;
              # J2 now disposed to a part of J, all within L
              
              my ($Z, $N);
-             for my $N (@jcss) {
+             for my $N (map { _.s } @jcss) {
                  $Z->{$_} = $N->{$_} for keys %$N;
              }
+             saybl " hoping ".$J2->pi." istyle:".wdump($Z);
+             my $beef = J2.S.Z;
+             Z.width = '100%';
+             Z.height = '100%';
+             Z.border = '2px solid rgba(0,0,0,0.3)';
              J2.S.Z = $Z;
-             say "YES". wdump 2,[tj.r, $Joint->{s}, map { "   _.r" } @jcss];
+             say "YES". wdump 2,[tj.r, $beef, map { "   _.r" } @jcss];
          }
      }
      

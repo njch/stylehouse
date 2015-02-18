@@ -282,7 +282,7 @@ sub uiuS {
 
         my $Gw = $w->{G}->findway($w->{K}) if $w->{Gw};
 
-        for my $ww ($Gw, $w) {
+        for my $ww ($w, $Gw) {
             next if !$ww;
             next if !$ww->{$a};
             if ($ww->{$a}->{"${b}_D"}) {
