@@ -1,97 +1,135 @@
 R_Jz:
-  - K: setup #c sets up $a with bb-domin & accessors
-    D: |
-      S.bb = {};
-      S.ord = [];
-      S.bz = w $R as(bb=>S.bb, ord=>S.ord);
-      
-      S.fro = sub {
-          my $fro = [S.bz, @_];
-          w G.theR gpfro(a=>$fro);
-      };
-      
-  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
-    D: |
-        my $j = {};
-        my $do;
-        $do = sub {
-            my $j = {%$j};
-            my $ad = [@_];
-            my %j = %$j;
-            while (@$ad) {
-                my ($k, $v) = (shift @$ad, shift @$ad);
-                
-                my $comp = $k =~ /^(%|\+)/;
-                my $j = {%j} if $comp;
-                if ($comp) {
-                    $k =~ s/^\+// if $comp;
-                    j.t .= $k if $comp;
-                }
-                else {
-                    (j.t, j.cv) = split /\s+/, $k, 2;
-                    %j = %$j;
-                }
-                defined j.cv || die "NOSEYV: j.cv".wdump($j);
-                j.r = j.t."\t".j.cv;
-                j.s = $v;
-                
-                $bb->{j.r} = j.s;
-                push @$ord, {%$j} if $ord;
-            }
-            sub{$do->(%$j, @_)} # TODO fucked, get some weed and fix it
-        };
-        $do
-  - K: shj #c pronounce $j{r,s,t,l,com?,style?,cv,ev?} # to cache or something, is phasey
-    D: |
-      my $j;
-      j.r = $r;
-      j.s = ar.C || ar.d->{$r}; # carbon in, or from abdomin
-      (j.t, j.cv) =
-          j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
-          :
-          split /\s+/, j.r, 2;
-          
-      my $t = j.t; # sep orthoogabooga
-      j.com = $1 if $t =~ s/#(.+)$//;
-      j.style = $1 if $t =~ s/%(.+)$//;
-      j.l = $t;
-      
-      (j.cv, my @e) = split /\s+/, j.cv;
-      j.ev = \@e if @e;
-      $j
-  - K: ytv #c sort by voltage making cityscape, things only
-    D: |
-      
-      my $tvs;
-      map{
-          push @{ar.ord}, $_ if ar.ord;
-            push @{$tvs->{_.cv}||=[]}, $_
-        }
-        sort{ a.r cmp b.r }
-        grep{ _.t eq _.l } # things onlyness
-        map{ w $R shj(r=>$_,d=>J.bb); }
-        keys %{J.bb};
-      $tvs;
-  - K: tvo #c sort by voltage making cv,r ordered list
-    D: |
-      sort { a.cv <=> b.cv }
-        sort{ a.r cmp b.r }
-        map{ w $R shj(r=>$_,d=>J.bb); }
-        keys %{J.bb};
-  - K: tvy #c group tvo by thing with style
-    D: |
-       my @d = w $R tvo[$J]; # !style||com
-       my @things;
-       while (@d) {
-           my $ne = shift @d;
-           die wdump(1, $ne) if ne.l ne ne.t; # style no tip
-
-           my $thing = [$ne];
-           while (@d && $d[0]->{l} eq ne.l) {
-               my $sj = shift @d;
-               push @$thing, $sj;
+ - K: setup #c sets up $a with bb-domin & accessors
+   D: |
+     S.bb = {};
+     S.ord = [];
+     S.bz = w $R as(bb=>S.bb, ord=>S.ord);
+     
+     S.fro = sub {
+         my $fro = [S.bz, @_];
+         w G.theR gpfro(a=>$fro);
+     };
+     
+ - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
+   D: |
+       my $j = {};
+       my $do;
+       $do = sub {
+           my $j = {%$j};
+           my $ad = [@_];
+           my %j = %$j;
+           while (@$ad) {
+               my ($k, $v) = (shift @$ad, shift @$ad);
+               
+               my $comp = $k =~ /^(%|\+)/;
+               my $j = {%j} if $comp;
+               if ($comp) {
+                   $k =~ s/^\+// if $comp;
+                   j.t .= $k if $comp;
+               }
+               else {
+                   (j.t, j.cv) = split /\s+/, $k, 2;
+                   %j = %$j;
+               }
+               defined j.cv || die "NOSEYV: j.cv".wdump($j);
+               j.r = j.t."\t".j.cv;
+               j.s = $v;
+               
+               $bb->{j.r} = j.s;
+               push @$ord, {%$j} if $ord;
            }
-           push @things, $thing;
+           sub{$do->(%$j, @_)} # TODO fucked, get some weed and fix it
+       };
+       $do
+ - K: shj #c pronounce $j{r,s,t,l,com?,style?,cv,ev?} # to cache or something, is phasey
+   D: |
+     my $j;
+     j.r = $r;
+     j.s = ar.C || ar.d->{$r}; # carbon in, or from abdomin
+     (j.t, j.cv) =
+         j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
+         :
+         split /\s+/, j.r, 2;
+         
+     my $t = j.t; # sep orthoogabooga
+     j.com = $1 if $t =~ s/#(.+)$//;
+     j.style = $1 if $t =~ s/%(.+)$//;
+     j.l = $t;
+     
+     (j.cv, my @e) = split /\s+/, j.cv;
+     j.ev = \@e if @e;
+     $j
+ - K: ytv #c sort by voltage making cityscape, things only
+   D: |
+     
+     my $tvs;
+     map{
+         push @{ar.ord}, $_ if ar.ord;
+           push @{$tvs->{_.cv}||=[]}, $_
        }
-       @things
+       sort{ a.r cmp b.r }
+       grep{ _.t eq _.l } # things onlyness
+       map{ w $R shj(r=>$_,d=>J.bb); }
+       keys %{J.bb};
+     $tvs;
+ - K: tvo #c sort by voltage making cv,r ordered list
+   D: |
+     sort { a.cv <=> b.cv }
+       sort{ a.r cmp b.r }
+       map{ w $R shj(r=>$_,d=>J.bb); }
+       keys %{J.bb};
+ - K: tvy #c group tvo by thing with style
+   D: |
+      my @d = w $R tvo[$J]; # !style||com
+      my @things;
+      while (@d) {
+          my $ne = shift @d;
+          die wdump(1, $ne) if ne.l ne ne.t; # style no tip
+
+          my $thing = [$ne];
+          while (@d && $d[0]->{l} eq ne.l) {
+              my $sj = shift @d;
+              push @$thing, $sj;
+          }
+          push @things, $thing;
+      }
+      @things
+ - K: hiJ #c
+   D: |
+     my $r;
+     r.name = shift @$m;
+     r.name .=  "-J".G.Jnumb++; # additively, paranoid
+     r.style = [@$m];
+     
+     my $J = Rw makeJ $r;
+     
+     Rw Jup $J;
+     
+     waylay mux(u=>$J);
+     
+     $J
+ - K: makeJ #c
+   D: |
+      my $r = ar.r || $ar;
+      my $u = {K=>'J',%$r}; 
+      u.name ||= "J".G.Jnumb++; # additively
+      my $q = 1;
+      my $J = w G.R fuu[$u, $q];
+      
+      sayyl "made ++ ".$J->pi;
+      $J
+ - K: Jup #c
+   D: |
+     my $style = J.style;
+     my @style = map {
+         saygr "J.name seeking $_...";
+         my $p = "$_/styJup";
+         Rw suck - $p,
+         #Rw suck - */styJup/$_,
+        } @$style;
+     saygr "J.name styJupd: @style";
+     
+      J.yt = { map{$_=>1} @style};
+       
+     "J".G.Jnumb++; # additively
 
