@@ -429,10 +429,11 @@ R_Mz:
                 if ($needmore) {
                     my $j = {};
                     my $jp = w $R Usurf(j=>$j, i=>$M);
-                    
                     my $vom = {};
                     for my $k (sort keys %$jp) {
                         my $v = $jp->{$k};
+                        saybl "sssssss $k       $v";
+                        next if length($vom->{$v}) > length($k); # dodge
                         $vom->{$v} = $k; # replaces lesser uSdness
                     };
                     M.vom = $vom;
@@ -475,7 +476,7 @@ R_Mz:
                   my $pat = [];
                   for my $k (sort keys %$to) {
                       sayyl "To $k";
-                      sayyl "tooooooooooooooooooooooooooooooo ".$to->{$k}->pi;
+                      sayyl "                            ".$to->{$k}->pi;
                       push @$pat, {k=>$k, M=>$M, i=>$to->{$k}}; # TODO k reduntd?
                   }
                   # has no M i=$M in it until..
@@ -559,8 +560,9 @@ R_Mz:
                 my $vom = M.vom;
                 my $where = $vom->{d.id};
                 my @wh = split /\//, $where;
-                my $should = $wh[-2] eq u.id;
-                $should
+                my $should = $wh[-2] ne u.id;
+                sayre "down ".$u->pi."   to $where         ".$d->pi if $should;
+                !$should
            }
         } @down;
         @down = grep { !_.i.dead } @down;
