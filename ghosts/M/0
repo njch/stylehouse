@@ -194,6 +194,9 @@ R_Ms:
     my @down = w $R Udown;
     ar.d++;
     die if ar.d > 10;
+    my @out;
+    @down = grep { !_.A.u_uS || do { push @out, $_; 0 } } @down;
+    push @down, @out;
     for my $d (@down) {
         my $jpp = w $R Usurf(j=>$j, i=>$d, d=>ar.d);
         for my $k (keys %$jpp) {
@@ -319,8 +322,8 @@ R_Mz:
       }
       
       for my $u (values %{$p->{9}}) {     # goners
-          sayyl "deleting ".$u->pi;
-          sayyl "  yup: ".u.i.dead;
+          sayre "uxdel ".$u->pi;
+          die unless u.i.dead;
           w R.Wo del[$u];
           delete V.bb->{"i/u.i.id%u 3"};
           # scrape all the u/i out of the vortex ^
@@ -408,15 +411,25 @@ R_Mz:
                 
                 push @{M.tohu||=[]}, $ux;
                 
+                sayyl "ux ".$ux->pi."       has symbio..." if @{ux.i.A.u_S || []};
                 for my $iu (map{_.i}@{ux.i.A.u_S||[]}) { # or whatever
-                    my $u = (V.bb->{"i/iu.id%u 3"} || next)->{s};
+                    my $u = V.bb->{"i/iu.id%u 3"};
+                    if (!$u) {
+                        sayyl "Has bro in origin but not in V\n"
+                        ." ux- ".$ux->pi."\n"
+                        ." brorig- ".$iu->pi;
+                        next;
+                    }
+                    $u = u.s; # j case, pop out ux
                     die if $iu ne u.i;
+                    sayyl " Wants to be under... ". $iu->pi;
                     $p->{5}->{"i/iu.id"} = $iu; # must go through to get here
                     ux.A->umk($u, 'uS'); # relatable
                 }
             }
             elsif ($to eq 'M') {
                 my $M = $s;
+                saybl "M M M M";
                 # TODO know about which i's at this point
                 # so to try and join up _uS
                 # taking the Udown backwards seems like less work
@@ -666,8 +679,7 @@ R_Mz:
                 
             }
             for my $gonu (grep { !$ino->($_, at.ooze) } @{u._at.ooze}) {
-                sayyl "SSSSSSSSSSSSSSSSSSSSSSSsrm ".$gonu->pi;
-                sayyl " was gonu.i.dead";
+                sayre "DDDDDDDDDeath ".$gonu->pi;
                 my $way = gonu.i.S.jsrm || 'remove()';
                 $doj_S->(gonu.at.id, '.'.$way); # one grain of sand
                 
