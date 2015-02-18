@@ -35,10 +35,9 @@ R_surs:
       my ($aser, $l, $u, $cv, @etc) = @$a;
       
       my $gp = {u=>$u, cv=>$cv};
-      if (ref gp.cv) {
-          my $mcv = delete gp.cv;
-          %$gp = (%$gp, %$mcv);
-      }
+      %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
+      %$gp = (%$gp, %{ar.also}) if ar.also;
+      
       my $v = w $R gp(a => $gp);
             
       $aser->($l => $v,
@@ -46,18 +45,15 @@ R_surs:
           @etc,
       );
     
-    gp: | #c R_sur gp
+    gp: | #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
         G.gp_inarow++;
         my $a = ar.a || die;
-        a.cv = ar.cv if ar.cv;
-        a.u = ar.u if ar.u;
         # usuall comes in on a:
-        %$a = (%$a, %{delete a.cv}) if ref a.cv; # sneak params in
+        die "ref cv stilla t gp" if ref a.cv;
+        %$a = (%$a, %{delete a.cv}) if ref a.cv; # sneak params in...
         a.cv = 0.1 if a.cv < 0.1;
         
         my $u = a.u;
-        my $arr = {a => $a, u => $u};
-        
         
         # 3
         $R->phat($a);
@@ -79,7 +75,6 @@ R_surs:
         # 5
 
         # 6
-        #saybl wdump(2, $arr);
         w $R pi/$wa[$a,$u];
         
         # 7
