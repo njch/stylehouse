@@ -1176,7 +1176,7 @@ sub parse_babble {
     my $_g = qr/($poing )?/;
     my $mwall = qr/(?:= |^\s*)/m;
 
-    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?);?$/gsm) {
+    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
         #say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;

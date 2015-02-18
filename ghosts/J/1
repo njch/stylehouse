@@ -6,24 +6,25 @@ R_Jz:
      S.bz = w $R as(bb=>S.bb, ord=>S.ord);
      
      S.fro = sub {
-         my $fro = [S.bz, @_];
-         my $also = { Jiter => $S };
-         w G.theR gpfro(a=>$fro,also=>$also);
+         my $fro = {
+            l => shift,
+            u => shift,
+            cv => shift,
+            etc => [@_],
+        };
+        fro.Jiter = $S; # drifter, expecting 8 (forks & events) approp.
+        Rw gpfro $fro ; 
      };
      
  - K: gpfro #c .fro(...) -> Rw gp $a
    D: |
-      my ($aser, $l, $u, $cv, @etc) = @$a;
+      %$fro = (%$fro, %{delete fro.cv}) if ref fro.cv;
       
-      my $gp = {u=>$u, cv=>$cv};
-      %$gp = (%$gp, %{delete gp.cv}) if ref gp.cv;
-      %$gp = (%$gp, %{ar.also}) if ar.also;
-      
-      my $v = w $R gp(a => $gp);
+      fro.v = Rw gp $a:fro;
             
-      $aser->($l => $v,
-          '%gp' => $gp,
-          @etc,
+      fro.Jiter.bz->(fro.l => fro.v,
+          '%gp' => $fro,
+          @{fro.etc||[]},
       );
     
  - K: gp #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
@@ -38,7 +39,7 @@ R_Jz:
         my $u = a.u;
         
         # 3
-        $R->phat($a);
+        G.theR->phat($a);
         
         a.isJid = a.replaceJid || $H->mkuid;
         undef a.isJid if G.gp_inarow > 1;
@@ -52,15 +53,15 @@ R_Jz:
             $wa ||= 'wtf';
             $wa
         };
-        R.way->find("pi/$wa") || die "not $wa equip";
+        G.theR.way->find("pi/$wa") || die "not $wa equip";
         
         # 5
 
         # 6
-        w $R pi/$wa[$a,$u];
+        w G.theR pi/$wa[$a,$u];
         
         # 7
-        my $html = w $R maka[$a,$u];
+        my $html = w G.theR maka[$a,$u];
         # don't need to close it up right now...
         # top down injection gos
         
