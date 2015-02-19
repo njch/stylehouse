@@ -7,7 +7,7 @@ R_Jz:
      
      S.fro = sub {
          my $fro = {
-            l => shift,
+            r => shift,
             u => shift,
             cv => shift,
             etc => [@_],
@@ -16,17 +16,54 @@ R_Jz:
         Rw gpfro $fro ; 
      };
      
+ - K: tent #c pearlesque kings of the
+   D: |
+     my $na = shift @$m;
+     my $name = J.name.'-'.$na;
+     my $conJ = Rw makeJ $name;
+     conJ.A->umk($J, 'J');
+     conJ.Jmost = J.Jmost || $J;
+     $conJ;
  - K: gpfro #c .fro(...) -> Rw gp $a
    D: |
       %$fro = (%$fro, %{delete fro.cv}) if ref fro.cv;
       
       fro.v = Rw gp $a:fro;
             
-      fro.Jiter.bz->(fro.l => fro.v,
+      fro.Jiter.bz->(fro.r => fro.v,
           '%gp' => $fro,
           @{fro.etc||[]},
       );
     
+ - K: event #c ITS COMING BACK AROUND
+   D: |
+     my $id = e.id;
+     sayyl "ID: $id";
+     my $fro = J.gpa.pis->{$id} || die "non $id\n".wdump(2,J.gpa);
+     my $j = $R->shj(fro.r, J.bb);
+     my $ip = {l => j.l};
+     my @junk = Rw tvo + $ip;
+     my @pathy = grep { _.style eq 'path' } @junk;
+     # look for whole l ness
+     die wdump(\@pathy) if @pathy > 1;
+     my ($j) = @pathy;
+     saygr "You want j.s! he's not here";
+     # sud in $j
+   balls: |
+        my $k = $1 if $gpl =~ /^(\d+)/;
+        if (!defined $k) {
+            sayre "nothing to";
+            return unless $pi;
+            ar.i = $pi;
+            w are;
+            w $R Sud/in;
+            return;
+        }
+        w are;
+        w $R Num/in[$k, $S];
+      
+      
+      
  - K: gp #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
    D: |
         G.gp_inarow++;
@@ -59,6 +96,9 @@ R_Jz:
 
         # 6
         w G.theR pi/$wa[$a,$u];
+        
+        a.Jiter.Jmost.gpa.pis->{a.isJid} = $a; # TODO J pass over # maka suction
+        say "put a.isJid away on ".a.Jiter->pi;
         
         # 7
         my $html = w G.theR maka[$a,$u];
@@ -187,6 +227,7 @@ R_Jz:
    D: |
      sort { a.cv <=> b.cv }
        sort{ a.r cmp b.r }
+       grep { !ar.ip || $G->ip(ar.ip => $_) }
        map{ w $R shj(r=>$_,d=>J.bb); }
        keys %{J.bb};
  - K: tvy #c group tvo by thing with style
