@@ -100,11 +100,9 @@ Ds:
                 my $wa = $g.'->w('.$en.')'.$ne;
                 
                 if ($delay) {
-                    saygr "Deeelaying Rw: $old\nDeeelay: $delay";
                     $delay =~ /aylay ($NUM)/;
                     $delay = $1 || "";
                     $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
-                    saygr "Deeewow: $wa";
                 }
                 
                 #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
@@ -143,13 +141,10 @@ Ds:
                 my $wa = $g."->w(".$en.")".$ne;
                 
                 if ($delay) {
-                    saygr "ol: $old\nDeeelay: $delay";
                     $delay =~ /aylay ($NUM)/;
                     $delay = $1 || "";
                     $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
-                    saygr "Deeewow: $wa";
                 }
-                
                 
                 #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
                 
@@ -162,11 +157,6 @@ Ds:
             ($1 || '$G')
             .qq {->K("$2","$3")$4}/seg;
             
-            # 
-            $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
-            $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
-            $eval =~ s/G:($Gnv)/HGf("$1")/sg;
-
             $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
 
             $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;

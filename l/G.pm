@@ -1224,11 +1224,9 @@ sub parse_babble {
         my $wa = $g.'->w('.$en.')'.$ne;
 
         if ($delay) {
-            saygr "Deeelaying Rw: $old\nDeeelay: $delay";
             $delay =~ /aylay ($NUM)/;
             $delay = $1 || "";
             $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
-            saygr "Deeewow: $wa";
         }
 
         #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
@@ -1267,13 +1265,10 @@ sub parse_babble {
         my $wa = $g."->w(".$en.")".$ne;
 
         if ($delay) {
-            saygr "ol: $old\nDeeelay: $delay";
             $delay =~ /aylay ($NUM)/;
             $delay = $1 || "";
             $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
-            saygr "Deeewow: $wa";
         }
-
 
         #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
 
@@ -1285,11 +1280,6 @@ sub parse_babble {
     $eval =~ s/\${0}($poing)? K ($point)(?::($point))?(;| )/
     ($1 || '$G')
     .qq {->K("$2","$3")$4}/seg;
-
-    # 
-    $eval =~ s/G!($Gnv)/G\.A->spawn(G => "$1")/sg;
-    $eval =~ s/G-($Gnv)/\$G->Gf("$1")/sg;
-    $eval =~ s/G:($Gnv)/HGf("$1")/sg;
 
     $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
 
