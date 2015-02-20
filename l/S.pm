@@ -50,17 +50,6 @@ __DATA__
   <script src="jquery.scrollTo.js"></script>
   <style type="text/css">
       .NZ { display:none; };
-      body {
-      margin: 0px; background: url('i/greencush.jpg'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;
-      -webkit-user-select: none;
-      }
-      #msgs {
-      white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;
-      }
-      #ux {
-      position:absolute;top:0em;
-      right:0em;width:100%;height:100%; overflow:hidden;
-      }
       @font-face {
           font-family: DVSM;
           src: url('DejaVuSansMono.ttf');
@@ -74,9 +63,13 @@ __DATA__
       }
   </style>
   <link href="light.css" rel="stylesheet"></link>
-</head><body>
-    <div id='msgs'></div>
-    <div id='ux'></div>
+</head><body style="margin: 0px; background: url('i/greencush.jpg'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;">
+
+    <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;"> </div>
+
+    <div id='ux' style="position:absolute;top:0em;
+    right:0em;width:100%;height:100%; overflow:hidden;"> </div>
+
     <script type="text/javascript">
       // default, top level #c
       var w = {conin: '<%= $ws_location %>'};
@@ -121,20 +114,14 @@ __DATA__
       };
 
 
-      // click, keys #c
+      // click, keys
       var ks; var oks;
-      function clon () { $(window).on("mousedown", a.cle); $(window).on("mouseup", a.cl); }
-      function clof () { $(window).off("mousedown", a.cle); $(window).off("mouseup", a.cl); }
+      function clon () { $(window).on("click", a.cl); }
+      function clof () { $(window).off("click", a.cl); }
       function keon () { $(window).on("keydown", a.ke); oks = ks; ks = s; }
       function keof () { $(window).off("keydown", a.ke); ks = oks; }
       var keyjam = 0;
       var keyjamfor = 10;
-      var veer;
-      a.cle = function(ev, ws) {
-          var d = {};
-          a.dscam(d,ev);
-          veer = d;
-      };
       a.cl = function(ev, ws) {
           if (keyjam) {
               return;
@@ -144,10 +131,32 @@ __DATA__
 
           var d = {};
           a.dscam(d,ev);
-          if (veer) {
-              d.veer = veer;
-              veer = null;
+
+          var tag = $(ev.target);
+          d.name = tag.attr('name');
+          //d.value = a.valblag(d.tag); // drapes
+          while (!tag.attr('id')) {
+                tag = tag.parent();
           }
+          d.id = tag.attr('id');
+          d.class = tag.attr('class');
+          d.x = ev.clientX;
+          d.y = ev.clientY;
+          d.pagex = window.pageXOffset;
+          d.pagey = window.pageYOffset;
+          var W = tag.closest( "ww" ).attr('id');
+          if (W) {
+              d.W = W;
+              var conin = conz[W];
+              if (conin) {
+                  ws = C[conin];
+              }
+          }
+          var ux = tag.closest( "ux" ).attr('id');
+          if (ux) {
+              d.ux = ux;
+          }
+
           if (!ws) {
               ws = w;
           }
@@ -185,33 +194,6 @@ __DATA__
           d.C = 0+ev.ctrlKey;
           d.A = 0+ev.altKey;
           d.M = 0+ev.metaKey;
-
-          var tag = $(ev.target);
-          d.name = tag.attr('name');
-          //d.value = a.valblag(d.tag); // drapes
-          while (!tag.attr('id')) {
-                tag = tag.parent();
-          }
-          d.id = tag.attr('id');
-          d.class = tag.attr('class');
-          d.x = ev.clientX;
-          d.y = ev.clientY;
-          d.inx = ev.offsetX;
-          d.iny = ev.offsetY;
-          d.pagex = window.pageXOffset;
-          d.pagey = window.pageYOffset;
-          var W = tag.closest( "ww" ).attr('id');
-          if (W) {
-              d.W = W;
-              var conin = conz[W];
-              if (conin) {
-                  ws = C[conin];
-              }
-          }
-          var ux = tag.closest( "ux" ).attr('id');
-          if (ux) {
-              d.ux = ux;
-          }
       };
       a.valblag = function(tag) {
           var value = ''+tag.contents();
