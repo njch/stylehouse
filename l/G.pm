@@ -1202,7 +1202,7 @@ sub parse_babble {
                     $fa =~ s/:$//;
                 }
                 $na = '$'.$na unless $na =~ /\S\.\S/;
-                saygr "from: $a          na: $na";
+                #saygr "from: $a          na: $na";
                 push @n, "$fa => $na" ; # also avail a listy position
             }
             else {

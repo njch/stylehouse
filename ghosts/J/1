@@ -32,7 +32,7 @@ R_Jz:
        @con = grep { $_ ne J.on } @con;
        
        my @names = map { _.name } @con;
-       @names = grep { s/^\QJ.name\E// || 1 } @names;
+       @names = map { s/^J.name//; $_ } @names;
        unshift @con, $J;
        
        say "Scraping out ".$J->pi."   tents ".join ", ", @names;
@@ -41,7 +41,7 @@ R_Jz:
        
        
        for my $tent (@con) {
-           say "Scraping out the ".$tent->pi;
+           #say "Scraping out the ".$tent->pi;
            Rw setup $J:tent;
        }
  - K: gpfro #c .fro(...) -> Rw gp $a
