@@ -1,4 +1,19 @@
 R_Jz:
+ - K: down #c TODO to have maintained down by what comes up from 7 via 8 in motion, tune in values
+   D: |
+       my $ordy = Load(<<'');
+       {A: 12, id: 11, K: 17, name: 18,
+       G: 14, R: 14, B: 23, more: 543}
+       
+       my $ydro = {};
+       push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
+       my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
+       
+       { order => \@order,
+            ordy => $ordy,
+       }
+
+     
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      styJup: | #c
@@ -13,10 +28,13 @@ R_Jz:
        J.lum = Rw tent lum;
        # TODO replace last
        
-       
        my $u = J.on.bb->{"u\t".0.1};
+       # META
+           J.lum.fro->("J\t"."0.01" => $J, 0.1);
+           J.lum.fro->("Jonei\t"."0.03" => J.onei, 0.4);
+           J.lum.fro->("u\t"."0.03" => $u, 0.2);
        
-       say "U: ".$u->pi;
+       say "U: ".$J->pi."   ".$u->pi;
      
        my $r = {map{$_=>1} keys %$u};
        
@@ -28,9 +46,6 @@ R_Jz:
        my @r = grep { delete $r->{$_} } @{y.order};
        push @r, sort keys %$r;
        
-       # META
-           J.lum.fro->("J\t"."0.01" => $J, 0.1);
-           J.lum.fro->("Jonei\t"."0.03" => J.onei, 0.4);
        
        for $r (@r) {
             my $v = $u->{$r};
@@ -42,7 +57,7 @@ R_Jz:
            #J.bz->("$r\t"."0.$cv".0 => $r);
            J.lum.fro->("$r/\t"."0.$cv" => $v,
                {cv=>0.2, makaz=>{ # hooky
-                  "/%css#jit\t"."0.1" => 'padding-left:4em;white-space:pre;max-width:10em',
+                  "/%css#jit\t"."0.1" => 'position:absolute;left:1em;',
                }},
                '%path' => '{'.$r,
               );
