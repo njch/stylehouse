@@ -1283,7 +1283,7 @@ sub parse_babble {
 
     $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
 
-    $eval =~ s/(?:(?<=\W)|^)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+    $eval =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
 
 
     $eval;
