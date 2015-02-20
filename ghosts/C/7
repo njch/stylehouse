@@ -51,6 +51,9 @@ R_surz:
                         $gp = oj.s;
                         $ishtml = 1;
                     }
+                    when ('lp') {
+                        $ishtml  = 1;
+                    }
                     when ('sf') {
                         push @$css, map { $R::f->{$_} || die "no style $_"}
                             split '_', oj.s;
@@ -74,11 +77,14 @@ R_surz:
                     1 when 'path';
                     1 when 'origin';
                     1 when 'Joint';
+                    1 when 'lp';
                     default {
                         die "style oj.style = oj.s \t for $l";
                     }
                 }
             }
+            # TODO hold things in pockets relative to origin css comment
+            # to help things break down into styles better
             at.style = join '', map{"$_;"}
                 grep{defined} map { split ';' } @$css;
         # 6.6 #c stylecompressor aboves

@@ -2,19 +2,21 @@ R_Jz:
  - K: setup #c sets up $a with bb-domin & accessors
    D: |
      saybl "setup ".$J->pi;
+     Rw suJ $J;
+ - K: suJ #c sets up $a (J or not quite J hash $a, phro etc) with bbdomin stuff
+   D: |
      J.bb = {};
      J.ord = [];
      J.bz = w $R as(bb=>J.bb, ord=>J.ord);
      
      J.lev = sub { #TODO
-         my $fro = {
+         my $lev = {
             r => shift,
-            u => shift,
-            cv => shift,
+            sub => shift,
             etc => [@_],
             Jiter => $J, # drifter, expecting 8 (forks & events) approp.
         };
-        Rw gpfro $fro ;
+        Rw lplumb $a:lev;
      };
      J.fro = sub {
          my $fro = {
@@ -24,36 +26,34 @@ R_Jz:
             etc => [@_],
             Jiter => $J, # drifter, expecting 8 (forks & events) approp.
         };
-        Rw gpfro $fro ; 
+        Rw gp $a:fro;
      };
-     
- - K: gpfro #c .fro(...) -> Rw gp $a
+ - K: lplumb #c subby plumbing
    D: |
-      %$fro = (%$fro, %{delete fro.cv}) if ref fro.cv;
-      
-      fro.v = Rw gp $a:fro;
-            
-      fro.Jiter.bz->(fro.r => fro.v,
-          '%gp' => $fro,
-          @{fro.etc||[]},
-      );
-    
+        Rw suJ $J:a;
+        a.sub->($a);
+        a.v = w G.theR maka[$a];
+        a.Jiter.bz->(a.r => a.v,
+            '%lp' => $a,
+            @{a.etc||[]},
+        );
  - K: gp #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
    D: |
         G.gp_inarow++;
-        my $a = ar.a || die;
-        die "ref cv stilla t gp" if ref a.cv;
-        %$a = (%$a, %{delete a.cv}) if ref a.cv; # sneak params in...
+        %$a = (%$a, %{delete a.cv}) if ref a.cv;
         a.cv = 0.1 if a.cv < 0.1;
         
-        my $u = a.u;
-        
         # 3
-        G.theR->phat($a);
+        Rw suJ $J:a;
         
         a.isJid = a.replaceJid || $H->mkuid;
         undef a.isJid if G.gp_inarow > 1;
+        a.Jiter.Jmost.gpa.pis->{a.isJid} = $a if a.isJid;
+        # TODO J pass over # maka suction
+        # don't need to close it up right now...
+        # top down injection gos
         
+        my $u = a.u;
         my $c = $R->cgp($u);
         
         # 4
@@ -65,26 +65,25 @@ R_Jz:
         };
         G.theR.way->find("pi/$wa") || die "not $wa equip";
         
-        # 5
+        # 5 forking swivel injecty
 
         # 6
         w G.theR pi/$wa[$a,$u];
         
-        a.Jiter.Jmost.gpa.pis->{a.isJid} = $a; # TODO J pass over # maka suction
         
         # 7
-        my $html = w G.theR maka[$a,$u];
-        # don't need to close it up right now...
-        # top down injection gos
+        a.v = w G.theR maka[$a,$u];
         
         
         # 8
         
         # 9
         G.gp_inarow--;
-        my $ind = join "", ("  ") x scalar @F;
-        #sayyl "$ind Done gp for $u ".F_delta;
-        $html
+        
+        a.Jiter.bz->(a.r => a.v,
+            '%gp' => $a,
+            @{a.etc||[]},
+        );
         
  - K: hiJ #c
    D: |

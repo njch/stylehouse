@@ -135,7 +135,7 @@ __DATA__
           var tag = $(ev.target);
           d.name = tag.attr('name');
           //d.value = a.valblag(d.tag); // drapes
-          while (!tag.attr('id')) {
+          while (tag && !tag.attr('id')) {
                 tag = tag.parent();
           }
           d.id = tag.attr('id');
