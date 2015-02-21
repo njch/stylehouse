@@ -89,7 +89,11 @@ R_surz:
                 grep{defined} map { split ';' } @$css;
         # 6.6 #c stylecompressor aboves
             # hooch
-            at.title = "j.cv $l".(at.title ? " at.title" : "");
+            if (at.title || !a.untitled) {
+                at.title = join " ", grep{defined}
+                    (!a.untitled ? "j.cv $l" : undef),
+                    (at.title ? at.title : undef);
+            }
             $at = join " ", $tag,
                 map { $_.'="'.$at->{$_}.'"' } # attra
                 grep { $at->{$_} } sort keys %$at;
