@@ -8,7 +8,6 @@ R_Jz:
      J.bb = {};
      J.ord = [];
      J.bz = w $R as(bb=>J.bb, ord=>J.ord);
-     
      J.lev = sub { #TODO
          my $lev = {
             r => shift,
@@ -16,8 +15,10 @@ R_Jz:
             etc => [@_],
             Jiter => $J, # drifter, expecting 8 (forks & events) approp.
         };
+        lev.Jmost = J.Jmost;
         Rw lplumb $a:lev;
      };
+     # another little con tent, backeting a harmonic sur-ish portal
      J.fro = sub {
          my $fro = {
             r => shift,
@@ -26,9 +27,10 @@ R_Jz:
             etc => [@_],
             Jiter => $J, # drifter, expecting 8 (forks & events) approp.
         };
+        fro.Jmost = J.Jmost;
         Rw gp $a:fro;
      };
- - K: lplumb #c subby plumbing, like gp but seemingly uncomplicated here
+ - K: lplumb #c level, subby plumbing, like gp but seemingly uncomplicated here
    D: |
         Rw suJ $J:a;
         a.sub->($a);
@@ -37,9 +39,12 @@ R_Jz:
             '%lp' => $a,
             @{a.etc||[]},
         );
- - K: gp #c R_sur gp # another little con tent, backeting a harmonic sur-ish portal
+ - K: gp #c R_sur gp
    D: |
         G.jumb.gp_inarow++;
+        0->accum($F[0] => _after_do => sub {
+            G.jumb.gp_inarow--;
+        });
         %$a = (%$a, %{delete a.cv}) if ref a.cv;
         a.cv = 0.1 if a.cv < 0.1;
         
@@ -49,8 +54,8 @@ R_Jz:
         a.isJid = a.replaceJid || $H->mkuid;
         if (G.jumb.gp_inarow > 1) {
             undef a.isJid;
-            say "            GP NON ORIGIN: ".gp(a.u);
         }
+        #sayyl join(" ", ("  ") x G.jumb.gp_inarow)." ooooo ".gp(a.u);
         a.Jiter.Jmost.gpa.pis->{a.isJid} = $a if a.isJid;
         # TODO J pass over # maka suction
         # don't need to close it up right now...
@@ -81,8 +86,6 @@ R_Jz:
         # 8
         
         # 9
-        G.jumb.gp_inarow--;
-        
         a.Jiter.bz->(a.r => a.v,
             '%gp' => $a,
             @{a.etc||[]},
