@@ -13,10 +13,10 @@ R_Jz:
    n_D:
      oe: |
        my $v = ar.v || 9;
-       my $nonv = $v;
        my $wi = length($v);
        my $thi = join '', ('9') x $wi;
        my $n = 1;
+       
        my $squidge;
        if (ar.m && join(" ",@{ar.m}) =~ /off(\d+)/) {
            $squidge = int($1 * ($thi / ($v))); # TODO not quite
@@ -27,7 +27,7 @@ R_Jz:
        my @is = map { sprintf '%0'.$wi.'d', $_  }
        map { int($_ * ($thi / $v)) } $n..$v;
        
-       sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
+       #sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
        die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
        @is;
        
@@ -68,7 +68,9 @@ R_Jz:
                unshift @$ro, map { pop @$no } 1..$bulg;
            }
            elsif ($bulg > 0) {
-               die 'backflip';
+               #die "buckstop $bulg";
+               pop @$no for 1..$bulg;
+               J.bz->("buckstop\t0.999" => "@".$bulg."...", '%css' => 'color:blue');
                # flip everything around, raise $id,
                # slosh back toward the middle again
                # very painterly
@@ -87,7 +89,7 @@ R_Jz:
            if (@cvs != uniq @cvs) {
                
                my $warp = @$no;
-               @cvs = map { sayyl "$cvb / $_"; "0.".$cvb.$_ } Rw cv/oe $v:warp;
+               @cvs = map { "0.".$cvb.$_ } Rw cv/oe $v:warp;
                # wind for thi like in mod
            }
            

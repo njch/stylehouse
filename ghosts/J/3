@@ -18,19 +18,29 @@ R_Jz:
      # path must be somewhere around here...
      # on the gp's / which is inside yet outsideness, or the lev... whatev.
      # TODO look-around-for %whatever
-       my $Jit = fro.Jiter;
-       my $j = $R->shj(fro.r, Jit.bb);
-       my $ip = {l => j.l};
-       my @junk = Rw tvo $J:Jit $ip;
-       my @pathy = grep { _.style eq 'path' } @junk;
+     # way is a weird uri-ish string, like {key
      
-     die wdump(\@junk) if @pathy != 1;
-     my ($j) = @pathy;
-     my $t = j.s;
+     my ($the) = my @pathy = Rw uptopathway $lim:J $J:fro;
+     die wdump(\@pathy) if @pathy != 1;
+     my $t = the.s;
+     
      # look for whole l ness
      Rw conty $t, $J3:J;
      
      waylay 3 mux(u=>$J);
+     
+ - K: uptopathway #c up from J until a %path, but not too far
+   D: |
+     my $i = 0;
+     until ($J eq $lim) {
+         my $Jit = J.Jiter;
+         my $j = $R->shj(J.r, Jit.bb);
+         my $ip = {l => j.l, style => 'path'};
+         my @junk = Rw tvo $J:Jit $ip;
+         return @junk if @junk;
+         die if $i++ > 9;
+         $J = $Jit;
+     }
      
  - K: conty #c hit J bit, somethingsomething
    D: |
