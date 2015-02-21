@@ -1,11 +1,10 @@
 R_Jz:
-
  - K: nuym #c MOD MATSHUP
    babz:
      'mod#nuym 3.12345': |
              my $num = $i * $v + 5;
              $num = sprintf '%.3d',$num;
- - K: olours #c MOD MOD
+ - K: olours # MOD MOD
    babz:
      'mod#olour 3.32345': |
              $i =~ /(\d)?(\d)?(\d)?$/;
@@ -17,7 +16,7 @@ R_Jz:
              $1,$2,$3;
 
              push @{d.css}, '%css#olo' => 'color:#'.$col.';white-space:pre;';
- - K: spfx #c MOD MOD MOD
+ - K: spfx # MOD MOD MOD
    babz:
      'mod#olour 3.32345': |
              $i =~ /(\d)?(\d)?(\d)?$/;
@@ -29,7 +28,7 @@ R_Jz:
              $1,$2,$3;
 
              push @{d.css}, '%css#olo' => 'color:#'.$col.';white-space:pre;';
- - K: unico #c UNICO MOD MOD MOD
+ - K: unico # UNICO MOD MOD MOD
    babz:
      'mod#wt 3.32344': |
              if (my $un = c.unico) { # some J to mod from 9
@@ -46,7 +45,7 @@ R_Jz:
                      push @gl, $pa.$b;
                  } 1..34;
              }
- - K: fs #c MOD MOD MOD
+ - K: fs # MOD MOD MOD
    babz:
      'mod#fs 3.532332': |
              if (c.fs) {
@@ -56,76 +55,14 @@ R_Jz:
                  $siz -= $num / $mod if $mod;
                  push @{d.css}, '%css#egy' => 'font-size:'.$siz.'%;';
              }
- - K: shtackedo #c
+ - K: shtackedo #
    babz:
      'mod#shtakc 7.5263': |
        '%css#awl', 'text-shadow:2px 2px 7px rgb(0,255,205)'
- - K: jam #c
+ - K: jam #
    babz:
      'mod#jam 3.43232': |
              if (c.jamit) {
                  push @{d.css}, '%tt#ee' => "JAMTHATFUELTANK"
              }
- - K: dolphy #c
-   D: |
-     my $tvs = w $R ytv[$J];
-     
-     my $phi_n = 1;
-     map { $phi_n++ } map { @$_ } values %$tvs;
-     my $phia = {n=>$phi_n};
-     phia.ai = 0.06;
-     phia.modi = { map { $_ => 0.5 } 18..$phi_n };
-     my $where = w $R phi(%$phia);
-     
-       #sayyl "!\n";
-       
-     for my $jkv (sort keys %$tvs) { 
-         #sayyl "at $jkv";
-         for my $j (@{$tvs->{$jkv}}) {
-             #sayyl "    It's j.t !";
-             my $whe = shift @$where;
-             $whe || die "out of spiral!";
-             
-             J.bz->(j.t."%css#phi"."\t".j.cv =>
-               'position:absolute;'
-               .'top:'.whe.x.'%;'
-               .'left:'.whe.y.'%;'
-               .'-webkit-transform:rotate('.whe.radial.'rad);'
-               .'transform-origin:-10% -10%;' # animate that bit
-             ); 
-             J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
-             # + font-size fit + whe.angle
-         }
-     }
-       #sayyl "!\n";
- 
- - K: phi #c re/progressive proJammable petalis
-   D: |
-     my $n = ar.n || 9;
-          my $width = 100;
-          my $height = 100;
-          my $cx = $width / 2;
-          my $cy = $height / 2;
-          my $lg_diam = $width * 0.85;
-          my $lg_rad = $lg_diam / 2; 
-          my $outer_rad = $width*0.45;
-          my $angle_incr = ar.ai || 9 / $n;
-          
-          my $xy = [];
-          for my $i (1..$n) {
-              my $ratio = $i/$n;
-              my $spiral_rad = ($ratio *1.3) * $outer_rad;
-              my $angi = $angle_incr + 0.15;
-              $angi *= ar.modi->{$i} if ar.modi->{$i};
-              my $angle = 1.2+$i*$angi;
-              my $x = $cx + cos($angle) * $spiral_rad;
-              my $y = $cy + sin($angle) * $spiral_rad;
-              push @$xy, {
-                  radial => sprintf('%.2f', atan2($x - $cx, $y - $cy)),
-                  angle => sprintf('%.3f', $angle),
-                  x => sprintf('%.2f', $x),
-                  y => sprintf('%.2f', $y),
-              };
-          }
-          $xy
 
