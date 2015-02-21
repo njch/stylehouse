@@ -48,24 +48,25 @@ R_Jz:
        
        
        for $r (@r) {
-            my $v = $u->{$r};
+           my $v = $u->{$r};
             
-            my $cv = 0;
-            $cv ||= y.ordy->{$r};
-            $cv ||= 4;
+           my $cv = y.ordy->{$r} || 4;
             
-           #J.bz->("$r\t"."0.$cv".0 => $r);
            J.lum.lev->("$r/\t0.$cv" => sub {
                my $a = shift;
-               my $fs = length($r) > 9 ? 60 : 80; # TODO curve
+               my $fs = length($r) > 9 ? 60 : 80;
+               # TODO curve ^ # make sf of a Q factor that can see $v somehow
                a.bz->(
-                    "lable 0.01" => $r,
-                    #'%sf#la' => 'ab;pr.5;fs8;', C that < v
+                    "lable 0.1" => $r,
+                    #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
                     "%css#laob" => 'position:absolute;right:0.5em;',
                     "%css#lableg" => "font-size:$fs%",
                     "%css#labcoat" => "color:black", # TODO unwind cv into colour
+                    "%tt#\cv" => $cv,
                     );
-               a.fro->("gp\t"."0.$cv" => $v,
+               
+                  
+               a.fro->("gp\t"."0.6" => $v,
                  {cv=>0.2, makaz=>{ # hooky
                     "/%css#jit 0.1" => 'position:absolute;left:1em;width:30em',
                  }},
@@ -79,76 +80,5 @@ R_Jz:
              # start culture
              # the middle
        }
-       Rw suck */round;
-     round: | #c regroup
-       # J.lum -5> $J
-       # could multiple J sources and exits, provide roundness, generally...
-       
-       my @be = Rw tvo $J:J.lum;
-       my $jit; # cv / l / t / $j
-       my $ji = {map{$_=>[]}0..9};
-       
-       for my $j (@be) {
-           $jit->{j.cv}->{j.l}->{j.t} && die;
-           $jit->{j.cv}->{j.l}->{j.t} = $j;
-           next unless j.l eq j.t; # just deal thing spines
-           j.cv =~ /^0\.(\d)/ || die;
-           my $cvb = $1;
-           push @{$ji->{$cvb}}, $j;
-       }
-       
-       # wavesmush
-       my $id = 3;
-       for my $i (0..9) {
-           my $lo = $ji->{$i-1};
-           my $no = $ji->{$i};
-           my $ro = $ji->{$i+1};
-           
-           my $bulg = @$no - $id if @$no > $id;
-           if ($bulg > 0 && $lo && @$lo < $id) {
-               my $idspacl = $id - @$lo;
-               push @$lo, map { shift @$no } 1..$idspacl;
-           }
-           
-           $bulg = 0;
-           $bulg = @$no - $id if @$no > $id;
-           if ($bulg > 0 && $ro) { # without varing  && @$ro < $id
-               unshift @$ro, map { shift @$no } 1..$bulg;
-           }
-           elsif ($bulg > 0) {
-               die 'backflip';
-               # flip everything around, raise $id,
-               # slosh back toward the middle again
-               # very painterly
-           }
-           
-       }
-       
-       
-       # measure $ji, mod up locations for things
-       # give original j.cv if the $cvb/ set is same
-       for my $cvb (sort keys %$ji) {
-           my $no = $ji->{$cvb};
-           my @cvs = map{_.cv}@$no;
-           die if join(":",@cvs) ne join(":", sort @cvs);
-           
-           if (@cvs != uniq @cvs) {
-               
-               my $warp = @$no;
-               @cvs = map { "0.".$cvb.$_ } Rw cv/oe $v:warp;
-               # wind for thi like in mod
-           }
-           
-           for my $j (@$no) {
-               my $ncv = shift @cvs;
-               my $ts = $jit->{j.cv}->{j.l};
-               for my $k (sort keys %$ts) {
-                   my $tj = $ts->{$k};
-                   J.bz->(tj.t."\t".$ncv, tj.s);
-               }
-               J.bz->(j.l."%origin\t".$ncv, $j); # subtlest A-tion
-           }
-       }
-       
-       
+       Rw round +;
 
