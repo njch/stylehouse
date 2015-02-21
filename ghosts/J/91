@@ -34,43 +34,64 @@ R_Jz:
            J.lum.fro->("Jonei\t"."0.03" => J.onei, {cv=>0.4,untitled=>1});
            J.lum.fro->("u\t"."0.03" => $u, {cv=>0.2,untitled=>1});
        
-       say "U: ".$J->pi."   ".$u->pi;
-     
-       my $r = {map{$_=>1} keys %$u};
-       
-       # bunch of keys... ^ interpret, compress knowledge
-       # TODO ^make itv like two indexes, polars
+       say "U: ".$J->pi."   ".gp($u);
        
        my $y = w $R down; # 2ish aggd knowledge, instructions?
        
-       my @r = grep { delete $r->{$_} } @{y.order};
-       push @r, sort keys %$r;
+       my @r;
+       if (!ref $u) {
+           die 'stringy';
+       }
+       elsif (ref $u eq 'ARRAY') {
+           my $i = 0;
+           my $warp = @$u; # TODO or less?
+           my @warp = Rw cv/oe off1 $v:warp;
+           for (@$u) {
+               my $cv = "0.". shift @warp;
+               push @r, { r=>$i, path=>"[".$i++, v=>$_, cv=>$cv};
+           }
+       }
+       else {
+           my $r = {map{$_=>1} keys %$u};
+
+           # bunch of keys... ^ interpret, compress knowledge
+           # TODO ^make itv like two indexes, polars
+           # any sorta layout knowhow...
+       
+           my @or = grep { delete $r->{$_} } @{y.order};
+           push @or, sort keys %$r;
+           
+           for (@or) {
+               my $cv = y.ordy->{$_} || 4;
+               $cv = "0.$cv";
+               push @r, { r=>$_, path=>"{$_", v=>$u->{$_}, cv=>$cv };
+           }
+       }
        
        
-       for $r (@r) {
-           my $v = $u->{$r};
+       for my $r (@r) {
             
-           my $cv = y.ordy->{$r} || 4;
+           next if r.r eq 'load_ways_count';
             
-           J.lum.lev->("$r/\t0.$cv" => sub {
+           J.lum.lev->("r.r/\t".r.cv => sub {
                my $a = shift;
-               my $fs = length($r) > 9 ? 60 : 80;
+               my $fs = length(r.r) > 9 ? 60 : 80;
                # TODO curve ^ # make sf of a Q factor that can see $v somehow
                a.bz->(
-                    "lable 0.1" => $r,
+                    "lable 0.1" => r.r,
                     #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
                     "%css#laob" => 'position:absolute;right:0.5em;',
                     "%css#lableg" => "font-size:$fs%",
                     "%css#labcoat" => "color:black", # TODO unwind cv into colour
-                    "%tt#\cv" => $cv,
+                    "%tt#\cv" => r.cv,
                );
                
                   
-               a.fro->("gp\t"."0.6" => $v,
+               a.fro->("gp\t"."0.6" => r.v,
                  {cv=>0.2, makaz=>{ # hooky
                     "/%css#jit 0.1" => 'position:absolute;left:1em;width:30em',
                  }},
-                 '%path' => '{'.$r,
+                 (r.path ? ('%path' => r.path) : ()),
                );
            });
             #J.bz->("$r\t"."0.$cv" => ''.$v, '%css'=>'white-space:pre');
@@ -81,4 +102,9 @@ R_Jz:
              # the middle
        }
        Rw round +;
+       
+       my @oooo = Rw tvo $J;
+       for my $j (@oooo) {
+           #say j.r;
+       }
 
