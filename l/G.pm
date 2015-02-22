@@ -451,20 +451,6 @@ sub Stytog {
     $G->w('chang', {humm=>$u});
 }
 
-sub su {
-    my $G = shift;
-    my ($a) = @_;
-    if (@_ > 1) {
-        $a = {top => shift};
-        $a->{cb} = pop;
-        $a->{div} = shift || 7;
-    }
-    $a->{top} && $a->{cb} || die "wtf";
-    my $D = $a->{cb};
-
-    $H->{G}->w(subsc => $a); 
-}
-
 sub load_ways {
     my $G = shift;
     my @ways = split /\+/, $G->{way};
@@ -1141,6 +1127,20 @@ sub inter {
     $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 
+sub su {
+    my $G = shift;
+    my ($a) = @_;
+    if (@_ > 1) {
+        $a = {top => shift};
+        $a->{cb} = pop;
+        $a->{div} = shift || 7;
+    }
+    $a->{top} && $a->{cb} || die "wtf";
+    my $D = $a->{cb};
+
+    $H->{G}->w(subsc => $a); 
+}
+
 sub parse_babble {
     my $G = shift;
     my $eval = shift;
@@ -1174,14 +1174,21 @@ sub parse_babble {
 
     $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
 
-
     $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
+
+    # io
+    my $mwall = qr/(?:= |^\s*)/m;
+    $eval =~ s/${mwall}Sur (\S+) \{/su \$G, "$1", sub{my\$r=shift; /sg;
+    $eval =~ s/${mwall}Pur (\S+) /pub \$H, "$1", /sg;
+
+    #Sur Hostinfo {
+    #Pur S/$hol "hostinfo/ack r.m", 'ig'
 
     # waylay
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
 
-    # wholeness
+    # wholeness Rwish #c
 
     my $sur = qr/ if| unless| for| when|,\s*$|;/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;

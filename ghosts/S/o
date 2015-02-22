@@ -4,20 +4,8 @@ C:
   - K: Hi
 hooks:
   fresh_init: | # sub hostinfos before w in does our hostinfo
-    $G->su('Hi' => sub {
-        my $a = shift;
-        w Hi[$a];
-    });
-    0->su('Hostinfo' => sub {
-        my $a = shift;
-        my ($hol, $inf) = split ' ', a.m, 2;
-        $H->pub("S/$hol", "hostinfo/ack a.m", 'ig');
-        saygr "from $hol -> $inf";
-        G.hostinfo->{$hol} = {
-            info => $inf,
-            when => $H->hitime,
-        };
-    });
+    Sur Hi { w Hi[$r]; };
+    Sur Hostinfo { w Hostinfo[$r] };
     $G->recur(3, sub { saygr " Yep" });
     $G->recur(10, sub {
         my $fi = `find ghosts -type f`;
@@ -29,7 +17,18 @@ hooks:
     
   in: |
     $G->timer(9, sub{w Hiwtidy;});
+  Hostinfo: |
+        my ($hol, $inf) = split ' ', r.m, 2;
+        pub $H, "S/$hol", "hostinfo/ack $r->{m}", 'ig';
+        $DB::single = 1;
+        Pur S/$hol "hostinfo/ack r.m", 'ig';
+        saygr "from $hol -> $inf";
+        G.hostinfo->{$hol} = {
+            info => $inf,
+            when => $H->hitime,
+        };
   Hi: |
+      my $a = $r;
       saygr "a.top to a.m";
       my ($hol, $m) = split ' ', a.m, 2;
       (my $sn = $hol) =~ s/\/\w+$//;
@@ -68,7 +67,9 @@ hooks:
     delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
     my $js;
     for (keys %$wild) {
-        $js .= " \$('#ux > #$_').remove();";
+        # TODFO javascript guns
+        die;
+        $js .= " \$('#ux > #$_').fadeOut(1000, function() { $(this).remove(); });";
     }
     $H->send($js) if $js;
     say "Done Hiwtidy";
