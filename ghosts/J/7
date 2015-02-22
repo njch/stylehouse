@@ -130,214 +130,211 @@ R_Jz:
         $H->send(" \$('#".meta.Wid."')$cssset$unhide".";");
     }
 
-R_surz:
 
-    - K: Smak #c
-      babz:
-        'S 7': |
-          my $html = w $R maka(R=>$R, a=>S.a, cv => 0);
-    
-    - K: prot_fits #c
-      babz:
-        'S#proto_fits 8.7': |
-          # proto fits: shrink this webbing into a space in our webbing
-          my @sty;
+ - K: Smak #c
+   babz:
+     'S 7': |
+       my $html = w $R maka(R=>$R, a=>S.a, cv => 0);
 
-          my $o = 12;
-          my $lines = split /\n/, $html;
-          if ($lines > $o) {
-              $lines = 17 if $lines > 17;
-              my $fs = 100 * $o / $lines;
-              $fs *= -1 if $fs < 0;
-              push @sty, "font-size:$fs%";
-          }
-          push @sty, "background:rgba(80,50,22,0.3)"; 
-          push @sty, "white-space:pre";
-          push @sty, "font-family:mono";
-          push @sty, "display:block";
-          push @sty, "overflow-wrap:break-word";
-          my $sty = join ";", @sty; 
-          $html = qq{<span style="$sty"><span>$html<span></span>};
-      
-    - K: maka #c
-      D: |
-        my $cv = ar.cv; 
-        $cv = a.cv if !defined $cv;
-        my $a = ar.a || ar.J;
-      babz:
-        'maka 1': |
-          if (my $id = a.isJid || a.replaceJid) {
-              a.bz->("/%id\t"."0.1" => $id);
-          }
-          if (my $tod = a.makaz) {
-              for (keys %$tod) {
-                  a.bz->($_ => $tod->{$_})
-              }
-          }
-        'maka 2.5': | #c stylepliers
-            for my $k (%{a.bb}) {
-                if ($k =~ /^(\S*(?:oB|Bo|Bi|Bs))\s+(.+)$/) {
-                    a.bb->{"$1\%css#maka25\t$2"} = "color:black";
-                }
-                if ($k =~ /^thi\s+(.+)$/) {
-                    a.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
-                }
-                if ($k =~ /^name\s+(.+)$/) {
-                    a.bb->{"name\%css#maka25\t$1"} = "color:#f93;";
-                }
-                if ($k =~ /^K\s+(.+)$/) {
-                    a.bb->{"K%css#maka25\t$1"} = "color:#3f3";
-                }
-            }
-    - K: t___a #c thingness <-> appearance
-      babz:
-        'maka 4': |
-          my @r = $G->stylekeysort(a.bb);
+ - K: prot_fits #c
+   babz:
+     'S#proto_fits 8.7': |
+       # proto fits: shrink this webbing into a space in our webbing
+       my @sty;
 
-          a.o = {}; # by voltage, peel
-          for my $r (@r) {
-                  my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
+       my $o = 12;
+       my $lines = split /\n/, $html;
+       if ($lines > $o) {
+           $lines = 17 if $lines > 17;
+           my $fs = 100 * $o / $lines;
+           $fs *= -1 if $fs < 0;
+           push @sty, "font-size:$fs%";
+       }
+       push @sty, "background:rgba(80,50,22,0.3)"; 
+       push @sty, "white-space:pre";
+       push @sty, "font-family:mono";
+       push @sty, "display:block";
+       push @sty, "overflow-wrap:break-word";
+       my $sty = join ";", @sty; 
+       $html = qq{<span style="$sty"><span>$html<span></span>};
+   
+ - K: maka #c
+   D: |
+     my $cv = ar.cv; 
+     $cv = a.cv if !defined $cv;
+     my $a = ar.a || ar.J;
+   babz:
+     'maka 1': | #c
+       if (my $id = a.isJid || a.replaceJid) {
+           a.bz->("/%id\t"."0.1" => $id);
+       }
+       if (my $tod = a.makaz) {
+           for (keys %$tod) {
+               a.bz->($_ => $tod->{$_})
+           }
+       }
+     'maka 2.5': | #c stylepliers
+         for my $k (%{a.bb}) {
+             if ($k =~ /^(\S*(?:oB|Bo|Bi|Bs))\s+(.+)$/) {
+                 a.bb->{"$1\%css#maka25\t$2"} = "color:black";
+             }
+             if ($k =~ /^thi\s+(.+)$/) {
+                 a.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
+             }
+             if ($k =~ /^name\s+(.+)$/) {
+                 a.bb->{"name\%css#maka25\t$1"} = "color:#f93;";
+             }
+             if ($k =~ /^K\s+(.+)$/) {
+                 a.bb->{"K%css#maka25\t$1"} = "color:#3f3";
+             }
+         }
+     'maka 4': | #c thingness <-> appearance
+       my @r = $G->stylekeysort(a.bb);
 
-                  $or = $vo if !defined $or;
+       a.o = {}; # by voltage, peel
+       for my $r (@r) {
+               my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
 
-                  my $o = a.o->{$or} ||= []; 
-                  push @$o, $r;
-          }
-          
-              #thingness <-> appearance
-              my $th = {};
-              my $ap = {};
-              my @int;
-              for my $ov (sort keys %{a.o}) {
-                   my $o = a.o->{$ov};
+               $or = $vo if !defined $or;
 
-                   for my $r (@$o) {
-                       my $j = $R->shj($r, a.bb);
-                       
-                       j.style ? do {
-                           push @{$ap->{j.l} ||= []}, $j;
-                       } : do {
-                           if (exists $th->{j.l}
-                           && j.t ne '#more%sf' # wtf
-                           && j.l ne 'name') {
-                               warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) 
-                           }
-                           $th->{j.l} = $j;
-                           push @int, j.l;
-                       }
-                  }
-              }
-        'maka 6.5': | #c
-          my $apl = sub {
-              my ($l, $s, $j) = @_;
+               my $o = a.o->{$or} ||= []; 
+               push @$o, $r;
+       }
+       
+           #thingness <-> appearance
+           my $th = {};
+           my $ap = {};
+           my @int;
+           for my $ov (sort keys %{a.o}) {
+                my $o = a.o->{$ov};
 
-              my $o = delete $ap->{$l};
-
-              if (ref $s) {
-                  die "reffy $s in $l".wdump(2,$j);
-              }
-              #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
-
-              my $ishtml = $l eq '/';
-              my $gp;
-              my $at = {};
-              my $tag = "añ";
-              my $css = [];
-              for my $oj (@$o) {
-                  saybl "        sdtyle! oj.style oj.s" if ar.db;
-
-                  # TODO here Jung Cs have injected langauge to grab themselves by...
-                  for (oj.style) {
-
-                      # < >< >< >?
-                      # < >< >< >?
-                      # < >< >< >?
-                      # < >< >< >?
-                      # < >< >< >?
-                      # < >< >< >?
-                      when ('gp') {
-                          # has a way to $a the gp action within...
-                          $gp = oj.s;
-                          $ishtml = 1;
-                      }
-                      when ('lp') {
-                          $ishtml  = 1;
-                      }
-                      when ('sf') {
-                          push @$css, map { $R::f->{$_} || die "no style $_"}
-                              split '_', oj.s;
-                      }
-                      when ('css') {
-                          my $cs = oj.s;
-                          $cs = join ';', map{"$_:$cs->{$_}"}
-                              sort keys %$cs
-                              if ref $cs;
-                          push @$css, $cs;
-                      }
-                      $ishtml = 1 when 'ishtml';
-
-                      at.id = oj.s when 'id';
-
-                      at.title = oj.s when 'tt';
-
-                      $tag = oj.s when 'tag';
-
-                      # TODO compile J.ys
-                      1 when 'path';
-                      1 when 'origin';
-                      1 when 'Joint';
-                      1 when 'lp';
-                      default {
-                          die "style oj.style = oj.s \t for $l";
-                      }
-                  }
-              }
-              # TODO hold things in pockets relative to origin css comment
-              # to help things break down into styles better
-            at.style = join '', map{"$_;"}
-                grep{defined} map { split ';' } @$css;
-        'maka 6.6': | #c
-          # stylecompressor 3 aboves
-              # hooch
-              if (at.title || !a.untitled) {
-                  at.title = join " ", grep{defined}
-                      (!a.untitled ? "j.cv $l" : undef),
-                      (at.title ? at.title : undef);
-              }
-              $at = join " ", $tag,
-                  map { $_.'="'.$at->{$_}.'"' } # attra
-                  grep { $at->{$_} } sort keys %$at;
-
-              $s = encode_entities($s) if !$ishtml;
-              $s = "<$at>$s</$tag>" if defined $s;
-              $s
-          };
-        'maka 7': | #c
-            my @s;
-            for my $thl (@int) {
-                my $j = $th->{$thl} || next;
-                my $l = j.l;
-                my $s = j.s;
-                die "$l  -- $thl" if $thl ne $l;
-                
-                # top volt for thing selection: # whattage
-                if ($l eq 'K' && a.bb->{"name 0.1"} eq $s
-                 #|| $l eq 'name' && a.bb->{"K 0.2"} =~ $s
-                 && $s ne a.bb->{"K 0.2"}) {
-                    delete $ap->{$l};
-                    next;
-                }
+                for my $r (@$o) {
+                    my $j = $R->shj($r, a.bb);
                     
-                push @s, $apl->($l, $s, $j);
-            }
-            
-            @s = "no?" if !@s;
-            my $html = $apl->('/', join '', @s);
-            
-                sayre "Extr a appearance: ".
-                join", ",sort keys %$ap if %$ap;
-            
-            #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
-            $html;
-            
+                    j.style ? do {
+                        push @{$ap->{j.l} ||= []}, $j;
+                    } : do {
+                        if (exists $th->{j.l}
+                        && j.t ne '#more%sf' # wtf
+                        && j.l ne 'name') {
+                            warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) 
+                        }
+                        $th->{j.l} = $j;
+                        push @int, j.l;
+                    }
+               }
+           }
+     'maka 6.5': | #c
+       my $apl = sub {
+           my ($l, $s, $j) = @_;
+
+           my $o = delete $ap->{$l};
+
+           if (ref $s) {
+               die "reffy $s in $l".wdump(2,$j);
+           }
+           #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
+
+           my $ishtml = $l eq '/';
+           my $gp;
+           my $at = {};
+           my $tag = "añ";
+           my $css = [];
+           for my $oj (@$o) {
+               saybl "        sdtyle! oj.style oj.s" if ar.db;
+
+               # TODO here Jung Cs have injected langauge to grab themselves by...
+               for (oj.style) {
+
+                   # < >< >< >?
+                   # < >< >< >?
+                   # < >< >< >?
+                   # < >< >< >?
+                   # < >< >< >?
+                   # < >< >< >?
+                   when ('gp') {
+                       # has a way to $a the gp action within...
+                       $gp = oj.s;
+                       $ishtml = 1;
+                   }
+                   when ('lp') {
+                       $ishtml  = 1;
+                   }
+                   when ('sf') {
+                       push @$css, map { $R::f->{$_} || die "no style $_"}
+                           split '_', oj.s;
+                   }
+                   when ('css') {
+                       my $cs = oj.s;
+                       $cs = join ';', map{"$_:$cs->{$_}"}
+                           sort keys %$cs
+                           if ref $cs;
+                       push @$css, $cs;
+                   }
+                   $ishtml = 1 when 'ishtml';
+
+                   at.id = oj.s when 'id';
+
+                   at.title = oj.s when 'tt';
+
+                   $tag = oj.s when 'tag';
+
+                   # TODO compile J.ys
+                   1 when 'path';
+                   1 when 'origin';
+                   1 when 'Joint';
+                   1 when 'lp';
+                   default {
+                       die "style oj.style = oj.s \t for $l";
+                   }
+               }
+           }
+           # TODO hold things in pockets relative to origin css comment
+           # to help things break down into styles better
+         at.style = join '', map{"$_;"}
+             grep{defined} map { split ';' } @$css;
+     'maka 6.6': | #c
+       # stylecompressor 3 aboves
+           # hooch
+           if (at.title || !a.untitled) {
+               at.title = join " ", grep{defined}
+                   (!a.untitled ? "j.cv $l" : undef),
+                   (at.title ? at.title : undef);
+           }
+           $at = join " ", $tag,
+               map { $_.'="'.$at->{$_}.'"' } # attra
+               grep { $at->{$_} } sort keys %$at;
+
+           $s = encode_entities($s) if !$ishtml;
+           $s = "<$at>$s</$tag>" if defined $s;
+           $s
+       };
+     'maka 7': | #c
+         my @s;
+         for my $thl (@int) {
+             my $j = $th->{$thl} || next;
+             my $l = j.l;
+             my $s = j.s;
+             die "$l  -- $thl" if $thl ne $l;
+             
+             # top volt for thing selection: # whattage
+             if ($l eq 'K' && a.bb->{"name 0.1"} eq $s
+              #|| $l eq 'name' && a.bb->{"K 0.2"} =~ $s
+              && $s ne a.bb->{"K 0.2"}) {
+                 delete $ap->{$l};
+                 next;
+             }
+                 
+             push @s, $apl->($l, $s, $j);
+         }
+         
+         @s = "no?" if !@s;
+         my $html = $apl->('/', join '', @s);
+         
+             sayre "Extr a appearance: ".
+             join", ",sort keys %$ap if %$ap;
+         
+         #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
+         $html;
+         
 
