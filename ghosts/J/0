@@ -105,94 +105,12 @@ hooks:
     push @a, K R:J;
     w pv(i=>\@a, n=>1);
 R_Jz:
-
-  - K: poke #c
-    D: |
-      my @w;
-          push @w, "Yheaps";
-          push @w, Rw suck */curves;
-          
-          w pv(i=>\@w);
-  - K: suck #c
-    D: |
-      #saygr "Got a J!".ar.J->pi."  @{ar.m}" if ar.J;
-      my @ps = Rw fi +;
-      my @wo;
-      for my $p (@ps) {
-          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
-          next if ar.J && !ar.J.yt->{$dp};
-          push @wo, w $R $p;
-      }
-      @wo
-      
-  - K: fi #c
-    D: |
-      my %wo = Rw findl +;
-      map { s/^\///; $_ } keys %wo; 
-      
-  - K: findl #c
-    D: |
-            my $point = ar.p || ar.m->[0];
-            my @path = split /\/|\./, $point;
-            my $h = ar.h || R.way;
-            $h = h.hooks if h.hooks;
-            
-            my $doig;
-            $doig = sub {
-                my ($p,$h,$s) = @_;
-                my @a = @$p;
-                
-                return $s => $h if !@a; 
-                
-                ($p) = shift @a;
-                
-                return undef if !ref $h;
-                
-                if (exists $h->{$p}) { 
-                    $h = $h->{$p};
-                    return $doig->([@a],$h,"$s/$p");
-                }
-                else {
-                    if ($p =~ /^(.*)\*(.*)$/) {
-                        my ($l,$r) = ($1, $2);
-                        my $ma = join '.+', split /\*/, $p;
-                        my @ke = grep { /^$l.+$r$/ } keys %$h;
-                        my @wu;
-                        for my $tk (@ke) {
-                            push @wu, $doig->([@a], $h->{$tk}, "$s/$tk");
-                        }
-                        @wu = grep {defined} @wu;
-                        return @wu;
-                    }
-                    else {
-                        return undef;
-                    }
-                }
-            };
-            
-            grep {defined} $doig->([@path], $h, '');
-  - K: bacup #c SCHEMA
-    D: |
-        my $ss_Ds = R.S.ss_Ds = Load(<<'');
-                  n: |
-                     n.HASH = {};
-                  Ai: |
-                     Ai.A = {};
-                  Gi: |
-                     my $likes = {map{$_=>1}qw{G ways}};
-                     Gi.HASH = {
-                      it => sub {
-                        my $h = shift;
-                        my @r = map { { K=>$_, k=>"{".$_, v=>$h->{$_} } } sort keys %$h
-                      },
-                     };
-        
-        for my $k (sort keys %$ss_Ds) { # or K array who knows
-            my $u = R.S.ss->{$k} = w $R dus;
-            my $D = $ss_Ds->{$k};
-            $G->D({bab=>$D, ar=>{$k=>$u}});
-        }
-        
+ - K: hijack #c hit J
+   D: |
+      my $J = Rw hiJ below hull;
+      ar.J = $J;
+      Rw suck + */hijack;
+      $J
 R_surz:
     - K: Jaction #c
       key:
