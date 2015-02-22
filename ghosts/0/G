@@ -171,6 +171,20 @@ Ds:
                 }
                 push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
             }
+            elsif (ref $t eq 'HASH') {
+                push @s, '%{';
+                if (3 == grep { $_ =~ /^(.+)\t(.+?)$/ } 
+                    (shuffle keys %$t)[0,1,2]) {
+                    push @s, "st%le";
+                }
+                if (t.name) {
+                    push @s, "name=t.name";
+                }
+                if (t.bb) {
+                    push @s, "* ".0+keys %$d;
+                }
+                push @s, '}%';
+            }
             elsif (ref $t) {
                 push @s, $witcolour->(ref($t), "333;font-size:50%");
                 my $name = gname($t);
