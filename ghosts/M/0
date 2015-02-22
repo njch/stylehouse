@@ -80,6 +80,27 @@ hooks:
     my $u = delete a.u;
     w $M remux[$MR,$a,$u];
 R_Ms:
+  event: | # BEFORE
+    my $uy = $i if $i ne $ux;
+    my $i = ux.i if $ux;
+    $i = undef if !$ux;
+    my $E = {
+        e => $e,
+        W => $W,
+        i => $i,
+        ux => $ux,
+        uy => $uy, # something with ID beyond the ux, may be grasped...
+        # TODO liesy after styley tagname anarchy
+    };
+    
+    saybl " W ". $W->pi if $W;
+    saybl " UX ". $ux->pi if $ux;
+    saybl " Uy ". $uy->pi if $uy;
+    return saygr "ungrasped line" unless $i;
+    saybl " i ". $i->pi;
+    
+    # TODO make a pattern about y=to match against Eways...
+    i.G w event(%$E);
   setup: |
     G.theM.Wo = G.theM.A->spawn(R => 'non'); # $G->R();
     G.theM.Wo.K = "WoM"; # TODO
@@ -220,27 +241,6 @@ R_Ms:
     @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
     uniq @down;
     
-  event: | # BEFORE
-    my $uy = $i if $i ne $ux;
-    my $i = ux.i if $ux;
-    $i = undef if !$ux;
-    my $E = {
-        e => $e,
-        W => $W,
-        i => $i,
-        ux => $ux,
-        uy => $uy, # something with ID beyond the ux, may be grasped...
-        # TODO liesy after styley tagname anarchy
-    };
-    
-    saybl " W ". $W->pi if $W;
-    saybl " UX ". $ux->pi if $ux;
-    saybl " Uy ". $uy->pi if $uy;
-    return saygr "ungrasped line" unless $i;
-    saybl " i ". $i->pi;
-    
-    # TODO make a pattern about y=to match against Eways...
-    i.G w event(%$E);
 R_Mz:
   - K: ux #c
     D: |
