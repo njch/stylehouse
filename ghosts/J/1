@@ -154,9 +154,25 @@ R_Jz:
           
           my ($th) = @$thing;
           if ($th && th.l ne th.t) {
-              sayre "style no tip ".wdump(1, $th),
-                  "   bbr: ".join " ", map{_.r} @$thing;
-              unshift @$thing, undef;
+              my @plan;
+              for (@$thing) {
+                  # somehow plan to hide things from yourself
+                  push @plan, $_ if _.l eq '/';
+                  # <> > <>
+                  # <> > <>
+                  # <> > <>
+                  # <> > <>
+                  # <> > <>
+                  # <> > <>
+                  # TODO conroll polai
+              }
+              if (@plan != @$thing) { # unknown and thingless style action
+                  sayre "style no tip th.r", map { "   _.r     =". gp _.s } @$thing;
+                  unshift @$thing, undef;
+              }
+              for (@plan) {
+                   # TODO how it likes to get together? this set somewhere else
+              }
           }
           
           push @things, $thing;
