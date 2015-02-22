@@ -1,4 +1,17 @@
 R_Jz:
+ - K: Jup #c
+   D: |
+     my $style = J.style;
+     my @style = map {
+         saygr "J.name seeking $_...";
+         my $p = "$_/styJup";
+         Rw suck - $p,
+         #Rw suck - */styJup/$_,
+        } @$style;
+     J.yt = { map{$_=>1} @style};
+     saygr "J.name styJupd: @style";
+       
+     "J".G.jumb.Jnumb++; # additively
  - K: hijack #c hit J
    D: |
       my $J = Rw hiJ below hull;
@@ -29,19 +42,40 @@ R_Jz:
       
       sayyl "made ++ ".$J->pi;
       $J
- - K: Jup #c
+ - K: tent #c pearlesque kings of the
    D: |
-     my $style = J.style;
-     my @style = map {
-         saygr "J.name seeking $_...";
-         my $p = "$_/styJup";
-         Rw suck - $p,
-         #Rw suck - */styJup/$_,
-        } @$style;
-     J.yt = { map{$_=>1} @style};
-     saygr "J.name styJupd: @style";
-       
-     "J".G.jumb.Jnumb++; # additively
+     my $na = shift @$m;
+     my $name = J.name.'-'.$na;
+     my $conJ = Rw makeJ $name;
+     $J->{$na} = $conJ;
+     conJ.A->umk($J, 'tent');
+     conJ.Jmost = J.Jmost || $J;
+     $conJ;
+ - K: conroll #c rolling away into shadow effect caused by reiteration
+   D: |
+     my @con = map{_.i} @{J.A.n_tent||[]};
+     @con = grep { $_ ne J.on } @con;
+
+     unshift @con, $J;
+     
+     my @conty;
+     la: { for (@con) {
+         keys %{_.bb} && do{ push @conty, $_; last la }
+     } return };
+     @con = @conty;
+
+     my @names = map { _.name } @con;
+     @names = map { s/^J.name\-//; $_ } @names;
+
+     say "Scraping out ".$J->pi."   tents ".join ", ", @names;
+     
+     sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
+         sort grep {!/\%/} keys %{J.bb};
+
+     for my $tent (@con) {
+         say "Scraping out the ".$tent->pi;
+         Rw setup $J:tent;
+     }
  - K: JL #c make L bracket
    D: |
       my $u = {K=>'L',%{ar.r || {}}}; 
@@ -50,7 +84,6 @@ R_Jz:
       my $L = w G.R fuu[$u, $q];
       sayyl "made ++ ".$L->pi;
       $L
-
  - K: fitin #c
    D: |
      my @so = sort grep {/^J.+/} keys %$ar;
