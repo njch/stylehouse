@@ -33,10 +33,11 @@ R_Jz:
        
  - K: round #c regroup - smush cove + copy here -> there
    D: |
-       # J.lum -5> $J
+       my $J4 = ar.J4 || ar.from || ar.humm;
+       my $J5 = ar.J5 || ar.to || ar.styje;
        # could multiple J sources and exits, provide roundness, generally...
        
-       my @be = Rw tvo $J:J.lum;
+       my @be = Rw tvo $J:J4;
        my $jit; # cv / l / t / $j
        my $ji = {map{$_=>[]}0..9};
        
@@ -50,6 +51,7 @@ R_Jz:
        }
        
        # wavesmush
+       my $away;
        my $id = 3;
        for my $i (0..9) {
            my $lo = $ji->{$i-1};
@@ -68,12 +70,12 @@ R_Jz:
                unshift @$ro, map { pop @$no } 1..$bulg;
            }
            elsif ($bulg > 0) {
-               #die "buckstop $bulg";
-               pop @$no for 1..$bulg;
-               J.bz->("buckstop\t0.999" => "@".$bulg."...", '%css' => 'color:blue');
-               # flip everything around, raise $id,
+               # could flip everything around, raise $id,
                # slosh back toward the middle again
                # very painterly
+               # hidden realms
+               pop @$no for 1..$bulg;
+               $away = {bulg=>$away};
            }
            
        }
@@ -95,14 +97,21 @@ R_Jz:
            
            for my $j (@$no) {
                my $ncv = shift @cvs;
-               my $ts = $jit->{j.cv}->{j.l};
+               my $ts = $jit->{j.cv}->{j.l};#/j.t => $j
                for my $k (sort keys %$ts) {
                    my $tj = $ts->{$k};
-                   J.bz->(tj.t."\t".$ncv, tj.s);
+                   if (tj.t eq tj.l) {
+                       J5.bz->(j.l."%origin\t".$ncv, $tj); # subtlest A-tion
+                       J4.bz->(j.l."%waves\t".$ncv, $j); # subtlest A-tion
+                   }
+                   J5.bz->(tj.t."\t".$ncv, tj.s);
                }
-               J.bz->(j.l."%origin\t".$ncv, $j); # subtlest A-tion
            }
        }
        
+       if ($away) {
+           J5.bz->("buckstop\t0.999" => "@".away.bulg."...",
+           '%css' => 'color:blue');
+       }
        
 
