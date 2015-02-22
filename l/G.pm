@@ -165,6 +165,20 @@ sub ghostlyprinty {
             }
             push @s, map { "[".ghostlyprinty(($nohtml?("NOHTML", $_):($_))) } @$t;
         }
+        elsif (ref $t eq 'HASH') {
+            push @s, '%{';
+            if (3 == grep { $_ =~ /^(.+)\t(.+?)$/ } 
+                (shuffle keys %$t)[0,1,2]) {
+                push @s, "st%le";
+            }
+            if ($t->{name}) {
+                push @s, "name=$t->{name}";
+            }
+            if ($t->{bb}) {
+                push @s, "* ".0+keys %$t;
+            }
+            push @s, '}%';
+        }
         elsif (ref $t) {
             push @s, $witcolour->(ref($t), "333;font-size:50%");
             my $name = gname($t);
@@ -1159,6 +1173,9 @@ sub parse_babble {
     # timer
 
     $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
+
+
+    $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
 
     # waylay
 

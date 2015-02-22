@@ -1,76 +1,111 @@
 R_Jz:
+ - K: tent #c pearlesque kings of the
+   D: |
+     my $na = shift @$m;
+     my $name = J.name.'-'.$na;
+     my $conJ = Rw makeJ $name;
+     $J->{$na} = $conJ;
+     conJ.A->umk($J, 'tent');
+     conJ.Jmost = J.Jmost || $J;
+     $conJ;
+ - K: conroll #c rolling away into shadow effect caused by reiteration
+   D: |
+       my @con = map{_.i} @{J.A.n_tent||[]};
+       @con = grep { $_ ne J.on } @con;
+       
+       my @names = map { _.name } @con;
+       @names = map { s/^J.name//; $_ } @names;
+       unshift @con, $J;
+       
+       say "Scraping out ".$J->pi."   tents ".join ", ", @names;
+       sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
+         sort grep {!/\%/} keys %{J.bb};
+       
+       
+       for my $tent (@con) {
+           #say "Scraping out the ".$tent->pi;
+           Rw setup $J:tent;
+       }
  - K: setup #c sets up $a with bb-domin & accessors
    D: |
-     saybl "setup ".$J->pi;
      Rw suJ $J;
- - K: suJ #c sets up $a (J or not quite J hash $a, phro etc) with bbdomin stuff
+ - K: suJ #c a sudo J, %{ r:sets up $a (J or not quite J hash $a, phro etc) with bbdomin stuff
    D: |
      J.bb = {};
      J.ord = [];
-     J.bz = w $R as(bb=>J.bb, ord=>J.ord);
-     J.lev = sub { #TODO
-         my $lev = {
-            r => shift,
-            sub => shift,
-            etc => [@_],
-            Jiter => $J, # drifter, expecting 8 (forks & events) approp.
-        };
-        lev.Jmost = J.Jmost;
-        Rw lplumb $a:lev;
+     J.bz = Rw as $bb:J.bb $ord:J.ord;
+     
+     my $by = sub {
+         my $that = shift;
+         sub {
+             my $j = {etc=>[]};
+             (j.r, j.s, @{j.etc}) = @_;
+             j.Jiter = $J; # easy reverse
+             # drifter, expecting 8 (forks & events) approp.
+             # this is a tent it is
+             j.Jmost = J.Jmost;
+             $that->($j); 
+         };
      };
+     
+     J.lev = $by->(sub {
+         my $j = shift;
+         j.sub = delete j.s;
+         Rw lplumb $J:j;
+     });
      # another little con tent, backeting a harmonic sur-ish portal
-     J.fro = sub {
-         my $fro = {
-            r => shift,
-            u => shift,
-            cv => shift,
-            etc => [@_],
-            Jiter => $J, # drifter, expecting 8 (forks & events) approp.
-        };
-        fro.Jmost = J.Jmost;
-        Rw gp $a:fro;
-     };
- - K: lplumb #c level, subby plumbing, like gp but seemingly uncomplicated here
+     J.fro = $by->(sub {
+         my $j = shift;
+         j.u = delete j.s;
+         j.cv = shift @{j.etc};
+         Rw gp $J:j;
+     });
+ - K: lplumb #c abomdin, a level, subby plumbing, tin gplumb
    D: |
-        Rw suJ $J:a;
-        a.sub->($a);
-        a.v = w G.theR maka[$a];
-        a.Jiter.bz->(a.r => a.v,
-            '%lp' => $a,
-            @{a.etc||[]},
+        Rw suJ $J;
+        J.sub->($J);
+        my $a = $J;
+        J.s = w G.theR maka[$a];
+        J.Jiter.bz->(J.r => J.s,
+            '%lp' => $J,
+            @{J.etc},
         );
  - K: gp #c R_sur gp
    D: |
+        Rw suJ $J;
         G.jumb.gp_inarow++;
-        0->accum($F[0] => _after_do => sub {
-            G.jumb.gp_inarow--;
-        });
-        %$a = (%$a, %{delete a.cv}) if ref a.cv;
-        a.cv = 0.1 if a.cv < 0.1;
+        aft { G.jumb.gp_inarow-- };
+        %$J = (%$J, %{delete J.cv}) if ref J.cv;
+        J.cv = 0.1 if J.cv < 0.1;
         
         # 3
-        Rw suJ $J:a;
         
-        a.isJid = a.replaceJid || $H->mkuid;
+        J.isJid = J.replaceJid || $H->mkuid;
         if (G.jumb.gp_inarow > 1) {
-            undef a.isJid;
+            undef J.isJid;
         }
-        #sayyl join(" ", ("  ") x G.jumb.gp_inarow)." ooooo ".gp(a.u);
-        a.Jiter.Jmost.gpa.pis->{a.isJid} = $a if a.isJid;
+        #sayyl join(" ", ("  ") x G.jumb.gp_inarow)." ooooo ".gp(J.u);
+        J.Jmost.gpa.pis->{J.isJid} = $J if J.isJid;
         # TODO J pass over # maka suction
         # don't need to close it up right now...
         # top down injection gos
         
-        my $u = a.u;
-        my $c = $R->cgp($u);
+        my $a = $J; # pretend, sli C7
+        my $u = J.ul;
         
-        # 4
-        my $wa = a.wa || do {
-            my ($wa) = grep { $c->{$_} } qw'canpi ARRAY HASH ref undef text';
+        my $wa = J.wa || do {
+            J.c = $R->cgp($u);
+            # ^
+            
+            # v
+            my ($wa) = grep { J.c->{$_} } qw'canpi ARRAY HASH ref undef text';
             $wa = ref $u if $wa eq 'canpi';
             $wa ||= 'wtf';
-            $wa
+            $wa;
         };
+        # can stick $wa on J.wa for thrashing maths
+        
+        
         G.theR.way->find("pi/$wa") || die "not $wa equip";
         
         # 5 forking swivel injecty
@@ -80,18 +115,14 @@ R_Jz:
         
         
         # 7
-        a.v = w G.theR maka[$a,$u];
+        a.s = w G.theR maka[$a,$u];
         
         
         # 8
         
         # 9
-        a.Jiter.bz->(a.r => a.v,
-            '%gp' => $a,
-            @{a.etc||[]},
-        );
+        a.Jiter.bz->(J.r => J.s,    '%gp' => $J,    @{J.etc});
         
-
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
    D: |
        my $j = {};
@@ -179,31 +210,4 @@ R_Jz:
           push @things, $thing;
       }
       @things
- - K: tent #c pearlesque kings of the
-   D: |
-     my $na = shift @$m;
-     my $name = J.name.'-'.$na;
-     my $conJ = Rw makeJ $name;
-     $J->{$na} = $conJ;
-     conJ.A->umk($J, 'tent');
-     conJ.Jmost = J.Jmost || $J;
-     $conJ;
- - K: conroll #c rolling away into shadow effect caused by reiteration
-   D: |
-       my @con = map{_.i} @{J.A.n_tent||[]};
-       @con = grep { $_ ne J.on } @con;
-       
-       my @names = map { _.name } @con;
-       @names = map { s/^J.name//; $_ } @names;
-       unshift @con, $J;
-       
-       say "Scraping out ".$J->pi."   tents ".join ", ", @names;
-       sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
-         sort grep {!/\%/} keys %{J.bb};
-       
-       
-       for my $tent (@con) {
-           #say "Scraping out the ".$tent->pi;
-           Rw setup $J:tent;
-       }
 

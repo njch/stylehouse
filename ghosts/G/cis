@@ -36,6 +36,9 @@ Ds:
             
             $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
             
+            
+            $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
+            
             # waylay
             
             #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;

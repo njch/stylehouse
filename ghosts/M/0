@@ -220,7 +220,7 @@ R_Ms:
     @down = grep {!ar.j.seenid->{_.id}} @down unless !ar.j || ar.allseeing;
     uniq @down;
     
-  event: |
+  event: | # BEFORE
     my $uy = $i if $i ne $ux;
     my $i = ux.i if $ux;
     $i = undef if !$ux;
@@ -264,7 +264,7 @@ R_Mz:
       # R.W is C, the wormhole we are unifying
       # R.Wo is R:non, the wormhole of this RNA
 
-      sayyl "\n ixomg ".$G->pi."    ".R.W->pi."\n";
+      sayyl $R->pi."    ".$G->pi."    ".R.W->pi;
       my $W = R.W; # not really singular, crazy patchwork though
       my $V = R.W.V;
       my $les = '*';
@@ -402,12 +402,13 @@ R_Mz:
     babz:
       'ux 4': |
             if ($to eq 'i') {
-                saybl "Four i";
                 # the 374 coil, ux set must be complete
                 # ux nests under another ux like origin
                 # and M must humm after (reversal after 3
                 my $ux = (V.bb->{"i/s.id%u 3"} || die)->{s};
                 my $M = (TV.bb->{"i/s.id%M 4"} || die "no i/s.id.'%M 4'")->{s};
+                
+                saybl "Four M-M.id     ". $ux->pi;
                 
                 push @{M.tohu||=[]}, $ux;
                 
@@ -427,7 +428,7 @@ R_Mz:
             }
             elsif ($to eq 'M') {
                 my $M = $s;
-                saybl "M M M M";
+                saybl "MMMM M-M.id: ". $M->pi;
                 # TODO know about which i's at this point
                 # so to try and join up _uS
                 # taking the Udown backwards seems like less work
@@ -520,10 +521,8 @@ R_Mz:
               for my $p (@mm) {
                   my $i = p.i;
                   my $M = p.M;
-                  if (i.i.dead) {
-                      sayyl "Severed!          ".$i->pi;
-                    next;
-                  }
+                  i.i.dead && sayyl("Severed!          ".$i->pi) && next;
+                  
                   sayyl "Seven! ".$i->pi;
                   Rw Out $i $j $M;
               }
@@ -533,16 +532,6 @@ R_Mz:
       my $ui = u.i if u.i;
 
       my $at = u.at = {};
- 
-
-    babz:
-
-    babz:
-
-    babz:
-
-    babz:
-
     babz:
       'Out 2': | #c
         if (u.K eq "uW") {
@@ -594,10 +583,6 @@ R_Mz:
   - K: wayout_sendo #c
     babz:
       'Out 3': | #c
-        my $u = $i;
-        my $ui = u.i if u.i && u.K eq 'ux';
-        
-        my $at = u.at;
         my $sendo = u.sendo = [];
         
         my ($s,$c) = ([],[]);
