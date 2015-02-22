@@ -1141,6 +1141,13 @@ sub su {
     $H->{G}->w(subsc => $a); 
 }
 
+sub pub {
+    my $G = shift;
+    my ($S, $m, $ig) = @_;
+    G::sayyl "G pub $S < ".G::slim(50,50,$m) if !$ig;
+    $H->{db}->notify($S,$m);
+}
+
 sub parse_babble {
     my $G = shift;
     my $eval = shift;
@@ -1179,7 +1186,7 @@ sub parse_babble {
     # io
     my $mwall = qr/(?:= |^\s*)/m;
     $eval =~ s/${mwall}Sur (\S+) \{/su \$G, "$1", sub{my\$r=shift; /sg;
-    $eval =~ s/${mwall}Pur (\S+) /pub \$H, "$1", /sg;
+    $eval =~ s/${mwall}Pur (\S+) /pub \$G, "$1", /sg;
 
     #Sur Hostinfo {
     #Pur S/$hol "hostinfo/ack r.m", 'ig'

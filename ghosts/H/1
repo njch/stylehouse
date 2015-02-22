@@ -114,8 +114,8 @@ hooks:
     $G->recur(9 => sub {
         w hostinfo;
     });
-  hostinfo: |
-    my @ps = `ps -p$$ fu`;
+  hostinfo: | # REname Hostinfo, polari
+    my @ps = `ps -p$$ fu`; # j right
     my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
     $_ = $_ / 100 for $cpu, $mem;
     my $now = $H->hitime;
@@ -124,9 +124,10 @@ hooks:
     my $info = "$cpu $mem $now";
     
     saygr "hostinfo: $info " if rand(1) > 0.7;
-    H.r->set("H/$hol", $info);
     
-    $H->pub("Hostinfo" => "$hol $info", 'ig');
+    # TODO some Purs have core v
+    H.r->set("H/$hol", $info);
+    Pur Hostinfo "$hol $info", 'ig';
     
     $H->pub("Hi" => $hol) if !H.lastinfo || ar.withHi;
     H.lastinfo = $now;
