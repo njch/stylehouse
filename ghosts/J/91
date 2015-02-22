@@ -64,30 +64,42 @@ R_Jz:
            for (@or) {
                my $cv = y.ordy->{$_} || 4;
                $cv = "0.$cv";
-               push @r, { r=>$_, path=>"{$_", v=>$u->{$_}, cv=>$cv };
+               push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
            }
        }
        
+       my $cos = {qw(
+       1 white
+       2 orange
+       3 red
+       4 blue
+       5 yellow
+       7 green
+       8 pink
+       9 purple
+       )};
        
-       for my $r (@r) {
+       for my $r (@r) { # %{ r, path, v, cv
             
            next if r.r eq 'load_ways_count';
             
            J.lum.lev->("r.r/\t".r.cv => sub {
                my $a = shift;
                my $fs = length(r.r) > 9 ? 60 : 80;
+               my $guec = $2 if r.cv =~ /^(0\.)?(\d)/;
+               my $col = $cos->{$guec} || die "was r.cv so $guec";
                # TODO curve ^ # make sf of a Q factor that can see $v somehow
                a.bz->(
                     "lable 0.1" => r.r,
                     #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
                     "%css#laob" => 'position:absolute;right:0.5em;',
                     "%css#lableg" => "font-size:$fs%",
-                    "%css#labcoat" => "color:black", # TODO unwind cv into colour
+                    "%css#labcoat" => "color:$col", # TODO unwind cv into colour
                     "%tt#\cv" => r.cv,
                );
                
                   
-               a.fro->("gp\t"."0.6" => r.v,
+               a.fro->("gp\t"."0.6" => r.s,
                  {cv=>0.2, makaz=>{ # hooky
                     "/%css#jit 0.1" => 'position:absolute;left:1em;width:30em',
                  }}, # ^ v in out sameish
@@ -100,6 +112,7 @@ R_Jz:
              # ad what kind of cursor, fro delays/syncs
              # start culture
              # the middle
+             # start cuddle
        }
        Rw round $J4:J.lum $J5:J;
        
