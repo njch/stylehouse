@@ -135,35 +135,50 @@ R_Jz:
 
  - K: maka #c
    D: |
-     my $cv = ar.cv; 
-     $cv = a.cv if !defined $cv;
-     my $a = ar.a || ar.J;
+     my $J = ar.J || ar.a;
+     ar.cv && die;
    babz:
      'maka 1': | #c
-       if (my $id = a.isJid || a.replaceJid) {
-           a.bz->("/%id\t"."0.1" => $id);
+       if (my $id = J.isJid || J.replaceJid) {
+           J.bz->("/%id\t"."0.1" => $id);
        }
-       if (my $tod = a.makaz) {
+       if (my $tod = J.makaz) {
            for (keys %$tod) {
-               a.bz->($_ => $tod->{$_})
+               J.bz->($_ => $tod->{$_})
            }
        }
-     'maka 2.5': | #c stylepliers
-         for my $k (%{a.bb}) {
+     'maka 2.5': | #c zurp stylepliers
+         for my $k (%{J.bb}) {
              if ($k =~ /^(\S*(?:oB|Bo|Bi|Bs))\s+(.+)$/) {
-                 a.bb->{"$1\%css#maka25\t$2"} = "color:black";
+                 J.bb->{"$1\%css#maka25\t$2"} = "color:black";
              }
              if ($k =~ /^thi\s+(.+)$/) {
-                 a.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
+                 J.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
              }
              if ($k =~ /^name\s+(.+)$/) {
-                 a.bb->{"name\%css#maka25\t$1"} = "color:#f93;";
+                 J.bb->{"name\%css#maka25\t$1"} = "color:#f93;";
              }
              if ($k =~ /^K\s+(.+)$/) {
-                 a.bb->{"K%css#maka25\t$1"} = "color:#3f3";
+                 J.bb->{"K%css#maka25\t$1"} = "color:#3f3";
              }
          }
      'maka 4': | #c thingness <-> appearance
+       J.o = {};
+       my @things = Rw tvy $J;
+       for my $thing (@things) {
+           my ($th, @sjs) = @$thing;
+           
+           say "not thing: ".wdump(2, $thing) if th.l ne th.t;
+           
+           for my $i (@$thing) {
+           
+               my $ev = i.ev->[-1] || i.cv;
+               saybl "cvisssss $ev to i.cv   on i.r" if $ev ne i.cv;
+               
+               # ev
+           }
+       }
+               
        my @r = $G->stylekeysort(a.bb);
 
        a.o = {}; # by voltage, peel

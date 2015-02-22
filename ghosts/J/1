@@ -76,17 +76,26 @@ R_Jz:
  - K: tvy #c group tvo by thing with style
    D: |
       my @d = w $R tvo[$J]; # !style||com
+      
       my @things;
       while (@d) {
           my $ne = shift @d;
-          die wdump(1, $ne) if ne.l ne ne.t; # style no tip
 
           my $thing = [$ne];
           while (@d && $d[0]->{l} eq ne.l) {
               my $sj = shift @d;
               push @$thing, $sj;
           }
+          
+          my ($th) = @$thing;
+          if ($th && th.l ne th.t) {
+              sayre "style no tip ".wdump(1, $th),
+                  "   bbr: ".join " ", map{_.r} @$thing;
+              unshift @$thing, undef;
+          }
+          
           push @things, $thing;
+          
       }
       @things
 
