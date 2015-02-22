@@ -11,7 +11,8 @@ R_Jz:
      # way is a weird uri-ish string, like {key
      
      my ($the) = my @pathy = Rw uptopathway $lim:J $J:fro;
-     die wdump(\@pathy) if @pathy != 1;
+     die "path not found, was last looking through "
+         .join" ", map{_.t} @pathy if @pathy != 1;
      my $t = the.s;
      
      # look for whole l ness
@@ -22,11 +23,15 @@ R_Jz:
  - K: uptopathway #c up from J until a %path, but not too far
    D: |
      my $i = 0;
+     sayyl gp($J);
+     sayre "L:imit: ".$lim->pi;
      until ($J eq $lim) {
          my $Jit = J.Jiter;
+         saybl "  ? ".gp($Jit);
          my $j = $R->shj(J.r, Jit.bb);
-         my $ip = {l => j.l, style => 'path'};
+         my $ip = {l => j.l};
          my @junk = Rw tvo $J:Jit $ip;
+         sayyl "lolking through ".join" ", map{_.t} @junk;
          return @junk if @junk;
          die if $i++ > 9;
          $J = $Jit;
