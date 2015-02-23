@@ -66,7 +66,7 @@ R_Jz:
        do {
        my (@css,@class);
        for my $cs (@$css) {
-           $cs = join '', map{"$_;"} grep{defined} split ';', $cs;
+           # saybl " a bit $cs";
            G.jumb.shtuuyle->{$cs}++; #<in vout
            if (my $class = G.jumb.shtdc->{$cs}) {
                say "HAVE $class for $cs";
@@ -86,20 +86,30 @@ R_Jz:
         komp: |
             my $dc = G.jumb.shtuuyle || return;
             my $sd;
-            my @all;
-            while (my ($sty,$uses) = each %$dc) {
-                push @all, {sty=>$sty,uses=>$uses};
-            }
-            @all = sort { _.uses <=> _.uses } @all;
+            my $byii;
+            push @{$byii->{$dc->{$_}}||=[]}, $_ for keys %$dc;
             my $limit = 250;
-            for my $a (@all) {
-                last if $limit-- <= 1;
-                my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
-                next unless $sty;
-                my ($heex) = $H->dig($sty) =~ /^(...)/;
-                # TODO pack hex into unibabl
-                $sd->{"a".$heex} = $sty;
+            my $bored = 5; # bored lower than 5, or as ratio once going
+            my @order = reverse sort {$a<=>$b} keys %$byii;
+            for my $usk (@order) {
+                my $us = $byii->{$usk};
+                say "usk $usk  of ".scalar(@$us);
+                last if $usk < $bored;
+                for my $u (@$us) {
+                    last if $limit-- < 1;
+                    my $sty = join '', map{"$_;"} grep{defined} split ';', $u;
+                    die unless $sty;
+                    my ($heex) = $H->dig($sty) =~ /^(...)/;
+                    # TODO pack hex into unibabl
+                    $sd->{"a".$heex} = $sty;
+                }
             }
+            if (!$sd) {
+                # TOO MUCH NOTHING
+                sayyl "NOTHING TO COMPRESS" for 1..20;
+                return;
+            }
+            sayyl "compression is ".scalar(keys %$sd)." wide";
             G.jumb.shtdc = {reverse %$sd};
 
             # ^ to maka
@@ -232,7 +242,7 @@ R_Jz:
            my $l = j.l;
            sayre "y hello ".wdump(1,$thing) if j.l ne j.t;
            
-           my $cssdb = 1;
+           my $cssdb = 0;
            
            sayyl " thji: j.r" if $cssdb;
            die if j.cv == 0.9 && j.l ne '/';
@@ -305,6 +315,9 @@ R_Jz:
                    }
                }
            }
+           @$css = map {
+               join '', map{"$_;"} grep{defined} split ';', $_
+           } @$css;
            # TODO hold things in pockets relative to origin css comment
            # to help things break down into styles better
            at.style = join '', map{"$_;"}
@@ -324,7 +337,7 @@ R_Jz:
            saybl "Tag! $tag" if $tag;
            $tag ||= "añ";
            $at = join " ", $tag,
-               map { saybl " : $_ "; $_ }
+               map { saybl " : $_ " if $cssdb; $_ }
                map { $_.'="'.$at->{$_}.'"' } # attra
                grep { $at->{$_} } sort keys %$at;
            
