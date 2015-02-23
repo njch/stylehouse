@@ -44,13 +44,15 @@ hooks:
           for my $vh (H.r->keys("V/$Hid*")) {
               my (@v) = split '/', $vh;
               my $ww = $v[2];
-              $js .= " \$('#ux > #$ww').remove();";
+              $js .= w jsrm(id=>$ww);
               H.r->del($vh);
               H.r->del("W/$ww");
           }
           $H->send($js) if $js;
           H.r->del("H/$oth");
       }
+  jsrm: |
+    " \$('#ux > #$id').fadeOut(1000, function() { \$(this).remove(); });";
   Hiwtidy: |
     my $js = 
     " var e = []; \$('#ux > ww').each(function(){"
@@ -67,9 +69,10 @@ hooks:
     my $js;
     for (keys %$wild) {
         # TODFO javascript guns
-        die;
-        $js .= " \$('#ux > #$_').fadeOut(1000, function() { $(this).remove(); });";
+        #die;
+        $js .= w jsrm(id=>$_);
     }
+    saybl $js;
     $H->send($js) if $js;
     say "Done Hiwtidy";
     

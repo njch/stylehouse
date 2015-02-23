@@ -685,6 +685,8 @@ sub D {
     if (ref $sub eq "CODE" && !$@) {
         local $SIG{__DIE__} = $H->{sigstackend};
         local $SIG{__WARN__} = $H->{sigstackwa};
+
+
         eval { @return = $sub->($a->{ar}) }
     }
 
@@ -780,10 +782,12 @@ sub Duck {
             if ($first) {
                 $DOOF .= ind('ar.', join "\n",
                     map{
-                    "$_ = ".
-                    #gp()
-                    $ar->{$_}
-                    }keys %$ar);
+                     my $e = $ar->{$_};
+                     my $s = $e->pi
+                         if ref $e && ref $e ne 'ARRAY' && ref $e ne 'HASH' && $e->canpi;
+                     $s ||= $e;
+                    "$_ = ". $s
+                    }keys %$ar); 
             }
 
             $D->{Error} = $DOOF;
