@@ -138,7 +138,7 @@ R_Jz:
      my $J = ar.J || ar.a;
      ar.cv && die;
    babz:
-     'maka 1': | #c
+     'maka 1': | #c should be J/1 in gpasm
        if (my $id = J.isJid || J.replaceJid) {
            J.bz->("/%id\t"."0.1" => $id);
        }
@@ -164,20 +164,22 @@ R_Jz:
          }
      'maka 4': | #c thingness <-> appearance
        J.o = {};
+       # shall create "/ 0.99" => something for this element
+       # so that things last, embeds contooz
+       # maybe J.by.maka.whol describes it, and provides its contooz (@s)
+           # execution order in J.o is ev
+           # / thing knows how to suck up others
+           
        my @things = Rw tvy $J;
        for my $thing (@things) {
            my ($th, @sjs) = @$thing;
            
-           say "not thing: ".wdump(2, $thing) if th.l ne th.t;
-           
-           # execution order in J.o is ev
-           # / thing knows how to suck up others
+           say "not thing: th.r" if th.l ne th.t;
            
            for my $i (@$thing) {
-           
                my $ev = i.ev->[-1] || i.cv;
                saybl "cvisssss $ev to i.cv   on i.r" if $ev ne i.cv;
-               
+               push @{J.o->{$ev}||=[]}
                # ev
            }
        }
@@ -303,7 +305,7 @@ R_Jz:
            $s = "<$at>$s</$tag>" if defined $s;
            $s
        };
-     'maka 7': | #c
+     'maka 7': | #c HERE for some reason is the loop that actuates 5 + 6
          my @s;
          for my $thl (@int) {
              my $j = $th->{$thl} || next;
