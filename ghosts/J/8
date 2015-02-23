@@ -6,42 +6,31 @@ R_Jz:
      saybl (join("      ", (" JJJ ".$J->pi) x 7)) x 3;
      sayyl "ID: $id";
      
-     my $fro = J.gpa.pis->{$id} || return warn "non $id";#.wdump(2,J.gpa);
+     my $bit = J.gpa.pis->{$id} || return warn "non $id";#.wdump(2,J.gpa);
+     
+     # the class etc bits of $e might clue in what to do
+     # maybe can mousedown just x y?
+     # J is the 1circle, J2 the 2circle
+     my $pa = Rw upath $J $J2:bit;
+     
+     my $t = pa.pathy || die wdump(2,[nopathy=>$pa]);
+     
+     
+     
+     
+     sayyl "goeth bit.r ========  pa.pathy";
      # path must be somewhere around here...
      # on the gp's / which is inside yet outsideness, or the lev... whatev.
      # TODO look-around-for %whatever
      # way is a weird uri-ish string, like {key
      
-     my ($the) = my @pathy = Rw uptopathway $lim:J $J:fro;
-     if (!$the) {
-         sayre "path not found, was last looking through "
-         .join" ", map{_.t} @pathy if @pathy != 1;
-         return;
-     }
-     sayyl" Continuing";
-     my $t = the.s;
+     # there's a bunch of paths, there interesting
      
-     # look for whole l ness
+     sayyl" Continuing";
+     # look for whole l ness # eats HASH
      Rw conty $t, $J3:J;
      
      waylay 3 mux(u=>$J);
-     
- - K: uptopathway #c up from J until a %path, but not too far
-   D: |
-     my $i = 0;
-     sayyl gp($J);
-     sayre "L:imit: ".$lim->pi;
-     until ($J eq $lim) {
-         my $Jit = J.Jiter;
-         saybl "  ? ".gp($Jit);
-         my $j = $R->shj(J.r, Jit.bb);
-         my $ip = {l => j.l};
-         my @junk = Rw tvo $J:Jit $ip;
-         sayyl "lolking through ".join" ", map{_.t} @junk;
-         return @junk if @junk;
-         die if $i++ > 9;
-         $J = $Jit;
-     }
      
  - K: conty #c hit J bit, somethingsomething
    D: |
@@ -55,5 +44,38 @@ R_Jz:
      J2.onei = {%{J3.onei}};
      J2.onei.t = [@{J2.onei.t}] if J2.onei.t;
      
+     
      Rw inness $J:J2 $t;
+ - K: upath #c find %path or so between J and J2, a subj, FUZZ
+   D: |
+     my $py = {Jr=>J.r, J2r=>J.r};
+     
+     sayyl "upthy: ".gp($J)."          <->   ".gp($J2);
+     my $Jo = $J2;
+     while (1) {
+         saybl "  ? ".gp(Jo.Jiter);
+         saybl "has: Jo.r";
+         sayre("hno Jitter") && last if !Jo.Jiter;
+         # see if this Jo thing has any styles above
+         # .r was a phro/lev thing , blend J j
+         my $j = Rw shj $r:Jo.r $J:Jo.Jiter;
+         my $ip = {l => j.l};
+         my @junk = Rw tvo $J:Jo.Jiter $ip;
+         my (@path) = grep { _.style eq 'path' } @junk;
+         sayyl "lolking through ".join" ", map{_.t} @junk;
+         
+         die @path if @path > 1;
+         unless (@path) {
+             sayre "nothing in...";
+         }
+         else {
+            my ($path) = @path;
+            py.pathy = path.s;
+            push @{py.paths||=[]}, \@junk;
+         }
+         last if $Jo eq $J; # complete
+         $Jo = Jo.Jiter; # move up
+     }
+     return $py;
+     
 

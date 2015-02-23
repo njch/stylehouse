@@ -174,8 +174,11 @@ sub ghostlyprinty {
             if ($t->{name}) {
                 push @s, "name=$t->{name}";
             }
+            if ($t->{r}) {
+                push @s, "r=$t->{r}";
+            }
             if ($t->{bb}) {
-                push @s, "* ".0+keys %$t;
+                push @s, "* ".scalar(keys %$t);
             }
             push @s, '}%';
         }
