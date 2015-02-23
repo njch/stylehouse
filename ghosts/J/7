@@ -174,35 +174,36 @@ R_Jz:
            my $l = j.l;
            sayre "y hello ".wdump(1,$thing) if j.l ne j.t;
            
-           sayyl " thji: j.r";
+           my $cssdb = 1;
+           
+           sayyl " thji: j.r" if $cssdb;
            die if j.cv == 0.9 && j.l ne '/';
+           die "reffy $s in $l".wdump(2,$j) if ref $s;
            
            # top volt for thing selection?: # whattage
            # skip overlap of K + name
            next if $l eq 'K' && J.bb->{"name 0.1"} eq $s
               && $s ne J.bb->{"K 0.2"};
 
-           die "reffy $s in $l".wdump(2,$j) if ref $s;
-           
            my $ishtml;
-           if ($l eq '/') { # swoosh
+           my $at = {};
+           my $tag;
+           my $css = []; # TODO harder, like style / comment = $v
+           # , can know how to accum/comrpess nice
+           
+                   # < >< >< >?
+                   # < >< >< >?
+                   # < >< >< >?
+           if ($l eq '/') { # swoosh, swallows up the rest of @s
                $ishtml = 1;
                $s = join "", @s;
                @s = ();
            }
-           my $at = {};
-           my $tag = "añ";
-           my $css = []; # TODO harder, like style / comment = $v
-           # , can know how to accum/comrpess nice
+           # thingness ^     appearance v
            for my $oj (@sjs) {
-               saybl "        sdtyle! oj.style oj.s" if ar.db;
-
                # TODO here Jung Cs have injected langauge to grab themselves by...
                for (oj.style) {
 
-                   # < >< >< >?
-                   # < >< >< >?
-                   # < >< >< >?
                    # < >< >< >?
                    # < >< >< >?
                    # < >< >< >?
@@ -212,8 +213,10 @@ R_Jz:
                    # has a way to $a the gp action within...
                        
                    when ('sf') {
-                       push @$css, map { $R::f->{$_} || die "no style $_"}
-                           split '_', oj.s
+                       my @cs = map { $R::f->{$_} || die "no style $_"}
+                           split '_', oj.s;
+                       push @$css, @cs;
+                       say "bit of sf: oj.s := @cs" if $cssdb;
                    }
                    when ('css') {
                        my $cs = oj.s;
@@ -221,6 +224,7 @@ R_Jz:
                            sort keys %$cs
                            if ref $cs;
                        push @$css, $cs;
+                       say "bit of css: $cs" if $cssdb;
                    }
 
                    at.id = oj.s when 'id';
@@ -244,10 +248,11 @@ R_Jz:
            # to help things break down into styles better
            at.style = join '', map{"$_;"}
                grep{defined} map { split ';' } @$css;
-
+           # /////////////////////////////////////////////////////
            # 6.5
            # stylecompressor 3 aboves
            # hooch
+           $tag ||= "añ";
            if (at.title || !a.untitled) {
                at.title = join " ", grep{defined}
                    (!a.untitled ? "j.cv $l" : undef),
@@ -256,12 +261,12 @@ R_Jz:
            $at = join " ", $tag,
                map { $_.'="'.$at->{$_}.'"' } # attra
                grep { $at->{$_} } sort keys %$at;
-
+           saybl "going for: $at";
+           
            $s = encode_entities($s) if !$ishtml;
            $s = "<$at>$s</$tag>" if defined $s;
            push @s, $s;
-       }    
-       # HERE for some reason is the loop that actuates 5 + 6
+       }
        @s = "no?" if !@s;
        my $html = join '', @s;
        $html;
