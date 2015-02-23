@@ -62,12 +62,26 @@ R_Jz:
  - K: occie #c style komerp # occasional (page) global aggregate
    spesh: 0
    babz:
-        'maka 6': |
-                    G.jumb.shtuuyle->{at.style}++;
-                    if (my $class = G.jumb.shtdc->{at.style}) {
-                        delete at.style;
-                        at.tag = $class; # TODODORORO
-                    }
+     'maka 6': |
+       do {
+       my (@css,@class);
+       for my $cs (@$css) {
+           $cs = join '', map{"$_;"} grep{defined} split ';', $cs;
+           G.jumb.shtuuyle->{$cs}++; #<in vout
+           if (my $class = G.jumb.shtdc->{$cs}) {
+               say "HAVE $class for $cs";
+               push @class, $class;
+               #at.tag = $class; # TODODORORO
+           }
+           else {
+               push @css, $cs;
+           }
+       }
+       at.class = join' ',@class if @class;
+       # and redo:
+       at.style = join '', map{"$_;"}
+       grep{defined} map { split ';' } @css;
+       };
    n_D:
         komp: |
             my $dc = G.jumb.shtuuyle || return;
@@ -77,7 +91,7 @@ R_Jz:
                 push @all, {sty=>$sty,uses=>$uses};
             }
             @all = sort { _.uses <=> _.uses } @all;
-            my $limit = 50;
+            my $limit = 250;
             for my $a (@all) {
                 last if $limit-- <= 1;
                 my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
@@ -94,8 +108,8 @@ R_Jz:
             my $as = {K=>'style', B=>{am=>'styleyo'}};
             my $st = w G.R fuu(u=>$as);
             my $was = st.sheet;
-            # TODO more accumo
-            st.sheet = join "\n", map { "$_ { $sd->{$_} }" } sort keys %$sd;
+            # TODO more accumo, and compress the compression
+            st.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
             # TODO style order massively important
             # for regrouping s;t;y;l;e into sma;ll;er st;yles
             # need well oiled J to do it right
@@ -231,6 +245,8 @@ R_Jz:
 
            my $ishtml;
            my $at = {};
+           # my $cs = {}; # %(style) / #(comment) / $translation ?
+           # trying with @$css
            my $css = []; # TODO harder, like style / comment = $v
            # , can know how to accum/comrpess nice
            
