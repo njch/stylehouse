@@ -319,10 +319,11 @@ Ds:
                     $DOOF .= ind('ar.', join "\n",
                         map{
                          my $e = $ar->{$_};
-                         my $s = $e->pi
-                             if ref $e && ref $e ne 'ARRAY' && ref $e ne 'HASH' && $e->canpi;
-                         $s ||= $e;
-                        "$_ = ". $s
+                         my $s = "$e";
+                         $s .= "(name=$e->{name})"
+                             if ref $e && ref $e ne 'ARRAY'
+                            && $e->{name};
+                        "$_ = ". $s;
                         }keys %$ar); 
                 }
                 
