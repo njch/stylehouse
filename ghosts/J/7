@@ -58,8 +58,52 @@ R_Jz:
       }
       Rw suck */outhere;
       sayre join " ", (">") x scalar(@d);
- - K: stylo #c OUT
-   D: |
+
+ - K: occie #c style komerp # occasional (page) global aggregate
+   spesh: 0
+   babz:
+        'maka 6': |
+                    G.jumb.shtuuyle->{at.style}++;
+                    if (my $class = G.jumb.shtdc->{at.style}) {
+                        delete at.style;
+                        at.tag = $class; # TODODORORO
+                    }
+   n_D:
+        komp: |
+            my $dc = G.jumb.shtuuyle || return;
+            my $sd;
+            my @all;
+            while (my ($sty,$uses) = each %$dc) {
+                push @all, {sty=>$sty,uses=>$uses};
+            }
+            @all = sort { _.uses <=> _.uses } @all;
+            my $limit = 50;
+            for my $a (@all) {
+                last if $limit-- <= 1;
+                my $sty = join '', map{"$_;"} grep{defined} split ';', a.sty;
+                next unless $sty;
+                my ($heex) = $H->dig($sty) =~ /^(...)/;
+                # TODO pack hex into unibabl
+                $sd->{"a".$heex} = $sty;
+            }
+            G.jumb.shtdc = {reverse %$sd};
+
+            # ^ to maka
+            # v to elvis
+
+            my $as = {K=>'style', B=>{am=>'styleyo'}};
+            my $st = w G.R fuu(u=>$as);
+            my $was = st.sheet;
+            # TODO more accumo
+            st.sheet = join "\n", map { "$_ { $sd->{$_} }" } sort keys %$sd;
+            # TODO style order massively important
+            # for regrouping s;t;y;l;e into sma;ll;er st;yles
+            # need well oiled J to do it right
+            # also may compress sheet updates with text append...
+            # and many sheets at levels of holiness
+            w mux(u=>$st) if st.sheet ne $was;
+
+      
  - K: retile #c # TODO use L & J
    D: | 
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
@@ -187,23 +231,26 @@ R_Jz:
 
            my $ishtml;
            my $at = {};
-           my $tag;
            my $css = []; # TODO harder, like style / comment = $v
            # , can know how to accum/comrpess nice
            
                    # < >< >< >?
                    # < >< >< >?
                    # < >< >< >?
+     'maka 5.3': | #c thingness
            if ($l eq '/') { # swoosh, swallows up the rest of @s
+               # could know this is coming and defer tiny contents
+               # favour big picture, only need to surf by...
+               # water keeps watering anywhere you look at it
+               # the @s gets too big for one message too
                $ishtml = 1;
                $s = join "", @s;
                @s = ();
            }
-           # thingness ^     appearance v
+     'maka 5.5': | #c appearance
            for my $oj (@sjs) {
                # TODO here Jung Cs have injected langauge to grab themselves by...
                for (oj.style) {
-
                    # < >< >< >?
                    # < >< >< >?
                    # < >< >< >?
@@ -228,10 +275,8 @@ R_Jz:
                    }
 
                    at.id = oj.s when 'id';
-
                    at.title = oj.s when 'tt';
-
-                   $tag = oj.s when 'tag';
+                   at.tag = oj.s when 'tag';
 
                    # TODO compile J.ys
                    1 when 'path';
@@ -248,20 +293,24 @@ R_Jz:
            # to help things break down into styles better
            at.style = join '', map{"$_;"}
                grep{defined} map { split ';' } @$css;
+           
            # /////////////////////////////////////////////////////
-           # 6.5
-           # stylecompressor 3 aboves
-           # hooch
-           $tag ||= "añ";
+           
+     'maka 7': | #c thingness <-> appearance
+       # stylecompressor 3s6 aboves
+       # hooch
            if (at.title || !a.untitled) {
                at.title = join " ", grep{defined}
                    (!a.untitled ? "j.cv $l" : undef),
                    (at.title ? at.title : undef);
            }
+           my $tag = delete at.tag;
+           saybl "Tag! $tag" if $tag;
+           $tag ||= "añ";
            $at = join " ", $tag,
+               map { saybl " : $_ "; $_ }
                map { $_.'="'.$at->{$_}.'"' } # attra
                grep { $at->{$_} } sort keys %$at;
-           saybl "going for: $at";
            
            $s = encode_entities($s) if !$ishtml;
            $s = "<$at>$s</$tag>" if defined $s;

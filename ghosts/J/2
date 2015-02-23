@@ -98,20 +98,17 @@ R_Jz:
            my $j = shift;
            j.u = delete j.s;
            j.cv = shift @{j.etc};
+           %$j = (%$j, %{delete j.cv}) if ref j.cv;
            Rw gp $J:j;
        });
    D: |
      G.jumb.gp_inarow++;
      aft { G.jumb.gp_inarow-- };
-     %$J = (%$J, %{delete J.cv}) if ref J.cv;
      J.cv = 0.1 if J.cv < 0.1;
-     
      J.bz->("/\t0.9" => "yep");
      # 3
-     
      J.isJid = J.replaceJid || $H->mkuid;
      undef J.isJid if G.jumb.gp_inarow > 1;
-     
      J.Jmost.gpa.pis->{J.isJid} = $J if J.isJid;
      
      # TODO J pass over # maka suction
@@ -130,10 +127,13 @@ R_Jz:
          $wa;
      };
      # can stick $wa on J.wa for thrashing maths
+     # funcy fuzz fields
+     # mutating spiral code
      
      R.way->find("pi/$wa") || die "not $wa equip"; # more
      
      # 5 forking swivel injecty redis, etc etc
+     # set up more consciously the stylepliers of 5
 
      # 6
      Rw pi/$wa $J $u;
@@ -146,6 +146,6 @@ R_Jz:
      # 8
      
      # 9
-     a.Jiter.bz->(J.r => J.s,    '%gp' => $J,    @{J.etc});
+     J.Jiter.bz->(J.r => J.s,    '%gp' => $J,    @{J.etc});
      
 
