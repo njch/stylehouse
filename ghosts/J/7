@@ -129,10 +129,6 @@ R_Jz:
         
         $H->send(" \$('#".meta.Wid."')$cssset$unhide".";");
     }
-
-
-
-
  - K: maka #c
    D: |
      die if ar.hello;
@@ -140,7 +136,7 @@ R_Jz:
    babz:
      'maka 1': | #c should be J/1 in gpasm
        if (my $id = J.isJid || J.replaceJid) {
-           J.bz->("/%id\t"."0.1" => $id);
+           J.bz->("/%id\t0.9" => $id);
        }
        if (my $tod = J.makaz) {
            for (keys %$tod) {
@@ -169,74 +165,36 @@ R_Jz:
        # maybe J.by.maka.whol describes it, and provides its contooz (@s)
            # execution order in J.o is ev
            # / thing knows how to suck up others
-           
        my @things = Rw tvy $J;
+       my @s;
+       J.ty.maka.s = \@s;
        for my $thing (@things) {
-           my ($th, @sjs) = @$thing;
+           my ($j, @sjs) = @$thing;
+           my $s = j.s;
+           my $l = j.l;
+           sayre "y hello ".wdump(1,$thing) if j.l ne j.t;
            
-           say "not thing: th.r" if th.l ne th.t;
+           sayyl " thji: j.r";
+           die if j.cv == 0.9 && j.l ne '/';
            
-           for my $i (@$thing) {
-               my $ev = i.ev->[-1] || i.cv;
-               saybl "cvisssss $ev to i.cv   on i.r" if $ev ne i.cv;
-               push @{J.o->{$ev}||=[]}
-               # ev
+           # top volt for thing selection?: # whattage
+           # skip overlap of K + name
+           next if $l eq 'K' && J.bb->{"name 0.1"} eq $s
+              && $s ne J.bb->{"K 0.2"};
+
+           die "reffy $s in $l".wdump(2,$j) if ref $s;
+           
+           my $ishtml;
+           if ($l eq '/') { # swoosh
+               $ishtml = 1;
+               $s = join "", @s;
+               @s = ();
            }
-       }
-       my $a = $J;
-               
-       my @r = $G->stylekeysort(a.bb);
-
-       a.o = {}; # by voltage, peel
-       for my $r (@r) {
-               my ($l, $vo, $or) = split /\s+/, $r; # split style, vectory
-
-               $or = $vo if !defined $or;
-
-               my $o = a.o->{$or} ||= []; 
-               push @$o, $r;
-       }
-       
-           #thingness <-> appearance
-           my $th = {};
-           my $ap = {};
-           my @int;
-           for my $ov (sort keys %{a.o}) {
-                my $o = a.o->{$ov};
-
-                for my $r (@$o) {
-                    my $j = $R->shj($r, a.bb);
-                    
-                    j.style ? do {
-                        push @{$ap->{j.l} ||= []}, $j;
-                    } : do {
-                        if (exists $th->{j.l}
-                        && j.t ne '#more%sf' # wtf
-                        && j.l ne 'name') {
-                            warn "replacemont j.l ".wdump(3,[$j,$th->{j.l}]) 
-                        }
-                        $th->{j.l} = $j;
-                        push @int, j.l;
-                    }
-               }
-           }
-     'maka 5': | #c
-       my $apl = sub {
-           my ($l, $s, $j) = @_;
-
-           my $o = delete $ap->{$l};
-
-           if (ref $s) {
-               die "reffy $s in $l".wdump(2,$j);
-           }
-           #sayyl "for the $l\t\t".slim(150,150,$s) for 1..5;
-
-           my $ishtml = $l eq '/';
-           my $gp;
            my $at = {};
            my $tag = "añ";
-           my $css = [];
-           for my $oj (@$o) {
+           my $css = []; # TODO harder, like style / comment = $v
+           # , can know how to accum/comrpess nice
+           for my $oj (@sjs) {
                saybl "        sdtyle! oj.style oj.s" if ar.db;
 
                # TODO here Jung Cs have injected langauge to grab themselves by...
@@ -248,17 +206,14 @@ R_Jz:
                    # < >< >< >?
                    # < >< >< >?
                    # < >< >< >?
-                   when ('gp') {
-                       # has a way to $a the gp action within...
-                       $gp = oj.s;
-                       $ishtml = 1;
-                   }
-                   when ('lp') {
-                       $ishtml  = 1;
-                   }
+                   $ishtml = 1 when 'gp';
+                   $ishtml = 1 when 'lp';
+                   $ishtml = 1 when 'ishtml';
+                   # has a way to $a the gp action within...
+                       
                    when ('sf') {
                        push @$css, map { $R::f->{$_} || die "no style $_"}
-                           split '_', oj.s;
+                           split '_', oj.s
                    }
                    when ('css') {
                        my $cs = oj.s;
@@ -267,7 +222,6 @@ R_Jz:
                            if ref $cs;
                        push @$css, $cs;
                    }
-                   $ishtml = 1 when 'ishtml';
 
                    at.id = oj.s when 'id';
 
@@ -288,10 +242,11 @@ R_Jz:
            }
            # TODO hold things in pockets relative to origin css comment
            # to help things break down into styles better
-         at.style = join '', map{"$_;"}
-             grep{defined} map { split ';' } @$css;
-     'maka 6.6': | #c
-       # stylecompressor 3 aboves
+           at.style = join '', map{"$_;"}
+               grep{defined} map { split ';' } @$css;
+
+           # 6.5
+           # stylecompressor 3 aboves
            # hooch
            if (at.title || !a.untitled) {
                at.title = join " ", grep{defined}
@@ -304,34 +259,11 @@ R_Jz:
 
            $s = encode_entities($s) if !$ishtml;
            $s = "<$at>$s</$tag>" if defined $s;
-           $s
-       };
-     'maka 7': | #c HERE for some reason is the loop that actuates 5 + 6
-         my @s;
-         for my $thl (@int) {
-             my $j = $th->{$thl} || next;
-             my $l = j.l;
-             my $s = j.s;
-             die "$l  -- $thl" if $thl ne $l;
-             
-             # top volt for thing selection: # whattage
-             if ($l eq 'K' && a.bb->{"name 0.1"} eq $s
-              #|| $l eq 'name' && a.bb->{"K 0.2"} =~ $s
-              && $s ne a.bb->{"K 0.2"}) {
-                 delete $ap->{$l};
-                 next;
-             }
-                 
-             push @s, $apl->($l, $s, $j);
-         }
-         
-         @s = "no?" if !@s;
-         my $html = $apl->('/', join '', @s);
-         
-             sayre "Extr a appearance: ".
-             join", ",sort keys %$ap if %$ap;
-         
-         #sayyl join "  ", map { _.G.name .": _.point _.id" } grep {_.name eq 'D'} reverse @F;
-         $html;
+           push @s, $s;
+       }    
+       # HERE for some reason is the loop that actuates 5 + 6
+       @s = "no?" if !@s;
+       my $html = join '', @s;
+       $html;
          
 
