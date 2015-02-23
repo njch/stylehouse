@@ -13,7 +13,7 @@ R_Jz:
      my @wo;
      for my $p (@ps) {
          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
-         next if ar.J && !ar.J.yt->{$dp};
+         next if !ar.pin && ar.J && !ar.J.yt->{$dp};
          push @wo, w $R $p;
      }
      @wo
@@ -25,7 +25,7 @@ R_Jz:
      
  - K: findl #c
    D: |
-           my $point = ar.p || ar.m->[0];
+           my $point = ar.p || ar.pin || ar.m->[0];
            my @path = split /\/|\./, $point;
            my $h = ar.h || R.way;
            $h = h.hooks if h.hooks;
