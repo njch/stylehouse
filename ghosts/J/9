@@ -34,8 +34,36 @@ R_Jz: # shadows for the land
 
      J2.jointed = $J;
      $J2;
+ - K: inness #cc soy packets everywhere # THINGNESS as onness
+   D: |
+      J.on = Rw tent on;
+      # ^ recursor...
+      
+      my $r = ar.r || $ar;
+      
+      sayyl "Inness: ".gp(r.i)."      ".r.t; 
+      
+      J.onei ||= {i=>$G};
+      J.onei.i = r.i if r.i;
+      # t distributable, listy
+      if (ref r.t eq 'ARRAY') {
+          J.onei.t = [@{r.t}];
+      }
+      else {
+          push @{J.onei.t||=[]}, r.t if r.t;
+      }
+      
+      my $i = J.onei.i;
+      for my $t (@{J.onei.t}) {
+          $i = $R->suets($i, $t);
+      }
+      J.on.bz->("u%travely\t".0.1 => J.onei);
+      J.on.bz->("u\t".0.1 => $i);
+      
  - K: hull #c whole screen iraga
    n_D:
+     conty: |
+       die "hill";
      styJup: |
        qw| hull |
        # geophat
@@ -51,16 +79,29 @@ R_Jz: # shadows for the land
  - K: thesurf #c CURVE curver
    n_D:
      conty: |
-       die "hi";
-       my $J = J2.jointed;
-       my $J3 = Rw suck $J */hijack;
-
-       say "Got new ".$J2->pi;
-       J3.onei = {%{J2.onei}};
-       J3.onei.t = [@{J2.onei.t}] if J2.onei.t;
-
-
-       Rw inness $J:J2 $t;
+       my $Jointe = J.jointed;
+       saybl "HULL;  ".gp($Jointe); # the J above
+       saybl "self;  ".gp($J); # the J we evented
+       saybl "sejnoi;  ".gp($J2); # gp or so
+       saybl "pat :".wdump(2,$pa);
+       
+       pa.t = pa.pathy; # we decide # surfism
+       
+       # how to patter along
+       my $J3 = $J; # same board, or find Joltway upwards, on jointed
+       # or cloneyshift
+       $J3 = Rw Jolt $J:Jointe;
+       
+       my $r = {};
+       r.t = pa.t if pa.t;
+       sayyl " pat r.t";
+       # &or copy if refraction
+       %$r = %{J.onei} if $J ne $J3;
+       # or any further difficult...
+       say "Same, ".gp($J3);
+       # or J = J2 v to go out
+       Rw inness $J:J3 $r;
+       w mux(u=>$J3);
      curves: |
          #["spun 0" => 0.025],
          ["curve 0" => -0.211],
