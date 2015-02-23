@@ -1160,6 +1160,7 @@ sub parse_babble {
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
       my $NUM = qr/\d+(?:\.\d+)?/;
+    my $mwall = qr/(?:= |^\s*)/m;
 
 
 
@@ -1188,7 +1189,6 @@ sub parse_babble {
     $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
 
     # io
-    my $mwall = qr/(?:= |^\s*)/m;
     $eval =~ s/${mwall}Sur (\S+) \{/su \$G, "$1", sub{my\$r=shift; /sg;
     $eval =~ s/${mwall}Pur (\S+) /pub \$G, "$1", /sg;
 
@@ -1209,7 +1209,6 @@ sub parse_babble {
     my $_u = qr/(?: ($poing))?/;
     my $ylay = qr/(yl(?: $NUM)?)?/;
     my $_g = qr/($poing )?/;
-    my $mwall = qr/(?:= |^\s*)/m;
 
     while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
