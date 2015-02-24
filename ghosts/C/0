@@ -121,12 +121,6 @@ hooks:
     w mux(u=>G.theD);
     G.theR;
   ikey: | # $S assumes keyzition
-    H.keydo = sub {
-        my $e = shift; 
-        my $S = G.theD;
-        sayyl "To ".$S->pi;
-        w G.theR keys[$e, $S];
-    };
   ave: |
     if (ar.Dname) {
         my @Ds = grep {_.K eq 'D' && _.name eq ar.Dname} @{G.R.A.n_C};
@@ -177,6 +171,14 @@ hooks:
     return if i.K ne 'D';
     saybl $G->pi." G.K   EEEEEE ".$i->pi;
     w ikey;
+    
+    return sayre e.type;
+    if (e.type eq 'key') {
+        my $e = shift; 
+        my $S = G.theD;
+        sayyl "To ".$S->pi;
+        w G.theR keys[$e, $S];
+    }
     
         G.envsub && do { say "envsub"; delete(G.envsub)->($i); next };
         if (e.S) {

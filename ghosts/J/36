@@ -67,9 +67,13 @@ R_Jz:
                     J.bb->{"[${ki}_Bs 0.2"} = ', ';
                     $ki++;
                 }
+                my $fs = 75;
+                $fs -= length($v) - 8 * 4 if 8 < length $v;
+                $fs = int($fs);
+
                 J.bz->("[${ki}_k 0.2" => $k,
-                    
-                    "\%css" => "color:#acf;font-size:80%");
+                    '%tt' => "fs:$fs",
+                    "\%css" => "color:#acf;font-size:$fs%");
                     
                     
                 my $keyi = $ki;
@@ -81,9 +85,12 @@ R_Jz:
                     J.bz->("[${ki}_Bi 0.2" => ':', '%css' => "font-size:40%");
                     
                     $ki++;
+                    my $fs = 75;
+                    $fs -= length($v) - 8 * 4 if 8 < length $v;
+                    $fs = int($fs);
                     
                     J.fro->("[${ki}_v 0.2" => $v, $vcv,
-                        '%css' => "font-size:75%");
+                        '%css' => "font-size:$fs%");
 
                 }
                 
@@ -101,8 +108,8 @@ R_Jz:
             my $si = keys %$u;
             J.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
             
-            J.bz->("B:Bo 0.1 0.11" => '{');
-            J.bz->('B:oB 0.1 0.9' => '}');
+            J.bz->("B:Bo 0.1 0.1" => '{');
+            J.bz->('B:oB 0.1 0.89' => '}');
             
             return if $cv < 0.2;
             
@@ -168,7 +175,7 @@ R_Jz:
                     ."font-size:70%");
             
             if ($si) {
-                J.bz->("more 0.9" => "@",'%sf' => "blue");
+                J.bz->("more 0.89" => "@",'%sf' => "blue");
             }
             
             return if J.cv < 0.2;

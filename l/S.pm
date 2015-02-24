@@ -46,8 +46,7 @@ __DATA__
 @@ws_page.html.ep
 <!DOCTYPE html>
 <html><head>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-  <script src="jquery.scrollTo.js"></script>
+<script src="jquery.min.js" type="text/javascript"></script>
   <style type="text/css">
       .NZ { display:none; };
       @font-face {
@@ -131,32 +130,12 @@ __DATA__
 
           var d = {};
           a.dscam(d,ev);
-
-          var tag = $(ev.target);
-          d.name = tag.attr('name');
-          //d.value = a.valblag(d.tag); // drapes
-          while (tag && !tag.attr('id')) {
-                tag = tag.parent();
-          }
-          d.id = tag.attr('id');
-          d.class = tag.attr('class');
-          d.x = ev.clientX;
-          d.y = ev.clientY;
-          d.pagex = window.pageXOffset;
-          d.pagey = window.pageYOffset;
-          var W = tag.closest( "ww" ).attr('id');
-          if (W) {
-              d.W = W;
-              var conin = conz[W];
+          if (d.W) {
+              var conin = conz[d.W];
               if (conin) {
                   ws = C[conin];
               }
           }
-          var ux = tag.closest( "ux" ).attr('id');
-          if (ux) {
-              d.ux = ux;
-          }
-
           if (!ws) {
               ws = w;
           }
@@ -194,6 +173,28 @@ __DATA__
           d.C = 0+ev.ctrlKey;
           d.A = 0+ev.altKey;
           d.M = 0+ev.metaKey;
+
+          var tag = $(ev.target);
+          d.name = tag.attr('name');
+          //d.value = a.valblag(d.tag); // drapes
+          while (tag && !tag.attr('id')) {
+                tag = tag.parent();
+          }
+          d.id = tag.attr('id');
+          d.class = tag.attr('class');
+          d.x = ev.clientX;
+          d.y = ev.clientY;
+          d.pagex = window.pageXOffset;
+          d.pagey = window.pageYOffset;
+          var W = tag.closest( "ww" ).attr('id');
+          if (W) {
+              d.W = W;
+          }
+          var ux = tag.closest( "ux" ).attr('id');
+          if (ux) {
+              d.ux = ux;
+          }
+
       };
       a.valblag = function(tag) {
           var value = ''+tag.contents();

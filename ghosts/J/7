@@ -154,7 +154,9 @@ R_Jz:
        my @things = Rw tvy $J;
        my @s;
        J.ty.maka.s = \@s;
-       for my $thing (@things) {
+       
+       while (@things) {
+           my $thing = shift @things;
            my ($j, @sjs) = @$thing;
            my $s = j.s;
            my $l = j.l;
@@ -163,7 +165,14 @@ R_Jz:
            my $cssdb = 0;
            
            sayyl " thji: j.r" if $cssdb;
-           die if j.cv == 0.9 && j.l ne '/';
+           if (j.l eq '/') {
+               die "god non 0.9 && j.l eq '/'".wdump(2,$j)
+                   if j.cv != 0.9;
+               if (@things) {
+                   push @things, $thing; # defer to last
+                   next;
+               }
+           }
            die "reffy $s in $l".wdump(2,$j) if ref $s;
            
            # top volt for thing selection?: # whattage
@@ -229,7 +238,7 @@ R_Jz:
                    1 when 'Joint';
                    1 when 'lp';
                    default {
-                       die "style oj.style = oj.s \t for $l";
+                       die "style ".wdump($oj);
                    }
                }
            }

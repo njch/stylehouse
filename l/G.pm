@@ -465,7 +465,7 @@ sub load_ways {
 
     my $Awns = join '+', sort map{$_->{name}}@Aways;
     my $Gwns = join '+', sort map{$_->{name}}@{$G->{ways}};
-    $Awns eq $Gwns || warn "funny looking A n_way <-> G ways:\n  A: $Awns\n  G: $Gwns";
+    $Awns eq $Gwns || sayre "tons of A way building up for G way....?";
 
     my $Aways = {map{$_->{name}=>$_}@Aways};
 
@@ -1074,7 +1074,7 @@ sub w {
 
         warn $G->pi."    way miss $talk"
         if !($H->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D'}
+            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D event'}
           )->{$wa};
         return;
     }

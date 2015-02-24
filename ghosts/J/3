@@ -31,7 +31,7 @@ R_Jz:
      my @style = map {
          saygr "J.name seeking $_...";
          my $pin = "$_/styJup";
-         Rw suck $pin;
+         Rw suck + $pin;
         } @$style;
      
      J.yt->{$_} ||= 1 for @style;
@@ -54,17 +54,11 @@ R_Jz:
 
      unshift @con, $J;
      
-     my @conty;
-     la: { for (@con) {
-         # somehow plan
-         keys %{_.bb} && do{ push @conty, $_; last la }
-     } return };
-     @con = @conty;
-
-     my @names = map { _.name } @con;
-     @names = map { s/^J.name\-//; $_ } @names;
-
-     say "Scraping out ".$J->pi."   tents ".join ", ", @names;
+     @con = grep { keys %{_.bb} } @con;
+     return saygr "Fresh Con" if !@con;
+     
+     say "Scraping out ".$J->pi."   tents ".join ", ",
+         map { _.name =~ /^(J.name\-)?(.+)$/; $2 } @con;
      
      sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
          sort grep {!/\%/} keys %{J.bb};
