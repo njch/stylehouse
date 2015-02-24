@@ -1194,7 +1194,7 @@ sub parse_babble {
 
     # io
     $eval =~ s/${mwall}Sur (\S+) \{/su \$G, "$1", sub{my\$r=shift; /sg;
-    $eval =~ s/${mwall}Pur (\S+) /pub \$G, "$1", /sg;
+    $eval =~ s/${mwall}Pur (\S+) ([^;]+);$/\$H->pub("$1", $2);/sgm;
 
     #Sur Hostinfo {
     #Pur S/$hol "hostinfo/ack r.m", 'ig'
