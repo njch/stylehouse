@@ -71,9 +71,9 @@ R_Jz:
            if (my $class = G.jumb.shtdc->{$cs}) {
                say "HAVE $class for $cs";
                push @class, $class;
-               #at.tag = $class; # TODODORORO
            }
            else {
+               saybl "keep $cs";
                push @css, $cs;
            }
        }
@@ -88,15 +88,19 @@ R_Jz:
             my $sd;
             my $byii;
             push @{$byii->{$dc->{$_}}||=[]}, $_ for keys %$dc;
-            my $limit = 250;
-            my $bored = 5; # bored lower than 5, or as ratio once rolling
             my @order = reverse sort {$a<=>$b} keys %$byii;
+            
+            my $i = 0;
+            my $bored = 5; # bored lower than 5, or as ratio once rolling
+            my $limit = 250;
+            my $ilimit = @order / 3;
             for my $usk (@order) {
                 my $us = $byii->{$usk};
                 say "usk $usk  of ".scalar(@$us);
                 last if $usk < $bored;
                 for my $u (@$us) {
                     last if $limit-- < 1;
+                    last if $ilimit-- < 1;
                     my $sty = join '', map{"$_;"} grep{defined} split ';', $u;
                     die unless $sty;
                     my ($heex) = $H->dig($sty) =~ /^(...)/;
@@ -108,9 +112,10 @@ R_Jz:
             if (!$sd) {
                 # TOO MUCH NOTHING
                 sayyl "NOTHING TO COMPRESS" for 1..20;
-                return;
+                return; 
             }
             sayyl "compression is ".scalar(keys %$sd)." wide";
+            
             G.jumb.shtdc = {reverse %$sd};
 
             # ^ to maka
