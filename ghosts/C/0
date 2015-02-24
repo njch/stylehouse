@@ -70,11 +70,6 @@ hooks:
       ishtml: 1
       content_D: |
         w G.theR S[$S, $u];
-    E:
-      _D: |
-        G.theD = $S; # funny singu
-        sayyl "To ".$S->pi;
-        w G.theR E[$S, $e];
     flows_D: |
       w G.theR setup[$S]; # J level
   fresh_init: |
@@ -170,23 +165,17 @@ hooks:
   event: |
     return if i.K ne 'D';
     saybl $G->pi." G.K   EEEEEE ".$i->pi;
-    w ikey;
     
-    return sayre e.type;
-    if (e.type eq 'key') {
-        my $e = shift; 
-        my $S = G.theD;
-        sayyl "To ".$S->pi;
+    my $S = $i;
+    G.theD = $S; # funny singu
+    sayyl "e.type To ".$S->pi;
+    
+    if (e.type eq 'keydown') {
         w G.theR keys[$e, $S];
     }
-    
-        G.envsub && do { say "envsub"; delete(G.envsub)->($i); next };
-        if (e.S) {
-            w $i zoum;
-        }
-        else {
-            w $i E/_D;
-        }
+    else {
+        w G.theR E[$S, $e];
+    }
   unchanged: |
       my ($u) = values %$ar;
       $u = G.theD || die $u if ref $u ne 'C';

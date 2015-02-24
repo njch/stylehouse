@@ -183,13 +183,18 @@ hooks:
     event: | #c
       my $e = ar.e = j.event;
       
-      return w S/key if e.type =~ /^key/;
-      
+      if (e.W) {
+          G.lastWe = $e
+      }
+      if (e.type =~ /^key/ && !e.W && G.lastWe) {
+          my $We = G.lastWe;
+          for my $k (keys %$We) {
+              $e->{$k} = $We->{$k} unless exists $e->{$k};
+          }
+          say wdump $e;
+      }
       return w S/W if e.W;
-      
-      return w S/TV if e.id;
-      
-      sayre "Strange event", $e;
+      sayre "Strange event", wdump $e;
       
     key: | #c key -> W switch
       saybl "e: ".wdump($e);

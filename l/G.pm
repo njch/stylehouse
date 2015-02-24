@@ -570,7 +570,7 @@ sub di {
     my $a = $F[0]->{di} = {};
     ($a->{mag}, $a->{dir}, $a->{etc}) = @vec;
     $a->{tip} = [@_];
-    die @_;
+    die wdump(3,[@_]);
 }
 
 sub Dm {
