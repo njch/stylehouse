@@ -16,6 +16,21 @@ Ds:
        my ($S, $m, $ig) = @_;
        G::sayyl "G pub $S < ".G::slim(50,50,$m) if !$ig;
        H.db->notify($S,$m);
+  - K: djson #c & ejson
+    style: func
+    D: |
+      my $m = shift;
+      my $j;
+
+      eval { $j = $H->json->decode(H::encode_utf8($m)) };
+      die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+      die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+      $j
+  - K: ejson #
+    style: func
+    D: |
+      my $m = shift;
+      $H->json->encode($m);
   - K: parse_babble #c
     style: nonbabble
     D: |

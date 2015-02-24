@@ -1156,6 +1156,21 @@ sub pub {
     $H->{db}->notify($S,$m);
 }
 
+sub djson {
+    my $m = shift;
+    my $j;
+
+    eval { $j = $H->json->decode(H::encode_utf8($m)) };
+    die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+    die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+    $j
+}
+
+sub ejson {
+    my $m = shift;
+    $H->json->encode($m);
+}
+
 sub parse_babble {
     my $G = shift;
     my $eval = shift;

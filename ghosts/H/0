@@ -192,12 +192,8 @@ hooks:
       sayre "Strange event", $e;
       
     key: | #c key -> W switch
-      if (H.name eq "O") {
-          G.keysto || die "no key subber";
-          if (G.keysto ne H.ol) {
-                return $H->pub("S/G.keysto" => "speaks $m");
-          }
-      }
+      saybl "e: ".wdump($e);
+      
       return w S/W;
       return H.keydo->($e) if H.keydo;
     On: | #c
@@ -206,7 +202,7 @@ hooks:
     W: | #c
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
-        my $meta = H.r->get("W/e.W") || die "no such e.W but also H.G.A.W->{e.W}";
+        my $meta = H.r->get("W/e.W") || return warn "no such e.W but also H.G.A.W->{e.W}";
         $meta = $H->djson($meta);
         my $hol = meta.hol;
         G.keysto = $hol;
@@ -233,7 +229,8 @@ hooks:
         }
         elsif ($hol ne H.ol) {
             sayyl "HSW H.ol -> $hol";
-            $H->pub("S/$hol", "speaks $m");
+            saybl "e: ".wdump($e);
+            $H->pub("S/$hol", "speaks $m"); 
         }
         else {
             die "goner";
