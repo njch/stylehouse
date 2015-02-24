@@ -62,12 +62,11 @@ hooks:
     my $cb = sub { my $m = shift; w Hiwtidy_ja[$m]; };
     H.G w jaw[$js, $cb];
   Hiwtidy_ja: |
-    my $wild = {map { $_ => 1 } split ' ', $m};
-    say "Wild:".join"\n - ",keys %$wild;
-    my @Ws = H.r->keys("W/*");
-    delete $wild->{$_} for map { /W\/(.+)/ } @Ws;
+    my @W = split ' ', $m;
+    @W = grep { !H.r->get("W/$_") } @W;
+    say "Wild: @W";
     my $js;
-    for (keys %$wild) {
+    for (@W) {
         # TODFO javascript guns
         #die;
         $js .= w jsrm(id=>$_);
