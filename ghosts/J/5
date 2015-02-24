@@ -1,5 +1,5 @@
 R_Jz:
- - K: stev #c
+ - K: stev #c steving lambassy
    D: |
      # my $st = already
      my @ev = grep { _.l eq _.t } w $R tvo; # poli
@@ -9,6 +9,79 @@ R_Jz:
              # 6
          }
       }
+ - K: occie #c style komerp # occasional (page) global aggregate
+   spesh: 0
+   babz:
+     'maka 6.1': |
+       do {
+       my (@css,@class);
+       my ($fat, $skinny, $kompi);
+       for my $cs (@$css) {
+           $fat += length $cs;
+           # saybl " a bit $cs";
+           G.jumb.shtuuyle->{$cs}++; #<in vout
+           if (my $class = G.jumb.shtdc->{$cs}) {
+               $kompi += length $class;
+               push @class, $class;
+           }
+           else {
+               $skinny += length $cs;
+               push @css, $cs;
+           }
+       }
+       sayyl "Komp: $fat -> $kompi & $skinny";
+       at.class = join' ',@class if @class;
+       # and redo:
+       at.style = join '', map{"$_;"}
+       grep{defined} map { split ';' } @css;
+       };
+   n_D:
+        komp: |
+            my $dc = G.jumb.shtuuyle || return;
+            my $sd;
+            my $byii;
+            push @{$byii->{$dc->{$_}}||=[]}, $_ for keys %$dc;
+            my @order = reverse sort {$a<=>$b} keys %$byii;
+            
+            my $i = 0;
+            my $bored = 5; # bored lower than 5, or as ratio once rolling
+            my $limit = 250;
+            my $ilimit = @order / 3;
+            for my $usk (@order) {
+                my $us = $byii->{$usk};
+                say "usk $usk  of ".scalar(@$us);
+                last if $usk < $bored;
+                for my $u (@$us) {
+                    last if $limit-- < 1;
+                    last if $ilimit-- < 1;
+                    my $sty = join '', map{"$_;"} grep{defined} split ';', $u;
+                    die unless $sty;
+                    my ($heex) = $H->dig($sty) =~ /^(...)/;
+                    $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+                    # TODO pack hex into unibabl
+                    $sd->{"s".$heex} = $sty;
+                }
+            }
+            if (!$sd) {
+                # TOO MUCH NOTHING
+                sayyl "NOTHING TO COMPRESS" for 1..20;
+                return; 
+            }
+            sayyl "compression is ".scalar(keys %$sd)." wide";
+            
+            G.jumb.shtdc = {reverse %$sd};
+
+            # ^ to maka
+            # v to elvis
+
+            my $as = {K=>'style', B=>{am=>'styleyo'}};
+            my $st = w G.R fuu(u=>$as);
+            my $was = st.sheet;
+            st.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
+            
+            w mux(u=>$st) if st.sheet ne $was;
+
+      
  - K: cv #c mod cove
    n_D:
      oe: |
