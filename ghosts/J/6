@@ -24,25 +24,27 @@ R_Jz:
      my $last = {x=>0, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
      for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
          #sayyl "       <<<< yep j.cv j.t          ".ki j.s;
-         
+         $last = {%$last};
          my $here = {};
          here.cv = j.cv;
          
          my $r = j.s;
-         
-         here.spin = r.curve if exists r.curve; # on the level
-         
-         here.x = r.x if exists r.x;
-         here.y = r.y if exists r.y;
+         here.x  = last.x = r.x if exists r.x;
+         here.y = last.y = r.y if exists r.y;
          
          here.rad = 4*$RADIAN * r.spun if exists r.spun;
+         
+         here.creatin = j.s;#$H->ejson(j.s);
+         
          
          here.zoom = 4*$RADIAN * r.zoom if defined r.zoom;
          here.zoom = undef if exists r.zoom && !defined j.s.zoom;
          
-         here.creatin = j.s;#$H->ejson(j.s);
          
          w $R atom[$j, $here, $last];
+         
+         # aft fo smoothi
+         here.spin = r.curve if exists r.curve; # on the level
          
          J.geo.bz->("b%ve\t".j.cv => $here);
          $last = $here;
