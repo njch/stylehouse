@@ -130,6 +130,16 @@ R_Jz:
                        my $r = {t=>\@t};
                        Rw inness $J $r;
                    }
+                   when ('G') {
+                       return if fork();
+                       sayre `figlet GIT`;
+                       # TODO forking pyramid isolator with error report
+                       `ssh v 'export DISPLAY=":0"; ssh s "cd styleshed; git gui"'`;
+                       exit;
+                   }
+                   when ('C') {
+                       H.G w reexec;
+                   }
                }
            }
            default {

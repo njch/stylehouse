@@ -28,12 +28,17 @@ R_Jz:
          my $here = {};
          here.cv = j.cv;
          
-         here.spin = j.s.curve if exists j.s.curve; # on the level
+         my $r = j.s;
          
-         here.rad = 4*$RADIAN * j.s.spun if exists j.s.spun;
+         here.spin = r.curve if exists r.curve; # on the level
          
-         here.zoom = 4*$RADIAN * j.s.zoom if defined j.s.zoom;
-         here.zoom = undef if exists j.s.zoom && !defined j.s.zoom;
+         here.x = r.x if exists r.x;
+         here.y = r.y if exists r.y;
+         
+         here.rad = 4*$RADIAN * r.spun if exists r.spun;
+         
+         here.zoom = 4*$RADIAN * r.zoom if defined r.zoom;
+         here.zoom = undef if exists r.zoom && !defined j.s.zoom;
          
          here.creatin = j.s;#$H->ejson(j.s);
          
