@@ -65,18 +65,21 @@ R_Jz:
      'maka 6.1': |
        do {
        my (@css,@class);
+       my ($fat, $skinny, $kompi);
        for my $cs (@$css) {
+           $fat += length $cs;
            # saybl " a bit $cs";
            G.jumb.shtuuyle->{$cs}++; #<in vout
            if (my $class = G.jumb.shtdc->{$cs}) {
-               say "HAVE $class for $cs";
+               $kompi += length $class;
                push @class, $class;
            }
            else {
-               saybl "keep $cs";
+               $skinny += length $cs;
                push @css, $cs;
            }
        }
+       sayyl "Komp: $fat -> $kompi & $skinny  @css";
        at.class = join' ',@class if @class;
        # and redo:
        at.style = join '', map{"$_;"}
@@ -124,13 +127,8 @@ R_Jz:
             my $as = {K=>'style', B=>{am=>'styleyo'}};
             my $st = w G.R fuu(u=>$as);
             my $was = st.sheet;
-            # TODO more accumo, and compress the compression
             st.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
-            # TODO style order massively important
-            # for regrouping s;t;y;l;e into sma;ll;er st;yles
-            # need well oiled J to do it right
-            # also may compress sheet updates with text append...
-            # and many sheets at levels of holiness
+            
             w mux(u=>$st) if st.sheet ne $was;
 
       
