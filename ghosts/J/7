@@ -89,7 +89,7 @@ R_Jz:
             my $byii;
             push @{$byii->{$dc->{$_}}||=[]}, $_ for keys %$dc;
             my $limit = 250;
-            my $bored = 5; # bored lower than 5, or as ratio once going
+            my $bored = 5; # bored lower than 5, or as ratio once rolling
             my @order = reverse sort {$a<=>$b} keys %$byii;
             for my $usk (@order) {
                 my $us = $byii->{$usk};
@@ -100,8 +100,9 @@ R_Jz:
                     my $sty = join '', map{"$_;"} grep{defined} split ';', $u;
                     die unless $sty;
                     my ($heex) = $H->dig($sty) =~ /^(...)/;
+                    $heex =~ tr/0123456789/ghijklmnop/; # no numbers
                     # TODO pack hex into unibabl
-                    $sd->{"a".$heex} = $sty;
+                    $sd->{"s".$heex} = $sty;
                 }
             }
             if (!$sd) {
