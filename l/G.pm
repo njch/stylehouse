@@ -471,7 +471,7 @@ sub load_ways {
 
     $G->{ways} ||= [];
     $G->{wayfiles} ||= [];
-    $G->{load_ways_count}++;
+    $H->{load_ways_count}->{$G->{id}}++;
     my $ldw = [];
     for my $ghost (@ways) {
         my @files;
