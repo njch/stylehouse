@@ -90,6 +90,7 @@ R_Jz:
      $J2;
  - K: fitin #c like push onto the %Joints centipede, which cons
    D: |
+     $n ||= 0; 
      J.bz->(J2.name."\t"."0.".$n => '>:D', '%Joint' => $J2);
      Rw jtrbg $J;
      Rw Joints $J;
@@ -174,11 +175,12 @@ R_Jz:
             my @js;
             my $group = 3;
             for my $a (@$pias) {
+                a.replaceJid || die "FIRSTTOOO". wdump(2,$a);
                 Rw gp $J:a;
                 my $html = a.s;
                 next if a.wash eq $H->dig($html);
                 my $set = $H->ejson($html);
-                my $id = a.replaceJid || die;
+                my $id = a.replaceJid || die wdump(2,$a);
                 my $js = qq{ \$('#$id').replaceWith($set);};
                 push @js, $js;
                 if (@js >= $group) {
