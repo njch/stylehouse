@@ -141,9 +141,16 @@ R_Jz:
        # META
        J.lum.fro->("J\t"."0.01" => $J, {cv=>0.1,untitled=>1});
        
-       J.lum.fro->("Jonei\t"."0.03" => J.onei, {cv=>0.4,untitled=>1});
+       J.lum.lev->("onei\t0.06" => sub {
+           my $J2 = shift;
+           J2.bz->(
+               "lable 0.1" => "onei ",
+           );
+           J2.fro->("Jonei\t0.3" => J.onei.i, 0.2); 
+           J2.bz->("Joneei\t0.4" => " ".join "  ", @{J.onei.t||[]});
+       }, '%sf'=>"fs60");
        
-       J.lum.fro->("u\t"."0.03" => $u, {cv=>0.2,untitled=>1});
+       J.lum.fro->("u\t"."0.08" => $u, {cv=>0.2,untitled=>1});
        
        say "U: ".$J->pi."   ".gp($u);
        
@@ -208,7 +215,7 @@ R_Jz:
                
                   
                a.fro->("gp\t"."0.6" => r.s,
-                 {cv=>0.3, makaz=>{ # hooky
+                 {cv=>0.4, makaz=>{ # hooky
                     "/%css#jit 0.9" => 'position:absolute;left:1em;width:30em',
                  }}, # ^ v in out sameish
                  (r.path ? ('%path' => r.path) : ()),

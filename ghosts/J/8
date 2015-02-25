@@ -128,40 +128,35 @@ R_Jz:
          }
      }
  - K: forkpi #c
-   spesh: 1
+   spesh: 0
    spesh_D: |
      H.name eq "O" || $DB::sub # perl -dw cannot fork # websockets cannot fork?
    babz:
-        'gp#fork_layert 5.6': | 
-            if (a.cv > 0.2 && !a.replaceJid && !a.q && $wa ne 'text') {
-                my $la = {%$a};
-                la.replaceJid = a.isJid; #$H->mkuid;
-                my $lyt = R.lastS.layert ||= [];
+        'gp 2.5': |
+            if (J.cv > 0.2 && !J.replaceJid && !J.q) {
+                my $la = {%$J};
+                la.replaceJid = J.isJid; #$H->mkuid;
+                my $lyt = G.jumb.forkpis ||= [];
                 push @$lyt, $la;
-                a.forking = $la;
-                a.cv = 0.1;
+                J.forking = $la;
+                J.cv = 0.1;
             }
-        'S#waylayert_pias 8.8': |
-            if (my $pias = delete S.layert) {
-                # my $it = natatime 5, @$pias;
-                # TODO they come back out of order of attachment 
-                # fork only the top level pi, not pi within pi?
+        'hiss 8.8': |
+            if (my $pias = delete G.jumb.forkpis) {
+                # these could be forked right away
+                # if they can wait for the M muxing J if they reach O first
                 $G->timer(0, sub {
-                    w $R forkpi/pias[$S, $pias];
+                    Rw forkpi/pias $J $pias;
                 });
             }
-        'gp 6.2': |
-            R.lastS.a.pis->{a.isJid} = $a; # TODO J pass over # maka suction
         'gp 7.1': |
-            a.forking.wash = $H->dig($html) if a.forking;
-        'S#tidy 0.113': |
-            if (my $tokill = delete S.forkpi_tokill) {
-                kill 'KILL', $_ for @$tokill;
-            }
+            J.forking.wash = $H->dig(J.s) if J.forking;
+        'hiss 2.88': |
+            kill 'KILL', $_ for @{delete G.forkpi_tokill || []};
    n_D:
         pias: |
             if (my $pid = fork()) {
-                my $Sftk = S.forkpi_tokill ||= [];
+                my $Sftk = G.forkpi_tokill ||= [];
                 push @$Sftk, $pid;
                 return
             }
@@ -178,7 +173,8 @@ R_Jz:
             my @js;
             my $group = 3;
             for my $a (@$pias) {
-                my $html = w $R gp[$a];
+                Rw gp $J:a;
+                my $html = a.s;
                 next if a.wash eq $H->dig($html);
                 my $set = $H->ejson($html);
                 my $id = a.replaceJid || die;
