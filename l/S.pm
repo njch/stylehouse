@@ -46,7 +46,7 @@ __DATA__
 @@ws_page.html.ep
 <!DOCTYPE html>
 <html><head>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+<script src="jquery.min.js" type="text/javascript"></script>
   <script src="jquery.scrollTo.js"></script>
   <style type="text/css">
       .NZ { display:none; };
@@ -133,6 +133,9 @@ __DATA__
           a.dscam(d,ev);
 
           var tag = $(ev.target);
+          if (ev.target.type == 'range') {
+              d.rval = ev.target.value
+          }
           d.name = tag.attr('name');
           //d.value = a.valblag(d.tag); // drapes
           while (tag && !tag.attr('id')) {

@@ -141,19 +141,25 @@ R_Jz:
        
        my $u = J.on.bb->{"u\t".0.1};
        # META
-       J.lum fro J 0.01      $J, {cv=>0.1,untitled=>1}
+       J.lum fro J 0.01      $J, 0.1
        
-       J.lum.lev->("onei\t0.06" => sub {
+       J.lum.lev->("onei\t0.05" => sub {
            my $J2 = shift;
-           J2.bz->(
-               "lable 0.1" => "onei ",
-           );
-           J2.fro->("Jonei\t0.3" => J.onei.i, 0.2);
+           J2 bz lable 0.1 "onei "
            
-           J2.bz->("Joneei\t0.4" => " ".join "  ", @{J.onei.t||[]});
+           my $on = J.onei;
+           J2 fro Jonei 0.3 on.i, 0.2
+           
+           if ($u ne on.i) {
+               J2 bz Joneei 0.6 " ".join("  ", @{on.t||[]})." "
+               J2 fro u 0.7 $u, 0.2
+           }
+           
        }, '%sf'=>"fs60");
        
-       J.lum.fro->("u\t"."0.08" => $u, {cv=>0.2,untitled=>1});
+       my $cra = 9;
+       J.lum bz slide 0.08 "<input type=range min=1 value=$cra max=9 step=0.25>", "%ishtml"=>1, "%idly" => 'slide'
+       
        
        say "U: ".$J->pi."   ".gp($u);
        
@@ -180,6 +186,9 @@ R_Jz:
            # any sorta layout knowhow...
        
            my @or = grep { delete $r->{$_} } @{y.order};
+           if (ref $u eq 'A') {
+               push @or, sort grep { /^u_/ && delete $r->{$_} } keys %$r;
+           }
            push @or, sort keys %$r;
            
            for (@or) {
@@ -213,14 +222,18 @@ R_Jz:
                     "%tt#\cv" => r.cv,
                );
                
+               my $bcv = 0.4;
+               $bcv = 0.1 if r.cv < 0.2;
+               say "r.cv so b fro $bcv";
                   
                a.fro->("gp\t"."0.6" => r.s,
-                 {cv=>0.4, makaz=>{ # hooky
+                 {cv=>$bcv, makaz=>{ # hooky
                     "/%css#jit 0.9" => 'position:absolute;left:1em;width:30em',
                  }}, # ^ v in out sameish
-                 (r.path ? ('%path' => r.path) : ()),
                );
-           });
+           },
+                 (r.path ? ('%path' => r.path) : ()),
+           );
             #J.bz->("$r\t"."0.$cv" => ''.$v, '%css'=>'white-space:pre');
              # has l cursor stashed as a 1shj
              # TODO 5er grab l cursor and style

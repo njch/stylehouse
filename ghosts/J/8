@@ -25,11 +25,25 @@ R_Jz:
           return sayyl "Served e.k" if !$dont;
      }
      
-     my $J2 = J.gpa.pis->{e.id};
+     my ($J2, $j); # the deepest findable ab
+     if (my $ju = J.idly->{e.id}) {
+         $J2 = ju.J;
+         $j = ju.j;
+         sayyl "WOOOO ".gp($J2);
+         sayyl "WOOOO ".wdump(1,$j);
+     }
+     
+     
+     $J2 ||= J.gpa.pis->{e.id};
 
      saybl "HULL;  ".gp(J.jointed); # the J above
      saybl "FROM;  ".gp($J); # the J we evented
      saybl "sejnoi;  ".gp($J2); # gp or so, sometimes
+     
+     if (e.rval) {
+         sayyl "Wants to e.rval!";
+         sleep 1;
+     }
 
      # ex clues about pathways
      $J2 ||= $J;
@@ -88,7 +102,7 @@ R_Jz:
 
      J2.jointed = $J;
      $J2;
- - K: fitin #c like push onto the %Joints centipede, which cons
+ - K: fitin #c like push onto the %Joints centipede, which cons # mmm
    D: |
      $n ||= 0;
      J.bz->(J2.name."\t"."0.".$n => '>:D', '%Joint' => $J2);
@@ -175,7 +189,11 @@ R_Jz:
             my @js;
             my $group = 3;
             for my $a (@$pias) {
-                a.replaceJid || die "FIRSTTOOO". wdump(2,$a);
+                a.replaceJid || do {
+                    warn "Jid missing... ". wdump(1,$a)
+                    ."\n".gp(a.u)."\nJiter: ".gp a.Jiter;
+                    next;
+                };
                 Rw gp $J:a;
                 my $html = a.s;
                 next if a.wash eq $H->dig($html);

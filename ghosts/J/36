@@ -9,35 +9,29 @@ R_Jz:
             
             my $si = @$u;
             J.bz->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
-            J.bz->('Bo 0.1 0.1' => '[');
-            J.bz->('oB 0.1 0.89' => ']');
+            J.bz->('Bo 0.11' => '[');
+            J.bz->('oB 0.89' => ']');
             
             return if $cv < 0.2;
             
-            my $ki = 0;
+            
+            my @cvs = Rw cv/oe $v:si;
             my $i = 0;
             while (exists $u->[$i]) {
                 my $uu = $u->[$i];
-                if ($ki > 0) {
-                    $ki++;
-                    J.bb->{"[${ki}_Bs 0.2"} = ',';
-                    $ki++;
+                my $vc = shift @cvs;
+                if ($i > 0) {
+                    J bz [${i}/Bs 0.2${vc}1 ','
                 }
                 
                 my $vcv = J.cv - 0.2; # dus bend for $k
                 $vcv = 0.1 if $vcv < 0.1;
-                if (1) {
-                    J.fro->("[${ki}_v 0.2", $uu, $vcv,
-                    
-                        "%css" => "font-size:75%");
-                    $ki++;
-                }
+                
+                J fro [${i} 0.2${vc}4 $uu, $vcv, "%css" => "font-size:75%"
                 
                 $i++;
                 if ($i >= 5) {
-                    J.bz->("more 0.2 0.886" => "@",
-                    
-                        '%sf' => "blue");
+                    J bz more 0.88 "@", '%sf' => "blue"
                     last;
                 }
             }
@@ -47,8 +41,8 @@ R_Jz:
             my $si = keys %$u;
             J.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
             
-            J.bz->("Bo 0.11" => '{');
-            J.bz->('oB 0.89' => '}');
+            J bz Bo 0.11 '{'
+            J bz oB 0.89 '}'
             
             return if $cv < 0.2;
             
@@ -57,40 +51,32 @@ R_Jz:
             my @r = grep { delete $r->{$_} } qw'K name';
             push @r, sort keys %$r;
             
-            my $ki = 0;
+            my @cvs = Rw cv/oe $v:si;
             my $i = 0;
             for my $k (@r) {
                 my $v = $u->{$k};
-                
-                if ($ki > 0) {
-                    $ki++;
-                    J.bb->{"[${ki}_Bs 0.2"} = ', ';
-                    $ki++;
+                my $vc = shift @cvs;
+                if ($i > 0) {
+                    J bz {$k/Bs 0.2${vc}1 ','
                 }
+                
                 my $fs = 75;
                 $fs -= length($v) - 8 * 4 if 8 < length $v;
                 $fs = int($fs);
+                    
 
-                J.bz->("[${ki}_k 0.2" => $k,
-                    '%tt' => "fs:$fs",
-                    "\%css" => "color:#acf;font-size:$fs%");
-                    
-                    
-                my $keyi = $ki;
-                $ki++;
-                my $vcv = J.cv - 0.2; # dus bend for $k
+                J bz {$k/k 0.2${vc}2 $k, "%css" => "color:#acf;font-size:$fs%"
                 
+                my $vcv = J.cv - 0.2; # dus bend for $k
                 if ($vcv >= 0.2) {
                 
-                    J.bz->("[${ki}_Bi 0.2" => ':', '%css' => "font-size:40%");
+                    J bz {$k/Bi 0.2${vc}3 ':', '%css' => "font-size:40%"
                     
-                    $ki++;
                     my $fs = 75;
                     $fs -= length($v) - 8 * 4 if 8 < length $v;
                     $fs = int($fs);
                     
-                    J.fro->("[${ki}_v 0.2" => $v, $vcv,
-                        '%css' => "font-size:$fs%");
+                    J fro {$k/v 0.2${vc}4 $v, $vcv, '%css' => "font-size:$fs%"
 
                 }
                 
@@ -332,8 +318,6 @@ R_Jz:
         return if $cv < 0.3;
         J.fro->('G 0.3', u.G, 0.2, '%css'=>"font-size:80%"); # TODO relative down
         return if $cv < 0.4;
-        J.fro->('A 0.4', u.A, 0.4, '%css'=>"border:5px solid black;font-size:60%"); # TODO relative down
-        #J.fro->('R 0.5', $u, 0.2, '%css'=>"font-size:40%"); # TODO relative down
       C: | #c
         my $cv = J.cv ||= 0.3;
         J.bb->{"thi 0"} = ref $u;
