@@ -1,0 +1,64 @@
+R_Jz:
+ - K: dolphy #c
+   D: |
+     my $tvs = w $R ytv[$J];
+     
+     my $phi_n = 1;
+     map { $phi_n++ } map { @$_ } values %$tvs;
+     my $phia = {n=>$phi_n};
+     phia.ai = 0.06;
+     phia.modi = { map { $_ => 0.5 } 18..$phi_n };
+     my $where = w $R phi(%$phia);
+     
+       #sayyl "!\n";
+       
+     for my $jkv (sort keys %$tvs) { 
+         #sayyl "at $jkv";
+         for my $j (@{$tvs->{$jkv}}) {
+             #sayyl "    It's j.t !";
+             my $whe = shift @$where;
+             $whe || die "out of spiral!";
+             
+             J.bz->(j.t."%css#phi"."\t".j.cv =>
+               'position:absolute;'
+               .'top:'.whe.x.'%;'
+               .'left:'.whe.y.'%;'
+               .'-webkit-transform:rotate('.whe.radial.'rad);'
+               .'transform-origin:-10% -10%;' # animate that bit
+             ); 
+             J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
+             # + font-size fit + whe.angle
+         }
+     }
+       #sayyl "!\n";
+ 
+ - K: phi #c re/progressive proJammable petalis
+   D: |
+     my $n = ar.n || 9;
+          my $width = 100;
+          my $height = 100;
+          my $cx = $width / 2;
+          my $cy = $height / 2;
+          my $lg_diam = $width * 0.85;
+          my $lg_rad = $lg_diam / 2; 
+          my $outer_rad = $width*0.45;
+          my $angle_incr = ar.ai || 9 / $n;
+          
+          my $xy = [];
+          for my $i (1..$n) {
+              my $ratio = $i/$n;
+              my $spiral_rad = ($ratio *1.3) * $outer_rad;
+              my $angi = $angle_incr + 0.15;
+              $angi *= ar.modi->{$i} if ar.modi->{$i};
+              my $angle = 1.2+$i*$angi;
+              my $x = $cx + cos($angle) * $spiral_rad;
+              my $y = $cy + sin($angle) * $spiral_rad;
+              push @$xy, {
+                  radial => sprintf('%.2f', atan2($x - $cx, $y - $cy)),
+                  angle => sprintf('%.3f', $angle),
+                  x => sprintf('%.2f', $x),
+                  y => sprintf('%.2f', $y),
+              };
+          }
+          $xy
+
