@@ -61,8 +61,10 @@ R_Jz:
                 }
                 
                 my $fs = 75;
-                $fs -= length($v) - 8 * 4 if 8 < length $v;
+                my $ksi = length($k);
+                $fs -= ($ksi - 8) * 8 if $ksi > 8;
                 $fs = int($fs);
+                $fs = 25 if $fs < 25;
                     
 
                 J bz {$k/k 0.2${vc}2 $k, "%css" => "color:#acf;font-size:$fs%"
