@@ -55,10 +55,10 @@ R_Jz:
      unshift @con, $J;
      
      @con = grep { keys %{_.bb} } @con;
-     return saygr "Fresh Con" if !@con;
+     return say "non" if !@con;
      
-     say "Scraping out ".$J->pi."   tents ".join ", ",
-         map { _.name =~ /^(J.name\-)?(.+)$/; $2 } @con;
+     say "conrolling ".$J->pi."   tents ".join "    ",
+         map { _.name =~ /^(J.name\-)?(.+)$/; "$2 * ".keys %{_.bb} } @con;
      
      sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
          sort grep {!/\%/} keys %{J.bb};
