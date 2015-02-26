@@ -1,47 +1,22 @@
 R_Jz:
  - K: event #c ITS COMING BACK AROUND # care bout acJuatoring
    D: |
-     saybl (join("      ", (" JJJ ".$J->pi) x 7)) x 3;
+     saybl join("      ", (" JJJ ".$J->pi) x 7);
      sayyl "ID: e.id";
      
-     if (e.type =~ /^key/) {
-          my $dont = 0;
-          for (e.k) {
-              when ('G') {
-                  return if fork();
-                  sayre `figlet GIT`;
-                  # TODO forking pyramid isolator with error report
-                  `git gui`;
-                  exit;
-              }
-              when ('C') {
-                  H.G w reexec;
-              }
-              when ('J') {
-                  w jak;
-              }
-              when ('Y') {
-                  Rw occie/komp;
-              }
-              default { $dont = 1}
-          }
-          return sayyl "Served e.k" if !$dont;
-     }
+     return if Rw eventkeygrab/grab;
      
      my ($J2, $j); # the deepest findable ab
      if (my $ju = J.idly->{e.id}) {
          $J2 = ju.J;
          $j = ju.j;
-         sayyl "WOOOO ".gp($J2);
-         sayyl "WOOOO ".wdump(1,$j);
      }
      
-     
-     $J2 ||= J.gpa.pis->{e.id};
-
      saybl "HULL;  ".gp(J.jointed); # the J above
      saybl "FROM;  ".gp($J); # the J we evented
      saybl "sejnoi;  ".gp($J2); # gp or so, sometimes
+     
+     sayyl "\nWOOOO ".wdump(1,$j) if $j;
      
      if (e.rval) {
          sayyl "Wants to e.rval!";
@@ -56,8 +31,30 @@ R_Jz:
      
       # auth between ^ v
       
-     waylay 0.3 mux(u=>$J);
-      
+     waylay mux(u=>$J);
+ - K: eventkeygrab #c hack in some basic doings
+   n_D:
+     grab: |
+       return 0 unless e.type =~ /^key/;
+       my $k = e.k;
+       if (R.way.hooks.eventkeygrab->{$k}) {
+           Rw eventkeygrab/$k;
+           sayyl "Served e.k";
+           return 1;
+       }
+       return 0;
+     G: |
+       return if fork();
+       sayre `figlet GIT`;
+       # TODO forking pyramid isolator with error report
+       `git gui`;
+       exit;
+     C: |
+         H.G w reexec;
+     J: |
+         w jak;
+     Y: |
+         Rw occie/komp;
  - K: upath #c find %path or so between J and J2, a subj, FUZZ
    D: | # it's making spirals of looking for things to jump forward with
      my $py = {Jr=>J.r||J.name, J2r=>J2.r||J2.name};
@@ -67,50 +64,34 @@ R_Jz:
      
      my $Jo = $J2;
      while (1) { # lurch upwards towards the...
-         saybl "  ? ".gp(Jo.Jiter);
-         saybl "has: Jo.r";
-         sayre("hno Jitter") && last if !Jo.Jiter;
+         sayre("topmost") && last if !Jo.Jiter;
          # see if this Jo thing has any styles above
          # .r was a phro/lev thing , blend J j
          my $j = Rw shj $r:Jo.r $J:Jo.Jiter;
          my $ip = {l => j.l};
          my @junk = Rw tvo $J:Jo.Jiter $ip;
          my (@path) = grep { _.style eq 'path' } @junk;
-         sayyl "lolking through ".join" ", map{_.t} @junk;
+         sayyl "  ? ".gp(Jo.Jiter)."       path search: "
+             .join" ", map{_.t} @junk;
          
          die @path if @path > 1;
-         unless (@path) {
-             sayre "nothing in...";
-         }
-         else {
+         if (@path) {
             my ($path) = @path;
-            py.pathy = path.s;
-            push @{py.paths||=[]}, \@junk;
+            if (!py.pathy) {
+                py.pathy = path.s;
+                say "pathy: path.s";
+            }
+            else {
+                say "extra path above: path.s";
+            }
+            push @{py.paths||=[]}, @path;
          }
          last if $Jo eq $J; # complete
          $Jo = Jo.Jiter; # move up
      }
      return $py;
      
- - K: Jolt #c JjJj how to J -> j, sproutlinger
-   D: |
-     # balance follicles
-     die if J.joitne > 9;
-     my $n = J.joitne;
-     J.joitne++ for 1..2;
-     
-     my $J2 = Rw hiJ $m;
 
-     Rw fitin $J $n $J2;
-
-     J2.jointed = $J;
-     $J2;
- - K: fitin #c like push onto the %Joints centipede, which cons # mmm
-   D: |
-     $n ||= 0;
-     J.bz->(J2.name."\t"."0.".$n => '>:D', '%Joint' => $J2);
-     Rw jtrbg $J;
-     Rw Joints $J;
  - K: Joints #c
    D: |
      my @things = Rw tvy $J;
@@ -193,7 +174,7 @@ R_Jz:
             my $group = 3;
             for my $a (@$pias) {
                 a.replaceJid || do {
-                    warn "Jid missing... ". wdump(1,$a)
+                    warn "Jid missing... ". gp($a)
                     ."\n".gp(a.u)."\nJiter: ".gp a.Jiter;
                     next;
                 };

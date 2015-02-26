@@ -71,11 +71,11 @@ R_Jz:
       J.on.bz->("u%travely\t".0.1 => J.onei);
       J.on.bz->("u\t".0.1 => $i);
       
-
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      styJup: | #c
        G.surf = $J;
+       J.onei.i = ar.i if ar.i;
        'thesurf', 'sur'
        # the class etc bits of $e might clue in what to do
        # maybe can mousedown just x y?
@@ -88,18 +88,29 @@ R_Jz:
        # there's a bunch of paths, there interesting
      conty: | #css # eats event + HASH preparation $pa
        my $r = {}; # sproutya
-       r.t = pa.pathy if pa.pathy =~ /^(\{|\[)/;
+       my $y = pa.pathy;
        # ^ compressions understood by t2ale of inness J.onei, compiled...
        
-       saybl "pat :".wdump(2,$r);
+       saybl "pat: $y";
        
        # /
        # \
        
        for (e.type) {
            when ('click') {
-               if (r.t) {
-                   Rw sur/folw $r $J;
+               for ($y) {
+                   when (/^(\{|\[)/) {
+                       my $r = {t=>$y};
+                       Rw sur/folw $r $J;
+                   }
+                   when ('root') {
+                       my $r = {t=>[]};
+                       Rw inness $J $r;
+                   }
+                   when ('feed') {
+                       my $r = {t=>[]};
+                       Rw inness $J $r;
+                   } 
                }
            }
            when ('keydown') {
@@ -242,7 +253,6 @@ R_Jz:
        sayyl " 4ully ".F_delta();
      entropia: | #c
        wdump(2,J.onei);
-
      folw: | #c expand path, may spew arm
        my $J3 = Rw sur/spawnge $J;
 

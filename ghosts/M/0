@@ -273,7 +273,7 @@ R_Mz:
 
       my @ONTV = w $R JV[$TV];
       my ($M) = map {_.s.W} grep {_.to eq 'M'} @ONTV;
-
+      
       TV.bz->("W 6", $W) if !grep{_.to eq 'W'} @ONTV; # W always there
 
       my $p = {};
@@ -369,6 +369,10 @@ R_Mz:
             else {
                 $cv = 1 if !s.at; # sat in
             }
+            if ($to eq 'M') {
+                my $M = $s;
+                M.tom = {};
+            }
 
             $p->{$cv}->{"$to/s.id"} = $s;
             sayre sprintf '%22s%s', j.r, " [ $cv";
@@ -448,8 +452,8 @@ R_Mz:
                         my $v = $jp->{$k};
                         #saybl "sssssss $k       $v";
                         next if length($vom->{$v}) > length($k); # dodge
-                        $vom->{$v} = $k; # replaces lesser uSdness
-                    };
+                        $vom->{$v} = $k; # replaces lesser A uS ness
+                    }
                     M.vom = $vom;
                 }
                 M.tom = {}; # < ^ others 5s put moves forth to 6
@@ -489,8 +493,8 @@ R_Mz:
                   my $to = M.tom;
                   my $pat = [];
                   for my $k (sort keys %$to) {
-                      #sayyl "To $k";
-                      #sayyl "                            ".$to->{$k}->pi;
+                      sayyl "To$to $k";
+                      sayyl "                            ".$to->{$k}->pi;
                       push @$pat, {k=>$k, M=>$M, i=>$to->{$k}}; # TODO k reduntd?
                   }
                   # has no M i=$M in it until..
