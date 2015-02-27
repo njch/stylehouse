@@ -52,13 +52,15 @@ R_Jz:
        sayyl "RAWR";
        saybl "YAYAAAYAYAAAYAYAAAYAYAAAYAYAAA" for 1..4;
        my $curves = J.ent.of.curves;
-       my $wd = wdump((J.oone ||= 1), $curves);
+       my $wd = wdump((J.oone ||= 3), $curves);
        my @l = split /\n/, $wd;
        my $thi = @l;
-       my @cvs = Rw cv/oe $thi;
+       my $off = 4;
+       my @cvs = Rw cv/oe $off $thi;
+       say wdump(\@cvs); 
        for my $l (@l) {
-           my $cv = shift @cvs;
-           J.bz->("lable 0.$cv" => "RAWR    $cv",
+           my $cv = shift @cvs || die;
+           J.bz->("lab$cv 0.$cv" => "RAWR    $cv $l",
                     #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
                     "%css#laob" => 'position:absolute;right:0.5em;',
            );
