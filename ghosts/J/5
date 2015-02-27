@@ -94,28 +94,27 @@ R_Jz:
    spesh: 0
    babz:
      'maka 6.1': |
-       do {
-       my (@css,@class);
-       my ($fat, $skinny, $kompi);
-       for my $cs (@$css) {
-           $fat += length $cs;
-           # saybl " a bit $cs";
-           G.jumb.shtuuyle->{$cs}++; #<in vout
-           if (my $class = G.jumb.shtdc->{$cs}) {
-               $kompi += length $class;
-               push @class, $class;
+       if (1) {
+           my (@css, @class);
+           my $fat = sum map { length $_ } @$css;
+           for my $cs (@$css) {
+               G.jumb.occie->{$cs}++; #<in
+               my $out = G.yomp.occie->{$cs}; #>out
+               if ($out) {
+                      push @class, $out;
+               }
+               else {
+                   push @css, $cs;
+               }
            }
-           else {
-               $skinny += length $cs;
-               push @css, $cs;
-           }
+           my $csin = sum map { length $_ } @css;
+           my $clin = sum map { length $_ } @class;
+           sayyl "Komp: $fat -> $csin      $clin"  if 4.97 < rand 5;
+           at.class = join' ',@class if @class;
+           # and redo:
+           at.style = join '', map{"$_;"}
+           grep{defined} map { split ';' } @css;
        }
-       #sayyl "Komp: $fat -> $kompi & $skinny" if 4.97 < rand 5;
-       at.class = join' ',@class if @class;
-       # and redo:
-       at.style = join '', map{"$_;"}
-       grep{defined} map { split ';' } @css;
-       };
    n_D:
      fresh_init: |
        timer 3 { w $R occie/komp; };
@@ -123,51 +122,54 @@ R_Jz:
      stylesheet: |
        # entropia & komp
      komp: |
-            my $dc = G.jumb.shtuuyle || return;
-            my $sd;
-            my $byii;
-            push @{$byii->{$dc->{$_}}||=[]}, $_ for keys %$dc;
-            my @order = reverse sort {$a<=>$b} keys %$byii;
-            
-            my $i = 0;
-            my $bored = 5; # bored lower than 5, or as ratio once rolling
-            my $limit = 250;
-            my $ilimit = @order / 3;
-            for my $usk (@order) {
-                my $us = $byii->{$usk};
-                #say "usk $usk  of ".scalar(@$us);
-                last if $usk < $bored;
-                for my $u (@$us) {
-                    last if $limit-- < 1;
-                    last if $ilimit-- < 1;
-                    my $sty = join '', map{"$_;"} grep{defined} split ';', $u;
-                    die unless $sty;
-                    my ($heex) = $H->dig($sty) =~ /^(...)/;
-                    $heex =~ tr/0123456789/ghijklmnop/; # no numbers
-                    # TODO pack hex into unibabl
-                    $sd->{"s".$heex} = $sty;
-                }
-            }
-            if (!$sd) {
-                # TOO MUCH NOTHING
-                sayyl "NOTHING TO COMPRESS" for 1..20;
-                return; 
-            }
-            sayyl "compression is ".scalar(keys %$sd)." wide";
-            
-            G.jumb.shtdc = {reverse %$sd};
-
-            # ^ to maka
-            # v to elvis
-            
-            my $u = Rw hamz style occie;
-            
-            my $was = u.sheet;
-            u.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
-            
-            w mux[$u] if u.sheet ne $was;
-
+       return unless G.jumb.occie;
+       my $u = Rw hamz style occie;
+       Rw toof + $u occie;
+ - K: toof #c
+   D: |
+      my $c = shift @$m;
+      $u || die "look for u>?";
       
+      my $pool = G.jumb->{$c};
+      
+      my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
+      
+      my @order = sort { a.sc <=> b.sc } @pool;
+      
+      my $limit = 250;
+      my $aimit = @order / 3;
+      for my $o (@order) {
+          say "usk o.of  of o.sc";
+          last if o.sc < 5;
+          # oras ratio ^ rolling
+          
+          last if $limit-- < 1;
+          last if $aimit-- < 1;
+          
+          my $sty = join('', map{"$_;"} grep{defined} split ';', o.of) || die;
+          
+          my ($heex) = $H->dig($sty) =~ /^(...)/;
+          $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+          # TODO name it
+          my $y = "s".$heex;
+          G.yomp->{$c}->{$y} = $sty;
+      }
+      if (!$sd) {
+          # TOO MUCH NOTHING
+          sayyl "NOTHING TO COMPRESS" for 1..20;
+          return; 
+      }
+      sayyl "compression is ".scalar(keys %$sd)." wide";
+
+      G.yomp->{$c} = {reverse %$sd};
+
+      # ^ to maka
+      # v to elvis
+      
+      my $was = u.sheet;
+      u.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
+
+      w mux[$u] if u.sheet ne $was;
  - K: hamz #c
    D: |
       my $b = shift @$m;
