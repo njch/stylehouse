@@ -78,7 +78,7 @@ R_Jz:
  - K: stylesheets #c
    n_D:
      any_init: |
-       Rwyl 2 stylesheets;
+       Rwyl 2 stylesheets/of;
      of: |
        my $tw = Rw huck */stylesheet;
 
@@ -120,7 +120,7 @@ R_Jz:
        # really whenever bored
        timer 3 { w $R occie/komp; };
        recur 40 { w $R occie/komp; };
-     stylesheet: |
+     styleshout: |
        # entropia & komp
      komp: |
        return unless G.jumb.occie;
@@ -137,8 +137,9 @@ R_Jz:
       
       my @order = sort { a.sc <=> b.sc } @pool;
       
+      my $komp = {}; # forward and back 
       my $limit = 250;
-      my $aimit = @order / 3;
+      my $aimit = @order / 1.2;
       for my $o (@order) {
           say "usk o.of  of o.sc";
           last if o.sc < 5;
@@ -153,16 +154,15 @@ R_Jz:
           $heex =~ tr/0123456789/ghijklmnop/; # no numbers
           # TODO name it
           my $y = "s".$heex;
-          G.yomp->{$c}->{$y} = $sty;
+          $komp->{$y} = $sty;
       }
-      if (!$sd) {
-          # TOO MUCH NOTHING
-          sayyl "NOTHING TO COMPRESS" for 1..20;
-          return; 
-      }
-      sayyl "compression is ".scalar(keys %$sd)." wide";
+      
+      my $wi = keys %$komp;
+      $wi || return sayre "NOTHING TO COMPRESS";
+      sayyl "compression is $wi wide";
 
-      G.yomp->{$c} = {reverse %$sd};
+      # komp carbonises, makes up style
+      G.yomp->{$c} = {reverse %$komp};
 
       # ^ to maka
       # v to elvis

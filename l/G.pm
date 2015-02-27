@@ -1287,7 +1287,7 @@ sub parse_babble {
         my $wa = $g.'->w('.$en.')'.$ne;
 
         if ($delay) {
-            $delay =~ /aylay ($NUM)/;
+            $delay =~ /yl ($NUM)/;
             $delay = $1 || "";
             $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
         }
