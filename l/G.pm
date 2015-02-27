@@ -271,6 +271,10 @@ sub unico {
     wantarray ? @s : shift @s
 }
 
+sub hitime {
+    return join ".", gettimeofday();
+}
+
 sub flatline {
     map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_
 }
