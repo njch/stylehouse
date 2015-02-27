@@ -42,7 +42,9 @@ R_Jz:
    D: |
      my $na = shift @$m;
      my $name = J.name.'-'.$na;
+     
      my $conJ = Rw makeJ $name;
+     
      $J->{$na} = $conJ;
      conJ.A->umk($J, 'tent');
      conJ.Jmost = J.Jmost || $J;
@@ -58,14 +60,20 @@ R_Jz:
      return say "non" if !@con;
      
      say "conrolling ".$J->pi."   tents ".join "    ",
-         map { _.name =~ /^(J.name\-)?(.+)$/; "$2 * ".keys %{_.bb} } @con;
+         map { _.name =~ /^(J.name\-)?(.+)$/; "$2 * ".
+         do {
+             my @log = sort keys %{_.bb};
+            return scalar(@log) if @log > 5;
+            join "'", @log;
+         };
+         } @con;
      
      sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
          sort grep {!/\%/} keys %{J.bb};
 
      for my $tent (@con) {
          #say "Scraping out the ".$tent->pi;
-         Rw setup $J:tent;
+         Rw suJ $J:tent;
      }
  - K: JL #c make L bracket # rename Joint
    D: |
