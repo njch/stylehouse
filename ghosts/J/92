@@ -37,17 +37,12 @@ R_Jz:
        # y
  - K: food #c
    n_D:
-     fresh_init: |
-       push @{G0.recoded_cbs}, sub {
-         my $Gd = shift;
-         sayre "FOOOOT ".wdump(2,$Gd);
-       };
      entropia: |
        my $n = Rw Jung;
-       my $yt = Rw tvo $J:n.ollox;
-       sayyl wdump(1,$yt); 
+       my @yt = Rw tvo $J:n.ollox;
+       sayyl _.r for @yt;
        return 'drone';
-     up: |
+     up: | #c
        my $cra = 9;
        sayyl "RAWR";
        saybl "YAYAAAYAYAAAYAYAAAYAYAAAYAYAAA" for 1..4;
@@ -56,8 +51,9 @@ R_Jz:
        my @l = split /\n/, $wd;
        my $thi = @l;
        
-       J.lev->("wiggle 0.4", sub { # become obvio overlay to content
-           my $J2 = shift;
+       # be anchoring a spiral uncoiling against/with this hull
+       #J.lev->("wiggle 0.4", sub { # become obvio overlay to content
+       #    my $J2 = shift;
            my $off = 4;
            my @cvs = Rw cv/oe $off $thi;
            say "cv food: @cvs"; 
@@ -66,11 +62,20 @@ R_Jz:
                J.bz->("lab$cv 0.$cv" => "   $cv $l",
                         #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
                         "%css#laob" => 'margin-left:4em',
+                         '%css#ttt' => 'white-space:pre;'
                );
            }
-       }, '%css' => 'white-space:pre;');
+       #},); 
        
+ - K: foody #c
+   n_D:
+     fresh_init: |
+       push @{G0.recoded_cbs}, sub {
+         my $Gd = shift;
+         sayre "FOOOOT ".wdump(2,$Gd);
+       };
        return ;
+     nothing: |
        
        J.lum.lev->("knobs\t0.08" => sub {
            my $J2 = shift;
@@ -82,5 +87,28 @@ R_Jz:
              J3 bz slide 0.2 "<input type=range min=1 value=$cra max=9 step=0.25>", "%ishtml"=>1, "%idly" => 'slide', '%css'=>'font-size:50%'
            });
        });
+       
+ - K: cv #c mod cove
+   n_D:
+     oe: |
+       my $v = ar.v || ar.thi || 9;
+       my $wi = length($v);
+       my $thi = join '', ('9') x $wi;
+       my $n = 1;
+       
+       my $squidge;
+       if (ar.off) {
+           $squidge = int(ar.off * ($thi / ($v))); # TODO not quite
+           $n += $squidge;
+           $v += $squidge; 
+       }
+       
+       my @is = map { sprintf '%0'.$wi.'d', $_  }
+           map { $_ - $squidge }
+           map { int($_ * ($thi / $v)) } $n..$v;
+       
+       #sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
+       die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
+       @is;
        
 
