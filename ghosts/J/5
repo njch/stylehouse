@@ -99,8 +99,7 @@ R_Jz:
            my $fat = sum map { length $_ } @$css;
            for my $cs (@$css) {
                G.jumb.occie->{$cs}++; #<in
-               my $out = G.yomp.occie->{$cs}; #>out
-               if ($out) {
+               if (my $out = G.yomp.occie->{$cs}) {
                       push @class, $out;
                }
                else {
@@ -135,13 +134,14 @@ R_Jz:
       
       my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
       
-      my @order = sort { a.sc <=> b.sc } @pool;
+      say "toof $c is ".@pool;
+      
+      my @order = reverse sort { a.sc <=> b.sc } @pool;
       
       my $komp = {}; # forward and back 
       my $limit = 250;
       my $aimit = @order / 1.2;
       for my $o (@order) {
-          say "usk o.of  of o.sc";
           last if o.sc < 5;
           # oras ratio ^ rolling
           
@@ -164,11 +164,11 @@ R_Jz:
       # komp carbonises, makes up style
       G.yomp->{$c} = {reverse %$komp};
 
-      # ^ to maka
-      # v to elvis
+      # ^ to maka, draws in
+      # v to elvis, draws out
       
       my $was = u.sheet;
-      u.sheet = join "\n", map { ".$_ { $sd->{$_} }" } sort keys %$sd;
+      u.sheet = join "\n", map { ".$_ { $komp->{$_} }" } sort keys %$komp;
 
       w mux[$u] if u.sheet ne $was;
  - K: round #c regroup - smush cove + copy here -> there
