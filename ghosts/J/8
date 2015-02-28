@@ -42,12 +42,33 @@ R_Jz:
      }
      
      if (my $J = $em[0]->{u}) {
-         sayyl "", "  G -> ".$J->pi, ""; 
+         sayyl "", "  G -> ".$J->pi, "";  
         0->timer(0.6, sub{
             Rw splat $J;
         }); 
      } 
   
+ - K: figure_busy #c log churn brings lux phase yoming
+   D: |
+     my $n = Rw Jung;
+     # collect J.biz.onei etc
+     my @mago = map { { u=>$n->{$_} } } sort keys %$n;
+     
+     my $now = $H->hitime;
+     for (@mago) {
+        my $lux = $now;
+        $lux -= _.ent.ti if _.ent.ti;
+        $lux *= _.ent.lux if _.ent.lux;
+        _.lux = $lux;
+     }
+     # 6
+     for (@mago) {
+         _.sc = _.lux;
+     }
+     # 7
+     my @tago = sort { a.sc <=> b.sc } @mago;
+     # 9
+     @tago;
  - K: fresh_init #c 
    D: |
      Rw suck */fresh_init;
@@ -125,25 +146,4 @@ R_Jz:
  - K: sh_ipo_fr #c
    D: |
      
- - K: figure_busy #c log churn brings lux phase yoming
-   D: |
-     my $n = Rw Jung;
-     # collect J.biz.onei etc
-     my @mago = map { { u=>$n->{$_} } } sort keys %$n;
-     
-     my $now = $H->hitime;
-     for (@mago) {
-        my $lux = $now;
-        $lux -= _.ent.ti if _.ent.ti;
-        $lux *= _.ent.lux if _.ent.lux;
-        _.lux = $lux;
-     }
-     # 6
-     for (@mago) {
-         _.sc = _.lux;
-     }
-     # 7
-     my @tago = sort { a.sc <=> b.sc } @mago;
-     # 9
-     @tago;
 
