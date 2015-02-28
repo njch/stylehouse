@@ -40,17 +40,16 @@ R_Jz:
  - K: upath #c find %path or so between J and J2, a subj, FUZZ
    D: | # it's making spirals of looking for things to jump forward with
      if ($j) {
-        !exists J2.bb->{j.r} ? die wdump(2,[$j,$J2]) : say " j.r    does exist in ".gp($J2);
+        !exists J2.bb->{j.r} ? die wdump(2,[$j,$J2]) : say " j.r    exists in ".gp($J2);
         
         # J(ux) <- <- J2 ) j
         
-        my $ip = {l => j.l};
-        my @junk = Rw tvo $J:J2 $ip;
-        # or so
-        my (@path) = grep { _.style eq 'path' } @junk;
+        # idyly to l
+        my $r = {};
+        my @path = Rw ship $J:J2 $l:j.l $r path;
         
         sayyl "  ? ".gp($J2)."       path search: "
-             .join" ", map{_.t} @junk;
+            .join" ", map{_.t} @{r.junk};
          
         die @path if @path > 1;
         
