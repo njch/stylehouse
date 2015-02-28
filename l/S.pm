@@ -47,7 +47,6 @@ __DATA__
 <!DOCTYPE html>
 <html><head>
 <script src="jquery.min.js" type="text/javascript"></script>
-  <script src="jquery.scrollTo.js"></script>
   <style type="text/css">
       .NZ { display:none; };
       @font-face {
@@ -90,6 +89,7 @@ __DATA__
               m = eval(e);
           }
           catch (er) {
+              console.log(["xutbang: ", e, er]);
               var ej = {er: {m: er.message, e: e}};
               s.reply(ej);
               a.m("!"+ ej.er.m);
