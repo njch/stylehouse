@@ -70,7 +70,7 @@ hooks:
     # the W side is R:M.Wo (G.theM.Wo)
     my $a = {%$ar};
     my $u = delete a.u;
-    #saybl "Muxing ".$G->pi."   ".$M->pi."     via ".$MR->pi."      with ".$u->pi;
+    saybl "Muxing ".$G->pi."   ".$M->pi."     via ".$MR->pi."      with ".$u->pi;
     a.v ||= 7; 
     w $M mux[$MR,$a,$u];
   remux: |
@@ -111,6 +111,14 @@ R_Ms:
     G.theM.W = w G.theM.Wo fuu(u => $uWa); # the unified into wormhole
     # ^ hardlink
     # all before perc_late makes things humm/mux
+  Mr: |
+      my $Ma = {K => 'M'};
+      Ma.B.W = Ma.W = $MR;
+      Ma.B.R = Ma.R = $R;
+      my $M = w R.Wo fuu(u => $Ma, q=>1); # the lines' W mirrored
+      M.A->umk(R.W, 'M');
+      M.A->umk($MR,'W'); # our long wave of the origin W (R/J)
+      $M
   mux: |
       my $M = w $R Mr[$MR]; # not G.theM, which is now $R
       my $TV = R.W.TV; # R.W is the C:W
@@ -153,14 +161,6 @@ R_Ms:
     my $TV = R.W.TV;
     G.R->phat(R.W.TV = {}); # flush
     w $R ux[$TV];
-  Mr: |
-      my $Ma = {K => 'M'};
-      Ma.B.W = Ma.W = $MR;
-      Ma.B.R = Ma.R = $R;
-      my $M = w R.Wo fuu(u => $Ma, q=>1); # the lines' W mirrored
-      M.A->umk(R.W, 'M');
-      M.A->umk($MR,'W'); # our long wave of the origin W (R/J)
-      $M
   JV: |
     my @J;
     my $TV = ar.TV || ar.V;

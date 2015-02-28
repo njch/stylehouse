@@ -38,35 +38,30 @@ R_Jz:
      my $n = Rw Jung;
      my (@em) = Rw figure_busy;
      for my $n (@em) {
-         saygr "    ".n.u->pi;
+         saygr "    ".n.J->pi ."       \t n.sc";
      }
      
-     if (my $J = $em[0]->{u}) {
-         sayyl "", "  G -> ".$J->pi, "";  
-        0->timer(0.6, sub{
-            Rw splat $J;
-        }); 
-     } 
+     my ($J) = map{_.J} @em;
+     
+     Rwyl 1 splat $J;
   
  - K: figure_busy #c log churn brings lux phase yoming
    D: |
      my $n = Rw Jung;
      # collect J.biz.onei etc
-     my @mago = map { { u=>$n->{$_} } } sort keys %$n;
-     
      my $now = $H->hitime;
-     for (@mago) {
+     my @mago = map {
+        my $J = $n->{$_};
+        # 4
         my $lux = $now;
-        $lux -= _.ent.ti if _.ent.ti;
-        $lux *= _.ent.lux if _.ent.lux;
-        _.lux = $lux;
-     }
-     # 6
-     for (@mago) {
-         _.sc = _.lux;
-     }
+        $lux -= (J.ent.ti || $now);
+        $lux *= J.ent.lux if J.ent.lux;
+        # 5
+         { J=>$J, lux=>$lux }
+     } sort keys %$n;
+     
      # 7
-     my @tago = sort { a.sc <=> b.sc } @mago;
+     my @tago = sort { a.lux <=> b.lux } @mago;
      # 9
      @tago;
  - K: fresh_init #c 
@@ -79,6 +74,7 @@ R_Jz:
   
  - K: splat #c it wands out
    D: |
+     
      waylay mux(u=>$J);
  - K: eventkeygrab #c hack in some basic doings
    n_D:
