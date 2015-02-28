@@ -22,16 +22,56 @@ R_Jz:
          sayyl "Wants to e.rval!";
          sleep 1;
      }
+     
+     die if !$J2 && $j;
+     
 
      # ex clues about pathways
      $J2 ||= $J;
-     my $pa = Rw upath + $J $J2;
+     
+     my $pa = {};
+     Rw upath $J $J2 $j $pa;
      
      Rw suck + */conty $pa $J2;
      
       # auth between ^ v
       
      waylay mux(u=>$J);
+ - K: upath #c find %path or so between J and J2, a subj, FUZZ
+   D: | # it's making spirals of looking for things to jump forward with
+     if ($j) {
+        !exists J2.bb->{j.r} ? die : say " j.r    does exist in ".$J2->pi;
+        
+        # J(ux) <- <- J2 ) j
+        
+        my $ip = {l => j.l};
+        my @junk = Rw tvo $J:J2 $ip;
+        # or so
+        my (@path) = grep { _.style eq 'path' } @junk;
+        
+        sayyl "  ? ".gp($J2)."       path search: "
+             .join" ", map{_.t} @junk;
+         
+        die @path if @path > 1;
+        
+        if (@path) {
+            push @{pa.paths||=[]}, @path;
+            my $pj = shift @path;
+            if (pa.pathy) {
+                sayre  "     extra path above: pj.s  " for 1..3;
+            }
+            pa.pathy ||= pj.s;
+        }
+     }
+     
+     if (my $J3 = J2.Jiter) {
+         J2.r || die;
+         my $nj = Rw shj $r:J2.r $J:J3;
+         
+         Rw upath $pa $J $J2:J3 $j:$nj;
+     }
+     # probly wanna start on the random little thing
+     
  - K: recoded_init #c 
      # one with grest 
    D: |
@@ -102,41 +142,4 @@ R_Jz:
          w jak;
      Y: |
          Rw occie/komp;
- - K: upath #c find %path or so between J and J2, a subj, FUZZ
-   D: | # it's making spirals of looking for things to jump forward with
-     my $py = {Jr=>J.r||J.name, J2r=>J2.r||J2.name};
-     
-     sayyl "upthy: ".gp($J)."          <->   ".gp($J2);
-     # probly wanna start on the random little thing
-     
-     my $Jo = $J2;
-     while (1) { # lurch upwards towards the...
-         last if !Jo.Jiter;
-         # see if this Jo thing has any styles above
-         # .r was a phro/lev thing , blend J j
-         
-         my $j = Rw shj $r:Jo.r $J:Jo.Jiter;
-         my $ip = {l => j.l};
-         my @junk = Rw tvo $J:Jo.Jiter $ip;
-         my (@path) = grep { _.style eq 'path' } @junk;
-         sayyl "  ? ".gp(Jo.Jiter)."       path search: "
-             .join" ", map{_.t} @junk;
-         
-         die @path if @path > 1;
-         if (@path) {
-            my ($path) = @path;
-            if (!py.pathy) {
-                py.pathy = path.s;
-                say "pathy: path.s";
-            }
-            else {
-                say "extra path above: path.s";
-            }
-            push @{py.paths||=[]}, @path;
-         }
-         last if $Jo eq $J; # complete
-         $Jo = Jo.Jiter; # move up
-     }
-     return $py;
-     
 
