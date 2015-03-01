@@ -157,20 +157,6 @@ S:
       css:
         - '-webkit-box-reflect: below -15px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.5)))'
 P:
- - GAK: U
-   InC:
-           W:
-             S:
-               styles: poi OxO
-             Z:
-               background: url(i/greencush.jpg)
-               background-size: 100%
-               z-index: -30
-           M:
-             Ss: [ooo, tr]
-             Z:
-               left: 50%
-               width: 50%
  - K: Lingos
    B:
      l: ᒊ
@@ -213,7 +199,28 @@ perc_else:
 hooks:
   recoded_init: |
     w f/at;
+  any_init: |
+    my $wo = $G->CsK({K=>'W'});
+    my $mo = $G->CsK({K=>'M'});
     
+    # the origin of C
+    my $WholeZ = Load(<<'');
+        background: url(i/greencush.jpg)
+        background-size: 100%
+        position: absolute
+        z-index: -30
+    
+    my $Mhalf = Load(<<'');  
+        left: 50%
+        width: 50%
+    
+    my $Mfrac = Load(<<'');
+        z-index: 5
+        overflow: hidden
+        background: url(i/future-games-fractal.jpg)
+    
+    mo.S.Z = {%$Mhalf, %$Mfrac};
+    wo.S.Z = $WholeZ;
   Im:
    print: $file
    flows_D: |
@@ -222,6 +229,7 @@ hooks:
      #w G.R fuu[$S, $u];
    humms_D: |
      S.S.Z->{'background-image'} = "url('$href')";
+     waylay mux(u=>$S);
    E:
      _D: |
        my $s = S.A.u_S->[0]->{i};
@@ -258,7 +266,8 @@ hooks:
   percolate: |
     w f/at; w f/at;
     w f/ph; w f/ph;
-    w uxd;
+    
+
     
     $G->timer(10, sub { G.maxloadav = 1.2; });
     
@@ -404,16 +413,17 @@ hooks:
     return shuffle(@bang);
   uxd: |
     my $U = K G:U;
+    
     my @im = w G.R fi(f=>{V=>"U"});
     
-    $U w ux(is => \@im);
+    w mux(u=>$_) for @im;
   uxd_lite: |
     my $U = K G:U;
     my $chi = G.Vu.U;
     G.Vu.U = [];
     return unless $chi && @$chi;
     say "part uxd ".@$chi;
-    $U w ux(part => $chi);
+    w mux(u=>$_) for @$chi;
   index_clickspace: |
     my $Mid = G.W.uuid;
     my ($x, $y) = (e.x, e.y);
