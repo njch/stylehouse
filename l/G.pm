@@ -1231,7 +1231,7 @@ sub parse_babble {
 
     # wholeness Rwish #c
 
-    my $sur = qr/ if| unless| for| when|,\s*$|;/;
+    my $sur = qr/ if| unless| for| when|,\s*$|;\s*/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
     my $suro = qr/(?:$sur|(?>!$sur))/;
 
@@ -1240,7 +1240,7 @@ sub parse_babble {
     my $ylay = qr/(yl(?: $NUM)?)?/;
     my $_g = qr/($poing )?/;
 
-    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?\s*$/gsm) {
+    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
         #say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;
