@@ -17,6 +17,7 @@ use Data::Dumper;
 use Storable 'dclone';
 use Carp;
 
+use Time::HiRes 'gettimeofday', 'usleep';
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
 use List::MoreUtils qw(natatime uniq);
 use POSIX qw'ceil floor';
@@ -802,9 +803,9 @@ sub Duck {
             $@ = $DOOF;
 
             if (@F == 1) {
-                sayyl "At top!";
                 # send it away
                 sayre $@;
+                $G->{dooftip} && $G->{dooftip}->($@);
                 $@ = "";
                 $_->() for @{$G0->{_aft_err_do}||[]};
             }
@@ -1239,7 +1240,7 @@ sub parse_babble {
     my $ylay = qr/(yl(?: $NUM)?)?/;
     my $_g = qr/($poing )?/;
 
-    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
+    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?\s*$/gsm) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
         #say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;

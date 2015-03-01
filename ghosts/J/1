@@ -119,12 +119,21 @@ R_Jz:
      # 4
  - K: pha #c temporal phatness
    D: |
-     if (J.yph) { # end - maybe new stuffright as some random part of this process
+     my $name = shift @$m;
+     
+     if (my $xx = J.phy->{$name}) {
+         # re endtrant
+         xx.end->();
+        # end - maybe new stuffright as some random part of this process
      }
-     J.yph = {};
+     for my $outx (grep {_.outsidey} values %{J.phy}) {
+        # something
+     }
+     
      J.phy ||= {}; # phases
-     my $name = shift;
-     J.phy->{$name} && die;
+     
+     die @$m if @$m;
+     
      my $x = J.phy->{$name} = {
         begin => hitime(),
         name => $name,
