@@ -117,6 +117,37 @@ R_Jz:
      
      # 3
      # 4
+ - K: pha #c temporal phatness
+   D: |
+     if (J.yph) { # end - maybe new stuffright as some random part of this process
+     }
+     J.yph = {};
+     J.phy ||= {}; # phases
+     my $name = shift;
+     J.phy->{$name} && die;
+     my $x = J.phy->{$name} = {
+        begin => hitime(),
+        name => $name,
+        bb => {},
+        ord => [],
+        tim => {},
+        wtf => {},
+     };
+     x.end = sub {
+         my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
+         x.ended = hitime();
+         delete J.phy->{name};
+         push @{y.l}, $x;
+         
+         # layers ^ rolling in time index .r -> the y.l
+         # so last phase of $name can be found?
+         my $w = @{y.l}-1;
+         y.l_bb->{$_} = $w for %{x.bb};
+         # somewhere thinks about what happened
+         return $y;
+     };
+     # ensure phase reset with _after_do
+     $x;
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
    D: |
        my $j = {};
@@ -142,8 +173,14 @@ R_Jz:
                j.r = j.t."\t".j.cv;
                j.s = $v;
                
-               J.bb->{j.r} = j.s;
-               push @{J.ord}, {%$j} if J.ord;
+               my @Js = $J;
+               push @Js, values %{J.phy} if J.phy;
+               for my $jj (@Js) {
+                   jj.bb->{j.r} = j.s;
+                   push @{jj.ord}, {%$j} if jj.ord;
+                   jj.tim->{j.r} = hitime() if jj.tim;
+                   jj.wtf->{j.r} = $F[0] if jj.wtf;
+               }
            }
            wantarray ? ($j, 
                sub{$do->(%$j, @_)} # TODO fucked, get some weed and fix it
