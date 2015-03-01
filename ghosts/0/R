@@ -128,3 +128,154 @@ Ds:
       $a
       
 
+
+
+ - K: a #c actuator
+   D: |
+      my $n = shift;
+      my $s = shift;
+      
+      my $lot = R.A->{"n_$n"} || die "no A\ $n";
+      die "empty n_$n" unless @$lot;
+      $lot = [@$lot];
+      die "make s" if $s; # TODO continue along a path
+      @$lot = map{_.i}@$lot;
+      wantarray ? @$lot : shift @$lot;
+ - K: wtf #c
+   D: |
+    my $a = shift;
+    # fractionating importantness into spacetime
+    if (a.way && a.div) { # spawn
+        a.now ||= 0;
+        R.wtf->{a.way} = $a;
+        return;
+    }
+    # inf
+    my $riv = R.wtf ||= {};
+    while (my ($way,$r) = each %$riv) {
+        r.now++;
+        if (r.now >= r.div) {
+            r.now = 0;
+            R.G->timer(0.0000001, sub {
+                r.last_hit = $H->hitime;
+                return r.D->() if r.D;
+                R.G->w("$way");
+            });
+        }
+    }
+ - K: cgp #c
+   D: |
+      my $u = shift;
+        my $c = {};
+        if (!defined $u){
+            c.undef = 1;
+        } else {
+            if (my $ref = ref $u) {
+                c.ARRAY = 1 if $ref eq "ARRAY";
+                c.HASH = 1 if $ref eq "HASH";
+                c.CODE = 1 if $ref eq "CODE";
+                c.canpi = 1 if !%$c && $u->can('pi');
+                for (qw'A C G T     R   J') {
+                      $c->{$_} = 1 if $ref eq $_;
+                }
+                c.ref = $ref;
+            }
+            else {
+                if (ref \$u eq 'SCALAR') {
+                    c.text = 1;
+                    c.len = length($u);
+                    c.lin = scalar split /\n/, $u;
+                    c.b = scalar split /\n\n/, $u;
+                    c.number = $u =~ /^(?:\d+\.)?\d+$/;
+                    c.wordy = $u =~ /\w+/;
+                }
+                else { die "wtf is $u" };
+            }
+        }
+        $c
+ - K: phat #c
+   D: |
+       my $a = shift;
+        a.bb = {};
+        a.ord = [];
+        a.bz = $R->as(a.bb, a.ord);
+        a.fro = sub {
+            my $fro = [a.bz, @_];
+            R.G w $R gpfro(a=>$fro);
+        };
+ - K: as #c cursory
+   D: |
+        my $bb = shift;
+        my $ord = shift;
+        my $j = {};
+        my $do;
+        $do = sub {
+            my $j = {%$j};
+            my $ad = [@_];
+            my %j = %$j;
+            while (@$ad) {
+                my ($k, $v) = (shift @$ad, shift @$ad);
+                
+                my $comp = $k =~ /^(%|\+)/;
+                my $j = {%j} if $comp;
+                if ($comp) {
+                    $k =~ s/^\+// if $comp;
+                    j.t .= $k if $comp;
+                }
+                else {
+                    (j.t, j.cv) = split /\s+/, $k, 2;
+                    %j = %$j;
+                }
+                j.cv || die;
+                j.r = "j.t j.cv";
+                j.s = $v;
+                $bb->{j.r} = j.s;
+                push @$ord, {%$j} if $ord;
+            }
+            sub{$do->(%$j, @_)}
+        };
+        $do
+ - K: shj #c stuff to get to J, native dapator snd
+   D: |
+      my ($r, $d) = @_;
+      my $j;
+      j.r = $r;
+      j.s = ref $d eq 'HASH' ? $d->{$r} : $d; # carbon in
+      (j.t, j.cv) =
+          j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
+          :
+          split /\s+/, j.r, 2;
+          
+      my $t = j.t; # sep orthoogabooga
+      j.com = $1 if $t =~ s/#(\S+)$//;
+      j.style = $1 if $t =~ s/%(\S+)$//;
+      j.l = $t;
+      
+      (j.cv, my @e) = split /\s+/, j.cv;
+      j.ev = \@e if @e;
+      $j
+ - K: Jshonj #c or to BE J and know how its already unpaced
+   D: |
+     my ($bb, $on) = @_;
+     my @ksd = sort keys %$bb;
+     my @j = map { $R->shj($_, $bb) } @ksd;
+     
+     if ($on) {
+         my @on = sort { a.cv <=> a.cv } grep { R.G->ip($on, $_) } @j;
+         $on = {min => $on[0]->{cv}, max => $on[-1]->{cv}};
+     }
+     my $ji = 0;
+     sub {
+         my $j = $j[$ji++] || return;
+         my $sec = 0;
+         if ($on) {
+             my $slike = j.cv < on.min ? on.min : on.max;
+             my $dist = $slike - j.cv;
+             $dist *= -1 if $dist < 0;
+             $dist = ceil($dist);
+             $sec = $dist > 5 ? 0 : -$dist + 5;
+         }
+         ($j, $sec);
+     }
+     
+
