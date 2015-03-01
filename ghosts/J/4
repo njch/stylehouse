@@ -11,6 +11,7 @@ R_Jz:
      
  - K: geoves #c dpaw
    D: |
+     
      J.yy.gemod = [
      Rw suck */mods,
      ];
@@ -21,6 +22,29 @@ R_Jz:
           # 7
           w $R mod[$J, $d];
      }
+ - K: cv #c mod cove
+   n_D:
+     oe: |
+       my $v = ar.v || ar.thi || 9;
+       my $wi = length($v);
+       my $thi = join '', ('9') x $wi;
+       my $n = 1;
+       
+       my $squidge;
+       if (ar.off) {
+           $squidge = int(ar.off * ($thi / ($v))); # TODO not quite
+           $n += $squidge;
+           $v += $squidge; 
+       }
+       
+       my @is = map { sprintf '%0'.$wi.'d', $_  }
+           map { $_ - $squidge }
+           map { int($_ * ($thi / $v)) } $n..$v;
+       
+       #sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
+       die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
+       @is;
+       
  - K: mod #c make pool, synth space, want arches
    D: |
      if (ref $d eq 'ARRAY') {
