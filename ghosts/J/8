@@ -40,7 +40,8 @@ R_Jz:
  - K: upath #c find %path or so between J and J2, a subj, FUZZ
    D: | # it's making spirals of looking for things to jump forward with
      if ($j) {
-        !exists J2.bb->{j.r} ? die wdump(2,[$j,$J2]) : say " j.r    exists in ".gp($J2);
+        !exists J2.bb->{j.r} ? sayre "You came on an ID no longer there...". wdump(2,[$j,$J2]) : 1;
+        #say " j.r    exists in ".gp($J2);
         
         # J(ux) <- <- J2 ) j
         
@@ -48,14 +49,14 @@ R_Jz:
         my $r = {};
         my @path = Rw ship $J:J2 $l:j.l $r path;
         
-        sayyl "  ? ".gp($J2)."       path search: "
-            .join" ", map{_.t} @{r.junk};
+        say "      o / n   ".gp($J2)." from j.r    ".join" ", map{_.t} @{r.junk};
          
         die @path if @path > 1;
         
         if (@path) {
             push @{pa.paths||=[]}, @path;
             my $pj = shift @path;
+            say " pj.s   <<<<<< upath";
             if (pa.pathy) {
                 sayre  "     extra path above: pj.s  " for 1..3;
             }
@@ -81,7 +82,7 @@ R_Jz:
      }
      
      my ($J) = map{_.J} @em;
-     
+     $J && 
      Rwyl 1 splat $J;
   
  - K: figure_busy #c log churn brings lux phase yoming

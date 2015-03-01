@@ -173,11 +173,12 @@ R_Jz:
       w mux[$u] if u.sheet ne $was;
  - K: round #c regroup - smush cove + copy here -> there
    D: |
-       my $J4 = ar.J4 || ar.from || ar.humm;
-       my $J5 = ar.J5 || ar.to || ar.styje;
        # could multiple J sources and exits, provide roundness, generally...
+       # not just from this J but spacing out logic according from what changed
+       # a style or intentness of the bzling reshadow
+       # increment
        
-       my @be = Rw tvo $J:J4;
+       my @be = Rw tvo $J:J2;
        my $jit; # cv / l / t / $j
        my $ji = {map{$_=>[]}0..9};
        
@@ -193,7 +194,8 @@ R_Jz:
        # wavesmush # DOESn't do spaceouts
        # but that old... 
        my $away;
-       my $id = 2;
+       sayyl "Be: ".@be;
+       my $id = J.yy.round.id || 2;
        for my $i (0..9) {
            my $lo = $ji->{$i-1};
            my $no = $ji->{$i};
@@ -242,16 +244,16 @@ R_Jz:
                for my $k (sort keys %$ts) {
                    my $tj = $ts->{$k};
                    if (tj.t eq tj.l) {
-                       J5.bz->(j.l."%origin\t".$ncv, $tj); # subtlest A-tion
-                       J4.bz->(j.l."%waves\t".$ncv, $j); # subtlest A-tion
+                       J.bz->(j.l."%origin\t".$ncv, $tj); # subtlest A-tion
+                       J2.bz->(j.l."%waves\t".$ncv, $j); # subtlest A-tion
                    }
-                   J5.bz->(tj.t."\t".$ncv, tj.s);
+                   J.bz->(tj.t."\t".$ncv, tj.s);
                }
            }
        }
        
        if ($away) {
-           J5.bz->("buckstop\t0.999" => "@".away.bulg."...",
+           J.bz->("buckstop\t0.999" => "@".away.bulg."...",
            '%css' => 'color:blue');
        }
        
