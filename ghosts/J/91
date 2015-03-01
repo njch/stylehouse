@@ -37,7 +37,7 @@ R_Jz:
          ["curve 1" => 0.211],
          ["zoom 0" => 0.15],
          ["zoom 0.21" => -0.05],
-         ["y 0" => 0.2],
+         ["y 0" => 0],
          ["x 0" => 0.8],
          ["x 0.1" => 0.7],
          ["curve 0.3" => -0.111],
@@ -47,6 +47,24 @@ R_Jz:
        [sq   => 10,  '~'],
        #[sqat   => 20,  '^', {}, 'color:blue', in => 10, ],
        #[sqat   => 20,  'v', {}, 'color:blue', out => 10, ],
+ - K: duck #c fo9od's
+   n_D:
+     yJup: |
+       'duck', 'sur',
+     curves: |
+       ["spun 0" => 0.9],
+       ["y 0" => 0.7],
+       ["x 0" => 0.6],
+       ["zoom 0" => 0.06],
+       ["curve 0.1" => -0.024],
+
+       #["zoom 0.4" => -0.12],
+       ["curve 0.4" => 0.3],
+
+       ["curve 0.7" => 1.1],
+     mods: |
+       [sqww => 23, 'ஓ୶', #{fs=>5_2},
+       'color:#8ff;-webkit-filter:blur(3px);margin-left:3em'],
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      conty: | #css # eats event + HASH preparation $pa
@@ -140,9 +158,9 @@ R_Jz:
            my $J2 = shift;
            # later style %idly if %path but no /%id
            J2 fro J 0.01      $J, 0.1, '%path'=>'self'
-           J2 bz boot 0.08 "ƾ", '%path'=>'boot', '%idly'=>1
+           J2 bz boot 0.08 "ƾ", '%path'=>'boot', '%idly'=>1, '%css'=>'color:#8ff;-webkit-filter:blur(3px)'
            J2 bz G 0.12 "G", '%path'=>'G', '%idly'=>1
-       }); 
+       }, '%css'=>'font-size:200%'); 
        J.lum.lev->("onei\t0.05" => sub {
            my $J2 = shift;
            J2 bz lable 0.1 "onei "
@@ -155,12 +173,14 @@ R_Jz:
                J2 fro u 0.7 $u, 0.2
            }
            
-       }, '%sf'=>"fs60", '%path'=>'feed');
+       }, '%sf'=>"fs80", '%path'=>'feed');
        
        
        say "U: ".$J->pi."   ".gp($u);
        
        my $y = w $R down; # 2ish aggd knowledge, instructions?
+       
+       my $spcv = 0.2; # so has gap in 1 unless id, etc
        
        my @r;
        if (!ref $u) {
@@ -177,6 +197,8 @@ R_Jz:
        }
        else {
            my $r = {map{$_=>1} keys %$u};
+           
+           $spcv = 0.3 if u.id;
 
            # bunch of keys... ^ interpret, compress knowledge
            # TODO ^make itv like two indexes, polars
@@ -189,36 +211,56 @@ R_Jz:
            push @or, sort keys %$r;
            
            for (@or) {
-               my $cv = y.ordy->{$_} || 4;
-               $cv = "0.$cv";
+               my $v = y.ordy->{$_};
+               # this is totally 5 in inness doing this
+               next if /^sqww\d+/;
+               next if /%css/;
+               my $cv = "0.$v" if $v;
+               $cv ||= $spcv;
                push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
            }
        }
        
-       for my $r (@r) { # %{ r, path, v, cv
+       for my $r (@r) { # %{ r, path, v, cv #c
            
            J.lum.lev->("r.r/\t".r.cv => sub {
-               my $a = shift;
+               my $J2 = shift;
                
-               my $fs = length(r.r) > 9 ? 60 : 80;
+               my $si = length(r.r);
+               my $fs = $si > 40 ? 60 : $si > 30 ? 70 : $si > 20 ? 80 : 100;
                
                my $guec = $2 if r.cv =~ /^(0\.)?(\d)/;
                my $col = G.jumb.cos->{$guec} || warn "was r.cv so $guec";
                
                # TODO curve ^ # make sf of a Q factor that can see $v somehow
-               a.bz->(
+               J2.bz->(
                     "lable 0.1" => r.r,
                     #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
-                    "%css#laob" => 'position:absolute;right:0.5em;',
+                    "%css#laob" => 'position:absolute;right:0.5em;white-space:pre;',
                     "%css#lableg" => "font-size:$fs%",
                     "%css#labcoat" => "color:$col", # TODO unwind cv into colour
                     "%tt#\cv" => r.cv,
                );
+               if (r.r eq 'id') {
+                   my $axio = ref $u;
+                   J2.bz->(
+                        "axio 0.1" => $axio,
+                        "%css#laob" => 'position:absolute;right:3em;font-size:300%',
+                   );  
+                   if (r.r eq 'K') {
+                       my $axio = u.K;
+                       J2.bz->(
+                            "axe 0.1" => $axio,
+                            "%css#laob" => 'position:absolute;right:2.5em;font-size:300%;color:#f93',
+                       );  
+                   }
+               }
                
+               # GP ness ^ v leaky
                my $bcv = 0.4;
                $bcv = 0.1 if r.cv < 0.2;
                   
-               a.fro->("gp\t"."0.6" => r.s,
+               J2.fro->("gp\t"."0.6" => r.s,
                  {cv=>$bcv, makaz=>{ # hooky
                     "/%css#jit 0.9" => 'position:absolute;left:1em;width:30em',
                  }}, # ^ v in out sameish
