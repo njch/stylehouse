@@ -1,132 +1,129 @@
-
-Oi:
-  includome: R/ivm
 Ds:
-  - K: head #c
-    D: |
-      our $f = {};
-      fstyles();
-      use POSIX 'ceil';
+ - K: head #c
+   D: |
+     our $f = {};
+     fstyles();
+     use POSIX 'ceil';
 
- 
-  - K: new #c
-    D: |
-      R.name = shift || 'non';
-      R.K = shift || R.name;
-      R.G = R.A->fiu('G');
-      R.A->umv("", "R");
-      R.A->umk($G::F[0], 'spawn');
-      R.etcarg = [@_] if @_;
-      H.G w _init_R[$R];
-  - K: from #c
-    D: |
-      my $s = shift;
-      my $a = shift;
-      my $u = $R;
-      $R->dfrom({u=>$R, s=>$s});
-      return $R;
-  - K: dfrom #c
-    D: |
-        my $a = shift;
-        my $u = a.u;
-        my $s = a.s;
 
-        my $sk = {map{$_=>1}qw"uuid id G A T"};
-        my $axi = ref $u ne "HASH"; # on ACGTR or so
+ - K: new #c
+   D: |
+     R.name = shift || 'non';
+     R.K = shift || R.name;
+     R.G = R.A->fiu('G');
+     R.A->umv("", "R");
+     R.A->umk($G::F[0], 'spawn');
+     R.etcarg = [@_] if @_;
+     H.G w _init_R[$R];
+ - K: from #c
+   D: |
+     my $s = shift;
+     my $a = shift;
+     my $u = $R;
+     $R->dfrom({u=>$R, s=>$s});
+     return $R;
+ - K: dfrom #c
+   D: |
+       my $a = shift;
+       my $u = a.u;
+       my $s = a.s;
 
-        for my $k (keys %$s) {
-            next if $axi && $sk->{$k};
-            # Li or Lo? TODO gonerism and schemas dusly
-            my $t = $u->{$k};
-            my $f = $s->{$k};
-            
-            if ($k =~ /^(.+)!(.+)$/) {
-                $k = $1;
-                my $uu = R.A->spawn($2);
-                $uu->from($f);
-                $f = $uu;
-            }
-            elsif ($f && $k =~ /^(B|S)$/) {
-                $t ||= {};
-                ref $t eq "HASH" || die;
-                $R->dfrom({u=>$t, s=>$f});
-                $f = $t;
-            }
+       my $sk = {map{$_=>1}qw"uuid id G A T"};
+       my $axi = ref $u ne "HASH"; # on ACGTR or so
 
-            $u->{$k} = $f;
-        }
-        return $u;
-  - K: pi #c 
-    D: |
-      join ' ', grep{defined} "R", R.K, R.name
-   
-  - K: f #c
-    D: |
-      my @styles = split "_", shift;
-      my $t = shift;
-      my $ff = shift;
-      @styles = map { $f->{$_} || $ff && $ff->{$_} || die "no style $_" } @styles;
-      qq{<span style="@styles">$t</span>};
-  - K: fstyles #c
-    D: |
-      f.fs150 = "font-size:150%;";
-      f.fs120 = "font-size:120%;";
-      f.fs40 = "font-size:40%;";
-      f.fs80 = "font-size:80%;";
-      f.fs60 = "font-size:60%;";
-      f.white = "color:white;";
-      f.blue = "color:blue;";
-      f.red = "color:#fca;";
-      f.lightblue = "color:#44f;";
-      f.black = "color:black;";
-  - K: loadup #c du in reverse
-    D: |
-      my ($i, $k, $v) = @_;
-      my $s = $R->snapple($k); # chunks {G{GG{etc 3
-      s.e = $v;
-      $R->suets($i, $s);
-      
+       for my $k (keys %$s) {
+           next if $axi && $sk->{$k};
+           # Li or Lo? TODO gonerism and schemas dusly
+           my $t = $u->{$k};
+           my $f = $s->{$k};
+           
+           if ($k =~ /^(.+)!(.+)$/) {
+               $k = $1;
+               my $uu = R.A->spawn($2);
+               $uu->from($f);
+               $f = $uu;
+           }
+           elsif ($f && $k =~ /^(B|S)$/) {
+               $t ||= {};
+               ref $t eq "HASH" || die;
+               $R->dfrom({u=>$t, s=>$f});
+               $f = $t;
+           }
+
+           $u->{$k} = $f;
+       }
+       return $u;
+ - K: pi #c 
+   D: |
+     join ' ', grep{defined} "R", R.K, R.name
   
-  - K: suets #c
-    D: |
-      my ($i, $s) = @_;
-      $s = {s=>[R.G->chuntr($s)]} if !ref $s;
-      my @s = @{s.s};
-      my $end = pop @s if exists s.e;
-      my $last;
-      while (1) {
-            my $ac = shift @s || do {exists s.e || last; $last=1; $end};
-          $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
-          if (!$last) { # TODO know about insto hash or array...
-               $i = $1 eq "{" ?
-               do { $i = $i->{$2} ||= {} }
-               :
-               $1 eq "[" ?
-               do { $i->[$2] ||= {} }
-               :
-               die "je seuits $1?";
-          }
-          else {
-              if (exists s.e) {
-                  $i->{$2} = s.e if $1 eq "{";
-                  $i->[$2] = s.e if $1 eq "[";
-              }
-              last;
-          }
-      }
-      $i
-  - K: snapple #c
-    D: |
-      my $k = shift;
-      ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
-      my $a = {k => $k, v => $v};
-      my @s;
-      while ($k =~ m/(\W\w+)/sg) {
-            push @s, $1;
-      }
-      a.s = \@s;
-      $a
-      
+ - K: f #c
+   D: |
+     my @styles = split "_", shift;
+     my $t = shift;
+     my $ff = shift;
+     @styles = map { $f->{$_} || $ff && $ff->{$_} || die "no style $_" } @styles;
+     qq{<span style="@styles">$t</span>};
+ - K: fstyles #c
+   D: |
+     f.fs150 = "font-size:150%;";
+     f.fs120 = "font-size:120%;";
+     f.fs40 = "font-size:40%;";
+     f.fs80 = "font-size:80%;";
+     f.fs60 = "font-size:60%;";
+     f.white = "color:white;";
+     f.blue = "color:blue;";
+     f.red = "color:#fca;";
+     f.lightblue = "color:#44f;";
+     f.black = "color:black;";
+ - K: loadup #c du in reverse
+   D: |
+     my ($i, $k, $v) = @_;
+     my $s = $R->snapple($k); # chunks {G{GG{etc 3
+     s.e = $v;
+     $R->suets($i, $s);
+     
+ 
+ - K: suets #c
+   D: |
+     my ($i, $s) = @_;
+     $s = {s=>[R.G->chuntr($s)]} if !ref $s;
+     my @s = @{s.s};
+     my $end = pop @s if exists s.e;
+     my $last;
+     while (1) {
+           my $ac = shift @s || do {exists s.e || last; $last=1; $end};
+         $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
+         if (!$last) { # TODO know about insto hash or array...
+              $i = $1 eq "{" ?
+              do { $i = $i->{$2} ||= {} }
+              :
+              $1 eq "[" ?
+              do { $i->[$2] ||= {} }
+              :
+              die "je seuits $1?";
+         }
+         else {
+             if (exists s.e) {
+                 $i->{$2} = s.e if $1 eq "{";
+                 $i->[$2] = s.e if $1 eq "[";
+             }
+             last;
+         }
+     }
+     $i
+ - K: snapple #c
+   D: |
+     my $k = shift;
+     ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
+     my $a = {k => $k, v => $v};
+     my @s;
+     while ($k =~ m/(\W\w+)/sg) {
+           push @s, $1;
+     }
+     a.s = \@s;
+     $a
+     
 
 
 
