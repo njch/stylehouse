@@ -29,7 +29,7 @@ hooks:
   ghostchanges: |
     my @ghosts = H.G K Gs:*;
     my @rG;
-    for my $S (@ghosts) {
+    for my $S (@ghosts) { 
         my $in = [grep{$Gd->{$_}} @{S.wayfiles}];
         next unless @$in;
         push @rG, $S;
@@ -38,14 +38,22 @@ hooks:
     }
     G.lastGd = $Gd;
     for my $cb (@{G.recoded_cbs}) {
-        $G->timer(0.1, sub { $cb->($Gd) });
+        if (ref $cb ne 'HASH') {
+            warn "nothash: ".wdump(4, G.recoded_cbs);
+            die; 
+            $cb->($Gd); 
+            next;
+        }
+        my ($c, $b) = %$cb;
+        die " weird callbacky: $c $b" unless $c && $b;
+        timer 0.1 { say "A callback called $c"; $b->($Gd); }
+          
     }
   recode_ways: |
     sayyl "recode_ways: ".$S->pi;
     say $S->pi." w! ".join '  ', @$in;
     
     $S->load_ways(split /\+/, S.way); # TODO all ways on any recoded or..? LIFE
-    
     
     say $S->pi." recoded";  
         
@@ -149,7 +157,8 @@ hooks:
   S:
     ghostchanges: | #c
       my $Gd = {map { $_ => 1 } split ', ', $m};
-      $G0 w ghostchanges[$Gd];
+      die "su
+      w ghostchanges[$Gd];
       
       
 
