@@ -32,22 +32,13 @@ hooks:
     for my $S (@ghosts) { 
         my $in = [grep{$Gd->{$_}} @{S.wayfiles}];
         next unless @$in;
-        push @rG, $S;
+        push @rG, $S; 
         # sort stream to avoid small before big?
         waylay recode_ways[$S, $in];
     }
     G.lastGd = $Gd;
     for my $cb (@{G.recoded_cbs}) {
-        if (ref $cb ne 'HASH') {
-            warn "nothash: ".wdump(4, G.recoded_cbs);
-            die; 
-            $cb->($Gd); 
-            next;
-        }
-        my ($c, $b) = %$cb;
-        die " weird callbacky: $c $b" unless $c && $b;
-        timer 0.1 { say "A callback called $c"; $b->($Gd); }
-          
+        $cb->($Gd);
     }
   recode_ways: |
     sayyl "recode_ways: ".$S->pi;
@@ -157,7 +148,6 @@ hooks:
   S:
     ghostchanges: | #c
       my $Gd = {map { $_ => 1 } split ', ', $m};
-      die "su
       w ghostchanges[$Gd];
       
       
