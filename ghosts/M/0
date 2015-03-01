@@ -96,10 +96,15 @@ R_Ms:
     saybl " W ". $W->pi if $W;
     saybl " UX ". $ux->pi if $ux;
     saybl " Uy ". $uy->pi if $uy;
-    return saygr "ungrasped line" unless $i;
+    if (!$i) {
+        saygr "ungrasped line";
+        w non_event(%$E);
+        return;
+    }
     saybl " i ". $i->pi;
     
     # TODO make a pattern about y=to match against Eways...
+    # re classes etc bund event
     i.G w event(%$E);
   setup: |
     G.theM.Wo = G.theM.A->spawn(R => 'non'); # $G->R();
