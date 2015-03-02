@@ -47,19 +47,9 @@ R_Jz:
      
  - K: ph_defaff #c loop exity if $d same
    D: |
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
+     x.defaff_wd = $H->dig(wdump((ar.depth||3),$d));
+     return 0 if !x.head;
+     return 1 if x.defaff_wd eq x.head.defaff_wd;
      
      
      return 0;
@@ -115,16 +105,21 @@ R_Jz:
        my $ox = J.hox ||= {};
        Rw suJ $J:ox;
        
+       my $curves = Rw huck $J */curves;
+       
        my $doof = sub {
            my $and = shift;
            my $cur = Rw pha $J:ox cur;
 
-           my $curves = Rw huck $J */curves;
            for my $k (sort keys %$curves) {
                my $d = $curves->{$k};
                my $m = ["$k"];
                my $coi = Rw pha $J:ox $m;
-               next if Rw ph_defaff $J $x:coi $d;
+               my $skippy = Rw ph_defaff $J $x:coi $d;
+               if ($skippy) {
+                   sayre "+++++++++++++++++++" for 1..5;
+                next;
+               }
 
                say "coi head: coi.head";
                
@@ -140,9 +135,12 @@ R_Jz:
            cur.end->();
        };
        
+       
        $doof->();
        
-       my $y = $doof->(1);
+       #shift @$_ for values %$curves;
+       
+       my $y = $doof->();
        
        # more crazyness in every direction
        
