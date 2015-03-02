@@ -45,41 +45,84 @@ R_Jz:
        # 
        my $n = Rw Jung;
        
+       my $blabphys = sub {
+           my $ox = shift; 
+           say "Active phases:".(! %{ox.phy} && " NONE");
+           for my $x (values %{ox.phy}) {
+              say " - x.name:";
+              say "  * $_    == x.bb->{$_}" for keys %{x.bb};
+           }
+       };
+       my $from_phys = sub {
+           my $ox = shift;
+           my $r = shift;
+           my $in = {};
+           for my $y (values %{ox.phl}) {
+               if (exists y.l_bb->{$r}) {
+                   $in->{y.name} = y.l_bb->{$r};
+               }
+           }
+           $in;
+       };
        #w G.R del(u=>n.o2x);
        
-       my $J3 = n.Hull;
        my $ox = J.hox ||= {};
-       ox.bb || do {
-          Rw suJ $J:ox;
+       Rw suJ $J:ox;
+       
+       
+       my $cur = Rw pha $J:ox cur;
+       
+       my $curves = Rw huck $J */curves;
+       for my $k (sort keys %$curves) {
+           my $d = $curves->{$k};
+           my $m = ["$k"];
+           my $coi = Rw pha $J:ox $m;
+           
+           ox.bz->(@$_) for @$d;
+           
+           coi.end->();
+           $blabphys->($ox);
+       }
+        
+       cur.end->();
+        
+       my $awlo = Rw pha $J:ox awlo;
+       do {
+          my $J = $ox;
+          J bz whatfor 0.2 "yep".rand 5
+          J bz whast 0.5 "ooga".rand 5 
        };
+       $blabphys->($ox);
+       awlo.end->();
+       $blabphys->($ox);
        
-       Rw pha $J:ox awlo; 
        
+       Rw pha $J:ox outs;
        # add pha curtaining and look at diffs in ducky
+       # be anchoring a spiral uncoiling against/with this hull
+       my $tw; # babel
+       
+       
        
        my @oxn = Rw tvo $J:ox;
        
-       my $tw = Rw huck */curves $J:J3;
+       my $i = 0; 
+       for my $j (@oxn) {
+           my $intents = $from_phys->($ox, j.r);
+           $tw->{$i++ ."_".j.r} = "j.s  ".join",", sort keys %$intents;
+       }
+       
+       
+       
+       #= Rw huck */curves $J:J3;
        
        my $r = {i=>$tw};
        my $duck = Rw jin duck duck;
-       my $sur = n.ollox;
-       
        Rw inness $J:duck $r;
        
-       
-       
-       my $i = 0;
-       $tw->{"and".$i++} = $_ for map { "_.r    _.s" } @oxn;
-       
-       
-       J.bible ||= [split /\n\n/, $H->slurp('not')];
-       my @l = (shuffle @{J.bible})[0..8];
-       @l = (" --- ") x 12;
+       my @l = (" --- ") x 12;
        my $thi = @l;
-       
        say @l;
-       # be anchoring a spiral uncoiling against/with this hull
        #my $off = 1;
        my @cvs = Rw cv/oe $thi;
        say "cv food: @cvs"; 

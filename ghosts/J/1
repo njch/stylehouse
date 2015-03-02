@@ -82,6 +82,8 @@ R_Jz:
      J.bb = {};
      J.ord = [];
      J.bz = Rw as $J;
+     J.phy = {};
+     J.phl = {};
      
      # PHASE JOINT
      # in time
@@ -145,13 +147,13 @@ R_Jz:
      x.end = sub {
          my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
          x.ended = hitime();
-         delete J.phy->{name};
+         delete J.phy->{$name};
          push @{y.l}, $x;
          
          # layers ^ rolling in time index .r -> the y.l
          # so last phase of $name can be found?
-         my $w = @{y.l}-1;
-         y.l_bb->{$_} = $w for %{x.bb};
+         my $w = @{y.l};
+         y.l_bb->{$_} = $w for keys %{x.bb};
          # somewhere thinks about what happened
          return $y;
      };
