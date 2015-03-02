@@ -126,10 +126,10 @@ R_Jz:
      if (my $xx = J.phy->{$name}) {
          # re endtrant
          xx.end->();
-        # end - maybe new stuffright as some random part of this process
+         # end - maybe new stuffright as some random part of this process
      }
      for my $outx (grep {_.outsidey} values %{J.phy}) {
-        # something
+        # something? # perhaps a non, fire when no other phy
      }
      
      J.phy ||= {}; # phases
@@ -144,12 +144,22 @@ R_Jz:
         tim => {},
         wtf => {},
      };
+     x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
+     x.abandon = sub {
+         my $why = shift;
+         delete J.phy->{$name};
+         x.abadoned = $why || 1;
+         if (my $xx = x.head) {
+             # probably dont want
+             (x.bb,x.ord,x.tim,x.wtf) = (xx.bb,xx.ord,xx.tim,xx.wtf);
+         }
+         x.end->();
+     };
      x.end = sub {
          my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
          x.ended = hitime();
          delete J.phy->{$name};
          push @{y.l}, $x;
-         
          # layers ^ rolling in time index .r -> the y.l
          # so last phase of $name can be found?
          my $w = @{y.l};
