@@ -1560,5 +1560,9 @@ sub ind {
     "$_[0]".join "\n$_[0]", split "\n", $_[1]
 }
 
+sub dig {
+    Digest::SHA::sha1_hex(encode_utf8(shift))
+}
+
 9;
 

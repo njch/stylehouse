@@ -31,6 +31,18 @@ R_Jz:
      }
      $tw
      
+ - K: wuck #c return path=>strings for static way to memoize, instead of exec+dump
+   D: |
+     my @ps = Rw fi +;
+     my $tw;
+     for my $p (@ps) {
+         my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
+         next if !ar.pin && ar.J && !ar.J.yt->{$dp};
+         my $str = R.way->find($p);
+         $tw->{$p} = $str;
+     }
+     $tw
+     
  - K: fi #c
    D: |
      my %wo = Rw findl +;
@@ -150,7 +162,7 @@ R_Jz:
          delete J.phy->{$name};
          x.abadoned = $why || 1;
          if (my $xx = x.head) {
-             # probably dont want
+             # probably dont want to lie here but...
              (x.bb,x.ord,x.tim,x.wtf) = (xx.bb,xx.ord,xx.tim,xx.wtf);
          }
          x.end->();
@@ -169,6 +181,47 @@ R_Jz:
      };
      # ensure phase reset with _after_do
      $x;
+ - K: ph_exactl #c or drop not in last
+   D: |
+       my $wtf = ar.wtf || {};
+       my $cur = y.l->[-1];
+       my $last = y.l->[-2];
+       wtf.same = 1;
+       if (!$last) { # better not get autovivified! 
+           wtf.allnew=1;
+           wtf.same = 0;
+           sayre "ph_exactl: all new";
+           return;
+       }
+       #y.l_bb->{$_} = $w for keys %{x.bb};
+       # churn stats like 30% of last disappear, 20% new
+       
+       for (grep { !exists last.bb->{$_} } sort keys %{cur.bb}) {
+           sayre " + No $_ in last";
+           wtf.new->{$_} = cur.bb->{$_};
+           wtf.same = 0;
+       }
+       
+       for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
+           sayre " - No $_ in current";
+           wtf.gone->{$_} = last.bb->{$_};
+           wtf.same = 0;
+           delete J.bb->{$_};
+       }
+       
+       my $gl = wtf.same ? "===" : "+-";
+       sayre "ph_exactl: ". slim 50, join("  ",($gl) x 6);
+     
+ - K: ph_defaff #c loop early exity if $d same
+   D: |
+     my $strung = ref $d ? wdump((ar.depth||3),$d) : $d;
+     x.defaff_wd = $H->dig($strung);
+     return 0 if !x.head;
+     if (x.defaff_wd eq x.head.defaff_wd) {
+         x.abandon->(say "defaff same dig");
+         return 1;
+     }
+     return 0;
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
    D: |
        my $j = {};
