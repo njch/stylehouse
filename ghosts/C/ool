@@ -203,27 +203,27 @@ hooks:
     my $wo = $G->CsK({K=>'W'});
     my $mo = $G->CsK({K=>'M'});
     
+    # two meta magnets
+    
     # the origin of C
-    my $WholeZ = Load(<<'');
+    mo.S.Z = Load(<<'');
         background: url(i/greencush.jpg)
         background-size: 100%
         position: absolute
         z-index: -30
     
     my $ent = int rand 10;
-    my $Mhalf;
-    Mhalf.left = '50%';
-    Load(<<''); # :D
-        left: 50%
-        width: 50%
+    wo.S.Z = my $MZ = {}; # Mhalf
+    MZ.right = '50%' if $ent > 4;
+    MZ.left = '50%' if $ent > 7;
+    MZ.width = $ent > 3 ? 50 : $ent."0";
+    # :D
     
     my $Mfrac = Load(<<'');
         z-index: 5
         overflow: hidden
         background: url(i/future-games-fractal.jpg)
     
-    mo.S.Z = {%$Mhalf, %$Mfrac};
-    wo.S.Z = $WholeZ;
   Im:
    print: $file
    flows_D: |
