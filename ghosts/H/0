@@ -149,6 +149,18 @@ hooks:
     
     H.r->lpush("Jungle", $m);
     $H->pub('Elvis', $m, 'ig');
+  reexec: |
+    for my $E (@{H.who||[]}) {
+        w $E disconecktie;
+    }
+    sayre "finish!";
+    exec "nice perl $0 @ARGV";
+  cyc: |
+    w reexec unless H.busy;
+  busy: |
+    my $y = H.busy = hitime;
+    timer 42 { delete H.busy if H.busy eq $y; }
+    
   reS: |
     my ($way, $am) = split /\s+/, $m, 2;
     sayyl "$top >> $m" if $way ne 'hostinfo/ack';

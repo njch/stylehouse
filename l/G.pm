@@ -667,7 +667,7 @@ sub D {
     $a->{name} = "D";
     my $D = $G->Doming($a);
 
-    $H->{sigstackend} ||= sub {
+    $G->{sigstackend} ||= sub {
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
@@ -681,7 +681,7 @@ sub D {
 
         push @$wall, \@stackend;
     };
-    $H->{sigstackwa} ||= sub {
+    $G->{sigstackwa} ||= sub {
         return 1 if $_[0] =~ /^Use of uninitialized value/;
         my @loc = caller(1);
         sayre join "\n", "warn from ".$F[0]->{G}->{name}
@@ -691,8 +691,8 @@ sub D {
     };
     my @return;
     if (ref $sub eq "CODE" && !$@) {
-        local $SIG{__DIE__} = $H->{sigstackend};
-        local $SIG{__WARN__} = $H->{sigstackwa};
+        local $SIG{__DIE__} = $G->{sigstackend};
+        local $SIG{__WARN__} = $G->{sigstackwa};
 
 
         eval { @return = $sub->($a->{ar}) }
@@ -1078,8 +1078,8 @@ sub w {
         my ($wa) = $talk =~ /^w\ (\w+)/;
 
         warn $G->pi."    way miss $talk"
-        if !($H->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D event'}
+        if !($G->{misslesswa} ||= {map{$_=>1}
+            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D event life_D'}
           )->{$wa};
         return;
     }
