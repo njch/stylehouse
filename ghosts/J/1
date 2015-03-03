@@ -182,11 +182,11 @@ R_Jz:
  - K: ph_exactl #c or drop not in last
    D: |
        my $wtf = ar.wtf || {};
-       my $cur = y.l->[-1];
-       my $last = y.l->[-2];
+       my $cur = wtf.cur = y.l->[-1];
+       my $last = wtf.last = y.l->[-2];
        wtf.same = 1;
        if (!$last) { # better not get autovivified! 
-           wtf.allnew=1;
+           wtf.allnew = 1;
            wtf.same = 0;
            sayre "ph_exactl: all new";
            return;
@@ -194,10 +194,17 @@ R_Jz:
        #y.l_bb->{$_} = $w for keys %{x.bb};
        # churn stats like 30% of last disappear, 20% new
        
-       for (grep { !exists last.bb->{$_} } sort keys %{cur.bb}) {
-           sayre " + No $_ in last";
-           wtf.new->{$_} = cur.bb->{$_};
-           wtf.same = 0;
+       for (sort keys %{cur.bb}) {
+           if (!exists last.bb->{$_}) {
+               sayre " + No $_ in last";
+               wtf.new->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           }
+           elsif (last.bb->{$_} ne cur.bb->{$_}) {
+               sayre " != different $_ now";
+               wtf.diff->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           }
        }
        
        for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
@@ -209,6 +216,7 @@ R_Jz:
        
        my $gl = wtf.same ? "===" : "+-";
        sayre "ph_exactl: ". slim 50, join("  ",($gl) x 6);
+       $wtf;
      
  - K: ph_defaff #c loop early exity if $d same
    D: |
