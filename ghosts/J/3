@@ -3,9 +3,17 @@ R_Jz:
  - K: jin #c replace namedo 
    D: |
      my $name = $m->[0];
+     push @$m, $name if @$m == 1;
+     
      my $n = Rw Jung;
      w G.R del(u=>$_) for $n->{$name};
-     Rw hiJ +;
+     my $J = Rw hiJ +;
+     
+     if (ar.in || ar.r) { 
+         my $r = ar.in? {i=>ar.in} : ar.r;
+         Rw inness $J $r;
+     }
+     $J;
  - K: Jun #c Jung with name, or not
    D: |
      my $n = Rw Jung;
@@ -85,7 +93,7 @@ R_Jz:
  - K: conroll #c rolling con tents, the C Js, away into shadow TIME
    D: |
      my @con = map{_.i} @{J.A.n_tent||[]};
-     @con = grep { $_ ne J.on } @con;
+     @con = grep { _.yy.conroll.dont } @con;
      
      unshift @con, $J;
      
@@ -116,6 +124,7 @@ R_Jz:
       # laying out the plane of attack
       # just has to find a corner of it as 3
       J.on = Rw tent on;
+      J.on.yy.conroll.dont = 1;
       # ^ recursor... incubator
       # v def
       my $o = J.onei ||= {i=>$G};

@@ -179,6 +179,22 @@ R_Jz:
      };
      # ensure phase reset with _after_do
      $x;
+ - K: blabphys #c
+   D: |
+     say "Active phases:".(! %{J.phy} && " NONE");
+     for my $x (values %{J.phy}) {
+         say " - x.name:";
+         say "  * $_    == x.bb->{$_}" for sort keys %{x.bb};
+     }
+ - K: from_phys #c
+   D: |
+     my $in = {};
+     for my $y (values %{J.phl}) {
+         if (exists y.l_bb->{$r}) {
+             $in->{y.name} = y.l_bb->{$r};
+         }
+     }
+     $in;
  - K: ph_exactl #c or drop not in last
    D: |
        my $wtf = ar.wtf || {};
