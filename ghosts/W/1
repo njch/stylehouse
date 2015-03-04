@@ -85,45 +85,45 @@ R_Jz:
        'color:#8ff;-webkit-filter:blur(3px);margin-left:3em'],
  - K: sur #c SURish rondo: on -> square ->
    n_D:
+     X: | #c close
+      w G.R del(u=>$J);
+
+     to: | #c into
+       my $to = shift @$m;
+       my $r;
+       for ($to) {
+           r.t = [] when 'root';
+           r.i = $G when 'G';
+           die         when 'feed'; # look at cont moves?
+           r.i = Rw Jung
+                       when 'Jung';
+           r.i = Rw onJ o2x theself
+                       when 'self';
+           default {
+               die "no yyyyyyyyyyyy to $to   on ".$J->pi;
+           }
+       }
+       Rw inness $J $r;
+     root: | #c back to 0
+       my $r;
+       r.t = [];
+       Rw inness $J $r;
      conty: | #css # eats event + HASH preparation $pa
        my $r = {}; # sproutya
        # ^ outer $y compressions understood by 2ale of inness J.onei, compiled...
        # will lovely to maintain in spiral
-       saybl "pat: $y";
+       saybl "pat: $y   mmmm @$m"; # < that m & v that m, language in the middle
        #/
        #\
        if (e.type eq 'click') {
-               for ($y) {
+           for ($y) {
+               when (/^!(.+?)(?::(.+))?$/) {
+                   my $m = [$2];
+                   Rw $1 + $m;
+               }
                    when (/^(\{|\[)/) {
                        r.t = $y;
                        Rw sur/folw $r $J;
-                   }
-                   when ('boot') {
-                       Rw hull/mkboot;
-                   }
-                   when ('root') {
-                       r.t = [];
-                       Rw inness $J $r;
-                   }
-                   when ('feed') { # look at cont moves?
-                       r.t = [];
-                       Rw inness $J $r;
-                   }
-                   when ('G') {
-                       r.i = $G;
-                       Rw inness $J $r;
-                   }
-                   when ('X') {
-                       w G.R del(u=>$J);
-                   }
-                   when ('Jung') {
-                       r.i = Rw Jung;
-                       Rw inness $J $r;
-                   }
-                   when ('self') {
-                       my $self = Rw onJ o2x theself;
-                       r.i = $J;
-                       Rw inness $J:self $r;
                    }
                }
        }
@@ -181,11 +181,11 @@ R_Jz:
        J.lum.lev->("J\t0.01", sub {
            my $J2 = shift;
            # later style %idly if %path but no /%id
-           J2 fro J 0.01      $J, 0.1, '%path'=>'self'
-           J2 bz boot 0.08 "ƾ", '%path'=>'boot', '%idly'=>1, '%css'=>'color:#8ff;-webkit-filter:blur(3px)'
-           J2 bz G 0.12 "G", '%path'=>'G', '%idly'=>1
-           J2 bz x 0.14 "x", '%path'=>'X', '%idly'=>1, '%css'=>'color:red;font-size:50%'
-           J2 bz Jung 0.15 "Jung", '%path'=>'Jung', '%idly'=>1, '%css'=>'color:#68d;font-size:30%'
+           J2 fro J 0.01      $J, 0.1, '%path'=>'!sur/self'
+           J2 bz boot 0.08 "ƾ", '%path'=>'!hull/mkboot', '%idly'=>1, '%css'=>'color:#8ff;-webkit-filter:blur(3px)'
+           J2 bz G 0.12 "G", '%path'=>'!sur/to:G', '%idly'=>1
+           J2 bz x 0.14 "x", '%path'=>'!sur/X', '%idly'=>1, '%css'=>'color:red;font-size:50%'
+           J2 bz Jung 0.15 "Jung", '%path'=>'!sur/to:Jung', '%idly'=>1, '%css'=>'color:#68d;font-size:30%'
            
        }, '%css'=>'font-size:200%'); 
        J.lum.lev->("onei\t0.05" => sub {
@@ -193,7 +193,7 @@ R_Jz:
            J2 bz lable 0.1 "onei "
            
            my $on = J.onei;
-           J2 fro Jonei 0.3 on.i, 0.2, '%path'=>'root'
+           J2 fro Jonei 0.3 on.i, 0.2, '%path'=>'!sur/to:/'
            
            if ($u ne on.i) {
                J2 bz Joneei 0.6 " ".join("  ", @{on.t||[]})." "
