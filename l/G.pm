@@ -1273,7 +1273,7 @@ sub parse_babble {
                 push @m, $_;
             }
         }
-        push @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
+        unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
 
         # could use ^ here # edpeak?
         push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
