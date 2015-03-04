@@ -21,9 +21,8 @@ R_Jz:
      
  - K: jin #c replace: find named J -> del -> hiJ   # poss replace namedo 
    D: |
-     $m=ar.m||=[];
-     $name ||= shift @$m;
-     unshift @$m, $name;
+     my $m = ar.m ||= [];
+     my $name = ar.name ||= shift(@$m);
      
      Rw Jundel $name;
      
@@ -36,17 +35,14 @@ R_Jz:
      $J;
  - K: Jundel #c ye
    D: |
-     my $oJ = Rw Jun $name;
-     $oj || return;
-     w G.R del(u=>$oJ);
+     my $u = Rw Jun $name;
+     $u || return;
+     w G.R del[$u];
      
  - K: onJ #c replace namedo 
    D: |
      my $oJ = Rw Jun $name;
-     $oj || return;
-     my $name = $m->[0];
-     my $n = Rw Jung;
-     $n->{$name} ||
+     $oJ ||
      Rw hiJ +;
  - K: Jup #c
    D: |
@@ -58,10 +54,9 @@ R_Jz:
          my $pin = "$_/yJup";
          my @wk = Rw suck + $pin;
          saygr "J.name seeking $_...";
-         push @blyl, join '+', uniq 
+         push @blyl, join '+', uniq @wk;
          push @style, @wk;
-         J.yt->{$_} ||= 1;
-         # ^ mka no warn when hacess J.yt.etc 
+         map { J.yt->{$_} ||= 1 } @wk;
      }
      saygr "J.name yJup: @style";
  - K: hiJ #c ipv6 goes in #sparse space so everyone can have dark matter# waves
@@ -92,6 +87,7 @@ R_Jz:
      # etc $m
      u.name ||= $name;
      
+     say "loJ: u.name";
      my $J = Rw makeJ $u;
  - K: makeJ #c
    D: |
@@ -101,9 +97,6 @@ R_Jz:
      # ^ babz to:
      my $J = w G.R fuu[$u];
      # ^ has flows_D to suJ, only first time
-     sayyl "\\";
-     sayyl " makeJ;     ".$J->pi."      ".join(" & ",@{J.style||[]});
-     sayyl "/";
      $J
  - K: tent #c pearlesque kings of the J...
    D: |
@@ -122,7 +115,7 @@ R_Jz:
  - K: conroll #c rolling con tents, the C Js, away into shadow TIME
    D: |
      my @con = map{_.i} @{J.A.n_tent||[]};
-     @con = grep { _.yy.conroll.dont } @con;
+     @con = grep { !_.yy.conroll.dont } @con;
      
      unshift @con, $J;
      
