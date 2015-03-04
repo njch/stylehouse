@@ -1,4 +1,7 @@
 mod c: # pile of stuff on the ceiling
+ - K: s #c yes
+   mod 3.1: |
+     push @{n.gl||=[]}, $cs; 
  - K: unico #c
    mod 3.3: |
       my $c = ref $cs ? $cs : {};
@@ -25,10 +28,10 @@ mod c: # pile of stuff on the ceiling
      d.cs.olo = 'color:#'.$col.';white-space:pre;';
  - K: fs #c MOD MOD MOD 1=stable 2=sweep # SWIM
    mod 3.3: |
-     my $mod = $1 if c.fs =~ s/_(\d+)$//;
-     c.fs =~ s/^0(\d+)/0.$1/; # leading zeroes, etc ssquihs
-     my $siz = c.fs * 9;
-     $siz -= n.um / $mod if $mod;
+     my ($n1,$n2) = split '_', $cs;
+     $n1 = '0.'.$n1; # leading zeroes, etc ssquihs
+     my $siz = $n1 * 9;
+     $siz -= n.um / $n2 if $n2;
      d.cs.fsgy = 'font-size:'.$siz.'%;';
  - K: sh #c
    mod 3: |
@@ -45,7 +48,11 @@ mod c: # pile of stuff on the ceiling
    mod 7: |
      push @{d.css}, '%css#'.$_ => d.cs->{$_}
          for sort keys %{d.cs};
- - K: yinvis #c an extremity at one point
+ - K: dsc #c outside pipe # exp kompd style for now
+   mod 7: |
+     push @{d.css}, '%css#'.$_ => d.cs->{$_}
+         for sort keys %{d.cs};
+ - K: yinvis #c an extremity at one point # two places at once to pack d.in
    mod 1: |
      my $v = $i / (999 - d.in);
  - K: yangco #c background language expansion
@@ -104,6 +111,7 @@ R_Jz:
      d.t = shift @$m;
      d.thi = shift @$m;
      d.c = shift @$m;
+     d.c = { s => delete d.c } if !ref d.c;
      d.sc = shift @$m;
      say "duck food ".wdump($d);
      Rw modn $J $d;
@@ -127,21 +135,13 @@ R_Jz:
      my $n; # drop values through with
      my $c = d.c; # <v contation
      $c = {} if !ref $c;
-     
-
-     my $carb = sub {
-         my ($i)  = @_;
-         my @gl;
-           
-         # 6 add style tio 
-          
-     };
 
      my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
 
      my $dcss = d.css;
      for my $i (@is){ # THE TIR
-         d.css = [@{$dcss}];
+         d.css = [@{$dcss}]; # spreads out
+         
          # YIN
          
          # YANG
@@ -150,7 +150,6 @@ R_Jz:
            
          # CITOZINE
 
-         # 7
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          # 7.1
          J.bz->(
@@ -167,13 +166,12 @@ R_Jz:
        Rw suck - */modi;
      modi: | #c shunt, suck, J maint wayfile story
        Rw Con mod modu modn;
- - K: conv #c cv to somethingness
+
+ - K: conv #c cv to somethingness # elements
    D: |
-     $v>=3 && $v<4 ? "CARBON"
-     :
-     $v>=7 && $v<8 ? "CITOZINE"
-     :
-     die $v;
+     my %way = qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE';
+     my $dig = $1 if $v =~ /^(\d)/;
+     $way{$dig} || die;
  - K: Con #c the
    D: |
      my ($the, $src, $path) = @$m;
@@ -201,7 +199,9 @@ R_Jz:
            $v = join "\n", @$v;
            $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
        } 
-       saybl " __________________" for 1..4;
+       sayre "YEH";
+       saybl " _________________  $mw
+       ";
        say join " & ", reverse $the, reverse map{"$_*$tl->{$_}"} sort keys %$tl;
        R.way.hooks->{$path} = $mw;
      
@@ -222,11 +222,13 @@ R_Jz:
                # if for c.cs, for implant condits # sche
                
                # lets assume K is it
+               my $type = Rw conv $v;
+               if ($type eq 'CARBON') {
                    $com .= "cs=c.K  ";
                    unshift @l, 'if (my $cs = c.'.c.K.') {';
                    $D = ind '     ', $D;
                    push @r, '}';
-               
+               }
                
                $D = join "\n", $com, @l, $D, @r;
                J bz $k#$ome $v $D
