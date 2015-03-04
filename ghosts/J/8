@@ -42,8 +42,11 @@ R_Jz:
          say " ! contig $1 -> @$m";
          Rw $1 + $m;
      }
-     else {
+     elsif ($y) {
          Rw suck + */conty $y;
+     }
+     else {
+         say " nothing to say";
      }
      
  - K: upath #c find %path or so between J and J2, a subj, FUZZ
@@ -129,12 +132,19 @@ R_Jz:
      grab: |
        return 0 unless e.type =~ /^key/;
        my $k = e.k;
-       if (R.way.hooks.eventkeygrab->{$k}) {
+       my @try = (e.k, 'w'.e.which);
+       my $g = R.way->find('eventkeygrab');
+       for my $k (@try) {
+           next unless $g->{$k};
            Rw eventkeygrab/$k;
            sayyl "Served e.k";
            return 1;
        }
        return 0;
+     w189: | # ½
+       # inject J / fontsize --
+     w187: | # »
+       # inject J / fontsize ++
      H: |
        my $n = Rw Jung;
        n.oot
