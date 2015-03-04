@@ -4,15 +4,13 @@ R_Jz:
      saybl "_---------------________------____________------------";
      sayyl "ID: e.id";
      
-     return if Rw eventkeygrab/grab;
-     
      my ($J2, $j); # the deepest findable ab
      if (my $ju = J.idly->{e.id}) {
          $J2 = ju.J;
          $j = ju.j;
      }
      
-     saybl "Jointup ^  ".gp(J.jointed); # the J above
+     saybl "  /        ".gp(J.jointed); # the J above
      saybl " J      |- ".gp($J); # the J ux we evented, modulator tip
      saybl "    J2 ... ".gp($J2); # gp or so, sometimes
      saybl "        j@ ".j.r if $j; # the bit of line, something%idly etc. line has %path or something interesting
@@ -24,19 +22,30 @@ R_Jz:
      
      die if !$J2 && $j;
      
-
      # ex clues about pathways
      $J2 ||= $J;
      
      my $pa = {};
      Rw upath $J $J2 $j $pa;
      
-     my $y = pa.pathy;
-     Rw suck + */conty $J $J2 $pa $y;
-     
+     Rw contier + $J $J2 $j $pa;
       # auth between ^ v
       
      waylay mux(u=>$J);
+ - K: contier #c
+   D: |
+     return if Rw eventkeygrab/grab;
+     
+     my $y = pa.pathy;
+     if ($y =~ /^!(.+?)(?::(.+))?$/) {
+         my $m = [split ' ', $2];
+         say " ! contig $1 -> @$m";
+         Rw $1 + $m;
+     }
+     else {
+         Rw suck + */conty $y;
+     }
+     
  - K: upath #c find %path or so between J and J2, a subj, FUZZ
    D: | # it's making spirals of looking for things to jump forward with
      if ($j) {
