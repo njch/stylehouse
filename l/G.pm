@@ -1459,8 +1459,8 @@ sub CsK {
     my $G = shift;
     my ($p, $GG) = @_;
     $GG ||= $G;
-    $p->{s} ||= 'Cs C';
-    my @topK = split ' ', delete $p->{s};
+    $p->{s} ||= 'C';
+    my @topK = delete $p->{s};
     my @Cs = map { flatline($_) } map { $GG->anyway($_) } @topK;
     @Cs = grep { $G->ip($p, $_) } @Cs if %$p;
     return wantarray ? @Cs : shift @Cs;
