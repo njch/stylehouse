@@ -62,23 +62,19 @@ R_Jz:
      d.in ||= 1;
      d.out ||= d.thi;
      
-     if (d.c) {
-         my $c = d.c;
-         $c = {} if !ref $c;
-         d.c = sub {
-             my ($i)  = @_;
-             my $v = $i / (999 - d.in);
-             # 3.2
-             my @gl;
-             # 3.3
-             # 3.4
-             # 3.5
-             # add style tio 
-             # 3.6
-             @gl = d.s if !@gl;
-             d.s = join'', @gl;
-         };
-     }
+     d.cs ||= {};
+     d.c ||= {};
+     my $c = d.c; # <v contation
+     $c = {} if !ref $c;
+     
+     d.c = sub {
+         my ($i)  = @_;
+         my $v = $i / (999 - d.in);
+         my @gl;
+         # 6 add style tio 
+         @gl = d.s if !@gl;
+         d.s = join'', @gl; # hmmmmmmmmm
+     };
      
      my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
      
@@ -88,6 +84,9 @@ R_Jz:
          d.s = d.c ? d.c->($i, $d) : d.s;
          
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
+         
+         push @{d.css}, '%css#'.$_ => d.cs->{$_}
+             for sort keys %{d.cs};
          
          J.bz->(
          # 7.2
@@ -105,27 +104,14 @@ R_Jz:
  - K: olours # MOD MOD
    babz:
      'mod#olour 3.32345': |
-             $i =~ /(\d)?(\d)?(\d)?$/;
-             my $col = join'',
-             map { /^.*(\d+).*$/; $1 }
-             map { J.ent.3 > 6 && $_ > 5 && -4 + J.ent.3 || $_ }
-             map{J.ent.1 > 6 ? $1 * (J.ent.3 / 4) :$_}
-             
-             $1,$2,$3;
+       $i =~ /(\d)?(\d)?(\d)?$/;
+       my $col = join'',
+       map { /^.*(\d+).*$/; $1 }
+       map { J.ent.3 > 6 && $_ > 5 && -4 + J.ent.3 || $_ }
+       map{J.ent.1 > 6 ? $1 * (J.ent.3 / 4) :$_}
 
-             push @{d.css}, '%css#olo' => 'color:#'.$col.';white-space:pre;';
- - K: spfx # MOD MOD MOD
-   babz:
-     'mod#olour 3.32345': |
-             $i =~ /(\d)?(\d)?(\d)?$/;
-             my $col = join'',
-             map { /^.*(\d+).*$/; $1 }
-             map { J.ent.3 > 6 && $_ > 5 && -4 + J.ent.3 || $_ }
-             map{J.ent.1 > 6 ? $1 * (J.ent.3 / 4) :$_}
-             
-             $1,$2,$3;
-
-             push @{d.css}, '%css#olo' => 'color:#'.$col.';white-space:pre;';
+       $1,$2,$3;
+       d.cs.olo = 'color:#'.$col.';white-space:pre;';
  - K: unico # UNICO MOD MOD MOD
    babz:
      'mod#wt 3.32344': |
