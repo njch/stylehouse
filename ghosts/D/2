@@ -1,0 +1,171 @@
+R_Jz:
+ - K: domi #c Doofer
+   n_D:
+     any_init: |
+       delete G.drop.conv;
+       Rw conv;
+       
+       delete G.drop.esc;
+       Rw Con esc esc escn;
+ - K: conv #c know about elemental stuff
+   D: |
+     my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
+     G.drop.conv = sub {
+          my $v = shift;
+         my $dig = $1 if $v =~ /^(\d)/;
+         $pway->{$dig} || die " not convable $dig $v";
+     };
+     G.drop.conv->(ar.v) if ar.v;
+ - K: esc #c espouse ton carbon product
+   D: |
+     my $seg = ar.m->[0] if ar.m;
+     my @css;
+     die wdump(ar.m) if !ref $sc; # parse strings too
+     # invent the stevecraig format, playing music
+     
+     my $X = G.drop.esc ||= {};
+     # CARBON subhash=X
+     
+     my $tw;
+     for my $k (sort keys %$sc) {
+         my $v = $sc->{$k};
+         my $com = ref $v eq 'HASH' ? $k : '';
+         my $t = $com ? $v : {$k=>$v};
+         for my $tk (sort keys %$t) {
+             my $tv = $t->{$tk};
+             my $W = $tw->{$com} ||= [];
+             
+             my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
+             
+             #say " cs #$com# $k    = $tk => $tv         $s";
+             push @$W, $s;
+         }
+     }
+     for my $com (sort keys %$tw) {
+         my $W = $tw->{$com};
+         $com = join'-', grep{$_} $seg, $com; 
+         my $sty = '%css';
+         $sty .= '#'.$com if $com;
+         push @css, $sty => join ';', @$W;
+     }
+      #   sayre "CSS  @css";
+     @css;
+
+ - K: Con #c the
+   D: |
+     my ($the, $src, $path) = @$m;
+     # or wherever thi src quags
+     my $s = "$the c";
+     my $J = Rw Carbonja $s $the;
+     
+       # shove togeth modn
+       # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
+       # tesalation
+       my @daw = Rw tvo $J;
+       my $wtf;
+       my $coms = {};
+       for my $j (@daw) {
+           die "non$the?" if j.l ne $the; # how does that work again...
+           acum $coms, j.cv => j.com;
+           
+           my $type = G.drop.conv->(j.cv);
+           push @{$wtf->{$type}||=[]}, j.s;
+       } 
+       
+       my $mw = R.way.hooks->{$src};
+       my $tl = {};
+       for my $k (keys %$wtf) { 
+           my $v = $wtf->{$k};
+           
+           $tl->{$k} = @$v;
+           
+           $v = join "\n", @$v;
+           $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
+       } 
+       my $cl = 'ded';
+       my $sl;
+       for (sort keys %$coms) {
+           my $c = $coms->{$_};
+           my $v = G.drop.conv->($_);
+           my $fr = " ";
+           if ($v ne $cl) {
+               $fr = "";
+               $cl = $v;
+               $sl .= ") " if $sl;
+               $sl .= "$v*$tl->{$v}(";
+           }
+           $sl .= ${fr}.join " ", @$c;
+       }
+       $sl.=")";
+       #saybl " _________________  $mw" if $the eq 'esc';
+       sayyl "$path <- $the     $sl";
+       # nice thing to print ^
+       R.way.hooks->{$path} = $mw;
+     
+ - K: Carbonja #c 3ish
+   D: |
+       my @mosd = 0->CsK({s=>$s});
+       die "no $s" if !@mosd;
+       
+       my $inj = sub {
+          my ($c, $com, $ome, $k, $v, $the, $J, $D) = @_;
+          my (@l,@lr,@r);
+
+          # if for c.cs, for implant condits # sche
+          my $type = G.drop.conv->($v);
+          # z downgrasp
+          my $h = c.MZ; # would be per $k if maybe, D_babz? emberd whatsits
+          # assume K stores c formaton 
+          $h ||= {csfrm => c.K}
+              if $the eq 'mod' && $type eq 'CARBON';
+
+          $h ||= {subhash => 'X'}
+              if $the eq 'esc' && $type eq 'CARBON';
+
+               
+               
+               if (h.subhash) {
+                   unshift @l, h.subhash.'.'.c.K." = sub {";
+                   push @lr, 'my $v = shift;';
+                   $D = ind '     ', $D;
+                   push @r, '};';
+               }
+               
+               if (h.csfrm) {
+                   $com .= "cs=h.csfrm  ";
+                   unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
+                   $D = ind '     ', $D;
+                   push @r, '}';
+               }
+               
+              
+              
+               $D = join "\n", $com, @l, @lr, $D, @r;
+               $ome = "#$ome" if $ome;
+               J bz $k$ome $v $D
+       };
+       
+       my $J = {};
+       Rw suJ $J; 
+       for my $c (@mosd) {
+       
+           my @wsy = grep {m/\s/} keys %$c;
+           for my $zk (@wsy) {
+               my $D = $c->{$zk};
+               my ($k, $v) = split m/\s/, $zk;
+               my $ome = c.K;
+               my $com = "# $zk @ $ome  ";
+               
+               $inj->($c, $com, $ome, $k, $v, $the, $J, $D);
+           }
+           
+           if (c.D) {
+               my $k = $the;
+               my $ome = c.K;
+               my $com = "# c.K";
+               my $v = 3;
+               $inj->($c, $com, $ome, $k, $v, $the, $J, c.D);
+           }
+       }
+       $J
+
