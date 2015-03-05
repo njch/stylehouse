@@ -52,6 +52,53 @@ R_Jz:
        return unless G.jumb.occie;
        my $u = Rw hamz style occie;
        Rw toof + $u occie;
+ - K: toof #c html styleshootout
+   D: |
+      my $c = shift @$m;
+      $u || die "look for u>?"; 
+      
+      my $pool = G.jumb->{$c};
+      
+      my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
+      
+      
+      my @order = reverse sort { a.sc <=> b.sc } @pool;
+      
+      my $komp = {}; # forward and back 
+      my $limit = 250;
+      my $aimit = @order / 1.2;
+      for my $o (@order) {
+          last if o.sc < 5;
+          next if o.of eq '';
+          # oras ratio ^ rolling
+          
+          last if $limit-- < 1;
+          last if $aimit-- < 1;
+          
+          my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
+          || die "of tiny: ".wdump($o);
+          
+          my ($heex) = $H->dig($sty) =~ /^(...)/;
+          $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+          # TODO name it
+          my $y = "s".$heex;
+          $komp->{$y} = $sty;
+      }
+      
+      my $wi = keys %$komp;
+      $wi || return sayre "NOTHING TO COMPRESS";
+      sayyl "toof $c compressed ".@pool." to $wi";
+
+      # komp carbonises, makes up style
+      G.yomp->{$c} = {reverse %$komp};
+
+      # ^ to maka, draws in
+      # v to elvis, draws out
+      
+      my $was = u.sheet;
+      u.sheet = join "\n", map { ".$_ { $komp->{$_} }" } sort keys %$komp;
+
+      w mux[$u] if u.sheet ne $was;
  - K: dolphy #c
    D: |
      my $tvs = w $R ytv[$J];
