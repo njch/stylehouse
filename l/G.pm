@@ -1548,6 +1548,11 @@ sub slim {
     $c
 }
 
+sub acum {
+    my ($n, $y, $c) = @_;
+    push @{$n->{$y}||=[]}, $c;
+}
+
 sub shtocss {
     my $s = shift;
     return join "", map { "$_:$s->{$_};" } sort keys %$s if ref $s eq "HASH";
