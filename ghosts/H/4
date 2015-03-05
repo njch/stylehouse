@@ -80,6 +80,8 @@ hooks:
     for my $r (@r) {
         my $b = a.bb->{$r};
         my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)?\s(.+)$/;
+        
+        say " *** $l $com $vo" if $l =~ /duck/;
         if ($com) {
             # should just attach them near the style
             # with one more phase of comment joining
@@ -151,7 +153,12 @@ hooks:
             my $D = $_;
             !ref D.D ? $D : do {
                 my $_K = D.K;
-                map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D}
+                ref D.D eq 'HASH' ?
+                ( map { { K=>"$_K/$_", D=>D.D->{$_} } } keys %{D.D} )
+                : do {
+                    D.C = delete D.D;
+                    $D
+                };
             }
         } map { 
             my $D = $_;
@@ -179,9 +186,16 @@ hooks:
             }
         }
         #    die wdump a.bb;
-
-        for my $D (@$Ds) {
-            a.Dh->{key}->{$_} = "D.K/D.key->{$_}" for keys %{D.key||{}};
+ 
+        # IVORY puur=@$Ds
+        for my $D (grep {_.key} @$Ds) {
+            a.Dh.key->{$_} = "D.K/D.key->{$_}"
+                for keys %{D.key};
+        }
+        for my $D (grep {_.C} @$Ds) {
+             
+            a.bb.key->{$_} = "D.K/D.key->{$_}"
+                for keys %{D.key};
         }
 
 
