@@ -4,12 +4,21 @@ R_Jz:
      my $i = 0;
      for my $m (@$M) {
          $i++;
-         my ($t, $path) = @$m;
+         my ($t, $path,  $cs) = @$m;
          $path = "!$path" unless $path =~ /^ /;
          
-           # later style %idly if %path but no /%id
+         my @cs;
          
-         my @cs = ('%css'=>'color:#f3a;-webkit-filter:blur(1px);font-size:200%');
-         J bz $t 0.$i "$t", '%path'=>$path, '%idly'=>1, @cs
+         # later style %idly if %path but no /%id
+         push @cs, '%path' => $path;
+         push @cs, '%idly' => 1 if !cs.fro;
+         # ^ make %path req %Jid, provided by %fro etc
+         push @cs, '%css' => 'color:#f3a;-webkit-filter:blur(1px);font-size:200%';
+         if (cs.fro) {
+             J fro $t 0.$i @{cs.fro}, @cs
+         }
+         else {
+             J bz $t 0.$i "$t", @cs
+         }
      }
 
