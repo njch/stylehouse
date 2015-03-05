@@ -75,14 +75,12 @@ hooks:
     # look at each $r in the source style way dimension
     
     # 7
-    say sort keys %{a.bb};
     my $Dz = a.Dz;
     my @r = $G->stylekeysort(a.bb);
     for my $r (@r) {
         my $b = a.bb->{$r};
         my ($l, $com, $vo) = $r =~ /^(\S+?)(\#\S+)?\s(.+)$/;
         
-        say " *** $l $com $vo" if $l =~ /duck/;
         if ($com) {
             # should just attach them near the style
             # with one more phase of comment joining
@@ -107,12 +105,14 @@ hooks:
         
         my @s = map {$bz->{$_}} sort keys %$bz;
         
-        my $b = ref $s[0] eq 'ARRAY' ? $s[0]
+        my $b = ref $s[0] eq 'ARRAY' ? $s[0] # could join somehow, flatline 1
         :
         join("\n", @s);
         
         $R->loadup($Dh, $ac, $b);
     }
+    
+    
   _in_Rw: |
     saybl "_in_Rw Recipe ".$Rw->pi;
     Rw.a = {};
