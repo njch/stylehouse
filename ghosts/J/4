@@ -13,9 +13,7 @@ mod c: # pile of stuff on the ceiling
           my $pa = $entoi > 7 ? "  " : $entoi > 3 ? " " : "";
           push @{n.gl||=[]}, $pa.$b;
       } 1..34;
- - K: numb #c
-   mod 3: |
-     n.um = sprintf '%.3d', ($i * $v + 5);
+
  - K: colourins #c
    mod 3.4: |
      $i =~ /(\d)?(\d)?(\d)?$/;
@@ -29,37 +27,71 @@ mod c: # pile of stuff on the ceiling
  - K: fs #c MOD MOD MOD 1=stable 2=sweep # SWIM
    mod 3.3: |
      my ($n1,$n2) = split '_', $cs;
-     $n1 = '0.'.$n1; # leading zeroes, etc ssquihs
+     if ($n1 =~ /^(0+)/) {
+         die "widouce: $n1 by $1";
+        $n1 *= 0.1 for 1..length($1);
+     }
      my $siz = $n1 * 9;
      $siz -= n.um / $n2 if $n2;
      d.cs.fsgy = 'font-size:'.$siz.'%;';
  - K: sh #c
    mod 3: |
-     d.cs.awl = 'text-shadow:2px 2px 7px rgb(0,255,205)'
+     d.cs.awl = 'text-shadow:2px 2px 7px rgb(0,255,205)';
  - K: jamit #c
    mod 3: |
      d.cs.awl = "JAMTHATFUELTANK";
  - K: carbcap #c jel like language
+   MZ: {}
    mod 3.9: |
      d.s = join'',@{n.gl};
      # ^ roll dough if not dough
      # ^ es also like looking for most magnity n.thee value heading for $s
- - K: dcs #c a pipeline # exp kompd style notes
+ - K: dcs #c a pipeline # exp kompd style notes from mod places
    mod 7: |
-     push @{d.css}, '%css#'.$_ => d.cs->{$_}
-         for sort keys %{d.cs};
- - K: dsc #c outside pipe # exp kompd style for now
+     # cs.$k.$sc -> squiggly first style compressions
+     # exp to css for now...
+     push @{d.css}, Rw expowsc $cs:d.cs;
+ - K: dsc #c outside mod twistor pipe, komp style specd at the */mods lines
    mod 7: |
-     push @{d.css}, '%css#'.$_ => d.cs->{$_}
-         for sort keys %{d.cs};
- - K: yinvis #c an extremity at one point # two places at once to pack d.in
+     # sc.$sc -> stable compressions, specd by the */mods vac
+     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
+     # for comments like v  # so comp is the very last hash, the rest is where etc.
+     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
+     #    for sort keys %{d.cs};
+ - K: yinvis #c what it means to be here
    mod 1: |
+     # an extremity at one point
+     # two places at once to pack d.in, overallness of loop
      my $v = $i / (999 - d.in);
+     n.um = sprintf '%.3d', ($i * $v + 5);
+     # hex round sweepage
  - K: yangco #c background language expansion
    mod 2: |
      # yang may pass arounJ komp struc intact for a while
      
 R_Jz:
+ - K: expowsc #c espouse ton carbon product
+   D: |
+     my @css;
+     die if !ref $sc; # parse strings too
+     # invent the stevecraig format, playing music
+     my $tw;
+     for my $k (sort keys %$sc) {
+         my $v = $sc->{$k};
+         my $com = ref $v eq 'HASH' ? $k : '';
+         my $t = $com ? $v : {$k=>$v};
+         for my $tk (sort keys %$t) {
+             my $W = $tw->{$com} ||= [];
+             push @$W, $v;
+         }
+     }
+     for my $com (sort keys %$tw) {
+         my $W = $tw->{$com};
+         my $sty = '%css';
+         $sty .= '#'.$com if $com;
+         push @css, $sty => join ';', @$W;
+     }
+     @css;
  - K: up #c scan
    D: |
      Rw suck */up;
@@ -138,9 +170,11 @@ R_Jz:
 
      my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
 
-     my $dcss = d.css;
+     say "AHAVE D ". wdump(2,$d);
+     
+     my $dd = $d;
      for my $i (@is){ # THE TIR
-         d.css = [@{$dcss}]; # spreads out
+         my $d = {%$dd, i => $i, css => [@{d.css}]};
          
          # YIN
          
@@ -150,6 +184,7 @@ R_Jz:
            
          # CITOZINE
 
+         saybl "Post: d.s       @{d.css} ";
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          # 7.1
          J.bz->(
@@ -168,9 +203,9 @@ R_Jz:
        Rw Con mod modu modn;
  - K: conv #c cv to somethingness # elements
    D: |
-     my %way = qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE';
+     G.pway ||= {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
      my $dig = $1 if $v =~ /^(\d)/;
-     $way{$dig} || die;
+     G.pway->{$dig} || die;
  - K: Con #c the
    D: |
      my ($the, $src, $path) = @$m;
@@ -208,26 +243,32 @@ R_Jz:
    D: |
        my @mosd = 0->CsK({s=>$s});
        my $J = {};
-       Rw suJ $J;
+       Rw suJ $J; 
        for my $c (@mosd) {
            my @wsy = grep {/ /} keys %$c;
            for my $zk (@wsy) {
                my $z = $c->{$zk};
-               my ($k, $v) = split ' ', $zk;
+               my ($k, $v) = split m/\s/, $zk; 
                my $D = $z;
                my $ome = c.K;
                my $com = "# $zk @ $ome  ";
                my (@l,@r);
                # if for c.cs, for implant condits # sche
                
-               # lets assume K is it
                my $type = Rw conv $v;
-               if ($type eq 'CARBON') {
-                   $com .= "cs=c.K  ";
-                   unshift @l, 'if (my $cs = c.'.c.K.') {';
+               # z downgrasp
+               my $h = c.MZ;
+               # assume K stores c formaton
+               $h ||= {csfrm => c.K} if $type eq 'CARBON';
+               
+               
+               if (h.csfrm) {
+                   $com .= "cs=h.csfrm  ";
+                   unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
                    $D = ind '     ', $D;
                    push @r, '}';
                }
+               
                
                $D = join "\n", $com, @l, $D, @r;
                J bz $k#$ome $v $D
