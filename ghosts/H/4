@@ -75,6 +75,7 @@ hooks:
     # look at each $r in the source style way dimension
     
     # 7
+    say sort keys %{a.bb};
     my $Dz = a.Dz;
     my @r = $G->stylekeysort(a.bb);
     for my $r (@r) {
@@ -104,9 +105,13 @@ hooks:
     while (my ($l, $bz) = each %$Dz) {
         my $ac = join'',map{"{$_"}split'/',$l;
         
-        my $babble = join "\n", map {$bz->{$_}} sort keys %$bz;
+        my @s = map {$bz->{$_}} sort keys %$bz;
         
-        $R->loadup($Dh, $ac, $babble);
+        my $b = ref $s[0] eq 'ARRAY' ? $s[0]
+        :
+        join("\n", @s);
+        
+        $R->loadup($Dh, $ac, $b);
     }
   _in_Rw: |
     saybl "_in_Rw Recipe ".$Rw->pi;
@@ -195,7 +200,7 @@ hooks:
                 for keys %{D.key};
         }
         for my $D (grep {_.C} @$Ds) {
-            a.bb->{D.K} = D.C;
+            a.bb->{"D.K 4"} = D.C;
         }
 
 
