@@ -74,7 +74,7 @@ mod c: # pile of stuff on the ceiling
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (%{d.cs}) {
-         push @{d.css}, Rw expowscn $sc:d.sc sc if %{d.sc};
+         push @{d.css}, Rw escn $sc:d.sc sc if %{d.sc};
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -84,9 +84,9 @@ mod c: # pile of stuff on the ceiling
      # and what's between...
      # exp to css for now...
      if (%{d.cs}) {
-         push @{d.css}, Rw expowscn $sc:d.cs;
+         push @{d.css}, Rw escn $sc:d.cs;
      }
-expowsc c:
+esc c:
  - K: sha #c it
    D: |
      my @m = split m/\s/, $v;
@@ -117,7 +117,7 @@ expowsc c:
  - K: co #c it
    D: |
      "color:".X.cole->($v);
- - K: zi #c it
+ - K: fs #c it
    D: |
      $v *= 9;
      'font-size:'.int($v).'%';
@@ -165,7 +165,7 @@ R_Jz:
          $sty .= '#'.$com if $com;
          push @css, $sty => join ';', @$W;
      }
-         sayre "CSS  @css";
+      #   sayre "CSS  @css";
      @css;
  - K: up #c scan
    D: |
@@ -274,13 +274,18 @@ R_Jz:
        Rw suck - */modi;
      modi: | #c shunt, suck, J maint wayfile story
        delete G.drop.esc;
+       delete G.drop.conv;
+       Rw conv;
        Rw Con mod modu modn;
        Rw Con esc esc escn;
  - K: conv #c cv to somethingness # elements
    D: |
-     G.pway ||= {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
-     my $dig = $1 if $v =~ /^(\d)/;
-     G.pway->{$dig} || die;
+     my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
+     G.drop.conv = sub {
+          my $v = shift;
+         my $dig = $1 if $v =~ /^(\d)/;
+         $pway->{$dig} || die " not convable $dig $v";
+     };
  - K: Con #c the
    D: |
      my ($the, $src, $path) = @$m;
@@ -293,10 +298,12 @@ R_Jz:
        # tesalation
        my @daw = Rw tvo $J;
        my $wtf;
+       my $coms = {};
        for my $j (@daw) {
            die "non$the?" if j.l ne $the; # how does that work again...
-           saygr j.r;
-           my $type = Rw conv $v:j.cv;
+           acum $coms, j.cv => j.com;
+           
+           my $type = G.drop.conv->(j.cv);
            push @{$wtf->{$type}||=[]}, j.s;
        } 
        
@@ -304,13 +311,30 @@ R_Jz:
        my $tl = {};
        for my $k (keys %$wtf) { 
            my $v = $wtf->{$k};
+           
            $tl->{$k} = @$v;
+           
            $v = join "\n", @$v;
            $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
        } 
-       sayre "YEH to $path";
-       saybl " _________________  $mw" if $the eq 'escn';
-       say join " & ", reverse $the, reverse map{"$_*$tl->{$_}"} sort keys %$tl;
+       my $cl = 'ded';
+       my $sl;
+       for (sort keys %$coms) {
+           my $c = $coms->{$_};
+           my $v = G.drop.conv->($_);
+           my $fr = " ";
+           if ($v ne $cl) {
+               $fr = "";
+               $cl = $v;
+               $sl .= ") " if $sl;
+               $sl .= "$v*$tl->{$v}(";
+           }
+           $sl .= ${fr}.join " ", @$c;
+       }
+       $sl.=")";
+       #saybl " _________________  $mw" if $the eq 'esc';
+       sayyl "$path <- $the     $sl";
+       # nice thing to print ^
        R.way.hooks->{$path} = $mw;
      
  - K: Carbonja #c 3ish
@@ -318,10 +342,42 @@ R_Jz:
        my @mosd = 0->CsK({s=>$s});
        die "no $s" if !@mosd;
        
-       sayyl "Got $s x ".@mosd;
-       
        my $inj = sub {
-       
+          my ($c, $com, $ome, $k, $v, $the, $J, $D) = @_;
+          my (@l,@lr,@r);
+
+          # if for c.cs, for implant condits # sche
+          my $type = G.drop.conv->($v);
+          # z downgrasp
+          my $h = c.MZ; # would be per $k if maybe, D_babz? emberd whatsits
+          # assume K stores c formaton 
+          $h ||= {csfrm => c.K}
+              if $the eq 'mod' && $type eq 'CARBON';
+
+          $h ||= {subhash => 'X'}
+              if $the eq 'esc' && $type eq 'CARBON';
+
+               
+               
+               if (h.subhash) {
+                   unshift @l, h.subhash.'.'.c.K." = sub {";
+                   push @lr, 'my $v = shift;';
+                   $D = ind '     ', $D;
+                   push @r, '};';
+               }
+               
+               if (h.csfrm) {
+                   $com .= "cs=h.csfrm  ";
+                   unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
+                   $D = ind '     ', $D;
+                   push @r, '}';
+               }
+               
+              
+              
+               $D = join "\n", $com, @l, @lr, $D, @r;
+               $ome = "#$ome" if $ome;
+               J bz $k$ome $v $D
        };
        
        my $J = {};
@@ -330,41 +386,20 @@ R_Jz:
        
            my @wsy = grep {m/\s/} keys %$c;
            for my $zk (@wsy) {
-               my $z = $c->{$zk};
+               my $D = $c->{$zk};
                my ($k, $v) = split m/\s/, $zk;
-               my $D = $z;
                my $ome = c.K;
                my $com = "# $zk @ $ome  ";
-               my (@l,@r);
-               # if for c.cs, for implant condits # sche
                
-               sayyl "wa c.K unt $k   $v" if $the eq 'expowsc';
-               
-               my $type = Rw conv $v;
-               # z downgrasp
-               my $h = c.MZ;
-               # assume K stores c formaton
-               $h ||= {csfrm => c.K}
-                   if $the eq 'mod' && $type eq 'CARBON';
-               
-               $h ||= {subhash => 'X'}
-                   if $the eq 'expowcs' && $type eq 'CARBON';
-               
-               if (h.subhash) {
-                   unshift @l, h.subhash.'.'.c.K.' = sub {';
-                   $D = ind '     ', $D;
-                   push @r, '};';
-               }
-               if (h.csfrm) {
-                   $com .= "cs=h.csfrm  ";
-                   unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
-                   $D = ind '     ', $D;
-                   push @r, '}';
-               }
-               
-               
-               $D = join "\n", $com, @l, $D, @r;
-               J bz $k#$ome $v $D
+               $inj->($c, $com, $ome, $k, $v, $the, $J, $D);
+           }
+           
+           if (c.D) {
+               my $k = $the;
+               my $ome = c.K;
+               my $com = "# c.K";
+               my $v = 3;
+               $inj->($c, $com, $ome, $k, $v, $the, $J, c.D);
            }
        }
        $J
