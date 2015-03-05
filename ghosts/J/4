@@ -2,6 +2,10 @@ mod c: # pile of stuff on the ceiling
  - K: s #c yes
    mod 3.1: |
      acum $n, gl => $cs; # some funky magnation
+ - K: rug #c make carpety
+   MZ: {}
+   mod 3.2: |
+     d.cs.rug.zi = -2;
  - K: unico #c
    mod 3.3: |
       my $c = ref $cs ? $cs : {};
@@ -50,23 +54,7 @@ mod c: # pile of stuff on the ceiling
      }
      # ^ es also like looking for most magnity n.thee value heading for $s
      # carbdome...
- - K: dcs #c a pipeline # exp kompd style notes from mod places
-   mod 7: |
-     # cs.$k.$sc -> squiggly first style compressions
-     # exp to css for now...
-     if (%{d.cs}) {
-         push @{d.css}, Rw expowsc $sc:d.cs;
-     }
- - K: dsc #c outside mod twistor pipe, komp style specd at the */mods lines
-   mod 7: |
-     # sc.$sc -> stable compressions, specd by the */mods vac
-     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
-     # for comments like v  # so comp is the very last hash, the rest is where etc.
-     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
-     #    for sort keys %{d.cs};
-     if (%{d.cs}) {
-         push @{d.css}, Rw expowsc $sc:d.sc sc if %{d.sc};
-     }
+
  - K: yinvis #c what it means to be here
    mod 1: |
      # an extremity at one point
@@ -78,25 +66,34 @@ mod c: # pile of stuff on the ceiling
    mod 2: |
      # yang may pass arounJ komp struc intact for a while
      
+ - K: dsc #c cs on d, outside mod twistor pipe
+   mod 7: |
+     # sc.$sc -> (stable compressions), specd by the */mods vac
+     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
+     # for comments like v  # so comp is the very last hash, the rest is where etc.
+     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
+     #    for sort keys %{d.cs};
+     if (%{d.cs}) {
+         push @{d.css}, Rw expowscn $sc:d.sc sc if %{d.sc};
+     }
+ - K: dcs #c cs in da pipe, modulating or so
+   mod 7: |
+     # cs.$k.$sc -> squiggly first style compressions
+     # the wilder pole, coming from mods
+     # there's stuff across the whole line too
+     # and what's between...
+     # exp to css for now...
+     if (%{d.cs}) {
+         push @{d.css}, Rw expowscn $sc:d.cs;
+     }
 expowsc c:
  - K: sha #c it
    D: |
-     
-R_Jz:
- - K: expowsc #c espouse ton carbon product
+     my @m = split m/\s/, $v;
+     $m[-1] = X.cole->($m[-1]);
+     sprintf 'text-shadow:%dpx %dpx %dpx %s', @m;
+ - K: cole #c it
    D: |
-     my $seg = ar.m->[0] if ar.m;
-     my @css;
-     die if !ref $sc; # parse strings too
-     # invent the stevecraig format, playing music
-     my $X = G.drop.expowsc ||= {};
-     X.sha = sub { # look familiar...
-        my @m = split m/\s/, shift;
-        $m[-1] = X.cole->($m[-1]);
-        sprintf 'text-shadow:%dpx %dpx %dpx %s', @m;
-     };
-     X.cole = sub {
-        my $v = shift;
         my $h;
         (h.r, h.g, h.b, h.la) = ($1, $2, $3, $4)
                   if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die;
@@ -114,31 +111,39 @@ R_Jz:
         else {
            return sprintf "#%s%s%s", h.r, h.g, h.b;
         }
-     };
+ - K: zi #c it
+   D: |
+     "z-index:$v"
+ - K: co #c it
+   D: |
+     "color:".X.cole->($v);
+ - K: zi #c it
+   D: |
+     $v *= 9;
+     'font-size:'.int($v).'%';
+ - K: ws #c it
+   D: |
+     my @wtf;
+     push @wtf, 'white-space:pre' if $v =~ /p/;
+     join ';', @wtf;
+ - K: blr #c it
+   D: |
+     '-webkit-filter:blur('.$v.'px)'
+ - K: ml #c it
+   D: |
+     $v .= 'em' if $v !~ /(%|em|px)/;
+     "margin-left:$v"
      
-     X.co = sub {
-        "color:".X.cole->(shift);
-     };
+R_Jz:
+ - K: esc #c espouse ton carbon product
+   D: |
+     my $seg = ar.m->[0] if ar.m;
+     my @css;
+     die if !ref $sc; # parse strings too
+     # invent the stevecraig format, playing music
+     my $X = G.drop.esc ||= {};
      
-     X.fs = sub {
-        my $fs = shift;
-        $fs *= 9;
-        'font-size:'.int($fs).'%';
-     };
-     
-     X.ws = sub {
-        my $wtf = shift;
-        my @wtf;
-        push @wtf, 'white-space:pre' if $wtf =~ /p/;
-        join ';', @wtf;
-     };
-     
-     X.blr = sub {
-        '-webkit-filter:blur('.shift.'px)';
-     };
-     X.ml = sub {
-        'margin-left:'.shift.'em';
-     };
+     # CARBON subhash=X
      
      my $tw;
      for my $k (sort keys %$sc) {
@@ -149,7 +154,7 @@ R_Jz:
              my $tv = $t->{$tk};
              my $W = $tw->{$com} ||= [];
              my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
-             say " cs #$com# $k    = $tk => $tv         $s";
+             #say " cs #$com# $k    = $tk => $tv         $s";
              push @$W, $s;
          }
      }
@@ -215,7 +220,7 @@ R_Jz:
      d.c = shift @$m;
      d.c = { s => delete d.c } if !ref d.c;
      d.sc = shift @$m;
-     say "duck food ".wdump($d);
+     #say "duck food ".wdump($d);
      Rw modn $J $d;
        # yep       'color:#8ff;-webkit-filter:blur(3px);margin-left:3em'],
      
@@ -240,8 +245,6 @@ R_Jz:
 
      my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
 
-     say "AHAVE D ". wdump(2,$d);
-     
      my $dd = $d;
      for my $i (@is){ # THE TIR
          my $d = {%$dd, i => $i, css => [@{d.css}]};
@@ -254,7 +257,7 @@ R_Jz:
            
          # CITOZINE
 
-         saybl "Post: d.s       @{d.css} ";
+         #saybl "Post: d.s       @{d.css} ";
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          # 7.1
          J.bz->(
@@ -270,8 +273,9 @@ R_Jz:
      any_init: | #c
        Rw suck - */modi;
      modi: | #c shunt, suck, J maint wayfile story
-       delete G.drop.expowsc;
+       delete G.drop.esc;
        Rw Con mod modu modn;
+       Rw Con esc esc escn;
  - K: conv #c cv to somethingness # elements
    D: |
      G.pway ||= {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
@@ -282,7 +286,7 @@ R_Jz:
      my ($the, $src, $path) = @$m;
      # or wherever thi src quags
      my $s = "$the c";
-     my $J = Rw Carbonja $s;
+     my $J = Rw Carbonja $s $the;
      
        # shove togeth modn
        # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
@@ -304,35 +308,53 @@ R_Jz:
            $v = join "\n", @$v;
            $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
        } 
-       sayre "YEH";
-       saybl " _________________  $mw
-       ";
+       sayre "YEH to $path";
+       saybl " _________________  $mw" if $the eq 'escn';
        say join " & ", reverse $the, reverse map{"$_*$tl->{$_}"} sort keys %$tl;
        R.way.hooks->{$path} = $mw;
      
  - K: Carbonja #c 3ish
    D: |
        my @mosd = 0->CsK({s=>$s});
+       die "no $s" if !@mosd;
+       
+       sayyl "Got $s x ".@mosd;
+       
+       my $inj = sub {
+       
+       };
+       
        my $J = {};
        Rw suJ $J; 
        for my $c (@mosd) {
-           my @wsy = grep {/ /} keys %$c;
+       
+           my @wsy = grep {m/\s/} keys %$c;
            for my $zk (@wsy) {
                my $z = $c->{$zk};
-               my ($k, $v) = split m/\s/, $zk; 
+               my ($k, $v) = split m/\s/, $zk;
                my $D = $z;
                my $ome = c.K;
                my $com = "# $zk @ $ome  ";
                my (@l,@r);
                # if for c.cs, for implant condits # sche
                
+               sayyl "wa c.K unt $k   $v" if $the eq 'expowsc';
+               
                my $type = Rw conv $v;
                # z downgrasp
                my $h = c.MZ;
                # assume K stores c formaton
-               $h ||= {csfrm => c.K} if $type eq 'CARBON';
+               $h ||= {csfrm => c.K}
+                   if $the eq 'mod' && $type eq 'CARBON';
                
+               $h ||= {subhash => 'X'}
+                   if $the eq 'expowcs' && $type eq 'CARBON';
                
+               if (h.subhash) {
+                   unshift @l, h.subhash.'.'.c.K.' = sub {';
+                   $D = ind '     ', $D;
+                   push @r, '};';
+               }
                if (h.csfrm) {
                    $com .= "cs=h.csfrm  ";
                    unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
