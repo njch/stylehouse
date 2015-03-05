@@ -4,7 +4,7 @@ R_Jz:
    D: |
      my $seg = ar.m->[0] if ar.m;
      my @css;
-     die if !ref $sc; # parse strings too
+     die wdump(ar.m) if !ref $sc; # parse strings too
      # invent the stevecraig format, playing music
      
      my $X = G.drop.esc ||= {};
@@ -72,24 +72,23 @@ R_Jz:
      my $tw = Rw muck */mods;
      # 6
      for my $k (sort keys %$tw) {
-          my $m = $tw->{$k};
-          say "goe */mods   $k  ";
-          $m || next;
+          my $M = $tw->{$k};
           # coul be entropated all the way to per geomodiff...
           # 7
-          Rw modstick $J $m;
+          for my $m (@$M) {
+              Rw modstick $J $m $k;
+          }
      }
  - K: modstick #c api layer between project and hive
    D: |
      my $d = {};
-     d.t = shift @$m;
-     d.thi = shift @$m;
-     d.c = shift @$m;
+     (d.t, d.thi, d.c, d.sc) = @$m;
      d.c = { s => delete d.c } if !ref d.c;
-     d.sc = shift @$m;
-     #say "duck food ".wdump($d);
+     say "duck food   from  $k
+           d.t d.thi   ".ind '    ',ddump(d.c)."    ".ddump(d.sc);
+     
+     #die R.way.hooks.modn;
      Rw modn $J $d;
-       # yep       'color:#8ff;-webkit-filter:blur(3px);margin-left:3em'],
      
  - K: modu #c make pool, synth space, want arches
    D: |
@@ -109,11 +108,13 @@ R_Jz:
      my $n; # drop values through with
      my $c = d.c; # <v contation
      $c = {} if !ref $c;
-
+     
      my @is = map { int($_ * (999/d.thi)) } d.in..d.out;
 
+     sayyl "atyl";
      my $dd = $d;
      for my $i (@is){ # THE TIR
+     
          my $d = {%$dd, i => $i, css => [@{d.css}]};
          
          # YIN
@@ -121,10 +122,11 @@ R_Jz:
          # YANG
          
          # CARBON
-           
+          
+          say "Citoi $i ";
          # CITOZINE
 
-         #saybl "Post: d.s       @{d.css} ";
+         saybl "Post: d.s       @{d.css} ";
          my $r = d.t."$i\t0.".sprintf('%03d',$i);
          # 7.1
          J.bz->(

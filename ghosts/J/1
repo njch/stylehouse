@@ -33,7 +33,11 @@ R_Jz:
  - K: muck #c
    D: |
      my $tw = Rw wuck +;
-     $tw->{$_} = dclone $tw->{$_} for keys %$tw;
+     for my $k (keys %$tw) {
+         my $v = $tw->{$k};
+         die "notar" if ref $v ne 'ARRAY';
+         $tw->{$k} = dclone $v
+     }
      $tw
      
  - K: wuck #c return path=>strings for static way to memoize, instead of exec+dump
