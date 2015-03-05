@@ -31,8 +31,8 @@ use feature 'switch';
 our @F; # is Ring re subs from below 
 
 our $MAX_FCURSION = 140;
-our $HASHC = "#"."c";
 our $RADIAN = 1.57079633;
+our $NUM = qr/-?\d+(?:\.\d+)?/;
 
 # going...
 our $db = 0;
@@ -1183,7 +1183,6 @@ sub parse_babble {
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
-      my $NUM = qr/\d+(?:\.\d+)?/;
     my $mwall = qr/(?:= |^\s*)/m;
 
 
