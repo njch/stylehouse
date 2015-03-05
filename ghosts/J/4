@@ -17,8 +17,7 @@ mod c: # pile of stuff on the ceiling
           my $pa = $entoi > 7 ? "  " : $entoi > 3 ? " " : "";
           push @{n.gl||=[]}, $pa.$b;
       } 1..34;
- - K: colourins #c
-   MZ: {}
+ - K: cow #c
    mod 3.4: |
      $i =~ /(\d)?(\d)?(\d)?$/;
      my $col = join'',
@@ -100,12 +99,12 @@ esc c:
         
         if (defined h.la) {
            # do an rgba(255,255,255,1)
-           for my $k (qw'r g b al') {
+           for my $k (qw'r g b la') {
                my $e = $h->{$k};
                $e = "$e$e" if length $e == 1; # out of 255
-               $h->{$k} = hex $_;
+               $h->{$k} = hex $e;
            }
-           h.al = h.al / 255; # out of 1
+           h.la = sprintf '%.2f', h.la / 255; # out of 1
            return "rgba(h.r,h.g,h.b,h.la)";
         }
         else {
@@ -141,8 +140,8 @@ R_Jz:
      my @css;
      die if !ref $sc; # parse strings too
      # invent the stevecraig format, playing music
-     my $X = G.drop.esc ||= {};
      
+     my $X = G.drop.esc ||= {};
      # CARBON subhash=X
      
      my $tw;
@@ -153,7 +152,9 @@ R_Jz:
          for my $tk (sort keys %$t) {
              my $tv = $t->{$tk};
              my $W = $tw->{$com} ||= [];
+             
              my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
+             
              #say " cs #$com# $k    = $tk => $tv         $s";
              push @$W, $s;
          }
