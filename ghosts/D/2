@@ -111,32 +111,41 @@ R_Jz:
    D: |
        my $tw = Rw fund $s;
        
-       say wdump($tw);
        my @mosd = 0->CsK({s=>$s});
        # really it's every $s individually so each one can be homeo
        # where to suck local protocols
        die "no $s" if !@mosd;
        
        my $J = {};
-       Rw suJ $J; 
-       for my $c (@mosd) {
+       Rw suJ $J;
        
-           my @wsy = grep {m/\s/} keys %$c;
-           for my $zk (@wsy) {
-               my $D = $c->{$zk};
-               my ($k, $v) = split m/\s/, $zk;
-               my $ome = c.K;
-               my $com = "# $zk @ $ome  ";
-               
-               Rw Nucleous $c $com $ome $k $v $the $J $D;
+       for my $wf (sort keys %$tw) {
+           my $Cs = $tw->{$wf};
+           
+           if (my ($MZ) = grep{_.K eq 'MZ'}@$Cs) {
+               # some carbon fits
            }
            
-           if (c.D) {
-               my $k = $the;
-               my $ome = c.K;
-               my $com = "# c.K";
-               my $v = 3;
-               Rw Nucleous $c $com $ome $k $v $the $J $D:c.D;
+           
+           for my $c (@mosd) {
+
+               my @wsy = grep {m/\s/} keys %$c;
+               for my $zk (@wsy) {
+                   my $D = $c->{$zk};
+                   my ($k, $v) = split m/\s/, $zk;
+                   my $ome = c.K;
+                   my $com = "# $zk @ $ome  ";
+
+                   Rw Nucleous $c $com $ome $k $v $the $J $D;
+               }
+
+               if (c.D) {
+                   my $k = $the;
+                   my $ome = c.K;
+                   my $com = "# c.K";
+                   my $v = 3;
+                   Rw Nucleous $c $com $ome $k $v $the $J $D:c.D;
+               }
            }
        }
        $J
