@@ -255,7 +255,7 @@ sub HGf {
 sub ki {
     my $ar = shift;
     if (!ref $ar || "$ar" !~ /HASH/) {
-        confess "NOT HASH: $ar";
+        return "!%:$ar";
     }
     join ' ', map {
         my $v = $ar->{$_};
