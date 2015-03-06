@@ -109,11 +109,39 @@ R_Jz:
      
  - K: Carbonja #c 3ish
    D: |
+       my $tw = Rw fund $s;
+       
+       say wdump($tw);
        my @mosd = 0->CsK({s=>$s});
+       # really it's every $s individually so each one can be homeo
+       # where to suck local protocols
        die "no $s" if !@mosd;
        
-       my $inj = sub {
-          my ($c, $com, $ome, $k, $v, $the, $J, $D) = @_;
+       my $J = {};
+       Rw suJ $J; 
+       for my $c (@mosd) {
+       
+           my @wsy = grep {m/\s/} keys %$c;
+           for my $zk (@wsy) {
+               my $D = $c->{$zk};
+               my ($k, $v) = split m/\s/, $zk;
+               my $ome = c.K;
+               my $com = "# $zk @ $ome  ";
+               
+               Rw Nucleous $c $com $ome $k $v $the $J $D;
+           }
+           
+           if (c.D) {
+               my $k = $the;
+               my $ome = c.K;
+               my $com = "# c.K";
+               my $v = 3;
+               Rw Nucleous $c $com $ome $k $v $the $J $D:c.D;
+           }
+       }
+       $J
+ - K: Nucleous #c
+   D: |
           my (@l,@lr,@r);
 
           # if for c.cs, for implant condits # sche
@@ -148,29 +176,4 @@ R_Jz:
                $D = join "\n", $com, @l, @lr, $D, @r;
                $ome = "#$ome" if $ome;
                J bz $k$ome $v $D
-       };
-       
-       my $J = {};
-       Rw suJ $J; 
-       for my $c (@mosd) {
-       
-           my @wsy = grep {m/\s/} keys %$c;
-           for my $zk (@wsy) {
-               my $D = $c->{$zk};
-               my ($k, $v) = split m/\s/, $zk;
-               my $ome = c.K;
-               my $com = "# $zk @ $ome  ";
-               
-               $inj->($c, $com, $ome, $k, $v, $the, $J, $D);
-           }
-           
-           if (c.D) {
-               my $k = $the;
-               my $ome = c.K;
-               my $com = "# c.K";
-               my $v = 3;
-               $inj->($c, $com, $ome, $k, $v, $the, $J, c.D);
-           }
-       }
-       $J
 

@@ -57,6 +57,17 @@ R_Jz:
      my %wo = Rw findl +;
      map { s/^\///; $_ } keys %wo; 
      
+ - K: fund #c
+   D: |
+     my $tw;
+     for my $way (@{G.ways}) {
+         my $p = "mod c";
+         my ($point,$Cs) = Rw findl $h:way $p;
+         next if !$point;
+         $tw->{way._wayfile} = $Cs;
+         sayyl " ways: ".join("  ", map {_.K} @$Cs);
+     }
+     $tw
  - K: findl #c
    D: |
            my $point = ar.p || ar.pin || ar.m->[0];
@@ -163,9 +174,11 @@ R_Jz:
  - K: fo #c gp in 3d
    D: |
      (J.u, J.cv) = @$m;
-     # cv could be anything
+     # cv 
+     die "could be anything" if ref J.cv;
      J.cv = 0.1 if J.cv < 0.1;
      
+     # give it %id, flux in cache of Jmost
      J bz / 0.9 "y"
      
      # 2
@@ -187,36 +200,18 @@ R_Jz:
      
      Rw oldschool $J;
      
-     # 7
+     # 7 TRACTOR BLEED
      J.s = Rw maka $J $u;
      # can pin/ping light source of con
      
      # 8
      
      # 9
+     $J
      
-     J.Jiter.bz->(J.r => J.s,    '%gp' => $J,    @{J.etc});
-     
- - K: oldschool #c
-   D: |
-     # next floatation device...
-         for my $k (%{J.bb}) {
-             if ($k =~ /^(\S*(?:oB|Bo|Bi|Bs))\s+(.+)$/) {
-                 J.bb->{"$1\%css#maka25\t$2"} = "color:black";
-             }
-             if ($k =~ /^thi\s+(.+)$/) {
-                 J.bb->{"thi\%css#maka25\t$1"} = "text-decoration:underline";
-             }
-             if ($k =~ /^name\s+(.+)$/) {
-                 J.bb->{"name\%css#maka25\t$1"} = "color:#f93;";
-             }
-             if ($k =~ /^K\s+(.+)$/) {
-                 J.bb->{"K%css#maka25\t$1"} = "color:#3f3";
-             }
-         }
  - K: fopathd #c
    D: |
-     my $u = J.u
+     my $u = J.u;
      my $wa = J.wa || do {
          J.c = $R->cgp($u);
          # ^
