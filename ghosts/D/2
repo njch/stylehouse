@@ -73,7 +73,7 @@ R_Jz:
            push @{$wtf->{$type}||=[]}, j.s;
        } 
        
-       my $mw = R.way.hooks->{$src};
+       my $mw = R.way->find($src) || die "no $src";
        my $tl = {};
        for my $k (keys %$wtf) { 
            my $v = $wtf->{$k};
@@ -101,7 +101,11 @@ R_Jz:
        #saybl " _________________  $mw" if $the eq 'esc';
        sayyl "$path <- $the     $sl";
        # nice thing to print ^
-       R.way.hooks->{$path} = $mw;
+       
+       my $ac = join'',map{"{$_"}split'/',$path;
+       say "Injecting $path   ($ac)   with ".slim 50, $mw;
+       $R->loadup(R.way.hooks, $ac, $mw);
+       #R.way.hooks->{$path} = $mw;
      
  - K: Carbonja #c 3ish
    D: |
