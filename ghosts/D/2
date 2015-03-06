@@ -8,7 +8,7 @@ R_Jz:
        Rw suck */dosc;
      dosc: |
        delete G.drop.esc;
-       Rw Con esc esc escn;
+       Rw Con esc;
  - K: conv #c know about elemental stuff
    D: |
      my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
@@ -19,42 +19,48 @@ R_Jz:
      };
      G.drop.conv->(ar.v) if ar.v;
  - K: esc #c espouse ton carbon product
-   D: |
-     my $seg = ar.m->[0] if ar.m;
-     my @css;
-     die wdump(ar.m) if !ref $sc; # parse strings too
-     # invent the stevecraig format, playing music
-     
-     my $X = G.drop.esc ||= {};
-     # CARBON subhash=X
-     
-     my $tw;
-     for my $k (sort keys %$sc) {
-         my $v = $sc->{$k};
-         my $com = ref $v eq 'HASH' ? $k : '';
-         my $t = $com ? $v : {$k=>$v};
-         for my $tk (sort keys %$t) {
-             my $tv = $t->{$tk};
-             my $W = $tw->{$com} ||= [];
-             
-             my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
-             
-             #say " cs #$com# $k    = $tk => $tv         $s";
-             push @$W, $s;
-         }
-     }
-     for my $com (sort keys %$tw) {
-         my $W = $tw->{$com};
-         $com = join'-', grep{$_} $seg, $com; 
-         my $sty = '%css';
-         $sty .= '#'.$com if $com;
-         push @css, $sty => join ';', @$W;
-     }
-      #   sayre "CSS  @css";
-     @css;
+   n_D:
+     el:
+       CARBON: |
+         {subhash => 'X'}
+     u: |
+       my $seg = ar.m->[0] if ar.m;
+       my @css;
+       die wdump(ar.m) if !ref $sc; # parse strings too
+       # invent the stevecraig format, playing music
+
+       my $X = G.drop.esc ||= {};
+       # CARBON subhash=X
+
+       my $tw;
+       for my $k (sort keys %$sc) {
+           my $v = $sc->{$k};
+           my $com = ref $v eq 'HASH' ? $k : '';
+           my $t = $com ? $v : {$k=>$v};
+           for my $tk (sort keys %$t) {
+               my $tv = $t->{$tk};
+               my $W = $tw->{$com} ||= [];
+
+               my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
+
+               #say " cs #$com# $k    = $tk => $tv         $s";
+               push @$W, $s;
+           }
+       }
+       for my $com (sort keys %$tw) {
+           my $W = $tw->{$com};
+           $com = join'-', grep{$_} $seg, $com; 
+           my $sty = '%css';
+           $sty .= '#'.$com if $com;
+           push @css, $sty => join ';', @$W;
+       }
+        #   sayre "CSS  @css";
+       @css;
  - K: Con #c the
    D: |
      my ($the, $src, $path) = @$m;
+     $src ||= "$the/u";
+     $path ||= "$the/n";
      # or wherever thi src quags
      my $p = "$the c";
      my $J = Rw Carbonja $p $the;
@@ -161,13 +167,9 @@ R_Jz:
           # z downgrasp
           my $h = c.MZ; # would be per $k if maybe, D_babz? emberd whatsits
           # assume K stores c formaton 
-          $h ||= {csfrm => c.K}
-              if $the eq 'mod' && $type eq 'CARBON';
+          $h ||= Rw $the/el/$type;
+          #    if $the eq 'mod' && $type eq 'CARBON';
 
-          $h ||= {subhash => 'X'}
-              if $the eq 'esc' && $type eq 'CARBON';
-
-               
                
                if (h.subhash) {
                    unshift @l, h.subhash.'.'.c.K." = sub {";
