@@ -63,10 +63,12 @@ R_Jz:
        # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
        # tesalation
        my @daw = Rw tvo $J;
-       my $wtf;
+       my $wtf; 
        my $coms = {};
        for my $j (@daw) {
-           die "non$the?" if j.l ne $the; # how does that work again...
+           die "j.r non$the?" if j.l ne $the; # how does that work again...
+           sayre(wdump $j) && next if j.style eq 'file';
+           
            acum $coms, j.cv => j.com;
            
            my $type = G.drop.conv->(j.cv);
@@ -109,25 +111,25 @@ R_Jz:
      
  - K: Carbonja #c 3ish
    D: |
-       my $tw = Rw fund $s;
-       
-       my @mosd = 0->CsK({s=>$s});
-       # really it's every $s individually so each one can be homeo
+       my $tw = Rw fund $p:the;
+       # per way file every $s, each one can be homeo, have some art for zip
        # where to suck local protocols
-       die "no $s" if !@mosd;
+       die "no $s" if !%$tw;
        
        my $J = {};
        Rw suJ $J;
        
-       for my $wf (sort keys %$tw) {
-           my $Cs = $tw->{$wf};
+       for my $file (sort keys %$tw) {
+           my $Cs = $tw->{$file};
+           my $coi = Rw pha $J $k:file;
            
            if (my ($MZ) = grep{_.K eq 'MZ'}@$Cs) {
                # some carbon fits
+               # also from $the/somemeta
            }
            
            
-           for my $c (@mosd) {
+           for my $c (@$Cs) { 
 
                my @wsy = grep {m/\s/} keys %$c;
                for my $zk (@wsy) {
@@ -136,7 +138,7 @@ R_Jz:
                    my $ome = c.K;
                    my $com = "# $zk @ $ome  ";
 
-                   Rw Nucleous $c $com $ome $k $v $the $J $D;
+                   Rw Nucleous $file $c $com $ome $k $v $the $J $D;
                }
 
                if (c.D) {
@@ -144,9 +146,10 @@ R_Jz:
                    my $ome = c.K;
                    my $com = "# c.K";
                    my $v = 3;
-                   Rw Nucleous $c $com $ome $k $v $the $J $D:c.D;
+                   Rw Nucleous $file $c $com $ome $k $v $the $J $D:c.D;
                }
            }
+           coi.end->();
        }
        $J
  - K: Nucleous #c
