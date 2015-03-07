@@ -137,22 +137,35 @@ R_Jz:
            my $t = $com ? $v : {$k=>$v};
            for my $tk (sort keys %$t) {
                my $tv = $t->{$tk};
-               my $W = $tw->{$com} ||= [];
 
-               my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
-
-               #say " cs #$com# $k    = $tk => $tv         $s";
-               push @$W, $s;
+               my @s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
+               
+               if (@s == 1) {
+                   unshift @s, '%css';
+               }
+               my $to = natatime(2, @s);
+               while (my @sty_s = $to->()) {
+                   my ($sty, $s) = @sty_s;
+                   defined $tw->{$com}->{$tk}->{$sty}
+                       && die "$com $sty all3    @s";
+                   $tw->{$com}->{$tk}->{$sty} = $s; 
+               }
            }
        }
        for my $com (sort keys %$tw) {
-           my $W = $tw->{$com};
-           $com = join'-', grep{$_} $seg, $com; 
-           my $sty = '%css';
-           $sty .= '#'.$com if $com;
-           push @css, $sty => join ';', @$W;
+           my $tks = $tw->{$com};
+           for my $tk (sort keys %$tks) {
+               my $stys = $tks->{$tk};
+               for my $sty (sort keys %$stys) {
+                   my $s = $stys->{$sty};
+                   say " ghave $com $sty => $s";
+                   $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
+                       unless $sty =~ /#/;
+                   push @css, $sty => $s;
+               }
+           }
        }
-        #   sayre "CSS  @css";
+           sayre "CSS  @css";
        @css;
        
 mod c:
@@ -188,9 +201,10 @@ mod c:
      # BUT YEAH for now lets bend the sweep...
      my $v = $i / (999 - d.in);
      n.um = sprintf '%.3d', ($i * $v + 5);
- - K: dsc #c cs on d, outside mod twistor pipe
+ - K: dsc #c cs on d, outside mod twistor pipe, the 4th in @$m
    mod 7: |
      # non-thinking modulatios
+     # you could say more compressed
      # usu static-ish spec, ie make this button green.
      
      # the sea of synapse we datum
@@ -202,7 +216,7 @@ mod c:
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/arp $sc:d.sc sc;
+         push @{d.css}, Rw esc/arp $sc:d.sc dsc;
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -212,6 +226,6 @@ mod c:
      # and what's between...
      # exp to css for now...
      if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/arp $sc:d.cs;
+         push @{d.css}, Rw esc/arp $sc:d.cs dcs;
      }
 
