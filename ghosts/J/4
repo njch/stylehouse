@@ -107,11 +107,54 @@ R_Jz:
 
            saybl "Post: d.s       @{d.css} " if ar.V;
            my $r = d.t."$i\t0.".sprintf('%03d',$i);
+           
            J.bz->(
              $r => d.s,
              @{d.css},
            );
        }
+ - K: esc #c espouse ton carbon product
+   n_D:
+     el:
+       CARBON: |
+         {subhash => 'X'}
+     u: |
+       my $X = G.drop.esc = {};
+       # CARBON
+       
+       $X
+     arp: |
+       my $seg = ar.m->[0] if ar.m;
+       my @css;
+       die wdump(ar.m) if !ref $sc; # parse strings too
+       # invent the stevecraig format, playing music
+       my $X = G.drop.esc ||= Rw esc/n;
+       
+       my $tw;
+       for my $k (sort keys %$sc) {
+           my $v = $sc->{$k};
+           my $com = ref $v eq 'HASH' ? $k : '';
+           my $t = $com ? $v : {$k=>$v};
+           for my $tk (sort keys %$t) {
+               my $tv = $t->{$tk};
+               my $W = $tw->{$com} ||= [];
+
+               my $s = $X->{$tk} ? $X->{$tk}->($tv) : die "invent $tk  $tv";
+
+               #say " cs #$com# $k    = $tk => $tv         $s";
+               push @$W, $s;
+           }
+       }
+       for my $com (sort keys %$tw) {
+           my $W = $tw->{$com};
+           $com = join'-', grep{$_} $seg, $com; 
+           my $sty = '%css';
+           $sty .= '#'.$com if $com;
+           push @css, $sty => join ';', @$W;
+       }
+        #   sayre "CSS  @css";
+       @css;
+       
 mod c:
  - K: yinvis #c what it means to be here in here            YIN
    mod 1: |
@@ -159,7 +202,7 @@ mod c:
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/n $sc:d.sc sc;
+         push @{d.css}, Rw esc/arp $sc:d.sc sc;
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -169,6 +212,6 @@ mod c:
      # and what's between...
      # exp to css for now...
      if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/n $sc:d.cs;
+         push @{d.css}, Rw esc/arp $sc:d.cs;
      }
 
