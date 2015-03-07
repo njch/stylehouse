@@ -96,8 +96,10 @@ R_Jz:
 
        my $dd = $d;
        for my $i (@is){ # THE TIR
-
-           my $d = {%$dd, i => $i, css => [@{d.css}]};
+           my $d = {%$dd};
+           d.i = $i;
+           d.css = [@{d.css}];
+           d.r = d.t."$i\t0.".sprintf('%03d',$i);
 
            # YANG
 
@@ -106,10 +108,9 @@ R_Jz:
            # CITOZINE
 
            saybl "Post: d.s       @{d.css} " if ar.V;
-           my $r = d.t."$i\t0.".sprintf('%03d',$i);
            
            J.bz->(
-             $r => d.s,
+             d.r => d.s,
              @{d.css},
            );
        }
@@ -141,7 +142,7 @@ R_Jz:
        my @css;
        die wdump(ar.m) if !ref $sc; # parse strings too
        # invent the stevecraig format, playing music
-       my $X = G.drop.esc ||= Rw esc/n;
+       my $X = G.drop.esc = Rw esc/n;
        
        my $tw;
        for my $k (sort keys %$sc) {
@@ -182,7 +183,7 @@ R_Jz:
        @css;
        
 mod c:
- - K: yinvis #c what it means to be here in here            YIN
+ - K: yinvis #c the valley - what it means to be here in here YIN
    mod 1: |
      # sub-dome and super-modloop
      # find beginning, end, thickness of loop atmosphere
@@ -229,7 +230,7 @@ mod c:
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/arp $sc:d.sc DSC;
+         push @{d.css}, Rw esc/arp $d $sc:d.sc DSC;
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -239,6 +240,6 @@ mod c:
      # and what's between...
      # exp to css for now...
      if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/arp $sc:d.cs DCS;
+         push @{d.css}, Rw esc/arp $d $sc:d.cs DCS;
      }
 
