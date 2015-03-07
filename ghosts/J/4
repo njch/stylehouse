@@ -119,6 +119,19 @@ R_Jz:
        CARBON: |
          {subhash => 'X'}
      u: |
+       # these subs return $s, their own bit of %css or something
+       # so the cs/sc can jostle along being expressions at whatever level
+       # then turn into whatever encoding/compression pattern
+       # as other styles
+       # at the point they're leaving the pipelining of the 4 long(yin)wave 
+       # also if @s > 1 it must be a list of styles
+       # everything, even ^ gets comments like:
+       #  #$seg(-$com)?-$tk
+       # com haps if there's a d.cs.fo.fo thing going on
+       # and when to group styles that can be patched around
+       # so '.this > .that' can move to '.another > .that' bunch of styles
+       # lending to high dynamic, low cost of tape
+       
        my $X = G.drop.esc = {};
        # CARBON
        
@@ -158,14 +171,14 @@ R_Jz:
                my $stys = $tks->{$tk};
                for my $sty (sort keys %$stys) {
                    my $s = $stys->{$sty};
-                   say " ghave $com $sty => $s";
+                   #say " ghave $com $sty => $s";
                    $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
                        unless $sty =~ /#/;
                    push @css, $sty => $s;
                }
            }
        }
-           sayre "CSS  @css";
+       #sayre "CSS  @css";
        @css;
        
 mod c:
@@ -216,7 +229,7 @@ mod c:
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/arp $sc:d.sc dsc;
+         push @{d.css}, Rw esc/arp $sc:d.sc DSC;
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -226,6 +239,6 @@ mod c:
      # and what's between...
      # exp to css for now...
      if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/arp $sc:d.cs dcs;
+         push @{d.css}, Rw esc/arp $sc:d.cs DCS;
      }
 
