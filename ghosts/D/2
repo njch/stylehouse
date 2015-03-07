@@ -116,7 +116,7 @@ R_Jz:
        #R.way.hooks->{$path} = $mw;
        
        if ($the eq 'esc') {  
-          Rw Jux ollox $in:J;
+          Rwyl 3 jin ollox $in:J; 
        }
      
  - K: Carbonja #c 3ish
@@ -129,34 +129,34 @@ R_Jz:
        my $J = {};
        Rw suJ $J;
        
+       my $p = "$the/el/*";
+       my $ty = Rw huck $p;
+       $ty = {map{
+            my $type = $1 if /el\/(.+)$/ || die;
+            my $an = $ty->{$_};
+            die if @$an > 1;
+            $type => $an->[0];
+       }keys %$ty};
+       
        for my $file (sort keys %$tw) {
            my $Cs = $tw->{$file};
            my $coi = Rw pha $J $k:file;
            
            if (my ($MZ) = grep{_.K eq 'MZ'}@$Cs) {
+               # homex ty, local modulation, the radio
                # some carbon fits
                # also from $the/somemeta
            }
            
-           
-           for my $c (@$Cs) { 
-
-               my @wsy = grep {m/\s/} keys %$c;
+           for my $c (@$Cs) {
+               my @wsy = grep {m/\S\s\S/} keys %$c;
                for my $zk (@wsy) {
                    my $D = $c->{$zk};
                    my ($k, $v) = split m/\s/, $zk;
                    my $ome = c.K;
                    my $com = "# $zk @ $ome  ";
 
-                   Rw Nucleous $file $c $com $ome $k $v $the $J $D;
-               }
-
-               if (c.D) {
-                   my $k = $the;
-                   my $ome = c.K;
-                   my $com = "# c.K";
-                   my $v = 3;
-                   Rw Nucleous $file $c $com $ome $k $v $the $J $D:c.D;
+                   Rw Nucleous $file $ty $c $com $ome $k $v $the $J $D;
                }
            }
            coi.end->();
@@ -171,9 +171,7 @@ R_Jz:
           # z downgrasp
           my $h = c.MZ; # per $k if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
-          $h ||= Rw $the/el/$type;
-          say wdump($h);
-          #    if $the eq 'mod' && $type eq 'CARBON';
+          $h ||= $ty->{$type};
 
                
                if (h.subhash) {
@@ -183,9 +181,10 @@ R_Jz:
                    push @r, '};';
                }
                
-               if (h.csfrm) {
-                   $com .= "cs=h.csfrm  ";
-                   unshift @l, 'if (my $cs = c.'.h.csfrm.') {';
+               if (my $cs = h.csfrm) {
+                   $cs = c.K if $cs eq 'cK';
+                   $com .= "cs=$cs  ";
+                   unshift @l, 'if (my $cs = c.'.$cs.') {';
                    $D = ind '     ', $D;
                    push @r, '}';
                }
