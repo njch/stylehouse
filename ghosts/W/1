@@ -117,28 +117,7 @@ R_Jz:
        ["x 0" => 0.6],
        ["zoom 0" => 0.06],
        ["curve 0.1" => -0.024],
- - K: downe #c TODO to have maintained down by what comes up from 7 via 8 in motion, tune in values
-   D: |
-     my $ordy = {qw'
-       id 11  A 13  K 17  name 18
-       
-       G  14  R 15
-       
-       B  24
-       style 25
-       
-       theJ 23  theM 28
-     '};
-       
-       my $ydro = {};
-       push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
-       my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
-       
-       { order => \@order,
-            ordy => $ordy,
-       }
 
-     
  - K: down #c TODO to have maintained down by what comes up from 7 via 8 in motion, tune in values
    D: |
        my $ordy = Load(<<'');
@@ -218,6 +197,7 @@ R_Jz:
            my $J2 = shift;
            my $M = [
                ['J', 'sur/self', {fo=>[$J,0.1]}],
+               ['ඬ', 'sur/engboo', {}, {co=>(J.engboo?'f85':'126')}],
                ['ƾ', 'hull/mkboot', {}, {co=>'8ff'}],
                ['G', 'sur/to:G'],
                ['x', 'sur/X', {}, {co=>'f34',fs=>3}],
@@ -241,7 +221,8 @@ R_Jz:
                   
            Rw mo/pwth $J:J2 $M 0.1-0.3;
        });
-       
+     engboo: | #c
+       J.engboo = !J.engboo;
      oundo: | #c hound god
        my @r;
        my $limit = 64; # geocvish
@@ -281,6 +262,28 @@ R_Jz:
            }
        }
        @r;
+     gelcaps: | #c egroup
+       # to have maintained down by what comes up from 7 via 8 in motion, tune in values
+       my $ordy = {qw'
+         id 11  A 13  K 17  name 18
+
+         G  14  R 15
+
+         B  24
+         style 25
+
+         theJ 23  theM 28
+       '};
+
+         my $ydro = {};
+         push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
+         my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
+
+         { order => \@order,
+              ordy => $ordy,
+         }
+     upeng: | #c the surrest
+       
      up: | #c upper level gplumb
        Rw inness;
        # move impression of ^ to v, then round
@@ -302,8 +305,11 @@ R_Jz:
        # eg the many %travels colates..
        # give best view to the freshest activated sense
        
-       # join gel cap knowledge halfway
-       my $y = w $R down; # 2ish aggd knowledge, instructions?
+       if (J.engboo) {
+           Rw upeng;
+           Rw round $J2:J.lum $J;
+           return;
+       }
        
        my @things = Rw tvy $J:J.on;
        while (@things) {
@@ -314,11 +320,48 @@ R_Jz:
            say "   * _.r          => ".gp(_.s) for @sjs;
            sayre " _____________________ " for 1..5;
        }
+       # pass innessing, group maker
+       # join gel cap knowledge halfway
        
+       my $y = w $R down; # 2ish aggd knowledge, instructions?
        
        my $spcv = 0.2; # BS so has gap in 1 unless id, etc
-       # pass innessing, group maker
-       my @r = Rw sur/oundo $u $spcv $y;
+       my @r;
+       if (!ref $u) {
+           push @r, { r=>"text", s=>$u, cv=>0.4 };
+       }
+       elsif (ref $u eq 'ARRAY') {
+           my $i = 0;
+           my $warp = @$u; # TODO or less?
+           my @warp = Rw cv/oe off1 $v:warp;
+           for my $ui (@$u) {
+               my $cv = "0.". shift @warp;
+               push @r, { r=>$i, path=>"[".$i++, s=>$ui, cv=>$cv};
+           }
+       }
+       else {
+           my $r = {map{$_=>1} keys %$u};
+           
+           $spcv = 0.3 if u.id;
+
+           # bunch of keys... ^ interpret, compress knowledge
+           # TODO ^make itv like two indexes, polars
+           # any sorta layout knowhow...
+       
+           my @or = grep { delete $r->{$_} } @{y.order};
+           if (ref $u eq 'A') {
+               push @or, sort grep { /^u_/ && delete $r->{$_} } keys %$r;
+           }
+           push @or, sort keys %$r;
+           
+           for (@or) {
+               my $v = y.ordy->{$_};
+               # this is totally 5 in inness doing this 
+               my $cv = "0.$v" if $v;
+               $cv ||= $spcv;
+               push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
+           }
+       }
        # alg for making groups is snatching from HASH knowings
        # involving the inness
        # reductive indexo
