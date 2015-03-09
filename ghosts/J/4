@@ -45,6 +45,37 @@ R_Jz:
               Rw modstick $J $m $k;
           }
      }
+ - K: mo #c general yinyang komprendonator
+   n_D:
+     m: |
+       my $y = {};
+       y.in = ar.in || 0.3;
+       y.out = ar.out || 0.4;
+
+       (y.in,y.out) = split '-', ar.m->[0] if ar.m;
+
+       y.bal = [ map {
+           my ($t,$thing,$c,$sc) = @$_;
+           my $p = {};
+           p.t = $t;
+           p.c = $c || {};
+           p.c.s ||= $t;
+           p.c->{$sty} = $thing if $thing ne '';
+           p.sc = $sc if $sc;
+           $p
+       } @$M ];
+
+       my $m = [
+          $sty.'y',
+          $y,
+          {%{ar.c||{}}},
+          {%{ar.sc||{}}},
+       ];
+
+       Rw modstick + $J $m;
+     pwth: |
+       my $sty = 'pwth';
+       Rw mo/m + $sty;
  - K: modstick #c api layer between project and hive # 4d
    D: |
      my $d = {};
@@ -168,7 +199,6 @@ mod c:
      # the modulation piles them in evenly (todo)
      my $y = d.yin;
      if (!ref $y) {
-         say "nonref yin mod: d.yin";
          $y = d.yin = {thi => $y};
      }
      else {

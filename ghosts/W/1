@@ -176,6 +176,37 @@ R_Jz:
        else {
              say "Sur". wdump($e);
        }
+     heading: |
+       
+     heading: | #c
+       J3.lev->("J\t0.01", sub {
+           my $J2 = shift;
+           my $M = [
+               ['J', 'sur/self', {fo=>[$J,0.1]}],
+               ['ƾ', 'hull/mkboot', {}, {co=>'8ff'}],
+               ['G', 'sur/to:G'],
+               ['x', 'sur/X', {}, {co=>'f34',fs=>3}],
+               ['Jung', 'sur/to:Jung', {}, {co=>'68d', fs=>5}],
+           ];
+           Rw mo/pwth $J:J2 $M 0.1-0.3;
+       }, '%css'=>'font-size:200%');
+     oning: | #c
+       J3.lev->("onei\t0.06" => sub {
+           my $J2 = shift;
+           my $on = J.onei;
+           my $M = [
+               ['=','', {}, {fs=>12,co=>'000'}],
+               ['i', 'sur/to:/', {fo=>[on.i,0.1]}]
+           ];
+           
+           push @$M,
+              ['travels', '', {s=>join("  ",@{on.t||[]}), wsp=>1}],
+              ['fou', '', {fo=>[$u, 0.2]}],
+                  if $u ne on.i;
+                  
+           Rw mo/pwth $J:J2 $M 0.1-0.3;
+       });
+       
      up: | #c upper level gplumb
        Rw inness;
        # move impression of ^ to v, then round
@@ -185,42 +216,32 @@ R_Jz:
        # sucks each u
        # but also the
        
-       J.lum.lev->("J\t0.01", sub {
-           my $J2 = shift;
-           my $M = [
-               ['J', 'sur/self', {fo=>[$J,0.1]}],
-               ['ƾ', 'hull/mkboot', {}, {co=>'8ff'}],
-               ['G', 'sur/to:G'],
-               ['x', 'sur/X', {}, {co=>'f34',fs=>3}],
-               ['Jung', 'sur/to:Jung', {}, {co=>'68d', fs=>5}],
-           ];
-           Rw pwthyl $J:J2 $M 0.1-0.3;
-       }, '%css'=>'font-size:200%'); 
+       Rw sur/heading + $J3:J.lum;
+       
+       my @ju = Rw tvo $J:J.on;
        
        my $u = J.on.bb->{"u\t".0.1};
+       Rw sur/oning + $u $J3:J.lum;
+       # ^ singulsr, really a gel cap we may have many of
+       # ventricles of its stature too
+       # eg the many %travels colates..
+       # give best view to the freshest activated sense
        
-       
-       J.lum.lev->("onei\t0.05" => sub {
-           my $J2 = shift;
-           
-           J2 bz lable 0.1 "onei "
-           
-           my $on = J.onei;
-           J2 fro Jonei 0.3 on.i, 0.2, '%path'=>'!sur/to:/'
-           
-           if ($u ne on.i) {
-               J2 bz Joneei 0.6 " ".join("  ", @{on.t||[]})." "
-               J2 fro u 0.7 $u, 0.2
-           }
-           
-       }, '%sf'=>"fs80", '%path'=>'feed');
-       
-       
-       say "U: ".$J->pi."   ".gp($u);
-       
+       # join gel cap knowledge halfway
        my $y = w $R down; # 2ish aggd knowledge, instructions?
        
+       my @things = Rw tvy $J:J.on;
+       while (@things) {
+           my $thing = shift @things;
+           my ($j, @sjs) = @$thing;
+       
+           say "U: ".$J->pi."   ".gp(j.s);
+           say "   * _.r          => ".gp(_.s) for @sjs;
+           sayre " _____________________ " for 1..5;
+       }
+       
        my $spcv = 0.2; # so has gap in 1 unless id, etc
+       
        
        my @r;
        if (!ref $u) {
