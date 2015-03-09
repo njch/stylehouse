@@ -39,6 +39,32 @@ R_Jz:
              J bz $t 0.$i "$t", @cs
          }
      }
+ - K: pwthyl #c kinda mod, kinda datasheet since this compression
+   D: |
+     my $y = {in=>0.3, out=>0.4};
+     
+     (y.in,y.out) = split '-', ar.m->[0] if ar.m;
+     
+     y.bal = [ map {
+         my ($t,$pwth,$c,$sc) = @$_;
+         my $p = {};
+         p.t = $t;
+         p.c = $c || {};
+         p.c.pwth = $pwth;
+         p.c.s ||= $t;
+         p.sc = $sc if $sc;
+         $p
+     } @$M ];
+     
+     my $m = [
+         'pwthy',
+        $y,
+        {%{ar.c||{}}},
+        {%{ar.sc||{}}},
+     ];
+     
+     Rw modstick + $m;
+     
  - K: food #c
    n_D:
      recoded_init: | #c
@@ -83,48 +109,21 @@ R_Jz:
        # v l v %s             %#s for d.cs -> d.css(orso)
        # BƾB path=!hull/mkash % col=f3a blr=1
        # or functions sucking more stuff... suck chain shunting
-       my $M = Load(<<'');
-            -
-              - BƾB
-              - hull/mkash
-            -
-              - hull
-              - Jux:hull
-            -
-              - sur
-              - hull/mksur
-            -
-              - occie
-              - occie/komp
-       
-       Rw pathyl $J $M;
-       
-       my $pwcl = [
-          
+       my $M = [
+           ['BƾB', 'hull/mkash'],
+           ['hull', 'Jux:hull'],
+           ['sur', 'hull/mksur'],
+           ['occie', 'occie/komp'],
        ];
+       # color:#f3a;-webkit-filter:blur(1px);font-size:200%
+       my $sc = {co=>'f3a'};
+       Rw pwthyl $J $M 0.1-0.3 $sc;
        
-       J.lev->("watcha 0.6" => sub {
-           my $J2 = shift;
-           my $M = [
-              [ Gee => 1,
-                { fo => [$J => 0.1], pwth=>'hull/mkash' }, # c
-                { fs => 14 }, # cs
-              ],
-           ];
-           
            
            # c: fro:[] zooms [] into fro  so as not k=fro => {c etc}
            # the data fractals ^
            # pthy => 'sur/to:Jung', # membe
-           
-           J2 bz what 0.1 'gp->', '%idly' => 1, '%path' => 'bglab', '%css' => 'color:black'
-
            # inj many ober thick
-           for my $m (@$M) {
-               my $V = 1;
-               Rw modstick $J:J2 $m $V;
-           }
-       });
      hoxy: | #c 
        my $ox = J.hox ||= {};
        ox.bb ||

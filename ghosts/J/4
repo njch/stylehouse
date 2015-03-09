@@ -66,17 +66,15 @@ R_Jz:
      dosc: | #c shunt, suck, J maint wayfile story
        Rw Con mod;
      u: | #c make pool, synth space, want arches
-       my @is;
        # fork & rejoin to exciting place
        
        # YIN
 
        my $n;
-       say "YEP   ".join' ', keys %$d;
 
        my $dd = $d;
        my $i = 0;
-       for my $ii (@is){ # THE TIR drop at hands
+       for my $is (@is) { # THE TIR drop at hands
 
            # YANG
 
@@ -84,7 +82,8 @@ R_Jz:
 
            # CITOZINE
 
-           saybl "Post: d.s       @{d.css} " if ar.V;
+           sayre " - ------ d.i :    d.r" if ar.V;
+           #saybl "Post: d.s       @{d.css} " if ar.V;
            
            J.bz->(
              d.r => d.s,
@@ -173,24 +172,31 @@ mod c:
          $y = d.yin = {thi => $y};
      }
      else {
-         say "Yin mod: ".wdump($y);
+        say "Yin mod: ".wdump($y);
         if (my $bs = y.bal) {
             y.thi = @$bs;
         }
      }
-     y.in ||= 1; 
+     y.in ||= 0.1; 
+     y.out ||= 0.9; # up to
      y.thi ||= 1;
-     y.out ||= y.thi;
+     y.space = y.out - y.in; # could spiral much space away from spine
+     die unless y.space > 0;
+     y.aspace = y.space / y.thi;
      # twist, lay into segment
-     say "YIN MOD: y.thi   y.in -> y.out";
-     @is = map { int($_ * (999/y.thi)) } y.in..y.out;
+     sayyl "YIN MOD: y.thi      y.in ... y.out";
+     my @is;
+     my $csv = y.in;
+     for (1..y.thi) {
+        push @is, [$csv, $_ / y.thi];
+        $csv += y.aspace;
+     }
  - K: yangco #c background language expansion, dewey mezrow   YANG
    mod 2: |
      my $d = {%$dd};
      
-     d.cv = "0.".sprintf('%03d',$ii);
-     d.t = d.t."$ii"; # delicate? y.bal overs
-     d.i = $ii;
+     (d.cv, d.cvint) = @$is;
+     d.t = d.t."$is"; # delicate? y.bal overs
      
      d.css = [@{d.css||[]}];
      
@@ -203,20 +209,20 @@ mod c:
      # 
      d.c || die;
      
-     my $v = $ii / (999 - d.in);
-     n.um = sprintf '%.3d', ($ii * $v + 5);
-     
      my $y = d.yin;
      if (y.bal) {
          # locality
          my $b = y.bal->[$i];
-         for my $k (keys %$b) { # merg in per row
+         say "BAL $i at d.cv    --- d.cvint   ". wdump($b);
+         for my $k (keys %$b) { # c etc merg in per row
              my $v = $b->{$k};
              if (ref $v) {
                  $d->{$k} = {%{$d->{$k}}, %$v};
+                 say "hash mergin $k";
              }
              else {
                  $d->{$k} = $v;
+                 say "over $k";
              }
          }
      }
@@ -225,6 +231,10 @@ mod c:
      
      my $c = d.c; # <v contation
      die if !ref $c;
+     
+ - K: yangist #c art
+   mod 2.3: |
+     n.um = sprintf '%.3d', d.cvint;
      
  - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
    mod 7: |
