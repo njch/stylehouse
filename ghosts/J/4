@@ -48,25 +48,15 @@ R_Jz:
  - K: modstick #c api layer between project and hive # 4d
    D: |
      my $d = {};
-     (d.t, d.thi, d.c, d.sc) = @$m;
+     (d.t, d.yin, d.c, d.sc) = @$m;
      
      die if !ref d.c;
      my $wtf = ar.k || $F[4]->{point}.'ᣝ'.$F[2]->{point};
-     sayyl "$wtf @ @ @ @ @ @ @ @  d.t d.thi   "
+     sayyl "$wtf @ @ @ @ @ @ @ @  d.t d.yin   "
          .ki(d.c||{})."    ".ki(d.sc||{});
      
      #die R.way.hooks.modn; 
      Rw mod/n + $J $d;
-     
- - K: moss #c api layer between project and hive
-   D: |
-     my $d = {};
-     (d.t, d.thi, d.c, d.sc) = @$m;
-     d.c = { s => delete d.c } if !ref d.c;
-     say "$k  @  d.t d.thi   ".ki(d.c||{})."    ".ki(d.sc||{});
-     
-     #die R.way.hooks.modn;
-     Rw mod/n $J $d;
      
  - K: mod #c modi
    n_D:
@@ -76,30 +66,17 @@ R_Jz:
      dosc: | #c shunt, suck, J maint wayfile story
        Rw Con mod;
      u: | #c make pool, synth space, want arches
-       d.css && die;
-       d.css = []; # styles in general
-       d.c ||= {};
-       d.cs ||= {};
-       d.sc ||= {};
-
        my @is;
        # fork & rejoin to exciting place
        
        # YIN
 
-       # $c=d.c is a whole little phase, language
-       # this magnet would have a thrust
-       my $n; # drop values through with
-       my $c = d.c; # <v contation
-       die if !ref $c;
-       $c = {} if !ref $c;
+       my $n;
+       say "YEP   ".join' ', keys %$d;
 
        my $dd = $d;
-       for my $i (@is){ # THE TIR
-           my $d = {%$dd};
-           d.i = $i;
-           d.css = [@{d.css}];
-           d.r = d.t."$i\t0.".sprintf('%03d',$i);
+       my $i = 0;
+       for my $ii (@is){ # THE TIR drop at hands
 
            # YANG
 
@@ -113,6 +90,7 @@ R_Jz:
              d.r => d.s,
              @{d.css},
            );
+           $i++;
        }
  - K: esc #c espouse ton carbon product
    n_D:
@@ -189,33 +167,66 @@ mod c:
      # find beginning, end, thickness of loop atmosphere
      # so thi is where the manifolds can attach in the stackening
      # the modulation piles them in evenly (todo)
-     d.in ||= 1;
-     d.out ||= d.thi;
-     @is = map { int($_ * (999/d.thi)) } d.in..d.out;
- - K: yangco #c background language expansion                YANG
+     my $y = d.yin;
+     if (!ref $y) {
+         say "nonref yin mod: d.yin";
+         $y = d.yin = {thi => $y};
+     }
+     else {
+         say "Yin mod: ".wdump($y);
+        if (my $bs = y.bal) {
+            y.thi = @$bs;
+        }
+     }
+     y.in ||= 1; 
+     y.thi ||= 1;
+     y.out ||= y.thi;
+     # twist, lay into segment
+     say "YIN MOD: y.thi   y.in -> y.out";
+     @is = map { int($_ * (999/y.thi)) } y.in..y.out;
+ - K: yangco #c background language expansion, dewey mezrow   YANG
    mod 2: |
-     # an extremity at one point
+     my $d = {%$dd};
      
-     # , time can be grabbed, twisted ?
-     # yang may pass arounJ komp struc intact for a while
-     #   like M's little j that flies around acuming the message
-     #   a 2d stack of elements sets up top-down
-     #   some stuff afterwards (c), a little 3d
+     d.cv = "0.".sprintf('%03d',$ii);
+     d.t = d.t."$ii"; # delicate? y.bal overs
+     d.i = $ii;
      
-     # aj is like a traversing todo list for modulating changes
-     #   using the pyramid of stuff on the ceiling ( M ) to komp
+     d.css = [@{d.css||[]}];
      
-     # each one (now) a big fat wave
-     # nestling into a tape machine (disc world)
-     # and percolating network
-     #  and that's all they should need to be...
-     # nodes passing compression notes on irc
-     # big (way)veforms resting in the wormhole/ etc
+     d.cs = {%{d.cs||{}}};
+     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
+     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
+     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
+     # v this should be overkill, supposed ro or yinbal merges to new
+     d.sc = {%{d.sc||{}}};
+     # 
+     d.c || die;
      
-     # BUT YEAH for now lets bend the sweep...
-     my $v = $i / (999 - d.in);
-     n.um = sprintf '%.3d', ($i * $v + 5);
- - K: dsc #c cs on d, outside mod twistor pipe, the 4th in @$m
+     my $v = $ii / (999 - d.in);
+     n.um = sprintf '%.3d', ($ii * $v + 5);
+     
+     my $y = d.yin;
+     if (y.bal) {
+         # locality
+         my $b = y.bal->[$i];
+         for my $k (keys %$b) { # merg in per row
+             my $v = $b->{$k};
+             if (ref $v) {
+                 $d->{$k} = {%{$d->{$k}}, %$v};
+             }
+             else {
+                 $d->{$k} = $v;
+             }
+         }
+     }
+     # bal may mod t, this may wannab 
+     d.r = join "\t", d.t, d.cv;
+     
+     my $c = d.c; # <v contation
+     die if !ref $c;
+     
+ - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
    mod 7: |
      # non-thinking modulatios
      # you could say more compressed
