@@ -18,7 +18,9 @@ R_Jz:
 
  - K: pwthyl #c kinda mod, kinda datasheet since this compression
    D: |
-     my $y = {in=>0.3, out=>0.4};
+     my $y = {};
+     y.in = ar.in || 0.3;
+     y.out = ar.out || 0.4;
      
      (y.in,y.out) = split '-', ar.m->[0] if ar.m;
      
@@ -42,6 +44,37 @@ R_Jz:
      
      Rw modstick + $m;
      
+ - K: mo #c general yinyang comprendo
+   n_D:
+     m: |
+       my $y = {};
+       y.in = ar.in || 0.3;
+       y.out = ar.out || 0.4;
+
+       (y.in,y.out) = split '-', ar.m->[0] if ar.m;
+
+       y.bal = [ map {
+           my ($t,$thing,$c,$sc) = @$_;
+           my $p = {};
+           p.t = $t;
+           p.c = $c || {};
+           p.c.s ||= $t;
+           p.c->{$sty} = $thing;
+           p.sc = $sc if $sc;
+           $p
+       } @$M ];
+
+       my $m = [
+          $sty.'y',
+          $y,
+          {%{ar.c||{}}},
+          {%{ar.sc||{}}},
+       ];
+
+       Rw modstick $J $m;
+     pwth: |
+       my $sty = 'pwth';
+       Rw mo/m + $sty;
  - K: food #c
    n_D:
      recoded_init: | #c
@@ -94,7 +127,7 @@ R_Jz:
        ];
        # color:#f3a;-webkit-filter:blur(1px);font-size:200%
        my $sc = {co=>'f3a'};
-       Rw pwthyl $J $M 0.1-0.3 $sc;
+       Rw mo/pwth $J $M 0.1-0.3 $sc;
        
            
            # c: fro:[] zooms [] into fro  so as not k=fro => {c etc}
