@@ -179,41 +179,14 @@ R_Jz:
        # 5 is style time
        J.lum.lev->("J\t0.01", sub {
            my $J2 = shift;
-           
-           my $MM = [
-           [ J => {pwth=>'sur/self', fro=>[$J,0.1]} ],
-           [ ƾ => 'hull/mkboot' ]
+           my $M = [
+               ['J', 'sur/self', {fo=>[$J,0.1]}],
+               ['ƾ', 'hull/mkboot', {}, {co=>'8ff'}],
+               ['G', 'sur/to:G'],
+               ['x', 'sur/X', {}, {co=>'f34',fs=>3}],
+               ['Jung', 'sur/to:Jung', {}, {co=>'68d', fs=>5}],
            ];
-           # ^ pass to pwthy so !ref $c -> {pwth=>"$c"} -> {path=>"!$c"}
-           # then it goes to mod as ["Jeta", MMthicknesing, $MM[], ...]
-           
-           
-           my $M = Load(<<'');
-            -
-              - J
-              - sur/self
-            -
-              - ƾ
-              - hull/mkboot
-              - co: 8ff
-            -
-              - G
-              - sur/to:G
-            -
-              - x
-              - sur/X
-              - co: f34
-                fs: 3
-            -
-              - Jung
-              - sur/to:Jung
-              - co: 68d
-                fs: 2
-           
-           my $thJ = $M->[0]->[2] ||= {};
-           thJ.fro = [$J => 0.1];
-           
-           Rw pathyl $J:J2 $M;
+           Rw pwthyl $J:J2 $M 0.1-0.3;
        }, '%css'=>'font-size:200%'); 
      up: | #c upper level gplumb
        Rw inness;
@@ -226,7 +199,7 @@ R_Jz:
        
        my $u = J.on.bb->{"u\t".0.1};
        
-       Rw metup $J;
+       Rw sur/metup $J;
        
        J.lum.lev->("onei\t0.05" => sub {
            my $J2 = shift;
