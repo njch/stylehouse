@@ -117,8 +117,26 @@ R_Jz:
        ["x 0" => 0.6],
        ["zoom 0" => 0.06],
        ["curve 0.1" => -0.024],
- - K: pw #c mo mod
-   
+ - K: down #c TODO to have maintained down by what comes up from 7 via 8 in motion, tune in values
+   D: |
+     my $ordy = {qw'
+       id 11  A 13  K 17  name 18
+       
+       G  14  R 15
+       
+       B  24
+       style 25
+       
+       theJ 23  theM 28
+     '};
+       
+       my $ydro = {};
+       push @{$ydro->{$_}||=[]}, $_ for keys %$ordy;
+       my @order = map { @{$ydro->{$_}} } sort keys %$ydro;
+       
+       { order => \@order,
+            ordy => $ordy,
+       }
  - K: sur #c SURish rondo: on -> square ->
    n_D:
      X: | #c close
@@ -206,43 +224,9 @@ R_Jz:
            Rw mo/pwth $J:J2 $M 0.1-0.3;
        });
        
-     up: | #c upper level gplumb
-       Rw inness;
-       # move impression of ^ to v, then round
-       J.lum = Rw tent lum;
-       # TODO replace last
-       
-       # sucks each u
-       # but also the
-       
-       Rw sur/heading + $J3:J.lum;
-       
-       my @ju = Rw tvo $J:J.on;
-       
-       my $u = J.on.bb->{"u\t".0.1};
-       Rw sur/oning + $u $J3:J.lum;
-       # ^ singulsr, really a gel cap we may have many of
-       # ventricles of its stature too
-       # eg the many %travels colates..
-       # give best view to the freshest activated sense
-       
-       # join gel cap knowledge halfway
-       my $y = w $R down; # 2ish aggd knowledge, instructions?
-       
-       my @things = Rw tvy $J:J.on;
-       while (@things) {
-           my $thing = shift @things;
-           my ($j, @sjs) = @$thing;
-       
-           say "U: ".$J->pi."   ".gp(j.s);
-           say "   * _.r          => ".gp(_.s) for @sjs;
-           sayre " _____________________ " for 1..5;
-       }
-       
-       my $spcv = 0.2; # so has gap in 1 unless id, etc
-       
-       
+     oundo: | #c hound god
        my @r;
+       my $limit = 64; # geocvish
        if (!ref $u) {
            push @r, { r=>"text", s=>$u, cv=>0.4 };
        }
@@ -278,6 +262,51 @@ R_Jz:
                push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
            }
        }
+       @r;
+     up: | #c upper level gplumb
+       Rw inness;
+       # move impression of ^ to v, then round
+       J.lum = Rw tent lum;
+       # TODO replace last
+       
+       # sucks each u
+       # but also the
+       
+       Rw sur/heading + $J3:J.lum;
+       
+       my @ju = Rw tvo $J:J.on;
+       
+       my $u = J.on.bb->{"u\t".0.1};
+       
+       Rw sur/oning + $u $J3:J.lum;
+       # ^ singulsr, really a gel cap we may have many of
+       # ventricles of its stature too
+       # eg the many %travels colates..
+       # give best view to the freshest activated sense
+       
+       # join gel cap knowledge halfway
+       my $y = w $R down; # 2ish aggd knowledge, instructions?
+       
+       my @things = Rw tvy $J:J.on;
+       while (@things) {
+           my $thing = shift @things;
+           my ($j, @sjs) = @$thing;
+       
+           say "U: ".$J->pi."   ".gp(j.s);
+           say "   * _.r          => ".gp(_.s) for @sjs;
+           sayre " _____________________ " for 1..5;
+       }
+       
+       
+       my $spcv = 0.2; # BS so has gap in 1 unless id, etc
+       # pass innessing, group maker
+       my @r = Rw sur/oundo $u $spcv $y;
+       # alg for making groups is snatching from HASH knowings
+       # involving the inness
+       # reductive indexo
+       # smallest wedge is probably the _.K for a [] of Cs
+       # top level tallies for stuff like that is useful
+       # then the long tail disappears through a little blue dot
        
        for my $r (@r) { # %{ r, path, v, cv #c
            
