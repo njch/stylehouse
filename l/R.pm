@@ -143,19 +143,6 @@ sub snapple {
     $a
 }
 
-sub a {
-    my $R = shift;
-    my $n = shift;
-    my $s = shift;
-
-    my $lot = $R->{A}->{"n_$n"} || die "no A\ $n";
-    die "empty n_$n" unless @$lot;
-    $lot = [@$lot];
-    die "make s" if $s; # TODO continue along a path
-    @$lot = map{$_->{i}}@$lot;
-    wantarray ? @$lot : shift @$lot;
-}
-
 sub wtf {
     my $R = shift;
     my $a = shift;
@@ -277,31 +264,6 @@ sub shj {
     ($j->{cv}, my @e) = split /\s+/, $j->{cv};
     $j->{ev} = \@e if @e;
     $j
-}
-
-sub Jshonj {
-    my $R = shift;
-    my ($bb, $on) = @_;
-    my @ksd = sort keys %$bb;
-    my @j = map { $R->shj($_, $bb) } @ksd;
-
-    if ($on) {
-        my @on = sort { $a->{cv} <=> $a->{cv} } grep { $R->{G}->ip($on, $_) } @j;
-        $on = {min => $on[0]->{cv}, max => $on[-1]->{cv}};
-    }
-    my $ji = 0;
-    sub {
-        my $j = $j[$ji++] || return;
-        my $sec = 0;
-        if ($on) {
-            my $slike = $j->{cv} < $on->{min} ? $on->{min} : $on->{max};
-            my $dist = $slike - $j->{cv};
-            $dist *= -1 if $dist < 0;
-            $dist = ceil($dist);
-            $sec = $dist > 5 ? 0 : -$dist + 5;
-        }
-        ($j, $sec);
-    }
 }
 
 9;

@@ -9,9 +9,7 @@ use lib 'l';
 use A;
 use C;
 use G;
-use J;
 use R;
-use T;
 use UUID;
 use File::Slurp;
 use Time::HiRes 'gettimeofday', 'usleep';
@@ -38,9 +36,7 @@ sub new {
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
-    $J::H = $H;
     $R::H = $H;
-    $T::H = $H;
 
     $H->spawn0('A')->new($H);
     $H->{G} = $H->{A}->spawn(G => 'H');
