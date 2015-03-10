@@ -43,6 +43,7 @@ R_Jz:
    n_D:
      yJup: |
        J.yy.round.id = 3;
+       J.engboo = 1;
        qw'thesurf sur faut oci'
      curves: |
          #["spun 0" => 0.025],
@@ -68,7 +69,7 @@ R_Jz:
    n_D:
      yJup: |
        J.yy.round.id = 3;
-       'thrash', 'ash', 'sur'
+       qw'thrash ash sur oci'
      curves: |
          ["zoom 0" => 0.10],
          ["y 0" => 0],
@@ -221,6 +222,102 @@ R_Jz:
        });
      engboo: | #c
        J.engboo = !J.engboo;
+
+     gelcaps: | #c egroup
+       my $ordy = {qw'
+         id 11  A 13  K 17  name 18
+         G  14  R 15
+
+         B  21  style 22
+         theJ 23  theM 28
+       '};
+       
+     upeng: | #c the surrest
+       my @things = Rw tvy $J:J.on;
+       my $tot = 32;
+       my $in = 0.1;
+       my $out = 0.9;
+       my $phi = $out - $in; # <-0.8->
+       my $tin = $in;
+       my $thi = $phi / @things; # or indi
+       my @re;
+       for (@things) {
+           my ($j, @sjs) = @$_;
+           say "U: ".$J->pi."   ".gp(j.s); 
+           say "   * _.r          => ".wdump(1, _.s) for @sjs;
+           my $outt = $tin + $thi; # r indi, of sjs
+           my $rr = {
+               in => $tin,
+               out => $outt,
+               sjs => \@sjs,
+               thi => $tot/$phi, # space volve, indi...
+               j => $j,
+           };
+           say "rr.j.r    = rr.in    -> rr.out";
+           push @re, $rr;
+           $tin = $outt;
+       }
+       # each branching yet here...
+       for my $rr (@re) {
+           my $M = [
+               Rw sur/rr_cap $rr,
+               Rw sur/rr_bod $rr,
+           ];
+           my $in = rr.in;
+           my $out = rr.out;
+           Rw mo/pwth $J:J.lum $M $in $out;
+       }
+     rr_cap: | #c zom
+       my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
+       my $M = [
+           ['_', '', {s=>rr.j.l}, {fs=>18, co=>'38f'}],
+           ['=','', {}, {fs=>12,co=>'000'}],
+           ['i', 'sur/to:/', {fo=>[vli.s,0.1]}],
+       ];
+       my ($vly) = grep{_.style eq 'travely'} @{rr.sjs};
+       if ($vly && @{vly.s}) {
+           push @$M,
+               ['travely', '', {s=>join("  ",@{vly.s}), wsp=>1}],
+               ['S', '', {fo=>[rr.j.s, 0.2]}],
+       }      
+       my $lev = sub {
+           my $J2 = shift;
+           Rw mo/pwth $J:J2 $M 0.1-0.3;
+       };
+       ['cap','', {lev=>$lev}]
+     rr_bod: | #c boodle am
+       my $in = rr.in;
+       my $out = rr.out;
+       my $phi = ($out - $in) * rr.thi; # normal lines per 0.1
+       say $phi for 1..5;
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       ()
      oundo: | #c hound god
        my @r;
        my $limit = 64; # geocvish
@@ -260,72 +357,6 @@ R_Jz:
            }
        }
        @r;
-     gelcaps: | #c egroup
-       my $ordy = {qw'
-         id 11  A 13  K 17  name 18
-         G  14  R 15
-
-         B  21  style 22
-         theJ 23  theM 28
-       '};
-       
-     upeng: | #c the surrest
-       my @things = Rw tvy $J:J.on;
-       my $tot = 32;
-       my $in = 0.1;
-       my $out = 0.9;
-       my $phi = $out - $in; # <-0.8->
-       my $tin = $in;
-       my $thi = $phi / @things; # or indi
-       my @re;
-       for (@things) {
-           my ($j, @sjs) = @$_;
-           say "U: ".$J->pi."   ".gp(j.s); 
-           say "   * _.r          => ".gp(_.s) for @sjs;
-           my $outt = $tin + $thi; # r indi
-           my $rr = {
-               in => $tin,
-               out => $outt,
-               sjs => \@sjs,
-               j => $j,
-           };
-           say "rr.j.r    = rr.in    -> rr.out";
-           push @re, $rr;
-           $tin = $outt;
-       }
-       
-       for my $rr (@re) {
-           my $u = J.on.bb->{"u\t".0.1};
-
-           Rw sur/oming + $u $J3:J.lum;
-       }
-     oming: | #c
-       # alg for making groups is snatching from HASH knowings
-       # involving the inness
-       # reductive indexo
-       # smallest wedge is probably the _.K for a [] of Cs
-       # top level tallies for stuff like that is useful
-       # then the long tail disappears through a little blue dot
-       
-       # ^ singulsr, really a gel cap we may have many of
-       # ventricles of its stature too
-       # eg the many %travels colates..
-       # give best view to the freshest activated sense
-       J3.lev->("onei\t0.06" => sub {
-           my $J2 = shift;
-           my $on = J.onei;
-           my $M = [
-               ['=','', {}, {fs=>12,co=>'000'}],
-               ['i', 'sur/to:/', {fo=>[on.i,0.1]}]
-           ];
-           
-           push @$M,
-              ['travels', '', {s=>join("  ",@{on.t||[]}), wsp=>1}],
-              ['fou', '', {fo=>[$u, 0.2]}],
-                  if $u ne on.i;
-                  
-           Rw mo/pwth $J:J2 $M 0.1-0.3;
-       });
      up: | #c upper level gplumb
        Rw inness;
        # move impression of ^ to v, then round
