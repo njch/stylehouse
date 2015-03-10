@@ -1,7 +1,57 @@
 
 R_Jz:
-  - K: pi #c
-    n_D:
+ - K: oundo #c hound god
+   D: |
+     my @r;
+     my $o = {r=>\@r};
+     # pass limit as $thi
+     # also $plucky to select hash key order
+     # a space for tiny-part-of-huge-set access
+     if (!ref $u) {
+         push @r, { r=>"text", s=>$u, cv=>0.4 };
+     }
+     elsif (ref $u eq 'ARRAY') {
+         my $i = 0;
+         my $it = @$u;
+         for my $ui (@$u) {
+             push @r, { r=>$i, path=>"[".$i, s=>$ui };
+             if (@r >= $thi && @r < $it) {
+                 o.more = $it - @r;
+                 o.total = $it;
+                 last;
+             }
+             $i++;
+         }
+     }
+     elsif (ref $u eq 'CODE') { die;
+         push @r, { r=>"CODE", clues=>{stuff=>"fromDm?"} }
+     }
+     else {
+         my $r = {map{$_=>1} keys %$u};
+         
+         $spcv = 0.3 if u.id;
+
+         # bunch of keys... ^ interpret, compress knowledge
+         # TODO ^make itv like two indexes, polars
+         # any sorta layout knowhow...
+       
+         my @or = grep { delete $r->{$_} } @{y.order};
+         if (ref $u eq 'A') {
+             push @or, sort grep { /^u_/ && delete $r->{$_} } keys %$r;
+         }
+           push @or, sort keys %$r;
+           
+           for (@or) {
+               my $v = y.ordy->{$_};
+               # this is totally 5 in inness doing this 
+               my $cv = "0.$v" if $v;
+               $cv ||= $spcv;
+               push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
+           }
+       }
+       @r;
+ - K: pi #c
+   n_D:
       wtf: | #c
         J.bz->('know 0.1', "$u");
       ARRAY: | #c

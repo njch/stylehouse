@@ -318,45 +318,6 @@ R_Jz:
        
        
        ()
-     oundo: | #c hound god
-       my @r;
-       my $limit = 64; # geocvish
-       if (!ref $u) {
-           push @r, { r=>"text", s=>$u, cv=>0.4 };
-       }
-       elsif (ref $u eq 'ARRAY') {
-           my $i = 0;
-           my $warp = @$u; # TODO or less?
-           my @warp = Rw cv/oe off1 $v:warp;
-           for my $ui (@$u) {
-               my $cv = "0.". shift @warp;
-               push @r, { r=>$i, path=>"[".$i++, s=>$ui, cv=>$cv};
-           }
-       }
-       else {
-           my $r = {map{$_=>1} keys %$u};
-           
-           $spcv = 0.3 if u.id;
-
-           # bunch of keys... ^ interpret, compress knowledge
-           # TODO ^make itv like two indexes, polars
-           # any sorta layout knowhow...
-       
-           my @or = grep { delete $r->{$_} } @{y.order};
-           if (ref $u eq 'A') {
-               push @or, sort grep { /^u_/ && delete $r->{$_} } keys %$r;
-           }
-           push @or, sort keys %$r;
-           
-           for (@or) {
-               my $v = y.ordy->{$_};
-               # this is totally 5 in inness doing this 
-               my $cv = "0.$v" if $v;
-               $cv ||= $spcv;
-               push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
-           }
-       }
-       @r;
      up: | #c upper level gplumb
        Rw inness;
        # move impression of ^ to v, then round
