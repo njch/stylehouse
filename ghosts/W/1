@@ -248,8 +248,8 @@ R_Jz:
            my $rr = {
                in => $tin,
                out => $outt,
-               sjs => \@sjs,
                thi => $tot/$phi, # space volve, indi...
+               sjs => \@sjs,
                j => $j,
            };
            say "rr.j.r    = rr.in    -> rr.out";
@@ -288,14 +288,20 @@ R_Jz:
        my $in = rr.in;
        my $out = rr.out;
        my $phi = ($out - $in) * rr.thi; # normal lines per 0.1
+       my $thi = $phi * 2; # oundo big window, bod small
        say $phi for 1..5;
        
-        
-       my $u = rr.j.s;
-       # how to what = @{rr.sjs}
-       my $o = Rw oundo $thi:phi $u;
-       say wdump 3, $o;
+       my $j = rr.j;
+       my $sjs = rr.sjs;
+       my $u = j.s;
        
+       # how to what = @{rr.sjs}
+       my $o = Rw oundo $thi $u;
+       saybl "===\n=== ooooooooooooooo j.r\n=== o.thi o.total";
+       say "_.path _.r _.s" for @{o.r};
+       saybl wdump 2, $o;  
+       
+       # some below here and super oundo is:
        # the art of extracting segments like pi/
        # must be offered & consumed
        # like diffusing a bomb
