@@ -18,6 +18,7 @@ R_Jz:
  - K: Con #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my ($the, $src, $path) = @$m;
+     sayyl "Con ".wdump $m;
      $src ||= "$the/u";
      $path ||= "$the/n";
      # or wherever thi src quags
@@ -32,10 +33,12 @@ R_Jz:
        my $wtf;
        my $wops;
        my $coms = {};
+       #sayyl wdump($tks) if $the eq 'esc';
        for my $r (sort keys %$tks) {
            my $tk = $tks->{$r};
            my $j = tk.j;
            my $sc = tk.sc;
+           say " $tk  j.r and ".wdump($sc);
            my $type = G.drop.conv->(j.cv);
            
            if (my $cs = sc.cs) { # like swimming in charocean ,7_/*}_J
@@ -149,29 +152,36 @@ R_Jz:
           # if for c.cs, for implant condits # sche
           my $type = G.drop.conv->($v);
           # z downgrasp
-          my $h = c.MZ; # per $k if maybe ?? emberd whatsits
+          my $sc = c.MZ if c.MZ; # per $k if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
-          $h ||= $ty->{$type};
+          $sc ||= $ty->{$type};
           
-          if (my $cs = h.qmco) {
-              push @l, ':', "\$tk eq 'c.K' ? do {";
-              $D = ind '     ', $D;
-              push @r, '}';
-              J bz $k$ome 1 c.K
-              my $l = 
-              J bz $k%cs$ome 1 $cs
-          } 
-
+          if ($sc && %$sc) {
+              my $t = "$k%cs$ome";
+              say " Jbz   t: $t";
+              # TODO turn into %cs
+              J bz $t 1 $sc
+          }
+          
                
-               if (h.subhash) {
-                   unshift @l, h.subhash.'.'.c.K." = sub {";
+               if (my $sub = sc.subhash) {
+                   unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
                    push @lr, 'my ($v,$tks) = @_;';
                    $D = ind '     ', $D;
                    push @r, '};';
                    push @r, 'push @{G.drop.esc.O}, "'.c.K.'";';
                }
+          
+          # : EXPR ? DO +
+          if (my $cs = sc.qmco) {
+              push @l, ':', "\$tk eq 'c.K' ? do {";
+              $D = ind '     ', $D;
+              push @r, '}';
+              J bz $k$ome 1 c.K
+          }
+          # if (sc.this) { DO } +
                
-               if (my $cs = h.csfrm) {
+               if (my $cs = sc.csfrm) {
                    $cs = c.K if $cs eq 'cK';
                    $com .= "cs=$cs  ";
                    unshift @l, 'if (my $cs = c.'.$cs.') {';
