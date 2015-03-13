@@ -27,23 +27,27 @@ R_Jz:
        # shove togeth modn
        # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
        # tesalation
-       my $eh = Rw tly $J;
-       die wdump $eh if $the eq 'esc';
+       my $tks = Rw tly $J;
        # ^ hash styles, things are l+com, like $tks
-       my @daw = Rw tvo $J;
        my $wtf;
        my $wops;
        my $coms = {};
-       for my $j (@daw) {
-           die "j.r non$the?" if j.l ne $the; # how does that work again...
-           sayre(wdump $j) && next if j.style eq 'file';
+       for my $r (sort keys %$tks) {
+           my $tk = $tks->{$r};
+           my $j = tk.j;
+           my $sc = tk.sc;
+           my $type = G.drop.conv->(j.cv);
            
-           say "j.r isssssssss    j.s" if j.l eq 'esc' && j.cv < 3;
+           if (my $cs = sc.cs) { # like swimming in charocean ,7_/*}_J
+               for (split ' ', $cs) {
+                   /^(\S+):(\S+)$/ || die;
+                   $wops->{$type}->{$1} = $2; # may dup
+               }
+           }
+           die "j.r non$the?" if j.l ne $the; # how does that work again...
            
            acum $coms, j.cv => j.com;    # <<<<<<<
            
-           
-           my $type = G.drop.conv->(j.cv);
            push @{$wtf->{$type}||=[]}, j.s;
        } 
        
@@ -51,11 +55,21 @@ R_Jz:
        my $tl = {};
        for my $k (sort keys %$wtf) { 
            my $v = $wtf->{$k};
+           my $cs = $wops->{$k};
            
            $tl->{$k} = @$v; # sum
-           $v = join "\n", @$v;        # # <<<<<<<
+           my $join = "\n";
+           $join = ' ' if cs.qw;
+           $v = join $join, @$v;        # # <<<<<<<
+           $v = "qw'$v'" if cs.qw;
+           
+           $v = "G\.drop\.".$the."\.".cs.droplist." ||= [$v]" if cs.droplist;
+           
+           $v .= ';' if cs.qw || cs.droplist;
            
            $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
+           
+           #die $mw;
        } 
        my $cl = 'ded';
        my $sl;
