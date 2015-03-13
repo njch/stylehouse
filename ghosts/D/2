@@ -34,7 +34,10 @@ R_Jz:
            die "j.r non$the?" if j.l ne $the; # how does that work again...
            sayre(wdump $j) && next if j.style eq 'file';
            
-           acum $coms, j.cv => j.com;
+           say "j.r isssssssss    j.s\n\n\n" if j.l eq 'esc' && j.cv < 3;
+           
+           acum $coms, j.cv => j.com;    # <<<<<<<
+           
            
            my $type = G.drop.conv->(j.cv);
            push @{$wtf->{$type}||=[]}, j.s;
@@ -42,12 +45,12 @@ R_Jz:
        
        my $mw = R.way->find($src) || die "no $src";
        my $tl = {};
-       for my $k (keys %$wtf) { 
+       for my $k (sort keys %$wtf) { 
            my $v = $wtf->{$k};
            
-           $tl->{$k} = @$v;
+           $tl->{$k} = @$v; # sum
+           $v = join "\n", @$v;        # # <<<<<<<
            
-           $v = join "\n", @$v;
            $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
        } 
        my $cl = 'ded';
@@ -60,7 +63,7 @@ R_Jz:
                $fr = "";
                $cl = $v;
                $sl .= ") " if $sl;
-               $sl .= "$v*$tl->{$v}(";
+               $sl .= "$v*$tl->{$v}("; # sum
            }
            $sl .= ${fr}.join " ", @$c;
        }
@@ -122,6 +125,8 @@ R_Jz:
  - K: Nucleous #c
    D: |
           my (@l,@lr,@r);
+          
+          $ome = "#$ome" if $ome;
 
           # if for c.cs, for implant condits # sche
           my $type = G.drop.conv->($v);
@@ -129,6 +134,15 @@ R_Jz:
           my $h = c.MZ; # per $k if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
           $h ||= $ty->{$type};
+          
+          if (my $cs = h.qmco) {
+              push @l, ':', "\$tk eq 'c.K' ? do {";
+              $D = ind '     ', $D;
+              push @r, '}';
+              J bz $k$ome 1 c.K
+              my $l = 
+              J bz $k%cs$ome 1 $cs
+          } 
 
                
                if (h.subhash) {
@@ -150,6 +164,5 @@ R_Jz:
               
               
                $D = join "\n", $com, @l, @lr, $D, @r;
-               $ome = "#$ome" if $ome;
                J bz $k$ome $v $D
 

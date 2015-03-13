@@ -134,7 +134,7 @@ R_Jz:
    n_D:
      el:
        CARBON: | #c
-         {subhash => 'X'}
+         {qmco => 'drop_qw:O'}
      dosc: | #c
        delete G.drop.esc;
        Rw Con esc;
@@ -152,17 +152,13 @@ R_Jz:
        # so '.this > .that' can move to '.another > .that' bunch of styles
        # lending to high dynamic, low cost of tape
        
-       my $X = G.drop.esc.X = {};
-       G.drop.esc.O = [];
-       # CARBON
-       
-       $X
-     arp: | #c
        my $seg = ar.m->[0] if ar.m;
        my @css;
        die wdump(ar.m) if !ref $sc; # parse strings too
        # invent the stevecraig format, playing music
-       my $X = G.drop.esc.X ||= Rw esc/n;
+       # YIN
+       
+       # ^ list esc.O
        
        my $tks; # expand (k:)?lma:v to lma:k:v
        for my $k (sort keys %$sc) {
@@ -177,7 +173,7 @@ R_Jz:
        
        my $unseen = {map{$_=>1}keys%$tks};
        my $tw; # bang
-       for my $tk (@{G.drop.esc.O}) {
+       for my $tk (@{G.drop.esc.O}) { #c
            my $oms = $tks->{$tk};
            delete $unseen->{$tk};
            next if !$oms;
@@ -185,7 +181,12 @@ R_Jz:
                my $v = $oms->{$com};
                
                my @s = $X->{$tk}->($v, $tks);
-               
+               @s = 0 ? 1
+               # CARBON
+
+               :
+               die "un $tk";
+               # could be a big...
                # tks for X to inject this stream: lma:k:v style (com is k)
                # make better looking pyramids
                
@@ -218,6 +219,7 @@ R_Jz:
        #sayre "CSS  @css";
        @css;
        
+     arp: | #c
 mod c:
  - K: yinvis #c the valley - what it means to be here in here YIN
    mod 1: |
@@ -305,7 +307,7 @@ mod c:
      #push @{d.css}, '%css#'.$_ => d.cs->{$_}
      #    for sort keys %{d.cs};
      if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/arp $d $sc:d.sc DSC;
+         push @{d.css}, Rw esc/n $d $sc:d.sc DSC;
      }
  - K: dcs #c cs in da pipe, modulating or so
    mod 7: |
@@ -315,6 +317,6 @@ mod c:
      # and what's between...
      # exp to css for now...
      if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/arp $d $sc:d.cs DCS;
+         push @{d.css}, Rw esc/n $d $sc:d.cs DCS;
      }
 
