@@ -6,9 +6,6 @@ R_Jz:
        Rw conv;
        
        Rw suck */dosc;
-     dosc: |
-       delete G.drop.esc;
-       Rw Con esc;
  - K: conv #c know about elemental stuff
    D: |
      my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
@@ -18,8 +15,7 @@ R_Jz:
          $pway->{$dig} || die " not convable $dig $v";
      };
      G.drop.conv->(ar.v) if ar.v;
-
- - K: Con #c the
+ - K: Con #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my ($the, $src, $path) = @$m;
      $src ||= "$the/u";
@@ -137,9 +133,10 @@ R_Jz:
                
                if (h.subhash) {
                    unshift @l, h.subhash.'.'.c.K." = sub {";
-                   push @lr, 'my $v = shift;';
+                   push @lr, 'my ($v,$tks) = @_;';
                    $D = ind '     ', $D;
                    push @r, '};';
+                   push @r, 'push @{G.drop.esc.O}, "'.c.K.'";';
                }
                
                if (my $cs = h.csfrm) {
