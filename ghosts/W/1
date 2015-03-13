@@ -266,6 +266,7 @@ R_Jz:
            my $out = rr.out;
            Rw mo/pwth $J:J.lum $M $in $out;
        }
+       sayre "==\n== delt ".F_delta."\n==";
      rr_cap: | #c zom
        my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
        my $M = [
@@ -318,22 +319,20 @@ R_Jz:
        for my $r (@{o.r}) {
            my $M = [];
            
+           # SZOOOOOOOOOOOM
            push @$M, Rw sur/labegy $r;
            
-           die ddump $M;
-       
            my $lev = sub {
                my $J2 = shift;
                Rw mo/pwth $J:J2 $M 0.1-0.3;
+               # chain that ^ into c of that v to fractionate by 0
            };
            
            push @M, [r.r, r.path, {lev=>$lev}];
        
            say "r.path r.r \t\t r.s";
        }
-       saybl wdump 3, $o;
-       
-       ()
+       @M
      labegy: | #c
         my $sc = {};
         my $si = length(r.r);
@@ -345,7 +344,10 @@ R_Jz:
         for (sort keys %$curve) {
             sc.fs = $curve->{$_} if $si > $_
         }
+        sc.ws = 'p';
+        #sc.a
         my $c = {};
+        # tooltip? (title="")
         c.s = r.r; # could use r.path and make a tiny maka thing for the meta key graphics
         return ['lab', '', $c, $sc];
         #my $guec = $2 if r.cv =~ /^(0\.)?(\d)/;
