@@ -84,8 +84,15 @@ R_Jz:
        my $cra = 9;
        # intent of which curve line the bz is for
        # bz inted
-       Rw food/hoxy;
-       Rw food/wtfing;
+       #Rw food/hoxy;
+       my @l = map {"---".$_} `ps faux | grep perl`;
+       my $wtf = [];
+       for my $l (@l) {
+           $l = [split /\s+/, $l, 5];
+           push $wtf, $l;
+       }
+       
+       Rw food/wtfing + $wtf;
        Rw food/dam;
      dam: | #c
        # mod some menu into space
@@ -95,8 +102,8 @@ R_Jz:
        my $M = [
            ['BƾB', 'hull/mkash'],
            ['hull', 'Jux:hull'],
-           ['sur', 'hull/mksur', {fs=>44},{co=>'f3f'}],
-           ['occie', 'occie/komp', {fs=>28},{co=>'ff6'}],
+           ['sur', 'hull/mksur', {},{fs=>68,co=>'f3f'}],
+           ['occie', 'occie/komp', {},{fs=>12,co=>'ff6'}],
        ];
        # color:#f3a;-webkit-filter:blur(1px);font-size:200%
        my $sc = {co=>'f3a'};
