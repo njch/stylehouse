@@ -160,8 +160,7 @@ R_Jz:
            my $sc = lv.sc;
            my $s = j.s;
            my $l = j.l;
-           say "j.r";
-           say "   * $_    === ".gp($sc->{$_}) for keys %$sc;
+           say "j.r \t\t". join "\t", sort keys %$sc; # gp($sc->{$_})
            
            my $cssdb = 0;
            
@@ -226,7 +225,7 @@ R_Jz:
                            sort keys %$cs
                            if ref $cs;
                        push @$css, $cs;
-                       sayre "bit of css: $cs";
+                       sayre "bit of css: $cs" if ar.db;
                    }
 
                    at.id = $cs when 'id';
@@ -241,12 +240,11 @@ R_Jz:
                    1 when 'waves';
                    1 when 'Joint';
                    1 when 'lp';
-                   when ('idly') {
+                   when ('idly') { # is knowable j id
                        my $id = $H->mkuid;
                        at.id && die "arl";
                        at.id = $id;
-                       die $cs;
-                       J.idyl->($J, $id, j.r);
+                       J.idyl->($J, $id, $j);
                    }
                    default {
                        die "style??".wdump[$style,$cs];
