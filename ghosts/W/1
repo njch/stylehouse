@@ -243,7 +243,7 @@ R_Jz:
        for (@things) {
            my ($j, @sjs) = @$_;
            say "U: ".$J->pi."   ".gp(j.s); 
-           say "   * _.r          => ".wdump(1, _.s) for @sjs;
+           say "   * _.r          => ".gp(_.s) for @sjs;
            my $outt = $tin + $thi; # r indi, of sjs
            my $rr = {
                in => $tin,
@@ -291,18 +291,17 @@ R_Jz:
        my $out = rr.out;
        my $phi = ($out - $in) * rr.thi; # normal lines per 0.1
        my $thi = $phi * 2; # oundo big window, bod small
-       say $phi for 1..5;
        
        my $j = rr.j;
        my $sjs = rr.sjs;
        my $u = j.s;
+       say "bod $in <--> $out  $thi     j.r";
        
        # how to what = @{rr.sjs}
        my $o = Rw oundo $thi $u;
-       saybl "===\n=== ooooooooooooooo j.r\n=== o.thi o.total";
        
-       # some below here and super oundo is:
-       # the art of extracting segments like pi/
+       # between here and oundo is:
+       # the art of extracting segments like pi/HASH etc
        # anything you want more than a list for
        # hive of piish style joined by opportunism to oundo pipe
        # must be offered & consumed
@@ -324,6 +323,8 @@ R_Jz:
            # SZOOOOOOOOOOOM
            push @$M, Rw sur/labegy $r;
            
+           push @$M, Rw sur/pi $r;
+           
            my $lev = sub {
                my $J2 = shift;
                Rw mo/pwth $J:J2 $M 0.1-0.3;
@@ -333,11 +334,35 @@ R_Jz:
            
            push @M, [r.r, r.path, {lev=>$lev}];
        
-           say "r.path r.r \t\t r.s";
+           #say "r.path r.r \t\t r.s";
        }
        @M
+     pi: | #c hmmm
+       my ($c,$sc);
+       
+       say ki $r;
+       c.fo = [r.s, 0.6];
+       
+       sc.ws = 'n';
+       sc.ab = 'left:1em';
+       sc.mw = '14em';
+       sc.over = 'hidden';
+       
+       return ['pi', '', $c, $sc];
      labegy: | #c
-        my $sc = {};
+        # TODO add a style that colours it after round
+        # TODO curve
+        # TODO shared labels
+        # TODO culture
+        # TODO unwind cv into colours variously
+        # TODO make a tiny maka thing for $k decor, tiny styled tags
+        my ($c,$sc);
+        
+        c.s = r.r;
+        
+        sc.ws = 'p';
+        sc.ab = 'right:0.5em';
+        
         my $si = length(r.r);
         my $curve = {qw{
         40 60
@@ -347,20 +372,7 @@ R_Jz:
         for (sort keys %$curve) {
             sc.fs = $curve->{$_} if $si > $_
         }
-        sc.ws = 'p';
-        sc.ab = 'right:0.5em';
-        #sc.a
-        my $c = {};
-        # tooltip? (title="")
-        c.s = r.r; # could use r.path and make a tiny maka thing for the meta key graphics
         return ['lab', '', $c, $sc];
-        #my $guec = $2 if r.cv =~ /^(0\.)?(\d)/;
-        #sc.col = G.jumb.cos->{$guec} || warn "was r.cv so $guec";
-        # TODO add a style that colours it after round
-        # TODO curve
-        # TODO shared labels
-        # TODO culture
-        # TODO unwind cv into colours variously
      up: | #c upper level gplumb
        Rw inness;
        # move impression of ^ to v, then round
