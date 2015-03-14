@@ -10,7 +10,7 @@ mod c:
  - K: pwth #c -> !some/path exp.
    mod 3.1: |
      my $path = $cs;
-     $path = "!$path" unless $path =~ /^ /;
+     $path = "!$path" unless $path =~ /^\W/;
      c.path && die;
      c.path = $path;
  - K: path #c install cs path
@@ -365,7 +365,7 @@ R_Jz:
        sc.mw = '14em';
        sc.over = 'hidden';
        
-       return ['pi', '', $c, $sc];
+       return ['pi', r.path, $c, $sc];
      labegy: | #c
         # TODO add a style that colours it after round
         # TODO curve
@@ -390,7 +390,6 @@ R_Jz:
             sc.fs = $curve->{$_} if $si > $_
         }
         return ['lab', '', $c, $sc];
-
      odup: | #c old road
        Rw inness;
        J.lum = Rw tent lum;
