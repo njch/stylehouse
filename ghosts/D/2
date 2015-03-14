@@ -47,7 +47,7 @@ R_Jz:
            my $j = lj.j;
            
            if (!%$j) {
-               warn "not j: ".wdump(2,$tk);
+               warn "not j: ".wdump(2,$lj);
                next;
            }
            
@@ -97,10 +97,11 @@ R_Jz:
            my $ac = join'',map{"{$_"}split'/',$pin;
            
            say "Injecting   $pin  $ac   with:";
-           sayre ind '   ', slim 620, $www;
+           sayre ind '   ', $www if $the eq 'esc';
            $R->loadup(R.way.hooks, $ac, $www);
        }
        
+       #exit if $the eq 'esc';
        G.jumb.ConJ->{$the} = $J;
      
 
@@ -184,7 +185,7 @@ R_Jz:
                if (my $sub = sc.subhash) {
                    sayre "$k   oooooo $v          ". ki $sc;
                    unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
-                   push @lr, 'my ($v,$tks) = @_;';
+                   push @lr, '    my ($v,$tks,$'.$sub.') = @_;'; # gets $X, etc
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
@@ -192,13 +193,18 @@ R_Jz:
                        J bz $k/$sub#rese$list 1 "G\.drop\.$the\.$list = [];"
                    }
                    my $haD = join "\n", $com, @l, @lr, $D, @r;
+                   @l = (); @lr = (); @r = ();
                    J bz $k/$sub$ome $v $haD
                    J bz $k/$sub#rese 1 "G\.drop\.$the\.$sub = {};"
                    J bz $k/$sub#return 9 "G\.drop\.$the\.$sub;"
-                   J bz $k#upsubhash-$sub 1 "G\.drop\.$the\.$sub || Rw $k/upsubhash/$sub;"
+                   J bz $k#upsubhash-$sub 1 "my \$$sub = G\.drop\.$the\.$sub || Rw $k/$sub;"
+                   return; #
                }
           
           # : EXPR ? DO +
+          # or they want elsif
+          # see what the cv wants to land on/through
+          # see twisty ops in lightcones
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
               if (my $sub = sc.subhash) {

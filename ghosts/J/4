@@ -134,7 +134,7 @@ R_Jz:
    n_D:
      el:
        CARBON: | #c
-         {droplist => 'O', subhash => 'X', qmco => 'subhash'} # qmco:sutff
+         {droplist => 'O', subhash => 'X'} # qmco:sutff
          # different rhythms to qw == hallucinogenic yaml
      dosc: | #c
        delete G.drop.esc;
@@ -150,7 +150,6 @@ R_Jz:
        # YIN
        
        # ^ list esc.O
-       
        my $tks; # expand (k:)?lma:v to lma:k:v
        for my $k (sort keys %$sc) {
            my $v = $sc->{$k};
@@ -164,19 +163,16 @@ R_Jz:
        
        my $unseen = {map{$_=>1}keys%$tks};
        my $tw; # bang
-       for my $tk (@{G.drop.esc.O}) { #c
+       say wdump G.drop.esc.O;
+       for my $tk (@{G.drop.esc.O}) {
            my $oms = $tks->{$tk};
+           say " see $tk";
            delete $unseen->{$tk};
            next if !$oms;
            for my $com (sort keys %$oms) {
                my $v = $oms->{$com};
                
-               #my @s = $X->{$tk}->($v, $tks);
-               my @s = 0 ? 1
-               # CARBON
-
-               :
-               die "un $tk";
+               my @s = $X->{$tk}->($v, $tks, $X); # < $mish carbon adapt
                # could be a big...
                # tks for X to inject this stream: lma:k:v style (com is k)
                # make better looking pyramids

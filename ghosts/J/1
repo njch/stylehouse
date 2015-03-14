@@ -477,7 +477,9 @@ R_Jz:
           
           say "weeee j.r \t\t\t\t".ki $sc; 
           
-          $tw->{$tk} = { j => $j, sc => $sc };
+          my $x = $tw->{$tk} = {};
+          x.j = $j;
+          x.sc = $sc if keys %$sc;
       }
       $tw
  - K: tlv #c { index line thing.r: $j, styles made into an $sc }
@@ -486,13 +488,17 @@ R_Jz:
       
       my $cvtk;
       for my $tk (keys %$tw) {
-          my $tt = $tw->{$tk}->{""} || die " not thingy $tk";
-          $cvtk->{tt.cv}->{$tk} = $tw->{$tk};
+          my $j = $tw->{$tk}->{j} || die " not thingy $tk";
+          $cvtk->{j.cv}->{$tk} = $tw->{$tk};
       }
       my $lvs = [];
       for my $cv (sort keys %$cvtk) {
-          push @$lvs, $cvtk
-      $cvtk
+          my $vtk = $cvtk->{$cv};
+          for my $tk (sort keys %$vtk) {
+              push @$lvs, $vtk->{$tk};
+          }
+      }
+      $lvs
  - K: ship #c l to di ydly
    D: |
      my $r = delete ar.r;
