@@ -145,7 +145,7 @@ R_Jz:
        
        my $seg = ar.m->[0] if ar.m;
        my @css;
-       die wdump(ar.m) if !ref $sc; # parse strings too
+       die "nonrefsc u asc esc usc". wdump(ar.m) if !ref $sc; # parse strings too
        # invent the stevecraig format, playing music
        # YIN
        
@@ -163,10 +163,8 @@ R_Jz:
        
        my $unseen = {map{$_=>1}keys%$tks};
        my $tw; # bang
-       say wdump G.drop.esc.O;
        for my $tk (@{G.drop.esc.O}) {
            my $oms = $tks->{$tk};
-           say " see $tk";
            delete $unseen->{$tk};
            next if !$oms;
            for my $com (sort keys %$oms) {

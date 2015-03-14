@@ -28,10 +28,12 @@ R_Jz:
  - K: Con #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my ($the, $src, $path) = @$m;
-     sayyl "Con ".wdump $m;
      $src ||= "$the/u";
      $path ||= "$the/n";
-     # or wherever thi src quags
+     # or wherever thi src + carbon quags into existence
+     # root l=$the := $the/n, otherwis whatever is l
+     # so $the/X for subhash X, yin require of user
+     # similar smush in G.drop.$the
      my $p = "$the c";
      my $J = Rw Carbonja $p $the;
      
@@ -42,7 +44,6 @@ R_Jz:
        # ^ hash styles, things are l+com, like $tks
        my $wtf;
        my $coms = {};
-       #sayyl wdump($tks) if $the eq 'esc';
        for my $lj (@$ljs) {
            my $j = lj.j;
            
@@ -97,16 +98,16 @@ R_Jz:
            my $ac = join'',map{"{$_"}split'/',$pin;
            
            say "Injecting   $pin  $ac   with:";
-           sayre ind '   ', $www if $the eq 'esc';
+           sayre ind '   ', slim 300, $www
+               if 0 && $the eq 'esc'; # db
            $R->loadup(R.way.hooks, $ac, $www);
        }
        
-       #exit if $the eq 'esc';
        G.jumb.ConJ->{$the} = $J;
      
 
        
-       #talkyelemental #c
+       #talkyelemental 
        my $sl; # elemental spawn coms
        my $cl = "";
        for (sort keys %$coms) {
@@ -183,7 +184,6 @@ R_Jz:
           $sc ||= $ty->{$type};
           
                if (my $sub = sc.subhash) {
-                   sayre "$k   oooooo $v          ". ki $sc;
                    unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
                    push @lr, '    my ($v,$tks,$'.$sub.') = @_;'; # gets $X, etc
                    $D = ind '     ', $D;
