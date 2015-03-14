@@ -88,11 +88,15 @@ R_Jz:
        my @l = map {"---".$_} `ps faux | grep perl`;
        my $wtf = [];
        for my $l (@l) {
-           $l = [split /\s+/, $l, 5];
-           push $wtf, $l;
+           my @r = split /\s+/, $l, 11;
+           my $cs = [@r[0..3,9,10]];
+           my $o = Rw pul $cs user pid cpu mem time cmd;
+           
+           push $wtf, ki $o;
        }
+       Rw psfaus;
        
-       Rw food/wtfing + $wtf;
+       #Rw food/wtfing + $wtf;
        Rw food/dam;
      dam: | #c
        # mod some menu into space
@@ -148,17 +152,18 @@ R_Jz:
        
        Rw food/ducking + $ox;
        Rw food/wtfing + $wtf;
-     wtfing: | #c 
+     wtfing: | #c
        my $wtf = ar.wtf;
        $wtf ||= Rw wuck $J */curves;
        
        my $wd = wdump(2,$wtf);
+       sayyl "wad: $wd";
        my @l = split /\n/, $wd;
        my $M = [map{
-           ["soooooooooooooooooooooo", '', {s=>$_,i=>1}, {co=>'4fc'}],
+           ["SO", '', {s=>$_,i=>1}, {co=>'4fc'}],
        }@l];
-       my $in = 0.6;
-       my $out = 0.9;
+       my $in = 1.2;
+       my $out = 1.4;
        Rw mo/pwth $J $M $in $out;
        
      ducking: | #c
