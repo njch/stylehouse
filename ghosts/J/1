@@ -462,19 +462,30 @@ R_Jz:
           
       }
       @things
- - K: tly #c { index line thing.r: $j, styles made into an $sc }
+ - K: tyv #c { index of (j.l) / %style#com = $j
+   D: |
+     my $comfl = 1;
+     Rw tlv + $comfl;
+ - K: tly #c { index  of (j.l#com)/ %style = $j  or as above
    D: |
       my @d = Rw tvo $J;
       
       my $tks;
       for my $d (@d) {
-          $tks->{"d.l#d.com d.cv"}->{d.style||''} = $d;
+          my $pl = "d.l#d.com d.cv";
+          my $fl = d.style||'';
+          if (ar.comfl) { # com stuctury ^ or com floating in with style v
+              $pl = "d.l d.cv";
+              $fl .= "#d.com" if d.com;
+          }
+          $tks->{$pl}->{$fl} = $d;
       }
       
       my $tw;
       for my $tk (sort keys %$tks) {
           my $ks = $tks->{$tk};
           my $j = delete $ks->{''};
+          die "no j on $tk" if !$j;
           my $sc = {map{ $_ => $ks->{$_}->{s} } keys %$ks};
           
           my $x = $tw->{$tk} = {};
@@ -484,7 +495,7 @@ R_Jz:
       $tw
  - K: tlv #c { index line thing.r: $j, styles made into an $sc }
    D: |
-      my $tw = Rw tly $J;
+      my $tw = Rw tly;
       
       my $cvtk;
       for my $tk (keys %$tw) {

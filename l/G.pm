@@ -181,6 +181,9 @@ sub ghostlyprinty {
             if ($t->{bb}) {
                 push @s, "* ".scalar(keys %$t);
             }
+            if (@s == 1) {
+                push @s, slim(200, ki($t));
+            }
             push @s, '}%';
         }
         elsif (ref $t) {

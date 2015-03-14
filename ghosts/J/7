@@ -148,18 +148,20 @@ R_Jz:
        # maybe J.by.maka.whol describes it, and provides its contooz (@s)
            # execution order in J.o is ev
            # / thing knows how to suck up others
-       my @things = Rw tvy $J;
+       my $vs = Rw tyv $J;
+       #my @things = Rw tvy $J;
        my @s;
        J.ty.maka.s = \@s;
        
+       my @things = @$vs;
        while (@things) {
-           my $thing = shift @things;
-           my ($j, @sjs) = @$thing;
-           say "j.r";
-           say "   * _.r " for @sjs;
+           my $lv = shift @things;
+           my $j = lv.j;
+           my $sc = lv.sc;
            my $s = j.s;
            my $l = j.l;
-           sayre "y hello ".wdump(1,$thing) if j.l ne j.t;
+           say "j.r";
+           say "   * $_    === ".gp($sc->{$_}) for keys %$sc;
            
            my $cssdb = 0;
            
@@ -168,7 +170,7 @@ R_Jz:
                die "god non 0.9 && j.l eq '/'".wdump(2,$j)
                    if j.cv != 0.9;
                if (@things) {
-                   push @things, $thing; # defer to last
+                   push @things, $lv; # defer to last
                    next;
                }
            }
@@ -186,16 +188,9 @@ R_Jz:
 
            my $ishtml;
            my $at = {};
-           # my $cs = {}; # %(style) / #(comment) / $translation ?
-           # trying with @$css
-           my $css = []; # TODO harder, like style / comment = $v
-           # , can know how to accum/comrpess nice
-           
-                   # < >< >< >?
-                   # < >< >< >?
-                   # < >< >< >?
-     'maka 5.3': | #c thingness
-           if ($l eq '/') { # swoosh, swallows up the rest of @s
+           my $css = [];
+
+           if ($l eq '/') {  # thingness # swoosh, swallows up the rest of @s
                # could know this is coming and defer tiny contents
                # favour big picture, only need to surf by...
                # water keeps watering anywhere you look at it
@@ -205,11 +200,11 @@ R_Jz:
                @s = ();
            }
      'maka 5.5': | #c appearance
-           for my $oj (@sjs) {
-               die "NOT style, multiple same things? ".
-               wdump(2,$oj)."\n\n".wdump(2,$j)
-                   if !oj.style;
-               for (oj.style) {
+           for my $k (sort keys %$sc) {
+               my $cs = $sc->{$k};
+               my ($style,$com) = split '#', $k;
+               
+               for ($style) {
                    # < >< >< >?
                    # < >< >< >?
                    # Jung Cs have injected langauge
@@ -221,29 +216,26 @@ R_Jz:
                    # has a way to $a the gp action within...
                        
                    when ('sf') {
-                       my @cs = map { $R::f->{$_} || die "no style $_"}
-                           split '_', oj.s;
-                       push @$css, @cs;
-                       say "bit of sf: oj.s := @cs" if $cssdb;
+                       push @$css,
+                       map { $R::f->{$_} || die "no style $_"}
+                           split '_', $cs;
+                       sayre "bit of sf: $cs";
                    }
                    when ('css') {
-                       my $cs = oj.s;
                        $cs = join ';', map{"$_:$cs->{$_}"}
                            sort keys %$cs
                            if ref $cs;
                        push @$css, $cs;
-                       say "bit of css: $cs" if $cssdb;
+                       sayre "bit of css: $cs";
                    }
 
-                   at.id = oj.s when 'id';
-                   at.title = oj.s when 'tt';
-                   at.tag = oj.s when 'tag';
+                   at.id = $cs when 'id';
+                   at.title = $cs when 'tt';
+                   at.tag = $cs when 'tag';
 
                    # TODO compile J.ys
                    when ('path') {
                        # should get %idly if not lev/gp too
-                       #sayyl "path oj.s     for oj.r";
-                       #say join "\n", map { "  - _.r " } @sjs;
                    }
                    1 when 'origin';
                    1 when 'waves';
@@ -253,11 +245,11 @@ R_Jz:
                        my $id = $H->mkuid;
                        at.id && die "arl";
                        at.id = $id;
-                       #sayyl "idly phase o oj.r";
-                       J.idyl->($J, $id, $oj);
+                       die $cs;
+                       J.idyl->($J, $id, j.r);
                    }
                    default {
-                       die "style ".wdump($oj);
+                       die "style??".wdump[$style,$cs];
                    }
                }
            }
