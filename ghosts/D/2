@@ -3,18 +3,28 @@ R_Jz:
    n_D:
      any_init: |
        delete G.drop.conv;
+       delete G.drop.vonc; # TODO drop all
        Rw conv;
+       Rw vonc;
        
        Rw suck */dosc;
  - K: conv #c know about elemental stuff
    D: |
-     my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE'};
+     my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE 9 RETURN'};
      G.drop.conv = sub {
           my $v = shift;
          my $dig = $1 if $v =~ /^(\d)/;
-         $pway->{$dig} || die " not convable $dig $v";
+         $pway->{$dig} || die " not convable $dig from $v";
      };
      G.drop.conv->(ar.v) if ar.v;
+ - K: vonc #c elemental
+   D: |
+     G.drop.vonc = sub {
+          my $v = shift;
+         my $dig = $1 if $v =~ /^(\d)/;
+         return $1;
+     };
+     G.drop.vonc->(ar.v) if ar.v;
  - K: Con #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my ($the, $src, $path) = @$m;
@@ -28,54 +38,76 @@ R_Jz:
        # shove togeth modn
        # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
        # tesalation
-       my $tks = Rw tly $J;
+       my $ljs = Rw tlv $J;
        # ^ hash styles, things are l+com, like $tks
        my $wtf;
-       my $wops;
        my $coms = {};
        #sayyl wdump($tks) if $the eq 'esc';
-       for my $r (sort keys %$tks) {
-           my $tk = $tks->{$r};
-           my $j = tk.j;
-           my $sc = tk.sc;
-           say " $tk  j.r and ".wdump($sc);
-           my $type = G.drop.conv->(j.cv);
+       for my $lj (@$ljs) {
+           my $j = lj.j;
            
-           if (my $cs = sc.cs) { # like swimming in charocean ,7_/*}_J
-               for (split ' ', $cs) {
-                   /^(\S+):(\S+)$/ || die;
-                   $wops->{$type}->{$1} = $2; # may dup
-               }
+           if (!%$j) {
+               warn "not j: ".wdump(2,$tk);
+               next;
            }
-           die "j.r non$the?" if j.l ne $the; # how does that work again...
            
-           acum $coms, j.cv => j.com;    # <<<<<<<
+           lj.sc && die "wop";
            
-           push @{$wtf->{$type}||=[]}, j.s;
+           acum $coms, j.cv => j.com;
+           
+           
+           my $cvit = G.drop.vonc->(j.cv);
+           my $was = $wtf->{j.l} ||= {};
+           acum $was, $cvit, j.s; # <<<<<<< cv collapse unto elements
        } 
        
-       my $mw = R.way->find($src) || die "no $src";
+       my $real = {};
+       $real->{$the} = R.way->find($src) || die "no $src";
+       my $imag = {};
        my $tl = {};
-       for my $k (sort keys %$wtf) { 
-           my $v = $wtf->{$k};
-           my $cs = $wops->{$k};
+       for my $l (sort keys %$wtf) {
+           my $was = $wtf->{$l};
+           for my $cvit (sort keys %$was) {
+               my $v = $was->{$cvit};
+               my $type = G.drop.conv->($cvit); # con cvit
+               $tl->{$type} = @$v; # diagsum
+               
+               $v = join "\n", @$v;        # # <<<<<<<
+               
+               if ($real->{$l}) {
+                   # after an elemental aggregation...
+                   # these'll be top posting after cv sort?
+                   $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
+                   
+                   || die "no $type in ...";
+               }
+               else {
+                   $imag->{$l} .= "\n$v";
+               }
+           }
+       }
+       
+       my $all = {%$real, %$imag};
+       die wdump[[sort keys %$real],[sort keys %$imag],[sort keys %$all]]
+       if keys(%$real) + keys(%$imag) != keys %$all;
+       for my $pin (sort keys %$all) {
+           my $www = $all->{$pin};
            
-           $tl->{$k} = @$v; # sum
-           my $join = "\n";
-           $join = ' ' if cs.qw;
-           $v = join $join, @$v;        # # <<<<<<<
-           $v = "qw'$v'" if cs.qw;
+           $pin = $path if $pin eq $the; # $the/n
+           my $ac = join'',map{"{$_"}split'/',$pin;
            
-           $v = "G\.drop\.".$the."\.".cs.droplist." ||= [$v]" if cs.droplist;
-           
-           $v .= ';' if cs.qw || cs.droplist;
-           
-           $mw =~ s/(# $k.*?)$/$1\n$v/sm || die "no $k in ...";
-           
-           #die $mw;
-       } 
-       my $cl = 'ded';
-       my $sl;
+           say "Injecting   $pin  $ac   with:";
+           sayre ind '   ', slim 620, $www;
+           $R->loadup(R.way.hooks, $ac, $www);
+       }
+       
+       G.jumb.ConJ->{$the} = $J;
+     
+
+       
+       #talkyelemental #c
+       my $sl; # elemental spawn coms
+       my $cl = "";
        for (sort keys %$coms) {
            my $c = $coms->{$_};
            my $v = G.drop.conv->($_);
@@ -93,13 +125,6 @@ R_Jz:
        sayyl "$path <- $the     $sl";
        # nice thing to print ^
        
-       my $ac = join'',map{"{$_"}split'/',$path;
-       say "Injecting $path   ($ac)   with ".slim 50, $mw;
-       $R->loadup(R.way.hooks, $ac, $mw);
-       #R.way.hooks->{$path} = $mw;
-       
-       G.jumb.ConJ->{$the} = $J;
-     
  - K: Carbonja #c 3ish
    D: |
        my $tw = Rw fund $p;
@@ -145,7 +170,7 @@ R_Jz:
        $J
  - K: Nucleous #c
    D: |
-          my (@l,@lr,@r);
+          my (@l,@lr,@r); 
           
           $ome = "#$ome" if $ome;
 
@@ -156,31 +181,34 @@ R_Jz:
           # some special K of c may have meta for this too
           $sc ||= $ty->{$type};
           
-          if ($sc && %$sc) {
-              my $t = "$k%cs$ome";
-              say " Jbz   t: $t";
-              # TODO turn into %cs
-              J bz $t 1 $sc
-          }
-          
-               
                if (my $sub = sc.subhash) {
+                   sayre "$k   oooooo $v          ". ki $sc;
                    unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
                    push @lr, 'my ($v,$tks) = @_;';
                    $D = ind '     ', $D;
                    push @r, '};';
-                   push @r, 'push @{G.drop.esc.O}, "'.c.K.'";';
+                   if (my $list = sc.droplist) {
+                       push @r, "push \@{G\.drop\.$the\.$list}, 'c.K';";
+                       J bz $k/$sub#rese$list 1 "G\.drop\.$the\.$list = [];"
+                   }
+                   my $haD = join "\n", $com, @l, @lr, $D, @r;
+                   J bz $k/$sub$ome $v $haD
+                   J bz $k/$sub#rese 1 "G\.drop\.$the\.$sub = {};"
+                   J bz $k/$sub#return 9 "G\.drop\.$the\.$sub;"
+                   J bz $k#upsubhash-$sub 1 "G\.drop\.$the\.$sub || Rw $k/upsubhash/$sub;"
                }
           
           # : EXPR ? DO +
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
+              if (my $sub = sc.subhash) {
+                  $D = "G\.drop\.$the\.$sub\.c.K->(\$v, \$tks)";
+              }
               $D = ind '     ', $D;
               push @r, '}';
-              J bz $k$ome 1 c.K
           }
+          
           # if (sc.this) { DO } +
-               
                if (my $cs = sc.csfrm) {
                    $cs = c.K if $cs eq 'cK';
                    $com .= "cs=$cs  ";
@@ -189,8 +217,6 @@ R_Jz:
                    push @r, '}';
                }
                
-              
-              
                $D = join "\n", $com, @l, @lr, $D, @r;
                J bz $k$ome $v $D
 
