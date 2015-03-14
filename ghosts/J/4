@@ -1,4 +1,104 @@
+
+mod c:
+ - K: yinvis #c the valley - what it means to be here in here YIN
+   mod 1: |
+     # sub-dome and super-modloop
+     # find beginning, end, thickness of loop atmosphere
+     # so thi is where the manifolds can attach in the stackening
+     # the modulation piles them in evenly (todo)
+     my $y = d.yin;
+     if (!ref $y) {
+         $y = d.yin = {thi => $y};
+     }
+     else {
+        if (my $bs = y.bal) {
+            y.thi = @$bs;
+        }
+     }
+     y.in ||= 0.1; 
+     y.out ||= 0.9; # up to
+     y.thi ||= 1;
+     y.space = y.out - y.in; # could spiral much space away from spine
+     die unless y.space > 0;
+     y.aspace = y.space / y.thi;
+     # twist, lay into segment
+     my @is;
+     my $csv = y.in;
+     for (1..y.thi) {
+        push @is, [$csv, $_ / y.thi];
+        $csv += y.aspace;
+     }
+ - K: yangco #c background language expansion, dewey mezrow   YANG
+   mod 2: |
+     my $d = {%$dd};
      
+     (d.cv, d.pcv) = @$is;
+     d.t = d.t."".d.pcv; # delicate? y.bal overs
+     
+     d.css = [@{d.css||[]}];
+     
+     d.cs = {%{d.cs||{}}};
+     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
+     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
+     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
+     # v this should be overkill, supposed ro or yinbal merges to new
+     d.sc = {%{d.sc||{}}};
+     # 
+     d.c || die;
+     
+     my $y = d.yin;
+     if (y.bal) {
+         # locality
+         my $b = y.bal->[$i];
+         say "BAL $i at d.cv    --- d.cvint   ". wdump($b) if ar.V;
+         for my $k (keys %$b) { # c etc merg in per row
+             my $v = $b->{$k};
+             if (ref $v) {
+                 $d->{$k} = {%{$d->{$k}}, %$v};
+             }
+             else {
+                 $d->{$k} = $v;
+             }
+         }
+     }
+     # bal may mod t, this may wannab 
+     d.r = join "\t", d.t, d.cv;
+     
+     my $c = d.c; # <v contation
+     die if !ref $c;
+     
+ - K: yangist #c art
+   mod 2.3: |
+     n.um = sprintf '%.3d', d.cvint;
+     
+ - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
+   mod 7: |
+     # non-thinking modulatios
+     # you could say more compressed
+     # usu static-ish spec, ie make this button green.
+     
+     # the sea of synapse we datum
+     # mod spec lines go: [$l, $thi, 
+     # they were found 
+     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
+     # for comments like v
+     # so comp is the very last hash, the rest is where etc.
+     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
+     #    for sort keys %{d.cs};
+     if (d.sc && %{d.sc}) {
+         push @{d.css}, Rw esc/n $d $sc:d.sc DSC;
+     }
+ - K: dcs #c cs in da pipe, modulating or so
+   mod 7: |
+     # cs.$k.$sc -> squiggly first style compressions
+     # the wilder pole, coming from mods
+     # there's stuff across the whole line too
+     # and what's between...
+     # exp to css for now...
+     if (d.cs && %{d.cs}) { 
+         push @{d.css}, Rw esc/n $d $sc:d.cs DCS;
+     }
+
 R_Jz:
  - K: up #c scan
    D: |
@@ -205,103 +305,3 @@ R_Jz:
        @css;
        
      arp: | #c
-mod c:
- - K: yinvis #c the valley - what it means to be here in here YIN
-   mod 1: |
-     # sub-dome and super-modloop
-     # find beginning, end, thickness of loop atmosphere
-     # so thi is where the manifolds can attach in the stackening
-     # the modulation piles them in evenly (todo)
-     my $y = d.yin;
-     if (!ref $y) {
-         $y = d.yin = {thi => $y};
-     }
-     else {
-        if (my $bs = y.bal) {
-            y.thi = @$bs;
-        }
-     }
-     y.in ||= 0.1; 
-     y.out ||= 0.9; # up to
-     y.thi ||= 1;
-     y.space = y.out - y.in; # could spiral much space away from spine
-     die unless y.space > 0;
-     y.aspace = y.space / y.thi;
-     # twist, lay into segment
-     my @is;
-     my $csv = y.in;
-     for (1..y.thi) {
-        push @is, [$csv, $_ / y.thi];
-        $csv += y.aspace;
-     }
- - K: yangco #c background language expansion, dewey mezrow   YANG
-   mod 2: |
-     my $d = {%$dd};
-     
-     (d.cv, d.pcv) = @$is;
-     d.t = d.t."".d.pcv; # delicate? y.bal overs
-     
-     d.css = [@{d.css||[]}];
-     
-     d.cs = {%{d.cs||{}}};
-     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
-     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
-     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
-     # v this should be overkill, supposed ro or yinbal merges to new
-     d.sc = {%{d.sc||{}}};
-     # 
-     d.c || die;
-     
-     my $y = d.yin;
-     if (y.bal) {
-         # locality
-         my $b = y.bal->[$i];
-         say "BAL $i at d.cv    --- d.cvint   ". wdump($b) if ar.V;
-         for my $k (keys %$b) { # c etc merg in per row
-             my $v = $b->{$k};
-             if (ref $v) {
-                 $d->{$k} = {%{$d->{$k}}, %$v};
-             }
-             else {
-                 $d->{$k} = $v;
-             }
-         }
-     }
-     # bal may mod t, this may wannab 
-     d.r = join "\t", d.t, d.cv;
-     
-     my $c = d.c; # <v contation
-     die if !ref $c;
-     
- - K: yangist #c art
-   mod 2.3: |
-     n.um = sprintf '%.3d', d.cvint;
-     
- - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
-   mod 7: |
-     # non-thinking modulatios
-     # you could say more compressed
-     # usu static-ish spec, ie make this button green.
-     
-     # the sea of synapse we datum
-     # mod spec lines go: [$l, $thi, 
-     # they were found 
-     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
-     # for comments like v
-     # so comp is the very last hash, the rest is where etc.
-     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
-     #    for sort keys %{d.cs};
-     if (d.sc && %{d.sc}) {
-         push @{d.css}, Rw esc/n $d $sc:d.sc DSC;
-     }
- - K: dcs #c cs in da pipe, modulating or so
-   mod 7: |
-     # cs.$k.$sc -> squiggly first style compressions
-     # the wilder pole, coming from mods
-     # there's stuff across the whole line too
-     # and what's between...
-     # exp to css for now...
-     if (d.cs && %{d.cs}) { 
-         push @{d.css}, Rw esc/n $d $sc:d.cs DCS;
-     }
-
