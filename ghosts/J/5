@@ -222,7 +222,8 @@ R_Jz:
                if (my $cs = sc.csfrm) {
                    $cs = c.K if $cs eq 'cK';
                    $com .= "cs=$cs  ";
-                   unshift @l, 'if (my $cs = c.'.$cs.') {';
+                   unshift @l, "if (exists c\.$cs) {"
+                       ."\n    my \$cs = c\.$cs;";
                    $D = ind '     ', $D;
                    push @r, '}';
                }

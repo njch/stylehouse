@@ -109,11 +109,14 @@ R_Jz:
 
  - K: wtf #c pi friendly mod stackening, thingy endian # YIN accumuspinny $M parti
    D: |
-     my $m = ar.m || [];
-     my $l = ar.l || shift @$m;
+     my @m = @{ar.m||[]};
+     my $l = ar.l || shift @m;
      die"nolly" if !$l;
-     my $s = ar.s || shift @$m;
-     my $ss = ar.sc || [@$m];
+     my $s = ar.s || shift @m;
+     my $c = ar.c || {};
+     c.s = $s;
+     
+     my $ss = ar.sc || [@m];
      my $sc;
      if (ref $ss eq 'ARRAY') {
          for (@$ss) {
@@ -125,7 +128,7 @@ R_Jz:
          $sc = $ss;
      }
      
-     my $mo = [$l,'',{s=>$s},$sc];
+     my $mo = [$l,'',$c,$sc];
      if (my $M = ar.M) {
          push @$M, $mo;
      }
