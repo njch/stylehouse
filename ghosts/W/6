@@ -105,30 +105,7 @@ R_Jz:
      }
      o.thi = @{o.r};
      $o
- - K: psfaus #c
-   D: |
-       my @l = `ps faux | grep perl`;
-       my $wtf = [];
-       for my $l (@l) {
-           chomp $l;
-           next if $l =~ /grep perl/;
-           my @r = split /\s+/, $l, 11;
-           my $cs = [@r[0..3,9,10]];
-           my $o = Rw pul $cs user pid cpu mem time cmd;
-           
-           push @$wtf, $o;
-       }
-       my $M = [];
-       for my $f (@$wtf) {
-           push @$M,
-               ["SOI", '',
-               {fo=>[$f,0.8,'psfacts'],i=>1}, {co=>'4fc',zi=>10,mw=>'3em',ws=>'p'}],
-               
-       }
-       my $in = 0.6;
-       my $out = 0.74;
-       my $k = 'psfaus';
-       Rw mo/pwth $J $M $in $out $k;
+
  - K: wtfing #c
    D: |
      my $M = [];
@@ -162,72 +139,9 @@ R_Jz:
      }
      $mo
      
- - K: wt #c
-   n_D:
-     stylename: | #c TODO return _M_ brigy dep text jostle
-       my $sc = {}; # carbon flux $style
-       my $nc = {}; # carbon flux $name
-       
-       if ($style eq 'hut') {
-           sc.co = 'fc7';
-           sc.fs = 14;
-       }
-       if ($style eq 'h00s') {
-           sc.co = '007';
-           sc.sha = '3 1 2 cff6';
-       }
-       # ^ sheety
-       
-       nc.co ||= '4fc';
-       if ($name eq 'C') {
-           nc.co = 'ff0';
-           nc.fs = 19;
-       }
-       if ($name eq '\_ perl stylehouse.pl') {
-           $name = 'stylehouse.pl';
-           nc.fs = 8;
-       }
-       
-       Rw wtf $M style $s:style $sc;
-       Rw wtf $M name $s:name $sc:nc;
-     cpu: | #c usage 0.3u994uoij43
-       my $sc;
-       sc.co = 'fe0';
-       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:28;
-       Rw wtf $M cpu $s:cpu $sc;
-     mem: | #c usage 0.3u994uoij43
-       my $sc;
-       sc.co = '8e0'; # TODO make s m ooth, atomical curve compu
-       sc.fs = $mem<2?4:$mem<5?7:$mem<12?14:28;
-       Rw wtf $M cpu $s:mem $sc;
+
  - K: pi #c
    n_D:
-      psfacts: | #c
-        $_ =  u.cmd;
-        my ($style,$name) =
-            /l\/S\.pm (.+)$/ ? ('hut', $1)
-            :
-            /stylehouse\.pl$/ ? ('h00s', $_)
-            :
-            /\.\/ps/ ? ('ps', $_)
-            :
-            ("weird", $_);
-        
-        $style ne 'hut' && $name =~ s/^[| ]+//;
-        $style eq 'ps' && $name =~ s/\/usr\/bin\/perl //;
-        
-        my $M = []; # HMMMMM may wannsa J?
-        Rw wt/stylename $M $style $name; 
-        
-        Rw wt/cpu $M $cpu:u.cpu;
-        Rw wt/mem $M $mem:u.mem;
-        
-        
-        
-        Rw mo/pwth $J $M;
-        
-        
-        # J.fo->($u,0.3); # fo HASH complicato
       wtf: | #c
         J.bz->('know 0.1', "$u");
       ARRAY: | #c
