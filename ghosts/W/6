@@ -131,11 +131,21 @@ R_Jz:
        Rw mo/pwth $J $M $in $out $k;
  - K: wtfing #c
    D: |
+     my $M = [];
+     Rw wtf + $M;
+     
+     my $in = my $out = $cv;
+     $out += 0.01;
+     Rw mo/pwth $J $M $in $out;
+     
+ - K: wtf #c pi friendly mod stackening, thingy endian # YIN accumuspinny $M parti
+   D: |
+     my $m = ar.m || [];
      my $l = ar.l || shift @$m;
-     my $cv = ar.cv || shift @$m;
+     die"nolly" if !$l;
      my $s = ar.s || shift @$m;
      my $ss = ar.sc || [@$m];
-     my $sc = {};
+     my $sc;
      if (ref $ss eq 'ARRAY') {
          for (@$ss) {
              /^(\S+):(\S+)$/ || die $_;
@@ -145,33 +155,51 @@ R_Jz:
      else {
          $sc = $ss;
      }
-     my $M = [[$l,'',{s=>$s},$sc]];
-     sayre "got $l $cv and $s        $sc";
-     my $in = my $out = $cv;
-     $out += 0.01;
-     Rw mo/pwth $J $M $in $out;
      
- - K: wt #c like mod + pi but more on the thingy end # TODO YIN accumuspinny $M parti
+     my $mo = [$l,'',{s=>$s},$sc];
+     if (my $M = ar.M) {
+         push @$M, $mo;
+     }
+     $mo
+     
+ - K: wt #c
    n_D:
-     stylename: | # TODO primitive spiraly forms from css, dep text jostle
-       $_ = shift @$m;
-       my ($in,$out) = /^(\S+)_(\S+)$/;
-       say "$in _ $out";
+     stylename: | #c TODO return _M_ brigy dep text jostle
+       my $sc = {}; # carbon flux $style
+       my $nc = {}; # carbon flux $name
        
-       my $sc = {};
-       sc.co = 'fc7' if $style eq 'hut';
-       sc.fs = 19 if $style eq 'hut';
-       Rw wtfing $J style $cv:in $s:style $sc;
+       if ($style eq 'hut') {
+           sc.co = 'fc7';
+           sc.fs = 14;
+       }
+       if ($style eq 'h00s') {
+           sc.co = '007';
+           sc.sha = '3 1 2 cff6';
+       }
+       # ^ sheety
        
-       return;
-       my $nc = {};
-       nc.co = 'ff0' if $name eq 'C';
-       nc.fs = 19 if $name eq 'C';
-       Rw wtfing $J name $cv:out $s:name $sc:nc;
+       nc.co ||= '4fc';
+       if ($name eq 'C') {
+           nc.co = 'ff0';
+           nc.fs = 19;
+       }
+       if ($name eq '\_ perl stylehouse.pl') {
+           $name = 'stylehouse.pl';
+           nc.fs = 8;
+       }
        
-       
-
-       
+       Rw wtf $M style $s:style $sc;
+       Rw wtf $M name $s:name $sc:nc;
+     cpu: | #c usage 0.3u994uoij43
+       my $sc;
+       sc.co = 'fe0';
+       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:28;
+       Rw wtf $M cpu $s:cpu $sc;
+     mem: | #c usage 0.3u994uoij43
+       my $sc;
+       sc.co = '8e0'; # TODO make s m ooth, atomical curve compu
+       sc.fs = $mem<2?4:$mem<5?7:$mem<12?14:28;
+       Rw wtf $M cpu $s:mem $sc;
  - K: pi #c
    n_D:
       psfacts: | #c
@@ -179,14 +207,24 @@ R_Jz:
         my ($style,$name) =
             /l\/S\.pm (.+)$/ ? ('hut', $1)
             :
-            /stylehouse\.pl$/ ? ('house', $_)
+            /stylehouse\.pl$/ ? ('h00s', $_)
             :
             /\.\/ps/ ? ('ps', $_)
             :
             ("weird", $_);
         
-        Rw wt/stylename 0.1_0.2 $J $style $name; 
+        $style ne 'hut' && $name =~ s/^[| ]+//;
+        $style eq 'ps' && $name =~ s/\/usr\/bin\/perl //;
         
+        my $M = []; # HMMMMM may wannsa J?
+        Rw wt/stylename $M $style $name; 
+        
+        Rw wt/cpu $M $cpu:u.cpu;
+        Rw wt/mem $M $mem:u.mem;
+        
+        
+        
+        Rw mo/pwth $J $M;
         
         
         # J.fo->($u,0.3); # fo HASH complicato
