@@ -19,7 +19,18 @@ R_Jz:
    D: |
      my $J = Rw Jun;
      $J || die 'no';
-     
+     Rw Jpunt + $J;
+     $J;
+ - K: Jix #c goto: if ! then make it up
+   D: |
+     my $J = Rw Jun;
+     if (!$J) {
+         $J = Rw hiJ +;
+     }
+     Rw Jpunt + $J;
+     $J;
+ - K: Jpunt #c gou
+   D: |
      if (ar.in || ar.r) { 
          my $r = ar.in? {i=>ar.in} : ar.r;
          Rw inness $J $r;
@@ -27,20 +38,16 @@ R_Jz:
      else {
          w mux(u=>$J);
      }
-     $J;
  - K: jin #c +GOTO, replaces J: find name->del->hiJ
    D: |
      my $m = ar.m ||= [];
-     my $name = ar.name ||= shift(@$m);
+     my $name = ar.name ||= ar.m->[0];
      
      Rw Jundel $name;
      
      my $J = Rw hiJ +;
      
-     if (ar.in || ar.r) { 
-         my $r = ar.in? {i=>ar.in} : ar.r;
-         Rw inness $J $r;
-     }
+     Rw Jpunt + $J;
      $J;
  - K: Jundel #c ye
    D: |
@@ -74,14 +81,14 @@ R_Jz:
  - K: hiJ #c add to space # ipv6 goes in
    D: |
      my $u = ar.u ||= {};
-     my $m = ar.m ||= [];
-     my $name = ar.name ||= shift(@$m) || ar.u.name;
+     my @m = @{ar.m||[]};
+     my $name = ar.name ||= u.name || shift @m;
      
-     push @$m, $name if !@$m; # def style = name
+     push @m, $name if !@m; # def style = name
      
      u.name ||= $name;
      u.name .=  "-J".G.jumb.Jnumb++; # additively, paranoid # individualise
-     u.style = [@$m];
+     u.style = [@m];
      
      my $J = Rw makeJ $u;
      
@@ -123,9 +130,7 @@ R_Jz:
      conJ.Jmost = J.Jmost || $J;
      #say "Tent of ".$conJ->pi."  ".join"    ",map{_.point}@F[2,4,6,8]; 
      $conJ;
-
-
- - K: hamz #c
+ - K: hamz #c C-REATIVE ZIPY
    D: |
       my $b = shift @$m;
       my $as;

@@ -257,13 +257,17 @@ sub HGf {
 
 sub ki {
     my $ar = shift;
+    my $re = $ar if $ar =~ /^\d+$/;
+    $ar = shift if defined $re;
     if (!ref $ar || "$ar" !~ /HASH/) {
         return "!%:$ar";
     }
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
-        "$_=$v"
+        $re && ref $v eq 'HASH'
+            ? "$_={ ".ki($re-1, $v)." }"
+            : "$_=$v"
     } sort keys %$ar;
 }
 
