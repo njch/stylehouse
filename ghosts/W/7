@@ -1,4 +1,9 @@
 
+R_Jz:
+ - K: empc #c
+   D: |
+     $v .= 'em' if $v !~ /(%|em|px)/;
+     
 esc c:
  - K: sha #c it
    esc 3: |
@@ -46,12 +51,20 @@ esc c:
      '-webkit-filter:blur('.$v.'px)'
  - K: ml #c it
    esc 3: |
-     $v .= 'em' if $v !~ /(%|em|px)/;
+     $v = Rw empc $v;
      "margin-left:$v"
  - K: mr #c it
    esc 3: |
-     $v .= 'em' if $v !~ /(%|em|px)/;
+     $v = Rw empc $v;
      "margin-right:$v"
+ - K: mt #c it
+   esc 3: |
+     $v = Rw empc $v;
+     "margin-top:$v"
+ - K: mb #c it
+   esc 3: |
+     $v = Rw empc $v;
+     "margin-bottom:$v"
  - K: ab #c solute
    esc 3.3: |
      if ($v =~ /^(\S+:\S+)( \S+:\S+)*$/) {
