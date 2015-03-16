@@ -8,8 +8,9 @@ use feature 'say';
 # two annoying dependencies
 use Redis;
 use Mojo::Pg;
-use Scriptalicious;
+use Mojo::IOLoop::Stream;
 
+use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
@@ -277,6 +278,16 @@ sub unico {
     my @s = eval '"\\x{'.$h.'}"';
     push @s, charinfo($int) if $wantinfo;
     wantarray ? @s : shift @s
+}
+
+sub hexend {
+    $_[0] =~ /([0-f])?([0-f])?([0-f])?$/;
+    map { hex($_) } $1, $2, $3;
+}
+
+sub hexbe {
+    my@h = map { sprintf('%x', int($_)) } @_;
+    wantarray ? @h : join'',@h;
 }
 
 sub hitime {

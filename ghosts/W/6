@@ -15,9 +15,9 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
  - K: cow #c
    mod 3.4: |
      # TODO hex round sweepage
-     my @col = ($1,$2,$3) if $cs =~ /(\d)?(\d)?(\d)?$/;
+     my @col = hexend($cs);
      my @wo = grep{/^[1-9]$/} split '', d.pcv;
-     my $wi = sub { $_[0] += $_[1]; $_[0] -= 9 if 9 < $_[0]; };
+     my $wi = sub { $_[0] += $_[1]; $_[0] -= 15 if 15 < $_[0]; };
      my $win = {};
      for (0,1,2) {
           $win->{$_} = $cs =~ /w$_-(\d)/ ? $1 : $_;
@@ -29,6 +29,25 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
      # hexify? dark is nice
        # art this shit proply ^
      d.cs.olo.co = $col;
+ - K: mixco #c mix into olo.co
+   mod 3.5: |
+     $cs =~ /^($NUM )?(...)$/;
+     my $mix = $1;
+     my @col = hexend($2);
+     my @fro = hexend(d.cs.olo.co);
+     $mix = 0.6;
+     #$mix = ($mix||1) / 1;
+     for (0,1,2) {
+         my $yu = $col[0] - $fro[$_];
+         $yu = $yu * $mix;
+         say " $yu          from $col[0]    $fro[$_]       ";
+         $col[0] -= $yu;
+     }
+     say "$_ -> ". hexbe($_) for @col;
+     #d.cs.olo.co =
+     
+     
+     #
  - K: fs #c MOD MOD MOD 1=stable 2=sweep # & SWIM
    mod 3.3: |
      my ($n1,$n2) = $cs =~ /^($NUM)(?:_($NUM))?/;
