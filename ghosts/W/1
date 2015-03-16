@@ -4,7 +4,6 @@ R_Jz:
    n_D:
      yJup: |
        J.yy.round.id = 3;
-       J.engboo = 1; 
        qw'ollox sur fiz_ave oci'
      curves: |
          #["spun 0" => 0.025],
@@ -112,7 +111,7 @@ R_Jz:
            my $J2 = shift;
            my $M = [
                ['J', 'sur/self', {fo=>[$J,0.1]}],
-               ['ඬ', 'sur/engboo', {}, {co=>(J.engboo?'f85':'126')}],
+               ['ඬ', 'sur/engboo', {}, {co=>(J.ent.1 > 5 ? 'f85':'126')}],
                ['ƾ', 'hull/mkboot', {}, {co=>'8ff'}],
                ['G', 'sur/to:G'],
                ['x', 'sur/X', {}, {co=>'f34',fs=>3}],
@@ -136,8 +135,6 @@ R_Jz:
                   
            Rw mo/pwth $J:J2 $M 0.1-0.3;
        });
-     engboo: | #c
-       J.engboo = !J.engboo;
      gelcaps: | #c egroup
        my $ordy = {qw'
          id 11  A 13  K 17  name 18
@@ -148,12 +145,8 @@ R_Jz:
        '};
        
      up: | #c upper level gplumb
-       if (!J.engboo) {
-           Rw sur/odup;
-           return;
-       }
-       
        Rw inness;
+
        # shadow just right so round
        # sucks each u
        # bzphaz
@@ -308,113 +301,6 @@ R_Jz:
             sc.fs = $curve->{$_} if $si > $_
         }
         return ['lab', '', $c, $sc];
-     odup: | #c old road
-       Rw inness;
-       J.lum = Rw tent lum;
-       Rw sur/heading + $J3:J.lum;
-       
-       
-       my $u = J.on.bb->{"u\t".0.1};
-       Rw sur/oning + $u $J3:J.lum;
-       
-       # pass innessing, group maker
-       # join gel cap knowledge halfway
-       
-       my $y = w $R down; # 2ish aggd knowledge, instructions?
-       
-       my $spcv = 0.2; # BS so has gap in 1 unless id, etc
-       my @r;
-       if (!ref $u) {
-           push @r, { r=>"text", s=>$u, cv=>0.4 };
-       }
-       elsif (ref $u eq 'ARRAY') {
-           my $i = 0;
-           my $warp = @$u; # TODO or less?
-           my @warp = Rw cv/oe off1 $v:warp;
-           for my $ui (@$u) {
-               my $cv = "0.". shift @warp;
-               push @r, { r=>$i, path=>"[".$i++, s=>$ui, cv=>$cv};
-           }
-       }
-       else {
-           my $r = {map{$_=>1} keys %$u};
-           
-           $spcv = 0.3 if u.id;
-
-           # bunch of keys... ^ interpret, compress knowledge
-           # TODO ^make itv like two indexes, polars
-           # any sorta layout knowhow...
-       
-           my @or = grep { delete $r->{$_} } @{y.order};
-           if (ref $u eq 'A') {
-               push @or, sort grep { /^u_/ && delete $r->{$_} } keys %$r;
-           }
-           push @or, sort keys %$r;
-           
-           for (@or) {
-               my $v = y.ordy->{$_};
-               # this is totally 5 in inness doing this 
-               my $cv = "0.$v" if $v;
-               $cv ||= $spcv;
-               push @r, { r=>$_, path=>"{$_", s=>$u->{$_}, cv=>$cv };
-           }
-       }
-       
-       for my $r (@r) { # %{ r, path, v, cv #c
-           
-           J.lum.lev->("r.r/\t".r.cv => sub {
-               my $J2 = shift;
-               
-               # TODO curve ^ # make sf of a Q factor that can see $v somehow
-               J2.bz->(
-                    "lable 0.1" => r.r,
-                    #'%sf#la' => "ab;pr.5;fs$fs;c0", C that < v
-                    "%css#laob" => 'position:absolute;right:0.5em;white-space:pre;',
-                    "%tt#\cv" => r.cv,
-               );
-               if (r.r eq 'id') {
-                   my $axio = ref $u;
-                   J2.bz->(
-                        "axio 0.1" => $axio,
-                        "%css#laob" => 'position:absolute;right:3em;font-size:300%',
-                   );  
-                   if (r.r eq 'K') {
-                       my $axio = u.K;
-                       J2.bz->(
-                            "axe 0.1" => $axio,
-                            "%css#laob" => 'position:absolute;right:2.5em;font-size:300%;color:#f93',
-                       );  
-                   }
-               }
-               
-               # GP ness ^ v leaky
-               my $bcv = 0.4;
-               $bcv = 0.1 if r.cv < 0.2;
-                  
-               J2.fro->("gp\t"."0.6" => r.s,
-                 {cv=>$bcv, makaz=>{ # hooky
-                    "/%css#jit 0.9" => 'position:absolute;left:1em;max-width:14em;overflow:hidden;white-space:nowrap',
-                 }}, # ^ v in out sameish
-               );
-           },
-                 (r.path ? ('%path' => r.path) : ()),
-           );
-            #J.bz->("$r\t"."0.$cv" => ''.$v, '%css'=>'white-space:pre');
-             # has l cursor stashed as a 1shj
-             # TODO 5er grab l cursor and style
-             # ad what kind of cursor, fro delays/syncs
-             # start culture
-             # the middle
-             # start cuddle
-       }
-       
-       Rw round $J2:J.lum $J;
-       
-       my @oooo = Rw tvo $J;
-       for my $j (@oooo) {
-           #say j.r;
-       }
-       
      entropia: | #c kind of same as running intents on u/ etc from inness
        wdump(2,J.onei);
      folw: | #c expand path, may spew arm
