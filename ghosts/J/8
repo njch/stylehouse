@@ -93,17 +93,19 @@ R_Jz:
      my $knowb = {qw{
          W/9 ps
          W/2 oot
+         W/4 oot
+         W/3 hull
+         W/1 ollox
      }};
      for (@wt) {
          my $wu = $1 if /ghosts\/(.+)$/;
-         
-        sayre "Wu: $wu" for 1..8;
-        Rw Jix ps if $wu eq 'J/8'; 
-        if ($wu eq "W/1") {
-            sayre " UGUGUUGX Ollox"; # TODO no work 
-            Rw hull/mksur;
-        }
+         my $wh = $knowb->{$wu};
+         saybl "Wu: $wu -> $wh";
+         $wh || next;
+         Rw Jix $name:wh;
      }
+     
+     return; # add ^ to v
      
      my $n = Rw Jung;
      my (@em) = Rw figure_busy;
