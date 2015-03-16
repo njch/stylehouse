@@ -7,7 +7,8 @@ R_Jz:
        ["y 0" => 0.9],
        ["x 0" => 0.12],
        ["spun 0" => 0.75],  
-       ["curve 0.1" => -0.024], 
+       ["curve 0.1" => -0.024],
+       ["zoom 0" => 0.3],
 
        #["curve 0.4" => 0.3],
      up: |
@@ -33,7 +34,7 @@ R_Jz:
                
        }
        my $in = 0.1;
-       my $out = 0.3;
+       my $out = 0.9;
        my $k = 'psfaus';
        
        my $n = $M->[3]->[2];
@@ -94,22 +95,25 @@ R_Jz:
        # ^ sheety
        
        nc.co ||= '4fc';
-       if ($name eq 'C') {
+       if ($style eq 'hut') {
            nc.co = 'ff0';
-           nc.fs = 19;
+           nc.fs = 29;
        }
        if ($name eq '\_ perl stylehouse.pl') {
            $name = 'stylehouse.pl';
            nc.fs = 8;
        }
+       sc.sha = '1 2 6 000';
+       nc.sha = '1 2 6 000';
        
        Rw wtf $M style $s:style $sc;
        Rw wtf $M name $s:name $sc:nc;
  - K: wt/cpu #c  # TODO make fs smooth, atomical curve compu
    D: |
        my $sc;
-       sc.co = 'fe0';
-       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:28;
+       sc.co = 'eb0';
+       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:18;
+       sc.sha = '1 2 6 000';
        Rw wtf $M cpu $s:cpu $sc;
  - K: wt/mem #c
    D: |

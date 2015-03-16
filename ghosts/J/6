@@ -37,8 +37,7 @@ R_Jz:
          here.creatin = j.s;#$H->ejson(j.s);
          
          
-         here.zoom = 4*$RADIAN * r.zoom if defined r.zoom;
-         here.zoom = undef if exists r.zoom && !defined j.s.zoom;
+         here.zoom = r.zoom if defined r.zoom;
          
          
          w $R atom[$j, $here, $last];
@@ -60,8 +59,12 @@ R_Jz:
          here.rad += here.spin * here.dist * 10;
          # builds rad on rad
          here.rad += last.rad;
-         # distort space
-         here.zoom += last.zoom;
+         # distort space + more ways, orbital
+         # chuck skeletons for mods
+         # adapt M meta for what kinda places things want
+         # into constellations of high level things
+         # atomised hairs
+         here.zoom ||= last.zoom;
          here.dist *= here.zoom if here.zoom;
          # and move
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
