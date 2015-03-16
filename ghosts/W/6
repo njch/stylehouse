@@ -1,6 +1,6 @@
 
-mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ meanings
 
+mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ meanings
  - K: unico #c
    mod 3.3: |
       my $c = ref $cs ? $cs : {};
@@ -19,13 +19,17 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
      my @wo = grep{/^[1-9]$/} split '', d.pcv;
      my $wi = sub { $_[0] += $_[1]; $_[0] -= 15 if 15 < $_[0]; };
      my $win = {};
+     my $wc = {qw{r 0 g 1 b 2}};
      for (0,1,2) {
-          $win->{$_} = $cs =~ /w$_-(\d)/ ? $1 : $_;
+          my $wa = $wc->{$_};
+          $win->{$_} = $cs =~ /w$wa-(\d)/ ? $1 : $_;
      }
-     $wi->($col[0], $wo[$win->{0}]);
-     $wi->($col[1], $wo[$win->{1}]);
-     $wi->($col[2], $wo[$win->{2}]);
-     my $col = sprintf '%03d', map {int($_)} @col;
+     unless ($cs =~ /no/) {
+         $wi->($col[0], $wo[$win->{0}]) if $cs =~ /r/;
+         $wi->($col[1], $wo[$win->{1}]) if $cs =~ /g/;
+         $wi->($col[2], $wo[$win->{2}]) if $cs =~ /b/;
+     }
+     my $col = hexbe(@col);
      # hexify? dark is nice
        # art this shit proply ^
      d.cs.olo.co = $col;
@@ -35,16 +39,16 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
      my $mix = $1;
      my @col = hexend($2);
      my @fro = hexend(d.cs.olo.co);
-     $mix = 0.6;
-     #$mix = ($mix||1) / 1;
      for (0,1,2) {
-         my $yu = $col[0] - $fro[$_];
+         my $yu = $fro[$_] - $col[$_];
+         #$yu *= -1;
          $yu = $yu * $mix;
-         #say " $yu          from $col[0]    $fro[$_]       ";
-         $col[0] -= $yu;
+         say " $yu          from $col[$_]-$fro[$_] * $mix       ";
+         $fro[$_] -= $yu;
      }
-     #say "@col -> ". hexbe(@col);
-     d.cs.olo.co = hexbe(@col);
+     #say hexbe(@fro);
+     #d.cs.olo.co;
+     d.cs.olo.co = hexbe(@fro);
      
      
      #
