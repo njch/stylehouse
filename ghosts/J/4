@@ -14,22 +14,24 @@ R_Jz:
         }
         return $t;
      };
-     map {
-         my $n;
-         if (!ref $_) {
-             die "string: $_";
+     my @mm=();
+     my $fl={};
+     for my $s (@$m) {
+         my $n = {};
+         if (!ref $s) {
+             die "string: $s";
          }
-         elsif (ref $_ eq 'ARRAY') {
+         elsif (ref $s eq 'ARRAY') {
              # to four
-             if (@$_ eq 1) {
-                 my ($i) = @$_;
-                  if (!ref $i) {
+             if (@$s eq 1) {
+                 my ($i) = @$s;
+                 if (!ref $i) {
                      my $ci = $i;
                      for (qw,t y c sc,) {
                          if ($ci =~ s/^(\S+)\s*//) {
-                             my $s = $1;
-                             $s = $peel->($s) if $s =~ /^{/;
-                             $n->{$_} = $s;
+                             my $v = $1;
+                             $v = $peel->($v) if $v =~ /^{/;
+                             $n->{$_} = $v;
                          }
                      }
                  }
@@ -37,42 +39,51 @@ R_Jz:
              }
              else {die'@>2'}
          }
-         elsif (ref $_ eq 'HASH') {
-             if (_.MZ) {
-                 
+         elsif (ref $s eq 'HASH') {
+             if (s.MZ) {
+                 for (split /\s+/, s.MZ) {
+                     /^(.+?)(?::(.+))?$/ || die;
+                     $fl->{$1} = $2 || 1;
+                     sayre "MZfilter: $1 and $2";
+                 }
              }
              else {
              die 'hash: ';
              }
          }
-         else { die "mmtype:$_" }
-         $n
-     } @$m
- - K: im #c a little $m=[$m+] comes to decrypt the lowest $m
-   n_D:
-     otate: | #c
-       my $mm = [];
-       '
-       $m = [ t,y,c,sc ]
-       or
-       $mm = [$m, $m, $m...]
-       
-       theres also top level mods-from-ar ways to look nice src
-       the t will not be an array, so
-       ';
-       my $unmmm = sub
-       for my $n (@$m) {
-           
-       }
-       
+         else { die "mmtype:$s" }
+         for my $k (keys %$fl) {
+             my $v = $fl->{$k};
+             die if $v ne '1';
+             Rw ym/$k $n;
+         }
+         push @mm, $n;
+     }
+     @mm
+ - K: ym/pwth #c
+   D: |
+     n.c.pwth = delete n.y
+ - K: om/bal #c throw $M, also balanced   # o grabs space off 2sphere
+   D: |
+     my $y = Rw winout +;
+     y.bal = [ map {
+         ref $_ eq 'HASH' || die'nothashombal';
+         _.t || die;
+         $_
+     } @$M ]
+     
+     
+     # new light
+ - K: winout #c
+   D: |
+     my $y = ar.y || {};
+     y.in = ar.in || 0.3;
+     y.out = ar.out || 0.4;
+     (y.in,y.out) = split '-', ar.m->[0] if ar.m;
+     $y
  - K: mo/m #c general yinyang komprendonator, vis $M ^v^v^v^v^v
    D: |
-     
-       my $y = {};
-       y.in = ar.in || 0.3;
-       y.out = ar.out || 0.4;
-
-       (y.in,y.out) = split '-', ar.m->[0] if ar.m;
+     my $y = Rw winout +;
 
        y.bal = [ map {
            my ($t,$thing,$c,$sc) = @$_;
