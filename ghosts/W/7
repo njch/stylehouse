@@ -13,28 +13,56 @@ esc c:
  - K: cole #c it
    esc 3: |
         my $h;
-        (h.r, h.g, h.b, h.la) = ($1, $2, $3, $4)
-                  if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die;
+        (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
+                  if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $v";
         
-        if (defined h.la) {
+        if (defined h.a) {
            # do an rgba(255,255,255,1)
-           for my $k (qw'r g b la') {
+           for my $k (qw'r g b a') {
                my $e = $h->{$k};
                $e = "$e$e" if length $e == 1; # out of 255
                $h->{$k} = hex $e;
            }
            h.la = sprintf '%.2f', h.la / 255; # out of 1
-           return "rgba(h.r,h.g,h.b,h.la)";
+           return "rgba(h.r,h.g,h.b,h.a)";
         }
         else {
            return sprintf "#%s%s%s", h.r, h.g, h.b;
         }
- - K: zi #c it
+ - K: hsle #c ray lih, unhassley
    esc 3: |
-     "z-index:$v"
+        my $h;
+        if ($v =~ /^(\S+) (\S+) (\S+)(?: (\S+))?$/) {
+            (h.h, h.s, h.l, h.a) = ($1, $2, $3, $4);
+        }
+        elsif ($v =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?$/) {
+            (h.h, h.s, h.l, h.a) = ('0.'.$1, '0.'.$2, '0.'.$3, '0.'.$4);
+        }
+        else {
+            die "not hsle : $v";
+        }
+        h.h = h.h * 360 if h.h < 1;
+        $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+        
+        my $al = ", h.a" if defined h.a;
+        "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+        # 1423
+     
+ - K: zi #c ground
+   esc 3: |
+     "z-index:".$v
+ - K: zip #c it alley, primary
+   esc 3: |
+     "z-index:".(10+$v)
+ - K: zis #c suuuuuu
+   esc 3: |
+     "z-index:".(20+$v)
  - K: co #c it
    esc 3: |
      "color:".X.cole->($v);
+ - K: hs #c it
+   esc 3: |
+     "color:".X.hsle->($v);
  - K: fs #c it
    esc 3: |
      $v *= 9;
