@@ -82,18 +82,19 @@ R_Jz:
    D: |
      my $d;
      
-     my $o = Rw pul + $cs:m t y c sc;
-     
-     for (qw't y c sc') {
+     my $o = Rw pul + $cs:ar.m t y c sc;
+     for (qw't y c sc') { 
           exists $o->{$_} || next;
           $d->{$_} && die;
           $d->{$_} = $o->{$_};
      }
+     
      if (d.y && !ref d.y) {
          d.y =~ /^($NUM)(?:-($NUM))?/ || die;
          d.y = {in=>$1};
          d.y.out = $2 if $2;
      }
+     
      if (!defined d.y.in) {
          d.y.in = 0.3;
          d.y.out = 0.4;
@@ -116,7 +117,8 @@ R_Jz:
          sayyl "ar.k   d.t   @ @ @ @   ".ki(d.yin)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
-     Rw mod/n +;
+     my $V = 1;
+     Rw mod/n + $V;
      
  - K: mo/m #c mod outgoing # general yinyang komprendonator, vis $M ^v^v^v^v^v
    D: |
@@ -164,6 +166,7 @@ R_Jz:
        Rw Con mod;
      u: | #c make pool, synth space, want arches
        # fork & rejoin to exciting place
+       sayre ki $ar;
        
        # YIN
 
@@ -179,7 +182,7 @@ R_Jz:
 
            # CITOZINE
 
-           #sayre " - ------ d.i :    d.r" if ar.V;
+           sayre " - ------ d.i :    d.r" if ar.V;
            #saybl "Post: d.s       @{d.css} " if ar.V;
            
            if (c.lev) {
@@ -196,78 +199,130 @@ R_Jz:
            }
            $i++;
        }
- - K: esc #c espouse ton carbon product
-   n_D:
-     el:
-       CARBON: | #c
-         {droplist => 'O', subhash => 'X'} # qmco:sutff
-         # different rhythms to qw == hallucinogenic yaml
-     dosc: | #c
-       delete G.drop.esc;
-       Rw Con esc;
-     u: | #c around
-       # so '.this > .that' can move to '.another > .that' bunch of styles
-       # lending to high dynamic, low cost of tape
-       
-       my $seg = ar.m->[0] if ar.m;
-       my @css;
-       die "nonrefsc u asc esc usc". wdump(ar.m) if !ref $sc; # parse strings too
-       # invent the stevecraig format, playing music
-       # YIN
-       
-       # ^ list esc.O
-       my $tks; # expand (k:)?lma:v to lma:k:v
-       for my $k (sort keys %$sc) {
-           my $v = $sc->{$k};
-           my $com = ref $v eq 'HASH' ? $k : '';
-           my $t = ref $v eq 'HASH' ? $v : {$k=>$v};
-           
-           for my $tk (sort keys %$t) {
-               $tks->{$tk}->{$com} = $t->{$tk};
-           }
-       }
-       
-       my $unseen = {map{$_=>1}keys%$tks};
-       my $tw; # bang
-       for my $tk (@{G.drop.esc.O}) {
-           my $oms = $tks->{$tk};
-           delete $unseen->{$tk};
-           next if !$oms;
-           for my $com (sort keys %$oms) {
-               my $v = $oms->{$com};
-               
-               my @s = $X->{$tk}->($v, $tks, $X); # < $mish carbon adapt
-               # could be a big...
-               # tks for X to inject this stream: lma:k:v style (com is k)
-               # make better looking pyramids
-               
-               unshift @s, '%css' if @s == 1;
-               while (@s) {
-                   my $sty = shift @s;
-                   my $s = shift @s;
-                   die "$com $sty all3    @s"
-                       if defined $tw->{$com}->{$tk}->{$sty};
-                       
-                   $tw->{$com}->{$tk}->{$sty} = $s;
-               }
-           }
-       }
-       die "invent ".join' & ', keys %$unseen if keys %$unseen;
-       
-       for my $com (sort keys %$tw) {
-           my $tks = $tw->{$com};
-           for my $tk (sort keys %$tks) {
-               my $stys = $tks->{$tk};
-               for my $sty (sort keys %$stys) {
-                   my $s = $stys->{$sty};
-                   #say " ghave $com $sty => $s";
-                   $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
-                       unless $sty =~ /#/;
-                   push @css, $sty => $s;
-               }
-           }
-       }
-       #sayre "CSS  @css";
-       @css;
-       
+mod c:
+ - K: yinvis # the valley - what it means to be here in here YIN
+   mod 1: |
+     # sub-dome and super-modloop
+     # find beginning, end, thickness of loop atmosphere
+     # so thi is where the manifolds can attach in the stackening
+     # the modulation piles them in evenly (todo)
+     my $y = d.yin;
+     if (!ref $y) {
+         $y = d.yin = {thi => $y};
+     }
+     else {
+        if (my $bs = y.bal) {
+            y.thi = @$bs;
+        }
+     }
+     y.in ||= 0.1; 
+     y.out ||= 0.9; # up to
+     y.thi ||= 1;
+     y.space = y.out - y.in; # could spiral much space away from spine
+     y.space *= -1 unless y.space > 0;
+     y.aspace = y.space / y.thi;
+     # twist, lay into segment
+     my @is;
+     my $csv = y.in;
+     for (1..y.thi) {
+        my $wide = sprintf '%.6f', $csv;
+        my $narr = sprintf '%.6f', $_ / y.thi;
+        push @is, [$wide, $narr];
+        $csv += y.aspace;
+     }
+ - K: yangbal # background language expansion, dewey mezrow   YANG
+   mod 2: |
+     my $d = {%$dd};
+     
+     (d.cv, d.pcv) = @$is;
+     d.t = d.t."".d.pcv; # delicate? y.bal overs
+     
+     d.css = [@{d.css||[]}];
+     
+     # d.c.$modk = the unravelling
+     # d.cs.$modk.$esck = the outwards
+     # d.sc.$esck = outwards, passed
+     d.cs = {%{d.cs||{}}};
+     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
+     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
+     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
+     # v this should be overkill, supposed ro or yinbal merges to new
+     d.sc = {%{d.sc||{}}};
+     # 
+     d.c || die;
+     
+     my $y = d.yin;
+     if (y.bal) {
+         # locality
+         my $b = y.bal->[$i];
+         say "BAL $i at d.cv    --- d.cvint   ".ki 1, $b if ar.V;
+         for my $k (keys %$b) { # c etc merg in per row
+             my $v = $b->{$k};
+             if (ref $v) {
+                 $d->{$k} = {%{$d->{$k}}, %$v};
+             }
+             else {
+                 $d->{$k} = $v;
+             }
+         }
+     }
+     # bal may mod t, this may wannab 
+     d.r = join "\t", d.t, d.cv; # always update trio
+     
+     
+     my $c = d.c; # <v contation
+     die "notrefc  $c" if !ref $c;
+
+ - K: yangist #c art
+   mod 2.3: |
+     n.um = sprintf '%.3d', d.cvint;
+     
+ - K: s #c yes
+   mod 3.1: |
+     acum $n, gl => $cs; # some funky magnation
+ - K: i #c  $i is the osc, attach on $v to $n
+   mod 3.1: |
+     d.t = d.t."-".n.iii->{$cs}++; 
+     d.r = join "\t", d.t, d.cv;
+ - K: carbcap #c jel like language # n.gl gravity, implosi # agg from chaos
+   MZ: {}
+   mod 3.9: |
+     if (n.gl && @{n.gl}) {
+         my $was = d.s;
+         d.s = join'',@{n.gl};
+         #saybl "carb capin (was '$was') --> d.s" if ar.V;
+         delete n.gl;
+         # roll ^ dough, the gel that gl may be
+         # now snaps off a branch
+         # continuous notation we still pick up as chunks of lingo geom
+     }
+     # ^ es also like looking for most magnity n.thee value heading for $s
+     # carbdome...
+ - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
+   mod 7: |
+     # non-thinking modulatios
+     # you could say more compressed
+     # usu static-ish spec, ie make this button green.
+     
+     # the sea of synapse we datum
+     # mod spec lines go: [$l, $thi, 
+     # they were found 
+     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
+     # for comments like v
+     # so comp is the very last hash, the rest is where etc.
+     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
+     #    for sort keys %{d.cs};
+     if (d.sc && %{d.sc}) {
+         push @{d.css}, Rw esc/n $d $sc:d.sc DSC;
+     }
+ - K: dcs #c cs in da pipe, modulating or so
+   mod 7: |
+     # cs.$k.$sc -> squiggly first style compressions
+     # the wilder pole, coming from mods
+     # there's stuff across the whole line too
+     # and what's between...
+     # exp to css for now...
+     if (d.cs && %{d.cs}) { 
+         push @{d.css}, Rw esc/n $d $sc:d.cs DCS;
+     }
 
