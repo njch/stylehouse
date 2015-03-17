@@ -10,7 +10,6 @@ use Redis;
 use Mojo::Pg;
 use Mojo::IOLoop::Stream;
 
-use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
