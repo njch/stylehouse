@@ -239,31 +239,4 @@ R_Jz:
       J.on bz u%travely 0.1 J.onei.t
       J.on bz u%travel 0.1 J.onei
       
- - K: conroll #c rolling con tents, the C Js, away into shadow TIME
-   D: |
-     my @con = map{_.i} @{J.A.n_tent||[]};
-     @con = grep { !_.yy.conroll.dont } @con;
-     
-     unshift @con, $J;
-     
-     @con = grep { keys %{_.bb} } @con;
-     return if !@con;
-     
-     say "conrolling ".$J->pi."   tents ".join "    ",
-         map { _.name =~ /^(J.name\-)?(.+)$/; "$2 * ".
-         do {
-             my @log = sort keys %{_.bb};
-            @log > 5 ? scalar(@log)
-            : join "'", @log;
-         };
-         } @con;
-     
-     # dont mention mods? sum mods?
-     #sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
-     #    sort grep {!/\%/} keys %{J.bb};
-
-     for my $tent (@con) {
-         #say "Scraping out the ".$tent->pi;
-         Rw suJ $J:tent;
-     }
 
