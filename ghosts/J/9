@@ -70,4 +70,26 @@ R_Jz: # shadows for the land
          [sqw  => 33, $win.' 1 0 1 0',
            'color:#95d;font-size:'.($dis * (1800/5)).'%;-webkit-filter:blur(1px);white-space:pre;'],
        #};
+ - K: cv/oe #c mod cove
+   D: |
+       my $v = ar.v || ar.thi || 9;
+       my $wi = length($v);
+       my $thi = join '', ('9') x $wi;
+       my $n = 1;
+       
+       my $squidge;
+       if (ar.off) { # offs both ends? plot shit
+           $squidge = int(ar.off * ($thi / ($v))); # TODO not quite
+           $n += $squidge;
+           $v += $squidge; 
+       }
+       
+       my @is = map { sprintf '%0'.$wi.'d', $_  }
+           map { $_ - $squidge }
+           map { int($_ * ($thi / $v)) } $n..$v;
+       
+       #sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
+       die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
+       @is;
+       
 

@@ -223,13 +223,24 @@ R_Jz:
      
      my $name = J.name.'-'.$na;
      
-     my $conJ = Rw loJ $name;
+     my $conJ = Rw loJ $J $name;
      
      $J->{$na} = $conJ;
      conJ.A->umk($J, 'tent');
      conJ.Jmost = J.Jmost || $J;
      #say "Tent of ".$conJ->pi."  ".join"    ",map{_.point}@F[2,4,6,8]; 
      $conJ;
+ - K: loJ #c les con tent
+   D: |
+     my $u = ar.u ||= {};
+     my $m = ar.m ||= [];
+     my $name = ar.name ||= shift(@$m) || ar.u.name;
+     
+     # etc $m
+     u.name ||= $name;
+     
+     say "loJ: u.name" if !J.q;
+     Rw makeJ $u;
  - K: conroll #c rolling con tents, the C Js, away into shadow TIME
    D: |
      my @con = map{_.i} @{J.A.n_tent||[]};

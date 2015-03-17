@@ -19,7 +19,7 @@ mod c:
      y.out ||= 0.9; # up to
      y.thi ||= 1;
      y.space = y.out - y.in; # could spiral much space away from spine
-     die unless y.space > 0;
+     y.space *= -1 unless y.space > 0;
      y.aspace = y.space / y.thi;
      # twist, lay into segment
      my @is;
@@ -124,29 +124,55 @@ mod c:
      }
 R_Jz:
 
- - K: cv #c mod cove
-   n_D:
-     oe: |
-       my $v = ar.v || ar.thi || 9;
-       my $wi = length($v);
-       my $thi = join '', ('9') x $wi;
-       my $n = 1;
-       
-       my $squidge;
-       if (ar.off) { # offs both ends? plot shit
-           $squidge = int(ar.off * ($thi / ($v))); # TODO not quite
-           $n += $squidge;
-           $v += $squidge; 
-       }
-       
-       my @is = map { sprintf '%0'.$wi.'d', $_  }
-           map { $_ - $squidge }
-           map { int($_ * ($thi / $v)) } $n..$v;
-       
-       #sayyl "thehehehhe $squidge $n $v thi $thi". wdump[@is]; 
-       die "numbe rdist ".wdump(2,[$v,$wi,$thi,@is]) if uniq(@is) != @is;
-       @is;
-       
+
+ - K: mm #c mthem
+   D: |
+     my $peel = sub { # simple hash from string
+        my $s = shift;
+        $s =~ s/^{//;
+        $s =~ s/}$//;
+        my @t = split ',', $s;
+        my $t = {};
+        for (@t) {
+            my ($k, $v) = split ':', $_;
+            $t->{$k} = $v;
+        }
+        return $t;
+     };
+     map {
+         my $n;
+         if (!ref $_) {
+             die "string: $_";
+         }
+         elsif (ref $_ eq 'ARRAY') {
+             # to four
+             if (@$_ eq 1) {
+                 my ($i) = @$_;
+                  if (!ref $i) {
+                     my $ci = $i;
+                     for (qw,t y c sc,) {
+                         if ($ci =~ s/^(\S+)\s*//) {
+                             my $s = $1;
+                             $s = $peel->($s) if $s =~ /^{/;
+                             $n->{$_} = $s;
+                         }
+                     }
+                 }
+                 else {die $i}
+             }
+             else {die'@>2'}
+         }
+         elsif (ref $_ eq 'HASH') {
+             if (_.MZ) {
+                 
+             }
+             else {
+             die 'hash: ';
+             }
+         }
+         else { die "mmtype:$_" }
+         $n
+     } @$m
  - K: im #c a little $m=[$m+] comes to decrypt the lowest $m
    n_D:
      otate: | #c
@@ -203,7 +229,7 @@ R_Jz:
      
      die if !ref d.c;
      my $wtf = ar.k || $F[4]->{point}.'ᣝ'.$F[2]->{point};
-     if (!ar.q) {
+     if (!ar.q && !J.q) {
          sayyl "$wtf @ @ @ @ @ @ @ @  d.t d.yin   "
              .ki(d.c||{})."    ".ki(d.sc||{})
      }

@@ -70,7 +70,7 @@ hooks:
     # the W side is R:M.Wo (G.theM.Wo)
     my $a = {%$ar};
     my $u = delete a.u;
-    saybl "Muxing ".$G->pi."       with ".$u->pi;
+    saybl "Muxing ".$G->pi."       with ".$u->pi if !G.q;
     H.G w busy;
     a.v ||= 7; 
     w $M mux[$MR,$a,$u];
@@ -81,6 +81,8 @@ hooks:
     my $a = {%$ar};
     my $u = delete a.u;
     w $M remux[$MR,$a,$u];
+  any_init: |
+    G.q = 1;
 R_Ms:
   event: | # BEFORE
     my $uy = $i if $i ne $ux;
@@ -113,7 +115,6 @@ R_Ms:
     G.theM.Wo.K = "WoM"; # TODO
     
     # ^ for holding the C:W, C:Ms, C:uxs
-    
     my $uWa = {K => 'W', W => G.theM.Wo, R => G.theM};
     G.theM.W = w G.theM.Wo fuu(u => $uWa); # the unified into wormhole
     # ^ hardlink
@@ -382,7 +383,7 @@ R_Mz:
             }
 
             $p->{$cv}->{"$to/s.id"} = $s;
-            sayre sprintf '%22s%s', j.r, " [ $cv";
+            sayre sprintf '%22s%s', j.r, " [ $cv" if !G.q;
         }
   - K: three #c
     babz:
@@ -441,7 +442,7 @@ R_Mz:
             }
             elsif ($to eq 'M') {
                 my $M = $s;
-                saybl "MMMM M-M.id: ". $M->pi;
+                saybl "MMMM M-M.id: ". $M->pi if !G.q;
                 # TODO know about which i's at this point
                 # so to try and join up _uS
                 # taking the Udown backwards seems like less work

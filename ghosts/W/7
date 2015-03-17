@@ -80,6 +80,19 @@ esc c:
  - K: opa #c seetrhu
    esc 3: |
      "opacity:$v"
+ - K: tr #c filterszzzz weird style using com to agg.
+   esc 3.7: |
+     return '' if tks.tr.comp;
+     my @f;
+     for (qw(rotate )) {
+         my $v = tks.tr->{$_};
+         defined $v || next;
+         push @f, "$_($v)";
+     }
+     tks.tr.comp = '-webkit-transform:'.join' ', @f
+ - K: rad #c radial tr
+   esc 3.6: |
+     tks.tr.rotate = $v.'rad'
  - K: fl #c filterszzzz weird style using com to agg.
    esc 3.7: |
      return '' if tks.fl.comp;
