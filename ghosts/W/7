@@ -82,22 +82,26 @@ esc c:
      "opacity:$v"
  - K: fl #c filterszzzz weird style using com to agg.
    esc 3.7: |
-     tks.fl.comp ||= do {
-       my @f;
-       for (qw(blur saturation contrast lightness)) {
-           my $v = tks.fl->{$_};
-           defined $v || next;
-           push @f, "$_($v)";
-       #
-       }
-       '-webkit-filter:'.join' ', @f
+     return '' if tks.fl.comp;
+     my @f;
+     for (qw( saturate blur contrast brightness)) {
+         my $v = tks.fl->{$_};
+         defined $v || next;
+         push @f, "$_($v)";
      }
+     tks.fl.comp = '-webkit-filter:'.join' ', @f
  - K: blr #c it
    esc 3.6: |
      tks.fl.blur = $v.'px'
- - K: sat #c it
+ - K: sat #c it saturation
    esc 3.6: |
-     tks.fl.saturation = $v
+     tks.fl.saturate = $v
+ - K: con #c it contrast
+   esc 3.6: |
+     tks.fl.contrast = $v
+ - K: bri #c it bright
+   esc 3.6: |
+     tks.fl.brightness = $v
  - K: ml #c it
    esc 3: |
      $v = Rw empc $v;
