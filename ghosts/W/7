@@ -80,10 +80,24 @@ esc c:
  - K: opa #c seetrhu
    esc 3: |
      "opacity:$v"
+ - K: fl #c filterszzzz weird style using com to agg.
+   esc 3.7: |
+     tks.fl.comp ||= do {
+       my @f;
+       for (qw(blur saturation contrast lightness)) {
+           my $v = tks.fl->{$_};
+           defined $v || next;
+           push @f, "$_($v)";
+       #
+       }
+       '-webkit-filter:'.join' ', @f
+     }
  - K: blr #c it
    esc 3.6: |
-     n.flt.blur = $v.'px';
-     '-webkit-filter:blur('.$v.'px)'
+     tks.fl.blur = $v.'px'
+ - K: sat #c it
+   esc 3.6: |
+     tks.fl.saturation = $v
  - K: ml #c it
    esc 3: |
      $v = Rw empc $v;
