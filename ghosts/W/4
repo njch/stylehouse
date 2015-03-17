@@ -1,107 +1,125 @@
-R_Jz:
 
- - K: ash #c woosh
-   n_D:
-     life: |
-       die;
-       sayre "GOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" for 1..12;
-       J.yy.jiter = 'borg';
- - K: afghanrug #c
-   n_D:
-     mods:
-        -
-          - afghanrug
-          - in: 0.1
-            out: 0.9
-            thi: 13
-          - s:   ஓ୶
-            cow: rgb f3a
-            mixco: 0.5 582
-          - blr: 4
-            fs: 152.9
-            sat: 1
-            bri: 0.3
-            con: 3
-            sha: 3 3 3 034
-            zi: 5
- - K: fiz_ave #c
-   n_D:
-     mods:
-        - 
-          - sqww
-          - in: 0.001
-            out: 0.8
-            thi: 28
-          - s: ஓ୶
-            cow: rgb 155
-            mixco: 0.4 300
-            zim: 4^v1
-          - blr: 5
-            sat: 6
-            sha: 5 5 5 000
-            fs: 141
-            ml: -0.1em
- - K: flax #c
-   n_D:
-     mods:
-        - 
-          - flax
-          - 21
-          - s: ॐॐॐॐॐॐ
-            cow: rg 86e
-            zim: 5^v0.5*2
-            mixco: 0.61 050
-          - blr: 2
-            fs: 54.9 
-            #hs: 44.3.4.8
- - K: ocean #c
-   n_D:
-     mods:
-       -
-         - ocean-squi
-         - 16 # rivm add space every 1/3 so these go @ ~ ~ @ ~ ~ or so
-         - s: '~'
-         - fs: 24
-           zi: 3
-       -
-         - ocean-eddy
-         - 8
-         - cow: f33
-           #unico: 132
-           s: '@'
-         - fs: 73
-           zi: 2
- - K: oci #c
-   n_D:
-     mods:
-       -
-         - ociw
-         - 16 # rivm add space every 1/3 so these go @ ~ ~ @ ~ ~ or so
-         - s: '|'
-           cow: b 127
-         - fs: 22 # TODO local zoom...
-           co: aaf
-           sha: 3 3 5 fff
-           opa: 0.5
-           zi: 6
- - K: theself #c CURVE domer
-   n_D:
-     yJup: |
-       J.yy.round.id = 3;
-       die;
-       'theself', 'sur'
-     curves: |
-         ["spun 0" => 0.025], 
-         ["curve 1" => 0.211],
-         ["zoom 0" => 0.35],
-         ["zoom 0.21" => 0.45],
-         ["y 0" => 0],
-         ["x 0" => 0.8],
-         ["x 0.1" => 0.7],
-         ["curve 0.3" => -0.111],
-         
-     mods: |
-       [sq   => 10,  '~'],
-       #[sqat   => 20,  '^', {}, 'color:blue', in => 10, ],
-       #[sqat   => 20,  'v', {}, 'color:blue', out => 10, ],
+mod c:
+ - K: yinvis #c the valley - what it means to be here in here YIN
+   mod 1: |
+     # sub-dome and super-modloop
+     # find beginning, end, thickness of loop atmosphere
+     # so thi is where the manifolds can attach in the stackening
+     # the modulation piles them in evenly (todo)
+     my $y = d.yin;
+     if (!ref $y) {
+         $y = d.yin = {thi => $y};
+     }
+     else {
+        if (my $bs = y.bal) {
+            y.thi = @$bs;
+        }
+     }
+     y.in ||= 0.1; 
+     y.out ||= 0.9; # up to
+     y.thi ||= 1;
+     y.space = y.out - y.in; # could spiral much space away from spine
+     y.space *= -1 unless y.space > 0;
+     y.aspace = y.space / y.thi;
+     # twist, lay into segment
+     my @is;
+     my $csv = y.in;
+     for (1..y.thi) {
+        my $wide = sprintf '%.6f', $csv;
+        my $narr = sprintf '%.6f', $_ / y.thi;
+        push @is, [$wide, $narr];
+        $csv += y.aspace;
+     }
+ - K: yangbal #c background language expansion, dewey mezrow   YANG
+   mod 2: |
+     my $d = {%$dd};
+     
+     (d.cv, d.pcv) = @$is;
+     d.t = d.t."".d.pcv; # delicate? y.bal overs
+     
+     d.css = [@{d.css||[]}];
+     
+     d.cs = {%{d.cs||{}}};
+     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
+     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
+     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
+     # v this should be overkill, supposed ro or yinbal merges to new
+     d.sc = {%{d.sc||{}}};
+     # 
+     d.c || die;
+     
+     my $y = d.yin;
+     if (y.bal) {
+         # locality
+         my $b = y.bal->[$i];
+         #say "BAL $i at d.cv    --- d.cvint   ".ki 1, $b if ar.V;
+         for my $k (keys %$b) { # c etc merg in per row
+             my $v = $b->{$k};
+             if (ref $v) {
+                 $d->{$k} = {%{$d->{$k}}, %$v};
+             }
+             else {
+                 $d->{$k} = $v;
+             }
+         }
+     }
+     # bal may mod t, this may wannab 
+     d.r = join "\t", d.t, d.cv; # always update trio
+     
+     
+     my $c = d.c; # <v contation
+     die "notrefc" if !ref $c;
+     
+ - K: yangist #c art
+   mod 2.3: |
+     n.um = sprintf '%.3d', d.cvint;
+     
+ - K: s #c yes
+   mod 3.1: |
+     acum $n, gl => $cs; # some funky magnation
+ - K: i #c  $i is the osc, attach on $v to $n
+   mod 3.1: |
+     d.t = d.t."-".n.iii->{$cs}++; 
+     d.r = join "\t", d.t, d.cv;
+ - K: carbcap #c jel like language # n.gl gravity, implosi # agg from chaos
+   MZ: {}
+   mod 3.9: |
+     if (n.gl && @{n.gl}) {
+         my $was = d.s;
+         d.s = join'',@{n.gl};
+         #saybl "carb capin (was '$was') --> d.s" if ar.V;
+         delete n.gl;
+         # roll ^ dough, the gel that gl may be
+         # now snaps off a branch
+         # continuous notation we still pick up as chunks of lingo geom
+     }
+     # ^ es also like looking for most magnity n.thee value heading for $s
+     # carbdome...
+ - K: dsc #c cs on d, outside mod twistor pipe, modline 4th
+   mod 7: |
+     # non-thinking modulatios
+     # you could say more compressed
+     # usu static-ish spec, ie make this button green.
+     
+     # the sea of synapse we datum
+     # mod spec lines go: [$l, $thi, 
+     # they were found 
+     # also any $sc maybe be like {$k => $sc, $k2 => $sc2}
+     # for comments like v
+     # so comp is the very last hash, the rest is where etc.
+     #push @{d.css}, '%css#'.$_ => d.cs->{$_}
+     #    for sort keys %{d.cs};
+     if (d.sc && %{d.sc}) {
+         push @{d.css}, Rw esc/n $d $sc:d.sc DSC;
+     }
+ - K: dcs #c cs in da pipe, modulating or so
+   mod 7: |
+     # cs.$k.$sc -> squiggly first style compressions
+     # the wilder pole, coming from mods
+     # there's stuff across the whole line too
+     # and what's between...
+     # exp to css for now...
+     if (d.cs && %{d.cs}) { 
+         push @{d.css}, Rw esc/n $d $sc:d.cs DCS;
+     }
 
