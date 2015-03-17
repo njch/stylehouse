@@ -182,86 +182,14 @@ R_Jz:
        # collections of junk
        for my $rr (@re) {
            my $M = [
-               Rw sur/rr_cap $rr,
-               Rw sur/rr_bod $rr,
+               Rw ii/cap $rr,
+               Rw ii/bod $rr,
            ];
            my $in = rr.in;
            my $out = rr.out;
            Rw mo/pwth $J $M $in $out;
        }
        sayre "==\n== delt ".F_delta."\n==";
-     rr_cap: | #c zom
-       my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
-       my $M = [
-           ['_', '', {s=>rr.j.l}, {fs=>18, co=>'38f'}],
-           ['=','', {}, {fs=>12,co=>'000'}],
-           ['i', 'sur/to:/', {fo=>[vli.s,0.1]}],
-       ];
-       my ($vly) = grep{_.style eq 'travely'} @{rr.sjs};
-       if ($vly && @{vly.s}) {
-           my $s = " ".join(" ",@{vly.s})." ";
-           push @$M,
-               ['travely', '', {s=>$s, wsp=>1}],
-               ['S', '', {fo=>[rr.j.s, 0.2]}],
-       }   
-       # ^ all that within v
-       my $lev = sub {
-           my $J2 = shift;
-           Rw mo/pwth $J:J2 $M 0.1-0.3;
-       };
-       ['cap','', {lev=>$lev}]
-     rr_bod: | #c boodle am
-       my $in = rr.in;
-       my $out = rr.out;
-       my $phi = ($out - $in) * rr.thi; # normal lines per 0.1
-       my $thi = $phi * 2; # oundo big window, bod small
-       
-       my $j = rr.j;
-       my $sjs = rr.sjs;
-       my $u = j.s;
-       say "bod $in <--> $out  $thi     j.r"; # TODO say big
-       
-       # how to what = @{rr.sjs}
-       my $o = Rw oundo $thi $u;
-       
-       # between here and oundo is:
-       # the art of extracting segments like pi/HASH etc
-       # anything you want more than a list for
-       # hive of piish style joined by opportunism to oundo pipe
-       # must be offered & consumed
-       # like diffusing a bomb
-       # through quantum vectors to rate things
-       # explode enthusiastically the things inside
-       # and the alterations too,
-       # like why don't you combine this this way
-       # so things are things
-       # but there's real datastructurey first order things
-       # and all the other stuff on top
-       # then it flushes out reality by ways it wants
-       # by sorting by yay style then etc.
-       # making pods
-       # here are lots of pods:
-       warn "More o.more" if o.more;
-       my @M;
-       for my $r (@{o.r}) {
-           my $M = [];
-           
-           # SZOOOOOOOOOOOM
-           push @$M, Rw sur/labegy $r;
-           
-           push @$M, Rw sur/pi $r;
-           
-           my $lev = sub {
-               my $J2 = shift;
-               my $q = 1;
-               Rw mo/pwth $J:J2 $M 0.1-0.3 $q;
-               # chain that ^ into c of that v to fractionate by 0
-               # pyramoid the tape nice by this chaining
-           };
-           
-           push @M, [r.r, r.path, {lev=>$lev}];
-       }
-       @M
      pi: | #c THE WHOLE GHUTS
        my ($c,$sc);
        
