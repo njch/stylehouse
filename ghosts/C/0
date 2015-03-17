@@ -1,3 +1,30 @@
 C:
- - Con #c waiting for tension
+ - K: Con #c waiting for tension
+R_Jz:
+ - K: ii/Jhead #c J _
+   D: |
+       my $out = ar.out || 0.01;
+         J.lev->("J\t$out", sub {
+             my $J2 = shift;
+             my $M = [
+                 ['J', 'hull/mk:Jself', {fo=>[$J,0.1]}],
+                 ['ඬ', 'hull/mk:kapow', {}, {co=>(J.ent.1 > 5 ? 'f85':'126')}],
+                 ['ƾ', 'hull/mk:jin oot', {}, {co=>'8ff'}],
+                 ['G', 'sur/to:G'],
+                 ['x', 'hull/mk:X', {}, {co=>'f34',fs=>7}],
+                 ['Jung', 'sur/to:Jung', {}, {co=>'68d', fs=>5}],
+             ];
+             Rw mo/pwth $J:J2 $M 0.1-0.3;
+         }, '%css'=>'font-size:200%');
+ - K: ii/ornate #c arabic ornate parenthesis
+   D: |
+       my $gl = ar.out ? '﴿' : '﴾';
+       my $at = ar.out || 0.01;
+       my $M = [];
+       # do the pwth parse into an $M too
+       push @$M, [ornate => {at=>$at}, {s=>$gl}, {fs=>100,zip=>3}];
+       
+       Rw mo/pwth $J $M 0.1-0.3;
+       # 
+       
 

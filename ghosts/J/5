@@ -101,9 +101,8 @@ R_Jz:
            $pin = $path if $pin eq $the; # $the/n
            my $ac = join'',map{"{$_"}split'/',$pin;
            
-           say "Injecting   $pin  $ac   with:";
-           sayre ind '   ', slim 5300, $www
-               if 0 && $the eq 'mod'; # db
+           #say "Injecting   $pin  $ac   with:";
+           #sayre ind '   ', slim 5300, $www;
            $R->loadup(R.way.hooks, $ac, $www);
        }
        
@@ -112,21 +111,17 @@ R_Jz:
 
        
        #talkyelemental 
-       my $sl; # elemental spawn coms
-       my $cl = "";
+       my $ev;
        for (sort keys %$coms) {
            my $c = $coms->{$_};
-           my $v = G.drop.conv->($_);
-           my $fr = " ";
-           if ($v ne $cl) {
-               $fr = "";
-               $cl = $v;
-               $sl .= ") " if $sl;
-               $sl .= "$v*$tl->{$v}("; # sum
-           }
-           $sl .= ${fr}.join " ", @$c;
+           push @{$ev->{floor($_)}||=[]}, @$c;
        }
-       $sl.=")";
+       my $sl;
+       for my $k (sort keys %$ev) {
+           my $r = $ev->{$k};
+           $sl .= "   $k * ".(0+@$r)."(".slim(25,join(' ',@$r)).")";
+       }
+        
        #saybl " _________________  $mw" if $the eq 'esc';
        sayyl "$path <- $the     $sl";
        # nice thing to print ^
