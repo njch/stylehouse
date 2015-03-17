@@ -5,7 +5,7 @@ R_Jz:
      my $peel = sub { # simple hash from string
         my $s = shift;
         $s =~ s/^{//;
-        $s =~ s/}$//;
+        $s =~ s/}$// || die "unpealable $s";
         my @t = split ',', $s;
         my $t = {};
         for (@t) {
@@ -46,6 +46,7 @@ R_Jz:
                      $fl->{$1} = $2 || 1;
                      sayre "MZfilter: $1 and $2";
                  }
+                 next;
              }
              else {
              die 'hash: ';
@@ -63,29 +64,64 @@ R_Jz:
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
- - K: om/bal #c throw $M, also balanced   # o grabs space off 2sphere
+ - K: om/bal #c enclose $whateverM into $M also balanced   # o grabs space off 2sphere
    D: |
-     my $y = Rw winout +;
-     y.bal = [ map {
-         ref $_ eq 'HASH' || die'nothashombal';
-         _.t || die;
+     my ($d,$oM) = Rw iot +;
+     d.y.bal = [ map {
+         ref $_ eq 'HASH' || die'nothash';
+         _.t || die"not: ".ki $_;
          $_
-     } @$M ]
-     
-     
-     # new light
- - K: winout #c
+     } @$oM ];
+     say "ombl:". wdump $d; 
+     Rw shu + $d;
+ - K: shu #c     light
    D: |
-     my $y = ar.y || {};
-     y.in = ar.in || 0.3;
-     y.out = ar.out || 0.4;
-     (y.in,y.out) = split '-', ar.m->[0] if ar.m;
-     $y
- - K: mo/m #c general yinyang komprendonator, vis $M ^v^v^v^v^v
+     push @{ar.M}, $d if ar.M;
+     $d;
+ - K: iot #c
    D: |
-     my $y = Rw winout +;
-
-       y.bal = [ map {
+     my $d;
+     
+     my $o = Rw pul + $cs:m t y c sc;
+     
+     for (qw't y c sc') {
+          exists $o->{$_} || next;
+          $d->{$_} && die;
+          $d->{$_} = $o->{$_};
+     }
+     if (d.y && !ref d.y) {
+         d.y =~ /^($NUM)(?:-($NUM))?/ || die;
+         d.y = {in=>$1};
+         d.y.out = $2 if $2;
+     }
+     if (!defined d.y.in) {
+         d.y.in = 0.3;
+         d.y.out = 0.4;
+     }
+     
+     d.c ||= {};
+     d.sc ||= {};
+     
+     my $oM;
+     for (grep{/^\w+M$/ || /^_$/}keys %$ar) {
+         $oM && die "many oM: $_";
+         $oM = $ar->{$_};
+         die $oM if ref $oM ne 'ARRAY'
+     }
+     $d, $oM
+ - K: yo #c yo
+   D: |
+     d.yin = d.y || die;
+     if (!ar.q && !J.q) {
+         sayyl "ar.k   d.t   @ @ @ @   ".ki(d.yin)."     %  "
+             .ki(d.c||{})."      %  ".ki(d.sc||{})
+     }
+     Rw mod/n +;
+     
+ - K: mo/m #c mod outgoing # general yinyang komprendonator, vis $M ^v^v^v^v^v
+   D: |
+     my $d = Rw iot +;
+     d.y.bal = [ map {
            my ($t,$thing,$c,$sc) = @$_;
            my $p = {};
            p.t = $t;
@@ -95,20 +131,17 @@ R_Jz:
            p.sc = $sc if $sc;
            $p
        } @$M ];
+       
+     d.t = $sty.'y'; 
+     d.c = {%{ar.c||{}}};
+     d.sc = {%{ar.sc||{}}};
 
-       my $m = [
-          $sty.'y',
-          $y,
-          {%{ar.c||{}}},
-          {%{ar.sc||{}}},
-       ];
-
-       Rw modstick + $J $m;
- - K: mo/pwth #c
+     Rw yo $J $d;
+ - K: mo/pwth #
    D: |
        my $sty = 'pwth';
        Rw mo/m + $sty;
- - K: modstick #c api layer between project and hive # 4d
+ - K: modstick # api layer between project and hive # 4d
    D: |
      my $d = {};
      (d.t, d.yin, d.c, d.sc) = @$m;
