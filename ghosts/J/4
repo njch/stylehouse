@@ -1,5 +1,13 @@
 
 R_Jz:
+ - K: mi #c one for @$M
+   D: |
+     my $m = [$m];
+     my @M = Rw mm + $m;
+     if (ar.oM) {
+         push @{ar.oM}, @M
+     }
+     @M
  - K: mm #c mthem
    D: |
      my $peel = sub { # simple hash from string
@@ -23,7 +31,7 @@ R_Jz:
          }
          elsif (ref $s eq 'ARRAY') {
              # to four
-             if (@$s eq 1) {
+             if (@$s == 1) {
                  my ($i) = @$s;
                  if (!ref $i) {
                      my $ci = $i;
@@ -37,7 +45,12 @@ R_Jz:
                  }
                  else {die $i}
              }
-             else {die'@>2'}
+             else {
+                 (n.t,n.y) = @$s;
+                 n.c = $s->[2] if exists $s->[2];
+                 n.sc = $s->[3] if exists $s->[3];
+                 die'@>4' if @$s > 4;
+             }
          }
          elsif (ref $s eq 'HASH') {
              if (s.MZ) {
@@ -64,21 +77,66 @@ R_Jz:
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
- - K: om/bal #c enclose $whateverM into $M also balanced   # o grabs space off 2sphere
+ - K: food/traction #c
+   D: |
+       my $sc;
+       sc.co = 'f3a';
+       sc.fw = 6;
+       
+       my $oM = Rw the + tractor;
+       
+       my $d = Rw om/bal $J $oM pwaw 0.1-0.3 $sc;
+       
+       Rw yo $J $d;
+ - K: the #c pg69make
+   D: |
+     my $what = $m->[0];
+     my $wt = Rw wuck $J */$what;
+     my $M = [];
+     for my $k (sort keys %$wt) {
+         my $m = $wt->{$k};
+         # pha $what, any of:
+         # - [t( y)( c)( sc)???]
+         # - [t, y]
+         # - [t, y, c, sc]
+         push @$M, Rw mm $m;
+         say "waything $what from $k";
+     }
+     saybl "the $what: ".ki 1, $_ for @$M;
+     if (ar.oM) {
+         push @{ar.oM}, @$M
+     }
+     $M;
+ - K: om/bal #c in-fractalise $whateverM into $M or returns $d
    D: |
      my ($d,$oM) = Rw iot +;
      d.y.bal = [ map {
          ref $_ eq 'HASH' || die'nothash';
          _.t || die"not: ".ki $_;
+         _.c.s ||= _.t;
          $_
      } @$oM ];
-     say "ombl:". wdump $d; 
      Rw shu + $d;
- - K: shu #c     light
+ - K: om/lev #c envelop $whateverM into $M enve   # o grabs space off 2sphere
+   D: |
+     my ($d,$oM) = Rw iot +;
+     d.c.lev && die;
+     d.c.lev = sub {
+         my $J2 = shift;
+         my $d = Rw om/bal $J:J2 $oM $t:d.t 0.1-0.3;
+         sayre "omlev: d.t   ".ki(d.y);
+         my $V = 1;
+         Rw yo $J:J2 $d $V;
+     };
+     Rw shu + $d;
+   not: |
+        J.lev->("J\t$out", sub {
+         }, '%css'=>'font-size:200%');
+ - K: shu #c    OM shunts light, maybe into $M if its up there...
    D: |
      push @{ar.M}, $d if ar.M;
      $d;
- - K: iot #c
+ - K: iot #c # o to $d    grabs space off 2sphere
    D: |
      my $d;
      
@@ -94,6 +152,8 @@ R_Jz:
          d.y = {in=>$1};
          d.y.out = $2 if $2;
      }
+     
+     d.y.in = ar.at if ar.at;
      
      if (!defined d.y.in) {
          d.y.in = 0.3;
@@ -117,8 +177,7 @@ R_Jz:
          sayyl "ar.k   d.t   @ @ @ @   ".ki(d.yin)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
-     my $V = 1;
-     Rw mod/n + $V;
+     Rw mod/n +;
      
  - K: mo/m #c mod outgoing # general yinyang komprendonator, vis $M ^v^v^v^v^v
    D: |
@@ -166,7 +225,6 @@ R_Jz:
        Rw Con mod;
      u: | #c make pool, synth space, want arches
        # fork & rejoin to exciting place
-       sayre ki $ar;
        
        # YIN
 
@@ -182,7 +240,7 @@ R_Jz:
 
            # CITOZINE
 
-           sayre " - ------ d.i :    d.r" if ar.V;
+           sayre " - ------ $i :    d.r" if ar.V;
            #saybl "Post: d.s       @{d.css} " if ar.V;
            
            if (c.lev) {
@@ -200,7 +258,7 @@ R_Jz:
            $i++;
        }
 mod c:
- - K: yinvis # the valley - what it means to be here in here YIN
+ - K: yinvis #c the valley, what it means to be here in here YIN
    mod 1: |
      # sub-dome and super-modloop
      # find beginning, end, thickness of loop atmosphere
@@ -230,7 +288,7 @@ mod c:
         push @is, [$wide, $narr];
         $csv += y.aspace;
      }
- - K: yangbal # background language expansion, dewey mezrow   YANG
+ - K: yangbal #c inwave, background language expansion, dewey mezrow   YANG
    mod 2: |
      my $d = {%$dd};
      
@@ -272,7 +330,6 @@ mod c:
      
      my $c = d.c; # <v contation
      die "notrefc  $c" if !ref $c;
-
  - K: yangist #c art
    mod 2.3: |
      n.um = sprintf '%.3d', d.cvint;

@@ -1,6 +1,5 @@
 C:
  - K: Con #c waiting for tension
-R_Jz:
 
 R_Jz:
  - K: ash #c woosh
@@ -108,44 +107,36 @@ R_Jz:
        #[sqat   => 20,  '^', {}, 'color:blue', in => 10, ],
        #[sqat   => 20,  'v', {}, 'color:blue', out => 10, ],
 
+
  - K: ii/Jhead #c J _
    D: |
-       my $out = ar.out || 0.01;
-         J.lev->("J\t$out", sub {
-             my $J2 = shift;
-             my $M = [
-                 ['J', 'hull/mk:Jself', {fo=>[$J,0.1]}],
-                 ['ඬ', 'hull/mk:kapow', {}, {co=>(J.ent.1 > 5 ? 'f85':'126')}],
-                 ['ƾ', 'hull/mk:jin oot', {}, {co=>'8ff'}],
-                 ['G', 'sur/to:G'],
-                 ['x', 'hull/mk:X', {}, {co=>'f34',fs=>7}],
-                 ['Jung', 'sur/to:Jung', {}, {co=>'68d', fs=>5}],
-             ];
-             Rw mo/pwth $J:J2 $M 0.1-0.3;
-         }, '%css'=>'font-size:200%');
+       my $at = ar.out || 0.01;
+       
+       my $oM = [];
+       
+       Rw mi $m:_ $oM for
+          ['J', '', {pwth=>'hull/mk:Jself',fo=>[$J,0.1]}];
+       Rw the + Jhead $oM;
+       
+       my $d = Rw om/lev $J $oM Jhead $at;
+       say "JHead scoop: ".wdump 4, $d;
+       # make lev: Jhead $at 
+       Rw yo + $d;
  - K: ii/ornate #c arabic ornate parenthesis
    D: |
        my $gl = ar.out ? '﴿' : '﴾';
-       my $at = ar.out || 0.01;
-       my $M = [];
-       # do the pwth parse into an $M too
-       push @$M, Load <<"";
-        - ornate
-        - at: $at
-        - s: $gl
-        - fs: 100
-          zip: 3
-          blr: 5
-          zi: 3
-          rad: 1
-       
+       my $at = ar.out || ar.in || 0.01;
+       my $d;
+       d.t = 'ornate';
+       d.y.at = $at;
+       d.c.s = $gl;
+       d.sc = {qw{ fs 230   hs 4.3.7.5   zip 3   blr 5   zi 3   rad 1}};
        # 3
-       
-       Rw mo/pwth $J $M 0.1-0.3;
-       # 
-       
+       # detect $M and upload, or return $d hoping for a mod stick outside?
+       Rw yo + $d;
  - K: ii/cap #c ha zom
    D: |
+     
        my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
        my $M = [
            ['_', '', {s=>rr.j.l}, {fs=>18, co=>'38f'}],
@@ -160,6 +151,8 @@ R_Jz:
                ['S', '', {fo=>[rr.j.s, 0.2]}],
        }   
        # ^ all that within v
+       my $d = Rw om/lev $J $oM:M cap;
+       return $d;
        my $lev = sub {
            my $J2 = shift;
            Rw mo/pwth $J:J2 $M 0.1-0.3;
@@ -180,23 +173,6 @@ R_Jz:
        # how to what = @{rr.sjs}
        my $o = Rw oundo $thi $u;
        
-       # between here and oundo is:
-       # the art of extracting segments like pi/HASH etc
-       # anything you want more than a list for
-       # hive of piish style joined by opportunism to oundo pipe
-       # must be offered & consumed
-       # like diffusing a bomb
-       # through quantum vectors to rate things
-       # explode enthusiastically the things inside
-       # and the alterations too,
-       # like why don't you combine this this way
-       # so things are things
-       # but there's real datastructurey first order things
-       # and all the other stuff on top
-       # then it flushes out reality by ways it wants
-       # by sorting by yay style then etc.
-       # making pods
-       # here are lots of pods:
        warn "More o.more" if o.more;
        my @M;
        for my $r (@{o.r}) {
@@ -207,6 +183,9 @@ R_Jz:
            
            push @$M, Rw sur/pi $r;
            
+           
+           my $d = Rw om/lev $J $oM:M cap;
+           return $d;
            my $lev = sub {
                my $J2 = shift;
                my $q = 1;

@@ -5,6 +5,10 @@ R_Jz:
      my $csm = [@{ar.cs||[]}];
      for my $n (@$m) {
          # can type things along
+         if (defined $ar->{$n}) {
+             $o->{$n} = $ar->{$n};
+             next;
+         }
          my $v = shift @$csm;
          if ($n =~ s/{\+}// && ref $v eq 'HASH') {
              %$o = (%$o, %$v); # other abouts spill off cv modi
