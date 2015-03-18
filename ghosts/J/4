@@ -1,14 +1,10 @@
 
 R_Jz:
- - K: mi #c one for @$M
+ - K: Mn #c one for MN
    D: |
-     my $m = [$m];
-     my @M = Rw mm + $m;
-     if (ar.oM) {
-         push @{ar.oM}, @M
-     }
-     @M
- - K: mm #c mthem
+     my $N = [$n];
+     Rw MN + $N;
+ - K: MN #c mthemZY
    D: |
      my $peel = sub { # simple hash from string
         my $s = shift;
@@ -22,9 +18,12 @@ R_Jz:
         }
         return $t;
      };
-     my @mm=();
-     my $fl={};
-     for my $s (@$m) {
+     my $oM;
+     my $fl = {};
+     if (my $fli = ar.m) {
+         $fl->{$_} = 1 for @$fli; # could:this
+     }
+     for my $s (@$N) {
          my $n = {};
          if (!ref $s) {
              die "string: $s";
@@ -71,43 +70,57 @@ R_Jz:
              die if $v ne '1';
              Rw ym/$k $n;
          }
-         push @mm, $n;
+         push @$oM, $n;
      }
-     @mm
+     Rw iM + $oM;
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
- - K: food/traction #c
-   D: |
-       my $sc;
-       sc.co = 'f3a';
-       sc.fw = 6;
-       
-       my $oM = Rw the + tractor;
-       
-       my $d = Rw om/bal $J $oM pwaw 0.1-0.3 $sc;
-       
-       Rw yo $J $d;
- - K: the #c pg69make
+
+ - K: the #c pg69make, ongoable
    D: |
      my $what = $m->[0];
      my $wt = Rw wuck $J */$what;
      my $M = [];
      for my $k (sort keys %$wt) {
-         my $m = $wt->{$k};
+         my $N = $wt->{$k};
+         say " ** waything $what from $k";
          # pha $what, any of:
          # - [t( y)( c)( sc)???]
          # - [t, y]
          # - [t, y, c, sc]
-         push @$M, Rw mm $m;
-         say "waything $what from $k";
+         Rw MN $N $M;
      }
      saybl "the $what: ".ki 1, $_ for @$M;
-     if (ar.oM) {
-         push @{ar.oM}, @$M
+     # inside the J so
+     # ar close braid
+     Rw iM + $oM:M;
+ - K: iM #c as below, for $M instead of $d
+   D: |
+     return @$oM if ar.ret;
+     if (ar.M) {
+         push @{ar.M}, @$oM
      }
-     $M;
- - K: om/bal #c in-fractalise $whateverM into $M or returns $d
+     @$oM
+     
+ - K: iiJM #c an ii magnetises guts into $J or $M, or returns if no
+   D: |
+     return $d if ar.ret;
+     if (ar.M) {
+         push @{ar.M}, $d
+     }
+     elsif (ar.J) {
+         Rw yo + $d;
+     }
+     else {
+         die "no way to modulate: ".ki $d;
+     }
+     $d
+ - K: shu #c    OM shunts light, maybe into $M if its up there...
+   D: |
+     push @{ar.M}, $d if ar.M;
+     $d;
+ - K: om/bal #c in-fractalise   $whateverM > bal> $M
    D: |
      my ($d,$oM) = Rw iot +;
      d.y.bal = [ map {
@@ -116,7 +129,9 @@ R_Jz:
          _.c.s ||= _.t;
          $_
      } @$oM ];
-     Rw shu + $d;
+     say "oM: ".@$oM;
+     saybl "d.t: ".ki d.c;
+     Rw iiJM + $d;
  - K: om/lev #c envelop $whateverM into $M enve   # o grabs space off 2sphere
    D: |
      my ($d,$oM) = Rw iot +;
@@ -128,14 +143,8 @@ R_Jz:
          my $V = 1;
          Rw yo $J:J2 $d $V;
      };
-     Rw shu + $d;
-   not: |
-        J.lev->("J\t$out", sub {
-         }, '%css'=>'font-size:200%');
- - K: shu #c    OM shunts light, maybe into $M if its up there...
-   D: |
-     push @{ar.M}, $d if ar.M;
-     $d;
+     d.sc.fs = 40;
+     Rw iiJM + $d;
  - K: iot #c # o to $d    grabs space off 2sphere
    D: |
      my $d;
@@ -153,6 +162,8 @@ R_Jz:
          d.y.out = $2 if $2;
      }
      
+     d.y.in = ar.in if ar.in;
+     d.y.out = ar.out if ar.out;
      d.y.in = ar.at if ar.at;
      
      if (!defined d.y.in) {
@@ -167,7 +178,7 @@ R_Jz:
      for (grep{/^\w+M$/ || /^_$/}keys %$ar) {
          $oM && die "many oM: $_";
          $oM = $ar->{$_};
-         die $oM if ref $oM ne 'ARRAY'
+         die "no array in ar looking: $oM ".ki$oM if ref $oM ne 'ARRAY'
      }
      $d, $oM
  - K: yo #c yo
