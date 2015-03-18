@@ -185,7 +185,9 @@ R_Jz:
        
        my $he = $in - 0.08;
        # header fin at in - cell wall division, things squished up to
+       
        die if ar.M;
+       # ii yos if $J && !$M
        
        Rw ii/Jhead + $out:he;
        
@@ -195,13 +197,12 @@ R_Jz:
        # collections of junk
        
        for my $rr (@re) {
-           my $M = [
-               Rw ii/cap $rr,
-               Rw ii/bod $rr,
-           ];
+           my $M = [];
+           Rw ii/cap $rr $M;
+           Rw ii/bod $rr $M;
+           
            my $in = rr.in;
            my $out = rr.out;
-           
            my $d = Rw om/bal $J $oM:M pwaw $in $out;
 
            Rw yo $J $d;
@@ -209,41 +210,6 @@ R_Jz:
            say join "\n", sort split /\n/, wdump(1,J.bb);
        }
        sayre "==\n== delt ".F_delta."\n==";
-     pi: | #c THE WHOLE GHUTS
-       my ($c,$sc);
-       
-       c.fo = [r.s, 0.6];
-       
-       sc.ws = 'n';
-       sc.ab = 'left:1em';
-       sc.mw = '14em';
-       sc.over = 'hidden';
-       
-       return ['pi', r.path, $c, $sc];
-     labegy: | #c
-        # TODO add a style that colours it after round
-        # TODO curve
-        # TODO shared labels
-        # TODO culture
-        # TODO unwind cv into colours variously
-        # TODO make a tiny maka thing for $k decor, tiny styled tags
-        my ($c,$sc);
-        
-        c.s = r.r;
-        
-        sc.ws = 'p';
-        sc.ab = 'right:0.5em';
-        
-        my $si = length(r.r);
-        my $curve = {qw{
-        40 60
-        30 70
-        20 80
-        }};
-        for (sort keys %$curve) {
-            sc.fs = $curve->{$_} if $si > $_
-        }
-        return ['lab', '', $c, $sc];
      entropia: | #c kind of same as running intents on u/ etc from inness
        wdump(2,J.onei);
      folw: | #c expand path, may spew arm
