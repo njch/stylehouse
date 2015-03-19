@@ -5,15 +5,16 @@ use warnings;
 use utf8;
 use lib 'lib';
 use feature 'say';
-# two annoying dependencies
+# two annoying dependencies 
 use Redis;
 use Mojo::Pg;
 use Mojo::IOLoop::Stream;
 
+use Scriptalicious;
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
-use Data::Dumper;
+use Data::Dumper; 
 use Storable 'dclone';
 use Carp;
 
@@ -1074,7 +1075,7 @@ sub w {
 
         eval { $r = [ $G->D($a) ] };
 
-        $Z->{r} = $r;
+        $Z->{r} = $r; # TODO many awkward
 
         $G->Done($Z);
 
