@@ -65,18 +65,29 @@ R_Jz:
              }
          }
          else { die "mmtype:$s" }
+         
          for my $k (keys %$fl) {
              my $v = $fl->{$k};
              die if $v ne '1';
              Rw ym/$k $n;
          }
+         if (!ref n.y) {
+             if (n.y eq '') { # or undef
+                 n.y = {};
+             }
+             elsif (n.y =~ /^(\d+)$/) {
+                 n.y = {thi=>$1};
+             }
+             else {die "strung ny: n.y"};
+         }
+         die wdump $N if !ref n.y;
+         die if !n.y;
          push @$oM, $n;
      }
      Rw iM + $oM;
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
-
  - K: the #c pg69make, ongoable
    D: |
      my $what = $m->[0];
@@ -125,8 +136,8 @@ R_Jz:
          _.c.s ||= _.t;
          $_
      } @$oM ];
-     say ":::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
-     say " ^^ ".ki $ar;
+     say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     say "G.jumb.yos ^^ ".ki $ar;
      Rw iiJM + $d;
  - K: om/lev #c envelop $whateverM into $M enve   # o grabs space off 2sphere
    D: |
@@ -135,13 +146,13 @@ R_Jz:
      d.c.lev = sub {
          my $J2 = shift;
          my $d = Rw om/bal $J:J2 $oM $t:d.t 0.1-0.3;
-         sayre "omlev: d.t   ".ki(d.y);
+         sayre "G.jumb.yos !omlev: d.t   ".ki(d.y);
          my $V = 1;
          Rw yo $J:J2 $d $V;
      };
      d.sc.fs = 40;
-     say "//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
-     say " ^^ ".ki $ar;
+     say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     say "G.jumb.yos ^^ ".ki $ar;
      Rw iiJM + $d;
  - K: iot #c # o to $d    grabs space off 2sphere
    D: |
@@ -179,17 +190,28 @@ R_Jz:
          die "no array in ar looking: $oM ".ki$oM if ref $oM ne 'ARRAY'
      }
      $d, $oM
+ - K: yM #c yo $M 
+   D: |
+     sayre "G.jumb.yos===";
+     sayre "G.jumb.yos===  yM x".@$M;
+     sayre "G.jumb.yos===";
+     for my $d (@$M) {
+         die "look like d? ".wdump$d unless d.t && d.y;
+         Rw yo + $d;
+     }
  - K: yo #c yo
    D: |
-     d.yin = d.y || die;
      if (!ar.q && !J.q) {
-         sayyl "@@@@   yo:  ar.k     d.t   ".ki(d.yin)."     %  "
+         sayyl "G.jumb.yos@@@@   yo:  ar.k     d.t   ".ki(d.y)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
+     G.jumb.yos .= '    ';
      Rw mod/n +;
+     G.jumb.yos =~ s/    $//;
      
  - K: mo/m #c mod outgoing # general yinyang komprendonator, vis $M ^v^v^v^v^v
    D: |
+     die;
      my $d = Rw iot +;
      d.y.bal = [ map {
            my ($t,$thing,$c,$sc) = @$_;
@@ -209,6 +231,7 @@ R_Jz:
      Rw yo $J $d;
  - K: mo/pwth #c
    D: |
+      die;
        my $sty = 'pwth';
        Rw mo/m + $sty;
  - K: modstick #c api layer between project and hive # 4d
@@ -240,7 +263,6 @@ R_Jz:
        my $n;
 
        my $dd = $d;
-       my $i = 0;
        for my $is (@is) { # THE TIR drop at hands
 
            # YANG
@@ -249,7 +271,7 @@ R_Jz:
 
            # CITOZINE
 
-           sayre " - ------ $i :    d.r" if ar.V;
+           sayre "G.jumb.yos - ------ d.y.i:    d.r" if ar.V;
            #saybl "Post: d.s       @{d.css} " if ar.V;
            
            if (c.lev) {
@@ -264,7 +286,6 @@ R_Jz:
                    @{d.css},
                );
            }
-           $i++;
        }
 mod c:
  - K: yinvis #c the valley, what it means to be here in here YIN
@@ -273,15 +294,15 @@ mod c:
      # find beginning, end, thickness of loop atmosphere
      # so thi is where the manifolds can attach in the stackening
      # the modulation piles them in evenly (todo)
-     my $y = d.yin;
-     if (!ref $y) {
-         $y = d.yin = {thi => $y};
-     }
-     else {
+     d.y = {thi => d.y} if !ref d.y;
+     my $y = d.y;
+     
+     
         if (my $bs = y.bal) {
             y.thi = @$bs;
         }
-     }
+        
+        
      y.in ||= 0.1; 
      y.out ||= 0.9; # up to
      y.thi ||= 1;
@@ -292,37 +313,44 @@ mod c:
      my @is;
      my $csv = y.in;
      for (1..y.thi) {
-        my $wide = sprintf '%.6f', $csv;
-        my $narr = sprintf '%.6f', $_ / y.thi;
-        push @is, [$wide, $narr];
+        my $iy;
+        iy.i = $_-1;
+        iy.cv = sprintf '%.6f', $csv;
+        iy.uiv = sprintf '%.6f', $_ / y.thi;
+        push @is, $iy;
         $csv += y.aspace;
      }
  - K: yangbal #c inwave, background language expansion, dewey mezrow   YANG
    mod 2: |
      my $d = {%$dd};
      
-     (d.cv, d.pcv) = @$is;
-     d.t = d.t."".d.pcv; # delicate? y.bal overs
+     d.y = {%{d.y||die}, %$is};
+     d.cv = d.y.cv || die;
+     d.t = d.t."".d.y.uiv; # TODO delicate? y.bal overs
      
+     d.c || die;
+         d.sc = {%{d.sc||{}}};
+     #^v  ^v
+     #  ^v
+     d.cs = {%{d.cs||{}}};
+     #  ^v esc
      d.css = [@{d.css||[]}];
      
-     # d.c.$modk = the unravelling
-     # d.cs.$modk.$esck = the outwards
-     # d.sc.$esck = outwards, passed
-     d.cs = {%{d.cs||{}}};
-     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
-     # ^ fed to escitozer returns a string for '%css#$cometc$modk'=>$string
-     # ^ or a bunch of ('%style'=>$value)+s, will get $cometc so all play nice
-     # v this should be overkill, supposed ro or yinbal merges to new
-     d.sc = {%{d.sc||{}}};
-     # 
-     d.c || die;
+     #   d.c.$modk = the unravelling mod
+     # + d.sc.$esck = outwards, parafin
+     # =
+     #   d.cs.$modk.$esck = the outwards
+     # + d etc
      
-     my $y = d.yin;
-     if (y.bal) {
+     # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
+     
+     # ^ fed to esc which packs styles with com: #$cometc$modk, defaulting %cs
+     
+     my $y = d.y;
+     if (d.y.bal) {
          # locality
-         my $b = y.bal->[$i];
-         say "BAL $i at d.cv    --- d.cvint   ".ki 1, $b if ar.V;
+         my $b = d.y.bal->[d.y.i];
+         say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b;
          for my $k (keys %$b) { # c etc merg in per row
              my $v = $b->{$k};
              if (ref $v) {
@@ -341,7 +369,7 @@ mod c:
      die "notrefc  $c" if !ref $c;
  - K: yangist #c art
    mod 2.3: |
-     n.um = sprintf '%.3d', d.cvint;
+     n.um = sprintf '%.3d', d.y.uiv;
      
  - K: s #c yes
    mod 3.1: |

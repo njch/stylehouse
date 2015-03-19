@@ -134,7 +134,7 @@ R_Jz:
  - K: ii/cap #c ha zom
    D: |
        my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
-       my $M = [
+       my $N = [
            ['_', '', {s=>rr.j.l}, {fs=>18, co=>'38f'}],
            ['=','', {}, {fs=>12,co=>'000'}],
            ['i', 'sur/to:/', {fo=>[vli.s,0.1]}],
@@ -142,17 +142,17 @@ R_Jz:
        my ($vly) = grep{_.style eq 'travely'} @{rr.sjs};
        if ($vly && @{vly.s}) {
            my $s = " ".join(" ",@{vly.s})." ";
-           push @$M,
+           push @$N,
                ['travely', '', {s=>$s, wsp=>1}],
                ['S', '', {fo=>[rr.j.s, 0.2]}],
        }   
        
-       @$M = map {
-           Rw Mn $n:_ $M pwth;
-       } @$M;
-       # ^ all that within v
+       my $M = [];
+       # cend pwth
+       Rw MN $N $M pwth;
        
-       Rw om/lev + $oM:M cap;
+       say "ii/cap: ".ki$rr;
+       Rw om/lev + $at:rr.in $oM:M cap;
  - K: ii/bod #c boodle am   labegy ( pi
    D: |
        my $in = rr.in; # TODO whereto?
@@ -169,17 +169,21 @@ R_Jz:
        my $o = Rw oundo $thi $u;
        
        warn "More o.more" if o.more;
+       my $M = [];
        map {
            my $r = $_;
-           my $M = [];
+           my $oM = [];
            # SZOOOOOOOOOOOM
-           Rw ii/labegy $r $M;
-           Rw ii/pi $r $M;
+           Rw ii/labegy $r $M:oM;
+           Rw ii/pi $r $M:oM;
+           # ^ pass $thi, pool resources
            
            my $c = {path=>r.path};
+           sayyl "iibod: ". ki $r;
            
-           Rw om/lev + $oM:M $t:r.r $c;
-       } @{o.r}
+           Rw om/lev + $oM $M $t:r.r $c;
+       } @{o.r};
+       Rw om/bal + $oM:M $t:j.t $in:rr.in $out:rr.out;
  - K: ii/labegy #c suitcase handle
    D: |
         # TODO add a style that colours it after round
@@ -188,35 +192,24 @@ R_Jz:
         # TODO culture
         # TODO unwind cv into colours variously
         # TODO make a tiny maka thing for $k decor, tiny styled tags
-        my ($c,$sc);
+        my $d;
+        d.t = 'lab';
+        d.c.s = r.r;
         
-        c.s = r.r;
-        
-        sc.ws = 'p';
-        sc.ab = 'right:0.5em';
-        
-        my $si = length(r.r);
-        my $curve = {qw{
-        40 60
-        30 70
-        20 80
-        }};
-        for (sort keys %$curve) {
-            sc.fs = $curve->{$_} if $si > $_
-        }
-        # $Magnetise
-        {t=>'lab', '', $c, $sc}
+        d.sc.ws = 'p';
+        d.sc.ab = 'right:0.5em';
+        d.c.fsx = "25";
+        Rw iiJM + $d;
  - K: ii/pi #c THE WHOLE GHUTS
    D: |
-       my ($c,$sc);
+     my $d;
+     d.t = 'pi';
+     d.c.fo = [r.s, 0.6];
+     d.c.path = r.path;
        
-       c.fo = [r.s, 0.6];
-       c.path = r.path;
-       
-       sc.ws = 'n';
-       sc.ab = 'left:1em';
-       sc.mw = '14em';
-       sc.over = 'hidden';
-       
-       {t=>'pi', '', $c, $sc}
+     d.sc.ws = 'n';
+     d.sc.ab = 'left:1em';
+     d.sc.mw = '14em';
+     d.sc.over = 'hidden';
+     Rw iiJM + $d;
 
