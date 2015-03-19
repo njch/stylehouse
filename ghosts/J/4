@@ -106,6 +106,42 @@ R_Jz:
      # inside the J so
      # ar close braid
      Rw iM + $oM:M;
+ - K: iot #c # o to $d    tycscgrabs (starts) space off 2sphere ($d)
+   D: |
+     my $d;
+     
+     my $o = Rw pul + $cs:ar.m t y c sc;
+     for (qw't y c sc') { 
+          exists $o->{$_} || next;
+          $d->{$_} && die;
+          $d->{$_} = $o->{$_};
+     }
+     
+     if (d.y && !ref d.y) {
+         d.y =~ /^($NUM)(?:-($NUM))?/ || die "weird y: d.y";
+         d.y = {in=>$1};
+         d.y.out = $2 if $2;
+     }
+     
+     d.y.in = ar.in if ar.in;
+     d.y.out = ar.out if ar.out;
+     d.y.in = ar.at if ar.at;
+     
+     if (!defined d.y.in) {
+         d.y.in = 0.3;
+         d.y.out = 0.4;
+     }
+     
+     d.c ||= {};
+     d.sc ||= {};
+     
+     my $oM;
+     for (grep{/^\w+M$/ || /^_$/}keys %$ar) {
+         $oM && die "many oM: $_";
+         $oM = $ar->{$_};
+         die "no array in ar looking: $oM ".ki$oM if ref $oM ne 'ARRAY'
+     }
+     $d, $oM
  - K: iM #c as below, for $M instead of $d
    D: |
      return @$oM if ar.ret;
@@ -136,8 +172,8 @@ R_Jz:
          _.c.s ||= _.t;
          $_
      } @$oM ];
-     say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
-     say "G.jumb.yos ^^ ".ki $ar;
+     #say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     #say "G.jumb.yos ^^ ".ki $ar;
      Rw iiJM + $d;
  - K: om/lev #c envelop $whateverM into $M enve   # o grabs space off 2sphere
    D: |
@@ -150,102 +186,27 @@ R_Jz:
          my $V = 1;
          Rw yo $J:J2 $d $V;
      };
-     d.sc.fs = 40;
-     say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
-     say "G.jumb.yos ^^ ".ki $ar;
+     #say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     #say "G.jumb.yos ^^ ".ki $ar;
      Rw iiJM + $d;
- - K: iot #c # o to $d    grabs space off 2sphere
-   D: |
-     my $d;
-     
-     my $o = Rw pul + $cs:ar.m t y c sc;
-     for (qw't y c sc') { 
-          exists $o->{$_} || next;
-          $d->{$_} && die;
-          $d->{$_} = $o->{$_};
-     }
-     
-     if (d.y && !ref d.y) {
-         d.y =~ /^($NUM)(?:-($NUM))?/ || die;
-         d.y = {in=>$1};
-         d.y.out = $2 if $2;
-     }
-     
-     d.y.in = ar.in if ar.in;
-     d.y.out = ar.out if ar.out;
-     d.y.in = ar.at if ar.at;
-     
-     if (!defined d.y.in) {
-         d.y.in = 0.3;
-         d.y.out = 0.4;
-     }
-     
-     d.c ||= {};
-     d.sc ||= {};
-     
-     my $oM;
-     for (grep{/^\w+M$/ || /^_$/}keys %$ar) {
-         $oM && die "many oM: $_";
-         $oM = $ar->{$_};
-         die "no array in ar looking: $oM ".ki$oM if ref $oM ne 'ARRAY'
-     }
-     $d, $oM
- - K: yM #c yo $M 
+ - K: yM #c     yo$M e
    D: |
      sayre "G.jumb.yos===  yM x".@$M;
      for my $d (@$M) {
          die "look like d? ".wdump$d unless d.t && d.y;
          Rw yo + $d;
      }
- - K: yo #c yo
+ - K: yo #c     yrec $d
    D: |
+     G.jumb.yos .= '    ';
      if (!ar.q && !J.q) {
          sayyl "G.jumb.yos@@@@   yo:  ar.k     d.t   ".ki(d.y)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
-     G.jumb.yos .= '    ';
      Rw mod/n +;
      G.jumb.yos =~ s/    $//;
      
- - K: mo/m #c mod outgoing # general yinyang komprendonator, vis $M ^v^v^v^v^v
-   D: |
-     die;
-     my $d = Rw iot +;
-     d.y.bal = [ map {
-           my ($t,$thing,$c,$sc) = @$_;
-           my $p = {};
-           p.t = $t;
-           p.c = $c || {};
-           p.c.s = $t if !exists p.c.s;
-           p.c->{$sty} = $thing if $thing ne '';
-           p.sc = $sc if $sc;
-           $p
-       } @$M ];
-       
-     d.t = $sty.'y'; 
-     d.c = {%{ar.c||{}}};
-     d.sc = {%{ar.sc||{}}};
 
-     Rw yo $J $d;
- - K: mo/pwth #c
-   D: |
-      die;
-       my $sty = 'pwth';
-       Rw mo/m + $sty;
- - K: modstick #c api layer between project and hive # 4d
-   D: |
-     my $d = {};
-     (d.t, d.yin, d.c, d.sc) = @$m;
-     
-     die if !ref d.c;
-     my $wtf = ar.k || $F[4]->{point}.'ᣝ'.$F[2]->{point};
-     if (!ar.q && !J.q) {
-         sayyl "$wtf mo/m  d.t d.yin   "
-             .ki(d.c||{})."    ".ki(d.sc||{})
-     }
-     
-     Rw mod/n + $J $d;
-     
  - K: mod #c modi
    n_D:
      el:
@@ -318,7 +279,7 @@ mod c:
         push @is, $iy;
         $csv += y.aspace;
      }
- - K: yangbal #c inwave, background language expansion, dewey mezrow   YANG
+ - K: yangtycsc #c inwave, background language expansion, dewey mezrow   YANG
    mod 2: |
      my $d = {%$dd};
      
@@ -344,6 +305,8 @@ mod c:
      
      # ^ fed to esc which packs styles with com: #$cometc$modk, defaulting %cs
      
+ - K: yangbal #c
+   mod 2.4: |
      my $y = d.y;
      if (d.y.bal) {
          # locality
@@ -359,6 +322,8 @@ mod c:
              }
          }
      }
+ - K: yango #c
+   mod 2.7: |
      # bal may mod t, this may wannab 
      d.r = join "\t", d.t, d.cv; # always update trio
      
