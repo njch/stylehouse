@@ -102,9 +102,10 @@ R_Jz:
      up: | #c
        # or functions sucking more stuff... suck chain shunting 
        Rw food/traction;
+       Rw food/file;
      traction: | #c
        my $sc;
-       sc.co = 'f3a';
+       sc.co = 'f3a'; 
        sc.fw = 6;
        
        my $M = [];
@@ -115,11 +116,42 @@ R_Jz:
       - MZ: pwth
       - [h!o!x  food/hoxdrop]
       - [hox    food/hoxy]
+      - [file    food/file {} {hs:3.9.8.5}]
+      - [byle    food/byle {} {hs:3.9.8.5}]
       - [BƾB    jin:ash]
       - [hull   jin:hull]
       - [ps     jin:ps]
       - [sur    jin:ollox  {} {fs:14,co:a3a}]
       - [occie  occie/komp {} {fs:12,co:ff6}]
+     file: | #c or
+       open my $ha, 'blag';
+       my $s = Mojo::IOLoop::Stream->new($ha);
+       $s->on(read => sub {
+          my ($s,$b) = @_;
+          say "FILE:". wdump $b;
+          $DB::single = 1;
+          return 0;
+       });
+       $s->on(close => sub {
+       my $s = shift;
+        die "closed!?";
+       $s->start;
+       });
+       $s->timeout(0);
+       $s->on(error => sub {
+          my ($stream, $err) = @_;
+          die $err
+        });
+        
+        
+       $s->start;
+       $s->reactor->start unless $s->reactor->is_running;
+       say wdump 2,$s;
+       G.thes = $s;
+       G.theha = $ha;
+     byle: | #c 
+       my $ha = G.theha;
+       say <$ha>;
      hoxy: | #c 
        my $ox = J.hox ||= {};
        ox.bb ||
