@@ -102,7 +102,7 @@ R_Jz:
      up: | #c
        # or functions sucking more stuff... suck chain shunting 
        Rw food/traction;
-       Rw food/file;
+       Rw food/fiele;
      traction: | #c
        my $sc;
        sc.co = 'f3a'; 
@@ -123,13 +123,16 @@ R_Jz:
       - [ps     jin:ps]
       - [sur    jin:ollox  {} {fs:14,co:a3a}]
       - [occie  occie/komp {} {fs:12,co:ff6}]
+     fiele: | #c gor
+       write_file('blag',{append=>1},"Several\nThingsies\n");
      file: | #c or
-       open my $ha, 'blag';
+       G.thes && G.thes->stop;
+     
+       open my $ha, '-|','tail','-F','-n9999999999','blag' or die $!;
        my $s = Mojo::IOLoop::Stream->new($ha);
        $s->on(read => sub {
           my ($s,$b) = @_;
           say "FILE:". wdump $b;
-          $DB::single = 1;
           return 0;
        });
        $s->on(close => sub {
@@ -142,8 +145,12 @@ R_Jz:
           my ($stream, $err) = @_;
           die $err
         });
-        
-        
+        sub log2 {
+           log(shift) / log(2);
+        }
+       #say "Yep: ".($_ * log2($_)) for 1..42;
+       
+       
        $s->start;
        $s->reactor->start unless $s->reactor->is_running;
        say wdump 2,$s;
