@@ -271,7 +271,9 @@ R_Jz:
            }
            my $tag = delete at.tag;
            saybl "Tag! $tag" if $tag;
-           $tag ||= "añ";
+           my $ts = j.l;
+           $ts =~ s/[^\w]/ñ/sg;
+           $tag ||= "a$ts";
            $at = join " ", $tag,
                map { saybl " : $_ " if $cssdb; $_ }
                map { $_.'="'.$at->{$_}.'"' } # attra
