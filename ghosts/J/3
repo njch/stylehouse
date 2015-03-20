@@ -200,7 +200,8 @@ R_Jz:
      my $j;
      j.r = $r; # TODO probly sameness
      die if ar.C;
-     j.s = ar.C || (ar.J ? ar.J.bb : ar.d)->{$r}; # carbon in, or from abdomin
+     ar.d = ar.J.bb if ar.J;
+     j.s = ar.C || (ar.d)->{$r}; # carbon in, or from abdomin
      (j.t, j.cv) =
          j.r =~ /^(.+)\t(.+?)$/ ? ($1, $2)
          :
@@ -216,6 +217,7 @@ R_Jz:
      j.ev = \@e if @e;
      die if j.b;
      j.b.b.b = ar.d;
+     j.b.b.j = ar.J if ar.J;
      $j
  - K: tent #c pearlesque kings of the J...
    D: |

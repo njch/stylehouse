@@ -132,21 +132,23 @@ R_Jz:
        Rw iiJM + $d;
  - K: ii/cap #c ha zom
    D: |
-       my $vli = x.sc.traveli || die;
+       my $vli = x.sc.ori || die;
        
        my $N = [
            ['_', '',         {s=>x.j.l}, {co=>'38f'}],
            ['=', '',         {}, {fs=>12,co=>'000',sha=>'3 3 3 fff'}],
-           ['i', 'sur/to:/', {fo=>[$vli,0.1]}],
-           ['hmm', '',       {s=>join':',sort keys %{x.sc}}, {co=>'38f'}],
+           ['i', 'sur/to:/', {fo=>[x.sc.ori,0.1]}],
        ];
        if (x.sc.travely && @{x.sc.travely}) {
            my $s = " ".join(" ",@{x.sc.travely})." ";
            push @$N,
                ['travely', '', {s=>$s, wsp=>1}],
                ['S',       '', {fo=>[x.j.s, 0.2]}],
-       }   
-       
+       }
+       for my $k (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
+           push @$N,
+           ['sc_$k', '',       {s=>"$k:x.sc->{$k}",cow=>'rgb 38f'},{}],
+       }
        my $M = [];
        # cend pwth
        Rw MN $N $M pwth;
@@ -163,7 +165,7 @@ R_Jz:
        
        say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
        
-       my $o = Rw oundo $thi $u:x.j.s $sc:x.sc;
+       my $o = Rw oundo $thi $x;
        
        warn "More o.more" if o.more;
        my $M = [];
@@ -175,7 +177,7 @@ R_Jz:
            Rw ii/pi $r $M:oM;
            # ^ pass $thi, pool resources
            
-           my $c = {path=>r.path};
+           my $c = {%{r.c||{}}};
            #sayyl "iibod: ". ki $r;
            
            Rw om/lev + $oM $M $t:r.r $c;
