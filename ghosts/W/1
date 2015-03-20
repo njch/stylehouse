@@ -151,33 +151,32 @@ R_Jz:
        # mound aggregation, caving out
        
        # todo tlv
-       my @things = Rw tvy $J:J.on;
+       my $onl = Rw tlv $J:J.on;
+       
        my $tot = 16;
+       
        my $in = 0.1;
        my $out = 0.9;
        
-       
        my $phi = $out - $in; # <-0.8->
+       my $thi = $phi / @$onl; # or indi
+       
+       # thi vs $onl individuality
        my $tin = $in;
-       my $thi = $phi / @things; # or indi
-       my @re;
-       for (@things) {
-           my ($j, @sjs) = @$_;
+       for my $x (@$onl) {
+           # go higher and pipe mods to squish space
+           x.in = $tin;
+           x.out = $tin + $thi;
+           $tin = x.out; # next
+           
+           x.thi = $tot/$phi; # space volve, indi...
+           
+           my $j = x.j;
            if (!J.q) {
-               say "U: ".$J->pi."   ".slim 200, gp(j.s);
-               say "   * _.r          => ".gp(_.s) for @sjs;
+               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
+               say "   * _.r          => ".gp(_.s) for values %{x.sj};
+               say "up around x.in <-> x.out"
            }
-           my $outt = $tin + $thi; # r indi, of sjs
-           my $rr = {
-               in => $tin,
-               out => $outt,
-               thi => $tot/$phi, # space volve, indi...
-               sjs => \@sjs,
-               j => $j,
-           };
-           say "rr.j.r    = rr.in    -> rr.out";
-           push @re, $rr;
-           $tin = $outt;
        }
        # each branching yet here...
        # depending on tape processing fu
@@ -196,18 +195,16 @@ R_Jz:
        # collections of junk
        # pur inness
        
-       for my $rr (grep{defined}@re[0..$tot-1]) {
-           my $j = rr.j;
+       for my $x (@$onl) {
+           my $j = x.j;
            my $M = [];
-           my $sc = {fs=>20,mt=>'-2em'};
-           Rw ii/cap $rr $M $sc;
-           Rw ii/bod $rr $M;
+           Rw ii/cap $x $M;
+           Rw ii/bod $x $M;
+           
            
            say ":!!;   M    t:_.t    y:".ki(_.y)."        c:".ki(_.c)."       sc:".ki(_.sc) for @$M;
-           my $in = rr.in;
-           my $out = rr.out;
            die if !@$M;
-           Rw om/bal $J $oM:M $t:j.t $in $out;
+           Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
        }
        sayre "==\n== delt ".F_delta."\n==";
      entropia: | #c kind of same as running intents on u/ etc from inness

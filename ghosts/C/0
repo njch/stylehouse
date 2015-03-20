@@ -118,9 +118,7 @@ R_Jz:
           ['J', '', {pwth=>'hull/mk:Jself',fo=>[$J,0.1]}];
        Rw the + Jhead $M;
        
-       my $d = Rw om/lev + $oM:M Jhead $at;
-       say "JHead scoop: ".wdump 4, $d;
-       # make lev: Jhead $at
+       Rw om/lev + $oM:M Jhead $at;
  - K: ii/ornate #c arabic ornate parenthesis
    D: |
        my $gl = ar.out ? '﴿' : '﴾';
@@ -134,18 +132,18 @@ R_Jz:
        Rw iiJM + $d;
  - K: ii/cap #c ha zom
    D: |
-       my ($vli) = grep{_.style eq 'traveli'} @{rr.sjs};
+       my $vli = x.sc.traveli || die;
+       
        my $N = [
-           ['_', '', {s=>rr.j.l}, {fs=>18, co=>'38f'}],
-           ['=','', {}, {fs=>12,co=>'000'}],
-           ['i', 'sur/to:/', {fo=>[vli.s,0.1]}],
+           ['_', '',         {s=>x.j.l}, {fs=>4, co=>'38f'}],
+           ['=', '',         {}, {fs=>12,co=>'000'}],
+           ['i', 'sur/to:/', {fo=>[$vli,0.1]}],
        ];
-       my ($vly) = grep{_.style eq 'travely'} @{rr.sjs};
-       if ($vly && @{vly.s}) {
-           my $s = " ".join(" ",@{vly.s})." ";
+       if (x.sc.travely && @{x.sc.travely}) {
+           my $s = " ".join(" ",@{x.sc.travely})." ";
            push @$N,
                ['travely', '', {s=>$s, wsp=>1}],
-               ['S', '', {fo=>[rr.j.s, 0.2]}],
+               ['S',       '', {fo=>[x.j.s, 0.2]}],
        }   
        
        my $M = [];
@@ -153,22 +151,18 @@ R_Jz:
        Rw MN $N $M pwth;
        
        #say "ii/cap: ".ki$rr;
-       my $t = rr.j.t.'-cap';
+       my $t = x.j.t.'-cap';
        Rw om/lev + $oM:M $t;
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
-       my $in = rr.in; # TODO whereto?
-       my $out = rr.out;
-       my $phi = ($out - $in) * rr.thi; # normal lines per 0.1
+       my $in = x.in; # TODO whereto?
+       my $out = x.out;
+       my $phi = ($out - $in) * x.thi; # normal lines per 0.1
        my $thi = $phi * 2; # oundo big window, bod small
        
-       my $j = rr.j;
-       my $sjs = rr.sjs;
-       my $u = j.s;
-       say "bod $in <--> $out  $thi     j.r"; # TODO say big
+       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
        
-       # how to what = @{rr.sjs}
-       my $o = Rw oundo $thi $u;
+       my $o = Rw oundo $thi $u:x.j.s $sc:x.sc;
        
        warn "More o.more" if o.more;
        my $M = [];
