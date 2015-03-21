@@ -40,7 +40,8 @@ R_Jz:
    D: |
      %$J = (%$J, %{ar.o}) if ar.o;
      if (ar.m) {
-         Rw fom;
+         my $o = Rw fom;
+         
      }
      # cv 
      die "could be anything" if ref J.cv;
@@ -101,16 +102,24 @@ R_Jz:
 mod c:
  - K: fo #c MOD fo as sc sc makes a little J/a big j
    mod 3.6: |
-     my $zero = 0;
-     die if ref $cs ne 'ARRAY';
-     # ^v usually pass $csness as @$m
-     my $o = Rw fom $cs $J:zero;
+     my $o = {};
+     if (ref $cs eq 'ARRAY') {
+         my $zero = 0;
+         $o = Rw fom $cs $J:zero;
+     }
+     else {
+         %$o = %$cs;
+     }
      # do the args out here so add J.r
      o.r = d.r;
+     
+     o.mod = $d;
+     
      my $f = J.f->(fo=>$o); # magnetic fishingrods
+     
      d.cs.fo.fo = $f;
-     d.s = f.s;
-     n.gl = [];
+     d.s = f.s; # later
+     n.ogl = 1; # mark override
      # make like to hook %gp towards set f.r to the line this fo is on
  - K: pwth #c -> !some/path exp.
    mod 3.1: |
