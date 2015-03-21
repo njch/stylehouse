@@ -1,4 +1,83 @@
 R_Jz:
+ - K: cruxal #c
+   D: |
+     my $j = x.j;
+     my $J = j.b.b.j;
+     my ($k,$v) = @$m;
+     J.bz->("j.l%".$k." j.cv", $v);
+ - K: oundo #c hound god from a crux of inness $x
+   D: |
+     my $o = {r=>[]};
+     # fills up @r to $thi
+     # also $plucky to select hash key order
+     # a space for tiny-part-of-huge-set access
+     
+     my $u = x.j.s;
+     my $sc = x.sc;
+     
+     # $plucky could rate the things it gets passed
+     # and the $thi yins up out here
+     if (sc.ou) {
+         # further dimensional sc if {} or something?
+         # so the spec can curve data all the way
+         Rw ou/sc.ou + $u $o $x $sc;
+     }
+     elsif (!ref $u) {
+         o.type = 'text';
+         push @{o.r}, { r=>"text", s=>$u, cv=>0.4 };
+     }
+     elsif (ref $u eq 'ARRAY') {
+         o.type = 'ARRAY';
+         o.total = @$u;
+         my $i = 0;
+         until (@{o.r} >= $thi) {
+             if (!exists $u->[$i]) {
+                 last;
+             }
+             
+             my $v = $u->[$i];
+             # $plucky
+             push @{o.r}, { r=>$i, path=>"[".$i, s=>$v };
+             
+             if (@{o.r} >= $thi) {
+                 o.more = @$u - @{o.r};
+                 delete o.more if !o.more;
+                 last;
+             }
+             $i++;
+         }
+     }
+     elsif (ref $u eq 'CODE') {
+          die;
+          o.type = 'CODE';
+          push @{o.r}, { r=>"CODE", clues=>{stuff=>"fromDm?"} }
+     }
+     else {
+         my @ks = sort keys %$u;
+         o.total = @ks;
+         until (@{o.r} >= $thi) {
+             if (!@ks) {
+                 last;
+             }
+             
+             my $k = shift @ks;
+             my $v = $u->{$k};
+             # $plucky # could be R coded small lmaz
+             # can meet slightly more and select best
+             # nothing is too worthy
+             push @{o.r}, { r=>$k, path=>"{".$k, s=>$v };
+             
+             if (@{o.r} >= $thi) {
+                 o.more = @ks if @ks;
+                 last;
+             }
+         }
+         # bunch of keys... ^ interpret, compress knowledge
+         # TODO ^make itv like two indexes, polars
+         # any sorta layout knowhow...
+     }
+     o.thi = @{o.r};
+     $o
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
@@ -26,7 +105,26 @@ R_Jz:
            
            Rw om/lev + $oM $M $t:r.r $c;
        }
+       if (o.more) {
+           Rw ii/more $x $o $M;
+       }
        Rw iM + $oM:M;
+ - K: ii/more #c round corner
+   D: |
+     my $d;
+     d.t = 'more';
+     d.sc.ab = 'right:-1em';
+     d.c.fo = [$o, 0.5, 'more'];
+     Rw iiJM + $d;
+ - K: pi/more #c round corner
+   D: |
+     my $csl={fs=>19,co=>'31f'};
+     my $los = '@';
+     Rw wtf $J more 1 $s:los $sc:csl;
+     Rw wtf $J more 2 $s:u.more;
+     my $bl={co=>'000'};
+     my $more = 'more';
+     Rw wtf $J more 3 $s:more $sc:bl;
  - K: ii/labegy #c suitcase handle
    D: |
      my $d;
@@ -36,15 +134,16 @@ R_Jz:
      d.sc.ab = 'right:0.5em';
      d.c.fsx = "25";
      Rw iiJM + $d;
- - K: ii/pi #c THE WHOLE GHUTS
+ - K: ii/pi #c THE WHOLE GHUTS, X & L line the squiggles of inness $x and oundo $r
    D: |
      my $d;
      d.t = 'pi';
+     
      my $o = {};
      o.u = r.s;
      o.cv = 0.6;
      my $pi = [r.s, 0.6];
-     push @$pi, r.c.pi if r.c.pi;
+     push @$pi, r.c.pi if r.c.pi; # pi mod from ou
      d.c.fo = $pi;
      d.c.path = r.path;
      d.c.L = $r;
@@ -54,6 +153,6 @@ R_Jz:
      d.sc.ab = 'left:1em';
      d.sc.mw = '14em';
      d.sc.over = 'hidden';
-     say wdump [$d, from => $r] if r.s =~ /pidgeon/;
+     
      Rw iiJM + $d;
 

@@ -1,111 +1,58 @@
 R_Jz:
+ - K: ein/dire #c takeover J
+   D: |
+     my $r = {i=>$i, t=>[], sc=>{ou=>'dire'}};
+     Rw inness $J $r;
+ - K: ein/image #c
+   D: |
+     my $r = {i=>$i, t=>[], sc=>{ou=>'image'}};
+     Rw inness $J $r;
  - K: ou/dire #c
    D: |
-     my $we = $u;
-     ref $u && die "ref $u";
-     -d $we || die "not found: $we pwd=".`pwd`;
+     die 'ref' if ref $u;
+     -d $u || die "not found: $u pwd=".`pwd`;
      
-     my $j = x.j;
-     Rw cruxal $x lala wagga;
-     sayre "YWE: $we".
-         wdump [ glob("$we/*")];
-     for (glob("'$we/*'")) {
-         $H->fixutf8($_);
-         sayre "Found file: $_";
+     my @ma = glob("'$u/*'");
+     for my $f (@ma) {
+         $H->fixutf8($f);
+         sayre "Found file: $f";
          my $r;
-         die "un: $_" unless $_;
-         r.r = $_;
-         r.r =~ s/^$we\///;
+         r.r = $f;
+         r.r =~ s/^$u\///;
          r.s = r.r;
          r.c.path = "!pat/dire:/r.r";
          r.c.pi = 'dire';
-         r.c.file = $_;
+         r.c.file = $f;
          push @{o.r}, $r;
+         if (@{o.r} >= $thi) {
+             o.more = @ma - @{o.r};
+             last;
+         }
      }
+ - K: ou/image #c
+   D: |
+     -f $u || die 'not file';
+     
+     my $j = x.j;
+     #Rw cruxal $x lala wagga;
+     my $r;
+     r.r = $u;
+     r.s = $u;
+     r.c.path = "!nowhere";
+     r.c.pi = 'image';
+     r.c.file = $u;
+     push @{o.r}, $r;
  - K: pat/dire #c
    D: |
      my $ex = join ' ', @$m;
-     J.onei.i .= '/'.J2.u;
-     #Rw jin ash $i:J2;
- - K: cruxal #c
-   D: |
-     my $j = x.j;
-     my $J = j.b.b.j;
-     my ($k,$v) = @$m;
-     J.bz->("j.l%".$k." j.cv", $v);
- - K: oundo #c hound god from a crux of inness $x
-   D: |
-     my $o = {r=>[]};
-     # fills up @r to $thi
-     # also $plucky to select hash key order
-     # a space for tiny-part-of-huge-set access
-     
-     my $u = x.j.s;
-     my $sc = x.sc;
-     
-     # $plucky could rate the things it gets passed
-     # and the $thi yins up out here
-     if (sc.ou) {
-         # further dimensional sc if {} or something?
-         # so the spec can curve data all the way
-         Rw ou/sc.ou $u $o $x $sc;
-     }
-     elsif (!ref $u) {
-         o.type = 'text';
-         push @{o.r}, { r=>"text", s=>$u, cv=>0.4 };
-     }
-     elsif (ref $u eq 'ARRAY') {
-         o.type = 'ARRAY';
-         o.total = @$u;
-         my $i = 0;
-         until (@{o.r} >= $thi) {
-             if (!exists $u->[$i]) {
-                 last;
-             }
-             
-             my $v = $u->[$i];
-             # $plucky
-             push @{o.r}, { r=>$i, path=>"[".$i, s=>$v };
-             
-             if (@{o.r} >= $thi) {
-                 o.more = @$u - @{o.r};
-                 delete o.more if !o.more;
-                 last;
-             }
-             $i++;
-         }
-     }
-     elsif (ref $u eq 'CODE') {
-          die;
-          o.type = 'CODE';
-          push @{o.r}, { r=>"CODE", clues=>{stuff=>"fromDm?"} }
+     my $ul = J.onei.i.'/'.J2.u;
+     if (-d $ul) {
+         J.onei.i = $ul
      }
      else {
-         my @ks = sort keys %$u;
-         o.total = @ks;
-         until (@{o.r} >= $thi) {
-             if (!@ks) {
-                 last;
-             }
-             
-             my $k = shift @ks;
-             my $v = $u->{$k};
-             # $plucky # could be R coded small lmaz
-             # can meet slightly more and select best
-             # nothing is too worthy
-             push @{o.r}, { r=>$k, path=>"{".$k, s=>$v };
-             
-             if (@{o.r} >= $thi) {
-                 o.more = @ks if @ks;
-                 last;
-             }
-         }
-         # bunch of keys... ^ interpret, compress knowledge
-         # TODO ^make itv like two indexes, polars
-         # any sorta layout knowhow...
+         my $J = Rw jin ash;
+         Rw ein/image $J $i:ul;
      }
-     o.thi = @{o.r};
-     $o
  - K: pi/dire #c
    D: |
      my $x = J.mod.c.X;
@@ -119,13 +66,37 @@ R_Jz:
          my $dsc = {co=>'22f',fs=>20};
          my $s = '/';
          Rw wtf $J dir 0.2 $s $sc:dsc;
-         sc.sh = '3 5 4 22a';
-     }
-     if ($file =~ /^public\/(.+)$/) {
-         J.mod.sc.bgi = $1;
+         sc.sha = '3 5 4 22a';
      }
      
-     Rw wtf $J thing 0.1 $s:u $sc;
+     Rw wtf $J thing 1 $s:u $sc;
+     
+     if (-f $file && J.cv >= 0.5) {
+         Rw pi/thumbnail $file $J;
+     }
      
      #my $emb = '𐎘' if -d $-
+ - K: pi/image #c
+   D: |
+     my $file = $u;
+     -f $file || die;
+     J.mod.sc.width = "13em";
+     J.mod.sc.height = "13em";
+     Rw pi/thumbnail $file $J;
+ - K: pi/thumbnail #c
+   D: |
+     my $size = -s $file;
+     sayyl "Size: $file : $size";
+     return if $size > 3_000_000;
+     my $ava = $1 if $file =~ /^public\/i\/(.+)$/;
+     $ava || die "Not visibi? $file";
+     my $thl = "th/$ava";
+     my $th = "public/$thl";
+     my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
+     
+     run 'mkdir', '-p', $thd unless -d $thd;
+     
+     run 'convert', $file, '-thumbnail','300x300', $th unless -f $th;
+     
+     J.mod.sc.bgi = $thl;
 
