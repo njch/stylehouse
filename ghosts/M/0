@@ -694,8 +694,9 @@ R_Mz:
                 
             }
             if (at.conty ne _t.conty) {
-            
-                $doj_S->(at.id, '.html(%s)', $H->ejson(at.conty));
+                my $how = 'html';
+                $how = 'text' if u.K eq 'style';
+                $doj_S->(at.id, '.%s(%s)', $how, $H->ejson(at.conty));
                 
             }
             while (my ($k, $v) = each %{ at.attr }) {
