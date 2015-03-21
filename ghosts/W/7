@@ -5,6 +5,16 @@ R_Jz:
      $v .= 'em' if $v !~ /(%|em|px)/;
      
 esc c:
+ - K: at #c
+   esc 3: |
+     my @ats;
+     while (my ($k,$v) = each %$v) {
+         push @ats, '%at:'.$k, $v;
+     }
+     @ats
+ - K: tag #c
+   esc 3: |
+     '%tag' => $v
  - K: sha #c it
    esc 3: |
      my @m = split m/\s/, $v;
@@ -176,4 +186,7 @@ esc c:
  - K: over #c y 
    esc 3.4: |
      "overflow:$v"
+ - K: float #c y 
+   esc 3.4: |
+     "float:$v"
 

@@ -182,6 +182,7 @@ R_Jz:
            
            # top volt for thing selection?: # whattage
            # skip o0 &&verlap of K + name
+           # should be fo pi 6 stuff
            next if $l eq 'K' && J.bb->{"name 0.1"} eq $s
               && $s ne J.bb->{"K 0.2"};
 
@@ -231,6 +232,9 @@ R_Jz:
                    at.id = $cs when 'id';
                    at.title = $cs when 'tt';
                    at.tag = $cs when 'tag';
+                   when (/^at:(\S+)$/) {
+                        $at->{$1} = $cs;
+                   }
 
                    # TODO compile J.ys
                    when ('path') {
