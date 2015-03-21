@@ -37,10 +37,8 @@ R_Jz:
        my $out = 0.9;
        my $k = 'psfaus';
        
-       my $n = $M->[3]->[2];
-       
-       Rw mo/pwth $J $M $in $out $k;
-       #Rw jin ollox $in:n;
+       @$M = Rw MN $N:M pwth;
+       Rw om/bal $J $oM:M $in $out $k;
  - K: pi/psfacts #c
    D: |
         $_ =  u.cmd;
@@ -70,7 +68,9 @@ R_Jz:
         warn "heaps of mem on $style $name  (u.mem)" if u.mem > 20;
         my $V = 1;
         
-        Rw mo/pwth $J $M $V;
+        say "psfact -: ".ki 2, $_ for @$M; 
+        #die wdump [$d, $ar];
+        Rw yM $J $M;
         
         # J.fo->($u,0.3); # fo HASH complicato
  - K: wt/stylename #c  TODO return _M_ brigy dep text jostle
@@ -104,20 +104,20 @@ R_Jz:
        sc.sha = '1 2 6 000';
        nc.sha = '1 2 6 000';
        
-       Rw wtf $M style $s:style $sc;
-       Rw wtf $M name $s:name $sc:nc;
+       Rw wtf $M style 1 $s:style $sc;
+       Rw wtf $M name 2 $s:name $sc:nc;
  - K: wt/cpu #c  # TODO make fs smooth, atomical curve compu
    D: |
        my $sc;
        sc.co = 'eb0';
        sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:18;
        sc.sha = '1 2 6 000';
-       Rw wtf $M cpu $s:cpu $sc;
+       Rw wtf $M cpu 3 $s:cpu $sc;
  - K: wt/mem #c
    D: |
        my $sc;
        sc.co = '8e0';
        sc.co = 'f30' if $mem > 20;
        sc.fs = $mem<2?4:$mem<5?7:$mem<12?14:28;
-       Rw wtf $M cpu $s:mem $sc;
+       Rw wtf $M mem 4 $s:mem $sc;
 
