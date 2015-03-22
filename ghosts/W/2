@@ -77,11 +77,11 @@ R_Jz:
           - co: 8ff
             blr: 3
             ml: 3em
-       
-        
-        
-        
-        
+ - K: idi #c
+   D: |
+       my $J = Rw jin ollox;
+       my $i = 'public/i/'.shift @$m;
+       Rw ein/dire $J $i;
  - K: food #c FOOD #cc
    n_D:
 
@@ -101,6 +101,7 @@ R_Jz:
      up: | #c
        # or functions sucking more stuff... suck chain shunting 
        Rw food/traction;
+       
        #Rw food/file;
      traction: | #c
        my $sc;
@@ -120,43 +121,74 @@ R_Jz:
       - [hull   jin:hull]
       - [ps     jin:ps]
       - [sur    jin:ollox  {} {fs:14,co:a3a}]
-      - [occie  occie/komp {} {fs:12,co:ff6}]
+      - [occ\nie  occie/komp {} {fs:12,co:ff6}]
+      - [Tarf   idi:Tarf   {} {fs:12,co:5e7}]
+      - [life   idi:life   {} {fs:12,co:3f6}]
+     
      i: #c
-       gott: | #c
-         # MZ: something
-         my $J = Rw jin ollox;
-         my $i = 'public/i/Tarf';
-         Rw ein/dire $J $i;
+       twunk: |
+         H.G w Elvisphere;
        file: | #c or
-         open my $ha, '-|','tail','-F','-n9999999999','ghosts/C/0' or die $!;
-         my $s = Mojo::IOLoop::Stream->new($ha);
-         $s->on(read => sub {
-            my ($s,$b) = @_;
-            $H->fixutf8($b);
-            say "FILE:". wdump $b;
-            return 0;
-         });
-         $s->on(close => sub {
-         my $s = shift;
-          die "closed!?";
-         $s->start;
-         });
-         $s->timeout(0);
-         $s->on(error => sub {
-            my ($stream, $err) = @_;
-            die $err
-          });
-          sub log2 {
-             log(shift) / log(2);
-          }
-         #say "Yep: ".($_ * log2($_)) for 1..42;
-
-
-         $s->start;
-         $s->reactor->start unless $s->reactor->is_running;
-         say wdump 2,$s;
-
-         G.saaaa = $s;
+         my $in = G.inso ||= {};
+         
+         my $tail = sub {
+             my $file = shift;
+             my $do = shift;
+             
+             open my $ha, '-|','tail','-F','-n9999999999', $file or die $!;
+             my $s = Mojo::IOLoop::Stream->new($ha);
+             $s->on(read => sub {
+                 my ($s,$b) = @_;
+                 #return $i++ unless $i;
+                 $H->fixutf8($b);
+                 
+                 $do->($b);
+                 
+                 return 0;
+             });
+             $s->on(close => sub {
+                 my $s = shift;
+                 die "closed!?";
+             });
+             $s->on(error => sub {
+                 my ($stream, $err) = @_;
+                 die $err
+             });
+             $s->timeout(0);
+             $s->start;
+             $s->reactor->start unless $s->reactor->is_running;
+             $in->{$file} = $s;
+         };
+         my $dolines = sub { # tail do
+             my $perline = shift;
+             my $b = shift;
+             
+                 say "FILE:". wdump $b;
+                 for my $m (split "\n", $b) {
+                     next unless $m;
+                     $perline->($m);
+                 }
+                 #`cat /dev/null > life/J\.sc`;
+         };
+         my $pintou = sub { # perline
+             my $m = shift; 
+             my $meta = djson $m;
+             say "wanna send meta.Jid: ". -s "life/J/meta.Jid\.c";
+         };
+         my $sub = sub {
+             my $file = shift;
+             my $al = $in->{$file};
+             if ($al) {
+                 sayre "replacing tailo $file";
+                 $al->close;
+             }
+             my $do = sub { $dolines->($pintou, @_) };
+             $in->{$file} = $tail->($file, $do);
+         };
+         
+         $sub->("life/J\.sc");
+         $sub->("life/J\.ssc");
+         
        hoxy: | #c 
          my $ox = J.hox ||= {};
          ox.bb ||
