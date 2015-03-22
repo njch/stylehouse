@@ -1,4 +1,5 @@
 
+
 hooks:
   fresh_init: |
     say "     H Fresh init H.style H.name";
@@ -154,61 +155,6 @@ hooks:
     $H->pub('Elvis', $m, 'ig');
     
     saybl "Elvisiin: $m";
-  Elvisphere: | # switch J.sc/J.ssc
-    my $dir = 'life';
-    my $dJd = "$dir/J.";
-    my $wtf = $dJd.'wtf';
-    my $y = readlink $wtf;
-    my $x = $y;
-    my $scs = $1 if $x =~ s/(ss?c)$//;
-    $scs || die "mal $x of $wtf";
-    $scs = $scs eq 'sc' ? 'ssc' : 'sc'; # back and forth
-    $x .= $scs;
-    
-    say "---";
-    say "$y becomes $x";
-    say "---";
-    
-    `ln -fs $x $wtf`;
-    my $from = "$dir/$y";
-    my $into = "$dir/$x";
-    
-    0->timer(0.3, sub {
-        my $siz = -s $from;
-        waylay 2.3 Elvsquash[$from, $siz];
-    });
-  Elvish: | #c message for Elvis via fs streams, go get the stuff
-    $H->fixutf8($m);
-    my $meta = djson $m;
-    my $file = "life/J/meta.Jid\.c";
-    my $now = hitime;
-    
-    my $delay = sprintf '%.4f', $now - meta.hitime;
-    saybl "meta.hol -> meta.Jid  (delay $delay)    ". -s $file;
-    my $m = $H->slurp($file);
-  
-      # thing may contain more J structure we don't know about but it's art
-      # it may throw Emissive Js through from Building Js
-      # possibly without traces of U the W fab in the middle
-      # which is where we can wire travel through langths of Js
-      # without the bridge building ie doming needed to find the path
-      my $cb;
-      if (meta.unified) {
-          saygr "unifid styles: meta.styles";
-          
-          # is test # could be more meta over there
-          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
-          
-          if (meta.styles =~ /\bNZ\b/) {
-              
-              $cb = sub {
-                w mux(as=>"unified meta.Wid ( meta.hol");
-              };
-          }
-      }
-      $m = " $m"; 
-      w to_Elvis[$m, $meta, $cb];
-      
   to_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
     my $cb = ar.cb;
@@ -237,65 +183,6 @@ hooks:
         my ($Elvis,$cb) = @$e;
         w $Elvis send[$m, $cb];
     }
-  Elvphos: | #c flash bulb head
-         my $in = G.inso ||= {};
-         
-         my $tail = sub {
-             my $file = shift;
-             my $do = shift;
-             
-             open my $ha, '-|','tail','-s','0.1','-F','-n0', $file or die $!;
-             my $s = Mojo::IOLoop::Stream->new($ha);
-             $s->on(read => sub {
-                 my ($s,$b) = @_;
-                 #return $i++ unless $i;
-                 $H->fixutf8($b);
-                 
-                 $do->($b); # dolines
-                 
-                 return 0;
-             });
-             $s->on(close => sub {
-                 my $s = shift;
-                 die "closed!?";
-             });
-             $s->on(error => sub {
-                 my ($stream, $err) = @_;
-                 die $err
-             });
-             $s->timeout(0);
-             $s->start;
-             $s->reactor->start unless $s->reactor->is_running;
-             $in->{$file} = $s;
-         };
-         my $dolines = sub { # tail chunk
-             my $perline = shift;
-             my $b = shift;
-                 say "FILE:". wdump $b;
-                 for my $m (split "\n", $b) {
-                     next unless $m;
-                     $perline->($m);
-                 }
-                 #`cat /dev/null > life/J\.sc`;
-         };
-         my $pintou = sub { # perline
-             my $m = shift; 
-             w Elvish[$m];
-         };
-         my $sub = sub {
-             my $file = shift;
-             my $al = $in->{$file};
-             if ($al) {
-                 sayre "replacing tailo $file";
-                 $al->close;
-             }
-             my $do = sub { $dolines->($pintou, @_) };
-             $in->{$file} = $tail->($file, $do);
-         };
-         
-         $sub->("life/J\.sc");
-         $sub->("life/J\.ssc");
-         
   Elvsquash: | # swish slab
     my $siz2 = -s $from;
     if ($siz != $siz2) {

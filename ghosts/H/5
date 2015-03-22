@@ -1,0 +1,114 @@
+hooks:
+  flows_D: | #c
+      S.file = (S.what||'life').'/'.S.to;
+      for ('sc', 'ssc') {
+          my $file = S.file.'.'.$_;
+          Sw entail[$file];
+      }
+  entail: | #c
+      sayyl "Tailing $file...";
+      open my $ha, '-|','tail','-s','0.1','-F','-n0', $file or die $!;
+      say '.';
+      my $al = S.in->{$file};
+      if ($al) {
+          sayre "replacing tailo $file";
+          $al->close;
+      }
+      my $s = Mojo::IOLoop::Stream->new($ha);
+      $s->on(read => sub {
+          my ($s,$b) = @_;
+          $H->fixutf8($b);
+          Sw dolines[$b];
+      });
+      $s->on(close => sub {
+          my $s = shift;
+          die "S.file closed!?";
+      });
+      $s->on(error => sub {
+          my ($s, $err) = @_;
+          die "S.file err: $err";
+      });
+      $s->timeout(0);
+      $s->start;
+      $s->reactor->start unless $s->reactor->is_running;
+  dolines: | #c
+      if (S.persurge) {
+          S.persurge->($b);
+      }
+      if (S.perline) {
+          for my $m (split "\n", $b) {
+              next unless $m;
+              S.perline->($m);
+          }
+      }
+      
+  Elvisphere: | #c switch J.sc/J.ssc
+      my $dir = 'life';
+      my $dJd = "$dir/J.";
+      my $wtf = $dJd.'wtf';
+      my $y = readlink $wtf;
+      my $x = $y;
+      my $scs = $1 if $x =~ s/(ss?c)$//;
+      $scs || die "mal $x of $wtf";
+      $scs = $scs eq 'sc' ? 'ssc' : 'sc'; # back and forth
+      $x .= $scs;
+
+      say "---";
+      say "$y becomes $x";
+      say "---";
+
+      `ln -fs $x $wtf`;
+      my $from = "$dir/$y";
+      my $into = "$dir/$x";
+
+      0->timer(0.3, sub {
+          my $siz = -s $from;
+          waylay 2.3 Elvsquash[$from, $siz];
+      });
+  fuz: |
+    my $u;
+    u.K = 'fz';
+    u.to = $t;
+    u.persurge = ar.s if ar.s;
+    u.perline = ar.l if ar.l;
+    ar.s || ar.l || die "provide s or l for surgey or liney hook";
+    w G.R fuu[$u];
+  Jexit: | #c
+    my $t = 'J';
+    my $l = sub {
+        my $m = shift;
+        w Elvish[$m];
+    };
+    w fuz[$t,$l];
+  Elvish: | #c message for Elvis via fs streams, go get the stuff
+    $H->fixutf8($m);
+    my $meta = djson $m;
+    my $file = "life/J/meta.Jid\.c";
+    my $now = hitime;
+    
+    my $delay = sprintf '%.4f', $now - meta.hitime;
+    saybl "meta.hol -> meta.Jid  (delay $delay)    ". -s $file;
+    my $m = $H->slurp($file);
+  
+      # thing may contain more J structure we don't know about but it's art
+      # it may throw Emissive Js through from Building Js
+      # possibly without traces of U the W fab in the middle
+      # which is where we can wire travel through langths of Js
+      # without the bridge building ie doming needed to find the path
+      my $cb;
+      if (meta.unified) {
+          saygr "unifid styles: meta.styles";
+          
+          # is test # could be more meta over there
+          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
+          
+          if (meta.styles =~ /\bNZ\b/) {
+              
+              $cb = sub {
+                w mux(as=>"unified meta.Wid ( meta.hol");
+              };
+          }
+      }
+      $m = " $m"; 
+      w to_Elvis[$m, $meta, $cb];
+      
