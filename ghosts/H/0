@@ -183,38 +183,6 @@ hooks:
         my ($Elvis,$cb) = @$e;
         w $Elvis send[$m, $cb];
     }
-  Elvsquash: | # swish slab
-    my $siz2 = -s $from;
-    if ($siz != $siz2) {
-        warn "$from got written to sinze changing link!?";
-    }
-    say "$from is still $siz == $siz2";
-    `cat /dev/null > $from`;
-    sayre "Cleaned $from";
-  spurtJcon: | # spurt J stuff + zip into J.sc (or J.ssc)
-    my $dir = 'life';
-    my $dJd = "$dir/J.";
-    my $wtf = $dJd.'wtf';
-    my $y = readlink $wtf;
-    if (!$y) {
-        $y = "J\.sc";
-        `ln -s $y $wtf`;
-    }
-    $y = "$dir/$y";
-    saybl "Where: $y"; 
-    
-        my $con = 'life/J/'.meta.Jid.'.c';
-        die "already!" if -e $con;
-        $H->spurt($con, H::encode_utf8 $m);
-        warn "con n ving! $1" if $m =~ /(.{,20}\n.{,20})/;
-        
-    $m = $H->ejson($meta);
-    
-        warn "on met! $1" if $m =~ /(.{,20}\n.{,20})/;
-        $m .= "\n";
-        write_file($y, {append=>1}, $m);
-        
-    
   reexec: |
     for my $E (@{H.who||[]}) {
         w $E disconecktie;
