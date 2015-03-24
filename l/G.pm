@@ -9,8 +9,8 @@ use feature 'say';
 use Redis;
 use Mojo::Pg;
 use Mojo::IOLoop::Stream;
-
-use Scriptalicious;
+use File::Path qw(make_path remove_tree);
+use Scriptalicious;  
 use File::Slurp;
 use JSON::XS;
 use YAML::Syck;
@@ -1172,6 +1172,7 @@ sub taily {
       my $x = shift;
       my $link = $x->{fi}.'.s';
       my $s = readlink $link if -e $link;
+      say " LOokoing $link  : $s";
       if (!$s) {
           sayyl "auto sc $x->{fi}";
           $y->{wtfy}->($x); # makes a .s -> .sc
@@ -1182,10 +1183,10 @@ sub taily {
     };
     $y->{rr} = sub { #c
       my $x = $y->{spc}->(@_);
-      $y->{mk}->($x) unless -d $x->{fi};
+      saybl "rr : $x->{d}  == ".-d $x->{d};
+      $y->{mk}->($x) unless -d $x->{d};
       return $x->{fi};
     };
-
     $y->{spc} = sub { #c
       my $f = pop;
       my $o = pop || 'life';
@@ -1195,8 +1196,9 @@ sub taily {
           $x->{fi} = $fi;
           $x->{f} = $f;
           $x->{o} = $o;
-          $x->{t} = $1 if $fi =~ /\/([^\/]+)$/;
-          $x->{d} = $1 if $fi =~ /^(.+)\/.+?$/;
+          $fi =~ /^(.+)\/([^\/]+)$/;
+          $x->{t} = $2;
+          $x->{d} = $1;
           $x->{lots} = ['sc','sc2'];
       }
       $x
@@ -1207,10 +1209,9 @@ sub taily {
       $x->{l} = $l;
 
       $y->{mk}->($x);
-
       for (@{$x->{lots}}) {
           my $file = $x->{fi}.'.'.$_;
-          `cat /dev/null >> $file`;
+          fscc($file, '');
           die "go figgy $file" unless -f $file;
           $y->{tailf}->($x, $file);
       }
@@ -1219,8 +1220,15 @@ sub taily {
     };
     $y->{mk} = sub { #c
       my $x = shift;
-      run 'mkdir', '-p', $x->{fi} unless -d $x->{fi};
-      die "no go diggy $x->{fi}" unless -d $x->{fi};  
+      say "mk path $x->{d}";
+      my $some = `ls -d $x->{d}`;
+      say "SOME: $some";
+      say "-e $x->{d}" if -e $x->{d};
+      say "-d $x->{d}" if -d $x->{d};
+      return if -e $x->{d};
+      sayre "MKDIR $x->{d}";
+      make_path($x->{d});
+      die "no go diggy $x->{d}  pwd=".`pwd` if !-d $x->{d};
     };
     $y->{l_lines} = sub { #c
       my $x = shift;
@@ -1240,7 +1248,6 @@ sub taily {
           $y->{wtfy}->($x);
       }
     };
-
     $y->{wtfy} = sub { #c
       my $x = shift;
       my $link = $x->{fi}.'.s';
@@ -1249,12 +1256,14 @@ sub taily {
       my $ex = $1 if $s && $s =~ /\.(.+?)$/;
       my ($next) = reverse reverse(@{$x->{lots}}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{$x->{lots}};
       # forth and around
-      say "wtfy: ".wdump $x;
       my $wt = $x->{t}.'.'.$next;
 
-      sayyl "ln $link    $s -> $wt";
+      $y->{mk}->($x);
 
-      `ln -fs $wt $link`;
+      sayyl "ln -fs $wt $link";
+
+      symlink $wt, $link;
+      #`ln -fs $wt $link`;
 
       if ($s) {
           my $sif = $x->{d}.'/'.$s;
@@ -1275,7 +1284,9 @@ sub taily {
       if ($siz != $siz2) {
           warn "$sif got written to sinze changing link!?";
       }
-      `cat /dev/null > $sif`;
+
+      fspu($sif, '');
+
       sayre "Cleaned $sif";
     };
     $y->{tailf} = sub { #c
