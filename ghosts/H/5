@@ -43,18 +43,15 @@ hooks:
       w to_Elvis[$m, $meta, $cb];
       
   tai: |
-    my $y = shift @$m;
-    my $d = $G->taily->{rr}->($y);
-    my $f = $d.'/'.$t.'.i';
-    
-    my $i = ejson $meta;
-    fspu $f, "$i\n";
+    my $y = ar.y || shift @$m;
+    my $f = $G->taily->{rr}->($y);
+    $n = ejson $n if ref $n;
+    fspu $f, "$n\n";
   tac: |
-    my $y = shift @$m;
-    my $d = $G->taily->{rr}->($y);
-    my $f = $d.'/'.$t.'.W';
-    
-    fscc $f, $W;
+    my $y = ar.y || shift @$m;
+    my $f = $G->taily->{rr}->($y);
+    $n = ejson $n if ref $n;
+    fscc $f, "$n\n";
   aj: |
     my $W = j.W; # wonky picture frame
     
@@ -66,10 +63,10 @@ hooks:
         meta.unified = 1;
         meta.styles = W.at.styles;
         meta.hitime = $H->hitime;
-        
+
         my $R = undef;
-        Rw tai W $meta $t:meta.Wid;
-        
+        Rw tai W/meta.Wid\.i $n:meta;
+
         # or Rw tp J $n:meta.Wid $i:meta;
         # and it ref > jsons
         # somewhere ahead RNA compiles nicely into the walls
@@ -78,8 +75,8 @@ hooks:
         H.r->set("W/meta.Wid" => ejson $meta);
         
         
-        my $W = "W meta.Wid\n";
-        Rw tac V/H.style/H.name $W $t:H.id;
+        my $W = "W meta.Wid";
+        Rw tac V/H.style/H.name/H.id\.W $n:W;
         
         H.r->set("V/H.id/meta.Wid" => 1); # gone
         G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index

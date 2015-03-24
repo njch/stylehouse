@@ -1159,9 +1159,25 @@ sub inter {
     $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 
+sub tar {
+    my $G = shift;
+    my $ar = shift;
+    $ar->{y} = $ar->{y} || $ar->{m}->[0];
+    $ar->{f} = $G->taily->{rr}->($ar->{y});
+    $ar->{n} = ejson $ar->{n} if ref $ar->{n};
+    $ar->{f}
+}
+
+sub yr {
+    my $G = shift;
+    my $yy = $G->taily;
+    my $x = $yy->{spc}->(@_);
+}
+
 sub taily {
     my $G = shift;
     return $G->{taily} if $G->{taily};
+    $G->{lifespot} = "life/$H->{id}";
     my $y = $G->{taily} = {};
     #
     $y->{rw} = sub { #c
@@ -1181,26 +1197,26 @@ sub taily {
       # so appends can sense together before even .cing
       $x->{d}.'/'.$s
     };
-    $y->{rr} = sub { #c
+    $y->{rr} = sub { #c points to a bud to have bits (.i etc) sprout off
+      # make NZ to make can be created
       my $x = $y->{spc}->(@_);
-      saybl "rr : $x->{d}  == ".-d $x->{d};
-      $y->{mk}->($x) unless -d $x->{d};
       return $x->{fi};
     };
     $y->{spc} = sub { #c
       my $f = pop;
-      my $o = pop || 'life';
+      my $o = pop || $G->{lifespot} || 'life';
       my $fi = "$o/$f";
       my $x = $G->{taily}->{f}->{$fi} ||= {};
       if (!$x->{fi}) {
           $x->{fi} = $fi;
           $x->{f} = $f;
           $x->{o} = $o;
-          $fi =~ /^(.+)\/([^\/]+)$/;
+          $fi =~ /^(.+)\/(.+?)$/;
           $x->{t} = $2;
           $x->{d} = $1;
           $x->{lots} = ['sc','sc2'];
       }
+      fscc("$x->{d}/NZ", "") unless -e "$x->{d}/NZ";
       $x
     };
     $y->{ily} = sub { #c one l/ily per file
@@ -1208,11 +1224,8 @@ sub taily {
       my $x = $y->{spc}->(@_);
       $x->{l} = $l;
 
-      $y->{mk}->($x);
       for (@{$x->{lots}}) {
           my $file = $x->{fi}.'.'.$_;
-          fscc($file, '');
-          die "go figgy $file" unless -f $file;
           $y->{tailf}->($x, $file);
       }
 
@@ -1293,12 +1306,16 @@ sub taily {
       my $x = shift;
       my $file = shift;
       sayyl "Tailing $file";
+
+      fscc($file, '');
+      die "go figgy $file" unless -f $file;
+
       my $al = $x->{s}->{$file} ||= {};
-      if ($al->{s}) {
-          sayre "replacing tailo $file";
-          $al->{s}->close;
-      }
-      open my $ha, '-|','tail','-s','0.1','-F','-n0', $file or die $!;
+      open my $ha, '-|','tail',
+          '-s','0.1','-F','-n0',
+          $file
+          or die $!;
+      $al->{s} && $al->{s}->close;
       my $s = $al->{s} = Mojo::IOLoop::Stream->new($ha);
       $al->{h} = $ha;
       $al->{x} = $x;

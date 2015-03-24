@@ -1,7 +1,53 @@
 Ds:
+  - K: tai #c
+    D: |
+      my ($f,$n) = 0->taR(@_);
+      fscc($f, "$n\n";
+
+  - K: tac #c
+    D: |
+      my ($f,$n) = 0->taR(@_);
+      fscc($f, "$n\n";
+  - K: taR #c
+    D: |
+      # MZ $f,$n
+      my ($f, $n) = @_;
+      my $x = 0->yr($f);
+      $n = ejson $n if ref $n;
+      ($f, $n, $x)
+  - K: yr #c
+    D: |
+      my $x = 0->spc(@_);
+  - K: spc #c
+    D: |
+      my $f = pop;
+      my $o = pop || G.lifespot || 'life';
+      my $fi = "$o/$f";
+      my $x = G.taily.f->{$fi} ||= {};
+        if (!x.fi) {
+            x.fi = $fi;
+            x.f = $f;
+            x.o = $o;
+            $fi =~ /^(.+)\/(.+?)$/;
+            x.t = $2;
+            x.d = $1;
+            x.lots = ['sc','sc2'];
+        }
+      fscc("x.d/NZ", "") unless -e "x.d/NZ";
+      $x
+
+  - K: tar #c
+    D: |
+      my $ar = shift;
+      ar.y = ar.y || ar.m->[0];
+      ar.f = $G->taily->{rr}->(ar.y);
+      ar.n = ejson ar.n if ref ar.n;
+      ar.f
+
   - K: taily #c fs xenostrogen
     D: |
       return G.taily if G.taily;
+      G.lifespot = "life/H.id";
       my $y = G.taily = {};
       #
       y.rw = sub { #c
@@ -21,15 +67,14 @@ Ds:
         # so appends can sense together before even .cing
         x.d.'/'.$s
       };
-      y.rr = sub { #c
+      y.rr = sub { #c points to a bud to have bits (.i etc) sprout off
+        # make NZ to make can be created
         my $x = y.spc->(@_);
-        saybl "rr : x.d  == ".-d x.d;
-        y.mk->($x) unless -d x.d;
         return x.fi;
       };
-      y.spc = sub { #c
+      y.spc = sub { #c gone 0->spc
         my $f = pop;
-        my $o = pop || 'life';
+        my $o = pop || G.lifespot || 'life';
         my $fi = "$o/$f";
         my $x = G.taily.f->{$fi} ||= {};
         if (!x.fi) {
@@ -41,6 +86,7 @@ Ds:
             x.d = $1;
             x.lots = ['sc','sc2'];
         }
+        fscc("x.d/NZ", "") unless -e "x.d/NZ";
         $x
       };
       y.ily = sub { #c one l/ily per file
@@ -48,11 +94,8 @@ Ds:
         my $x = y.spc->(@_);
         x.l = $l;
 
-        y.mk->($x);
         for (@{x.lots}) {
             my $file = x.fi.'.'.$_;
-            fscc($file, '');
-            die "go figgy $file" unless -f $file;
             y.tailf->($x, $file);
         }
 
@@ -133,12 +176,16 @@ Ds:
         my $x = shift;
         my $file = shift;
         sayyl "Tailing $file";
+
+        fscc($file, '');
+        die "go figgy $file" unless -f $file;
+
         my $al = x.s->{$file} ||= {};
-        if (al.s) {
-            sayre "replacing tailo $file";
-            al.s->close;
-        }
-        open my $ha, '-|','tail','-s','0.1','-F','-n0', $file or die $!;
+        open my $ha, '-|','tail',
+            '-s','0.1','-F','-n0',
+            $file
+            or die $!;
+        al.s && al.s->close;
         my $s = al.s = Mojo::IOLoop::Stream->new($ha);
         al.h = $ha;
         al.x = $x;
