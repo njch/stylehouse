@@ -1164,11 +1164,11 @@ sub taily {
     return $G->{taily} if $G->{taily};
     my $y = $G->{taily} = {};
     #
-    $y->{rw} = sub {
+    $y->{rw} = sub { #c
       my $x = $y->{spc}->(@_);
       $y->{msc}->($x);
     };
-    $y->{msc} = sub {
+    $y->{msc} = sub { #c
       my $x = shift;
       my $link = $x->{fi}.'.s';
       my $s = readlink $link if -e $link;
@@ -1180,13 +1180,13 @@ sub taily {
       # so appends can sense together before even .cing
       $x->{d}.'/'.$s
     };
-    $y->{rr} = sub {
+    $y->{rr} = sub { #c
       my $x = $y->{spc}->(@_);
       $y->{mk}->($x) unless -d $x->{fi};
       return $x->{fi};
     };
 
-    $y->{spc} = sub { #
+    $y->{spc} = sub { #c
       my $f = pop;
       my $o = pop || 'life';
       my $fi = "$o/$f";
@@ -1195,7 +1195,7 @@ sub taily {
           $x->{fi} = $fi;
           $x->{f} = $f;
           $x->{o} = $o;
-          $x->{t} = $1 if $fi =~ /\/(.+?)$/;
+          $x->{t} = $1 if $fi =~ /\/([^\/]+)$/;
           $x->{d} = $1 if $fi =~ /^(.+)\/.+?$/;
           $x->{lots} = ['sc','sc2'];
       }
@@ -1249,6 +1249,7 @@ sub taily {
       my $ex = $1 if $s && $s =~ /\.(.+?)$/;
       my ($next) = reverse reverse(@{$x->{lots}}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{$x->{lots}};
       # forth and around
+      say "wtfy: ".wdump $x;
       my $wt = $x->{t}.'.'.$next;
 
       sayyl "ln $link    $s -> $wt";
@@ -1266,7 +1267,6 @@ sub taily {
           });
       }
     };
-
     $y->{squash} = sub { #c
       my $x = shift;
       my $sif = shift;

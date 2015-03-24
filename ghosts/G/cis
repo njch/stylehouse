@@ -35,7 +35,7 @@ Ds:
             x.fi = $fi;
             x.f = $f;
             x.o = $o;
-            x.t = $1 if $fi =~ /\/(.+?)$/;
+            x.t = $1 if $fi =~ /\/([^\/]+)$/;
             x.d = $1 if $fi =~ /^(.+)\/.+?$/;
             x.lots = ['sc','sc2'];
         }
@@ -89,6 +89,7 @@ Ds:
         my $ex = $1 if $s && $s =~ /\.(.+?)$/;
         my ($next) = reverse reverse(@{x.lots}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{x.lots};
         # forth and around
+        say "wtfy: ".wdump $x;
         my $wt = x.t.'.'.$next;
 
         sayyl "ln $link    $s -> $wt";
@@ -106,7 +107,6 @@ Ds:
             });
         }
       };
-
       y.squash = sub { #c
         my $x = shift;
         my $sif = shift;

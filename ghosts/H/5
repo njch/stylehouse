@@ -42,6 +42,19 @@ hooks:
       $m = " $m"; 
       w to_Elvis[$m, $meta, $cb];
       
+  tai: |
+    my $y = shift @$m;
+    my $d = $G->taily->{rr}->($y);
+    my $f = $d.'/'.$t.'.i';
+    
+    my $i = ejson $meta;
+    fspu $f, "$i\n";
+  tac: |
+    my $y = shift @$m;
+    my $d = $G->taily->{rr}->($y);
+    my $f = $d.'/'.$t.'.W';
+    
+    fscc $f, $W;
   aj: |
     my $W = j.W; # wonky picture frame
     
@@ -54,25 +67,21 @@ hooks:
         meta.styles = W.at.styles;
         meta.hitime = $H->hitime;
         
+        my $R = undef;
+        Rw tai W $meta $t:meta.Wid;
         
-        my $Wd = $G->taily->{rr}->('W');
-        my $Wf = $Wd.'/'.meta.Wid.'.i';
-        my $Wi = ejson $meta;
-        fspu $Wf, $Wi;
         # or Rw tp J $n:meta.Wid $i:meta;
         # and it ref > jsons
         # somewhere ahead RNA compiles nicely into the walls
         # which extend to infinity
         # so recur-C surface
-        H.r->set("W/meta.Wid" => $Wi);
+        H.r->set("W/meta.Wid" => ejson $meta);
         
         
-        my $Vd = $G->taily->{rr}->("V/H.style/H.name");
-        my $Vf = $Vd.'/'.H.id.'.W';
-        my $VW = "W meta.Wid\n";
-        fscc $Vf, $VW;
+        my $W = "W meta.Wid\n";
+        Rw tac V/H.style/H.name $W $t:H.id;
         
-        H.r->set("V/H.id/meta.Wid" => 1);
+        H.r->set("V/H.id/meta.Wid" => 1); # gone
         G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index
     }
     
