@@ -1,24 +1,19 @@
 hooks:
-  Jexit: | #c
+  Jexit: | #c setup the J suction of O (life/J.sc) (moving zipper)
     my $l = sub {
         my $m = shift;
-        w Elvish[$m];
+        w JElvis[$m];
     };
-    #my $lma = [ily => 'J',$l];
-    #w taily[$lma];
-    G.taily ||= w taily;
-    G.taily.ily->('J', $l);
-  Elvish: | #c $m from the scrambling stream
+    $G->taily->{ily}->('J', $l);
+  JElvis: | #c $m from the scrambling stream
     my $meta = djson $m;
     
-    G.taily ||= w taily;
-    my $dir = G.taily.rr->('J');
-    
+    my $dir = $G->taily->{rr}->('J');
     my $file = $dir.'/'.meta.Jid.'.c';
     
     my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
     saybl "meta.hol -> meta.Jid  (lag $del)    ". -s $file;
-    my $m = $H->slurp($file);
+    my $m = read_file($file);
   
       # thing may contain more J structure we don't know about but it's art
       # it may throw Emissive Js through from Building Js
@@ -42,21 +37,50 @@ hooks:
       $m = " $m"; 
       w to_Elvis[$m, $meta, $cb];
       
-  spurtJcon: | # spurt J stuff + meta through link tinto moving zipper
-    my $y = G.taily ||= w taily;
+  aj: |
+    my $W = j.W;
     
+    my $meta = {};
+    meta.hol = "H.style/H.name/H.id";
+    meta.Wid = W.at.id;
+    
+    if (j._) {
+        meta.unified = 1;
+        # W homing
+        meta.styles = W.at.styles;
+        meta.hitime = $H->hitime;
+        
+        H.r->set("W/meta.Wid" => $H->ejson($meta));
+        
+        H.r->set("V/H.id/meta.Wid" => 1);
+        G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index
+    }
+    
+    my @lot = reverse @{j.s}; # until whole
+    push @lot, reverse @{j.c}; # from whole
+    
+    return sayre "H: empty J aj" unless @lot;
+    
+    my $m = join" ", @lot;
+    $m = " $m"; # two spaces, tells js to eval
+    H.G w send_Elvis[$m, $meta];
+  spurtJcon: | # spurt J stuff + meta through link tinto moving zipper
     say "HIHI ".slim 30,$m;
-    my $con = 'life/J/'.meta.Jid.'.c';
-    die "already!" if -e $con;
-    $m = H::encode_utf8 $m;
-    $H->spurt($con, $m);
+    
+    my $dir = $G->taily->{rr}->('J');
+    my $f = $dir.'/'.meta.Jid.'.c';
+    
+    die "al$f" if -e $f;
     warn "con n ving! $1" if $m =~ /(.{,20}\n.{,20})/;
     
-    $m = $H->ejson($meta);
-    warn "on met! $1" if $m =~ /(.{,20}\n.{,20})/;
-    $m .= "\n";
-    my $file = y.rw->('J');
-    write_file($file, {append=>1}, $m);
+    fspu($f, $m);
+    # J should have an .i for meta + a skinny for v zipper
+    
+    my $s = ejson $meta;
+    warn "on met! $1" if $s =~ /(.{,20}\n.{,20})/;
+    $s .= "\n";
+    my $scf = $G->taily->{rw}->('J');
+    fscc($scf, $s);
         
     
   taily: | #c
@@ -180,7 +204,7 @@ hooks:
       sayre "Cleaned $sif";
     };
     
-    y.tailf = sub { #c
+    y.tailf = sub {
       my $x = shift;
       my $file = shift;
       sayyl "Tailing $file";

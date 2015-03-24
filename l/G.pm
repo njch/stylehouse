@@ -26,6 +26,7 @@ use Math::Trig 'pi2';
 
 use HTML::Entities;
 use Unicode::UCD 'charinfo';
+use Encode qw(encode_utf8 decode_utf8 is_utf8);
 use Term::ANSIColor; 
 use File::Find;
 use feature 'switch';
@@ -1156,6 +1157,178 @@ sub inter {
     $ki =~ s/^\s+//;
     $F[1]->{inter} ||= ".";
     $F[1]->{inter} .= "\n -{".$ki."}\n";
+}
+
+sub taily {
+    my $G = shift;
+    return $G->{taily} if $G->{taily};
+    my $y = $G->{taily} = {};
+    #
+    $y->{rw} = sub {
+      my $x = $y->{spc}->(@_);
+      my $link = $x->{fi}.'.s';
+      my $s = readlink $link if -e $link;
+      $s || die "nowherewhere".wdump($x);
+      $x->{d}.'/'.$s
+    };
+
+    $y->{rr} = sub {
+      my $x = $y->{spc}->(@_);
+      $y->{mk}->($x) unless -d $x->{fi};
+      return $x->{fi};
+    };
+
+    $y->{spc} = sub {
+      my $f = pop;
+      my $o = pop || 'life';
+      my $fi = "$o/$f";
+      my $x = $G->{taily}->{f}->{$fi} ||= {};
+      if (!$x->{fi}) {
+          $x->{fi} = $fi;
+          $x->{f} = $f;
+          $x->{o} = $o;
+          $x->{t} = $1 if $fi =~ /\/(.+?)$/;
+          $x->{d} = $1 if $fi =~ /^(.+)\/.+?$/;
+      }
+      $x
+    };
+
+    $y->{ily} = sub { # one l/ily per file
+      my $l = pop;
+      my $x = $y->{spc}->(@_);
+      $x->{l} = $l;
+      $x->{lots} = ['sc','sc2'];
+
+      $y->{mk}->($x);
+      $y->{zipl}->($x);
+
+      for (@{$x->{lots}}) {
+          my $file = $x->{fi}.'.'.$_;
+          $y->{tailf}->($x, $file);
+      }
+
+      $y->{wtfy}->($x);
+    };
+
+    $y->{mk} = sub {
+      my $x = shift;
+      run 'mkdir', '-p', $x->{fi} unless -d $x->{fi};
+      die "no go diggy $x->{fi}" unless -d $x->{fi};  
+    };
+
+    $y->{zipl} = sub {
+      my $x = shift;
+      for (@{$x->{lots}}) {
+          my $file = $x->{fi}.'.'.$_;
+          `cat /dev/null >> $file`;
+          die "go figgy $file" unless -f $file;
+      }
+    };
+
+    $y->{l_lines} = sub {
+      my $x = shift;
+      my $b = shift;
+      my $file = shift;
+      $y->{burp}->($x);
+      for my $m (split "\n", $b) {
+          next unless $m;
+          $x->{l}->($m);
+      }
+    };
+
+    $y->{burp} = sub {
+      my $x = shift;
+      my $time = hitime;
+      $x->{hitime} ||= $time;
+      if ($time - $x->{hitime} > 42) {
+          $y->{wtfy}->($x);
+      }
+    };
+
+    $y->{wtfy} = sub {
+      my $x = shift;
+      my $link = $x->{fi}.'.s';
+
+      my $s = readlink $link if -e $link;
+      my $ex = $1 if $s && $s =~ /\.(.+?)$/;
+      my ($next) = reverse reverse(@{$x->{lots}}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{$x->{lots}};
+      # forth and around
+      my $wt = $x->{t}.'.'.$next;
+
+      sayyl "ln $link    $s -> $wt";
+
+      `ln -fs $wt $link`;
+
+      if ($s) {
+          my $sif = $x->{d}.'/'.$s;
+          # TODO acquire lock (first hol line in lock file wins, wait 0.1)
+          $G->timer(0.4, sub {
+              my $siz = -s $sif;
+              $G->timer(2.3, sub {
+                  $y->{squash}->($x, $sif, $siz);
+              });
+          });
+      }
+    };
+
+    $y->{squash} = sub {
+      my $x = shift;
+      my $sif = shift;
+      my $siz = shift;
+      my $siz2 = -s $sif;
+      if ($siz != $siz2) {
+          warn "$sif got written to sinze changing link!?";
+      }
+      `cat /dev/null > $sif`;
+      sayre "Cleaned $sif";
+    };
+
+    $y->{tailf} = sub {
+      my $x = shift;
+      my $file = shift;
+      sayyl "Tailing $file";
+      my $al = $x->{s}->{$file} ||= {};
+      if ($al->{s}) {
+          sayre "replacing tailo $file";
+          $al->{s}->close;
+      }
+      open my $ha, '-|','tail','-s','0.1','-F','-n0', $file or die $!;
+      my $s = $al->{s} = Mojo::IOLoop::Stream->new($ha);
+      $al->{h} = $ha;
+      $al->{x} = $x;
+      $al->{file} = $file;
+
+      $s->on(read => sub {
+          my ($s,$b) = @_;
+          $H->fixutf8($b);
+          $y->{l_lines}->($al->{x}, $b, $al->{file});
+      });
+      $s->on(close => sub {
+          my $s = shift;
+          die "$al->{file} closed!?";
+      });
+      $s->on(error => sub {
+          my ($s, $err) = @_;
+          die "$al->{file} err: $err";
+      });
+      $s->timeout(0);
+      $s->start;
+      $s->reactor->start unless $s->reactor->is_running;
+    };
+
+    $y
+}
+
+sub fspu {
+    my $file = shift;
+    my $m = encode_utf8 shift;
+    write_file($file, $m);
+}
+
+sub fscc {
+    my $file = shift;
+    my $m = encode_utf8 shift;
+    write_file($file, {append=>1}, $m);
 }
 
 sub su {
