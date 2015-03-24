@@ -4,11 +4,11 @@ Ds:
       return G.taily if G.taily;
       my $y = G.taily = {};
       #
-      y.rw = sub {
+      y.rw = sub { #c
         my $x = y.spc->(@_);
         y.msc->($x);
       };
-      y.msc = sub {
+      y.msc = sub { #c
         my $x = shift;
         my $link = x.fi.'.s';
         my $s = readlink $link if -e $link;
@@ -20,14 +20,13 @@ Ds:
         # so appends can sense together before even .cing
         x.d.'/'.$s
       };
-
-      y.rr = sub {
+      y.rr = sub { #c
         my $x = y.spc->(@_);
         y.mk->($x) unless -d x.fi;
         return x.fi;
       };
 
-      y.spc = sub {
+      y.spc = sub { #c
         my $f = pop;
         my $o = pop || 'life';
         my $fi = "$o/$f";
@@ -42,8 +41,7 @@ Ds:
         }
         $x
       };
-
-      y.ily = sub { # one l/ily per file
+      y.ily = sub { #c one l/ily per file
         my $l = pop;
         my $x = y.spc->(@_);
         x.l = $l;
@@ -59,14 +57,12 @@ Ds:
 
         y.wtfy->($x);
       };
-
-      y.mk = sub {
+      y.mk = sub { #c
         my $x = shift;
         run 'mkdir', '-p', x.fi unless -d x.fi;
         die "no go diggy x.fi" unless -d x.fi;  
       };
-
-      y.l_lines = sub {
+      y.l_lines = sub { #c
         my $x = shift;
         my $b = shift;
         my $file = shift;
@@ -76,8 +72,7 @@ Ds:
             x.l->($m);
         }
       };
-
-      y.burp = sub {
+      y.burp = sub { #c
         my $x = shift;
         my $time = hitime;
         x.hitime ||= $time;
@@ -86,7 +81,7 @@ Ds:
         }
       };
 
-      y.wtfy = sub {
+      y.wtfy = sub { #c
         my $x = shift;
         my $link = x.fi.'.s';
 
@@ -112,7 +107,7 @@ Ds:
         }
       };
 
-      y.squash = sub {
+      y.squash = sub { #c
         my $x = shift;
         my $sif = shift;
         my $siz = shift;
@@ -123,8 +118,7 @@ Ds:
         `cat /dev/null > $sif`;
         sayre "Cleaned $sif";
       };
-
-      y.tailf = sub {
+      y.tailf = sub { #c
         my $x = shift;
         my $file = shift;
         sayyl "Tailing $file";
@@ -154,10 +148,9 @@ Ds:
         });
         $s->timeout(0);
         $s->start;
-        $s->reactor->start unless $s->reactor->is_running;
+        #$s->reactor->start unless $s->reactor->is_running;
       };
-
-      $y
+      $y #c
   - K: fspu #c write file
     style: func
     D: |

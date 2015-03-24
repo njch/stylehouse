@@ -1180,14 +1180,13 @@ sub taily {
       # so appends can sense together before even .cing
       $x->{d}.'/'.$s
     };
-
     $y->{rr} = sub {
       my $x = $y->{spc}->(@_);
       $y->{mk}->($x) unless -d $x->{fi};
       return $x->{fi};
     };
 
-    $y->{spc} = sub {
+    $y->{spc} = sub { #
       my $f = pop;
       my $o = pop || 'life';
       my $fi = "$o/$f";
@@ -1202,8 +1201,7 @@ sub taily {
       }
       $x
     };
-
-    $y->{ily} = sub { # one l/ily per file
+    $y->{ily} = sub { #c one l/ily per file
       my $l = pop;
       my $x = $y->{spc}->(@_);
       $x->{l} = $l;
@@ -1219,14 +1217,12 @@ sub taily {
 
       $y->{wtfy}->($x);
     };
-
-    $y->{mk} = sub {
+    $y->{mk} = sub { #c
       my $x = shift;
       run 'mkdir', '-p', $x->{fi} unless -d $x->{fi};
       die "no go diggy $x->{fi}" unless -d $x->{fi};  
     };
-
-    $y->{l_lines} = sub {
+    $y->{l_lines} = sub { #c
       my $x = shift;
       my $b = shift;
       my $file = shift;
@@ -1236,8 +1232,7 @@ sub taily {
           $x->{l}->($m);
       }
     };
-
-    $y->{burp} = sub {
+    $y->{burp} = sub { #c
       my $x = shift;
       my $time = hitime;
       $x->{hitime} ||= $time;
@@ -1246,7 +1241,7 @@ sub taily {
       }
     };
 
-    $y->{wtfy} = sub {
+    $y->{wtfy} = sub { #c
       my $x = shift;
       my $link = $x->{fi}.'.s';
 
@@ -1272,7 +1267,7 @@ sub taily {
       }
     };
 
-    $y->{squash} = sub {
+    $y->{squash} = sub { #c
       my $x = shift;
       my $sif = shift;
       my $siz = shift;
@@ -1283,8 +1278,7 @@ sub taily {
       `cat /dev/null > $sif`;
       sayre "Cleaned $sif";
     };
-
-    $y->{tailf} = sub {
+    $y->{tailf} = sub { #c
       my $x = shift;
       my $file = shift;
       sayyl "Tailing $file";
@@ -1314,10 +1308,9 @@ sub taily {
       });
       $s->timeout(0);
       $s->start;
-      $s->reactor->start unless $s->reactor->is_running;
+      #$s->reactor->start unless $s->reactor->is_running;
     };
-
-    $y
+    $y #c
 }
 
 sub fspu {

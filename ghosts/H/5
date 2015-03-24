@@ -1,4 +1,47 @@
 hooks:
+  in_listenings: |
+    my $l = sub { 
+        my $m = shift;
+        w reS[$m];
+    };
+    #Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+    #return;
+    $G->taily->{ily}->($_, $l) for
+        "S",
+        "S/H.style/H.name",
+        "S/H.style/H.name/H.id";
+  JElvis: | #c $m from the scrambling stream
+    my $meta = djson $m;
+    
+    my $dir = $G->taily->{rr}->('J');
+    my $file = $dir.'/'.meta.Jid.'.c';
+    my $m = read_file($file);
+    
+    my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
+    saybl "meta.hol -> meta.Jid  (lag $del)    ". -s $file;
+    
+      # thing may contain more J structure we don't know about but it's art
+      # it may throw Emissive Js through from Building Js
+      # possibly without traces of U the W fab in the middle
+      # which is where we can wire travel through langths of Js
+      # without the bridge building ie doming needed to find the path
+      my $cb;
+      if (meta.unified) {
+          saygr "unifid styles: meta.styles";
+          
+          # is test # could be more meta over there
+          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
+          
+          if (meta.styles =~ /\bNZ\b/) {
+              
+              $cb = sub {
+                w mux(as=>"unified meta.Wid ( meta.hol");
+              };
+          }
+      }
+      $m = " $m"; 
+      w to_Elvis[$m, $meta, $cb];
+      
   aj: |
     my $W = j.W; # wonky picture frame
     
@@ -8,12 +51,26 @@ hooks:
     
     if (j._) {
         meta.unified = 1;
-        # W homing
         meta.styles = W.at.styles;
         meta.hitime = $H->hitime;
         
-        H.r->set("W/meta.Wid" => $H->ejson($meta));
         
+        my $Wd = $G->taily->{rr}->('W');
+        my $Wf = $Wd.'/'.meta.Wid.'.i';
+        my $Wi = ejson $meta;
+        fspu $Wf, $Wi;
+        # or Rw tp J $n:meta.Wid $i:meta;
+        # and it ref > jsons
+        # somewhere ahead RNA compiles nicely into the walls
+        # which extend to infinity
+        # so recur-C surface
+        H.r->set("W/meta.Wid" => $Wi);
+        
+        
+        my $Vd = $G->taily->{rr}->("V/H.style/H.name");
+        my $Vf = $Vd.'/'.H.id.'.W';
+        my $VW = "W meta.Wid\n";
+        fscc $Vf, $VW;
         
         H.r->set("V/H.id/meta.Wid" => 1);
         G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index
@@ -53,36 +110,4 @@ hooks:
         w JElvis[$m];
     };
     $G->taily->{ily}->('J', $l);
-  JElvis: | #c $m from the scrambling stream
-    my $meta = djson $m;
-    
-    my $dir = $G->taily->{rr}->('J');
-    my $file = $dir.'/'.meta.Jid.'.c';
-    my $m = read_file($file);
-    
-    my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
-    saybl "meta.hol -> meta.Jid  (lag $del)    ". -s $file;
-    
-      # thing may contain more J structure we don't know about but it's art
-      # it may throw Emissive Js through from Building Js
-      # possibly without traces of U the W fab in the middle
-      # which is where we can wire travel through langths of Js
-      # without the bridge building ie doming needed to find the path
-      my $cb;
-      if (meta.unified) {
-          saygr "unifid styles: meta.styles";
-          
-          # is test # could be more meta over there
-          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
-          
-          if (meta.styles =~ /\bNZ\b/) {
-              
-              $cb = sub {
-                w mux(as=>"unified meta.Wid ( meta.hol");
-              };
-          }
-      }
-      $m = " $m"; 
-      w to_Elvis[$m, $meta, $cb];
-      
 

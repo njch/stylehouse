@@ -29,7 +29,8 @@ hooks:
     
     w figure_port;
     
-    my $reS = sub { my $a = shift; w reS(%$a); }; 
+    
+    my $reS = sub { my $a = shift; w reS(%$a); }; # going
     $G->su(S => $reS);
     $G->su("S/H.style/H.name" => $reS);
     $G->su("S/H.style/H.name/H.id" => $reS);
@@ -56,12 +57,6 @@ hooks:
     my $g = K G:S/O;
     $g || die "no SO!?";
     $g w websocket;
-  mess: |
-    # TODO sa* all over
-    # by voltage!
-    my $mess = "$what: @$thing";
-    $mess = slim(500,500,$mess);
-    $H->pub("S/H.style/H.name/sa", $mess);
   Teeth: |
     my $Eb = ar.E->pi."-" if ar.E;
     saybl ."$Eb > ".slim(75,80,$m);
@@ -93,7 +88,6 @@ hooks:
     else {
         die "wei tet '$j'";
     }
-
   jaw: |
     my $s = $H->mkuuid();
     ($s) = reverse split '-', $s;
@@ -117,16 +111,17 @@ hooks:
     }
     # we are now a line, W->J revelation sheds from W which is also J
     meta.Jid = $H->mkuid;
-    H.r->set("J/meta.Jid", $m);
+    
+    H.r->set("J/meta.Jid", $m); # going
     
     w spurtJcon[$meta,$m];
     
-    $m = $H->ejson($meta);
+    $m = $H->ejson($meta); # going <v
     
     saybl "pub Elvis $meta\t*".slim(280,280,$m) unless H.isforked;
     
     H.r->lpush("Jungle", $m);
-    $H->pub('Elvis', $m, 'ig');
+    $H->pub('Elvis', $m, 'ig'); # going <^
     
     saybl "Elvisiin: $m";
   to_Elvis: |
