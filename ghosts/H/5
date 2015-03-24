@@ -1,13 +1,19 @@
 hooks:
   Jexit: | #c
-    my $y = G.taily ||= w taily;
     my $l = sub {
         my $m = shift;
         w Elvish[$m];
     };
-    y.ily->('J', $l);
+    #my $lma = [ily => 'J',$l];
+    #w taily[$lma];
+    G.taily ||= w taily;
+    G.taily.ily->('J', $l);
   Elvish: | #c message for Elvis via fs streams, go get the stuff
     my $meta = djson $m;
+    
+    G.taily ||= w taily;
+    my $dir = G.taily.rr->('J');
+    
     my $file = "life/J/meta.Jid\.c";
     my $now = hitime;
     
@@ -40,6 +46,7 @@ hooks:
   spurtJcon: | # spurt J stuff + meta through link tinto moving zipper
     my $y = G.taily ||= w taily;
     
+    say "HIHI ".slim 30,$m;
     my $con = 'life/J/'.meta.Jid.'.c';
     die "already!" if -e $con;
     $m = H::encode_utf8 $m;
@@ -63,6 +70,11 @@ hooks:
       $s || die "nowherewhere".wdump($x);
       x.d.'/'.$s
     };
+    y.rr = sub {
+      my $x = y.spc->(@_);
+      y.mk->($x) unless -d x.fi;
+      return x.fi;
+    };
     
     y.spc = sub {
       my $f = pop;
@@ -85,7 +97,8 @@ hooks:
       x.l = $l;
       x.lots = ['sc','sc2'];
       
-      y.mkdir->($x);
+      y.mk->($x);
+      y.zipl->($x);
       
       for (@{x.lots}) {
           my $file = x.fi.'.'.$_;
@@ -97,13 +110,15 @@ hooks:
     
     y.mk = sub {
       my $x = shift;
-      
-      run 'mkdir', '-p', x.d unless -d x.d;
-      die "no go diggy x.d" unless -d x.d;
-      
+      run 'mkdir', '-p', x.fi unless -d x.fi;
+      die "no go diggy x.fi" unless -d x.fi;  
+    };
+    
+    y.zipl = sub {
+      my $x = shift;
       for (@{x.lots}) {
           my $file = x.fi.'.'.$_;
-          run 'echo', '/dev/null', '>>', $file;
+          `cat /dev/null >> $file`;
           die "go figgy $file" unless -f $file;
       }
     };
@@ -138,15 +153,13 @@ hooks:
       # forth and around
       my $wt = x.t.'.'.$next;
 
-      say "---";
-      say "ln $link    $s -> $wt";
-      say "---";
+      sayyl "ln $link    $s -> $wt";
 
       `ln -fs $wt $link`;
 
       if ($s) {
           my $sif = x.d.'/'.$s;
-          
+          # TODO acquire lock (first hol line in lock file wins, wait 0.1)
           0->timer(0.4, sub {
               my $siz = -s $sif;
               0->timer(2.3, sub {
@@ -171,8 +184,7 @@ hooks:
     y.tailf = sub { #c
       my $x = shift;
       my $file = shift;
-      sayyl "Tailing $file...";
-      say '.';
+      sayyl "Tailing $file";
       my $al = x.s->{$file} ||= {};
       if (al.s) {
           sayre "replacing tailo $file";
@@ -187,7 +199,8 @@ hooks:
       $s->on(read => sub {
           my ($s,$b) = @_;
           $H->fixutf8($b);
-          al.x.l_lines->(al.x, $b, al.file);
+          say "Read; ".slim 30, $b;
+          y.l_lines->(al.x, $b, al.file);
       });
       $s->on(close => sub {
           my $s = shift;
@@ -201,5 +214,10 @@ hooks:
       $s->start;
       $s->reactor->start unless $s->reactor->is_running;
     };
+
+    if (ar.lma) {
+        my ($l,@ma) = @{ar.lma};
+        return $y->{$l}->(@ma);
+    }
     $y
 
