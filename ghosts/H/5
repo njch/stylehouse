@@ -5,12 +5,13 @@ hooks:
         w reS[$m];
     };
     #Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-    #return;
+    return if H.name eq 'Z';
     $G->taily->{ily}->($_, $l) for
         "S",
         "S/H.style/H.name",
         "S/H.style/H.name/H.id";
   JElvis: | #c $m from the scrambling stream
+    return if H.name eq 'Z';
     my $meta = djson $m;
     
     my $dir = $G->taily->{rr}->('J');
@@ -47,11 +48,24 @@ hooks:
     my $f = $G->taily->{rr}->($y);
     $n = ejson $n if ref $n;
     fspu $f, "$n\n";
+  _tai: |
+    $G->tar($ar);
+    fspu ar.f, ar.n."\n";
+
   tac: |
     my $y = ar.y || shift @$m;
     my $f = $G->taily->{rr}->($y);
     $n = ejson $n if ref $n;
     fscc $f, "$n\n";
+  _tac: |
+    $G->tar($ar);
+    fscc ar.f, ar.n."\n";
+  lifage: |
+    return if H.name eq 'Z';
+    my $W = "W meta.Wid";
+    Rw tac V/H.style/H.name/H.id\.W $n:W;
+    my $R = undef;
+    Rw tai W/meta.Wid\.i $n:meta;
   aj: |
     my $W = j.W; # wonky picture frame
     
@@ -64,8 +78,6 @@ hooks:
         meta.styles = W.at.styles;
         meta.hitime = $H->hitime;
 
-        my $R = undef;
-        Rw tai W/meta.Wid\.i $n:meta;
 
         # or Rw tp J $n:meta.Wid $i:meta;
         # and it ref > jsons
@@ -75,8 +87,6 @@ hooks:
         H.r->set("W/meta.Wid" => ejson $meta);
         
         
-        my $W = "W meta.Wid";
-        Rw tac V/H.style/H.name/H.id\.W $n:W;
         
         H.r->set("V/H.id/meta.Wid" => 1); # gone
         G0.Wh->{meta.Wid} = $W; # TODO move Wh to A.h_W auto index
