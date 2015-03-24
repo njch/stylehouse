@@ -1166,9 +1166,18 @@ sub taily {
     #
     $y->{rw} = sub {
       my $x = $y->{spc}->(@_);
+      $y->{msc}->($x);
+    };
+    $y->{msc} = sub {
+      my $x = shift;
       my $link = $x->{fi}.'.s';
       my $s = readlink $link if -e $link;
-      $s || die "nowherewhere".wdump($x);
+      if (!$s) {
+          sayyl "auto sc $x->{fi}";
+          $y->{wtfy}->($x); # makes a .s -> .sc
+          return $y->{msc}->($x);
+      }
+      # so appends can sense together before even .cing
       $x->{d}.'/'.$s
     };
 
@@ -1189,6 +1198,7 @@ sub taily {
           $x->{o} = $o;
           $x->{t} = $1 if $fi =~ /\/(.+?)$/;
           $x->{d} = $1 if $fi =~ /^(.+)\/.+?$/;
+          $x->{lots} = ['sc','sc2'];
       }
       $x
     };
@@ -1197,13 +1207,13 @@ sub taily {
       my $l = pop;
       my $x = $y->{spc}->(@_);
       $x->{l} = $l;
-      $x->{lots} = ['sc','sc2'];
 
       $y->{mk}->($x);
-      $y->{zipl}->($x);
 
       for (@{$x->{lots}}) {
           my $file = $x->{fi}.'.'.$_;
+          `cat /dev/null >> $file`;
+          die "go figgy $file" unless -f $file;
           $y->{tailf}->($x, $file);
       }
 
@@ -1214,15 +1224,6 @@ sub taily {
       my $x = shift;
       run 'mkdir', '-p', $x->{fi} unless -d $x->{fi};
       die "no go diggy $x->{fi}" unless -d $x->{fi};  
-    };
-
-    $y->{zipl} = sub {
-      my $x = shift;
-      for (@{$x->{lots}}) {
-          my $file = $x->{fi}.'.'.$_;
-          `cat /dev/null >> $file`;
-          die "go figgy $file" unless -f $file;
-      }
     };
 
     $y->{l_lines} = sub {
