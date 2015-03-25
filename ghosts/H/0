@@ -11,24 +11,7 @@ hooks:
         qw '0 d uS boo humm links travel tractor braiding *'
     ;
     
-    # fading memory
-    H.r = w enRedis;
-    
-    # shared memory
-    H.pg = Mojo::Pg->new('postgresql://s@/s');
-    H.db = H.pg->db;
-    
-    H.db->on(notification => sub {
-        my ($db,$name,$pid,$payload) = @_;
-        my $d = {};
-        (d.top, d.m) = map { $H->fixutf8($_) } $name, $payload;
-        for my $cb (@{H.subscr->{$name}}) {
-            $G->timer(0.00001, sub { $cb->($d); });
-        }
-    });
-    
     w figure_port;
-    
     
     my $reS = sub { my $m = shift; w reS[$m]; };
     $G->su(S => $reS);
@@ -43,9 +26,6 @@ hooks:
         sayre "voluntary reexec" for 1..13;
         w reexec;
     });
-    
-    $G->recur(5 => sub { H.r->ping || die "not redis?" });
-    
     
     # start git torrent
     # do it all
@@ -119,16 +99,7 @@ hooks:
     # we are now a line, W->J revelation sheds from W which is also J
     meta.Jid = $H->mkuid;
     
-    H.r->set("J/meta.Jid", $m); # going
-    
     w spurtJcon[$meta,$m];
-    
-    $m = $H->ejson($meta); # going <v
-    
-    saybl "pub Elvis $meta\t*".slim(280,280,$m) unless H.isforked;
-    
-    H.r->lpush("Jungle", $m);
-    $H->pub('Elvis', $m, 'ig'); # going <^
     
     saybl "Elvisiin: $m";
   to_Elvis: |

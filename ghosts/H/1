@@ -143,16 +143,19 @@ hooks:
     my $now = $H->hitime;
     
     my $hol = H.ol ||= "H.style/H.name/H.id";
-    my $info = "$cpu $mem $now";
+    my $info = {cpu=>$cpu,mem=>$mem,now=>$now};
     
     saygr "hostinfo: $info " if rand(1) > 0.7;
     
     # TODO some Purs have core v
-    H.r->set("H/$hol", $info);
-    Pur Hostinfo "$hol $info", 'ig';
     
-    $H->pub("Hi" => $hol) if !H.lastinfo || ar.withHi;
-    H.lastinfo = $now;
+    $G->tai("H/$hol", $info);
+    
+    $G->pub("Hostinfo", "$hol $info", 'ig');
+    
+    $G->pub("Hi" => $hol) if !H.lastinfo || ar.withHi;
+    
+    H.lastinfo = $info;
     
     G.hostinfo_waits++;
     if (G.hostinfo_waits > 1) {
@@ -171,7 +174,6 @@ hooks:
     H.listen_http = "http://$host:$port";   
     H.listen_ws = "ws://$host:$port/s";
     
-
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',
