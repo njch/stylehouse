@@ -232,6 +232,14 @@ Ds:
         my $b = shift;
         my $file = shift;
         y.burp->($x);
+        
+        if($b =~ /\x{0}/) {
+            say "nully $b =>";
+            run(-in => sub{ print "$b\n"; },
+              -out => '/tmp/fuuf',
+              'xxd');
+            say "MSC ZOOP:", ''.`cat /tmp/fuuf`;
+        }
         for my $m (split "\n", $b) {
             next unless $m;
             x.l->($m);
