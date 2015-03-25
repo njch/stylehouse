@@ -53,6 +53,13 @@ hooks:
     w pre_in;
     w in;
     waylay transam; # 3
+  subsc: | # multi listening joi
+    my $tos = H.subscr->{$top} ||= [];
+    push @$tos, $cb;
+    
+    H.db->listen($top);
+    
+    sayyl "Subbed to $top";
   websocket: |
     my $g = K G:S/O;
     $g || die "no SO!?";

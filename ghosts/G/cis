@@ -9,6 +9,12 @@ Ds:
       my ($f,$n) = 0->taR(@_);
       fscc($f, "$n\n");
       saybl '  tac fscc '.$f.'    '.slim(30, $n);
+  - K: tas #c
+    D: |
+      my ($fs,$n,$x) = 0->taR(@_);
+      my $f = 0->msc($x);
+      fscc($f, "$n\n");
+      saybl '  tas fscc '.$f.'    '.slim(30, $n);
   - K: taR #c
     D: |
       # MZ $f,$n
@@ -16,6 +22,43 @@ Ds:
       my $x = 0->spc($f);
       $n = ejson($n) if ref $n;
       (x.fi, $n, $x)
+  - K: ily #c as su
+    D: |
+        say "Jep: ".join '  ', @_;
+        my $l = pop;
+        my $x = 0->spc(@_);
+        x.l = $l;
+        
+        saybl "        ily: x.fi";
+
+        for (@{x.lots}) {
+            my $file = x.fi.'.'.$_;
+            
+            $G->tailf($x, $file);
+        }
+
+        $G->wtfy($x);
+  - K: su #c ^ ily
+    D: |
+      0->ily(@_);
+      return;
+        my ($a) = @_;
+        if (@_ > 1) {
+            $a = {top => shift};
+            a.cb = pop;
+            a.div = shift || 7;
+        }
+        a.top && a.cb || die "wtf";
+        my $D = a.cb;
+        
+        H.G->w(subsc => $a); 
+  - K: pub #c
+    D: |
+       my ($S, $m, $ig) = @_;
+       sayyl "H pub $S < ".G::slim(50,50,$m) if !$ig;
+       0->tas($S, $m);
+
+      
   - K: spc #c
     D: |
       my $f = pop;
@@ -41,15 +84,19 @@ Ds:
         say " LOokoing $link  : $s";
         if (!$s) {
             sayyl "auto sc x.fi";
-            0->wtfy($x); # makes a .s -> .sc
-            return 0->msc($x);
+            $G->wtfy($x); # makes a .s -> .sc
+            return $G->msc($x);
         }
         # so appends can sense together before even .cing
         x.d.'/'.$s
+  - K: wtfy #c ye
+    D: |
+      $G->taily->{wtfy}->(@_);
+  - K: tailf #c ye
+    D: |
+      $G->taily->{tailf}->(@_);
   - K: taily #c fs xenostrogen
     D: |
-      return G.taily if G.taily;
-      #G.lifespot = "life/H.id";
       my $y = G.taily = {};
       #
       y.rw = sub { #c gone into msc
@@ -265,18 +312,6 @@ Ds:
           $@ = "";
       }
       
-  - K: su #c
-    D: |
-        my ($a) = @_;
-        if (@_ > 1) {
-            $a = {top => shift};
-            a.cb = pop;
-            a.div = shift || 7;
-        }
-        a.top && a.cb || die "wtf";
-        my $D = a.cb;
-        
-        H.G->w(subsc => $a); 
   - K: pub #c
     D: |
        my ($S, $m, $ig) = @_;

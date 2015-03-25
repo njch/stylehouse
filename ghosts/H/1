@@ -171,13 +171,7 @@ hooks:
     H.listen_http = "http://$host:$port";   
     H.listen_ws = "ws://$host:$port/s";
     
-  subsc: |
-    my $tos = H.subscr->{$top} ||= [];
-    push @$tos, $cb;
-    
-    H.db->listen($top);
-    
-    sayyl "Subbed to $top";
+
   enRedis: |
     my $r = Redis->new(
         server => 'localhost:8888',

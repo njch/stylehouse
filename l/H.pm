@@ -102,6 +102,7 @@ sub JS {
 sub pub {
     my $H = shift;
     my ($S, $m, $ig) = @_;
+
     G::sayyl "H pub $S < ".G::slim(50,50,$m) if !$ig;
     $H->{db}->notify($S,$m);
 }
