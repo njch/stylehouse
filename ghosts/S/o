@@ -26,12 +26,13 @@ hooks:
             when => $H->hitime,
         };
   Hi: |
-      saygr "Hostinfo to $m";
+      sayyl "--------\n---------\n------\n   Hi  to $m";
       my ($hol, $m) = split ' ', $m, 2;
       (my $sn = $hol) =~ s/\/\w+$//;
       
-      my @olds = glob("life/H/$sn/*");
+      my @olds = uniq map { /^H\/(.+)\/.+?$/;$_ } `find life/H/$sn -type f`;
       for my $oth (@olds) {
+          say "OLD: $oth";
           $oth =~ s/^.+H\///;
           my ($Hid) = reverse split '/', $oth;
           sayre "o $oth";
@@ -39,10 +40,10 @@ hooks:
               sayyl " haf self";
                 next;
           }
-          sayyl "Life:\n".`find life | grep $Hid`;
+          #sayyl "Life:\n".`find life | grep $Hid`;
           my $js;
           for my $vh (glob("life/V/$Hid*")) {
-              my (@v) = split '/', $vh;
+              my @v = split '/', $vh;
               my $ww = $v[2];
               $js .= w jsrm(id=>$ww);
               sayre "DEL $vh   && W/$ww";
@@ -79,11 +80,19 @@ hooks:
     say "Done Hiwtidy";
     
   reextet: |
-    die;
-    my @also = uniq map { /^H\/(.+)\/.+?$/ } H.r->keys("H/*");
-    @also = grep {$_ ne "H.style/H.name"} @also;
+    my @olds = uniq map { /^H\/(.+)\/.+?$/ } `find life/H -type f`;
+    @olds = grep {$_ ne "H.style/H.name"} @olds;
+    say wdump[@olds];
+    #$G->pub('S/hut/O', "reextet ".join",",@olds);
+    # pipes gone, slurp ps and kill hup
+    my @perls = map { /^\S+\s+(\d+)/||die'pspar'; $1 } 
+        grep {/S\.pm/} `ps faux | grep perl`;
+    say wdump[@perls];
     `rm $_` for `find life/ -type f`;
-    $G->pub('S/hut/O', "reextet ".join",",@also);
+    for my $pid (@perls) {
+        next if $pid eq $$;
+        kill 'HUP', $pid;
+    }
     H.G w reexec;
     
 

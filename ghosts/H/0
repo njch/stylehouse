@@ -4,12 +4,12 @@ hooks:
   fresh_init: |
     say "     H Fresh init H.style H.name";
 
+    $SIG{HUP} = sub { H.G w reexec; };
     H.who = [];
     
     my $ni = 0;
     H.nnn->{$_} = $ni++ for
-        qw '0 d uS boo humm links travel tractor braiding *'
-    ;
+        qw '0 d uS boo humm links travel tractor braiding *';
     
     w figure_port;
     
@@ -17,9 +17,6 @@ hooks:
     $G->su(S => $reS);
     $G->su("S/H.style/H.name" => $reS);
     $G->su("S/H.style/H.name/H.id" => $reS);
-    
-    w in_listenings; 
-    # S/* mods ^
     
     $G->timer(60*9+(20 * rand 4), sub {
         return if H.nosuddendeath;
@@ -30,10 +27,23 @@ hooks:
     # start git torrent
     # do it all
     # $0 has become a runtime
-    w pre_in;
+    
     w in;
+    
     waylay transam; # 3
+  figure_port: | # S
+    my $listen = readlink('listen');
+    my ($host,$port, $wa) = split ':', $listen;
+    die "too much listen" if $wa;
+    ($port, $host) = (2000, undef) if !$port && $host =~ /^\d+$/;
+    $port ||= 2000;
+    $host ||= '127.0.0.1';
 
+    $port += ord(H.name) + 8001;
+    
+    H.listen_http = "http://$host:$port";   
+    H.listen_ws = "ws://$host:$port/s";
+    
   websocket: |
     my $g = K G:S/O;
     $g || die "no SO!?";

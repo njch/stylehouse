@@ -37,6 +37,7 @@ if ($name eq 'O') {
     };
 
     my $listen = $H->{listen_http};
+    G::saybl("----------listeny $listen");
     app->start('daemon', '--listen' => "$listen");
 }else{
       Mojo::IOLoop->start unless Mojo::IOLoop->is_running;

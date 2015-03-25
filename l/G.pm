@@ -1413,14 +1413,15 @@ sub taily {
       my $x = shift;
       my $b = shift;
       my $file = shift;
-      $y->{burp}->($x);
+
+      $y->{burp}->($x, $file);
 
       if($b =~ /\x{0}/) {
           say "nully $b =>";
           run(-in => sub{ print "$b\n"; },
             -out => '/tmp/fuuf',
             'xxd');
-          say "MSC ZOOP:", ''.`cat /tmp/fuuf`;
+          say "MSC ZOOP:", ''.slim(100,`cat /tmp/fuuf`);
       }
       for my $m (split "\n", $b) {
           next unless $m;
@@ -1429,9 +1430,10 @@ sub taily {
     };
     $y->{burp} = sub { #c
       my $x = shift;
+      my $file = shift;
       my $time = hitime;
       $x->{hitime} ||= $time;
-      if ($time - $x->{hitime} > 42) {
+      if ($time - $x->{hitime} > 42 && -s $file > 8000) {
           $y->{wtfy}->($x);
       }
     };
