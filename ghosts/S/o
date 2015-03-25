@@ -18,6 +18,7 @@ hooks:
     $G->timer(9, sub{w Hiwtidy;});
   Hostinfo: |
         my ($hol, $inf) = split ' ', $m, 2;
+        $hol =~ s/\x{0}//sgm;
         $G->pub("S/$hol", "hostinfo/ack $m", 'ig');
         saygr "from $hol -> $inf";
         G.hostinfo->{$hol} = {

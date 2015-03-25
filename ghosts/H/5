@@ -4,7 +4,10 @@ hooks:
       eval { write_file(@$arm) };
       if ($@) {
           my ($file) = @$arm;
-          saybl "hexdump of $file :::".`echo '$file' | hexdump`;
+          run(-in => sub{ print "   H.style \n"; },
+              -out => '/tmp/fuuf',
+              'xxd');
+          say ''.`cat /tmp/fuuf`;
           if ($@ =~ /sysopen: No such file or directory/) {
           }
           elsif ($@ =~ /sysopen: Is a directory/) {

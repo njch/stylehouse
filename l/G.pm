@@ -1216,17 +1216,6 @@ sub ily {
 sub su {
     my $G = shift;
     $G->ily(@_);
-    return;
-      my ($a) = @_;
-      if (@_ > 1) {
-          $a = {top => shift};
-          $a->{cb} = pop;
-          $a->{div} = shift || 7;
-      }
-      $a->{top} && $a->{cb} || die "wtf";
-      my $D = $a->{cb};
-
-      $H->{G}->w(subsc => $a); 
 }
 
 sub pub {
@@ -1251,12 +1240,23 @@ sub spc {
           $x->{d} = $1;
           $x->{lots} = ['sc','sc2'];
       }
+      for (grep {$x->{$_} =~ /\x{0}/} keys %$x) {
+          say "nully $_ => $x->{$_}";
+          run(-in => sub{ print $x->{$_}."\n"; },
+            -out => '/tmp/fuuf',
+            'xxd');
+          #say "MSC ZOOP:", ''.`cat /tmp/fuuf`;
+      }
+      if (0){
+        }
     $x
 }
 
 sub msc {
     my $G = shift;
     my $x = ref $_[0] ? $_[0] : $G->spc(@_);
+
+
       my $link = $x->{fi}.'.s';
       my $s = `readlink $link` || do {
           $link =~ s/[^\w\/\-\.]//g;

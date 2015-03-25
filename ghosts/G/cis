@@ -46,17 +46,6 @@ Ds:
   - K: su #c ^ ily
     D: |
       0->ily(@_);
-      return;
-        my ($a) = @_;
-        if (@_ > 1) {
-            $a = {top => shift};
-            a.cb = pop;
-            a.div = shift || 7;
-        }
-        a.top && a.cb || die "wtf";
-        my $D = a.cb;
-        
-        H.G->w(subsc => $a); 
   - K: pub #c
     D: |
        my ($S, $m, $ig) = @_;
@@ -79,10 +68,21 @@ Ds:
             x.d = $1;
             x.lots = ['sc','sc2'];
         }
+        for (grep {$x->{$_} =~ /\x{0}/} keys %$x) {
+            say "nully $_ => $x->{$_}";
+            run(-in => sub{ print $x->{$_}."\n"; },
+              -out => '/tmp/fuuf',
+              'xxd');
+            #say "MSC ZOOP:", ''.`cat /tmp/fuuf`;
+        }
+        if (0){
+          }
       $x
   - K: msc #c catch movign zipper
     D: |
       my $x = ref $_[0] ? $_[0] : 0->spc(@_);
+      
+          
         my $link = x.fi.'.s';
         my $s = `readlink $link` || do {
             $link =~ s/[^\w\/\-\.]//g;
