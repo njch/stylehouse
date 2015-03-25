@@ -1179,7 +1179,7 @@ sub taR {
     my ($f, $n) = @_;
     my $x = $G->spc($f);
     $n = ejson($n) if ref $n;
-    ($f, $n, $x)
+    ($x->{fi}, $n, $x)
 }
 
 sub spc {
@@ -1187,6 +1187,7 @@ sub spc {
     my $f = pop;
     my $o = pop || $G->{lifespot} || 'life';
     my $fi = "$o/$f";
+    say "SPACE IS $fi";
     my $x = $G->{taily}->{f}->{$fi} ||= {};
       if (!$x->{fi}) {
           $x->{fi} = $fi;
@@ -1197,17 +1198,22 @@ sub spc {
           $x->{d} = $1;
           $x->{lots} = ['sc','sc2'];
       }
-    fscc("$x->{d}/NZ", "") unless -e "$x->{d}/NZ";
     $x
 }
 
-sub tar {
+sub msc {
     my $G = shift;
-    my $ar = shift;
-    $ar->{y} = $ar->{y} || $ar->{m}->[0];
-    $ar->{f} = $G->taily->{rr}->($ar->{y});
-    $ar->{n} = ejson $ar->{n} if ref $ar->{n};
-    $ar->{f}
+    my $x = ref $_[0] ? $_[0] : $G->spc(@_);
+      my $link = $x->{fi}.'.s';
+      my $s = readlink $link if -e $link;
+      say " LOokoing $link  : $s";
+      if (!$s) {
+          sayyl "auto sc $x->{fi}";
+          $G->wtfy($x); # makes a .s -> .sc
+          return $G->msc($x);
+      }
+      # so appends can sense together before even .cing
+      $x->{d}.'/'.$s
 }
 
 sub taily {
@@ -1216,14 +1222,14 @@ sub taily {
     #$G->{lifespot} = "life/$H->{id}";
     my $y = $G->{taily} = {};
     #
-    $y->{rw} = sub { #c
+    $y->{rw} = sub { #c gone into msc
       my $x = $y->{spc}->(@_);
       $y->{msc}->($x);
     };
-    $y->{msc} = sub { #c
+    $y->{msc} = sub { #c gone
       my $x = shift;
       my $link = $x->{fi}.'.s';
-      my $s = readlink $link if -e $link;
+      my $s = readlink $link;
       say " LOokoing $link  : $s";
       if (!$s) {
           sayyl "auto sc $x->{fi}";
@@ -1313,6 +1319,11 @@ sub taily {
       #$y->{mk}->($x);
 
       sayyl "ln -fs $wt $link";
+
+      my $fis = "$x->{d}/$wt";
+      if (!-e $fis) {
+          fscc($fis, '');
+      }
 
       symlink $wt, $link;
       #`ln -fs $wt $link`;

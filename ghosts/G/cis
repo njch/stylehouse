@@ -15,12 +15,13 @@ Ds:
       my ($f, $n) = @_;
       my $x = 0->spc($f);
       $n = ejson($n) if ref $n;
-      ($f, $n, $x)
+      (x.fi, $n, $x)
   - K: spc #c
     D: |
       my $f = pop;
       my $o = pop || G.lifespot || 'life';
       my $fi = "$o/$f";
+      say "SPACE IS $fi";
       my $x = G.taily.f->{$fi} ||= {};
         if (!x.fi) {
             x.fi = $fi;
@@ -31,15 +32,7 @@ Ds:
             x.d = $1;
             x.lots = ['sc','sc2'];
         }
-      fscc("x.d/NZ", "") unless -e "x.d/NZ";
       $x
-  - K: tar #c
-    D: |
-      my $ar = shift;
-      ar.y = ar.y || ar.m->[0];
-      ar.f = $G->taily->{rr}->(ar.y);
-      ar.n = ejson ar.n if ref ar.n;
-      ar.f
   - K: msc #c catch movign zipper
     D: |
       my $x = ref $_[0] ? $_[0] : 0->spc(@_);
@@ -66,7 +59,7 @@ Ds:
       y.msc = sub { #c gone
         my $x = shift;
         my $link = x.fi.'.s';
-        my $s = readlink $link if -e $link;
+        my $s = readlink $link;
         say " LOokoing $link  : $s";
         if (!$s) {
             sayyl "auto sc x.fi";
@@ -156,6 +149,11 @@ Ds:
         #y.mk->($x);
         
         sayyl "ln -fs $wt $link";
+        
+        my $fis = "x.d/$wt";
+        if (!-e $fis) {
+            fscc($fis, '');
+        }
         
         symlink $wt, $link;
         #`ln -fs $wt $link`;
