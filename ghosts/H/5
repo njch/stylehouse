@@ -3,10 +3,25 @@ hooks:
   write_cone: | # so stupidly retarded # use quantum fector to drop things down
       eval { write_file(@$arm) };
       if ($@) {
-          die "UNKNOWN WRITE CONE E\n\n$@" unless $@ =~ /sysopen: No such file or directory/;
-          sayre "Recovering from write error::: $@";
           my ($file) = @$arm;
+          saybl "hexdump of $file :::".`echo '$file' | hexdump`;
+          if ($@ =~ /sysopen: No such file or directory/) {
+          }
+          elsif ($@ =~ /sysopen: Is a directory/) {
+              my $wtah = "-f $file == ".-f $file;
+              warn "thinks it's a directory: $wtah";
+          }
+          else {
+              die "UNKNOWN WRITE CONE E\n\n$@"
+          }
+          sayre "Recovering from write error::: $@";
+          my $fore = $file;
           $file =~ s/[^\w\/\-\.]//g; # TODO nulls
+          if ($fore ne $file) {
+                  warn "NONNAMES OR SO, HEXDUMP IT $fore -> $file";
+          }
+          
+          
           my @chun = split '/', $file;
           my $fn = pop @chun;
           say "    file: $file";
@@ -40,7 +55,7 @@ hooks:
           
           
           if ($broke) {
-              die "cionedddd.....\n\nWrite $file fuckup: $@";
+              warn "cionedddd.....\n\nWrite $file fuckup: $@";
           }
           $@ = "";
       }
