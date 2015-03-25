@@ -6,8 +6,6 @@ use utf8;
 use lib 'lib';
 use feature 'say';
 # two annoying dependencies 
-use Redis;
-use Mojo::Pg;
 use Mojo::IOLoop::Stream;
 use File::Path qw(make_path remove_tree);
 use Scriptalicious;  

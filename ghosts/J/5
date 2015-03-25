@@ -268,11 +268,13 @@ R_Jz:
                 push @$Sftk, $pid;
                 return
             }
-            H.db = H.pg->db;
             H.isforked = 1;
-            # child must exit, after reporting error
-            # so nothing else can happen. listening db handle gone anyway?
+            # able to report error
+            # not EV reaction in the child, handles confused
+            # must exit so nothing else can happen
+            
             my $bail = sub{ exit };
+            
             $G->accum($G0, _aft_err_do => $bail);
             $G->accum($F[0], _aft_etc_do => $bail);
             
