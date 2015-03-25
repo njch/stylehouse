@@ -18,18 +18,23 @@ C:
       content_D: |
         $name
     event_D: |
-      Sw B/D;
+      if (B.D =~ /^Pur (\S+) (\S+)/) {
+          $G->pub($1, $2);
+      }
+      else { 
+          Sw B/D;
+      }
 P:
  - Do zz: waylay code(full=>1);
  - Do uxd: w uxd;
- - Do ܤ: Pur S/hut/o 'reextet';
- - Do ,: Pur S/hut/o 'Hiwtidy';
- - Do ~: Pur S/hut/O 'retile';
- - Do Zr: Pur S/hut/Z 'reexec';
- - Do Or: Pur S/hut/O 'reexec';
- - Do Cr: Pur S/hut/C 'reexec';
+ - Do ܤ: Pur S/hut/o reextet
+ - Do ,: Pur S/hut/o Hiwtidy
+ - Do ~: Pur S/hut/O retile
+ - Do Zr: Pur S/hut/Z reexec
+ - Do Or: Pur S/hut/O reexec
+ - Do Cr: Pur S/hut/C reexec
 # - Do C2r: Pur S/hut/C2 'reexec';
- - Do Sr: Pur S/hut/S 'reexec';
+ - Do Sr: Pur S/hut/S reexec
 hooks:
   fresh_init: |
     push @{G0.recoded_cbs}, sub {
