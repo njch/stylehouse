@@ -9,77 +9,12 @@ hooks:
     
     w figure_port;
     
-    H.r->ping() || die "no redids?";
-    $G->su("Elvis", sub {
-       my $a = shift;
-       my $m = a.m;
-       w pubbedElvis[$m];
-    });
-  any_init: |
-    # without redis:
     H.G w Jexit;
   recoded_init: |
     w retile;
-    # $H->pub('S/hut/o', 'reextet');
-    $H->pub('S/hut/o', 'Hiwtidy');
+    $G->pub('S/hut/o', 'Hiwtidy');
   Teeth: |
     H.G w Teeth; 
-  Jungl: | # juggle Jungle, Jid message queue keeps monorailing?
-    while (!0) {
-        my $m = H.r->lpop("Jungle");
-        last unless $m;
-        $H->fixutf8($m);
-        my $meta = $H->djson($m);
-        next if H.Jungle->{meta.Jid};
-      
-        if (H.Jungle->{meta.Jid}) {
-            sayre "Vungle! ! ar.m";
-        }
-        w pubbedElvis[$m];
-    }
-  pubbedElvis: | # message for elvis via redis
-      my $cb;
-      my $meta = $H->djson($m);
-      return sayre "avoiding meta.Jid";
-      
-      my $m = H.r->get("J/meta.Jid") || die "meta.Jid not ( meta.hol";
-      $H->fixutf8($m);
-      
-      # J pubbing around will always be below the J of the W itself
-      timer 0.05 {
-          w Jungl;
-          timer 0.4 { w Jungl; };
-          timer 5 { H.r->del("J/meta.Jid"); };
-          timer 7 { delete H.Jungle->{meta.Jid}; };
-      };
-      
-      if (H.Jungle->{meta.Jid}) {
-          sayre "AAAAAAAAAAAAAAA Judder! ar.m";
-      }
-      H.Jungle->{meta.Jid} = 1;
-      
-      # thing may contain more J structure we don't know about but it's art
-      # it may throw Emissive Js through from Building Js
-      # possibly without traces of U the W fab in the middle
-      # which is where we can wire travel through langths of Js
-      # without the bridge building ie doming needed to find the path
-      
-      if (meta.unified) {
-          saygr "unifid styles: meta.styles";
-          
-          # is test # could be more meta over there
-          my $hmm = H.r->get("W/meta.Wid") || die "no such meta.Wid";
-          
-          if (meta.styles =~ /\bNZ\b/) {
-              
-              $cb = sub {
-                w mux(as=>"unified meta.Wid ( meta.hol");
-              };
-          }
-      }
-      $m = " $m"; 
-      w send_Elvis[$m, $meta, $cb];
-      
   mux: |
     ar.as ||= '?';
     push @{G.muxis||=[]}, ar.as;
@@ -233,6 +168,7 @@ hooks:
       });
       B.address = $tx->remote_address;
   retile: | # TODO use J
+    die "retile rid of H.r";
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
     @m = map { $H->djson(H.r->get("W/$_")) } @m;
     

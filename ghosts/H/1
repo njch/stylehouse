@@ -174,21 +174,6 @@ hooks:
     H.listen_http = "http://$host:$port";   
     H.listen_ws = "ws://$host:$port/s";
     
-  enRedis: |
-    my $r = Redis->new(
-        server => 'localhost:8888',
-        reconnect => 1,
-        every => 10000,
-    );
-    r.gest = sub {
-        my ($k, $make) = @_;
-        my $c = H.r->get($k);
-        return ref \$c eq "SCALAR" ? $H->fixutf8($c) : $c if $c;
-        $c = $make->();
-        H.r->set($k => $c);
-        return $c;
-    };
-    $r
   S:
     hostinfo: #c
       ack: | #c

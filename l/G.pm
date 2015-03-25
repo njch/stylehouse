@@ -1204,7 +1204,7 @@ sub ily {
     my $x = $G->spc(@_);
     $x->{l} = $l;
 
-    saybl "        ily: $x->{fi}";
+    saybl "        ily: $x->{fi}"; 
 
     for (@{$x->{lots}}) {
         my $file = $x->{fi}.'.'.$_;
