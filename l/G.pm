@@ -1425,6 +1425,7 @@ sub taily {
       }
       for my $m (split "\n", $b) {
           next unless $m;
+
           $x->{l}->($m);
       }
     };
