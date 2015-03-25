@@ -1243,7 +1243,6 @@ sub spc {
     my $f = pop;
     my $o = pop || $G->{lifespot} || 'life';
     my $fi = "$o/$f";
-    say "SPACE IS $fi";
     my $x = $G->{taily}->{f}->{$fi} ||= {};
       if (!$x->{fi}) {
           $x->{fi} = $fi;
@@ -1262,7 +1261,6 @@ sub msc {
     my $x = ref $_[0] ? $_[0] : $G->spc(@_);
       my $link = $x->{fi}.'.s';
       my $s = readlink $link if -e $link;
-      say " LOokoing $link  : $s";
       if (!$s) {
           sayyl "auto sc $x->{fi}";
           $G->wtfy($x); # makes a .s -> .sc
@@ -1395,12 +1393,12 @@ sub taily {
       if ($s) {
           my $sif = $x->{d}.'/'.$s;
           # TODO acquire lock (first hol line in lock file wins, wait 0.1)
-          $G->timer(0.4, sub {
+          $G->sing("cleam$sif", sub {
               my $siz = -s $sif;
               $G->timer(2.3, sub {
                   $y->{squash}->($x, $sif, $siz);
               });
-          });
+          }, begin => 0.4);
       }
     };
     $y->{squash} = sub { #c

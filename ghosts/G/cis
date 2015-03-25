@@ -69,7 +69,6 @@ Ds:
       my $f = pop;
       my $o = pop || G.lifespot || 'life';
       my $fi = "$o/$f";
-      say "SPACE IS $fi";
       my $x = G.taily.f->{$fi} ||= {};
         if (!x.fi) {
             x.fi = $fi;
@@ -86,7 +85,6 @@ Ds:
       my $x = ref $_[0] ? $_[0] : 0->spc(@_);
         my $link = x.fi.'.s';
         my $s = readlink $link if -e $link;
-        say " LOokoing $link  : $s";
         if (!$s) {
             sayyl "auto sc x.fi";
             $G->wtfy($x); # makes a .s -> .sc
@@ -213,12 +211,12 @@ Ds:
         if ($s) {
             my $sif = x.d.'/'.$s;
             # TODO acquire lock (first hol line in lock file wins, wait 0.1)
-            0->timer(0.4, sub {
+            0->sing("cleam$sif", sub {
                 my $siz = -s $sif;
                 0->timer(2.3, sub {
                     y.squash->($x, $sif, $siz);
                 });
-            });
+            }, begin => 0.4);
         }
       };
       y.squash = sub { #c
