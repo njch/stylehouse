@@ -1407,7 +1407,7 @@ sub taily {
       my $siz = shift;
       my $siz2 = -s $sif;
       if ($siz != $siz2) {
-          warn "$sif got written to sinze changing link!?";
+          #warn "$sif got written to sinze changing link!?";
       }
 
       fspu($sif, '');
