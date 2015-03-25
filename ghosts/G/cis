@@ -15,6 +15,11 @@ Ds:
       my $f = 0->msc($x);
       fscc($f, "$n\n");
       saybl '  tas fscc '.$f.'    '.slim(30, $n);
+  - K: tri #c try read
+    D: |
+      my ($f) = 0->taR(@_);
+      return if !-f $f;  
+      read_file($f);
   - K: taR #c
     D: |
       # MZ $f,$n
@@ -29,7 +34,7 @@ Ds:
         my $x = 0->spc(@_);
         x.l = $l;
         
-        saybl "        ily: x.fi";
+        saybl "        ily: x.fi"; 
 
         for (@{x.lots}) {
             my $file = x.fi.'.'.$_;
@@ -56,7 +61,7 @@ Ds:
     D: |
        my ($S, $m, $ig) = @_;
        sayyl "H pub $S < ".G::slim(50,50,$m) if !$ig;
-       0->tas($S, $m);
+       $G->tas($S, $m);
 
       
   - K: spc #c
@@ -117,7 +122,7 @@ Ds:
         x.d.'/'.$s
       };
       y.rr = sub { #c points to a bud to have bits (.i etc) sprout off
-        # make NZ to make can be created
+        # make NZ to make can be created 
         my $x = y.spc->(@_);
         return x.fi;
       };
@@ -312,11 +317,7 @@ Ds:
           $@ = "";
       }
       
-  - K: pub #c
-    D: |
-       my ($S, $m, $ig) = @_;
-       G::sayyl "G pub $S < ".G::slim(50,50,$m) if !$ig;
-       H.db->notify($S,$m);
+
   - K: djson #c & ejson
     style: func
     D: |

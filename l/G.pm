@@ -1173,6 +1173,21 @@ sub tac {
     saybl '  tac fscc '.$f.'    '.slim(30, $n);
 }
 
+sub tas {
+    my $G = shift;
+    my ($fs,$n,$x) = $G->taR(@_);
+    my $f = $G->msc($x);
+    fscc($f, "$n\n");
+    saybl '  tas fscc '.$f.'    '.slim(30, $n);
+}
+
+sub tri {
+    my $G = shift;
+    my ($f) = $G->taR(@_);
+    return if !-f $f;  
+    read_file($f);
+}
+
 sub taR {
     my $G = shift;
     # MZ $f,$n
@@ -1180,6 +1195,47 @@ sub taR {
     my $x = $G->spc($f);
     $n = ejson($n) if ref $n;
     ($x->{fi}, $n, $x)
+}
+
+sub ily {
+    my $G = shift;
+    say "Jep: ".join '  ', @_;
+    my $l = pop;
+    my $x = $G->spc(@_);
+    $x->{l} = $l;
+
+    saybl "        ily: $x->{fi}";
+
+    for (@{$x->{lots}}) {
+        my $file = $x->{fi}.'.'.$_;
+
+        $G->tailf($x, $file);
+    }
+
+    $G->wtfy($x);
+}
+
+sub su {
+    my $G = shift;
+    $G->ily(@_);
+    return;
+      my ($a) = @_;
+      if (@_ > 1) {
+          $a = {top => shift};
+          $a->{cb} = pop;
+          $a->{div} = shift || 7;
+      }
+      $a->{top} && $a->{cb} || die "wtf";
+      my $D = $a->{cb};
+
+      $H->{G}->w(subsc => $a); 
+}
+
+sub pub {
+    my $G = shift;
+    my ($S, $m, $ig) = @_;
+    sayyl "H pub $S < ".G::slim(50,50,$m) if !$ig;
+    $G->tas($S, $m);
 }
 
 sub spc {
@@ -1216,10 +1272,18 @@ sub msc {
       $x->{d}.'/'.$s
 }
 
+sub wtfy {
+    my $G = shift;
+    $G->taily->{wtfy}->(@_);
+}
+
+sub tailf {
+    my $G = shift;
+    $G->taily->{tailf}->(@_);
+}
+
 sub taily {
     my $G = shift;
-    return $G->{taily} if $G->{taily};
-    #$G->{lifespot} = "life/$H->{id}";
     my $y = $G->{taily} = {};
     #
     $y->{rw} = sub { #c gone into msc
@@ -1240,7 +1304,7 @@ sub taily {
       $x->{d}.'/'.$s
     };
     $y->{rr} = sub { #c points to a bud to have bits (.i etc) sprout off
-      # make NZ to make can be created
+      # make NZ to make can be created 
       my $x = $y->{spc}->(@_);
       return $x->{fi};
     };
@@ -1432,27 +1496,6 @@ sub write_cone {
         sayre "Write $arm[0] fuckup: $@";
         $@ = "";
     }
-}
-
-sub su {
-    my $G = shift;
-    my ($a) = @_;
-    if (@_ > 1) {
-        $a = {top => shift};
-        $a->{cb} = pop;
-        $a->{div} = shift || 7;
-    }
-    $a->{top} && $a->{cb} || die "wtf";
-    my $D = $a->{cb};
-
-    $H->{G}->w(subsc => $a); 
-}
-
-sub pub {
-    my $G = shift;
-    my ($S, $m, $ig) = @_;
-    G::sayyl "G pub $S < ".G::slim(50,50,$m) if !$ig;
-    $H->{db}->notify($S,$m);
 }
 
 sub djson {

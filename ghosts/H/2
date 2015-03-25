@@ -137,14 +137,7 @@ hooks:
         w prop_ghostchanges[$m];
     }
   prop_ghostchanges: |
-    my @n = sort map { "S/".(split '/', $_, 2)[1] } H.r->keys("H/*");
-    @n = grep { /Z/ } @n if $m =~ /^ghosts\/0\/\w$/;
-    my $i = 0;
-    for my $t (@n) {
-        $H->pub($t => "ghostchanges $m");    
-        $H->snooze(240000) if $i++ < 3;      
-        $H->snooze(240000) if $i < 6; 
-    }
+    $G->pub('S', "ghostchanges $m");
   S:
     ghostchanges: | #c
       my $Gd = {map { $_ => 1 } split ', ', $m};
