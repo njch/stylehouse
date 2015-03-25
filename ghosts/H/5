@@ -6,6 +6,7 @@ hooks:
           die "UNKNOWN WRITE CONE E\n\n$@" unless $@ =~ /sysopen: No such file or directory/;
           sayre "Recovering from write error::: $@";
           my ($file) = @$arm;
+          $file =~ s/[^\w\/\-\.]//g; # TODO nulls
           my @chun = split '/', $file;
           my $fn = pop @chun;
           say "    file: $file";

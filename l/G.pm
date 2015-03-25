@@ -1161,14 +1161,14 @@ sub tai {
     my $G = shift;
     my ($f,$n) = $G->taR(@_);
     fspu($f, "$n\n");
-    saybl '  tai fspu '.$f.'    '.slim(30, $n);
+    #saybl '  tai fspu '.$f.'    '.slim(30, $n);
 }
 
 sub tac {
     my $G = shift;
     my ($f,$n) = $G->taR(@_);
     fscc($f, "$n\n");
-    saybl '  tac fscc '.$f.'    '.slim(30, $n);
+    #saybl '  tac fscc '.$f.'    '.slim(30, $n);
 }
 
 sub tas {
@@ -1176,7 +1176,7 @@ sub tas {
     my ($fs,$n,$x) = $G->taR(@_);
     my $f = $G->msc($x);
     fscc($f, "$n\n");
-    saybl '  tas fscc '.$f.'    '.slim(30, $n);
+    #saybl '  tas fscc '.$f.'    '.slim(30, $n);
 }
 
 sub tri {
@@ -1258,11 +1258,29 @@ sub msc {
     my $G = shift;
     my $x = ref $_[0] ? $_[0] : $G->spc(@_);
       my $link = $x->{fi}.'.s';
-      my $s = readlink $link if -e $link;
+      my $s = `readlink $link` || do {
+          $link =~ s/[^\w\/\-\.]//g;
+          `readlink $link` || do {
+              say "try again: $link";
+              my $jsu = `ls -l $link`;
+              sayre ' lsd: '.$jsu;
+              saybl "JSU ". `pwd`;
+              $jsu =~ /-> (.+)$/sgm;
+              sayre " re - $1";
+              $1;
+          };
+      };
+      chomp $s;
+      sayre "msc $link -> '$s'";
       if (!$s) {
-          sayyl "auto sc $x->{fi}";
+          say "auto sc (said $s) $x->{fi}    from $link";
           $G->wtfy($x); # makes a .s -> .sc
-          return $G->msc($x);
+          $H->snooze(2500);
+          $G->{mscily}++;
+          die "TOO MUCH TRIP looking for $link" if $G->{mscily} > 5;
+          my $f = $G->msc($x);
+          $G->{mscily}--;
+          return $f;
       }
       # so appends can sense together before even .cing
       $x->{d}.'/'.$s
@@ -1270,7 +1288,50 @@ sub msc {
 
 sub wtfy {
     my $G = shift;
-    $G->taily->{wtfy}->(@_);
+    my $x = shift;
+    my $link = $x->{fi}.'.s';
+
+    my $s = readlink $link if -e $link;
+    my $ex = $1 if $s && $s =~ /\.(.+?)$/;
+    my ($next) = reverse reverse(@{$x->{lots}}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{$x->{lots}};
+    # forth and around
+    my $wt = $x->{t}.'.'.$next;
+
+    sayyl "ln -fs $wt $link";
+
+    my $fis = "$x->{d}/$wt";
+    if (!-e $fis) {
+        fscc($fis, '');
+    }
+
+    symlink $wt, $link;
+    #`ln -fs $wt $link`;
+
+    if ($s) {
+        my $sif = $x->{d}.'/'.$s;
+        # TODO acquire lock (first hol line in lock file wins, wait 0.1)
+        $G->sing("cleam$sif", sub {
+            my $siz = -s $sif;
+            $G->timer(2.3, sub {
+                $G->squash($x, $sif, $siz);
+            });
+        }, begin => 0.4);
+    }
+}
+
+sub squash {
+    my $G = shift;
+    my $x = shift;
+    my $sif = shift;
+    my $siz = shift;
+    my $siz2 = -s $sif;
+    if ($siz != $siz2) {
+        #warn "$sif got written to sinze changing link!?";
+    }
+
+    fspu($sif, '');
+
+    sayre "Cleaned $sif";
 }
 
 sub tailf {
