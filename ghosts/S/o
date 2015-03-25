@@ -4,8 +4,8 @@ C:
   - K: Hi
 hooks:
   fresh_init: | # sub hostinfos before w in does our hostinfo
-    Sur Hi { w Hi[$r]; };
-    Sur Hostinfo { w Hostinfo[$r] };
+    $G->su("Hi", sub { my $m = shift; w Hi[$m]; });
+    $G->su("Hostinfo", sub { my $m = shift; w Hostinfo[$m] });
     $G->recur(10, sub {
         my $fi = `find ghosts -type f`;
         $fi =~ s/\n/ /g;
@@ -17,23 +17,22 @@ hooks:
   in: |
     $G->timer(9, sub{w Hiwtidy;});
   Hostinfo: |
-        my ($hol, $inf) = split ' ', r.m, 2;
-        pub $H, "S/$hol", "hostinfo/ack $r->{m}", 'ig';
-        $DB::single = 1;
-        Pur S/$hol "hostinfo/ack r.m", 'ig';
+        my ($hol, $inf) = split ' ', $m, 2;
+        pub $H, "S/$hol", "hostinfo/ack $m", 'ig';
+        Pur S/$hol "hostinfo/ack $m", 'ig';
         saygr "from $hol -> $inf";
         G.hostinfo->{$hol} = {
             info => $inf,
             when => $H->hitime,
         };
   Hi: |
-      my $a = $r;
-      saygr "a.top to a.m";
-      my ($hol, $m) = split ' ', a.m, 2;
+      saygr "Hostinfo to $m";
+      my ($hol, $m) = split ' ', $m, 2;
       (my $sn = $hol) =~ s/\/\w+$//;
-      my @olds = H.r->keys("H/$sn/*");
+      
+      my @olds = glob("life/H/$sn/*");
       for my $oth (@olds) {
-          $oth =~ s/^H\///;
+          $oth =~ s/^.+H\///;
           my ($Hid) = reverse split '/', $oth;
           sayre "o $oth";
           if ($oth eq $hol) {
@@ -41,15 +40,17 @@ hooks:
                 next;
           }
           my $js;
-          for my $vh (H.r->keys("V/$Hid*")) {
+          for my $vh (glob("life/V/$Hid*")) {
               my (@v) = split '/', $vh;
               my $ww = $v[2];
               $js .= w jsrm(id=>$ww);
-              H.r->del($vh);
-              H.r->del("W/$ww");
+              sayre "DEL $vh   && W/$ww";
+              #H.r->del($vh);
+              #H.r->del("W/$ww");
           }
           $H->send($js) if $js;
-          H.r->del("H/$oth");
+          sayre "DEL H/$oth";
+          #H.r->del("H/$oth");
       }
   jsrm: |
     " \$('#ux > #$id').fadeOut(1000, function() { \$(this).remove(); });";
@@ -78,8 +79,8 @@ hooks:
   reextet: |
     my @also = uniq map { /^H\/(.+)\/.+?$/ } H.r->keys("H/*");
     @also = grep {$_ ne "H.style/H.name"} @also;
-    H.r->del($_) for H.r->keys("*");
-    $H->pub('S/hut/O', "reextet ".join",",@also);
+    `rm $_` for `find life/ -type f`;
+    $G->pub('S/hut/O', "reextet ".join",",@also);
     H.G w reexec;
     
 
