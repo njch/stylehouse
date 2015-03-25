@@ -28,32 +28,46 @@ hooks:
   Hi: |
       sayyl "--------\n---------\n------\n   Hi  to $m";
       my ($hol, $m) = split ' ', $m, 2;
+      $hol =~ s/\x{0}//sgm;
       (my $sn = $hol) =~ s/\/\w+$//;
+      
+      if (-d "life/V/$sn") {
+          # a more than yay old TODO like J
+          my @Vol = uniq map { /^H\/(.+)\/.+?$/;$_ } `find life/V/$sn -type f`;
+          for (@Vol) {
+              chomp;
+              sayre "rm ing $_";
+              my $js;
+              for my $Wl(`cat $_`) {
+                  my $Wid = $1 if $Wl =~ /W (\S+)$/sgm || die "WEIRD $Wl";
+
+                  my $W = "life/W/${Wid}.i";
+                  $js .= w jsrm(id=>$Wid);
+                  sayre "rm ingiog $W";
+                  `rm $W`;
+              }
+              $H->send($js) if $js;
+              `rm $_`;
+          }
+      }
       
       my @olds = uniq map { /^H\/(.+)\/.+?$/;$_ } `find life/H/$sn -type f`;
       for my $oth (@olds) {
+          chomp $oth;
           say "OLD: $oth";
-          $oth =~ s/^.+H\///;
+          (my $olo = $oth) =~ s/^.+H\///;
           my ($Hid) = reverse split '/', $oth;
-          sayre "o $oth";
-          if ($oth eq $hol) {
+          sayre "o $olo   4vs $hol";
+          if ($olo eq $hol) {
               sayyl " haf self";
                 next;
           }
-          #sayyl "Life:\n".`find life | grep $Hid`;
-          my $js;
-          for my $vh (glob("life/V/$Hid*")) {
-              my @v = split '/', $vh;
-              my $ww = $v[2];
-              $js .= w jsrm(id=>$ww);
-              sayre "DEL $vh   && W/$ww";
-              #H.r->del($vh);
-              #H.r->del("W/$ww");
-          }
-          $H->send($js) if $js;
-          sayre "DEL H/$oth";
-          #H.r->del("H/$oth");
+          
+          `rm life/S/$olo*`;
+          `rm life/H/$olo`;
       }
+      
+      say "" for 1..3;
   jsrm: |
     " \$('#ux > #$id').fadeOut(1000, function() { \$(this).remove(); });";
   Hiwtidy: |
@@ -88,11 +102,12 @@ hooks:
     my @perls = map { /^\S+\s+(\d+)/||die'pspar'; $1 } 
         grep {/S\.pm/} `ps faux | grep perl`;
     say wdump[@perls];
-    `rm $_` for `find life/ -type f`;
     for my $pid (@perls) {
         next if $pid eq $$;
         kill 'HUP', $pid;
     }
+    # one second wait in ^ for v to hap without replacing files
+    `rm $_` for map{chomp;$_}`find life/ -type f`;
     H.G w reexec;
     
 
