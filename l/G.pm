@@ -1177,14 +1177,9 @@ sub taR {
     my $G = shift;
     # MZ $f,$n
     my ($f, $n) = @_;
-    my $x = $G->yr($f);
-    $n = ejson $n if ref $n;
+    my $x = $G->spc($f);
+    $n = ejson($n) if ref $n;
     ($f, $n, $x)
-}
-
-sub yr {
-    my $G = shift;
-    my $x = $G->spc(@_);
 }
 
 sub spc {
