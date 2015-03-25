@@ -1159,6 +1159,53 @@ sub inter {
     $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 
+sub tai {
+    my $G = shift;
+    my ($f,$n) = $G->taR(@_);
+    fspu($f, "$n\n");
+    saybl '  tai fspu '.$f.'    '.slim(30, $n);
+}
+
+sub tac {
+    my $G = shift;
+    my ($f,$n) = $G->taR(@_);
+    fscc($f, "$n\n");
+    saybl '  tac fscc '.$f.'    '.slim(30, $n);
+}
+
+sub taR {
+    my $G = shift;
+    # MZ $f,$n
+    my ($f, $n) = @_;
+    my $x = $G->yr($f);
+    $n = ejson $n if ref $n;
+    ($f, $n, $x)
+}
+
+sub yr {
+    my $G = shift;
+    my $x = $G->spc(@_);
+}
+
+sub spc {
+    my $G = shift;
+    my $f = pop;
+    my $o = pop || $G->{lifespot} || 'life';
+    my $fi = "$o/$f";
+    my $x = $G->{taily}->{f}->{$fi} ||= {};
+      if (!$x->{fi}) {
+          $x->{fi} = $fi;
+          $x->{f} = $f;
+          $x->{o} = $o;
+          $fi =~ /^(.+)\/(.+?)$/;
+          $x->{t} = $2;
+          $x->{d} = $1;
+          $x->{lots} = ['sc','sc2'];
+      }
+    fscc("$x->{d}/NZ", "") unless -e "$x->{d}/NZ";
+    $x
+}
+
 sub tar {
     my $G = shift;
     my $ar = shift;
@@ -1168,16 +1215,10 @@ sub tar {
     $ar->{f}
 }
 
-sub yr {
-    my $G = shift;
-    my $yy = $G->taily;
-    my $x = $yy->{spc}->(@_);
-}
-
 sub taily {
     my $G = shift;
     return $G->{taily} if $G->{taily};
-    $G->{lifespot} = "life/$H->{id}";
+    #$G->{lifespot} = "life/$H->{id}";
     my $y = $G->{taily} = {};
     #
     $y->{rw} = sub { #c
@@ -1202,7 +1243,7 @@ sub taily {
       my $x = $y->{spc}->(@_);
       return $x->{fi};
     };
-    $y->{spc} = sub { #c
+    $y->{spc} = sub { #c gone 0->spc
       my $f = pop;
       my $o = pop || $G->{lifespot} || 'life';
       my $fi = "$o/$f";
@@ -1221,11 +1262,14 @@ sub taily {
     };
     $y->{ily} = sub { #c one l/ily per file
       my $l = pop;
-      my $x = $y->{spc}->(@_);
+      my $x = $G->spc(@_);
       $x->{l} = $l;
+
+      saybl "        ily: $x->{fi}";
 
       for (@{$x->{lots}}) {
           my $file = $x->{fi}.'.'.$_;
+
           $y->{tailf}->($x, $file);
       }
 
@@ -1271,7 +1315,7 @@ sub taily {
       # forth and around
       my $wt = $x->{t}.'.'.$next;
 
-      $y->{mk}->($x);
+      #$y->{mk}->($x);
 
       sayyl "ln -fs $wt $link";
 
@@ -1344,13 +1388,44 @@ sub taily {
 sub fspu {
     my $file = shift;
     my $m = encode_utf8 shift;
-    write_file($file, $m);
+    write_cone($file, $m);
 }
 
 sub fscc {
     my $file = shift;
     my $m = encode_utf8 shift;
-    write_file($file, {append=>1}, $m);
+    write_cone($file, {append=>1}, $m);
+}
+
+sub write_cone {
+    my @arm = @_;
+    my $arm = \@arm;
+    return $H->{G} ->w("write_cone", {arm => $arm});
+    eval { write_file(@arm) };
+    if ($@) {
+        die $@ unless $@ =~ /sysopen: No such file or directory/;
+        my $file = $arm[0];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        sayre "Write $arm[0] fuckup: $@";
+        $@ = "";
+    }
 }
 
 sub su {

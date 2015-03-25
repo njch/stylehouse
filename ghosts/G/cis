@@ -2,12 +2,13 @@ Ds:
   - K: tai #c
     D: |
       my ($f,$n) = 0->taR(@_);
-      fscc($f, "$n\n";
-
+      fspu($f, "$n\n");
+      saybl '  tai fspu '.$f.'    '.slim(30, $n);
   - K: tac #c
     D: |
       my ($f,$n) = 0->taR(@_);
-      fscc($f, "$n\n";
+      fscc($f, "$n\n");
+      saybl '  tac fscc '.$f.'    '.slim(30, $n);
   - K: taR #c
     D: |
       # MZ $f,$n
@@ -35,7 +36,6 @@ Ds:
         }
       fscc("x.d/NZ", "") unless -e "x.d/NZ";
       $x
-
   - K: tar #c
     D: |
       my $ar = shift;
@@ -43,11 +43,10 @@ Ds:
       ar.f = $G->taily->{rr}->(ar.y);
       ar.n = ejson ar.n if ref ar.n;
       ar.f
-
   - K: taily #c fs xenostrogen
     D: |
       return G.taily if G.taily;
-      G.lifespot = "life/H.id";
+      #G.lifespot = "life/H.id";
       my $y = G.taily = {};
       #
       y.rw = sub { #c
@@ -91,11 +90,14 @@ Ds:
       };
       y.ily = sub { #c one l/ily per file
         my $l = pop;
-        my $x = y.spc->(@_);
+        my $x = 0->spc(@_);
         x.l = $l;
+        
+        saybl "        ily: x.fi";
 
         for (@{x.lots}) {
             my $file = x.fi.'.'.$_;
+            
             y.tailf->($x, $file);
         }
 
@@ -141,7 +143,7 @@ Ds:
         # forth and around
         my $wt = x.t.'.'.$next;
 
-        y.mk->($x);
+        #y.mk->($x);
         
         sayyl "ln -fs $wt $link";
         
@@ -214,14 +216,46 @@ Ds:
     D: |
       my $file = shift;
       my $m = encode_utf8 shift;
-      write_file($file, $m);
+      write_cone($file, $m);
       
   - K: fscc #c write >> file
     style: func
     D: |
       my $file = shift;
       my $m = encode_utf8 shift;
-      write_file($file, {append=>1}, $m);
+      write_cone($file, {append=>1}, $m);
+      
+  - K: write_cone #c write file (explode: create dir, retry)
+    style: func
+    D: |
+      my @arm = @_;
+      my $arm = \@arm;
+      return H.G w write_cone[$arm];
+      eval { write_file(@arm) };
+      if ($@) {
+          die $@ unless $@ =~ /sysopen: No such file or directory/;
+          my $file = $arm[0];
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          sayre "Write $arm[0] fuckup: $@";
+          $@ = "";
+      }
       
   - K: su #c
     D: |

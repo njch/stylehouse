@@ -6,10 +6,57 @@ hooks:
     };
     #Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
     return if H.name eq 'Z';
+    
+    make_path('life/was/here/and/then/etc');
+    fscc 'life/was/here/and/then/etc/fs', 'fsiooo';
+    
     $G->taily->{ily}->($_, $l) for
         "S",
         "S/H.style/H.name",
         "S/H.style/H.name/H.id";
+  write_cone: | # so stupidly retarded # use quantum fector to drop things down
+      eval { write_file(@$arm) };
+      if ($@) {
+          die "UNKNOWN WRITE CONE E\n\n$@" unless $@ =~ /sysopen: No such file or directory/;
+          sayre "Recovering from write error::: $@";
+          my ($file) = @$arm;
+          my @chun = split '/', $file;
+          my $fn = pop @chun;
+          say "    file: $file";
+          my @try = shift @chun;
+          push @try, join '/', $try[-1], $_ for @chun;
+          my @nodir;
+          for my $d (reverse @try) {
+              if (-d $d) {
+                  sayyl "$d DIR EXISTS!";
+                  last;
+              }
+              push @nodir, $d;
+          }
+          say "Not existing dirs: ".wdump[@nodir];
+          sayre "Weeor was $!";
+          undef $!;
+          say "==========";
+          my $broke;
+          for my $d (reverse @nodir) {
+              saybl "try to make_path $d";
+              mkdir $d;
+              if ($!) {
+                  sayre "mkdir $d: $!";
+                  $broke = 1;
+              }
+              if (!-d $d) {
+                  sayre "not exist after";
+                  $broke = 1;
+              }
+          }
+          
+          
+          if ($broke) {
+              die "cionedddd.....\n\nWrite $file fuckup: $@";
+          }
+          $@ = "";
+      }
   JElvis: | #c $m from the scrambling stream
     return if H.name eq 'Z';
     my $meta = djson $m;
