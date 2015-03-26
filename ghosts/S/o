@@ -31,19 +31,19 @@ hooks:
       $hol =~ s/\x{0}//sgm;
       (my $sn = $hol) =~ s/\/\w+$//;
       
-      if (-d "life/V/$sn") {
+      if (-d "life/V/$sn") { # would be good to control
           # a more than yay old TODO like J
-          my @Vol = uniq map { /^H\/(.+)\/.+?$/;$_ } `find life/V/$sn -type f`;
+          my @Vol = `find life/V/$sn -type f`; # doesn't go through symlinks
           for (@Vol) {
               chomp;
               sayre "rm ing $_";
               my $js;
-              for my $Wl(`cat $_`) {
-                  my $Wid = $1 if $Wl =~ /W (\S+)$/sgm || die "WEIRD $Wl";
-
-                  my $W = "life/W/${Wid}.i";
-                  $js .= w jsrm(id=>$Wid);
-                  sayre "rm ingiog $W";
+              for my $Wl (`cat $_`) {
+                  my $meta = djson $Wl;
+                  
+                  my $W = "life/meta.y/meta.id\.i";
+                  $js .= w jsrm(id=>meta.id);
+                  sayre "rm ingiog meta.y meta.id";
                   `rm $W`;
               }
               saybl "###### $js";

@@ -91,16 +91,60 @@ hooks:
     my $m = join " ", @lot;
     $m = " $m"; # space is the y that tells js to eval TODO mt lma
     w send_Elvis[$m, $meta];
-  send_Elvis: | # into the elvisphere! aj and send things mergey
-    # J comes out in Elvish on eg O
-    return
-    Rw sock_Elvis if H.O;
+  Jexit: | #c send elvis ^  v sock elvis  J suction of moving zipper
+    sayre "RHWOHOHOHOOH" for 1..3; 
+    Rw slw J Jslw;
+  slw: | #c slw of stimuli
+    my ($y,$z) = @$m;
+    my $l = sub {
+        sayyl "slwing $y => $z  :::: $_[0]";
+        $G->w($z,{m=>shift});
+    };
+    $G->ily($y, $l);
     
-    my $meta = Rw mJ J $ra:ar;
-    w emana[$meta,$m];
+  send_Elvis: | # into the elvisphere! network away to O
+    # W nativey aj ($W should be involved) and send() things mergey
+    say "on send Elvis";
+    if (H.O) {
+        Rw sock_Elvis;
+    }
+    else {
+        my $meta = Rw mJ J;
+        my $int = " W:ar.W.y ar.W.id   " if ar.W;
+        say "Emanating $int meta.y";
+        w emana[$meta,$m];
+    }
+  Jslw: | #c $m from the scrambling stream of J
+    die if H.name eq 'Z';
+    my $meta = djson $m;
+    
+    # TODO tri
+    my $m = $G->tri("meta.y/meta.id\.c");
+    
+    my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
+    saybl "meta.hol -> meta.id  (lag $del)    ";
+    
+      my $cb;
+      if (meta.W) {
+          saygr "unifid styles: meta.styles";
+          
+          # is test # could be more meta over there
+          $G->tri("meta.y/meta.id\.i")
+          || die "no such meta.id";
+          # ^ more meta than $meta, which is from the moving zipper
+          if (meta.styles =~ /\bNZ\b/) {
+              $cb = sub {
+                w mux(as=>"unified meta.Wid ( meta.hol");
+              };
+          }
+      }
+      $m = " $m";
+      my $W  = $meta;
+      
+      w send_Elvis[$m, $W, $cb];
+      
   sock_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
-    my $cb = ar.cb;
     my @Elvis = grep {defined} flatline $Elvis;
     if (!@Elvis) {
         saybl "no infiduvia ----- will spring on .... ".slim($m);
@@ -108,18 +152,20 @@ hooks:
         return;
     }
     
-    Rw newlinewarn $m if $m =~ /\n/;
-    $m =~ s/\n//g;
+    chomp $m;
+    if ($m =~ /\n/) {
+        $m = Rw nlwanr $m;
+    }
+    
+    my $cb = ar.cb;
     
     my $talk = "Elvis";
     $talk .= " ".ki(ar.meta) if ar.meta;
-    saybl " < $talk ))) ".slim(60,90,$m);
+    $m =~ /^(.{,90})/;
+    saybl " < $talk ))) ".slim(40,40,$m);
     
-    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
-    $e[-1]->[1] = $cb if $cb;
-    
-    for my $e (@e) {
-        my ($Elvis,$cb) = @$e;
+    for my $Elvis (@Elvis) {
+        saybl " Elvis socks: ".$Elvis->pi;
         w $Elvis send[$m, $cb];
     }
   mJ: |
@@ -137,21 +183,13 @@ hooks:
     0->tac("V/H.style/H.name/H.id\.meta.y", $tinymeta);
   emana: |
     # yoyoyo
-    saybl "Emanation! of meta.y meta.id";
+    saybl "Emanation! of meta.y meta.id     > ".slim(40,40,$m);
     0->tai("meta.y/meta.id\.c", $m);
     
     my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
     # tas many, eg W/this   and it all joints up
     $G->tas("meta.y", $tinymeta);
-  Jexit: | #c setup the J suction of O (life/J.sc) (moving zipper)
-    my $l = sub {
-        my $m = shift;
-        w JElvis[$m];
-    };
-    $G->taily->{ily}->('J', $l);
-
-
-  newlinewarn: |
+  nlwanr: |
     my $last = undef;
     my $wa;
     for my $l (split "\n", $m) {
@@ -166,70 +204,7 @@ hooks:
         $last = $l."\n";
     }
     warn "Message contains newlines: $wa\n\n";
-    
-  JElvis: | #c $m from the scrambling stream
-    return if H.name eq 'Z';
-    my $meta = djson $m;
-    
-    # TODO tri
-    die ki $meta;
-    my $m = $G->tri('J/'.meta.id.'.c');
-    chomp $m;
-    
-    my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
-    saybl "meta.hol -> meta.Jid  (lag $del)    ";
-    
-      # thing may contain more J structure we don't know about but it's art
-      # it may throw Emissive Js through from Building Js
-      # possibly without traces of U the W fab in the middle
-      # which is where we can wire travel through langths of Js
-      # without the bridge building ie doming needed to find the path
-      my $cb;
-      if (meta.unified) {
-          saygr "unifid styles: meta.styles";
-          
-          # is test # could be more meta over there
-          $G->tri('W/'.meta.Wid.'.i') || die "no such meta.Wid";
-          # ^ more meta than $meta, which is from the moving zipper
-          if (meta.styles =~ /\bNZ\b/) {
-              $cb = sub {
-                w mux(as=>"unified meta.Wid ( meta.hol");
-              };
-          }
-      }
-      $m = " $m"; 
-      w to_Elvis[$m, $meta, $cb];
-      
-  to_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who;
-    my $cb = ar.cb;
-    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
-        saybl "no infiduvia ----- will spring on .... ".slim($m);
-        push @{H.Jels||=[]}, $m;
-        return;
-    }
-    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
     $m =~ s/\n//g;
+    $m
     
-    my $talk = "Elvis";
-    die wdump ar.meta if ar.meta;
-    
-    if (my $m = ar.meta) {
-        $talk .= " meta.hol meta.Jid";
-        $talk .= " meta.id" if meta.id;
-        $talk .= " meta.unified" if meta.unified;
-    }
-    
-    
-        $m =~ s/\x{0}//sgm && die "HADH NULL";
-
-    saybl " < $talk ".slim(160,190,$m);
-    
-    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
-    $e[-1]->[1] = $cb if $cb;
-    
-    for my $e (@e) {
-        my ($Elvis,$cb) = @$e;
-        w $Elvis send[$m, $cb];
-    }
 
