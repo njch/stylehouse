@@ -70,23 +70,18 @@ hooks:
   aj: |
     my $W = j.W; # wonky picture frame
     
-    my $R = undef;
     my $meta = Rw mJ W $id:W.at.id;
     
     if (j._) {
+        # we are now a line, W->J revelation sheds from W which is also J
         meta.unified = 1;
         meta.styles = W.at.styles;
         
-        w lifage[$meta];
-        # or Rw tp J $n:meta.Wid $i:meta;
-        # and it ref > jsons
-        # somewhere ahead RNA compiles nicely into the walls
-        # which extend to infinity
-        # so recur-C surface
+        Rw lifage $meta;
         
-        G0.Wh->{meta.id} = $W; # TODO move Wh to A.h_W auto index
+        G0.Wh->{meta.id} = $W;
+        # TODO vectory auto index
     }
-    
     # the depths init codes once whole
     my @lot = reverse @{j.s}; # until whole
     push @lot, reverse @{j.c}; # from whole
@@ -95,56 +90,15 @@ hooks:
     
     my $m = join " ", @lot;
     $m = " $m"; # space is the y that tells js to eval TODO mt lma
-    H.G w send_Elvis[$m, $meta];
-  mJ: |
-    my $meta = {};
-    meta.y = shift @$m;
-    meta.id = ar.id || $H->mkuid;
-    meta.hol = "H.style/H.name/H.id";
-    meta.hitime = $H->hitime;
-    %$meta = (%$meta, %{ar.ar.meta}) if ar.ar.meta;
-    $meta
-  lifage: |
-    sayyl "Life! of meta.y meta.id";
-    0->tai("meta.y/meta.id\.i", $meta);
-    my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
-    0->tac("V/H.style/H.name/H.id\.meta.y", $tinymeta);
-  emana: |
-    # yoyoyo
-    saybl "Emanation! of meta.y meta.id";
-    0->tai("meta.y/meta.id\.c", $m);
+    w send_Elvis[$m, $meta];
+  send_Elvis: | # into the elvisphere! aj and send things mergey
+    # J comes out in Elvish on eg O
+    return
+    Rw sock_Elvis if H.O;
     
-    my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
-    # tas many, eg W/this   and it all joints up
-    $G->tas("meta.y", $tinymeta);
-  spurtJcon: | # spurt J stuff + meta through link tinto moving zipper
-    say "HIHI ".slim 30,$m;
-    
-    $G->tai("J/meta.Jid\.c", $m);
-    # J should have an .i for meta + a skinny for v zipper
-    
-    $G->tas('J', $meta);
-    # right right    
-    
-  Jexit: | #c setup the J suction of O (life/J.sc) (moving zipper)
-    my $l = sub {
-        my $m = shift;
-        w JElvis[$m];
-    };
-    $G->taily->{ily}->('J', $l);
-  send_Elvis: | # into the elvisphere! J comes out in Elvish on eg Omy $R = undef;
-    # we are now a line, W->J revelation sheds from W which is also J
-    
-    if (H.O) {
-        # websocket right here
-        H.O w send_Elvis;
-    }
-    else {
-        my $meta = Rw mJ - J $ar;
-        w emana[$meta,$m];
-    }
-    
-  O_Elvis: |
+    my $meta = Rw mJ J $ra:ar;
+    w emana[$meta,$m];
+  sock_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
     my $cb = ar.cb;
     my @Elvis = grep {defined} flatline $Elvis;
@@ -168,6 +122,35 @@ hooks:
         my ($Elvis,$cb) = @$e;
         w $Elvis send[$m, $cb];
     }
+  mJ: |
+    my $meta = {};
+    meta.y = shift @$m;
+    meta.id = ar.id || $H->mkuid;
+    meta.hol = "H.style/H.name/H.id";
+    meta.hitime = $H->hitime;
+    %$meta = (%$meta, %{ar.ra.meta}) if ar.ra.meta;
+    $meta
+  lifage: |
+    sayyl "Life! of meta.y meta.id";
+    0->tai("meta.y/meta.id\.i", $meta);
+    my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
+    0->tac("V/H.style/H.name/H.id\.meta.y", $tinymeta);
+  emana: |
+    # yoyoyo
+    saybl "Emanation! of meta.y meta.id";
+    0->tai("meta.y/meta.id\.c", $m);
+    
+    my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
+    # tas many, eg W/this   and it all joints up
+    $G->tas("meta.y", $tinymeta);
+  Jexit: | #c setup the J suction of O (life/J.sc) (moving zipper)
+    my $l = sub {
+        my $m = shift;
+        w JElvis[$m];
+    };
+    $G->taily->{ily}->('J', $l);
+
+
   newlinewarn: |
     my $last = undef;
     my $wa;
@@ -189,6 +172,7 @@ hooks:
     my $meta = djson $m;
     
     # TODO tri
+    die ki $meta;
     my $m = $G->tri('J/'.meta.id.'.c');
     chomp $m;
     
