@@ -1336,7 +1336,81 @@ sub squash {
 
 sub tailf {
     my $G = shift;
-    $G->taily->{tailf}->(@_);
+    my $x = shift;
+    my $file = shift;
+    sayyl "Tailing $file";
+
+    fscc($file, '');
+    die "go figgy $file" unless -f $file;
+
+    my $al = $x->{s}->{$file} ||= {};
+    open my $ha, '-|','tail',
+        '-s','0.1','-F','-n0',
+        $file
+        or die $!;
+    $al->{s} && $al->{s}->close;
+    my $s = $al->{s} = Mojo::IOLoop::Stream->new($ha);
+    $al->{h} = $ha;
+    $al->{x} = $x;
+    $al->{file} = $file;
+
+    $s->on(read => sub {
+        my ($s,$b) = @_;
+        $H->fixutf8($b);
+        $G->l_lines($al->{x}, $b, $al->{file});
+    });
+    $s->on(close => sub {
+        my $s = shift;
+        die "$al->{file} closed!?";
+    });
+    $s->on(error => sub {
+        my ($s, $err) = @_;
+        die "$al->{file} err: $err";
+    });
+    $s->timeout(0);
+    $s->start;
+    #$s->reactor->start unless $s->reactor->is_running;
+}
+
+sub burp {
+    my $G = shift;
+    my $x = shift;
+    my $file = shift;
+    my $time = hitime;
+    $x->{hitime} ||= $time;
+    if ($time - $x->{hitime} > 42 && -s $file > 8000) {
+        $G->wtfy($x);
+    }
+}
+
+sub l_lines {
+    my $G = shift;
+}
+
+sub l_lines {
+    my $G = shift;
+}
+
+sub l_lines {
+    my $G = shift;
+    my $x = shift;
+    my $b = shift;
+    my $file = shift;
+
+    $G->burp($x, $file);
+
+    if($b =~ /\x{0}/) {
+        say "nully $b =>";
+        run(-in => sub{ print "$b\n"; },
+          -out => '/tmp/fuuf',
+          'xxd');
+        say "MSC ZOOP:", ''.slim(100,`cat /tmp/fuuf`);
+    }
+    for my $m (split "\n", $b) {
+        next unless $m;
+
+        $x->{l}->($m);
+    }
 }
 
 sub taily {
@@ -1410,33 +1484,9 @@ sub taily {
       die "no go diggy $x->{d}  pwd=".`pwd` if !-d $x->{d};
     };
     $y->{l_lines} = sub { #c
-      my $x = shift;
-      my $b = shift;
-      my $file = shift;
-
-      $y->{burp}->($x, $file);
-
-      if($b =~ /\x{0}/) {
-          say "nully $b =>";
-          run(-in => sub{ print "$b\n"; },
-            -out => '/tmp/fuuf',
-            'xxd');
-          say "MSC ZOOP:", ''.slim(100,`cat /tmp/fuuf`);
-      }
-      for my $m (split "\n", $b) {
-          next unless $m;
-
-          $x->{l}->($m);
-      }
+      $G->l_lines(@_);
     };
     $y->{burp} = sub { #c
-      my $x = shift;
-      my $file = shift;
-      my $time = hitime;
-      $x->{hitime} ||= $time;
-      if ($time - $x->{hitime} > 42 && -s $file > 8000) {
-          $y->{wtfy}->($x);
-      }
     };
     $y->{wtfy} = sub { #c
       my $x = shift;
@@ -1485,40 +1535,7 @@ sub taily {
       sayre "Cleaned $sif";
     };
     $y->{tailf} = sub { #c
-      my $x = shift;
-      my $file = shift;
-      sayyl "Tailing $file";
-
-      fscc($file, '');
-      die "go figgy $file" unless -f $file;
-
-      my $al = $x->{s}->{$file} ||= {};
-      open my $ha, '-|','tail',
-          '-s','0.1','-F','-n0',
-          $file
-          or die $!;
-      $al->{s} && $al->{s}->close;
-      my $s = $al->{s} = Mojo::IOLoop::Stream->new($ha);
-      $al->{h} = $ha;
-      $al->{x} = $x;
-      $al->{file} = $file;
-
-      $s->on(read => sub {
-          my ($s,$b) = @_;
-          $H->fixutf8($b);
-          $y->{l_lines}->($al->{x}, $b, $al->{file});
-      });
-      $s->on(close => sub {
-          my $s = shift;
-          die "$al->{file} closed!?";
-      });
-      $s->on(error => sub {
-          my ($s, $err) = @_;
-          die "$al->{file} err: $err";
-      });
-      $s->timeout(0);
-      $s->start;
-      #$s->reactor->start unless $s->reactor->is_running;
+      $G->tailf(@_);
     };
     $y #c
 }
