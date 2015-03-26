@@ -1385,14 +1385,6 @@ sub burp {
 
 sub l_lines {
     my $G = shift;
-}
-
-sub l_lines {
-    my $G = shift;
-}
-
-sub l_lines {
-    my $G = shift;
     my $x = shift;
     my $b = shift;
     my $file = shift;
@@ -1859,21 +1851,6 @@ sub stylekeysort {
 sub chuntr {
     my $G = shift;
     split /(?=\{|\[|\^)/, shift;
-}
-
-sub vimcolor {
-    my $G = shift;
-    my $string = shift;
-    my $h = $H->dig($string);
-    my $k = "vimcolor-$h";
-    $H->{r}->{gest}->($k, sub {
-        use Text::VimColor;
-        my $syntax = Text::VimColor->new(
-            string => $string,
-            filetype => 'perl',
-        );
-        return $syntax->html;
-    });
 }
 
 sub CsK {
