@@ -72,11 +72,13 @@ hooks:
   jsrm: |
     " \$('#ux > #$id').fadeOut(1000, function() { \$(this).remove(); });";
   Hiwtidy: |
-    my $js = 
-    " var e = []; \$('#ux > ww').each(function(){"
-        ."e\.push(\$(this).attr('id'));" # could take more clues
-    ."});"
-    ."return e\.join(' ');";
+   # could take more clues
+    my $js = " var e = [];
+    \$('#ux > ww').each(function(){
+        e\.push(\$(this).attr('id'));
+    });
+    return e\.join(' ');";
+    
     my $cb = sub { my $m = shift; w Hiwtidy_ja[$m]; };
     H.G w jaw[$js, $cb];
   Hiwtidy_ja: |
