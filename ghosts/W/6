@@ -27,7 +27,7 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
      
      d.cs.zim.zi = osc.ce + (osc.v*osc.mul);
         
- - K: cow #c
+ - K: cow #c hs mods be more fun
    mod 3.4: |
      # TODO hex round sweepage
      my @col = hexend($cs);
@@ -40,11 +40,21 @@ mod c: # pile of stuff on the ceiling # pull out the culture protocol re MZ mean
           my $wa = $wc->{$_};
           $win->{$_} = $cs =~ /w$wa-(\d)/ ? $1 : $_;
      }
+     my $fore = join ' ', @col;
      unless ($cs =~ /no/) {
-         $wi->($col[0], $wo[$win->{0}]) if $cs =~ /r/;
-         $wi->($col[1], $wo[$win->{1}]) if $cs =~ /g/;
-         $wi->($col[2], $wo[$win->{2}]) if $cs =~ /b/;
+         my $norgb = $cs !~ /r|g|b/;
+         for my $k (keys %$wc) {
+             my $n = $wc->{$k};
+             my $ad = $wo[$win->{$n}];
+             # patch bay ^
+             my $mult = 9;
+             $mult = $1 if $cs =~ /$k(\d+)/;
+             say "$cs $k $mult   ".$mult / 9;
+             $ad *= ($mult / 9);
+             $wi->($col[$n], $ad) if $norgb || $cs =~ /$k/;
+         }
      }
+     saybl "cow mod $fore  ->  ".join ' ', @col;
      my $col = hexbe(@col);
      # hexify? dark is nice
        # art this shit proply ^
