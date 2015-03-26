@@ -91,50 +91,7 @@ hooks:
     my $Gpi = $F[2]->pi;
     saygr "jaw $s $Epi $Gpi js:".slim(30,30,$js);
     w send_Elvis;
-  send_Elvis: | # into the elvisphere! comes out in Elvish on eg O
-    my $meta = ar.meta ||= {};
-    meta.hol ||= "H.style/H.name/H.id";
-    meta.hitime ||= hitime;
-    if (H.name eq "O") {
-        my $g = K G:S/O;
-        $g || die "no SO";
-        return $g w send_Elvis; # no emanation, socket right here
-    }
-    # we are now a line, W->J revelation sheds from W which is also J
-    meta.Jid = $H->mkuid;
-    
-    w spurtJcon[$meta,$m];
-  to_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who;
-    my $cb = ar.cb;
-    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
-        saybl "no infiduvia ----- will spring on .... ".slim($m);
-        push @{H.Jels||=[]}, $m;
-        return;
-    }
-    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
-    $m =~ s/\n//g;
-    
-    my $talk = "Elvis";
-    
-    if (my $m = ar.meta) {
-        $talk .= " meta.hol meta.Jid";
-        $talk .= " meta.Wid" if meta.Wid;
-        $talk .= " meta.unified" if meta.unified;
-    }
-    
-    
-        $m =~ s/\x{0}//sgm && die "HADH NULL";
 
-    saybl " < $talk ".slim(160,190,$m);
-    
-    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
-    $e[-1]->[1] = $cb if $cb;
-    
-    for my $e (@e) {
-        my ($Elvis,$cb) = @$e;
-        w $Elvis send[$m, $cb];
-    }
   reexec: |
     for my $E (@{H.who||[]}) {
         w $E disconecktie;

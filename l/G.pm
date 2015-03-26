@@ -1003,12 +1003,14 @@ sub w {
     my @ways;
 
     die wdump($ar) if $ar && ref $ar ne 'HASH';
+    $ar->{R} = undef if !defined $ar->{R};
 
     my $talk = "w\ $point";
     my $watch;
 
     if ($S) {
-        $talk .= " S";
+        my $y = 'S';
+        $talk .= " $y";
         if (ref $S eq "G") {
             $talk .= " G";
         }
@@ -1035,6 +1037,7 @@ sub w {
         elsif (ref $S eq "R") {
             @ways = $S->{way};
             $G = $S->{G};
+            $y = 'R';
         }
 
         if (my $B = $S->{B}) {
@@ -1043,8 +1046,7 @@ sub w {
             # good verboz code clarity for scheming
             %$ar = (%$ar, %$B, B => $B);
         }
-        my $uu = ref $S eq 'R' ? 'R' : 'S';
-        $ar->{$uu} = $S;
+        $ar->{$y} = $S;
     }
     else {
         @ways = $G->ways;

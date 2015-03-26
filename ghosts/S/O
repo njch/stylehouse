@@ -7,6 +7,7 @@ hooks:
   fresh_init: |
     saygr "freshly H.ol ".`fig O`;
     
+    H.O = $G;
     w figure_port;
     
     H.G w Jexit;
@@ -24,33 +25,7 @@ hooks:
         w retile;
     }, begin => 0.2, again => 0.2);
   send_Elvis: |
-    my $Elvis = ar.Elvis || ar.E || H.who;
-    my $cb = ar.cb;
-    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
-        saybl "no infiduvia ----- will spring on .... ".slim($m);
-        push @{H.Jels||=[]}, $m;
-        return;
-    }
-    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
-    $m =~ s/\n//g;
-    
-    my $talk = "Elvis";
-    
-    if (my $m = ar.meta) {
-        $talk .= " meta.hol meta.Jid";
-        $talk .= " meta.Wid" if meta.Wid;
-        $talk .= " meta.unified" if meta.unified;
-    }
-
-    saybl " < $talk ".slim(60,90,$m);
-    
-    my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
-    $e[-1]->[1] = $cb if $cb;
-    
-    for my $e (@e) {
-        my ($Elvis,$cb) = @$e;
-        w $Elvis send[$m, $cb];
-    }
+    H.G w O_Elvis;
   websocket: | # Mojo throws connection over here
     my $u = { K=>'Elvis', B=>{tx => $M->tx, M => $M}};
     w G.R fuu[$u];
