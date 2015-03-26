@@ -68,8 +68,7 @@ hooks:
     
     # TODO tri
     my $m = $G->tri('J/'.meta.Jid.'.c');
-    
-    say "tried it: $m";
+    chomp $m;
     
     my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
     saybl "meta.hol -> meta.Jid  (lag $del)    ";
@@ -136,22 +135,11 @@ hooks:
   spurtJcon: | # spurt J stuff + meta through link tinto moving zipper
     say "HIHI ".slim 30,$m;
     
-    my $dir = $G->taily->{rr}->('J');
-    my $f = $dir.'/'.meta.Jid.'.c';
-    die "al$f" if -e $f;
-    
-    fspu($f, $m);
+    $G->tai("J/meta.Jid\.c", $m);
     # J should have an .i for meta + a skinny for v zipper
     
-    my $s = ejson $meta;
-    $s .= "\n";
-    my $scf = $G->taily->{rw}->('J');
-    fscc($scf, $s);
-    
-    # right right
-    warn "on met! $1" if $s =~ /(.{,20}\n.{,20})/;
-    warn "con n ving! $1" if $m =~ /(.{,20}\n.{,20})/;
-        
+    $G->tas('J', $meta);
+    # right right    
     
   Jexit: | #c setup the J suction of O (life/J.sc) (moving zipper)
     my $l = sub {
