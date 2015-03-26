@@ -1271,7 +1271,7 @@ sub msc {
           };
       };
       chomp $s;
-      sayre "msc $link -> '$s'";
+      sayre "msc $link -> '$s'" unless $s =~ /^(J|Hostinfo)\./;
       if (!$s) {
           say "auto sc (said $s) $x->{fi}    from $link";
           $G->wtfy($x); # makes a .s -> .sc
