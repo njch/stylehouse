@@ -140,30 +140,26 @@ hooks:
         H.O w send_Elvis;
     }
     else {
-        my $meta = Rw mJ J $ar;
+        my $meta = Rw mJ - J $ar;
         w emana[$meta,$m];
     }
     
   O_Elvis: |
     my $Elvis = ar.Elvis || ar.E || H.who;
     my $cb = ar.cb;
-    if (!$Elvis || ref $Elvis eq "ARRAY" && !@$Elvis) {
+    my @Elvis = grep {defined} flatline $Elvis;
+    if (!@Elvis) {
         saybl "no infiduvia ----- will spring on .... ".slim($m);
         push @{H.Jels||=[]}, $m;
         return;
     }
-    $m =~ /\n/ && say "Message contains \\n:\n$m\n\n";
+    
+    Rw newlinewarn $m if $m =~ /\n/;
     $m =~ s/\n//g;
     
     my $talk = "Elvis";
-    
-    if (my $meta = ar.meta) {
-        $talk .= " meta.hol meta.Jid";
-        $talk .= " meta.Wid" if meta.Wid;
-        $talk .= " meta.unified" if meta.unified;
-    }
-
-    saybl " < $talk ".slim(60,90,$m);
+    $talk .= " ".ki(ar.meta) if ar.meta;
+    saybl " < $talk ))) ".slim(60,90,$m);
     
     my @e = map { [$_, undef] } ref $Elvis eq "ARRAY" ? @$Elvis : $Elvis;
     $e[-1]->[1] = $cb if $cb;
@@ -172,6 +168,22 @@ hooks:
         my ($Elvis,$cb) = @$e;
         w $Elvis send[$m, $cb];
     }
+  newlinewarn: |
+    my $last = undef;
+    my $wa;
+    for my $l (split "\n", $m) {
+        if (!defined $last) {
+            $last = $l;
+            next;
+        }
+        $wa .= " - ";
+        $wa .= $1 if $last =~ /(.{,30})$/;
+        $wa .= " --- HERE --- ";
+        $wa .= slim(30, $l);
+        $last = $l."\n";
+    }
+    warn "Message contains newlines: $wa\n\n";
+    
   JElvis: | #c $m from the scrambling stream
     return if H.name eq 'Z';
     my $meta = djson $m;
