@@ -19,20 +19,39 @@ R_Jz:
         return $t;
      };
      my $oM;
+     
      my $fl = {};
      if (my $fli = ar.m) {
          $fl->{$_} = 1 for @$fli; # could:this
      }
+     my $MZu = sub {
+         my $MZ = shift;
+         for (split /\s+/, $MZ) {
+             /^(.+?)(?::(.+))?$/ || die;
+             $fl->{$1} = $2 || 1;
+         }
+     };
+     
      my $four = sub {
-         my ($i, $n) = @_;
-         for (qw,t y c sc,) {
-             if ($ci =~ s/^(\S+)\s*//) {
-                 my $v = $1;
-                 $v = $peel->($v) if $v =~ /^{/;
-                 $n->{$_} = $v;
+         $_ = shift;
+         my $n = shift;
+         if (/^\s*#?\s*MZ (.+)$/) {
+             $MZu->($1);
+         }
+         elsif (/^\s*#/) {
+         }
+         else {
+             my $ci = $_;
+             for (qw,t y c sc,) {
+                 if ($ci =~ s/^(.+) *//) { # some t are types of space
+                     my $v = $1;
+                     $v = $peel->($v) if $v =~ /^{/;
+                     $n->{$_} = $v;
+                 }
              }
          }
      };
+     
      for my $s (@$N) {
          my $n = {};
          if (!ref $s) {
@@ -54,10 +73,7 @@ R_Jz:
          }
          elsif (ref $s eq 'HASH') {
              if (s.MZ) {
-                 for (split /\s+/, s.MZ) {
-                     /^(.+?)(?::(.+))?$/ || die;
-                     $fl->{$1} = $2 || 1;
-                 }
+                 $MZu->(s.MZ);
                  next;
              }
              else {
@@ -85,12 +101,6 @@ R_Jz:
          push @$oM, $n;
      }
      Rw iM + $oM;
- - K: MZ #c babble switcher
-   D: |
-     die "Dome way MZI" if ar.x;
-     my @lines = split "\n", $str;
-     
-     my $MZ = $1 if $str =~ /^(#[^\n]+\n)?MZ ([^\n]+\n
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
@@ -99,24 +109,6 @@ R_Jz:
      my $d = Rw iot;
      d.c.s = ar.s if exists ar.s;
      Rw iiJM + $d;
- - K: the #c pg69make, ongoable
-   D: |
-     my $what = $m->[0];
-     my $wt = Rw wuck $J */$what;
-     my $M = [];
-     for my $k (sort keys %$wt) {
-         my $N = $wt->{$k};
-         say " ** waything $what from $k";
-         # pha $what, any of:
-         # - [t( y)( c)( sc)???]
-         # - [t, y]
-         # - [t, y, c, sc]
-         Rw MN $N $M;
-     }
-     saybl "the $what: ".ki 1, $_ for @$M;
-     # inside the J so
-     # ar close braid
-     Rw iM + $oM:M;
  - K: shway #c ongoable code view
    D: |
      my $what = $m->[0];
@@ -198,7 +190,7 @@ R_Jz:
      my ($d,$oM) = Rw iot +;
      d.y.bal = [ map {
          ref $_ eq 'HASH' || die'nothash';
-         _.t || die"not: ".wdump 3,$oM;
+         _.t || die"not: ".wdump 3,[$_,'OF OF',$oM];
          _.c.s ||= _.t;
          $_
      } @$oM ];
