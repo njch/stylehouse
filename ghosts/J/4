@@ -23,26 +23,27 @@ R_Jz:
      if (my $fli = ar.m) {
          $fl->{$_} = 1 for @$fli; # could:this
      }
+     my $four = sub {
+         my ($i, $n) = @_;
+         for (qw,t y c sc,) {
+             if ($ci =~ s/^(\S+)\s*//) {
+                 my $v = $1;
+                 $v = $peel->($v) if $v =~ /^{/;
+                 $n->{$_} = $v;
+             }
+         }
+     };
      for my $s (@$N) {
          my $n = {};
          if (!ref $s) {
              die "string: $s";
          }
          elsif (ref $s eq 'ARRAY') {
-             # to four
              if (@$s == 1) {
                  my ($i) = @$s;
-                 if (!ref $i) {
-                     my $ci = $i;
-                     for (qw,t y c sc,) {
-                         if ($ci =~ s/^(\S+)\s*//) {
-                             my $v = $1;
-                             $v = $peel->($v) if $v =~ /^{/;
-                             $n->{$_} = $v;
-                         }
-                     }
-                 }
-                 else {die $i}
+                 die if ref $i;
+                 # up to four in whitespace
+                 $four->($i, $n);
              }
              else {
                  (n.t,n.y) = @$s;
@@ -86,7 +87,10 @@ R_Jz:
      Rw iM + $oM;
  - K: MZ #c babble switcher
    D: |
+     die "Dome way MZI" if ar.x;
+     my @lines = split "\n", $str;
      
+     my $MZ = $1 if $str =~ /^(#[^\n]+\n)?MZ ([^\n]+\n
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
