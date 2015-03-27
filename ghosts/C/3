@@ -17,16 +17,45 @@ R_Jz:
      
      # $plucky could rate the things it gets passed
      # and the $thi yins up out here
-     if (sc.ou) {
-         # further dimensional sc if {} or something?
-         # so the spec can curve data all the way
-         Rw ou/sc.ou + $u $o $x $sc;
-     }
-     elsif (!ref $u) {
-         o.type = 'text';
-         push @{o.r}, { r=>"text", s=>$u, cv=>0.4 };
-     }
-     elsif (ref $u eq 'ARRAY') {
+     
+     sc.ou ||= 'text' if !ref $u;
+     sc.ou ||= 'array' if ref $u eq 'ARRAY';
+     sc.ou ||= 'code' if ref $u eq 'CODE';
+     sc.ou ||= 'hash';
+     
+     # further dimensional sc if {} or something?
+     # so the spec can curve data all the way
+     Rw ou/sc.ou + $u $o $x $sc;
+         
+     o.thi = @{o.r};
+     $o
+ - K: ou/text #c
+   D: |
+     o.type = 'text';
+     push @{o.r}, { r=>"text", s=>$u, cv=>0.4 };
+ - K: ou/hash #c
+   D: |
+      my @ks = sort keys %$u;
+      o.total = @ks;
+      until (@{o.r} >= $thi) {
+          last if !@ks;
+          my $k = shift @ks;
+          my $v = $u->{$k};
+          # $plucky # could be R coded small lmaz
+          # can meet slightly more and select best
+          # nothing is too worthy
+          push @{o.r}, { r=>$k, path=>"{".$k, s=>$v };
+
+          if (@{o.r} >= $thi) {
+              o.more = @ks if @ks;
+              last;
+          }
+      }
+      # bunch of keys... ^ interpret, compress knowledge
+      # TODO ^make itv like two indexes, polars
+      # any sorta layout knowhow...
+ - K: ou/array #c
+   D: |
          o.type = 'ARRAY';
          o.total = @$u;
          my $i = 0;
@@ -46,69 +75,11 @@ R_Jz:
              }
              $i++;
          }
-     }
-     elsif (ref $u eq 'CODE') {
+ - K: ou/code #c
+   D: |
           die;
           o.type = 'CODE';
           push @{o.r}, { r=>"CODE", clues=>{stuff=>"fromDm?"} }
-     }
-     else {
-         my @ks = sort keys %$u;
-         o.total = @ks;
-         until (@{o.r} >= $thi) {
-             if (!@ks) {
-                 last;
-             }
-             
-             my $k = shift @ks;
-             my $v = $u->{$k};
-             # $plucky # could be R coded small lmaz
-             # can meet slightly more and select best
-             # nothing is too worthy
-             push @{o.r}, { r=>$k, path=>"{".$k, s=>$v };
-             
-             if (@{o.r} >= $thi) {
-                 o.more = @ks if @ks;
-                 last;
-             }
-         }
-         # bunch of keys... ^ interpret, compress knowledge
-         # TODO ^make itv like two indexes, polars
-         # any sorta layout knowhow...
-     }
-     o.thi = @{o.r};
-     $o
- - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
-   D: |
-       my $in = x.in; # TODO whereto?
-       my $out = x.out;
-       my $phi = ($out - $in) * x.thi; # normal lines per 0.1
-       my $thi = $phi * 2; # oundo big window, bod small
-       
-       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
-       
-       my $o = Rw oundo $thi $x;
-       say "Oundo: ". join ', ', map{"$_"} @{o.r};
-       warn "More o.more" if o.more;
-       my $M = [];
-       for my $r (@{o.r}) {
-           r.r || die"nor".ki$r;
-           my $oM = [];
-           # SZOOOOOOOOOOOM
-           Rw ii/labegy $x $r $M:oM;
-           Rw ii/pi $x $r $M:oM;
-           # ^ pass $thi, pool resources
-           
-           my $c = {%{r.c||{}}};
-           #sayyl "iibod: ". ki $r;
-           
-           
-           Rw om/lev + $oM $M $t:r.r $c;
-       }
-       if (o.more) {
-           Rw ii/more $x $o $M;
-       }
-       Rw iM + $oM:M;
  - K: ii/more #c round corner
    D: |
      my $d;
