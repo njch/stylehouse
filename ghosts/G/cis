@@ -1,4 +1,18 @@
 Ds:
+  - K: fspu #c write file
+    style: func
+    D: |
+      my $file = shift;
+      my $m = encode_utf8 shift;
+      write_cone($file, $m);
+      
+  - K: fscc #c write >> file
+    style: func
+    D: |
+      my $file = shift;
+      my $m = encode_utf8 shift;
+      write_cone($file, {append=>1}, $m);
+      
   - K: tai #c
     D: |
       my ($f,$n) = 0->taR(@_);
@@ -220,20 +234,7 @@ Ds:
             
             x.l->($m);
         }
-  - K: fspu #c write file
-    style: func
-    D: |
-      my $file = shift;
-      my $m = encode_utf8 shift;
-      write_cone($file, $m);
-      
-  - K: fscc #c write >> file
-    style: func
-    D: |
-      my $file = shift;
-      my $m = encode_utf8 shift;
-      write_cone($file, {append=>1}, $m);
-      
+
   - K: write_cone #c write file (explode: create dir, retry)
     style: func
     D: |
@@ -244,30 +245,11 @@ Ds:
       if ($@) {
           die $@ unless $@ =~ /sysopen: No such file or directory/;
           my $file = $arm[0];
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           sayre "Write $arm[0] fuckup: $@";
           $@ = "";
       }
       
-
-  - K: djson #c & ejson
+  - K: djson #c
     style: func
     D: |
       my $m = shift;
@@ -277,7 +259,7 @@ Ds:
       die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
       die "$m\n\nJSON decoded to ~undef~" unless defined $j;
       $j
-  - K: ejson #
+  - K: ejson #c
     style: func
     D: |
       my $m = shift;
