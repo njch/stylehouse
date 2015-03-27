@@ -267,6 +267,12 @@ Ds:
     style: nonbabble
     D: |
             my $eval = shift;
+            my $point = shift;
+            my $x = shift;
+            
+            if ($eval =~ /^MZ (.+?)\n/sgm) {
+                $eval = $G->w('MZ', {x=>$x}, $x->{R}||die'noRMZ');
+            }
             
             my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
             my $G_name = qr/[\/\w]+/;
