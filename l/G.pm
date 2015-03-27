@@ -577,22 +577,122 @@ sub anyway {
     wantarray ? @a : shift @a
 }
 
-sub di {
-    # attaches meaning and dies
+sub w {
+    my $G = shift;
+    my $point = shift; 
+    my $ar = shift;
+    my $S = shift; # some kinda C subject
+    my $a = shift;
+    my @ways;
 
-    # throwing back to D hopefully enriching
+    die wdump($ar) if $ar && ref $ar ne 'HASH';
+    $ar->{R} = undef if !defined $ar->{R};
 
-    # @_:
-    #   bunch of vectors to topiarise the explotion
-    #   bunch of data/messages
+    my $talk = "w\ $point";
+    my $watch;
 
-    my @vec;
-    push @vec, shift while !ref $_[0] && $_[0] =~ /^[\.\d]+$/;
+    if ($S) {
+        my $y = 'S';
+        $talk .= " $y";
+        if (ref $S eq "G") {
+            $talk .= " G";
+        }
+        elsif (ref $S eq "C") {
+            if (my $of = $S->{ofways}) { # TODO 
+                @ways = @$of;
+            }
+            elsif ($S->{Gw}) {
+                my $SG = $S->{G} || die "no way G!?";
+                my $CodeK = $S->{Gw};
+                $CodeK = $S->{K} if $CodeK eq "1";
+                $point = "$CodeK/$point" unless $point =~ /^$CodeK/;
+                if ($G eq $SG) {
+                    @ways = $G->ways; # ------------------
+                }
+                else {
+                    return $SG->w($point, $ar, $S); # G pass
+                }
+            }
+            else {
+                @ways = $S; #---------------------
+            }
+        }
+        elsif (ref $S eq "R") {
+            @ways = $S->{way};
+            $G = $S->{G};
+            $y = 'R';
+        }
 
-    my $a = $F[0]->{di} = {};
-    ($a->{mag}, $a->{dir}, $a->{etc}) = @vec;
-    $a->{tip} = [@_];
-    die wdump(3,[@_]);
+        if (my $B = $S->{B}) {
+            # we dont upload variables from B
+            # change $B->{whatever} to set
+            # good verboz code clarity for scheming
+            %$ar = (%$ar, %$B, B => $B);
+        }
+        $ar->{$y} = $S;
+    }
+    else {
+        @ways = $G->ways;
+    }
+
+    my $l = [];
+    for my $w (@ways) {
+
+        my $h = $w->find($point) || next;
+
+        my $a = {
+          name => "Z",
+          stuff => [$talk],
+          bab => $h,
+          ar => $ar,
+          point => $point,
+          way => $S,
+        };
+        $a->{w} = $w;
+
+        my $Z = $G->Doming($a);
+
+        $Z->{l} = $l;
+        push @$l, $Z;
+
+        my $r;
+
+        eval { $r = [ $G->D($a) ] };
+
+        $Z->{r} = $r; # TODO many awkward
+
+        $G->Done($Z);
+
+        if ($@) {
+            my $ne = "Z";
+            $ne .= $Z->{inter} if $Z->{inter};
+            $ne .= "\n";
+            $ne .= "S: ".ki($S)."\n" if $S;
+            $ne .= "$@";
+            $@ = $ne;
+            $G->Flab("Z Error $@");
+            die $@ unless $a->{nodie};
+            $@ = "";
+        }
+    }
+
+    if (!@$l) {
+        my ($wa) = $talk =~ /^w\ (\w+)/;
+
+        warn $G->pi."    way miss $talk"
+        if !($G->{misslesswa} ||= {map{$_=>1}
+            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D event life_D'}
+          )->{$wa};
+        return;
+    }
+
+    if (@$l > 1) {
+          warn "multiple returns from $point";
+    }
+
+    my ($z) = @$l;
+    my @r = @{$z->{r}};
+    return wantarray ? @r : shift @r;
 }
 
 sub Dm {
@@ -994,124 +1094,6 @@ sub wayb {
     # replay dep on perc state of origin $G
 }
 
-sub w {
-    my $G = shift;
-    my $point = shift; 
-    my $ar = shift;
-    my $S = shift; # some kinda C subject
-    my $a = shift;
-    my @ways;
-
-    die wdump($ar) if $ar && ref $ar ne 'HASH';
-    $ar->{R} = undef if !defined $ar->{R};
-
-    my $talk = "w\ $point";
-    my $watch;
-
-    if ($S) {
-        my $y = 'S';
-        $talk .= " $y";
-        if (ref $S eq "G") {
-            $talk .= " G";
-        }
-        elsif (ref $S eq "C") {
-            if (my $of = $S->{ofways}) { # TODO 
-                @ways = @$of;
-            }
-            elsif ($S->{Gw}) {
-                my $SG = $S->{G} || die "no way G!?";
-                my $CodeK = $S->{Gw};
-                $CodeK = $S->{K} if $CodeK eq "1";
-                $point = "$CodeK/$point" unless $point =~ /^$CodeK/;
-                if ($G eq $SG) {
-                    @ways = $G->ways; # ------------------
-                }
-                else {
-                    return $SG->w($point, $ar, $S); # G pass
-                }
-            }
-            else {
-                @ways = $S; #---------------------
-            }
-        }
-        elsif (ref $S eq "R") {
-            @ways = $S->{way};
-            $G = $S->{G};
-            $y = 'R';
-        }
-
-        if (my $B = $S->{B}) {
-            # we dont upload variables from B
-            # change $B->{whatever} to set
-            # good verboz code clarity for scheming
-            %$ar = (%$ar, %$B, B => $B);
-        }
-        $ar->{$y} = $S;
-    }
-    else {
-        @ways = $G->ways;
-    }
-
-    my $l = [];
-    for my $w (@ways) {
-
-        my $h = $w->find($point) || next;
-
-        my $a = {
-          name => "Z",
-          stuff => [$talk],
-          bab => $h,
-          ar => $ar,
-          point => $point,
-          way => $S,
-        };
-        $a->{w} = $w;
-
-        my $Z = $G->Doming($a);
-
-        $Z->{l} = $l;
-        push @$l, $Z;
-
-        my $r;
-
-        eval { $r = [ $G->D($a) ] };
-
-        $Z->{r} = $r; # TODO many awkward
-
-        $G->Done($Z);
-
-        if ($@) {
-            my $ne = "Z";
-            $ne .= $Z->{inter} if $Z->{inter};
-            $ne .= "\n";
-            $ne .= "S: ".ki($S)."\n" if $S;
-            $ne .= "$@";
-            $@ = $ne;
-            $G->Flab("Z Error $@");
-            die $@ unless $a->{nodie};
-            $@ = "";
-        }
-    }
-
-    if (!@$l) {
-        my ($wa) = $talk =~ /^w\ (\w+)/;
-
-        warn $G->pi."    way miss $talk"
-        if !($G->{misslesswa} ||= {map{$_=>1}
-            qw'print humms_D flows_D fresh_init any_init recoded_init percolate_R percolate load_ways_post pv aj uxyou_D event life_D'}
-          )->{$wa};
-        return;
-    }
-
-    if (@$l > 1) {
-          warn "multiple returns from $point";
-    }
-
-    my ($z) = @$l;
-    my @r = @{$z->{r}};
-    return wantarray ? @r : shift @r;
-}
-
 sub pyramid {
     my $G = shift;
     my $a = shift;
@@ -1157,6 +1139,18 @@ sub inter {
     $ki =~ s/^\s+//;
     $F[1]->{inter} ||= ".";
     $F[1]->{inter} .= "\n -{".$ki."}\n";
+}
+
+sub fspu {
+    my $file = shift;
+    my $m = encode_utf8 shift;
+    write_cone($file, $m);
+}
+
+sub fscc {
+    my $file = shift;
+    my $m = encode_utf8 shift;
+    write_cone($file, {append=>1}, $m);
 }
 
 sub tai {
@@ -1407,145 +1401,6 @@ sub l_lines {
     }
 }
 
-sub taily {
-    my $G = shift;
-    my $y = $G->{taily} = {};
-    #
-    $y->{rw} = sub { #c gone into msc
-      my $x = $y->{spc}->(@_);
-      $y->{msc}->($x);
-    };
-    $y->{msc} = sub { #c gone
-      my $x = shift;
-      my $link = $x->{fi}.'.s';
-      my $s = readlink $link;
-      say " LOokoing $link  : $s";
-      if (!$s) {
-          sayyl "auto sc $x->{fi}";
-          $y->{wtfy}->($x); # makes a .s -> .sc
-          return $y->{msc}->($x);
-      }
-      # so appends can sense together before even .cing
-      $x->{d}.'/'.$s
-    };
-    $y->{rr} = sub { #c points to a bud to have bits (.i etc) sprout off
-      # make NZ to make can be created 
-      my $x = $y->{spc}->(@_);
-      return $x->{fi};
-    };
-    $y->{spc} = sub { #c gone 0->spc
-      my $f = pop;
-      my $o = pop || $G->{lifespot} || 'life';
-      my $fi = "$o/$f";
-      my $x = $G->{taily}->{f}->{$fi} ||= {};
-      if (!$x->{fi}) {
-          $x->{fi} = $fi;
-          $x->{f} = $f;
-          $x->{o} = $o;
-          $fi =~ /^(.+)\/(.+?)$/;
-          $x->{t} = $2;
-          $x->{d} = $1;
-          $x->{lots} = ['sc','sc2'];
-      }
-      fscc("$x->{d}/NZ", "") unless -e "$x->{d}/NZ";
-      $x
-    };
-    $y->{ily} = sub { #c one l/ily per file
-      my $l = pop;
-      my $x = $G->spc(@_);
-      $x->{l} = $l;
-
-      saybl "        ily: $x->{fi}";
-
-      for (@{$x->{lots}}) {
-          my $file = $x->{fi}.'.'.$_;
-
-          $y->{tailf}->($x, $file);
-      }
-
-      $y->{wtfy}->($x);
-    };
-    $y->{mk} = sub { #c
-      my $x = shift;
-      say "mk path $x->{d}";
-      my $some = `ls -d $x->{d}`;
-      say "SOME: $some";
-      say "-e $x->{d}" if -e $x->{d};
-      say "-d $x->{d}" if -d $x->{d};
-      return if -e $x->{d};
-      sayre "MKDIR $x->{d}";
-      make_path($x->{d});
-      die "no go diggy $x->{d}  pwd=".`pwd` if !-d $x->{d};
-    };
-    $y->{l_lines} = sub { #c
-      $G->l_lines(@_);
-    };
-    $y->{burp} = sub { #c
-    };
-    $y->{wtfy} = sub { #c
-      my $x = shift;
-      my $link = $x->{fi}.'.s';
-
-      my $s = readlink $link if -e $link;
-      my $ex = $1 if $s && $s =~ /\.(.+?)$/;
-      my ($next) = reverse reverse(@{$x->{lots}}), reverse grep { !$ex || $_ eq $ex && do {$ex=0} } @{$x->{lots}};
-      # forth and around
-      my $wt = $x->{t}.'.'.$next;
-
-      #$y->{mk}->($x);
-
-      sayyl "ln -fs $wt $link";
-
-      my $fis = "$x->{d}/$wt";
-      if (!-e $fis) {
-          fscc($fis, '');
-      }
-
-      symlink $wt, $link;
-      #`ln -fs $wt $link`;
-
-      if ($s) {
-          my $sif = $x->{d}.'/'.$s;
-          # TODO acquire lock (first hol line in lock file wins, wait 0.1)
-          $G->sing("cleam$sif", sub {
-              my $siz = -s $sif;
-              $G->timer(2.3, sub {
-                  $y->{squash}->($x, $sif, $siz);
-              });
-          }, begin => 0.4);
-      }
-    };
-    $y->{squash} = sub { #c
-      my $x = shift;
-      my $sif = shift;
-      my $siz = shift;
-      my $siz2 = -s $sif;
-      if ($siz != $siz2) {
-          #warn "$sif got written to sinze changing link!?";
-      }
-
-      fspu($sif, '');
-
-      sayre "Cleaned $sif";
-    };
-    $y->{tailf} = sub { #c
-      $G->tailf(@_);
-    };
-    $y #c
-}
-
-sub fspu {
-    my $file = shift;
-    my $m = encode_utf8 shift;
-    write_cone($file, $m);
-}
-
-sub fscc {
-    my $file = shift;
-    my $m = encode_utf8 shift;
-    write_cone($file, {append=>1}, $m);
-}
-
 sub write_cone {
     my @arm = @_;
     my $arm = \@arm;
@@ -1554,24 +1409,6 @@ sub write_cone {
     if ($@) {
         die $@ unless $@ =~ /sysopen: No such file or directory/;
         my $file = $arm[0];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         sayre "Write $arm[0] fuckup: $@";
         $@ = "";
     }
@@ -1595,6 +1432,7 @@ sub ejson {
 sub parse_babble {
     my $G = shift;
     my $eval = shift;
+
 
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     my $G_name = qr/[\/\w]+/;

@@ -18,7 +18,7 @@ R_Jz:
         }
         return $t;
      };
-     my $oM;
+     my $oM = [];
      
      my $fl = {};
      if (my $fli = ar.m) {
@@ -32,16 +32,19 @@ R_Jz:
          }
      };
      
-     my $four = sub {
-         $_ = shift;
+     my $fourstring = sub {
+         my $s = shift;
          my $n = shift;
-         if (/^\s*#?\s*MZ (.+)$/) {
+         if ($s =~ /^\s*#?\s*MZ (.+)$/) {
+             say "MUZLING $1";
              $MZu->($1);
          }
-         elsif (/^\s*#/) {
+         elsif ($s =~ /^\s*#/) {
+             saybl "comment ## $s";
          }
          else {
-             my $ci = $_;
+             saybl "iiii $s";
+             my $ci = $s;
              for (qw,t y c sc,) {
                  if ($ci =~ s/^(.+) *//) { # some t are types of space
                      my $v = $1;
@@ -52,47 +55,53 @@ R_Jz:
          }
      };
      
+     my $fouror = sub {
+         my $s = shift;
+         my $n = shift;
+         (n.t, n.y) = @$s;
+         n.c  = $s->[2] if exists $s->[2];
+         n.sc = $s->[3] if exists $s->[3];
+         die'@>4' if @$s > 4;
+     };
+     
      for my $s (@$N) {
          my $n = {};
+         
          if (!ref $s) {
              die "string: $s";
          }
          elsif (ref $s eq 'ARRAY') {
              if (@$s == 1) {
-                 my ($i) = @$s;
-                 die if ref $i;
-                 # up to four in whitespace
-                 $four->($i, $n);
+                 die if ref $s->[0];
+                 $fourstring->($s->[0], $n);
              }
              else {
-                 (n.t,n.y) = @$s;
-                 n.c = $s->[2] if exists $s->[2];
-                 n.sc = $s->[3] if exists $s->[3];
-                 die'@>4' if @$s > 4;
+                 $fouror->($s, $n);
              }
          }
          elsif (ref $s eq 'HASH') {
-             if (s.MZ) {
-                 $MZu->(s.MZ);
-                 next;
-             }
-             else {
-             die 'hash: ';
-             }
+             die 'hash: ' if !s.MZ;
+            
+            $MZu->(s.MZ);
+            next;
          }
          else { die "mmtype:$s" }
          
-         for my $k (keys %$fl) {
+         for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
              my $v = $fl->{$k};
              die if $v ne '1';
              Rw ym/$k $n;
          }
+         
          if (!ref n.y) {
-             if (n.y eq '') { # or undef
+             if (n.y eq '') { # is or undef
                  n.y = {};
              }
              elsif (n.y =~ /^(\d+)$/) {
                  n.y = {thi=>$1};
+             }
+             elsif (n.y =~ /^($NUM)$/) {
+                 n.y = {cv=>$1};
              }
              else {die "strung ny: n.y"};
          }
@@ -100,6 +109,7 @@ R_Jz:
          die "no ny: n.t" if !n.y;
          push @$oM, $n;
      }
+     say wdump $oM;
      Rw iM + $oM;
  - K: ym/pwth #c
    D: |
@@ -164,7 +174,7 @@ R_Jz:
          die "no array in ar looking: $oM ".ki$oM if ref $oM ne 'ARRAY'
      }
      wantarray ? ($d, $oM) : $d
- - K: iM #c as below, for $M instead of $d
+ - K: iM #c as below, for $oM instead of $d
    D: |
      return @$oM if ar.ret;
      if (ar.M) {
