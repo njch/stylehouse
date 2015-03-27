@@ -84,6 +84,118 @@ R_Jz:
          push @$oM, $n;
      }
      Rw iM + $oM;
+ - K: MyN #c mthemZY
+   D: |
+     my $peel = sub { # simple hash from string
+        my $s = shift;
+        $s =~ s/^{//;
+        $s =~ s/}$// || die "unpealable $s";
+        my @t = split ',', $s;
+        my $t = {};
+        for (@t) {
+            my ($k, $v) = split ':', $_;
+            $t->{$k} = $v;
+        }
+        return $t;
+     };
+     my $oM = [];
+     
+     my $fl = {};
+     if (my $fli = ar.m) {
+         $fl->{$_} = 1 for @$fli; # could:this
+     }
+     my $MZu = sub {
+         my $MZ = shift;
+         my $n = shift;
+         for (split /\s+/, $MZ) {
+             /^(.+?)(?::(.+))?$/ || die;
+             $fl->{$1} = $2 || 1;
+         }
+         n.moozd = 1;
+     };
+     
+     my $fourstring = sub {
+         my $s = shift;
+         my $n = shift;
+         if ($s =~ /^\s*#?\s*MZ (.+)$/) {
+             say "MUZLING $1";
+             $MZu->($1, $n);
+         }
+         elsif ($s =~ /^\s*#/) {
+             saybl "comment ## $s";
+         }
+         else {
+             saybl "iiii $s";
+             my $ci = $s;
+             for (qw,t y c sc,) {
+                 if ($ci =~ s/^(\S+) *//) { # some t are types of space
+                     my $v = $1;
+                     $v = $peel->($v) if $v =~ /^{/;
+                     $n->{$_} = $v;
+                 }
+             }
+         }
+     };
+     
+     my $fouror = sub {
+         my $s = shift;
+         my $n = shift;
+         (n.t, n.y) = @$s;
+         n.c  = $s->[2] if exists $s->[2];
+         n.sc = $s->[3] if exists $s->[3];
+         die'@>4' if @$s > 4;
+     };
+     
+     for my $s (@$N) {
+         my $n = {};
+         
+         if (!ref $s) {
+             die "string: $s";
+         }
+         elsif (ref $s eq 'ARRAY') {
+             if (@$s == 1) {
+                 die if ref $s->[0];
+                 $fourstring->($s->[0], $n);
+             }
+             else {
+                 $fouror->($s, $n);
+             }
+         }
+         elsif (ref $s eq 'HASH') {
+            die 'hash: ' if !s.MZ;
+            $MZu->(s.MZ, $n);
+         }
+         else { die "mmtype:$s" }
+         
+         if (n.moozd) {
+             sayyl "TYEYLELYLELYLEL";
+             next;
+         }
+         
+         for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
+             my $v = $fl->{$k};
+             die if $v ne '1';
+             Rw ym/$k $n;
+         }
+         
+         if (!ref n.y) {
+             if (n.y eq '') { # is or undef
+                 n.y = {};
+             }
+             elsif (n.y =~ /^(\d+)$/) {
+                 n.y = {thi=>$1};
+             }
+             elsif (n.y =~ /^($NUM)$/) {
+                 n.y = {cv=>$1};
+             }
+             else {die "strung ny: n.y"};
+         }
+         die wdump $N if !ref n.y;
+         die "no ny: n.t" if !n.y;
+         push @$oM, $n;
+     }
+     #ay "ZOYDoM    ". ki $_ for @$oM;
+     Rw iM + $oM;
  - K: ym/pwth #c
    D: |
      n.c.pwth = delete n.y
@@ -99,12 +211,15 @@ R_Jz:
      my $M = [];
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};
+         if (!ref $N) {
+             $N = [ map { [$_] } split "\n",$N ];
+         }
          say " ** waything $what from $k";
          # pha $what, any of:
          # - [t( y)( c)( sc)???]
          # - [t, y]
          # - [t, y, c, sc]
-         Rw MN $N $M;
+         Rw MyN $N $M;
      }
      saybl "the $what: ".ki 1, $_ for @$M;
      # inside the J so
@@ -191,7 +306,7 @@ R_Jz:
      my ($d,$oM) = Rw iot +;
      d.y.bal = [ map {
          ref $_ eq 'HASH' || die'nothash';
-         _.t || die"not: ".wdump 3,$oM;
+         _.t || die"not: ".wdump 3,[$_,$oM];
          _.c.s ||= _.t;
          $_
      } @$oM ];
