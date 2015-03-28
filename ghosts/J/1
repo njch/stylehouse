@@ -265,9 +265,10 @@ R_Jz:
      @aw = grep { !_.A.u_tent } @aw;
      my $na;
      map {
-         my $name = $1 if _.name =~ /(^\w+)-J\d+$/ || die "names _.name";
-        $na->{$name} && die "rep of $name";
-        $na->{$name} = $_;
+         my $name = _.name;
+         $name =~ /-J\d+$/;
+         $na->{$name} && die "rep of $name";
+         $na->{$name} = $_;
      } @aw;
      $na
  - K: Jux #c goto: muxes
