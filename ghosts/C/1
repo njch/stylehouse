@@ -68,6 +68,8 @@ R_Jz:
          sc.sha = '3 5 4 22a';
      }
      
+     sc.opa = 0.5;
+     sc.zi = 7;
      Rw wtf $J thing 1 $s:u $sc;
      
      if (-f $file && J.cv >= 0.5) {
@@ -79,8 +81,8 @@ R_Jz:
    D: |
      my $file = $u;
      -f $file || die;
-     J.mod.sc.width = "44em";
-     J.mod.sc.height = "44em";
+     J.mod.sc.width = "154em";
+     J.mod.sc.height = "174em";
      J.mod.sc.mw = "20em";
      Rw pi/thumbnail $file $J;
  - K: pi/thumbnail #c image/video
@@ -97,10 +99,17 @@ R_Jz:
      # TODO mod slowness
      # make this thumbnail J even more forky than usual
      
-     run 'mkdir', '-p', $thd unless -d $thd;
-     
-     run 'convert', $file, '-thumbnail','300x300', $th unless -f $th;
-     #ffmpegthumbnailer -s 420 -t 20% -i MVI_2406.MOV -o sgihed.jpg && display sgihed.jpg
+     if (!-f $th) {
+         if (!-d $thd) {
+             run 'mkdir', '-p', $thd;
+         }
+         if ($file =~ /(mov|avi|mp4)$/i) {
+             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$file.' -o '.$th
+         }
+         else {
+             run 'convert', $file, '-thumbnail','300x300', $th
+         }
+     }
      
      my $x = J.mod.c.X;
      my $sp = x.imspin++;
@@ -109,10 +118,11 @@ R_Jz:
      my $sc = {
          tag => 'img',
          zom=>{at => {src => $thl}},
-         width=>'7em',
-         height=>'7em',
+         width=>'17em',
+         height=>'17em',
          left => $sp,
          ab=>1,
+         opa=>0.5,
          rad=>0.4,
      };
      delete J.mod.sc.over;

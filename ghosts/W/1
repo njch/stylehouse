@@ -9,7 +9,7 @@ R_Jz:
          #spun 0  0.025
          zoom 0   0.4
          zoom 0.1   0.7
-         curve 0.1  -0.1811
+         curve 0.1  -0.1211
          #zoom 0 0.8
          zoom 0.21 1
          y 0 0
@@ -23,7 +23,7 @@ R_Jz:
           - sq
           - 10
           - s: ~
-            fs: 7_3
+            fs: 133
           - co: 8ff
             blr: 3
        
@@ -248,57 +248,7 @@ R_Jz:
        # pur inness
        
        for my $x (@$onl) {
-           Rw lx/suro + $x;
+           Rw ix/suro + $x;
        }
        sayre "==\n== delt ".F_delta."\n==";
- - K: lx/suro #c
-   D: |
-      my $j = x.j;
-      my $coi = Rw pha $J $k:j.l;
-      my $M = [];
-      
-      # innessy
-      Rw ii/cap $x $M;
-      # ^ ^ ^ ^ ^ ^
-      #^ ^ ^ ^ ^ ^ ^
-      Rw sur/bod $x $M;
-      #v v v v v v v
-      # v v v v v v
-
-      say "surM:   t:_.t    y:".ki(_.y)."        c:".ki(_.c)."       sc:".ki(_.sc) for @$M;
-      die if !@$M;
-      my $V = 1;
-      Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out $V;
-      coi.end->();
- - K: sur/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
-   D: |
-       my $in = x.in; # TODO whereto?
-       my $out = x.out;
-       my $phi = ($out - $in) * x.thi; # normal lines per 0.1
-       my $thi = $phi * 2; # oundo big window, bod small
-       
-       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
-       
-       my $o = Rw oundo $thi $x;
-       say "Oundo: ". join ', ', map{"$_"} @{o.r};
-       warn "More o.more" if o.more;
-       my $M = [];
-       for my $r (@{o.r}) {
-           r.r || die"nor".ki$r;
-           my $oM = [];
-           # SZOOOOOOOOOOOM
-           Rw ii/labegy $x $r $M:oM;
-           Rw ii/pi $x $r $M:oM;
-           # ^ pass $thi, pool resources
-           
-           my $c = {%{r.c||{}}};
-           #sayyl "iibod: ". ki $r;
-           
-           
-           Rw om/lev + $oM $M $t:r.r $c;
-       }
-       if (o.more) {
-           Rw ii/more $x $o $M;
-       }
-       Rw iM + $oM:M;
 
