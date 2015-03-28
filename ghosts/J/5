@@ -273,7 +273,7 @@ R_Jz:
             # not EV reaction in the child, handles confused
             # must exit so nothing else can happen
             
-            my $bail = sub{ exit };
+            my $bail = sub{ kill 'KILL', $$; exit };
             
             $G->accum($G0, _aft_err_do => $bail);
             $G->accum($F[0], _aft_etc_do => $bail);
