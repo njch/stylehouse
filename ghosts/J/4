@@ -1,89 +1,9 @@
 
 R_Jz:
- - K: Mn #c one for MN
+ - K: Mn #c one for MyN
    D: |
      my $N = [$n];
-     Rw MN + $N;
- - K: MN #c mthemZY
-   D: |
-     my $peel = sub { # simple hash from string
-        my $s = shift;
-        $s =~ s/^{//;
-        $s =~ s/}$// || die "unpealable $s";
-        my @t = split ',', $s;
-        my $t = {};
-        for (@t) {
-            my ($k, $v) = split ':', $_;
-            $t->{$k} = $v;
-        }
-        return $t;
-     };
-     my $oM;
-     my $fl = {};
-     if (my $fli = ar.m) {
-         $fl->{$_} = 1 for @$fli; # could:this
-     }
-     for my $s (@$N) {
-         my $n = {};
-         if (!ref $s) {
-             die "string: $s";
-         }
-         elsif (ref $s eq 'ARRAY') {
-             # to four
-             if (@$s == 1) {
-                 my ($i) = @$s;
-                 if (!ref $i) {
-                     my $ci = $i;
-                     for (qw,t y c sc,) {
-                         if ($ci =~ s/^(\S+)\s*//) {
-                             my $v = $1;
-                             $v = $peel->($v) if $v =~ /^{/;
-                             $n->{$_} = $v;
-                         }
-                     }
-                 }
-                 else {die $i}
-             }
-             else {
-                 (n.t,n.y) = @$s;
-                 n.c = $s->[2] if exists $s->[2];
-                 n.sc = $s->[3] if exists $s->[3];
-                 die'@>4' if @$s > 4;
-             }
-         }
-         elsif (ref $s eq 'HASH') {
-             if (s.MZ) {
-                 for (split /\s+/, s.MZ) {
-                     /^(.+?)(?::(.+))?$/ || die;
-                     $fl->{$1} = $2 || 1;
-                 }
-                 next;
-             }
-             else {
-             die 'hash: ';
-             }
-         }
-         else { die "mmtype:$s" }
-         
-         for my $k (keys %$fl) {
-             my $v = $fl->{$k};
-             die if $v ne '1';
-             Rw ym/$k $n;
-         }
-         if (!ref n.y) {
-             if (n.y eq '') { # or undef
-                 n.y = {};
-             }
-             elsif (n.y =~ /^(\d+)$/) {
-                 n.y = {thi=>$1};
-             }
-             else {die "strung ny: n.y"};
-         }
-         die wdump $N if !ref n.y;
-         die "no ny: n.t" if !n.y;
-         push @$oM, $n;
-     }
-     Rw iM + $oM;
+     Rw MyN + $N;
  - K: MyN #c mthemZY
    D: |
      my $peel = sub { # simple hash from string
@@ -191,6 +111,9 @@ R_Jz:
              }
              else {die "strung ny: n.y"};
          }
+         if (!ref n.c) {
+             n.c = {s => n.c};
+         }
          die wdump $N if !ref n.y;
          die "no ny: n.t" if !n.y;
          die "not: ".ki $n if !n.t;
@@ -244,26 +167,32 @@ R_Jz:
      wantarray ? ($d, $oM) : $d
  - K: iM #c as below, for $M instead of $d
    D: |
+     # modes: $oM into $J or $M, or $M into $J
+     my $J = ar.oJ || ar.J;
+     my $oM = ar.oM;
+     $oM ||= delete ar.M if ar.M && $J;
      return @$oM if ar.ret;
-     if (ar.M) {
-         push @{ar.M}, @$oM
+     my $M = ar.M;
+     
+     if ($M) {
+         push @$M, @$oM
+     }
+     elsif ($J) {
+         sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J);
+         for my $d (@$oM) {
+             Rw yo + $J $d;
+         }
+     }
+     else {
+         die "no way to modulate: ".wdump $oM;
      }
      @$oM
      
  - K: iiJM #c an ii magnetises guts into $J or $M, or returns if no
    D: |
      return $d if ar.ret;
-     
-     if (ar.M) {
-         push @{ar.M}, $d
-     }
-     elsif (ar.J) {
-         Rw yo + $d;
-     }
-     else {
-         die "no way to modulate: ".ki $d;
-     }
-     $d
+     my $oM = [$d];
+     Rw iM + $oM;
  - K: om/bal #c in-fractalise   $whateverM > bal> $M
    D: |
      my ($d,$oM) = Rw iot +;
@@ -301,7 +230,7 @@ R_Jz:
  - K: yo #c     yrec $d
    D: |
      G.jumb.yos .= '    ';
-     if (!ar.q && !J.q && 0) {
+     if (!ar.q && !J.q && 1) {
          sayyl "G.jumb.yos@@@@   yo:  ar.k     d.t   ".ki(d.y)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
@@ -332,7 +261,7 @@ R_Jz:
            # CITOZINE
 
            #sayre "G.jumb.yos - ------ d.y.i:    d.r" if ar.V;
-           #saybl "Post: d.s       @{d.css} " if ar.V;
+           saybl "G.jumb.yos Post:          d.r\t\t d.s       @{[]||d.css} " if ar.k eq 'curves';
            
            if (c.lev) {
                J.lev->(
@@ -387,7 +316,9 @@ mod c:
      d.y = {%{d.y||die}, %$is};
      d.cv = d.y.cv || die;
      d.pcv = d.y.pcv;
-     d.t = d.t."".d.pcv; # TODO delicate? y.bal overs
+     if (d.y.thi > 1) {
+         d.t = d.t."_not_".d.pcv; # TODO delicate? y.bal overs, but not always wanna
+     }
      
      d.c || die;
          d.sc = {%{d.sc||{}}};
