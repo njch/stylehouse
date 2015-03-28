@@ -9,7 +9,7 @@ R_Jz:
           ['J', '', {pwth=>'hull/mk:Jself',fo=>[$J,0.1]}];
        Rw the + Jhead $M;
        
-       Rw dock $M;
+       Rw doc $M;
        
        Rw om/lev + $oM:M Jhead $at;
  - K: ix/suro #c
@@ -25,9 +25,12 @@ R_Jz:
       Rw ii/cap $x $M;
       # ^ ^ ^ ^ ^ ^
       #^ ^ ^ ^ ^ ^ ^
-
-      say "surM:   t:_.t    y:".ki(_.y)."        c:".ki(_.c)."       sc:".ki(_.sc) for @$M;
+      
+      my @ts = map { join ' ', _.t, keys %{_.c} } @$M;
+      say "surM:   ".join ',  ', @ts;
+      
       die if !@$M;
+      
       my $V = 1;
       Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out $V;
       coi.end->();

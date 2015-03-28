@@ -2,8 +2,8 @@ R_Jz:
  - K: ii/standingtext #c
    D: |
      # find standing waves, columns with something there all the way down
-     Rw dock $m $d
- - K: dock #c dock swampdoctor
+     Rw doc $m $d
+ - K: doc #c dock swampdoctor
    D: |
      my $m = ['doc'];
      my $meta = H.G w mJ[$m];
@@ -15,7 +15,7 @@ R_Jz:
      $en =~ s/^\s+//sgm;
      
      $m = {};
-     m.ftrain = [map{"_.id _.K _.point"}@F];
+     m.Fscrape = Rw Fscrape;
      m.ar = join',',sort keys %{_.ar};
      m.en = $en;
      H.G w emana[$meta,$m];
@@ -27,7 +27,9 @@ R_Jz:
  - K: Fscrape #c to drag tthrough pipe
    D: |
      my @fs;
-     for my $F (@F) {
+     my @iF = @F;
+     shift @iF for 1..2;
+     for my $F (@iF) {
          my $f;
          f.K = F.K;
          f.point = F.point;
@@ -38,5 +40,5 @@ R_Jz:
          f.id ||= '?'; # tracable from near id
          push @fs, $f;
      }
-     
+     \@fs
 
