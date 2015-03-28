@@ -178,7 +178,7 @@ R_Jz:
          push @$M, @$oM
      }
      elsif ($J) {
-         sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J);
+         #sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J);
          for my $d (@$oM) {
              Rw yo + $J $d;
          }
@@ -286,12 +286,11 @@ mod c:
      d.y = {thi => d.y} if !ref d.y;
      my $y = d.y;
      
-     
         if (my $bs = y.bal) {
             y.thi = @$bs;
         }
         
-        
+     die if y.cv && y.in;
      y.in ||= 0.1; 
      y.out ||= 0.9; # up to
      y.thi ||= 1;
@@ -300,7 +299,7 @@ mod c:
      y.aspace = y.space / y.thi;
      # twist, lay into segment
      my @is;
-     my $csv = defined y.in ? y.in : defined y.cv ? y.cv : die "no yiny".ki$y;
+     my $csv = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
      for (1..y.thi) {
          my $iy;
          iy.i = $_-1;
