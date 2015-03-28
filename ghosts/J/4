@@ -38,15 +38,15 @@ R_Jz:
          my $s = shift;
          my $n = shift;
          if ($s =~ /^\s*#?\s*MZ (.+)$/) {
-             say "MUZLING $1";
+             #say "MUZLING $1";
              $MZu->($1, $n);
          }
          elsif ($s =~ /^\s*#/) {
-             saybl "comment ## $s";
+             #saybl "comment ## $s";
              n.moozd = 1;
          }
          else {
-             saybl "iiii $s";
+             #saybl "iiii $s";
              my $ci = $s;
              for (qw,t y c sc,) {
                  if ($ci =~ s/^(\S+) *//) { # some t are types of space
@@ -89,7 +89,7 @@ R_Jz:
          else { die "mmtype:$s" }
          
          if (n.moozd) {
-             sayyl "TYEYLELYLELYLEL";
+             #sayyl "TYEYLELYLELYLEL";
              next;
          }
          
@@ -103,7 +103,7 @@ R_Jz:
              if (n.y eq '') { # is or undef
                  n.y = {};
              }
-             elsif (n.y =~ /^(\d+)$/) {
+             elsif (n.y =~ /^(\d+)$/ && $1 ne '0') {
                  n.y = {thi=>$1};
              }
              elsif (n.y =~ /^($NUM)$/) {
@@ -300,14 +300,14 @@ mod c:
      y.aspace = y.space / y.thi;
      # twist, lay into segment
      my @is;
-     my $csv = y.in;
+     my $csv = defined y.in ? y.in : defined y.cv ? y.cv : die "no yiny".ki$y;
      for (1..y.thi) {
-        my $iy;
-        iy.i = $_-1;
-        iy.cv = sprintf '%.6f', $csv;
-        iy.pcv = sprintf '%.6f', $_ / y.thi;
-        push @is, $iy;
-        $csv += y.aspace;
+         my $iy;
+         iy.i = $_-1;
+         iy.cv = sprintf '%.6f', $csv;
+         iy.pcv = sprintf '%.6f', $_ / y.thi;
+         push @is, $iy;
+         $csv += y.aspace;
      }
  - K: yangtycsc #c inwave, background language expansion, dewey mezrow   YANG
    mod 2: |
