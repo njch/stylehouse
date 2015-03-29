@@ -134,10 +134,11 @@ R_Jz:
      my $M = ar.M;
      
      if ($M) {
+         sayyl "MMMM ".@$oM."  -0>  M" if ar.V;
          push @$M, @$oM
      }
      elsif ($J) {
-         #sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J);
+         sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J) if ar.V;
          for my $d (@$oM) {
              Rw yo + $J $d;
          }
@@ -161,7 +162,7 @@ R_Jz:
          _.c.s ||= _.t;
          $_
      } @$oM ];
-     #say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc) if ar.V;
      #say "G.jumb.yos ^^ ".ki $ar;
      Rw iiJM + $d;
  - K: om/lev #c envelop $whateverM into $M enve
@@ -172,8 +173,7 @@ R_Jz:
          my $J2 = shift;
          my $d = Rw om/bal $J:J2 $oM $t:d.t;
          #sayre "G.jumb.yos !omlev: d.t   ".ki(d.y);
-         my $V = 1;
-         Rw yo $J:J2 $d $V;
+         Rw yo $J:J2 $d;
      };
      
      #say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
@@ -189,7 +189,7 @@ R_Jz:
  - K: yo #c     yrec $d
    D: |
      G.jumb.yos .= '    ';
-     if (!ar.q && !J.q && 0) {
+     if (!ar.q && !J.q && ar.V) {
          sayyl "G.jumb.yos@@@@   yo:  ar.k     d.t   ".ki(d.y)."     %  "
              .ki(d.c||{})."      %  ".ki(d.sc||{})
      }
@@ -248,7 +248,7 @@ mod c:
         if (my $bs = y.bal) {
             y.thi = @$bs;
         }
-        
+   mod 1.5: | #c build wave manifold
      die if y.cv && y.in;
      y.in ||= 0.1; 
      y.out ||= 0.9; # up to
@@ -268,7 +268,7 @@ mod c:
          $csv += y.aspace;
      }
  - K: yangtycsc #c inwave, background language expansion, dewey mezrow   YANG
-   mod 2: |
+   mod 2.1: |
      my $d = {%$dd}; # first only & then yangy
      
      d.y = {%{d.y||die}, %$is};
@@ -277,7 +277,7 @@ mod c:
      if (d.y.thi > 1) {
          d.t = d.t."_not_".d.pcv; # TODO delicate? y.bal overs, but not always wanna
      }
-     
+   mod 2.2: | #c the framework... bolts as variables, glowing unevenly recurring hereness
      d.c || die;
          d.sc = {%{d.sc||{}}};
      #^v  ^v
@@ -285,7 +285,6 @@ mod c:
      d.cs = {%{d.cs||{}}};
      #  ^v esc
      d.css = [@{d.css||[]}];
-     
      #   d.c.$modk = the unravelling mod
      # + d.sc.$esck = outwards, parafin
      # =
@@ -293,16 +292,15 @@ mod c:
      # + d etc
      
      # ^ yanging mods attach style, main accum fet: cs.$modk.$ck = $c
-     
-     # ^ fed to esc which packs styles with com: #$cometc$modk, defaulting %cs
-     
- - K: yangbal #c suddenly somewhere, pretend to be more somewhere
-   mod 2.4: |
+     # ^ fed to esc which packs styles (default %css) with com: #$cometc$modk
+     # some vaguely different piping there for P... grabbed from above I reckon...
+   mod 2.3: | #     YANGBAL #c suddenly somewhere, pretend to be more somewhere
      my $y = d.y;
      if (d.y.bal) {
          # locality
          my $b = d.y.bal->[d.y.i];
-         #say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b;
+         say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b
+          if ar.V;
          for my $k (keys %$b) { # c etc merg in per row
              my $v = $b->{$k};
              if (ref $v) {
