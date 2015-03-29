@@ -129,6 +129,7 @@ R_Jz:
      # modes: $oM into $J or $M, or $M into $J
      my $J = ar.oJ || ar.J;
      my $oM = ar.oM;
+     $oM ||= [ar.d] if ar.d;
      $oM ||= delete ar.M if ar.M && $J;
      return @$oM if ar.ret;
      my $M = ar.M;
@@ -148,11 +149,6 @@ R_Jz:
      }
      @$oM
      
- - K: iiJM #c an ii magnetises guts into $J or $M, or returns if no
-   D: |
-     return $d if ar.ret;
-     my $oM = [$d];
-     Rw iM + $oM;
  - K: om/bal #c in-fractalise   $whateverM > bal> $M
    D: |
      my ($d,$oM) = Rw iot +;
@@ -164,22 +160,27 @@ R_Jz:
      } @$oM ];
      say "G.jumb.yos:::: om/bal: x".@$oM."  t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc) if ar.V;
      #say "G.jumb.yos ^^ ".ki $ar;
-     Rw iiJM + $d;
+     Rw iM + $d;
  - K: om/lev #c envelop $whateverM into $M enve
    D: |
      my ($d,$oM) = Rw iot +;
      d.c.lev && die;
      d.c.lev = sub {
          my $J2 = shift;
-         sayyl "Om lev of d.t -> ".ki$_ for @$oM;
+         if (ar.V) {
+             sayyl "Om lev of d.t -> ".ki$_ for @$oM;
+         }
          my $d = Rw om/bal $J:J2 $oM $t:d.t;
          #sayre "G.jumb.yos !omlev: d.t   ".ki(d.y);
-         Rw yo $J:J2 $d;
+         my $V = ar.V;
+         Rw yo $J:J2 $d $V;
+         
      };
+     d.y.at = d.y.in;
      
-     say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc);
+     say "G.jumb.yos//// om/lev: x".@$oM."   t:d.t    y:".ki(d.y)."        c:".ki(d.c)."       sc:".ki(d.sc) if ar.V;
      #say "G.jumb.yos ^^ ".ki $ar;
-     Rw iiJM + $d;
+     Rw iM + $d;
  - K: yM #c     yo$M e
    D: |
      sayre "G.jumb.yos===  yM x".@$M;
