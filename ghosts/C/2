@@ -17,6 +17,47 @@ R_Jz:
        Rw om/lev + $oM:M Jhead $at $V;
        sayre "over\n\n";
        
+ - K: ii/cap #c ha zom
+   D: |
+       my $vli = x.sc.ori || die;
+       
+       my $M = [];
+       Rw ii/infrom + $M;
+       sayyl "INFROM: ".wdump$M;
+       my $N = [
+           ['i', 'sur/to:/', {fo=>[$vli,0.4]}],
+       ];
+       # root ^
+       # travel v
+       if (x.sc.travely && @{x.sc.travely}) {
+           my $s = " ".join(" ",@{x.sc.travely})." ";
+           push @$N,
+               ['travely', '', {s=>$s, wsp=>1}],
+               ['S',       '', {fo=>[x.j.s, 0.2]}],
+       }
+       
+       # cend pwth
+       Rw MyN $N $M pwth;
+       
+       Rw ii/capstyle + $M;
+       
+       #say "ii/cap: ".ki$rr;
+       my $t = '/'.x.j.t.'-cap';
+       my $V = 1;
+       my $at = 0.08;
+       Rw om/lev + $oM:M $t $V $at;
+       saygr "cap omlev over..";
+ - K: ii/infrom #
+   D: |
+     my $t = '_';
+     my $un = {co=>'38f'};
+     Rw wtf + $t $s:x.j.l $sc:un;
+     
+     $t = '=';
+     my $esc = {fs=>12,co=>'000',sha=>'3 3 3 fff'};
+     Rw wtf + $t $sc:esc;
+     
+     
  - K: ix/suro #c
    D: |
       my $j = x.j;
@@ -69,44 +110,6 @@ R_Jz:
            Rw ii/more $x $o $M;
        }
        Rw iM + $oM:M;
- - K: ii/cap #c ha zom
-   D: |
-       my $vli = x.sc.ori || die;
-       
-       my $N = [
-           ['_', '',         {s=>x.j.l}, {co=>'38f'}],
-           ['=', '',         {}, {fs=>12,co=>'000',sha=>'3 3 3 fff'}],
-           ['i', 'sur/to:/', {fo=>[$vli,0.4]}],
-       ];
-       # root ^
-       # travel v
-       if (x.sc.travely && @{x.sc.travely}) {
-           my $s = " ".join(" ",@{x.sc.travely})." ";
-           push @$N,
-               ['travely', '', {s=>$s, wsp=>1}],
-               ['S',       '', {fo=>[x.j.s, 0.2]}],
-       }
-       
-       my $M = [];
-       # cend pwth
-       Rw MyN $N $M pwth;
-       
-       Rw ii/capstyle + $M;
-       
-       #say "ii/cap: ".ki$rr;
-       my $t = '/'.x.j.t.'-cap';
-       Rw om/lev + $oM:M $t;
- - K: ii/infrom #c
-   D: |
-     my $t = '_';
-     my $un = {co=>'38f'};
-     Rw wtf + $t $s:x.j.l $sc:un;
-     
-     $t = '=';
-     my $esc = {fs=>12,co=>'000',sha=>'3 3 3 fff'};
-     Rw wtf + $t $sc:esc;
-     
-     
  - K: ii/capstyle #c
    D: |
        my $sw = {};

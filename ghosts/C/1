@@ -89,17 +89,20 @@ R_Jz:
    D: |
      my $size = -s $file;
      return unless $file =~ /jpe?g$/i;
+     my $mou = "public/";
      #return if $size > 3_000_000;
-     my $ava = $1 if $file =~ /^public\/i\/(.+)$/;
-     $ava || die "Not visibi? $file";
-     my $thl = "th/$ava";
-     my $th = "public/$thl";
+     my ($first) = split '/', $file;
+     die "$first not $mou?" unless -e "$mou$first";
+     
+     my $thl = "th/$file";
+     my $th = "$mou$thl";
      my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
      
      # TODO mod slowness
      # make this thumbnail J even more forky than usual
      
      if (!-f $th) {
+         sayyl " thumbnail++$file";
          if (!-d $thd) {
              run 'mkdir', '-p', $thd;
          }
@@ -107,20 +110,22 @@ R_Jz:
              run 'ffmpegthumbnailer -s 420 -t 20% -i '.$file.' -o '.$th
          }
          else {
-             run 'convert', $file, '-thumbnail','300x300', $th
+             run 'convert', $file, '-thumbnail','500x500', $th
          }
+     }
+     else {
+         saygr " thumbnail  $file";
      }
      
      my $x = J.mod.c.X;
      my $sp = x.imspin++;
      x.imspin = 0 if $sp > 3;
-     my $sp = ($sp * 5).'em';
      my $sc = {
          tag => 'img',
          zom=>{at => {src => $thl}},
-         width=>'17em',
-         height=>'17em',
-         left => $sp,
+         width=>'27em',
+         height=>'27em',
+         left => ($sp * 5).'em',
          ab=>1,
          opa=>0.5,
          rad=>0.4,
