@@ -1273,7 +1273,7 @@ sub msc {
 
       my $link = $x->{fi}.'.s';
       my $s = `readlink $link` || do {
-          $link =~ s/[^\w\/\-\.]//g;
+          $link =~ s/[^\w\/\-\.]//g; # TODO nully
           `readlink $link` || do {
               say "try again: $link";
               my $jsu = `ls -l $link`;

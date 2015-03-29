@@ -8,10 +8,6 @@ hooks:
       eval { write_file(@$arm) };
       if ($@) {
           my ($file) = @$arm;
-          run(-in => sub{ print "   H.style \n"; },
-              -out => '/tmp/fuuf',
-              'xxd');
-          say ''.`cat /tmp/fuuf`;
           if ($@ =~ /sysopen: No such file or directory/) {
           }
           elsif ($@ =~ /sysopen: Is a directory/) {
@@ -27,7 +23,6 @@ hooks:
           if ($fore ne $file) {
                   warn "NONNAMES OR SO, HEXDUMP IT $fore -> $file";
           }
-          
           
           my @chun = split '/', $file;
           my $fn = pop @chun;
@@ -60,13 +55,20 @@ hooks:
               }
           }
           
+          sayyl "Doing again---";
+           eval {
+             write_file(@$arm)
+           };
+           if ($@) {
+             say "Fucked up again: @$";
+           }
+          
           
           if ($broke) {
               warn "cionedddd.....\n\nWrite $file fuckup: $@";
           }
           $@ = "";
       }
-
   aj: |
     my $W = j.W; # wonky picture frame
     
