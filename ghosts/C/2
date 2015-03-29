@@ -1,50 +1,41 @@
 R_Jz:
  - K: ii/Jhead #c J _
    D: |
-       my $at = ar.out || 0.01;
-       
        my $M = [];
-       Rw ii/J1 + $M;
+       
+       #Rw ii/J1 + $M;
+       my $n = ["Jay", '0.1', 
+           {pwth=>'hull/mk:Jself',fo=>[$J,0.1]},
+           {sha=>'3 5 2 330',fs=>20},
+       ];
+       Rw Mn $J $n;
+       # TODO wtf that onto $M overwrites others
+       #Rw wtf $M ITsa 0.03 $s $sc;
+       
        Rw the + $M Jhead;
        Rw the + $M Jim;
-       
        Rw doc $M;
        
-       sayre "YEYPE  $at";
-       say ki $_ for @$M;
+       say "----------------".ki $_ for @$M;
        my $V = 1;
-       Rw om/lev + $oM:M Jhead $at $V;
+       
+       my $at = ar.out || 0.001;
+       my $sc = {fs=>19};
+       Rw om/lev + $oM:M Jhead $at $V $sc;
        sayre "over\n\n";
        
- - K: ii/J1 #c J self
-   D: |
-       my $d;
-       d.t = "Jay";
-       d.cv = 0.1111;
-       d.c = {pwth=>'hull/mk:Jself',fo=>[$J,0.1]};
-       d.sc = {sha=>'3 5 2 330',fs=>30};
-       Rw iM + $d;
  - K: ii/cap #c ha zom
    D: |
-       my $vli = x.sc.ori || die;
        
        my $M = [];
        Rw ii/infrom + $M;
+       my $at = 0.03;
+       Rw om/lev + $oM:M bwaga $at;
+       $M = [];
        #sayyl "INFROM: ".wdump$M;
-       my $N = [
-           ['i', 'sur/to:/', {fo=>[$vli,0.4]}],
-       ];
        # root ^
        # travel v
-       if (x.sc.travely && @{x.sc.travely}) {
-           my $s = " ".join(" ",@{x.sc.travely})." ";
-           push @$N,
-               ['travely', '', {s=>$s, wsp=>1}],
-               ['S',       '', {fo=>[x.j.s, 0.2]}],
-       }
-       
        # cend pwth
-       Rw MyN $N $M pwth;
        
        Rw ii/capstyle + $M;
        
@@ -54,6 +45,16 @@ R_Jz:
        my $at = 0.08;
        Rw om/lev + $oM:M $t $V $at;
        saygr "cap omlev over..";
+ - K: ii/capstyle #c
+   D: |
+       my $sw = {};
+       for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
+           $sw->{$_} = x.sc->{$_};
+       }
+       return unless %$sw;
+       my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
+       my $sc = {fs=>26};
+       Rw wtf + caps $c;
  - K: ii/infrom #c
    D: |
      my $t = '_';
@@ -64,6 +65,18 @@ R_Jz:
      my $esc = {fs=>12,co=>'000',sha=>'3 3 3 fff'};
      Rw wtf + $t $sc:esc;
      
+     $t = 'i';
+     my $ic = {pwth=>'sur/to:/',fo=>[(x.sc.ori||die"noscori"),0.4]};
+     Rw wtf + $t $c:ic;
+     
+     my $vl = x.sc.travely;
+     if ($vl && @$vl) {
+           my $s = join(" ",'',@$vl,'');
+           Rw wtf + travely $s;
+           my $c = {fo=>[x.j.s, 0.2]};
+           Rw wtf + S $c;
+           sayyl "GEJIGEJIGJEIJ";
+     }
      
  - K: ix/suro #c
    D: |
@@ -117,13 +130,4 @@ R_Jz:
            Rw ii/more $x $o $M;
        }
        Rw iM + $oM:M;
- - K: ii/capstyle #c
-   D: |
-       my $sw = {};
-       for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
-           $sw->{$_} = x.sc->{$_};
-       }
-       return unless %$sw;
-       my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
-       Rw wtf + caps $c;
 
