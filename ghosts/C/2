@@ -41,12 +41,10 @@ R_Jz:
        
        #say "ii/cap: ".ki$rr;
        my $t = '/'.x.j.t.'-cap';
-       my $V = 1;
-       my $at = 0.08;
-       Rw om/lev + $oM:M $t $V $at;
-       saygr "cap omlev over..";
+       Rw om/lev + $oM:M $t;
  - K: ii/capstyle #c
    D: |
+     return if J.yaw.ii_capstyle.non;
        my $sw = {};
        for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
            $sw->{$_} = x.sc->{$_};
@@ -65,9 +63,17 @@ R_Jz:
      my $esc = {fs=>12,co=>'000',sha=>'3 3 3 fff'};
      Rw wtf + $t $sc:esc;
      
-     $t = 'i';
-     my $ic = {pwth=>'sur/to:/',fo=>[(x.sc.ori||die"noscori"),0.4]};
-     Rw wtf + $t $c:ic;
+     if (x.sc.ori) {
+         $t = 'i';
+         my $ic = {pwth=>'sur/to:/',fo=>[(x.sc.ori),0.4]};
+         Rw wtf + $t $c:ic;
+     }
+     if (x.sc.ts) {
+         my $s = x.sc.ts - H.uptime;
+         $s = sprintf '%.2f', $s;
+         my $sc = {co=>'33f5'};
+         Rw wtf + zetime $s $sc;
+     }
      
      my $vl = x.sc.travely;
      if ($vl && @$vl) {
@@ -75,34 +81,8 @@ R_Jz:
            Rw wtf + travely $s;
            my $c = {fo=>[x.j.s, 0.2]};
            Rw wtf + S $c;
-           sayyl "GEJIGEJIGJEIJ";
      }
      
- - K: very #c tak tlv into space, ready for lx/suro
-   D: |
-       my $onl = Rw tlv $J;
-       my $phi = $out - $in; # <-0.8->
-       my $thi = $phi / @$onl; # or indi
-       # thi vs $onl individuality
-       my $tin = $in;
-       for my $x (@$onl) {
-           # go higher and pipe mods to squish space
-           x.in = $tin;
-           x.out = $tin + $thi;
-           $tin = x.out; # next
-           
-           x.thi = $tot/$phi; # space volve, indi...
-           #die "x.j.r   shall x.thi    ($tot $phi)";
-           
-           my $j = x.j;
-           if (!J.q) {
-               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
-               say "   * _.r          => ".gp(_.s) for values %{x.sj};
-               say "up around x.in <-> x.out"
-           }
-       }
-       $onl
-       
  - K: ix/suro #c
    D: |
       my $j = x.j;
@@ -110,15 +90,15 @@ R_Jz:
       my $M = [];
       
       # innessy
-      Rw sur/bod $x $M;
+      Rw ii/cap $J $x $M;
       #v v v v v v v
       # v v v v v v
-      Rw ii/cap $x $M;
+      my $bit = Rw buck */bod $J;
+      Rw $bit $J $x $M;
       # ^ ^ ^ ^ ^ ^
       #^ ^ ^ ^ ^ ^ ^
       
-      my @ts = map { join ' ', _.t, keys %{_.c} } @$M;
-      say "surM:   ".join ',  ', @ts;
+      say "surM:   ".join ',  ', map{_.t} @$M;
       
       die if !@$M;
       
@@ -129,7 +109,7 @@ R_Jz:
        my $in = x.in; # TODO whereto?
        my $out = x.out;
        my $phi = ($out - $in) * (x.thi || 2); # normal lines per 0.1
-       my $thi = $phi * 2; # oundo big window, bod small
+       my $thi = $phi; # oundo big window, bod small
        
        say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
        
@@ -155,4 +135,35 @@ R_Jz:
            Rw ii/more $x $o $M;
        }
        Rw iM + $oM:M;
+ - K: ii/labegy #c suitcase handle
+   D: |
+     my $d;
+     d.t = 'lab';
+     d.c.s = r.r;
+     d.sc.ws = 'p';
+     d.sc.ab = 'right:0.5em';
+     d.c.fsx = "25";
+     Rw iiJM + $d;
+ - K: ii/pi #c THE WHOLE GHUTS, X & L line the squiggles of inness $x and oundo $r
+   D: |
+     my $d;
+     d.t = 'pi';
+     
+     my $o = {};
+     o.u = r.s;
+     o.cv = 0.6;
+     my $pi = [r.s, 0.6];
+     push @$pi, r.c.pi if r.c.pi; # pi mod from ou
+     d.c.fo = $pi;
+     d.c.path = r.path;
+     # structureal elements jump into the pipe lining
+     d.c.L = $r;
+     d.c.X = $x;
+       
+     d.sc.ws = 'n';
+     d.sc.ab = 'left:1em';
+     d.sc.mw = '14em';
+     d.sc.over = 'hidden';
+     
+     Rw iiJM + $d;
 

@@ -3,7 +3,8 @@ R_Jz:
    n_D:
      yJup: |
        J.yy.round.id = 3;
-       J.yy.conroll.dont = 1;
+       #J.yy.conroll.dont = 1;
+       J.yaw.ii_capstyle.non = 1;
        die "ASH must happen on D" if H.name ne 'D';
        'ash oci'
      curves: |
@@ -28,8 +29,130 @@ R_Jz:
        x  hull/mk:X     {} {co:f34,fs:7}
  - K: ash/up #c in t
    D: |
-     J.ldoc ||= Rw oc/exit;
+     
+     J.ldoc ||= do {
+       J.on = Rw tent on;
+       J.on.yy.conroll.dont = 1;
+       Rw oc/exit $J:J.on;
+     };
+     
      my $he = 0.05;
      Rw ii/Jhead + 0.03 $out:he;
      Rw ii/ornate + $in:he;
+     
+     my $onl = Rw ashzv $J:J.on;
+     
+     for my $x (@$onl) {
+         Rw ix/suro + $x;
+     }
+     sayre "==\n== delt ".F_delta."\n==";
+     
+ - K: ash/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
+   D: |
+       my $in = x.in; # TODO whereto?
+       my $out = x.out;
+       my $phi = ($out - $in) * (x.thi || 2); # normal lines per 0.1
+       my $thi = $phi; # oundo big window, bod small
+       
+       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
+       
+       my $o = Rw oundo $thi $x;
+       say "Oundo: ". join ', ', map{"$_"} @{o.r};
+       warn "More o.more" if o.more;
+       my $M = [];
+       for my $r (@{o.r}) {
+           r.r || die"nor".ki$r;
+           my $oM = [];
+           # SZOOOOOOOOOOOM
+           Rw ii/labegy $x $r $M:oM;
+           Rw ii/pi $x $r $M:oM;
+           # ^ pass $thi, pool resources
+           
+           my $c = {%{r.c||{}}};
+           #sayyl "iibod: ". ki $r;
+           
+           
+           Rw om/lev + $oM $M $t:r.r $c;
+       }
+       if (o.more) {
+           Rw ii/more $x $o $M;
+       }
+       Rw iM + $oM:M;
+ - K: ashzv #c zaust
+   D: |
+     my $onl = Rw tlv $J;
+     for my $x (@$onl) {
+         if (!x.sc.ts) {
+             # TODO time the stimuli originates from
+             x.sc.ts = x.j.s.hitime || die "no hitimej: ".ki(x.j.s);
+             J.bz->("x.j.t%ts x.j.cv" => x.sc.ts);
+         }
+     }
+     @$onl = reverse sort { a.sc.ts <=> b.sc.ts } @$onl;
+     sayyl _.sc.ts for @$onl;
+     my @in;
+     my @cut;
+     for my $x (@$onl) {
+         if (@in < 4) {
+             push @in, $x;
+         }
+         else {
+             push @cut, $x;
+         }
+     }
+     for my $x (@cut) {
+         sayyl "Del x.j.t x.sc.ts";
+     }
+     @$onl = @in;
+     my $in = 0.2;
+     my $out = 0.9;
+     my $tot = 14;
+     Rw very + $in $out $tot $onl;
+     
+     
+     
+ - K: very #c tak tlv into space, ready for lx/suro
+   D: |
+       my $onl = ar.onl;
+       $onl ||= Rw tlv $J;
+       
+       my $phi = $out - $in; # <-0.8->
+       my $thi = $phi / (@$onl||1); # or indi
+       # thi vs $onl individuality
+       my $tin = $in;
+       for my $x (@$onl) {
+           # go higher and pipe mods to squish space
+           x.in = $tin;
+           x.out = $tin + $thi;
+           $tin = x.out; # next
+           
+           x.thi = $tot/$phi; # space volve, indi...
+           #die "x.j.r   shall x.thi    ($tot $phi)";
+           
+           my $j = x.j;
+           if (!J.q) {
+               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
+               say "   * _.r          => ".gp(_.s) for values %{x.sj};
+               say "up around x.in <-> x.out"
+           }
+       }
+       $onl
+       
+ - K: oc/one #c
+   D: |
+     my $x;
+     x.in = $at;
+     x.out = $at + 0.18;
+     Rw ix/suro + $x;
+
+     
+     my $Ft = cd.Fscrape;
+     my $path = join "/", map {_.point} grep{_.K =~ /^D/} reverse @$Ft;
+     sayyl wdump 5, $cd;
+     #Rw ii/pi $x $r $M:oM;
+     my $s = "A trace... $path";
+     Rw wtf + tthin $at $s;
+     
+     w mux(u=>$J);
+       
 
