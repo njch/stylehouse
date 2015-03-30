@@ -93,12 +93,17 @@ R_Jz:
      my $knowb = {qw{
          W/9 ps
          W/3 hull
+         W/4 ash
          W/1 ollox
      }};
      for (@wt) {
          my $wu = $1 if /ghosts\/(.+)$/;
-         my $wh = $knowb->{$wu} ||                 "ollox";
+         my $wh = $knowb->{$wu} ||                 "oot";
          saybl "recoded_init Wu: $wu -> $wh";
+         if ($wh ne 'ash' && H.name eq 'D') {
+             sayre "Non ash on D, ig $wh";
+             undef $wh;
+         }
          $wh || next;
          Rw Jix $name:wh; 
      }
