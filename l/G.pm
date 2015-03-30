@@ -1159,6 +1159,11 @@ sub inter {
     $F[1]->{inter} .= "\n -{".$ki."}\n";
 }
 
+sub intr {
+    my ($k, $v) = @_;
+    $F[0]->{intr}->{$k} = $v;
+}
+
 sub fspu {
     my $file = shift;
     my $m = encode_utf8 shift;
