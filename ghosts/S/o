@@ -5,7 +5,7 @@ C:
 hooks:
   fresh_init: | # sub hostinfos before w in does our hostinfo
     $G->su("Hi", sub { my $m = shift; w Hi[$m]; });
-    $G->su("Hostinfo", sub { my $m = shift; w Hostinfo[$m] });
+    $G->su("Hostinfo", sub { my $m = shift; w Hostinfo[$m]; });
     $G->recur(10, sub {
         my $fi = `find ghosts -type f`;
         $fi =~ s/\n/ /g;
@@ -18,7 +18,11 @@ hooks:
     $G->timer(9, sub{w Hiwtidy;});
   Hostinfo: |
         my ($hol, $inf) = split ' ', $m, 2;
+        sayyl " - $m";
         $hol =~ s/\x{0}//sgm;
+        return if !$hol;
+        die if !$hol;
+        sayre "no $hol  ... $m" if !$hol;
         $G->pub("S/$hol", "hostinfo/ack $m", 'ig');
         saygr "from $hol -> $inf";
         G.hostinfo->{$hol} = {

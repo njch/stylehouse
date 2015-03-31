@@ -71,6 +71,12 @@ Ds:
   - K: spc #c interpret a space of ? (def. life/)
     D: |
       my $f = pop;
+      if ($f =~ /\x{0}/) {
+          run(-in => sub{ print $f."\n"; },
+              -out => '/tmp/fuuf',
+              'xxd');
+          sayre "NON ! ".`cat /tmp/fuuf`; 
+      }
       my $o = pop || G.lifespot || 'life';
       my $fi = "$o/$f";
       my $x = G.taily.f->{$fi} ||= {};

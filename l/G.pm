@@ -1248,6 +1248,12 @@ sub pub {
 sub spc {
     my $G = shift;
     my $f = pop;
+    if ($f =~ /\x{0}/) {
+        run(-in => sub{ print $f."\n"; },
+            -out => '/tmp/fuuf',
+            'xxd');
+        sayre "NON ! ".`cat /tmp/fuuf`; 
+    }
     my $o = pop || $G->{lifespot} || 'life';
     my $fi = "$o/$f";
     my $x = $G->{taily}->{f}->{$fi} ||= {};
@@ -1544,7 +1550,8 @@ sub parse_babble {
                         $na = '"'.$na.'"';
                     }
                 }
-                $na = '$'.$na unless $wa eq '=' || $na =~ /^\S+\.\S/;
+                $na = '$'.$na unless
+                    $wa eq '=' || $na =~ /^\S+\.\S/;
                 #saygr "from: $a          na: $na";
                 push @n, "$fa => $na" ; # also avail a listy position
             }
