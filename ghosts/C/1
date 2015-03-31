@@ -33,7 +33,6 @@ R_Jz:
      -f $u || die 'not file';
      
      my $j = x.j;
-     die 'wag';
      #Rw cruxal $x lala wagga;
      my $r;
      r.r = $u;
@@ -50,7 +49,7 @@ R_Jz:
          J.onei.i = $ul
      }
      elsif (-f $ul) {
-         w demux $J;
+         w demux[$J];
          my $J = Rw jin mash;
          # & over there
          Rw ein/image $J $i:ul;
@@ -83,10 +82,13 @@ R_Jz:
    D: |
      my $file = $u;
      -f $file || die;
-     J.mod.sc.width = "154em";
-     J.mod.sc.height = "174em";
-     J.mod.sc.mw = "20em";
-     Rw pi/thumbnail $file $J;
+     my $sc;
+     sc.width = "44em";
+     sc.height = "24em";
+     sc.hue = 0.6;
+     sc.left = "0em";
+     J.d.sc.mw = "20em";
+     Rw pi/thumbnail $file $J $sc;
  - K: pi/thumbnail #c image/video
    D: |
      my $size = -s $file;
@@ -98,27 +100,11 @@ R_Jz:
      
      my $thl = "th/$file";
      my $th = "$mou$thl";
-     my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
      
      # TODO mod slowness
      # make this thumbnail J even more forky than usual
      
-     if (!-f $th) {
-         sayyl " thumbnail++$file";
-         if (!-d $thd) {
-             run 'mkdir', '-p', $thd;
-         }
-         if ($file =~ /(mov|avi|mp4)$/i) {
-             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$file.' -o '.$th
-         }
-         else {
-             run 'convert', $file, '-thumbnail','500x500', $th
-         }
-     }
-     else {
-         saygr " thumbnail  $file";
-     }
-     
+     # tape twist effect coming from somewhere
      my $x = J.d.g.x;
      my $sp = x.imspin++;
      x.imspin = 0 if $sp > 3;
@@ -131,9 +117,24 @@ R_Jz:
          ab=>1,
          opa=>0.5,
          rad=>0.4,
+         %{ar.sc||{}}
      };
+     
+     if (!-f $th) {
+         sayyl " thumbnail++$file";
+         my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
+         if (!-d $thd) {
+             run 'mkdir', '-p', $thd;
+         }
+         if ($file =~ /(mov|avi|mp4)$/i) {
+             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$file.' -o '.$th
+         }
+         else {
+             run 'convert', $file, '-thumbnail','500x500', $th
+         }
+     }
      delete J.mod.sc.over;
-     my $s = "";
+     my $s = "###";
      Rw wtf $J yowl 3 $s $sc;
      #J.mod.sc.bgi = $thl;
 

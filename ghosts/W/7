@@ -184,7 +184,7 @@ esc c:
    esc 3.7: |
      return '' if tks.fl.comp;
      my @f;
-     for (qw( saturate blur contrast brightness)) {
+     for (qw(blur saturate contrast brightness hue-rotate sepia invert grayscale )) {
          my $v = tks.fl->{$_};
          defined $v || next;
          push @f, "$_($v)";
@@ -202,6 +202,18 @@ esc c:
  - K: bri #c it bright
    esc 3.6: |
      tks.fl.brightness = $v
+ - K: hue #c it bright
+   esc 3.6: |
+     tks.fl->{'hue-rotate'} = $v
+ - K: sep #c it old
+   esc 3.6: |
+     tks.fl.sepia = $v
+ - K: inv #c it old
+   esc 3.6: |
+     tks.fl.invert = $v
+ - K: gray #c it old
+   esc 3.6: |
+     tks.fl.grayscale = $v
  - K: ml #c it
    esc 3: |
      $v = Rw empc $v;
