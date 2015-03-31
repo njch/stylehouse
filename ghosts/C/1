@@ -7,7 +7,7 @@ R_Jz:
    D: |
      my $r = {i=>$i, t=>[], sc=>{ou=>'image'}};
      Rw inness $J $r;
- - K: ou/dire #c
+ - K: ou/dire #c # LOOK FOR KNOWNS, scoped in wormhole
    D: |
      die 'ref' if ref $u;
      -d $u || die "not found: $u pwd=".`pwd`;
@@ -33,7 +33,6 @@ R_Jz:
      -f $u || die 'not file';
      
      my $j = x.j;
-     die wdump $j;
      #Rw cruxal $x lala wagga;
      my $r;
      r.r = $u;
@@ -58,7 +57,8 @@ R_Jz:
      else{ die "no see $ul" }
  - K: pi/dire #c
    D: |
-     my $dir = J.d.g.x.j.s;
+     my $x = J.d.g.x;
+     my $dir = x.j.s;
      
      my $sc = {};
      my $file = "$dir/$u";
@@ -75,7 +75,14 @@ R_Jz:
      
      #die wdump $file;
      if (-f $file && J.cv >= 0.5) {
-         Rw pi/thumbnail $file $J;
+         my $sc;
+         sc.opa = 0.5;
+         
+         my $sp = x.imspin++;
+         x.imspin = 0 if $sp > 3;
+         sc.left = (($sp * 5)-4).'em';
+             
+         Rw pi/thumbnail $file $J $sc;
      }
      
      #my $emb = '𐎘' if -d $-
@@ -85,11 +92,12 @@ R_Jz:
      -f $file || die;
      my $sc;
      sc.width = "44em";
-     sc.height = "24em";
-     sc.hue = 0.6;
+     sc.height = "27em";
+     sc.hue = 36;
+     sc.con = 6;
      sc.left = "0em";
      J.d.sc.mw = "20em";
-     die wdump 2, $J;
+     #die wdump 2, $J;
      Rw pi/thumbnail $file $J $sc;
  - K: pi/thumbnail #c image/video
    D: |
@@ -107,17 +115,12 @@ R_Jz:
      # make this thumbnail J even more forky than usual
      
      # tape twist effect coming from somewhere
-     my $x = J.d.g.x;
-     my $sp = x.imspin++;
-     x.imspin = 0 if $sp > 3;
      my $sc = {
          tag => 'img',
          zom=>{at => {src => $thl}},
-         width=>'22em',
-         height=>'22em',
-         left => (($sp * 5)-4).'em',
+         width=>'12em',
+         height=>'12em',
          ab=>1,
-         opa=>0.5,
          rad=>0.4,
          %{ar.sc||{}}
      };

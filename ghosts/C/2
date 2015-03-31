@@ -41,6 +41,54 @@ R_Jz:
        #say "ii/cap: ".ki$rr;
        my $t = '/'.x.j.t.'-cap';
        Rw om/lev + $oM:M $t;
+ - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
+   D: |
+       my $in = x.in; # TODO whereto?
+       my $out = x.out;
+       my $phi = ($out - $in) * (x.thi || 2); # normal lines per 0.1
+       my $thi = $phi; # oundo big window, bod small
+       
+       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
+       
+       my $o = Rw oundo $thi $x;
+       #say "Oundo: ". join ', ', map{"$_"} @{o.r};
+       warn "More o.more" if o.more;
+       my $M = [];
+       for my $r (@{o.r}) {
+           r.r || die"nor".ki$r;
+           my $oM = [];
+           # SZOOOOOOOOOOOM animated, passing landmarks
+           
+           my $d;
+           d.g.x = $x;
+           d.g.r = $r;
+           
+           Rw ii/labegy $d $r $M:oM;
+           #v v v v v v v
+           # v v v v v v
+           Rw ii/pi $d $r $M:oM;
+           # ^ ^ ^ ^ ^ ^
+           #^ ^ ^ ^ ^ ^ ^
+           # ^ pass $thi, pool resources
+           
+           my $rc = {};
+           # whole line magneted styles etc...
+           rc.path = r.c.path if r.c.path;
+           Rw om/lev + $oM $M $t:r.r $c:rc;
+       }
+       if (o.more) {
+           Rw ii/more $x $o $M;
+       }
+       Rw iM + $oM:M;
+ - K: ii/labegy #c suitcase handle # elemental locus of travel/path fields
+   D: |
+     my $d = {%{ar.d||{}}};
+     d.t = 'lab';
+     d.c.s = r.r;
+     d.sc.ws = 'p';
+     d.sc.ab = 'right:0.5em';
+     d.c.fsx = "25";
+     Rw iiJM + $d;
  - K: whack #c the <, smash bit off end of stick
    D: |
      my $o = J.onei;
@@ -172,52 +220,4 @@ R_Jz:
       
       Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
       coi.end->();
- - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
-   D: |
-       my $in = x.in; # TODO whereto?
-       my $out = x.out;
-       my $phi = ($out - $in) * (x.thi || 2); # normal lines per 0.1
-       my $thi = $phi; # oundo big window, bod small
-       
-       say "bod $in <--> $out  $thi     x.j.r"; # TODO say big
-       
-       my $o = Rw oundo $thi $x;
-       say "Oundo: ". join ', ', map{"$_"} @{o.r};
-       warn "More o.more" if o.more;
-       my $M = [];
-       for my $r (@{o.r}) {
-           r.r || die"nor".ki$r;
-           my $oM = [];
-           # SZOOOOOOOOOOOM animated, passing landmarks
-           
-           my $d;
-           d.g.x = $x;
-           d.g.r = $r;
-           
-           Rw ii/labegy $d $r $M:oM;
-           #v v v v v v v
-           # v v v v v v
-           Rw ii/pi $d $r $M:oM;
-           # ^ ^ ^ ^ ^ ^
-           #^ ^ ^ ^ ^ ^ ^
-           # ^ pass $thi, pool resources
-           
-           my $rc = {};
-           # whole line magneted styles etc...
-           rc.path = r.c.path if r.c.path;
-           Rw om/lev + $oM $M $t:r.r $c:rc;
-       }
-       if (o.more) {
-           Rw ii/more $x $o $M;
-       }
-       Rw iM + $oM:M;
- - K: ii/labegy #c suitcase handle # elemental locus of travel/path fields
-   D: |
-     my $d = {%{ar.d||{}}};
-     d.t = 'lab';
-     d.c.s = r.r;
-     d.sc.ws = 'p';
-     d.sc.ab = 'right:0.5em';
-     d.c.fsx = "25";
-     Rw iiJM + $d;
 
