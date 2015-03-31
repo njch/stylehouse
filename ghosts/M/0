@@ -75,6 +75,10 @@ hooks:
     a.v ||= 7; 
     w $M mux[$MR,$a,$u];
     
+  demux: | #c woovouid
+    my $u = ar.J || ar.u;
+    my $t = hitime();
+    acum G.muxigy, $t, $u;
   remux: |
     my $M = G.theM;
     my $MR = G.R;
@@ -143,9 +147,17 @@ R_Ms:
       my $v = a.v if defined a.v;
       $v ||= 4;
       # 1-9 -> humm/links/etc
+      my $t = hitime();
+      my $igu;
+      for my $ts (keys %{G.muxigy}) {
+          next if $t - $ts > 4;
+          my $v = G.muxigy->{$ts};
+          $igu->{_.id} = 1 for @$v;
+      }
       
       for my $u (@$us) {
           next unless defined $u;
+          next if $igu->{u.id};
           die wdump($u) unless ref $u eq 'C';
           die if u.K eq 'ux';
           #say wdump(2,$F[0]);
