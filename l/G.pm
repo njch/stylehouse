@@ -1230,6 +1230,7 @@ sub ily {
     }
 
     $G->wtfy($x);
+    $x
 }
 
 sub su {
@@ -1531,16 +1532,19 @@ sub parse_babble {
         $wanr = 'stick' if $a =~ s/^- ?//;
         for (split /\,| |\, /, $a) {
             # sweet little pool... $J:geo etc
-            if (/^\$((\w+:)?\S+)$/) {
-                my ($na, $fa) = ($1, $2);
+            if (/^\$((\w+(:|=))?\S+)$/) {
+                my ($na, $fa, $wa) = ($1, $2, $3);
                 if (!$fa) { # fake name, to ar
                     $fa = $na;
                 }
                 else {
                     $na =~ s/^\Q$fa\E//;
-                    $fa =~ s/:$//;
+                    $fa =~ s/(:|=)$//;
+                    if ($wa eq '=') {
+                        $na = '"'.$na.'"';
+                    }
                 }
-                $na = '$'.$na unless $na =~ /\S\.\S/;
+                $na = '$'.$na unless $wa eq '=' || $na =~ /^\S+\.\S/;
                 #saygr "from: $a          na: $na";
                 push @n, "$fa => $na" ; # also avail a listy position
             }

@@ -29,7 +29,6 @@ R_Jz:
        x  hull/mk:X     {} {co:f34,fs:7}
  - K: ash/up #c in t
    D: |
-     
      J.ldoc ||= do {
        J.on = Rw tent on;
        J.on.yy.conroll.dont = 1;
@@ -47,48 +46,49 @@ R_Jz:
      }
      sayre "==\n== delt ".F_delta."\n==";
      
+ - K: ashzv #c zaust - time valve
+   D: |
+     # so tlv makes a nice mod sheet of the stuff in J
+     my $onl = Rw tlv $J;
+     Rw onl/cut $J $onl $thi=2 $scsort=ts;
+     Rw very + $onl $in=0.2 $out=0.9 $tot=14;
+     
+     
+     
  - K: ou/fstat #c
    D: |
      # $u $o $x $sc
      my $n = {%$u};
      delete n.ar;
-     push @{o.r}, { r=>'Fscrape', path=>"{en", s=>n.Fscrape };
-     my $n = u.en;
-     Rw ou/hash + $u:n;
+     my $Fr;
+     Fr.r = 'Fᣝ';
+     Fr.c.pi = 'Fs';
+     Fr.c.s = n.Fscrape;
+     push @{o.r}, $Fr;
+     Rw ou/hash + $u:Fr;
+     say wdump 3, $o;
 
      
- - K: ashzv #c zaust
+ - K: pi/Fs #c
    D: |
-     my $onl = Rw tlv $J;
-     for my $x (@$onl) {
-         if (!x.sc.ts) {
-             # TODO time the stimuli originates from
-             x.sc.ts = x.j.s.hitime || die "no hitimej: ".ki(x.j.s);
-             J.bz->("x.j.t%ts x.j.cv" => x.sc.ts);
-         }
-     }
-     @$onl = reverse sort { a.sc.ts <=> b.sc.ts } @$onl;
-     sayyl _.sc.ts for @$onl;
+     saybl "Fs pi: ".wdump $u;
+     Rw wtf Fsoup 
+     #Rw wtf "FS! $s";
+ - K: onl/cut #c
+   D: |
+     $scsort||die;
+     @$onl = reverse
+         sort { a.sc->{$scsort} <=> b.sc->{$scsort} }
+         grep { defined _.sc->{$scsort} || die'no %'.$scsort.' on: '._.j.r }
+         @$onl;
      my @in;
      my @cut;
-     for my $x (@$onl) {
-         if (@in < 4) {
-             push @in, $x;
-         }
-         else {
-             push @cut, $x;
-         }
-     }
+     push @{ @in < 4 ? \@in : \@cut }, $_ for @$onl;
      for my $x (@cut) {
-         sayyl "Del x.j.t x.sc.ts";
+         delete J.bb->{_.r} for x.j, values %{x.sj};
      }
      @$onl = @in;
-     my $in = 0.2;
-     my $out = 0.9;
-     my $tot = 14;
-     Rw very + $in $out $tot $onl;
-     
-     
+     $onl
      
  - K: very #c tak tlv into space, ready for lx/suro
    D: |
