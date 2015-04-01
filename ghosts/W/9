@@ -21,7 +21,11 @@ R_Jz:
        curve 0.1 -0.024
        zoom 0 0.3
        #["curve 0.4" => 0.3],
-     up: |
+     Jhead: | #c
+       MZ pwth
+       x  hull/mk:X     {} {co:f34,fs:7}
+     up: | #c
+       Rw ii/Jhead 0.1;
        Rw ii/psfaus;
  - K: ii/psfaus #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
@@ -38,10 +42,16 @@ R_Jz:
        }
        my $M = [];
        for my $f (@$wtf) {
-           push @$M,
-               ["SOI", '',
-               {fo=>[$f,0.8,'psfacts'],i=>1}, {co=>'4fc',zi=>10,ws=>'p'}],
-               
+           my $c;
+           c.pi = 'psfacts';
+           c.gp.cv = 0.8;
+           c.s = $f;
+           c.i = 1; # numbers
+           my $sc;
+           sc.co = '4fc';
+           sc.zi = 10;
+           sc.ws = 'p';
+           push @$M, ['SOI', '', $c, $sc];
        }
        my $in = 0.1;
        my $out = 0.9;
@@ -79,7 +89,7 @@ R_Jz:
         warn "heaps of mem on $style $name  (u.mem)" if u.mem > 20;
         my $V = 1;
         
-        say "psfact -: ".ki 2, $_ for @$M; 
+        #say "psfact -: ".ki 2, $_ for @$M; 
         #die wdump [$d, $ar];
         Rw iM $J $M;
         
@@ -87,7 +97,7 @@ R_Jz:
  - K: wt/stylename #c  TODO return _M_ brigy dep text jostle
    D: |
        my $sc = {}; # carbon flux $style
-       my $nc = {}; # carbon flux $name
+       my $nsc = {}; # carbon flux $name
        
        if ($style eq 'hut') {
            sc.co = 'fc7';
@@ -103,32 +113,38 @@ R_Jz:
        }
        # ^ sheety
        
-       nc.co ||= '4fc';
+       nsc.co ||= '4fc';
        if ($style eq 'hut') {
-           nc.co = 'ff0';
-           nc.fs = 29;
+           nsc.co = 'ff0';
+           nsc.fs = 29;
        }
        if ($name eq '\_ perl stylehouse.pl') {
            $name = 'stylehouse.pl';
-           nc.fs = 8;
+           nsc.fs = 8;
        }
        sc.sha = '1 2 6 000';
-       nc.sha = '1 2 6 000';
+       nsc.sha = '1 2 6 000';
+       my $nc;
+       nc.weigh = 'activity';
        
        Rw wtf $M style 1 $s:style $sc;
-       Rw wtf $M name 2 $s:name $sc:nc;
+       Rw wtf $M name 2 $s:name $c:nc $sc:nsc;
  - K: wt/cpu #c  # TODO make fs smooth, atomical curve compu
    D: |
        my $sc;
        sc.co = 'eb0';
-       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?14:18;
+       sc.fs = $cpu<0.5?4:$cpu<2?7:$cpu<4?10:14;
        sc.sha = '1 2 6 000';
-       Rw wtf $M cpu 3 $s:cpu $sc;
+       my $c;
+       c.weighed = 'activity';
+       Rw wtf $M cpu 3 $s:cpu $c $sc;
  - K: wt/mem #c
    D: |
        my $sc;
        sc.co = '8e0';
        sc.co = 'f30' if $mem > 20;
        sc.fs = $mem<2?4:$mem<5?7:$mem<12?14:28;
-       Rw wtf $M mem 4 $s:mem $sc;
+       my $c;
+       c.weighed = 'activity';
+       Rw wtf $M mem 4 $s:mem $c $sc;
 

@@ -2,22 +2,26 @@ R_Jz:
  - K: ii/Jhead #c J _
    D: |
        my $M = [];
+       my $cv = ar.m ? ar.m->[0] : 0.4;
        
-       #Rw ii/J1 + $M;
-       my $n = ["Jay", '0.1', 
-           {pwth=>'hull/mk:Jself',fo=>[$J,0.1]},
-           {sha=>'3 5 2 330',fs=>20,hue=>180,bri=>0.6},
-       ];
-       Rw Mn $J $n;
+       my $name = J.name;
+       my $nsc = {sha=>'3 5 2 330'};
+       Rw wtf $M $t:name $sc:nsc;
+       
+       #    {pwth=>'hull/mk:Jself',pi=>'',s=>$J,gp=>{cv=>0.1}},
+       #    {sha=>'3 5 2 330',fs=>20,hue=>180,bri=>0.6},
+       
+       #Rw Mn $J $n;
        # TODO wtf that onto $M overwrites others
        #Rw wtf $M ITsa 0.03 $s $sc;
-       
-       Rw the + $M Jhead;
-       Rw the + $M Jim;
-       Rw doc $M;
-       
+       if ($cv > 0.3) {
+           Rw the + $M Jhead;
+           Rw the + $M Jim;
+           Rw doc $M;
+       }
        my $at = ar.out || 0.001;
-       my $sc = {fs=>19};
+       my $sc;
+       sc.fs = $cv > 0.2 ? 19 : 9;
        Rw om/lev + $oM:M Jhead $at $sc;
  - K: ii/cap #c ha zom
    D: |

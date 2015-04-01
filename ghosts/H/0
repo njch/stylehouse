@@ -108,7 +108,12 @@ hooks:
     my ($way, $am) = split /\s+/, $m, 2;
     sayyl "reS >> $m" if $way ne 'hostinfo/ack';
     $way || die "wtf $m";
-    w S/$way(%$ar,m=>$am);
+    if (my $co = G.reSway->{$way}) {
+        $co->($am);
+    }
+    else {
+        w S/$way(%$ar,m=>$am);
+    }
   S: #c
     percC: | #c
         my $way = "C".($m?" $m":"");
