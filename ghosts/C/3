@@ -84,11 +84,27 @@ R_Jz:
      # so the spec can curve data all the way
      Rw ou/sc.ou + $u $o $x $sc;
      
+     sc.grp ||= 'ref';
+     Rw og/sc.grp + $u $o $x $sc;
+     
      # $r rows over the contents
      # r.c probably for pi, other stuff may pick stuff up...
      
      o.thi = @{o.r};
      $o
+ - K: og/ref #c mix up @{o.r}
+   D: |
+     my $ac = {};
+     for my $r (@{o.r}) {
+         my $s = ref r.s;
+         acum $ac, $s, $r;
+     }
+     my @r;
+     for my $s (sort keys %$ac) {
+         my $v = $ac->{$s};
+         push @r, @$v;
+     }
+     o.r = \@r;
  - K: ou/text #c
    D: |
      o.type = 'text';
