@@ -75,6 +75,17 @@ R_Jz:
            Rw wtf + S $c;
      }
      
+ - K: ii/capstyle #c
+   D: |
+     return if J.yaw.ii_capstyle.non;
+       my $sw = {};
+       for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
+           $sw->{$_} = x.sc->{$_};
+       }
+       return unless %$sw;
+       my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
+       my $sc = {fs=>26};
+       Rw wtf + caps $c;
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
@@ -180,18 +191,6 @@ R_Jz:
           }
       }
       
- - K: ii/capstyle #c
-   D: |
-     return if J.yaw.ii_capstyle.non;
-       my $sw = {};
-       for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
-           $sw->{$_} = x.sc->{$_};
-       }
-       return unless %$sw;
-       my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
-       my $sc = {fs=>26};
-       Rw wtf + caps $c;
-
  - K: ix/suro #c
    D: |
       my $j = x.j;
