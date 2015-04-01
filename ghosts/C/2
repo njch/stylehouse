@@ -1,4 +1,5 @@
 R_Jz:
+
  - K: ii/Jhead #c J _
    D: |
        my $M = [];
@@ -14,8 +15,8 @@ R_Jz:
        Rw wtf $M $t:nac $sc:nacsc;
        
        
-       my $xsc = {co=>'f34',fs=>'17'};
        my $xc = {pwth=>'hull/mk:X'};
+       my $xsc = {co=>'f34',fs=>'13'};
        if ($cv < 0.3) {
            xsc.fs = 14;
            xsc.ab = 1;
@@ -38,50 +39,23 @@ R_Jz:
        my $sc;
        sc.fs = $cv > 0.2 ? 19 : 9;
        Rw om/lev + $oM:M Jhead $at $sc;
- - K: Jhead #c
-   D: |
-       MZ pwth
-       ƾ  jin:oot       {} {co:8ff}
-       x  hull/mk:X     {} {co:f34,fs:7}
  - K: sur/Jhead #c
    D: |
        MZ pwth
        ඬ  shed:eye      {} {co:f85}
        ƾ  jin:oot       {} {co:8ff}
        G  sur/to:G
-       x  hull/mk:X     {} {co:f34,fs:7}
-       Jung sur/to:Jung {} {co:68d,fs:5}
- - K: ii/cap #c ha zom
-   D: |
-       # root ^
-       # travel v
-       # cend pwth
-       my $M = [];
-       Rw ii/infrom + $M;
-       my $at = 0.03;
-       #Rw om/lev + $oM:M bwaga $at;
-       #$M = [];
-       #sayyl "INFROM: ".wdump$M;
-       
-       Rw ii/capstyle + $M;
-       Rw Mn $M $n:_ for
-       ['<','',{pwth=>'whack'},{fs=>16,co=>'314'}];
-       
-       #say "ii/cap: ".ki$rr;
-       my $t = '/'.x.j.t.'-cap';
-       Rw om/lev + $oM:M $t;
+       Js sur/to:Jung {} {co:68d,fs:5}
  - K: ii/infrom #c
    D: |
      Rw Mn + $n:_ for
-     ['_', '', {s=>x.j.l}, {co=>'38f'}];
+     grep{$_}
+     ['_', '', {s=>x.j.l}, {co=>'38f'}],
+     ['=', '', {}, {fs=>12,co=>'000',sha=>'3 3 3 fff'}],
+     x.sc.ori && 
+     ['i', '', {s=>x.sc.ori, pi=>'', pwth=>'sur/to:/', gp=>{cv=>0.1}}, {}];
      
-     Rw Mn + $n:_ for
-     ['=', '', {}, {fs=>12,co=>'000',sha=>'3 3 3 fff'}];
      
-     if (x.sc.ori) {
-          Rw Mn + $n:_ for
-         ['i', '', {s=>x.sc.ori, pi=>'', pwth=>'sur/to:/', gp=>{cv=>0.2}}, {}];
-     }
      if (my $time = x.sc.ts) { # can't be zero, so relative
          Rw ii/time + $time;
      }
@@ -114,6 +88,42 @@ R_Jz:
        my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
        my $sc = {fs=>26};
        Rw wtf + caps $c;
+ - K: ii/cap #c ha zom
+   D: |
+       # root ^
+       # travel v
+       # cend pwth
+       my $M = [];
+       Rw ii/infrom + $M;
+       my $at = 0.0001;
+       
+       Rw ii/capstyle + $M;
+       Rw Mn $M $n:_ for
+       ['<','',{pwth=>'whack'},{fs=>16,co=>'314'}];
+       
+       #say "ii/cap: ".ki$rr;
+       my $t = '/'.x.j.t.'-cap';
+       Rw om/lev + $oM:M $t $at;
+ - K: ix/suro #c
+   D: |
+      my $j = x.j;
+      my $coi = Rw pha $J $k:j.l;
+      my $M = [];
+      
+      # innessy
+      Rw ii/cap $J $x $M;
+      #v v v v v v v
+      # v v v v v v
+      Rw ii/bod $J $x $M;
+      # ^ ^ ^ ^ ^ ^
+      #^ ^ ^ ^ ^ ^ ^
+      
+      say "surM:   ".join ',  ', map{_.t} @$M;
+      
+      die if !@$M;
+      
+      Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
+      coi.end->();
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
@@ -219,24 +229,4 @@ R_Jz:
           }
       }
       
- - K: ix/suro #c
-   D: |
-      my $j = x.j;
-      my $coi = Rw pha $J $k:j.l;
-      my $M = [];
-      
-      # innessy
-      Rw ii/cap $J $x $M;
-      #v v v v v v v
-      # v v v v v v
-      Rw ii/bod $J $x $M;
-      # ^ ^ ^ ^ ^ ^
-      #^ ^ ^ ^ ^ ^ ^
-      
-      say "surM:   ".join ',  ', map{_.t} @$M;
-      
-      die if !@$M;
-      
-      Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
-      coi.end->();
 

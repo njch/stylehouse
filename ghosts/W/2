@@ -10,7 +10,7 @@ R_Jz:
        - spun 0 0.51
      curves: |
        spun 0  0.51
-       y    0  1
+       y    0  0.98
        x    0  0.061
        zoom 0.1 0.8
        curve 0.1 0.3
@@ -87,31 +87,30 @@ R_Jz:
      up: | #c
        # or functions sucking more stuff... suck chain shunting 
        # thy
-       Rw ii/Jhead $J $cv=0.3;
+       Rw ii/Jhead $J $cv=0.2;
        
        my $time = hitime();
        Rw ii/time $J $time;
        
        my $sc;
-       sc.co = 'a3a'; 
        sc.fw = 6;
        my $M = [];
        Rw the + left $M;
-       Rw om/bal + $oM:M tractorfood 0.1-0.4 $sc;
+       for (@$M) {
+           _.c.pi = 'lablfa';
+           _.sc.co ||= 'a3a';
+       }
+       Rw om/bal + $oM:M tractorfood 0.2-0.4 $sc;
        
        $M = [];
        Rw the + right $M;
-       for my $d (@$M) {
-           # need a little more /ness, not as much as pi really...
-           d.c.pi = 'labback';
-           my $sc = d.c.gp.sc = {}; # TODO pick that up as more /ness
-       }
-       Rw om/bal + $oM:M tractorfood 0.0015-0.1;
+       _.c.pi = 'labback' for @$M;
+       # need a little more /ness, not as much as pi really...
+       Rw om/bal + $oM:M tractorfood 0.0015-0.2;
      left: | #c or ii/some further
        # MZ pwth
        h!o!x  food/hoxdrop
        hox    food/hoxy
-       file   food/file {} {hs:3.9.8.5}
        BƾB    jin:mash
        hull   jin:hull
        sur    jin:ollox  {} {fs:14,co:a3a}
@@ -124,13 +123,13 @@ R_Jz:
        tidy    cl/tidy    {} {co:ffff}
        Cv      cl/reC     {} {co:b238}
        ps      jin:ps
-     i: #c
-       twunk: |
-         H.G w Elvisphere;
-       file: | #c or
+       file   food/file {} {hs:3.9.8.5}
+     twunk: |
+       H.G w Elvisphere;
+     file: | #c or
          
          
-       hoxy: | #c 
+     hoxy: | #c 
          my $ox = J.hox ||= {};
          ox.bb ||
              Rw suJ $J:ox;
@@ -167,8 +166,8 @@ R_Jz:
          Rw food/ducking + $ox;
          Rw food/wtfing + $wtf;
 
-       hoxdrop: |
-         delete J.hox
+     hoxdrop: |
+       delete J.hox
      wtfing: | #c
        my $wtf = ar.wtf;
        $wtf ||= Rw wuck $J */curves;
