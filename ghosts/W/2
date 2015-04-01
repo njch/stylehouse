@@ -79,31 +79,30 @@ R_Jz:
        return 'drone';  
      conty: | #
        die "$y conty";
-     up: | #c
-       # or functions sucking more stuff... suck chain shunting 
-       Rw food/traction;
-       # thy
-       
-       #Rw food/file;
+
      hedo: | #c
        my $name = 'ollox';
        my $jo = Rw Jon $name;
        my $Jung = Rw Jung;
        say wdump [$jo,$Jung];
-     traction: | #c
+     up: | #c
+       # or functions sucking more stuff... suck chain shunting 
+       # thy
        my $sc;
        sc.co = 'a3a'; 
        sc.fw = 6;
-       
        my $M = [];
        Rw the + left $M;
-       
-       my $rM = [];
-       Rw the + right $M:rM;
-       Rw geo/backflip $M:rM;
-       push @$M, @$rM;
-       
        Rw om/bal + $oM:M tractorfood 0.1-0.4 $sc;
+       
+       $M = [];
+       Rw the + right $M;
+       for my $d (@$M) {
+           # need a little more /ness, not as much as pi really...
+           d.c.pi = 'labback';
+           my $sc = d.c.gp.sc = {}; # TODO pick that up as more /ness
+       }
+       Rw om/bal + $oM:M tractorfood 0.0015-0.1;
      left: | #c or ii/some further
        # MZ pwth
        h!o!x  food/hoxdrop
@@ -111,7 +110,6 @@ R_Jz:
        file   food/file {} {hs:3.9.8.5}
        BƾB    jin:mash
        hull   jin:hull
-       ps     jin:ps
        sur    jin:ollox  {} {fs:14,co:a3a}
        occie  occie/komp {} {fs:12,co:ff6}
        Tarf   eye:Pic/Tyr   {} {fs:12,co:5e7}
@@ -120,70 +118,13 @@ R_Jz:
        # MZ pwth
        reextet cl/reextet {} {co:b227}
        tidy    cl/tidy    {} {co:ffff}
-       ^Cv     cl/reC     {} {co:b238}
+       Cv      cl/reC     {} {co:b238}
+       ps      jin:ps
      i: #c
        twunk: |
          H.G w Elvisphere;
        file: | #c or
-         my $in = G.inso ||= {};
          
-         my $tail = sub {
-             my $file = shift;
-             my $do = shift;
-             
-             open my $ha, '-|','tail','-F','-n9999999999', $file or die $!;
-             my $s = Mojo::IOLoop::Stream->new($ha);
-             $s->on(read => sub {
-                 my ($s,$b) = @_;
-                 #return $i++ unless $i;
-                 $H->fixutf8($b);
-                 
-                 $do->($b);
-                 
-                 return 0;
-             });
-             $s->on(close => sub {
-                 my $s = shift;
-                 die "closed!?";
-             });
-             $s->on(error => sub {
-                 my ($stream, $err) = @_;
-                 die $err
-             });
-             $s->timeout(0);
-             $s->start;
-             $s->reactor->start unless $s->reactor->is_running;
-             $in->{$file} = $s;
-         };
-         my $dolines = sub { # tail do
-             my $perline = shift;
-             my $b = shift;
-             
-                 say "FILE:". wdump $b;
-                 for my $m (split "\n", $b) {
-                     next unless $m;
-                     $perline->($m);
-                 }
-                 #`cat /dev/null > life/J\.sc`;
-         };
-         my $pintou = sub { # perline
-             my $m = shift; 
-             my $meta = djson $m;
-             say "wanna send meta.Jid: ". -s "life/J/meta.Jid\.c";
-         };
-         my $sub = sub {
-             my $file = shift;
-             my $al = $in->{$file};
-             if ($al) {
-                 sayre "replacing tailo $file";
-                 $al->close;
-             }
-             my $do = sub { $dolines->($pintou, @_) };
-             $in->{$file} = $tail->($file, $do);
-         };
-         
-         $sub->("life/J\.sc");
-         $sub->("life/J\.ssc");
          
        hoxy: | #c 
          my $ox = J.hox ||= {};
