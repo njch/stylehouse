@@ -2,20 +2,35 @@ R_Jz:
  - K: ii/Jhead #c J _
    D: |
        my $M = [];
-       my $cv = ar.m ? ar.m->[0] : 0.4;
+       my $cv = ar.cv || 0.4;
        
        my $name = J.name;
-       my $nsc = {sha=>'3 5 2 330'};
-       Rw wtf $M $t:name $sc:nsc;
+       my ($nas, $nac) = split '-', $name, 2;
        
-       #    {pwth=>'hull/mk:Jself',pi=>'',s=>$J,gp=>{cv=>0.1}},
-       #    {sha=>'3 5 2 330',fs=>20,hue=>180,bri=>0.6},
+       my $nsc = {sha=>'3 5 2 330',fs=>15};
+       Rw wtf $M $t:nas $sc:nsc;
+       
+       my $nacsc = {sha=>'3 5 2 330',co=>'a359',fs=>9};
+       Rw wtf $M $t:nac $sc:nacsc;
+       
+       
+       my $xsc = {co=>'f34',fs=>'17'};
+       my $xc = {pwth=>'hull/mk:X'};
+       if ($cv < 0.3) {
+           xsc.fs = 14;
+           xsc.ab = 1;
+           xsc.left = '0.3em';
+           xsc.zi = 44;
+       }
+       Rw wtf $M x $c:xc $sc:xsc;
+       
+       # TODO collapse upwards button
        
        #Rw Mn $J $n;
        # TODO wtf that onto $M overwrites others
        #Rw wtf $M ITsa 0.03 $s $sc;
        if ($cv > 0.3) {
-           Rw the + $M Jhead;
+           Rw the + $M Jhead; 
            Rw the + $M Jim;
            Rw doc $M;
        }
@@ -23,18 +38,30 @@ R_Jz:
        my $sc;
        sc.fs = $cv > 0.2 ? 19 : 9;
        Rw om/lev + $oM:M Jhead $at $sc;
+ - K: Jhead #c
+   D: |
+       MZ pwth
+       ƾ  jin:oot       {} {co:8ff}
+       x  hull/mk:X     {} {co:f34,fs:7}
+ - K: sur/Jhead #c
+   D: |
+       MZ pwth
+       ඬ  shed:eye      {} {co:f85}
+       ƾ  jin:oot       {} {co:8ff}
+       G  sur/to:G
+       x  hull/mk:X     {} {co:f34,fs:7}
+       Jung sur/to:Jung {} {co:68d,fs:5}
  - K: ii/cap #c ha zom
    D: |
-       
+       # root ^
+       # travel v
+       # cend pwth
        my $M = [];
        Rw ii/infrom + $M;
        my $at = 0.03;
        #Rw om/lev + $oM:M bwaga $at;
        #$M = [];
        #sayyl "INFROM: ".wdump$M;
-       # root ^
-       # travel v
-       # cend pwth
        
        Rw ii/capstyle + $M;
        Rw Mn $M $n:_ for
@@ -45,38 +72,37 @@ R_Jz:
        Rw om/lev + $oM:M $t;
  - K: ii/infrom #c
    D: |
-     my $t = '_';
-     my $un = {co=>'38f'};
-     Rw wtf + $t $s:x.j.l $sc:un;
+     Rw Mn + $n:_ for
+     ['_', '', {s=>x.j.l}, {co=>'38f'}];
      
-     $t = '=';
-     my $esc = {fs=>12,co=>'000',sha=>'3 3 3 fff'};
-     Rw wtf + $t $sc:esc;
+     Rw Mn + $n:_ for
+     ['=', '', {}, {fs=>12,co=>'000',sha=>'3 3 3 fff'}];
      
-     if (x.sc.ori) { # TODO Mn in 1
-         $t = 'i';
-         my $ic;
-         ic.pwth = 'sur/to:/';
-         ic.pi = '';
-         ic.s = x.sc.ori;
-         ic.gp.cv = 0.4;
-         Rw wtf + $t $c:ic;
+     if (x.sc.ori) {
+          Rw Mn + $n:_ for
+         ['i', '', {s=>x.sc.ori, pi=>'', pwth=>'sur/to:/', gp=>{cv=>0.2}}, {}];
      }
-     if (x.sc.ts) {
-         my $s = x.sc.ts - H.uptime;
-         $s = sprintf '%.2f', $s;
-         my $sc = {co=>'33f5'};
-         Rw wtf + zetime $s $sc;
+     if (my $time = x.sc.ts) { # can't be zero, so relative
+         Rw ii/time + $time;
      }
      
-     my $vl = x.sc.travely;
-     if ($vl && @$vl) {
-           my $s = join(" ",'',@$vl,'');
-           Rw wtf + travely $s;
-           my $c = {fo=>[x.j.s, 0.2]};
-           Rw wtf + S $c;
+     if (my $vl = x.sc.travely) {
+         Rw ii/travely + $vl;
      }
+ - K: ii/travely #c
+   D: |
+     return unless $vl && @$vl;
+     Rw Mn + $n:_ for
+     ['travely', '', {s=>join(" ",'',@$vl,'')}],
+     ['S', '', {pi=>'',s=>x.js,gp=>{cv=>0.2}}];
      
+ - K: ii/time #c
+   D: |
+     # say # ago and js hookup increment into human
+     my $rtime = sprintf '%.2f', $time - H.uptime;
+     # time since H started? since the J started?
+     Rw Mn + $n:_ for
+     ['zetime', '', {s=>$rtime}, {co=>'33f5'}];
  - K: ii/capstyle #c
    D: |
      return if J.yaw.ii_capstyle.non;
