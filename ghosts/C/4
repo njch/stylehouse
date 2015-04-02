@@ -35,23 +35,151 @@ R_Jz:
      my $yl = J.Jmost.idly->{$id} = {};
      yl.J = $J;
      yl.j = ar.j if ar.j;
- - K: ii/pi #c THE WHOLE GHUTS, see d.c.gp ghost plumbing  & d.g.(x|r) for geo sync suro
+
+ - K: forkpi #c whias
+   spesh: 1
+   spesh_D: |
+     H.name eq "O" || $DB::sub # perl -dw cannot fork # websockets cannot fork?
+   babz:
+        'gp 2.5': |
+            if (J.cv > 0.2 && !J.replaceJid && !J.q) {
+                my $la = {%$J};
+                la.replaceJid = J.isJid; #$H->mkuid;
+                push @{G.jumb.forkpis ||= []}, $la;
+                J.forking = $la;
+                J.cv = 0.1;
+            }
+        'spit 8.8': |
+            if (my $pias = delete G.jumb.forkpis) {
+                # these could be forked right away
+                # if they can wait for the M muxing J if they reach O first
+                die;
+                $G->timer(0, sub {
+                    Rw forkpi/pias $J $pias;
+                });
+            }
+        'gp 7.1': |
+            J.forking.wash = $H->dig(J.s) if J.forking;
+        'spit 2.88': |
+            kill 'KILL', $_ for @{delete G.forkpi_tokill || []};
+   n_D:
+        pias: |
+            if (my $pid = fork()) {
+                my $Sftk = G.forkpi_tokill ||= [];
+                push @$Sftk, $pid;
+                return
+            }
+            H.forked = H.isforked = 1;
+            # able to report error
+            # not EV reaction in the child, handles confused
+            # must exit so nothing else can happen
+            
+            my $bail = sub{ kill 'KILL', $$; exit };
+            
+            $G->accum($G0, _aft_err_do => $bail);
+            $G->accum($F[0], _aft_etc_do => $bail);
+            
+            sayyl "pier Forked... ";
+            
+            my @js;
+            my $group = 3;
+            for my $a (@$pias) {
+                a.replaceJid || do {
+                    warn "Jid missing... ". gp($a)
+                    ."\n".gp(a.u)."\nJiter: ".gp a.Jiter;
+                    next;
+                };
+                Rw gp $J:a;
+                my $html = a.s;
+                next if a.wash eq $H->dig($html);
+                my $set = ejson($html);
+                my $id = a.replaceJid || die wdump(2,$a);
+                my $js = qq{ \$('#$id').replaceWith($set);};
+                push @js, $js;
+                if (@js >= $group) {
+                    $H->send(join('', @js));
+                    @js = ();
+                }
+            }
+            $H->send(join '', @js) if @js;
+            saygr "pier done ".F_delta;
+            
+ - K: forkin #c stick fork in
+   babz:
+     'spit 2.89': |
+       kill 'KILL', $_ for @{delete J.fopikil || []};
+     'suJ 3.5': |
+       # to put something off til forking
+       # so false when in shadow
+       J.fop = $by->(sub { # a little J (pi) 
+           return 1 if H.forking;
+           Rw fopi $J;
+           return 0;
+       });
+     'spit 8.9': | # forking
+       if (%{J.fopi||{}}) {
+           my $Js = [values %{delete J.fopi}];
+           Rw foping $J $Js;
+       }
+     'foping 2': |
+       if (my $pid = fork()) {
+           push @{J.fopikil||=[]}, $pid;
+           return
+       }
+       H.forked = H.forking = H.isforked = 1;
+       my $bail = sub{ kill 'KILL', $$; exit };
+       $G->accum($G0, _aft_err_do => $bail);
+       $G->accum($F[0], _aft_etc_do => $bail);
+       # able to report error
+       # not EV reaction in the child, handles confused
+       # must exit so nothing else can happen
+ - K: fopi #c enqueue/shadow-
    D: |
-     my $d = {%{ar.d||{}}};
-     d.t = 'pi';
-     # structureal elements jump into the pipe lining
-     d.c = {%{r.c||{}}};
-     d.c.pi ||= '';
+     my $Jm = J.Jmost;
+     sayyl $Jm->pi."     aND ".gp($J);
+     die gp $J if !J.isJid;
+     Jm.fopi->{J.isJid} = $J;
+     # these could be forked right away
+     # if they can wait for the M muxing J if they reach O first
+     # graphable evens it
+ - K: foping #c carbon coopy of pi 4
+   D: |
+     say @$Js." fops from ".gp($J);
+     # 2 bunch of forking gguts
+     # 3
+     saybl "   Forked... ";
      
-     d.c.s ||= r.s;
-     d.c.gp.cv = 0.6;
+     # little qv teether, batch for finer grained things, timely
+     my @js;
+     my $group = 3;
+     for my $cs (@$Js) {
+         say "Doing a cs.r";
+         
+         Rw pir $cs;
+         
+         cs.s = Rw maka $J:cs;
+         
+         say "Got :".slim(260, cs.s);
+         cs.isJid || die 'noJid'.wdump 2,$cs;
+         
+         push @js, sprintf " \$('#%s').replaceWith(%s);",
+             cs.isJid, ejson(cs.s);
+         
+         if (@js >= $group) {
+             $H->send(join('', @js));
+             @js = ();
+         }
+      }
+      $H->send(join '', @js) if @js;
+      
+      saybl "  d...";
+ - K: pir #c
+   D: |
+     cs.yg = Rw pipathg $J:cs;
      
-     d.c.path = r.path;
-       
-     d.sc.ws = 'n';
-     d.sc.ab = 'left:1em';
+     Rw cs.yg $J:cs $u:cs.u;
      
-     Rw iiJM + $d;
+     Rw oldschool $J:cs;
 mod c:
  - K: s #c d.c.s -> d.s
    mod 3.1: |
@@ -72,12 +200,7 @@ mod c:
      cs.u = d.s;
      die'csnod' if cs.d ne $d;
      
-     cs.yg = Rw pipathg $J:cs;
-     
-     say "path cs.yg";
-     Rw cs.yg $J:cs $u:cs.u;
-     
-     Rw oldschool $J:cs;
+     Rw pir $cs;
    mod#pi 3.5: | #c
    mod#pi 3.7: | #c
      # can pin/ping light source of con
@@ -86,8 +209,6 @@ mod c:
      #sayyl "itlbe: ".slim 130, d.s;
      d.cs.pi.pi = $cs;
    mod#pi 3.8: | #c fork... when mod swivels its nice.
-     # shunt into postmux queue like old
-     #  something
 esc c:
  - K: pi #c ag
    esc 3.5: |

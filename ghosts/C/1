@@ -59,6 +59,19 @@ R_Jz:
          Rw ein/image $J $i:ul;
      }
      else{ die "no see $ul" }
+ - K: globdir #c
+   D: |
+     my @ma = glob("'$file/*'");
+     my @r;
+     for my $f (@ma) {
+         $H->fixutf8($f);
+         my $r;
+         r.full = $f;
+         $f =~ s/^$file\///;
+         r.r = $f;
+         push @r, $r;
+     }
+     @r;
  - K: pi/dire #c
    D: |
      my $x = J.d.g.x;
@@ -67,13 +80,21 @@ R_Jz:
      my $sc = {};
      my $file = "$dir/$u";
      if (-d $file) {
-         my $dsc = {co=>'22f',fs=>60,ab=>1,left=>'-0.3em'};
+         my $dsc = {co=>'22f',fs=>30,ab=>1,left=>'-1em'};
          my $s = '/';
          Rw wtf $J dir 0.2 $s $sc:dsc;
          sc.sha = '3 5 4 22a';
-         sayre "Coming through... ".J.cv;
+         if (J.fop->()) {
+             my @r = Rw globdir $file;
+             my $sc = {co=>'33f',sha=>'3 3 5 fff', ml=>'0.5em'};
+             for my $r (@r) {
+                 my $c = {s=>$r,pi=>'dierfi'};
+                 Rw wtf $J $t:r.r $c $sc;
+             }
+             #die "$file oooooooooooo";
+         }
      }
-     elsif (-f $file && J.cv >= 0.5) {
+     elsif (-f $file && J.cv >= 0.3) {
          my $sc;
          sc.opa = 0.5;
          
@@ -93,8 +114,21 @@ R_Jz:
      # if J.d.c.n ? notes and stuff
      
      
-     
      #my $emb = '𐎘' if -d $-
+ - K: pi/dierfi #c
+   D: |
+     my $sc;
+     sc.ml = '2em';
+     Rw wtf + name $s:u.r $sc;
+     
+     if (-d u.full) {
+         my ($hc,$hs);
+         hc.s = '/';
+         hs.co = 'afa';
+         hs.sha = '3 3 4 af8';
+         Rw wtf + type $c:hc $sc:hs;
+     }
+     
  - K: pi/image #c
    D: |
      my $file = $u;
@@ -124,17 +158,8 @@ R_Jz:
      # make this thumbnail J even more forky than usual
      # TODO wander 90deg radial over phatness...
      # tape twist effect coming from somewhere
-     my $sc = {
-         tag => 'img',
-         zom=>{at => {src => $thl}},
-         width=>'27em',
-         height=>'27em',
-         ab=>1,
-         zi=>2,
-         %{ar.sc||{}}
-     };
      
-     if (!-f $th) {
+     if (!-f $th && J.fop->()) {
          sayyl " thumbnail++$file";
          my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
          if (!-d $thd) {
@@ -147,8 +172,19 @@ R_Jz:
              run 'convert', $file, '-thumbnail','500x500', $th
          }
      }
+     if (-f $th) {
+         my $sc = {
+             tag => 'img',
+             zom=>{at => {src => $thl}},
+             width=>'27em',
+             height=>'27em',
+             ab=>1,
+             zi=>2,
+             %{ar.sc||{}}
+         };
+         my $s = "";
+         Rw wtf $J yowl 3 $s $sc;
+     }
      delete J.mod.sc.over;
-     my $s = "";
-     Rw wtf $J yowl 3 $s $sc;
      #J.mod.sc.bgi = $thl;
 

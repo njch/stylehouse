@@ -15,6 +15,7 @@ R_Jz:
      }
      
      if (my $vl = x.sc.travely) {
+         @$vl &&
          Rw ii/travely + $vl;
      }
      Rw ii/capstyle +;
@@ -35,9 +36,12 @@ R_Jz:
  - K: ii/capstyle #c
    D: |
        return if J.yaw.ii_capstyle.non;
+       my $in = {%{x.sc}};
+       delete in.ori;
+       delete in.travely;
        my $c;
        c.pi = '';
-       c.s = x.sc;
+       c.s = $in;
        c.gp.cv = 0.7;
        Rw wtf + cap_sc $c;
  - K: ii/Jhead #c J _
