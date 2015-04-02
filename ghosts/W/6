@@ -341,9 +341,13 @@ R_Jz:
         J bz name 0.1     u.name
         return if $cv < 0.2;
         J bz K 0.2        u.K
-        
-        J fro i 0.2 u.i, 0.2
-        
+        #die wdump 2, J.d.g.x.sc;
+        if (J.d.g.x.sc.ori ne u.i) {
+            J fro i 0.2 u.i, 0.2
+        }
+        else {
+            J bz i 0.2 'this'
+        }
         return if $cv < 0.3;
         
         my $un;
@@ -444,24 +448,31 @@ R_Jz:
         
         return if $cv < 0.2;
         
+        u.B && ref u.B eq 'HASH' && do {
+            u.B.name &&
+            Rw wtf + B_name 0.23 $s:u.B.name;
+        };
         
-        my $B = u.B if u.B && ref u.B eq 'HASH';
-        if (B.name) { # B aetc
-            J.bz->("B_name 0.23", u.B.name); 
+        u.bb && ref u.bb eq 'HASH' && do {
+            my $s = keys %{u.bb};
+            my $sc = {co=>'be0',fs=>7};
+            Rw wtf + bbmag 0.4 $s $sc;
+        };
+        
+        if (J.fop->()) {
+            my @ts = Rw tvy $J;
+            my $s = @ts;
+            my $sc = {co=>'be0',fs=>9};
+            Rw wtf + bbthings 0.41 $s $sc;
+            my $bs = 'l';
+            my $bsc = {co=>'97e5',fs=>9};
+            Rw wtf + bbthind 0.401 $s:bs $sc:bsc;
+            # lev this ^ and get them all to drop at ...
+            # calc width thi of things up to there
         }
         
-        my $S = u.S if u.S && ref u.S eq 'HASH';
-        if ($S && %$S) {
-            J.fro->('S 0.4', $S, 0.4);
-            J.fro->('SZ 0.5', S.Z, 0.4) if u.S.Z;
-            J.bz->('SZ 0.5', "$S S.Z u.S.Z.left S.Z.top", '%css','font-size:50%') if S.Z;
-        }
         
-        my $Z = u.Z if u.Z && ref u.Z eq 'HASH';
-        if ($Z && %$Z) {
-            J.fro->('Z 0.5', u.Z, 0.4);
-        }
-
+        # maybe S, Z
         
         
         return if $cv < 0.3;
@@ -470,7 +481,6 @@ R_Jz:
             my $p = u.G->w('print' => {}, $u, {nodie=>1});
             J.bb->{"print 0.3"} = $p if defined $p;
         }
-        
         
         # dusseldorf
         my %s = map { $_=>1 } grep { /^[a-z]/ } keys %$u;
