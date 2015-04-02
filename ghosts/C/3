@@ -55,7 +55,7 @@ R_Jz:
          o.g.ref->{$s} = $v;
          push @r, @$v;
      }
-     _.sc.mw = '14em' for @r;
+     _.sc.mw = '22em' for @r;
      _.sc.over = 'hidden' for @r;
      o.r = \@r;
 
@@ -73,6 +73,18 @@ R_Jz:
                _.skip = 1 for @r;
            }
        }
+       
+     # want a default mode that shrinks away as other innesses come up
+     # & reappropriates pi rhythms
+     # where pi/stuff uses wtfs
+     # chunks of the branching meaning can be patched upwards
+     my $bigys = {map{$_=>1}qw{B S Z o phl phy}};
+     @{o.r} = grep {!(
+         sc.ou eq 'hash' && (
+             $bigys->{_.r} && !%{_.s}
+            || _.r eq 'Gw' && _.s eq '1'
+         )
+     )} @{o.r};
        
  - K: pi/codes #c bo
    D: |
