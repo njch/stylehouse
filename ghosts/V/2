@@ -18,32 +18,28 @@ R_Jz:
          Rw ii/travely + $vl;
      }
      Rw ii/capstyle +;
- - K: ii/travely #
+ - K: ii/travely #c
    D: |
      return unless $vl && @$vl;
      Rw Mn + $n:_ for
      ['travely', '', {s=>join(" ",'',@$vl,'')}],
      ['S', '', {pi=>'',s=>x.js,gp=>{cv=>0.2}}];
      
- - K: ii/time #
+ - K: ii/time #c
    D: |
      # say # ago and js hookup increment into human
      my $rtime = sprintf '%.2f', $time - H.uptime;
      # time since H started? since the J started?
      Rw Mn + $n:_ for
      ['zetime', '', {s=>$rtime}, {co=>'33f5'}];
- - K: ii/capstyle ##
+ - K: ii/capstyle #c
    D: |
        return if J.yaw.ii_capstyle.non;
-       
-       my $sw = {};
-       for (grep {!/^(travely|ori)$/} sort keys %{x.sc}) {
-           $sw->{$_} = x.sc->{$_};
-       }
-       return unless %$sw;
-       my $c = {fo=>[$sw,0.7], cow=>'rgb 38f'};
-       Rw wtf + caps $c;
-
+       my $c;
+       c.pi = '';
+       c.s = x.sc;
+       c.gp.cv = 0.7;
+       Rw wtf + cap_sc $c;
  - K: ii/Jhead #c J _
    D: |
        my $M = [];
@@ -90,5 +86,4 @@ R_Jz:
        ƾ  jin:oot       {} {co:8ff}
        G  sur/to:G
        Js sur/to:Jung {} {co:68d,fs:5}
-
 
