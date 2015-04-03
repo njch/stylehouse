@@ -236,6 +236,8 @@ sub codolist {
             my $cs = (
                 $codon->{is}->{G} && $n =~ /^L/ ? '009900'
                 :
+                $codon->{is}->{G} && $n =~ /^V/ ? '4455ff'
+                :
                 $codon->{is}->{G} && $n =~ /^N/ ? '40F8aB'
                 :
                 $codon->{is}->{G} && $n =~ /^J/ ? '000'
