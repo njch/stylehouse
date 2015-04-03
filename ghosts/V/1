@@ -6,15 +6,12 @@ R_Jz:
      die 'ref' if ref $u;
      -d $u || die "not found: $u pwd=".`pwd`;
      my @r = Rw globdir $dir:u;
-     
      for my $n (@r) {
          my $r;
          r.r = n.r;
          r.s = n.full;
-         # light pat, or emblem to fly through
          r.c.path = "!pat/dire:/r.r";
          r.c.pi = 'dire';
-         r.c.file = n.full;
          push @{o.r}, $r;
          if (@{o.r} >= $thi) {
              o.more = @r - @{o.r};
@@ -24,34 +21,31 @@ R_Jz:
  - K: pi/dire #c
    D: |
      my $x = J.d.g.x;
-     my $dir = x.j.s;
-     
-     my $sc = {};
-     my $file = "$dir/$u";
-     if (-d $file) {
-         Rw Mn + $n:_ for
-         ['dir', 0.2, {s=>'𐏓'}, {hs=>'4.2.5.9',fs=>23,ab=>1,left=>'-0.76em',top=>'-0.4em'}];
+     my $dir = -d $u;
+     my $file = -f $u;
+     if ($dir) {
+         J.no->($J, dir => 0.2,
+             '𐏓',
+            '{hs:3.7.5.9,fs:33,ab:1,left:-0.36em,top:-0.4em}');
          
          if (J.fop->()) {
-             Rw pi/direst $J $dir:file;
+             Rw pi/direst $J $dir:u;
          }
      }
-     elsif (-f $file && J.cv >= 0.3) {
- 
-         Rw Mn + $n:_ for
-         ['file', 0.2, {s=>'𐏓f'},{hs=>'8.7.5.9',fs=>33,ab=>1,left=>'-0.36em',top=>'-0.4em'}];
-         
-         my $sc;
-         sc.opa = 0.5;
-         
-         my $sp = x.imspin++;
-         x.imspin = 0 if $sp > 3;
-         sc.left = (($sp * 5)-4).'em';
-         sc.top = '-5em';
-         sc.rad = 0.4;
-         sc.sat = 5;
+     if ($file) {
+         J.no->($J, file => 0.2,
+             '𐏓f',
+            '{hs:3.7.5.9,fs:33,ab:1,left:-0.36em,top:-0.4em}');
+            
+         if (J.cv >= 0.3) {
+             my $sp = x.imspin++;
+             x.imspin = 0 if $sp > 3;
+             my $left = (($sp * 5)-4).'em';
              
-         Rw pi/thumbnail $file $J $sc;
+             J.no->($J, thumb => 0.3,
+                 {pi=>'thumbnail',s=>$u,gp=>{cv=>J.cv}},
+                "{opa:0.5,left:$left,top:-5em,ab:1,rad:0.4,sat:4}");
+         }
      }
      else {
          Rw wtf wtf 1 $J;
@@ -77,34 +71,18 @@ R_Jz:
      else{ die "no see $ul" }
  - K: globdir #c
    D: |
-     my @ma = map{$H->fixutf8($_);chomp;$_}`ls -1 $dir`;
+     my @ma = map{$H->fixutf8($_);chomp;$_}`ls -1 '$dir'`;
      my @r;
      for my $f (@ma) {
          my $r;
-         r.full = $f;
-         $f =~ s/^$dir\///;
+         r.full = "$dir/$f";
          r.r = $f;
          push @r, $r;
      }
      @r;
- - K: ou/image #c
-   D: |
-     -f $u || die 'not file';
-     
-     my $j = x.j;
-     #Rw cruxal $x lala wagga;
-     my $r;
-     r.r = $u;
-     r.s = $u;
-     r.c.path = "!nowhere";
-     r.c.pi = 'image';
-     r.c.file = $u;
-     push @{o.r}, $r;
-
  - K: pi/image #c
    D: |
-     my $file = $u;
-     -f $file || die;
+     -f $u || die;
      my $sc;
      sc.width = "44em";
      sc.height = "27em";
@@ -112,18 +90,17 @@ R_Jz:
      sc.con = 6;
      sc.left = "0em";
      J.d.sc.mw = "20em";
-     #die wdump 2, $J;
-     Rw pi/thumbnail $file $J $sc;
+     Rw pi/thumbnail $u $J $sc;
  - K: pi/thumbnail #c image/video
    D: |
-     my $size = -s $file;
-     return unless $file =~ /jpe?g$/i;
+     my $size = -s $u;
+     return "nontypeimage: $u" unless $u =~ /(png|gif|jpe?g)$/i;
      my $mou = "public/";
      #return if $size > 3_000_000;
-     my ($first) = split '/', $file;
+     my ($first) = split '/', $u;
      die "$first not $mou?" unless -e "$mou$first";
      
-     my $thl = "th/$file";
+     my $thl = "th/$u";
      my $th = "$mou$thl";
      
      # TODO mod slowness
@@ -132,16 +109,16 @@ R_Jz:
      # tape twist effect coming from somewhere
      
      if (!-f $th && J.fop->()) {
-         sayyl " thumbnail++$file";
+         sayyl " thumbnail++$u";
          my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
          if (!-d $thd) {
              run 'mkdir', '-p', $thd;
          }
-         if ($file =~ /(mov|avi|mp4)$/i) {
-             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$file.' -o '.$th
+         if ($u =~ /(mov|avi|mp4)$/i) {
+             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
          }
          else {
-             run 'convert', $file, '-thumbnail','500x500', $th
+             run 'convert', $u, '-thumbnail','500x500', $th
          }
      }
      if (-f $th) {
@@ -159,14 +136,14 @@ R_Jz:
      }
      delete J.mod.sc.over;
      #J.mod.sc.bgi = $thl;
-
  - K: pi/direst #c shadowing fs
    D: |
      my @r = Rw globdir $dir;
      my @d = grep { -d _.full } @r;
      for my $r (@d) {
-         Rw Mn + $n:_ for
-         [r.r, '', {s=>$r,pi=>'dierfi'}, {co=>'33f',sha=>'3 3 5 fff', ml=>'0.5em'}];
+         J.no->($J, r.r, '',
+             {s=>$r,pi=>'dierfi'},
+             '{co:33f,sha:3 3 5 fff,ml:0.5em}');
      }
      my $ts;
      ts.d = @d;
@@ -187,10 +164,9 @@ R_Jz:
    D: |
      my $i = 0;
      for my $k (sort keys %$u) {
-         Rw Mn + $n:_ for
-         grep {$_}
-         ['count', '', {s=>$u->{$k}}, {fs=>9,co=>'39a7'}],
-         ['k', '', {s=>$k}, {fs=>7,co=>'e9a7'}],
-         ($i++>0 ? ['Bs', '', {s=>','}, {}] : undef);
+         J.no->($J, count => '', "$u->{$k}", '{fs:9,co:39a7}');
+         
+         J.no->($J, k => '', "$k", '{fs:7,co:e9a7}');
+         J.no->($J, Bs => '', ',', {}) if $i++ > 0;
      }
 
