@@ -204,56 +204,58 @@ R_Jz:
            for my $k (sort keys %$sc) {
                my $cs = $sc->{$k};
                my ($style,$com) = split '#', $k;
-               
-               for ($style) {
-                   # < >< >< >?
-                   # < >< >< >?
-                   # Jung Cs have injected langauge
-                   # to grab themselves by...
-                   # < >< >< >?
-                   $ishtml = 1 when 'gp';
-                   $ishtml = 1 when 'lp';
-                   $ishtml = 1 when 'ishtml';
-                   # has a way to $a the gp action within...
-                       
-                   when ('sf') {
+               # < >< >< >?
+               # < >< >< >?
+               # Jung Cs have injected langauge
+               # to grab themselves by...
+               # < >< >< >?
+               if ($style eq 'gp' || $style eq 'lp' || $style eq 'ishtml') {
+                   $ishtml = 1;
+               }
+               # has a way to $a the gp action within...
+               elsif ($style eq 'sf') {
                        push @$css,
                        map { $R::f->{$_} || die "no style $_"}
                            split '_', $cs;
                        #sayre "bit of sf: $cs";
-                   }
-                   when ('css') {
+               }
+               elsif ($style eq 'css') {
                        $cs = join ';', map{"$_:$cs->{$_}"}
                            sort keys %$cs
                            if ref $cs;
                        push @$css, $cs;
                        sayre "bit of css: $cs" if ar.db;
-                   }
-
-                   at.id = $cs when 'id';
-                   at.title = $cs when 'tt';
-                   at.tag = $cs when 'tag';
-                   when (/^at:(\S+)$/) {
-                        $at->{$1} = $cs;
-                   }
-
+               }
+               elsif ($style eq 'id') {
+                   at.id = $cs;
+               }
+               elsif ($style eq 'tt') {
+                   at.title = $cs;
+               }
+               elsif ($style eq 'tag') {
+                   at.tag = $cs;
+               }
+               elsif ($style =~ /^at:(\S+)$/) {
+                   $at->{$1} = $cs;
+               }
+               elsif ($style eq 'path') {
                    # TODO compile J.ys
-                   when ('path') {
-                       # should get %idly if not lev/gp too
-                   }
-                   1 when 'origin';
-                   1 when 'waves';
-                   1 when 'Joint';
-                   1 when 'lp';
-                   when ('idly') { # is knowable j id
-                       my $id = $H->mkuid;
-                       at.id && die "arl";
-                       at.id = $id;
-                       J.idyl->($J, $id, $j);
-                   }
-                   default {
-                       die "style??".wdump[$style,$cs];
-                   }
+                   # should get %idly if not lev/gp too
+               }
+               elsif ($style eq 'origin') {
+               }
+               elsif ($style eq 'waves') {
+               }
+               elsif ($style eq 'Joint') {
+               }
+               elsif ($style eq 'idly') { # is knowable j id
+                   my $id = $H->mkuid;
+                   at.id && die "arl";
+                   at.id = $id;
+                   J.idyl->($J, $id, $j);
+               }
+               else {
+                   die "style??".wdump[$style,$cs];
                }
            }
            @$css = map {

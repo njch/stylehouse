@@ -1,16 +1,18 @@
 R_Jz:
  - K: surf #c
    D: |
+     my $name = ar.name || 'ollox';
      my $i = ar.i || $J;
-     my $J = Rw jin ollox;
-     Rw ein/stu $J $i;
+     my $J2 = Rw jin $name;
+     Rw ein/stu $J:J2 $i;
  - K: eye #c
    D: |
-       my $J = Rw jin ollox;
+       my $name = ar.name || 'ollox';
+       my $J = Rw jin $name;
        my $an = shift @$m;
        my $i = join '/', grep{defined} 'eye', $an;
        Rw ein/dire $J $i;
- - K: shed #c
+ - K: shed #c not even eye
    D: |
      my $o = Rw pul $cs:m i;
      my $i = defined o.i ? o.i : '.';
@@ -20,7 +22,7 @@ R_Jz:
    D: |
      my $r = {i=>$i, t=>[], sc=>{ou=>'dire'}};
      Rw inness $J $r;
- - K: ein/image #c
+ - K: ein/image #c directed...
    D: |
      my $r = {i=>$i, t=>[], sc=>{ou=>'image'}};
      Rw inness $J $r;
@@ -36,8 +38,9 @@ R_Jz:
    D: |
      die 'ref' if ref $u;
      -d $u || die "not found: $u pwd=".`pwd`;
-     
-     my @ma = glob("'$u/*'");
+     my @ma = map{chomp;$_}`ls -1 $u`;
+     sayyl @ma;
+     sayre "GLOB $u/* GOT: ".@ma;
      for my $f (@ma) {
          $H->fixutf8($f);
          my $s = $f;
