@@ -628,7 +628,9 @@ sub Dm {
         } keys %$ar)
         if %$ar;
       # there is
-    my @warnings = ();#"no warnings 'experimental';");
+    my @warnings;
+    #push @warnings, "no warnings 'experimental';"
+    #    if $H->{expre} ||= $^V gt $v5->{18};
 
     my $sub = "bollox";
     my $evs = 'sub { my $ar = shift; '.

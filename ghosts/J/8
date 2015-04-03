@@ -65,13 +65,16 @@ R_Jz:
          
         die wdump \@path if @path > 1;
         
-        if (@path) {
-            push @{pa.paths||=[]}, @path;
-            my $pj = shift @path;
+        sayyl _.r for @path;
+        
+        my ($pj) = @path;
+        if (defined $pj) {
+            push @{pa.paths||=[]}, $pj;
             say "     upath   >>>>>>> pj.s <<<<<< ";
             if (pa.pathy) {
                 sayre  "     extra path above: pj.s  " for 1..3;
             }
+            
             pa.pathy = pj.s;
         }
      }
