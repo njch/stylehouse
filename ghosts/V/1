@@ -12,6 +12,7 @@ R_Jz:
          r.s = n.full;
          r.c.path = "!pat/dire:/r.r";
          r.c.pi = 'dire';
+         r.lab_c.pi = 'direlab';
          push @{o.r}, $r;
          if (@{o.r} >= $thi) {
              o.more = @r - @{o.r};
@@ -24,19 +25,21 @@ R_Jz:
      my $dir = -d $u;
      my $file = -f $u;
      if ($dir) {
-         J.no->($J, dir => 0.2,
-             '𐏓',
-            '{hs:3.7.5.9,fs:33,ab:1,left:-0.36em,top:-0.4em}');
+         Jn(isdir => 0.2,
+            {pi=>'emb', s=>'𐏓'},
+            '{hs:3.7.5.9}');
          
          if (J.fop->()) {
              Rw pi/direst $J $dir:u;
          }
      }
-     if ($file) {
-         J.no->($J, file => 0.2,
-             '𐏓f',
-            '{hs:3.7.5.9,fs:33,ab:1,left:-4.36em,top:-0.4em}');
-            
+     elsif ($file) {
+         Jn(isfile => 0.2,
+         {pi=>'emb', s=>'f'},
+            '{hs:6.7.2.9}');
+         
+         return if J.cv < 0.2;
+         
          if (J.cv >= 0.3) {
              my $sp = x.imspin++;
              x.imspin = 0 if $sp > 3;
@@ -50,11 +53,85 @@ R_Jz:
      else {
          Rw wtf wtf 1 $J;
      }
+ - K: pi/direlab #c round corner, where one bit/type/hum of noise splits others
+   D: |
+     my $s = $u;
+     my $r = J.d.g.r;
+     my $ex;
+     # 3 s ripping apart
      
-     # if J.d.c.n ? notes and stuff
+     my $fi = {pi=>'fileinfo', s=>r.s, label=>$u};
+     Jn(fileinfo => 0.3, $fi,
+            '{hs:6.7.2.9,ab:1,top:1em,right:1em}');
+     
+     my $s = fi.label; # may change just then ^
+     
+     # 4 pea
+     if (defined $s) {
+         my $sc ={zi=>15, sha=>'2 3 6 ccf',
+                  fw=>6, co=>'3f4'};
+         Rw wtf $J lab $s $sc;
+     }
+     
+ - K: ou/image #c
+   D: |
+     -f $u || die 'not file';
+     
+     my $j = x.j;
+     #Rw cruxal $x lala wagga;
+     my $r;
+     r.r = $u;
+     r.s = $u;
+     r.c.path = "!nowhere";
+     r.c.pi = 'image';
+     r.c.file = $u;
+     push @{o.r}, $r;
+ - K: pi/emb #c right
+   D: |
+     J.no->($J, J.r, 0.2, "$u", '{fs:33}');
+ - K: pi/filab #c under dirlab
+   D: |
+     # 5ery
+     if (defined $ex) {# TODO this huge beingness faster
+         my $sc = {co=>'000',sha=>'2 3 4 ccf', 
+             ab=>1,right=>'0.4em',top=>'0.5em',
+            fs=>8,zi=>'3'};
+         Rw wtf $J ex $s:ex $sc;
+     }
+     Jn(filesiz => 0.3,
+         {pi=>'filesiz', s=>r.s}, # full
+            '{hs:6.7.2.9,ab:1,top:1em,right:3em}');
+         
+ - K: pi/filesiz #c the vague know something about files disjoint
+   D: |
+     my $s = (stat $u)[7];
+     say "$u is $s";
+     my @t = qw'b kB MB GB';
+     while ($s > 1024) {
+         shift @t || last;
+         $s /= 1024;
+     }
+     $s = sprintf '%.1f', $s;
+     my ($co) = @t;
+     Jn(size => 0.2, $s, '{fs:7,hs:8.3.5.8}');
+     Jn(co => 0.3, $co);
      
      
-     #my $emb = '𐎘' if -d $-
+     #e
+ - K: pi/direst #c shadowing fs
+   D: |
+     my @r = Rw globdir $dir;
+     my @d = grep { -d _.full } @r;
+     for my $r (@d) {
+         J.no->($J, r.r, '',
+             {s=>$r,pi=>'dierfi'},
+             '{co:33f,sha:3 3 5 fff,ml:0.5em}');
+     }
+     my $ts;
+     ts.d = @d;
+     ts.files = @r - @d;
+     Rw Mn + $n:_ for
+         ['more', 0.88, {s=>$ts,pi=>'n_tal'}, {fs=>13,co=>'e9a7'}];
  - K: pat/dire #c pat a physical, in a directory
    D: |
      my $ex = join ' ', @$m;
@@ -136,20 +213,6 @@ R_Jz:
      }
      delete J.mod.sc.over;
      #J.mod.sc.bgi = $thl;
- - K: pi/direst #c shadowing fs
-   D: |
-     my @r = Rw globdir $dir;
-     my @d = grep { -d _.full } @r;
-     for my $r (@d) {
-         J.no->($J, r.r, '',
-             {s=>$r,pi=>'dierfi'},
-             '{co:33f,sha:3 3 5 fff,ml:0.5em}');
-     }
-     my $ts;
-     ts.d = @d;
-     ts.files = @r - @d;
-     Rw Mn + $n:_ for
-         ['more', 0.88, {s=>$ts,pi=>'n_tal'}, {fs=>13,co=>'e9a7'}];
  - K: pi/dierfi #c
    D: |
      Rw Mn + $n:_ for

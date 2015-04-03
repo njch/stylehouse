@@ -629,8 +629,6 @@ sub Dm {
         if %$ar;
       # there is
     my @warnings;
-    #push @warnings, "no warnings 'experimental';"
-    #    if $H->{expre} ||= $^V gt $v5->{18};
 
     my $sub = "bollox";
     my $evs = 'sub { my $ar = shift; '.
@@ -1472,6 +1470,7 @@ sub parse_babble {
 
 
 
+
     # word or scalar
     my $point = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
 
@@ -1505,6 +1504,8 @@ sub parse_babble {
     # thingy, cv => thing
     my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
     $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
+
+    $eval =~ s/($mwall)(o?(J|M))n\(/$1$2\.no->(\$$2, /smg;
 
     #Sur Hostinfo {
     #Pur S/$hol "hostinfo/ack r.m", 'ig'

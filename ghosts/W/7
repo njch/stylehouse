@@ -78,7 +78,32 @@ R_Jz:
        #sayre "CSS  @css";
        @css;
        
+
 esc c:
+ - K: mktk #c language expansion
+   esc 3: |
+     my ($tks, $name, $s) = @_;
+     my $name = ar.m && ar.m->[0] || "langsp";
+     my @t = split ',', $s;
+     my $t = {};
+     for (@t) {
+         my ($k, $v) = split ':', $_;
+         $tks->{$k}->{$name} = $v;
+         # or rejoint another trip to $k if passed...
+         #sayyl "mktk $name $k : $v";
+     }
+     return;
+ - K: ab #c absolute # ORDER uglies
+   esc 3.3: |
+     if ($v =~ /^.+:.+/) {
+         X.mktk->($tks, abc => $v);
+         $v = 1;
+     }
+     elsif ($v ne '1') {
+         die "whatab:$v";
+     }
+     $v = "absolute" if $v eq '1';
+     "position:$v";
  - K: at #c
    esc 3: |
      my @ats;
@@ -230,21 +255,6 @@ esc c:
    esc 3: |
      $v = Rw empc $v;
      "margin-bottom:$v"
- - K: ab #c absolute
-   esc 3.3: |
-     if ($v =~ /^(\S+:\S+)( \S+:\S+)*$/) {
-         my @se = split ' ', $v;
-         for (@se) {
-             /^(\S+):(\S+)$/;
-             $tks->{$1}->{abc} = $2;
-         }
-         $v = 1;
-     }
-     elsif ($v ne '1') {
-         die "whatab:$v";
-     }
-     $v = "absolute" if $v eq '1';
-     "position:$v";
  - K: right #c yep
    esc 3.4: |
      "right:$v";
