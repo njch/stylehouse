@@ -628,7 +628,7 @@ sub Dm {
         } keys %$ar)
         if %$ar;
       # there is
-    my @warnings = ("no warnings 'experimental';");
+    my @warnings = ();#"no warnings 'experimental';");
 
     my $sub = "bollox";
     my $evs = 'sub { my $ar = shift; '.

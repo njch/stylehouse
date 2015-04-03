@@ -1,9 +1,10 @@
 #!/usr/bin/env perl
 package S;
+use lib 'l';
+use lib 'll';
 use Mojo::IOLoop;
 use common::sense;
 
-use lib 'l';
 use H;
 our $H;
 binmode(STDOUT, ":utf8");
