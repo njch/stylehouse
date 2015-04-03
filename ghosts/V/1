@@ -1,54 +1,26 @@
 R_Jz:
 
- - K: ou/dire #c # LOOK FOR KNOWNS, scoped in wormhole
+ - K: ou/dire #c 
    D: |
+     # LOOK FOR KNOWNS, scoped in wormhole
      die 'ref' if ref $u;
      -d $u || die "not found: $u pwd=".`pwd`;
-     my @ma = map{chomp;$_}`ls -1 $u`;
-     sayyl @ma;
-     sayre "GLOB $u/* GOT: ".@ma;
-     for my $f (@ma) {
-         $H->fixutf8($f);
-         my $s = $f;
-         $s =~ s/^$u\///;
-         my $r = {r=>$s,s=>$s};
+     my @r = Rw globdir $dir:u;
+     
+     for my $n (@r) {
+         my $r;
+         r.r = n.r;
+         r.s = n.full;
          # light pat, or emblem to fly through
          r.c.path = "!pat/dire:/r.r";
          r.c.pi = 'dire';
-         r.c.file = $f;
+         r.c.file = n.full;
          push @{o.r}, $r;
          if (@{o.r} >= $thi) {
-             o.more = @ma - @{o.r};
+             o.more = @r - @{o.r};
              last;
          }
      }
- - K: ou/image #c
-   D: |
-     -f $u || die 'not file';
-     
-     my $j = x.j;
-     #Rw cruxal $x lala wagga;
-     my $r;
-     r.r = $u;
-     r.s = $u;
-     r.c.path = "!nowhere";
-     r.c.pi = 'image';
-     r.c.file = $u;
-     push @{o.r}, $r;
- - K: pat/dire #c pat a physical, in a directory
-   D: |
-     my $ex = join ' ', @$m;
-     my $ul = J.onei.i.$ex;
-     if (-d $ul) {
-         J.onei.i = $ul
-     }
-     elsif (-f $ul) {
-         w demux[$J];
-         my $J = Rw jin mash;
-         # & over there
-         Rw ein/image $J $i:ul;
-     }
-     else{ die "no see $ul" }
  - K: pi/dire #c
    D: |
      my $x = J.d.g.x;
@@ -58,13 +30,17 @@ R_Jz:
      my $file = "$dir/$u";
      if (-d $file) {
          Rw Mn + $n:_ for
-         ['dir', 0.2, {s=>'/'}, {co=>'22f4',fs=>23,ab=>1,left=>'-0.56em'}];
+         ['dir', 0.2, {s=>'𐏓'}, {hs=>'4.2.5.9',fs=>23,ab=>1,left=>'-0.76em',top=>'-0.4em'}];
          
          if (J.fop->()) {
              Rw pi/direst $J $dir:file;
          }
      }
      elsif (-f $file && J.cv >= 0.3) {
+ 
+         Rw Mn + $n:_ for
+         ['file', 0.2, {s=>'𐏓f'},{hs=>'8.7.5.9',fs=>33,ab=>1,left=>'-0.36em',top=>'-0.4em'}];
+         
          my $sc;
          sc.opa = 0.5;
          
@@ -85,6 +61,46 @@ R_Jz:
      
      
      #my $emb = '𐎘' if -d $-
+ - K: pat/dire #c pat a physical, in a directory
+   D: |
+     my $ex = join ' ', @$m;
+     my $ul = J.onei.i.$ex;
+     if (-d $ul) {
+         J.onei.i = $ul
+     }
+     elsif (-f $ul) {
+         w demux[$J];
+         my $J = Rw jin mash;
+         # & over there
+         Rw ein/image $J $i:ul;
+     }
+     else{ die "no see $ul" }
+ - K: globdir #c
+   D: |
+     my @ma = map{$H->fixutf8($_);chomp;$_}`ls -1 $dir`;
+     my @r;
+     for my $f (@ma) {
+         my $r;
+         r.full = $f;
+         $f =~ s/^$dir\///;
+         r.r = $f;
+         push @r, $r;
+     }
+     @r;
+ - K: ou/image #c
+   D: |
+     -f $u || die 'not file';
+     
+     my $j = x.j;
+     #Rw cruxal $x lala wagga;
+     my $r;
+     r.r = $u;
+     r.s = $u;
+     r.c.path = "!nowhere";
+     r.c.pi = 'image';
+     r.c.file = $u;
+     push @{o.r}, $r;
+
  - K: pi/image #c
    D: |
      my $file = $u;
@@ -167,19 +183,6 @@ R_Jz:
          ['symbol', '', {s=>'/'}, {sha=>'3 3 4 af8',co=>'afa'}];
      }
      
- - K: globdir #c
-   D: |
-     my @ma = glob("'$dir/*'");
-     my @r;
-     for my $f (@ma) {
-         $H->fixutf8($f);
-         my $r;
-         r.full = $f;
-         $f =~ s/^$dir\///;
-         r.r = $f;
-         push @r, $r;
-     }
-     @r;
  - K: pi/n_tal #c
    D: |
      my $i = 0;

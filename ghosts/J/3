@@ -350,7 +350,10 @@ R_Jz:
      my $M = [];
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};
-         my $n = [$k, $k];
+         my $s = $k;
+         my $sw = $1 if $what =~ /^(.+\/)\*/;
+         $s =~ s/^.*$sw//;
+         my $n = [$s, $k];
          say " ** waything $what from $k";
          Rw Mn $n $M pwth;
      }
