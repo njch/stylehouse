@@ -22,6 +22,19 @@ R_Jz:
           - co: 8ff
             blr: 3
             ml: 3em
+ - K: ashzv #c zaust - time valve
+   D: |
+     # so tlv makes a nice mod sheet of the stuff in J
+     my $onl = Rw tlv $J;
+     Rw onl/cut $J $onl $thi=2 $scsort=ts;
+     Rw very + $onl $in=0.2 $out=0.9 $tot=14;
+     
+     
+     
+ - K: ash/inness #c
+   D: |
+     #some
+     die'ashin';
  - K: ash/up #c in t
    D: |
      J.ldoc ||= do {
@@ -64,15 +77,6 @@ R_Jz:
           - co: 8ff
             blr: 3
             ml: 3em
- - K: ashzv #c zaust - time valve
-   D: |
-     # so tlv makes a nice mod sheet of the stuff in J
-     my $onl = Rw tlv $J;
-     Rw onl/cut $J $onl $thi=2 $scsort=ts;
-     Rw very + $onl $in=0.2 $out=0.9 $tot=14;
-     
-     
-     
  - K: ou/fstat #c
    D: |
      # $u $o $x $sc
@@ -92,49 +96,6 @@ R_Jz:
      saybl "Fs pi: ".wdump $u;
      Rw wtf Fsoup 
      #Rw wtf "FS! $s";
- - K: onl/cut #c
-   D: |
-     $scsort||die;
-     @$onl = reverse
-         sort { a.sc->{$scsort} <=> b.sc->{$scsort} }
-         grep { defined _.sc->{$scsort} || die'no %'.$scsort.' on: '._.j.r }
-         @$onl;
-     my @in;
-     my @cut;
-     push @{ @in < 4 ? \@in : \@cut }, $_ for @$onl;
-     for my $x (@cut) {
-         delete J.bb->{_.r} for x.j, values %{x.sj};
-     }
-     @$onl = @in;
-     $onl
-     
- - K: very #c tak tlv into space, ready for lx/suro
-   D: |
-       my $onl = ar.onl;
-       $onl ||= Rw tlv $J;
-       
-       my $phi = $out - $in; # <-0.8->
-       my $thi = $phi / (@$onl||1); # or indi
-       # thi vs $onl individuality
-       my $tin = $in;
-       for my $x (@$onl) {
-           # go higher and pipe mods to squish space
-           x.in = $tin;
-           x.out = $tin + $thi;
-           $tin = x.out; # next
-           
-           x.thi = $tot/$phi; # space volve, indi...
-           #die "x.j.r   shall x.thi    ($tot $phi)";
-           
-           my $j = x.j;
-           if (!J.q) {
-               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
-               say "   * _.r          => ".gp(_.s) for values %{x.sj};
-               say "up around x.in <-> x.out"
-           }
-       }
-       $onl
-       
  - K: Doc/one #c
    D: |
      my $x;
