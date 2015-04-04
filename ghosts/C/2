@@ -26,7 +26,7 @@ R_Jz:
        my $tin = $in;
        for my $x (@$onl) {
            # go higher and pipe mods to squish space, vary $thi (other ways to)
-           x.thi = @$onl / $thi;
+           x.thi = $tot / $thi;
            x.phi = $thi;
            x.in = $tin;
            x.out = $tin + $thi;
@@ -114,18 +114,35 @@ R_Jz:
           }
       }
       
- - K: ii/iny #c ha zom
+
+ - K: pi/infrom #c
    D: |
-       # root ^
-       # travel v
-       # cend pwth
-       my $M = [];
-       
-       Rw ii/infrom + $M;
-       
-       #say "ii/cap: ".ki$rr;
-       my $t = '/'.x.j.t.'-cap';
-       Rw om/lev + $oM:M $t $at=0.0001;
+     my $x = $u;
+     Jn('_', '', "x.j.l", '{co:38f}');
+     Jn('=', '', {}, '{fs:22,co:000,sha:3 3 3 fff}');
+     
+     # or anywhere w e came through
+     # root ^
+     # travel v
+     # cend pwth
+     Jn('ori','',
+           {s=>x.sc.ori, pi=>'', gp=>{cv=>0.2}, pwth=>'sur/to:/'},
+           '{hue:100,fs:18}')
+           if exists x.sc.ori;
+     
+     # quick reverse, snap bits off i
+     Jn('<','',{pwth=>'whack'},'{fs:16,co:314,sha:1 1 3 fff}');
+     
+     
+     my $in = {%{x.sc}};
+     delete in.ori;
+     delete in.travely if ref in.travely eq 'ARRAY' && !@{in.travely};
+     if (%$in) {
+         Jn('x-sc','',{pi=>'capstyle',s=>$in},{fs=>13 ,co=>'314',sha=>'1 1 3 fff'});
+     }
+     if (my $time = x.sc.ts) { # can't be zero, so relative
+         Rw ii/time + $time;
+     }
  - K: ix/suro #c
    D: |
       my $j = x.j;
@@ -133,7 +150,9 @@ R_Jz:
       my $M = [];
       
       # innessy
-      Rw ii/iny $J $x $M;
+      my $cv = x.sc.capcv || 0.4;
+      Mn('/'.x.j.t.'-cap' => '',
+      {pi=>'infrom',s=>$x,gp=>{cv=>$cv},pwth=>'intoo'});
       
       #v v v v v v v
       # v v v v v v
@@ -147,6 +166,10 @@ R_Jz:
       
       Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
       coi.end->();
+ - K: intoo #c
+   D: |
+     #die J2.Jmost->pi ."          ".wdump ;
+     Rw surf $i:J2.d.c.s;
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
@@ -199,7 +222,7 @@ R_Jz:
        
      d.sc = {%{r.sc||{}}};
      d.sc.ws = 'n';
-     d.sc.ab = 'left:1em';
+     d.sc.ab = 'left:3em';
      
      Rw iiJM + $d;
  - K: ii/labegy #c suitcase handle # elemental locus of travel/path fields
@@ -215,9 +238,23 @@ R_Jz:
      # selection piways
      d.sc = {%{r.lab_sc||{}}};
      d.sc.ws = 'p';
+     #d.sc.fs = 30 if x.phi > 0.4;
+     sayyl ki d.g.x;
      d.sc.ab = 'right:0.5em'; 
      Rw iiJM + $d;
      # the lasty tangvely, sandy mod hooks beVow
+ - K: pi/lab #c round corner, where one bit/type/hum of noise splits others
+   D: |
+     my $r = J.d.g.r;
+     Jn(wtf => '', $u, '{zi:15,sha:2 3 6 ccf,fw:16,co:3f4}');
+     
+ - K: pi/capstyle # the sc attachment
+   D: |
+     Jn( intersc => '',
+       {pi=>'',s=>$u,gp=>{cv=>0.7}},
+       '{fs:3,co:314,sha:1 1 3 fff}');
+
+     
  - K: whack #c the <, smash bit off end of stick
    D: |
      my $o = J.onei;

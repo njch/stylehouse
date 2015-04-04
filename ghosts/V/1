@@ -54,11 +54,11 @@ R_Jz:
          if (J.cv >= 0.3) {
              my $sp = x.imspin++;
              x.imspin = 0 if $sp > 3;
-             my $left = (($sp * 5)-4).'em';
+             my $left = (($sp * 5)).'em';
              
              J.no->($J, thumb => 0.3,
                  {pi=>'thumbnail',s=>$u,gp=>{cv=>J.cv}},
-                "{opa:0.5,left:$left,top:-5em,ab:1,rad:0.1,sat:4}");
+                "{opa:0.5,left:$left,top:0em,ab:1,rad:0.1,sat:4}");
          }
      }
      else {
@@ -76,20 +76,7 @@ R_Jz:
      Jn('label', '', fi.label,
          "{zi:15,sha:2 3 6 ccf,fw:6,co:3f4}");
      
- - K: ou/image #c
-   D: |
-     -f $u || die 'not file';
-     
-     
-     my $j = x.j;
-     #Rw cruxal $x lala wagga;
-     my $r;
-     r.r = $u;
-     r.s = $u;
-     r.c.path = "!nowhere";
-     r.c.pi = 'image';
-     r.c.file = $u;
-     push @{o.r}, $r;
+
  - K: pi/emb #c right
    D: |
      Jn(J.r, 0.2, "$u", '{fs:15}');
@@ -166,16 +153,29 @@ R_Jz:
          push @r, $r;
      }
      @r;
+ - K: ou/image #c
+   D: |
+     -f $u || die 'not file';
+     
+     
+     my $j = x.j;
+     #Rw cruxal $x lala wagga;
+     my $r;
+     r.r = x.j.l; # abrevid
+     r.s = $u;
+     r.c.path = "!nowhere";
+     r.c.pi = 'image';
+     r.c.file = $u;
+     push @{o.r}, $r;
  - K: pi/image #c
    D: |
      -f $u || die;
      my $sc;
      my $thi = J.d.g.x.phi || 1;
-     sc.width = (74 * $thi)."em";
-     say "Image thickness:   sc.width     for $u";
-     sc.height = undef;
-     sc.hue = 36;
-     sc.con = 6;
+     sc.height = (84 * $thi)."em";
+     say "Image thickness:   sc.height     for $u";
+     sc.hue = -20 + int(rand 56);
+     sc.con = sprintf '%.1f', 0.7 + rand 2;
      sc.left = "0em";
      J.d.sc.mw = "60em";
      Rw pi/thumbnail $u $J $sc;
@@ -213,8 +213,7 @@ R_Jz:
          my $sc = {
              tag => 'img',
              zom=>{at => {src => $thl}},
-             width=>'27em',
-             height=>'27em',
+             height=>'17em',
              ab=>1,
              zi=>2,
              %{ar.sc||{}}
