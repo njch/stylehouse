@@ -30,13 +30,15 @@ R_Jz:
        my $wtf = [];
        for my $l (@l) {
            chomp $l;
-           next if $l =~ /grep perl/;
+           next if $l !~ /perl/;
+           next if $l =~ /sshfs/;
            my @r = split /\s+/, $l, 11;
            my $cs = [@r[0..3,9,10]];
            my $o = Rw pul $cs user pid cpu mem time cmd;
            
            push @$wtf, $o;
        }
+       say "PSFAUX: ". wdump $wtf;
        my $M = [];
        for my $f (@$wtf) {
            my $c;
@@ -59,17 +61,17 @@ R_Jz:
        Rw om/bal $J $oM $in $out $k;
  - K: ii/psfaux #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
-       my @l = `ps faux | grep perl`;
+       my @l = `ps faux`;
        my $wtf = [];
        for my $l (@l) {
            chomp $l;
-           next if $l =~ /grep perl/;
+           next if $l !~ /perl|sshfs|tail/;
            my @r = split /\s+/, $l, 11;
            my $cs = [@r[0..3,9,10]];
            my $o = Rw pul $cs user pid cpu mem time cmd;
-           
            push @$wtf, $o;
        }
+       say "PSFAUX: ". wdump $wtf;
        my $M = [];
        for my $f (@$wtf) {
            my $c;
