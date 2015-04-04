@@ -58,7 +58,7 @@ sub spawn {
     my $H = shift;
     my $a = shift;
     my $u = $H->spawn0(@{$a->{r}});
-    say "H spa $u->{id} ". ref $u unless ref $u eq 'A' || ref $u eq 'C';
+    #say "H spa $u->{id} ". ref $u unless ref $u eq 'A' || ref $u eq 'C';
 
     if (ref $u eq 'A') {
         $u = $u->new($a->{i});

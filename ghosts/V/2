@@ -80,13 +80,14 @@ R_Jz:
        
        my $name = J.name;
        my ($nas, $nameb) = split '-', $name, 2;
-       Rw Mn $M $n:_ for
-       ['nas', '', {s=>$nas}, {sha=>'3 5 2 330',fs=>15}],
-       ['nameb', '', {s=>$nameb}, {sha=>'3 5 2 330',co=>'a359',fs=>9}];
+       Mn(nas => '', "$nas",
+           '{sha:3 5 2 330,fs:15}');
+       Mn(nameb => '', "$nameb", 
+           '{sha:3 5 2 330,co:a359,fs:9}');
        
        if (H.name ne 'C') {
-           Rw Mn $M $n:_ for
-           ['Hname', '', {s=>H.name}, {sha=>'3 5 2 330',co=>'ff59',fs=>12,ab=>1,ml=>'-0.3em'}];
+           Mn(Hname => '', "H.name", 
+               '{sha:3 5 2 330,co:ff59,fs:12,ab:1,ml:0.3em}');
        }
        
        my $xc = {pwth=>'hull/mk:X'};
@@ -97,7 +98,7 @@ R_Jz:
            xsc.left = '0.3em';
            xsc.zi = 44;
        }
-       Rw wtf $M x $c:xc $sc:xsc;
+       Mn(x => '', $xc, $xsc);
        
        # TODO collapse upwards button
        

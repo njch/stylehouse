@@ -30,21 +30,50 @@ R_Jz:
        }
        sayre "==\nASH delt ASH ".F_delta."\n==";
      ines: | #c inness vines
-         say wdump $r;
-         if (my $r = ar.r) {
-             Rw inesto $J:J.on $r;
-         }
-         my $tl = Rw tlv $J:J.on;
-         for my $l (@$tl) {
-             sayyl l.j.r;
-             sayyl "yep" if l.j.t eq 'u';
-             sayre wdump 2, $l;
-
-         }
-         #Rw surf $i:ty;
- - K: inesto #c
+       my $J = J.on;
+       if (my $r = ar.r) {
+           Rw inesto $J $r;
+       }
+       my $tl = Rw tlv $J:J.on;
+       for my $l (@$tl) {
+           sayyl "l.j.r     ";
+           sayre ki l.sc;
+           if (l.j.l eq 'u') {
+               delete J.bb->{_.r} for l.j, values %{l.sj}
+           }
+       }
+       3
+ - K: inesto #c in J.on, throwing $r down
    D: |
-    say wdump $r;
+     my $d;
+     d.s = r.i;
+     d.sc = r.sc;
+     
+     sayyl sort keys %{J.bb};
+     
+     die slim 300, wdump 2, d.s if ref d.s;
+     
+     if (d.sc.ou eq 'image') {
+         if (d.s =~ /^(.+)\/([^\/]+)\/([^\/]+)(?:\.([^\/\.]+))?$/) {
+             d.t = "$2/$3";
+         }
+         d.t ||= d.s if !ref d.s;
+     }
+     # TODO make safe IDish munge of the d.t
+     d.t ||= 'u';
+     # Jn(d.t, '', d.s, d.sc); # TODO that easy
+     sayyl "inesto ".gp($J)."       ".gp(d.t)."      d.s  ".ki r.sc;
+     
+      J bz d.t 0.1 d.s
+      
+      for (sort keys %{r.sc||{}}) {
+           sayre "d.t      = = the $_    is r.sc->{$_}";
+           J bz d.t%$_ 0.1 r.sc->{$_}
+      }
+      
+     #J.on bz u 0.1 $i
+     # J.on bz u%ori 0.1 J.onei.i
+     # J.on bz u%travely 0.1 J.onei.t
  - K: stylesheets #c
    n_D:
      any_init: |
@@ -183,7 +212,7 @@ R_Jz:
       
       my $wi = keys %$komp;
       $wi || return sayre "NOTHING TO COMPRESS";
-      sayyl "toof $c compressed ".@pool." to $wi";
+      #sayyl "toof $c compressed ".@pool." to $wi";
 
       # komp carbonises, makes up style
       G.yomp->{$c} = {reverse %$komp};
