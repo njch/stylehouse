@@ -1,70 +1,41 @@
 R_Jz:
  - K: ii/infrom #c
    D: |
-     J.no->($J, '_', '', "x.j.l", '{co:38f}');
-     J.no->($M, '=', '', {}, '{fs:22,co:000,sha:3 3 3 fff}');
+     Mn('_', '', "! x.j.l !", '{co:38f}');
+     Mn('=', '', {}, '{fs:22,co:000,sha:3 3 3 fff}');
      
      if (my $ori = x.sc.ori) {
          # eye/ghosts etc
-         J.no->($J, 'ori', '',
-             {s=>$ori, pi=>'ori', pwth=>'sur/to:/', gp=>{cv=>0.1}});
+         Mn('ori','',
+           {s=>$ori, pi=>'', gp=>{cv=>0.2}, pwth=>'sur/to:/'},
+           '{hue:100,ab:1,left:1em}');
+         
      }
      
      # quick reverse, snap bits off i
-     Rw Mn + $n:_ for
-     ['<','',{pwth=>'whack'},'{fs:16,co:314,sha:1 1 3 fff}'];
+     Mn('<','',{pwth=>'whack'},'{fs:16,co:314,sha:1 1 3 fff}');
      
      
      my $in = {%{x.sc}};
      delete in.ori;
      delete in.travely if ref in.travely eq 'ARRAY' && !@{in.travely};
      if (%$in) {
-         Rw Mn + $n:_ for
-         ['x-sc','',{pi=>'capstyle',s=>$in},{fs=>26,co=>'314',sha=>'1 1 3 fff'}];
+         Mn('x-sc','',{pi=>'capstyle',s=>$in},{fs=>26,co=>'314',sha=>'1 1 3 fff'});
      }
      if (my $time = x.sc.ts) { # can't be zero, so relative
          Rw ii/time + $time;
      }
- - K: pi/ori #c
-   D: |
-     J.no->($J, 'ori','',"$u", '{hue:100,ab:1,right:1em}');
  - K: pi/lab #c round corner, where one bit/type/hum of noise splits others
    D: |
-     my $s = $u;
      my $r = J.d.g.r;
-     my $ex;
-     # 3 s ripping apart
-     
-     if (r.c.file) {
-         $s =~ s/\.(\w+)$//;
-         $ex = $1;
-     }
-     # 4 pea
-     if (defined $s) {
-         my $sc ={zi=>15, sha=>'2 3 6 ccf',
-                  fw=>6, co=>'3f4'};
-         Rw wtf $J lab $s $sc;
-     }
-     # 5ery
-     if (defined $ex) {# TODO this huge beingness faster
-         my $sc = {co=>'000',sha=>'2 3 4 ccf', 
-             ab=>1,right=>'0.4em',top=>'0.5em',
-            fs=>8,zi=>'3'};
-         Rw wtf $J ex $s:ex $sc;
-     }
+     Jn(wtf => '', $u, '{zi:15,sha:2 3 6 ccf,fw:6,co:3f4}');
      
  - K: pi/capstyle #c
    D: |
-     Rw Mn + $n:_ for
-     ['intersc','',{pi=>'',s=>$u,gp=>{cv=>0.7}},{fs=>10,co=>'314',sha=>'1 1 3 fff'}];
+     Jn( intersc => '',
+       {pi=>'',s=>$u,gp=>{cv=>0.7}},
+       '{fs:7,co:314,sha:1 1 3 fff}');
 
-     
- - K: ii/travely #c
-   D: |
-     return unless $vl && @$vl;
-     Rw Mn + $n:_ for
-     ['travely', '', {s=>join(" ",'',@$vl,'')}],
-     ['S', '', {pi=>'',s=>x.js,gp=>{cv=>0.2}}];
      
  - K: ii/time #c
    D: |
