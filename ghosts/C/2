@@ -19,9 +19,9 @@ R_Jz:
    D: |
        my $onl = ar.onl;
        $onl ||= Rw tlv $J;
+       my $sec = $out - $in; # <-0.8->
        
-       my $phi = $out - $in; # <-0.8->
-       my $thi = $phi / (@$onl||1); # or indi
+       my $thi = $sec / (@$onl||1); # or indi
        # thi vs $onl individuality
        my $tin = $in;
        for my $x (@$onl) {
@@ -32,7 +32,7 @@ R_Jz:
            x.out = $tin + $thi;
            $tin = x.out; # next
            # space volve, indi...
-           #die "x.j.r   shall x.thi    ($tot $phi)";
+           saybl "blbl x.j.r   shall x.thi    ($tot $sec)";
            
            my $j = x.j;
            if (!J.q) {
@@ -43,6 +43,26 @@ R_Jz:
        }
        $onl
        
+ - K: waits #c
+   D: |
+    my $towait = ar.towait || 1;
+    my $to = ar.to;
+    
+    my $max = max map { _.div } @$to;
+    _.span = $max / _.div for @$to;
+    
+    my $tot = sum map { _.span } @$to;
+    my $one = $towait / $tot;
+    
+    my $ord = {};
+    for my $t (@$to) {
+        my $waits = $one * t.span;
+        $waits = sprintf("%.7f", $waits);
+        t.waits = $waits;
+        push @{ $ord->{$waits} ||= [] }, $t
+    }
+    return $ord;
+    
  - K: inness #cc soy packets everywhere # THINGNESS as onness
    D: |
       w mux(u=>$J) if ar.r; # slower reintro - calc entropy
@@ -54,12 +74,7 @@ R_Jz:
       
       my $ye = Rw suck + */ines;
       
-      #die wdump $ye if J.name =~ /mash/;
-      
-      if ($ye) {
-      sayre "inness override ".$J->pi;
-      return
-      }
+      return sayre "inness override ".$J->pi if $ye;
       die if J.name =~ /mash/;
       
       # right handed receiver of 8s, informs to humm etc.
@@ -114,12 +129,11 @@ R_Jz:
           }
       }
       
-
  - K: pi/infrom #c
    D: |
      my $x = $u;
-     Jn('_', '', "x.j.l", '{co:38f}');
-     Jn('=', '', {}, '{fs:22,co:000,sha:3 3 3 fff}');
+     Jn('onl', 0.1, "x.j.l", '{co:38f,fs:20}');
+     Jn('=', 0.12, {}, '{fs:22,co:000,sha:3 3 3 fff}');
      
      # or anywhere w e came through
      # root ^
@@ -131,15 +145,12 @@ R_Jz:
            if exists x.sc.ori;
      
      # quick reverse, snap bits off i
-     Jn('<','',{pwth=>'whack'},'{fs:16,co:314,sha:1 1 3 fff}');
+     Jn('whack',0.3,{s=>'<',pwth=>'whack',pwar=>{x=>$x}},'{fs:46,co:314,sha:1 1 3 fff}');
      
      
      my $in = {%{x.sc}};
-     delete in.ori;
-     delete in.travely if ref in.travely eq 'ARRAY' && !@{in.travely};
-     if (%$in) {
-         Jn('x-sc','',{pi=>'capstyle',s=>$in},{fs=>13 ,co=>'314',sha=>'1 1 3 fff'});
-     }
+     Jn('x-sc',0.4,{pi=>'capstyle',s=>$x},{fs=>23 ,co=>'314',sha=>'1 1 3 fff'});
+     
      if (my $time = x.sc.ts) { # can't be zero, so relative
          Rw ii/time + $time;
      }
@@ -166,7 +177,6 @@ R_Jz:
       
       Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
       coi.end->();
-
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
@@ -236,7 +246,7 @@ R_Jz:
      d.sc = {%{r.lab_sc||{}}};
      d.sc.ws = 'p';
      #d.sc.fs = 30 if x.phi > 0.4;
-     sayyl ki d.g.x;
+     #sayyl ki d.g.x;
      d.sc.ab = 'right:0.5em'; 
      Rw iiJM + $d;
      # the lasty tangvely, sandy mod hooks beVow
@@ -247,9 +257,10 @@ R_Jz:
      
  - K: pi/capstyle # the sc attachment
    D: |
+     my $x = $u;
      Jn( intersc => '',
-       {pi=>'',s=>$u,gp=>{cv=>0.7}},
-       '{fs:3,co:314,sha:1 1 3 fff}');
+       {pi=>'',s=>x.sc,gp=>{cv=>0.7}},
+       '{fs:7,co:314,sha:1 1 3 fff}');
 
      
  - K: whack #c the <, smash bit off end of stick
