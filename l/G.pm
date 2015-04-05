@@ -290,7 +290,7 @@ sub hexbe {
 }
 
 sub hitime {
-    return join ".", gettimeofday();
+    return join ".", gettimeofday() - 1420070400;
 }
 
 sub flatline {

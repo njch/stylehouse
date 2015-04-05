@@ -1,29 +1,38 @@
 R_Jz:
+
+ - K: capu #c fo9od
+   n_D:
+     yJup: |
+       qw'ps oci ';
+     curves: |
+       y 0  0.9
+       x 0  0.12
+       spun 0  0.75
+       curve 0.1 -0.024
+       zoom 0 0.3
+       #["curve 0.4" => 0.3],
+     up: |
+       Rw ii/Jhead $J $cv=0.2;
+       Rw ii/psfaus;
+ - K: capup #c
+   D: |
+     die wdump $ar;
  - K: mash #c CURVEd FOOD
    n_D:
      yJup: |
-       'mash oci bluerug'
+       'mash bluerug eyenest'
      curves: |
           zoom 0 0.570
           y 0 0
           x 0 0.5
           #x 0.1 0.46
           curve 0.3 -0.041
-     mods:
-        - 
-          - sq
-          - 10
-          - s: 22
-            fs: 7_3
-            cow: rg 34f
-          - blr: 3
-            ml: 1em
      up: | #c
        my $he = 0.05;
        Rw ii/Jhead + 0.03 $out=0.05;
        #Rw ii/ornate + $in:he;
        
-       Jn(eW => 0.1112, {s=>'eW',pwth=>'mash/down'}, {fs=>'25'});
+       Rw ii/Wdo $J $oJ:J.on;
 
        my $onl = Rw very + $J:J.on $in=0.2 $out=0.9 $tot=16;
 
@@ -31,19 +40,9 @@ R_Jz:
            Rw ix/suro + $x;
        }
        sayre "==\nASH delt ASH ".F_delta."\n==";
-     down: | #c
-       w demux[$J];
-       my $tl = Rw tlv $J:J.on;
-       
-       
-       my $m = [];
-       for my $l (@$tl) {
-           say wdump [l.j.l, '', l.j.s, l.sc];
-       }
-       $m = ejson $m;
-       
-       
-     ines: | #c inness vines
+ - K: eyenest #c
+   n_D:
+     ines: | # inness vines
        my $J = J.on;
        if (my $r = ar.r) {
            Rw inesto $J $r;
@@ -57,12 +56,131 @@ R_Jz:
            }
        }
        3
+ - K: ii/Wdo #c
+   D: |
+       Jn(eW => 0.1112, {s=>'eW',pwth=>'Wdo',pwar=>$ar}, {fs=>'25'});
+ - K: Wdo #c
+   D: |
+       w demux[$J];
+       my $on = ar.oJ || $J;
+       my $tl = Rw tlv $J:on;
+       
+       
+       my $M = [];
+       for my $l (@$tl) {
+           my $d;
+           d.t = l.j.l;
+           d.y = '';
+           d.c = l.j.s;
+           d.sc = l.sc;
+           
+           sayyl "d.t         d.c           ".ki d.sc;
+           
+           for my $n (sort keys %$d) {
+               my $s = $d->{$n};
+               if (ref $s eq 'HASH') {
+                   my @h;
+                   for my $k (sort keys %$s) {
+                       my $v = $s->{$k};
+                       if (ref $v || $v =~ /[,\n:}]/) {
+                           sayre "cannot down d.t  d_${n}_$k = $v";
+                       }
+                       else {
+                           push @h, $k.':'.$v;
+                       }
+                   }
+                   $d->{$n} = '{'.join(',',@h).'}';
+               }
+               elsif (ref $s) {
+                   sayre "cannot down d.t  d_$n = $s";
+                   $d->{$n} = '';
+               }
+               else {
+               }
+           }
+           push @$M, [d.t, d.y, d.c, d.sc];
+       }
+       my $n = 'wormhole/the'.J.nam;
+       $n .= '-'.ar.m->[0] if ar.m;
+       fspu $n, ejson $M;
+       
+       
+ - K: oats #c CURVE curver
+   n_D:
+     yJup: |
+       'oats fiz_ave oci eyenest'
+     curves: |
+         zoom 0   0.4
+         zoom 0.1   0.7
+         curve 0.1  -0.1211
+         zoom 0.21 1
+         y 0 0
+         x 0 0
+         x 0.1 0.06
+         curve 0.3 -0.111
+     up: |
+       my $he = 0.05;
+       Rw ii/Jhead + 0.03 $out=0.05;
+       #Rw ii/ornate + $in:he;
+       
+       Rw ii/Wdo $J $oJ:J.on;
+
+       my $onl = Rw very + $J:J.on $in=0.2 $out=0.9 $tot=16;
+
+       for my $x (@$onl) {
+           Rw ix/suro + $x;
+       }
+       sayre "==\nASH delt ASH ".F_delta."\n==";
+     down: | #c
+       w demux[$J];
+       my $on = ar.oJ || $J;
+       my $tl = Rw tlv $J:on;
+       
+       
+       my $M = [];
+       for my $l (@$tl) {
+           my $d;
+           d.t = l.j.l;
+           d.y = '';
+           d.c = l.j.s;
+           d.sc = l.sc;
+           
+           sayyl "d.t         d.c           ".ki d.sc;
+           
+           for my $n (sort keys %$d) {
+               my $s = $d->{$n};
+               if (ref $s eq 'HASH') {
+                   my @h;
+                   for my $k (sort keys %$s) {
+                       my $v = $s->{$k};
+                       if (ref $v || $v =~ /[,\n:}]/) {
+                           sayre "cannot down d.t  d_${n}_$k = $v";
+                       }
+                       else {
+                           push @h, $k.':'.$v;
+                       }
+                   }
+                   $d->{$n} = '{'.join(',',@h).'}';
+               }
+               elsif (ref $s) {
+                   sayre "cannot down d.t  d_$n = $s";
+                   $d->{$n} = '';
+               }
+               else {
+               }
+           }
+           push @$M, [d.t, d.y, d.c, d.sc];
+       }
+       my $n = 'wormhole/the'.J.nam;
+       $n .= '-'.ar.m->[0] if ar.m;
+       fspu $n, ejson $M;
+       
+       
  - K: intoo #c
    D: |
      #die J2.Jmost->pi ."          ".wdump ;
      my $x = J2.d.c.s;
      my $on = x.j.b.b.j;
-     die wdump 2, $x;
  - K: inesto #c in J.on, throwing $r down
    D: |
      my $d;
@@ -71,14 +189,14 @@ R_Jz:
      
      sayyl sort keys %{J.bb};
      
-     warn "inesto ref in: ".gp d.s if ref d.s;
+     die "inesto ref in: ".gp d.s if ref d.s;
      
      if (d.sc.ou eq 'image') {
          if (d.s =~ /^(.+)\/([^\/]+)\/([^\/]+)(?:\.([^\/\.]+))?$/) {
              d.t = "$2/$3";
          }
-         d.t ||= d.s if !ref d.s;
      }
+     d.t ||= d.s if !ref d.s;
      # TODO make safe IDish munge of the d.t
      d.t ||= 'u';
      # Jn(d.t, '', d.s, d.sc); # TODO that easy

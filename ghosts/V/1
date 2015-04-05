@@ -14,7 +14,7 @@ R_Jz:
          # track J.most.J etcs...
          # shway by Jhead the ou/dire culture suggestions
          # to be chucked on and off, little nonmuxing pi swimming events
-         r.c.path = "!pat/dire:/r.r";
+         r.c.path = "!pat/dire";
          r.c.pi = 'dire';
          r.lab_c.pi = 'direlab';
          push @{o.r}, $r;
@@ -25,21 +25,22 @@ R_Jz:
      }
  - K: pat/dire #c pat a physical, in a directory
    D: |
-     my $ex = join ' ', @$m;
-     my $ul = J.onei.i.$ex;
-     if (-d $ul) {
-         J.onei.i = $ul
+     # this row...
+     my $i = J2.most.r.s;
+     if (-d $i) {
+         #J2.d.g.x.j.s = $ul;
+         Rw ein/dire $J $i;
      }
-     elsif (-f $ul) {
+     elsif (-f $i) {
          w demux[$J];
          my $J = Rw Jon $name=mash;
          # & over there
-         Rw ein/image $J $i:ul;
+         Rw ein/image $J $i;
      }
-     else{ die "no see $ul" }
+     else{ die "no see $i" }
  - K: pi/dire #c
    D: |
-     my $x = J.d.g.x;
+     my $x = J.most.x;
      my $dir = -d $u;
      my $file = -f $u;
      if ($dir) {
@@ -55,7 +56,6 @@ R_Jz:
              my $sp = x.imspin++;
              x.imspin = 0 if $sp > 3;
              my $left = (($sp * 5)).'em';
-             
              J.no->($J, thumb => 0.3,
                  {pi=>'thumbnail',s=>$u,gp=>{cv=>J.cv}},
                 "{opa:0.5,left:$left,top:0em,ab:1,rad:0.1,sat:4}");
@@ -69,14 +69,13 @@ R_Jz:
      my $s = $u;
      my $r = J.d.g.r;
      
-     my $fi = {pi=>'fileinfo', s=>r.s, label=>$u};
+     my $fi = {pi=>'fileinfo', s=>r.s, label=>$u, gp=>{cv=>0.1}};
      Jn(fileinfo => 0.3, $fi,
             '{hs:6.7.2.9,ab:1,top:1em,right:1em}');
      
      Jn('label', '', fi.label,
          "{zi:15,sha:2 3 6 ccf,fw:6,co:3f4}");
      
-
  - K: pi/emb #c right
    D: |
      Jn(J.r, 0.2, "$u", '{fs:15}');
@@ -84,12 +83,12 @@ R_Jz:
    D: |
      J.d.sc.sha = '-2 1 5 ff7a';
      if (-d $u) {
-         Jn(isdir => 0.4,
+         Jn(isdir => 0.1,
             {pi=>'emb', s=>'𐏓'},
             '{hs:3.7.5.9}');
      }
      if (-f $u) {
-         Jn(isfile => 0.2,
+         Jn(isfile => 0.1,
          {pi=>'emb', s=>'f'},
             '{hs:6.7.2.9}');
          
@@ -98,12 +97,12 @@ R_Jz:
                  if J.d.c.label =~ s/\.([^\.]+)$//;
          }
          if (defined J.d.c.fileext) {
-             Jn(ext => 0.2, J.d.c.fileext, 
+             Jn(ext => 0.1, J.d.c.fileext, 
                  '{co:fff,sha:2 3 4 ccf,fs:8,zi:3,deco:1}');
          }
      }
      
-     return unless J.fop->();
+     return unless J.cv >= 0.3 && J.fop->();
      
      if (-f $u) {
          Jn(filesiz => 0.3,
@@ -133,9 +132,9 @@ R_Jz:
      my @r = Rw globdir $dir;
      my @d = grep { -d _.full } @r;
      for my $r (@d) {
-         J.no->($J, r.r, '',
+         Jn(r.r, '',
              {s=>$r,pi=>'dierfi'},
-             '{co:33f,sha:3 3 5 fff,ml:0.5em}');
+             '{co:33f,sha:3 3 5 fff,ml:0.1em}');
      }
      my $ts;
      ts.d = @d;
