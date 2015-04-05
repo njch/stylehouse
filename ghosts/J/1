@@ -138,6 +138,11 @@ R_Jz:
            };
            
            grep {defined} $doig->([@path], $h, '');
+ - K: delbbl #c
+   D: |
+     my $ip = {l => $l};
+     delete J.bb->{_.r} for
+     Rw tvo $J $ip;
  - K: ytv #c sort by voltage making cityscape, things only
    D: |
      
@@ -252,8 +257,7 @@ R_Jz:
    D: |
      my $r = delete ar.r;
      my $m = delete ar.m;
-     my $style = shift @$m;
-     die if @$m;
+     my $stz = {map{$_ => 1}@$m};
      
      my $ip = {%$ar}; 
      delete $ip->{$_} for qw'J R';
@@ -261,8 +265,13 @@ R_Jz:
      my @junk = Rw tvo $J $ip;
      r.junk = \@junk;
      # or so
-     my (@path) = grep { _.style eq $style } @junk; 
+     my (@path) = grep { $stz->{_.style} } @junk; 
      r.path = \@path;
+     if (@$m > 1) {
+        my $ps = {};
+        acum $ps, _.style, $_ for @path;
+        @path = map { $ps->{$_} || [] } @$m;
+     }
      @path;
         
  - K: Jun #c find named J, may return nothing

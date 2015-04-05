@@ -15,35 +15,7 @@ R_Jz:
      @$onl = @in;
      $onl
      
- - K: very #c tak tlv into space, ready for lx/suro
-   D: |
-       my $onl = ar.onl;
-       $onl ||= Rw tlv $J;
-       my $sec = $out - $in; # <-0.8->
-       
-       my $thi = $sec / (@$onl||1); # or indi
-       
-       # thi vs $onl individuality
-       my $tin = $in;
-       for my $x (@$onl) {
-           # go higher and pipe mods to squish space, vary $thi (other ways to)
-           x.thi = $tot * $thi;
-           x.phi = $thi;
-           x.in = $tin;
-           x.out = $tin + $thi;
-           $tin = x.out; # next
-           # space volve, indi...
-           saybl "blbl x.j.r   $tot * $thi =  x.thi    ($tot $sec)";
-           
-           my $j = x.j;
-           if (!J.q) {
-               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
-               say "   * _.r          => ".gp(_.s) for values %{x.sj};
-               say "up around x.in <-> x.out"
-           }
-       }
-       $onl
-       
+
  - K: waits #c
    D: |
     my $towait = ar.towait || 1;
@@ -133,7 +105,7 @@ R_Jz:
  - K: pi/infrom #c
    D: |
      my $x = $u;
-     Jn('onl', 0.1, "x.j.l", '{co:38f,fs:20}');
+     Jn('onl', 0.1, "x.j.l", '{co:38f,fs:12}');
      Jn('=', 0.12, {}, '{fs:22,co:000,sha:3 3 3 fff}');
      
      # or anywhere w e came through
@@ -146,7 +118,7 @@ R_Jz:
            if exists x.sc.ori;
      
      # quick reverse, snap bits off i
-     Jn('whack',0.3,{s=>'<',pwth=>'whack'},'{fs:46,co:314,sha:1 1 3 fff}');
+     Jn('whack',0.3,{s=>'<',pwth=>'whack'},'{fs:20,co:314,sha:1 1 3 fff}');
      
      
      my $in = {%{x.sc}};
@@ -157,6 +129,7 @@ R_Jz:
      if (my $time = x.sc.ts) { # can't be zero, so relative
          Rw ii/time + $time;
      }
+ - K: 
  - K: ix/suro #c
    D: |
       my $j = x.j;
@@ -180,18 +153,74 @@ R_Jz:
       
       Rw om/bal $J $oM:M $t:j.t $in:x.in $out:x.out;
       coi.end->();
+ - K: very #c tak tlv into space, ready for lx/suro
+   D: |
+       my $onl = ar.onl;
+       $onl ||= Rw tlv $J;
+       my $sec = $out - $in; # <-0.8->
+       
+       my $thi = $sec / (@$onl||1); # or indi
+       
+       # thi vs $onl individuality
+       my $tin = $in;
+       for my $x (@$onl) {
+           # go higher and pipe mods to squish space, vary $thi (other ways to)
+           x.thi = $tot * $thi;
+           x.phi = $thi;
+           x.in = $tin;
+           x.out = $tin + $thi;
+           $tin = x.out; # next
+           # space volve, indi...
+           saybl "blbl x.j.r   $tot * $thi =  x.thi    ($tot $sec)";
+           
+           my $j = x.j;
+           if (!J.q) {
+               say "up on ".$J->pi."    j.r    ".slim 200, gp(j.s);
+               say "   * _.r          => ".gp(_.s) for values %{x.sj};
+               say "up around x.in <-> x.out"
+           }
+       }
+       $onl
+       
+ - K: oundo #c hound god from a crux of inness $x
+   D: |
+     my $o = {r=>[]};
+     # fills up @r to $thi
+     # also $plucky to select hash key order
+     # a space for tiny-part-of-huge-set access
+     
+     my $u = x.j.s;
+     my $sc = x.sc;
+     
+     # $plucky could rate the things it gets passed
+     # and the $thi yins up out here
+     
+     sc.ou ||= 'text' if !ref $u;
+     sc.ou ||= 'array' if ref $u eq 'ARRAY';
+     sc.ou ||= 'code' if ref $u eq 'CODE';
+     sc.ou ||= 'hash';
+     
+     # further dimensional sc if {} or something?
+     # so the spec can curve data all the way
+     Rw ou/sc.ou + $u $o $x $sc;
+     
+     sc.grp &&
+     Rw og/sc.grp + $u $o $x $sc;
+     
+     # $r rows over the contents
+     # r.c probably for pi, other stuff may pick stuff up...
+     
+     o.thi = @{o.r};
+     $o
  - K: ii/bod #c boodle am $rr into $M: lab,pi, lab,pi ...
    D: |
        my $in = x.in; # TODO whereto?
        my $out = x.out;
-       my $phi = ($out - $in) * (x.thi || 2); # normal lines per 0.1
-       my $thi = $phi; # oundo big window, bod small
-       my $whi = $thi * (x.sc.whim || 2);
-       sayyl '=========' for 1..5;
-       sayre "bod     $in    $out     x $thi     x.j.r"; # TODO say big
+       my $thi = x.thi;
        
+       sayyl "x.in - x.out     x.thi";
        
-       my $o = Rw oundo $thi $whi $x;
+       my $o = Rw oundo $thi $x;
        
        my $oM = [];
        for my $r (@{o.r}) {
@@ -241,18 +270,25 @@ R_Jz:
    D: |
      my $d;
      d.g.x = $x;
+     
      d.g.r = $r;
+     
      d.t = 'lab';
+     
      d.c = {%{r.lab_c||{}}};
+     
      d.c.s = r.r;
      d.c.pi ||= 'lab';
      d.c.fsx = "25";
+     
      # selection piways
      d.sc = {%{r.lab_sc||{}}};
      d.sc.ws = 'p';
      #d.sc.fs = 30 if x.phi > 0.4;
      #sayyl ki d.g.x;
+     
      d.sc.ab = 'right:0.5em'; 
+     
      Rw iiJM + $d;
      # the lasty tangvely, sandy mod hooks beVow
  - K: pi/lab #c round corner, where one bit/type/hum of noise splits others

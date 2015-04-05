@@ -55,27 +55,16 @@ R_Jz:
          if (J.cv >= 0.3) {
              my $sp = x.imspin++;
              x.imspin = 0 if $sp > 3;
-             my $left = (($sp * 5)).'em';
+             my $left = (($sp * 3)).'em';
+             $left = "0.1em";
              J.no->($J, thumb => 0.3,
                  {pi=>'thumbnail',s=>$u,gp=>{cv=>J.cv}},
-                "{opa:0.5,left:$left,top:0em,ab:1,rad:0.1,sat:4}");
+                "{opa:0.8,left:$left,top:0em,ab:1,rad:0.1,sat:4}");
          }
      }
      else {
          Rw wtf wtf 1 $J;
      }
- - K: pi/direlab #c round corner, where one bit/type/hum of noise splits others
-   D: |
-     my $s = $u;
-     my $r = J.d.g.r;
-     
-     my $fi = {pi=>'fileinfo', s=>r.s, label=>$u, gp=>{cv=>0.1}};
-     Jn(fileinfo => 0.3, $fi,
-            '{hs:6.7.2.9,ab:1,top:1em,right:1em}');
-     
-     Jn('label', '', fi.label,
-         "{zi:15,sha:2 3 6 ccf,fw:6,co:3f4}");
-     
  - K: pi/emb #c right
    D: |
      Jn(J.r, 0.2, "$u", '{fs:15}');
@@ -127,20 +116,7 @@ R_Jz:
      
      
      #e
- - K: pi/direst #c shadowing fs
-   D: |
-     my @r = Rw globdir $dir;
-     my @d = grep { -d _.full } @r;
-     for my $r (@d) {
-         Jn(r.r, '',
-             {s=>$r,pi=>'dierfi'},
-             '{co:33f,sha:3 3 5 fff,ml:0.1em}');
-     }
-     my $ts;
-     ts.d = @d;
-     ts.files = @r - @d;
-     Rw Mn + $n:_ for
-         ['more', 0.88, {s=>$ts,pi=>'n_tal'}, {fs=>13,co=>'e9a7'}];
+
  - K: globdir #c
    D: |
      my @ma = map{$H->fixutf8($_);chomp;$_}`ls -1 '$dir'`;
@@ -171,12 +147,12 @@ R_Jz:
      -f $u || die;
      my $sc;
      my $thi = J.d.g.x.phi || 1;
-     sc.height = (84 * $thi)."em";
+     sc.height = (64 * $thi)."em";
      say "Image thickness:   sc.height     for $u";
      sc.hue = -20 + int(rand 56);
      sc.con = sprintf '%.1f', 0.7 + rand 2;
      sc.left = "0em";
-     J.d.sc.mw = "60em";
+     J.d.sc.mw = "20em";
      Rw pi/thumbnail $u $J $sc;
  - K: pi/thumbnail #c image/video
    D: |
@@ -222,10 +198,24 @@ R_Jz:
      }
      delete J.mod.sc.over;
      #J.mod.sc.bgi = $thl;
+ - K: pi/direst #c shadowing fs
+   D: |
+     my @r = Rw globdir $dir;
+     my @d = grep { -d _.full } @r;
+     for my $r (@d) {
+         Jn(r.r, '',
+             {s=>$r,pi=>'dierfi'},
+             '{co:33f,sha:3 3 5 fff,ml:0.1em}');
+     }
+     my $ts;
+     ts.d = @d;
+     ts.files = @r - @d;
+     Rw Mn + $n:_ for
+         ['more', 0.88, {s=>$ts,pi=>'n_tal'}, {fs=>13,co=>'e9a7'}];
  - K: pi/dierfi #c
    D: |
      Rw Mn + $n:_ for
-     ['name', '', {s=> u.r }, {ml=>'2em'}];
+     ['name', '', {s=> u.r }, {ml=>'0.1em'}];
      
      if (-d u.full) {
          Rw Mn + $n:_ for
