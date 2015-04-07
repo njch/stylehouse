@@ -1281,9 +1281,10 @@ sub spc {
 sub msc {
     my $G = shift;
     my $x = ref $_[0] ? $_[0] : $G->spc(@_);
+    my $link = $x->{fi}.'.s';
 
+    return $link if -l $link;
 
-      my $link = $x->{fi}.'.s';
       my $s = `readlink $link` || do {
           $link =~ s/[^\w\/\-\.]//g; # TODO nully
           `readlink $link` || do {

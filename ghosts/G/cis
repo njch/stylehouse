@@ -102,9 +102,10 @@ Ds:
   - K: msc #c catch movign zipper      M    S    C dont really need, write at .s if exists
     D: |
       my $x = ref $_[0] ? $_[0] : 0->spc(@_);
+      my $link = x.fi.'.s';
       
-          
-        my $link = x.fi.'.s';
+      return $link if -l $link;
+      
         my $s = `readlink $link` || do {
             $link =~ s/[^\w\/\-\.]//g; # TODO nully
             `readlink $link` || do {
