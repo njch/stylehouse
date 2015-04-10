@@ -102,6 +102,15 @@ R_Jz:
           }
       }
       
+ - K: whack #c the <, smash bit off end of stick
+   D: |
+     my $o = J.onei;
+     if (@{o.t||[]}) {
+         pop @{o.t};
+     }
+     else {
+         o.i =~ s/\/[^\/]+$//;
+     }
  - K: pi/infrom #c
    D: |
      my $x = $u;
@@ -263,7 +272,7 @@ R_Jz:
        
      d.sc = {%{r.sc||{}}};
      d.sc.ws = 'n';
-     d.sc.ab = 'left:3em';
+     d.sc.ab = 'left:0.1em';
      
      Rw iiJM + $d;
  - K: ii/labegy #c suitcase handle # elemental locus of travel/path fields
@@ -296,7 +305,7 @@ R_Jz:
      my $r = J.d.g.r;
      Jn(wtf => '', $u, '{zi:15,sha:2 3 6 ccf,fw:16,co:3f4}');
      
- - K: pi/capstyle # the sc attachment
+ - K: pi/capstyle #c the sc attachment
    D: |
      my $x = $u;
      Jn( intersc => '',
@@ -304,16 +313,6 @@ R_Jz:
        '{fs:7,co:314,sha:1 1 3 fff}');
 
      
- - K: whack #c the <, smash bit off end of stick
-   D: |
-     my $o = J.onei;
-     if (@{o.t||[]}) {
-         die;
-     }
-     else {
-         o.i =~ s/\/[^\/]+$//;
-     }
-
  - K: ii/time #c
    D: |
      # say # ago and js hookup increment into human
@@ -326,28 +325,17 @@ R_Jz:
        my $M = [];
        my $cv = ar.cv || 0.4;
        
-       my $name = J.name;
-       my ($nas, $nameb) = split '-', $name, 2;
-       Mn(nas => '', "$nas",
-           '{sha:3 5 2 330,fs:15}');
-       Mn(nameb => '', "$nameb", 
-           '{sha:3 5 2 330,co:a359,fs:9}');
+       Mn(name => '', {pi=>'Jname',s=>$J,gp=>{cv=>$cv}});
        
-       if (H.name ne 'C') {
-           Mn(Hname => '', "H.name", 
-               '{sha:3 5 2 330,co:ff59,fs:12,ab:1,ml:0.3em}');
-       }
+       Mn(Hname => '', "H.name", 
+               '{sha:3 5 2 330,co:ff59,fs:12,ab:1,ml:0.3em}')
+           if H.name ne 'C';
        
-       my $xc = {pwth=>'hull/mk:X'};
-       my $xsc = {co=>'f34',fs=>'13'};
-       if ($cv < 0.3) {
-           xsc.fs = 14;
-           xsc.ab = 1;
-           xsc.left = '0.3em';
-           xsc.zi = 44;
-       }
-       Mn(x => '', $xc, $xsc);
+       Mn(X => '', {pi=>'Jkill',s=>$J,gp=>{cv=>$cv}});
        
+       
+       Jn(eW => '', {s=>'eW',pwth=>'Wdo',pwar=>$ar}, {fs=>'25'});
+
        # TODO collapse upwards button
        
        #Rw Mn $J $n;
@@ -362,4 +350,22 @@ R_Jz:
        my $sc;
        sc.fs = $cv > 0.2 ? 19 : 9;
        Rw om/lev + $oM:M Jhead $at $sc;
+ - K: pi/Jkill #c
+   D: |
+       my $xc = {pwth=>'hull/mk:X',s=>'X'};
+       my $xsc = {co=>'f34',fs=>'13'};
+       if (J.cv < 0.3) {
+           #xsc.fs = 14;
+           xsc.ab = 'left:0.3em';
+           #xsc.zi = 44;
+       }
+       Jn(x => '', $xc, $xsc);
+     
+ - K: pi/Jname #c
+   D: |
+      my $name = u.name;
+      ($name, my $soob) = ($1,$2) if $name =~ /^(.+)(-.+?)$/;
+      Jn(name => '', "$name", '{sha:3 5 2 330,fs:15}');
+      Jn(oob => '', "$soob", '{sha:3 5 2 330,co:a359,fs:6,ml:-0.4em}') if defined $soob;
+       
 
