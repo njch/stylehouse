@@ -200,14 +200,6 @@ R_Jz:
    babz:
      'spit 2.89': |
        kill 'KILL', $_ for @{delete J.fopikil || []};
-     'suJ 3.5': |
-       # to put something off til forking
-       # so false when in shadow
-       J.fop = $by->(sub { # a little J (pi) 
-           return 1 if H.forking;
-           Rw fopi $J;
-           return 0;
-       });
      'spit 8.9': | # forking
        if (%{J.fopi||{}}) {
            my $Js = [values %{delete J.fopi}];
@@ -226,17 +218,25 @@ R_Jz:
        # not EV reaction in the child, handles confused
        # must exit so nothing else can happen
  - K: fopi #c enqueue/shadow-
+   babz:
+     'suJ 3.5': |
+       # to put something off til forking
+       # so false when in shadow
+       J.fop = $by->(sub { # a little J (pi) 
+           return 1 if H.forking;
+           Rw fopi $J;
+           return 0;
+       });
    D: |
      J.isJid ||= Rw mkJid $J;
      J.Jmost.fopi->{J.isJid} = $J;
      # these could be forked right away
      # if they can wait for the M muxing J if they reach O first
      # graphable evens it
- - K: foping #c carbon coopy of pi 4
+ - K: foping #c carbon coopy of pi 4 # could be a global wag jaw, Js swim
    D: |
-     say @$Js." fops from ".gp($J);
-     # 2 bunch of forking gguts
-     # 3
+     say @$Js." fops, forking for: ".gp($J);
+     # 3 after the gguts from forkin
      saybl "   Forked... ";
      
      # little qv teether, batch for finer grained things, timely
