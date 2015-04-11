@@ -103,27 +103,24 @@ R_Jz:
           # language inthemiddle
        #\  v m
        if (e.type eq 'click') {
-           for ($y) {
-               when (/^(\{|\[)/) {
-                   r.t = $y;
-                   Rw sur/folw $r $J;
-               }
-               default {
-                   die "dunno $y"
-               }
+           if ($y =~ /^(\{|\[)/) {
+               r.t = $y;
+               Rw sur/folw $r $J;
+           }
+           else {
+               die "dunno $y"
            }
        }
        elsif (e.type eq 'keydown') {
-               say "is key e.k";
-               for (e.k) {
-                   when ('0') {
-                       my $t = J.onei.t;
-                       my @t = @{$t||die};
-                       pop @t;
-                       my $r = {t=>\@t};
-                       Rw inness $J $r;
-                   }
-               }
+           say "is key e.k";
+           if (e.k eq '0') {
+               die 'pop inness travelin...';
+               my $t = J.onei.t;
+               my @t = @{$t||die};
+               pop @t;
+               my $r = {t=>\@t};
+               Rw inness $J $r;
+           }
        }
        else {
              say "Sur". wdump($e);
