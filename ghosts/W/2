@@ -68,11 +68,9 @@ R_Jz:
  - K: timeloop #c
    n_D:
      fresh_init: | #c
-       my $to = sub {
+       $G->recur(24, sub {
          Rw timeloop/ocur;
-         sayre "BOO";
-       };
-       recur 24 { $to->() }
+       });
      ocur: | #c
        sayre "OC!" if !H.busy;
        # H.G w cyc; 
