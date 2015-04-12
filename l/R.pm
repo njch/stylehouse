@@ -205,10 +205,6 @@ sub phat {
      $a->{bb} = {};
      $a->{ord} = [];
      $a->{bz} = $R->as($a->{bb}, $a->{ord});
-     $a->{fro} = sub {
-         my $fro = [$a->{bz}, @_];
-         $R->{G} ->w("gpfro", {a=>$fro}, $R);
-     };
 }
 
 sub as {

@@ -174,8 +174,8 @@ R_Jz:
                 
                 my $vcv = J.cv - 0.2; # dus bend for $k
                 $vcv = 0.1 if $vcv < 0.1;
-                
-                J fro [${i} 0.2${vc}4 $uu, $vcv, "%css" => "font-size:75%"
+                 
+                Jn("[${i}", "0.2${vc}4", {pi=>'',s=>$uu,gp=>{cv=>$vcv}}, {fs=>7});
                 
                 $i++;
                 if ($i >= 5) {
@@ -208,26 +208,23 @@ R_Jz:
                     #J bz {$k/Bs 0.2${vc}1 ','
                 }
                 
-                my $fs = 75;
+                my $fs = 12; # is 100%?
                 my $ksi = length($k);
-                $fs -= ($ksi - 8) * 8 if $ksi > 8;
+                $fs -= ($ksi - 2) * 0.4 if $ksi > 8;
                 $fs = int($fs);
-                $fs = 25 if $fs < 25;
-                    
-
-                J bz {$k/k 0.2${vc}2 $k, "%css" => "color:#acf;font-size:$fs%"
+                $fs = 4 if $fs < 4;
+                
+                J.bz->("{$k/k 0.2${vc}", $k, "%css" => "color:#acf;font-size:$fs%");
                 
                 my $vcv = J.cv - 0.2; # dus bend for $k
                 if ($vcv >= 0.2) {
-                
                     #J bz {$k/Bi 0.2${vc}3 ':', '%css' => "font-size:40%"
-                    
-                    my $fs = 75;
-                    $fs -= length($v) - 8 * 4 if 8 < length $v;
+                    # TODO fsxing, cv, geom peeps
+                    my $fs = 11;
+                    $fs -= length($v) - 2 * 0.4 if 8 < length $v;
                     $fs = int($fs);
                     
-                    J fro {$k/v 0.2${vc}4 $v, $vcv, '%css' => "font-size:$fs%"
-
+                    Jn("{$k/v", "0.2${vc}4", {pi=>'',s=>$v,gp=>{cv=>$vcv}}, {fs=>$fs});
                 }
                 
                 $i++;
@@ -236,49 +233,6 @@ R_Jz:
                     
                         '%sf' => "blue");
                     last;
-                }
-            }
-      HASH2: | #c
-            my $cv = J.cv ||= 0.3;
-            
-            my $si = keys %$u;
-            J.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
-            
-            J.bz->("B:Bo 0.1 0.1" => '{');
-            J.bz->('B:oB 0.1 0.89' => '}');
-            
-            return if $cv < 0.2;
-            
-            # 3
-            my $r = {map{$_=>1} keys %$u};
-            my @r = grep { delete $r->{$_} } qw'K name';
-            push @r, sort keys %$r;
-            
-            my $ki = 0;
-            my $i = 0;
-            J.bz->('B:Bs 0.2', ',');
-            J.bz->('B:Bi 0.3', ':');
-            
-            for my $k (@r) {
-                my $v = $u->{$k};
-                $i++;
-                if ($cv < 0.8 && $i >= 5) { # braids at 0.8
-                    J.bz->("more 0.2 0.886" => "@", '%sf' => "blue");
-                    last;
-                }
-                
-                my $ii = sprintf('%04d', $i);
-                
-                J.bz->('B/'.$ii.'/k 0.2', $k,
-                
-                    '%css' => 'color:#acf;font-size:80%');
-                
-                
-                my $vcv = J.cv - 0.2; # dus bend for $k
-                if ($vcv >= 0.2) {
-                    J.fro->('B/'.$ii.'/v 0.3', $v, $vcv,
-
-                        '%css' => 'font-size:75%');
                 }
             }
       ref: | #c weird ref
@@ -377,8 +331,9 @@ R_Jz:
         return if $cv < 0.2;
         J bz K 0.2        u.K
         #die wdump 2, J.d.g.x.sc;
+        # THIS v kinda as the whole thing is water phased cleverness (a defer)
         if (J.d.g.x.sc.ori ne u.i) {
-            J fro i 0.2 u.i, 0.2
+            Jn('i', 0.2, {pi=>'',s=>u.i,gp=>{cv=>0.2}});
         }
         else {
             J bz i 0.2 'this'
@@ -425,18 +380,12 @@ R_Jz:
         return if $cv < 0.1;
         J.bb->{"name 0.1"} = $H->ejson(u.B) if u.B;
         return if $cv < 0.2;
-        J.fro->('i 0.2', $u, 0.1);
+        Jn(i => 0.2, {pi=>'',s=>$u,gp=>{cv=>0.1}});
         return if $cv < 0.3;
         # 3
-          my $bits = do {
-              my $a = {u=>$u, wa=>'up'};
-              w $R gp[$u, $a];
-              J.bb
-          };
-          J.bb->{'bit/'.$_} = $bits->{$_} for keys %$bits;
-        
-      up: | #c
+      up: | #c WWAHAT
             my $r = {map{$_=>1} sort keys %$u};
+            die "UP IN PI";
             
             my $ordy = {
                 A => 1,
@@ -477,7 +426,7 @@ R_Jz:
         J.bb->{"name 0.12"} = u.name;
         return if $cv < 0.2;
         return if $cv < 0.3;
-        J.fro->('G 0.3', u.G, 0.2, '%css'=>"font-size:80%"); # TODO relative down
+        Jn(G => 0.3, {pi=>'',s=>u.G,gp=>{cv=>0.2}}, {fs=>7}); # TODO relative down
         return if $cv < 0.4;
       C: | #c
         my $cv = J.cv ||= 0.3;
