@@ -341,13 +341,11 @@ R_Jz:
    D: |
      my $style = J.style;
      J.yt = {};
-     my @blyl;
      my @style;
      for (@$style) {
-         my $pin = "$_/yJup";
-         my @wk = Rw suck + $pin;
-         @wk = map {split / +/} @wk;
-         push @blyl, join '+', uniq @wk;
+         my @wk = uniq
+             grep{length} map {split /\s+/}
+             Rw suck + $pin=$_/yJup;
          for (@wk) {
              push @style, $_;
              J.yt->{$_} ||= {};
@@ -359,7 +357,7 @@ R_Jz:
      $style = [@style];
      
      Rw doc Jyup $J $style;
-     saygr "J.name yJup: @style  -> @blyl";
+     saygr "J.name yJup: @style ";
  - K: hiJ #c add to space # ipv6 goes in
    D: |
      my $u = ar.u ||= {};
