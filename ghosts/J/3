@@ -225,10 +225,39 @@ R_Jz:
      
      $J->{$na} = $conJ;
      #say "We got a $conJ conJ: ".gp $conJ;
-     conJ.A->umk($J, 'tent');
      conJ.most.J = J.most.J || $J;
      #say "Tent of ".$conJ->pi."  ".join"    ",map{_.point}@F[2,4,6,8]; 
      $conJ;
+ - K: conroll #c rolling con tents, the C Js, away into shadow TIME
+   D: |
+     my @con = map{_.i} @{J.A.n_tent||[]};
+     
+     unshift @con, $J;
+      
+     @con = grep { !_.yy.conroll.dont } @con;
+     
+     @con = grep { keys %{_.bb} } @con;
+     
+     return if !@con;
+     
+     say "conrolling ".$J->pi."   tents:";
+     sayyl map{" - $_"}
+         map { _.name =~ /^(J.name\-)?(.+)$/; "$2 * ".
+         do {
+             my @log = sort keys %{_.bb};
+            @log > 5 ? scalar(@log)
+            : join "'", @log;
+         };
+         } @con;
+     
+     # dont mention mods? sum mods?
+     #sayre "Jmost bb goners: ".join " ", grep { s/\t(.+?)$// || 1 } 
+     #    sort grep {!/\%/} keys %{J.bb};
+
+     for my $tent (@con) {
+         #say "Scraping out the ".$tent->pi;
+         Rw suJ $J:tent;
+     }
  - K: loJ #c les con tent
    D: |
      my $u = ar.u ||= {};
