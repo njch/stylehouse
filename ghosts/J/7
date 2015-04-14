@@ -135,29 +135,27 @@ R_Jz:
      #say "maka ".gp($J)."              ".gp(J.most.J);
    babz:
      'maka 1': | # should be J/1 in gpasm
-       if (my $id = J.id) {
-           J.bz->("/%id\t0.9" => $id) if !J.noJid;
-       }
-       if (my $tod = J.makaz) {
-           for (keys %$tod) {
-               J.bz->($_ => $tod->{$_})
-           }
-       }
-     'maka 4': | # thingness <-> appearance
+       J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
+       
+       
        J.o = {};
-       # shall create "/ 0.99" => something for this element
-       # so that things last, embeds contooz
-       # maybe J.by.maka.whol describes it, and provides its contooz (@s)
-           # execution order in J.o is ev
-           # / thing knows how to suck up others
        my $vs = Rw tyv $J;
-       #my @things = Rw tvy $J;
+       
+       # want the target projection to bounce diffs
+       # and so to regroup, do / like envelopes
+       # the maka on the border between ux and J wants to have id and tag=ux imposed down, everything else imposed up
+       # interesting V shape, laces
+       # execution order in J.o is ev
+           
        my @s;
        J.ty.maka.s = \@s;
        
        my @things = @$vs;
-       while (@things) {
+       my @toplevels; # emerge from things
+       
+       while (@things || @toplevels) {
            my $lv = shift @things;
+           $lv ||= shift @toplevels;
            my $j = lv.j;
            my $sc = lv.sc;
            my $s = j.s;
@@ -171,7 +169,8 @@ R_Jz:
                die "god non 0.9 && j.l eq '/'".wdump(2,$j)
                    if j.cv != 0.9;
                if (@things) {
-                   push @things, $lv; # defer to last
+                      #sayre "defer ".wdump 2, $lv;
+                   push @toplevels, $lv; # defer to last
                    next;
                }
            }

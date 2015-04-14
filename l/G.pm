@@ -1460,6 +1460,10 @@ sub ejson {
     $H->json->encode($m);
 }
 
+sub E {
+    $H->send(@_);
+}
+
 sub parse_babble {
     my $G = shift;
     my $eval = shift;
