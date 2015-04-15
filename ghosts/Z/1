@@ -28,7 +28,7 @@ R_Jz:
      my $oJ = Rw JJJJ $J wwcoupler;
      Rw up $J:oJ $id:J.id $afterid;
      
-     
+     Rw JJJ toc;
      # setup wrinkle
      # of time
      
@@ -46,9 +46,22 @@ R_Jz:
      say "so self is : J.id";
      
      $J
+
+ - K: toc #c
  - K: wwcoupler #c
    n_D:
      yJup: |
+       my $am;
+       my $id = $G->recur(4 => sub { $am->() });
+       $am = sub {
+           if (G.oin.bb->{J.name."\t0.3"} eq $J) {
+               Rw up $J;
+           }
+           else {
+               warn "no longer J.name = $J";
+               Mojo::IOLoop->remove($id);
+           }
+       };
        'wwcoupler'
      up: |
        $afterid || die;
@@ -58,14 +71,23 @@ R_Jz:
        E(" \$('#' + \$('#$afterid').parent().attr('id') + ' ww').remove();");
        E(" \$('#$afterid').after(".ejson($h).");");
        
-       sayyl "Jid: $id  and not J.id ";
+       'toc'
+     up: | #
+       my @ls = Rw tvo $J:G.oin;
+       say _.r for @ls;
+       sayre "YEP";
+       # makes a pile to see/curve in J.up, tiny geos? things hop
+ - K: join #c
+   n_D:
+     yJup: |
+       'join clingleftwall'
+     up: | #
+       my $ls = Rw tlv;
+       # makes a pile to see/curve in J.up, tiny geos? things hop
  - K: JJJJ #c from $J above, emb   J.oJ.$name = $J2   and   J2.Jo = $J
    D: |
      die unless G.oin;
-     # pul from $m $name $style ?
-     my $name = shift @$m;
-     my $style = join ' ', @$m;
-     my $J2 = Rw JJ $name $style;
+     my $J2 = Rw JJ;
      J2.most.J = $J;
      J2.Jo = $J;
      J.oJ->{J2.name} = $J2;
@@ -73,7 +95,7 @@ R_Jz:
  - K: JJJ #c G.oin embedding spawn
    D: |
      die unless G.oin;
-     my $J = Rw JJ $name;
+     my $J = Rw JJ;
      Rw adJ $J;
  - K: adJ #c embed J
    D: |
@@ -84,8 +106,11 @@ R_Jz:
  - K: JJ #c make J that most.J = self
    D: |
      my $J = {};
-     J.name = $name;
-     J.style = ar.style ? ar.style : ar.m ? @{ar.m} : $name;
+     my $m = ar.m||[];
+     my $o = Rw pul + $cs:m name style+;
+     J.name = o.name;
+     o.style = join ' ', @{o.style} if ref o.style;
+     J.style = o.style || o.name;
      J.style = [split /\s+/, J.style] if !ref J.style;
      J.most.J = $J;
      
@@ -133,13 +158,7 @@ R_Jz:
      $exp->($_) for @{J.style};
      die "no style for   @{J.style}   (J.name)" if !%{J.yt};
      saygr "J.name yJup: ".join(' + ', @{J.style})." -> ".join(' ~ ', sort keys %{J.yt});
- - K: join #c
-   n_D:
-     yJup: |
-       'clingleftwall'
-     up: | #
-       my $ls = Rw tlv
-       # makes a pile to see/curve in J.up, tiny geos? things hop
+
  - K: clingleftwall/curves #c
    D: |
        spun 0  2
