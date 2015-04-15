@@ -293,10 +293,18 @@ R_Jz:
           my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
           || die "of tiny: ".wdump($o);
           
-          my ($heex) = $H->dig($sty) =~ /^(....)/;
+          my ($heex) = $H->dig($sty) =~ /^(........)/;
           $heex =~ tr/0123456789/ghijklmnop/; # no numbers
-          # TODO name it
-          my $y = "s".$heex;
+          my @s;
+          push @s, $1 while $heex =~ s/^(..)//;
+          
+          @s = map {
+              my ($o,$t) = /^(.)(.)$/;
+              $t = chr ord($t) + 10 if $o =~ /[g-p]/;
+              $t;
+          } @s;
+          # TODO name it nicer things
+          my $y = join'',@s;
           $komp->{$y} = $sty;
       }
       
