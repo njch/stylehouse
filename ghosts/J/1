@@ -212,7 +212,10 @@ R_Jz:
       for my $tk (sort keys %$tks) {
           my $ks = $tks->{$tk};
           my $j = delete $ks->{''};
-          die "no j on $tk ".wdump($ks).wdump(1,$tks) if !$j;
+          if (!$j) {
+              warn "no j on $tk ".wdump($ks).wdump(1,$tks);
+              next;
+          }
           
           my $x;
           x.j = $j;

@@ -106,6 +106,9 @@ esc c:
  - K: deco #c splurge many, get this pipe sorted...
    esc 3.2: |
      "text-decoration:underline";
+ - K: poi #c pointer-events
+   esc 3.2: |
+     "pointer-events:".($v =~ /^(1|a)$/ ? 'all' : 'none');
  - K: at #c
    esc 3: |
      my @ats;
@@ -170,13 +173,19 @@ esc c:
      "z-index:".(20+$v)
  - K: co #c it
    esc 3: |
-     "color:".X.cole->($v);
+     "color:".X.cole->($v)
  - K: hs #c color: hsla
    esc 3: |
-     "color:".X.hsle->($v);
+     "color:".X.hsle->($v)
  - K: bgi #c background image
    esc 3.2: |
-     "background-image:url('$v')";
+     "background-image:url('$v')"
+ - K: bg #c background something
+   esc 3.2: |
+     "background:$v"
+ - K: bgh #c background hsla
+   esc 3.2: |
+     "background-color:".X.hsle->($v)
  - K: fs #c it
    esc 3: |
      $v *= 9;
@@ -257,6 +266,9 @@ esc c:
    esc 3: |
      $v = Rw empc $v;
      "margin-bottom:$v"
+ - K: m #c margrin
+   esc 3: |
+     "margin:$v";
  - K: right #c yep
    esc 3.4: |
      "right:$v";
