@@ -41,27 +41,58 @@ R_Jz:
      my $lvs = [];
      @$lvs =# [sort keys %{J.bb}];
      Rw tvo $J;
-     say wdump $lvs; 
+     say _.r for @$lvs;
      
      say "so self is : J.id";
      
      $J
-
  - K: toc #c
+   n_D:
+     yJup: |
+       Rw vortex $J up;
+       'toc'
+     up: | #
+       my @ls = Rw tvo $J:G.oin;
+       sayre _.r for @ls;
+       sayre "YEP";
+       # makes a pile to see/curve in J.up, tiny geos? things hop
+ - K: vortex #c do recur while J
+   D: |
+     my $m = ar.m||[];
+     my $o = Rw pul $cs:m way;
+     o.way || die;
+     
+     my $loopr = J.name."%loopid#o.way\t0.3";
+     my $id = G.oin.bb->{$loopr};
+     Mojo::IOLoop->remove($id) if $id;
+     
+     my $bl = {};
+     bl.id = 
+     G.oin.bb->{$loopr} = 
+         $G->recur(4 => sub {
+             return Mojo::IOLoop->remove(bl.id)
+                 if G.oin.bb->{$loopr} ne bl.id;
+             Rw o.way $J;
+         });
+
+     
+ - K: adJ #c embed J
+   D: |
+     my $oJ = G.oin;
+     J.name || die;
+     J.r && die;
+     oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
+ - K: rm #c bb rm filt, do # thingri
+   D: |
+     my $o = Rw pul $cs:m t y c sc;
+     my @can = Rw tvo $J;
+     say wdump [ $o, $_ ];
+     @can = grep { $G->ip($o, $_) } @can;
+     sayre "DOIGIGOIGOG " for 1..5;
+     say _.r for @can;
  - K: wwcoupler #c
    n_D:
      yJup: |
-       my $am;
-       my $id = $G->recur(4 => sub { $am->() });
-       $am = sub {
-           if (G.oin.bb->{J.name."\t0.3"} eq $J) {
-               Rw up $J;
-           }
-           else {
-               warn "no longer J.name = $J";
-               Mojo::IOLoop->remove($id);
-           }
-       };
        'wwcoupler'
      up: |
        $afterid || die;
@@ -71,12 +102,6 @@ R_Jz:
        E(" \$('#' + \$('#$afterid').parent().attr('id') + ' ww').remove();");
        E(" \$('#$afterid').after(".ejson($h).");");
        
-       'toc'
-     up: | #
-       my @ls = Rw tvo $J:G.oin;
-       say _.r for @ls;
-       sayre "YEP";
-       # makes a pile to see/curve in J.up, tiny geos? things hop
  - K: join #c
    n_D:
      yJup: |
@@ -97,12 +122,6 @@ R_Jz:
      die unless G.oin;
      my $J = Rw JJ;
      Rw adJ $J;
- - K: adJ #c embed J
-   D: |
-     my $oJ = G.oin;
-     J.name || die;
-     J.r && die;
-     oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
  - K: JJ #c make J that most.J = self
    D: |
      my $J = {};
