@@ -73,7 +73,14 @@ hooks:
     saybl "Muxing ".$G->pi."       with ".$u->pi if !G.q;
     H.G w busy;
     a.v ||= 7;
-    return warn "no M" if !$M;
+    if (!$M) {
+        return warn "no M" if ar.doub > 5;
+        warn "SLEEPY";
+        $G->timer(0.4, sub {
+            w mux(+ doub=>ar.doub+1);
+        });
+        return;
+    }
     w $M mux[$MR,$a,$u];
     
   demux: | #c woovouid

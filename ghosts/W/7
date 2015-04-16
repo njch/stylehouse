@@ -4,6 +4,48 @@ R_Jz:
    D: |
      $v .= 'em' if $v !~ /(%|em|px)/;
      $v;
+ - K: sctks #c # expand (k:)?lma:v to lma:k:v
+   D: |
+     my $tks = {};
+     for my $k (sort keys %$sc) {
+         my $v = $sc->{$k};
+         # possible extra {} level couples into com '' behind $k
+         # com is for many of same styles
+         my $com = ref $v eq 'HASH' ? $k : '';
+         my $t = ref $v eq 'HASH' ? $v : {$k=>$v};
+
+         for my $tk (sort keys %$t) {
+             $tks->{$tk}->{$com} = $t->{$tk};
+         }
+     }
+     $tks
+     
+ - K: scitl #c iterate iterations
+   D: |
+     my ($n,$h) = @$m;
+     my @dl = @{G.drop->{$n}->{$h}};
+     my $pr = {%$tks};
+     
+     my $unseen = {map{$_=>1}keys%$tks};
+     
+     my $i = 0;
+     my @om;
+     sub {
+         if (@om) {
+             my $o = shift @om;
+             return @$o;
+         }
+         while (1) {
+             my $tk = $dl[$i];
+             my $oms = delete $tks->{$tk};
+             # delete so if tks come back, we repeat
+             for my $com (sort keys %$oms) {
+                 my $v = $oms->{$com};
+                 push @om, [$tk, $com, $v, $tks];
+             }
+         }
+     }
+   
  - K: esc #c espouse ton carbon product
    n_D:
      el:
@@ -24,17 +66,31 @@ R_Jz:
        # YIN
        
        # ^ list esc.O
-       my $tks; # expand (k:)?lma:v to lma:k:v
-       for my $k (sort keys %$sc) {
-           my $v = $sc->{$k};
-           my $com = ref $v eq 'HASH' ? $k : '';
-           my $t = ref $v eq 'HASH' ? $v : {$k=>$v};
-           
-           for my $tk (sort keys %$t) {
-               $tks->{$tk}->{$com} = $t->{$tk};
-           }
-       }
+       # this chunk could embed, gravuity
+       # a meeting of spaceships of an astral body
+       my $tks = Rw sctks $sc;
        
+       # G net tks
+       my $it = Rw scitl $tks esc O;
+       
+       while (0) {
+           my ($tk, $com, $v, $tks) = $it->();
+           say " $tk, $com, $v, $tks";
+           last if !$tk;
+           
+           my @s;#$X->{$tk}->($v, $tks, $X);
+           
+           @s = ('%css' => @s) if @s == 1;
+           while (@s) {
+               my $sty = shift @s;
+               my $s = shift @s;
+               #
+               die "$com $sty all3    @s"
+               #if defined $tw->{$com}->{$tk}->{$sty};
+               #$tw->{$com}->{$tk}->{$sty} = $s;
+           }
+           
+       }
        my $unseen = {map{$_=>1}keys%$tks};
        my $tw; # bang
        for my $tk (@{G.drop.esc.O}) {

@@ -12,7 +12,7 @@ R_Jz:
        Rw vonc;
        
        Rw suck */dosc;
-       Rwyl 2 conc;
+       Rw conc;
  - K: conc #c C_whta
    D: |
      sayyl "CONC!" for 1..4;
@@ -24,7 +24,7 @@ R_Jz:
      }
  - K: conv #c know about elemental stuff
    D: |
-     my $pway = {qw'1 YIN 2 YANG 3 CARBON 7 CITOZINE 9 RETURN'};
+     my $pway = {qw'1 YIN 2 YANG 3 CARBON 5 STYLE 6 TRAVEL 7 CITOZINE 9 RETURN'};
      G.drop.conv = sub {
           my $v = shift;
          my $dig = $1 if $v =~ /^(\d)/;
@@ -79,7 +79,8 @@ R_Jz:
        }
        
        my $real = {};
-       $real->{$the} = R.way->find($src) || die "no $src";
+       $real->{$path} = R.way->find($src) || die "no $src";
+       
        my $imag = {};
        my $tl = {};
        for my $l (sort keys %$wtf) {
@@ -136,6 +137,8 @@ R_Jz:
         
        #saybl " _________________  $mw" if $the eq 'esc';
        sayyl "$path <- $the     $sl";
+       
+       Rw $the/Conned $J;
        # nice thing to print ^
        
  - K: Carbonja #c 3ish
@@ -156,6 +159,7 @@ R_Jz:
             die if @$an > 1;
             $type => $an->[0];
        }keys %$ty};
+       sayyl "$the $path ". ki 2, $ty;
        
        for my $file (sort keys %$tw) {
            my $Cs = $tw->{$file};
@@ -178,13 +182,16 @@ R_Jz:
                        c.s = $D;
                        c.sc.com = "# $zk @ c.K  ";
 
-                       Rw Nucleous $file $ty $c $the $path $J $D;
+                       Rw Nucleous $file $ty $c $the $path $J;
                    }
                }
                elsif (ref $c eq 'ARRAY') {
                    my $n = {};
                    (n.K, n.v, n.s, n.sc) = @$c;
-                   saybl "$file: ".wdump $c;
+                   n.sc.com ||= "# n.K n.v";
+                   
+                   Rw Nucleous $file $ty $c:n $the $path $J;
+                   saybl "  $file: n.K n.v";
                }
                else {
                die wdump $c;
@@ -198,16 +205,25 @@ R_Jz:
           my (@l,@lr,@r); 
           c.K || die;
           c.v ||= 3;
+          c.v += 0;
           my $ome = "#".c.K;
+          die c.v if c.v !~ /^\d/;
 
           # if for c.cs, for implant condits # sche
-          my $type = G.drop.conv->(c.v);
-          say "Type: $type from ". wdump 2, $c;
+          say "Is $path c.K\t c.v etc" if $path eq 'may';
+          my $cv = c.v;
+          my $D = c.s;
+          my $type = G.drop.conv->($cv);
           # z downgrasp
-          my $sc = c.MZ if c.MZ; # per $path if maybe ?? emberd whatsits
-          # some special K of c may have meta for this too
+          my $sc;
+          $sc = c.sc.MZ if c.sc && c.sc.MZ;
           $sc ||= $ty->{$type};
+          $sc ||= {};
           $sc = {%$sc, %{c.sc}} if c.sc;
+          
+          # per $path if maybe ?? emberd whatsits
+          # some special K of c may have meta for this too
+          say "Type: $type   c.v from ". wdump 2, $sc if $path eq 'may';
           
                if (my $sub = sc.subhash) {
                    unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
@@ -216,11 +232,11 @@ R_Jz:
                    push @r, '};';
                    if (my $list = sc.droplist) {
                        push @r, "push \@{G\.drop\.$the\.$list}, 'c.K';";
-                       J bz $path/$sub#rese$list 1 "G\.drop\.$the\.$list = [];"
+                       J bz ${path}_$sub#rese$list 1 "G\.drop\.$the\.$list = [];"
                    }
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
-                   J bz ${path}_$sub$ome c.v $haD
+                   J bz ${path}_$sub$ome $cv $haD
                    J bz ${path}_$sub#rese 1 "G\.drop\.$the\.$sub = {};"
                    J bz ${path}_$sub#return 9 "G\.drop\.$the\.$sub;"
                    J bz $path#upsubhash-$sub 1 "my \$$sub = G\.drop\.$the\.$sub ||= Rw ${path}_$sub;"
@@ -251,7 +267,7 @@ R_Jz:
                }
                
                $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
-               J bz $path$ome c.v $D
+               J bz $path$ome $cv $D
  - K: round #c regroup - smush cove + copy here -> there
    D: |
        # could multiple J sources and exits, provide roundness, generally...
