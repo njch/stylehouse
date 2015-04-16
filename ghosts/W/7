@@ -135,12 +135,16 @@ R_Jz:
        @css;
        
 esc c:
- - K: jsc #c some compression
-   esc 3: |
+ -
+  - jsc # some compression
+  - 3
+  - |
      '%jsc'=>$v
      
- - K: mktk #c language expansion
-   esc 3: |
+ -
+  - mktk # language expansion
+  - 3
+  - |
      my ($tiks, $name, $s) = @_;
      #my $name = ar.m && ar.m->[0] || "langsp";
      my @t = split ',', $s;
@@ -152,8 +156,10 @@ esc c:
          #sayyl "mktk $name $k : $v";
      }
      return;
- - K: ab #c absolute # ORDER uglies
-   esc 3.3: |
+ -
+  - ab # absolute # ORDER uglies
+  - 3.3
+  - |
      if ($v =~ /^.+:.+/) {
          X.mktk->($tks, abc => $v);
          $v = 1;
@@ -163,29 +169,41 @@ esc c:
      }
      $v = "absolute" if $v eq '1';
      "position:$v";
- - K: deco #c splurge many, get this pipe sorted...
-   esc 3.2: |
+ -
+  - deco # splurge many, get this pipe sorted...
+  - 3.2
+  - |
      "text-decoration:underline";
- - K: poi #c pointer-events
-   esc 3.2: |
+ -
+  - poi # pointer-events
+  - 3.2
+  - |
      "pointer-events:".($v =~ /^(1|a)$/ ? 'all' : 'none');
- - K: at #c
-   esc 3: |
+ -
+  - at #
+  - 3
+  - |
      my @ats;
      while (my ($k,$v) = each %$v) {
          push @ats, '%at:'.$k, $v;
      }
      @ats
- - K: tag #c
-   esc 3: |
+ -
+  - tag #
+  - 3
+  - |
      '%tag' => $v
- - K: sha #c it
-   esc 3: |
+ -
+  - sha # it
+  - 3
+  - |
      my @m = split m/\s/, $v;
      $m[-1] = X.cole->($m[-1]);
      sprintf 'text-shadow:%dpx %dpx %dpx %s', @m;
- - K: cole #c it
-   esc 3: |
+ -
+  - cole # it
+  - 3
+  - |
         my $h;
         (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
                   if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $v";
@@ -203,8 +221,10 @@ esc c:
         else {
            return sprintf "#%s%s%s", h.r, h.g, h.b;
         }
- - K: hsle #c ray lih, unhassley
-   esc 3: |
+ -
+  - hsle # ray lih, unhassley
+  - 3
+  - |
         my $h;
         if ($v =~ /^(\S+) (\S+) (\S+)(?: (\S+))?$/) {
             (h.h, h.s, h.l, h.a) = ($1, $2, $3, $4);
@@ -222,49 +242,75 @@ esc c:
         "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
         # 1423
      
- - K: zi #c ground
-   esc 3: |
+ -
+  - zi # ground
+  - 3
+  - |
      "z-index:".$v
- - K: zip #c it alley, primary
-   esc 3: |
+ -
+  - zip # it alley, primary
+  - 3
+  - |
      "z-index:".(10+$v)
- - K: zis #c suuuuuu
-   esc 3: |
+ -
+  - zis # suuuuuu
+  - 3
+  - |
      "z-index:".(20+$v)
- - K: co #c it
-   esc 3: |
+ -
+  - co # it
+  - 3
+  - |
      "color:".X.cole->($v)
- - K: hs #c color: hsla
-   esc 3: |
+ -
+  - hs # color: hsla
+  - 3
+  - |
      "color:".X.hsle->($v)
- - K: bgi #c background image
-   esc 3.2: |
+ -
+  - bgi # background image
+  - 3.2
+  - |
      "background-image:url('$v')"
- - K: bg #c background something
-   esc 3.2: |
+ -
+  - bg # background something
+  - 3.2
+  - |
      "background:$v"
- - K: bgh #c background hsla
-   esc 3.2: |
+ -
+  - bgh # background hsla
+  - 3.2
+  - |
      "background-color:".X.hsle->($v)
- - K: fs #c it
-   esc 3: |
+ -
+  - fs # it
+  - 3
+  - |
      $v *= 9;
      'font-size:'.int($v).'%';
- - K: fw #c it
-   esc 3.5: |
+ -
+  - fw # it
+  - 3.5
+  - |
      'font-weight:'.int($v*100);
- - K: ws #c it
-   esc 3: |
+ -
+  - ws # it
+  - 3
+  - |
      my @wtf;
      push @wtf, 'white-space:pre' if $v =~ /p/;
      push @wtf, 'white-space:nowrap' if $v =~ /n/;
      die "many :  @wtf       from $v" if @wtf > 1;
      join ';', @wtf;
- - K: opa #c seetrhu
-   esc 3: |
+ -
+  - opa # seetrhu
+  - 3
+  - |
      "opacity:$v"
- - K: tr #c filterszzzz weird style using com to agg.
-   esc 3.7: |
+ -
+  - tr # filterszzzz weird style using com to agg.
+  - 3.7
+  - |
      return '' if tks.tr.comp;
      my @f;
      for (qw(rotate )) {
@@ -273,11 +319,15 @@ esc c:
          push @f, "$_($v)";
      }
      tks.tr.comp = '-webkit-transform:'.join' ', @f
- - K: rad #c radial tr
-   esc 3.6: |
+ -
+  - rad # radial tr
+  - 3.6
+  - |
      tks.tr.rotate = $v.'rad'
- - K: fl #c filterszzzz weird style using com to agg.
-   esc 3.7: |
+ -
+  - fl #c filterszzzz weird style using com to agg.
+  - 3.7
+  - |
      return '' if tks.fl.comp;
      my @f;
      for (qw(blur saturate contrast brightness hue-rotate sepia invert grayscale )) {
@@ -286,80 +336,128 @@ esc c:
          push @f, "$_($v)";
      }
      tks.fl.comp = '-webkit-filter:'.join' ', @f
- - K: blr #c it
-   esc 3.6: |
+ -
+  - blr # it
+  - 3.6
+  - |
      tks.fl.blur = $v.'px'
- - K: sat #c it saturation
-   esc 3.6: |
+ -
+  - sat # it saturation
+  - 3.6
+  - |
      tks.fl.saturate = $v
- - K: con #c it contrast
-   esc 3.6: |
+ -
+  - con # it contrast
+  - 3.6
+  - |
      tks.fl.contrast = $v
- - K: bri #c it bright
-   esc 3.6: |
+ -
+  - bri # it bright
+  - 3.6
+  - |
      tks.fl.brightness = $v
- - K: hue #c it bright
-   esc 3.6: |
+ -
+  - hue # it bright
+  - 3.6
+  - |
      tks.fl->{'hue-rotate'} = $v.'deg';
- - K: sep #c it old
-   esc 3.6: |
+ -
+  - sep # it old
+  - 3.6
+  - |
      tks.fl.sepia = $v
- - K: inv #c it old
-   esc 3.6: |
+ -
+  - inv # it old
+  - 3.6
+  - |
      tks.fl.invert = $v
- - K: gray #c it old
-   esc 3.6: |
+ -
+  - gray # it old
+  - 3.6
+  - |
      tks.fl.grayscale = $v
- - K: ml #c it
-   esc 3: |
+ -
+  - ml # it
+  - 3
+  - |
      $v = Rw empc $v;
      "margin-left:$v"
- - K: mr #c it
-   esc 3: |
+ -
+  - mr # it
+  - 3
+  - |
      $v = Rw empc $v;
      "margin-right:$v"
- - K: mt #c it
-   esc 3: |
+ -
+  - mt # it
+  - 3
+  - |
      $v = Rw empc $v;
      "margin-top:$v";
- - K: mb #c it
-   esc 3: |
+ -
+  - mb # it
+  - 3
+  - |
      $v = Rw empc $v;
      "margin-bottom:$v"
- - K: m #c margrin
-   esc 3: |
+ -
+  - m # margrin
+  - 3
+  - |
      "margin:$v";
- - K: right #c yep
-   esc 3.4: |
+ -
+  - right # yep
+  - 3.4
+  - |
      "right:$v";
- - K: left #c yep
-   esc 3.4: |
+ -
+  - left # yep
+  - 3.4
+  - |
      "left:$v"
- - K: top #c yep
-   esc 3.4: |
+ -
+  - top # yep
+  - 3.4
+  - |
      "top:$v"
- - K: bottom #c yep
-   esc 3.4: |
+ -
+  - bottom # yep
+  - 3.4
+  - |
      "bottom:$v"
- - K: mw #c y
-   esc 3.4: |
+ -
+  - mw # y
+  - 3.4
+  - |
      "max-width:$v"
- - K: miw #c y
-   esc 3.4: |
+ -
+  - miw # y
+  - 3.4
+  - |
      "min-width:$v"
- - K: width #c y
-   esc 3.4: |
+ -
+  - width # y
+  - 3.4
+  - |
      "width:$v"
- - K: height #c y
-   esc 3.4: |
+ -
+  - height # y
+  - 3.4
+  - |
      "height:$v"
- - K: over #c y 
-   esc 3.4: |
+ -
+  - over # y 
+  - 3.4
+  - |
      "overflow:$v"
- - K: float #c y 
-   esc 3.4: |
+ -
+  - float # y 
+  - 3.4
+  - |
      "float:$v"
- - K: bo #c border
-   esc 3.4: |
+ -
+  - bo # border
+  - 3.4
+  - |
      "border:$v"
 
