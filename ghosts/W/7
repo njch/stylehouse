@@ -23,7 +23,9 @@ R_Jz:
  - K: scitl #c iterate iterations
    D: |
      my ($n,$h) = @$m;
+     
      my @dl = @{G.drop->{$n}->{$h}};
+     warn "nodl" if !@dl;
      my $pr = {%$tks};
      
      my $unseen = {map{$_=>1}keys%$tks};
@@ -46,15 +48,12 @@ R_Jz:
          }
      }
    
- - K: esc #c espouse ton carbon product
+ - K: C_esc #c espouse ton carbon product
    n_D:
      el:
        CARBON: | #
          {droplist => 'O', subhash => 'X'} # qmco:sutff
          # different rhythms to qw == hallucinogenic yaml
-     dosc: | #
-       delete G.drop.esc;
-       Rw Con esc esc/u esc/n;
      u: | # around
        # so '.this > .that' can move to '.another > .that' bunch of styles
        # lending to high dynamic, low cost of tape
@@ -74,6 +73,7 @@ R_Jz:
        my $it = Rw scitl $tks esc O;
        
        while (0) {
+           my $it = sub{};
            my ($tk, $com, $v, $tks) = $it->();
            say " $tk, $com, $v, $tks";
            last if !$tk;
@@ -116,6 +116,7 @@ R_Jz:
                }
            }
        }
+       die "nothing esc O".wdump(2, G.drop) if !@{G.drop.esc.O};
        die "invent ".join' & ', keys %$unseen if keys %$unseen;
        
        for my $com (sort keys %$tw) {
@@ -134,7 +135,7 @@ R_Jz:
        #sayre "CSS  @css";
        @css;
        
-esc c:
+C esc:
  -
   - jsc # some compression
   - 3

@@ -159,7 +159,6 @@ R_Jz:
             die if @$an > 1;
             $type => $an->[0];
        }keys %$ty};
-       sayyl "$the $path ". ki 2, $ty;
        
        for my $file (sort keys %$tw) {
            my $Cs = $tw->{$file};
@@ -191,10 +190,9 @@ R_Jz:
                    n.sc.com ||= "# n.K n.v";
                    
                    Rw Nucleous $file $ty $c:n $the $path $J;
-                   saybl "  $file: n.K n.v";
                }
                else {
-               die wdump $c;
+                   die wdump $c;
                }
            }
            coi.end->();
@@ -226,20 +224,20 @@ R_Jz:
           say "Type: $type   c.v from ". wdump 2, $sc if $path eq 'may';
           
                if (my $sub = sc.subhash) {
-                   unshift @l, "G\.drop\.$the\.$sub\.c.K = sub {";
+                   unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
                    push @lr, '    my ($v,$tks,$'.$sub.') = @_;'; # gets $X, etc
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
-                       push @r, "push \@{G\.drop\.$the\.$list}, 'c.K';";
+                       push @r, "push \@{G\.drop\.$path\.$list}, 'c.K';";
                        J bz ${path}_$sub#rese$list 1 "G\.drop\.$the\.$list = [];"
                    }
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
                    J bz ${path}_$sub$ome $cv $haD
-                   J bz ${path}_$sub#rese 1 "G\.drop\.$the\.$sub = {};"
-                   J bz ${path}_$sub#return 9 "G\.drop\.$the\.$sub;"
-                   J bz $path#upsubhash-$sub 1 "my \$$sub = G\.drop\.$the\.$sub ||= Rw ${path}_$sub;"
+                   J bz ${path}_$sub#rese 1 "G\.drop\.$path\.$sub = {};"
+                   J bz ${path}_$sub#return 9 "G\.drop\.$path\.$sub;"
+                   J bz $path#upsubhash-$sub 1 "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;"
                    return; #
                }
           
@@ -250,7 +248,7 @@ R_Jz:
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
               if (my $sub = sc.subhash) {
-                  $D = "G\.drop\.$the\.$sub\.c.K->(\$v, \$tks)";
+                  $D = "G\.drop\.$path\\.$sub\.c.K->(\$v, \$tks)";
               }
               $D = ind '     ', $D;
               push @r, '}';
