@@ -38,12 +38,22 @@ R_Jz:
              return @$o;
          }
          while (1) {
+             return if !keys %$tks;
+             if (!exists $dl[$i]) {
+                 $i = 0;
+                 
+             }
              my $tk = $dl[$i];
              my $oms = delete $tks->{$tk};
              # delete so if tks come back, we repeat
              for my $com (sort keys %$oms) {
                  my $v = $oms->{$com};
                  push @om, [$tk, $com, $v, $tks];
+             }
+             $i++;
+             if (@om) {
+                 my $o = shift @om;
+                 return @$o;
              }
          }
      }
@@ -57,67 +67,41 @@ R_Jz:
      u: | # around
        # so '.this > .that' can move to '.another > .that' bunch of styles
        # lending to high dynamic, low cost of tape
+       # invent the stevecraig format, playing music
        
        my $seg = ar.m->[0] if ar.m;
        my @css;
        die "nonrefsc u asc esc usc". wdump(ar.m) if !ref $sc; # parse strings too
-       # invent the stevecraig format, playing music
        # YIN
        
        # ^ list esc.O
        # this chunk could embed, gravuity
        # a meeting of spaceships of an astral body
        my $tks = Rw sctks $sc;
+       my $ptks = {%$tks};
        
        # G net tks
        my $it = Rw scitl $tks esc O;
        
-       while (0) {
-           my $it = sub{};
+       my $tw; # bang
+       while (1) {
            my ($tk, $com, $v, $tks) = $it->();
-           say " $tk, $com, $v, $tks";
            last if !$tk;
+           #say " $tk, $com, $v, $tks";
            
-           my @s;#$X->{$tk}->($v, $tks, $X);
+           my @s = $X->{$tk}->($v, $tks, $X);
            
            @s = ('%css' => @s) if @s == 1;
            while (@s) {
                my $sty = shift @s;
                my $s = shift @s;
                #
-               die "$com $sty all3    @s"
-               #if defined $tw->{$com}->{$tk}->{$sty};
-               #$tw->{$com}->{$tk}->{$sty} = $s;
+               warn "$com $sty ----> $s  all3    @s"
+                   if defined $tw->{$com}->{$tk}->{$sty};
+               $tw->{$com}->{$tk}->{$sty} = $s;
            }
            
        }
-       my $unseen = {map{$_=>1}keys%$tks};
-       my $tw; # bang
-       for my $tk (@{G.drop.esc.O}) {
-           my $oms = $tks->{$tk};
-           delete $unseen->{$tk};
-           next if !$oms;
-           for my $com (sort keys %$oms) {
-               my $v = $oms->{$com};
-               
-               my @s = $X->{$tk}->($v, $tks, $X); # < $mish carbon adapt
-               # could be a big...
-               # tks for X to inject this stream: lma:k:v style (com is k)
-               # make better looking pyramids
-               
-               unshift @s, '%css' if @s == 1;
-               while (@s) {
-                   my $sty = shift @s;
-                   my $s = shift @s;
-                   die "$com $sty all3    @s"
-                       if defined $tw->{$com}->{$tk}->{$sty};
-                       
-                   $tw->{$com}->{$tk}->{$sty} = $s;
-               }
-           }
-       }
-       die "nothing esc O".wdump(2, G.drop) if !@{G.drop.esc.O};
-       die "invent ".join' & ', keys %$unseen if keys %$unseen;
        
        for my $com (sort keys %$tw) {
            my $tks = $tw->{$com};
@@ -244,7 +228,17 @@ C esc:
         # 1423
      
  -
-  - zi # ground
+  - co # it
+  - 3
+  - |
+     "color:".X.cole->($v)
+ -
+  - hs # color: hsla
+  - 3
+  - |
+     "color:".X.hsle->($v)
+ -
+  - zi #c ground etc
   - 3
   - |
      "z-index:".$v
@@ -258,16 +252,6 @@ C esc:
   - 3
   - |
      "z-index:".(20+$v)
- -
-  - co # it
-  - 3
-  - |
-     "color:".X.cole->($v)
- -
-  - hs # color: hsla
-  - 3
-  - |
-     "color:".X.hsle->($v)
  -
   - bgi # background image
   - 3.2
@@ -312,95 +296,87 @@ C esc:
   - tr # filterszzzz weird style using com to agg.
   - 3.7
   - |
-     return '' if tks.tr.comp;
-     my @f;
-     for (qw(rotate )) {
-         my $v = tks.tr->{$_};
-         defined $v || next;
-         push @f, "$_($v)";
-     }
-     tks.tr.comp = '-webkit-transform:'.join' ', @f
+    '-webkit-transform:'.join' ', map {"$_($v->{$_})"} keys %$v;
  -
   - rad # radial tr
   - 3.6
   - |
-     tks.tr.rotate = $v.'rad'
- -
-  - fl #c filterszzzz weird style using com to agg.
+     tks.tr.of.rotate = $v.'rad'
+ - #c filterszzzz weird style using com to agg.
+  - fl
   - 3.7
   - |
-     return '' if tks.fl.comp;
-     my @f;
-     for (qw(blur saturate contrast brightness hue-rotate sepia invert grayscale )) {
-         my $v = tks.fl->{$_};
-         defined $v || next;
-         push @f, "$_($v)";
-     }
-     tks.fl.comp = '-webkit-filter:'.join' ', @f
+    '-webkit-filter:'.join' ', map {"$_($v->{$_})"} keys %$v;
  -
   - blr # it
   - 3.6
   - |
-     tks.fl.blur = $v.'px'
+     tks.fl.of.blur = $v.'px'
  -
   - sat # it saturation
   - 3.6
   - |
-     tks.fl.saturate = $v
+     tks.fl.of.saturate = $v
  -
   - con # it contrast
   - 3.6
   - |
-     tks.fl.contrast = $v
+     tks.fl.of.contrast = $v
  -
   - bri # it bright
   - 3.6
   - |
-     tks.fl.brightness = $v
+     tks.fl.of.brightness = $v
  -
   - hue # it bright
   - 3.6
   - |
-     tks.fl->{'hue-rotate'} = $v.'deg';
+     tks.fl.of->{'hue-rotate'} = $v.'deg';
  -
   - sep # it old
   - 3.6
   - |
-     tks.fl.sepia = $v
+     tks.fl.of.sepia = $v
  -
   - inv # it old
   - 3.6
   - |
-     tks.fl.invert = $v
+     tks.fl.of.invert = $v
  -
   - gray # it old
   - 3.6
   - |
-     tks.fl.grayscale = $v
+     tks.fl.of.grayscale = $v
+ - #c limbic space
+  - empc # decide space unit TODO init soon
+  - 3
+  - |
+     $v .= 'em' if $v !~ /(%|em|px)/;
+     $v =~ s/^-?0em$/0%/;
+     $v;
  -
   - ml # it
   - 3
   - |
      $v = Rw empc $v;
-     "margin-left:$v"
+     "margin-left:".X.empc->($v);
  -
   - mr # it
   - 3
   - |
      $v = Rw empc $v;
-     "margin-right:$v"
+     "margin-right:".X.empc->($v);
  -
   - mt # it
   - 3
   - |
-     $v = Rw empc $v;
-     "margin-top:$v";
+     "margin-top:".X.empc->($v);
  -
   - mb # it
   - 3
   - |
      $v = Rw empc $v;
-     "margin-bottom:$v"
+     "margin-bottom:".X.empc->($v);
  -
   - m # margrin
   - 3
