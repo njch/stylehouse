@@ -20,44 +20,6 @@ R_Jz:
      }
      $tks
      
- - K: scitl #c iterate iterations
-   D: |
-     my ($n,$h) = @$m;
-     
-     my @dl = @{G.drop->{$n}->{$h}};
-     warn "nodl" if !@dl;
-     my $pr = {%$tks};
-     
-     my $unseen = {map{$_=>1}keys%$tks};
-     
-     my $i = 0;
-     my @om;
-     sub {
-         if (@om) {
-             my $o = shift @om;
-             return @$o;
-         }
-         while (1) {
-             return if !keys %$tks;
-             if (!exists $dl[$i]) {
-                 $i = 0;
-                 
-             }
-             my $tk = $dl[$i];
-             my $oms = delete $tks->{$tk};
-             # delete so if tks come back, we repeat
-             for my $com (sort keys %$oms) {
-                 my $v = $oms->{$com};
-                 push @om, [$tk, $com, $v, $tks];
-             }
-             $i++;
-             if (@om) {
-                 my $o = shift @om;
-                 return @$o;
-             }
-         }
-     }
-   
  - K: C_esc #c espouse ton carbon product
    n_D:
      el:
@@ -68,19 +30,16 @@ R_Jz:
        # so '.this > .that' can move to '.another > .that' bunch of styles
        # lending to high dynamic, low cost of tape
        # invent the stevecraig format, playing music
-       
-       my $seg = ar.m->[0] if ar.m;
-       my @css;
-       die "nonrefsc u asc esc usc". wdump(ar.m) if !ref $sc; # parse strings too
-       # YIN
-       
-       # ^ list esc.O
        # this chunk could embed, gravuity
        # a meeting of spaceships of an astral body
-       my $tks = Rw sctks $sc;
-       my $ptks = {%$tks};
-       
        # G net tks
+       my $seg = ar.m->[0] if ar.m;
+       
+       die "nonrefsc" if !ref $sc; # parse strings too
+       
+       # YIN
+       
+       my $tks = Rw sctks $sc;
        my $it = Rw scitl $tks esc O;
        
        my $tw; # bang
@@ -95,6 +54,7 @@ R_Jz:
            while (@s) {
                my $sty = shift @s;
                my $s = shift @s;
+               die $sty if $sty !~ /^%/;
                #
                warn "$com $sty ----> $s  all3    @s"
                    if defined $tw->{$com}->{$tk}->{$sty};
@@ -103,6 +63,7 @@ R_Jz:
            
        }
        
+       my @css;
        for my $com (sort keys %$tw) {
            my $tks = $tw->{$com};
            for my $tk (sort keys %$tks) {

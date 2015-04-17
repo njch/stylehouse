@@ -225,7 +225,11 @@ R_Jz:
           
                if (my $sub = sc.subhash) {
                    unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
-                   push @lr, '    my ($v,$tks,$'.$sub.') = @_;'; # gets $X, etc
+                   my $args = '$v,$tks,$'.$sub;
+                   if (my $arp = sc.subhash_X_arp) {
+                       $args .= ",$arp";
+                   }
+                   push @lr, '    my ('.$args.') = @_;'; # gets $X, etc
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
@@ -245,6 +249,7 @@ R_Jz:
           # or they want elsif
           # see what the cv wants to land on/through
           # see twisty ops in lightcones
+          # could resolve curve embeddings like this
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
               if (my $sub = sc.subhash) {
