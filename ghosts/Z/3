@@ -82,17 +82,6 @@ C may:
     at.id = $id;
     J.idyl->($J, $id, $j);
     #
- - #comp
-  - jsc
-  - 5
-  - |
-    at.tag = 'script';
-    at.type = 'text/javascript';
-    sayre "j.l               j.r        ". d.s;
-    d.s = "a.".j.l." = function (A,C,G,T) {\n".d.s.";\n";
-    say wdump d.s;
-    #
-    
 R_Jz:
  - K: sctks #c # expand (k:)?lma:v to lma:k:v
    D: |
@@ -130,13 +119,8 @@ R_Jz:
      
  - K: scitl #c iterate iterations
    D: |
-     my ($n,$h) = @$m;
-     
-     my @dl = @{G.drop->{$n}->{$h}};
+     my @dl = @$styles;
      warn "nodl" if !@dl;
-     my $pr = {%$tks};
-     
-     my $unseen = {map{$_=>1}keys%$tks};
      
      my $i = 0;
      my @om;
@@ -199,26 +183,21 @@ R_Jz:
          }
      Conned: |
        sayre "conned may:";
-       sayyl R.way.hooks.may_X;
        my @l = Rw tvo $J;
        saybl _.r for @l;
      u: |
        # YIN
-       sayyl "Maky on J.name: R.way.hooks.may";
+       #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
-       J.bz->("/%what\t0.9" => "hi");
        
        my $vs = Rw tyv $J;
-       sayyl "YEP";
        
        my $gs = Rw gyv $J $vs;
-       
-       sayyl "YEP2";
-       
-       say wdump[ G.drop.may.O ];
        # puts / last ^
-       my @s;
+       
+       my @s; # heading
+       
        for my $lv (@$gs) {
            my $d;
            my $j = lv.j;
@@ -229,8 +208,6 @@ R_Jz:
            my $at = d.at = {};
            my $css = d.css = [];
            
-           say wdump $sc;
-           
            if (j.l eq '/') { # carbon hapso
                at.ishtml = 1;
                d.s = join "", @s;
@@ -238,19 +215,19 @@ R_Jz:
            }
            
            $sc = Rw kyv $sc;
-           saybl wdump $sc;
+           
            my $tks = Rw sctks $sc;
            
-           my $it = Rw scitl $tks may O;
+           my $styles = G.drop.may.O;
+           my $it = Rw scitl $tks $styles;
            
            while (1) {
                my ($tk, $com, $v, $tks) = $it->();
-               saybl "it: $tk";
                last if !$tk;
                say " $tk, $com, $v, $tks";
 
                my @s = $X->{$tk}->($v, $tks, $X, $d, d.at, d.css, $J, $j);
-               say wdump [@s];
+               #say wdump [@s];
            }
            # Jung Cs have injected langauge
            # to grab themselves by...
@@ -297,7 +274,4 @@ R_Jz:
        
        # STYLE
        
- - K: 333 #c FLAKEY!
-   D: |
-         
 
