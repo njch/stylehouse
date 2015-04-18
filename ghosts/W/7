@@ -26,7 +26,7 @@ R_Jz:
        
        my $tks = Rw sctks $sc;
        my $styles = G.drop.esc.O;
-       my $it = Rw scitl $tks $styles;
+       my $it = Rw scitl $X $tks $styles;
        
        my $tw; # bang
        while (1) {
@@ -71,7 +71,27 @@ C esc:
   - 3
   - |
      '%jsc'=>$v
-     
+ -
+  - argzs # some compression pattern
+  - 3
+  - |
+     '%argzs'=>$v
+
+ -
+  - FLYING #
+  - 3
+  - |
+    #warn "all these were flying: ".wdump $v;
+    my @style;
+    for my $lma (sort keys %$v) {
+        my $lm = $v->{$lma};
+        for my $com (sort keys %$lm) {
+            my $y = join '#', grep {length} $lma, $com;
+            sayre "making %"."$y => $lm->{$com}";
+            push @style, '%'.$y => $lm->{$com};
+        }
+    }
+    @style;
  -
   - mktk # language expansion
   - 3

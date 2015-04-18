@@ -139,8 +139,15 @@ R_Jz:
                      my $cs = {};
                      $cs->{$_} = delete $tks->{$_} for keys %$tks;
                      $flying = 0;
-                     
-                     return ['FLYING', '', $cs, $tks];
+                     if (X.FLYING) {
+                         return 'FLYING', '', $cs, $tks;
+                     }
+                     else {
+                         sayre $F[2]->pi,
+                         $F[0]->pi,
+                         "    unnibblable (make FLYING to catch): ".ki 2, $cs;
+                         return;
+                     }
                  }
                  next;
              }
@@ -221,9 +228,11 @@ R_Jz:
            $sc = Rw kyv $sc;
            
            my $tks = Rw sctks $sc;
+           d.cs && die;
+           d.cs = $tks;
            
            my $styles = G.drop.may.O;
-           my $it = Rw scitl $tks $styles;
+           my $it = Rw scitl $X $tks $styles;
            
            while (1) {
                my ($tk, $com, $v, $tks) = $it->();
@@ -231,17 +240,17 @@ R_Jz:
                say " $tk, $com, $v, $tks";
 
                my @s = $X->{$tk}->($v, $tks, $X, $d, d.at, d.css, $J, $j);
-               #say wdump [@s];
+               #say "May X $tk returned: ". wdump [@s] if @s;
            }
-           # Jung Cs have injected langauge
-           # to grab themselves by...
-           # < >< >< >?
+           
            
            @$css = map {
                join '', map{"$_;"} grep{defined} split ';', $_
            } @$css;
+           
            # TODO hold things in pockets relative to origin css comment
            # to help things break down into styles better
+           # this is what language for,
            at.style = join '', map{"$_;"}
                grep{defined} map { split ';' } @$css;
            
