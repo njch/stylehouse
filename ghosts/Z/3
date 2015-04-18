@@ -82,7 +82,7 @@ C may:
     at.id = $id;
     J.idyl->($J, $id, $j);
     #
- -
+ - #comp
   - jsc
   - 5
   - |
@@ -92,6 +92,7 @@ C may:
     d.s = "a.".j.l." = function (A,C,G,T) {\n".d.s.";\n";
     say wdump d.s;
     #
+    
 R_Jz:
  - K: sctks #c # expand (k:)?lma:v to lma:k:v
    D: |
@@ -109,7 +110,7 @@ R_Jz:
      }
      $tks
      
- - K: gyv #c gplumb
+ - K: gyv #c
    D: |
        my @tops;
        @$vs = grep{defined} map {
@@ -151,13 +152,12 @@ R_Jz:
              if (!exists $dl[$i]) {
                  $i = 0;
                  if ($flying++ > 2) {
-                     sayre "flying around, the dead: ".join", ", sort keys %$tks;
+                     warn "unnibblable style: ".join", ", sort keys %$tks;
                      last;
                  }
                  next;
              }
              my $tk = $dl[$i];
-             #say "maybe $tk   is among ".join', ', sort keys %$tks;
              if (!exists $tks->{$tk}) {
                  $i++;
                  next;
@@ -177,13 +177,14 @@ R_Jz:
          }
      }
    
+
+   
  - K: kyv #c go tyv -> style com $cs
    D: |
      my $ts = {};
      for my $k (sort keys %$sc) {
          my $cs = $sc->{$k};
          my ($style,$com) = split '#', $k;
-         saybl "making $k     -> $style $com    $cs";
          die if $style =~ /\W/;
          $ts->{$com}->{$style} = $cs;
      }
@@ -206,6 +207,8 @@ R_Jz:
        sayyl "Maky on J.name: R.way.hooks.may";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
+       J.bz->("/%what\t0.9" => "hi");
+       
        my $vs = Rw tyv $J;
        sayyl "YEP";
        
@@ -226,6 +229,8 @@ R_Jz:
            my $at = d.at = {};
            my $css = d.css = [];
            
+           say wdump $sc;
+           
            if (j.l eq '/') { # carbon hapso
                at.ishtml = 1;
                d.s = join "", @s;
@@ -235,9 +240,9 @@ R_Jz:
            $sc = Rw kyv $sc;
            saybl wdump $sc;
            my $tks = Rw sctks $sc;
-       sayyl "Tisk:! ".wdump 2, $tks;
-           my $it = Rw csitl $tks may O;
-           saybl "csitl it";
+           
+           my $it = Rw scitl $tks may O;
+           
            while (1) {
                my ($tk, $com, $v, $tks) = $it->();
                saybl "it: $tk";
