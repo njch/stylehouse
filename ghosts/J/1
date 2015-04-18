@@ -224,7 +224,7 @@ R_Jz:
           my $ks = $tks->{$tk};
           if (!$ks->{''}) {
               my ($o) = values %$ks;
-              sayre "no j on $tk \t%% all style %%  ".join' ',sort keys %$ks;#.wdump(2,[map {_.r}grep { 1} @d]);
+              warn "no j on $tk \t%% all style %%  ".join' ',sort keys %$ks;#.wdump(2,[map {_.r}grep { 1} @d]);
               next;
           }
           my $j = delete $ks->{''};
@@ -301,8 +301,10 @@ R_Jz:
      map {
          my $name = _.name;
          $name =~ s/-J\d+$//;
-         $na->{$name} && die "rep of $name";
-         $na->{$name} = $_;
+         if ($name !~ /J\d+-/) {
+             $na->{$name} && die "rep of $name";
+             $na->{$name} = $_;
+         }
      } @aw;
      $na
  - K: Jux #c goto: muxes
