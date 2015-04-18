@@ -80,6 +80,7 @@ __DATA__
       var ws;
       var C = {};
       var conz = {};
+      var ww = {};
 
 
       // splate
