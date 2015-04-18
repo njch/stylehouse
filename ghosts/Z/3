@@ -136,8 +136,11 @@ R_Jz:
              if (!exists $dl[$i]) {
                  $i = 0;
                  if ($flying++ > 2) {
-                     warn "unnibblable style: ".join", ", sort keys %$tks;
-                     last;
+                     my $cs = {};
+                     $cs->{$_} = delete $tks->{$_} for keys %$tks;
+                     $flying = 0;
+                     
+                     return ['FLYING', '', $cs, $tks];
                  }
                  next;
              }
