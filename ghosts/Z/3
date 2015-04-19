@@ -173,7 +173,7 @@ R_Jz:
    
 
    
- - K: kyv #c go tyv -> style com $cs
+ - K: kyv #c go tyv -> com style $cs
    D: |
      my $ts = {};
      for my $k (sort keys %$sc) {
@@ -183,6 +183,27 @@ R_Jz:
          $ts->{$com}->{$style} = $cs;
      }
      $sc = $ts;
+ - K: tks_cs #c tks -> style=>v
+   D: |
+     my $cs = {};
+     for my $k (sort keys %$tks) {
+         my $w = $tks->{$k};
+         my @wks = sort keys %$w;
+         my ($el) = @wks;
+         my $v = $w->{$el};
+         if (@wks > 1) {
+             warn "ar.r   style $k collaprse ::: @wks \n"
+             ." went with $el: $v";
+         }
+         $cs->{$k} = $v;
+     }
+     $cs
+           
+ - K: Travel #c from may, make wave coupler
+   D: |
+     my $j = {Wid=>J.id};
+     $j->{$_} = [] for 1..9;
+     $j;
  - K: C_may #c
    n_D:
      el:
@@ -200,6 +221,10 @@ R_Jz:
        #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
+       my $j = Rw Travel $J;
+       # J.id should be the scribe tabogan targeto
+       # , subtle Multipe, since shadow, all waves
+       # get into jsc_args to make c,leaner ar
        
        my $vs = Rw tyv $J;
        
@@ -225,11 +250,15 @@ R_Jz:
                @s = ();
            }
            
+           # style#\com / v (sctks should eat this, esc chang)
            $sc = Rw kyv $sc;
-           
+           # com / style / v
            my $tks = Rw sctks $sc;
-           d.cs && die;
-           d.cs = $tks;
+           # style / com / v
+           
+           d.cs = Rw tks_cs $r:j.r $tks;
+           # style / v
+           
            
            my $styles = G.drop.may.O;
            my $it = Rw scitl $X $tks $styles;
@@ -243,7 +272,12 @@ R_Jz:
                #say "May X $tk returned: ". wdump [@s] if @s;
            }
            
+           if (at.c) {
+               acum $j, '1' => ' a.'.at.c.'('.ejson(d.s).');';
+               next;
+           }
            
+           # AND .... scribe, slump to end
            @$css = map {
                join '', map{"$_;"} grep{defined} split ';', $_
            } @$css;
@@ -254,16 +288,11 @@ R_Jz:
            at.style = join '', map{"$_;"}
                grep{defined} map { split ';' } @$css;
            
-           # /////////////////////////////////////////////////////
-       # thingness <-> appearance
-       
            # compressior
-       # stylecompressor 3s6 aboves
-       # hooch
-           if (at.title || !J.untitled) {
-               at.title = join " ", grep{defined}
-                   (!J.untitled ? "j.cv j.l" : undef),
-                   (at.title ? at.title : undef);
+           # stylecompressor 3s6 aboves
+           # hooch
+           if (!exists at.title || defined at.title) {
+               at.title = "j.cv j.l".(defined at.title && " at.title");
            }
            
            my $ishtml = delete at.ishtml;

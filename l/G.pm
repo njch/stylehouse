@@ -439,41 +439,15 @@ sub fs_find {
     return @list;
 }
 
-sub jsq {
-    my $G = shift;
-    my @a = @_;
-    for (@a) {
-        s/\\/\\\\/g;
-        s/'/\\'/g;
-        s/\n/\\n/g;
-    }
-    wantarray ? @a : shift @a;
+sub mkuid {
+    (mkuuid() =~ /^(\w+)-.+$/)[0]
+    .$H->{sdghih}++
 }
 
-sub jssq {
-    my $G = shift;
-    my @a = @_;
-    for (@a) {
-        s/\\/\\\\/g;
-        s/"/\\"/g;
-        s/\\\\n/\\n/g;
-        #s/\n/\\n/g;
-    }
-    wantarray ? @a : shift @a;
-}
-
-sub Stytog {
-    my $G = shift;
-    my ($u, $s) = @_;
-    my @styles = split /\s+/, $u->{styles};
-    if (grep { $_ eq $s } @styles) {
-        @styles = grep { $_ ne $s } @styles
-    }
-    else {
-        push @styles, $s;
-    }
-    $u->{styles} = join ' ', @styles;
-    $G->w('chang', {humm=>$u});
+sub mkuuid {
+    UUID::generate(my $i);
+    UUID::unparse($i, my $s);
+    $s
 }
 
 sub load_ways {

@@ -434,35 +434,17 @@ Ds:
             push @list, $na;
         }, @dirs);
         return @list;
-  - K: jsq #c
+  - K: mkuid #c H wide unique id
+    style: func
     D: |
-        my @a = @_;
-        for (@a) {
-            s/\\/\\\\/g;
-            s/'/\\'/g;
-            s/\n/\\n/g;
-        }
-        wantarray ? @a : shift @a;
-  - K: jssq #c
+        (mkuuid() =~ /^(\w+)-.+$/)[0]
+        .H.sdghih++
+        
+  - K: mkuuid # make a number bigger than the universe
+    style: func
     D: |
-        my @a = @_;
-        for (@a) {
-            s/\\/\\\\/g;
-            s/"/\\"/g;
-            s/\\\\n/\\n/g;
-            #s/\n/\\n/g;
-        }
-        wantarray ? @a : shift @a;
-  - K: Stytog #c
-    D: |
-        my ($u, $s) = @_;
-        my @styles = split /\s+/, u.styles;
-        if (grep { $_ eq $s } @styles) {
-            @styles = grep { $_ ne $s } @styles
-        }
-        else {
-            push @styles, $s;
-        }
-        u.styles = join ' ', @styles;
-        $G->w('chang', {humm=>$u});
+      UUID::generate(my $i);
+      UUID::unparse($i, my $s);
+      $s
+    
 
