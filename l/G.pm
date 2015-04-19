@@ -1434,6 +1434,11 @@ sub ejson {
     $H->json->encode($m);
 }
 
+sub jsq {
+    my ($s,@e) = @_;
+    sprintf $s, map { ejson($_) } @e
+}
+
 sub E {
     $H->send(@_);
 }
