@@ -220,7 +220,8 @@ R_Jz:
        
        my $aj = {Wid=>J.id,id=>mkuid,c=>[],sc=>[]};
        
-       my $vs = Rw tyv $J;
+       my $ip = ar.ip || {};
+       my $vs = Rw tyv $J $ip;
        # puts / last:
        my $gs = Rw gyv $J $vs;
        
@@ -232,7 +233,7 @@ R_Jz:
            my $sc = lv.sc;
            d.lv = $lv;
            d.s = j.s;
-           die "reffy d.s in j.l".wdump(2,$j) if ref d.s;
+           die "reffy d.s in j.l   ip: ".ki($ip)."\n\n".wdump(2,$j) if ref d.s;
            say "niner j.r" if j.cv == 0.9;
            my $at = d.at = {};
            my $css = d.css = [];
@@ -309,7 +310,9 @@ R_Jz:
        
        aj.s = $html;
        
-       Rw Em $aj;
+       if (!ar.catj) {
+           Rw Em $aj;
+       }
        
        $aj
        # STYLE

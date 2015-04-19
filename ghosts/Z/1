@@ -32,25 +32,21 @@ R_Jz:
      my $J = Rw oJ wu;
      Rw up $J $aj;
      
-
- - K: wu #c attaches to the wwcup
+ - K: wu #c attach anything under ww
    n_D:
      yJup: |
        'wu'
      up: |
-       if (aj.s) {
+       if (my $s = delete aj.s) {
            my $wwid = G.oin.id;
-           unshift @{aj.sc}, ' a.wu('.ejson($wwid).', \$('ww#$wwid').append
-           acum $aj, 'c', 
+           my $Wid = aj.Wid;
+           unshift @{aj.c},
+           " \$('ww#$wwid').append(".ejson($s).");";
        }
-       say "WWcup!". wdump $aj;
-       return;
-     not: |
-       Jn('/', 0.9, {}, "{id:$id,tag:ww"
-           .",ab:1,width:100%,height:100%,poi:n,zi:1,bgh:33.5.3.8}");
-       my $h = Rw maka $J $db=1;
-       E(" \$('#' + \$('#$afterid').parent().attr('id') + ' ww').remove();");
-       E(" \$('#$afterid').after(".ejson($h).");");
+       my @M = (@{aj.c}, @{aj.sc});
+       #Jn(aj.Wid, 0.2, {tsup=>'1'});
+       #Jn(aj.Wid.'/'.aj.id, 0.3,
+       E($_) for @M;
        
  - K: scr #c
    n_D:
@@ -59,19 +55,25 @@ R_Jz:
      around: |
        Rw suck */up;
        Rw suck */out;
-     up: | #
+     up: | # if the in up, pha wakeups out - all response to editing
        Rw the $J comprsc;
      out: |
-       my @l = Rw tvo $J;
-       sayyl "In scr...";
-       sayyl _.r for @l;
+       # splurt of compressions so may can do more
        Rw may $J;
        
      comprsc: #c
        - MZ: jsc
        -
+        - wu
+        - 1
+        - args: wwid, Wid, s
+        - |
+         $('ww#'+wwid+' > #'+Wid).fadeOut(1000, function() { $(this).remove(); });
+         $('ww#'+wwid).append(s);
+       -
          - o
          - 1
+         - args: Wid, K, C
          - |
            var W = ww[Wid];
            if (!W) {
@@ -92,22 +94,20 @@ R_Jz:
            
            a[K](A, C, G, T);
            
-         - args: Wid, K, C
        -
          - el
          - 3
-         - |v
+         - |
            // gets (A,C,G,T
-           
            // the index t, tag?
-
-            K y Mn fourstringity
-            c id and junk, triggers
-            sc style
-                # C
-           #someomeon
+           // 
+           // c thingy
+           // sc styley
  - K: ym/jsc #c
    D: |
+     if (ref n.c && !ref n.sc) {
+         (n.c,n.sc) = (n.sc,n.c);
+     }
      n.sc.jsc ||= 'y';
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
@@ -135,6 +135,7 @@ R_Jz:
      Rw adJ $J;
      
      Rw join/wwcup $J $afterid;
+     # this emission bracket
      
      Rw JJJ toc;
      
@@ -166,8 +167,15 @@ R_Jz:
        }
        # makes a pile to see/curve in J.up, tiny geos? things hop
      wwcup: |
-       my $wwJ = Rw JJJJ $J wwcup;
-       Rw up $J:wwJ $id:J.id $afterid;
+       Jn('/', 0.9, {}, "{tag:ww,ab:100,poi:n,zi:1,bgh:33.5.3.8}");
+       my $ip = {l=>'/'};
+       my $aj = Rw may $J $catj=1 $ip;
+       if (my $s = delete aj.s) {
+           unshift @{aj.c}, 
+           " \$('#' + \$('#$afterid').parent().attr('id') + ' ww').remove();",
+           " \$('#$afterid').after(".ejson($s).");"
+       }
+       Rw Em $aj;
  - K: toc #c
    n_D:
      yJup: |

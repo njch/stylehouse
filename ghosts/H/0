@@ -138,8 +138,10 @@ hooks:
       w Teeth[$m];
       
     er: | #c
-      die "much JS error..." if H.JErrors++ > 3;
-      sayre "javascript error from client", j.m, j.e;
+      warn "much JS error..." if H.JErrors++ > 3;
+      my $er = j.er;
+      sayre ind 'EEE ', join "\n", "javascript error from client",
+          "m  er.m", "", er.e;
     event: | #c
       my $e = ar.e = j.event;
       
