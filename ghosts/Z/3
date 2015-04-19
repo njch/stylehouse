@@ -199,11 +199,6 @@ R_Jz:
      }
      $cs
            
- - K: Travel #c from may, make wave coupler
-   D: |
-     my $j = {Wid=>J.id};
-     $j->{$_} = [] for 1..9;
-     $j;
  - K: C_may #c
    n_D:
      el:
@@ -221,15 +216,13 @@ R_Jz:
        #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
-       my $j = Rw Travel $J;
-       # J.id should be the scribe tabogan targeto
-       # , subtle Multipe, since shadow, all waves
-       # get into jsc_args to make c,leaner ar
+       J.bz->("/%tag\t0.9" => 'ux');
+       
+       my $aj = {Wid=>J.id,id=>mkuid,c=>[],sc=>[]};
        
        my $vs = Rw tyv $J;
-       
+       # puts / last:
        my $gs = Rw gyv $J $vs;
-       # puts / last ^
        
        my @s; # heading
        
@@ -247,6 +240,7 @@ R_Jz:
            if (j.l eq '/') { # carbon hapso
                at.ishtml = 1;
                d.s = join "", @s;
+               # really like n.sc.M = [...]
                @s = ();
            }
            
@@ -273,7 +267,7 @@ R_Jz:
            }
            
            if (at.c) {
-               acum $j, '1' => ' a.'.at.c.'('.ejson(d.s).');';
+               acum $aj, 'c', ' a.'.at.c.'('.ejson(d.s).');';
                next;
            }
            
@@ -312,8 +306,12 @@ R_Jz:
        }
        @s = "no?" if !@s;
        my $html = join '', @s;
-       $html;
        
+       aj.s = $html;
+       
+       Rw Em $aj;
+       
+       $aj
        # STYLE
        
 
