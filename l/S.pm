@@ -103,6 +103,7 @@ __DATA__
       var w = {conin: '<%= $ws_location %>'};
       var fail = 0;
       var a = {};
+      var q = 1;
       var elvis = Math.random();
       var ws;
       var C = {};
@@ -113,7 +114,9 @@ __DATA__
       // splate
 
       a.e = function(e) {
-          console.log("xut "+e);
+          if (!q) {
+              console.log("xut "+e);
+          }
           var m;
           try {
               m = eval(e);

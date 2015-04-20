@@ -52,6 +52,8 @@ C may:
   - 5.1
   - |
     at.type = $v;
+    at.ishtml = 1;
+    at.title = undef;
  -
   - tag
   - 5
@@ -289,7 +291,11 @@ R_Jz:
            }
            
            if (at.c) {
-               acum $aj, 'c', ' a.'.at.c.'('.ejson(d.s).');';
+               my $js = ref d.s eq 'ARRAY' ?
+                   join(',',map{ ejson($_) }@{d.s})
+               :
+                   ejson(d.s);
+               acum $aj, 'c', ' a.'.at.c.'('.$js.');';
                next;
            }
            
