@@ -19,25 +19,54 @@ C may:
   - 5
   - |
     at.c = 'o';
-    d.s = [J.id, 'do', d.s];
-    sayre "JS: j.r        ";
-    saygr "JS j.l :::: ". join' ', split /\s+/, d.s;
+    my $od = 'do';
+    $od = d.cs.od if defined d.cs.od;
+    d.s = [J.id, $od, d.s];
+    sayre "JS: j.r   $od        ";
+    saygr "JS j.l :::: ". wdump d.s;#join' ', split /\s+/, d.s;
+ - # ompu #c
+  - ps
+  - 5
+  - |
+    at.tag = 'script';
+    at.type ||= 'text/paperscript';
+    at.canvas = 'display';
+    at.ishtml = 1;
+    at.src = d.cs.src if d.cs.src;
+    #$od = d.cs.od if defined d.cs.od;
+    #d.s = [J.id, $od, d.s];
+    #d.s = with (pap
+    sayre "JS: j.r          ";
+    saygr "JS j.l :::: ". wdump d.s;#join' ', split /\s+/, d.s;
 R_Jz:
+ - K: ym/jsc #c
+   D: |
+     if (ref n.c && !ref n.sc) {
+         (n.c,n.sc) = (n.sc,n.c);
+     }
+     n.sc.jsc ||= 'y';
+ - K: ym/js #c
+   D: |
+     if (ref n.c && !ref n.sc) {
+         (n.c,n.sc) = (n.sc,n.c);
+     }
+     n.sc.js ||= 'y';
+ - K: ym/ps #c
+   D: |
+     if (ref n.c && !ref n.sc) {
+         (n.c,n.sc) = (n.sc,n.c);
+     }
+     n.sc.ps ||= 'y';
  - K: scr/canvas #c
    D: 
    - MZ: js
    -
-    - ps #
+    - pzl #
     - 3
-    - {}
-    #type: text/paperscript
-    #  canvas: display
+    - od: ps
     - |
-      var pa = A.p;
-      console.log(pa);
-      with (paper) {
-         console.log(project.clear());
-         var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+      console.log(project.clear());
+         var shape = new Path.RegularPolygon(new Point(280, 170), 4, 100);
           console.log(shape);
          shape.fillColor = '#339e92'; 
          shape.selected = true;
@@ -46,14 +75,43 @@ R_Jz:
               .translate(new Point(200,100))
               .rotate(60)
               .scale(2);
-              
-         paper.view.draw();
-              
+   - MZ: js:0 ps # paperscripts
+   -
+    - pso #
+    - 4
+    - |
+      console.log('hello');
+      project.clear();
+      var mousePoint = view.center;
+      var amount = 25;
+      var colors = ['red', 'white', 'blue', 'white'];
+
+      for (var i = 0; i < amount; i++) {
+          var rect = new Rectangle([0, 0], [25, 25]);
+          rect.center = mousePoint;
+          var path = new Path.Rectangle(rect, 6);
+          path.fillColor = colors[i % 4];
+          var scale = (1 - i / amount) * 20;
+          path.scale(scale);
       }
-      
- - K: nonrrrrrrrrr
-   D: |
+
+      function onMouseMove(event) {
+          mousePoint = event.point;
+      }
+
+      var children = project.activeLayer.children;
+      function onFrame(event) {
+          for (var i = 0, l = children.length; i < l; i++) {
+              var item = children[i];
+              var delta = (mousePoint - item.position) / (i + 5);
+              item.rotate(Math.sin((event.count + i) / 10) * 7);
+              if (delta.length > 0.1)
+                  item.position += delta;
+          }
+      }
      
+ - K: nonrrrrrrrrr
+   not: |
  
          paper.uplg = new PaperAnimate.Updater();
         
@@ -82,10 +140,6 @@ R_Jz:
  - K: scr/comprsc #c
    D:
    - MZ: jsc
-   -
-    - pep
-    - 1
-    - args: Wid
    -
     - wu
     - 1
@@ -146,6 +200,13 @@ R_Jz:
     - 3
     - |
       eval(C.c);
+   -
+    - ps
+    - 3
+    - |
+      with (paper) {
+          eval(C.c);
+      }
    -
      - el
      - 3
