@@ -4,7 +4,11 @@ C may:
   - 5
   - |
     my $args = d.cs.args || 'A,C,G,T';
-    at.c = 'e';
+    #at.c = 'e';
+    at.tag = 'script';
+    at.ishtml = 1;
+    at.type ||= 'text/javascript';
+    at.title = undef;
     d.s = "a.".j.l." = function (".$args.") {\n".d.s."};\n";
     sayre "Javascript compression: j.r        ";
     
@@ -25,8 +29,8 @@ R_Jz:
  - K: Em #c send love
    D: |
      my $J = Rw oJ wu;
-     say wdump $aj;
      Rw up $J $aj;
+     say wdump $aj;
      
  - K: wu #c attach anything under ww
    n_D:
@@ -42,7 +46,10 @@ R_Jz:
        my @M = (@{aj.c}, @{aj.sc});
        #Jn(aj.Wid, 0.2, {tsup=>'1'});
        #Jn(aj.Wid.'/'.aj.id, 0.3,
-       E($_) for @M;
+       for (@M) {
+          saybl '', $_, '';
+          E($_);
+       }
        
  - K: scr #c
    n_D:
@@ -58,82 +65,6 @@ R_Jz:
        # splurt of compressions so may can do more
        Rw may $J;
        
-     canvas: #c
-      - MZ: js
-      -
-       - ps #
-       - 3
-       - type: text/paperscript
-         canvas: display
-       - |
-         var updater = new PaperAnimate.Updater();
-         var shape = new Path.Circle(new Point(80, 50), 35);
-         var secondPath = new Path.Circle(new Point(120, 50), 35);
-        
-          #  var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
-            shape.fillColor = '#e9e9ff';
-            shape.selected = true;
-            shape.animate(1, updater, true)
-                 .shear(0.1,0.2)
-                 .translate(new Point(200,100))
-                 .rotate(60)
-                 .scale(2);
-
-            var dupe = new Path.RegularPolygon(new Point(180, 170), 4, 100);
-            dupe.fillColor = '#3949ff';
-            dupe.selected = true;
-            dupe.shear(0.1,0.2);
-            dupe.translate(new Point(700,100));
-            dupe.rotate(60);
-            dupe.scale(2);
-         
-          function onFrame(e) { updater.update(e); }
-     comprsc: #c
-       - MZ: jsc
-       -
-        - wu
-        - 1
-        - args: wwid, Wid, s
-        - |
-         $('ww#'+wwid+' > #'+Wid).fadeOut(1000, function() { $(this).remove(); });
-         $('ww#'+wwid).append(s);
-       -
-         - o
-         - 1
-         - args: Wid, K, C
-         - |
-           var W = ww[Wid];
-           if (!W) {
-               W = ww[Wid] = {};
-               W.Wid = Wid;
-           }
-           var A = W.A;
-           if (!A) {
-               A = W.A = {};
-           }
-           var C = C;
-           if (C.constructor == 'Array') {
-               var M = C;
-               C = {};
-               C.t = M[0];
-               C.y = M[1];
-               C.c = M[2];
-               C.sc = M[3];
-           }
-           var G = a; // should be receiver, W.G, auto locals + uni
-           var T = {};
-           
-           a[K](A, C, G, T);
-           
-       -
-         - el
-         - 3
-         - |
-           // gets (A,C,G,T
-           // the index t, tag?
-           // 
-           // c thingy
-           // sc styley
  - K: ym/jsc #c
    D: |
      if (ref n.c && !ref n.sc) {

@@ -1,0 +1,97 @@
+R_Jz:
+ - K: scr/canvas #c
+   D: 
+   - MZ: js
+   -
+    - ps #
+    - 3
+    - {}
+    #type: text/paperscript
+    #  canvas: display
+    - |
+      var updater = paper.uplg;
+      var shape = new paper.Path.Circle(new paper.Point(80, 50), 35);
+      console.log(shape);
+     
+       //#  var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+         shape.fillColor = '#e9e9ff';
+         shape.selected = true;
+         shape.animate(1, updater, true)
+              .shear(0.1,0.2)
+              .translate(new paper.Point(200,100))
+              .rotate(60)
+              .scale(2);
+ 
+     
+ - K: scr/comprsc #c
+   D:
+   - MZ: jsc
+   -
+    - pep
+    - 1
+    - args: Wid
+   -
+    - wu
+    - 1
+    - args: wwid, Wid, s
+    - |
+     $('ww#'+wwid+' > #'+Wid).fadeOut(1000, function() { $(this).remove(); });
+     $('ww#'+wwid).append(s);
+   -
+    - WW
+    - 1
+    - args: Wid
+    - |
+      var W = ww[Wid];
+      if (!W) {
+          W = ww[Wid] = {};
+          W.Wid = Wid;
+          
+          W.A = {};
+          var canvas = document.getElementById('myCanvas');
+          paper.setup(canvas);
+          W.A.p = paper.project;
+      }
+      W.A.p.activate();
+      
+      return W;
+   -
+     - o
+     - 1
+     - args: Wid, K, C
+     - |
+       var W = a.WW(Wid);
+       var A = W.A;
+       if (!A) {
+           A = W.A = {};
+       }
+       var C = C;
+       if (C.constructor == 'Array') {
+           var M = C;
+           C = {};
+           C.t = M[0];
+           C.y = M[1];
+           C.c = M[2];
+           C.sc = M[3];
+       }
+       var G = a; // should be receiver, W.G, auto locals + uni
+       var T = {};
+       
+       console.log('the K: '+ K);
+       
+       a[K](A, C, G, T);
+   -
+    - do
+    - 3
+    - |
+      eval(C.c);
+   -
+     - el
+     - 3
+     - |
+       // gets (A,C,G,T
+       // the index t, tag?
+       // 
+       // c thingy
+       // sc styley
+
