@@ -19,25 +19,13 @@ C may:
   - 5
   - |
     at.c = 'o';
-    my $od = 'do';
-    $od = d.cs.od if defined d.cs.od;
-    d.s = [J.id, $od, d.s];
-    sayre "JS: j.r   $od        ";
-    saygr "JS j.l :::: ". wdump d.s;#join' ', split /\s+/, d.s;
- - # ompu #c
+    d.s = [J.id, 'do', d.s];
+ - # ompu
   - ps
   - 5
   - |
-    at.tag = 'script';
-    at.type ||= 'text/paperscript';
-    at.canvas = 'display';
-    at.ishtml = 1;
-    at.src = d.cs.src if d.cs.src;
-    #$od = d.cs.od if defined d.cs.od;
-    #d.s = [J.id, $od, d.s];
-    #d.s = with (pap
-    sayre "JS: j.r          ";
-    saygr "JS j.l :::: ". wdump d.s;#join' ', split /\s+/, d.s;
+    at.c = 'o';
+    d.s = [J.id, 'ps', d.s];
 R_Jz:
  - K: ym/jsc #c
    D: |
@@ -59,29 +47,32 @@ R_Jz:
      n.sc.ps ||= 'y';
  - K: scr/canvas #c
    D: 
-   - MZ: js
+   - MZ: ps
    -
     - pzl #
     - 3
-    - od: ps
     - |
-      console.log(project.clear());
-         var shape = new Path.RegularPolygon(new Point(280, 170), 4, 100);
-          console.log(shape);
+      project.clear();
+      A.hi = 'yo';
+         var shape = new Path.RegularPolygon(new Point(180, 170),3, 100);
          shape.fillColor = '#339e92'; 
          shape.selected = true;
          shape.animate(1, paper.uplg, true)
-              .shear(0.1,0.2) 
               .translate(new Point(200,100))
-              .rotate(60)
-              .scale(2);
-   - MZ: js:0 ps # paperscripts
+              .rotate(90)
+         //shape.animate(4, paper.uplg, true) // 2 secs, chained = true
+         .scale(2)
+         //.shear(0.1, 0.3)
+         ;  
+      
+ - K: nonrrrrrrrrr
+   not: |
    -
-    - pso #
+    - pso #c
     - 4
     - |
-      console.log('hello');
-      project.clear();
+      console.log('hello '+ A.hi);
+      //project.clear();
       var mousePoint = view.center;
       var amount = 25;
       var colors = ['red', 'white', 'blue', 'white'];
@@ -100,7 +91,7 @@ R_Jz:
       }
 
       var children = project.activeLayer.children;
-      function onFrame(event) {
+      function onMouseMove(event) {
           for (var i = 0, l = children.length; i < l; i++) {
               var item = children[i];
               var delta = (mousePoint - item.position) / (i + 5);
@@ -109,9 +100,6 @@ R_Jz:
                   item.position += delta;
           }
       }
-     
- - K: nonrrrrrrrrr
-   not: |
  
          paper.uplg = new PaperAnimate.Updater();
         
