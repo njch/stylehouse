@@ -54,7 +54,12 @@ R_Jz:
          my $n = shift;
          for (split /\s+/, $MZ) {
              /^(.+?)(?::(.+))?$/ || die;
-             $fl->{$1} = $2 || 1;
+             if (defined $2 && $2 eq '0') {
+                 delete $fl->{$1};
+             }
+             else {
+                 $fl->{$1} = $2 || 1;
+             }
          }
          n.moozd = 1;
      };

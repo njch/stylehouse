@@ -48,7 +48,6 @@ __DATA__
 @@ws_page.html.ep
 <!DOCTYPE html>
 <html><head>
-<script src="jquery.min.js" type="text/javascript"></script>
   <style type="text/css">
       .NZ { display:none; };
       @font-face {
@@ -64,12 +63,40 @@ __DATA__
       }
   </style>
   <link href="light.css" rel="stylesheet"></link>
-</head><body style="margin: 0px; background: url('i/rock.jpg'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;">
+  <script src="paper.js"></script>
+  <script src="paper.animate.js"></script>
+  <script canvas="display" type="text/paperscript">var updater = new PaperAnimate.Updater();
+
+
+      var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+      shape.fillColor = '#e9e9ff';
+      shape.selected = true;
+      shape.animate(1, updater, true)
+           .shear(0.1,0.2)
+           .translate(new Point(200,100))
+           .rotate(60)
+           .scale(2);
+
+      var dupe = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+      dupe.fillColor = '#3949ff';
+      dupe.selected = true;
+      dupe.shear(0.1,0.2);
+      dupe.translate(new Point(700,100));
+      dupe.rotate(60);
+      dupe.scale(2);
+
+
+   function onFrame(e) { updater.update(e); }
+  </script>
+<script src="jquery.min.js" type="text/javascript"></script>
+</head><body style="margin: 0px; background: url('eye/Pic/ift/IMG_4021.JPG'); background: black; position:absolute; color: #0d2; overflow:hidden; height:100%; width:100%;">
 
     <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;"> </div>
 
     <div id='ux' style="position:absolute;top:0em;
     right:0em;width:100%;height:100%; overflow:hidden;"> </div>
+
+    <canvas id="display" resize></canvas>
 
     <script type="text/javascript">
       // default, top level #c

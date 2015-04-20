@@ -15,6 +15,7 @@ C may:
   - 5
   - |
      at.ishtml = 1;
+
  -
   - sf # has a way to $a the gp action within...
   - 5
@@ -37,6 +38,21 @@ C may:
   - |
     at.title = $v;
  -
+  - canvas
+  - 5
+  - |
+    at.canvas = $v;
+ -
+  - nt
+  - 5
+  - |
+    at.title = undef;
+ -
+  - type
+  - 5.1
+  - |
+    at.type = $v;
+ -
   - tag
   - 5
   - |
@@ -47,6 +63,11 @@ C may:
   - |
     $v =~ /^(?:(\S+):)?(\S+)$/;
     $at->{$1} = $2;
+ - #
+  - atrp
+  - 5
+  - |
+     at.rp = $v;
  -
   - path
   - 5
@@ -295,14 +316,17 @@ R_Jz:
            my $ts = j.l;
            $ts =~ s/[^\w]/ñ/sg;
            $tag ||= "a$ts";
-           $at = join " ", $tag,
+           my $arp = delete at.rp if exists at.rp;
+           my $mat = join " ", $tag,
                map { saybl " : $_ "; $_ }
                map { $_.'="'.$at->{$_}.'"' } # attra
                grep { $at->{$_} } sort keys %$at;
            
+           $mat .= ' '.$arp if defined $arp;
+           
            my $s = d.s;
            $s = encode_entities($s) if !$ishtml;
-           $s = "<$at>$s</$tag>" if defined $s;
+           $s = "<$mat>$s</$tag>" if defined $s;
            push @s, $s;
        }
        @s = "no?" if !@s;

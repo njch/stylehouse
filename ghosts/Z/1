@@ -14,7 +14,8 @@ C may:
   - 5
   - |
     at.tag = 'script';
-    at.type = 'text/javascript';
+    at.ishtml = 1;
+    at.type ||= 'text/javascript';
     at.src = d.cs.src if d.cs.src;
     at.title = undef;
     
@@ -24,8 +25,8 @@ R_Jz:
  - K: Em #c send love
    D: |
      my $J = Rw oJ wu;
-     Rw up $J $aj;
      say wdump $aj;
+     Rw up $J $aj;
      
  - K: wu #c attach anything under ww
    n_D:
@@ -52,24 +53,41 @@ R_Jz:
        Rw suck */out;
      up: | # if the in up, pha wakeups out - all response to editing
        Rw the $J comprsc;
-       Rw the $J scripty;
+       Rw the $J canvas;
      out: |
        # splurt of compressions so may can do more
        Rw may $J;
        
-     scripty: #c
+     canvas: #c
       - MZ: js
       -
-       - paper
-       - 1
-       - ''
-       - src: paper.js
-      -
-       - paperanim
-       - 1
-       - ''
-       - src: paper.animate.js
-       
+       - ps #
+       - 3
+       - type: text/paperscript
+         canvas: display
+       - |
+         var updater = new PaperAnimate.Updater();
+         var shape = new Path.Circle(new Point(80, 50), 35);
+         var secondPath = new Path.Circle(new Point(120, 50), 35);
+        
+          #  var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+            shape.fillColor = '#e9e9ff';
+            shape.selected = true;
+            shape.animate(1, updater, true)
+                 .shear(0.1,0.2)
+                 .translate(new Point(200,100))
+                 .rotate(60)
+                 .scale(2);
+
+            var dupe = new Path.RegularPolygon(new Point(180, 170), 4, 100);
+            dupe.fillColor = '#3949ff';
+            dupe.selected = true;
+            dupe.shear(0.1,0.2);
+            dupe.translate(new Point(700,100));
+            dupe.rotate(60);
+            dupe.scale(2);
+         
+          function onFrame(e) { updater.update(e); }
      comprsc: #c
        - MZ: jsc
        -
