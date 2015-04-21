@@ -67,6 +67,23 @@ __DATA__
   <script src="paper.animate.js"></script>
   <script canvas="display" type="text/paperscript">paper.uplg = new PaperAnimate.Updater();
 
+
+      var shape = new Path.RegularPolygon(view.center, 3, 100);
+      shape.fillColor = '#333bbb';
+      shape.blur(10);
+      shape.animate(1, paper.uplg)
+           .translate(new Point(200,100))
+           .rotate(60)
+           .scale(2);
+
+      var text = new PointText(view.center);
+      text.justification = 'center';
+      text.fillColor = 'green';
+      text.content = 'STYLEHOUSE';
+      text.scale(14);
+      // text.animate(4, paper.uplg, true)
+      //     .scale(0.0001);
+
    function onFrame(e) { 
    if (a.doya) {
        a.doya(e);

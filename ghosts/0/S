@@ -72,23 +72,21 @@ Ds:
         <script canvas="display" type="text/paperscript">paper.uplg = new PaperAnimate.Updater();
         
         
-            var shape = new Path.RegularPolygon(new Point(180, 170), 4, 100);
-            shape.fillColor = '#e9e9ff';
-            shape.selected = true;
-            shape.animate(1, paper.uplg, true)
-                 .shear(0.1,0.2)
+            var shape = new Path.RegularPolygon(view.center, 3, 100);
+            shape.fillColor = '#333bbb';
+            shape.blur(10);
+            shape.animate(1, paper.uplg)
                  .translate(new Point(200,100))
                  .rotate(60)
                  .scale(2);
-
-            var dupe = new Path.RegularPolygon(new Point(180, 170), 4, 100);
-            dupe.fillColor = '#3949ff';
-            dupe.selected = true;
-            dupe.shear(0.1,0.2);
-            dupe.translate(new Point(700,100));
-            dupe.rotate(60);
-            dupe.scale(2);
             
+            var text = new PointText(view.center);
+            text.justification = 'center';
+            text.fillColor = 'green';
+            text.content = 'STYLEHOUSE';
+            text.scale(14);
+            // text.animate(4, paper.uplg, true)
+            //     .scale(0.0001);
 
          function onFrame(e) { 
          if (a.doya) {

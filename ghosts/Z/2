@@ -33,41 +33,51 @@ R_Jz:
          (n.c,n.sc) = (n.sc,n.c);
      }
      n.sc->{$v} ||= 'y';
+ - K: ym/jswith #c
+   D: |
+     say "JSWITH: ".slim 50, n.c;
  - K: scr/canvas #c
    D: 
-   - MZ: cc:ps
+   - MZ: cc:ps # paperscope (with (paper) {...}) spines!
+   -
+    - funstuff
+    - 3
+    - |
+      project.clear();
+      a.pzl();
+   - MZ: cc:jsc jswith:paper #c paper blocks
+   -
+    - doya # animation frame
+    - 1
+    - args: e
+    - |
+      console.log('de rock'); 
+      // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
    -
     - pzl #
     - 3
     - |
-      project.clear();
-      A.hi = 'yo';
-         var shape = new Path.RegularPolygon(new Point(180, 170),3, 100);
-         shape.fillColor = '#339e92'; 
-         shape.selected = true;
-         shape.animate(2, paper.uplg, true)
-              .translate(new Point(200,100))
-              .rotate(90)
-         //shape.animate(4, paper.uplg, true) // 2 secs, chained = true
-         .scale(2)
-         //.shear(0.1, 0.3)
-         ;  
+      var shape = new Path.RegularPolygon(new Point(180, 170),3, 100);
+      
+      shape.fillColor = '#339e92';
+      shape.animate(2, paper.uplg, true)
+          .translate(new Point(200,100))
+          .rotate(90)
+          .scale(5);
    -
-    - pso #c
+    - pso #
     - 4
     - |
-      console.log('hello '+ A.hi);
-      //project.clear();
-      var mousePoint = view.center - 20;
-      var amount = 147;
+      var mousePoint = view.center;
+      var amount = 30;
       var colors = ['red', 'black', 'blue', 'black'];
 
       for (var i = 0; i < amount; i++) {
-          var rect = new Rectangle([0, 0], [25, 25]);
+          var rect = new Rectangle([5, 0], [25, 25]);
           rect.center = mousePoint;
           var path = new Path.Rectangle(rect, 6);
           path.fillColor = colors[i % 4];
-          var scale = (1 - i / amount) * 20;
+          var scale = (1 - i / amount) * 15;
           path.scale(scale);
       }
 
@@ -77,25 +87,21 @@ R_Jz:
 
       var children = project.activeLayer.children;
       view.onFrame = function (event) {
+          paper.uplg.update(event);
+          
           for (var i = 1, l = children.length; i < l; i++) {
               var item = children[i];
               var delta = (mousePoint - item.position) / (i + 5);
-              item.rotate((Math.sin((event.count + i) / 10)+1) * 3);
+              item.rotate((Math.sin((event.count + i) / 10)+1.617) * 3);
               if (delta.length > 0.1)
                   item.position += delta;
+              item.fillColor.hue += 1;
           }
       }
       
  - K: scr/comprsc #c
    D:
    - MZ: cc:jsc
-   -
-    - doya #c animation frame
-    - 1
-    - args: e
-    - |
-      console.log('de rock'); 
-      // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
    -
     - wu #c ww append a thing, cancel its Wid before
     - 1
