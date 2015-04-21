@@ -27,27 +27,15 @@ C may:
     at.c = 'o';
     d.s = [J.id, 'ps', d.s];
 R_Jz:
- - K: ym/jsc #c
+ - K: ym/cc #c
    D: |
      if (ref n.c && !ref n.sc) {
          (n.c,n.sc) = (n.sc,n.c);
      }
-     n.sc.jsc ||= 'y';
- - K: ym/js #c
-   D: |
-     if (ref n.c && !ref n.sc) {
-         (n.c,n.sc) = (n.sc,n.c);
-     }
-     n.sc.js ||= 'y';
- - K: ym/ps #c
-   D: |
-     if (ref n.c && !ref n.sc) {
-         (n.c,n.sc) = (n.sc,n.c);
-     }
-     n.sc.ps ||= 'y';
+     n.sc->{$v} ||= 'y';
  - K: scr/canvas #c
    D: 
-   - MZ: ps
+   - MZ: cc:ps
    -
     - pzl #
     - 3
@@ -57,7 +45,7 @@ R_Jz:
          var shape = new Path.RegularPolygon(new Point(180, 170),3, 100);
          shape.fillColor = '#339e92'; 
          shape.selected = true;
-         shape.animate(1, paper.uplg, true)
+         shape.animate(2, paper.uplg, true)
               .translate(new Point(200,100))
               .rotate(90)
          //shape.animate(4, paper.uplg, true) // 2 secs, chained = true
@@ -70,7 +58,7 @@ R_Jz:
     - |
       console.log('hello '+ A.hi);
       //project.clear();
-      var mousePoint = view.center;
+      var mousePoint = view.center - 20;
       var amount = 147;
       var colors = ['red', 'black', 'blue', 'black'];
 
@@ -100,14 +88,14 @@ R_Jz:
       
  - K: scr/comprsc #c
    D:
-   - MZ: jsc
+   - MZ: cc:jsc
    -
-    - doya #c
+    - doya #c animation frame
     - 1
     - args: e
     - |
       console.log('de rock'); 
-      # etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
+      // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
    -
     - wu #c ww append a thing, cancel its Wid before
     - 1
@@ -126,10 +114,7 @@ R_Jz:
           W.Wid = Wid;
           
           W.A = {};
-          //var canvas = document.getElementById('myCanvas');
-          //paper.setup(canvas);
-          //W.A.p = paper.project;
-          //W.A.p.up = paper.uplg;
+          //W.A.p = new paper.Project();
           W.A.W = W;
       }
       //W.A.p.activate();
