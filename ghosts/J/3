@@ -57,6 +57,16 @@ R_Jz:
      };
      # ensure phase reset with _after_do
      $x;
+ - K: ph_defaff #c loop early exity if $d same
+   D: |
+     my $strung = ref $d ? wdump((ar.depth||3),$d) : $d;
+     x.defaff_wd = $H->dig($strung);
+     return 0 if !x.head;
+     if (x.defaff_wd eq x.head.defaff_wd) {
+         x.abandon->(saygr "same source: x.name");
+         return 1;
+     }
+     return 0;
  - K: blabphys #c
    D: |
      say "Active phases:".(! %{J.phy} && " NONE");
@@ -113,17 +123,6 @@ R_Jz:
        sayre "ph_exactl: ". slim 50, join("  ",($gl) x 6);
        $wtf;
      
- - K: ph_defaff #c loop early exity if $d same
-   D: |
-     my $strung = ref $d ? wdump((ar.depth||3),$d) : $d;
-     x.defaff_wd = $H->dig($strung);
-     return 0 if !x.head;
-     if (x.defaff_wd eq x.head.defaff_wd) {
-         x.abandon->(say "defaff same dig");
-         say "hey hey x.defaff_wd eq x.head.defaff_wd";
-         return 1;
-     }
-     return 0;
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
    D: |
        my $j = {};

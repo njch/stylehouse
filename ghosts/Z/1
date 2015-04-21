@@ -4,9 +4,13 @@ R_Jz:
    D: |
      my $J = Rw oJ wu;
      Rw up $J $aj;
-     say wdump $aj;
+     for my $k (sort keys %$aj) {
+         my $v = $aj->{$k};
+         say "$k => $v";
+         map { saybl slim 60, $_ } @$v if ref $v eq 'ARRAY';
+     }
      
- - K: wu #c attach anything under ww
+ - K: wu #c attach anything under ww, trainyard
    n_D:
      yJup: |
        'wu'
@@ -23,8 +27,9 @@ R_Jz:
        for (@M) {
           E($_);
        }
-       
- - K: scr #c
+       return;
+       E(join("\n",@M));
+ - K: scr #c 
    n_D:
      yJup: |
        'scr clingleftwall'
@@ -32,12 +37,35 @@ R_Jz:
        Rw suck */up;
        Rw suck */out;
      up: | # if the in up, pha wakeups out - all response to editing
-       Rw the $J comprsc;
-       Rw the $J canvas;
+       Rw thy $J comprsc;
+       Rw thy $J canvas;
      out: |
        # splurt of compressions so may can do more
        Rw may $J;
        
+ - K: thy #c rollbar grab
+   D: |
+     my $what = $m->[0];
+     my $wt = Rw wuck $J */$what;
+     my $M = [];
+     for my $k (sort keys %$wt) {
+         my $N = $wt->{$k};
+         
+         my $coi = Rw pha $J $k;
+         
+         my $d = ref $N ? ejson($N) : $N;
+         
+         next if Rw ph_defaff $J $x:coi $d;
+         
+         if (!ref $N) {
+             $N = [ map { [$_] } split "\n",$N ];
+         }
+         #say " ** waything $what from $k";
+         Rw MyN $N $J;
+          
+         my $y = coi.end->();
+         my $ex = Rw ph_exactl $J $y;
+     }
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
      yJup: |
@@ -75,7 +103,7 @@ R_Jz:
      # delete G.oin;
      
      my $J = G.oin ||= do{
-         my $J = Rw JJ $name=join;
+         my $J = G.oin = Rw JJ $name=join;
          Rw adJ $J;
          Rw join/wwcup $J $afterid;
          $J
@@ -92,17 +120,14 @@ R_Jz:
      # incremental
      
      # eat bees, up reports
-     
-     say "so self is : J.id";
-     
      $J
  - K: join #c
    n_D:
      yJup: |
        'join clingleftwall'
      up: | #
-       my $z = Rw oJ $J zling;
-       Rw up $J:z;
+       #my $z = Rw oJ $J zling;
+       #Rw up $J:z;
        my $ip = {style=>'J'};
        my @l = Rw tvo $J $ip;
        for (@l) {
@@ -124,21 +149,14 @@ R_Jz:
      yJup: |
        'zling clingleftwall'
   
- - K: toc #c
-   n_D:
-     yJup: |
-       'toc'
-     around: |
-       Rw vortex $J up;
-     up: | #
-       saybl "hi";
-       my $ip = {style=>'wantime'};
-       my @timey = Rw tvo $J:G.oin $ip;
-       my $l = {map{_.l => 1}@timey};
-       my $ip = {style=>'J',l=>$l};
-       my @l = Rw tvo $J:G.oin $ip;
-       say _.r for @l;
-       # makes a pile to see/curve in J.up, tiny geos? things hop
+
+ - K: adJ #c embed J
+   D: |
+     my $oJ = G.oin;
+     J.name || die;
+     J.r && die;
+     oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
+     Rw around $J;
  - K: oJ #c asume G.oin.oJ.$name
    D: |
      # squiggly time reconvogation
@@ -150,19 +168,13 @@ R_Jz:
      }
      $oJ;
      
- - K: adJ #c embed J
-   D: |
-     my $oJ = G.oin;
-     J.name || die;
-     J.r && die;
-     oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
-     Rw around $J;
  - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up)
    D: |
      my $m = ar.m||[];
      my $o = Rw pul + $cs:m name style+;
      my $J = G.oin.bb->{o.name."\t0.3"};
-     sayyl " JJJJJ  J.name";
+     my $is = " *" if $J;
+     sayyl " JJJJJ  o.name$is";
      if ($J) {
          # resync style
         Rw around $J;
@@ -242,7 +254,21 @@ R_Jz:
      $exp->($_) for @{J.style};
      die "no style for   @{J.style}   (J.name)" if !%{J.yt};
      saygr "J.name yJup: ".join(' + ', @{J.style})." -> ".join(' ~ ', sort keys %{J.yt});
-
+ - K: toc #c
+   n_D:
+     yJup: |
+       'toc'
+     around: |
+       Rw vortex $J up;
+     up: | #
+       saybl "hi";
+       my $ip = {style=>'wantime'};
+       my @timey = Rw tvo $J:G.oin $ip;
+       my $l = {map{_.l => 1}@timey};
+       my $ip = {style=>'J',l=>$l};
+       my @l = Rw tvo $J:G.oin $ip;
+       say _.r for @l;
+       # makes a pile to see/curve in J.up, tiny geos? things hop
  - K: vortex #c do recur while J as in G.oin
    D: |
      my $m = ar.m||[];
@@ -251,6 +277,9 @@ R_Jz:
      
      my $loopr = J.name."%loopid#o.way\t0.3";
      my $id = G.oin.bb->{$loopr};
+     saybl "timer replaco J.name o.way" if $id;
+     # if last hit and delta are whack
+     # tiny hairs of sanity
      Mojo::IOLoop->remove($id) if $id;
      
      my $bl = {};
