@@ -1,4 +1,4 @@
-C may:
+C may#styley:
  - #
   - gp
   - 5
@@ -20,13 +20,13 @@ C may:
   - sf # has a way to $a the gp action within...
   - 5
   - |
-    push @$css, map { $R::f->{$_} || die "no style $_"} split '_', $v;
+    push @{at.css}, map { $R::f->{$_} || die "no style $_"} split '_', $v;
  -
   - css
   - 5
   - |
     $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v;
-    push @$css, $v;
+    push @{at.css}, $v;
  -
   - id
   - 5
@@ -222,13 +222,25 @@ R_Jz:
      }
      $cs
            
+ - K: non #c
+   n_D:
+     yJup: |
+       'non'
+    
+ - K: linehum #c arrayngement of line
+   D: | 
+     my @line = 
+     sort { a.cv <=> b.cv }
+       sort{ a.r cmp b.r }
+       lv.j, values %{lv.sj};
+     return [ map { [ _.t, _.cv, _.s ] } @line ];
  - K: C_may #c
    n_D:
      el:
        STYLE: | #
          {droplist => 'O',
           subhash => 'X',
-          subhash_X_arp => '$d,$at,$css,$J,$j',
+          subhash_X_arp => '$d,$at,$J,$j',
          }
      Conned: |
        sayre "conned may:";
@@ -238,9 +250,10 @@ R_Jz:
        # YIN
        #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
-       J.bz->("/%id\t0.9" => J.id) if J.id && !J.noJid;
-       J.bz->("/%tag\t0.9" => 'ux');
+       J.bz->("/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux");
        
+       my $oJ = Rw oJ $J non;
+       #  ^ v MMMMMMMMMM
        my $aj = {Wid=>J.id,id=>mkuid,c=>[],sc=>[]};
        
        my $ip = ar.ip || {};
@@ -251,59 +264,99 @@ R_Jz:
        my @s; # heading
        
        for my $lv (@$gs) {
-           my $d;
            my $j = lv.j;
-           my $sc = lv.sc;
+           my $d;
            d.lv = $lv;
            d.s = j.s;
            die "reffy d.s in j.l   ip: ".ki($ip)."\n\n".wdump(2,$j) if ref d.s;
            say "niner j.r" if j.cv == 0.9;
            
-           # rtight here from thy of up
-           my $at = d.at = {};
-           my $css = d.css = [];
-           
-           if (j.l eq '/') { # carbon hapso
-               at.ishtml = 1;
-               d.s = join "", @s;
-               # really like n.sc.M = [...]
-               @s = ();
+           my $k = "j.r xatly";
+           my $coi = Rw pha $J:oJ $k;
+           my $ln = Rw linehum $lv;
+           my $ig = dig ejson($ln);
+           my $xat;
+           if (oJ.bb->{"at/j.r"}) { # < $at stored & v hum same
+               $xat = Rw ph_same $oJ $x:coi $d:ig;
            }
            
-           # style#\com / v (sctks should eat this, esc chang)
-           $sc = Rw kyv $sc;
-           # com / style / v
-           my $tks = Rw sctks $sc;
-           # style / com / v
-           
-           d.cs = Rw tks_cs $r:j.r $tks;
-           # style / v
-           
-           
-           my $styles = G.drop.may.O;
-           my $it = Rw scitl $X $tks $styles;
-           
-           while (1) {
-               my ($tk, $com, $v, $tks) = $it->();
-               last if !$tk;
-               #say " $tk, $com, $v, $tks";
+           my $at;
+           my $pat;
+           if (!$xat) {
+               $at = d.at = {css=>[]};
+               at.s = d.s;
 
-               my @s = $X->{$tk}->($v, $tks, $X, $d, d.at, d.css, $J, $j);
-               #say "May X $tk returned: ". wdump [@s] if @s;
+               if (j.l eq '/') { # carbon hapso
+                   at.ishtml = 1;
+                   at.s = join "", @s;
+                   # really like n.sc.M = [...]
+                   @s = ();
+               }
+               
+               # keyscrunch
+               my $sc = lv.sc;
+               # the law is to make it not to crazy
+               say "j.r    ".join(' ',sort keys $sc)."     $ig";
+               
+               # style#Com / v (sctks should eat this, esc chang)
+               $sc = Rw kyv $sc;
+               # com / style / v
+               my $tks = Rw sctks $sc;
+               # style / com / v
+               d.cs = Rw tks_cs $r:j.r $tks;
+               # style / v
+               my $styles = G.drop.may.O;
+               my $it = Rw scitl $X $tks $styles;
+               while (1) {
+                   my ($tk, $com, $v, $tks) = $it->();
+                   last if !$tk;
+                   #say " $tk, $com, $v, $tks";
+
+                   my @s = $X->{$tk}->($v, $tks, $X, $d, $at, $J, $j);
+                   #say "May X $tk returned: ". wdump [@s] if @s;
+               }
+               $pat = oJ.bb->{"at/j.r"};
+               oJ.bb->{"at/j.r"} = $at;
+               
+               my $y = coi.end->();
+               my $ex = Rw ph_exactl $J:oJ $y;
+           }
+           else {
+               $pat = $at = d.at = oJ.bb->{"at/j.r"};
            }
            
+           #for my $k () {
+                
+           # } if !$xatly;
            
+           
+           
+           #say wdump $ex;
+           # entropiate 
+           # rtight here from thy of up
+           $at = {%$at}; # must fall apart
+           
+           my $ats = sub { my $at = shift;
+              join',', map{"$_:".ejson($at->{$_})} sort keys %$at;
+              };
+           
+           my $sat = $ats->($at);
+           my $spat = $ats->($pat);
            
            if (at.c) {
-               my $js = ref d.s eq 'ARRAY' ?
-                   join(',',map{ ejson($_) }@{d.s})
+               next if $sat eq $spat && !at.pur;
+               # args for y
+               # some day G.w(y, @args);
+               my $js = ref at.s eq 'ARRAY' ?
+                   join(',',map{ ejson($_) }@{at.s})
                :
-                   ejson(d.s);
+                   ejson(at.s);
                acum $aj, 'c', ' a.'.at.c.'('.$js.');';
                next;
            }
            
            # AND .... scribe, slump to end
+           my $css = delete at.css;
            @$css = map {
                join '', map{"$_;"} grep{defined} split ';', $_
            } @$css;
@@ -321,7 +374,10 @@ R_Jz:
                at.title = "j.cv j.l".(defined at.title && " at.title");
            }
            
+           my $s = delete at.s;
            my $ishtml = delete at.ishtml;
+           $s = encode_entities($s) if !$ishtml;
+           
            my $tag = delete at.tag;
            my $ts = j.l;
            $ts =~ s/[^\w]/ñ/sg;
@@ -334,9 +390,7 @@ R_Jz:
            
            $mat .= ' '.$arp if defined $arp;
            
-           my $s = d.s;
-           $s = encode_entities($s) if !$ishtml;
-           $s = "<$mat>$s</$tag>" if defined $s;
+           $s = "<$mat>$s</$tag>";
            push @s, $s;
        }
        @s = "no?" if !@s;

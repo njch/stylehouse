@@ -87,10 +87,14 @@ R_Jz:
    D: |
      my $tw = {};
      for my $way (@{G.ways}) {
-         my ($point,$Cs) = Rw findl $h:way $p;
+         my ($point,$Cs) = my @AW = Rw findl $h:way $p;
          next if !$point;
-         $tw->{way._wayfile} = $Cs;
-         #sayyl " ways: ".join("  ", map {_.K} @$Cs);
+         my $k = way._wayfile;
+         $k .= $1 if $point =~ /(#.+$)/;
+         $tw->{$k} = $Cs;
+         # want one more tent? #om
+         # tiny J piles of stuff to return
+         # like the tyv family
      }
      $tw
  - K: findl #c
@@ -116,10 +120,8 @@ R_Jz:
                    return $doig->([@a],$h,"$s/$p");
                }
                else {
-                   if ($p =~ /^(.*)\*(.*)$/) {
-                       my ($l,$r) = ($1, $2);
-                       my $ma = join '.+', split /\*/, $p;
-                       my @ke = grep { /^$l.+$r$/ } keys %$h;
+                   if ($p =~ s/\*/.+/sg) {
+                       my @ke = grep { /^$p$/ } keys %$h;
                        my @wu;
                        for my $tk (@ke) {
                            push @wu, $doig->([@a], $h->{$tk}, "$s/$tk");
@@ -240,7 +242,7 @@ R_Jz:
           $tw->{$tk} = $x;
       }
       $tw
- - K: tyv #c { index of (j.l) / %style#com = $j
+ - K: tyv #c { index of (j.l) / %style#com = $lv(j,sc,sj,
    D: |
      my $comfl = 1;
      Rw tlv + $comfl;

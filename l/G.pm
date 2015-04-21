@@ -1808,6 +1808,12 @@ sub slim {
     $c
 }
 
+sub slm {
+    my $s = slim(@_);
+    $s =~ s/\.\.\.$//;
+    $s
+}
+
 sub acum {
     my ($n, $y, $c) = @_;
     push @{$n->{$y}||=[]}, $c;

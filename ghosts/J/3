@@ -33,7 +33,7 @@ R_Jz:
         wtf => {},
      };
      x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
-     x.abandon = sub {
+     x.abandon = sub { # upgrades what's there already, early exity lop
          my $why = shift;
          delete J.phy->{$name};
          x.abadoned = $why || 1;
@@ -57,13 +57,13 @@ R_Jz:
      };
      # ensure phase reset with _after_do
      $x;
- - K: ph_defaff #c loop early exity if $d same
+ - K: ph_same #c loop early exity if $d same
    D: |
-     my $strung = ref $d ? wdump((ar.depth||3),$d) : $d;
-     x.defaff_wd = $H->dig($strung);
      return 0 if !x.head;
-     if (x.defaff_wd eq x.head.defaff_wd) {
-         x.abandon->(saygr "same source: x.name");
+     die"string with order $d" if ref $d;
+     x.same_wd = $d;
+     if (x.same_wd eq x.head.same_wd) {
+         x.abandon->(saygr "$F[2]->{point} @ ph same: x.name");
          return 1;
      }
      return 0;
@@ -92,7 +92,7 @@ R_Jz:
        if (!$last) { # better not get autovivified! 
            wtf.allnew = 1;
            wtf.same = 0;
-           sayre "ph_exactl: all new";
+           sayre "ph_exactl cur.name: all new";
            #return;
            last.bb = {};
        }
@@ -101,7 +101,7 @@ R_Jz:
        
        for (sort keys %{cur.bb}) {
            if (!exists last.bb->{$_}) {
-               sayre " + No $_ in last";
+               sayre " + No $_ in last" if !wtf.allnew;
                wtf.new->{$_} = cur.bb->{$_};
                wtf.same = 0;
            }
@@ -120,7 +120,7 @@ R_Jz:
        }
        
        my $gl = wtf.same ? "===" : "+-";
-       sayre "ph_exactl: ". slim 50, join("  ",($gl) x 6);
+       sayre "ph_exactl cur.name: ". slim 50, join("  ",($gl) x 6) if !wtf.allnew;
        $wtf;
      
  - K: as #c get abulator # TODO sink hashy hooks all over # TODO should chain, broke
