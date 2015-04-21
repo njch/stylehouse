@@ -43,14 +43,15 @@ R_Jz:
      yJup: |
        qw'zoy oci'
      curves: |
-       spun 0  2
+       spun 0  3
        y    0  0
        x    0  0.02
        zoom 0.1 0.5
-       curve 0.1 -0.4
+       curve 0.3 -0.2
      up: |
        Rw Jhead;
        
+       if(1){
        my @jo = Rw tvo $J:G.oin;
        my $M = [];
        for my $j (@jo) {
@@ -60,11 +61,9 @@ R_Jz:
            Mn(j.l, '', j.l, $sc);
        }
        Rw om/bal $J $oM:M jesu 0.1-0.5;
+       }
        
        J.bz->("something\t0.2","bwall");
-       
-       my @oy = Rw tvo $J;
-       say _.r for @oy;
        
        Rw zoybracken $afterid:u.at.id;
  - K: pi/shelfo #c mhmm
@@ -73,19 +72,17 @@ R_Jz:
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      #return sayre "NONREPEAT G_oin" if G.oin;
+     # delete G.oin;
      
-     my $J = G.oin = Rw JJ $name=join;
-     # , as JJJ
-     Rw adJ $J;
-     
-     Rw join/wwcup $J $afterid;
-     # this emission bracket
-     
-     Rw JJJ toc;
-     
-     Rw JJJ scr;
-     
-     Rw suck */up $J;
+     my $J = G.oin ||= do{
+         my $J = Rw JJ $name=join;
+         Rw adJ $J;
+         Rw join/wwcup $J $afterid;
+         $J
+     };
+     Rw J5 toc;
+     Rw J5 scr;
+     Rw up $J;
      # setup wrinkle
      # of time
      
@@ -104,6 +101,8 @@ R_Jz:
      yJup: |
        'join clingleftwall'
      up: | #
+       my $z = Rw oJ $J zling;
+       Rw up $J:z;
        my $ip = {style=>'J'};
        my @l = Rw tvo $J $ip;
        for (@l) {
@@ -120,6 +119,11 @@ R_Jz:
            " \$('#$afterid').after(".ejson($s).");"
        }
        Rw Em $aj;
+ - K: zling #c
+   n_D:
+     yJup: |
+       'zling clingleftwall'
+  
  - K: toc #c
    n_D:
      yJup: |
@@ -128,7 +132,6 @@ R_Jz:
        Rw vortex $J up;
      up: | #
        saybl "hi";
-       return;
        my $ip = {style=>'wantime'};
        my @timey = Rw tvo $J:G.oin $ip;
        my $l = {map{_.l => 1}@timey};
@@ -136,26 +139,6 @@ R_Jz:
        my @l = Rw tvo $J:G.oin $ip;
        say _.r for @l;
        # makes a pile to see/curve in J.up, tiny geos? things hop
- - K: vortex #c do recur while J as in G.oin
-   D: |
-     my $m = ar.m||[];
-     my $o = Rw pul $cs:m way;
-     o.way || die;
-     
-     my $loopr = J.name."%loopid#o.way\t0.3";
-     my $id = G.oin.bb->{$loopr};
-     Mojo::IOLoop->remove($id) if $id;
-     
-     my $bl = {};
-     bl.id = 
-     G.oin.bb->{$loopr} = 
-         $G->recur(4 => sub {
-             return Mojo::IOLoop->remove(bl.id)
-                 if G.oin.bb->{$loopr} ne bl.id;
-             Rw o.way $J;
-         });
-
-     
  - K: oJ #c asume G.oin.oJ.$name
    D: |
      # squiggly time reconvogation
@@ -173,7 +156,21 @@ R_Jz:
      J.name || die;
      J.r && die;
      oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
-     Rw suck $J */around;
+     Rw around $J;
+ - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up)
+   D: |
+     my $m = ar.m||[];
+     my $o = Rw pul + $cs:m name style+;
+     my $J = G.oin.bb->{o.name."\t0.3"};
+     sayyl " JJJJJ  J.name";
+     if ($J) {
+         # resync style
+        Rw around $J;
+     }
+     else {
+        $J = Rw JJJ;
+     }
+     $J
  - K: JJJJ #c from $J above, emb   J.oJ.$name = $J2   and   J2.Jo = $J
    D: |
      die unless G.oin;
@@ -183,7 +180,7 @@ R_Jz:
      J.oJ->{J2.name} = $J2;
      sayyl "J J J J  J2.name";
      $J2;
- - K: JJJ #c G.oin embedding spawn
+ - K: JJJ #c G.oin embedding spawn # 3 = REPLACEY, see J5 for ambient arounding
    D: |
      die unless G.oin;
      my $J = Rw JJ;
@@ -226,8 +223,9 @@ R_Jz:
      
      # 3
      # 4
- - K: Jup #c
+ - K: Jup #c behaviouriser (lingo)
    D: |
+     push @{J.style}, J.name if !grep{$_ eq J.name} @{J.style};
      J.yt = {};
      my $exp;$exp = sub {
          my $s = shift;
@@ -244,11 +242,27 @@ R_Jz:
      $exp->($_) for @{J.style};
      die "no style for   @{J.style}   (J.name)" if !%{J.yt};
      saygr "J.name yJup: ".join(' + ', @{J.style})." -> ".join(' ~ ', sort keys %{J.yt});
- - K: clingleftwall/curves #c
+
+ - K: vortex #c do recur while J as in G.oin
    D: |
-       spun 0  2
-       y    0  0.4
-       x    0  0.32
+     my $m = ar.m||[];
+     my $o = Rw pul $cs:m way;
+     o.way || die;
+     
+     my $loopr = J.name."%loopid#o.way\t0.3";
+     my $id = G.oin.bb->{$loopr};
+     Mojo::IOLoop->remove($id) if $id;
+     
+     my $bl = {};
+     bl.id = 
+     G.oin.bb->{$loopr} = 
+         $G->recur(4 => sub {
+             return Mojo::IOLoop->remove(bl.id)
+                 if G.oin.bb->{$loopr} ne bl.id;
+             Rw o.way $J;
+         });
+
+     
 Juping: |
   # anything in j.t should be fine
   # parse j.r in one regex, tightened at the right (cv) end
