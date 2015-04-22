@@ -370,7 +370,7 @@ R_Jz:
            }
            else {
                $pat = $at = d.at = oJ.bb->{"j.l%at\t".j.cv};
-               $plv = oJ.bb->{"j.l%plv\t".j.cv};
+               $plv = oJ.bb->{"j.l%lv\t".j.cv};
            }
            
            my $inv = sub {
@@ -394,7 +394,7 @@ R_Jz:
                    join(',',map{ ejson($_) }@{at.s})
                :
                    ejson(at.s);
-               acum $lv, 'c', ' a.'.at.c.'('.$js.');';
+               acum $lv, 'Ec', ' a.'.at.c.'('.$js.');';
                next;
            }
            
@@ -430,7 +430,8 @@ R_Jz:
                # dif pat._joins, insert just right
                at.s = join '', map { _.s } @lvs;
                # hoist into [][][]s
-               #map { acum $lv, 'sc', $_ for @{_.c} } @lvs;
+               map { acum $lv, 'Esc', $_ for @{_.Ec} } @lvs;
+               map { acum $lv, 'Esc', $_ for @{_.Esc} } @lvs;
                sayyl "made up at.s\n\n\n from ".wdump(at._joins);
                say "noupcont: at.s \n\nSame == ". at.s eq pat.s;
            }
@@ -459,13 +460,14 @@ R_Jz:
            saybl "left j.r   ".lv.s;
            push @s, $lv;
        }
-       say wdump 3, \@s;
-       @s = "no?" if !@s;
-       my $html = join "\n\n", map { _.s } grep { !_.at._jointed } @s;
+       my $lv = oJ.bb->{"/%lv\t0.9"};
+       my $html = lv.s;
        
        sayre $html;
        
        aj.s = $html;
+       aj.c = lv.Ec || [];
+       aj.sc = lv.Esc || [];
        
        if (!ar.catj) {
            Rw Em $aj;
