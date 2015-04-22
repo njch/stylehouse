@@ -269,7 +269,7 @@ R_Jz:
        STYLE: | #
          {droplist => 'O',
           subhash => 'X',
-          subhash_X_arp => '$d,$at,$J,$j',
+          subhash_X_arp => '$cs,$at,$lv,$J,$j',
          }
      Conned: |
        sayre "conned may";
@@ -295,10 +295,7 @@ R_Jz:
        
        for my $lv (@$gs) {
            my $j = lv.j;
-           my $d;
-           d.lv = $lv;
-           d.s = j.s;
-           die "reffy d.s in j.l ON J.name".wdump 3, [$ip, $j] if ref d.s;
+           die "reffy j.s in j.l ON J.name".wdump 3, [$ip, $j] if ref j.s;
            
            my $k = "j.r xatly";
            my $coi = Rw pha $J:oJ $k;
@@ -311,13 +308,12 @@ R_Jz:
            my $pat;
            my $plv;
            if (!$xat) {
-               $at = d.at = {css=>[]};
+               $at = {css=>[]};
                at.s = j.s;
                # may be creating, overhead thought
                at.__ajid1 = aj.id;
                
                my ($tks, $cs, $it) = Rw sit may O X $lv;
-               d.cs = $cs;
                
                # SOMETHING
                if (j.l =~ /^(.*)\/$/) { # carbon hapsso env
@@ -355,7 +351,7 @@ R_Jz:
                    last if !$tk;
                    #say " $tk, $com, $v, $tks";
 
-                   my @s = $X->{$tk}->($v, $tks, $X, $d, $at, $J, $j);
+                   my @s = $X->{$tk}->($v, $tks, $X, $cs, $at, $lv, $J, $j);
                    #say "May X $tk returned: ". wdump [@s] if @s;
                }
                #c at beam
@@ -363,15 +359,17 @@ R_Jz:
                oJ.bb->{"j.l%at\t".j.cv};
                $plv =
                oJ.bb->{"j.l%lv\t".j.cv};
-               oJ.bb->{"j.l%at\t".j.cv} = $at;
                oJ.bb->{"j.l%lv\t".j.cv} = $lv;
+               oJ.bb->{"j.l%at\t".j.cv} = $at;
                
                my $y = coi.end->();
                my $ex = Rw ph_exactl $J:oJ $y;
            }
            else {
-               $pat = $at = d.at = oJ.bb->{"j.l%at\t".j.cv};
+               $pat = oJ.bb->{"j.l%at\t".j.cv};
                $plv = oJ.bb->{"j.l%lv\t".j.cv};
+               oJ.bb->{"j.l%lv\t".j.cv} = $lv;
+               $at = $pat;
            }
            
            # gets self aware in waves
@@ -395,21 +393,22 @@ R_Jz:
                    # these are html
                    # dif pat._joins, insert/appendAfter with xpath just right
                    # just as alive in the $lex;
-                   sayyl "it is aj.id";
                    my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
                    my @skip = grep {_.at.__ajid2 ne aj.id} @lvs;
-                   saygr "skipped: _.j.r    ".slm 85, ki 2, $_ for @skip;
-                   sayyl "upd()ed: _.j.r    ".wdump [_.Ec,_.Esc,_.s]  for @live;
+                   if (J.V) {
+                   sayyl "it is aj.id";
+                   saygr "skipped: _.j.r    ".ejson [_.Ec,_.Esc,_.s] for @skip;
+                   sayyl "upd()ed: _.j.r    ".ejson [_.Ec,_.Esc,_.s]  for @live;
+                   }
                    
                    #sayre "not all alive were... ".wdump 2, \@skip;
                    at.s = join '', map { _.s } @lvs;
                    # assume we got these over time
                    # these are curving down into things
                    # hoist into [][][]s
+                   # assume @live phased will sane s/c/sc
                    map { acum $lv, 'Esc', $_ for @{_.Ec} } @live;
                    map { acum $lv, 'Esc', $_ for @{_.Esc} } @live;
-                   #sayyl "made up at.s\n\n\n from ".wdump(at._joins);
-                   sayre "noupcont: at.s \n\nSame == ". at.s eq pat.s;
                }
                else {
                    sayyl "keeping ".$inv->(at._joins);
@@ -419,10 +418,9 @@ R_Jz:
            }
            
            if (at.c) { #cleaves
-               say "at.pur 11111   $sat";
-               if ($sat eq $spat && !at.pur) {
-                   acum $lv, 'Ec', " a\.m('nothing');";
-                   sayre " lv.j.r pretent nothing" for 1..5;;
+               if ($sat eq $spat && !at.pur || do {sayre"purs";0}) {
+                   #acum $lv, 'Ec', " a\.m('nothing');";
+                   #sayre " lv.j.r pretent nothing";
                    next;
                }
                # args for y
@@ -436,10 +434,10 @@ R_Jz:
            
            #cleaving
            if ($spat eq $sat) {
-               saybl "        leaving  j.r";
+               #saybl "        same  j.r";
            }
            else {
-               sayre "must ew   $sat";
+               sayyl "must ew   $sat";
            }
            
            # AND .... scribe, #c slump to end ## switch up pool of lang > styles
@@ -486,13 +484,14 @@ R_Jz:
            $mat .= ' '.$arp if defined $arp;
            
            lv.s = "<$mat>$s</$tag>";
-           lv.at = $at;
-           saybl "left j.r   ".lv.s;
+           lv.scon = 1 if lv.s eq plv.s;
+           #saybl "left j.r   ".lv.s;
            push @s, $lv;
        }
        # check lv up cover
        my $lv = oJ.bb->{"/%lv\t0.9"};
        aj.s = lv.s;
+       delete aj.s if lv.scon; # no repeat emit
        aj.c = lv.Ec || [];
        aj.sc = lv.Esc || [];
        
