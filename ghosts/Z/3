@@ -126,7 +126,7 @@ R_Jz:
    D: |
        my @tops;
        @$vs = grep{defined} map {
-           if (_.j.l eq '/') { # make envelope aft
+           if (_.j.l =~ /\/$/) { # make envelope aft
                push @tops, $_;
                $_ = undef;
            } # COMPRESSION v
@@ -137,7 +137,10 @@ R_Jz:
            else {}
            $_    
        } @$vs;
-       push @$vs, @tops;
+       push @$vs,
+         reverse
+         sort { a.j.cv <=> b.j.cv }
+         sort{ a.j.r cmp b.j.r } @tops;
        $vs
      
  - K: scitl #c iterate iterations
@@ -248,7 +251,10 @@ R_Jz:
        # YIN
        #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
+       
+       # think these want to be injected crazily
        J.bz->("/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux");
+       J.bz->("wtf/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux");
        
        my $oJ = Rw oJ $J non;
        #  ^ v MMMMMMMMMM
@@ -284,7 +290,7 @@ R_Jz:
                $at = d.at = {css=>[]};
                at.s = d.s;
 
-               if (j.l eq '/') { # carbon hapso
+               if (j.l =~ /\/$/) { # carbon hapsso env
                    at.ishtml = 1;
                    at.s = join "", @s;
                    # really like n.sc.M = [...]
@@ -322,24 +328,15 @@ R_Jz:
                $pat = $at = d.at = oJ.bb->{"at/j.r"};
            }
            
-           #for my $k () {
-                
-           # } if !$xatly;
            
+           my ($sat, $spat) = map {
+              my $wa = $_;
+              join',', map{"$_:".ejson($wa->{$_})} sort keys %$wa;
+           } $at, $pat;
            
-           
-           #say wdump $ex;
-           # entropiate 
-           # rtight here from thy of up
            $at = {%$at}; # must fall apart
            
-           my $ats = sub { my $at = shift;
-              join',', map{"$_:".ejson($at->{$_})} sort keys %$at;
-              };
-           
-           my $sat = $ats->($at);
-           my $spat = $ats->($pat);
-           
+           # 
            if (at.c) {
                next if $sat eq $spat && !at.pur;
                # args for y
@@ -364,12 +361,17 @@ R_Jz:
            at.style = join '', map{"$_;"}
                grep{defined} map { split ';' } @$css;
            
-           # compressior
+           # compressior compressior compressior compressior
+           # compressior compressior compressior compressior
+           # compressior compressior compressiorcompressior
            # stylecompressor 3s6 aboves
            # hooch
            if (!exists at.title || defined at.title) {
                at.title = "j.cv j.l".(defined at.title && " at.title");
            }
+           
+           # <>
+           oJ.bb->{"art/j.r"} = $at;
            
            my $s = delete at.s;
            my $ishtml = delete at.ishtml;
