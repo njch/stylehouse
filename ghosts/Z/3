@@ -266,23 +266,23 @@ R_Jz:
        my $gs = Rw gyv $J $vs;
        
        my @s; # heading
+       my $tw = oJ.bb->{"tw\t0.99"} ||= {};
        
        for my $lv (@$gs) {
            my $j = lv.j;
            my $d;
            d.lv = $lv;
            d.s = j.s;
-           die "reffy d.s in j.l   ip: ".ki($ip)."\n\n".wdump(2,$j) if ref d.s;
-           say "niner j.r" if j.cv == 0.9;
+           die "reffy d.s in j.l ON J.name".wdump 3, [$ip, $j] if ref d.s;
            
            my $k = "j.r xatly";
            my $coi = Rw pha $J:oJ $k;
-           my $ln = Rw linehum $lv;
-           my $ig = dig ejson($ln);
-           my $xat;
-           if (oJ.bb->{"at/j.r"}) { # < $at stored & v hum same
-               $xat = Rw ph_same $oJ $x:coi $d:ig;
-           }
+           
+           my $xat = do {
+               my $ln = Rw linehum $lv;
+               my $d = dig ejson($ln);
+               Rw ph_same $oJ $x:coi $d;
+           } if oJ.bb->{"j.l%at\tj.cv"};
            
            my $at;
            my $pat;
@@ -290,7 +290,18 @@ R_Jz:
                $at = d.at = {css=>[]};
                at.s = d.s;
 
-               if (j.l =~ /\/$/) { # carbon hapsso env
+               if (j.l =~ /^(.*)\/$/) { # carbon hapsso env
+                   # grep tw for $1/things
+                   my $p = $1;
+                   $p .= '/' if length $p;
+                   # assume this/ is for this/*, / is for *
+                   # j sc may have a motice to grab something
+                   my @cj =
+                   grep {_.j.r ne j.r}
+                   map {oJ.bb->{$_}}
+                   grep {/^$p/}
+                   grep {/%lv\s+\S+$/}
+                   keys %{oJ.bb};
                    at.ishtml = 1;
                    at.s = join "", @s;
                    # really like n.sc.M = [...]
@@ -318,14 +329,16 @@ R_Jz:
                    my @s = $X->{$tk}->($v, $tks, $X, $d, $at, $J, $j);
                    #say "May X $tk returned: ". wdump [@s] if @s;
                }
-               $pat = oJ.bb->{"at/j.r"};
-               oJ.bb->{"at/j.r"} = $at;
+               $pat = oJ.bb->{"j.l%at\tj.cv"};
+               oJ.bz->("j.l%at\tj.cv" => $at);
+               oJ.bz->("j.l%lv\tj.cv" => $lv);
+               #oJ.bb->{"at/j.r"} = $at;
                
                my $y = coi.end->();
                my $ex = Rw ph_exactl $J:oJ $y;
            }
            else {
-               $pat = $at = d.at = oJ.bb->{"at/j.r"};
+               $pat = $at = d.at = oJ.bb->{"j.l%at\tj.cv"};
            }
            
            
