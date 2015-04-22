@@ -18,8 +18,17 @@ C may#sentinet:
   - js
   - 5
   - |
-    at.c = 'o';
-    at.s =   [J.id, 'do', at.s]; 
+    if (1 || cs.src) {
+        at.tag = 'script';
+        at.type = cs.type || 'text/javascript';
+        at.title = undef;
+        at.src = cs.src if cs.src;
+        say ki $at;
+    }
+    else {
+        at.c = 'o';
+        at.s =   [J.id, 'do', at.s];
+    }
  - # ompu
   - ps
   - 5
@@ -27,6 +36,22 @@ C may#sentinet:
     at.c = 'o'; # etc
     at.s = [J.id, 'ps', at.s];
     at.pur = 1; # TODO local lumi
+ -  #c
+  - yt
+  - 5
+  - |
+    my $vid = $v; # pre s c
+    my $v = at.s; # the c
+    # fusc expand videoId from $v or ${at.s}
+    my $d = {
+        height => '390',
+        width => '640',
+    };
+    
+      #<iframe width="420" height="315" src="https://www.youtube.com/embed/DyVnwKcb0YY#t=958" frameborder="0" autoplay="1" start="958" allowfullscreen></iframe>
+      player = new YT.Player('ytplayer', {
+        videoId: 'M7lc1UVf-VE'
+      });
 R_Jz:
  - K: ym/cc #c
    D: |
@@ -40,7 +65,16 @@ R_Jz:
      # wants to mod Mn
  - K: scr/canvas #c
    D: 
-   - MZ: cc:jsc jswith:paper #c paper blocks
+   - MZ: cc:js
+   -
+    - yt
+    - 1
+    - src: https://www.youtube.com/player_api
+   -
+    - yt
+    - 2
+    - src: https://www.youtube.com/player_api
+   - MZ: cc:jsc #c paper blocks
    -
     - doya # animation frame
     - 1
