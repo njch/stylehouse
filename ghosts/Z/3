@@ -262,7 +262,7 @@ R_Jz:
      my $ln = Rw linehum $lv;
      my $d = ejson $ln;
      $d = dig $d;
-     Rw ph_same $oJ $x:coi $d;
+     Rw ph_same $oJ $x $d;
  - K: C_may #c
    n_D:
      el:
@@ -302,7 +302,9 @@ R_Jz:
            
            my $k = "j.r xatly";
            my $coi = Rw pha $J:oJ $k;
-           my $xat = Rw lv_same $lv $x $oJ if oJ.bb->{"j.l%at\t".j.cv};
+           my $xat = do {
+               Rw lv_same $lv $x:coi $oJ;
+           } if oJ.bb->{"j.l%at\t".j.cv};
            
            
            my $at;
@@ -321,11 +323,13 @@ R_Jz:
                    my $p = $1;
                    $p .= '/' if length $p;
                    sayre "looking for '$p'";
+                   my $olvr = "j.l%lv\t".j.cv;
                    # assume this/ is for this/*, / is for *
                    my @lvs =
                        sort { a.j.cv <=> b.j.cv }
                        sort{ a.j.r cmp b.j.r }
                        grep {_.j.l ne j.l}
+                       grep {!_.at._jointed || grep {$_ eq $olvr} @{_.at._jointed}}
                        # $lv ^
                        map {oJ.bb->{$_}}
                        grep {/^$p/}
@@ -334,8 +338,11 @@ R_Jz:
                    # j sc may have a motice to grab something
                    say "j.r eats _.j.r" for @lvs;
                    acum $at, _joins => "_.j.l%lv\t"._.j.cv for @lvs;
+                   
                    _.at || die "no at _.j.r (we j.r)".wdump($_) for @lvs;
-                   acum _.at, _jointed => "j.l%lv\t".j.cv for @lvs;
+                   
+                   acum _.at, _jointed => $olvr for @lvs;
+                   
                    # really like n.sc.M = [...]
                    at.ishtml = 1;
                    at.s = '';
