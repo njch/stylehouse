@@ -122,7 +122,7 @@ R_Jz:
      }
      $tks
      
- - K: gyv #c
+ - K: ordlv #c
    D: |
        my @tops;
        @$vs = grep{defined} map {
@@ -260,9 +260,15 @@ R_Jz:
  - K: lv_same #c linehum check
    D: |
      my $ln = Rw linehum $lv;
+     for my $n (@$ln) {
+         my $s = $n->[2];
+         $s = ref $s eq 'HASH' ? "s.r s.id" : ref $s eq 'ARRAY' ? die 'arline' : $s;
+         $n->[2] = $s;
+     }
+     #sayyl wdump $ln;
      my $d = ejson $ln;
      $d = dig $d;
-     Rw ph_same $oJ $x $d;
+     Rw ph_same $J $x $d;
  - K: C_may #c
    n_D:
      el:
@@ -289,7 +295,7 @@ R_Jz:
        my $ip = ar.ip || {};
        my $vs = Rw tyv $J $ip;
        # puts / last:
-       my $gs = Rw gyv $J $vs;
+       my $gs = Rw ordlv $J $vs;
        
        my @s; # heading
        
@@ -300,7 +306,7 @@ R_Jz:
            my $k = "j.r xatly";
            my $coi = Rw pha $J:oJ $k;
            my $xat = do {
-               Rw lv_same $lv $x:coi $oJ;
+               Rw lv_same $lv $x:coi $J:oJ;
            } if oJ.bb->{"j.l%at\t".j.cv};
            
            
@@ -337,7 +343,7 @@ R_Jz:
                    acum $at, _joins => "_.j.l%lv\t"._.j.cv for @lvs;
                    
                    _.at || die "no at _.j.r (we j.r)".wdump($_) for @lvs;
-                   acum _.at, _jointed => $olvr for @lvs;
+                   acum _.at, __jointed => $olvr for @lvs;
                    
                    # really like n.sc.M = [...]
                    at.ishtml = 1;
@@ -382,17 +388,14 @@ R_Jz:
               return ejson $wa if ref $wa eq 'ARRAY';
               join"            ", map{"$_:".ejson($wa->{$_})} sort grep{!/^__/} keys %$wa;
            };
-           my $sat = $inv->($at);
-           my $spat = $inv->($pat);
            
            #c <>
            if (at._joins) {
                if (1 || $inv->(at._joins) ne $inv->(pat._joins)) {
                    my @lvs = map { oJ.bb->{$_} } @{at._joins};
-                   say "j.r eats _.j.r  _.at.__ajid1 _.at.__ajid2" for @lvs;
-                   # these are html
-                   # dif pat._joins, insert/appendAfter with xpath just right
-                   # just as alive in the $lex;
+                   say "j.r eats    ".join',   ', map{_.j.l} @lvs;
+                   # or compressions in c, sc
+                   # make them tubes real nice
                    my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
                    my @skip = grep {_.at.__ajid2 ne aj.id} @lvs;
                    if (J.V) {
@@ -402,6 +405,8 @@ R_Jz:
                    }
                    
                    #sayre "not all alive were... ".wdump 2, \@skip;
+                   # dif pat._joins, insert/appendAfter with xpath just right
+                   # these are flying blind chunks of html in s
                    at.s = join '', map { _.s } @lvs;
                    # assume we got these over time
                    # these are curving down into things
@@ -417,6 +422,8 @@ R_Jz:
                }
            }
            
+           my $sat = $inv->($at);
+           my $spat = $inv->($pat);
            if (at.c) { #cleaves
                if ($sat eq $spat && !at.pur || do {sayre"purs";0}) {
                    #acum $lv, 'Ec', " a\.m('nothing');";
@@ -432,38 +439,35 @@ R_Jz:
                next;
            }
            
-           #cleaving
-           if ($spat eq $sat) {
-               #saybl "        same  j.r";
+           #c at out scribe, #c slump to end ## switch up pool of lang > styles
+           if ($spat && $spat ne $sat) {
+               my $zp = {%$pat};
+               my $zt = {%$at};
+               delete _.s for $zp, $zt;
+               say $inv->($zt);
+               saygr $inv->($zp);
+               if ($inv->($zp) eq $inv->($zt)) {
+                  say "only s changes:";
+                  say at.s;
+                  saygr pat.s;
+               }
+               else {
+                  sayyl "pat not entirely same: \n"
+                     .slim(370, $sat)."\n".slim(370, $spat)
+               }
            }
-           else {
-               sayyl "must ew   $sat";
-           }
-           
-           # AND .... scribe, #c slump to end ## switch up pool of lang > styles
            my $css = at.css;
            @$css = map { join '', map{"$_;"} 
            grep{defined} split ';', $_ } @$css;
-           # TODO hold things in pockets relative to origin css comment
-           # to help things break down into styles better
-           # this is what language for,
-           # switch up a pool of it
-           # re-c-ver has 
-           # {cl,st}{ad,rm}
-           # and everything
            at.style = join '', map{"$_;"} 
            grep{defined} map { split ';' } @$css;
-           # compressior compressior compressior compressior
-           # compressior compressior compressior compressior
-           # compressior compressior compressiorcompressior
-           # stylecompressor 3s6 aboves
-           # hooch
-           if (!exists at.title || defined at.title) {
+           delete at.style if !length at.style;
+           # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+           if (0){#!exists at.title || defined at.title) {
                at.title = "j.cv j.l".(defined at.title && " * at.title")
                if at.title !~ /^j.cv j.l/;
            }
            
-           #c at out
            my $of = {map{$_=>1}qw's ishtml css tag rp'};
            my $s = at.s;
            my $ishtml = at.ishtml;
@@ -486,6 +490,9 @@ R_Jz:
            lv.s = "<$mat>$s</$tag>";
            lv.scon = 1 if lv.s eq plv.s;
            #saybl "left j.r   ".lv.s;
+           # here hangs loose, we would want to conduct at.c/sc business cleanly
+           
+           
            push @s, $lv;
        }
        # check lv up cover

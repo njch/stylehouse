@@ -109,7 +109,8 @@ __DATA__
       var q = 1;
       var elvis = Math.random();
       var ws;
-      var cone = {};
+      var etc = {};
+      var C = {};
       var conz = {};
       var ww = {};
 
@@ -125,12 +126,20 @@ __DATA__
               m = eval(e);
           }
           catch (er) {
-              console.log(["xutbang: ", e, er]);
-              var ej = {er: {m: er.message, e: e}};
-              s.reply(ej);
-              a.m("!"+ ej.er.m);
+              a.er(e, er);
           }
           m
+      };
+      a.er = function (e, er) {
+              console.log(["xutbang: ", e, er]);
+              var ej = {er: {e: e}};
+              if (er) {
+                  if (er.message) {
+                      ej.er.m = er.message;
+                  }
+              }
+              s.reply(ej);
+              a.m("!"+ (ej.er.m || e));
       };
       a.m = function(e) {
           var d = e.substr(0,1);
@@ -188,7 +197,7 @@ __DATA__
               d.W = W;
               var conin = conz[W];
               if (conin) {
-                  ws = cone[conin];
+                  ws = C[conin];
               }
           }
           var ux = tag.closest( "ux" ).attr('id');
@@ -245,13 +254,13 @@ __DATA__
       // websockety #c
       a.con = function(c) {
          var conin = c.conin;
-         if (cone[conin] && cone[conin].readyState == 1) {
+         if (C[conin] && C[conin].readyState == 1) {
                 return;
          }
          c = new WebSocket(conin);
          c.conin = conin;
 
-         cone[conin] = c;
+         C[conin] = c;
          if (w.conin === conin) {
                  w = c;
          }
@@ -289,7 +298,7 @@ __DATA__
             t = 256;
         }
         window.setTimeout(function(){
-            if (cone[c.conin] == c) { // still
+            if (C[c.conin] == c) { // still
                 a.con(c);
             }
         }, t);

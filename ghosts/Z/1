@@ -32,7 +32,7 @@ R_Jz:
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
      yJup: |
-       qw'zoy oci'
+       qw'zoy headi oci'
      curves: |
        spun 0  3
        y    0  0
@@ -75,10 +75,53 @@ R_Jz:
        Rw thy $J comprsc;
        Rw thy $J canvas;
        Rw thy $J other;
-       Rw thy $J yt;
+       #Rw thy $J yt;
      out: |
        # splurt of compressions so may can do more
        Rw may $J;
+       
+ - K: on #c
+   n_D:
+     yJup: |
+       J.yl.nojb = 1;
+       'on';
+ - K: wam #c 
+   n_D:
+     yJup: |
+       'wam clingleftwall'
+     up: | # if the in up, pha wakeups out - all response to editing
+       my $on = Rw oJ $J on;
+       on.bz->("twang\t".0.2 => 'Z/2');
+       my $onl = Rw onlv $in=0.1 $out=0.9 $J:on $tot:J.cv;
+       for my $x (@$onl) {
+           Rw ix/suro + $x;
+       }
+       Rw thy $J comprsc;
+       #Rw thy $J yt;
+     out: |
+       # splurt of compressions so may can do more
+       Rw may $J;
+       
+ - K: onlv #c tak tlv J.on into iterations of upgoing clever 
+   D: |
+       my $vs = Rw tyv $J $ip:ar.ip;
+       
+       for my $lv (@$vs) {
+           my $j = lv.j;
+           my $k = "j.r xatly";
+           my $coi = Rw pha $J $k;
+           if (!lv.sc) {
+               say wdump 2, $lv;
+               # looking at this J's abilities to upgrade string input with ou thinkg/crawl
+           }
+           #sayyl " ** *  lv.j.r     =>   lv.j.s\n*  *  ".ki(lv.sc);
+           my $ln = Rw linehum $lv;
+           sayyl wdump 2, $ln;
+           #my $xat = Rw lv_same $lv $x:coi $J;
+           #say "xat" if $xat;
+       }
+       
+       return Rw very +;
        
  - K: thy #c rollbar grab
    D: |
@@ -150,7 +193,7 @@ R_Jz:
      }
      $oJ;
      
- - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up)
+ - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up) 
    D: |
      my $m = ar.m||[];
      my $o = Rw pul + $cs:m name style+;
@@ -233,7 +276,7 @@ R_Jz:
          }
      };
      $exp->($_) for @{J.style};
-     die "no style for   @{J.style}   (J.name)" if !%{J.yt};
+     warn "no style for   @{J.style}   (J.name)" if !%{J.yt};
      saygr "J.name yJup: ".join(' + ', @{J.style})." -> ".join(' ~ ', sort keys %{J.yt});
  - K: toc #c
    n_D:

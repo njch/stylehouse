@@ -1804,7 +1804,7 @@ sub slim {
     my ($f,$t,$c) = @_;
     ($f,$t,$c) = (40,40,$f) if $f && !$t && !$c;
     ($f,$t,$c) = ($f,$f,$t) if $t && $f && !$c;
-    $c = ($c=~/^(.{$t})/s)[0]."..." if length($c) > $f;
+    $c = ($c=~/^(.{$t})/s)[0]."..".(length($c) - $f) if length($c) > $f;
     $c
 }
 
