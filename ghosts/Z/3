@@ -217,7 +217,7 @@ R_Jz:
          my @wks = sort keys %$w;
          my ($el) = @wks;
          my $v = $w->{$el};
-         if (@wks > 1) {
+         if (@wks > 1 && 0) {
              warn "ar.r   style $k collaprse ::: ".ki($w)."\n"
              ." went with $el: $v";
          }
@@ -290,7 +290,7 @@ R_Jz:
        
        my $oJ = Rw oJ $J non;
        #  ^ v MMMMMMMMMM
-       my $aj = {Wid=>J.id,id=>mkuid,c=>[],sc=>[]};
+       my $aj = {Wid=>J.id,J=>$J,id=>mkuid,c=>[],sc=>[]};
        
        my $ip = ar.ip || {};
        my $vs = Rw tyv $J $ip;
@@ -339,6 +339,7 @@ R_Jz:
                        grep {/^$p/}
                        grep {/%lv\s+\S+$/}
                        keys %{oJ.bb};
+                       
                    # j sc may have a motice to grab something
                    acum $at, _joins => "_.j.l%lv\t"._.j.cv for @lvs;
                    
@@ -385,8 +386,10 @@ R_Jz:
            
            my $inv = sub {
               my $wa = shift;
+              my $ig = shift;
               return ejson $wa if ref $wa eq 'ARRAY';
-              join"            ", map{"$_:".ejson($wa->{$_})} sort grep{!/^__/} keys %$wa;
+              join"            ", map{"$_:".ejson($wa->{$_})}
+              sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
            };
            
            #c <>
@@ -407,6 +410,9 @@ R_Jz:
                    #sayre "not all alive were... ".wdump 2, \@skip;
                    # dif pat._joins, insert/appendAfter with xpath just right
                    # these are flying blind chunks of html in s
+                   # maybe this is a space we must give up on if its not an easy
+                   # few replace selves, say lv.scon = 1;
+                   # make at.s [ [_.j.r => _.s] ... ] and shake down...
                    at.s = join '', map { _.s } @lvs;
                    # assume we got these over time
                    # these are curving down into things
@@ -427,7 +433,6 @@ R_Jz:
            if (at.c) { #cleaves
                if ($sat eq $spat && !at.pur || do {sayre"purs";0}) {
                    #acum $lv, 'Ec', " a\.m('nothing');";
-                   #sayre " lv.j.r pretent nothing";
                    next;
                }
                # args for y
@@ -436,24 +441,43 @@ R_Jz:
                    join(',',map{ ejson($_) }@{at.s})
                    : ejson(at.s);
                acum $lv, 'Ec', ' a.'.at.c.'('.$js.');';
+               # eventual lv.C = [ [...]... ] and then aj.C = [lvs{}C];
+               # yet vectory again
+               # bucket fountain, musical atitude
+               # where mess goes into black hole, proofs strung up
                next;
            }
            
            #c at out scribe, #c slump to end ## switch up pool of lang > styles
-           if ($spat && $spat ne $sat) {
-               my $zp = {%$pat};
-               my $zt = {%$at};
-               delete _.s for $zp, $zt;
-               say $inv->($zt);
-               saygr $inv->($zp);
-               if ($inv->($zp) eq $inv->($zt)) {
-                  say "only s changes:";
-                  say at.s;
-                  saygr pat.s;
+           my $onlys;
+           my $tryig = sub {
+              my $ig = shift;
+              $inv->($pat, $ig) eq $inv->($at, $ig)
+           };
+           if ($spat && $spat ne $sat) { # S-C
+               my $only;
+               do { $only = $_ if !$only && $tryig->($_) } for 's', 's|id';
+               
+               if ($only) {
+                  say "only $only changes:";
+                  #say slim 90, at.s;
+                  #saygr slim 90, pat.s;
+                  $onlys = $only eq 's';
                }
                else {
                   sayyl "pat not entirely same: \n"
                      .slim(370, $sat)."\n".slim(370, $spat)
+                  # !onlys, so if spat.id replaceWith lv.s
+               }
+           }
+           if ($onlys) { # S-C
+               if (pat.id) {
+                   # and ig join
+                   #acum $lv, 'Ec', jsq ' $(%s).html(%s);', '#'.pat.id, at.s;
+               }
+               else {
+                   #sayre "onlys buit no id: j.r  ";
+                   # where is the jointed?
                }
            }
            my $css = at.css;
@@ -463,10 +487,7 @@ R_Jz:
            grep{defined} map { split ';' } @$css;
            delete at.style if !length at.style;
            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-           if (0){#!exists at.title || defined at.title) {
-               at.title = "j.cv j.l".(defined at.title && " * at.title")
-               if at.title !~ /^j.cv j.l/;
-           }
+           #Rw attitle $at $j;
            
            my $of = {map{$_=>1}qw's ishtml css tag rp'};
            my $s = at.s;
@@ -487,8 +508,17 @@ R_Jz:
            
            $mat .= ' '.$arp if defined $arp;
            
+                   # whole replace 
+           
            lv.s = "<$mat>$s</$tag>";
            lv.scon = 1 if lv.s eq plv.s;
+           
+           if (pat.id) { # S-C
+               lv.scon = 1 if lv.s eq plv.s;
+               # need to relax the _jointed, cannot find?
+               #say "j.r      pat __jointed: ". wdump 2, plv.__jointed;
+               # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
+           }
            #saybl "left j.r   ".lv.s;
            # here hangs loose, we would want to conduct at.c/sc business cleanly
            
@@ -508,4 +538,10 @@ R_Jz:
        
        $aj
        
+ - K: attitle #c no
+   D: |
+     if (!exists at.title || defined at.title) {
+         at.title = "j.cv j.l".(defined at.title && " * at.title")
+         if at.title !~ /^j.cv j.l/;
+     }
 

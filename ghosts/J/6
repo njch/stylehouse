@@ -3,27 +3,33 @@ R_Jz:
  - K: geolo #c begin digging - smiling egg cup - most reentrant part
      # set up archeology site, anything you want
    D: |
-     my $Jeo = J.geo; # woo
-     
-     for my $j (do{ grep { !_.style } w $R tvo(J=>J.geo); }) {
-         # comp b%tr j.cv => j.t => j.s
-         J.geo.bz->("b%tr\t".j.cv => {
-             %{J.geo.bb->{"b%tr\t".j.cv} || {}},
-            j.t => j.s,
-         });
+     my @t = grep { _.l eq _.t }
+        Rw tvo;
+        
+     for (@t) {
+         # ^^^^^^^
+         J.bz->("b%tr\t"._.cv => {
+             %{J.bb->{"b%tr\t"._.cv} || {}},
+             _.t => _.s,
+         })
      }
      
      for my $pcv (map{$_ * 0.1} 1..9) {
          my $w = "b%tr\t".$pcv;
-         J.geo.bz->($w => {}) if !J.geo.bb->{$w};
+         J.bz->($w => {}) if !J.bb->{$w};
          # extra stick pole, sparsitor to trace by, blank as tr(ansf)
      }
      
      # and lay out
      my $last = {x=>0, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
-     for my $j (do{ grep { _.style eq 'tr' } w $R tvo(J=>J.geo); }) {
+     
+     my @tr = grep { _.style eq 'tr' }
+         Rw tvo;
+         
+     for my $j (@tr) {
          #sayyl "       <<<< yep j.cv j.t          ".ki j.s;
          $last = {%$last};
+         # mapping intents into chain reactions
          my $here = {};
          here.cv = j.cv;
          
@@ -33,7 +39,7 @@ R_Jz:
          
          here.rad = 4*$RADIAN * r.spun if exists r.spun;
          
-         here.creatin = j.s;#$H->ejson(j.s);
+         here.creatin = j.s;
          
          
          here.zoom = r.zoom if defined r.zoom;
@@ -44,7 +50,7 @@ R_Jz:
          # aft fo smoothi
          here.spin = r.curve if exists r.curve; # on the level
          
-         J.geo.bz->("b%ve\t".j.cv => $here);
+         J.bz->("b%ve\t".j.cv => $here);
          $last = $here;
      }
      # etc
@@ -71,10 +77,14 @@ R_Jz:
          
  - K: phairo #c re/progressive proJammable petalis, frequency convogation
    D: |
-     J.pha = Rw tent pha;
-     
-     my @d = grep { _.t eq _.l } w $R tvo[$J]; # dump J things into space
-     my @be = grep { _.style eq 've' } w $R tvo(J=>J.geo); # poli
+     # things from oJ to J (pha)
+     my @d =
+         grep { _.t eq _.l }
+         Rw tvo $J:oJ;
+         
+     my @be =
+         grep { _.style eq 've' }
+         Rw tvo $J:geo;
      
      my ($left,$right) = (undef,shift @be);
      $left ||= $right;
@@ -94,11 +104,11 @@ R_Jz:
          here.right = $right; # <^ follow jagging rad, spaces within
          
          my $last = left.s || {};
-         w $R atom[$here, $last];
+         Rw atom $here $last;
          
-         J.pha.bz->(j.r => $here);
+         J.bz->(j.r => $here);
      }
      
-     saygr "J pha @  ".keys %{J.pha.bb};
+     saygr "J pha @  ".keys %{J.bb};
      
 
