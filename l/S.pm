@@ -109,7 +109,7 @@ __DATA__
       var q = 1;
       var elvis = Math.random();
       var ws;
-      var C = {};
+      var cone = {};
       var conz = {};
       var ww = {};
 
@@ -188,7 +188,7 @@ __DATA__
               d.W = W;
               var conin = conz[W];
               if (conin) {
-                  ws = C[conin];
+                  ws = cone[conin];
               }
           }
           var ux = tag.closest( "ux" ).attr('id');
@@ -245,13 +245,13 @@ __DATA__
       // websockety #c
       a.con = function(c) {
          var conin = c.conin;
-         if (C[conin] && C[conin].readyState == 1) {
+         if (cone[conin] && cone[conin].readyState == 1) {
                 return;
          }
          c = new WebSocket(conin);
          c.conin = conin;
 
-         C[conin] = c;
+         cone[conin] = c;
          if (w.conin === conin) {
                  w = c;
          }
@@ -289,7 +289,7 @@ __DATA__
             t = 256;
         }
         window.setTimeout(function(){
-            if (C[c.conin] == c) { // still
+            if (cone[c.conin] == c) { // still
                 a.con(c);
             }
         }, t);
