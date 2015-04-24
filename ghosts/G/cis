@@ -39,8 +39,23 @@ Ds:
       # MZ $f,$n
       my ($f, $n) = @_;
       my $x = 0->spc($f);
-      $n = ejson($n) if ref $n;
+      $n = zjson($n) if ref $n;
       (x.fi, $n, $x)
+  - K: zjson #c .J ignore for aj
+    style: func
+    D: |
+      my $n = shift;
+      if (n.J) {
+          $n = {%$n};
+          delete n.J;
+      }
+      ejson($n)
+      
+  - K: ztm #c {y,id} for .s
+    style: func
+    D: |
+      my $aj = shift;
+      return {map{$_=>$aj->{$_}}'y','id'};
   - K: ily #c as su
     D: |
         say "Jep: ".join '  ', @_;

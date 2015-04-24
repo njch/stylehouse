@@ -1196,8 +1196,22 @@ sub taR {
     # MZ $f,$n
     my ($f, $n) = @_;
     my $x = $G->spc($f);
-    $n = ejson($n) if ref $n;
+    $n = zjson($n) if ref $n;
     ($x->{fi}, $n, $x)
+}
+
+sub zjson {
+    my $n = shift;
+    if ($n->{J}) {
+        $n = {%$n};
+        delete $n->{J};
+    }
+    ejson($n)
+}
+
+sub ztm {
+    my $aj = shift;
+    return {map{$_=>$aj->{$_}}'y','id'};
 }
 
 sub ily {

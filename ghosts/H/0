@@ -177,18 +177,26 @@ hooks:
         
         my $a = {};
         if (my $W = G0.Wh->{e.W}) {
+            if (!W.R) {
+                my $R = G0.WhR->{e.W};
+                my $G = R.G;
+                my $J = $W;
+                Rw event $J $e;
+                return;
+            }
             my $find = sub {
                 w W.W fi(f => {id => shift});
             };
             a.W = $W;
-            a.i = $find->(e.id);
+            a.i = $find->(e.id); # sometimes something
             a.ux = $find->(e.ux);
             a.e = $e;
             
-            if (W.W.G.name =~ /^(D|U)$/) {
-                die "wta";
-                saybl "event hook: ".W.G->pi;
-                W.G w event(%$a);
+            saybl "event hook e.W  ->  e.ux  ->  e.id  ";
+            w W.R event(%$a);
+            
+            if (!W.R) {
+              die;
             }
             else { # future: in-G Rs
                 saybl "event hook: ".W.R->pi;
