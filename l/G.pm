@@ -408,7 +408,19 @@ sub ip {
     my ($ip, $i) = @_;
     my $pass = 1;
     for my $I (keys %$ip) {
-        $pass-- if $ip->{$I} ne $i->{$I};
+        !ref $ip->{$I} && $ip->{$I} ne $i->{$I} && $pass--;
+        ref $ip->{$I} eq 'HASH' && do {
+            if (my $not = $ip->{$I}->{not}) {
+                if ($not eq 'def') {
+                    defined $i->{$I} && $pass--;
+                }
+                else {die'notsomething'}
+            }
+            else {
+                $ip->{$I}->{$i->{$I}} eq '1' || $pass--;
+            }
+        };
+
     }
     $pass == 1
 }

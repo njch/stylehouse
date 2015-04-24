@@ -3,22 +3,33 @@ R_Jz:
  - K: geolo #c begin digging - smiling egg cup - most reentrant part
      # set up archeology site, anything you want
    D: |
-     my @t = grep { _.l eq _.t }
-        Rw tvo;
-        
-     for (@t) {
+     for my $k ("geo things -> tr") {
+         my $ip = {style=>{not=>'def'}};
+         my $js = Rw tva $J $ip;
+         
+         my $coi = Rw pha $J $k;
+         last if Rw lv_same $js $x:coi $J;
+         
          # ^^^^^^^
-         J.bz->("b%tr\t"._.cv => {
-             %{J.bb->{"b%tr\t"._.cv} || {}},
-             _.t => _.s,
-         })
+         for (@$js) {
+             my $rtr = "b%tr\t"._.cv;
+             my $b = J.bb->{$rtr} || {}; #acumey
+             $b->{_.t} = _.s;
+             J.bz->($rtr => $b);
+         }
+         my $y = coi.end->();
+         my $ex = Rw ph_exactl $J $y;
      }
      
-     for my $pcv (map{$_ * 0.1} 1..9) {
-         my $w = "b%tr\t".$pcv;
-         J.bz->($w => {}) if !J.bb->{$w};
+     # do about 9
+     #my $coi = Rw pha $J $k=trmin;
+     for my $trr (map {"b%tr\t".$_} map {$_ * 0.1} 1..9) {
+         J.bz->($trr => {}) if !J.bb->{$trr};
          # extra stick pole, sparsitor to trace by, blank as tr(ansf)
+         # keeps exponential dist reactions on track...
      }
+     #my $y = coi.end->();
+     #my $ex = Rw ph_exactl $J $y;
      
      # and lay out
      my $last = {x=>0, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
@@ -115,9 +126,9 @@ R_Jz:
    D: |
      my @d = grep { _.t eq _.l }
          Rw tvo $J;
-         sayyl "othere!!!!!!" for 1..5;
-     sayyl gp($J);
-     saybl gp($oJ);
+         
+     sayyl "othere!!!!!!  ".gp($J)."              ".gp($oJ);
+     
      for my $j (@d) {
          my $here = j.s;
          # unwind # TODO wind blowing crazy
