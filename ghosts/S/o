@@ -12,8 +12,7 @@ hooks:
         saygr "lies: ".((`wc -l $fi`)[-1]  =~ /(\d+) total/)[0];
     });
     
-    H.G w hostinfo;
-    
+    H.G w hostinfo; 
   in: |
     $G->timer(9, sub{w Hiwtidy;});
   Hostinfo: |
@@ -38,21 +37,26 @@ hooks:
       if (-d "life/V/$sn") { # would be good to control
           # a more than yay old TODO like J
           my @Vol = `find life/V/$sn -type f`; # doesn't go through symlinks
-          for (@Vol) {
-              chomp;
-              sayre "rm ing $_";
-              my $js;
-              for my $Wl (`cat $_`) {
-                  my $meta = djson $Wl;
-                  
-                  my $W = "life/meta.y/meta.id\.i";
-                  $js .= w jsrm(id=>meta.id);
-                  sayre "rm ingiog meta.y meta.id";
-                  `rm $W`;
+          for my $iss (@Vol) {
+              chomp $iss;
+              sayre "rm ing $iss";
+              if ($iss =~ /\.s$/) {
+                  my @s = split "\n", read_file($iss);
+                  my $js;
+                  say "in $iss: ".wdump \@s;
+                  my $wt = '';
+                  for my $s (@s) {
+                      my $meta = djson($s);
+                      my $t = "meta.y/meta.id";
+                      $js .= w jsrm(id=>meta.id); # 
+                      sayre "rm ingiog $t";
+                      `rm life/$t.*`;
+                      $wt .= " $t";
+                  }
+                  saybl "###### $js       $wt";
+                  $H->send($js) if $js;
               }
-              saybl "###### $js";
-              $H->send($js) if $js;
-              `rm $_`;
+              `rm $iss`;
           }
       }
       
@@ -74,7 +78,7 @@ hooks:
       
       say "" for 1..3;
   jsrm: |
-    " \$('#ux > #$id').fadeOut(1000, function() { \$(this).remove(); });";
+    " \$('#$id').fadeOut(1000, function() { \$(this).remove(); });";
   Hiwtidy: |
    # could take more clues
     my $js = " var e = [];
