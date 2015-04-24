@@ -4,7 +4,7 @@ R_Jz:
      # set up archeology site, anything you want
    D: |
      for my $k ("geo things -> tr") {
-         my $ip = {style=>{not=>'def'}};
+         my $ip = {style=>''};
          my $js = Rw tva $J $ip;
          
          my $coi = Rw pha $J $k;
@@ -17,26 +17,27 @@ R_Jz:
              $b->{_.t} = _.s;
              J.bz->($rtr => $b);
          }
-         my $y = coi.end->();
-         my $ex = Rw ph_exactl $J $y;
+         coi.exactl->();
      }
      
      # do about 9
-     #my $coi = Rw pha $J $k=trmin;
+     # extra stick pole, sparsitor to trace by, blank as tr(ansf)
+     # keeps exponential dist reactions on track...
      for my $trr (map {"b%tr\t".$_} map {$_ * 0.1} 1..9) {
          J.bz->($trr => {}) if !J.bb->{$trr};
-         # extra stick pole, sparsitor to trace by, blank as tr(ansf)
-         # keeps exponential dist reactions on track...
      }
-     #my $y = coi.end->();
-     #my $ex = Rw ph_exactl $J $y;
      
      # and lay out
      my $last = {x=>0, y=>0, cv=>0.001, rad=>$RADIAN, spin=>0}; # downy
      
-     my @tr = grep { _.style eq 'tr' }
-         Rw tvo;
-         
+     my $ip = {style=>'tr'};
+     my @tr = Rw tvo $J $ip;
+     
+     # wants to style with styles
+     # of course there's lots of geo things
+     # and thingness right now is actually style...
+     # so this'll eventually be lv_sameable as the @js come in waves
+     my $coi = Rw pha $J $k=tr_atoms;
      for my $j (@tr) {
          #sayyl "       <<<< yep j.cv j.t          ".ki j.s;
          $last = {%$last};
@@ -64,6 +65,7 @@ R_Jz:
          J.bz->("b%ve\t".j.cv => $here);
          $last = $here;
      }
+     coi.exactl->('diff');
      # etc
  - K: atom #c may +atomb? without compare you are dead
    D: |
@@ -89,17 +91,16 @@ R_Jz:
  - K: phairo #c re/progressive proJammable petalis, frequency convogation
    D: |
      # things from oJ to J (pha)
-     my @d =
-         grep { _.t eq _.l }
-         Rw tvo $J:oJ;
-         
-     my @be =
-         grep { _.style eq 've' }
-         Rw tvo $J:geo;
+     my $ip = {style=>'',t=>{not=>'/'}};
+     my @d = Rw tvo $J:oJ $ip;
+     
+     $ip = {style=>{ve=>1}};
+     my @be = Rw tvo $J:geo $ip;
      
      my ($left,$right) = (undef,shift @be);
      $left ||= $right;
      
+     my $coi = Rw pha $J $k=phairo;
      for my $j (@d) {
          my $here = {cv => j.cv};
          
@@ -119,16 +120,18 @@ R_Jz:
          
          J.bz->(j.r => $here);
      }
+     coi.exactl->('diff');
      
      saygr "J pha @  ".keys %{J.bb};
      
  - K: outhere #c out
    D: |
-     my @d = grep { _.t eq _.l }
-         Rw tvo $J;
+     my $ip = {style=>''};
+     my @d = Rw tvo $J $ip;
          
      sayyl "othere!!!!!!  ".gp($J)."              ".gp($oJ);
      
+     my $coi = Rw pha $J $k=outhere;
      for my $j (@d) {
          my $here = j.s;
          # unwind # TODO wind blowing crazy
@@ -179,5 +182,6 @@ R_Jz:
              "*".ere.radial
          );
       }
+      coi.exactl->('diff');
       sayre join " ", (">") x scalar(@d);
 

@@ -411,10 +411,10 @@ sub ip {
         !ref $ip->{$I} && $ip->{$I} ne $i->{$I} && $pass--;
         ref $ip->{$I} eq 'HASH' && do {
             if (my $not = $ip->{$I}->{not}) {
-                if ($not eq 'def') {
+                $not eq 'def' && do {
                     defined $i->{$I} && $pass--;
-                }
-                else {die'notsomething'}
+                } 
+                || $not eq $i->{$I} && $pass--;
             }
             else {
                 $ip->{$I}->{$i->{$I}} eq '1' || $pass--;
