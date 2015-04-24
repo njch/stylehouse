@@ -82,48 +82,60 @@ R_Jz:
      yJup: |
        'geo'
      up: |
-       my $Jo = J.Jo;
+       my $sr = J.Jo;
        
-       saybl "geo of Jo.name";
+       saybl "geo of sr.name";
        
-       Rw thy curves $J:Jo $oJ:J;
+       Rw thy curves $J:sr $oJ:J
+       ||
        Rw geolo $J;
        
+       Rw oJ $J phz &up;
+ - K: phz #c transfer
+   n_D:
+     yJup: |
+       'phz'
+     up: |
+       my $geo = J.Jo;
+       my $io = J.Jo.Jo;
+       Rw phairo $J $oJ:io $geo;
        
-       my $pha = Rw oJ $J pha;
-       Rw phairo $J:pha $oJ:Jo $geo:J;
-       
-       Rw outhere $J:pha $oJ:Jo;
+       Rw outhere $J $oJ:io;
  - K: wam #c 
    n_D:
      yJup: |
-       'wam clingleftwall'
-     curves: |
-       spun 0  2
-       y    0  0.3
-       x    0  0.4
-       zoom 0.1 0.5
-       curve 0.3 -0.2
+       'wam mayo clw'
      up: | # if the in up, pha wakeups out - all response to editing
        Rw Jhead;
        my $on = Rw oJ $J on;
        # init text aparter
        on.bz->("twang\t".0.2 => 'Z/2');
        # bounce different ways...
-       my $onl = Rw onlv $in=0.1 $out=0.9 $J:on $tot:J.cv;
+       my $onl = Rw onlv $in=0.4 $out=0.9 $J:on $tot:J.cv;
        # pin down top level
        # primitives for geo site
        for my $x (@$onl) {
            Rw ix/suro + $x;
        }
        
-       my $geo = Rw oJ $J geo;
-       Rw up $J:geo;
+       Jn(wamo => 0.2, {s=>'wam',pwth=>'J5:wam'}); 
        
+       Rw oJ $J geo &up;
+       
+ - K: mayo #c
+   n_D:
      out: |
        # splurt of compressions so may can do more
        Rw may $J;
        
+ - K: clw #c
+   n_D:
+     curves: |
+       spun 0  2
+       y    0  0.3
+       x    0  0
+       zoom 0.1 0.5
+       curve 0.3 -0.2
  - K: onlv #c tak tlv J.on into iterations of upgoing clever 
    D: |
        my $vs = Rw tyv $J $ip:ar.ip;
@@ -151,6 +163,7 @@ R_Jz:
      my $wt = Rw wuck $J */$what;
      $J = ar.oJ || $J;
      my $M = [];
+     my $nc = 1;
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};
          
@@ -166,9 +179,10 @@ R_Jz:
          #say " ** waything $what from $k";
          Rw MyN $N $J;
           
-         my $y = coi.end->();
-         my $ex = Rw ph_exactl $J $y;
+         my $y = coi.exactl->();
+         $nc = 0 if !y.same;
      }
+     $nc
  - K: join #c
    n_D:
      yJup: |
@@ -208,11 +222,15 @@ R_Jz:
    D: |
      # squiggly time reconvogation
      # golden mean swivels
+     my $wha = $1 if ar.m && ar.m->[-1] =~ /^&(.+)$/ && pop @{ar.m};
      my $oJ = ar.J || G.oin;
      my $and = ar.name || ar.m && ar.m->[0];
      if ($and) {
          $oJ = oJ.oJ->{$and} ||
              Rw JJJJ $J:oJ $name:and;
+     }
+     if ($wha) {
+         Rw $wha $J:oJ;
      }
      $oJ;
      
