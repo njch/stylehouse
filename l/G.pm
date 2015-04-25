@@ -325,7 +325,6 @@ sub uiuS {
             next if !$ww;
             next if !$ww->{$a};
             if ($ww->{$a}->{"${b}_D"}) {
-                $G->Flab("got a $a $b _D  ", $u);
                 my $some = $w->{G}->w("$a/${b}_D", {u=>$u}, $w);
                 return $some if $some;
             }
@@ -356,7 +355,7 @@ sub sing {
         $G->timer($after, sub {
             my $splatter = delete $si->{$name};
             if ($splatter > 1 && $p->{again}) {
-                $G->Flab("Sig reps $splatter... again!  $name");
+                sayre "Gsing $splatter again! $name";
                 $G->sing($name, $code, %$p);
             }
         }, "sing-block        $name");
@@ -522,26 +521,6 @@ sub load_ways {
     return $G->w("load_ways_post") if !$G0;
 
     $G0 ->w("_load_ways_post", {S=>$G,w=>$G->{ways}});
-}
-
-sub Flab {
-    my $G = shift;
-    wish(G=>$G) || die "send G";
-
-    # like sa*
-    # throw $S up little con tent # F jointed sa*
-    # also like di, has this db vector
-    # for punching out with helpful quality
-
-    say join("", "$G->{db} + $db", ("_") x scalar(@F))."$G->{name}  $_[0]"
-        if $G->{db} + $db > 0
-        && $_[0] !~ /^\w\ Error/;
-
-    my $a;
-    $a->{name} = "flab";
-    $a->{stuff} = [@_];
-
-    $G->pyramid($a);
 }
 
 sub ways {
