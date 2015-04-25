@@ -285,8 +285,8 @@ R_Jz:
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        
        # think these want to be injected crazily
-       J.bz->("/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux");
-       J.bz->("wtf/\t0.9"=>"y","%id"=>J.id,"%tag"=>"dwell");
+       J.bz->("/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux")
+       if !J.yy.may.noroot;
        
        my $oJ = Rw oJ $J non;
        #  ^ v MMMMMMMMMM
@@ -427,19 +427,12 @@ R_Jz:
                map { acum $lv, 'Esc', $_ for @{_.Ec} } @live;
                map { acum $lv, 'Esc', $_ for @{_.Esc} } @live;
                
-               if (J.V) {
-               sayyl "it is aj.id";
-               saygr "skipped: _.j.r    ".ejson [_.Ec,_.Esc,_.s] for @skip;
-               sayyl "upd()ed: _.j.r    ".ejson [_.Ec,_.Esc,_.s]  for @live;
-               }
-               #sayre "not all alive were... ".wdump 2, \@skip;
-               # dif pat._joins, insert/appendAfter with xpath just right
                # these are flying blind chunks of html in s
-               # maybe this is a space we must give up on if its not an easy
                # few replace selves, say lv.scon = 1;
                # make at.s [ [_.j.r => _.s] ... ] and shake down...
+               # filter out who is scon'ing for themselves
+               # they want to Jtube through us
                at.s = join '', map { _.s } @lvs;
-               # assume we got these over time
                # these are curving down into things
            }
            
@@ -532,16 +525,21 @@ R_Jz:
            #saybl "left j.r   ".lv.s;
            # here hangs loose, we would want to conduct at.c/sc business cleanly
            
-           
            push @s, $lv;
        }
        # check lv up cover
-       my $lv = oJ.bb->{"/%lv\t0.9"};
-       aj.s = lv.s;
-       delete aj.s if lv.scon; # no repeat emit
-       aj.c = lv.Ec || [];
-       aj.sc = lv.Esc || [];
-       
+       if (J.yy.may.noroot) {
+           die 'noroot ag has s'.wdump($_) for grep {_.s} @s;
+           aj.c = [map{@{_.Ec||[]}}@s];
+           aj.sc = [map{@{_.Esc||[]}}@s];
+       }
+       else {
+           my $lv = oJ.bb->{"/%lv\t0.9"};
+           aj.s = lv.s;
+           delete aj.s if lv.scon; # no repeat emit
+           aj.c = lv.Ec || [];
+           aj.sc = lv.Esc || [];
+       }
        if (!ar.catj) {
            Rw Em $aj;
        }
