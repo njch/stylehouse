@@ -3,7 +3,6 @@ Ray:
  - K: J
    findway: R_J
 hooks:
-
   percolate_R: | # capow! R
     G.theJ = $G->R('J');
   percolate: |
@@ -74,7 +73,7 @@ R_Jz:
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
      yJup: |
-       qw'zoy headi oci'
+       qw'zoy headi oci mayo'
      curves: |
        spun 0  3
        y    0  0
@@ -84,7 +83,36 @@ R_Jz:
      up: |
        Rw Jhead;
        Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'});
-       Rw zoybracken $afterid:u.at.id;
+       #Rw zoybracken;
+       Rw oJ $J geo &up;
+ - K: wam #c 
+   n_D:
+     yJup: |
+       'wam mayo clw'
+     up: | # if the in up, pha wakeups out - all response to editing
+       Rw Jhead;
+       my $oJ = Rw oJ $J on;
+       oJn( twang => 0.2 => 'Z/2');
+       Rw up $J:oJ;
+       # bounce different ways...
+       
+       # hire a Con...
+       # requireway, with parameters
+       # then patch bay for groups of style to feed in
+       # also the other elements present in may...
+       # farmed out
+       
+       
+       my $onl = Rw very $in=0.4 $out=0.9 $J:oJ $tot:J.cv;
+       # pin down top level
+       # primitives for geo site
+       for my $x (@$onl) {
+           Rw ix/suro + $x;
+       }
+       
+       Jn(wamo => 0.2, {s=>'wam',pwth=>'J5:wam'}); 
+       
+       Rw oJ $J geo &up;
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      my $J = G.oin ||= do{ # START
@@ -102,16 +130,16 @@ R_Jz:
    n_D:
      yJup: |
        G.oin = $J;
-       'join clingleftwall'
+       'join clw'
      up: |
        Rw J5 toc;
        Rw J5 scr;
+       Rw J5 zoy;
+       
        my $ip = {style=>'J'};
-       my @l = Rw tvo $J $ip;
-       for (@l) {
-           sayyl "join JOIN join : _.l ".keys %{_.s.bb};
-       }
-       # makes a pile to see/curve in J.up, tiny geos? things hop
+       sayyl "JOIN join : _.r ".keys %{_.s.bb} for
+           Rw tvo $J $ip;
+           
      wwcup: |
        Jn('/', 0.9, {}, "{tag:ww,ab:100,poi:n,zi:1,bgh:33.5.3.1}");
        my $ip = {l=>'/'};
@@ -127,21 +155,13 @@ R_Jz:
    n_D:
      yJup: |
        J.yy.may.noroot = 1;
-       'scr clw outmay'
+       'scr clw mayo'
      up: | # if the in up, pha wakeups out - all response to editing
        Rw thy $J comprsc;
        Rw thy $J canvas;
        Rw thy $J other;
        G.oin.no->(G.oin, "J.name",0.3,{wantime=>8});
        #Rw thy $J youtube;
- - K: outmay #c 
-   n_D:
-     yJup: |
-       'outmay'
-     out: |
-       # splurt of compressions so may can do more
-       Rw may $J;
-       
  - K: on #c
    n_D:
      yJup: |
@@ -191,36 +211,10 @@ R_Jz:
        Rw phairo $J $oJ:io $geo;
        
        Rw outhere $J $oJ:io;
- - K: wam #c 
-   n_D:
-     yJup: |
-       'wam mayo clw'
-     up: | # if the in up, pha wakeups out - all response to editing
-       Rw Jhead;
-       my $oJ = Rw oJ $J on;
-       oJn( twang => 0.2 => 'Z/2');
-       Rw up $J:oJ;
-       # bounce different ways...
-       
-       # hire a Con...
-       # requireway, with parameters
-       # then patch bay for groups of style to feed in
-       # also the other elements present in may...
-       # farmed out
-       
-       
-       my $onl = Rw very $in=0.4 $out=0.9 $J:oJ $tot:J.cv;
-       # pin down top level
-       # primitives for geo site
-       for my $x (@$onl) {
-           Rw ix/suro + $x;
-       }
-       
-       Jn(wamo => 0.2, {s=>'wam',pwth=>'J5:wam'}); 
-       
-       Rw oJ $J geo &up;
  - K: mayo #c
    n_D:
+     yJup: |
+       'mayo'
      out: |
        # splurt of compressions so may can do more
        Rw may $J;
