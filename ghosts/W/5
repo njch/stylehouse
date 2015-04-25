@@ -164,58 +164,7 @@ R_Jz:
      #J.on bz u 0.1 $i
      # J.on bz u%ori 0.1 J.onei.i
      # J.on bz u%travely 0.1 J.onei.t
- - K: sts #c
-   n_D:
-     yJ: |
-       'sts';
-     up: |
-       my $tw = Rw huck */stylesheet;
-       while (my($t,$w) = each %$tw) {
-          die wdump [$t,$w];
-           my $as = {K=>'style', B=>{am=>$t}};
-          my $u = w G.R fuu(u=>$as);
-          my $was = u.sheet;   
-          u.sheet = join "\n",@$w;
-          
-          die $u if !$u;
 
-          w mux[$u] if u.sheet ne $was;
-       }
-     stylesheet: | #
-       my $Y = Load(<<'');
-        - K: nopoi # outer
-          css: [pointer-events:none]
-        - K: poi
-          css: [pointer-events:all]
-        - K: OxO
-          styles: ab
-          css: [height:100%, width:100%]
-        - K: ab
-          css: [position:absolute]
-        - K: rel
-          css: 
-            - position:relative
-        - K: X
-          css:
-            - position:relative
-            - width:100%
-            - height:100%
-        - K: NZ
-          css: []
-          classy: hidden until its brought into the web
-        - K: z
-          css: []
-          classy: to bring into the web
-
-
-       $Y = {map {
-           _.K => join '', map { "$_;" } @{_.css}
-       } @$Y};
-       
-       my $stuff = Rw sts/ep $Y;
-       $stuff.
-       'ux * {pointer-events: all;z-index:100}';
-          
  - K: occie #c style komerp # occasional (page) global aggregate
    babz:
      'maka 6.1': |
@@ -250,6 +199,20 @@ R_Jz:
        });
        'occie'
      up: |
+       my $sty_y = sub {
+           my $sty = shift;
+           my ($heex) = $H->dig($sty) =~ /^(........)/;
+           $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+           my @s;
+           push @s, $1 while $heex =~ s/^(..)//;
+           @s = map {
+               my ($o,$t) = /^(.)(.)$/;
+               $t = chr ord($t) + 10 if $o =~ /[g-p]/;
+               $t;
+           } @s;
+           join'',@s
+       };
+     
        my $t = 'occie';
        my $pool = G.jumb->{$t} || return;
       
@@ -258,7 +221,7 @@ R_Jz:
       
        my @order = reverse sort { a.sc <=> b.sc } @pool;
       
-       my $komp = {};
+       my $Y = {};
       
        my $limit = 100;
        my $aimit = @order / 1.2;
@@ -273,37 +236,72 @@ R_Jz:
            my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
            || die "of tiny: ".wdump($o);
            
-           my ($heex) = $H->dig($sty) =~ /^(........)/;
-           $heex =~ tr/0123456789/ghijklmnop/; # no numbers
-           my @s;
-           push @s, $1 while $heex =~ s/^(..)//;
-           
-           @s = map {
-               my ($o,$t) = /^(.)(.)$/;
-               $t = chr ord($t) + 10 if $o =~ /[g-p]/;
-               $t;
-           } @s;
-           # TODO name it nicer things
-           my $y = join'',@s;
-           $komp->{$y} = $sty;
+           my $y = $sty_y->($sty);
+           $Y->{$y} = $sty;
        }
       
-       my $wi = keys %$komp;
+       my $wi = keys %$Y;
        $wi || return sayre "NOTHING TO COMPRESS";
-       
-       G.yomp->{$c} = {reverse %$komp};
-
-       # ^ to maka, draws in
-       # v to elvis, draws out
+       G.yomp->{$t} = {reverse %$Y};
        
        my $oJ = Rw oJ sts;
+       Rw sts/tY $J:oJ $t $Y;
+ - K: sts #c
+   n_D:
+     yJ: |
+       'sts mayo';
+     up: |
+       my $tw = Rw huck */stylesheet;
+       while (my($t,$w) = each %$tw) {
+           my ($Y) = @$w;
+           Rw sts/tY $J $t $Y;
+       }
+     tY: | # eat
+       my $was = J.bb->{"$t\t0.3"};
        
-       die wdump $oJ;
-       my $was = oJ.bb->{"$t\t0.3"};
-       my $is = Rw sheep $Y:komp;
-       oJn($t => 0.3 => $is, {
+       my $is = join "\n", map {
+          (/ /?'':'.')."$_ { $Y->{$_} }"
+       } sort keys %$Y;
+       
+       if ($was ne $is) {
+           Jn($t => 0.3 => $is, {st=>1});
+           Rw out $J;
+       }
+     stylesheet: | #
+       my $Y = Load(<<'');
+        - K: nopoi # outer
+          css: [pointer-events:none]
+        - K: poi
+          css: [pointer-events:all]
+        - K: OxO
+          styles: ab
+          css: [height:100%, width:100%]
+        - K: ab
+          css: [position:absolute]
+        - K: rel
+          css: 
+            - position:relative
+        - K: X
+          css:
+            - position:relative
+            - width:100%
+            - height:100%
+        - K: NZ
+          css: []
+          classy: hidden until its brought into the web
+        - K: z
+          css: []
+          classy: to bring into the web
+        - K: ux *
+          css: [pointer-events:all, z-index:100]
 
-        w mux[$u] if u.sheet ne $was;
+
+       $Y = {map {
+           _.K => join '', map { "$_;" } @{_.css}
+       } @$Y};
+       
+       $Y
+          
  - K: dolphy #c
    D: |
      my $tvs = w $R ytv[$J];
