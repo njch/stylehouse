@@ -61,7 +61,7 @@ R_Jz:
      }
  - K: wu #c cattach anything under ww, trainyard, patch bay, hash out space <body>
    n_D:
-     yJup: |
+     yJ: |
        'wu'
      up: |
        if (my $s = delete aj.s) {
@@ -72,7 +72,7 @@ R_Jz:
        $aj;
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
-     yJup: |
+     yJ: |
        qw'zoy headi oci mayo'
      curves: |
        spun 0  3
@@ -87,7 +87,7 @@ R_Jz:
        Rw oJ $J geo &up;
  - K: wam #c 
    n_D:
-     yJup: |
+     yJ: |
        'wam mayo clw'
      up: | # if the in up, pha wakeups out - all response to editing
        Rw Jhead;
@@ -128,12 +128,14 @@ R_Jz:
      $J
  - K: join #c
    n_D:
-     yJup: |
+     yJ: |
        G.oin = $J;
        'join clw'
      up: |
        Rw J5 toc;
        Rw J5 scr;
+       Rw J5 sts;
+       Rw J5 occie;
        Rw J5 zoy;
        
        my $ip = {style=>'J'};
@@ -153,7 +155,7 @@ R_Jz:
        $aj;
  - K: scr #c 
    n_D:
-     yJup: |
+     yJ: |
        J.yy.may.noroot = 1;
        'scr clw mayo'
      up: | # if the in up, pha wakeups out - all response to editing
@@ -164,7 +166,7 @@ R_Jz:
        #Rw thy $J youtube;
  - K: on #c
    n_D:
-     yJup: |
+     yJ: |
        J.yl.nojb = 1;
        'on';
      up: | # tak tlv J.on into iterations of upgoing clever
@@ -189,7 +191,7 @@ R_Jz:
        
  - K: geo #c
    n_D:
-     yJup: |
+     yJ: |
        'geo'
      up: |
        my $sr = J.Jo;
@@ -203,7 +205,7 @@ R_Jz:
        Rw oJ $J phz &up;
  - K: phz #c transfer
    n_D:
-     yJup: |
+     yJ: |
        'phz'
      up: |
        my $geo = J.Jo;
@@ -213,7 +215,7 @@ R_Jz:
        Rw outhere $J $oJ:io;
  - K: mayo #c
    n_D:
-     yJup: |
+     yJ: |
        'mayo'
      out: |
        # splurt of compressions so may can do more
@@ -349,8 +351,8 @@ R_Jz:
          my $s = shift;
          my @wk = uniq
              grep{length} map {split /\s+/}
-             Rw suck + $pin=$s/yJup;
-         #saybl " - sty $s -> @wk" if @wk;
+             Rw suck + $pin=$s/yJ;
+         saybl " - sty $s -> @wk";
          for my $k (@wk) {
              next if exists J.yt->{$k}; # many styles leading to the same style
              J.yt->{$k} ||= {};
@@ -362,7 +364,7 @@ R_Jz:
      saygr "J.name yJup: ".join(' + ', @{J.style})." -> ".join(' ~ ', sort keys %{J.yt});
  - K: toc #c
    n_D:
-     yJup: |
+     yJ: |
        'toc'
      around: |
        Rw vortex $J up;
@@ -380,7 +382,7 @@ R_Jz:
        # make {$v=>1} == $v in ip for hash multitudes
        $ip = {style=>'J',l=>$l};
        my @l = Rw tvo $J:G.oin $ip;
-       say _.r for @l;
+       say "on time: _.r" for @l;
        # makes a pile to see/curve in J.up, tiny geos? things hop
  - K: vortex #c do recur while J as in G.oin
    D: |

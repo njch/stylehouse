@@ -164,14 +164,14 @@ R_Jz:
      #J.on bz u 0.1 $i
      # J.on bz u%ori 0.1 J.onei.i
      # J.on bz u%travely 0.1 J.onei.t
- - K: stylesheets #c
+ - K: sts #c
    n_D:
-     any_init: |
-       Rwyl stylesheets/of;
-     of: |
+     yJ: |
+       'sts';
+     up: |
        my $tw = Rw huck */stylesheet;
-
        while (my($t,$w) = each %$tw) {
+          die wdump [$t,$w];
            my $as = {K=>'style', B=>{am=>$t}};
           my $u = w G.R fuu(u=>$as);
           my $was = u.sheet;   
@@ -181,23 +181,8 @@ R_Jz:
 
           w mux[$u] if u.sheet ne $was;
        }
-     stylesheet: | #c
+     stylesheet: | #
        my $Y = Load(<<'');
-        - K: te # yer standard thing
-          css: 
-            - border-bottom:1px solid black
-            - padding-left:2em
-            - float:left
-            - position:relative
-            - width:calc(100% - 2em)
-            - background:rgba(150,100,50,0.1)
-        - K: tu # without indentation, more normal
-          css: 
-            - border-bottom:1px solid black
-            - float:left
-            - position:relative
-            - width:100%
-            - background:rgba(150,100,50,0.1)
         - K: nopoi # outer
           css: [pointer-events:none]
         - K: poi
@@ -227,12 +212,11 @@ R_Jz:
            _.K => join '', map { "$_;" } @{_.css}
        } @$Y};
        
-       my $stuff = Rw sheep $Y;
+       my $stuff = Rw sts/ep $Y;
        $stuff.
        'ux * {pointer-events: all;z-index:100}';
           
  - K: occie #c style komerp # occasional (page) global aggregate
-   spesh: 0
    babz:
      'maka 6.1': |
        if (1) {
@@ -256,76 +240,70 @@ R_Jz:
            grep{defined} map { split ';' } @css;
        }
    n_D:
-     fresh_init: |
-       # really whenever bored
-       timer 7 { w $R occie/komp; };
-       recur 40 { w $R occie/komp; };
-     styleshout: |
-       # entropia & komp
-     komp: |
-       return unless G.jumb.occie;
-       my $u = Rw hamz style occie;
-       Rw toof + $u occie;
- - K: toof #c html styleshootout
-   D: |
-      my $c = shift @$m;
-      $u || die "look for u>?"; 
+     yJ: |
+       # really whenever bored, busied
+       0->timer(7,sub{
+           Rw up;
+       });
+       0->recur(40,sub{
+           Rw up;
+       });
+       'occie'
+     up: |
+       my $t = 'occie';
+       my $pool = G.jumb->{$t} || return;
       
-      my $pool = G.jumb->{$c};
-      
-      my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
+       my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
       
       
-      my @order = reverse sort { a.sc <=> b.sc } @pool;
+       my @order = reverse sort { a.sc <=> b.sc } @pool;
       
-      my $komp = u.komp ||= {}; # back/forward
+       my $komp = {};
       
-      my $limit = 100;
-      my $aimit = @order / 1.2;
-      for my $o (@order) {
-          last if o.sc < 5;
-          next if o.of eq '';
-          # pha oras ratio ^ rolling
-          
-          last if $limit-- < 1;
-          last if $aimit-- < 1;
-          
-          my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
-          || die "of tiny: ".wdump($o);
-          
-          my ($heex) = $H->dig($sty) =~ /^(........)/;
-          $heex =~ tr/0123456789/ghijklmnop/; # no numbers
-          my @s;
-          push @s, $1 while $heex =~ s/^(..)//;
-          
-          @s = map {
-              my ($o,$t) = /^(.)(.)$/;
-              $t = chr ord($t) + 10 if $o =~ /[g-p]/;
-              $t;
-          } @s;
-          # TODO name it nicer things
-          my $y = join'',@s;
-          $komp->{$y} = $sty;
-      }
+       my $limit = 100;
+       my $aimit = @order / 1.2;
+       for my $o (@order) {
+           last if o.sc < 5;
+           next if o.of eq '';
+           # pha oras ratio ^ rolling
+           
+           last if $limit-- < 1;
+           last if $aimit-- < 1;
+           
+           my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
+           || die "of tiny: ".wdump($o);
+           
+           my ($heex) = $H->dig($sty) =~ /^(........)/;
+           $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+           my @s;
+           push @s, $1 while $heex =~ s/^(..)//;
+           
+           @s = map {
+               my ($o,$t) = /^(.)(.)$/;
+               $t = chr ord($t) + 10 if $o =~ /[g-p]/;
+               $t;
+           } @s;
+           # TODO name it nicer things
+           my $y = join'',@s;
+           $komp->{$y} = $sty;
+       }
       
-      my $wi = keys %$komp;
-      $wi || return sayre "NOTHING TO COMPRESS";
-      #sayyl "toof $c compressed ".@pool." to $wi";
+       my $wi = keys %$komp;
+       $wi || return sayre "NOTHING TO COMPRESS";
+       
+       G.yomp->{$c} = {reverse %$komp};
 
-      # komp carbonises, makes up style
-      G.yomp->{$c} = {reverse %$komp};
+       # ^ to maka, draws in
+       # v to elvis, draws out
+       
+       my $oJ = Rw oJ sts;
+       
+       die wdump $oJ;
+       my $was = oJ.bb->{"$t\t0.3"};
+       my $is = Rw sheep $Y:komp;
+       oJn($t => 0.3 => $is, {
 
-      # ^ to maka, draws in
-      # v to elvis, draws out
-      
-      
-      my $was = u.sheet;
-      u.sheet = Rw sheep $Y:komp;
-
-      w mux[$u] if u.sheet ne $was;
- - K: sheep #c html stylesheet Y
-   D: |
-     join "\n", map { ".$_ { $Y->{$_} }" } sort keys %$Y;
+        w mux[$u] if u.sheet ne $was;
  - K: dolphy #c
    D: |
      my $tvs = w $R ytv[$J];
