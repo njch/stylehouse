@@ -294,7 +294,7 @@ R_Jz:
        
        my $ip = ar.ip || {};
        my $vs = Rw tyv $J $ip;
-       # puts / last:
+       # puts /s backwards and last:
        my $gs = Rw ordlv $J $vs;
        
        my @s; # heading
@@ -438,9 +438,11 @@ R_Jz:
            }
            
            my $sat = $inv->($at);
-           my $spat = $inv->($pat);
-           if (at.c) { #cleaves
-               if ($sat eq $spat && !at.pur) {
+           my $spat = $inv->($pat) if $pat;
+           my $ateq = $sat eq $spat;
+           if (at.c) { #cleaves away c/sc lines
+           # which are really just patterns to keep embedding higher and hire
+               if ($ateq && !at.pur) {
                    #acum $lv, 'Ec', " a\.m('nothing');";
                    next;
                }
@@ -458,33 +460,10 @@ R_Jz:
            }
            
            #c at out scribe, #c slump to end ## switch up pool of lang > styles
-           my $onlys;
-           if ($spat && $spat ne $sat) { # S-C
-               my $only;
-               do { $only = $_ if !$only && $tryig->($_) } for 's', 's|id';
-               
-               if ($only) {
-                  say "only $only changes:";
-                  #say slim 90, at.s;
-                  #saygr slim 90, pat.s;
-                  $onlys = $only eq 's';
-               }
-               else {
-                  sayyl "pat not same\n"
-                     .slim(170, $sat);
-                  saygr slim(170, $spat);
-                  # !onlys, so if spat.id replaceWith lv.s
-               }
-           }
-           if ($onlys) { # S-C
-               if (pat.id) {
-                   # and ig join
-                   #acum $lv, 'Ec', jsq ' $(%s).html(%s);', '#'.pat.id, at.s;
-               }
-               else {
-                   #sayre "onlys buit no id: j.r  ";
-                   # where is the jointed?
-               }
+           if ($spat && !$ateq) { # S-C
+               # maybe .html if $tryig->('s')
+               # or replaceWith if spat.id or we can find ourselves
+               # for aj.C streams it shall easy...
            }
            
            at.style = join '', map{"$_;"} 
