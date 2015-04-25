@@ -275,7 +275,7 @@ R_Jz:
        STYLE: | #
          {droplist => 'O',
           subhash => 'X',
-          subhash_X_arp => '$cs,$at,$lv,$J,$j',
+          subhash_X_arp => '$com,$cs,$at,$lv,$J,$j',
          }
      Conned: |
        sayre "conned may";
@@ -358,9 +358,13 @@ R_Jz:
                    last if !$tk;
                    #say " $tk, $com, $v, $tks";
 
-                   my @s = $X->{$tk}->($v, $tks, $X, $cs, $at, $lv, $J, $j);
+                   my @s = $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
                    #say "May X $tk returned: ". wdump [@s] if @s;
                }
+               
+               # Some 7 while symmetrical... some 7 of extrude
+               @{at.css} = map { join '', map{"$_;"} 
+               grep{defined} split ';', $_ } @{at.css};
                # at beam
                $pat =
                oJ.bb->{"j.l%at\t".j.cv};
@@ -391,41 +395,52 @@ R_Jz:
               join"            ", map{"$_:".ejson($wa->{$_})}
               sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
            };
+           my $tryig = sub {
+              my $ig = shift;
+              $inv->($pat, $ig) eq $inv->($at, $ig)
+           };
+           my $kinv = sub {
+              my $k = shift;
+              $inv->($at->{$k}) ne $inv->($pat->{$k})
+           };
            
            #c <>
            if (at._joins) {
-               if (1 || $inv->(at._joins) ne $inv->(pat._joins)) {
-                   my @lvs = map { oJ.bb->{$_} } @{at._joins};
-                   say "j.r eats    ".join',   ', map{_.j.l} @lvs;
-                   # or compressions in c, sc
-                   # make them tubes real nice
-                   my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
-                   my @skip = grep {_.at.__ajid2 ne aj.id} @lvs;
-                   if (J.V) {
-                   sayyl "it is aj.id";
-                   saygr "skipped: _.j.r    ".ejson [_.Ec,_.Esc,_.s] for @skip;
-                   sayyl "upd()ed: _.j.r    ".ejson [_.Ec,_.Esc,_.s]  for @live;
-                   }
-                   
-                   #sayre "not all alive were... ".wdump 2, \@skip;
-                   # dif pat._joins, insert/appendAfter with xpath just right
-                   # these are flying blind chunks of html in s
-                   # maybe this is a space we must give up on if its not an easy
-                   # few replace selves, say lv.scon = 1;
-                   # make at.s [ [_.j.r => _.s] ... ] and shake down...
-                   at.s = join '', map { _.s } @lvs;
-                   # assume we got these over time
-                   # these are curving down into things
-                   # hoist into [][][]s
-                   # assume @live phased will sane s/c/sc
-                   map { acum $lv, 'Esc', $_ for @{_.Ec} } @live;
-                   map { acum $lv, 'Esc', $_ for @{_.Esc} } @live;
+               my @lvs = map { oJ.bb->{$_} } @{at._joins};
+               
+               say "j.r eats    ".join',   ', map{_.j.l} @lvs;
+               # or compressions in c, sc
+               # make them tubes real nice
+               my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
+               my @skip = grep {_.at.__ajid2 ne aj.id} @lvs;
+               # can trust lvs c/sc from this aj (pipe/time)
+               # circumference
+               # future should be all self...
+               # el:
+               # C[/:ux, 0.3, {id:$id,cl:$class,etc:whatsit}, [
+               #   C[Jhead, 0.1, ["yt",:h3YO-zOl82g}, [
+               
+               
+               # hoist at.Cs into our at.C t y c sc ssc
+               #
+               # assume @live phased will sane s/c/sc
+               map { acum $lv, 'Esc', $_ for @{_.Ec} } @live;
+               map { acum $lv, 'Esc', $_ for @{_.Esc} } @live;
+               
+               if (J.V) {
+               sayyl "it is aj.id";
+               saygr "skipped: _.j.r    ".ejson [_.Ec,_.Esc,_.s] for @skip;
+               sayyl "upd()ed: _.j.r    ".ejson [_.Ec,_.Esc,_.s]  for @live;
                }
-               else {
-                   sayyl "keeping ".$inv->(at._joins);
-                   saybl wdump [plv.Esc, pat.s];
-                   say wdump [lv.Esc, at.s];
-               }
+               #sayre "not all alive were... ".wdump 2, \@skip;
+               # dif pat._joins, insert/appendAfter with xpath just right
+               # these are flying blind chunks of html in s
+               # maybe this is a space we must give up on if its not an easy
+               # few replace selves, say lv.scon = 1;
+               # make at.s [ [_.j.r => _.s] ... ] and shake down...
+               at.s = join '', map { _.s } @lvs;
+               # assume we got these over time
+               # these are curving down into things
            }
            
            my $sat = $inv->($at);
@@ -450,10 +465,6 @@ R_Jz:
            
            #c at out scribe, #c slump to end ## switch up pool of lang > styles
            my $onlys;
-           my $tryig = sub {
-              my $ig = shift;
-              $inv->($pat, $ig) eq $inv->($at, $ig)
-           };
            if ($spat && $spat ne $sat) { # S-C
                my $only;
                do { $only = $_ if !$only && $tryig->($_) } for 's', 's|id';
@@ -481,11 +492,9 @@ R_Jz:
                    # where is the jointed?
                }
            }
-           my $css = at.css;
-           @$css = map { join '', map{"$_;"} 
-           grep{defined} split ';', $_ } @$css;
+           
            at.style = join '', map{"$_;"} 
-           grep{defined} map { split ';' } @$css;
+           grep{defined} map { split ';' } @{at.css};
            delete at.style if !length at.style;
            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
            #Rw attitle $at $j;
