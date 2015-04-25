@@ -16,6 +16,7 @@ R_Jz:
      aj.Wid || die "not Wid?";
      aj.hol = "H.style/H.name/H.id";
      aj.hitime = hitime;
+     aj.name ||= J.name;
      # also some J.headlev readings for .i
      
      G0.Wh->{aj.Wid} ||= do {
@@ -51,13 +52,16 @@ R_Jz:
      
  - K: blabaj #c
    D: |
-     my $la = {%$aj};
-     say "J ".la.J.id."  ".delete(la.J)->{name};
-     sayyl "W ".delete(la.Wid)."  ".delete(la.id);
-     for my $k (sort keys %$la) {
+     saybl "E    aj.name    aj.yy/".$aj->{aj.yy.'id'}."   (  aj.id";
+     for my $k (sort grep{/^[sc]+/} keys %$aj) {
          my $v = $aj->{$k};
-         say "$k => $v";
-         map { saybl slim $k eq 'c' ? 690 : 90, $_ } @$v if ref $v eq 'ARRAY';
+         if (ref $v eq 'ARRAY') {
+             saybl "$k => ".@$v;
+             map { saybl slim $k eq 'c' ? 690 : 90, $_ } @$v 
+         }
+         else {
+             saybl "$k    => ".slim 80, $v;
+         }
      }
  - K: wu #c cattach anything under ww, trainyard, patch bay, hash out space <body>
    n_D:
@@ -83,6 +87,7 @@ R_Jz:
      up: |
        Rw Jhead;
        Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'});
+       Jn(oot => 0.3, {s=>'oot',pwth=>'J5:oot'});
        #Rw zoybracken;
        Rw J5 wam;
        Rw oJ $J geo &up;
@@ -262,6 +267,7 @@ R_Jz:
      J.name || die;
      J.r && die;
      oJn(J.name, 0.3, {s=>$J,J=>$J}, {});
+     oJ.idJy->{J.id} = $J;
      Rw around $J;
  - K: oJ #c materialise G.oin.oJ.$name or J.oJ.$name
    D: |
