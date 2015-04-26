@@ -284,8 +284,12 @@ R_Jz:
        # v should be somehow, not necessarily # sorta J/1 in gpasm
        
        # think these want to be injected crazily
-       J.bz->("/\t0.9"=>"y","%id"=>J.id,"%tag"=>"ux")
-       if !J.yy.may.noroot;
+       if (!J.yy.may.noroot) {
+           exists J.bb->{"/\t0.9"} ||
+           J.bz->("/\t0.9", "y", "%tag","ux");
+           exists J.bb->{"/%id\t0.9"} ||
+           J.bz->("/%id\t0.9", J.id);
+       }
        
        my $oJ = Rw oJ $J non;
        #  ^ v MMMMMMMMMM
@@ -491,8 +495,8 @@ R_Jz:
            $mat .= ' '.$arp if defined $arp;
            
                    # whole replace 
-           
            lv.s = "<$mat>$s</$tag>";
+           sayyl slim 100, lv.s;
            lv.scon = 1 if lv.s eq plv.s;
            
            if (pat.id) { # S-C
