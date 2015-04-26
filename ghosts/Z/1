@@ -95,7 +95,7 @@ R_Jz:
                " a\.wu(%s, %s, %s);",
                J.id, aj.Wid, $s;
        }
-       say "aj: $aj  aj.id ".ki $aj;
+       say "aj: aj.name aj.yy  aj.Wid ".ki $aj;
        $aj;
      unwu: |
        if (my $J = X.oJ.A) {
@@ -124,22 +124,25 @@ R_Jz:
  - K: wam #c 
    n_D:
      yJ: |
-       'wam mayo clw'
+       'wam mayo clw headi'
      up: | # if the in up, pha wakeups out - all response to editing
        Rw Jhead;
-       my $oJ = Rw oJ $J on;
-       oJn( twang => 0.2 => 'Z/2');
-       Rw up $J:oJ;
-       # bounce different ways...
        
+       my $oJ = Rw oJ $J on filey;
+       
+       oJn( twang => 0.2 => 'Z/2');
+       
+       Rw up $J:oJ;
+       
+       # bounce different ways...
        # hire a Con...
        # requireway, with parameters
        # then patch bay for groups of style to feed in
        # also the other elements present in may...
        # farmed out
        
-       
        my $onl = Rw very $in=0.4 $out=0.9 $J:oJ $tot:J.cv;
+       
        # pin down top level
        # primitives for geo site
        for my $x (@$onl) {
@@ -149,6 +152,39 @@ R_Jz:
        Jn(wamo => 0.2, {s=>'wam',pwth=>'J5:wam'}); 
        
        Rw oJ $J geo &up;
+ - K: filey #c
+   n_D:
+     yJ: |
+       'filey'
+     uplv: |
+       if (!lv.sc) {
+           say "INIT STYLO ".ejson $lv;
+           J.bb->{"j.l%ou\t".j.cv} = 'file' if j.s =~ /^[A-Z0]/;
+           # looking at this J's abilities to upgrade string input with ou thinkg/crawl
+       }
+ - K: on #c
+   n_D:
+     yJ: |
+       J.yl.nojb = 1;
+       'on';
+     up: | # tak tlv J.on into iterations of upgoing clever
+       my $vs = Rw tyv $J $ip:ar.ip;
+       
+       for my $lv (@$vs) {
+           my $j = lv.j;
+           my $k = "j.r xatly";
+           my $coi = Rw pha $J $k;
+           #sayyl " ** *  lv.j.r     =>   lv.j.s\n*  *  ".ki(lv.sc);
+           my $ln = Rw linehum $lv;
+           
+           Rw suck */uplv $J $lv $j;
+           
+           #my $xat = Rw lv_same $lv $x:coi $J;
+           #say "xat" if $xat;
+           coi.end->();
+       }
+       
+       
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      my $J = G.oin ||= do{ # START
@@ -212,31 +248,6 @@ R_Jz:
        Rw thy $J other;
        
        #Rw thy $J youtube;
- - K: on #c
-   n_D:
-     yJ: |
-       J.yl.nojb = 1;
-       'on';
-     up: | # tak tlv J.on into iterations of upgoing clever
-       my $vs = Rw tyv $J $ip:ar.ip;
-       
-       for my $lv (@$vs) {
-           my $j = lv.j;
-           my $k = "j.r xatly";
-           my $coi = Rw pha $J $k;
-           #sayyl " ** *  lv.j.r     =>   lv.j.s\n*  *  ".ki(lv.sc);
-           my $ln = Rw linehum $lv;
-           sayyl ejson $ln;
-           if (!lv.sc) {
-               say "INIT STYLO ".ejson $lv;
-               #if (ln
-               # looking at this J's abilities to upgrade string input with ou thinkg/crawl
-           }
-           #my $xat = Rw lv_same $lv $x:coi $J;
-           #say "xat" if $xat;
-       }
-       
-       
  - K: geo #c
    n_D:
      yJ: |
@@ -277,48 +288,24 @@ R_Jz:
        x    0  0
        zoom 0.1 0.5
        curve 0.3 -0.2
- - K: thy #c rollbar grab
-   D: |
-     my $what = $m->[0];
-     my $wt = Rw wuck $J */$what;
-     $J = ar.oJ || $J;
-     my $M = [];
-     my $nc = 1;
-     for my $k (sort keys %$wt) {
-         my $N = $wt->{$k};
-         
-         my $coi = Rw pha $J $k;
-         
-         my $d = ref $N ? ejson($N) : $N;
-         
-         next if Rw ph_same $J $x:coi $d;
-         
-         if (!ref $N) {
-             $N = [ map { [$_] } split "\n",$N ];
-         }
-         #say " ** waything $what from $k";
-         Rw MyN $N $J;
-          
-         my $y = coi.exactl->();
-         $nc = 0 if !y.same;
-     }
-     $nc
+
  - K: adJ #c embed J
    D: |
-     Rw join/in $J
+     Rw join/in $J;
      J.name || die;
      J.r && die;
      Rw around $J;
  - K: oJ #c materialise G.oin.oJ.$name or J.oJ.$name
    D: |
+     my $oJ = ar.J || G.oin;
+     my $wha = $1 if ar.m && ar.m->[-1] =~ /^&(.+)$/ && pop @{ar.m};
      # squiggly time reconvogation
      # golden mean swivels
-     my $wha = $1 if ar.m && ar.m->[-1] =~ /^&(.+)$/ && pop @{ar.m};
-     my $oJ = ar.J || G.oin;
-     my $and = ar.name || ar.m && ar.m->[0];
-     if ($and) {
-         $oJ = oJ.oJ->{$and} ||
-             Rw JJJJ $J:oJ $name:and;
+     my $m = ar.m||[];
+     my $o = Rw pul + $cs:m name style+;
+     if (o.name) {
+         $oJ = oJ.oJ->{o.name} ||
+             Rw JJJJ $J:oJ $name:o.name $style=o.style;
      }
      if ($wha) {
          Rw $wha $J:oJ;
