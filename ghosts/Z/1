@@ -373,7 +373,7 @@ R_Jz:
      yJ: |
        'toc'
      around: |
-       Rw vortex $J up;
+       Rw vortex $J up $d=4;
      up: | #
        saybl "hi  ".slm 16, R.way.hooks.may;
        # hops, rhythm aesthetics
@@ -384,8 +384,27 @@ R_Jz:
        
        #G.oin.no->(G.oin, "J.name",0.3,{wantime=>8});
        
+       my $oJ = G.oin;
        my $ip = {style=>'wantime'};
-       my @timey = Rw tvo $J:G.oin $ip;
+       my @timey = Rw tvo $J:oJ $ip;
+       my @go;
+       for my $j (@timey) {
+           my $y = j.s;
+           my $x = J.bb->{"j.l%timex\t0.3"};
+           $x += $d; # vortex 4s
+           if ($x >= $y) {
+               $x = 0;
+               push @go, oJ.bb->{"j.l%J\t0.3"};
+           }
+           else {
+               say "ti $x -- $y";
+           }
+           J.bz->("j.l%timex\t0.3" => $x);
+       }
+       for my $J (@go) {
+           say J.name;
+           Rw up $J;
+       }
        my $l = {map{_.l => 1}@timey};
        # make {$v=>1} == $v in ip for hash multitudes
        $ip = {style=>'J',l=>$l};
@@ -396,6 +415,7 @@ R_Jz:
  - K: vortex #c do recur while J as in G.oin
    D: |
      my $m = ar.m||[];
+     my $d = ar.d||4;
      my $o = Rw pul $cs:m way;
      o.way || die;
      
@@ -409,10 +429,10 @@ R_Jz:
      my $bl = {};
      bl.id = 
      G.oin.bb->{$loopr} = 
-         $G->recur(4 => sub {
+         $G->recur($d => sub {
              return Mojo::IOLoop->remove(bl.id)
                  if G.oin.bb->{$loopr} ne bl.id;
-             Rw o.way $J;
+             Rw o.way $J $d;
          });
 
      

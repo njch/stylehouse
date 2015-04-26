@@ -55,9 +55,12 @@ R_Jz:
                my $stys = $tks->{$tk};
                for my $sty (sort keys %$stys) {
                    my $s = $stys->{$sty};
-                   #say " ghave $com $sty => $s";
-                   $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
-                       unless $sty =~ /#/;
+                   my $st = $1 if $sty =~ /^%?(.+)/;
+                   if ($com ne '' && $st ne $com || $tk ne $st) {
+                       $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
+                           unless $sty =~ /#/;
+                   }
+                   
                    push @css, $sty => $s;
                }
            }
