@@ -156,11 +156,24 @@ R_Jz:
      yJ: |
        'filey'
      uplv: |
+       my $sc;
        if (!lv.sc) {
            say "INIT STYLO ".ejson $lv;
-           J.bb->{"j.l%ou\t".j.cv} = 'file' if j.s =~ /^[A-Z0]/;
+           if (j.s =~ /^[A-Z0]/) {
+               sc.ou = 'file';
+               sc.dir = 'ghosts/';
+           }
            # looking at this J's abilities to upgrade string input with ou thinkg/crawl
        }
+       Rw jamsc $J $j $sc;
+ - K: jamsc #c 
+   D: |
+     return if !$sc;
+     for my $k (sort keys %$sc) {
+         my $v = $sc->{$k};
+         J.bb->{"j.l%$k\t".j.cv} = $v;
+     }
+     
  - K: on #c
    n_D:
      yJ: |
@@ -184,16 +197,56 @@ R_Jz:
        }
        
        
+ - K: ou/file #c
+   D: |
+     my $file = x.j.s;
+     defined $file || die 'nofile';
+     if (my $dir = sc.dir) {
+         $dir .= '/' if $dir !~ /\/$/;
+         $file = "$dir$file";
+     }
+     my $ilJ = Rw oJ fil;
+     
+     my $f = Rw around $J:ilJ $file;
+     my @r = Rw around $J:f;
+     say wdump \@r;
+     
+ - K: fil #c
+   n_D:
+     yJ: |
+       'fil'
+     around: |
+       ar.file ?
+          Rw fil/ile
+       :();
+     ile: |
+       my $fid = slm 8, dig $file;
+       my $fJ = J.bb->{"$fid\t0.1"};
+       if ($fJ) {
+           saybl "fil ile $fid: $file open";
+           die 'hashclash' if $file ne J.bb->{"$fid%file\t0.1"};
+       }
+       else {
+           $fJ = Rw oJ $J $name=fid$fid $style=lie;
+           J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
+       }
+       return $fJ;
+ - K: lie #c
+   n_D:
+     yJ: |
+       'lie'
+     around: |
+       "yep";
  - K: zoybracken #c embed ww # a super JJJ
    D: |
-     my $J = G.oin ||= do{ # START
-         my $J = G.oin = Rw JJ $name=join;
-         # could JJJ where suJ self embeds before adJ?
-         Rw adJ $J;
-         #$afterid;
-         $J
-     };
-     Rw up $J;
+     my $J = G.oin;
+     if (!$J) { # START
+         # has to do this instead of JJJ
+         $J = Rw JJJ join;
+     }
+     else {
+         Rw up $J;
+     }
      $J
  - K: join #c
    n_D:
@@ -209,11 +262,12 @@ R_Jz:
        Rw J5 sts;
        # statspastic css compressions:
        Rw J5 occie;
-       # something:
-       Rw J5 zoy;
        # iterations:
        Rw J5 toc;
        
+       Rwyl 0.001 join/bollox;
+     bollox: |
+       Rw J5 zoy;
        my $ip = {style=>'J'};
        sayyl "J.name  J.id  : ".join'     ',
            map {"_.l(".keys %{_.s.bb}}
@@ -287,7 +341,7 @@ R_Jz:
        x    0  0
        zoom 0.1 0.5
        curve 0.3 -0.2
- - K: adJ #c embed J
+ - K: adJ #c embed J & GO AROUND
    D: |
      Rw join/in $J;
      J.name || die;

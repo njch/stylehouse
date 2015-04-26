@@ -2,20 +2,20 @@ R_Jz:
  - K: pul #c pulk # parses list of things from an $m (now $cs) using $m scheme, each could be named in $ar
    D: |
      my $o = {};
-     my $csm = [@{$F[2]->{ar}->{m} || []}];
+     my $csm = [@{$F[2]->{ar}->{m} || []}]; # looks at one ar.m above
      for my $n (@$m) {
          # can type things along
-         my $k = $1 if $n =~ /^(.+)\+?$/;
-         if (defined $ar->{$k}) {
-             $o->{$k} = $ar->{$k};
+         my $acumey = $n =~ s/\+$//;
+         if (defined $ar->{$n}) {
+             $o->{$n} = $ar->{$n};
              next;
          }
          my $v = shift @$csm;
          if ($n =~ s/{\+}// && ref $v eq 'HASH') {
              %$o = (%$o, %$v); # other abouts spill off cv modi
          }
-         elsif ($n =~ s/\+$//) {
-             $o->{$n} = [$v, @$csm];
+         elsif ($acumey) {
+             $o->{$n} ||= [$v, @$csm];
          }
          else {
              $o->{$n} = $v;

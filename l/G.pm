@@ -912,14 +912,13 @@ sub waystacken {
                 unshift @FF, shift @F until $FF[0] && $FF[0] eq $s || !@F;
                 $E .= " - from $_->{name}\n" for shift @FF;
             }
-            $H->error(BATS => $G->Flab($E, $s, [[@FF], [@F]]));
+            warn "BATS: $E     s.point";
         }
         else {
             shift @F;
         }
 
         if ($@) {
-            #$G->Flab("Stack Return Error", $s, $@);
             $s->{Error} = $@;
         }
 
@@ -1052,7 +1051,6 @@ sub w {
             $ne .= "S: ".ki($S)."\n" if $S;
             $ne .= "$@";
             $@ = $ne;
-            $G->Flab("Z Error $@");
             die $@ unless $a->{nodie};
             $@ = "";
         }
@@ -1815,7 +1813,7 @@ sub slim {
 
 sub slm {
     my $s = slim(@_);
-    $s =~ s/\.\.\.$//;
+    $s =~ s/\.\.(\.|\d+)$//;
     $s
 }
 
