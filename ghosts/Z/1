@@ -95,7 +95,6 @@ R_Jz:
                " a\.wu(%s, %s, %s);",
                J.id, aj.Wid, $s;
        }
-       say "aj: aj.name aj.yy  aj.Wid ".ki $aj;
        $aj;
      unwu: |
        if (my $J = X.oJ.A) {
@@ -222,8 +221,8 @@ R_Jz:
      in: |
        my $oJ = $J; # classic 8 stuf
        $J = G.oin;
-       if (my $J = J.bb->{"oJ.name%J\t0.3"}) {
-           Rw join/X $J;
+       if (my $X = J.bb->{"oJ.name%J\t0.3"}) {
+           Rw join/X $J:X;
        }
        Jn(oJ.name, 0.3, {s=>$oJ,J=>$oJ}, {});
        J.idJy->{oJ.id} = $oJ;
@@ -288,7 +287,6 @@ R_Jz:
        x    0  0
        zoom 0.1 0.5
        curve 0.3 -0.2
-
  - K: adJ #c embed J
    D: |
      Rw join/in $J;
@@ -301,11 +299,11 @@ R_Jz:
      my $wha = $1 if ar.m && ar.m->[-1] =~ /^&(.+)$/ && pop @{ar.m};
      # squiggly time reconvogation
      # golden mean swivels
-     my $m = ar.m||[];
-     my $o = Rw pul + $cs:m name style+;
+     my $o = Rw pul + name style+;
      if (o.name) {
-         $oJ = oJ.oJ->{o.name} ||
-             Rw JJJJ $J:oJ $name:o.name $style=o.style;
+         $oJ = oJ.oJ->{o.name} || do {
+             Rw JJJJ $J:oJ $o;
+         };
      }
      if ($wha) {
          Rw $wha $J:oJ;
@@ -314,8 +312,7 @@ R_Jz:
      
  - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up) 
    D: |
-     my $m = ar.m||[];
-     my $o = Rw pul + $cs:m name style+;
+     my $o = Rw pul + name style+;
      my $J = G.oin.bb->{o.name."\t0.3"};
      my $is = " *" if $J;
      sayyl " JJJJJ  o.name$is";
@@ -345,8 +342,8 @@ R_Jz:
  - K: JJ #c make J that most.J = self
    D: |
      my $J = {};
-     my $m = ar.m||[];
-     my $o = Rw pul + $cs:m name style+;
+     my $o = ar.o ||
+         Rw pul + name style+;
      J.name = o.name;
      o.style = join ' ', @{o.style} if ref o.style;
      J.style = o.style || o.name;

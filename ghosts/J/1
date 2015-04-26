@@ -2,11 +2,12 @@ R_Jz:
  - K: pul #c pulk # parses list of things from an $m (now $cs) using $m scheme, each could be named in $ar
    D: |
      my $o = {};
-     my $csm = [@{ar.cs||[]}];
+     my $csm = [@{$F[2]->{ar}->{m} || []}];
      for my $n (@$m) {
          # can type things along
-         if (defined $ar->{$n}) {
-             $o->{$n} = $ar->{$n};
+         my $k = $1 if $n =~ /^(.+)\+?$/;
+         if (defined $ar->{$k}) {
+             $o->{$k} = $ar->{$k};
              next;
          }
          my $v = shift @$csm;
