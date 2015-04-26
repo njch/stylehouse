@@ -81,16 +81,18 @@ hooks:
     " \$('#$id').fadeOut(1000, function() { \$(this).remove(); });";
   Hiwtidy: |
    # could take more clues
-    my $js = " var e = [];
-    \$('#ux > ww').each(function(){
-        e\.push(\$(this).attr('id'));
-    });
-    return e\.join(' ');";
+    my $js =
+      " var e = []; "
+     ."\$('#ux > ww').each(function(){"
+     ." e\.push(\$(this).attr('id'));"
+     ."});"
+     ."return e\.join(' ');";
     
     my $cb = sub { my $m = shift; w Hiwtidy_ja[$m]; };
     H.G w jaw[$js, $cb];
   Hiwtidy_ja: |
     my @W = split ' ', $m;
+    saybl "There: @W";
     @W = grep { !-f "life/W/$_\.i" } @W;
     say "Wild: @W";
     my $js;
