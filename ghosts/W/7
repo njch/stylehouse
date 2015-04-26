@@ -20,6 +20,13 @@ R_Jz:
        # G net tks
        my $seg = ar.m->[0] if ar.m;
        
+       my $sc = ar.sc;
+       if (ar.cs) {
+           die if ar.sc;
+           $sc = {};
+           $sc->{''}->{$_} = ar.cs->{$_} for keys %{ar.cs};
+       }
+       
        die "nonrefsc" if !ref $sc; # parse strings too
        
        # YIN
@@ -267,6 +274,11 @@ C esc:
   - 3.7
   - |
     '-webkit-transform:'.join' ', map {"$_($v->{$_})"} keys %$v;
+ -
+  - tro #
+  - 3.6
+  - |
+    'transform-origin:'.$v
  -
   - rad # radial tr
   - 3.6

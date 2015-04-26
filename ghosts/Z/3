@@ -118,7 +118,7 @@ R_Jz:
          my $v = $sc->{$k};
          # possible extra {} level couples into com '' behind $k
          # com is for many of same styles
-         my $com = ref $v eq 'HASH' ? $k : '';
+         my $com = ref $v eq 'HASH' ? $k : ''; # $k can be ''
          my $t = ref $v eq 'HASH' ? $v : {$k=>$v};
 
          for my $tk (sort keys %$t) {
@@ -282,6 +282,8 @@ R_Jz:
        # YIN
        #sayyl "Maky on J.name: R.way.hooks.may_X";
        # v should be somehow, not necessarily # sorta J/1 in gpasm
+       
+       say "         MAY J.name        J.name MAY" for 1..3;
        
        # think these want to be injected crazily
        if (!J.yy.may.noroot) {
@@ -496,7 +498,6 @@ R_Jz:
            
                    # whole replace 
            lv.s = "<$mat>$s</$tag>";
-           sayyl slim 100, lv.s;
            lv.scon = 1 if lv.s eq plv.s;
            
            if (pat.id) { # S-C
