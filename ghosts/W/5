@@ -24,20 +24,6 @@ R_Jz:
            Rw ix/suro + $x;
        }
        sayre "==\nASH delt ASH ".F_delta."\n==";
- - K: pos #c fo9od
-   n_D:
-     yJ: |
-       qw'pos oci ';
-     curves: |
-       y 0  0.9
-       x 0  0.12
-       spun 0  0.75
-       curve 0.1 -0.024
-       zoom 0 0.3
-       #["curve 0.4" => 0.3],
-     up: | #
-       Rw ii/Jhead $J $cv=0.2;
-       Jn(code => 0.3, {s=>'',cm=>1});
  - K: eyenest #c
    n_D:
      ines: | # inness vines
@@ -189,8 +175,9 @@ R_Jz:
      yJ: |
        'occie'
      around: |
-       # really whenever bored, busied
+       # really whenever bored, busied, and in the 7 of anything big/strange/initial
        G.oin.bz->("J.name%wantime\t0.3" => 40);
+       Rw up;
      up: |
        my $sty_y = sub {
            my $sty = shift;
@@ -215,7 +202,7 @@ R_Jz:
        my @order = reverse sort { a.sc <=> b.sc } @pool;
       
        my $Y = {};
-      
+       
        my $limit = 100;
        my $aimit = @order / 1.2;
        for my $o (@order) {
@@ -232,9 +219,15 @@ R_Jz:
            my $y = $sty_y->($sty);
            $Y->{$y} = $sty;
        }
-      
-       my $wi = keys %$Y;
-       $wi || return sayre "NOTHING TO COMPRESS";
+       
+       my $oY = {reverse %{G.yomp->{$t}}};
+       if (keys %$oY < 500) { # roll time, may appends...
+           $Y->{$_} = $oY->{$_} for keys %$oY;
+       }
+       if (!keys %$Y) {
+           return sayre "NOTHING TO COMPRESS";
+       }
+       
        G.yomp->{$t} = {reverse %$Y};
        
        my $oJ = Rw oJ sts;
@@ -256,6 +249,7 @@ R_Jz:
        my $is = join "\n", map {
           (/ /?'':'.')."$_ { $Y->{$_} }"
        } sort keys %$Y;
+       $is .= "\n";
        
        if ($was ne $is) {
            Jn($t => 0.3 => $is, {st=>1});

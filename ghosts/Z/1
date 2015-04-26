@@ -11,12 +11,11 @@ hooks:
 R_Jz:
  - K: Em #c send love
    D: |
-     my $J = Rw oJ wu;
      # aj.id is the J zipped .c to E in one, stream?
      aj.Wid || die "not Wid?";
      aj.hol = "H.style/H.name/H.id";
      aj.hitime = hitime;
-     aj.name ||= J.name;
+     aj.name ||= aj.J.name;
      # also some J.headlev readings for .i
      
      G0.Wh->{aj.Wid} ||= do {
@@ -32,9 +31,7 @@ R_Jz:
          aj.J;
      };
 
-     Rw up $J $aj;
-     #Jn(aj.Wid, 0.2, {tsup=>'1'});
-     #Jn(aj.Wid.'/'.aj.id, 0.3,
+     Rw J5 wu $aj;
      
      aj.y ||= 'J';
      aj.yy = 'W';
@@ -67,13 +64,47 @@ R_Jz:
    n_D:
      yJ: |
        'wu'
-     up: |
-       if (my $s = delete aj.s) {
+     around: |
+       J.stup ||= Rw wu/wup;
+       ar.aj ?
+          Rw wu/ajwu
+       :
+       ar.X ?
+          Rw wu/unwu
+       :();
+     wup: | # non self id wirdness
+       J.stup = 1; # as we Em->wu
+       Jn('/', 0.9, {}, "{id:J.id,tag:ww,ab:100,zi:1,bgh:33.5.3.1}");
+       my $ip = {l=>'/'};
+       say " _.r               _.s"for
+       Rw tvo $J $ip;
+       
+       my $aj = Rw may $J $catj=1 $ip;
+       if (my $s = delete aj.s) { # OUR ww/ a W multiplex of Ws
+           unshift @{aj.c}, jsq " \$('#ux').append(%s);", $s;
+       }
+       Rw Em $aj;
+       $aj;
+     ajwu: |
+       # transact aj into W...
+       # a.wu is blob kinda a.o
+       #Jn(aj.Wid, 0.2, {tsup=>'1'});
+       #Jn(aj.Wid.'/'.aj.id, 0.3,
+       if (my $s = delete aj.s) { # first timey, otherwise C knows all
            unshift @{aj.c}, jsq 
                " a\.wu(%s, %s, %s);",
-               G.oin.id, aj.Wid, $s;
+               J.id, aj.Wid, $s;
        }
+       say "aj: $aj  aj.id ".ki $aj;
        $aj;
+     unwu: |
+       if (my $J = X.oJ.A) {
+           Rw around $J $X;
+       }
+       else {
+           die "kill no oJ: X.name X.id";
+       }
+       
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
      yJ: |
@@ -88,7 +119,6 @@ R_Jz:
        Rw Jhead;
        Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'});
        Jn(oot => 0.3, {s=>'oot',pwth=>'J5:oot'});
-       #Rw zoybracken;
        Rw J5 wam;
        Rw oJ $J geo &up;
  - K: wam #c 
@@ -136,33 +166,33 @@ R_Jz:
        G.oin = $J;
        'join clw'
      up: |
-       # to communicate
-       J.wwcup ||= 
-         Rw join/wwcup $J;
+       # G.oin root ww:
+       Rw J5 wu;
+       # compressions:
        Rw J5 scr;
+       # styles:
        Rw J5 sts;
+       # statspastic css compressions:
        Rw J5 occie;
+       # something:
        Rw J5 zoy;
+       # iterations:
        Rw J5 toc;
        
        my $ip = {style=>'J'};
-       sayyl "JOIN join : _.l ".keys %{_.s.bb} for
+       sayyl "J.name  J.id  : ".join'     ',
+           map {"_.l(".keys %{_.s.bb}}
            Rw tvo $J $ip;
-           
-     wwcup: |
-       Jn('/', 0.9, {}, "{id:J.id,tag:ww,ab:100,zi:1,bgh:33.5.3.1}");
-       my $ip = {l=>'/'};
-       say _.r for
-       Rw tvo $J $ip;
+     X: |
+       my $oJ = $J; # classic 8 stuf
+       $J = G.oin;
+       my $is = J.bb->{"oJ.name%J\t0.3"};
+       warn "not latest oJ.name... continuing delete" if $is ne $oJ;
        
-       my $aj = Rw may $J $catj=1 $ip;
-       if (my $s = delete aj.s) {
-           unshift @{aj.c}, jsq " \$('#ux').append(%s);", $s;
-           #" \$('#' + \$('#$afterid').parent().attr('id') + ' ww').remove();",
-           #" \$('#$afterid').after(".ejson($s).");"
-       }
-       Rw Em $aj;
-       $aj;
+       Rw J5 wu $X:oJ;
+       Rw delbbl $J $l:oJ.name;
+       
+       sayyl "delete is.name";
  - K: scr #c 
    n_D:
      yJ: |
@@ -298,7 +328,8 @@ R_Jz:
      sayyl " JJJJJ  o.name$is";
      if ($J) {
          # resync style
-        Rw around $J;
+         delete ar.m;
+         Rw around + $J;
      }
      else {
         $J = Rw JJJ;
