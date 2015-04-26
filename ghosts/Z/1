@@ -207,6 +207,7 @@ R_Jz:
      }
      my $fil = Rw J5 fil $file;
      my $lie = Rw around $J:fil $file;
+     
      my @r = Rw around $J:lie;
      say wdump \@r;
      
@@ -220,22 +221,20 @@ R_Jz:
        :();
      ile: |
        my $fid = slm 8, dig $file;
-       $fJ = Rw oJ $J $name=fid$fid $style=lie;
        my $fJ = J.bb->{"$fid\t0.1"};
-       if ($fJ) {
-           saybl "fil ile $fid: $file open";
-           die 'hashclash' if $file ne J.bb->{"$fid%file\t0.1"};
-       }
-       else {
+       if (!$fJ) {
+           $fJ = Rw oJ $J $name=fid$fid $style=lie;
+           fJ.bz->("file\t0.1" => $file);
            J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
        }
-       return $fJ;
+       $fJ
  - K: lie #c
    n_D:
      yJ: |
        'lie'
      around: |
-       "hoo hoo";
+       return _.r for
+         Rw tvo;
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      my $J = G.oin;
