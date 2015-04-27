@@ -222,25 +222,74 @@ R_Jz:
        my $fid = slm 8, dig $file;
        my $fJ = J.bb->{"$fid\t0.1"};
        if (!$fJ) {
-           $fJ = Rw oJ $J $name=fid$fid $style=lie;
+           $fJ = Rw oJ $J $name=lie.$fid $style=lie;
            fJ.bz->("file\t0.1" => $file);
            J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
        }
        $fJ
+ - K: flu #c creativity is a disease
+   n_D:
+     yJ: |
+       'flu'
+     around: |
+       ar.cJ ?
+           Rw flu/cod
+       :();
+     cod: |
+       my $ent = ejson[cJ.style,$name];
+       my $h = slm 6, dig $ent;
+       my $oJ = G.drop.flows->{$h};
+       return $oJ if $oJ;
+       $oJ = Rw oJ $J $name=flz.$h;
+       Rw thy $oJ $J:cJ flows/$name
+       ||
+       Rw flaginate $J:oJ $oJ:J;
+       $oJ
+       
  - K: perc #c
    D: |
      my $vs = Rw tyv $J;
      for my $lv (@$vs) {
-     
+         my $j = lv.j;
+         #my $coi = Rw pha $J $k=j.r;
+         #my $xat = Rw lv_same $lv $x:coi $J;
+         #my $y = coi.exactl->();
+         sayyl "j.r   is j.s";
      }
      
+ - K: flow #c K-flow
+   D: |
+     my $name = $m->[0];
+     my $uJ = Rw J5 flu;
+     my $oJ = Rw up $J:uJ $cJ:J $name;
+     
+     die wdump $oJ;
+     #fol
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     #fol
  - K: lie #c
    n_D:
      yJ: |
        'lie'
+     flows:
+       folate: |
+         filesitu 0.1
+         fileopen 0.2
+         filejam 0.3
+         filesow
      around: |
        J.cv ||= 0.3;
-       Rw perc $J;
+       
+       Rw flow $J folate;
+       
        return map { "_.r           _.s" }
        Rw tvo;
  - K: zoybracken #c embed ww # a super JJJ
@@ -348,7 +397,6 @@ R_Jz:
        x    0  0
        zoom 0.1 0.5
        curve 0.3 -0.2
-
  - K: oJ #c materialise G.oin.oJ.$name or J.oJ.$name
    D: |
      my $oJ = ar.J || G.oin;
@@ -407,6 +455,7 @@ R_Jz:
          Rw pul + name style+;
      J.name = o.name;
      o.style = join ' ', @{o.style} if ref o.style;
+     delete o.name if o.name =~ /\./;
      J.style = o.style || o.name;
      J.style = [split /\s+/, J.style] if !ref J.style;
      J.most.J = $J;
@@ -415,10 +464,7 @@ R_Jz:
      
      Rw suJ $J;
      
-     
      Rw Jup $J;
-     
-     sayyl "  J J   J.name";
      
      $J
  - K: suJ #c bbdomining for any sorta J
@@ -438,7 +484,7 @@ R_Jz:
      # 4
  - K: Jup #c behaviouriser (lingo)
    D: |
-     push @{J.style}, J.name if !grep{$_ eq J.name} @{J.style};
+     push @{J.style}, J.name if J.name !~ /\./ && !grep{$_ eq J.name} @{J.style};
      J.yt = {};
      my $exp;$exp = sub {
          my $s = shift;
