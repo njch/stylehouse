@@ -205,11 +205,10 @@ R_Jz:
          $dir .= '/' if $dir !~ /\/$/;
          $file = "$dir$file";
      }
-     my $fil = Rw J5 fil $file;
-     my $lie = Rw around $J:fil $file;
-     
-     my @r = Rw around $J:lie;
-     say wdump \@r;
+     my $J = Rw J5 fil;
+     my $fJ = Rw around $J $file;
+     my @o = Rw around $J:fJ;
+     say "FIL:". wdump \@o;
      
  - K: fil #c
    n_D:
@@ -228,13 +227,22 @@ R_Jz:
            J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
        }
        $fJ
+ - K: perc #c
+   D: |
+     my $vs = Rw tyv $J;
+     for my $lv (@$vs) {
+     
+     }
+     
  - K: lie #c
    n_D:
      yJ: |
        'lie'
      around: |
-       return _.r for
-         Rw tvo;
+       J.cv ||= 0.3;
+       Rw perc $J;
+       return map { "_.r           _.s" }
+       Rw tvo;
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      my $J = G.oin;
@@ -263,7 +271,7 @@ R_Jz:
        # iterations:
        Rw J5 toc;
        
-       Rwyl join/bollox;
+       Rwyl 0.0001 join/bollox;
      bollox: |
        Rw J5 zoy;
        
@@ -340,12 +348,7 @@ R_Jz:
        x    0  0
        zoom 0.1 0.5
        curve 0.3 -0.2
- - K: adJ #c embed J & GO AROUND
-   D: |
-     Rw join/in $J;
-     J.name || die;
-     J.r && die;
-     Rw around $J;
+
  - K: oJ #c materialise G.oin.oJ.$name or J.oJ.$name
    D: |
      my $oJ = ar.J || G.oin;
@@ -363,20 +366,24 @@ R_Jz:
      }
      $oJ;
      
+ - K: adJ #c embed J & GO AROUND
+   D: |
+     Rw join/in $J;
+     J.name || die;
+     J.r && die;
+     ar.noround ||
+     Rw around $J;
  - K: J5 #c & Jmod cs like, resume/resync by name, JJJ underneath, hits */around (update or up) 
    D: |
      my $o = Rw pul + name style+;
      my $J = G.oin.bb->{o.name."\t0.3"};
      my $is = " *" if $J;
+     
      sayyl " JJJJJ  o.name$is";
-     if ($J) {
-         # resync style?
-         delete ar.m;
-         Rw around + $J;
-     }
-     else {
-        $J = Rw JJJ;
-     }
+     $J ||= Rw JJJ $o;
+     
+     Rw around + $J;
+     
      $J
  - K: JJJJ #c from $J above, emb   J.oJ.$name = $J2   and   J2.Jo = $J
    D: |
@@ -392,6 +399,7 @@ R_Jz:
      my $J = Rw JJ;
      sayyl " J J J  J.name";
      Rw adJ $J;
+     $J
  - K: JJ #c make J that most.J = self
    D: |
      my $J = {};

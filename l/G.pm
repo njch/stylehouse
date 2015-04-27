@@ -733,7 +733,12 @@ sub Duck {
             );
             $DOOF .= " w"." $D->{point}  ".join(", ", keys %$ar)."\n";
 
-            $DOOF = "$D->{K}\n" if $D->{K} ne 'Dᣝ';
+            if ($D->{K} ne 'Dᣝ') {
+                $DOOF = "$D->{K}";
+                $DOOF .= "  $D->{inter}" if $D->{inter};
+                $DOOF .= "\n";
+            }
+
 
 
             if ($first) {
@@ -900,7 +905,6 @@ sub waystacken {
     push @{ $F[0]->{undies} ||= [] }, $s if @F;
     unshift @F, $s;
     $s->{F} = [@F],
-    $G->ob("\\", $s);
     my $unway = sub {
         my @FF;
         if ($F[0] ne $s) {
@@ -927,7 +931,6 @@ sub waystacken {
         }
 
         my $te = $@; $@ = "";
-        $G->ob("/", $s);
         $@ = $te;
         $s
     };
@@ -1118,8 +1121,7 @@ sub inter {
     my $thing = shift;
     my $ki = ki($thing);
     $ki =~ s/^\s+//;
-    $F[1]->{inter} ||= ".";
-    $F[1]->{inter} .= "\n -{".$ki."}\n";
+    $F[1]->{inter} .= " -{".$ki."}\n";
 }
 
 sub intr {

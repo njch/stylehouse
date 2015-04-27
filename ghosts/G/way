@@ -246,7 +246,7 @@ Ds:
         
         
         $D
-  - K: Duck #c
+  - K: Duck #c do fuckup printout
     D: |
         my $D = shift;
         my $evs = D.Ds.evs;
@@ -261,7 +261,12 @@ Ds:
                 );
                 $DOOF .= " w"." D.point  ".join(", ", keys %$ar)."\n";
                 
-                $DOOF = "D.K\n" if D.K ne 'Dᣝ';
+                if (D.K ne 'Dᣝ') {
+                    $DOOF = "D.K";
+                    $DOOF .= "  D.inter" if D.inter;
+                    $DOOF .= "\n";
+                }
+                
                 
                 
                 if ($first) {
@@ -322,7 +327,7 @@ Ds:
                 else {
                     die $@;
                 }
-  - K: Duckling #c
+  - K: Duckling #c the code look
     D: |
         my ($line, $code, $D) = @_;
         
@@ -421,7 +426,6 @@ Ds:
             push @{ $F[0]->{undies} ||= [] }, $s if @F;
             unshift @F, $s;
             $s->{F} = [@F],
-            $G->ob("\\", $s);
             my $unway = sub {
                 my @FF;
                 if ($F[0] ne $s) {
@@ -448,7 +452,6 @@ Ds:
                 }
                 
                 my $te = $@; $@ = "";
-                $G->ob("/", $s);
                 $@ = $te;
                 $s
             };
@@ -634,8 +637,7 @@ Ds:
       my $thing = shift;
       my $ki = ki($thing);
       $ki =~ s/^\s+//;
-      $F[1]->{inter} ||= ".";
-      $F[1]->{inter} .= "\n -{".$ki."}\n";
+      $F[1]->{inter} .= " -{".$ki."}\n";
   - K: intr #c as above... but on D
     style: func
     D: |

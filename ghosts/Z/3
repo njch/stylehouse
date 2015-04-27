@@ -179,7 +179,7 @@ R_Jz:
                      my $cs = {};
                      $cs->{$_} = delete $tks->{$_} for keys %$tks;
                      $flying = 0;
-                     if (X.FLYING) {
+                     if (ar.X.FLYING) {
                          return 'FLYING', '', $cs, $tks;
                      }
                      else {
@@ -306,8 +306,7 @@ R_Jz:
        #  ^ v MMMMMMMMMM aj ejector
        my $aj = Rw up $J:oJ;
        
-       my $ip = ar.ip || {};
-       my $vs = Rw tyv $J $ip;
+       my $vs = Rw tyv $J $ip:ar.ip;
        # puts /s backwards and last:
        my $gs = Rw ordlv $J $vs;
        
@@ -316,7 +315,7 @@ R_Jz:
        for my $lv (@$gs) {
            push @s, $lv;
            my $j = lv.j;
-           die "reffy j.s in j.l ON J.name".wdump 3, [$ip, $j] if ref j.s;
+           die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
            
            my $k = "j.r xatly";
            my $coi = Rw pha $J:oJ $k;
