@@ -1,4 +1,35 @@
 R_Jz:
+
+ - K: filey #c note uplv for the from $lv, projecting flavour
+   n_D:
+     yJ: |
+       'filey'
+     uplv: |
+       my $sc;
+       if (!lv.sc) {
+           say "INIT STYLO ".ejson $lv;
+           if (j.s =~ /^[A-Z0]/) {
+               sc.ou = 'file';
+               sc.dir = 'ghosts/';
+           }
+           # looking at this J's abilities to upgrade string input with ou thinkg/crawl
+       }
+       Rw jamsc $J $j $sc;
+ - K: ou/file #c
+   D: |
+     my $file = x.j.s;
+     defined $file || die 'nofile';
+     if (my $dir = sc.dir) {
+         $dir .= '/' if $dir !~ /\/$/;
+         $file = "$dir$file";
+     }
+     my $lJ = Rw J5 fil;
+     my $fJ = Rw around $J:lJ $file;
+     say ki $fJ;
+     my @o = Rw around $J:fJ;
+     
+     say "Around say: ". wdump \@o;
+     
  - K: fil #c index of vectors about files
    n_D:
      yJ: |
@@ -16,6 +47,23 @@ R_Jz:
            J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
        }
        $fJ
+ - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
+   n_D:
+     yJ: |
+       'lie'
+     flows:
+       folate: |
+         file/situ 0.1
+         file/open 0.2
+         file/jam 0.3
+         yaam 0.9
+     around: |
+       J.cv ||= 0.3;
+       
+       Rw flow $J folate;
+       
+       return map { "_.r           _.s" }
+       Rw tvo;
  - K: flu #c index: creativity is a disease - hang them on G.drop
    n_D:
      yJ: |
@@ -30,8 +78,8 @@ R_Jz:
        #return G.drop.flows->{$h} ||= do {
            my $oJ = Rw oJ $J $name=flz.$h $style=flz;
            
-           Rw thy $oJ $J:cJ flows/$name
-           || 1;
+           Rw thy $oJ $J:cJ flows/$name;
+           # ^nc ||
            Rw around $J:oJ;
            $oJ;
        #};
@@ -40,7 +88,9 @@ R_Jz:
      yJ: |
        'flz'
      around: |
-       sayyl "Around of J.name !" for 1..5;
+       sayyl "Around of J.name !" for 1..2;
+       my $oJ = Rw oJ $J way;
+       
        my $vs = Rw tyv $J;
        for my $lv (@$vs) { 
            my $j = lv.j;
@@ -56,7 +106,11 @@ R_Jz:
      my $uJ = Rw J5 flu;
      my $oJ = Rw around $J:uJ $cJ:J $name;
      
-     sayre "oJ.name !";
+     sayre "oJ.name !\n oJ.way";
+     
+     sayyl "_.r        => _.s" for
+     Rw tvo $J;
+     return "BOLLOX";
      #fol
      
      
@@ -68,47 +122,4 @@ R_Jz:
      
      
      #fol
- - K: ou/file #c
-   D: |
-     my $file = x.j.s;
-     defined $file || die 'nofile';
-     if (my $dir = sc.dir) {
-         $dir .= '/' if $dir !~ /\/$/;
-         $file = "$dir$file";
-     }
-     my $J = Rw J5 fil;
-     my $fJ = Rw around $J $file;
-     my @o = Rw around $J:fJ;
-     say "FIL:". wdump \@o;
-     
- - K: filey # note uplv for the from $lv, projecting flavour
-   n_D:
-     yJ: |
-       'filey'
-     uplv: |
-       my $sc;
-       if (!lv.sc) {
-           say "INIT STYLO ".ejson $lv;
-           if (j.s =~ /^[A-Z0]/) {
-               sc.ou = 'file';
-               sc.dir = 'ghosts/';
-           }
-           # looking at this J's abilities to upgrade string input with ou thinkg/crawl
-       }
-       Rw jamsc $J $j $sc;
- - K: lie #c
-   n_D:
-     yJ: |
-       'lie'
-     flows:
-       folate: |
-         file/situ 0.1
-         file/open 0.2
-         file/jam 0.3
-     around: |
-       J.cv ||= 0.3;
-       
-       Rw flow $J folate;
-       
-       return map { "_.r           _.s" }
-       Rw tvo;
+
