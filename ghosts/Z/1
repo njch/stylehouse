@@ -74,7 +74,7 @@ R_Jz:
        :();
      wup: | # non self id wirdness
        J.stup = 1; # as we Em->wu
-       Jn('/', 0.9, {}, "{id:J.id,tag:ww,ab:100,zi:1,bgh:33.5.3.1}");
+       Jn('/', 0.9, {}, "{id:J.id,tag:ww,poi:0,ab:100,bgh:33.5.3.1}");
        my $ip = {l=>'/'};
        say " _.r               _.s"for
        Rw tvo $J $ip;
@@ -120,7 +120,9 @@ R_Jz:
        Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'});
        Jn(oot => 0.3, {s=>'oot',pwth=>'J5:oot'});
        
-       Rwyl 0 suck */upon/H.name $J;
+       0->timer(0,sub{
+           Rw suck */upon/H.name $J;
+       });
        
        Rw oJ $J geo &up;
      upon:
@@ -216,7 +218,7 @@ R_Jz:
      my @o = Rw around $J:fJ;
      say "FIL:". wdump \@o;
      
- - K: fil #c
+ - K: fil #c index of vectors about files
    n_D:
      yJ: |
        'fil'
@@ -242,21 +244,24 @@ R_Jz:
            Rw flu/cod
        :();
      cod: |
-       sayre "Her 09i 93i9" for 1..3;
+       # look at this word in the context of yay style
        my $h = slm 6, dig ejson[cJ.style,$name];
        
-       my $oJ = G.drop.flows->{$h};
-       return $oJ if $oJ;
-       
-       $oJ = Rw oJ $J $name=flz.$h $style=flz;
-       
-       Rw thy $oJ $J:cJ flows/$name
-       ||
-       sayyl("Flaginate!") &&
-       Rw flaginate $J:oJ $oJ:J;
-       
-       $oJ
-       
+       return G.drop.flows->{$h} ||= do {
+           my $oJ = Rw oJ $J $name=flz.$h $style=flz;
+           
+           Rw thy $oJ $J:cJ flows/$name
+           ||
+           Rw around $J:oJ;
+           $oJ;
+       };
+ - K: flz #c created
+   n_D:
+     yJ: |
+       'flz'
+     around: |
+       Rw perc;
+  
  - K: perc #c
    D: |
      my $vs = Rw tyv $J;
@@ -274,7 +279,7 @@ R_Jz:
      my $uJ = Rw J5 flu;
      my $oJ = Rw around $J:uJ $cJ:J $name;
      
-     die ki $oJ;
+     sayre "oJ.name !";
      #fol
      
      
@@ -330,7 +335,7 @@ R_Jz:
          # compressions:
          Rw J5 scr;
          # styles:
-         Rw J5 sts;
+         Rw J5 somestyles;
        C: |
          # statspastic css compressions:
          Rw J5 occie;
