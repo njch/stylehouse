@@ -138,19 +138,25 @@ R_Jz:
      
  - K: ordlv #c
    D: |
+       my @first;
        my @tops;
-       @$vs = grep{defined} map {
-           if (_.j.l =~ /\/$/) { # make envelope aft
+       @$vs = grep{defined} map { # COMPRESSION v
+           my $v;
+           if (J.oy.ordlv.slashtopi && _.j.l =~ /\/$/) { # make envelope aft
                push @tops, $_;
-               $_ = undef;
-           } # COMPRESSION v
-           elsif (_.j.l eq 'K' && J.bb->{"name 0.1"} eq _.j.s
-               && _.j.s ne J.bb->{"K 0.2"}) {
-               $_ = undef;
            }
-           else {}
-           $_    
+           elsif (0 || _.j.l eq 'K' && J.bb->{"name 0.1"} eq _.j.s
+               && _.j.s ne J.bb->{"K 0.2"}) {
+           }
+           elsif (J.oy.ordlv.ninefirst && _.j.cv =~ /9/) {
+               push @first, $_;
+           }
+           else {
+               $v = $_;
+           }
+           $v
        } @$vs;
+       unshift @$vs, @first;
        push @$vs,
          reverse
          sort { a.j.cv <=> b.j.cv }
@@ -277,6 +283,8 @@ R_Jz:
      $d = dig $d;
      #sayyl "izzz $d   ". wdump $ln if x.name =~ /^geo things/;
      Rw ph_same $J $x $d;
+ - K: chi #c
+   
  - K: C_may #c
    n_D:
      el:
@@ -294,7 +302,7 @@ R_Jz:
        
        say "         MAY J.name        J.name MAY" for 1..3;
        
-       # think these want to be injected crazily
+       # 0.1        think these want to be injected crazily
        if (!J.yy.may.noroot) {
            exists J.bb->{"/\t0.9"} ||
            J.bz->("/\t0.9", "y", "%tag","ux","%tt"=>J.name);
@@ -308,7 +316,7 @@ R_Jz:
        
        my $vs = Rw tyv $J $ip:ar.ip;
        # puts /s backwards and last:
-       my $gs = Rw ordlv $J $vs;
+       my $gs = Rw ordlv $J $vs $slashtopi=1;
        
        my @s; # heading
        

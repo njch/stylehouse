@@ -170,13 +170,15 @@ R_Jz:
      Rw iM + $oM:M $k:what;
  - K: thy #c rollbar grab
    D: |
-     my $what = $m->[0];
+     my $o = Rw pul + pin;
+     o.pin ||= ar.p;
      my $wt = ar.anon ?
-         Rw wuck $J $what
+         Rw wuck $J $pin:o.pin
      :
-         Rw wuck $J */$what;
+         Rw wuck $J */o.pin;
+     warn "no o.pin          for J.name" if !$wt;
+     
      $J = ar.oJ || $J;
-     warn "no $what          for J.name" if !$wt;
      my $nc = 1;
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};

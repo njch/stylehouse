@@ -118,13 +118,11 @@ R_Jz:
                
                ($p) = shift @a;
                
-               return undef if !ref $h;
-               
-               if (exists $h->{$p}) { 
-                   $h = $h->{$p};
-                   return $doig->([@a],$h,"$s/$p");
-               }
-               else {
+               return undef if !ref $h;#ne 'HASH';
+                   if (exists $h->{$p}) { 
+                       $h = $h->{$p};
+                       return $doig->([@a],$h,"$s/$p");
+                   }
                    if ($p =~ s/\*/.+/sg) {
                        my @ke = grep { /^$p$/ } keys %$h;
                        my @wu;
@@ -137,7 +135,6 @@ R_Jz:
                    else {
                        return undef;
                    }
-               }
            };
            
            grep {defined} $doig->([@path], $h, '');

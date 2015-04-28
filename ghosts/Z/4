@@ -53,10 +53,10 @@ R_Jz:
        'lie'
      flows:
        folate: |
-         file/situ 0.1
-         file/open 0.2
+         file/stat 0.1
+         file/read 0.2
          file/jam 0.3
-         yaam 0.9
+         ya/am 0.9
      around: |
        J.cv ||= 0.3;
        
@@ -64,48 +64,25 @@ R_Jz:
        
        return map { "_.r           _.s" }
        Rw tvo;
- - K: flu #c index: creativity is a disease - hang them on G.drop
-   n_D:
-     yJ: |
-       'flu'
-     around: |
-       ar.cJ ?
-           Rw flu/cod
-       :();
-     cod: |
-       # look at this word in the context of yay style
-       my $h = slm 6, dig ejson[cJ.style,$name];
-       #return G.drop.flows->{$h} ||= do {
-           my $oJ = Rw oJ $J $name=flz.$h $style=flz;
-           
-           Rw thy $oJ $J:cJ flows/$name;
-           # ^nc ||
-           Rw around $J:oJ;
-           $oJ;
-       #};
- - K: flz #c created
-   n_D:
-     yJ: |
-       'flz'
-     around: |
-       sayyl "Around of J.name !" for 1..2;
-       my $oJ = Rw oJ $J way;
-       
-       my $vs = Rw tyv $J;
-       for my $lv (@$vs) { 
-           my $j = lv.j;
-           my $coi = Rw pha $J $k=j.r;
-           #my $xat = Rw lv_same $lv $x:coi $J;
-           sayyl "j.r   is j.s";
-           my $y = coi.exactl->();
-       }
-       
-       
-  
  - K: file #c
    n_D:
-     situ: |
-       
+     situ: |# lv = 0.1s
+       #-
+       # - fileis
+       # - 4
+       # - |
+          at.is_file = -f j.s;
+          my @s = stat j.s;
+          at.size = $s[7];
+          at.mtime = $s[9];
+          at.ctime = $s[10];
+     read: | # lv = 0.2s
+       #-
+       # - ope
+       # - 4
+       # - |
+          oJn('read' => 0.3 => read_file(j.s);
+     jam: |
  - K: flow #c K-flow
    D: |
      my $name = $m->[0];
@@ -128,4 +105,142 @@ R_Jz:
      
      
      #fol
+ - K: flu #c index: creativity is a disease - hang them on G.drop
+   n_D:
+     yJ: |
+       'flu'
+     around: |
+       ar.cJ ?
+           Rw flu/cod
+       :();
+     cod: |
+       # look at this word in the context of yay style
+       my $h = slm 6, dig ejson[cJ.style,$name];
+       #return G.drop.flows->{$h} ||= do {
+           my $oJ = Rw oJ $J $name=flz.$h $style=flz;
+           
+           Rw thy $oJ $J:cJ flows/$name;
+           # ^nc ||
+           Rw around $J:oJ;
+           $oJ;
+       #};
+ - K: flz #c created way jumping into vector, stringing to paths
+   n_D:
+     yJ: |
+       'flz'
+     around: |
+       sayyl "Around of J.name !" for 1..2;
+       my $oJ = Rw oJ $J way;
+       
+       my $vs = Rw tyv $J;
+       my $gs = Rw ordlv $J $vs $ninefirst=1;
+       
+       for my $lv (@$vs) { 
+           my $j = lv.j;
+           my $coi = Rw pha $J $k=j.r;
+           #my $xat = Rw lv_same $lv $x:coi $J;
+           Rw thi $p:j.t $J;
+           # makes a bunch of coils around lvs
+           # so one set of styles runs at a time
+           # grabs a template... 0.9
+           # 0.8 is the join to the template from the most-sorted Carbonja 0.7
+           sayyl "j.r   is j.s";
+           my $y = coi.exactl->();
+       }
+       
+       
+  
+ - K: ya #c
+   n_D:
+     am:
+      -
+       - whole
+       - 0.1
+       - |
+         my $vs = Rw tyv $J;
+         my $gs = Rw ordlv $J $vs;
+         
+         
+
+ - K: C _fyl #c
+   n_D:
+     el:
+       STYLE: | #
+         {droplist => 'O',
+          subhash => 'X',
+          subhash_X_arp => '$com,$cs,$at,$lv,$J,$j',
+         }
+
+     u: |
+       # oJ
+       
+       # 3
+       my $vs = Rw tyv $J $ip:ar.ip;
+       # 3.1 puts /s backwards and last:
+       my $gs = Rw ordlv $J $vs;
+       
+       # lvitate
+       for my $lv (@$gs) {
+           my $j = lv.j;
+           
+           my $coi = Rw pha $J:oJ $k=j.r-xatly;
+           # Rw lv_same $lv $x:coi $J:oJ; # ends coi
+           # know style's styles
+           # so
+           
+           
+           my $at;
+           my $pat;
+           my $plv;
+           if (!$xat) {
+               $at = {css=>[]};
+               at.s = j.s;
+               # may be creating, overhead thought
+               at.__ajid1 = aj.id;
+               
+               my ($tks, $cs, $it) = Rw sit may O X $lv;
+               
+               # sciterate, can add to $tks
+               while (1) {
+                   my ($tk, $com, $v, $tks) = $it->();
+                   last if !$tk;
+                   #say " $tk, $com, $v, $tks";
+
+                   $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
+                   #say "May X $tk returned: ". wdump [@s] if @s;
+               }
+               # 5.6
+               # lv/at cache
+               
+               my $y = coi.end->();
+               my $ex = Rw ph_exactl $J:oJ $y;
+           }
+           else {
+               $pat = oJ.bb->{"j.l%at\t".j.cv};
+               $plv = oJ.bb->{"j.l%lv\t".j.cv};
+               oJ.bb->{"j.l%lv\t".j.cv} = $lv;
+               $at = $pat;
+           }
+           
+           # gets self aware in waves
+           # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
+           at.__ajid2 = aj.id;
+           lv.at = $at;
+           
+           my $inv = sub {
+              my $wa = shift;
+              my $ig = shift;
+              return ejson $wa if ref $wa eq 'ARRAY';
+              join"            ", map{"$_:".ejson($wa->{$_})}
+              sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
+           };
+           my $tryig = sub {
+              my $ig = shift;
+              $inv->($pat, $ig) eq $inv->($at, $ig)
+           };
+           my $kinv = sub {
+              my $k = shift;
+              $inv->($at->{$k}) ne $inv->($pat->{$k})
+           };
+           
 
