@@ -771,7 +771,7 @@ sub Duck {
             }
 
             if (!$first) {
-                my $in = $D->{K} eq 'Dᣝ' ? "!   " : "";
+                my $in = $D->{K} eq 'Dᣝ' ? "! " : "";
                 $DOOF .= ind($in, "$@")."\n";
             }
             if ($first) {

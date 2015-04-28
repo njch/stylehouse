@@ -171,9 +171,12 @@ R_Jz:
  - K: thy #c rollbar grab
    D: |
      my $what = $m->[0];
-     my $wt = Rw wuck $J */$what;
+     my $wt = ar.anon ?
+         Rw wuck $J $what
+     :
+         Rw wuck $J */$what;
      $J = ar.oJ || $J;
-     my $M = [];
+     warn "no $what          for J.name" if !$wt;
      my $nc = 1;
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};
@@ -184,9 +187,8 @@ R_Jz:
          
          next if Rw ph_same $J $x:coi $d;
          
-         if (!ref $N) {
-             $N = [ map { [$_] } split "\n",$N ];
-         }
+         $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+         
          #say " ** waything $what from $k";
          Rw MyN $N $J;
           
@@ -194,6 +196,9 @@ R_Jz:
          $nc = 0 if !y.same;
      }
      $nc
+ - K: thi #c thy rollbar grab, anon
+   D: |
+     Rw thy + $anon=1;
  - K: wtf #c pi friendly mod stackening, thingy endian # YIN accumuspinny $M parti
    D: |
      my $d = Rw iot;
