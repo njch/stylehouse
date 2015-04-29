@@ -1439,6 +1439,16 @@ sub ejson {
     $H->json->encode($m);
 }
 
+sub sjson {
+    my $m = shift;
+    $H->{canon}||= do {
+       my $j = new JSON::XS;
+       $j->canonical(1);
+       $j
+    };
+    $H->{canon}->encode($m);
+}
+
 sub jsq {
     my ($s,@e) = @_;
     sprintf $s, map { ejson($_) } @e

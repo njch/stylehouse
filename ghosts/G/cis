@@ -286,6 +286,16 @@ Ds:
     D: |
       my $m = shift;
       $H->json->encode($m);
+  - K: sjson #c
+    style: func
+    D: |
+      my $m = shift;
+      H.canon||= do {
+         my $j = new JSON::XS;
+         $j->canonical(1);
+         $j
+      };
+      H.canon->encode($m);
   - K: jsq #c
     style: func
     D: |
