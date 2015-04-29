@@ -1,5 +1,4 @@
 R_Jz:
-
  - K: filey #c note uplv for the from $lv, projecting flavour
    n_D:
      yJ: |
@@ -23,17 +22,23 @@ R_Jz:
          $dir .= '/' if $dir !~ /\/$/;
          $file = "$dir$file";
      }
-     my $lJ = Rw J5 fil;
-     my $fJ = Rw around $J:lJ $file;
-     say ki $fJ;
-     my @o = Rw around $J:fJ;
+     my $J = Rw fil/e $file;
+     my @o = Rw around $J;
+     @o = sort { a.sc.in <=> b.sc.in } @o;
      
-     say "Around say: ". wdump \@o;
+     say "Around say: ". join'   ',map{_.t}@o;
      
- - K: fil #c index of vectors about files
+     push @{o.r}, $_ for map{
+          $_
+     }@o;
+     
+ - K: fil #c index of files
    n_D:
      yJ: |
        'fil'
+     e: |
+       my $J = Rw J5 - fil;
+       Rw around + $J;
      around: |
        ar.file ?
           Rw fil/ile
@@ -54,40 +59,130 @@ R_Jz:
      flows:
        folate: |
          file/stat 0.1
-         file/read 0.2
-         file/jam 0.3
-         ya/am 0.9
+         file/read 0.2 
+         read/jam 0.3
      around: |
        J.cv ||= 0.3;
        
-       Rw flow $J folate;
+       # doflow: 
+       my $flow = 'folate';
+       my $fl = Rw oJ $J fl-$flow;
+       Rw thy $J $oJ:fl flows/$flow;
+       my $fvs = Rw tyv $J:fl;
        
-       return map { "_.r           _.s" }
-       Rw tvo;
- - K: file #c
+       for my $fv (@$fvs) {
+           my ($forl,$gap,$re) = fv.j.l =~ /\/|:/;
+           my $ip = {l=>$forl};
+           my $vs = Rw tyv $J $ip;
+           
+           for my $lv (@$vs) {
+               my $j = lv.j;
+               my $coi = Rw pha $J $k=fv.j.l*j.r;
+               
+               
+               my $off = fv.j.cv <= 0.1 ? 0 : 15;
+               my $nc = coi.begin - coi.head.begin < $off &&
+                   Rw lv_same $lv $x:coi $J;
+               
+               if ($nc) {
+                   sayyl "skip fv.j.r";
+                   next;
+               }
+               sayyl "Effect: fv.j.r  fv.j.s";
+               
+               sayre "NO CHANGE" if $nc;
+               #$nc || saybl "Changijie\ngjjijgeij " for 1..4;
+               my $at = {};
+               Rw $flow/fv.j.l $J $j $at $sc:lv.sc;
+               
+               # at travels fast
+               sayyl ki $at;
+               
+               Rw jamsc $J $j $sc:at;
+               
+           
+               my $y = coi.exactl->();
+               sayyl "  is ".slim 60, j.s;
+           }
+       }
+       
+       my $ip = {cv=>0.4};
+       my $vs = Rw tyv $J $ip;
+       
+       my $con = join "\n",map{_.j.s}@$vs;
+       write_file('gab1', $con);
+       write_file('gab2', J.bb->{"read\t0.3"});
+       die 'is' if $con ne J.bb->{"read\t0.3"};
+       
+       map { {
+          t => _.j.t,
+          cv => _.j.cv,
+          s => _.j.s,
+          lie_sc => _.sc,
+       } } @$vs;
+ - K: folate #c
    n_D:
-     situ: |# lv = 0.1s
-       #-
-       # - fileis
-       # - 4
-       # - |
-          at.is_file = -f j.s;
-          my @s = stat j.s;
-          at.size = $s[7];
-          at.mtime = $s[9];
-          at.ctime = $s[10];
-     read: | # lv = 0.2s
-       #-
-       # - ope
-       # - 4
-       # - |
-          oJn('read' => 0.3 => read_file(j.s);
-     jam: |
+     file:
+       stat: | #  lv  = 0.1s
+         at.is_file = -f j.s;
+         my @s = stat j.s;
+         at.size = $s[7];
+         at.mtime = $s[9];
+         at.ctime = $s[10];
+       read: |
+         my $s = read_file(j.s);
+         Jn('read' => 0.3 => $s, {dig=>dig $s});
+     read:
+       jam: |
+         my $i = 0;
+         my $l = {map { $i++ => $_ } split "\n", j.s};
+         Jn('lines' => 0.3 => $l);
+         my @bu;
+         my @nol;
+         for my $li (sort keys %$l) {
+             my $n = {in=>$li};
+             n.s = $l->{$li};
+             if (n.s =~ /^.?.?\S/) {
+                 n.r = 'low';
+             }
+             if (n.s =~ /#(c)(.*)$/) {
+                 n.r = 'c';
+                 n.com = $2 if $2;
+             }
+             n.K = $1 if n.s =~ /K: (\w+[^#]+)/; 
+             n.K ||= $1 if n.s =~ /^.*?(\w+[^#]+)/;
+             n.K =~ s/\s+$// if n.K;
+             if (n.r) {
+                 if (@nol) {
+                     n.s = join"\n",@nol,n.s;
+                     @nol = ();
+                     n.in = 0;
+                 }
+                 push @bu, $n;
+             }
+             elsif (@bu) {
+                 my $las = $bu[-1]; 
+                 las.s .= "\n".n.s;
+                 las.out = $li;
+             }
+             else {
+                 push @nol, n.s
+             }
+         }
+         for my $n (@bu) {
+             my $s = delete n.s;
+             $s||die;
+             n.dig = slm 7, dig $s;
+             my $j = {l=>n.K,cv=>0.4};
+             Jn(j.l, j.cv, $s);
+             Rw jamsc $J $j $sc:n;
+             #saybl "N: n.K        ".slim 40, ki $n;
+         }
  - K: flow #c K-flow
    D: |
-     my $name = $m->[0];
+     my $flow = $m->[0];
      my $uJ = Rw J5 flu;
-     my $oJ = Rw around $J:uJ $cJ:J $name;
+     my $oJ = Rw around $J:uJ $cJ:J $flow;
      
      sayre "oJ.name !\n oJ.way";
      
@@ -115,12 +210,12 @@ R_Jz:
        :();
      cod: |
        # look at this word in the context of yay style
-       my $h = slm 6, dig ejson[cJ.style,$name];
+       my $h = slm 6, dig ejson[cJ.style,$flow];
        #return G.drop.flows->{$h} ||= do {
            my $oJ = Rw oJ $J $name=flz.$h $style=flz;
            
-           Rw thy $oJ $J:cJ flows/$name;
-           # ^nc ||
+           Rw thy $oJ $J:cJ flows/$flow;
+           # ^nc || v setup
            Rw around $J:oJ;
            $oJ;
        #};
@@ -139,7 +234,7 @@ R_Jz:
            my $j = lv.j;
            my $coi = Rw pha $J $k=j.r;
            #my $xat = Rw lv_same $lv $x:coi $J;
-           Rw thi $p:j.t $J;
+           #Rw thi $p:j.t $J;
            # makes a bunch of coils around lvs
            # so one set of styles runs at a time
            # grabs a template... 0.9
@@ -161,7 +256,6 @@ R_Jz:
          my $gs = Rw ordlv $J $vs;
          
          
-
  - K: C _fyl #c
    n_D:
      el:

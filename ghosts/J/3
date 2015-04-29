@@ -39,7 +39,7 @@ R_Jz:
          x.abadoned = $why || 1;
          if (my $xx = x.head) {
              # probably dont want to lie here but...
-             (x.bb,x.ord,x.tim,x.wtf) = (xx.bb,xx.ord,xx.tim,xx.wtf);
+             (x.begin,x.bb,x.ord,x.tim,x.wtf) = (xx.begin,xx.bb,xx.ord,xx.tim,xx.wtf);
          }
          x.end->();
      };
@@ -64,11 +64,13 @@ R_Jz:
      $x;
  - K: ph_same #c loop early exity if $d same
    D: |
-     return 0 if !x.head;
+     return do {saybl"first x.name";0} if !x.head;
      die"string with order $d" if ref $d;
      x.same_wd = $d;
      if (x.same_wd eq x.head.same_wd) {
-         x.abandon->(saygr "$F[2]->{point} @ ph same: x.name");
+         my $why = "$F[2]->{point} @ ph same: x.name";
+         saygr $why if !x.qui;
+         x.abandon->($why);
          return 1;
      }
      return 0;
@@ -111,7 +113,7 @@ R_Jz:
                wtf.same = 0;
            }
            elsif (last.bb->{$_} ne cur.bb->{$_}) {
-               sayre " != different $_ now" if !ar.q eq 'diff'; # block hash s noise
+               sayre " != different $_ now" if !cur.qui && !ar.q eq 'diff'; # block hash s noise
                wtf.diff->{$_} = cur.bb->{$_};
                wtf.same = 0;
            }
@@ -124,8 +126,10 @@ R_Jz:
            delete J.bb->{$_};
        }
        
+       my $count = keys %{cur.bb};
        my $gl = wtf.same ? "===" : "+-";
-       saygr "ph_exactl cur.name: ". slim 50, join("  ",($gl) x 6) if !wtf.allnew;
+       saygr "ph_exactl cur.name: *$count ".
+           slim 50, join("  ",($gl) x 6) if !cur.qui && !wtf.allnew;
        $wtf;
      
  - K: tent #c pearlesque kings of the J... NOPE, PUT INSIDE, HIDE FROM WO ETC STYLES ARE WIRES TODO
@@ -180,6 +184,7 @@ R_Jz:
      
      $J = ar.oJ || $J;
      my $nc = 1;
+     
      for my $k (sort keys %$wt) {
          my $N = $wt->{$k};
          
