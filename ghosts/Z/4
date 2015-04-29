@@ -1,4 +1,36 @@
 R_Jz:
+ - K: wam #c 
+   n_D:
+     yJ: |
+       'wam mayo clw headi'
+     up: | # if the in up, pha wakeups out - all response to editing
+       Rw Jhead;
+       
+       my $oJ = Rw oJ $J on filey;
+       # ^ makes a J:on:on+filey
+       # to upgrade strings v into somewhere brained (ou/file)
+       oJn( twang => 0.2 => 'Z/2');
+       
+       Rw up $J:oJ;
+       
+       # bounce different ways...
+       # hire a Con...
+       # requireway, with parameters
+       # then patch bay for groups of style to feed in
+       # also the other elements present in may...
+       # farmed out
+       
+       my $onl = Rw very $in=0.5 $out=0.9 $J:oJ $tot:J.cv;
+       
+       # pin down top level
+       # primitives for geo site
+       for my $x (@$onl) {
+           Rw ix/suro + $x;
+       }
+       
+       Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'}); 
+       
+       Rw oJ $J geo &up;
  - K: filey #c note uplv for the from $lv, projecting flavour
    n_D:
      yJ: |
@@ -25,10 +57,15 @@ R_Jz:
      my $J = Rw fil/e $file;
      my @o = Rw around $J;
      @o = sort { a.sc.in <=> b.sc.in } @o;
+      
      
      say "Around say: ". join'   ',map{_.t}@o;
      
      push @{o.r}, $_ for map{
+          my $sc = _.lie_sc = delete _.sc;
+          _.s = sc.com if sc.com;
+          _.sc.fs = 4 if !sc.com;
+          _.c.gp.cv = 0.4;
           $_
      }@o;
      
@@ -58,29 +95,33 @@ R_Jz:
        'lie'
      flows:
        folate: |
-         file/stat 0.1
-         file/read 0.2 
-         read/jam 0.3
+         file/stat 0.1 {} {et:0}
+         file/read 0.2 {} {et:10}
+         read/jam 0.3 {} {et:40}
      around: |
        J.cv ||= 0.3;
-       
        # doflow: 
        my $flow = 'folate';
+       
+       #Rw flow $J $flow;
+       
        my $fl = Rw oJ $J fl-$flow;
        Rw thy $J $oJ:fl flows/$flow;
-       my $fvs = Rw tyv $J:fl;
+       my $fvs = Rw tyv $J:fl; 
        
        for my $fv (@$fvs) {
-           my ($forl,$gap,$re) = fv.j.l =~ /\/|:/;
+           my ($forl,$gap,$re) = fv.j.l =~ /(.+)(\/|:)(.+)/;
            my $ip = {l=>$forl};
            my $vs = Rw tyv $J $ip;
            
+           $re = "$forl$gap$re" unless $gap eq ':';
+           
+           say ki fv.sc;
            for my $lv (@$vs) {
                my $j = lv.j;
                my $coi = Rw pha $J $k=fv.j.l*j.r;
                
-               
-               my $off = fv.j.cv <= 0.1 ? 0 : 15;
+               my $off = fv.sc.et;
                my $nc = coi.begin - coi.head.begin < $off &&
                    Rw lv_same $lv $x:coi $J;
                
@@ -100,6 +141,14 @@ R_Jz:
                
                Rw jamsc $J $j $sc:at;
                
+               say coi.head;
+               # coi
+               coi.same_wd ||= do {
+                   my $ip = {l=>j.l};
+                   my $vs = Rw tyv $J $ip;
+                   my $lv = $vs->[0];
+                   Rw lv_same $lv $x:coi $J $ret=1;
+               };
            
                my $y = coi.exactl->();
                sayyl "  is ".slim 60, j.s;
@@ -109,16 +158,11 @@ R_Jz:
        my $ip = {cv=>0.4};
        my $vs = Rw tyv $J $ip;
        
-       my $con = join "\n",map{_.j.s}@$vs;
-       write_file('gab1', $con);
-       write_file('gab2', J.bb->{"read\t0.3"});
-       die 'is' if $con ne J.bb->{"read\t0.3"};
-       
        map { {
           t => _.j.t,
           cv => _.j.cv,
           s => _.j.s,
-          lie_sc => _.sc,
+          sc => _.sc,
        } } @$vs;
  - K: folate #c
    n_D:
@@ -142,6 +186,7 @@ R_Jz:
          for my $li (sort keys %$l) {
              my $n = {in=>$li};
              n.s = $l->{$li};
+             n.h = n.s;
              if (n.s =~ /^.?.?\S/) {
                  n.r = 'low';
              }
@@ -150,9 +195,9 @@ R_Jz:
                  n.com = $2 if $2;
              }
              n.K = $1 if n.s =~ /K: (\w+[^#]+)/; 
-             n.K ||= $1 if n.s =~ /^.*?(\w+[^#]+)/;
+             n.K ||= $1 if n.s =~ /^[^#]*?(\w+[^#]+)/;
              n.K =~ s/\s+$// if n.K;
-             if (n.r) {
+             if (n.r && n.K) {
                  if (@nol) {
                      n.s = join"\n",@nol,n.s;
                      @nol = ();
@@ -173,10 +218,12 @@ R_Jz:
              my $s = delete n.s;
              $s||die;
              n.dig = slm 7, dig $s;
-             my $j = {l=>n.K,cv=>0.4};
+             my $j;
+             j.l = n.K||n.h;
+             j.cv = 0.4;
              Jn(j.l, j.cv, $s);
              Rw jamsc $J $j $sc:n;
-             #saybl "N: n.K        ".slim 40, ki $n;
+             saybl "N: n.K        ".slim 40, ki $n;
          }
  - K: flow #c K-flow
    D: |

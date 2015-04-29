@@ -28,6 +28,7 @@ hooks:
     $S w any_init;
   ghostchanges: |
     my @ghosts = H.G K Gs:*;
+    G.lastGd = $Gd;
     my @rG;
     for my $S (@ghosts) { 
         my $in = [grep{$Gd->{$_}} @{S.wayfiles}];
@@ -36,10 +37,10 @@ hooks:
         # sort stream to avoid small before big?
         waylay recode_ways[$S, $in];
     }
-    G.lastGd = $Gd;
     for my $cb (@{G.recoded_cbs}) {
         $cb->($Gd);
     }
+    saybl "ghostchanges: ". F_delta;
   recode_ways: |
     sayyl "recode_ways: ".$S->pi;
     say $S->pi." w! ".join '  ', @$in;
