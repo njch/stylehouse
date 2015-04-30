@@ -292,7 +292,8 @@ R_Jz:
      return $d if ar.ret;
      Rw ph_same $J $x $d;
  - K: chi #c
-   
+   n_D:
+     
  - K: C_may #c
    n_D:
      el:
@@ -322,11 +323,20 @@ R_Jz:
        #  ^ v MMMMMMMMMM aj ejector
        my $aj = Rw up $J:oJ;
        
-       my $vs = Rw tyv $J $ip:ar.ip;
+       my $vs = Rw tyv $J;
        # puts /s backwards and last:
        my $gs = Rw ordlv $J $vs $slashtopi=1;
        
        my @s; # heading
+       
+       # this should be all the current lvs
+       my %now = map{_.j.r => 1} @$gs;
+       for (keys %{oJ.bb}) {
+           /^(.+)%.+?\t(\S+)$/||die$_;
+           if (!$now{"$1\t$2"}) {
+               delete oJ.bb->{$_};
+           }
+       }
        
        for my $lv (@$gs) {
            push @s, $lv;
@@ -337,7 +347,7 @@ R_Jz:
            my $coi = Rw pha $J:oJ $k;
            my $xat = do {
                Rw lv_same $lv $x:coi $J:oJ;
-           } if oJ.bb->{"j.l%at\t".j.cv};
+           } if oJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
            
            
            my $at;
@@ -438,7 +448,7 @@ R_Jz:
            if (at._joins) {
                my @lvs = map { oJ.bb->{$_} } @{at._joins};
                
-               say "j.r eats    ".join',   ', map{_.j.l} @lvs;
+               say "j.r eats    ".join',   ', map{_.j.r} @lvs;
                # or compressions in c, sc
                # make them tubes real nice
                my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
