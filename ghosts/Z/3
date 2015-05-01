@@ -281,6 +281,11 @@ R_Jz:
      return [ map { [ _.t, _.cv, _.s ] } @line ];
  - K: lv_same #c linehum check
    D: |
+     return 0 if x.off && x.begin - x.head.begin < x.off;
+     my $d = Rw lv_dig +;
+     Rw ph_same $J $x $d;
+ - K: lv_dig #c linehum dig
+   D: |
      my $ln = Rw linehum +;
      for my $n (@$ln) {
          my $s = $n->[2];
@@ -289,8 +294,7 @@ R_Jz:
      }
      my $d = ejson $ln;
      $d = dig $d;
-     return $d if ar.ret;
-     Rw ph_same $J $x $d;
+     
  - K: chi #c
    n_D:
      
@@ -345,6 +349,7 @@ R_Jz:
            
            my $k = "may j.r";
            my $coi = Rw pha $J:oJ $k;
+           coi.qui = 1;
            my $xat = do {
                Rw lv_same $lv $x:coi $J:oJ;
            } if oJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
@@ -444,7 +449,7 @@ R_Jz:
               $inv->($at->{$k}) ne $inv->($pat->{$k})
            };
            
-           #c <>
+           # <>           eats #c
            if (at._joins) {
                my @lvs = map { oJ.bb->{$_} } @{at._joins};
                

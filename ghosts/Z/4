@@ -18,6 +18,7 @@ R_Jz:
            my $j = lv.j;
            my $k = "j.r xatly";
            my $coi = Rw pha $J $k;
+                   #Rw lv_same $lv $j $x:coi $J;
            #sayyl " ** *  lv.j.r     =>   lv.j.s\n*  *  ".ki(lv.sc);
            my $ln = Rw linehum $lv;
            
@@ -29,6 +30,25 @@ R_Jz:
        }
        
        
+ - K: pi/infrom #c
+   D: |
+     my $x = $u;
+     J.d.sc.mt = '-3em';
+     Jn('onl', 0.1, "x.j.l", '{co:38f,fs:12}');
+     
+     Jn('is',0.102,{s=>':',pwth=>'whack'},'{fs:20,co:eee}');
+     
+     Jn('s', 0.11, {pi=>'',s=>x.j.s},'{fs:15}');
+     
+     
+     
+     my $in = {%{x.sc}};
+     Jn('sc',0.3, {pi=>'scbund',s=>x.sc},
+         {fs=>23 ,co=>'314',sha=>'1 1 3 fff'});
+     
+     if (my $time = x.sc.ts) { # can't be zero, so relative
+         Rw ii/time + $time;
+     }
  - K: wam #c 
    n_D:
      yJ: |
@@ -42,36 +62,47 @@ R_Jz:
      defon: |
        twang 0.1 J/4
      up: | # if the in up, pha wakeups out - all response to editing
-       J.cv = 40;
+       J.cv = 20;
+       
+       sayre join "   ", sort keys %$ar;
        my $coi = Rw pha $J $k=upix;
        Rw Jhead;
+       
+       # pin down top level
+       # primitives for geo site
        
        my $oJ = Rw oJ $J on filey;
        Rw up $J:oJ;
        
+       
+       
+       
        my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
-       
-       say "very ".F_delta;
-       
-       
-       
-       # pin down top level
-       # primitives for geo site
        for my $x (@$onl) {
            my $M = [];
 
            Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
-           Mn(x.j.l.'-nez' => '', x.thi);
+           Mn(nez => '', x.thi);
+           Mn(nez => '', {pi=>'',s=>$x,cv=>0.6},"{ls:-2px}");
+           sayyl ki $x;
 
            my $o = Rw oundo $x;
-             say "   oundoof: ".F_delta;
+           say "   oundoof: ".F_delta;
+           my $thy = x.thi / o.thi;
+           
            # pha
            # o.dig
+           say join '  ', sort keys %$o;
            
            for my $r (@{o.r}) {
-               #say ki 2,$r;
-               Mn(r.t,'',{cow=>'30e',pi=>'lie',s=>$r,gp=>{cv=>0.8}},{mw=>'29em',mh=>'3em',over=>'hidden',idly=>1,fs=>6});
+               Mn(r.t,'',
+                  {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.8},
+                  {mw=>'29em',mh=>'3em',
+                  idly=>1,
+                  fs=>7});
                
+           sayre join '  ', sort keys %$r;
+           sayre ki r.c;
                #v v v v v v v
                # v v v v v v
                #Rw ii/pi $x $r $M;
@@ -89,14 +120,21 @@ R_Jz:
            #Rw om/bal $J $oM:M $t=notes $in:x.in $out:x.out;
        }
        
+       #say _.r.'   => '.slim 50, _.s for
+       #Rw tvo;
        
        say "anx ".F_delta;
        coi.exactl->();
 
        say "comat ".F_delta;
-       sayyl "now wam geo";
-       Rw oJ $J geo &up;
-       
+ - K: pi/xor #c
+   D: |
+     my $c = J.d.c;
+     my ($x,$o,$r) = (c.x,c.o,c.r);
+     my $pi = o.pig || 'rune';
+     my $cv = r.cv || 0.8;
+     Jn(r.t,'',{pi=>$pi,s=>$r,gp=>{cv=>$cv}});
+    
  - K: clw #c
    n_D:
      curves: |
@@ -105,34 +143,27 @@ R_Jz:
        y    0  0.3
        x    0  0.1
        curve 0 -0.1
- - K: pi/infrom #c
-   D: |
-     my $x = $u;
-     J.d.sc.mt = '-3em';
-     Jn('onl', 0.1, "x.j.l", '{co:38f,fs:12}');
-     
-     Jn('is',0.102,{s=>':',pwth=>'whack'},'{fs:20,co:314,sha:1 1 3 fff,mw:6em}');
-     
-     Jn('s', 0.11, {pi=>'',s=>x.j.s},'{fs:15}');
-     
-     
-     
-     my $in = {%{x.sc}};
-     Jn('sc',0.3, {pi=>'scbund',s=>x.sc},
-         {fs=>23 ,co=>'314',sha=>'1 1 3 fff'});
-     
-     if (my $time = x.sc.ts) { # can't be zero, so relative
-         Rw ii/time + $time;
-     }
  - K: pi/lie #c
    D: |
-     my $sc = u.lie_sc;
-     my $lead = $1 if sc.h =~ /^(.*)sc.K/;
-     my $ml = length($lead)* 0.4;
-     Jn(K => 0.1, sc.K, "{co:f42,fs:17,ml:$ml}");
-     Jn(lines => 0.2, sc.out - sc.in, '{ml:2em,co:f42,fs:9}');
+     my $sc = u.sc;
+     
+     #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
+     Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
+     
+     my $ind = $1 if sc.h =~ /^(.+)sc.K/;
+     my $al = $1 if sc.h =~ /sc.K(.+)$/;
+     Jn(ind => 0.09, $ind, "{co:38e,fs:12}");
+     Jn(K => 0.1, sc.K, "{co:f42,fs:17}");
+     # go look for the right side of /K
+     Jn(al => 0.11, {fadwi=>$al,s=>slm(20, $al)}, "{co:5ae,fs:12}");
+     
+     
      #Jn(com => 0.3, {s=>sc.com}, '{co:f42,fs:9}');
      #Jn(
+ - K: pi/hangleft #c
+   D: |
+     my $sq = J.d.c.scwa || 'right:1em';
+     Jn(lines => 0.1, $u, "{ab:1,$sq}");
  - K: oundo #c hound god from a crux of inness $x
    D: |
      my $o = {r=>[]};
@@ -171,7 +202,7 @@ R_Jz:
        my $sc;
        if (!lv.sc) {
            say "INIT STYLO ".ejson $lv;
-           if (j.s =~ /^[A-Z0]/) {
+           if (j.s =~ /^[A-Z0]\/./) {
                sc.ou = 'file';
                sc.dir = 'ghosts/';
            }
@@ -186,20 +217,10 @@ R_Jz:
          $dir .= '/' if $dir !~ /\/$/;
          $file = "$dir$file";
      }
-     my $J = Rw fil/e $file;
-     my @o = Rw around $J;
-     @o = sort { a.sc.in <=> b.sc.in } @o;
-      
-     push @{o.r}, $_ for map{
-          my $sc = _.lie_sc = delete _.sc;
-          _.s = sc.com if sc.com;
-          #_.sc.fs = 4 if !sc.com;
-          #_.s = 4 if !sc.com;
-          _.c.gp.cv = 0.4;
-          $_
-     }@o;
      
-     o.dig = dig sjson \@o;
+     my $J = Rw fil/e $file;
+     
+     Rw around $J $o;
      
  - K: fil #c index of files
    n_D:
@@ -237,12 +258,18 @@ R_Jz:
        
        my $ip = {cv=>0.4};
        my $vs = Rw tyv $J $ip;
-       map { {
+       my @o = map { {
           t => _.j.t,
           cv => _.j.cv,
-          s => slim(30, _.j.s),
+          s => _.j.s,
           sc => _.sc,
        } } @$vs;
+       
+       @o = sort { a.sc.in <=> b.sc.in } @o;
+       o.pig = 'lie';
+       push @{o.r}, @o;
+
+       o.dig = dig sjson \@o;
  - K: folate #c
    n_D:
      file:
@@ -268,13 +295,15 @@ R_Jz:
              my $n = {in=>$li};
              n.s = $l->{$li};
              n.h = n.s;
-             if (n.s =~ /^.?.?\S/) {
+             
+             if (n.s =~ /^.?.?\w/) {
                  n.r = 'low';
              }
              if (n.s =~ /#(c)(.*)$/) {
                  n.r = 'c';
                  n.com = $2 if $2;
              }
+             
              n.K = $1 if n.s =~ /K: (\w+[^#]+)/; 
              n.K ||= $1 if n.s =~ /^[^#]*?(\w+[^#]+)/;
              n.K =~ s/\s+$// if n.K;
@@ -299,6 +328,7 @@ R_Jz:
              my $s = delete n.s;
              $s||die;
              n.dig = slm 7, dig $s;
+             n.lines = split "\n", $s;
              my $j;
              j.l = n.K||n.h;
              j.cv = 0.4;
@@ -327,12 +357,10 @@ R_Jz:
            for my $lv (@$vs) {
                my $j = lv.j;
                my $coi = Rw pha $J $k=fv.j.l*j.r;
-               
-               my $off = fv.sc.et;
+               coi.off = fv.sc.et;
                # resolve $offness, add $and to lv_same
                # if change exactl swoops an init linehum wd
-               my $nc = coi.begin - coi.head.begin < $off &&
-                   Rw lv_same $lv $j $x:coi $J;
+               my $nc = Rw lv_same $lv $j $x:coi $J;
                
                if ($nc) {
                    next;
