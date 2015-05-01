@@ -38,10 +38,9 @@ R_Jz:
        # then patch bay for groups of style to feed in
        # also the other elements present in may...
        # farmed out
-       'wam mayo clw headi'
+       'wam geomay clw headi'
      defon: |
-       twang 0.2 Z/4
-       twang 0.1 Z/1
+       twang 0.1 J/4
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 40;
        my $coi = Rw pha $J $k=upix;
@@ -50,7 +49,7 @@ R_Jz:
        my $oJ = Rw oJ $J on filey;
        Rw up $J:oJ;
        
-       my $onl = Rw very $in=0.01 $out=0.9 $J:oJ $tot:J.cv;
+       my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
        
        say "very ".F_delta;
        
@@ -60,9 +59,9 @@ R_Jz:
        # primitives for geo site
        for my $x (@$onl) {
            my $M = [];
-           sayyl ki $x;
 
-           Mn(x.j.l.'-cap' => '',{pi=>'infrom',s=>$x});
+           Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
+           Mn(x.j.l.'-nez' => '', x.thi);
 
            my $o = Rw oundo $x;
              say "   oundoof: ".F_delta;
@@ -84,7 +83,7 @@ R_Jz:
            if (o.more) {
                Rw ii/more $x $o $M;
            }
-           Rw om/bal $J $oM:M $t:x.j.l $in:x.in $out:x.out;
+           Rw om/bal $J $oM:M $t:x.j.l $thi:x.thi $in:x.in $out:x.out;
            #$M=[];
            #Mn("Thi$_",'',{cow=>'39f',s=>'3sdsds'}) for 1..15;
            #Rw om/bal $J $oM:M $t=notes $in:x.in $out:x.out;
@@ -98,9 +97,18 @@ R_Jz:
        sayyl "now wam geo";
        Rw oJ $J geo &up;
        
+ - K: clw #c
+   n_D:
+     curves: |
+       spun 0  2
+       zoom 0 0.5
+       y    0  0.3
+       x    0  0.1
+       curve 0 -0.1
  - K: pi/infrom #c
    D: |
      my $x = $u;
+     J.d.sc.mt = '-3em';
      Jn('onl', 0.1, "x.j.l", '{co:38f,fs:12}');
      
      Jn('is',0.102,{s=>':',pwth=>'whack'},'{fs:20,co:314,sha:1 1 3 fff,mw:6em}');
@@ -119,7 +127,9 @@ R_Jz:
  - K: pi/lie #c
    D: |
      my $sc = u.lie_sc;
-     Jn(K => 0.1, sc.K, '{co:f42,fs:17}');
+     my $lead = $1 if sc.h =~ /^(.*)sc.K/;
+     my $ml = length($lead)* 0.4;
+     Jn(K => 0.1, sc.K, "{co:f42,fs:17,ml:$ml}");
      Jn(lines => 0.2, sc.out - sc.in, '{ml:2em,co:f42,fs:9}');
      #Jn(com => 0.3, {s=>sc.com}, '{co:f42,fs:9}');
      #Jn(
