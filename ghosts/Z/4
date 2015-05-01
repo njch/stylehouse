@@ -14,13 +14,16 @@ R_Jz:
        }
        
        sayyl "ON J.Jo.name";
+       my $nc = 1;
        for my $lv (@$vs) {
            my $j = lv.j;
-           my $k = "j.r xatly";
-           my $coi = Rw pha $J $k;
-                   #Rw lv_same $lv $j $x:coi $J;
-           #sayyl " ** *  lv.j.r     =>   lv.j.s\n*  *  ".ki(lv.sc);
-           my $ln = Rw linehum $lv;
+           my $coi = Rw pha $J $k=j.r;
+           coi.off=100;
+           
+           my $lnc = Rw lv_same $lv $j $x:coi $J $V=1;
+           sayyl "LINEHUM SAME: $lnc";
+           $nc = 0 if !$lnc;
+           next if $lnc;
            
            Rw suck */uplv $J $lv $j;
            
@@ -28,6 +31,7 @@ R_Jz:
            #say "xat" if $xat;
            coi.end->();
        }
+       $nc;
        
        
  - K: pi/infrom #c
@@ -42,7 +46,7 @@ R_Jz:
      
      
      
-     my $in = {%{x.sc}};
+     my $in = {%{x.sc||{}}};
      Jn('sc',0.3, {pi=>'scbund',s=>x.sc},
          {fs=>23 ,co=>'314',sha=>'1 1 3 fff'});
      
@@ -58,33 +62,46 @@ R_Jz:
        # then patch bay for groups of style to feed in
        # also the other elements present in may...
        # farmed out
-       'wam geomay clw headi'
+       'wam clw headi'
      defon: |
-       twang 0.1 J/4
+       twang 0.1 Z/4
+     in: |
+       my @up = $J2;
+       push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
+       my ($se,$xor) = reverse @up;
+       say "We se.name and xor.r";
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
        
-       sayre join "   ", sort keys %$ar;
        my $coi = Rw pha $J $k=upix;
        Rw Jhead;
-       
-       # pin down top level
-       # primitives for geo site
-       
        my $oJ = Rw oJ $J on filey;
-       Rw up $J:oJ;
+       
+       my $nc = Rw up $J:oJ;
+       if ($nc){
+           sayyl "WAS NC" for 1..6;
+       }
+       
+       Rw onxor $J $oJ;
        
        
+       say "anx ".F_delta;
+       coi.exactl->();
        
-       
+       Rw oJ $J geo &up;
+       Rw may $J;
+
+       say "comat ".F_delta;
+ - K: onxor #c
+   D: |
        my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
        for my $x (@$onl) {
            my $M = [];
-
+           #die ki $x
            Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
+           
            Mn(nez => '', x.thi);
            Mn(nez => '', {pi=>'',s=>$x,cv=>0.6},"{ls:-2px}");
-           sayyl ki $x;
 
            my $o = Rw oundo $x;
            say "   oundoof: ".F_delta;
@@ -95,38 +112,16 @@ R_Jz:
            say join '  ', sort keys %$o;
            
            for my $r (@{o.r}) {
-               Mn(r.t,'',
+               say join " ", sort keys %$r;
+               Mn( r.t, {thy=>$thy},
                   {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.8},
-                  {mw=>'29em',mh=>'3em',
-                  idly=>1,
-                  fs=>7});
-               
-           sayre join '  ', sort keys %$r;
-           sayre ki r.c;
-               #v v v v v v v
-               # v v v v v v
-               #Rw ii/pi $x $r $M;
-               # ^ ^ ^ ^ ^ ^
-               #^ ^ ^ ^ ^ ^ ^
-               # ^ pass $thi, pool resources
-               # whole line magneted styles etc...
+                  {idly=>1,fs=>7});
            }
            if (o.more) {
                Rw ii/more $x $o $M;
            }
            Rw om/bal $J $oM:M $t:x.j.l $thi:x.thi $in:x.in $out:x.out;
-           #$M=[];
-           #Mn("Thi$_",'',{cow=>'39f',s=>'3sdsds'}) for 1..15;
-           #Rw om/bal $J $oM:M $t=notes $in:x.in $out:x.out;
        }
-       
-       #say _.r.'   => '.slim 50, _.s for
-       #Rw tvo;
-       
-       say "anx ".F_delta;
-       coi.exactl->();
-
-       say "comat ".F_delta;
  - K: pi/xor #c
    D: |
      my $c = J.d.c;
@@ -150,7 +145,10 @@ R_Jz:
      #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
      Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
      
-     my $ind = $1 if sc.h =~ /^(.+)sc.K/;
+     
+     my $ind = $1 if sc.h =~ /^(.+?)sc.K/;
+     
+     
      my $al = $1 if sc.h =~ /sc.K(.+)$/;
      Jn(ind => 0.09, $ind, "{co:38e,fs:12}");
      Jn(K => 0.1, sc.K, "{co:f42,fs:17}");
@@ -206,7 +204,8 @@ R_Jz:
                sc.ou = 'file';
                sc.dir = 'ghosts/';
            }
-           # looking at this J's abilities to upgrade string input with ou thinkg/crawl
+           # upgrade strings to thoughts
+           # drag in 
        }
        Rw jamsc $J $j $sc;
  - K: ou/file #c
@@ -220,7 +219,7 @@ R_Jz:
      
      my $J = Rw fil/e $file;
      
-     Rw around $J $o;
+     Rw around $J $o $x;
      
  - K: fil #c index of files
    n_D:
@@ -242,6 +241,10 @@ R_Jz:
            J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
        }
        $fJ
+       
+       
+       
+       
  - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
    n_D:
      yJ: |
