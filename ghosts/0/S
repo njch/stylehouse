@@ -67,6 +67,17 @@ Ds:
             }
         </style>
         <link href="light.css" rel="stylesheet"></link>
+        
+        <script src="codemirror/lib/codemirror.js"></script>
+        <link href="codemirror/lib/codemirror.css" rel="stylesheet">
+        <link href="codemirror/theme/night.css" rel="stylesheet">
+        <link href="codemirror/theme/midnight.css" rel="stylesheet">
+        <link href="codemirror/theme/base16-dark.css" rel="stylesheet">
+        <link href="codemirror/addon/display/fullscreen.css" rel="stylesheet">
+        <script src="codemirror/addon/display/fullscreen.js"></script>
+        <script src="codemirror/mode/perl/perl.js"></script>
+
+        
         <script src="paper.js"></script>
         <script src="paper.animate.js"></script>
         <script canvas="display" type="text/paperscript">paper.uplg = new PaperAnimate.Updater();
@@ -181,39 +192,48 @@ Ds:
                 var d = {};
                 a.dscam(d,ev);
                 
+                d.x = ev.clientX;
+                d.y = ev.clientY;
+                d.pagex = window.pageXOffset;
+                d.pagey = window.pageYOffset;
+                
                 var tag = $(ev.target);
-                if (ev.target.type == 'range') {
-                    d.rval = ev.target.value
+                if (tag.type == 'range') {
+                    d.rval = tag.value
                 }
+                
+                a.entag(d, tag);
+                a.ethro(d, ws);
+            };
+            a.entag = function(d, tag) {
                 d.name = tag.attr('name');
-                //d.value = a.valblag(d.tag); // drapes
                 while (tag && !tag.attr('id')) {
                       tag = tag.parent();
                 }
                 d.id = tag.attr('id');
                 d.class = tag.attr('class');
-                d.x = ev.clientX;
-                d.y = ev.clientY;
-                d.pagex = window.pageXOffset;
-                d.pagey = window.pageYOffset;
+                
                 var W = tag.closest( "ww" ).attr('id');
                 if (W) {
                     d.W = W;
-                    var conin = conz[W];
-                    if (conin) {
-                        ws = C[conin];
-                    }
                 }
                 var ux = tag.closest( "ux" ).attr('id');
                 if (ux) {
                     d.ux = ux;
                 }
-                
+            };
+            a.ethro = function(d, wd) {
+                if (d.W) {
+                    var conin = conz[d.W];
+                    if (conin) {
+                        ws = C[conin];
+                    }
+                }
                 if (!ws) {
                     ws = w;
                 }
                 ws.reply({event: d});
-            };
+            }
             a.ke = function(ev, ws) {
                 if (keyjam) {
                     return;

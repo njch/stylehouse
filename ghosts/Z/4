@@ -56,21 +56,17 @@ R_Jz:
  - K: wam #c 
    n_D:
      yJ: |
-       # bounce different ways...
-       # hire a Con...
-       # requireway, with parameters
-       # then patch bay for groups of style to feed in
-       # also the other elements present in may...
-       # farmed out
        'wam clw headi'
      defon: |
-       twang 0.1 Z/4
+       twang 0.1 Z/3
      in: |
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
        my ($se,$xor) = reverse @up;
        say "We se.name and xor.r";
-       sayyl "Sez: ".join "  ",sort keys %{xor.d.c.r.sc};
+       my $J = Rw oJ $J cod;
+       my $c = xor.d.c;
+       Rw up $J $o:c.o $r:c.r;
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
        
@@ -81,8 +77,8 @@ R_Jz:
        my $nc = Rw up $J:oJ;
        if ($nc){
            sayyl "WAS NC" for 1..6;
-           coi.abandon->('same on');
-           return;
+           # coi.abandon->('same on');
+           #return;
        }
        
        Rw onxor $J $oJ;
@@ -94,26 +90,39 @@ R_Jz:
        Rw may $J;
 
        say "comat ".F_delta;
+ - K: cod #c
+   n_D:
+     yJ: |
+       'cod';
+     up: |
+       my $x = Rw pha swoosh;
+       Rw Jhead;
+       Jn('srcvector',0.1,{pi=>'',s=>o.oJ});
+       Jn('row',0.2,{s=>r.s},{idly=>1,cm=>'perl',dig=>r.sc.dig});
+       
+       x.exactl->();
+       Rw oJ $J geo &up;
+       Rw may $J;
+     curves: |
+       spun 0  2
+       zoom 0 0.5
+       y    0  0.5
+       x    0  0.4
  - K: onxor #c
    D: |
        my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
        for my $x (@$onl) {
            my $M = [];
-           #die ki $x
            Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
            
-           #Mn(nez => '', {pi=>'',s=>$x,cv=>0.6},"{ls:-2px}");
-
            my $o = Rw oundo $x;
            say "   oundoof: ".F_delta;
            my $thy = x.thi / o.thi;
            
-           # pha
-           # o.dig
-           say join '  ', sort keys %$o;
+           #say join '  ', sort keys %$o;
            
            for my $r (@{o.r}) {
-               say join " ", sort keys %$r;
+               #say join " ", sort keys %$r;
                Mn( r.t, {thy=>$thy},
                   {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.8},
                   {idly=>1,fs=>7});
@@ -145,6 +154,7 @@ R_Jz:
      
      #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
      Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
+     Jn(linein => 0.034, {pi=>'hangleft',s=>sc.in,scwa=>'right:3em'}, '{ab:1,co:e72,fs:10}');
      
      
      my $ind = $1 if sc.h =~ /^(.+?)sc.K/;
@@ -269,7 +279,7 @@ R_Jz:
           s => _.j.s,
           sc => _.sc,
        } } @$vs;
-       
+       o.oJ = $J;
        o.pig = 'lie';
  - K: folate #c
    n_D:
@@ -292,7 +302,7 @@ R_Jz:
          Jn('lines' => 0.3 => $l);
          my @bu;
          my @nol;
-         for my $li (sort keys %$l) {
+         for my $li (sort {$a<=>$b} keys %$l) {
              my $n = {in=>$li};
              n.s = $l->{$li};
              n.h = n.s;
@@ -346,8 +356,8 @@ R_Jz:
      # little meta codey index thing:
        my $fl = Rw oJ $J fl-$flow;
        Rw thy $J $oJ:fl flows/$flow;
-       my $fvs = Rw tyv $J:fl; 
-       sayre F_delta;
+       my $fvs = Rw tyv $J:fl;
+       
        for my $fv (@$fvs) {
            my ($forl,$gap,$re) = fv.j.l =~ /(.+)(\/|:)(.+)/;
            
@@ -362,10 +372,7 @@ R_Jz:
                # resolve $offness, add $and to lv_same
                # if change exactl swoops an init linehum wd
                my $nc = Rw lv_same $lv $j $x:coi $J;
-               
-               if ($nc) {
-                   next;
-               }
+               next if $nc;
                sayyl "Effect: fv.j.r  fv.j.s";
                
                my $at = {};

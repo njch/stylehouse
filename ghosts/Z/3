@@ -1,5 +1,14 @@
 C may#styley:
  - #
+  - cm
+  - 5.8
+  - |
+    my $wt = ejson {id=>at.id, value=>at.s};
+    at.id || die;
+    at.dig = cs.dig || die "no diggy";
+    acum $at, Esc => " a\.cod($wt);";
+    at.s = '';
+ - #
   - gp
   - 5
   - |
@@ -281,7 +290,8 @@ R_Jz:
      return [ map { [ _.t, _.cv, _.s ] } @line ];
  - K: lv_same #c linehum check
    D: |
-     return 0 if x.off && x.begin - x.head.begin < x.off;
+     sayyl "!   ".(x.begin - x.head.begin)."    f x.off";
+     return 1 if x.off && x.begin - x.head.begin < x.off;
      my $d = Rw lv_dig +;
      Rw ph_same $J $x $d;
  - K: lv_dig #c linehum dig
@@ -293,7 +303,6 @@ R_Jz:
          $n->[2] = $s;
      }
      my $d = ejson $ln;
-     say "porfo x.name    $d" if x.name =~ /twang/;
      $d = dig $d;
      
  - K: chi #c
@@ -450,7 +459,7 @@ R_Jz:
               $inv->($at->{$k}) ne $inv->($pat->{$k})
            };
            
-           # <>           eats #c
+           # eats #c
            if (at._joins) {
                my @lvs = map { oJ.bb->{$_} } @{at._joins};
                
@@ -502,6 +511,9 @@ R_Jz:
                # bucket fountain, musical atitude
                # where mess goes into black hole, proofs strung up
                next;
+           }
+           if (at.Esc) {
+               acum $lv, 'Esc', $_ for @{at.Esc};
            }
            
            #c at out scribe, #c slump to end ## switch up pool of lang > styles
