@@ -80,8 +80,8 @@ R_Jz:
        my $nc = Rw up $J:oJ;
        if ($nc){
            sayyl "WAS NC" for 1..6;
-           # coi.abandon->('same on');
-           #return;
+           coi.abandon->('same on');
+           return;
        }
        
        Rw onxor $J $oJ;
@@ -289,8 +289,12 @@ R_Jz:
        it.s = u.s;
        
        my $file = J.bb->{"file\t".0.1};
-       die $file;
        
+       write_file($file, join("\n", map {_.s} @{o.r})."\n\n");
+       
+       Rw around;
+       
+       say "Saved?";
      around: |
        J.cv ||= 0.3;
        
