@@ -63,10 +63,13 @@ R_Jz:
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
        my ($se,$xor) = reverse @up;
+       
        say "We se.name and xor.r";
-       my $J = Rw oJ $J cod;
+       
        my $c = xor.d.c;
+       my $J = Rw oJ $J cod;
        Rw up $J $o:c.o $r:c.r;
+       
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
        
@@ -94,9 +97,21 @@ R_Jz:
    n_D:
      yJ: |
        'cod';
+     in: |
+       my $r = J.row;
+       my $o = J.ooo;
+       my $u;
+       u.t = r.t;
+       u.cv = r.cv;
+       u.dig = e.dig;
+       u.s = e.code;
+       my $oJ = o.oJ;
+       Rw in $J:o.oJ $u;
      up: |
        my $x = Rw pha swoosh;
        Rw Jhead;
+       J.row = $r;
+       J.ooo = $o;
        Jn('srcvector',0.1,{pi=>'',s=>o.oJ});
        Jn('row',0.2,{s=>r.s},{idly=>1,cm=>'perl',dig=>r.sc.dig});
        
@@ -265,20 +280,35 @@ R_Jz:
          file/stat 0.1 {} {et:0}
          file/read 0.2 {} {et:130}
          read/jam 0.3 {} {et:340}
+     in: |
+       my $o = {};
+       Rw around $J $o;
+       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.r};
+       $it || die "u.t   u.cv not found!";
+       it.sc.dig eq u.dig || die "NOT UP";
+       it.s = u.s;
+       
+       my $file = J.bb->{"file\t".0.1};
+       die $file;
+       
      around: |
        J.cv ||= 0.3;
        
        Rw flow $J folate;
        
+       Rw out
+       if ar.o;
+     out: |
        my $ip = {cv=>0.4};
        my $vs = Rw tyv $J $ip;
        
-       push @{o.r}, sort { a.sc.in <=> b.sc.in } map { {
+       push @{o.r||=[]}, sort { a.sc.in <=> b.sc.in } map { {
           t => _.j.t,
           cv => _.j.cv,
           s => _.j.s,
           sc => _.sc,
        } } @$vs;
+       
        o.oJ = $J;
        o.pig = 'lie';
  - K: folate #c
