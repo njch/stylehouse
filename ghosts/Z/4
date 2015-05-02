@@ -37,7 +37,7 @@ R_Jz:
  - K: pi/infrom #c
    D: |
      my $x = $u;
-     J.d.sc.mt = '-3em';
+     
      Jn('onl', 0.1, "x.j.l", '{co:38f,fs:12}');
      
      Jn('is',0.102,{s=>':',pwth=>'whack'},'{fs:20,co:eee}');
@@ -70,6 +70,7 @@ R_Jz:
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
        my ($se,$xor) = reverse @up;
        say "We se.name and xor.r";
+       sayyl "Sez: ".join "  ",sort keys %{xor.d.c.r.sc};
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
        
@@ -80,12 +81,13 @@ R_Jz:
        my $nc = Rw up $J:oJ;
        if ($nc){
            sayyl "WAS NC" for 1..6;
+           coi.abandon->('same on');
+           return;
        }
        
        Rw onxor $J $oJ;
        
        
-       say "anx ".F_delta;
        coi.exactl->();
        
        Rw oJ $J geo &up;
@@ -100,8 +102,7 @@ R_Jz:
            #die ki $x
            Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
            
-           Mn(nez => '', x.thi);
-           Mn(nez => '', {pi=>'',s=>$x,cv=>0.6},"{ls:-2px}");
+           #Mn(nez => '', {pi=>'',s=>$x,cv=>0.6},"{ls:-2px}");
 
            my $o = Rw oundo $x;
            say "   oundoof: ".F_delta;
@@ -261,18 +262,15 @@ R_Jz:
        
        my $ip = {cv=>0.4};
        my $vs = Rw tyv $J $ip;
-       my @o = map { {
+       
+       push @{o.r}, sort { a.sc.in <=> b.sc.in } map { {
           t => _.j.t,
           cv => _.j.cv,
           s => _.j.s,
           sc => _.sc,
        } } @$vs;
        
-       @o = sort { a.sc.in <=> b.sc.in } @o;
        o.pig = 'lie';
-       push @{o.r}, @o;
-
-       o.dig = dig sjson \@o;
  - K: folate #c
    n_D:
      file:
@@ -444,85 +442,4 @@ R_Jz:
          my $gs = Rw ordlv $J $vs;
          
          
- - K: C _fyl #c
-   n_D:
-     el:
-       STYLE: | #
-         {droplist => 'O',
-          subhash => 'X',
-          subhash_X_arp => '$com,$cs,$at,$lv,$J,$j',
-         }
-
-     u: |
-       # oJ
-       
-       # 3
-       my $vs = Rw tyv $J $ip:ar.ip;
-       # 3.1 puts /s backwards and last:
-       my $gs = Rw ordlv $J $vs;
-       
-       # lvitate
-       for my $lv (@$gs) {
-           my $j = lv.j;
-           
-           my $coi = Rw pha $J:oJ $k=j.r-xatly;
-           # Rw lv_same $lv $x:coi $J:oJ; # ends coi
-           # know style's styles
-           # so
-           
-           
-           my $at;
-           my $pat;
-           my $plv;
-           if (!$xat) {
-               $at = {css=>[]};
-               at.s = j.s;
-               # may be creating, overhead thought
-               at.__ajid1 = aj.id;
-               
-               my ($tks, $cs, $it) = Rw sit may O X $lv;
-               
-               # sciterate, can add to $tks
-               while (1) {
-                   my ($tk, $com, $v, $tks) = $it->();
-                   last if !$tk;
-                   #say " $tk, $com, $v, $tks";
-
-                   $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
-                   #say "May X $tk returned: ". wdump [@s] if @s;
-               }
-               # 5.6
-               # lv/at cache
-               
-               my $y = coi.end->();
-               my $ex = Rw ph_exactl $J:oJ $y;
-           }
-           else {
-               $pat = oJ.bb->{"j.l%at\t".j.cv};
-               $plv = oJ.bb->{"j.l%lv\t".j.cv};
-               oJ.bb->{"j.l%lv\t".j.cv} = $lv;
-               $at = $pat;
-           }
-           
-           # gets self aware in waves
-           # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
-           at.__ajid2 = aj.id;
-           lv.at = $at;
-           
-           my $inv = sub {
-              my $wa = shift;
-              my $ig = shift;
-              return ejson $wa if ref $wa eq 'ARRAY';
-              join"            ", map{"$_:".ejson($wa->{$_})}
-              sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
-           };
-           my $tryig = sub {
-              my $ig = shift;
-              $inv->($pat, $ig) eq $inv->($at, $ig)
-           };
-           my $kinv = sub {
-              my $k = shift;
-              $inv->($at->{$k}) ne $inv->($pat->{$k})
-           };
-           
 
