@@ -132,7 +132,7 @@ R_Jz:
            
            my $o = Rw oundo $x;
            say "   oundoof: ".F_delta;
-           my $thy = x.thi / o.thi;
+           my $thy = x.thi / (o.thi||1);
            
            #say join '  ', sort keys %$o;
            
@@ -277,9 +277,10 @@ R_Jz:
        'lie'
      flows:
        folate: |
-         stat 0.1 {tv:file} {et:0}
-         read 0.2 {tv:file} {et:130}
-         jam 0.3 {tv:jam} {et:340}
+         stat 0.1 {} {tv:file,et:0}
+         read 0.2 {} {tv:file,et:130}
+         jam  0.3 {} {tv:read,et:340}
+         flow 0.9 {} {}
      in: |
        my $o = {};
        Rw around $J $o;
@@ -315,20 +316,21 @@ R_Jz:
        
        o.oJ = $J;
        o.pig = 'lie';
- - K: folate #c
-   n_D:
-     stat: | #  lv  = 0.1s
-         at.is_file = -f j.s;
-         my @s = stat j.s;
-         at.size = $s[7];
-         at.mtime = $s[9];
-         at.ctime = $s[10];
-     read: |
-         my $s = read_file(j.s);
-         my $dig = dig $s;
-         Jn('read' => 0.3 => $s, {dig=>$dig});
-         at.dig = $dig;
-     jam: |
+ - K: folate/stat #c
+   D: |
+     at.is_file = -f j.s;
+     my @s = stat j.s;
+     at.size = $s[7];
+     at.mtime = $s[9];
+     at.ctime = $s[10];
+ - K: folate/read #c
+   D: |
+     my $s = read_file(j.s);
+     my $dig = dig $s;
+     Jn('read' => 0.3 => $s, {dig=>$dig});
+     at.dig = $dig;
+ - K: folate/jam #c
+   D: |
          my $i = 0;
          my $l = {map { $i++ => $_ } split "\n", j.s};
          Jn('lines' => 0.3 => $l);
@@ -379,10 +381,42 @@ R_Jz:
              Rw jamsc $J $j $sc:n;
              #saybl "N: n.K        ".slim 40, ki $n;
          }
+ - K: folate/flow #c
+   D: |
+ - K: fl #c
+   n_D:
+     yJ: |
+       'fl'
+     up: |
+       my $h = slm 8, dig ejson[J.Jo.style,J.name];
+       my $uJ = G.drop.flows->{$h} ||= Rw fl/op;
+       
+       R.way.fl->{$h} = uJ.way;
+       
+       Rw fl/$h $J:uJ;
+       
+       # later nondig the cache ind and shoot out only changed words
+     op: |
+       J.flow = ar.flow if ar.flow;
+       J.flow || die;
+       Rw thy $J:J.Jo $oJ:J flows/J.flow;
+       
+       my $vs = Rw tyv $J $cv=0.9;
+       @$vs || die "no 0.9 on J.flow";
+       # all these ways
+       # "Bloody Zipper" plays
+       
+       for my $lv (@$vs) { 
+           my $j = lv.j;
+           
+       }
+       say wdump [ uJ.name." styled way: "=>uJ.way ];
  - K: flow #c K-flow
    D: |
      my $flow = $m->[0];
-     #my $uJ = Rw J5 flu;
+     
+     my $fJ = Rw oJ $J $flow fl &up;
+     
      #my $oJ = Rw around $J:uJ $cJ:J $flow;
      # cachey carbonja ^
      # little meta codey index thing:
@@ -405,10 +439,10 @@ R_Jz:
                my $nc = Rw lv_same $lv $j $x:coi $J;
                next if $nc;
                sayyl "f.cv Effect: f.t  f.s";
-               saybl "In: j.r   => j.s";
+               saybl "In: j.r   => ".slim 20, j.s;
                
                my $at = {};
-               Rw $flow/fv.j.t $J $j $at $sc:lv.sc;
+               Rw $flow/f.t $J $j $at $sc:lv.sc;
                # ^
                # at travels fast
                # v
@@ -416,8 +450,7 @@ R_Jz:
                
                # coi
                coi.same_wd ||= do {
-                   my $ip = {l=>j.l};
-                   my $vs = Rw tyv $J $ip;
+                   my $vs = Rw tyv $J $l:j.l;
                    my $lv = $vs->[0];
                    Rw lv_same $lv $x:coi $J $ret=1;
                };
@@ -425,60 +458,4 @@ R_Jz:
                my $y = coi.exactl->();
            }
        }
- - K: flu #c index J maky escy mody Carbonja
-   n_D:
-     yJ: |
-       'flu'
-     around: |
-       ar.cJ ?
-           Rw flu/cod
-       :();
-     cod: |
-       # look at this word in the context of yay style
-       my $h = slm 6, dig ejson[cJ.style,$flow];
-       #return G.drop.flows->{$h} ||= do {
-           my $oJ = Rw oJ $J $name=flz.$h $style=flz;
-           
-           Rw thy $oJ $J:cJ flows/$flow;
-           # ^nc || v setup
-           Rw around $J:oJ;
-           $oJ;
-       #};
- - K: flz #c created way jumping into vector, stringing to paths
-   n_D:
-     yJ: |
-       'flz'
-     around: |
-       sayyl "Around of J.name !" for 1..2;
-       my $oJ = Rw oJ $J way;
-       
-       my $vs = Rw tyv $J;
-       my $gs = Rw ordlv $J $vs $ninefirst=1;
-       
-       for my $lv (@$vs) { 
-           my $j = lv.j;
-           my $coi = Rw pha $J $k=j.r;
-           #my $xat = Rw lv_same $lv $x:coi $J;
-           #Rw thi $p:j.t $J;
-           # makes a bunch of coils around lvs
-           # so one set of styles runs at a time
-           # grabs a template... 0.9
-           # 0.8 is the join to the template from the most-sorted Carbonja 0.7
-           sayyl "j.r   is j.s";
-           my $y = coi.exactl->();
-       }
-       
-       
-  
- - K: ya #c
-   n_D:
-     am:
-      -
-       - whole
-       - 0.1
-       - |
-         my $vs = Rw tyv $J;
-         my $gs = Rw ordlv $J $vs;
-         
-         
 
