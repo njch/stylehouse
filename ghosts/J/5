@@ -45,6 +45,28 @@ R_Jz:
          return $1;
      };
      G.drop.vonc->(ar.v) if ar.v;
+ - K: concat #c tlv -> wtf.$l.$cvit [ j.s
+   D: |
+       # shove togeth modn
+       # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
+       # tesalation
+       my $vs = Rw tlv $J;
+       # ^ hash styles, things are l+com, like $tks
+       my $wtf;
+       for my $lv (@$vs) {
+           my $j = lv.j;
+           die if !%$j;
+           
+           lv.sc && die "wop";
+           
+           acum ar.coms, j.cv => j.com if ar.coms;
+           
+           my $was = $wtf->{j.l} ||= {};
+           
+           acum $was, G.drop.vonc->(j.cv), j.s;
+           # <<<<<<< cv collapse unto elements #? rel src to round cv...
+       }
+       $wtf
  - K: Con #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my $o = Rw pul + the src path;
@@ -58,42 +80,19 @@ R_Jz:
      my $p = $the =~ /_/ ? "C $path" : "$the c";
      my $J = Rw Carbonja $p $the $path;
      
-       # shove togeth modn
-       # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
-       # tesalation
-       my $ljs = Rw tlv $J;
-       # ^ hash styles, things are l+com, like $tks
-       my $wtf;
-       my $coms = {};
-       for my $lj (@$ljs) {
-           my $j = lj.j;
-           
-           if (!%$j) {
-               warn "not j: ".wdump(2,$lj);
-               next;
-           }
-           
-           lj.sc && die "wop";
-           
-           acum $coms, j.cv => j.com;
-           
-           
-           my $cvit = G.drop.vonc->(j.cv);
-           my $was = $wtf->{j.l} ||= {};
-           acum $was, $cvit, j.s; # <<<<<<< cv collapse unto elements
-       }
+     my $coms = {};
+     my $wtf = Rw concat $J $coms;
+     
+     my $real = {};
+     $real->{$path} = R.way->find($src) || die "no $src";
        
-       my $real = {};
-       $real->{$path} = R.way->find($src) || die "no $src";
-       
-       my $imag = {};
-       my $tl = {};
+     my $imag = {};
+     
        for my $l (sort keys %$wtf) {
            my $was = $wtf->{$l};
            for my $cvit (sort keys %$was) {
                my $v = $was->{$cvit};
                my $type = G.drop.conv->($cvit); # con cvit
-               $tl->{$type} = @$v; # diagsum
                
                $v = join "\n", @$v;        # # <<<<<<<
                
@@ -154,8 +153,6 @@ R_Jz:
        my $tw = Rw fund $p;
        die "no '$p'" if !%$tw;
        # where to suck localness
-       
-       
        
        my $J = {};
        Rw suJ $J;

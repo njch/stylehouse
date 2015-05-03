@@ -379,55 +379,7 @@ R_Jz:
          }
  - K: folate/flow #c
    D: |
-     die "TYad";
- - K: fl #c
-   n_D:
-     yJ: |
-       'fl'
-     up: |
-       my $h = slm 8, dig ejson[J.Jo.style,J.name];
-       my $uJ = G.drop.flows->{$h} ||= Rw fl/op;
-       
-       R.way.fl->{$h} = uJ.way;
-       
-       Rw fl/$h $J:uJ;
-       
-       # later nondig the cache ind and shoot out only changed words
-     op: |
-       J.flow = ar.flow if ar.flow;
-       J.flow || die;
-       Rw thy $J:J.Jo $oJ:J flows/J.flow;
-       
-       my $vs = Rw tyv $J;
-       @$vs || die "no 0.9 on J.flow";
-       $vs = Rw ordlv $J $vs $ninefirst=1;
-       # all these ways
-       # "Bloody Zipper" plays
-       for my $lv (@$vs) { 
-           my $j = lv.j;
-           sayre "Stitch j.r";
-           if (j.cv == 0.9) {
-               my $Z = Rw muck - J.flow/j.l;
-               die wdump $Z;
-               die "J.flow/j.l $Z";
-               die wdump R.way.hooks.folate;
-               #J.way = j.s if 
-           }
-       }
-       
-       say wdump [ J.name." styled way: "=>J.way ];
- - K: flow #c K-flow
-   D: |
-     my $flow = $m->[0];
-     
-     my $fJ = Rw oJ $J $flow fl &up;
-     
-     #my $oJ = Rw around $J:uJ $cJ:J $flow;
-     # cachey carbonja ^
-     # little meta codey index thing:
-       my $fl = Rw oJ $J fl-$flow;
-       Rw thy $J $oJ:fl flows/$flow;
-       my $fvs = Rw tyv $J:fl;
+       my $fvs = Rw tyv $J:fJ;
        
        for my $fv (@$fvs) {
            my $f = fv.j;
@@ -463,4 +415,56 @@ R_Jz:
                my $y = coi.exactl->();
            }
        }
+ - K: flow #c K-flow
+   D: |
+     my $flow = $m->[0];
+     Rw oJ $J $flow fl &up;
+ - K: fl #c
+   n_D:
+     yJ: |
+       'fl'
+     up: |
+       my $h = slm 8, dig ejson[J.Jo.style,J.name];
+       # shoot out only changed words
+       my $cJ = G.drop.flows->{$h} ||= Rw fl/op;
+       
+       R.way.hooks.fl->{$h} = cJ.way;
+       
+       
+       Rw fl/$h/flow $J:J.Jo $fJ:J $cJ;
+       # this ^ for ^ bits ^ loaf ^
+     op: |
+       J.flow = ar.flow if ar.flow;
+       J.flow || die;
+       Rw thy $J:J.Jo $oJ:J flows/J.flow;
+       # ingrediento ^ v
+       my $vs = Rw tyv $J;
+       @$vs || die "no 0.9 on J.flow";
+       $vs = Rw ordlv $J $vs $ninefirst=1;
+       
+       my $wJ = Rw oJ $J way;
+       Rw suJ $J:wJ;
+       
+       # all these ways
+       # "Bloody Zipper" plays
+       for my $lv (@$vs) { 
+           my $j = lv.j;
+           sayre "Stitchup j.r";
+           my $Z = Rw muck - J.flow/j.l;
+           my ($w,$no) = values %$Z;
+           die "wtf".wdump$Z if $no || ref $w eq 'HASH';
+           if (ref $w eq 'ARRAY') {
+               # mod styley into j.l
+           }
+           
+           wJ.bz->(j.
+               
+               die wdump $w;
+               die "J.flow/j.l $Z";
+               die wdump R.way.hooks.folate;
+               #J.way = j.s if 
+           }
+       }
+       
+       say wdump [ J.name." styled way: "=>J.way ];
 
