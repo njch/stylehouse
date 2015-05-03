@@ -218,7 +218,7 @@ __DATA__
               d.ux = ux;
           }
       };
-      a.ethro = function(d, wd) {
+      a.ethro = function(d, ws) {
           if (d.W) {
               var conin = conz[d.W];
               if (conin) {

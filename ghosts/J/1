@@ -231,6 +231,11 @@ R_Jz:
  - K: tvo #c sort by voltage making cv,r ordered list
    D: |
      #say "ipin: ".ki ar.ip if ar.ip;
+     if (ar.l || ar.cv) {
+         my $ip = ar.ip ||= {};
+         ip.l = ar.l if exists ar.l;
+         ip.cv = ar.cv if exists ar.cv;
+     }
      sort { a.cv <=> b.cv }
        sort{ a.r cmp b.r }
        grep { !ar.ip || $G->ip(ar.ip => $_) }

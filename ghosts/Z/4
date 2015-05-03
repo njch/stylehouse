@@ -277,9 +277,9 @@ R_Jz:
        'lie'
      flows:
        folate: |
-         file/stat 0.1 {} {et:0}
-         file/read 0.2 {} {et:130}
-         read/jam 0.3 {} {et:340}
+         stat 0.1 {tv:file} {et:0}
+         read 0.2 {tv:file} {et:130}
+         jam 0.3 {tv:jam} {et:340}
      in: |
        my $o = {};
        Rw around $J $o;
@@ -317,20 +317,18 @@ R_Jz:
        o.pig = 'lie';
  - K: folate #c
    n_D:
-     file:
-       stat: | #  lv  = 0.1s
+     stat: | #  lv  = 0.1s
          at.is_file = -f j.s;
          my @s = stat j.s;
          at.size = $s[7];
          at.mtime = $s[9];
          at.ctime = $s[10];
-       read: |
+     read: |
          my $s = read_file(j.s);
          my $dig = dig $s;
          Jn('read' => 0.3 => $s, {dig=>$dig});
          at.dig = $dig;
-     read:
-       jam: |
+     jam: |
          my $i = 0;
          my $l = {map { $i++ => $_ } split "\n", j.s};
          Jn('lines' => 0.3 => $l);
@@ -393,11 +391,10 @@ R_Jz:
        my $fvs = Rw tyv $J:fl;
        
        for my $fv (@$fvs) {
-           my ($forl,$gap,$re) = fv.j.l =~ /(.+)(\/|:)(.+)/;
-           
-           my $ip = {l=>$forl};
-           my $vs = Rw tyv $J $ip;
-           $re = "$forl$gap$re" unless $gap eq ':';
+           my $f = fv.j;
+           my $fsc = fv.sc;
+           my $vs = Rw tyv $J $l:fsc.tv;
+           sayre "Outis: f.r";
            
            for my $lv (@$vs) {
                my $j = lv.j;
@@ -407,10 +404,11 @@ R_Jz:
                # if change exactl swoops an init linehum wd
                my $nc = Rw lv_same $lv $j $x:coi $J;
                next if $nc;
-               sayyl "Effect: fv.j.r  fv.j.s";
+               sayyl "f.cv Effect: f.t  f.s";
+               saybl "In: j.r   => j.s";
                
                my $at = {};
-               Rw $flow/fv.j.l $J $j $at $sc:lv.sc;
+               Rw $flow/fv.j.t $J $j $at $sc:lv.sc;
                # ^
                # at travels fast
                # v
