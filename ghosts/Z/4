@@ -78,11 +78,7 @@ R_Jz:
        my $oJ = Rw oJ $J on filey;
        
        my $nc = Rw up $J:oJ;
-       if ($nc){
-           sayyl "WAS NC" for 1..6;
-           coi.abandon->('same on');
-           return;
-       }
+       #return coi.abandon->('same on') if $nc;
        
        Rw onxor $J $oJ;
        
@@ -383,6 +379,7 @@ R_Jz:
          }
  - K: folate/flow #c
    D: |
+     die "TYad";
  - K: fl #c
    n_D:
      yJ: |
@@ -401,16 +398,24 @@ R_Jz:
        J.flow || die;
        Rw thy $J:J.Jo $oJ:J flows/J.flow;
        
-       my $vs = Rw tyv $J $cv=0.9;
+       my $vs = Rw tyv $J;
        @$vs || die "no 0.9 on J.flow";
+       $vs = Rw ordlv $J $vs $ninefirst=1;
        # all these ways
        # "Bloody Zipper" plays
-       
        for my $lv (@$vs) { 
            my $j = lv.j;
-           
+           sayre "Stitch j.r";
+           if (j.cv == 0.9) {
+               my $Z = Rw muck - J.flow/j.l;
+               die wdump $Z;
+               die "J.flow/j.l $Z";
+               die wdump R.way.hooks.folate;
+               #J.way = j.s if 
+           }
        }
-       say wdump [ uJ.name." styled way: "=>uJ.way ];
+       
+       say wdump [ J.name." styled way: "=>J.way ];
  - K: flow #c K-flow
    D: |
      my $flow = $m->[0];
