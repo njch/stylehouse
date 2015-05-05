@@ -164,10 +164,6 @@ R_Jz:
       var shape = new Path.RegularPolygon(view.center,3, 100);
       
       shape.fillColor = '#8C8A00';
-      //shape.animate(2, paper.uplg, true)
-      //    .translate(new Point(200,100))
-      //    .rotate(60)
-      //    .scale(3);
       view.onFrame = function (event) {
       //    paper.uplg.update(event);
           shape.rotate(1);
@@ -194,6 +190,7 @@ R_Jz:
 
       view.onMouseMove = function (event) {
           mousePoint = event.point;
+          a.m('mm!');
       }
 
       var children = project.activeLayer.children;
@@ -203,7 +200,7 @@ R_Jz:
           for (var i = 1, l = children.length; i < l; i++) {
               var item = children[i];
               var delta = (mousePoint - item.position) / (i + 5);
-              item.rotate((Math.sin((event.count + i) / 10)+1.617) * 3);
+              item.rotate((Math.sin((event.count + i) / 10)+0.617) * 3);
               if (delta.length > 0.1)
                   item.position += delta;
               item.fillColor.hue += 1;
