@@ -418,7 +418,8 @@ R_Jz:
  - K: flow #c K-flow
    D: |
      my $name = $m->[0];
-     Rw oJ $J $name $style=fl &up;
+     my $oJ = Rw oJ $J $name $style=fl;
+     Rw up $J:oJ;
  - K: fl #c stitch at/cs solvents 
    n_D:
      yJ: |
@@ -440,28 +441,32 @@ R_Jz:
        my $vs = Rw tyv $J;
        @$vs || die "no 0.9 on J.name";
        
-       my $wJ = Rw oJ $J way;
-       Rw suJ $J:wJ;
+       my $cJ = Rw oJ $J way;
+       Rw suJ $J:ctJ;
        
        # all these ways
        # "Bloody Zipper" plays
        for my $lv (@$vs) { 
            my $j = lv.j;
-           sayre "Stitchup j.r";
+           sayre "Stitchup j.r    ".ki lv.sc;
+           
            my $Z = Rw muck - J.name/j.l;
-           my ($w,$no) = values %$Z;
-           die "wtf".wdump$Z if $no || ref $w eq 'HASH';
-           if (ref $w eq 'ARRAY') {
+           my ($s,$no) = values %$Z;
+           say $s;
+           
+           die "wtf".wdump$Z if $no || ref $s eq 'HASH';
+           if (ref $s eq 'ARRAY') {
                # mod styley into j.l
            }
-           
+           next;
            #wJ.bz->(j.
                
-               die wdump $w;
+               die wdump $s;
                die "J.flow/j.l $Z";
                die wdump R.way.hooks.folate;
                #J.way = j.s if 
        }
-       
        say wdump [ J.name." styled way: "=>J.way ];
+       
+       $cJ
 
