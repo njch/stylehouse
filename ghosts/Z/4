@@ -273,10 +273,10 @@ R_Jz:
        'lie'
      flows:
        folate: |
-         stat 0.1 {} {tv:file,et:0}
-         read 0.2 {} {tv:file,et:130}
-         jam  0.3 {} {tv:read,et:340}
-         flow 0.9 {} {}
+         stat 0.61 {} {tv:file,et:0}
+         read 0.62 {} {tv:file,et:130}
+         jam  0.63 {} {tv:read,et:340}
+         flow 0.9  {} {}
      in: |
        my $o = {};
        Rw around $J $o;
@@ -424,15 +424,15 @@ R_Jz:
      yJ: |
        'fl'
      up: |
+       # later shoot out only changed words
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
-       # shoot out only changed words
+       
        my $cJ = G.drop.flows->{$h} ||= Rw fl/op;
        
        R.way.hooks.fl->{$h} = cJ.way;
        
-       
        Rw fl/$h/flow $J:J.Jo $fJ:J $cJ;
-       # this ^ for ^ bits ^ loaf ^
+       #   this ^ for ^ bits ^ loaf ^
      op: |
        J.flow = ar.flow if ar.flow;
        J.flow || die;
