@@ -273,10 +273,10 @@ R_Jz:
        'lie'
      flows:
        folate: |
+         flow 0.1  {} {}
          stat 0.61 {} {tv:file,et:0}
          read 0.62 {} {tv:file,et:130}
          jam  0.63 {} {tv:read,et:340}
-         flow 0.9  {} {}
      in: |
        my $o = {};
        Rw around $J $o;
@@ -417,9 +417,9 @@ R_Jz:
        }
  - K: flow #c K-flow
    D: |
-     my $flow = $m->[0];
-     Rw oJ $J $flow fl &up;
- - K: fl #c
+     my $name = $m->[0];
+     Rw oJ $J $name $style=fl &up;
+ - K: fl #c stitch at/cs solvents 
    n_D:
      yJ: |
        'fl'
@@ -434,13 +434,11 @@ R_Jz:
        Rw fl/$h/flow $J:J.Jo $fJ:J $cJ;
        #   this ^ for ^ bits ^ loaf ^
      op: |
-       J.flow = ar.flow if ar.flow;
-       J.flow || die;
-       Rw thy $J:J.Jo $oJ:J flows/J.flow;
-       # ingrediento ^ v
+       # $oJ/flows/M(Carbon switchboard)
+       Rw thy $J:J.Jo $oJ:J flows/J.name;
+       
        my $vs = Rw tyv $J;
-       @$vs || die "no 0.9 on J.flow";
-       $vs = Rw ordlv $J $vs $ninefirst=1;
+       @$vs || die "no 0.9 on J.name";
        
        my $wJ = Rw oJ $J way;
        Rw suJ $J:wJ;
@@ -450,7 +448,7 @@ R_Jz:
        for my $lv (@$vs) { 
            my $j = lv.j;
            sayre "Stitchup j.r";
-           my $Z = Rw muck - J.flow/j.l;
+           my $Z = Rw muck - J.name/j.l;
            my ($w,$no) = values %$Z;
            die "wtf".wdump$Z if $no || ref $w eq 'HASH';
            if (ref $w eq 'ARRAY') {
