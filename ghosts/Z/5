@@ -50,13 +50,16 @@ R_Jz:
        # later shoot out only changed words
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
        
-       my $oJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
+       my $oJ = G.drop.flows->{$h} 
+       #||=
+       = Rw fl/op + $h;
        
        R.way.hooks.fl->{$h} = oJ.way;
        oJ.hw = "fl/$h"; # < Rw ^ data
        
-       Rw fJ.hw/flow $J:J.Jo $fJ:J $oJ;
-       #   this ^ for ^ bits ^ loaf ^
+       Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
+       #   enter ^ for ^ bits ^ loaf ^
+       # (bits whack)
      op: |
        J.hw = "fl/$h";
        # 
@@ -102,7 +105,7 @@ R_Jz:
      # so $the/X for subhash X, yin require of user
      # similar smush in G.drop.$the
      my $p = $the =~ /_/ ? "C $path" : "$the c";
-     my $J = Rw Carbonja $p $the $path;
+     my $J = Rw Carbonjour $p $the $path;
      
      my $coms = {};
      my $wtf = Rw concat $J $coms;
@@ -212,7 +215,7 @@ R_Jz:
                        c.s = $D;
                        c.sc.com = "# $zk @ c.K  ";
 
-                       Rw Nucleous $file $ty $c $the $path $J;
+                       Rw Nucleoues $file $ty $c $the $path $J;
                    }
                }
                elsif (ref $c eq 'ARRAY') {
@@ -220,7 +223,7 @@ R_Jz:
                    (n.K, n.v, n.s, n.sc) = @$c;
                    n.sc.com ||= "# n.K n.v";
                    
-                   Rw Nucleous $file $ty $c:n $the $path $J;
+                   Rw Nucleoues $file $ty $c:n $the $path $J;
                }
                else {
                    die wdump $c;
