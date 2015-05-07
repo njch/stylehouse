@@ -16,6 +16,7 @@ hooks:
     
     my $reS = sub { my $m = shift; w reS[$m]; };
     $G->su(S => $reS);
+    $G->su("S/H.style" => $reS);
     $G->su("S/H.style/H.name" => $reS);
     $G->su("S/H.style/H.name/H.id" => $reS);
     
@@ -40,7 +41,7 @@ hooks:
     $port ||= 2000;
     $host ||= '127.0.0.1';
 
-    $port += ord(H.name) + 8002;
+    $port += ord(H.name) + 8003;
     
     H.listen_http = "http://$host:$port";   
     H.listen_ws = "ws://$host:$port/s";
@@ -156,6 +157,11 @@ hooks:
       return w S/W if e.W;
       sayre "Strange event", wdump $e;
       
+    elv: | #c enters
+      my @ghosts = H.G K Gs:*;
+      for my $g (@ghosts) {
+          $g->w('elv', {m=>$m});
+      }
     key: | #c key -> W switch
       saybl "e: ".wdump($e);
       

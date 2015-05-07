@@ -1,4 +1,42 @@
 R_Jz:
+ - K: folate/flow #c
+   D: |
+       my $fvs = Rw tyv $J:fJ;
+       
+       for my $fv (@$fvs) {
+           my $f = fv.j;
+           my $fsc = fv.sc;
+           my $vs = Rw tyv $J $l:fsc.tv;
+           sayre "Outis: f.r";
+           
+           for my $lv (@$vs) {
+               my $j = lv.j;
+               my $coi = Rw pha $J $k=fv.j.l*j.r;
+               coi.off = fv.sc.et;
+               # resolve $offness, add $and to lv_same
+               # if change exactl swoops an init linehum wd
+               my $nc = Rw lv_same $lv $j $x:coi $J;
+               next if $nc;
+               sayyl "f.cv Effect: f.t  f.s";
+               saybl "In: j.r   => ".slim 20, j.s;
+               
+               my $at = {};
+               Rw $flow/f.t $J $j $at $sc:lv.sc;
+               # ^
+               # at travels fast
+               # v
+               Rw jamsc $J $j $sc:at;
+               
+               # coi
+               coi.same_wd ||= do {
+                   my $vs = Rw tyv $J $l:j.l;
+                   my $lv = $vs->[0];
+                   Rw lv_same $lv $x:coi $J $ret=1;
+               };
+           
+               my $y = coi.exactl->();
+           }
+       }
  - K: flow #c K-flow
    D: |
      my $name = $m->[0];
@@ -12,31 +50,31 @@ R_Jz:
        # later shoot out only changed words
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
        
-       my $cJ = G.drop.flows->{$h} ||= Rw fl/op;
+       my $oJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
        
-       R.way.hooks.fl->{$h} = cJ.way;
+       R.way.hooks.fl->{$h} = oJ.way;
+       oJ.hw = "fl/$h"; # < Rw ^ data
        
-       Rw fl/$h/flow $J:J.Jo $fJ:J $cJ;
+       Rw fJ.hw/flow $J:J.Jo $fJ:J $oJ;
        #   this ^ for ^ bits ^ loaf ^
      op: |
+       J.hw = "fl/$h";
        # 
        Rw thy $J:J.Jo $oJ:J flows/J.name;
        
        my $vs = Rw tyv $J;
+       @$vs||die;
        
-       my $cJ = Rw oJ $J way;
-       Rw suJ $J:ctJ;
+       my $oJ = {};
+       Rw suJ $J:oJ;
        
-       # all these ways
-       # "Bloody Zipper" plays
-       @$vs||die"novs J.name";
        for my $lv (@$vs) { 
            my $j = lv.j;
            sayre "Stitchup j.r    ".ki lv.sc;
            
            my $Z = Rw muck - J.name/j.l;
            my ($s,$no) = values %$Z;
-           say $s;
+           say slim 40, $s;
            
            die "wtf".wdump$Z if $no || ref $s eq 'HASH';
            if (ref $s eq 'ARRAY') {
@@ -52,5 +90,214 @@ R_Jz:
        }
        say wdump [ J.name." styled way: "=>J.way ];
        
-       $cJ
+       $oJ
+ - K: Connn #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
+   D: |
+     my $o = Rw pul + the src path;
+     my $the = o.the || die;
+     my $src = o.src || "$the/u";
+     my $path = o.path || "$the/n";
+     # or wherever thi src + carbon quags into existence
+     # root l=$the := $the/n, otherwis whatever is l
+     # so $the/X for subhash X, yin require of user
+     # similar smush in G.drop.$the
+     my $p = $the =~ /_/ ? "C $path" : "$the c";
+     my $J = Rw Carbonja $p $the $path;
+     
+     my $coms = {};
+     my $wtf = Rw concat $J $coms;
+     
+     my $real = {};
+     $real->{$path} = R.way->find($src) || die "no $src";
+       
+     my $imag = {};
+     
+       for my $l (sort keys %$wtf) {
+           my $was = $wtf->{$l};
+           for my $cvit (sort keys %$was) {
+               my $v = $was->{$cvit};
+               my $type = G.drop.conv->($cvit); # con cvit
+               
+               $v = join "\n", @$v;        # # <<<<<<<
+               
+               if ($real->{$l}) {
+                   # after an elemental aggregation...
+                   # these'll be top posting after cv sort?
+                   $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
+                   
+                   || die "no $type in ...";
+               }
+               else {
+                   $imag->{$l} .= "\n$v";
+               }
+           }
+       }
+       
+       my $all = {%$real, %$imag};
+       die wdump[[sort keys %$real],[sort keys %$imag],[sort keys %$all]]
+          if keys(%$real) + keys(%$imag) != keys %$all;
+       for my $pin (sort keys %$all) {
+           my $www = $all->{$pin};
+           
+           $pin = $path if $pin eq $the; # $the/n
+           my $ac = join'',map{"{$_"}split'/',$pin;
+           
+           #say "Injecting   $pin  $ac   with:";
+           #sayre ind '   ', slim 5300, $www;
+           $R->loadup(R.way.hooks, $ac, $www);
+       }
+       
+       G.jumb.ConJ->{$the} = $J;
+     
+
+       
+       #talkyelemental 
+       my $ev;
+       for (sort keys %$coms) {
+           my $c = $coms->{$_};
+           push @{$ev->{floor($_)}||=[]}, @$c;
+       }
+       my $sl;
+       for my $k (sort keys %$ev) {
+           my $r = $ev->{$k};
+           $sl .= "   $k * ".(0+@$r)."(".slim(25,join(' ',@$r)).")";
+       }
+        
+       #saybl " _________________  $mw" if $the eq 'esc';
+       sayyl "$path <- $the     $sl";
+       
+       my $em = ["$the/Conned"];
+       Rw suck $m:em $J;
+       # nice thing to print ^
+       
+ - K: Carbonjour #c 3ish
+   D: |
+       
+       $p .= '(#*)?' if $p =~ /^C /;
+       my $tw = Rw fund $p;
+       die "no '$p'" if !%$tw;
+       # where to suck localness
+       
+       my $J = {};
+       Rw suJ $J;
+       
+       my $p = "$the/el/*";
+       my $ty = Rw huck $p;
+       $ty = {map{
+            my $type = $1 if /el\/(.+)$/ || die;
+            my $an = $ty->{$_};
+            die if @$an > 1;
+            $type => $an->[0];
+       }keys %$ty};
+       
+       
+       for my $file (sort keys %$tw) {
+           my $Cs = $tw->{$file};
+           my $coi = Rw pha $J $k:file;
+           
+           for my $c (@$Cs) {
+               #die wdump $c if ref $c eq 'HASH' && (c.MZ || c.K eq 'MZ');
+               # occasional c.MZ for things that always want in...
+               # homex ty, local modulation, the radio
+               # some carbon fits
+               # also from $the/el
+               
+               if (ref $c eq 'HASH') {
+                   my @wsy = grep {m/\S\s\S/} keys %$c;
+                   for my $zk (@wsy) {
+                       my $D = $c->{$zk};
+                       my ($k, $v) = split m/\s/, $zk;
+                       #die "$k ne $the      $path" if $k ne $the; # the redund
+                       c.v ||= $v;
+                       c.s = $D;
+                       c.sc.com = "# $zk @ c.K  ";
+
+                       Rw Nucleous $file $ty $c $the $path $J;
+                   }
+               }
+               elsif (ref $c eq 'ARRAY') {
+                   my $n = {};
+                   (n.K, n.v, n.s, n.sc) = @$c;
+                   n.sc.com ||= "# n.K n.v";
+                   
+                   Rw Nucleous $file $ty $c:n $the $path $J;
+               }
+               else {
+                   die wdump $c;
+               }
+           }
+           coi.end->();
+       }
+       $J
+ - K: Nucleoues #c
+   D: |
+          my (@l,@lr,@r);
+          c.K || die;
+          c.v ||= 3;
+          c.v += 0;
+          my $ome = "#".c.K;
+          die c.v if c.v !~ /^\d/;
+
+          # if for c.cs, for implant condits # sche
+          my $cv = c.v;
+          my $D = c.s;
+          my $type = G.drop.conv->($cv);
+          # z downgrasp
+          my $sc;
+          $sc = c.sc.MZ if c.sc && c.sc.MZ;
+          $sc ||= $ty->{$type};
+          $sc ||= {};
+          $sc = {%$sc, %{c.sc}} if c.sc;
+          
+          # per $path if maybe ?? emberd whatsits
+          # some special K of c may have meta for this too
+          
+               if (my $sub = sc.subhash) {
+                   unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
+                   my $args = '$v,$tks,$'.$sub;
+                   if (my $arp = sc.subhash_X_arp) {
+                       $args .= ",$arp";
+                   }
+                   push @lr, '    my ('.$args.') = @_;'; # gets $X, etc
+                   $D = ind '     ', $D;
+                   push @r, '};';
+                   if (my $list = sc.droplist) {
+                       push @r, "push \@{G\.drop\.$path\.$list}, 'c.K';"; 
+                       J bz ${path}_$sub#rese$list 1 "G\.drop\.$path\.$list = [];"
+                   }
+                   my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+                   @l = (); @lr = (); @r = ();
+                   J bz ${path}_$sub$ome $cv $haD
+                   J bz ${path}_$sub#rese 1 "G\.drop\.$path\.$sub = {};"
+                   J bz ${path}_$sub#return 9 "G\.drop\.$path\.$sub;"
+                   J bz $path#upsubhash-$sub 1 "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;"
+                   return; #
+               }
+          
+          # : EXPR ? DO +
+          # or they want elsif
+          # see what the cv wants to land on/through
+          # see twisty ops in lightcones
+          # could resolve curve embeddings like this
+          if (my $cs = sc.qmco) {
+              push @l, ':', "\$tk eq 'c.K' ? do {";
+              if (my $sub = sc.subhash) {
+                  $D = "G\.drop\.$path\.$sub\.c.K->(\$v, \$tks)";
+              }
+              $D = ind '     ', $D;
+              push @r, '}';
+          }
+          
+          # if (sc.this) { DO } +
+               if (my $cs = sc.csfrm) {
+                   $cs = c.K if $cs eq 'cK';
+                   sc.com .= "# cs=$cs  ";
+                   unshift @l, "if (exists c\.$cs) {"
+                       ."\n    my \$cs = c\.$cs;";
+                   $D = ind '     ', $D;
+                   push @r, '}';
+               }
+               
+               $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+               J bz $path$ome $cv $D
 
