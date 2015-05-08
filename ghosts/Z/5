@@ -1,28 +1,26 @@
 R_Jz:
  - K: folate/flow #c
    D: |
-     die ddump oJ.tvs;
-       my $fvs = Rw tyv $J:fJ;
-       
-       for my $fv (@$fvs) {
-           my $f = fv.j;
-           my $fsc = fv.sc;
-           my $vs = Rw tyv $J $l:fsc.tv;
-           sayre "Outis: f.r   Got: ".@$vs;
-           
-           for my $lv (@$vs) {
-               my $j = lv.j;
-               my $coi = Rw pha $J $k=fv.j.l*j.r;
-               coi.off = fv.sc.et;
-               # resolve $offness, add $and to lv_same
-               # if change exactl swoops an init linehum wd
-               my $nc = Rw lv_same $lv $j $x:coi $J;
-               next if $nc;
-               sayyl "f.cv Effect: f.t  f.s";
-               saybl "In: j.r   => ".slim 20, j.s;
+     for my $c (@{oJ.tvs}) {
+         my $ip;
+         ip.l = c.sc.tv if c.sc.tv;
+         my $vs = Rw tyv $J $ip;
+         
+         sayre "Outis: c.v --- c.K  Got: ".@$vs;
+         for my $lv (@$vs) {
+             my $j = lv.j;
+             my $coi = Rw pha $J $k=c.K*j.r;
+             coi.off = c.sc.et if c.sc.et;
+             # resolve $offness, add $and to lv_same
+             # if change exactl swoops an init linehum wd
+             
+             my $nc = Rw lv_same $lv $j $x:coi $J;
+             next if $nc;
+             sayyl "c.v Effect: c.K ";
+             saybl "In: j.r   => ".slim 20, j.s;
                
-               my $at = {};
-               Rw oJ.hw/f.t $J $j $at $sc:lv.sc;
+             my $at = {};
+             Rw oJ.hw/c.K $J $j $at $c $sc:lv.sc;
                # ^
                # at travels fast
                # v
@@ -51,22 +49,19 @@ R_Jz:
        # later shoot out only changed words
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
        
-       my $oJ = G.drop.flows->{$h} 
+       my $oJ = G.drop.flows->{$h} = Rw fl/op + $h;
        #||=
-       = Rw fl/op + $h;
-       
-       R.way.hooks.fl->{$h} = oJ.way;
+       Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
        
        Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
        #   enter ^ for ^ bits ^ loaf ^
        # (lost bits)
      op: |
-       J.hw = "fl/$h";
        # 
        Rw thy $J:J.Jo $oJ:J flows/J.name;
        # where to suck localness ^
-       # which hackymods to:
-       my $oJ = {};
+       my $oJ;
+       oJ.hw = "fl/h/$h";
        Rw suJ $J:oJ;
        
        my $vs = Rw tyv $J;
@@ -105,18 +100,74 @@ R_Jz:
                    Rw Nucleoues $c $path $oJ:J $J:oJ;
                }
            }
-           
-
-           next;
-           #wJ.bz
        }
+       
        my $coms = {};
        my $wtf = Rw concat $J:oJ $coms;
        
-       saybl ddump $wtf ;
+       my $real = Rw wtfity $wtf;
+       
+       oJ.way = {};
+       for my $pin (sort keys %$real) {
+           my $n = $real->{$pin};
+           Rw loadup $u:oJ.way $pin $n;
+       }
+       saybl ddump oJ.way ;
        say ddump oJ.tvs;
        
        $oJ
+ - K: wtfity #c
+   D: |
+     my $real = {};
+     
+     for my $l (sort keys %$wtf) {
+         my $cvs = $wtf->{$l};
+         
+         for my $cvit (sort keys %$cvs) {
+             my $v = $cvs->{$cvit};
+             
+             my $type = G.drop.conv->($cvit);
+             # con cvit # make zp(1) to round zero point numbers to 1, etc
+             
+             $v = join "\n", @$v;        # # <<<<<<<
+             
+             if ($type eq 'YIN') {
+                 $real->{$l} = $v;
+             }
+             else {
+                 $real->{$l} || die;
+                 $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
+                    
+                    || die "no $type in ...";
+             }
+         }
+     }
+     
+     $real
+       
+ - K: concat #c tlv -> wtf.$l.$cvit [ j.s
+   D: |
+       # shove togeth modn
+       # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
+       # tesalation
+       my $vs = Rw tlv $J;
+       # ^ hash styles, things are l+com, like $tks
+       my $wtf;
+       for my $lv (@$vs) {
+           my $j = lv.j;
+           die if !%$j;
+           
+           lv.sc && die "wop";
+           
+           acum ar.coms, j.cv => j.com if ar.coms;
+           
+           my $was = $wtf->{j.l} ||= {};
+           
+           acum $was, G.drop.vonc->(j.cv), j.s;
+           # aggs to wanted dp, fractionated in as the src wants, in the order of tlvness
+           # <<<<<<< cv collapse unto elements #? rel src to round cv...
+       }
+       $wtf
  - K: Connn #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
    D: |
      my $o = Rw pul + the src path;
