@@ -7,7 +7,7 @@ R_Jz:
            my $f = fv.j;
            my $fsc = fv.sc;
            my $vs = Rw tyv $J $l:fsc.tv;
-           sayre "Outis: f.r";
+           sayre "Outis: f.r   Got: ".@$vs;
            
            for my $lv (@$vs) {
                my $j = lv.j;
@@ -21,7 +21,7 @@ R_Jz:
                saybl "In: j.r   => ".slim 20, j.s;
                
                my $at = {};
-               Rw $flow/f.t $J $j $at $sc:lv.sc;
+               Rw oJ.hw/f.t $J $j $at $sc:lv.sc;
                # ^
                # at travels fast
                # v
@@ -55,7 +55,6 @@ R_Jz:
        = Rw fl/op + $h;
        
        R.way.hooks.fl->{$h} = oJ.way;
-       oJ.hw = "fl/$h"; # < Rw ^ data
        
        Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
        #   enter ^ for ^ bits ^ loaf ^
@@ -72,30 +71,49 @@ R_Jz:
        my $vs = Rw tyv $J;
        @$vs||die;
        
+       my $path;
+       
        for my $lv (@$vs) { 
            my $j = lv.j;
            sayre "Stitchup j.r    ".ki lv.sc;
            
            my $Z = Rw muck - J.name/j.l;
+           
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
-               my ($s,$no) = values %$Z;
-               say slim 40, $s;
+               
+               $path = j.l if j.cv == 0.1;
+               
+               say " *  $k   ".slim 40, $s;
+               if (ref $s eq 'ARRAY') {
+                   die 'mod styley into j.l, sc inherit';
+               }
+               elsif (ref $s eq 'HASH') {
+                   die 'possible lma fire...'
+               }
+               else {
+                   ref $s && die $s;
+                   !$path && die "noapth";
+                   my $c = {};
+                   c.K = j.l;
+                   c.v = j.cv;
+                   c.s = $s;
+                   c.sc = lv.sc;
+                   c.sc.com ||= "# c.K c.v";
+                   
+                   Rw Nucleoues $c $path $oJ:J $J:oJ;
+               }
            }
            
-           die "wtf".wdump$Z if $no || ref $s eq 'HASH';
-           if (ref $s eq 'ARRAY') {
-               # mod styley into j.l
-           }
+
            next;
-           #wJ.bz->(j.
-               
-               die wdump $s;
-               die "J.flow/j.l $Z";
-               die wdump R.way.hooks.folate;
-               #J.way = j.s if 
+           #wJ.bz
        }
-       say wdump [ J.name." styled way: "=>J.way ];
+       my $coms = {};
+       my $wtf = Rw concat $J:oJ $coms;
+       
+       saybl wdump 4,[ J.name." styled way: "=>$wtf ];
+       say wdump J.tvs;
        
        $oJ
  - K: Connn #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
@@ -177,6 +195,12 @@ R_Jz:
        Rw suck $m:em $J;
        # nice thing to print ^
        
+ - K: loadup #c
+   D: |
+     my $pin = ar.p||ar.pin;
+     my $ac = join'',map{"{$_"}split'/',$pin;
+     $R->loadup($u, $ac, $n);
+     
  - K: Carbonjour #c 3ish
    D: |
        #$p .= '(#*)?' if $p =~ /^C /;
@@ -239,26 +263,32 @@ R_Jz:
           c.K || die;
           c.v ||= 3;
           c.v += 0;
-          my $ome = "#".c.K;
+          
+          my $ome = c.K; # as uncompressed in the bb key? wtf if K dup
+          
           die c.v if c.v !~ /^\d/;
 
           # if for c.cs, for implant condits # sche
           my $cv = c.v;
           my $D = c.s;
           my $type = G.drop.conv->($cv);
-          # z downgrasp
+          # z downgrasp (ty above) self if MZ
           my $sc;
           $sc = c.sc.MZ if c.sc && c.sc.MZ;
+          my $ty = {};
           $sc ||= $ty->{$type};
           $sc ||= {};
           $sc = {%$sc, %{c.sc}} if c.sc;
+          c.sc = $sc;
           
           # per $path if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
           
                if (my $sub = sc.subhash) {
                    unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
+                   
                    my $args = '$v,$tks,$'.$sub;
+                   
                    if (my $arp = sc.subhash_X_arp) {
                        $args .= ",$arp";
                    }
@@ -271,18 +301,21 @@ R_Jz:
                    }
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
-                   J bz ${path}_$sub$ome $cv $haD
-                   J bz ${path}_$sub#rese 1 "G\.drop\.$path\.$sub = {};"
-                   J bz ${path}_$sub#return 9 "G\.drop\.$path\.$sub;"
-                   J bz $path#upsubhash-$sub 1 "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;"
+                   
+                   J.bz->("${path}_$sub#rese\t1", "G\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#$ome\t$cv", $haD);
+                   J.bz->("${path}_$sub#return\t9", "G\.drop\.$path\.$sub;");
+                   J.bz->("$path#upsubhash-$sub\t1",
+                     "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;");
+                     
                    return; #
                }
           
-          # : EXPR ? DO +
-          # or they want elsif
-          # see what the cv wants to land on/through
           # see twisty ops in lightcones
           # could resolve curve embeddings like this
+          # same in bush of stuff to cv out
+          # cv in
+          
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
               if (my $sub = sc.subhash) {
@@ -302,6 +335,16 @@ R_Jz:
                    push @r, '}';
                }
                
+               if ($type eq 'TRAVEL') {
+                   # lets D
+                   J.bz->("c.K\t1", $D);
+                   # dup pha check^
+                   #die ki $sc;
+                   acum $oJ, tvs => $c;
+                   #die wdump [$path, $ome, $cv, c.K, $sc, $type];
+                   return;
+               }
+               
                $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
-               J bz $path$ome $cv $D
+               J.bz->("$path#$ome\t$cv", $D);
 

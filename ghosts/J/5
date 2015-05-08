@@ -33,7 +33,7 @@ R_Jz:
      my $pway = {qw'1 YIN 2 YANG 3 CARBON 5 STYLE 6 TRAVEL 7 CITOZINE 9 RETURN'};
      G.drop.conv = sub {
           my $v = shift;
-         my $dig = $1 if $v =~ /^(\d)/;
+         my $dig = $1 if $v =~ /^.*?([1-9]).*/;
          $pway->{$dig} || die " not convable $dig from $v";
      };
      G.drop.conv->(ar.v) if ar.v;
@@ -41,7 +41,7 @@ R_Jz:
    D: |
      G.drop.vonc = sub {
           my $v = shift;
-         my $dig = $1 if $v =~ /^(\d)/;
+         my $dig = $1 if $v =~ /^.*?([1-9]).*/;
          return $1;
      };
      G.drop.vonc->(ar.v) if ar.v;
@@ -114,14 +114,9 @@ R_Jz:
        die wdump[[sort keys %$real],[sort keys %$imag],[sort keys %$all]]
           if keys(%$real) + keys(%$imag) != keys %$all;
        for my $pin (sort keys %$all) {
-           my $www = $all->{$pin};
-           
+           my $n = $all->{$pin};
            $pin = $path if $pin eq $the; # $the/n
-           my $ac = join'',map{"{$_"}split'/',$pin;
-           
-           #say "Injecting   $pin  $ac   with:";
-           #sayre ind '   ', slim 5300, $www;
-           $R->loadup(R.way.hooks, $ac, $www);
+           Rw loadup $u:R.way.hooks $pin $n;
        }
        
        G.jumb.ConJ->{$the} = $J;
