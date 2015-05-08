@@ -1,41 +1,5 @@
 R_Jz:
- - K: folate/flow #c
-   D: |
-     for my $c (@{oJ.tvs}) {
-         my $ip;
-         ip.l = c.sc.tv if c.sc.tv;
-         my $vs = Rw tyv $J $ip;
-         
-         sayre "Outis: c.v --- c.K  Got: ".@$vs;
-         for my $lv (@$vs) {
-             my $j = lv.j;
-             my $coi = Rw pha $J $k=c.K*j.r;
-             coi.off = c.sc.et if c.sc.et;
-             # resolve $offness, add $and to lv_same
-             # if change exactl swoops an init linehum wd
-             
-             my $nc = Rw lv_same $lv $j $x:coi $J;
-             next if $nc;
-             sayyl "c.v Effect: c.K ";
-             saybl "In: j.r   => ".slim 20, j.s;
-               
-             my $at = {};
-             Rw oJ.hw/c.K $J $j $at $c $sc:lv.sc;
-               # ^
-               # at travels fast
-               # v
-               Rw jamsc $J $j $sc:at;
-               
-               # coi
-               coi.same_wd ||= do {
-                   my $vs = Rw tyv $J $l:j.l;
-                   my $lv = $vs->[0];
-                   Rw lv_same $lv $x:coi $J $ret=1;
-               };
-           
-               my $y = coi.exactl->();
-           }
-       }
+
  - K: flow #c K-flow
    D: |
      my $name = $m->[0];
@@ -49,9 +13,7 @@ R_Jz:
        # later shoot out only changed words
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
        
-       my $oJ = G.drop.flows->{$h} = Rw fl/op + $h;
-       #||=
-       Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
+       my $oJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
        
        Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
        #   enter ^ for ^ bits ^ loaf ^
@@ -112,8 +74,7 @@ R_Jz:
            my $n = $real->{$pin};
            Rw loadup $u:oJ.way $pin $n;
        }
-       saybl ddump oJ.way ;
-       say ddump oJ.tvs;
+       Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
        
        $oJ
  - K: wtfity #c
@@ -138,7 +99,7 @@ R_Jz:
                  $real->{$l} || die;
                  $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
                     
-                    || die "no $type in ...";
+                    || die "no $type in $l ...";
              }
          }
      }
@@ -168,85 +129,6 @@ R_Jz:
            # <<<<<<< cv collapse unto elements #? rel src to round cv...
        }
        $wtf
- - K: Connn #c the shunt, suck, J maint wayfile story # OSCILATE FUNCS, test frequencies tuned synapse
-   D: |
-     my $o = Rw pul + the src path;
-     my $the = o.the || die;
-     my $src = o.src || "$the/u";
-     my $path = o.path || "$the/n";
-     # or wherever thi src + carbon quags into existence
-     # root l=$the := $the/n, otherwis whatever is l
-     # so $the/X for subhash X, yin require of user
-     # similar smush in G.drop.$the
-     my $p = $the =~ /_/ ? "C $path" : "$the c";
-     my $J = Rw Carbonjour $p $the $path;
-     
-     my $coms = {};
-     my $wtf = Rw concat $J $coms;
-     
-     my $real = {};
-     $real->{$path} = R.way->find($src) || die "no $src";
-       
-     my $imag = {};
-     
-       for my $l (sort keys %$wtf) {
-           my $was = $wtf->{$l};
-           for my $cvit (sort keys %$was) {
-               my $v = $was->{$cvit};
-               my $type = G.drop.conv->($cvit); # con cvit
-               
-               $v = join "\n", @$v;        # # <<<<<<<
-               
-               if ($real->{$l}) {
-                   # after an elemental aggregation...
-                   # these'll be top posting after cv sort?
-                   $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
-                   
-                   || die "no $type in ...";
-               }
-               else {
-                   $imag->{$l} .= "\n$v";
-               }
-           }
-       }
-       
-       my $all = {%$real, %$imag};
-       die wdump[[sort keys %$real],[sort keys %$imag],[sort keys %$all]]
-          if keys(%$real) + keys(%$imag) != keys %$all;
-       for my $pin (sort keys %$all) {
-           my $www = $all->{$pin};
-           
-           $pin = $path if $pin eq $the; # $the/n
-           my $ac = join'',map{"{$_"}split'/',$pin;
-           
-           #say "Injecting   $pin  $ac   with:";
-           #sayre ind '   ', slim 5300, $www;
-           $R->loadup(R.way.hooks, $ac, $www);
-       }
-       
-       G.jumb.ConJ->{$the} = $J;
-     
-
-       
-       #talkyelemental 
-       my $ev;
-       for (sort keys %$coms) {
-           my $c = $coms->{$_};
-           push @{$ev->{floor($_)}||=[]}, @$c;
-       }
-       my $sl;
-       for my $k (sort keys %$ev) {
-           my $r = $ev->{$k};
-           $sl .= "   $k * ".(0+@$r)."(".slim(25,join(' ',@$r)).")";
-       }
-        
-       #saybl " _________________  $mw" if $the eq 'esc';
-       sayyl "$path <- $the     $sl";
-       
-       my $em = ["$the/Conned"];
-       Rw suck $m:em $J;
-       # nice thing to print ^
-       
  - K: loadup #c
    D: |
      my $pin = ar.p||ar.pin;
