@@ -1849,5 +1849,9 @@ sub dig {
     Digest::SHA::sha1_hex(encode_utf8(shift))
 }
 
+sub snooze {
+    return Time::HiRes::usleep((shift || 500) * 10);
+}
+
 9;
 
