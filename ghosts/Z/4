@@ -53,12 +53,20 @@ R_Jz:
      if (my $time = x.sc.ts) { # can't be zero, so relative
          Rw ii/time + $time;
      }
+ - K: clw #c
+   n_D:
+     curves: |
+       spun 0  2
+       zoom 0 0.5
+       y    0  0.3
+       x    0  0.1
+       curve 0 -0.1
  - K: wam #c 
    n_D:
      yJ: |
        'wam clw headi'
      defon: |
-       twang 0.1 Z/3
+       twang 0.1 Z/5
      in: |
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
@@ -75,7 +83,7 @@ R_Jz:
        my $c = xor.d.c;
        
        unless (c.o && c.r) {
-           sayre "Not or";
+           die "Not or";
            return;
        }
        
@@ -101,11 +109,13 @@ R_Jz:
        Rw may $J;
 
        say "comat ".F_delta;
- - K: cod #c
+ - K: cod #c code piece
    n_D:
      yJ: |
        'cod';
      in: |
+       # GARSP 8
+       return sayre "Some kinda ".ki$e if !e.code;
        my $r = J.row;
        my $o = J.ooo;
        my $u;
@@ -118,9 +128,12 @@ R_Jz:
      up: |
        my $x = Rw pha swoosh;
        Rw Jhead;
+       
        J.row = $r;
        J.ooo = $o;
+       
        Jn('srcvector',0.1,{pi=>'',s=>o.oJ});
+       
        Jn('row',0.2,{s=>r.s},{idly=>1,cm=>'perl',dig=>r.sc.dig});
        
        x.exactl->();
@@ -147,7 +160,7 @@ R_Jz:
            for my $r (@{o.r}) {
                #say join " ", sort keys %$r;
                Mn( r.t, {thy=>$thy},
-                  {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.8},
+                  {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.6},
                   {idly=>1,fs=>7});
            }
            if (o.more) {
@@ -163,14 +176,6 @@ R_Jz:
      my $cv = r.cv || 0.8;
      Jn(r.t,'',{pi=>$pi,s=>$r,gp=>{cv=>$cv}});
     
- - K: clw #c
-   n_D:
-     curves: |
-       spun 0  2
-       zoom 0 0.5
-       y    0  0.3
-       x    0  0.1
-       curve 0 -0.1
  - K: pi/lie #c
    D: |
      my $sc = u.sc;
