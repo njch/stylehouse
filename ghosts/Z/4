@@ -81,7 +81,7 @@ R_Jz:
        say "We se.name and  xor.r";
        # theres this gravity to resolve to which part of the found spine
        # and the $e coming in
-       # the xor fractal should couple tuples and point to the base 
+       # the xor fractal should couple tuples (c.r)
        
        my $c = xor.d.c;
        
@@ -90,9 +90,9 @@ R_Jz:
            return;
        }
        
-       say wdump c.r;
-       my $J = Rw oJ $J cod;
-       Rw up $J $o:c.o $r:c.r;
+       say wdump 2, c.o;
+       say "c.o.r and c.r";
+       my $J = Rw oJ $J cod &up $cc:c;
        
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
@@ -113,28 +113,31 @@ R_Jz:
        Rw may $J;
 
        say "comat ".F_delta;
- - K: cod #c code piece
+ - K: cod #c code piece, frontal lobe to the coiled lies
    n_D:
      yJ: |
        'cod';
      in: |
-       # GARSP 8
-       return sayre "Some kinda ".ki$e if !e.code;
-       my $r = J.row;
-       my $o = J.ooo;
-       my $u;
+       # GARSP 8 xor flippering tubeway, $e compiling
+       
+       # could be legit use of B
+       my $o = J.cc.o;
+       my $r = J.cc.r;
+       my $u; # thruster
+       
        u.t = r.t;
        u.cv = r.cv;
        u.dig = e.dig;
-       u.s = e.code;
-       my $oJ = o.oJ;
+       u.s = e.code || return sayre "Some kindao ".ki$e;
+       
        Rw in $J:o.oJ $u;
      up: |
        my $x = Rw pha swoosh;
        Rw Jhead;
        
-       J.row = $r;
-       J.ooo = $o;
+       J.cc = $cc;
+       my $o = cc.o;
+       my $r = cc.r;
        
        Jn('srcvector',0.1,{pi=>'',s=>o.oJ});
        
@@ -148,6 +151,52 @@ R_Jz:
        zoom 0 0.5
        y    0  0.5
        x    0  0.4
+ - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
+   n_D:
+     yJ: |
+       'lie'
+     flows:
+       folate: |
+         flow 0.1  {} {}
+         stat 0.61 {} {tv:file,et:0}
+         read 0.62 {} {tv:file,et:130}
+         jam  0.63 {} {tv:read,et:340}
+     in: |
+       my $o = {};
+       Rw around $J $o;
+       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.r};
+       $it || die "u.t   u.cv not found!";
+       it.sc.dig eq u.dig || die "NOT UP";
+       it.s = u.s;
+       
+       my $file = J.bb->{"file\t".0.1};
+       
+       write_file($file, join("\n", map {_.s} @{o.r})."\n\n");
+       
+       Rw around;
+       
+       say "Saved?";
+     around: |
+       J.cv ||= 0.3;
+       
+       Rw flow $J folate;
+       
+       # $o put
+       Rw out
+       if ar.o;
+     out: |
+       my $ip = {cv=>0.4};
+       my $vs = Rw tyv $J $ip;
+       
+       push @{o.r||=[]}, sort { a.sc.in <=> b.sc.in } map { {
+          t => _.j.t,
+          cv => _.j.cv,
+          s => _.j.s,
+          sc => _.sc,
+       } } @$vs;
+       
+       o.oJ = $J;
+       o.pig = 'lie';
  - K: onxor #c
    D: |
        my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
@@ -288,52 +337,7 @@ R_Jz:
        
        
        
- - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
-   n_D:
-     yJ: |
-       'lie'
-     flows:
-       folate: |
-         flow 0.1  {} {}
-         stat 0.61 {} {tv:file,et:0}
-         read 0.62 {} {tv:file,et:130}
-         jam  0.63 {} {tv:read,et:340}
-     in: |
-       my $o = {};
-       Rw around $J $o;
-       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.r};
-       $it || die "u.t   u.cv not found!";
-       it.sc.dig eq u.dig || die "NOT UP";
-       it.s = u.s;
-       
-       my $file = J.bb->{"file\t".0.1};
-       
-       write_file($file, join("\n", map {_.s} @{o.r})."\n\n");
-       
-       Rw around;
-       
-       say "Saved?";
-     around: |
-       J.cv ||= 0.3;
-       
-       Rw flow $J folate;
-       
-       # $o put
-       Rw out
-       if ar.o;
-     out: |
-       my $ip = {cv=>0.4};
-       my $vs = Rw tyv $J $ip;
-       
-       push @{o.r||=[]}, sort { a.sc.in <=> b.sc.in } map { {
-          t => _.j.t,
-          cv => _.j.cv,
-          s => _.j.s,
-          sc => _.sc,
-       } } @$vs;
-       
-       o.oJ = $J;
-       o.pig = 'lie';
+
  - K: folate/flow #c
    D: |
      for my $c (@{oJ.tvs}) {
