@@ -62,11 +62,23 @@ R_Jz:
      in: |
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
-       my ($se,$xor) = reverse @up;
+       my ($se,$xor,@etc) = reverse @up;
        
-       say "We se.name and xor.r";
-       die join '    ', sort keys %$xor;
+       my $is = '';
+       for my $j (reverse @up) {
+           saybl "$is ".(j.name||j.r);
+           $is .= '    ';
+       }
+       
+       say "We se.name and  xor.r";
+       
        my $c = xor.d.c;
+       
+       unless (c.o && c.r) {
+           sayre "Not or";
+           return;
+       }
+       
        my $J = Rw oJ $J cod;
        Rw up $J $o:c.o $r:c.r;
        
