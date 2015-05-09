@@ -17,9 +17,11 @@ R_Jz:
            my $coi = Rw pha $J $k=j.r;
            coi.off=100;
            my $lnc = Rw lv_same $lv $j $x:coi $J $V=1;
-           sayyl "LINEHUM SAME: $lnc";
            $nc = 0 if !$lnc;
-           next if $lnc;
+           if ($lnc) {
+               sayyl "LINEHUM SAME";
+               next;
+           }
            
            my $sc = {};
            if (!lv.sc) {
@@ -76,26 +78,25 @@ R_Jz:
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
        
-       Rw on_xor_geo $J;
+       Rw on_xor_geo + $J;
        
+ - K: on_xor_geo #c
+   D: |
        my $coi = Rw pha $J $k=upix;
-       Rw Jhead;
+       Rw Jhead $J;
        
        my $oJ = Rw oJ $J on;
-       
        my $nc = Rw up $J:oJ;
        return coi.abandon->('same on') if $nc;
        
        Rw onxor $J $oJ;
        
-       
        coi.exactl->();
-       
        Rw oJ $J geo &up;
        Rw may $J;
 
        say "comat ".F_delta;
-
+     
  - K: cod #c code piece, frontal lobe to the coiled lies
    n_D:
      yJ: |
@@ -119,6 +120,10 @@ R_Jz:
        Rw Jhead;
        
        J.cc = J2.d.c;
+       # into on^
+       # to xor 8ly # all of this ^v codding is tiny coupling
+       
+       
        my $x = J.cc.x;
        my $o = J.cc.o;
        my $r = J.cc.r;
@@ -138,6 +143,9 @@ R_Jz:
        zoom 0 0.5
        y    0  0.5
        x    0  0.4
+ - K: wowk #c
+   D: |
+     die wdump 2, [$J2, $J, $ar];
  - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
    n_D:
      yJ: |
