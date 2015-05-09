@@ -74,6 +74,35 @@ R_Jz:
          return 1;
      }
      return 0;
+ - K: linehum #c arrayngement of line
+   D: | 
+     my @line = ar.js ? @{ar.js} :
+     sort { a.cv <=> b.cv }
+       sort{ a.r cmp b.r }
+       ar.lv.j, values %{ar.lv.sj};
+     return [ map { [ _.t, _.cv, _.s ] } @line ];
+ - K: lv_same #c linehum check
+   D: |
+     if (x.off) {
+        sayyl "!   ".(x.begin - x.head.begin)."    f x.off";
+        if (x.off && x.begin - x.head.begin < x.off) {
+            saygr " same offing";
+            return 1;
+        }
+     }
+     my $d = Rw lv_dig +;
+     Rw ph_same $J $x $d;
+ - K: lv_dig #c linehum dig
+   D: |
+     my $ln = Rw linehum +;
+     for my $n (@$ln) {
+         my $s = $n->[2];
+         $s = ref $s eq 'HASH' ? "s.r s.id" : ref $s eq 'ARRAY' ? die 'arline' : $s;
+         $n->[2] = $s;
+     }
+     my $d = ejson $ln;
+     $d = dig $d;
+     
  - K: blabphys #c
    D: |
      say "Active phases:".(! %{J.phy} && " NONE");
