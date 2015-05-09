@@ -297,38 +297,31 @@ R_Jz:
           
  - K: dolphy #c
    D: |
-     my $tvs = w $R ytv[$J];
+     my $vs = Rw tvy;
      
-     my $phi_n = 1;
-     map { $phi_n++ } map { @$_ } values %$tvs;
-     my $phia = {n=>$phi_n};
+     my $phia;
+     phia.n = 1 + @$vs;
      phia.ai = 0.06;
      phia.modi = { map { $_ => 0.5 } 18..$phi_n };
-     my $where = w $R phi(%$phia);
+     my $where = Rw phi $phia;
      
-       #sayyl "!\n";
-       
-     for my $jkv (sort keys %$tvs) { 
-         #sayyl "at $jkv";
-         for my $j (@{$tvs->{$jkv}}) {
-             #sayyl "    It's j.t !";
-             my $whe = shift @$where;
-             $whe || die "out of spiral!";
-             
-             J.bz->(j.t."%css#phi"."\t".j.cv =>
+     for my $lv (@$vs) { 
+         my $j = lv.j;
+         
+         my $whe = shift @$where;
+         $whe || die "out of spiral!";
+         
+         J.bz->(j.t."%css#phi"."\t".j.cv =>
                'position:absolute;'
                .'top:'.whe.x.'%;'
                .'left:'.whe.y.'%;'
                .'-webkit-transform:rotate('.whe.radial.'rad);'
                .'transform-origin:-10% -10%;' # animate that bit
-             ); 
-             J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
+         ); 
+         J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
              # + font-size fit + whe.angle
-         }
      }
-       #sayyl "!\n";
- 
- - K: phi #c re/progressive proJammable petalis
+ - K: phi #c re/progressive proJammable petalis # wtb jsc
    D: |
      my $n = ar.n || 9;
           my $width = 100;

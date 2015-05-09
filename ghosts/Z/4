@@ -12,8 +12,8 @@ R_Jz:
            >=0 && return
            Rw up + $rev=1;
        }
-       
-       sayyl "ON J.Jo.name";
+       # yawl!
+       sayyl "ON J.Jo.name";  
        my $nc = 1;
        for my $lv (@$vs) {
            my $j = lv.j;
@@ -65,7 +65,7 @@ R_Jz:
      yJ: |
        'wam clw headi'
      defon: |
-       twang 0.1 Z/4
+       twang 0.1 J/3
      in: |
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
@@ -341,20 +341,23 @@ R_Jz:
  - K: folate/flow #c
    D: |
      for my $c (@{oJ.tvs}) {
+         my $coi = Rw pha $J $k=c.K/c.v;
+         
+         coi.off = c.sc.et if defined c.sc.et;
+         sayyl "Trying c.K    c.v        off=coi.off";
+         
          my $ip;
          ip.l = c.sc.tv if c.sc.tv;
          my $vs = Rw tyv $J $ip;
          
-         sayre "Outis: c.v --- c.K  Got: ".@$vs;
+         my $nc = Rw lv_same $vs $x:coi $J $V=1;
+         next if $nc;
+         
          for my $lv (@$vs) {
              my $j = lv.j;
-             my $coi = Rw pha $J $k=c.K*j.r;
-             coi.off = c.sc.et if c.sc.et;
              # resolve $offness, add $and to lv_same
              # if change exactl swoops an init linehum wd
              
-             my $nc = Rw lv_same $lv $j $x:coi $J;
-             next if $nc;
              sayyl "c.v Effect: c.K ";
              saybl "In: j.r   => ".slim 20, j.s;
                
@@ -366,17 +369,15 @@ R_Jz:
                Rw jamsc $J $j $sc:at;
                
                # STYLE
-               
-               
-               # coi
-               coi.same_wd ||= do {
-                   my $vs = Rw tyv $J $l:j.l;
-                   my $lv = $vs->[0];
-                   Rw lv_same $lv $x:coi $J $ret=1;
-               };
-           
-               my $y = coi.exactl->();
-           }
+          }
+          coi.same_wd ||= do {
+              my $vs = Rw tyv $J $ip;
+              delete coi.off;
+              Rw lv_same $vs $x:coi $J $ret=1 $V=1;
+          };
+          
+          coi.V = 1;
+          my $y = coi.exactl->();
        }
  - K: folate/stat #c
    D: |

@@ -21,7 +21,7 @@ R_Jz:
      for my $outx (grep {_.outsidey} values %{J.phy}) {
         # something? # perhaps a non, fire when no other phy
      }
-     
+      
      J.phy ||= {}; # phases
      
      my $x = J.phy->{$name} = {
@@ -79,29 +79,33 @@ R_Jz:
      my @line = ar.js ? @{ar.js} :
      sort { a.cv <=> b.cv }
        sort{ a.r cmp b.r }
-       ar.lv.j, values %{ar.lv.sj};
+       map { _.j, values %{_.sj} } ar.lv ? ar.lv : @{ar.vs};
      return [ map { [ _.t, _.cv, _.s ] } @line ];
  - K: lv_same #c linehum check
    D: |
-     if (x.off) {
+     if (defined x.off) {
         sayyl "!   ".(x.begin - x.head.begin)."    f x.off";
-        if (x.off && x.begin - x.head.begin < x.off) {
-            saygr " same offing";
-            return 1;
+        if (defined x.off && x.begin - x.head.begin > x.off) {
+            saygr " > off ness" for 1..3;
+            return 0;
         }
      }
      my $d = Rw lv_dig +;
      Rw ph_same $J $x $d;
  - K: lv_dig #c linehum dig
    D: |
-     my $ln = Rw linehum +;
+     my $ln =  Rw linehum +;
      for my $n (@$ln) {
-         my $s = $n->[2];
-         $s = ref $s eq 'HASH' ? "s.r s.id" : ref $s eq 'ARRAY' ? die 'arline' : $s;
+         my $s = $n->[2]; # t/y/(s)
+         $s = ref $s eq 'HASH' ? "s.r s.id"
+            : ref $s eq 'ARRAY' ? die 'arline'
+            : $s;
          $n->[2] = $s;
      }
      my $d = ejson $ln;
+     saygr " Digwa: ".slim 80, $d if ar.V;
      $d = dig $d;
+     
      
  - K: blabphys #c
    D: |
@@ -140,9 +144,9 @@ R_Jz:
                sayre " + No $_ in last" if !wtf.allnew;
                wtf.new->{$_} = cur.bb->{$_};
                wtf.same = 0;
-           }
+           } 
            elsif (last.bb->{$_} ne cur.bb->{$_}) {
-               sayre " != different $_ now" if !cur.qui && !ar.q eq 'diff'; # block hash s noise
+               sayre " != different $_ now" if cur.V || !cur.qui && !ar.q eq 'diff'; # block hash s noise
                wtf.diff->{$_} = cur.bb->{$_};
                wtf.same = 0;
            }
