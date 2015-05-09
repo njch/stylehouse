@@ -25,6 +25,7 @@ R_Jz:
      # and trace backwards
      my @up = $J2;
      push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
+     unshift @up, $j if $j;
      push @up, $J if $up[-1] ne $J;
 
      # make heatmap
@@ -45,7 +46,8 @@ R_Jz:
              }
              if (%$sc) {
                  sayyl "$is has ".ki($sc)."    in lh.name";
-                 push @to, { J => $lh, J2 => $j, sc => $sc };
+                 # may want to J = lh ... pbl on other side of vector pooling
+                 push @to, { J => $J, J2 => $j, sc => $sc };
              }
          }
          $is .= '    ';
