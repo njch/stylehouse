@@ -3,24 +3,51 @@ R_Jz:
    D: |
      # J == join/ww, moves to ux
      saybl "_---------------________------____________------------";
-     sayyl ki($e)."              SSSSSSSSSSSSSSSS";
+     sayyl ki($e);
      my $wuJ = $J;
+     sayyl "              SSSSSSSSSSSSSSSS   ".gp($wuJ);
      
-     my $J = G.oin.idJy->{e.ux};
+     # first beloww ww
+     my $J = G.oin.idJy->{e.ux} || die "noJ...";
      
-     $J || die "noJ...";
-     
-     my $J2;
-     my $j;
+     # deepest id
+     my ($J2, $j);
      if (my $ju = J.idly->{e.id}) {
          $J2 = ju.J;
          $j = ju.j;
      }
      
-     saybl "  /        ".gp($wuJ);
-     saybl " J      |- J.name  ".gp($J); # the J ux we evented, modulator tip
-     saybl "    J2 ... ".gp($J2); # random gp maybe quit deep.gp or so, sometimes
-     saybl "        j@ ".j.r if $j; # the bit of line, something%idly etc. line has %path or something interesting
+     # and trace backwards
+     my @up = $J2;
+     push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
+
+     # make heatmap
+     my $tocs = {map{$_=>1}'path','pwar'};
+     my @to;
+     my $is = '';
+     my $lh;
+     for my $j (reverse @up) {
+         # like c is ar or seome
+         saybl "$is ".(j.name||j.r);
+         
+         if ($lh) {
+             my $lv = Rw r_lv $r:j.r $J:lh;
+             my $sc = {};
+             for my $sj (values %{lv.sj}) {
+                 next unless $tocs->{sj.style};
+                 $sc->{sj.style} = sj.s;
+             }
+             if (%$sc) {
+                 sayyl "$is has ".ki($sc)."    in lh.name";
+                 push @to, { J => $lh, J2 => $j, sc => $sc };
+             }
+         }
+         $is .= '    ';
+         $lh = $j;
+     }
+     die 'multo' if @to > 1;
+     
+     saybl "         j@ ".j.r if $j; # something interesting
      
      if (e.rval) {
          sayyl "Wants to e.rval!";
@@ -29,25 +56,21 @@ R_Jz:
      
      die if !$J2 && $j;
      
-     # ex clues about pathways
-     $J2 ||= $J;
-     
-     my $pa = {};
-     Rw upath $J $J2 $j $pa;
-     
-     my $upi={};
-     Rw contier + $J $J2 $j $pa $upi;
-      # auth between ^ v
-     
-     upi.i ||
-     Rw in $J $J2 $e;
-     # ambient J up if else
- - K: contier #c
-   D: |
      return if Rw eventkeygrab/grab;
      
-     my $y = pa.pathy;
-     say "y pathy is $y";
+     my $upi={};
+     for my $to (@to) {
+     
+         Rw contier + $J:to.J $J2:to.J2 $pa:to.sc $upi;
+     }
+     upi.i ||
+     Rw in $J $J2 $e;
+     # ambient J up elseness
+ - K: contier #c 
+   D: |
+     my $y = pa.path;
+     say " pa_path  $y";
+     
      if ($y =~ /^!(.+?)(?::(.+))?$/) {
          my $m = [split /(?!^) /, $2];
          say " ! contig $1 -> @$m";
@@ -61,45 +84,15 @@ R_Jz:
          say " CONTIER with no y ..." if !$y;
          Rw suck + */conty $y;
      }
-     
- - K: upath #c FUZZ bend inside outside
-   D: | # it's making spirals of looking for things to jump forward with
-     if ($j) {
-        sayre "You came on an ID no longer there... "
-            .gp($j)."\n".gp($J2) if !exists J2.bb->{j.r};
-            
-            
-        my ($path, $pwar) = Rw ship $J:J2 $l:j.l path pwar;
-        #say "on j.r    ". wdump [$path, $pwar];
-        die wdump $path if @$path > 1;
-         
-        
-        my ($par) = @$pwar;
-        if ($par) {
-            pa.pwar ||= par.s;
-            saybl "\n     upath/pwar   >>>>>> ".ki(pa.pwar)."\n";
-        }
-        my ($pj) = @$path;
-        if (defined $pj) {
-            push @{pa.paths||=[]}, $pj;
-            saybl "\n     upath   >>>>>>> pj.s <<<<<< \n";
-            if (pa.pathy) {
-                sayre  "     extra path above: pj.s  " for 1..3;
-            }
-            else {
-                pa.pathy = pj.s;
-            }
-        }
-     }
-     # try to J3 (up) until its J1 and we have the neighbourhood
-     if (my $J3 = J2.Jiter) {
-         J2.r || die;
-         my $nj = Rw shj $r:J2.r $J:J3;
-         
-         Rw upath $pa $J $J2:J3 $j:nj;
-     }
-     # probly wanna start on the random little thing
-     
+ - K: r_lv #c
+   D: |
+     my $jh = Rw shj $r $J;
+     my $ip;
+     ip.l = jh.l;
+     ip.cv = jh.cv;
+     my $vs = Rw tyv $J $ip;
+     die "m,any ".wdump 2, $vs if @$vs > 1;
+     my $lv = $vs->[0];
  - K: recoded_init #c wake up
    D: |
      Rw suck */recoded_init;
