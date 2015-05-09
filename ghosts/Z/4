@@ -5,13 +5,9 @@ R_Jz:
        J.yl.nojb = 1;
        'on';
      up: | # tak tlv J.on into iterations of upgoing clever
+       Rw thy $oJ:J $J:J.Jo defon;
        my $vs = Rw tyv $J $ip:ar.ip;
        
-       if (!@$vs && !ar.rev) {
-           Rw thy $oJ:J $J:J.Jo defon
-           >=0 && return
-           Rw up + $rev=1;
-       }
        # yawl!
        sayyl "ON J.Jo.name";  
        my $nc = 1;
@@ -65,7 +61,9 @@ R_Jz:
      yJ: |
        'wam clw headi'
      defon: |
-       twang 0.1 J/3
+       #twang 0.1 Z/2
+       #twong 0.1 Z/3
+       twzng 0.1 Z/4
      in: |
        my @up = $J2;
        push @up, $up[-1]->{Jiter} until !$up[-1]->{Jiter};
@@ -209,13 +207,14 @@ R_Jz:
            say "   oundoof: ".F_delta;
            my $thy = x.thi / (o.thi||1);
            
-           #say join '  ', sort keys %$o;
            
            for my $r (@{o.r}) {
                #say join " ", sort keys %$r;
+               my $fs = sprintf '%.2f', $thy * 9;
+               #say " This n x.thi  o o.thi   ==  $thy      $fs";
                Mn( r.t, {thy=>$thy},
                   {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.6},
-                  {idly=>1,fs=>7});
+                  {idly=>1,fs=>$fs});
            }
            if (o.more) {
                Rw ii/more $x $o $M;
@@ -353,6 +352,7 @@ R_Jz:
          my $nc = Rw lv_same $vs $x:coi $J $V=1;
          next if $nc;
          
+         die if @$vs > 1;
          for my $lv (@$vs) {
              my $j = lv.j;
              # resolve $offness, add $and to lv_same

@@ -306,6 +306,7 @@ C mod:
      # twist, lay into segment
      my @is;
      my $csv = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
+     my $muav;
      for (1..y.thi) {
          my $iy;
          iy.i = $_-1;
@@ -315,10 +316,21 @@ C mod:
          push @is, $iy;
          my $mu = 1;
          if (y.bal) {
+             if (!defined $muav) {
+                 my $s = sum map{_.y.thy} @{y.bal};
+                 my $ov = @{y.bal};
+                 $muav = $s/$ov;
+                 $muav ||= 1;
+             }
              my $b = y.bal->[iy.i];
              $mu = b.y.thy if exists b.y.thy;
+             $mu = $mu / ($muav||1);
+             #saybl " _ iy.cv @ @ @ this thy: $mu y.thi";
+             #my $muc = y.aspace * $mu;
+             #sayyl "y.aspace * $mu == $muc";
          }
-         $csv += y.aspace * $mu;
+         my $muc = y.aspace * $mu;
+         $csv += $muc;
      }
  - 
   - yangtycsc #c inwave, background language expansion, dewey mezrow   YANG
