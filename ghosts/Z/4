@@ -10,7 +10,7 @@ R_Jz:
        my $vs = Rw tyv $J $ip:ar.ip;
        
        # yawl!
-       sayyl "ON J.Jo.name";  
+       sayyl "ON J.Jo.name";
        my $nc = 1;
        for my $lv (@$vs) {
            my $j = lv.j;
@@ -93,7 +93,9 @@ R_Jz:
        
        coi.exactl->();
        Rw oJ $J geo &up;
-       Rw may $J;
+       
+       Rw may $J
+       if !ar.nomay;
 
        say "comat ".F_delta;
      
@@ -119,12 +121,15 @@ R_Jz:
        my $coi = Rw pha swoosh;
        Rw Jhead;
        
+       say gp($J)."   #################>   ".gp($J2);
+       die unless $J2;
        J.cc = J2.d.c;
+       die gp($J2)."   _d_c notlike xor: ".ki(J2.d) if !J.cc.x;
        # into on^
        # to xor 8ly # all of this ^v codding is tiny coupling
        
        
-       my $x = J.cc.x;
+       my $x = J.cc.x || die 'nox o';
        my $o = J.cc.o;
        my $r = J.cc.r;
        sayyl "oJ      ".gp(o.oJ);
@@ -271,7 +276,8 @@ R_Jz:
      
      # further dimensional sc if {} or something?
      # so the spec can curve data all the way
-     Rw ou/sc.ou + $u $o $x $sc;
+     my $thi = x.thi || die;
+     Rw ou/sc.ou + $u $o $x $sc $thi;
      
      sc.grp &&
      Rw og/sc.grp + $u $o $x $sc;
@@ -281,43 +287,6 @@ R_Jz:
      
      o.thi = @{o.r};
      $o
-
- - K: ou/file #c
-   D: |
-     my $file = x.j.s;
-     defined $file || die 'nofile';
-     if (my $dir = sc.dir) {
-         $dir .= '/' if $dir !~ /\/$/;
-         $file = "$dir$file";
-     }
-     
-     my $J = Rw fil/e $file;
-     
-     Rw around $J $o $x;
-     
- - K: ou/lsing #c 
-   D: |
-     # LOOK FOR KNOWNS, scoped in wormhole
-     die 'ref' if ref $u;
-     -d $u || die "not found: $u pwd=".`pwd`;
-     my @r = Rw globdir $dir:u;
-     for my $n (@r) {
-         my $r;
-         r.r = n.r;
-         r.s = n.full;
-         # $x power percolates
-         # track J.most.J etcs...
-         # shway by Jhead the ou/dire culture suggestions
-         # to be chucked on and off, little nonmuxing pi swimming events
-         r.c.path = "!pat/dire";
-         r.c.pi = 'dire';
-         r.lab_c.pi = 'direlab';
-         push @{o.r}, $r;
-         if (@{o.r} >= $thi) {
-             o.more = @r - @{o.r};
-             last;
-         }
-     }
  - K: fil #c index of files
    n_D:
      yJ: |

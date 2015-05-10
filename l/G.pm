@@ -1185,7 +1185,7 @@ sub zjson {
         $n = {%$n};
         delete $n->{J};
     }
-    ejson($n)
+    sjson($n)
 }
 
 sub ztm {

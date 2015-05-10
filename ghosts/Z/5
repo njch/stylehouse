@@ -11,8 +11,9 @@ R_Jz:
        'fl'
      up: |
        # later shoot out only changed words
-       my $h = slm 8, dig ejson[J.Jo.style,J.name];
-       
+       my $h = ejson[J.Jo.style,J.name];
+       sayyl $h."   ".ejson(J.yt) for 1..5;
+       $h = slm 8, dig $h;
        my $oJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
        
        saybl "Flop: ".F_delta;
@@ -20,7 +21,7 @@ R_Jz:
        Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
        saybl "Flow: ".F_delta;
        #   enter ^ for ^ bits ^ loaf ^
-       # (lost bits)
+       # (lost bits) 
      op: |
        # 
        Rw thy $J:J.Jo $oJ:J flows/J.name;
@@ -43,26 +44,50 @@ R_Jz:
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
                
-               $path = j.l if j.cv == 0.1;
+               $path = j.l if G.drop.conv->(j.cv) eq 'YIN';
                
-               #say " *  $k   ".slim 40, $s;
-               if (ref $s eq 'ARRAY') {
-                   die 'mod styley into j.l, sc inherit';
+               my @N = ref $s eq 'ARRAY' ? do {
+                   my $M = [];
+                   Rw MyN $N:s $M;
+                   @$M;
                }
-               elsif (ref $s eq 'HASH') {
+               :
+               ref $s eq 'HASH' ? do {
                    die 'possible lma fire...'
                }
-               else {
-                   ref $s && die $s;
-                   !$path && die "noapth";
-                   my $c = {};
-                   c.K = j.l;
-                   c.v = j.cv;
-                   c.s = $s;
-                   c.sc = lv.sc;
-                   c.sc.com ||= "# c.K c.v";
-                   
+               :
+               ref $s ? die "no $s" : do {
+                   my $M = [];
+                   my $i = 0.01;
+                   my @cs;
+                   sayre $s if j.l =~ /flow/;
+                   my $up = sub {
+                       @cs || return "nothing in j.l $i";
+                       my $c;
+                       c.t = j.l;
+                       c.y.cv = $i;
+                       c.s = join "\n", @cs;
+                       c.sc = lv.sc;
+                       push @$M, $c;
+                       @cs = ();
+                   };
+                   for my $l (split "\n", $s) {
+                       if ($l =~ /^\s*# (\d\S*)/) {
+                           my $ni = $1;
+                           $up->();
+                           $i = $ni;
+                       }
+                       push @cs, $l;
+                   }
+                   $up->();
+                   @$M;
+               };
+               !$path && die "noapth";
+               
+               for my $c (@N) {
+                   sayyl ki 2, $c;
                    Rw Nucleoues $c $path $oJ:J $J:oJ;
+                   saybl '==================';
                }
            }
        }
@@ -78,6 +103,8 @@ R_Jz:
            Rw loadup $u:oJ.way $pin $n;
        }
        Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
+       
+       saygr wdump oJ.way;
        
        $oJ
  - K: wtfity #c
@@ -97,12 +124,13 @@ R_Jz:
              
              if ($type eq 'YIN') {
                  $real->{$l} = $v;
+                 #die "split: $v";
              }
              else {
                  $real->{$l} || die;
-                 $real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
-                    
-                    || die "no $type in $l ...";
+                 $real->{$l} .= "\n$v";
+                 #$real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
+                 #   || die "no $type in $l ... $real->{$l}";
              }
          }
      }
@@ -135,7 +163,9 @@ R_Jz:
  - K: Nucleoues #c
    D: |
           my (@l,@lr,@r);
+          c.K ||= c.t;
           c.K || die;
+          c.v ||= c.y.cv;
           c.v ||= 3;
           c.v += 0;
           
@@ -145,7 +175,7 @@ R_Jz:
 
           # if for c.cs, for implant condits # sche
           my $cv = c.v;
-          my $D = c.s;
+          my $D = c.s || c.c.s;
           my $type = G.drop.conv->($cv);
           # z downgrasp (ty above) self if MZ
           my $sc;
@@ -155,12 +185,15 @@ R_Jz:
           $sc ||= {};
           $sc = {%$sc, %{c.sc}} if c.sc;
           c.sc = $sc;
+          sc.com = "# c.K c.v sc.com";
+          
+          saybl " c.K c.v ==  $D  ".ki $c;
           
           # per $path if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
           
                if (my $sub = sc.subhash) {
-                   unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
+                   unshift @l, "oJ\.drop\.$path\.$sub\.c.K = sub {";
                    
                    my $args = '$v,$tks,$'.$sub;
                    
@@ -210,7 +243,7 @@ R_Jz:
                    push @r, '}';
                }
                 
-               if ($type eq 'TRAVEL') {
+               if (sc.tv) {
                    # lets D
                    J.bz->("c.K\t1", $D);
                    # dup pha check^

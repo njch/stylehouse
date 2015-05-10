@@ -31,7 +31,7 @@ R_Jz:
      # - [t( y)( c)( sc)???]
      # - [t, y]
      # - [t, y, c, sc]
-     my $peel = sub { # simple hash from string
+     my $peel = sub { # simple as hash from string
         my $s = shift;
         $s =~ s/^{//;
         $s =~ s/}$// || die "unpealable $s";
@@ -43,7 +43,10 @@ R_Jz:
         }
         return $t;
      };
+     # some comp could expectorate lots charstream rhythms ^
+     
      my $oM = [];
+     my @N = @$N;
      
      my $fl = {};
      if (my $fli = ar.m) {
@@ -60,6 +63,25 @@ R_Jz:
              else {
                  $fl->{$1} = $2 || 1;
              }
+         }
+         n.moozd = 1;
+     };
+     my $WZu = sub {
+         my $WZ = shift;
+         my $n = shift;
+         
+         my $way = 'muck';
+         $way = 'fund' if $WZ =~ s/^\///;
+         my $Z = Rw $way - $p:WZ $dclone=1;
+         
+         for my $k (sort keys %$Z) {
+              my $s = $Z->{$k};
+              die wdump $s if ref $s ne 'ARRAY';
+              unshift @N, @$s;
+              # or we could do on a stick, so its MZ junk dont linger in this stream
+              # ie always flow outwards the sc filtery stuff.
+              #my $M = [];
+              #Rw MyN $N:s $M;
          }
          n.moozd = 1;
      };
@@ -96,7 +118,8 @@ R_Jz:
          die'@>4' if @$s > 4;
      };
      
-     for my $s (@$N) {
+     while (@N) {
+         my $s = shift @N;
          my $n = {};
          
          if (!ref $s) {
@@ -112,15 +135,13 @@ R_Jz:
              }
          }
          elsif (ref $s eq 'HASH') {
-            die 'hash: ' if !s.MZ;
-            $MZu->(s.MZ, $n);
+            s.MZ ? $MZu->(s.MZ, $n)
+            : s.WZ ? $WZu->(s.WZ, $n)
+            : die 'hash: '.wdump($s);
          }
          else { die "mmtype:$s" }
          
-         if (n.moozd) {
-             #sayyl "TYEYLELYLELYLEL";
-             next;
-         }
+         next if n.moozd;
          
          for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
              my $v = $fl->{$k};
