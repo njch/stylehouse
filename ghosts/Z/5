@@ -188,10 +188,10 @@ R_Jz:
           # per $path if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
           
-               if (my $sub = sc.subhash) {
+               if (my $sub = sc.sh) {
                    unshift @l, "oJ\.drop\.$path\.$sub\.c.K = sub {";
-                   if (my $args = sc.subhash_X_arp) {
-                       push @lr, '    my ('.$args.') = @_;'; # gets $X, etc
+                   if (my $args = $sc->{"sh_${sub}_args"}) {
+                       push @lr, '    my ('.$args.') = @_;';
                    }
                    $D = ind '     ', $D;
                    push @r, '};';
@@ -202,6 +202,7 @@ R_Jz:
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
                    
+                   # makes $X or so lexical
                    J.bz->("${path}_$sub#rese\t1", "my \$$sub = oJ\.drop\.$path\.$sub = {};");
                    J.bz->("${path}_$sub#$ome\t$cv", $haD);
                    J.bz->("${path}_$sub#return\t9", "oJ\.drop\.$path\.$sub;");
