@@ -1494,10 +1494,6 @@ sub parse_babble {
 
     $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
 
-    # io
-    $eval =~ s/${mwall}Sur? (\S+) \{/su \$G, "$1", sub{my\$r=shift; /sg;
-    $eval =~ s/${mwall}Pu?r (\S+) ([^;]+);$/\$H->pub("$1", $2);/sgm;
-
 
     my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
     # thingy, cv => thing

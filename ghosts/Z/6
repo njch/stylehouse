@@ -23,8 +23,9 @@ R_Jz:
    n_D:
      flows:
        geomo: |
-         flow 1  {} {}
-         style 5 {} {}
+         flow 1
+         nesting 4
+         style 5
        
  - K: ym/dorp #c
    D: |
@@ -35,79 +36,13 @@ R_Jz:
      } if $v eq 'XO';
      $so||die "ym/dorp of $v";
      n.sc->{$_} = $so->{$_} for keys %$so;
- - K: geomo/style #c
+ - K: geomo/nesting #c
    D:
-     - MZ: dorp:XO
-     - WZ: /C may#styley
      -
-      - siome
-      - 5
+      - nesto
+      - 4.189
       - |
-        ETC
- - K: geomo/flow #c
-   D: |
-       # 1
-       #sayyl "Maky on J.name: R.way.hooks.may_X";
-       # v should be somehow, not necessarily # sorta J/1 in gpasm
-       say "         MAY J.name        J.name MAY";
-       die;
-       
-       # 2
-       G.oin.idJy->{J.id} ||= $J;
-       # think these want to be injected crazily
-       if (!J.yy.may.noroot) {
-           exists J.bb->{"/\t0.9"} ||
-           J.bz->("/\t0.9", "y", "%tag","ux","%tt"=>J.name);
-           exists J.bb->{"/%id\t0.9"} ||
-           J.bz->("/%id\t0.9", J.id);
-       }
-       
-       my $oJ = Rw oJ $J A;
-       #  ^ v MMMMMMMMMM aj ejector
-       my $aj = Rw up $J:oJ;
-       
-       my $vs = Rw tyv $J;
-       # puts /s backwards and last:
-       my $gs = Rw ordlv $J $vs $slashtopi=1;
-       
-       my @s; # heading
-       # 3
-       # this should be all the current lvs
-       my %now = map{_.j.r => 1} @$gs;
-       for (keys %{oJ.bb}) {
-           /^(.+)%.+?\t(\S+)$/||die$_;
-           if (!$now{"$1\t$2"}) {
-               delete oJ.bb->{$_};
-           }
-       }
-       
-       for my $lv (@$gs) {
-           push @s, $lv;
-           my $j = lv.j;
-           die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
-           
-           my $k = "may j.r";
-           my $coi = Rw pha $J:oJ $k;
-           coi.qui = 1;
-           my $xat = do {
-               Rw lv_same $lv $x:coi $J:oJ;
-           } if oJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
-           
-           
-           my $at;
-           my $pat;
-           my $plv;
-           # 4 exactify
-           if (!$xat) {
-               $at = {css=>[]};
-               at.s = j.s;
-               # may be creating, overhead thought
-               at.__ajid1 = aj.id;
-               
-               my ($tks, $cs, $it) = Rw sit may O X $lv;
-               
-               
-               # 4.2 #c >< up from... # carbon hapsso env 
+               # >< up from... # carbon hapsso env 
                if (j.l =~ /^(.*)\/$/) {
                    # grep tw for $1/things
                    my $p = $1;
@@ -121,10 +56,10 @@ R_Jz:
                        grep {_.j.l ne j.l}
                        grep {!_.at._jointed || grep {$_ eq $olvr} @{_.at._jointed}}
                        # $lv ^
-                       map {oJ.bb->{$_}}
+                       map {aJ.bb->{$_}}
                        grep {/^$p/}
                        grep {/%lv\s+\S+$/}
-                       keys %{oJ.bb};
+                       keys %{aJ.bb};
                        
                    # j sc may have a motice to grab something
                    acum $at, _joins => "_.j.l%lv\t"._.j.cv for @lvs;
@@ -137,63 +72,13 @@ R_Jz:
                    at.s = '';
                    @s = ();
                }
-               
-               
-               # 5.3 sciterate
-               while (1) {
-                   my ($tk, $com, $v, $tks) = $it->();
-                   last if !$tk;
-                   #say " $tk, $com, $v, $tks";
-
-                   my @s = $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
-                   #say "May X $tk returned: ". wdump [@s] if @s;
-               }
-               
-               # 5.7 while symmetrical... some 7 of extrude
-               @{at.css} = map { join '', map{"$_;"} 
-               grep{defined} split ';', $_ } @{at.css};
-               
-               # 5.89 at beam
-               $pat = oJ.bb->{"j.l%at\t".j.cv};
-               $plv = oJ.bb->{"j.l%lv\t".j.cv};
-               oJ.bb->{"j.l%lv\t".j.cv} = $lv;
-               oJ.bb->{"j.l%at\t".j.cv} = $at;
-               
-               my $y = coi.end->();
-               my $ex = Rw ph_exactl $J:oJ $y;
-           }
-           else {
-               $pat = oJ.bb->{"j.l%at\t".j.cv};
-               $plv = oJ.bb->{"j.l%lv\t".j.cv};
-               oJ.bb->{"j.l%lv\t".j.cv} = $lv;
-               $at = $pat;
-           }
-           
-           # gets self aware in waves
-           # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
-           # 6.1
-           at.__ajid2 = aj.id;
-           lv.at = $at;
-           
-           my $inv = sub {
-              my $wa = shift;
-              my $ig = shift;
-              return ejson $wa if ref $wa eq 'ARRAY';
-              join"            ", map{"$_:".ejson($wa->{$_})}
-              sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
-           };
-           my $tryig = sub {
-              my $ig = shift;
-              $inv->($pat, $ig) eq $inv->($at, $ig)
-           };
-           my $kinv = sub {
-              my $k = shift;
-              $inv->($at->{$k}) ne $inv->($pat->{$k})
-           };
-           
-           # 6.189 #c eats hoist
+     -
+      - nests
+      - 6.189
+      - | 
+           # eats hoist
            if (at._joins) {
-               my @lvs = map { oJ.bb->{$_} } @{at._joins};
+               my @lvs = map { aJ.bb->{$_} } @{at._joins};
                
                say "j.r eats    ".join',   ', map{_.j.r} @lvs;
                # or compressions in c, sc
@@ -222,8 +107,133 @@ R_Jz:
                at.s = join '', map { _.s } @lvs;
                # these are curving down into things
            }
+               
+               
+ - K: geomo/style #c
+   D:
+     - MZ: dorp:XO
+     - WZ: /C may#styley
+     -
+      - siome
+      - 5
+      - |
+        # ETC
+ - K: geomo/flow #c
+   D: |
+       # 1
+       #sayyl "Maky on J.name: R.way.hooks.may_X";
+       # v should be somehow, not necessarily # sorta J/1 in gpasm
+       say "         MAY J.name        J.name MAY";
+       #die;
+       # 2
+       #die wdump $X;
+       G.oin.idJy->{J.id} ||= $J;
+       # think these want to be injected crazily
+       if (!J.yy.may.noroot) {
+           exists J.bb->{"/\t0.9"} ||
+           J.bz->("/\t0.9", "y", "%tag","ux","%tt"=>J.name);
+           exists J.bb->{"/%id\t0.9"} ||
+           J.bz->("/%id\t0.9", J.id);
+       }
+       
+       my $aJ = Rw oJ $J A;
+       #  ^ v MMMMMMMMMM aj ejector
+       my $aj = Rw up $J:aJ;
+       
+       my $vs = Rw tyv $J;
+       # puts /s backwards and last:
+       my $gs = Rw ordlv $J $vs $slashtopi=1;
+       
+       my @s; # heading
+       # 3
+       # this should be all the current lvs
+       my %now = map{_.j.r => 1} @$gs;
+       for (keys %{aJ.bb}) {
+           /^(.+)%.+?\t(\S+)$/||die$_;
+           if (!$now{"$1\t$2"}) {
+               delete aJ.bb->{$_};
+           }
+       }
+       
+       for my $lv (@$gs) {
+           push @s, $lv;
+           my $j = lv.j;
+           die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
            
-           # 6.2
+           my $k = "may j.r";
+           my $coi = Rw pha $J:aJ $k;
+           coi.qui = 1;
+           my $xat = do {
+               Rw lv_same $lv $x:coi $J:aJ;
+           } if aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
+           
+           
+           my $at;
+           my $pat;
+           my $plv;
+           # 4 exactify
+           if (!$xat) {
+               $at = {css=>[]};
+               at.s = j.s;
+               # may be creating, overhead thought
+               at.__ajid1 = aj.id;
+               
+               my ($tks, $cs, $it) = Rw sit flow O X $lv $oJ;
+               
+               
+               # 5.3 #c sciterate
+               while (1) {
+                   my ($tk, $com, $v, $tks) = $it->();
+                   last if !$tk;
+                   #say " $tk, $com, $v, $tks";
+
+                   my @s = $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
+                   #say "May X $tk returned: ". wdump [@s] if @s;
+               }
+               
+               # 5.7 while symmetrical... some 7 of extrude
+               @{at.css} = map { join '', map{"$_;"} 
+               grep{defined} split ';', $_ } @{at.css};
+               
+               # 5.89 at beam
+               $pat = aJ.bb->{"j.l%at\t".j.cv};
+               $plv = aJ.bb->{"j.l%lv\t".j.cv};
+               aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+               aJ.bb->{"j.l%at\t".j.cv} = $at;
+               
+               my $y = coi.end->();
+               my $ex = Rw ph_exactl $J:oJ $y;
+           }
+           else {
+               $pat = aJ.bb->{"j.l%at\t".j.cv};
+               $plv = aJ.bb->{"j.l%lv\t".j.cv};
+               aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+               $at = $pat;
+           }
+           
+           # gets self aware in waves
+           # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
+           # 6.1
+           at.__ajid2 = aj.id;
+           lv.at = $at;
+           
+           my $inv = sub {
+              my $wa = shift;
+              my $ig = shift;
+              return ejson $wa if ref $wa eq 'ARRAY';
+              join"            ", map{"$_:".ejson($wa->{$_})}
+              sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
+           };
+           my $tryig = sub {
+              my $ig = shift;
+              $inv->($pat, $ig) eq $inv->($at, $ig)
+           };
+           my $kinv = sub {
+              my $k = shift;
+              $inv->($at->{$k}) ne $inv->($pat->{$k})
+           };
+           
+           # 
            my $sat = $inv->($at);
            my $spat = $inv->($pat) if $pat;
            my $ateq = $sat eq $spat;
@@ -307,7 +317,7 @@ R_Jz:
            aj.sc = [map{@{_.Esc||[]}}@s];
        }
        else {
-           my $lv = oJ.bb->{"/%lv\t0.9"};
+           my $lv = aJ.bb->{"/%lv\t0.9"};
            aj.s = lv.s;
            delete aj.s if lv.scon; # no repeat emit
            aj.c = lv.Ec || [];

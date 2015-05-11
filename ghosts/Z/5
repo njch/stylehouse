@@ -40,7 +40,7 @@ R_Jz:
            sayre "Stitchup j.r    ".ki lv.sc;
            
            my $Z = Rw muck - J.name/j.l;
-           
+           die "nothing from J.name/j.l   fo" if !%$Z;
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
                
@@ -60,7 +60,7 @@ R_Jz:
                    my $M = [];
                    my $i = 0.01;
                    my @cs;
-                   sayre $s if j.l =~ /flow/;
+                   #sayre $s if j.l =~ /flow/;
                    my $up = sub {
                        @cs || return "nothing in j.l $i";
                        my $c;
@@ -85,7 +85,6 @@ R_Jz:
                !$path && die "noapth";
                
                for my $c (@N) {
-                   sayyl ki 2, $c;
                    Rw Nucleoues $c $path $oJ:J $J:oJ;
                    saybl '==================';
                }
@@ -185,9 +184,7 @@ R_Jz:
           $sc ||= {};
           $sc = {%$sc, %{c.sc}} if c.sc;
           c.sc = $sc;
-          sc.com = "# c.K c.v sc.com";
-          
-          saybl " c.K c.v ==  $D  ".ki $c;
+          sc.com = "# c.v c.K sc.com";
           
           # per $path if maybe ?? emberd whatsits
           # some special K of c may have meta for this too
@@ -204,17 +201,17 @@ R_Jz:
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
-                       push @r, "push \@{G\.drop\.$path\.$list}, 'c.K';"; 
-                       J bz ${path}_$sub#rese$list 1 "G\.drop\.$path\.$list = [];"
+                       push @r, "push \@{oJ\.drop\.$path\.$list}, 'c.K';"; 
+                       J bz ${path}_$sub#rese$list 1 "oJ\.drop\.$path\.$list = [];"
                    }
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
                    
-                   J.bz->("${path}_$sub#rese\t1", "G\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#rese\t1", "oJ\.drop\.$path\.$sub = {};");
                    J.bz->("${path}_$sub#$ome\t$cv", $haD);
-                   J.bz->("${path}_$sub#return\t9", "G\.drop\.$path\.$sub;");
+                   J.bz->("${path}_$sub#return\t9", "oJ\.drop\.$path\.$sub;");
                    J.bz->("$path#upsubhash-$sub\t1",
-                     "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;");
+                     "my \$$sub = oJ\.drop\.$path\.$sub ||= Rw J.hw/${path}_$sub;");
                      
                    return; #
                }
