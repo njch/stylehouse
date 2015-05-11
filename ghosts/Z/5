@@ -190,13 +190,9 @@ R_Jz:
           
                if (my $sub = sc.subhash) {
                    unshift @l, "oJ\.drop\.$path\.$sub\.c.K = sub {";
-                   
-                   my $args = '$v,$tks,$'.$sub;
-                   
-                   if (my $arp = sc.subhash_X_arp) {
-                       $args .= ",$arp";
+                   if (my $args = sc.subhash_X_arp) {
+                       push @lr, '    my ('.$args.') = @_;'; # gets $X, etc
                    }
-                   push @lr, '    my ('.$args.') = @_;'; # gets $X, etc
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
@@ -206,7 +202,7 @@ R_Jz:
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
                    
-                   J.bz->("${path}_$sub#rese\t1", "oJ\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#rese\t1", "my \$$sub = oJ\.drop\.$path\.$sub = {};");
                    J.bz->("${path}_$sub#$ome\t$cv", $haD);
                    J.bz->("${path}_$sub#return\t9", "oJ\.drop\.$path\.$sub;");
                    J.bz->("$path#upsubhash-$sub\t1",

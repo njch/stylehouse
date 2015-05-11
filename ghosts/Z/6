@@ -26,6 +26,7 @@ R_Jz:
          flow 1
          nesting 4
          style 5
+         etcs 6
          
        
  - K: ym/dorp #c
@@ -33,11 +34,36 @@ R_Jz:
      my $so = {
          droplist => 'O',
          subhash => 'X',
-         subhash_X_arp => '$com,$cs,$at,$lv,$J,$j',
+         subhash_X_arp => '$v,$tks,$com,$cs,$at,$lv,$J,$j',
      } if $v eq 'XO';
+     $so = {subhash=>'X'} if $v eq 'X';
      $so||die "ym/dorp of $v";
      n.sc->{$_} = $so->{$_} for keys %$so;
-
+ - K: geomo/etcs #c
+   D:
+    - MZ: dorp:X
+    -
+     - inv
+     - 5.7
+     - |
+       my $wa = shift;
+       my $ig = shift;
+       return ejson $wa if ref $wa eq 'ARRAY';
+       join"            ", map{"$_:".ejson($wa->{$_})}
+       sort grep {!$ig||$_ !~ /^($ig)$/} grep{!/^__/} keys %$wa;
+    -
+     - tryig
+     - 5.7
+     - |
+       my $ig = shift;
+       $inv->($pat, $ig) eq $inv->($at, $ig)
+       
+    -
+     - kinv
+     - 5.7
+     - |
+       my $k = shift;
+       $inv->($at->{$k}) ne $inv->($pat->{$k})
  - K: geomo/nesting #c
    D:
      -
@@ -129,11 +155,6 @@ R_Jz:
  - K: geomo/flow #c
    D: |
        # 1
-       #sayyl "Maky on J.name: R.way.hooks.may_X";
-       # v should be somehow, not necessarily # sorta J/1 in gpasm
-       say "         MAY J.name        J.name MAY";
-       #die;
-       # 2
        G.oin.idJy->{J.id} ||= $J;
        # think these want to be injected crazily
        if (!J.yy.may.noroot) {
@@ -142,6 +163,7 @@ R_Jz:
            exists J.bb->{"/%id\t0.9"} ||
            J.bz->("/%id\t0.9", J.id);
        }
+       # 2
        
        my $aJ = Rw oJ $J A;
        #  ^ v MMMMMMMMMM aj ejector
@@ -151,13 +173,11 @@ R_Jz:
        my $vs = Rw tyv $J;
        my @s;
        
-       
-       
        # 3.7 know what we are ignoring and destroying
        # bi-pha
        # pingy statechange graphicly allele towers
        # $vs should stretch over aJ as far as any $ip is
-       
+       #
        my %now = map{_.j.r => 1} @$vs;
        for (keys %{aJ.bb}) {
            /^(.+)%.+?\t(\S+)$/||die$_;
@@ -171,6 +191,7 @@ R_Jz:
            my $j = lv.j;
            die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
            
+           # 4
            my $coi = Rw pha $J:aJ $k:j.r;
            coi.qui = 1;
            my $xat = do {
@@ -181,7 +202,6 @@ R_Jz:
            my $at;
            my $pat;
            my $plv;
-           # 4 exactify
            if (!$xat) {
                $at = {css=>[]};
                at.s = j.s;
@@ -195,9 +215,7 @@ R_Jz:
                while (1) {
                    my ($tk, $com, $v, $tks) = $it->();
                    last if !$tk;
-                   #say " $tk, $com, $v, $tks";
-
-                   my @s = $X->{$tk}->($v, $tks, $X, $com, $cs, $at, $lv, $J, $j);
+                   my @s = $X->{$tk}->($v, $tks, $com, $cs, $at, $lv, $J, $j);
                    #say "May X $tk returned: ". wdump [@s] if @s;
                }
                

@@ -1500,13 +1500,9 @@ sub parse_babble {
     my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
     $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
 
-    $eval =~ s/($mwall)(o?J)n\(/$1$2\.no->(\$$2, /smg;
-    $eval =~ s/($mwall)(o?M)n\(/${1}J\.no->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w?J)n\(/$1$2\.no->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w?M)n\(/${1}J\.no->(\$$2, /smg;
 
-    #Sur Hostinfo {
-    #Pur S/$hol "hostinfo/ack r.m", 'ig'
-
-    # waylay
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
 
