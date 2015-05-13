@@ -2,9 +2,9 @@ R_Jz:
 
  - K: flow #c K-flow
    D: |
-     my $name = $m->[0];
+     my ($name) = ar.name || @{delete ar.m};
      my $oJ = Rw oJ $J $name $style=fl;
-     Rw up $J:oJ;
+     Rw up $J:oJ $oJ:ar.oJ;
  - K: fl #c stitch at/cs solvents via $oJ/flows/M(Carbony patchbay)
    n_D:
      yJ: |
@@ -23,7 +23,9 @@ R_Jz:
        
        saybl "Flop: ".F_delta;
        
-       Rw oJ.hw/flow $J:J.Jo $fJ:J $oJ;
+       my $Jo = ar.oJ || J.Jo;
+       saygr wdump oJ.way if Jo.V;
+       Rw oJ.hw/flow $J:Jo $fJ:J $oJ;
        #   enter ^ for ^ bits ^ loaf ^
        
        saybl "Flow: ".F_delta;
@@ -107,8 +109,6 @@ R_Jz:
            Rw loadup $u:oJ.way $pin $n;
        }
        Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
-       
-       #saygr wdump oJ.way;
        
        $oJ
  - K: wtfity #c
