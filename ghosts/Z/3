@@ -11,8 +11,9 @@ R_Jz:
        
        # yawl!
        sayyl "ON J.Jo.name";
-       my $nc = 1;
+       my $nc = -1;
        for my $lv (@$vs) {
+           $nc = 0 if $nc == -1;
            my $j = lv.j;
            my $coi = Rw pha $J $k=j.r;
            coi.off=100;
@@ -77,7 +78,6 @@ R_Jz:
        twzng 0.1 J/2
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
-       
        Rw on_xor_geo + $J;
        
  - K: on_xor_geo #c
@@ -87,7 +87,7 @@ R_Jz:
        
        my $oJ = Rw oJ $J on;
        my $nc = Rw up $J:oJ;
-       return coi.abandon->('same on') if $nc;
+       return sayre(("ABABAN") x 5) && coi.abandon->('same on') if $nc;
        
        Rw onxor $J $oJ;
        
