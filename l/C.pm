@@ -88,6 +88,7 @@ sub init_way {
 
     # merge the ways into us
     for my $i (keys %$d) {
+
         $C->{$i} = $d->{$i};
     }
     # TODO should be in G or so as we thrust down many ways to here

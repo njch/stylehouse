@@ -267,19 +267,16 @@ R_Jz:
          J.no->($J, k => '', "$k", '{fs:7,co:e9a7}');
          J.no->($J, Bs => '', ',', {}) if $i++ > 0;
      }
-
 C mod#fun: # pile of stuff on the ceiling # pull out the culture protocol re MZ meanings
  -
   - unico #c
   - 3.3
   - |
       my $c = ref $cs ? $cs : {};
-      my $ent = d.s =~ /^(d+)$/ ? $1 : J.ent.2;
       my @s;
       for my $i (1..(c.thi||24)) {
-          my $entoi = $1 if ($ent * $i) =~ /(\d)$/;
-
-          my ($b, $dd) = unico((100*d.pcv)+$i* 100 * $entoi, 1);
+          my ($b, $dd) = unico(int(d.pcv*1000+$i*100), 1);
+          my $entoi = $1 if $i =~ /(\d)$/;
           my $pa = $entoi > 7 ? "  " : $entoi > 3 ? " " : "";
           push @s, $pa.$b;
       }
@@ -358,9 +355,15 @@ C mod#fun: # pile of stuff on the ceiling # pull out the culture protocol re MZ 
   - |
      my ($n1,$n2) = $cs =~ /^($NUM)(?:_($NUM))?/;
      # n1 already 0.4 if it wants to be tiny
-     my $siz = (12 / $n1);
-     sayre d.pcv;
-     $siz -= d.pcv / $n2 if $n2;
+     my $siz = $n1;
+     
+     if ($n2) {
+         my $no = d.pcv;
+         my $li = (1/$n2);
+         $no -= $li until $no < $li;
+         my $mu = $no / $li;
+         $siz *= $mu if $mu;
+     }
      d.cs.fsgy.fs = int $siz;
  -
   - fsx #c text fit
