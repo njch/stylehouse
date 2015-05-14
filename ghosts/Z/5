@@ -2,23 +2,23 @@ R_Jz:
 
  - K: flow #c K-flow
    D: |
-     my ($name) = ar.name || @{delete ar.m};
-     my $oJ = Rw oJ $J $name $style=fl;
-     Rw up $J:oJ $oJ:ar.oJ;
- - K: fl #c stitch at/cs solvents via $oJ/flows/M(Carbony patchbay)
+     my ($name) = delete(ar.name) || @{delete ar.m};
+     my $wJ = Rw oJ $J $name $style=fl;
+     Rw up $J:wJ $oJ:ar.oJ;
+ - K: fl #c stitch at/cs solvents via $wJ/flows/M(Carbony patchbay)
    n_D:
      yJ: |
        'fl'
      up: |
        my $h = slm 8, dig ejson[J.Jo.style,J.name];
        
-       my $oJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
+       my $wJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
        
        saybl "Flop: ".F_delta;
        
        my $Jo = ar.oJ || J.Jo;
-       saygr wdump oJ.way if Jo.V;
-       Rw oJ.hw/flow $J:Jo $fJ:J $oJ;
+       saygr wdump wJ.way if Jo.V;
+       Rw wJ.hw/flow $J:Jo $fJ:J $wJ;
        #   enter ^ for ^ bits ^ loaf ^
        
        saybl "Flow: ".F_delta;
@@ -26,9 +26,9 @@ R_Jz:
      op: | #c amplify options
        Rw thy $J:J.Jo $oJ:J flows/J.name;
        # <stuff>
-       my $oJ;
-       oJ.hw = "fl/h/$h";
-       Rw suJ $J:oJ;
+       my $wJ;
+       wJ.hw = "fl/h/$h";
+       Rw suJ $J:wJ;
        
        my $vs = Rw tyv $J;
        @$vs||die;
@@ -86,24 +86,24 @@ R_Jz:
                !$path && die "noapth";
                
                for my $c (@N) {
-                   Rw Nucleoues $c $path $oJ:J $J:oJ;
+                   Rw Nucleoues $c $path $oJ:J $J:wJ;
                }
            }
        }
        
        my $coms = {};
-       my $wtf = Rw concat $J:oJ $coms;
+       my $wtf = Rw concat $J:wJ $coms;
        
        my $real = Rw wtfity $wtf;
        
-       oJ.way = {};
+       wJ.way = {};
        for my $pin (sort keys %$real) {
            my $n = $real->{$pin};
-           Rw loadup $u:oJ.way $pin $n;
+           Rw loadup $u:wJ.way $pin $n;
        }
-       Rw loadup $u:R.way.hooks $pin:oJ.hw $n:oJ.way;
+       Rw loadup $u:R.way.hooks $pin:wJ.hw $n:wJ.way;
        
-       $oJ
+       $wJ
  - K: wtfity #c
    D: |
      my $real = {};
@@ -188,25 +188,25 @@ R_Jz:
           # some special K of c may have meta for this too
           
                if (my $sub = sc.sh) {
-                   unshift @l, "oJ\.drop\.$path\.$sub\.c.K = sub {";
+                   unshift @l, "wJ\.drop\.$path\.$sub\.c.K = sub {";
                    if (my $args = $sc->{"sh_${sub}_args"}) {
                        push @lr, '    my ('.$args.') = @_;';
                    }
                    $D = ind '     ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
-                       push @r, "push \@{oJ\.drop\.$path\.$list}, 'c.K';"; 
-                       J bz ${path}_$sub#rese$list 1 "oJ\.drop\.$path\.$list = [];"
+                       push @r, "push \@{wJ\.drop\.$path\.$list}, 'c.K';"; 
+                       J bz ${path}_$sub#rese$list 1 "wJ\.drop\.$path\.$list = [];"
                    }
                    my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                    @l = (); @lr = (); @r = ();
                    
                    # makes $X or so lexical
-                   J.bz->("${path}_$sub#rese\t1", "my \$$sub = oJ\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#rese\t1", "my \$$sub = wJ\.drop\.$path\.$sub = {};");
                    J.bz->("${path}_$sub#$ome\t$cv", $haD);
-                   J.bz->("${path}_$sub#return\t9", "oJ\.drop\.$path\.$sub;");
+                   J.bz->("${path}_$sub#return\t9", "wJ\.drop\.$path\.$sub;");
                    J.bz->("$path#upsubhash-$sub\t1",
-                     "my \$$sub = oJ\.drop\.$path\.$sub ||= Rw J.hw/${path}_$sub;");
+                     "my \$$sub = wJ\.drop\.$path\.$sub ||= Rw J.hw/${path}_$sub;");
                      
                    return; #
                }
