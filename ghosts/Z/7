@@ -2,24 +2,34 @@
 R_Jz:
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
-   -
-    - siome #
-    - 5.3
-    - |
-        my ($tks, $cs, $it) = Rw sit flow O X $lv $wJ;
-        sayre wdump lv.sc;
-        #saybl wdump $tks;
-        while (1) {
-            my ($tk, $com, $v, $tks) = $it->();
-            last if !$tk;
-            my @s = $X->{$tk}->($v, $tks, $com, $cs, $at, $lv, $J, $j);
-        }
-   - MZ: dorp:XO
-   - WZ: /flung
- - K: esca/i #c
-   D:
-   - MZ: dorp:XO
-   - WZ: /flung
+    -
+     - cts_V #
+     - 5.3
+     - |
+       my $sc;
+       for my $k (keys %{lv.sc}) {
+           my $v = lv.sc->{$k};
+           my $om = $1 if $k =~ s/(#.+)$//;
+           sayre "j.r      ==== $k => $v";
+           $sc->{$k}= $v;
+       }
+       
+        #my @s = $X->{$tk}->($v, $tks, $com, $cs, $at, $lv, $J, $j);
+       for my $ct (@{wJ.cts.V}) {
+           next unless exists $sc->{ct.t};
+           my $v = $sc->{ct.t};
+           wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+       }
+       saybl "j.r   =------ ".join" ",@{at.css};
+       
+    - MZ: dorp:ctx_V
+    - WZ: /flung
+    - MZ: dorp:0 sticks:V
+    - WZ: /stylat
+ - K: ym/sticks #c
+   D: |
+     n.sc.ct = $v;
+     n.sc->{"ct_${v}_args"} = '$J,$j,$lv,$v,$sc,$at';
 stylat:
  - #
   - cm
@@ -27,7 +37,7 @@ stylat:
   - |
     my $wt = ejson {id=>at.id, value=>at.s};
     at.id || die;
-    at.dig = cs.dig || die "no diggy";
+    at.dig = sc.dig || die "no diggy";
     acum $at, Esc => " a\.cod($wt);";
     at.s = '';
  - #
@@ -136,8 +146,8 @@ stylat:
     at.id = $id;
     J.idyl->($J, $id, $j);
     #
-flung:
- - #c func y
+flung: # func y
+ - 
   - mktk # language expansion
   - 3
   - |
@@ -155,6 +165,7 @@ flung:
   - cole # it
   - 3
   - |
+    my $v = shift;
         my $h;
         (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
                   if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $v";
@@ -176,6 +187,7 @@ flung:
   - hsle # ray lih, unhassley
   - 3
   - |
+    my $v = shift;
         my $h;
         if ($v =~ /^(\S+) (\S+) (\S+)(?: (\S+))?$/) {
             (h.h, h.s, h.l, h.a) = ($1, $2, $3, $4);
@@ -196,10 +208,12 @@ flung:
   - empc # decide space unit TODO init soon
   - 3
   - |
+    my $v = shift;
      $v .= 'em' if $v !~ /(%|em|px)/;
      $v =~ s/^-?0em$/0%/;
      $v;
- - #c STASHINGS
+stwa: # STASHINGS
+ - 
   - jsc # some compression
   - 3
   - |

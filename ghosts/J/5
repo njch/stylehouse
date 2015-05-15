@@ -256,21 +256,33 @@ R_Jz:
                 
      if (my $C = sc.ct) {
          # lets C
-         my $sub = c.t.'_'.c.v;
-         $sub =~ s/\.//sg;
-         J.cts ||= {};
-         acum J.cts, $C, => {t=>c.t,x=>$sub};
+         my $sub = c.t;
+         if (!sc.nx) {
+             $sub = c.t.'_'.c.v;
+             $sub =~ s/\.//sg;
+             
+         }
          
-         my $s = "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
+         sayyl "$C c.t   for ".ki $sc;
+         
+         my @s;
+         push @s, "acum wJ\.cts, '$C', {t=>'c.t',x=>'$sub'};"
+             if !sc.nx;
+         
+         push @s, "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
          if (my $args = $sc->{"ct_${C}_args"}) {
-         $s .= "\n    my ($args) = \@_;";
+             push @s, "    my ($args) = \@_;";
          }
          $D = ind '    ', $D;
-         $s .= "\n$D";
-         $s .= "\n};";
-         $D = join "\n", (sc.com||"#!?"), $s;
+         push @s, "$D";
+         push @s, "};";
+         $D = join "\n", (sc.com||"#!?"), @s;
          # makes $X or so lexical
-         J.bz->("${path}_$C#rese\t1", "wJ\.ctx\.$C = {};");
+         J.bz->("${path}_$C#rese\t1", 
+          "wJ\.ctx\.$C = {};"
+         ."wJ\.cts\.$C = [];"
+         );
+         
          J.bz->("${path}_$C#$ome\t$cv", $D);
          J.bz->("${path}_$C#return\t9", "wJ\.ctx\.$C;");
          J.bz->("$path#upctx-$C\t1",
