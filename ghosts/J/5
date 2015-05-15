@@ -1,1 +1,262 @@
 R_Jz:
+ - K: flow #c K-flow
+   D: |
+     my ($name) = delete(ar.name) || @{delete ar.m};
+     my $wJ = Rw oJ $J $name $style=fl;
+     Rw fl/up + $J:wJ;
+ - K: fl #c stitch at/cs solvents via $wJ/flows/M(Carbony patchbay)
+   n_D:
+     yJ: |
+       'fl'
+     up: |
+       my $h = slm 8, dig ejson[J.Jo.style,J.name];
+       
+       my $wJ = G.drop.flows->{$h} ||= Rw fl/op + $h;
+       
+       saybl "Flop: ".F_delta;
+       
+       return $wJ if ar.re;
+       
+       my $Jo = ar.oJ || J.Jo;
+       saygr wdump wJ.way if Jo.V;
+       Rw wJ.hw/flow $J:Jo $fJ:J $wJ;
+       #   enter ^ for ^ bits ^ loaf ^
+       
+       saybl "Flow: ".F_delta;
+       # (lost bits) 
+     op: | #c amplify options
+       Rw thy $J:J.Jo $oJ:J flows/J.name;
+       # <stuff>
+       my $wJ;
+       wJ.hw = "fl/h/$h";
+       Rw suJ $J:wJ;
+       
+       my $vs = Rw tyv $J;
+       @$vs||die;
+       
+       # the point to throw at if there is one
+       my $path;
+       
+       for my $lv (@$vs) { 
+           my $j = lv.j;
+           sayre "Stitchup j.r    ".ki lv.sc;
+           # potential ab pathy via cs craziness at ~/flows/$k M...
+           my $Z = Rw muck - J.name/j.l;
+           if (!%$Z) {
+               for my $nam (split ',', lv.sc.pa) {
+                   $Z = Rw muck - $pin=$nam/j.l;
+                   if (%$Z) {
+                       saygr "J.name inherits j.l from $nam";
+                       last;
+                    }
+               }
+               die "nothing from J.name/j.l   fo  j.r  ###sc: ".ki lv.sc if !%$Z;
+           }
+           for my $k (sort keys %$Z) {
+               my $s = $Z->{$k};
+               
+               $path = j.l if G.drop.conv->(j.cv) eq 'YIN';
+               
+               my @N = ref $s eq 'ARRAY' ? do {
+                   my $M = [];
+                   Rw MyN $N:s $M;
+                   @$M;
+               }
+               :
+               ref $s eq 'HASH' ? do {
+                   die 'possible lma fire...'
+               }
+               :
+               ref $s ? die "no $s" : do {
+                   my $M = [];
+                   my $i = 0.01;
+                   my @cs;
+                   #sayre $s if j.l =~ /flow/;
+                   my $up = sub {
+                       @cs || return "nothing in j.l $i";
+                       my $c;
+                       c.t = j.l;
+                       c.y.cv = $i;
+                       c.s = join "\n", @cs;
+                       c.sc = lv.sc;
+                       push @$M, $c;
+                       @cs = ();
+                   };
+                   for my $l (split "\n", $s) {
+                       if ($l =~ /^\s*# (\d\S*)/) {
+                           my $ni = $1;
+                           $up->();
+                           $i = $ni;
+                       }
+                       push @cs, $l;
+                   }
+                   $up->();
+                   @$M;
+               };
+               !$path && die "noapth";
+               
+               for my $c (@N) {
+                   Rw Nucleoues $c $path $oJ:J $J:wJ;
+               }
+           }
+       }
+       
+       my $coms = {};
+       my $wtf = Rw concat $J:wJ $coms;
+       
+       my $real = Rw wtfity $wtf;
+       
+       wJ.way = {};
+       for my $pin (sort keys %$real) {
+           my $n = $real->{$pin};
+           Rw loadup $u:wJ.way $pin $n;
+       }
+       Rw loadup $u:R.way.hooks $pin:wJ.hw $n:wJ.way;
+       
+       $wJ
+ - K: wtfity #c
+   D: |
+     my $real = {};
+     
+     for my $l (sort keys %$wtf) {
+         my $cvs = $wtf->{$l};
+         
+         for my $cvit (sort keys %$cvs) {
+             my $v = $cvs->{$cvit};
+             
+             my $type = G.drop.conv->($cvit);
+             # con cvit # make zp(1) to round zero point numbers to 1, etc
+             
+             $v = join "\n", @$v;        # # <<<<<<<
+             
+             if ($type eq 'YIN') {
+                 $real->{$l} = $v;
+                 #die "split: $v";
+             }
+             else {
+                 $real->{$l} || die;
+                 $real->{$l} .= "\n$v";
+                 #$real->{$l} =~ s/(# $type.*?)$/$1\n$v/sm
+                 #   || die "no $type in $l ... $real->{$l}";
+             }
+         }
+     }
+     
+     $real
+       
+ - K: concat #c tlv -> wtf.$l.$cvit [ j.s
+   D: |
+       # shove togeth modn
+       # get a cv sorter  that puts 3 > 32, since 3 is 3 all the way down > 3232323...
+       # tesalation
+       my $vs = Rw tlv $J;
+       # ^ hash styles, things are l+com, like $tks
+       my $wtf;
+       for my $lv (@$vs) {
+           my $j = lv.j;
+           die if !%$j;
+           
+           lv.sc && die "wop";
+           
+           acum ar.coms, j.cv => j.com if ar.coms;
+           
+           my $was = $wtf->{j.l} ||= {};
+           
+           acum $was, G.drop.vonc->(j.cv), j.s;
+           # aggs to wanted dp, fractionated in as the src wants, in the order of tlvness
+           # <<<<<<< cv collapse unto elements #? rel src to round cv...
+       }
+       $wtf
+ - K: Nucleoues #c
+   D: |
+          my (@l,@lr,@r);
+          c.K ||= c.t;
+          c.K || die;
+          c.v ||= c.y.cv;
+          c.v ||= 3;
+          c.v += 0;
+          
+          my $ome = c.K; # as uncompressed in the bb key? wtf if K dup
+          
+          die c.v if c.v !~ /^\d/;
+
+          # if for c.cs, for implant condits # sche
+          my $cv = c.v;
+          my $D = c.s || c.c.s;
+          my $type = G.drop.conv->($cv);
+          # z downgrasp (ty above) self if MZ
+          my $sc;
+          $sc = c.sc.MZ if c.sc && c.sc.MZ;
+          my $ty = {};
+          $sc ||= $ty->{$type};
+          $sc ||= {};
+          $sc = {%$sc, %{c.sc}} if c.sc;
+          c.sc = $sc;
+          sc.com = "# c.v c.K sc.com";
+          
+          # per $path if maybe ?? emberd whatsits
+          # some special K of c may have meta for this too
+          
+               if (my $sub = sc.sh) {
+                   unshift @l, "wJ\.drop\.$path\.$sub\.c.K = sub {";
+                   if (my $args = $sc->{"sh_${sub}_args"}) {
+                       push @lr, '    my ('.$args.') = @_;';
+                   }
+                   $D = ind '     ', $D;
+                   push @r, '};';
+                   if (my $list = sc.droplist) {
+                       push @r, "push \@{wJ\.drop\.$path\.$list}, 'c.K';"; 
+                       J bz ${path}_$sub#rese$list 1 "wJ\.drop\.$path\.$list = [];"
+                   }
+                   my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+                   @l = (); @lr = (); @r = ();
+                   
+                   # makes $X or so lexical
+                   J.bz->("${path}_$sub#rese\t1", "my \$$sub = wJ\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#$ome\t$cv", $haD);
+                   J.bz->("${path}_$sub#return\t9", "wJ\.drop\.$path\.$sub;");
+                   J.bz->("$path#upsubhash-$sub\t1",
+                     "my \$$sub = wJ\.drop\.$path\.$sub ||= Rw J.hw/${path}_$sub;");
+                     
+                   return; #
+               }
+          
+          # see twisty ops in lightcones
+          # could resolve curve embeddings like this
+          # same in bush of stuff to cv out
+          # cv in
+          
+          if (my $cs = sc.qmco) {
+              push @l, ':', "\$tk eq 'c.K' ? do {";
+              if (my $sub = sc.subhash) {
+                  $D = "G\.drop\.$path\.$sub\.c.K->(\$v, \$tks)";
+              }
+              $D = ind '     ', $D;
+              push @r, '}';
+          }
+          
+          # if (sc.this) { DO } +
+               if (my $cs = sc.csfrm) {
+                   $cs = c.K if $cs eq 'cK';
+                   sc.com .= "# cs=$cs  ";
+                   unshift @l, "if (exists c\.$cs) {"
+                       ."\n    my \$cs = c\.$cs;";
+                   $D = ind '     ', $D;
+                   push @r, '}';
+               }
+                
+               if (sc.tv) {
+                   # lets D
+                   J.bz->("c.K\t1", $D);
+                   # dup pha check^
+                   #die ki $sc;
+                   my $d = {%$c};
+                   delete d.s;
+                   acum $J, tvs => $d;
+                   #die wdump [$path, $ome, $cv, c.K, $sc, $type];
+                   return;
+               }
+               
+               $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+               J.bz->("$path#$ome\t$cv", $D);
+
