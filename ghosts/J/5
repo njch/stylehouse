@@ -169,40 +169,38 @@ R_Jz:
        $wtf
  - K: Nucleoues #c
    D: |
-          my (@l,@lr,@r);
-          c.K ||= c.t;
-          c.K || die;
-          c.v ||= c.y.cv;
-          c.v ||= 3;
-          c.v += 0;
+     my (@l,@lr,@r);
+     c.K ||= c.t;
+     c.K || die;
+     c.v ||= c.y.cv;
+     c.v ||= 3;
+     c.v += 0;
           
-          my $ome = c.K; # as uncompressed in the bb key? wtf if K dup
+     my $ome = c.K; # as uncompressed in the bb key? wtf if K dup
           
-          die c.v if c.v !~ /^\d/;
+     die c.v if c.v !~ /^\d/;
 
-          # if for c.cs, for implant condits # sche
-          my $cv = c.v;
-          my $D = c.s || c.c.s;
-          my $type = G.drop.conv->($cv);
-          # z downgrasp (ty above) self if MZ
-          my $sc;
-          $sc = c.sc.MZ if c.sc && c.sc.MZ;
-          my $ty = {};
-          $sc ||= $ty->{$type};
-          $sc ||= {};
-          $sc = {%$sc, %{c.sc}} if c.sc;
-          c.sc = $sc;
-          sc.com = "# c.v c.K sc.com";
-          
-          # per $path if maybe ?? emberd whatsits
-          # some special K of c may have meta for this too
-          
-               if (my $sub = sc.sh) {
+     # if for c.cs, for implant condits # sche
+     my $cv = c.v;
+     my $D = c.s || c.c.s;
+     my $type = G.drop.conv->($cv);
+     # z downgrasp (ty above) self if MZ
+     my $sc;
+     $sc = c.sc.MZ if c.sc && c.sc.MZ;
+     my $ty = {};
+     $sc ||= $ty->{$type};
+     $sc ||= {};
+     $sc = {%$sc, %{c.sc}} if c.sc;
+     c.sc = $sc;
+     sc.com = "# c.v c.K sc.com";
+     # per $path if maybe ?? emberd whatsits
+     # some special K of c may have meta for this too
+     if (my $sub = sc.sh) {
                    unshift @l, "wJ\.drop\.$path\.$sub\.c.K = sub {";
                    if (my $args = $sc->{"sh_${sub}_args"}) {
                        push @lr, '    my ('.$args.') = @_;';
                    }
-                   $D = ind '     ', $D;
+                   $D = ind '    ', $D;
                    push @r, '};';
                    if (my $list = sc.droplist) {
                        push @r, "push \@{wJ\.drop\.$path\.$list}, 'c.K';"; 
@@ -219,12 +217,11 @@ R_Jz:
                      "my \$$sub = wJ\.drop\.$path\.$sub ||= Rw J.hw/${path}_$sub;");
                      
                    return; #
-               }
-          
-          # see twisty ops in lightcones
-          # could resolve curve embeddings like this
-          # same in bush of stuff to cv out
-          # cv in
+     }
+     # see twisty ops in lightcones
+     # could resolve curve embeddings like this
+     # same in bush of stuff to cv out
+     # cv in
           
           if (my $cs = sc.qmco) {
               push @l, ':', "\$tk eq 'c.K' ? do {";
@@ -256,6 +253,30 @@ R_Jz:
                    #die wdump [$path, $ome, $cv, c.K, $sc, $type];
                    return;
                }
+                
+     if (my $C = sc.ct) {
+         # lets C
+         my $sub = c.t.'_'.c.v;
+         $sub =~ s/\.//sg;
+         J.cts ||= {};
+         acum J.cts, $C, => {t=>c.t,x=>$sub};
+         
+         my $s = "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
+         if (my $args = $sc->{"ct_${C}_args"}) {
+         $s .= "\n    my ($args) = \@_;";
+         }
+         $D = ind '    ', $D;
+         $s .= "\n$D";
+         $s .= "\n};";
+         $D = join "\n", (sc.com||"#!?"), $s;
+         # makes $X or so lexical
+         J.bz->("${path}_$C#rese\t1", "wJ\.ctx\.$C = {};");
+         J.bz->("${path}_$C#$ome\t$cv", $D);
+         J.bz->("${path}_$C#return\t9", "wJ\.ctx\.$C;");
+         J.bz->("$path#upctx-$C\t1",
+             "wJ\.ctx\.$C ||= Rw J.hw/${path}_$C;");
+         return; #
+     }
                
                $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                J.bz->("$path#$ome\t$cv", $D);
