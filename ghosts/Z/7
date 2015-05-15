@@ -19,83 +19,126 @@ R_Jz:
        #Rw wJ.hw/flow + $wJ;
        
        
- - K: escJ #c keeps
-   n_D:
-     yJ: |
-       'escJ'
-     flows:
-       esca: |
-         flow 1
-         i 3
-       
  - K: esca/i #c
    D:
    - MZ: dorp:XO
    - WZ: /flung
- - K: esca/flow #c espouse ton carbon product - hanging around the mods too...
-   D: |
-     die wdump ar.sc;
-     my $X;
-     my $seg;
-     
-       my $sc = ar.sc;
-       if (ar.cs) {
-           die if ar.sc;
-           $sc = {};
-           $sc->{''}->{$_} = ar.cs->{$_} for keys %{ar.cs};
-       }
-       
-       die "nonrefsc" if !ref $sc; # parse strings too
-       
-       # YIN
-       
-       my $tks = Rw sctks $sc;
-       my $styles = G.drop.esc.O;
-       my $it = Rw scitl $X $tks $styles;
-       
-       my $tw; # bang
-       while (1) {
-           my ($tk, $com, $v, $tks) = $it->();
-           $tk || last;
-           
-           my @s = $X->{$tk}->($v, $tks, $X);
-           
-           @s = ('%css' => @s) if @s == 1;
-           #sayre "S for $tk $v ; @s  (".@s;
-           while (@s) {
-               my $sty = shift @s;
-               my $s = shift @s;
-               die $sty if $sty !~ /^%/;
-               #
-               warn "$com $sty ----> $s  all3    @s"
-                   if defined $tw->{$com}->{$tk}->{$sty};
-               $tw->{$com}->{$tk}->{$sty} = $s;
-           }
-           
-       }
-       
-       my @css;
-       for my $com (sort keys %$tw) {
-           my $tks = $tw->{$com};
-           for my $tk (sort keys %$tks) {
-               my $stys = $tks->{$tk};
-               for my $sty (sort keys %$stys) {
-                   my $s = $stys->{$sty};
-                   my $st = $1 if $sty =~ /^%?(.+)/;
-                   if ($com ne '' && $st ne $com || $tk ne $st) {
-                       $sty .= "#".join('-', grep{$_} $seg, $com, $tk)
-                           unless $sty =~ /#/;
-                   }
-                   $sty =~ s/#SC-FLYING$//;
-                   
-                   
-                   push @css, $sty => $s;
-               }
-           }
-       }
-       #sayre "CSS  @css";
-       @css;
-       
+stylat:
+ - #
+  - cm
+  - 5.8
+  - |
+    my $wt = ejson {id=>at.id, value=>at.s};
+    at.id || die;
+    at.dig = cs.dig || die "no diggy";
+    acum $at, Esc => " a\.cod($wt);";
+    at.s = '';
+ - #
+  - pi
+  - 5
+  - |
+     at.ishtml = 1;
+ - #
+  - lp
+  - 5
+  - |
+     at.ishtml = 1;
+
+ - #
+  - ishtml
+  - 5
+  - |
+     at.ishtml = 1;
+
+ -
+  - sf # has a way to $a the gp action within...
+  - 5
+  - |
+    push @{at.css}, map { $R::f->{$_} || die "no style $_"} split '_', $v;
+ -
+  - css
+  - 5
+  - |
+    $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v;
+    push @{at.css}, $v;
+ -
+  - id
+  - 5
+  - |
+    at.id = $v;
+ -
+  - tt
+  - 5
+  - |
+    at.title = $v;
+ -
+  - canvas
+  - 5
+  - |
+    at.canvas = $v;
+ -
+  - nt
+  - 5
+  - |
+    at.title = undef;
+ -
+  - type
+  - 5.1
+  - |
+    at.type = $v;
+    at.ishtml = 1;
+    at.title = undef;
+ -
+  - tag
+  - 5
+  - |
+    at.tag = $v;
+ -
+  - at
+  - 5
+  - |
+    $v =~ /^(?:(\S+):)?(\S+)$/;
+    $at->{$1} = $2;
+ - #
+  - atrp
+  - 5
+  - |
+     at.rp = $v;
+ -
+  - path
+  - 5
+  - |
+    # TODO compile J.ys
+    # should get %idly if not lev/gp too
+ -
+  - origin
+  - 5
+  - |
+    #
+ -
+  - waves
+  - 5
+  - |
+    #
+ -
+  - pwar
+  - 5
+  - |
+    #
+ -
+  - Joint
+  - 5
+  - |
+    #
+ -
+  - idly
+  - 5
+  - |
+    my $id = $H->mkuid;
+    at.id && die "arl";
+    at.id = $id;
+    J.idyl->($J, $id, $j);
+    #
 flung:
  - #c func y
   - mktk # language expansion
