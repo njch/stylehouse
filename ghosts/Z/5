@@ -43,7 +43,16 @@ R_Jz:
            sayre "Stitchup j.r    ".ki lv.sc;
            # potential ab pathy via cs craziness at ~/flows/$k M...
            my $Z = Rw muck - J.name/j.l;
-           die "nothing from J.name/j.l   fo" if !%$Z;
+           if (!%$Z) {
+               for my $nam (split ',', lv.sc.pa) {
+                   $Z = Rw muck - $pin=$nam/j.l;
+                   if (%$Z) {
+                       saygr "J.name inherits j.l from $nam";
+                       last;
+                    }
+               }
+               die "nothing from J.name/j.l   fo  j.r  ###sc: ".ki lv.sc if !%$Z;
+           }
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
                
