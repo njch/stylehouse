@@ -9,13 +9,14 @@ R_Jz:
            next unless exists d.c->{ct.t};
            my $v = d.c->{ct.t};
            my $at = {};
-           wJ.ctx.C->{ct.x}->($d,d.t,$c,d.sc,$at,$v);
+           wJ.ctx.C->{ct.x}->($J,$d,d.t,$c,d.sc,$at,$v);
            for my $k (keys %$at) {
                d.cs->{"$k#".ct.x} = d.sc->{$k} = $at->{$k};
            }
        }
-       
-       push @{d.css}, map { '%'.$_ => d.cs->{$_} } sort keys %{d.cs};
+       for my $cs (d.sc, d.cs) {
+           push @{d.css}, map { '%'.$_ => $cs->{$_} } sort keys %$cs;
+       }
     - MZ: dorp:ct_C
     - WZ: /modulapi
 modulapi:

@@ -263,15 +263,22 @@ R_Jz:
              
          }
          
-         sayyl "$C c.t   for ".ki $sc;
+         #sayyl "$C c.t   for ".ki $sc;
          
          my @s;
-         push @s, "acum wJ\.cts, '$C', {t=>'c.t',x=>'$sub'};"
+         push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sub'};"
              if !sc.nx;
-         
          push @s, "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
-         if (my $args = $sc->{"ct_${C}_args"}) {
+         my $args;
+         if ($args = $sc->{"ct_${C}_args"}) {
              push @s, "    my ($args) = \@_;";
+         }
+         if (sc.way) {
+             my $wp = "${path}_${C}_${sub}";
+             J.bz->("$wp\t1", $D);
+             $args =~ s/,/ /sg;
+             $D = 'Rw'." J.hw/$wp $args;";
+             
          }
          $D = ind '    ', $D;
          push @s, "$D";
@@ -286,7 +293,7 @@ R_Jz:
          J.bz->("${path}_$C#$ome\t$cv", $D);
          J.bz->("${path}_$C#return\t9", "wJ\.ctx\.$C;");
          J.bz->("$path#upctx-$C\t1",
-             "wJ\.ctx\.$C ||= Rw J.hw/${path}_$C;");
+             "wJ\.ctx\.$C ||= Rw J.hw/${path}_$C \$wJ;");
          return; #
      }
                

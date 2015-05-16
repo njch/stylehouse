@@ -1,5 +1,50 @@
 
 R_Jz:
+ - K: shv #c  and to compile J5 rounds ahead
+   n_D:
+     yJ: |
+       'shv mooJ'
+     curves: | 
+       spun 0  2
+       zoom 0 0.5
+       y    0  0
+       x    0  0.2
+       curve 0 -0.1
+     defon: |
+       #twang 0.1 Z/2
+       #twong 0.1 Z/3
+     up: | # if the in up, pha wakeups out - all response to editing
+       J.cv = 20;
+       J.mody = 'anno';
+       my $coi = Rw pha $J $k=shvs;
+       
+       my $zoy = Rw J5 zoy $q=1;
+       #J.V=1;
+       Jn('zoy',0.3,{s=>'zoy'},{J=>$zoy,uxmv=>zoy.id});
+       #J.V=0;
+       
+       
+       coi.exactl->();
+       
+       
+       Rw oJ $J geo &up $noesc=1;
+       
+       my $vs = Rw tyv $J;
+       for my $lv (@$vs) {
+        saygr " lv.j.r      => ".ki lv.sc;
+       }
+        
+       Rw flow $J geomo;   
+ - K: shv/flows/geomo #c
+   D: |
+     flow 1
+     nesting 4
+     stiz 3
+     sticks 5
+     stool 5
+     sharp 5
+     etcs 6
+     outs 7
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
     -
@@ -10,22 +55,35 @@ R_Jz:
        for my $k (keys %{lv.sc}) {
            my $v = lv.sc->{$k};
            my $om = $1 if $k =~ s/(#.+)$//;
-           sayre "j.r      ==== $k => $v";
            $sc->{$k}= $v;
+           saybl "j.r hash $k $v";
+       }
+       for my $ct (@{wJ.cts.Y}) {
+           next unless exists $sc->{ct.t};
+           sayyl "YYYYYY          ct.t ! $sc->{ct.t}";
+           my $v = $sc->{ct.t};
+           my $wtf = wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+           
+           if ($wtf) {
+               saygr "YYYYYYYYYY: j.r ct.t    $v   :".wdump 2, $wtf;
+           }
        }
        for my $ct (@{wJ.cts.V}) {
            next unless exists $sc->{ct.t};
+           sayyl "ct.t ! $sc->{ct.t}";
            my $v = $sc->{ct.t};
-           wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+           my $wtf = wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+           
+           if ($wtf) {
+               saygr "YES: j.r ct.t    $v   :".wdump 2, $wtf;
+           }
        }
-       saybl "j.r   =------ ".join" ",@{at.css};
-    - WZ: sticktools
-    - WZ: sharpsticks
- - K: sticktools #c
+       saybl "j.r   =------ ".ki 2, $at;
+ - K: geomo/stool #c
    D:
     - MZ: dorp:ctx_V
     - WZ: /flung
- - K: sharpsticks #c
+ - K: geomo/sharp #c
    D:
     - MZ: sticks:V
     - WZ: /stylat
@@ -34,7 +92,56 @@ R_Jz:
    D: |
      n.sc.ct = $v;
      n.sc->{"ct_${v}_args"} = '$J,$j,$lv,$v,$sc,$at';
+ - K: geomo/stiz #c
+   D:
+    - MZ: sticks:Y
+    - WZ: /stiz
+stiz:
+ -
+  - ab # absolute # ORDER uglies
+  - 3.3
+  - |
+     at.cs.position = 'absolute';
+     at.cs.width = '100%';
+     at.cs.height = '100%';
+ -
+  - left # yep
+  - 3.4
+  - |
+     at.cs.left = $v;
+ -
+  - top # yep
+  - 3.4
+  - |
+     at.cs.top = $v;
+ -
+  - tr # filterszzzz weird style using com to agg.
+  - 3.7
+  - |
+    at.cs->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
+ -
+  - tro #
+  - 3.6
+  - |
+    at.cs->{'transform-origin'} = $v;
+ -
+  - rad # radial tr
+  - 3.6
+  - |
+     sc.tr.rotate = $v.'rad' if $v;
+     return;
 stylat:
+ - 
+  - uxmv
+  - 5.1
+  - |
+    my $cs = at.cs;
+    my $js = join '.',
+    "\$('#$v')", map {"css('$_','$cs->{$_}')"}sort keys %$cs;
+    #die $js;
+    acum $at, 'Esc', " $js;";#die "Movovie $v". wdump 2, at.cs;
+  - way: 1
+  
  - #
   - cm
   - 5.8
@@ -104,6 +211,7 @@ stylat:
   - 5
   - |
     at.tag = $v;
+    warn "TAGTAG: $v";
  -
   - at
   - 5
