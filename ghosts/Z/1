@@ -63,16 +63,6 @@ R_Jz:
      0->tai("aj.y/aj.id\.c", $m);
      0->tac("aj.y\.s", $z);
      
- - K: gajbi #c
-   D: |
-     my $z = ztm($aj);
-     if (aj.yy) {
-         0->tac("aj.yy/".$aj->{aj.yy.'id'}.'.s', $z);
-     }
-     my $m = join "\n", map {@{$aj->{$_}}} sort grep{/^[sc]+/} keys %$aj;
-     0->tai("aj.y/aj.id\.c", $m);
-     0->tac("aj.y\.s", $z);
-     
  - K: blabaj #c
    D: |
      saybl "E    aj.name    aj.yy/".$aj->{aj.yy.'id'}."   (  aj.id";
@@ -125,6 +115,9 @@ R_Jz:
                J.id, aj.Wid, $s;
            
        }
+       if (aj.J.yt.clw) {
+           #Rwyl J5 shv $i:aj.J;
+       }
        $aj;
      unwu: |
        if (my $J = X.oJ.A) {
@@ -137,22 +130,21 @@ R_Jz:
  - K: zoy #c boat for catching/tlv looking the fishes
    n_D:
      yJ: |
-       qw'zoy headi oci mayo'
-     curves: |
-       spun 0  3
-       y    0  0
-       x    0  0.02
-       zoom 0.1 0.5
-       curve 0.3 -0.2
+       qw'zoy clw headi oci mayo'
      up: |
        #n('/',0.91,{}, {});
        Rw Jhead;
        Jn(C   => 0.1, {s=>'C',pwth=>'cl/reC'}, '{fs:29,co:b238}');
        
-       #my @n = map{ map{/^(.+)\/yJ$/;$1} keys%$_ }
-       #    Rw wuck - */yJ;
-       #die wdump [@n];
+       my $Js = Rw Jnwith $y=clw;
+       say wdump $Js;
        
+       
+       my $ip = {style=>'J'};
+       sayyl "J.name  J.id  : ".join'     ',
+           map {"_.l(".keys %{_.s.bb}}
+           Rw tvo $J $ip;
+           
        Jn(wam => 0.2, {s=>'wam',pwth=>'J5:wam'});
        Jn(oot => 0.3, {s=>'oot',pwth=>'J5:oot'});
        Jn(swi => 0.4, {s=>'swi',pwth=>'J5:swi'});
@@ -168,6 +160,15 @@ R_Jz:
          Rw J5 shv;
        D: |
          Rw J5 wam;
+ - K: Jnwith #c
+   D: |
+     my $ty = Rw wuck - */yJ;
+     my @n;
+     while (my ($k,$v) = each %$ty) {
+         my $n = $1 if $k =~ /^(.+)\/yJ$/;
+         push @n, $n if $v =~ /\b$y\b/;
+     }
+     [@n]
  - K: zoybracken #c embed ww # a super JJJ
    D: |
      my $J = G.oin;
@@ -201,11 +202,6 @@ R_Jz:
          Rwyl 0.0001 join/bollox;
      bollox: |
        Rw J5 zoy;
-       
-       my $ip = {style=>'J'};
-       sayyl "J.name  J.id  : ".join'     ',
-           map {"_.l(".keys %{_.s.bb}}
-           Rw tvo $J $ip;
      in: |
        my $oJ = $J; # classic 8 stuf
        $J = G.oin;
@@ -233,7 +229,7 @@ R_Jz:
    n_D:
      yJ: |
        J.yy.may.noroot = 1;
-       'scr clw mayo'
+       'scr mayo'
      up: | # if the in up, pha wakeups out - all response to editing
        Rw thy $J comprsc;
        Rw thy $J canvas;
@@ -248,6 +244,7 @@ R_Jz:
        my $sr = J.Jo;
        J.noesc = ar.noesc if ar.noesc;
        saybl "geo of sr.name";
+         #die "wa ".wdump 2, $_ if J.bb->{_.l."%nogeo\t"._.cv};
        
        Rw thy curves $J:sr $oJ:J
        ||
