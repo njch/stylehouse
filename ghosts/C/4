@@ -37,36 +37,15 @@ R_Jz:
      yl.J = $J;
      yl.j = ar.j if ar.j;
  - K: forkin #c stick fork in
-   babz:
-     'spit 2.89': |
+   n_D:
+     spit_ret: |
        kill 'KILL', $_ for @{delete J.fopikil || []};
-     'spit 8.9': | # forking
+     spit_post: |
        if (%{J.fopi||{}}) {
            my $Js = [values %{delete J.fopi}];
            Rw foping $J $Js;
        }
-     'foping 2': |
-       if (my $pid = fork()) {
-           push @{J.fopikil||=[]}, $pid;
-           return
-       }
-       H.forked = H.forking = H.isforked = 1;
-       my $bail = sub{ kill 'KILL', $$; exit };
-       $G->accum($G0, _aft_err_do => $bail);
-       $G->accum($F[0], _aft_etc_do => $bail);
-       # able to report error
-       # not EV reaction in the child, handles confused
-       # must exit so nothing else can happen
- - K: fopi #c enqueue/shadow-
-   babz:
-     'suJ 3.5': |
-       # to put something off til forking
-       # so false when in shadow
-       J.fop = sub { # a little J (pi)
-           return 1 if H.forking;
-           Rw fopi $J;
-           return 0;
-       };
+ - K: fopi #c enqueue/shadow- # suJ J.fop -> here
    D: |
      J.id ||
      Rw mkJid $J;
@@ -90,6 +69,19 @@ R_Jz:
  - K: foping #c carbon coopy of pi 4 # could be a global wag jaw, Js swim
    D: |
      say @$Js." fops, forking for: ".gp($J);
+     
+       if (my $pid = fork()) {
+           push @{J.fopikil||=[]}, $pid;
+           return
+       }
+       H.forked = H.forking = H.isforked = 1;
+       my $bail = sub{ kill 'KILL', $$; exit };
+       $G->accum($G0, _aft_err_do => $bail);
+       $G->accum($F[0], _aft_etc_do => $bail);
+       # able to report error
+       # not EV reaction in the child, handles confused
+       # must exit so nothing else can happen
+       
      # 3 after the gguts from forkin
      saybl "   Forked... ";
      
