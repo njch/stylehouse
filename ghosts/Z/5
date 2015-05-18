@@ -1,18 +1,7 @@
 R_Jz:
- - K: onx #c
-   n_D:
-     yJ: |
-       'on';
-     up: | # tak tlv J.on into iterations of upgoing clever
-       Rw thy $oJ:J $J:J.Jo defon;
-       
-       
+
  - K: wo1 #c 
    n_D:
-     defon: |
-       #twang 0.1 Z/2
-       #twong 0.1 Z/3
-       twzng 0.1 Z/7
      yJ: |
        'clw headi'
      flows:
@@ -22,8 +11,84 @@ R_Jz:
          may 7
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
+       
+       Rw jf eye
+       ||
+       Jn(eye => 0.1, '{pi:fol,s:eye/fug}');
+       
        Rw flow $J xorg;
        
+ - K: pi/fol #c
+   D: |
+     # LOOK FOR KNOWNS, scoped in wormhole
+     die if ref $u;
+     Jn(name => 0.1, $u);
+     
+     my @m = map{$H->fixutf8($_);chomp;$_}`/bin/ls -lh '$u'`;
+     
+     my $tot = shift @m if $m[0] =~ /^total/;
+     if ($tot) {
+         Jn(D => 0.22, 'D');
+         Jn(tot => 0.22, $tot);
+     }
+     my @o;
+     my $i = 0;
+     for my $n (@m) {
+         my $d;
+         $n =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+\s+\S+\s+\S+)\s+(.+)$/;
+         d.t = $7;
+         d.y.i = $i++;
+         d.c.s = "$u/$7";
+         d.c.pi = "fol";
+         d.sc.size = $5;
+         d.sc.time = $6;
+         push @o, $d;
+     }
+     
+     die $RADIAN;
+     # ire culture suggestions
+     my $M = [@o];
+     Rw vary $J $M;
+         push @{o.r}, $r;
+         if (@{o.r} >= $thi) {
+             o.more = @r - @{o.r};
+             last;
+         }
+     }
+ - K: vary #c tak tlv into space, ready for lx/suro
+   D: |
+       my $out = ar.out || 0.9;
+       my $in = ar.in || 0.1;
+       my $sec = $out - $in; # <-0.8->
+       my $thi = $sec / (@$M||1); # or indi
+       
+       # thi of $lv individuality
+       my $tin = $in;
+       for my $x (@$lvs) {
+           # go higher and pipe mods to squish space, vary $thi (other ways to)
+           x.thi = $tot * $thi;
+           x.phi = $thi;
+           x.in = $tin;
+           x.out = $tin + $thi;
+           $tin = x.out; # next
+           # space volve, indi...
+           saybl "blbl x.j.r   $tot * $thi =  x.thi    ($tot $sec)";
+           
+           my $j = x.j;
+           if (!J.q) {
+               say "up on ".gp($J)."    j.r    ".slim 200, gp(j.s);
+               say "   * _.r          => ".gp(_.s) for values %{x.sj};
+               say "up around x.in <-> x.out"
+           }
+       }
+       $lvs
+       
+ - K: jf #c
+   D: |
+     my $o = Rw pul name;
+     my $ip = {t=>o.name};
+     my @f = Rw tvo $J $ip;
+     scalar @f;
  - K: xorg/flow #c
    D:
    -
