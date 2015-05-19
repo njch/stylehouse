@@ -3,18 +3,25 @@ R_Jz:
  - K: wo1 #c 
    n_D:
      yJ: |
-       'clw headi'
+       'clw headi mooJ shav'
      flows:
        xorg: |
          flow 1
          onx 3
          may 7
      up: | # if the in up, pha wakeups out - all response to editing
-       J.cv = 20;
+       J.d.thi = 20;
+       J.most.mody = 'anno';
+       J.most.eo = 'geomo';
        
-       Rw jf eye
-       ||
+       J.V = 1;
+       J.d.t = 'www';
+       my $coi = Rw pha $J $k=jo;
+       #Rw pi/fol $J $u=eye;
        Jn(eye => 0.1, '{pi:fol,s:eye/fug}');
+       
+       J.V = 0;
+       coi.exactl->();
        
        Rw flow $J xorg;
        
@@ -22,9 +29,10 @@ R_Jz:
    D: |
      # LOOK FOR KNOWNS, scoped in wormhole
      die if ref $u;
-     Jn(name => 0.1, $u);
+     Jn(name => 0.1, {pi=>'text',s=>J.d.t,cv=>0.2});
      
      my @m = map{$H->fixutf8($_);chomp;$_}`/bin/ls -lh '$u'`;
+     #die gp J.most.J;
      
      my $tot = shift @m if $m[0] =~ /^total/;
      if ($tot) {
@@ -36,25 +44,32 @@ R_Jz:
      for my $n (@m) {
          my $d;
          $n =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+\s+\S+\s+\S+)\s+(.+)$/;
+         if (!$tot && @m == 1 && $7 eq $u) {
+             Jn(Size => 0.24, $5, '{hs:4.5.3.8,fs:7}');
+             Jn(Time => 0.25, $6, '{hs:5.5.3.8,fs:5}');
+             last;
+         }
          d.t = $7;
          d.y.i = $i++;
          d.c.s = "$u/$7";
          d.c.pi = "fol";
-         d.sc.size = $5;
-         d.sc.time = $6;
+         d.c.sc.size = $5;
+         d.c.sc.time = $6;
          push @o, $d;
+         last if @o > 5;
      }
      
-     die $RADIAN;
      # ire culture suggestions
+     # make d.y.thi for the 3-6 M bal
+     # where it shrinks if we pan missing
+     # or if theres light bringing up the ab
+     # 
      my $M = [@o];
-     Rw vary $J $M;
-         push @{o.r}, $r;
-         if (@{o.r} >= $thi) {
-             o.more = @r - @{o.r};
-             last;
-         }
-     }
+     Rw om/bal $J $oM:M;
+     #die wdump $M;
+     #Rw vary $J $M;#
+     Jn(ei => 0.8, "<br/>", {ishtml=>1});
+     
  - K: vary #c tak tlv into space, ready for lx/suro
    D: |
        my $out = ar.out || 0.9;
