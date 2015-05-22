@@ -19,15 +19,13 @@ R_Jz:
        
        J.V = 0;
        Rw flow $J geomo;    
- - K: geomoss #c
-   n_D:
-     flows:
-       geomo: |
-         flow 1
-         nesting 2
-         style 5
-         etcs 6
-         outs 7
+ - K: geomoss/flows/geomo #c
+   D: |
+     flow 1
+     nesting 2
+     style 5
+     etcs 6
+     outs 7
          
        
  - K: geomo/nesting #c
@@ -97,7 +95,10 @@ R_Jz:
             #
             # assume @live phased will sane s/c/sc
             map { acum $lv, 'Esc', $_ for @{_.Ec} } @live;
-            map { acum $lv, 'Esc', $_ for @{_.Esc} } @live;
+            map { acum $lv, 'Esc', $_ for @{_.Esc};
+            sayre wdump 2, _.at.Esc;
+            sayyl "lv.j.r   tos the:".wdump(_.Esc);
+            }  @live;
             
             # these are flying blind chunks of html in s
             # few replace selves, say lv.scon = 1;
@@ -187,6 +188,7 @@ R_Jz:
      - 6.4
      - |
        map { acum $lv, 'Esc', $_ } @{at.Esc} if at.Esc;
+       saygr wdump lv.Esc;
        # at out scribe,
        # slump to end
        # switch up pool of lang > styles

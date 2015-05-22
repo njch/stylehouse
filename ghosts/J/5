@@ -1,4 +1,261 @@
 R_Jz:
+ - K: make #c
+   n_D:
+     any_init: |
+       Rwyl 0.000001 make/up;
+     up: |
+       my $t = Rw wuck - */flows/*;
+       for my $k (sort keys %$t) {
+           my $v = $t->{$k};
+           my ($path,$flows,$from) = split '/', $k;
+           
+           Rw make/op $pin:k $path $from;
+       } 
+       
+       DumpFile('yourway.yml', R.way.hooks);
+       #die wdump $t;
+       sayyl "We o ".F_delta();
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       #geomoss/flows/geomo
+     op: | #c amplify options
+       my $J = {};
+       Rw suJ $J;
+       Rw thi $J $pin;
+       
+       my $vs = Rw tyv $J;
+       @$vs||die $pin;
+       Rw suJ $J;
+       
+       for my $lv (@$vs) { 
+           my $j = lv.j;
+           sayyl " !!! Stitchup j.r    ".ki lv.sc;
+           # potential ab pathy via cs craziness at ~/flows/$k M...
+           my $Z = Rw muck - $pin=$from/j.l;
+           if (!%$Z) {
+               for my $nam (split ',', lv.sc.pa) {
+                   $Z = Rw muck - $pin=$nam/j.l;
+                   if (%$Z) {
+                       saygr "$path inherits j.l from $nam  ,,,, $from";
+                       last;
+                    }
+               }
+               die "nothing from $from/j.l   fo  j.r  ###sc: ".ki lv.sc if !%$Z;
+           }
+           for my $k (sort keys %$Z) {
+               my $s = $Z->{$k};
+               
+               my @N = ref $s eq 'ARRAY' ? do {
+                   my $M = [];
+                   Rw MyN $N:s $M;
+                   @$M;
+               }
+               :
+               ref $s eq 'HASH' ? do {
+                   die 'possible lma fire...'
+               }
+               :
+               ref $s ? die "no $s" : do {
+                   my $M = [];
+                   my $i = 0.01;
+                   my @cs;
+                   #sayre $s if j.l =~ /flow/;
+                   my $up = sub {
+                       @cs || return "nothing in j.l $i";
+                       my $c;
+                       c.t = j.l;
+                       c.y.cv = $i;
+                       c.s = join "\n", @cs;
+                       c.sc = lv.sc;
+                       push @$M, $c;
+                       @cs = ();
+                   };
+                   for my $l (split "\n", $s) {
+                       if ($l =~ /^\s*# (\d\S*)/) {
+                           my $ni = $1;
+                           $up->();
+                           $i = $ni;
+                       }
+                       push @cs, $l;
+                   }
+                   $up->();
+                   @$M; 
+               };
+               !$path && die "noapth"; 
+               
+               for my $c (@N) {
+                   Rw Nucl $c $path $J;
+               }
+           }
+       }
+       
+       my $coms = {};
+       my $wtf = Rw concat $J $coms;
+       my $real = Rw wtfity $wtf;
+       #ie wdump $real;
+       
+       for my $pin (sort keys %$real) {  
+           my $n = $real->{$pin};
+       sayyl "&&&&&&&&&&&&&&&&&&&&& Loadinup $pin";
+           Rw loadup $u:R.way.hooks $pin $n;
+       #    Rw loadup $u:wJ.way $pin $n;
+       }
+       
+       #$wJ
+ - K: Nucl #c
+   D: |
+     my (@l,@lr,@r);
+     c.K ||= c.t;
+     c.K || die;
+     c.v ||= c.y.cv;
+     c.v ||= 3;
+     c.v += 0;
+          
+     my $ome = c.K; # as uncompressed in the bb key? wtf if K dup
+          
+     die c.v if c.v !~ /^\d/;
+
+     # if for c.cs, for implant condits # sche
+     my $cv = c.v;
+     my $D = c.s || c.c.s;
+     my $type = G.drop.conv->($cv);
+     # z downgrasp (ty above) self if MZ
+     my $sc;
+     $sc = c.sc.MZ if c.sc && c.sc.MZ;
+     my $ty = {};
+     $sc ||= $ty->{$type};
+     $sc ||= {};
+     $sc = {%$sc, %{c.sc}} if c.sc;
+     c.sc = $sc;
+     sc.com = "# c.v c.K sc.com";
+     
+     my $up_path = sub {
+         J.bz->("$path#up\t1","my \$wJ={};
+            \$wJ = G\.drop\.$path\.wJ ||= Rw\ ${path}_up \$wJ;");
+            
+         J.bz->("${path}_up#return\t9", "\$wJ;");
+     };
+     
+     # per $path if maybe ?? emberd whatsits
+     # some special K of c may have meta for this too
+     if (my $sub = sc.sh) {
+                   unshift @l, "G\.drop\.$path\.$sub\.c.K = sub {";
+                   if (my $args = $sc->{"sh_${sub}_args"}) {
+                       push @lr, '    my ('.$args.') = @_;';
+                   }
+                   $D = ind '    ', $D;
+                   push @r, '};';
+                   if (my $list = sc.droplist) {
+                       push @r, "push \@{G\.drop\.$path\.$list}, 'c.K';"; 
+                       J bz ${path}_$sub#rese$list 1 "G\.drop\.$path\.$list = [];"
+                   }
+                   my $haD = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+                   @l = (); @lr = (); @r = ();
+                   
+                   # makes $X or so lexical
+                   J.bz->("${path}_$sub#rese\t1", "my \$$sub = G\.drop\.$path\.$sub = {};");
+                   J.bz->("${path}_$sub#$ome\t$cv", $haD);
+                   J.bz->("${path}_$sub#return\t9", "G\.drop\.$path\.$sub;");
+                   J.bz->("$path#upsubhash-$sub\t1",
+                     "my \$$sub = G\.drop\.$path\.$sub ||= Rw ${path}_$sub;");
+                     
+                   return; #
+     }
+     # see twisty ops in lightcones
+     # could resolve curve embeddings like this
+     # same in bush of stuff to cv out
+     # cv in
+          
+          if (my $cs = sc.qmco) {
+              push @l, ':', "\$tk eq 'c.K' ? do {";
+              if (my $sub = sc.subhash) {
+                  $D = "G\.drop\.$path\.$sub\.c.K->(\$v, \$tks)";
+              }
+              $D = ind '     ', $D;
+              push @r, '}';
+          }
+          
+          # if (sc.this) { DO } +
+               if (my $cs = sc.csfrm) {
+                   $cs = c.K if $cs eq 'cK';
+                   sc.com .= "# cs=$cs  ";
+                   unshift @l, "if (exists c\.$cs) {"
+                       ."\n    my \$cs = c\.$cs;";
+                   $D = ind '     ', $D;
+                   push @r, '}';
+               }
+                
+               if (sc.tv) {
+                   # lets D
+                   my $d = {%$c};
+                   d.wa = $path.'_'.c.K;
+                   J.bz->("d.wa\t1", $D);
+                   
+                   $up_path->();
+                   
+                   J.bz->("${path}_up#rese$ome\t1", 
+                    "wJ\.tvs = [];"
+                   );
+                   delete d.s;
+                   J.bz->("${path}_up#tv$ome\t$cv",
+                   "push \@{wJ\.tvs}, djson(q[".ejson($d)."]);");
+                   
+                   return;
+               }
+                
+     if (my $C = sc.ct) { #c
+         # lets C
+         my $sub = c.t;
+         if (!sc.nx) {
+             $sub = c.t.'_'.c.v;
+             $sub =~ s/\.//sg;
+             
+         }
+         
+         #sayyl "$C c.t   for ".ki $sc;
+         
+         my @s;
+         push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sub'};"
+             if !sc.nx;
+         push @s, "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
+         my $args;
+         if ($args = $sc->{"ct_${C}_args"}) {
+             push @s, "    my ($args) = \@_;";
+         }
+         if (sc.way) {
+             my $wp = "${path}_${C}_${sub}";
+             J.bz->("$wp\t1", $D);
+             $args =~ s/,/ /sg;
+             $D = 'Rw'." $wp $args;";
+             
+         }
+         $D = ind '    ', $D;
+         push @s, "$D";
+         push @s, "};";
+         $D = join "\n", (sc.com||"#!?"), @s;
+         # makes $X or so lexical
+         
+         $up_path->();
+         
+         J.bz->("${path}_up#rese$C\t1", 
+          "wJ\.ctx\.$C = {};"
+         ."wJ\.cts\.$C = [];"
+         );
+         J.bz->("${path}_up#$C$ome\t$cv", $D);
+         
+         return; #
+     }
+               
+               $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
+               J.bz->("$path#$ome\t$cv", $D);
  - K: flow #c K-flow
    D: |
      my ($name) = delete(ar.name) || @{delete ar.m};
@@ -55,7 +312,9 @@ R_Jz:
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
                
-               $path = j.l if G.drop.conv->(j.cv) eq 'YIN';
+               if (G.drop.conv->(j.cv) eq 'YIN') {
+                   $path = j.l;
+               }
                
                my @N = ref $s eq 'ARRAY' ? do {
                    my $M = [];
@@ -108,6 +367,7 @@ R_Jz:
        
        wJ.way = {};
        for my $pin (sort keys %$real) {
+       sayyl "Loadinup $pin";
            my $n = $real->{$pin};
            Rw loadup $u:wJ.way $pin $n;
        }

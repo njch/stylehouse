@@ -3,41 +3,49 @@ R_Jz:
  - K: wo1 #c 
    n_D:
      yJ: |
-       'clw headi mooJ shav'
-     flows:
-       xorg: |
-         flow 1
-         onx 3
-         may 7
+       'clw headi mooJ shuv'
      up: | # if the in up, pha wakeups out - all response to editing
-       J.d.thi = 20;
-       J.mody = 'anno';
+       J.d.c.cv = 20;
+       J.most.mody = 'anno';
        J.most.eo = 'geomo';
        
-       J.V = 1;
+       #J.V = 1;
        J.d.t = 'www';
        my $coi = Rw pha $J $k=jo;
        #Rw pi/fol $J $u=eye;
-       Jn(eye => 0.1, '{pi:fol,s:eye/fug}');
+       my $M=[];
+       Mn(fu => {thy=>3}, {pi=>'fol',s=>'eye/fug'});
+       Mn(e => {thy=>1}, {pi=>'fol',s=>'eye/o'});
        
+       Rw om/bal $J $oM:M $in=0.2 $out=0.9;
+       
+       #die wdump $N;
        J.V = 0;
        coi.exactl->();
+       Rw oJ $J geo &up $noesc=1;
        
-       Rw flow $J xorg;
+       Rw flow $J geomo;
        
  - K: pi/fol #c
    D: |
      # LOOK FOR KNOWNS, scoped in wormhole
      die if ref $u;
+     Jn(ei => 0.0008, "<br/>", {ishtml=>1});
      Jn(name => 0.1, {pi=>'text',s=>J.d.t,cv=>0.2});
      
-     my @m = map{$H->fixutf8($_);chomp;$_}`/bin/ls -lh '$u'`;
+     my $c = J.d.c;
+     sayyl "is looking $u  J.cv c.cv";
+     
+     
+     
+     my @m = map{$H->fixutf8($_);chomp;$_}`/bin/ls -lHh '$u'`
+      unless c.mode && !c.dir;
      #die gp J.most.J;
      
      my $tot = shift @m if $m[0] =~ /^total/;
      if ($tot) {
-         Jn(D => 0.22, 'D');
-         Jn(tot => 0.22, $tot);
+         $tot = $1 if $tot =~ /^total (.+)$/;
+         Jn(D => 0.22, "D ".@m." $tot", '{hs:5.5.3.8,fs:5}');
      }
      my @o;
      my $i = 0;
@@ -49,14 +57,23 @@ R_Jz:
              Jn(Time => 0.25, $6, '{hs:5.5.3.8,fs:5}');
              last;
          }
-         d.t = $7;
+         return if J.cv < 0.4;
+         d.t = "$7";
+         my $sc;
+         sc.mode = $1;
+         sc.size = $5;
+         sc.time = $6;
+         sc.dir = 1 if sc.mode =~ /^d/;
+         
          d.y.i = $i++;
-         d.c.s = "$u/$7";
          d.c.pi = "fol";
-         d.c.sc.size = $5;
-         d.c.sc.time = $6;
-         push @o, $d;
-         last if @o > 5;
+         d.sc.ml = '3em';
+         d.c.s = "$u/d.t";
+         d.c.sc = $sc;
+         #d.c.cv = J.cv / 2;
+         #push @o, $d;
+         
+         last if @o > 2;
      }
      
      # ire culture suggestions
@@ -68,7 +85,6 @@ R_Jz:
      Rw om/bal $J $oM:M;
      #die wdump $M;
      #Rw vary $J $M;#
-     Jn(ei => 0.8, "<br/>", {ishtml=>1});
      
  - K: vary #c tak tlv into space, ready for lx/suro
    D: |
@@ -102,68 +118,6 @@ R_Jz:
    D: |
      my $o = Rw pul name;
      my $ip = {t=>o.name};
-     my @f = Rw tvo $J $ip;
-     scalar @f;
- - K: xorg/flow #c
-   D:
-   -
-    - flow
-    - 1
-    - |
-       my $coi = Rw pha $J $k=upix;
-       Rw Jhead $J;
-    
-   -
-    - flowered
-    - 4.9
-    - |
-       coi.exactl->();
-    
- - K: xorg/onx #c
-   D:
-   -
-    - onx
-    - 2.2
-    - |
-       my $oJ = Rw oJ $J onx;
-       my $nc = Rw up $J:oJ;
-       return sayre(("ABABAN") x 5) && coi.abandon->('same on') if $nc;
-       
-       Rw nxor $J $oJ;
-       
-       Rw oJ $J geo &up;
- - K: xorg/may #c
-   D:
-   -
-    - may
-    - 8
-    - |
-       Rw may $J;
-       say "comat ".F_delta;
-     
- - K: nxor #c
-   D: |
-       my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
-       for my $x (@$onl) {
-           my $M = [];
-           Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
-           
-           my $o = Rw oundo $x;
-           say "   oundoof: ".F_delta;
-           my $thy = x.thi / (o.thi||1);
-           
-           
-           for my $r (@{o.r}) {
-               #say join " ", sort keys %$r;
-               my $fs = sprintf '%.2f', $thy * 9;
-               #say " This n x.thi  o o.thi   ==  $thy      $fs";
-               Mn( "xor/r.t", {thy=>$thy},
-                  {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.6,pwth=>'J5:cod'},
-                  {fs=>$fs});
-           }
-           if (o.more) {
-               Rw ii/more $x $o $M;
-           }
-           Rw om/bal $J $oM:M $t:x.j.l $thi:x.thi $in:x.in $out:x.out;
-       }
+     my $vs = Rw tyv $J $ip;
+     return shift @$vs if @$vs;
 
