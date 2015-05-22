@@ -9,6 +9,7 @@ use lib 'l';
 use A;
 use C;
 use G;
+use g;
 use J;
 use R;
 use UUID;
@@ -36,6 +37,7 @@ sub new {
     $A::H = $H;
     $C::H = $H;
     $G::H = $H;
+    $g::H = $H;
     $H::H = $H;
     $J::H = $H;
     $R::H = $H;

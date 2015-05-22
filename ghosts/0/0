@@ -362,6 +362,8 @@ hooks:
         shift @name if $name[0] eq '0';
         my $nb = join "::", @name;
         c.nb = $nb;
+        my $self = $nb;
+        $self = uc $self if $self eq 'g';
 
         my $co = $way->find("Ds");
         $co ||do{ warn "No Domes si ".$way->pi; next };
@@ -374,13 +376,14 @@ hooks:
                 "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
         );
         my $btw = {};
+        my @post;
         for my $ch (@$co) {
             say "skipping a blank Kin $nb" && next if !ch.K;
             
             my $D = ch.D || ch.SD;
             $D = $eg->parse_babble($D) unless ch.style =~ /nonbabble/;
             
-            if (ch.K eq "head" || ch.K eq "everything") {
+            if (ch.K =~ /^(head|everything|tail)$/) {
                 if (ch.K eq "everything") {
                     @code = ();
                 }
@@ -399,10 +402,10 @@ hooks:
                 $D =~ s/$_/btw.s->{$_}/seg for keys %{btw.s};
                 
                 # setup self
-                $D = "my \$$nb = shift;\n$D" if ch.style !~ /func/;
+                $D = "my \$$self = shift;\n$D" if ch.style !~ /func/;
                 
                 # return self
-                $D = "$D\n\$$nb"             if ch.K eq "new" || ch.SD;
+                $D = "$D\n\$$self"             if ch.K eq "new" || ch.SD;
                 
                 $D = ind('    ', $D);
                 $D =~  s/^    $//sgm;
@@ -411,8 +414,13 @@ hooks:
             if (c.Dd->{ch.K}) {
                 c.Dd->{ch.K} = $D;
             }
+            if (ch.K eq "tail") {
+                push @post, $D;
+                next;
+            }
             push @code, $D;
         }
+        push @code, @post;
         push @code, ($co->[0]->{K} ne "everything" ? "9;\n\n" : ''); ##
         my $file = "il/l/${nb}.pm"; # TODO ::->/
         $H->spurt($file, H::encode_utf8(join("\n", @code)));

@@ -5,14 +5,20 @@ R_Jz:
        Rwyl 0.000001 make/up;
      up: |
        my $t = Rw wuck - */flows/*;
+       my $amp = {};
        for my $k (sort keys %$t) {
            my $v = $t->{$k};
            my ($path,$flows,$from) = split '/', $k;
            
-           Rw make/op $pin:k $path $from;
+           Rw make/op $amp $pin:k $path $from;
        } 
-        
-       DumpFile('wormhole/yr.yml', R.way.hooks);
+       
+       my $dir = "wormhole";
+       DumpFile("$dir/yr\.yml", R.way.hooks);
+       DumpFile("$dir/ya\.yml", $amp);
+       
+       `cd $dir; cat yr\.yml ya\.yml > yb\.yml`;
+       
        #die wdump $t;
        sayyl "We o ".F_delta();
        
@@ -117,7 +123,7 @@ R_Jz:
        for my $pin (sort keys %$real) {  
            my $n = $real->{$pin};
            sayyl "&&&&&&&&&&&&&&&&&&&&& Loadinup $pin";
-           Rw loadup $u:R.way.hooks $pin $n;
+           Rw loadup $u:amp $pin $n;
        #    Rw loadup $u:wJ.way $pin $n;
        }
        
