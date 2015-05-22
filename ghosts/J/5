@@ -12,7 +12,7 @@ R_Jz:
            Rw make/op $pin:k $path $from;
        } 
        
-       DumpFile('yourway.yml', R.way.hooks);
+       DumpFile('wormhole/yr.yml', R.way.hooks);
        #die wdump $t;
        sayyl "We o ".F_delta();
        
@@ -35,6 +35,7 @@ R_Jz:
        @$vs||die $pin;
        Rw suJ $J;
        
+       my $M = [];
        
        for my $lv (@$vs) { 
            my $j = lv.j;
@@ -50,7 +51,10 @@ R_Jz:
                     }
                }
                die "nothing from $from/j.l   fo  j.r  ###sc: ".ki lv.sc if !%$Z;
-           }
+           } 
+           
+           
+          
            
            for my $k (sort keys %$Z) {
                my $s = $Z->{$k};
@@ -91,12 +95,19 @@ R_Jz:
                    $up->();
                    @$M; 
                };
-               !$path && die "noapth"; 
-               saybl ejson \@N;
-               for my $c (@N) {
-                   Rw Nucl $c $path $J;
-               }
+               !$path && die "noapth";
+               push @$M, @N;
            }
+       }
+       
+       my $h = G.gekoodiu ||= {};
+       my $e = sjson $M;
+       return saygr "$path same" if $e eq $h->{$path};
+       
+       $h->{$path} = $e;
+       
+       for my $c (@$M) {
+           Rw Nucl $c $path $J;
        }
        
        my $wtf = Rw concat $J;
