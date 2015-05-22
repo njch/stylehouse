@@ -2,8 +2,18 @@ Ds:
  - K: head #c
    D: |
      use lib 'l';
+     use G;
      use parent 'G';
  - K: tail #c
    D: |
-     #G::wag();
+     *G::w = *g::w;
+     G::wag() if @ARGV;
+ - K: w #c
+   D: |
+      my $point = shift; 
+      my $ar = shift;
+      my $to = G::find(G.way, $point);
+      
+      die wdump($ar) if $ar && ref $ar ne 'HASH';
+      die "something".G::wdump [@_];
 

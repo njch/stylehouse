@@ -15,6 +15,7 @@ use YAML::Syck;
 use Data::Dumper; 
 use Storable 'dclone';
 use Carp;
+use UUID;
 
 use Time::HiRes 'gettimeofday', 'usleep';
 use List::Util qw(first max maxstr min minstr reduce shuffle sum);
@@ -1843,6 +1844,29 @@ sub dig {
 
 sub snooze {
     return Time::HiRes::usleep((shift || 500) * 10);
+}
+
+sub wag {
+    $H ||= {up=>hitime()};
+    my $G = bless {}, 'g';
+    $G->{id} = mkuid();
+    $G->wayup('wormhole/$yb->{yml}');
+    $G->w('fresh_init');
+
+    $G->w('any_init');
+}
+
+sub catchings {
+    my $G = shift;
+    $SIG{__WARN__} = sub {
+       my $ing = shift;
+       warn$ing unless $ing =~ /^Use of uninitialized/;
+    };
+}
+
+sub wayup {
+    my $G = shift;
+    $G->{way} = G::Load(shift);
 }
 
 9;

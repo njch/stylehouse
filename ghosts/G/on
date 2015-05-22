@@ -1,20 +1,27 @@
 Ds:
- - K: wa #c
+ - K: wag #c
    style: func
    D: |
-     $H ||= {up=>G::hitime()};
+     $H ||= {up=>hitime()};
      my $G = bless {}, 'g';
-     G.id = G::mkuid();
+     G.id = mkuid();
+     $G->wayup('wormhole/yb.yml');
+     $G->w('fresh_init');
+     
+     $G->w('any_init');
+     
+ - K: catchings #c
+   D: |
      $SIG{__WARN__} = sub {
         my $ing = shift;
         warn$ing unless $ing =~ /^Use of uninitialized/;
      };
-     $G->wayup('wormhole/yb.yml');
- - K: wayup #
+     
+
+     
+ - K: wayup #c
    D: |
      G.way = G::Load(shift);
-     my @c = caller;
-     die $c[3];
 
      
 
