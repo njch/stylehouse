@@ -9,6 +9,7 @@ use lib 'l';
 use A;
 use C;
 use G;
+use J;
 use R;
 use UUID;
 use File::Slurp;
@@ -36,6 +37,7 @@ sub new {
     $C::H = $H;
     $G::H = $H;
     $H::H = $H;
+    $J::H = $H;
     $R::H = $H;
 
     $H->spawn0('A')->new($H);
