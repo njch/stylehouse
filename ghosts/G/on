@@ -8,15 +8,8 @@ Ds:
      G.name = "theG";
      $G->catchings;
      $G->wayup("wormhole/yb\.yml");
-     #$G->w('fresh_init');
-     #$G->w('any_init');
      $G->w('expro');
      
-     saybl "done ";
-     sleep 1;
-     sayyl "and...";
-     snooze 1200;
-     exec "nice perl $0 @ARGV";
      
      
  - K: catchings #c
@@ -76,12 +69,8 @@ Ds:
       my $Z = $G->Doming($am);
       my $r;
       eval { $r = [ $G->D($am) ] };
-      sayyl "an";
-      
-      $DB::single = 1 if $@;
       $G->Done($Z);
       
-      sayyl "NOW: $@";
       if ($@) {
           my $ne = "Z";
           $ne .= Z.inter if Z.inter;
@@ -153,6 +142,7 @@ Ds:
         ."$upload"
         .'return @doo_return };';
 
+        
         $sub = $G->Doe($evs, $ar);
             
         $@ = "nicht kompilieren!\n\n$@" if $@;
@@ -168,19 +158,19 @@ Ds:
         $Ds
  - K: g_D #c
    D: |
-      my $am = shift;
-            my $ar = am.ar || {};
+      my $D = shift;
+            my $ar = D.ar || {};
             
             die "RECURSION ".@F if @F > $MAX_FCURSION; 
             
-            my $Ds = $G->Dm($am);
-            am.Ds = $Ds;
+            my $Ds = $G->Dm($D);
+            D.Ds = $Ds;
             my ($evs, $sub) = (Ds.evs, Ds.sub);
                 
-            # TODO rewayen
-            am.sign = 'D';
-            am.talk = "am.sign am.name";
-            my $D = $G->Doming($am);
+            # TODO getonwithitnciousness
+            D.sign = 'D';
+            D.talk = "D.sign D.name";
+            $D = $G->Doming($D);
             
             G.sigstackend ||= sub {
                 local $@;
@@ -204,13 +194,17 @@ Ds:
                     ."       at line $loc[2] in $loc[1]:", @_;
                 return 1;
             };
+            
             my @return;
             if (ref $sub eq "CODE" && !$@) {
                 local $SIG{__DIE__} = G.sigstackend;
                 local $SIG{__WARN__} = G.sigstackwa;
                 
-                
-                eval { @return = $sub->(a.ar) }
+                #sub ggggggg {eval{shift->(@_)}}
+                wantarray ? 
+                do { @return = ggggggg($sub, D.ar) }
+                : do { $return[0] = ggggggg($sub, D.ar) };
+                #eval {  = $sub->(a.ar) }
             }
             
             $G->Done($D); # Ducks

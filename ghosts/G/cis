@@ -302,6 +302,15 @@ Ds:
     D: |
       my ($s,@e) = @_;
       sprintf $s, map { ejson($_) } @e
+  - K: fixutf8 #c
+    style: func
+    D: |
+      for (@_) {
+        if (!is_utf8($_)) {
+          $_ = decode_utf8($_); 
+        }
+      }
+      return shift if @_ == 1
   - K: E #c
     style: func
     D: |

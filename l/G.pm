@@ -673,15 +673,15 @@ sub D {
 
 sub Doming {
     my $G = shift;
-    my $a = shift;
+    my $D = shift;
     die if @_;
 
-    my $s = $G->pyramid($a);
+    $D = $G->pyramid($D);
 
-    unshift @F, $s;
-    $s->{F} = [@F];
+    unshift @F, $D;
+    $D->{F} = [@F];
 
-    return $s;
+    return $D;
 }
 
 sub Done {
@@ -707,11 +707,9 @@ sub Duck {
     my $D = shift;
     my $evs = $D->{Ds}->{evs};
     my $ar = $D->{ar};
-            sayyl "RJWOIJORJWOJO";
-
             my $DOOF; 
             my $first = 1 unless $@ =~ /DOOF/;
-
+            $DOOF .= " ". i $D;
             $DOOF .= "DOOF $D->{K}".sprintf("%-24s",
                 $G->{name}."  $D->{K}  ".($ar->{S} ? "S=".gpty($ar->{S}) :"")
             );
@@ -721,7 +719,7 @@ sub Duck {
                 $DOOF = "$D->{K}";
                 $DOOF .= "  $D->{inter}" if $D->{inter};
                 $DOOF .= "\n";
-            }
+            } 
 
 
 
@@ -1117,7 +1115,6 @@ sub pyramid {
 sub F_delta {
     my $now = hitime();
     my $then = $F[0]->{hitime};
-    sayyl "$now  and $then \n\n". ki $F[0];
     my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
@@ -1457,6 +1454,15 @@ sub sjson {
 sub jsq {
     my ($s,@e) = @_;
     sprintf $s, map { ejson($_) } @e
+}
+
+sub fixutf8 {
+    for (@_) {
+      if (!is_utf8($_)) {
+        $_ = decode_utf8($_); 
+      }
+    }
+    return shift if @_ == 1
 }
 
 sub E {
@@ -1857,15 +1863,7 @@ sub wag {
     $G->{name} = "theG";
     $G->catchings;
     $G->wayup("wormhole/yb\.yml");
-    #$G->w('fresh_init');
-    #$G->w('any_init');
     $G->w('expro');
-
-    saybl "done ";
-    sleep 1;
-    sayyl "and...";
-    snooze 1200;
-    exec "nice perl $0 @ARGV";
 }
 
 sub catchings {
@@ -1924,12 +1922,8 @@ sub g_w {
     my $Z = $G->Doming($am);
     my $r;
     eval { $r = [ $G->D($am) ] };
-    sayyl "an";
-
-    $DB::single = 1 if $@;
     $G->Done($Z);
 
-    sayyl "NOW: $@";
     if ($@) {
         my $ne = "Z";
         $ne .= $Z->{inter} if $Z->{inter};
@@ -2004,6 +1998,7 @@ sub g_Dm {
     ."$upload"
     .'return @doo_return };';
 
+
     $sub = $G->Doe($evs, $ar);
 
     $@ = "nicht kompilieren!\n\n$@" if $@;
@@ -2021,19 +2016,19 @@ sub g_Dm {
 
 sub g_D {
     my $G = shift;
-    my $am = shift;
-          my $ar = $am->{ar} || {};
+    my $D = shift;
+          my $ar = $D->{ar} || {};
 
           die "RECURSION ".@F if @F > $MAX_FCURSION; 
 
-          my $Ds = $G->Dm($am);
-          $am->{Ds} = $Ds;
+          my $Ds = $G->Dm($D);
+          $D->{Ds} = $Ds;
           my ($evs, $sub) = ($Ds->{evs}, $Ds->{sub});
 
-          # TODO rewayen
-          $am->{sign} = 'D';
-          $am->{talk} = "$am->{sign} $am->{name}";
-          my $D = $G->Doming($am);
+          # TODO getonwithitnciousness
+          $D->{sign} = 'D';
+          $D->{talk} = "$D->{sign} $D->{name}";
+          $D = $G->Doming($D);
 
           $G->{sigstackend} ||= sub {
               local $@;
@@ -2057,13 +2052,17 @@ sub g_D {
                   ."       at line $loc[2] in $loc[1]:", @_;
               return 1;
           };
+
           my @return;
           if (ref $sub eq "CODE" && !$@) {
               local $SIG{__DIE__} = $G->{sigstackend};
               local $SIG{__WARN__} = $G->{sigstackwa};
 
-
-              eval { @return = $sub->($a->{ar}) }
+              #sub ggggggg {eval{shift->(@_)}}
+              wantarray ? 
+              do { @return = ggggggg($sub, $D->{ar}) }
+              : do { $return[0] = ggggggg($sub, $D->{ar}) };
+              #eval {  = $sub->($a->{ar}) }
           }
 
           $G->Done($D); # Ducks
