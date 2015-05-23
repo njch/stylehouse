@@ -1117,6 +1117,7 @@ sub pyramid {
 sub F_delta {
     my $now = hitime();
     my $then = $F[0]->{hitime};
+    sayyl "$now  and $then \n\n". ki $F[0];
     my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
 }
@@ -1860,7 +1861,7 @@ sub wag {
     #$G->w('any_init');
     $G->w('expro');
 
-    saybl "done ".F_delta;
+    saybl "done ";
     sleep 1;
     sayyl "and...";
     snooze 1200;
