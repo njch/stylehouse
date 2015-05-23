@@ -5,11 +5,19 @@ Ds:
      $H ||= {up=>hitime()};
      my $G = bless {}, 'G';
      G.id = mkuid();
+     G.name = "theG";
+     $G->catchings;
      $G->wayup("wormhole/yb\.yml");
      #$G->w('fresh_init');
+     #$G->w('any_init');
      $G->w('expro');
      
-     #$G->w('any_init');
+     saybl "done ".F_delta;
+     sleep 1;
+     sayyl "and...";
+     snooze 1200;
+     exec "nice perl $0 @ARGV";
+     
      
  - K: catchings #c
    D: |
@@ -68,7 +76,12 @@ Ds:
       my $Z = $G->Doming($am);
       my $r;
       eval { $r = [ $G->D($am) ] };
+      sayyl "an";
+      
+      $DB::single = 1 if $@;
       $G->Done($Z);
+      
+      sayyl "NOW: $@";
       if ($@) {
           my $ne = "Z";
           $ne .= Z.inter if Z.inter;
@@ -112,7 +125,9 @@ Ds:
         am.talk || confess wdump 2, $am;
         my $Ds = G.drop.Dscache->{am.talk};
         return $Ds if $Ds;
-        sayyl wdump 1, $am;
+        
+        sayyl "Dm am.talk";
+        
         confess "SOMEONENONE".wdump 1, $am if ref am.bab || !am.point;
         
         my $eval = $G->parse_babble(am.bab, am.point);
@@ -163,8 +178,8 @@ Ds:
             my ($evs, $sub) = (Ds.evs, Ds.sub);
                 
             # TODO rewayen
-            am.name = "D";
             am.sign = 'D';
+            am.talk = "am.sign am.name";
             my $D = $G->Doming($am);
             
             G.sigstackend ||= sub {
@@ -205,13 +220,12 @@ Ds:
             return wantarray ? @return : shift @return
  - K: g_Duck #c do fuckup printout
    D: |
-        my $D = shift;
-        my $evs = D.Ds.evs;
-        my $ar = D.ar;
-                
-                
-                my $DOOF; 
-                my $first = 1 unless $@ =~ /DOOF/;
+     my $D = shift;
+     my $evs = D.Ds.evs;
+     my $ar = D.ar;
+     
+     my $DOOF; 
+     my $first = 1 unless $@ =~ /DOOF/;
                 
                 $DOOF .= "DOOF D.talk\n";
                 $DOOF .= "  D.inter" if D.inter;
@@ -226,8 +240,7 @@ Ds:
                     undef $file if $file && !-f $file;
 
                     my $code = $file ? 
-                    #read_file($file)
-                    "FILE CONTETNS $file"
+                    read_file($file)
                     : $evs;
                     
                     my $eval = $G->Duckling($x, $code, $D);
@@ -269,6 +282,7 @@ Ds:
                 
                 if (@F == 1) {
                     # send it away
+                    sayre $DOOF;
                     G.dooftip && G.dooftip->($@);
                     $@ = "";
                     $_->() for @{G._aft_err_do||[]};

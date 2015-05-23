@@ -706,7 +706,7 @@ sub Duck {
     my $D = shift;
     my $evs = $D->{Ds}->{evs};
     my $ar = $D->{ar};
-
+            sayyl "RJWOIJORJWOJO";
 
             my $DOOF; 
             my $first = 1 unless $@ =~ /DOOF/;
@@ -772,6 +772,7 @@ sub Duck {
             $D->{Error} = $DOOF;
             $@ = $DOOF;
 
+            sayre $@;
             if (@F == 1) {
                 # send it away
                 sayre $@;
@@ -1851,11 +1852,18 @@ sub wag {
     $H ||= {up=>hitime()};
     my $G = bless {}, 'G';
     $G->{id} = mkuid();
+    $G->{name} = "theG";
+    $G->catchings;
     $G->wayup("wormhole/yb\.yml");
     #$G->w('fresh_init');
+    #$G->w('any_init');
     $G->w('expro');
 
-    #$G->w('any_init');
+    saybl "done ".F_delta;
+    sleep 1;
+    sayyl "and...";
+    snooze 1200;
+    exec "nice perl $0 @ARGV";
 }
 
 sub catchings {
@@ -1914,7 +1922,12 @@ sub g_w {
     my $Z = $G->Doming($am);
     my $r;
     eval { $r = [ $G->D($am) ] };
+    sayyl "an";
+
+    $DB::single = 1 if $@;
     $G->Done($Z);
+
+    sayyl "NOW: $@";
     if ($@) {
         my $ne = "Z";
         $ne .= $Z->{inter} if $Z->{inter};
@@ -1961,7 +1974,9 @@ sub g_Dm {
     $am->{talk} || confess wdump 2, $am;
     my $Ds = $G->{drop}->{Dscache}->{$am->{talk}};
     return $Ds if $Ds;
-    sayyl wdump 1, $am;
+
+    sayyl "Dm $am->{talk}";
+
     confess "SOMEONENONE".wdump 1, $am if ref $am->{bab} || !$am->{point};
 
     my $eval = $G->parse_babble($am->{bab}, $am->{point});
@@ -2014,8 +2029,8 @@ sub g_D {
           my ($evs, $sub) = ($Ds->{evs}, $Ds->{sub});
 
           # TODO rewayen
-          $am->{name} = "D";
           $am->{sign} = 'D';
+          $am->{talk} = "$am->{sign} $am->{name}";
           my $D = $G->Doming($am);
 
           $G->{sigstackend} ||= sub {
@@ -2062,73 +2077,72 @@ sub g_Duck {
     my $evs = $D->{Ds}->{evs};
     my $ar = $D->{ar};
 
+    my $DOOF; 
+    my $first = 1 unless $@ =~ /DOOF/;
 
-            my $DOOF; 
-            my $first = 1 unless $@ =~ /DOOF/;
+               $DOOF .= "DOOF $D->{talk}\n";
+               $DOOF .= "  $D->{inter}" if $D->{inter};
 
-            $DOOF .= "DOOF $D->{talk}\n";
-            $DOOF .= "  $D->{inter}" if $D->{inter};
+               if ($first) {
+                   my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+                       || $@ =~ /line (\d+)/;
 
-            if ($first) {
-                my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
-                    || $@ =~ /line (\d+)/;
+                   my $file = $1 if $@ =~ /at (\S+) line/;
 
-                my $file = $1 if $@ =~ /at (\S+) line/;
+                   undef $file if $file && $file =~ /\(eval \d+\)/;
+                   undef $file if $file && !-f $file;
 
-                undef $file if $file && $file =~ /\(eval \d+\)/;
-                undef $file if $file && !-f $file;
+                   my $code = $file ? 
+                   read_file($file)
+                   : $evs;
 
-                my $code = $file ? 
-                #read_file($file)
-                "FILE CONTETNS $file"
-                : $evs;
+                   my $eval = $G->Duckling($x, $code, $D);
 
-                my $eval = $G->Duckling($x, $code, $D);
+                   if (exists $D->{SigDieStack}) {
+                       warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
+                       $DOOF .= "\n";
+                       my $i = "  ";
+                       for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                           $DOOF .= "$i- $s\n";
+                           $i .= "  ";
+                       }
+                   }        
+                   $DOOF .= "\n$eval\n";
+               }
 
-                if (exists $D->{SigDieStack}) {
-                    warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
-                    $DOOF .= "\n";
-                    my $i = "  ";
-                    for my $s ( reverse flatline($D->{SigDieStack}) ) {
-                        $DOOF .= "$i- $s\n";
-                        $i .= "  ";
-                    }
-                }        
-                $DOOF .= "\n$eval\n";
-            }
+               if ($first) {
+                   $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+               }
 
-            if ($first) {
-                $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
-            }
+               if (!$first) {
+                   my $in = $D->{sign} eq 'D' ? "! " : "";
+                   $DOOF .= ind($in, "$@")."\n";
+               }
+               if ($first) {
+                   $DOOF .= ind('ar.', join "\n",
+                       map{
+                        my $e = $ar->{$_};
+                        my $s = "$e";
+                        $s .= "(name=$e->{name})"
+                            if ref $e && ref $e ne 'ARRAY'
+                           && $e->{name};
+                       "$_ = ". $s;
+                       }keys %$ar); 
+               }
 
-            if (!$first) {
-                my $in = $D->{sign} eq 'D' ? "! " : "";
-                $DOOF .= ind($in, "$@")."\n";
-            }
-            if ($first) {
-                $DOOF .= ind('ar.', join "\n",
-                    map{
-                     my $e = $ar->{$_};
-                     my $s = "$e";
-                     $s .= "(name=$e->{name})"
-                         if ref $e && ref $e ne 'ARRAY'
-                        && $e->{name};
-                    "$_ = ". $s;
-                    }keys %$ar); 
-            }
+               $D->{Error} = $DOOF;
+               $@ = $DOOF;
 
-            $D->{Error} = $DOOF;
-            $@ = $DOOF;
-
-            if (@F == 1) {
-                # send it away
-                $G->{dooftip} && $G->{dooftip}->($@);
-                $@ = "";
-                $_->() for @{$G->{_aft_err_do}||[]};
-            }
-            else {
-                die $@;
-            }
+               if (@F == 1) {
+                   # send it away
+                   sayre $DOOF;
+                   $G->{dooftip} && $G->{dooftip}->($@);
+                   $@ = "";
+                   $_->() for @{$G->{_aft_err_do}||[]};
+               }
+               else {
+                   die $@;
+               }
 }
 
 9;
