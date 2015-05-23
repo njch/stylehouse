@@ -3,9 +3,9 @@ Ds:
    style: func
    D: |
      $H ||= {up=>hitime()};
-     my $G = bless {}, 'g';
+     my $G = bless {}, 'G';
      G.id = mkuid();
-     $G->wayup('wormhole/yb.yml');
+     $G->wayup("wormhole/yb\.yml");
      $G->w('fresh_init');
      
      $G->w('any_init');
@@ -21,7 +21,180 @@ Ds:
      
  - K: wayup #c
    D: |
-     G.way = G::Load(shift);
+     G.way = G::LoadFile(shift);
+ - K: find #c
+   style: func
+   D: |
+      my $way = shift;
+            my $point = shift;
+            my @path = split /\/|\./, $point;
+            my $h = $way;
+            for my $p (@path) {
+                $h = $h->{$p};
+                unless ($h) {
+                    undef $h;
+                    last;
+                }
+            }
+            return $h if defined $h;
+            
+            return undef unless $point =~ /\*/;
+            die "sat rs findy $point";
 
      
+ - K: g_w #c
+   D: |
+      my $am;
+      am.point = shift;
+      am.ar = shift;
+      
+      am.name = join ' ', am.point, sort keys %{am.ar};
+      am.talk = "Z am.name";
+      
+      am.babz = G::find(G.way, am.point);
+      
+      if (!defined am.babz) {
+          warn $G->pi."    way miss am.talk"
+              if !(G.misslesswa ||= {map{$_=>1} qw'
+                  fresh_init any_init recoded_init
+                  percolate_R percolate load_ways_post aj event
+              '})->{am.point};
+          return;
+      }
+      
+      my $Z = $G->Doming($am);
+      my $r;
+      eval { $r = [ $G->D($am) ] };
+      $G->Done($Z);
+      if ($@) {
+          my $ne = "Z";
+          $ne .= Z.inter if Z.inter;
+          $ne .= "\n";
+          $ne .= "$@";
+          $@ = $ne;
+          die $@ unless am.nodie;
+          $@ = "";
+      }
+      return wantarray ? @$r : $r->[0];
+ - K: g_pyramid #c
+   D: |
+      my $am = shift;
+      confess "Ba" if ref $am ne 'HASH';
+      
+      my ($last) = @F;
+      my $u = {%$am};
+      if ($last) {
+          push @{last.Lo||=[]}, $u;
+          u.Li = $last;
+      }
+      else {
+          push @{G.East||=[]}, $u;
+      }
+      
+      u.G = $G;
+      u.K = u.name || die;
+      u.K .= 'ᣝ';
+      u.hitime = hitime;
+      u.order = H.pyramiding++;
+      u.stack = stack(2,7);
+      u.F = [@F];
+      u.depth = 0+@F;
+      u.Error = $@ if $@; #?
+      
+      $u
+      
+ - K: g_Dm #c
+   D: |
+        my $am = shift;
+        
+        am.talk || confess wdump 2, $am;
+        my $Ds = G.drop.Dscache->{am.talk};
+        return $Ds if $Ds;
+        
+        my $eval = $G->parse_babble(am.bab, am.point);
+        
+        my $ar = am.ar || {};
+        my $download = join("", map {
+            'my$'.$_.'=$ar->{'.$_."}; "
+            } keys %$ar)
+            if %$ar;
+        my $upload = join("", map {
+            '$ar->{'.$_.'}=$'.$_."; "
+            } keys %$ar)
+            if %$ar;
+            
+        my @warnings;
+        my $sub = "bollox";
+        my $evs = 'sub { my $ar = shift; '.
+        "@warnings $download\n".
+
+        "my \@doo_return = (sub { \n\n$eval\n })->();\n"
+
+        ."$upload"
+        .'return @doo_return };';
+
+        $sub = $G->Doe($evs, $ar);
+            
+        $@ = "nicht kompilieren!\n\n$@" if $@;
+        
+        $Ds = {evs=>$evs, sub=>$sub, talk=>am.talk};
+
+        if (!$@ && ref $sub eq "CODE") {
+            G.drop.Dscache->{am.talk} = $Ds;
+        }
+        else {
+            am.bungeval = $evs;
+        }
+        $Ds
+ - K: g_D #c
+   D: |
+      my $am = shift;
+            my $ar = am.ar || {};
+            
+            die "RECURSION ".@F if @F > $MAX_FCURSION; 
+            
+            my $Ds = $G->Dm($am);
+            am.Ds = $Ds;
+            my ($evs, $sub) = (Ds.evs, Ds.sub);
+                
+            # TODO rewayen
+            a.name = "D";
+            my $D = $G->Doming($a);
+            
+            G.sigstackend ||= sub {
+                local $@;
+                eval { confess( '' ) };
+                my @stack = split m/\n/, $@;
+                shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
+                my @stackend;
+                push @stackend, shift @stack until $stack[0] =~ /G::D/ || !@stack && die;
+                s/\t//g for @stackend;
+
+                # write on the train thats about to derail
+                my $wall = $G::F[0]->{SigDieStack}||=[];
+
+                push @$wall, \@stackend;
+            };
+            G.sigstackwa ||= sub {
+                return 1 if $_[0] =~ /^Use of uninitialized value/;
+                my @loc = caller(1);
+                sayre join "\n", "warn from ".$F[0]->{G}->{name}
+                    ."  way $F[0]->{point}"
+                    ."       at line $loc[2] in $loc[1]:", @_;
+                return 1;
+            };
+            my @return;
+            if (ref $sub eq "CODE" && !$@) {
+                local $SIG{__DIE__} = G.sigstackend;
+                local $SIG{__WARN__} = G.sigstackwa;
+                
+                
+                eval { @return = $sub->(a.ar) }
+            }
+            
+            $G->Done($D); # Ducks
+            D.r = [@return];
+            
+            
+            return wantarray ? @return : shift @return
 

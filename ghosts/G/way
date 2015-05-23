@@ -75,28 +75,7 @@ Ds:
         my @a = grep { defined $_ } map { $_->find($point, 1) } $G->ways;
         wantarray ? @a : shift @a
         
-  - K: di #c
-    style: func
-    D: |
-      # attaches meaning and dies
-      
-      # throwing back to D hopefully enriching
-      
-      # @_:
-      #   bunch of vectors to topiarise the explotion
-      #   bunch of data/messages
-      
-      my @vec;
-      push @vec, shift while !ref $_[0] && $_[0] =~ /^[\.\d]+$/;
-      
-      my $a = $F[0]->{di} = {};
-      (a.mag, a.dir, a.etc) = @vec;
-      a.tip = [@_];
-      die wdump(3,[@_]);
-      
-      
-      
-      
+
   - K: Dm #c
     D: |
         my $a = shift;
@@ -367,6 +346,26 @@ Ds:
         }
         
         $diag
+      
+  - K: stack #c
+    style: func
+    D: |
+      my $b = shift;
+      my $for = shift || 1024;
+      $b = 1 unless defined $b;
+      my @from;
+      while (my $f = join " ", (caller($b))[0,3,2]) {
+          last unless defined $f;
+          my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
+              || $f =~ m/^Mojo::IOLoop/
+              || $f =~ m/^Mojolicious::Controller/;
+          $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
+          push @from, $f;
+          last if $surface;
+          last if !--$for;
+          $b++;
+      }
+      return [@from];
       
   - K: timer #c coming, going
     D: |

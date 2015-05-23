@@ -391,7 +391,7 @@ hooks:
                     my ($ldir) = $lg =~ /^(.+)\/.+?$/;
                     my @l = map { /\/(.+?)\.pm$/ } glob $lg;
                     push @code, "use lib '$ldir';";
-                    push @code, "use $_;" for grep {$_ ne $nb && $_ !~ /s/i} @l;
+                    push @code, "use $_;" for grep {$_ eq uc($_) && $_ ne $nb && $_ !~ /s/i} @l;
                     btw.s.___LIBGLOBETC = join "\n",
                     map { "\$${_}::H = \$H;" } grep {$_ !~ /s/i} @l;
                 }
