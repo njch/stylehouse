@@ -139,7 +139,7 @@ Ds:
         if (!$s) {
             say "auto sc (said $s) x.fi    from $link";
             $G->wtfy($x); # makes a .s -> .sc
-            $H->snooze(2500);
+            snooze(2500);
             G.mscily++;
             die "TOO MUCH TRIP looking for $link" if G.mscily > 5;
             my $f = $G->msc($x);
@@ -214,7 +214,7 @@ Ds:
 
         $s->on(read => sub {
             my ($s,$b) = @_;
-            $H->fixutf8($b);
+            fixutf8($b);
             $G->l_lines(al.x, $b, al.file);
         });
         $s->on(close => sub {
@@ -278,7 +278,7 @@ Ds:
       my $m = shift;
       my $j;
 
-      eval { $j = $H->json->decode(H::encode_utf8($m)) };
+      eval { $j = $JSON->decode(H::encode_utf8($m)) };
       die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
       die "$m\n\nJSON decoded to ~undef~" unless defined $j;
       $j
@@ -286,7 +286,7 @@ Ds:
     style: func
     D: |
       my $m = shift;
-      $H->json->encode($m);
+      $JSON->encode($m);
   - K: sjson #c
     style: func
     D: |

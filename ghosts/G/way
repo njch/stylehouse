@@ -25,7 +25,7 @@ Ds:
             push @files, $where if -f $where;
             push @files, grep { /\/\d+$/ }
             # only glob numbery, so C/name will file further than C ways
-                map { $H->fixutf8($_) }
+                map { fixutf8($_) }
                 grep {-f $_}
                 glob("$where/*") if -d $where;
 
@@ -87,11 +87,11 @@ Ds:
         
         my $uuname = join " ",
             $G->{id},
-            $H->dig(a.bab),
+            dig(a.bab),
             a.point,
             " ar%".join(",",sort keys %{a.ar}),
         ;        
-        my $ha = $H->dig($uuname);
+        my $ha = dig($uuname);
         die unless length($ha) == 40;
             
         my $Ds = G0.Dscache->{$ha};
@@ -613,7 +613,7 @@ Ds:
       $u->from($a);
       u.K = u.name || die;
       u.K .= 'ᣝ';
-      u.hitime = $H->hitime();
+      u.hitime = hitime();
       u.order = H.pyramiding++;
       u.stack = $H->stack(2,7);
       u.F = [@F];
@@ -627,10 +627,10 @@ Ds:
   - K: F_delta #c
     style: func
     D: |
-            my $now = $H->hitime();
-            my $then = $F[0]->{hitime};
-            my $d = sprintf("%.3f",$now-$then);
-            $d = $d<1 ? ($d*1000).'ms' : $d.'s';
+      my $now = hitime();
+      my $then = $F[0]->{hitime};
+      my $d = sprintf("%.3f",$now-$then);
+      $d = $d<1 ? ($d*1000).'ms' : $d.'s';
   - K: inter #c
     style: func
     D: |

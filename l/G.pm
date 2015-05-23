@@ -11,6 +11,7 @@ use File::Path qw(make_path remove_tree);
 use Scriptalicious;  
 use File::Slurp;
 use JSON::XS;
+our $JSON = JSON::XS->new->allow_nonref;
 use YAML::Syck;
 use Data::Dumper; 
 use Storable 'dclone';
@@ -488,7 +489,7 @@ sub load_ways {
         push @files, $where if -f $where;
         push @files, grep { /\/\d+$/ }
         # only glob numbery, so C/name will file further than C ways
-            map { $H->fixutf8($_) }
+            map { fixutf8($_) }
             grep {-f $_}
             glob("$where/*") if -d $where;
 
@@ -554,11 +555,11 @@ sub Dm {
 
     my $uuname = join " ",
         $G->{id},
-        $H->dig($a->{bab}),
+        dig($a->{bab}),
         $a->{point},
         " ar%".join(",",sort keys %{$a->{ar}}),
     ;        
-    my $ha = $H->dig($uuname);
+    my $ha = dig($uuname);
     die unless length($ha) == 40;
 
     my $Ds = $G0->{Dscache}->{$ha};
@@ -1101,7 +1102,7 @@ sub pyramid {
     $u->from($a);
     $u->{K} = $u->{name} || die;
     $u->{K} .= 'ᣝ';
-    $u->{hitime} = $H->hitime();
+    $u->{hitime} = hitime();
     $u->{order} = $H->{pyramiding}++;
     $u->{stack} = $H->stack(2,7);
     $u->{F} = [@F];
@@ -1114,7 +1115,7 @@ sub pyramid {
 }
 
 sub F_delta {
-    my $now = $H->hitime();
+    my $now = hitime();
     my $then = $F[0]->{hitime};
     my $d = sprintf("%.3f",$now-$then);
     $d = $d<1 ? ($d*1000).'ms' : $d.'s';
@@ -1284,7 +1285,7 @@ sub msc {
       if (!$s) {
           say "auto sc (said $s) $x->{fi}    from $link";
           $G->wtfy($x); # makes a .s -> .sc
-          $H->snooze(2500);
+          snooze(2500);
           $G->{mscily}++;
           die "TOO MUCH TRIP looking for $link" if $G->{mscily} > 5;
           my $f = $G->msc($x);
@@ -1365,7 +1366,7 @@ sub tailf {
 
     $s->on(read => sub {
         my ($s,$b) = @_;
-        $H->fixutf8($b);
+        fixutf8($b);
         $G->l_lines($al->{x}, $b, $al->{file});
     });
     $s->on(close => sub {
@@ -1431,7 +1432,7 @@ sub djson {
     my $m = shift;
     my $j;
 
-    eval { $j = $H->json->decode(H::encode_utf8($m)) };
+    eval { $j = $JSON->decode(H::encode_utf8($m)) };
     die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
     die "$m\n\nJSON decoded to ~undef~" unless defined $j;
     $j
@@ -1439,7 +1440,7 @@ sub djson {
 
 sub ejson {
     my $m = shift;
-    $H->json->encode($m);
+    $JSON->encode($m);
 }
 
 sub sjson {
