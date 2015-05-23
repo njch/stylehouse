@@ -257,7 +257,7 @@ Ds:
                     undef $file if $file && $file =~ /\(eval \d+\)/;
                     undef $file if $file && !-f $file;
 
-                    my $code = $file ? $H->slurp($file) : $evs;
+                    my $code = $file ? read_file($file) : $evs;
                     
                     my $eval = $G->Duckling($x, $code, $D);
                     
@@ -278,7 +278,7 @@ Ds:
                 }
                 
                 if (!$first) {
-                    my $in = D.K eq 'Dᣝ' ? "! " : "";
+                    my $in = (D.K ? D.K eq 'Dᣝ' : D.sign eq 'D') ? "! " : "";
                     $DOOF .= ind($in, "$@")."\n";
                 }
                 if ($first) {

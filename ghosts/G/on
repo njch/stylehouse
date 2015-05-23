@@ -6,9 +6,10 @@ Ds:
      my $G = bless {}, 'G';
      G.id = mkuid();
      $G->wayup("wormhole/yb\.yml");
-     $G->w('fresh_init');
+     #$G->w('fresh_init');
+     $G->w('expro');
      
-     $G->w('any_init');
+     #$G->w('any_init');
      
  - K: catchings #c
    D: |
@@ -22,7 +23,7 @@ Ds:
  - K: wayup #c
    D: |
      G.way = G::LoadFile(shift);
- - K: find #c
+ - K: fwind #c
    style: func
    D: |
       my $way = shift;
@@ -45,15 +46,17 @@ Ds:
  - K: g_w #c
    D: |
       my $am;
+      #die wdump [@_] if @_ > 1;
       am.point = shift;
       am.ar = shift;
       
       am.name = join ' ', am.point, sort keys %{am.ar};
-      am.talk = "Z am.name";
+      am.sign = "Z";
+      am.talk = "am.sign am.name";
       
-      am.babz = G::find(G.way, am.point);
+      am.bab = G::fwind(G.way, am.point);
       
-      if (!defined am.babz) {
+      if (!defined am.bab) {
           warn $G->pi."    way miss am.talk"
               if !(G.misslesswa ||= {map{$_=>1} qw'
                   fresh_init any_init recoded_init
@@ -93,7 +96,6 @@ Ds:
       
       u.G = $G;
       u.K = u.name || die;
-      u.K .= 'ᣝ';
       u.hitime = hitime;
       u.order = H.pyramiding++;
       u.stack = stack(2,7);
@@ -110,10 +112,13 @@ Ds:
         am.talk || confess wdump 2, $am;
         my $Ds = G.drop.Dscache->{am.talk};
         return $Ds if $Ds;
+        sayyl wdump 1, $am;
+        confess "SOMEONENONE".wdump 1, $am if ref am.bab || !am.point;
         
         my $eval = $G->parse_babble(am.bab, am.point);
         
         my $ar = am.ar || {};
+        ar.R ||= $G;
         my $download = join("", map {
             'my$'.$_.'=$ar->{'.$_."}; "
             } keys %$ar)
@@ -158,16 +163,17 @@ Ds:
             my ($evs, $sub) = (Ds.evs, Ds.sub);
                 
             # TODO rewayen
-            a.name = "D";
-            my $D = $G->Doming($a);
+            am.name = "D";
+            am.sign = 'D';
+            my $D = $G->Doming($am);
             
             G.sigstackend ||= sub {
                 local $@;
                 eval { confess( '' ) };
                 my @stack = split m/\n/, $@;
-                shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
+                shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
                 my @stackend;
-                push @stackend, shift @stack until $stack[0] =~ /G::D/ || !@stack && die;
+                push @stackend, shift @stack until $stack[0] =~ /G::(g_)?D/ || !@stack && die;
                 s/\t//g for @stackend;
 
                 # write on the train thats about to derail
@@ -197,4 +203,77 @@ Ds:
             
             
             return wantarray ? @return : shift @return
+ - K: g_Duck #c do fuckup printout
+   D: |
+        my $D = shift;
+        my $evs = D.Ds.evs;
+        my $ar = D.ar;
+                
+                
+                my $DOOF; 
+                my $first = 1 unless $@ =~ /DOOF/;
+                
+                $DOOF .= "DOOF D.talk\n";
+                $DOOF .= "  D.inter" if D.inter;
+                
+                if ($first) {
+                    my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+                        || $@ =~ /line (\d+)/;
+
+                    my $file = $1 if $@ =~ /at (\S+) line/;
+
+                    undef $file if $file && $file =~ /\(eval \d+\)/;
+                    undef $file if $file && !-f $file;
+
+                    my $code = $file ? 
+                    #read_file($file)
+                    "FILE CONTETNS $file"
+                    : $evs;
+                    
+                    my $eval = $G->Duckling($x, $code, $D);
+                    
+                    if (exists $D->{SigDieStack}) {
+                        warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
+                        $DOOF .= "\n";
+                        my $i = "  ";
+                        for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                            $DOOF .= "$i- $s\n";
+                            $i .= "  ";
+                        }
+                    }        
+                    $DOOF .= "\n$eval\n";
+                }
+                
+                if ($first) {
+                    $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+                }
+                
+                if (!$first) {
+                    my $in = D.sign eq 'D' ? "! " : "";
+                    $DOOF .= ind($in, "$@")."\n";
+                }
+                if ($first) {
+                    $DOOF .= ind('ar.', join "\n",
+                        map{
+                         my $e = $ar->{$_};
+                         my $s = "$e";
+                         $s .= "(name=$e->{name})"
+                             if ref $e && ref $e ne 'ARRAY'
+                            && $e->{name};
+                        "$_ = ". $s;
+                        }keys %$ar); 
+                }
+                
+                D.Error = $DOOF;
+                $@ = $DOOF;
+                
+                if (@F == 1) {
+                    # send it away
+                    G.dooftip && G.dooftip->($@);
+                    $@ = "";
+                    $_->() for @{G._aft_err_do||[]};
+                }
+                else {
+                    die $@;
+                }
 

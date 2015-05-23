@@ -76,8 +76,8 @@ R_Jz:
        }
        H.forked = H.forking = H.isforked = 1;
        my $bail = sub{ kill 'KILL', $$; exit };
-       $G->accum($G0, _aft_err_do => $bail);
-       $G->accum($F[0], _aft_etc_do => $bail);
+       acum $G, _aft_err_do => $bail;
+       acum $F[0], _aft_etc_do => $bail;
        # able to report error
        # not EV reaction in the child, handles confused
        # must exit so nothing else can happen
