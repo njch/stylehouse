@@ -709,17 +709,17 @@ sub Duck {
     my $ar = $D->{ar};
             my $DOOF; 
             my $first = 1 unless $@ =~ /DOOF/;
-            $DOOF .= " ". i $D;
+            $DOOF .= " ". $D;
             $DOOF .= "DOOF $D->{K}".sprintf("%-24s",
                 $G->{name}."  $D->{K}  ".($ar->{S} ? "S=".gpty($ar->{S}) :"")
             );
             $DOOF .= " w"." $D->{point}  ".join(", ", keys %$ar)."\n";
 
             if ($D->{K} ne 'Dᣝ') {
-                $DOOF = "$D->{K}";
+                $DOOF =  "$D->{K}"; 
                 $DOOF .= "  $D->{inter}" if $D->{inter};
                 $DOOF .= "\n";
-            } 
+            }  
 
 
 
