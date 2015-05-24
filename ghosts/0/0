@@ -368,9 +368,9 @@ hooks:
         $co ||do{ warn "No Domes si ".$way->pi; next };
     
         my @code = (
-            join "\n",
+            join "\n", grep{defined}
             "package $nb;", 
-            "our \$H;",
+            ($nb eq 'g' ? undef : "our \$H;"),
             map { "use $_;" }
                 "strict", "warnings", "utf8", "lib 'lib'", "feature 'say'"
         );
@@ -420,7 +420,7 @@ hooks:
             push @code, $D;
         }
         push @code, @post;
-        push @code, ($co->[0]->{K} ne "everything" ? "9;\n\n" : ''); ##
+        push @code, ($co->[0]->{K} ne "everything" ? "my \$g = 9;\n\n" : ''); ##
         my $file = "il/l/${nb}.pm"; # TODO ::->/
         $H->spurt($file, H::encode_utf8(join("\n", @code)));
         

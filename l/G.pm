@@ -1971,8 +1971,6 @@ sub g_Dm {
     my $Ds = $G->{drop}->{Dscache}->{$am->{talk}};
     return $Ds if $Ds;
 
-    sayyl "Dm $am->{talk}";
-
     confess "SOMEONENONE".wdump 1, $am if ref $am->{bab} || !$am->{point};
 
     my $eval = $G->parse_babble($am->{bab}, $am->{point});
@@ -2146,5 +2144,5 @@ sub g_Duck {
                }
 }
 
-9;
+my $g = 9;
 

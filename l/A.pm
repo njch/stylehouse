@@ -154,5 +154,5 @@ sub path {
     #return join "/", map { ref $_ } @path;
 }
 
-9;
+my $g = 9;
 

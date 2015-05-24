@@ -211,5 +211,5 @@ sub dig {
     Digest::SHA::sha1_hex(encode_utf8(shift))
 }
 
-9;
+my $g = 9;
 

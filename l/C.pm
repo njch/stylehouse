@@ -222,5 +222,5 @@ sub find {
     die "sat rs findy $point";
 }
 
-9;
+my $g = 9;
 
