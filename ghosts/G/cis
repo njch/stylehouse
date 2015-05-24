@@ -201,8 +201,8 @@ Ds:
         fscc($file, '');
         die "go figgy $file" unless -f $file;
 
-        my $al = x.s->{$file} ||= {};
-        open my $ha, '-|','tail',
+        my $al = x.s->{$file} ||= {}; 
+        open my $ha, '-|','tail', '-q',
             '-s','0.1','-F','-n0',
             $file
             or die $!;
@@ -261,16 +261,77 @@ Ds:
   - K: write_cone #c write file (explode: create dir, retry)
     style: func
     D: |
-      my @arm = @_;
-      my $arm = \@arm;
-      return H.G w write_cone[$arm];
-      eval { write_file(@arm) };
+      my $arm = [@_];
+      
+      # so stupidly retarded
+      # use quantum fector to drop things down
+      # exhaustingly haphazard machinery crammed into the rounding error factory
+      # make rounding error factory factory
+      eval { write_file(@$arm) };
       if ($@) {
-          die $@ unless $@ =~ /sysopen: No such file or directory/;
-          my $file = $arm[0];
-          sayre "Write $arm[0] fuckup: $@";
+          my ($file) = @$arm;
+          if ($@ =~ /sysopen: No such file or directory/) {
+          }
+          elsif ($@ =~ /sysopen: Is a directory/) {
+              my $wtah = "-f $file == ".-f $file;
+              warn "thinks it's a directory: $wtah";
+          }
+          else {
+              die "UNKNOWN WRITE CONE E\n\n$@"
+          }
+          sayre "Recovering from write error::: $@";
+          my $fore = $file;
+          $file =~ s/[^\w\/\-\.]//g; # TODO nulls
+          if ($fore ne $file) {
+                  warn "NONNAMES OR SO, HEXDUMP IT $fore -> $file";
+          }
+          
+          my @chun = split '/', $file;
+          my $fn = pop @chun;
+          say "    file: $file";
+          my @try = shift @chun;
+          push @try, join '/', $try[-1], $_ for @chun;
+          my @nodir;
+          for my $d (reverse @try) {
+              if (-d $d) {
+                  sayyl "$d DIR EXISTS!";
+                  last;
+              }
+              push @nodir, $d;
+          }
+          say "Not existing dirs: ".wdump[@nodir];
+          sayre "Weeor was $!";
+          undef $!;
+          say "==========";
+          my $broke;
+          for my $d (reverse @nodir) {
+              saybl "try to make_path $d";
+              mkdir $d;
+              if ($!) {
+                  sayre "mkdir $d: $!";
+                  $broke = 1;
+              }
+              if (!-d $d) {
+                  sayre "not exist after";
+                  $broke = 1;
+              }
+          }
+          
+          sayyl "Doing again---";
+           eval {
+             write_file(@$arm)
+           };
+           if ($@) {
+             say "Fucked up again: $@";
+           }
+          
+          
+          if ($broke) {
+              warn "cionedddd.....\n\nWrite $file fuckup: $@";
+          }
           $@ = "";
       }
+
       
   - K: djson #c
     style: func

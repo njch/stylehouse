@@ -93,7 +93,7 @@ R_Jz:
    D: | 
     die "retile get rid of H.r";
     my @m = map { /W\/(.+)$/ } H.r->keys("W/*");
-    @m = map { $H->djson(H.r->get("W/$_")) } @m;
+    @m = map { djson(H.r->get("W/$_")) } @m;
     
     H.G w TODOWhack(meta=>$_) for grep { _.dead } @m;
     @m = grep { !_.dead } @m;
@@ -152,9 +152,9 @@ R_Jz:
         $o->{$_} = ($o->{$_} * 100)."%" for keys %$o;
         
         meta.ces = $o;
-        H.r->set("W/meta.Wid" => $H->ejson($meta));
+        H.r->set("W/meta.Wid" => ejson($meta));
         
-        my $cssset = ".animate(".$H->ejson($o).", 0)";
+        my $cssset = ".animate(".ejson($o).", 0)";
         my $unhide = ".removeClass('NZ')";
         
         $H->send(" \$('#".meta.Wid."')$cssset$unhide".";");
@@ -281,7 +281,7 @@ R_Jz:
                elsif ($style eq 'Joint') {
                }
                elsif ($style eq 'idly') { # is knowable j id
-                   my $id = $H->mkuid;
+                   my $id = mkuid;
                    at.id && die "arl";
                    at.id = $id;
                    J.idyl->($J, $id, $j);
@@ -329,8 +329,10 @@ R_Jz:
  - K: domi #c Doofer
    n_D:
      recoded_init: |
+       return unless H.style eq 'hut';
        Rw domi/up;
      fresh_init: |
+       return unless H.style eq 'hut';
        Rw domi/up;
      up: |
        # quick rezip  

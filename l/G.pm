@@ -312,30 +312,6 @@ sub wish {
     $w eq "G" ? ref $i eq "Ghost" || ref $i eq "G" : die "wish $w $i";
 }
 
-sub uiuS {
-    my $G = shift;
-    my ($u, $b) = @_;
-    my $a = "S";
-    my $ui = $u->{i} if $u->{i};
-
-    for my $w ($ui, $u) {
-        next if !$w;
-
-        my $Gw = $w->{G}->findway($w->{K}) if $w->{Gw};
-
-        for my $ww ($w, $Gw) {
-            next if !$ww;
-            next if !$ww->{$a};
-            if ($ww->{$a}->{"${b}_D"}) {
-                my $some = $w->{G}->w("$a/${b}_D", {u=>$u}, $w);
-                return $some if $some;
-            }
-            my $some = $ww->{$a}->{$b};
-            return $some if $some;
-        }
-    }
-}
-
 sub sing {
     my $G = shift;
     my $p;
@@ -1351,8 +1327,8 @@ sub tailf {
     fscc($file, '');
     die "go figgy $file" unless -f $file;
 
-    my $al = $x->{s}->{$file} ||= {};
-    open my $ha, '-|','tail',
+    my $al = $x->{s}->{$file} ||= {}; 
+    open my $ha, '-|','tail', '-q',
         '-s','0.1','-F','-n0',
         $file
         or die $!;
@@ -1414,14 +1390,74 @@ sub l_lines {
 }
 
 sub write_cone {
-    my @arm = @_;
-    my $arm = \@arm;
-    return $H->{G} ->w("write_cone", {arm => $arm});
-    eval { write_file(@arm) };
+    my $arm = [@_];
+
+    # so stupidly retarded
+    # use quantum fector to drop things down
+    # exhaustingly haphazard machinery crammed into the rounding error factory
+    # make rounding error factory factory
+    eval { write_file(@$arm) };
     if ($@) {
-        die $@ unless $@ =~ /sysopen: No such file or directory/;
-        my $file = $arm[0];
-        sayre "Write $arm[0] fuckup: $@";
+        my ($file) = @$arm;
+        if ($@ =~ /sysopen: No such file or directory/) {
+        }
+        elsif ($@ =~ /sysopen: Is a directory/) {
+            my $wtah = "-f $file == ".-f $file;
+            warn "thinks it's a directory: $wtah";
+        }
+        else {
+            die "UNKNOWN WRITE CONE E\n\n$@"
+        }
+        sayre "Recovering from write error::: $@";
+        my $fore = $file;
+        $file =~ s/[^\w\/\-\.]//g; # TODO nulls
+        if ($fore ne $file) {
+                warn "NONNAMES OR SO, HEXDUMP IT $fore -> $file";
+        }
+
+        my @chun = split '/', $file;
+        my $fn = pop @chun;
+        say "    file: $file";
+        my @try = shift @chun;
+        push @try, join '/', $try[-1], $_ for @chun;
+        my @nodir;
+        for my $d (reverse @try) {
+            if (-d $d) {
+                sayyl "$d DIR EXISTS!";
+                last;
+            }
+            push @nodir, $d;
+        }
+        say "Not existing dirs: ".wdump[@nodir];
+        sayre "Weeor was $!";
+        undef $!;
+        say "==========";
+        my $broke;
+        for my $d (reverse @nodir) {
+            saybl "try to make_path $d";
+            mkdir $d;
+            if ($!) {
+                sayre "mkdir $d: $!";
+                $broke = 1;
+            }
+            if (!-d $d) {
+                sayre "not exist after";
+                $broke = 1;
+            }
+        }
+
+        sayyl "Doing again---";
+         eval {
+           write_file(@$arm)
+         };
+         if ($@) {
+           say "Fucked up again: $@";
+         }
+
+
+        if ($broke) {
+            warn "cionedddd.....\n\nWrite $file fuckup: $@";
+        }
         $@ = "";
     }
 }
@@ -1908,7 +1944,7 @@ sub g_w {
     $am->{sign} = "Z";
     $am->{talk} = "$am->{sign} $am->{name}";
 
-    $am->{bab} = G::fwind($G->{way}, $am->{point});
+    $am->{bab} = fwind($G->{way}, $am->{point});
 
     if (!defined $am->{bab}) {
         warn $G->pi."    way miss $am->{talk}"
@@ -2032,7 +2068,7 @@ sub g_D {
               local $@;
               eval { confess( '' ) };
               my @stack = split m/\n/, $@;
-              shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
+              shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
               my @stackend;
               push @stackend, shift @stack until $stack[0] =~ /G::(g_)?D/ || !@stack && die;
               s/\t//g for @stackend;
@@ -2045,8 +2081,7 @@ sub g_D {
           $G->{sigstackwa} ||= sub {
               return 1 if $_[0] =~ /^Use of uninitialized value/;
               my @loc = caller(1);
-              sayre join "\n", "warn from ".$F[0]->{G}->{name}
-                  ."  way $F[0]->{point}"
+              sayre join "\n", "warn from $F[0]->{talk}"
                   ."       at line $loc[2] in $loc[1]:", @_;
               return 1;
           };

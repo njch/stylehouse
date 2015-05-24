@@ -55,7 +55,7 @@ Ds:
       am.sign = "Z";
       am.talk = "am.sign am.name";
       
-      am.bab = G::fwind(G.way, am.point);
+      am.bab = fwind(G.way, am.point);
       
       if (!defined am.bab) {
           warn $G->pi."    way miss am.talk"
@@ -174,7 +174,7 @@ Ds:
                 local $@;
                 eval { confess( '' ) };
                 my @stack = split m/\n/, $@;
-                shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
+                shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
                 my @stackend;
                 push @stackend, shift @stack until $stack[0] =~ /G::(g_)?D/ || !@stack && die;
                 s/\t//g for @stackend;
@@ -187,8 +187,7 @@ Ds:
             G.sigstackwa ||= sub {
                 return 1 if $_[0] =~ /^Use of uninitialized value/;
                 my @loc = caller(1);
-                sayre join "\n", "warn from ".$F[0]->{G}->{name}
-                    ."  way $F[0]->{point}"
+                sayre join "\n", "warn from $F[0]->{talk}"
                     ."       at line $loc[2] in $loc[1]:", @_;
                 return 1;
             };
