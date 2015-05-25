@@ -7,6 +7,7 @@ use lib 'lib';
 use feature 'say';
 # two annoying dependencies 
 use Mojo::IOLoop::Stream;
+use Mojo::IOLoop;
 use File::Path qw(make_path remove_tree);
 use Scriptalicious;  
 use File::Slurp;
@@ -1900,6 +1901,8 @@ sub wag {
     $G->catchings;
     $G->wayup("wormhole/yb\.yml");
     $G->w('expro');
+    sayre "exporop..."; sleep 1;
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 
 sub catchings {

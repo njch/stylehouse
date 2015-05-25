@@ -17,10 +17,14 @@ R_Jz:
  - K: expro #c
    D: |
      Rw exprob;
-       Rw zoybracken;
      
-     w fresh_init;
-     w any_init;
+     my @z = Rw muck */fresh_init;
+     say wdump [@z];
+     
+     Rw zoybracken;
+     
+     Rw fresh_init;
+     Rw any_init;
      
      
      saybl "done ". F_delta;
@@ -37,11 +41,12 @@ R_Jz:
     H.name = 'C';
     H.id = mkuid;
     H.ol = "H.style/H.name/H.id";
+    H.uptime = hitime;
     say "     H Fresh init H.style H.name";
 
     $SIG{HUP} = sub { snooze 500; H.G w reexec; };
     
-    G.uptime = hitime;
+    Rw hostinfo;
     
     my $reS = sub {
         my $m = shift; 
@@ -61,6 +66,39 @@ R_Jz:
     # start git torrent
     # do it all
     # $0 has become a runtime
+ - K: hostinfo #c
+   D: | # REname Hostinfo, polari
+    if (!H.lastinfo) {
+        $G->recur(29 => sub {
+            Rw hostinfo;
+        });
+    }
+    my @ps = `ps -p$$ fu`; # j right
+    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
+    $_ = $_ / 100 for $cpu, $mem;
+    
+    my $info;
+    info.cpu = $cpu;
+    info.mem = $mem;
+    info.now = hitime;
+    info.hol = H.ol;
+    
+    saygr "hostinfo: $info " if rand(1) > 0.7;
+    
+    # TODO some Purs have core v
+    
+    $G->tai("H/H.ol", $info);
+    
+    $G->pub("Hostinfo", "info.hol info.now", 'ig');
+    
+    $G->pub("Hi" => H.ol) if !H.lastinfo || ar.withHi;
+    
+    H.lastinfo = $info;
+    
+    G.hostinfo_waits++;
+    if (G.hostinfo_waits > 1) {
+        sayre "hostinfo uncollected";
+    }
  - K: recoded_init #c wake up
    D: |
      sayre "ANY!"; 
