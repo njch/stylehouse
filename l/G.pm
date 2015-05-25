@@ -748,7 +748,6 @@ sub Duck {
             $D->{Error} = $DOOF;
             $@ = $DOOF;
 
-            sayre $@;
             if (@F == 1) {
                 # send it away
                 sayre $@;
@@ -767,7 +766,7 @@ sub Duckling {
 
     my $diag = "";
     my @code = split "\n", $code;
-    my $whole = @code < 30;
+    my $whole = @code < 18;
 
 
     if ($code =~ /^sub \{ my \$ar = shift/
@@ -827,14 +826,16 @@ sub timer {
     my $time = shift || 0.001;
     my $D = shift;
 
-    my $a;
-    $a->{name} = "t";
-    $a->{time} = $time;
-    $a->{D} = $D; # maybe sub or Disc like thing
-    $a->{stuff} = [@_];
-    my $Dome = $G->Doming($a);
+    my $B; 
+    $B->{name} = "t";
+    $B->{talk} = "Ze timer from ".$F[0]->{talk};
+    $B->{time} = $time;
+    $B->{D} = $D; # maybe sub or Disc like thing
+    $B->{stuff} = [@_];
+    my $Dome = $G->Doming($B);
 
     Mojo::IOLoop->timer($time, sub {
+    sayyl "TIME BACKL: $time from $B->{talk}";
         $G->comeback($Dome);
     });
 
@@ -868,9 +869,9 @@ sub comeback {
     my $a;
     $a->{name} = 'r';
     $a->{from} = $Dome;
-    my $Doing = $G->Doming($a);
+    my $Doing = $G->Doming($a); 
 
-    $G->D({D=>$Dome->{D}, toplevel=>1});
+    $G->D({D=>$Dome->{D}, toplevel=>1, talk=>"351 dollars",name=>"comeback"});
 
     $G->Done($Doing);
 
@@ -1467,7 +1468,7 @@ sub djson {
     my $m = shift;
     my $j;
 
-    eval { $j = $JSON->decode(H::encode_utf8($m)) };
+    eval { $j = $JSON->decode(encode_utf8($m)) };
     die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
     die "$m\n\nJSON decoded to ~undef~" unless defined $j;
     $j
@@ -1901,7 +1902,7 @@ sub wag {
     $G->catchings;
     $G->wayup("wormhole/yb\.yml");
     $G->w('expro');
-    sayre "exporop..."; sleep 1;
+    sayre "exporop...";
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 
@@ -1915,7 +1916,8 @@ sub catchings {
 
 sub wayup {
     my $G = shift;
-    $G->{way} = G::LoadFile(shift);
+    my $way = read_file(shift);
+    $G->{way} = Load($way); 
 }
 
 sub fwind {
@@ -2010,7 +2012,7 @@ sub g_Dm {
     my $Ds = $G->{drop}->{Dscache}->{$am->{talk}};
     return $Ds if $Ds;
 
-    confess "SOMEONENONE".wdump 1, $am if ref $am->{bab} || !$am->{point};
+    die "SOMEONENONE".wdump 2, $am if ref $am->{bab};
 
     my $eval = $G->parse_babble($am->{bab}, $am->{point});
 
@@ -2056,11 +2058,12 @@ sub g_D {
     my $D = shift;
           my $ar = $D->{ar} || {};
 
-          die "RECURSION ".@F if @F > $MAX_FCURSION; 
-
-          my $Ds = $G->Dm($D);
-          $D->{Ds} = $Ds;
-          my ($evs, $sub) = ($Ds->{evs}, $Ds->{sub});
+          die "RECURSION ".@F if @F > $MAX_FCURSION;
+          my $sub = $D->{D} || do {
+               $D->{Ds} = $G->Dm($D);
+               $D->{Ds}->{sub};
+          };
+          #ref $sub eq 'CODE' || die wdump [ $@, $D ];
 
           # TODO getonwithitnciousness
           $D->{sign} = 'D';
@@ -2073,7 +2076,7 @@ sub g_D {
               my @stack = split m/\n/, $@;
               shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
               my @stackend;
-              push @stackend, shift @stack until $stack[0] =~ /G::(g_)?D/ || !@stack && die;
+              push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die;
               s/\t//g for @stackend;
 
               # write on the train thats about to derail
@@ -2117,7 +2120,7 @@ sub g_Duck {
     my $DOOF; 
     my $first = 1 unless $@ =~ /DOOF/;
 
-               $DOOF .= "DOOF $D->{talk}\n";
+               $DOOF .= "DOOF $D->{talk}\n" if $D->{sign} eq 'D';
                $DOOF .= "  $D->{inter}" if $D->{inter};
 
                if ($first) {

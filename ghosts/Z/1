@@ -17,9 +17,10 @@ R_Jz:
  - K: expro #c
    D: |
      Rw exprob;
-     
-     my @z = Rw muck */fresh_init;
-     say wdump [@z];
+     my $z = "ඬƾ";
+     die;
+     my $t = Rw wuck Jhead;
+     say wdump $t;
      
      Rw zoybracken;
      
@@ -28,24 +29,89 @@ R_Jz:
      
      
      saybl "done ". F_delta;
-     sleep 2;
      sayyl "and...";
      #die "H33i";
-     Rw rez;
+     #Rw rez;
  - K: rez #c entropy! the randomness can antrophy
    D: |
      exec("nice perl $0 @ARGV");
+ - K: reS #c pump someth Teeth
+   D: |
+    my $Eb = ar.E->pi."-" if ar.E;
+    saybl "$Eb > ".slim(75,80,$m);
+    my $j = $m =~ /^\w/ ? $m : djson($m);
+    
+    if (ref $j eq "HASH") {
+        die "hash wide/skinny ".wdump($j) if keys %$j != 1;
+        my ($uno) = keys %$j;
+        my $ar = {
+            j => $j,
+            m => $m,
+            $uno => $j->{$uno},
+        };
+        Rw S/$uno;
+        # hit or not? see post 6 with r  ### o
+        return;
+    }  
+    
+    die "weird shit: '$m'" if ref $j; 
+    
+    $j =~ /^([\w\/]+)(?: (.+))?$/ ?
+        Rw S/$1 $m:2
+    :
+    die "wei tet '$j'";
+ - K: S #
+   n_D:
+     reexec: |
+       Rw rez;
+     speaks: | # loop conealed elvis
+       Rw reS $m
+     event: | #
+      my $e = ar.e = j.event;
+      
+      if (e.W) {
+          G.lastWe = $e
+      }
+      if (e.type =~ /^key/ && !e.W && G.lastWe) {
+          my $We = G.lastWe;
+          for my $k (keys %$We) {
+              $e->{$k} = $We->{$k} unless exists $e->{$k};
+          }
+      }
+      return w S/W if e.W;
+      warn "Strange", wdump $e;
+     W: |
+        $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
+        
+        my $meta = $G->tri('W/'.e.W.'.i');
+        $meta || return warn "no such e.W ... ".ki 2, $e;
+        $meta = djson $meta if $meta;
+        
+        my $hol = meta.hol;
+        G.keysto = $hol;
+        
+        my $a = {};
+        if (my $J = G.Wh->{e.W}) {
+            Rw event $J $e;
+        }
+        elsif ($hol ne H.ol) {
+            sayyl "HSW H.ol -> $hol";
+            saybl "e: ".wdump($e);
+            $G->pub("S/$hol", "speaks $m"); # our json event again over there
+        }
+        else {
+            die "goner";
+        }
+    
  - K: exprob #c https://soundcloud.com/jsg89g9
    D: |
     H.style = 'shed';
     H.name = 'C';
     H.id = mkuid;
     H.ol = "H.style/H.name/H.id";
-    H.uptime = hitime;
+    H.uptime = hitime;   
     say "     H Fresh init H.style H.name";
-
-    $SIG{HUP} = sub { snooze 500; H.G w reexec; };
-    
+  
     Rw hostinfo;
     
     my $reS = sub {
@@ -82,6 +148,7 @@ R_Jz:
     info.mem = $mem;
     info.now = hitime;
     info.hol = H.ol;
+    info.pid = $$;
     
     saygr "hostinfo: $info " if rand(1) > 0.7;
     
@@ -142,7 +209,7 @@ R_Jz:
    D: |
      Rw suck */any_init;
   
- - K: elv #c online
+ - K: elv #c is online
    D: |
      saybl " Elvis e !: $m";
      sleep 1 if H.name ne 'K';
@@ -164,7 +231,7 @@ R_Jz:
      aj.name ||= aj.J.name;
      # also some J.headlev readings for .i
      
-     G0.Wh->{aj.Wid} ||= do {
+     G.Wh->{aj.Wid} ||= do {
          my $ij = {}; map {
          $ij->{$_} = $aj->{$_} if !/^[sc]+/; } keys %$aj;
          ij.id = delete ij.Wid;
@@ -173,7 +240,6 @@ R_Jz:
          sayyl "Life! of ij.y ij.id";
          0->tai("ij.y/ij.id\.i", $ij);
          0->tac("V/H.style/H.name/H.id\.s", ztm($ij));
-         G0.WhR->{aj.Wid} = $R;
          aj.J;
      };
 
@@ -243,7 +309,7 @@ R_Jz:
            
        }
        if (H.name ne 'V' && (aj.J.yt.clw || aj.J.yt.cly)) {
-           Rwyl J5 shv $i:aj.J;
+           Rwyl 0.0005 J5 shv $i:aj.J;
        }
        $aj;
      unwu: |
@@ -321,7 +387,7 @@ R_Jz:
          Rw J5 somestyles;
        C: |
          Rw J5 occie; 
-
+         
          Rwyl 0.0001 join/bollox;
      bollox: |
        Rw J5 zoy;

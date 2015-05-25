@@ -294,7 +294,6 @@ Ds:
                 D.Error = $DOOF;
                 $@ = $DOOF;
                 
-                sayre $@;
                 if (@F == 1) {
                     # send it away
                     sayre $@;
@@ -311,7 +310,7 @@ Ds:
         
         my $diag = "";
         my @code = split "\n", $code;
-        my $whole = @code < 30;
+        my $whole = @code < 18;
         
         
         if ($code =~ /^sub \{ my \$ar = shift/
@@ -371,14 +370,16 @@ Ds:
             my $time = shift || 0.001;
             my $D = shift;
             
-            my $a;
-            a.name = "t";
-            a.time = $time;
-            a.D = $D; # maybe sub or Disc like thing
-            a.stuff = [@_];
-            my $Dome = $G->Doming($a);
+            my $B; 
+            B.name = "t";
+            B.talk = "Ze timer from ".$F[0]->{talk};
+            B.time = $time;
+            B.D = $D; # maybe sub or Disc like thing
+            B.stuff = [@_];
+            my $Dome = $G->Doming($B);
             
             Mojo::IOLoop->timer($time, sub {
+            sayyl "TIME BACKL: $time from B.talk";
                 $G->comeback($Dome);
             });
             
@@ -408,9 +409,9 @@ Ds:
         my $a;
         a.name = 'r';
         a.from = $Dome;
-        my $Doing = $G->Doming($a);
+        my $Doing = $G->Doming($a); 
         
-        $G->D({D=>Dome.D, toplevel=>1});
+        $G->D({D=>Dome.D, toplevel=>1, talk=>"351 dollars",name=>"comeback"});
         
         $G->Done($Doing);
         

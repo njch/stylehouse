@@ -66,7 +66,21 @@ R_Jz:
      for my $p (@ps) { 
          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
          next if !ar.pin && ar.J && !ar.J.yt->{$dp};
-         my $str = $R ? R.way->find($p) : fwind(G.way, $p);
+         # R == G
+         my $str = R.way->find($p);
+         $tw->{$p} = $str;
+     }
+     $tw
+     
+ - K: g_wuck #c return path=>strings for static way to memoize, instead of exec+dump
+   D: |
+     my @ps = Rw fi +;
+     my $tw;
+     for my $p (@ps) { 
+         my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
+         next if !ar.pin && ar.J && !ar.J.yt->{$dp};
+         # R == G
+         my $str = fwind(G.way, $p);
          $tw->{$p} = $str;
      }
      $tw
@@ -106,6 +120,42 @@ R_Jz:
            my $point = ar.p || ar.pin || ar.m->[0];
            my @path = split /\/|\./, $point;
            my $h = ar.h || R.way;
+           $h = h.hooks if h.hooks;
+           
+           my $doig;
+           $doig = sub {
+               my ($p,$h,$s) = @_;
+               my @a = @$p;
+               
+               return $s => $h if !@a; 
+               
+               ($p) = shift @a;
+               
+               return undef if !ref $h;#ne 'HASH';
+                   if (exists $h->{$p}) { 
+                       $h = $h->{$p};
+                       return $doig->([@a],$h,"$s/$p");
+                   }
+                   if ($p =~ s/\*/.+/sg) {
+                       my @ke = grep { /^$p$/ } keys %$h;
+                       my @wu;
+                       for my $tk (@ke) {
+                           push @wu, $doig->([@a], $h->{$tk}, "$s/$tk");
+                       }
+                       @wu = grep {defined} @wu;
+                       return @wu;
+                   }
+                   else {
+                       return undef;
+                   }
+           };
+           
+           grep {defined} $doig->([@path], $h, '');
+ - K: g_findl #c
+   D: |
+           my $point = ar.p || ar.pin || ar.m->[0];
+           my @path = split /\/|\./, $point;
+           my $h = ar.h || G.way;
            $h = h.hooks if h.hooks;
            
            my $doig;
