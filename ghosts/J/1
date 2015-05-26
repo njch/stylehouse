@@ -32,7 +32,7 @@ R_Jz:
      for my $p (@ps) {
          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
          next if !ar.pin && ar.J && !ar.J.yt->{$dp};
-         push @wo, w $R $p;
+         push @wo, Rw $p;
      }
      @wo
      
@@ -45,7 +45,7 @@ R_Jz:
      for my $p (@ps) {
          my ($dp) = split '/', $p; # domepiece (K) must be in our Jytterspace
          next if !ar.pin && ar.J && !ar.J.yt->{$dp};
-         my @wo = w $R $p;
+         my @wo = Rw $p;
          $tw->{$p} = \@wo;
      }
      $tw
@@ -248,7 +248,9 @@ R_Jz:
      sort { a.cv <=> b.cv }
        sort{ a.r cmp b.r }
        grep { !ar.ip || $G->ip(ar.ip => $_) }
-       map{ w $R shj(r=>$_,J=>$J); }
+       map{
+       Rw shj $r:_ $J;
+       }
        keys %{J.bb};
  - K: tva #c woos
    D: |

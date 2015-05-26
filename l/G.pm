@@ -1586,7 +1586,7 @@ sub parse_babble {
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
 
-    # wholeness Rwish #c
+    # wholeness Rwish #
 
     my $sur = qr/ if| unless| for| when|,\s*$|;\s*/;
     my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
@@ -1659,7 +1659,7 @@ sub parse_babble {
         $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
     }
 
-    #c way
+    # way
     while ($eval =~ 
     /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
         my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
@@ -1949,6 +1949,142 @@ sub wayup {
     my $G = shift;
     my $way = read_file(shift);
     $G->{way} = Load($way); 
+}
+
+sub g_parse_babble {
+    my $G = shift;
+    my $eval = shift;
+
+    my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
+    my $G_name = qr/[\/\w]+/;
+    my $Gnv = qr/\$?$G_name/;
+    my $mwall = qr/(?:= |^\s*)/m;
+
+
+
+
+    # word or scalar
+    my $point = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
+
+    my $alive = qr/\$[\w]*[\w\->\{\}]+/;
+    # a.b.c
+    my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+
+    my $poing = qr/$alive|G:$point|$dotha/;
+
+    # [...]
+    my $sqar = qr/\[.+?\]|\(.+?\)/; 
+
+    # timer
+
+    $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
+
+    $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
+
+
+    my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
+    # thingy, cv => thing
+    my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
+    $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
+
+    $eval =~ s/($mwall)(\w?J)n\(/$1$2\.no->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w?M)n\(/${1}J\.no->(\$$2, /smg;
+
+
+    #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
+
+    # wholeness Rwish #
+
+    my $sur = qr/ if| unless| for| when|,\s*$|;\s*/;
+    my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
+    my $suro = qr/(?:$sur|(?>!$sur))/;
+
+    my $_m = qr/(?: (.+))?/;
+    my $_u = qr/(?: ($poing))?/;
+    my $ylay = qr/(yl(?: $NUM)?)?/;
+    my $_g = qr/($poing )?/;
+
+    while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
+        my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
+        #say wdump[($1, $2, $3, $4, $5, $6, $7)];
+        $g ||= $u.'->{G}' if $u;
+        $g ||= '$G';
+        $u ||= '$R';
+
+        my $ne = ""; # hidden reverse
+        $ne = $1 if $a =~ s/($sur)$//;
+
+        my @n;
+        my @m;
+        my $wanr = $a =~ s/^\+ ?//;
+        $wanr = 'stick' if $a =~ s/^- ?//;
+        for (split /\,| |\, /, $a) {
+            # sweet little pool... $J:geo etc
+            if (/^\$((\w+(:|=))?\S+)$/) {
+                my ($na, $fa, $wa) = ($1, $2, $3);
+                if (!$fa) { # fake name, to ar
+                    $fa = $na;
+                }
+                else {
+                    $na =~ s/^\Q$fa\E//;
+                    $fa =~ s/(:|=)$//;
+                    if ($wa eq '=') {
+                        $na = '"'.$na.'"';
+                    }
+                }
+                $na = '$'.$na unless
+                    $wa eq '=' || $na =~ /^\S+\.\S/;
+                #saygr "from: $a          na: $na";
+                push @n, "$fa => $na" ; # also avail a listy position
+            }
+            else {
+                push @m, $_;
+            }
+        }
+        unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
+
+        # could use ^ here # edpeak?
+        push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
+            if @m;
+
+        my @e;
+        push @e, '"'.$p.'"';
+        push @e, "{".join(", ",@n)."}";
+        push @e, $u if $u;
+        my $en = join ", ", @e;
+
+        my $wa = $g.'->w('.$en.')'.$ne;
+
+        if ($delay) {
+            $delay =~ /yl ($NUM)/;
+            $delay = $1 || "";
+            $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
+        }
+
+        #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
+
+        $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
+    }
+
+    # way
+    while ($eval =~ 
+    /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
+        my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
+        die wdump[$old,$eval];
+    } 
+
+    # 8/9
+
+    $eval =~ s/\${0}($poing)? K ($point)(?::($point))?(;| )/
+    ($1 || '$G')
+    .qq {->K("$2","$3")$4}/seg;
+
+    $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
+
+    $eval =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+
+
+    $eval;
 }
 
 sub fwind {
