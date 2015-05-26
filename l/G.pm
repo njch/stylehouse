@@ -835,7 +835,6 @@ sub timer {
     my $Dome = $G->Doming($B);
 
     Mojo::IOLoop->timer($time, sub {
-    sayyl "TIME BACKL: $time from $B->{talk}";
         $G->comeback($Dome);
     });
 
