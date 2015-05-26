@@ -3,7 +3,8 @@ R_Jz:
    n_D:
      up: |
        my $t = Rw wuck - */flows/*;
-       my $amp = G.ampampamp ||= {};
+       my $fr = 0;
+       my $amp = G.ampampamp ||= do{$fr=1;{}};
        for my $k (sort keys %$t) {
            my $v = $t->{$k};
            my ($path,$flows,$from) = split '/', $k;
@@ -32,7 +33,9 @@ R_Jz:
        
        # maka yml, seeing .s is a gas leak
        `cd wormhole; cat yr\.yml ya\.yml > yb\.yml`;
-       
+       $fr ?
+       $G->pub('S/shed', "reexec")
+       :
        $G->pub('S/shed', "wayup w/yb\.yml");
        sayyl "We o ".F_delta();
      op: | #c amplify options
@@ -48,14 +51,13 @@ R_Jz:
        
        for my $lv (@$vs) { 
            my $j = lv.j;
-           sayyl " !!! Stitchup j.r    ".ki lv.sc;
            # potential ab pathy via cs craziness at ~/flows/$k M...
            my $Z = Rw muck - $pin=$from/j.l;
            if (!%$Z) {
                for my $nam (split ',', lv.sc.pa) {
                    $Z = Rw muck - $pin=$nam/j.l;
                    if (%$Z) {
-                       saygr "$path inherits j.l from $nam  ,,,, $from";
+                       #saygr "$path inherits j.l from $nam  ,,,, $from";
                        last;
                     }
                }
