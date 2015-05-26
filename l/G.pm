@@ -223,6 +223,38 @@ sub gname {
     $may;
 }
 
+sub cgp {
+    my $G = shift;
+    my $u = shift;
+      my $c = {};
+      if (!defined $u){
+          $c->{undef} = 1;
+      } else {
+          if (my $ref = ref $u) {
+              $c->{ARRAY} = 1 if $ref eq "ARRAY";
+              $c->{HASH} = 1 if $ref eq "HASH";
+              $c->{CODE} = 1 if $ref eq "CODE";
+              $c->{canpi} = 1 if !%$c && $u->can('pi');
+              for (qw'A C G T     R   J') {
+                    $c->{$_} = 1 if $ref eq $_;
+              }
+              $c->{ref} = $ref;
+          }
+          else {
+              if (ref \$u eq 'SCALAR') {
+                  $c->{text} = 1;
+                  $c->{len} = length($u);
+                  $c->{lin} = scalar split /\n/, $u;
+                  $c->{b} = scalar split /\n\n/, $u;
+                  $c->{number} = $u =~ /^(?:\d+\.)?\d+$/;
+                  $c->{wordy} = $u =~ /\w+/;
+              }
+              else { die "wtf is $u" };
+          }
+      }
+      $c
+}
+
 sub ob {
     my $G = shift;
     my $ob = $G->{_ob} || $_ob || return;

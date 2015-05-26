@@ -64,7 +64,7 @@ R_Jz:
      
      die if !$J2 && $j;
      
-     return if Rw eventkeygrab/grab;
+     return if e.type =~ /^key/ && Rw eventkeygrab/grab;
      
      my $upi={};
      for my $to (@to) {
@@ -127,10 +127,10 @@ R_Jz:
        return 0 unless e.type =~ /^key/;
        my $k = e.k;
        my @try = (e.k, 'w'.e.which);
-       my $g = R.way->find('eventkeygrab');
        for my $k (@try) {
-           next unless $g->{$k};
-           Rw eventkeygrab/$k;
+           my @yep = Rw suck - eventkeygrab/$k;
+           say wdump \@yep;
+           
            sayyl "Served e.k";
            return 1;
        }
