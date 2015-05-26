@@ -322,27 +322,31 @@ Ds:
         
         
         my $xx = 0;
-        for (@code) {
+        my $lci;
+        for my $c (@code) {
             $xx++;
+            $lci = $1 if $c =~ /^\s*(#\s*\d.*)$/;
+            sayyl "- $lci " if $lci;
             if (!defined $line) {
-                $diag .= ind("⊘  ", $_)."\n"
+                $diag .= ind("⊘  ", $c)."\n"
             }
             elsif ($xx == $line) {
-                $diag .= ind("⊘  ", $_)."\n";
+                $diag .= ind("⊘  ", $c)."\n";
                 
                 my $bab = (split"\n",D.bab)[$line-2];
-                if ($bab ne $_) {
+                if ($bab ne $c) {
                     $diag .= ind("⊖r ", $bab)."\n";
                 }
             }
             elsif (!$whole && $xx > $line-5 && $xx < $line+5) {
-                $diag .= ind("|  ", $_)."\n"
+                $diag .= ind("|  ", $c)."\n"
             }
             elsif ($whole) {
-                $diag .= ind("|  ", $_)."\n"
+                $diag .= ind("|  ", $c)."\n"
             }
         }
         
+        $diag = "$diag\n#~~~$lci" if $lci && $lci !~ /^# 0.01/;
         $diag
       
   - K: stack #c
