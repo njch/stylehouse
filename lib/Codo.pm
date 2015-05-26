@@ -102,6 +102,7 @@ sub init_codons {
         $self->{code_dir} = readlink($bm).'/';
     }
     my @codefiles = $self->codefiles();
+    die "no codons in $self->{code_dir}" if !@codefiles;
 
     for my $cf (@codefiles) {
         my $filename = $self->{code_dir}.$cf;
@@ -236,7 +237,7 @@ sub codolist {
             my $cs = (
                 $codon->{is}->{G} && $n =~ /^L/ ? '009900'
                 :
-                $codon->{is}->{G} && $n =~ /^V/ ? '4455ff'
+                $codon->{is}->{G} && $n =~ /^W/ ? '006BB2'
                 :
                 $codon->{is}->{G} && $n =~ /^N/ ? '40F8aB'
                 :
