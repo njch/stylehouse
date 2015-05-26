@@ -58,9 +58,14 @@ R_Jz:
     $j =~ /^([\w\/]+)(?: (.+))?$/ ?
         Rw S/$1 $m:2
     :
-    die "wei tet '$j'";
- - K: S #
+    die "wei tet '$j'";  
+ - K: S # 
    n_D:
+     ghostchanges: |
+       # nothing, gets compiled and broadcast:
+     wayup: |
+       -f $m || die;
+       $G->wayup($m);
      reexec: |
        Rw rez;
      speaks: | # loop conealed elvis
@@ -101,7 +106,13 @@ R_Jz:
         else {
             die "goner";
         }
-    
+     hostinfo/ack: | #
+        my (@s) = split /\s+/, $m;
+        if (rand(1) > 0) {
+            my $lag = (1000*sprintf('%.3f',hitime - $s[-1])).'ms';
+            saygr "... $lag";
+        }
+        G.hostinfo_waits = 0;
  - K: exprob #c https://soundcloud.com/jsg89g9
    D: |
     H.style = 'shed';
