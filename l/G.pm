@@ -813,8 +813,7 @@ sub Duckling {
     my $lci;
     for my $c (@code) {
         $xx++;
-        $lci = $1 if $c =~ /^\s*(#\s*\d.*)$/;
-        sayyl "- $lci " if $lci;
+        $lci = $1 if $xx < $line && $c =~ /^\s*(#\s*\d.*)$/;
         if (!defined $line) {
             $diag .= ind("⊘  ", $c)."\n"
         }
