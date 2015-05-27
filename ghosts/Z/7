@@ -27,7 +27,6 @@ R_Jz:
        my $oJ = Rw oJ $J je;
        if (my $i = ar.i) {
           oJn(i.name, 0.3, {s=>$i,J=>$i});
-          sayre "GOT ".gp $i;
        }
        
        my $vs = Rw tyv $J:oJ;
@@ -35,6 +34,7 @@ R_Jz:
        for my $lv (@$vs) {
            my $j = lv.j;
            next if j.s.dead;
+           sayre "GOT ".gp j.s;
            Mn(j.l,'',j.l,{J=>j.s,uxmv=>j.s.id});
        }
        J.V=1;
@@ -74,6 +74,7 @@ R_Jz:
      - 5.3
      - |
        my $sc;
+       sayyl "STICKS : ".ki lv.sc;
        for my $k (keys  %{lv.sc}) {
            my $v = lv.sc->{$k};
            my $om = $1 if $k =~ s/(#.+)$//;
@@ -96,6 +97,7 @@ R_Jz:
      - 6.33
      - |
        if (my $cs = at.cs) {
+           warn "CS: ".ki $cs;
            if (%$cs) {
                at.style .= join '',
                    map {"$_:$cs->{$_};"}sort keys %$cs;

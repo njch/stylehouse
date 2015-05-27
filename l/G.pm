@@ -302,7 +302,7 @@ sub ki {
         $v = "~" unless defined $v;
         $re && ref $v eq 'HASH'
             ? "$_={ ".ki($re-1, $v)." }"
-            : "$_=$v"
+            : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
 
@@ -1990,8 +1990,8 @@ sub g_parse_babble {
     my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
     $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
 
-    $eval =~ s/($mwall)(\w?J)n\(/$1$2\.no->(\$$2, /smg;
-    $eval =~ s/($mwall)(\w?M)n\(/${1}J\.no->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
 
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
