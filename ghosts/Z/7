@@ -168,17 +168,42 @@ R_Jz:
        for my $ct (@{wJ.cts.Y}) {
            next unless exists $sc->{ct.t};
            my $v = $sc->{ct.t};
+           sayyl "Y j.r ct.t $v";
            wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
        for my $ct (@{wJ.cts.V}) {
            next unless exists $sc->{ct.t};
            my $v = $sc->{ct.t};
-           sayyl "j.r ct.t $v";
+           saygr "V j.r ct.t $v";
            wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
        saybl "=------ ".ki 2, $at;
+ - K: chov/sharp #c
+   D:
+   - MZ: sticks:V
+   - 
+    - uxmv
+    - 5.1 
+    - |
+      my $cs = delete at.cs;
+      my $js = join '.',
+      "\$('#$v')", map {"css('$_','$cs->{$_}')"}sort keys %$cs;
+      acum $at, 'Esc', " $js;";
+    - way: 1
+   -
+    - css
+    - 5
+    - |
+      $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v eq 'HASH';
+      for my $set (split ';', $v) {
+          my ($k,$v) = split ':', $set;
+          push @{at.css}, "$k:$v;";
+          #at.cs->{$k} = $v;
+      }
+    - way: 1
+   - WZ: geomo/shrap
  - K: chov/outs #c switchapol val shifter, 7 hoisting to comp, find selv
    D:
        
@@ -281,7 +306,7 @@ R_Jz:
    - MZ: sticks:V
    - 
     - uxmv
-    - 5.1
+    - 5.1 
     - |
       my $cs = delete at.cs;
       my $js = join '.',
