@@ -277,6 +277,68 @@ R_Jz:
          
          return; #
      }
+     if (my $C = sc.cl) { #c
+         # lets C
+         my $sub = c.t;
+         if (!sc.nx) {
+             $sub = c.t.'_'.c.v;
+             $sub =~ s/\.//sg;
+             
+         }
+         
+         # avalanche cooker
+         # watery hydrosoul
+         # manuka oil ^ wash
+         # for mastitis, cleans cows udders and the rivers as it goes
+         # knowledge is like wine" - Pete
+         # "if it's incomplete its the antiknowledge
+         
+         sayyl "$C CL c.t   for ".ki $sc;
+         
+         my $sob = $C.'_'.$sub;
+         
+         J.bz->("${path}_up#return\t9", "\$wJ;");
+         my @s;
+         push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sob'};"
+             if !sc.nx;
+         push @s, "sub $sob {";
+         my $args;
+         if ($args = $sc->{"ct_${C}_args"}) {
+             push @s, "    my ($args) = \@_;";
+         }
+         if (sc.way) {
+             my $wp = "${path}_${C}_${sub}";
+             J.bz->("$wp\t1", $D);
+             $args =~ s/,/ /sg;
+             $D = 'Rw'." $wp $args;";
+             
+         }
+         $D = ind '    ', $D;
+         push @s, "$D";
+         push @s, "}";
+         $D = join "\n", (sc.com||"#!?"), @s;
+         # makes $X or so lexical
+         
+         
+         
+         
+         J.bz->("$path#up\t1","my \$wJ={};
+            \$wJ = G\.drop\.$path\.wJ ||= Rw\ ${path}_up \$wJ;");
+            
+         J.bz->("${path}_up#return\t9", "\$wJ;");
+         
+         
+         
+         
+         
+         J.bz->("${path}_up#rese$C\t1", 
+          "wJ\.ctx\.$C = {};"
+         ."wJ\.cts\.$C = [];"
+         );
+         J.bz->("${path}_up#$C$ome\t$cv", $D);
+         
+         return; #
+     }
                
                $D = join "\n", (sc.com||"#!?"), @l, @lr, $D, @r;
                J.bz->("$path#$ome\t$cv", $D);
