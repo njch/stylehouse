@@ -12,7 +12,7 @@ R_Jz:
        x    0  0.33
        curve 0 -0.4
      defon: |
-       #twang 0.1 Z/2
+       #twang 0.1 Z/2 
        #twong 0.1 Z/3
      up: | # if the in up, pha wakeups out - all response to editing
        J.cv = 20;
@@ -51,7 +51,18 @@ R_Jz:
         saygr " lv.j.r      => ".ki lv.sc;
        }
         
-       Rw shuv $J;   
+       Rw chuv $J;   
+ - K: chuv/flows/chov #c
+   D: |
+     #MZ pa:geomo
+     flow 1
+     nesting 4
+     stiz 3
+     sticks 5
+     stool 5
+     sharp 5
+     etcs 6
+     outs 7
  - K: shuv/flows/geomo #c
    D: |
      flow 1
@@ -62,6 +73,191 @@ R_Jz:
      sharp 5
      etcs 6
      outs 7
+ - K: chov/flow #c
+   D: |
+     # 1
+     G.oin.idJy->{J.id} ||= $J;
+     # think these want to be injected crazily
+     if (!J.yy.may.noroot) {
+         exists J.bb->{"/\t0.9"} ||
+         J.bz->("/\t0.9", "y", "%tag","ux","%tt"=>J.name);
+         exists J.bb->{"/%id\t0.9"} ||
+         J.bz->("/%id\t0.9", J.id);
+     }
+     # 2
+     
+     my $aJ = Rw oJ $J A;
+     #  ^ v MMMMMMMMMM aj ejector
+     my $aj = Rw up $J:aJ;
+     
+     # 3 spewing two-step
+     my $vs = Rw tyv $J;
+     my @s;
+     
+     # 3.7 know what we are ignoring and destroying
+     # bi-pha
+     # pingy statechange graphicly allele towers
+     # $vs should stretch over aJ as far as any $ip is
+     #
+     my %now = map{_.j.r => 1} @$vs;
+     for (keys %{aJ.bb}) {
+         /^(.+)%.+?\t(\S+)$/||die$_;
+         if (!$now{"$1\t$2"}) {
+             delete aJ.bb->{$_};
+         }
+     }
+     
+     for my $lv (@$vs) {
+         push @s, $lv;
+         my $j = lv.j;
+         #saygr wdump 2, lv.sc;
+         die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
+         
+         # 4 #
+         my $coi = Rw pha $J:aJ $k:j.r;
+         coi.qui = 1;
+         my $xat = do {
+             Rw lv_same $lv $x:coi $J:aJ;
+         } if aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
+         
+         
+         my $at;
+         my $pat;
+         my $plv;
+         if (!$xat) {
+             $at = {};
+             # 5.2
+             at.s = j.s;
+             # may be creating, overhead thought
+             at.__ajid1 = aj.id;
+             
+             # 5.4
+         }
+         # 5.78 at beam
+         $pat = aJ.bb->{"j.l%at\t".j.cv};
+         $plv = aJ.bb->{"j.l%lv\t".j.cv};
+         if (!$xat) {
+             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+             aJ.bb->{"j.l%at\t".j.cv} = $at;
+             
+             coi.exactl->();
+         }
+         else {
+             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+             $at = $pat;
+         }
+         # 5.8
+         # gets self aware in waves
+         # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
+         at.__ajid2 = aj.id;
+         lv.at = $at;
+         
+         # 7.9 # heaps ^ all of at outwardsing
+     }
+     # 8 check lv up cover
+     if (J.yy.may.noroot) {
+         die 'noroot ag has s'.wdump($_) for grep {_.s} @s;
+         aj.c = [map{@{_.Ec||[]}}@s];
+         aj.sc = [map{@{_.Esc||[]}}@s];
+     }
+     else {
+         my $lv = aJ.bb->{"/%lv\t0.9"};
+         aj.s = lv.s;
+         delete aj.s if lv.scon; # no repeat emit
+         aj.c = lv.Ec || [];
+         aj.sc = lv.Esc || [];
+     }
+     # 8.8
+     if (!ar.catj) {
+         Rw Em $aj;
+     }
+     # 9
+     $aj
+     
+ - K: chov/outs #c switchapol val shifter, 7 hoisting to comp, find selv
+   D:
+    -
+     - symetr
+     - 6.1
+     - |
+       my $sat = X.inv->($at);
+       my $spat = X.inv->($pat) if $pat;
+       my $ateq = $sat eq $spat;
+    -
+     - cleaves # leaves away c/sc lines
+     - 6.3
+     - |
+       if (at.c) { 
+           # mast/beam - patterns to keep embedding higher and hire/hoistre
+           # if beef
+           if ($ateq && !at.pur) {
+               #acum $lv, 'Ec', " a\.m('nothing');";
+               next;
+           }
+           # args for y
+           # some day G.w(y, @args);
+           my $js = ref at.s eq 'ARRAY' ?
+               join(',',map{ ejson($_) }@{at.s})
+               : ejson(at.s);
+           acum $lv, 'Ec', ' a.'.at.c.'('.$js.');';
+           # eventual lv.C = [ [...]... ] and then aj.C = [lvs{}C];
+           # yet vectory again
+           # bucket fountain, musical atitude
+           # where mess goes into black hole, proofs strung up
+           next;
+       }
+       
+    -
+     - Esc
+     - 6.4
+     - |
+       map { acum $lv, 'Esc', $_ } @{at.Esc} if at.Esc;
+    -
+     - css2style
+     - 6.5
+     - |
+       die wdump at.css if at.css;
+    -
+     - outw
+     - 7.1
+     - |
+       my $s = at.s;
+       my $ishtml = at.ishtml;
+       $s = encode_entities($s) if !$ishtml;
+    -
+     - outw
+     - 7.4
+     - |
+       my $tag = at.tag;
+       my $ts = j.l;
+       $ts =~ s/[^\w]/ñ/sg;
+       $tag ||= "$ts";
+       $tag = "Z$tag" if $tag !~ /^[a-z]/i;
+       my $arp = at.rp if exists at.rp;
+    -
+     - outw
+     - 7.6
+     - |
+       my $of = {map{$_=>1}qw's ishtml css tag rp'};
+       my $mat = join " ", $tag,
+           map { $_ }
+           map { $_.'="'.$at->{$_}.'"' } # attra
+           grep { $at->{$_} } sort grep {!/^_/ && !$of->{$_} } keys %$at;
+       $mat .= ' '.$arp if defined $arp;
+    -
+     - outw
+     - 7.7
+     - |
+       lv.s = "<$mat>$s</$tag>";
+       lv.scon = 1 if lv.s eq plv.s;
+       
+       if (pat.id) { # S-C
+           lv.scon = 1 if lv.s eq plv.s;
+           # need to relax the _jointed, cannot find?
+           #say "j.r      pat __jointed: ". wdump 2, plv.__jointed;
+           # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
+       }
+       # here hangs loose, we would want to conduct at.c/sc business cleanly
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
     -
@@ -69,7 +265,7 @@ R_Jz:
      - 5.3
      - |
        my $sc;
-       sayyl "STICKS : ".ki lv.sc;
+       sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
        for my $k (keys  %{lv.sc}) {
            my $v = lv.sc->{$k};
            my $om = $1 if $k =~ s/(#.+)$//;
@@ -85,7 +281,7 @@ R_Jz:
            my $v = $sc->{ct.t};
            wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
        }
-       saybl "j.r   =------ ".ki 2, $at;
+       saybl "=------ ".ki 2, $at;
 
     - 
      - uxooo
@@ -195,6 +391,11 @@ R_Jz:
       acum $at, Esc => " a\.cod($wt);";
       at.s = '';
    - #
+    - J
+    - 5
+    - |
+       at.ishtml = 1;
+   - #
     - pi
     - 5
     - |
@@ -210,18 +411,16 @@ R_Jz:
     - 5
     - |
        at.ishtml = 1;
-
-   -
-    - sf # has a way to $a the gp action within...
-    - 5
-    - |
-      push @{at.css}, map { $R::f->{$_} || die "no style $_"} split '_', $v;
    -
     - css
     - 5
     - |
       $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v;
-      push @{at.css}, $v;
+      for my $set (split ';', $v) {
+          my ($k,$v) = split ':', $set;
+          die wdump at.css;
+          at.css->{$k} = $v;
+      }
    -
     - id
     - 5
@@ -254,7 +453,6 @@ R_Jz:
     - 5
     - |
       at.tag = $v;
-      warn "TAGTAG: $v";
    -
     - at
     - 5
