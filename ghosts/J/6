@@ -1,5 +1,29 @@
 R_Jz:
-
+ - K: geo #c
+   n_D:
+     yJ: |
+       'geo'
+     up: |
+       my $sr = J.Jo;
+       J.noesc = ar.noesc if ar.noesc;
+       saybl "geo of sr.name";
+         #die "wa ".wdump 2, $_ if J.bb->{_.l."%nogeo\t"._.cv};
+       
+       Rw thy curves $J:sr $oJ:J
+       ||
+       Rw geolo $J;
+       
+       Rw oJ $J phz &up;
+ - K: phz #c transfer
+   n_D:
+     yJ: |
+       'phz'
+     up: |
+       my $geo = J.Jo;
+       my $io = J.Jo.Jo;
+       Rw phairo $J $oJ:io $geo;
+       
+       Rw outhere $J $oJ:io $geo;
  - K: geolo #c begin digging - smiling egg cup - most reentrant part
      # set up archeology site, anything you want
    D: |
@@ -148,20 +172,28 @@ R_Jz:
          # its mass would be good too
          # share space with curves
          my $rad = here.rad;
+         # radial -> angle, shouldery thing
          my $radleg = -$RADIAN;
          # and pan to hemisphere...#
          # from O- is it in the left hemisphere etc
           $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
          $rad -= $radleg; 
          
-         my $ere = {
-             left => here.left,
+         my $e = {
              radial => sprintf('%.5f', $rad),
              angle => sprintf('%.5f', here.rad),
              x => sprintf('%.5f', here.x),
              y => sprintf('%.5f', here.y),
          };
          
+         if (oJ.yt.quigeo) {
+             oJ.bz->("j.t%geo\t".j.cv => join' ',map{$e->{$_}}qw'x,y,radial');
+             next;
+         }
+         my $ere = {%$e};
+         ere.left = here.left;
+         
+         # shove com toeget
          #sayre ">>>> yep @ent  j.cv    ". j.t;
          # OR SOMETHING
          # loses its compressibility as csz
@@ -179,7 +211,7 @@ R_Jz:
          if (geo.noesc) {
              cs.tro = '0% 0%';
              for my $k (sort keys %$cs) {
-             oJ.bz->("j.t%$k\t".j.cv => $cs->{$k}); # concert per emportar
+                 oJ.bz->("j.t%$k\t".j.cv => $cs->{$k}); # concert per emportar
              }
              next;
          }
