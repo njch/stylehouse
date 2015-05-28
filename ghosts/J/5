@@ -283,9 +283,7 @@ R_Jz:
          if (!sc.nx) {
              $sub = c.t.'_'.c.v;
              $sub =~ s/\.//sg;
-             
          }
-         
          # avalanche cooker
          # watery hydrosoul
          # manuka oil ^ wash
@@ -297,45 +295,53 @@ R_Jz:
          
          my $sob = $C.'_'.$sub;
          
-         J.bz->("${path}_up#return\t9", "\$wJ;");
-         my @s;
-         push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sob'};"
-             if !sc.nx;
-         push @s, "sub $sob {";
-         my $args;
-         if ($args = $sc->{"ct_${C}_args"}) {
-             push @s, "    my ($args) = \@_;";
-         }
-         if (sc.way) {
-             my $wp = "${path}_${C}_${sub}";
-             J.bz->("$wp\t1", $D);
-             $args =~ s/,/ /sg;
-             $D = 'Rw'." $wp $args;";
-             
-         }
-         $D = ind '    ', $D;
-         push @s, "$D";
-         push @s, "}";
-         $D = join "\n", (sc.com||"#!?"), @s;
-         # makes $X or so lexical
+         # boiler
+         J.bz->("$path#up\t1","use F_$path;
+         my \$wJ = G\.drop\.$path\.wJ ||= new F_$path();");
          
-         
-         
-         
-         J.bz->("$path#up\t1","my \$wJ={};
-            \$wJ = G\.drop\.$path\.wJ ||= Rw\ ${path}_up \$wJ;");
-            
-         J.bz->("${path}_up#return\t9", "\$wJ;");
-         
-         
-         
-         
-         
-         J.bz->("${path}_up#rese$C\t1", 
+         J.bz->("F_${path}#new\t1", "package F_$path;
+         sub new {
+             my \$wJ = bless {}, 'F_$path';
+             \$wJ->up;
+             \$wJ;
+         }");
+         J.bz->("F_${path}#up\t1.2",
+         "sub up {
+             my \$wJ = shift;
+         ");
+         # index
+         J.bz->("F_${path}#in/$C\t2",
           "wJ\.ctx\.$C = {};"
          ."wJ\.cts\.$C = [];"
          );
-         J.bz->("${path}_up#$C$ome\t$cv", $D);
+         J.bz->("F_${path}#in/$C/c.v/c.t\t3",
+             "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sob'};")
+             unless sc.nx;
+         J.bz->("F_${path}#epcto\t2.9", "}");
+         # chunk
+         J.bz->("F_${path}#Cts/$C/c.t/c.v\t3", $_) for do {
+             my $args;
+             join "\n", grep{defined}
+                 (sc.com||"#!?"),
+                 "sub $sob {",
+                 do{if($args = $sc->{"ct_${C}_args"}) {
+                    "    my ($args) = \@_;"
+                 }},
+                 do{
+                     if (sc.way) {
+                         my $wp = "${path}_${C}_${sub}";
+                         J.bz->("$wp\t1", $D);
+                         $args =~ s/,/ /sg;
+                         $D = 'Rw'." $wp $args;";
+
+                     }
+                     # TODO ind for where
+                     $D = ind '    ', $D;
+                     $D;
+                 },
+                 "}"
+         };
+         
          
          return; #
      }
