@@ -212,35 +212,37 @@ R_Jz:
            return $at->{$k};
        };
        if (at.Esc) {
-           map { acum $lv, 'Esc', $_ } @{at.Esc};
+           #map { acum $lv, 'Esc', $_ } @{at.Esc};
        }
        if (c.nobody) {
            c.nobody = $not->('id');
            $not->($_) for 's', 'ishtml';
        }
        else {
-           my $s = not&s;
-           
-           $s = encode_entities($s) if not&ishtml;
-           
            my $tag = not&tag || do {
              my $ts = j.l;
              $ts =~ s/[^\w]/ñ/sg;
              "$ts"
            };
            $tag = "Z$tag" if $tag !~ /^[a-z]/i;
+           at.t = "$tag";
            
-           my $arp = at.rp if exists at.rp;
+           at.name = "Tom";
+           not&name;
            
-           my $of = {map{$_=>1}qw's ishtml c css tag rp'};
-           my $mat = join " ", $tag,
-               map { $_ }
-               map { $_.'="'.$at->{$_}.'"' } # attra
-               grep { $at->{$_} } sort grep {!/^_/ && !$of->{$_} } keys %$at;
-           $mat .= ' '.$arp if defined $arp;
-           $s = "<$mat>$s</$tag>";
-           
+           my $s = not&s;
+           $s = encode_entities($s) if not&ishtml;
            c.s = $s;
+           
+           die 'attr $something>' if at.rp;
+           my $of = {map{$_=>1}qw's ishtml t y c sc Esc Ec id css tag rp'};
+           
+           c.attr->{$_} = $at->{$_} for 
+               sort grep {!/^_/ && !$of->{$_} } keys %$at;
+           
+           c.el = not&id;
+           c.M = not&Esc;
+           
            #lv.scon = 1 if lv.s eq plv.s;
 
            if (pat.id) { # S-C
@@ -257,12 +259,49 @@ R_Jz:
            next if $note->{$k};
            $to->{$k} = $at->{$k};
        }
-       saybl 13 + ord 1;
-       sayyl wdump $to;
+       warn "Got $_" for grep { $_ !~ /^(t|y|c|sc)$/ } keys %$to;
+       saybl ord('a').chr (26 + ord 1);
+       acum $lv, 'Ec', $to;
+       sayyl wdump 5, [lv.Ec, lv.Esc];
  - K: scr/nobody #c
    D:
-    -
-     - 
+   - MZ: cc:jsc
+   -
+     - o #
+     - 1
+     - args: Wid, K, C
+     - |
+       var W = a.WW(Wid);
+       var A = W.A;
+       
+       C = a.inC(C);
+       
+       var G = a;
+       // should be receiver, W.G, auto locals + uni
+       // looks in W.G, W.G.incs, a
+       // passes ACGT
+       var T = {};
+       
+       a[K](A, C, G, T);
+   -
+     - inC #
+     - 1
+     - args: C
+     - |
+       if (C.constructor == 'Array') {
+           if (C.length !== 4)
+               a.er("nolly", C);
+           C = {t:C[0], y:C[1], c:C[2], sc:C[3]};
+       }
+       if (typeof C == 'string') {
+           C = {c: {s: C}};
+       }
+       C
+   -
+    - el # A,C,G,T
+    - 3
+    - |
+      a.m('hi');
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
     -

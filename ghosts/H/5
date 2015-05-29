@@ -99,7 +99,6 @@ hooks:
   slw: | #c slw of stimuli
     my ($y,$z) = @$m;
     my $l = sub {
-        sayyl "slwing $y => $z  :::: $_[0]";
         $G->w($z,{m=>shift});
     };
     $G->ily($y, $l);
@@ -118,14 +117,10 @@ hooks:
     }
   Jslw: | #c $m from the scrambling stream of J KEEP
     die if H.name eq 'Z';
-    sayyl "JAZZZZ $m";
     my $meta = djson $m;
     
     # TODO tri
     my $m = $G->tri("meta.y/meta.id\.c");
-    
-    my $del = sprintf '%.4f', scalar(hitime) - meta.hitime;
-    saybl "meta.hol -> meta.id  (lag $del)    ";
     
       my $cb;
       if (meta.W) {
@@ -141,7 +136,7 @@ hooks:
               };
           }
       }
-      $m = " $m";
+      #$m = " $m";
       my $W  = $meta;
       
       w send_Elvis[$m, $W, $cb];
