@@ -99,7 +99,6 @@ R_Jz:
          my $plv;
          if (!$xat) {
              $at = {};
-             at.css = {};
              # 5.2
              at.s = j.s;
              # may be creating, overhead thought
@@ -187,10 +186,6 @@ R_Jz:
     - |
       at.id = $v;
       at.c.nobody = 1;
-      my $cs = delete at.cs;
-      my $js = join '.',
-      "\$('#$v')", map {"css('$_','$cs->{$_}')"}sort keys %$cs;
-      acum $at, 'Esc', " $js;";
     - way: 1
    -
     - css
@@ -209,13 +204,28 @@ R_Jz:
      - Esc
      - 6.4
      - |
-       sayyl wdump $at;
+       my $c = at.c;
+       my $note = {};
+       my $not = sub {
+           my $k = shift;
+           $note->{$k} = 1;
+           return $at->{$k};
+       };
        if (at.Esc) {
            map { acum $lv, 'Esc', $_ } @{at.Esc};
        }
-       # some further
- - K: chov/elemeos #c
-   D: 
+       if (c.nobody) {
+           c.nobody = $not->('id');
+           $not->($_) for 's', 'ishtml';
+       }
+       my $to = {};
+       for my $k (keys %$at) {
+           next if $k =~ /^_/;
+           next if $note->{$k};
+           $to->{$k} = $at->{$k};
+       }
+       sayyl wdump $to;
+
     -
      - outw
      - 7.1
@@ -243,6 +253,10 @@ R_Jz:
            # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
        }
        # here hangs loose, we would want to conduct at.c/sc business cleanly
+ - K: scr/nobody #c
+   D:
+    -
+     - 
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
     -
