@@ -30,7 +30,7 @@ R_Jz:
            my $j = lv.j;
            next if j.s.dead;
            sayre "GOT ".gp j.s;
-           Mn(j.l,'',j.l,{J=>j.s,uxmv=>j.s.id});
+           Mn(j.l,'',j.l,{J=>j.s,enid=>j.s.id});
        }
        J.V=1;
        #die wdump $M;
@@ -58,7 +58,7 @@ R_Jz:
      sticks 5
      stool 5
      sharp 5
-     etcs 6
+     #etcs 6
      outs 7
  - K: shuv/flows/geomo #c
    D: |
@@ -166,24 +166,27 @@ R_Jz:
            next unless exists $sc->{ct.t};
            my $v = $sc->{ct.t};
            #sayyl "Y j.r ct.t $v";
-           wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+           wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
        for my $ct (@{wJ.cts.V}) {
            next unless exists $sc->{ct.t};
            my $v = $sc->{ct.t};
            #saygr "V j.r ct.t $v";
-           wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+           wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
        saybl "=------ ".ki 2, $at;
  - K: chov/sharp #c
    D:
    - MZ: sticks:V
+   
    - 
-    - uxmv
+    - enid
     - 5.1 
     - |
+      at.id = $v;
+      at.c.nobody = 1;
       my $cs = delete at.cs;
       my $js = join '.',
       "\$('#$v')", map {"css('$_','$cs->{$_}')"}sort keys %$cs;
@@ -196,8 +199,7 @@ R_Jz:
       $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v eq 'HASH';
       for my $set (split ';', $v) {
           my ($k,$v) = split ':', $set;
-          push @{at.css}, "$k:$v;";
-          #at.cs->{$k} = $v;
+          at.sc.css->{$k} = $v;
       }
     - way: 1
    - WZ: geomo/shrap
@@ -207,46 +209,33 @@ R_Jz:
      - Esc
      - 6.4
      - |
+       #die "\n";
+       sayyl wdump $at;
        if (at.Esc) {
            map { acum $lv, 'Esc', $_ } @{at.Esc};
        }
-    -
-     - css2style
-     - 6.5
-     - |
-       die "HeRE".wdump at.css if at.css && %{at.css};
-     - way: 1
+       # some further
+ - K: chov/elemeos #c
+   D: 
     -
      - outw
      - 7.1
      - |
        my $s = at.ishtml ? at.s : encode_entities(at.s);
-    -
-     - outw
-     - 7.4
-     - |
        my $tag = at.tag;
        my $ts = j.l;
        $ts =~ s/[^\w]/ñ/sg;
        $tag ||= "$ts";
        $tag = "Z$tag" if $tag !~ /^[a-z]/i;
        my $arp = at.rp if exists at.rp;
-    -
-     - outw
-     - 7.6
-     - |
        my $of = {map{$_=>1}qw's ishtml css tag rp'};
        my $mat = join " ", $tag,
            map { $_ }
            map { $_.'="'.$at->{$_}.'"' } # attra
            grep { $at->{$_} } sort grep {!/^_/ && !$of->{$_} } keys %$at;
        $mat .= ' '.$arp if defined $arp;
-    -
-     - outw
-     - 7.7
-     - |
-       lv.s = "<$mat>$s</$tag>";
-       lv.scon = 1 if lv.s eq plv.s;
+       #lv.s = "<$mat>$s</$tag>";
+       #lv.scon = 1 if lv.s eq plv.s;
        
        if (pat.id) { # S-C
            lv.scon = 1 if lv.s eq plv.s;
@@ -296,7 +285,7 @@ R_Jz:
  - K: ym/sticks #c
    D: |
      n.sc.ct = $v;
-     n.sc->{"ct_${v}_args"} = '$J,$j,$lv,$v,$sc,$at';
+     n.sc->{"ct_${v}_args"} = '$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
  - K: geomo/sharp #c
    D:
    - MZ: sticks:V
@@ -437,37 +426,42 @@ R_Jz:
    D:
      - MZ: sticks:Y
      -
+      - geo
+      - 3.2
+      - |
+        at.sc.geo = $v;
+     -
       - ab # absolute # ORDER uglies
       - 3.3
       - |
-         at.cs.position = 'absolute';
-         at.cs.width = '100%';
-         at.cs.height = '100%';
+        sc.css.position = 'absolute';
+        sc.css.width = '100%';
+        sc.css.height = '100%';
      -
       - left # yep
       - 3.4
       - |
-         at.cs.left = $v;
+        sc.css.left = $v;
      -
       - top # yep
       - 3.4
       - |
-         at.cs.top = $v;
+        sc.css.top = $v;
      -
       - tr # filterszzzz weird style using com to agg.
       - 3.7
       - |
-        at.cs->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
+        sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
      -
       - tro #
       - 3.6
       - |
-        at.cs->{'transform-origin'} = $v;
+        sc.css->{'transform-origin'} = $v;
      -
       - rad # radial tr
       - 3.6
       - |
-         sc.tr.rotate = $v.'rad' if $v;
+        sc.tr.rotate = $v.'rad' if $v;
          return;
 stwa: # STASHINGS
  -
