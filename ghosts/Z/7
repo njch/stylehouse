@@ -204,7 +204,7 @@ R_Jz:
      - Esc
      - 6.4
      - |
-       my $c = at.c;
+       my $c = at.c ||= {};
        my $note = {};
        my $not = sub {
            my $k = shift;
@@ -218,6 +218,39 @@ R_Jz:
            c.nobody = $not->('id');
            $not->($_) for 's', 'ishtml';
        }
+       else {
+           my $s = not&s;
+           
+           $s = encode_entities($s) if not&ishtml;
+           
+           my $tag = not&tag || do {
+             my $ts = j.l;
+             $ts =~ s/[^\w]/ñ/sg;
+             "$ts"
+           };
+           $tag = "Z$tag" if $tag !~ /^[a-z]/i;
+           
+           my $arp = at.rp if exists at.rp;
+           
+           my $of = {map{$_=>1}qw's ishtml c css tag rp'};
+           my $mat = join " ", $tag,
+               map { $_ }
+               map { $_.'="'.$at->{$_}.'"' } # attra
+               grep { $at->{$_} } sort grep {!/^_/ && !$of->{$_} } keys %$at;
+           $mat .= ' '.$arp if defined $arp;
+           $s = "<$mat>$s</$tag>";
+           
+           c.s = $s;
+           #lv.scon = 1 if lv.s eq plv.s;
+
+           if (pat.id) { # S-C
+               lv.scon = 1 if lv.s eq plv.s;
+               # need to relax the _jointed, cannot find?
+               #say "j.r      pat __jointed: ". wdump 2, plv.__jointed;
+               # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
+           }
+           # here hangs loose, we would want to conduct at.c/sc business cleanly
+       }
        my $to = {};
        for my $k (keys %$at) {
            next if $k =~ /^_/;
@@ -225,34 +258,6 @@ R_Jz:
            $to->{$k} = $at->{$k};
        }
        sayyl wdump $to;
-
-    -
-     - outw
-     - 7.1
-     - |
-       my $s = at.ishtml ? at.s : encode_entities(at.s);
-       my $tag = at.tag;
-       my $ts = j.l;
-       $ts =~ s/[^\w]/ñ/sg;
-       $tag ||= "$ts";
-       $tag = "Z$tag" if $tag !~ /^[a-z]/i;
-       my $arp = at.rp if exists at.rp;
-       my $of = {map{$_=>1}qw's ishtml css tag rp'};
-       my $mat = join " ", $tag,
-           map { $_ }
-           map { $_.'="'.$at->{$_}.'"' } # attra
-           grep { $at->{$_} } sort grep {!/^_/ && !$of->{$_} } keys %$at;
-       $mat .= ' '.$arp if defined $arp;
-       #lv.s = "<$mat>$s</$tag>";
-       #lv.scon = 1 if lv.s eq plv.s;
-       
-       if (pat.id) { # S-C
-           lv.scon = 1 if lv.s eq plv.s;
-           # need to relax the _jointed, cannot find?
-           #say "j.r      pat __jointed: ". wdump 2, plv.__jointed;
-           # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
-       }
-       # here hangs loose, we would want to conduct at.c/sc business cleanly
  - K: scr/nobody #c
    D:
     -

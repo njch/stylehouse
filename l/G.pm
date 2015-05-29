@@ -1990,8 +1990,13 @@ sub g_parse_babble {
     my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
     $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
 
+    # oJn -> oJ.n->( ish
     $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
+
+    # lma quack $not->('tag');
+    $eval =~ s/(\w+)\&(\w+)/\$$1->('$2')/smg;
+
 
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
