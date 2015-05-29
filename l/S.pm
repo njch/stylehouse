@@ -203,20 +203,22 @@ __DATA__
       };
       a.entag = function(d, tag) {
           d.name = tag.attr('name');
-          while (tag && !tag.attr('id')) {
-                tag = tag.parent();
+          var ids = [];
+          while (tag.length) {
+              var nam = tag.prop('tagName');
+              var id = tag.attr('id');
+              if (!d.id && id)
+                  d.id = id;
+              if (id)
+                  ids.unshift(id);
+              if (nam === 'WW') {
+                  d.W = id;
+                  d.ux = ids[1];
+                  break;
+              }
+              tag = tag.parent();
           }
-          d.id = tag.attr('id');
-          d.class = tag.attr('class');
-
-          var W = tag.closest( "ww" ).attr('id');
-          if (W) {
-              d.W = W;
-          }
-          var ux = tag.closest( "ux" ).attr('id');
-          if (ux) {
-              d.ux = ux;
-          }
+          d.ids = ids;
       };
       a.ethro = function(d, ws) {
           if (d.W) {
