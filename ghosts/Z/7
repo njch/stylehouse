@@ -321,25 +321,30 @@ R_Jz:
                 $(A.on).css(i, v);
            });
        }
+       if (C.sc.anc) {
+           $(A.on).animate(C.sc.anc, (C.sc.ant||900));
+       }
    -
     - sc_geo # A,C,G,T
     - 3
     - |
       if (!C.sc.css)
           C.sc.css = {};
+      if (!C.sc.anc)
+          C.sc.anc = {};
       C.sc.css.top = (C.c.y * 100)+'%';
       C.sc.css.left = (C.c.x * 100)+'%';
-      C.sc.css.position = 'absolute';
-      C.sc.css['transform-origin'] = '0% 50%';
-            
-      C.sc.css['-webkit-transform'] = 'rotate('+C.c.radial+'rad)';
-      
+      C.sc.css.width = '100%';
+      C.sc.css.height = '100%';
+      C.sc.css.position = 'absolute'; 
+      C.sc.css['transform-origin'] = '0% 0%';
+      C.sc.css['transform'] = 'rotate('+C.c.radial+'rad)';
+       
       console.log(C);
    -
     - el # A,C,G,T
     - 3
     - |
-      $('#msg').animate({height:500}, 500);
       if (!C.c.attr)
           C.c.attr = {};
       if (C.c.id) { 
@@ -582,7 +587,7 @@ R_Jz:
          return;
 stwa: # STASHINGS
  -
-  - ab # absolute # ORDER uglies
+  - ab #c absolute # ORDER uglies
   - 3.3
   - |
      $v = 'width:100%,height:100%' if $v eq '100';
