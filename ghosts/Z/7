@@ -280,6 +280,22 @@ R_Jz:
    D:
    - MZ: cc:jsc
    -
+     - yl #
+     - 1
+     - args: delay,func
+     - |
+       setTimeout(func, delay);
+   -
+     - ks #
+     - 1
+     - args: hash
+     - |
+       var ks = [];
+       for (var k in hash) {
+           ks.push(k);
+       }
+       return ks.join(',');
+   -
      - om #
      - 2
      - args: A,C,G,T
@@ -288,25 +304,23 @@ R_Jz:
        if (!T.d)
            T.d=1;
        
-       //console.log("Weeg "+C.t, C.c, C.sc);
+       var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
+       a.m(see);
+       
+       
        if (typeof C.c === 'string')
            return a.er('c string');
        if (C.c.W)
            A.on = $('#'+C.c.W);
        
        if (C.sc.M) {
-           T.d++;
-           for (i = 0; i < C.sc.M.length; i++) { 
-                var nC = C.sc.M[i];
-                a.m('w'+T.d+'  '+nC[0]);
-                console.log('goot @ '+T.d,C,nC);
-                
-                setTimeout(function () { 
-                    G.om(A,nC,G,T);
-                }, 5);
-
-                // ?
-           }
+           //T.d++;
+           $.each(C.sc.M, function(i,v) {
+               var nC = G.inC(v);
+               a.yl(5, function () { 
+                G.om(A,nC,G,{d:T.d+1});
+               });
+           });
        }
           
    -
