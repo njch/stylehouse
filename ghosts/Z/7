@@ -300,6 +300,7 @@ R_Jz:
      - 2
      - args: A,C,G,T
      - |
+       A = $.extend({},A);
        C = G.inC(C); 
        if (!T.d)
            T.d=1;
@@ -312,6 +313,8 @@ R_Jz:
            return a.er('c string');
        if (C.c.W)
            A.on = $('#'+C.c.W);
+       if (C.c.el)
+           G.el(A,C,G,T);
        
        if (C.sc.M) {
            //T.d++;
@@ -341,7 +344,29 @@ R_Jz:
     - el # A,C,G,T
     - 3
     - |
-      a.m('hi');
+      if (!C.c.attr)
+          C.c.attr = {};
+      if (C.c.id) { 
+          C.c.attr.id = C.c.id;
+          var aid = A.on.attr('id');
+          if (aid && C.c.id) {
+              var ex = $('#'+aid+' #'+C.c.id);
+              if (ex) {
+                  a.m('deleting '+ex.prop('tagName'));
+                  $(ex).remove();
+              }
+          }
+      }
+      
+      var div = $("<"+C.t+">", C.c.attr);
+      var el
+      $(div).appendTo(A.on).each(function(i,v) {
+           el = v;
+      });
+      
+      console.log(A.on, el, C);
+      A.on = el;
+      
  - K: geomo/sticks #c rejoin the pipelining - form style trance
    D:
     -
