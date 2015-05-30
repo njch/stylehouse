@@ -222,9 +222,7 @@ R_Jz:
                _.c,_.sc
            ]} @_
        };
-       if (at.Esc) {
-           #map { acum $lv, 'Esc', $_ } @{at.Esc};
-       }
+       
        if (c.nobody) {
            c.nobody = $not->('id');
            $not->($_) for 's', 'ishtml';
@@ -238,7 +236,6 @@ R_Jz:
            
            c.id = $_ for not&id;
            
-           at.name = "j.r";
            not&name;
            
            my $s = not&s;
@@ -280,22 +277,6 @@ R_Jz:
    D:
    - MZ: cc:jsc
    -
-     - yl #
-     - 1
-     - args: delay,func
-     - |
-       setTimeout(func, delay);
-   -
-     - ks #
-     - 1
-     - args: hash
-     - |
-       var ks = [];
-       for (var k in hash) {
-           ks.push(k);
-       }
-       return ks.join(',');
-   -
      - om #
      - 2
      - args: A,C,G,T
@@ -304,17 +285,21 @@ R_Jz:
        C = G.inC(C); 
        if (!T.d)
            T.d=1;
+       if (typeof C.c === 'string')
+           return a.er('c string');
        
        var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
        a.m(see);
        
-       
-       if (typeof C.c === 'string')
-           return a.er('c string');
        if (C.c.W)
            A.on = $('#'+C.c.W);
        if (C.c.el)
            G.el(A,C,G,T);
+       if (C.c.nobody)
+           A.on = $('#'+C.c.nobody);
+       
+       if (!C.sc)
+           C.sc = {};
        
        if (C.sc.M) {
            //T.d++;
@@ -325,46 +310,55 @@ R_Jz:
                });
            });
        }
-          
+       
+       if (C.sc.geo) {
+           var nC = {c: C.sc.geo, sc: C.sc};
+           G.sc_geo(A,nC,G,T);
+       }
+       
+       if (C.sc.css) {
+           $.each(C.sc.css, function(i,v) {
+                $(A.on).css(i, v);
+           });
+       }
    -
-     - inC #
-     - 1
-     - args: C
-     - |
-       if (C.constructor == Array) {
-           if (C.length !== 4)
-               a.er("nolly", C);
-           C = {t:C[0], y:C[1], c:C[2], sc:C[3]};
-       }
-       else if (typeof C === 'string') {
-           C = {c: C};
-       }
-       return C
+    - sc_geo # A,C,G,T
+    - 3
+    - |
+      if (!C.sc.css)
+          C.sc.css = {};
+      C.sc.css.top = (C.c.y * 100)+'%';
+      C.sc.css.left = (C.c.x * 100)+'%';
+      C.sc.css.position = 'absolute';
+      C.sc.css['transform-origin'] = '0% 50%';
+            
+      C.sc.css['-webkit-transform'] = 'rotate('+C.c.radial+'rad)';
+      
+      console.log(C);
    -
     - el # A,C,G,T
     - 3
     - |
+      $('#msg').animate({height:500}, 500);
       if (!C.c.attr)
           C.c.attr = {};
       if (C.c.id) { 
           C.c.attr.id = C.c.id;
           var aid = A.on.attr('id');
-          if (aid && C.c.id) {
-              var ex = $('#'+aid+' #'+C.c.id);
+          if (aid && C.c.id) { 
+              var to = '#'+aid+' #'+C.c.id;
+              var ex = $(to);
               if (ex) {
-                  a.m('deleting '+ex.prop('tagName'));
+                  a.m('rm '+ex.prop('tagName')+' '+to);
                   $(ex).remove();
               }
           }
       }
-      
       var div = $("<"+C.t+">", C.c.attr);
-      var el
-      $(div).appendTo(A.on).each(function(i,v) {
-           el = v;
-      });
-      
-      console.log(A.on, el, C);
+      var el;
+      $(div).appendTo(A.on).each(function(i,v){el=v});
+      if (C.c.s)
+          $(el).html(C.c.s);
       A.on = el;
       
  - K: geomo/sticks #c rejoin the pipelining - form style trance
