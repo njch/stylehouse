@@ -29,28 +29,17 @@ R_Jz:
        for my $lv (@$vs) {
            my $j = lv.j;
            next if j.s.dead;
-           sayre "GOT ".gp j.s;
            Mn(j.l,'',j.l,{J=>j.s,enid=>j.s.id});
        }
-       
-       Mn('elevetor',{thi=>0.4},'Something','{hs:8.5.1.4,fs:20}');
-       
-       J.V=1;
-       #die wdump $M;
        Rw om/bal $J $oM:M $in=0.001 $out=0.9;
-       J.V=0;
        
+       
+       coi.qui=1;
        coi.exactl->();
        
        
        Rw oJ $J geo &up $noesc=1;
        
-       
-       $vs = Rw tyv $J;
-       for my $lv (@$vs) {
-        saygr " lv.j.r      => ".ki lv.sc;
-       }
-        
        Rw chuv $J;   
  - K: chuv/flows/chov #c
    D: |
@@ -63,6 +52,19 @@ R_Jz:
      sharp 5
      #etcs 6
      outs 7
+     Wout 8
+ - K: chiv/flows/chov #c
+   D: |
+     #MZ pa:geomo
+     flow 1
+     nesting 4
+     stiz 3
+     sticks 5
+     stool 5
+     sharp 5
+     #etcs 6
+     outs 7
+     
  - K: shuv/flows/geomo #c
    D: |
      flow 1
@@ -73,6 +75,17 @@ R_Jz:
      sharp 5
      etcs 6
      outs 7
+ - K: chov/Wout #c
+   D:
+    -
+     - begin
+     - 8.5
+     - |
+       my $c = aj.c;
+       die 'scs' if @{aj.sc};
+       die 's' if aj.s;
+       my $M = ['','',{W=>G.Wid},{M=>$c}];
+       aj.c = [" a\.om({},".sjson($M).",a,{});"];
  - K: chov/flow #c
    D: |
      # 1
@@ -189,6 +202,12 @@ R_Jz:
       at.c.nobody = 1;
     - way: 1
    -
+    - J
+    - 5
+    - |
+      # notmuch
+      warn "Have a J: ".gp $v;
+   -
     - css
     - 5
     - |
@@ -236,6 +255,7 @@ R_Jz:
            c.id = $_ for not&id;
            
            not&name;
+           not&title;
            
            my $s = not&s;
            $s = encode_entities($s) if not&ishtml;
@@ -258,20 +278,11 @@ R_Jz:
            $to->{$k} = $at->{$k};
        }
        warn "Got $_" for grep { $_ !~ /^(t|y|c|sc)$/ } keys %$to;
-       saybl "=------ ".ki 2, $to;
+       saybl "=------ ".ki 2, $to if J.V;
        acum $lv, 'Ec', $MM->($to);
        # so we add here locally ^
        # and 
        #sayyl sjson lv.Ec;# if j.l eq '/';
-    -
-     - begin
-     - 8.5
-     - |
-       my $c = aj.c;
-       die 'scs' if @{aj.sc};
-       die 's' if aj.s;
-       my $M = ['','',{W=>G.Wid},{M=>$c}];
-       aj.c = [" a\.om({},".sjson($M).",a,{});"];
  - K: scr/nobody #c
    D:
    - MZ: cc:jsc

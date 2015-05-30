@@ -142,19 +142,19 @@ R_Jz:
        
        for (sort keys %{cur.bb}) {
            if (!exists last.bb->{$_}) {
-               sayre " + No $_ in last" if !wtf.allnew;
+               sayre " ++ No $_ in last" if !cur.qui && !wtf.allnew;
                wtf.new->{$_} = cur.bb->{$_};
                wtf.same = 0;
            } 
            elsif (last.bb->{$_} ne cur.bb->{$_}) {
-               sayre " != different $_ now" if cur.V || !cur.qui && !ar.q eq 'diff'; # block hash s noise
+               sayre " <> different $_ now" if cur.V || !cur.qui && !ar.q eq 'diff'; # block hash s noise
                wtf.diff->{$_} = cur.bb->{$_};
                wtf.same = 0;
            }
        }
        
        for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
-           sayre " - No $_ in current";
+           sayre " rm No $_ in current" if !cur.qui;
            wtf.gone->{$_} = last.bb->{$_};
            wtf.same = 0;
            delete J.bb->{$_};

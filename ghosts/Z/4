@@ -94,7 +94,11 @@ R_Jz:
            my $aj = Rw $name $J $catj=1;
            d.s = J.s = aj.s;
            
-           die wdump $aj if @{aj.c} || @{aj.sc};
+           if (@{aj.c}) {
+               sayre "Upto J.r go ".sjson aj.c;
+               
+           }
+           die wdump $aj if @{aj.sc};
            
            saybl "pi eo $name ... ".F_delta();
        }
@@ -156,8 +160,8 @@ R_Jz:
            #die d.r if d.r !~ /\w\s/;
            saybl ind("G.jumb.yos ",join"\n","Post:  "
            ."d.r  \t\t  'd.s'       ",map{
-           " $_ => ".slim 140, gp($ch->{$_});
-           }sort keys %$ch);
+           " $_ => ".slim 140, gp($ch->{$_})
+           }sort keys %$ch) if J.V;
            if (c.lev) {
                J.lev->(
                    d.r => c.lev,
