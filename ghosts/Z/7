@@ -32,6 +32,9 @@ R_Jz:
            sayre "GOT ".gp j.s;
            Mn(j.l,'',j.l,{J=>j.s,enid=>j.s.id});
        }
+       
+       Mn('elevetor',{thi=>0.4},'Something','{hs:8.5.1.4,fs:20}');
+       
        J.V=1;
        #die wdump $M;
        Rw om/bal $J $oM:M $in=0.001 $out=0.9;
@@ -175,7 +178,6 @@ R_Jz:
            wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
-       saybl "=------ ".ki 2, $at;
  - K: chov/sharp #c
    D:
    - MZ: sticks:V
@@ -205,11 +207,20 @@ R_Jz:
      - 6.4
      - |
        my $c = at.c ||= {};
+       my $sc = at.sc ||= {};
        my $note = {};
        my $not = sub {
            my $k = shift;
            $note->{$k} = 1;
-           return $at->{$k};
+           return $at->{$k} if exists $at->{$k};
+           return ();
+       };
+       my $MM = sub {
+           map {[
+               (defined _.t ? _.t : ''),
+               (defined _.y ? _.y : ''),
+               _.c,_.sc
+           ]} @_
        };
        if (at.Esc) {
            #map { acum $lv, 'Esc', $_ } @{at.Esc};
@@ -220,14 +231,14 @@ R_Jz:
        }
        else {
            my $tag = not&tag || do {
-             my $ts = j.l;
-             $ts =~ s/[^\w]/ñ/sg;
-             "$ts"
+             (my $ts = j.l)  =~ s/[^\w]/ñ/sg; "$ts"
            };
            $tag = "Z$tag" if $tag !~ /^[a-z]/i;
            at.t = "$tag";
            
-           at.name = "Tom";
+           c.id = $_ for not&id;
+           
+           at.name = "j.r";
            not&name;
            
            my $s = not&s;
@@ -240,17 +251,8 @@ R_Jz:
            c.attr->{$_} = $at->{$_} for 
                sort grep {!/^_/ && !$of->{$_} } keys %$at;
            
-           c.el = not&id;
-           c.M = not&Esc;
-           
-           #lv.scon = 1 if lv.s eq plv.s;
-
-           if (pat.id) { # S-C
-               lv.scon = 1 if lv.s eq plv.s;
-               # need to relax the _jointed, cannot find?
-               #say "j.r      pat __jointed: ". wdump 2, plv.__jointed;
-               # acum $lv, 'Ec', jsq ' $(%s).replaceWith(%s);', '#'.pat.id, at.s;
-           }
+           c.el = 1;
+           sc.M = [@{not&Esc||[]}];
            # here hangs loose, we would want to conduct at.c/sc business cleanly
        }
        my $to = {};
@@ -260,43 +262,67 @@ R_Jz:
            $to->{$k} = $at->{$k};
        }
        warn "Got $_" for grep { $_ !~ /^(t|y|c|sc)$/ } keys %$to;
-       saybl ord('a').chr (26 + ord 1);
-       acum $lv, 'Ec', $to;
-       sayyl wdump 5, [lv.Ec, lv.Esc];
+       saybl "=------ ".ki 2, $to;
+       acum $lv, 'Ec', $MM->($to);
+       # so we add here locally ^
+       # and 
+       #sayyl sjson lv.Ec;# if j.l eq '/';
+    -
+     - begin
+     - 8.5
+     - |
+       my $c = aj.c;
+       die 'scs' if @{aj.sc};
+       die 's' if aj.s;
+       my $M = ['','',{W=>G.Wid},{M=>$c}];
+       aj.c = [" a\.om({},".sjson($M).",a,{});"];
  - K: scr/nobody #c
    D:
    - MZ: cc:jsc
    -
-     - o #
-     - 1
-     - args: Wid, K, C
+     - om #
+     - 2
+     - args: A,C,G,T
      - |
-       var W = a.WW(Wid);
-       var A = W.A;
+       C = G.inC(C); 
+       if (!T.d)
+           T.d=1;
        
-       C = a.inC(C);
+       //console.log("Weeg "+C.t, C.c, C.sc);
+       if (typeof C.c === 'string')
+           return a.er('c string');
+       if (C.c.W)
+           A.on = $('#'+C.c.W);
        
-       var G = a;
-       // should be receiver, W.G, auto locals + uni
-       // looks in W.G, W.G.incs, a
-       // passes ACGT
-       var T = {};
-       
-       a[K](A, C, G, T);
+       if (C.sc.M) {
+           T.d++;
+           for (i = 0; i < C.sc.M.length; i++) { 
+                var nC = C.sc.M[i];
+                a.m('w'+T.d+'  '+nC[0]);
+                console.log('goot @ '+T.d,C,nC);
+                
+                setTimeout(function () { 
+                    G.om(A,nC,G,T);
+                }, 5);
+
+                // ?
+           }
+       }
+          
    -
      - inC #
      - 1
      - args: C
      - |
-       if (C.constructor == 'Array') {
+       if (C.constructor == Array) {
            if (C.length !== 4)
                a.er("nolly", C);
            C = {t:C[0], y:C[1], c:C[2], sc:C[3]};
        }
-       if (typeof C == 'string') {
-           C = {c: {s: C}};
+       else if (typeof C === 'string') {
+           C = {c: C};
        }
-       C
+       return C
    -
     - el # A,C,G,T
     - 3
