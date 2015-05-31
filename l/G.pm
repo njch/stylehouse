@@ -1995,7 +1995,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
-    $eval =~ s/(\w+)\&(\w+)/\$$1->('$2')/smg;
+    $eval =~ s/(\w+)\&($point)/\$$1->("$2")/smg;
 
 
     # $sc>$k -> $sc->{$k}
