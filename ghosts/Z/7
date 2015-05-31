@@ -170,24 +170,42 @@ R_Jz:
      - STYCKS #
      - 5.3
      - |
-       my $sc;
        sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
-       for my $k (keys  %{lv.sc}) {
-           my $v = lv.sc->{$k};
-           my $om = $1 if $k =~ s/(#.+)$//;
-           $sc->{$k}= $v;
+       sayyl wdump 2, lv.sc if j.l eq 'fu';
+       
+       my $sc;
+       my $als;
+       for (keys %{lv.sc}) {
+           /^(.+)((?:#.+)?)$/;
+           $als->{$1}->{$2} = lv.sc->{$_};
        }
+       for my $k (keys %$als) {
+           my $ck = $als.>$k;
+           my @ks = sort keys %$ck;
+           if (@ks == 1) {
+               my ($com) = @ks;
+               my $v = $ck->{$com};
+               ($sc.>$k) = $v;
+           }
+           else {
+               warn "multiple @ks";
+           }
+           
+       }
+       
+       
        for my $ct (@{wJ.cts.Y}) {
            next unless exists $sc->{ct.t};
+           
            my $v = $sc->{ct.t};
-           #sayyl "Y j.r ct.t $v";
+           sayyl "Y j.r ct.t ".gp $v if J.V;
            wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
        for my $ct (@{wJ.cts.V}) {
            next unless exists $sc->{ct.t};
            my $v = $sc->{ct.t};
-           #saygr "V j.r ct.t $v";
+           saygr "V j.r ct.t ".gp $v if J.V;
            wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
            die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
        }
@@ -241,6 +259,10 @@ R_Jz:
            ]} @_
        };
        
+       if (j.l eq 'ei') {
+        saybl wdump 2, $at;
+       }
+       
        if (c.nobody) {
            c.nobody = $not->('id');
            $not->($_) for 's', 'ishtml';
@@ -258,7 +280,7 @@ R_Jz:
            not&title;
            
            my $s = not&s;
-           $s = encode_entities($s) if not&ishtml;
+           $s = encode_entities($s) unless not&ishtml;
            c.s = $s;
            
            die 'attr $something>' if at.rp;
@@ -278,7 +300,13 @@ R_Jz:
            $to->{$k} = $at->{$k};
        }
        warn "Got $_" for grep { $_ !~ /^(t|y|c|sc)$/ } keys %$to;
-       saybl "=------ ".ki 2, $to if J.V;
+       if (J.V) {
+           saybl "=------ ".ki 2, $to;
+           if (my $cM = to.sc.M) {
+              saybl "- ".sjson($_) for @$cM;
+              saybl "MMMM ".@$cM;
+           }
+       }
        acum $lv, 'Ec', $MM->($to);
        # so we add here locally ^
        # and 
@@ -360,7 +388,7 @@ R_Jz:
           C.c.attr = {};
       if (C.c.id) { 
           C.c.attr.id = C.c.id;
-          var aid = A.on.attr('id');
+          var aid = $(A.on).attr('id');
           if (aid && C.c.id) { 
               var to = '#'+aid+' #'+C.c.id;
               var ex = $(to);
@@ -384,11 +412,11 @@ R_Jz:
      - 5.3
      - |
        my $sc;
-       sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
+       sayyl "STEOCKOS :   j.r    ".join' ', sort keys %{lv.sc};
        for my $k (keys  %{lv.sc}) {
            my $v = lv.sc->{$k};
            my $om = $1 if $k =~ s/(#.+)$//;
-           $sc->{$k}= $v;
+           $sc->{$k} = $v;
        }
        for my $ct (@{wJ.cts.Y}) {
            next unless exists $sc->{ct.t};
@@ -422,15 +450,6 @@ R_Jz:
  - K: geomo/sharp #c
    D:
    - MZ: sticks:V
-   - 
-    - uxmv
-    - 5.1 
-    - |
-      my $cs = delete at.cs;
-      my $js = join '.',
-      "\$('#$v')", map {"css('$_','$cs->{$_}')"}sort keys %$cs;
-      acum $at, 'Esc', " $js;";
-    - way: 1
    -
     - css
     - 5
@@ -459,11 +478,16 @@ R_Jz:
     - 5
     - |
        at.ishtml = 1;
+       sayyl "J at something something $F[0]->{talk}";
    - #
     - pi
     - 5
     - |
        at.ishtml = 1;
+       die "Pi v.r has s" if v.s;
+       sayre "v.r has ".sjson(v.Ec);
+       acum $at, 'Esc', $_ for @{v.Ec};
+       
    - #
     - lp
     - 5

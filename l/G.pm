@@ -1973,7 +1973,7 @@ sub g_parse_babble {
     # a.b.c
     my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
 
-    my $poing = qr/$alive|G:$point|$dotha/;
+    my $poing = qr/$alive|$dotha/;
 
     # [...]
     my $sqar = qr/\[.+?\]|\(.+?\)/; 
@@ -1997,6 +1997,9 @@ sub g_parse_babble {
     # lma quack $not->('tag');
     $eval =~ s/(\w+)\&(\w+)/\$$1->('$2')/smg;
 
+
+    # $sc>$k -> $sc->{$k}
+    $eval =~ s/($poing)\.>($poing)/$1\->{$2}/smg;
 
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
