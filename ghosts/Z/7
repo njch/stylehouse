@@ -220,6 +220,14 @@ R_Jz:
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
        }
+       my $mys = {};
+       for my $k (keys %$sc) {
+           next if $k =~ /^_/;
+           next if $stc->{$k};
+           $mys->{$k} = $at->{$k};
+       }
+       warn "Got $_" for #grep { $_ !~ /^(t|y|c|sc)$/ }
+       keys %$mys;
  - K: chov/sharp #c
    D:
    - MZ: sticks:V
@@ -434,19 +442,6 @@ R_Jz:
            wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
        }
        saybl "=------ ".ki 2, $at;
-
-    - 
-     - uxooo
-     - 6.33
-     - |
-       if (my $cs = at.cs) {
-           warn "CS: ".ki $cs;
-           if (%$cs) {
-               at.style .= join '',
-                   map {"$_:$cs->{$_};"}sort keys %$cs;
-               #acum $at, 'Esc', " $js;";#die "Movovie $v". wdump 2, at.cs;
-           }
-       }
      - way: 1
  - K: ym/sticks #c
    D: |
