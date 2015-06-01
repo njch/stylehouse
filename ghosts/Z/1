@@ -271,10 +271,9 @@ R_Jz:
      for my $k (sort grep{/^[sc]+/} keys %$aj) {
          my $v = $aj->{$k};
          if (ref $v eq 'ARRAY') {
-             saybl "$k => ".@$v;
-             map { saybl slim $k eq 'c' ? 290
-             #690
-             : 90, $_ } @$v 
+             my $i = 1;
+             my $lim = $k eq 'c' ? 290 : 90;
+             saybl "$k ".$i++."=".slim $lim, $_ for @$v 
          }
          else {
              saybl "$k    => ".slim 80, $v;

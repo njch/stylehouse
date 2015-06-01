@@ -43,22 +43,22 @@ R_Jz:
        Rw chuv $J;   
  - K: osca #c unsolved c
    D: |
-     $sc = {};
      my $als = {};
-       for (keys %{ar.sc}) {
-           /^(.+)((?:#.+)?)$/;
-           $als->{$1}->{$2} = ar.sc->{$_};
-       }
+     $als->{_.style}->{_.com||''} = _.s for values %{lv.sj};
+     my $sc = {};
+     
        for my $k (keys %$als) {
            my $ck = $als.>$k;
            my @ks = sort keys %$ck;
-           if (@ks == 1) {
-               my ($com) = @ks;
-               my $v = $ck->{$com};
-               ($sc.>$k) = $v;
-           }
-           else {
-               warn "multiple @ks";
+           
+           my $one = shift @ks; # probly ''
+           my $v = $ck.>$one;
+           ($sc.>$k) = $v;
+           
+           for my $com (@ks) {
+               next if $ck.>$com eq $v;
+               #die wdump [@ks];
+               die "multiple @ks".wdump[$als,$sc];
            }
        }
      $sc
@@ -192,7 +192,7 @@ R_Jz:
      - 5.3
      - |
        sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
-       my $sc = Rw osca $sc:lv.sc;
+       my $sc = Rw osca $J $lv;
        
        my $stc = {};
        my $st = sub {
@@ -207,7 +207,7 @@ R_Jz:
            @v || next;
            for my $v (@v) {
                sayyl "Y j.r ct.t ".gp $v if J.V;
-               wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
+               wJ.ctx.Y->{ct.x}->($wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
        }
@@ -216,7 +216,7 @@ R_Jz:
            @v || next;
            for my $v (@v) {
                saygr "V j.r ct.t ".gp $v if J.V;
-               wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at,$aj,$aJ);
+               wJ.ctx.V->{ct.x}->($wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
        }
@@ -446,7 +446,7 @@ R_Jz:
  - K: ym/sticks #c
    D: |
      n.sc.ct = $v;
-     n.sc->{"ct_${v}_args"} = '$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
+     n.sc->{"ct_${v}_args"} = '$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
  - K: geomo/sharp #c
    D:
    - MZ: sticks:V
@@ -478,7 +478,6 @@ R_Jz:
     - 5
     - |
        at.ishtml = 1;
-       sayyl "J at something something $F[0]->{talk}";
    - #
     - pi
     - 5
@@ -513,11 +512,6 @@ R_Jz:
     - |
       at.canvas = $v;
    -
-    - nt
-    - 5
-    - |
-      at.title = undef;
-   -
     - type
     - 5.1
     - |
@@ -540,32 +534,10 @@ R_Jz:
     - 5
     - |
        at.rp = $v;
-   -
-    - path
-    - 5
-    - |
-      # TODO compile J.ys
-      # should get %idly if not lev/gp too
-   -
-    - origin
-    - 5
-    - |
-      #
-   -
-    - waves
-    - 5
-    - |
-      #
-   -
-    - pwar
-    - 5
-    - |
-      #
-   -
-    - Joint
-    - 5
-    - |
-      #
+   - [path, 5, ''] # TODO compile J.ys
+   - [origin ,5, '']
+   - [pwar, 5, '']
+   - [Joint, 5, '']
    -
     - idly
     - 5
