@@ -42,7 +42,7 @@ R_Jz:
        J.most.eo = 'chiv';
        'gui quigeo'
      out: |
-       saygr "GEO J.name    GEO J.name    GEO J.name GEO J.name GEO J.name" for 1..5;
+       #saygr "GEO J.name    GEO J.name    GEO J.name GEO J.name GEO J.name" for 1..5;
        Rw oJ $J geo &up $noesc=1;
        Rw chuv $J;
  - K: heag #c
@@ -191,7 +191,7 @@ R_Jz:
      - 5.3
      - |
        #J.V=1;
-       if (!aj.geko++) {
+       if (J.V && !aj.geko++) {
            sayyl "has V: ".join' ',map{_.t}@{wJ.cts.V};
        }
        sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
@@ -229,7 +229,6 @@ R_Jz:
        sayre "am ".gp($J).": ".join ' ', sort keys %{J.yt};
  - K: chov/wonga #c
    D:
-   - EZ: chov/stiz
    - EZ: chov/Go
    - EZ: chov/sharp
    - EZ: chov/sharpish
@@ -246,7 +245,7 @@ R_Jz:
       C.c = r.s if exists r.s;
       C.sc = r.sc if exists r.sc;
       my $z = $g.>$way;
-      sayyl "gwa $way";
+      #sayyl "gwa $way";
       $z || warn "no $way ".gp($g);
       $z && $z ->($A,$C,$g,$T);
       return $T;
@@ -326,6 +325,12 @@ R_Jz:
  - K: chov/sharp #c
    D:
    - MZ: sticks:V
+   -
+    - geo
+    - 3
+    - |
+      at.sc.geo = $v={%$v};
+      C.sc.ab = delete v.ab if v.ab;
    - 
     - enid
     - 5.9 
@@ -372,6 +377,8 @@ R_Jz:
       J.idyl->($J, $id, $j);
       #die wdump 2, A.J
       #
+   - WZ: /stwa
+
 
     
  - K: chov/sharpish #c
@@ -668,40 +675,7 @@ R_Jz:
        # so we add here locally ^
        # and 
        #sayyl sjson lv.Ec;# if j.l eq '/';
- - K: chov/stiz #c
-   D:
-     - MZ: sticks:V
-     -
-      - geo
-      - 3
-      - |
-        at.sc.geo = $v={%$v};
-        C.sc.ab = delete v.ab if v.ab;
-     -
-      - ab # absolute # ORDER uglies
-      - 3.1
-      - |
-        warn "Seen ab: $v";
-        return;
-        at.sc.css.position = 'absolute';
-        at.sc.css.width = '100%';
-        at.sc.css.height = '100%';
-     -
-      - rad # radial tr
-      - 3.6
-      - |
-        C.sc.tr.rotate = $v.'rad' if $v;
-     -
-      - tr # filterszzzz weird style using com to agg.
-      - 3.7
-      - |
-        at.sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
-     -
-      - tro #
-      - 3.6
-      - |
-        at.sc.css->{'transform-origin'} = $v;
-     - WZ: /stwa
+
 stwa: # STASHINGS
  - #c absolute # ORDER uglies
   - ab 
@@ -811,7 +785,7 @@ stwa: # STASHINGS
   - opa # seetrhu
   - 3
   - |
-     at.sc.css->{"opacity"} = $v
+     at.sc.css->{"opacity"} = $v;
  -
   - tro #
   - 3.6
