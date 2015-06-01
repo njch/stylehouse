@@ -40,11 +40,17 @@ R_Jz:
        J.cv = 20;
        J.most.mody = 'ano';
        J.most.eo = 'chiv';
-       gui => 'quigeo'
+       'gui quigeo'
      out: |
        saygr "GEO J.name    GEO J.name    GEO J.name GEO J.name GEO J.name" for 1..5;
        Rw oJ $J geo &up $noesc=1;
        Rw chuv $J;
+ - K: heag #c
+   n_D:
+     yJ: |
+       'headi'
+     up: |
+       Rw Jhead;
  - K: osca #c unsolved c
    D: |
      my $als = {};
@@ -184,6 +190,7 @@ R_Jz:
      - STYCKS #
      - 5.3
      - |
+       #J.V=1;
        if (!aj.geko++) {
            sayyl "has V: ".join' ',map{_.t}@{wJ.cts.V};
        }
@@ -219,6 +226,7 @@ R_Jz:
        }
        sayre "! j.r $_ $sc->{$_}" for #grep { $_ !~ /^(t|y|c|sc)$/ }
        keys %$mys;
+       sayre "am ".gp($J).": ".join ' ', sort keys %{J.yt};
  - K: chov/wonga #c
    D:
    - EZ: chov/stiz
@@ -237,6 +245,7 @@ R_Jz:
       my $T = {};
       C.c = r.s if exists r.s;
       C.sc = r.sc if exists r.sc;
+      die wdump "HERE $way";
       $G.>$way->($A,$C,$G,$T);
       return $T;
     - args: way,r,G
@@ -673,7 +682,7 @@ R_Jz:
       - ab # absolute # ORDER uglies
       - 3
       - |
-        die "Ab: $v";
+        return;
         at.sc.css.position = 'absolute';
         at.sc.css.width = '100%';
         at.sc.css.height = '100%';
@@ -754,7 +763,7 @@ stwa: # STASHINGS
   - zig # it alley, primary, ground
   - 3
   - |
-     at.sc.css->{"z-index"} = 0+($v-20);
+    at.sc.css->{"z-index"} = 0+($v-20);
  -
   - zie # suuuuuu, ether
   - 3
@@ -811,7 +820,7 @@ stwa: # STASHINGS
   - rad # radial tr
   - 3.6
   - |
-    C.sc.tr.rad.rotate = $v.'rad' if $v;
+    C.sc.tr.rotate = $v.'rad' if $v;
  -
   - tr # filterszzzz weird style using com to agg.
   - 3.7
