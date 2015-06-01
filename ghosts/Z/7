@@ -108,10 +108,9 @@ R_Jz:
      for my $lv (@$vs) {
          push @s, $lv;
          my $j = lv.j;
-         #saygr wdump 2, lv.sc;
          die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
          
-         # 4 #
+         # 4 figure floor
          my $coi = Rw pha $J:aJ $k:j.r;
          coi.qui = 1;
          my $xat = do {
@@ -124,14 +123,15 @@ R_Jz:
          my $plv;
          if (!$xat) {
              $at = {};
-             # 5.2
              at.s = j.s;
              # may be creating, overhead thought
              at.__ajid1 = aj.id;
+             # 5
              
-             # 5.4
+             # 5.9
          }
-         # 5.78 at beam
+         # gets self aware in waves: 5 busi, 6 traj, 7 scoops
+         # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
          $pat = aJ.bb->{"j.l%at\t".j.cv};
          $plv = aJ.bb->{"j.l%lv\t".j.cv};
          if (!$xat) {
@@ -144,14 +144,11 @@ R_Jz:
              aJ.bb->{"j.l%lv\t".j.cv} = $lv;
              $at = $pat;
          }
-         # 5.8
-         # gets self aware in waves
-         # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
          at.__ajid2 = aj.id;
          lv.at = $at;
-         #die wdump $X;#$F[0]->{bab}."";
+         # 6
          
-         # 7.9 # heaps ^ all of at outwardsing
+         # 7.9 # T ^
      }
      # 8 check lv up cover
      if (J.yy.may.noroot) {
@@ -190,21 +187,16 @@ R_Jz:
            return $sc->{$k}
        };
        
-       for my $ct (@{wJ.cts.Y}) {
-           my @v = st&ct.t;
-           @v || next;
-           for my $v (@v) {
-               sayyl "Y j.r ct.t ".gp $v;# if J.V;
-               wJ.ctx.Y->{ct.x}->($wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
-               die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
-           }
+       if (!aj.geko++) {
+           saygr "has V: ".join' ',map{_.t}@{wJ.cts.V};
        }
+       my $X = wJ.ctx.V;
        for my $ct (@{wJ.cts.V}) {
            my @v = st&ct.t;
            @v || next;
            for my $v (@v) {
                saygr "V j.r ct.t ".gp $v if J.V;
-               wJ.ctx.V->{ct.x}->($wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
+               wJ.ctx.V->{ct.x}->($X,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
        }
@@ -214,7 +206,7 @@ R_Jz:
            next if $stc->{$k};
            $mys->{$k} = $at->{$k};
        }
-       warn "Got $_" for #grep { $_ !~ /^(t|y|c|sc)$/ }
+       sayre "! j.r $_ $sc->{$_}" for #grep { $_ !~ /^(t|y|c|sc)$/ }
        keys %$mys;
  - K: chov/stool #c
    D:
@@ -304,7 +296,91 @@ R_Jz:
           at.sc.css->{$k} = $v;
       }
     - way: 1
-   - WZ: geomo/shrap
+   - #
+    - cm
+    - 5.8
+    - |
+      my $wt = ejson {id=>at.id, value=>at.s};
+      at.id || die;
+      at.dig = sc.dig || die "no diggy";
+      acum $at, Esc => " a\.cod($wt);";
+      at.s = '';
+   - #
+    - J
+    - 5
+    - |
+       at.ishtml = 1;
+   - #
+    - pi
+    - 5
+    - |
+       die "Pi v.r has s" if v.s;
+       die "Pi v.r no .Ec" if !@{v.Ec};
+       acum $at, 'Esc', $_ for @{v.Ec};
+   - #
+    - lp
+    - 5
+    - |
+       at.ishtml = 1;
+
+   - 
+    - ishtml
+    - 5
+    - |
+       at.ishtml = 1;
+   -
+    - id
+    - 5
+    - |
+      at.id = $v;
+   -
+    - tt
+    - 5
+    - |
+      at.title = $v;
+   -
+    - canvas
+    - 5
+    - |
+      at.canvas = $v;
+   -
+    - type
+    - 5.1
+    - |
+      at.type = $v;
+      at.ishtml = 1;
+      at.title = undef;
+   -
+    - tag
+    - 5
+    - |
+      at.tag = $v;
+   -
+    - at
+    - 5
+    - |
+      $v =~ /^(?:(\S+):)?(\S+)$/;
+      $at->{$1} = $2;
+   - #
+    - atrp
+    - 5
+    - |
+       at.rp = $v;
+   - [path, 5, ''] # TODO compile J.ys
+   - [origin ,5, '']
+   - [pwar, 5, '']
+   - [Joint, 5, '']
+   -
+    - idly
+    - 5
+    - |
+      my $id = mkuid();
+      at.id && die "arl";
+      at.id = $id;
+      J.idyl->($J, $id, $j);
+      #
+
+    
  - K: chov/outs #c switchapol val shifter, 7 hoisting to comp, find selv
    D: 
     -
@@ -478,97 +554,11 @@ R_Jz:
  - K: ym/sticks #c
    D: |
      n.sc.ct = $v;
-     n.sc->{"ct_${v}_args"} = '$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
- - K: geomo/shrap #c
-   D:
-   - #
-    - cm
-    - 5.8
-    - |
-      my $wt = ejson {id=>at.id, value=>at.s};
-      at.id || die;
-      at.dig = sc.dig || die "no diggy";
-      acum $at, Esc => " a\.cod($wt);";
-      at.s = '';
-   - #
-    - J
-    - 5
-    - |
-       at.ishtml = 1;
-   - #
-    - pi
-    - 5
-    - |
-       die "Pi v.r has s" if v.s;
-       die "Pi v.r no .Ec" if !@{v.Ec};
-       acum $at, 'Esc', $_ for @{v.Ec};
-   - #
-    - lp
-    - 5
-    - |
-       at.ishtml = 1;
+     n.sc->{"ct_${v}_args"} = '$X,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
 
-   - #
-    - ishtml
-    - 5
-    - |
-       at.ishtml = 1;
-   -
-    - id
-    - 5
-    - |
-      at.id = $v;
-   -
-    - tt
-    - 5
-    - |
-      at.title = $v;
-   -
-    - canvas
-    - 5
-    - |
-      at.canvas = $v;
-   -
-    - type
-    - 5.1
-    - |
-      at.type = $v;
-      at.ishtml = 1;
-      at.title = undef;
-   -
-    - tag
-    - 5
-    - |
-      at.tag = $v;
-   -
-    - at
-    - 5
-    - |
-      $v =~ /^(?:(\S+):)?(\S+)$/;
-      $at->{$1} = $2;
-   - #
-    - atrp
-    - 5
-    - |
-       at.rp = $v;
-   - [path, 5, ''] # TODO compile J.ys
-   - [origin ,5, '']
-   - [pwar, 5, '']
-   - [Joint, 5, '']
-   -
-    - idly
-    - 5
-    - |
-      my $id = mkuid();
-      at.id && die "arl";
-      at.id = $id;
-      J.idyl->($J, $id, $j);
-      #
-
-    
  - K: chov/stiz #c
    D:
-     - MZ: sticks:Y
+     - MZ: sticks:V
      -
       - geo
       - 3.2
