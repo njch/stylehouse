@@ -26,6 +26,16 @@ R_Jz:
      outs 7
          
        
+ - K: shuv/flows/geomo #c
+   D: |
+     flow 1
+     nesting 4
+     stiz 3
+     sticks 5
+     stool 5
+     sharp 5
+     etcs 6
+     outs 7
  - K: geomo/flow #c
    D: |
      # 1
@@ -230,6 +240,23 @@ R_Jz:
         
                
                
+
+ - K: geomo/style #c
+   D:
+     -
+      - siome #
+      - 5.3
+      - |
+        my ($tks, $cs, $it) = Rw sit geomoss O X $lv;
+        #sayre wdump 2, lv.sc;
+        #saybl wdump $tks;
+        while (1) {
+            my ($tk, $com, $v, $tks) = $it->();
+            last if !$tk;
+            my @s = $X->{$tk}->($v, $tks, $com, $cs, $at, $lv, $J, $j);
+        }
+     - MZ: dorp:XO
+     - WZ: /C may#styley
  - K: geomo/stool #c
    D:
    - MZ: dorp:ctx_V
@@ -298,22 +325,46 @@ R_Jz:
        $v .= 'em' if $v !~ /(%|em|px)/;
        $v =~ s/^-?0em$/0%/;
        $v;
- - K: geomo/style #c
+ - K: geomo/sharp #c
    D:
-     -
-      - siome #
-      - 5.3
-      - |
-        my ($tks, $cs, $it) = Rw sit geomoss O X $lv;
-        #sayre wdump 2, lv.sc;
-        #saybl wdump $tks;
-        while (1) {
-            my ($tk, $com, $v, $tks) = $it->();
-            last if !$tk;
-            my @s = $X->{$tk}->($v, $tks, $com, $cs, $at, $lv, $J, $j);
-        }
-     - MZ: dorp:XO
-     - WZ: /C may#styley
+   - MZ: sticks:V
+   -
+    - css
+    - 5
+    - |
+      $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v eq 'HASH';
+      for my $set (split ';', $v) {
+          my ($k,$v) = split ':', $set;
+          push @{at.css}, "$k:$v;";
+          #at.cs->{$k} = $v;
+      }
+    - way: 1
+   - WZ: geomo/shrap
+ - K: geomo/sticks #c rejoin the pipelining - form style trance
+   D:
+    -
+     - cts_V #
+     - 5.3
+     - |
+       my $sc;
+       sayyl "STEOCKOS :   j.r    ".join' ', sort keys %{lv.sc};
+       for my $k (keys  %{lv.sc}) {
+           my $v = lv.sc->{$k};
+           my $om = $1 if $k =~ s/(#.+)$//;
+           $sc->{$k} = $v;
+       }
+       for my $ct (@{wJ.cts.Y}) {
+           next unless exists $sc->{ct.t};
+           my $v = $sc->{ct.t};
+           wJ.ctx.Y->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+       }
+       for my $ct (@{wJ.cts.V}) {
+           next unless exists $sc->{ct.t};
+           my $v = $sc->{ct.t};
+           wJ.ctx.V->{ct.x}->($J,$j,$lv,$v,$sc,$at);
+       }
+       saybl "=------ ".ki 2, $at;
+     - way: 1
  - K: geomo/etcs #c
    D:
     - 
@@ -377,6 +428,47 @@ R_Jz:
      - |
        my ($pat,$at,$k) = shift;
        X.inv->($at->{$k}) ne X.inv->($pat->{$k})
+ - K: geomo/stiz #c
+   D:
+     - MZ: sticks:Y
+     -
+      - geo
+      - 3.2
+      - |
+        at.sc.geo = $v;
+     -
+      - ab # absolute # ORDER uglies
+      - 3.3
+      - |
+        sc.css.position = 'absolute';
+        sc.css.width = '100%';
+        sc.css.height = '100%';
+     -
+      - left # yep
+      - 3.4
+      - |
+        sc.css.left = $v;
+     -
+      - top # yep
+      - 3.4
+      - |
+        sc.css.top = $v;
+     -
+      - tr # filterszzzz weird style using com to agg.
+      - 3.7
+      - |
+        sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
+     -
+      - tro #
+      - 3.6
+      - |
+        sc.css->{'transform-origin'} = $v;
+     -
+      - rad # radial tr
+      - 3.6
+      - |
+        sc.tr.rotate = $v.'rad' if $v;
+         return;
  - K: geomo/outs #c switchapol val shifter, 7 hoisting to comp, find selv
    D:
     -
