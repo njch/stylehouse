@@ -4,7 +4,7 @@ R_Jz:
  - K: shv #c  and to compile J5 rounds ahead
    n_D:
      yJ: |
-       'shv gui'
+       'shv gui geoex'
      curves: | 
        spun 0 0.15
        zoom 0 2
@@ -78,7 +78,7 @@ R_Jz:
      n.sc.ct = $v;
      n.sc.args = join',',map{'$'.$_}split',',n.sc.args
          if n.sc.args && n.sc.args !~ /\$/;
-     n.sc->{"ct_${v}_args"} = n.sc.args || '$A,$C,$v,$G,$at,$J,$j';
+     n.sc->{"ct_${v}_args"} = n.sc.args || '$A,$C,$v,$g,$at,$J,$j';
      #'$X,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
  - K: chuv/flows/chov #c
    D: |
@@ -205,7 +205,7 @@ R_Jz:
            return $sc->{$k}
        };
        
-       my $G = wJ.ctx.V;
+       my $g = wJ.ctx.V;
        for my $ct (@{wJ.cts.V}) {
            my @v = st&ct.t;
            @v || next;
@@ -213,7 +213,7 @@ R_Jz:
                saygr "V j.r ct.t ".gp $v if J.V;
                my $A = {J=>$J,j=>$j};
                my $C = {c=>$v,sc=>$sc}; # bendy stick throw
-               wJ.ctx.V->{ct.x}->($A,$C,$v,$G,$at,$J,$j);
+               wJ.ctx.V->{ct.x}->($A,$C,$v,$g,$at,$J,$j);
                #,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
@@ -245,32 +245,33 @@ R_Jz:
       my $T = {};
       C.c = r.s if exists r.s;
       C.sc = r.sc if exists r.sc;
-      die wdump "HERE $way";
-      $G.>$way->($A,$C,$G,$T);
+      my $z = $g.>$way;
+      sayyl "gwa $way";
+      $z || warn "no $way ".gp($g);
+      $z && $z ->($A,$C,$g,$T);
       return $T;
-    - args: way,r,G
+    - args: way,r,g
       way: 1
    - 
     - mksc # 
     - 5
     - |
-      my $t = G.w->(mos=>{s=>C.c},$G);
-      die wdump $t;
+      my $t = g.w->(mos=>{s=>C.c},$g);
       while(my($k,$v) = each %$t) {
           C.sc.>$k = $v;
       }
       return;
+    - args: A,C,g,T
    -
     - mos # language expansion
     - 3
     - |
       my @t = split ',', C.c;
-      my $t = {};
       for (@t) {
           my ($k, $v) = split ':', $_;
-          $t.>$k = $v;
+          $T.>$k = $v;
       }
-      $t
+    - args: A,C,g,T
    -
     - cole # it
     - 5
@@ -562,9 +563,6 @@ R_Jz:
           C.sc.anc = {};
       C.sc.css.top = (C.c.y * 100)+'%';
       C.sc.css.left = (C.c.x * 100)+'%';
-      C.sc.css['width'] = '100%';
-      C.sc.css['height'] = '100%';
-      C.sc.css.position = 'absolute'; 
       C.sc.css['transform-origin'] = '0% 0%';
       C.sc.css['transform'] = 'rotate('+C.c.radial+'rad)';
        
@@ -677,11 +675,13 @@ R_Jz:
       - geo
       - 3
       - |
-        at.sc.geo = $v;
+        at.sc.geo = $v={%$v};
+        C.sc.ab = delete v.ab if v.ab;
      -
       - ab # absolute # ORDER uglies
-      - 3
+      - 3.1
       - |
+        warn "Seen ab: $v";
         return;
         at.sc.css.position = 'absolute';
         at.sc.css.width = '100%';
@@ -709,7 +709,7 @@ stwa: # STASHINGS
   - |
      $v = 'width:100%,height:100%' if $v eq '100';
      if ($v =~ /^.+:.+/) {
-         G.w->(mksc=>{s=>$v,sc=>C.sc},$G);
+         g.w->(mksc=>{s=>$v,sc=>C.sc},$g );
          $v = 1;
      }
      elsif ($v ne '1') {
@@ -717,6 +717,7 @@ stwa: # STASHINGS
      }
      $v = "absolute" if $v eq '1';
      at.sc.css->{"position"} = $v;
+  - way: 1
  -
   - deco # splurge many, get this pipe sorted...
   - 3.2
@@ -742,18 +743,18 @@ stwa: # STASHINGS
   - 3
   - |
      my @m = split m/\s/, $v;
-     $m[-1] = G.cole->($m[-1]);
+     $m[-1] = g.cole->($m[-1]);
      at.sc.css->{"text-shadow"} = sprintf '%dpx %dpx %dpx %s', @m;
  -
   - co # it
   - 3
   - |
-    at.sc.css->{"color"} = G.cole->($v)
+    at.sc.css->{"color"} = g.cole->($v)
  -
   - hs # color: hsla
   - 3
   - |
-    at.sc.css->{"color"} = G.hsle->($v)
+    at.sc.css->{"color"} = g.hsle->($v)
  - #c ground etc
   - zi 
   - 3
@@ -783,7 +784,7 @@ stwa: # STASHINGS
   - bgh # background hsla
   - 3.2
   - |
-     at.sc.css->{"background-color"} = G.hsle->($v);
+     at.sc.css->{"background-color"} = g.hsle->($v);
  -
   - fs # it
   - 3
@@ -875,27 +876,27 @@ stwa: # STASHINGS
   - ls # it
   - 3
   - |
-    C.sc.css->{"letter-spacing"} = G.empc->($v);
+    C.sc.css->{"letter-spacing"} = g.empc->($v);
  -
   - ml # it
   - 3
   - |
-    C.sc.css->{"margin-left"} = G.empc->($v);
+    C.sc.css->{"margin-left"} = g.empc->($v);
  -
   - mr # it
   - 3
   - |
-    C.sc.css->{"margin-right"} = G.empc->($v);
+    C.sc.css->{"margin-right"} = g.empc->($v);
  -
   - mt # it
   - 3
   - |
-    C.sc.css->{"margin-top"} = G.empc->($v);
+    C.sc.css->{"margin-top"} = g.empc->($v);
  -
   - mb # it
   - 3
   - |
-    C.sc.css->{"margin-bottom"} = G.empc->($v);
+    C.sc.css->{"margin-bottom"} = g.empc->($v);
  -
   - m # margrin
   - 3
