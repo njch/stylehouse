@@ -367,6 +367,7 @@ R_Jz:
     - lp
     - 5
     - |
+      die 'so lap '.gp $v;
        at.ishtml = 1;
 
    - 
@@ -416,47 +417,7 @@ R_Jz:
    - [origin ,5, '']
    - [pwar, 5, '']
    - [Joint, 5, '']
- - K: chov/stiz #c
-   D:
-     - MZ: sticks:V
-     -
-      - geo
-      - 3
-      - |
-        at.sc.geo = $v;
-     -
-      - ab # absolute # ORDER uglies
-      - 3
-      - |
-        die "Ab: $v";
-        at.sc.css.position = 'absolute';
-        at.sc.css.width = '100%';
-        at.sc.css.height = '100%';
-     -
-      - left # yep
-      - 3.4
-      - |
-        at.sc.css.left = $v;
-     -
-      - top # yep
-      - 3.4
-      - |
-        at.sc.css.top = $v;
-     -
-      - rad # radial tr
-      - 3.6
-      - |
-        C.sc.tr.rotate = $v.'rad' if $v;
-     -
-      - tr # filterszzzz weird style using com to agg.
-      - 3.7
-      - |
-        at.sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
-     -
-      - tro #
-      - 3.6
-      - |
-        at.sc.css->{'transform-origin'} = $v;
+
  - K: chov/ou #c
    D:
    - EZ: chov/ouf
@@ -638,7 +599,6 @@ R_Jz:
      - 6.4
      - |
        my $c = at.c ||= {};
-       sayyl "at_c: ".ki at.c;
        my $sc = at.sc ||= {};
        my $note = {};
        my $not = sub {
@@ -656,7 +616,7 @@ R_Jz:
        };
        
        if (j.l eq 'ei') {
-        saybl wdump 2, $at;
+          saybl "EI EI".wdump 2, $at;
        }
        
        if (c.nobody) {
@@ -708,6 +668,48 @@ R_Jz:
        # so we add here locally ^
        # and 
        #sayyl sjson lv.Ec;# if j.l eq '/';
+ - K: chov/stiz #c
+   D:
+     - MZ: sticks:V
+     -
+      - geo
+      - 3
+      - |
+        at.sc.geo = $v;
+     -
+      - ab # absolute # ORDER uglies
+      - 3
+      - |
+        die "Ab: $v";
+        at.sc.css.position = 'absolute';
+        at.sc.css.width = '100%';
+        at.sc.css.height = '100%';
+     -
+      - left # yep
+      - 3.4
+      - |
+        at.sc.css.left = $v;
+     -
+      - top # yep
+      - 3.4
+      - |
+        at.sc.css.top = $v;
+     -
+      - rad # radial tr
+      - 3.6
+      - |
+        C.sc.tr.rotate = $v.'rad' if $v;
+     -
+      - tr # filterszzzz weird style using com to agg.
+      - 3.7
+      - |
+        at.sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
+     -
+      - tro #
+      - 3.6
+      - |
+        at.sc.css->{'transform-origin'} = $v;
+     - WZ: /stwa
 stwa: # STASHINGS
  -
   - ab #c absolute # ORDER uglies
@@ -715,117 +717,118 @@ stwa: # STASHINGS
   - |
      $v = 'width:100%,height:100%' if $v eq '100';
      if ($v =~ /^.+:.+/) {
-         X.mksc->($sc, abc => $v);
+         G.w->(mksc=>{s=>$v,sc=>C.sc},$G);
          $v = 1;
      }
      elsif ($v ne '1') {
          die "whatab:$v";
      }
      $v = "absolute" if $v eq '1';
-     "position:$v";
+     at.sc.css->{"position"} = $v;
  -
   - deco # splurge many, get this pipe sorted...
   - 3.2
   - |
-     "text-decoration:underline";
+    at.sc.css->{"text-decoration"} = "underline";
  -
   - poi # pointer-events
   - 3.2
   - |
-     "pointer-events:".($v =~ /^([1ay])/ ? 'all' : 'none');
+    at.sc.css->{"pointer-events"} = ($v =~ /^([1ay])/ ? 'all' : 'none');
  -
   - at #
   - 3
   - |
-     my @ats;
-     while (my ($k,$v) = each %$v) {
-         push @ats, '%at:'.$k, $v;
-     }
-     @ats
+     $at.>$_ = $v.>$_ for keys %$v;
  -
   - tag #
   - 3
   - |
-     '%tag' => $v
+     at.tag = $v;
  -
   - sha # it
   - 3
   - |
      my @m = split m/\s/, $v;
-     $m[-1] = X.cole->($m[-1]);
-     sprintf 'text-shadow:%dpx %dpx %dpx %s', @m;
+     $m[-1] = G.cole->($m[-1]);
+     at.sc.css->{"text-shadow"} = sprintf '%dpx %dpx %dpx %s', @m;
  -
   - co # it
   - 3
   - |
-     "color:".X.cole->($v)
+    at.sc.css->{"color"} = G.cole->($v)
  -
   - hs # color: hsla
   - 3
   - |
-     "color:".X.hsle->($v)
+    at.sc.css->{"color"} = G.hsle->($v)
  -
   - zi #c ground etc
   - 3
   - |
-     "z-index:".$v
+    at.sc.css->{"z-index"} = 0+$v;
  -
   - zig # it alley, primary, ground
   - 3
   - |
-     "z-index:".($v-20)
+     at.sc.css->{"z-index"} = 0+($v-20);
  -
   - zie # suuuuuu, ether
   - 3
   - |
-     "z-index:".($v-10)
+     at.sc.css->{"z-index"} = 0+($v-10);
  -
   - bgi # background image
   - 3.2
   - |
-     "background-image:url('$v')"
+     at.sc.css->{"background-image"} = "url('$v')";
  -
   - bg # background something
   - 3.2
   - |
-     "background:$v"
+     at.sc.css->{"background"} = "$v";
  -
   - bgh # background hsla
   - 3.2
   - |
-     "background-color:".X.hsle->($v)
+     at.sc.css->{"background-color"} = G.hsle->($v);
  -
   - fs # it
   - 3
   - |
      $v *= 9;
-     'font-size:'.int($v).'%';
+     at.sc.css->{"font-size"} = int($v).'%';
  -
   - fw # it
   - 3.5
   - |
-     'font-weight:'.int($v*100);
+    at.sc.css->{"font-weight"} = int($v*100);
  -
   - ws # it
   - 3
   - |
-     $v = $v =~ /p/ ? 'pre' : $v =~ /n/ ? 'nowrap' : '';
-     return 'white-space:'.$v if $v;
+    if ($v eq 'p') { 
+        $v = 'pre';
+    }
+    if ($v eq 'n') {
+        $v = 'nowrap';
+    }
+    at.sc.css->{"white-space"} = $v;
  -
   - opa # seetrhu
   - 3
   - |
-     "opacity:$v"
+     at.sc.css->{"opacity"} = $v
  -
   - tr # filterszzzz weird style using com to agg.
   - 3.7
   - |
-    '-webkit-transform:'.join' ', map {"$_($v->{$_})"} keys %$v;
+    at.sc.css->{"-webkit-transform"} = join' ', map {"$_($v->{$_})"} keys %$v;
  -
   - tro #
   - 3.6
   - |
-    'transform-origin:'.$v
+    at.sc.css->{"transform-origin"} = $v;
  -
   - rad # radial tr
   - 3.6
@@ -841,7 +844,7 @@ stwa: # STASHINGS
   - blr # it
   - 3.6
   - |
-     cs.of.blur = $v.'px';
+     C.cs.of.blur = $v.'px';
      return
  -
   - sat # it saturation
@@ -889,90 +892,90 @@ stwa: # STASHINGS
   - ls # it
   - 3
   - |
-     "letter-spacing:".X.empc->($v);
+    C.sc.css->{"letter-spacing"} = G.empc->($v);
  -
   - ml # it
   - 3
   - |
-     "margin-left:".X.empc->($v);
+    C.sc.css->{"margin-left"} = G.empc->($v);
  -
   - mr # it
   - 3
   - |
-     "margin-right:".X.empc->($v);
+    C.sc.css->{"margin-right"} = G.empc->($v);
  -
   - mt # it
   - 3
   - |
-     "margin-top:".X.empc->($v);
+    C.sc.css->{"margin-top"} = G.empc->($v);
  -
   - mb # it
   - 3
   - |
-     "margin-bottom:".X.empc->($v);
+    C.sc.css->{"margin-bottom"} = G.empc->($v);
  -
   - m # margrin
   - 3
   - |
-     "margin:$v";
+    C.sc.css->{margin} = $v;
  -
   - right # yep
   - 3.4
   - |
-     "right:$v";
+    C.sc.css->{right} = $v;
  -
   - left # yep
   - 3.4
   - |
-     "left:$v"
+    C.sc.css->{left} = $v;
  -
   - top # yep
   - 3.4
   - |
-     "top:$v"
+    C.sc.css->{top} = $v;
  -
   - bottom # yep
   - 3.4
   - |
-     "bottom:$v"
+    C.sc.css->{bottom} = $v;
  -
   - mw # y
   - 3.4
   - |
-     "max-width:$v"
+    C.sc.css->{"max-width"} = $v;
  -
   - mh # y
   - 3.4
   - |
-     "max-height:$v"
+    C.sc.css->{"max-height"} = $v;
  -
   - miw # y
   - 3.4
   - |
-     "min-width:$v"
+    C.sc.css->{"min-width"} = $v;
  -
   - width # y
   - 3.4
   - |
-     "width:$v"
+    C.sc.css->{"width"} = $v;
  -
   - height # y
   - 3.4
   - |
-     "height:$v"
+    C.sc.css->{"height"} = $v;
  -
   - over # y 
   - 3.4
   - |
-     "overflow:$v"
+    C.sc.css->{"overflow"} = $v;
  -
   - float # y 
   - 3.4
   - |
-     "float:$v"
+    C.sc.css->{"float"} = $v;
  -
   - bo # border
   - 3.4
   - |
-     "border:$v"
+    C.sc.css->{"border"} = $v;
 
