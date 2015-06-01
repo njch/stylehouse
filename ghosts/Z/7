@@ -64,8 +64,11 @@ R_Jz:
      $sc
  - K: ym/sticks #c
    D: |
+     n.sc.nx = $v =~ s/^x//;
      n.sc.ct = $v;
-     n.sc->{"ct_${v}_args"} = '$J,$C,$G,$T';
+     n.sc.args = join',',map{'$'.$_}split',',n.sc.args
+         if n.sc.args && n.sc.args !~ /\$/;
+     n.sc->{"ct_${v}_args"} = n.sc.args || '$A,$C,$v,$G,$at,$J,$j';
      #'$X,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
  - K: chuv/flows/chov #c
    D: |
@@ -73,9 +76,7 @@ R_Jz:
      flow 1
      nesting 4
      sticks 5
-     stiz 3
-     Go 5
-     sharp 5
+     wonga 5
      outs 7
      Wout 8
  - K: chiv/flows/chov #c
@@ -179,6 +180,9 @@ R_Jz:
      - STYCKS #
      - 5.3
      - |
+       if (!aj.geko++) {
+           sayyl "has V: ".join' ',map{_.t}@{wJ.cts.V};
+       }
        sayyl "STICKS :   j.r    ".join' ', sort keys %{lv.sc};
        my $sc = Rw osca $J $lv;
        
@@ -190,18 +194,15 @@ R_Jz:
            return $sc->{$k}
        };
        
-       if (!aj.geko++) {
-           saygr "has V: ".join' ',map{_.t}@{wJ.cts.V};
-       }
        my $G = wJ.ctx.V;
        for my $ct (@{wJ.cts.V}) {
            my @v = st&ct.t;
            @v || next;
            for my $v (@v) {
                saygr "V j.r ct.t ".gp $v if J.V;
-               my $C = $v;
-               my $T = $at;
-               wJ.ctx.V->{ct.x}->($J,$C,$G,$T);
+               my $A = {J=>$J,j=>$j};
+               my $C = {c=>$v,sc=>$sc}; # bendy stick throw
+               wJ.ctx.V->{ct.x}->($A,$C,$v,$G,$at,$J,$j);
                #,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ);
                die "j.r ct.t $v  make css" if ref at.css eq 'ARRAY';
            }
@@ -219,26 +220,38 @@ R_Jz:
    - EZ: chov/stiz
    - EZ: chov/Go
    - EZ: chov/sharp
+   - EZ: chov/sharpish
  - K: chov/Go #c
    D:
-   - MZ: dorp:ctx_V
+   - MZ: sticks:xV
+   -
+    - w
+    - 5
+    - |
+      my $A = {};
+      my $C = r.C || {};
+      my $T = {};
+      C.c = r.s if exists r.s;
+      C.sc = r.sc if exists r.sc;
+      $G.>$way->($A,$C,$G,$T);
+      return $T;
+    - args: way,r,G
+      way: 1
    - 
     - mksc # 
     - 5
     - |
-      my $sc = shift;
-      my $s = shift;
-      my $t = X.mos->($s);
+      my $t = G.w->(mos=>{s=>C.c},$G);
+      die wdump $t;
       while(my($k,$v) = each %$t) {
-          $sc.>$k = $v;
+          C.sc.>$k = $v;
       }
       return;
    -
     - mos # language expansion
     - 3
     - |
-      my $c = shift;
-      my @t = split ',', $c;
+      my @t = split ',', C.c;
       my $t = {};
       for (@t) {
           my ($k, $v) = split ':', $_;
@@ -301,27 +314,26 @@ R_Jz:
    - MZ: sticks:V
    - 
     - enid
-    - 5.1 
+    - 5.9 
     - |
       at.id = $v;
       at.c.nobody = 1;
    -
     - css
-    - 5
+    - 5.55
     - |
       $v = join ';', map{"$_:$v->{$_}"} sort keys %$v if ref $v eq 'HASH';
       for my $set (split ';', $v) {
           my ($k,$v) = split ':', $set;
           at.sc.css->{$k} = $v;
       }
-    - way: 1
    - #
     - cm
     - 5.8
     - |
       my $wt = ejson {id=>at.id, value=>at.s};
       at.id || die;
-      at.dig = sc.dig || die "no diggy";
+      at.dig = C.sc.dig || die "no diggy";
       acum $at, Esc => " a\.cod($wt);";
       at.s = '';
    - #
@@ -336,6 +348,21 @@ R_Jz:
        die "Pi v.r has s" if v.s;
        die "Pi v.r no .Ec" if !@{v.Ec};
        acum $at, 'Esc', $_ for @{v.Ec};
+   -
+    - idly
+    - 5.8
+    - |
+      my $id = mkuid();
+      at.id && die "arl";
+      at.id = $id;
+      J.idyl->($J, $id, $j);
+      #die wdump 2, A.J
+      #
+
+    
+ - K: chov/sharpish #c
+   D:
+   - MZ: sticks:V
    - #
     - lp
     - 5
@@ -389,17 +416,47 @@ R_Jz:
    - [origin ,5, '']
    - [pwar, 5, '']
    - [Joint, 5, '']
-   -
-    - idly
-    - 5
-    - |
-      my $id = mkuid();
-      at.id && die "arl";
-      at.id = $id;
-      J.idyl->($J, $id, $j);
-      #
-
-    
+ - K: chov/stiz #c
+   D:
+     - MZ: sticks:V
+     -
+      - geo
+      - 3
+      - |
+        at.sc.geo = $v;
+     -
+      - ab # absolute # ORDER uglies
+      - 3
+      - |
+        die "Ab: $v";
+        at.sc.css.position = 'absolute';
+        at.sc.css.width = '100%';
+        at.sc.css.height = '100%';
+     -
+      - left # yep
+      - 3.4
+      - |
+        at.sc.css.left = $v;
+     -
+      - top # yep
+      - 3.4
+      - |
+        at.sc.css.top = $v;
+     -
+      - rad # radial tr
+      - 3.6
+      - |
+        C.sc.tr.rotate = $v.'rad' if $v;
+     -
+      - tr # filterszzzz weird style using com to agg.
+      - 3.7
+      - |
+        at.sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
+     -
+      - tro #
+      - 3.6
+      - |
+        at.sc.css->{'transform-origin'} = $v;
  - K: chov/ou #c
    D:
    - EZ: chov/ouf
@@ -581,6 +638,7 @@ R_Jz:
      - 6.4
      - |
        my $c = at.c ||= {};
+       sayyl "at_c: ".ki at.c;
        my $sc = at.sc ||= {};
        my $note = {};
        my $not = sub {
@@ -650,49 +708,6 @@ R_Jz:
        # so we add here locally ^
        # and 
        #sayyl sjson lv.Ec;# if j.l eq '/';
-
- - K: chov/stiz #c
-   D:
-     - MZ: sticks:V
-     -
-      - geo
-      - 3.2
-      - |
-        at.sc.geo = $v;
-     -
-      - ab # absolute # ORDER uglies
-      - 3.3
-      - |
-        die "Ab: $v";
-        sc.css.position = 'absolute';
-        sc.css.width = '100%';
-        sc.css.height = '100%';
-     -
-      - left # yep
-      - 3.4
-      - |
-        sc.css.left = $v;
-     -
-      - top # yep
-      - 3.4
-      - |
-        sc.css.top = $v;
-     -
-      - tr # filterszzzz weird style using com to agg.
-      - 3.7
-      - |
-        sc.css->{'-webkit-transform'} = join' ', map {"$_($v->{$_})"} keys %$v;
-     -
-      - tro #
-      - 3.6
-      - |
-        sc.css->{'transform-origin'} = $v;
-     -
-      - rad # radial tr
-      - 3.6
-      - |
-        sc.tr.rotate = $v.'rad' if $v;
-         return;
 stwa: # STASHINGS
  -
   - ab #c absolute # ORDER uglies

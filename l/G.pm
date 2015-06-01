@@ -1961,7 +1961,7 @@ sub g_parse_babble {
     my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
-    my $mwall = qr/(?:= |^\s*)/m;
+    my $mwall = qr/(?:= |if |^\s*)/m;
 
 
 
