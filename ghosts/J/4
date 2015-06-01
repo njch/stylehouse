@@ -61,6 +61,7 @@ R_Jz:
      my $WZu = sub {
          my $WZ = shift;
          my $n = shift;
+         n.moozd = 1;
          
          my $way = 'muck';
          $way = 'fund' if $WZ =~ s/^\///;
@@ -70,15 +71,29 @@ R_Jz:
               my $s = $Z->{$k};
               die wdump $s if ref $s ne 'ARRAY';
               unshift @N, @$s;
-              # or we could do on a stick, so its MZ junk dont linger in this stream
-              # ie always flow outwards the sc filtery stuff.
-              #my $M = [];
-              #Rw MyN $N:s $M;
          }
+     };
+     # or we could do on a stick, so its MZ junk dont linger in this stream
+     # ie always flow outwards the sc filtery stuff.
+     my $EZu = sub {
+         my $EZ = shift;
+         my $n = shift;
+         my $oM = shift;
          n.moozd = 1;
+         
+         my $way = 'muck';
+         $way = 'fund' if $EZ =~ s/^\///;
+         my $Z = Rw $way - $p:EZ $dclone=1;
+         
+         #die "HI $EZ ";
+         for my $k (sort keys %$Z) {
+              my $s = $Z->{$k};
+              die wdump $s if ref $s ne 'ARRAY';
+              Rw MyN $M:oM $N:s;
+         }
      };
      
-     my $fourstring = sub {
+     my $fourstring = sub { #c
          my $s = shift;
          my $n = shift;
          if ($s =~ /^\s*#?\s*MZ (.+)$/) {
@@ -128,6 +143,7 @@ R_Jz:
          }
          elsif (ref $s eq 'HASH') {
             s.MZ ? $MZu->(s.MZ, $n)
+            : s.EZ ? $EZu->(s.EZ, $n, $oM)
             : s.WZ ? $WZu->(s.WZ, $n)
             : die 'hash: '.wdump($s);
          }
