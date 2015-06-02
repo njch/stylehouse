@@ -54,6 +54,22 @@ R_Jz:
      
      
      
+ - K: onl/cut #c
+   D: |
+     $scsort||die;
+     @$onl = reverse
+         sort { a.sc->{$scsort} <=> b.sc->{$scsort} }
+         grep { defined _.sc->{$scsort} || die'no %'.$scsort.' on: '._.j.r }
+         @$onl;
+     my @in;
+     my @cut;
+     push @{ @in < 4 ? \@in : \@cut }, $_ for @$onl;
+     for my $x (@cut) {
+         delete J.bb->{_.r} for x.j, values %{x.sj};
+     }
+     @$onl = @in;
+     $onl
+     
  - K: ghosts #c a eye/
    n_D:
      yJ: |

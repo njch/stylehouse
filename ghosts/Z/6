@@ -13,25 +13,6 @@ R_Jz:
        Jn('ee',0.4,'THINGS!');
        
        Rw on_xor_geo $J $nomay=1 $nogeo=1;
- - K: geomoss/flows/geomo #c
-   D: |
-     flow 1
-     nesting 2
-     style 5
-     etcs 6
-     outs 7
-         
-       
- - K: shuv/flows/geomo #c
-   D: |
-     flow 1
-     nesting 4
-     stiz 3
-     sticks 5
-     stool 5
-     sharp 5
-     etcs 6
-     outs 7
  - K: geomo/flow #c
    D: |
      # 1
@@ -147,7 +128,10 @@ R_Jz:
                delete aJ.bb->{$_};
            }
        }
-       sayre "Gone: ".join', ',sort uniq map{s/%\S+//;$_}@gone if @gone;
+       if (@gone) {
+           @gone = uniq map{s/%\S+//;$_} @gone;
+           sayre "Gone: ".join', ',sort @gone;
+       }
      -
       - vsord
       - 3.2189

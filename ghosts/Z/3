@@ -13,11 +13,11 @@ R_Jz:
  - K: wam #c 
    n_D:
      yJ: |
-       'wam clw gui heag'
+       'wam awm clw gui heag'
      defon: |
        twzng 0.1 J/2
-     up: | # if the in up, pha wakeups out - all response to editing
-       my $coi = Rw pha $J $k=jo;
+     upl: | # if the in up, pha wakeups out - all response to editing
+       
        my $vs = Rw tyv $J:G.oin;
        my $M=[];
        map {
@@ -26,8 +26,17 @@ R_Jz:
        Rw om/bal $J $oM:M $in=0.2 $out=0.6;
        
        
-       Rw on_xor_geo + $J; 
+       
+ - K: awm #c 
+   n_D:
+     yJ: |
+       'awm clw gui heag'
+     up: |
+       my $coi = Rw pha $J $k=jo;
+       Rw suck */upl;
+       Rw on_xor_geo + $J;
        coi.exactl->();
+       
        
  - K: cod #c code piece, frontal lobe to the coiled lies
    n_D:
@@ -78,53 +87,8 @@ R_Jz:
        zoom 0 0.5
        y    0  0.37
        x    0  0.37
- - K: lie #c one file vector, expanding reconvening substructure of io mess to artifacts and stuff in 0.8
-   n_D:
-     yJ: |
-       'lie lief'
-     in: |
-       my $o = {};
-       Rw around $J $o;
-       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.r};
-       $it || die "u.t   u.cv not found!";
-       it.sc.dig eq u.dig || die "NOT UP";
-       it.s = u.s;
-       
-       my $file = J.bb->{"file\t".0.1};
-       
-       write_file($file, join("\n", map {_.s} @{o.r})."\n\n");
-       
-       Rw around;
-       
-       say "Saved?";
-     around: |
-       J.cv ||= 0.3;
-       
-       Rw lief $J;
-       
-       # $o put
-       Rw out
-       if ar.o;
-     out: |
-       my $ip = {cv=>0.4};
-       my $vs = Rw tyv $J $ip;
-       
-       push @{o.r||=[]}, sort { a.sc.in <=> b.sc.in } map { {
-          r => _.j.r,
-          t => _.j.t,
-          cv => _.j.cv,
-          s => _.j.s,
-          sc => _.sc,
-       } } @$vs;
-       
-       o.oJ = $J;
-       o.pig = 'lie';
- - K: lief/flows/folate #c
-   D: |
-     flow 0.1  {} {}
-     stat 0.61 {} {tv:file,et:0}
-     read 0.62 {} {tv:file,et:130}
-     jam  0.63 {} {tv:read,et:340}
+
+
  - K: on_xor_geo #c
    D: |
        
@@ -135,10 +99,37 @@ R_Jz:
        
        say "comat ".F_delta;
      
+ - K: very #c tak tlv into space, ready for lx/suro
+   D: |
+       my $lvs = ar.lvs ||= Rw tlv $J;
+       
+       my $sec = $out - $in; # <-0.8->
+       my $thi = $sec / (@$lvs||1); # or indi
+       
+       # thi of $lv individuality
+       my $tin = $in;
+       for my $x (@$lvs) {
+           # go higher and pipe mods to squish space, vary $thi (other ways to)
+           x.thi = $tot * $thi;
+           x.phi = $thi;
+           x.in = $tin;
+           x.out = $tin + $thi;
+           $tin = x.out; # next
+           # space volve, indi...
+           saybl "blbl x.j.r   $tot * $thi =  x.thi    ($tot $sec)";
+           
+           my $j = x.j;
+           if (!J.q) {
+               say "up on ".gp($J)."    j.r    ".slim 200, gp(j.s);
+               say "   * _.r          => ".gp(_.s) for values %{x.sj};
+               say "up around x.in <-> x.out"
+           }
+       }
+       $lvs
+       
  - K: onxor #c
    D: |
        my $onl = Rw very $in=0.1 $out=0.9 $J:oJ $tot:J.cv;
-       sayyl wdump $onl;
        for my $x (@$onl) {
            my $M = [];
            Mn(x.j.l.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$x});
@@ -155,6 +146,11 @@ R_Jz:
                Mn( "xor/r.t", {thy=>$thy},
                   {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.6,pwth=>'J5:cod'},
                   {fs=>$fs});
+           }
+           if (!@{o.r}) {
+               Mn("nothing", {thy=>0.3}, 'nothing');
+               sayre "nothing from ".wdump 2, $x;
+               saybl "nothing from ".wdump 2, $o;
            }
            if (o.more) {
                Rw ii/more $x $o $M;
@@ -194,61 +190,12 @@ R_Jz:
    D: |
      my $sq = J.d.c.scwa || 'right:1em';
      Jn(lines => 0.1, $u, "{ab:1,$sq}");
- - K: oundo #c hound god from a crux of inness $x
+ - K: lief/flows/folate #c
    D: |
-     my $o = {r=>[]};
-     # fills up @r to $thi
-     # also $plucky to select hash key order
-     # a space for tiny-part-of-huge-set access
-     
-     my $u = x.j.s;
-     my $sc = x.sc;
-     
-     # $plucky could rate the things it gets passed
-     # and the $thi yins up out here
-     
-     sc.ou ||= 'text' if !ref $u;
-     sc.ou ||= 'array' if ref $u eq 'ARRAY';
-     sc.ou ||= 'code' if ref $u eq 'CODE';
-     sc.ou ||= 'hash';
-     
-     # further dimensional sc if {} or something?
-     # so the spec can curve data all the way
-     my $thi = x.thi || die;
-     Rw ou/sc.ou + $u $o $x $sc $thi;
-     
-     sc.grp &&
-     Rw og/sc.grp + $u $o $x $sc;
-     
-     # $r rows over the contents
-     # r.c probably for pi, other stuff may pick stuff up...
-     
-     o.thi = @{o.r};
-     $o
- - K: fil #c index of files
-   n_D:
-     yJ: |
-       'fil'
-     e: |
-       my $J = Rw J5 - fil;
-       Rw around + $J;
-     around: |
-       ar.file ?
-          Rw fil/ile
-       :();
-     ile: |
-       my $fid = slm 8, dig $file;
-       my $fJ = J.bb->{"$fid\t0.1"};
-       if (!$fJ) {
-           $fJ = Rw oJ $J $name=lie.$fid $style=lie;
-           fJ.bz->("file\t0.1" => $file);
-           J.bz->("$fid\t0.1", $fJ, '%file'=>$file);
-       }
-       $fJ
-       
-       
-       
-       
+     flow 0.1  {} {}
+     stat 0.61 {} {tv:file,et:0}
+     read 0.62 {} {tv:file,et:130}
+     jam  0.63 {} {tv:read,et:340}
  - K: folate/flow #c
    D: |
      # 2
