@@ -139,13 +139,15 @@ R_Jz:
        # $vs should stretch over aJ as far as any $ip is
        #
        my $now = {map{_.j.r => 1} @$vs};
+       my @gone;
        for (keys %{aJ.bb}) {
-           /^(.+)%.+?\t(\S+)$/||die$_; 
+           /^(.+)%.+?\t(\S+)$/||die$_;
            if (!$now->{"$1\t$2"}) {
-               sayre "Gone: $_";
+               push @gone, $_;
                delete aJ.bb->{$_};
            }
        }
+       sayre "Gone: ".join', ',sort uniq map{s/%\S+//;$_}@gone if @gone;
      -
       - vsord
       - 3.2189
@@ -206,7 +208,7 @@ R_Jz:
         my ($j,$at,$aJ,$aj,$lv) = @_;
             my @lvs = map { aJ.bb->{$_} } @{at._joins};
             
-            say "j.r eats    ".join',   ', map{_.j.r} @lvs;
+            say "j.r eats    ".join',   ', map{_.j.r} @lvs if J.V;
             # or compressions in c, sc
             # make them tubes real nice
             my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
@@ -236,7 +238,6 @@ R_Jz:
         
                
                
-
  - K: geomo/style #c
    D:
      -
