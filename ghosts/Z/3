@@ -13,7 +13,7 @@ R_Jz:
  - K: wam #c 
    n_D:
      yJ: |
-       'wam awm clw gui heag'
+       'awm'
      defon: |
        twzng 0.1 J/2
      upl: | # if the in up, pha wakeups out - all response to editing
@@ -52,7 +52,7 @@ R_Jz:
      up: |
        my $coi = Rw pha $J $k=jo;
        Rw suck */upl;
-       Rw on_xor_geo + $J;
+       Rw nx + $J;
        coi.exactl->();
        
        
@@ -105,17 +105,7 @@ R_Jz:
        zoom 0 0.5
        y    0  0.37
        x    0  0.37
- - K: on_xor_geo #c
-   D: |
-       my $oJ = Rw oJ $J on;
-       my $nc = Rw up $J:oJ;
-       my $oM = Rw very $J:oJ;
-       say wdump $oM;
-       
-       Rw om/bal $J $oM $t=hihi $in=0.1 $out=0.9 $V=1;
-       
-       say "comat ".F_delta;
-     
+
  - K: pi/xor #c cast catch
    D: |
      my $c = J.d.c;
@@ -149,118 +139,4 @@ R_Jz:
    D: |
      my $sq = J.d.c.scwa || 'right:1em';
      Jn(lines => 0.1, $u, "{ab:1,$sq}");
- - K: lief/flows/folate #c
-   D: |
-     flow 0.1  {} {}
-     stat 0.61 {} {tv:file,et:0}
-     read 0.62 {} {tv:file,et:130}
-     jam  0.63 {} {tv:read,et:340}
- - K: folate/flow #c
-   D: |
-     # 2
-     for my $c (@{wJ.tvs}) {
-         my $coi = Rw pha $J $k=c.K/c.v;
-         
-         coi.off = c.sc.et if defined c.sc.et;
-         sayyl "Trying c.K    c.v        off=coi.off";
-         
-         my $ip;
-         ip.l = c.sc.tv if c.sc.tv;
-         my $vs = Rw tyv $J $ip;
-         
-         my $nc = Rw lv_same $vs $x:coi $J $V=1;
-         next if $nc;
-         
-         die if @$vs > 1;
-         for my $lv (@$vs) {
-             my $j = lv.j;
-             # resolve $offness, add $and to lv_same
-             # if change exactl swoops an init linehum wd
-             
-             sayyl "c.v Effect: c.K ";
-             saybl "In: j.r   => ".slim 20, j.s;
-               
-             my $at = {};
-             Rw c.wa $J $j $at $c $sc:lv.sc;
-               # ^
-               # at travels fast
-               # v
-               Rw jamsc $J $j $sc:at;
-               
-               # STYLE
-          }
-          coi.same_wd ||= do { # catchup (all wong)
-              my $vs = Rw tyv $J $ip;
-              delete coi.off;
-              Rw lv_same $vs $x:coi $J $ret=1 $V=1;
-          };
-          
-          coi.V = 1;
-          my $y = coi.exactl->();
-       }
- - K: folate/stat #c
-   D: |
-     at.is_file = -f j.s;
-     my @s = stat j.s;
-     at.size = $s[7];
-     at.mtime = $s[9];
-     at.ctime = $s[10];
- - K: folate/read #c
-   D: |
-     my $s = read_file(j.s);
-     my $dig = dig $s;
-     Jn('read' => 0.3 => $s, {dig=>$dig});
-     at.dig = $dig;
- - K: folate/jam #c
-   D: |
-         my $i = 0;
-         my $l = {map { $i++ => $_ } split "\n", j.s};
-         Jn('lines' => 0.3 => $l);
-         my @bu;
-         my @nol;
-         for my $li (sort {$a<=>$b} keys %$l) {
-             my $n = {in=>$li};
-             n.s = $l->{$li};
-             n.h = n.s;
-             
-             if (n.s =~ /^.?.?\w/) {
-                 n.r = 'low';
-             }
-             if (n.s =~ /#(c)(.*)$/) {
-                 n.r = 'c';
-                 n.com = $2 if $2;
-             }
-             
-             n.K = $1 if n.s =~ /K: (\w+[^#]+)/; 
-             n.K ||= $1 if n.s =~ /^[^#]*?(\w+[^#]+)/;
-             n.K =~ s/\s+$// if n.K;
-             if (n.r && n.K) {
-                 if (@nol) {
-                     n.s = join"\n",@nol,n.s;
-                     @nol = ();
-                     n.in = 0;
-                 }
-                 push @bu, $n;
-             }
-             elsif (@bu) {
-                 my $las = $bu[-1]; 
-                 las.s .= "\n".n.s;
-                 las.out = $li;
-             }
-             else {
-                 push @nol, n.s
-             }
-         }
-         for my $n (@bu) {
-             my $s = delete n.s;
-             $s||die;
-             n.dig = slm 7, dig $s;
-             n.lines = split "\n", $s;
-             my $j;
-             j.l = n.K||n.h;
-             j.cv = 0.4;
-             Jn(j.l, j.cv, $s);
-             Rw jamsc $J $j $sc:n;
-             #saybl "N: n.K        ".slim 40, ki $n;
-         }
 
