@@ -127,14 +127,14 @@ R_Jz:
      in: |
        my $o = {};
        Rw around $J $o;
-       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.M};
-       $it || die "u.t   u.cv not found!";
-       it.sc.dig eq u.dig || die "NOT UP";
-       it.s = u.s;
-       
+       my ($it) = grep { _.t eq u.t && _.y.cv == u.y.cv } @{o.M};
+       $it || die "u.t   u.y.cv not found!";
+       it.sc.dig eq u.sc.dig || die "NOT UP";
+       it.c.s = u.c.s;
+       #die wdump [$it, $u];
        my $file = J.bb->{"file\t".0.1};
        
-       write_file($file, join("\n", map {_.s} @{o.M})."\n\n");
+       write_file($file, join("\n", map {_.c.s} @{o.M})."\n\n");
        
        Rw around;
        
