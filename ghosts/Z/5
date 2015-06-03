@@ -23,9 +23,7 @@ R_Jz:
        my $oJ = Rw oJ $J on;
        
        my $nc = Rw up $J:oJ;
-       
        my $oM = Rw very $J:oJ;
-       
        say wdump $oM;
        
        Rw om/bal $J $oM $t=hihi $in=0.1 $out=0.9 $V=1;
@@ -34,28 +32,32 @@ R_Jz:
      
  - K: very #c tak tlv into space, ready for lx/suro
    D: |
-     my $N = Rw tyc $J;
-     for (@$N) {
-     # mod to space volve, indi... lifeupstyle
-         _.y = {};
-         _.c.pi = _.sc.ou if _.sc.ou;
-         #_.y.thy=_.sc.thy # from on
-     }
-     $N;
+       my $N = Rw tyc $J;
+       for (@$N) {
+           # mod to space volve, indi... lifeupstyle
+           _.y = {};
+           _.c.pi = _.sc.ou if _.sc.ou;
+           #_.y.thy=_.sc.thy # from on
+       }
+       $N;
  - K: pi/file #c
    D: |
      my $file = $u;
      defined $file || die 'nofile';
      if (my $dir = C.sc.dir) {
-         $dir .= '/' if $dir !~ /\/$/;
+         $dir =~ s/\/?$/\//;
          $file = "$dir$file";
      }
-     
-     my $f = Rw fil/e $file;
-     
      sayyl "oufile: $file";
+     my $f = Rw fil/e $file;
+     my $o = {};
+     Rw around $J:f $o;
+     my $oM = [];
+     push @$oM, { t=>_.t, y=>{%{_.y}}, c=>{pi=>o.ou,s=>$_} } 
+     for @{o.M};
+     Rw om/bal $J $oM $in=0.3 $out=0.6;
+     sayre wdump 2, $oM;
      
-     Rw around $J $o $x;
  - K: fil #c index of files?
    n_D:
      yJ: |
@@ -77,46 +79,36 @@ R_Jz:
      in: |
        my $o = {};
        Rw around $J $o;
-       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.r};
+       my ($it) = grep { _.t eq u.t && _.cv eq u.cv } @{o.M};
        $it || die "u.t   u.cv not found!";
        it.sc.dig eq u.dig || die "NOT UP";
        it.s = u.s;
        
        my $file = J.bb->{"file\t".0.1};
        
-       write_file($file, join("\n", map {_.s} @{o.r})."\n\n");
+       write_file($file, join("\n", map {_.s} @{o.M})."\n\n");
        
        Rw around;
        
        say "Saved?";
      around: |
-       J.cv ||= 0.3;
-       
-       #Rw lief $J;
-       
-       # $o put
-       Rw out
-       if ar.o;
+       J.cv ||= 0.5;
+       Rw lief $J;
+       ar.o &&
+       Rw out;
+       sayyl "Doof ". F_delta;
      out: |
-       my $ip = {cv=>0.4};
-       my $vs = Rw tyv $J $ip;
-       
-       push @{o.r||=[]}, sort { a.sc.in <=> b.sc.in } map { {
-          r => _.j.r,
-          t => _.j.t,
-          cv => _.j.cv,
-          s => _.j.s,
-          sc => _.sc,
-       } } @$vs;
-       
+       my $out = Rw tyc $J;
+       my @hum = sort {a.sc.in<=>b.sc.in} grep{_.y.cv == 0.4} @$out;
+       o.M = \@hum;
        o.oJ = $J;
-       o.pig = 'lie';
+       o.ou = 'lie';
  - K: lief/flows/folate #c
    D: |
-     flow 0.1  {} {}
-     stat 0.61 {} {tv:file,et:0}
-     read 0.62 {} {tv:file,et:130}
-     jam  0.63 {} {tv:read,et:340}
+     flow 1  {} {}
+     stat 6.1 {} {tv:file,et:0}
+     read 6.2 {} {tv:file,et:130}
+     jam  6.3 {} {tv:read,et:340}
  - K: folate/flow #c
    D: |
      # 2

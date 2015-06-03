@@ -85,7 +85,6 @@ R_Jz:
                    my $M = [];
                    my $i = 0.01;
                    my @cs;
-                   #sayre $s if j.l =~ /flow/;
                    my $up = sub {
                        @cs || return "nothing in j.l $i";
                        my $c;
@@ -96,17 +95,27 @@ R_Jz:
                        push @$M, $c;
                        @cs = ();
                    };
-                   for my $l (split "\n", $s) {
-                       if ($l =~ /^\s*# (\d\S*)/) {
-                           my $ni = $1;
-                           $up->();
-                           $i = $ni;
+                   if (j.cv == 1) {
+                       sayyl "splitting j.l for $path   j.cv";
+                       for my $l (split "\n", $s) {
+                           if ($l =~ /^\s*# (\d\S*)/) {
+                               my $ni = $1;
+                               $up->();
+                               $i = $ni;
+                           }
+                           push @cs, $l;
                        }
-                       push @cs, $l;
+                       $up->();
                    }
-                   $up->();
+                   else {
+                       sayyl "sc atchs j.l for $path j.cv";
+                       push @cs, $s;
+                       $i = j.cv;
+                       $up->();
+                   }
                    @$M; 
                };
+               
                !$path && die "noapth";
                push @$M, @N;
            }
@@ -114,7 +123,7 @@ R_Jz:
        
        my $h = G.gekoodiu ||= {};
        my $e = sjson $M;
-       return saygr "$path same" if $e eq $h->{$path};
+       #return saygr "$path same" if $e eq $h->{$path};
        
        $h->{$path} = $e;
        
@@ -123,6 +132,7 @@ R_Jz:
        }
        
        my $wtf = Rw concat $J;
+       #sayre wdump wtf.lief_up if $path eq 'lief';
        my $real = Rw wtfity $wtf;
        #ie wdump $real;
        
@@ -225,7 +235,7 @@ R_Jz:
                    
                    $up_path->();
                    
-                   J.bz->("${path}_up#rese$ome\t1", 
+                   J.bz->("${path}_up#rese_tvs\t1", 
                     "wJ\.tvs = [];"
                    );
                    delete d.s;
@@ -244,7 +254,7 @@ R_Jz:
              
          }
          
-         #sayyl "$C c.t   for ".ki $sc;
+         sayyl "$C c.t   for ".ki $sc if $path eq 'lief';
          
          my @s;
          push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sub'};"
