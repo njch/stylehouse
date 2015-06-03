@@ -341,12 +341,12 @@ R_Jz:
       }
    - #
     - cm
-    - 5.8
+    - 5.84
     - |
-      my $wt = ejson {id=>at.id, value=>at.s};
-      at.id || die;
+      my $wt = {id=>at.id, value=>at.s};
+      at.id || die"noid".wdump 2,$at;
       at.dig = C.sc.dig || die "no diggy";
-      acum $at, Esc => " a\.cod($wt);";
+      at.sc.cod = $wt;
       at.s = '';
    - #
     - J
@@ -555,6 +555,9 @@ R_Jz:
        }
        if (C.sc.anc) {
            $(A.on).animate(C.sc.anc, (C.sc.ant||900));
+       }
+       if (C.sc.cod) {
+           a.cod(C.sc.cod);
        }
    -
     - sc_geo #c A,C,G,T

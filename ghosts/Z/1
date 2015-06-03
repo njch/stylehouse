@@ -59,10 +59,11 @@ R_Jz:
        # nothing, gets compiled and broadcast:
      wayup: |
        -f $m || die;
+       die "u  p $m";
        $G->wayup($m);
      reexec: |
        Rw rez;
-     speaks: | # loop conealed elvis
+     speaks: | # loop conealed elvis 
        Rw reS $m
      event: | #
       my $e = ar.e = j.event;
@@ -408,19 +409,20 @@ R_Jz:
      X: |
        my $oJ = $J; # classic 8 stuf
        $J = G.oin;
+       $oJ = e.J;
        my $name = oJ.name;
        my $is = J.bb->{"$name%J\t0.3"};
        warn "not latest $name... continuing delete" if $is ne $oJ;
+       for my $oJ ($oJ, $is) {
        
        Rw J5 wu $X:oJ;
        Rw delbbl $J $l:oJ.name;
        oJ.dead = 1; # etcrise
+       }
        sayyl "delete is.name";
-       
        if (e.S) {
            Rw J5 $name;
        }
-
  - K: toc #c
    n_D:
      yJ: |
