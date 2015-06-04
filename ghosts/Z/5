@@ -18,6 +18,20 @@ R_Jz:
        J.V = 1;
        coi.exactl->();
        
+ - K: wam #c 
+   n_D:
+     yJ: |
+       'awm'
+     defon: |
+       twzng 0.1 J/2
+       twzng 0.6 eye {ou:eye}
+     upl: | # if the in up, pha wakeups out - all response to editing
+       #Rw pi/showgoin;
+       #Rw pi/shivoo;
+       Jn('it',0.9,'o','{co:fca,bo:3px solid white}');
+ - K: wayedup #c
+   D: |
+     Rw J5 wam;
  - K: nx #c
    D: |
        my $oJ = Rw oJ $J on;
@@ -70,6 +84,28 @@ R_Jz:
            }
            Rw om/bal $J $oM:M $t:x.j.l $thi:x.thi $in:x.in $out:x.out;
        }
+ - K: pi/eye #c
+   D: |
+     my $file = $u;
+     Jn('ls',0.1,{pi=>'ls',s=>$file});
+ - K: pi/ls #c
+   D: |
+     my $file = $u;
+     my @ma = map{fixutf8($_);chomp;$_}`/bin/ls -1 '$file'`;
+     Jn('file',0.1,$file);
+     my $oM;
+     if (@ma == 1 && $ma[0] eq $u) {
+         Jn('-f',0.2,'-f');
+         oMn('.','',{pi=>'fi',s=>$file});
+     }
+     # balance thes e thig
+     my @r;
+     for my $f (@ma) {
+         my $r;
+         r.t = $f;
+         push @r, $r;
+     }
+     @r;
  - K: pi/file #c
    D: |
      my $file = $u;
@@ -80,27 +116,64 @@ R_Jz:
      }
      sayyl "oufile: $file";
      
+     Jn("filename",0.1,$file,'{fs:20,hs:1.5.6.9}');
+     
+     
      my $o = Rw fil/o $file;
      my $y = J.d.y;
      my $oM = [];
      #push @$oM, { t=>"passing", y=>{}, c=>{pi=>'text',s=>'thingy'},sc=>{oJ=>o.oJ} };
-     oMn("what",{},"y.cv out=y.ov");
+     oMn("what",
+     {thy=>1},"y.cv out=".(0+y.ov),'{fs:8,hs:3.5.6.9}');
      
-     oMn(_.t, {thy=>1,%{_.y}}, {pi=>o.ou,s=>$_},{oJ=>o.oJ})
-     for @{o.M};
+     my $lum = 3;
+     my $i = 0;
+     for (@{o.M}) {
+         oMn(_.t, {thy=>$lum,%{_.y}}, {pi=>o.ou,s=>$_},{oJ=>o.oJ});
+         $i++;
+         $lum = 2 if $i == 4;
+         $lum = 1 if $i == 7;
+     }
      
-     oMn("what",{},"");
+     oMn("what",
+     {thy=>1},
+     "");
      
      delete _.y.cv for @$oM;
-     Rw om/bal $J:J.Jiter $oM $in=y.cv $out=y.ov $V=1;
-     oMn("what",{},"y.cv out=y.ov");
+     my $thic = y.ov - y.cv;
+     warn "THICKNESS: ".$thic;
+     my $y = {in => y.cv+0.06, out => y.ov};
+     
+     Rw om/bal $J:J.Jiter $oM $t=thelov $y $V=1;
+     
      sayre J.r."   ".ki J.d.y;
      
- - K: om/in #c
+ - K: pi/lie #c s = d/C for a file
    D: |
+     my $sc = u.sc;
      
-     Rw om/bal $J:J.Jiter $oM $in=y.cv $out=y.ov $V=1;
+     sayyl "dwkokdwoo ". ki J.d.y;
+     J.d.c.pwth='J5:cod';
+     my $spc = J.d.y.ov - J.d.y.cv;
+     my $fl = ($spc / 0.02) * 4;
+     warn "$spc =>   $fl";
+     J.d.sc.fs = $fl;
+       
+     #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
+     #Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
+     #Jn(linein => 0.034, {pi=>'hangleft',s=>sc.in,scwa=>'right:3em'}, '{ab:1,co:e72,fs:10}');
      
+     
+     #my $ind = $1 if sc.h =~ /^(.+?)\Qsc.K\E/;
+     #my $al = $1 if sc.h =~ /\Qsc.K\E(.+)$/;
+     #Jn(ind => 0.09, $ind, "{co:38e,fs:12}");
+     Jn(K => 0.1, sc.K, "{co:f42,fs:17}");
+     # go look for the right side of /K
+     #Jn(al => 0.11, {fadwi=>$al,s=>slm(20, $al)}, "{co:5ae,fs:12}");
+     
+     
+     #Jn(com => 0.3, {s=>sc.com}, '{co:f42,fs:9}');
+     #Jn(
  - K: fil #c index of files?
    n_D:
      yJ: |
@@ -260,6 +333,7 @@ R_Jz:
              n.lines = split "\n", $s;
              my $j;
              j.l = n.K||n.h;
+             j.l =~ s/[^\w]+//sgm;
              j.cv = 0.4;
              Jn(j.l, j.cv, $s);
              Rw jamsc $J $j $sc:n;

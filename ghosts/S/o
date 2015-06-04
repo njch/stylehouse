@@ -41,7 +41,12 @@ hooks:
               chomp $iss;
               sayre "rm ing $iss";
               if ($iss =~ /\.s$/) {
-                  my @s = split "\n", read_file($iss);
+                  my $s = read_file($iss);
+                  if ($s =~ /^\x{0}+$/) {
+                      warn "NULLY $iss";
+                      $s = '';
+                  }
+                  my @s = split "\n", $s;
                   my $js;
                   say "in $iss: ".wdump \@s;
                   my $wt = '';

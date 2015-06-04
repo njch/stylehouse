@@ -136,8 +136,8 @@ R_Jz:
     - 7
     - |
       project.clear(); 
+      a.sitandspin();
       a.pzl();
-      //a.sitandspin();
  - K: scr/youtube #c
    D:
    -
@@ -204,6 +204,11 @@ R_Jz:
       view.onFrame = function (event) {
           shape.rotate(1);
           shape.fillColor.hue += 1;
+          
+          shape.position.x += shape.bounds.width / 50;
+          if (shape.bounds.left > view.size.width) {
+              shape.position.x = -shape.bounds.width;
+          }
       }
       }
    -
@@ -211,6 +216,7 @@ R_Jz:
     - 4
     - |
       with(paper){
+      var tjhus = new Project;
       var mousePoint = view.center;
       var amount = 30;
       var colors = ['red', 'black', 'blue', 'black'];
@@ -240,6 +246,11 @@ R_Jz:
               if (delta.length > 0.1)
                   item.position += delta;
               item.fillColor.hue += 1;
+              var shape = item;
+              shape.position.x += shape.bounds.width / 50;
+              if (shape.bounds.left > view.size.width) {
+                  shape.position.x = -shape.bounds.width;
+              } 
           }
       }
       }
