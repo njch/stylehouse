@@ -1,19 +1,29 @@
 R_Jz:
-
+ - K: awm #c 
+   n_D:
+     yJ: |
+       'awm clw gui heag'
+     up: |
+       my $coi = Rw pha $J $k=jo;
+       Rw suck */upl;
+       Rw nx + $J;
+       coi.exactl->();
+       
+       
  - K: wo1 #c 
    n_D:
      yJ: |
        'awm'
-     defon: |
-       twzng 0.1 w {ou:fol}
-     upl: | # if the in up, pha wakeups out - all response to editing
+     on: |
+       twzng 0.1 ghosts {ou:ls}
+     up: | # if the in up, pha wakeups out - all response to editing
        my $coi = Rw pha $J $k=jo;
        #Rw pi/fol $J $u=eye;
        my $M=[];
-       Mn(fu => {thy=>3}, {pi=>'fol',s=>'eye/fug'});
-       Mn(e => {thy=>1}, {pi=>'fol',s=>'eye/o'});
+       Mn(fu => {thy=>3}, {pi=>'ls',s=>'eye/fug'});
+       Mn(e => {thy=>1}, {pi=>'ls',s=>'eye/o'});
        
-       Rw om/bal $J $oM:M $in=0.2 $out=0.9;
+       Rw om/bal $J $oM:M $in=0.2 $out=0.3;
        
        J.V = 1;
        coi.exactl->();
@@ -22,27 +32,25 @@ R_Jz:
    n_D:
      yJ: |
        'awm'
-     defon: |
-       twzng 0.1 J/2
+     on: |
+       twzng 0.1 J/2 {dir:ghosts,ou:file}
        twzng 0.6 eye {ou:eye}
-     upl: | # if the in up, pha wakeups out - all response to editing
+     up: | # if the in up, pha wakeups out - all response to editing
        #Rw pi/showgoin;
        #Rw pi/shivoo;
        Jn('it',0.9,'o','{co:fca,bo:3px solid white}');
- - K: wayedup #c
-   D: |
-     Rw J5 wam;
+ - K: anno/o #c
+   D:
+   -
+    - el
+    - 2
+    - |
+      #die "baha!";
  - K: nx #c
    D: |
-       my $oJ = Rw oJ $J on;
-       
-       my $nc = Rw up $J:oJ;
-       my $oM = Rw very $J:oJ;
-       say wdump $oM;
-       
-       Rw om/bal $J $oM $t=hihi $in=0.1 $out=0.9 $V=1;
-       
-       say "comat ".F_delta;
+     Rw thy on;
+     #Rw om/bal $J $oM $t=hihi $in=0.1 $out=0.9 $V=1;
+     say "comat ".F_delta;
      
  - K: very #c tak tlv into space, ready for lx/suro
    D: |
@@ -54,36 +62,6 @@ R_Jz:
            #_.y.thy=_.sc.thy # from on
        }
        $N;
- - K: nonxor #c
-   D: |
-       for my $n (@$N) {
-           my $M = [];
-           $N
-           Mn(n.t.'-cap' => {thy=>x.thi/5},{pi=>'infrom',s=>$n});
-           
-           my $o = Rw oundo $x;
-           say "   oundoof: ".F_delta;
-           my $thy = x.thi / (o.thi||1);
-           
-           
-           for my $r (@{o.r}) {
-               #say join " ", sort keys %$r;
-               my $fs = sprintf '%.2f', $thy * 9;
-               #say " This n x.thi  o o.thi   ==  $thy      $fs";
-               Mn( "xor/r.t", {thy=>$thy},
-                  {pi=>'xor',x=>$x,o=>$o,r=>$r,cv=>0.6,pwth=>'J5:cod'},
-                  {fs=>$fs});
-           }
-           if (!@{o.r}) {
-               Mn("nothing", {thy=>0.3}, 'nothing');
-               sayre "nothing from ".wdump 2, $x;
-               saybl "nothing from ".wdump 2, $o;
-           }
-           if (o.more) {
-               Rw ii/more $x $o $M;
-           }
-           Rw om/bal $J $oM:M $t:x.j.l $thi:x.thi $in:x.in $out:x.out;
-       }
  - K: pi/eye #c
    D: |
      my $file = $u;
@@ -94,20 +72,15 @@ R_Jz:
      my $file = $u;
      my @ma = map{fixutf8($_);chomp;$_}`/bin/ls -1 '$file'`;
      Jn('file',0.1,$file);
-     my $oM;
+     my $oM=[];
      if (@ma == 1 && $ma[0] eq $u) {
          Jn('-f',0.2,'-f');
          oMn('.','',{pi=>'fi',s=>$file});
      }
-     #oMn($_,{},{
-     # balance thes e thig
-     my @r;
-     for my $f (@ma) {
-         my $r;
-         r.t = $f;
-         push @r, $r;
+     else {
+         oMn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
-     @r;
+     
  - K: pi/file #c
    D: |
      my $file = $u;
@@ -121,7 +94,6 @@ R_Jz:
      Jn("filename",0.1,$file,'{fs:20,hs:1.5.6.9}');
      
      my $o = Rw fil/o $file;
-     
      Rw inmid $J $o;
      
      sayre J.r."   ".ki J.d.y;
