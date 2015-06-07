@@ -5,8 +5,14 @@ R_Jz:
        'awm clw gui heag'
      up: |
        my $coi = Rw pha $J $k=jo;
+       
        Rw suck */upl;
-       Rw nx + $J;
+       
+       my $M=[];
+       Rw the + on $M;
+       Jn('hihi',{in=>0.15,out=>0.9,o=>$M});
+       say "comat ".F_delta;
+       
        coi.exactl->();
        
        
@@ -15,18 +21,7 @@ R_Jz:
      yJ: |
        'awm'
      on: |
-       twzng 0.1 ghosts {ou:ls}
-     up: | # if the in up, pha wakeups out - all response to editing
-       my $coi = Rw pha $J $k=jo;
-       #Rw pi/fol $J $u=eye;
-       my $M=[];
-       Mn(fu => {thy=>3}, {pi=>'ls',s=>'eye/fug'});
-       Mn(e => {thy=>1}, {pi=>'ls',s=>'eye/o'});
-       
-       Rw om/bal $J $oM:M $in=0.2 $out=0.3;
-       
-       J.V = 1;
-       coi.exactl->();
+       twzng 0.1 ghosts/J {ou:ls}
        
  - K: wam #c 
    n_D:
@@ -34,24 +29,7 @@ R_Jz:
        'awm'
      on: |
        twzng 0.1 J/2 {dir:ghosts,ou:file}
-       twzng 0.6 eye {ou:eye}
-     up: | # if the in up, pha wakeups out - all response to editing
-       #Rw pi/showgoin;
-       #Rw pi/shivoo;
-       Jn('it',0.9,'o','{co:fca,bo:3px solid white}');
- - K: anno/o #c
-   D:
-   -
-    - el
-    - 2
-    - |
-      #die "baha!";
- - K: nx #c
-   D: |
-     Rw thy on;
-     #Rw om/bal $J $oM $t=hihi $in=0.1 $out=0.9 $V=1;
-     say "comat ".F_delta;
-     
+       twang 0.6 eye/fug {ou:eye}
  - K: very #c tak tlv into space, ready for lx/suro
    D: |
        my $N = Rw tyc $J;
@@ -65,22 +43,38 @@ R_Jz:
  - K: pi/eye #c
    D: |
      my $file = $u;
-     Jn('file',0.1,'BLAH');
-     Jn('ls',0.1,{pi=>'ls',s=>$file});
+     Jn('ey',0.09,"ey",'{hs:239}');
+     Jn('file',0.1,"$file",'{hs:239}');
+     Jn($file,0.2,{pi=>'ls',s=>$file});
  - K: pi/ls #c
    D: |
      my $file = $u;
+     
      my @ma = map{fixutf8($_);chomp;$_}`/bin/ls -1 '$file'`;
-     Jn('file',0.1,$file);
+     Jn('fiule',0.1,"J.d.t",'{hs:7565}');
+     sayyl "J.cv ".ki J.d.y;
+     
+     return if J.d.y.space < 0.02;
+     
      my $oM=[];
      if (@ma == 1 && $ma[0] eq $u) {
          Jn('-f',0.2,'-f');
          oMn('.','',{pi=>'fi',s=>$file});
      }
      else {
+         @ma = @ma[0..7] if @ma > 8;
          oMn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
+     Jn('ls',{o=>$oM},{});
      
+ - K: pi/fi #c -f
+   D: |
+     sayyl "filin $u";
+     my $file = '`?';#`file '$u'`;
+     $file =~ s/^\Q$u: \E//;
+     chomp $file;
+     $file ||= "/?";
+     Jn('mimey',0.2,$file,'{fs:7}');
  - K: pi/file #c
    D: |
      my $file = $u;
@@ -91,12 +85,109 @@ R_Jz:
      }
      sayyl "oufile: $file";
      
-     Jn("filename",0.1,$file,'{fs:20,hs:1.5.6.9}');
+     Jn("filename",0.1,$file,'{fs:20,hs:5563}');
      
      my $o = Rw fil/o $file;
-     Rw inmid $J $o;
+     Jn('nmyd',{o=>$o});
+     #Rw inmid $J $o;
+     #J.V=1;
+     #Jn('inmyd',{ o=>$o },{ pi=>o.ou },{oJ=>o.oJ});
+     #J.V=0;
      
      sayre J.r."   ".ki J.d.y;
+ - K: anno/o #c
+   D:
+   -
+    - el
+    - 2
+    - |
+      if (my $o = d.y.o) {
+         if (ref $o eq 'ARRAY') {
+             $o = d.y.o = {M=>$o};
+         }
+         else {
+             o.M = [map{
+                 my $d;
+                 d.t = _.t;
+                 d.y = {%{_.y}};
+                 d.c = _.c;
+                 if (o.ou) {
+                     delete d.y.cv;
+                     d.c.pi = o.ou;
+                     d.c.s = $_;
+                 }
+                 if (o.oJ) {
+                      d.sc.oJ = o.oJ;
+                 }
+                 $d
+             }@{o.M}]
+         }
+         d.y.bal = o.M || die"nomo";
+         
+         #my $y = J.d.y;
+         #$y = {in => y.cv+0.06, out => y.ov};
+         #Rw om/bal $J:J.Jiter $oM $t=thelov $y;
+         
+      }
+      if (d.c.lumfa) {
+         my $lum = 3;
+         my $i = 0;
+         for (@{d.y.bal}) {
+             _.thy=$lum;
+             $i++;
+             $lum = 2 if $i == 4;
+             $lum = 1 if $i == 7;
+         }
+      }
+   -
+    - yongbal
+    - 2.1
+    - |
+       d.y.thi = @{d.y.bal} if d.y.bal;
+   -
+    - yang 
+    - 2.7
+    - |
+           if (y.bal) {
+               if (!defined $muav) {
+                   my $s = sum map{_.y.thy} @{y.bal};
+                   my $ov = @{y.bal};
+                   $muav = $s/($ov||1);
+                   $muav ||= 1;
+               }
+               my $b = y.bal->[iy.i];
+               $mu = b.y.thy if exists b.y.thy;
+               
+               
+               $mu = $mu / ($muav||1);
+               
+               #saybl wdump 2, $b;
+               do {
+               say "J.d.c.cv * y.aspace * $mu  === ". (J.d.c.cv * y.aspace * $mu);
+              b.c.cv ||= J.d.c.cv * y.aspace * $mu
+               } if J.d.c.cv && b.y.thy;
+           }
+   -
+    - yangbalin # 
+    - 3.21
+    - |
+       my $y = d.y;
+       if (d.y.bal) {
+           # locality
+           my $b = d.y.bal->[d.y.i];
+           say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b if ar.V;
+           # mergins... maybe theres a weird lma in b saying replaceall or so
+           # anything could be alive
+           for my $k (keys %$b) { # c etc merg in per row
+               my $v = $b->{$k};
+               if (ref $v) {
+                   $d->{$k} = {%{$d->{$k}||{}}, %$v};
+               }
+               else {
+                   $d->{$k} = $v;
+               }
+           }
+       }
  - K: inmid #c
    D: |
      my $y = J.d.y;
@@ -117,11 +208,12 @@ R_Jz:
      "");
      
      delete _.y.cv for @$oM;
+     
      my $thic = y.ov - y.cv;
-     warn "THICKNESS: ".$thic;
+     warn "THICKNESS of J.r : y.ov - y.cv    (".$thic;
      my $y = {in => y.cv+0.06, out => y.ov};
      
-     Rw om/bal $J:J.Jiter $oM $t=thelov $y $V=1;
+     Rw om/bal $J:J.Jiter $oM $t=thelov $y;
      
  - K: pi/lie #c s = d/C for a file
    D: |
@@ -130,7 +222,7 @@ R_Jz:
      J.d.c.pwth='J5:cod';
      my $spc = J.d.y.ov - J.d.y.cv;
      my $fl = ($spc / 0.02) * 4;
-     warn "$spc =>   $fl";
+     sayyl "$spc =>   $fl";
      J.d.sc.fs = $fl;
        
      #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
@@ -141,12 +233,12 @@ R_Jz:
      #my $ind = $1 if sc.h =~ /^(.+?)\Qsc.K\E/;
      #my $al = $1 if sc.h =~ /\Qsc.K\E(.+)$/;
      #Jn(ind => 0.09, $ind, "{co:38e,fs:12}");
-     Jn(K => 0.1, sc.K, "{co:f42,fs:17}");
+     Jn(K => 0.1, sc.K, "{hs:347,fs:17}");
      # go look for the right side of /K
      #Jn(al => 0.11, {fadwi=>$al,s=>slm(20, $al)}, "{co:5ae,fs:12}");
      
      
-     #Jn(com => 0.3, {s=>sc.com}, '{co:f42,fs:9}');
+     #Jn(com => 0.3, {s=>sc.com}, '{co:342,fs:9}');
      #Jn(
  - K: fil #c index of files?
    n_D:

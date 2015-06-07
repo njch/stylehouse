@@ -291,22 +291,26 @@ R_Jz:
     - 5
     - |
       my $v = shift;
-          my $h;
-          if ($v =~ /^(\S+) (\S+) (\S+)(?: (\S+))?$/) {
-              (h.h, h.s, h.l, h.a) = ($1, $2, $3, $4);
-          }
-          elsif ($v =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?$/) {
-              (h.h, h.s, h.l, h.a) = ('0.'.$1, '0.'.$2, '0.'.$3, '0.'.$4);
-          }
-          else {
-              die "not hsle : $v";
-          }
-          h.h = h.h * 360 if h.h < 1;
-          $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+      my @m;
+      for ($v) {
+          @m = split ' ', $_;
+          last if @m == 3 || @m == 4;
+          @m = split /\./, $_;
+          last if @m == 3 || @m == 4;
+          @m = split '', $_;
+          last if @m == 3 || @m == 4;
+          @m = ();
+      }
+      @m || die "not hsle: $v";
+      my $h;
+      (h.h, h.s, h.l, h.a) = map{0+("0.".$_)}@m;
+      
+      h.h = h.h * 360 if h.h < 1;
+      
+      $h->{$_} = ($h->{$_}*100).'%' for 's','l';
 
-          my $al = ", h.a" if defined h.a;
-          "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
-          # 1423
+      my $al = ", h.a" if defined h.a;
+      "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
    -
     - empc # decide space unit TODO init soon
     - 5
@@ -637,12 +641,16 @@ stwa: # STASHINGS
   - co # it
   - 3
   - |
-    at.sc.css->{"color"} = g.cole->($v)
+    my $s = g.cole->($v);
+    sayyl "j.r co goes $v   => $s";
+    at.sc.css->{"color"} = $s;
  -
   - hs # color: hsla
   - 3
   - |
-    at.sc.css->{"color"} = g.hsle->($v)
+    my $s = g.hsle->($v);
+    sayyl "j.r hs goes $v   => $s";
+    at.sc.css->{"color"} = $s;
  - #c ground etc
   - zi 
   - 3
