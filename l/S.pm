@@ -61,6 +61,8 @@ __DATA__
       body {
           font-family: DVSM, mono;
       }
+      ww * { pointer-events:none; }
+      ww * * { pointer-events:all; }
   </style>
   <link href="light.css" rel="stylesheet"></link>
 

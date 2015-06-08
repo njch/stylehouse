@@ -11,7 +11,7 @@ R_Jz:
        
        my $M=[];
        Rw the + on $M;
-       Jn('hihi',{o=>$M});
+       Jn('hihi',{o=>$M}) if @$M;
        say "comat ".F_delta;
        
        coi.exactl->();
@@ -22,30 +22,30 @@ R_Jz:
      yJ: |
        'awm'
      on: |
-       twzng 0.1 ghosts/J {ou:eye}
+       twang 0.1 g {ou:eye}
        
  - K: wam #c 
    n_D:
      yJ: |
        'awm'
      on: |
-       twang 0.1 w {ou:eye}
+       twzng 0.1 eye/fug/1 {ou:eye}
        #twzng 0.5 J/2 {dir:ghosts,ou:file}
- - K: very #c tak tlv into space, ready for lx/suro
-   D: |
-       my $N = Rw tyc $J;
-       for (@$N) {
-           # mod to space volve, indi... lifeupstyle
-           _.y = {};
-           _.c.pi = _.sc.ou if _.sc.ou;
-           #_.y.thy=_.sc.thy # from on
-       }
-       $N;
+ - K: gut #c 
+   n_D:
+     yJ: |
+       'awm'
+     upl: |
+       J.iM = ar.M if ar.M;
+       J.V = 1;
+       Jn('hihi',{o=>J.iM}) if J.iM;
+       J.iM || Jn('not',0.1,'nothing');
+       J.V = 0;
  - K: pi/eye #c
    D: |
      my $file = $u;
      J.V = 1;
-     J.d.c.path = 'amp';
+     #J.d.c.path = 'amp';
      Jn('ey',0.09,"ey",'{hs:636}');
      Jn('file',0.1,"$file",'{hs:277}');
      Jn($file,{o=>{}},{pi=>'ls',s=>$file});
@@ -53,13 +53,16 @@ R_Jz:
  - K: pi/ls #c
    D: |
      my $file = $u;
+     J.d.c.pwth = 'somewhere';
      
      J.V = 1 if J.d.t =~ /bol/;
      my @ma = map{fixutf8($_);chomp;$_}`/bin/ls -1 '$file'`;
+     #Jn('spc',0.024,"J.d.y.spc");
+     
      Jn('fiule',0.1,"J.d.t",'{hs:7579}');
      
-     return  if J.d.y.spc < 0.02;
-     J.d.c.pwth = 'somewhere';
+     return
+     Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}') if J.d.y.spc < 0.02;
      
      my $oM=[];
      if (@ma == 1 && $ma[0] eq $u) {
@@ -72,8 +75,9 @@ R_Jz:
      else {
          Jn('diry',0.2,'/','{hs:3555}');
          my $rl = int(14 * (J.d.y.spc / 0.3 * J.d.y.spc));
-         $rl = 3 if $rl < 3;
+         $rl = 7 if $rl < 7;
          @ma = @ma[0..$rl] if @ma > $rl;
+         sayyl "ls $u   (J.d.t) e $rl    in J.d.y.spc";
          oMn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
      Jn('ls',{o=>$oM},{});
@@ -81,7 +85,20 @@ R_Jz:
  - K: somewhere #c
    D: |
      my $J = J2.sc.pi;
-     die join"\n", reverse map{gp $_} $J, J.Jiter, J.Jiter.Jiter;
+     my @path = $J;
+     while (1) {
+        my $l = $path[0];
+        unshift @path, l.Jiter || last;
+     }
+     my @lspath;
+     for (reverse @path) {
+         _.y eq 'ls' || last;
+         push @lspath, _.d.t;
+     }
+     my $path = join '/', reverse @lspath;
+     my $M = [];
+     Mn('fro',{},"$path",'{ou:file}');
+     Rw J5 gut $M;
  - K: pi/fi #c -f
    D: |
      my $file = '`?';#`file '$u'`;
@@ -105,116 +122,6 @@ R_Jz:
      
      Jn('nmyd',{o=>$o});
      sayre J.r."   ".ki J.d.y;
- - K: anno/o #c
-   D:
-   -
-    - el
-    - 2
-    - |
-      if (my $o = d.y.o) {
-         if (ref $o eq 'ARRAY') {
-             $o = d.y.o = {M=>$o};
-         }
-         else {
-             o.M ||= [$d];
-             o.M = [map{
-                 my $d;
-                 d.t = _.t;
-                 d.y = {%{_.y}};
-                 d.c = _.c;
-                 delete d.y.cv;
-                 if (o.ou) {
-                     d.c.pi = o.ou;
-                     d.c.s = $_;
-                 }
-                 if (o.oJ) {
-                      d.sc.oJ = o.oJ;
-                 }
-                 $d
-             }@{o.M}]
-         }
-         d.y.bal = o.M || die"nomo";
-         
-         my $Jy = J.d.y;
-         d.y.o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.2;
-         d.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if d.y.o.J;
-         d.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
-         d.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
-         d.c.lumfa = 1;
-         
-      }
-      if (d.c.lumfa) {
-         my $lum = 3;
-         my $i = 0;
-         for (@{d.y.bal}) {
-             _.y.thy=$lum;
-             $i++;
-             $lum = 2 if $i == 4;
-             $lum = 1 if $i == 7;
-         }
-      }
-   -
-    - yongbal
-    - 2.1
-    - |
-       d.y.thi = @{d.y.bal} if d.y.bal;
-   -
-    - yang 
-    - 2.7
-    - |
-           if (y.bal) {
-               if (!defined $muav) {
-                   my $s = sum map{_.y.thy} @{y.bal};
-                   my $ov = @{y.bal};
-                   $muav = $s/($ov||1);
-                   $muav ||= 1;
-               }
-               my $b = y.bal->[iy.i];
-               $mu = b.y.thy if exists b.y.thy;
-               
-               
-               $mu = $mu / ($muav||1);
-               
-               #saybl wdump 2, $b;
-               do {
-               say "J.d.c.cv * y.aspace * $mu  === ". (J.d.c.cv * y.aspace * $mu);
-              b.c.cv ||= J.d.c.cv * y.aspace * $mu
-               } if J.d.c.cv && b.y.thy;
-           }
-   -
-    - yangbalin # 
-    - 3.21
-    - |
-       my $y = d.y;
-       if (d.y.bal) {
-           # locality
-           my $b = d.y.bal->[d.y.i];
-           say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b if J.V;
-           # mergins... maybe theres a weird lma in b saying replaceall or so
-           # anything could be alive
-           for my $k (keys %$b) { # c etc merg in per row
-               my $v = $b->{$k};
-               if (ref $v) {
-                   $d->{$k} = {%{$d->{$k}||{}}, %$v};
-               }
-               else {
-                   $d->{$k} = $v;
-               }
-           }
-       }
-       d.r = join "\t", d.t, (d.cv+0);
-       d.y.spc = d.y.ov - d.y.cv;
-       d.y->{$_} = 0+sprintf('%.6f',d.y->{$_}) for qw'cv ov aspace spc';
-       
-       if (d.c.lumfa) {
-           my $fl = (d.y.spc / 0.02) * 4;
-           #sayyl "d.t   d.y.ov - d.y.cv  ::: d.y.spc d.y.aspace \t\t $fl";
-           d.sc.fs = $fl if $fl < 9;
-           d.sc.tt="d.t at d.y.cv for d.y.spc";
-       }
-       if (d.y.over) {
-           d.sc.ml = (d.y.over * 40)."%"; 
-       }
  - K: inmid #c
    D: |
      my $y = J.d.y;

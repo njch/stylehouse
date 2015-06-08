@@ -79,6 +79,7 @@ R_Jz:
      n.sc.args = join',',map{'$'.$_}split',',n.sc.args
          if n.sc.args && n.sc.args !~ /\$/;
      n.sc->{"ct_${v}_args"} = n.sc.args || '$A,$C,$v,$g,$at,$J,$j';
+     #n.sc.way = 1 unless n.sc.nx;
      #'$X,$wJ,$J,$j,$lv,$v,$sc,$at,$aj,$aJ';
  - K: chuv/flows/chov #c
    D: |
@@ -89,6 +90,81 @@ R_Jz:
      wonga 5
      outs 7
      Wout 8
+ - K: chov/flow #c
+   D: |
+     # 1
+     G.oin.idJy->{J.id} ||= $J;
+     
+     # 3 spewing two-step
+     my $vs = Rw tyv $J;
+     my @s;
+     
+     # 3.9
+     for my $lv (@$vs) {
+         push @s, $lv;
+         my $j = lv.j;
+         die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
+         
+         # 4 figure floor
+         my $coi = Rw pha $J:aJ $k:j.r;
+         coi.qui = 1;
+         my $xat = do {
+             Rw lv_same $lv $x:coi $J:aJ;
+         } if aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
+         
+         
+         my $at;
+         my $pat;
+         my $plv;
+         if (!$xat) {
+             $at = {};
+             at.s = j.s;
+             # may be creating, overhead thought
+             at.__ajid1 = aj.id;
+             # 5
+             
+             # 5.9
+         }
+         # gets self aware in waves: 5 busi, 6 traj, 7 scoops
+         # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
+         $pat = aJ.bb->{"j.l%at\t".j.cv};
+         $plv = aJ.bb->{"j.l%lv\t".j.cv};
+         if (!$xat) {
+             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+             aJ.bb->{"j.l%at\t".j.cv} = $at;
+             
+             coi.exactl->();
+         }
+         else {
+             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
+             $at = $pat;
+         }
+         at.__ajid2 = aj.id;
+         lv.at = $at;
+         # 6
+         
+         # 7.9 # T ^
+     }
+     # 8 check lv up cover
+     if (J.yy.may.noroot) {
+         die 'noroot ag has s'.wdump($_) for grep {_.s} @s;
+         aj.c = [map{@{_.Ec||[]}}@s];
+         aj.sc = [map{@{_.Esc||[]}}@s];
+     }
+     else {
+         my $lv = aJ.bb->{"/%lv\t0.9"};
+         aj.s = lv.s;
+         delete aj.s if lv.scon; # no repeat emit
+         aj.c = lv.Ec || [];
+         aj.sc = lv.Esc || [];
+     }
+     # 8.8
+     if (!ar.catj) {
+         Rw Em $aj;
+     }
+     # 9
+     $aj
+     
  - K: geomo/nesting #c
    D:
      -
@@ -234,81 +310,6 @@ R_Jz:
            my $M = ['','',{W=>G.Wid},{z=>$c}];
            aj.c = [" a\.om({},".sjson($M).",a,{});"];
        }
- - K: chov/flow #c
-   D: |
-     # 1
-     G.oin.idJy->{J.id} ||= $J;
-     
-     # 3 spewing two-step
-     my $vs = Rw tyv $J;
-     my @s;
-     
-     # 3.9
-     for my $lv (@$vs) {
-         push @s, $lv;
-         my $j = lv.j;
-         die "reffy j.s in j.l ON J.name".wdump 3, [ar.ip, $j] if ref j.s;
-         
-         # 4 figure floor
-         my $coi = Rw pha $J:aJ $k:j.r;
-         coi.qui = 1;
-         my $xat = do {
-             Rw lv_same $lv $x:coi $J:aJ;
-         } if aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
-         
-         
-         my $at;
-         my $pat;
-         my $plv;
-         if (!$xat) {
-             $at = {};
-             at.s = j.s;
-             # may be creating, overhead thought
-             at.__ajid1 = aj.id;
-             # 5
-             
-             # 5.9
-         }
-         # gets self aware in waves: 5 busi, 6 traj, 7 scoops
-         # above can now trust lvs to have iter-sane E{s,}c[] impulses / same s
-         $pat = aJ.bb->{"j.l%at\t".j.cv};
-         $plv = aJ.bb->{"j.l%lv\t".j.cv};
-         if (!$xat) {
-             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
-             aJ.bb->{"j.l%at\t".j.cv} = $at;
-             
-             coi.exactl->();
-         }
-         else {
-             aJ.bb->{"j.l%lv\t".j.cv} = $lv;
-             $at = $pat;
-         }
-         at.__ajid2 = aj.id;
-         lv.at = $at;
-         # 6
-         
-         # 7.9 # T ^
-     }
-     # 8 check lv up cover
-     if (J.yy.may.noroot) {
-         die 'noroot ag has s'.wdump($_) for grep {_.s} @s;
-         aj.c = [map{@{_.Ec||[]}}@s];
-         aj.sc = [map{@{_.Esc||[]}}@s];
-     }
-     else {
-         my $lv = aJ.bb->{"/%lv\t0.9"};
-         aj.s = lv.s;
-         delete aj.s if lv.scon; # no repeat emit
-         aj.c = lv.Ec || [];
-         aj.sc = lv.Esc || [];
-     }
-     # 8.8
-     if (!ar.catj) {
-         Rw Em $aj;
-     }
-     # 9
-     $aj
-     
  - K: chov/sticks #c 5 cs oscacts rejoin the pipelining - form style trance
    D:
     -
@@ -686,7 +687,7 @@ R_Jz:
            my $tag = not&tag || do {
              (my $ts = j.l)  =~ s/[^\w]/ñ/sg; "$ts"
            };
-           $tag = "Z$tag" if $tag !~ /^[a-z]/i;
+           $tag = "Z$tag" if $tag !~ /^[a-z]/i || $tag =~ /^[sbu]$/i;
            at.t = "$tag";
            
            c.id = $_ for not&id;
