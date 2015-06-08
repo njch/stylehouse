@@ -17,20 +17,22 @@ R_Jz:
        coi.exactl->();
        
        
- - K: zoy/upon/u #c
+ - K: zoc #c
    D: |
+     Rw loadc;
      Rw lodname;
      Rw J5 shv;
      Rw J5 wam;
- - K: lodname #c
+ - K: loadc #c
    D: |
      my $n = 'x';
      my $m = LoadFile('w/c/1');  
      for my $p (keys %$m) {
          my $n = $m->{$p};
          Rw loadup $u:G.way $p $n;
-         #loadup(G.way, $k, $
      }  
+ - K: lodname #c
+   D: |
      my $st = Rw wuck - lod/H.name;
      for my $v (values %$st) {
          for my $p (keys %$v) {
@@ -38,14 +40,13 @@ R_Jz:
              Rw loadup $u:G.way $p $n;
          } 
      }
-     die wdump G.way.lod.u;
      
  - K: wo1 #c 
    n_D:
      yJ: |
        'awm'
      on: |
-       won 0.1 w/c {ou:eye}
+       won 0.1 eye/fug {ou:eye}
        #won 0.1 g/Z {ou:eye}
        
  - K: wam #c 
@@ -53,7 +54,7 @@ R_Jz:
      yJ: |
        'awm'
      on: |
-       twzng 0.1 eye/fug/1 {ou:eye}
+       twzng 0.1 w/c {ou:eye}
        #twzng 0.5 J/2 {dir:ghosts,ou:file}
  - K: wut #c 
    n_D:
@@ -79,31 +80,43 @@ R_Jz:
      my $file = $u;
      J.d.c.pwth = 'somewhere';
      
-     J.V = 1 if J.d.t =~ /bol/;
-     my @ma = map{fixutf8($_);chomp;$_}`/bin/ls -1 '$file'`;
-     #Jn('spc',0.024,"J.d.y.spc");
-     
      Jn('fiule',0.1,"J.d.t",'{hs:7579}');
      
      return
-     Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}') if J.d.y.spc < 0.02;
+     Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
+     if J.d.y.spc < 0.02;
      
+     # cm smartIndent
      my $oM=[];
-     if (@ma == 1 && $ma[0] eq $u) {
+     if (!-e $file) {
+         Jn("not",0.2,"!$file:$!",'{co:fca}');
+     }
+     elsif (-l $file) {
+         my $to = readlink $file;
+         $to || die "$file => $to";
+         Jn('-s',0.2,'-s','{co:fca}');
+         oMn($to,{},{pi=>'ls',s=>"$u/$to"});
+     }
+     elsif (-f $file) {
          Jn('-f',0.2,'-f');
+         
          oMn('.','',{pi=>'fi',s=>$file});
      }
-     elsif (!@ma) {
-         Jn("not",0.2,"!:$!",'{co:fca}');
-     }
-     else {
+     elsif (-d $file) {
          Jn('diry',0.2,'/','{hs:3555}');
+         
+         opendir(my $dh, $file) || die "can't opendir $file: $!";
+         my @ma = grep {$_ ne '.' && $_ ne '..'} readdir($dh);
+         closedir $dh;
+         
+         sayyl "$file ctionais".wdump\@ma;
          my $rl = int(14 * (J.d.y.spc / 0.3 * J.d.y.spc));
          $rl = 7 if $rl < 7;
          @ma = @ma[0..$rl] if @ma > $rl;
          sayyl "ls $u   (J.d.t) e $rl    in J.d.y.spc";
          oMn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
+     
      Jn('ls',{o=>$oM},{});
      
  - K: somewhere #c
