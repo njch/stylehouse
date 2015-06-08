@@ -106,6 +106,8 @@ R_Jz:
      chomp $file;
      $file ||= "/?";
      Jn('mimey',0.2,$file,'{fs:7}');
+     Jn('thumbnail',0.2,{pi=>'thumbnail',s=>$u}) 
+             if $u =~ /(png|gif|jpe?g)$/i;
  - K: pi/file #c
    D: |
      my $file = $u;
@@ -118,6 +120,8 @@ R_Jz:
      
      Jn("filename",0.1,$file,'{fs:20,hs:5563}');
      
+     my $met = `file '$file'`;
+     die $met unless $met =~ /text/;
      my $o = Rw fil/o $file;
      
      Jn('nmyd',{o=>$o});

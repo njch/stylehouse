@@ -33,7 +33,7 @@ use File::Find;
 use feature 'switch';
 our @F; # is Ring re subs from below 
 
-our $MAX_FCURSION = 140;
+our $MAX_FCURSION = 240;
 our $RADIAN = 1.57079633;
 our $NUM = qr/-?\d+(?:\.\d+)?/;
 
