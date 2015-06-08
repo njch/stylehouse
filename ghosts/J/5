@@ -20,11 +20,12 @@ R_Jz:
            }
        }
        my $x;
-       x.wormhole.yr = $hk; 
+       x.wormhole.yr = $hk;  
        x.wormhole.ya = $amp;
        while (my ($dir, $v) = each %$x) {
            while (my ($k, $d) = each %$v) {
-               my $y = Dump($d);
+               my $y = YAML::Syck::Dump($d);
+               die wdump $y if length $y < 50; 
                $y =~ s/^---//;
                encode_utf8 $y;
                fspu("$dir/$k\.yml", $y);
