@@ -1991,14 +1991,6 @@ sub snapple {
     $a
 }
 
-sub loadup {
-    my $G = shift;
-    my ($i, $k, $v) = @_;
-    my $s = $G->snapple($k); # chunks {G{GG{etc 3
-    $s->{e} = $v;
-    $G->suets($i, $s);
-}
-
 sub catchings {
     my $G = shift;
     $SIG{__WARN__} = sub {
