@@ -1940,6 +1940,65 @@ sub wag {
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 
+sub loadup {
+    my $G = shift;
+    my ($i, $k, $v) = @_;
+    my $s = $G->snapple($k); # chunks {G{GG{etc 3
+    $s->{e} = $v;
+    $G->suets($i, $s);
+}
+
+sub suets {
+    my $G = shift;
+    my ($i, $s) = @_;
+    $s = {s=>[$G->chuntr($s)]} if !ref $s;
+    my @s = @{$s->{s}};
+    my $end = pop @s if exists $s->{e};
+    my $last;
+    while (1) {
+          my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
+        $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
+        if (!$last) { # TODO know about insto hash or array...
+             $i = $1 eq "{" ?
+             do { $i = $i->{$2} ||= {} }
+             :
+             $1 eq "[" ?
+             do { $i->[$2] ||= {} }
+             :
+             die "je seuits $1?";
+        }
+        else {
+            if (exists $s->{e}) {
+                $i->{$2} = $s->{e} if $1 eq "{";
+                $i->[$2] = $s->{e} if $1 eq "[";
+            }
+            last;
+        }
+    }
+    $i
+}
+
+sub snapple {
+    my $G = shift;
+    my $k = shift;
+    ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
+    my $a = {k => $k, v => $v};
+    my @s;
+    while ($k =~ m/(\W\w+)/sg) {
+          push @s, $1;
+    }
+    $a->{s} = \@s;
+    $a
+}
+
+sub loadup {
+    my $G = shift;
+    my ($i, $k, $v) = @_;
+    my $s = $G->snapple($k); # chunks {G{GG{etc 3
+    $s->{e} = $v;
+    $G->suets($i, $s);
+}
+
 sub catchings {
     my $G = shift;
     $SIG{__WARN__} = sub {
