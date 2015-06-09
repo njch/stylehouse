@@ -459,7 +459,8 @@ R_Jz:
     - geo
     - 3
     - |
-      at.sc.geo = $v={%$v};
+      my $s = join ' ', map{0+$_} v.x, v.y, v.radial;
+      at.sc.geo = $s;
       C.sc.ab = delete v.ab if v.ab;
    - 
     - enid
@@ -605,10 +606,18 @@ R_Jz:
            });
        }
        
-       if (C.sc.geo) {
-           var nC = {c: C.sc.geo, sc: C.sc};
-           G.sc_geo(A,nC,G,T);
-       }
+       if (!C.sc.css)
+          C.sc.css = {};
+       var ung = ['ab','geo'];
+       $.each(ung, function(i,v) {
+           if (C.sc[v]) {
+               var nC = {c: C.sc[v], sc: C.sc};
+               var way = 'sc_'+v;
+               
+               var f = {n: G[way]};
+               f.n(A,nC,G,T);
+           }
+       });
        
        
        if (C.sc.css) {
@@ -626,16 +635,21 @@ R_Jz:
     - sc_geo #c A,C,G,T
     - 3
     - |
-      if (!C.sc.css)
-          C.sc.css = {};
-      if (!C.sc.anc)
-          C.sc.anc = {};
+      var s = C.c.split(' ');
+      C.c = {x:s[0],y:s[1],radial:s[2]};
       C.sc.css.top = (C.c.y * 100)+'%';
       C.sc.css.left = (C.c.x * 100)+'%';
       C.sc.css['transform-origin'] = '0% 0%';
       C.sc.css['transform'] = 'rotate('+C.c.radial+'rad)';
-       
-      console.log(C);
+   -
+    - sc_ab #c A,C,G,T
+    - 3
+    - |
+      if (C.c === '100') {
+          C.sc.css.width = '100%';
+          C.sc.css.height = '100%';
+      }
+      C.sc.css.position = 'absolute';
    -
     - el #c A,C,G,T
     - 3
@@ -739,8 +753,11 @@ stwa: # STASHINGS
   - ab 
   - 3.3
   - |
-     $v = 'width:100%,height:100%' if $v eq '100';
+    at.sc.ab = $v;
+    return;
+     #$v = 'width:100%,height:100%' if $v eq '100';
      if ($v =~ /^.+:.+/) {
+     die $v;
          g.w->(mksc=>{s=>$v,sc=>C.sc},$g );
          $v = 1;
      }
