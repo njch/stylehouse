@@ -86,16 +86,22 @@ R_Jz:
      Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
      if J.d.y.spc < 0.02;
      
+     if (-l $file) {
+         Jn('-s',0.12,'-s','{co:fca}');
+         my $to = readlink $file;
+         my $oo = $u;
+         $oo =~ s/\/[^\/]+$//;
+         #Jn('sc',0.3,"$oo/",'{co:3ca}');
+         $oo .= '/'.$to;
+         Jn('sb',0.1231,"$to",'{co:f6a}');
+         $oo || die "$file => $oo";
+         $file = $oo;
+     }
+     
      # cm smartIndent
      my $oM=[];
      if (!-e $file) {
          Jn("not",0.2,"!$file:$!",'{co:fca}');
-     }
-     elsif (-l $file) {
-         my $to = readlink $file;
-         $to || die "$file => $to";
-         Jn('-s',0.2,'-s','{co:fca}');
-         oMn($to,{},{pi=>'ls',s=>"$u/$to"});
      }
      elsif (-f $file) {
          Jn('-f',0.2,'-f');
@@ -138,13 +144,13 @@ R_Jz:
      Rw J5 wut $M;
  - K: pi/fi #c -f
    D: |
-     my $file = '`?';#`file '$u'`;
-     $file =~ s/^\Q$u: \E//;
-     chomp $file;
-     $file ||= "/?";
-     Jn('mimey',0.2,$file,'{fs:7}');
-     Jn('thumbnail',0.2,{pi=>'thumbnail',s=>$u}) 
-             if $u =~ /(png|gif|jpe?g)$/i;
+     my $y;
+     $y ||= 'thumbnail' if $u =~ /(png|gif|jpe?g)$/i;
+     $y ||= 'file' if $u =~ /^w\/c|^g/;
+     my $oM = [];
+     oMn($y,{},{pi=>$y,s=>$u});
+     Jn('fis',{o=>$oM},{});
+     
  - K: pi/file #c
    D: |
      my $file = $u;
