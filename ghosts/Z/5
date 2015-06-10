@@ -26,7 +26,7 @@ R_Jz:
  - K: loadc #c
    D: |
      my $n = 'x';
-     my $m = LoadFile('w/c/1');  
+     my $m = LoadFile('w/c/1');
      for my $p (keys %$m) {
          my $n = $m->{$p};
          Rw loadup $u:G.way $p $n;
@@ -54,8 +54,13 @@ R_Jz:
      yJ: |
        'awm'
      on: |
-       twzng 0.1 w/c {ou:eye}
+       #twzng 0.1 w/c {ou:eye}
+       tweg 0.1 life/W {ou:eye}
        #twzng 0.5 J/2 {dir:ghosts,ou:file}
+     upl: |
+     
+     
+     
  - K: wut #c 
    n_D:
      yJ: |
@@ -89,20 +94,22 @@ R_Jz:
      if (-l $file) {
          Jn('-s',0.12,'-s','{co:fca}');
          my $to = readlink $file;
-         my $oo = $u;
-         $oo =~ s/\/[^\/]+$//;
-         #Jn('sc',0.3,"$oo/",'{co:3ca}');
-         $oo .= '/'.$to;
+         my $oo = $file;
+         $oo =~ s/(^|\/)[^\/]+$//;
+         undef $oo if $oo eq '';
+         $oo = (defined$oo?"$oo/":"").$to;
+         
          Jn('sb',0.1231,"$to",'{co:f6a}');
+         
          $oo || die "$file => $oo";
          $file = $oo;
      }
      
-     # cm smartIndent
+     # cm smartIndent 
      my $oM=[];
      if (!-e $file) {
          Jn("not",0.2,"!$file:$!",'{co:fca}');
-     }
+     }  
      elsif (-f $file) {
          Jn('-f',0.2,'-f');
          
@@ -112,13 +119,21 @@ R_Jz:
          Jn('diry',0.2,'/','{hs:3555}');
          
          opendir(my $dh, $file) || die "can't opendir $file: $!";
-         my @ma = grep {$_ ne '.' && $_ ne '..'} readdir($dh);
+         my @ma = readdir($dh);
+         
+         @ma = sort grep {$_ ne '.' && $_ ne '..'} @ma;
+         
+         my @fa;
+         @ma = map { -d "$u/$_" ? push @fa, $_ : $_ } @ma;
+         @ma = (@fa,@ma); 
+         
          closedir $dh;
          
          my $rl = int(14 * (J.d.y.spc / 0.3 * J.d.y.spc));
          $rl = 7 if $rl < 7;
          @ma = @ma[0..$rl] if @ma > $rl;
          sayyl "ls $u   (J.d.t) e $rl    in J.d.y.spc";
+         #saybl wdump 2, {J.d.t=>\@ma};
          oMn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
      
@@ -146,6 +161,7 @@ R_Jz:
      my $y;
      $y ||= 'thumbnail' if $u =~ /(png|gif|jpe?g)$/i;
      $y ||= 'file' if $u =~ /^w\/c|^g/;
+     $y ||= 'text';
      my $oM = [];
      
      oMn($y,{},{pi=>$y,s=>$u});
