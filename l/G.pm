@@ -1999,6 +1999,49 @@ sub catchings {
     };
 }
 
+sub Loadc {
+    my $yaml = shift;
+    $@="";
+
+    $SIG{__DIE__} = undef;
+    $SIG{__WARN__} = undef;
+    my $w = eval {
+    YAML::Syck::Load($yaml)
+    } ;
+    sayyl ki 1, {yml=>$yaml,w=>$w};
+
+           if ($@ || !$w || $@) {
+               say $@;
+               my ($x, $y) = $@ =~
+                     /parser \(line (\d+), column -?(\d+)\)/;
+
+               my @file = split "\n",  $yaml;
+               my $xx = 1;
+               my $vision = SYCK(); 
+               for (@file) {
+                 if ($x - 8 < $xx && $xx < $x + 5) {
+                   if ($xx == $x) {
+                     $vision .= "HERE > $_\n";
+                     $vision .= "HERE > ".join("", (" ")x$y)."^\n";
+                   }
+                   else {
+                     $vision .= "       $_\n";
+                   }
+                 }
+                 $xx++;
+               }
+               sayre "! YAML load failed: "
+               .($@ ? $@ : "got: ".($w || "~"))
+               ."\n\n".$vision;
+               $@ = "";
+           }
+     $w
+}
+
+sub SYCK {
+    'SYCK SYCJK';
+}
+
 sub wayup {
     my $G = shift;
     my $way = read_file(shift);

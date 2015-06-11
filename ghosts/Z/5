@@ -48,11 +48,16 @@ R_Jz:
  - K: loadc #c
    D: |
      my $n = 'x';
-     my $m = LoadFile('w/c/1');
+     my $file = 'w/c/1';
+     my $m = Rw Loadc $file;
      for my $p (keys %$m) {
          my $n = $m->{$p};
          Rw loadup $u:G.way $p $n;
-     }  
+     }
+ - K: Loadc #c
+   D: |
+     my $s = read_file($file);
+     Load($s);
  - K: lodname #c
    D: |
      my $st = Rw wuck - lod/H.name;

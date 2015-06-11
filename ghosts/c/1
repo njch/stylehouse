@@ -16,13 +16,15 @@ J6: |
    my $sc;
    sc.ok = 6;
    Rw J5 + $sc;
-
+d:
+ d
 S/ghostchanges: |
     Rw loD;
+    sleep 1;  
     Rw rego;
 rego: |
     Rw J5 $file:m;
-    Rw os;  
+    Rw os;   
 J5: |
    my $r = {%$ar};
    r.J = delete($r->{m})->[0] if ar.m;
@@ -44,7 +46,7 @@ oo: |
        my $v = shift;
        $s = '%'.$s if $s;
        my $r = "d.t$s\td.cv";
-       $v ? J.bb->{$r} :
+       !defined $v ? J.bb->{$r} :
        do { J.bb->{$r} = $v;
          sub { delete J.bb->{$r} } 
        }
@@ -65,24 +67,28 @@ oo: |
        my $ok = d.sc.ok;
        my $co = jr&ok-$ok;
        #$ok && hitime-
-    die wdump d.sc;
+       die wdump d.sc;
    }
+   my $ig = {map{$_,1}qw'file J ok'};
+   
+   my @jh = grep{!$ig->{$_}}keys %{d.c};
+   warn "Have: @jh" if @jh;
    # 7
    die if !d.t;
    die if !d.cv;
    die if !ref d.s;
    
    J.bz->("d.t\td.cv",d.s);
+   
    do {
        my $ar = {%{d.c}};
        ar.J=d.s;
-       return d.s if jr&ok-9 == 9;
+       return d.s if jr&ok-9;
        my $n = jr&ok-9,9;
        Rw around;
        $n->();
    };
    d.s
-bail
 etc: |
    maky something
 
