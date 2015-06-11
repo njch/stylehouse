@@ -305,8 +305,8 @@ Ds:
       join ' ', map {
           my $v = $ar->{$_};
           $v = "~" unless defined $v;
-          $re && ref $v eq 'HASH'
-              ? "$_={ ".ki($re-1, $v)." }"
+          ref $v eq 'HASH'
+              ? "$_=".($re ?  "{ ".slim(150,ki($re-1, $v))." }" : gp($v))
               : "$_=".slim(150,"$v")
       } sort keys %$ar;
       

@@ -1,15 +1,88 @@
+lod/C:
+  os: Rw J6 wam;
+  wam/on: noe 0.1 w/fug  {ou:eye,blur:5px}   
 lod/u:
-  shv/curves: | #c
+  os: Rw J5 wam;
+  shv/curves: [EZ: floorish]
+  floorish: |
     spun 0 -0.12
     zoom 0 1 
-    y    0  0.84
+    y    0  0.84 
     x    0  0
-    curve 0 -0.4
-    
-    
-wam/on: |
-   noe 0.1 w/coast  {ou:eye,blur:5px} 
-  
+    curve 0 -0.4 
+  wam/on: noe 0.1 w/coast  {ou:eye,blur:5px}
+
+J6: |
+   my $sc;
+   sc.ok = 6;
+   Rw J5 + $sc;
+
+S/ghostchanges: |
+    Rw loD;
+    Rw rego;
+rego: |
+    Rw J5 $file:m;
+    Rw os;  
+J5: |
+   my $r = {%$ar};
+   r.J = delete($r->{m})->[0] if ar.m;
+   delete r.R;
+   my $d;
+   d.c = $r;
+   Rw oo $J:G.oin $d;
+
+oo: |
+   d.sc = delete d.c.sc if d.c.sc;
+   d.t = !ref d.c.J ? d.c.J : d.c.J.name if d.c.J;
+   d.t = d.c.file if d.c.file;
+   d.cv = 0.4 if d.c.file;
+   d.cv = 0.3 if d.c.J;
+   sayyl ki 1, $d;
+   
+   my $jr = sub {
+       my $s = shift;
+       my $v = shift;
+       $s = '%'.$s if $s;
+       my $r = "d.t$s\td.cv";
+       $v ? J.bb->{$r} :
+       do { J.bb->{$r} = $v;
+         sub { delete J.bb->{$r} } 
+       }
+       ;
+   };
+   
+   d.s = $jr->();
+   if (d.c.J) {
+       die if ref d.c.J;
+       my $o = {name=>d.c.J};
+       d.s = Rw JJ $o;
+   }
+   if (d.c.file) {
+       warn "d.c.file ist d.s";
+       return if !d.s;
+   }
+   if (d.sc.ok) {
+       my $ok = d.sc.ok;
+       my $co = jr&ok-$ok;
+       #$ok && hitime-
+    die wdump d.sc;
+   }
+   # 7
+   die if !d.t;
+   die if !d.cv;
+   die if !ref d.s;
+   
+   J.bz->("d.t\td.cv",d.s);
+   do {
+       my $ar = {%{d.c}};
+       ar.J=d.s;
+       return d.s if jr&ok-9 == 9;
+       my $n = jr&ok-9,9;
+       Rw around;
+       $n->();
+   };
+   d.s
+bail
 etc: |
    maky something
 

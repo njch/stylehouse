@@ -1,4 +1,13 @@
 R_Jz:
+ - K: clw #c
+   n_D:
+     curves: |
+       #spun 0  2
+       zoom 0 0.5
+       y    0  0
+       x    0  0
+       curve 0 -0.1
+     
  - K: Em #c send love
    D: |
      # aj.id is the J zipped .c to E in one, stream?
@@ -26,13 +35,23 @@ R_Jz:
      aj.yy = 'W';
      Rw aji $aj;
      Rw blabaj $aj;
- - K: aji #c
+ - K: aji #c 
    D: |
      my $z = ztm($aj);
      if (aj.yy) {
          0->tac("aj.yy/".$aj->{aj.yy.'id'}.'.s', $z);
      }
-     my $m = join "\n", map {@{$aj->{$_}}} sort grep{/^[sc]+/} keys %$aj;
+     my @m;
+     for my $s (sort grep{/^[sc]+/} keys %$aj) {
+         my $v = $aj->{$s};
+         if ($s eq 's') {
+             die "s is $v" if $v;
+             next;
+         }
+         ref $v || die "$s is $v";     
+         push @m, @$v;
+     }
+     my $m = join "\n", @m;
      0->tai("aj.y/aj.id\.c", $m);
      0->tac("aj.y\.s", $z);
      

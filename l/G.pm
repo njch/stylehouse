@@ -300,8 +300,8 @@ sub ki {
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
-        $re && ref $v eq 'HASH'
-            ? "$_={ ".ki($re-1, $v)." }"
+        ref $v eq 'HASH'
+            ? "$_=".($re ?  "{ ".slim(150,ki($re-1, $v))." }" : gp($v))
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
@@ -2046,7 +2046,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
-    $eval =~ s/(\w+)\&($point)/\$$1->("$2")/smg;
+    $eval =~ s/(\w+)\&($point)(,\S+?)?(;)?/\$$1->("$2"$3)$4/smg;
 
 
     # $sc>$k -> $sc->{$k}
