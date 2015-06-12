@@ -56,8 +56,12 @@ oo: |
    d.s = $jr->();
    if (d.c.J) {
        die if ref d.c.J;
-       my $o = {name=>d.c.J};
-       d.s = Rw JJ $o;
+       if (!d.s) {
+           my $o = {name=>d.c.J};
+           d.s = Rw JJ $o;
+           sayyl "Made o.name";
+       }
+       die if !ref d.s;
    }
    if (d.c.file) {
        warn "d.c.file ist d.s";
@@ -67,12 +71,13 @@ oo: |
        my $ok = d.sc.ok;
        my $co = jr&ok-$ok;
        #$ok && hitime-
-       die wdump d.sc;
+       return warn wdump d.sc;
    }
    my $ig = {map{$_,1}qw'file J ok'};
-   
    my @jh = grep{!$ig->{$_}}keys %{d.c};
    warn "Have: @jh" if @jh;
+   my $hav = 1 if @jh;
+   # some alt ^ make round v
    # 7
    die if !d.t;
    die if !d.cv;
@@ -83,8 +88,9 @@ oo: |
    do {
        my $ar = {%{d.c}};
        ar.J=d.s;
-       return d.s if jr&ok-9;
-       my $n = jr&ok-9,9;
+       return d.s if !$hav && jr&ok-9;
+       my $n = $hav ? sub{} : jr&ok-9,9;
+       say "to d.t  we $hav   @jh";
        Rw around;
        $n->();
    };
