@@ -138,21 +138,19 @@ hooks:
     if (H.name ne 'o') {
         w hostinfo;
     }
-    $G->recur(29 => sub {
+    $G->recur(6 => sub {
         w hostinfo;
     });
   hostinfo: | # REname Hostinfo, polari
-    my @ps = `ps -p$$ fu`; # j right
-    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
-    $_ = $_ / 100 for $cpu, $mem;
-    my $now = $H->hitime;
-    
+    #my @ps = `ps -p$$ fu`; # j right
+    #my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
     my $hol = H.ol ||= "H.style/H.name/H.id";
     my $info;
-    info.cpu = $cpu;
-    info.mem = $mem;
-    info.now = $now;
+    #info.cpu = $cpu;
+    #info.mem = $mem;
+    info.now = hitime;
     info.hol = $hol;
+    info.pid = $$;
     
     saygr "hostinfo: $info " if rand(1) > 0.7;
     
