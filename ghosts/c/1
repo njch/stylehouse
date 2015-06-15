@@ -19,7 +19,7 @@ fun: |
      Rw J5 wam;
 wa:
    yJ: |
-    'clw gui heag';
+    'clw gui heag sope';
    up: |
     my $coi = Rw pha $J $k=jo;
     my $wam = Rw J6 wam;
@@ -31,20 +31,19 @@ wa:
     Jn('hoos',0.9,'S@T');
     Rw vortex $J around $d=8;
     coi.exactl->();
-    
+sope/out: |
+    sayre "SOPEWAYS J.name";
+       Rw oJ $J geo &up $noesc=1;
+       Rw chuv $J;
 pi/keys: |
     my $M = [];
     Mn("key/$_" => {}, {pi=>'text',s=>$_}) for sort keys %$u;
     Jn('ls',{o=>$M},{});
 pi/HASH: |
-            my $cv = J.cv ||= 0.3;
-            
-            Jn(t => 0.1, C.t);
-            
             my $si = keys %$u;
-            J.bz->('si 0.1' => $si, 'si%css 0.1' => "color:#fff;font-size:50%");
-            
+            Jn(si=>0.1, $si, '{co:fff,fs:6}');
             Jn(Bo => 0.11, {s=>'{'});
+            
             if ($si > 32) {
                 Jn(many=>0.2,'many}','{co:33e}');
             }
@@ -54,11 +53,10 @@ pi/HASH: |
              if J.d.y.spc < 0.07;
             Jn(oB => 0.89, {s=>'}'});
             
-            return if $cv < 0.2;
-            
             # 3
             my $r = {map{$_=>1} sort keys %$u};
-            my @r = grep { delete $r->{$_} } qw'K name';
+            my @r = grep { delete $r->{$_} } 
+            qw'K name r style';
             push @r, sort keys %$r;
             
             my $M=[];
@@ -70,7 +68,7 @@ pi/HASH: |
                 y.thy = 5 if $k eq 'W';
                 Mn('{'.$k => $y, {pi=>'kv',s=>[$k,$v]});
                 
-                 my $rl = int(12 * (J.d.y.spc / 0.3 * J.d.y.spc));
+                 my $rl = int(21 * (J.d.y.spc / 0.3 * J.d.y.spc));
                 if ($i >= $rl) {
                     J.bz->("more\t0.886" => "@",
                     
@@ -208,7 +206,6 @@ oo: |
        ar.J=d.s;
        return d.s if !$hav && jr&ok-9;
        my $n = $hav ? sub{} : jr&ok-9,9;
-       say "to d.t  we $hav   @jh";
        Rw around;
        $n->();
    };
