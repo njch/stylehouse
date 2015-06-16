@@ -18,7 +18,6 @@ brack: |
 wa:
    yJ: |
     'clw gui heag sope waz';
-    
    M: |
     my $d = Jn(qw'life 0.1 life/H/*/*/*');
     y.out = 0.9;
@@ -29,17 +28,19 @@ pi/liv: |
     
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
     my @m = map{chomp;$_} `$s`;
-    @m = @m[0..5] if @m > 6;  
+    Jn(fo => 0.2 => 'fo'.@m, '%fs:6,hs:938');
+    @m = @m[0..19] if @m > 20;  
     Mn($_ => '', {pi=>'lif',s=>$_}) for @m;
     
 pi/lif: |
       -e $u || return 
       Jn('not',0.1,'!!!!'.$u,'%hs:9385');
+      J.most.filey = $u;
       
       Jn(lifen => 0.09 => 'l', '%hs:3884,fs:11');
       my $si = -s $u;
       Jn(si => 0.1 => $si, '%hs:9584,fs:7');
-      Jn(life => 0.2 => $u, '%hs:6884,fs:5');
+      #Jn(life => 0.2 => $u, '%hs:6884,fs:5');
       
       if ($si > 8000) {
           Jn(more => 0.3, '@', '%mu:r');
@@ -50,7 +51,7 @@ pi/lif: |
       }
 pi/liel: |
     $u =~ /^[\{\[]/ || die "funny $u";
-    Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
+    #Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
     
     Mn(C.t=>{},{pi=>'life',s=>djson $u});
 pi/life: |
@@ -59,6 +60,13 @@ pi/life: |
     my $s = 'text';
     my $br = 1; 
     Rw kapai + $i $u $s;
+    my $mf = J.most.filey;
+    if (u.now && $mf && hitime() - u.now > 60*4.2) {
+        C.sc.deco = 1;
+        sayre "RM $mf";
+        `rm $mf`;
+    }
+    
 kapai: |
     my $f = [];
     my $l = [];
@@ -74,21 +82,20 @@ kapai: |
 pi/now: |
     die if $u < 100 && $u > -100;
     my $d = hitime() - $u;
-    $d = Rw samv $d;
-    Jn(delta=>0.1=>$d,'%fs:8,hs:873');
+    my $dl = $d > 3*60 ? [8,873] : $d > 60 ? [6,853] : [5,634];
+    my $l = Rw samv $d;
+    Jn(delta=>0.1=>$l,"%fs:$dl->[0],hs:$dl->[1]");
 pi/hol: |
     my ($s,$n,$i,$etc) = split '/', $u;
     die "$u is long" if $etc;
-    Jn(style => 0.1 => $s, '%is:style');
-    Jn(name => 0.2 => $s, '%is:name');
-    Jn(id => 0.3 => $s, '%is:id');
+    #die "wells $u => $s"; 
+    Jn(_style => 0.1 => $s, '%is:style');
+    Jn(name => 0.2 => $n, '%is:name,fs:12');
+    Jn(id => 0.3 => $i, '%is:id,fs:6');
     
 pi/pid: |
-    my ($s,$n,$i,$etc) = split '/', $u;
-    die "$u is long" if $etc;
-    Jn(style => 0.1 => $s, '%is:style');
-    Jn(name => 0.2 => $s, '%is:name');
-    Jn(id => 0.3 => $s, '%is:id');
+    Jn(pid => 0.1 => $u, '%hs:483');
+    
     
 pi/kv: |
     return if 13<
@@ -96,7 +103,9 @@ pi/kv: |
     
     my ($k,$v) = @$u;
     my $pi = C.c.and && C.c.and.pi || '';
-    my $eel = $pi ? '' : '{ab:1,ml:-4em}';
+    my $eel = $pi ? '' : 'ab:1,ml:-4em';
+    $eel .= ",fs:6,hs:3563";
+    $eel = '%'.$eel if $eel;
     Jn('la',0.2,$k,$eel); # if hori
     Mn('v',0.3,{pi=>$pi,s=>$v});
 pidepth: |
@@ -204,7 +213,6 @@ pi/ARRAY: |
                     last;
                 }
             }
-
 os: |
     Rw J5 wa;   
     
