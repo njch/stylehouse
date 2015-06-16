@@ -1,6 +1,5 @@
 lod/C:
    fun: |
-     Rw J5 wam;
      Rw J5 wa;
    wam/on: noe 0.1 eye/o {ou:eye,blur:5px}   
 lod/u:
@@ -22,18 +21,50 @@ wa:
     'clw gui heag sope waz';
     
    M: |
+    my $d = Jn(qw'life 0.1 life/H/*/*/*');
+    Mn(d.t,'',{pi=>'liv',s=>d.s});
+pi/liv: |
+    my $s = "find $u -type f";
     
-    my $E = [map { ki $_ } map { 
-      my $d = hitime() - _.now;
-      _.now = Rw samv $d;
-      $_
-      } 
-      map{djson $_}
-    `cat life/H/*/*/*`
-    ]; 
-    # $E = wam.oJ.A;
-    Mn('wamoJA','',{pi=>'', s=>$E});
+    Jn(for => 0.1 => $s, '%hs:2784,fs:5');
+    my @m = map{chomp;$_} `$s`;
+    @m = @m[0..6] if @m > 7;
+    Mn($_ => '', {pi=>'life',s=>$_}) for @m;
     
+pi/life: |
+      -e $u || return 
+      Jn('not',0.1,'!!!!'.$u,'%hs:9385');
+      
+      Jn(life => 0.1 => 'l', '%hs:3884,fs:7');
+      my $si = -s $u;
+      Jn(si => 0.1 => $si, '%hs:9384,fs:7,mu:g');
+      
+      if ($si > 8000) {
+          Jn(more => 0.3, '@', '%mu:r');
+      }
+      else {
+          Mn(li=>'',{pi=>'liel',s=>$_}) 
+          for split "\n", ''.read_file $u;
+      }
+      
+      #my $d = hitime() - _.now;
+      #_.now = Rw samv $d;
+pi/liel: |
+    Jn(li=>0.1,"!$u", '%hs:3884,fs:4');
+    
+    if ($u =~ /^ /) {
+       Jn(line=>0.1=>{pi=>'text',s=>$u});
+    }
+    elsif ($u =~ /^[\{\[]/) {
+        my $s = djson $u;
+        Mn(li=>'',{pi=>'text',"$s"});
+    }
+    else {
+        Jn(line=>0.1=>{pi=>'text',s=>$u}); 
+    }
+
+      #my $d = hitime() - _.now;
+      #_.now = Rw samv $d;
 samv: |
     G.samv ||= [
         ["w", 7*86400], ["d", 86400, " "], ["h", 3600, ":"],
