@@ -21,7 +21,7 @@ wa:
     
    M: |
     my $d = Jn(qw'life 0.1 life/H/*/*/*');
-    y.out = 0.7;
+    y.out = 0.9;
     Mn(d.t,'',{pi=>'liv',s=>d.s});
     
 pi/liv: |
@@ -29,7 +29,7 @@ pi/liv: |
     
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
     my @m = map{chomp;$_} `$s`;
-    @m = @m[0..2] if @m > 3;  
+    @m = @m[0..5] if @m > 6;  
     Mn($_ => '', {pi=>'lif',s=>$_}) for @m;
     
 pi/lif: |
@@ -50,7 +50,7 @@ pi/lif: |
       }
 pi/liel: |
     $u =~ /^[\{\[]/ || die "funny $u";
-    Jn(li=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
+    Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
     
     Mn(C.t=>{},{pi=>'life',s=>djson $u});
 pi/life: |
@@ -69,12 +69,43 @@ kapai: |
         $pi ||= 'text';
         push @$h, [C.t,'',{pi=>'kv',s=>[$k,$v],and=>{pi=>$pi}}];
     }
-    Mn(@$_) for @$f, @$l;
+    push @$f, @$l;
+    Mn(@$_) for @$f;
 pi/now: |
     die if $u < 100 && $u > -100;
     my $d = hitime() - $u;
     $d = Rw samv $d;
+    Jn(delta=>0.1=>$d,'%fs:8,hs:873');
+pi/hol: |
+    my ($s,$n,$i,$etc) = split '/', $u;
+    die "$u is long" if $etc;
+    Jn(style => 0.1 => $s, '%is:style');
+    Jn(name => 0.2 => $s, '%is:name');
+    Jn(id => 0.3 => $s, '%is:id');
     
+pi/pid: |
+    my ($s,$n,$i,$etc) = split '/', $u;
+    die "$u is long" if $etc;
+    Jn(style => 0.1 => $s, '%is:style');
+    Jn(name => 0.2 => $s, '%is:name');
+    Jn(id => 0.3 => $s, '%is:id');
+    
+pi/kv: |
+    return if 13<
+    Rw pidepth;
+    
+    my ($k,$v) = @$u;
+    my $pi = C.c.and && C.c.and.pi || '';
+    my $eel = $pi ? '' : '{ab:1,ml:-4em}';
+    Jn('la',0.2,$k,$eel); # if hori
+    Mn('v',0.3,{pi=>$pi,s=>$v});
+pidepth: |
+    my $o = $J;
+    my $i = 0;
+    while (o.Jiter) {
+        $i++; $o = o.Jiter;
+    }
+    $i;
 waz:
     up: |
       my $coi = Rw pha $J $k=jo;
@@ -173,22 +204,7 @@ pi/ARRAY: |
                     last;
                 }
             }
-pi/kv: |
-    return if 13<
-    Rw pidepth;
-    
-    my ($k,$v) = @$u;
-    my $pi = C.c.and && C.c.and.pi || '';
-    my $eel = $pi ? '' : '{ab:1,ml:-4em}';
-    Jn('la',0.2,$k,$eel); # if hori
-    Mn('v',0.3,{pi=>'',s=>$v});
-pidepth: |
-    my $o = $J;
-    my $i = 0;
-    while (o.Jiter) {
-        $i++; $o = o.Jiter;
-    }
-    $i;
+
 os: |
     Rw J5 wa;   
     
