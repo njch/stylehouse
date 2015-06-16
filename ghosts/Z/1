@@ -194,18 +194,13 @@ R_Jz:
             Rw hostinfo;
         });
     }
-    my @ps = `ps -p$$ fu`; # j right
-    my ($u, $pid, $mem, $cpu) = (split /\s+/, $ps[1])[0,1,2,3];
-    $_ = $_ / 100 for $cpu, $mem;
     
     my $info;
-    info.cpu = $cpu;
-    info.mem = $mem;
     info.now = hitime;
     info.hol = H.ol;
     info.pid = $$;
     
-    saygr "hostinfo: $info " if rand(1) > 0.7;
+    saygr "hostinfo: ".ki $info if rand(1) > 0.7;
     
     # TODO some Purs have core v
     

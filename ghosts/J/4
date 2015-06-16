@@ -37,10 +37,13 @@ R_Jz:
      # - [t( y)( c)( sc)???]
      # - [t, y]
      # - [t, y, c, sc]
+     my $peels = qr/^[\{\%]/;
      my $peel = sub { # simple as hash from string
         my $s = shift;
-        $s =~ s/^{//;
-        $s =~ s/}$// || die "unpealable $s";
+        unless ($s =~ s/^%//) {
+            $s =~ s/^{//;
+            $s =~ s/}$// || die "unpealable $s";
+        }
         my @t = split ',', $s;
         my $t = {};
         for (@t) {
@@ -123,7 +126,7 @@ R_Jz:
              for (qw,t y c sc,) {
                  if ($ci =~ s/^(\S+) *//) { # some t are types of space
                      my $v = $1;
-                     $v = $peel->($v) if $v =~ /^{/;
+                     $v = $peel->($v) if $v =~ $peels;
                      $n->{$_} = $v;
                  }
              }
@@ -187,7 +190,7 @@ R_Jz:
              else {die "strung ny: n.y"};
          }
          if (!ref n.c) {
-             if (n.c =~ /^{/) {
+             if (n.c =~ $peels) {
                  n.c = $peel->(n.c);
              }
              else {
@@ -195,7 +198,7 @@ R_Jz:
              }
          }
          if (!ref n.sc) {
-             if (n.sc =~ /^{/) {
+             if (n.sc =~ $peels) {
                  n.sc = $peel->(n.sc);
              }
          }
@@ -224,9 +227,14 @@ R_Jz:
      }
      elsif ($J) {
          sayyl "@@@@ imol ".@$oM."  -0>  ".gp($J) if ar.V;
+         my @d;
          for my $d (@$oM) {
+             push @d,
              Rw yo + $J $d;
          }
+         #die wdump [ @d];
+         return @d
+         
      }
      else {
          die "no way to modulate: ".wdump $oM;
@@ -238,10 +246,10 @@ R_Jz:
      return $d if ar.ret;
      my $oM = [$d];
      Rw iM + $oM;
-
  - K: om/lev #c envelop-in     $whateverM into $M enve
    D: |
      my ($d,$oM) = Rw iot +;
+     inter({d=>ki $d});
      d.c.pi && die;
      d.c.pi = 'level';
      d.c.s = sub {

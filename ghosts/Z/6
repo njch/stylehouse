@@ -8,10 +8,10 @@ R_Jz:
        d.y = {thi => d.y} if !ref d.y;
        my $y = d.y;
        
-       die if y.cv && y.in;
+       die wdump 2, [$y, d.sc, d.c] if y.cv && y.in;
        y.in ||= 0.1; 
        y.out ||= 0.9; # up to
-       y.thi ||= 1;
+       y.thi ||= 1; 
        y.space = y.out - y.in; # could spiral much space away from spine
        y.space *= -1 unless y.space > 0;
        y.aspace = y.space / y.thi;
@@ -75,7 +75,7 @@ R_Jz:
          d.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if d.y.o.J;
          d.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
          d.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
-         d.c.lumfa = 1;
+         d.c.lumfa = 1 if J.most.J.name eq 'wam';
          
       }
       if (d.c.lumfa) {
