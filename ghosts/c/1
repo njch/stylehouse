@@ -30,9 +30,9 @@ pi/liv: |
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
     my @m = map{chomp;$_} `$s`;
     @m = @m[0..2] if @m > 3;  
-    Mn($_ => '', {pi=>'life',s=>$_}) for @m;
+    Mn($_ => '', {pi=>'lif',s=>$_}) for @m;
     
-pi/life: |
+pi/lif: |
       -e $u || return 
       Jn('not',0.1,'!!!!'.$u,'%hs:9385');
       
@@ -48,22 +48,33 @@ pi/life: |
           my @m = read_file $u;
           Mn(C.t=>'',{pi=>'liel',s=>$_}) for @m;
       }
-      
-      #my $d = hitime() - _.now;
-      #_.now = Rw samv $d;
 pi/liel: |
-    Jn(li=>0.1,"$u", '%hs:3884,fs:6');
+    $u =~ /^[\{\[]/ || die "funny $u";
+    Jn(li=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
     
-    if (0 && $u =~ /^ /) {
-        Jn(line=>0.1=>{pi=>'text',s=>$u});
+    Mn(C.t=>{},{pi=>'life',s=>djson $u});
+pi/life: |
+    Jn('ins',0.1,'k{'); 
+    my $i = {qw'hol hol pid pid now now'};
+    my $s = 'text';
+    my $br = 1; 
+    Rw kapai + $i $u $s;
+kapai: |
+    my $f = [];
+    my $l = [];
+    for my $k (sort keys %$u) {
+        my $v = $u->{$k};
+        my $pi = $i->{$k};
+        my $h = $pi ? $f : $l;
+        $pi ||= 'text';
+        push @$h, [C.t,'',{pi=>'kv',s=>[$k,$v],and=>{pi=>$pi}}];
     }
-    elsif ($u =~ /^[\{\[]/) {
-        my $s = djson $u;
-        Mn('and'.C.t=>{},{pi=>'',s=>$s});
-    }
-    else {
-        Jn(line=>0.1=>{pi=>'text',s=>$u}); 
-    }
+    Mn(@$_) for @$f, @$l;
+pi/now: |
+    die if $u < 100 && $u > -100;
+    my $d = hitime() - $u;
+    $d = Rw samv $d;
+    
 waz:
     up: |
       my $coi = Rw pha $J $k=jo;
@@ -95,9 +106,11 @@ pi/HASH: |
                 Jn(many=>0.2,'many}','{co:33e}');
             }
             
+            
              return
              Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
              if J.d.y.spc < 0.01;
+             
             Jn(oB => 0.89, {s=>'}'});
             
             # 3
@@ -116,10 +129,12 @@ pi/HASH: |
                 
                 $i++;
                 J.d.y.spc || die "wut:". wdump J.d.y;
-                my $rl = int(8 * (J.d.y.spc / 0.3 * J.d.y.spc));
-                sayyl " J.d.y.spc ! ! $rl";
+                my $rl = 7 ;
+                #int(1 * (J.d.y.spc / 0.3 * J.d.y.spc));
+                sayyl " J.d.y.spc ! ! $rl       "
+                    .(J.d.y.spc / 0.3 * J.d.y.spc);
                 if ($i >= $rl) {
-                    J.bz->("more\t0.886" => "$i@!!!$rl",
+                    J.bz->("more\t0.886" => "$i@! !!$rl",
                     
                         '%sf' => "blue");
                     last;
@@ -159,14 +174,14 @@ pi/ARRAY: |
                 }
             }
 pi/kv: |
-    return if 7<
+    return if 13<
     Rw pidepth;
     
     my ($k,$v) = @$u;
-    Jn('la',0.2,$k,'{ab:1,ml:-4em}');
-    my $M = [];
+    my $pi = C.c.and && C.c.and.pi || '';
+    my $eel = $pi ? '' : '{ab:1,ml:-4em}';
+    Jn('la',0.2,$k,$eel); # if hori
     Mn('v',0.3,{pi=>'',s=>$v});
-    Jn('ls',{o=>$M},{}); 
 pidepth: |
     my $o = $J;
     my $i = 0;
