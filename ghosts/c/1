@@ -1,9 +1,10 @@
 lod/C:
    fun: |
      Rw J5 wa;
+   os: Rw fun; 
    wam/on: noe 0.1 eye/o {ou:eye,blur:5px}   
 lod/u:
-   os: Rw J5 wam;
+   os: Rw J6 wam;
    shv/curves: [EZ: floorish]
    wam/on: noe 0.1 g/c/1  {ou:eye,blur:5px}
 floorish: |
@@ -14,141 +15,65 @@ floorish: |
     curve 0 -0.4 
 brack: |
      Rw J5 shv;
-fun: |
-     Rw J5 wam;
 wa:
    yJ: |
     'clw gui heag sope waz';
     
    M: |
     my $d = Jn(qw'life 0.1 life/H/*/*/*');
+    y.out = 0.7;
     Mn(d.t,'',{pi=>'liv',s=>d.s});
+    
 pi/liv: |
     my $s = "find $u -type f";
     
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
     my @m = map{chomp;$_} `$s`;
-    @m = @m[0..6] if @m > 7;
+    @m = @m[0..2] if @m > 3;  
     Mn($_ => '', {pi=>'life',s=>$_}) for @m;
     
 pi/life: |
       -e $u || return 
       Jn('not',0.1,'!!!!'.$u,'%hs:9385');
       
-      Jn(life => 0.1 => 'l', '%hs:3884,fs:7');
+      Jn(lifen => 0.09 => 'l', '%hs:3884,fs:11');
       my $si = -s $u;
-      Jn(si => 0.1 => $si, '%hs:9384,fs:7,mu:g');
+      Jn(si => 0.1 => $si, '%hs:9584,fs:7');
+      Jn(life => 0.2 => $u, '%hs:6884,fs:5');
       
       if ($si > 8000) {
           Jn(more => 0.3, '@', '%mu:r');
       }
       else {
-          Mn(li=>'',{pi=>'liel',s=>$_}) 
-          for split "\n", ''.read_file $u;
+          my @m = read_file $u;
+          Mn(C.t=>'',{pi=>'liel',s=>$_}) for @m;
       }
       
       #my $d = hitime() - _.now;
       #_.now = Rw samv $d;
 pi/liel: |
-    Jn(li=>0.1,"!$u", '%hs:3884,fs:4');
+    Jn(li=>0.1,"$u", '%hs:3884,fs:6');
     
-    if ($u =~ /^ /) {
-       Jn(line=>0.1=>{pi=>'text',s=>$u});
+    if (0 && $u =~ /^ /) {
+        Jn(line=>0.1=>{pi=>'text',s=>$u});
     }
     elsif ($u =~ /^[\{\[]/) {
         my $s = djson $u;
-        Mn(li=>'',{pi=>'text',"$s"});
+        Mn('and'.C.t=>{},{pi=>'',s=>$s});
     }
     else {
         Jn(line=>0.1=>{pi=>'text',s=>$u}); 
-    }
-
-      #my $d = hitime() - _.now;
-      #_.now = Rw samv $d;
-samv: |
-    G.samv ||= [
-        ["w", 7*86400], ["d", 86400, " "], ["h", 3600, ":"],
-        ["m", 60, ":" ], ["s", 1, 0],
-        [ "ms", 0.001 ], [ "us", 1e-6 ], ["ns", 1e-9],
-    ];  
-
-    my $scalar = $d;
-    my $neg = $scalar < 0;
-    if ($neg) {
-        $scalar = -$scalar;
-    }
-    my $d = (shift) || 4;
-    if ($scalar == 0) {
-        return "0s";
-    }
-    my $quanta = exp(log($scalar)-2.3025851*$d);
-    my $rem = $scalar+0;
-    my $rv = "";
-    for my $i (0..@{G.samv}) {
-           my $unit = G.samv->[$i];
-        if ($rv or $unit->[1] <= $rem ) {
-           my $x = int($rem/$unit->[1]);
-           my $new_rem = ($x ? $rem - ($x*$unit->[1]) : $rem);
-           my $last = (G.samv->[$i+1][1]<$quanta);
-           if ($last and $new_rem >= $unit->[1]/2) {
-               $x++;
-           }
-           if (!$last and $unit->[2]) {
-               $rv .= $x.$unit->[0].$unit->[2];
-           }
-           elsif (defined $unit->[2] and !$unit->[2]) {
-               # stop at seconds
-               my $prec = ceil(-log($quanta)/log(10)-1.01);
-               if ( $prec >= 1 ) {
-                       $rv .= sprintf("%.${prec}f", $rem).$unit->[0];
-               }
-               else {
-                       $rv .= sprintf("%d", $rem).$unit->[0];
-               }
-               last;
-           }
-           else {
-               $rv .= $x.$unit->[0];
-           }
-           last if $last;
-           $rem = $new_rem;
-        }
-    }
-    ($neg?"-":"").$rv;
-mugwu: |
-    my %prefixes=(18=>"E",15=>"P",12=>"T",9=>"G",6=>"M",3=>"k",0=>"",
-              -3=>"m",-6=>"u",-9=>"n",-12=>"p",-15=>"f",-18=>"a");
-
-    my $scalar = $d;
-    my $neg = $scalar < 0 ? "-" : "";
-    if ($neg) {
-        $scalar = -$scalar;
-    }
-    my $unit = (shift) || "";
-    my $d = (shift) || 4;
-    my $e = 0;
-    #scale value
-    while ( abs($scalar) > 1000 ) { $scalar /= 1000; $e += 3; }
-    while ( $scalar and abs($scalar) < 1 ) {$scalar*=1000;$e-=3}
-
-    # round the number to the right number of digits with sprintf
-    if (exists $prefixes{$e}) {
-        $d -= ceil(log($scalar)/log(10));
-        $d = 0 if $d < 0;
-        my $a = sprintf("%s%.${d}f", $neg, $scalar);
-        return $a.$prefixes{$e}.$unit;
-    } else {
-        return sprintf("%s%${d}e", $neg, $scalar).$unit;
     }
 waz:
     up: |
       my $coi = Rw pha $J $k=jo;
       my $wam = Rw J6 wam;
       my $M=[];
+      my $y = {o=>$M};
       
-      Rw suck */M $J $M;
+      Rw suck */M $J $M $y;
       
-      Jn('zoo',{in=>0.2,o=>$M}); 
+      Jn('zoo',$y) if @$M;
 
       Jn('hoos',0.9,'S@T');
       Rw vortex $J around $d=8;
@@ -181,16 +106,18 @@ pi/HASH: |
             qw'K name r style';
             push @r, sort keys %$r;
             
-            my $M=[];
             my $i = 0;
             for my $k (@r) {
                 my $v = $u->{$k};
                 
                 my $y = {};
                 y.thy = 5 if $k eq 'W';
-                Mn('{'.$k => $y, {pi=>'kv',s=>[$k,$v]});
+                Mn("{$i" => $y, {pi=>'kv',s=>[$k,$v]});
                 
-                 my $rl = int(21 * (J.d.y.spc / 0.3 * J.d.y.spc));
+                $i++;
+                J.d.y.spc || die "wut:". wdump J.d.y;
+                my $rl = int(8 * (J.d.y.spc / 0.3 * J.d.y.spc));
+                sayyl " J.d.y.spc ! ! $rl";
                 if ($i >= $rl) {
                     J.bz->("more\t0.886" => "$i@!!!$rl",
                     
@@ -198,7 +125,6 @@ pi/HASH: |
                     last;
                 }
             }
-            Jn('ls',{o=>$M},{}); 
 pi/ARRAY: |
             my $cv = J.cv ||= 0.3;
             
@@ -217,7 +143,6 @@ pi/ARRAY: |
             
             return if $cv < 0.2;
             
-            my $M = [];
             my $i = 0;
             while (exists $u->[$i]) {
                 my $uu = $u->[$i];
@@ -233,9 +158,8 @@ pi/ARRAY: |
                     last;
                 }
             }
-            Jn('ls',{o=>$M},{}); 
 pi/kv: |
-    return if 3<
+    return if 7<
     Rw pidepth;
     
     my ($k,$v) = @$u;
