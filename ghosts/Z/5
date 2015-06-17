@@ -73,7 +73,7 @@ R_Jz:
    D: |
      Rw loD;
      Rw brack;
-     Rw fun;
+     Rw fresh_init;
      
  - K: loD #c
    D: |
@@ -82,12 +82,16 @@ R_Jz:
      Rw lodname;
  - K: loadc #c
    D: |
-     my $n = 'x';
-     my $file = 'w/c/1';
-     my $m = Rw Loadc $file;
-     for my $p (keys %$m) {
-         my $n = $m->{$p};
-         Rw loadup $u:G.way $p $n;
+     my $l = ar.l || 'w/c';
+     $l =~ s/\/*$/\//;
+     my @f = map{chomp$_;$_}`find $l -type f`;
+     @f || die "no $l";
+     for my $file (@f) {
+         my $m = Rw Loadc $file;
+         for my $p (keys %$m) {
+             my $n = $m->{$p};
+             Rw loadup $u:G.way $p $n;
+         }
      }
  - K: Loadc #c
    D: |

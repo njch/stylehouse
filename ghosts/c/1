@@ -1,12 +1,10 @@
 lod/C:
-   fun: |
-     Rw J5 wa;
-   os: Rw fun; 
-   wam/on: noe 0.1 eye/o {ou:eye,blur:5px}   
+   wam/on: noe 0.1 eye/o {ou:eye,blur:5px}
+   fresh_init: Rw J5 wam;
 lod/u:
-   os: Rw J6 wam;
    shv/curves: [EZ: floorish]
    wam/on: noe 0.1 g/c/1  {ou:eye,blur:5px}
+   fresh_init: Rw J5 wam; 
 floorish: |
     spun 0 -0.12
     zoom 0 1 
@@ -15,14 +13,20 @@ floorish: |
     curve 0 -0.4 
 brack: |
      Rw J5 shv;
-
 aww:
    yJ: |
      'clw gui heag sope waz';
 wa:
    yJ: |
-    Rw mkmost
-    'aww'
+     my $A = J.most.A = {};
+     A.time = sub{
+         my ($J,$wa) = shift;
+         J.A.time >= $wa ? 1 : do {
+             A.fopi->{J.id} = $J;
+             0;
+         };
+     };
+     'aww'
    M: |
     if (J.runt++ > 3) {
         sayre "ex";
@@ -247,9 +251,7 @@ pi/ARRAY: |
                     last;
                 }
             }
-os: |
-    Rw J5 wa;   
-    
+
 J6: |
    my $sc; 
    sc.ok = 6;
@@ -258,7 +260,7 @@ S/ghostchanges: |
     Rw J5 $file:m;
     Rw loD;
     sayyl "loded";
-    Rw rego;
+    Rw rego; 
 rego: |
     Rw os;   
 J5: |
