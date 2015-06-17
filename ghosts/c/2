@@ -1,0 +1,198 @@
+
+pi/liv: |
+    my $s = "find $u -type f";
+    Jn(for => 0.1 => $s, '%hs:2784,fs:5');
+    my @m = map{chomp;$_} `$s`;
+    Jn(fo => 0.2 => 'fo'.@m, '%fs:6,hs:938');
+    #y.lim = 9;
+    my $lim = 19;
+    @m = @m[0..$lim-1] if @m > $lim;  
+    Mn($_ => '', {pi=>'lif',s=>$_}) for @m;
+    
+    Atime(4)||return;
+    
+    Rwyl 0.2 delifeH $J;
+bbk: |
+     my @k = grep { $_=~ar.re } keys %{J.bb};
+     warn wdump [from => ar.re => @k ] if @k != 1;
+     die wdump [@k];
+     my $r = $k[0] || return;
+     my ($t,$cv) = ($1,$2) if $r =~ /^(.+)\t(\S+?)$/;
+     my $ip = {t=>$t,cv=>$cv};
+     my $N = Rw tyc $J $ip;
+     return @$N;
+delifeH: |
+    my $J = J.most.J;
+    #my $j = Rw bbk $J $re:_ 
+    #for qr/^life\/H\/\w+\/o\/\w+\t/;
+    #die wdump $j;
+    
+    sayyl "YEP";
+    
+pi/lif: |
+      -e $u || return 
+      Jn('not',0.1,'!!!!'.$u,'%hs:9385');
+      
+      Jn(lifen => 0.09 => 'l', '%hs:3884,fs:11');
+      my $si = -s $u;
+      #Jn(si => 0.1 => $si, '%hs:9584,fs:7');
+      
+      J.most.filey = $u;  
+      
+      if ($si > 8000) {
+          Jn(more => 0.3, '@', '%mu:r');
+      }
+      else {
+          my @m = read_file $u;
+          Mn(C.t=>'',{pi=>'liel',s=>$_}) for @m;
+      }
+pi/liel: |
+    $u =~ /^[\{\[]/ || return
+    Jn(funny=>0.1,"$u");
+    #Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
+    
+    Mn(C.t=>{},{pi=>'life',s=>djson $u});
+pi/life: |
+    Jn('ins',0.1,{s=>'{'});
+    Jn(life => 0.2 => C.s);
+    my $i = {qw'hol hol pid pid now now'};
+    my $s = 'text';
+    my $br = 1; 
+    Rw kapai + $i $u $s;
+    my $mf = J.most.filey;
+    if (u.now && $mf && hitime() - u.now > 60*1.2) {
+        C.sc.deco = 1;
+        Jn(rm => 0.6 => "RM", '%hs:378');
+        sayre "RM $mf";
+        `rm $mf`;
+    }
+    
+kapai: |
+    my $f = [];
+    my $l = [];
+    for my $k (sort keys %$u) {
+        my $v = $u->{$k};
+        my $pi = $i->{$k};
+        my $h = $pi ? $f : $l;
+        $pi ||= 'text';
+        push @$h, [C.t,'',{pi=>'kv',s=>[$k,$v],and=>{pi=>$pi}}];
+    }
+    push @$f, @$l;
+    Mn(@$_) for @$f;
+pi/now: |
+    die if $u < 100 && $u > -100;
+    my $d = hitime() - $u;
+    my $dl = $d > 3*60 ? [8,873] : $d > 60 ? [6,853] : [5,634];
+    my $l = Rw samv $d;
+    Jn(delta=>0.1=>$l,"%fs:$dl->[0],hs:$dl->[1]");
+pi/hol: |
+    my ($s,$n,$i,$etc) = split '/', $u;
+    die "$u is long" if $etc;
+    #die "wells $u => $s"; 
+    Jn(_style => 0.1 => $s, '%is:style');
+    Jn(name => 0.2 => $n, '%is:name,fs:12');
+    Jn(id => 0.3 => $i, '%is:id,fs:6');
+    
+pi/pid: |
+    Jn(pid => 0.1 => $u, '%hs:483,fs:5');
+    
+    
+pi/kv: |
+    return if 13<
+    Rw pidepth;
+    
+    my ($k,$v) = @$u;
+    my $pi = C.c.and && C.c.and.pi || '';
+    my $eel = $pi ? '' : 'ab:1,ml:-4em';
+    $eel .= ",fs:6,hs:3563";
+    $eel = '%'.$eel if $eel;
+    Jn('la',0.2,$k,$eel); # if hori
+    Mn('v',0.3,{pi=>$pi,s=>$v});
+pidepth: |
+    my $o = $J;
+    my $i = 0;
+    while (o.Jiter) {
+        $i++; $o = o.Jiter;
+    }
+    $i;
+
+pi/keys: |
+    my $M = [];
+    Mn("key/$_" => {}, {pi=>'text',s=>$_}) for sort keys %$u;
+    Jn('ls',{o=>$M},{});
+pi/HASH: |
+            my $si = keys %$u;
+            Jn(si=>0.1, $si, '{co:fff,fs:6}');
+            Jn(Bo => 0.11, {s=>'{'});
+            
+            if ($si > 32) {
+                Jn(many=>0.2,'many}','{co:33e}');
+            }
+            
+            
+             return
+             Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
+             if J.d.y.spc < 0.01;
+             
+            Jn(oB => 0.89, {s=>'}'});
+            
+            # 3
+            my $r = {map{$_=>1} sort keys %$u};
+            my @r = grep { delete $r->{$_} } 
+            qw'K name r style';
+            push @r, sort keys %$r;
+            
+            my $i = 0;
+            for my $k (@r) {
+                my $v = $u->{$k};
+                
+                my $y = {};
+                y.thy = 5 if $k eq 'W';
+                Mn("{$i" => $y, {pi=>'kv',s=>[$k,$v]});
+                
+                $i++;
+                J.d.y.spc || die "wut:". wdump J.d.y;
+                my $rl = 7 ;
+                #int(1 * (J.d.y.spc / 0.3 * J.d.y.spc));
+                sayyl " J.d.y.spc ! ! $rl       "
+                    .(J.d.y.spc / 0.3 * J.d.y.spc);
+                if ($i >= $rl) {
+                    J.bz->("more\t0.886" => "$i@! !!$rl",
+                    
+                        '%sf' => "blue");
+                    last;
+                }
+            }
+pi/ARRAY: |
+            my $cv = J.cv ||= 0.3;
+            
+            Jn(t => 0.1, C.t);
+            
+            my $si = @$u;
+            J.bz->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
+            J.bz->('Bo 0.11' => '[');
+            J.bz->('oB 0.89' => ']');
+            
+            Jn(Bo => 0.11, {s=>'{'}); 
+             return
+             Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
+             if J.d.y.spc < 0.07;
+            Jn(oB => 0.89, {s=>'}'});
+            
+            return if $cv < 0.2;
+            
+            my $i = 0;
+            while (exists $u->[$i]) {
+                my $uu = $u->[$i];
+                
+                
+                Mn('['.$i => {}, {pi=>'kv',s=>['['.$i,$uu]});
+                
+                $i++ > 8 && last; 
+                if ($i >= 5) {
+                    J.bz->("more\t0.886" => "@",
+                    
+                        '%sf' => "blue");
+                    last;
+                }
+            }
