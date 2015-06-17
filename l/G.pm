@@ -1143,6 +1143,104 @@ sub intr {
     $F[0]->{intr}->{$k} = $v;
 }
 
+sub loadup {
+    my $G = shift;
+    my ($i, $k, $v) = @_;
+    my $s = $G->snapple($k); # chunks {G{GG{etc 3
+    $s->{e} = $v;
+    $G->suets($i, $s);
+}
+
+sub suets {
+    my $G = shift;
+    my ($i, $s) = @_;
+    $s = {s=>[$G->chuntr($s)]} if !ref $s;
+    my @s = @{$s->{s}};
+    my $end = pop @s if exists $s->{e};
+    my $last;
+    while (1) {
+          my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
+        $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
+        if (!$last) { # TODO know about insto hash or array...
+             $i = $1 eq "{" ?
+             do { $i = $i->{$2} ||= {} }
+             :
+             $1 eq "[" ?
+             do { $i->[$2] ||= {} }
+             :
+             die "je seuits $1?";
+        }
+        else {
+            if (exists $s->{e}) {
+                $i->{$2} = $s->{e} if $1 eq "{";
+                $i->[$2] = $s->{e} if $1 eq "[";
+            }
+            last;
+        }
+    }
+    $i
+}
+
+sub snapple {
+    my $G = shift;
+    my $k = shift;
+    ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
+    my $a = {k => $k, v => $v};
+    my @s;
+    while ($k =~ m/(\W\w+)/sg) {
+          push @s, $1;
+    }
+    $a->{s} = \@s;
+    $a
+}
+
+sub catchings {
+    my $G = shift;
+    $SIG{__WARN__} = sub {
+       my $ing = shift;
+       warn$ing unless $ing =~ /^Use of uninitialized/;
+    };
+}
+
+sub Loadc {
+    my $yaml = shift;
+    $@="";
+
+    $SIG{__DIE__} = undef;
+    $SIG{__WARN__} = undef;
+    my $w = eval {
+    YAML::Syck::Load($yaml)
+    } ;
+    sayyl ki 1, {yml=>$yaml,w=>$w};
+
+           if ($@ || !$w || $@) {
+               say $@;
+               my ($x, $y) = $@ =~
+                     /parser \(line (\d+), column -?(\d+)\)/;
+
+               my @file = split "\n",  $yaml;
+               my $xx = 1;
+               my $vision = 'SYCK SYCJK'; 
+               for (@file) {
+                 if ($x - 8 < $xx && $xx < $x + 5) {
+                   if ($xx == $x) {
+                     $vision .= "HERE > $_\n";
+                     $vision .= "HERE > ".join("", (" ")x$y)."^\n";
+                   }
+                   else {
+                     $vision .= "       $_\n";
+                   }
+                 }
+                 $xx++;
+               }
+               sayre "! YAML load failed: "
+               .($@ ? $@ : "got: ".($w || "~"))
+               ."\n\n".$vision;
+               $@ = "";
+           }
+     $w
+}
+
 sub fspu {
     my $file = shift;
     my $m = encode_utf8 shift;
@@ -1937,108 +2035,6 @@ sub wag {
     $G->wayup("wormhole/yb\.yml");
     $G->w('expro');
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-}
-
-sub loadup {
-    my $G = shift;
-    my ($i, $k, $v) = @_;
-    my $s = $G->snapple($k); # chunks {G{GG{etc 3
-    $s->{e} = $v;
-    $G->suets($i, $s);
-}
-
-sub suets {
-    my $G = shift;
-    my ($i, $s) = @_;
-    $s = {s=>[$G->chuntr($s)]} if !ref $s;
-    my @s = @{$s->{s}};
-    my $end = pop @s if exists $s->{e};
-    my $last;
-    while (1) {
-          my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
-        $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
-        if (!$last) { # TODO know about insto hash or array...
-             $i = $1 eq "{" ?
-             do { $i = $i->{$2} ||= {} }
-             :
-             $1 eq "[" ?
-             do { $i->[$2] ||= {} }
-             :
-             die "je seuits $1?";
-        }
-        else {
-            if (exists $s->{e}) {
-                $i->{$2} = $s->{e} if $1 eq "{";
-                $i->[$2] = $s->{e} if $1 eq "[";
-            }
-            last;
-        }
-    }
-    $i
-}
-
-sub snapple {
-    my $G = shift;
-    my $k = shift;
-    ($k, my $v) = $k =~ /^(\S+)(?: (.+))?$/;
-    my $a = {k => $k, v => $v};
-    my @s;
-    while ($k =~ m/(\W\w+)/sg) {
-          push @s, $1;
-    }
-    $a->{s} = \@s;
-    $a
-}
-
-sub catchings {
-    my $G = shift;
-    $SIG{__WARN__} = sub {
-       my $ing = shift;
-       warn$ing unless $ing =~ /^Use of uninitialized/;
-    };
-}
-
-sub Loadc {
-    my $yaml = shift;
-    $@="";
-
-    $SIG{__DIE__} = undef;
-    $SIG{__WARN__} = undef;
-    my $w = eval {
-    YAML::Syck::Load($yaml)
-    } ;
-    sayyl ki 1, {yml=>$yaml,w=>$w};
-
-           if ($@ || !$w || $@) {
-               say $@;
-               my ($x, $y) = $@ =~
-                     /parser \(line (\d+), column -?(\d+)\)/;
-
-               my @file = split "\n",  $yaml;
-               my $xx = 1;
-               my $vision = SYCK(); 
-               for (@file) {
-                 if ($x - 8 < $xx && $xx < $x + 5) {
-                   if ($xx == $x) {
-                     $vision .= "HERE > $_\n";
-                     $vision .= "HERE > ".join("", (" ")x$y)."^\n";
-                   }
-                   else {
-                     $vision .= "       $_\n";
-                   }
-                 }
-                 $xx++;
-               }
-               sayre "! YAML load failed: "
-               .($@ ? $@ : "got: ".($w || "~"))
-               ."\n\n".$vision;
-               $@ = "";
-           }
-     $w
-}
-
-sub SYCK {
-    'SYCK SYCJK';
 }
 
 sub wayup {
