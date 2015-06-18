@@ -1,10 +1,15 @@
 lod/C:
    wam/on: noe 0.1 eye/o {ou:eye,blur:5px}
-   fresh_init: Rw J5 wam;
+   fresh_init: Rw J5 wa;
+   recoded_init: |
+     $G->pub('S/hut/K', 'do make/up'); 
 lod/u:
    shv/curves: [EZ: floorish]
    wam/on: noe 0.1 g/c/1  {ou:eye,blur:5px}
-   fresh_init: Rw J5 wam; 
+   fresh_init: Rw J5 wam;
+   recoded_init: |
+      rand(5) > 3 &&
+      Rw J5 wam;
 floorish: |
     spun 0 -0.12
     zoom 0 1 
@@ -15,29 +20,78 @@ brack: |
      Rw J5 shv;
 aww:
    yJ: |
-     'clw gui heag sope waz';
-wa:
-   yJ: |
      my $A = J.most.A = {};
-     A.time = sub{
+     A.time = sub{ 
+         warn "HI";
          my ($J,$wa) = shift;
          J.A.time >= $wa ? 1 : do {
              A.fopi->{J.id} = $J;
              0;
          };
      };
+     'clw gui heag sope waz Atime';
+wa:
+   yJ: |
      'aww'
    M: |
-    if (J.runt++ > 3) {
-        sayre "ex";
-        sleep 2;
+    if (J.runt++ > 3) {sayre "ex";sleep 2;
         Rw rez;
     }
-    #die wdump G.way.any_init;
-    my $d = Jn(qw'life 0.1 life/H/');
-    y.out = 0.9;
-    Mn(d.t,'',{pi=>'liv',s=>d.s});
+    Jn(shedful => '', {pi=>'seas',s=>'w/k'});  
     
+   Hosp: |
+    my $d = Jn(qw'life 0.1 life/H/');
+    Mn(hoisp => '',{pi=>'liv',s=>d.s});
+    
+Wp:
+   yJ: |
+     'aww'
+   M: |
+    Rw wa/Fact;
+   Fact: |
+    Mn(shedful => '', {pi=>'seas',s=>'w/c'});
+    
+   Hosp: |
+    my $d = Jn(qw'life 0.1 life/H/');
+    Mn(hoisp => '',{pi=>'liv',s=>d.s});
+    
+pi/seas: |
+     Jn(see => 0.1 => C.s,'%hs:7398'); 
+     for my $t (split /\s+/, C.s) {
+         Mn($t => '', {pi=>'loadc',s=>$t});
+     }
+pi/loadc: |
+     my $l = C.s;
+     Jn(l => 0.1 => $l);
+     $l =~ s/\/*$/\//;
+     my @f = map{chomp$_;$_}`find $l -type f`;
+     @f || die "no $l";
+     for my $file (@f) {
+         Mn($file => '', {pi=>'cfile',s=>$file});
+     }
+pi/cfile: |
+     my $file = C.s;
+     Jn(file => 0.1 => $file);
+     saybl "Loading $file";
+     my $s = read_file($file);
+     my $h;
+     my @ks;
+     while ($s =~ m/^(\S+)(:.+?)(?=^\S|\Z)/smg) {
+         push @ks, $1;
+         $h->{$1} = $2;
+     }
+     my $in = {map{$_=>1}@ks};
+     my $m = Load($s);
+     exists $in->{$_} || die "$_" for keys %$m;
+     
+     for my $p (@ks) {
+         my $n = $m->{$p};
+         my $dig = dig($h->{$p});
+         Mn($p => '', {pi=>clife=>s=>$n},{dig=>$dig});
+     }
+pi/clife: |
+     Jn(c=>0.1=>'c'=>'%hs:8474');
+     Mn(c=>'',{pi=>''=>s=>slim(30,"C.s")});
 waz:
     up: |
       my $coi = Rw pha $J $k=jo;
@@ -55,18 +109,17 @@ waz:
 sope/out: |
     #Rw oJ $J geo &up $noesc=1;
     #Rw chuv $J;
-
 J6: |
    my $sc; 
    sc.ok = 6;
    Rw J5 + $sc; 
 S/ghostchanges: |
-    Rw J5 $file:m;
     Rw loD;
     sayyl "loded";
+    Rw J5 $file:m;
     Rw rego; 
 rego: |
-    Rw os;   
+    Rw recoded_init;
 J5: |
    my $r = {%$ar};
    r.J = delete($r->{m})->[0] if ar.m;
