@@ -78,15 +78,19 @@ R_Jz:
      push @{J.style}, J.name if J.name !~ /\./ && !grep{$_ eq J.name} @{J.style};
      
      J.yt = {};
+     my $en = sub {
+         my $s = shift;
+         J.yt->{$s} ||= do { acum J.yt => styleord => $s; {} };
+     };
      my $exp;$exp = sub {
          my $s = shift;
          my @wk = uniq
              grep{length} map {split /\s+/}
              Rw suck + $pin=$s/yJ;
-         J.yt->{$s} = {};
+         $en->($s);
          for my $k (@wk) {
              next if exists J.yt->{$k}; # many styles leading to the same style
-             J.yt->{$k} ||= {};
+             $en->($k);
              $exp->($k);
          }
      };

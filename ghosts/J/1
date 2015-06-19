@@ -119,7 +119,7 @@ R_Jz:
    D: |
            my $point = ar.p || ar.pin || ar.m->[0];
            my @path = split /\/|\./, $point;
-           my $h = ar.h || R.way;
+           my $h = ar.h || ar.u || R.way;
            $h = h.hooks if h.hooks;
            
            my $doig;
@@ -139,6 +139,7 @@ R_Jz:
                    if ($p =~ s/\*/.+/sg) {
                        my @ke = grep { /^$p$/ } keys %$h;
                        sayyl "findlke : @ke " if ar.J && ar.J.name =~ /wa/;
+                       
                        my @wu;
                        for my $tk (@ke) {
                            push @wu, $doig->([@a], $h->{$tk}, "$s/$tk");
