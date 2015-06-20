@@ -1100,7 +1100,10 @@ sub pyramid {
     # spawn the shadow $S of actions
     # could want more complexity per G
     # A hooks?
-    my $u = $last->{A}->spawn('C') if $last;
+    my $u = $last->{A}->spawn('C') if $last && do{
+        $last->{A} || warn wdump ["lotast: ",$last];
+        $last->{A};
+    };
     if (!$u) {
           $u = $G->{A}->spawn('C');
         $u->{A}->umv('','pyramid');
