@@ -265,13 +265,14 @@ R_Jz:
          sayyl "$C c.t   for ".ki $sc if $path eq 'lief';
          
          my @s;
-         my $dats = '';
-         if (sc.t_k) {
-             $dats = ",t_k=>'sc.t_k'";
-         }
+         my $d;
+         d.t = c.t;
+         d.x = $sub;
+         $d->{$_} = sc.dat->{$_} for keys %{sc.dat||{}};
+         d.t_k = sc.t_k if sc.t_k;
          
          
-         push @s, "push \@{wJ\.cts\.$C}, {t=>'c.t',x=>'$sub'$dats};"
+         push @s, "push \@{wJ\.cts\.$C}, djson(".ejson(ejson($d)).");"
              if !sc.nx;
          push @s, "wJ\.ctx\.".$C.'->{"'.$sub.'"} = sub {';
          my $args;

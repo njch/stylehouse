@@ -56,7 +56,7 @@ R_Jz:
      - |
        my $g = wJ.ctx.C;
        for my $ct (@{wJ.cts.C}) {
-           next unless exists $d->{ct.t_k}->{ct.t};
+           next unless ct.any or exists $d->{ct.t_k}->{ct.t};
            my $v = $d->{ct.t_k}->{ct.t};
            my $at = {};
            my $A = {J=>$J,d=>$d}; 
@@ -78,6 +78,8 @@ R_Jz:
  - K: ym/sticks #c
    D: |
      n.sc.nx = $v =~ s/^x//;
+     n.sc.dat.any = 1 if $v =~ s/any//;
+     $v =~ s/\s+//g;
      n.sc.ct = $v;
      n.sc.args = join',',map{'$'.$_}split',',n.sc.args
          if n.sc.args && n.sc.args !~ /\$/;
