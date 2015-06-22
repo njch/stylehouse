@@ -5,15 +5,12 @@ oo/flows/ooj: |
    #ing 2 
    #file 2 
 ooj/flow: |
-   d.sc = delete d.c.sc if d.c.sc;
-   d.t = !ref d.c.J ? d.c.J : d.c.J.name if d.c.J;
-   warn "dt    d.t"; 
-   d.t = d.c.file if d.c.file;
-   d.cv = 0.4 if d.c.file;
-   d.cv = 0.3 if d.c.J;
+   my $A = {J=>$J,d=>$d};
+   
+   # 3
    sayyl ki 1, $d; 
    
-   my $jr = sub {
+   A.jr = sub {
        my $s = shift;
        my $v = shift;  
        $s = '%'.$s if $s;  
@@ -21,37 +18,15 @@ ooj/flow: |
        !defined $v ? J.bb->{$r} :
        do { J.bb->{$r} = $v;
          sub { delete J.bb->{$r} } 
-       }
-       ;
+       };
    };
    
    # 5
    
-   d.s = $jr->();
-   if (d.c.J) {
-       die if ref d.c.J;
-       if (!d.s) {
-           my $o = {name=>d.c.J};
-           d.s = Rw JJ $o;
-           sayyl "Made o.name";
-       }
-       die if !ref d.s;
-   }
-   if (d.c.file) {
-       warn "d.c.file ist d.s";
-       return if !d.s;
-   }
-   if (d.sc.ok) {
-       my $ok = d.sc.ok;
-       my $co = jr&ok-$ok;
-       #$ok && hitime-
-       return d.s;warn wdump d.sc;
-   }
-   
    # 7
    my $ig = {map{$_,1}qw'file J ok'};
    my @jh = grep{!$ig->{$_}}keys %{d.c};
-   #warn "Have: @jh" if @jh;
+   warn "Have: @jh" if @jh;
    my $hav = 1 if @jh;
    # some alt ^ make round v
    # 
@@ -64,19 +39,34 @@ ooj/flow: |
    do {
        my $ar = {%{d.c}};
        ar.J=d.s;
-       return d.s if !$hav && jr&ok-9;
-       my $n = $hav ? sub{} : jr&ok-9,9;
+       
+       return d.s if !$hav && A.jr&ok-9;
+       my $n = $hav ? sub{} : A.jr&ok-9,9;
        Rw around;
        $n->();
    };
    d.s
-ooj/ing: 
-   - MZ: Cc:C
-   -
-    - J
-    - 3
-    - |
-      die "J! $v ".gp $v;
+ooj/Y:
+    -
+     - cts_Y #
+     - 1
+     - |
+       for my $ct (@{wJ.cts.Y}) {
+           next unless ct.any or exists $d->{ct.t_k}->{ct.t};
+           my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
+           my $at = {};
+           my $T = {};
+           my $C = $d; # bendy stick throw
+           my $c = C.c; # <v contation
+           my $g = wJ.ctx.Y;
+           
+           wJ.ctx.Y->{ct.x}->($A,$J,$C,$c,$d,$v,$g,$at,$T);
+           
+           return die @{T.return} if T.return;
+           die "atgot ". ki $at if %$at;
+           die "Tgot ". ki $T if %$T;
+       }
+       
 ooj/Sty:
     -
      - cts_C #
@@ -87,15 +77,70 @@ ooj/Sty:
            next unless ct.any or exists $d->{ct.t_k}->{ct.t};
            my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
            my $at = {};
-           my $A = {J=>$J,d=>$d}; 
+           my $T = {};
            my $C = $d; # bendy stick throw
            my $c = C.c; # <v contation
            
-           wJ.ctx.C->{ct.x}->($A,$J,$C,$c,$d,$v,$g,$at);
+           wJ.ctx.C->{ct.x}->($A,$J,$C,$c,$d,$v,$g,$at,$T);
            
-           for my $k (keys %$at) {
-               d.cs->{"$k#".ct.x} = d.sc->{$k} = $at->{$k};
-           }
+           return die @{T.return} if T.return;
+           die "atgot ". ki $at if %$at;
+           die "Tgot ". ki $T if %$T;
        }
        
+ooj/ing: 
+   - MZ: Cc:Y
+   -
+    - sc
+    - 3.1
+    - |
+     d.sc = delete d.c.sc;
+   -
+    - J
+    - 3.2
+    - |
+     d.t = ref $v ? v.name : $v;
+     d.cv = 0.3;
+   -
+    - file
+    - 3.2
+    - |
+     d.t = $v
+     d.cv = 0.4;
+      
+   - MZ: Cc:Cany
+   -
+    - gets
+    - 2
+    - |
+      d.s = A.jr->();
+      
+   - MZ: Cc:C
+   -
+    - J
+    - 3.2
+    - |
+       die if ref d.c.J;
+       if (!d.s) {
+           my $o = {name=>d.c.J};
+           d.s = Rw JJ $o;
+           sayyl "oo Made o.name";
+       }
+       die if !ref d.s;
+   -
+    - file
+    - 3.1
+    - |
+       warn "d.c.file ist d.s";
+       return if d.s;
+       
+       T.return = [];
+   -
+    - ok
+    - 3.3
+    - |
+       my $ok = d.sc.ok;
+       my $co = A.jr&ok-$ok;
+       #$ok && hitime- 
+       T.return = [d.s];
 

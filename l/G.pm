@@ -2089,7 +2089,11 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
-    $eval =~ s/(\w+)\&($point)(,\S+?)?(;)?/\$$1->("$2"$3)$4/smg;
+    $eval =~ s/($poing|\w+)\&($point)(,\S+?)?(;)?/
+    my $s = "$1->(\"$2\"$3)$4";
+    $s = '$'.$s if $1 !~ m{\.};
+    $s
+    /smge;
 
 
     # $sc>$k -> $sc->{$k}
