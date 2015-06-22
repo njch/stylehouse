@@ -1,52 +1,22 @@
 oo/flows/ooj: |
    flow 1
    Y 2
-   S 5
-   time 3
+   C 4
+   D 8
+   time 7
    ing 3
+   JJ 3
    file 3
    
 ooj/flow: |
    my $A = {J=>$J,d=>$d};
    
-   # 3
-   sayyl ki 1, $d; 
-   
-   A.jr = sub {
-       my $s = shift;
-       my $v = shift;  
-       $s = '%'.$s if $s;  
-       my $r = "d.t$s\td.cv";
-       !defined $v ? J.bb->{$r} :
-       do { J.bb->{$r} = $v;
-         sub { delete J.bb->{$r} } 
-       };
-   };
    
    # 5
    
    # 7
-   my $ig = {map{$_,1}qw'file J ok'};
-   my @jh = grep{!$ig->{$_}}keys %{d.c};
-   warn "Have: @jh" if @jh;
-   my $hav = 1 if @jh;
-   # some alt ^ make round v
-   # 
-   die if !d.t;
-   die if !d.cv;
-   die if !ref d.s;
    
-   J.bz->("d.t\td.cv",d.s);
-   
-   do {
-       my $ar = {%{d.c}};
-       ar.J=d.s;
-       
-       return d.s if !$hav && A.jr&ok-9;
-       my $n = $hav ? sub{} : A.jr&ok-9,9;
-       Rw around;
-       $n->();
-   };
+   # 9
    d.s
 ooj/Y:
     -
@@ -54,7 +24,7 @@ ooj/Y:
      - 2
      - |
        for my $ct (@{wJ.cts.Y}) {
-           next unless ct.any or exists $d->{ct.t_k}->{ct.t};
+           next unless ct.any or exists $d->{ct.t_k} && exists $d->{ct.t_k}->{ct.t};
            my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
            my $at = {};
            my $T = {};
@@ -69,7 +39,7 @@ ooj/Y:
            die "Tgot ". ki $T if %$T;
        }
        
-ooj/S:
+ooj/C:
     -
      - cts_C #
      - 5
@@ -86,6 +56,29 @@ ooj/S:
            wJ.ctx.C->{ct.x}->($A,$J,$C,$c,$d,$v,$g,$at,$T);
            
            return @{T.return} if T.return;
+           last if T.last;
+           die "atgot ". ki $at if %$at;
+           die "Tgot ". ki $T if %$T;
+       }
+       
+ooj/D:
+    -
+     - cts_D #
+     - 5
+     - |
+       for my $ct (@{wJ.cts.D}) {
+           next unless ct.any or exists $d->{ct.t_k}->{ct.t};
+           my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
+           my $at = {};
+           my $T = {};
+           my $C = $d; # bendy stick throw
+           my $c = C.c; # <v contation
+           my $g = wJ.ctx.D;
+           
+           $g->{ct.x}->($A,$J,$C,$c,$d,$v,$g,$at,$T);
+           
+           return @{T.return} if T.return;
+           last if T.last;
            die "atgot ". ki $at if %$at;
            die "Tgot ". ki $T if %$T;
        }
@@ -97,32 +90,79 @@ ooj/ing:
     - 1
     - |
      d.sc = delete d.c.sc;
+      
+   - MZ: Cc:Yany
+   -
+    - jr
+    - 4
+    - |
+     A.jr = sub {
+         my $s = shift;
+         my $v = shift;  
+         $s = '%'.$s if $s;  
+         my $r = "d.t$s\td.cv";
+         !defined $v ? J.bb->{$r} :
+         do { J.bz->($r, $v);
+           sub { delete J.bb->{$r} } 
+         };
+     };
+     sayyl 'jring  '. wdump 3, $d;
+      
+   - MZ: Cc:Cany
+   -
+    - gets
+    - 2 
+    - |
+      d.s = A.jr->();
+   -
+    - puts
+    - 8
+    - |
+       my $ig = {map{$_,1}qw'file J ok'};
+       my @jh = grep{!$ig->{$_}}keys %{d.c};
+       warn "Have: @jh" if @jh;
+       my $hav = 1 if @jh;
+       # some alt ^ make round v
+       # 
+       die if !d.t;
+       die if !d.cv;
+       die if !ref d.s;
+       
+       J.bz->("d.t\td.cv",d.s);
+ooj/JJ: 
+   - MZ: Cc:Y
    -
     - J
     - 3
     - |
      d.t = ref $v ? v.name : $v;
      d.cv = 0.3;
-      
-   - MZ: Cc:Cany
-   -
-    - gets
-    - 2
-    - |
-      d.s = A.jr->();
-      
+     
    - MZ: Cc:C
    -
     - J
     - 3
     - |
        die "tis" if ref d.c.J;
-       if (!d.s) {
+       if (!ref d.s) {
            my $o = {name=>d.c.J};
            d.s = Rw JJ $o;
            sayyl "oo Made o.name";
        }
        die if !ref d.s;
+
+   - MZ: Cc:Dany
+   -
+    - Joing 
+    - 3
+    - |
+       my $ar = {%{d.c}};
+       ar.J=d.s;
+       
+       return d.s if !A.hav && A.jr&ok-9;
+       my $n = A.hav ? sub{} : A.jr&ok-9,9;
+       Rw around;
+       $n->();
 ooj/time:
    - MZ: Cc:Yany
    -
@@ -130,7 +170,7 @@ ooj/time:
     - 3
     - |
       A.ztime = d.c.time || 6;
-      A.time = sub { 
+      A.time = sub {
            my ($J,$wa) = @_;
            warn "$J, $wa";
            A.ztime >= $wa ? 1 : do {
@@ -142,14 +182,20 @@ ooj/time:
    - MZ: Cc:C
    -
     - ok
-    - 3
+    - 2.2
     - |
-       my $ok = d.sc.ok;
-       my $co = A.jr&ok-$ok;
+       #A.ztime = 7 - $v;
+       my $co = A.jr&ok-$v;
+       if (!$co) {
+           
+       }
+       sayyl "co $v : $co";
+       if ($v > 1 && $v < 10) {
+       } 
        saygr "OK: ".ki 2, $d; 
        saybl "and d.s = ".gp d.s;
        #$ok && hitime- 
-       Atime(6) or T.return = [];
+       Atime(7) or T.return = [];
        
 ooj/file:
    - MZ: Cc:Y
@@ -164,7 +210,7 @@ ooj/file:
     - file
     - 3
     - |
-      sayyl "YEAH! $v ist d.s";
+      sayyl "YEAH! $v ist d.s";  
        return if d.s;
        
        T.return = [];

@@ -2083,7 +2083,7 @@ sub g_parse_babble {
     $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
 
     # oJn -> oJ.n->( ish
-    $eval =~ s/($mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+    $eval =~ s/($mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $eval =~ s/($mwall)(\w*G)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;

@@ -343,7 +343,6 @@ R_Jz:
     - cole # it
     - 5
     - |
-      my $v = shift;
       my $h;
       (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
           if $v =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $v";
@@ -361,11 +360,11 @@ R_Jz:
           else {
              return sprintf "#%s%s%s", h.r, h.g, h.b;
           }
+    - args: v
    -
     - hsle # ray lih, unhassley
     - 5
     - |
-      my $v = shift;
       my @m;
       for ($v) {
           @m = split ' ', $_;
@@ -386,14 +385,15 @@ R_Jz:
 
       my $al = ", h.a" if defined h.a;
       "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+    - args: v
    -
     - empc # decide space unit TODO init soon
     - 5
     - |
-      my $v = shift;
       $v .= 'em' if $v !~ /(%|em|px)/;
       $v =~ s/^-?0em$/0%/;
       $v;
+    - args: v 
  - K: chov/sharp #c
    D:
    - MZ: sticks:V
