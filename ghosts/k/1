@@ -2,6 +2,7 @@ oo/flows/ooj: |
    flow 1
    Y 2
    S 5
+   time 3
    ing 3
    file 3
    
@@ -98,7 +99,7 @@ ooj/ing:
      d.sc = delete d.c.sc;
    -
     - J
-    - 2
+    - 3
     - |
      d.t = ref $v ? v.name : $v;
      d.cv = 0.3;
@@ -122,20 +123,39 @@ ooj/ing:
            sayyl "oo Made o.name";
        }
        die if !ref d.s;
+ooj/time:
+   - MZ: Cc:Yany
    -
     - ok
-    - 3.3
+    - 3
+    - |
+      A.ztime = d.c.time || 6;
+      A.time = sub { 
+           my ($J,$wa) = @_;
+           warn "$J, $wa";
+           A.ztime >= $wa ? 1 : do {
+               A.fopi->{J.id} = $J;
+               0;
+           };
+      };
+      
+   - MZ: Cc:C
+   -
+    - ok
+    - 3
     - |
        my $ok = d.sc.ok;
        my $co = A.jr&ok-$ok;
        saygr "OK: ".ki 2, $d; 
+       saybl "and d.s = ".gp d.s;
        #$ok && hitime- 
-       T.return = [d.s];
+       Atime(6) or T.return = [];
+       
 ooj/file:
    - MZ: Cc:Y
    -
     - file
-    - 2
+    - 3
     - |
      d.t = $v;
      d.cv = 0.4;
