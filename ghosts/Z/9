@@ -140,9 +140,11 @@ R_Jz:
  - K: jamsc #c sc->j.bb
    D: |
      return if !$sc;
+     my $t = ar.j ? ar.j.l : ar.d ? ar.d.t : die;
+     my $cv = ar.j ? ar.j.cv : ar.d ? ar.d.cv : die;
      for my $k (sort keys %$sc) {
          my $v = $sc->{$k};
-         J.bz->("j.l%$k\t".j.cv => $v);
+         J.bz->("$t%$k\t".$cv => $v);
      }
      
  - K: sctks #c # expand (k:)?lma:v to lma:k:v

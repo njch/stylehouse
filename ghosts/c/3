@@ -1,13 +1,19 @@
-csdig: |
-    
-     for my $n (@$ln) {
-         my $s = $n->[2]; # t/y/(s)
-         $s = ref $s eq 'HASH' ? "s.r s.id"
-            : ref $s eq 'ARRAY' ? die 'arline'
-            : $s;
-         $n->[2] = $s;
-     }
-     my $d = ejson $ln;
-     #saygr " Digwa: ".slim 280, $d if ar.V;
-     $d = dig $d;
+cscomp: |
+    my $non = {%$d};
+    my $de;$de = sub {
+        my $v = shift;
+        ref $v eq 'ARRAY' ?  [map{ $de->($_) } @$v]
+        : !ref $v ? $v
+        : v.id || die "no v".wdump(2,$v);
+    };
+    for my $k (qw'c sc') {
+        my $v = $non->{$k} || next;
+        $non->{$k} = $v = {%$v};
+        for my $sk (keys %$v) {
+            my $sv = $v->{$sk};
+            $v->{$sk} = $de->($sv);
+        }
+    }
+    non.s = $de->(non.s);
+    return sjson $non
 

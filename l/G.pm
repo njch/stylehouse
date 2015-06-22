@@ -2089,7 +2089,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
-    $eval =~ s/($poing|\w+)\&($point)(,\S+?)?(;)?/
+    $eval =~ s/($poing|\w+)\&($point)(,[^\s;]+)?(;)?/
     my $s = "$1->(\"$2\"$3)$4";
     $s = '$'.$s if $1 !~ m{\.};
     $s
@@ -2097,7 +2097,9 @@ sub g_parse_babble {
 
 
     # $sc>$k -> $sc->{$k}
-    $eval =~ s/($poing)\.>($poing)/$1\->{"$2"}/smg;
+    $eval =~ s/($poing)((?:\.>$poing)+)/
+    join '->', $1, map {'{"'.$_.'"}'} grep {$_} split m{\.>}, $2;
+    /smge;
 
 
     #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
