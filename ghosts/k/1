@@ -3,8 +3,8 @@ oo/flows/ooj: |
    Y 2
    S 5
    ing 3
-   #ing 2 
-   #file 2 
+   file 3
+   
 ooj/flow: |
    my $A = {J=>$J,d=>$d};
    
@@ -93,21 +93,15 @@ ooj/ing:
    - MZ: Cc:Y
    -
     - sc
-    - 3.1
+    - 1
     - |
      d.sc = delete d.c.sc;
    -
     - J
-    - 3.2
+    - 2
     - |
      d.t = ref $v ? v.name : $v;
      d.cv = 0.3;
-   -
-    - file
-    - 3.2
-    - |
-     d.t = $v;
-     d.cv = 0.4;
       
    - MZ: Cc:Cany
    -
@@ -119,7 +113,7 @@ ooj/ing:
    - MZ: Cc:C
    -
     - J
-    - 3.2
+    - 3
     - |
        die "tis" if ref d.c.J;
        if (!d.s) {
@@ -129,20 +123,30 @@ ooj/ing:
        }
        die if !ref d.s;
    -
-    - file
-    - 3.1
-    - |
-       warn "d.c.file ist d.s";
-       return if d.s;
-       
-       T.return = [];
-   -
     - ok
     - 3.3
     - |
        my $ok = d.sc.ok;
        my $co = A.jr&ok-$ok;
-       saygr "OK: ".ki $ok;
+       saygr "OK: ".ki 2, $d; 
        #$ok && hitime- 
        T.return = [d.s];
+ooj/file:
+   - MZ: Cc:Y
+   -
+    - file
+    - 2
+    - |
+     d.t = $v;
+     d.cv = 0.4;
+   - MZ: Cc:C
+   -
+    - file
+    - 3
+    - |
+      sayyl "YEAH! $v ist d.s";
+       return if d.s;
+       
+       T.return = [];
+ 
 
