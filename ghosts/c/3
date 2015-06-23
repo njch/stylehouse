@@ -30,7 +30,8 @@ Ha:
      J.updos ||= 1 +
          Rw vortex around $J $d=1;
      my $N = Rw tc $J;
-     sayyl "Ha rounding... ". @$N;
+     sayre "ZEV  ZEV ZEV  ".@$N;
+     my $lcv;
      for my $d (@$N) {
          my $n = d.c.s;
          sayyl "WAITS  ".slim(10,d.t)."  n.t   d.y.cv    ".ki 1,n.c;
@@ -54,8 +55,12 @@ Ha:
          sayre "would be n.t   !\n";
          sayyl "RE& n.t  at d.y.cv  d.sc.pict";
          
+         Rwyl oo $J:G.oin $d:n;
+         
+         last if $lcv && $lcv > d.y.cv;
+         $lcv = d.y.cv;
      }
-     sayre "ZEV  ZEV ZEV" for 1..3;
+     sayre "ZEV  ZEV ZEV";
 hoset: |
     my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
     delete J.bb->{$_} for @r;
@@ -70,11 +75,8 @@ comb: |
     
     saybl "COMB ".gp($J)." d.t A.ztime } to $wa";
     
-    my $igktk = {c=>A.note.csrm};
-    A.selif = Rw cscomp $d $igktk;
+    A.selif = Rw cscomp $d;
     my $dig = dig A.selif;
-    sayyl "$dig combackin $wa or so";
-    #die "ye $wa";
     
     die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
     die 'noiJ' if !$iJ;
@@ -87,11 +89,10 @@ comb: |
     n.s = {%$d};
     n.t = $dig;
     
+    sayyl "d.t d.y.cv  or so ".ki n.sc;
     
     Rw hosin $J:iJ $n;
 
-    sayyl 'jring  '.A.selif;
-    sayre wdump [ 'three' ];
     A.fopi->{J.id} = $J;
     0;
 noetcomb: |

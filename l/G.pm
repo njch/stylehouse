@@ -1101,7 +1101,7 @@ sub pyramid {
     # could want more complexity per G
     # A hooks?
     my $u = $last->{A}->spawn('C') if $last && do{
-        $last->{A} || warn wdump ["lotast: ",$last];
+        $last->{A} ||  $H->{G}->w('reexec');
         $last->{A};
     };
     if (!$u) {
