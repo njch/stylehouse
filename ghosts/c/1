@@ -65,12 +65,26 @@ wa:
    yJ: |
      'aww'
    M: |
-    if (J.runt++ > 42) {sayre "ex";sleep 1;
-        Rw rez;
+    if (J.runt++ > 8) {sayre "ex";sleep 1;
+        #Rw rez;
     }
     A.ztime = 4;
     #die wdump G.way.Loadc;
+    Rwyl 1 wa/ps;
     Rw wa/pl -;
+   ps: |
+    my @ps = `ps -p$$ fu`; # j right
+    my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
+    sayre "$u $pid       cpu:$cpu  mem:$mem";
+    if ($mem > 20 || $cpu > 60) {
+        saybl "& $mem";
+        if ($mem > 22) {
+            sayre "massive, restarting" for 1..8;sleep 1;
+            Rw rez;
+        }
+        sleep 5;
+        
+    }
    pl: |
     #Rw J5 Wkcs; 
     Rw J6 - Hosp;
@@ -81,7 +95,7 @@ Eosse:
    M: |
     Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1'});
     Rwyl 0.1 aftor;
-    Atime(4) || return; 
+    Atime(4) || return;
     
 Wkcs:
    yJ: |
