@@ -38,8 +38,8 @@ aww:
      my $A = J.A = J.most.A = {}; 
      A.time = sub{ 
          my ($J,$wa) = @_;
-         warn "$J, $wa";
          J.A.ztime >= $wa ? 1 : do {
+             warn gp($J)." Wants time, $wa";
              A.fopi->{J.id} = $J;
              0;
          };
@@ -92,6 +92,7 @@ wa:
     #Rw J5 Wkcs; 
     Rw J6 - Hosp;
     Rw J6 - Eosse;
+    Rw J6 - EYZ
 Eosse:
    yJ: |
      'aww'
@@ -100,19 +101,25 @@ Eosse:
     Rwyl 0.1 aftor;
     Atime(4) || return;
     
+EYZ:
+   yJ: |
+     'aww'
+   M: |
+    Mn(shedful => '', {pi=>'eye',s=>'w/coast'});
+    #Atime(4) || return die "SJIO";
+    
 Wkcs:
    yJ: |
      'aww'
    M: |
     Mn(shedful => '', {pi=>'seas',s=>'w/k w/c'});
-    Rwyl 0.1 aftor;
-    Atime(4) || return; 
     
 Hosp:
    yJ: |
      'aww'
    M: |
     my $d = Jn(qw'life 0.1 life/H/');
+    sayyl "HOS: ".ki $A;
     Mn(hoisp => '',{pi=>'liv',s=>d.s}); 
     
 We: |
@@ -128,11 +135,11 @@ aftor: |
         my $n = C.c.s;
         Rw loadup $u $p $n;
     }
-    sayyl "After J.name: clife: ".wdump 2, $u;
+    sayyl "After J.name: clife: ".wdump 2, [$u,$N];
     Rw makoo $u;
     
 makoo: |
-       warn "we could be ".wdump [sort keys %$u];
+       sayre "we could be ".wdump [sort keys %$u];
        return;
        my $t = Rw wuck - $u */flows/*;
        my $fr = 0;   
