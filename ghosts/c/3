@@ -30,37 +30,45 @@ Ha:
      J.updos ||= 1 +
          Rw vortex around $J $d=1;    
      my $N = Rw tc $J;
-     sayre "ZEV  ZEV ZEV  ".@$N;
      my $lcv;
+     my $i;
      for my $d (@$N) {
          my $n = d.c.s;
-         sayyl "WAITS  ".slim(10,d.t)."  n.t   d.y.cv    ".ki 1,n.c;
+         
+         my $com;
+         my $dont;
          if (d.sc.watime) {
              my $del = d.sc.watime - hitime;
-             saybl "watime n.t    $del";
+             $com = "w\@in ".sprintf('%.3f',$del);
              if ($del > 0.02) {
-                 next if d.sc.watimed;
-                 sayyl "WAYLAY $del to \n\n\n";
-                 my $ip = {l=>d.t,cv=>d.y.cv};
-                 timer $del {
-                    Rw around $J;
-                 };
-                 J.bz->("d.t%watimed\t".d.y.cv => $del);
-                 next;
+                 if (d.sc.watime != d.sc.watimed) {
+                     sayyl "TIMING $del to n.t";
+                     my $ip = {l=>d.t,cv=>d.y.cv};
+                     timer $del {
+                        Rw around $J;
+                     };
+                     J.bz->("d.t%watimed\t".d.y.cv => d.sc.watime);
+                 }
+                 $dont = 1;
              }
              
          }
-         Rw hoset + $d;
+         my $mers = "WAITS  ".slim(10,d.t)."  n.t\t d.y.cv  $com  ".ki 1,n.c;
+         $dont ? saybl $mers : sayyl $mers;
+         next if $dont;
          
-         sayre "would be n.t   !\n";
+         Rw hoset + $d;
          sayyl "RE& n.t  at d.y.cv  d.sc.pict";
          
-         Rwyl 0.001 oo $J:G.oin $d:n;
+         timer 0.001 {
+             Rw oo $J:G.oin $d:n;
+         };
          
+         $i++;
          last if $lcv && $lcv > d.y.cv;
          $lcv = d.y.cv;
      }
-     sayre "ZEV  ZEV ZEV";
+     sayre "ZEV  ZEV ZEV  ".($i && " $i / ".@$N);
 hoset: |
     my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
     delete J.bb->{$_} for @r;
@@ -73,10 +81,11 @@ comb: |
     # so that J.2 etcs declare needs and resume when ready
     my $iJ = G.ino || return do{warn "no loop";1}; # continues the Atime
     
-    saybl "COMB ".gp($J)." d.t A.ztime } to $wa";
+    sayyl "COMB J.name d.t A.ztime } to $wa";
     
     A.selif = Rw cscomp $d;
     my $dig = dig A.selif;
+    sayyl "COMB J.name  ".slim(10,$dig)."  d.t   d.y.cv    ".ki 1,d.c;
     
     die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
     die 'noiJ' if !$iJ;
@@ -92,9 +101,5 @@ comb: |
     sayyl "d.t d.y.cv  or so ".ki n.sc;
     
     Rw hosin $J:iJ $n;
-
-    A.fopi->{J.id} = $J;
     0;
-noetcomb: |
-    
 
