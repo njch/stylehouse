@@ -86,18 +86,17 @@ ooj/ing:
     - |
       d.s = A.jr->();
       A.comp = $d;
-      A.selif = Rw cscomp $d $igtk:A.note;
-      sayyl 'jring  '.A.selif;
    -
     - puts
     - 7
     - |
-       
-       my $ig = {map{$_,1}qw'file J ok'};
-       
        my @jh = grep{!A.note.c->{$_}}keys %{d.c};
-       sayyl wdump [map{[$_ => gp d.c->{$_}]}@jh] if @jh;
-       my $hav = 1 if @jh;
+       
+       if (@jh) {
+           saybl "J ".gp(d.s)."   ->  ".join " @@@ ",
+               map { " ** $_ => ".gp d.c->{$_}}@jh;
+           A.hav = 1;
+       }
        # some alt ^ make round v
        # 
        die if !d.t;
@@ -167,11 +166,10 @@ ooj/time:
       A.time = sub {
            my ($J,$wa) = @_;
            A.ztime >= $wa ? 1 : do {
-               saybl "COMB ".gp($J)." d.t A.ztime } to $wa";
-               A.fopi->{J.id} = $J;
-               0;
+               Rw comb $J $A $d $wa;
            };
       };
+    - way: 1
       
    - MZ: Cc:C
    -
@@ -184,22 +182,25 @@ ooj/time:
        my $co = A.jr&ok-$v;
        
        my $til = $co - hitime;
-        
-       my $del = $v; 
+       # cv wave column to plant next self in
+       A.waov = $v;
+       # assume that v shapes delay until DNS of tension
+       my $del = $v;
        if ($co && $til < 0) {
            sayyl "low not $til " for 1..3;
-           A.ztime = $v if $v > A.ztime;
-           A.latime = $til;
+           A.ztime = $v if $v > A.ztime; # on
            undef $co;
        }
        elsif (!$co) {
-           $del = 0.8;
+           $del = 0.1;
            sayyl "begins";
        }
        $del *= 5;
        $del *= 1.2 if rand 5 > 3;
        $co ||= do { sayyl "Combackin: $del\n\n"; $del + hitime; };
-          
+       
+       A.note.watime = $co;
+       
        A.jr&ok-$v,$co;
         
        sayyl "co $v : $co";
