@@ -29,38 +29,71 @@ Ha:
      G.ino ||= $J;
      J.updos ||= 1 +
          Rw vortex around $J $d=1;
-     my @l = Rw tyc $J;
-     
-     saybl wdump 6, \@l;
+     my $N = Rw tc $J;
+     sayyl "Ha rounding... ". @$N;
+     for my $d (@$N) {
+         my $n = d.c.s;
+         sayyl "WAITS  ".slim(10,d.t)."  n.t   d.y.cv    ".ki 1,n.c;
+         if (d.sc.watime) {
+             my $del = d.sc.watime - hitime;
+             saybl "watime n.t    $del";
+             if ($del > 0.02) {
+                 next if d.sc.watimed;
+                 sayyl "WAYLAY $del to \n\n\n";
+                 my $ip = {l=>d.t,cv=>d.y.cv};
+                 timer $del {
+                    Rw around $J;
+                 };
+                 J.bz->("d.t%watimed\t".d.y.cv => $del);
+                 next;
+             }
+             
+         }
+         Rw hoset + $d;
+         
+         sayre "would be n.t   !\n";
+         sayyl "RE& n.t  at d.y.cv  d.sc.pict";
+         
+     }
      sayre "ZEV  ZEV ZEV" for 1..3;
+hoset: |
+    my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
+    delete J.bb->{$_} for @r;
+    
+hosin: |
+    n.sc = ar.sc if ar.sc; n.c.s = n.s if exists n.s; n.y.cv = n.cv if n.cv;
+    my @glu = map { '%'.$_ => n.sc->{$_} } sort keys %{n.sc};
+    J.bz->(n.t."\t".n.y.cv => n.c.s, @glu);
 comb: |
-    # so that J.2 etcs declare needs and may rerun when ready
-    my $iJ = G.ino;
-    if (!$iJ) {
-        sayre "No loop";
-        return 1;
-    }
+    # so that J.2 etcs declare needs and resume when ready
+    my $iJ = G.ino || return do{warn "no loop";1}; # continues the Atime
     
     saybl "COMB ".gp($J)." d.t A.ztime } to $wa";
+    
     my $igktk = {c=>A.note.csrm};
     A.selif = Rw cscomp $d $igktk;
     my $dig = dig A.selif;
     sayyl "$dig combackin $wa or so";
     #die "ye $wa";
-    die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
-    my $cv = $wa / 10;
-    die 'noiJ' if !$iJ;
-    #die 'here';
-    $wa = A.waov if A.waov;
-    iJ.bz->("$dig\t0.$wa" => {%$d});
     
-    # sort out a timer maybe;
-    # + hitime; 
-    # A.waov
-    # A.note.watime 
+    die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
+    die 'noiJ' if !$iJ;
+    
+    my $n;
+    n.sc.pict = A.selif;
+    n.sc.watime = A.watime if A.watime;
+    $wa = A.waov if A.waov;
+    n.cv = $wa / 10;
+    n.s = {%$d};
+    n.t = $dig;
+    
+    
+    Rw hosin $J:iJ $n;
 
     sayyl 'jring  '.A.selif;
     sayre wdump [ 'three' ];
     A.fopi->{J.id} = $J;
     0;
+noetcomb: |
+    
 

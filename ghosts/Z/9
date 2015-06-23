@@ -139,9 +139,9 @@ R_Jz:
        Rw Em $aj;
  - K: jamsc #c sc->j.bb
    D: |
-     return if !$sc;
-     my $t = ar.j ? ar.j.l : ar.d ? ar.d.t : die;
-     my $cv = ar.j ? ar.j.cv : ar.d ? ar.d.cv : die;
+     my $t = ar.t || ar.j ? ar.j.l : ar.d ? ar.d.t : die;
+     my $cv = ar.cv || ar.j ? ar.j.cv : ar.d ? ar.d.cv : die;
+     J.bz->("$t\t".$cv => ar.s) if exists ar.s;
      for my $k (sort keys %$sc) {
          my $v = $sc->{$k};
          J.bz->("$t%$k\t".$cv => $v);

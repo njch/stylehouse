@@ -2072,7 +2072,7 @@ sub g_parse_babble {
 
     # timer
 
-    $eval =~ s/(timer|recur) ($NUM) \{/$1 \$G, $2, sub{/sg;
+    $eval =~ s/(timer|recur) ($NUM|$alive) \{/$1 \$G, $2, sub{/sg;
 
     $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
 
