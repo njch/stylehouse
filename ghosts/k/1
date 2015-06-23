@@ -44,15 +44,16 @@ ooj/C:
      - 5
      - |
        A.note = {};
-       my $not = sub {
+       A.note.not = sub {
            my ($ct,$k) = @_;
            A.note.>$ct.>$k = 1;
        };
+       
        my $g = wJ.ctx.C;
        for my $ct (@{wJ.cts.C}) {
            next unless ct.any or exists $d->{ct.t_k}->{ct.t};
            my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
-           ct.t_k eq "c" && not&c,ct.t;
+           ct.t_k eq "c" && A.note.not&c,ct.t;
            my $at = {};
            my $T = {};
            my $C = $d; # bendy stick throw
@@ -91,9 +92,11 @@ ooj/ing:
     - puts
     - 7
     - |
+       
        my $ig = {map{$_,1}qw'file J ok'};
-       my @jh = grep{!$ig->{$_}}keys %{d.c};
-       warn "Have: @jh" if @jh;
+       
+       my @jh = grep{!A.note.c->{$_}}keys %{d.c};
+       sayyl wdump [map{[$_ => gp d.c->{$_}]}@jh] if @jh;
        my $hav = 1 if @jh;
        # some alt ^ make round v
        # 
@@ -176,11 +179,12 @@ ooj/time:
     - 2.2
     - |
        A.ztime = 1;
+       A.note.not&csrm,'ok';
        
        my $co = A.jr&ok-$v;
        
        my $til = $co - hitime;
-       sayyl wdump[ $co, $til ];   
+        
        my $del = $v; 
        if ($co && $til < 0) {
            sayyl "low not $til " for 1..3;
@@ -190,13 +194,11 @@ ooj/time:
        }
        elsif (!$co) {
            $del = 0.8;
+           sayyl "begins";
        }
-       if (ref d.s) {
-           
-       }
-       $del *= 4;
+       $del *= 5;
        $del *= 1.2 if rand 5 > 3;
-       $co ||= do { sayyl "Combackin: $del"; $del + hitime; };
+       $co ||= do { sayyl "Combackin: $del\n\n"; $del + hitime; };
           
        A.jr&ok-$v,$co;
         
