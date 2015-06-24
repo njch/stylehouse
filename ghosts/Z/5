@@ -142,147 +142,7 @@ R_Jz:
        Jn('hihi',{o=>J.iM}) if J.iM;
        J.iM || Jn('not',0.1,'nothing');
        J.V = 0;
- - K: pi/eye #c
-   D: |
-     my $file = $u;
-     #J.V = 1;
-     #J.d.c.path = 'amp';
-     Jn('ey',0.09,"ey",'{hs:636}');
-     Jn('file',0.1,"$file",'{hs:277}');
-     Jn($file,{o=>{}},{pi=>'ls',s=>$file});
-     #J.V = 0;
- - K: pi/ls #c
-   D: |
-     my $file = $u;
-     J.d.c.pwth = 'somewhere';
-     J.d.sc.tt = 'somewhere';
-     
-     Jn('fiule',0.1,"J.d.t",'{hs:4889,ab:1,sz:20}');
-         
-     return
-     Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
-     if J.d.y.spc < 0.02;
-     
-     if (-l $file) {
-         Jn('-s',0.12,'-s','{co:fca}');
-         my $to = readlink $file;
-         my $oo = $file;
-         $oo =~ s/(^|\/)[^\/]+$//;
-         undef $oo if $oo eq '';
-         $oo = (defined$oo?"$oo/":"").$to;
-         
-         Jn('sb',0.1231,"$to",'{co:f6a}');
-         
-         $oo || die "$file => $oo";
-         $file = $oo;
-     }
-     
-     # cm smartIndent 
-     if (!-e $file) {
-         Jn("not",0.2,"!$file:$!",'{co:fca}');
-     }  
-     elsif (-f $file) {
-         Jn('-f',0.2,'-f');
-         
-         Mn('.','',{pi=>'fi',s=>$file});
-     }
-     elsif (-d $file) {
-         Jn('diry',0.2,'/','{hs:3555}');
-         
-         opendir(my $dh, $file) || die "can't opendir $file: $!";
-         my @ma = readdir($dh);
-         
-         @ma = sort grep {$_ ne '.' && $_ ne '..'} @ma;
-         
-         my @fa;
-         @ma = map { -d "$u/$_" ? push @fa, $_ : $_ } @ma;
-         @ma = (@fa,@ma); 
-         
-         closedir $dh;
-         
-         my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
-         $rl = 7 if $rl < 7;
-         @ma = @ma[0..$rl] if @ma > $rl;
-         # space mod
-         sayyl "ls $u   (J.d.t) e $rl    in J.d.y.spc";
-         #saybl wdump 2, {J.d.t=>\@ma};
-         Mn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
-     }
-     
- - K: somewhere #c
-   D: |
-     my $J = J2.sc.pi;
-     my @path = $J;
-     while (1) {
-        my $l = $path[0];
-        unshift @path, l.Jiter || last;
-     }
-     my @lspath;
-     for (reverse @path) {
-         _.y eq 'ls' || last;
-         push @lspath, _.d.t;
-     }
-     my $path = join '/', reverse @lspath;
-     my $M = [];
-     Mn('fro',{},"$path",'{ou:file}');
-     Rw J5 wut $M;
- - K: pi/fi #c -f
-   D: |
-     my $y;
-     $y ||= 'thumbnail' if $u =~ /(png|gif|jpe?g)$/i;
-     $y ||= 'file' if $u =~ /^w\/c|^g/;
-     $y ||= 'text';
-     my $oM = [];
-     
-     oMn($y,{},{pi=>$y,s=>$u});
-     
-     Jn('fis',{o=>$oM},{});
-     
- - K: pi/file #c
-   D: |
-     my $file = $u;
-     defined $file || die 'nofile';
-     if (my $dir = C.sc.dir) {
-         $dir =~ s/\/?$/\//;
-         $file = "$dir$file";
-     }
-     sayyl "oufile: $file";
-     
-     Jn("filename",0.1,$file,'{fs:20,hs:5563}');
-     
-     my $met = `file '$file'`;
-     die $met unless $met =~ /text/;
-     my $o = Rw fil/o $file;
-     
-     Jn('nmyd',{o=>$o});
-     sayre J.r."   ".ki J.d.y;
- - K: inmid #c
-   D: |
-     my $y = J.d.y;
-     my $oM = [];
-     oMn("what",{thy=>1},"y.cv out=".(0+y.ov),'{fs:8,hs:3.5.6.9}');
-     
-     my $lum = 3;
-     my $i = 0;
-     for (@{o.M}) {
-         oMn(_.t, {thy=>$lum,%{_.y}}, {pi=>o.ou,s=>$_},{oJ=>o.oJ});
-         $i++;
-         $lum = 2 if $i == 4;
-         $lum = 1 if $i == 7;
-     }
-     
-     oMn("what",
-     {thy=>1},
-     "");
-     
-     delete _.y.cv for @$oM;
-     
-     my $thic = y.ov - y.cv;
-     warn "THICKNESS of J.r : y.ov - y.cv    (".$thic;
-     my $y = {in => y.cv+0.06, out => y.ov};
-     
-     Rw om/bal $J:J.Jiter $oM $t=thelov $y;
-     
+
  - K: pi/lie #c s = d/C for a file
    D: |
      my $sc = u.sc;
@@ -290,16 +150,16 @@ R_Jz:
      J.d.c.pwth='J5:cod';
        
      #Jn(catch => 0.03, {pi=>'hangleft',s=>{pi=>'text',s=>sc.r},scwa=>'right:0em'}, '{ab:1,hs:3 9 7 9,fs:13}');
-     #Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
+     Jn(lines => 0.07, {pi=>'hangleft',s=>sc.lines}, '{ab:1,co:f42,fs:13}');
      #Jn(linein => 0.034, {pi=>'hangleft',s=>sc.in,scwa=>'right:3em'}, '{ab:1,co:e72,fs:10}');
      
      
      #my $ind = $1 if sc.h =~ /^(.+?)\Qsc.K\E/;
-     #my $al = $1 if sc.h =~ /\Qsc.K\E(.+)$/;
+     my $al = $1 if sc.h =~ /\Qsc.K\E(.+)$/;
      #Jn(ind => 0.09, $ind, "{co:38e,fs:12}");
      Jn(K => 0.1, sc.K, "{hs:347,fs:17}");
      # go look for the right side of /K
-     #Jn(al => 0.11, {fadwi=>$al,s=>slm(20, $al)}, "{co:5ae,fs:12}");
+     #Jn(al => 0.11, {s=>slm(20, $al)}, "{co:5ae,fs:12}");
      
      
      #Jn(com => 0.3, {s=>sc.com}, '{co:342,fs:9}');
