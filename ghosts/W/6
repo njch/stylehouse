@@ -179,51 +179,7 @@ R_Jz:
      sc.left = "0em";
      J.d.sc.mw = "20em";
      Rw pi/thumbnail $u $J $sc;
- - K: pi/thumbnail #c image/video
-   D: |
-     my $size = -s $u;
-     return "nontypeimage: $u" unless $u =~ /(png|gif|jpe?g)$/i;
-     my $mou = "public/";
-     #return if $size > 3_000_000;
-     my ($first) = split '/', $u;
-     die "$first not $mou?" unless -e "$mou$first";
-     
-     my $thl = "th/$u";
-     my $th = "$mou$thl";
-     
-     saygr "thumb $u to $th";
-     
-     # TODO mod slowness
-     # make this thumbnail J even more forky than usual
-     # TODO wander 90deg radial over phatness...
-     # tape twist effect coming from somewhere
-     if (!-f $th && 1){#J.fop->()) {
-         sayyl " thumbnail++$u";
-         my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
-         if (!-d $thd) {
-             run 'mkdir', '-p', $thd;
-         }
-         if ($u =~ /(mov|avi|mp4)$/i) {
-             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
-         }
-         else {
-             run 'convert', $u, '-thumbnail','500x500', $th
-         }
-     }
-     if (-f $th) {
-         my $sc = {
-             tag => 'img',
-             src => $thl,
-             height=>'3em',
-             ab=>1,
-             zi=>2,
-             %{ar.sc||{}}
-         };
-         my $s = "";
-         Rw wtf $J yowl 3 $s $sc;
-     }
-     delete J.mod.sc.over;
-     #J.mod.sc.bgi = $thl;
+
  - K: pi/direst #c shadowing fs
    D: |
      my @r = Rw globdir $dir;
