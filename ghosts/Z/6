@@ -1,142 +1,158 @@
 R_Jz:
+
+ - K: anno/Y #c
+   D:
+    -
+     - cts_Y #
+     - 2
+     - |
+       for my $ct (@{wJ.cts.Y}) {
+           next unless ct.any or exists $d->{ct.t_k} && exists $d->{ct.t_k}->{ct.t};
+           my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
+           my $at = {};
+           my $A = $A;
+           my $T = {};
+           my $C = $d; # bendy stick throw
+           my $g = wJ.ctx.Y;
+           
+           wJ.ctx.Y->{ct.x}->($A,$C,$g,$T,C.y);
+       }
+       
  - K: mooj/i #c
    D:
+   - EZ: mooj/BB
+   - MZ: Cy:Yany
    -
-    - yinvo # build wave manifold, fore loop
-    - 2.3
+    - i # build wave manifold, fore loop
+    - 1
     - |
-       d.y = {thi => d.y} if !ref d.y;
-       my $y = d.y;
+       C.y = {thi => C.y} if !ref C.y;
        
-       die wdump 2, [$y, d.sc, d.c] if y.cv && y.in;
+       my $y = C.y;
+       
+       die "cv+in".k2 $d if y.cv && y.in;
+       
        y.in ||= 0.1; 
        y.out ||= 0.9; # up to
        y.thi ||= 1; 
        y.space = y.out - y.in; # could spiral much space away from spine
        y.space *= -1 unless y.space > 0;
        y.aspace = y.space / y.thi;
-       
-       
-       # twist, lay into segment
-       my $csv = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
-       my $muav;
-       for (1..y.thi) {
-           my $iy;
-           
-           iy.i = $_-1;
-           iy.cv = sprintf '%.6f', $csv;
-           iy.pcv = sprintf '%.6f', $_ / y.thi;
-           
-           s/0+$/0/ for iy.cv, iy.pcv;
-           push @is, $iy;
-           
-           my $mu = 1;
    -
-    - yinvout # build wave manifold, fore loop
-    - 2.7
+    - i # build wave manifold, fore loop
+    - 6
     - |
-       # some
-           my $muc = y.aspace * $mu;
-           $csv += $muc;
-           iy.ov = sprintf '%.6f', $csv;
+       # twist, lay into segment
+       A.v = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
+       for (1..y.thi) {
+           my $T;
+           T.y.i = $_-1;
+           push @{A.is}, $T;
+           my $A = {%$A};
+           
+           for my $ct (@{wJ.cts.YB}) {
+               next unless ct.any or exists $d->{ct.t_k} && exists $d->{ct.t_k}->{ct.t};
+               my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
+               
+               wJ.ctx.YB->{ct.x}->($A,$C,$g,$T,T.y);
+           }
        }
  - K: anno/o #c
    D:
+   - EZ: anno/lum
+   - EZ: anno/Bal
+   - MZ: Cy:Y
    -
-    - el
+    - o
     - 2
     - |
-      if (my $o = d.y.o) {
-         if (ref $o eq 'ARRAY') {
-             $o = d.y.o = {M=>$o};
-         }
-         else {
-             o.M ||= [$d];
-             o.M = [map{
-                 my $d;
-                 d.t = _.t;
-                 d.y = {%{_.y}};
-                 d.c = {%{_.c}};
-                 delete d.y.cv;
-                 if (o.ou) {
-                     d.c.pi = o.ou;
-                     d.c.s = $_;
-                 }
-                 if (o.oJ) {
-                      d.sc.oJ = o.oJ;
-                 }
-                 $d
-             }@{o.M}]
-         }
-         d.y.bal = o.M || die"nomo";
-         
-         my $Jy = J.d.y;
-         d.y.o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.2;
-         d.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if d.y.o.J;
-         d.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
-         d.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
-         d.c.lumfa = 1 if J.most.J.name eq 'wam';
-         
+      my $o = $v;
+      if (ref $o eq 'ARRAY') {
+          $o = C.y.o = {M=>$o};
       }
-      if (d.c.lumfa) {
+      else {
+           o.M ||= [$C];
+           o.M = [map{
+               my $d;
+               d.t = _.t;
+               d.y = {%{_.y}};
+               d.c = {%{_.c}};
+               delete d.y.cv;
+               # TR
+               if (o.ou) { # inside our
+                   d.c.pi = o.ou;
+                   d.c.s = $_;
+               }
+               if (o.oJ) {
+                    d.sc.oJ = o.oJ;
+               }
+               $d
+           }@{o.M}]
+       }
+       C.y.bal = o.M || die"nomo";
+       
+       my $Jy = J.d.y;
+       C.y.o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.2;
+       
+       C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if d.y.o.J;
+       
+       C.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
+       C.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
+       C.c.lumfa = 1 if J.most.J.name eq 'wam';
+   -
+    - lumfa
+    - 3
+    - |
          my $lum = 3;
          my $i = 0;
-         for (@{d.y.bal}) {
+         for (@{C.y.bal}) {
              _.y.thy=$lum;
              $i++;
              $lum = 2 if $i == 4;
              $lum = 1 if $i == 7;
          }
+   -
+    - bal
+    - 4
+    - |
+       C.y.thi = @$v;
+       A.muav = ( sum(map{_.y.thy} @{y.bal}) /  (@{y.bal}||1) )||1;
+ - K: mooj/BB #c
+   D:  
+   - MZ: Cy:YBany
+   -
+    - yinvout # build wave manifold, fore loop
+    - 1
+    - |
+      y.cv = sprintf '%.6f', A.v;
+      y.pcv = sprintf '%.6f', $_ / C.y.thi;
+      s/0+$/0/ for y.cv, y.pcv;
+      A.mu = 1;
+      
+   -
+    - bally 
+    - 3.2
+    - |
+      my $b = $C; # clone
+      
+      $b = C.y.bal->[y.i] if C.y.bal;
+      
+      for my $k (keys %$b) {
+          my $v = $b->{$k};
+          $T->{$k} = ref $v ? {%{$C->{$k}||{}}, %$v} : $v;
       }
-   -
-    - yongbal
-    - 2.1
-    - |
-       d.y.thi = @{d.y.bal} if d.y.bal;
-   -
-    - yang 
-    - 2.7
-    - |
-           if (y.bal) {
-               if (!defined $muav) {
-                   my $s = sum map{_.y.thy} @{y.bal};
-                   my $ov = @{y.bal};
-                   $muav = $s/($ov||1);
-                   $muav ||= 1;
-               }
-               my $b = y.bal->[iy.i];
-               $mu = b.y.thy if exists b.y.thy;
-               
-               
-               $mu = $mu / ($muav||1);
-               
-               #saybl wdump 2, $b;
-               do {
-               say "J.d.c.cv * y.aspace * $mu  === ". (J.d.c.cv * y.aspace * $mu);
-              b.c.cv ||= J.d.c.cv * y.aspace * $mu
-               } if J.d.c.cv && b.y.thy;
-           }
+      
+      A.mu = T.y.thy if exists T.y.thy;
+      A.mu /= A.muav;
+      
+      if (J.d.c.cv && b.y.thy) {
+          say "C.c.cv * C.y.aspace * $mu  === ". (C.c.cv * C.y.aspace * $mu);
+          #b.c.cv ||= J.d.c.cv * C.y.aspace * $mu
+      } 
    -
     - yangbalin # 
     - 3.21
     - |
-       my $y = d.y;
-       if (d.y.bal) {
-           # locality
-           my $b = d.y.bal->[d.y.i];
-           say "G.jumb.yos BAL d.y.i at d.cv    --- d.y.uyiv   ".ki 1, $b if J.V;
-           # mergins... maybe theres a weird lma in b saying replaceall or so
-           # anything could be alive
-           for my $k (keys %$b) { # c etc merg in per row
-               my $v = $b->{$k};
-               if (ref $v) {
-                   $d->{$k} = {%{$d->{$k}||{}}, %$v};
-               }
-               else {
-                   $d->{$k} = $v;
-               }
-           }
-       }
        d.r = join "\t", d.t, (d.cv+0);
        d.y.spc = d.y.ov - d.y.cv;
        d.y->{$_} = 0+sprintf('%.6f',d.y->{$_}) for qw'cv ov aspace spc';
@@ -153,4 +169,10 @@ R_Jz:
        if (d.y.over) {
            d.sc.ml = (d.y.over * 40)."%"; 
        }
+   -
+    - over # build wave manifold, fore loop
+    - 9
+    - |
+      A.v += y.aspace * A.mu;
+           T.ov = sprintf '%.6f', A.v;
 

@@ -306,6 +306,10 @@ sub ki {
     } sort keys %$ar;
 }
 
+sub k2 {
+    ki 2, shift;
+}
+
 sub unico {
     my ($int, $wantinfo) = @_;
     my $h = sprintf("%x", $int);
