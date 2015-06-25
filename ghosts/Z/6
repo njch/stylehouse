@@ -17,52 +17,6 @@ R_Jz:
            wJ.ctx.Y->{ct.x}->($A,$C,$g,$T,C.y,$v);
        }
        
- - K: mooj/i #c
-   D:
-   - EZ: mooj/BB
-   - MZ: Cy:Yany
-   -
-    - i # build wave manifold, fore loop
-    - 1
-    - |
-       C.y = {thi => C.y} if !ref C.y;
-   -
-    - i # build wave manifold, fore loop
-    - 1.2
-    - |
-       sayyl 'i 1.2  '.k2 $C;
-       saygr k2 $y;
-       
-       die "cv+in".k2 $C if y.cv && y.in;
-       
-       y.in ||= 0.1; 
-       y.out ||= 0.9; # up to
-       y.thi ||= 1; 
-       y.space = y.out - y.in; # could spiral much space away from spine
-       y.space *= -1 unless y.space > 0;
-       y.aspace = y.space / y.thi;
-   -
-    - i # build wave manifold, fore loop
-    - 6
-    - |
-       # twist, lay into segment
-       A.v = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
-       warn "histtwqay". k2 $C;
-       
-       for (1..y.thi) {
-           my $T;
-           T.y.i = $_-1;
-           push @{A.is}, $T;
-           my $A = {%$A};
-           
-           my $wJ = A.wJ;
-           for my $ct (@{wJ.cts.YB}) {
-               next unless ct.any or exists $C->{ct.t_k} && exists $C->{ct.t_k}->{ct.t};
-               my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
-               
-               wJ.ctx.YB->{ct.x}->($A,$C,$g,$T,T.y);
-           }
-       }
  - K: anno/o #c
    D:
    - EZ: anno/Bal
@@ -95,25 +49,80 @@ R_Jz:
            }@{o.M}]
        }
        C.y.bal = o.M || die"nomo";
-       
+       my $J = A.J;
        my $Jy = J.d.y;
        C.y.o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.2;
        
-       C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if d.y.o.J;
+       C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if y.o.J;
        
        C.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
        C.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
+       
        C.c.lumfa = 1 if J.most.J.name eq 'wam';
+       
+       sayyl "IS o  ". k2 $C;
+ - K: mooj/i #c
+   D:
+   - EZ: mooj/BB
+   - MZ: Cy:Yany
+   -
+    - i # build wave manifold, fore loop
+    - 1.1
+    - |
+       C.y = {thi => C.y} if !ref C.y;
+   -
+    - i # build wave manifold, fore loop
+    - 3
+    - |
+       die "cv+in".k2 $C if y.cv && y.in;
+       
+       
+       y.in ||= 0.1; 
+       y.out ||= 0.9; # up to
+       y.thi ||= 1; 
+       y.space = y.out - y.in; # could spiral much space away from spine
+       y.space *= -1 unless y.space > 0;
+       y.aspace = y.space / y.thi;
+   -
+    - i # build wave manifold, fore loop
+    - 6
+    - |
+       # twist, lay into segment
+       A.v = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
+       my $wJ = A.wJ;
+       
+       for (1..y.thi) {
+           my $T = {%$C};
+           while (my($k,$v) = each %$T) {
+               $T->{$k} = {%$v} if ref $v;
+           }
+           T.y.i = $_-1;
+           push @{A.is}, $T;
+           
+           for my $ct (@{wJ.cts.B}) {
+               next unless ct.any or exists $C->{ct.t_k} && exists $C->{ct.t_k}->{ct.t};
+               my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
+               
+               wJ.ctx.B->{ct.x}->($A,$C,$g,$T,T.y);
+           }
+           say "KAp T.t  T.y.cv   T.y.ov" if A.J.V;
+       }
+       #sayyl wdump 2, A.is;
  - K: anno/Bal #c
    D:
    - EZ: anno/lumfa
    - MZ: Cy:Y
    -
     - bal
+    - 2.3
+    - |
+       y.thi = @$v;
+   -
+    - bal
     - 4
     - |
-       C.y.thi = @$v;
        A.muav = ( sum(map{_.y.thy} @{y.bal}) /  (@{y.bal}||1) )||1;
+       saygr "Ybal 4 A.muav over". k2 $y if A.J.V;
  - K: anno/lumfa #c
    D: |
    - MZ: Cc:Y
@@ -123,53 +132,57 @@ R_Jz:
     - |
       my $lum = 3;
       my $i = 0;
+      y.bal || die "lumfa no ybal ".k2 $C;
       for (@{y.bal}) {
           _.y.thy=$lum;
           $i++;
           $lum = 2 if $i == 4;
           $lum = 1 if $i == 7;
       }
+   - MZ: Cc:B
    -
     - lumfa
-    - 4
+    - 5
     - |
-       if (T.c.lumfa) {
-           my $spc = d.y.spc;
-           my $upt = 0;#0.9 / @{d.y.bal};
-           $spc = $upt if $spc < $upt;
-           my $fl = ($spc / 0.02) * 4;
-           #sayyl "d.t   d.y.ov - d.y.cv  ::: $spc d.y.aspace \t\t $fl";
-           d.sc.fs = $fl if $fl < 9;
-           #d.sc.tt="d.t at d.y.cv for d.y.spc";
-       }
+      my $spc = T.y.spc;
+      my $upt = 0;#0.9 / @{d.y.bal};
+      $spc = $upt if $spc < $upt;
+      my $fl = ($spc / 0.02) * 4;
+      sayyl "d.t   d.y.ov - d.y.cv  ::: $spc d.y.aspace \t\t $fl";
+      d.sc.fs = $fl if $fl < 9;
+      #d.sc.tt="d.t at d.y.cv for d.y.spc";
  - K: mooj/BB #c
    D:  
-   - MZ: Cy:YBany
+   - MZ: Cy:Bany
    -
     - yinvout # build wave manifold, fore loop, reclimb vines
-    - 1
+    - 1.1
     - |
-      y.cv = sprintf '%.6f', A.v;
-      y.pcv = sprintf '%.6f', $_ / C.y.thi;
-      s/0+$/0/ for y.cv, y.pcv;
+      die "if " if $y ne T.y;
+      die "nov" if !A.v;
+      y.cv = 0+sprintf '%.6f', A.v;
+      y.pcv = 0+sprintf '%.6f', $_ / C.y.thi;
       A.mu = 1;
-      
+      saygr "Mad T.t  is T.y.cv  (T.y.i / C.y.thi)" if A.J.V;
    -
     - bally 
     - 3.2
     - |
-      my $b = $C; # clone
+      my $b = {};
       
-      $b = C.y.bal->[y.i] if C.y.bal;
+      if (C.y.bal) {
+          $b = C.y.bal->[y.i] if C.y.bal; 
+        sayyl "ISCYBAL y.i  ".ki $b;
+      }
       
-      for my $k (keys %$b) {
-          my $v = $b->{$k};
-          $T->{$k} = ref $v ? {%{$C->{$k}||{}}, %$v} : $v;
+      while (my($k,$v) = each %$b) {
+          sayyl "clon $k    ".gp($T->{$k})."   ->  ".gp($v) if A.J.V;
+          $T->{$k} = ref $v ? {%{$T->{$k}||{}}, %$v} : $v;
       }
       
       A.mu = T.y.thy if exists T.y.thy;
-      A.mu /= A.muav||1;
-      
+      say "T.t ist A.mu  among A.muav" if A.J.V;
+      A.mu = A.mu / A.muav if A.muav;
       #if (J.d.c.cv && b.y.thy) {
       #    say "C.c.cv * C.y.aspace * $mu  === ". (C.c.cv * C.y.aspace * $mu);
       #    b.c.cv ||= J.d.c.cv * C.y.aspace * $mu
@@ -178,18 +191,19 @@ R_Jz:
     - over # cap
     - 4
     - |
+      sayyl "A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.J.V;
       A.v += y.aspace * A.mu;
       y.ov = sprintf '%.6f', A.v;
+      y.spc = y.ov - y.cv;
+      T.r = join "\t", T.t, (y.cv+0);
+      sayyl "T.r ist T.y.cv -> T.y.ov" if A.J.V;
    -
     - yangbalin # 
     - 7
     - |
-       T.r = join "\t", T.t, (y.cv+0);
+       $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';
        
-       y.spc = y.ov - y.cv;
-       $y->{$_} = 0+sprintf('%.6f',y->{$_}) for qw'cv ov aspace spc';
-       
-       if (d.y.over) {
-           d.sc.ml = (d.y.over * 40)."%"; 
+       if (T.y.over) {
+           T.sc.ml = (T.y.over * 40)."%"; 
        }
 
