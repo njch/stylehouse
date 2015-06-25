@@ -70,23 +70,33 @@ wa:
     if (J.runt++ > 8) {sayre "ex";sleep 1;
         #Rw rez;
     }
-    sayyl ''.`figlet wa`;
-    Rw vortex $J around $d=16;
+    Rw vortex $J around $d=6;
+    
     Rwyl 0.01 wa/ps;
+    
     Rw wa/pl -;
    ps: |
     J.first++ || return;
     my @ps = `ps -p$$ fu`; # j right
     my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
-    sayre "$u $pid       cpu:$cpu  mem:$mem";
-    if ($mem > 20 || $cpu > 30) {
+    if ($mem > 20 || $cpu > 60) {
         saybl "& $mem";
-        if ($mem > 22) {
+        if ($mem > 38) {
             sayre "massive, restarting" for 1..8;sleep 1;
             Rw rez;
         }
-        sleep 5;
-        
+        sleep 4;
+    }
+     
+    my @temps = 
+    map {/\+(\d+\.\d+)\S+? /;$1} 
+    grep {/^temp1:/} 
+    `sensors`;
+    my ($ch,$gh) = @temps;
+    sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
+    if ($ch > 70) {
+        sayre "HOT";
+        sleep 7;
     }
    pl: |
     #Rw J5 Wkcs; 
@@ -122,7 +132,6 @@ Hosp:
      'aww'
    M: |
     my $d = Jn(qw'life 0.1 life/H/');
-    sayyl "HOS: ".ki $A;
     Mn(hoisp => '',{pi=>'liv',s=>d.s}); 
     
 We: |
