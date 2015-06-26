@@ -19,7 +19,9 @@ R_Jz:
      aj.hol = "H.style/H.name/H.id";
      aj.hitime = hitime;
      aj.name ||= aj.J.name;
+     
      # also some J.headlev readings for .i
+     aj.sent = 1;
      
      # route aj.W from ...
      G.Wh->{aj.Wid} ||= do {
@@ -47,7 +49,7 @@ R_Jz:
          0->tac("aj.yy/".$aj->{aj.yy.'id'}.'.s', $z);
      }
      my @m;
-     for my $s (sort grep{/^[sc]+/} keys %$aj) {
+     for my $s (sort grep{/^[sc]+$/} keys %$aj) {
          my $v = $aj->{$s};
          if ($s eq 's') {
              die "s is $v" if $v;
@@ -68,7 +70,7 @@ R_Jz:
          my $v = $aj->{$k};
          if (ref $v eq 'ARRAY') {
              my $i = 1;
-             my $lim = $k eq 'c' ? 76 : 90;
+             my $lim = aj.name eq 'shv' ? 200 : $k eq 'c' ? 76 : 90;
              saybl "$k ".$i++."=".slim $lim, $_ for @$v 
          }
          else {

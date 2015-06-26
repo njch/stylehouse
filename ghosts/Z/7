@@ -51,9 +51,21 @@ R_Jz:
          # 4 figure floor
          my $coi = Rw pha $J:aJ $k:j.r;
          coi.qui = 1;
-         my $xat = do {
+         
+         my $xat; # 1 to ignore
+         
+         my $hav = lv.sc.enid && lv.sc.J && lv.sc.J.oJ.A;
+         if ($hav) {
+              my $aj = hav.W->[-1];
+              saygr wdump 1, $aj;
+              if (!aj.sent) {
+              sayyl "aj.name  ist not send, in J.name  uinder j.r";
+                  $xat = 0;
+              }
+         }
+         $xat = do {
              Rw lv_same $lv $x:coi $J:aJ;
-         } if aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
+         } if !defined $xat && aJ.bb->{"j.l%at\t".j.cv} && j.l !~ /\//;
          
          
          my $at;
@@ -86,7 +98,7 @@ R_Jz:
          lv.at = $at;
          # 6
          
-         # 7.9 # T ^
+         # 7.9 # T ^``
      }
      # 8 check lv up cover
      if (J.yy.may.noroot) {
@@ -435,19 +447,27 @@ R_Jz:
       at.id = $v;
       at.c.nobody = 1;
       saygr "the j.r   ".ki at.sc;
+      sayyl " )_)))))))))))))))) ENID";
       sayyl ki $F[2]->{ar};
-      if (my $aj = $F[2]->{ar}->{aj}) {
-          my $l = aj.c->[0];
-          my ($t,$y,$c,$sc) = @$l;
-          say "Maybn $t   j.l   ";
-          if ($t eq j.l) {
-              sayyl "WE HAVE AJ: $v ". wdump 2, $l;
-              say "want to merge ".wdump at.sc;
-              sayyl  "BIG GAP\n\n\n";
-              die if c.id ne at.id;
-              %$sc = (%$sc,%{at.sc});
+      if (my $J = C.sc.J) {
+          my $aj = C.sc.J.oJ.A.W->[-1];
+          if (!aj.sent) {
+              my $l = aj.c->[0];
+              my ($t,$y,$c,$sc) = @$l;
+              say "Maybn $t   j.l   ";
+              if ($t eq j.l) {
+                  sayyl "WE HAVE AJ: $v ". wdump 2, $l;
+                  say "want to merge ".wdump at.sc;
+                  sayyl  "BIG GAP\n\n\n";
+                  die if c.id ne at.id;
+                  %$sc = (%$sc,%{at.sc});
+              }
+          }
+          else {
+              sayre "aj sent";
           }
       }
+      say "\n";
    -
     - css
     - 5.55
@@ -567,7 +587,7 @@ R_Jz:
            return a.er('c string');
        
        var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
-       a.m(see);
+       
        
        if (C.c.W)
            A.on = $('#'+C.c.W);
@@ -647,6 +667,8 @@ R_Jz:
               var ex = $(to);
               if (ex) {
                   a.m('rm '+ex.prop('tagName')+' '+to);
+                  if (ex.prop('tagName') === 'undefined')
+                     a.m('?');
                   $(ex).remove();
               }
           }
