@@ -32,11 +32,12 @@ paintaj: |
 
     
 zipline: |
+     if (aj.J.yt.clw) {
      
-     #sayyl wdump 4, [aj.c,aj.sc];
-     # uppyness
-     
-     Rw J5 shv $aj;
+         Rw J5 shv $aj;
+         
+         
+     }
      
      my $c = aj.c;
      die 'scs' if @{aj.sc};
@@ -71,6 +72,56 @@ zipline: |
      Rw blabaj $aj;
      
      1
+thy: |
+     my $o = Rw pul + pin;
+     o.pin ||= ar.p;
+     my $wt = ar.anon ?
+         Rw wuck $J $pin:o.pin
+     :
+         Rw wuck $J */o.pin;
+     warn "no o.pin          for ".gp($J) if !$wt;
+     
+     my $nc = 1;
+     
+     my @keys = sort keys %$wt;
+     if (my $or = J.yt.styleord) {
+         my ($na,@or) = @$or;
+         push @or, $na; # me is most
+         my $i = 1;
+         my $is = {map{$_=>$i++}reverse @or};
+         @keys = sort {
+          $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($a=~/^(.+?)\//)[0]}
+          } @keys;
+          
+         if (@keys > 1) {
+             sayre "Limiting @keys";
+             @keys = $keys[0];
+         }
+     }
+     
+     $J = ar.oJ || $J;
+     for my $k (@keys) {
+         my $N = $wt->{$k};
+         
+         saygr "GEO - J.name -    $k";
+         
+         my $coi = Rw pha $J $k;
+         
+         my $d = ref $N ? ejson($N) : $N;
+         
+         coi.qui = 1 if ar.q;
+         next if !ar.almod && Rw ph_same $J $x:coi $d;
+         
+         $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+         
+         #say " ** waything $what from $k";
+         Rw MyN $N $J;
+          
+         my $y = coi.exactl->();
+         $nc = 0 if !y.same;
+     }
+     $nc = -1 if !%$wt;
+     $nc
 Ha:
    yJ: |
      'Ha'

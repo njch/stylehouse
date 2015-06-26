@@ -209,7 +209,7 @@ pi/ls: |
      J.d.c.pwth = 'somewhere';
      J.d.sc.tt = 'somewhere';
      
-     Jn('fiule',0.1,"J.d.t",'{hs:4889,sz:20}');
+     Jn('fiule',0.1,"J.d.t",'{hs:4889,sz:8/1.6}');
          
      return
      Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
@@ -223,7 +223,7 @@ pi/ls: |
          undef $oo if $oo eq '';
          $oo = (defined$oo?"$oo/":"").$to;
          
-         Jn('sb',0.1231,"$to",'{co:f6a}');
+         Jn('sb',0.1231,"$to",'{co:f6a,sz:8/1.6}');
          
          $oo || die "$file => $oo";
          $file = $oo;
@@ -252,17 +252,24 @@ pi/ls: |
          
          closedir $dh;
          
-         my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
-         $rl = 7 if $rl < 7;
-         @ma = @ma[0..$rl] if @ma > $rl;
-         # space mod
-         sayyl "ls $u   (J.d.t) e $rl    in J.d.y.spc";
-         #saybl wdump 2, {J.d.t=>\@ma};
+       
+           my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
+           $rl = 7 if $rl < 7;
+           my $was = @ma;
+           sayyl "C.t ist o  $was";
+           if (@ma > $rl) {
+               @ma = @ma[0..$rl];
+               # space mod
+               sayyl "ls C.t   (J.d.t) e $rl < $was      in J.d.y.spc" for 1..5;
+               Jn("lim",0.7,"}$rl<$was");
+           }
+           \
+         sayyl " 0- $_" for @ma;
          Mn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
      }
      
 somewhere: |
-     my $J = J2.sc.pi;
+     my $J = J2.sc.J;
      my @path = $J;
      while (1) {
         my $l = $path[0];
