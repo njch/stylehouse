@@ -240,17 +240,16 @@ pi/ls: |
      }
      elsif (-d $file) {
          Jn('diry',0.2,'/','{hs:3555}');
-         
+         sayyl "Looking at $file";
          opendir(my $dh, $file) || die "can't opendir $file: $!";
          my @ma = readdir($dh);
-         
-         @ma = sort grep {$_ ne '.' && $_ ne '..'} @ma;
-         
-         my @fa;
-         @ma = map { -d "$u/$_" ? push @fa, $_ : $_ } @ma;
-         @ma = (@fa,@ma); 
-         
          closedir $dh;
+         
+         @ma = sort grep {$_ ne '.' && $_ ne '..' && -e "$file/$_"} @ma;
+         
+         my (@fa,@la);
+         map { -d "$u/$_" ? push @fa, $_ : push @la, $_ } @ma;
+         @ma = (@fa,@la); 
          
        
            my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
@@ -258,7 +257,7 @@ pi/ls: |
            my $was = @ma;
            sayyl "C.t ist o  $was";
            if (@ma > $rl) {
-               @ma = @ma[0..$rl];
+               @ma = @ma[0..$rl-1];
                # space mod
                sayyl "ls C.t   (J.d.t) e $rl < $was      in J.d.y.spc" for 1..5;
                Jn("lim",0.7,"}$rl<$was");
