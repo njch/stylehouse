@@ -1191,6 +1191,13 @@ sub suets {
     $i
 }
 
+sub suet {
+    my $G = shift;
+    my ($i,$s) = @_;
+    $s = {s=>[map{"{$_"}split'/',$s]};
+    $G->suets($i,$s);
+}
+
 sub snapple {
     my $G = shift;
     my $k = shift;

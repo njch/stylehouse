@@ -2,20 +2,40 @@ R_Jz:
 
  - K: event #c the join # ITS COMING BACK AROUND # care bout acJuatoring
    D: |
-     # J == join/ww, moves to ux
+     return if e.type =~ /^key/ && Rw eventkeygrab/grab;
      saybl "_---------------________------____________------------";
      sayyl ki($e);
      my $wuJ = $J;
-     die wdump e.ids;
+     my @ids = @{e.ids};
+     
+     my $Wid = shift @ids;
+     wuJ.id eq $Wid || die;
      sayyl "   W   ".gp($wuJ);
      
-     my ($ww, $ux, @ids) = @{e.ids};
-     wuJ.id eq $ww || die "noww: $ww wuJ.id";
+     my $ux = shift @ids;
      my $J = G.oin.idJy->{$ux} || die "noJ...";
-     
      saybl "J    ". gp ($J);
      e.J = $J;
      
+     my @etc;
+     for my $id (@ids) {
+         push @etc, J.idly->{$id}->{j};
+     }
+     
+     sayre wdump 2, \@etc;
+     
+     my $upi={};
+     for my $j (reverse @etc) {
+         if (my $pa = j.sc.path) {
+             Rw contier + $J $j $pa $upi;
+             last;
+         }
+     }
+     #my $h = [$J,map{_.J
+     upi.i ||
+     Rw in $J $e;
+     
+   else: | #c
      # deepest id
      my ($J2, $j);
      if (my $ju = J.idly->{e.id}) {
@@ -69,8 +89,6 @@ R_Jz:
      
      die if !$J2 && $j;
      
-     return if e.type =~ /^key/ && Rw eventkeygrab/grab;
-     
      my $upi={};
      for my $to (@to) {
      
@@ -81,16 +99,13 @@ R_Jz:
      # ambient J up elseness
  - K: contier #c 
    D: |
-     my $y = pa.path;
+     my $y = $pa;
      say " pa_path  $y";
      
      if ($y =~ /^!(.+?)(?::(.+))?$/) {
          my $m = [split /(?!^) /, $2];
          say " ! contig $1 -> @$m";
          upi.i = 1;
-         if (my $par = pa.pwar) {
-             $ar->{$_} ||= $par->{$_} for keys %$par;
-         }
          Rw $1 + $m;
      }
      elsif ($y) {
@@ -106,7 +121,6 @@ R_Jz:
      my $vs = Rw tyv $J $ip;
      die "m,any ".wdump 2, $vs if @$vs > 1;
      my $lv = $vs->[0];
-
  - K: figure_lux #c log churn brings lux phase yoming, flow control & expression
    D: |
      my $n = Rw Jung;

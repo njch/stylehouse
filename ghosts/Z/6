@@ -16,7 +16,6 @@ R_Jz:
            
            wJ.ctx.Y->{ct.x}->($A,$C,$g,$T,C.y,$v);
        }
-       
  - K: anno/o #c
    D:
    - EZ: anno/Bal
@@ -26,11 +25,10 @@ R_Jz:
     - 2
     - |
       my $o = $v;
-      if (ref $o eq 'ARRAY') {
-          $o = C.y.o = {M=>$o};
-      }
-      else {
+      $o = C.y.o = {M=>$o} if ref $o eq 'ARRAY';
+      
            o.M ||= [$C];
+           
            o.M = [map{
                my $d;
                d.t = _.t;
@@ -45,27 +43,31 @@ R_Jz:
                if (o.oJ) {
                     d.sc.oJ = o.oJ;
                }
+               if (my $b = A.J.A.in->{d.t}) { # outside in
+                   $b = b._;
+                   say "d.t in: ".wdump $b;
+                   g.extend->($d, $b);
+               }
                $d
-           }@{o.M}]
-       }
+           }@{o.M}];
+           
+           
+       my $J = A.J;
+       my $Jy = J.d.y;
        
-       if (my $lt = C.y.limn)
+       if (my $lt = C.y.limn) {
            my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
            $rl = 7 if $rl < 7;
            
            my $was = @{o.M};
-           sayyl "C.t ist o  $was";
            if ($was > $rl) {
                my @um = @{o.M};
                @um = @um[0..$rl-1];
                @{o.M} = @um;
                # space mod
-               sayyl "ls C.t   (J.d.t) e $rl < $was      in J.d.y.spc" for 1..5;
                Jn("lim",0.7,"}$rl<$was");
            }
        }
-       my $J = A.J;
-       my $Jy = J.d.y;
        
        C.y.bal = o.M || die"nomo";
        
@@ -77,11 +79,20 @@ R_Jz:
        C.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
        C.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
        
-       sayre "--\nTHIS J.Jiter.d.t of ".ki J.Jiter.d.c;
-       
        C.c.lumfa = 1 if J.most.J.name eq 'wam';
        
        sayyl "IS o  C.t  C.y.cv    ".ki(C.c)."    ".ki(C.sc) if A.J.V;
+
+   - MZ: Cy:xY
+   -
+    - extend
+    - 3
+    - |
+      while (my($k,$v) = each %$b) {
+          $T->{$k} = ref $v ? {%{$T->{$k}||{}}, %$v} : $v;
+      }
+    - args: T,b
+       
  - K: mooj/i #c
    D:
    - EZ: mooj/BB
@@ -113,10 +124,8 @@ R_Jz:
        my $wJ = A.wJ;
        
        for (1..y.thi) {
-           my $T = {%$C};
-           while (my($k,$v) = each %$T) {
-               $T->{$k} = {%$v} if ref $v;
-           }
+           my $T = {};
+           g.extend->($T, $C);
            T.y.i = $_-1;
            push @{A.is}, $T;
            
@@ -143,7 +152,7 @@ R_Jz:
     - 4
     - |
        A.muav = ( sum(map{_.y.thy} @{y.bal}) /  (@{y.bal}||1) )||1;
-       saygr "Ybal 4 A.muav over". k2 $y if A.J.V;
+       saygr "Ybal 4 A.muav over  ". @{y.bal} if 1||A.J.V;
  - K: anno/lumfa #c
    D: |
    - MZ: Cc:Y
@@ -193,18 +202,13 @@ R_Jz:
       my $b = {};
       
       if (C.y.bal) {
-          $b = C.y.bal->[y.i] if C.y.bal; 
-        saygr "ISCYBAL y.i  -> b.t  ".ki b.y."   ".slim 30,ki b.c if A.J.V;
-      }
-      
-      while (my($k,$v) = each %$b) {
-          sayyl "clon $k    ".gp($T->{$k})."   ->  ".gp($v) if A.J.V;
-          $T->{$k} = ref $v ? {%{$T->{$k}||{}}, %$v} : $v;
+          $b = C.y.bal->[y.i] if C.y.bal;
+          g.extend->($T, $b);
       }
       
       A.mu = T.y.thy if exists T.y.thy;
-      say "T.t ist A.mu  among A.muav" if A.J.V;
-      A.mu = A.mu / A.muav if A.muav;
+      say "T.t ist A.mu  among A.muav" if 1||A.J.V;
+      A.mu = A.mu * A.muav if A.muav;
       #if (J.d.c.cv && b.y.thy) {
       #    say "C.c.cv * C.y.aspace * $mu  === ". (C.c.cv * C.y.aspace * $mu);
       #    b.c.cv ||= J.d.c.cv * C.y.aspace * $mu
@@ -213,12 +217,12 @@ R_Jz:
     - over # cap
     - 4
     - |
-      sayyl "A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.J.V;
+      sayyl "T.r   A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.J.V;
       A.v += y.aspace * A.mu;
       y.ov = sprintf '%.6f', A.v;
       y.spc = y.ov - y.cv;
       T.r = join "\t", T.t, (y.cv+0);
-      sayyl "T.r ist T.y.cv -> T.y.ov" if A.J.V;
+      #sayyl "T.r ist T.y.cv -> T.y.ov" if A.J.V;
    -
     - yangbalin # 
     - 7
