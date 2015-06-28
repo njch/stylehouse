@@ -1169,23 +1169,27 @@ sub suets {
     my $end = pop @s if exists $s->{e};
     my $last;
     while (1) {
-          my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
+        my $ac = shift @s || do {exists $s->{e} || last; $last=1; $end};
+
         $ac =~ /^(\W)(.*)$/ || die "$ac !".G::wdump($s);
-        if (!$last) { # TODO know about insto hash or array...
-             $i = $1 eq "{" ?
-             do { $i = $i->{$2} ||= {} }
-             :
-             $1 eq "[" ?
-             do { $i->[$2] ||= {} }
-             :
-             die "je seuits $1?";
-        }
-        else {
+
+        if ($last) { # TODO know about insto hash or array...
             if (exists $s->{e}) {
                 $i->{$2} = $s->{e} if $1 eq "{";
                 $i->[$2] = $s->{e} if $1 eq "[";
             }
             last;
+        }
+        elsif ($1 eq '{') {
+             $i = $i->{$2} ||=
+                  $s->{noset} ? return undef : {};
+        }
+        elsif ($1 eq '[') {
+             $i = $i->[$2] ||=
+                  $s->{noset} ? return undef : {};
+        }
+        else {
+             die "je seuits $1?";
         }
     }
     $i
@@ -1195,6 +1199,14 @@ sub suet {
     my $G = shift;
     my ($i,$s) = @_;
     $s = {s=>[map{"{$_"}split'/',$s]};
+    $G->suets($i,$s);
+}
+
+sub gip {
+    my $G = shift;
+    my ($i,$s) = @_;
+    $s = {s=>[map{"{$_"}split'/',$s]};
+    $s->{noset} = 1;
     $G->suets($i,$s);
 }
 

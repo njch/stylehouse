@@ -18,20 +18,23 @@ cscomp: |
     non.s = $de->(non.s);
     return sjson $non
 somewhere: |
-     my @path = ar.j.sc.J;
+     my @path = ar.j.sc.J || ar.j.J;
      while (1) {
         my $l = $path[0];
         unshift @path, l.Jiter || last;
      }
+     saybl wdump 2, ["Gootblock:",@path];
      
-     say "avoid: ".gp shift @path until $path[0] eq $J;
+     say "avoid: ".gp shift @path until !@path || $path[0] eq $J;
      shift @path;
      my $path = join '/', map{_.d.t} @path;
      
      my $A = J.A;
      my $v = $G->suet($A, "in/$path");
-     v._.y.thy = 1.5;
-     say "A in assign". wdump 14, [$path, $v];
+     my $amo = 1.5;
+     $amo = 0.8 if e.S;
+     (v._.y.thy ||= 1) *= $amo;
+     say "A in assign". wdump 14, [gp($J), $path, $v];
      return;
      
      #die wdump 2, [@lspath]; 

@@ -7,6 +7,7 @@ R_Jz:
      - 2
      - |
        A.wJ = $wJ;
+       A.muav = 1;
        for my $ct (@{wJ.cts.Y}) {
            next unless ct.any or exists $C->{ct.t_k} && exists $C->{ct.t_k}->{ct.t};
            my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
@@ -43,7 +44,8 @@ R_Jz:
                if (o.oJ) {
                     d.sc.oJ = o.oJ;
                }
-               if (my $b = A.J.A.in->{d.t}) { # outside in
+               sayyl "     d.t";
+               if (my $b = $G->gip(A.J.A.in, d.t)) { # outside in
                    $b = b._;
                    say "d.t in: ".wdump $b;
                    g.extend->($d, $b);
@@ -151,8 +153,10 @@ R_Jz:
     - bal
     - 4
     - |
-       A.muav = ( sum(map{_.y.thy} @{y.bal}) /  (@{y.bal}||1) )||1;
-       saygr "Ybal 4 A.muav over  ". @{y.bal} if 1||A.J.V;
+      my $total = sum(map { _.y.thy||1 } @$v) || 1;
+      my $over = @$v || 1;
+      A.muav = $over / $total;
+      saygr "Ybal 4 A.muav over  ". @{y.bal} if A.muav != 1 ||A.J.V;
  - K: anno/lumfa #c
    D: |
    - MZ: Cc:Y
@@ -207,7 +211,7 @@ R_Jz:
       }
       
       A.mu = T.y.thy if exists T.y.thy;
-      say "T.t ist A.mu  among A.muav" if 1||A.J.V;
+      say "A.J.d.t  /  T.t ist A.mu  among A.muav" if A.muav != 1 ||A.J.V;
       A.mu = A.mu * A.muav if A.muav;
       #if (J.d.c.cv && b.y.thy) {
       #    say "C.c.cv * C.y.aspace * $mu  === ". (C.c.cv * C.y.aspace * $mu);
@@ -217,7 +221,7 @@ R_Jz:
     - over # cap
     - 4
     - |
-      sayyl "T.r   A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.J.V;
+      sayyl "T.r   A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.muav != 1 ||A.J.V;
       A.v += y.aspace * A.mu;
       y.ov = sprintf '%.6f', A.v;
       y.spc = y.ov - y.cv;
