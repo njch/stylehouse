@@ -220,7 +220,7 @@ pi/ls: |
          my $to = readlink $file;
          my $oo = $file;
          $oo =~ s/(^|\/)[^\/]+$//;
-         undef $oo if $oo eq '';
+         undef $oo if $oo eq '' || $to =~ /^\//;
          $oo = (defined$oo?"$oo/":"").$to;
          
          Jn('sb',0.1231,"$to",'{co:f6a,sz:8/1.6}');
@@ -258,7 +258,7 @@ pi/ls: |
 pi/fi: |
      my $y;
      $y ||= 'thumbnail' if $u =~ /(tga|png|gif|jpe?g)$/i;
-     $y ||= 'file' if $u =~ /^w\/c|^g/;
+     $y ||= 'file' if $u =~ /^w\/c|^g|^eye\/notes\//;
      $y ||= do { $u = C.t; 'text' };
      my $oM = [];
      
@@ -294,20 +294,17 @@ pi/thumbnail: |
              run 'convert', $u, '-thumbnail','500x500', $th
          }
      }
-     C.sc.ab = 1;
      if (-f $th) {
          my $sc = {
              tag => 'img',
              src => $thl,
              height=>(24*C.y.spc).'em',
-             ab=>1,
+             #ab=>1,
              tt=>" J.d.y.spc   of C.y.cv - C.y.ov",
-             zi=>2,
-             %{ar.sc||{}}
+             zig=>2,
          };
          Jn(yowl=>3=>'',$sc);
      }
-     delete J.mod.sc.over;
      #J.mod.sc.bgi = $thl;
 pi/file: |
      my $file = $u;
