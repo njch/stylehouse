@@ -209,11 +209,11 @@ pi/ls: |
      J.d.c.pwth = 'somewhere';
      J.d.sc.tt = 'somewhere';
      
-     Jn('fiule',0.1,{s=>J.d.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6}');
+     Jn('fiule',0.1,{s=>C.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6}');
          
      return
-     Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
-     if J.d.y.spc < 0.02;
+     Jn('ends',0.2,'@'.J.d.y.spc,'{hs:6984,ml:-0.3em}')
+     if J.d.y.spc < 0.005;
      
      if (-l $file) {
          Jn('-s',0.12,'-s','{co:fca}');
@@ -234,13 +234,12 @@ pi/ls: |
          Jn("not",0.2,"!$file:$!",'{co:fca}');
      }  
      elsif (-f $file) {
-         Jn('-f',0.2,'-f');
+         Jn('-f',0.2,'-f','%fs:7,hs:392');
          
-         Mn('.','',{pi=>'fi',s=>$file});
+         Mn(C.t,'',{pi=>'fi',s=>$file});
      }
      elsif (-d $file) {
          Jn('diry',0.2,'/','{hs:3555}');
-         sayyl "Looking at $file";
          opendir(my $dh, $file) || die "can't opendir $file: $!";
          my @ma = readdir($dh);
          closedir $dh;
@@ -260,7 +259,7 @@ pi/fi: |
      my $y;
      $y ||= 'thumbnail' if $u =~ /(tga|png|gif|jpe?g)$/i;
      $y ||= 'file' if $u =~ /^w\/c|^g/;
-     $y ||= 'text';
+     $y ||= do { $u = C.t; 'text' };
      my $oM = [];
      
      oMn($y,{},{pi=>$y,s=>$u});
@@ -306,8 +305,7 @@ pi/thumbnail: |
              zi=>2,
              %{ar.sc||{}}
          };
-         my $s = "";
-         Rw wtf $J yowl 3 $s $sc;
+         Jn(yowl=>3=>'',$sc);
      }
      delete J.mod.sc.over;
      #J.mod.sc.bgi = $thl;

@@ -44,7 +44,7 @@ R_Jz:
                if (o.oJ) {
                     d.sc.oJ = o.oJ;
                }
-               sayyl "     d.t";
+               #sayyl "     d.t";
                if (my $b = $G->gip(A.J.A.in, d.t)) { # outside in
                    $b = b._;
                    say "d.t in: ".wdump $b;
@@ -58,8 +58,9 @@ R_Jz:
        my $Jy = J.d.y;
        
        if (my $lt = C.y.limn) {
-           my $rl = int(4 * (J.d.y.spc / 0.3 * J.d.y.spc));
-           $rl = 7 if $rl < 7;
+           my $rl = int(45 * Jy.spc);
+           sayre "$rl from Jy.spc";
+           $rl = 3 if $rl < 3;
            
            my $was = @{o.M};
            if ($was > $rl) {
@@ -74,16 +75,20 @@ R_Jz:
        C.y.bal = o.M || die"nomo";
        
        # unless y unlimited...until
-       C.y.o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.2;
+       o.J = J.most.J if $Jy && Jy.o && Jy.aspace > 0.1;
+       my $shut = $Jy && Jy.o && !o.J;
        
        C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if y.o.J;
        
-       C.y.in ||= $Jy ? Jy.cv + 0.03 : 0.1;
-       C.y.out ||= $Jy ? Jy.ov - 0.03 : 0.9;
+       #sayre "Jyspace: spc:  J.d.y.spc  or aspace: Jy.aspace" if $Jy;
        
-       C.c.lumfa = 1 if J.most.J.name eq 'wam';
        
-       sayyl "IS o  C.t  C.y.cv    ".ki(C.c)."    ".ki(C.sc) if A.J.V;
+       C.y.in ||= $shut ? 0.3 : $Jy ? Jy.cv + Jy.spc * 0.1 : 0.1;
+       C.y.out ||= $shut ? 0.4 : $Jy ? Jy.ov - Jy.spc * 0.1 : 0.9;
+       
+       C.c.lumfa = 1 if J.most.J.name eq 'wam'||1;
+       
+       #sayyl "IS o  J.d.t  J.d.c.pi: " if 1||A.J.V;
 
    - MZ: Cy:xY
    -
@@ -156,7 +161,7 @@ R_Jz:
       my $total = sum(map { _.y.thy||1 } @$v) || 1;
       my $over = @$v || 1;
       A.muav = $over / $total;
-      saygr "Ybal 4 A.muav over  ". @{y.bal} if A.muav != 1 ||A.J.V;
+      saygr "Ybal 4 A.muav over  ". @{y.bal} if A.J.V;
  - K: anno/lumfa #c
    D: |
    - MZ: Cc:Y
@@ -169,7 +174,7 @@ R_Jz:
       my $y = C.y;
       y.bal || die "lumfa no ybal ".k2 $C;
       for (@{y.bal}) {
-          _.y.thy=$lum;
+          _.y.thy+=$lum;
           $i++;
           $lum = 2 if $i == 4;
           $lum = 1 if $i == 7;
@@ -183,7 +188,7 @@ R_Jz:
       my $upt = 0;#0.9 / @{d.y.bal};
       $spc = $upt if $spc < $upt;
       my $fl = ($spc / 0.02) * 4;
-      sayyl "d.t   d.y.ov - d.y.cv  ::: $spc d.y.aspace \t\t $fl";
+      #sayyl "d.t   d.y.ov - d.y.cv  ::: $spc d.y.aspace \t\t $fl";
       d.sc.fs = $fl if $fl < 9;
       #d.sc.tt="d.t at d.y.cv for d.y.spc";
  - K: mooj/BB #c
@@ -211,7 +216,7 @@ R_Jz:
       }
       
       A.mu = T.y.thy if exists T.y.thy;
-      say "A.J.d.t  /  T.t ist A.mu  among A.muav" if A.muav != 1 ||A.J.V;
+      say "A.J.d.t  /  T.t ist A.mu  among A.muav" if A.J.V;
       A.mu = A.mu * A.muav if A.muav;
       #if (J.d.c.cv && b.y.thy) {
       #    say "C.c.cv * C.y.aspace * $mu  === ". (C.c.cv * C.y.aspace * $mu);
@@ -221,7 +226,7 @@ R_Jz:
     - over # cap
     - 4
     - |
-      sayyl "T.r   A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.muav != 1 ||A.J.V;
+      sayyl "T.r   A.v  iwl +=    y.aspace * A.mu    =".(y.aspace * A.mu) if A.J.V;
       A.v += y.aspace * A.mu;
       y.ov = sprintf '%.6f', A.v;
       y.spc = y.ov - y.cv;
