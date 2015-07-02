@@ -24,7 +24,7 @@ R_Jz:
      up: | #c
        Rw ii/Jhead $J $cv=0.2;
        Rw ii/psfaus;
- - K: ii/psfaus #c ii = indigo, pi = carving, wt = maneuvrable type 
+ - K: pi/psfaus #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
        my @l = `ps faux`;
        my $wtf = [];
@@ -38,7 +38,6 @@ R_Jz:
            
            push @$wtf, $o;
        }
-       say "PSFAUX: ". wdump $wtf;
        my $M = [];
        for my $f (@$wtf) {
            my $c;
@@ -50,15 +49,8 @@ R_Jz:
            sc.co = '4fc';
            sc.zi = 10;
            sc.ws = 'p';
-           push @$M, ['SOI', '', $c, $sc];
+           Mn(ps => '', $c, $sc);
        }
-       my $in = 0.1;
-       my $out = 0.9;
-       my $k = 'psfaus';
-       
-       my $oM = [];
-       Rw MyN $M:oM $N:M pwth;
-       Rw om/bal $J $oM $in $out $k;
  - K: ii/psfaux #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
        my @l = `ps faux`;
