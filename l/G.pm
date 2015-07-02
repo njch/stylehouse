@@ -2266,6 +2266,7 @@ sub g_w {
     }
 
     my $Z = $G->Doming($am);
+    $G->{randomtask}->() if $G->{randomtask};
     my $r;
     eval { $r = [ $G->D($am) ] };
     $G->Done($Z);
