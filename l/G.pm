@@ -2392,8 +2392,10 @@ sub g_D {
           $G->{sigstackwa} ||= sub {
               return 1 if $_[0] =~ /^Use of uninitialized value/;
               my @loc = caller(1);
-              sayre join "\n", "warn from $F[0]->{talk}"
-                  ."       at line $loc[2] in $loc[1]:", @_;
+              $@ = join "\n", @_;
+              my $DOOF = $G->Duck($F[0],1);
+              $@ = "";
+              sayre $DOOF;
               return 1;
           };
 
@@ -2419,6 +2421,7 @@ sub g_D {
 sub g_Duck {
     my $G = shift;
     my $D = shift;
+    my $nodie = shift;
     my $evs = $D->{Ds}->{evs};
     my $ar = $D->{ar};
 
@@ -2474,6 +2477,8 @@ sub g_Duck {
                        "$_ = ". $s;
                        }keys %$ar); 
                }
+
+               return $DOOF if $nodie;
 
                $D->{Error} = $DOOF;
                $@ = $DOOF;
