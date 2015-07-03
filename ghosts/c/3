@@ -17,13 +17,65 @@ cscomp: |
     non.cv = ''.non.cv;
     non.s = $de->(non.s);
     return sjson $non
+Ha:
+   yJ: |
+     'Ha'
+   around: |
+     my $now = hitime();
+     return if J.last > $now - 0.4 || G.pslagtil > $now;
+     J.last = $now;
+     G.ino ||= $J;
+     J.updos ||= '1'.
+     Rw vortex around $J $d=5;    
+     
+     my $N = Rw tc $J;
+     my $lcv;
+     my $i;
+     for my $d (@$N) {
+         my $n = d.c.s;
+         
+         my $com;
+         my $dont;
+         if (d.sc.watime) {
+             my $del = d.sc.watime - hitime;
+             $com = "w\@in ".sprintf('%.3f',$del);
+             if ($del > 0.02) {
+                 if (d.sc.watime != d.sc.watimed) {
+                     # & shift out Ha 6
+                     #sayyl "WAYLAY $del to n.t";
+                     my $ip = {l=>d.t,cv=>d.y.cv};
+                     timer $del {
+                        Rw around $J;
+                     };
+                     J.bz->("d.t%watimed\t".d.y.cv => d.sc.watime);
+                 }
+                 $dont = 1;
+             }
+             
+         }
+         #my $mers = "WAITS  ".slim(10,d.t)."  n.t\t d.y.cv  $com  ".ki (1,n.c)." \t\t";#.d.sc.pict;
+         #$dont ? saybl $mers : sayyl $mers;
+         next if $dont;
+         
+         Rw hoset + $d;
+         #sayyl "RE& n.t  at d.y.cv  d.sc.pict";
+         
+         timer 0.001 {
+             Rw oo $J:G.oin $d:n;
+         };
+         
+         $i++;
+         last if $lcv && $lcv > d.y.cv;
+         $lcv = d.y.cv;
+     }
+     sayre "ZEV  ZEV ZEV   $i / ".@$N if $i;
 somewhere: |
      my @path = ar.j.sc.J || ar.j.J;
      while (1) {
         my $l = $path[0];
         unshift @path, l.Jiter || last;
      }
-     saybl wdump 2, ["Gootblock:",@path];
+     #saybl wdump 2, ["Gootblock:",@path];
      
      say "avoid: ".gp shift @path until !@path || $path[0] eq $J;
      shift @path;
@@ -149,57 +201,6 @@ thy: |
      }
      $nc = -1 if !%$wt;
      $nc
-Ha:
-   yJ: |
-     'Ha'
-   around: |
-     my $now = hitime();
-     return if J.last > $now - 0.4;
-     J.last = $now;
-     G.ino ||= $J;
-     J.updos ||= '1'.
-         Rw vortex around $J $d=1;    
-     my $N = Rw tc $J;
-     my $lcv;
-     my $i;
-     for my $d (@$N) {
-         my $n = d.c.s;
-         
-         my $com;
-         my $dont;
-         if (d.sc.watime) {
-             my $del = d.sc.watime - hitime;
-             $com = "w\@in ".sprintf('%.3f',$del);
-             if ($del > 0.02) {
-                 if (d.sc.watime != d.sc.watimed) {
-                     # & shift out Ha 6
-                     #sayyl "WAYLAY $del to n.t";
-                     my $ip = {l=>d.t,cv=>d.y.cv};
-                     timer $del {
-                        Rw around $J;
-                     };
-                     J.bz->("d.t%watimed\t".d.y.cv => d.sc.watime);
-                 }
-                 $dont = 1;
-             }
-             
-         }
-         #my $mers = "WAITS  ".slim(10,d.t)."  n.t\t d.y.cv  $com  ".ki (1,n.c)." \t\t";#.d.sc.pict;
-         #$dont ? saybl $mers : sayyl $mers;
-         next if $dont;
-         
-         Rw hoset + $d;
-         #sayyl "RE& n.t  at d.y.cv  d.sc.pict";
-         
-         timer 0.001 {
-             Rw oo $J:G.oin $d:n;
-         };
-         
-         $i++;
-         last if $lcv && $lcv > d.y.cv;
-         $lcv = d.y.cv;
-     }
-     sayre "ZEV  ZEV ZEV   $i / ".@$N if $i;
 hoset: |
     my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
     delete J.bb->{$_} for @r;
@@ -221,6 +222,7 @@ comb: |
     
     my $n;
     n.sc.pict = A.selif;
+    say A.selif;
     n.sc.watime = A.watime if A.watime;
     $wa = A.waov if A.waov;
     n.cv = $wa / 10;

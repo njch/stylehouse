@@ -36,16 +36,7 @@ S/wayup: |
        Rw recoded_init;
 aww:
    yJ: |
-     my $A = J.A = J.most.A = {}; 
-     A.time = sub{ 
-         my ($J,$wa) = @_;
-         J.A.ztime >= $wa ? 1 : do {
-             warn gp($J)." Wants time, $wa";
-             A.fopi->{J.id} = $J;
-             0;
-         };
-     };
-     'clw gui heag sope waz Atime zipl';
+     'clw gui heag sope waz Atime zipl Travel';
 zipl/yJ: |
     delete J.yt.uppy;
     J.yt.zipline = 1;
@@ -74,12 +65,19 @@ wa:
    M: |
     Rw vortex $J around $d=6;
     
-    Rw Here -;
-    
     Rwyl 0.01 wa/ps;
     
+    Rw Here;
+    
    ps: |
+    sayyl 'ps';
     J.first++ || return;
+    my $sleep = sub {
+        my $til = hitime() + shift;
+        G.pslagtil = $til if $til > G.pslagtil;
+    };
+    
+    
     my @ps = `ps -p$$ fu`; # j right
     my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
     if ($mem > 20 || $cpu > 60) {
@@ -88,7 +86,7 @@ wa:
             sayre "massive, restarting" for 1..8;sleep 1;
             Rw rez;
         }
-        sleep 4;
+        $sleep->(4);
     }
      
     my @temps = 
@@ -99,16 +97,15 @@ wa:
     sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
     if ($ch > 70) {
         sayre "HOT";
-        sleep 7;
+        $sleep->(7);
     }
-   pl: |
 Here: |
     #Rw J5 Wkcs; 
-    #Rw J6 - Hosp;
+    Rw J6 - Hosp;
     #Rw J6 - Eosse;
-    Rw J6 - EYZ;
+    #Rw J6 - EYZ;
     Rw J6 - Travel;
-    sayyl G.way.Travel;
+    sayyl "GWAYTRAVB: ". G.way.Travel;
 Eosse:
    yJ: |
      'aww'
@@ -128,10 +125,8 @@ EYZ:
      curve 0 0.04
    M: |
     C.sc.css = 'font-family:cursive';
-    Mn(shedful => '', {pi=>'eye',s=>'eye/notes'});
-    J.V = 1;
-    Mn(ps => '', {pi=>'psfaus'});
-    J.V = 0;
+    Mn(shedful => '', {pi=>'eye',s=>'eye/Tarf'});
+    #Mn(ps => '', {pi=>'psfaus'});
     #Atime(4) || return die "SJIO";
     
 Wkcs:

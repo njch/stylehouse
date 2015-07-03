@@ -209,7 +209,7 @@ pi/ls: |
      J.d.c.pwth = 'somewhere';
      J.d.sc.tt = 'somewhere';
      
-     Jn('fiule',0.1,{s=>C.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6}');
+     Jn('fiule',0.1,{s=>C.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6,sha:2 2 2 000}');
          
      return
      Jn('ends',0.2,'@'.J.d.y.spc,'{hs:6984,ml:-0.3em}')
@@ -257,15 +257,11 @@ pi/ls: |
      }
      
 pi/fi: |
-     my $y;
-     $y ||= 'thumbnail' if $u =~ /(tga|png|gif|jpe?g)$/i;
-     $y ||= 'file' if $u =~ /^w\/c|^g|^eye\/notes\//;
-     $y ||= do { $u = C.t; 'text' };
-     my $oM = [];
-     
-     oMn($y,{},{pi=>$y,s=>$u});
-     
-     Jn('fis',{o=>$oM},{});
+     $_ = $u;
+     my $pi = /(tga|png|gif|jpe?g)$/i ? 'thumbnail' :
+          /^w\/c|^g|notes\// ? 'file' :
+          do { $u = C.t; 'text' };
+     Mn($pi,{},{pi=>$pi,s=>$u});
      
 pi/thumbnail: |
      my $size = -s $u;
@@ -299,8 +295,9 @@ pi/thumbnail: |
          my $sc = {
              tag => 'img',
              src => $thl,
-             height=>(24*C.y.spc).'em',
-             #ab=>1,
+             height=>(14*C.y.spc).'em',
+             ab=>1,
+             ml=>'-3em',
              tt=>" J.d.y.spc   of C.y.cv - C.y.ov",
              zig=>2,
          };
@@ -311,6 +308,7 @@ pi/file: |
      my $file = $u;
      defined $file || die 'nofile';
      die if C.sc.dir;
+     C.sc.sz = 20;
      sayyl "oufile: $file";
      
      Jn("filename",0.1,$file,'{fs:20,hs:5563}');
