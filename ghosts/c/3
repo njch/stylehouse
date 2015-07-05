@@ -23,10 +23,9 @@ Ha:
    around: |
      my $now = hitime();
      return if J.last > $now - 0.4 || G.pslagtil > $now;
+     $now - J.last < 9 && Rw vortex around $J $d=5;    
      J.last = $now;
      G.ino ||= $J;
-     J.updos ||= '1'.
-     Rw vortex around $J $d=5;    
      
      my $N = Rw tc $J;
      my $lcv;
@@ -68,7 +67,6 @@ Ha:
          last if $lcv && $lcv > d.y.cv;
          $lcv = d.y.cv;
      }
-     sayre "ZEV  ZEV ZEV   $i / ".@$N if $i;
 somewhere: |
      my @path = ar.j.sc.J || ar.j.J;
      while (1) {
@@ -110,10 +108,7 @@ paintaj: |
     
 zipline: |
      if (aj.J.yt.clw) {
-     
          Rw J5 shv $aj;
-         
-         
      }
      
      my $c = aj.c;
@@ -182,8 +177,6 @@ thy: |
      for my $k (@keys) {
          my $N = $wt->{$k};
          
-         saygr "GEO - J.name -    $k";
-         
          my $coi = Rw pha $J $k;
          
          my $d = ref $N ? ejson($N) : $N;
@@ -222,14 +215,13 @@ comb: |
     
     my $n;
     n.sc.pict = A.selif;
-    say A.selif;
     n.sc.watime = A.watime if A.watime;
     $wa = A.waov if A.waov;
     n.cv = $wa / 10;
     n.s = {%$d};
     n.t = $dig;
     
-    sayyl "COMB J.name  d.t  A.ztime } to $wa \t ".ki 1,d.c;
+    #sayyl "COMB J.name  d.t  A.ztime } to $wa \t ".ki 1,d.c;
     
     Rw hosin $J:iJ $n;
     0;

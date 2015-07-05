@@ -5,7 +5,6 @@ lod/C:
      Rw J5 wa;
    recoded_init: |
      Rw fresh_init;
-     sayyl "YEA";
      #$G->pub('S/hut/K', 'do make/up')
      #   if $m =~ /\/k\//;  
 lod/u:
@@ -83,12 +82,11 @@ wa:
         $sleep->(7);
     }
 Here: |
-    Rw J5 Wkcs; 
+    Rw J6 - Wkcs; 
     #Rw J6 - Hosp;
     #Rw J6 - Eosse;
     #Rw J6 - EYZ;
     Rw J6 - Wander;
-    sayyl "GWAYTRAVB: ". G.way.Travel;
 Eosse:
    yJ: |
      'aww'
@@ -188,7 +186,7 @@ pi/loadc: |
      my $l = C.s;
      Jn(l => 0.1 => $l);
      $l =~ s/\/*$/\//;
-     my @f = map{chomp$_;$_}`find $l -type f`;
+     my @f = map{chomp$_;$_}`find -L $l -type f`;
      @f || die "no $l";
      for my $file (@f) {
          Mn($file => '', {pi=>'cfile',s=>$file});
@@ -196,6 +194,7 @@ pi/loadc: |
 pi/cfile: |
      my $file = C.s;
      Jn(file => 0.1 => $file, '%hs:042');
+     Atime(2)||return; 
      saybl "Loading $file";
      my $s = read_file($file);
      my $h;
