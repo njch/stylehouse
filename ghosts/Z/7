@@ -224,15 +224,11 @@ R_Jz:
             # or compressions in c, sc
             # make them tubes real nice
             my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
-            my @skip = grep {_.at.__ajid2 ne aj.id} @lvs;
-            # can trust lvs c/sc from this aj (pipe/time)
-            # circumference
-            # future should be all self...
-            # el:
-            # C[/:ux, 0.3, {id:$id,cl:$class,etc:whatsit}, [
-            #   C[Jhead, 0.1, ["yt",:h3YO-zOl82g}, [
-            
-            
+            my @skip = grep {_.at.__ajid1 ne aj.id} @lvs;
+            if (aJ.Jo.name eq 'shv') {
+                say "j.r ignoresz    ".join',   ', map{_.j.r} @skip if @skip;
+                say "j.r has    ".join',   ', map{_.j.r} @live if @live;
+            }
             # hoist at.Cs into our at.C t y c sc ssc
             #
             # assume @live phased will sane s/c/sc
@@ -445,9 +441,9 @@ R_Jz:
     - 5.9 
     - |
       at.id = $v;
-      at.c.nobody = 1;
-      
-      say wdump 2, $C;
+      at.c.nobody = 1; 
+      say "enid j.l :::: ";
+      #at.t = j.l;
       
       if (my $J = C.sc.J) {
           my $aj = C.sc.J.oJ.A.W->[-1];
@@ -458,7 +454,8 @@ R_Jz:
               if ($t eq j.l) {
                   die if c.id ne at.id;
                   %$sc = (%$sc,%{at.sc});
-                  say "enid $v  aj.J.name aj.id c l: ".ki $l
+                  say "enid j.l  !   $v   aj.J.name aj.id c l: ".ki at.sc;
+                  at._aux = 1;
               }
           }
       }
@@ -490,7 +487,7 @@ R_Jz:
     - J
     - 5
     - |
-       at.ishtml = 1;
+       #at.ishtml = 1;
    - #
     - pi
     - 5
@@ -723,13 +720,23 @@ R_Jz:
            die 'attr $something>' if at.rp;
            my $of = {map{$_=>1}qw's ishtml t y c sc Esc Ec id css tag rp'};
            
-           c.attr->{$_} = $at->{$_} for 
-               sort grep {!/^_/ && !$of->{$_} } keys %$at;
+           c.el = $pat ? 2 : 1;
            
-           c.el = 1;
            sc.z = [@{not&Esc||[]}];
+           
+           if (J.most.J.name eq 'Wander') {
+             say "Off.... j.r". wdump 5, sc.z;
+           }
+           
            # here hangs loose, we would want to conduct at.c/sc business cleanly
+           
+           # clang
+           c.attr->{$_} = $at->{$_} for            
+               sort grep {!/^_/ && !$of->{$_} && !$note->{$_} } keys %$at;
        }
+       my $may = 0;
+       #$may = 1 if not&_aux;
+       
        my $to = {};
        for my $k (keys %$at) {
            next if $k =~ /^_/;
@@ -744,7 +751,8 @@ R_Jz:
               saybl "MMMM ".@$cM;
            }
        }
-       acum $lv, 'Ec', $MM->($to);
+       
+       acum $lv, 'Ec', $MM->($to);# unless $may;
        # so we add here locally ^
        # and 
        #sayyl sjson lv.Ec;# if j.l eq '/';
