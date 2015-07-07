@@ -56,9 +56,9 @@ R_Jz:
        my $Jy = J.d.y;
        
        if (my $lt = C.y.limn) {
-           my $rl = int(25 * Jy.spc);
-           sayre "$rl from Jy.spc";
-           $rl = 3 if $rl < 3;
+           my $rl = int(9 * $lt * Jy.spc);
+           #sayre "$rl from Jy.spc";
+           $rl = 2 if $rl < 2 && @F < 100;
            
            my $was = @{o.M};
            if ($was > $rl) {
@@ -66,7 +66,9 @@ R_Jz:
                @um = @um[0..$rl-1];
                @{o.M} = @um;
                # space mod
-               Jn("lim",0.7,"}$rl<$was",'%fs:6,hs:7487');
+               my $s = $was;
+               
+               Jn("lim",0.7,"$was>$rl",'%fs:4,hs:7487');
            }
        }
        
@@ -74,10 +76,12 @@ R_Jz:
        
        # unless y unlimited...until
        o.J = J.most.J if $Jy && Jy.o && Jy.spc > 0.1;
+       
        my $shut = $Jy && Jy.o && !o.J;
        
        C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if y.o.J;
        
+       y.over += y.ovur if y.ovur;
        #sayre "Jyspace: spc:  J.d.y.spc  or aspace: Jy.aspace" if $Jy;
        
        
@@ -167,15 +171,18 @@ R_Jz:
     - lumfa
     - 3
     - |
+      my $roll = 1;
       my $lum = 3;
       my $i = 0;
       my $y = C.y;
       y.bal || die "lumfa no ybal ".k2 $C;
+      sayyl wdump [[$lum, $v]];
       for (@{y.bal}) {
           _.y.thy+=$lum;
           $i++;
-          $lum = 2 if $i == 4;
-          $lum = 1 if $i == 7;
+          if ($i > $roll) {
+              $lum -= $lum * 0.2 if $lum > 0.1;
+          }
       }
    - MZ: Cc:B
    -

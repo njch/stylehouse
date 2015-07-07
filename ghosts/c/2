@@ -98,14 +98,15 @@ pi/pid: |
     
     
 pi/kv: |
-    return if 7<
+    return if @F >200 || 7<
     Rw pidepth;
     
     C.sc.nspc = 0.05;
     
     my ($k,$v) = @$u;
     my $pi = C.c.and && C.c.and.pi || '';
-    my $eel = $pi ? '' : 'ab:1,ml:-4em';
+    
+    my $eel = $pi ? '' : 'rad:-1.3';
     $eel .= ",fs:6,hs:3563";
     $eel = '%'.$eel if $eel;
     Jn('la',0.2,$k,$eel); # if hori
@@ -122,56 +123,51 @@ pi/keys: |
     Mn("ke__$_" => {}, {pi=>'text',s=>"$_,"}) for sort keys %$u;
 pi/HASH: |
     my $si = keys %$u;
-    y.limn = 7;
-    Jn(si=>0.1, $si, '{hs:8378,fs:6}');
-    Jn(Bo => 0.11, {s=>'{'});
-            
-            if ($si > 32) {
-                Jn(many=>0.2,'many}','{co:33e}');
-            }
-            
+    y.limn = 6;
+    C.sc.nspc = 0.2;
+    y.lumfa = 2;
+    Jn(si=>0.1, $si, '{hs:8378,fs:4}');
+    Jn(Bo => 0.11, {s=>'{'},'%fs:7');
             
              return
              Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
-             if J.d.y.spc < 0.01;
+             if J.d.y.spc < 0.05;
              
-            Jn(oB => 0.89, {s=>'}'});
+            Jn(oB => 0.89, {s=>'}'},'%fs:7');
             
             # 3
-            my $r = {map{$_=>1} sort keys %$u};
-            my @r = grep { delete $r->{$_} } 
-            qw'K name r style';
-            push @r, sort keys %$r;
+            my @r = Rw kord $u t y K name r style;
             
             
             my $i = 0;
-            for my $k (@r) {
+            fo r my $k (@r) {
                 my $v = $u->{$k};
                 
                 my $y = {};
-                y.thy = 5 if $k eq 'W';
-                y.thy = 3 if $k eq 'way';
+                y.thy = 1.3 if $k=~/^(way|t|y|c|W)$/;
                 
                 Mn("{$i" => $y, {pi=>'kv',s=>[$k,$v]},{path=>'somewhere'});
                 
                 $i++;
             }
+kord: |
+    my @ord = @$m;
+    my $r = {map{$_=>1} sort keys %$u};
+    my @r = grep { delete($r->{$_}),1 if exists $r->{$_} } @ord;
+    push @r, sort keys %$r;
+    @r;
 pi/ARRAY: |
-    y.limn = 7;
+    y.limn = 2;
     my $cv = J.cv ||= 0.3;
-            
-            Jn(t => 0.1, C.t);
             
             my $si = @$u;
             J.bz->('si 0.1' => $si, '%css' => "color:#fff;font-size:50%");
             J.bz->('Bo 0.11' => '[');
             J.bz->('oB 0.89' => ']');
             
-            Jn(Bo => 0.11, {s=>'{'}); 
              return
-             Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
+             Jn('ends',0.2,'@','{hs:6984}')
              if J.d.y.spc < 0.07;
-            Jn(oB => 0.89, {s=>'}'});
             
             return if $cv < 0.2;
             
@@ -181,14 +177,6 @@ pi/ARRAY: |
                 
                 
                 Mn('['.$i => {}, {pi=>'kv',s=>['['.$i,$uu]});
-                
-                $i++ > 8 && last; 
-                if ($i >= 5) {
-                    J.bz->("more\t0.886" => "@",
-                    
-                        '%sf' => "blue");
-                    last;
-                }
             }
 pi/eye: |
      my $file = $u;
