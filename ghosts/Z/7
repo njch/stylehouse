@@ -115,6 +115,7 @@ R_Jz:
      # 8.8
      aj.oudelta = F_delta;
      if (!ar.catj) {
+     
          Rw Em $aj;
      }
      # 9
@@ -172,6 +173,7 @@ R_Jz:
       - |
         # >< up from... # carbon hapsso env 
         if (j.l =~ /^(.*)\/$/) {
+            die "Upwards: 'j.l'" if j.l ne '/';
             X.nestw->($1,$j,$at,$aJ,$lv);
             @s = ();
         }
@@ -225,7 +227,7 @@ R_Jz:
             # make them tubes real nice
             my @live = grep {_.at.__ajid2 eq aj.id} @lvs;
             my @skip = grep {_.at.__ajid1 ne aj.id} @lvs;
-            if (aJ.Jo.name eq 'shv') {
+            if (0) {
                 say "j.r ignoresz    ".join',   ', map{_.j.r} @skip if @skip;
                 say "j.r has    ".join',   ', map{_.j.r} @live if @live;
             }
@@ -434,15 +436,32 @@ R_Jz:
     - 3
     - |
       my $s = join ' ', map{0+$_} v.x, v.y, v.radial;
+      $s .= ' '.v.scale if v.scale;
       at.sc.geo = $s;
       C.sc.ab = delete v.ab if v.ab;
+   -
+    - nspc
+    - 2
+    - |
+      $J = C.sc.J;
+      my $squ = C.sc.yspc || J.d.y.spc;
+      my $ratio = $squ / $v;
+      my $s = sprintf '%.2f', $ratio;
+      my $cl = 0.02;
+      $s = 1 if $s > 1;
+      if ($s > 1+$cl || $s < 1-$cl) {
+          C.sc.geo ? 
+          C.sc.geo.scale = $s
+          :
+          C.sc.tr.scale = $s;
+      }
    - 
     - enid
     - 5.9 
     - |
       at.id = $v;
       at.c.nobody = 1; 
-      say "enid j.l :::: ";
+      #say "enid j.l :::: ";
       at.t = j.l;
       
       if (my $J = C.sc.J) {
@@ -454,7 +473,6 @@ R_Jz:
               if ($t eq j.l) {
                   die if c.id ne at.id;
                   %$sc = (%$sc,%{at.sc});
-                  say "enid j.l  !   $v   aj.J.name aj.id c l: ".ki at.sc;
                   at._aux = 1;
               }
           }
@@ -576,10 +594,9 @@ R_Jz:
        if (!T.d)
            T.d=1; 
        if (typeof C.c === 'string')
-           return a.er('c string');
+           return a.er('c string: '+C.c);
        
        var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
-       
        
        if (C.c.W)
            A.on = $('#'+C.c.W);
@@ -587,11 +604,20 @@ R_Jz:
            G.el(A,C,G,T);
        if (C.c.nobody)
            A.on = $('#'+C.c.nobody);
-       
+       if (C.c.rm) {
+           a.m(see);
+           var delay = C.c.rm;
+           if (!delay)
+              delay = 10;
+           delay *= 100;
+           $(A.on).fadeOut(delay, function() { $(this).remove(); });
+           return;
+       } 
+           
        if (!C.sc)
            C.sc = {};
        
-       if (C.sc.z) {
+       if (C.sc.z) { 
            //T.d++;
            $.each(C.sc.z, function(i,v) {
                var nC = G.inC(v);
@@ -603,6 +629,7 @@ R_Jz:
        
        if (!C.sc.css)
           C.sc.css = {};
+          C.sc.anc = {};
        var ung = ['ab','geo'];
        $.each(ung, function(i,v) {
            if (C.sc[v]) {
@@ -610,6 +637,7 @@ R_Jz:
                var way = 'sc_'+v;
                
                var f = {n: G[way]};
+               
                f.n(A,nC,G,T);
            }
        });
@@ -631,11 +659,14 @@ R_Jz:
     - 3
     - |
       var s = C.c.split(' ');
-      C.c = {x:s[0],y:s[1],rad:s[2]};
+      C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
       C.sc.css.top = (C.c.y * 100)+'%';
       C.sc.css.left = (C.c.x * 100)+'%';
       C.sc.css['transform-origin'] = '0% 0%';
+      
       C.sc.css['transform'] = 'rotate('+C.c.rad+'rad)';
+      if (C.c.scale)
+          C.sc.css['transform'] += ' scale('+C.c.scale+')';
    -
     - sc_ab #c A,C,G,T
     - 3
@@ -703,7 +734,7 @@ R_Jz:
            my $tag = not&tag || do {
              (my $ts = j.l)  =~ s/[^\w]/ñ/sg; "$ts"
            };
-           $tag = "Z$tag" if $tag !~ /^[a-z]/i || $tag =~ /^[sbu]$/i;
+           $tag = "Z$tag" if $tag !~ /^[a-z]/i || $tag =~ /^([sbu]|style)$/i;
            at.t = "$tag";
            
            c.id = $_ for not&id;
@@ -725,7 +756,7 @@ R_Jz:
            sc.z = [@{not&Esc||[]}];
            
            if (J.most.J.name eq 'Wander') {
-             say "Off.... j.r". wdump 5, sc.z;
+             #say "Off.... j.r". wdump 5, sc.z;
            }
            delete sc.z if !@{sc.z};
            
@@ -920,6 +951,11 @@ stwa: # STASHINGS
   - |
     C.sc.tr.rotate = $v.'rad' if $v;
  -
+  - scale # zzz tr
+  - 3.6
+  - |
+    C.sc.tr.scale = $v;
+ -
   - tr # filterszzzz weird style using com to agg.
   - 3.7
   - |
@@ -974,6 +1010,11 @@ stwa: # STASHINGS
   - 3
   - |
     C.sc.css->{"letter-spacing"} = g.empc->($v);
+ -
+  - lh # it
+  - 3
+  - |
+    C.sc.css->{"line-height"} = g.empc->($v);
  -
   - ml # it
   - 3

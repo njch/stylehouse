@@ -27,7 +27,7 @@ R_Jz:
  - K: pi/psfaus #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
        my @l = `ps faux`;
-       my $wtf = [];
+       
        for my $l (@l) {
            chomp $l;
            next if $l !~ /perl/;
@@ -36,20 +36,7 @@ R_Jz:
            my $cs = [@r[0..3,9,10]];
            my $o = Rw pul $cs user pid cpu mem time cmd;
            
-           push @$wtf, $o;
-       }
-       my $M = [];
-       for my $f (@$wtf) {
-           my $c;
-           c.pi = 'psfacts';
-           c.gp.cv = 0.8;
-           c.s = $f;
-           c.i = 1; # numbers
-           my $sc;
-           sc.co = '4fc';
-           sc.zi = 10;
-           sc.ws = 'p';
-           Mn(ps => '', $c, $sc);
+           Mn(ps=>'',{pi=>psfacts=>s=>$o}, '%co:4fc,zi:10,ws:p,mh:2em');
        }
  - K: ii/psfaux #c ii = indigo, pi = carving, wt = maneuvrable type 
    D: |
@@ -86,9 +73,13 @@ R_Jz:
        Rw om/bal $J $oM $in $out $k;
  - K: pi/psfacts #c
    D: |
+        C.sc.nspc = 0.05;
+        
         $_ =  u.cmd;
         my ($style,$name) =
             /l\/S\.pm (.+)$/ ? ('hut', $1)
+            :
+            /l\/(\w+)\.pm (\S+) (.+)$/ ? ($2, $3)
             :
             /stylehouse\.pl$/ ? ('h00s', $_)
             :
@@ -103,19 +94,10 @@ R_Jz:
             $name =~ s/\/usr\/bin\/perl //;
         }
         
-        my $M = []; # HMMMMM may wannsa J?
+        Rw wt/stylename + $style $name; 
         
-        Rw wt/stylename $M $style $name; 
-        
-        Rw wt/cpu $M $cpu:u.cpu;
-        Rw wt/mem $M $mem:u.mem;
-        
-        warn "heaps of mem on $style $name  (u.mem)" if u.mem > 20;
-        my $V = 1;
-        
-        #say "psfact -: ".ki 2, $_ for @$M; 
-        #die wdump [$d, $ar];
-        Rw iM $J $M;
+        Rw wt/cpu + $cpu:u.cpu;
+        Rw wt/mem + $mem:u.mem;
         
  - K: wt/stylename #c  TODO return _M_ brigy dep text jostle
    D: |
@@ -139,7 +121,7 @@ R_Jz:
        nsc.co ||= '4fc';
        if ($style eq 'hut') {
            nsc.co = 'ff0';
-           nsc.fs = 29;
+           nsc.fs = 14;
        }
        if ($name eq '\_ perl stylehouse.pl') {
            $name = 'stylehouse.pl';
@@ -147,11 +129,9 @@ R_Jz:
        }
        sc.sha = '1 2 6 000';
        nsc.sha = '1 2 6 000';
-       my $nc;
-       nc.weigh = 'activity';
        
-       Rw wtf $M style 1 $s:style $sc;
-       Rw wtf $M name 2 $s:name $c:nc $sc:nsc;
+       Jn(styel=>1=>{s=>$style},$sc);
+       Jn(name=>2=>{s=>$name},$nsc);
  - K: wt/cpu #c  # TODO make fs smooth, atomical curve compu
    D: |
        my $sc;
@@ -160,7 +140,8 @@ R_Jz:
        sc.sha = '1 2 6 000';
        my $c;
        c.weighed = 'activity';
-       Rw wtf $M cpu 3 $s:cpu $c $sc;
+       c.s = $cpu;
+       Jn(cpu=>3=>$c,$sc);
  - K: wt/mem #c
    D: |
        my $sc;
@@ -169,7 +150,8 @@ R_Jz:
        sc.fs = $mem<2?4:$mem<5?7:$mem<12?14:28;
        my $c;
        c.weighed = 'activity';
-       Rw wtf $M mem 4 $s:mem $c $sc;
+       c.s = $mem;
+       Jn(mem=>4=>$c,$sc);
  - K: samv #c
    D: |
     G.samv ||= [

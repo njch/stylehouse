@@ -66,7 +66,7 @@ R_Jz:
                @um = @um[0..$rl-1];
                @{o.M} = @um;
                # space mod
-               Jn("lim",0.7,"}$rl<$was");
+               Jn("lim",0.7,"}$rl<$was",'%fs:6,hs:7487');
            }
        }
        
@@ -84,7 +84,7 @@ R_Jz:
        C.y.in ||= $shut ? 0.3 : $Jy ? Jy.cv + Jy.spc * 0.1 : 0.1;
        C.y.out ||= $shut ? 0.4 : $Jy ? Jy.ov - Jy.spc * 0.1 : 0.9;
        
-       C.c.lumfa = 1 if J.most.J.name eq 'wam';
+       C.c.lumfa = 1 if y.lumfa || J.most.J.name eq 'wam';
        
        #sayyl "IS o  J.d.t  J.d.c.pi: " if 1||A.J.V;
 
@@ -235,6 +235,10 @@ R_Jz:
     - 7
     - |
        $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';
+       
+       if (T.sc.nspc) {
+           T.sc.yspc = y.spc;
+       }
        
        if (T.y.over) {
            T.sc.ml = (T.y.over * 40)."%"; 

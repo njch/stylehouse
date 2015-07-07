@@ -2429,6 +2429,9 @@ sub g_Duck {
     my $DOOF; 
     my $first = 1 unless $@ =~ /DOOF/;
 
+    sayre map{"F $_->{name} $_->{point}  ".join" ",sort keys %$_} reverse @F
+      if $@ =~ /Deep recursion on/;
+
                $DOOF .= "DOOF $D->{talk}\n" if $D->{sign} eq 'D';
                $DOOF .= "  $D->{inter}" if $D->{inter};
 

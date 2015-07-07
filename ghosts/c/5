@@ -11,21 +11,79 @@ Travel:
         texture directives
           way over
                
+wa:
+   yJ: |
+     'aww'
+   M: |
+    Rw vortex $J around $d=6;
+    
+    #Rw J6 - Wkcs; 
+    Rw J6 - Vil;
+    Rw J6 - Vuel;
+    #Rw J6 - Hosp;
+    #Rw J6 - Eosse;
+    #Rw J6 - EYZ;
+    #Rw J6 - Wander;
+    
+    Jn(st=>0.9=>"OP");
+    Rwyl 0.01 waps;
 Wkcs:
    yJ: |
      'Travel'
    M: |
     sayyl "J.name" for 1..5;
     Mn(shedful => '', {pi=>'seas',s=>'w/d'});
-    Rw J6 - Wander;
     
+Vil:
+   yJ: |
+      'Travel'
+   M: |
+      Mn(hah => {thy=>1}, {pi=>'eye',s=>'eye/fug'});
+      
+      Mn(ZIS => {thy=>0.1}, {pi=>'text',s=>"Thisway"});
+Vuel:
+   yJ: |
+      'Travel'
+   M: |
+      #J.zip == 1 &&
+      my $g = {map{$_=>"$G->{$_}"}keys %$G};
+      
+      my $vs = Rw tc $J:G.oin;
+      Mn(deef=>'',{pi=>'vs',s=>$vs});
+pi/vs: |
+    #die wdump $u;
+    C.sc.nspc = 0.1;
+    Jn(sthis=>1=>"sees: $u");
+    y.lumfa = 1;
+    y.limn = 16;
+    y.cl = 1;
+    Mn(hah => {thy=>1}, {pi=>'HASH',s=>$_}) for @$u;
+pi/keysz: |
 Wander:
    yJ: |
       'Travel'
    M: |
-      sayyl "J.name" for 1..5;
+      J.zip++ >= 5 && do{ J.zip = 0 };
+      sayyl "J.name  J.zip" for 1..5;
+      Rw J6 - Vil;
       
-      Mn(skode => '', {pi=>'psfaus',s=>'THIS'});
+      
+      J.zip == 1 &&
+      Mn(ZIS => '', {pi=>'text',s=>"Thisway"});
+      
+      J.zip == 0 || J.zip == 2 &&
+      Mn(ZIS => '', {pi=>'text',s=>"ones"});
+      
+      J.zip > 1 &&
+      Mn(ZIS => '', {pi=>'text',s=>"sway"});
+      
+      J.zip > 2 &&
+      Mn(skode => {thy=>3}, {pi=>'psfaus',s=>'THIS'});
+      
+      J.zip > 3 &&
+      Mn(ZIStor => '', {pi=>'text',s=>"away..."});
+      #sayylto "_.dead : ".gp $_ for values %{J.idly};
+      #Mn(skoeede => '', {pi=>'text',s=>'THIS'});
       
       #Mn(With => 8, {J=>''}); # J with
       
@@ -75,10 +133,9 @@ waz/up: |
 pi3: |
        my $oJ = $J;
        #Ajr("BLAH");
-       
-       #sayyl join(" ", ("") x int(@F/4))."  YAYA C.t   C.c.pi";
-       $J = J.bb->{d.t."%J\t".d.cv} ||
-           Rw spinash $J;
+       $oJ = d.y.o.J if d.y.o && d.y.o.J;
+       my $ca = oJ.bb->{d.t."%J\t".d.cv};
+       $J = $ca || Rw spinash $J;
        
        my $A = J.most.A||{};
        $A = J.A = {%$A};
@@ -119,6 +176,7 @@ pi6: |
        
        Jn('zoo',$y) if @$M;
        
+       A.coi.qui = 1;
        A.coi.exactl->();
 pi7: |
        $v = C.sc.J||die;
@@ -131,6 +189,7 @@ pi7: |
        #sayre "Upto J.r go ".slim 70, sjson aj.c if @{aj.c};
        v.Ec = [@{aj.c}];
        die wdump $aj if @{aj.sc};
+       
 gui: # turn into some
      yJ: |
        J.cv = 20;

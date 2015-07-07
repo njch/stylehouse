@@ -94,15 +94,24 @@ R_Jz:
      }
      my $d = Rw lv_dig +;
      Rw ph_same $J $x $d;
- - K: lv_dig #c linehum dig
+ - K: lv_dig #c linehum dig - dealing t(%style)? cv => s
    D: |
      my $ln =  Rw linehum +;
+     my $env;$env = sub {
+         my $s = shift;
+         if (ref $s eq 'HASH') {
+            $s = s.id ? "s.r s.name s.id" : ki($s);
+         }
+         elsif (ref $s eq 'ARRAY') {
+            $s = [map{$env->($_)}@$s];
+         }
+         else {
+            $s = "$s";
+         }
+         $s;
+     };
      for my $n (@$ln) {
-         my $s = $n->[2]; # t/y/(s)
-         $s = ref $s eq 'HASH' ? "s.r s.id"
-            : ref $s eq 'ARRAY' ? die 'arline'
-            : $s;
-         $n->[2] = $s;
+         $n->[2] = $env->($n->[2]); # t/y/(s)
      }
      my $d = ejson $ln;
      #saygr " Digwa: ".slim 280, $d if ar.V;
