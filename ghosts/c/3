@@ -106,94 +106,57 @@ paintaj: |
      
 
     
-zipline: |
-     if (aj.J.yt.clw) {
-         Rw J5 shv $aj;
-     }
-     
-     my $c = aj.c;
-     die 'scs' if @{aj.sc};
-     die 's' if aj.s;
-     my $M = ['','',{W=>G.Wid},{z=>aj.c}];
-     #sayyl wdump 15, $M;
-     aj.c = [" a\.om({},".sjson($M).",a,{});"];
-     aj.sent = 1;
-     
-     return 0;
-     
-     Rw paintaj $aj;
-     # also some J.headlev readings for .i
-     
-     G.Wh->{aj.Wid} ||= do {
-         my $ij = {}; map {
-         $ij->{$_} = $aj->{$_} if !/^[sc]+/; } keys %$aj;
-         ij.id = delete ij.Wid;
-         ij.y = 'W';
-         
-         sayyl "Life! of ij.y ij.id"; 
-         0->tai("ij.y/ij.id\.i", $ij);
-         0->tac("V/H.style/H.name/H.id\.s", ztm($ij));
-         aj.J;
-     };
 
-     Rw J5 wu $aj;
+fi: | #c
+     my $point = ar.p || ar.pin || ar.m->[0];
      
-     aj.y ||= 'J';
-     aj.yy = 'W';
-     Rw aji $aj;
-     Rw blabaj $aj;
-     
-     1
-thy: |
-     my $o = Rw pul + pin;
-     o.pin ||= ar.p;
-     my $wt = ar.anon ?
-         Rw wuck $J $pin:o.pin
-     :
-         Rw wuck $J */o.pin;
-     warn "no o.pin          for ".gp($J) if !$wt;
-     
-     my $nc = 1;
-     
-     my @keys = sort keys %$wt;
-     if (my $or = J.yt.styleord) {
-         my ($na,@or) = @$or;
-         push @or, $na; # me is most
-         my $i = 1;
-         my $is = {map{$_=>$i++}reverse @or};
-         @keys = sort {
-          $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($a=~/^(.+?)\//)[0]}
-          } @keys;
-          
-         if (@keys > 1) {
-             sayre "Limiting @keys";
-             @keys = $keys[0];
+     my $know;
+     if (!ar.pin && ar.J) {
+         my $J = ar.J;
+         if ($point =~ /^\*\/(\w+)$/) {
+             my $inway = $1;
+             my $h = ar.h || G.way;
+             $h = h.hooks if h.hooks;
+             my @gu = @{J.yy.styleord};
+             @gu = @gu[0..5] if @gu > 6;
+             my @so;
+             for (@gu) {
+                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
+                    push @{$know||=[]}, "$_/$inway";
+                    last if !ar.sucky;
+                }
+             }
          }
      }
      
-     #sayyl " J.name  thys => @keys";
-     
-     $J = ar.oJ || $J;
-     for my $k (@keys) {
-         my $N = $wt->{$k};
-         
-         my $coi = Rw pha $J $k;
-         
-         my $d = ref $N ? ejson($N) : $N;
-         
-         coi.qui = 1 if ar.q;
-         next if !ar.almod && Rw ph_same $J $x:coi $d;
-         
-         $N = [ map { [$_] } split "\n",$N ] if !ref $N;
-         
-         #say " ** waything $what from $k";
-         Rw MyN $N $J;
-          
-         my $y = coi.exactl->();
-         $nc = 0 if !y.same;
+     if (!$know) {
+         my %wo = Rw findl +;
+
+
+         my @keys = map { s/^\///; $_ } keys %wo;
+         if (!ar.pin && ar.J) {
+             my $J = ar.J;
+
+             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
+             my @or = @{J.yy.styleord};
+             if (@or && @keys > 1) {
+                 my $i = 1;
+                 my $is = {map{$_=>$i++}@or};
+                 @keys = sort {
+                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($a=~/^(.+?)\//)[0]}
+                  } @keys;
+
+                 if (!ar.sucky && @keys > 1) {
+                     #sayre "Limiting @keys";
+                     @keys = $keys[0];
+                 }
+             }
+         }
+         $know = [@keys];
      }
-     $nc = -1 if !%$wt;
-     $nc
+     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name;
+     @$know
+     
 hoset: |
     my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
     delete J.bb->{$_} for @r;
