@@ -1,10 +1,5 @@
 
-kord: |
-    my @ord = @$m;
-    my $r = {map{$_=>1} sort keys %$s};
-    my @r = grep { delete($r->{$_}),1 if exists $r->{$_} } @ord;
-    push @r, sort keys %$r;
-    @r;
+
 pi/head: |
     Jn(t=>0.01,C.t,'%fs:6,hs:389');
     Jn(pi=>0.02,C.sc.pi,'%fs:7');
@@ -20,26 +15,51 @@ pi/vs: |
     Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s, @$s;
 pi/lv: |
     C.sc.nspc = 0.12;
-    C.sc.nspc_max = 4;
-    y.limn = 5.4;
+    C.sc.nspc_max = 8;
+    y.limn = 9.4;
     C.sc.pwth = 'somewhere';
     
     Rw pi/head;
-    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.4em,mt:-2em');
+    
+    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.9em,mt:-2em');
     #$u = {wtf=>[map{unico($_)}4300..4305]};
     #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
     
-    #Mn(lv=>'',{pi=>'kord',s=>$s});
+    C.c.k = 'lv';
     
-    Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
+    Rw pi/kord;
+    
+    #Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
+dg/kord:
+   lv:
+    - ws: t+5 name+4 block y c sc
 pi/kord: |
-    C.c.k ||= 
-    my @k = Rw kord $s t name block y c sc;
-    0&&
-    Mn($_ => {($_ eq 'sc' ? (thy=>1.3) : ())},
-       {pi=>'kv',s=>[$_=>$u->{$_}]},
-       {mw=>'5em'},
-       ) for @k;
+    C.c.k ||= C.t || J.Jiter.C.pi;
+    my $map;# = Rw muck $pin=dg/kord/C.c.k;
+    $map = G.way.dg.kord.>C.c.k;
+    $map = {found=>$map};
+    my ($N) = values %$map;
+    my ($in) = @$N;
+    my @in = in.ws ? split ' ', in.ws : die "how $in";
+    my $yin = {};
+    my @ord;
+    for (@in) {
+        my ($t,$i) = split /\+/, $_;
+        my $y = {};
+        y.thy = $i if $i =~ /\d+/;
+        $yin->{$t} = $y;
+        push @ord, $t;
+    }
+    
+    my $r = {map{$_=>1} sort keys %$s};
+    my @r = grep { delete($r->{$_}),1 if exists $r->{$_} } @ord;
+    push @r, sort keys %$r;
+    
+    for (@r) {
+        my $y = $yin->{$_}||{};
+        Mn($_ => $y, {pi=>'kv',s=>[$_=>$s->{$_}]}, {mw=>'5em'});
+    }
+    sayre "korded: ".F_delta;
 pi/liv: |
     my $s = "find $u -type f";
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
