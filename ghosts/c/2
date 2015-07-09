@@ -6,10 +6,10 @@ pi/head: |
 pi/vs: |
     C.sc.nspc = 0.1;
     y.lumfa = 2;
-    y.limn = 1.8;
+    y.limn = 2.8;
     
     Rw pi/head;
-    $s = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
+    #$s = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
     
     my $i = 0;
     Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s, @$s;
@@ -25,18 +25,19 @@ pi/lv: |
     #$u = {wtf=>[map{unico($_)}4300..4305]};
     #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
     
-    C.c.k = 'lv';
-    
-    Rw pi/kord;
+    Rw pi/kord lv;
     
     #Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
 dg/kord:
    lv:
     - ws: t+5 name+4 block y c sc
+   hash:
+    - ws: t+3 y+2 K+5 name+5 r+5 style+3
 pi/kord: |
-    C.c.k ||= C.t || J.Jiter.C.pi;
+    C.c.k ||= ar.m ? ar.m->[0] : C.c.pi;
     my $map;# = Rw muck $pin=dg/kord/C.c.k;
     $map = G.way.dg.kord.>C.c.k;
+    $map || die "no C.c.k".wdump 2,$C;
     $map = {found=>$map};
     my ($N) = values %$map;
     my ($in) = @$N;
@@ -270,20 +271,7 @@ pi/HASH: |
             Jn(oB => 0.89, {s=>'}'},'%fs:7');
             
             # 3
-            my @r = Rw kord $u t y K name r style;
-            
-            
-            my $i = 0;
-            for my $k (@r) {
-                my $v = $u->{$k};
-                
-                my $y = {};
-                y.thy = 1.3 if $k=~/^(way|t|y|c|W)$/;
-                
-                Mn("{$i" => $y, {pi=>'kv',s=>[$k,$v]},{path=>'somewhere'});
-                
-                $i++;
-            }
+            Rw pi/kord hash;
 pi/ARRAY: |
     y.limn = 6;
     my $cv = J.cv ||= 0.3;
