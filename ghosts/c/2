@@ -6,17 +6,17 @@ pi/head: |
 pi/vs: |
     C.sc.nspc = 0.1;
     y.lumfa = 2;
-    y.limn = 2.8;
+    y.limn = 1.8;
     
     Rw pi/head;
-    #$s = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
+    $s = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
     
     my $i = 0;
-    Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s, @$s;
+    Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s;
 pi/lv: |
     C.sc.nspc = 0.12;
     C.sc.nspc_max = 8;
-    y.limn = 9.4;
+    y.limn = 3;
     C.sc.pwth = 'somewhere';
     
     Rw pi/head;
@@ -37,16 +37,20 @@ pi/kord: |
     C.c.k ||= ar.m ? ar.m->[0] : C.c.pi;
     my $map;# = Rw muck $pin=dg/kord/C.c.k;
     $map = G.way.dg.kord.>C.c.k;
-    $map || die "no C.c.k".wdump 2,$C;
+    $map || die "no C.c.k  ".wdump 2,$C;
     $map = {found=>$map};
     my ($N) = values %$map;
     my ($in) = @$N;
+    
     my @in = in.ws ? split ' ', in.ws : die "how $in";
+    
     my $yin = {};
     my @ord;
     for (@in) {
         my ($t,$i) = split /\+/, $_;
         my $y = {};
+        y.in.sc.>$1 = $2 while $i=~s/(\w+):(\S+)//g;
+        # same^v
         y.thy = $i if $i =~ /\d+/;
         $yin->{$t} = $y;
         push @ord, $t;
@@ -60,7 +64,6 @@ pi/kord: |
         my $y = $yin->{$_}||{};
         Mn($_ => $y, {pi=>'kv',s=>[$_=>$s->{$_}]}, {mw=>'5em'});
     }
-    sayre "korded: ".F_delta;
 pi/liv: |
     my $s = "find $u -type f";
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
