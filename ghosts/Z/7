@@ -447,7 +447,8 @@ R_Jz:
       my $ratio = $squ / $v;
       my $s = sprintf '%.2f', $ratio;
       my $cl = 0.02;
-      $s = 1 if $s > 1;
+      my $max = C.sc.nspc_max || 1;
+      $s = $max if $s > $max;
       if ($s > 1+$cl || $s < 1-$cl) {
           C.sc.geo ? 
           C.sc.geo.scale = $s

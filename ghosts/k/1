@@ -101,10 +101,10 @@ ooj/ing:
        # some alt ^ make round v
        # 
        die if !d.t;
-       die if !d.cv;
+       die if !d.y.cv;
        die if !ref d.s;
        
-       J.bz->("d.t\t".d.cv,d.s);
+       J.bz->("d.t\t".d.y.cv,d.s);
 ooj/JJ: 
    - MZ: Cc:Y
    -
@@ -112,7 +112,8 @@ ooj/JJ:
     - 3
     - |
      d.t = ref $v ? v.name : $v;
-     d.cv = 0.3;
+     d.y.cv ||= 0.3;
+     
      
    - MZ: Cc:C
    -
@@ -147,7 +148,7 @@ ooj/time:
          my $s = shift;
          my $v = shift;  
          $s = '%'.$s if $s;  
-         my $r = "d.t$s\t".d.cv;
+         my $r = "d.t$s\t".d.y.cv;
          !defined $v ? J.bb->{$r} :
          do { J.bz->($r, $v);
            sub { delete J.bb->{$r} } 
@@ -158,7 +159,13 @@ ooj/time:
     - time
     - 3
     - |
-      Rw Acoomo;
+      A.ztime = d.c.time || 8;
+      A.time = sub {
+           my ($J,$wa) = @_;
+           A.ztime >= $wa ? 1 : do {
+               Rw comb oo $J $A $d $wa;
+           };
+      };
     - way: 1
       
    - MZ: Cc:C

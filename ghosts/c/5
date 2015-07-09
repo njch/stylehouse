@@ -1,15 +1,6 @@
 Travel:
    yJ: |
      'clw waz gui TravelingMeans'
-   non: |
-      to overload the filesystem
-      a bz ring
-      make a whole sub
-      easy
-      its an oversight
-      a ribbing
-        texture directives
-          way over
    Em: |
      sayyl "TRAVEL EM  aj.J.name" for 1..5;
      if (aj.J.yt.clw) {
@@ -20,7 +11,7 @@ Travel:
      die 'scs' if @{aj.sc};
      die 's' if aj.s;
      my $M = ['','',{W=>G.Wid},{z=>aj.c}];
-     sayyl wdump 15, $M;
+     #sayyl wdump 15, $M;
      aj.c = [" a\.om({},".sjson($M).",a,{});"];
      aj.sent = 1;
      
@@ -60,6 +51,11 @@ newwave: |
 join:
      yJ: |
        G.oin = $J;
+       my $bz = J.bz;
+       J.bz = sub {
+           say "  bz ".join'      ',@_;
+           $bz->(@_);
+       };
        'join clw'
      up: |
        # G.oin root ww:
@@ -74,6 +70,7 @@ join:
        if (my $X = J.bb->{"oJ.name%J\t0.3"}) {
            Rw join/X $J:X;
        }
+       saygr "Joining in oJ.name";
        Jn(oJ.name, 0.3, {J=>$oJ}, {});
        J.idJy->{oJ.id} = $oJ;
      X: |
@@ -172,32 +169,7 @@ Vuel:
       
       my $vs = Rw tc $J:G.oin;
       Mn(deef=>'',{pi=>'vs',s=>$vs});
-pi/vs: |
-    #die wdump $u;
-    C.sc.nspc = 0.1;
-    Jn(lvs=>0.1=>lvs=>{});
-    #y.lumfa = 3;
-    y.limn = 4.7;
-    my $i = 0;
-    #$u = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
-    Mn($i++=>'',{pi=>'lv',s=>$_}) for @$u;
-pi/code: |
-    Jn(code=>1=>'&','%hs:389');
-pi/lv: |
-    C.sc.nspc = 0.04;
-    y.limn = 5.4;
-    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.4em,mt:-2em');
-    C.sc.pwth = 'somewhere';
-    #$u = {wtf=>[map{unico($_)}4300..4305]};
-    #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
-    my @k = Rw kord $u t name block y c sc;
-    
-    0&&
-    Mn($_ => {($_ eq 't' ? (thy=>2) : ())},
-       {pi=>'kv',s=>[$_=>$u->{$_}]},
-       {mw=>'5em'},
-       ) for @k;
-    Jn(it=>1=>{pi=>'text',s=>wdump(4,$u),cv=>0.8},'%opa:0.3');
+
 Wander:
    yJ: |
       'Travel'
@@ -232,14 +204,6 @@ pi/show: |
      
      
      
-Acoomo: |
-      A.ztime = d.c.time || 8;
-      A.time = sub {
-           my ($J,$wa) = @_;
-           A.ztime >= $wa ? 1 : do {
-               Rw comb oo $J $A $d $wa;
-           };
-      };
 around: |
      inter({Jname=>ar.J.name}) if ref ar.J;
      my $tw = Rw huck + */around;
@@ -261,6 +225,8 @@ waz/up: |
       A.ztime ||= 2;
       my $C = J.d;
       
+      Rw Jhead;
+      
       Rw suck */M $A $J $C $M $y;
       
       Jn('zoo',$y) if @$M;
@@ -271,9 +237,9 @@ waz/up: |
       
 pi3: |
        my $oJ = $J;
-       #Ajr("BLAH");
-       $oJ = d.y.o.J if d.y.o && d.y.o.J;
-       my $ca = oJ.bb->{d.t."%J\t".d.cv};
+       $oJ = C.y.o.J if C.y.o && C.y.o.J;
+       # ^ string cheesae
+       my $ca = oJ.bb->{C.t."%J\t".C.y.cv};
        $J = $ca || Rw spinash $J;
        
        my $A = J.most.A||{};
@@ -282,9 +248,9 @@ pi3: |
        J.A.coi = Rw pha $J ako;
        
        at.J = $J;
-       at.pi = J.y = d.c.pi;
-       J.d = J.C = $d;
-       J.u = d.c.s;
+       at.pi = C.c.pi || 'guess';
+       J.d = J.C = $C
+       
        ; # jo ma in lo
        J.r = d.r; # be adjusting this xor
        Rw mkJid $J;
@@ -303,22 +269,36 @@ pi6: |
        v.cv = C.c.gp.cv || C.c.cv || 0.6;
        die'csnod' if v.d ne $d || v.d.c ne d.c;
        
-       
-
-       J.yg = Rw pipathg $J; 
-       J.yg = 'pi/text' if J.A.d > 5;
+       my $path = C.sc.pi||die;
+       $path = 'text' if J.A.d > 5;
        
        # sayyl "A kv    J.yg";
     
        # G is... suck */etc with trails
        # 
+       my $u = C.c.s;
        
-       Rw J.yg $A $J $u:J.u $C:J.C $M $y; 
+       Rw pi/$path $A $J $u $s:u $C $M $y; 
        
        Jn('zoo',$y) if @$M;
        
        A.coi.qui = 1;
        A.coi.exactl->();
+pi/guess: |
+     my $cg = $G->cgp($s);
+     # ^
+     # v
+     my ($path) = grep { $cg->{$_} } qw'canpi ARRAY HASH ref undef text';
+     $path = ref $s if $path eq 'canpi';
+     $path = 'code' if ref $s eq 'CODE';
+     $path ||= 'wtf';
+     #$path = 'J' if $wa eq 'HASH' && u.bb;
+     # can stick $wa on J.wa for thrashing maths
+     # funcy fuzz fields
+     # mutating spiral code
+     
+     Rw pi/$path;
+     
 pi7: |
        $v = C.sc.J||die;
        # can pin/ping light source of con paral
