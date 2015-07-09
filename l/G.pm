@@ -73,7 +73,10 @@ sub wdump {
         $thing = shift;
     }
     $Data::Dumper::Maxdepth = $maxdepth;
-    return join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+    my $s = join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+    $s =~ s/^\$VAR1 = //;
+    $s =~ s/^    //gm;
+    $s;
 }
 
 sub new {

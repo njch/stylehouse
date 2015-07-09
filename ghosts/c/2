@@ -1,10 +1,45 @@
 
 kord: |
     my @ord = @$m;
-    my $r = {map{$_=>1} sort keys %$u};
+    my $r = {map{$_=>1} sort keys %$s};
     my @r = grep { delete($r->{$_}),1 if exists $r->{$_} } @ord;
     push @r, sort keys %$r;
     @r;
+pi/head: |
+    Jn(t=>0.01,C.t,'%fs:6,hs:389');
+    Jn(pi=>0.02,C.sc.pi,'%fs:7');
+pi/vs: |
+    C.sc.nspc = 0.1;
+    y.lumfa = 2;
+    y.limn = 1.8;
+    
+    Rw pi/head;
+    $s = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
+    
+    my $i = 0;
+    Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s, @$s;
+pi/lv: |
+    C.sc.nspc = 0.12;
+    C.sc.nspc_max = 4;
+    y.limn = 5.4;
+    C.sc.pwth = 'somewhere';
+    
+    Rw pi/head;
+    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.4em,mt:-2em');
+    #$u = {wtf=>[map{unico($_)}4300..4305]};
+    #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
+    
+    #Mn(lv=>'',{pi=>'kord',s=>$s});
+    
+    Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
+pi/kord: |
+    C.c.k ||= 
+    my @k = Rw kord $s t name block y c sc;
+    0&&
+    Mn($_ => {($_ eq 'sc' ? (thy=>1.3) : ())},
+       {pi=>'kv',s=>[$_=>$u->{$_}]},
+       {mw=>'5em'},
+       ) for @k;
 pi/liv: |
     my $s = "find $u -type f";
     Jn(for => 0.1 => $s, '%hs:2784,fs:5');
@@ -108,7 +143,6 @@ pidepth: |
         $i++; $o = o.Jiter;
     }
     $i;
-
 pi/keys: |
     Mn("ke__$_" => {}, {pi=>'text',s=>"$_,"}) for sort keys %$u;
 pi/text: |
@@ -120,35 +154,56 @@ pi/text: |
      :
      Rw pi/fulltext
     
-pi/fulltext: |
-     Jn(hi=>0.3=>"HI  J.cv");
-     
-        my $si = length($s);
-     
-     
-            my $ni = J.c.lin if J.c.lin > 1;
-            my $bi = J.c.b if J.c.b > 1;
+pi/foldytext: |
+         $s =~ s/\n/↯/g;
+         
+         my $tev = int(J.cv * 200); # 0.4 = 100
+         if (C.c.si > $tev) {
+             $s = ($s=~/^(.{$tev})/s)[0];
+         }
+         else {
+             delete C.c.si;
+         }
             
-                J.bz->("si/l 0.2" => "$si",
-                    '%css' => "color:#b89;font-size:50%;position:absolute") if $si;
-                J.bz->('si/n 0.2' => "$ni",
-                    '%css' =>
-                        "color:#fff;font-size:50%;"
-                        ."position:absolute;margin-top:1.4em;") if $ni;
+         if ($s =~ /^\d{10,11}(\.\d*)?$/) {
+             Jn(timestamp => 0.1 => {pi=>'now',s=>$s})
+             && return;
+         }
+         
+         J.bz->('line 0.1' => $s,
+                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
+                    ."font-size:70%");
+pi/boxtext: |
+     C.c.si = length($s);
+     
+     Rw pi/foldytext;
+     
+     my $ni = J.c.lin if J.c.lin > 1;
+     my $bi = J.c.b if J.c.b > 1;
+            
+            J.bz->("si/l 0.2" => "C.c.si",
+            '%css' => "color:#b89;font-size:50%;position:absolute") if exists C.c.si;
+            
+            J.bz->('si/n 0.2' => "$ni",
+            '%css' =>
+            "color:#fff;font-size:50%;"
+            ."position:absolute;margin-top:1.4em;") if $ni;
+            
                 J.bz->('si/b 0.2' => "b$bi",
                     '%css' =>
                         "color:#f89;font-size:50%;"
                         ."float:left;left:-1em") if $bi;
                    
-            if (J.cv < 0.7 && $text =~ /^(# \d.+?)↯/) {
+            if (J.cv < 0.7 && $s =~ /^(# \d.+?)↯/) {
                 J.bz->('line 0.1' => $1,
                 '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
                     ."font-size:70%");
             }
-            return if J.cv < 0.7;
-            
+pi/fulltext: |
+     Jn(hi=>0.3=>"HI  J.cv");
+     
             # 7
-            my @tex = split /\n/, $u;
+            my @tex = split /\n/, $s;
             #my $s = $G->vimcolor($u);
             #$s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
             
@@ -178,25 +233,6 @@ pi/fulltext: |
             my $s = join"\n", @tex;
             J.bz->("line 0.1" => $s, '%tag'=>'pre','%gp'=>{vimcolor=>1},
                 '%css' => "margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim");
-pi/foldytext: |
-         $u =~ s/\n/↯/g;
-         
-         my $tev = int(J.cv * 200); # 0.4 = 100
-         if ($si > $tev) {
-             $u = ($u=~/^(.{$tev})/s)[0];
-         }
-         else {
-             undef $si;
-         }
-            
-         if ($text =~ /^\d{10,11}(\.\d*)?$/) {
-             Jn(timestamp => 0.1 => {pi=>'now',s=>$text})
-             && return;
-         }
-         
-         J.bz->('line 0.1' => $text,
-                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
-                    ."font-size:70%");
 pi/HASH: |
     my $si = keys %$u;
     y.limn = 2;
@@ -228,7 +264,6 @@ pi/HASH: |
                 
                 $i++;
             }
-
 pi/ARRAY: |
     y.limn = 6;
     my $cv = J.cv ||= 0.3;
@@ -253,32 +288,8 @@ pi/ARRAY: |
                 Mn('['.$i => {}, {pi=>'kv',s=>['['.$i,$uu]});
                 $i++;
             }
-pi/vs: |
-    #die wdump $u;
-    C.sc.nspc = 0.1;
-    Jn(lvs=>0.1=>lvs=>{});
-    y.lumfa = 2;
-    y.limn = 0.8;
-    my $i = 0;
-    #$u = [map{ my ($c,$i) = unico($_,1); i.t = $c; $i } map{232+$_} 1..20];
-    Mn($i++=>'',{pi=>'lv',s=>$_}) for @$u, @$u;
 pi/code: |
     Jn(code=>1=>'&','%hs:389');
-pi/lv: |
-    C.sc.nspc = 0.12;
-    C.sc.nspc_max = 4;
-    y.limn = 5.4;
-    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.4em,mt:-2em');
-    C.sc.pwth = 'somewhere';
-    #$u = {wtf=>[map{unico($_)}4300..4305]};
-    #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
-    my @k = Rw kord $u t name block y c sc;
-   
-    Mn($_ => {($_ eq 'sc' ? (thy=>1.3) : ())},
-       {pi=>'kv',s=>[$_=>$u->{$_}]},
-       {mw=>'5em'},
-       ) for @k;
-    #Jn(it=>1=>{pi=>'text',s=>wdump(4,$u),cv=>0.8},'%opa:0.3');
 pi/eye: |
      my $file = $u;
      #J.V = 1;
