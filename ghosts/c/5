@@ -74,30 +74,11 @@ join:
        Rw J5 wu;
        # iterations:
        Rw J5 toc;
-
-     in: |
-       my $oJ = $J;
-       $J = G.oin;
-       if (my $X = J.bb->{"oJ.name%J\t0.3"}) {
-           Rw join/X $J:X;
-       }
-       Jn(oJ.name, 0.3, {J=>$oJ}, {});
-       J.idJy->{oJ.id} = $oJ;
      X: |
-       Rw J5 $J $rm=9;
-       my $oJ = $J;
-       $J = G.oin;
-       my $is = J.bb->{"oJ.name%J\t0.3"};
-       warn "not latest oJ.name... delete both ".wdump 3,[$is,$oJ] if $is ne $oJ;
-       for my $oJ ($oJ, $is) {
-           Rw J5 wu $X:oJ;
-           Rw delbbl $J $l:oJ.name;
-           oJ.dead = 1; # etcrise
-       }
-       sayyl "delete is.name";
-       if (e.S) {
-           Rw J5 $J=J.name;
-       }
+       Rw J5 $J $X=9;
+       
+       Rw J5 $J=J.name
+       if e.S;
 noibz/yJ: |
        my $bz = J.bz;
        J.bz = sub {
@@ -269,11 +250,17 @@ waz/up: |
 Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
       sub {
           my $s = shift;
-          my $v = shift;  
+          my $v = shift;
+          my $d = shift;
           $s = '%'.$s if $s;  
           my $t = exists ar.t ? ar.t : ar.C.t;
           my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
           my $r = $t.$s."\t".$cv;
+          if ($d) {
+              sayre "delbbl $r   J.name";
+              Rw delbbl $J $l:t;
+              return;
+          }
           saybl " chuck $r     $v  >  ".J.bb->{$r} if J.V;
           !defined $v ?
             J.bb->{$r}
@@ -285,7 +272,7 @@ Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
 pie:
     yJ: |
       saybl "som.";
-oJ2: | # 
+oJ2: | # MOD wo
     die "what the hell";
 oW2: | # some get-J or weave wires protocol - hosts
     if (ref $v) {
@@ -322,6 +309,17 @@ oJ3: | # MOD  being repeater
         }
     }
     
+    if (C.c.X) {
+        my @being = C.sc.J;
+        push @being, C.c.J if ref C.c.J;
+        @being = uniq @being;
+        
+       #warn "not latest oJ.name... delete both ".wdump 3,[$is,$oJ] if $is ne $oJ;
+       for my $oJ (@being) {
+           Rw J5 wu $X:oJ;
+           oJ.dead = 1; # etcrise
+       }
+    }
     my $J = C.sc.J;
     A.jr&J,$J;
     A.jr->('',"Jay");
