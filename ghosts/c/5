@@ -51,10 +51,10 @@ J5: |
    my $r = {%$ar};
    r.J = delete($r->{m})->[0] if ar.m;
    delete r.R;
-   my $d;
-   d.c = $r;
+   my $C;
+   C.c = $r;
    return sayre "RECUR" if @F > 130;
-   Rw oo $J:G.oin $d;
+   Rw oo $J:G.oin $C;
 newwave: |
     saygr "EXactly";
     G.oin = Rw JJ join;
@@ -67,18 +67,13 @@ newwave: |
 join:
      yJ: |
        G.oin = $J;
-       my $bz = J.bz;
-       J.bz = sub {
-           say "#  bz ".join'      ',@_;
-           $bz->(@_);
-       };
        'join clw'
      up: |
        # G.oin root ww:
+       Rw J5 Ha;
        Rw J5 wu;
        # iterations:
        Rw J5 toc;
-       Rw J5 Ha;
 
      in: |
        my $oJ = $J;
@@ -89,6 +84,7 @@ join:
        Jn(oJ.name, 0.3, {J=>$oJ}, {});
        J.idJy->{oJ.id} = $oJ;
      X: |
+       Rw J5 $J $rm=9;
        my $oJ = $J;
        $J = G.oin;
        my $is = J.bb->{"oJ.name%J\t0.3"};
@@ -100,8 +96,15 @@ join:
        }
        sayyl "delete is.name";
        if (e.S) {
-           Rw J5 $name;
+           Rw J5 $J=J.name;
        }
+noibz/yJ: |
+       my $bz = J.bz;
+       J.bz = sub {
+           say "# J.name bz ".join'      ',@_;
+           $bz->(@_);
+       };
+    
 toc:
      yJ: |
        'toc'
@@ -144,10 +147,10 @@ wa:
     Rw vortex $J around $d=6;
     
     #Rw J6 - Wkcs; 
-    Rw J6 - Vil;
+    Rw J5 - Vil;
     #Rw J6 - Vuel;
-    #Rw J6 - Hosp;
-    #Rw J6 - Eosse;
+    Rw J6 - Hosp;
+    Rw J6 - Eosse;
     #Rw J6 - EYZ;
     #Rw J6 - Wander;
     
@@ -227,6 +230,13 @@ pi/show: |
      
 around: |
      inter({Jname=>ar.J.name}) if ref ar.J;
+     if (!ar.A) {
+         #die " J5 ah $d   J.name". join'  ', sort keys %$ar;
+         return Rw J5
+         
+     }
+     
+     
      my $tw = Rw huck + */around;
      
      if (!$tw) {
@@ -264,6 +274,7 @@ Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
           my $t = exists ar.t ? ar.t : ar.C.t;
           my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
           my $r = $t.$s."\t".$cv;
+          saybl " chuck $r     $v  >  ".J.bb->{$r} if J.V;
           !defined $v ?
             J.bb->{$r}
           : do {
@@ -276,13 +287,19 @@ pie:
       saybl "som.";
 oJ2: | # 
     die "what the hell";
-oW2: | # some get-J protocol
-    my $t = T.J = T.W = $v;
+oW2: | # some get-J or weave wires protocol - hosts
+    if (ref $v) {
+        sayre "Hope v.name is roW";
+        $v = v.name;
+    }
+    my $t = C.c.J = at.J = at.W = $v;
+    C.t ||= $t;
+    C.y.cv ||= 0.3;
     
     A.jr = Rw Ajr $J:G.oin $t $cv=0.3;
 opi2: | # approach
-    T.pi = $v || 'guess';
-    T.J = 'pie';
+    at.pi = $v || 'guess';
+    C.c.J = 'pie';
     
     my $oJ = $J;
     $oJ = C.y.o.J if C.y.o && C.y.o.J;
@@ -291,14 +308,15 @@ opi2: | # approach
 oJ3: | # MOD  being repeater
     my $ca = A.jr&J;
     C.sc.J = $ca if $ca; # resolve
-     die wdump 3, $A;
+    # die wdump 3, $A;
     
+    sayyl "oJ3 C.t   C.sc.pi    C.sc.J   " if J.V;
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
         }
         else {
-            my $o = {name=>d.c.J};
+            my $o = {name=>C.c.J};
             C.sc.J = Rw JJ $o;
             sayyl "J3   Made o.name";
         }
@@ -306,7 +324,9 @@ oJ3: | # MOD  being repeater
     
     my $J = C.sc.J;
     A.jr&J,$J;
-       
+    A.jr->('',"Jay");
+    at.J = $J;
+    
     if (C.sc.pi) {
        my $A = J.most.A||{};
        $A = J.A = {%$A};
@@ -317,27 +337,29 @@ oJ3: | # MOD  being repeater
        
        J.d = J.C = $C;
        J.r = C.r;
-       
        J.bz->("/\t0.9" => "y");
     }
 oJ6: |
-    C.sc.pi && return
-    Rw opi6;
+    return
+    Rw opi6
+    if C.sc.pi;
     
     my $ar = {%{C.c}};
     ar.J=C.sc.J||die'noj';
+    ar.C=$C;
+    ar.A=$A;
 
     return C.s if !A.hav && A.jr&ok-9;
     
     my $n = A.hav ? sub{} : A.jr&ok-9,9;
     aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
-
+    saybl "oJ6 C.t";
+    
     Rw around;
        
 opi6: |
        my $oJ = $J;
        $J = C.sc.J||die;
-       
        my $A = J.A;
        my $T = {};
        
@@ -356,19 +378,24 @@ opi6: |
        Rw pi/$path $A $J $u:s $s $C $M $y; 
        
        
-       
        Jn('zoo',$y) if @$M;
        
        
        
        A.coi.qui = 1;
        A.coi.exactl->();
-oJ67: | # around-out)   Em $aj ins   who knows about the A.J we are... 
+oJ7: |
+    return
+    Rw opi7
+    if ar.A && ar.C.sc.pi;
+    
+    my $J = C.sc.J;
+    
+    say "oJ7 J.name";
     Rw oJ $J geo &up $noesc=1;
-    Rw J.most.eo;
-    # 
-pi67: | # MOD pi     out cup           # REF JOIN A.c/sc
-    my $J = C.sc.J||die;
+    Rw J.most.eo $J;
+opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
+    my $J = C.sc.J;
     
     my $aj = Rw J.most.eo $J $catj=1;
     
@@ -379,9 +406,11 @@ pi67: | # MOD pi     out cup           # REF JOIN A.c/sc
        
 oJ75: | # OUT J
     if (C.sc.pi) {
+        die wdump $C if !ref C.sc.J;
         $v = C.sc.J || die'enoJ'.C.t;
         die "Pi v.r has s" if v.s;
         delete at.s if defined at.s;
+        die wdump $C if !ref v.Ec;
         die "Pi v.r no .Ec" if !@{v.Ec};
         acum $at, 'Esc', $_ for @{v.Ec};
     }
@@ -392,7 +421,7 @@ gui: # turn into some
        J.most.eo = 'chuv';
        'gui quigeo' 
      out: |
-       Rw oJ67;
+       Rw oJ7;
 TravelingMeans:
    yJ: |
      my $A = J.A = J.most.A = {}; 

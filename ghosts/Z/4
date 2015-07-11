@@ -53,7 +53,7 @@ R_Jz:
            C.c || die;
            C.y.cv || die "no cv".k2 $C;
            C.r = join "\t", C.t, (C.y.cv+0);
-           C.sc = {%{d.sc||{}}}; # ?
+           C.sc = {%{C.sc||{}}}; # ?
            
            # 7.9
            C.r = join "\t", C.t, (C.y.cv+0);
@@ -70,8 +70,8 @@ R_Jz:
      - |
        my $g = wJ.ctx.C;
        for my $ct (@{wJ.cts.C}) {
-           next unless ct.any or exists $d->{ct.t_k}->{ct.t};
-           my $v = $d->{ct.t_k}->{ct.t} unless ct.any;
+           next unless ct.any or exists $C->{ct.t_k}->{ct.t};
+           my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
            
            my $T = {};
            my $d = $C;
@@ -95,7 +95,7 @@ R_Jz:
      n.sc.args = join',',map{'$'.$_}split',',n.sc.args
          if n.sc.args && n.sc.args !~ /\$/;
      n.sc->{"ct_${v}_args"} = n.sc.args || '$A,$C,$g,$T,$J,$j,$v,$at';
-     n.sc.way = 1;# unless n.sc.nx;
+     #n.sc.way = 1;# unless n.sc.nx;
  - K: ym/moz #c
    D: |
      n.sc.args ||= '$A,$C,$g,$T,$J,$d,$v,$at';
