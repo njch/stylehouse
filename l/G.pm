@@ -2395,6 +2395,11 @@ sub g_D {
           };
           $G->{sigstackwa} ||= sub {
               return 1 if $_[0] =~ /^Use of uninitialized value/;
+              if ($_[0] =~ /Deep recursion on/) {
+                 sayre "snoozing $F[0]->{talk}";
+                 snooze();
+                 return;
+              }
               my @loc = caller(1);
               $@ = join "\n", @_;
               my $DOOF = $G->Duck($F[0],1);
@@ -2431,9 +2436,6 @@ sub g_Duck {
 
     my $DOOF; 
     my $first = 1 unless $@ =~ /DOOF/;
-
-    sayre map{"F $_->{name} $_->{point}  ".join" ",sort keys %$_} reverse @F
-      if $@ =~ /Deep recursion on/;
 
                $DOOF .= "DOOF $D->{talk}\n" if $D->{sign} eq 'D';
                $DOOF .= "  $D->{inter}" if $D->{inter};

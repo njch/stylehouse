@@ -68,6 +68,8 @@ join:
      yJ: |
        G.oin = $J;
        'join clw'
+     around: |
+       die "around:!". ki $ar;
      up: |
        # G.oin root ww:
        Rw J5 Ha;
@@ -75,7 +77,16 @@ join:
        # iterations:
        Rw J5 toc;
      X: |
-       Rw J5 $J $X=9;
+       # message goes up to wu via A
+       if (my $oJ = J.oJ.A) {
+           Rw A/X $J:oJ $X:J;
+       }
+       else {
+           die "noway";
+       }
+       
+       # for the delbbl
+       Rw J5 $J $X:J;
        
        Rw J5 $J=J.name
        if e.S;
@@ -125,7 +136,7 @@ wa:
    yJ: |
      'Travel aww'
    M: |
-    Rw vortex $J around $d=6;
+    Rw vortex $J around $d=16;
     
     #Rw J6 - Wkcs; 
     Rw J5 - Vil;
@@ -163,7 +174,7 @@ Vuel:
    M: |
       #J.zip == 1 &&
       my $g = {map{$_=>"$G->{$_}"}keys %$G};
-      G.way.Vuel.curves = <<'';
+      G.way.Vuel.curves = <<'' if 0;
       x 0 -0.2
       zoom 0  0.7
       curve 0 0.3
@@ -172,8 +183,9 @@ Vuel:
       my @s = Rw wuck $J */curves;
       #sayyl wdump [@s];
       
+      my $oJ = Rw J5 - shv;
       
-      my $vs = Rw tc $J:G.oin;
+      my $vs = Rw tc $J:oJ;
       Mn(deef=>'',{pi=>'vs',s=>$vs});
 Wander:
    yJ: |
@@ -235,7 +247,7 @@ waz/up: |
       my $y = {o=>$M};
       my $A = J.A;
       A.ztime ||= 2;
-      my $C = J.d;
+      my $C = J.C;
       
       Rw Jhead;
       
@@ -257,9 +269,8 @@ Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
           my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
           my $r = $t.$s."\t".$cv;
           if ($d) {
-              sayre "delbbl $r   J.name";
+              sayre "delbbl $r  $d   J.name" for 1..5;
               Rw delbbl $J $l:t;
-              return;
           }
           saybl " chuck $r     $v  >  ".J.bb->{$r} if J.V;
           !defined $v ?
@@ -309,18 +320,16 @@ oJ3: | # MOD  being repeater
         }
     }
     
-    if (C.c.X) {
-        my @being = C.sc.J;
-        push @being, C.c.J if ref C.c.J;
-        @being = uniq @being;
-        
-       #warn "not latest oJ.name... delete both ".wdump 3,[$is,$oJ] if $is ne $oJ;
-       for my $oJ (@being) {
-           Rw J5 wu $X:oJ;
-           oJ.dead = 1; # etcrise
-       }
-    }
     my $J = C.sc.J;
+    die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
+    if (ref C.c.X) {
+        die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
+        A.jr&J,$J,9;
+        # ^ delete
+        J.dead = 1;
+        T.return = [];
+        return;
+    }
     A.jr&J,$J;
     A.jr->('',"Jay");
     at.J = $J;
