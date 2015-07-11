@@ -28,6 +28,21 @@ pi/lv: |
     Rw pi/kord lv;
     
     #Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
+pi/guess: |
+     my $cg = $G->cgp($s);
+     # ^
+     # v
+     my ($path) = grep { $cg->{$_} } qw'canpi ARRAY HASH ref undef text';
+     $path = ref $s if $path eq 'canpi';
+     $path = 'code' if ref $s eq 'CODE';
+     $path ||= 'wtf';
+     #$path = 'J' if $wa eq 'HASH' && u.bb;
+     # can stick $wa on J.wa for thrashing maths
+     # funcy fuzz fields
+     # mutating spiral code
+     
+     Rw pi/$path;
+     
 dg/kord:
    lv:
     - ws: t+5 name+4 block y c sc

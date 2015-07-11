@@ -70,6 +70,15 @@ ooj/C:
            die "Tgot ". ki $T if %$T;
        }
        
+anno/opi:
+   - MZ: moz:C
+   - [s, 2, 'd.s = $v;']
+   - [pi, 2, 'd.s = "ou?$v";']
+   - MZ: isway:1
+   - [pi, 3, 'Rw pi3;']
+   - [pi, 6, 'Rw pi6;']
+   - [pi, 7, 'Rw pi7;']
+   - [W, 2,  'Rw W2;']
 ooj/ing: 
    - MZ: Cc:Y
    -
@@ -85,27 +94,25 @@ ooj/ing:
     - |
       d.s = A.jr->();
       # from a way
-      # then somewhere just way/J.name 
-      A.comp = $d;
+      # then somewhere just way/J.name
    -
     - puts
     - 7
     - |
        my @jh = grep{!A.note.c->{$_}}keys %{d.c};
        if (@jh) {
-           sayyl "oo  d.t d.cv   ->  ".join "      ",
+           sayyl "oo  d.t d.y.cv   ->  ".join "      ",
                map { "$_ = ".gp d.c->{$_}}@jh;
            A.hav = 1;
        }
        else {
-           sayyl "oo  d.t d.cv";
+           sayyl "oo  d.t d.y.cv";
        }
        # some alt ^ make round v
        # 
        die if !d.t;
        die if !d.y.cv;
-       die if !ref d.s;
-       
+       die if !ref d.sc.J;
        J.bz->("d.t\t".d.y.cv,d.s);
 ooj/JJ: 
    -
@@ -113,15 +120,18 @@ ooj/JJ:
     - 3
     - |
       A.jr = sub {
-         my $s = shift;
-         my $v = shift;  
-         $s = '%'.$s if $s;  
-         my $r = "d.t$s\t".d.y.cv;
-         !defined $v ? J.bb->{$r} :
-         do { J.bz->($r, $v);
-           sub { delete J.bb->{$r} } 
-         };
+          my $s = shift;
+          my $v = shift;  
+          $s = '%'.$s if $s;  
+          my $r = "d.t$s\t".d.y.cv;
+          !defined $v ?
+            J.bb->{$r}
+          : do {
+              J.bz->($r, $v);
+              sub { delete J.bb->{$r} } 
+          };
       };
+      
    - MZ: Cc:Y
    -
     - J
@@ -134,26 +144,24 @@ ooj/JJ:
    - MZ: Cc:C
    -
     - J
-    - 1
+    - 2
     - |
+     my $is = A.jr&J;
+     d.sc.J = $is if $is;
        die "tis" if ref d.c.J;
    -
     - J
     - 3
     - |
-       if (!ref d.s) {
-           my $o = {name=>d.c.J};
-           d.s = Rw JJ $o;
-           sayyl "oo Made o.name";
-       }
-       die if !ref d.s;
+      Rw oJ3;
+    - way: 1
 
    - MZ: Cc:Cany
    -
     - Joing 
     - 8
     - |
-      Rw Jeight;
+      Rw oJ6;
     - way: 1
 ooj/time:
    - MZ: Cc:Yany

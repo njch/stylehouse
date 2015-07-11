@@ -105,7 +105,9 @@ R_Jz:
    D: |
      my $s = read_file($file);
      saybl "Loading $file";
-     Load($s);
+     my $e = eval { Load($s); };
+     die join"\n","ERRRSYCK $file",(split"\n",$s)[$1-3..$1+3],'',$@ if $@ =~ /Syck parser \(line (\d+),/;
+     $e
  - K: lodname #c
    D: |
      my $st = Rw wuck - lod/H.name;

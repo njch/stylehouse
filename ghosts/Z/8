@@ -67,10 +67,11 @@ R_Jz:
      saybl "E    aj.name    aj.yy/".$aj->{aj.yy.'id'}."   (  aj.id      aj.oudelta";
      for my $k (sort grep{/^[sc]+/} keys %$aj) {
          my $v = $aj->{$k};
+         next if $k eq 'sent';
          if (ref $v eq 'ARRAY') {
              my $i = 1; 
              my $lim = $k eq 'c' ? 70 : 90;
-             saybl "$k ".$i++."=".slim $lim, $_ for @$v 
+             saybl "$k ".$i++."=".slm $lim, $_ for @$v 
          }
          else {
              saybl "$k    => ".slim 80, $v;
@@ -80,8 +81,7 @@ R_Jz:
    n_D:
      yJ: |
        'wu'
-     around: | 
-       sayyl "WU!";
+     around: |
        J.stup ||= Rw wu/wup;
        ar.aj ?
           Rw wu/ajwu
