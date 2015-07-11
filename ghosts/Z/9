@@ -139,13 +139,14 @@ R_Jz:
        Rw Em $aj;
  - K: jamsc #c sc->j.bb
    D: |
-     my $t = ar.t || ar.j ? ar.j.l : ar.d ? ar.d.t : die;
-     my $cv = ar.cv || ar.j ? ar.j.cv : ar.d ? ar.d.cv || ar.d.y.cv : die;
+     ar.C = ar.d if ar.d;
+     my $t = ar.t || ar.j ? ar.j.l : ar.C ? ar.C.t : die;
+     my $cv = ar.cv || ar.j ? ar.j.cv : ar.C ? ar.C.cv || ar.C.y.cv : die;
      J.bz->("$t\t".$cv => ar.s) if exists ar.s;
      for my $k (sort keys %$sc) {
          my $v = $sc->{$k};
          J.bz->("$t%$k\t".$cv => $v);
-         d.sc->{$k} = $v;
+         ar.C.sc->{$k} = $v;
      }
      
  - K: sctks #c # expand (k:)?lma:v to lma:k:v

@@ -277,12 +277,13 @@ pie:
 oJ2: | # 
     die "what the hell";
 oW2: | # some get-J protocol
-    my $t = C.sc.W;
-    at.J = $t;
+    my $t = T.J = T.W = $v;
+    
     A.jr = Rw Ajr $J:G.oin $t $cv=0.3;
 opi2: | # approach
-    at.J = 'pie';
-    at.pi = C.c.pi || 'guess';
+    T.pi = $v || 'guess';
+    T.J = 'pie';
+    
     my $oJ = $J;
     $oJ = C.y.o.J if C.y.o && C.y.o.J;
     A.jr = Rw Ajr $J:oJ $C;
@@ -290,6 +291,7 @@ opi2: | # approach
 oJ3: | # MOD  being repeater
     my $ca = A.jr&J;
     C.sc.J = $ca if $ca; # resolve
+     die wdump 3, $A;
     
     if (!ref C.sc.J) {
         if (C.sc.pi) {
@@ -297,12 +299,14 @@ oJ3: | # MOD  being repeater
         }
         else {
             my $o = {name=>d.c.J};
-            C.sc.J = at.J = Rw JJ $o;
+            C.sc.J = Rw JJ $o;
             sayyl "J3   Made o.name";
         }
     }
     
     my $J = C.sc.J;
+    A.jr&J,$J;
+       
     if (C.sc.pi) {
        my $A = J.most.A||{};
        $A = J.A = {%$A};
@@ -311,20 +315,26 @@ oJ3: | # MOD  being repeater
        
        J.A.coi = Rw pha $J ako;
        
-       at.J = $J;
        J.d = J.C = $C;
+       J.r = C.r;
        
-       J.r = d.r; # be adjusting this xor
-       Rw mkJid $J;
        J.bz->("/\t0.9" => "y");
     }
-oJ3: | # oo  WJish, from G.oin or A.I       read/create
-    my $is = A.jr&J;
-    C.sc.J = $is if $is;
-    die "tis" if ref C.c.J;
-    if (!ref C.sc.J) {
-    }
-pi63: |
+oJ6: |
+    C.sc.pi && return
+    Rw opi6;
+    
+    my $ar = {%{C.c}};
+    ar.J=C.sc.J||die'noj';
+
+    return C.s if !A.hav && A.jr&ok-9;
+    
+    my $n = A.hav ? sub{} : A.jr&ok-9,9;
+    aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
+
+    Rw around;
+       
+opi6: |
        my $oJ = $J;
        $J = C.sc.J||die;
        
@@ -353,16 +363,6 @@ pi63: |
        
        A.coi.qui = 1;
        A.coi.exactl->();
-oJ6: | # oo J hits
-    my $ar = {%{d.c}};
-    ar.J=C.sc.J||die'noj';
-
-    return d.s if !A.hav && A.jr&ok-9;
-    my $n = A.hav ? sub{} : A.jr&ok-9,9;
-    aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
-
-    Rw around;
-       
 oJ67: | # around-out)   Em $aj ins   who knows about the A.J we are... 
     Rw oJ $J geo &up $noesc=1;
     Rw J.most.eo;
