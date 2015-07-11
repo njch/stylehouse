@@ -60,8 +60,9 @@ newwave: |
     G.oin = Rw JJ join;
     Rw up $J:G.oin;
     
+    Rw cl/tidy;
     #Rw zoybracken;
-    Rwyl 1 fresh_init;
+    Rwyl 0.01 fresh_init;
     1
 join:
      yJ: |
@@ -255,33 +256,75 @@ waz/up: |
       coi.qui = 1;
       coi.exactl->();
       
-pi3: |
-       my $oJ = $J;
-       $oJ = C.y.o.J if C.y.o && C.y.o.J;
-       # ^ string cheesae
-       my $ca = oJ.bb->{C.t."%J\t".C.y.cv};
-       $J = $ca || Rw spinash $J;
-       
+Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
+      sub {
+          my $s = shift;
+          my $v = shift;  
+          $s = '%'.$s if $s;  
+          my $t = exists ar.t ? ar.t : ar.C.t;
+          my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
+          my $r = $t.$s."\t".$cv;
+          !defined $v ?
+            J.bb->{$r}
+          : do {
+              J.bz->($r, $v);
+              sub { delete J.bb->{$r} } 
+          };
+      };
+pie:
+    yJ: |
+      saybl "som.";
+oJ2: | # 
+    die "what the hell";
+oW2: | # some get-J protocol
+    my $t = C.sc.W;
+    at.J = $t;
+    A.jr = Rw Ajr $J:G.oin $t $cv=0.3;
+opi2: | # approach
+    at.J = 'pie';
+    at.pi = C.c.pi || 'guess';
+    my $oJ = $J;
+    $oJ = C.y.o.J if C.y.o && C.y.o.J;
+    A.jr = Rw Ajr $J:oJ $C;
+   
+oJ3: | # MOD  being repeater
+    my $ca = A.jr&J;
+    C.sc.J = $ca if $ca; # resolve
+    
+    if (!ref C.sc.J) {
+        if (C.sc.pi) {
+            C.sc.J = Rw spinash $J;
+        }
+        else {
+            my $o = {name=>d.c.J};
+            C.sc.J = at.J = Rw JJ $o;
+            sayyl "J3   Made o.name";
+        }
+    }
+    
+    my $J = C.sc.J;
+    if (C.sc.pi) {
        my $A = J.most.A||{};
        $A = J.A = {%$A};
+       
        A.in = $G->gip(J.Jiter.A.in, C.t)||{};
+       
        J.A.coi = Rw pha $J ako;
        
        at.J = $J;
-       at.pi = C.c.pi || 'guess';
-       J.d = J.C = $C
+       J.d = J.C = $C;
        
-       ; # jo ma in lo
        J.r = d.r; # be adjusting this xor
        Rw mkJid $J;
        J.bz->("/\t0.9" => "y");
-oJ3: |
-    if (!ref C.sc.J) {
-        my $o = {name=>d.c.J};
-        at.J = Rw JJ $o;
-        sayyl "J3   Made o.name";
     }
-pi6: |
+oJ3: | # oo  WJish, from G.oin or A.I       read/create
+    my $is = A.jr&J;
+    C.sc.J = $is if $is;
+    die "tis" if ref C.c.J;
+    if (!ref C.sc.J) {
+    }
+pi63: |
        my $oJ = $J;
        $J = C.sc.J||die;
        
@@ -298,40 +341,50 @@ pi6: |
        my $path = C.sc.pi||die'nopi';
        $path = 'text' if J.A.d > 5;
        
-       # sayyl "A kv    J.yg";
-    
-       # G is... suck */etc with trails
-       # 
-       my $u = C.c.s;
        
-       Rw pi/$path $A $J $u $s:u $C $M $y; 
+       my $s = C.c.s;
+       Rw pi/$path $A $J $u:s $s $C $M $y; 
+       
+       
        
        Jn('zoo',$y) if @$M;
+       
+       
        
        A.coi.qui = 1;
        A.coi.exactl->();
 oJ6: | # oo J hits
-       my $ar = {%{d.c}};
-       ar.J=C.sc.J||die'noj';
+    my $ar = {%{d.c}};
+    ar.J=C.sc.J||die'noj';
+
+    return d.s if !A.hav && A.jr&ok-9;
+    my $n = A.hav ? sub{} : A.jr&ok-9,9;
+    aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
+
+    Rw around;
        
-       return d.s if !A.hav && A.jr&ok-9;
-       my $n = A.hav ? sub{} : A.jr&ok-9,9;
-       aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
+oJ67: | # around-out)   Em $aj ins   who knows about the A.J we are... 
+    Rw oJ $J geo &up $noesc=1;
+    Rw J.most.eo;
+    # 
+pi67: | # MOD pi     out cup           # REF JOIN A.c/sc
+    my $J = C.sc.J||die;
+    
+    my $aj = Rw J.most.eo $J $catj=1;
+    
+    die aj.s if aj.s;
+    #sayre "Upto J.r go ".slim 70, sjson aj.c if @{aj.c};
+    J.Ec = [@{aj.c}];
+    die wdump $aj if @{aj.sc};
        
-       Rw around;
-       
-pi7: |
-       $v = C.sc.J||die;
-       # can pin/ping light source of con paral
-       my $name = v.most.eo || die "noeo";
-       
-       my $aj = Rw $name $J:v $catj=1;
-       die aj.s if aj.s;
-       
-       #sayre "Upto J.r go ".slim 70, sjson aj.c if @{aj.c};
-       v.Ec = [@{aj.c}];
-       die wdump $aj if @{aj.sc};
-       
+oJ75: | # OUT J
+    if (C.sc.pi) {
+        $v = C.sc.J || die'enoJ'.C.t;
+        die "Pi v.r has s" if v.s;
+        delete at.s if defined at.s;
+        die "Pi v.r no .Ec" if !@{v.Ec};
+        acum $at, 'Esc', $_ for @{v.Ec};
+    }
 gui: # turn into some
      yJ: |
        J.cv = 20;
@@ -339,9 +392,7 @@ gui: # turn into some
        J.most.eo = 'chuv';
        'gui quigeo' 
      out: |
-       #sayyl "gui GGEO OUTING J.name";
-       Rw oJ $J geo &up $noesc=1;
-       Rw chuv;
+       Rw oJ67;
 TravelingMeans:
    yJ: |
      my $A = J.A = J.most.A = {}; 
