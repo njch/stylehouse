@@ -141,7 +141,7 @@ wa:
     #Rw J6 - Wkcs; 
     Rw J5 - Vil;
     #Rw J6 - Vuel;
-    Rw J6 - Hosp;
+    #Rw J6 - Hosp;
     Rw J6 - Eosse;
     #Rw J6 - EYZ;
     #Rw J6 - Wander;
@@ -186,7 +186,8 @@ Vuel:
       my $oJ = Rw J5 - shv;
       
       my $vs = Rw tc $J:oJ;
-      Mn(deef=>'',{pi=>'vs',s=>$vs});
+      my $rr = [map{_.sc.J}@$vs];
+      Mn(deef=>'',{pi=>'',s=>$rr});
 Wander:
    yJ: |
       'Travel'
@@ -307,8 +308,10 @@ oJ3: | # MOD  being repeater
     my $ca = A.jr&J;
     C.sc.J = $ca if $ca; # resolve
     # die wdump 3, $A;
+    ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     
     sayyl "oJ3 C.t   C.sc.pi    C.sc.J   " if J.V;
+    die if J.name eq "shv";
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
