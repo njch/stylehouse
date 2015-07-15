@@ -302,20 +302,22 @@ Ds:
       my $ar = shift;
       my $re = $ar if $ar =~ /^\d+$/;
       $ar = shift if defined $re;
+      my $d = 1 + shift;
       if (!ref $ar || "$ar" !~ /HASH/) {
           return "!%:$ar";
       }
+      my $lim = 150 - (150 * ($d / 3));
       join ' ', map {
           my $v = $ar->{$_};
           $v = "~" unless defined $v;
           ref $v eq 'HASH'
-              ? "$_=".($re ?  "{ ".slim(150,ki($re-1, $v))." }" : gp($v))
+              ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
               : "$_=".slim(150,"$v")
       } sort keys %$ar;
   - K: k2 #c
     style: func
     D: |
-      ki 2, shift;
+      ki 1, shift;
   - K: unico #c
     style: func
     D: |

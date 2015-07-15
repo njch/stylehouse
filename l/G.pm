@@ -297,20 +297,22 @@ sub ki {
     my $ar = shift;
     my $re = $ar if $ar =~ /^\d+$/;
     $ar = shift if defined $re;
+    my $d = 1 + shift;
     if (!ref $ar || "$ar" !~ /HASH/) {
         return "!%:$ar";
     }
+    my $lim = 150 - (150 * ($d / 3));
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
         ref $v eq 'HASH'
-            ? "$_=".($re ?  "{ ".slim(150,ki($re-1, $v))." }" : gp($v))
+            ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
 
 sub k2 {
-    ki 2, shift;
+    ki 1, shift;
 }
 
 sub unico {
@@ -2494,6 +2496,7 @@ sub g_Duck {
 
                if (@F == 1) {
                    # send it away
+                   $DOOF = join"\n",map{s/^(\! )+//smg if !/DOOF/; $_}split"\n",$DOOF;
                    sayre $DOOF;
                    $G->{dooftip} && $G->{dooftip}->($@);
                    $@ = "";
