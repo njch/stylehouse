@@ -2,11 +2,15 @@
 oJ2: | # MOD wo
     die "what the hell";
 oW2: | # some get-J or weave wires protocol - hosts
+    my $t = $v;
+    $t = v.name if ref $t;
+    at.J = ref $v ? $v : $t;
+    at.W = $t;
+    
     if (ref $v) {
-        sayre "Hope v.name is roW";
-        $v = v.name;
+        die wdump ["onto W J.name:",$v] if $v ne v.most.J;
     }
-    my $t = C.c.J = at.J = at.W = $v;
+    
     C.t ||= $t;
     C.y.cv ||= 0.3;
     
@@ -20,13 +24,43 @@ opi2: | # approach
     A.jr = Rw Ajr $J:oJ $C;
    
 oJ3: | # MOD  being repeater
-    my $ca = A.jr&J;
+    my $ca = A.jr&J; # gets W from oin(etc)  or  abdomisa
+    my $sp = C.sc.J;
     C.sc.J = $ca if $ca; # resolve
-    # die wdump 3, $A;
+    
+    my $talk = "";
+    
+    die "diff c W-J  " if C.c.W && C.c.W ne C.c.J;
+    if (C.sc.W) {
+        if (ref C.sc.J) {
+            $talk .= "r";
+            $talk .= "!" if $sp ne $ca;
+            $talk .= ">" if !ref $ca;
+        }
+        $talk .= "W";
+    }
+    
+    if (!exists C.c.pi) {
+        saybl "J.name  -- $talk -- ".k2 $C;
+    }
+    #die "YE  J.name" if ref C.c.W;
+    die "sp: $sp -> $ca" if ref $sp && ref $ca && $sp ne $ca;
+    
+    sayre "ref CcJ J.name  ".k2 $C if ref C.c.J;
+    
+    
+    C.sc.J = C.c.W if ref C.c.W;
+    
+    
     ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     
+    if (ref C.c.J || ref C.c.W) {
+    }
+    
     sayyl "oJ3 C.t   C.sc.pi    C.sc.J   " if J.V;
-    die if J.name eq "shv";
+    #die k2 $C if C.t eq 'Vuel';
+    
+    
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
@@ -39,7 +73,9 @@ oJ3: | # MOD  being repeater
     }
     
     my $J = C.sc.J;
+    
     die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
+    
     if (ref C.c.X) {
         die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
         A.jr&J,$J,9;
@@ -68,6 +104,8 @@ oJ6: |
     return
     Rw opi6
     if C.sc.pi;
+    return die "YEp!".k2 $C
+    if ref C.sc.W;
     
     my $ar = {%{C.c}};
     ar.J=C.sc.J||die'noj';
