@@ -19,11 +19,11 @@ wa:
    M: |
     Rw vortex $J around $d=16;
     
-    Rw J6 - Wkcs; 
+    #Rw J6 - Wkcs; 
     Rw J5 - Vil;
-    #Rw J6 - Vuel;
+    Rw J6 - Vuel;
     #Rw J6 - Hosp;
-    Rw J6 - Eosse;
+    #Rw J6 - Eosse;
     #Rw J6 - EYZ;
     #Rw J6 - Wander;
     
@@ -58,7 +58,7 @@ Vuel:
       G.way.Vuel.curves = <<'' if 0;
       x 0 -0.2
       zoom 0  0.7
-      curve 0 0.3
+      curve 0 -0.3
       x 0.02 0
       
       my @s = Rw wuck $J */curves;
@@ -67,7 +67,7 @@ Vuel:
       
       my $vs = Rw tc $J:oJ;
       #my $s = wdump $vs;
-      my $rr = [map{[_.t,_.y.sc,_.sc.J]}@$vs];
+      my $rr = [map{[_.t,_.sc]}@$vs];
       Mn(deef=>'',{pi=>'',s=>$rr});
 Wander:
    yJ: |
@@ -123,7 +123,6 @@ around: |
      unless J.yt.quiet;
      # try return stuff? pretty aroundo
      @{(values %$tw)[0]} if $tw
-
 pie:
     yJ: |
       saybl "som.";
@@ -135,16 +134,4 @@ gui: # turn into some
        'gui quigeo' 
      out: |
        Rw oJ7;
-TravelingMeans:
-   yJ: |
-     my $A = J.A = J.most.A = {}; 
-     A.time = sub{ 
-         my ($J,$wa) = @_;
-         J.A.ztime >= $wa ? 1 : do {
-             sayre gp($J)." Wants time, $wa";
-             acum $A, fo => $J;
-             0;
-         };
-     };
-     'splain';
 

@@ -46,6 +46,7 @@ R_Jz:
                d.y = {%{_.y}};
                d.c = {%{_.c}};
                delete d.y.cv;
+               d.sc = {%{_.sc||{}}};
                
                # TR
                if (o.ou) { # inside our
@@ -57,6 +58,10 @@ R_Jz:
                }
                
                Rw Travel/Io $g $A $d;
+               
+               if (A.J.V) {
+                   say "AH A.J.name  ::: d.t   ".ki d.sc;
+               }
                
                $d
            }@{o.M}];
@@ -143,7 +148,7 @@ R_Jz:
                
                wJ.ctx.B->{ct.x}->($A,$C,$g,$T,T.y);
            }
-           say "KAp T.t  T.y.cv   T.y.ov" if A.J.V;
+           say "KAp T.t  T.y.cv   spc=T.y.spc    (".(1+T.y.i)." / C.y.thi)" if A.J.V;
        }
        #sayyl wdump 2, A.is;
  - K: anno/Bal #c
@@ -162,7 +167,7 @@ R_Jz:
       my $total = sum(map { _.y.thy||1 } @$v) || 1;
       my $over = @$v || 1;
       A.muav = $over / $total;
-      saygr "Ybal 4 A.muav over  ". @{y.bal} if A.J.V;
+      saygr "Ybal A.muav over  ". @{y.bal} if A.J.V;
  - K: anno/lumfa #c
    D: |
    - MZ: Cc:Y
@@ -206,7 +211,6 @@ R_Jz:
       y.cv = 0+sprintf '%.6f', A.v;
       y.pcv = 0+sprintf '%.6f', $_ / C.y.thi;
       A.mu = 1;
-      saygr "Mad T.t  is T.y.cv  (T.y.i / C.y.thi)" if A.J.V;
    -
     - bally 
     - 3.2
@@ -216,6 +220,9 @@ R_Jz:
       if (C.y.bal) {
           $b = C.y.bal->[y.i] if C.y.bal;
           g.extend->($T, $b);
+          if (A.J.V) {
+          sayyl "AN A.J.name in y.i ".wdump 2, $b;
+          }
       }
       
       A.mu = T.y.thy if exists T.y.thy;

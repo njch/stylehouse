@@ -83,7 +83,6 @@ __DATA__
 
       var shape = new Path.RegularPolygon(view.center, 3, 100);
       shape.fillColor = '#333bbb';
-      shape.blur(10);
       shape.animate(1, paper.uplg)
            .translate(new Point(200,100))
            .rotate(60)
@@ -94,8 +93,8 @@ __DATA__
       text.fillColor = 'green';
       text.content = 'STYLEHOUSE';
       text.scale(14);
-      // text.animate(4, paper.uplg, true)
-      //     .scale(0.0001);
+       text.animate(4, paper.uplg, true)
+           .scale(0.0001);
 
    function onFrame(e) { 
    if (a.doya) {

@@ -28,38 +28,24 @@ oJ3: | # MOD  being repeater
     my $sp = C.sc.J;
     C.sc.J = $ca if $ca; # resolve
     
-    my $talk = "";
     
     die "diff c W-J  " if C.c.W && C.c.W ne C.c.J;
-    if (C.sc.W) {
-        if (ref C.sc.J) {
-            $talk .= "r";
-            $talk .= "!" if $sp ne $ca;
-            $talk .= ">" if !ref $ca;
-        }
-        $talk .= "W";
-    }
-    
-    if (!exists C.c.pi) {
-        saybl "J.name  -- $talk -- ".k2 $C;
-    }
-    #die "YE  J.name" if ref C.c.W;
     die "sp: $sp -> $ca" if ref $sp && ref $ca && $sp ne $ca;
-    
     sayre "ref CcJ J.name  ".k2 $C if ref C.c.J;
-    
-    
-    C.sc.J = C.c.W if ref C.c.W;
-    
     
     ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     
-    if (ref C.c.J || ref C.c.W) {
+    if (ref C.c.X) {
+        my $J = C.sc.J;
+        die "Nofound $J  C.t   C.y.cv" if !ref $J;
+        die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
+        sayyl "KILING J.name". wdump $C if C.c.X;
+        A.jr&J,$J,9;
+        # ^ delete
+        J.dead = 1;
+        T.return = [];
+        return;
     }
-    
-    sayyl "oJ3 C.t   C.sc.pi    C.sc.J   " if J.V;
-    #die k2 $C if C.t eq 'Vuel';
-    
     
     if (!ref C.sc.J) {
         if (C.sc.pi) {
@@ -76,14 +62,6 @@ oJ3: | # MOD  being repeater
     
     die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
     
-    if (ref C.c.X) {
-        die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
-        A.jr&J,$J,9;
-        # ^ delete
-        J.dead = 1;
-        T.return = [];
-        return;
-    }
     A.jr&J,$J;
     A.jr->('',"Jay");
     at.J = $J;
@@ -106,20 +84,45 @@ oJ6: |
     if C.sc.pi;
     return die "YEp!".k2 $C
     if ref C.sc.W;
-    
-    my $ar = {%{C.c}};
-    ar.J=C.sc.J||die'noj';
-    ar.C=$C;
-    ar.A=$A;
 
-    return C.s if !A.hav && A.jr&ok-9;
+    return C.sc.J if !A.hav && A.jr&ok-9;
     
+    # lock unless ooing some ar
     my $n = A.hav ? sub{} : A.jr&ok-9,9;
     aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
-    saybl "oJ6 C.t" unless J.yt.quiet;
     
-    Rw around;
+    saybl "oJ6 C.t" unless C.sc.J.yt.quiet;
+    
+    {
+        my $ar = {%{C.c}};
+        ar.J=C.sc.J||die'noj';
+        ar.C=$C;
+        ar.A=$A;
+        Rw around;
+    }
        
+waz/up: |
+      my $coi = Rw pha $J $k=jo;
+      my $M=[];
+      my $y = {o=>$M};
+      my $A = J.A;
+      A.ztime ||= 2;
+      my $C = J.C;
+      
+      Rw Jhead;
+      Rw suck + */M $A $J $C $M $y;
+      
+      Jn('zoo',$y) if @$M;
+      
+      if (J.V) {
+          my $vs = Rw tyv $J;
+           say "J.name vs: $_" for map {"_.j.r  => ".ki _.sc}@$vs;
+      }
+
+      Jn(st=>0.9=>"o",'%hs:8427,fs:4');
+      coi.qui = 1;
+      coi.exactl->();
+      
 opi6: |
        my $oJ = $J;
        $J = C.sc.J||die;
@@ -154,7 +157,7 @@ oJ7: |
     
     my $J = C.sc.J;
     
-    say "oJ7 J.name";
+    say "oJ7 J.name" unless J.yt.quiet;
     Rw oJ $J geo &up $noesc=1;
     Rw J.most.eo $J;
 opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
