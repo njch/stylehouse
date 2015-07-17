@@ -74,18 +74,22 @@ join:
        Rw J5 toc;
      X: |
        # message goes up to wu via A
-       if (my $oJ = J.oJ.A) {
-           Rw A/X $J:oJ $X:J;
-       }
-       else {
-           die "noway";
-       }
-       
-       # for the A delbbl
+       my $oJ = J.oJ.A || die 'noway';
+       Rw A/X $J:oJ $X:J;
+       # to inX for the A delbbl
        Rw J5 $J $X:J;
-       
        Rw J5 $J=J.name
        if e.S;
+     inX: |
+        my $J = C.sc.J;
+        die "Nofound $J  C.t   C.y.cv" if !ref $J;
+        die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
+        sayyl "KILING J.name". wdump $C if C.c.X;
+        A.jr&J,$J,9;
+        # ^ delete
+        J.dead = 1;
+        T.return = [];
+        return;
 toc:
      yJ: |
        'toc'
@@ -239,12 +243,7 @@ fi: | #c
              my @gu = @{J.yy.styleord};
              #@gu = @gu[0..5] if @gu > 6;
              my @so;
-             if (J.name eq 'shw' || J.name eq 'Tok') {
-               saybl "J.name::  @gu   for $point  ".($inway eq 'curves' && "btw  $h->{J.name}->{$inway}");
-             }
              for (@gu) {
-                sayre "ISss $_ ".($inway eq 'curves' &&  $h->{$_}->{$inway})
-                if J.name eq 'shw';
                 if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
                     push @{$know||=[]}, "$_/$inway";
                     last if !ar.sucky;
@@ -278,7 +277,7 @@ fi: | #c
          }
          $know = [@keys];
      }
-     saybl "With: ar.J.name  $point    @$know" if ar.J && (ar.J.name eq 'shw' || ar.J.name eq 'Tok');
+     saybl "With: ar.J.name  $point    @$know" if 0 && ar.J && ar.J.name eq 'shw';
      @$know
      
 hoset: |
