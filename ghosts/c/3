@@ -240,9 +240,11 @@ fi: | #c
              #@gu = @gu[0..5] if @gu > 6;
              my @so;
              if (J.name eq 'shw' || J.name eq 'Tok') {
-               saybl "J.name @gu   for $point";
+               saybl "J.name::  @gu   for $point  ".($inway eq 'curves' && "btw  $h->{J.name}->{$inway}");
              }
              for (@gu) {
+                sayre "ISss $_ ".($inway eq 'curves' &&  $h->{$_}->{$inway})
+                if J.name eq 'shw';
                 if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
                     push @{$know||=[]}, "$_/$inway";
                     last if !ar.sucky;
@@ -265,7 +267,7 @@ fi: | #c
                  my $i = 1;
                  my $is = {map{$_=>$i++}@or};
                  @keys = sort {
-                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($a=~/^(.+?)\//)[0]}
+                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
                   } @keys;
 
                  if (!ar.sucky && @keys > 1) {
