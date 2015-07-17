@@ -225,47 +225,7 @@ paintaj: |
      aj.hitime = hitime;
      aj.name ||= aj.J.name;
      
-Travel:
-   yJ: |
-     'clw waz gui TravelingMeans'
-   Em: |
-     if (aj.J.yt.clw) {
-         Rw J5 shv $aj;
-     }
-     
-     my $c = aj.c;
-     die 'scs' if @{aj.sc};
-     die 's' if aj.s;
-     my $M = ['','',{W=>G.Wid},{z=>aj.c}];
-     sayyl wdump 15, $M if aj.J.name eq 'Eosse';
-     aj.c = [" a\.om({},".sjson($M).",a,{});"];
-     aj.sent = 1;
-     
-     Rw paintaj $aj;
-     
-     # also some J.headlev readings for .i
-     aj.sent = 1;
-     
-     # route aj.W from ...
-     G.Wh->{aj.Wid} ||= do {
-         my $ij = {}; map {
-         $ij->{$_} = $aj->{$_} if !/^[sc]+/; } keys %$aj;
-         ij.id = delete ij.Wid;
-         ij.y = 'W';
-         
-         sayyl "Life! of ij.y ij.id";
-         0->tai("ij.y/ij.id\.i", $ij);
-         0->tac("V/H.style/H.name/H.id\.s", ztm($ij));
-         aj.J;
-     };
 
-     Rw J5 wu $aj;
-     
-     aj.y ||= 'J';
-     aj.yy = 'W';
-     Rw aji $aj;
-     Rw blabaj $aj;
-     
 fi: | #c
      my $point = ar.p || ar.pin || ar.m->[0];
      
@@ -277,8 +237,11 @@ fi: | #c
              my $h = ar.h || G.way;
              $h = h.hooks if h.hooks;
              my @gu = @{J.yy.styleord};
-             @gu = @gu[0..5] if @gu > 6;
+             #@gu = @gu[0..5] if @gu > 6;
              my @so;
+             if (J.name eq 'shw' || J.name eq 'Tok') {
+               saybl "ToK @gu   for $point";
+             }
              for (@gu) {
                 if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
                     push @{$know||=[]}, "$_/$inway";
@@ -313,7 +276,7 @@ fi: | #c
          }
          $know = [@keys];
      }
-     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name;
+     saybl "With: ar.J.name  $point    @$know" if ar.J && (ar.J.name eq 'shw' || ar.J.name eq 'Tok');
      @$know
      
 hoset: |
