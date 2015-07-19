@@ -1,22 +1,4 @@
-cscomp: |
-    my $non = {%$d};
-    my $de;$de = sub {
-        my $v = shift;
-        ref $v eq 'ARRAY' ?  [map{ $de->($_) } @$v]
-        : !ref $v ? $v
-        : v.id || die "no v".wdump(2,$v);
-    };
-    for my $k (qw'c sc') {
-        my $v = $non->{$k} || next;
-        $non->{$k} = $v = {%$v};
-        for my $sk (keys %$v) {
-            my $sv = $v->{$sk};
-            $v->{$sk} = $de->($sv);
-        }
-    }
-    non.cv = ''.non.cv;
-    non.s = $de->(non.s);
-    return sjson $non
+
 Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
       sub {
           my $s = shift;
@@ -49,8 +31,9 @@ J5: |
    my $C;
    C.c = $r;
    return sayre "RECUR" if @F > 130;
-   Rw oo $J:G.oin $C;
-
+   my $J = G.oin;
+   Jn(C.t||'', '', C.c, C.sc);
+   #Rw oo $J:G.oin $C;
 newwave: |
     saygr "EXactly";
     G.oin = Rw JJ join;
@@ -63,7 +46,7 @@ newwave: |
 join:
      yJ: |
        G.oin = $J;
-       'join clw'
+       'join clw rondo'
      around: |
        die "around:!". ki $ar;
      up: |
@@ -266,7 +249,7 @@ comb: |
     my $iJ = G.ino || return do{warn "no loop";1}; # continues the Atime
     
     
-    A.selif = Rw cscomp $d $ig:A.note;
+    A.selif = Rw cscomp $C $ig:A.note;
     my $dig = dig A.selif;
     
     die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
@@ -277,11 +260,30 @@ comb: |
     n.sc.watime = A.watime if A.watime;
     $wa = A.waov if A.waov;
     n.cv = $wa / 10;
-    n.s = {%$d};
+    n.s = {%$C};
     n.t = $dig;
     
-    sayyl "COMB J.name  d.t  A.ztime } to $wa \t ".ki 1,d.c;
+    sayyl "COMB J.name  C.t  A.ztime } to $wa \t ".ki 1,C.c;
     
     Rw hosin $J:iJ $n;
     0;
+cscomp: |
+    my $non = {%$C};
+    my $de;$de = sub {
+        my $v = shift;
+        ref $v eq 'ARRAY' ?  [map{ $de->($_) } @$v]
+        : !ref $v ? $v
+        : v.id || die "no v".wdump(2,$v);
+    };
+    for my $k (qw'c sc') {
+        my $v = $non->{$k} || next;
+        $non->{$k} = $v = {%$v};
+        for my $sk (keys %$v) {
+            my $sv = $v->{$sk};
+            $v->{$sk} = $de->($sv);
+        }
+    }
+    non.cv = ''.non.cv;
+    non.s = $de->(non.s);
+    return sjson $non
 

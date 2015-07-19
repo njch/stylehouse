@@ -59,7 +59,7 @@ R_Jz:
            C.r = join "\t", C.t, (C.y.cv+0);
            my $J = C.y.o && C.y.o.J || $J;
            if (J.V) {
-           say "J.name ea C.t C.y.cv     ".k2(C.c)
+           say "MOD COMPLETE J.name ea C.t C.y.cv     ".k2(C.c)
            ."                     ".k2(C.sc);
            }
            Rw jamsc $J $C $s:C.s $sc:C.sc;
@@ -72,10 +72,16 @@ R_Jz:
      - cts_C #
      - 5
      - |
+       A.note = {};
+       A.note.not = sub {
+           my ($ct,$k) = @_;
+           A.note.>$ct.>$k = 1;
+       };
        my $g = wJ.ctx.C;
        for my $ct (@{wJ.cts.C}) {
            next unless ct.any or exists $C->{ct.t_k}->{ct.t};
            my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
+           ct.t_k eq "c" && A.note.not&c,ct.t;
            
            my $T = {};
            my $d = $C;

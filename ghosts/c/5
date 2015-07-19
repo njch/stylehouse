@@ -11,11 +11,12 @@ wa:
      'Travel aww'
    M: |
     Rw vortex $J around $d=16;
-    
-    Jn('','',{J=>'Wkcs'});
+    J.V=1;
+    Jn('','',{W=>'Wkcs'});
+    J.V=0;
     #Rw J6 - Wkcs; 
     #Rw J6 - Vil;
-    #Rw J6 - Vuel;
+    Rw J6 - Vuel;
     #Rw J6 - Tok;
     #Rw J6 - Hosp;
     #Rw J6 - Eosse;
@@ -47,15 +48,14 @@ Vuel:
    M: |
       #J.zip == 1 &&
       my $g = {map{$_=>"$G->{$_}"}keys %$G};
-      G.way.Vuel.curves = <<'' if 0;
-      x 0 -0.2
-      zoom 0  0.7
-      curve 0 -0.3
+      G.way.Vuel.curves = <<'' if 1;
+      zoom 0  0.6
+      curve 0 -0.03
       x 0.02 0
       
       my @s = Rw wuck $J */curves;
       
-      my $oJ = Rw J5 - shv;
+      my $oJ = Rw J6 - wa;
       
       my $vs = Rw tc $J:oJ;
       #my $s = wdump $vs;
@@ -135,11 +135,16 @@ around: |
      # try return stuff? pretty aroundo
      @{(values %$tw)[0]} if $tw
 gui: # turn into some
-     yJ: |
+     yJ: 
        J.cv = 20;
        J.most.mody = 'mani';
        J.most.eo = 'chuv';
        'gui quigeo' 
      out: |
        Rw oJ7;
+rondo:
+     yJ: |
+       J.cv = 20;
+       J.most.mody = 'mani';
+       J.most.eo = 'chuv';
 
