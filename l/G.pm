@@ -2398,6 +2398,8 @@ sub g_D {
           $G->{sigstackwa} ||= sub {
               return 1 if $_[0] =~ /^Use of uninitialized value/;
               if ($_[0] =~ /Deep recursion on/) {
+                 return if $G->{deepr}++ < 9;
+                 $G->{deepr} = 0;
                  sayre "snoozing $F[0]->{talk}";
                  snooze();
                  return;

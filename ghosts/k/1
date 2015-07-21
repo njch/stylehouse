@@ -63,7 +63,10 @@ ooj/C:
            for my $k (keys %$at) {
                C.sc->{$k} = $at->{$k};
            }
-           return @{T.return} if T.return;
+           if (T.return) {
+           die "returning from ct.x   C.sc.J.name";
+               return @{T.return};
+           }
            last if T.last;
            #die "Tgot ". ki $T if %$T;
        }
@@ -91,7 +94,7 @@ ooj/ing:
    - MZ: Cc:Cany
    -
     - puts
-    - 7
+    - 5
     - |
        my @jh = grep{!A.note.c->{$_}}keys %{C.c};
        if (@jh) {
@@ -111,6 +114,12 @@ ooj/JJ:
     - |
      C.c.W = C.c.J;
      Rw oW2;
+   -
+    - ok
+    - 2.2
+    - |
+      Rw ok5;
+    - way: 1
      
    - MZ: Csc:C
    -
@@ -121,77 +130,12 @@ ooj/JJ:
       die if !C.y.cv;
       Rw oJ3;
       die if !ref C.sc.J;
-      #Rw jamsc $J $C $sc:C.sc;
-      
-      
-    - way: 1
 
    - MZ: Csc:Cany
    -
     - Joing 
-    - 8
+    - 6
     - |
       Rw oJ6;
-    - way: 1
 ooj/time:
-   - MZ: Cc:Yany
-   -
-    - time
-    - 3
-    - |
-      A.ztime = C.c.time || 8;
-      A.time = sub {
-           my ($J,$wa) = @_;
-           A.ztime >= $wa ? 1 : do {
-               Rw comb oo $J $A $C $wa;
-           };
-      };
-    - way: 1
-      
-   - MZ: Cc:C
-   -
-    - ok
-    - 2.2
-    - |
-       A.ztime = 1;
-       A.note.not&csrm,'ok';
-       
-       my $co = A.jr&ok-$v;
-       my $til = $co - hitime;
-       # cv wave column to plant next self in
-       A.waov = $v;
-       # assume that v shapes delay until DNS of tension
-       my $del = $v;
-       if ($co && $til < 0) {
-           sayre "running late: ". $til if $til < -0.1;
-           A.ztime = $v if $v > A.ztime; # on there
-           undef $co;
-       }
-       elsif (!$co) {
-           $del = 0.1;
-           sayyl "begins";
-       }
-       $del *= 3.7;
-       $del *= 1.2 if rand 5 > 3;
-       $co ||= $del + hitime;
-       
-       A.watime = $co;
-       
-       A.jr&ok-$v,$co;
-   - MZ: Cc:Cany
-   -
-    - time2
-    - 2.9
-    - |
-       Atime(2) or T.return = [];
-   -
-    - time4
-    - 4.9
-    - |
-       Atime(4) or T.return = [];
-   -
-    - time8
-    - 8.9
-    - |
-       Atime(8) or T.return = [];
 

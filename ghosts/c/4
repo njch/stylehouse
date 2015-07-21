@@ -76,18 +76,6 @@ oJ4: |
     # A.ztime jumps inside in various ways
     # so we run with less intent 3/4s of the time
     
-    # Atime(2) means the header bz'd - pha exact->abandon, avoid work
-    # Atime(4) means everything wants to happen later, plant J
-    # Atime(8) means while 
-    # !pi means J.most.J, ie Eming
-    # pi means J.most.A enqueues J.most.J recomb
-    #   skipping the just-done and filling in the gaps
-    #   as long as no C.y.o.J
-    # 
-    
-    # A.ztime already low i
-    # C.c.W always returns J.most.J, checks time, may wedge in
-    # C.c.J an indifferent W, avoids runway til 3
     if (J.most.J eq $J) {
         # stores reintent style via A.jr
         # join refluxes
@@ -105,125 +93,133 @@ oJ4: |
              };
         };
     }
+    die if C.sc.pi && J.Jiter ne A.J;
+    die if C.sc.pi && J.most.J eq $J;
+    die if !C.sc.pi && J.most.J ne $J;
     
     J.most.A || die;
+    
+    if (grep{!A.note.c->{$_}}keys %{C.c}) {
+        sayyl "hav to ".ki $C;
+        A.hav = 1;
+    }
+    
     J.A.time = sub {
         J.most.A.time->(@_);
     };
     
+    J.A.ztime ||= C.c.time || 6;
     
-    J.A.ztime = 6 if !J.A.left;
-    
-    J.A.ztime ||= 6;
-    
-    #A.time = J.A.time
-    
-    sayyl "oA3 C.t   C.sc.pi  A.ztime  J.A.ztime   J.A.left"
-    unless exists C.sc.pi;
+    A.ztime = J.A.ztime if J.A.ztime > A.ztime;
+    # so 8 can make braind
     
     
     J.A.in = $G->gip(J.Jiter.A.in, C.t)||{} if J.Jiter;
     
-    
-    
+    A.time = sub {
+        my ($JJ,$v) = @_;
+        #A.int->{$v} = F_delta;
+        return 1 if $v >= J.A.ztime;
+        sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
+    };
     
     if (C.sc.pi) {
-        die if J.most.J eq $J;
-        die if J.Jiter ne A.J;
         J.A.d = J.Jiter.A.d + 1;
         J.name = "J.A.d . C.c.pi*C.t";
-        
-
-        J.A.coi = Rw pha $J ako;
-
         J.d = J.C = $C;
         J.r = C.r;
+        
         J.bz->("/\t0.9" => "y");
     }
     else {
-        die if J.most.J ne $J;
-        A.thet += 6;
-        J.A.thet += 6;
-        sayyl "J.name oA3" unless J.yt.quiet;
-        sayyl "J.name $A   J.A".A.thet."    ".k2($C)."  \n\n "
-        .wdump 2,[$A,J.A] if J.name eq 'Wkcs';
-
-        A.ztime ||= C.c.time || 8;
-
+        sayyl "oA3 C.t   C.sc.pi  A.ztime  J.A.ztime   J.A.left";
+    
         A.time = sub {
-             my ($J,$wa) = @_;
-                 sayre "toooocomb $wa/A.ztime J.most.eo J.name   $wa\n";
-             A.ztime >= $wa ? 1 : do {
-                 #Rw comb oo $J $A $d $wa;
-                 sayre "comb J.most.eo J.name   $wa\n\n";
+             my ($JJ,$wa) = @_;
+                 sayre "toooocomb $wa/A.ztime J.name >>>> JJ.name      \n";
+             J.A.ztime >= $wa ? 1 : do {
+                 #Rw comb oo $J:JJ $A $d $wa;
+                 sayre "comb JJ.most.eo JJ.name   $wa\n\n";
              };
         };
     }
+ok5: |
+    my $J = C.sc.J||die;
+       A.ztime = 1;
+       A.note.not&csrm,'ok';
+       
+       my $co = A.jr&ok-$v;
+       my $til = $co - hitime;
+       # cv wave column to plant next self in
+       A.waov = $v;
+       # assume that v shapes delay until DNS of tension
+       my $del = $v;
+       if ($co && $til < 0) {
+           sayre "running late: ". $til if $til < -0.1;
+           A.ztime = $v if $v > A.ztime; # on there
+           undef $co;
+       }
+       elsif (!$co) {
+           $del = 0.1;
+           sayyl "C.t begins";
+       }
+       $del *= 3.7;
+       $del *= 1.2 if rand 5 > 3;
+       $co ||= $del + hitime;
+       
+       A.watime = $co;
+       
+       
+       die "$co for A.ztime";
+       A.jr&ok-$v,$co;
 oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
+    my $J = C.sc.J;
+    Atime(6) || !A.hav && !A.jr&ok-9 
+    || return die "Jri";#.T.return=[$J];
+    
     return
     Rw opi6
     if C.sc.pi;
-
-    return C.sc.J if !A.hav && A.jr&ok-9;
     
-    # lock unless ooing some ar
     my $n = A.hav ? sub{} : A.jr&ok-9,9;
     aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
     
     saybl "oJ6 C.t" unless C.sc.J.yt.quiet;
     {
         my $ar = {%{C.c}};
-        ar.J=C.sc.J||die'noj';
-        ar.C=$C;
-        ar.A=$A;
-        Rw around;
+        Rw around + $J $C $A;
     }
        
 waz/up: |
-      my $coi = Rw pha $J $k=jo;
-      my $M=[];
-      my $y = {o=>$M};
-      my $A = J.A;
-      A.ztime ||= 2;
-      my $C = J.C;
-      
-      Rw Jhead;
-      Rw suck + */M $A $J $C $M $y;
-      
-      Jn('zoo',$y) if @$M;
-
-      Jn(st=>0.9=>"o",'%hs:8427,fs:4');
-      coi.qui = 1;
-      coi.exactl->();
-      
+    Rw Jhead;
+    Jn(st=>0.9=>"o",'%hs:8427,fs:4');
+    
+    Rw oT6 */M $J $A:J.A $C:J.C;
 opi6: |
-       sayyl "oJ3pi  C.t  oo  A.ztime" if A.ztime;
-       my $oJ = $J;
-       $J = C.sc.J||die;
-       my $A = J.A;
-       my $T = {};
-       
-       my $M=[];
-       my $y = {o=>$M};
-       
-       $v = C.sc.J||die'noj';
-       v.cv = C.c.gp.cv || C.c.cv || 0.6;
-       die'csnod' if v.d ne $d || v.d.c ne d.c;
-       
-       my $path = C.sc.pi||die'nopi';
-       $path = 'text' if J.A.d > 5;
-       
-       
-       my $s = C.c.s;
-       Rw pi/$path $A $J $u:s $s $C $M $y; 
-       
-       
-       Jn('zoo',$y) if @$M;
-       
-       
-       sayyl "Done pi   J.name ".F_delta;
-       A.coi.qui = 1;
-       A.coi.exactl->();
+    $J = C.sc.J||die;
+    J.cv = C.c.gp.cv || C.c.cv || 0.6;
+    die'csnod' if $C ne J.C;
+    
+    my $path = C.sc.pi||die'nopi';
+    $path = 'text' if J.A.d > 7;
+    my $pin = "pi/$path";
+    
+    my $s = C.c.s;
+    
+    Rw oT6 $pin $A $C $J $s $u:s;
+oT6: |
+    my $T = ar.T||{};
+    A.coi = Rw pha $J ako;
+
+    my $M=[];
+    my $y = {o=>$M};
+    
+    Rw suck + $M $y; 
+
+    Jn('zoo',$y) if @$M;
+    
+    A.coi.qui = 1;
+    A.coi.exactl->();
 oJ7: |
     return
     Rw opi7
