@@ -69,9 +69,13 @@ oJ3: | # MOD  being repeater
     at.J = $J;
     
     # ^ gets & replaces, C.sc.J now it
-    # time
-    Rw oA3 + $J;
-oA3: |
+    Rw oJ4 + $J;
+oJ4: |
+    # try to get above sheer 3
+    # A.ztime resolves until < 4, return later
+    # A.ztime jumps inside in various ways
+    # so we run with less intent 3/4s of the time
+    
     # Atime(2) means the header bz'd - pha exact->abandon, avoid work
     # Atime(4) means everything wants to happen later, plant J
     # Atime(8) means while 
@@ -81,6 +85,7 @@ oA3: |
     #   as long as no C.y.o.J
     # 
     
+    # A.ztime already low i
     # C.c.W always returns J.most.J, checks time, may wedge in
     # C.c.J an indifferent W, avoids runway til 3
     if (J.most.J eq $J) {
@@ -126,7 +131,7 @@ oA3: |
         die if J.most.J eq $J;
         die if J.Jiter ne A.J;
         J.A.d = J.Jiter.A.d + 1;
-        J.name = "J.A.d . C.c.pi C.t";
+        J.name = "J.A.d . C.c.pi*C.t";
         
 
         J.A.coi = Rw pha $J ako;
@@ -237,6 +242,16 @@ opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
     die aj.s if aj.s;
     #sayre "Upto J.r go ".slim 70, sjson aj.c if @{aj.c};
     J.Ec = [@{aj.c}];
+    
+    
+    aft { 
+    $@||return;
+    sayre wdump 9, aj.c;
+    say "J.name :::::::::::: ".ki $C;
+    };
+    sjson(aj.c);
+    
+    
     die wdump $aj if @{aj.sc};
        
 oJ75: | # chov J

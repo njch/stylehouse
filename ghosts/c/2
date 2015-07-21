@@ -28,6 +28,21 @@ pi/lv: |
     Rw pi/kord lv;
     
     #Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
+pi/kv: |
+    return if @F >200 || 7<
+    Rw pidepth;
+    
+    C.sc.nspc = 0.02;
+    C.sc.nspc_max = 4;
+    
+    my ($k,$v) = @$u;
+    my $pi = C.c.and && C.c.and.pi || '';
+    
+    my $eel = $pi||1 ? '' : 'rad:-1.3';
+    $eel .= ",fs:6,hs:3563";
+    $eel = '%'.$eel if $eel;
+    Jn('la',0.2,$k,$eel); # if hori
+    Mn('v',0.3,{pi=>$pi,s=>$v});
 pi/guess: |
      my $cg = $G->cgp($s);
      # ^
@@ -160,21 +175,6 @@ pi/pid: |
     Jn(pid => 0.1 => $u, '%hs:483,fs:5');
     
     
-pi/kv: |
-    return if @F >200 || 7<
-    Rw pidepth;
-    
-    C.sc.nspc = 0.02;
-    C.sc.nspc_max = 4;
-    
-    my ($k,$v) = @$u;
-    my $pi = C.c.and && C.c.and.pi || '';
-    
-    my $eel = $pi||1 ? '' : 'rad:-1.3';
-    $eel .= ",fs:6,hs:3563";
-    $eel = '%'.$eel if $eel;
-    Jn('la',0.2,$k,$eel); # if hori
-    Mn('v',0.3,{pi=>$pi,s=>$v});
 pidepth: |
     my $o = $J;
     my $i = 0;
@@ -210,7 +210,7 @@ pi/foldytext: |
              && return;
          }
          
-         J.bz->('line 0.1' => $s,
+         J.bz->('line 0.1' => "$s",
                 '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
                     ."font-size:70%");
 pi/boxtext: |
