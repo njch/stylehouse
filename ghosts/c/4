@@ -83,28 +83,29 @@ oA3: |
     
     # C.c.W always returns J.most.J, checks time, may wedge in
     # C.c.J an indifferent W, avoids runway til 3
+    if (J.most.J eq $J) {
+        # stores reintent style via A.jr
+        # join refluxes
+        J.most.A.time = sub {
+             my ($J,$wa) = @_;
+             sayyl F_delta()."Mostlook a A.J.name J.most.J.name >> J.name   J.A.ztime  > $wa";
+
+             J.A.ztime >= $wa ? 1 : do {
+                 sayre gp($J)." Wants time, $wa" for 1..5;
+                 # what kind of time it wants: 8 is background flow
+                 # 2 is that this can avoid work, sync state
+                 # 
+                 #acum $A, fo => $J;
+                 0;
+             };
+        };
+    }
     
-    J.most.A.time = sub {
-         my ($J,$wa) = @_;
-         sayyl "Looking J.C.t for J.A.ztime  > $wa" for 1..5;
-         J.A.ztime >= $wa ? 1 : do {
-             sayre gp($J)." Wants time, $wa" for 1..5;    
-             #acum $A, fo => $J;
-             0;
-         };
-    } if J.most.J eq $J;
-    
+    J.most.A || die;
     J.A.time = sub {
         J.most.A.time->(@_);
     };
     
-    if (!J.A.left) {
-        J.A.ztime = 6;
-        sayyl "anew";
-    }
-    J.A.left++;
-    
-    J.most.A || die;
     
     J.A.ztime = 6 if !J.A.left;
     
@@ -123,8 +124,9 @@ oA3: |
     
     if (C.sc.pi) {
         die if J.most.J eq $J;
-        
         die if J.Jiter ne A.J;
+        J.A.d = J.Jiter.A.d + 1;
+        J.name = "J.A.d . C.c.pi C.t";
         
 
         J.A.coi = Rw pha $J ako;
@@ -152,7 +154,7 @@ oA3: |
              };
         };
     }
-oJ6: |
+oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
     return
     Rw opi6
     if C.sc.pi;
@@ -214,7 +216,7 @@ opi6: |
        Jn('zoo',$y) if @$M;
        
        
-       
+       sayyl "Done pi   J.name ".F_delta;
        A.coi.qui = 1;
        A.coi.exactl->();
 oJ7: |

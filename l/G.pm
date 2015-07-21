@@ -2323,7 +2323,7 @@ sub g_Dm {
     my $Ds = $G->{drop}->{Dscache}->{$am->{talk}};
     return $Ds if $Ds;
 
-    die "SOMEONENONE".wdump 2, $am if ref $am->{bab};
+    die "SOMEONENONE".wdump 1, $am if ref $am->{bab};
 
     my $eval = $G->parse_babble($am->{bab}, $am->{point});
 
