@@ -28,73 +28,6 @@ pi/lv: |
     Rw pi/kord lv;
     
     #Jn(it=>0.2=>{pi=>'text',s=>wdump(2,$s),cv=>0.8},'%opa:0.3');
-pi/kv: |
-    return if @F >200 || 7<
-    Rw pidepth;
-    
-    C.sc.nspc = 0.02;
-    C.sc.nspc_max = 4;
-    
-    my ($k,$v) = @$u;
-    my $pi = C.c.and && C.c.and.pi || '';
-    
-    my $eel = $pi||1 ? '' : 'rad:-1.3';
-    $eel .= ",fs:6,hs:3563";
-    $eel = '%'.$eel if $eel;
-    Jn('la',0.2,$k,$eel); # if hori
-    Mn('v',0.3,{pi=>$pi,s=>$v});
-pi/guess: |
-     my $cg = $G->cgp($s);
-     # ^
-     # v
-     my ($path) = grep { $cg->{$_} } qw'canpi ARRAY HASH ref undef text';
-     $path = ref $s if $path eq 'canpi';
-     $path = 'code' if ref $s eq 'CODE';
-     $path ||= 'wtf';
-     #$path = 'J' if $wa eq 'HASH' && u.bb;
-     # can stick $wa on J.wa for thrashing maths
-     # funcy fuzz fields
-     # mutating spiral code
-     
-     Rw pi/$path;
-     
-dg/kord:
-   lv:
-    - ws: dead+4 t+5 name+3 block y c sc
-   hash:
-    - ws: dead+4 t+3 y+2 K+2 name+3 r+3 style+1 bb+2
-pi/kord: |
-    C.c.k ||= ar.m ? ar.m->[0] : C.c.pi;
-    my $map;# = Rw muck $pin=dg/kord/C.c.k;
-    $map = G.way.dg.kord.>C.c.k;
-    $map || die "no C.c.k  ".wdump 2,$C;
-    $map = {found=>$map};
-    my ($N) = values %$map;
-    my ($in) = @$N;
-    
-    my @in = in.ws ? split ' ', in.ws : die "how $in";
-    
-    my $yin = {};
-    my @ord;
-    for (@in) {
-        my ($t,$i) = split /\+/, $_;
-        my $y = {};
-        y.in.sc.>$1 = $2 while $i=~s/(\w+):(\S+)//g;
-        # same^v
-        y.thy = $i if $i =~ /\d+/;
-        $yin->{$t} = $y;
-        push @ord, $t;
-    }
-    
-    my $r = {map{$_=>1} sort keys %$s};
-    my @r = grep { delete($r->{$_}),1 if exists $r->{$_} } @ord;
-    push @r, sort keys %$r;
-    
-    for (@r) {
-        my $y = $yin->{$_}||{};
-        Mn($_ => $y, {pi=>'kv',s=>[$_=>$s->{$_}]}, {mw=>'5em'});
-    }
-    
 pidepth: |
     my $o = $J;
     my $i = 0;
@@ -102,51 +35,6 @@ pidepth: |
         $i++; $o = o.Jiter;
     }
     $i;
-pi/keys: |
-    Mn("ke__$_" => {}, {pi=>'text',s=>"$_,"}) for sort keys %$u;
-pi/HASH: |
-    my $si = keys %$u;
-    y.limn = 2;
-    C.sc.nspc = 0.01;
-    #y.lumfa = 2;
-    Jn(si=>0.1, $si, '{hs:8378,fs:4}');
-    #Jn(spc=>0.09, J.d.y.spc, '{hs:9373,fs:7}');
-    
-    Jn(Bo => 0.11, {s=>'{'},'%fs:7');
-            
-             return
-             Jn('ends',0.2,'@','{hs:6984,ml:-0.3em}')
-             if J.d.y.spc < 0.05;
-             
-            Jn(oB => 0.89, {s=>'}'},'%fs:7');
-            
-            # 3
-            Rw pi/kord hash;
-pi/ARRAY: |
-    y.limn = 4.7;
-    C.sc.nspc = 0.01;
-    my $cv = J.cv ||= 0.3;
-    my $si = @$u;
-    
-    Jn(si => 0.1 => $si, '{hs:8378,fs:4}');
-    #Jn(spc=>0.09, J.d.y.spc, '{hs:9373,fs:7}');
-    J.bz->('Bo 0.11' => '[');
-    J.bz->('oB 0.89' => ']');
-            
-             return
-             Jn('ends',0.2,'@','{hs:6984}')
-             if J.d.y.spc < 0.07;
-            
-            return if $cv < 0.2;
-            
-            my $i = 0;
-            while (exists $u->[$i]) {
-                my $uu = $u->[$i];
-                
-                
-                Mn('['.$i => {}, {pi=>'kv',s=>['['.$i,$uu]});
-                $i++;
-            }
 pi/code: |
     Jn(code=>1=>'&','%hs:389');
 pi/eye: |
