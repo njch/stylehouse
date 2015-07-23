@@ -79,21 +79,43 @@ toc:
      yJ: |
        'toc'
      around: |
-       Rw vortex toc/up $J $d=4;
+       Rw vortex toc/up $J $d=3;
+       sayyl "Isup! J.name";
      up: | #
        # hops, rhythm aesthetics
        # things pur ambiently & incur pipes of sprawlingness into music
        # to space it out right...
        # for the mass of the atom of thought
        # wants emit with precision, figure processing/Em route into time
+       # is a subscribe that catches up as %vv is join bz'd
        
-       # is a subscribe that catches up as %wantime is join bz'd
        say ',';
        my $oJ = G.oin;
-       my $ip = {style=>'vv'};
-       my @timey = Rw tvo $J:oJ $ip;
+       
+       #my $ip = {style=>'vv'};
+       my $ip = {};
+       my $timey = Rw tc $J:oJ $ip;
+       my $tw = {};
+       acum $tw, _.sc.vv, $_ for grep { _.sc.vv } @$timey;
+       my $one = 0;
+       for my $k (sort keys %$tw) {
+           my $v = $tw->{$k};
+           saybl "for $k  ".@$v;
+           for my $C (@$v) {
+               last if $one;
+               $one = 1;
+               sayyl "spawning C.t   C.y.cv   ".ki C.sc;
+               timer 0.001 {
+                   oJn('','',C.sc);
+               };
+           }
+       }
+       
+       
+       #sayyl "_.t    _.y.cv    ". ki _.sc for @wa;
+       return;
        my @go;
-       for my $j (@timey) {
+       for my $j (@$timey) {
            die wdump $j;
            my $y = j.s;
            my $x = J.bb->{"j.l%timex\t0.3"};
