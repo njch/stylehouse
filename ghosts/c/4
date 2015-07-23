@@ -8,8 +8,10 @@ oAiC: |
      }
 oJ2: | # MOD wo
     die "what the hell $v" if ref $v;
+    die "Here in here";
     C.c.W = $v;
     A.ztime = 3;
+    die wdump [C.c, A.ztime];
     
 oW2: | # some get-J or weave wires protocol - hosts
     my $t = $v;
@@ -83,10 +85,11 @@ oJ4: |
     A.ztime = delete C.c.time if C.c.time;
     
     
-    if (my @mis = sort grep{!A.note.c->{$_}}keys %{C.c}) {
+    if (my @mis = sort grep{$_ ne 'J' && !A.note.c->{$_}}keys %{C.c}) {
         sayyl "hav to J.name   A.ztime  because @mis  ::::::   seen "
             .join'  ',sort keys %{A.note.c};
-        A.hav = 1;
+        die k2 $C if "@mis" =~ /\bJ\b/;
+        A.ztime = 9;
     }
     
     my $now = hitime;
@@ -121,10 +124,9 @@ oJ4: |
     }
     else {
         sayyl "oA3 J.name   A.ztime / J.A.ztime   $from";
-    
         A.time = sub {
              my ($JJ,$wa) = @_;
-                 sayre "toooocomb $wa/   A.ztime / J.A.ztime   J.name >>>> JJ.name      \n";
+             sayre "toooocomb $wa/   A.ztime / J.A.ztime   J.name >>>> JJ.name      ";
              J.A.ztime >= $wa ? 1 : do {
                  #Rw comb oo $J:JJ $A $d $wa;
                  sayre "comb JJ.most.eo JJ.name   $wa\n\n";
@@ -156,7 +158,7 @@ ok5: |
        $co ||= $del + hitime;
        
        A.watime = $co;
-       
+       die "yep";
        
        say "!! $til for A.ztime   ".ki C.c;
        A.jr&ok-$v,$co;
@@ -215,7 +217,9 @@ oJ7: |
     Rw opi7
     if ar.A && ar.C.sc.pi;
     
+    
     my $J = C.sc.J;
+    return sayre "J.name repeat 7 ! A.don7 !" if ++A.don7 > 1;
     
     say "oJ7 J.name" unless J.yt.quiet;
     Rw oJ $J geo &up $noesc=1;
