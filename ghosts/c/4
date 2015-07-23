@@ -7,11 +7,10 @@ oAiC: |
          g.extend->($C, $c);
      }
 oJ2: | # MOD wo
-    die "what the hell $v" if ref $v;
-    die "Here in here";
+    sayre "ref v oJ2 : ".gp($v) if ref $v;
     C.c.W = $v;
+    sayyl "WW WW $v         J.name";
     A.ztime = 3;
-    die wdump [C.c, A.ztime];
     
 oW2: | # some get-J or weave wires protocol - hosts
     my $t = $v;
@@ -22,8 +21,8 @@ oW2: | # some get-J or weave wires protocol - hosts
     
     die wdump ["onto W J.name:",$v] if ref $v && $v ne v.most.J;
     
-    C.t ||= $t;
-    C.y.cv ||= 0.3;
+    C.t = $t;
+    C.y.cv = 0.3;
     
     A.jr = Rw Ajr $J:G.oin $t $cv=0.3;
 opi2: | # approach
@@ -41,7 +40,7 @@ oJ3: | # MOD  being repeater
     
     die "diff c W-J  " if C.c.W && C.c.W ne C.c.J;
     die "sp: $sp -> $ca" if ref $sp && ref $ca && $sp ne $ca;
-    sayre "ref CcJ J.name  ".k2 $C if ref C.c.J;
+    #sayre "ref CcJ J.name  ".k2 $C if ref C.c.J;
     ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     return
     Rw join/inX
@@ -83,12 +82,14 @@ oJ4: |
     J.most.A || die;
     
     A.ztime = delete C.c.time if C.c.time;
+    A.ztime ||= 6;
     
-    
-    if (my @mis = sort grep{$_ ne 'J' && !A.note.c->{$_}}keys %{C.c}) {
-        sayyl "hav to J.name   A.ztime  because @mis  ::::::   seen "
-            .join'  ',sort keys %{A.note.c};
-        die k2 $C if "@mis" =~ /\bJ\b/;
+    my @mis = grep{!A.note.c->{$_}}keys %{C.c};
+    @mis=grep{$_ ne'J'}@mis;
+    if (@mis) {
+        my $cm;
+        $cm->{$_} = C.c->{$_} for @mis;
+        A.preg = $cm;
         A.ztime = 9;
     }
     
@@ -103,7 +104,7 @@ oJ4: |
     
     J.A.ztime ||= C.c.time ? delete C.c.time : 6;
     
-    A.ztime = J.A.ztime if J.A.ztime > A.ztime;
+    #A.ztime = J.A.ztime if J.A.ztime > A.ztime;
     # so 8 can make braind
     
     J.A.in = $G->gip(J.Jiter.A.in, C.t)||{} if J.Jiter;
@@ -119,7 +120,7 @@ oJ4: |
         J.A.d = J.Jiter.A.d + 1;
         J.name = "J.A.d . C.c.pi*C.t";
         J.d = J.C = $C;
-        J.r = C.r;
+        J.r = C.t."\t".C.y.cv;
         J.bz->("/\t0.9" => "y");
     }
     else {
@@ -127,9 +128,11 @@ oJ4: |
         A.time = sub {
              my ($JJ,$wa) = @_;
              sayre "toooocomb $wa/   A.ztime / J.A.ztime   J.name >>>> JJ.name      ";
-             J.A.ztime >= $wa ? 1 : do {
+             A.ztime >= $wa ? 1 : do {
                  #Rw comb oo $J:JJ $A $d $wa;
                  sayre "comb JJ.most.eo JJ.name   $wa\n\n";
+                 A.jr&vv,$wa;
+                 0;
              };
         };
     }
@@ -164,8 +167,15 @@ ok5: |
        A.jr&ok-$v,$co;
 oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
     my $J = C.sc.J;
-    Atime(6) || !A.hav && !A.jr&ok-9 
-    || return die "Jri";#.T.return=[$J];
+    Atime(6) || return T.last=1;
+    
+    if (A.ztime < 9) { # $C not pregnant
+        !A.jr&ok-9 || return die" YEP! J.name";
+    }
+    
+    #A.ztime < 9 && Atime(6) 
+    #Atime(6) ||  !A.jr&ok-9 
+    #|| return die "Jri";#.T.return=[$J];
     
     return
     Rw opi6
@@ -179,6 +189,7 @@ oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
         my $ar = {%{C.c}};
         Rw around + $J $C $A;
     }
+    A.roundi = 1;
        
 waz/up: |
     if (!J.yt.nohead) {
@@ -219,11 +230,13 @@ oJ7: |
     
     
     my $J = C.sc.J;
-    return sayre "J.name repeat 7 ! A.don7 !" if ++A.don7 > 1;
+    return if A.roundi;
     
     say "oJ7 J.name" unless J.yt.quiet;
     Rw oJ $J geo &up $noesc=1;
-    Rw J.most.eo $J;
+    my $eo = J.most.eo;
+    $eo || die "noeo: J.name";
+    Rw $eo $J;
 opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
     my $J = C.sc.J;
     
