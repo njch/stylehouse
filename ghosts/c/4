@@ -7,9 +7,8 @@ oAiC: |
          g.extend->($C, $c);
      }
 oJ2: | # MOD wo
-    sayre "ref v oJ2 : ".gp($v) if ref $v;
     C.c.W = $v;
-    sayyl "WW WW $v         J.name";
+    #sayyl "WW WW $v         J.name";
     A.ztime = 3;
     
 oW2: | # some get-J or weave wires protocol - hosts
@@ -55,6 +54,7 @@ oJ3: | # MOD  being repeater
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
+            sayyl "made C.t = C.sc.pi for J.most.J.name" if J.most.J.name eq 'Wkcs';
         }
         else {
             my $o = {name=>C.c.J};
@@ -115,12 +115,6 @@ oJ4: |
     
     J.A.in = $G->gip(J.Jiter.A.in, C.t)||{} if J.Jiter;
     
-    A.time = sub {
-        my ($JJ,$v) = @_;
-        #A.int->{$v} = F_delta;
-        return 1 if $v >= J.A.ztime;
-        sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
-    };
     
     if (C.sc.pi) {
         J.A.d = J.Jiter.A.d + 1;
@@ -128,6 +122,13 @@ oJ4: |
         J.d = J.C = $C;
         J.r = C.t."\t".C.y.cv;
         J.bz->("/\t0.9" => "y");
+        
+        A.time = sub {
+            my ($JJ,$v) = @_;
+            #A.int->{$v} = F_delta;
+            return 1 if $v >= J.A.ztime;
+            sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
+        };
     }
     else {
         sayyl "oA3 J.name   A.ztime / J.A.ztime   $from" if !J.yt.quiet;
@@ -141,52 +142,18 @@ oJ4: |
              };
         };
     }
-ok5: |
-    my $J = C.sc.J||die;
-       A.ztime = 1;
-       A.note.not&csrm,'ok';
-       
-       my $co = A.jr&ok-$v;
-       my $til = $co - hitime;
-       # cv wave column to plant next self in
-       A.waov = $v;
-       # assume that v shapes delay until DNS of tension
-       my $del = $v;
-       if ($co && $til < 0) {
-           sayre "running late: ". $til if $til < -0.1;
-           A.ztime = $v if $v > A.ztime; # on there
-           undef $co;
-       }
-       elsif (!$co) {
-           $del = 0.1;
-           sayyl "C.t begins";
-       }
-       $del *= 3.7;
-       $del *= 1.2 if rand 5 > 3;
-       $co ||= $del + hitime;
-       
-       A.watime = $co;
-       die "yep";
-       
-       say "!! $til for A.ztime   ".ki C.c;
-       A.jr&ok-$v,$co;
 oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
     my $J = C.sc.J;
     Atime(6) || return T.last=1;
     
-    if (A.ztime < 9) { # $C not pregnant
-        !A.jr&ok-9 || return die" YEP! J.name";
-    }
+    return die "doubly"
+    if A.ztime < 9 && A.jr&ok-9;
     
-    #A.ztime < 9 && Atime(6) 
-    #Atime(6) ||  !A.jr&ok-9 
-    #|| return die "Jri";#.T.return=[$J];
+    return Rw opi6
+    if exists C.sc.pi;
     
-    return
-    Rw opi6
-    if C.sc.pi;
+    my $n = A.ztime >= 9 ? sub{} : A.jr&ok-9,9;
     
-    my $n = A.hav ? sub{} : A.jr&ok-9,9;
     aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
     
     saybl "oJ6 C.t" unless C.sc.J.yt.quiet;
@@ -216,6 +183,26 @@ opi6: |
     Rw oT6 $pin $A $C $J $s $u:s;
 oT6: |
     my $T = ar.T||{};
+    if (exists C.sc.pi) {
+        A.time = sub {
+            my ($JJ,$v) = @_;
+            if ($v == 2) {
+                A.ico.qui = 1;
+                my $wt = A.coi.exactl->();
+                # then-is
+                # coi clone?
+                # crux to pi
+                # point to give up
+                # so can much very, sculpt
+                saybl "The two! of J.name   by JJ.name";
+                saybl "At 222 J.name    //// C.t  ".wdump 2, [wt.same,wt.new,wt.diff,wt.gone];
+            }
+            #A.int->{$v} = F_delta;
+            return 1 if $v >= J.A.ztime;
+            sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
+        };
+        A.ico = Rw pha $J ao;
+    };
     A.coi = Rw pha $J ako;
 
     my $M=[];
@@ -227,7 +214,13 @@ oT6: |
     Jn('zoo',$y) if @$M;
     
     A.coi.qui = 1;
-    A.coi.exactl->();
+    my $wt = A.coi.exactl->();
+    
+    if (J.name eq 'Wkcs') {
+        sayyl "At J.name    //// C.t  ".wdump 2, [wt.new,wt.diff,wt.gone]
+        if !wt.same;
+        
+    }
 oJ7: |
     return
     Rw opi7
@@ -276,4 +269,33 @@ oJ75: | # chov J
         #say "AM v.name  rrrrr J.name";
         at.s = "Vrrr v.name";
     }
+ok5: |
+    my $J = C.sc.J||die;
+       A.ztime = 1;
+       A.note.not&csrm,'ok';
+       
+       my $co = A.jr&ok-$v;
+       my $til = $co - hitime;
+       # cv wave column to plant next self in
+       A.waov = $v;
+       # assume that v shapes delay until DNS of tension
+       my $del = $v;
+       if ($co && $til < 0) {
+           sayre "running late: ". $til if $til < -0.1;
+           A.ztime = $v if $v > A.ztime; # on there
+           undef $co;
+       }
+       elsif (!$co) {
+           $del = 0.1;
+           sayyl "C.t begins";
+       }
+       $del *= 3.7;
+       $del *= 1.2 if rand 5 > 3;
+       $co ||= $del + hitime;
+       
+       A.watime = $co;
+       die "yep";
+       
+       say "!! $til for A.ztime   ".ki C.c;
+       A.jr&ok-$v,$co;
 
