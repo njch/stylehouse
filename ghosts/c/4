@@ -54,7 +54,7 @@ oJ3: | # MOD  being repeater
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
-            sayyl "made C.t = C.sc.pi for J.most.J.name" if J.most.J.name eq 'Wkcs';
+            #sayyl "made C.t = C.sc.pi for J.most.J.name" if J.most.J.name eq 'Wkcs';
         }
         else {
             my $o = {name=>C.c.J};
@@ -110,11 +110,7 @@ oJ4: |
     
     J.A.ztime ||= C.c.time ? delete C.c.time : 6;
     
-    #A.ztime = J.A.ztime if J.A.ztime > A.ztime;
-    # so 8 can make braind
-    
     J.A.in = $G->gip(J.Jiter.A.in, C.t)||{} if J.Jiter;
-    
     
     if (C.sc.pi) {
         J.A.d = J.Jiter.A.d + 1;
@@ -159,7 +155,7 @@ oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
     saybl "oJ6 C.t" unless C.sc.J.yt.quiet;
     {
         my $ar = {%{C.c}};
-        Rw around + $J $C $A;
+        Rw around + $A $C $J $T;
     }
     A.roundi = 1;
        
@@ -168,7 +164,8 @@ waz/up: |
         Rw Jhead;
         Jn(st=>0.9=>"o",'%hs:8427,fs:4');
     }
-    Rw oT6 + $p=*/M $J $A:J.A $C:J.C;
+    die wdump [ sort keys %$ar ] if !ar.T;
+    Rw oT6 + $p=*/M $J $A:J.A $C:J.C $T;
 opi6: |
     $J = C.sc.J||die;
     J.cv = C.c.gp.cv || C.c.cv || 0.6;
@@ -179,48 +176,76 @@ opi6: |
     my $pin = "pi/$path";
     
     my $s = C.c.s;
-    
-    Rw oT6 $pin $A $C $J $s $u:s;
+    die wdump [ sort keys %$ar ] if !ar.T;
+    Rw oT6 $pin $A $C $J $T $s $u:s;
 oT6: |
-    my $T = ar.T||{};
+    A.coi = Rw pha $J ako;
     if (exists C.sc.pi) {
         A.time = sub {
             my ($JJ,$v) = @_;
+            # point to give up
+            # so can much very, sculpt
             if ($v == 2) {
+                A.ico = Rw pha $J ico;
                 A.ico.qui = 1;
-                my $wt = A.coi.exactl->();
+                A.ico.as->(A.coi);
+                my $wt = A.ico.exactl->();
+                A.ico.wt || die;
+                saybl "The two! of J.name   by JJ.name";
+                saybl "At 222 J.name    //// C.t  "
+                .wdump 2, [wt.same,wt.new,wt.diff,wt.gone];
+                
+                return 0 if wt.same;
+                # for jamcs screenfly
+                J.most.R.ljm = [];
                 # then-is
                 # coi clone?
                 # crux to pi
-                # point to give up
-                # so can much very, sculpt
-                saybl "The two! of J.name   by JJ.name";
-                saybl "At 222 J.name    //// C.t  ".wdump 2, [wt.same,wt.new,wt.diff,wt.gone];
+                return 1;
             }
             #A.int->{$v} = F_delta;
             return 1 if $v >= J.A.ztime;
             sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
         };
-        A.ico = Rw pha $J ao;
     };
-    A.coi = Rw pha $J ako;
 
     my $M=[];
     my $y = {o=>$M};
     
     my $tw = Rw huck + $M $y; 
     $tw || die "nothing! J.name";
+    die "many".ki $tw if keys %$tw > 1;
 
     Jn('zoo',$y) if @$M;
     
-    A.coi.qui = 1;
-    my $wt = A.coi.exactl->();
-    
-    if (J.name eq 'Wkcs') {
-        sayyl "At J.name    //// C.t  ".wdump 2, [wt.new,wt.diff,wt.gone]
-        if !wt.same;
-        
+    if (A.ico && A.ico.wt.same) {
+        my $cut = @{A.ico.ord};
+        my @cc = @{A.coi.ord};
+        if (@cc > $cut) {
+            #splice @cc, $cut;
+            warn"J.name entered stuff aftyer 2!".wdump [@cc, 
+            '                     =============',
+            @{A.ico.ord}];
+        }
+        A.coi.abandon->();
+        if (my $ljm = J.most.R.ljm) {
+            for my $ar (@$ljm) {
+                ar.noR=1;
+                Rw jamsc;
+            }
+        }
+        sayre "Skipping out on J.name           J.most.J.name";
+        T.last = 1;
     }
+    else {
+        A.coi.qui = 1;
+        my $wt = A.coi.exactl->();
+        if (J.name eq 'Wkcs') {
+            sayyl "At J.name    //// C.t  "
+            .wdump 2, [wt.new,wt.diff,wt.gone];
+        }
+    }
+    
 oJ7: |
     return
     Rw opi7

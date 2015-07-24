@@ -31,7 +31,7 @@ R_Jz:
         bb => {},
         ord => [],
         tim => {},
-        wtf => {},
+        wtf => {}, # F grab
      };
      x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
      x.abandon = sub { # upgrades what's there already, early exity lop
@@ -43,6 +43,15 @@ R_Jz:
              (x.begin,x.bb,x.ord,x.tim,x.wtf) = (xx.begin,xx.bb,xx.ord,xx.tim,xx.wtf);
          }
          x.end->();
+     };
+     x.as = sub {
+         my $ox = shift;
+         for (qw'begin bb ord tim wtf') {
+              my $v = $ox->{$_};
+              $v = [@$v] if ref $v eq 'ARRAY';
+              $v = {%$v} if ref $v eq 'HASH';
+              $x->{$_} = $v;
+         }
      };
      x.end = sub {
          my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
@@ -175,6 +184,7 @@ R_Jz:
        my $gl = wtf.same ? "===" : "+-";
        saygr "ph_exactl cur.name: *$count ".
            slim 50, join("  ",($gl) x 6) if !cur.qui && !wtf.allnew;
+       cur.wt = $wtf;
        $wtf;
      
  - K: the #c pg69make, ongoable, rolly grab
