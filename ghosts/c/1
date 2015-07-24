@@ -155,54 +155,6 @@ makoo: |
        sayyl "We o ".F_delta();
        
        Rwyl 0.1 J5 scr;
-pi/seas: |
-     Jn(see => 0.1 => C.s,'%hs:7878');
-     for my $t (split /\s+/, C.s) {
-         Mn($t => '', {pi=>'loadc',s=>$t});
-     }
-pi/loadc: |
-     my $l = C.s;
-     Jn(l => 0.1 => $l);
-     $l =~ s/\/*$/\//;
-     my @f = map{chomp$_;$_}`find -L $l -type f`;
-     @f || die "no $l";
-     for my $file (@f) {
-         Mn($file => '', {pi=>'cfile',s=>$file});
-     }
-pi/cfile: |
-     my $file = C.s;
-     Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
-     saybl "cfile Hmmmm";
-     Atime(2)||return; 
-     saybl "Loading $file";
-     my $s = read_file($file);
-     my $h;
-     my @ks;
-     while ($s =~ m/^(\S+)(:.+?)(?=^\S|\Z)/smg) {
-         push @ks, $1;
-         $h->{$1} = $2;
-     }
-     my $m = Load($s);
-     #die if m.R_Jz;
-     if (m.R_Jz) {
-         Jn(rj=>0.2=>'R_Jz');
-         return;
-     }
-     my $in = {map{$_=>1}@ks};
-     exists $in->{$_} || die "$_" for keys %$m;
-     
-     for my $p (@ks) {
-         my $n = $m->{$p};
-         my $dig = dig($h->{$p});
-         Mn($p => '', {pi=>clife=>s=>$n},{dig=>$dig,nspc=>0.2});
-     }
-pi/clife: |
-     C.sc.nspc = 0.02;
-     Jn(c=>0.1=>'c'=>'%hs:8474');
-     Jn(c=>0.2=>"C.t"=>'%hs:849');
-     my $s = C.s;
-     #$s = ref $s ? join",",sort keys %$s : slim(30,"C.s");
-     Mn(c=>'',{pi=>''=>s=>$s});
 sope/out: |
     #Rw oJ $J geo &up $noesc=1;
     #Rw chuv $J;
