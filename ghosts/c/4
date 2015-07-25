@@ -22,12 +22,6 @@ oJ2: | # MOD wo
     
     
     
-    
-    
-    
-    
-    
-    
     #sayyl "WW WW $v         J.name";
     A.ztime = 3;
     
@@ -103,6 +97,8 @@ oJ4: |
                  0;
              };
         };
+        J.A.pathology = {};
+        J.A.timesheet = {};
     }
     die if C.sc.pi && J.Jiter ne A.J;
     die if C.sc.pi && J.most.J eq $J;
@@ -208,7 +204,7 @@ oT6: |
     if (exists C.sc.pi) {
         A.time = sub {
             my ($JJ,$v) = @_;
-            # then-is
+            # then - is
             # crux to pi
             # point to give up
             # so can much very, sculpt
@@ -217,11 +213,19 @@ oT6: |
                 A.ico.qui = 1;
                 A.ico.as->(A.coi);
                 my $wt = A.ico.exactl->();
-                saybl "The two! of J.name   by JJ.name";
+                #saybl "The two! of J.name   by JJ.name";
                 saybl "At 222 J.name    //// C.t  "
-                .wdump 2, [wt.same,wt.new,wt.diff,wt.gone] if !wt.same;
+                .wdump 2, [wt.same,wt.new,wt.diff,wt.gone]
+                if wt.last && !wt.same;
                 
-                return 0 if wt.same; # & not too long ago
+                if (A.tch++ > 4) {
+                    A.tch = 1;
+                    warn "avoid thing";
+                    A.ico.wt.same=0; # fo coi
+                }
+                elsif (wt.same) {
+                    return 0;
+                }
                 
                 # for jamcs screenfly
                 J.most.R.ljm = [];
@@ -242,6 +246,7 @@ oT6: |
 
     Jn('zoo',$y) if @$M;
     
+    my $sol = "?";
     if (A.ico && A.ico.wt.same) {
         my $cut = @{A.ico.ord};
         my @cc = @{A.coi.ord};
@@ -258,6 +263,7 @@ oT6: |
         }
         sayre "Skipping out on J.name           J.most.J.name";
         T.last = 1;
+        $sol = "skip";
     }
     else {
         A.coi.qui = J.name ne 'Wkcs';
@@ -265,12 +271,24 @@ oT6: |
         if (wt.same) {
             if (++A.wch > 4) {
                 A.wch = 0;
+                $sol = "same";
             }
             else {
+               $sol = "skip";
                sayre "Skipping out on J.name    A.ztime t:A.wch     J.most.J.name";
                 T.last = 1;
             }
         }
+        else {
+            $sol = "notsame";
+        }
+    }
+    my $ti = J.most.J.A.timesheet;
+    ti.t->{J.name} = $sol;
+    $ti->{$sol}++;
+    
+    if (J.name eq 'Wkcs') {
+       say wdump $ti;
     }
     
 oJ7: |
