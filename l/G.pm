@@ -2441,7 +2441,7 @@ sub g_Duck {
     my $DOOF; 
     my $first = 1 unless $@ =~ /DOOF/;
 
-               $DOOF .= "DOOF $D->{talk}\n" if $D->{sign} eq 'D';
+               $DOOF .= "DOOF $D->{talk}\n" if $D->{sign} eq 'D' || $nodie;
                $DOOF .= "  $D->{inter}" if $D->{inter};
 
                if ($first) {
