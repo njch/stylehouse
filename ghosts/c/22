@@ -80,9 +80,8 @@ pi/loadc: |
 pi/cfile: |
      my $file = C.s;
      Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
-     saybl "cfile Hmmmm";
      Atime(2)||return; 
-     saybl "Loading $file";
+     saybl "Loading cfile $file";
      my $s = read_file($file);
      my $h;
      my @ks;
@@ -109,8 +108,8 @@ pi/clife: |
      Jn(c=>0.1=>'c'=>'%hs:8474');
      Jn(c=>0.2=>"C.t"=>'%hs:849');
      my $s = C.s;
-     #$s = ref $s ? join",",sort keys %$s : slim(30,"C.s");
-     Mn(c=>'',{pi=>''=>s=>$s});
+     $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"C.s");
+     Mn(c=>'',{pi=>''=>s=>$s,cv=>0.1});
 pi/now: |
     die if $u < 100 && $u > -100;
     my $d = hitime() - $u;
