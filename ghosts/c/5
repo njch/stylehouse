@@ -14,10 +14,10 @@ wa:
     Jn('','',{J=>'Wkcs'});
     #Rw J6 - Wkcs; 
     #Rw J6 - Vil;
-    #Rw J6 - Vuel;
+    Rw J6 - Vuel;
     #Rw J6 - Tok;
     #Rw J6 - Hosp;
-    Rw J6 - Eosse;
+    #Rw J6 - Eosse;
     #Rw J6 - EYZ;
     #Rw J6 - Wander;
     Rw J5 - toc;
@@ -28,16 +28,31 @@ Wkcs:
    yJ: |
      'Travel'
    M: |
-    for (qw'g/c') {
-        Mn($_ => '', {pi=>'seas',s=>$_});
-    }
+    Mn(shedful => '', {pi=>'seas',s=>'g/c'});
     
     G.way.Wkcs.curves = <<'' if 1;
     zoom 0  0.8
     curve 0 -0.03
     x 0.02 0
-      
+    
+    
+    
     # etc
+aftor: |
+    Rwyl 0.1 aftor;
+    my $J = J.most.J;
+    my $N = Rw tyc $J;
+    @$N = grep { _.sc.pi eq 'thumbnail' } @$N;
+    
+    my $u = {};
+    for my $C (@$N) {
+        my $p = C.t;
+        my $n = C.c.s;
+        Rw loadup $u $p $n;
+    }
+    sayyl "After J.name: clife: ".wdump 2, [$u,$N];
+    Rw makoo $u;
+    
 Vil:
    yJ: |
       'Travel'
@@ -60,13 +75,16 @@ Vuel:
       curve 0 -0.03
       x 0.02 0
       
-      my @s = Rw wuck $J */curves;
+      my $i = Rw J6 - Wkcs;
       
-      my $oJ = G.oin;
-      my $vs = Rw tc $J:oJ;
-      #my $s = wdump $vs;
-      my $rr = [map{[_.t,_.y.cv,_.sc]}@$vs];
-      Mn(deef=>'',{pi=>'',s=>$rr});
+      #my @s = Rw wuck $J */curves;
+      
+      #my $oJ = G.oin;
+      #my $vs = Rw tc $J:oJ;
+      #my $rr = [map{[_.t,_.y.cv,_.sc]}@$vs];
+      my $rr = i.oJ.A;
+      $rr = rr.W if $rr;
+      Mn(deef=>'',{pi=>'',cv=>0.8,s=>wdump 2, $rr});
 Tok:
    yJ: |
       'shd Travel'
