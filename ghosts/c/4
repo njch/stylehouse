@@ -292,7 +292,7 @@ oT6: |
                 Rw jamsc;
             }
         }
-        sayre "Skipping out on J.name           J.most.J.name";
+        sayre "Skipping out on J.name           J.most.J.name" if J.V;
         T.last = 1;
         $sol = "skip";
     }
@@ -306,16 +306,14 @@ oT6: |
             }
             else {
                $sol = "skip";
-               sayre "Skipping out on J.name    A.ztime t:A.wch     J.most.J.name";
+               sayre "Skipping out on J.name    A.ztime t:A.wch     J.most.J.name" if J.V;
                 T.last = 1;
             }
         }
         else {
             $sol = "notsame";
-            if (J.most.J.name eq 'Wkcs') {
-            
-                sayyl "J.name notsame: ".wdump 2, [wt.same,wt.new,wt.diff,wt.gone];
-            }
+            #sayyl "J.name notsame: ".wdump 2, [wt.same,wt.new,wt.diff,wt.gone];
+            #if J.most.J.name eq 'Wkcs';
         }
     }
     my $ti = J.most.J.A.timesheet;
@@ -323,7 +321,7 @@ oT6: |
     $ti->{$sol}++;
     
     if (J.name eq 'Wkcs') {
-       say wdump $ti;
+       say "Wkcs: ". k2 {w=>{W=>$ti}};
     }
     
 etcray: |
