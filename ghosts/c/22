@@ -65,16 +65,17 @@ pi/life: |
     }
 pi/seas: |
      Jn(see => 0.1 => C.s,'%hs:7878');
-     for my $t (split /\s+/, C.s) {
+     for my $t (map{glob $_}split /\s+/, C.s) {
+         chomp $t;
          Mn($t => '', {pi=>'loadc',s=>$t});
      }
 pi/loadc: |
      my $l = C.s;
      Jn(l => 0.1 => $l);
      #y.lumfa = 1;
-     y.limn = 4;
+     #y.limn = 1;
      $l =~ s/\/*$/\//;
-     my @f = map{chomp$_;$_}`find -L $l -type f`;
+     my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`find -L $l -type f`;
      @f || die "no $l";
      for my $file (@f) {
          Mn($file => '', {pi=>'cfile',s=>$file});
@@ -83,12 +84,18 @@ pi/cfile: |
      my $file = C.s;
      Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
      C.sc.nspc = 0.02;
-     #y.limn = 8;
+     y.limn = 18;
      y.lumfa = 2;
      
      Atime(2)||return; 
      
-     saybl "Loading    cfile $file";
+     my $be = `wc -l $file`; chomp $be;
+     saybl "Loading    cfile $be";
+     if ($be =~ /^\d{4}/) {
+         Mn(massive=>'',{pi=>text=>s=>"MASSIVE"});
+         sayre "massive s";
+         return;
+     }
      my $s = read_file($file);
      my $m = Load($s);
      
@@ -129,7 +136,9 @@ pi/mRJz: |
     }
     my $rj = delete n.R_Jz;
     my @ksl = sort keys %$n;
-    die "extrta  ".wdump[@ksl] if @ksl;
+    for (@ksl) {
+         Mn($_=>''=>{pi=>text=>s=>$_});
+    }
     my $tw;
     for my $D (@$rj) {
         my $d = {%$D};
@@ -142,7 +151,7 @@ pi/mRJz: |
              $sc->{$_} = delete $d->{$_} if exists $d->{$_};
         }
         if (%$d) {
-            die "more to ".ki $D;
+            Mn(more=>''=>{pi=>text=>s=>ki $D});
         }
         $tw->{$k} = $s;
         $sc->{$all} = 1;
@@ -153,8 +162,9 @@ pi/clife: |
      C.sc.nspc = 0.04;
      y.limn = 1;
      #y.lumfa = 1;
+     # THE K -> NET
      Jn(c=>0.1=>'c'=>'%hs:8474');
-     Jn(c=>0.2=>"C.t"=>'%hs:849');  # blah
+     Jn(K=>0.2=>"C.t"=>'%hs:849');  # blah
      my $s = C.s; 
      $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"C.s");
      Mn(c=>'',{pi=>''=>s=>$s,cv=>0.1});
