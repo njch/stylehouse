@@ -13,8 +13,8 @@ pi/kv: |
     my $eel = $pi||1 ? '' : 'rad:-1.3';
     $eel .= ",fs:6,hs:3563";
     $eel = '%'.$eel if $eel;
-    Jn('la',0.2,$k,$eel); # if hori
-    Mn('v',0.3,{pi=>$pi,s=>$v});
+    Jn($k,0.2,$k,$eel); # if hori
+    Mn($k,0.3,{pi=>$pi,s=>$v});
 pi/guess: |
      my $cg = $G->cgp($s);
      # ^
@@ -32,7 +32,7 @@ pi/guess: |
      
 dg/kord:
    lv:
-    - ws: dead+4 t+5 name+3 block y c sc
+    - ws: dead+4 t+5 name+3 block y+2 c+3 sc+8
    hash:
     - ws: dead+4 t+3 y+2 K+2 name+3 r+3 style+1 bb+2
 pi/kord: |
@@ -51,8 +51,8 @@ pi/kord: |
     for (@in) {
         my ($t,$i) = split /\+/, $_;
         my $y = {};
-        y.in.sc.>$1 = $2 while $i=~s/(\w+):(\S+)//g;
-        # same^v
+        y.in.sc.>$1 = $2 while $i=~s/(\w+):(\S+)[,\$]//smg;
+        # same^v 
         y.thy = $i if $i =~ /\d+/;
         $yin->{$t} = $y;
         push @ord, $t;
@@ -64,27 +64,27 @@ pi/kord: |
     
     for (@r) {
         my $y = $yin->{$_}||{};
-        Mn($_ => $y, {pi=>'kv',s=>[$_=>$s->{$_}]}, {mw=>'5em'});
+        Mn($_ => $y, {pi=>'kv',s=>[$_=>$s->{$_}]});
     }
     
 pi/vs: |
     C.sc.nspc = 0.02;
     #y.lumfa = 0.2;
-    y.limn = 2;
+    y.limn = 0.7;
     
     Rw pi/head;
     
     my $i = 0;
     Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s;
 pi/lv: |
-    C.sc.nspc = 0.01;
-    C.sc.nspc_max = 8;
+    C.sc.nspc = 0.03;
+    C.sc.nspc_max = 2;
     y.limn = 30;
     C.sc.pwth = 'somewhere';
     
     Rw pi/head;
     
-    Jn(lv=>0.1=>{s=>'{'},'%fs:34,hs:3892,ml:-0.9em,mt:-2em');
+    #Jn(lv=>0.1=>{s=>'lv'},'%fs:34,hs:3892,ml:-0.9em,mt:-2em');
     #$u = {wtf=>[map{unico($_)}4300..4305]};
     #u.c.etc = {mil =>pond=>exp=>[qw'exp re']};
     
@@ -96,6 +96,7 @@ pi/keys: |
 pi/HASH: |
     my $si = keys %$u;
     y.limn = 2;
+    Jn(tee=>0.09, "t:C.t", '%fs:5,hs:978');
     C.sc.nspc = 0.01;
     #y.lumfa = 2;
     Jn(si=>0.1, $si, '{hs:8378,fs:4}');
@@ -112,7 +113,7 @@ pi/HASH: |
             # 3
             Rw pi/kord hash;
 pi/ARRAY: |
-    y.limn = 4.7;
+    y.limn = 3;
     C.sc.nspc = 0.01; 
     my $cv = J.cv ||= 0.3;
     my $si = @$u;
