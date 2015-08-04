@@ -2120,7 +2120,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, \$J, /smg;
 
-    $eval =~ s/($mwall)(u|n) (.+?)(;?)$/${1}J\.$2->($3)$4/smg;
+    $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
     #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');

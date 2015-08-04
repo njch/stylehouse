@@ -1,41 +1,96 @@
+stylehut: |
+    u perl/file
+    n ACGT
+    n doi=>'',<<'','%code=1'
+      Rw j phon;
+    
+lazershop: |
+    #my $g = Rw Jto Gee;
+    Rw j - Gee;
+    
+phon: |
+    n Jh=>0.01
+    n lazershop
+perl/file: |
+    
+Jh: |
+    n J.name=>1,J.name
+    
 j: |
-    my $J = ar.J || G.oin ||= Rw Jto sea;
+    my $J = ar.J;
+    $J ||= G.eoin ||= Rw Jto sea;
+    my ($t) = @{delete ar.m};
+    u something
+    die;
+    n $t
+    
+    
+    
     
 Jto: |
      my $J;
      J.id = mkuid;
-     J.name = @{delete ar.m};
-     J.qq = {};
+     (J.name) = @{delete ar.m};
      J.bb = {};
      J.phy = {};
      J.phl = {};
      
+     J.u = sub {
+         my $ar;
+         ar.J = Rw j $J qq;
+         ar.N = [[@_]];
+         sayyl "J.name U! @_";
+         Rw MyN;
+         # & concert overworld
+     };
      J.n = sub {
          my $ar;
          ar.J = $J;
-         if (ref $_[0] eq 'ARRAY') {
-             # is Mn($M,$J,t,y,c,sc)
-             ar.M = shift;
-             die "wtff" if ar.J ne shift;
-         }
          ar.N = [[@_]];
          Rw MyN;
      };
-     J.u = sub {
+     J.m = sub {
          my $ar;
+         ar.M = shift;
          ar.J = $J;
          ar.N = [[@_]];
          Rw MyN;
      };
-     
-     Rw suJ $J;
-     
-     Rw Jup $J;
-     
+     J.bz = sub {
+         my $m = [@_];
+         die "not 2 @$m" if @$m != 2;
+         while (@$m) {
+             my ($k, $v) = (shift @$m, shift @$m);
+             my $j;
+             if ($k =~ /^(.*?)\t(.*)\t(.*?)$/) {
+                 saybl "new $k         $v";
+                 (j.cv,j.t,j.style) = ($1,$2,$3);
+             }
+             else { # old:
+                 (j.t,j.style,j.cv) = $k =~ /^(.+)(?:%(.+))?\s+(.+?)$/;
+             }
+             defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$k, $v]];
+             
+             j.r = join "\n", j.cv, j.t, j.style;
+             j.s = $v;
+             my @Js = $J;
+             push @Js, values %{J.phy} if J.phy;
+             for my $jj (@Js) {
+                 jj.bb->{j.r} = j.s;
+                 push @{jj.ord}, {%$j} if jj.ord;
+                 jj.tim->{j.r} = hitime() if jj.tim;
+                 jj.wtf->{j.r} = $F[0] if jj.wtf;
+                 jj.ap->($j) if jj.ap; # <<<
+             }
+        }
+     };
      $J
+     
 Trail: |
 sea: |
-    
+    u 8ou;
+8ou: |
+    u Ver
 blus: |
     u 
     
