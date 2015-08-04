@@ -109,7 +109,7 @@ pi/cfile: |
      }
      
      my $h;
-     my @ks;
+     my @ks; 
      while ($s =~ m/($kf)/smg) {
          push @ks, $2;
          $h->{$2} = $1;
@@ -122,7 +122,7 @@ pi/cfile: |
          my $s = $h->{$p};
          $s || die "no $p $s ".wdump $h;
          my $sc = $tsc->{$p}||{};
-         sc.dige = dig($s);
+         sc.dige = substr dig($s), 0, 8;
          sc.nspc = 0.2;
          Mn($p => '', {pi=>'clife',pwth=>'somewhere',s=>$n},$sc);
      }
@@ -168,7 +168,7 @@ pi/clife: |
      Jn(K=>0.2=>"C.t"=>'%hs:849');  # blah
      my $s = C.s; 
      $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"C.s");
-     Mn(c=>'',{pi=>''=>s=>$s,cv=>0.1});
+     Mn(c=>'',{pi=>''=>s=>$s});
 pi/now: |
     die if $u < 100 && $u > -100;
     my $d = hitime() - $u;

@@ -34,7 +34,7 @@ dg/kord:
    lv:
     - ws: dead+4 t+5 name+3 block y+2 c+3 sc+8
    hash:
-    - ws: dead+4 t+3 y+2 K+2 name+3 r+3 style+1 bb+2
+    - ws: dead+4 pi+2 t+3 y+2 K+2 name+3 r+3 style+1 bb+2
 pi/kord: |
     C.c.k ||= ar.m ? ar.m->[0] : C.c.pi;
     my $map;# = Rw muck $pin=dg/kord/C.c.k;
@@ -69,7 +69,7 @@ pi/kord: |
     
 pi/vs: |
     C.sc.nspc = 0.02;
-    #y.lumfa = 0.2;
+    y.lumfa = 0.2;
     y.limn = 0.7;
     
     Rw pi/head;
@@ -77,7 +77,7 @@ pi/vs: |
     my $i = 0;
     Mn($i++=>'',{pi=>'lv',s=>$_}) for @$s;
 pi/lv: |
-    C.sc.nspc = 0.03;
+    C.sc.nspc = 0.04;
     C.sc.nspc_max = 2;
     y.limn = 30;
     C.sc.pwth = 'somewhere';
@@ -96,8 +96,9 @@ pi/keys: |
 pi/HASH: |
     my $si = keys %$u;
     y.limn = 2;
-    Jn(tee=>0.09, "t:C.t", '%fs:5,hs:978');
-    C.sc.nspc = 0.01;
+    y.limn = 9 if C.t eq 'sc';
+    #Jn(tee=>0.09, "t:C.t", '%fs:5,hs:978');
+    C.sc.nspc = 0.02;
     #y.lumfa = 2;
     Jn(si=>0.1, $si, '{hs:8378,fs:4}');
     #Jn(spc=>0.09, C.y.spc, '{hs:9373,fs:7}');
