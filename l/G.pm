@@ -2063,11 +2063,12 @@ sub snooze {
 sub wag {
     $H ||= {up=>hitime()};
     my $G = bless {}, 'G';
+    $G->{w} = sub { $G->w(@_) };
     $G->{id} = mkuid();
     $G->{name} = "theG";
     $G->catchings;
     $G->wayup("wormhole/yb\.yml");
-    $G->w('expro');
+    $G->{w}->('expro');
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 

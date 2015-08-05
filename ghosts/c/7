@@ -69,10 +69,13 @@ Jto: |
      J.bz = sub {
          my $m = [@_];
          die "not 2 @$m" if @$m != 2;
+         my $j={};
          while (@$m) {
              my ($k, $v) = (shift @$m, shift @$m);
-             my $j;
-             if ($k =~ /^(.*?)\t(.*)\t(.*?)$/) {
+             if ($k =~ /^%(\S+)/) {
+                 j.style = $1;
+             }
+             elsif ($k =~ /^(.*?)\t(.*)\t(.*?)$/) {
                  saybl "new $k         $v";
                  (j.cv,j.t,j.style) = ($1,$2,$3);
              }
