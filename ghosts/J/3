@@ -30,8 +30,9 @@ R_Jz:
         name => $name,
         bb => {},
         ord => [],
-        tim => {},
-        wtf => {}, # F grab
+        #tim => {},
+        #wtf => {}, # F grab
+        #ap => sub{}, # bz do aftering
      };
      x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
      x.abandon = sub { # upgrades what's there already, early exity lop
@@ -47,6 +48,7 @@ R_Jz:
      x.as = sub {
          my $ox = shift;
          for (qw'begin bb ord tim wtf') {
+              exists $ox->{$_} || next;
               my $v = $ox->{$_};
               $v = [@$v] if ref $v eq 'ARRAY';
               $v = {%$v} if ref $v eq 'HASH';
@@ -61,8 +63,10 @@ R_Jz:
          shift @{y.l} while @{y.l} > 5;
          # layers ^ rolling in time index .r -> the y.l
          # so last phase of $name can be found?
-         my $w = @{y.l};
-         y.l_bb->{$_} = $w for keys %{x.bb};
+         if (x.bb) {
+             my $w = @{y.l};
+             y.l_bb->{$_} = $w for keys %{x.bb};
+         }
          # somewhere thinks about what happened
          return $y;
      };

@@ -2200,7 +2200,7 @@ sub g_parse_babble {
         push @e, $u if $u;
         my $en = join ", ", @e;
 
-        my $wa = $g.'->w('.$en.')'.$ne;
+        my $wa = $g.'->{w}->('.$en.')'.$ne;
 
         if ($delay) {
             $delay =~ /yl ($NUM)/;

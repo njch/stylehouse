@@ -4,6 +4,8 @@ stylehut: |
     n doi=>'',<<'','%code=1'
       Rw j phon;
     
+ACGT: |
+    
 lazershop: |
     #my $g = Rw Jto Gee;
     Rw j - Gee;
@@ -30,9 +32,18 @@ somewherei: |
     u jbz
 jbz: |
     u mody=>=>so
+qq: |
+    # getting run t
+    # qode qompiler
+    # does each thing input... has out that joins up
+    # J (above)  # does u thing
+    #   J qq     # gets W/thing as inbryo or stored G.oin Wemotables
+    #   ^        # settles (Jbove wants out, to do n)
+    #   output G compressions (+/- laws)
+    # J eats   " "
     
     
-    
+    #
 Jto: |
      my $J;
      J.id = mkuid;
@@ -43,7 +54,8 @@ Jto: |
      
      J.most.J = $J;
      J.most.mody = 'mani';
-     J.most.eo = 'Sun';
+     J.most.eo = 'Yesui';
+     J.tt = 1;
      
      J.u = sub {
          my $ar;
@@ -66,25 +78,21 @@ Jto: |
          ar.N = [[@_]];
          Rw MyN;
      };
-     J.bz = sub {
+     J.bz = sub { #c
          my $m = [@_];
          die "not 2 @$m" if @$m != 2;
          my $j={};
          while (@$m) {
-             my ($k, $v) = (shift @$m, shift @$m);
-             if ($k =~ /^%(\S+)/) {
+             my ($r, $v) = (shift @$m, shift @$m);
+             if ($r =~ /^%(\S+)/) {
                  j.style = $1;
              }
-             elsif ($k =~ /^(.*?)\t(.*)\t(.*?)$/) {
-                 saybl "new $k         $v";
-                 (j.cv,j.t,j.style) = ($1,$2,$3);
+             else {
+                 $j = Rw r2j $r $J;
              }
-             else { # old:
-                 (j.t,j.style,j.cv) = $k =~ /^(.+)(?:%(.+))?\s+(.+?)$/;
-             }
-             defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$k, $v]];
+             defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
              
-             j.r = join "\n", j.cv, j.t, j.style;
+             j.r = join "\t", j.cv, j.t, j.style;
              j.s = $v;
              my @Js = $J;
              push @Js, values %{J.phy} if J.phy;
@@ -99,6 +107,69 @@ Jto: |
      };
      $J
      
+r2j: |
+    my $j;
+    if (J.tt) {
+        (j.cv,j.t,j.style) = $r =~ /^(.*?)\t(.*)\t(.*?)$/;
+    }
+    else {
+        (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
+    }
+    defined j.cv || die "(tt=J.tt) no $r    ".ki $j;
+    j.s = ar.J.bb->{$r} if ar.J;
+    $j;
+    
+Yesui: |
+    # etc
+    my $hv = Rw Yer $J;
+    say wdump 3, $hv;
+    
+    #return if J.tt;
+    
+    Rw chuv;
+ 
+Yer: |
+    my $i = Rw pha Yer $J;
+    i.Y = i.head.Y if i.head && i.head.Y;
+    i.Y && sayyl "Y stole: ".wdump 2, i.Y;
+    i.Y || sayre "Y not, ,makeke";
+    i.Y ||= do {
+        my $Y;
+        my $tw;
+        for my $r (keys %{J.bb}) {
+            my $j = Rw r2j $r $J;
+            Y.bb->{$r} =
+            $tw->{j.cv."\t".j.t}->{j.style} = j.s;
+        }
+        Y.vs = [];
+        for my $k (sort keys %$tw) {
+            my $cs = $tw->{$k};
+            my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
+            defined $cv || die;
+            my $C = {t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs};
+            C.c.s = delete C.sc->{''} if exists C.sc->{''};
+            Y.tv->{C.t}->{C.y.cv} = $C;
+            Y.tw->{C.y.cv}->{C.t} = $C;
+            push @{Y.vs}, $C;
+        }
+        $Y;
+    };
+    delete i.bb;
+    i.ap = sub {
+         my $j = shift;
+         if (exists i.Y.bb->{j.r} && i.Y.bb->{j.r} eq j.s) {
+             i.pos++;
+             say "J.ind no j.r   where j.s  last". i.Y.bb->{j.r};
+         }
+         else {
+             sayyl "J.ind i.pos  j.r   j.s  last". i.Y.bb->{j.r};
+             delete i.Y;
+             #i.end->();
+         }
+    };
+    #{tw=>$tw,vs=>$vs,i=>$i};
+    'ye'#i.Y.vs;
+    
 Trail: |
 sea: |
     u 8ou;
