@@ -154,7 +154,6 @@ wtfch: |
            wtf.same = 0;
        }
        $wtf;
-
 Elvis: |
     my $name = shift @$m;
     my $Y = J.El->{$name} ||= {bb=>{}};
@@ -162,8 +161,10 @@ Elvis: |
     my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
     
     Y.tw ||= {};
-    my $lo = {};
-    say "wtf.sami  / wtf.tot   :::  ".wdump 2, $wtf;
+    Y.lo = {};
+    my $ratio = wtf.sami / wtf.tot;
+    my $tor = $ratio > 0.7 ? 2 : 1;
+    say "$ratio   of  wtf.sami  / wtf.tot   :::  ".wdump $tor, $wtf;
     
     for my $mo (qw'gone diff new') {
         for my $r (keys %{$wtf->{$mo}}) {
@@ -179,30 +180,31 @@ Elvis: |
                 Y.bb->{j.r} = j.s;
                 Y.tw->{j.lt}->{j.style} = j.s;
             }
-            $lo->{j.lt}->{$mo}->{j.style} = j.s;
+            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
         }
     }
     
     Y.tv ||= {};
+    Y.go = {};
     my $same = 1;
-    for my $k (keys %$lo) {
-        my $tf = $lo->{$k};
+    for my $k (keys %{Y.lo}) {
+        my $tf = Y.lo->{$k};
         my $cs = Y.tw->{$k};
         if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
             $same = 0; # new line to make
         }
         if (tf.gone && !keys %$cs) {
             $same = 0; # line to disappear
-            delete Y.tv->{$k};
+            my $C = Y.go->{$k} = delete Y.tv->{$k};
         }
         if (tf.diff || tf.new) {
             keys %$cs || die 'nokeys';
             my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
             defined $cv || die;
-            my $C = Y.tv->{$k} || {};
+            
+            my $C = Y.tv->{$k} ||= {};
             %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs);
             C.c.s = delete C.sc->{''} if exists C.sc->{''};
-            Y.tv->{$k} = $C;
         }
     }
     saybl "Same vs." if $same;
@@ -214,6 +216,7 @@ Elvis: |
         }
         sayre "vs re: ".@{Y.vs};
     }
+    
     
     $Y;
 Trail: |
