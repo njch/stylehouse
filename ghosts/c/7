@@ -128,6 +128,10 @@ Yesui: |
     push @to, $C;
     saybl F_delta()."   AND";#  WE ".  wdump 1, $Y;
     #sayyl wdump 2, Y.lo if Y.ra > 0.7 && Y.ra < 1;
+    my $hasa = sub {
+        my $h = shift;
+        join',',map{"$_=".$h->{$_}}sort keys %$h;
+    };
     
     my $V = J.El->{Duv} ||= {bb=>{}};
     my $ot={};
@@ -137,13 +141,32 @@ Yesui: |
         my $lt = Y.tw->{$k};
         my $toen = 1;
         if (my $di = Y.lo->{$k}) {
-            
+            my $not;
             if (keys %$di == 1 && di.diff) {
                 my $CC = V.tw->{$k} || die "thought diff, no tw $k";
-                sayyl wdump 3,[$CC,di.diff];
+                for my $tk (keys %{di.diff}) {
+                    if ($tk eq 'geo') {
+                        $not++ if $hasa->(C.sc.geo) ne $hasa->(CC.sc.geo);
+                    }
+                    elsif ($tk eq '') {
+                        $not++ unless C.sc.dige && C.sc.dige eq CC.sc.dige;
+                    }
+                    else {
+                        saybl "Somewhere C.t tk $tk";
+                        $not++;
+                    }
+                }
             }
+            else {
+                $not = 1;
+            }
+            $toen = 0 if !$not;
         }
-        saybl "C.t :   ".C.sc.geo if C.t eq 'Yesui';
+        else {
+            $toen = 1;
+        }
+        $toen || next;
+        saybl "C.t :   ".ki C.sc;
         
         my $CC = {%$C};
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
