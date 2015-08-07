@@ -121,8 +121,8 @@ r2j: |
     
 Yesui: |
     # etc
-    my $hv = Rw Yer $J;
-    say wdump 3, $hv;
+    my $Y = Rw Elvis Pre $J;
+    saybl F_delta()."   AND  WE ".  wdump 1, $Y;
     
     # / 9 last
     
@@ -130,56 +130,92 @@ Yesui: |
     
     Rw chuv;
  
-Yer: |
-    my $i = Rw pha Yer $J;
-    # tower philosophic calm
-    i.Y = i.head.Y if i.head && i.head.Y;
-    i.Y && sayyl "Y stole: ".wdump 1, i.Y;
-    i.Y || sayre "Y not, ,makeke";
-    if (i.Y) {
-        for (keys %{i.Y.out}) {
-             
+wtfch: |   
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    
+       for (sort keys %$Jb) {
+           if (!exists $Yb->{$_}) {
+               wtf.new->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           } 
+           elsif ($Yb->{$_} ne $Jb->{$_}) {
+               wtf.diff->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           }
+           else {
+               wtf.sami++;
+           }
+           wtf.tot++;
+       }
+       for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+           wtf.gone->{$_} = $Yb->{$_};
+           wtf.same = 0;
+       }
+       $wtf;
+
+Elvis: |
+    my $name = shift @$m;
+    my $Y = J.El->{$name} ||= {bb=>{}};
+    
+    my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
+    
+    Y.tw ||= {};
+    my $lo = {};
+    say "wtf.sami  / wtf.tot   :::  ".wdump 2, $wtf;
+    
+    for my $mo (qw'gone diff new') {
+        for my $r (keys %{$wtf->{$mo}}) {
+            my $j = Rw r2j $r $J;
+            j.r = $r;
+            j.lt = j.cv."\t".j.t;
+            
+            if ($mo eq 'gone') {
+                delete Y.bb->{j.r};
+                delete Y.tw->{j.lt}->{j.style};
+            }
+            else {
+                Y.bb->{j.r} = j.s;
+                Y.tw->{j.lt}->{j.style} = j.s;
+            }
+            $lo->{j.lt}->{$mo}->{j.style} = j.s;
         }
     }
-    i.Y ||= do {
-        my $Y;
-        my $tw;
-        for my $r (keys %{J.bb}) {
-            my $j = Rw r2j $r $J;
-            Y.bb->{$r} =
-            $tw->{j.cv."\t".j.t}->{j.style} = j.s;
+    
+    Y.tv ||= {};
+    my $same = 1;
+    for my $k (keys %$lo) {
+        my $tf = $lo->{$k};
+        my $cs = Y.tw->{$k};
+        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+            $same = 0; # new line to make
         }
-        Y.vs = [];
-        for my $k (sort keys %$tw) {
-            my $cs = $tw->{$k};
+        if (tf.gone && !keys %$cs) {
+            $same = 0; # line to disappear
+            delete Y.tv->{$k};
+        }
+        if (tf.diff || tf.new) {
+            keys %$cs || die 'nokeys';
             my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
             defined $cv || die;
-            my $C = {t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs};
+            my $C = Y.tv->{$k} || {};
+            %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs);
             C.c.s = delete C.sc->{''} if exists C.sc->{''};
-            Y.tv->{C.t}->{C.y.cv} = $C;
-            Y.tw->{C.y.cv}->{C.t} = $C;
+            Y.tv->{$k} = $C;
+        }
+    }
+    saybl "Same vs." if $same;
+    if (!$same) {
+        Y.vs = [];
+        for my $k (sort keys %{Y.tv}) {
+            my $C = Y.tv->{$k} || die "wtf $k";
             push @{Y.vs}, $C;
         }
-        $Y;
-    };
-    delete i.bb;
-    i.ap = sub {
-         my $j = shift;
-         if (exists i.Y.bb->{j.r} && i.Y.bb->{j.r} eq j.s) {
-             delete i.Y.out->{j.r};
-             say "J.ind no j.r   where j.s  last". i.Y.bb->{j.r};
-         }
-         else {
-             i.out->{j.r} = 1;
-             sayyl "J.ind i.pos  j.r   j.s  last". i.Y.bb->{j.r};
-             #delete i.Y;
-             #i.end->();
-         }
-    };
+        sayre "vs re: ".@{Y.vs};
+    }
     
-    #{tw=>$tw,vs=>$vs,i=>$i};
-    'ye'#i.Y.vs;
-    
+    $Y;
 Trail: |
 sea: |
     u 8ou;
