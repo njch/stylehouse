@@ -120,16 +120,40 @@ r2j: |
     $j;
     
 Yesui: |
-    # etc
-    my $Y = Rw Elvis Pre $J;
-    saybl F_delta()."   AND  WE ".  wdump 1, $Y;
+    my $aj = Rw chuv;
     
-    # / 9 last
+    my $Y = Rw Elvis Pre $J;
+    my $C = Y.tw->{"0.9\t/"};
+    my @to = grep { $_ ne $C } @{Y.vs};
+    push @to, $C;
+    saybl F_delta()."   AND";#  WE ".  wdump 1, $Y;
+    #sayyl wdump 2, Y.lo if Y.ra > 0.7 && Y.ra < 1;
+    
+    my $V = J.El->{Duv} ||= {bb=>{}};
+    my $ot={};
+    for my $C (@to) {
+        my $k = C.y.cv."\t".C.t;
+        $ot->{$k} = 1;
+        my $lt = Y.tw->{$k};
+        my $toen = 1;
+        if (my $di = Y.lo->{$k}) {
+            
+            if (keys %$di == 1 && di.diff) {
+                my $CC = V.tw->{$k} || die "thought diff, no tw $k";
+                sayyl wdump 3,[$CC,di.diff];
+            }
+        }
+        saybl "C.t :   ".C.sc.geo if C.t eq 'Yesui';
+        
+        my $CC = {%$C};
+        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
+        V.tw->{$k} = $CC;
+    }
+    
     
     #return if J.tt;
-    
-    Rw chuv;
- 
+    $aj;
+GOateeee: |
 wtfch: |   
     my $wtf = {};
     wtf.same = 1;
@@ -162,9 +186,6 @@ Elvis: |
     
     Y.tw ||= {};
     Y.lo = {};
-    my $ratio = wtf.sami / wtf.tot;
-    my $tor = $ratio > 0.7 ? 2 : 1;
-    say "$ratio   of  wtf.sami  / wtf.tot   :::  ".wdump $tor, $wtf;
     
     for my $mo (qw'gone diff new') {
         for my $r (keys %{$wtf->{$mo}}) {
@@ -207,7 +228,6 @@ Elvis: |
             C.c.s = delete C.sc->{''} if exists C.sc->{''};
         }
     }
-    saybl "Same vs." if $same;
     if (!$same) {
         Y.vs = [];
         for my $k (sort keys %{Y.tv}) {
@@ -217,6 +237,13 @@ Elvis: |
         sayre "vs re: ".@{Y.vs};
     }
     
+    my $ratio = wtf.sami / wtf.tot;
+    $ratio = 0.01 * int(100*$ratio);
+    Y.ra = $ratio;
+    
+    my $tor = $ratio > 0.7 ? 2 : 1;
+    say "$ratio   of  wtf.sami  / wtf.tot   :::  ".($ratio>0 && wdump $tor, $wtf)
+    if $ratio < 1;
     
     $Y;
 Trail: |
