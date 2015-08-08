@@ -122,15 +122,13 @@ r2j: |
 Yesui: |
     my $aj = Rw chuv;
     
-    Rw Noodles;
+    Rw Noodles $J;
     $aj;
 Noodles: |
     my $Y = Rw Elvis Pre $J;
     my $sil = Y.tw->{"0.9\t/"};
     my @to = grep { $_ ne $sil } @{Y.vs};
     push @to, $sil;
-    saybl F_delta()."   AND";#  WE ".  wdump 1, $Y;
-    #sayyl wdump 2, Y.lo if Y.ra > 0.7 && Y.ra < 1;
     my $heq = sub {
         my ($o,$t) = @_;
         keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o;
@@ -138,12 +136,26 @@ Noodles: |
     
     my $V = J.El->{Duv} ||= {bb=>{}};
     my $ot={};
+    my $tt={}:
     for my $C (@to) {
         my $k = C.y.cv."\t".C.t;
         $ot->{$k} = 1;
-        my $lt = Y.tw->{$k};
         
+        next unless $C eq $sil ||
+        # if change is, or just diff in perceiving it
+        Rw diffreally $J $C $k $Y $V;
         
+        saybl "C.t :   \t".join'  ',sort keys %{C.sc};
+        
+        # OK do the 5 to style -> at things
+        
+        # hold an indifferent subject to relate future to
+        my $CC = {%$C};
+        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
+        V.tw->{$k} = $CC;
+    }
+    sayyl "THe J.name was Y.ra    y Y.to ";
+diffreally: |
         my $toen = 1;
         if (my $di = Y.lo->{$k}) {
             my $not;
@@ -171,16 +183,7 @@ Noodles: |
         else {
             $toen = 0;
         }
-        $toen || next unless $C eq $sil;
-        saybl "C.t :   \t".join'  ',sort keys %{C.sc};
-        
-        # OK do the 5 to style -> at things
-        
-        my $CC = {%$C};
-        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
-        V.tw->{$k} = $CC;
-    }
-diffreally: |
+        $toen
      
 wtfch: |   
     my $wtf = {};
@@ -268,6 +271,7 @@ Elvis: |
     my $ratio = wtf.sami / wtf.tot;
     $ratio = 0.01 * int(100*$ratio);
     Y.ra = $ratio;
+    Y.rato = wtf.tot;
     Y.revs = !$same;
     
     
