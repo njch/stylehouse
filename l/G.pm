@@ -8,6 +8,7 @@ use feature 'say';
 # two annoying dependencies 
 use Mojo::IOLoop::Stream;
 use Mojo::IOLoop;
+use Mojo::UserAgent;
 use File::Path qw(make_path remove_tree);
 use Scriptalicious;  
 use File::Slurp;
