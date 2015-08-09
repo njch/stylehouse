@@ -200,9 +200,13 @@ R_Jz:
              }
          }
          if (!ref n.sc) {
-             if (n.sc =~ $peels) {
+             if (n.sc eq '') {
+                 n.sc = {};
+             }
+             elsif (n.sc =~ $peels) {
                  n.sc = $peel->(n.sc);
              }
+             else { die "nostr  n.sc    ".ki $n }
          }
          die wdump $N if !ref n.y;
          die "no ny: n.t" if !n.y;

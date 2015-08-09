@@ -37,11 +37,15 @@ R_Jz:
          return 0;
      };
      J.no = J.n = sub { #c a little J (pi)
-         
-         if (!ref $_[0]) {
-             @_ = ($J,$_[0],$_[1],{J=>$_[0]});
+         my @m = @_;
+         if (!ref $m[0]) {
+             if (@m < 4) {
+                 $m[2] ||= {J=>$m[0]};
+                 @m == 3 || die "!!!\n".wdump[@m];
+             }
+             unshift @m, $J;
          }
-         my $m = [@_];
+         my $m = [@m];
          Rw Mno $m;
      };
      J.m = sub {
