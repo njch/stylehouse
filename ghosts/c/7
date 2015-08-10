@@ -148,48 +148,36 @@ Noodles: |
         }else{0}
     };
     
-    my $V = J.El->{Duv} ||= {bb=>{}};
+    
+    my $was = J.El.Duv;
+    my $V = J.El.Duv ||= {bb=>{}};
+    if (J.name eq 'Yes') {
+        sayre "J.name  Duv $was -> $V";
+    }
     my $ot={};
     my $tt={};
     my @nos;
     for my $C (@to) {
         ref C.y || die"nospace".ki $C;
         ref C.y || next;
+        
         my $k = C.y.cv."\t".C.t;
         push @nos, $k unless $C eq $sil;
         
         $ot->{$k} = 1;
-         
+        
         next unless $C eq $sil ||
         # if change is, or just diff in perceiving it
         Rw diffre $J $C $k $Y $V;
         
         $tt->{$k} = $C;
         
-        
         # O
-        my $at = {};
-        at.t = C.t;
-        at.y.cv = C.y.cv;
-        sayre "C.t no s" if !exists C.c.s;
-        at.c.s = C.c.s;
-        at.sc = {%{C.sc}};
-        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
-        if (my $v = at.sc.J) {
-            at.sc.J = v.name;
-            sayyl "Can see v.name   from J.name   C.t  C.y.cv";
-            #v.El.Duv || die "not from here: ".wdump 1, $v;
-            #at.sc.z = v.Ec;
-        }
-        at.sc.geo = ki(at.sc.geo) if at.sc.geo;
-        at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+        my $at = Rw OSC $J $C ;
         
-        
+        sayyl "live once: $k    ".wdump 1, V.lv->{$k};
         
         # so now flop at into on
-        
-        
-        sayre ">.>>>>>> C.t  pi: C.sc.pi";
         
         # V
         
@@ -198,11 +186,17 @@ Noodles: |
         # always see into J c/sc we want
         
         my $ta = V.ta->{$k};
+        my $vl = V.lv->{$k};
+        my $lv;
         
         if ($C eq $sil) {
-            my $unapen = 0;
-            if (keys %{Y.go}) {
-                sayyl "Goners: ".wdump 2, [sort keys %{Y.go}];
+            my $rec = 0;
+            for my $kg (keys %{Y.go}) {
+                my $gv = V.lv->{$kg};
+                if (gv.rmb) {
+                    
+                }
+                sayyl "Goners:  $kg ";
                 # if the medium supports it
                 # sc the removal of something we still c
                 # 
@@ -215,46 +209,68 @@ Noodles: |
             for my $ik (@nos) {
                 
             }
-            if (ta._Yvs eq Y.vs) {
+            
+            if (vl._Yvs eq Y.vs) {
                 sayyl "Vs stable";
                 at.sc.z = ta.sc.z;
             }
             else {
                 at.sc.z = [map{V.lv->{$_}}@nos];
-                at._Yvs = Y.vs;
-                say " Yvs become   at._Yvs - ta._yvs";
+                #die "Was ".wdump[$V];
+                lv._Yvs = "Y.vs";
+                say " Yvs become   lv._Yvs - vl._Yvs";
             }
             #at.z = 
         }
         # can sc the new /-zc
-        say "OUT in J.name ";
         
-        my $c = [at.t, at.y, at.c, at.sc];
-        my $sc = [];
-        
-        
-        saygr "At  now:  ".ki($at)."\nvs  then: ".ki($ta);
-        
+        lv.c = [at.t, at.y, at.c, at.sc];
+        lv.sc = [];
+        V.lv->{$k} = $lv;
         V.ta->{$k} = $hup->($at);
         V.tv->{$k} = $hup->($C);
         
         if ($C eq $sil) {
-            V.c = $c;
-            V.sc = $sc;
+            V.rv = $lv;
         }
         
-        # OK do the 5 to style -> at things
+        #saygr "At  now:  ".ki($at)."\nvs  then: ".ki($ta);
         
-        # hold an indifferent subject to relate future to
     }
     
     my $o = keys %$tt;
     my $t = keys %$ot;
     my $ine = Rw ratio $o $t;
     sayyl "THe J.name was Y.ra     y Y.to               $ine   "
-    .wdump[sort keys %$tt];
+    .wdump([sort keys %$tt])
+    .wdump([sort keys %{V.lv}]);
+    
+    #say wdump 15, V.rv if J.name eq 'Yes';
     
     # bloop
+OSC: | # sheets of language up to da
+        my $at = {};
+        
+        at.t = C.t;
+        at.y.cv = C.y.cv;
+        sayre "C.t no s" if !exists C.c.s;
+        at.c.s = C.c.s;
+        at.sc = {%{C.sc}};
+        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
+        if (my $v = at.sc.J) {
+            at.sc.J = v.name;
+            sayyl "Can see v.name   from J.name   C.t  C.y.cv";
+            my $rV = v.El.Duv || die "J.name of v.name is not from here: ".wdump 2, v.El;
+            my $rv = rV.rv;
+            say "For v.name   ::: ".ki $rv;
+            # we have some change to embed
+            at.sc.z = $rv;
+        }
+        at.sc.geo = ki(at.sc.geo) if at.sc.geo;
+        at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+        
+        $at;
+        
 Sun/oo: [somoe]
 diffre: |
         my $heq = sub {
@@ -266,12 +282,16 @@ diffre: |
         if (my $di = Y.lo->{$k}) {
             my $not;
             if (keys %$di == 1 && di.diff) {
-                my $CC = V.tv->{$k} || die "thought diff, no tw $k";
+                my $CC = V.tv->{$k};
+                if (!$CC) {
+                    sayre "never heard of (V_tv) diff J.name : $k ";
+                    return 1;
+                }
                 for my $tk (keys %{di.diff}) {
                     if ($tk eq 'geo') {
                         $not++ if 0 && !$heq->(C.sc.geo,CC.sc.geo);
                         if ($not && 0) {
-                        sayyl "Geo was $not a difference in the thing";
+                            sayyl "Geo was $not a difference in the thing";
                             sayyl sjson(C.sc.geo);
                             saybl sjson(CC.sc.geo);
                         }
@@ -292,6 +312,12 @@ diffre: |
             $toen = 0 if !$not;
         }
         else {
+            if (my $JJ = C.sc.J) {
+                if (my $V = JJ.El.Duv) {
+                
+                    sayyl "Wonder about JJ.name:  ".wdump 1, $V;
+                }
+            }
             $toen = 0;
         }
         $toen
@@ -322,7 +348,7 @@ wtfch: |
        $wtf;
 Elvis: |
     my $name = shift @$m;
-    my $Y = J.El->{$name} ||= {bb=>{}};
+    my $Y = J.El->{$name} ||= {bb=>{},name=>$name};
     
     my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
     
@@ -392,7 +418,7 @@ ratio: |
     my $ratio = $o / $t;
     0.01 * int(100*$ratio);
     
-Trail: |
+
 sea: |
     u 8ou;
 8ou: |
