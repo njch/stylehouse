@@ -126,10 +126,13 @@ Yesui: |
     };
     $aj;
 Noodles: |
-    my $Y = Rw Elvis Pre $J;
-    my $sil = Y.tv->{"0.9\t/"};
-    my @to = grep { $_ ne $sil } @{Y.vs};
-    push @to, $sil;
+    my $Y = Rw El Pre;
+    
+    Rw Elvis $J $Y;
+    
+    Y.il = Y.tv->{"0.9\t/"}||die'noroot';
+    my @to = grep { $_ ne Y.il } @{Y.vs};
+    push @to, Y.il;
     # coordinate / to ajup chunks of @to
     
     my $hup = sub {
@@ -149,11 +152,7 @@ Noodles: |
     };
     
     
-    my $was = J.El.Duv;
-    my $V = J.El.Duv ||= {bb=>{}};
-    if (J.name eq 'Yes') {
-        sayre "J.name  Duv $was -> $V";
-    }
+    my $V = Rw El Duv;
     my $ot={};
     my $tt={};
     my @nos;
@@ -162,20 +161,20 @@ Noodles: |
         ref C.y || next;
         
         my $k = C.y.cv."\t".C.t;
-        push @nos, $k unless $C eq $sil;
+        push @nos, $k unless $C eq Y.il;
         
         $ot->{$k} = 1;
         
-        next unless $C eq $sil ||
+        next unless $C eq Y.il ||
         # if change is, or just diff in perceiving it
         Rw diffre $J $C $k $Y $V;
         
         $tt->{$k} = $C;
         
         # O
-        my $at = Rw OSC $J $C ;
+        my $at = Rw OSC $J $C $k $Y $V;
         
-        sayyl "live once: $k    ".wdump 1, V.lv->{$k};
+        sayyl "J.name live once: $k    ".wdump 3, V.lv->{$k};
         
         # so now flop at into on
         
@@ -189,8 +188,10 @@ Noodles: |
         my $vl = V.lv->{$k};
         my $lv;
         
-        if ($C eq $sil) {
+        if ($C eq Y.il) {
             my $rec = 0;
+            # selectively replace/drop old
+            #  "  hold keeps, drop others
             for my $kg (keys %{Y.go}) {
                 my $gv = V.lv->{$kg};
                 if (gv.rmb) {
@@ -218,19 +219,20 @@ Noodles: |
                 at.sc.z = [map{V.lv->{$_}}@nos];
                 #die "Was ".wdump[$V];
                 lv._Yvs = "Y.vs";
-                say " Yvs become   lv._Yvs - vl._Yvs";
+                say "$k Yvs become   lv._Yvs - vl._Yvs";
             }
             #at.z = 
         }
         # can sc the new /-zc
         
+        at.c.name = J.name;
         lv.c = [at.t, at.y, at.c, at.sc];
         lv.sc = [];
         V.lv->{$k} = $lv;
         V.ta->{$k} = $hup->($at);
         V.tv->{$k} = $hup->($C);
         
-        if ($C eq $sil) {
+        if ($C eq Y.il) {
             V.rv = $lv;
         }
         
@@ -243,9 +245,9 @@ Noodles: |
     my $ine = Rw ratio $o $t;
     sayyl "THe J.name was Y.ra     y Y.to               $ine   "
     .wdump([sort keys %$tt])
-    .wdump([sort keys %{V.lv}]);
+    .wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
     
-    #say wdump 15, V.rv if J.name eq 'Yes';
+    say wdump 5, V.rv if J.name eq 'Yes';
     
     # bloop
 OSC: | # sheets of language up to da
@@ -259,8 +261,12 @@ OSC: | # sheets of language up to da
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
         if (my $v = at.sc.J) {
             at.sc.J = v.name;
+            
             sayyl "Can see v.name   from J.name   C.t  C.y.cv";
-            my $rV = v.El.Duv || die "J.name of v.name is not from here: ".wdump 2, v.El;
+            # unifies us-most or so fro
+            my $rV = v.El.Duv;
+            $rV ||= {rv=>{LIES=>"from v.name"}};
+            #|| sayre "J.name of v.name is not from here: ".wdump 2, v.El;
             my $rv = rV.rv;
             say "For v.name   ::: ".ki $rv;
             # we have some change to embed
@@ -314,7 +320,7 @@ diffre: |
         else {
             if (my $JJ = C.sc.J) {
                 if (my $V = JJ.El.Duv) {
-                
+                    
                     sayyl "Wonder about JJ.name:  ".wdump 1, $V;
                 }
             }
@@ -346,10 +352,11 @@ wtfch: |
            wtf.same = 0;
        }
        $wtf;
-Elvis: |
+El: |
     my $name = shift @$m;
     my $Y = J.El->{$name} ||= {bb=>{},name=>$name};
-    
+    return $Y
+Elvis: |
     my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
     
     Y.tw ||= {};
@@ -418,7 +425,6 @@ ratio: |
     my $ratio = $o / $t;
     0.01 * int(100*$ratio);
     
-
 sea: |
     u 8ou;
 8ou: |
