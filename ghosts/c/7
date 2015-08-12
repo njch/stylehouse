@@ -121,9 +121,7 @@ r2j: |
     
 Yesui: |
     my $aj = Rw chuv;
-    timer 0.1 {
-    Rw Noodles $J
-    };
+    Rw Noodles $J;
     $aj;
 Noodles: |
     my $Y = Rw El Pre;
@@ -162,7 +160,6 @@ Noodles: |
         
         my $k = C.y.cv."\t".C.t;
         push @nos, $k unless $C eq Y.il;
-        
         $ot->{$k} = 1;
         
         next unless $C eq Y.il ||
@@ -174,19 +171,15 @@ Noodles: |
         # O
         my $at = Rw OSC $J $C $k $Y $V;
         
-        sayyl "J.name live once: $k    ".wdump 3, V.lv->{$k};
-        
         # so now flop at into on
-        
         # V
-        
         # re-c if sc missing or unable to makeup diff
-        
         # always see into J c/sc we want
         
         my $ta = V.ta->{$k};
         my $vl = V.lv->{$k};
-        my $lv;
+        my $lv = {};
+        my $cl = {};
         
         if ($C eq Y.il) {
             my $rec = 0;
@@ -194,15 +187,12 @@ Noodles: |
             #  "  hold keeps, drop others
             for my $kg (keys %{Y.go}) {
                 my $gv = V.lv->{$kg};
-                if (gv.rmb) {
-                    
+                if (gv.rmnsc) {
+                    acum $cl, sc => gv.rmnsc;
                 }
                 sayyl "Goners:  $kg ";
                 # if the medium supports it
                 # sc the removal of something we still c
-                # 
-                
-                # c l=1 removes 
                 # find .c removability
                 # replace our c 
             }
@@ -225,29 +215,46 @@ Noodles: |
         }
         # can sc the new /-zc
         
+        sayyl "J.name live once: $k    ".wdump 4, V.lv->{$k};
+        
         at.c.name = J.name;
-        lv.c = [at.t, at.y, at.c, at.sc];
-        lv.sc = [];
-        V.lv->{$k} = $lv;
+        if ('force') {
+            at.c.el = 1;
+            lv.rmnsc = [at.t, at.y, {el=>9}];
+        }
         V.ta->{$k} = $hup->($at);
         V.tv->{$k} = $hup->($C);
+        
+        for my $nk (qw't y c sc') {
+            my $v = $at->{$nk};
+            if (!$heq->($v, $ta->{$nk})) {
+                sayyl " $k   the $nk";#$v $ta->{$nk} is diff: ".ki($v);
+            }
+            else {
+                sayre " $k  thje $nk";
+            }
+        }
+        
+        lv.ma = lv.ma+1;
+        lv.c = [[at.t, at.y, at.c, at.sc]];
+        lv.sc = [];
+        V.lv->{$k} = $lv;
         
         if ($C eq Y.il) {
             V.rv = $lv;
         }
         
-        #saygr "At  now:  ".ki($at)."\nvs  then: ".ki($ta);
+        saygr "At  now:  ".ki($at)."\nvs  then: ".ki($ta);
         
     }
     
     my $o = keys %$tt;
     my $t = keys %$ot;
     my $ine = Rw ratio $o $t;
-    sayyl "THe J.name was Y.ra     y Y.to               $ine   "
-    .wdump([sort keys %$tt])
-    .wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
+    sayyl "THe J.name was Y.ra     y Y.to               $ine   ";
+    #.wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
     
-    say wdump 5, V.rv if J.name eq 'Yes';
+    #say wdump 15, V.rv if J.name eq 'Yes';
     
     # bloop
 OSC: | # sheets of language up to da
@@ -261,13 +268,14 @@ OSC: | # sheets of language up to da
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
         if (my $v = at.sc.J) {
             at.sc.J = v.name;
-            
+            my $nV = v.El.Duv || do { 
+                sayre "noduv $k";
+                {rv=>{LIES=>"from v.name"}}
+            };
             sayyl "Can see v.name   from J.name   C.t  C.y.cv";
             # unifies us-most or so fro
-            my $rV = v.El.Duv;
-            $rV ||= {rv=>{LIES=>"from v.name"}};
             #|| sayre "J.name of v.name is not from here: ".wdump 2, v.El;
-            my $rv = rV.rv;
+            my $rv = nV.rv;
             say "For v.name   ::: ".ki $rv;
             # we have some change to embed
             at.sc.z = $rv;
@@ -317,13 +325,19 @@ diffre: |
             }
             $toen = 0 if !$not;
         }
-        else {
+        if (!$toen) {
             if (my $JJ = C.sc.J) {
-                if (my $V = JJ.El.Duv) {
-                    
-                    sayyl "Wonder about JJ.name:  ".wdump 1, $V;
+                if (my $nV = JJ.El->{V.name}) {
+                    my $TT = V.ta->{$k};
+                    sayyl "J.name  Wonder about $k  JJ.name:  ".wdump 1, nV.rv;
+                    #my $vl = V.lv->{$k};
+                    saybl "Vs: ".wdump 3, $TT;
+                }
+                else {
+                   sayre "no El V.name on JJ.name";
                 }
             }
+            say "after J";
             $toen = 0;
         }
         $toen
