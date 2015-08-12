@@ -221,143 +221,143 @@ Noodles: |
     
     # bloop
 ACT: |
-                if (ref $v eq 'HASH') {
-                    my $wt = Rw wtfch $Jb:v $Yb:o;
-                    sayyl "J.name    $k   the $nk";
-                    sayre "gone: $_" for sort keys %{wt.gone};
-                    sayyl "new: $_" for sort keys %{wt.new};
-                    say "diff: $_  ---\n ^ $o->{$_}\n | wt.diff->{$_}" for sort keys %{wt.diff};
+    if (ref $v eq 'HASH') {
+        my $wt = Rw wtfch $Jb:v $Yb:o;
+        sayyl "J.name    $k   the $nk";
+        sayre "gone: $_" for sort keys %{wt.gone};
+        sayyl "new: $_" for sort keys %{wt.new};
+        say "diff: $_  ---\n ^ $o->{$_}\n | wt.diff->{$_}" for sort keys %{wt.diff};
+        
+        if ($nk eq 'V') {
+            for my $wk (qw'gone diff new') {
+                for my $gk (sort keys %{$wt->{$wk}}) {
+                    my $iv = lv.do->{$gk};
+                    my $ov = vl.do->{$gk};
+                    ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
                     
-                    if ($nk eq 'V') {
-                        for my $wk (qw'gone diff new') {
-                            for my $gk (sort keys %{$wt->{$wk}}) {
-                                my $iv = lv.do->{$gk};
-                                my $ov = vl.do->{$gk};
-                                ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
-                                
-                                
-                                sayre "J.name off $k: $wk: $gk";
-                                if ($wk eq 'gone') {
-                                    ov.rmnsc || die "no remin";
-                                    !$iv || die "gone had iv";
-                                    # ^ sc plumb its destruction
-                                    # can void if our c reframes by implicitly clearing 
-                                }
-                                elsif ($wk eq 'new') {
-                                    $iv || die;
-                                    # may like to grab the element before it
-                                    # like a curve continuing
-                                    
-                                }
-                                elsif ($wk eq 'diff') {
-                                    if (iv.c eq ov.c) {
-                                        iv.sc eq ov.sc || die "same c fluc sc $gk";
-                                        if (@{iv.sc} > @{ov.sc}) {
-                                            saybl "J.name GROWs $gk";
-                                        }
-                                    }
-                                    else {
-                                        saybl "J.name $gk    REPLACES c";
-                                    }
-                                }
-                                
+                    
+                    sayre "J.name off $k: $wk: $gk";
+                    if ($wk eq 'gone') {
+                        ov.rmnsc || die "no remin";
+                        !$iv || die "gone had iv";
+                        # ^ sc plumb its destruction
+                        # can void if our c reframes by implicitly clearing 
+                    }
+                    elsif ($wk eq 'new') {
+                        $iv || die;
+                        # may like to grab the element before it
+                        # like a curve continuing
+                        
+                    }
+                    elsif ($wk eq 'diff') {
+                        if (iv.c eq ov.c) {
+                            iv.sc eq ov.sc || die "same c fluc sc $gk";
+                            if (@{iv.sc} > @{ov.sc}) {
+                                saybl "J.name GROWs $gk";
                             }
                         }
+                        else {
+                            saybl "J.name $gk    REPLACES c";
+                        }
                     }
-                }
-                else {
-                    sayyl " $k   the $nk ".wdump 2,[$v,$o];
                     
                 }
-OSC: | # sheets of language up to da
-        my $at = {};
-        
-        at.t = C.t;
-        at.y.cv = C.y.cv;
-        sayre "C.t no s" if !exists C.c.s;
-        at.c.s = C.c.s;
-        at.sc = {%{C.sc}};
-        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
-        if (my $v = at.sc.J) { # J unifies -
-            at.sc.J = v.name;
-            
-            my $nV = v.El->{V.name}||{};
-            my $rv = nV.rv || {LIES=>"from v.name"};
-            
-            lv.do->{V.name} = $rv;
-            at.V->{V.name} = rv.i;
-        }
-        if ($C eq Y.il) { # / unifies  <
-            for my $ik (@{V.os}) {
-                my $iv = V.lv->{$ik};
-                
-                lv.do->{$ik} = $iv;
-                at.V->{$ik} = iv.i;
             }
         }
-        at.sc.geo = ki(at.sc.geo) if at.sc.geo;
-        at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+    }
+    else {
+        sayyl " $k   the $nk ".wdump 2,[$v,$o];
         
-        $at;
+    }
+OSC: | # sheets of language up to da
+    my $at = {};
+    
+    at.t = C.t;
+    at.y.cv = C.y.cv;
+    sayre "C.t no s" if !exists C.c.s;
+    at.c.s = C.c.s;
+    at.sc = {%{C.sc}};
+    delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
+    if (my $v = at.sc.J) { # J unifies -
+        at.sc.J = v.name;
+        
+        my $nV = v.El->{V.name}||{};
+        my $rv = nV.rv || {LIES=>"from v.name"};
+        
+        lv.do->{V.name} = $rv;
+        at.V->{V.name} = rv.i;
+    }
+    if ($C eq Y.il) { # / unifies  <
+        for my $ik (@{V.os}) {
+            my $iv = V.lv->{$ik};
+            
+            lv.do->{$ik} = $iv;
+            at.V->{$ik} = iv.i;
+        }
+    }
+    at.sc.geo = ki(at.sc.geo) if at.sc.geo;
+    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+    
+    $at;
         
 Sun/oo: [somoe]
 diffre: |
-        my $heq = sub {
-            my ($o,$t) = @_;
-            keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o;
-        };
-        my $toen = 1;
-        
-        if (my $di = Y.lo->{$k}) {
-            my $not;
-            if (keys %$di == 1 && di.diff) {
-                my $CC = V.tv->{$k};
-                if (!$CC) {
-                    sayre "never heard of (V_tv) diff J.name : $k ";
-                    return 1;
+    my $heq = sub {
+        my ($o,$t) = @_;
+        keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o;
+    };
+    my $toen = 1;
+    
+    if (my $di = Y.lo->{$k}) {
+        my $not;
+        if (keys %$di == 1 && di.diff) {
+            my $CC = V.tv->{$k};
+            if (!$CC) {
+                sayre "never heard of (V_tv) diff J.name : $k ";
+                return 1;
+            }
+            for my $tk (keys %{di.diff}) {
+                if ($tk eq 'geo') {
+                    $not++ if 0 && !$heq->(C.sc.geo,CC.sc.geo);
+                    if ($not && 0) {
+                        sayyl "Geo was $not a difference in the thing";
+                        sayyl sjson(C.sc.geo);
+                        saybl sjson(CC.sc.geo);
+                    }
                 }
-                for my $tk (keys %{di.diff}) {
-                    if ($tk eq 'geo') {
-                        $not++ if 0 && !$heq->(C.sc.geo,CC.sc.geo);
-                        if ($not && 0) {
-                            sayyl "Geo was $not a difference in the thing";
-                            sayyl sjson(C.sc.geo);
-                            saybl sjson(CC.sc.geo);
-                        }
-                    }
-                    elsif ($tk eq '') {
-                        $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
-                    }
-                    else {
-                    
-                        saybl "Somewhere else ch  C.t tk $tk";
-                        $not++;
-                    }
+                elsif ($tk eq '') {
+                    $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
+                }
+                else {
+                
+                    saybl "Somewhere else ch  C.t tk $tk";
+                    $not++;
+                }
+            }
+        }
+        else {
+            $not = 1;
+        }
+        $toen = 0 if !$not;
+    }
+    if (!$toen) {
+        if (my $JJ = C.sc.J) {
+            my $ta = V.ta->{$k};
+            if (my $nV = JJ.El->{V.name}) {
+                my $iv = nV.rv;
+                my $oi = ta.V->{V.name};
+                if ($oi ne iv.i) {
+                    $toen = 1;
+                    sayyl "J.name  $k   about JJ.name: $toen \n"
+                    .($toen&&" ^ iv.i\n | $oi");
                 }
             }
             else {
-                $not = 1;
-            }
-            $toen = 0 if !$not;
-        }
-        if (!$toen) {
-            if (my $JJ = C.sc.J) {
-                my $ta = V.ta->{$k};
-                if (my $nV = JJ.El->{V.name}) {
-                    my $iv = nV.rv;
-                    my $oi = ta.V->{V.name};
-                    if ($oi ne iv.i) {
-                        $toen = 1;
-                        sayyl "J.name  $k   about JJ.name: $toen \n"
-                        .($toen&&" ^ iv.i\n | $oi");
-                    }
-                }
-                else {
-                   sayre "no El V.name on JJ.name";
-                }
+               sayre "no El V.name on JJ.name";
             }
         }
-        $toen
+    }
+    $toen
      
 wtfch: |   
     my $wtf = {};
