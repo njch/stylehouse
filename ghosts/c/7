@@ -184,12 +184,12 @@ Noodles: |
         
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
-            my $o = $ta->{$nk}; # still 
+            my $o = $ta->{$nk}; # still
             if (!$heq->($v, $o)) { #
                 Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
             }
             else {
-                say "J.name $k  thje $nk  =====";
+                #say "J.name $k  thje $nk  =====";
             }
         }
         
@@ -223,45 +223,70 @@ ACT: |
     my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
         my $wt = Rw wtfch $Jb:v $Yb:o;
-        my $nonnew = keys %{wt.gone} || keys %{wt.diff};
-        if ($nk eq 'V') {
+        my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
+        
             for my $wk (qw'gone diff new still') {
                 for my $gk (sort keys %{$wt->{$wk}}) {
-                    my $iv = lv.do->{$gk};
-                    my $ov = vl.do->{$gk};
-                    ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
-                    
-                    my $talk = "$talk $wk: $gk\t";
+                    my $talk = "$talk $wk: $gk";
+                    my $s = $at->{$nk}->{$gk};
                     
                     if ($nk eq 'V') {
-                        Rw AC_V + $talk $nonnew $iv $ov $gk $wk;
+                        Rw AC_V + $talk $nonnew $gk $wt $wk $s;
                     }
                     elsif ($nk eq 'c') {
-                    
+                        Rw AC_c + $talk $nonnew $gk $wt $wk $s;
                     }
-                    elsif ($nk eq 'scc') {
-                    
+                    elsif ($nk eq 'sc') {
+                        Rw AC_sc + $talk $nonnew $gk $wt $wk $s;
                     }
-                    else {die"wtfis$nk";
+                    else {die"wtfis$nk"}
                 }
             }
-            saybl "$talk    is all new" if !$nonnew && keys %{wt.new};
-        }
-        else {
-            if ($nonnew) {
-                saybl "$talk    OTher thing chang";
-                sayre "gone: $_" for sort keys %{wt.gone};
-                sayyl "new: $_" for sort keys %{wt.new};
-                say "diff: $_  --- ".ki{from=>$v->{$_},to=>$o->{$_}} for sort keys %{wt.diff};
-            }
-            say "$talk ist";
-        }
+            saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
+            
     }
     else {
-        sayyl " $k   the $nk ".wdump 2,[$v,$o];
-        
+        my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";
+        $talk .= "$wk: ";
+        if ($nk eq 't' || $nk eq 'y') {
+            if ($wk ne 'new') {
+                die "HOWTO $talk";
+            }
+            sayyl $talk unless !$vl;
+            lv.op.o = 1;
+        }
+        else {die"wtfis $v $nk"}
+    }
+AC_c: |
+    if ($wk eq 'gone') {
+        die "how delete a c $gk"
+        lv.op.c->{$gk} = 9;
+    }
+    elsif ($wk eq 'new') {
+    
+    }
+    elsif ($wk eq 'diff') {
+        sayyl "$talk erdif   $gk  $s";
+    }
+    else {
+        sayyl "!!!!! $talk" unless !$nonnew;
+    }
+    if ($nonnew) {
+        sayre "gone: $_" for sort keys %{wt.gone};
+        sayyl "new: $_" for sort keys %{wt.new};
+        sayyl "diff: $_  --- ".ki{i=>$v->{$_},o=>$o->{$_}} for sort keys %{wt.diff};
+    }
+AC_sc: |
+    sayyl "!!!!! $talk" unless !$nonnew;
+    if ($nonnew) {
+        sayre "gone: $_" for sort keys %{wt.gone};
+        sayyl "new: $_" for sort keys %{wt.new};
+        sayyl "diff: $_  --- ".ki{i=>$v->{$_},o=>$o->{$_}} for sort keys %{wt.diff};
     }
 AC_V: |
+    my $iv = lv.do->{$gk};
+    my $ov = vl.do->{$gk};
+    ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
                     if ($wk eq 'gone') {
                         ov.rmnsc || die "no remin";
                         !$iv || die "gone had iv";
