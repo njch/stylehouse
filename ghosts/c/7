@@ -174,7 +174,6 @@ Noodles: |
         
         my $ta = V.ta->{$k};
         my $vl = V.lv->{$k};
-        my $cl = {};
         
         at.c.name = J.name;
         if ('force') {
@@ -182,15 +181,15 @@ Noodles: |
             lv.rmnsc = [at.t, at.y, {el=>9}];
         }
         
+        
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk}; # still 
             if (!$heq->($v, $o)) { #
                 Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
-                
             }
             else {
-                #sayre " $k  thje $nk";
+                say "J.name $k  thje $nk  =====";
             }
         }
         
@@ -221,54 +220,89 @@ Noodles: |
     
     # bloop
 ACT: |
+    my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
         my $wt = Rw wtfch $Jb:v $Yb:o;
-        sayyl "J.name    $k   the $nk";
-        sayre "gone: $_" for sort keys %{wt.gone};
-        sayyl "new: $_" for sort keys %{wt.new};
-        say "diff: $_  ---\n ^ $o->{$_}\n | wt.diff->{$_}" for sort keys %{wt.diff};
-        
+        my $nonnew = keys %{wt.gone} || keys %{wt.diff};
         if ($nk eq 'V') {
-            for my $wk (qw'gone diff new') {
+            for my $wk (qw'gone diff new still') {
                 for my $gk (sort keys %{$wt->{$wk}}) {
                     my $iv = lv.do->{$gk};
                     my $ov = vl.do->{$gk};
                     ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
                     
+                    my $talk = "$talk $wk: $gk\t";
                     
-                    sayre "J.name off $k: $wk: $gk";
-                    if ($wk eq 'gone') {
-                        ov.rmnsc || die "no remin";
-                        !$iv || die "gone had iv";
-                        # ^ sc plumb its destruction
-                        # can void if our c reframes by implicitly clearing 
+                    if ($nk eq 'V') {
+                        Rw AC_V + $talk $nonnew $iv $ov $gk $wk;
                     }
-                    elsif ($wk eq 'new') {
-                        $iv || die;
-                        # may like to grab the element before it
-                        # like a curve continuing
-                        
-                    }
-                    elsif ($wk eq 'diff') {
-                        if (iv.c eq ov.c) {
-                            iv.sc eq ov.sc || die "same c fluc sc $gk";
-                            if (@{iv.sc} > @{ov.sc}) {
-                                saybl "J.name GROWs $gk";
-                            }
-                        }
-                        else {
-                            saybl "J.name $gk    REPLACES c";
-                        }
-                    }
+                    elsif ($nk eq 'c') {
                     
+                    }
+                    elsif ($nk eq 'scc') {
+                    
+                    }
+                    else {die"wtfis$nk";
                 }
             }
+            saybl "$talk    is all new" if !$nonnew && keys %{wt.new};
+        }
+        else {
+            if ($nonnew) {
+                saybl "$talk    OTher thing chang";
+                sayre "gone: $_" for sort keys %{wt.gone};
+                sayyl "new: $_" for sort keys %{wt.new};
+                say "diff: $_  --- ".ki{from=>$v->{$_},to=>$o->{$_}} for sort keys %{wt.diff};
+            }
+            say "$talk ist";
         }
     }
     else {
         sayyl " $k   the $nk ".wdump 2,[$v,$o];
         
     }
+AC_V: |
+                    if ($wk eq 'gone') {
+                        ov.rmnsc || die "no remin";
+                        !$iv || die "gone had iv";
+                        # ^ sc plumb its destruction
+                        # can void if our c reframes by implicitly clearing 
+                        saybl "$talk  is GONE!";
+                        
+                        lv.od.go->{$gk} = $iv;
+                    }
+                    elsif ($wk eq 'new') {
+                        $iv || die;
+                        # may like to grab the element before it
+                        # like a curve continuing
+                        saybl "$talk    new!" unless !$nonnew;
+                        
+                        lv.od.new->{$gk} = $iv;
+                    }
+                    elsif ($wk eq 'diff') {
+                        if (iv.c eq ov.c) {
+                            iv.sc eq ov.sc && die "same c fluc sc $gk";
+                            my $in = @{iv.sc};
+                            my $out = @{ov.sc};
+                            if (@{iv.sc} > @{ov.sc}) {
+                                saybl "$talk GROWs";
+                                
+                                lv.od.gr->{$gk} = $iv;
+                            }
+                            else {
+                                warn "WTFF ".wdump 2,[$iv,$ov];
+                            }
+                        }
+                        else {
+                            saybl "$talk  REPLACES c";
+                            
+                            lv.od.over->{$gk} = $iv;
+                        }
+                    }
+                    elsif ($wk eq 'still') {
+                        lv.od.ll->{$gk} = $iv;
+                    }
+                    else {die 'wtwhack'};
 OSC: | # sheets of language up to da
     my $at = {};
     
@@ -288,6 +322,7 @@ OSC: | # sheets of language up to da
         at.V->{V.name} = rv.i;
     }
     if ($C eq Y.il) { # / unifies  <
+        lv.voso = 1;
         for my $ik (@{V.os}) {
             my $iv = V.lv->{$ik};
             
@@ -329,8 +364,7 @@ diffre: |
                     $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
                 }
                 else {
-                
-                    saybl "Somewhere else ch  C.t tk $tk";
+                    saybl "J.name $k has diffre: $tk";
                     $not++;
                 }
             }
@@ -348,8 +382,8 @@ diffre: |
                 my $oi = ta.V->{V.name};
                 if ($oi ne iv.i) {
                     $toen = 1;
-                    sayyl "J.name  $k   about JJ.name: $toen \n"
-                    .($toen&&" ^ iv.i\n | $oi");
+                    #sayyl "J.name  $k   about JJ.name: $toen \n"
+                    #.($toen&&" ^ iv.i\n | $oi");
                 }
             }
             else {
