@@ -196,6 +196,12 @@ Noodles: |
         V.ta->{$k} = $hup->($at); 
         V.tv->{$k} = $hup->($C);
         
+        # re c if lv.op.o
+        if (1 || J.name eq 'Yes') {
+            sayyl "TOpl: ".wdump 3, ["$vl", lv.pur, lv.op, lv.od];
+        }
+        
+        
         lv.ma = lv.ma+1;
         lv.c = [[at.t, at.y, at.c, at.sc]];
         lv.sc = [];
@@ -259,30 +265,50 @@ ACT: |
     }
 AC_c: |
     if ($wk eq 'gone') {
-        die "how delete a c $gk"
+        die "how delete a c $gk";
+        die "would have" if !$vl;
+        # most of these can re c if they get confused
+        # care later to grab /in, recreate holster, place
+        # or however we whatever
+        
         lv.op.c->{$gk} = 9;
     }
     elsif ($wk eq 'new') {
-    
+        die "how inject a c $gk" if $vl;
     }
     elsif ($wk eq 'diff') {
-        sayyl "$talk erdif   $gk  $s";
+        sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
+        if ($gk eq 's') {
+        
+            lv.pur.c.s = 1;
+        }
+        else {
+            die "how to c dif $gk";
+        }
     }
-    else {
-        sayyl "!!!!! $talk" unless !$nonnew;
-    }
-    if ($nonnew) {
-        sayre "gone: $_" for sort keys %{wt.gone};
-        sayyl "new: $_" for sort keys %{wt.new};
-        sayyl "diff: $_  --- ".ki{i=>$v->{$_},o=>$o->{$_}} for sort keys %{wt.diff};
-    }
+    else {die 'wtwhack'.$wk}
 AC_sc: |
-    sayyl "!!!!! $talk" unless !$nonnew;
-    if ($nonnew) {
-        sayre "gone: $_" for sort keys %{wt.gone};
-        sayyl "new: $_" for sort keys %{wt.new};
-        sayyl "diff: $_  --- ".ki{i=>$v->{$_},o=>$o->{$_}} for sort keys %{wt.diff};
+    if ($wk eq 'gone') {
+        die "how delete a c $gk";
+        die "would have" if !$vl;
+        # most of these can re c if they get confused
+        # care later to grab /in, recreate holster, place
+        # or however we whatever
+        
+        lv.op.sc->{$gk} = 9;
     }
+    elsif ($wk eq 'new') {
+        sayyl "$talk  !!!!  $v->{$gk} " unless !$nonnew;
+        
+        lv.pur.sc->{$gk} = 1;
+    }
+    elsif ($wk eq 'diff') {
+        sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
+        
+        lv.pur.sc->{$gk} = 1;
+    }
+    else {die 'wtwhack'.$wk}
+    
 AC_V: |
     my $iv = lv.do->{$gk};
     my $ov = vl.do->{$gk};
@@ -294,7 +320,7 @@ AC_V: |
                         # can void if our c reframes by implicitly clearing 
                         saybl "$talk  is GONE!";
                         
-                        lv.od.go->{$gk} = $iv;
+                        lv.od.go->{$gk} = $ov;
                     }
                     elsif ($wk eq 'new') {
                         $iv || die;
