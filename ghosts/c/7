@@ -176,18 +176,19 @@ Noodles: |
         at.c.name = J.name;
         if ('force') {
             at.c.el = 1;
+            lv.force = 'el';
+            lv.selfs = 1;
+            lv.grab = [at.t, at.y, {el=>8}];
             lv.rmnsc = [at.t, at.y, {el=>9}];
+            # and or ID
+            # ID makes possible to throw into most aj the tiniest spec of change
         }
-        
         
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk}; # still
             if (!$heq->($v, $o)) { #
                 Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
-            }
-            else {
-                #say "J.name $k  thje $nk  =====";
             }
         }
         
@@ -210,24 +211,115 @@ Noodles: |
     sayyl "THe J.name was Y.ra     y Y.to               $ine   ";
     #.wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
     
-    #say wdump 15, V.rv if J.name eq 'Yes';
+    my $rv = V.rv;
+    
+    say wdump 15, [rv.i,rv.c,rv.sc] if J.name eq 'Yes';
     
     # bloop
 OMP: |
     my $talk = join"  ",($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
     say "OMP $talk";
+    !$vl && !lv.op && die "unopposed to not-bfore";
+    
+    my $ne = {};
+    undef $ne if lv.op;
+    if ($ne) {
+        for my $nk (keys %{lv.pur}) {
+            my $sv = lv.pur->{$nk};
+            if (ref $sv eq 'HASH') {
+                for my $ck (keys %$sv) {
+                    $ne->{$nk}->{$ck} = $at->{$nk}->{$ck};
+                }
+            }
+            else {
+                ref $sv && die "wtf $sv";
+                $ne->{$nk} = $at->{$nk};
+            }
+        }
+    }
+    
+    if (!$ne && !lv.od) {
+        sayre "Try to keep guts: ".wdump 1, lv.do;
+    }
+    if (lv.od) {
+            my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
+            my $san = {map{$_=>1}keys %{lv.do}};
+            
+            my $ded = [];
+            
+            if (my $go = lv.od.go) {
+                for my $ea (sort keys %$go) {
+                    my $ov = $go->{$ea};
+                    my $oov = vl.do->{$ea};
+                    $ov eq $oov || die "difoov $ov, $oov";
+                    $san->{$ea} && die " $ea goes but still in do..";
+                    if (!ov.rmnsc) {
+                        lv.op.V->{$ea} = 1 && die " wtf";
+                    }
+                    push @$ded, ov.rmnsc;
+                }
+            }
+            
+                
+            my $z = [];
+            my $left;
+            for my $ea (@each) {
+                delete $san->{$ea};
+                my $iv = lv.do->{$ea}||die;
+                my $ov = vl.do->{$ea};
+                
+                if (lv.od.new->{$ea}) {
+                    $ov && die "new had ov";
+                    sayyl "New $ea";
+                    
+                    push @$z, left.grab if $left && left.grab;
+                    # where $left is already in lv
+                    # want iv.appendAfter(left);
+                    # impl want to iv.prependTo(lv) if no $left
+                    push @$z, grep{defined} @{iv.c}, @{iv.sc};
+                }
+                elsif (lv.od.gr->{$ea}) {
+                    $ov || die 'nov';
+                    iv.c eq ov.c || die "wasn't satbv c";
+                    
+                    my @ra = @{ov.sc}..@{iv.sc}-1;
+                    
+                    sayyl "gr $ea        @ra";
+                    
+                    my @ray = @{iv.sc}[@ra];
+                    
+                    push @$z, @ray;
+                    
+                }
+                elsif (lv.od.over->{$ea}) {
+                    sayyl "OVER $ea";
+                    lv.selfs || die "no way to...";
+                    
+                    
+                    push @$z, grep{defined} @{iv.c}, @{iv.sc};
+                }
+                elsif (lv.od.ll->{$ea}) {
+                    say "keep $ea";
+                }
+                else {die "wtf $ea "}
+                $left = $iv;
+            }
+            sayre "!!! forgot about $_" for keys %$san;
+            ne.sc.z = $z;
+        }
+        
+        if (keys %$ne) {
+            ne.t = at.t;
+            ne.y = at.y;
+        }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    sayyl wdump 3, [$ne] if 1||keys %$ne;
+    # op & re c
+    # but there is intended to wipe clean or just redo the surface
+    # pur and sc
+    # handleable od
     
     
     
