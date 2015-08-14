@@ -299,20 +299,16 @@ sub ki {
     my $ar = shift;
     my $re = $ar if $ar =~ /^\d+$/;
     $ar = shift if defined $re;
-    $re = 1 if !defined $re;
     my $d = 1 + shift;
     if (!ref $ar || "$ar" !~ /HASH/) {
-        return "!$re $d $ar%:$ar";
+        return "!%:$ar";
     }
     my $lim = 150 - (150 * ($d / 3));
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
-        sayyl "-~ ".slm(20, "$v");
         ref $v eq 'HASH'
-            ? "$_=".($re ?  "{ "
-                .slim($lim,ki($re-1, $v,$d))
-            ." }" : "@@".gp($v))
+            ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
