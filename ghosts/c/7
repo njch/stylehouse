@@ -196,11 +196,9 @@ Noodles: |
         V.ta->{$k} = $hup->($at); 
         V.tv->{$k} = $hup->($C);
         
-        # re c if lv.op.o
-        if (1 || J.name eq 'Yes') {
-            sayyl "TOpl: ".wdump 3, ["$vl", lv.pur, lv.op, lv.od];
-        }
+        my $talk = ($vl?"vl":"**").join"  ",map{"$_:".ki$lv->{$_}}qw'pur op od';
         
+        sayyl $talk if J.name eq 'Yes';
         
         lv.ma = lv.ma+1;
         lv.c = [[at.t, at.y, at.c, at.sc]];
@@ -259,7 +257,8 @@ ACT: |
                 die "HOWTO $talk";
             }
             sayyl $talk unless !$vl;
-            lv.op.o = 1;
+            
+            lv.op->{$nk} = 1;
         }
         else {die"wtfis $v $nk"}
     }
