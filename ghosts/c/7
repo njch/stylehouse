@@ -151,22 +151,20 @@ Noodles: |
     
     
     my $V = Rw El Duv;
-    my $ot={};
     V.os = [];
-    my $tt={};
+    my $twof = 0;
     for my $C (@to) {
         ref C.y || die"nospace".ki $C;
         ref C.y || next;
         
         my $k = C.y.cv."\t".C.t;
         push @{V.os}, $k unless $C eq Y.il;
-        $ot->{$k} = 1;
         
         next unless $C eq Y.il ||
         # if change is, or just diff in perceiving it
         Rw diffre $J $C $k $Y $V;
         
-        $tt->{$k} = $C;
+        $twof++;
         
         # O
         my $lv = {};
@@ -196,26 +194,18 @@ Noodles: |
         V.ta->{$k} = $hup->($at); 
         V.tv->{$k} = $hup->($C);
         
-        my $talk = join"  ",($vl?"vl":"**"),map{"$_:".ki(1,$lv->{$_})}qw'pur op od';
+        Rw OMP $J $C $k $Y $V $at $ta $lv $vl;
+        # lv c-sc actualiser ^
         
-        say "Jname $k\n\t$talk" if J.name eq 'Yes';
-        
-        lv.ma = lv.ma+1;
-        lv.c = [[at.t, at.y, at.c, at.sc]];
-        lv.sc = [];
-        lv.i = "lv.c lv.sc ".@{lv.sc};
         V.lv->{$k} = $lv;
         
         if ($C eq Y.il) {
             V.rv = $lv;
         }
-        
-        #saygr "At  now:  ".ki($at)."\nvs  then: ".ki($ta);
-        
     }
     
-    my $o = keys %$tt;
-    my $t = keys %$ot;
+    my $o = $twof;
+    my $t = @to;
     my $ine = Rw ratio $o $t;
     sayyl "THe J.name was Y.ra     y Y.to               $ine   ";
     #.wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
@@ -223,6 +213,14 @@ Noodles: |
     #say wdump 15, V.rv if J.name eq 'Yes';
     
     # bloop
+OMP: |
+    my $talk = join"  ",($vl?"vl":"**"),
+        (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
+    say "OMP $talk";
+    lv.ma = lv.ma+1;
+    lv.c = [[at.t, at.y, at.c, at.sc]];
+    lv.sc = [];
+    lv.i = "lv.c lv.sc ".@{lv.sc};
 ACT: |
     my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
@@ -274,17 +272,22 @@ AC_c: |
     }
     elsif ($wk eq 'new') {
         die "how inject a c $gk" if $vl;
+        
+        lv.op.c->{$gk} = 9;
     }
     elsif ($wk eq 'diff') {
         sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
         if ($gk eq 's') {
         
-            lv.pur.c.s = 1;
+            lv.pur.c->{$gk} = 1;
         }
         else {
             die "how to c dif $gk";
+            
+            lv.op.c->{$gk} = 9;
         }
     }
+    elsif ($wk eq 'still') {}
     else {die 'wtwhack'.$wk}
 AC_sc: |
     if ($wk eq 'gone') {
@@ -306,6 +309,7 @@ AC_sc: |
         
         lv.pur.sc->{$gk} = 1;
     }
+    elsif ($wk eq 'still') {}
     else {die 'wtwhack'.$wk}
     
 AC_V: |
@@ -459,6 +463,7 @@ wtfch: |
            }
            else {
                wtf.sami++;
+               wtf.still->{$_} = $Jb->{$_};
            }
            wtf.tot++;
        }
