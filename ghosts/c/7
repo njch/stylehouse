@@ -30,6 +30,9 @@ j: |
     
 somewherei: |
     u jbz
+    n fgeijji dsfji
+    n jidj jfiewji
+    
 jbz: |
     u mody=>=>so
 qq: |
@@ -45,68 +48,67 @@ qq: |
     
     #
 Jto: |
-     my $J;
-     J.id = mkuid;
-     (J.name) = @{delete ar.m};
-     J.bb = {};
-     J.phy = {};
-     J.phl = {};
-     
-     J.most.J = $J;
-     J.most.mody = 'mani';
-     J.most.eo = 'Yesui';
-     J.tt = 1;
-     
-     J.u = sub {
-         my $ar;
-         ar.J = Rw j $J qq;
-         ar.N = [[@_]];
-         sayyl "J.name U! @_";
-         Rw MyN;
-         # & concert overworld
-     };
-     J.n = sub {
-         my $ar;
-         ar.J = $J;
-         ar.N = [[@_]];
-         Rw MyN;
-     };
-     J.m = sub {
-         my $ar;
-         ar.M = shift;
-         ar.J = $J;
-         ar.N = [[@_]];
-         Rw MyN;
-     };
-     J.bz = sub { #c
-         my $m = [@_];
-         die "not 2 @$m" if @$m != 2;
-         my $j={};
-         while (@$m) {
-             my ($r, $v) = (shift @$m, shift @$m);
-             if ($r =~ /^%(\S+)/) {
-                 j.style = $1;
-             }
-             else {
-                 $j = Rw r2j $r $J;
-             }
-             defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
-             
-             j.r = join "\t", j.cv, j.t, j.style;
-             j.s = $v;
-             my @Js = $J;
-             push @Js, values %{J.phy} if J.phy;
-             for my $jj (@Js) {
-                 jj.bb->{j.r} = j.s;
-                 push @{jj.ord}, {%$j} if jj.ord;
-                 jj.tim->{j.r} = hitime() if jj.tim;
-                 jj.wtf->{j.r} = $F[0] if jj.wtf;
-                 jj.ap->($j) if jj.ap; # <<<
-             }
-        }
-     };
-     $J
-     
+    my $J;
+    J.id = mkuid;
+    (J.name) = @{delete ar.m};
+    J.bb = {};
+    J.phy = {};
+    J.phl = {};
+
+    J.most.J = $J;
+    J.most.mody = 'mani';
+    J.most.eo = 'Yesui';
+    J.tt = 1;
+
+    J.u = sub {
+       my $ar;
+       ar.J = Rw j $J qq;
+       ar.N = [[@_]];
+       sayyl "J.name U! @_";
+       Rw MyN;
+       # & concert overworld
+    };
+    J.n = sub {
+       my $ar;
+       ar.J = $J;
+       ar.N = [[@_]];
+       Rw MyN;
+    };
+    J.m = sub {
+       my $ar;
+       ar.M = shift;
+       ar.J = $J;
+       ar.N = [[@_]];
+       Rw MyN;
+    };
+    J.bz = sub { #c
+       my $m = [@_];
+       die "not 2 @$m" if @$m != 2;
+       my $j={};
+       while (@$m) {
+           my ($r, $v) = (shift @$m, shift @$m);
+           if ($r =~ /^%(\S+)/) {
+               j.style = $1;
+           }
+           else {
+               $j = Rw r2j $r $J;
+           }
+           defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
+           
+           j.r = join "\t", j.cv, j.t, j.style;
+           j.s = $v;
+           my @Js = $J;
+           push @Js, values %{J.phy} if J.phy;
+           for my $jj (@Js) {
+               jj.bb->{j.r} = j.s;
+               push @{jj.ord}, {%$j} if jj.ord;
+               jj.tim->{j.r} = hitime() if jj.tim;
+               jj.wtf->{j.r} = $F[0] if jj.wtf;
+               jj.ap->($j) if jj.ap; # <<<
+           }
+      }
+    };
+    $J
 r2j: |
     my $j;
     if (J.tt) {
@@ -182,13 +184,14 @@ Noodles: |
             lv.grab = [at.t, at.y, {el=>8}];
             lv.rmnsc = [at.t, at.y, {el=>9}];
             # and or ID
-            # ID makes possible to throw into most aj the tiniest spec of change
+            # ID makes possible to throw into the W (most J) tiniest specs of change
+            # maybe 8regate
         }
         
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
-            my $o = $ta->{$nk}; # still
-            if (!$heq->($v, $o)) { #
+            my $o = $ta->{$nk};
+            if (!$heq->($v, $o)) {
                 Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
             }
         }
@@ -197,7 +200,6 @@ Noodles: |
         V.tv->{$k} = $hup->($C);
         
         Rw OMP $J $C $k $Y $V $at $ta $lv $vl;
-        # lv c-sc actualiser ^
         
         V.lv->{$k} = $lv;
         
@@ -214,19 +216,37 @@ Noodles: |
     #.wdump([sort keys %{V.lv}]) if J.name eq 'Yes';
     
     my $rv = V.rv;
-    
-    say wdump 15, [rvl.i,rv.i,rv.c,rv.sc] if J.name eq 'Yes';
+    if (J.name eq 'Yes') {
+        if (rvl.i eq rv.i) {
+            say "Same";
+        }
+        elsif (rvl.c eq rv.c) {
+            my $ray = Rw scd $ov:rvl $iv:rv;
+            
+            sayyl "GROWTH! ".wdump 25, $ray;
+        }
+        else {
+            say "New! ".wdump 15, [rvl.i,rv.i,rv.c,rv.sc]
+        }
+    }
     
     # bloop
+scd: |
+    my $r;
+    r.in = @{ov.sc};
+    r.out = @{iv.sc}-1;
+    r.ay = [r.in..r.out];
+    r.z = [@{iv.sc}[@{r.ay}]];
+    $r
 OMP: |
     my $talk = join"  ",($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
-    say "OMP $talk";
+        
+    say "OMP $talk" if $vl;
     !$vl && !lv.op && die "unopposed to not-bfore";
     
     my $ne = {};
-    undef $ne if lv.op;
-    if ($ne) {
+    if (!lv.op) {
         for my $nk (keys %{lv.pur}) {
             my $sv = lv.pur->{$nk};
             if (ref $sv eq 'HASH') {
@@ -240,24 +260,29 @@ OMP: |
             }
         }
     }
+    else {
+        $ne = $at;
+        # grab can also transplant inners for a minorish
+        # not re-c but recreate element a move things in
+        # while re-cing anything within that can't be grabbed
+        # element rebuild may be crucial for undoing anything we cant undo
+        # something may restate its entire c
+        # including any inner c..sc tents
+    }
     
-    if (!$ne && !lv.od) {
-        sayre "Try to keep guts: ".wdump 1, lv.do;
-    }
-    if (lv.do && !lv.od) {
-        sayyl "do & !od! $talk";
-    }
-    my @beach;
     if (lv.od) {
         my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
         my $san = {map{$_=>1}keys %{lv.do}};
         
         my $ded = [];
-        
+        my $z = [];
+        # occasionally wants to add/subtract from the thing
+        # 
         if (my $go = lv.od.go) {
             for my $ea (sort keys %$go) {
                 my $ov = $go->{$ea};
-                my $oov = vl.do->{$ea};
+                ref ov.c || die "noovc";
+                my $oov = vl.do->{$ea} if $vl;
                 $ov eq $oov || die "difoov $ov, $oov";
                 $san->{$ea} && die " $ea goes but still in do..";
                 if (!ov.rmnsc) {
@@ -267,12 +292,11 @@ OMP: |
             }
         }
         
-        my $z = [];
         my $left;
         for my $ea (@each) {
             delete $san->{$ea};
             my $iv = lv.do->{$ea}||die;
-            my $ov = vl.do->{$ea};
+            my $ov = vl.do->{$ea} if $vl;
             
             if (lv.od.new->{$ea}) {
                 $ov && die "new had ov";
@@ -284,22 +308,18 @@ OMP: |
                     # chuck in the el:8 if we skip over anything
                     # ie if left is od.ll this round...
                 }
-                # grab can also transplant inners for a minorish
-                # not re-c but recreate element a move things in
-                # while re-cing anything within that can't be grabbed
                 push @$z, grep{defined} @{iv.c}, @{iv.sc};
             }
             elsif (lv.od.gr->{$ea}) {
                 $ov || die 'nov';
                 iv.c eq ov.c || die "wasn't satbv c";
                 
-                my @ra = @{ov.sc}..@{iv.sc}-1;
+                my $ray = Rw scd $ov $iv;
                 
-                sayyl "gr $ea        @ra";
+                sayyl "gr $ea        ray.i";
                 
-                my @ray = @{iv.sc}[@ra];
                 
-                push @$z, @ray;
+                push @$z, @{ray.z};
                 
             }
             elsif (lv.od.over->{$ea}) {
@@ -315,7 +335,7 @@ OMP: |
             else {die "wtf $ea "}
             $left = $iv;
         }
-        my @al = map { my $ey = $_; 
+        my @al = map { my $ey = $_;
             map { "$ey: $_" } keys %{lv.od->{$ey}}
             } qw'new gr over ll';
         die "difs lv.oso os each/od "
@@ -324,23 +344,38 @@ OMP: |
         sayre "!!! forgot $_" for keys %$san;
         
         unshift @$z, @$ded if @$ded;
+        
         ne.sc.z = $z if @$z;
     }
     
-    if (keys %$ne) {
+    my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
+    if (lv.op) {
+        # make sure z is full...
+        lv.c = [$nn->($ne)];
+        lv.sc = [];
+    }
+    elsif (keys %$ne) {
+        die wdump [lv.op, $ne]  if lv.op;
         ne.t = at.t;
         ne.y = at.y;
+        ne.c->{lv.force} = 3;
+        
+        lv.c = vl.c || die"novlc";
+        lv.sc = [@{vl.sc}, $nn->($ne)];
+        
+        say "Ne wumped: ".wdump 5, [lv.c,lv.sc];
     }
-    
-    sayyl wdump 3, [$ne] if 1||keys %$ne;
-    # op & re c
+    else {
+        sayyl "$talk unopposed";
+        lv.c = vl.c;
+        lv.sc = vl.sc;
+    }
+    #sayyl wdump 7, [$ne] if 1||keys %$ne;
     # but there is intended to wipe clean or just redo the surface
+    # much more is liking to collapse the past into the future in degrees as the c fulls
     # pur and sc
     # handleable od
-    
-    lv.ma = lv.ma+1;
-    lv.c = [[at.t, at.y, at.c, at.sc]];
-    lv.sc = [];
+    lv.ma = ($vl?vl.ma:0)+1;
     lv.i = "lv.c ".@{lv.sc};
 ACT: |
     my $talk = "J.name ACT $nk: $k\t";
