@@ -153,6 +153,7 @@ Noodles: |
     my $V = Rw El Duv;
     V.os = [];
     my $twof = 0;
+    my $rvl;
     for my $C (@to) {
         ref C.y || die"nospace".ki $C;
         ref C.y || next;
@@ -167,7 +168,7 @@ Noodles: |
         $twof++;
         
         # O
-        my $lv = {};
+        my $lv = {k=>$k};
         my $at = Rw OSC $J $C $k $Y $V $lv;
         
         my $ta = V.ta->{$k};
@@ -202,6 +203,7 @@ Noodles: |
         
         if ($C eq Y.il) {
             V.rv = $lv;
+            $rvl = $vl;
         }
     }
     
@@ -213,7 +215,7 @@ Noodles: |
     
     my $rv = V.rv;
     
-    say wdump 15, [rv.i,rv.c,rv.sc] if J.name eq 'Yes';
+    say wdump 15, [rvl.i,rv.i,rv.c,rv.sc] if J.name eq 'Yes';
     
     # bloop
 OMP: |
@@ -242,6 +244,10 @@ OMP: |
     if (!$ne && !lv.od) {
         sayre "Try to keep guts: ".wdump 1, lv.do;
     }
+    if (lv.do && !lv.od) {
+        sayyl "do & !od! $talk";
+    }
+    my @beach;
     if (lv.od) {
             my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
             my $san = {map{$_=>1}keys %{lv.do}};
@@ -272,11 +278,16 @@ OMP: |
                 if (lv.od.new->{$ea}) {
                     $ov && die "new had ov";
                     sayyl "New $ea";
-                    
-                    push @$z, left.grab if $left && left.grab;
-                    # where $left is already in lv
-                    # want iv.appendAfter(left);
-                    # impl want to iv.prependTo(lv) if no $left
+                    if ($left && left.grab) {
+                        push @$z, left.grab;
+                        # otherwise lv.prepend(iv) until
+                        # the last z/c:el:* gives iv.appendAfter(left)
+                        # chuck in the el:8 if we skip over anything
+                        # ie if left is od.ll this round...
+                    }
+                    # grab can also transplant inners for a minorish
+                    # not re-c but recreate element a move things in
+                    # while re-cing anything within that can't be grabbed
                     push @$z, grep{defined} @{iv.c}, @{iv.sc};
                 }
                 elsif (lv.od.gr->{$ea}) {
@@ -295,8 +306,8 @@ OMP: |
                 elsif (lv.od.over->{$ea}) {
                     sayyl "OVER $ea";
                     lv.selfs || die "no way to...";
-                    
-                    
+                    # el:1 will replace the old by t/y or something
+                    # chuck ids on everything?
                     push @$z, grep{defined} @{iv.c}, @{iv.sc};
                 }
                 elsif (lv.od.ll->{$ea}) {
@@ -305,9 +316,20 @@ OMP: |
                 else {die "wtf $ea "}
                 $left = $iv;
             }
-            sayre "!!! forgot about $_" for keys %$san;
-            ne.sc.z = $z;
+            my @al = map { my $ey = $_; 
+                map { "$ey: $_" } keys %{lv.od->{$ey}}
+                } qw'new gr over ll';
+            die "difs lv.oso os each/od "
+                .wdump[ [sort @each], [sort @al] ]
+                if @each != @al;
+            sayre "!!! forgot $_" for keys %$san;
+            
+            unshift @$z, @$ded if @$ded;
+            ne.sc.z = $z if @$z;
+            
+            
         }
+        
         
         if (keys %$ne) {
             ne.t = at.t;
@@ -321,32 +343,10 @@ OMP: |
     # pur and sc
     # handleable od
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     lv.ma = lv.ma+1;
     lv.c = [[at.t, at.y, at.c, at.sc]];
     lv.sc = [];
-    lv.i = "lv.c lv.sc ".@{lv.sc};
+    lv.i = "lv.c ".@{lv.sc};
 ACT: |
     my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
