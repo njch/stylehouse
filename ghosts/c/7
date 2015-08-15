@@ -249,93 +249,88 @@ OMP: |
     }
     my @beach;
     if (lv.od) {
-            my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
-            my $san = {map{$_=>1}keys %{lv.do}};
-            
-            my $ded = [];
-            
-            if (my $go = lv.od.go) {
-                for my $ea (sort keys %$go) {
-                    my $ov = $go->{$ea};
-                    my $oov = vl.do->{$ea};
-                    $ov eq $oov || die "difoov $ov, $oov";
-                    $san->{$ea} && die " $ea goes but still in do..";
-                    if (!ov.rmnsc) {
-                        lv.op.V->{$ea} = 1 && die " wtf";
-                    }
-                    push @$ded, ov.rmnsc;
+        my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
+        my $san = {map{$_=>1}keys %{lv.do}};
+        
+        my $ded = [];
+        
+        if (my $go = lv.od.go) {
+            for my $ea (sort keys %$go) {
+                my $ov = $go->{$ea};
+                my $oov = vl.do->{$ea};
+                $ov eq $oov || die "difoov $ov, $oov";
+                $san->{$ea} && die " $ea goes but still in do..";
+                if (!ov.rmnsc) {
+                    lv.op.V->{$ea} = 1 && die " wtf";
                 }
+                push @$ded, ov.rmnsc;
             }
-            
-                
-            my $z = [];
-            my $left;
-            for my $ea (@each) {
-                delete $san->{$ea};
-                my $iv = lv.do->{$ea}||die;
-                my $ov = vl.do->{$ea};
-                
-                if (lv.od.new->{$ea}) {
-                    $ov && die "new had ov";
-                    sayyl "New $ea";
-                    if ($left && left.grab) {
-                        push @$z, left.grab;
-                        # otherwise lv.prepend(iv) until
-                        # the last z/c:el:* gives iv.appendAfter(left)
-                        # chuck in the el:8 if we skip over anything
-                        # ie if left is od.ll this round...
-                    }
-                    # grab can also transplant inners for a minorish
-                    # not re-c but recreate element a move things in
-                    # while re-cing anything within that can't be grabbed
-                    push @$z, grep{defined} @{iv.c}, @{iv.sc};
-                }
-                elsif (lv.od.gr->{$ea}) {
-                    $ov || die 'nov';
-                    iv.c eq ov.c || die "wasn't satbv c";
-                    
-                    my @ra = @{ov.sc}..@{iv.sc}-1;
-                    
-                    sayyl "gr $ea        @ra";
-                    
-                    my @ray = @{iv.sc}[@ra];
-                    
-                    push @$z, @ray;
-                    
-                }
-                elsif (lv.od.over->{$ea}) {
-                    sayyl "OVER $ea";
-                    lv.selfs || die "no way to...";
-                    # el:1 will replace the old by t/y or something
-                    # chuck ids on everything?
-                    push @$z, grep{defined} @{iv.c}, @{iv.sc};
-                }
-                elsif (lv.od.ll->{$ea}) {
-                    say "keep $ea";
-                }
-                else {die "wtf $ea "}
-                $left = $iv;
-            }
-            my @al = map { my $ey = $_; 
-                map { "$ey: $_" } keys %{lv.od->{$ey}}
-                } qw'new gr over ll';
-            die "difs lv.oso os each/od "
-                .wdump[ [sort @each], [sort @al] ]
-                if @each != @al;
-            sayre "!!! forgot $_" for keys %$san;
-            
-            unshift @$z, @$ded if @$ded;
-            ne.sc.z = $z if @$z;
-            
-            
         }
         
-        
-        if (keys %$ne) {
-            ne.t = at.t;
-            ne.y = at.y;
+        my $z = [];
+        my $left;
+        for my $ea (@each) {
+            delete $san->{$ea};
+            my $iv = lv.do->{$ea}||die;
+            my $ov = vl.do->{$ea};
+            
+            if (lv.od.new->{$ea}) {
+                $ov && die "new had ov";
+                sayyl "New $ea";
+                if ($left && left.grab) {
+                    push @$z, left.grab;
+                    # otherwise lv.prepend(iv) until
+                    # the last z/c:el:* gives iv.appendAfter(left)
+                    # chuck in the el:8 if we skip over anything
+                    # ie if left is od.ll this round...
+                }
+                # grab can also transplant inners for a minorish
+                # not re-c but recreate element a move things in
+                # while re-cing anything within that can't be grabbed
+                push @$z, grep{defined} @{iv.c}, @{iv.sc};
+            }
+            elsif (lv.od.gr->{$ea}) {
+                $ov || die 'nov';
+                iv.c eq ov.c || die "wasn't satbv c";
+                
+                my @ra = @{ov.sc}..@{iv.sc}-1;
+                
+                sayyl "gr $ea        @ra";
+                
+                my @ray = @{iv.sc}[@ra];
+                
+                push @$z, @ray;
+                
+            }
+            elsif (lv.od.over->{$ea}) {
+                sayyl "OVER $ea";
+                lv.selfs || die "no way to...";
+                # el:1 will replace the old by t/y or something
+                # chuck ids on everything?
+                push @$z, grep{defined} @{iv.c}, @{iv.sc};
+            }
+            elsif (lv.od.ll->{$ea}) {
+                say "keep $ea";
+            }
+            else {die "wtf $ea "}
+            $left = $iv;
         }
+        my @al = map { my $ey = $_; 
+            map { "$ey: $_" } keys %{lv.od->{$ey}}
+            } qw'new gr over ll';
+        die "difs lv.oso os each/od "
+            .wdump[ [sort @each], [sort @al] ]
+            if @each != @al;
+        sayre "!!! forgot $_" for keys %$san;
+        
+        unshift @$z, @$ded if @$ded;
+        ne.sc.z = $z if @$z;
+    }
     
+    if (keys %$ne) {
+        ne.t = at.t;
+        ne.y = at.y;
+    }
     
     sayyl wdump 3, [$ne] if 1||keys %$ne;
     # op & re c
@@ -442,47 +437,47 @@ AC_V: |
     my $iv = lv.do->{$gk};
     my $ov = vl.do->{$gk};
     ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
-                    if ($wk eq 'gone') {
-                        ov.rmnsc || die "no remin";
-                        !$iv || die "gone had iv";
-                        # ^ sc plumb its destruction
-                        # can void if our c reframes by implicitly clearing 
-                        saybl "$talk  is GONE!";
-                        
-                        lv.od.go->{$gk} = $ov;
-                    }
-                    elsif ($wk eq 'new') {
-                        $iv || die;
-                        # may like to grab the element before it
-                        # like a curve continuing
-                        saybl "$talk    new!" unless !$nonnew;
-                        
-                        lv.od.new->{$gk} = $iv;
-                    }
-                    elsif ($wk eq 'diff') {
-                        if (iv.c eq ov.c) {
-                            iv.sc eq ov.sc && die "same c fluc sc $gk";
-                            my $in = @{iv.sc};
-                            my $out = @{ov.sc};
-                            if (@{iv.sc} > @{ov.sc}) {
-                                saybl "$talk GROWs";
-                                
-                                lv.od.gr->{$gk} = $iv;
-                            }
-                            else {
-                                warn "WTFF ".wdump 2,[$iv,$ov];
-                            }
-                        }
-                        else {
-                            saybl "$talk  REPLACES c";
-                            
-                            lv.od.over->{$gk} = $iv;
-                        }
-                    }
-                    elsif ($wk eq 'still') {
-                        lv.od.ll->{$gk} = $iv;
-                    }
-                    else {die 'wtwhack'};
+    if ($wk eq 'gone') {
+        ov.rmnsc || die "no remin";
+        !$iv || die "gone had iv";
+        # ^ sc plumb its destruction
+        # can void if our c reframes by implicitly clearing 
+        saybl "$talk  is GONE!";
+        
+        lv.od.go->{$gk} = $ov;
+    }
+    elsif ($wk eq 'new') {
+        $iv || die;
+        # may like to grab the element before it
+        # like a curve continuing
+        saybl "$talk    new!" unless !$nonnew;
+        
+        lv.od.new->{$gk} = $iv;
+    }
+    elsif ($wk eq 'diff') {
+        if (iv.c eq ov.c) {
+            iv.sc eq ov.sc && die "same c fluc sc $gk";
+            my $in = @{iv.sc};
+            my $out = @{ov.sc};
+            if (@{iv.sc} > @{ov.sc}) {
+                saybl "$talk GROWs";
+                
+                lv.od.gr->{$gk} = $iv;
+            }
+            else {
+                warn "WTFF ".wdump 2,[$iv,$ov];
+            }
+        }
+        else {
+            saybl "$talk  REPLACES c";
+            
+            lv.od.over->{$gk} = $iv;
+        }
+    }
+    elsif ($wk eq 'still') {
+        lv.od.ll->{$gk} = $iv;
+    }
+    else {die 'wtwhack'};
 OSC: | # sheets of language up to da
     my $at = {};
     
