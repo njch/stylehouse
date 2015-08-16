@@ -1,7 +1,7 @@
 
 
 oAiC: |
-     saybl "oAiC ... A.J.ind A.J.name     C.t" if A.J.most.J.name eq 'Wkcs';
+     #saybl "oAiC ... A.J.ind A.J.name     C.t" if A.J.most.J.name eq 'Wkcs';
      if (my $c = $G->gip(A.J.A.in, C.t)) { # outside in
          $c = c._ || return;
          say "C.t in: ".wdump $c if !A.J.yt.quiet;
@@ -11,7 +11,6 @@ oJ3: | # MOD  being repeater
     my $ca = A.jr&J; # gets W from oin(etc)  or  abdomisa
     my $sp = C.sc.J;
     C.sc.J = $ca if $ca; # resolve
-    
     die "diff c W-J  " if C.c.W && C.c.W ne C.c.J;
     die "sp: $sp -> $ca" if ref $sp && ref $ca && $sp ne $ca;
     #sayre "ref CcJ J.name  ".k2 $C if ref C.c.J;
@@ -23,7 +22,6 @@ oJ3: | # MOD  being repeater
     if (!ref C.sc.J) {
         if (C.sc.pi) {
             C.sc.J = Rw spinash $J;
-            #sayyl "made C.t = C.sc.pi for J.most.J.name" if J.most.J.name eq 'Wkcs';
         }
         else {
             my $o = {name=>C.c.J};
@@ -41,6 +39,7 @@ oJ3: | # MOD  being repeater
     A.jr->('',"Jay");
     at.J = $J;
     # ^ gets & replaces, C.sc.J now it
+    
     Rw oJ4 + $J;
 oJ41: |
     #J.yy.may.noroot = 1;
@@ -51,25 +50,12 @@ oJ41: |
     J.A.first = hitime;
 oJ42: |
     if (J.most.J eq $J) {
-        J.most.A.time = sub {
-             my ($J,$wa) = @_;
-             J.A.ztime >= $wa ? 1 : do {
-                 sayre gp($J)." Wants time, $wa" for 1..5;
-                 #acum $A, fo => $J;
-                 0;
-             };
-        };
+        # J.most.A could coord 8ish stuff. allele towerish...
         J.A.timery = {};
     }
     die if C.sc.pi && J.Jiter ne A.J;
     die if C.sc.pi && J.most.J eq $J;
     die if !C.sc.pi && J.most.J ne $J;
-    J.most.A || die;
-oJ4: |
-    # J.A remains, A transitory
-    J.A || Rw oJ41;
-    
-    Rw oJ42;
     
     A.ztime = delete C.c.time if C.c.time;
     A.ztime ||= 6;
@@ -84,20 +70,18 @@ oJ4: |
         A.ztime = 9;
     }
     
-    
     my $now = hitime;
     my $from = $now - J.A.last;
-    $from = sprintf'%.3f',$from;
     J.A.last = $now;
     
-    J.A.time = sub {
-        J.most.A.time->(@_);
-    };
     
-    J.A.ztime ||= C.c.time ? delete C.c.time : 6;
+oJ4: |
+    # J.A remains, A transitory
+    J.A || Rw oJ41;
     
-    J.A.ztime = 9 if A.ztime == 9;
+    Rw oJ42;
     
+    # the pull down
     J.A.in = $G->gip(J.Jiter.A.in, C.t)||{} if J.Jiter;
     
     if (C.sc.pi) {
@@ -107,43 +91,38 @@ oJ4: |
         J.d = J.C = $C;
         J.r = C.t."\t".C.y.cv;
         J.bz->("/\t0.9" => "y");
-        
         A.time = sub {
-            my ($JJ,$v) = @_;
-            #A.int->{$v} = F_delta;
-            return 1 if $v <= J.A.ztime;
-            sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
+             my($JJ,$q) = @_;
+             A.ztime >= $q || do {
+                 warn "J.name  ---- JJ.name     A.ztime quuuuuu $q";
+                 0
+             };
         };
     }
     else {
-        sayyl "oA3 J.name   A.ztime / J.A.ztime   $from" if !J.yt.quiet;
         A.time = sub {
-             my ($JJ,$wa) = @_;
-             A.ztime >= $wa ? 1 : do {
-                 #Rw comb oo $J:JJ $A $d $wa;
-             sayre "toooocomb $wa/   A.ztime / J.A.ztime   J.name >>>> JJ.name      ";
-                 A.jr&vv,$wa;
-                 0;
+             my($JJ,$q) = @_;
+             A.ztime >= $q || do {
+                 sayre "J.name ----- JJ.name      A.ztime < $q";
+                 A.jr&vv,$q;
+                 0
              };
         };
     }
 oJ6: | # https://www.youtube.com/watch?v=tL8N_3tln0Y
     my $J = C.sc.J;
-    Atime(6) || return T.last=1;
+    return T.last = 1 unless Atime(6);
     
-    return die "doubly"
-    if A.ztime < 9 && A.jr&ok-9;
+    return die "doubly" if A.ztime < 9 && A.jr&ok-9;
     
-    return Rw opi6
-    if exists C.sc.pi;
+    exists C.sc.pi && return Rw opi6;
     
     my $n = A.ztime >= 9 ? sub{} : A.jr&ok-9,9;
-    
     aft { $@ && do{sayre" BONG"for 1..10}; $n->(); };
-    
-    saybl "oJ6 C.t" unless C.sc.J.yt.quiet;
+    saybl "oJ6 C.t" unless J.yt.quiet;
     {
         my $ar = {%{C.c}};
+        die J.name unless ref G.way->{J.name} eq 'HASH';
         Rw around + $A $C $J $T;
     }
     A.roundi = 1;
@@ -161,12 +140,23 @@ opi6: |
     die'csnod' if $C ne J.C;
     
     my $path = C.sc.pi||die'nopi';
-    $path = 'text' if J.A.d > 7;
+    if (J.A.d > 7) {
+        $path = 'text';
+        warn "J.name J.A.d limit to text";
+    }
     my $pin = "pi/$path";
     
     my $s = C.c.s;
     die wdump [ sort keys %$ar ] if !ar.T;
     Rw oT6 $pin $A $C $J $T $s $u:s;
+eighthnot: |
+    my ($dir) = J.id =~ /(.)$/;
+    my $lim = $dir > 6 ? 6 : $dir > 3 ? 5 : 4;
+    if (J.A.tch++ > $lim) {
+        J.A.tch = $lim - 4;
+        return 1
+    }
+    return 0
 oT6: |
     my $talk = "T J.most.J.name /// J.A.d J.name  J.A.ztime A.ztime";
     A.coi = Rw pha $J ako;
@@ -177,43 +167,35 @@ oT6: |
              if J.Jiter && J.Jiter.A->{$_};
         }
         A.time = sub {
-            my ($JJ,$v) = @_;
+            my($JJ,$q) = @_;
             # then - is
             # crux to pi
             # point to give up
             # so can much very, sculpt
-            if ($v == 2) {
+            if ($q == 2) {
                 A.ico = Rw pha $J ico;
                 A.ico.qui = 1;
                 A.ico.as->(A.coi);
                 my $wt = A.ico.exactl->();
                 
-                saybl "$talk 22222 //// C.t  "
-                .wdump 2, [wt.same,wt.new,wt.diff,wt.gone]
-                if wt.last && !wt.same;
+                saybl "$talk  2222 ".wdump 2, [wt.same,wt.new,wt.diff,wt.gone]
+                    if wt.last && !wt.same;
                 
-                my ($dir) = J.id =~ /(.)$/;
-                my $lim = $dir > 6 ? 6 : $dir > 3 ? 5 : 4;
-                if (J.A.tch++ > $lim) {
-                    J.A.tch = $lim - 4;
-                    A.ico.wt.same=0; # fo coi
-                }
-                elsif (wt.same) {
-                    return 0;
-                }
+                Rw eighthnot $J
+                 ? do { A.ico.wt.same = 0; }
+                 : wt.same && return 0;
                 
                 # for jamcs screenfly
                 J.A.ljm = [];
                 J.A.ljmo = "fr  J.name";
                 return 1;
             }
-            if ($v == 8) {
+            warn "$talk other $q";
+            if ($q == 8) {
                 # until J.most coord attention evaporates
                 # as in pulling on a list
             }
-            A.int->{$v} = F_delta;
-            return 1 if J.A.ztime >= $v;
-            sayyl "TIME J.A.ztime   $v   of J.name  --- JJ.name  --";
+            A.ztime >= $q;
         };
     };
 

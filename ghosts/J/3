@@ -33,6 +33,7 @@ R_Jz:
         #tim => {},
         #wtf => {}, # F grab
         #ap => sub{}, # bz do aftering
+        qui => 1,
      };
      x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
      x.abandon = sub { # upgrades what's there already, early exity lop
@@ -40,8 +41,7 @@ R_Jz:
          delete J.phy->{$name};
          x.abadoned = $why || 1;
          if (my $xx = x.head) {
-             # probably dont want to lie here but...
-             (x.begin,x.bb,x.ord,x.tim,x.wtf) = (xx.begin,xx.bb,xx.ord,xx.tim,xx.wtf);
+             x.as->($xx);
          }
          x.end->();
      };
