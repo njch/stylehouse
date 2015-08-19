@@ -1,0 +1,135 @@
+pi/eye: |
+     my $file = $u;
+     #J.V = 1;
+     #J.d.c.path = 'amp';
+     Jn('ey',0.09,"ey",'{hs:636}');
+     Jn('file',0.1,"$file",'{hs:277}');
+     Jn($file,{o=>{}},{pi=>'ls',s=>$file});
+     #J.V = 0;
+pi/ls: |
+     my $file = $u;
+     J.d.c.pwth = 'somewhere';
+     J.d.sc.tt = 'somewhere';
+     J.d.sc.nspc = 0.03;
+     y.lumfa = 1;
+     
+     Jn('fiule',0.1,{s=>C.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6,sha:2 2 2 000}');
+         
+     return
+     Jn('ends',0.2,'@'.J.d.y.spc,'{hs:6984,ml:-0.3em}')
+     if J.d.y.spc < 0.005;
+     
+     if (-l $file) {
+         Jn('-s',0.12,'-s','{co:fca}');
+         my $to = readlink $file;
+         my $oo = $file;
+         $oo =~ s/(^|\/)[^\/]+$//;
+         undef $oo if $oo eq '' || $to =~ /^\//;
+         $oo = (defined$oo?"$oo/":"").$to;
+         
+         Jn('sb',0.1231,"$to",'{co:f6a,sz:8/1.6}');
+         
+         $oo || die "$file => $oo";
+         $file = $oo;
+     }
+     
+     # cm smartIndent 
+     if (!-e $file) {
+         Jn("not",0.2,"!$file:$!",'{co:fca}');
+     }  
+     elsif (-f $file) {
+         Jn('-f',0.2,'-f','%fs:7,hs:392');
+         
+         Mn(C.t,'',{pi=>'fi',s=>$file});
+     }
+     elsif (-d $file) {
+         Jn('diry',0.2,'/','{hs:3555}');
+         opendir(my $dh, $file) || die "can't opendir $file: $!";
+         my @ma = readdir($dh);
+         closedir $dh;
+         
+         @ma = grep {!/^\..+\.swp$/} @ma;
+         @ma = sort grep {$_ ne '.' && $_ ne '..' && -e "$file/$_"} @ma;
+         
+         my (@fa,@la);
+         map { -d "$u/$_" ? push @fa, $_ : push @la, $_ } @ma;
+         @ma = (@fa,@la); 
+         
+         y.limn = 7;
+         
+         Mn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
+     }
+     
+pi/fi: |
+     $_ = $u;
+     my $pi = /(tga|png|gif|jpe?g)$/i ? 'thumbnail' :
+          /^w\/c|^g|notes\// ? 'file' :
+          do { $u = C.t; 'text' };
+     Mn($pi,{},{pi=>$pi,s=>$u});
+     
+pi/thumbnail: |
+     my $size = -s $u;
+     C.sc.nspc = 0.46;
+     C.sc.nspc_max = 2;
+     return "nontypeimage: $u" unless $u =~ /(tga|png|gif|jpe?g)$/i;
+     my $mou = "public/";
+     #return if $size > 3_000_000;
+     my ($first) = split '/', $u;
+     die "$first not $mou?" unless -e "$mou$first";
+     Jn(spc=>0.09, C.y.spc, '{hs:9976,fs:7}');
+     
+     my $thl = "th/$u";
+     my $th = "$mou$thl";
+     
+     # TODO mod slowness
+     # make this thumbnail J even more forky than usual
+     # TODO wander 90deg radial over phatness...
+     # tape twist effect coming from somewhere
+     if (!-f $th && 1){#J.fop->()) {
+         sayyl " thumbnail++$u";
+         my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
+         if (!-d $thd) {
+             run 'mkdir', '-p', $thd;
+         }
+         if ($u =~ /(mov|avi|mp4)$/i) {
+             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
+         }
+         else {
+             run 'convert', $u, '-thumbnail','500x500', $th
+         }
+     }
+     #sayyl "Pi thumbnAIL of J.most.J.name";
+     #J.V = 1;
+     if (-f $th) {
+         my $sc = {
+             tag => 'img',
+             src => $thl,
+             height=>'9em',#(24*C.y.spc).'em',
+             ab=>1,
+             ml=>'-3em',
+             tt=>" J.d.y.spc   of C.y.cv - C.y.ov",
+             opa=>0.16,
+             zig=>2,
+         };
+         Jn(yowl=>0.3=>'',$sc);
+     }
+
+
+pi/file: |
+     my $file = $u;
+     defined $file || die 'nofile';
+     die if C.sc.dir;
+     C.sc.sz = 20;
+     
+     Jn("filename",0.1,$file,'{fs:20,hs:5569}');
+     my $met = `file '$file'`;
+     die $met unless $met =~ /text/;
+     
+     
+     #my $o = Rw fil/o $file;
+     #Jn('nmyd',{o=>$o});
+     #sayre J.r."   ".ki J.d.y;
+
+
+
+
