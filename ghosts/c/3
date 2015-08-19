@@ -1,32 +1,3 @@
-around: |
-     inter({Jname=>ar.J.name}) if ref ar.J;
-     if (!ar.A) {
-         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar) for 1..10;
-         return Rw J5
-     }
-     
-     
-     my $tw = Rw huck + */around;
-     
-     if (!$tw) {
-        Rw up +;
-        Rw out +;
-     }
-     
-     saygr "around ! ! J.name ".F_delta()
-     unless J.yt.quiet;
-     # try return stuff? pretty aroundo
-     @{(values %$tw)[0]} if $tw
-gui: # turn into some
-     yJ: |
-       'gui quigeo rondo' 
-     out: |
-       Rw oJ7;
-rondo:
-     yJ: |
-       J.cv = 20;
-       J.most.mody = 'mani';
-       J.most.eo = 'chuv';
 
 Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
       sub {
@@ -98,7 +69,24 @@ fi: | #c
      }
      #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
      @$know
+around: |
+     inter({Jname=>ar.J.name}) if ref ar.J;
+     if (!ar.A) {
+         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar) for 1..10;
+         return Rw J5
+     }
      
+     my $tw = Rw huck + */around;
+     
+     if (!$tw) {
+        Rw up +;
+        Rw out +;
+     }
+     
+     saygr "around ! ! J.name ".F_delta()
+     unless J.yt.quiet;
+     # try return stuff? pretty aroundo
+     @{(values %$tw)[0]} if $tw
 J6: |
    ar.J = (delete ar.m)->[0] if ar.m;
    # do J=>m not W=>m, looser
@@ -113,69 +101,6 @@ J5: |
    my $J = G.oin;
    my ($s) = Jn('','',$r);
    return s.sc.J||die "no sc J";
-newwave: |
-    saygr "EXactly";
-    G.oin = Rw JJ join;
-    Rw up $J:G.oin;
-    
-    Rw cl/tidy;
-    #Rw zoybracken;
-    Rwyl 0.01 fresh_init;
-    1
-join:
-     yJ: |
-       G.oin = $J;
-       'join clw rondo'
-     around: |
-       sayre "J.name    around:!". ki $ar;
-     up: |
-       # G.oin root ww:.
-       Rw J5 Ha;
-       Rw J5 wu;
-       # iterations:
-       Rw J5 toc;
-     X: |
-       # message goes up to wu via A
-       my $oJ = J.oJ.A || die 'noway';
-       Rw A/X $J:oJ $X:J;
-       # to inX for the A delbbl
-       Rw J5 $J $X:J;
-       Rw J5 $J=J.name
-       if e.S;
-     inX: |
-       die "dont join/inX";
-toc:
-     yJ: |
-       'toc'
-     around: |
-       Rw vortex toc/up $J $d=3;
-     up: | #
-       # hops, rhythm aesthetics
-       # things pur ambiently & incur pipes of sprawlingness into music
-       # to space it out right...
-       # for the mass of the atom of thought
-       # wants emit with precision, figure processing/Em route into time
-       # is a subscribe that catches up as %vv is join bz'd
-       
-       my $oJ = G.oin;
-       
-       #my $ip = {style=>'vv'};
-       my $ip = {};
-       my $timey = Rw tc $J:oJ $ip;
-       my $tw = {};
-       acum $tw, _.sc.vv, $_ for grep { _.sc.vv } @$timey;
-       my $one = 0;
-       for my $k (sort keys %$tw) {
-           my $v = $tw->{$k};
-           for my $C (@$v) {
-               last if $one;
-               $one = 1;
-               #sayyl "spawning C.t   C.y.cv   ".ki C.sc;
-               timer 0.001 {
-                   oJn('','',C.sc);
-               };
-           }
-       }
 vortex: |
      my $m = ar.m||[];
      my $d = ar.d||4;
@@ -197,110 +122,8 @@ vortex: |
                  if G.oin.bb->{$loopr} ne bl.id;
              Rw o.way $J $d;
          });
-Ha:
-   yJ: |
-     'Ha'
-   around: |
-     my $now = hitime();
-     return if J.last > $now - 0.4 || G.pslagtil > $now;
-     $now - J.last < 9 && Rw vortex around $J $d=5;    
-     J.last = $now;
-     G.ino ||= $J;
-     
-     my $N = Rw tc $J;
-     my $lcv;
-     my $i;
-     for my $d (@$N) {
-         my $n = d.c.s;
-         
-         my $com;
-         my $dont;
-         if (d.sc.watime) {
-             my $del = d.sc.watime - hitime;
-             $com = "w\@in ".sprintf('%.3f',$del);
-             if ($del > 0.02) {
-                 if (d.sc.watime != d.sc.watimed) {
-                     # & shift out Ha 6
-                     #sayyl "WAYLAY $del to n.t";
-                     my $ip = {l=>d.t,cv=>d.y.cv};
-                     timer $del {
-                        Rw around $J;
-                     };
-                     J.bz->("d.t%watimed\t".d.y.cv => d.sc.watime);
-                 }
-                 $dont = 1;
-             }
-             
-         }
-         #my $mers = "WAITS  ".slim(10,d.t)."  n.t\t d.y.cv  $com  ".ki (1,n.c)." \t\t";#.d.sc.pict;
-         #$dont ? saybl $mers : sayyl $mers;
-         next if $dont;
-         
-         Rw hoset + $d;
-         #sayyl "RE& n.t  at d.y.cv  d.sc.pict";
-         
-         timer 0.001 {
-             Rw oo $J:G.oin $d:n;
-         };
-         
-         $i++;
-         last if $lcv && $lcv > d.y.cv;
-         $lcv = d.y.cv;
-     }
 paintaj: |
      aj.Wid || die "not Wid?";
      aj.hol = "H.style/H.name/H.id";
      aj.hitime = hitime;
      aj.name ||= aj.J.name;
-     
-hoset: |
-    my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
-    delete J.bb->{$_} for @r;
-    
-hosin: |
-    n.sc = ar.sc if ar.sc; n.c.s = n.s if exists n.s; n.y.cv = n.cv if n.cv;
-    my @glu = map { '%'.$_ => n.sc->{$_} } sort keys %{n.sc};
-    J.bz->(n.t."\t".n.y.cv => n.c.s, @glu);
-comb: |
-    # so that J.2 etcs declare needs and resume when ready
-    my $iJ = G.ino || return do{warn "no loop";1}; # continues the Atime
-    
-    
-    A.selif = Rw cscomp $C $ig:A.note;
-    my $dig = dig A.selif;
-    
-    die "wamngle $wa" if $wa != int($wa) || $wa < 1 || $wa > 9;
-    die 'noiJ' if !$iJ;
-    
-    my $n;
-    n.sc.pict = A.selif;
-    n.sc.watime = A.watime if A.watime;
-    $wa = A.waov if A.waov;
-    n.cv = $wa / 10;
-    n.s = {%$C};
-    n.t = $dig;
-    
-    sayyl "COMB J.name  C.t  A.ztime } to $wa \t ".ki 1,C.c;
-    
-    Rw hosin $J:iJ $n;
-    0;
-cscomp: |
-    my $non = {%$C};
-    my $de;$de = sub {
-        my $v = shift;
-        ref $v eq 'ARRAY' ?  [map{ $de->($_) } @$v]
-        : !ref $v ? $v
-        : v.id || die "no v".wdump(2,$v);
-    };
-    for my $k (qw'c sc') {
-        my $v = $non->{$k} || next;
-        $non->{$k} = $v = {%$v};
-        for my $sk (keys %$v) {
-            my $sv = $v->{$sk};
-            $v->{$sk} = $de->($sv);
-        }
-    }
-    non.cv = ''.non.cv;
-    non.s = $de->(non.s);
-    return sjson $non
-
