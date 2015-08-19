@@ -1,153 +1,9 @@
 
-Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
-      sub {
-          my $s = shift;
-          my $v = shift;
-          my $d = shift;
-          $s = '%'.$s if $s;  
-          my $t = exists ar.t ? ar.t : ar.C.t;
-          my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
-          my $r = $t.$s."\t".$cv;
-          if ($d) {
-              sayre "delbbl $r  $d   J.name" for 1..5;
-              Rw delbbl $J $l:t;
-          }
-          saybl " chuck $r     $v  >  ".J.bb->{$r} if J.V;
-          !defined $v ?
-            J.bb->{$r}
-          : do {
-              J.bz->($r, $v);
-              sub { delete J.bb->{$r} } 
-          };
-      };
-fi: | #c
-     my $point = ar.p || ar.pin || ar.m->[0];
-     
-     my $know;
-     if (!ar.pin && ar.J) {
-         my $J = ar.J;
-         if ($point =~ /^\*\/(\w+)$/) {
-             my $inway = $1;
-             my $h = ar.h || G.way;
-             $h = h.hooks if h.hooks;
-             my @gu = @{J.yy.styleord};
-             #@gu = @gu[0..5] if @gu > 6;
-             my @so;
-             for (@gu) {
-                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
-                    push @{$know||=[]}, "$_/$inway";
-                    last if !ar.sucky;
-                }
-             }
-         }
-     }
-     
-     if (!$know) {
-         my %wo = Rw findl +;
 
-
-         my @keys = map { s/^\///; $_ } keys %wo;
-         if (!ar.pin && ar.J) {
-             my $J = ar.J;
-
-             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
-             my @or = @{J.yy.styleord};
-             if (@or && @keys > 1) {
-                 my $i = 1;
-                 my $is = {map{$_=>$i++}@or};
-                 @keys = sort {
-                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
-                  } @keys;
-
-                 if (!ar.sucky && @keys > 1) {
-                     #sayre "Limiting @keys";
-                     @keys = $keys[0];
-                 }
-             }
-         }
-         $know = [@keys];
-     }
-     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
-     @$know
-around: |
-     inter({Jname=>ar.J.name}) if ref ar.J;
-     if (!ar.A) {
-         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar) for 1..10;
-         return Rw J5
-     }
-     
-     my $tw = Rw huck + */around;
-     
-     if (!$tw) {
-        Rw up +;
-        Rw out +;
-     }
-     
-     saygr "around ! ! J.name ".F_delta()
-     unless J.yt.quiet;
-     # try return stuff? pretty aroundo
-     @{(values %$tw)[0]} if $tw
-J6: |
-   ar.J = (delete ar.m)->[0] if ar.m;
-   # do J=>m not W=>m, looser
-   Rw J5 +; 
-J3: |
-   Rw J5 + $ok=3; 
-J5: |
-   return sayre "RECUR" if @F > 130;
-   my $r = {%$ar};
-   r.W = delete($r->{m})->[0] if ar.m;
-   delete r.R;
-   my $J = G.oin;
-   my ($s) = Jn('','',$r);
-   return s.sc.J||die "no sc J";
-
-vortex: |
-     my $m = ar.m||[];
-     my $d = ar.d||4;
-     my $o = Rw pul $cs:m way;
-     o.way || die;
-     
-     my $loopr = J.name."%loopid#o.way\t0.3";
-     my $id = G.oin.bb->{$loopr};
-     saybl "timer replaco J.name o.way" if $id;
-     # if last hit and delta are whack
-     # tiny hairs of sanity
-     Mojo::IOLoop->remove($id) if $id;
-     
-     my $bl = {};
-     bl.id = 
-     G.oin.bb->{$loopr} = 
-         $G->recur($d => sub {
-             return Mojo::IOLoop->remove(bl.id)
-                 if G.oin.bb->{$loopr} ne bl.id;
-             Rw o.way $J $d;
-         });
-wtfch: |   
-    my $wtf = {};
-    wtf.same = 1;
-    $wtf->{$_} = {} for qw'new diff gone';
-    
-       for (sort keys %$Jb) {
-           if (!exists $Yb->{$_}) {
-               wtf.new->{$_} = $Jb->{$_};
-               wtf.same = 0;
-           } 
-           elsif ($Yb->{$_} ne $Jb->{$_}) {
-               wtf.diff->{$_} = $Jb->{$_};
-               wtf.same = 0;
-           }
-           else {
-               wtf.sami++;
-               wtf.still->{$_} = $Jb->{$_};
-           }
-           wtf.tot++;
-       }
-       for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
-           wtf.gone->{$_} = $Yb->{$_};
-           wtf.same = 0;
-       }
-       $wtf;
+Elvus: |
+    my $Y = Rw El Pre;
+    Rw Elvis $J:oJ $Y;
+    $Y
 El: |
     my $name = shift @$m;
     my $Y = J.El->{$name} ||= {bb=>{},name=>$name};
@@ -217,4 +73,133 @@ Elvis: |
     
     
     $Y;
+fi: | #c
+     my $point = ar.p || ar.pin || ar.m->[0];
+     
+     my $know;
+     if (!ar.pin && ar.J) {
+         my $J = ar.J;
+         if ($point =~ /^\*\/(\w+)$/) {
+             my $inway = $1;
+             my $h = ar.h || G.way;
+             $h = h.hooks if h.hooks;
+             my @gu = @{J.yy.styleord};
+             #@gu = @gu[0..5] if @gu > 6;
+             my @so;
+             for (@gu) {
+                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
+                    push @{$know||=[]}, "$_/$inway";
+                    last if !ar.sucky;
+                }
+             }
+         }
+     }
+     
+     if (!$know) {
+         my %wo = Rw findl +;
+
+
+         my @keys = map { s/^\///; $_ } keys %wo;
+         if (!ar.pin && ar.J) {
+             my $J = ar.J;
+
+             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
+             my @or = @{J.yy.styleord};
+             if (@or && @keys > 1) {
+                 my $i = 1;
+                 my $is = {map{$_=>$i++}@or};
+                 @keys = sort {
+                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
+                  } @keys;
+
+                 if (!ar.sucky && @keys > 1) {
+                     #sayre "Limiting @keys";
+                     @keys = $keys[0];
+                 }
+             }
+         }
+         $know = [@keys];
+     }
+     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
+     @$know
+around: |
+     inter({Jname=>ar.J.name}) if ref ar.J;
+     die if !ar.J;
+     if (!ar.A) {
+         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar) for 1..10;
+         return Rw J5
+     }
+     die J.name unless ref G.way->{J.name} eq 'HASH';
+     
+     my $tw = Rw huck + */around;
+     
+     if (!$tw) {
+        Rw up +;
+        Rw out +;
+     }
+     
+     saygr "around ! ! J.name ".F_delta()
+     ;#unless J.yt.quiet;
+     # try return stuff? pretty aroundo
+     @{(values %$tw)[0]} if $tw
+J6: |
+   ar.J = (delete ar.m)->[0] if ar.m;
+   # do J=>m not W=>m, looser
+   Rw J5 +; 
+J3: |
+   Rw J5 + $ok=3; 
+J5: |
+   return sayre "RECUR" if @F > 130;
+   my $r = {%$ar};
+   r.W = delete($r->{m})->[0] if ar.m;
+   delete r.R;
+   my $J = G.oin;
+   my ($s) = Jn('','',$r);
+   return s.sc.J||die "no sc J";
+vortex: |
+     my $m = ar.m||[];
+     my $d = ar.d||4;
+     my $o = Rw pul $cs:m way;
+     o.way || die;
+     
+     my $loopr = J.name."%loopid#o.way\t0.3";
+     my $id = G.oin.bb->{$loopr};
+     saybl "timer replaco J.name o.way" if $id;
+     # if last hit and delta are whack
+     # tiny hairs of sanity
+     Mojo::IOLoop->remove($id) if $id;
+     
+     my $bl = {};
+     bl.id = 
+     G.oin.bb->{$loopr} = 
+         $G->recur($d => sub {
+             return Mojo::IOLoop->remove(bl.id)
+                 if G.oin.bb->{$loopr} ne bl.id;
+             Rw o.way $J $d;
+         });
+wtfch: |   
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    
+       for (sort keys %$Jb) {
+           if (!exists $Yb->{$_}) {
+               wtf.new->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           } 
+           elsif ($Yb->{$_} ne $Jb->{$_}) {
+               wtf.diff->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           }
+           else {
+               wtf.sami++;
+               wtf.still->{$_} = $Jb->{$_};
+           }
+           wtf.tot++;
+       }
+       for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+           wtf.gone->{$_} = $Yb->{$_};
+           wtf.same = 0;
+       }
+       $wtf;
 

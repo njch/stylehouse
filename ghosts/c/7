@@ -83,15 +83,6 @@ Noodles: |
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         $CC;
     };
-    my $heq = sub {
-        my ($o,$t) = @_;
-        if (ref $o && ref $t) {
-        keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
-        }
-        elsif (!ref $o && !ref $t) {
-        $o eq $t
-        }else{0}
-    };
     
     
     my $V = Rw El Duv;
@@ -131,6 +122,15 @@ Noodles: |
         }
         
         # crazy has places to hide in
+        my $heq = sub {
+            my ($o,$t) = @_;
+            if (ref $o && ref $t) {
+            keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
+            }
+            elsif (!ref $o && !ref $t) {
+            $o eq $t
+            }else{0}
+        };
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
@@ -155,21 +155,25 @@ Noodles: |
     my $o = $twof;
     my $t = @to;
     my $ine = Rw ratio $o $t;
-    
     my $rv = V.rv;
     if (J.name eq 'Yes') {
         if (rvl.i eq rv.i) {
             say "Same" if J.V;
         }
-        elsif (rvl.c eq rv.c) {
-            my $ray = Rw scd $ov:rvl $iv:rv;
-            
-            say "sc gr: ". wdump 1, $ray;
-            sayyl "GROWTH! ".wdump 25, $ray if J.V;
-        }
         else {
-            say "New! ".wdump 15, [rvl.i,rv.i,rv.c,rv.sc] if J.V;
-        }
+            V.i++;
+            # maybe 2 could see synapalife trustworthiness in V.ii moves
+            if (rvl.c eq rv.c) {
+                my $ray = Rw scd $ov:rvl $iv:rv;
+
+                say "sc gr: ". wdump 1, $ray;
+                sayyl "GROWTH! ".wdump 25, $ray if J.V;
+            }
+            else {
+                say "New! ".wdump (V.i == 1 ? 5 : 15),
+                    [rvl.i,rv.i,rv.c,rv.sc] if J.V;
+            }
+       }
     }
     
     # bloop
