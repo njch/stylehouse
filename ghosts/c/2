@@ -1,17 +1,32 @@
 
 oJ2: |
      sayyl "oJJJ oJJJ ".wdump $C;
-     C.c.y ? Rw oy2
-     :
-     C.c.W ? Rw oW2
-     :
-     C.c.J ? do { # mod way over
-         C.c.W = $v;
+     if (C.c.J eq A.J) {
+         sayre "J above A.J.name";
+         delete C.c.J;
+     }
+     if (exists C.c.J) {
+         C.c.W = C.c.J;
          A.ztime = 3;
          # amount of time each thing spends being the top level
          # which was... n... mani
      }
-     : die "misrep ".ki $C;
+     
+     if (exists C.c.y) {
+         Rw oy2;
+     }
+     elsif (exists C.c.pi) {
+         Rw opi2;
+     }
+     elsif (exists C.c.W) {
+         Rw oW2;
+     }
+     else {
+         die "misrep ".ki $C;
+     }
+oy2: |
+    A.jr = Rw Ajr $J $C;
+    
 opi2: | # approach - c language is map to some u before 6ing
     at.pi = $v || 'guess';
     C.c.J = 'pie';
@@ -19,7 +34,7 @@ opi2: | # approach - c language is map to some u before 6ing
     my $oJ = $J;
     $oJ = C.y.o.J if C.y.o && C.y.o.J;
     A.jr = Rw Ajr $J:oJ $C;
-   
+    
 oW2: | # some get-J or weave wires protocol - hosts
     my $t = $v;
     $t = v.name if ref $t;
