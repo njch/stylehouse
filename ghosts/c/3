@@ -1,3 +1,32 @@
+around: |
+     inter({Jname=>ar.J.name}) if ref ar.J;
+     if (!ar.A) {
+         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar) for 1..10;
+         return Rw J5
+     }
+     
+     
+     my $tw = Rw huck + */around;
+     
+     if (!$tw) {
+        Rw up +;
+        Rw out +;
+     }
+     
+     saygr "around ! ! J.name ".F_delta()
+     unless J.yt.quiet;
+     # try return stuff? pretty aroundo
+     @{(values %$tw)[0]} if $tw
+gui: # turn into some
+     yJ: |
+       'gui quigeo rondo' 
+     out: |
+       Rw oJ7;
+rondo:
+     yJ: |
+       J.cv = 20;
+       J.most.mody = 'mani';
+       J.most.eo = 'chuv';
 
 Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
       sub {
@@ -20,6 +49,56 @@ Ajr: | # aimed at J and a line: C or t/cv    sends style => $v
               sub { delete J.bb->{$r} } 
           };
       };
+fi: | #c
+     my $point = ar.p || ar.pin || ar.m->[0];
+     
+     my $know;
+     if (!ar.pin && ar.J) {
+         my $J = ar.J;
+         if ($point =~ /^\*\/(\w+)$/) {
+             my $inway = $1;
+             my $h = ar.h || G.way;
+             $h = h.hooks if h.hooks;
+             my @gu = @{J.yy.styleord};
+             #@gu = @gu[0..5] if @gu > 6;
+             my @so;
+             for (@gu) {
+                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
+                    push @{$know||=[]}, "$_/$inway";
+                    last if !ar.sucky;
+                }
+             }
+         }
+     }
+     
+     if (!$know) {
+         my %wo = Rw findl +;
+
+
+         my @keys = map { s/^\///; $_ } keys %wo;
+         if (!ar.pin && ar.J) {
+             my $J = ar.J;
+
+             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
+             my @or = @{J.yy.styleord};
+             if (@or && @keys > 1) {
+                 my $i = 1;
+                 my $is = {map{$_=>$i++}@or};
+                 @keys = sort {
+                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
+                  } @keys;
+
+                 if (!ar.sucky && @keys > 1) {
+                     #sayre "Limiting @keys";
+                     @keys = $keys[0];
+                 }
+             }
+         }
+         $know = [@keys];
+     }
+     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
+     @$know
+     
 J6: |
    ar.J = (delete ar.m)->[0] if ar.m;
    # do J=>m not W=>m, looser
@@ -65,15 +144,6 @@ join:
        if e.S;
      inX: |
        die "dont join/inX";
-        my $J = C.sc.J;
-        die "Nofound $J  C.t   C.y.cv" if !ref $J;
-        die "noovewr X  C.c.X ne $J" if C.c.X ne $J;
-        sayyl "KILING J.name". wdump $C if C.c.X;
-        A.jr&J,$J,9;
-        # ^ delete
-        J.dead = 1;
-        T.return = [];
-        return;
 toc:
      yJ: |
        'toc'
@@ -182,56 +252,6 @@ paintaj: |
      aj.hol = "H.style/H.name/H.id";
      aj.hitime = hitime;
      aj.name ||= aj.J.name;
-     
-fi: | #c
-     my $point = ar.p || ar.pin || ar.m->[0];
-     
-     my $know;
-     if (!ar.pin && ar.J) {
-         my $J = ar.J;
-         if ($point =~ /^\*\/(\w+)$/) {
-             my $inway = $1;
-             my $h = ar.h || G.way;
-             $h = h.hooks if h.hooks;
-             my @gu = @{J.yy.styleord};
-             #@gu = @gu[0..5] if @gu > 6;
-             my @so;
-             for (@gu) {
-                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
-                    push @{$know||=[]}, "$_/$inway";
-                    last if !ar.sucky;
-                }
-             }
-         }
-     }
-     
-     if (!$know) {
-         my %wo = Rw findl +;
-
-
-         my @keys = map { s/^\///; $_ } keys %wo;
-         if (!ar.pin && ar.J) {
-             my $J = ar.J;
-
-             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
-             my @or = @{J.yy.styleord};
-             if (@or && @keys > 1) {
-                 my $i = 1;
-                 my $is = {map{$_=>$i++}@or};
-                 @keys = sort {
-                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
-                  } @keys;
-
-                 if (!ar.sucky && @keys > 1) {
-                     #sayre "Limiting @keys";
-                     @keys = $keys[0];
-                 }
-             }
-         }
-         $know = [@keys];
-     }
-     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
-     @$know
      
 hoset: |
     my @r = map { d.t.($_?'%'.$_:'')."\t".d.y.cv } '', keys %{d.sc};
