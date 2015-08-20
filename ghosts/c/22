@@ -72,11 +72,15 @@ pi/seas: |
          Mn($t => '', {pi=>'loadc',s=>$t});
      }
 pi/loadc: |
-     my $l = C.s;
+     my $l = C.c.s;
      Jn(l => 0.1 => $l);
      #y.lumfa = 1;
      #y.limn = 1;
      $l =~ s/[^\d]+\/*$/\//;
+     die $l if $l =~ /[^\/\w]/;
+     die "l:$l"if $l !~ /.../;
+     #return;
+     
      my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`find -L $l -type f`;
      @f || die "no $l";
      for my $file (@f) {

@@ -1,1 +1,1 @@
-ghosts/
+ghosts
