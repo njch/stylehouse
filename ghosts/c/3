@@ -47,12 +47,14 @@ oJ3: | # MOD  being repeater  - humm
     }
     if (!exists C.c.s) {
         C.c.s = A.jr->('');
-        sayyl "C.t grabbed C.c.s";
+        sayre "C.t grabbed C.c.s";
     }
-    
+    if (exists C.c.s && !A.jr->('')) {
+        die if !C.c.s;
+        A.jr->('',C.c.s);
+    }
     die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
     A.jr&J,$J;
-    A.jr->('',"Jay"); # goes
     at.J = $J;
     # ^ gets & replaces, C.sc.J now it
     
@@ -197,7 +199,8 @@ around: |
      }
      
      saygr "around ! ! J.name ".F_delta()
-     ;#unless J.yt.quiet;
+         unless J.yt.quiet;
+     
      # try return stuff? pretty aroundo
      @{(values %$tw)[0]} if $tw
 J6: |

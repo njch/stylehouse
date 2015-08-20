@@ -46,13 +46,13 @@ pi/lif: |
       }
 pi/liel: |
     $u =~ /^[\{\[]/ || return
-    Jn(funny=>0.1,"$u");
+    Jn(funny=>0.1,"$s");
     #Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
     
     Mn(C.t=>{},{pi=>'life',s=>djson $u});
 pi/life: |
     Jn('ins',0.1,{s=>'{'});
-    Jn(life => 0.2 => C.s);
+    Jn(life => 0.2 => $s);
      C.sc.nspc = 0.02;
     my $i = {qw'hol hol pid pid now now begin now'};
     my $s = 'text';
@@ -66,28 +66,27 @@ pi/life: |
         `rm $mf`;
     }
 pi/seas: |
-     Jn(see => 0.1 => C.s,'%hs:7878');
-     for my $t (map{glob $_}split /\s+/, C.s) {
+     Jn(see => 0.1 => $s,'%hs:7878');
+     for my $t (map{glob $_}split /\s+/, $s) {
          chomp $t;
          Mn($t => '', {pi=>'loadc',s=>$t});
      }
 pi/loadc: |
-     my $l = C.c.s;
+     my $l = $s;
      Jn(l => 0.1 => $l);
      #y.lumfa = 1;
      #y.limn = 1;
-     $l =~ s/[^\d]+\/*$/\//;
+     die "LLL $s -> $l ".wdump $C if  $l !~ /.../;
      die $l if $l =~ /[^\/\w]/;
-     die "l:$l"if $l !~ /.../;
-     #return;
      
-     my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`find -L $l -type f`;
+     my $r = "find -L $l -type f";
+     my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`$r`;
      @f || die "no $l";
      for my $file (@f) {
          Mn($file => '', {pi=>'cfile',s=>$file});
      }
 pi/cfile: |
-     my $file = C.s;
+     my $file = $s;
      Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
      C.sc.nspc = 0.02;
      #y.limn = 18;
@@ -172,8 +171,7 @@ pi/clife: |
      
      Jn(c=>0.1=>'c'=>'%hs:8474');
      Jn(K=>0.2=>"C.t"=>'%hs:849');  # blah
-     my $s = C.s; 
-     $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"C.s");
+     $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"$s");
      Mn(c=>'',{pi=>''=>s=>$s});
 pi/now: |
     die if $u < 100 && $u > -100;
