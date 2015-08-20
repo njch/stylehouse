@@ -7,7 +7,7 @@ oJ31: |
     my $fo = A.jr&J;
     my $wa = C.sc.J;
     C.sc.J = $fo if $fo;
-    die "diff c W-J C.c.W ne C.c.J or C.sc.J $wa $fo" if C.c.W && C.c.W ne C.c.J;
+    die "diff c W-J C.c.W ne C.c.J or C.sc.J $wa $fo".wdump 2, $C if C.c.W && C.c.W ne C.c.J;
     die "scwa->Ajr'd: $wa -> $fo" if ref $wa && ref $fo && $wa ne $fo;
     ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     my $J = C.sc.J;
@@ -108,7 +108,7 @@ oJ4: |
         A.time = sub {
              my($JJ,$q) = @_;
              A.ztime >= $q || do {
-                 warn "J.name  ---- JJ.name     A.ztime quuuuuu $q";
+                 die "J.name  ---- JJ.name     A.ztime quuuuuu $q";
                  0
              };
         };
@@ -117,7 +117,7 @@ oJ4: |
         A.time = sub {
              my($JJ,$q) = @_;
              A.ztime >= $q || do {
-                 sayre "J.name ----- JJ.name      A.ztime < $q";
+                 die "J.name ----- JJ.name      A.ztime < $q";
                  A.jr&vv,$q;
                  0
              };
