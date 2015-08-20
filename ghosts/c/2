@@ -12,19 +12,25 @@ oJ2: |
          # which was... n... mani
      }
      
+     C.c.s ||= 'Swim';
+     A.note.not&c,'s';
      if (exists C.c.y) {
-         Rw oy2;
+         A.note.not&c,'y';
+         Rw oy2 + $v:C.c.y;
      }
      elsif (exists C.c.pi) {
-         Rw opi2;
+         A.note.not&c,'pi';
+         Rw opi2 + $v:C.c.pi;
      }
      elsif (exists C.c.W) {
-         Rw oW2;
+         A.note.not&c,'W';
+         Rw oW2 + $v:C.c.W;
      }
      else {
          #die "misrep ".wdump 2, $C;
      }
 oy2: |
+    A.note.not&c,'y';
     A.jr = Rw Ajr $J $C;
     
 opi2: | # approach - c language is map to some u before 6ing
@@ -37,7 +43,6 @@ opi2: | # approach - c language is map to some u before 6ing
     A.jr = Rw Ajr $J:oJ $C;
     
 oW2: | # some get-J or weave wires protocol - hosts
-    my $v = C.c.W;
     my $t = $v;
     $t = v.name if ref $t;
     at.J = ref $v ? $v : $t;
