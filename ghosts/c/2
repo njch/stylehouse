@@ -18,6 +18,7 @@ oJ2: |
      nn&c,'s';
      C.c.W && # nets
      nn&c,'W';
+     my $wasW;
      if (exists C.c.y) {
          nn&c,'y';
          Rw oy2 + $v:C.c.y;
@@ -27,11 +28,23 @@ oJ2: |
          Rw opi2 + $v:C.c.pi;
      }
      elsif (exists C.c.W) {
+         $wasW = 1;
          nn&c,'W';
          Rw oW2 + $v:C.c.W;
      }
      else {
          #die "misrep ".wdump 2, $C;
+     }
+     if (C.c.W && !$wasW) {
+         if (!ref C.c.W) {
+             my $Wjr = Rw Ajr $J:G.oin $t:C.c.W $cv=0.3;
+             my $WJ = Wjr&J;
+             sayyl "HJvae A.J.name holding C.t with WJ.name";
+             C.c.W = $WJ;
+         }
+         else {
+             die "knew W? ".ki C.c.W;
+         }
      }
 oy2: |
     A.note.not&c,'y';
@@ -80,7 +93,14 @@ Ajr: | # aimed at J and a K/line: C or t/cv    sends style => $v
               sayre "delbbl $r  $d   J.name" for 1..5;
               Rw delbbl $J $l:t;
           }
-          saybl " chuck $r     $v  >  ".J.bb->{$r} if J.V;
+          if (J.V) {
+              if ( defined $v) {
+                  saybl "J.name chuck $r     $v  <--  ".J.bb->{$r};
+              }
+              else {
+                  saygr "J.name read $r";
+              }
+          }
           !defined $v ?
             J.bb->{$r}
           : do {
