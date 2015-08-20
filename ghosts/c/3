@@ -4,7 +4,6 @@ oJ31: |
     my $fo = A.jr&J;
     my $wa = C.sc.J;
     C.sc.J = $fo if $fo;
-    die "diff c W-J C.c.W ne C.c.J or C.sc.J $wa $fo".wdump 2, $C if C.c.W && C.c.W ne C.c.J;
     die "scwa->Ajr'd: $wa -> $fo" if ref $wa && ref $fo && $wa ne $fo;
     ref C.sc.J && C.sc.J.dead && undef C.sc.J;
     my $J = C.sc.J;
@@ -46,10 +45,15 @@ oJ3: | # MOD  being repeater  - humm
         C.sc.J = $J || die 'want23';
         C.c.s ||= "Swim";
     }
+    if (!exists C.c.s) {
+        C.c.s = A.jr->('');
+        sayyl "C.t grabbed C.c.s";
+    }
+    sayyl "C.t s is C.c.s";
     
     die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
     A.jr&J,$J;
-    #A.jr->('',"Jay");
+    A.jr->('',"Jay");
     at.J = $J;
     # ^ gets & replaces, C.sc.J now it
     
