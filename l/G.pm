@@ -2088,7 +2088,6 @@ sub g_parse_babble {
     my $G_name = qr/[\/\w]+/;
     my $Gnv = qr/\$?$G_name/;
     my $mwall = qr/(?:= |if |unless |^\s*)/m;
-    my $wall = qr/(?:^\s*)/m;
 
 
 
@@ -2124,7 +2123,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.$3->(\$$2, \$J, /smg;
 
-    $eval =~ s/($wall)(\w) ([\w\'\"]+.*?);?$/${1}J\.y->($2=>$3=>'');/smg;
+    $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
     #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
