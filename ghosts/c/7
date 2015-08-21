@@ -1,10 +1,6 @@
 oJ7: |
-    sayyl "HIPO 7 to J.name ".wdump 2, ar.C if J.most.J.name eq 'Hypo';
-    # where was Hypo diving in out" more el, mediated by Hypo T
-    return
-    Rw opi7
-    if ar.A && ar.C.sc.pi;
     
+    exists C.sc.pi && return Rw opi7;
     
     my $J = C.sc.J;
     return if A.roundi;
@@ -17,7 +13,7 @@ oJ7: |
 opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
     my $J = C.sc.J;
     
-    
+    sayyl "opi7! J.most.J.name J.name" if J.most.J.V;
     my $aj = Rw J.most.eo $J $catj=1;
     
     die aj.s if aj.s;
@@ -26,9 +22,9 @@ opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
     
     
     aft { 
-    $@||return;
-    sayre wdump 9, aj.c;
-    say "J.name :::::::::::: ".ki $C;
+        $@||return;
+        sayre wdump 9, aj.c;
+        say "J.name :::::::::::: ".ki $C;
     };
     sjson(aj.c);
     
@@ -50,7 +46,7 @@ oJ75: | # chov J
     }
 Yesui: |
     my $aj = Rw chuv;
-    sayyl "Noodles of J.name " if J.most.J eq $J;
+    sayyl "Noodles of J.name   J.most.J.name ";
     Rw Noodles $J;
     $aj;
 Noodles: |
@@ -162,6 +158,7 @@ Noodles: |
             }
        }
     }
+    sayyl "J.most.J.name /// J.name rv aj";
     
     # bloop
 scd: |
