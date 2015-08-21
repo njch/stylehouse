@@ -51,15 +51,24 @@ Run: |
     
     sayyl "YEP";
 Many: |
-    my $J = G.One ||= Rw JJ One;
-    n One=>=>{J=>$J}
-    n vortex
-    n Somel
+    my $J = G.oin;
+    if (!$J) {
+        my $t = "One";
+        $J = Rw Jto $name:t;
+        my $sc;
+        sc.J = $J;
+        Rw jamsc $J $t $cv=0.1 $s:t $sc;
+        G.oin = $J
+    }
+    n One=>=>{J=>$J,time=>6}
+    
     my $y = G.Many||={};
     y.i++;
     my $t = hitime;
     y.la->{$t} = 1;
     sayyl "many y.i";
+One: |
+    die "hello";
 Gto: |
     my $G = $G;
     G.w = sub {
@@ -91,6 +100,43 @@ Gto: |
         return wantarray ? @$r : $r->[0];
     };
     $G
+Joldbz: |
+     J.bz = sub { 
+           my $j = {%$j};
+           my $ad = [@_];
+           my %j = %$j;
+           while (@$ad) {
+               my ($k, $v) = (shift @$ad, shift @$ad);
+               
+               my $comp = $k =~ /^(%|\+)/;
+               my $j = {%j} if $comp;
+               if ($comp) {
+                   $k =~ s/^\+// if $comp;
+                   j.t .= $k if $comp;
+               }
+               else {
+                   (j.t, j.cv) = $k =~ /^(.+)\s+(.+?)$/;
+                   %j = %$j;
+               }
+               defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$k, $v]];
+               j.r = j.t."\t".j.cv;
+               j.s = $v;
+               
+               my @Js = $J;
+               push @Js, values %{J.phy} if J.phy;
+               for my $jj (@Js) {
+                   jj.bb->{j.r} = j.s;
+                   push @{jj.ord}, {%$j} if jj.ord;
+                   jj.tim->{j.r} = hitime() if jj.tim;
+                   jj.wtf->{j.r} = $F[0] if jj.wtf;
+                   jj.ap->($j) if jj.ap;
+               }
+           }
+           wantarray ? ($j, 
+               sub{J.bz->(%$j, @_)} # TODO fucked, get some weed and fix it
+           ) : $j
+     };
+     
 Jto: |
     my $J;
     J.id = mkuid;
@@ -100,7 +146,9 @@ Jto: |
     J.most.J = $J;
     J.most.mody = 'mani';
     J.most.eo = 'Yesui';
-    J.tt = 1;
+    #J.tt = 1;
+    Rw suJ $J;
+    return $J;
 
     J.u = sub {
        my $ar;
