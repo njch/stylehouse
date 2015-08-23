@@ -52,6 +52,22 @@ R_Jz:
          my $m = [@m];
          Rw Mno $m;
      };
+     J.u = sub { #c upJ
+         my @m = @_;
+         if (!ref $m[0]) {
+             if (@m < 4) {
+                 $m[2] ||= {J=>$m[0]};
+                 @m == 3 || die "!!!\n".wdump[@m];
+             }
+             while (@m > 4) {
+                 my $wat = pop @m;
+                 $wat eq '' || die "got some $wat  f n".wdump 2, \@m;
+             }
+             unshift @m, $J;
+         }
+         my $m = [@m];
+         Rw Mno $m;
+     };
      J.m = sub { #c amod
          my $ar;
          ar.M = shift;
