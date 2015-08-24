@@ -1,7 +1,10 @@
 Sun/oo: [somoe]
 Hypo: |
     J.V = 0;
-    u lovft
+    $G = Rw Gto;
+    sayyl "Viewing......" for 1..4;
+    Rw Viu;
+    u Vi;
     n stod=>''=>{pi=>ajyp=>s=>Duv=>W=>'Yes'}
     #my $G = Rw Gto $J;
     #my $Y = Rw Elvus $J $oJ aboves1;
@@ -11,6 +14,59 @@ Hypo: |
     J.No = 'anga';
     
     
+Viu: |
+    my $eu = sub { J.uS = 0 if J.uS };
+    my $unu = sub {
+        return if J.uS;
+        Rw uCon;
+        J.uS = 1;
+    };
+    my $dJ = sub {
+        my @m = @_;
+        if (@m < 4) {
+            $m[2] ||= {J=>$m[0]};
+            @m == 3 || die "!!!\n".wdump[@m];
+        }
+        while (@m > 4) {
+            my $wat = pop @m;
+            $wat eq '' || die "got some $wat  f n".wdump 2, \@m;
+        }
+        [@m]
+    };
+    J.u = sub {
+       $eu->();
+       my $ar;
+       ar.N = [$dJ->(@_)];
+       ar.J = Rw j $J qq;
+       ar.J.V = 1;
+       sayyl "J.name U! @_";
+       Rw MyN;
+    };
+    J.n = sub {
+       $unu->();
+       my $ar;
+       ar.J = $J;
+       ar.N = [$dJ->(@_)];
+       Rw MyN;
+    };
+    J.m = sub {
+       $unu->();
+       my $ar;
+       ar.M = shift;
+       ar.J = $J;
+       ar.N = [$dJ->(@_)];
+       Rw MyN;
+    };
+uCon: |
+    sayyl "JI J.name posto @_";
+    my $A = {J=>$J};
+    my $J = Rw j qq;
+    my $Y = Rw Noodles $J;
+    say wdump 33, [Y.rv.i, Y.rv.c, Y.rv.sc];
+    
+Vi: |
+    # is being, inserted to qqs
+    n Deliur=>=>222
 lod/2:
    newwave: | # THE TAKER
     Rw Run;
@@ -85,8 +141,19 @@ Gto: |
         
         D.bab = G.way->{$pin};
         if (!defined D.bab) {
-            warn "Not findin D.talk";
-            return;
+            if ($pin =~ /\//) {
+                D.bab = fwind(G.way,$pin);
+            }
+            if (!defined D.bab) {
+                sayre "Not findin D.talk";
+                return;
+            }
+            else {
+                #say "Trick shot: $pin"
+            }
+        }
+        else {
+            #say "Shot: $pin";
         }
         
         my $Z = $G->Doming($D);
@@ -140,6 +207,12 @@ Joldbz: |
            ) : $j
      };
      
+j: |
+    my $name = shift @$m;
+    my $Y = J.El->{$name};
+    return $Y if $Y;
+    J.El->{$name} = Rw Jto - $name;
+    
 Jto: |
     my $J;
     J.id = mkuid;
@@ -149,30 +222,14 @@ Jto: |
     J.most.J = $J;
     J.most.mody = 'mani';
     J.most.eo = 'Yesui';
-    #J.tt = 1;
+    
     Rw suJ $J;
+    
+    n '/', 0.9, J.name, {tag=>J.name,id=>J.id}
+    
     return $J;
-
-    J.u = sub {
-       my $ar;
-       ar.N = [[@_]];
-       ar.J = Rw j $J qq;
-       sayyl "J.name U! @_";
-       Rw MyN;
-    };
-    J.n = sub {
-       my $ar;
-       ar.J = $J;
-       ar.N = [[@_]];
-       Rw MyN;
-    };
-    J.m = sub {
-       my $ar;
-       ar.M = shift;
-       ar.J = $J;
-       ar.N = [[@_]];
-       Rw MyN;
-    };
+    Rw Viu;
+    
     J.bz = sub { #
        my $m = [@_];
        die "not 2 @$m" if @$m != 2;
@@ -218,18 +275,6 @@ phon: |
     n lazershop
 Jh: |
     n J.name=>1,J.name
-    
-j: |
-    my $J = ar.J ||= G.eoin ||= Rw Jto - sea;
-    my ($t) = @{delete ar.m};
-    say "Look for $t in J.name";
-    return if $t eq 'qq';
-    
-    #u somewhereei
-    
-    my ($s) = Jn('','',{W=>$t});
-    return s.sc.J||die "no sc J".wdump 3,[$t,$s];
-    
     
 somewherei: |
     u jbz

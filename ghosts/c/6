@@ -151,9 +151,11 @@ oT6: |
                 A.ico.as->(A.coi);
                 my $wt = A.ico.exactl->();
                 
-                saybl "$talk  2222 ".wdump 2,
-                  [wt.same,wt.new,wt.diff,wt.gone]
-                    if wt.last && !wt.same;
+                if (wt.last && !wt.same) {
+                    my $shuf = join "\n", map{"$_: ".wdump(1,$wt->{$_})}
+                        grep {keys %{$wt->{$_}}} qw'new diff gone';
+                    saybl "$talk  2222   $shuf";
+                }
                 
                 Rw eighthnot $J
                  ? do { A.ico.wt.same = 0; }
@@ -182,7 +184,7 @@ oT6: |
     die "many".ki $tw if keys %$tw > 1;
     # set our C.c.s to [that], noise probe case, maybe
 
-    Jn('zoo',$y) if @$M;
+    Jn('z',$y) if @$M;
     
     my $sol = "?";
     if (A.ico && A.ico.wt.same) {
