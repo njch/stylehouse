@@ -1,13 +1,17 @@
 oJ7: |
     sayre "AT 7! J.name " if  J.most.J.name eq 'Hypo';
+    my $J = C.sc.J;
+    
+    J.most.wq && return
+    Rw J.most.eo $J;
+    
     exists C.sc.pi && return Rw opi7;
     
-    my $J = C.sc.J;
     return if A.roundi;
     
     say "oJ7777 J.name" unless J.yt.quiet;
     Rw oJ $J geo &up $noesc=1
-        if !J.No;
+        if !J.most.wq;
     my $eo = J.most.eo;
     $eo || die "noeo: J.name";
     Rw $eo $J;
@@ -17,10 +21,7 @@ opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
     sayyl "opi7! J.most.J.name J.name" if J.most.J.V;
     my $aj = Rw J.most.eo $J $catj=1;
     
-    die aj.s if aj.s;
-    #sayre "Upto J.r go ".slim 70, sjson aj.c if @{aj.c};
     J.Ec = [@{aj.c}];
-    
     die wdump $aj if @{aj.sc};
        
 oJ75: | # chov J
@@ -37,13 +38,15 @@ oJ75: | # chov J
         at.s = "Vrrr v.name";
     }
 Yesui: |
-    my $aj = Rw chuv;
-    Rw Noodles $J;
-    $aj;
+    !J.most.wq && return Rw chuv;
+    
+    my $V = Rw Noodles $J;
+    V.rv;
 Noodles: |
     my $Y = Rw Elvus $J Pre;
     
-    Y.il = Y.tv->{"0.9\t/"}||Y.tv->{"0.9\t".J.name}||die'noroot';
+    Y.il = Y.tv->{"0.9\t/"}||Y.tv->{"0.9\t".J.name}
+      ||die"noroot J.name  ".wdump 2,[sort keys %{Y.tv}];
     my @to = grep { $_ ne Y.il } @{Y.vs};
     push @to, Y.il;
     # coordinate / to ajup chunks of @to
@@ -54,7 +57,6 @@ Noodles: |
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         $CC;
     };
-    
     
     my $V = Rw El Duv;
     V.os = [];
@@ -352,6 +354,7 @@ AC_c: |
     }
     elsif ($wk eq 'diff') {
         sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
+        
         if ($gk eq 's') {
         
             lv.pur.c->{$gk} = 1;
