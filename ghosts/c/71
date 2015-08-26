@@ -1,0 +1,191 @@
+MZ: |
+   u ashtray=>,'c ha'
+   
+ashtray: |
+   # make us code
+   u codeout
+   # make trans Cscape patcher
+   n ic=>7,{
+codeout: |
+   u Els
+Els: |
+    n A.most.J.C.t
+urp: |
+    
+I: |
+    #my $G = Rw urp;
+    
+     my $peels = qr/^[\{\%]/;
+     my $peel = sub { # simple as hash from string
+        my $s = shift;
+        unless ($s =~ s/^%//) {
+            $s =~ s/^{//;
+            $s =~ s/}$// || die "unpealable $s";
+        }
+        my @t = split ',', $s;
+        my $t = {};
+        for (@t) {
+            my ($k, $v) = split ':', $_, 2;
+            $t->{$k} = $v;
+        }
+        return $t;
+     };
+     # some comp could expectorate lots charstream rhythms ^
+     
+     my $oM = [];
+     my @N = @$N;
+     
+     my $fl = {};
+     if (my $fli = ar.m) {
+         $fl->{$_} = 1 for @$fli; # could:this
+     }
+     my $MZu = sub {
+         my $MZ = shift;
+         my $n = shift;
+         for (split /\s+/, $MZ) {
+             /^(.+?)(?::(.+))?$/ || die;
+             if (defined $2 && $2 eq '0') {
+                 delete $fl->{$1};
+             }
+             else {
+                 $fl->{$1} = $2 || 1;
+             }
+         }
+         n.moozd = 1;
+     };
+     my $WZu = sub {
+         my $WZ = shift;
+         my $n = shift;
+         n.moozd = 1;
+         
+         my $way = 'muck';
+         $way = 'fund' if $WZ =~ s/^\///;
+         my $Z = Rw $way - $p:WZ $dclone=1;
+         
+         for my $k (sort keys %$Z) {
+              my $s = $Z->{$k};
+              die wdump $s if ref $s ne 'ARRAY';
+              unshift @N, @$s;
+         }
+     };
+     # or we could do on a stick, so its MZ junk dont linger in this stream
+     # ie always flow outwards the sc filtery stuff.
+     my $EZu = sub {
+         my $EZ = shift;
+         my $n = shift;
+         my $oM = shift;
+         n.moozd = 1;
+         
+         my $way = 'muck';
+         $way = 'fund' if $EZ =~ s/^\///;
+         my $Z = Rw $way - $p:EZ $dclone=1;
+         
+         #die "HI $EZ ";
+         for my $k (sort keys %$Z) {
+              my $N = $Z->{$k};
+              $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+              Rw MyN $M:oM $N;
+         }
+     };
+     
+     my $fourstring = sub { #
+         my $s = shift;
+         my $n = shift;
+         if ($s =~ /^\s*#?\s*MZ (.+)$/) {
+             #say "MUZLING $1";
+             $MZu->($1, $n);
+         }
+         elsif ($s =~ /^\s*#/ || $s eq '') {
+             #saybl "comment ## $s";
+             n.moozd = 1;
+         }
+         else {
+             my $ci = $s;
+             for (qw,t y c sc,) {
+                 if ($ci =~ s/^(\S+) *//) { # some t are types of space
+                     my $v = $1;
+                     $v = $peel->($v) if $v =~ $peels;
+                     $n->{$_} = $v;
+                 }
+             }
+         }
+     };
+     
+     my $fouror = sub {
+         my $s = shift;
+         my $n = shift;
+         (n.t, n.y) = @$s;
+         n.c  = $s->[2] if exists $s->[2];
+         n.sc = $s->[3] if exists $s->[3];
+         die'@>4'.wdump $s if @$s > 4;
+     };
+     
+     while (@N) { #
+         my $s = shift @N;
+         my $n = {};
+         
+         if (!ref $s) {
+             die "string: $s";
+         }
+         elsif (ref $s eq 'ARRAY') {
+             if (@$s == 1) {
+                 die if ref $s->[0];
+                 $fourstring->($s->[0], $n);
+             }
+             else {
+                 $fouror->($s, $n);
+             }
+         }
+         elsif (ref $s eq 'HASH') {
+            s.MZ ? $MZu->(s.MZ, $n)
+            : s.EZ ? $EZu->(s.EZ, $n, $oM)
+            : s.WZ ? $WZu->(s.WZ, $n)
+            : die 'hash: '.wdump($s);
+         }
+         else { die "mmtype:$s" }
+         
+         next if n.moozd;
+         
+         for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
+             my $v = $fl->{$k};
+             Rw ym/$k $n $v;
+         }
+         
+         if (!ref n.y) {
+             if (n.y eq '') { # is or undef
+                 n.y = {};
+             }
+             elsif (n.y =~ /^($NUM)$/) {
+                 n.y = {cv=>$1};
+             }
+             elsif (n.y =~ /^($NUM)-($NUM)$/) {
+                 n.y = {from=>$1,to=>$2};
+             }
+             else {die "strung ny: n.y"};
+         }
+         if (!ref n.c) { # loop merge if array
+             if (!ar.c_is && n.c =~ $peels) {
+                 n.c = $peel->(n.c);
+             }
+             else {
+                 n.c = {s => n.c};
+             }
+         }
+         if (!ref n.sc) {
+             if (n.sc eq '') {
+                 n.sc = {};
+             }
+             elsif (n.sc =~ $peels) {
+                 n.sc = $peel->(n.sc);
+             }
+             else { die "nostr  n.sc    ".ki $n }
+         }
+         die wdump $N if !ref n.y;
+         die "no ny: n.t" if !n.y;
+         die "not: ".wdump 4,[$N, $n] if !defined n.t;
+         push @$oM, $n;
+     }
+     #say "ZOYDoM    ". ki $_ for @$oM;
+     sayyl "J.name N! ".wdump 4, $oM if J.V;
+     Rw iM + $oM;
+
