@@ -12,13 +12,10 @@ Els: |
     n A.most.J.C.t
 urp: |
     
-I: | #I I I
-    my $N = ar.N||ar.C;
-    
-    #my $G = Rw urp;
-    
-     my $peels = qr/^[\{\%]/;
-     my $peel = sub { # simple as hash from string
+dostuff: |
+   my $I = {};
+   I.peels = qr/^[\{\%]/;
+   I.peel = sub { # simple as hash from string
         my $s = shift;
         unless ($s =~ s/^%//) {
             $s =~ s/^{//;
@@ -32,6 +29,11 @@ I: | #I I I
         }
         return $t;
      };
+   $I;
+I: | #I I I
+    my $N = ar.N||ar.C;
+    my $I = J.I ||= Rw dostuff;
+    
      # some comp could expectorate lots charstream rhythms ^
      
      my $oM = [];
@@ -94,7 +96,6 @@ I: | #I I I
          my $s = shift;
          my $n = shift;
          if ($s =~ /^\s*#?\s*MZ (.+)$/) {
-             #say "MUZLING $1";
              $MZu->($1, $n);
          }
          elsif ($s =~ /^\s*#/ || $s eq '') {
@@ -106,7 +107,7 @@ I: | #I I I
              for (qw,t y c sc,) {
                  if ($ci =~ s/^(\S+) *//) { # some t are types of space
                      my $v = $1;
-                     $v = $peel->($v) if $v =~ $peels;
+                     $v = I.peel->($v) if $v =~ I.peels;
                      $n->{$_} = $v;
                  }
              }
@@ -166,8 +167,8 @@ I: | #I I I
              else {die "strung ny: n.y"};
          }
          if (!ref n.c) { # loop merge if array
-             if (!ar.c_is && n.c =~ $peels) {
-                 n.c = $peel->(n.c);
+             if (!ar.c_is && n.c =~ I.peels) {
+                 n.c = I.peel->(n.c);
              }
              else {
                  n.c = {s => n.c};
@@ -177,8 +178,8 @@ I: | #I I I
              if (n.sc eq '') {
                  n.sc = {};
              }
-             elsif (n.sc =~ $peels) {
-                 n.sc = $peel->(n.sc);
+             elsif (n.sc =~ I.peels) {
+                 n.sc = I.peel->(n.sc);
              }
              else { die "nostr  n.sc    ".ki $n }
          }

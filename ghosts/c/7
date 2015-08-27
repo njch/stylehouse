@@ -37,6 +37,13 @@ oJ75: | # chov J
         #say "AM v.name  rrrrr J.name";
         at.s = "Vrrr v.name";
     }
+scd: |
+    my $r;
+    r.in = @{ov.sc};
+    r.out = @{iv.sc}-1;
+    r.ay = [r.in..r.out];
+    r.z = [@{iv.sc}[@{r.ay}]];
+    $r
 Yesui: |
     !J.most.wq && return Rw chuv;
     
@@ -82,7 +89,6 @@ Noodles: |
         my $ta = V.ta->{$k};
         my $vl = V.lv->{$k};
         
-        at.c.name = J.name;
         if ('force') {
             at.c.el = 1;
             lv.force = 'el';
@@ -455,9 +461,13 @@ OSC: | # sheets of language up to da
             lv.do->{$ik} = $iv;
             at.V->{$ik} = iv.i;
         }
+        at.sc.most = ki J.most if J.most;
     }
     at.sc.geo = ki(at.sc.geo) if at.sc.geo;
     at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+    for my $up (qw'tag id') {
+        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
+    }
     
     $at;
 diffre: |
