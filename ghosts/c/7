@@ -153,46 +153,7 @@ Noodles: |
     sayyl "J.most.J.name /// J.name rv aj" if J.V;
     $V
     # bloop
-scd: |
-    my $r;
-    r.in = @{ov.sc};
-    r.out = @{iv.sc}-1;
-    r.ay = [r.in..r.out];
-    r.z = [@{iv.sc}[@{r.ay}]];
-    $r
-OMP: |
-    my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
-        (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
-        
-    say $talk if J.V && $vl && (lv.pur || lv.op || lv.od);
-    
-    !$vl && !lv.op && die "unopposed to not-bfore";
-    
-    my $ne = {};
-    if (!lv.op) {
-        for my $nk (keys %{lv.pur}) {
-            my $sv = lv.pur->{$nk};
-            if (ref $sv eq 'HASH') {
-                for my $ck (keys %$sv) {
-                    $ne->{$nk}->{$ck} = $at->{$nk}->{$ck};
-                }
-            }
-            else {
-                ref $sv && die "wtf $sv";
-                $ne->{$nk} = $at->{$nk};
-            }
-        }
-    }
-    else {
-        $ne = $at;
-        # grab can also transplant inners for a minorish
-        # not re-c but recreate element a move things in
-        # while re-cing anything within that can't be grabbed
-        # element rebuild may be crucial for undoing anything we cant undo
-        # something may restate its entire c
-        # including any inner c..sc tents
-    }
-    
+VOD: |
     if (lv.od) {
         my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
         my $san = {map{$_=>1}keys %{lv.do}};
@@ -267,6 +228,41 @@ OMP: |
         
         ne.sc.z = $z if @$z;
     }
+OMP: |
+    my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
+        (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
+        
+    say $talk if J.V && $vl && (lv.pur || lv.op || lv.od);
+    
+    !$vl && !lv.op && die "unopposed to not-bfore";
+    
+    my $ne = {};
+    if (!lv.op) {
+        for my $nk (keys %{lv.pur}) {
+            my $sv = lv.pur->{$nk};
+            if (ref $sv eq 'HASH') {
+                for my $ck (keys %$sv) {
+                    $ne->{$nk}->{$ck} = $at->{$nk}->{$ck};
+                }
+            }
+            else {
+                ref $sv && die "wtf $sv";
+                $ne->{$nk} = $at->{$nk};
+            }
+        }
+    }
+    else {
+        $ne = $at;
+        # grab can also transplant inners for a minorish
+        # not re-c but recreate element a move things in
+        # while re-cing anything within that can't be grabbed
+        # element rebuild may be crucial for undoing anything we cant undo
+        # something may restate its entire c
+        # including any inner c..sc tents
+    }
+    
+    
+    Rw VOD + $ne $talk;
     
     my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
     if (lv.op) {
@@ -291,7 +287,6 @@ OMP: |
         lv.c = vl.c;
         lv.sc = vl.sc;
     }
-    #sayyl wdump 7, [$ne] if 1||keys %$ne;
     # but there is intended to wipe clean or just redo the surface
     # much more is liking to collapse the past into the future in degrees as the c fulls
     # pur and sc
@@ -304,25 +299,24 @@ ACT: |
         my $wt = Rw wtfch $Jb:v $Yb:o;
         my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
         
-            for my $wk (qw'gone diff new still') {
-                for my $gk (sort keys %{$wt->{$wk}}) {
-                    my $talk = "$talk $wk: $gk";
-                    my $s = $at->{$nk}->{$gk};
-                    
-                    if ($nk eq 'V') {
-                        Rw AC_V + $talk $nonnew $gk $wt $wk $s;
-                    }
-                    elsif ($nk eq 'c') {
-                        Rw AC_c + $talk $nonnew $gk $wt $wk $s;
-                    }
-                    elsif ($nk eq 'sc') {
-                        Rw AC_sc + $talk $nonnew $gk $wt $wk $s;
-                    }
-                    else {die"wtfis$nk"}
+        for my $wk (qw'gone diff new still') {
+            for my $gk (sort keys %{$wt->{$wk}}) {
+                my $talk = "$talk $wk: $gk";
+                my $s = $at->{$nk}->{$gk};
+                
+                if ($nk eq 'V') {
+                    Rw AC_V + $talk $nonnew $gk $wt $wk $s;
                 }
+                elsif ($nk eq 'c') {
+                    Rw AC_c + $talk $nonnew $gk $wt $wk $s;
+                }
+                elsif ($nk eq 'sc') {
+                    Rw AC_sc + $talk $nonnew $gk $wt $wk $s;
+                }
+                else {die"wtfis$nk"}
             }
-            saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
-            
+        }
+        saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
     }
     else {
         my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";

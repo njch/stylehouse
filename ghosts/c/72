@@ -48,11 +48,11 @@ Jto: |
     };
     $J
 Viu: |
-    my $eu = sub { J.uS = 0 if J.uS };
+    my $eu = sub { J.uS = 1 };
     my $unu = sub {
-        return if J.uS;
+        J.uS || return;
         Rw uCon;
-        J.uS = 1;
+        J.uS = 0;
     };
     my $dJ = sub {
         my @m = @_;
@@ -65,7 +65,6 @@ Viu: |
             }
         }
         pop @m while $m[-1] eq '';
-         sayyl "J.name dJ begin:! ".wdump 2, \@m if J.V;
         if (@m < 4) {
             $m[2] ||= {J=>$m[0]};
             @m == 3 || die "!!!\n".wdump[@m];
@@ -79,7 +78,7 @@ Viu: |
     J.u = sub {
        $eu->();
        my $ar;
-       ar.N = [$dJ->(@_)];
+       ar.C = [$dJ->(@_)];
        ar.J = Rw j $J qq;
        ar.J.V = 1;
        Rw I;
@@ -88,7 +87,7 @@ Viu: |
        $unu->();
        my $ar;
        ar.J = $J;
-       ar.N = [$dJ->(@_)];
+       ar.C = [$dJ->(@_)];
        Rw I;
     };
     J.m = sub {
@@ -96,7 +95,7 @@ Viu: |
        my $ar;
        ar.M = shift;
        ar.J = $J;
-       ar.N = [$dJ->(@_)];
+       ar.C = [$dJ->(@_)];
        Rw I;
     };
 Run: |
