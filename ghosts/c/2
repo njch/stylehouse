@@ -17,7 +17,7 @@ oJ2: |
      
      my $nn = A.note.not;
      
-     C.c.s ||= 'Swim';
+     C.c.s = 'S2im' if !defined C.c.s;
      nn&c,'s';
      C.c.W && # nets
      nn&c,'W';
@@ -88,6 +88,8 @@ oW2: | # some get-J or weave wires protocol - hosts
     }
 Ajr: | # aimed at J and a K/line: C or t/cv    sends style => $v
       sub {
+          my $isv = @_ >= 2;
+          my $isd = @_ >= 3;
           my $s = shift;
           my $v = shift;
           my $d = shift;
@@ -95,7 +97,7 @@ Ajr: | # aimed at J and a K/line: C or t/cv    sends style => $v
           my $t = exists ar.t ? ar.t : ar.C.t;
           my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
           my $r = $t.$s."\t".$cv;
-          if ($d) {
+          if ($isd) {
               sayre "delbbl $r  $d   J.name" for 1..5;
               Rw delbbl $J $l:t;
           }
@@ -107,8 +109,8 @@ Ajr: | # aimed at J and a K/line: C or t/cv    sends style => $v
                   saygr "J.name read $r";
               }
           }
-          !defined $v ?
-            J.bb->{$r}
+          !$isv ?
+            !exists J.bb->{$r} ? () : J.bb->{$r}
           : do {
               J.bz->($r, $v);
               sub { delete J.bb->{$r} } 

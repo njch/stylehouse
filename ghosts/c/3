@@ -48,14 +48,13 @@ oJ3: | # MOD  being repeater  - humm
             J.most.mody = 'mani';
         }
         C.sc.J = $J || die 'want23';
-        C.c.s ||= "Swim";
+        C.c.s = "Swim" if !exists C.c.s;
     }
-    if (!exists C.c.s) {
-        C.c.s = A.jr->('');
-        sayre "C.t grabbed C.c.s";
+    my @an =  A.jr->('');
+    if (@an && !exists C.c.s) {
+        C.c.s = shift @an;
     }
-    if (exists C.c.s && !A.jr->('')) {
-        die if !C.c.s;
+    elsif (!@an && exists C.c.s) {
         A.jr->('',C.c.s);
     }
     die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;

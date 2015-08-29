@@ -77,7 +77,7 @@ pi/loadc: |
      #y.lumfa = 1;
      #y.limn = 1;
      die "LLL $s -> $l ".wdump $C if  $l !~ /.../;
-     die $l if $l =~ /[^\/\w]/;
+     die $l if $l =~ /[^\/\.\w]/;
      
      my $r = "find -L $l -type f";
      my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`$r`;
@@ -90,7 +90,7 @@ pi/cfile: |
      Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
      C.sc.nspc = 0.02;
      #y.limn = 18;
-     #y.lumfa = 2;
+     #y.lumfa = 2; 
      
      Atime(2)||return; 
      
@@ -101,7 +101,13 @@ pi/cfile: |
          sayre "massive s";
          return;
      }
+      #
+     # etc
      my $s = read_file($file);
+     unless ($s =~ /^\s*[\w]+.*:\s/s) {
+         n notyaml=>''=>{pi=>text=>cv=>0.8,s=>$s}
+         return
+     }
      my $m = Load($s);
      
      my $kf = qr/^(\S+)(:.+?)(?=^\S|\Z)/sm;
