@@ -1,3 +1,8 @@
+Elj: |
+    my $name = shift @$m;
+    my $Y = J.El->{$name};
+    return $Y if $Y;
+    J.El->{$name} = Rw Jto - $name;
 Jto: |
     my $J;
     J.id = mkuid;
@@ -17,7 +22,7 @@ Jto: |
     Rw Viu $J;
     
     return $J;
-    
+Nbz: | # receiver of buzzed out planes of N (C)
     J.bz = sub { # the cv=>t=>style r
        my $m = [@_];
        die "not 2 @$m" if @$m != 2;
@@ -78,7 +83,7 @@ Viu: |
        $eu->();
        my $ar;
        ar.C = [$dJ->(@_)];
-       ar.J = Rw j $J qq;
+       ar.J = Rw Elj $J qq;
        Rw I;
     };
     J.n = sub {
@@ -97,10 +102,3 @@ Viu: |
        Rw I;
     };
 
-
-j: |
-    my $name = shift @$m;
-    my $Y = J.El->{$name};
-    return $Y if $Y;
-    J.El->{$name} = Rw Jto - $name;
-    
