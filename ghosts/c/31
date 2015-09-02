@@ -1,16 +1,33 @@
+Elvus: | # with thrust over - c for J must be already seT
+    my $Y = Rw El;
+    my $oJ = ar.oJ || $J;
+    Rw Elvis + $J:oJ $Y;
+    $Y
 El: |
     my $name = ar.name || shift @{delete ar.m};
     my $Y = J.El->{$name} ||= {bb=>{},name=>$name};
-    return $Y
 Elj: |
     my $name = ar.name || shift @{delete ar.m};
-    my $Y = J.El->{$name};
-    return $Y if $Y;
+    if (my $Y = J.El->{$name}) {
+        return $Y;
+    }
     J.El->{$name} = Rw Jto - $name;
+J6: | # do J=>m not W=>m, looser
+   ar.J = ar.name || shift @{delete ar.m};
+   Rw J5 +; 
+J5: |
+   return sayre "RECUR" if @F > 150;
+   my $r = {%$ar};
+   r.W = delete(r.m)->[0] if ar.m;
+   delete r.R;
+   my $J = G.oin;
+   my $i = Jn('','',$r);
+   my ($s) = @{i.is};
+   return s.sc.J||die "no sc J";
 Jto: |
     my $J;
     J.id = mkuid;
-    J.name = ar.name || (@{delete ar.m})[0];
+    J.name = ar.name || shift @{delete ar.m};
     J.bb = {};
 
     J.most.J = $J;
@@ -18,7 +35,9 @@ Jto: |
     J.most.eo = 'Yesui';
     J.most.wq = 1;
     
+    # 
     Rw suJ $J;
+    
     Rw Jup $J;
     
     n J.name, 0.9, J.name, {tag=>J.name,id=>J.id}
@@ -26,35 +45,6 @@ Jto: |
     Rw Viu $J;
     
     return $J;
-Nbz: | # receiver of buzzed out planes of N (C)
-    J.bz = sub { # the cv=>t=>style r
-       my $m = [@_];
-       die "not 2 @$m" if @$m != 2;
-       my $j={};
-       while (@$m) {
-           my ($r, $v) = (shift @$m, shift @$m);
-           if ($r =~ /^%(\S+)/) {
-               j.style = $1;
-           }
-           else {
-               $j = Rw r2j $r $J;
-           }
-           defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
-           
-           j.r = join "\t", j.cv, j.t, j.style;
-           j.s = $v;
-           my @Js = $J;
-           push @Js, values %{J.phy} if J.phy;
-           for my $jj (@Js) {
-               jj.bb->{j.r} = j.s;
-               push @{jj.ord}, {%$j} if jj.ord;
-               jj.tim->{j.r} = hitime() if jj.tim;
-               jj.wtf->{j.r} = $F[0] if jj.wtf;
-               jj.ap->($j) if jj.ap; # <<<
-           }
-      }
-    };
-    $J
 Viu: |
     my $eu = sub { J.uS = 1 };
     my $unu = sub {

@@ -9,19 +9,32 @@ dostuff: |
    my $I = {};
    I.peels = qr/^[\{\%]/;
    I.peel = sub { # simple as hash from string
-        my $s = shift;
-        unless ($s =~ s/^%//) {
-            $s =~ s/^{//;
-            $s =~ s/}$// || die "unpealable $s";
-        }
-        my @t = split ',', $s;
-        my $t = {};
-        for (@t) {
+        my ($A,$C,$G,$T,$s) = @_;
+        $s =~ s/^%// || 
+            $s =~ s/^{// && $s =~ s/}$//
+            || die "unpealable $s";
+        my $c;
+        for (split ',', $s) {
             my ($k, $v) = split ':', $_, 2;
-            $t->{$k} = $v;
+            $c->{$k} = $v;
         }
-        return $t;
-     };
+        $c||{}
+   };
+   I.MZu = {
+        my ($A,$C,$G,$T,$s) = @_;
+         for (split /\s+/, $s) {
+             /^(.+?)(?::(.+))?$/ || die;
+             if (defined $2 && $2 eq '0') {
+                 delete A.fl->{$1};
+             }
+             else {
+                 A.fl->{$1} = $2 || 1;
+             }
+         }
+         n.moozd = 1;
+   };
+   I.MZu = {
+        my ($A,$C,$G,$T,$s) = @_;
    $I;
 I: | #I I I
     my $N = ar.N||ar.C;
@@ -31,25 +44,10 @@ I: | #I I I
      
      my $oM = [];
      my @N = @$N;
+     my $A = {};
      
-     my $fl = {};
-     if (my $fli = ar.m) {
-         $fl->{$_} = 1 for @$fli; # could:this
-     }
-     my $MZu = sub {
-         my $MZ = shift;
-         my $n = shift;
-         for (split /\s+/, $MZ) {
-             /^(.+?)(?::(.+))?$/ || die;
-             if (defined $2 && $2 eq '0') {
-                 delete $fl->{$1};
-             }
-             else {
-                 $fl->{$1} = $2 || 1;
-             }
-         }
-         n.moozd = 1;
-     };
+     A.fl = {};
+     
      my $WZu = sub {
          my $WZ = shift;
          my $n = shift;

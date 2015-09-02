@@ -1,7 +1,7 @@
 
 oJ2: |
      #sayyl "oJJJ oJJJ ".wdump $C;
-     if (exists C.c.J eq A.J) {
+     if (C.c.J eq A.J) {
          sayre "J above A.J.name";
          delete C.c.J;
      }
@@ -86,36 +86,7 @@ oW2: | # some get-J or weave wires protocol - hosts
         A.jr&vv,9
         ->(); #delone
     }
-Ajr: | # aimed at J and a K/line: C or t/cv    sends style => $v
-      sub {
-          my $isv = @_ >= 2;
-          my $isd = @_ >= 3;
-          my $s = shift;
-          my $v = shift;
-          my $d = shift;
-          $s = '%'.$s if $s;  
-          my $t = exists ar.t ? ar.t : ar.C.t;
-          my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
-          my $r = $t.$s."\t".$cv;
-          if ($isd) {
-              sayre "delbbl $r  $d   J.name" for 1..5;
-              Rw delbbl $J $l:t;
-          }
-          if (J.V) {
-              if ( defined $v) {
-                  saybl "J.name chuck $r     $v  <--  ".J.bb->{$r};
-              }
-              else {
-                  saygr "J.name read $r";
-              }
-          }
-          !$isv ?
-            !exists J.bb->{$r} ? () : J.bb->{$r}
-          : do {
-              J.bz->($r, $v);
-              sub { delete J.bb->{$r} } 
-          };
-      };
+
 pidepth: |
     my $o = $J;
     my $i = 0;
