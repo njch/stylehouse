@@ -1,10 +1,6 @@
 MZ: |
    u ashtray=>,'c ha'
    
-
-
-
-
 dostuff: |
    my $I = {};
    I.peels = qr/^[\{\%]/;
@@ -20,38 +16,36 @@ dostuff: |
         }
         $c||{}
    };
-   I.MZu = {
+   I.MZu = sub {
         my ($A,$C,$G,$T,$s) = @_;
-         for (split /\s+/, $s) {
-             /^(.+?)(?::(.+))?$/ || die;
-             if (defined $2 && $2 eq '0') {
-                 delete A.fl->{$1};
-             }
-             else {
-                 A.fl->{$1} = $2 || 1;
-             }
+        for (split /\s+/, $s) {
+            /^(.+?)(?::(.+))?$/ || die;
+            if (defined $2 && $2 eq '0') {
+                delete A.fl->{$1};
+            }
+            else {
+                A.fl->{$1} = $2 || 1;
+            }
          }
-         n.moozd = 1;
+         T.not = 1;
    };
-   I.MZu = {
+   I.EZu = sub {
         my ($A,$C,$G,$T,$s) = @_;
-   $I;
-I: | #I I I
-    my $N = ar.N||ar.C;
-    my $I = J.I ||= Rw dostuff;
-    
-     # some comp could expectorate lots charstream rhythms ^
-     
-     my $oM = [];
-     my @N = @$N;
-     my $A = {};
-     
-     A.fl = {};
-     
-     my $WZu = sub {
-         my $WZ = shift;
-         my $n = shift;
-         n.moozd = 1;
+         T.not = 1;
+         
+         my $way = 'muck';
+         $way = 'fund' if $EZ =~ s/^\///;
+         my $Z = Rw $way - $p:EZ $dclone=1;
+         
+         for my $k (sort keys %$Z) {
+              my $N = $Z->{$k};
+              $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+              Rw I $M:oM $N;
+         }
+   };
+   I.WZu = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        T.not = 1;
          
          my $way = 'muck';
          $way = 'fund' if $WZ =~ s/^\///;
@@ -62,89 +56,75 @@ I: | #I I I
               die wdump $s if ref $s ne 'ARRAY';
               unshift @N, @$s;
          }
-     };
-     # or we could do on a stick, so its MZ junk dont linger in this stream
-     # ie always flow outwards the sc filtery stuff.
-     my $EZu = sub {
-         my $EZ = shift;
-         my $n = shift;
-         my $oM = shift;
-         n.moozd = 1;
-         
-         my $way = 'muck';
-         $way = 'fund' if $EZ =~ s/^\///;
-         my $Z = Rw $way - $p:EZ $dclone=1;
-         
-         #die "HI $EZ ";
-         for my $k (sort keys %$Z) {
-              my $N = $Z->{$k};
-              $N = [ map { [$_] } split "\n",$N ] if !ref $N;
-              Rw MyN $M:oM $N;
-         }
-     };
-     
-     my $fourstring = sub { #
-         my $s = shift;
-         my $n = shift;
+   };
+   I.4string = sub {
+        my ($A,$C,$G,$T,$s) = @_;
          if ($s =~ /^\s*#?\s*MZ (.+)$/) {
-             $MZu->($1, $n);
+             I.d&MZu, $1;
          }
-         elsif ($s =~ /^\s*#/ || $s eq '') {
-             #saybl "comment ## $s";
-             n.moozd = 1;
+         elsif ($s =~ /^\s*#/) {
+             T.not = 1;
+         }
+         elsif ($s eq '') {
+             T.not = 1;
+             T.space = 1;
          }
          else {
              my $ci = $s;
-             for (qw,t y c sc,) {
+             for (qw't y c sc') {
                  if ($ci =~ s/^(\S+) *//) { # some t are types of space
                      my $v = $1;
-                     $v = I.peel->($v) if $v =~ I.peels;
+                     $v = I.d&peel,$v if $v =~ I.peels;
                      $n->{$_} = $v;
                  }
              }
          }
-     };
-     
-     my $fouror = sub {
-         my $s = shift;
-         my $n = shift;
-         (n.t, n.y) = @$s;
-         n.c  = $s->[2] if exists $s->[2];
-         n.sc = $s->[3] if exists $s->[3];
-         die'@>4'.wdump $s if @$s > 4;
-     };
-     
-     while (@N) { #
-         my $s = shift @N;
-         my $n = {};
-         
+   };
+   I.4real = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        (C.t, C.y) = @$s;
+        C.c  = $s->[2] if exists $s->[2];
+        C.sc = $s->[3] if exists $s->[3];
+        die'@>4'.wdump $s if @$s > 4;
+   };
+   I.d = sub { #
+        # grease thje stomac
+        my $s = shift;
+        my $P = I.nF ||= {};
+        my $y = $I->{$s} || die "no $s";
+        $y->(P.A,P.C,P.G,P.T,@_);
+   };
+   I.in = sub {
+        my ($A,$C,$G,$T,$AA,$CC,$GG,$TT) = @_;
+        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
+   };
+   I.d2 = sub { #
+        my ($A,$C,$G,$T,$s) = @_;
+        
          if (!ref $s) {
              die "string: $s";
          }
          elsif (ref $s eq 'ARRAY') {
              if (@$s == 1) {
-                 die if ref $s->[0];
-                 $fourstring->($s->[0], $n);
+                 my ($s) = $s->[0];
+                 die if ref $s;
+                 I.d&4string, $s
              }
              else {
-                 $fouror->($s, $n);
+                 I.d&4real, $s
              }
          }
          elsif (ref $s eq 'HASH') {
-            s.MZ ? $MZu->(s.MZ, $n)
+            s.MZ ? I.d&MZu, s.MZ
             : s.EZ ? $EZu->(s.EZ, $n, $oM)
             : s.WZ ? $WZu->(s.WZ, $n)
             : die 'hash: '.wdump($s);
          }
          else { die "mmtype:$s" }
          
-         next if n.moozd;
-         
-         for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
-             my $v = $fl->{$k};
-             Rw ym/$k $n $v;
-         }
-         
+   };
+   I.d4 = sub { #
+        my ($A,$C,$G,$T) = @_;
          if (!ref n.y) {
              if (n.y eq '') { # is or undef
                  n.y = {};
@@ -174,10 +154,48 @@ I: | #I I I
              }
              else { die "nostr  n.sc    ".ki $n }
          }
+         
+   };
+   $I;
+I: | #I I I
+    my $N = ar.N||ar.C;
+    my $I = J.I ||= Rw dostuff;
+    my $oM = [];
+    my @N = @$N;
+    my $A = {};
+     
+    A.fl = {};
+    # some comp could expectorate lots charstream rhythms ^
+    # Z flow?
+    # or we could do on a stick,
+    # so its MZ junk dont linger in this stream
+    # ie always flow outwards the sc filtery stuff.
+    while (@N) { #
+        my $s = shift @N;
+        my $C = {};
+        my $T = {};
+        T.oM = [];
+         
+         I.d&in, $A,$C,$G,$T;
+         
+         I.d&d2,$s;
+         
+         next if T.not;
+         
+         for my $k (keys %$fl) { # apply filters that rip elabourate c out of \S+ c
+             my $v = $fl->{$k};
+             Rw ym/$k $n $v;
+         }
+         
+         I.d&d4,$s;
+         
          die wdump $N if !ref n.y;
          die "no ny: n.t" if !n.y;
          die "not: ".wdump 4,[$N, $n] if !defined n.t;
-         push @$oM, $n;
+         
+         push @{T.oM}, $C;
+         
+         push $oM, @{T.oM};
      }
      Rw iM + $oM;
 
