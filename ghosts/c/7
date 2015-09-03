@@ -157,7 +157,6 @@ Noodles: |
     $V
     # bloop
 VOD: |
-    if (lv.od) {
         my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
         my $san = {map{$_=>1}keys %{lv.do}};
         
@@ -232,7 +231,6 @@ VOD: |
         @$z = () if C.sc.J && $J eq C.sc.J;
         
         ne.sc.z = $z if @$z;
-    }
 OMP: |
     my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
@@ -266,8 +264,9 @@ OMP: |
         # including any inner c..sc tents
     }
     
-    
-    Rw VOD + $ne $talk;
+    if (lv.od) {
+        Rw VOD + $ne $talk;
+    }
     
     my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
     if (lv.op) {
