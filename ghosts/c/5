@@ -6,6 +6,93 @@ noibz/yJ: |
            $bz->(@_);
        };
     
+waps: |
+    sayyl 'ps';
+    J.first++ || return;
+    my $sleep = sub {
+        my $til = hitime() + shift;
+        G.pslagtil = $til if $til > G.pslagtil;
+    };
+    
+    
+    my @ps = `ps -p$$ fu`; # j right
+    my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
+    if ($mem > 20 || $cpu > 60) {
+        saybl "& $mem";
+        if ($mem > 38) {
+            sayre "massive, restarting" for 1..8;sleep 1;
+            Rw rez;
+        }
+        $sleep->(4);
+    }
+     
+    my @temps = 
+    map {/\+(\d+\.\d+)\S+? /;$1} 
+    grep {/^temp1:/} 
+    `sensors`;
+    my ($ch,$gh) = @temps;
+    sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
+    if ($ch > 70) {
+        sayre "HOT";
+        $sleep->(7);
+    }
+aftor: |
+    my $J = J.most.J;
+    my $N = Rw tyc $J;
+    @$N = grep { _.sc.pi eq 'thumbnail' } @$N;
+    
+    my $u = {};
+    for my $C (@$N) {
+        my $p = C.t;
+        my $n = C.c.s;
+        Rw loadup $u $p $n;
+    }
+    sayyl "After J.name: clife: ".wdump 2, [$u,$N];
+    Rw makoo $u;
+    
+makoo: |
+       sayre "to make some code? ".wdump [sort keys %$u];
+       return;
+       my $t = Rw wuck - $u */flows/*;
+       my $fr = 0;   
+       my $amp = G.ampampamp ||= do{$fr=1;{}};
+       for my $k (sort keys %$t) {
+           my $v = $t->{$k};
+           my ($path,$flows,$from) = split '/', $k;
+           
+           Rw make/op $amp $pin:k $path $from;
+       }
+       my $hk = {%{R.way.hooks}};
+       for my $z ($hk, $amp) {
+           for my $k (keys %$z) {
+               next unless $k =~ /^g_(.+)$/;
+               say "Has $k";
+               $z->{$1} = delete $z->{$k};
+           }
+       }
+       my $x;
+       x.wormhole.yr = $hk;  
+       x.wormhole.ya = $amp;
+       while (my ($dir, $v) = each %$x) {
+           while (my ($k, $d) = each %$v) {
+               my $y = YAML::Syck::Dump($d);
+               die wdump $y if length $y < 50; 
+               $y =~ s/^---//;
+               encode_utf8 $y;
+               fspu("$dir/$k\.yml", $y);
+           }    
+       }
+       
+       # maka yml, seeing .s is a gas leak
+       `cd wormhole; cat yr\.yml ya\.yml > yb\.yml`;
+       #$fr = 1;
+       $fr ?
+       $G->pub('S/'.$_, "reexec")
+       :
+       $G->pub('S/'.$_, "wayup w/yb\.yml") for 'shed','coast';
+       sayyl "We o ".F_delta();
+       
+       Rwyl 0.1 J5 scr;
 wa:
    yJ: |
      'Travel aww'
@@ -22,7 +109,7 @@ wa:
     
     #n Tok
     #n Hosp
-    #n Eosse
+    n Eosse
     #n EYZ
     #n Wander
     
@@ -52,7 +139,7 @@ Yes:
      Rw StillYes;
      
      #Mn(shedful => '', {pi=>'seas',s=>'g/c/6 g/c/7'});
-     Mn(shedful => '0.1-0.7', {pi=>'seas',s=>"life/S\.s g/c/8 g/G/on"});
+     Mn(shedful => '0.1-0.7', {pi=>'seas',s=>"life/S\.s g/c/6 g/c/8 g/G/on"});
      
      # wants to A.aft{A.K} = {do Hypno}
      # where do is bundle of A.aft etc stashed things
@@ -78,10 +165,7 @@ StillYes: |
      
      n st3vil =>0.86=>{pi=>text=>s=>'st3vil.github.com'}
      n time=>0.9=>{pi=>text=>s=>join'',`date` =~ /^(.+):\d\d( .+)$/smg}
-Eosse:
-   yJ: |
-     'Travel'
-   M: |
+Eosse: |
     Mn(shedful => '', {pi=>'eye',s=>'eye'});
     #y.out = 0.8 + 0.1 * (rand(3)-1.5);
     Atime(4) || return;

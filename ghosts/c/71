@@ -111,42 +111,6 @@ I_D: |
         I.d&Crec if !ref C.c;
         I.d&Cresc if !ref C.sc;
     };
-I_Cr: | # work the corner
-    # kind of apply filters as they like to chew, ripping from string theirs, later congealing...
-    # maybewa u and n of the ym is the way way
-    # it doubles
-    I.Crey = sub { # work the y corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.y eq '') { # is or undef
-            C.y = {};
-        }
-        elsif (C.y =~ /^($NUM)$/) {
-            C.y = {cv=>$1};
-        }
-        elsif (C.y =~ /^($NUM)-($NUM)$/) {
-            C.y = {from=>$1,to=>$2};
-        }
-        else {die "strung ny: C.y"};
-    };
-    I.Crec = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (!ar.c_is && C.c =~ I.peels) {
-            C.c = I.d&peel, C.c;
-        }
-        else {
-            C.c = {s => C.c};
-        }
-    };
-    I.Cresc = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.sc eq '') {
-            C.sc = {};
-        }
-        elsif (C.sc =~ I.peels) {
-            C.sc = I.d&peel, C.sc;
-        }
-        else { die "nostr  C.sc    ".ki $C }
-    };
 I_Ci: | # receive topu
     $I->{'4string'} = sub { # barse
         my ($A,$C,$G,$T,$s) = @_;
@@ -233,5 +197,41 @@ I_Ci: | # receive topu
             unshift @{A.N}, @$s;
         }
         T.not = 1;
+    };
+I_Cr: | # work the corner
+    # kind of apply filters as they like to chew, ripping from string theirs, later congealing...
+    # maybewa u and n of the ym is the way way
+    # it doubles
+    I.Crey = sub { # work the y corner
+        my ($A,$C,$G,$T) = @_;
+        if (C.y eq '') { # is or undef
+            C.y = {};
+        }
+        elsif (C.y =~ /^($NUM)$/) {
+            C.y = {cv=>$1};
+        }
+        elsif (C.y =~ /^($NUM)-($NUM)$/) {
+            C.y = {from=>$1,to=>$2};
+        }
+        else {die "strung ny: C.y"};
+    };
+    I.Crec = sub { # work the c corner
+        my ($A,$C,$G,$T) = @_;
+        if (!ar.c_is && C.c =~ I.peels) {
+            C.c = I.d&peel, C.c;
+        }
+        else {
+            C.c = {s => C.c};
+        }
+    };
+    I.Cresc = sub { # work the c corner
+        my ($A,$C,$G,$T) = @_;
+        if (C.sc eq '') {
+            C.sc = {};
+        }
+        elsif (C.sc =~ I.peels) {
+            C.sc = I.d&peel, C.sc;
+        }
+        else { die "nostr  C.sc    ".ki $C }
     };
 

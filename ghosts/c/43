@@ -1,0 +1,111 @@
+jamsc: |
+    ar.C = ar.d if ar.d;
+    my $t = ar.t ? ar.t : ar.j ? ar.j.l : ar.C ? ar.C.t : die;
+    my $cv = ar.cv ? ar.cv : ar.j ? ar.j.cv : ar.C ? ar.C.cv || ar.C.y.cv : die;
+    if (ar.oJ && ar.oJ ne ar.J && !ar.noR) {
+        my $J = ar.oJ;
+        if (my $ljm = J.A.ljm) {
+            sayyl join('  ',('')x ar.oJ.A.d)
+                ."ar.J.name    J.A.ljmo  <<< J.name  sends:  $t\t$cv  $ljm" if J.V || ar.J.V;
+            push @$ljm, {%$ar};
+        }
+    }
+    J.bz->("$t\t".$cv => ar.s) if exists ar.s;
+    for my $k (sort keys %$sc) {
+        my $v = $sc->{$k};
+        J.bz->("$t%$k\t".$cv => $v);
+        ar.C.sc->{$k} = $v;
+    }
+     
+
+Elvis: | # safe vs doing - oJ
+    my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
+    
+    Y.tw ||= {};
+    Y.lo = {};
+    
+    for my $mo (qw'gone diff new') {
+        for my $r (keys %{$wtf->{$mo}}) {
+            my $j = Rw r2j $r $J;
+            j.r = $r;
+            j.lt = j.cv."\t".j.t;
+            if (!j.lt=~/\S/) {
+                die "Got $r =>   ".ki $j;
+            }
+            
+            if ($mo eq 'gone') {
+                delete Y.bb->{j.r};
+                delete Y.tw->{j.lt}->{j.style};
+            }
+            else {
+                Y.bb->{j.r} = j.s;
+                Y.tw->{j.lt}->{j.style} = j.s;
+            }
+            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
+        }
+    }
+    
+    Y.tv ||= {};
+    Y.go = {};
+    my $same = 1;
+    for my $k (keys %{Y.lo}) {
+        my $tf = Y.lo->{$k};
+        my $cs = Y.tw->{$k};
+        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+            $same = 0; # new line to make
+        }
+        if (tf.gone && !keys %$cs) {
+            $same = 0; # line to disappear
+            my $C = Y.go->{$k} = delete Y.tv->{$k};
+        }
+        if (tf.diff || tf.new) {
+            keys %$cs || die 'nokeys';
+            my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
+            defined $cv || die "twas $k";
+            
+            my $C = Y.tv->{$k} ||= {};
+            %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs);
+            C.c.s = delete C.sc->{''} if exists C.sc->{''};
+        }
+    }
+    if (!$same) {
+        Y.vs = [];
+        for my $k (sort keys %{Y.tv}) {
+            my $C = Y.tv->{$k} || die "wtf $k";
+            push @{Y.vs}, $C;
+        }
+        #sayre "vs re: ".@{Y.vs};
+    }
+    
+    Y.ra = Rw ratio $o:wtf.sami $t:wtf.tot;
+    Y.rato = wtf.tot;
+    Y.revs = !$same;
+    
+    
+    $Y;
+wtfch: |   
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    
+       for (sort keys %$Jb) {
+           if (!exists $Yb->{$_}) {
+               wtf.new->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           } 
+           elsif ($Yb->{$_} ne $Jb->{$_}) {
+               wtf.diff->{$_} = $Jb->{$_};
+               wtf.same = 0;
+           }
+           else {
+               wtf.sami++;
+               wtf.still->{$_} = $Jb->{$_};
+           }
+           wtf.tot++;
+       }
+       for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+           wtf.gone->{$_} = $Yb->{$_};
+           wtf.same = 0;
+       }
+       $wtf;
+

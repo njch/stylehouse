@@ -5,6 +5,26 @@ lod/2:
     return 1;
 recur: |
      Mojo::IOLoop->recurring($d,$cb);
+vortex: |
+     my $m = ar.m||[];
+     my $d = ar.d||4;
+     my $o = Rw pul $cs:m way;
+     o.way || die;
+     
+     my $loopr = J.name."%loopid#o.way\t0.3";
+     my $id = G.oin.bb->{$loopr};
+     saybl "timer replaco J.name o.way" if $id;
+     # if last hit and delta are whack
+     # tiny hairs of sanity
+     Mojo::IOLoop->remove($id) if $id;
+     
+     my $bl = {};
+     my $cb = sub {
+         return Mojo::IOLoop->remove(bl.id)
+         if G.oin.bb->{$loopr} ne bl.id;
+         Rw o.way $J;
+     };
+     bl.id = G.oin.bb->{$loopr} = Rw recur $d $cb;
 Run: |
     # arrived from newwave:
     #  perl G/on/wag eats a wormhole of way
@@ -31,15 +51,14 @@ Run: |
     sayyl "YEP";
 Many: |
     $G || die;
-    my $J = G.oin;
-    if (!$J) {
-        my $t = "One";
-        $J = Rw Jto $name:t;
-        my $sc;
-        sc.J = $J;
-        Rw jamsc $J $t $cv=0.3 $s:t $sc;
-        G.oin = $J
-    }
+    # The Beatles - Martha My Dear
+    my $J;
+    ($J) = G.oin = G.J ||= G.oin ||= map {
+        $J = Rw Jto $name:_;
+        my $sc = {J=>$J};
+        Rw jamsc $J $t:J.name $cv=0.3 $s=oo $sc;
+        $J
+    } 'One';
     n One=>0.3=>{J=>$J,time=>6}
     
     my $y = G.Many||={};
