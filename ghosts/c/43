@@ -1,4 +1,29 @@
 
+wtfch: |   
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    
+    for (sort keys %$Jb) {
+        if (!exists $Yb->{$_}) {
+            wtf.new->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        } 
+        elsif ($Yb->{$_} ne $Jb->{$_}) {
+            wtf.diff->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        }
+        else {
+            wtf.sami++;
+            wtf.still->{$_} = $Jb->{$_};
+        }
+        wtf.tot++;
+    }
+    for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+        wtf.gone->{$_} = $Yb->{$_};
+        wtf.same = 0;
+    }
+    $wtf;
 Elvis: | # safe vs doing - oJ
     my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
     
@@ -64,29 +89,4 @@ Elvis: | # safe vs doing - oJ
     
     
     $Y;
-wtfch: |   
-    my $wtf = {};
-    wtf.same = 1;
-    $wtf->{$_} = {} for qw'new diff gone';
-    
-    for (sort keys %$Jb) {
-        if (!exists $Yb->{$_}) {
-            wtf.new->{$_} = $Jb->{$_};
-            wtf.same = 0;
-        } 
-        elsif ($Yb->{$_} ne $Jb->{$_}) {
-            wtf.diff->{$_} = $Jb->{$_};
-            wtf.same = 0;
-        }
-        else {
-            wtf.sami++;
-            wtf.still->{$_} = $Jb->{$_};
-        }
-        wtf.tot++;
-    }
-    for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
-        wtf.gone->{$_} = $Yb->{$_};
-        wtf.same = 0;
-    }
-    $wtf;
 
