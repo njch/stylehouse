@@ -2,9 +2,9 @@ MZ: |
    u ashtray=>,'c ha'
    
 dostuff: |
-   my $I = {};
-   I.peels = qr/^[\{\%]/;
-   I.peel = sub { # simple as hash from string
+    my $I = {};
+    I.peels = qr/^[\{\%]/;
+    I.peel = sub { # simple as hash from string
         my ($A,$C,$G,$T,$s) = @_;
         $s =~ s/^%// || 
             $s =~ s/^{// && $s =~ s/}$//
@@ -15,8 +15,8 @@ dostuff: |
             $c->{$k} = $v;
         }
         $c||{}
-   };
-   I.MZu = sub {
+    };
+    I.MZu = sub {
         my ($A,$C,$G,$T,$s) = @_;
         for (split /\s+/, $s) {
             /^(.+?)(?::(.+))?$/ || die;
@@ -28,77 +28,77 @@ dostuff: |
             }
          }
          T.not = 1;
-   };
-   I.EZu = sub {
+    };
+    I.EZu = sub {
         my ($A,$C,$G,$T,$s) = @_;
-         T.not = 1;
-         
-         my $way = 'muck';
-         $way = 'fund' if $EZ =~ s/^\///;
-         my $Z = Rw $way - $p:EZ $dclone=1;
-         
-         for my $k (sort keys %$Z) {
-              my $N = $Z->{$k};
-              $N = [ map { [$_] } split "\n",$N ] if !ref $N;
-              Rw I $M:oM $N;
-         }
-   };
-   I.WZu = sub {
+        T.not = 1;
+
+        my $way = 'muck';
+        $way = 'fund' if $EZ =~ s/^\///;
+        my $Z = Rw $way - $p:EZ $dclone=1;
+
+        for my $k (sort keys %$Z) {
+            my $N = $Z->{$k};
+            $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+            Rw I $M:oM $N;
+        }
+    };
+    I.WZu = sub {
         my ($A,$C,$G,$T,$s) = @_;
         T.not = 1;
          
-         my $way = 'muck';
-         $way = 'fund' if $WZ =~ s/^\///;
-         my $Z = Rw $way - $p:WZ $dclone=1;
-         
-         for my $k (sort keys %$Z) {
-              my $s = $Z->{$k};
-              die wdump $s if ref $s ne 'ARRAY';
-              unshift @N, @$s;
-         }
-   };
-   I.4string = sub {
+        my $way = 'muck';
+        $way = 'fund' if $WZ =~ s/^\///;
+        my $Z = Rw $way - $p:WZ $dclone=1;
+
+        for my $k (sort keys %$Z) {
+            my $s = $Z->{$k};
+            die wdump $s if ref $s ne 'ARRAY';
+            unshift @N, @$s;
+        }
+    };
+    I.4string = sub {
         my ($A,$C,$G,$T,$s) = @_;
-         if ($s =~ /^\s*#?\s*MZ (.+)$/) {
-             I.d&MZu, $1;
-         }
-         elsif ($s =~ /^\s*#/) {
-             T.not = 1;
-         }
-         elsif ($s eq '') {
-             T.not = 1;
-             T.space = 1;
-         }
-         else {
-             my $ci = $s;
-             for (qw't y c sc') {
-                 if ($ci =~ s/^(\S+) *//) { # some t are types of space
-                     my $v = $1;
-                     $v = I.d&peel,$v if $v =~ I.peels;
-                     $n->{$_} = $v;
-                 }
-             }
-         }
-   };
-   I.4real = sub {
+        if ($s =~ /^\s*#?\s*MZ (.+)$/) {
+           I.d&MZu, $1;
+        }
+        elsif ($s =~ /^\s*#/) {
+           T.not = 1;
+        }
+        elsif ($s eq '') {
+           T.not = 1;
+           T.space = 1;
+        }
+        else {
+           my $ci = $s;
+           for (qw't y c sc') {
+               if ($ci =~ s/^(\S+) *//) { # some t are types of space
+                   my $v = $1;
+                   $v = I.d&peel,$v if $v =~ I.peels;
+                   $n->{$_} = $v;
+               }
+           }
+        }
+    };
+    I.4real = sub {
         my ($A,$C,$G,$T,$s) = @_;
         (C.t, C.y) = @$s;
         C.c  = $s->[2] if exists $s->[2];
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
-   };
-   I.d = sub { #
+    };
+    I.d = sub {
         # grease thje stomac
         my $s = shift;
         my $P = I.nF ||= {};
         my $y = $I->{$s} || die "no $s";
         $y->(P.A,P.C,P.G,P.T,@_);
-   };
-   I.in = sub {
+    };
+    I.in = sub {
         my ($A,$C,$G,$T,$AA,$CC,$GG,$TT) = @_;
         I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
-   };
-   I.d2 = sub { #
+    };
+    I.d2 = sub { #
         my ($A,$C,$G,$T,$s) = @_;
         
          if (!ref $s) {
@@ -122,41 +122,40 @@ dostuff: |
          }
          else { die "mmtype:$s" }
          
-   };
-   I.d4 = sub { #
+    };
+    I.d4 = sub { #
         my ($A,$C,$G,$T) = @_;
-         if (!ref n.y) {
-             if (n.y eq '') { # is or undef
-                 n.y = {};
-             }
-             elsif (n.y =~ /^($NUM)$/) {
-                 n.y = {cv=>$1};
-             }
-             elsif (n.y =~ /^($NUM)-($NUM)$/) {
-                 n.y = {from=>$1,to=>$2};
-             }
-             else {die "strung ny: n.y"};
-         }
-         if (!ref n.c) { # loop merge if array
-             if (!ar.c_is && n.c =~ I.peels) {
-                 n.c = I.peel->(n.c);
-             }
-             else {
-                 n.c = {s => n.c};
-             }
-         }
-         if (!ref n.sc) {
-             if (n.sc eq '') {
-                 n.sc = {};
-             }
-             elsif (n.sc =~ I.peels) {
-                 n.sc = I.peel->(n.sc);
-             }
-             else { die "nostr  n.sc    ".ki $n }
-         }
-         
-   };
-   $I;
+        if (!ref n.y) {
+            if (n.y eq '') { # is or undef
+               n.y = {};
+            }
+            elsif (n.y =~ /^($NUM)$/) {
+               n.y = {cv=>$1};
+            }
+            elsif (n.y =~ /^($NUM)-($NUM)$/) {
+               n.y = {from=>$1,to=>$2};
+            }
+            else {die "strung ny: n.y"};
+        }
+        if (!ref n.c) { # loop merge if array
+            if (!ar.c_is && n.c =~ I.peels) {
+               n.c = I.peel->(n.c);
+            }
+            else {
+               n.c = {s => n.c};
+            }
+        }
+        if (!ref n.sc) {
+            if (n.sc eq '') {
+               n.sc = {};
+            }
+            elsif (n.sc =~ I.peels) {
+               n.sc = I.peel->(n.sc);
+            }
+            else { die "nostr  n.sc    ".ki $n }
+        }
+    };
+    $I;
 I: | #I I I
     my $N = ar.N||ar.C;
     my $I = J.I ||= Rw dostuff;
