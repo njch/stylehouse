@@ -1,67 +1,130 @@
+Elvus: | # arbitrary in-J Elvi with thrust over, possibly   - c for J must be already seT
+    my $Y = Rw El;
+    my $oJ = ar.oJ || $J;
+    Rw Elvis + $J:oJ $Y;
+    $Y
+El: |
+    my $name = ar.name || shift @{delete ar.m};
+    my $Y = J.El->{$name} ||= {bb=>{},name=>$name};
+Elj: |
+    my $name = ar.name || shift @{delete ar.m};
+    if (my $Y = J.El->{$name}) {
+        return $Y;
+    }
+    J.El->{$name} = Rw Jto - $name;
+J6: | # do J=>m not W=>m, looser
+   ar.J = ar.name || shift @{delete ar.m};
+   Rw J5 +; 
+J5: |
+   return sayre "RECUR" if @F > 150;
+   my $r = {%$ar};
+   r.W = ar.name || shift @{delete ar.m} if ar.m;
+   delete r.R;
+   my $J = G.oin;
+   my $i = Jn('','',$r);
+   my ($s) = @{i.is};
+   return s.sc.J||die "no sc J";
+Jto: |
+    my $J;
+    J.id = mkuid;
+    J.name = ar.name || shift @{delete ar.m};
+    J.bb = {};
 
-
-oJ3: | # MOD  being repeater  - humm # GONER
-    my $J = Rw oJ31;
-    Rw oJ32 + $J;
-    return if T.return;
+    J.most.J = $J;
+    J.most.mody = 'mani';
+    J.most.eo = 'Yesui';
+    J.most.wq = 1;
     
-    if (!ref $J) {
-        if (C.sc.pi) {
-            #A.J.most.wq
-            $J = Rw spinash $J:A.J;
-        }
-        elsif (!ref G.way->{$J}) {
-            $J = Rw Jto $name:J;
-            sayyl "J33   Made J.name";
-        }
-        else {
-            my $o = {name=>C.c.J};
-            o.style = delete C.c.style if C.c.style;
-            # TODO make func like J.w&oc,style=>C.c;
-            # which moves into the wall and percs lamt.
-            $J = Rw JJ $o;
-            sayyl "J3   Made J.name";
-        }
-        if (!ref G.way->{J.name}) {
-            J.most.eo = 'Yesui';
-            J.most.mody = 'mani';
-        }
-        C.sc.J = $J || die 'want23';
-        C.c.s = "Swim" if !exists C.c.s;
-    }
+    # GONERS
+    Rw suJ $J;
+    Rw Jup $J;
+    # 
     
-    my @an =  A.jr->('');
-    if (@an && !exists C.c.s) {
-        C.c.s = shift @an;
-    }
-    elsif (!@an && exists C.c.s) {
-        A.jr->('',C.c.s);
-    }
-    die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
-    A.jr&J,$J;
-    at.J = $J;
-    # ^ gets & replaces, C.sc.J now it
+    n J.name, 0.9, J.name, {tag=>J.name,id=>J.id}
     
-    Rw oJ4 + $J;
-around: | # GONER
-     inter({Jname=>ar.J.name}) if ref ar.J;
-     die if !ar.J;
-     if (!ar.A) {
-         saybl "around -- J5 ".(ar.J ? ar.J.name : ki $ar);
-         return Rw J5
-     }
-     die J.name unless ref G.way->{J.name} eq 'HASH';
-     
-     my $tw = Rw huck + */around;
-     
-     if (!$tw) {
-        Rw up +;
-        Rw out +;
-     }
-     
-     saygr "around ! ! J.name ".F_delta()
-         unless J.yt.quiet;
-     
-     # try return stuff? pretty aroundo
-     @{(values %$tw)[0]} if $tw
+    Rw Viu $J;
+    
+    return $J;
+Nbz: | # receiver of buzzed out planes of N (C)   # peeler futuro, forte arbiter # suJ cloned  # other is A.jr
+    J.tt = 1;
+    J.bz = sub { # the cv=>t=>style r
+       my $m = [@_];
+       die "not 2 @$m" if @$m != 2;
+       my $j={};
+       while (@$m) {
+           my ($r, $v) = (shift @$m, shift @$m);
+           if ($r =~ /^%(\S+)/) {
+               j.style = $1;
+           }
+           else {
+               # to ivertake in here
+               $j = Rw r2j $r $J;
+           }
+           defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
+           
+           j.r = join "\t", j.cv, j.t, j.style;
+           j.s = $v;
+           my @Js = $J;
+           push @Js, values %{J.phy} if J.phy;
+           for my $jj (@Js) {
+               jj.bb->{j.r} = j.s;
+               push @{jj.ord}, {%$j} if jj.ord;
+               jj.tim->{j.r} = hitime() if jj.tim;
+               jj.wtf->{j.r} = $F[0] if jj.wtf;
+               jj.ap->($j) if jj.ap; # <<<
+           }
+      }
+    };
+    $J
+Viu: |
+    my $eu = sub { J.uS = 1 };
+    my $unu = sub {
+        J.uS || return;
+        Rw uCon;
+        J.uS = 0;
+    };
+    my $dJ = sub {
+        my @m = @_;
+        if (ref $m[0]) {
+            if ($m[0] eq $J) {
+                sayre "EWsup J J.name is passing J as I _ 0";
+                shift @m;
+            }
+            else {
+                die "nJinto: ".wdump 2, [@_];
+            }
+        }
+        pop @m while $m[-1] eq '';
+        if (@m < 4) {
+            $m[2] ||= {J=>$m[0]};
+            @m == 3 || die "!!!\n".wdump[@m];
+        }
+        while (@m > 4) {
+            my $wat = pop @m;
+            $wat eq '' || die "got some $wat  f n".wdump 2, \@m;
+        }
+        [@m]
+    };
+    J.u = sub {
+       $eu->();
+       my $ar;
+       ar.C = [$dJ->(@_)];
+       ar.J = Rw Elj $J qq;
+       Rw In;
+    };
+    J.n = sub {
+       $unu->();
+       my $ar;
+       ar.J = $J;
+       ar.C = [$dJ->(@_)];
+       Rw In;
+    };
+    J.m = sub {
+       $unu->();
+       my $ar;
+       ar.M = shift;
+       ar.J = $J;
+       ar.C = [$dJ->(@_)];
+       Rw In;
+    };
 
