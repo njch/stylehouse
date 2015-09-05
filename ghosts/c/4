@@ -19,15 +19,107 @@ timery: |
                 say "Wkcs: ". k2 {w=>{W=>$ti}};
             }
         }
+allcode: |
+    n 'make sc_code=1 if no'=>2,{s=><<''},{code=>'In 51'}
+        if (!exists C.sc.code) {
+            C.sc.code = 1;
+        }
+onlycode: |
+    n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
+        if (!exists C.sc.code) {
+            C.sc.code = 1;
+        }
+concatco: |
+    n 'pool lang spines to s (^) unifying arms as surface res goes, except sc_fr=musts'=>7=>{s=><<''}
+        # another frequency to this
+        # tune in this into the space
+        # get the layers of music to inter
+        # C and D stuff
+        
     
+Ein: |
+    u allcode
+    n args=>1=>{s=><<''}
+        my $N = ar.N||ar.C;
+        $N = [$N] if ref $N ne 'ARRAY';
+    
+    n In=>2=>{s=><<''},{code=>'^'}
+        my $A = Rw ready;
+        A.N = $N;
+        A.ti&3||return;
+    
+    # pi lays out in tiles
+    
+    n fl=>22=>{s=><<''}
+        A.fl = ar.fl || {};
+    n M=>24=>{s=><<''}
+        A.M = [];
+        
+    n bangC=>26=>{s=><<''},{fr=>'musts'}; 
+        aft {
+            $@||return;
+            $@ = "C: ".ki(I.nF.C)."\n$@";
+        };
+       
+    # 2821:      keys arrive as characters already:
+    # prep A for A (I), J-sessioned etc stuff
+    # is literal G spacer, index jointed bunch of code to check out from w
+    # some comp could expectorate lots charstream rhythms ^
+    # Z flow?
+    # or we could do on a stick,
+    # so its MZ junk dont linger in this stream
+    # ie always flow outwards the sc filtery stuff.
+    while (@{A.N}) { #
+        my $s = shift @{A.N};
+        my $C = {};
+        my $T = {};
+        T.oM = [];
+        
+        I.d&n,$A,$C,$G,$T;
+        
+        I.d&time
+        I.d&Ci,$s;
+        
+        I.d&z && next if T.not;
+        
+        # elabourate C,
+        for my $k (keys %{A.fl}) {
+            my $v = A.fl->{$k};
+            Rw ym/$k $A $C $n:C $v $G $T;
+        }
+        
+        I.d&Cr,$s;
+         
+        die "not: ".wdump 4,[$N, $C]
+           if !ref C.y || !C.y || !defined C.t;
+         
+        push @{T.oM}, $C;
+        
+        I.d&z;
+    }
+    
+    my $M = ar.M;
+    if ($M) {
+        push @$M, @{A.M}
+    }
+    elsif ($J) {
+        map {
+           Rw mani + $J $C:_
+        } @{A.M}
+    } else {
+        die "noJM";
+    }
+     
+ready: |
     
 a4ready: |
     my $I = {};
     Rw I_Din $I;
-    Rw C_D $I;
+    Rw C_E $I;
+    Rw C_C $I;
     $I;
-C_D: |
-    I.Ci = sub {
+C_E: |
+    I.accept = sub {
         my ($A,$C,$G,$T,$s) = @_;
         
         if (!ref $s) {
@@ -51,6 +143,22 @@ C_D: |
         }
         else { die "mmtype:$s" }
     };
+C_C: |
+    I.accept = sub { # coinsciousness accept, v 1-2
+        my ($A,$C,$G,$T,$D) = @_;
+        
+        return T.next = 1 unless D.c.any || I.d&wanteD,$D;
+    };
+    I.wanteD = sub {
+        my ($A,$C,$G,$T,$D) = @_;
+        D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}
+    };
+    I.extend = sub {
+        my ($A,$C,$G,$T,$s,$c) = @_;
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+        }
+    };
 At4: |
     $C||die;
     my $A = {};
@@ -67,6 +175,7 @@ I_4: | # is a 4d join! something n'd in, certain conditions already from 6...
      my $A = Rw At4;
      # ^ DESCRIBE how we're in here to
      # also the executablur
+     # if something wants to mess with itself when...
      A.note = {};
      A.note.not = sub {
          my ($nt,$k) = @_;
