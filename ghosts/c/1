@@ -51,8 +51,12 @@ In: | # I I I
     my $A;
     A.N = $N;
     A.I = $I;
-    A.fl = {};
+    A.fl = ar.fl || {};
     A.M = [];
+    aft {
+        $@||return;
+        $@ = "C: ".ki(I.nF.C)."\n$@";
+    };
     # 2821:      keys arrive as characters already:
     # prep A for A (I), J-sessioned etc stuff
     # is literal G spacer, index jointed bunch of code to check out from w
@@ -98,7 +102,7 @@ In: | # I I I
            Rw mani + $J $C:_
         } @{A.M}
     } else {
-        die;
+        die "noJM";
     }
      
 I_D: |
@@ -111,7 +115,7 @@ I_D: |
         elsif (ref $s eq 'ARRAY') {
             if (@$s == 1) {
                 my ($s) = @$s;
-                ref $s && die;
+                ref $s && die "1striong: ".wdump $s;
                 I.d&4string,$s
             }
             else {

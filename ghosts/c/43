@@ -1,4 +1,106 @@
 
+pha: | # temporal phatness, per suJ (encap $M surges within)
+     my $name = ar.k || shift @{ar.m};
+     
+     if (my $xx = J.phy->{$name}) {
+         # re endtrant
+         xx.end->();
+         # end - maybe new stuffright as some random part of this process
+     }
+     for my $outx (grep {_.outsidey} values %{J.phy}) {
+        # something? # perhaps a non, fire when no other phy
+     }
+      
+     J.phy ||= {}; # phases
+     
+     my $x = J.phy->{$name} = {
+        begin => hitime(),
+        name => $name,
+        bb => {},
+        ord => [],
+        #tim => {},
+        #wtf => {}, # F grab
+        #ap => sub{}, # bz do aftering
+        qui => 1,
+     };
+     x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
+     x.abandon = sub { # upgrades what's there already, early exity lop
+         my $why = shift;
+         delete J.phy->{$name};
+         x.abadoned = $why || 1;
+         if (my $xx = x.head) {
+             x.as->($xx);
+         }
+         x.end->();
+     };
+     x.as = sub {
+         my $ox = shift;
+         for (qw'begin bb ord tim wtf') {
+              exists $ox->{$_} || next;
+              my $v = $ox->{$_};
+              $v = [@$v] if ref $v eq 'ARRAY';
+              $v = {%$v} if ref $v eq 'HASH';
+              $x->{$_} = $v;
+         }
+     };
+     x.end = sub {
+         my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
+         x.ended = hitime();
+         delete J.phy->{$name};
+         push @{y.l}, $x;
+         shift @{y.l} while @{y.l} > 5;
+         # layers ^ rolling in time index .r -> the y.l
+         # so last phase of $name can be found?
+         if (x.bb) {
+             my $w = @{y.l};
+             y.l_bb->{$_} = $w for keys %{x.bb};
+         }
+         # somewhere thinks about what happened
+         return $y;
+     };
+     x.exactl = sub {
+         my $q = shift;
+         my $y = x.end->();
+         Rw ph_exactl $J $y $q;
+     };
+     # ensure phase reset with _after_do
+     $x;
+ph_exactl: | #c or drop not in last
+       my $wtf = ar.wtf || {};
+       my $cur = wtf.cur = y.l->[-1];
+       my $last = wtf.last = y.l->[-2];
+       wtf.same = 1;
+       if (!$last) { # better not get autovivified! 
+           wtf.allnew = 1;
+           wtf.same = 0;
+           #return;
+           last.bb = {};
+       }
+       $wtf->{$_} = {} for qw'new diff gone';
+       #y.l_bb->{$_} = $w for keys %{x.bb};
+       # churn stats like 30% of last disappear, 20% new
+       
+       for (sort keys %{cur.bb}) {
+           if (!exists last.bb->{$_}) {
+               wtf.new->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           } 
+           elsif (last.bb->{$_} ne cur.bb->{$_}) {
+               wtf.diff->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           }
+       }
+       
+       for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
+           wtf.gone->{$_} = last.bb->{$_};
+           wtf.same = 0;
+           delete J.bb->{$_};
+       }
+       
+       my $count = keys %{cur.bb};
+       cur.wt = $wtf;
+       $wtf;
+     
 wtfch: |   
     my $wtf = {};
     wtf.same = 1;
@@ -24,7 +126,7 @@ wtfch: |
         wtf.same = 0;
     }
     $wtf;
-Elvis: | # safe vs doing - oJ
+Elvis: | # safe vs doing - sheets of J->Y, dont drop any frames, where we start being onlies
     my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
     
     Y.tw ||= {};
