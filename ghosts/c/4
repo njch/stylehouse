@@ -27,17 +27,46 @@ a4ready: |
     Rw C_D $I;
     $I;
 C_D: |
-    I.
-J_4: | # is a 4d join! something n'd in, certain conditions already...
+    I.Ci = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        
+        if (!ref $s) {
+            die "string: $s";
+        }
+        elsif (ref $s eq 'ARRAY') {
+            if (@$s == 1) {
+                my ($s) = @$s;
+                ref $s && die "1striong: ".wdump $s;
+                I.d&4string,$s
+            }
+            else {
+                I.d&4real,$s
+            }
+        }
+        elsif (ref $s eq 'HASH') {
+           s.MZ ? I.d&MZu,s.MZ
+           : s.EZ ? I.d&MZu,s.EZ
+           : s.WZ ? I.d&MZu,s.WZ
+           : die 'hash: '.wdump($s);
+        }
+        else { die "mmtype:$s" }
+    };
+At4: |
+    $C||die;
+    my $A = {};
+    A.J = $J;
+    A.C = $C;
+    A.I = Rw a4ready;
+    A.is = A.M = [];
+    $A;
+I_4: | # is a 4d join! something n'd in, certain conditions already from 6...
+     # whatever is high in the plain is coming at us
      # make pool, synth space, want arches
      # fork & rejoin to exciting place
      # the valley, what it means to be here in here YIN
-     $C || die;
-     my $A;
-     A.J = $J;
-     A.I = Rw Ghe;
-     A.C = $C;
-     A.is = [];
+     my $A = Rw At4;
+     # ^ DESCRIBE how we're in here to
+     # also the executablur
      A.note = {};
      A.note.not = sub {
          my ($nt,$k) = @_;
@@ -47,12 +76,16 @@ J_4: | # is a 4d join! something n'd in, certain conditions already...
            my ($ct) = @_;
            ct.t_k eq "c" && A.note.not&c,ct.t;
      };
+     # all thoughts are prayed to some beast
+     # acquire Y personality:
+     A.y&upto;
      #ඬ
      # 2.8
      my $CC = $C;
      @{A.is}||die'nois'.wdump[$C,$A];
      for my $C (@{A.is}) { # THE TIR drop at hands
            my $A = {%$A};
+           A.note = {};
            A.C = $C;
            C.c || die;
            C.y.cv || die "no cv".k2 $C;
