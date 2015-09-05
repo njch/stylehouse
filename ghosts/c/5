@@ -1,41 +1,6 @@
 
-noibz/yJ: |
-       my $bz = J.bz;
-       J.bz = sub {
-           say "# J.name bz ".join'      ',@_;
-           $bz->(@_);
-       };
-    
-waps: |
-    sayyl 'ps';
-    J.first++ || return;
-    my $sleep = sub {
-        my $til = hitime() + shift;
-        G.pslagtil = $til if $til > G.pslagtil;
-    };
-    
-    
-    my @ps = `ps -p$$ fu`; # j right
-    my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
-    if ($mem > 20 || $cpu > 60) {
-        saybl "& $mem";
-        if ($mem > 38) {
-            sayre "massive, restarting" for 1..8;sleep 1;
-            Rw rez;
-        }
-        $sleep->(4);
-    }
-     
-    my @temps = 
-    map {/\+(\d+\.\d+)\S+? /;$1} 
-    grep {/^temp1:/} 
-    `sensors`;
-    my ($ch,$gh) = @temps;
-    sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
-    if ($ch > 70) {
-        sayre "HOT";
-        $sleep->(7);
-    }
+
+
 aftor: |
     my $J = J.most.J;
     my $N = Rw tyc $J;
@@ -116,8 +81,10 @@ wa:
     
     Rw J5 - toc;
     
+    n ps=>0.3=>{pi=>'waps'}
+    
     Jn(st=>0.9=>"o",'%hs:8427,fs:4');
-    Rwyl 0.01 waps;
+    
 Wkcs:
    yJ: |
      'Travel'
@@ -192,7 +159,6 @@ Hosp:
     my $d = Jn(qw'life 0.1 life/H/');
     
     Mn(hoisp => '',{pi=>'liv',s=>d.s}); 
-
 Vil:
    yJ: |
       'Travel'

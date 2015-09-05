@@ -196,4 +196,37 @@ pi/hol: |
 pi/pid: |
     Jn(pid => 0.1 => $u, '%hs:483,fs:5');
     
+pi/waps: |
+    sayyl 'ps';
+    my $sleep = sub {
+        my $til = hitime() + shift;
+        G.pslagtil = $til if $til > G.pslagtil;
+    };
+    
+    
+    my @ps = `ps -p$$ fu`; # j right
+    my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
+    if ($mem > 20 || $cpu > 60) {
+        saybl "& $mem";
+        if ($mem > 38) {
+            sayre "massive, restarting" for 1..8;sleep 1;
+            Rw rez;
+        }
+        $sleep->(4);
+    }
+     
+    my @temps = 
+    map {/\+(\d+\.\d+)\S+? /;$1} 
+    grep {/^temp1:/} 
+    `sensors`;
+    my ($ch,$gh) = @temps;
+    sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
+    if ($ch > 70) {
+        sayre "HOT";
+        $sleep->(7);
+    }
+    n cpu => 3 => $cpu;
+    n mem => 32 => $mem;
+    n cputemp => 34 => $ch;
+    n gputemp => 36 => $gh;
 

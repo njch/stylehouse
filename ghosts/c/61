@@ -53,13 +53,14 @@ Many: |
     $G || die;
     # The Beatles - Martha My Dear
     my $J;
-    ($J) = G.oin = G.J ||= G.oin ||= map {
-        $J = Rw Jto $name:_;
+    ($J) = G.oin = G.J ||= G.oin ||= do{
+        $J = Rw Jto One;
         my $sc = {J=>$J};
         Rw jamsc $J $t:J.name $cv=0.3 $s=oo $sc;
         $J
-    } 'One';
-    n One=>0.3=>{J=>$J,time=>6}
+    };
+    
+    n ''=>''=>{W=>J.name};
     
     my $y = G.Many||={};
     y.i++;
@@ -69,10 +70,14 @@ Many: |
 One: |
     sayyl "Doing J.name stuff...";
     n theS=>1=>{pi=>'cfile'=>s=>"life/S\.s"}
-    J.V = 0;
+    
+    n Yup
+    n Hypo
+    
+    J.V = 1;
 Gto: |
     my $G = $G;
-    G.w = sub {
+    my $mkD = sub {
         my ($pin,$ar)=@_;
         my $D;
         D.point = $pin;
@@ -80,22 +85,22 @@ Gto: |
         D.name = join ' ', D.point, sort keys %{D.ar};
         D.sign = "Z";
         D.talk = "D.sign D.name";
+        $D;
+    };
+    G.w = sub {
+        my ($pin,$ar)=@_;
+        my $D = $mkD->($pin,$ar);
         
         D.bab = G.way->{$pin};
         if (!defined D.bab) {
             if ($pin =~ /\//) {
+                say "windshot: $pin";
                 D.bab = fwind(G.way,$pin);
             }
             if (!defined D.bab) {
-                sayre "Not findin D.talk";
+                die "Not findin D.talk";
                 return;
             }
-            else {
-                #say "Trick shot: $pin"
-            }
-        }
-        else {
-            #say "Shot: $pin";
         }
         
         my $Z = $G->Doming($D);
