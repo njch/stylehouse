@@ -30,11 +30,22 @@ onlycode: |
             C.sc.code = 1;
         }
 concatco: |
-    n 'pool lang spines to s (^) unifying arms as surface res goes, except sc_fr=musts'=>7=>{s=><<''}
+    n 'pool lang spines to s (^) unifying arms as surface res goes'=>7=>{s=><<''}
         # another frequency to this
         # tune in this into the space
         # get the layers of music to inter
         # C and D stuff
+        
+        # code is an index
+            # 
+        # 2821:      keys arrive as characters already:
+        # prep A for A (I), J-sessioned etc stuff
+        # is literal G spacer, index jointed bunch of code to check out from w
+        # some comp could expectorate lots charstream rhythms ^
+        # Z flow?
+        # or we could do on a stick,
+        # so its MZ junk dont linger in this stream
+        # ie always flow outwards the sc filtery stuff.
         
     
 Ein: |
@@ -46,7 +57,6 @@ Ein: |
     n In=>2=>{s=><<''},{code=>'^'}
         my $A = Rw ready;
         A.N = $N;
-        A.ti&3||return;
     
     # pi lays out in tiles
     
@@ -55,60 +65,59 @@ Ein: |
     n M=>24=>{s=><<''}
         A.M = [];
         
-    n bangC=>26=>{s=><<''},{fr=>'musts'}; 
+    n bangC=>26=>{s=><<''}
         aft {
             $@||return;
             $@ = "C: ".ki(I.nF.C)."\n$@";
         };
-       
-    # 2821:      keys arrive as characters already:
-    # prep A for A (I), J-sessioned etc stuff
-    # is literal G spacer, index jointed bunch of code to check out from w
-    # some comp could expectorate lots charstream rhythms ^
-    # Z flow?
-    # or we could do on a stick,
-    # so its MZ junk dont linger in this stream
-    # ie always flow outwards the sc filtery stuff.
-    while (@{A.N}) { #
-        my $s = shift @{A.N};
-        my $C = {};
-        my $T = {};
-        T.oM = [];
-        
-        I.d&n,$A,$C,$G,$T;
-        
-        I.d&time
-        I.d&Ci,$s;
-        
-        I.d&z && next if T.not;
-        
-        # elabourate C,
-        for my $k (keys %{A.fl}) {
-            my $v = A.fl->{$k};
-            Rw ym/$k $A $C $n:C $v $G $T;
-        }
-        
-        I.d&Cr,$s;
-         
-        die "not: ".wdump 4,[$N, $C]
-           if !ref C.y || !C.y || !defined C.t;
-         
-        push @{T.oM}, $C;
-        
-        I.d&z;
-    }
     
-    my $M = ar.M;
-    if ($M) {
-        push @$M, @{A.M}
-    }
-    elsif ($J) {
-        map {
-           Rw mani + $J $C:_
-        } @{A.M}
-    } else {
-        die "noJM";
-    }
+    n loop=>3=>{s=><<''}
+        A.t&3||return;
+        while (@{A.N}) { #
+            my ($C,$T,$s) = ({},{},shift @{A.N});
+    
+    n l=>31=>{s=><<''}
+            T.oM = [];
+            I.d&n,$A,$C,$G,$T;
+    
+    n l=>32=>{s=><<''}
+            I.d&Ci,$s;
+    
+    n l=>33=>{s=><<''}
+            I.d&z && next if T.not;
+
+    n fl=>4=>{s=><<''}
+            for my $k (keys %{A.fl}) {
+                my $v = A.fl->{$k};
+                Rw ym/$k $A $C $n:C $v $G $T;
+            }
+
+    n l=>5=>{s=><<''}
+            I.d&Cr,$s;
+
+    n l=>6=>{s=><<''}
+            die "not: ".wdump 4,[$N, $C]
+               if !ref C.y || !C.y || !defined C.t;
+
+    n l=>67=>{s=><<''}
+            push @{T.oM}, $C;
+
+    n l=>68=>{s=><<''}
+            I.d&z;
+        }
+    
+    n l=>7=>{s=><<''}
+        my $M = ar.M;
+        if ($M) {
+            push @$M, @{A.M}
+        }
+        elsif ($J) {
+            map {
+               Rw mani + $J $C:_
+            } @{A.M}
+        } else {
+            die "noJM";
+        }
      
 ready: |
     
