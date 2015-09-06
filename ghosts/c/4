@@ -130,7 +130,6 @@ ready: |
     # define how to throw sheets of language
     # do zis first stuff...
     # and and...
-
 C_E: |
     I.An = sub {
         my ($A,$C,$G,$T) = @_;
@@ -193,20 +192,14 @@ C_C: |
         # (is mailing itself further instructions, intro c, further lines)
         # an In persona, joining our M
         my ($A,$C,$G,$T,$s) = @_;
+        ref $s eq 'ARRAY' || die;
         my ($s,$c) = @$s;
         my $E; # push to dome
         E.Ci.3.doextend = sub {
             my ($A,$C,$G,$T) = @_;
             I.d&extend,$C,$c;
         };
-        Rw In + $M:T.oM $C:s $E;
-        
-        my $Z = I.d&iZu,$s;
-        for my $k (sort keys %$Z) {
-            my $s = $Z->{$k};
-            die wdump $s if ref $s ne 'ARRAY';
-            unshift @{A.N}, @$s;
-        }
+        Rw In $J $M:T.oM $C:s $E;
         T.not = 1;
     };
 ym/wongui: |
@@ -217,7 +210,8 @@ ym/wongui: |
         saybl wdump 3, $C;
         my $from = [[C.t,C.y]];
         unshift @$from, A.c&from;
-        push @{A.N}, {EC=>[$zi,{c=>{from=>$from}}];
+        my $c = {c=>{from=>$from}};
+        push @{A.N}, {EC=>[$zi,$c]};
     }
 At4: |
     $C||die;

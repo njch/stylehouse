@@ -22,14 +22,15 @@ MourmaZ: |
    ';
    
 already: |
-    my $I = {};
-    Rw I_Din $I;
-    Rw C_C $I;
-    Rw C_E $I;
-    Rw I_D $I;
-    Rw I_Ci $I;
-    Rw I_Cr $I;
-    $I;
+    # note ar.*
+    ar.I = {};
+    Rw I_Din;
+    Rw C_C;
+    Rw C_E;
+    Rw I_D;
+    Rw I_Ci;
+    Rw I_Cr;
+    ar.I
 I_Din: |
     I.d = sub {
         my $s = shift;
@@ -57,7 +58,9 @@ In: | # I I I
     A.M = [];
     aft {
         $@||return;
-        $@ = "C: ".ki(I.nF.C)."\n$@";
+        my $m = "C: ".ki I.nF.C;
+        $m .= "\ns: ".wdump 3, $N;
+        $@ = "$m\n$@";
     };
     # 2821:      keys arrive as characters already:
     # prep A for A (I), J-sessioned etc stuff
@@ -116,13 +119,13 @@ I_D: |
     I.Ci = sub {
         my ($A,$C,$G,$T,$s) = @_;
         if (!ref $s) {
-            I.d&string;
+            I.d&string,$s;
         }
         elsif (ref $s eq 'ARRAY') {
-            I.d&array;
+            I.d&array,$s;
         }
         elsif (ref $s eq 'HASH') {
-            I.d&hash;
+            I.d&hash,$s;
         }
         else { die "mmtype:$s" }
     };
