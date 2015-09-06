@@ -68,8 +68,9 @@ Ein: |
     
     n loop=>3=>{s=><<''}
         A.t&3||return;
-        while (@{A.N}) { #
+        while (@{A.N}) {
             my ($C,$T,$s) = ({},{},shift @{A.N});
+            # the 2-8 reflection
     
     n l=>31=>{s=><<''}
             my $A = {%$A};
@@ -87,7 +88,7 @@ Ein: |
     n fl=>4=>{s=><<''}
             for my $k (keys %{A.fl}) {
                 my $v = A.fl->{$k};
-                Rw ym/$k $A $C $n:C $v $G $T;
+                Rw ym/$k $J $A $C $n:C $v $G $T;
             }
 
     n l=>5=>{s=><<''}
@@ -150,12 +151,12 @@ C_E: |
                     D.c.gk = $gk;
                 }
             }
+            exists C.c->{$_} && die "COT INTERESTING ".ki $C for qw'code if of ref';
             # ^nk glue
-            my $got = I.d&Cngk,$D;
-            return () unless $got;
-            A.note->{D.c.nk}->{D.c.gk} = $got;
-            my $v = $got->[0];
-            die 'mulitAn' if @$got > 1;
+            my $v = I.d&Cngk,$D;
+            return () unless $v;
+            A.note->{D.c.nk}->{D.c.gk} = $v;
+            die 'mulitAn' if @$v > 1;
             if (D.c.as eq 'list') {
                 return ref $v eq 'ARRAY' ? @$v : $v;
             }
@@ -164,7 +165,7 @@ C_E: |
         $A
     };
 C_C: |
-    I.accept = sub { # coinsciousness accept, v 1-2
+    I.accept = sub { # coinsciousness accept, v 1-2, OSC readex
         my ($A,$C,$G,$T,$D) = @_;
         return T.next = 1 unless I.d&Cngk,$D;
     };
@@ -193,25 +194,38 @@ C_C: |
         # an In persona, joining our M
         my ($A,$C,$G,$T,$s) = @_;
         ref $s eq 'ARRAY' || die;
-        my ($s,$c) = @$s;
+        my ($N,$c) = @$s;
         my $E; # push to dome
+        # that must in  A
         E.Ci.3.doextend = sub {
             my ($A,$C,$G,$T) = @_;
             I.d&extend,$C,$c;
         };
-        Rw In $J $M:T.oM $C:s $E;
+        say "Rein In: ";
+        Rw stwo $J $n=ECReIn $N;
+        #wdump 17,[$N,'====','====',$C,$s];
+        Rw In $J $M:T.oM $N $E;
+        # ^but instead push to A.N and A.No, the sister strand Whare Y Whare
+        # and A walks through t&Y, d&Whare(6)
+        # turns via n&ACGT
+        # the time beams mapped... a W concat couldol
         T.not = 1;
     };
 ym/wongui: |
     my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',as=>'list'}};
     
-    saybl "Slamping".  wdump 3, $C;
+    my @go = A.c->($D);
+    sayyl "Slamped ".wdump 5,[$D,$C];
     for my $zi (A.c->($D)) {
-        saybl wdump 3, $C;
-        my $from = [[C.t,C.y]];
-        unshift @$from, A.c&from;
+        my $from = [];
+        push @$from, A.c&from;
+        push @$from, $C;
         my $c = {c=>{from=>$from}};
-        push @{A.N}, {EC=>[$zi,$c]};
+        my $s = {EC=>[$zi,$c]};
+        saybl "Wiz: ";
+        Rw stwo $J $n=wonguizlist $N:_
+            for [$s];
+        push @{A.N}, $s;
     }
 At4: |
     $C||die;
