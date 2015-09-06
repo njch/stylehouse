@@ -21,14 +21,10 @@ timery: |
         }
 allcode: |
     n 'make sc_code=1 if no'=>2,{s=><<''},{code=>'In 51'}
-        if (!exists C.sc.code) {
-            C.sc.code = 1;
-        }
+        C.sc.code = 1 !exists C.sc.code;
 onlycode: |
     n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
-        if (!exists C.sc.code) {
-            C.sc.code = 1;
-        }
+        C.sc.code = 1 !exists C.sc.code;
 concatco: |
     n 'pool lang spines to s (^) unifying arms as surface res goes'=>7=>{s=><<''}
         # another frequency to this
@@ -47,7 +43,6 @@ concatco: |
         # so its MZ junk dont linger in this stream
         # ie always flow outwards the sc filtery stuff.
         
-    
 Ein: |
     u allcode
     n args=>1=>{s=><<''}
@@ -77,8 +72,11 @@ Ein: |
             my ($C,$T,$s) = ({},{},shift @{A.N});
     
     n l=>31=>{s=><<''}
+            my $A = {%$A};
             T.oM = [];
             I.d&n,$A,$C,$G,$T;
+            I.d&An;
+            
     
     n l=>32=>{s=><<''}
             I.d&Ci,$s;
@@ -132,46 +130,56 @@ ready: |
     # define how to throw sheets of language
     # do zis first stuff...
     # and and...
-a4ready: |
-    my $I = {};
-    Rw I_Din $I;
-    Rw C_E $I;
-    Rw C_C $I;
-    $I;
+
 C_E: |
-    I.accept = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        
-        if (!ref $s) {
-            die "string: $s";
-        }
-        elsif (ref $s eq 'ARRAY') {
-            if (@$s == 1) {
-                my ($s) = @$s;
-                ref $s && die "1striong: ".wdump $s;
-                I.d&4string,$s
+    I.An = sub {
+        my ($A,$C,$G,$T) = @_;
+        A.note = {}; # pinging csc
+        A.c = sub {
+            my ($nk,$gk) = @_;
+            my $D = {};
+            if (ref $nk) {
+                $D = $nk
             }
             else {
-                I.d&4real,$s
+                if (@_ == 1) { # or from t,,,
+                    D.c.nk = 'c';
+                    D.c.gk = $nk;
+                }
+                elsif (@_ == 2) {
+                    D.c.nk = $nk;
+                    D.c.gk = $gk;
+                }
             }
-        }
-        elsif (ref $s eq 'HASH') {
-           s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&MZu,s.EZ
-           : s.WZ ? I.d&MZu,s.WZ
-           : die 'hash: '.wdump($s);
-        }
-        else { die "mmtype:$s" }
+            # ^nk glue
+            my $got = I.d&Cngk,$D;
+            return () unless $got;
+            A.note->{D.c.nk}->{D.c.gk} = $got;
+            my $v = $got->[0];
+            die 'mulitAn' if @$got > 1;
+            if (D.c.as eq 'list') {
+                return ref $v eq 'ARRAY' ? @$v : $v;
+            }
+            return 1;
+        };
+        $A
     };
 C_C: |
     I.accept = sub { # coinsciousness accept, v 1-2
         my ($A,$C,$G,$T,$D) = @_;
-        
-        return T.next = 1 unless D.c.any || I.d&wanteD,$D;
+        return T.next = 1 unless I.d&Cngk,$D;
     };
-    I.wanteD = sub {
+    I.Cngk = sub {
         my ($A,$C,$G,$T,$D) = @_;
-        D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}
+        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        return 1 if D.c.any;
+        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
+            my $v = [$C->{D.c.nk}->{D.c.gk}];
+            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
+            return $v;
+        }
+        die "nonnk".ki$D unless exists D.c.nk;
+        0;
     };
     I.extend = sub {
         my ($A,$C,$G,$T,$s,$c) = @_;
@@ -179,16 +187,49 @@ C_C: |
             $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
         }
     };
+    I.ECu = sub { # extend C on the way in to another dome, magnetised into our M
+        # probably for collapsing roooves...
+        # dumber than sc decompresphere & playing out
+        # (is mailing itself further instructions, intro c, further lines)
+        # an In persona, joining our M
+        my ($A,$C,$G,$T,$s) = @_;
+        my ($s,$c) = @$s;
+        my $E; # push to dome
+        E.Ci.3.doextend = sub {
+            my ($A,$C,$G,$T) = @_;
+            I.d&extend,$C,$c;
+        };
+        Rw In + $M:T.oM $C:s $E;
+        
+        my $Z = I.d&iZu,$s;
+        for my $k (sort keys %$Z) {
+            my $s = $Z->{$k};
+            die wdump $s if ref $s ne 'ARRAY';
+            unshift @{A.N}, @$s;
+        }
+        T.not = 1;
+    };
+ym/wongui: |
+    my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',as=>'list'}};
+    
+    saybl "Slamping".  wdump 3, $C;
+    for my $zi (A.c->($D)) {
+        saybl wdump 3, $C;
+        my $from = [[C.t,C.y]];
+        unshift @$from, A.c&from;
+        push @{A.N}, {EC=>[$zi,{c=>{from=>$from}}];
+    }
 At4: |
     $C||die;
     my $A = {};
     A.J = $J;
     A.C = $C;
-    A.I = Rw a4ready;
+    A.I = Rw already;
     A.is = A.M = [];
     $A;
 I_4: | # is a 4d join! something n'd in, certain conditions already from 6...
      # whatever is high in the plain is coming at us
+     
      # make pool, synth space, want arches
      # fork & rejoin to exciting place
      # the valley, what it means to be here in here YIN

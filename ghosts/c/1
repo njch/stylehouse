@@ -24,6 +24,8 @@ MourmaZ: |
 already: |
     my $I = {};
     Rw I_Din $I;
+    Rw C_C $I;
+    Rw C_E $I;
     Rw I_D $I;
     Rw I_Ci $I;
     Rw I_Cr $I;
@@ -69,9 +71,10 @@ In: | # I I I
         my $s = shift @{A.N};
         my $C = {};
         my $T = {};
+        my $A = {%$A};
         T.oM = [];
-        
         I.d&n,$A,$C,$G,$T;
+        I.d&An;
         
         I.d&Ci,$s;
         
@@ -107,12 +110,32 @@ In: | # I I I
      
 I_D: |
     I.Ci = sub {
-        my ($A,$C,$G,$T,$s) = @_;
+        my ($A,$C,$G,$T,$nk,$gk) = @_;
         
+    };
+    I.Ci = sub {
+        my ($A,$C,$G,$T,$s) = @_;
         if (!ref $s) {
-            die "string: $s";
+            I.d&string;
         }
         elsif (ref $s eq 'ARRAY') {
+            I.d&array;
+        }
+        elsif (ref $s eq 'HASH') {
+            I.d&hash;
+        }
+        else { die "mmtype:$s" }
+    };
+    I.hash = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+           s.MZ ? I.d&MZu,s.MZ
+           : s.EZ ? I.d&MZu,s.EZ
+           : s.WZ ? I.d&MZu,s.WZ
+           : s.EC ? I.d&ECu,s.EC
+           : die 'hash: '.wdump($s);
+    };
+    I.array = sub {
+        my ($A,$C,$G,$T,$s) = @_;
             if (@$s == 1) {
                 my ($s) = @$s;
                 ref $s && die "1striong: ".wdump $s;
@@ -121,14 +144,10 @@ I_D: |
             else {
                 I.d&4real,$s
             }
-        }
-        elsif (ref $s eq 'HASH') {
-           s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&MZu,s.EZ
-           : s.WZ ? I.d&MZu,s.WZ
-           : die 'hash: '.wdump($s);
-        }
-        else { die "mmtype:$s" }
+    };
+    I.string = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        die "string: $s";
     };
     I.Cr = sub { # work the corner
         my ($A,$C,$G,$T) = @_;
@@ -209,7 +228,7 @@ I_Ci: | # receive topu
         for my $k (sort keys %$Z) {
             my $N = $Z->{$k};
             $N = [ map { [$_] } split "\n",$N ] if !ref $N;
-            Rw I $M:T.oM $N;
+            Rw In $M:T.oM $N;
         }
         T.not = 1;
     };
