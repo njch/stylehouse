@@ -300,8 +300,12 @@ sub ki {
     my $re = $ar if $ar =~ /^\d+$/;
     $ar = shift if defined $re;
     my $d = 1 + shift;
-    if (!ref $ar || "$ar" !~ /HASH/) {
+    if (!ref $ar || "$ar" !~ /(ARRAY|HASH)/) {
         return "!%:$ar";
+    }
+    if (ref $ar =~ 'ARRAY') {
+        return "Array(".@$ar.")" if $d > 1;
+        $ar = {map{$_=>$ar->[$_]}0..(@$ar-1)};
     }
     my $lim = 150 - (150 * ($d / 3));
     join ' ', map {
@@ -309,6 +313,8 @@ sub ki {
         $v = "~" unless defined $v;
         ref $v eq 'HASH'
             ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
+        : ref $v eq 'ARRAY'
+            ? "$_=".($re ?  "[ ".slim($lim,ki($re-1, $v,$d))." ]" : gp($v))
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
