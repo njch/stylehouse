@@ -65,7 +65,8 @@ uCon: |
     # curve falls
     Rw In $J $N $M;
     $N = $M;
-    Rw stwo $J $n=ourt $N $noz=1;
+    my $want = [[sc=>'code']];
+    Rw stwo $J $n=ourt $N $want $noz=1;
 C_EC: |
      # not
 stwo: |
@@ -75,13 +76,8 @@ stwo: |
         my $t;
         my ($A,$C,$T) = ({},{},{});
         I.d&n,$A,$C,$G,$T;
+        I.d&An;
         if (ref $N eq 'HASH') {
-            if (N.EC) {
-                $t.="EC{".@{N.EC};
-                my ($Z,$c) = @{N.EC};
-                N.sc.z && die'wazyECsc';
-                N.sc.z = [@$Z, $c]
-            }
             my $sig = join ' ', sort keys %$N;
             $t .= "car: $sig" unless $sig eq 'c sc t y';
             %$C = %$N;
@@ -100,10 +96,26 @@ stwo: |
         }
         $yc = delete(C.t).$yc;
         if (my $f = C.c.from) {
-            #saybl wdump 4, [$f,$C];
             $n .= " _.t _.y.cv / " for @$f;
         }
-        sayyl "! $n    $t $yc  \t\t". ki $C;
+        my $s = "! $n    $t $yc  \t\t". ki $C;
+        if (my $wa = ar.want) {
+            my $y;
+            for my $try (@$wa) {
+                my @am = A.c->(@$try);
+                next if !@am;
+                $y++;
+            }
+            if ($y) {
+                sayyl $s
+            }
+            else {
+                saybl $s;
+            }
+        }
+        else {
+            saygr $s;
+        }
         if (my $z = C.sc.z) {
             for my $Z (@$z) {
                 last if ar.noz;
