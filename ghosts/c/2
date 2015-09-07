@@ -72,6 +72,10 @@ uCon: |
     
     saybl "AND AGHAIN";
     $N = [{MZ=>'ceoncoi'}, @$N];
+    sayyl wdump $N;
+    return;
+    Rw In $J $N $M;
+    $N = $M;
     Rw stwo $J $n=again $N $noz=1;
      
 ym/ceoncoi: |
@@ -135,18 +139,21 @@ stwo: |
         else {
            C.c.s = $N;
         }
-        my $yc;
         I.d&Cr;
+        
+        my $nC = {%$C};
+        my $yc;
         if (C.y.cv && keys %{C.y} == 1) {
             $yc = "  C.y.cv";
-            delete C.y;
+            delete nC.y;
         }
-        $yc = delete(C.t).$yc;
+        $yc = delete(nC.t).$yc;
         if (my $f = C.c.from) {
             $n .= " _.t /" for @$f;
         }
-        my $s = "! $n    $t $yc  \t\t". ki $C;
-        $s =~ s/\n/↯/g;
+        
+        my $s = "! $n    $t $yc  \t\t". ki $nC;
+        #$s =~ s/\n/↯/g;
         if (my $wa = ar.want) {
             my $y;
             for my $try (@$wa) {
