@@ -52,14 +52,13 @@ I_Din: |
     };
 In: | # I I I
     my $N = ar.N||ar.C;
-    my $I = J.I && J.I.free ? J.I : J.I = Rw already;
+    my $I = Rw already;
     my $A;
     A.N = [@$N];
     A.I = $I;
     A.fl = ar.fl || {};
     A.M = [];
     aft {
-        I.free = 1;
         $@||return;
         my $m = "C: ".ki I.nF.C;
         $m .= "\ns: ".wdump 3, $N;
@@ -87,9 +86,10 @@ In: | # I I I
         I.d&z && next if T.not;
         
         # elabourate C,
-        for my $k (keys %{A.fl}) {
+        for my $k (sort keys %{A.fl}) {
             my $v = A.fl->{$k};
-            Rw ym/$k $J $A $C $n:C $v $G $T;
+            $k = $2 if $k =~ /^(\d+) (.+)$/;
+            Rw ym/$k $I $J $A $C $n:C $v $G $T;
         }
         
         I.d&Cr,$s;
@@ -230,13 +230,22 @@ I_Ci: | # receive topu
     };
     I.MZu = sub { # fl apply, strangely, meta zip oi, applu guvtion
         my ($A,$C,$G,$T,$s) = @_;
-        for (split /\s+/, $s) {
-            /^(.+?)(?::(.+))?$/ || die;
-            if (defined $2 && $2 eq '0') {
-                delete A.fl->{$1};
+        my $uM = sub {
+            my ($k,$v) = @_;
+            if (defined $v && $v eq '0') {
+                delete A.fl->{$k}
             }
             else {
-                A.fl->{$1} = $2 || 1;
+                A.fl->{$k} = $v || 1;
+            }
+        };
+        if (ref $s eq 'HASH') {
+            $uM->($_,$s->{$_}) for keys %$s;
+        }
+        else {
+            for (split /\s+/, $s) {
+                /^(.+?)(?::(.+))?$/ || die;
+                $uM->($1,$2);
             }
         }
         T.not = 1;
@@ -267,6 +276,26 @@ I_Ci: | # receive topu
             die wdump $s if ref $s ne 'ARRAY';
             unshift @{A.N}, @$s;
         }
+        T.not = 1;
+    };
+    I.ECu = sub { # extend C on the way in to another dome, magnetised into our M
+        # probably for collapsing roooves...
+        # dumber than sc decompresphere & playing out
+        # (is mailing itself further instructions, intro c, further lines)
+        # an In persona, joining our M
+        # push to dome
+        # that must in  A
+        my ($A,$C,$G,$T,$s) = @_;
+        ref $s eq 'ARRAY' || die;
+        my ($N,$c) = @$s;
+        # take 4s v             add 3s v         next 2 
+        $N = [{MZ=>'wongui'}, {MZ=>{'3 doex'=>$c}}, @$N];
+        Rw In $J $M:T.oM $N;
+        #Rw stwo $J $n=wongui $N;
+        # ^but instead push to A.N and A.No, the sister strand Whare Y Whare
+        # and A walks through t&Y, d&Whare(6)
+        # turns via n&ACGT
+        # the time beams mapped... a W concat couldol
         T.not = 1;
     };
 I_Cr: | # work the corner

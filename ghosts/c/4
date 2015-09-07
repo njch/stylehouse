@@ -142,6 +142,10 @@ C_E: |
                 $D = $nk
             }
             else {
+                if ($gk =~ /^%(.+):(.+)$/) {
+                    D.c->{$1} = $2;
+                    pop @_;
+                }
                 if (@_ == 1) { # or from t,,,
                     D.c.nk = 'c';
                     D.c.gk = $nk;
@@ -158,7 +162,7 @@ C_E: |
             A.note->{D.c.nk}->{D.c.gk} = $v;
             die 'mulitAn' if @$v > 1;
             if (D.c.as eq 'list') {
-                return ref $v eq 'ARRAY' ? @$v : $v;
+                return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
             }
             return 1;
         };
@@ -199,6 +203,7 @@ At4: |
     $A;
 I_4: | # is a 4d join! something n'd in, certain conditions already from 6...
      # whatever is high in the plain is coming at us
+     # worked up to via aj/In jig, or T huck d&n&er
      
      # make pool, synth space, want arches
      # fork & rejoin to exciting place
