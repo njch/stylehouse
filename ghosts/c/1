@@ -50,12 +50,115 @@ I_Din: |
         push @{A.M}, @{T.oM};
         1
     };
+C_E: |
+    I.An = sub {
+        my ($A,$C,$G,$T) = @_;
+        A.note = {}; # pinging csc
+        A.c = sub {
+            my ($nk,$gk) = @_;
+            my $D = {};
+            if (ref $nk) {
+                $D = $nk
+            }
+            else {
+                if ($gk =~ /^%(.+):(.+)$/) {
+                    D.c->{$1} = $2;
+                    pop @_;
+                }
+                if (@_ == 1) { # or from t,,,
+                    D.c.nk = 'c';
+                    D.c.gk = $nk;
+                }
+                elsif (@_ == 2) {
+                    D.c.nk = $nk;
+                    D.c.gk = $gk;
+                }
+            }
+            exists C.c->{$_} && die "COT INTERESTING ".ki $C for qw'code if of ref';
+            # ^nk glue
+            my $v = I.d&Cngk,$D;
+            return () unless $v;
+            A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
+            die 'mulitAn' if @$v > 1;
+            if (D.c.as eq 'list') {
+                return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
+            }
+            return 1;
+        };
+        A.t = sub {
+            my ($z) = @_;
+            
+        };
+        $A
+    };
+I_Cr: | # work the corner
+    # kind of apply filters as they like to chew, ripping from string theirs, later congealing...
+    # maybewa u and n of the ym is the way way
+    # it doubles
+    I.Crey = sub { # work the y corner
+        my ($A,$C,$G,$T) = @_;
+        if (C.y eq '') { # is or undef
+            C.y = {};
+        }
+        elsif (C.y =~ /^($NUM)$/) {
+            C.y = {cv=>$1};
+        }
+        elsif (C.y =~ /^($NUM)-($NUM)$/) {
+            C.y = {from=>$1,to=>$2};
+        }
+        else {die "strung ny: C.y".wdump $C};
+    };
+    I.Crec = sub { # work the c corner
+        my ($A,$C,$G,$T) = @_;
+        if (!ar.c_is && C.c =~ I.peels) {
+            C.c = I.d&peel, C.c;
+        }
+        else {
+            C.c = {s => C.c};
+        }
+    };
+    I.Cresc = sub { # work the c corner
+        my ($A,$C,$G,$T) = @_;
+        if (C.sc eq '') {
+            C.sc = {};
+        }
+        elsif (C.sc =~ I.peels) {
+            C.sc = I.d&peel, C.sc;
+        }
+        else { die "nostr  C.sc    ".ki $C }
+    };
+C_C: |
+    I.accept = sub { # coinsciousness accept, v 1-2, OSC readex
+        my ($A,$C,$G,$T,$D) = @_;
+        return T.next = 1 unless I.d&Cngk,$D;
+    };
+    I.Cngk = sub {
+        my ($A,$C,$G,$T,$D) = @_;
+        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        return 1 if D.c.any;
+        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
+            my $v = [$C->{D.c.nk}->{D.c.gk}];
+            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
+            return $v;
+        }
+        die "nonnk".ki$D unless exists D.c.nk;
+        0;
+    };
+    I.extend = sub {
+        my ($A,$C,$G,$T,$s,$c) = @_;
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+        }
+    };
+    Rw C_EC;
+    
 In: | # I I I
     my $N = ar.N||ar.C;
     my $I = Rw already;
     my $A;
     A.N = [@$N];
     A.I = $I;
+    A.J = $J;
     A.fl = ar.fl || {};
     A.M = [];
     aft {
@@ -92,6 +195,10 @@ In: | # I I I
             Rw ym/$k $I $J $A $C $n:C $v $G $T;
         }
         
+        if (my $i = J.A.I) {
+            sayyl "got: ".wdump$i;
+            saygr wdump $C;
+        }
         I.d&Cr,$s;
          
         die "not: ".wdump 4,[$N, $C]
@@ -279,41 +386,5 @@ I_Ci: | # receive topu
         # turns via n&ACGT
         # the time beams mapped... a W concat couldol
         T.not = 1;
-    };
-I_Cr: | # work the corner
-    # kind of apply filters as they like to chew, ripping from string theirs, later congealing...
-    # maybewa u and n of the ym is the way way
-    # it doubles
-    I.Crey = sub { # work the y corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.y eq '') { # is or undef
-            C.y = {};
-        }
-        elsif (C.y =~ /^($NUM)$/) {
-            C.y = {cv=>$1};
-        }
-        elsif (C.y =~ /^($NUM)-($NUM)$/) {
-            C.y = {from=>$1,to=>$2};
-        }
-        else {die "strung ny: C.y"};
-    };
-    I.Crec = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (!ar.c_is && C.c =~ I.peels) {
-            C.c = I.d&peel, C.c;
-        }
-        else {
-            C.c = {s => C.c};
-        }
-    };
-    I.Cresc = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.sc eq '') {
-            C.sc = {};
-        }
-        elsif (C.sc =~ I.peels) {
-            C.sc = I.d&peel, C.sc;
-        }
-        else { die "nostr  C.sc    ".ki $C }
     };
 
