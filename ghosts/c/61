@@ -77,10 +77,18 @@ One: |
     J.V = 1;
 Gto: |
     my $G = $G;
+    G.name = 'thouG';
     my $mkD = sub {
         my ($pin,$ar)=@_;
         my $D;
         D.point = $pin;
+        if (my $C = ar.BD) {
+            delete ar.BD;
+            D.C.c.s
+        if (ar.baba) {
+            D.Verb = 1;
+            D.bab = delete ar.baba;
+        }
         D.ar = $ar;
         D.name = join ' ', D.point, sort keys %{D.ar};
         D.sign = "Z";
@@ -90,17 +98,18 @@ Gto: |
     G.w = sub {
         my ($pin,$ar)=@_;
         my $D = $mkD->($pin,$ar);
-        
-        D.bab = G.way->{$pin};
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
         if (!defined D.bab) {
             if ($pin =~ /\//) {
                 #say "windshot: $pin" unless $pin =~ /^pi/;
                 D.bab = fwind(G.way,$pin);
             }
-            if (!defined D.bab) {
-                die "Not findin D.talk";
-                return;
-            }
+        }
+        if (!defined D.bab) {
+            die "Not findin D.talk";
+            return;
         }
         
         my $Z = $G->Doming($D);

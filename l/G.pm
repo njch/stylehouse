@@ -812,7 +812,7 @@ sub Duckling {
     my $whole = @code < 18;
 
 
-    if ($code =~ /^sub \{ my \$ar = shift/
+    if (!$D->{Verb} && $code =~ /^sub \{ my \$ar = shift/
         && $code =~ /return \@doo_return \};/) {
         $line -= 2 if $line;
         shift @code for 1..2;
