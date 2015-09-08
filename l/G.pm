@@ -2344,10 +2344,9 @@ sub g_Dm {
         } keys %$ar)
         if %$ar;
 
-    my @warnings;
     my $sub = "bollox";
     my $evs = 'sub { my $ar = shift; '.
-    "@warnings $download\n".
+    "$download\n".
 
     "my \@doo_return = (sub { \n\n$eval\n })->();\n"
 

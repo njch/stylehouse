@@ -18,10 +18,10 @@ Viu: | # u/n/m pinging uCon, setup part Jto
         }
         [@m]
     };
-    my $oAr = sub {
-        my $oA;
-        oA.babline = (caller(1))[2];
-        ar.oA = $oA;
+    my $oAr = sub { # bit of dome escape vector
+        my ($ar) = @_;
+        my $oA = ar.oA = {};
+        oA.subline = (caller(1))[2];
     };
     J.u = sub {
        $eu->();
@@ -36,6 +36,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        my $ar;
        ar.J = $J;
        ar.C = [$dJ->(@_)];
+       $oAr->($ar);
        Rw In;
     };
     J.m = J.M = sub {
@@ -45,6 +46,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        ar.M = shift;
        ar.J = $J;
        ar.C = [$dJ->(@_)];
+       $oAr->($ar);
        Rw In;
     };
 C_E: |  # elvission/I joinsession/c convene
@@ -105,10 +107,10 @@ C_E: |  # elvission/I joinsession/c convene
         };
         $A
     };
-    I.ex = sub {
+    I.ex = sub { #c
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
         # A wind down to K cv
-        saybl "J.name C: ".ki $C;
+        saybl grep{s/\n//g;1} "J.name C: ".ki $C;
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
             die "$K $cv - $k" if $K ne $k;
@@ -119,14 +121,11 @@ C_E: |  # elvission/I joinsession/c convene
                     my $D = $iii->{$ik};
                     die if D.sc.args;
                     die if D.sc.gk;
-                    say "ink: $K $cv - ".ki $D;
+                    #say grep{s/\n//g;1} "ink: $K $cv - ".ki $D;
                     my $paw = join"_",'',$k,$vc,D.t;
                     $paw =~ s/\W//g;
-                    sayre "$paw from $K $cv ".q{
-                    Rw $paw $A $C $G $T $baba:D.c.s;
-                    };#.qq{
-                    Rw $paw $A $C $G $T $BD;
-                    #};
+                    sayre "$paw from $K $cv ";
+                    #Rw $paw $A $C $G $T $__D:D;
                 }
             }
         }
