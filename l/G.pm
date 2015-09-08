@@ -2158,7 +2158,7 @@ sub g_parse_babble {
         #say wdump[($1, $2, $3, $4, $5, $6, $7)];
         $g ||= $u.'->{G}' if $u;
         $g ||= '$G';
-        $u ||= '$R';
+        $u ||= '$G';
 
         my $ne = ""; # hidden reverse
         $ne = $1 if $a =~ s/($sur)$//;
