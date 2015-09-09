@@ -36,54 +36,53 @@ Ein: |
         
     # pi lays out in tiles
     
-    n fl=>22=>{s=><<''}
-        A.fl = ar.fl || {};
+    n oAbabrip=>22=>{s=><<''}
+        if (my $oA = ar.oA) {
+            my $D = oA.D;
+            Rw babsubrip $oA $D $N
+                if substr(D.bab, 0, 200) =~ /s=><<''/;
+        }
     
     n M=>24=>{s=><<''}
+        my $A;
+        A.N = [@$N];
+        A.I = $I;
+        A.J = $J;
+        A.fl = ar.fl || {};
         A.M = [];
-        
+        A.am = 'In';
+    
     n bangC=>26=>{s=><<''}
         aft {
             $@||return;
-            $@ = "C: ".ki(I.nF.C)."\n$@";
+            my $m = "J: J.name J.le.name";
+            $m .= "\nC: ".ki I.nF.C;
+            $m .= "\ns: ".wdump 3, $N unless length $m > 20;
+            $@ = "$m\n$@";
         };
     
     n loop=>3=>{s=><<''}
-        A.t&3||return;
-        while (@{A.N}) {
-            my ($C,$T,$s) = ({},{},shift @{A.N});
-            # the 2-8 reflection
-    
-    n l=>31=>{s=><<''}
+        while (@{A.N}) { #
+            my $s = shift @{A.N};
+            my $C = {};
+            my $T = {};
             my $A = {%$A};
             T.oM = [];
             I.d&n,$A,$C,$G,$T;
             I.d&An;
-            
-    
-    n l=>32=>{s=><<''}
             I.d&Ci,$s;
-    
-    n l=>33=>{s=><<''}
             I.d&z && next if T.not;
-
-    n fl=>4=>{s=><<''}
-            for my $k (keys %{A.fl}) {
+            # elabourate C,
+            for my $k (sort keys %{A.fl}) {
                 my $v = A.fl->{$k};
-                Rw ym/$k $J $A $C $n:C $v $G $T;
+                $k = $2 if $k =~ /^(\d+) (.+)$/;
+                Rw ym/$k $I $J $A $C $n:C $v $G $T;
             }
-
-    n l=>5=>{s=><<''}
+            A.t&42;
             I.d&Cr,$s;
-
-    n l=>6=>{s=><<''}
             die "not: ".wdump 4,[$N, $C]
                if !ref C.y || !C.y || !defined C.t;
-
-    n l=>67=>{s=><<''}
             push @{T.oM}, $C;
-
-    n l=>68=>{s=><<''}
             I.d&z;
         }
     
@@ -99,7 +98,8 @@ Ein: |
         } else {
             die "noJM";
         }
-     
+    
+    #
 ready: |
     # F says how to make an A for it
     # then A.t&3 etc moves time forward, ore return is crux slot craft
