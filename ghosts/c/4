@@ -21,10 +21,10 @@ timery: |
         }
 allcode: |
     n 'allarecode=1'=>2,{s=><<''},{code=>'In 42'}
-        C.sc.code = 1 !exists C.sc.code;
+        C.sc.code = 1 if !exists C.sc.code;
 onlycode: |
     n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
-        C.sc.code = 1 !exists C.sc.code;
+        T.last = 1 unless C.sc.code;
 Ein: |
     u allcode
     
@@ -32,15 +32,13 @@ Ein: |
     n args=>1=>{s=><<''}
         my $N = ar.N||ar.C;
         $N = [$N] if ref $N ne 'ARRAY';
-    
-    n eIn=>2=>{s=><<''},{code=>'^'}
-        my $A = Rw ready;
-        A.N = $N;
-    
+        my $I = Rw already;
+        
     # pi lays out in tiles
     
     n fl=>22=>{s=><<''}
         A.fl = ar.fl || {};
+    
     n M=>24=>{s=><<''}
         A.M = [];
         

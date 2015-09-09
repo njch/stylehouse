@@ -2334,7 +2334,7 @@ sub g_Dm {
     my $eval = $G->parse_babble($am->{bab}, $am->{point});
 
     my $ar = $am->{ar} || {};
-    $ar->{R} = $G;
+     $ar->{R} = $G;
     my $download = join("", map {
         'my$'.$_.'=$ar->{'.$_."}; "
         } keys %$ar)
@@ -2350,7 +2350,7 @@ sub g_Dm {
 
     "my \@doo_return = (sub { \n\n$eval\n })->();\n"
 
-    ."$upload"
+    #."$upload"
     .'return @doo_return };';
 
 

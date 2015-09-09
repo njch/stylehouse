@@ -113,6 +113,13 @@ C_C: |
 In: | # I I I
     my $N = ar.N||ar.C;
     my $I = Rw already;
+    
+    if (my $oA = ar.oA) {
+        my $D = oA.D;
+        Rw babsubrip $oA $D $N
+            if substr(D.bab, 0, 200) =~ /s=><<''/;
+    }
+    
     my $A;
     A.N = [@$N];
     A.I = $I;
@@ -121,14 +128,6 @@ In: | # I I I
     A.M = [];
     A.am = 'In';
     
-    # the product of allcode:
-    my $D = $F[2]; # F1 when Z=D
-    my $tiny = substr D.bab, 0, 200;
-    if ($tiny =~ /s=><<''/) {
-        sayyl "CONCENTRATEY ".ki ar.oA;
-        saybl slim 90, D.bab;
-        #saybl slim 300, wdump 2, $D;
-    }
     
     
     aft {
