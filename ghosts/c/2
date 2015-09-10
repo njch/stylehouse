@@ -121,7 +121,9 @@ C_E: |  # elvission/I joinsession/c convene
                 die "$K $cv - $k $vc" if $cv ne $vc;
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
-                    die if D.sc.args;
+                    if (D.sc.args) {
+                        die "DEEE".wdump $D;
+                    }
                     die if D.sc.gk;
                     my $paw = join"_",'',$k,$vc,D.t;
                     $paw =~ s/\W//g;
@@ -196,21 +198,25 @@ ym/concoi: |
     if ($s=~/^\^$/ && A.t&61) {
         my $i = I.d&moy,'spr';
         # this is at spray
-        C.c.s = join "\n",map{"#@ _.y.p\n"."_.c.s\n"}@{i.N};
+        C.c.s = join "\n",map{
+            _.sc.got = 1 if $_ ne $C;
+            "#@ _.y.p\n"."_.c.s\n"
+        }@{i.N};
+        C.sc.code =~ s/^\^ ?//;
+        C.sc.code ||= "C.t 4";
         sayyl "Com espel ".wdump 2, $C;
     }
-    if (my $s = C.sc.acgt) {
-        $_||next;
-        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}$_;
-        # which could mean we nk/gk spine
+    if (my $acgt = C.sc.acgt) {
+        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}$acgt;
+        C.sc.code ||= "I 2";
     }
-    if ($s=~/\w+ \w+/) {
+    $_ = C.sc.code;
+    if (/\w+ \w+/) {
         my ($K,$cv) = ($1,$2) if /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
         sayyl "Ke on J.name   J.le.name   <<<<<<<<< $_    ".ki $C;
-        # we are making a J.I
-        # only a step to remake D with subs
         C.sc.dige = slm 12, dig C.c.s;
         $v->{$K}->{$cv}->{C.t} = $C;
+        C.sc.got = 1;
     }
     
     if (my $y = T.y) {
@@ -218,15 +224,14 @@ ym/concoi: |
             A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
         }
     }
-    # if T.y.$k make C.y.p."$k"
 ym/wongui: |
     my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
     $C->{$_} = {%{$C->{$_}||{}}} for 'c','sc';
     
     for my $zi (A.c->($D)) {
-        my $from = [];
-        push @$from, @$_ for A.c&from,'%as:list';
-        push @$from, $C;
+        my $from = [
+            reverse $C, reverse map{@$_} A.c&from,'%as:list'
+        ];
         my $c = {c=>{from=>$from}};
         my $s = {EC=>[$zi,$c]};
         push @{A.N}, $s;
@@ -261,7 +266,9 @@ stwo: |
         }
         $yc = delete(nC.t).$yc;
         if (my $f = C.c.from) {
-            $n .= " _.t /" for @$f;
+            $n .= " _.t /" for 
+                grep{ref $_ eq 'HASH' || die wdump $_}
+                @$f;
         }
         
         my $s = "! $n    $t $yc  \t\t". ki $nC;
