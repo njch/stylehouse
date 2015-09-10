@@ -165,6 +165,9 @@ C_D: |
     I.ex = sub {
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
         # A wind down to K cv
+        # is a wad of what matters
+        # matter - time it matters
+        # 
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
             sayre "extry $K $cv - $k" if $K ne $k;
@@ -174,7 +177,7 @@ C_D: |
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
                     if (D.sc.args) {
-                        sayre "DEEE catchping $K $cv   ".wdump $D;
+                        sayre "DEEE catchping $K $cv   D.t D.y.cv";
                     }
                     die if D.sc.gk;
                     my $paw = join"_",'',$k,$vc,D.t;
@@ -216,7 +219,8 @@ ym/concoi: |
         if (my $args = C.sc.args) {
             C.c.s = "A.".$K.".".C.t." = sub {\n"
                 ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
-                .ind("    ", C.c.s)."\n"
+                ."    my \$I = A\.I;\n"
+                .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                 ."};\n";
             
         }
