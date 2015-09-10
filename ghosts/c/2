@@ -110,28 +110,6 @@ C_E: |  # elvission/I joinsession/c convene
         };
         $A
     };
-    I.ex = sub { #c
-        my ($A,$C,$G,$T,$i,$K,$cv) = @_;
-        # A wind down to K cv
-        for my $k (sort keys %$i) {
-            my $ii = $i->{$k};
-            die "$K $cv - $k" if $K ne $k;
-            for my $vc (sort keys %$ii) {
-                my $iii = $ii->{$vc};
-                die "$K $cv - $k $vc" if $cv ne $vc;
-                for my $ik (sort keys %$iii) {
-                    my $D = $iii->{$ik};
-                    if (D.sc.args) {
-                        die "DEEE".wdump $D;
-                    }
-                    die if D.sc.gk;
-                    my $paw = join"_",'',$k,$vc,D.t;
-                    $paw =~ s/\W//g;
-                    Rw $paw $A $C $G $T $__D:D;
-                }
-            }
-        }
-    };
     Rw C_D;
 uCon: |
     my $A = {J=>$J};
@@ -152,10 +130,7 @@ uCon: |
     # curve falls # just throw J.Idex on
     
     
-    my $N = [
-        @{rv.c},
-        @{rv.sc},
-    ];
+    my $N = [@{rv.c}];
     sayre "SLIPPING SC" if @{rv.sc};
     $N = [{MZ=>'wongui'}, @$N];
     my $M = [];
@@ -187,11 +162,33 @@ C_D: |
         my $is = $i->{C.y.p}; # things in our C's pool
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     };
+    I.ex = sub {
+        my ($A,$C,$G,$T,$i,$K,$cv) = @_;
+        # A wind down to K cv
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            sayre "extry $K $cv - $k" if $K ne $k;
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                sayre "extry $K $cv - $k $vc" if $cv ne $vc;
+                for my $ik (sort keys %$iii) {
+                    my $D = $iii->{$ik};
+                    if (D.sc.args) {
+                        sayre "DEEE catchping $K $cv   ".wdump $D;
+                    }
+                    die if D.sc.gk;
+                    my $paw = join"_",'',$k,$vc,D.t;
+                    $paw =~ s/\W//g;
+                    Rw $paw $A $C $G $T $__D:D;
+                }
+            }
+        }
+    };
 ym/concoi: |
     my $s = C.sc.code || return;
     
-    C.y.p = join'/',map{_.t}@{C.c.from||[]};
-    C.y.cvt = "C.y.cv\tC.t";
+    C.y.p ||= join'/',map{_.t}@{C.c.from||[]};
+    C.y.cvt ||= "C.y.cv\tC.t";
     
     T.y.spr=$C if A.t&42 && $s=~/^(\^|1)$/;
     
@@ -208,16 +205,29 @@ ym/concoi: |
     }
     if (my $acgt = C.sc.acgt) {
         C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}$acgt;
+        undef C.sc.code if C.sc.code eq '1';
         C.sc.code ||= "I 2";
     }
     $_ = C.sc.code;
     if (/\w+ \w+/) {
         my ($K,$cv) = ($1,$2) if /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
-        sayyl "Ke on J.name   J.le.name   <<<<<<<<< $_    ".ki $C;
+        sayyl "Ke on J.le.name  J.name  $_".ki $C;
+        
+        if (my $args = C.sc.args) {
+            C.c.s = "A.".$K.".".C.t." = sub {\n"
+                ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
+                .ind("    ", C.c.s)."\n"
+                ."};\n";
+            
+        }
+        
         C.sc.dige = slm 12, dig C.c.s;
         $v->{$K}->{$cv}->{C.t} = $C;
         C.sc.got = 1;
     }
+    
+    
+    
     
     if (my $y = T.y) {
         for my $k (keys %$y) {
