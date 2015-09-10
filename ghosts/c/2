@@ -50,6 +50,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        $oAr->($ar);
        Rw In;
     };
+
 C_E: |  # elvission/I joinsession/c convene
     # u/n/m get here, we know ar.
     # here we step further into the light grabbing
@@ -129,6 +130,7 @@ C_E: |  # elvission/I joinsession/c convene
             }
         }
     };
+    Rw C_D;
 uCon: |
     my $A = {J=>$J};
     
@@ -152,7 +154,7 @@ uCon: |
         @{rv.c},
         @{rv.sc},
     ];
-    die "theres sc" if @{rv.sc};
+    sayre "SLIPPING SC" if @{rv.sc};
     $N = [{MZ=>'wongui'}, @$N];
     my $M = [];
     Rw In $J:oo $N $M;
@@ -176,27 +178,49 @@ uCon: |
     
     
      
+C_D: |
+    I.moy = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        my $i = A.mo.y->{$s}||die"no$s";
+        my $is = $i->{C.y.p}; # things in our C's pool
+        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    };
 ym/concoi: |
-    return unless J.le.name eq 'Ein';
+    my $s = C.sc.code || return;
     
-    # adding stuff from around to A.I, then I=A.I and
-    if (A.t&61) {
-        if (C.sc.code eq '^') {
-        
-        }
+    C.y.p = join'/',map{_.t}@{C.c.from||[]};
+    C.y.cvt = "C.y.cv\tC.t";
     
-    # we are on oo, applying
-    for (A.c&code,'%nk:sc%as:list') {
-         my ($K,$cv) = ($1,$2) if /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
-         sayyl "Ke on J.name   J.le.name   <<<<<<<<< $_    ".ki $C;
-         # we are making a J.I
-         # only a step to remake D with subs
-         C.sc.dige = slm 12, dig C.c.s;
-         $v->{$K}->{$cv}->{C.t} = $C;
+    T.y.spr=$C if A.t&42 && $s=~/^(\^|1)$/;
+    
+    if ($s=~/^\^$/ && A.t&61) {
+        my $i = I.d&moy,'spr';
+        # this is at spray
+        C.c.s = join "\n",map{"#@ _.y.p\n"."_.c.s\n"}@{i.N};
+        sayyl "Com espel ".wdump 2, $C;
     }
+    if (my $s = C.sc.acgt) {
+        $_||next;
+        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}$_;
+        # which could mean we nk/gk spine
+    }
+    if ($s=~/\w+ \w+/) {
+        my ($K,$cv) = ($1,$2) if /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
+        sayyl "Ke on J.name   J.le.name   <<<<<<<<< $_    ".ki $C;
+        # we are making a J.I
+        # only a step to remake D with subs
+        C.sc.dige = slm 12, dig C.c.s;
+        $v->{$K}->{$cv}->{C.t} = $C;
+    }
+    
+    if (my $y = T.y) {
+        for my $k (keys %$y) {
+            A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
+        }
+    }
+    # if T.y.$k make C.y.p."$k"
 ym/wongui: |
     my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
-    # the Cr y/c/sc shakeout, should 1?
     $C->{$_} = {%{$C->{$_}||{}}} for 'c','sc';
     
     for my $zi (A.c->($D)) {

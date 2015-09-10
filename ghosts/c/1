@@ -24,6 +24,12 @@ MourmaZ: |
 already: |
     # note ar.*
     $J||die;
+    if (my $oA = ar.oA) {
+        my $D = oA.D;
+        Rw babsubrip $oA $D $N
+            if substr(D.bab, 0, 200) =~ /s=><<''/;
+    }
+    # and similar from-above thing ^
     
     ar.I = {};
     Rw I_Din;
@@ -112,13 +118,8 @@ C_C: |
     
 In: | # I I I
     my $N = ar.N||ar.C;
-    my $I = Rw already;
+    my $I = Rw already + $N;
     
-    if (my $oA = ar.oA) {
-        my $D = oA.D;
-        Rw babsubrip $oA $D $N
-            if substr(D.bab, 0, 200) =~ /s=><<''/;
-    }
     
     my $A;
     A.N = [@$N];
@@ -238,6 +239,57 @@ I_D: |
         I.d&Crec if !ref C.c;
         I.d&Cresc if !ref C.sc;
     };
+Einond: |
+    u allcode
+    u allacgts
+    
+    n Ci =>''=>{s=><<''}
+        my ($A,$C,$G,$T,$s) = @_;
+        if (!ref $s) {
+            A.d&string,$s;
+        }
+        elsif (ref $s eq 'ARRAY') {
+            A.d&array,$s;
+        }
+        elsif (ref $s eq 'HASH') {
+            A.d&hash,$s;
+        }
+        else { die "mmtype:$s" }
+    
+    n hash =>''=>{s=><<''}
+        # some talking to self
+        if (s.t && s.y && s.c) {
+            sayre "HASHIN no sc: ".ki $s if !s.sc;
+            %$C = %$s;
+            return;
+        }
+           s.MZ ? A.d&MZu,s.MZ
+           : s.EZ ? A.d&MZu,s.EZ
+           : s.WZ ? A.d&MZu,s.WZ
+           : s.EC ? A.d&ECu,s.EC
+           : die 'hash: '.wdump($s);
+    
+    n array =>''=>{s=><<''}
+        # some for slide
+        if (@$s == 1) {
+            my ($s) = @$s;
+            ref $s && die "array1ref: ".wdump $s;
+            I.d&4string,$s
+        }
+        else {
+            I.d&4real,$s
+        }
+    
+    n string =>''=>{s=><<''}
+        die "string: $s";
+    
+    n Cr  =>''=>{s=><<''},{acgt=>1}
+        die"reft" if ref C.t;
+        I.d&Crey if !ref C.y;
+        I.d&Crec if !ref C.c;
+        I.d&Cresc if !ref C.sc;
+    
+    #qak
 I_Ci: | # receive topu
     $I->{'4string'} = sub { # barse
         my ($A,$C,$G,$T,$s) = @_;
