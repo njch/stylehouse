@@ -117,8 +117,9 @@ C_E: |  # elvission/I joinsession/c convene
                     $ncv = $c;
                 }
                 else {
+                    $re = 0;
                     $dont = 1;
-                say " DeInc A.cv - $cv $c";
+                    say " DeInc A.cv - $cv $c" if J.V;
                 }
                 die "pre bigger" if $cv < A.cv;
             }
@@ -126,12 +127,13 @@ C_E: |  # elvission/I joinsession/c convene
                 if ($c < A.cv) {
                     if (A.cv == 0.6) { # scoop up lesser on entering timezone
                         $re = 1;
-                        say "6lessdo";
+                        $dont = 1; # or will IIII fall away
+                        #say "6lessdo $cv" if J.V;
                     }
                     else {
                         $re = 0;
-                        say "6not (already)";
                         $dont = 1;
+                        #say "6not (already)" if J.V;
                     }
                 }
                 elsif ($c == A.cv) {
@@ -139,10 +141,37 @@ C_E: |  # elvission/I joinsession/c convene
                     $re = 1;
                 }
                 elsif ($c > A.cv) { # and < 0.7
-                    sayre "Mark loop $cv";
+                    sayre "Mark loop $c" if J.V;
+                    T.Z->{$c} = 1;
+                    $re = 0;
+                    $dont = 1;
                 }
                 else {die"nof"}
             }
+            if ($cv == 7) {
+                if (my $z = T.Z) {
+                    my ($lo) = sort keys %$z;
+                    # each thing emits just the next one
+                    say "C.y.p  C.t  wants to go to ".ki $z if J.V;
+                    push @{A.mo.re->{$lo} ||= []}, [$A,$C];
+                    undef $ncv;
+                }
+                if (!@{A.mo.N}) {
+                    my $ats = A.mo.re || {};
+                    my @wa = sort keys %$ats;
+                    my ($lo) = @wa;
+                    saybl "Last! $ats ".ki $ats if J.V;
+                    if ($lo) {
+                        my $ay = delete $ats->{$lo};
+                        die if $ats->{$lo};
+                        say "WIthout $lo? ".ki A.mo.re;
+                        my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+                        sayyl "A.cv spews -> $lo forth ".@N;
+                        push @{A.mo.N}, @N;
+                    }
+                }
+            }
+            
             # break off at 1,2
             I.d&ex,$i,$K=>$cv
                 unless $dont;
@@ -152,11 +181,37 @@ C_E: |  # elvission/I joinsession/c convene
         $A
     };
     Rw C_D;
+C_D: |
+    I.moy = sub {
+        my ($A,$C,$G,$T,$s) = @_;
+        my $i = A.mo.y->{$s}||die"no$s";
+        my $is = $i->{C.y.p}; # things in our C's pool
+        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    };
+    I.ex = sub {
+        my ($A,$C,$G,$T,$i,$K,$cv) = @_;
+        Rw Wex $A $C $G $T $i $K $cv;
+    };
+    I.AZu = sub {
+        my ($A,$C,$G,$T,$am) = @_;
+        die 'amany' if keys %$am > 1;
+        my ($cv,$ac) = %$am;
+        my ($AA,$CC) = @$ac;
+        I.d&n,$AA,$CC,$G,$T;
+        T.grabac = [$AA,$CC]; #lexac
+        if (AA.cv >= $cv) {
+            sayre "Double comback AA.cv $cv";
+            return T.not = 1;
+        }
+        AA.cv = $cv;
+        I.d&An;
+        sayre " TTT $cv the CC.t";
+    };
 Wex: |
     my $talk = "A.J.name ".(A.J.le && A.J.le.name).": ";
-    sayyl "\t\t\t: $talk    C.t   $cv $K   ".keys %$i unless "$cv $K" eq "42 In";
-    
-    
+    unless ($cv =~ /^[267]$/) {
+        sayyl "\t\t\t: $talk    C.t   $cv $K   ".keys %$i if A.J.V;
+    }
     
     # A wind down to K cv
     # is a wad of what matters
@@ -165,7 +220,7 @@ Wex: |
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
             sayyl("Weird $ii") && next if ref $ii ne 'HASH';
-            sayre "extry $K $cv - $k" if $K ne $k;
+            sayyl("extry $K $cv - $k") && next if $K ne $k;
             for my $vc (sort keys %$ii) {
                 my $iii = $ii->{$vc};
                 sayre "extry $K $cv - $k $vc" if $cv ne $vc;
@@ -214,31 +269,16 @@ uCon: |
     my $s = {};
     $N = [{MZ=>{concoi=>$s}}, @$N];
     $M = [];
+    oo.V = 1;
     Rw In $J:oo $N $M;
     $N = $M;
     Rw stwo $J $n=again $N $noz=1;
     J.A.I = $s if %$s;
     delete J.A.I if !%$s;
-    #say "Reckonon J.name: ".wdump 5, J.A.I;
+    say "Reckonon J.name: ".wdump 3, J.A.I;
     
     
      
-C_D: |
-    I.moy = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        my $i = A.mo.y->{$s}||die"no$s";
-        my $is = $i->{C.y.p}; # things in our C's pool
-        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
-    };
-    I.ex = sub {
-        my ($A,$C,$G,$T,$i,$K,$cv) = @_;
-        Rw Wex $A $C $G $T $i $K $cv;
-    };
-    I.AZu = sub {
-        my ($A,$C,$G,$T,$am) = @_;
-        I.d&An,@$am;
-    };
-
 ym/concoi: |
     my $s = C.sc.code || return;
     
@@ -256,7 +296,8 @@ ym/concoi: |
         }@{i.N};
         C.sc.code =~ s/^\^ ?//;
         C.sc.code ||= "C.t 4";
-        sayyl "Com espel ".wdump 2, $C;
+        #sayyl "Com espel BETTER BE ".wdump 3, [$i,[[$C]]];
+        sayre "NO ESPEL" unless @{i.N};
     }
     
     if (A.t&43 && C.sc.acgt) {

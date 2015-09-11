@@ -309,6 +309,8 @@ sub ki {
         $v = "~" unless defined $v;
         ref $v eq 'HASH'
             ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
+        : ref $v eq 'ARRAY'
+            ? "$_=\@x".@$v
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }

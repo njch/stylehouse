@@ -138,9 +138,10 @@ In: | # I I I
     I.d&n,$A,{},$G,{};
     I.d&An;
     A.t&1;
-    
+    my $oJV = J.V;
     
     aft {
+        J.V = $oJV;
         $@||return;
         my $m = "J: J.name J.le.name";
         $m .= "\nC: ".ki I.nF.C;
@@ -166,6 +167,7 @@ In: | # I I I
         A.t&2;
         
         I.d&Ci,$s;
+        ($A,$C) = @{T.grabac} if T.grabac;
         
         I.d&z && next if T.not;
         A.t&6;
@@ -187,6 +189,7 @@ In: | # I I I
         I.d&z;
         A.t&7;
     }
+    J.V = $oJV;
     
     my $M = ar.M;
     if ($M) {
@@ -274,8 +277,9 @@ Einond: |
             %$C = %$s;
             return;
         }
-           s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&MZu,s.EZ
+           s.AZ ? I.d&AZu,s.AZ
+           : s.MZ ? I.d&MZu,s.MZ
+           : s.EZ ? I.d&EZu,s.EZ
            : s.WZ ? I.d&WZu,s.WZ
            : s.EC ? I.d&ECu,s.EC
            : die 'hash: '.wdump($s);
