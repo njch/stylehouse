@@ -23,22 +23,36 @@ MourmaZ: |
    
 already: |
     # note ar.*
-    $J||die;
-    if (my $oA = ar.oA) {
+    my $s = $ar;
+    my $N = s.N;
+    
+    if (my $oA = s.oA) {
+        # preserve babs within babs
         my $D = oA.D;
         Rw babsubrip $oA $D $N
             if substr(D.bab, 0, 200) =~ /s=><<''/;
     }
-    # and similar from-above thing ^
+    # and similar from-above thing ^ some point in 1
     
-    ar.I = {};
-    Rw I_Din;
-    Rw C_C;
-    Rw C_E;
-    Rw I_D;
-    Rw I_Ci;
-    Rw I_Cr;
-    ar.I
+    my $A = {};
+    A.mo = $A;
+    A.N = [@$N];
+    A.M = [];
+    A.J = s.J || die 'noJ';
+    A.am = s.am || die "unsame?";
+    # ^ should then know how to v
+    A.fl = ar.fl || {};
+    A.I = {};
+    {
+        ar.I = A.I;
+        Rw I_Din;
+        Rw C_C;
+        Rw C_E;
+        Rw I_D;
+        Rw I_Ci;
+        Rw I_Cr;
+    }
+    $A
 I_Din: |
     I.d = sub {
         my $s = shift;
@@ -118,17 +132,13 @@ C_C: |
     
 In: | # I I I
     my $N = ar.N||ar.C;
-    my $I = Rw already + $N;
     
-    
-    my $A;
-    A.N = [@$N];
-    A.I = $I;
-    A.J = $J;
-    A.fl = ar.fl || {};
-    A.M = [];
-    A.am = 'In';
-    
+    my $A = Rw already + $am=In $N;
+    my $I = A.I;
+    my $T = {};
+    I.d&n,$A,{},$G,$T;
+    I.d&An;
+    A.t&1;
     
     
     aft {
@@ -158,6 +168,7 @@ In: | # I I I
         I.d&Ci,$s;
         
         I.d&z && next if T.not;
+        A.t&6;
         
         # elabourate C,
         for my $k (sort keys %{A.fl}) {
@@ -166,7 +177,6 @@ In: | # I I I
             Rw ym/$k $I $J $A $C $n:C $v $G $T;
         }
         
-        A.t&42;
         I.d&Cr,$s;
          
         die "not: ".wdump 4,[$N, $C]

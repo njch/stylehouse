@@ -103,9 +103,10 @@ C_E: |  # elvission/I joinsession/c convene
             @_>2 && die "_ _";
             my ($cv,$K) = reverse @_;
             $K ||= A.am||die"noam A_t";
-            if (my $i = J.A.I) {
-                I.d&ex,$i,$K=>$cv
-            }
+            my $i = # much mergey extendo rubble, 
+                 $G->gip($A,'J/A/I') || {};
+            # break off at 1,2
+            I.d&ex,$i,$K=>$cv
             # man 
         };
         $A
@@ -164,12 +165,18 @@ C_D: |
     };
     I.ex = sub {
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
+        Rw Wex $A $C $G $T $i $K $cv;
+    };
+Wex: |
+        my $talk = "A.J.name ".(A.J.le && A.J.le.name).": ";
+        sayyl "ontime: $talk    C.t   $cv $K   ".keys %$i unless "$cv $K" eq "42 In";
         # A wind down to K cv
         # is a wad of what matters
         # matter - time it matters
-        # 
+        # we may be in here like a I.d
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
+            sayyl("Weird $ii") && next if ref $ii ne 'HASH';
             sayre "extry $K $cv - $k" if $K ne $k;
             for my $vc (sort keys %$ii) {
                 my $iii = $ii->{$vc};
@@ -177,7 +184,7 @@ C_D: |
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
                     if (D.sc.args) {
-                        sayre "DEEE catchping $K $cv   D.t D.y.cv";
+                        sayre "DEEE $talk  catchping $K $cv   D.t D.y.cv";
                     }
                     die if D.sc.gk;
                     my $paw = join"_",'',$k,$vc,D.t;
@@ -186,14 +193,13 @@ C_D: |
                 }
             }
         }
-    };
 ym/concoi: |
     my $s = C.sc.code || return;
     
     C.y.p ||= join'/',map{_.t}@{C.c.from||[]};
     C.y.cvt ||= "C.y.cv\tC.t";
     
-    T.y.spr=$C if A.t&42 && $s=~/^(\^|1)$/;
+    T.y.spr=$C if A.t&43 && $s=~/^(\^|1)$/;
     
     if ($s=~/^\^$/ && A.t&61) {
         my $i = I.d&moy,'spr';
@@ -206,32 +212,33 @@ ym/concoi: |
         C.sc.code ||= "C.t 4";
         sayyl "Com espel ".wdump 2, $C;
     }
-    if (my $acgt = C.sc.acgt) {
-        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}$acgt;
+    
+    if (A.t&43 && C.sc.acgt) {
+        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
         undef C.sc.code if C.sc.code eq '1';
-        C.sc.code ||= "I 2";
+        # the I that Cs all, it is indifferent to its current
+        C.sc.code ||= "I 1";
     }
+    
     $_ = C.sc.code;
-    if (/\w+ \w+/) {
+    if (A.t&7 && /\w+ \w+/) {
         my ($K,$cv) = ($1,$2) if /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
-        sayyl "Ke on J.le.name  J.name  $_".ki $C;
         
         if (my $args = C.sc.args) {
+            die "wonky C.t   of ".ki $C if C.t =~ /\W/;
             C.c.s = "A.".$K.".".C.t." = sub {\n"
                 ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
                 ."    my \$I = A\.I;\n"
                 .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                 ."};\n";
-            
         }
         
         C.sc.dige = slm 12, dig C.c.s;
+        sayyl "Ke on J.le.name  J.name  $_".ki $C;
+        
         $v->{$K}->{$cv}->{C.t} = $C;
         C.sc.got = 1;
     }
-    
-    
-    
     
     if (my $y = T.y) {
         for my $k (keys %$y) {
@@ -251,7 +258,8 @@ ym/wongui: |
         push @{A.N}, $s;
     }
 stwo: |
-    my $I = Rw already;
+    my $A = Rw already + $am=In;
+    my $I = A.I;
     my $sel = [] if ar.want;
     my $o;$o = sub { # not, nearly news (Tray n)
         my ($n,$N) = @_;
