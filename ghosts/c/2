@@ -100,21 +100,85 @@ C_E: |  # elvission/I joinsession/c convene
             }
             return 1;
         };
-        A.t = sub {
+        A.t = sub { #c
             my ($cv,$K) = reverse @_;
             @_>2 && die "_ _";
             $K ||= A.am||die"noam A_t";
             my $i = # much mergey extendo rubble, 
                  $G->gip($A,'J/A/I') || {};
-                 
+            
+            my $c = 0 + ("0.".$cv);
+            my $ncv;
+            my $re;
+            my $dont;
+            die'danK' if $K ne 'In';
+            if (A.cv < 0.6 || $c >= 0.7) {
+                if ($c >= A.cv) {
+                    $ncv = $c;
+                }
+                else {
+                    $dont = 1;
+                say " DeInc A.cv - $cv $c";
+                }
+                die "pre bigger" if $cv < A.cv;
+            }
+            else {
+                if ($c < A.cv) {
+                    if (A.cv == 0.6) { # scoop up lesser on entering timezone
+                        $re = 1;
+                        say "6lessdo";
+                    }
+                    else {
+                        $re = 0;
+                        say "6not (already)";
+                        $dont = 1;
+                    }
+                }
+                elsif ($c == A.cv) {
+                    say "6i s Z  Z";
+                    $re = 1;
+                }
+                elsif ($c > A.cv) { # and < 0.7
+                    sayre "Mark loop $cv";
+                }
+                else {die"nof"}
+            }
             # break off at 1,2
-            I.d&ex,$i,$K=>$cv;
-            # man 
-            #A.mo.f
+            I.d&ex,$i,$K=>$cv
+                unless $dont;
+            A.cv = $ncv if defined $ncv;
+            $re;
         };
         $A
     };
     Rw C_D;
+Wex: |
+    my $talk = "A.J.name ".(A.J.le && A.J.le.name).": ";
+    sayyl "\t\t\t: $talk    C.t   $cv $K   ".keys %$i unless "$cv $K" eq "42 In";
+    
+    
+    
+    # A wind down to K cv
+    # is a wad of what matters
+    # matter - time it matters
+    # we may be in here like a I.d
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            sayyl("Weird $ii") && next if ref $ii ne 'HASH';
+            sayre "extry $K $cv - $k" if $K ne $k;
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                sayre "extry $K $cv - $k $vc" if $cv ne $vc;
+                for my $ik (sort keys %$iii) {
+                    my $D = $iii->{$ik};
+                    sayre "DEEE $talk  catchping $K $cv   D.t D.y.cv   D.sc.args";
+                    die if D.sc.gk;
+                    my $paw = join"_",'',$k,$vc,D.t;
+                    $paw =~ s/\W//g;
+                    Rw $paw $A $C $G $T $__D:D;
+                }
+            }
+        }
 uCon: |
     my $A = {J=>$J};
     
@@ -170,33 +234,11 @@ C_D: |
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
         Rw Wex $A $C $G $T $i $K $cv;
     };
-Wex: |
-    my $talk = "A.J.name ".(A.J.le && A.J.le.name).": ";
-    sayyl "ontime: $talk    C.t   $cv $K   ".keys %$i unless "$cv $K" eq "42 In";
-    
-    
-    
-    # A wind down to K cv
-    # is a wad of what matters
-    # matter - time it matters
-    # we may be in here like a I.d
-        for my $k (sort keys %$i) {
-            my $ii = $i->{$k};
-            sayyl("Weird $ii") && next if ref $ii ne 'HASH';
-            sayre "extry $K $cv - $k" if $K ne $k;
-            for my $vc (sort keys %$ii) {
-                my $iii = $ii->{$vc};
-                sayre "extry $K $cv - $k $vc" if $cv ne $vc;
-                for my $ik (sort keys %$iii) {
-                    my $D = $iii->{$ik};
-                    sayre "DEEE $talk  catchping $K $cv   D.t D.y.cv   D.sc.args";
-                    die if D.sc.gk;
-                    my $paw = join"_",'',$k,$vc,D.t;
-                    $paw =~ s/\W//g;
-                    Rw $paw $A $C $G $T $__D:D;
-                }
-            }
-        }
+    I.AZu = sub {
+        my ($A,$C,$G,$T,$am) = @_;
+        I.d&An,@$am;
+    };
+
 ym/concoi: |
     my $s = C.sc.code || return;
     
