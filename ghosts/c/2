@@ -57,8 +57,7 @@ C_E: |  # elvission/I joinsession/c convene
     # parts spine up from In's A the In, using qqJ.A
     # but the broken tiles of use cassettes- culture eddies, vines of intuit
     I.interpD = sub { # make csc grab exprD
-        my ($A,$C,$G,$T)=(@_);
-        splice @_,0,4;
+        my ($A,$C,$G,$T)=splice @_,0,4;
         my ($nk,$gk) = @_;
         my $D = {};
         if (ref $nk) {
@@ -80,10 +79,8 @@ C_E: |  # elvission/I joinsession/c convene
         }
         $D
     };
-    I.An = sub { # A within faller # wants to I 2, throw subs on A directly...
-        my ($A,$C,$G,$T) = @_;
-        A.note = {}; # pinging csc
-        A.c = sub { # 
+    I.c = sub {
+        my ($A,$C,$G,$T)=splice @_,0,4;
             my ($D) = @_;
             $D = I.d&interpD,@_ if !ref $D;
             
@@ -100,8 +97,39 @@ C_E: |  # elvission/I joinsession/c convene
                 return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
             }
             return 1;
-        };
-        A.t = sub { #c
+    };
+    I.An = sub { # A within faller # wants to I 2, throw subs on A directly...
+        my ($A,$C,$G,$T) = @_;
+        A.note = {}; # pinging csc
+        A.c = sub { I.d&c,@_; };
+        A.t = sub { I.d&t,@_; };
+        $A
+    };
+    I.moy = sub { # groups, to spread
+        my ($A,$C,$G,$T,$s) = @_;
+        my $i = A.mo.y->{$s}||die"no$s";
+        my $is = $i->{C.y.p}; # things in our C's pool
+        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    };
+    I.AZu = sub {
+        my ($A,$C,$G,$T,$am) = @_;
+        die 'amany' if keys %$am > 1;
+        my ($cv,$ac) = %$am;
+        my ($AA,$CC) = @$ac;
+        I.d&n,$AA,$CC,$G,$T;
+        T.grabac = [$AA,$CC]; #lexac
+        if (AA.cv >= $cv) {
+            warn "Double comback AA.cv $cv";
+            return T.not = 1;
+        }
+        AA.cv = $cv;
+        I.d&An;
+        #sayre " TTT $cv the CC.t";
+    };
+    Rw C_D;
+C_D: |
+    I.t = sub {
+        my ($A,$C,$G,$T)=splice @_,0,4;
             my ($cv,$K) = reverse @_;
             @_>2 && die "_ _";
             $K ||= A.am||die"noam A_t";
@@ -161,7 +189,7 @@ C_E: |  # elvission/I joinsession/c convene
                     if ($lo) {
                         my $ay = delete $ats->{$lo};
                         my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                        sayyl "Loop A.cv > $lo x ".@N;
+                        #sayyl "Loop A.cv > $lo x ".@N;
                         push @{A.mo.N}, @N;
                     }
                 }
@@ -172,16 +200,6 @@ C_E: |  # elvission/I joinsession/c convene
                 unless $dont;
             A.cv = $ncv if defined $ncv;
             $re;
-        };
-        $A
-    };
-    Rw C_D;
-C_D: |
-    I.moy = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        my $i = A.mo.y->{$s}||die"no$s";
-        my $is = $i->{C.y.p}; # things in our C's pool
-        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     };
     I.ex = sub {
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
@@ -213,29 +231,34 @@ C_D: |
                 #sayre "intriasm $talk  \t ov: $k $vc" if $c ne $vc;
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
-                    sayre "DEEE $talk  $vc  D.t D.y.cv  ". ki D.sc;
+                    sayre "DEEE $talk $k > $vc  D.t D.y.cv  ". ki D.sc;
                     die if D.sc.gk;
-                    my $paw = join"_",'',$k,$vc,D.t;
-                    $paw =~ s/\W//g;
-                    Rw $paw $A $C $G $T $__D:D;
+                    
+                    my $act;
+                    my $dont;
+                    if ($k ne 'I' && D.sc.acgt) {
+                        $act = 1;
+                        $dont = 1 if exists A.I->{D.t};
+                    }
+                    
+                    unless ($dont) {
+                        my $paw = join"_",'',$k,$vc,D.t;
+                        $paw =~ s/\W//g;
+                        Rw $paw $A $C $G $T $__D:D;
+                    }
+                    
+                    # non-I acgt means some expressed tick of the creature
+                    # as osc accesses
+                    if ($act) {
+                        D.sc.acgt eq 's'||die "nonacgts";
+                        exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
+                        say "Bridge to $k > $vc   D.t";
+                        I.d&D.t,A.s;
+                    }
+                    
                 }
             }
         }
-    };
-    I.AZu = sub {
-        my ($A,$C,$G,$T,$am) = @_;
-        die 'amany' if keys %$am > 1;
-        my ($cv,$ac) = %$am;
-        my ($AA,$CC) = @$ac;
-        I.d&n,$AA,$CC,$G,$T;
-        T.grabac = [$AA,$CC]; #lexac
-        if (AA.cv >= $cv) {
-            warn "Double comback AA.cv $cv";
-            return T.not = 1;
-        }
-        AA.cv = $cv;
-        I.d&An;
-        #sayre " TTT $cv the CC.t";
     };
 uCon: |
     my $A = {J=>$J};
@@ -297,7 +320,6 @@ ym/concoi: |
         }@{i.N};
         C.sc.code =~ s/^\^ ?//;
         C.sc.code ||= "C.t 4";
-        #sayyl "Com espel BETTER BE ".wdump 3, $C;
     }
     
     if (A.t&43 && C.sc.acgt) {
@@ -310,7 +332,6 @@ ym/concoi: |
     $_ = C.sc.code;
     if (A.t&67) {
         if (C.sc.got) {
-            #sayre "C.t got got!";
             return T.not=1;
         }
         my $s = C.sc.code;
@@ -321,7 +342,15 @@ ym/concoi: |
 
             if (my $args = C.sc.args) {
                 die "wonky C.t   of ".ki $C if C.t =~ /\W/;
-                C.c.s = "A.".$K.".".C.t." = sub {\n"
+                my $gl = "";
+                if ($args =~ /^A.C.G.T(!=.s).+/) {
+                    $gl .= '    my ($A,$C,$G,$T)=splice @_,0,4;'."\n";
+                    $args =~ s/^A.C.G.T.//||die"wtf $args ".ki $C;
+                }
+        
+                # here some want their own I space? if I resolv backward winding pro-be
+                # G pulls in I
+                C.c.s = "A\.I.".C.t." = sub {\n"
                     ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
                     ."    my \$I = A\.I;\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
@@ -329,8 +358,7 @@ ym/concoi: |
             }
 
             C.sc.dige = slm 12, dig C.c.s;
-            
-            sayyl "Ke on J.le.name  J.name  $s == $K $cv   - C.t";
+            #sayyl "Ke on J.le.name  J.name  $s == $K $cv   - C.t";
                 #Rw stickwo + $C;
 
             $v->{$K}->{$cv}->{C.t} = $C;

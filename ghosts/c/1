@@ -54,11 +54,11 @@ already: |
     }
     $A
 I_Din: |
-    I.d = sub {
+    I.d = sub { # consumer of what it means to be deeply
         my $s = shift;
         # grease thje stomac
         my $P = I.nF ||= {};
-        my $y = $I->{$s} || die "no $s";
+        my $y = $I->{$s} || die "no way named '$s'";
         $y->(P.A,P.C,P.G,P.T,@_);
     };
     I.n = sub { # no-act A acui, An separate
@@ -160,6 +160,7 @@ In: | # I I I
         my $C = {};
         my $T = {};
         my $A = {%$A};
+        A.s = $s;
         T.oM = [];
         I.d&n,$A,$C,$G,$T;
         I.d&An;
@@ -254,10 +255,15 @@ I_D: |
         I.d&Cresc if !ref C.sc;
     };
 Einond: |
+    n ''=>1=>{W=>'SlideEater'}
+    
+    #qak
+SlideEater: |
     u allcode
     u allacgts
     
-    n Ci =>''=>{s=><<''}
+    # slide eater
+    n Ci =>''=>{s=><<''},{code=>'In 12'}
         if (!ref $s) {
             I.d&string,$s;
         }
@@ -269,22 +275,10 @@ Einond: |
         }
         else { die "mmtype:$s" }
     
-    n hash =>''=>{s=><<''}
-        # some talking to self
-        if (s.t && s.y && s.c) {
-            sayre "HASHIN no sc: ".ki $s if !s.sc;
-            %$C = %$s;
-            return;
-        }
-           s.AZ ? I.d&AZu,s.AZ
-           : s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&EZu,s.EZ
-           : s.WZ ? I.d&WZu,s.WZ
-           : s.EC ? I.d&ECu,s.EC
-           : die 'hash: '.wdump($s);
+    n string =>''=>{s=><<''}
+        die "string: $s";
     
     n array =>''=>{s=><<''}
-        # some for slide
         if (@$s == 1) {
             my ($s) = @$s;
             ref $s && die "array1ref: ".wdump $s;
@@ -294,16 +288,24 @@ Einond: |
             I.d&4real,$s
         }
     
-    n string =>''=>{s=><<''}
-        die "string: $s";
+    n hash =>''=>{s=><<''}
+        return %$C = %$s if s.t && s.y && s.c;
+        # some talking to self - how to C over exactly, the object could be live
+           s.AZ ? I.d&AZu,s.AZ
+           : s.MZ ? I.d&MZu,s.MZ
+           : s.EZ ? I.d&EZu,s.EZ
+           : s.WZ ? I.d&WZu,s.WZ
+           : s.EC ? I.d&ECu,s.EC
+           : die 'hash: '.wdump($s);
     
-    n Cr  =>''=>{s=><<''},{acgt=>1}
+    n Cr =>''=>{s=><<''},{code=>'In 18'}
         die"reft" if ref C.t;
+        die"not" if !defined C.t||C.y||C.c;
         I.d&Crey if !ref C.y;
         I.d&Crec if !ref C.c;
         I.d&Cresc if !ref C.sc;
     
-    #qak
+    #e
 I_Ci: | # receive topu
     $I->{'4string'} = sub { # barse
         my ($A,$C,$G,$T,$s) = @_;
