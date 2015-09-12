@@ -57,7 +57,8 @@ C_E: |  # elvission/I joinsession/c convene
     # parts spine up from In's A the In, using qqJ.A
     # but the broken tiles of use cassettes- culture eddies, vines of intuit
     I.interpD = sub { # make csc grab exprD
-        my ($A,$C,$G,$T)=(shift,shift,shift,shift);
+        my ($A,$C,$G,$T)=(@_);
+        splice @_,0,4;
         my ($nk,$gk) = @_;
         my $D = {};
         if (ref $nk) {
@@ -79,7 +80,7 @@ C_E: |  # elvission/I joinsession/c convene
         }
         $D
     };
-    I.An = sub {
+    I.An = sub { # A within faller # wants to I 2, throw subs on A directly...
         my ($A,$C,$G,$T) = @_;
         A.note = {}; # pinging csc
         A.c = sub { # 
@@ -107,7 +108,7 @@ C_E: |  # elvission/I joinsession/c convene
             my $i = # much mergey extendo rubble, 
                  $G->gip($A,'J/A/I') || {};
             
-            my $c = 0 + ("0.".$cv);
+            my $c = 0+("0.".$cv);
             my $ncv;
             my $re;
             my $dont;
@@ -115,6 +116,7 @@ C_E: |  # elvission/I joinsession/c convene
             if (A.cv < 0.6 || $c >= 0.7) {
                 if ($c >= A.cv) {
                     $ncv = $c;
+                    $re = 1;
                 }
                 else {
                     $re = 0;
@@ -125,23 +127,19 @@ C_E: |  # elvission/I joinsession/c convene
             }
             else {
                 if ($c < A.cv) {
-                    if (A.cv == 0.6) { # scoop up lesser on entering timezone
+                    if (A.cv == 0.6) { # scoop up all on entering timezone
                         $re = 1;
                         $dont = 1; # or will IIII fall away
-                        #say "6lessdo $cv" if J.V;
                     }
                     else {
                         $re = 0;
                         $dont = 1;
-                        #say "6not (already)" if J.V;
                     }
                 }
                 elsif ($c == A.cv) {
-                    say "6i s Z  Z $c";
                     $re = 1;
                 }
-                elsif ($c > A.cv) { # and < 0.7
-                    sayre "Mark loop $c" if J.V;
+                elsif ($c > A.cv) { # and $c < 0.7
                     T.Z->{$c} = 1;
                     $re = 0;
                     $dont = 1;
@@ -152,7 +150,7 @@ C_E: |  # elvission/I joinsession/c convene
                 if (my $z = T.Z) {
                     my ($lo) = sort keys %$z;
                     # each thing emits just the next one
-                    say "C.y.p  C.t  wants to go to ".ki $z if J.V;
+                    @{T.oM} = ();
                     push @{A.mo.re->{$lo} ||= []}, [$A,$C];
                     undef $ncv;
                 }
@@ -160,13 +158,10 @@ C_E: |  # elvission/I joinsession/c convene
                     my $ats = A.mo.re || {};
                     my @wa = sort keys %$ats;
                     my ($lo) = @wa;
-                    saybl "Last! $ats ".ki $ats if J.V;
                     if ($lo) {
                         my $ay = delete $ats->{$lo};
-                        die if $ats->{$lo};
-                        say "WIthout $lo? ".ki A.mo.re;
                         my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                        sayyl "A.cv spews -> $lo forth ".@N;
+                        sayyl "Loop A.cv > $lo x ".@N;
                         push @{A.mo.N}, @N;
                     }
                 }
@@ -190,30 +185,35 @@ C_D: |
     };
     I.ex = sub {
         my ($A,$C,$G,$T,$i,$K,$cv) = @_;
-        my $talk = "A.J.name ".(A.J.le && A.J.le.name).": ";
-        unless ($cv =~ /^[267]$/) {
-            sayyl "\t\t\t: $talk    C.t   $cv $K   ".keys %$i if A.J.V;
+        my $c = 0+("0.".$cv);
+        my $talk = "A.J.name ".(A.J.le && A.J.le.name).": $K A.cv > $c --- C.t ";
+        unless ($c =~ /^0\.[1267]$/) {
+            #sayyl "\t\t\t: $talk   ".keys %$i if A.J.V;
         }
+        my $aim = {$K=>1};
+        aim.I = 1 if $aim->{A.am};
         
-        my $ltk = sub {
-            # select between A.cv - $cv given probably zero point
-        };
-        
-        # A wind down to K cv
-        # is a wad of what matters
-        # matter - time it matters
-        # we may be in here like a I.d
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
-            sayyl("Weird $ii") && next if ref $ii ne 'HASH';
-            sayyl("extry A.cv $K $cv - $k") && next if $K ne $k;
+            ref $ii eq 'HASH' || die "wei $k ".ki $i;
+            
+            $aim->{$k} || #sayyl("$talk \t other: $k") &&
+                next;
+            # ^ or what group be are doing.... looper inner higher
+            
             for my $vc (sort keys %$ii) {
                 my $iii = $ii->{$vc};
-                # $ltk
-                sayre "extry A.cv  $K $cv - $k $vc" if $cv ne $vc;
+                
+                die unless $vc < 1;
+                $vc <= A.cv #&& sayre("$talk \t before: $K $vc")
+                    && next;
+                $vc > $c #&& sayre("$talk \t after: $K $vc")
+                    && next;
+                
+                #sayre "intriasm $talk  \t ov: $k $vc" if $c ne $vc;
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
-                    sayre "DEEE $talk  catchping $K $cv   D.t D.y.cv   D.sc.args";
+                    sayre "DEEE $talk  $vc  D.t D.y.cv  ". ki D.sc;
                     die if D.sc.gk;
                     my $paw = join"_",'',$k,$vc,D.t;
                     $paw =~ s/\W//g;
@@ -230,12 +230,12 @@ C_D: |
         I.d&n,$AA,$CC,$G,$T;
         T.grabac = [$AA,$CC]; #lexac
         if (AA.cv >= $cv) {
-            sayre "Double comback AA.cv $cv";
+            warn "Double comback AA.cv $cv";
             return T.not = 1;
         }
         AA.cv = $cv;
         I.d&An;
-        sayre " TTT $cv the CC.t";
+        #sayre " TTT $cv the CC.t";
     };
 uCon: |
     my $A = {J=>$J};
@@ -247,7 +247,7 @@ uCon: |
     
     say "On J.name went qq.name =-> oo.name rv.i ";
     #Rw stwo $J $n=UNbefore $N:_
-    #for [@{Y.rv.c},@{Y.rv.sc}];
+    #for [@{Y.rv.c}];#,@{Y.rv.sc}];
     
     say F_delta();
     # wants to flatten to clifes, keeping pathT/t/t/t 
@@ -310,13 +310,14 @@ ym/concoi: |
     $_ = C.sc.code;
     if (A.t&67) {
         if (C.sc.got) {
-            sayre "C.t got got!";
+            #sayre "C.t got got!";
             return T.not=1;
         }
         my $s = C.sc.code;
         if ($s =~ /\w+ \w+/) {
             $s =~ /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
             my ($K,$cv) = ($1,$2); 
+            $cv = 0+("0.".$cv);
 
             if (my $args = C.sc.args) {
                 die "wonky C.t   of ".ki $C if C.t =~ /\W/;
