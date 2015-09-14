@@ -59,6 +59,44 @@ already: | # allready
         Rw I_Cr;
     }
     $A
+WeBase: |
+    # note ar.*
+    my $s = $ar;
+    my $N = s.N;
+    
+    if (my $oA = s.oA) {
+        # preserve babs within babs
+        my $D = oA.D;
+        Rw babsubrip $oA $D $N
+            if substr(D.bab, 0, 200) =~ /s=><<''/;
+    }
+    # and similar from-above thing ^ some point in 1
+    
+    my $A = {};
+    A.mo = $A;
+    A.N = [@$N];
+    A.M = [];
+    A.J = s.J || die 'noJ';
+    A.am = s.am || die "unsame?";
+    # ^ should then know how to v
+    A.fl = ar.fl || {};
+    A.I = {};
+    my $dont;
+    if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
+        A.I = $I;
+        $dont = 1;
+        A.cv = 0.1;
+    } # hit/miss to analyse, when I drops in completely we cna drop:
+    unless ($dont) { # turning into some...
+        ar.I = A.I;
+        Rw I_Din;
+        Rw C_C;
+        Rw C_E;
+        Rw I_D;
+        Rw I_Ci;
+        Rw I_Cr;
+    }
+    $A
 In: | # I I I
     my $N = ar.N||ar.C;
     
@@ -151,7 +189,7 @@ IStuff: |
         shift; # imporo
         my $y = $I->{$s} || die "no way named '$s'";
         my $P = I.nF ||= {};
-        P.A||die'dnoA!?'; # papto
+        P.A||die'PnoA!?'; # papto
         $y->(P.A,P.C,P.G,P.T,@_);
     
     n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
