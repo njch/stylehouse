@@ -87,8 +87,11 @@ uCon: |
     Rw In $J:oo $N $M;
     $N = $M;
     
-    my $Ns=[];
-    my $sem = Rw InCoil $J $N wantcode $s:Ns;
+    #my $Ns=[[sc=>'code']];
+    # A.c feed, seek &= found M, could be way wider langusage (embassy work to other)
+    # note Spanish order ^    ^
+    my $sem = Rw InCoil $J $N wantcode;
+    say "Sembelate:". wdump $sem;
     
     my $want = [[sc=>'code']]; # fed to A.c
     Rw stwo $J $n=ourt $N $want $noz=1 $q=1;
@@ -117,14 +120,15 @@ uCon: |
         }
     }
 ym/wantcode: |
+    # could T.not and grab M
     sayyl "Wanting to code sift: C.t ".ki C.sc;
-InCoil: | # throw an index packer
-   ar.s ||= {};
+InCoil: | # In wild packer
+   ar.v ||= {};
    ar.M ||= [];
-   my ($protoK) = @{delete ar.m||die"nbok"};
-   $N = [{MZ=>{$protoK=>ar.s}}, @$N];
+   my ($oK) = @{delete ar.m||die"nbok"};
+   $N = [{MZ=>{$oK=>ar.v}}, @$N];
    Rw In + $N;
-   ar.s
+   ar.v # or wantarray @{ar.M}
    
    
 ym/concoi: |
@@ -281,7 +285,6 @@ stear: | # tentstring
         if (my $wa = ar.want) {
             my $y;
             for my $try (@$wa) {
-            $DB::single = 1;
                 my @am = A.c->(@$try);
                 next if !@am;
                 $y++;
