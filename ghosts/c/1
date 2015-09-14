@@ -104,17 +104,11 @@ In: | # I I I
     my $I = A.I;
     I.d&n,$A,{},$G,{};
     I.d&An;
-    A.t&1 || warn "NO 1";
+    A.t&1;
+    
+    A.t&11111 || warn "NO 1";
     # 
     
-    aft {
-        # want to sus $@ and hang vectors of what, should be autoish
-        $@ || return;
-        my $m = "J: J.name J.le.name";
-        $m .= "\nC: ".ki I.nF.C;
-        $m .= "\ns: ".wdump 3, $N unless length $m > 20;
-        $@ = "$m\n$@";
-    };
     # 2821:      keys arrive as characters already:
     # prep A for A (I), J-sessioned etc stuff
     # is literal G spacer, index jointed bunch of code to check out from w
@@ -128,6 +122,7 @@ In: | # I I I
         my $C = {};
         my $T = {};
         my $A = {%$A};
+        A.mo.on = $A;
         A.s = $s;
         T.oM = [];
         I.d&n,$A,$C,$G,$T;
@@ -140,6 +135,7 @@ In: | # I I I
         I.d&z && next if T.not;
         A.t&6;
         
+        die if A.J.name eq 'Hypo';
         # elabourate C,
         for my $k (sort keys %{A.fl}) {
             my $v = A.fl->{$k};
@@ -175,12 +171,14 @@ In: | # I I I
     
     
 Ind: |
+    n ''=>''=>{W=>'Bangdesk'}
     n ''=>''=>{W=>'IStuff'}
     n ''=>''=>{W=>'KnowTime'}
     n ''=>''=>{W=>'SlideEater'}
     n ''=>''=>{W=>'CGolf'}
     n ''=>''=>{W=>'Csys'}
     n ''=>''=>{W=>'Servo'}
+
 IStuff: |
     u allacgt
     
@@ -201,6 +199,27 @@ IStuff: |
     
     n recycle =>''=>{s=><<''}
         G.drop.recycling->{A.J.id}->{A.am} = A.I;
+Bangdesk: |
+    u allacgts
+    # want to sus $@ and hang vectors of what, should be autoish
+    # suppose we come here with only ACGT between us and F
+    n after =>''=>{s=><<''},{code=>"In 11"}
+        aft {
+            $@ || return; A.bang && return; A.bang = 21;
+                # want to sus $@ and hang vectors of what, should be autoish
+                my $m = "J: I.nF.A.talk";
+                $m .= "\nC: ".ki I.nF.A.C;
+                $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
+                $@ = "$m\n$@";
+            # A.t&9,$@; 
+        }
+    
+    n erg =>''=>{s=><<''},{code=>"In 9"}
+        # must pre compile, see D severators
+        my $m = "J: A.talk";
+        $m .= "\nC: ".ki $C;
+        $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
+        $@ = "$m\n$@";
 KnowTime: | # dome props
     u allacgts
     
@@ -218,10 +237,30 @@ KnowTime: | # dome props
         $A
     
     n moy =>''=>{s=><<''}
-        # groups, to spread
+        # groups, spread the moise
         my $i = A.mo.y->{$s}||die"no$s";
         my $is = $i->{C.y.p}; # things in our C's pool
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    
+    n severato =>''=>{s=><<''}
+                if (my $z = T.Z) {
+                    my ($lo) = sort keys %$z;
+                    # each thing emits just the next one
+                    @{T.oM} = ();
+                    push @{A.mo.re->{$lo} ||= []}, [$A,$C];
+                    T.sever = 1;
+                }
+                if (!@{A.mo.N}) {
+                    my $ats = A.mo.re || {};
+                    my @wa = sort keys %$ats;
+                    my ($lo) = @wa;
+                    if ($lo) {
+                        my $ay = delete $ats->{$lo};
+                        my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+                        #sayyl "Loop A.cv > $lo x ".@N;
+                        push @{A.mo.N}, @N;
+                    }
+                }
     
     n t =>''=>{s=><<''},{acgt=>'K,cv'}
         ($K,$cv) = (A.am,$K) if !$cv && $K;
@@ -232,7 +271,7 @@ KnowTime: | # dome props
         my $ncv;
         my $re;
         my $dont;
-        die'danK' if $K ne 'In';
+        die'danK'.wdump 3, [$A,$K,$cv,$i] if $K ne 'In';
             if (A.cv < 0.6 || $c >= 0.7) {
                 if ($c >= A.cv) {
                     $ncv = $c;
@@ -266,26 +305,8 @@ KnowTime: | # dome props
                 }
                 else {die"nof"}
             }
-            if ($cv == 7) { # TOLIFT
-                if (my $z = T.Z) {
-                    my ($lo) = sort keys %$z;
-                    # each thing emits just the next one
-                    @{T.oM} = ();
-                    push @{A.mo.re->{$lo} ||= []}, [$A,$C];
-                    undef $ncv;
-                }
-                if (!@{A.mo.N}) {
-                    my $ats = A.mo.re || {};
-                    my @wa = sort keys %$ats;
-                    my ($lo) = @wa;
-                    if ($lo) {
-                        my $ay = delete $ats->{$lo};
-                        my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                        #sayyl "Loop A.cv > $lo x ".@N;
-                        push @{A.mo.N}, @N;
-                    }
-                }
-            }
+            I.d&severato if $cv == 7;
+            undef $ncv if T.sever;
             unless ($dont) {
                 # break off at 1,2
                 I.d&ex,$i,$K=>$cv
