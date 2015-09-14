@@ -59,47 +59,8 @@ already: | # allready
         Rw I_Cr;
     }
     $A
-WeBase: |
-    # note ar.*
-    my $s = $ar;
-    my $N = s.N;
-    
-    if (my $oA = s.oA) {
-        # preserve babs within babs
-        my $D = oA.D;
-        Rw babsubrip $oA $D $N
-            if substr(D.bab, 0, 200) =~ /s=><<''/;
-    }
-    # and similar from-above thing ^ some point in 1
-    
-    my $A = {};
-    A.mo = $A;
-    A.N = [@$N];
-    A.M = [];
-    A.J = s.J || die 'noJ';
-    A.am = s.am || die "unsame?";
-    # ^ should then know how to v
-    A.fl = ar.fl || {};
-    A.I = {};
-    my $dont;
-    if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
-        A.I = $I;
-        $dont = 1;
-        A.cv = 0.1;
-    } # hit/miss to analyse, when I drops in completely we cna drop:
-    unless ($dont) { # turning into some...
-        ar.I = A.I;
-        Rw I_Din;
-        Rw C_C;
-        Rw C_E;
-        Rw I_D;
-        Rw I_Ci;
-        Rw I_Cr;
-    }
-    $A
+
 In: | # I I I
-    my $N = ar.N||ar.C;
-    
     my $A = Rw already + $am=In $N;
     my $I = A.I;
     I.d&n,$A,{},$G,{};
@@ -135,7 +96,6 @@ In: | # I I I
         I.d&z && next if T.not;
         A.t&6;
         
-        die if A.J.name eq 'Hypo';
         # elabourate C,
         for my $k (sort keys %{A.fl}) {
             my $v = A.fl->{$k};
@@ -145,10 +105,7 @@ In: | # I I I
         I.d&z && next if T.not;
         
         I.d&Cr,$s;
-         
-        die "not: ".wdump 4,[$N, $C]
-           if !ref C.y || !C.y || !defined C.t;
-         
+        
         push @{T.oM}, $C;
         
         A.t&7;
@@ -170,7 +127,40 @@ In: | # I I I
     }
     
     
+WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
+    ar.oA && ar.oA.D &&
+    substr(ar.oA.D.bab, 0, 200) =~ /s=><<''/ && 
+    Rw babsubrip $oA $D:s.oA.D $N;
+    
+    my $A = {};
+    A.mo = $A;
+    A.N = [@$N];
+    A.M = [];
+    A.J = ar.J || die 'noJ';
+    (A.am) = @{delete ar.m}
+    A.am || die "unsame?";
+    # ^ should then know how to v
+    A.fl = ar.fl || {};
+    A.I = {};
+    my $dont;
+    if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
+        # hit/miss to analyse, when I drops in completely we cna drop:
+        A.I = $I;
+        $dont = 1;
+        A.cv = 0.1;
+    } 
+    unless ($dont) { # turning into some...
+        ar.I = A.I;
+        Rw I_Din;
+        Rw C_C;
+        Rw C_E;
+        Rw I_D;
+        Rw I_Ci;
+        Rw I_Cr;
+    }
+    $A
 Ind: |
+    # not allcode since uCons blank qq cone & then thing
     n ''=>''=>{W=>'Bangdesk'}
     n ''=>''=>{W=>'IStuff'}
     n ''=>''=>{W=>'KnowTime'}
@@ -178,7 +168,51 @@ Ind: |
     n ''=>''=>{W=>'CGolf'}
     n ''=>''=>{W=>'Csys'}
     n ''=>''=>{W=>'Servo'}
-
+    n Indi=>''=>{s=><<''},{code=>'W 4'}
+        my $A = Rw WeBase In;
+        my $I = A.I;
+        I.d&n,$A,{},$G,{};
+        I.d&An;
+        A.t&1;
+        A.t&11111 || warn "NO 1";
+        while (@{A.N}) { #
+            my $A = {%$A};
+            A.mo.on = $A;
+            A.s = shift @{A.N};
+            my $T = {oM=>[]};
+            I.d&n,$A,{},$G,$T;
+            I.d&An;
+            A.t&2;
+            $A = I.nF.A;
+            # and whenever
+            I.d&z && next if T.not;
+            # then the things todo
+            A.t&6;
+            # elabourate C,
+            # we want to throw our next II etc (transmit C and II)
+            for my $k (sort keys %{A.fl}) {
+                my $v = A.fl->{$k};
+                $k = $2 if $k =~ /^(\d+) (.+)$/;
+                Rw ym/$k $I $J $A $C $n:C $v $G $T;
+            }
+            I.d&z && next if T.not;
+            push @{T.oM}, $C; # this a 67 thing?
+            A.t&7;
+            I.d&z;
+        }
+        A.t&8;
+        I.d&recycle;
+        my $M = ar.M;
+        if ($M) {
+            push @$M, @{A.M}
+        }
+        elsif ($J) {
+            map {
+               Rw mani + $J $C:_
+            } @{A.M}
+        } else {
+            die "noJM";
+        }
 IStuff: |
     u allacgt
     
@@ -208,8 +242,8 @@ Bangdesk: |
             $@ || return; A.bang && return; A.bang = 21;
                 # want to sus $@ and hang vectors of what, should be autoish
                 my $m = "J: I.nF.A.talk";
-                $m .= "\nC: ".ki I.nF.A.C;
-                $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
+                $m .= "\nC: ".k2 I.nF.C;
+                $m .= "\ns: ".wdump 3, I.nF.A.s unless length $m > 20;
                 $@ = "$m\n$@";
             # A.t&9,$@; 
         }
@@ -226,14 +260,8 @@ KnowTime: | # dome props
     n An =>''=>{s=><<''},{acgt=>1}
         A.note = {}; # pinging csc
         A.talk = "A.J.name ".(A.J.le && A.J.le.name);
-        A.c = sub { 
-            #saybl "Ac! A.talk"; snooze;saybl("A_d d"); 
-            I.d&c,@_;
-        };
-        A.t = sub { 
-            #saybl "At! A.talk"; snooze;saybl("A_t t"); 
-            I.d&t,@_;
-        };
+        A.c = sub { I.d&c,@_; };
+        A.t = sub { I.d&t,@_; };
         $A
     
     n moy =>''=>{s=><<''}
@@ -453,6 +481,8 @@ SlideEater: | # liney schemery
         I.d&Crey if !ref C.y;
         I.d&Crec if !ref C.c;
         I.d&Cresc if !ref C.sc;
+        die "not: ".wdump 4,[$N, $C]
+           if !ref C.y || !C.y || !defined C.t;
     
     n Crey =>''=>{s=><<''}
         C.y = C.y eq '' ? {}

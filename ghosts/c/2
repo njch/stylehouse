@@ -13,9 +13,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
             $m[2] ||= {J=>$m[0]};
             @m == 3 || die "!!!\n".wdump[@m];
         }
-        while (@m > 4) {
-            die "m too big J.name ::: ".wdump 2, \@m;
-        }
+        @m>4&&die"mvelope>4".wdump 2, \@m;
         [@m]
     };
     my $oAr = sub { # bit of dome escape vector
@@ -24,10 +22,11 @@ Viu: | # u/n/m pinging uCon, setup part Jto
         oA.subline = (caller(1))[2];
         oA.D = $F[0];
     };
+    # 6 shul start u pha
     J.u = sub {
        $eu->();
        my $ar;
-       ar.C = [$dJ->(@_)];
+       ar.N = [$dJ->(@_)];
        ar.J = Rw Elj $J qq;
        $oAr->($ar);
        Rw In;
@@ -36,7 +35,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        $unu->();
        my $ar;
        ar.J = $J;
-       ar.C = [$dJ->(@_)];
+       ar.N = [$dJ->(@_)];
        $oAr->($ar);
        Rw In;
     };
@@ -46,13 +45,10 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        my $ar;
        ar.M = shift;
        ar.J = $J;
-       ar.C = [$dJ->(@_)];
+       ar.N = [$dJ->(@_)];
        $oAr->($ar);
        Rw In;
     };
-
-
-
 uCon: |
     my $A = {J=>$J};
     # am U?
