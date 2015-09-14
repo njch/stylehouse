@@ -59,9 +59,9 @@ uCon: |
     A.talk = "A.J.name ".(A.J.le && A.J.le.name);
     
     my $qq = Rw Elj $J qq;
-    qq.V = 1;
+    #qq.V = 1;
     my $Y = Rw Noodles $J:qq;
-    qq.V = 0;
+    #qq.V = 0;
     my $oo = Rw Elj $J oo;
     
     Rw uThree $A $J $Y $qq $oo;
@@ -91,7 +91,7 @@ uThree: |
     die "sc slip" if @{rv.sc};
     
     @$N = Rw InCoil $J:oo $N wongui _;
-    
+    # sense stream, wired with c.from = CCC (spiral cut &&)
     # A.c feed, seek &= found M, could be way wider langusage (embassy work to other)
     # note Spanish order ^    ^
     @$N = Rw InCoil $J:oo $N wantcode _;
@@ -99,9 +99,9 @@ uThree: |
     oo.V=1;
     my $s = Rw InCoil $J:oo $N concoi;
     
-    # the usual plywood spiral peel
-    # made {s=>$s,ply=>'K/cv/t:D',grp=>'K/cv&c,sc,gr'}
-    # as the i,i,i coalesces,
+    #Rw InCoil $J:oo $N talky;
+    
+    # as the i,i,i coalesces, later
     J.A.Ii = rv.i;
     J.A.I = $s if %$s;
     # then A.Ii sees J.A.I (+more, concat) hashrefs i aj like
@@ -109,12 +109,28 @@ uThree: |
     # the wave can catch up to itself
     delete J.A.I if !%$s;
     say "Reckonon J.name: ".F_delta();
+    # the usual plywood spiral peel
+    # made {s=>$s,ply=>'K/cv/t:D',grp=>'K/cv&c,sc,gr'}
+    my $scby = "gro";
+    my $bydef = "^";
+    # climb the limbs in falling A.mo.y./..
+    # you are suggesting I use more noisey code
     for my $K (sort keys %$s) {
         my $vs = $s->{$K};
         for my $cv (sort keys %$vs) {
             my $tw = $vs->{$cv};
-            # group by D.sc.gro
-            saygr "    $K\t$cv\t".join ",", sort keys %$tw;
+            my $g = {};
+            while (my ($k,$D) = each %$tw) {
+                my $gk = D.sc->{$scby} || $bydef;
+                # ^
+                # v
+                $g->{$gk}->{$k} = $D;
+            }
+            for my $gk (sort keys %$g) {
+                my $ts = $g->{$gk};
+                saygr sprintf ' %-9s %-6s %-18s %18s',
+                    $K, $cv, $gk, join(",", sort keys %$ts);
+            }
         }
     }
 InCoil: | # In wild packer # slipping an II in, aggregator following alllist
@@ -125,10 +141,25 @@ InCoil: | # In wild packer # slipping an II in, aggregator following alllist
    $N = [{MZ=>{$oK=>ar.v}}, @$N];
    Rw In + $N;
    $rM ? @{ar.M} : ar.v
+ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
+    my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
+    
+    # I. for decoupling hashrefs like vasing
+    $C->{$_} = {%{$C->{$_}||{}}} for 'c','sc';
+    my $wire = 'from';
+    
+    for my $zi (A.c->($D)) {
+        my $from = [
+            reverse $C, reverse map{@$_} A.c&$wire,'%as:list'
+        ];
+        my $c = {c=>{$wire=>$from}};
+        my $s = {EC=>[$zi,$c]};
+        push @{A.N}, $s;
+    }
 ym/wantcode: |
     # could T.not and grab M
-    acum $v=>M=>$C if A.c&sc,'code';
-    # to throw a 67 to ./..
+    T.not = 1 unless C.sc.code;
+    # to throw a 67 to ./.. would be pushing into II 
 ym/concoi: |
     my $s = C.sc.code || return;
     
@@ -198,6 +229,8 @@ ym/concoi: |
             }
 
             C.sc.dige = slm 12, dig C.c.s;
+            C.sc.gro = join'/',map{_.t}grep{_.y.cv != 0.9}
+                @{C.c.from} if C.c.from;
 
             $v->{$K}->{$cv}->{C.t} = $C;
         }
@@ -208,19 +241,9 @@ ym/concoi: |
             A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
         }
     }
-ym/wongui: |
-    my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
-    $C->{$_} = {%{$C->{$_}||{}}} for 'c','sc';
-    
-    for my $zi (A.c->($D)) {
-        my $from = [
-            reverse $C, reverse map{@$_} A.c&from,'%as:list'
-        ];
-        my $c = {c=>{from=>$from}};
-        my $s = {EC=>[$zi,$c]};
-        push @{A.N}, $s;
-    }
-stickwo: |
+
+
+ym/talky: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     my $nC = {%$C};
     my $t = ar.t ||"";
     my $n = ar.n ||"";
@@ -231,81 +254,11 @@ stickwo: |
         delete nC.y;
     }
     $yc = delete(nC.t).$yc;
-    if (my $f = C.c.from) {
-        $n .= " _.t /" for 
-            grep{ref $_ eq 'HASH' || die wdump $_}
-            @$f;
-    }
+    $n = "in:C.sc.gro";
     
     my $s = "! $n    $t $yc  \t\t". ki $nC;
     $s =~ s/\n/↯/g;
-    $s;
-stwo: |
-    my $A = Rw already + $am=In;
-    my $I = A.I;
-    I.d&n,$A,{},$G,{};
-    I.d&An;
-    A.t&1 || warn "NO 1";
-    
-    my $sel = [] if ar.want;
-    Rw stear + $sel $A $I $n $N:_
-        for ref $N eq 'ARRAY' ? @$N : die"topray";
-    @{ar.want} = @$sel if $sel;
-    "and ..."
-    
-    
-stear: | # tentstring
-    my $A = {%$A};
-    my $C = {};
-    my $T = {};
-    A.s = $N;
-    $I = A.I;
-    I.d&n,$A,$C,$G,$T;
-    I.d&An;
-    A.t&2;
-    # n indentstring, N
-        my $t;
-        if (ref $N eq 'HASH') {
-            my $sig = join ' ', sort keys %$N;
-            $t .= "car: $sig" unless $sig eq 'c sc t y';
-            %$C = %$N;
-        }
-        elsif (ref $N eq 'ARRAY' && !ref $N->[0]) { # feel terrain
-           I.d&4fourreal,$N;
-        }
-        else {
-           C.c.s = $N;
-        }
-        I.d&Cr;
-        
-        my $s = Rw stickwo + $t $n $C;
-        
-        if (my $wa = ar.want) {
-            my $y;
-            for my $try (@$wa) {
-                my @am = A.c->(@$try);
-                next if !@am;
-                $y++;
-            }
-            if ($y) {
-                push @$sel, $C;
-                sayyl $s unless ar.q;
-            }
-            else {
-                saybl $s unless ar.q;
-            }
-        }
-        else {
-            saygr $s unless ar.q;
-        }
-        
-        if (my $z = C.sc.z) {
-            for my $Z (@$z) {
-                last if ar.noz;
-                my $n = "$n    ";
-                Rw stear + $n $N:Z;
-            }
-        }
+    say $s;
 Elvus: | # arbitrary in-J Elvi with thrust over, possibly   - c for J must be already seT
     my $Y = Rw El;
     my $oJ = ar.oJ || $J;
