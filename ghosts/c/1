@@ -47,6 +47,8 @@ already: | # allready
     if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
         A.I = $I;
         $dont = 1;
+        sayyl "RECYCLING";
+        A.cv = 0.1;
     }
     unless ($dont) { # turning into some...
         ar.I = A.I;
@@ -58,23 +60,6 @@ already: | # allready
         Rw I_Cr;
     }
     $A
-I_Din: |
-    I.d = sub { # consumer of what it means to be deeply
-        my $s = shift;
-        # grease thje stomac
-        my $P = I.nF ||= {};
-        my $y = $I->{$s} || die "no way named '$s'";
-        $y->(P.A,P.C,P.G,P.T,@_);
-    };
-    I.n = sub { # no-act A acui, An separate
-        my ($A,$C,$G,$T,$AA,$CC,$GG,$TT) = @_;
-        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
-    };
-    I.z = sub {
-        my ($A,$C,$G,$T) = @_;
-        push @{A.M}, @{T.oM};
-        1
-    };
 In: | # I I I
     my $N = ar.N||ar.C;
     
@@ -82,12 +67,12 @@ In: | # I I I
     my $I = A.I;
     I.d&n,$A,{},$G,{};
     I.d&An;
-    A.t&1 || die "NO 1";
+    A.t&1 || warn "NO 1";
     # 
     
     aft {
         # want to sus $@ and hang vectors of what, should be autoish
-        $@ || I.d&recycle && return;
+        $@ || return;
         my $m = "J: J.name J.le.name";
         $m .= "\nC: ".ki I.nF.C;
         $m .= "\ns: ".wdump 3, $N unless length $m > 20;
@@ -137,6 +122,8 @@ In: | # I I I
         I.d&z;
     }
     
+    I.d&recycle;
+    
     my $M = ar.M;
     if ($M) {
         push @$M, @{A.M}
@@ -149,13 +136,227 @@ In: | # I I I
         die "noJM";
     }
     
+    
 Einond: |
     n ''=>''=>{W=>'IStuff'}
+    n ''=>''=>{W=>'KnowTime'}
     n ''=>''=>{W=>'SlideEater'}
     n ''=>''=>{W=>'CGolf'}
+    n ''=>''=>{W=>'Csys'}
     n ''=>''=>{W=>'Servo'}
+IStuff: |
+    u allacgt
 
-SlideEater: |
+    n d =>''=>{s=><<''},{acgt=>1,args=>'s'}
+        # grease thje stomac
+        shift; # imporo
+        saybl "Using the inner! $s";
+        my $y = $I->{$s} || die "no way named '$s'";
+        my $P = I.nF ||= {};
+        die "noPE ".wdump 2, $P if !P.A;
+        my @um = $y->(P.A,P.C,P.G,P.T,@_);
+        saybl "Unsuing in $s";
+        @um
+    
+    n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
+        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
+    
+    n z =>''=>{s=><<''}
+        push @{A.M}, @{T.oM};
+        1
+    
+    n recycle =>''=>{s=><<''}
+        G.drop.recycling->{A.J.id}->{A.am} = A.I;
+KnowTime: | # dome props
+    u allacgts
+    
+    n An =>''=>{s=><<''},{acgt=>1}
+        A.note = {}; # pinging csc
+        saybl "An! A.talk"; snooze;
+        A.talk = "A.J.name ".(A.J.le && A.J.le.name);
+        A.c = sub { 
+            saybl "Ac! A.talk"; snooze;saybl("A_d d"); 
+            I.d&c,@_;
+        };
+        A.t = sub { 
+            saybl "At! A.talk"; snooze;saybl("A_t t"); 
+            I.d&t,@_;
+        };
+        $A
+    
+    n moy =>''=>{s=><<''}
+        # groups, to spread
+        my $i = A.mo.y->{$s}||die"no$s";
+        my $is = $i->{C.y.p}; # things in our C's pool
+        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    
+    n t =>''=>{s=><<''},{acgt=>'K,cv'}
+        ($K,$cv) = (A.am,$K) if !$cv && $K;
+        die "K$K cv$cv" unless $K && $cv;
+        saybl "t! A.talk"; snooze;
+        # much mergey extendo rubble, 
+        my $i = $G->gip($A,'J/A/I') || {};
+        my $c = 0+("0.".$cv);
+        my $ncv;
+        my $re;
+        my $dont;
+        die'danK' if $K ne 'In';
+            if (A.cv < 0.6 || $c >= 0.7) {
+                if ($c >= A.cv) {
+                    $ncv = $c;
+                    $re = 1;
+                }
+                else {
+                    $re = 0;
+                    $dont = 1;
+                    say " DeInc A.cv - $cv $c";
+                }
+                die "pre bigger" if $cv < A.cv;
+            }
+            else {
+                if ($c < A.cv) {
+                    if (A.cv == 0.6) { # scoop up all on entering timezone
+                        $re = 1;
+                        $dont = 1; # or will IIII fall away
+                    }
+                    else {
+                        $re = 0;
+                        $dont = 1;
+                    }
+                }
+                elsif ($c == A.cv) {
+                    $re = 1;
+                }
+                elsif ($c > A.cv) { # and $c < 0.7
+                    T.Z->{$c} = 1;
+                    $re = 0;
+                    $dont = 1;
+                }
+                else {die"nof"}
+            }
+            if ($cv == 7) {
+                if (my $z = T.Z) {
+                    my ($lo) = sort keys %$z;
+                    # each thing emits just the next one
+                    @{T.oM} = ();
+                    push @{A.mo.re->{$lo} ||= []}, [$A,$C];
+                    undef $ncv;
+                }
+                if (!@{A.mo.N}) {
+                    my $ats = A.mo.re || {};
+                    my @wa = sort keys %$ats;
+                    my ($lo) = @wa;
+                    if ($lo) {
+                        my $ay = delete $ats->{$lo};
+                        my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+                        #sayyl "Loop A.cv > $lo x ".@N;
+                        push @{A.mo.N}, @N;
+                    }
+                }
+            }
+            unless ($dont) {
+                # break off at 1,2
+                I.d&ex,$i,$K=>$cv
+            }
+            A.cv = $ncv if defined $ncv;
+            $re;
+    
+    n ex =>''=>{s=><<''},{acgt=>'i,K,cv'}
+        my $c = 0+("0.".$cv);
+        my $talk = "A.talk: $K A.cv > $c --- C.t ";
+        saybl "ex! $talk"; snooze;
+        my $aim = {$K=>1};
+        aim.I = 1 if $aim->{A.am};
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            ref $ii eq 'HASH' || die "wei $k ".ki $i;
+            $aim->{$k} || next;
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                die unless $vc < 1;
+                next if $vc <= A.cv;
+                next if $vc > $c;
+                for my $ik (sort keys %$iii) {
+                    my $D = $iii->{$ik};
+                    sayre "DEEE $talk $k > $vc  D.t D.y.cv  ". ki D.sc;
+                    die if D.sc.gk;
+                    my $act;
+                    my $dont;
+                    if ($k ne 'I' && D.sc.acgt) {
+                        $act = 1;
+                        $dont = 1 if exists A.I->{D.t};
+                    }
+                    unless ($dont) {
+                        my $paw = join"_",'',$k,$vc,D.t;
+                        $paw =~ s/\W//g;
+                        Rw $paw $A $C $G $T $__D:D;
+                    }
+                    # non-I acgt means some expressed tick of the creature
+                    # as osc accesses
+                    if ($act) {
+                        D.sc.acgt eq 's'||die "nonacgts";
+                        exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
+                        say "Bridge to $k > $vc   D.t";
+                        I.d&D.t,A.s;
+                    }
+                }
+            }
+        }
+    
+    # y
+Csys: |
+    u allacgts
+    
+    n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
+        return $nk if ref $nk;
+        my $D = {};
+            while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
+                D.c->{$1} = $2;
+                pop @_ if @_ == 2;
+            }
+            if (@_ == 1) { # or from t,,,
+                D.c.nk ||= 'c';
+                D.c.gk ||= $nk;
+            }
+            elsif (@_ == 2) {
+                D.c.nk = $nk;
+                D.c.gk = $gk;
+            }
+        $D
+    
+    n c =>''=>{s=><<''},{acgt=>'D'}
+        die'nofA' if !I.nF.A;
+            $D = I.d&interpD,@_ if !ref $D;
+            exists C.c->{$_} && die "COT I".ki $C
+                for qw'code if of ref';
+            my $v = I.d&Cngk,$D;
+            return () unless $v;
+            A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
+            die 'mulitAn' if @$v > 1;
+            if (D.c.as eq 'list') {
+                return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
+            }
+            return 1;
+    
+    n accept =>''=>{s=><<''},{acgt=>'D'}
+        return T.next = 1 unless I.d&Cngk,$D;
+    
+    n Cngk =>''=>{s=><<''},{acgt=>'D'}
+        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        return 1 if D.c.any;
+        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
+            my $v = [$C->{D.c.nk}->{D.c.gk}];
+            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
+            return $v;
+        }
+        die "noNnk".wdump $D unless exists D.c.nk;
+        0;
+    
+    n extend =>''=>{s=><<''},{acgt=>'s,c'}
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+        }
+SlideEater: | # liney schemery
     u allacgts
     
     n Ci =>''=>{s=><<''},{code=>'In 12'}
@@ -214,47 +415,6 @@ SlideEater: |
             : die "nostr  C.sc    ".ki $C
     
     #e
-IStuff: |
-    u allacgt
-
-    n d =>''=>{s=><<''},{subpeel=>1}
-        sub { # consumer of what it means to be deeply
-            my $s = shift;
-            # grease thje stomac
-            my $P = I.nF ||= {};
-            my $y = $I->{$s} || die "no way named '$s'";
-            $y->(P.A,P.C,P.G,P.T,@_);
-        };
-    
-    n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
-        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
-    
-    n z =>''=>{s=><<''}
-        push @{A.M}, @{T.oM};
-        1
-    
-    # some C inter
-    n accept =>''=>{s=><<''}
-        return T.next = 1 unless I.d&Cngk,$D;
-    
-    n Cngk =>''=>{s=><<''}
-        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
-        return 1 if D.c.any;
-        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
-            my $v = [$C->{D.c.nk}->{D.c.gk}];
-            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
-            return $v;
-        }
-        die "nonnk".ki$D unless exists D.c.nk;
-        0;
-    
-    n extend =>''=>{s=><<''},{acgt=>'s,c'}
-        while (my($k,$v) = each %$c) {
-            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
-        }
-
-    n recycle =>''=>{s=><<''}
-            G.drop.recycling->{A.J.id}->{A.am} = A.I;
 CGolf: |
     u allacgts
     
@@ -314,7 +474,6 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
     u allacgts
     
     n servehash =>''=>{s=><<''}
-        my ($A,$C,$G,$T,$s) = @_;
           s.AZ ? I.d&AZu,s.AZ
         : s.MZ ? I.d&MZu,s.MZ
         : s.EZ ? I.d&EZu,s.EZ
@@ -385,5 +544,18 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         # turns via n&ACGT
         # the time beams mapped... a W concat couldol
         T.not = 1;
+     
+    n AZu =>''=>{s=><<''}
+        die 'amany' if keys %$s > 1;
+        my ($cv,$ac) = %$s;
+        my ($AA,$CC) = @$ac;
+        I.d&n,$AA,$CC,$G,$T;
+        T.grabac = [$AA,$CC]; #lexac
+        if (AA.cv >= $cv) {
+            warn "Double comback AA.cv $cv";
+            return T.not = 1;
+        }
+        AA.cv = $cv;
+        I.d&An;
     
 

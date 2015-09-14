@@ -56,48 +56,6 @@ C_E: |  # elvission/I joinsession/c convene
     # here we step further into the light grabbing
     # parts spine up from In's A the In, using qqJ.A
     # but the broken tiles of use cassettes- culture eddies, vines of intuit
-    I.interpD = sub { # make csc grab exprD
-        my ($A,$C,$G,$T)=splice @_,0,4;
-        my ($nk,$gk) = @_;
-        my $D = {};
-        if (ref $nk) {
-            $D = $nk
-        }
-        else {
-            while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
-                D.c->{$1} = $2;
-                pop @_ if @_ == 2;
-            }
-            if (@_ == 1) { # or from t,,,
-                D.c.nk ||= 'c';
-                D.c.gk ||= $nk;
-            }
-            elsif (@_ == 2) {
-                D.c.nk = $nk;
-                D.c.gk = $gk;
-            }
-        }
-        $D
-    };
-    I.c = sub {
-        my ($A,$C,$G,$T)=splice @_,0,4;
-            my ($D) = @_;
-            $D = I.d&interpD,@_ if !ref $D;
-            
-            exists C.c->{$_} && die "COT I".ki $C
-                for qw'code if of ref';
-            
-            my $v = I.d&Cngk,$D;
-            return () unless $v;
-            
-            A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
-            
-            die 'mulitAn' if @$v > 1;
-            if (D.c.as eq 'list') {
-                return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
-            }
-            return 1;
-    };
     I.An = sub { # A within faller # wants to I 2, throw subs on A directly...
         my ($A,$C,$G,$T) = @_;
         A.note = {}; # pinging csc
@@ -110,21 +68,6 @@ C_E: |  # elvission/I joinsession/c convene
         my $i = A.mo.y->{$s}||die"no$s";
         my $is = $i->{C.y.p}; # things in our C's pool
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
-    };
-    I.AZu = sub {
-        my ($A,$C,$G,$T,$am) = @_;
-        die 'amany' if keys %$am > 1;
-        my ($cv,$ac) = %$am;
-        my ($AA,$CC) = @$ac;
-        I.d&n,$AA,$CC,$G,$T;
-        T.grabac = [$AA,$CC]; #lexac
-        if (AA.cv >= $cv) {
-            warn "Double comback AA.cv $cv";
-            return T.not = 1;
-        }
-        AA.cv = $cv;
-        I.d&An;
-        #sayre " TTT $cv the CC.t";
     };
     Rw C_D;
 C_D: |
@@ -297,8 +240,8 @@ uCon: |
     $M = [];
     oo.V = 1;
     Rw In $J:oo $N $M;
-    $N = $M;
-    Rw stwo $J $n=again $N $noz=1;
+    #$N = $M;
+    #Rw stwo $J $n=again $N $noz=1;
     J.A.I = $s if %$s;
     delete J.A.I if !%$s;
     
@@ -323,7 +266,8 @@ ym/concoi: |
     }
     
     if (A.t&43 && C.sc.acgt) {
-        C.sc.args = join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
+        # for ACGT+args in acgt, args take whole @_
+        C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
         undef C.sc.code if C.sc.code eq '1';
         # the I that Cs all, it is indifferent to its current
         C.sc.code ||= "I 1";
@@ -339,27 +283,38 @@ ym/concoi: |
             $s =~ /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
             my ($K,$cv) = ($1,$2); 
             $cv = 0+("0.".$cv);
+            
 
             if (my $args = C.sc.args) {
                 die "wonky C.t   of ".ki $C if C.t =~ /\W/;
                 my $gl = "";
-                if ($args =~ /^A.C.G.T(!=.s).+/) {
+                if ($args =~ s/^(A,C,G,T,)(?!s)//) {
                     $gl .= '    my ($A,$C,$G,$T)=splice @_,0,4;'."\n";
-                    $args =~ s/^A.C.G.T.//||die"wtf $args ".ki $C;
                 }
-        
-                # here some want their own I space? if I resolv backward winding pro-be
+                my($sf,$sa);
+                if (C.sc.subpeel) { # runs, returns T.thing
+                    $sf = "(";
+                    $sa = ')->($A,$C,$G,$T)';
+                }
+                # here some want their own I space
+                # if I resolv backward winding pro-be
                 # G pulls in I
-                C.c.s = "A\.I.".C.t." = sub {\n"
+                C.c.s = "A\.I.".C.t." = "
+                    .$sf
+                    ."sub {\n"
+                    .$gl
                     ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
                     ."    my \$I = A\.I;\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
-                    ."};\n";
+                    ."}"
+                    .$sa
+                    .";\n";
+            }
+            else {
+                C.sc.subpeel&&die"nonargs ha subpeel".ki$C
             }
 
             C.sc.dige = slm 12, dig C.c.s;
-            #sayyl "Ke on J.le.name  J.name  $s == $K $cv   - C.t";
-                #Rw stickwo + $C;
 
             $v->{$K}->{$cv}->{C.t} = $C;
         }
@@ -405,20 +360,35 @@ stickwo: |
 stwo: |
     my $A = Rw already + $am=In;
     my $I = A.I;
+    I.d&n,$A,{},$G,{};
+    I.d&An;
+    A.t&1 || warn "NO 1";
+    
     my $sel = [] if ar.want;
-    my $o;$o = sub { # not, nearly news (Tray n)
-        my ($n,$N) = @_;
+    Rw stear + $sel $A $I $n $N:_
+        for ref $N eq 'ARRAY' ? @$N : die"topray";
+    @{ar.want} = @$sel if $sel;
+    "and ..."
+    
+    
+stear: | # tentstring
+    my $A = {%$A};
+    my $C = {};
+    my $T = {};
+    A.s = $N;
+    $I = A.I;
+    I.d&n,$A,$C,$G,$T;
+    I.d&An;
+    A.t&2;
+    # n indentstring, N
         my $t;
-        my ($A,$C,$T) = ({},{},{});
-        I.d&n,$A,$C,$G,$T;
-        I.d&An;
         if (ref $N eq 'HASH') {
             my $sig = join ' ', sort keys %$N;
             $t .= "car: $sig" unless $sig eq 'c sc t y';
             %$C = %$N;
         }
         elsif (ref $N eq 'ARRAY' && !ref $N->[0]) { # feel terrain
-           I.d&4real,$N;
+           I.d&4fourreal,$N;
         }
         else {
            C.c.s = $N;
@@ -427,10 +397,10 @@ stwo: |
         
         my $s = Rw stickwo + $t $n $C;
         
-        
         if (my $wa = ar.want) {
             my $y;
             for my $try (@$wa) {
+            $DB::single = 1;
                 my @am = A.c->(@$try);
                 next if !@am;
                 $y++;
@@ -446,16 +416,14 @@ stwo: |
         else {
             saygr $s unless ar.q;
         }
+        
         if (my $z = C.sc.z) {
             for my $Z (@$z) {
                 last if ar.noz;
-                $o->("$n    ", $Z);
+                my $n = "$n    ";
+                Rw stear + $n $N:Z;
             }
         }
-    };
-    $o->($n,$_) for ref $N eq 'ARRAY' ? @$N : die"topray";
-    @{ar.want} = @$sel if $sel;
-    "and ..."
 Elvus: | # arbitrary in-J Elvi with thrust over, possibly   - c for J must be already seT
     my $Y = Rw El;
     my $oJ = ar.oJ || $J;
