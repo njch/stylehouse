@@ -21,7 +21,7 @@ MourmaZ: |
       and splat from A couplings
    ';
    
-already: |
+already: | # allready
     # note ar.*
     my $s = $ar;
     my $N = s.N;
@@ -43,7 +43,12 @@ already: |
     # ^ should then know how to v
     A.fl = ar.fl || {};
     A.I = {};
-    {
+    my $dont;
+    if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
+        A.I = $I;
+        $dont = 1;
+    }
+    unless ($dont) { # turning into some...
         ar.I = A.I;
         Rw I_Din;
         Rw C_C;
@@ -70,66 +75,6 @@ I_Din: |
         push @{A.M}, @{T.oM};
         1
     };
-I_Cr: | # work the corner
-    # kind of apply filters as they like to chew, ripping from string theirs, later congealing...
-    # maybewa u and n of the ym is the way way
-    # it doubles
-    I.Crey = sub { # work the y corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.y eq '') { # is or undef
-            C.y = {};
-        }
-        elsif (C.y =~ /^($NUM)$/) {
-            C.y = {cv=>$1};
-        }
-        elsif (C.y =~ /^($NUM)-($NUM)$/) {
-            C.y = {from=>$1,to=>$2};
-        }
-        else {die "strung ny: C.y".wdump $C};
-    };
-    I.Crec = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (!ar.c_is && C.c =~ I.peels) {
-            C.c = I.d&peel, C.c;
-        }
-        else {
-            C.c = {s => C.c};
-        }
-    };
-    I.Cresc = sub { # work the c corner
-        my ($A,$C,$G,$T) = @_;
-        if (C.sc eq '') {
-            C.sc = {};
-        }
-        elsif (C.sc =~ I.peels) {
-            C.sc = I.d&peel, C.sc;
-        }
-        else { die "nostr  C.sc    ".ki $C }
-    };
-C_C: |
-    I.accept = sub { # coinsciousness accept, v 1-2, OSC readex
-        my ($A,$C,$G,$T,$D) = @_;
-        return T.next = 1 unless I.d&Cngk,$D;
-    };
-    I.Cngk = sub {
-        my ($A,$C,$G,$T,$D) = @_;
-        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
-        return 1 if D.c.any;
-        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
-            my $v = [$C->{D.c.nk}->{D.c.gk}];
-            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
-            return $v;
-        }
-        die "nonnk".ki$D unless exists D.c.nk;
-        0;
-    };
-    I.extend = sub {
-        my ($A,$C,$G,$T,$s,$c) = @_;
-        while (my($k,$v) = each %$c) {
-            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
-        }
-    };
-    
 In: | # I I I
     my $N = ar.N||ar.C;
     
@@ -141,7 +86,8 @@ In: | # I I I
     # 
     
     aft {
-        $@||return;
+        # want to sus $@ and hang vectors of what, should be autoish
+        $@ || I.d&recycle && return;
         my $m = "J: J.name J.le.name";
         $m .= "\nC: ".ki I.nF.C;
         $m .= "\ns: ".wdump 3, $N unless length $m > 20;
@@ -203,66 +149,15 @@ In: | # I I I
         die "noJM";
     }
     
-I_D: |
-    I.Ci = sub { # 3 rip out of space
-        my ($A,$C,$G,$T,$s) = @_;
-        if (!ref $s) {
-            I.d&string,$s;
-        }
-        elsif (ref $s eq 'ARRAY') {
-            I.d&array,$s;
-        }
-        elsif (ref $s eq 'HASH') {
-            I.d&hash,$s;
-        }
-        else { die "mmtype:$s" }
-    };
-    I.hash = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        if (s.t && s.y && s.c) {
-            sayre "HASHIN no sc: ".ki $s if !s.sc;
-            %$C = %$s;
-            return;
-        }
-        # a Ci dome, In 3-4 looking at N[.+,{c}]
-           s.AZ ? I.d&AZu,s.AZ
-           : s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&EZu,s.EZ
-           : s.WZ ? I.d&WZu,s.WZ
-           : s.EC ? I.d&ECu,s.EC
-           : die 'hash: '.wdump($s);
-    };
-    I.array = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-            if (@$s == 1) {
-                my ($s) = @$s;
-                ref $s && die "1striong: ".wdump $s;
-                I.d&4string,$s
-            }
-            else {
-                I.d&4real,$s
-            }
-    };
-    I.string = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        die "string: $s";
-    };
-    I.Cr = sub { # 6 work the corner
-        my ($A,$C,$G,$T) = @_;
-        die"reft" if ref C.t;
-        I.d&Crey if !ref C.y;
-        I.d&Crec if !ref C.c;
-        I.d&Cresc if !ref C.sc;
-    };
 Einond: |
-    n ''=>1=>{W=>'SlideEater'}
-    
-    #qak
+    n ''=>''=>{W=>'IStuff'}
+    n ''=>''=>{W=>'SlideEater'}
+    n ''=>''=>{W=>'CGolf'}
+    n ''=>''=>{W=>'Servo'}
+
 SlideEater: |
-    u allcode
     u allacgts
     
-    # slide eater
     n Ci =>''=>{s=><<''},{code=>'In 12'}
         if (!ref $s) {
             I.d&string,$s;
@@ -282,21 +177,16 @@ SlideEater: |
         if (@$s == 1) {
             my ($s) = @$s;
             ref $s && die "array1ref: ".wdump $s;
-            I.d&4string,$s
+            I.d&fourstring,$s
         }
         else {
-            I.d&4real,$s
+            I.d&fourreal,$s
         }
     
     n hash =>''=>{s=><<''}
         return %$C = %$s if s.t && s.y && s.c;
         # some talking to self - how to C over exactly, the object could be live
-           s.AZ ? I.d&AZu,s.AZ
-           : s.MZ ? I.d&MZu,s.MZ
-           : s.EZ ? I.d&EZu,s.EZ
-           : s.WZ ? I.d&WZu,s.WZ
-           : s.EC ? I.d&ECu,s.EC
-           : die 'hash: '.wdump($s);
+        I.d&servehash,$s;
     
     n Cr =>''=>{s=><<''},{code=>'In 18'}
         die"reft" if ref C.t;
@@ -305,10 +195,70 @@ SlideEater: |
         I.d&Crec if !ref C.c;
         I.d&Cresc if !ref C.sc;
     
+    n Crey =>''=>{s=><<''}
+        C.y = C.y eq '' ? {}
+            : C.y =~ /^($NUM)$/
+            ? {cv=>$1}
+            : C.y =~ /^($NUM)-($NUM)$/
+            ? {from=>$1,to=>$2}
+            : die "strung ny: C.y".wdump $C;
+    
+    n Crec =>''=>{s=><<''}
+        C.c = C.c =~ I.peels ? I.d&peel,C.c
+          : {s => C.c};
+    
+    n Cresc =>''=>{s=><<''}
+        C.sc = C.sc eq '' ? {}
+            : C.sc =~ I.peels
+            ? I.d&peel,C.sc
+            : die "nostr  C.sc    ".ki $C
+    
     #e
-I_Ci: | # receive topu
-    $I->{'4string'} = sub { # barse
-        my ($A,$C,$G,$T,$s) = @_;
+IStuff: |
+    u allacgt
+
+    n d =>''=>{s=><<''},{subpeel=>1}
+        sub { # consumer of what it means to be deeply
+            my $s = shift;
+            # grease thje stomac
+            my $P = I.nF ||= {};
+            my $y = $I->{$s} || die "no way named '$s'";
+            $y->(P.A,P.C,P.G,P.T,@_);
+        };
+    
+    n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
+        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
+    
+    n z =>''=>{s=><<''}
+        push @{A.M}, @{T.oM};
+        1
+    
+    # some C inter
+    n accept =>''=>{s=><<''}
+        return T.next = 1 unless I.d&Cngk,$D;
+    
+    n Cngk =>''=>{s=><<''}
+        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        return 1 if D.c.any;
+        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
+            my $v = [$C->{D.c.nk}->{D.c.gk}];
+            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
+            return $v;
+        }
+        die "nonnk".ki$D unless exists D.c.nk;
+        0;
+    
+    n extend =>''=>{s=><<''},{acgt=>'s,c'}
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+        }
+
+    n recycle =>''=>{s=><<''}
+            G.drop.recycling->{A.J.id}->{A.am} = A.I;
+CGolf: |
+    u allacgts
+    
+    n fourstring =>''=>{s=><<''}
         # sticks out of usual c 5 hive of MZ/awarey things
         if ($s =~ /^\s*#?\s*MZ (.+)$/) {
            I.d&MZu, $1;
@@ -335,19 +285,19 @@ I_Ci: | # receive topu
                }
            }
         }
-    };
-    $I->{'4real'} = sub {
-        my ($A,$C,$G,$T,$s) = @_;
+    
+    n fourreal =>''=>{s=><<''}
         (C.t, C.y) = @$s;
         C.c  = $s->[2] if exists $s->[2];
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
         die"C.t from ".wdump $s if ref C.t; # dive
-    };
     
-    I.peels = qr/^[\{\%]/;
-    I.peel = sub { # simple as hash from string
-        my ($A,$C,$G,$T,$s) = @_;
+    n peels =>''=>{s=><<''},{subpeel=>1}
+        qr/^[\{\%]/;
+    
+    
+    n peel =>''=>{s=><<''}
         $s =~ s/^%// || 
             $s =~ s/^{// && $s =~ s/}$//
             || die "unpealable $s";
@@ -357,9 +307,22 @@ I_Ci: | # receive topu
             $c->{$k} = $v;
         }
         $c||{}
-    };
-    I.MZu = sub { # fl apply, strangely, meta zip oi, applu guvtion
+    
+    
+Servo: | # things over top of speech bubble in the c 5 liniarity
+    u allcode
+    u allacgts
+    
+    n servehash =>''=>{s=><<''}
         my ($A,$C,$G,$T,$s) = @_;
+          s.AZ ? I.d&AZu,s.AZ
+        : s.MZ ? I.d&MZu,s.MZ
+        : s.EZ ? I.d&EZu,s.EZ
+        : s.WZ ? I.d&WZu,s.WZ
+        : s.EC ? I.d&ECu,s.EC
+        : die 'hash: '.wdump($s);
+    
+    n MZu =>''=>{s=><<''}
         my $uM = sub {
             my ($k,$v) = @_;
             if (defined $v && $v eq '0') {
@@ -379,16 +342,13 @@ I_Ci: | # receive topu
             }
         }
         T.not = 1;
-    };
-    I.iZu = sub {
-        my ($A,$C,$G,$T,$s) = @_;
+    
+    n iZu =>''=>{s=><<''}
         my $way = 'muck';
         $way = 'fund' if $s =~ s/^\///;
         my $Z = Rw $way - $p:s $dclone=1;
-    };
-    I.EZu = sub {
-        my ($A,$C,$G,$T,$s) = @_;
-        
+    
+    n EZu =>''=>{s=><<''}
         my $Z = I.d&iZu,$s;
         for my $k (sort keys %$Z) {
             my $N = $Z->{$k};
@@ -396,10 +356,8 @@ I_Ci: | # receive topu
             Rw In $M:T.oM $N;
         }
         T.not = 1;
-    };
-    I.WZu = sub { # clomne N appends this N, width firstappend us
-        my ($A,$C,$G,$T,$s) = @_;
-         
+    
+    n WZu =>''=>{s=><<''}
         my $Z = I.d&iZu,$s;
         for my $k (sort keys %$Z) {
             my $s = $Z->{$k};
@@ -407,25 +365,25 @@ I_Ci: | # receive topu
             unshift @{A.N}, @$s;
         }
         T.not = 1;
-    };
-    I.ECu = sub { # extend C on the way in to another dome, magnetised into our M
+    
+    n ECu =>''=>{s=><<''}
+        # extend C on the way in to another dome, magnetised into our M
         # probably for collapsing roooves...
         # dumber than sc decompresphere & playing out
         # (is mailing itself further instructions, intro c, further lines)
         # an In persona, joining our M
         # push to dome
         # that must in  A
-        my ($A,$C,$G,$T,$s) = @_;
         ref $s eq 'ARRAY' || die;
         my ($N,$c) = @$s;
         # take 4s v             add 3s v         next 2 
         $N = [{MZ=>'wongui'}, {MZ=>{'3 doex'=>$c}}, @$N];
-        Rw In $J $M:T.oM $N;
-        #Rw stwo $J $n=wongui $N;
+        # and In could feel our light cone
+        Rw In $J:A.J $M:T.oM $N;
         # ^but instead push to A.N and A.No, the sister strand Whare Y Whare
         # and A walks through t&Y, d&Whare(6)
         # turns via n&ACGT
         # the time beams mapped... a W concat couldol
         T.not = 1;
-    };
+    
 
