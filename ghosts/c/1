@@ -475,16 +475,17 @@ SlideEater: | # liney schemery
         # some talking to self - how to C over exactly, the object could be live
         I.d&servehash,$s;
     
-    n Cr =>''=>{s=><<''},{code=>'In 18'}
+    n reasonlock =>''=>{s=><<''},{code=>'In 18'}
         die"reft" if ref C.t;
-        die"not" if !defined C.t||C.y||C.c;
-        I.d&Crey if !ref C.y;
-        I.d&Crec if !ref C.c;
-        I.d&Cresc if !ref C.sc;
-        die "not: ".wdump 4,[$N, $C]
-           if !ref C.y || !C.y || !defined C.t;
+        # uis a nested wave
+        # allow much manufold
+        I.d&reny if !ref C.y;
+        I.d&renc if !ref C.c;
+        I.d&rensc if !ref C.sc;
+        (3==grep{ref}map{$C->{$_}}y=>c=>'sc') &&
+        defined C.t || die "reaso fail".wdump $C;
     
-    n Crey =>''=>{s=><<''}
+    n reny =>''=>{s=><<''}
         C.y = C.y eq '' ? {}
             : C.y =~ /^($NUM)$/
             ? {cv=>$1}
@@ -492,11 +493,11 @@ SlideEater: | # liney schemery
             ? {from=>$1,to=>$2}
             : die "strung ny: C.y".wdump $C;
     
-    n Crec =>''=>{s=><<''}
+    n renc =>''=>{s=><<''}
         C.c = C.c =~ I.peels ? I.d&peel,C.c
           : {s => C.c};
     
-    n Cresc =>''=>{s=><<''}
+    n rensc =>''=>{s=><<''}
         C.sc = C.sc eq '' ? {}
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
@@ -543,7 +544,6 @@ CGolf: |
     
     n peels =>''=>{s=><<''},{subpeel=>1}
         qr/^[\{\%]/;
-    
     
     n peel =>''=>{s=><<''}
         $s =~ s/^%// || 
