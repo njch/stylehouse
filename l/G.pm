@@ -2028,8 +2028,8 @@ sub deaccum {
 
 sub slim {
     my ($f,$t,$c) = @_;
-    ($f,$t,$c) = (40,40,$f) if $f && !$t && !$c;
-    ($f,$t,$c) = ($f,$f,$t) if $t && $f && !$c;
+    ($f,$t,$c) = (40,40,$f) if defined $f && !defined $t && !defined $c;
+    ($f,$t,$c) = ($f,$f,$t) if defined $t && defined $f && !defined $c;
     $c = ($c=~/^(.{$t})/s)[0]."..".(length($c) - $f) if length($c) > $f;
     $c
 }
