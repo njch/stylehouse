@@ -35,22 +35,18 @@ Arange: |
 WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     my $A = Rw Arange;
     
-    if (my $fo = J.A.IIII) {
-        my $to = [map{G.T->{$_}}
-        # wired up some hypnos J.A.I into G.T.$W
-        # then in there each W/ is supposedly W overlay (way)
+    my $iKo = {};
+    if (my $fo = J.A.IIII) { # collasps also J.A.I?
+        my $to = [map { G.T->{$_} } @$fo];
+        iKo.i = join" + ", map{defined$_?ref$_?"$_":die("nonrefi? $_"):"UNDEF"}@$to;
+        iKo.o = $to;
+        # wired up some hypnocodes from other J.A.I into G.T.$W
+        # then in each there each W is supposedly W overlay (way)
+        # and theres I/1/n,An->A.t auxi, which shall wind us up to 1
         # but its a bundle of wires here, about 8
-        my $ot = {};
-        for my $W (@$fo) {
-            my $s = G.T->{$W};
-            $ot->{$W} = $s if $s;
-        }
-        # if W/* hashes are all same skji/recycle
+        # if top level hashes are all same skji/recycle, some other's uCon is trusted
+        # G.T is a switching table
         # together and wind up to 1...
-        say "Fo JAIIII ". wdump $ot;
-        use Term::ReadKey;
-        ($wchar, $hchar, $wpixels, $hpixels) = GetTerminalSize();
-        sayre "Termi : $hchar x $wchar";
     }
     # collasp J.A.IIII via G.T to J.A.III hashes-that-change,
     # to be stitched K/cv/t 
@@ -61,29 +57,80 @@ WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     # there's like a lesser I that am before I am
     A.fl = ar.fl || {};
     A.I = {};
-    
     my $dont;
     if (my $I = delete G.drop.recycling->{A.J.id}->{A.am}) {
-        # hit/miss to analyse, when I drops in completely we cna drop:
-        say "Recycleed!";
-        A.I = $I;
-        $dont = 1;
-        A.cv = 0.1;
-    } 
-    unless ($dont) { # turning into some...
-        ar.I = A.I;
-        Rw I_Din;
-        Rw C_C;
-        Rw C_E;
-        Rw I_D;
-        Rw I_Ci;
-        Rw I_Cr;
+        if (I.Ii eq iKo.i) {
+            # hit/miss to analyse, when I drops in completely we cna drop:
+            say "Recycleed! I.Ii continu";
+            A.I = $I;
+            $dont = 1;
+            A.cv = 0.1;
+        }
+        else {
+            sayre "Recycloped, Diff I.Ii  --  iKo.i";
+        }
     }
+    if ($dont) {
+        my $I = A.I||die"basenoI";
+        ref $I->{$_} eq 'CODE' || die "baseno I $_" for 'n','An'; # must A.t
+        return $I;
+    }
+    
+    Rw Mobile $A $iKo;
+    
+    sayre " Must compile I ! ".wdump 4, [J.A.I, J.A.II, A.I, $iKo];
+    
     $A
+Essen: |
+    I.n = sub { # A qcui
+        my ($A,$C,$G,$T,$AA,$CC,$GG,$TT) = @_;
+        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
+    };
+    I.d = sub { # be, sub
+        my $s = shift;
+        my $P = I.nF ||= {};
+        my $y = $I->{$s} || die "no way named '$s'";
+        $y->(P.A,P.C,P.G,P.T,@_);
+    };
+Essentall: |
+    I.An = sub { # A within faller # wants to I 2, throw subs on A directly...
+        my ($A,$C,$G,$T) = @_;
+        A.note = {}; # pinging csc
+        A.c = sub { die "An ein!" };
+        A.t = sub { I.d&t,@_ };
+        $A
+    };
+    I.t = sub {
+        my ($A,$C,$G,$T) = splice @_,0,4;
+        my ($cv,$K) = reverse @_;
+        @_>2 && die "_ _";
+        $K ||= A.am||die"noam A_t";
+        my $i = # much mergey extendo rubble, 
+             $G->gip($A,'J/A/I') || {};
+        my $c = 0+("0.".$cv);
+        die "Calling Essentall A.t->I.t for $c" if $c > 0.1;
+        die "nowlow $c" if $c < 0.1;
+        say "A.J.name  ex $i up to  $c";
+        A.cv = $c;
+    };
+
+Essenate: | # I.ex
+Mobile: | # dangling self
+    # there's W managed for us, create the tiniest consume starter:
+    my $I = A.I;
+    die "hasmo".ki$I if keys %$I;
+    say wdump 4, $iKo;
+    Rw Essen $I;
+    Rw Essentall $I;
+    I.d&n,$A,{},$G,{};
+    I.d&An;
+    A.t&1;
+    # n - take A
+    # An - furbish A.t
+    # A.t - crawl (in general) to 1
 Indo: |
     sayyl "INDO! J.name";
     my $A = Rw WeBase In;
-    #sayyl "Wi! ".wdump 2, A.I;
 Wild: |
     J.A.IIII = ['Hypo'];
     J.A.Indo = 1;
