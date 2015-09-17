@@ -83,6 +83,7 @@ WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     
     # c I with J.A.II
     my $II = Rw collaspII $A;
+    # II.ooI.st = changed things 
     
     if ($I) {
         if (I.Ii eq II.Ii) {
@@ -133,11 +134,12 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     # we dive into always, should form tidy tree with D chaos at tips
     # the screening space saver, the no way out-er
     my $N = [@C];
-    Rw spIII $A $II $N K/cv;
+    Rw spIII $A $II $N K/cv/t;
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};
     ooI.mo ||= $ooI;
+    delete ooI.st if ooI.mo eq $ooI;
     my $m = [@{ar.m}];
     @$m = split '/', $m->[0] if @$m == 1;
     my $n = shift @$m;
@@ -159,24 +161,25 @@ spIII: |
         if (@$m) {
             my $III = $II->{$K} ||= {};
             my $oI = ooI.K->{$K} ||= {mo=>ooI.mo};
-            oI.ins = (ooI.ins&&"$n=ooI.ins/")."$K";
+            oI.ins = (ooI.ins&&"ooI.ins/")."$K";
             my $N = [
                 map { {t=>_.t,c=>{s=>_.c.s->{$K}}} }
                 grep {exists _.c.s->{$K}}
                 @$N
             ];
             my $d = ar.d + 1;
-            say "Throw ooI.ins   >>> $K";
+            #say "Throw ooI.ins   >>> $K";
             
             Rw spIII $A $II:III $ooI:oI $N $m $d;
         }
         else {
-           
-            map {
-                sayyl "got   ooI.ins   === $K        for _.t";
+            my @C = grep {exists _.c.s->{$K}} @$N;
+            die "manyC for $K" if @C > 1;
+            for (@C) {
+                #sayyl "got   ooI.ins   === $K        for _.t";
                 ooI.mo.st->{ooI.ins}->{_.t}->{$K} =
-                $II->{$K} = _.c.s;
-            } grep {exists _.c.s->{$K}} @$N;
+                    $II->{$K} = _.c.s->{$K};
+            } 
             
         }
     }
@@ -268,12 +271,18 @@ SNat: | # I.ex # it's in that, bubbles
 Indo: |
     sayyl "INDO! J.name";
     my $A = Rw WeBase Collarspew;
+    my $W = A.J.A.II.W->{'0.4'};
+    W.Indi || die"noindi";
+    Rw Indi + $A;
+    
+    
     my $I = A.I;
     #I.d&n,$A,{},$G,{};
     #I.d&An;
     #A.t&1;
-    
-    sayyl wdump 4, [A.I, J.A.II];
+    #A.cv = 0.3
+    #A.t&4;
+    sayyl wdump 4, [A.I, ''];
     
     
     
@@ -295,6 +304,7 @@ Ind: | # basics
     n ''=>''=>{W=>'CGolf'}
     n ''=>''=>{W=>'Csys'}
     n ''=>''=>{W=>'Servo'}
+    n ''=>''=>{W=>'Indiy'}
     # ^^, allcode:
     n Indi=>''=>{s=><<''},{code=>'W 4'}
         my $A = Rw WeBase In;
@@ -317,8 +327,10 @@ Ind: | # basics
             I.d&z && next if T.not;
             # then the things todo
             A.t&6;
-            # elabourate C,
-            # we want to throw our next II etc (transmit C and II)
+            # elabourate C, seeming to chew
+            # we want to throw our next II etc
+            # transmit A,C via AZ, which and A.cv via AZ and A.II)
+            my $C = I.nF.C;
             for my $k (sort keys %{A.fl}) {
                 my $v = A.fl->{$k};
                 $k = $2 if $k =~ /^(\d+) (.+)$/;
@@ -343,6 +355,33 @@ Ind: | # basics
         } else {
             die "noJM";
         }
+Indiy: |
+    
+    n moy =>''=>{s=><<''}
+        # groups, spread the moise over A
+        my $i = A.mo.y->{$s}||die"no$s";
+        my $is = $i->{C.y.p}; # things in our C's pool
+        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
+    
+    n severato =>''=>{s=><<''}
+        if (my $z = T.Z) {
+            my ($lo) = sort keys %$z; # next one
+            @{T.oM} = ();
+            push @{A.mo.re->{$lo} ||= []}, [$A,$C];
+            T.sever = 1;
+        }
+        if (!@{A.mo.N}) {
+            my $ats = A.mo.re || {};
+            my @wa = sort keys %$ats;
+            my ($lo) = @wa;
+            if ($lo) {
+                my $ay = delete $ats->{$lo};
+                my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+                #sayyl "Loop A.cv > $lo x ".@N;
+                push @{A.mo.N}, @N;
+            }
+        }
+    
 already: | # allready
     # note ar.*
     my $s = $ar;
@@ -502,31 +541,6 @@ KnowTime: | # dome props
         A.t = sub { I.d&t,@_; };
         $A
     
-    n moy =>''=>{s=><<''}
-        # groups, spread the moise over A
-        my $i = A.mo.y->{$s}||die"no$s";
-        my $is = $i->{C.y.p}; # things in our C's pool
-        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
-    
-    n severato =>''=>{s=><<''}
-        if (my $z = T.Z) {
-            my ($lo) = sort keys %$z; # next one
-            @{T.oM} = ();
-            push @{A.mo.re->{$lo} ||= []}, [$A,$C];
-            T.sever = 1;
-        }
-        if (!@{A.mo.N}) {
-            my $ats = A.mo.re || {};
-            my @wa = sort keys %$ats;
-            my ($lo) = @wa;
-            if ($lo) {
-                my $ay = delete $ats->{$lo};
-                my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                #sayyl "Loop A.cv > $lo x ".@N;
-                push @{A.mo.N}, @N;
-            }
-        }
-    
     n t =>''=>{s=><<''},{acgt=>'K,cv'}
         ($K,$cv) = (A.am,$K) if !$cv && $K;
         die "K$K cv$cv" unless $K && $cv;
@@ -572,7 +586,7 @@ KnowTime: | # dome props
                 else {die"nof"}
             }
             I.d&severato if $cv == 7;
-            undef $ncv if T.sever;
+            undef $ncv if T.sever; # hmm
             unless ($dont) {
                 # break off at 1,2
                 I.d&ex,$i,$K=>$cv

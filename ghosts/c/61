@@ -82,6 +82,7 @@ Gto: |
         my ($pin,$ar)=@_;
         my $D;
         D.point = $pin;
+        
         if (my $C = ar.__D) {
             delete ar.__D;
             D.bab = C.c.s || die "N s".ki $C;
@@ -97,6 +98,7 @@ Gto: |
     G.w = sub {
         my ($pin,$ar)=@_;
         my $D = $mkD->($pin,$ar);
+        
         if (!defined D.bab) {
             D.bab = G.way->{$pin};
         }
@@ -106,6 +108,22 @@ Gto: |
                 D.bab = fwind(G.way,$pin);
             }
         }
+        
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                sayyl "Fdoun W $c! c.t".ki $c;
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = $mkD->($pin,$ar);
+                }
+            }
+        }
+        
+        
         if (!defined D.bab) {
             die "Not findin D.talk";
             return;
