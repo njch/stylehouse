@@ -48,12 +48,13 @@ Noodles: |
     # then we could I when doing:
     my $Y = Rw Elvus $J Pre;
     # providing the source pretend of c/sc ray anarchy
-    
+    # v to ^
     Y.il = Y.tv->{"0.9\t/"}||Y.tv->{"0.9\t".J.name}
       ||die"noroot J.name  ".wdump 2,[sort keys %{Y.tv}];
-    my @to = grep { $_ ne Y.il } @{Y.vs};
-    push @to, Y.il;
-    # coordinate / to ajup chunks of @to
+    
+    my $N = [grep { $_ ne Y.il } @{Y.vs}];
+    push @$N, Y.il;
+    A.N = [@$N];
     
     my $hup = sub {
         my $C = shift;
@@ -64,11 +65,12 @@ Noodles: |
     
     my $V = Rw El Duv;
     V.os = [];
-    my $twof = 0;
+    A.twof = 0; # made it past 2
     my $rvl;
-    for my $C (@to) {
+    while (@{A.N}) {
+        my $C = shift @{A.N};
         ref C.y || die"nospace".ki $C;
-        ref C.y || next;
+        ref C.y || sayre("Weird".ki$C) && next;
         
         my $k = C.y.cv."\t".C.t;
         push @{V.os}, $k unless $C eq Y.il;
@@ -77,7 +79,7 @@ Noodles: |
         # if change is, or just diff in perceiving it
         Rw diffre $J $C $k $Y $V;
         
-        $twof++;
+        A.twof++;
         
         # O
         my $lv = {k=>$k};
@@ -127,10 +129,13 @@ Noodles: |
             $rvl = $vl;
         }
     }
-    
-    if (J.V) {
-        my $o = $twof;
-        my $t = @to;
+    Rw TNews $A $N $J $V $rvl
+        if J.V;
+    $V
+    # bloop
+TNews: |
+        my $o = A.twof;
+        my $t = @$N;
         my $ine = Rw ratio $o $t;
         my $rv = V.rv;
         my $v = 0;
@@ -152,10 +157,6 @@ Noodles: |
                     [rvl.i,rv.i,rv.c,rv.sc] if J.V||$v;
             }
        }
-    }
-    #sayyl "J.most.J.name /// J.name rv aj" if J.V;
-    $V
-    # bloop
 VOD: |
         my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
         my $san = {map{$_=>1}keys %{lv.do}};

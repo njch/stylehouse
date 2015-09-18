@@ -63,13 +63,17 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
         }
     }
     my $Ii = join " + ", map{"_.t:_.c.s"} @C;
-    return sayre("Same A.J.name A.am! II.Ii") if II.Ii eq $Ii;
-    sayre "Diffi  II.Ii eq $Ii";
+    my $was = II.Ii;
+    if ($Ii eq $was) {
+        saygr "Same A.talk! II.Ii  ".F_delta;
+        return
+    }
     II.Ii = $Ii;
     # we dive into always, should form tidy tree with D chaos at tips
     # the screening space saver, the no way out-er
     my $N = [@C];
     Rw spIII $A $II $N K/cv/t;
+    sayre "Diffi  II.Ii eq $Ii  ".F_delta;
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};
@@ -312,6 +316,8 @@ uCon: |
       : sayre "A.talk: New ! rv.i";
     
     Rw uThree $A $J $Y $qq $oo $rv $N;
+
+    say "Reckonon J.name: ".F_delta();
 uThree: |
     @$N = Rw InCoil $J:oo $N wongui _;
     @$N = Rw InCoil $J:oo $N wantcode _;
@@ -327,13 +333,15 @@ uThree: |
     # then A.Ii sees J.A.I (+more, concat) hashrefs i aj like
     # which is a stilled wave of vectors
     # the wave can catch up to itself
-    say "Reckonon J.name: ".F_delta();
     # the usual plywood spiral peel
     # made {s=>$s,ply=>'K/cv/t:D',grp=>'K/cv&c,sc,gr'}
-    my $scby = "gro";
-    my $bydef = "^";
     # climb the limbs in falling A.mo.y./..
     # you are suggesting I use more noisey code
+    saygr
+        Rw TreeD $s $scby=gro;
+TreeD: |
+    my $bydef = "^";
+    my @say;
     for my $K (sort keys %$s) {
         my $vs = $s->{$K};
         for my $cv (sort keys %$vs) {
@@ -347,11 +355,12 @@ uThree: |
             }
             for my $gk (sort keys %$g) {
                 my $ts = $g->{$gk};
-                saygr sprintf ' %-9s %-6s %-18s %27s',
+                push @say, sprintf ' %-9s %-6s %-18s %27s',
                     $K, $cv, $gk, join(",", sort keys %$ts);
             }
         }
     }
+    join "\n", @say
 InCoil: | # In wild packer # slipping an II in, aggregator following alllist
    ar.v ||= {};
    ar.M ||= [];
