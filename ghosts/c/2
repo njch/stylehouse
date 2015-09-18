@@ -82,17 +82,16 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
         }
     }
     my $Ii = join " + ", map{"_.t:_.c.s"} @C;
-    my $was = II.Ii;
-    if ($Ii eq $was) {
-        saygr "Same A.talk! II.Ii  ".F_delta;
-        return
-    }
+    $Ii eq II.Ii && return;
     II.Ii = $Ii;
     # we dive into always, should form tidy tree with D chaos at tips
     # the screening space saver, the no way out-er
     my $N = [@C];
-    Rw spIII $A $II $N K/cv/t;
-    sayre "Diffi  II.Ii eq $Ii  ".F_delta;
+    my $s = {};
+    Rw spIII $A $II $N K/cv/t $s;
+    saybl
+        Rw TreeD $s $scby=gro;
+    say "Spidered A.talk: ".F_delta;
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};
@@ -105,7 +104,7 @@ spIII: |
     @$N||die"noNsp";
     
     my $Ii = join " + ", map{"_.t:_.c.s"} @$N;
-    return if $Ii eq ooI.Ii;
+    return say "ooI.ins stabilised" if $Ii eq ooI.Ii;
     ooI.Ii = $Ii;
     
     %$II = ();
@@ -119,6 +118,7 @@ spIII: |
         if (@$m) {
             my $III = $II->{$K} ||= {};
             my $oI = ooI.K->{$K} ||= {mo=>ooI.mo};
+            my $S = $s->{$K} ||= {};
             oI.ins = (ooI.ins&&"ooI.ins/")."$K";
             my $N = [
                 map { {t=>_.t,c=>{s=>_.c.s->{$K}}} }
@@ -128,13 +128,14 @@ spIII: |
             my $d = ar.d + 1;
             #say "Throw ooI.ins   >>> $K";
             
-            Rw spIII $A $II:III $ooI:oI $N $m $d;
+            Rw spIII $A $II:III $ooI:oI $N $m $d $s:S;
         }
         else {
             my @C = grep {exists _.c.s->{$K}} @$N;
             die "manyC for $K" if @C > 1;
             for (@C) {
                 #sayyl "got   ooI.ins   === $K        for _.t";
+                $s->{$K} =
                 ooI.mo.st->{ooI.ins}->{_.t}->{$K} =
                     $II->{$K} = _.c.s->{$K};
             } 
@@ -307,7 +308,7 @@ uCon: |
     # three and two circles
     # get that banjo
     
-    return say "We know A.talk" if J.A.Ii eq rv.i;
+    J.A.Ii eq rv.i && return say "uCon ---- A.talk: ".F_delta();
     
     my $N = [@{rv.c}];
     
@@ -342,6 +343,7 @@ uThree: |
     saygr
         Rw TreeD $s $scby=gro;
 TreeD: |
+    # $scby
     my $bydef = "^";
     my @say;
     for my $K (sort keys %$s) {
