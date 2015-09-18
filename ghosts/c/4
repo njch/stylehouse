@@ -22,8 +22,32 @@ allacgt: |
 onlycode: |
     n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
         T.last = 1 unless C.sc.code;
-
-
+babsubrip: |
+            my $l = oA.subline;
+            $l -= 4; # sub head lines
+            my @l = split "\n", D.bab;
+            my $st = $l[$l];
+            if ($st =~ /s=><<''/) {
+                $st =~ /^\S/ || die "first line start space: $st";
+                $l++;
+                my $ind;
+                my @up;
+                while (1) {
+                    my $st = $l[$l];
+                    last if !$st =~ /\S/;
+                    $ind = $1 if !defined $ind
+                        && ($st =~ /^(    ).*\S+/ || die "no start ind $st");
+                    $st =~ /^$ind(.+)$/ || last;
+                    push @up, $1;
+                    $l++;
+                }
+                my $co = join '', map{"$_\n"} @up;
+                $co =~ s/\n\s+\.\n/\n\n/sg;
+                @$N == 1 || die "allcode in swa";
+                my $c = $N->[0]->[2];
+                die "Swap ".wdump [c.s=>FOR=>$co] unless split("\n", c.s) == @up;
+                c.s = $co;
+            }
 oJ4: | # J.A remains, A transitory  - A.time is to couple it like I.in
     J.A ||= {first=>hitime()};
     # everytime stuff:
