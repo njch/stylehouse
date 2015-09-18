@@ -124,6 +124,94 @@ spIII: |
         II.Ii = $Ii;
         II.ooI = $ooI;
     }
+Gto: |
+    my $G = $G;
+    G.name = 'thouG';
+    my $mkD = sub {
+        my ($pin,$ar)=@_;
+        my $D;
+        D.point = $pin;
+        
+        if (my $C = ar.__D) {
+            delete ar.__D;
+            D.bab = C.c.s || die "N s".ki $C;
+            D.noise .= C.sc.dige if C.sc.dige;
+            D.Verb = 1;
+        }
+        D.ar = $ar;
+        D.name = join ' ', D.point, sort keys %{D.ar};
+        D.sign = "Z";
+        D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
+        $D;
+    };
+    G.w = sub {
+        my ($pin,$ar)=@_;
+        my $D = $mkD->($pin,$ar);
+        
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
+        if (!defined D.bab) {
+            if ($pin =~ /\//) {
+                #say "windshot: $pin" unless $pin =~ /^pi/;
+                D.bab = fwind(G.way,$pin);
+            }
+        }
+        
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = $mkD->($pin,$ar);
+                }
+            }
+        }
+        
+        if (!defined D.bab) {
+            die "Not findin D.talk";
+            return;
+        }
+        
+        my $Z = $G->Doming($D);
+        G.randomtask->() if G.randomtask;
+        my $r; eval { $r = [ $G->D($D) ] };
+        $G->Done($Z);
+      
+        if ($@) {
+            my $ne = "Z Z.inter\n$@";
+            $@ = $ne;
+            D.nodie || die $@;
+            $@ = "";
+        }
+        return wantarray ? @$r : $r->[0];
+    };
+    $G
+Jto: |
+    my $J;
+    J.id = mkuid;
+    J.name = ar.name || shift @{delete ar.m};
+    J.bb = {};
+
+    J.le = ar.le if ar.le;
+    J.most.J = $J;
+    J.most.mody = 'mani';
+    J.most.eo = 'Yesui';
+    J.most.wq = 1;
+    
+    # GONERS
+    Rw suJ $J;
+    Rw Jup $J;
+    # 
+    
+    n J.name, 0.9, J.name, {tag=>J.name,id=>J.id}
+    
+    Rw Viu $J;
+    
+    return $J;
 Viu: | # u/n/m pinging uCon, setup part Jto
     my $eu = sub { J.uS = 1 };
     my $unu = sub {
@@ -298,28 +386,6 @@ J5: |
    my $i = Jn('','',$r);
    my ($s) = @{i.is};
    return s.sc.J||die "no sc J";
-Jto: |
-    my $J;
-    J.id = mkuid;
-    J.name = ar.name || shift @{delete ar.m};
-    J.bb = {};
-
-    J.le = ar.le if ar.le;
-    J.most.J = $J;
-    J.most.mody = 'mani';
-    J.most.eo = 'Yesui';
-    J.most.wq = 1;
-    
-    # GONERS
-    Rw suJ $J;
-    Rw Jup $J;
-    # 
-    
-    n J.name, 0.9, J.name, {tag=>J.name,id=>J.id}
-    
-    Rw Viu $J;
-    
-    return $J;
 Nbz: | # receiver of buzzed out planes of N (C)   # peeler futuro, forte arbiter # suJ cloned  # other is A.jr
     J.tt = 1;
     J.bz = sub { # the cv=>t=>style r
