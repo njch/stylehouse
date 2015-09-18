@@ -134,104 +134,104 @@ Noodles: |
     $V
     # bloop
 TNews: |
-        my $o = A.twof;
-        my $t = @$N;
-        my $ine = Rw ratio $o $t;
-        my $rv = V.rv;
-        my $v = 0;
-        if (rvl.i eq rv.i) {
-            say "A.talk: Same" if J.V||$v;
+    my $o = A.twof;
+    my $t = @$N;
+    my $ine = Rw ratio $o $t;
+    my $rv = V.rv;
+    my $v = 0;
+    if (rvl.i eq rv.i) {
+        say "A.talk: Same" if J.V||$v;
+    }
+    else {
+        V.i++;
+        # maybe 2 could see synapalife trustworthiness in V.ii moves
+        if (rvl.c eq rv.c) {
+            my $ray = Rw scd $ov:rvl $iv:rv;
+
+            #say "sc gr: ". wdump 1, $ray;
+            sayyl "A.talk: GROWTH! ".wdump 22, $ray if J.V||$v;
         }
         else {
-            V.i++;
-            # maybe 2 could see synapalife trustworthiness in V.ii moves
-            if (rvl.c eq rv.c) {
-                my $ray = Rw scd $ov:rvl $iv:rv;
-
-                #say "sc gr: ". wdump 1, $ray;
-                sayyl "A.talk: GROWTH! ".wdump 22, $ray if J.V||$v;
-            }
-            else {
-                my $idd = V.i == 1 ? 6 : 15;
-                say "A.talk: New! ".wdump $idd,
-                    [rvl.i,rv.i,rv.c,rv.sc] if J.V||$v;
-            }
-       }
+            my $idd = V.i == 1 ? 6 : 15;
+            say "A.talk: New! ".wdump $idd,
+                [rvl.i,rv.i,rv.c,rv.sc] if J.V||$v;
+        }
+   }
 VOD: |
-        my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
-        my $san = {map{$_=>1}keys %{lv.do}};
-        
-        my $ded = [];
-        my $z = [];
-        # occasionally wants to add/subtract from the thing
-        # the whole sending rms vs moving the remainders
-        # also if re-c desired soon, factor vortex
-        if (my $go = lv.od.go) {
-            for my $ea (sort keys %$go) {
-                my $ov = $go->{$ea};
-                ref ov.c || die "noovc";
-                my $oov = vl.do->{$ea} if $vl;
-                $ov eq $oov || die "difoov $ov, $oov";
-                $san->{$ea} && die " $ea goes but still in do..";
-                if (!ov.rmnsc) {
-                    lv.op.V->{$ea} = 1 && die " wtf";
-                }
-                push @$ded, ov.rmnsc;
+    my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
+    my $san = {map{$_=>1}keys %{lv.do}};
+    
+    my $ded = [];
+    my $z = [];
+    # occasionally wants to add/subtract from the thing
+    # the whole sending rms vs moving the remainders
+    # also if re-c desired soon, factor vortex
+    if (my $go = lv.od.go) {
+        for my $ea (sort keys %$go) {
+            my $ov = $go->{$ea};
+            ref ov.c || die "noovc";
+            my $oov = vl.do->{$ea} if $vl;
+            $ov eq $oov || die "difoov $ov, $oov";
+            $san->{$ea} && die " $ea goes but still in do..";
+            if (!ov.rmnsc) {
+                lv.op.V->{$ea} = 1 && die " wtf";
             }
+            push @$ded, ov.rmnsc;
         }
+    }
+    
+    my $left;
+    for my $ea (@each) {
+        delete $san->{$ea};
+        my $iv = lv.do->{$ea}||die;
+        my $ov = vl.do->{$ea} if $vl;
         
-        my $left;
-        for my $ea (@each) {
-            delete $san->{$ea};
-            my $iv = lv.do->{$ea}||die;
-            my $ov = vl.do->{$ea} if $vl;
+        if (lv.od.new->{$ea}) {
+            $ov && die "new had ov";
+            if ($left && left.grab) {
+                push @$z, left.grab if lv.od.ll->{left.k};
+                # om lv.prepend(iv) until one
+                # then last z/c:el:* gives iv.appendAfter(left)
+                # chuck in the el:8 if we skip over anything
+                # ie if left is od.ll this round...
+                # can have no el:8 and switch everything else out
+            }
+            push @$z, grep{defined} @{iv.c}, @{iv.sc};
+        }
+        elsif (lv.od.gr->{$ea}) {
+            $ov || die "novodo $ea";
+            iv.c eq ov.c || die "wasn't satbv c";
+            my $ray = Rw scd $ov $iv;
+            sayyl "gr $ea        ".ki $ray if J.V;
             
-            if (lv.od.new->{$ea}) {
-                $ov && die "new had ov";
-                if ($left && left.grab) {
-                    push @$z, left.grab if lv.od.ll->{left.k};
-                    # om lv.prepend(iv) until one
-                    # then last z/c:el:* gives iv.appendAfter(left)
-                    # chuck in the el:8 if we skip over anything
-                    # ie if left is od.ll this round...
-                    # can have no el:8 and switch everything else out
-                }
-                push @$z, grep{defined} @{iv.c}, @{iv.sc};
-            }
-            elsif (lv.od.gr->{$ea}) {
-                $ov || die "novodo $ea";
-                iv.c eq ov.c || die "wasn't satbv c";
-                my $ray = Rw scd $ov $iv;
-                sayyl "gr $ea        ".ki $ray if J.V;
-                
-                push @$z, @{ray.z};
-                
-            }
-            elsif (lv.od.over->{$ea}) {
-                sayyl "OVER $ea";
-                lv.selfs || die "no way to...";
-                # el:1 will replace the old by t/y or something
-                # chuck ids on everything?
-                
-                push @$z, grep{defined} @{iv.c}, @{iv.sc};
-            }
-            elsif (lv.od.ll->{$ea}) {
-                #say "keep $ea" if J.V;
-            }
-            else {die "wtf $ea "}
-            $left = $iv;
+            push @$z, @{ray.z};
+            
         }
-        my @have = map { keys %{lv.od->{$_}} } grep {$_ ne "go"} keys %{lv.od};
-        my $ha = {map{$_=>1}@have};
-        delete $ha->{$_} for @each;
-        die "difs".wdump $ha if keys %$ha;
-        die "!!! forgot $_" for keys %$san;
-        
-        unshift @$z, @$ded if @$ded;
-        
-        @$z = () if C.sc.J && $J eq C.sc.J;
-        
-        ne.sc.z = $z if @$z;
+        elsif (lv.od.over->{$ea}) {
+            sayyl "OVER $ea";
+            lv.selfs || die "no way to...";
+            # el:1 will replace the old by t/y or something
+            # chuck ids on everything?
+            
+            push @$z, grep{defined} @{iv.c}, @{iv.sc};
+        }
+        elsif (lv.od.ll->{$ea}) {
+            #say "keep $ea" if J.V;
+        }
+        else {die "wtf $ea "}
+        $left = $iv;
+    }
+    my @have = map { keys %{lv.od->{$_}} } grep {$_ ne "go"} keys %{lv.od};
+    my $ha = {map{$_=>1}@have};
+    delete $ha->{$_} for @each;
+    die "difs".wdump $ha if keys %$ha;
+    die "!!! forgot $_" for keys %$san;
+    
+    unshift @$z, @$ded if @$ded;
+    
+    @$z = () if C.sc.J && $J eq C.sc.J;
+    
+    ne.sc.z = $z if @$z;
 OMP: |
     my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;

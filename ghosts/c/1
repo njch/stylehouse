@@ -220,54 +220,54 @@ KnowTime: | # dome props
     # y
 SNat: | # I.ex # it's in that, bubbles 
     # baseism
-        my $s = {};
-        my $c = 0+("0.".$cv);
-        my $talk = "A.talk: $K A.cv > $c --- C.t ";
-        my $aim = {$K=>1};
-        aim.I = 1 if $aim->{A.am};
-        for my $k (sort keys %$i) {
-            my $ii = $i->{$k};
-            
-            ref $ii ? die "wei $k=$ii" : next
-                if ref $ii ne 'HASH';
-            $aim->{$k} || next;
-            
-            for my $vc (sort keys %$ii) {
-                my $iii = $ii->{$vc};
-                die unless $vc < 1;
-                next if $vc <= A.cv;
-                next if $vc > $c;
-                for my $ik (sort keys %$iii) {
-                    my $D = $iii->{$ik};
-                    die if D.sc.gk;
-                    my $act;
-                    my $dont;
-                    if ($k ne 'I' && D.sc.acgt) {
-                        $act = 1;
-                        $dont = 1 if exists A.I->{D.t};
-                    }
-                    $s->{$k}->{$vc}->{$ik} = $D;
-                    my $sep = $act ? "----" : ">>>>";
-                    sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ". ki D.sc
-                        if A.J.V;
-                    unless ($dont) {
-                        my $paw = join"_",'',$k,$vc,D.t;
-                        $paw =~ s/\W//g;
-                        Rw $paw $A $C $G $T $__D:D;
-                    }
-                    # non-I acgt means some expressed tick of the creature
-                    # as osc accesses
-                    # should exude spines, have 0.9s in oo awaiting
-                    # where nodes want to unify to is another osc trick
-                    # cna get the fingers picking through fillaments
-                    if ($act) {
-                        D.sc.acgt eq 's'||die "nonacgts".ki $D;
-                        exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
-                        I.d&D.t,A.s;
-                    }
+    my $s = {};
+    my $c = 0+("0.".$cv);
+    my $talk = "A.talk: $K A.cv > $c --- C.t ";
+    my $aim = {$K=>1};
+    aim.I = 1 if $aim->{A.am};
+    for my $k (sort keys %$i) {
+        my $ii = $i->{$k};
+        
+        ref $ii ? die "wei $k=$ii" : next
+            if ref $ii ne 'HASH';
+        $aim->{$k} || next;
+        
+        for my $vc (sort keys %$ii) {
+            my $iii = $ii->{$vc};
+            die unless $vc < 1;
+            next if $vc <= A.cv;
+            next if $vc > $c;
+            for my $ik (sort keys %$iii) {
+                my $D = $iii->{$ik};
+                die if D.sc.gk;
+                my $act;
+                my $dont;
+                if ($k ne 'I' && D.sc.acgt) {
+                    $act = 1;
+                    $dont = 1 if exists A.I->{D.t};
+                }
+                $s->{$k}->{$vc}->{$ik} = $D;
+                my $sep = $act ? "----" : ">>>>";
+                sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ". ki D.sc
+                    if A.J.V;
+                unless ($dont) {
+                    my $paw = join"_",'',$k,$vc,D.t;
+                    $paw =~ s/\W//g;
+                    Rw $paw $A $C $G $T $__D:D;
+                }
+                # non-I acgt means some expressed tick of the creature
+                # as osc accesses
+                # should exude spines, have 0.9s in oo awaiting
+                # where nodes want to unify to is another osc trick
+                # cna get the fingers picking through fillaments
+                if ($act) {
+                    D.sc.acgt eq 's'||die "nonacgts".ki $D;
+                    exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
+                    I.d&D.t,A.s;
                 }
             }
         }
+    }
     say
         Rw TreeD $s $scby=gro
             if keys %$s;
