@@ -74,7 +74,7 @@ Arange: |
     $A;
 WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     my $A = Rw Arange;
-    A.N = [@{ar.N||[ar.C]}];
+    A.N = [ar.C || @{ar.N}];
     A.M = [];
     A.fl = ar.fl || {};
     A.I = {};
@@ -247,7 +247,7 @@ SNat: | # I.ex do  # it's in that, bubbles
                 $s->{$k}->{$vc}->{$ik} = $D;
                 my $sep = $act ? "----" : ">>>>";
                 sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ". ki D.sc
-                    if A.J.V;
+                    if A.J.V > 1;
                 unless ($dont) {
                     my $paw = join"_",'',$k,$vc,D.t;
                     $paw =~ s/\W//g;
@@ -285,6 +285,11 @@ Ind: | # main spine
     n ''=>''=>{W=>'Modulator'}
     
     # 
+Indo: | # leg off In if Ind (Wild)
+    my $A = Rw WeBase Collarspew;
+    my $M = [];
+    Rw Indi + $A $M;
+    sayyl "Indo thought ". wdump $M;
 Indulator: |
      
     n Indi=>''=>{s=><<''},{code=>'W 4'}
@@ -340,7 +345,8 @@ Indulator: |
     #
 Modulator: |
     #
-    n Modi=>''=>{s=><<''},{code=>'W 4'}
+    #n Modi=>''=>{s=><<''},{code=>'W 4'}
+Modi: |
         # make pool, synth space, want arches
         # fork & rejoin to exciting place
         # the valley, what it means to be here in here YIN
@@ -351,18 +357,21 @@ Modulator: |
         A.t&1;
         A.t&11111 || warn "NO 1";
         @{A.N}||die"nois".wdump[$C,$A];
-        while (@{A.N}) { #                                           ඬ
+        while (@{A.N}) { #                                             ඬ
             my $A = {%$A};
             A.mo.on = $A;
             A.s = shift @{A.N};
             my $T = {oM=>[]};
-            I.d&n,$A,{},$G,$T;
+            my $C = {};
+            I.d&n,$A,$C,$G,$T;
             I.d&An;
             A.t&2;
             $A = I.nF.A;
-            $C = I.nF.C;
+            my $CC = I.nF.C;
+            die wei=>wdump[$C,$CC] if $CC ne $C;
             # and whenever
-            die "Must be C: ". wdump $C;
+            die "Must be C: ". wdump [A.s,$C] unless C.t eq 'something';
+            die "through".wdump[A.s,$C];
                C.r = join "\t", C.t, (C.y.cv+0);
                C.sc = {%{C.sc||{}}}; # ?
                #
@@ -379,7 +388,7 @@ Modulator: |
          # 9
          return $A
     
-    #
+    
 Indiy: | # A and A.mo dye drops, M tractios
     u allacgts
     
@@ -503,9 +512,6 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         my $way = $s =~ s/^\/// ? 'fund' : 'muck';
         my $Z = Rw $way - $p:s $dclone=1;
     
-Indo: | # leg off In if Ind (Wild)
-    my $A = Rw WeBase Collarspew;
-    Rw Indi + $A;
 In: | # I I I
     J.A.Indo && return Rw Indo;
     
@@ -590,7 +596,7 @@ Bangdesk: |
             # A.t&9,$@; 
         }
     
-    n erg =>''=>{s=><<''},{code=>"In 9"}
+    n erg =>''=>{s=><<''},{code=>"I 9"}
         # must pre compile, see D severators
         my $m = "J: A.talk";
         $m .= "\nC: ".ki $C;
@@ -638,6 +644,7 @@ SlideEater: | # liney schemery
         I.d&rensc if !ref C.sc;
         (3==grep{ref}map{$C->{$_}}y=>c=>'sc') &&
         defined C.t || die "reaso fail".wdump $C;
+        say "C.t C.y.cv    looks reasonable...  ". join"  ",sort keys %{C.sc};
     
     n reny =>''=>{s=><<''}
         C.y = C.y eq '' ? {}
