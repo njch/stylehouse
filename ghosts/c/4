@@ -113,8 +113,18 @@ ym/concoi: |
             my ($K,$cv) = ($1,$2); 
             $cv = 0+("0.".$cv);
             
-            if (C.sc.v) {
-                die "form ".ki $C;
+            my @ara; # ar ups and demand argsed
+            
+            if (my $v = C.sc.v) {
+                my ($nk,$gk) = $v =~ /^([tyc]|sc)(.+)$/
+                    ||die"strv:$v";
+                C.sc.nk = $nk;
+                $v eq $nk &&
+                    push @ara, "    my \$".$nk." = C\.".$nk.";";
+                if ($gk) {
+                    C.sc.gk = $gk;
+                    push @ara, "    my \$".$gk." = C\.".$nk."\.".$gk.";";
+                }
             }
             if (C.sc.nk) {
                 die "form ".ki $C;
@@ -136,12 +146,14 @@ ym/concoi: |
                 # G pulls in I
                 my $sn = "A\.I\.d"."&An;" if C.t eq 'An';
                 
+                push @ara, "    my \$I = A\.I;";
+                
                 C.c.s = "A\.I.".C.t." = "
                     .$sf
                     ."sub {\n"
                     .$gl
                     ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
-                    ."    my \$I = A\.I;\n"
+                    .join("\n",@ara)."\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                     ."}"
                     .$sa

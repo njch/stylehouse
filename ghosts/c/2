@@ -246,9 +246,10 @@ Viu: | # u/n/m pinging uCon, setup part Jto
         my @m = @_;
         shift @m if ref $m[0] && $m[0] eq $J;
         pop @m while $m[-1] eq '';
-        $m[2] = {W=>$m[0]} if $m[1] eq 'W' && !$m[2];
         if (@m < 4) {
-            $m[2] = {J=>$m[0]} unless defined $m[2]; # c.J=t reflex
+            my $gk = $m[1] eq 'W' ? 'W' : 'J';
+            $m[1] = '' if $gk eq 'W';
+            $m[2] = {$gk=>$m[0]} unless defined $m[2]; # c.J=t reflex
             @m == 3 || die "!!!\n".wdump[@m];
         }
         @m>4&&die"mvelope>4".wdump 2, \@m;
