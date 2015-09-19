@@ -410,12 +410,16 @@ Motion: |
             C.sc->{$k} = $at->{$k}; # sizling update sprites
         }
     
+    n on =>''=>{s=><<''}
+        push @{A.N}, $C;
+    
     n ToM =>''=>{s=><<''},{code=>'I 112',act=>1}
         T.oM = [];
     
     n CoM =>''=>{s=><<''},{code=>'I 71',act=>1}
         push @{T.oM}, $C;
     
+    # on exit, snakes
     n z =>''=>{s=><<''}
         push @{A.M}, @{T.oM};
         1
@@ -803,8 +807,11 @@ Csys: |
         die "noNnk".wdump $D unless exists D.c.nk;
         0;
     
-    n extend =>''=>{s=><<''},{acgt=>'s,c'}
+    n xot =>''=>{s=><<''},{acgt=>'s,c'}
         while (my($k,$v) = each %$c) {
             $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
         }
+        $s
+   
+   
 

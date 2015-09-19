@@ -37,7 +37,7 @@ C14: | # the CIA is all over it
         }
         # love guessing with small pools of stable
         elsif (grep {exists $c->{$_}} qw{t y c sc}) {
-            I.d&extend,$C,$c;
+            I.d&xot,$C,$c;
         }
         else {
             die "howto ".ki $c;
@@ -156,11 +156,13 @@ Space: |
          C.c.lumfa = 1 if y.lumfa;
 Spaci: |
     u allvy
+    n lum =>W
     
+    # i11
     n yall =>''=>{s=><<''},{code=>'Mo 221'}
-       C.y = {thi => C.y} if !ref C.y;
+        C.y = {thi => C.y} if !ref C.y;
            
-    n yin =>''=>{s=><<''},{code=>'Mo 23'}
+    n yin =>''=>{s=><<''},{code=>'Mo 222'}
         # build wave manifold, fore loop
         die "cv+in".k2 $C if y.cv && y.in;
         y.in ||= 0.1; 
@@ -170,28 +172,33 @@ Spaci: |
         y.space *= -1 unless y.space > 0;
         y.aspace = y.space / y.thi;
     
-    0&&# 
+    n bal =>''=>{s=><<''},{code=>'Mo 223',v=>'bal'}
+        y.thi = @$bal;
+    
+    n balmuav =>''=>{s=><<''},{code=>'Mo 24',v=>'bal'}
+        my $total = sum(map { _.y.thy||1 } @$v) || 1;
+        my $over = @$v || 1;
+        A.muav = $over / $total;
+        saygr "Ybal A.muav over  ". @{y.bal} if A.J.V;
+
+    # we can stitch into 3actally proper
     n yin =>''=>{s=><<''},{code=>'Mo 26'}
         # twist, lay into segment
-        A.v = defined y.cv ? y.cv : defined y.in ? y.in : die "no yiny".ki$y;
-        my $wJ = A.wJ;
+        A.v = defined y.cv ? y.cv
+            : defined y.in ? y.in
+            : die "no yiny".ki$y;
+        y.thi || die "Whythi".ki$C;
+        # 
         for (1..y.thi) {
-            my $T = {};
-            g.extend->($T, $C);
-             T.y.i = $_-1;
-            push @{A.is}, $T;
-            for my $ct (@{wJ.cts.B}) {
-                next unless ct.any or exists $C->{ct.t_k} && exists $C->{ct.t_k}->{ct.t};
-                my $v = $C->{ct.t_k}->{ct.t} unless ct.any;
-                wJ.ctx.B->{ct.x}->($A,$C,$g,$T,T.y);
-            }
-            say "KAp T.t  T.y.cv   spc=T.y.spc    (".(1+T.y.i)." / C.y.thi)" if A.J.V && C.y.thi != 1;
+            my $C = I.d&xot,{},$C;
+            C.y.i = $_-1;
+            I.d&on,$C;
         }
-        #sayyl wdump 2, A.is;
+        # B foir y was ^, 3 is space foyay calcium
     
-    #0&&# 
-    #n yin =>''=>{s=><<''},{code=>'Mo 26'}
-        
+    
+       
+            say "KAp T.t  T.y.cv   spc=T.y.spc    (".(1+T.y.i)." / C.y.thi)" if A.J.V && C.y.thi != 1;
 r2j: | # interpreter of buzzed puit partiscules r -> j.[cv,t,style]
     my $j;
     my $sing;
