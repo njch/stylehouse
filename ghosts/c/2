@@ -119,6 +119,7 @@ spIII: |
             my $III = $II->{$K} ||= {};
             my $oI = ooI.K->{$K} ||= {mo=>ooI.mo};
             my $S = $s->{$K} ||= {};
+            # ^ thse particles
             oI.ins = (ooI.ins&&"ooI.ins/")."$K";
             my $N = [
                 map { {t=>_.t,c=>{s=>_.c.s->{$K}}} }
@@ -126,15 +127,13 @@ spIII: |
                 @$N
             ];
             my $d = ar.d + 1;
-            #say "Throw ooI.ins   >>> $K";
             
             Rw spIII $A $II:III $ooI:oI $N $m $d $s:S;
         }
         else {
             my @C = grep {exists _.c.s->{$K}} @$N;
-            die "manyC for $K" if @C > 1;
+            # say "manyC for $K" if @C > 1;
             for (@C) {
-                #sayyl "got   ooI.ins   === $K        for _.t";
                 $s->{$K} =
                 ooI.mo.st->{ooI.ins}->{_.t}->{$K} =
                     $II->{$K} = _.c.s->{$K};
