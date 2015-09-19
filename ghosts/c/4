@@ -116,18 +116,21 @@ ym/concoi: |
             my @ara; # ar ups and demand argsed
             
             if (my $v = C.sc.v) {
-                my ($nk,$gk) = $v =~ /^([tyc]|sc)(.+)$/
-                    ||die"strv:$v";
+                my ($nk,$gk) = $v =~ /^([tyc]|sc)(.*)$/;
+                $nk||die"strv:$v";
                 C.sc.nk = $nk;
-                $v eq $nk &&
-                    push @ara, "    my \$".$nk." = C\.".$nk.";";
+                push @ara, "    my \$".$nk." = C\.".$nk.";";
                 if ($gk) {
                     C.sc.gk = $gk;
                     push @ara, "    my \$".$gk." = C\.".$nk."\.".$gk.";";
                 }
             }
-            if (C.sc.nk) {
-                die "form ".ki $C;
+            if (my $v = C.sc.rg) {
+                my $nk = C.sc.nk || die"nonkrg".ki$C;
+                for my $s (split /,/, $v) {
+                    push @ara, "    my \$".$s." = C\.".$nk."\.".$s.";";
+                }
+                die wdump [$C,\@ara];
             }
 
             if (my $args = C.sc.args) {
