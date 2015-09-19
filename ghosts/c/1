@@ -299,7 +299,8 @@ Indo: | # leg off In if Ind (Wild)
     my $A = Rw WeBase Collarspew;
     my $M = [];
     my $oA = Rw Indi + $A;
-    sayyl "Indo thought ". wdump [oA.am,oA.M];
+    sayyl "Indo thought ";
+    Rw humms $J:G.oin $N:oA.M talky;
 Indulator: |
     # 
     #n Indi=>''=>{s=><<''},{code=>'W 4'}
@@ -372,14 +373,15 @@ Modi: |
                
             I.d&z && next if T.not;
             A.t&6||die("Was not to 6")&&next;
-            I.d&flywheels;
+            I.d&flywheels; # want to outgrow
             I.d&z && next if T.not;
             A.t&78;
             I.d&z;
-               #Rw jamsc $J $oJ $C $s:C.c.s $sc:C.sc;
             my $oJ = $J;
             my $J = C.y.o && C.y.o.J || $oJ;
-               sayyl "Hamsc! A.talk: C.t C.y.cv     ".ki {c=>C.c,sc=>C.sc};
+            die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
+            sayyl "Hamsc! A.talk: C.t C.y.cv     ".ki {c=>C.c,sc=>C.sc};
+            #Rw jamsc $J $oJ $C $s:C.c.s $sc:C.sc;
          }
          # 9
          return $A
@@ -387,6 +389,13 @@ Modi: |
     
 Motion: |
     u allacgts
+    # 6* thing/rule management
+    # SNat exudes over the nk'ing ish things which .wh=fly(wheel)
+    # iterates grouped 6cv via T.Z, all N at a time
+    # (make no hop if ==1)
+    # also have pha cone stack available for offphasing
+    # if our intent it loose enough
+    
     n flywheel =>''=>{s=><<''},{code=>'Mo 1'}
         # run around each 6*
         # SNat recoils if we 0
@@ -397,20 +406,6 @@ Motion: |
         return 0 if T.last;
         1;
     
-    # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
-    # its I.d&nded and holds things to code, $v a spiral it's filling up
-    # $v could be mounted... aj8 mysteries
-    n flywheels =>''=>{s=><<''}
-        for my $k (sort keys %{A.fl}) {
-            my $v = A.fl->{$k};
-            #   ^ bus to ride
-            $k = $2 if $k =~ /^(\d+) (.+)$/;
-            Rw ym/$k $I $J:A.J $A $C $v $G $T;
-        }
-    
-Indiy: | # A and A
-    u allacgts
-    # A and A.mo dye drops, M tractios
     n Tat =>''=>{s=><<''}
         my $at = T.at || die "youAT";
         for my $k (keys %$at) {
@@ -427,14 +422,27 @@ Indiy: | # A and A
         push @{A.M}, @{T.oM};
         1
     
+    
+Indiy: | # A and A
+    u allacgts
+    # A and A.mo dye drops, M tractios, T tooly
+    
+    n flywheels =>''=>{s=><<''}
+        # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
+        # its I.d&nded and holds things to code, $v a spiral it's filling up
+        # $v could be mounted... aj8 mysteries
+        for my $k (sort keys %{A.fl}) {
+            my $v = A.fl->{$k};
+            #   ^ bus to ride
+            $k = $2 if $k =~ /^(\d+) (.+)$/;
+            Rw ym/$k $I $J:A.J $A $C $v $G $T;
+        }
+    
     n moy =>''=>{s=><<''}
         # groups, spread the moise over A
         my $i = A.mo.y->{$s}||die"no$s";
         my $is = $i->{C.y.p}; # things in our C's pool
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
-    
-    n severato =>''=>{s=><<''}
-        die "Old secerator";
     
     n oseverato =>''=>{s=><<''},{code=>'I 72',act=>1}
         if (my $z = T.Z) {
