@@ -76,6 +76,7 @@ WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     my $A = Rw Arange;
     A.N = [ar.C || @{ar.N}];
     A.M = [];
+    A.talk = "A.J.name ".(A.J.le && A.J.le.name);
     A.fl = ar.fl || {};
     A.I = {};
     
@@ -240,8 +241,12 @@ SNat: | # I.ex do  # it's in that, bubbles
                 die if D.sc.gk;
                 my $act;
                 my $dont;
-                if ($k ne 'I' && D.sc.acgt) {
+                if (D.sc.acgt && D.sc.act) {
                     $act = 1;
+                    # acgtsubs can be defined at any cv
+                    # run themselves if act
+                    # usu. one receiver (Ci) and the rest scheme
+                    die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
                     $dont = 1 if exists A.I->{D.t};
                 }
                 $s->{$k}->{$vc}->{$ik} = $D;
@@ -304,11 +309,14 @@ Indi: |
             my $A = {%$A};
             A.mo.on = $A;
             A.s = shift @{A.N};
+            my $C = {};
             my $T = {oM=>[]};
-            I.d&n,$A,{},$G,$T;
+            I.d&n,$A,$C,$G,$T;
             I.d&An;
             A.t&2;
             $A = I.nF.A;
+            $C = I.nF.C if $C ne I.nF.C &&die("dif".wdump[$C,I.nF.C])|| 1; 
+            sayyl "Indi 7!". wdump $C;
             # and whenever
             I.d&z && next if T.not;
             # then the things todo
@@ -325,7 +333,6 @@ Indi: |
             }
             I.d&z && next if T.not;
             $C = I.nF.C;
-            sayyl "Indi 7!". wdump $C;
             push @{T.oM}, $C; # this a 67 thing?
             A.t&7;
             I.d&z;
@@ -587,7 +594,7 @@ Bangdesk: |
     u allacgts
     # want to sus $@ and hang vectors of what, should be autoish
     # suppose we come here with only ACGT between us and F
-    n after =>''=>{s=><<''},{code=>"In 11"}
+    n after =>''=>{s=><<''},{code=>"In 11",act=>1}
         aft {
             $@ || return; A.bang && return; A.bang = 21;
                 # want to sus $@ and hang vectors of what, should be autoish
@@ -607,7 +614,8 @@ Bangdesk: |
 SlideEater: | # liney schemery
     u allacgts
     
-    n Ci =>''=>{s=><<''},{code=>'I 12'}
+    n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
+        say "SLide et A.talk ! $s";
         if (!ref $s) {
             I.d&string,$s;
         }
@@ -637,7 +645,7 @@ SlideEater: | # liney schemery
         # some talking to self - how to C over exactly, the object could be live
         I.d&servehash,$s;
     
-    n reasonlock =>''=>{s=><<''},{code=>'I 18'}
+    n reasonlock =>''=>{s=><<''},{code=>'I 18',act=>1}
         die"reft" if ref C.t;
         # uis a nested wave
         # allow much manufold
@@ -757,6 +765,7 @@ CGolf: |
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
         die"C.t from ".wdump $s if ref C.t; # dive
+        say "$C  C.t from! A.talk   ".ki $C;
     
     n peels =>''=>{s=><<''},{subpeel=>1}
         qr/^[\{\%]/;
