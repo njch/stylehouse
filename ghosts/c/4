@@ -17,6 +17,14 @@ allacgts: |
     n allcode=>''=>{W=>'allcode'}
     n 'allareacgt=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
+allact: |
+    n allacgts=>''=>{W=>'allacgts'}
+    n 'allareact=1'=>2,{s=><<''},{code=>'In 42'}
+        C.sc.act = 1 if !exists C.sc.act;
+allvy: |
+    n allact=>''=>{W=>'allact'}
+    n 'allarev=y'=>2,{s=><<''},{code=>'In 42'}
+        C.sc.v = 'y'.C.sc.v;
 allacgt: |
     n allcode=>''=>{W=>'allcode'}
     n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
@@ -105,6 +113,12 @@ ym/concoi: |
             my ($K,$cv) = ($1,$2); 
             $cv = 0+("0.".$cv);
             
+            if (C.sc.v) {
+                die "form ".ki $C;
+            }
+            if (C.sc.nk) {
+                die "form ".ki $C;
+            }
 
             if (my $args = C.sc.args) {
                 die "wonky C.t   of ".ki $C if C.t =~ /\W/;
