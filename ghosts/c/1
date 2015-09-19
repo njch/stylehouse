@@ -290,6 +290,7 @@ Ind: | # main spinality
     n ''=>''=>{W=>'Csys'}
     n ''=>''=>{W=>'Servo'}
     n ''=>''=>{W=>'Indiy'}
+    n ''=>''=>{W=>'Motion'}
     
     n ''=>''=>{W=>'Indulator'}
     n ''=>''=>{W=>'Modulator'}
@@ -305,88 +306,85 @@ Indulator: |
     # 
     #n Indi=>''=>{s=><<''},{code=>'W 4'}
 Indi: |
-        my $A = Rw WeBase In;
-        my $I = A.I;
-        I.d&n,$A,{},$G,{};
+    my $A = Rw WeBase In;
+    my $I = A.I;
+    I.d&n,$A,{},$G,{};
+    I.d&An;
+    A.t&1;
+    A.t&11111 || warn "NO 1";
+    while (@{A.N}) { #
+        my $A = {%$A};
+        A.mo.on = $A;
+        A.s = shift @{A.N};
+        my $C = {};
+        my $T = {};
+        I.d&n,$A,$C,$G,$T;
         I.d&An;
-        A.t&1;
-        A.t&11111 || warn "NO 1";
-        while (@{A.N}) { #
-            my $A = {%$A};
-            A.mo.on = $A;
-            A.s = shift @{A.N};
-            my $C = {};
-            my $T = {};
-            I.d&n,$A,$C,$G,$T;
-            I.d&An;
-            A.t&2;
-            $A = I.nF.A;
-            I.d&z && next if T.not;
-            A.t&6||die("Was not to 6")&&next;
-            I.d&flywheels;
-            I.d&z && next if T.not;
-            A.t&78;
-            I.d&z;
-        }
-        A.t&8;
-        I.d&recycle;
-        ar.M ? do {
-            push @{ar.M}, @{A.M};
-            $A
-        }
-        : ar.J ? map {
-            Rw Modi + $J $C:_
-        } @{A.M}
-        : die "noJMout";
-    
+        A.t&2;
+        $A = I.nF.A;
+        I.d&z && next if T.not;
+        A.t&6||die("Was not to 6")&&next;
+        I.d&flywheels;
+        I.d&z && next if T.not;
+        A.t&78;
+        I.d&z;
+    }
+    A.t&8;
+    I.d&recycle;
+    ar.M ? do {
+        push @{ar.M}, @{A.M};
+        $A
+    }
+    : ar.J ? map {
+        Rw Modi + $J $C:_
+    } @{A.M}
+    : die "noJMout";
     
 Modulator: |
-    #
-    n ''=>''=>{W=>'Motion'}
+    n ''=>''=>{W=>'Space'}
+    n ''=>''=>{W=>'Spaci'}
     #n Modi=>''=>{s=><<''},{code=>'W 4'}
 Modi: |
-        # make pool, synth space, want arches
-        # fork & rejoin to exciting place
-        # the valley, what it means to be here in here YIN
-        my $A = Rw WeBase Mo;
-        my $I = A.I;
-        I.d&n,$A,$C,$G,{};
+    # make pool, synth space, want arches
+    # fork & rejoin to exciting place
+    # the valley, what it means to be here in here YIN
+    my $A = Rw WeBase Mo;
+    my $I = A.I;
+    I.d&n,$A,$C,$G,{};
+    I.d&An;
+    A.t&1;
+    A.t&11111 || warn "NO 1";
+    @{A.N}||die"nois".wdump[$C,$A];
+    while (@{A.N}) { #                                             ඬ
+        my $A = {%$A};
+        A.mo.on = $A;
+        A.s = shift @{A.N};
+        my $C = {};
+        my $T = {};
+        I.d&n,$A,$C,$G,$T;
         I.d&An;
-        A.t&1;
-        A.t&11111 || warn "NO 1";
-        @{A.N}||die"nois".wdump[$C,$A];
-        while (@{A.N}) { #                                             ඬ
-            my $A = {%$A};
-            A.mo.on = $A;
-            A.s = shift @{A.N};
-            my $C = {};
-            my $T = {};
-            I.d&n,$A,$C,$G,$T;
-            I.d&An;
-            A.t&2;
-            $A = I.nF.A;
-            die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
-            # and whenever
-            C.sc = {%{C.sc||{}}}; # ?
-            #
-            # 7.9
-               
-            I.d&z && next if T.not;
-            A.t&6||die("Was not to 6")&&next;
-            I.d&flywheels; # want to outgrow
-            I.d&z && next if T.not;
-            A.t&78;
-            I.d&z;
-            my $oJ = $J;
-            my $J = C.y.o && C.y.o.J || $oJ;
-            die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
-            sayyl "Hamsc! A.talk: C.t C.y.cv     ".ki {c=>C.c,sc=>C.sc};
-            #Rw jamsc $J $oJ $C $s:C.c.s $sc:C.sc;
-         }
-         # 9
-         return $A
-    
-    
+        A.t&2;
+        $A = I.nF.A;
+        die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
+        # and whenever
+        C.sc = {%{C.sc||{}}}; # ?
+        #
+        # 7.9
+           
+        I.d&z && next if T.not;
+        A.t&6||die("Was not to 6")&&next;
+        I.d&flywheels; # want to outgrow
+        I.d&z && next if T.not;
+        A.t&78;
+        I.d&z;
+        my $oJ = $J;
+        my $J = C.y.o && C.y.o.J || $oJ;
+        die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
+        sayyl "Hamsc! A.talk: C.t C.y.cv     ".ki {c=>C.c,sc=>C.sc};
+        #Rw jamsc $J $oJ $C $s:C.c.s $sc:C.sc;
+    }
+    # 9
+    return $A
 Motion: |
     u allacgts
     # 6* thing/rule management
@@ -421,7 +419,6 @@ Motion: |
     n z =>''=>{s=><<''}
         push @{A.M}, @{T.oM};
         1
-    
     
 Indiy: | # A and A
     u allacgts
@@ -621,7 +618,6 @@ In: | # I I I
         die "noJM";
     }
     
-    
 Bangdesk: |
     u allacgts
     # want to sus $@ and hang vectors of what, should be autoish
@@ -643,6 +639,7 @@ Bangdesk: |
         $m .= "\nC: ".ki $C;
         $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
         $@ = "$m\n$@";
+    
 SlideEater: | # liney schemery
     u allacgts
     
@@ -704,7 +701,6 @@ SlideEater: | # liney schemery
             ? I.d&peel,C.sc
             : die "nostr  C.sc    ".ki $C
     
-    #e
 CGolf: |
     u allacgts
     
