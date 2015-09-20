@@ -163,8 +163,13 @@ SNat: | # I.ex do  # it's in that, bubbles
             next if $vc > $c;
             for my $ik (sort keys %$iii) {
                 my $D = $iii->{$ik};
-                die "giot nk".ki($C)."\n\n".ki $D if D.sc.nk;
-                die "giot gk".ki($C)."\n\n".ki $D if D.sc.gk;
+                
+                if (my $nk = D.sc.nk) {
+                    next if !exists $C->{$nk};
+                    if (my $gk = D.sc.gk) {
+                        next if !exists $C->{$nk}->{$gk};
+                    }
+                }
                 my $act;
                 my $dont;
                 if (D.sc.acgt && D.sc.act) {
@@ -175,7 +180,6 @@ SNat: | # I.ex do  # it's in that, bubbles
                     die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
                     $dont = 1 if exists A.I->{D.t};
                 }
-                die "SNATv".ki$D if D.sc.v;
                 
                 $s->{$k}->{$vc}->{$ik} = $D;
                 my $sep = $act ? "----" : ">>>>";
@@ -195,6 +199,10 @@ SNat: | # I.ex do  # it's in that, bubbles
                     D.sc.acgt eq 's'||die "nonacgts".ki $D;
                     exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
                     I.d&D.t,A.s;
+                }
+                if (T.not) {
+                    sayre "TSnot! A.cv @ C.t";
+                    return; # will &z, oseve
                 }
             }
         }
@@ -258,7 +266,7 @@ KnowTime: | # dome props
                 if ($c < A.cv) {
                     if (A.cv == 0.6) { # scoop up all on entering timezone
                         $re = 1;
-                        $dont = 1; # or will IIII fall away
+                        $dont = 1; # or will II fall away
                     }
                     else {
                         $re = 0;
@@ -268,7 +276,7 @@ KnowTime: | # dome props
                 elsif ($c == A.cv) {
                     $re = 1;
                 }
-                elsif ($c > A.cv) { # and $c < 0.7
+                elsif ($c > A.cv) { # and $c < 0.7, is a next time
                     T.Z->{$c} = 1;
                     $re = 0;
                     $dont = 1;
@@ -283,7 +291,6 @@ KnowTime: | # dome props
         Rw SNat $A $C $G $T $I $i $K $cv;
     
     # y
-
 Indo: | # leg off In if Ind (Wild)
     my $A = Rw WeBase Collarspew;
     my $M = [];
@@ -356,6 +363,8 @@ Modi: |
     A.t&11111 || warn "NO 1";
     @{A.N}||die"nois".wdump[$C,$A];
     while (@{A.N}) { #                                             ඬ
+        #my ($A,$C,$T) = I.d&Act;
+        # ^this to thisv to 2, returns the finitest A, etc.
         my $A = {%$A};
         A.mo.on = $A;
         A.s = shift @{A.N};
@@ -365,14 +374,11 @@ Modi: |
         I.d&An;
         A.t&2;
         $A = I.nF.A;
-        die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
-        # and whenever
-        C.sc = {%{C.sc||{}}}; # ?
-        #
-        # 7.9
+        # C.sc = {%{C.sc||{}}}; # ?
            
         I.d&z && next if T.not;
         A.t&6||die("Was not to 6")&&next;
+        I.d&z && next if T.not;
         I.d&flywheels; # want to outgrow
         I.d&z && next if T.not;
         A.t&78;
@@ -419,6 +425,7 @@ Motion: |
     # on exit, snakes
     n z =>''=>{s=><<''}
         push @{A.M}, @{T.oM};
+        I.d&oseverato;
         1
     
 Indiy: | # A and A
@@ -443,7 +450,7 @@ Indiy: | # A and A
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     
     n oseverato =>''=>{s=><<''},{code=>'I 72',act=>1}
-        if (my $z = T.Z) {
+        if (my $z = T.Z) { # tease out the next times
             my ($lo) = sort keys %$z; # next one
             @{T.oM} = ();
             push @{A.mo.re->{$lo} ||= []}, [$A,$C];
@@ -459,6 +466,13 @@ Indiy: | # A and A
                 push @{A.mo.N}, @N;
             }
         }
+        # concoi severaliser, for conglom up; merging spiral snips of code
+        if (my $y = T.y) {
+            for my $k (keys %$y) {
+                A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
+            }
+        }
+
         
 Servo: | # things over top of speech bubble in the c 5 liniarity
     u allacgts
@@ -472,10 +486,11 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         : die 'hash: '.wdump($s);
     
     # time impersonator
-    n AZu =>''=>{s=><<''},{li=>'Indiy'}
+    n AZu =>''=>{s=><<''},{li=>'Indiy/oseverato'}
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
         my ($AA,$CC) = @$ac;
+        $AA ||= $A;
         I.d&n,$AA,$CC,$G,$T;
         if (AA.cv >= $cv) {
             warn "Double comback AA.cv $cv";
