@@ -14,20 +14,35 @@ allcode: |
     n 'allarecode1'=>2,{s=><<''},{code=>'In 42'}
         C.sc.code = 1 if !exists C.sc.code;
 allacgts: |
-    n allcode=>''=>{W=>'allcode'}
+    n allcode =>W
     n 'allareacgt=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
-    n allacgts=>''=>{W=>'allacgts'}
+    n allacgts =>W
     n 'allareact=1'=>2,{s=><<''},{code=>'In 42'}
         C.sc.act = 1 if !exists C.sc.act;
 allvy: |
-    n allact=>''=>{W=>'allact'}
+    n allact =>W
     n 'allarev=y'=>2,{s=><<''},{code=>'In 42'}
         C.sc.v = 'y'.C.sc.v;
+allvc: |
+    n allact =>W
+    n 'allarev=c'=>2,{s=><<''},{code=>'In 422'}
+        if (defined C.sc.v && C.sc.v eq '0') {
+            delete C.sc.v
+        }
+        else {
+            C.sc.v = 'c'.C.sc.v;
+        }
+allvse: |
+    n allvc =>W
+    n 'allarev=c'=>2,{s=><<''},{code=>'In 421'}
+        C.sc.v ||= C.t unless exists C.sc.v;
+        say "Autovase C.t  C.y.cv";
 allacgt: |
     n allcode=>''=>{W=>'allcode'}
     n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
+        #
         C.sc.acgt = '1' if !exists C.sc.acgt;
 onlycode: |
     n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
