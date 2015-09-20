@@ -178,6 +178,7 @@ SNat: | # I.ex do  # it's in that, bubbles
                 my $D = $iii->{$ik};
                 
                 if (my $nk = D.sc.nk) {
+                    my $C = I.nF.C;
                     next if !exists $C->{$nk};
                     if (my $gk = D.sc.gk) {
                         next if !exists $C->{$nk}->{$gk};
@@ -197,10 +198,12 @@ SNat: | # I.ex do  # it's in that, bubbles
                 # schools of many fish
                 $vb ||= $vc if D.sc.v;
                 
+                # TreeD
                 $s->{$k}->{$vc}->{$ik} = $D;
                 my $sep = $act ? "----" : ">>>>";
                 sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
                     if A.J.V > 1;
+                    
                 unless ($dont) {
                     my $paw = join"_",'',$k,$vc,D.t;
                     $paw =~ s/\W//g;
@@ -219,6 +222,10 @@ SNat: | # I.ex do  # it's in that, bubbles
                 if (T.not) {
                     sayre "TSnot! A.cv $vc $c @ D.t";
                     return; # will &z, oseve
+                }
+                if (my $wh = delete T.whack) {
+                    $wh eq '1' || die "whatwhack:$wh";
+                    return;
                 }
             }
         }
@@ -265,7 +272,6 @@ KnowTime: | # dome props
         my $ncv;
         my $re;
         my $dont;
-        sayre "A.talk A.cv, $K,$cv  is interesting" if $K ne 'In';
             if (A.cv < 0.6 || $c >= 0.7) {
                 if ($c >= A.cv) {
                     $ncv = $c;
@@ -343,6 +349,7 @@ Indi: |
         I.d&An;
         A.t&2;
         $A = I.nF.A;
+        T.not&&next;
         I.d&z && next if T.not;
         A.t&6||die("Was not to 6")&&next;
         I.d&flywheels;
@@ -350,6 +357,7 @@ Indi: |
         A.t&78;
         I.d&z;
     }
+    continue { I.d&z; }
     A.t&8;
     I.d&recycle;
     ar.M ? do {
@@ -392,18 +400,14 @@ Modi: |
         I.d&An;
         A.t&2;
         $A = I.nF.A;
-        $C = I.nF.C;
-        sayyl "Wandering into A.cv   vis C.t";
-        # C.sc = {%{C.sc||{}}}; # ?
-           
-        I.d&z && next if T.not;
+        T.not&&next;
         A.t&6||die("Was not to 6")&&next;
-        I.d&z && next if T.not;
+        T.not&&next;
         I.d&flywheels; # want to outgrow
-        I.d&z && next if T.not;
+        T.not&&next;
         A.t&78;
-        I.d&z;
     }
+    continue { I.d&z; }
     # 9
     return $A
 Motion: |
@@ -440,10 +444,6 @@ Motion: |
         push @{A.M}, @{T.oM};
         I.d&oseverato;
         1
-    
-    # the kind of 7 that emits the new, any z is this: answers Talk
-    n sev =>''=>{s=><<''},{code=>'I 72',act=>1}
-        I.d&oseverato; # a T thing
     
 Indiy: | # A and A
     u allacgts
@@ -720,9 +720,8 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
             return T.not = 1;
         }
         A.cv = $cv;
-        sayyl "Comback A.cv  the C.t";
-        # needs to SNat out of it so t2-t6 can be thought
         I.d&An;
+        T.whack = 1;
     
     n MZu =>''=>{s=><<''}
         my $uM = sub {
