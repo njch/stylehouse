@@ -157,9 +157,7 @@ Space: |
 Spaci: |
     u allvy
     # space foyay calcium
-    
-    n lum =>W
-    n bal =>W
+    # also lum + bal mingle space
     
     # was Y/i/11
     n yall =>''=>{s=><<''},{code=>'Mo 221'}
@@ -177,12 +175,6 @@ Spaci: |
         y.space *= -1 unless y.space > 0;
         y.aspace = y.space / y.thi;
     
-    # things have masses
-    n muav =>''=>{s=><<''},{code=>'Mo 241',v=>'bal'}
-        my $total = sum(map { y.thy||1 } @$bal) || 1;
-        my $over = @$bal || 1;
-        y.u.muav = $over / $total;
-
     n yarN =>''=>{s=><<''},{code=>'Mo 26'}
         # twist, lay into segment
         y.u.v = defined y.cv ? y.cv
@@ -193,7 +185,7 @@ Spaci: |
         for (1..y.thi) {
             my $C = I.d&xot,{},$C;
             C.y.i = $_-1;
-            I.d&on,$C;
+            push @{A.N}, $C;
         }
         
     n NotStuff =>''=>{s=><<''},{code=>'Mo 29'}
@@ -204,20 +196,24 @@ Spaci: |
         # it has something to do with nk in SNat
     
     n yinvout =>''=>{s=><<''},{code=>'Mo 3'}
-        die "noAv".ki $C if !defined y.u.v;
-        y.cv = 0+sprintf '%.6f', y.u.v;
-        y.pcv = 0+sprintf '%.6f', y.i / C.y.thi;
         y.mu = 1;
     
+    # things bend mu into:
     n black =>''=>{s=><<''},{code=>'Mo 34'}
-        my $in = y.aspace * y.mu;
         my $was = y.u.v;
+        defined $was || die"noAv".ki$C;
+        # in:
+        y.cv = 0+sprintf '%.6f', y.u.v;
+        y.pcv = 0+sprintf '%.6f', y.i / C.y.thi;
+        # over:
+        my $in = y.aspace * y.mu;
         y.u.v += $in;
+        # out: 
         y.ov = sprintf '%.6f', y.u.v;
         y.spc = y.ov - y.cv;
         #
         sayyl "Bend: C.t   $was += $in       y.aspace * y.mu";
-            if A.J.V && y.muav != 1;
+            if A.J.V && y.u.muav != 1;
     
     n ent =>''=>{s=><<''},{code=>'Mo 37'}
         $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';
@@ -229,6 +225,13 @@ bal: |
     n bal =>''=>{s=><<''},{code=>'Mo 223',v=>'bal'}
         y.thi = @$bal;
     
+    # yin 23 - space totalled
+    # things have masses
+    n muav =>''=>{s=><<''},{code=>'Mo 241',v=>'bal'}
+        my $total = sum(map { y.thy||1 } @$bal) || 1;
+        my $over = @$bal || 1;
+        y.u.muav = $over / $total;
+
     n balin =>''=>{s=><<''},{code=>'Mo 32',v=>'bal'}
         I.d&xot,$C,$bal->[y.i];
         y.mu = y.thy if exists y.thy;
@@ -257,8 +260,9 @@ lum: |
         my $upt = 0;
         $spc = $upt if $spc < $upt;
         # t-rewirey formulae:
-        my $fl = ($spc / 0.02) * 4;
-        d.sc.fs = $fl if $fl < 9;
+        my $fs = ($spc / 0.02) * 4;
+        C.sc.fs = $fs if $fs < 9;
+        C.y.spc = $spc;
 r2j: | # interpreter of buzzed puit partiscules r -> j.[cv,t,style]
     my $j;
     my $sing;
