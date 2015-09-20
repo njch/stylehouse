@@ -44,7 +44,11 @@ I_Din: |
     I.d = sub { # be, sub
         my $s = shift;
         my $P = I.nF ||= {};
-        my $y = $I->{$s} || die "no way named '$s'";
+        my $y = $I->{$s};
+        if (!$y) {
+            return if $s eq 'oseverato';
+            die "no I way named '$s'";
+        }
         $y->(P.A,P.C,P.G,P.T,@_);
     };
     I.z = sub {

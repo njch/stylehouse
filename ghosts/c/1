@@ -154,13 +154,26 @@ SNat: | # I.ex do  # it's in that, bubbles
         ref $ii ? die "wei $k=$ii" : next
             if ref $ii ne 'HASH';
         $aim->{$k} || next;
+        my $vb;
         
         for my $vc (sort keys %$ii) {
             my $iii = $ii->{$vc};
             die unless $vc < 1;
+            
             # what to do with my brain:
             next if $vc <= A.cv && $vc != $c;
             next if $vc > $c;
+            
+            if ($vb && $vc > $vb) {
+                if (@{A.N}) {
+                    sayre "$vb -> $vc  bump, ". @{A.N};
+                    T.Z->{$vb} = 1;
+                    # go wide A.N, come back A.cv=$bv, right about now
+                    # sincing 
+                    return T.not = 1;
+                }
+            }
+            
             for my $ik (sort keys %$iii) {
                 my $D = $iii->{$ik};
                 
@@ -180,13 +193,13 @@ SNat: | # I.ex do  # it's in that, bubbles
                     die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
                     $dont = 1 if exists A.I->{D.t};
                 }
-                if (D.sc.v) {
-                    
-                }
+                
+                # schools of many fish
+                $vb ||= $vc if D.sc.v;
                 
                 $s->{$k}->{$vc}->{$ik} = $D;
                 my $sep = $act ? "----" : ">>>>";
-                sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ". ki D.sc
+                sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
                     if A.J.V > 1;
                 unless ($dont) {
                     my $paw = join"_",'',$k,$vc,D.t;
@@ -204,7 +217,7 @@ SNat: | # I.ex do  # it's in that, bubbles
                     I.d&D.t,A.s;
                 }
                 if (T.not) {
-                    sayre "TSnot! A.cv @ C.t";
+                    sayre "TSnot! A.cv $vc $c @ D.t";
                     return; # will &z, oseve
                 }
             }
@@ -252,7 +265,7 @@ KnowTime: | # dome props
         my $ncv;
         my $re;
         my $dont;
-        sayre "A.talk  $K,$cv  is interesting" if $K ne 'In';
+        sayre "A.talk A.cv, $K,$cv  is interesting" if $K ne 'In';
             if (A.cv < 0.6 || $c >= 0.7) {
                 if ($c >= A.cv) {
                     $ncv = $c;
@@ -286,8 +299,9 @@ KnowTime: | # dome props
                 }
                 else {die"nof"}
             }
+            my $was = A.cv;
             $dont || I.d&ex,$i,$K=>$cv;
-            A.cv = $ncv if defined $ncv;
+            A.cv = $ncv if defined $ncv && A.cv == $was;
             $re;
     
     n ex =>''=>{s=><<''},{acgt=>'i,K,cv'}
@@ -352,6 +366,7 @@ Modulator: |
     
     n Space =>W
     n Spaci =>W
+    
     n lum =>W
     n bal =>W
 Modi: |
@@ -377,6 +392,8 @@ Modi: |
         I.d&An;
         A.t&2;
         $A = I.nF.A;
+        $C = I.nF.C;
+        sayyl "Wandering into A.cv   vis C.t";
         # C.sc = {%{C.sc||{}}}; # ?
            
         I.d&z && next if T.not;
@@ -386,11 +403,6 @@ Modi: |
         I.d&z && next if T.not;
         A.t&78;
         I.d&z;
-        my $oJ = $J;
-        my $J = C.y.o && C.y.o.J || $oJ;
-        die"DifintC post 2".[$C,I.nF.C] if $C ne I.nF.C;
-        sayyl "Hamsc! A.talk: C.t C.y.cv     ".ki {c=>C.c,sc=>C.sc};
-        #Rw jamsc $J $oJ $C $s:C.c.s $sc:C.sc;
     }
     # 9
     return $A
@@ -402,11 +414,13 @@ Motion: |
     # (make no hop if ==1)
     # also have pha cone stack available for offphasing
     # if our intent it loose enough
+    # begins with possible outgoing magnet:
+    n ToM =>''=>{s=><<''},{code=>'I 112',act=>1}
+        T.oM = [];
     
     n flywheel =>''=>{s=><<''},{code=>'Mo 1'}
-        # run around each 6*
+        # wheels acts run in, run around each 6*
         # SNat recoils if we 0
-        # ^ does A.c to the things, with D.sc.nk etc
         # we should scrub away any T we understand (exactly)
         $s->();
         I.d&Tat if T.at;
@@ -414,13 +428,9 @@ Motion: |
         1;
     
     n Tat =>''=>{s=><<''}
-        my $at = T.at || die "youAT";
-        for my $k (keys %$at) {
-            C.sc->{$k} = $at->{$k}; # sizling update sprites
-        }
-    
-    n ToM =>''=>{s=><<''},{code=>'I 112',act=>1}
-        T.oM = [];
+        my $at = delete T.at;
+        $at || die "youAT";
+        C.sc->{$_} = $at->{$_} for keys %$at; # sizling update sprites
     
     n CoM =>''=>{s=><<''},{code=>'I 71',act=>1}
         push @{T.oM}, $C;
@@ -430,6 +440,10 @@ Motion: |
         push @{A.M}, @{T.oM};
         I.d&oseverato;
         1
+    
+    # the kind of 7 that emits the new, any z is this: answers Talk
+    n sev =>''=>{s=><<''},{code=>'I 72',act=>1}
+        I.d&oseverato; # a T thing
     
 Indiy: | # A and A
     u allacgts
@@ -446,8 +460,8 @@ Indiy: | # A and A
             Rw ym/$k $I $J:A.J $A $C $v $G $T;
         }
     
-    n oseverato =>''=>{s=><<''},{code=>'I 72',act=>1}
-        if (my $z = T.Z) { # tease out the next times
+    n oseverato =>''=>{s=><<''}
+        if (my $z = delete T.Z) { # tease out the next times
             my ($lo) = sort keys %$z; # next one
             @{T.oM} = ();
             push @{A.mo.re->{$lo} ||= []}, [$A,$C];
@@ -477,98 +491,6 @@ Indiy: | # A and A
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     
         
-Servo: | # things over top of speech bubble in the c 5 liniarity
-    u allacgts
-    
-    n servehash =>''=>{s=><<''}
-          s.AZ ? I.d&AZu,s.AZ
-        : s.MZ ? I.d&MZu,s.MZ
-        : s.EZ ? I.d&EZu,s.EZ
-        : s.WZ ? I.d&WZu,s.WZ
-        : s.EC ? I.d&ECu,s.EC
-        : die 'hash: '.wdump($s);
-    
-    # time impersonator
-    n AZu =>''=>{s=><<''},{li=>'Indiy/oseverato'}
-        die 'amany' if keys %$s > 1;
-        my ($cv,$ac) = %$s;
-        my ($AA,$CC) = @$ac;
-        $AA ||= $A;
-        I.d&n,$AA,$CC,$G,$T;
-        if (AA.cv >= $cv) {
-            warn "Double comback AA.cv $cv";
-            return T.not = 1;
-        }
-        AA.cv = $cv;
-        I.d&An;
-    
-    n MZu =>''=>{s=><<''}
-        my $uM = sub {
-            my ($k,$v) = @_;
-            if (defined $v && $v eq '0') {
-                delete A.fl->{$k}
-            }
-            else {
-                A.fl->{$k} = $v || 1;
-            }
-        };
-        ref $s eq 'HASH' ?
-            map{ $uM->($_,$s->{$_}) } keys %$s
-        :   map{
-                /^(.+?)(?::(.+))?$/ || die;
-                $uM->($1,$2);
-            } split /\s+/, $s;
-        T.not = 1;
-    
-    # without our humm, straight to M
-    # this is kind of like going through el1389, so many spires to pi on
-    # the calls to In want to be IId
-    n EZu =>''=>{s=><<''},{l=>'Indiy'}
-        my $Z = I.d&iZu,$s;
-        warn "About EZ";
-        for my $k (sort keys %$Z) {
-            my $N = $Z->{$k};
-            $N = [ map { [$_] } split "\n",$N ] if !ref $N;
-            Rw In $M:T.oM $N;
-        }
-        T.not = 1;
-    
-    # with our humm
-    n WZu =>''=>{s=><<''},{l=>'Indiy'}
-        my $Z = I.d&iZu,$s;
-        warn "About WZ";
-        for my $k (sort keys %$Z) {
-            my $s = $Z->{$k};
-            die wdump $s if ref $s ne 'ARRAY';
-            unshift @{A.N}, @$s;
-        }
-        T.not = 1;
-    
-    n ECu =>''=>{s=><<''},{li=>'Indiy'}
-        # extend C on the way in to another dome, magnetised into our M
-        # probably for collapsing roooves...
-        # dumber than sc decompresphere & playing out
-        # (is mailing itself further instructions, intro c, further lines)
-        # an In persona, joining our M
-        # push to dome
-        # that must in  A
-        ref $s eq 'ARRAY' || die;
-        my ($N,$c) = @$s;
-        # take 4s v             add 3s v         next 2 
-        $N = [{MZ=>A.fl}, {MZ=>{'3 doex'=>$c}}, @$N];
-        # and In could feel our light cone
-        Rw In $J:A.J $M:T.oM $N;
-        # ^but instead push to A.N and A.No, the sister strand Whare Y Whare
-        # and A walks through t&Y, d&Whare(6)
-        # turns via n&ACGT
-        # the time beams mapped... a W concat couldol
-        T.not = 1;
-     
-    # theses, pulling bits
-    n iZu =>''=>{s=><<''}
-        my $way = $s =~ s/^\/// ? 'fund' : 'muck';
-        my $Z = Rw $way - $p:s $dclone=1;
-    
 In: | # I I I
     J.A.Indo && return Rw Indo;
     
@@ -607,6 +529,7 @@ In: | # I I I
         I.d&z && next if T.not;
         I.d&Cr,$s;
         A.t&6;
+        I.d&z && next if T.not;
         
         # elabourate C,
         for my $k (sort keys %{A.fl}) {
@@ -772,6 +695,101 @@ CGolf: |
         }
         $c||{}
     
+    
+Servo: | # things over top of speech bubble in the c 5 liniarity
+    u allacgts
+    
+    n servehash =>''=>{s=><<''}
+          s.AZ ? I.d&AZu,s.AZ
+        : s.MZ ? I.d&MZu,s.MZ
+        : s.EZ ? I.d&EZu,s.EZ
+        : s.WZ ? I.d&WZu,s.WZ
+        : s.EC ? I.d&ECu,s.EC
+        : die 'hash: '.wdump($s);
+    
+    # time impersonator
+    n AZu =>''=>{s=><<''},{li=>'Indiy/oseverato'}
+        die 'amany' if keys %$s > 1;
+        my ($cv,$ac) = %$s;
+        my ($AA,$CC) = @$ac;
+        $AA ||= do {sayre "Spawning cone CC.t"; $A};
+        I.d&n,$AA,$CC,$G,$T;
+        $A = $AA;
+        if (A.cv >= $cv) {
+            warn "Double comback A.cv $cv";
+            return T.not = 1;
+        }
+        A.cv = $cv;
+        sayyl "Comback A.cv  the C.t";
+        # needs to SNat out of it so t2-t6 can be thought
+        I.d&An;
+    
+    n MZu =>''=>{s=><<''}
+        my $uM = sub {
+            my ($k,$v) = @_;
+            if (defined $v && $v eq '0') {
+                delete A.fl->{$k}
+            }
+            else {
+                A.fl->{$k} = $v || 1;
+            }
+        };
+        ref $s eq 'HASH' ?
+            map{ $uM->($_,$s->{$_}) } keys %$s
+        :   map{
+                /^(.+?)(?::(.+))?$/ || die;
+                $uM->($1,$2);
+            } split /\s+/, $s;
+        T.not = 1;
+    
+    # without our humm, straight to M
+    # this is kind of like going through el1389, so many spires to pi on
+    # the calls to In want to be IId
+    n EZu =>''=>{s=><<''},{l=>'Indiy'}
+        my $Z = I.d&iZu,$s;
+        warn "About EZ";
+        for my $k (sort keys %$Z) {
+            my $N = $Z->{$k};
+            $N = [ map { [$_] } split "\n",$N ] if !ref $N;
+            Rw In $M:T.oM $N;
+        }
+        T.not = 1;
+    
+    # with our humm
+    n WZu =>''=>{s=><<''},{l=>'Indiy'}
+        my $Z = I.d&iZu,$s;
+        warn "About WZ";
+        for my $k (sort keys %$Z) {
+            my $s = $Z->{$k};
+            die wdump $s if ref $s ne 'ARRAY';
+            unshift @{A.N}, @$s;
+        }
+        T.not = 1;
+    
+    n ECu =>''=>{s=><<''},{li=>'Indiy'}
+        # extend C on the way in to another dome, magnetised into our M
+        # probably for collapsing roooves...
+        # dumber than sc decompresphere & playing out
+        # (is mailing itself further instructions, intro c, further lines)
+        # an In persona, joining our M
+        # push to dome
+        # that must in  A
+        ref $s eq 'ARRAY' || die;
+        my ($N,$c) = @$s;
+        # take 4s v             add 3s v         next 2 
+        $N = [{MZ=>A.fl}, {MZ=>{'3 doex'=>$c}}, @$N];
+        # and In could feel our light cone
+        Rw In $J:A.J $M:T.oM $N;
+        # ^but instead push to A.N and A.No, the sister strand Whare Y Whare
+        # and A walks through t&Y, d&Whare(6)
+        # turns via n&ACGT
+        # the time beams mapped... a W concat couldol
+        T.not = 1;
+     
+    # theses, pulling bits
+    n iZu =>''=>{s=><<''}
+        my $way = $s =~ s/^\/// ? 'fund' : 'muck';
+        my $Z = Rw $way - $p:s $dclone=1;
     
 Csys: |
     u allacgts
