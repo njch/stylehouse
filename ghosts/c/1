@@ -148,31 +148,39 @@ SNat: | # I.ex do  # it's in that, bubbles
     my $talk = "A.talk: $K A.cv > $c --- C.t ";
     my $aim = {$K=>1};
     aim.I = 1 if $aim->{A.am};
+    my $yv = {};
+    # make K/cv/t -> cv/K/t
     for my $k (sort keys %$i) {
         my $ii = $i->{$k};
         
-        ref $ii ? die "wei $k=$ii" : next
-            if ref $ii ne 'HASH';
-        $aim->{$k} || next;
-        my $vb;
+        next if $k eq 'Ii';
+        next if $k eq 'ooI';
+        ref $ii eq 'HASH' || die "weird $k=$ii";
         
         for my $vc (sort keys %$ii) {
             my $iii = $ii->{$vc};
-            die unless $vc < 1;
+            die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
+            $yv->{$vc}->{$k} = $iii;
+        }
+    }
+    # do stuff
+    my $vb; # in fractions
+    for my $vc (sort keys %$yv) {
+        my $is = $yv->{$vc};
+        
+        next if $vc <= A.cv && $vc != $c;
+        next if $vc > $c;
             
-            # what to do with my brain:
-            next if $vc <= A.cv && $vc != $c;
-            next if $vc > $c;
+        if ($vb && $vc > $vb && @{A.N}) {
+            # sincing
+            sayre "$vb -> $vc  bump, ". @{A.N};
+            T.Z->{$vb} = 1;
+            return T.not = 1;
+        }
+        for my $k (sort keys %$is) {
+            my $iii = $is->{$k};
             
-            if ($vb && $vc > $vb) {
-                if (@{A.N}) {
-                    sayre "$vb -> $vc  bump, ". @{A.N};
-                    T.Z->{$vb} = 1;
-                    # go wide A.N, come back A.cv=$bv, right about now
-                    # sincing 
-                    return T.not = 1;
-                }
-            }
+            next unless $aim->{$k};
             
             for my $ik (sort keys %$iii) {
                 my $D = $iii->{$ik};
@@ -230,6 +238,7 @@ SNat: | # I.ex do  # it's in that, bubbles
             }
         }
     }
+    
     say
         Rw TreeD $s $scby=gro
             if A.J.V && keys %$s;
