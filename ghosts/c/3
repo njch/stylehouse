@@ -46,18 +46,6 @@ C14: | # the CIA is all over it
             die "howto ".ki $c;
         }
     }
-Modulator: |
-    n Indulator =>W
-    
-    n Space =>W
-    n Spaci =>W
-    
-    n lum =>W
-    n bal =>W
-    
-    n Rings =>W
-    n Wrinkles =>W
-    n Jing =>W
 Modi: |
     # make pool, synth space, want arches
     # fork & rejoin to exciting place
@@ -82,18 +70,18 @@ Modi: |
     continue { I.d&z; }
     # 9
     return $A
-Rings: | # qualitative space coupling, T phasing
-    u allacgts
+Modulator: |
+    n Indulator =>W
     
-    n flywheel =>''=>{s=><<''},{code=>'Mo 1'}
-        # wheels acts run in, run around each 6*
-        # SNat recoils if we 0
-        # we should scrub away any T we understand (exactly)
-        $s->();
-        I.d&Tat if T.at;
-        return 0 if T.last;
-        1;
+    n Space =>W
+    n Spaci =>W
     
+    n lum =>W
+    n bal =>W
+    
+    n Rings =>W
+    n Wrinkles =>W
+    n Jing =>W
 Wrinkles: | # space refering to itself
     u allvse
     
@@ -113,6 +101,18 @@ Wrinkles: | # space refering to itself
         # install sc path, wants idlyness (indexedness)
         T.at.path = $path;
         T.at.idly = 1 if !C.c.fo;
+    
+Rings: | # qualitative space coupling, T phasing
+    u allacgts
+    
+    n flywheel =>''=>{s=><<''},{code=>'Mo 1'}
+        # wheels acts run in, run around each 6*
+        # SNat recoils if we 0
+        # we should scrub away any T we understand (exactly)
+        $s->();
+        I.d&Tat if T.at;
+        return 0 if T.last;
+        1;
     
 Space: |
     u allvy
@@ -158,6 +158,7 @@ Space: |
     # since they want to effect how we nest about them
     n yon =>''=>{s=><<''},{code=>'Mo 22',v=>'o'}
          my $J = A.J;
+         die "AM HAIR";
          my $Jy = J.C.y; # pi's sea
          if (my $lt = C.y.limn) {
              my $rl = int(9 * $lt * Jy.spc);
@@ -190,14 +191,20 @@ Spaci: |
     # was Y/i/11
     n yall =>''=>{s=><<''},{code=>'Mo 221'}
         C.y = {thi => C.y} if !ref C.y;
+        # ^ distribute display particles
+        
     
     # y is all in
     # could spiral much space away from spine
     n yin =>''=>{s=><<''},{code=>'Mo 23'}
         # build wave plot manifold
-        die "cv+in".k2 $C if y.cv && y.in;
-        y.in ||= 0.1; 
-        y.out ||= 0.9; # up to
+        # 
+        y.cv ||= 0.3 if !y.cv && !y.in;
+        sayre "cv+in".k2 $C if y.cv && y.in;
+        y.in = y.cv if y.cv;
+        y.in ||= 0.1;
+        y.out = y.in + y.space if defined y.space;
+        y.out ||= 0.9; # up to, then low things big
         y.thi ||= 1; 
         y.space = y.out - y.in;
         y.space *= -1 unless y.space > 0;
@@ -302,4 +309,83 @@ lum: |
         my $fs = ($spc / 0.02) * 4;
         C.sc.fs = $fs if $fs < 9;
         C.y.spc = $spc;
+Jing: | # higher crinkles
+    u allvse
+    
+    # allact nov
+    n J =>0.211=>{s=><<''},{code=>'Mo 3211'}
+        C.c.W = $J;
+        die "In self: J.name" if $J eq A.J;
+        A.ztime = 3 if A.J.name ne 'qq'; # break off
+        
+    n time =>0.212=>{s=><<''},{code=>'Mo 3212'}
+        A.ztime = delete C.c.time;
+        
+    n pi =>0.213=>{s=><<''},{code=>'Mo 3213'}
+        # crunch gravel, spreaders
+        # - c. language is map to some u before 6ing
+        ref $s && die"refpi";
+        T.at.pi = $s || 'guess';
+        C.c.J = 'pi';
+        my $oJ = $J;
+        $oJ = C.y.o.J if C.y.o && C.y.o.J;
+        .
+        A.jr = Rw Ajr $J:oJ $C;
+    
+    n W =>0.213=>{s=><<''},{code=>'Mo 32132'}
+        my $cv = 0.3;
+        my $jr = Rw Ajr $J:G.oin $t:W $cv;
+        return C.c.W = jr&J if C.c.pi;
+        # W
+        # some get-J or weave wires protocol - hosts
+        my $t = $W;
+        $t = W.name if ref $t;
+        T.at.J = ref $W ? $W : $t;
+        T.at.W = $t;
+        C.c.J ||= $W;
+        C.t = $t;
+        C.y.cv ||= do { sayyl"Auto Wormole pitch C.t = $cv"; $cv };
+        A.jr = $jr;
+        # and where the
+        if (C.c.vv) {
+            A.ztime = delete C.c.vv;
+            A.jr&vv,9
+            ->(); #delone
+        }
+        
+    n J =>0.3=>{s=><<''},{code=>'Mo 43'}
+        sayre "No S" if !defined C.c.s;
+        sayre "nadad S" if !exists C.c.s;
+        die "nonmost W: J.name" if C.c.W && $J ne J.most.J;
+        Rw oo3;
+    
+    n J =>0.31=>{s=><<''},{code=>'Mo 431'}
+        my $f = A.jr&J;
+        my $j = C.sc.J;
+        # the J string->ref going
+        # J is here, W is around
+        ref $j && ref $f && $j ne $f || die ".sc J dif $f $j";
+        # should T.at so vis
+        C.sc.J = $f if $f && ref $f && !f.dead;
+    
+    n X =>0.32=>{s=><<''},{code=>'Mo 432'}
+        my $J = C.c.J;
+        $J || die "X no J";
+        ref $J || die "Nofound $J  C.t   C.y.cv";
+        C.c.X eq $J || die "noovewr X  C.c.X ne $J";
+        sayyl "DELING J.name".ki$C;
+        A.jr&J,$J,9;
+        J.dead = 1;
+        # SNat bail, we have balin by now so hole in space this time
+        T.not = 1;
+        
+    n J =>0.33=>{s=><<''},{code=>'Mo 433'}
+        !ref $J &&
+        Rw oo33 + $J;
+    
+    n J =>0.6=>{s=><<''},{code=>'Mo 6'}
+        Rw oJ6;
+    
+    n J =>0.7=>{s=><<''},{code=>'Mo 7'}
+        Rw oJ7;
 

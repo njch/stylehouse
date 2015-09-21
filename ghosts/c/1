@@ -222,32 +222,20 @@ SNat: | # I.ex do  # it's in that, bubbles
                     $paw =~ s/\W//g;
                     Rw $paw $A $C $G $T $__D:D;
                 }
-                # non-I acgt means some expressed tick of the creature
-                # as osc accesses
-                # should exude spines, have 0.9s in oo awaiting
-                # where nodes want to unify to is another osc trick
-                # cna get the fingers picking through fillaments
-                # as wants Yesui via whatever, etc.
+                
+                # most tiny ticks
                 if ($act) {
                     D.sc.acgt eq 's'||die "nonacgts".ki $D;
                     exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
                     I.d&D.t,A.s;
                 }
-                if (T.not) {
-                    sayre "TSnot! A.cv $vc $c @ D.t";
-                    return; # will &z, oseve
-                }
-                if (my $wh = delete T.whack) {
-                    $wh eq '1' || die "whatwhack:$wh";
-                    return;
-                }
+                return if T.not;  # will &z, oseve
+                return if delete T.whack;
             }
         }
     }
     
-    say
-        Rw TreeD $s $scby=gro
-            if A.J.V && keys %$s;
+    say Rw TreeD $s $scby=gro if A.J.V && keys %$s;
     
 IStuff: |
     u allacgt
@@ -326,7 +314,99 @@ KnowTime: | # dome props
         $re;
     
     n ex =>''=>{s=><<''},{acgt=>'i,K,cv'}
-        Rw SNat $A $C $G $T $I $i $K $cv;
+        #Rw SNat $A $C $G $T $I $i $K $cv;
+        # baseism
+        my $s = {};
+        my $c = 0+("0.".$cv);
+        my $talk = "A.talk: $K A.cv > $c --- C.t ";
+        .
+        my $aim = {$K=>1};
+        aim.I = 1 if $aim->{A.am};
+        .
+        my $yv = {};
+        # make K/cv/t -> cv/K/t
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            .
+            next if $k eq 'Ii';
+            next if $k eq 'ooI';
+            ref $ii eq 'HASH' || die "weird $k=$ii";
+            .
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
+                $yv->{$vc}->{$k} = $iii;
+            }
+        }
+        .
+        # do stuff
+        my $vb; # in fractions
+        for my $vc (sort keys %$yv) {
+            my $is = $yv->{$vc};
+            .
+            next if $vc <= A.cv && $vc != $c;
+            next if $vc > $c;
+            .
+            if ($vb && $vc > $vb && @{A.N}) {
+                # sincing, wide order
+                # various others want to be around for only some of the process...
+                sayre "$vb -> $vc  bump, ". @{A.N};
+                T.Z->{$vb} = 1;
+                return T.not = 1;
+            }
+            for my $k (sort keys %$is) {
+                my $iii = $is->{$k};
+                .
+                next unless $aim->{$k};
+                .
+                for my $ik (sort keys %$iii) {
+                    my $D = $iii->{$ik};
+                    .
+                    if (my $nk = D.sc.nk) {
+                        my $C = I.nF.C;
+                        next if !exists $C->{$nk};
+                        if (my $gk = D.sc.gk) {
+                            next if !exists $C->{$nk}->{$gk};
+                        }
+                    }
+                    my $act;
+                    my $dont;
+                    if (D.sc.acgt && D.sc.act) {
+                        $act = 1;
+                        # acgtsubs can be defined at any cv
+                        # run themselves if act
+                        # usu. one receiver (Ci) and the rest scheme
+                        die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
+                        $dont = 1 if exists A.I->{D.t};
+                    }
+                    .
+                    # schools of many fish
+                    $vb ||= $vc if D.sc.v;
+                    .
+                    # TreeD
+                    $s->{$k}->{$vc}->{$ik} = $D;
+                    my $sep = $act ? "----" : ">>>>";
+                    sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
+                        if A.J.V > 1;
+                    .
+                    # way or acgt-setuping-way
+                    unless ($dont) {
+                        my $paw = join"_",'',$k,$vc,D.t;
+                        $paw =~ s/\W//g;
+                        Rw $paw $A $C $G $T $__D:D;
+                    }
+                    # most tiny ticks
+                    if ($act) {
+                        D.sc.acgt eq 's'||die "nonacgts".ki $D;
+                        exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
+                        I.d&D.t,A.s;
+                    }
+                    return if T.not;  # will &z, oseve
+                    return if delete T.whack;
+                }
+            }
+        }
+        say Rw TreeD $s $scby=gro if A.J.V && keys %$s;
     
     # y
 Indo: | # leg off In if Ind (Wild)
@@ -509,7 +589,7 @@ In: | # I I I
         for my $k (sort keys %{A.fl}) {
             my $v = A.fl->{$k};
             $k = $2 if $k =~ /^(\d+) (.+)$/;
-            Rw ym/$k $I $J $A $C $n:C $v $G $T;
+            Rw ym/$k $I $J $A $C $v $G $T;
         }
         I.d&z && next if T.not;
         
@@ -686,7 +766,7 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
         my ($AA,$CC) = @$ac;
-        $AA ||= do {sayre "Spawning cone CC.t"; $A};
+        $AA ||= $A; # spawning cone thing
         I.d&n,$AA,$CC,$G,$T;
         $A = $AA;
         if (A.cv >= $cv) {

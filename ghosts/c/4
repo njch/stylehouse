@@ -38,7 +38,6 @@ allvse: |
     n allvc =>W
     n 'allarev=c'=>2,{s=><<''},{code=>'In 421'}
         C.sc.v ||= C.t unless exists C.sc.v;
-        say "Autovase C.t  C.y.cv";
 allacgt: |
     n allcode=>''=>{W=>'allcode'}
     n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
@@ -67,7 +66,7 @@ babsubrip: |
             $l++;
         }
         my $co = join '', map{"$_\n"} @up;
-        $co =~ s/\n\s+\.\n/\n\n/sg;
+        $co =~ s/\n\s*\.\s*\n/\n\n/sg;
         @$N == 1 || die "allcode in swa";
         my $c = $N->[0]->[2];
         die "Swap ".wdump [c.s=>FOR=>$co] unless split("\n", c.s) == @up;
@@ -220,19 +219,33 @@ ym/talky: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     
     my $s = "! $n    $t $yc  \t\t". ki $nC;
     $s =~ s/\n/↯/g;
+    $s =~ s/c=%\{/c/;
+    $s =~ s/\}% sc= %\{/ %%% /;
     if (v.talks) {
         push @{v.talks}, $s;
     }
     else {
         say $s;
     }
-TNews: |
-    my $o = A.twof;
-    my $t = @$N;
-    my $ine = Rw ratio $o $t;
-    my $rv = V.rv;
+ym/doex: | # extend C by v 
+    I.d&xot,$C,$v;
+scd: | # read parts, given rv and possibly since rl - puts newzs in flat list, they themselves unify time etc.
+    my $r;
+    r.z = [];
+    r.oldz = [];
+    undef $rl if rl.c ne rv.c;
+    push @{$rl ? r.oldz : r.z}, @{rv.c};
     
-    return say "A.talk: Same" if rl.i eq rv.i;
+    r.in = @{rl.sc||[]};
+    r.out = @{rv.sc};
+    if (r.out > r.in) {
+        r.ay = [r.in..(r.out - 1)];
+        push @{r.oldz}, @{rv.sc}[0..r.in] if r.in;
+        push @{r.z}, @{rv.sc}[@{r.ay}];
+    }
+    $r
+TNews: |
+    return say "$talk: Same    rl.i eq rv.i  \n$rl\n$rv" if rl.i eq rv.i;
     
     my $new = "";
     if (rl.c ne rv.c) {
@@ -242,22 +255,30 @@ TNews: |
         $new = "new!";
     }
     my $r = Rw scd $rl $rv;
-    my $o = Rw ZNews $sc:r.oldz if r.oldz;
-    my $n = Rw ZNews $sc:r.z;
+    my $o = Rw ZNews $J sold $sc:r.oldz if r.oldz;
+    my $n = Rw ZNews $J news $sc:r.z;
     
-    say "A.talk: ".($new||"GROWTH!");
+    say "$talk: ".($new||"GROWTH!");
     saybl $o if $o;
     sayyl $n if $n;
     
 ZNews: |
+    if (ref $sc->[0] && @$sc > 1) {
+        return join "\n", map {
+            my $sc = [$_];
+            my $s = Rw ZNews $J $sc;
+            $s =~ s/^! /oo/s;
+            $s;
+        } @$sc;
+    }
+    elsif (!ref $sc->[0] && @$sc) {
+        return warn "Raw ".wdump $sc;
+    }
     my $N = [@$sc];
-    my $J = G.Hypo;
-    @$N = Rw humms $J $N wongui _;
     my $v = {talks=>[],indcar=>'from'};
-    Rw humms $J $N talky $v;
+    @$N = Rw humms $J:G.oin $N wongui _;
+        Rw humms $J:G.oin $N talky $v;
     join "\n", @{v.talks};
-ym/doex: | # extend C by v 
-    I.d&xot,$C,$v;
 oJ4: | # J.A remains, A transitory  - A.time is to couple it like I.in
     J.A ||= {first=>hitime()};
     # everytime stuff:
