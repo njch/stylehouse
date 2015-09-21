@@ -73,6 +73,14 @@ babsubrip: |
         die "Swap ".wdump [c.s=>FOR=>$co] unless split("\n", c.s) == @up;
         c.s = $co;
     }
+humms: | # In wild packer # slipping an II in, aggregator following alllist or so, proto arirang
+   ar.v ||= {};
+   ar.M ||= [];
+   my ($oK,$rM) = @{delete ar.m||die"nbok"};
+   inter({oK=>$oK});
+   $N = [{MZ=>{$oK=>ar.v}}, @$N];
+   Rw In + $N;
+   $rM ? @{ar.M} : ar.v
 ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
     
@@ -85,9 +93,8 @@ ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
             reverse $C, reverse map{@$_} A.c&$wire,'%as:list'
         ];
         my $c = {c=>{$wire=>$from}};
-        my $s = {EC=>[$zi,$c]};
-        # the merging ^
-        push @{A.N}, $s;
+        # the merging 
+        push @{A.N}, {EC=>[$zi,$c]};
     }
 ym/notnotcode: |
     T.not = 1 unless exists C.sc.code;
@@ -204,11 +211,51 @@ ym/talky: | # make M flat, acum .c.from, atoms wired together like so J.most.$
         delete nC.y;
     }
     $yc = delete(nC.t).$yc;
-    $n = "in:C.sc.gro";
+    $n = "in:C.sc.gro" if C.sc.gro;
+    if (v.indcar) {
+        my $th = C.c->{v.indcar} || [];
+        my $am = 0 + @$th;
+        $n .= join "", ("    ") x $am;
+    }
     
     my $s = "! $n    $t $yc  \t\t". ki $nC;
     $s =~ s/\n/↯/g;
-    say $s;
+    if (v.talks) {
+        push @{v.talks}, $s;
+    }
+    else {
+        say $s;
+    }
+TNews: |
+    my $o = A.twof;
+    my $t = @$N;
+    my $ine = Rw ratio $o $t;
+    my $rv = V.rv;
+    
+    return say "A.talk: Same" if rl.i eq rv.i;
+    
+    my $new = "";
+    if (rl.c ne rv.c) {
+        sayre "C C C C C C C";
+        sayre "C C C C C C C";
+        sayre "C C C C C C C";
+        $new = "new!";
+    }
+    my $r = Rw scd $rl $rv;
+    my $o = Rw ZNews $sc:r.oldz if r.oldz;
+    my $n = Rw ZNews $sc:r.z;
+    
+    say "A.talk: ".($new||"GROWTH!");
+    saybl $o if $o;
+    sayyl $n if $n;
+    
+ZNews: |
+    my $N = [@$sc];
+    my $J = G.Hypo;
+    @$N = Rw humms $J $N wongui _;
+    my $v = {talks=>[],indcar=>'from'};
+    Rw humms $J $N talky $v;
+    join "\n", @{v.talks};
 ym/doex: | # extend C by v 
     I.d&xot,$C,$v;
 oJ4: | # J.A remains, A transitory  - A.time is to couple it like I.in
