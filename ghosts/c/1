@@ -272,43 +272,43 @@ KnowTime: | # dome props
         my $ncv;
         my $re;
         my $dont;
-            if (A.cv < 0.6 || $c >= 0.7) {
-                if ($c >= A.cv) {
-                    $ncv = $c;
+        if (A.cv < 0.6 || $c >= 0.7) {
+            if ($c >= A.cv) {
+                $ncv = $c;
+                $re = 1;
+            }
+            else {
+                $re = 0;
+                $dont = 1;
+                say " deInc A.cv - $cv $c";
+            }
+            die "pre bigger" if $cv < A.cv;
+        }
+        else {
+            if ($c < A.cv) {
+                if (A.cv == 0.6) { # scoop up all on entering timezone
                     $re = 1;
+                    $dont = 1; # or will II fall away
                 }
                 else {
                     $re = 0;
                     $dont = 1;
-                    say " deInc A.cv - $cv $c";
                 }
-                die "pre bigger" if $cv < A.cv;
             }
-            else {
-                if ($c < A.cv) {
-                    if (A.cv == 0.6) { # scoop up all on entering timezone
-                        $re = 1;
-                        $dont = 1; # or will II fall away
-                    }
-                    else {
-                        $re = 0;
-                        $dont = 1;
-                    }
-                }
-                elsif ($c == A.cv) {
-                    $re = 1;
-                }
-                elsif ($c > A.cv) { # and $c < 0.7, is a next time
-                    T.Z->{$c} = 1;
-                    $re = 0;
-                    $dont = 1;
-                }
-                else {die"nof"}
+            elsif ($c == A.cv) {
+                $re = 1;
             }
-            my $was = A.cv;
-            $dont || I.d&ex,$i,$K=>$cv;
-            A.cv = $ncv if defined $ncv && A.cv == $was;
-            $re;
+            elsif ($c > A.cv) { # and $c < 0.7, is a next time
+                T.Z->{$c} = 1;
+                $re = 0;
+                $dont = 1;
+            }
+            else {die"nof"}
+        }
+        my $was = A.cv;
+        $dont || I.d&ex,$i,$K=>$cv;
+        A.cv = $ncv if defined $ncv && A.cv == $was;
+        $re;
     
     n ex =>''=>{s=><<''},{acgt=>'i,K,cv'}
         Rw SNat $A $C $G $T $I $i $K $cv;
