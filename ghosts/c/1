@@ -505,7 +505,6 @@ Motion: |
     n Tat =>''=>{s=><<''}
         my $at = delete T.at;
         $at || die "youAT";
-        say "GOt at: ".join ', ', sort keys %$at;
         C.sc->{$_} = $at->{$_} for keys %$at; # sizling update sprites
     
     n CoM =>''=>{s=><<''},{code=>'I 71',act=>1}
@@ -517,7 +516,7 @@ Motion: |
         I.d&oseverato;
         1
 
-    # A and A.mo dye drops, M tractios, T tooly
+    # A and A.mo dye drops, M tractios, T tooly, see also flywheel
     n flywheels =>''=>{s=><<''}
         # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
         # its I.d&nded and holds things to code, $v a spiral it's filling up
@@ -542,7 +541,6 @@ Motion: |
             if ($lo) {
                 my $ay = delete $ats->{$lo};
                 my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                sayyl "Loop A.cv > $lo x ".@N;
                 push @{A.mo.N}, @N;
             }
         }
@@ -627,6 +625,7 @@ SlideEater: | # liney schemery
         I.d&rensc if !ref C.sc;
         (3==grep{ref}map{$C->{$_}}y=>c=>'sc') &&
         defined C.t || die "reaso fail".wdump $C;
+        A.J.V > 1 && sayyl "REason: A.J.name: ".ki$C;
     
     n reny =>''=>{s=><<''}
         C.y = C.y eq '' ? {}
@@ -634,9 +633,16 @@ SlideEater: | # liney schemery
             ? {cv=>$1}
             : C.y =~ /^($NUM)-($NUM)$/
             ? {from=>$1,to=>$2}
-            : die "strung ny: C.y".wdump $C;
-        if (C.y.cv) {
-            C.y.cv /= 10 while C.y.cv <= -1 || C.y.cv >= 1;
+            : C.y =~ /^($NUM)-($NUM)x($NUM)$/
+            ? {from=>$1,to=>$2,thi=>$3}
+            : die "C y wtf: C.y";
+        I.d&scyvle;
+    
+    n scyvle =>''=>{s=><<''}
+        for (qw'from to cv') {
+            if (C.y->{$_}) {
+                C.y->{$_} /= 10 while C.y->{$_} <= -1 || C.y->{$_} >= 1;
+            }
         }
     
     n renc =>''=>{s=><<''}
@@ -647,7 +653,7 @@ SlideEater: | # liney schemery
         C.sc = C.sc eq '' ? {}
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
-            : die "nostr  C.sc    ".ki $C
+            : die "nostr  C.sc   of I.peels  ".ki $C
     
 C: |
     u allacgts
@@ -749,7 +755,7 @@ C: |
         $s
    
    
-Servo: | # things over top of speech bubble in the c 5 liniarity
+Servo: | # lightning over speech bubble in the c 5 liniarity
     u allacgts
     
     n servehash =>''=>{s=><<''}
@@ -769,7 +775,7 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         I.d&n,$AA,$CC,$G,$T;
         $A = $AA;
         if (A.cv >= $cv) {
-            warn "Double comback A.cv $cv";
+            sayre "Double comback A.cv $cv: ".ki $CC;
             return T.not = 1;
         }
         A.cv = $cv;
