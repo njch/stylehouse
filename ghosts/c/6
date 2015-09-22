@@ -67,14 +67,13 @@ Jing: | # higher crinkles
     
     # create
     n Jcreate =>0.33=>{s=><<''},{code=>'Mo 433',v=>'J'}
-        my $J = C.sc.J;
+        my $J = C.c.J;
         return if ref $J;
-        die wdump "TC ".wdump $C;
         $J = Rw Jto $name:J;
         ref $J || die 'watt'.$J;
         if (exists C.c.pi) {
             J.Jiter = A.J; # erse rev
-            J.most->{$_} = J.most->{$_} for keys %{J.most||{}};
+            J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};
         }
         sayyl "J33   Made J.name";
         T.at.J = $J;
@@ -85,18 +84,18 @@ Jing: | # higher crinkles
         
     # time out
     n Jtime =>0.34=>{s=><<''},{code=>'Mo 434',v=>'J'}
-        die "C.c.J vs C.sc.J" if C.c.J ne C.sc.J;
+        #die "C.c.J vs C.sc.J" if C.c.J ne C.sc.J;
         $J = C.c.J = C.sc.J;
         # A falls
         # J.A persists
         J.A ||= {first=>hitime()};
         die "same A.J.name =- J.name" if A.J eq $J;
         if (exists C.sc.pi) {
-            die if J.Jiter ne A.J;
-            die if J.most.J eq $J;
+            die 'JiternotAJ' if J.Jiter ne A.J;
+            die 'pimostJ'if J.most.J eq $J;
         }
         else {
-            die if J.most.J ne $J;
+            die 'esel' if J.most.J ne $J;
         }
         A.ztime ||= 6;
         if (C.sc.pi) {
