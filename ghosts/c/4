@@ -36,8 +36,12 @@ allvc: |
         }
 allvse: |
     n allvc =>W
-    n 'allarev=c'=>2,{s=><<''},{code=>'In 421'}
+    n 'allvse'=>2,{s=><<''},{code=>'In 421'}
         C.sc.v ||= C.t unless exists C.sc.v;
+        (my $cv = C.y.cv) =~ s/^0\.//;
+        $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
+        $cv||die"no0 C.y.cv  ".ki $C;
+        C.t .= "_$cv";
 allacgt: |
     n allcode=>''=>{W=>'allcode'}
     n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
@@ -69,6 +73,9 @@ babsubrip: |
         $co =~ s/\n\s*\.\s*\n/\n\n/sg;
         @$N == 1 || die "allcode in swa";
         my $c = $N->[0]->[2];
+        if (!ref $c) {
+            $c = $N->[0]->[2] = {s=>$co};
+        }
         die "Swap ".wdump [c.s=>FOR=>$co] unless split("\n", c.s) == @up;
         c.s = $co;
     }
@@ -156,8 +163,10 @@ ym/concoi: |
             if (my $args = C.sc.args) {
                 die "wonky C.t   of ".ki $C if C.t =~ /\W/;
                 my $gl = "";
+                my $und = "_";
                 if ($args =~ s/^(A,C,G,T,)(?!s)//) {
-                    $gl .= '    my ($A,$C,$G,$T)=splice @_,0,4;'."\n";
+                    $gl .= '    my ($A,$C,$G,$T,@M)=@_;'."\n";
+                    $und = 'M';
                 }
                 my($sf,$sa);
                 if (C.sc.subpeel) { # runs, returns T.thing
@@ -175,7 +184,7 @@ ym/concoi: |
                     .$sf
                     ."sub {\n"
                     .$gl
-                    ."    my (".join(',',map{'$'.$_}split',',$args).") = \@_;\n"
+                    ."    my (".join(',',map{'$'.$_}split',',$args).") = \@".$und.";\n"
                     .join("\n",@ara)."\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                     ."}"

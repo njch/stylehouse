@@ -235,7 +235,9 @@ SNat: | # I.ex do  # it's in that, bubbles
         }
     }
     
-    saygr Rw TreeD $s $scby=gro if A.J.V > 1 && keys %$s;
+    A.J.V > 1 && keys %$s &&
+    saygr "Your A.J.name is A.J.V: \n".
+        Rw TreeD $s $scby=gro;
     
 IStuff: |
     u allacgt
@@ -439,10 +441,8 @@ Indulator: | # Wain spinality
     n IStuff =>W
     n KnowTime =>W
     n SlideEater =>W
-    n CGolf =>W
-    n Csys =>W
+    n C =>W
     n Servo =>W
-    n Indiy =>W
     n Motion =>W
     
 Indi: |
@@ -517,11 +517,8 @@ Motion: |
         push @{A.M}, @{T.oM};
         I.d&oseverato;
         1
-    
-Indiy: | # A and A
-    u allacgts
+
     # A and A.mo dye drops, M tractios, T tooly
-    
     n flywheels =>''=>{s=><<''}
         # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
         # its I.d&nded and holds things to code, $v a spiral it's filling up
@@ -563,8 +560,6 @@ Indiy: | # A and A
         my $is = $i->{C.y.p}; # things in our C's pool
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     
-        
-
 Bangdesk: |
     u allacgts
     # want to sus $@ and hang vectors of what, should be autoish
@@ -652,25 +647,21 @@ SlideEater: | # liney schemery
             ? I.d&peel,C.sc
             : die "nostr  C.sc    ".ki $C
     
-CGolf: |
+
+C: |
     u allacgts
     
-    n fourstring =>''=>{s=><<''}
-        # sticks out of usual c 5 hive of MZ/awarey things #l=Servo
-        if ($s =~ /^\s*#?\s*MZ (.+)$/) {
-           I.d&MZu, $1;
-        }
-        # the rest of this stuff lies here more, eating a string of lumps
-        # if we were reading lines the N[$line] hop would neg
+    n fourstring =>'',<<''
+        $s =~ /^\s*#?\s*MZ (.+)$/
+                && I.d&MZu, $1;
         # modem sounds etc.
         # dome props, repeatable tests
-        elsif ($s =~ /^\s*(#.*)$/) {
+        if ($s =~ /^\s*(#.*)$/) {
            T.not = 1;
            T.com = $1;
         }
         elsif ($s eq '') {
-           T.not = 1;
-           T.space = 1; # could mean sticks
+           T.not = T.space = 1;
         }
         else {
            my $ci = $s;
@@ -683,28 +674,80 @@ CGolf: |
            }
         }
     
-    n fourreal =>''=>{s=><<''}
+    n fourreal =>'',<<''
         (C.t, C.y) = @$s;
         C.c  = $s->[2] if exists $s->[2];
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
-        die"C.t from ".wdump $s if ref C.t; # dive
+        die"C.t from ".wdump $s if ref C.t; # dives
     
-    n peels =>''=>{s=><<''},{subpeel=>1}
+    n peels =>'',<<'','%subpeel'
         qr/^[\{\%]/;
     
-    n peel =>''=>{s=><<''}
+    n peel =>'',<<''
         $s =~ s/^%// || 
             $s =~ s/^{// && $s =~ s/}$//
             || die "unpealable $s";
         my $c;
         for (split ',', $s) {
             my ($k, $v) = split ':', $_, 2;
+            $v = 1 if !defined $v;
             $c->{$k} = $v;
         }
         $c||{}
     
+    # for getting click together:
+    n c =>'',<<'','%acgt:D'
+        die'nofA' if !I.nF.A;
+        $D = I.d&interpD,@_ if !ref $D;
+        for (qw'code if of ref') {
+            exists C.c->{$_} && die "COT I".ki $C
+        }
+        my $v = I.d&Cngk,$D;
+        return () unless $v;
+        A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
+        die 'mulitAn' if @$v > 1;
+        if (D.c.as eq 'list') {
+            return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
+        }
+        return 1;
     
+    n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
+        return $nk if ref $nk;
+        my $D = {};
+            while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
+                D.c->{$1} = $2;
+                pop @_ if @_ == 2;
+            }
+            if (@_ == 1) { # or from t,,,
+                D.c.nk ||= 'c';
+                D.c.gk ||= $nk;
+            }
+            elsif (@_ == 2) {
+                D.c.nk = $nk;
+                D.c.gk = $gk;
+            }
+        $D
+    
+    n Cngk =>'',<<'',{acgt=>'D'}
+        ref $A || die "nmonref A!";
+        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        return 1 if D.c.any;
+        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
+            my $v = [$C->{D.c.nk}->{D.c.gk}];
+            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
+            return $v;
+        }
+        die "noNnk".wdump $D unless exists D.c.nk;
+        0;
+    
+    n xot =>'',<<'',{acgt=>'s,c'}
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+        }
+        $s
+   
+   
 Servo: | # things over top of speech bubble in the c 5 liniarity
     u allacgts
     
@@ -799,58 +842,4 @@ Servo: | # things over top of speech bubble in the c 5 liniarity
         my $way = $s =~ s/^\/// ? 'fund' : 'muck';
         my $Z = Rw $way - $p:s $dclone=1;
     
-Csys: |
-    u allacgts
-    
-    n c =>''=>{s=><<''},{acgt=>'D'}
-        die'nofA' if !I.nF.A;
-        $D = I.d&interpD,@_ if !ref $D;
-        for (qw'code if of ref') {
-            exists C.c->{$_} && die "COT I".ki $C
-        }
-        my $v = I.d&Cngk,$D;
-        return () unless $v;
-        A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
-        die 'mulitAn' if @$v > 1;
-        if (D.c.as eq 'list') {
-            return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
-        }
-        return 1;
-    
-    n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
-        return $nk if ref $nk;
-        my $D = {};
-            while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
-                D.c->{$1} = $2;
-                pop @_ if @_ == 2;
-            }
-            if (@_ == 1) { # or from t,,,
-                D.c.nk ||= 'c';
-                D.c.gk ||= $nk;
-            }
-            elsif (@_ == 2) {
-                D.c.nk = $nk;
-                D.c.gk = $gk;
-            }
-        $D
-    
-    n Cngk =>''=>{s=><<''},{acgt=>'D'}
-        ref $A || die "nmonref A!";
-        die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
-        return 1 if D.c.any;
-        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
-            my $v = [$C->{D.c.nk}->{D.c.gk}];
-            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
-            return $v;
-        }
-        die "noNnk".wdump $D unless exists D.c.nk;
-        0;
-    
-    n xot =>''=>{s=><<''},{acgt=>'s,c'}
-        while (my($k,$v) = each %$c) {
-            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
-        }
-        $s
-   
-   
 

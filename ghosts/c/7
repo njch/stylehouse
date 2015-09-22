@@ -177,7 +177,7 @@ VOD: |
             $ov || die "novodo $ea";
             iv.c eq ov.c || die "wasn't satbv c";
             my $ray = Rw scd $rl:ov $rv:iv;
-            sayyl "gr $ea    ov.i     iv.i    ".ki $ray if J.V;
+            #sayyl "gr $ea    ov.i     iv.i    ".ki $ray if J.V;
             
             push @$z, @{ray.z};
             
@@ -211,7 +211,7 @@ OMP: |
     my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
         
-    say $talk if J.V && $vl && (lv.pur || lv.op || lv.od);
+    say $talk if J.V > 2 && $vl && (lv.pur || lv.op || lv.od);
     
     !$vl && !lv.op && die "unopposed to not-bfore";
     
@@ -392,7 +392,7 @@ AC_V: |
             my $in = @{iv.sc};
             my $out = @{ov.sc};
             if (@{iv.sc} > @{ov.sc}) {
-                saybl "$talk GROWs" if J.V;
+                saybl "$talk GROWs" if J.V > 2;
                 
                 lv.od.gr->{$gk} = $iv;
             }
