@@ -69,7 +69,7 @@ MourmaZ: |
         # this feeding on I or III
 Arange: |
     ar.oA && ar.oA.D &&
-    substr(ar.oA.D.bab, 0, 200) =~ /s=><<''/ && 
+    substr(ar.oA.D.bab, 0, 200) =~ /<<''/ && 
     Rw babsubrip $oA:ar.oA $D:ar.oA.D $N;
     
     my $A = {};
@@ -214,7 +214,7 @@ SNat: | # I.ex do  # it's in that, bubbles
                 $s->{$k}->{$vc}->{$ik} = $D;
                 my $sep = $act ? "----" : ">>>>";
                 sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
-                    if A.J.V > 1;
+                    if A.J.V > 2;
                 
                 # way or acgt-setuping-way
                 unless ($dont) {
@@ -235,7 +235,7 @@ SNat: | # I.ex do  # it's in that, bubbles
         }
     }
     
-    saygr Rw TreeD $s $scby=gro if A.J.V && keys %$s;
+    saygr Rw TreeD $s $scby=gro if A.J.V > 1 && keys %$s;
     
 IStuff: |
     u allacgt
@@ -375,7 +375,6 @@ KnowTime: | # dome props
                         next if !exists $C->{$nk};
                         if (my $gk = D.sc.gk) {
                             next if !exists $C->{$nk}->{$gk};
-                            say "D.t does D.sc.nk"."."."D.sc.gk: $C->{$nk}->{$gk}";
                         }
                     }
                     my $act;
@@ -396,7 +395,7 @@ KnowTime: | # dome props
                     $s->{$k}->{$vc}->{$ik} = $D;
                     my $sep = $act ? "----" : ">>>>";
                     sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
-                        if A.J.V > 1;
+                        if A.J.V > 2;
                     .
                     # way or acgt-setuping-way
                     unless ($dont) {
@@ -420,7 +419,7 @@ KnowTime: | # dome props
                 last if T.not || T.whack;
             }
             my $se = Rw TreeD $s $scby=gro
-                if A.J.V && keys %$s;
+                if A.J.V > 1 && keys %$s;
             $c == 0.1 ? saygr $se : say $se if $se;
             .
             return if T.not;  # will &z, oseve
@@ -507,7 +506,7 @@ Motion: |
     n Tat =>''=>{s=><<''}
         my $at = delete T.at;
         $at || die "youAT";
-        say "GOt at: ". wdump 2, $at;
+        say "GOt at: ".join ', ', sort keys %$at;
         C.sc->{$_} = $at->{$_} for keys %$at; # sizling update sprites
     
     n CoM =>''=>{s=><<''},{code=>'I 71',act=>1}
@@ -565,75 +564,7 @@ Indiy: | # A and A
         {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};
     
         
-In: | # I I I
-    J.A.Indo && return Rw Indo;
-    
-    my $A = Rw already + $am=In $N;
-    my $I = A.I;
-    I.d&n,$A,{},$G,{};
-    I.d&An;
-    A.t&1;
-    
-    A.t&11111 || warn "NO 1";
-    # 
-    
-    # 2821:      keys arrive as characters already:
-    # prep A for A (I), J-sessioned etc stuff
-    # is literal G spacer, index jointed bunch of code to check out from w
-    # some comp could expectorate lots charstream rhythms ^
-    # Z flow?
-    # or we could do on a stick,
-    # so its MZ junk dont linger in this stream
-    # ie always flow outwards the sc filtery stuff.
-    while (@{A.N}) { #
-        my $s = shift @{A.N};
-        my $C = {};
-        my $T = {};
-        my $A = {%$A};
-        A.mo.on = $A;
-        A.s = $s;
-        T.oM = [];
-        I.d&n,$A,$C,$G,$T;
-        I.d&An;
-        A.t&2;
-        
-        I.d&Ci,$s;
-        ($A,$C) = @{T.grabac} if T.grabac;
-        
-        I.d&z && next if T.not;
-        I.d&Cr,$s;
-        A.t&6;
-        I.d&z && next if T.not;
-        
-        # elabourate C,
-        for my $k (sort keys %{A.fl}) {
-            my $v = A.fl->{$k};
-            $k = $2 if $k =~ /^(\d+) (.+)$/;
-            Rw ym/$k $I $J $A $C $v $G $T;
-        }
-        I.d&z && next if T.not;
-        
-        
-        push @{T.oM}, $C;
-        
-        A.t&7;
-        I.d&z;
-    }
-    
-    I.d&recycle;
-    
-    my $M = ar.M;
-    if ($M) {
-        push @$M, @{A.M}
-    }
-    elsif ($J) {
-        map {
-           Rw mani + $J $C:_
-        } @{A.M}
-    } else {
-        die "noJM";
-    }
-    
+
 Bangdesk: |
     u allacgts
     # want to sus $@ and hang vectors of what, should be autoish

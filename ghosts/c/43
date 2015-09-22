@@ -154,6 +154,7 @@ Elvis: | # safe vs doing - sheets of J->Y, dont drop any frames, where we start 
     }
     
     Y.tv ||= {};
+    Y.v ||= {};
     Y.go = {};
     my $same = 1;
     for my $k (keys %{Y.lo}) {
@@ -165,15 +166,21 @@ Elvis: | # safe vs doing - sheets of J->Y, dont drop any frames, where we start 
         if (tf.gone && !keys %$cs) {
             $same = 0; # line to disappear
             my $C = Y.go->{$k} = delete Y.tv->{$k};
+            my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
+            delete Y.v->{$cv}->{$t};
+            delete Y.v->{$cv} unless keys %{Y.v->{$cv}};
         }
         if (tf.diff || tf.new) {
             keys %$cs || die 'nokeys';
             my ($cv,$t) = $k =~ /^(.+?)\t(.+)$/;
             defined $cv || die "twas $k";
-            
-            my $C = Y.tv->{$k} ||= {};
-            %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>$cs);
-            C.c.s = delete C.sc->{''} if exists C.sc->{''};
+            my $foam = sub {
+                my $C = shift;
+                %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});
+                C.c.s = delete C.sc->{''} if exists C.sc->{''};
+            };
+            $foam->(Y.tv->{$k} ||= {});
+            $foam->(Y.v->{$cv}->{$t} ||= {});
         }
     }
     if (!$same) {

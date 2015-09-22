@@ -51,7 +51,7 @@ babsubrip: |
     $l -= 4; # sub head lines
     my @l = split "\n", D.bab;
     my $st = $l[$l];
-    if ($st =~ /s=><<''/) {
+    if ($st =~ /<<''/) {
         $st =~ /^\S/ || die "first line start space: $st";
         $l++;
         my $ind;
@@ -259,6 +259,13 @@ TNews: |
     my $n = Rw ZNews $J news $sc:r.z;
     
     say "$talk: ".($new||"GROWTH!");
+    my @o = split "\n", $o;
+    if (@o > 5) {
+        my $more = @o - 5;
+        shift @o while @o > 5;
+        unshift @o, "... $more more ^";
+    }
+    $o = join "\n", @o;
     saybl $o if $o;
     sayyl $n if $n;
     
