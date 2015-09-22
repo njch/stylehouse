@@ -326,6 +326,7 @@ KnowTime: | # dome props
         my $sp = $av ? " Flav $av (no A.cv)" : "";
         .
         my $talk = "A.talk: $K$sp $Av > $c --- C.t ";
+        sayre $talk if $K =~ /J/;
         .
         my $aim = {$K=>1};
         aim.I = 1 if $aim->{A.am};
@@ -406,7 +407,12 @@ KnowTime: | # dome props
                     if ($act) {
                         D.sc.acgt eq 's'||die "nonacgts".ki $D;
                         exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
-                        I.d&D.t,A.s;
+                        my $n = sub {
+                            I.d&D.t,A.s;
+                        };
+                        I.flywheel
+                            ? I.d&flywheel,$n
+                            : $n->();
                     }
                     return if T.not;  # will &z, oseve
                     return if delete T.whack;
@@ -496,6 +502,7 @@ Motion: |
     n Tat =>''=>{s=><<''}
         my $at = delete T.at;
         $at || die "youAT";
+        say "GOt at: ". wdump 2, $at;
         C.sc->{$_} = $at->{$_} for keys %$at; # sizling update sprites
     
     n CoM =>''=>{s=><<''},{code=>'I 71',act=>1}
