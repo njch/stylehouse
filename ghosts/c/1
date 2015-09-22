@@ -235,7 +235,7 @@ SNat: | # I.ex do  # it's in that, bubbles
         }
     }
     
-    say Rw TreeD $s $scby=gro if A.J.V && keys %$s;
+    saygr Rw TreeD $s $scby=gro if A.J.V && keys %$s;
     
 IStuff: |
     u allacgt
@@ -320,7 +320,6 @@ KnowTime: | # dome props
     n ex =>''=>{s=><<''},{acgt=>'i,K,cv,av',nois=>'#c'}
         # was Rw SNat $A $C $G $T $I $i $K $cv;
         # baseism
-        my $s = {};
         my $c = 0+("0.".$cv);
         my $Av = $av || A.cv;
         my $sp = $av ? " Flav $av (no A.cv)" : "";
@@ -351,6 +350,7 @@ KnowTime: | # dome props
         my $vb; # in fractions
         for my $vc (sort keys %$yv) {
             my $is = $yv->{$vc};
+            my $s = {};
             .
             next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
@@ -375,6 +375,7 @@ KnowTime: | # dome props
                         next if !exists $C->{$nk};
                         if (my $gk = D.sc.gk) {
                             next if !exists $C->{$nk}->{$gk};
+                            say "D.t does D.sc.nk"."."."D.sc.gk: $C->{$nk}->{$gk}";
                         }
                     }
                     my $act;
@@ -414,13 +415,17 @@ KnowTime: | # dome props
                             ? I.d&flywheel,$n
                             : $n->();
                     }
-                    return if T.not;  # will &z, oseve
-                    return if delete T.whack;
+                    last if T.not || T.whack;
                 }
+                last if T.not || T.whack;
             }
+            my $s = Rw TreeD $s $scby=gro
+                if A.J.V && keys %$s;
+            $c == 0.1 ? saygr $s : say $s if $s;
+            .
+            return if T.not;  # will &z, oseve
+            return if delete T.whack;
         }
-        say Rw TreeD $s $scby=gro
-            if A.J.V && keys %$s;
     
     # y
 Indo: | # leg off In if Ind (Wild)
