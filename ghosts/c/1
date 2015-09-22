@@ -264,32 +264,35 @@ KnowTime: | # dome props
         A.t = sub { I.d&t,@_; };
         $A
     
-    n t =>''=>{s=><<''},{acgt=>'K,cv'}
+    n t =>''=>{s=><<''},{acgt=>'K,cv,av'}
         ($K,$cv) = (A.am,$K) if !$cv && $K;
+        $av = 0+("0.".$av) if $av;
         die "K$K cv$cv" unless $K && $cv;
-        # adapt to much  mergey       extendo  rubble, 
-        #
-        my $i = Rw collaspII $A;
-        #
         my $c = 0+("0.".$cv);
+        my $Av = $av || A.cv;
+        .
+        # adapt to much  mergey       extendo  rubble
+        my $i = Rw collaspII $A;
+        die'difAvcol' if $Av ne ($av || A.cv);
+        #
         my $ncv;
         my $re;
         my $dont;
-        if (A.cv < 0.6 || $c >= 0.7) {
-            if ($c >= A.cv) {
+        if ($Av < 0.6 || $c >= 0.7) {
+            if ($c >= $Av) {
                 $ncv = $c;
                 $re = 1;
             }
             else {
                 $re = 0;
                 $dont = 1;
-                say " deInc A.cv - $cv $c";
+                say " deInc $Av - $cv $c";
             }
-            die "pre bigger" if $cv < A.cv;
+            die "pre bigger" if $cv < $Av;
         }
         else {
-            if ($c < A.cv) {
-                if (A.cv == 0.6) { # scoop up all on entering timezone
+            if ($c < $Av) {
+                if ($Av == 0.6) { # scoop up all on entering timezone
                     $re = 1;
                     $dont = 1; # or will II fall away
                 }
@@ -298,27 +301,30 @@ KnowTime: | # dome props
                     $dont = 1;
                 }
             }
-            elsif ($c == A.cv) {
+            elsif ($c == $Av) {
                 $re = 1;
             }
-            elsif ($c > A.cv) { # and $c < 0.7, is a next time
+            elsif ($c > $Av) { # and $c < 0.7, is a next time
                 T.Z->{$c} = 1;
                 $re = 0;
                 $dont = 1;
             }
             else {die"nof"}
         }
+        undef $ncv if $av; # aux K
         my $was = A.cv;
-        $dont || I.d&ex,$i,$K=>$cv;
+        $dont || I.d&ex,$i,$K,$cv,$av;
         A.cv = $ncv if defined $ncv && A.cv == $was;
         $re;
     
-    n ex =>''=>{s=><<''},{acgt=>'i,K,cv'}
+    n ex =>''=>{s=><<''},{acgt=>'i,K,cv,av',noist=>'#c'}
         #Rw SNat $A $C $G $T $I $i $K $cv;
         # baseism
         my $s = {};
         my $c = 0+("0.".$cv);
-        my $talk = "A.talk: $K A.cv > $c --- C.t ";
+        my $Av = $av || A.cv;
+        .
+        my $talk = "A.talk: $K $Av > $c --- C.t ";
         .
         my $aim = {$K=>1};
         aim.I = 1 if $aim->{A.am};
@@ -344,7 +350,7 @@ KnowTime: | # dome props
         for my $vc (sort keys %$yv) {
             my $is = $yv->{$vc};
             .
-            next if $vc <= A.cv && $vc != $c;
+            next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
             .
             if ($vb && $vc > $vb && @{A.N}) {
@@ -406,7 +412,8 @@ KnowTime: | # dome props
                 }
             }
         }
-        say Rw TreeD $s $scby=gro if A.J.V && keys %$s;
+        say Rw TreeD $s $scby=gro
+            if A.J.V && keys %$s;
     
     # y
 Indo: | # leg off In if Ind (Wild)
@@ -620,13 +627,17 @@ Bangdesk: |
     # suppose we come here with only ACGT between us and F
     n after =>''=>{s=><<''},{code=>"In 11",act=>1}
         aft {
-            $@ || return; A.bang && return; A.bang = 21;
-                # want to sus $@ and hang vectors of what, should be autoish
-                my $m = "J: I.nF.A.talk";
-                $m .= "\nC: ".k2 I.nF.C;
-                $m .= "\ns: ".wdump 3, I.nF.A.s unless length $m > 20;
-                $@ = "$m\n$@";
-            # A.t&9,$@; 
+            $_->() for values %{A.bangdesk.aft};
+            $@ || return;
+            A.bang && return;
+            A.bang = 21;
+            $_->() for values %{A.bangdesk.bang};
+            # want to sus $@ and hang vectors of what, should be autoish
+            my $m = "J: I.nF.A.talk";
+            $m .= "\nC: ".k2 I.nF.C;
+            $m .= "\ns: ".wdump 3, I.nF.A.s unless length $m > 20;
+            $@ = "$m\n$@";
+            # A.t&9,$@; # skippy
         }
     
     n erg =>''=>{s=><<''},{code=>"I 9"}
