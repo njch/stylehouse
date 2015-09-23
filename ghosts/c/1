@@ -69,10 +69,11 @@ MourmaZ: |
         # this feeding on I or III
 Arange: |
     ar.oA && ar.oA.D &&
-    substr(ar.oA.D.bab, 0, 200) =~ /<<''/ && 
+    substr(ar.oA.D.bab, 0, 200) =~ /<<(''|"")/ && 
     Rw babsubrip $oA:ar.oA $D:ar.oA.D $N;
     
     my $A = {};
+    A.oA = ar.oA if ar.oA;
     A.J = ar.J || die 'noJ';
     A.G = $G; # so travel can G/T/Hypo
     A.mo = $A;
@@ -671,10 +672,12 @@ C: |
                    my $v = $1;
                    $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;
                    # << consumes more lines into $nk, then ...
+                   $v = '' if $v =~ /^(''|"")$/;
                    $C->{$nk} = $v;
                }
            }
         }
+        saybl "4string: ".ki $C;
     
     n fourreal =>'',<<''
         (C.t, C.y) = @$s;

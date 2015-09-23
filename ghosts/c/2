@@ -166,9 +166,13 @@ Gto: |
         D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
         $D;
     };
+    G.log = sub {
+        fscc('glog',"\n".shift);
+    };
     G.w = sub {
         my ($pin,$ar)=@_;
         my $D = $mkD->($pin,$ar);
+        
         
         if (!defined D.bab) {
             D.bab = G.way->{$pin};
@@ -197,6 +201,7 @@ Gto: |
             die "Not findin D.talk";
             return;
         }
+        G.log->(D.talk);
         
         my $Z = $G->Doming($D);
         G.randomtask->() if G.randomtask;
