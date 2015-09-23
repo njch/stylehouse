@@ -453,15 +453,7 @@ Indi: |
     A.t&1;
     A.t&11111 || warn "NO 1";
     while (@{A.N}) { #
-        my $A = {%$A};
-        A.mo.on = $A;
-        A.s = shift @{A.N};
-        my $C = {};
-        my $T = {};
-        I.d&n,$A,$C,$G,$T;
-        I.d&An;
-        A.t&2;
-        $A = I.nF.A;
+        my ($A,$C,$T) = I.d&Act,$A;
         T.not&&next;
         I.d&z && next if T.not;
         A.t&6||die("Was not to 6")&&next;
@@ -474,7 +466,7 @@ Indi: |
     A.t&8;
     I.d&recycle;
     ar.M ? do {
-        push @{ar.M}, @{A.M};
+        push @{ar.M}, uniq @{A.M};
         $A
     }
     : ar.J ? map {
@@ -663,7 +655,6 @@ C: |
     
     n fourstring =>'',<<''
         I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
-        die "HI";
         # modem sounds etc.
         # dome props, repeatable tests
         if ($s =~ /^\s*(#.*)$/) {
@@ -679,6 +670,7 @@ C: |
                if ($ci =~ s/^(\S+) *//) { # some t are types of space
                    my $v = $1;
                    $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;
+                   # << consumes more lines into $nk, then ...
                    $C->{$nk} = $v;
                }
            }

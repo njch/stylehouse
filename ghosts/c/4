@@ -24,16 +24,13 @@ allact: |
 allvy: |
     n allact =>W
     n 'allarev=y'=>2,{s=><<''},{code=>'In 42'}
+        return if C.sc.nov;
         C.sc.v = 'y'.C.sc.v;
 allvc: |
     n allact =>W
     n 'allarev=c'=>2,{s=><<''},{code=>'In 422'}
-        if (defined C.sc.v && C.sc.v eq '0') {
-            delete C.sc.v
-        }
-        else {
-            C.sc.v = 'c'.C.sc.v;
-        }
+        return if C.sc.nov;
+        C.sc.v = 'c'.C.sc.v;
 allvse: |
     n allvc =>W
     n 'allvse'=>2,{s=><<''},{code=>'In 419'}
@@ -85,8 +82,11 @@ babsubrip: |
         if (!ref $c) {
             $c = $N->[0]->[2] = {s=>$co};
         }
-        die "Swap ".wdump [c.s=>FOR=>$co] unless split("\n", c.s) == @up;
-        c.s = $co;
+        my $ck = 's';
+        $ck = $1 if $st =~ /(\w+)=><<''/;
+        my $o = $c->{$ck};
+        die "Swap ".wdump [$o=>FOR=>$co] unless split("\n", $o) == @up;
+        $c->{$ck} = $co;
     }
 humms: | # In wild packer # slipping an II in, aggregator following alllist or so, proto arirang
    ar.v ||= {};
@@ -155,17 +155,22 @@ ym/concoi: |
             if (my $v = C.sc.v) {
                 my ($nk,$gk) = $v =~ /^([tyc]|sc)(.*)$/;
                 $nk||die"strv:$v";
-                C.sc.nk = $nk;
+                C.sc.nk ||= $nk;
+                C.sc.rg ||= 1 if C.sc.nk ne $nk;
                 push @ara, "    my \$".$nk." = C\.".$nk.";";
                 if ($gk) {
-                    C.sc.gk = $gk;
+                    C.sc.gk ||= $gk;
                     push @ara, "    my \$".$gk." = C\.".$nk."\.".$gk.";";
                 }
             }
             if (my $v = C.sc.rg) {
-                my $nk = C.sc.nk || die"nonkrg".ki$C;
-                for my $s (split /,/, $v) {
-                    push @ara, "    my \$".$s." = C\.".$nk."\.".$s.";";
+                $v = '' if $v eq '1';
+                my ($nk) = C.sc.v =~ /^([tyc]|sc)(.*)$/;
+                $nk ||= C.sc.nk || die"nonkrg".ki$C;
+                my @no = map {[$nk,$_]} split /,/, $v;
+                push @no, [C.sc.nk,C.sc.gk] if $nk ne C.sc.nk;
+                for my $s (@no) {
+                    push @ara, "    my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
                 }
             }
 
@@ -277,21 +282,26 @@ TNews: |
     my $n = Rw ZNews $J news $sc:r.z;
     
     say "$talk: ".($new||"GROWTH!");
-    my @o = split "\n", $o;
-    if (@o > 5) {
-        my $more = @o - 5;
-        shift @o while @o > 5;
-        unshift @o, "... $more more ^";
-    }
-    $o = join "\n", @o;
-    saybl $o if $o;
-    sayyl $n if $n;
+    my $lim = sub {
+        my ($s,$lim) = @_;
+        my @o = split "\n", $s;
+        if (@o > $lim) {
+            my $more = @o - $lim;
+            shift @o while @o > $lim;
+            unshift @o, "... $more more ^";
+        }
+        join "\n", @o;
+    };
+    $o = $lim->($o);
+    saybl $lim->($o,5) if $o;
+    sayyl $lim->($n,7) if $n;
     
 ZNews: |
+    my $sc = ar.sc || ar.N || ar.M || die "n lost";
     if (ref $sc->[0] && @$sc > 1) {
         return join "\n", map {
             my $sc = [$_];
-            my $s = Rw ZNews $J $sc;
+            my $s = Rw ZNews $J:G.oin $sc;
             $s =~ s/^! /oo/s;
             $s;
         } @$sc;
