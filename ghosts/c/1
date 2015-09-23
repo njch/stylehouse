@@ -359,8 +359,9 @@ KnowTime: | # dome props
             if ($vb && $vc > $vb && @{A.N}) {
                 # sincing, wide order
                 # various others want to be around for only some of the process...
-                sayre "$vb -> $vc  bump, ". @{A.N};
+                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V > 1;
                 T.Z->{$vb} = 1;
+                A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
             for my $k (sort keys %$is) {
@@ -439,7 +440,7 @@ Indulator: | # Wain spinality
     n Bangdesk =>W
     n IStuff =>W
     n KnowTime =>W
-    n SlideEater =>W
+    n EatSlide =>W
     n C =>W
     n Servo =>W
     n Motion =>W
@@ -542,6 +543,7 @@ Motion: |
                 my $ay = delete $ats->{$lo};
                 my @N = map { {AZ=>{$lo=>$_}} } @$ay;
                 push @{A.mo.N}, @N;
+                sayyl "Looping ".@N." to $lo";
             }
         }
         # concoi severaliser, for conglom up; merging spiral snips of code
@@ -583,7 +585,7 @@ Bangdesk: |
         $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
         $@ = "$m\n$@";
     
-SlideEater: | # liney schemery
+EatSlide: | # liney schemery
     u allacgts
     
     n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
@@ -623,27 +625,28 @@ SlideEater: | # liney schemery
         I.d&reny if !ref C.y;
         I.d&renc if !ref C.c;
         I.d&rensc if !ref C.sc;
-        (3==grep{ref}map{$C->{$_}}y=>c=>'sc') &&
-        defined C.t || die "reaso fail".wdump $C;
-        A.J.V > 1 && sayyl "REason: A.J.name: ".ki$C;
+        defined C.t && !ref C.t
+        && ref C.y && ref C.c && ref C.sc
+            || die "reaso fail".wdump $C;
+        I.d&scyvle;
+    
+    # fold space til fit
+    n scyvle =>''=>{s=><<''}
+        for (qw'in out cv') {
+            if (C.y->{$_}) {
+                C.y->{$_} /= 10 while C.y->{$_} <= -1 || C.y->{$_} >= 1;
+            }
+        }
     
     n reny =>''=>{s=><<''}
         C.y = C.y eq '' ? {}
             : C.y =~ /^($NUM)$/
             ? {cv=>$1}
             : C.y =~ /^($NUM)-($NUM)$/
-            ? {from=>$1,to=>$2}
+            ? {in=>$1,out=>$2}
             : C.y =~ /^($NUM)-($NUM)x($NUM)$/
-            ? {from=>$1,to=>$2,thi=>$3}
+            ? {in=>$1,out=>$2,thi=>$3}
             : die "C y wtf: C.y";
-        I.d&scyvle;
-    
-    n scyvle =>''=>{s=><<''}
-        for (qw'from to cv') {
-            if (C.y->{$_}) {
-                C.y->{$_} /= 10 while C.y->{$_} <= -1 || C.y->{$_} >= 1;
-            }
-        }
     
     n renc =>''=>{s=><<''}
         C.c = C.c =~ I.peels ? I.d&peel,C.c
@@ -653,7 +656,7 @@ SlideEater: | # liney schemery
         C.sc = C.sc eq '' ? {}
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
-            : die "nostr  C.sc   of I.peels  ".ki $C
+            : die "C sc nostr: C.sc   of I.peels  ".ki $C
     
 C: |
     u allacgts
@@ -767,15 +770,18 @@ Servo: | # lightning over speech bubble in the c 5 liniarity
         : die 'hash: '.wdump($s);
     
     # time impersonator
-    n AZu =>''=>{s=><<''},{l=>'Indiy/oseverato'}
+    n AZu =>''=>{s=><<''},{l=>'Motion/oseverato'}
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
         my ($AA,$CC) = @$ac;
+        my $aa = $AA?"AAcv=AA.cv":"NoAA";
+        #sayre "AZinto $cv -> CC.t    $aa";
         $AA ||= $A; # spawning cone thing
         I.d&n,$AA,$CC,$G,$T;
         $A = $AA;
-        if (A.cv >= $cv) {
-            sayre "Double comback A.cv $cv: ".ki $CC;
+        # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time
+        if (A.cv > $cv) {
+            warn "Double comback A.cv > $cv: ".ki $CC;
             return T.not = 1;
         }
         A.cv = $cv;
