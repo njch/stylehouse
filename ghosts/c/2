@@ -65,7 +65,7 @@ qq: | # u
 collaspII: | # acquire perhaps even time 1, spiral spiraled IIII and I
     # you could make it keep A.II, which includes A.IIIII, many tiles
     my $II = A.J.A.II ||= {};
-    Rw spII $A $II J/A/IIII J/A/I;
+    Rw spII $A $II J/A/IIII J/A/III J/A/I;
     $II;
     
 spII: | # thereis a II being passed overhead, entrance to spIII N C applier/updater
@@ -75,7 +75,7 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
         my $m = shift @N;
         my $r = $G->gip($A,$m);
         if (ref $r eq 'ARRAY') {
-            push @N, @$r;
+            unshift @N, @$r;
         }
         elsif (ref $r eq 'HASH') {
             push @C, {t=>$m,c=>{s=>$r}};
@@ -88,8 +88,9 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     # the screening space saver, the no way out-er
     my $N = [@C];
     my $s = {};
-    Rw spIII $A $II $N K/cv/t $s;
-    #saybl Rw TreeD $s $scby=gro;
+    Rw spIII $A $II $N K/cv/t $s
+    =~ /stabilised/ &&
+    saybl Rw TreeD $s $scby=gro;
     say "Spidered A.talk: ".F_delta;
 spIII: |
     my $ooI = ar.ooI;
@@ -113,6 +114,7 @@ spIII: |
     # we all look like each other's Jesuses
     # must in N order move in changed hashes
     # but our awareness of
+    my @say;
     for my $K (sort keys %$tw) {
         if (@$m) {
             my $III = $II->{$K} ||= {};
@@ -126,7 +128,7 @@ spIII: |
                 @$N
             ];
             my $d = ar.d + 1;
-            
+            push @say,
             Rw spIII $A $II:III $ooI:oI $N $m $d $s:S;
         }
         else {
@@ -146,6 +148,7 @@ spIII: |
         II.Ii = $Ii;
         II.ooI = $ooI;
     }
+    join "\n",grep{defined}@say;
 Gto: |
     my $G = $G;
     G.name = 'thouG';
@@ -201,7 +204,7 @@ Gto: |
             die "Not findin D.talk";
             return;
         }
-        G.log->(D.talk);
+        #G.log->(D.talk);
         
         my $Z = $G->Doming($D);
         G.randomtask->() if G.randomtask;
@@ -324,19 +327,19 @@ uCon: |
     # three and two circles
     # get that banjo
     
-    J.A.Ii eq rv.i && return say "uCon ---- A.talk: ".F_delta();
+    J.A.Ii eq rv.i && return;# say "uCon ---- A.talk: ".F_delta();
     
     my $N = [@{rv.c}];
     
     J.A.Ii ?
         J.A.Ii ne rv.i ?
             sayre "A.talk: Diff o J.A.Ii -> rv.i"
-          : 1
+          : return say "A.talk: Same J.A.Ii"
       : sayre "A.talk: New ! rv.i";
     
     Rw uThree $A $J $Y $qq $oo $rv $N;
 
-    say "Reckonon J.name: ".F_delta();
+    say "uCon ch: J.name: ".F_delta();
 uThree: | # shadow qq via oo - curve expnd
     @$N = Rw humms $J:oo $N wongui _;
     @$N = Rw humms $J:oo $N notnotcode _;
