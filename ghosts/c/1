@@ -452,7 +452,9 @@ Indi: |
     I.d&An;
     A.t&1;
     A.t&11111 || warn "NO 1";
+    my $i;
     while (@{A.N}) { #
+        $i++ > 1000 && die "Huge Indi";
         my ($A,$C,$T) = I.d&Act,$A;
         T.not&&next;
         T.not&&next;
@@ -555,6 +557,7 @@ Bangdesk: |
     # want to sus $@ and hang vectors of what, should be autoish
     # suppose we come here with only ACGT between us and F
     n after =>''=>{s=><<''},{code=>"I 11",act=>1}
+         A.bangdesk = {};
         aft {
             $_->() for values %{A.bangdesk.aft};
             $@ || return;
@@ -630,7 +633,6 @@ EatSlide: | # liney schemery
                     C.y->{$_} /= 10;
                     die "Many i chewing on ".ki C.y if $i++ > 10;
                 }
-                say "CHewed on $so => C.y->{$_}" if $i;
             }
         }
     

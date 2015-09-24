@@ -43,60 +43,76 @@ Run: |
     
     my $G = Rw Gto;
     `rm w/glog`;
-    G.logs = 1;
+    G.logs = 1; 
+    say wdump 2, [@ARGV];
+    Rw Loading;
     
     
     my $cb = sub {
-        sayyl "Manyg>?";
+        my $now = hitime;
+        
         Rw Many;    
+        acum $G,lastout=>$now;
+        shift @{G.lastout} if 
     };
     Rw recur $d=4 $cb;
     
     sayyl "YEP";
+Loading: |
+    my $for = {
+        Wild => 'w/ild',
+    };
+    while (my ($k,$f) = each %$for) {
+        my $s = -s $f;
+        $s || die "Not $f";
+        G.Tt->{$k} eq $s && next;
+        sayyl "Loading: $k";
+        G.Tt->{$k} = $s;
+        G.T->{$k} = LoadFile($f);
+    }
 Many: |
     $G || die;
     # The Beatles - Martha My Dear
-    my $J = G.OIN ||= do{
+    my $J;
+    $J = G.outerspace ||= do{
         $J = Rw Jto One;
         my $sc;
         G.oin = sc.J = Rw Jto Oth;
         Rw jamsc $J $t=Oth $cv=0.3 $s=oo $sc;
         $J
     };
-    
-    G.T.Wild = LoadFile('w/ild');
     J.A.IIII = ['G/T/Wild'];
-    J.V = 0;
-    J.inV = 0;
     J.A.Indo = 2;
     Rw Viu $J;
     
-    n Oth => W;
+    n Oth =>''=>{J=>'Oth',vv=>6};
     
     my $y = G.Many||={};
     y.i++;
     my $t = hitime;
     y.la->{$t} = 1;
     sayyl "many y.i"; 
-One: |
-    sayyl "Doing J.name stuff...";
-    
-    n theS=>1=>{pi=>'cfile'=>s=>"life/S\.s"}
-    
-    #n Idle
-    n Dwight
-    
-    J.V = 1;
 Oth: |
-    sayyl "Doing J.name stuff...";
+    sayyl "Doing J.name stuff... other is ";
+    J.V = 0;
+    n Dwight=>W
+    n Checks=>W
+    n Cight=>W
     
-    n theS=>1=>{pi=>'cfile'=>s=>"life/S\.s"}
+    # randonly pour time ^
+Checks: |
+    Rw Loading;
     
-    #n Idle
-    n Dwight
-    
-    J.V = 1;
 Dwight: |
+    J.V = 0;
+    n theS=>1=>{pi=>'cfile'=>s=>"life/S\.s"}
     Mn(shedful => '0.1-0.7', {pi=>'seas',s=>"g/c/43"});
     n s =>8=>"Stevewashere!",'%fs:30'
+Cight: |
+    u Indulator
+    u Modulator
+    n some=>''=>thang;
+    G.T.Cight = J.A.I;
+    J.A.I = Load(Dump(J.A.I));
+    
 

@@ -50,7 +50,6 @@ Ajr: | # shed A.jr bb io, aimed for J and cv,t (of C?)  send $style,$v
             $r = $t.$s."\t".$cv;
         }
         if ($isd) {
-            sayre "delbbl $r  $d   J.name" for 1..5;
             return delete J.bb->{$r};
         }
         defined $v ? 
@@ -82,10 +81,29 @@ jamsc: | # put C in bb
             push @$ljm, {%$ar};
         }
     }
-    J.bz->("$t\t".$cv => ar.s) if exists ar.s;
-    for my $k (sort keys %$sc) {
-        my $v = $sc->{$k};
-        J.bz->("$t%$k\t".$cv => $v);
-        ar.C.sc->{$k} = $v;
+    
+    my @fobz;
+    push @fobz, [$cv,$t,undef,ar.s] if exists ar.s;
+    push @fobz, [$cv,$t,$_,$sc->{$_}] for keys %$sc;
+    my @tobz = map {
+        my ($cv,$t,$s,$v) = @$_;
+        my $r;
+        if (J.tt) { # FUTU
+            $r = $cv."\t".$t."\t".$s;
+        }
+        else {
+            my $s = $s;
+            $s = '%'.$s if $s;
+            $r = $t.$s."\t".$cv;
+        }
+        if ($s) {
+            ar.C.sc->{$s} = $v;
+        }
+        [$r,$v]
+    } @fobz;
+    
+    for (@tobz) {
+        my ($r,$v) = @$_;
+        J.bz->($r,$v);
     }
 
