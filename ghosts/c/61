@@ -51,6 +51,15 @@ Run: |
     }
     Rw Loading;
     
+    my @ch = (
+    'In=Indi',
+    'Joot=Jto',
+    'Jto=Joto',
+    );
+    for (@ch) {
+        my ($k,$f) = split '=';
+        G.way->{$k} = G.way->{$f};
+    }
     
     my $cb = sub {
         my $now = hitime;
@@ -63,6 +72,10 @@ Run: |
     $cb->();
     
     sayyl "YEP";
+Joto: |
+    my $J = Rw Joot;
+    sayyl "                                       J.name";
+    $J
 Loading: |
     G.Tfor ||= {Wild => 'w/ild'};
     while (my ($k,$f) = each %{G.Tfor}) {
@@ -75,7 +88,6 @@ Loading: |
     }
 feo: |
     G.Tfor ||= {Wild => 'w/ild'};
-
 Many: |
     $G || die;
     # The Beatles - Martha My Dear
@@ -103,11 +115,12 @@ Oth: |
     J.V = 0;
     n Dwight=>W
     n Checks=>W
-    n Cight=>W
+    #n Cight=>W
     
     # randonly pour time ^
 Checks: |
     Rw Loading;
+    saybl "Here";
     
 Dwight: |
     J.V = 0;
