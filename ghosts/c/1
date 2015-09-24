@@ -624,8 +624,13 @@ EatSlide: | # liney schemery
     # fold space til fit
     n scyvle =>''=>{s=><<''}
         for (qw'in out cv') {
-            if (C.y->{$_}) {
-                C.y->{$_} /= 10 while C.y->{$_} <= -1 || C.y->{$_} >= 1;
+            if (my $so = C.y->{$_}) {
+                my $i;
+                while (C.y->{$_} <= -1 || C.y->{$_} >= 1) {
+                    C.y->{$_} /= 10;
+                    die "Many i chewing on ".ki C.y if $i++ > 10;
+                }
+                say "CHewed on $so => C.y->{$_}" if $i;
             }
         }
     
