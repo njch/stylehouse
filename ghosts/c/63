@@ -147,6 +147,55 @@ Gto: |
         }
         G.log->(D.talk) if G.logs;
         
+        my $Z = $G->Doming($D);
+        G.randomtask->() if G.randomtask;
+        my $r; eval { $r = [ $G->D($Z) ] };
+        $G->Done($Z);
+      
+        if ($@) {
+            my $ne = "Z Z.inter\n$@";
+            $@ = $ne;
+            D.nodie || die $@;
+            $@ = "";
+        }
+        return wantarray ? @$r : $r->[0];
+    };
+    Rw Ghuts;
+    #return $G;
+    G.w = sub {
+        my ($pin,$ar)=@_;
+        my $D = $mkD->($pin,$ar);
+        
+        
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
+        if (!defined D.bab) {
+            if ($pin =~ /\//) {
+                #say "windshot: $pin" unless $pin =~ /^pi/;
+                D.bab = fwind(G.way,$pin);
+            }
+        }
+        
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = $mkD->($pin,$ar);
+                }
+            }
+        }
+        
+        if (!defined D.bab) {
+            die "Not findin D.talk";
+            return;
+        }
+        G.log->(D.talk) if G.logs;
+        
         my $Z = G.Doming->($D);
         G.randomtask->() if G.randomtask;
         my $r; eval { $r = [ G.D->($Z) ] };
@@ -160,7 +209,6 @@ Gto: |
         }
         return wantarray ? @$r : $r->[0];
     };
-    Rw Ghuts;
     $G
 Ghuts: |
     G.sigstackend ||= sub {
@@ -169,7 +217,7 @@ Ghuts: |
         my @stack = split m/\n/, $@;
         shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
         my @stackend;
-        push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die;
+        push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die "NO find gggg stack";
         s/\t//g for @stackend;
 
         # write on the train thats about to derail
@@ -195,7 +243,7 @@ Ghuts: |
     };
     G.Doming = sub {
         my $D = shift;
-        die if @_;
+        die "More to DOming" if @_;
         $D = G.pyramid->($D);
         unshift @F, $D;
         D.F = [@F];
@@ -215,10 +263,10 @@ Ghuts: |
             push @{G.East||=[]}, $u;
         }
         u.G = $G;
-        u.K = u.name || die;
+        u.K = u.name || die "No Dome Name";
         u.hitime = hitime;
         u.order = H.pyramiding++;
-        #u.stack = stack(2,7);
+        u.stack = stack(2,7);
         u.F = [@F];
         u.depth = 0+@F;
         u.Error = $@ if $@; #?
@@ -254,8 +302,10 @@ Ghuts: |
             
             #sub ggggggg {eval{shift->(@_)}}
             wantarray ? 
-            do { @return = $sub->(D.ar)) }
-            : do { $return[0] = $sub->(D.ar)};
+            #do { @return = $sub->(D.ar)} # stack crawl wants to see ggggggg
+            #: do { $return[0] = $sub->(D.ar)};
+                do { @return = ggggggg($sub, D.ar) }
+                : do { $return[0] = ggggggg($sub, D.ar) };
         }
 
         $G->Done($D); # Ducks
