@@ -54,40 +54,385 @@ Nbz: | # receiver of buzzed out planes of N (C)   # peeler futuro, forte arbiter
     $J
 Obz: |
     my $j = {};
-     J.bz = sub {
-           my $j = {%$j};
-           my $ad = [@_];
-           my %j = %$j;
-           while (@$ad) {
-               my ($k, $v) = (shift @$ad, shift @$ad);
-               
-               my $comp = $k =~ /^(%|\+)/;
-               my $j = {%j} if $comp;
-               if ($comp) {
-                   $k =~ s/^\+// if $comp;
-                   j.t .= $k if $comp;
-               }
-               else {
-                   (j.t, j.cv) = $k =~ /^(.+)\s+(.+?)$/;
-                   %j = %$j;
-               }
-               defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$k, $v]];
-               j.r = j.t."\t".j.cv;
-               j.s = $v;
-               
-               my @Js = $J;
-               push @Js, values %{J.phy} if J.phy;
-               for my $jj (@Js) {
-                   jj.bb->{j.r} = j.s;
-                   push @{jj.ord}, {%$j} if jj.ord;
-                   jj.tim->{j.r} = hitime() if jj.tim;
-                   jj.wtf->{j.r} = $F[0] if jj.wtf;
-                   jj.ap->($j) if jj.ap;
-               }
-           }
-           wantarray ? ($j, 
-               sub{J.bz->(%$j, @_)} # TODO fucked, get some weed and fix it
-           ) : $j
-     };
+    J.bz = sub {
+         my $j = {%$j};
+         my $ad = [@_];
+         my %j = %$j;
+         while (@$ad) {
+             my ($k, $v) = (shift @$ad, shift @$ad);
+             
+             my $comp = $k =~ /^(%|\+)/;
+             my $j = {%j} if $comp;
+             if ($comp) {
+                 $k =~ s/^\+// if $comp;
+                 j.t .= $k if $comp;
+             }
+             else {
+                 (j.t, j.cv) = $k =~ /^(.+)\s+(.+?)$/;
+                 %j = %$j;
+             }
+             defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$k, $v]];
+             j.r = j.t."\t".j.cv;
+             j.s = $v;
+             
+             my @Js = $J;
+             push @Js, values %{J.phy} if J.phy;
+             for my $jj (@Js) {
+                 jj.bb->{j.r} = j.s;
+                 push @{jj.ord}, {%$j} if jj.ord;
+                 jj.tim->{j.r} = hitime() if jj.tim;
+                 jj.wtf->{j.r} = $F[0] if jj.wtf;
+                 jj.ap->($j) if jj.ap;
+             }
+         }
+         wantarray ? ($j, 
+             sub{J.bz->(%$j, @_)} # TODO fucked, get some weed and fix it
+         ) : $j
+    };
      
+Gto: |
+    my $G = $G;
+    G.name = 'thouG';
+    my $mkD = sub {
+        my ($pin,$ar)=@_;
+        my $D;
+        D.point = $pin;
+        
+        if (my $C = ar.__D) {
+            delete ar.__D;
+            D.bab = C.c.s || die "N s".ki $C;
+            D.noise .= C.sc.dige if C.sc.dige;
+            D.Verb = 1;
+        }
+        D.ar = $ar;
+        D.name = join ' ', D.point, sort keys %{D.ar};
+        D.sign = "Z";
+        D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
+        $D;
+    };
+    G.log = sub {
+        fscc('w/glog',"\n".shift);
+    };
+    G.w = sub {
+        my ($pin,$ar)=@_;
+        my $D = $mkD->($pin,$ar);
+        
+        
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
+        if (!defined D.bab) {
+            if ($pin =~ /\//) {
+                #say "windshot: $pin" unless $pin =~ /^pi/;
+                D.bab = fwind(G.way,$pin);
+            }
+        }
+        
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = $mkD->($pin,$ar);
+                }
+            }
+        }
+        
+        if (!defined D.bab) {
+            die "Not findin D.talk";
+            return;
+        }
+        G.log->(D.talk) if G.logs;
+        
+        my $Z = G.Doming->($D);
+        G.randomtask->() if G.randomtask;
+        my $r; eval { $r = [ G.D->($Z) ] };
+        G.Done->($Z);
+      
+        if ($@) {
+            my $ne = "Z Z.inter\n$@";
+            $@ = $ne;
+            D.nodie || die $@;
+            $@ = "";
+        }
+        return wantarray ? @$r : $r->[0];
+    };
+    Rw Ghuts;
+    $G
+Ghuts: |
+    G.sigstackend ||= sub {
+        local $@;
+        eval { confess( '' ) };
+        my @stack = split m/\n/, $@;
+        shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
+        my @stackend;
+        push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die;
+        s/\t//g for @stackend;
+
+        # write on the train thats about to derail
+        my $wall = $F[0]->{SigDieStack}||=[];
+
+        push @$wall, \@stackend;
+    };
+    G.sigstackwa ||= sub {
+        return 1 if $_[0] =~ /^Use of uninitialized value/;
+        if ($_[0] =~ /Deep recursion on/) {
+           return if G.deepr++ < 9;
+           G.deepr = 0;
+           sayre "snoozing $F[0]->{talk}";
+           snooze();
+           return;
+        }
+        my @loc = caller(1);
+        $@ = join "\n", @_;
+        my $DOOF = $G->Duck($F[0],1);
+        $@ = "";
+        sayre $DOOF;
+        return 1;
+    };
+    G.Doming = sub {
+        my $D = shift;
+        die if @_;
+        $D = G.pyramid->($D);
+        unshift @F, $D;
+        D.F = [@F];
+        return $D;
+    };
+    G.pyramid = sub {
+        my $am = shift;
+        confess "Ba" if ref $am ne 'HASH';
+
+        my ($last) = @F;
+        my $u = {%$am};
+        if ($last) {
+            push @{last.Lo||=[]}, $u;
+            u.Li = $last;
+        }
+        else {
+            push @{G.East||=[]}, $u;
+        }
+        u.G = $G;
+        u.K = u.name || die;
+        u.hitime = hitime;
+        u.order = H.pyramiding++;
+        #u.stack = stack(2,7);
+        u.F = [@F];
+        u.depth = 0+@F;
+        u.Error = $@ if $@; #?
+
+        $u
+    };
+    G.Done = sub {
+        my $D = shift;
+        sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
+        D.dolat = $@ if $@;
+        $_->() for @{D._after_do||[]};
+        shift @F;
+        G.Duck->($D) if $@;
+        $_->() for @{D._aft_etc_do||[]};
+        $D
+    };
+    G.D = sub { #c
+        my $D = shift;
+        my $ar = D.ar || {};
+
+        die "RECURSION ".@F if @F > $MAX_FCURSION;
+        my $sub = D.D || do {
+             D.Ds = $G->Dm($D);
+             D.Ds.sub;
+        };
+        D.sign = 'D';
+        D.talk = "D.sign D.name";
+        $D = G.Doming->($D);
+        my @return;
+        if (ref $sub eq "CODE" && !$@) {
+            local $SIG{__DIE__} = G.sigstackend;
+            local $SIG{__WARN__} = G.sigstackwa;
+            
+            #sub ggggggg {eval{shift->(@_)}}
+            wantarray ? 
+            do { @return = $sub->(D.ar)) }
+            : do { $return[0] = $sub->(D.ar)};
+        }
+
+        $G->Done($D); # Ducks
+        D.r = [@return];
+
+        return wantarray ? @return : shift @return
+    };
+    G.Dm = sub {
+        my $am = shift;
+        
+        am.talk || confess wdump 2, $am;
+        my $Ds = G.drop.Dscache->{am.talk};
+        return $Ds if $Ds;
+        
+        die "SOMEONENONE".wdump 1, $am if ref am.bab;
+        
+        my $eval = $G->parse_babble(am.bab, am.point);
+        
+        my $ar = am.ar || {};
+         ar.R = $G;
+        my $download = join("", map {
+            'my$'.$_.'=$ar->{'.$_."}; "
+            } keys %$ar)
+            if %$ar;
+        my $upload = join("", map {
+            '$ar->{'.$_.'}=$'.$_."; "
+            } keys %$ar)
+            if %$ar;
+            
+        my $sub = "bollox";
+        my $evs = 'sub { my $ar = shift; '.
+        "$download\n".
+
+        "my \@doo_return = (sub { \n\n$eval\n })->();\n"
+
+        #."$upload"
+        .'return @doo_return };';
+
+        
+        $sub = G.Doe->($evs, $ar);
+            
+        $@ = "nicht kompilieren!\n\n$@" if $@;
+        
+        $Ds = {evs=>$evs, sub=>$sub, talk=>am.talk};
+
+        if (!$@ && ref $sub eq "CODE") {
+            G.drop.Dscache->{am.talk} = $Ds;
+        }
+        else {
+            am.bungeval = $evs;
+        }
+        $Ds
+    };
+    G.Doe = sub {
+         my $D_eval_string = shift;
+         my $ar = shift;
+         return eval $D_eval_string;
+    };
+      
+    G.Duck = sub { #c
+        my $D = shift;
+        my $nodie = shift;
+        my $evs = D.Ds.evs;
+        my $ar = D.ar;
+
+        my $DOOF; 
+        my $first = 1 unless $@ =~ /DOOF/;
+                
+        $DOOF .= "DOOF D.talk\n" if D.sign eq 'D' || $nodie;
+        $DOOF .= "  D.inter" if D.inter;
+        
+        if ($first) {
+            my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+                || $@ =~ /line (\d+)/;
+
+            my $file = $1 if $@ =~ /at (\S+) line/;
+
+            undef $file if $file && $file =~ /\(eval \d+\)/;
+            undef $file if $file && !-f $file;
+
+            my $code = $file ? 
+            read_file($file)
+            : $evs;
+            
+            my $eval = G.Duckling->($x, $code, $D);
+            
+            if (exists $D->{SigDieStack}) {
+                warn "MALTY SIGGI" if @{$D->{SigDieStack}} > 1;
+                $DOOF .= "\n";
+                my $i = "  ";
+                for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                    $DOOF .= "$i- $s\n";
+                    $i .= "  ";
+                }
+            }        
+            $DOOF .= "\n$eval\n";
+        }
+        
+        if ($first) {
+            $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+        }
+        
+        if (!$first) {
+            my $in = D.sign eq 'D' ? "! " : "";
+            $DOOF .= ind($in, "$@")."\n";
+        }
+        if ($first) {
+            $DOOF .= ind('ar.', join "\n",
+                map{
+                 my $e = $ar->{$_};
+                 my $s = "$e";
+                 $s .= "(name=$e->{name})"
+                     if ref $e && ref $e ne 'ARRAY'
+                    && $e->{name};
+                "$_ = ". $s;
+                }keys %$ar); 
+        }
+        
+        return $DOOF if $nodie;
+        
+        D.Error = $DOOF;
+        $@ = $DOOF;
+        
+        if (@F == 1) {
+            # send it away
+            $DOOF = join"\n",map{s/^(\! )+//smg if !/DOOF/; $_}split"\n",$DOOF;
+            sayre $DOOF;
+            G.dooftip && G.dooftip->($@);
+            $@ = "";
+            $_->() for @{G._aft_err_do||[]};
+        }
+        else {
+            die $@;
+        }
+    };
+    G.Duckling = sub {
+        my ($line, $code, $D) = @_;
+        
+        my $diag = "";
+        my @code = split "\n", $code;
+        my $whole = @code < 18;
+        
+        
+        if (!D.Verb && $code =~ /^sub \{ my \$ar = shift/
+            && $code =~ /return \@doo_return \};/) {
+            $line -= 2 if $line;
+            shift @code for 1..2;
+            pop @code for 1..2;
+        }
+        
+        
+        my $xx = 0;
+        my $lci;
+        for my $c (@code) {
+            $xx++;
+            $lci = $1 if $xx < $line && $c =~ /^\s*(#\s*\d.*)$/;
+            if (!defined $line) {
+                $diag .= ind("⊘  ", $c)."\n"
+            }
+            elsif ($xx == $line) {
+                $diag .= ind("⊘  ", $c)."\n";
+                
+                my $bab = (split"\n",D.bab)[$line-2];
+                if ($bab ne $c) {
+                    $diag .= ind("⊖r ", $bab)."\n";
+                }
+            }
+            elsif (!$whole && $xx > $line-5 && $xx < $line+5) {
+                $diag .= ind("|  ", $c)."\n"
+            }
+            elsif ($whole) {
+                $diag .= ind("|  ", $c)."\n"
+            }
+        }
+        
+        $diag = "$diag\n#~~~$lci" if $lci && $lci !~ /^# 0.01/;
+        $diag
+    };
+   
 

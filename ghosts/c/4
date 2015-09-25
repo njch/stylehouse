@@ -94,19 +94,13 @@ humms: | # In wild packer # slipping an II in, aggregator following alllist or s
    my ($oK,$rM) = @{delete ar.m||die"nbok"};
    inter({oK=>$oK});
    $N = [{MZ=>{$oK=>ar.v}}, @$N];
+   sayyl "Humms: J.name vi $oK";
    Rw In + $N;
    $rM ? @{ar.M} : ar.v
 ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
-    my $D = {t=>z=>y=>4=>c=>{nk=>'sc',gk=>'z',mdrl=>1,as=>'list'}};
-    
-    # I. for decoupling hashrefs like vasing
-    $C->{$_} = {%{$C->{$_}||{}}} for 'c','sc';
     my $wire = 'from';
-    
-    for my $zi (A.c->($D)) {
-        my $from = [
-            reverse $C, reverse map{@$_} A.c&$wire,'%as:list'
-        ];
+    for my $zi (@{C.sc.z||[]}) {
+        my $from = [@{C.c->{$wire}||[]},$C];
         my $c = {c=>{$wire=>$from}};
         # the merging 
         push @{A.N}, {EC=>[$zi,$c]};
@@ -280,8 +274,8 @@ TNews: |
         $new = "new!";
     }
     my $r = Rw scd $rl $rv;
-    my $o = Rw ZNews $J sold $sc:r.oldz if r.oldz;
-    my $n = Rw ZNews $J news $sc:r.z;
+    my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
+    my $n = Rw ZNews news $sc:r.z;
     
     say "$talk: ".($new||"GROWTH!");
     my $lim = sub {
@@ -296,14 +290,16 @@ TNews: |
     };
     $o = $lim->($o);
     saybl $lim->($o,5) if $o;
-    sayyl $lim->($n,7) if $n;
+    sayyl $n if $n;
+    #$lim->($n,7)
     
 ZNews: |
+    my $J = G.Byst || return sayre "Cannot G-Byst-ander yet";
     my $sc = ar.sc || ar.N || ar.M || die "n lost";
     if (ref $sc->[0] && @$sc > 1) {
         return join "\n", map {
             my $sc = [$_];
-            my $s = Rw ZNews $J:G.oin $sc;
+            my $s = Rw ZNews $sc;
             $s =~ s/^! /oo/s;
             $s;
         } @$sc;
@@ -313,8 +309,8 @@ ZNews: |
     }
     my $N = [@$sc];
     my $v = {talks=>[],indcar=>'from'};
-    @$N = Rw humms $J:G.oin $N wongui _;
-        Rw humms $J:G.oin $N talky $v;
+    @$N = Rw humms $J $N wongui _;
+        Rw humms $J $N talky $v;
     join "\n", @{v.talks};
 oJ4: | # J.A remains, A transitory  - A.time is to couple it like I.in
     J.A ||= {first=>hitime()};
