@@ -61,17 +61,19 @@ babsubrip: |
     $l -= 4; # sub head lines
     my @l = split "\n", D.bab;
     my $st = $l[$l];
-    if ($st =~ /<<(''|"")/) {
+    if ($st =~ /<<['"](\w*)['"]/) {
+        my $mark = $1;
         $st =~ /^\S/ || die "first line start space: $st";
         $l++;
         my $ind;
         my @up;
         while (1) {
             my $s = $l[$l];
-            last unless $s =~ /\S/;
+            last unless $s =~ /\S/ || $mark;
+            last if $mark && $s =~ /^$mark$/;
             $ind = $1 if !defined $ind
                 && ($s =~ /^(    ).*\S+/ || die "no start ind $s");
-            $s =~ /^$ind(.+)$/ || last;
+            $mark || $s =~ /^$ind(.+)$/ || last;
             push @up, $1;
             $l++;
         }
@@ -83,7 +85,7 @@ babsubrip: |
             $c = $N->[0]->[2] = {s=>$co};
         }
         my $ck = 's';
-        $ck = $1 if $st =~ /(\w+)=><<(''|"")/;
+        $ck = $1 if $st =~ /(\w+)=><<['"](\w*)['"]/;
         my $o = $c->{$ck};
         die "Swap ".wdump [$c,$o=>FOR=>$co,[@up]] unless split("\n", $o) == @up;
         $c->{$ck} = $co;

@@ -160,8 +160,8 @@ Gto: |
         }
         return wantarray ? @$r : $r->[0];
     };
-    Rw Ghuts;
-    #return $G;
+    #Rw Ghuts;
+    return $G;
     G.w = sub {
         my ($pin,$ar)=@_;
         my $D = $mkD->($pin,$ar);
@@ -236,7 +236,7 @@ Ghuts: |
         }
         my @loc = caller(1);
         $@ = join "\n", @_;
-        my $DOOF = $G->Duck($F[0],1);
+        my $DOOF = G.Duck->($F[0],1);
         $@ = "";
         sayre $DOOF;
         return 1;
@@ -289,7 +289,7 @@ Ghuts: |
 
         die "RECURSION ".@F if @F > $MAX_FCURSION;
         my $sub = D.D || do {
-             D.Ds = $G->Dm($D);
+             D.Ds = G.Dm->($D);
              D.Ds.sub;
         };
         D.sign = 'D';
@@ -308,7 +308,7 @@ Ghuts: |
                 : do { $return[0] = ggggggg($sub, D.ar) };
         }
 
-        $G->Done($D); # Ducks
+        G.Done->($D); # Ducks
         D.r = [@return];
 
         return wantarray ? @return : shift @return
