@@ -101,11 +101,22 @@ Jamping: | # timing of 6 & 7
         J.A.first ||= hitime();
         if (C.sc.W && G.oin ne $J) {
             my $lev = G.oin.A.tid;
-            if (J.A.tidi && J.A.tidi == $lev) {
+            sayyl "On the $lev, we J.name  are J.A.tidi";
+            if (J.A.tidi) {
+                if ((J.A.tidi + 3) > $lev) {
+                    A.ztime = 4;
+                }
+                else {
+                    undef J.A.tidi;
+                }
+            }
+            J.A.tidi ||= $lev;
+            if (G.sta->{J.id}) {
                 A.ztime = 4;
+                T.same = 1;
             }
             else {
-                J.A.tidi = G.oin.A.tid;
+                G.sta->{J.id} = 1;
             }
         }
         sayre "same A.J.name =- J.name" if A.J eq $J;
@@ -134,19 +145,19 @@ Jamping: | # timing of 6 & 7
             }
         }
         A.talk .= "J: J.name";
-        sayyl "J6 ! A.talk";
 
     # https://www.youtube.com/watch?v=tL8N_3tln0Y
     n J =>6,<<''
         my $talk = "T A.cv A.ztime J.most.J.name       J.name";
-        return say"$talk J.name SKive!" unless Atime(6);
+        return T.nose = say"$talk J.name SKive!" unless Atime(6);
+        sayyl "J6 ! A.talk";
         A.t&J,7,1;
         
     
     n J =>7,<<''
-        say "oJ77 77 J.name" unless J.yt.quiet || C.sc.pi;
         return if T.nose;
         return sayre "Same J.name" if T.same;
+        say "oJ77 77 J.name" unless J.yt.quiet || C.sc.pi;
         Rw J.most.eo $J;
         # dos geo ^ Yesui
     
