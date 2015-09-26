@@ -53,8 +53,7 @@ Run: |
     
     my @ch = (
     'In=Indi',
-    'Joot=Jto',
-    'Jto=Joto',
+    'Jto=Jtt',
     );
     for (@ch) {
         my ($k,$f) = split '=';
@@ -68,14 +67,10 @@ Run: |
         Rw Many;    
         G.lastout = $now;
     };
-    Rw recur $d=3 $cb;
+    Rw recur $d=8 $cb;
     $cb->();
     
     sayyl "YEP";
-Joto: |
-    my $J = Rw Jtt;
-    sayyl "                                       J.name";
-    $J
 Loading: |
     G.Tfor ||= {Wild => 'w/ild'};
     while (my ($k,$f) = each %{G.Tfor}) {
@@ -92,7 +87,7 @@ Many: |
     $G || die;
     # The Beatles - Martha My Dear
     my $J;
-    $J = G.outerspace ||= do{
+    $J = G.outerspace ||= do {
         $J = Rw Jto One;
         my $sc;
         G.oin = sc.J = Rw Jto Oth;
@@ -112,13 +107,15 @@ Many: |
     sayyl "many y.i"; 
 Oth: |
     sayyl "Doing J.name stuff... other is ";
-    J.V = 1;
+    J.V = 0;
+    Rw Moreoth;
+Moreoth: |
     #n Dwight=>W
     n Byst=>W
     n Checks=>W
-    n Mild=>W
+    #n Mild=>W
     #n Cight=>W
-    T.not = 1;
+    T.nose = 1;
     
     # randonly pour time ^
 Mild: |
@@ -131,7 +128,8 @@ Mild: |
     
 Byst: |
     G.Byst = $J;
-    n bystanding=>'','bystander';
+    n bystanding=>2,'bystander'
+    
 Checks: |
     Rw Loading;
     n wa =>''=>{pi=>'waps'}
