@@ -214,7 +214,7 @@ Ghuts: |
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
-        shift @stack for 1..3; # hide above this sub, G eval & '  at G...';
+        #shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die "NO find gggg stack";
         s/\t//g for @stackend;
@@ -427,7 +427,8 @@ Ghuts: |
         
         D.Error = $DOOF;
         $@ = $DOOF;
-        
+        sayre $@;
+        exit;
         if (@F == 1) {
             # send it away
             $DOOF = join"\n",map{s/^(\! )+//smg if !/DOOF/; $_}split"\n",$DOOF;
