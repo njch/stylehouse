@@ -83,6 +83,14 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     }
     my $Ii = join " + ", map{"_.t:_.c.s"} @C;
     $Ii eq II.Ii && return;
+    if (my $TI = G.TT->{$Ii}) {
+        die "DifgTI " if TI.Ii ne $Ii;
+        %$II = %$TI;
+        return sayyl "Hiked GTT $Ii";
+    }
+    else {
+        G.TT->{$Ii} = $II;
+    }
     II.Ii = $Ii;
     # we dive into always, should form tidy tree with D chaos at tips
     # the screening space saver, the no way out-er
@@ -261,7 +269,7 @@ uCon: |
     # three and two circles
     # get that banjo
     
-    J.A.Ii eq rv.i && return;# say "uCon ---- A.talk: ".F_delta();
+    J.A.Ii eq rv.i && return say "uCon ---- A.talk: ".F_delta();
     
     my $N = [@{rv.c}];
     
@@ -269,18 +277,25 @@ uCon: |
         J.A.Ii ne rv.i ?
             sayre "A.talk: Diff o J.A.Ii -> rv.i"
           : return say "A.talk: Same J.A.Ii"
-      : sayre "A.talk: New ! rv.i";
+      : sayre "A.talk: New uCon ! rv.i";
     
     Rw uThree $A $J $Y $qq $oo $rv $N;
 
     say "uCon ch: J.name: ".F_delta();
 uThree: | # shadow qq via oo - curve expnd
     @$N = Rw humms $J:oo $N wongui _;
+    oo.V=2;
     @$N = Rw humms $J:oo $N notnotcode _;
+    my $sc = [@$N];
     oo.V=1;
     my $s = Rw humms $J:oo $N concoi;
     #Rw humms $J:oo $N talky;
     
+    
+    if (!%$s) {
+        sayyl "No s from: ".
+            Rw ZNews $sc $nov=1;
+    }
     # as the i,i,i coalesces, later
     J.A.Ii = rv.i;
     J.A.I = $s if %$s;

@@ -199,12 +199,10 @@ Gto: |
         my $Z = G.Doming->($D);
         G.randomtask->() if G.randomtask;
         my $r; eval { $r = [ G.D->($Z) ] };
-        sayyl "D.talk BANG: $@" if $@;
+        sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
         G.Done->($Z);
       
         if ($@) {
-            my $ne = "Z Z.inter\n$@";
-            $@ = $ne;
             D.nodie || die $@;
             $@ = "";
         }
@@ -408,11 +406,11 @@ Ghuts: |
         if ($first) {
             $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
         }
-        
-        if (!$first) {
+        else {
             my $in = D.sign eq 'D' ? "! " : "";
             $DOOF .= ind($in, "$@")."\n";
         }
+        
         if ($first) {
             $DOOF .= ind('ar.', join "\n",
                 map{

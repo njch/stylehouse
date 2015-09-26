@@ -106,26 +106,170 @@ Many: |
     y.la->{$t} = 1;
     sayyl "many y.i"; 
 Oth: |
-    sayyl "Doing J.name stuff... other is ";
-    J.V = 0;
-    Rw Moreoth;
-Moreoth: |
     #n Dwight=>W
     n Byst=>W
     n Checks=>W
-    #n Mild=>W
+    n Mild=>W
     #n Cight=>W
     T.nose = 1;
     
     # randonly pour time ^
 Mild: |
-    u Jong
-    J.V = 0;
-    n some=>''=>thang;
+    J.V = 2;
+    u Modulator;
+    n some=>''=>thang
     
+    
+    
+    
+    sayyl "J.name A I: ".wdump 5, J.A.I;
     G.T.Mild = J.A.I;
     DumpFile('w/imld',G.T.Mild);
     
+    return;
+    
+    
+    my $qq = Rw Elj $J fo;
+    for my $J ($qq) {
+        n Oneci =>3=>'say "hijjjj";','%code:I 1'
+    }
+    
+    my $Y = Rw Noodles $J:qq;
+    my $oo = Rw Elj $J:qq oo;
+    
+    my $N = [@{Y.rv.c}];
+    @$N = Rw humms $J:oo $N wongui _;
+    oo.V=2;
+    @$N = Rw humms $J:oo $N notnotcode _;
+    my $sc = [@$N];
+    oo.V=2;
+    my $s = Rw humms $J:oo $N coins;
+    #Rw humms $J:oo $N talky;
+    
+        sayyl "SSSSSSSSSs from: ".wdump $s;
+            #Rw ZNews $sc $nov=1;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ym/coins: |
+    sayyl "HI CON A.cv  --- J.name J.le.name ".ki $C;
+    J.V = 2;
+    my $s = C.sc.code || return;
+    
+    C.y.p ||= join'/',map{_.t}@{C.c.from||[]};
+    C.y.cvt ||= "C.y.cv\tC.t";
+    
+    T.y.spr=$C if A.t&43 && $s=~/^(\^|1)$/;
+    
+    if ($s=~/^\^$/ && A.t&61) {
+        my $i = I.d&moy,'spr';
+        # this is at spray
+        C.c.s = join "\n",map{
+            _.sc.got = 1 if $_ ne $C;
+            "#@ _.y.p\n"."_.c.s\n"
+        }@{i.N};
+        C.sc.code =~ s/^\^ ?//;
+        C.sc.code ||= "C.t 4";
+    }
+    
+    if (A.t&43 && C.sc.acgt) {
+        # for ACGT+args in acgt, args take whole @_
+        C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
+        undef C.sc.code if C.sc.code eq '1';
+        # the I that Cs all, it is indifferent to its current
+        C.sc.code ||= "I 1";
+    }
+    
+    if (A.t&67) {
+        if (C.sc.got) {
+            return T.not=1;
+        }
+        my $s = C.sc.code;
+        if ($s =~ /\w+ \w+/) {
+            $s =~ /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
+            my ($K,$cv) = ($1,$2); 
+            $cv = 0+("0.".$cv);
+            
+            my @ara; # ar ups and demand argsed
+            
+            if (my $v = C.sc.v) {
+                my ($nk,$gk) = $v =~ /^([tyc]|sc)(.*)$/;
+                $nk||die"strv:$v";
+                C.sc.nk ||= $nk;
+                C.sc.rg ||= 1 if C.sc.nk ne $nk;
+                push @ara, "    my \$".$nk." = C\.".$nk.";";
+                if ($gk) {
+                    C.sc.gk ||= $gk;
+                    push @ara, "    my \$".$gk." = C\.".$nk."\.".$gk.";";
+                }
+            }
+            if (my $v = C.sc.rg) {
+                $v = '' if $v eq '1';
+                my ($nk) = C.sc.v =~ /^([tyc]|sc)(.*)$/;
+                $nk ||= C.sc.nk || die"nonkrg".ki$C;
+                my @no = map {[$nk,$_]} split /,/, $v;
+                push @no, [C.sc.nk,C.sc.gk] if $nk ne C.sc.nk;
+                for my $s (@no) {
+                    push @ara, "    my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
+                }
+            }
+
+            if (my $args = C.sc.args) {
+                die "wonky C.t   of ".ki $C if C.t =~ /\W/;
+                my $gl = "";
+                my $und = "_";
+                if ($args =~ s/^(A,C,G,T,)(?!s)//) {
+                    $gl .= '    my ($A,$C,$G,$T,@M)=@_;'."\n";
+                    $und = 'M';
+                }
+                my($sf,$sa);
+                if (C.sc.subpeel) { # runs, returns T.thing
+                    $sf = "(";
+                    $sa = ')->($A,$C,$G,$T)';
+                }
+                # here some want their own I space
+                # if I resolv backward winding pro-be
+                # G pulls in I
+                my $sn = "A\.I\.d"."&An;" if C.t eq 'An';
+                
+                unshift @ara, "    my \$I = A\.I;";
+                
+                C.c.s = "A\.I.".C.t." = "
+                    .$sf
+                    ."sub {\n"
+                    .$gl
+                    ."    my (".join(',',map{'$'.$_}split',',$args).") = \@".$und.";\n"
+                    .join("\n",@ara)."\n"
+                    .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
+                    ."}"
+                    .$sa
+                    .";$sn\n";
+            }
+            else {
+                C.sc.subpeel&&die"nonargs ha subpeel".ki$C
+            }
+
+            C.sc.dige = slm 12, dig C.c.s;
+            C.sc.gro = join'/',map{_.t}grep{_.y.cv != 0.9}
+                @{C.c.from} if C.c.from;
+
+            delete C.c.from; # as 7
+            
+            $v->{$K}->{$cv}->{C.t} = $C;
+        }
+    }
+    
+    if (my $y = T.y) {
+        for my $k (keys %$y) {
+            A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
+        }
+    }
 Byst: |
     G.Byst = $J;
     n bystanding=>2,'bystander'
@@ -133,7 +277,7 @@ Byst: |
 Checks: |
     Rw Loading;
     n wa =>''=>{pi=>'waps'}
-    saybl "Here";
+    
     
 Dwight: |
     J.V = 0;
