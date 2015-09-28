@@ -130,17 +130,17 @@ Jamping: | # timing of 6 & 7
             J.ind = join '  ', ('') x J.A.d;
             J.name = "J.A.d. C.c.pi*C.t";
             J.d = J.C = $C;
-            if (A.ztime < 6) {
-                sayre "pi J.name   winding A.ztime -> 6";
-                A.ztime = 6;
-            }
+            A.ztime = 6 if A.ztime < 6;
         }
         A.talk .= "J: J.name";
 
     # https://www.youtube.com/watch?v=tL8N_3tln0Y
     n J =>6,<<''
         my $talk = "T A.cv A.ztime J.most.J.name       J.name";
-        return T.nose = say"$talk J.name SKive!" unless Atime(6);
+        Atime(6) || return do {
+            say"$talk   SKive!" if A.J.V;
+            T.nose = 1;
+        };
         sayyl "J6 ! A.talk";
         A.t&J,7,1;
         
