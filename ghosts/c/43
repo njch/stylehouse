@@ -1,0 +1,32 @@
+Ipifalls: |
+    n stopiclife=>''=><<'',{code=>"Mo 444",v=>'cpi'}
+        C.sc.J.A.III = ['J/most/J/A/I'];
+pi3d: |
+    n inlevels =>''=><<'',{code=>"Mo 3212",v=>'cpi'}
+        delete C.y.o.J;
+stopi_clife: |
+    n stopi_clife=>''=><<'',{code=>"Mo 4445",v=>'cpi'}
+        if (C.sc.pi eq 'clife') {
+            A.ztime = 2;
+        }
+clifeGkeeps: |
+    # wants to be in a humming list of the things, before thi gets figured tho
+    n clifeGkeeps=>''=><<'',{code=>"Mo 212",act=>1}
+        my $CC = A.J.C;
+        return unless CC.c.pi eq 'cfile' && C.t eq 'z';
+        my $keep = {
+            'g/0/G' => qr/^(say.*|k.|hitime|unico|hex.*|.dump|mku.*|head)$/,
+            'g/G/cis' => qr/^(ind|dig|snooze|acum|sli?m|.json)$/,  
+            'g/G/on' => qr/^(wag|wayup|fwind|g_parse_babble)$/,
+            'g/G/way' => qr/^(stack|F_delta|inter)$/,
+        };
+        my $r = $keep->{CC.t} || die "noyt to CC.t";
+        my @not;
+        my @keep = @{C.y.o.M} = grep { _.t =~ $r ? 1 :
+            do{ push @not, $_; 0 }
+        } @{C.y.o.M};
+        saybl "CC.t keeps ".join", ",sort map{_.t} @keep;
+        saygr "CC.t drops ".join", ",sort map{_.t} @not;
+        return;
+
+
