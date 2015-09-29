@@ -49,7 +49,7 @@ Run: |
         say "specialin $what";
         Rw $what;
     }
-    G.Tfor ||= {Cable => 'w/ild', Wild => 'w/imld'} if $what eq 'feo';
+    G.Tfor ||= {Wild => 'w/imld'} if $what eq 'feo';
     G.Tfor ||= {Wild => 'w/ild'};
     Rw Loading;
     
@@ -74,7 +74,12 @@ Run: |
     
     sayyl "YEP";
 Loading: |
-    while (my ($k,$f) = each %{G.Tfor}) {
+    my @l;
+    push @l, keys %{G.T} if G.T;
+    push @l, keys %{G.Tfor} if G.Tfor;
+    @l = uniq @l;
+    for my $k (sort @l) {
+        my $f = G.Tfor->{$k} || "w/$k";
         my $s = -s $f;
         $s || die "Not $f";
         G.Tt->{$k} eq $s && next;

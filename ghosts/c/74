@@ -1,5 +1,5 @@
 Yesoo: |
-    u allacgts
+    u allact
     
     n J =>7,<<'','%code:J 7,v:cJ'
         sayyl "Seveny J.name" for 1..5;
@@ -30,6 +30,21 @@ Galso: |
         my $I = A.I || die 'GhnoI';
         I.d&Other,$am;
     };
+    my %T = %{G.T||{}};
+    G.T = \%T;
+    {
+        package Wormhole;
+        use Tie::Hash;
+        use YAML::Syck;
+        our @ISA = qw(Tie::StdHash);
+        sub FETCH {
+            my ($s,$k) = @_;
+            $s->{$k} ||= do{ 
+            print "Loading w/$k ...\n" for 1..5;
+            LoadFile("w/$k") };
+        }
+    }
+    tie %T, 'Wormhole';
 Sev: |
     sayyl "SEV!" for 1..5;
     my ($A,$I) = G.h&Sev;
