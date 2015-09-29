@@ -1,86 +1,211 @@
+Galso: |
+    G.h = sub {
+        my $am = shift;
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$am;
+    };
+    my %T = %{G.T||{}};
+    G.T = \%T;
+    {
+        package Wormhole;
+        use Tie::Hash;
+        use YAML::Syck;
+        our @ISA = qw(Tie::StdHash);
+        sub FETCH {
+            my ($s,$k) = @_;
+            $s->{$k} ||= do{ 
+            print "Loading w/$k ...\n" for 1..5;
+            LoadFile("w/$k") };
+        }
+    }
+    tie %T, 'Wormhole';
+Goo: | # Gto is made, babbed, things for G's I which is G itself
+    u allacgts
+    
+    n Gooso =>W
+    n Goodat =>W
+    n Gooway =>W
+    n Goolog =>W
+    Rw Ghuts;
+Gooso: |
+    u allacgts
+    
+    # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
+    n h =>''=><<''
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$s;
+
+    n T =>''=><<''
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$s;
+Goodat: |
+    u allacgts
+        
+    n mkD =>''=><<'',{acgt=>'pin,ar'}
+        my $D;
+        D.point = $pin;
+        if (my $C = ar.__D) {
+            delete ar.__D;
+            D.bab = C.c.s || die "N s".ki $C;
+            D.noise .= C.sc.dige if C.sc.dige;
+            D.Verb = 1;
+        }
+        D.ar = $ar;
+        D.name = join ' ', D.point, sort keys %{D.ar};
+        D.sign = "Z";
+        D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
+        $D;
+
+    n pwin =>''=><<'',{acgt=>'pin,way'}
+        my $point = shift;
+        return $way->{$point} if exists $way->{$point};
+        my @path = split /\/|\./, $point;
+        my $h = $way;
+        for my $p (@path) {
+            $h = $h->{$p};
+            unless ($h) {
+                undef $h;
+                last;
+            }
+        }
+        return $h if defined $h;
+        . 
+        return undef unless $point =~ /\*/;
+        die "sat rs findy $point";
+    
+Gooway: |
+    u allacgts
+    
+    n w =>''=><<'',{acgt=>'pin,ar'}
+        my $D = G.mkD->($pin,$ar);
+        .
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
+        .
+        if (!defined D.bab) {
+            if ($pin =~ /\//) {
+                #say "windshot: $pin" unless $pin =~ /^pi/;
+                D.bab = fwind(G.way,$pin);
+            }
+        }
+        .
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = $mkD->($pin,$ar);
+                }
+            }
+        }
+        .
+        if (!defined D.bab) {
+            die "Not findin D.talk";
+            return;
+        }
+        .
+        G.log->(D.talk) if G.logs;
+        .
+        my $Z = G.Doming->($D);
+        G.randomtask->() if G.randomtask;
+        my $r; eval { $r = [ G.D->($Z) ] };
+        sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
+        G.Done->($Z);
+        .
+        if ($@) {
+            D.nodie || die $@;
+            $@ = "";
+        }
+        return wantarray ? @$r : $r->[0];
+    
+Goolog: |
+    u allacgts
+    
+    n rese =>''=><<'','%code:G 1'
+        `rm w/glog`;
+        G.logs = 1;
+    
+    n log =>''=><<''
+        write_file('w/glog', {append=>1}, "\n$s");
+    
+    
 Babz: |
     # see <<'' and levitate
-            my $eval = shift;
-            
+    u allacgts
+    
+    
+    
+    n bitsof_babble =>''=><<'','%bab:non,subpeel:1'
+        # etc
+    
+    n parse_babble =>''=><<'','%bab:non'
             my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
             my $G_name = qr/[\/\w]+/;
             my $Gnv = qr/\$?$G_name/;
             my $mwall = qr/(?:= |if |unless |^\s*)/m;
-            
-            
-            
-            
-            # word or scalar
             my $point = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
-            
             my $alive = qr/\$[\w]*[\w\->\{\}]+/;
-            # a.b.c
             my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
-            
             my $poing = qr/$alive|$dotha|[-\w]{8,}/;
-            
-            # [...]
-            my $sqar = qr/\[.+?\]|\(.+?\)/; 
-            
-            # timer
-            
-            $eval =~ s/(timer|recur) ($NUM|$alive) \{/$1 \$G, $2, sub{/sg;
-            
-            $eval =~ s/aft \{/accum \$G, \$F[0] => _after_do => sub {/sg;
-            
-            
+            my $sqar = qr/\[.+?\]|\(.+?\)/;
             my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
-            # thingy, cv => thing
             my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
-            $eval =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
-            
-            # oJn -> oJ.n->( ish
-            $eval =~ s/($mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
-            # or w
-            $eval =~ s/($mwall)(\w*G)(\w+)\(/${1}g\.$3->(\$A,\$C,\$g,\$T, /smg;
-            $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
-            $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
-            
-            $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
-            #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$$2, /smg;
-            
-            # lma quack $not->('tag');
-            $eval =~ s/($poing|\w+)\&($point)(,[^\s;]+)?(;)?/
-            my $s = "$1->(\"$2\"$3)$4";
-            $s = '$'.$s if $1 !~ m{\.};
-            $s
-            /smge;
-            
-            
-            # $sc>$k -> $sc->{$k}
-            $eval =~ s/($poing)((?:\.>$poing)+)/
-            join '->', $1, map {'{"'.$_.'"}'} grep {$_} split m{\.>}, $2;
-            /smge;
-            
-            
-            #$eval =~ s/waylay (?:($NUM) )?(\w.+?);/\$G->timer("$1",sub { w $2; },"waylay $2");/sg;
-            
-            # wholeness Rwish #
-            
+            $s =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
             my $sur = qr/ if| unless| for| when|,\s*$|;\s*/;
             my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
             my $suro = qr/(?:$sur|(?>!$sur))/;
-            
             my $_m = qr/(?: (.+))?/;
             my $_u = qr/(?: ($poing))?/;
             my $ylay = qr/(yl(?: $NUM)?)?/;
             my $_g = qr/($poing )?/;
-            
+            # ^ maybe
+            # :
+            $eval =~ s/($mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
+            $eval =~ s/($mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
+            $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+            $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+            .
+            $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+            #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+            # lma quack $not->('tag');? from I.d&pui,$s
+            $eval =~ s/($poing|\w+)\&($point)(,[^\s;]+)?(;)?/
+                my $s = "$1->(\"$2\"$3)$4";
+                $s = '$'.$s if $1 !~ m{\.};
+                $s
+            /smge;
+            # $sc>$k -> $sc->{$k}
+            $eval =~ s/($poing)((?:\.>$poing)+)/
+                join '->', $1, map {'{"'.$_.'"}'}
+                grep {$_} split m{\.>}, $2;
+            /smge;
+            # sc.k -> $sc->{k};
+            $eval =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+            # 
+            $s =~ s/aft \{/acum \$G, \$F[0] => _after_do => sub {/sg;
+            #
             while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
                 my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
                 #say wdump[($1, $2, $3, $4, $5, $6, $7)];
                 $g ||= $u.'->{G}' if $u;
                 $g ||= '$G';
                 $u ||= '$G';
-                
+                .
                 my $ne = ""; # hidden reverse
                 $ne = $1 if $a =~ s/($sur)$//;
-                
+                .
                 my @n;
                 my @m;
                 my $wanr = $a =~ s/^\+ ?//;
@@ -109,47 +234,20 @@ Babz: |
                     }
                 }
                 unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
-                
                 # could use ^ here # edpeak?
                 push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
                     if @m;
-                
+                .
                 my @e;
                 push @e, '"'.$p.'"';
                 push @e, "{".join(", ",@n)."}";
                 push @e, $u if $u;
                 my $en = join ", ", @e;
-                
+                .
                 my $wa = $g.'->{w}->('.$en.')'.$ne;
-                
-                if ($delay) {
-                    $delay =~ /yl ($NUM)/;
-                    $delay = $1 || "";
-                    $wa = '$G->timer("'.$delay.'",sub { '.$wa.' })';
-                }
-                
+                die "Delay" if $delay;
                 #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
-                
                 $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
             }
-            
-            # way
-            while ($eval =~ 
-            /\${0}($poing )?((?<![\$\w])w(aylay(?: $NUM)?)?(?: ($poing))? ($point)( ?$sqar| ?$point|))($sur)?/sg) {
-                my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-                die wdump[$old,$eval];
-            } 
-            
-            # 8/9
-            
-            $eval =~ s/\${0}($poing)? K ($point)(?::($point))?(;| )/
-            ($1 || '$G')
-            .qq {->K("$2","$3")$4}/seg;
-            
-            $eval =~ s/(?<!G)0->(\w+)\(/\$G->$1(/sg; 
-
-            $eval =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
-
-
             $eval;
 

@@ -12,8 +12,9 @@ Yesoo: |
 Otherway: |
     u allacgts
     
+    # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
     n Other =>''=>{s=><<''}
-        # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
+        my $ar = $F[0]->{ar};
         my $A = Rw WeBase In;
         my $I = A.I;
         I.d&n,$A,{},$G,{};
@@ -21,30 +22,6 @@ Otherway: |
         A.t&1;
         A.t&11111 || warn "NO 1";
     
-Galso: |
-    G.h = sub {
-        my $am = shift;
-        my $D = $F[0];
-        my $r = D.ar;
-        my $A = r.A || die 'GhnoA';
-        my $I = A.I || die 'GhnoI';
-        I.d&Other,$am;
-    };
-    my %T = %{G.T||{}};
-    G.T = \%T;
-    {
-        package Wormhole;
-        use Tie::Hash;
-        use YAML::Syck;
-        our @ISA = qw(Tie::StdHash);
-        sub FETCH {
-            my ($s,$k) = @_;
-            $s->{$k} ||= do{ 
-            print "Loading w/$k ...\n" for 1..5;
-            LoadFile("w/$k") };
-        }
-    }
-    tie %T, 'Wormhole';
 Sev: |
     sayyl "SEV!" for 1..5;
     my ($A,$I) = G.h&Sev;
