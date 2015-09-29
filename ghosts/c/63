@@ -113,55 +113,26 @@ Gto: |
     G.log = sub {
         fscc('w/glog',"\n".shift);
     };
-    G.w = sub {
-        my ($pin,$ar)=@_;
-        my $D = $mkD->($pin,$ar);
-        
-        
-        if (!defined D.bab) {
-            D.bab = G.way->{$pin};
-        }
-        if (!defined D.bab) {
-            if ($pin =~ /\//) {
-                #say "windshot: $pin" unless $pin =~ /^pi/;
-                D.bab = fwind(G.way,$pin);
-            }
-        }
-        
-        if (!defined D.bab && !ar.__D && ar.A) {
-            my $c = ar.A;
-            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
-            if ($c) {
-                my $C = $c->{$pin};
-                if ($C) {
-                    c.sc.acgt && die "selected W4".ki$C;
-                    ar.__D = $C;
-                    $D = $mkD->($pin,$ar);
+    G.pwin = sub {
+        my $point = shift;
+        my $way = shift;
+            return $way->{$point} if exists $way->{$point};
+            my @path = split /\/|\./, $point;
+            my $h = $way;
+            for my $p (@path) {
+                $h = $h->{$p};
+                unless ($h) {
+                    undef $h;
+                    last;
                 }
             }
-        }
-        
-        if (!defined D.bab) {
-            die "Not findin D.talk";
-            return;
-        }
-        G.log->(D.talk) if G.logs;
-        
-        my $Z = $G->Doming($D);
-        G.randomtask->() if G.randomtask;
-        my $r; eval { $r = [ $G->D($Z) ] };
-        $G->Done($Z);
-      
-        if ($@) {
-            my $ne = "Z Z.inter\n$@";
-            $@ = $ne;
-            D.nodie || die $@;
-            $@ = "";
-        }
-        return wantarray ? @$r : $r->[0];
+            return $h if defined $h;
+            
+            return undef unless $point =~ /\*/;
+            die "sat rs findy $point";
     };
+    Rw Galso;
     Rw Ghuts;
-    #return $G;
     G.w = sub {
         my ($pin,$ar)=@_;
         my $D = $mkD->($pin,$ar);
