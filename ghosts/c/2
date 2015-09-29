@@ -63,7 +63,8 @@ qq: | # u
     # how cached waveforms W together as they get further down
     # the users
 
-Jto: |
+
+Jtt: | # Jto
     my $J;
     J.id = mkuid;
     J.name = ar.name || shift @{delete ar.m};
@@ -74,20 +75,48 @@ Jto: |
     J.most.mody = 'mani';
     J.most.eo = 'Yesui';
     J.most.wq = 1;
-    #J.A.IIII = ['G/T/Wild'];
-    #J.A.Indo = 2;
+    J.A.IIII = ['G/T/Wild'];
+    J.A.Indo = 2;
     
-    # GONERS
-    Rw suJ $J;
-    Rw Jup $J;
-    # 
-    
-    n J.name, 0.9, J.name, {tag=>J.name,id=>J.id}
-    J.uname = J.name;
-    
+    Rw Nbz $J;
     Rw Viu $J;
     
+    my $sc = {tag=>J.name,id=>J.id};
+    Rw jamsc $J $t=J.name $cv=0.9 $s=J.name $sc;
+    J.uname = J.name;
+    
     return $J;
+Nbz: | # receiver of buzzed out planes of N (C)   # peeler futuro, forte arbiter # suJ cloned  # other is A.jr
+    J.tt = 1;
+    J.bz = sub { # the cv=>t=>style r
+       my $m = [@_];
+       sayre "bz not 2 @$m" if @$m != 2;
+       my $j={};
+       while (@$m) {
+           my ($r, $v) = (shift @$m, shift @$m);
+           if ($r =~ /^%(\S+)/) {
+               j.style = $1;
+           }
+           else {
+               # to ivertake in here
+               $j = Rw r2j $r $J;
+           }
+           defined j.cv || die "NOSEYV: j.cv".wdump[$j,[@_],[$r, $v]];
+           
+           j.r = join "\t", j.cv, j.t, j.style;
+           j.s = $v;
+           my @Js = $J;
+           push @Js, values %{J.phy} if J.phy;
+           for my $jj (@Js) {
+               jj.bb->{j.r} = j.s;
+               push @{jj.ord}, {%$j} if jj.ord;
+               jj.tim->{j.r} = hitime() if jj.tim;
+               jj.wtf->{j.r} = $F[0] if jj.wtf;
+               jj.ap->($j) if jj.ap; # <<<
+           }
+      }
+    };
+    $J
 Viu: | # u/n/m pinging uCon, setup part Jto
     my $eu = sub { J.uS = 1 };
     my $unu = sub {
@@ -210,29 +239,6 @@ uThree: | # shadow qq via oo - curve expnd
     # climb the limbs in falling A.mo.y./..
     # you are suggesting I use more noisey code
     #saygr Rw TreeD $s $scby=gro;
-TreeD: |
-    # $scby
-    my $bydef = "^";
-    my @say;
-    for my $K (sort keys %$s) {
-        my $vs = $s->{$K};
-        for my $cv (sort keys %$vs) {
-            my $tw = $vs->{$cv};
-            my $g = {};
-            while (my ($k,$D) = each %$tw) {
-                my $gk = D.sc->{$scby} || $bydef;
-                # ^
-                # v
-                $g->{$gk}->{$k} = $D;
-            }
-            for my $gk (sort keys %$g) {
-                my $ts = $g->{$gk};
-                push @say, sprintf ' %-9s %-6s %-18s %27s',
-                    $K, $cv, $gk, join(",", sort keys %$ts);
-            }
-        }
-    }
-    join "\n", @say
 Elvus: | # arbitrary in-J Elvi with thrust over, possibly   - c for J must be already seT
     my $Y = Rw El;
     my $oJ = ar.oJ || $J;
