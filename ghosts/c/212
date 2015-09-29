@@ -418,4 +418,53 @@ oC43: | # maniC pulls down travel # comep from aj compi
             die "howto ".ki $c;
         }
     }
+fi: | #c
+     my $point = ar.p || ar.pin || ar.m->[0];
+     
+     my $know;
+     if (!ar.pin && ar.J) {
+         my $J = ar.J;
+         if ($point =~ /^\*\/(\w+)$/) {
+             my $inway = $1;
+             my $h = ar.h || G.way;
+             $h = h.hooks if h.hooks;
+             my @gu = @{J.yy.styleord};
+             #@gu = @gu[0..5] if @gu > 6;
+             my @so;
+             for (@gu) {
+                if (ref $h->{$_} eq 'HASH' && $h->{$_}->{$inway}) {
+                    push @{$know||=[]}, "$_/$inway";
+                    last if !ar.sucky;
+                }
+             }
+         }
+     }
+     
+     if (!$know) {
+         my %wo = Rw findl +;
+
+
+         my @keys = map { s/^\///; $_ } keys %wo;
+         if (!ar.pin && ar.J) {
+             my $J = ar.J;
+
+             @keys = grep { my($K)=split'/',$_; J.yt->{$K} } @keys;
+             my @or = @{J.yy.styleord};
+             if (@or && @keys > 1) {
+                 my $i = 1;
+                 my $is = {map{$_=>$i++}@or};
+                 @keys = sort {
+                  $is->{($a=~/^(.+?)\//)[0]} <=> $is->{($b=~/^(.+?)\//)[0]}
+                  } @keys;
+
+                 if (!ar.sucky && @keys > 1) {
+                     #sayre "Limiting @keys";
+                     @keys = $keys[0];
+                 }
+             }
+         }
+         $know = [@keys];
+     }
+     #saybl "With: ar.J.name  $point    @$know" if ar.J && ar.J.name eq 'shv';
+     @$know
 
