@@ -44,26 +44,24 @@ Run: |
     my $G = Rw Gto;
     `rm w/glog`;
     G.logs = 1; 
-    G.what = @ARGV;
-    if (exists G.way->{G.what}) {
-        say "specialin G.what";
-        Rw G.what;
-    }
-    Rw Loading;
     
-    my @ch = (
-    'In=Indi',
-    'Jto=Jtt',
-    );
-    for (@ch) {
+    (G.what) = @ARGV;
+    
+    map {
         my ($k,$f) = split '=';
         G.way->{$k} = G.way->{$f};
     }
+    'In=Indi',
+    'Jto=Jtt';
     
     my $cb = sub {
         my $now = hitime;
         my $gap = $now - G.lastout;
-        return sayre "sl" if $gap < 2;
+        if ($gap < 2) {
+            sayre "slowlaned" for 1..7;
+            sleep 3;
+            return;
+        }
         Rw Many;    
         G.lastout = $now;
     };
@@ -71,7 +69,6 @@ Run: |
     $cb->();
     
     sayyl "YEP";
-
 Many: |
     $G || die;
     # The Beatles - Martha My Dear
