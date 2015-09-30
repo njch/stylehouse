@@ -81,10 +81,10 @@ Goodat: |
         D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
         $D;
 
-    n pwin =>''=><<'',{acgt=>'pin,way'}
-        my $point = shift;
-        return $way->{$point} if exists $way->{$point};
-        my @path = split /\/|\./, $point;
+    # non acgts
+    n pwin =>''=><<'',{args=>'pin,way'}
+        return $way->{$pin} if exists $way->{$pin};
+        my @path = split /\/|\./, $pin;
         my $h = $way;
         for my $p (@path) {
             $h = $h->{$p};
