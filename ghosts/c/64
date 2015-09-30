@@ -1,12 +1,14 @@
 
 Goo: | # Gto is made, babbed, things for G's I which is G itself
-    u allacgts
-    
+    # this all goes... somewhere
     n Gooso =>W
     n Goodat =>W
     n Gooway =>W
     n Goolog =>W
-    Rw Ghuts;
+    n GBabz =>W
+    n Ghoots =>W
+    n GDom =>W
+    n Gouck =>W
 Galso: | # Gooso goner
     G.h = sub {
         my $am = shift;
@@ -70,6 +72,7 @@ Goodat: |
             delete ar.__D;
             D.bab = C.c.s || die "N s".ki $C;
             D.noise .= C.sc.dige if C.sc.dige;
+            D.babnon = 1 if C.sc.bab eq 'non';
             D.Verb = 1;
         }
         D.ar = $ar;
@@ -99,7 +102,7 @@ Gooway: |
     u allacgts
     
     n w =>''=><<'',{acgt=>'pin,ar'}
-        my $D = G.mkD->($pin,$ar);
+        my $D = GmkD($pin,$ar);
         .
         if (!defined D.bab) {
             D.bab = G.way->{$pin};
@@ -107,8 +110,7 @@ Gooway: |
         .
         if (!defined D.bab) {
             if ($pin =~ /\//) {
-                #say "windshot: $pin" unless $pin =~ /^pi/;
-                D.bab = fwind(G.way,$pin);
+                D.bab = Gpwin($pin,G.way);
             }
         }
         .
@@ -120,23 +122,20 @@ Gooway: |
                 if ($C) {
                     c.sc.acgt && die "selected W4".ki$C;
                     ar.__D = $C;
-                    $D = $mkD->($pin,$ar);
+                    $D = GmkD($pin,$ar);
                 }
             }
         }
         .
-        if (!defined D.bab) {
-            die "Not findin D.talk";
-            return;
-        }
+        return die "Not findin D.talk" if !defined D.bab;
         .
-        G.log->(D.talk) if G.logs;
+        Glog(D.talk) if G.logs;
         .
-        my $Z = G.Doming->($D);
+        my $Z = GDoming($D);
         G.randomtask->() if G.randomtask;
-        my $r; eval { $r = [ G.D->($Z) ] };
+        my $r; eval { $r = [ GD($Z) ] };
         sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
-        G.Done->($Z);
+        GDone($Z);
         .
         if ($@) {
             D.nodie || die $@;
@@ -356,10 +355,11 @@ GDom: |
     n ggggggg =>''=><<'',{code=>'Perl 3',args=>'c,sc'}
         eval{ $c->($sc) }
     
+    # swim by the compile (Dm), do(g7 evals)/done($@ handle)/return
     n D =>''=><<''
         my $D = $s;
         my $ar = D.ar || {};
-
+        .
         die "RECURSION ".@F if @F > $MAX_FCURSION;
         my $sub = D.D || do {
              D.Ds = GDm($D);
@@ -391,7 +391,8 @@ GDom: |
         .
         die "SOMEONENONE".wdump 1, $am if ref am.bab;
         .
-        my $eval = Gparse_babble(am.bab, am.point);
+        my $eval = am.bab;
+        $eval = Gparse_babble($eval) unless am.babnon;
         .
         my $ar = am.ar || {};
          ar.R = $G;
@@ -421,6 +422,8 @@ GDom: |
     
     n Doe =>''=><<'',{acgt=>'D_eval_string,ar'}
          return eval $D_eval_string;
+Gouck: |
+    u allacgts
     
     n Duck =>''=><<''
         my $D = $s;
