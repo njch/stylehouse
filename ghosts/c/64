@@ -1,4 +1,13 @@
-Galso: |
+
+Goo: | # Gto is made, babbed, things for G's I which is G itself
+    u allacgts
+    
+    n Gooso =>W
+    n Goodat =>W
+    n Gooway =>W
+    n Goolog =>W
+    Rw Ghuts;
+Galso: | # Gooso goner
     G.h = sub {
         my $am = shift;
         my $D = $F[0];
@@ -22,14 +31,6 @@ Galso: |
         }
     }
     tie %T, 'Wormhole';
-Goo: | # Gto is made, babbed, things for G's I which is G itself
-    u allacgts
-    
-    n Gooso =>W
-    n Goodat =>W
-    n Gooway =>W
-    n Goolog =>W
-    Rw Ghuts;
 Gooso: |
     u allacgts
     
@@ -41,12 +42,24 @@ Gooso: |
         my $I = A.I || die 'GhnoI';
         I.d&Other,$s;
 
+    # see also Loading for ongoign G.T timeyness
     n T =>''=><<''
-        my $D = $F[0];
-        my $r = D.ar;
-        my $A = r.A || die 'GhnoA';
-        my $I = A.I || die 'GhnoI';
-        I.d&Other,$s;
+        my %T = %{G.T||{}};
+        G.T = \%T;
+        {
+            package Wormhole;
+            use Tie::Hash;
+            use YAML::Syck;
+            our @ISA = qw(Tie::StdHash);
+            sub FETCH {
+                my ($s,$k) = @_;
+                $s->{$k} ||= do{ 
+                    print "Loading w/$k ...\n" for 1..5;
+                    LoadFile("w/$k");
+                };
+            }
+        }
+        tie %T, 'Wormhole';
 Goodat: |
     u allacgts
         
@@ -146,68 +159,76 @@ Babz: |
     # see <<'' and levitate
     u allacgts
     
-    
-    
     n bitsof_babble =>''=><<'','%bab:non,subpeel:1'
-        # etc
+        my $p;
+        p.alive = qr/\$[\w]*[\w\->\{\}]+/;
+        p.dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+        p.oing = qr/p.alive|p.dotha|[-\w]{8,}/;
+        p.oint = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
+        p.mwall = qr/(?:= |if |unless |^\s*)/m;
+        p.sur = qr/ if| unless| for| when|,\s*$|;\s*/;
+        $p
     
     n parse_babble =>''=><<'','%bab:non'
-            my $AR = qr/(?:\[(.+?)\]|(?:\((.+?)\)))/;
-            my $G_name = qr/[\/\w]+/;
-            my $Gnv = qr/\$?$G_name/;
-            my $mwall = qr/(?:= |if |unless |^\s*)/m;
-            my $point = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
-            my $alive = qr/\$[\w]*[\w\->\{\}]+/;
-            my $dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
-            my $poing = qr/$alive|$dotha|[-\w]{8,}/;
-            my $sqar = qr/\[.+?\]|\(.+?\)/;
-            my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
-            my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
-            $s =~ s/$mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
-            my $sur = qr/ if| unless| for| when|,\s*$|;\s*/;
-            my $surn = qr/(?>! if)|(?>! unless)|(?>! for)/;
-            my $suro = qr/(?:$sur|(?>!$sur))/;
-            my $_m = qr/(?: (.+))?/;
-            my $_u = qr/(?: ($poing))?/;
-            my $ylay = qr/(yl(?: $NUM)?)?/;
-            my $_g = qr/($poing )?/;
-            # ^ maybe
-            # :
-            $eval =~ s/($mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
-            $eval =~ s/($mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
-            $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
-            $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+        my $p = G.bitsof_babble;
+        # gone:
+        my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
+        my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
+        $s =~ s/p.mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
+        .
+        # :
+        my @s;
+        my $indbe;
+        for my $s (split "\n", $s) {
+            if ($indbe) {
+                if ($indbe eq 'nextind') {
+                    $s =~ /^(\s+)/;
+                    $indbe = qr/^$1/;
+                }
+                if ($s =~ $indbe) {
+                    push @s, $s;
+                    next;
+                }
+                else {
+                    undef $indbe;
+                }
+            }
+            if ($s =~ /<<['"](\w*)['"]/) {
+                $indbe = $1 ?
+                    qr/^(?!\Q$1\E)/ # for <<'EOD' til ^EOD, etc
+                  : 'nextind';
+            }
+            $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
+            $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
+            $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+            $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
             .
-            $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
-            #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+            $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+            #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+            .
             # lma quack $not->('tag');? from I.d&pui,$s
-            $eval =~ s/($poing|\w+)\&($point)(,[^\s;]+)?(;)?/
+            $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
                 my $s = "$1->(\"$2\"$3)$4";
                 $s = '$'.$s if $1 !~ m{\.};
                 $s
             /smge;
             # $sc>$k -> $sc->{$k}
-            $eval =~ s/($poing)((?:\.>$poing)+)/
+            $s =~ s/(p.oing)((?:\.>p.oing)+)/
                 join '->', $1, map {'{"'.$_.'"}'}
                 grep {$_} split m{\.>}, $2;
             /smge;
-            # sc.k -> $sc->{k};
-            $eval =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
-            # 
-            $s =~ s/aft \{/acum \$G, \$F[0] => _after_do => sub {/sg;
-            #
-            while ($eval =~ /(?:^| )()(Rw$ylay() ((?:\*\/)?$point)$_m?)$sur?$/gsm) {
-                my ($g, $old, $delay, $u, $p, $a, $un) = ($1, $2, $3, $4, $5, $6, $7);
-                #say wdump[($1, $2, $3, $4, $5, $6, $7)];
-                $g ||= $u.'->{G}' if $u;
+            .
+            while ($s =~ /(?:^| )(Rw ((?:\*\/)?p.oint)(?: (.+))?)p.sur?$/gsm) {
+                my ($old, $p, $a) = ($1, $2, $3);
+                my $g;
                 $g ||= '$G';
-                $u ||= '$G';
                 .
                 my $ne = ""; # hidden reverse
-                $ne = $1 if $a =~ s/($sur)$//;
+                $ne = $1 if $a =~ s/(p.sur)$//;
                 .
                 my @n;
                 my @m;
+                # want to mix {m m m %$ar m m} whereever + is
                 my $wanr = $a =~ s/^\+ ?//;
                 $wanr = 'stick' if $a =~ s/^- ?//;
                 for (split /\,| |\, /, $a) {
@@ -241,13 +262,22 @@ Babz: |
                 my @e;
                 push @e, '"'.$p.'"';
                 push @e, "{".join(", ",@n)."}";
-                push @e, $u if $u;
                 my $en = join ", ", @e;
                 .
                 my $wa = $g.'->{w}->('.$en.')'.$ne;
                 die "Delay" if $delay;
-                #saygr " $old \t=>\t$wa \t\t\tg$g \tu$u \tp$p \ta$a \tun$un";
-                $eval =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n in\n\n$eval";
+                $s =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n $s";
             }
-            $eval;
+            .
+            # sc.k -> $sc->{k};
+            $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+            # 
+            $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
+            #
+            .
+            push @s, $s;
+        }
+        $s = join "\n", @s;
+        .
+        $s;
 
