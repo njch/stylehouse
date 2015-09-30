@@ -4,12 +4,12 @@ I:
     AZu: 
       c: 
         el: 1
-        s: "A.I.AZu = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    die 'amany' if keys %$s > 1;\n    my ($cv,$ac) = %$s;\n    my ($AA,$CC) = @$ac;\n    my $aa = $AA?\"AAcv=AA.cv\":\"NoAA\";\n    $AA ||= $A; # spawning cone thing\n    I.d&n,$AA,$CC,$G,$T;\n    $A = $AA;\n    # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time\n    if (A.cv > $cv) {\n        sayre \"Double comback A.cv > $cv: CC.t CC.y.cv \";\n        #return T.not = 1;\n    }\n    A.cv = $cv;\n    I.d&An;\n    T.whack = 1;\n};\n"
+        s: "A.I.AZu = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    die 'amany' if keys %$s > 1;\n    my ($cv,$ac) = %$s;\n    my ($AA,$CC) = @$ac;\n    my $aa = $AA?\"AAcv=AA.cv\":\"NoAA\";\n    $AA ||= $A; # spawning cone thing\n    I.d&n,$AA,$CC,$G,$T;\n    $A = $AA;\n    # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time\n    if (A.cv > $cv) {\n        #sayre \"Double comback A.cv > $cv: CC.t CC.y.cv \";\n        #return T.not = 1;\n    }\n    A.cv = $cv;\n    I.d&An;\n    T.whack = 1;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: '220920800369'
+        dige: c5c181e80148
         gro: Indulator/Servo
         l: Motion/oseverato
       t: AZu
@@ -324,12 +324,12 @@ I:
     oseverato: 
       c: 
         el: 1
-        s: "A.I.oseverato = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        if (my $z = delete $T->{Z}) { # tease out the next times\n            my ($lo) = sort keys %$z; # next one\n            @{$T->{oM}} = ();\n            push @{$A->{mo}->{re}->{$lo} ||= []}, [$A,$C];\n        }\n        if (!@{$A->{mo}->{N}} && $A->{mo}->{re}) {\n            my $ats = $A->{mo}->{re} || {};\n            my @wa = sort keys %$ats;\n            my ($lo) = @wa;\n            if ($lo) {\n                my $ay = delete $ats->{$lo};\n                my @N = map { {AZ=>{$lo=>$_}} } @$ay;\n                push @{$A->{mo}->{N}}, @N;\n                saybl \"Looping \".@N.\" to $lo\" if $A->{J}->{V};\n            }\n        }\n        # concoi severaliser, for conglom up; merging spiral snips of code\n        if (my $y = $T->{y}) {\n            for my $k (keys %$y) {\n                $A->{mo}->{y}->{$k}->{$C->{y}->{p}}->{$C->{y}->{cvt}} = $C;\n            }\n        }\n};\n"
+        s: "A.I.oseverato = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        if (my $z = delete $T->{Z}) { # tease out the next times\n            my ($lo) = sort keys %$z; # next one\n            my $v = $z->{$lo};\n            push @{$A->{mo}->{re}->{$lo} ||= []},\n                ref $v eq 'ARRAY' ? @$v : [$A,$C];\n            @{$T->{oM}} = ();\n        }\n        if (!@{$A->{mo}->{N}} && $A->{mo}->{re}) {\n            my $ats = $A->{mo}->{re} || {};\n            my @wa = sort keys %$ats;\n            my ($lo) = @wa;\n            if ($lo) {\n                my $ay = delete $ats->{$lo};\n                my @N = map { {AZ=>{$lo=>$_}} } @$ay;\n                push @{$A->{mo}->{N}}, @N;\n                saybl \"Looping \".@N.\" to $lo\" if $A->{J}->{V};\n            }\n        }\n        # concoi severaliser, for conglom up; merging spiral snips of code\n        if (my $y = $T->{y}) {\n            for my $k (keys %$y) {\n                $A->{mo}->{y}->{$k}->{$C->{y}->{p}}->{$C->{y}->{cvt}} = $C;\n            }\n        }\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: ae42d69be06e
+        dige: d0dfe9a4ea20
         gro: Indulator/Motion
       t: oseverato
       "y": 
@@ -445,12 +445,12 @@ I:
     servehash: 
       c: 
         el: 1
-        s: "A.I.servehash = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n      s.AZ ? I.d&AZu,s.AZ\n    : s.MZ ? I.d&MZu,s.MZ\n    : s.EZ ? I.d&EZu,s.EZ\n    : s.WZ ? I.d&WZu,s.WZ\n    : s.EC ? I.d&ECu,s.EC\n    : die 'hash: '.wdump($s);\n};\n"
+        s: "A.I.servehash = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n      s.AZ ? I.d&AZu,s.AZ\n    : s.MZ ? I.d&MZu,s.MZ\n    : s.EZ ? I.d&EZu,s.EZ\n    : s.WZ ? I.d&WZu,s.WZ\n    : s.EC ? I.d&ECu,s.EC\n    : s.Elvis ? I.d&Elvisu,s.Elvis\n    : die 'hash: '.wdump($s);\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: e563c3e0cee1
+        dige: 85c22c6ad2c2
         gro: Indulator/Servo
       t: servehash
       "y": 
