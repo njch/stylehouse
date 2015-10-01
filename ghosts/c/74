@@ -160,7 +160,6 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
     n '','','%of:Sev'
     
     n Y =>23=><<'',{rg=>'J,V'}
-        sayyl "Was in! ".ki $C;
         C.y.k = C.y.cv."\t".C.t;
         push @{V.os}, C.y.k unless C.c.root;
     
@@ -219,19 +218,22 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
             }
         }
         .
-        return T.not = 1 if !$toen;
+        T.not = 1 if !$toen;
         
 Yeoscil: | # make lv,at + write stuff on at
     u allvse
     n '','','%of:Sev'
     
     n Y =>3=><<'',{rg=>'J,V,yk'}
-        sayre "3 in!  $k";
         C.y.lv = {k=>$k,C=>$C};
         C.y.at = {};
+        if (C.c.root) { # /
+            T.Z->{0.6} = 0.3;
+            T.not = 1;
+            # ^ at everything's 6, come back and ex from 3
+        }
     
     n Y =>31=><<'',{rg=>'J,V,yk,yat,ylv'}
-        saybl "Tastes like $k";
         at.t = C.t;
         at.y.cv = C.y.cv;
         sayre "OSC7 C.t no c_s" if !exists C.c.s;
@@ -453,11 +455,9 @@ Yeomp: | # lvigorta + write stuff on at
     
     n Y =>58=><<'',{rg=>'J,V,yk,ylv,yvl'}
         V.lv->{$k} = $lv;
-        saybl "Am $k  root=".(C.c.root);
         if (C.c.root) {
             V.rl = $vl;
             V.rv = $lv;
-            say wdump 9, [V.rv.c,V.rv.sc];
             Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
                 if J.V;
         }
