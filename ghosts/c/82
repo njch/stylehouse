@@ -1,0 +1,369 @@
+
+JSea: |
+    u alljs
+    # for the webclient channels
+    n om =>''=><<''
+        A = $.extend({},A);
+        C = G.inC(C); 
+        if (!T.d)
+           T.d=1; 
+        if (typeof C.c === 'string')
+           return a.er('c string: '+C.c);
+        .
+        var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
+        .
+        if (C.c.W)
+           A.on = $('#'+C.c.W);
+        if (C.c.el)
+           G.el(A,C,G,T);
+        if (C.c.nobody)
+           A.on = $('#'+C.c.nobody);
+        if (C.c.rm) {
+           a.m(see);
+           var delay = C.c.rm;
+           if (!delay)
+              delay = 10;
+           delay *= 100;
+           $(A.on).fadeOut(delay, function() { $(this).remove(); });
+           return;
+        }
+        .
+        if (!C.sc)
+           C.sc = {};
+        .
+        if (C.sc.z) { 
+           //T.d++;
+           $.each(C.sc.z, function(i,v) {
+               var nC = G.inC(v);
+               //a.yl(1, function () { 
+                G.om(A,nC,G,{d:T.d+1});
+               //});
+           });
+        }
+        .
+        if (!C.sc.css)
+          C.sc.css = {};
+          C.sc.anc = {};
+        var ung = ['ab','geo'];
+        $.each(ung, function(i,v) {
+           if (C.sc[v]) {
+               var nC = {c: C.sc[v], sc: C.sc};
+               var way = 'sc_'+v;
+               
+               var f = {n: G[way]};
+               
+               f.n(A,nC,G,T);
+           }
+        });
+        .
+        if (C.sc.css) {
+           $.each(C.sc.css, function(i,v) {
+                $(A.on).css(i, v);
+           });
+        }
+        if (C.sc.anc) {
+           $(A.on).animate(C.sc.anc, (C.sc.ant||900));
+        }
+        if (C.sc.cod) {
+           a.cod(C.sc.cod);
+        }
+    
+    n sc_geo =>''=><<''
+        var s = C.c.split(' ');
+        if (s[0].match('^a')) {
+            
+        }
+        C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
+        C.sc.css.top = (C.c.y * 100)+'%';
+        C.sc.css.left = (C.c.x * 100)+'%';
+        C.sc.css['transform-origin'] = '0% 0%';
+        .
+        C.sc.css['transform'] = 'rotate('+C.c.rad+'rad)';
+        if (C.c.scale)
+            C.sc.css['transform'] += ' scale('+C.c.scale+')';
+    
+    n sc_ab =>''=><<''
+        if (C.c === '100') {
+            C.sc.css.width = '100%';
+            C.sc.css.height = '100%';
+        }
+        C.sc.css.position = 'absolute';
+    
+    n el =>''=><<''
+        if (!C.sc.attr)
+            C.sc.attr = {};
+        var last;
+        if (C.c.el === '9' || C.c.el === '1') {
+            
+        }
+        if (C.c.id) { 
+            C.sc.attr.id = C.c.id;
+            var aid = $(A.on).attr('id');
+            if (aid && C.c.id) { 
+                var to = '#'+aid+' #'+C.c.id;
+                var ex = $(to);
+                if (ex) {
+                    a.m('rm '+ex.prop('tagName')+' '+to);
+                    if (ex.prop('tagName') === 'undefined')
+                       a.m('?');
+                    $(ex).remove();
+                }
+            }
+        }
+        var div = $("<"+C.t+">", C.sc.attr);
+        var el;
+        $(div).appendTo(A.on).each(function(i,v){el=v});
+        if (C.c.s)
+            $(el).html(C.c.s);
+        A.on = el;
+
+Otheringso: |
+    u alljs
+    # paperscope (with (paper) {...}) FUN STUFF! spines!
+    die 'relartd';
+    
+    n funstuff =>''=><<''
+        project.clear(); 
+        a.sitandspin();
+        //a.pzl();
+    
+    # pAaq2_PkypY?t=24
+    # http://jsfiddle.net/M78zz/
+    n Re =>''=><<''
+        # <div id="ytplayer"></div>
+    
+    n yt =>''=><<''
+        var d = {};
+        d.playerVars = C.c || {};
+        d.height = '390';
+        d.width = '640';
+        d.videoId = C.t;
+        console.log(' yepeppp', C);
+        etc.pla = A.player = new YT.Player('ytplayer', d);
+        console.log(' yepeppp', d, A.player);
+    
+    # compression jsc ^, js v
+    n ytapi =>''=><<''
+        # makes element src: https://www.youtube.com/player_api
+    
+    n ytr =>''=><<''
+        //$('canvas#display').attr('width'=>'100%', height=>'100%');
+        function onYouTubeIframeAPIReady() {
+            etc.ytread = 1;
+        }
+Canvasc: |
+    u alljs
+    # & sitting
+    die 'relartd';
+    
+    n doya =>''=><<''
+        # animation frame
+        console.log('de rock'); 
+        // and!
+        // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
+    
+    n pzl =>''=><<''
+        with(paper){
+            var shape = new Path.RegularPolygon(view.center,3, 100);
+            .
+            shape.fillColor = '#8C8A00';
+            view.onFrame = function (event) {
+                shape.rotate(1);
+                shape.fillColor.hue += 1;
+                .
+                shape.position.x += shape.bounds.width / 50;
+                if (shape.bounds.left > view.size.width) {
+                    shape.position.x = -shape.bounds.width;
+                }
+            }
+        }
+    
+    n sitandspin =>''=><<''
+        with (paper) {
+            var project = new Project;
+            var mousePoint = view.center;
+            var amount = 30;
+            var colors = ['red', 'black', 'blue', 'black'];
+
+            for (var i = 0; i < amount; i++) {
+                var rect = new Rectangle([5, 0], [25, 25]);
+                rect.center = mousePoint;
+                var path = new Path.Rectangle(rect, 6);
+                path.fillColor = colors[i % 4];
+                var scale = (1 - i / amount) * 25;
+                path.scale(scale);
+            }
+
+            view.onMouseMove = function (event) {
+                mousePoint = event.point;
+                a.m('mm!');
+            }
+
+            var children = project.activeLayer.children;
+            view.onFrame = function (event) {
+                paper.uplg.update(event);
+                
+                for (var i = 1, l = children.length; i < l; i++) {
+                    var item = children[i];
+                    var delta = (mousePoint - item.position) / (i + 5);
+                    item.rotate((Math.sin((event.count + i) / 10)+0.617) * 3);
+                    if (delta.length > 0.1)
+                        item.position += delta;
+                    item.fillColor.hue += 1;
+                    var shape = item;
+                    shape.position.x += shape.bounds.width / 50;
+                    if (shape.bounds.left > view.size.width) {
+                        shape.position.x = -shape.bounds.width;
+                    } 
+                }
+            }
+        }
+    
+JScomp: |
+    u alljs
+
+    n inC =>''=><<''
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: C};
+        }
+        return C
+
+    n yl =>''=><<'',{acgt=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<''
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+    # turf grab
+    n wu =>''=><<'',{acgt=>'wwid,Wid,s'}
+        $('ww#'+wwid+' > *#'+Wid).remove();
+        $('ww#'+wwid).append(s);
+    
+    # contextualise to W
+    n WW =>''=><<''
+        var W = ww[s];
+        if (!W) {
+            W = ww[s] = {};
+            W.Wid =s;
+            W.A = {};
+            //W.A.p = new paper.Project();
+            W.A.W = W;
+        }
+        //W.A.p.activate();
+        return W;
+    
+    # contextualise to W
+    n o =>''=><<'',{acgt=>'Wid,K,C'}
+        var W = a.WW(Wid);
+        var A = W.A;
+        C = a.inC(C);
+        var G = a;
+        // should be receiver, W.G, auto locals + uni
+        // looks in W.G, W.G.incs, a
+        // passes ACGT
+        var T = {};
+        a[K](A, C, G, T);
+    
+    # contextualise to W
+    n do =>''=><<''
+        try {
+          eval(C.c);
+        }
+        catch (er) {
+          a.er(C.c, er);
+        }
+    
+    n ps =>''=><<''
+        with (paper) {
+          try {
+            eval(C.c);
+          }
+          catch (er) {
+            a.er(C.c, er);
+          }
+        }
+    
+    # mire
+    n cod =>''=><<''
+        var def = {mode:'perl',theme:'midnight',lineWrapping:true};
+        var set = $.extend(def, s);
+        var id = set['id'];
+        delete set['id'];
+        var cm = CodeMirror(document.getElementById(id), set);
+        .
+        cm.ididid = id;
+        cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
+        .
+        cm.on('focus',function(){clof();keof();});
+        cm.on('blur',function(){clon();keon();a.codsav(cm)});
+        .
+        $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
+        $('#'+id+' > .CodeMirror');//.css('height','auto');
+    
+    # reflux
+    n codsav =>''=><<''
+        var we = $('#'+s.ididid);
+        a.m('AAAAAAAAAAA');
+        var d = {};
+        a.entag(d, we);
+        d.code = cm.getValue();
+        d.dig = we.attr('dig');
+        a.ethro(d, ws);
+        console.log(d);
+
+JSosC: |
+    u allsvse
+    
+    n args =>5=><<''
+        # quack
+    
+    n jsc =>5=><<''
+        my $args = cs.args || 'A,C,G,T';
+        at.c = 'e';
+        at.s =  "a.".j.l." = function (".$args.") {\n".at.s."};\n";
+    
+    n js =>5=><<''
+        if (1 || cs.src) {
+            at.tag = 'script';
+            at.type = cs.type || 'text/javascript';
+            at.title = undef;
+            at.src = cs.src if cs.src;
+        }
+        else {
+            at.c = 'o';
+            at.s =   [J.id, 'do', at.s];
+        }
+    
+    n st =>5=><<''
+        at.tag = 'style';
+        at.type = 'text/css';
+    
+    n ps =>5=><<''
+        at.c = 'o'; # etc
+        at.s = [J.id, 'ps', at.s];
+        at.pur = 1; # TODO local lumi
+    
+    n yt =>5=><<''
+        my $n = {};
+        (n.t, my $ma) = split /\?/, $v;
+        $ma = {map{split '=', $_, 2}split '&', $ma};
+        .
+        n.c.autoplay = 1 if ma.t;
+        n.c.start = ma.t if ma.t;
+        .
+        #die "$v   :". wdump $n;
+        at.pur = 1; # TODO local lumi
+        at.c = 'o';
+        at.s = [J.id, yt => [n.t,n.y,n.c,n.sc]];
+        #<iframe width="420" height="315" src="https://www.youtube.com/embed/DyVnwKcb0YY#t=958" frameborder="0" autoplay="1" start="958" allowfullscreen></iframe>
+
+
