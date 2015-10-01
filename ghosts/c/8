@@ -1,3 +1,974 @@
+
+JSea: |
+    u alljs
+    # for the webclient channels
+    n om =>''=><<''
+        A = $.extend({},A);
+        C = G.inC(C); 
+        if (!T.d)
+           T.d=1; 
+        if (typeof C.c === 'string')
+           return a.er('c string: '+C.c);
+        .
+        var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
+        .
+        if (C.c.W)
+           A.on = $('#'+C.c.W);
+        if (C.c.el)
+           G.el(A,C,G,T);
+        if (C.c.nobody)
+           A.on = $('#'+C.c.nobody);
+        if (C.c.rm) {
+           a.m(see);
+           var delay = C.c.rm;
+           if (!delay)
+              delay = 10;
+           delay *= 100;
+           $(A.on).fadeOut(delay, function() { $(this).remove(); });
+           return;
+        }
+        .
+        if (!C.sc)
+           C.sc = {};
+        .
+        if (C.sc.z) { 
+           //T.d++;
+           $.each(C.sc.z, function(i,v) {
+               var nC = G.inC(v);
+               //a.yl(1, function () { 
+                G.om(A,nC,G,{d:T.d+1});
+               //});
+           });
+        }
+        .
+        if (!C.sc.css)
+          C.sc.css = {};
+          C.sc.anc = {};
+        var ung = ['ab','geo'];
+        $.each(ung, function(i,v) {
+           if (C.sc[v]) {
+               var nC = {c: C.sc[v], sc: C.sc};
+               var way = 'sc_'+v;
+               
+               var f = {n: G[way]};
+               
+               f.n(A,nC,G,T);
+           }
+        });
+        .
+        if (C.sc.css) {
+           $.each(C.sc.css, function(i,v) {
+                $(A.on).css(i, v);
+           });
+        }
+        if (C.sc.anc) {
+           $(A.on).animate(C.sc.anc, (C.sc.ant||900));
+        }
+        if (C.sc.cod) {
+           a.cod(C.sc.cod);
+        }
+    
+    n sc_geo =>''=><<''
+        var s = C.c.split(' ');
+        if (s[0].match('^a')) {
+            
+        }
+        C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
+        C.sc.css.top = (C.c.y * 100)+'%';
+        C.sc.css.left = (C.c.x * 100)+'%';
+        C.sc.css['transform-origin'] = '0% 0%';
+        .
+        C.sc.css['transform'] = 'rotate('+C.c.rad+'rad)';
+        if (C.c.scale)
+            C.sc.css['transform'] += ' scale('+C.c.scale+')';
+    
+    n sc_ab =>''=><<''
+        if (C.c === '100') {
+            C.sc.css.width = '100%';
+            C.sc.css.height = '100%';
+        }
+        C.sc.css.position = 'absolute';
+    
+    n el =>''=><<''
+        if (!C.sc.attr)
+            C.sc.attr = {};
+        var last;
+        if (C.c.el === '9' || C.c.el === '1') {
+            
+        }
+        if (C.c.id) { 
+            C.sc.attr.id = C.c.id;
+            var aid = $(A.on).attr('id');
+            if (aid && C.c.id) { 
+                var to = '#'+aid+' #'+C.c.id;
+                var ex = $(to);
+                if (ex) {
+                    a.m('rm '+ex.prop('tagName')+' '+to);
+                    if (ex.prop('tagName') === 'undefined')
+                       a.m('?');
+                    $(ex).remove();
+                }
+            }
+        }
+        var div = $("<"+C.t+">", C.sc.attr);
+        var el;
+        $(div).appendTo(A.on).each(function(i,v){el=v});
+        if (C.c.s)
+            $(el).html(C.c.s);
+        A.on = el;
+
+Otheringso: |
+    u alljs
+    # paperscope (with (paper) {...}) FUN STUFF! spines!
+    die 'relartd';
+    
+    n funstuff =>''=><<''
+        project.clear(); 
+        a.sitandspin();
+        //a.pzl();
+    
+    # pAaq2_PkypY?t=24
+    # http://jsfiddle.net/M78zz/
+    n Re =>''=><<''
+        # <div id="ytplayer"></div>
+    
+    n yt =>''=><<''
+        var d = {};
+        d.playerVars = C.c || {};
+        d.height = '390';
+        d.width = '640';
+        d.videoId = C.t;
+        console.log(' yepeppp', C);
+        etc.pla = A.player = new YT.Player('ytplayer', d);
+        console.log(' yepeppp', d, A.player);
+    
+    # compression jsc ^, js v
+    n ytapi =>''=><<''
+        # makes element src: https://www.youtube.com/player_api
+    
+    n ytr =>''=><<''
+        //$('canvas#display').attr('width'=>'100%', height=>'100%');
+        function onYouTubeIframeAPIReady() {
+            etc.ytread = 1;
+        }
+Canvasc: |
+    u alljs
+    # & sitting
+    die 'relartd';
+    
+    n doya =>''=><<''
+        # animation frame
+        console.log('de rock'); 
+        // and!
+        // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
+    
+    n pzl =>''=><<''
+        with(paper){
+            var shape = new Path.RegularPolygon(view.center,3, 100);
+            .
+            shape.fillColor = '#8C8A00';
+            view.onFrame = function (event) {
+                shape.rotate(1);
+                shape.fillColor.hue += 1;
+                .
+                shape.position.x += shape.bounds.width / 50;
+                if (shape.bounds.left > view.size.width) {
+                    shape.position.x = -shape.bounds.width;
+                }
+            }
+        }
+    
+    n sitandspin =>''=><<''
+        with (paper) {
+            var project = new Project;
+            var mousePoint = view.center;
+            var amount = 30;
+            var colors = ['red', 'black', 'blue', 'black'];
+
+            for (var i = 0; i < amount; i++) {
+                var rect = new Rectangle([5, 0], [25, 25]);
+                rect.center = mousePoint;
+                var path = new Path.Rectangle(rect, 6);
+                path.fillColor = colors[i % 4];
+                var scale = (1 - i / amount) * 25;
+                path.scale(scale);
+            }
+
+            view.onMouseMove = function (event) {
+                mousePoint = event.point;
+                a.m('mm!');
+            }
+
+            var children = project.activeLayer.children;
+            view.onFrame = function (event) {
+                paper.uplg.update(event);
+                
+                for (var i = 1, l = children.length; i < l; i++) {
+                    var item = children[i];
+                    var delta = (mousePoint - item.position) / (i + 5);
+                    item.rotate((Math.sin((event.count + i) / 10)+0.617) * 3);
+                    if (delta.length > 0.1)
+                        item.position += delta;
+                    item.fillColor.hue += 1;
+                    var shape = item;
+                    shape.position.x += shape.bounds.width / 50;
+                    if (shape.bounds.left > view.size.width) {
+                        shape.position.x = -shape.bounds.width;
+                    } 
+                }
+            }
+        }
+    
+JScomp: |
+    u alljs
+
+    n inC =>''=><<''
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: C};
+        }
+        return C
+
+    n yl =>''=><<'',{acgt=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<''
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+    # turf grab
+    n wu =>''=><<'',{acgt=>'wwid,Wid,s'}
+        $('ww#'+wwid+' > *#'+Wid).remove();
+        $('ww#'+wwid).append(s);
+    
+    # contextualise to W
+    n WW =>''=><<''
+        var W = ww[s];
+        if (!W) {
+            W = ww[s] = {};
+            W.Wid =s;
+            W.A = {};
+            //W.A.p = new paper.Project();
+            W.A.W = W;
+        }
+        //W.A.p.activate();
+        return W;
+    
+    # contextualise to W
+    n o =>''=><<'',{acgt=>'Wid,K,C'}
+        var W = a.WW(Wid);
+        var A = W.A;
+        C = a.inC(C);
+        var G = a;
+        // should be receiver, W.G, auto locals + uni
+        // looks in W.G, W.G.incs, a
+        // passes ACGT
+        var T = {};
+        a[K](A, C, G, T);
+    
+    # contextualise to W
+    n do =>''=><<''
+        try {
+          eval(C.c);
+        }
+        catch (er) {
+          a.er(C.c, er);
+        }
+    
+    n ps =>''=><<''
+        with (paper) {
+          try {
+            eval(C.c);
+          }
+          catch (er) {
+            a.er(C.c, er);
+          }
+        }
+    
+    # mire
+    n cod =>''=><<''
+        var def = {mode:'perl',theme:'midnight',lineWrapping:true};
+        var set = $.extend(def, s);
+        var id = set['id'];
+        delete set['id'];
+        var cm = CodeMirror(document.getElementById(id), set);
+        .
+        cm.ididid = id;
+        cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
+        .
+        cm.on('focus',function(){clof();keof();});
+        cm.on('blur',function(){clon();keon();a.codsav(cm)});
+        .
+        $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
+        $('#'+id+' > .CodeMirror');//.css('height','auto');
+    
+    # reflux
+    n codsav =>''=><<''
+        var we = $('#'+s.ididid);
+        a.m('AAAAAAAAAAA');
+        var d = {};
+        a.entag(d, we);
+        d.code = cm.getValue();
+        d.dig = we.attr('dig');
+        a.ethro(d, ws);
+        console.log(d);
+
+JSosC: |
+    u allsvse
+    
+    n args =>5=><<''
+        # quack
+    
+    n jsc =>5=><<''
+        my $args = cs.args || 'A,C,G,T';
+        at.c = 'e';
+        at.s =  "a.".j.l." = function (".$args.") {\n".at.s."};\n";
+    
+    n js =>5=><<''
+        if (1 || cs.src) {
+            at.tag = 'script';
+            at.type = cs.type || 'text/javascript';
+            at.title = undef;
+            at.src = cs.src if cs.src;
+        }
+        else {
+            at.c = 'o';
+            at.s =   [J.id, 'do', at.s];
+        }
+    
+    n st =>5=><<''
+        at.tag = 'style';
+        at.type = 'text/css';
+    
+    n ps =>5=><<''
+        at.c = 'o'; # etc
+        at.s = [J.id, 'ps', at.s];
+        at.pur = 1; # TODO local lumi
+    
+    n yt =>5=><<''
+        my $n = {};
+        (n.t, my $ma) = split /\?/, $v;
+        $ma = {map{split '=', $_, 2}split '&', $ma};
+        .
+        n.c.autoplay = 1 if ma.t;
+        n.c.start = ma.t if ma.t;
+        .
+        #die "$v   :". wdump $n;
+        at.pur = 1; # TODO local lumi
+        at.c = 'o';
+        at.s = [J.id, yt => [n.t,n.y,n.c,n.sc]];
+        #<iframe width="420" height="315" src="https://www.youtube.com/embed/DyVnwKcb0YY#t=958" frameborder="0" autoplay="1" start="958" allowfullscreen></iframe>
+
+TheKnobbies: |
+    #u allsvse
+    
+    n lumquest =>5=><<''
+         J.lum.lev->("knobs\t0.08" => sub {
+             my $J2 = shift; 
+             J2 bz lable 0.1 "knobs "
+             J2.lev->("knobs\t0.2" => sub {
+               my $J3 = shift;
+               J3 bz slide 0.2 "<input type=range min=1 value=$cra max=9 step=0.25>", "%ishtml"=>1, "%idly" => 'slide', '%css'=>'font-size:50%'
+             });
+         }); 
+
+    n stylesheest =>5=><<''
+            input[type=range] {
+                -webkit-appearance: none;
+                background: black;
+                height: 2px;
+            }
+            input[type=range]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              background: url(i/copper_anodes.jpg);
+              height: 12px;
+              width: 12px;
+              border-radius: 6px;
+              cursor: crosshair;
+              box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            }
+       
+Oscgrin: 
+    u allacgts
+    
+    n mksc =>''=><<''
+        my $t = I.d&mos,C.c;
+        while(my($k,$v) = each %$t) {
+            C.sc.>$k = $v;
+        }
+        return;
+        
+    # language expansion
+    n mos =>''=><<''
+        my @t = split ',',$s;
+        for (@t) {
+            my ($k, $v) = split ':', $_;
+            $T.>$k = $v;
+        }
+    
+    n meat =>''=><<'',{acgt=>'k,v'}
+        my $f = $v;
+        my $mv = C.sc->{$k};
+        $f = g.mean&$f,$mv;
+        C.sc->{$k} = $f;
+
+    n mean =>''=><<'',{acgt=>'to,fro,mix'}
+        $mix ||= 0.5;
+        my $yu = $fro - $to;
+        $yu = $yu * $mix;
+        $fro -= $yu;
+        $fro
+    
+    # it
+    n cole =>''=><<''
+        my $h;
+        (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
+            if $s =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $s";
+        if (defined h.a) {
+           # do an rgba(255,255,255,1)
+           for my $k (qw'r g b a') {
+               my $e = $h->{$k};
+               $e = "$e$e" if length $e == 1; # out of 255
+               $h->{$k} = hex $e;
+           }
+           h.la = sprintf '%.2f', h.la / 255; # out of 1
+           return "rgba(h.r,h.g,h.b,h.a)";
+        }
+        else {
+           return sprintf "#%s%s%s", h.r, h.g, h.b;
+        }
+    
+    # ray lih, unhassley
+    n hsle =>''=><<''
+        my @m;
+        for ($s) {
+            @m = split ' ', $_;
+            last if @m == 3 || @m == 4;
+            @m = split /\./, $_;
+            last if @m == 3 || @m == 4;
+            @m = split '', $_;
+            last if @m == 3 || @m == 4;
+            @m = ();
+        }
+        @m || die "not hsle: $s";
+        my $h;
+        (h.h, h.s, h.l, h.a) = map{0+("0.".$_)}@m;
+        .
+        h.h = h.h * 360 if h.h < 1;
+        .
+        $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+        .
+        my $al = ", h.a" if defined h.a;
+        "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+    
+    # decide space unit TODO init soon
+    n empc =>''=><<''
+        $s .= 'em' if $s !~ /(%|em|px)/;
+        $s =~ s/^-?0em$/0%/;
+        $s
+    
+Oscapps: |
+    u allsvse
+    
+    n geo =>3=><<''
+        my $s = join ' ', map{0+$_} v.x, v.y, v.radial;
+        $s .= ' '.v.scale if v.scale;
+        #$s = "a".v.ab." $s" if v.ab;
+        at.sc.geo = $s;
+        C.sc.ab = delete v.ab if v.ab;
+    
+    n nspc =>2=><<''
+        my $J = C.sc.J;
+        my $squ = C.sc.yspc || J.d.y.spc;
+        my $ratio = $squ / $s;
+        my $sl = sprintf '%.2f', $ratio;
+        my $cl = 0.02;
+        my $max = C.sc.nspc_max || 1;
+        $sl = $max if $sl > $max;
+        if ($sl > 1+$cl || $sl < 1-$cl) {
+            C.sc.geo ? 
+            C.sc.geo.scale = $sl
+            :
+            C.sc.tr.scale = $sl;
+        }
+    
+    n enid =>59=><<''
+        at.id = $s;
+        at.c.nobody = 1; 
+        at.t = j.l;
+        #say "enid j.l ::::  C.sc.at.sc.ab   ".k2 $at;
+        at.sc.ab = '100';
+        .
+        if (my $J = C.sc.J) {
+            die "DIffnoiw";
+            my $aj = C.sc.J.oJ.A.W->[-1];
+            my $l = aj.c->[0];
+            if (!aj.sent && ref $l) {
+                my ($t,$y,$c,$sc) = @$l;
+                if ($t eq j.l) {
+                    die if c.id ne at.id;
+                    %$sc = (%$sc,%{at.sc});
+                    at._aux = 1;
+                }
+            }
+        }
+    
+    n css =>555=><<''
+        $s = join ';', map{"$_:$s->{$_}"} sort keys %$s if ref $s eq 'HASH';
+        for my $set (split ';', $s) {
+            my ($k,$s) = split ':', $set;
+            at.sc.css->{$k} = $s;
+        }
+    
+    n src =>556=><<''
+        at.src = $s
+    
+    n cm =>584=><<''
+        my $wt = {id=>at.id, value=>at.s};
+        at.id || die"noid".wdump 2,$at;
+        at.dig = C.sc.dig || die "no diggy";
+        at.sc.cod = $wt;
+        at.s = '';
+    
+    n idly =>58=><<''
+        my $id = mkuid();
+        at.id && die "arl";
+        at.id = $id;
+        j.sc ||= C.sc;
+        #J.idyl->($J, $id, $j);
+        sayre "idly C.t  J.name J.r    ".ki C.sc;
+        #die wdump 2, A.J
+        
+    n lp =>5=><<''
+        at.ishtml = 1;
+        
+    n ishtml =>5=><<''
+        at.ishtml = 1;
+        
+    n id =>5=><<''
+        at.id = $s;
+        
+    n tt =>5=><<''
+        at.title = $s;
+        
+    n canvas =>5=><<''
+        at.canvas = $s;
+        
+    n type =>51=><<''
+        at.type = $s;
+        at.ishtml = 1;
+        at.title = undef;
+        
+    n tag =>5=><<''
+        at.tag = $s;
+        
+    n at =>5=><<''
+        die;
+        $s =~ /^(?:(\S+):)?(\S+)$/;
+        $at->{$1} = $2;
+        
+    n atrp =>5=><<''
+        die "heloarp";
+        at.rp = $s;
+        
+    n path =>5=><<''
+        # to compuile J.ys
+        
+    n origin =>5=><<''
+        # better than W via c pi and W
+        
+    n pwar =>5=><<''
+        # to suggest
+        
+    n Joint =>5=><<''
+        # Something
+
+TheAttractor: |
+    u allsvse
+        
+    m @$_
+    for @{Load(<<'')}
+     -
+      - sz
+      - 3.1
+      - |
+        my $si = length(C.c.s);
+        ($s, my $lim) = split '/',$s;
+        my $di = $s/$si;
+        $di = $lim if $lim && $di > $lim;
+        I.d&meat,fsi=>$di;
+        I.d&meat,fsi=>1 if $di > 2;
+        return;
+        #        $fs = "font-size:$fs%;";
+        #        if ($si > $tev) {
+        #            $text = ($text=~/^(.{$tev})/s)[0];
+        #        }
+     -
+      - deco # splurge many, get this pipe sorted...
+      - 3.2
+      - |
+        at.sc.css->{"text-decoration"} = "underline";
+     -
+      - is # colour from value spinner
+      - 3.2
+      - |
+        my ($t,$z) = split ':', $s;
+        $z ||= C.c.s;
+        my $i = sum map { ord $_ } split '', $z;
+        $i -= 9 until $i < 10;
+        C.sc.hs = "${i}75";
+     -
+      - mu # timers
+      - 3.2
+      - |
+        if ($s eq 'g') {
+            C.c.s || die "nos : ".wdump 2, $C;
+            C.c.s = Rw mugwu $d:C.c.s;
+            C.sc.hs ||= "576";
+        }
+        else {
+            die "how mu $s? C.s";
+        }
+     -
+      - poi # pointer-events
+      - 3.2
+      - |
+        at.sc.css->{"pointer-events"} = ($s =~ /^([1ay])/ ? 'all' : 'none');
+     -
+      - at # fossicks
+      - 3
+      - |
+         $at.>$_ = $s.>$_ for keys %$s;
+     -
+      - tag #
+      - 3
+      - |
+         at.tag = $s;
+     -
+      - sha # it
+      - 3
+      - |
+         my @m = split m/\s/, $s;
+         $m[-1] = I.d&cole,$m[-1];
+         at.sc.css->{"text-shadow"} = sprintf '%dpx %dpx %dpx %s', @m;
+     -
+      - co # it
+      - 3.3
+      - |
+        at.sc.css->{"color"} = I.d&cole,$s;
+     -
+      - hs # color: hsla
+      - 3.3
+      - |
+        at.sc.css->{"color"} = I.d&hsle,$s;
+     - #c ground etc
+      - zi 
+      - 3
+      - |
+        at.sc.css->{"z-index"} = 0+$s;
+     -
+      - zig # it alley, primary, ground
+      - 3
+      - |
+        at.sc.css->{"z-index"} = 0+($s-20);
+     -
+      - zie # suuuuuu, ether
+      - 3
+      - |
+         at.sc.css->{"z-index"} = 0+($s-10);
+     -
+      - bgi # background image
+      - 3.2
+      - |
+         at.sc.css->{"background-image"} = "url('$s')";
+     -
+      - bg # background something
+      - 3.2
+      - |
+         at.sc.css->{"background"} = "$s";
+     -
+      - bgh # background hsla
+      - 3.2
+      - |
+         at.sc.css->{"background-color"} = I.d&hsle,$s;
+     -
+      - fsi # it
+      - 6.9
+      - |
+         at.sc.css.>font-size = int($s*100).'%';
+     -
+      - fs # it
+      - 7
+      - |
+         $s *= 9;
+         at.sc.css.>font-size = int($s).'%';
+     -
+      - fw # it
+      - 7
+      - |
+        at.sc.css->{"font-weight"} = int($s*100);
+     -
+      - ws # it
+      - 7
+      - |
+        if ($s eq 'p') { 
+            $s = 'pre';
+        }
+        if ($s eq 'n') {
+            $s = 'nowrap';
+        }
+        at.sc.css->{"white-space"} = $s;
+     - #c filterszzzz weird style using com to agg.
+      - opa # seetrhu
+      - 3
+      - |
+         at.sc.css->{"opacity"} = $s;
+     -
+      - tro #
+      - 3.6
+      - |
+        at.sc.css->{"transform-origin"} = $s;
+     -
+      - rad # radial tr
+      - 3.6
+      - |
+        C.sc.tr.rotate = $s.'rad' if $s;
+     -
+      - scale # zzz tr
+      - 3.6
+      - |
+        C.sc.tr.scale = $s;
+     -
+      - tr # filterszzzz weird style using com to agg.
+      - 3.7
+      - |
+        at.sc.css->{"-webkit-transform"} = join' ', map {"$_($s->{$_})"} keys %$s;
+     -
+      - of
+      - 3.7
+      - |
+        C.sc.css->{"-webkit-filter"} = join' ', map {"$_($s->{$_})"} keys %$s;
+     -
+      - blr # it
+      - 3.6
+      - |
+        C.cs.of.blur = $s.'px';
+     -
+      - sat # it saturation
+      - 3.6
+      - |
+        C.cs.of.saturate = $s;
+     -
+      - con # it contrast
+      - 3.6
+      - |
+        C.cs.of.contrast = $s;
+     -
+      - bri # it bright
+      - 3.6
+      - |
+        C.cs.of.brightness = $s;
+     -
+      - hue # it bright
+      - 3.6
+      - |
+        C.cs.of->{'hue-rotate'} = $s.'deg';
+     -
+      - sep # it old
+      - 3.6
+      - |
+        C.cs.of.sepia = $s;
+     -
+      - inv # it old
+      - 3.6
+      - |
+        C.cs.of.invert = $s;
+     -
+      - gray # it old
+      - 3.6
+      - |
+        C.cs.of.grayscale = $s;
+     - #c limbic space
+      - ls # it
+      - 3
+      - |
+        C.sc.css->{"letter-spacing"} = g.empc->($s);
+     -
+      - lh # it
+      - 3
+      - |
+        C.sc.css->{"line-height"} = g.empc->($s);
+     -
+      - ml # it
+      - 3
+      - |
+        C.sc.css->{"margin-left"} = g.empc->($s);
+     -
+      - mr # it
+      - 3
+      - |
+        C.sc.css->{"margin-right"} = g.empc->($s);
+     -
+      - mt # it
+      - 3
+      - |
+        C.sc.css->{"margin-top"} = g.empc->($s);
+     -
+      - mb # it
+      - 3
+      - |
+        C.sc.css->{"margin-bottom"} = g.empc->($s);
+     -
+      - m # margrin
+      - 3
+      - |
+        C.sc.css->{margin} = $s;
+     -
+      - right # yep
+      - 3.4
+      - |
+        C.sc.css->{right} = $s;
+     -
+      - left # yep
+      - 3.4
+      - |
+        C.sc.css->{left} = $s;
+     -
+      - top # yep
+      - 3.4
+      - |
+        C.sc.css->{top} = $s;
+     -
+      - bottom # yep
+      - 3.4
+      - |
+        C.sc.css->{bottom} = $s;
+     -
+      - mw # y
+      - 3.4
+      - |
+        C.sc.css->{"max-width"} = $s;
+     -
+      - mh # y
+      - 3.4
+      - |
+        C.sc.css->{"max-height"} = $s;
+     -
+      - miw # y
+      - 3.4
+      - |
+        C.sc.css->{"min-width"} = $s;
+     -
+      - width # y
+      - 3.4
+      - |
+        C.sc.css->{"width"} = $s;
+     -
+      - height # y
+      - 3.4
+      - |
+        C.sc.css->{"height"} = $s;
+     -
+      - over # y 
+      - 3.4
+      - |
+        C.sc.css->{"overflow"} = $s;
+     -
+      - float # y 
+      - 3.4
+      - |
+        C.sc.css->{"float"} = $s;
+     -
+      - bo # border
+      - 3.4
+      - |
+        C.sc.css->{"border"} = $s;
+
+WhereWeParseat:|
+       my $c = at.c ||= {};
+       my $sc = at.sc ||= {};
+       my $note = {};
+       my $not = sub {
+           my $k = shift;
+           $note->{$k} = 1;
+           return $at->{$k} if exists $at->{$k};
+           return ();
+       };
+       my $MM = sub {
+           map {[
+               (defined _.t ? _.t : ''),
+               (defined _.y ? _.y : ''),
+               _.c,_.sc
+           ]} @_
+       };
+       
+       if (c.nobody) {
+           c.nobody = $not->('id');
+           $not->($_) for 's', 'ishtml';
+       }
+       else {
+           my $tag = not&tag || do {
+             (my $ts = j.l)  =~ s/[^\w]/ñ/sg; "$ts"
+           };
+           $tag = "Z$tag" if $tag !~ /^[a-z]/i || $tag =~ /^([sbu]|style)$/i;
+           at.t = "$tag";
+           
+           c.id = $_ for not&id;
+           
+           not&name;
+           not&title;
+           not&src;
+            
+           my $s = not&s;
+           $s = encode_entities($s) unless not&ishtml;
+
+           c.s = $s;
+           
+           die 'attr $something>' if at.rp;
+           my $of = {map{$_=>1}qw's ishtml t y c sc Esc Ec id css tag rp'};
+           
+           c.el = $pat ? 2 : 1;
+           
+           sc.z = [@{not&Esc||[]}];
+           
+           if (J.most.J.name eq 'Wander') {
+             #say "Off.... j.r". wdump 5, sc.z;
+           }
+           delete sc.z if !@{sc.z};
+           
+           # here hangs loose, we would want to conduct at.c/sc business cleanly
+           
+           # clang
+           c.attr->{$_} = $at->{$_} for            
+               sort grep {!/^_/ && !$of->{$_} } keys %$at;
+       }
+       my $may = 0;
+       #$may = 1 if not&_aux;
+       
+       my $to = {};
+       for my $k (keys %$at) {
+           next if $k =~ /^_/;
+           next if $note->{$k};
+           $to->{$k} = $at->{$k};
+       }
+       
+       warn "Got $_" for grep { $_ !~ /^(t|y|c|sc)$/ } keys %$to;
+       if (J.V) {
+           saybl "=------ ".ki 2, $to;
+           if (my $cM = to.sc.z) {
+              saybl " M  ".$_->[0]."\t".ki $_->[2]."\t((( ".ki $_->[3] for @$cM;
+              saybl "MMMM ".@$cM;
+           }
+       }
+       
+       acum $lv, 'Ec', $MM->($to);# unless $may;
 Travel: # make somewhere bridge
    yJ: |
      'clw waz gui'
