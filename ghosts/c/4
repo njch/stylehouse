@@ -124,7 +124,13 @@ ym/concoi: |
                 $v = '' if $v eq '1';
                 my ($nk) = C.sc.v =~ /^([tyc]|sc)(.*)$/;
                 $nk ||= C.sc.nk || die"nonkrg".ki$C;
-                my @no = map {[$nk,$_]} split /,/, $v;
+                my @no = map {
+                    my ($wnk,$wgk);
+                    ($wnk,$wgk) = ($1,$2) if /^([tyc]|sc)(.*)$/;
+                    $wnk ||= $nk;
+                    $wgk ||= $_;
+                    [$wnk,$wgk]
+                } split /,/, $v;
                 push @no, [C.sc.nk,C.sc.gk] if $nk ne C.sc.nk;
                 for my $s (@no) {
                     push @ara, "    my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";

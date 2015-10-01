@@ -1,4 +1,4 @@
-RB: | # require N, required to return an A.I that I.n,I.An,A.t
+RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
     my $A = {};
     
     A.oA = ar.oA if ar.oA;
@@ -40,8 +40,9 @@ RB: | # require N, required to return an A.I that I.n,I.An,A.t
     $A
 Otherway: |
     u allacgts
-    
-    # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
+    # G.h
+    # encap A/spiral spinner for the G.h, from the  to ar A.I.d&Others
+    # G.h&I finds relevant A.I to AI.d&Other with, returning ($A,$I)
     n Other =>''=>{s=><<''}
         my $ar = $F[0]->{ar};
         my $A = Rw RB + $t:s;
@@ -53,12 +54,37 @@ Otherway: |
         A.t&11111 || warn "NO 1";
         ($A,A.I)
     
-Seven: |
+Galso: | # Gooso goner # 
+    G.h = sub {
+        my $am = shift;
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$am;
+    };
+    my %T = %{G.T||{}};
+    G.T = \%T;
+    {
+        package Wormhole;
+        use Tie::Hash;
+        use YAML::Syck;
+        our @ISA = qw(Tie::StdHash);
+        sub FETCH {
+            my ($s,$k) = @_;
+            $s->{$k} ||= do{ 
+            print "Loading w/$k ...\n" for 1..5;
+            LoadFile("w/$k") };
+        }
+    }
+    tie %T, 'Wormhole';
+Seven: | # ^^^^^^^^^^^^^^^^^
     n Otherway =>W
     n Yesoo =>W
     n Yools =>W
     n Yeoso =>W
     n Yeosleep =>W
+    n Yeoscil =>W
 Yesoo: |
     u allvse
     n '','','%of:Mo'
@@ -85,8 +111,9 @@ Seve: |
                 T.not&&next;
     }
     continue { I.d&z; }
-    A.t&8;
+    A.t&89;
     I.d&recycle;
+    A.retu;
 Yools: |
     u allacgts
     
@@ -95,20 +122,30 @@ Yools: |
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         $CC;
     
+    n heq =>'',<<'',{acgt=>'o,t'}
+        if (ref $o && ref $t) {
+            keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
+        }
+        elsif (!ref $o && !ref $t) {
+            $o eq $t
+        }else{0}
 Yeoso: |
     u allvse
     n '','','%of:Sev'
     
     # time impersonator
     n Y =>2=><<'',{rg=>'J,V'}
-        C.c.V || die "NO V";
-        C.c.Y || die "NO Y";
-        C.c.Y = Rw Elj $J $name:C.c.Y;
+        for (Y => 'V') {
+            C.c->{$_} || die "NO _";
+            C.c->{$_} = Rw Elj $J $name:_;
+        }
     
     # exchange        
     n Y =>21=><<'',{rg=>'J,V'}
         Rw Elvis $J $Y;
         V.os = [];
+        A.mo.retu && die "J.name's  V.name: Already is  A.mo.retu.name";
+        A.mo.retu = $V;
     
     # root of etc (yin)
     n Y =>22=><<'',{rg=>'J,V'}
@@ -121,14 +158,14 @@ Yeoso: |
         my $N = [grep { $_ ne Y.il } @{Y.vs}];
         push @$N, Y.il;
         # should be able to s/A.mo.re/T.Z/
-        # Z.cv = 1 makes selves, array others (yarN) which may Acquire
+        # Z.cv = 1 makes A,Celf, array others (yarN) which may Acquire
         push @{A.mo.re->{0.226}||=[]}, map{
             my $CC = I.d&hup,$_;
             # all spreads out to play Y/V
             I.d&xot,$CC,{c=>C.c};
             [undef,$CC]
         }@$N;
-    
+        
 Yeosleep: |
     u allvse
     n '','','%of:Sev'
@@ -136,36 +173,120 @@ Yeosleep: |
     n Y =>23=><<'',{rg=>'J,V'}
         sayyl "Was in! ".ki $C;
         .
-        my C.c.k = C.y.cv."\t".C.t;
-        push @{V.os}, C.c.k unless $C eq Y.il;
+        C.y.k = C.y.cv."\t".C.t;
+        push @{V.os}, C.y.k unless $C eq Y.il;
         .
-        return T.next = 1 unless $C eq Y.il ||
+        return T.not = 1 unless $C eq Y.il ||
         # if change is, or just diff in perceiving it
-        Rw diffre $J $C $k $Y $V;
+        Rw YDiffre $J $A $I $C $Y $V $T;
         
-Nooqdles: |
-    # providing the source pretend of c/sc ray anarchy
-    my $V = Rw El Duv;
-    while (@{A.N}) {
-        my $C = shift @{A.N};
-        ref C.y || die"nospace".ki $C;
-        ref C.y || sayre("Weird".ki$C) && next;
+YDiffre: |
+    my $toen = 1;
+    
+    if (my $di = Y.lo->{C.y.k}) {
+        my $not;
+        if (keys %$di == 1 && di.diff) {
+            my $CC = V.tv->{C.y.k};
+            if (!$CC) {
+                sayre "never heard of (V_tv) diff J.name : C.y.k ";
+                return 1;
+            }
+            for my $tk (keys %{di.diff}) {
+                if ($tk eq 'geo') {
+                    $not++ if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
+                    if ($not && 0) {
+                        sayyl "Geo was $not a difference in the thing";
+                        sayyl sjson(C.sc.geo);
+                        saybl sjson(CC.sc.geo);
+                    }
+                }
+                elsif ($tk eq '') {
+                    $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
+                }
+                else {
+                    saybl "J.name C.y.k has diffre: $tk";
+                    $not++;
+                }
+            }
+        }
+        else {
+            $not = 1;
+        }
+        $toen = 0 if !$not;
+    }
+    if (!$toen) {
+        if (my $JJ = C.sc.J) {
+            my $ta = V.ta->{C.y.k};
+            if (my $nV = JJ.El->{V.name}) {
+                my $iv = nV.rv;
+                my $oi = ta.V->{V.name};
+                if ($oi ne iv.i) {
+                    $toen = 1;
+                    #sayyl "J.name  $k   about JJ.name: $toen \n"
+                    #.($toen&&" ^ iv.i\n | $oi");
+                }
+            }
+            else {
+               sayre "no El V.name on JJ.name";
+            }
+        }
+    }
+    $toen
+     
+Yeoscil: | # lvigorta + write stuff on at
+    u allvse
+    n '','','%of:Sev'
+    
+    n Y =>3=><<'',{rg=>'J,V,yk'}
+        sayre "3 in! ".ki $C;
+        C.y.lv = {k=>$k,C=>$C};
+        C.y.at = {};
+    
+    n Y =>31=><<'',{rg=>'J,V,yat,ylv'}
+        at.t = C.t;
+        at.y.cv = C.y.cv;
+        sayre "OSC7 C.t no c_s" if !exists C.c.s;
+        at.c.s = C.c.s;
+        at.sc = {%{C.sc}};
+        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
+    
+    n Y =>36=><<'',{rg=>'J,V,yat,ylv'}
+        if (my $v = at.sc.J) { # J unifies -
+            at.sc.J = v.name;
+             .
+            my $nV = v.El->{V.name}||{};
+            my $rv = nV.rv || {LIES=>"from v.name"};
+            .
+            lv.do->{V.name} = $rv;
+            at.V->{V.name} = rv.i;
+        }
+        if ($C eq Y.il) { # / unifies  <
+            lv.voso = 1;
+            for my $ik (@{V.os}) {
+                my $iv = V.lv->{$ik};
+                sayre("Skip self in self") && next if C.sc.J && C.sc.J eq A.J;
+                lv.do->{$ik} = $iv;
+                at.V->{$ik} = iv.i;
+            }
+        }
+    
+    n Y =>38=><<'',{rg=>'J,V,yat,ylv'}
+        at.sc.geo = ki(at.sc.geo) if at.sc.geo;
+        at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+        # ^ to SlideEater decode array of y expressions, xotted together
+        for my $up (qw'tag id') {
+            at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
+        }
         
-        my $k = C.y.cv."\t".C.t;
-        push @{V.os}, $k unless $C eq Y.il;
-        
-        next unless $C eq Y.il ||
-        # if change is, or just diff in perceiving it
-        Rw diffre $J $C $k $Y $V;
-        
-        # O
-        my $lv = {k=>$k};
-        lv.C = $C;
-        my $at = Rw OSC $A $J $C $k $Y $V $lv;
-        
-        my $ta = V.ta->{$k};
-        my $vl = V.lv->{$k};
-        
+Yeoodle: | # how is at (now & then)
+    u allvse
+    n '','','%of:Sev'
+    
+    n Y =>4=><<'',{rg=>'J,V,yk'}
+        C.y.ta = V.ta->{$k};
+        C.y.vl = V.lv->{$k};
+    
+    n Y =>41=><<'',{rg=>'J,V,yat,ylv'}
         if ('force') {
             at.c.el = 1;
             lv.force = 'el';
@@ -173,44 +294,42 @@ Nooqdles: |
             lv.grab = [at.t, at.y, {el=>8}];
             lv.rmnsc = [at.t, at.y, {el=>9}];
             # and or ID
-            # ID makes possible to throw into the W (most J) tiniest specs of change
+            # ID makes possible to throw into the W
+            #    (most J) tiniest specs of change
+            # receiving with ID means most.J knows ID to Jpath (bottom up easy)
+            # wants to sorta figure originating light cone 
+            # - figure that once things on screen again!
             # maybe 8regate
         }
         
-        # crazy has places to hide in
-        my $heq = sub {
-            my ($o,$t) = @_;
-            if (ref $o && ref $t) {
-                keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
-            }
-            elsif (!ref $o && !ref $t) {
-                $o eq $t
-            }else{0}
-        };
+    n Y =>42=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
-            if (!$heq->($v, $o)) {
-                Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
-            }
+            I.d&heq,$v,$o ||
+                Rw ACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;
         }
-        
-        V.ta->{$k} = $hup->($at); 
-        V.tv->{$k} = $hup->($C);
-        
-        Rw OMP $J $C $k $Y $V $at $ta $lv $vl;
-        
+    
+    n Y =>48=><<'',{rg=>'J,V,yk,yat'}
+        V.ta->{$k} = I.d&hup,$at;
+        V.tv->{$k} = I.d&hup,$C;
+Yeomp: | # lvigorta + write stuff on at
+    u allvse
+    n '','','%of:Sev'
+    
+    n Y =>52=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
+        Rw OMP $J $A $I $C $k $Y $V $at $ta $lv $vl;
+    
+    n Y =>58=><<'',{rg=>'J,V,yk,ylv'}
         V.lv->{$k} = $lv;
         
+    n Y =>59=><<'',{rg=>'J,V,yk,ylv,yvl'}
         if ($C eq Y.il) {
             V.rl = $vl;
             V.rv = $lv;
+            Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
+                if J.V;
         }
-    }
-    Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
-        if J.V;
-    $V
-    # bloop
 VOD: |
     my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
     my $san = {map{$_=>1}keys %{lv.do}};
@@ -489,95 +608,4 @@ AC_V: |
         lv.od.ll->{$gk} = $iv;
     }
     else {die 'wtwhack'};
-OSC: | # sheets of language up to da
-    my $at = {};
-    
-    at.t = C.t;
-    at.y.cv = C.y.cv;
-    sayre "OSC7 C.t no c_s" if !exists C.c.s;
-    at.c.s = C.c.s;
-    at.sc = {%{C.sc}};
-    delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
-    if (my $v = at.sc.J) { # J unifies -
-        at.sc.J = v.name;
-        
-        my $nV = v.El->{V.name}||{};
-        my $rv = nV.rv || {LIES=>"from v.name"};
-        
-        lv.do->{V.name} = $rv;
-        at.V->{V.name} = rv.i;
-    }
-    if ($C eq Y.il) { # / unifies  <
-        lv.voso = 1;
-        for my $ik (@{V.os}) {
-            my $iv = V.lv->{$ik};
-            sayre("Skip self in self") && next if C.sc.J && C.sc.J eq A.J;
-            lv.do->{$ik} = $iv;
-            at.V->{$ik} = iv.i;
-        }
-    }
-    at.sc.geo = ki(at.sc.geo) if at.sc.geo;
-    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
-    for my $up (qw'tag id') {
-        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
-    }
-    
-    $at;
-diffre: |
-    my $heq = sub {
-        my ($o,$t) = @_;
-        keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o;
-    };
-    my $toen = 1;
-    
-    if (my $di = Y.lo->{$k}) {
-        my $not;
-        if (keys %$di == 1 && di.diff) {
-            my $CC = V.tv->{$k};
-            if (!$CC) {
-                sayre "never heard of (V_tv) diff J.name : $k ";
-                return 1;
-            }
-            for my $tk (keys %{di.diff}) {
-                if ($tk eq 'geo') {
-                    $not++ if 0 && !$heq->(C.sc.geo,CC.sc.geo);
-                    if ($not && 0) {
-                        sayyl "Geo was $not a difference in the thing";
-                        sayyl sjson(C.sc.geo);
-                        saybl sjson(CC.sc.geo);
-                    }
-                }
-                elsif ($tk eq '') {
-                    $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
-                }
-                else {
-                    saybl "J.name $k has diffre: $tk";
-                    $not++;
-                }
-            }
-        }
-        else {
-            $not = 1;
-        }
-        $toen = 0 if !$not;
-    }
-    if (!$toen) {
-        if (my $JJ = C.sc.J) {
-            my $ta = V.ta->{$k};
-            if (my $nV = JJ.El->{V.name}) {
-                my $iv = nV.rv;
-                my $oi = ta.V->{V.name};
-                if ($oi ne iv.i) {
-                    $toen = 1;
-                    #sayyl "J.name  $k   about JJ.name: $toen \n"
-                    #.($toen&&" ^ iv.i\n | $oi");
-                }
-            }
-            else {
-               sayre "no El V.name on JJ.name";
-            }
-        }
-    }
-    $toen
-     
 
