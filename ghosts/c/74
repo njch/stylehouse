@@ -82,10 +82,10 @@ Seven: | # ^^^^^^^^^^^^^^^^^
     n Otherway =>W
     n Yesoo =>W
     n Yools =>W
-    n Yeoso =>W
+    n Yunifier =>W
     n Yeosleep =>W
     n Yeoscil =>W
-Yesoo: |
+Yesoo: | # holst J most eo = Seve (above and below)
     u allvse
     n '','','%of:Mo'
     n J =>69,<<''
@@ -94,6 +94,21 @@ Yesoo: |
         # dosgeo v Yesui as O or so
         # A pile v spiral
         # hive of change
+Yools: |
+    u allacgts
+    
+    n hup =>'',<<'','%code:Sev 1'
+        my $CC = {%$s};
+        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
+        $CC;
+    
+    n heq =>'',<<'',{acgt=>'o,t'}
+        if (ref $o && ref $t) {
+            keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
+        }
+        elsif (!ref $o && !ref $t) {
+            $o eq $t
+        }else{0}
 Seve: |
     sayyl "SEV!" for 1..5;
     ar.C ||= [Elvis=>''=>{J=>$J,Y=>'Pres',V=>'Dsuv'}];
@@ -114,31 +129,19 @@ Seve: |
     A.t&89;
     I.d&recycle;
     A.retu;
-Yools: |
-    u allacgts
-    
-    n hup =>'',<<'','%code:Sev 1'
-        my $CC = {%$s};
-        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
-        $CC;
-    
-    n heq =>'',<<'',{acgt=>'o,t'}
-        if (ref $o && ref $t) {
-            keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
-        }
-        elsif (!ref $o && !ref $t) {
-            $o eq $t
-        }else{0}
-Yeoso: |
+
+Yunifier: |
     u allvse
     n '','','%of:Sev'
     
     # time impersonator
     n Y =>2=><<'',{rg=>'J,V'}
-        for (Y => 'V') {
-            C.c->{$_} || die "NO _";
-            C.c->{$_} = Rw Elj $J $name:_;
+        for my $K ('Y','V') {
+            my $name = C.c->{$K};
+            $name || die "No $K";
+            C.c->{$K} = Rw Elj $J $name;
         }
+
     
     # exchange        
     n Y =>21=><<'',{rg=>'J,V'}
@@ -175,63 +178,65 @@ Yeosleep: |
         .
         C.y.k = C.y.cv."\t".C.t;
         push @{V.os}, C.y.k unless $C eq Y.il;
-        .
-        return T.not = 1 unless $C eq Y.il ||
+    
+    n Y =>24=><<'',{rg=>'J,V'}
+        return if $C eq Y.il;
         # if change is, or just diff in perceiving it
         Rw YDiffre $J $A $I $C $Y $V $T;
-        
-YDiffre: |
-    my $toen = 1;
-    
-    if (my $di = Y.lo->{C.y.k}) {
-        my $not;
-        if (keys %$di == 1 && di.diff) {
-            my $CC = V.tv->{C.y.k};
-            if (!$CC) {
-                sayre "never heard of (V_tv) diff J.name : C.y.k ";
-                return 1;
-            }
-            for my $tk (keys %{di.diff}) {
-                if ($tk eq 'geo') {
-                    $not++ if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
-                    if ($not && 0) {
-                        sayyl "Geo was $not a difference in the thing";
-                        sayyl sjson(C.sc.geo);
-                        saybl sjson(CC.sc.geo);
+        my $toen = 1;
+
+        if (my $di = Y.lo->{C.y.k}) {
+            my $not;
+            if (keys %$di == 1 && di.diff) {
+                my $CC = V.tv->{C.y.k};
+                if (!$CC) {
+                    sayre "never heard of (V_tv) diff J.name : C.y.k ";
+                    return 1;
+                }
+                for my $tk (keys %{di.diff}) {
+                    if ($tk eq 'geo') {
+                        $not++ if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
+                        if ($not && 0) {
+                            sayyl "Geo was $not a difference in the thing";
+                            sayyl sjson(C.sc.geo);
+                            saybl sjson(CC.sc.geo);
+                        }
                     }
-                }
-                elsif ($tk eq '') {
-                    $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
-                }
-                else {
-                    saybl "J.name C.y.k has diffre: $tk";
-                    $not++;
-                }
-            }
-        }
-        else {
-            $not = 1;
-        }
-        $toen = 0 if !$not;
-    }
-    if (!$toen) {
-        if (my $JJ = C.sc.J) {
-            my $ta = V.ta->{C.y.k};
-            if (my $nV = JJ.El->{V.name}) {
-                my $iv = nV.rv;
-                my $oi = ta.V->{V.name};
-                if ($oi ne iv.i) {
-                    $toen = 1;
-                    #sayyl "J.name  $k   about JJ.name: $toen \n"
-                    #.($toen&&" ^ iv.i\n | $oi");
+                    elsif ($tk eq '') {
+                        $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
+                    }
+                    else {
+                        saybl "J.name C.y.k has diffre: $tk";
+                        $not++;
+                    }
                 }
             }
             else {
-               sayre "no El V.name on JJ.name";
+                $not = 1;
+            }
+            $toen = 0 if !$not;
+        }
+        if (!$toen) {
+            if (my $JJ = C.sc.J) {
+                my $ta = V.ta->{C.y.k};
+                if (my $nV = JJ.El->{V.name}) {
+                    my $iv = nV.rv;
+                    my $oi = ta.V->{V.name};
+                    if ($oi ne iv.i) {
+                        $toen = 1;
+                        #sayyl "J.name  $k   about JJ.name: $toen \n"
+                        #.($toen&&" ^ iv.i\n | $oi");
+                    }
+                }
+                else {
+                   sayre "no El V.name on JJ.name";
+                }
             }
         }
-    }
-    $toen
+        $toen
+        return T.not = 1
+        
+YDiffre: |
      
 Yeoscil: | # lvigorta + write stuff on at
     u allvse
