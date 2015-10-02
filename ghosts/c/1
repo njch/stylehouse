@@ -322,7 +322,10 @@ KnowTime: | # dome props
         my $talk = "A.talk: $K$sp $Av > $c --- C.t ";
         .
         my $aim = {$K=>1};
-        aim.I = 1 if $aim->{A.am};
+        if ($aim->{A.am}) {
+            $aim->{$_} = 1 for @{A.Isl||[]};
+            aim.I = 1;
+        }
         .
         my $yv = {};
         # make K/cv/t -> cv/K/t
