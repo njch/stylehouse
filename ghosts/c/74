@@ -318,6 +318,81 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
             # ex flywheel arbiter more into T
         }
     
+Yod: |
+    u allovse
+    # {rg=>'J,V,yk,yat,yta,ylv,yvl'}
+    
+    n '','','%of:Sev'
+    
+    n Y =>42=><<''
+        for my $nk (qw't y c sc V') {
+            my $d;
+            d.v = $at->{$nk};
+            d.o = $ta->{$nk};
+            I.d&heq,d.v,d.o && next;
+            T.d->{$nk} = $d;
+            if (ref d.v eq 'HASH') {
+                my $wt = Rw wtfch $Jb:v $Yb:o;
+                #my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
+                for my $wk (qw'gone diff new still') {
+                    for my $gk (sort keys %{$wt->{$wk}}) {
+                        my $dd = {};
+                        dd.v = $at->{$nk}->{$gk};
+                        dd.o = $ta->{$nk}->{$gk};
+                        d.T.d->{$gk} && die " C.t the $nk $gk ($v) was already...";
+                        d.T.d->{$gk} = 
+                            dd.T.d->{$wk} = $dd;
+                    }
+                }
+            }
+            else {
+                my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";
+                my $dd = {%$d};
+                d.T.d.s =
+                    dd.T.d->{$wk} = $dd;
+            }
+        }
+    
+    # tee to 4 sc ^T.* to T looks compinkgk 6
+    # this alternating data, which brings in middle terms
+    # all T.d is a divable rhythm like:
+    #   T.d.$nk (o/v of nk) .T.d.$gk (o/v of gk) .T.d.$wk (o/v of gk)
+    # lives in pools and across pools, being beside it notes a kind of transience for it
+    # for string nk the gk would be s, same o/v as nk, and also has wk
+    # oseverato carte copies T.d to A.T.d 
+    #     which AZ back into new T (usu most transient part)
+    #     except for this shape of consciousness
+    # ex to note Td acks, perhaps on T.d.*, $d, so it wanders
+    # arf on anything we dont eventually understand in T.d, - total options tho
+    # other flywheel stuff for lv.op button presses
+    # wk = still is fine (usu)
+    n Y =>4311=><<'',{Td=>'t/s/new'}
+        lv.op.t = 1;
+        
+    n Y =>4312=><<'',{Td=>'y/s/new'}
+        lv.op.y = 1;
+        
+    n Y =>4321=><<'',{Td=>'c/*/new'}
+        die "how inject a c $gk" if $vl;
+        lv.op.c->{$gk} = 9;
+        
+    n Y =>4321=><<'',{Td=>'c/*/gone'}
+        die "how delete a c $gk";
+        lv.op.c->{$gk} = 9;
+    
+    n Y =>4321=><<'',{Td=>'c/s/diff'}
+        lv.pur.c->{$gk} = 1;
+    
+    # ^ should avoid v (matched paths)
+    n Y =>4322=><<'',{Td=>'c/*/diff'}
+        die "how to c dif $gk";
+        lv.op.c->{$gk} = 9;
+        
+    n Y =>431=><<'',{Td=>'sc/s/new'}
+    n Y =>431=><<'',{Td=>'V/s/new'}
+    
+    n Y =>48=><<''
+        # check all in T.dd uo
 sACT: | # examine something that at-ta diffs, given $nk and $v and its $o
     my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
@@ -344,7 +419,6 @@ sACT: | # examine something that at-ta diffs, given $nk and $v and its $o
         saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
     }
     else {
-        my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";
         $talk .= "$wk: ";
         if ($nk eq 't' || $nk eq 'y') {
             if ($wk ne 'new') {
@@ -358,7 +432,6 @@ sACT: | # examine something that at-ta diffs, given $nk and $v and its $o
     }
 sAC_c: |
     if ($wk eq 'gone') {
-        die "how delete a c $gk";
         die "would have" if !$vl;
         # most of these can re c if they get confused
         # care later to grab /in, recreate holster, replace
@@ -389,7 +462,7 @@ sAC_c: |
     else {die 'wtwhack'.$wk}
 sAC_sc: |
     if ($wk eq 'gone') {
-        die "how delete a c $gk";
+        die "how delete a sc $gk";
         die "would have" if !$vl;
         # most of these can re c if they get confused
         # care later to grab /in, recreate holster, place
