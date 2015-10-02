@@ -153,13 +153,41 @@ Yunifier: |
             [undef,$CC]
         }@$N;
         T.not = 1; # or more 78ism
-Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
-    u allvse
-    n '','','%of:Sev'
-    
+
     n Y =>23=><<'',{rg=>'J,V'}
         C.y.k = C.y.cv."\t".C.t;
         push @{V.os}, C.y.k unless C.c.root;
+    
+    n Y =>3=><<'',{rg=>'J,V,yk'}
+        C.y.lv = {k=>$k,C=>$C};
+        C.y.at = {};
+        C.y.ta = V.ta->{$k};
+        C.y.vl = V.lv->{$k};
+        if (C.c.root) { # / continues from 3 when everything's 6
+            T.Z->{0.6} = 0.3;
+            T.not = 1;
+        }
+        # must ,,,, A.t to gain perception (not mid ex but should)
+        # but yeah add things as lines rejoin
+        A.Iso.O = 1;
+    
+    n Y =>48=><<'',{rg=>'J,V,yk,yat'}
+        V.ta->{$k} = I.d&hup,$at;
+        V.tv->{$k} = I.d&hup,$C;
+
+    n Y =>58=><<'',{rg=>'J,V,yk,ylv,yvl'}
+        V.lv->{$k} = $lv;
+        if (C.c.root) {
+            V.rl = $vl;
+            V.rv = $lv;
+            Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
+                if J.V;
+        }
+
+    
+Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
+    u allvse
+    n '','','%of:Sev'
     
     n Y =>24=><<'',{rg=>'J,V'}
         return if C.c.root;
@@ -220,44 +248,15 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
         
 Yeoscil: | # make lv,at + write stuff on at
     u allvse
-    n '','','%of:Sev'
-    
-    n Y =>3=><<'',{rg=>'J,V,yk'}
-        C.y.lv = {k=>$k,C=>$C};
-        C.y.at = {};
-        C.y.ta = V.ta->{$k};
-        C.y.vl = V.lv->{$k};
-        if (C.c.root) { # / continues from 3 when everything's 6
-            T.Z->{0.6} = 0.3;
-            T.not = 1;
-        }
-        # must ,,,
-        A.Isl = ['O'];
-    
+    n '','','%of:O'
     n Y =>31=><<'',{rg=>'J,V,yk,yat,ylv'}
         at.t = C.t;
         at.y.cv = C.y.cv;
-        say "Y31 at.t at.y  (at.y.cv)";
         sayre "OSC7 C.t no c_s" if !exists C.c.s;
         at.c.s = C.c.s;
         at.sc = {%{C.sc}};
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
     
-    n Y =>48=><<'',{rg=>'J,V,yk,yat'}
-        V.ta->{$k} = I.d&hup,$at;
-        V.tv->{$k} = I.d&hup,$C;
-
-    n Y =>58=><<'',{rg=>'J,V,yk,ylv,yvl'}
-        V.lv->{$k} = $lv;
-        if (C.c.root) {
-            V.rl = $vl;
-            V.rv = $lv;
-            Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
-                if J.V;
-        }
-
-    
-    n '','','%of:O'
     n Y =>36=><<'',{rg=>'J,V,yat,ylv'}
         sayyl "OS 0 C.t C.y.cv";
         if (my $v = at.sc.J) { # J unifies -
@@ -295,7 +294,6 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
     
     # is the other of this vector:
     n Y =>41=><<'',{rg=>'J,V,yk,yat,ylv'}
-        say "Y41 at.t at.y";
         if ('force') {
             at.c.el = 1;
             lv.force = 'el';
@@ -311,7 +309,6 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
         }
         
     n Y =>42=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
-        say "YTeovil at.t at.y";
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
