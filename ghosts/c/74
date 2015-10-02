@@ -369,9 +369,12 @@ Yod: |
     n Y =>4311=><<'',{Td=>'t/s/new'}
         lv.op.t = 1;
         
+        
     n Y =>4312=><<'',{Td=>'y/s/new'}
         lv.op.y = 1;
-        
+    
+    
+    
     n Y =>4321=><<'',{Td=>'c/*/new'}
         die "how inject a c $gk" if $vl;
         lv.op.c->{$gk} = 9;
@@ -387,102 +390,39 @@ Yod: |
     n Y =>4322=><<'',{Td=>'c/*/diff'}
         die "how to c dif $gk";
         lv.op.c->{$gk} = 9;
+    
+    
+    
+    n Y =>4331=><<'',{Td=>'sc/*/new'}
+        lv.pur.sc->{$gk} = 1;
         
+    n Y =>4331=><<'',{Td=>'sc/*/gone'}
+        die "how delete a sc $gk";
+        lv.op.sc->{$gk} = 9;
+    
+    n Y =>4331=><<'',{Td=>'sc/*/diff'}
+        sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
+        lv.pur.sc->{$gk} = 1;
+    
+    
+    n Y =>4331=><<'',{Td=>'sc/*/new'}
+        lv.pur.sc->{$gk} = 1;
+        
+    n Y =>4331=><<'',{Td=>'sc/*/gone'}
+        die "how delete a sc $gk";
+        lv.op.sc->{$gk} = 9;
+    
+    n Y =>4331=><<'',{Td=>'sc/*/diff'}
+        sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
+        lv.pur.sc->{$gk} = 1;
+    
+    
+    
     n Y =>431=><<'',{Td=>'sc/s/new'}
     n Y =>431=><<'',{Td=>'V/s/new'}
     
     n Y =>48=><<''
         # check all in T.dd uo
-sACT: | # examine something that at-ta diffs, given $nk and $v and its $o
-    my $talk = "J.name ACT $nk: $k\t";
-    if (ref $v eq 'HASH') {
-        my $wt = Rw wtfch $Jb:v $Yb:o;
-        my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
-        
-        for my $wk (qw'gone diff new still') {
-            for my $gk (sort keys %{$wt->{$wk}}) {
-                my $talk = "$talk $wk: $gk";
-                my $s = $at->{$nk}->{$gk};
-                
-                if ($nk eq 'c') {
-                    Rw sAC_c + $talk $nonnew $gk $wt $wk $s;
-                }
-                elsif ($nk eq 'sc') {
-                    Rw sAC_sc + $talk $nonnew $gk $wt $wk $s;
-                }
-                elsif ($nk eq 'V') {
-                    Rw sAC_V + $talk $nonnew $gk $wt $wk $s;
-                }
-                else {die"wtfis  '$nk' ".wdump [$v,$o]}
-            }
-        }
-        saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
-    }
-    else {
-        $talk .= "$wk: ";
-        if ($nk eq 't' || $nk eq 'y') {
-            if ($wk ne 'new') {
-                die "HOWTO $talk";
-            }
-            sayyl $talk unless !$vl;
-            
-            lv.op->{$nk} = 1;
-        }
-        else {die"wtfis $v $nk".wdump[$v,$o]}
-    }
-sAC_c: |
-    if ($wk eq 'gone') {
-        die "would have" if !$vl;
-        # most of these can re c if they get confused
-        # care later to grab /in, recreate holster, replace
-        # or however we whatever
-        # protocols for travel regroup
-        
-        lv.op.c->{$gk} = 9;
-    }
-    elsif ($wk eq 'new') {
-        die "how inject a c $gk" if $vl;
-        
-        lv.op.c->{$gk} = 9;
-    }
-    elsif ($wk eq 'diff') {
-        sayyl "$talk  ".slim(45,$v->{$gk})." <--- ".slim(45,$o->{$gk});
-        
-        if ($gk eq 's') {
-        
-            lv.pur.c->{$gk} = 1;
-        }
-        else {
-            die "how to c dif $gk";
-            
-            lv.op.c->{$gk} = 9;
-        }
-    }
-    elsif ($wk eq 'still') {}
-    else {die 'wtwhack'.$wk}
-sAC_sc: |
-    if ($wk eq 'gone') {
-        die "how delete a sc $gk";
-        die "would have" if !$vl;
-        # most of these can re c if they get confused
-        # care later to grab /in, recreate holster, place
-        # or however we whatever
-        
-        lv.op.sc->{$gk} = 9;
-    }
-    elsif ($wk eq 'new') {
-        sayyl "$talk  !!!!  $v->{$gk} " unless !$nonnew;
-        
-        lv.pur.sc->{$gk} = 1;
-    }
-    elsif ($wk eq 'diff') {
-        sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
-        
-        lv.pur.sc->{$gk} = 1;
-    }
-    elsif ($wk eq 'still') {}
-    else {die 'wtwhack'.$wk}
-    
 sAC_V: |
     my $iv = lv.do->{$gk};
     my $ov = vl.do->{$gk};
