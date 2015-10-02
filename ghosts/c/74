@@ -66,9 +66,9 @@ Galso: | # Gooso goner #
 Seven: | # ^^^^^^^^^^^^^^^^^ is Motion, v is Sevening
     n Yesoo =>W
     n Yools =>W
-    n Yunifier =>W
+    n Yuni =>W
     n Yeosleep =>W
-    n Yeoscil =>W
+    n Yosc =>W
     n Yeoodle =>W
     n Yeomp =>W
 Yesoo: | # holst J most eo = Seve (above and below)
@@ -114,7 +114,7 @@ Sev: |
     A.t&89;
     I.d&recycle;
     A.retu;
-Yunifier: |
+Yuni: |
     u allvse
     n '','','%of:Sev'
     
@@ -143,9 +143,8 @@ Yunifier: |
         rC.c.root = 1;
         my $N = [grep { $_ ne $rC } @{Y.vs}];
         push @$N, $rC;
-        # bump in order!
-        # should be able to s/A.mo.re/T.Z/
-        # Z.cv = 1 makes A,Celf, array others (yarN) which may Acquire
+        # T.Z.$incv = 1||$setAcv makes A,Celf, 
+        # A.mo.re array others (yarN) which may Acquire
         push @{A.mo.re->{0.22}||=[]}, map{
             my $CC = I.d&hup,$_;
             # all spreads out to play Y/V
@@ -157,6 +156,16 @@ Yunifier: |
     n Y =>23=><<'',{rg=>'J,V'}
         C.y.k = C.y.cv."\t".C.t;
         push @{V.os}, C.y.k unless C.c.root;
+        # how happening to thingk
+        # must ,,,, A.t to gain perception (not mid ex but should)
+        # but yeah add things as lines rejoin
+        A.Iso.O = 1;
+    
+    n Y =>231=><<'',{rg=>'J,V'}
+        return if C.c.root;
+        T.to = 0;
+        A.t&S,6,2;
+        T.not = 1 if !delete T.to;
     
     n Y =>3=><<'',{rg=>'J,V,yk'}
         C.y.lv = {k=>$k,C=>$C};
@@ -167,9 +176,6 @@ Yunifier: |
             T.Z->{0.6} = 0.3;
             T.not = 1;
         }
-        # must ,,,, A.t to gain perception (not mid ex but should)
-        # but yeah add things as lines rejoin
-        A.Iso.O = 1;
     
     n Y =>48=><<'',{rg=>'J,V,yk,yat'}
         V.ta->{$k} = I.d&hup,$at;
@@ -187,13 +193,11 @@ Yunifier: |
     
 Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
     u allvse
-    n '','','%of:Sev'
+    n '','','%of:S'
     
+    # if change is, or just diff in perceiving it
+    # looking at refs that came from string, or who are spiraling refs
     n Y =>24=><<'',{rg=>'J,V'}
-        return if C.c.root;
-        # if change is, or just diff in perceiving it
-        my $toen = 1;
-        .
         if (my $di = Y.lo->{C.y.k}) {
             my $not;
             if (keys %$di == 1 && di.diff) {
@@ -204,7 +208,7 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
                 }
                 for my $tk (keys %{di.diff}) {
                     if ($tk eq 'geo') {
-                        $not++ if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
+                        T.to = 1 if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
                         if ($not && 0) {
                             sayyl "Geo was $not a difference in the thing";
                             sayyl sjson(C.sc.geo);
@@ -212,43 +216,41 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
                         }
                     }
                     elsif ($tk eq '') {
-                        $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
+                        T.to = 1 unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
                     }
                     else {
                         saybl "J.name C.y.k has diffre: $tk";
-                        $not++;
+                        T.to = 1;
                     }
                 }
             }
             else {
-                $not = 1;
-            }
-            $toen = 0 if !$not;
-        }
-        .
-        if (!$toen) {
-            if (my $JJ = C.sc.J) {
-                my $ta = V.ta->{C.y.k};
-                if (my $nV = JJ.El->{V.name}) {
-                    my $iv = nV.rv;
-                    my $oi = ta.V->{V.name};
-                    if ($oi ne iv.i) {
-                        $toen = 1;
-                        #sayyl "J.name  $k   about JJ.name: $toen \n"
-                        #.($toen&&" ^ iv.i\n | $oi");
-                    }
-                }
-                else {
-                   sayre "no El V.name on JJ.name";
-                }
+                T.to = 1;
             }
         }
-        .
-        T.not = 1 if !$toen;
+        T.whack = 1 if T.to;
+    
+    # J embed
+    n Y =>25=><<'',{rg=>'J,V'}
+        if (my $JJ = C.sc.J) {
+            my $ta = V.ta->{C.y.k};
+            if (my $nV = JJ.El->{V.name}) {
+                my $iv = nV.rv;
+                my $oi = ta.V->{V.name};
+                if ($oi ne iv.i) {
+                    T.to = 1;
+                }
+            }
+            else {
+                sayre "no El V.name on JJ.name";
+            }
+        }
+        T.whack = 1 if T.to;
         
-Yeoscil: | # make lv,at + write stuff on at
+Yosc: | # make lv,at + write stuff on at
     u allvse
     n '','','%of:O'
+    
     n Y =>31=><<'',{rg=>'J,V,yk,yat,ylv'}
         at.t = C.t;
         at.y.cv = C.y.cv;
@@ -258,10 +260,9 @@ Yeoscil: | # make lv,at + write stuff on at
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
     
     n Y =>36=><<'',{rg=>'J,V,yat,ylv'}
-        sayyl "OS 0 C.t C.y.cv";
         if (my $v = at.sc.J) { # J unifies -
             at.sc.J = v.name;
-             .
+            .
             my $nV = v.El->{V.name}||{};
             my $rv = nV.rv || {LIES=>"from v.name"};
             .
@@ -282,7 +283,6 @@ Yeoscil: | # make lv,at + write stuff on at
     n Y =>38=><<'',{rg=>'J,V,yat,ylv'}
         at.sc.geo = ki(at.sc.geo) if at.sc.geo;
         at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
-        sayyl "OS 38 C.t C.y.cv ->   at.t at.y   etc";
         # ^ to SlideEater decode array of y expressions, xotted together
         for my $up (qw'tag id') {
             at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
