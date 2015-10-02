@@ -225,6 +225,8 @@ Yeoscil: | # make lv,at + write stuff on at
     n Y =>3=><<'',{rg=>'J,V,yk'}
         C.y.lv = {k=>$k,C=>$C};
         C.y.at = {};
+        C.y.ta = V.ta->{$k};
+        C.y.vl = V.lv->{$k};
         if (C.c.root) { # / continues from 3 when everything's 6
             T.Z->{0.6} = 0.3;
             T.not = 1;
@@ -238,6 +240,20 @@ Yeoscil: | # make lv,at + write stuff on at
         at.sc = {%{C.sc}};
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
         A.t&O,7,1;
+    
+    n Y =>48=><<'',{rg=>'J,V,yk,yat'}
+        V.ta->{$k} = I.d&hup,$at;
+        V.tv->{$k} = I.d&hup,$C;
+
+    n Y =>58=><<'',{rg=>'J,V,yk,ylv,yvl'}
+        V.lv->{$k} = $lv;
+        if (C.c.root) {
+            V.rl = $vl;
+            V.rv = $lv;
+            Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
+                if J.V;
+        }
+
     
     n '','','%of:O'
     n Y =>36=><<'',{rg=>'J,V,yat,ylv'}
@@ -265,6 +281,7 @@ Yeoscil: | # make lv,at + write stuff on at
     n Y =>38=><<'',{rg=>'J,V,yat,ylv'}
         at.sc.geo = ki(at.sc.geo) if at.sc.geo;
         at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+        sayyl "OS 38 C.t C.y.cv ->   at.t at.y   etc";
         # ^ to SlideEater decode array of y expressions, xotted together
         for my $up (qw'tag id') {
             at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
@@ -273,10 +290,6 @@ Yeoscil: | # make lv,at + write stuff on at
 Yeoodle: | # how is at (lv,at now & vl,ta then)
     u allvse
     n '','','%of:Sev'
-    
-    n Y =>4=><<'',{rg=>'J,V,yk'}
-        C.y.ta = V.ta->{$k};
-        C.y.vl = V.lv->{$k};
     
     # is the other of this vector:
     n Y =>41=><<'',{rg=>'J,V,yk,yat,ylv'}
@@ -299,15 +312,12 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
             I.d&heq,$v,$o && next;
-            Rw ACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;
+            Rw sACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;
             # wants to be embedded A.t&A,3-4 per T.nk or so
             # ex flywheel arbiter more into T
         }
     
-    n Y =>48=><<'',{rg=>'J,V,yk,yat'}
-        V.ta->{$k} = I.d&hup,$at;
-        V.tv->{$k} = I.d&hup,$C;
-ACT: | # examine something that at-ta diffs, given $nk and $v and its $o
+sACT: | # examine something that at-ta diffs, given $nk and $v and its $o
     my $talk = "J.name ACT $nk: $k\t";
     if (ref $v eq 'HASH') {
         my $wt = Rw wtfch $Jb:v $Yb:o;
@@ -319,15 +329,15 @@ ACT: | # examine something that at-ta diffs, given $nk and $v and its $o
                 my $s = $at->{$nk}->{$gk};
                 
                 if ($nk eq 'c') {
-                    Rw AC_c + $talk $nonnew $gk $wt $wk $s;
+                    Rw sAC_c + $talk $nonnew $gk $wt $wk $s;
                 }
                 elsif ($nk eq 'sc') {
-                    Rw AC_sc + $talk $nonnew $gk $wt $wk $s;
+                    Rw sAC_sc + $talk $nonnew $gk $wt $wk $s;
                 }
                 elsif ($nk eq 'V') {
-                    Rw AC_V + $talk $nonnew $gk $wt $wk $s;
+                    Rw sAC_V + $talk $nonnew $gk $wt $wk $s;
                 }
-                else {die"wtfis  '$nk'"}
+                else {die"wtfis  '$nk' ".wdump [$v,$o]}
             }
         }
         saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
@@ -345,7 +355,7 @@ ACT: | # examine something that at-ta diffs, given $nk and $v and its $o
         }
         else {die"wtfis $v $nk".wdump[$v,$o]}
     }
-AC_c: |
+sAC_c: |
     if ($wk eq 'gone') {
         die "how delete a c $gk";
         die "would have" if !$vl;
@@ -376,7 +386,7 @@ AC_c: |
     }
     elsif ($wk eq 'still') {}
     else {die 'wtwhack'.$wk}
-AC_sc: |
+sAC_sc: |
     if ($wk eq 'gone') {
         die "how delete a c $gk";
         die "would have" if !$vl;
@@ -399,7 +409,7 @@ AC_sc: |
     elsif ($wk eq 'still') {}
     else {die 'wtwhack'.$wk}
     
-AC_V: |
+sAC_V: |
     my $iv = lv.do->{$gk};
     my $ov = vl.do->{$gk};
     ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
@@ -449,17 +459,76 @@ Yeomp: | # lvigorta + write stuff on at
     n '','','%of:Sev'
     
     n Y =>52=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
-        Rw OMP $J $A $I $C $k $Y $V $at $ta $lv $vl;
-    
-    n Y =>58=><<'',{rg=>'J,V,yk,ylv,yvl'}
-        V.lv->{$k} = $lv;
-        if (C.c.root) {
-            V.rl = $vl;
-            V.rv = $lv;
-            Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
-                if J.V;
+        Rw sOMP $J $A $I $C $k $Y $V $at $ta $lv $vl;
+notnonos: |
+    n Y =>53=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
+        my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
+            (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
+        say $talk if J.V > 2 && $vl && (lv.pur || lv.op || lv.od);
+        .
+        !$vl && !lv.op && die "unopposed to not-bfore";
+        .
+        my $ne = {};
+        if (!lv.op) {
+            for my $nk (keys %{lv.pur}) {
+                my $sv = lv.pur->{$nk};
+                if (ref $sv eq 'HASH') {
+                    for my $ck (keys %$sv) {
+                        $ne->{$nk}->{$ck} = $at->{$nk}->{$ck};
+                    }
+                }
+                else {
+                    ref $sv && die "wtf $sv";
+                    $ne->{$nk} = $at->{$nk};
+                }
+            }
         }
-OMP: |
+        else {
+            $ne = $at;
+            # grab can also transplant inners for a minorish
+            # not re-c but recreate element a move things in
+            # while re-cing anything within that can't be grabbed
+            # element rebuild may be crucial for undoing anything we cant undo
+            # something may restate its entire c
+            # including any inner c..sc tents
+        }
+        .
+        if (lv.od) {
+            Rw sVOD + $ne $talk;
+        }
+        .
+        my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
+        if (lv.op) {
+            # make sure z is full...
+            lv.c = [$nn->($ne)];
+            lv.sc = [];
+        }
+        elsif (keys %$ne) {
+            die wdump [lv.op, $ne]  if lv.op;
+            ne.t = at.t;
+            ne.y = at.y;
+            ne.c->{lv.force} = 3;
+            .
+            lv.c = vl.c || die"novlc";
+            lv.sc = [@{vl.sc}, $nn->($ne)];
+            # Rw doc 5 [lv.c,lv.sc];
+            # the two pronged link
+            # circuity internet
+        }
+        else {
+            #sayyl "$talk unopposed" if J.V;
+            lv.c = vl.c;
+            lv.sc = vl.sc;
+        }
+        # but there is intended to wipe clean or just redo the surface
+        # much more is liking to collapse the past into the future in degrees as the c fulls
+        # pur and sc
+        # handleable od
+        lv.ma = ($vl?vl.ma:0)+1;
+        lv.i = "lv.c ".@{lv.sc};
+
+    
+sOMP: |
     my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
         (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
         
@@ -493,7 +562,7 @@ OMP: |
     }
     
     if (lv.od) {
-        Rw VOD + $ne $talk;
+        Rw sVOD + $ne $talk;
     }
     
     my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
@@ -525,7 +594,7 @@ OMP: |
     # handleable od
     lv.ma = ($vl?vl.ma:0)+1;
     lv.i = "lv.c ".@{lv.sc};
-VOD: |
+sVOD: |
     my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
     my $san = {map{$_=>1}keys %{lv.do}};
     
