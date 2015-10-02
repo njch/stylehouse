@@ -321,7 +321,6 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
 Yod: |
     u allovse
     # {rg=>'J,V,yk,yat,yta,ylv,yvl'}
-    
     n '','','%of:Sev'
     
     n Y =>42=><<''
@@ -352,7 +351,68 @@ Yod: |
                     dd.T.d->{$wk} = $dd;
             }
         }
+
     
+    n Y =>48=><<''
+        # pick T bones
+    
+allTdse: |
+    return unless C.sc.Td;
+    my $d;
+    d.path = [split '/', C.sc.Td];
+    d.onpa = [split '/', 'T/d'];
+    d.patar = [split '/', 'nk/gk/wk'];
+    C.sc.Ifs.Td = $d;
+matchTd: |
+    my $hy = {T=>$T};
+    my $pas = sub { # pwin flexy passing tube
+        my ($pin,$d) = @_;
+        my $s = d.s;
+        my $e = d.e;
+        my @ks = $pin eq '*' ? sort keys %$s
+            : exists $s->{$pin} ? $pin
+            : ();
+        map {
+            my $dd;
+            dd.e.k = $_;
+            dd.s = $s->{$_};
+            dd.d = d.d if d.d;
+            push @in, $dd;
+        } @ks
+    };
+    if (my $Ifs = D.sc.Ifs) {
+        for my $k (keys %$Ifs) {
+            my $p = $Ifs->{$k};
+            my $d = $hy;
+            my @in = $d;
+            my $pi = 0;
+            for my $pin (@{p.path}) {
+                for my $pTn (@{d.onpa}) {
+                    @in = map { $pas->($pTn, $_) } @in
+                }
+                @in = map {
+                        _.od = _.d if _.d;
+                        _.d = $_;
+                        _.e.lk = d.patar->[$pi]||die"no idea what $pi is";
+                    }
+                    map { $pas->($pin, $_) } @in
+                $pi++;
+            }
+            for my $d (@in) {
+                # now inmost, .od leads above (without pTn inway)
+                # and each d.e.lk calls it something $nk $gk and $wk
+                my $arg;
+                my $up = $d;
+                while ($up) {
+                    $arg->{up.e.lk} = up.e.k;
+                    $up = up.od;
+                }
+                die wdump [$arg,$up];
+            }
+        }
+    }
+Ydo: |
+    u allTdse
     # tee to 4 sc ^T.* to T looks compinkgk 6
     # this alternating data, which brings in middle terms
     # all T.d is a divable rhythm like:
@@ -405,7 +465,48 @@ Yod: |
         lv.pur.sc->{$gk} = 1;
     
     
-    n Y =>4331=><<'',{Td=>'sc/*/new'}
+    
+    # without being a match prepare the Vacuumosd iv/ov
+    n Y =>434=><<'',{Td=>'V/*'}
+        d.iv = lv.do->{$gk};
+        d.ov = vl.do->{$gk};
+        d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
+        T.noTd = 1;
+    
+    n Y =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
+        # may like to grab the element before it
+        # like a curve continuing
+        lv.od.new->{$gk} = $iv;
+    
+    n Y =>4341=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
+        ov.rmnsc || die "no remin";
+        !$iv || die "gone had iv";
+        # ^ sc plumb its destruction
+        # can void if our c reframes by implicitly clearing
+        lv.od.go->{$gk} = $ov;
+    
+    n Y =>4341=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+        if (iv.c eq ov.c) {
+            iv.sc eq ov.sc && die "same c fluc sc $gk";
+            my $in = @{iv.sc};
+            my $out = @{ov.sc};
+            if (@{iv.sc} > @{ov.sc}) {
+                saybl "$talk GROWs" if J.V > 2;
+                lv.od.gr->{$gk} = $iv;
+            }
+            else {
+                warn "WTFF ".wdump 2,[$iv,$ov];
+            }
+        }
+        else {
+            saybl "$talk  REPLACES c";
+            lv.od.over->{$gk} = $iv;
+        }
+    
+    n Y =>4341=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+        lv.od.ll->{$gk} = $iv;
+    
+    n Y =>4331=><<'',{Td=>'sc/*/new'
         lv.pur.sc->{$gk} = 1;
         
     n Y =>4331=><<'',{Td=>'sc/*/gone'}
@@ -428,44 +529,16 @@ sAC_V: |
     my $ov = vl.do->{$gk};
     ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
     if ($wk eq 'gone') {
-        ov.rmnsc || die "no remin";
-        !$iv || die "gone had iv";
-        # ^ sc plumb its destruction
-        # can void if our c reframes by implicitly clearing 
-        saybl "$talk  is GONE!";
-        
-        lv.od.go->{$gk} = $ov;
     }
     elsif ($wk eq 'new') {
         $iv || die wdump [$gk, lv.do];
-        # may like to grab the element before it
-        # like a curve continuing
         saybl "$talk    new!" unless !$nonnew;
         
         lv.od.new->{$gk} = $iv;
     }
     elsif ($wk eq 'diff') {
-        if (iv.c eq ov.c) {
-            iv.sc eq ov.sc && die "same c fluc sc $gk";
-            my $in = @{iv.sc};
-            my $out = @{ov.sc};
-            if (@{iv.sc} > @{ov.sc}) {
-                saybl "$talk GROWs" if J.V > 2;
-                
-                lv.od.gr->{$gk} = $iv;
-            }
-            else {
-                warn "WTFF ".wdump 2,[$iv,$ov];
-            }
-        }
-        else {
-            saybl "$talk  REPLACES c";
-            
-            lv.od.over->{$gk} = $iv;
-        }
     }
     elsif ($wk eq 'still') {
-        lv.od.ll->{$gk} = $iv;
     }
     else {die 'wtwhack'};
 Yeomp: | # lvigorta + write stuff on at
