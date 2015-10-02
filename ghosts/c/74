@@ -248,10 +248,10 @@ Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
         T.whack = 1 if T.to;
         
 Yosc: | # make lv,at + write stuff on at
-    u allvse
+    u allovse
     n '','','%of:O'
     
-    n Y =>31=><<'',{rg=>'J,V,yk,yat,ylv'}
+    n Y =>31=><<''
         at.t = C.t;
         at.y.cv = C.y.cv;
         sayre "OSC7 C.t no c_s" if !exists C.c.s;
@@ -259,7 +259,7 @@ Yosc: | # make lv,at + write stuff on at
         at.sc = {%{C.sc}};
         delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
     
-    n Y =>36=><<'',{rg=>'J,V,yat,ylv'}
+    n Y =>36=><<''
         if (my $v = at.sc.J) { # J unifies -
             at.sc.J = v.name;
             .
@@ -280,7 +280,7 @@ Yosc: | # make lv,at + write stuff on at
             }
         }
     
-    n Y =>38=><<'',{rg=>'J,V,yat,ylv'}
+    n Y =>38=><<''
         at.sc.geo = ki(at.sc.geo) if at.sc.geo;
         at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
         # ^ to SlideEater decode array of y expressions, xotted together
@@ -289,11 +289,11 @@ Yosc: | # make lv,at + write stuff on at
         }
         
 Yeoodle: | # how is at (lv,at now & vl,ta then)
-    u allvse
+    u allovse
     n '','','%of:Sev'
     
     # is the other of this vector:
-    n Y =>41=><<'',{rg=>'J,V,yk,yat,ylv'}
+    n Y =>41=><<''
         if ('force') {
             at.c.el = 1;
             lv.force = 'el';
@@ -308,19 +308,18 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
             # maybe 8regate
         }
         
-    n Y =>42=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
+    n Y =>42=><<''
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
             I.d&heq,$v,$o && next;
-            Rw sACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;
+            Rw ACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;
             # wants to be embedded A.t&A,3-4 per T.nk or so
             # ex flywheel arbiter more into T
         }
     
 Yod: |
     u allovse
-    # {rg=>'J,V,yk,yat,yta,ylv,yvl'}
     n '','','%of:Sev'
     
     n Y =>42=><<''
@@ -362,6 +361,7 @@ allTdse: |
     d.path = [split '/', C.sc.Td];
     d.onpa = [split '/', 'T/d'];
     d.patar = [split '/', 'nk/gk/wk'];
+    d.caps = {map{$_=>1}split',',$_ for grep{$_}C.sc.Tdarge;
     C.sc.Ifs.Td = $d;
 matchTd: |
     my $hy = {T=>$T};
@@ -387,13 +387,13 @@ matchTd: |
             my @in = $d;
             my $pi = 0;
             for my $pin (@{p.path}) {
-                for my $pTn (@{d.onpa}) {
+                for my $pTn (@{p.onpa}) {
                     @in = map { $pas->($pTn, $_) } @in
                 }
                 @in = map {
                         _.od = _.d if _.d;
                         _.d = $_;
-                        _.e.lk = d.patar->[$pi]||die"no idea what $pi is";
+                        _.e.lk = p.patar->[$pi]||die"no idea what $pi is";
                     }
                     map { $pas->($pin, $_) } @in
                 $pi++;
@@ -403,16 +403,36 @@ matchTd: |
                 # and each d.e.lk calls it something $nk $gk and $wk
                 my $arg;
                 my $up = $d;
+                
                 while ($up) {
                     $arg->{up.e.lk} = up.e.k;
+                    if (d.caps) { # read between the lines of $d
+                        for my $k (grep{d.caps->{$_}}keys %$d) {
+                            $arg->{$k} ||= $d->{$k};
+                        }
+                    }
                     $up = up.od;
                 }
+                # Z/D wad of multiplicity
+                # D args $d and arg, $nk/$ov etc things plucked
+                # they must stay present to later Ds as well, stored T.d path subtlates
+                
+                # 6 ^
                 die wdump [$arg,$up];
+                if (!T.noTd) {
+                    #T.dd
+                    # wants to be swimming with T.dd in future T.d ventures
+                    # to share same $d (and any caps from upwards)
+                    # and avoid less specific after more specific, or just avoid repeats
+                    # shaky but index
+                    # the fish is shaking but on the deck
+                }
             }
+
         }
     }
 Ydo: |
-    u allTdse
+    u allovse
     # tee to 4 sc ^T.* to T looks compinkgk 6
     # this alternating data, which brings in middle terms
     # all T.d is a divable rhythm like:
@@ -506,46 +526,11 @@ Ydo: |
     n Y =>4341=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
         lv.od.ll->{$gk} = $iv;
     
-    n Y =>4331=><<'',{Td=>'sc/*/new'
-        lv.pur.sc->{$gk} = 1;
-        
-    n Y =>4331=><<'',{Td=>'sc/*/gone'}
-        die "how delete a sc $gk";
-        lv.op.sc->{$gk} = 9;
-    
-    n Y =>4331=><<'',{Td=>'sc/*/diff'}
-        sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
-        lv.pur.sc->{$gk} = 1;
-    
-    
-    
-    n Y =>431=><<'',{Td=>'sc/s/new'}
-    n Y =>431=><<'',{Td=>'V/s/new'}
-    
-    n Y =>48=><<''
-        # check all in T.dd uo
-sAC_V: |
-    my $iv = lv.do->{$gk};
-    my $ov = vl.do->{$gk};
-    ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
-    if ($wk eq 'gone') {
-    }
-    elsif ($wk eq 'new') {
-        $iv || die wdump [$gk, lv.do];
-        saybl "$talk    new!" unless !$nonnew;
-        
-        lv.od.new->{$gk} = $iv;
-    }
-    elsif ($wk eq 'diff') {
-    }
-    elsif ($wk eq 'still') {
-    }
-    else {die 'wtwhack'};
 Yeomp: | # lvigorta + write stuff on at
-    u allvse
+    u allovse
     n '','','%of:Sev'
     
-    n Y =>52=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
+    n Y =>52=><<''
         Rw sOMP $J $A $I $C $k $Y $V $at $ta $lv $vl;
 notnonos: |
     n Y =>53=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
