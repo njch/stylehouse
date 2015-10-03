@@ -338,7 +338,7 @@ Yod: |
                         dd.v = $at->{$nk}->{$gk};
                         dd.o = $ta->{$nk}->{$gk};
                         d.T.d->{$gk} && die " C.t the $nk $gk ($v) was already...";
-                        d.T.d->{$gk} = 
+                        d.T.d->{$gk} =
                             dd.T.d->{$wk} = $dd;
                     }
                 }
@@ -350,18 +350,24 @@ Yod: |
                     dd.T.d->{$wk} = $dd;
             }
         }
-
     
     n Y =>48=><<''
         # pick T bones
     
-allTdse: |
-    return unless C.sc.Td;
+coiTd: |
     my $d;
     d.path = [split '/', C.sc.Td];
+    die if @{d.path} < 1;
+    
+    my $form = C.sc.Tdform || 'nk/gk/wk';
+    d.patar = [split '/', $form];
+    @{d.patar} = @{d.patar}[0 .. (@{d.path}-1)];
+    
     d.onpa = [split '/', 'T/d'];
-    d.patar = [split '/', 'nk/gk/wk'];
-    d.caps = {map{$_=>1}split',',$_ for grep{$_}C.sc.Tdarge;
+    d.caps = {map{$_=>1}split',',$_} for grep{$_}C.sc.Tdarge;
+    # like rg but from $s
+    C.sc.sr && die "already sr";
+    C.sc.sr = join ',', grep{$_} @{d.patar}, %{d.caps||{}};
     C.sc.Ifs.Td = $d;
 matchTd: |
     my $hy = {T=>$T};
@@ -382,20 +388,25 @@ matchTd: |
     };
     if (my $Ifs = D.sc.Ifs) {
         for my $k (keys %$Ifs) {
-            my $p = $Ifs->{$k};
+            my $Q = $Ifs->{$k};
             my $d = $hy;
             my @in = $d;
             my $pi = 0;
-            for my $pin (@{p.path}) {
-                for my $pTn (@{p.onpa}) {
+            for my $pin (@{Q.path}) {
+                for my $pTn (@{Q.onpa}) {
                     @in = map { $pas->($pTn, $_) } @in
                 }
                 @in = map {
+                        if (_.d) { # nonroot pattern mutable
+                            $_ = _.d.T.q->{_.e.k} ||= $_;
+                        }
                         _.od = _.d if _.d;
                         _.d = $_;
-                        _.e.lk = p.patar->[$pi]||die"no idea what $pi is";
+                        _.e.lk = Q.patar->[$pi]||die"no idea what $pi is";
+                        $_
                     }
-                    map { $pas->($pin, $_) } @in
+                    map { $pas->($pin, $_) } @in;
+                sayyl "$pin: Have - ".ki $_ for @in;
                 $pi++;
             }
             for my $d (@in) {
@@ -406,8 +417,8 @@ matchTd: |
                 
                 while ($up) {
                     $arg->{up.e.lk} = up.e.k;
-                    if (d.caps) { # read between the lines of $d
-                        for my $k (grep{d.caps->{$_}}keys %$d) {
+                    if (Q.caps) { # read between the lines of $d
+                        for my $k (grep{Q.caps->{$_}}keys %$d) {
                             $arg->{$k} ||= $d->{$k};
                         }
                     }
@@ -415,15 +426,16 @@ matchTd: |
                 }
                 # Z/D wad of multiplicity
                 # D args $d and arg, $nk/$ov etc things plucked
-                # they must stay present to later Ds as well, stored T.d path subtlates
-                
+                # they must stay present to later Ds as well
+                # stored T.d path subtlates
                 # 6 ^
                 die wdump [$arg,$up];
                 if (!T.noTd) {
                     #T.dd
                     # wants to be swimming with T.dd in future T.d ventures
                     # to share same $d (and any caps from upwards)
-                    # and avoid less specific after more specific, or just avoid repeats
+                    # and avoid less specific after more specific
+                    # or just avoid repeats
                     # shaky but index
                     # the fish is shaking but on the deck
                 }
@@ -457,17 +469,17 @@ Ydo: |
     
     n Y =>4321=><<'',{Td=>'c/*/new'}
         die "how inject a c $gk" if $vl;
-        lv.op.c->{$gk} = 9;
+        lv.op2c->{$gk} = 9;
         
     n Y =>4321=><<'',{Td=>'c/*/gone'}
         die "how delete a c $gk";
         lv.op.c->{$gk} = 9;
     
-    n Y =>4321=><<'',{Td=>'c/s/diff'}
+    n Y =>4323=><<'',{Td=>'c/s/diff'}
         lv.pur.c->{$gk} = 1;
     
     # ^ should avoid v (matched paths)
-    n Y =>4322=><<'',{Td=>'c/*/diff'}
+    n Y =>4324=><<'',{Td=>'c/*/diff'}
         die "how to c dif $gk";
         lv.op.c->{$gk} = 9;
     
@@ -476,11 +488,11 @@ Ydo: |
     n Y =>4331=><<'',{Td=>'sc/*/new'}
         lv.pur.sc->{$gk} = 1;
         
-    n Y =>4331=><<'',{Td=>'sc/*/gone'}
+    n Y =>4332=><<'',{Td=>'sc/*/gone'}
         die "how delete a sc $gk";
         lv.op.sc->{$gk} = 9;
     
-    n Y =>4331=><<'',{Td=>'sc/*/diff'}
+    n Y =>4333=><<'',{Td=>'sc/*/diff'}
         sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
         lv.pur.sc->{$gk} = 1;
     
@@ -498,14 +510,14 @@ Ydo: |
         # like a curve continuing
         lv.od.new->{$gk} = $iv;
     
-    n Y =>4341=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
+    n Y =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
         ov.rmnsc || die "no remin";
         !$iv || die "gone had iv";
         # ^ sc plumb its destruction
         # can void if our c reframes by implicitly clearing
         lv.od.go->{$gk} = $ov;
     
-    n Y =>4341=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+    n Y =>4343=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
         if (iv.c eq ov.c) {
             iv.sc eq ov.sc && die "same c fluc sc $gk";
             my $in = @{iv.sc};
@@ -523,7 +535,7 @@ Ydo: |
             lv.od.over->{$gk} = $iv;
         }
     
-    n Y =>4341=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+    n Y =>4344=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
         lv.od.ll->{$gk} = $iv;
     
 Yeomp: | # lvigorta + write stuff on at
