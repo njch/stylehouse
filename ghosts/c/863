@@ -249,6 +249,17 @@ pi/fulltext: |
     my $s = join"\n", @tex;
     n line=>0.1=>$s, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}
 pi/vimcolor: |
+    my $string = shift;
+    my $h = dig($string);
+    my $k = "vimcolor-$h";
+    H.r.gest->($k, sub {
+        use Text::VimColor;
+        my $syntax = Text::VimColor->new(
+            string => $string,
+            filetype => 'perl',
+        );
+        return $syntax->html;
+    });
     #my $s = $G->vimcolor($u);
     #$s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
     
