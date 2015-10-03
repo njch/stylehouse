@@ -1,0 +1,170 @@
+Yeosleep: | # notes in V.os of C, sees if it wants to wake up...
+    u allvse
+    n '','','%of:S'
+    
+    # if change is, or just diff in perceiving it
+    # looking at refs that came from string, or who are spiraling refs
+    n Y =>24=><<'',{rg=>'J,V'}
+        if (my $di = Y.lo->{C.y.k}) {
+            my $not;
+            if (keys %$di == 1 && di.diff) {
+                my $CC = V.tv->{C.y.k};
+                if (!$CC) {
+                    sayre "never heard of (V_tv) diff J.name : C.y.k ";
+                    return 1;
+                }
+                for my $tk (keys %{di.diff}) {
+                    if ($tk eq 'geo') {
+                        T.to = 1 if 0 && !I.d&heq,C.sc.geo,CC.sc.geo;
+                        if ($not && 0) {
+                            sayyl "Geo was $not a difference in the thing";
+                            sayyl sjson(C.sc.geo);
+                            saybl sjson(CC.sc.geo);
+                        }
+                    }
+                    elsif ($tk eq '') {
+                        T.to = 1 unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
+                    }
+                    else {
+                        saybl "J.name C.y.k has diffre: $tk";
+                        T.to = 1;
+                    }
+                }
+            }
+            else {
+                T.to = 1;
+            }
+        }
+        T.whack = 1 if T.to;
+    
+    # J embed
+    n Y =>25=><<'',{rg=>'J,V'}
+        if (my $JJ = C.sc.J) {
+            my $ta = V.ta->{C.y.k};
+            if (my $nV = JJ.El->{V.name}) {
+                my $iv = nV.rv;
+                my $oi = ta.V->{V.name};
+                if ($oi ne iv.i) {
+                    T.to = 1;
+                }
+            }
+            else {
+                sayre "no El V.name on JJ.name";
+            }
+        }
+        T.whack = 1 if T.to;
+        
+Yosc: | # make lv,at + write stuff on at
+    u allovse
+    n '','','%of:O'
+    
+    n Y =>31=><<''
+        at.t = C.t;
+        at.y.cv = C.y.cv;
+        sayre "OSC7 C.t no c_s" if !exists C.c.s;
+        at.c.s = C.c.s;
+        at.sc = {%{C.sc}};
+        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
+    
+    n Y =>36=><<''
+        if (my $v = at.sc.J) { # J unifies -
+            at.sc.J = v.name;
+            .
+            my $nV = v.El->{V.name}||{};
+            my $rv = nV.rv || {LIES=>"from v.name"};
+            .
+            lv.do->{V.name} = $rv;
+            at.V->{V.name} = rv.i;
+        }
+        if (C.c.root) { # / unifies  <
+            lv.voso = 1;
+            for my $ik (@{V.os}) {
+                my $iv = V.lv->{$ik};
+                do { sayre("Skip self in self") for 1..6 } && next
+                    if C.sc.J && C.sc.J eq A.J;
+                lv.do->{$ik} = $iv;
+                at.V->{$ik} = iv.i;
+            }
+        }
+    
+    n Y =>38=><<''
+        at.sc.geo = ki(at.sc.geo) if at.sc.geo;
+        at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
+        # ^ to SlideEater decode array of y expressions, xotted together
+        for my $up (qw'tag id') {
+            at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
+        }
+
+Yeomp: | # lvigorta + write stuff on at
+    u allovse
+    n '','','%of:Sev'
+    
+    n Y =>52=><<''
+        Rw OMP $J $A $I $C $k $Y $V $at $ta $lv $vl;
+notnonos: |
+    n Y =>53=><<'',{rg=>'J,V,yk,yat,yta,ylv,yvl'}
+        my $talk = "J.name OMP ".join"  ", ($vl?"vl":"**"),
+            (map{"$_:".ki(1,$lv->{$_})}qw'pur op'), wdump 2, lv.od;
+        say $talk if J.V > 2 && $vl && (lv.pur || lv.op || lv.od);
+        .
+        !$vl && !lv.op && die "unopposed to not-bfore";
+        .
+        my $ne = {};
+        if (!lv.op) {
+            for my $nk (keys %{lv.pur}) {
+                my $sv = lv.pur->{$nk};
+                if (ref $sv eq 'HASH') {
+                    for my $ck (keys %$sv) {
+                        $ne->{$nk}->{$ck} = $at->{$nk}->{$ck};
+                    }
+                }
+                else {
+                    ref $sv && die "wtf $sv";
+                    $ne->{$nk} = $at->{$nk};
+                }
+            }
+        }
+        else {
+            $ne = $at;
+            # grab can also transplant inners for a minorish
+            # not re-c but recreate element a move things in
+            # while re-cing anything within that can't be grabbed
+            # element rebuild may be crucial for undoing anything we cant undo
+            # something may restate its entire c
+            # including any inner c..sc tents
+        }
+        .
+        if (lv.od) {
+            Rw sVOD + $ne $talk;
+        }
+        .
+        my $nn = sub { my $n=shift; [n.t, n.y||{}, n.c||{}, n.sc||{}] };
+        if (lv.op) {
+            # make sure z is full...
+            lv.c = [$nn->($ne)];
+            lv.sc = [];
+        }
+        elsif (keys %$ne) {
+            die wdump [lv.op, $ne]  if lv.op;
+            ne.t = at.t;
+            ne.y = at.y;
+            ne.c->{lv.force} = 3;
+            .
+            lv.c = vl.c || die"novlc";
+            lv.sc = [@{vl.sc}, $nn->($ne)];
+            # Rw doc 5 [lv.c,lv.sc];
+            # the two pronged link
+            # circuity internet
+        }
+        else {
+            #sayyl "$talk unopposed" if J.V;
+            lv.c = vl.c;
+            lv.sc = vl.sc;
+        }
+        # but there is intended to wipe clean or just redo the surface
+        # much more is liking to collapse the past into the future in degrees as the c fulls
+        # pur and sc
+        # handleable od
+        lv.ma = ($vl?vl.ma:0)+1;
+        lv.i = "lv.c ".@{lv.sc};
+
