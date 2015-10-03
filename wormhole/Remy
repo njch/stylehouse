@@ -4,12 +4,12 @@ I:
     AZu: 
       c: 
         el: 1
-        s: "A.I.AZu = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    die 'amany' if keys %$s > 1;\n    my ($cv,$ac) = %$s;\n    my ($AA,$CC,$cov) = @$ac;\n    my $aa = $AA?\"AAcv=AA.cv\":\"NoAA\";\n    $AA ||= $A; # spawning cone thing\n    I.d&n,$AA,$CC,$G,$T;\n    $A = $AA;\n    # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time\n    if (A.cv > $cv) {\n        #sayre \"Double comback A.cv > $cv: CC.t CC.y.cv \";\n        #return T.not = 1;\n    }\n    A.cv = $cov || $cv;\n    I.d&An;\n    T.whack = 1;\n};\n"
+        s: "A.I.AZu = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    die 'amany' if keys %$s > 1;\n    my ($cv,$ac) = %$s;\n    my ($AA,$CC,$cov) = @$ac;\n    my $aa = $AA?\"AAcv=AA.cv\":\"NoAA\";\n    $AA ||= $A; # spawning cone thing\n    I.d&n,$AA,$CC,$G,$T;\n    $A = $AA;\n    # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time\n    if (A.cv > $cv) {\n        #sayre \"Double comback A.cv > $cv: CC.t CC.y.cv \";\n        #return T.not = 1;\n    }\n    A.cv = $cov || $cv;\n    $T->{$_} = A.T->{$_} for keys %{A.T||{}};\n    I.d&An;\n    T.whack = 1;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 056bea57ce3c
+        dige: 55a0e890ec44
         gro: Indulator/Servo
         l: Motion/oseverato
       t: AZu
@@ -112,12 +112,12 @@ I:
     Other: 
       c: 
         el: 1
-        s: "A.I.Other = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        my $ar = $F[0]->{ar};\n        my $A = $G->{w}->(\"RB\", {%$ar, t => $s}, $G);\n        my $I = $A->{I};\n        # midnight at the oasis\n        $I->{d}->(\"n\",$A,{},$G,{});\n        $I->{d}->(\"An\");\n        $A->{t}->(\"1\");\n        $A->{t}->(\"11111\") || warn \"NO 1\";\n        ($A,$A->{I})\n};\n"
+        s: "A.I.Other = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        my $ar = $F[0]->{ar};\n        $A = $G->{w}->(\"RB\", {%$ar, t => $s}, $G);\n        $I = $A->{I};\n        # midnight at the oasis\n        $I->{d}->(\"n\",$A,{},$G,{});\n        $I->{d}->(\"An\");\n        $A->{t}->(\"1\");\n        $A->{t}->(\"11111\") || warn \"NO 1\";\n        ($A,$A->{I})\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 2801725aea19
+        dige: a7a114ae8516
         gro: Indulator/Motion
       t: Other
       "y": 
@@ -354,12 +354,12 @@ I:
     oseverato: 
       c: 
         el: 1
-        s: "A.I.oseverato = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        if (my $z = delete $T->{Z}) { # tease out the next times\n            my ($lo) = sort keys %$z; # next one\n            my $v = $z->{$lo};\n            push @{$A->{mo}->{re}->{$lo} ||= []},\n                ref $v eq 'ARRAY' ? @$v :\n                $v ne '1' ? [$A,$C,$v] :\n                [$A,$C];\n            @{$T->{oM}} = ();\n        }\n        if (!@{$A->{mo}->{N}} && $A->{mo}->{re}) {\n            my $ats = $A->{mo}->{re} || {};\n            my @wa = sort keys %$ats;\n            my ($lo) = @wa;\n            if ($lo) {\n                my $ay = delete $ats->{$lo};\n                my @N = map { {AZ=>{$lo=>$_}} } @$ay;\n                push @{$A->{mo}->{N}}, @N;\n                saybl \"Looping \".@N.\" to $lo\" if $A->{J}->{V};\n            }\n        }\n        # concoi severaliser, for conglom up; merging spiral snips of code\n        if (my $y = $T->{y}) {\n            for my $k (keys %$y) {\n                $A->{mo}->{y}->{$k}->{$C->{y}->{p}}->{$C->{y}->{cvt}} = $C;\n            }\n        }\n};\n"
+        s: "A.I.oseverato = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n        if ($T->{d}) {\n            $A->{T}->{d} = $T->{d}; # carte\n        }\n        if (my $z = delete $T->{Z}) { # tease out the next times\n            my ($lo) = sort keys %$z; # next one\n            my $v = $z->{$lo};\n            push @{$A->{mo}->{re}->{$lo} ||= []},\n                ref $v eq 'ARRAY' ? @$v :\n                $v ne '1' ? [$A,$C,$v] :\n                [$A,$C];\n            @{$T->{oM}} = ();\n        }\n        if (!@{$A->{mo}->{N}} && $A->{mo}->{re}) {\n            my $ats = $A->{mo}->{re} || {};\n            my @wa = sort keys %$ats;\n            my ($lo) = @wa;\n            if ($lo) {\n                my $ay = delete $ats->{$lo};\n                my @N = map { {AZ=>{$lo=>$_}} } @$ay;\n                push @{$A->{mo}->{N}}, @N;\n                saybl \"Looping \".@N.\" to $lo\" if $A->{J}->{V};\n            }\n        }\n        # concoi severaliser, for conglom up; merging spiral snips of code\n        if (my $y = $T->{y}) {\n            for my $k (keys %$y) {\n                $A->{mo}->{y}->{$k}->{$C->{y}->{p}}->{$C->{y}->{cvt}} = $C;\n            }\n        }\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 810a12bbdb6b
+        dige: f2c6aba2fc43
         gro: Indulator/Motion
       t: oseverato
       "y": 
@@ -1436,6 +1436,70 @@ Mo:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Modulator/Modulator/Spaci/Spaci
+O: 
+  "0.31": 
+    Y_31: 
+      c: 
+        el: 1
+        s: "A.I.Y_31 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.t = C.t;\n    at.y.cv = C.y.cv;\n    sayre \"OSC7 C.t no c_s\" if !exists C.c.s;\n    at.c.s = C.c.s;\n    at.sc = {%{C.sc}};\n    delete at.sc->{$_} for qw'geo idly ml nspc path yspc';\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: O 31
+        dige: 37761c5d21f3
+        gk: 'Y'
+        gro: Seven/Yosc
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_31
+      "y": 
+        cv: '0.31'
+        cvt: 0.31	C.t
+        p: qq/Seven/Seven/Yosc/Yosc
+  "0.36": 
+    Y_36: 
+      c: 
+        el: 1
+        s: "A.I.Y_36 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (my $v = at.sc.J) { # J unifies -\n        at.sc.J = v.name;\n    \n        my $nV = v.El->{V.name}||{};\n        my $rv = nV.rv || {LIES=>\"from v.name\"};\n    \n        lv.do->{V.name} = $rv;\n        at.V->{V.name} = rv.i;\n    }\n    if (C.c.root) { # / unifies  <\n        lv.voso = 1;\n        for my $ik (@{V.os}) {\n            my $iv = V.lv->{$ik};\n            do { sayre(\"Skip self in self\") for 1..6 } && next\n                if C.sc.J && C.sc.J eq A.J;\n            lv.do->{$ik} = $iv;\n            at.V->{$ik} = iv.i;\n        }\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: O 36
+        dige: 560e2c39a01d
+        gk: 'Y'
+        gro: Seven/Yosc
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_36
+      "y": 
+        cv: '0.36'
+        cvt: 0.36	C.t
+        p: qq/Seven/Seven/Yosc/Yosc
+  "0.38": 
+    Y_38: 
+      c: 
+        el: 1
+        s: "A.I.Y_38 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.sc.geo = ki(at.sc.geo) if at.sc.geo;\n    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;\n    # ^ to SlideEater decode array of y expressions, xotted together\n    for my $up (qw'tag id') {\n        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: O 38
+        dige: 88dad709a8bd
+        gk: 'Y'
+        gro: Seven/Yosc
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_38
+      "y": 
+        cv: '0.38'
+        cvt: 0.38	C.t
+        p: qq/Seven/Seven/Yosc/Yosc
 S: 
   "0.24": 
     Y_24: 
@@ -1622,6 +1686,48 @@ Sev:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yuni/Yuni
+  "0.41": 
+    Y_41: 
+      c: 
+        el: 1
+        s: "A.I.Y_41 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if ('force') {\n        at.c.el = 1;\n        lv.force = 'el';\n        lv.selfs = 1;\n        lv.grab = [at.t, at.y, {el=>8}];\n        lv.rmnsc = [at.t, at.y, {el=>9}];\n        # ID makes possible to throw into the W\n        #    (most J) tiniest specs of change\n        # receiving with ID means most.J knows ID to Jpath (bottom up easy)\n        #   also wants to know originating light cone \n        # - figure that once things on screen again!\n        # maybe 8regate\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 41
+        dige: d695f16cd5b5
+        gk: 'Y'
+        gro: Seven/Yeoodle
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_41
+      "y": 
+        cv: '0.41'
+        cvt: 0.41	C.t
+        p: qq/Seven/Seven/Yeoodle/Yeoodle
+  "0.42": 
+    Y_42: 
+      c: 
+        el: 1
+        s: "A.I.Y_42 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    for my $nk (qw't y c sc V') {\n        my $v = $at->{$nk};\n        my $o = $ta->{$nk};\n        I.d&heq,$v,$o && next;\n        Rw ACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;\n        # wants to be embedded A.t&A,3-4 per T.nk or so\n        # ex flywheel arbiter more into T\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 42
+        dige: a238b00044f7
+        gk: 'Y'
+        gro: Seven/Yeoodle
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_42
+      "y": 
+        cv: '0.42'
+        cvt: 0.42	C.t
+        p: qq/Seven/Seven/Yeoodle/Yeoodle
   "0.48": 
     Y_48: 
       c: 
@@ -1643,6 +1749,27 @@ Sev:
         cv: '0.48'
         cvt: 0.48	C.t
         p: qq/Seven/Seven/Yuni/Yuni
+  "0.52": 
+    Y_52: 
+      c: 
+        el: 1
+        s: "A.I.Y_52 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    Rw OMP $J $A $I $C $k $Y $V $at $ta $lv $vl;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 52
+        dige: 5800d16a0fa1
+        gk: 'Y'
+        gro: Seven/Yeomp
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: Y_52
+      "y": 
+        cv: '0.52'
+        cvt: 0.52	C.t
+        p: qq/Seven/Seven/Yeomp/Yeomp
   "0.58": 
     Y_58: 
       c: 
