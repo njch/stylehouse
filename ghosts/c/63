@@ -80,11 +80,11 @@ Gto: | # is made, babbed
         my $Z = G.Doming->($D);
         G.randomtask->() if G.randomtask;
         my $r; eval { $r = [ G.D->($Z) ] };
-        sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
+        sayyl "D.talk BANG: $@" if $@ && !G.bangplu++;
         G.Done->($Z);
       
         if ($@) {
-            D.nodie || die $@;
+            die $@;
             $@ = "";
         }
         return wantarray ? @$r : $r->[0];
@@ -95,7 +95,7 @@ Ghuts: |
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
-        #shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
+        shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die "NO find gggg stack";
         s/\t//g for @stackend;
@@ -119,6 +119,7 @@ Ghuts: |
         my $DOOF = G.Duck->($F[0],1);
         $@ = "";
         sayre $DOOF;
+        exit;
         return 1;
     };
     G.Doming = sub {

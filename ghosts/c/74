@@ -77,8 +77,7 @@ Yex: |
             next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
             .
-            sayyl ".. $K";
-            if ($K eq 'Sev') {
+            if (0 && $K eq 'Sev') {
                 saybl "We $K - $vb -> $vc  ".join', ',
                     map{"$_: ".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};
             }
@@ -99,14 +98,7 @@ Yex: |
                 .
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
-                    if ($k eq 'Sev') {
-                        saybl "Found ".ki $D;
-                    }
                     .
-                    sayre "Deet: D.t  D.y.cv   ".ki D.sc if $k eq 'Sev';
-                    if (D.sc.Ifs) {
-                        die wdump $D;
-                    }
                     if (my $nk = D.sc.nk) {
                         my $C = I.nF.C;
                         next if !exists $C->{$nk};
@@ -147,17 +139,18 @@ Yex: |
                     my @is = A.s;
                     my $utro;
                     if (D.sc.Ifs) {
-                        die wdump $D;
                         @is = Rw matchTd $A $C $D $T;
                         utro.matchTd = 1;
                     }
                     if (D.sc.gro =~ /Ydo$/) {
-                        sayyl "Gro: ".wdump [$D];
+                        sayyl "Gro: ".wdump [D.sc.Ifs.Td, $D];
+                        sleep 1;
                     }
                     if ($act) {
                         for $s (@is) {
                             D.sc.acgt eq 's'||die "nonacgts".ki $D;
                             exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
+                            saybl "D.t idfsjko";
                             I.d&D.t,$s;
                             I.d&acted,$s if I.acted;
                             if ($utro) {
@@ -169,6 +162,7 @@ Yex: |
                                 }
                                 else { die"utrowhat ".ki $utro }
                             }
+                            last if T.not || T.whack;
                         }
                     }
                     last if T.not || T.whack;
@@ -191,20 +185,23 @@ Yod: |
     # overs Yeoodle
     n Y =>42=><<''
         for my $nk (qw't y c sc V') {
+            my $v = $at->{$nk};
+            my $o = $ta->{$nk};
+            I.d&heq,$v,$o && next;
             my $d;
-            d.v = $at->{$nk};
-            d.o = $ta->{$nk};
-            I.d&heq,d.v,d.o && next;
+            d.v = $v;
+            d.o = $o;
             T.d->{$nk} = $d;
-            if (ref d.v eq 'HASH') {
+            if (ref $v eq 'HASH') {
                 my $wt = Rw wtfch $Jb:v $Yb:o;
-                #my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
+                #my $nonnew = keys %{wt.gone} 
+                #|| keys %{wt.diff} || keys %{wt.still};
                 for my $wk (qw'gone diff new still') {
                     for my $gk (sort keys %{$wt->{$wk}}) {
                         my $dd = {};
                         dd.v = $at->{$nk}->{$gk};
                         dd.o = $ta->{$nk}->{$gk};
-                        d.T.d->{$gk} && die " C.t the $nk $gk ($v) was already...";
+                        d.T.d->{$gk} && die "C.t: $nk,$gk ($v) rep.";
                         d.T.d->{$gk} =
                             dd.T.d->{$wk} = $dd;
                     }
@@ -216,7 +213,7 @@ Yod: |
                 d.T.d.s =
                     dd.T.d->{$wk} = $dd;
             }
-            sayyl "TDback $nk: ".wdump $d;
+            #sayyl "TDback $nk: ".wdump 7,$d;
         }
     
     n Y =>48=><<''
@@ -232,10 +229,10 @@ coiTd: |
     @{d.patar} = @{d.patar}[0 .. (@{d.path}-1)];
     
     d.onpa = [split '/', 'T/d'];
-    d.caps = {map{$_=>1}split',',$_} for grep{$_}C.sc.Tdarge;
+    d.caps = {map{$_=>1}split',',C.sc.Tdarge} if C.sc.Tdarge;
     # like rg but from $s
     C.sc.sr && die "already sr";
-    C.sc.sr = join ',', grep{$_} @{d.patar}, %{d.caps||{}};
+    C.sc.sr = join ',', grep{$_} d=>o=>v=> @{d.patar}, %{d.caps||{}};
     for my $sr (split ',', C.sc.sr) {
         die "mixo $sr" if $sr =~ /\W/;
         push @$ara, "    my \$".$sr." = s\.$sr;";
@@ -256,20 +253,26 @@ matchTd: |
             dd.e.k = $_;
             dd.s = $s->{$_};
             dd.d = d.d if d.d;
-            push @in, $dd;
+            $dd;
         } @ks
     };
-    die wdump "HI AGAIN";
+    my @is;
     if (my $Ifs = D.sc.Ifs) {
         for my $k (keys %$Ifs) {
             my $Q = $Ifs->{$k};
             my $d = $hy;
-            my @in = $d;
+            my @in = {s=>$d};
             my $pi = 0;
             for my $pin (@{Q.path}) {
                 for my $pTn (@{Q.onpa}) {
                     @in = map { $pas->($pTn, $_) } @in
                 }
+                
+                sayyl "For $k in $pin  (via @{Q.onpa})";
+                saybl wdump 4, [@in];
+                
+                @in = map { $pas->($pin, $_) } grep{defined} @in;
+                sayyl "$pin: ahlfv - ".ki $_ for @in;
                 @in = map {
                         if (_.d) { # nonroot pattern mutable (into/on/off origin)
                             $_ = _.d.s.T.q->{_.e.k} ||= $_;
@@ -278,11 +281,11 @@ matchTd: |
                         _.d = $_;
                         _.e.lk = Q.patar->[$pi]||die"no idea what $pi is";
                         $_
-                    }
-                    map { $pas->($pin, $_) } @in;
+                    } grep{defined} @in;
                 sayyl "$pin: Have - ".ki $_ for @in;
                 $pi++;
             }
+            sayre "Leaving $k for ". @in;
             for my $d (@in) {
                 # now inmost, .od leads above (without pTn inway)
                 # and each d.e.lk calls it something $nk $gk and $wk
@@ -304,7 +307,8 @@ matchTd: |
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
                 # 6 ^
-                die wdump [$arg,$up];
+                sayre "At split 1: ".wdump [$arg,$d,$up];
+                exit;
                 if (!T.noTd) {
                     #T.dd
                     # wants to be swimming with T.dd in future T.d ventures
@@ -318,6 +322,8 @@ matchTd: |
 
         }
     }
+    sayyl "LEaving ".@is;
+    @is
 Ydo: |
     u allovse
     n '','','%of:Sev'
