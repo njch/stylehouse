@@ -245,6 +245,7 @@ matchTd: |
         my ($pin,$d) = @_;
         my $s = d.s;
         my $e = d.e;
+        say "Pas $pin fromto $s on ".wdump 1,$d;
         my @ks = $pin eq '*' ? sort keys %$s
             : exists $s->{$pin} ? $pin
             : ();
@@ -272,7 +273,7 @@ matchTd: |
                 saybl wdump 4, [@in];
                 
                 @in = map { $pas->($pin, $_) } grep{defined} @in;
-                sayyl "$pin: ahlfv - ".ki $_ for @in;
+                sayyl "$pin: ahlfv - ".wdump 4,$_ for @in;
                 @in = map {
                         if (_.d) { # nonroot pattern mutable (into/on/off origin)
                             $_ = _.d.s.T.q->{_.e.k} ||= $_;
@@ -282,7 +283,7 @@ matchTd: |
                         _.e.lk = Q.patar->[$pi]||die"no idea what $pi is";
                         $_
                     } grep{defined} @in;
-                sayyl "$pin: Have - ".ki $_ for @in;
+                sayyl "$pin: Have - ".wdump 4, $_ for @in;
                 $pi++;
             }
             sayre "Leaving $k for ". @in;
