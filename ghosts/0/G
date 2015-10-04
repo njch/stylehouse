@@ -318,6 +318,23 @@ Ds:
               ? "$_=\@x".@$v
               : "$_=".slim(150,"$v")
       } sort keys %$ar;
+  - K: ok #c
+    style: func
+    D: |
+      my ($s,$lum) = @_;
+      $lum ||= 1;
+      my $d = (3 - $lum);
+      my $lim = 150 - (150 * ($d / 3));
+      !ref $s || "$s" !~ /(ARRAY|HASH)/ && return "!%:$s";
+      join ' ', map {
+          my $v = $s->{$_};
+          $v = "~" unless defined $v;
+          ref $v eq 'HASH'
+              ? "$_=".($lum ?  "{ ".slim($lim,ok($v,$lum-1))." }" : "$v")
+          : ref $v eq 'ARRAY'
+              ? "$_=\@x".@$v
+              : "$_=".slim(150,"$v")
+      } sort keys %$s;
   - K: k2 #c
     style: func
     D: |

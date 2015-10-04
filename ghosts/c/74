@@ -33,6 +33,7 @@ Yodness: |
     J.V = 1;
     n Yod =>W
     n Ydo =>W
+    n YdoV =>W
     n Yex =>W
 Yex: |
     u allacgts
@@ -142,15 +143,10 @@ Yex: |
                         @is = Rw matchTd $A $C $D $T;
                         utro.matchTd = 1;
                     }
-                    if (D.sc.gro =~ /Ydo$/) {
-                        sayyl "Gro: ".wdump [D.sc.Ifs.Td, $D];
-                        sleep 1;
-                    }
                     if ($act) {
                         for $s (@is) {
                             D.sc.acgt eq 's'||die "nonacgts".ki $D;
                             exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
-                            saybl "D.t idfsjko";
                             I.d&D.t,$s;
                             I.d&acted,$s if I.acted;
                             if ($utro) {
@@ -204,6 +200,7 @@ Yod: |
                         d.T.d->{$gk} && die "C.t: $nk,$gk ($v) rep.";
                         d.T.d->{$gk} =
                             dd.T.d->{$wk} = $dd;
+                            die wdump [$C,$d] if $wk eq 'still';
                     }
                 }
             }
@@ -220,32 +217,32 @@ Yod: |
         # pick T bones
     
 coiTd: |
-    my $d;
-    d.path = [split '/', C.sc.Td];
-    die if @{d.path} < 1;
+    my $Q;
+    Q.path = [split '/', C.sc.Td];
+    die if @{Q.path} < 1;
     
     my $form = C.sc.Tdform || 'nk/gk/wk';
-    d.patar = [split '/', $form];
-    @{d.patar} = @{d.patar}[0 .. (@{d.path}-1)];
+    Q.atar = [split '/', $form];
+    @{Q.atar} = @{Q.atar}[0 .. (@{Q.path}-1)];
     
-    d.onpa = [split '/', 'T/d'];
-    d.caps = {map{$_=>1}split',',C.sc.Tdarge} if C.sc.Tdarge;
+    Q.onpa = [split '/', 'T/d'];
+    Q.caps = {map{$_=>1}split',',C.sc.Tdarge} if C.sc.Tdarge;
     # like rg but from $s
     C.sc.sr && die "already sr";
-    C.sc.sr = join ',', grep{$_} d=>o=>v=> @{d.patar}, %{d.caps||{}};
+    C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
     for my $sr (split ',', C.sc.sr) {
         die "mixo $sr" if $sr =~ /\W/;
         push @$ara, "    my \$".$sr." = s\.$sr;";
     }
-    C.sc.Ifs.Td = $d;
+    C.sc.Ifs.Td = $Q;
     
 matchTd: |
+    # ki/ok doesn't like $d (@in)
     my $hy = {T=>$T};
     my $pas = sub { # pwin flexy passing tube
         my ($pin,$d) = @_;
         my $s = d.s;
         my $e = d.e;
-        say "Pas $pin fromto $s on ".wdump 1,$d;
         my @ks = $pin eq '*' ? sort keys %$s
             : exists $s->{$pin} ? $pin
             : ();
@@ -268,62 +265,70 @@ matchTd: |
                 for my $pTn (@{Q.onpa}) {
                     @in = map { $pas->($pTn, $_) } @in
                 }
-                
-                sayyl "For $k in $pin  (via @{Q.onpa})";
-                saybl wdump 4, [@in];
-                
                 @in = map { $pas->($pin, $_) } grep{defined} @in;
-                sayyl "$pin: ahlfv - ".wdump 4,$_ for @in;
                 @in = map {
-                        if (_.d) { # nonroot pattern mutable (into/on/off origin)
-                            $_ = _.d.s.T.q->{_.e.k} ||= $_;
+                        if (_.od) { # nonroot pattern mutable (into/on/off origin s)
+                            $_ = _.od.s.T.q->{_.e.k} ||= $_;
                         }
-                        _.od = _.d if _.d;
+                        _.od ||= _.d if _.d;
                         _.d = $_;
-                        _.e.lk = Q.patar->[$pi]||die"no idea what $pi is";
+                        _.e.lk = Q.atar->[$pi]||die"no idea what $pi is";
                         $_
                     } grep{defined} @in;
-                sayyl "$pin: Have - ".wdump 4, $_ for @in;
                 $pi++;
             }
-            sayre "Leaving $k for ". @in;
             for my $d (@in) {
                 # now inmost, .od leads above (without pTn inway)
                 # and each d.e.lk calls it something $nk $gk and $wk
+                    # and avoid less specific after more specific
+                    # or just avoid repeats
+                    #   
+                    # shaky but index
+                    # the fish is shaking but on the deck
                 my $arg;
-                my $up = $d;
-                
-                while ($up) {
-                    $arg->{up.e.lk} = up.e.k;
-                    if (Q.caps) { # read between the lines of $d
-                        for my $k (grep{Q.caps->{$_}}keys %$d) {
-                            $arg->{$k} ||= $d->{$k};
-                        }
-                    }
-                    $up = up.od;
+                if (keys %{d.s.T && d.s.T.q || {}}) {
+                    sayre " D.t   @{Q.path}  went deeper before";#.wdump[$d,$arg,$Q];
                 }
                 
+                my $up = $d;
+                my $last = $up;
+                my $i = 0;
+                while ($up) {
+                    $i++ > 8 && die "LAST WANDERS";
+                    $arg->{up.e.lk} = up.e.k;
+                    if (Q.caps) { # read between the lines of $d
+                        for my $k (grep{Q.caps->{$_}}keys %{up.s}) {
+                            $arg->{$k} ||= up.s->{$k};
+                        }
+                    }
+                    $last = $up;
+                    $up = up.od;
+                    if ($up eq $last) {
+                        sayre "D.t D.sc.Td  refers to itself as .od: ".wdump $last;
+                        last;
+                    }
+                }
+                
+                arg.d = $d;
+                for my $k (keys %{d.s}) {
+                    next if $k eq 'T';
+                    $arg->{$k} && die "Already $k arg of ".wdump[$d,$arg];
+                    $arg->{$k} = d.s->{$k};
+                }
+                arg.talk = "D.t ($k:@{Q.path}) C.t C.y.cv: "
+                    .join '/', map{$arg->{$_}} @{Q.atar};
+                
+                push @is, $arg;
                 # Z/D wad of multiplicity
                 # D args $d and arg, $nk/$ov etc things plucked
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
                 # 6 ^
-                sayre "At split 1: ".wdump [$arg,$d,$up];
-                exit;
-                if (!T.noTd) {
-                    #T.dd
-                    # wants to be swimming with T.dd in future T.d ventures
-                    # to share same $d (and any caps from upwards)
-                    # and avoid less specific after more specific
-                    # or just avoid repeats
-                    # shaky but index
-                    # the fish is shaking but on the deck
-                }
+                sayre " D.t   @{Q.path}  ".ki $arg;#.wdump [arg.d.s,$arg,$d,$D];
             }
 
         }
     }
-    sayyl "LEaving ".@is;
     @is
 Ydo: |
     u allovse
@@ -381,6 +386,9 @@ Ydo: |
         lv.pur.sc->{$gk} = 1;
     
     
+YdoV: |
+    u allovse
+    n '','','%of:Sev'
     
     # without being a match prepare the Vacuumosd iv/ov
     n Y =>434=><<'',{Td=>'V/*'}
@@ -392,6 +400,8 @@ Ydo: |
     n Y =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
         # may like to grab the element before it
         # like a curve continuing
+        $iv || die "News cap no iv: ".wdump $s;
+        sayyl "$talk  ($iv) NEW!";
         lv.od.new->{$gk} = $iv;
     
     n Y =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
@@ -407,7 +417,7 @@ Ydo: |
             my $in = @{iv.sc};
             my $out = @{ov.sc};
             if (@{iv.sc} > @{ov.sc}) {
-                saybl "$talk GROWs" if J.V > 2;
+                saybl "$talk GROWS" if J.V > 2;
                 lv.od.gr->{$gk} = $iv;
             }
             else {
@@ -419,7 +429,7 @@ Ydo: |
             lv.od.over->{$gk} = $iv;
         }
     
-    n Y =>4344=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+    n Y =>4344=><<'',{Td=>'V/*/still',Tdarge=>'iv,ov'}
         lv.od.ll->{$gk} = $iv;
     
 

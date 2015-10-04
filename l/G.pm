@@ -308,11 +308,28 @@ sub ki {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
         ref $v eq 'HASH'
-            ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : gp($v))
+            ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : "$v")
         : ref $v eq 'ARRAY'
             ? "$_=\@x".@$v
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
+}
+
+sub ok {
+    my ($s,$lum) = @_;
+    $lum ||= 1;
+    my $d = (3 - $lum);
+    my $lim = 150 - (150 * ($d / 3));
+    !ref $s || "$s" !~ /(ARRAY|HASH)/ && return "!%:$s";
+    join ' ', map {
+        my $v = $s->{$_};
+        $v = "~" unless defined $v;
+        ref $v eq 'HASH'
+            ? "$_=".($lum ?  "{ ".slim($lim,ok($v,$lum-1))." }" : "$v")
+        : ref $v eq 'ARRAY'
+            ? "$_=\@x".@$v
+            : "$_=".slim(150,"$v")
+    } sort keys %$s;
 }
 
 sub k2 {
@@ -2239,6 +2256,7 @@ sub g_parse_babble {
 sub fwind {
     my $way = shift;
           my $point = shift;
+          return $way->{$point} if exists $way->{$point};
           my @path = split /\/|\./, $point;
           my $h = $way;
           for my $p (@path) {
