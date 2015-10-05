@@ -91,11 +91,11 @@ Gto: | # is made, babbed
     };
     $G
 Ghuts: |
-    G.sigstackend ||= sub {
+    G.sigstackend = sub {
         local $@;
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
-        #shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
+        shift @stack for 1..2; # hide above this sub, G eval & '  at G...';
         my @stackend;
         push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die "NO find gggg stack";
         s/\t//g for @stackend;
@@ -105,7 +105,7 @@ Ghuts: |
 
         push @$wall, \@stackend;
     };
-    G.sigstackwa ||= sub {
+    G.sigstackwa = sub {
         return 1 if $_[0] =~ /^Use of uninitialized value/;
         if ($_[0] =~ /Deep recursion on/) {
            return if G.deepr++ < 9;

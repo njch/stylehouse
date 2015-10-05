@@ -150,7 +150,7 @@ Ydo: |
     
     # ^ should avoid v (matched paths)
     n cdiff =>4324=><<'',{Td=>'c/*/diff'}
-        warn "how to c dif $gk";
+        warn "how to c dif $gk".slim(30,$v)." <--- ".slim(30,$o);
         lv.op.c->{$gk} = 9;
     
     
@@ -163,7 +163,7 @@ Ydo: |
         lv.op.sc->{$gk} = 9;
     
     n scdiff =>4333=><<'',{Td=>'sc/*/diff'}
-        #sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
+        sayyl "C.t $nk $gk $wk: ".slim(30,$v)." <--- ".slim(30,$o);
         saybl "YEP";
         lv.pur.sc->{$gk} = 1;
     
@@ -174,14 +174,14 @@ YdoV: |
     
     # without being a match prepare the Vacuumosd iv/ov
     n Vsup =>434=><<'',{Td=>'V/*/*'}
-        saybl "NO WHAT $talk           s.d ";#. wdump 7,[$s];
+        saybl "$talk           s.d ";
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
         d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
         T.noTd = 1;
     
     n Vnew =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
-        saybl "NO WHAT $talk           s.d ";#. wdump 7,[$s];
+        saybl "$talk           s.d ";
         # may like to grab the element before it
         # like a curve continuing
         $iv || sayre("News cap no iv: ".wdump $s) && return;
@@ -196,9 +196,12 @@ YdoV: |
         lv.od.go->{$gk} = $ov;
     
     n Vdiff =>4343=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
-        sayre "Digfip";
+        saybl "$talk           s.d ";
         if (iv.c eq ov.c) {
-            iv.sc eq ov.sc && die "same c fluc sc $gk";
+            iv.sc eq ov.sc && do {
+            sayre "SAME FLUC SC $gk";
+            die "same c fluc sc $gk";
+            };
             my $in = @{iv.sc};
             my $out = @{ov.sc};
             if (@{iv.sc} > @{ov.sc}) {

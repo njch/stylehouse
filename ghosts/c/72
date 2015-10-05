@@ -178,23 +178,25 @@ Yex: |
                     #
                     @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
                     #
-                    sayre("Skip D.t".2 || wdump 4,[map{
-                        my $s = $_;
-                        !ref $s ? $s : map {
-                            my $v = $s->{$_};
-                            "$_: $v ".ki $v;
-                        } sort keys %$s;
-                    }D.sc.Ifs,"++++++++++++++",T.d])&&next if !@is;
-                    #
+                    sayre("Skip D.t")&&next if !@is;
+                    #.2 || wdump 4,[map{
+                    #    my $s = $_;
+                    #    !ref $s ? $s : map {
+                    #        my $v = $s->{$_};
+                    #        "$_: $v ".ki $v;
+                    #    } sort keys %$s;
+                    #}D.sc.Ifs,"++++++++++++++",T.d])
                     if ($act) {
                         push @$xrd, [$k,$ik];
                         my $Ds = $x->{$k}->{$ik} ||= {};
+                        say "Scupa";
                         Ds.D = $D;
                         Ds.is = \@is;
                         D.sc.its = @is;
                         # pin down poles
                         #I.cv = $vc;
                         #I.vb = $vb;
+                        # draw curvles as spirals done
                     }
                     .
                     # TreeD
@@ -210,15 +212,19 @@ Yex: |
                 my $Ds = $x->{$k}->{$ik};
                 my $D = Ds.D;
                 for my $s (@{Ds.is}) {
-                    D.sc.acgt eq 's'||die "nonacgts".ki $D;
-                    exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
-                    sayre "DElEE $talk $k $vc $ik  D.t D.y.cv     ".ki D.sc
-                        if A.J.V > 1;
-                    say " for ".ki $s if A.J.V > 1;
+                    #ref $s eq 'HASH' || die "nothash $s ".wdump 4, $Ds;
+                    D.sc.acgt eq 's'||die "nonacgts".wdump $D;
+                    exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
+                    if (ref $s eq 'HASH' && exists s.talk) {
+                        saybl "s.talk           s.d ";
+                    }
+                    #sayre "DElEE $talk $k $vc $ik  D.t D.y.cv     ".ki D.sc
+                    #    if A.J.V > 1;
+                    #say " for ".ki $s if A.J.V > 1;
                     .
                     I.d&D.t,$s;
-                    saybl "Done $talk D.t D.y.cv  ".ki D.sc
-                        if A.J.V > 1;
+                    #saybl "Done $talk D.t D.y.cv  ".ki D.sc
+                    #    if A.J.V > 1;
                     .
                     I.acted and I.d&acted,$s;
                     if (my $ut = delete T.ut) {
@@ -228,7 +234,7 @@ Yex: |
                                 s.d.od.s.T.m = 1;
                             }
                         }
-                        else { die"utrowhat ".ki $ut }
+                        else { die"utrowhat ".wdump 2, $ut }
                     }
                     .
                     # schools of many fish (not upcv if !@is)
