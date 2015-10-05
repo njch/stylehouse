@@ -197,6 +197,9 @@ Yod: |
                         my $dd = {};
                         dd.v = $at->{$nk}->{$gk};
                         dd.o = $ta->{$nk}->{$gk};
+                        if ($wk eq 'new' && $nk eq 'V') {
+                            dd.v || sayre "$nk $gk missing: ".wdump 5, $at;
+                        }
                         d.T.d->{$gk} && die "C.t: $nk,$gk ($v) rep.";
                         d.T.d->{$gk} =
                             dd.T.d->{$wk} = $dd;
@@ -210,7 +213,7 @@ Yod: |
                 d.T.d.s =
                     dd.T.d->{$wk} = $dd;
             }
-            #sayyl "TDback $nk: ".wdump 7,$d;
+            sayyl "TDback $nk: ".wdump 7,$d;
         }
     
     n Y =>48=><<''
@@ -267,14 +270,14 @@ matchTd: |
                 }
                 @in = map { $pas->($pin, $_) } grep{defined} @in;
                 @in = map {
-                        if (_.od) { # nonroot pattern mutable (into/on/off origin s)
-                            $_ = _.od.s.T.q->{_.e.k} ||= $_;
-                        }
-                        _.od ||= _.d if _.d;
-                        _.d = $_;
-                        _.e.lk = Q.atar->[$pi]||die"no idea what $pi is";
-                        $_
-                    } grep{defined} @in;
+                    if (_.od) { # nonroot pattern mutable (into/on/off origin s)
+                        $_ = _.od.s.T.q->{_.e.k} ||= $_;
+                    }
+                    _.od ||= _.d if _.d;
+                    _.d = $_;
+                    _.e.lk = Q.atar->[$pi]||die"no idea what $pi is";
+                    $_
+                } grep{defined} @in;
                 $pi++;
             }
             for my $d (@in) {
@@ -392,6 +395,7 @@ YdoV: |
     
     # without being a match prepare the Vacuumosd iv/ov
     n Y =>434=><<'',{Td=>'V/*'}
+        saybl "NO WHAT $talk". wdump 7, $d if $wk ne 'gone' && !d.v;
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
         d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
@@ -400,7 +404,7 @@ YdoV: |
     n Y =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
         # may like to grab the element before it
         # like a curve continuing
-        $iv || die "News cap no iv: ".wdump $s;
+        $iv || sayre("News cap no iv: ".wdump $s) && return;
         sayyl "$talk  ($iv) NEW!";
         lv.od.new->{$gk} = $iv;
     
@@ -430,6 +434,7 @@ YdoV: |
         }
     
     n Y =>4344=><<'',{Td=>'V/*/still',Tdarge=>'iv,ov'}
+        say "Wegode: ".wdump 7, $d;
         lv.od.ll->{$gk} = $iv;
     
 

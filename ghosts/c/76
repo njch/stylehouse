@@ -70,8 +70,10 @@ Yosc: | # make lv,at + write stuff on at
         if (my $v = at.sc.J) { # J unifies -
             at.sc.J = v.name;
             .
-            my $nV = v.El->{V.name}||{};
+            my $nV = v.El->{V.name};
+            $nV || die "no V.name on v.name";
             my $rv = nV.rv || {LIES=>"from v.name"};
+            nV.rv || die "no rv V.name on v.name";
             .
             lv.do->{V.name} = $rv;
             at.V->{V.name} = rv.i;
