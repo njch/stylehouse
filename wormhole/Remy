@@ -185,6 +185,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/C/C
+    convog: 
+      c: 
+        el: 1
+        s: "A.I.convog = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($in,$Q) = @M;\n    my $I = A.I;\n    Q.path && Q.onpa || die \"learn more\";\n    for my $pin (@{Q.path}) {\n        for my $pTn (@{Q.onpa}) {\n            I.d&pass,$pTn,$in;\n        }\n        I.d&pass,$pin,$in;\n    }\n};\n"
+      sc: 
+        acgt: in,Q
+        args: A,C,G,T,in,Q
+        code: I 1
+        dige: 66e02c61bff1
+        gro: Seven/Yools
+      t: convog
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Seven/Seven/Yools/Yools
     d: 
       c: 
         el: 1
@@ -366,6 +381,36 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/Motion/Motion
+    pas: 
+      c: 
+        el: 1
+        s: "A.I.pas = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,$d) = @M;\n    my $I = A.I;\n    my $s = d.s;\n    my $e = d.e;\n    my @ks = $pin eq '*' ? sort keys %$s\n        : exists $s->{$pin} ? $pin\n        : ();\n    map {\n        my $dd;\n        dd.e.k = $_;\n        dd.s = $s->{$_};\n        dd.d = d.d if d.d;\n        $dd;\n    } @ks\n};\n"
+      sc: 
+        acgt: pin,d
+        args: A,C,G,T,pin,d
+        code: I 1
+        dige: e0e83fe0dcd3
+        gro: Seven/Yools
+      t: pas
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Seven/Seven/Yools/Yools
+    pass: 
+      c: 
+        el: 1
+        s: "A.I.pass = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,$s) = @M;\n    my $I = A.I;\n    @$s = grep{defined} map { I.d&pass,$pin,$_ } grep{defined} @$s;\n};\n"
+      sc: 
+        acgt: pin,s
+        args: A,C,G,T,pin,s
+        code: I 1
+        dige: f4e6642ad467
+        gro: Seven/Yools
+      t: pass
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Seven/Seven/Yools/Yools
     peel: 
       c: 
         el: 1

@@ -94,6 +94,34 @@ Yools: |
         elsif (!ref $o && !ref $t) {
             $o eq $t
         }else{0}
+    
+    # pwin flexy passing tubes, to atoms
+    n pas =>'',<<'',{acgt=>'pin,d'}
+        my $s = d.s;
+        my $e = d.e;
+        my @ks = $pin eq '*' ? sort keys %$s
+            : exists $s->{$pin} ? $pin
+            : ();
+        map {
+            my $dd;
+            dd.e.k = $_;
+            dd.s = $s->{$_};
+            dd.d = d.d if d.d;
+            $dd;
+        } @ks
+    
+    n pass =>'',<<'',{acgt=>'pin,s'}
+        @$s = grep{defined} map { I.d&pas,$pin,$_ } grep{defined} @$s;
+    
+    n convog =>'',<<'',{acgt=>'in,Q'}
+        Q.path && Q.onpa || die "learn more";
+        for my $pin (@{Q.path}) {
+            for my $pTn (@{Q.onpa}) {
+                I.d&pass,$pTn,$in;
+            }
+            I.d&pass,$pin,$in;
+        }
+    
 Sev: |
     ar.C ||= [Elvis=>''=>{J=>$J,Y=>'Pre',V=>'Duv'}];
     my ($A,$I) = G.h&Sev;

@@ -140,7 +140,7 @@ Yex: |
                     my @is = A.s;
                     my $utro;
                     if (D.sc.Ifs) {
-                        @is = Rw matchTd $A $C $D $T;
+                        @is = Rw matchTd $A $C $I $D $T;
                         utro.matchTd = 1;
                     }
                     if ($act) {
@@ -218,6 +218,7 @@ Yod: |
     
     n Y =>48=><<''
         # pick T bones
+        #saybl wdump 5, T.d.V.d;
     
 coiTd: |
     my $Q;
@@ -262,14 +263,15 @@ matchTd: |
         for my $k (keys %$Ifs) {
             my $Q = $Ifs->{$k};
             my $d = $hy;
-            my @in = {s=>$d};
+            my $in = [{s=>$d}];
             my $pi = 0;
+            
             for my $pin (@{Q.path}) {
                 for my $pTn (@{Q.onpa}) {
-                    @in = map { $pas->($pTn, $_) } @in
+                    I.d&pass,$pTn,$in;
                 }
-                @in = map { $pas->($pin, $_) } grep{defined} @in;
-                @in = map {
+                I.d&pass,$pin,$in;
+                @$in = map {
                     if (_.d) { # nonroot pattern mutable (into/on/off origin s)
                         $_ = _.d.s.T.q->{_.e.k} ||= $_;
                     }
@@ -277,10 +279,10 @@ matchTd: |
                     _.d = $_;
                     _.e.lk = Q.atar->[$pi]||die"no idea what $pi is";
                     $_
-                } grep{defined} @in;
+                } grep{defined} @$in;
                 $pi++;
             }
-            for my $d (@in) {
+            for my $d (@$in) {
                 # now inmost, .od leads above (without pTn inway)
                 # and each d.e.lk calls it something $nk $gk and $wk
                     # and avoid less specific after more specific
