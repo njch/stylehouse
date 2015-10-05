@@ -4,22 +4,22 @@ Yeoodle: | # how is at (lv,at now & vl,ta then)
     n '','','%of:Sev'
     
     # is the other of this vector:
-    n Y =>41=><<''
-        if ('force') {
-            at.c.el = 1;
-            lv.force = 'el';
-            lv.selfs = 1;
-            lv.grab = [at.t, at.y, {el=>8}];
-            lv.rmnsc = [at.t, at.y, {el=>9}];
-            # ID makes possible to throw into the W
-            #    (most J) tiniest specs of change
-            # receiving with ID means most.J knows ID to Jpath (bottom up easy)
-            #   also wants to know originating light cone 
-            # - figure that once things on screen again!
-            # maybe 8regate
-        }
-        
-    n Y =>42=><<''
+    n force =>41=><<''
+        at.c.el = 1;
+        lv.force = 'el';
+        lv.selfs = 1;
+        lv.grab = [at.t, at.y, {el=>8}];
+        lv.rmnsc = [at.t, at.y, {el=>9}];
+        # ID makes possible to throw into the W
+        #    (most J) tiniest specs of change
+        # receiving with ID means most.J knows ID to Jpath (bottom up easy)
+        #   also wants to know originating light cone 
+        # - figure that once things on screen again!
+        # maybe 8regate
+        # greg annotates the flyby
+    
+    # like actual
+    n acttle =>42=><<''
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
@@ -179,7 +179,7 @@ Yod: |
     n '','','%of:Sev'
     
     # overs Yeoodle
-    n Y =>42=><<''
+    n mkTd =>42=><<''
         for my $nk (qw't y c sc V') {
             my $v = $at->{$nk};
             my $o = $ta->{$nk};
@@ -187,6 +187,7 @@ Yod: |
             my $d;
             d.v = $v;
             d.o = $o;
+            T.d->{$nk} = $d;
             if (ref $v eq 'HASH') {
                 my $wt = Rw wtfch $Jb:v $Yb:o;
                 #my $nonnew = keys %{wt.gone} 
@@ -212,13 +213,12 @@ Yod: |
                 d.T.d.s =
                     dd.T.d->{$wk} = $dd;
             }
-            T.d->{$nk} = $d;
-            #sayyl "TDback $nk: ".wdump 7,$d;
+            sayyl "TDback $nk: ".wdump 7,$d;
         }
     
-    n Y =>48=><<''
-        # pick T bones
-        #saybl wdump 5, T.d.V.d;
+    n doTd =>48=><<''
+        # pick T bones, dot Is
+        # a 9 for the Td consciousness rendezvou
     
 coiTd: |
     my $Q;
@@ -352,41 +352,39 @@ Ydo: |
     # arf on anything we dont eventually understand in T.d, - total options tho
     # other flywheel stuff for lv.op button presses
     # wk = still is fine (usu)
-    n Y =>4311=><<'',{Td=>'t/s/new'}
+    n tsnew =>4311=><<'',{Td=>'t/s/new'}
         lv.op.t = 1;
-        
-        
-    n Y =>4312=><<'',{Td=>'y/s/new'}
+    
+    n ysnew =>4312=><<'',{Td=>'y/s/new'}
         lv.op.y = 1;
     
     
-    
-    n Y =>4321=><<'',{Td=>'c/*/new'}
+    n cnew =>4321=><<'',{Td=>'c/*/new'}
         die "how inject a c $gk" if $vl;
-        lv.op2c->{$gk} = 9;
+        lv.op.c->{$gk} = 9;
         
-    n Y =>4321=><<'',{Td=>'c/*/gone'}
+    n cgone =>4321=><<'',{Td=>'c/*/gone'}
         die "how delete a c $gk";
         lv.op.c->{$gk} = 9;
     
-    n Y =>4323=><<'',{Td=>'c/s/diff'}
+    n csdiff =>4323=><<'',{Td=>'c/s/diff'}
         lv.pur.c->{$gk} = 1;
     
     # ^ should avoid v (matched paths)
-    n Y =>4324=><<'',{Td=>'c/*/diff'}
+    n cdiff =>4324=><<'',{Td=>'c/*/diff'}
         die "how to c dif $gk";
         lv.op.c->{$gk} = 9;
     
     
     
-    n Y =>4331=><<'',{Td=>'sc/*/new'}
+    n scnew =>4331=><<'',{Td=>'sc/*/new'}
         lv.pur.sc->{$gk} = 1;
         
-    n Y =>4332=><<'',{Td=>'sc/*/gone'}
+    n scgone =>4332=><<'',{Td=>'sc/*/gone'}
         die "how delete a sc $gk";
         lv.op.sc->{$gk} = 9;
     
-    n Y =>4333=><<'',{Td=>'sc/*/diff'}
+    n scdiff =>4333=><<'',{Td=>'sc/*/diff'}
         sayyl "C.t $nk $gk $wk:  ".slim(30,$v)." <--- ".slim(30,$o);
         lv.pur.sc->{$gk} = 1;
     
@@ -396,30 +394,28 @@ YdoV: |
     n '','','%of:Sev'
     
     # without being a match prepare the Vacuumosd iv/ov
-    n Y =>434=><<'',{Td=>'V/*/*'}
-        saybl "NO WHAT $talk". wdump 7, $s if $wk ne 'gone' && !s.v;
+    n Vsup =>434=><<'',{Td=>'V/*/*'}
+        #saybl "NO WHAT $talk ". wdump 7,[$s,$d];# if $wk ne 'gone' && !s.v;
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
-        d.hi = "LO";
-        d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  s.ov.i eq $o->{$gk}");
+        d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
         T.noTd = 1;
     
-    n Y =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
+    n Vnew =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
         # may like to grab the element before it
         # like a curve continuing
         $iv || sayre("News cap no iv: ".wdump $s) && return;
         sayyl "$talk  ($iv) NEW!";
         lv.od.new->{$gk} = $iv;
     
-    n Y =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov,hi'}
+    n Vgone =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
         ov.rmnsc || die "no remin";
-        die wdump d.hi;
         !$iv || die "gone had iv";
         # ^ sc plumb its destruction
         # can void if our c reframes by implicitly clearing
         lv.od.go->{$gk} = $ov;
     
-    n Y =>4343=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
+    n Vdiff =>4343=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
         if (iv.c eq ov.c) {
             iv.sc eq ov.sc && die "same c fluc sc $gk";
             my $in = @{iv.sc};
@@ -437,7 +433,7 @@ YdoV: |
             lv.od.over->{$gk} = $iv;
         }
     
-    n Y =>4344=><<'',{Td=>'V/*/still',Tdarge=>'iv,ov'}
+    n Vstill =>4344=><<'',{Td=>'V/*/still',Tdarge=>'iv,ov'}
         say "Wegode: ".wdump 7, $d;
         lv.od.ll->{$gk} = $iv;
     
