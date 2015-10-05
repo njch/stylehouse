@@ -118,15 +118,6 @@ Yex: |
                         $dont = 1 if exists A.I->{D.t};
                     }
                     .
-                    # schools of many fish
-                    $vb ||= $vc if D.sc.v;
-                    .
-                    # TreeD
-                    $s->{$k}->{$vc}->{$ik} = $D;
-                    my $sep = $act ? "----" : ">>>>";
-                    sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
-                        if A.J.V > 2;
-                    .
                     # way or acgt-setuping-way
                     unless ($dont) {
                         my $paw = join"_",'',$k,$vc,D.t;
@@ -138,29 +129,43 @@ Yex: |
                     # it's a kind of unity that wants to be a block of code like this
                     # and #c
                     my @is = A.s;
-                    my $utro;
-                    if (D.sc.Ifs) {
-                        @is = Rw matchTd $A $C $I $D $T;
-                        utro.matchTd = 1;
-                    }
+                    #
+                    @is = I.d&scIfs if D.sc.Ifs;
+                    #
+                    sayre("Skip D.t")&&next if !@is;
+                    #
                     if ($act) {
+                        # pin down poles
+                        I.cv = $vc;
+                        I.vb = $vb;
                         for $s (@is) {
                             D.sc.acgt eq 's'||die "nonacgts".ki $D;
                             exists A.I->{D.t}||die "acgtI D.t not up: ".ki A.I;
                             I.d&D.t,$s;
                             I.d&acted,$s if I.acted;
-                            if ($utro) {
-                                if (utro.matchTd) {
+                            if (my $ut = delete T.ut) {
+                                if (ut.matchTd) {
                                     unless (delete T.noTd) {
                                         s.d.od || die "matchd root: OOgie";
                                         s.d.od.s.T.m = 1;
                                     }
                                 }
-                                else { die"utrowhat ".ki $utro }
+                                else { die"utrowhat ".ki $ut }
                             }
                             last if T.not || T.whack;
                         }
+                        D.sc.its = @is;
                     }
+                    .
+                    # schools of many fish (not upcv if !@is)
+                    $vb ||= $vc if D.sc.v;
+                    .
+                    # TreeD
+                    $s->{$k}->{$vc}->{$ik} = $D;
+                    my $sep = $act ? "----" : ">>>>";
+                    sayre "DElEE $talk $k $sep $vc  D.t D.y.cv  ".ki D.sc
+                        if A.J.V > 2;
+                    #
                     last if T.not || T.whack;
                 }
                 last if T.not || T.whack;
@@ -215,11 +220,12 @@ Yod: |
             T.d->{$nk} = $d;
             #sayyl "TDback $nk: ".wdump 7,$d;
         }
-    
+
+
     n doTd =>48=><<''
         # pick T bones, dot Is
         # a 9 for the Td (ill 8) consciousness rendezvou
-        saybl wdump 5, T.d.V.d;
+        saybl wdump 5, T.d;
     
 coiTd: |
     my $Q;
@@ -243,27 +249,12 @@ coiTd: |
     
 matchTd: |
     # ki/ok doesn't like $d (@in)
-    my $hy = {T=>$T};
-    my $pas = sub { # pwin flexy passing tube
-        my ($pin,$d) = @_;
-        my $s = d.s;
-        my $e = d.e;
-        my @ks = $pin eq '*' ? sort keys %$s
-            : exists $s->{$pin} ? $pin
-            : ();
-        map {
-            my $dd;
-            dd.e.k = $_;
-            dd.s = $s->{$_};
-            dd.d = d.d if d.d;
-            $dd;
-        } @ks
-    };
     my @is;
+    die "hev";
     if (my $Ifs = D.sc.Ifs) {
         for my $k (keys %$Ifs) {
             my $Q = $Ifs->{$k};
-            my $d = $hy;
+            my $d = {T=>$T};
             my $in = [{s=>$d}];
             my $pi = 0;
             
@@ -274,7 +265,9 @@ matchTd: |
                 I.d&pass,$pin,$in;
                 @$in = map {
                     if (_.d) { # nonroot pattern mutable (into/on/off origin s)
+                        my $su = $_;
                         $_ = _.d.s.T.q->{_.e.k} ||= $_;
+                        say "_.e.k con $_ tas $su" if $_ ne $su;
                     }
                     _.od ||= _.d if _.d;
                     _.d = $_;
@@ -292,9 +285,6 @@ matchTd: |
                     # shaky but index
                     # the fish is shaking but on the deck
                 my $arg;
-                if (keys %{d.s.T && d.s.T.q || {}}) {
-                    sayre " D.t   @{Q.path}  went deeper before";#.wdump[$d,$arg,$Q];
-                }
                 
                 my $up = $d;
                 my $last = $up;
@@ -320,6 +310,9 @@ matchTd: |
                     next if $k eq 'T';
                     $arg->{$k} && die "Already $k arg of ".wdump[$d,$arg];
                     $arg->{$k} = d.s->{$k};
+                }
+                if (keys %{d.s.T && d.s.T.q || {}}) {
+                    sayre " D.t   @{Q.path} d.s.v went deeper before";#.wdump[$d,$arg,$Q];
                 }
                 arg.talk = "D.t ($k:@{Q.path}) C.t C.y.cv: "
                     .join '/', map{$arg->{$_}} @{Q.atar};
@@ -359,6 +352,10 @@ Ydo: |
     n ysnew =>4312=><<'',{Td=>'y/s/new'}
         lv.op.y = 1;
     
+    n ysnew =>4312=><<'',{Td=>'y/s/still'}
+        lv.op.y = 1;
+        sayre "SJDFIJDIG";
+    
     
     n cnew =>4321=><<'',{Td=>'c/*/new'}
         die "how inject a c $gk" if $vl;
@@ -396,13 +393,14 @@ YdoV: |
     
     # without being a match prepare the Vacuumosd iv/ov
     n Vsup =>434=><<'',{Td=>'V/*/*'}
-        #saybl "NO WHAT $talk ". wdump 7,[$s,$d];# if $wk ne 'gone' && !s.v;
+        saybl "NO WHAT $talk           s.d ";#. wdump 7,[$s];
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
         d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
         T.noTd = 1;
     
     n Vnew =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
+        saybl "NO WHAT $talk           s.d ";#. wdump 7,[$s];
         # may like to grab the element before it
         # like a curve continuing
         $iv || sayre("News cap no iv: ".wdump $s) && return;
