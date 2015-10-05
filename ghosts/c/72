@@ -178,18 +178,13 @@ Yex: |
                     #
                     @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
                     #
-                    sayre("Skip D.t")&&next if !@is;
-                    #.2 || wdump 4,[map{
-                    #    my $s = $_;
-                    #    !ref $s ? $s : map {
-                    #        my $v = $s->{$_};
-                    #        "$_: $v ".ki $v;
-                    #    } sort keys %$s;
-                    #}D.sc.Ifs,"++++++++++++++",T.d])
+                    unless (@is) {
+                        sayre("Skip D.t") if A.J.V;
+                        next;
+                    }
                     if ($act) {
                         push @$xrd, [$k,$ik];
                         my $Ds = $x->{$k}->{$ik} ||= {};
-                        say "Scupa";
                         Ds.D = $D;
                         Ds.is = \@is;
                         D.sc.its = @is;
@@ -212,21 +207,13 @@ Yex: |
                 my $Ds = $x->{$k}->{$ik};
                 my $D = Ds.D;
                 for my $s (@{Ds.is}) {
-                    #ref $s eq 'HASH' || die "nothash $s ".wdump 4, $Ds;
                     D.sc.acgt eq 's'||die "nonacgts".wdump $D;
                     exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
-                    if (ref $s eq 'HASH' && exists s.talk) {
-                        saybl "s.talk           s.d ";
-                    }
-                    #sayre "DElEE $talk $k $vc $ik  D.t D.y.cv     ".ki D.sc
-                    #    if A.J.V > 1;
-                    #say " for ".ki $s if A.J.V > 1;
                     .
                     I.d&D.t,$s;
-                    #saybl "Done $talk D.t D.y.cv  ".ki D.sc
-                    #    if A.J.V > 1;
                     .
                     I.acted and I.d&acted,$s;
+                    .
                     if (my $ut = delete T.ut) {
                         if (ut.matchTd) {
                             unless (delete T.noTd) {
@@ -239,6 +226,7 @@ Yex: |
                     .
                     # schools of many fish (not upcv if !@is)
                     $vb ||= $vc if D.sc.v;
+                    .
                     last if T.not || T.whack;
                 }
                 last if T.not || T.whack;
@@ -254,6 +242,9 @@ Yex: |
         my @is;
         for my $k (keys %$s) {
             my $Q = $s->{$k};
+            my $tot = @{Q.path};
+            my $star = grep{$_ eq '*'} @{Q.path};
+            Q.weig = $tot - $star;
             .
             my $in = [{s=>{T=>$T}}];
             my $pi = 0;
@@ -264,11 +255,12 @@ Yex: |
                 I.d&pass,$pin,$in;
                 @$in = map {
                     if (_.d) { # nonroot pattern mutable (into/on/off origin s)
-                        my $su = $_;
-                        $_ = _.d.s.T.q->{_.e.k} ||= $_;
-                        #say "_.e.k con $_ tas $su" if $_ ne $su;
+                        _.od ||= _.d;
+                        if (my $su = _.od.s.T.q->{_.e.k}) {
+                            $_ = $su;
+                            # deeper knowish
+                        }
                     }
-                    _.od ||= _.d if _.d;
                     _.d = $_;
                     _.e.lk = Q.atar->[$pi]||die"no idea what $pi is";
                     $_
@@ -289,6 +281,7 @@ Yex: |
                 my $up = $d;
                 my $last = $up;
                 my $i = 0;
+                #sayre "INZifs: ".wdump 5, $d;
                 while ($up) {
                     $i++ > 8 && die "LAST WANDERS";
                     $arg->{up.e.lk} = up.e.k;
@@ -315,14 +308,26 @@ Yex: |
                 .
                 my $fo = "    ";
                 $fo = "444 " if keys %{d.s.T && d.s.T.q || {}};
-                .
-                arg.talk = "C.t $fo($k:@{Q.path}) C.t C.y.cv:\t"
-                    .join '/', map{$arg->{$_}} @{Q.atar};
+                my $path = "@{Q.path}";
+                arg.talk = "C.t $fo($k:$path) C.t C.y.cv"
+                    .":\t".join '/', map{$arg->{$_}} @{Q.atar};
+                d.weig ||= Q.weig;
+                d.path ||= $path;
+                if (d.weig > Q.weig) {
+                    say "Later $path outweighed by d.path (Q.weig < d.weig)";
+                    next;
+                }
+                elsif (d.path ne $path) {
+                    say "Moreo $path ............. d.path (Q.weig < d.weig)";
+                    d.weig = Q.weig;
+                    d.path = $path;
+                }
                 push @is, $arg;
                 # Z/D wad of multiplicity
                 # D args $d and arg, $nk/$ov etc things plucked
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
+                d.od.s.T.q->{d.e.k} ||= $d;
                 # 6 ^
                 sayre "arg.talk  ".ki $arg if A.J.V;
             }
