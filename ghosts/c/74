@@ -187,7 +187,6 @@ Yod: |
             my $d;
             d.v = $v;
             d.o = $o;
-            T.d->{$nk} = $d;
             if (ref $v eq 'HASH') {
                 my $wt = Rw wtfch $Jb:v $Yb:o;
                 #my $nonnew = keys %{wt.gone} 
@@ -213,7 +212,8 @@ Yod: |
                 d.T.d.s =
                     dd.T.d->{$wk} = $dd;
             }
-            sayyl "TDback $nk: ".wdump 7,$d;
+            T.d->{$nk} = $d;
+            #sayyl "TDback $nk: ".wdump 7,$d;
         }
     
     n Y =>48=><<''
@@ -270,8 +270,8 @@ matchTd: |
                 }
                 @in = map { $pas->($pin, $_) } grep{defined} @in;
                 @in = map {
-                    if (_.od) { # nonroot pattern mutable (into/on/off origin s)
-                        $_ = _.od.s.T.q->{_.e.k} ||= $_;
+                    if (_.d) { # nonroot pattern mutable (into/on/off origin s)
+                        $_ = _.d.s.T.q->{_.e.k} ||= $_;
                     }
                     _.od ||= _.d if _.d;
                     _.d = $_;
@@ -300,9 +300,8 @@ matchTd: |
                     $i++ > 8 && die "LAST WANDERS";
                     $arg->{up.e.lk} = up.e.k;
                     if (Q.caps) { # read between the lines of $d
-                        for my $k (grep{Q.caps->{$_}}keys %{up.s}) {
-                            sayre "FOUND CAP $k";
-                            $arg->{$k} ||= up.s->{$k};
+                        for my $k (grep{Q.caps->{$_}} keys %$up) {
+                            $arg->{$k} ||= $up->{$k};
                         }
                     }
                     $last = $up;
@@ -322,14 +321,13 @@ matchTd: |
                 arg.talk = "D.t ($k:@{Q.path}) C.t C.y.cv: "
                     .join '/', map{$arg->{$_}} @{Q.atar};
                 
-                sayyl "Caps: ".wdump 3, [$arg];
                 push @is, $arg;
                 # Z/D wad of multiplicity
                 # D args $d and arg, $nk/$ov etc things plucked
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
                 # 6 ^
-                sayre " D.t   @{Q.path}  ".ki $arg;#.wdump [arg.d.s,$arg,$d,$D];
+                sayre " D.t   @{Q.path}  ".ki $arg if A.J.V
             }
 
         }
@@ -396,11 +394,11 @@ YdoV: |
     n '','','%of:Sev'
     
     # without being a match prepare the Vacuumosd iv/ov
-    n Y =>434=><<'',{Td=>'V/*'}
-        saybl "NO WHAT $talk". wdump 7, $d if $wk ne 'gone' && !d.v;
+    n Y =>434=><<'',{Td=>'V/*/*'}
+        saybl "NO WHAT $talk". wdump 7, $s if $wk ne 'gone' && !s.v;
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
-        d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  d.ov.i eq $o->{$gk}");
+        d.ov.i && (d.ov.i eq $o->{$gk} || warn "no ovi ogk  s.ov.i eq $o->{$gk}");
         T.noTd = 1;
     
     n Y =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
