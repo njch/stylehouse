@@ -376,6 +376,7 @@ KnowTime: | # dome props
         .
         # do stuff
         my $vb; # in fractions
+        my $wasSubtle;
         for my $vc (sort keys %$yv) {
             my $is = $yv->{$vc};
             my $s = {};
@@ -389,6 +390,10 @@ KnowTime: | # dome props
                 saybl "We $K - $vb -> $vc  ".join', ',
                     map{"$_: ".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};
             }
+            if ($wasSubtle) {
+                undef $wasSubtle;
+                $vb = $vc;
+            }
             if ($vb && $vc > $vb && (
                 @{A.N} || @{A.mo.re->{$vb}||[]}
                 )) {
@@ -399,10 +404,12 @@ KnowTime: | # dome props
                 A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
+            my $nonSubtle;
             for my $k (sort keys %$is) {
                 my $iii = $is->{$k};
                 .
                 next unless $aim->{$k} || (aim.I && A.Iso->{$k});
+                $nonSubtle = 1 unless A.Subtle && A.Subtle->{$k};
                 .
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
@@ -490,6 +497,11 @@ KnowTime: | # dome props
                 }
                 delete T.ut;
                 last if T.not || T.whack;
+            }
+            .
+            if (!$nonSubtle) {
+                $wasSubtle = 1;
+                $vb = $vc;
             }
             .
             return if T.not;  # will &z, oseve

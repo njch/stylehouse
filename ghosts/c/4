@@ -109,7 +109,7 @@ Oscgrin: |
     
 Oscapps: |
     u allsvse
-    n '','','%of:Sev'
+    n '','','%of:S'
     # all but intercepted sc is sc
     
     n geo =>3=><<''
@@ -134,6 +134,51 @@ Oscapps: |
             C.sc.tr.scale = $sl;
         }
     
+    n lp =>5=><<''
+        at.c.ishtml = 1;
+        
+    n ishtml =>5=><<''
+        at.c.ishtml = 1;
+        
+    n id =>5=><<''
+        at.c.id = $s;
+        
+    n tt =>5=><<''
+        at.c.title = $s;
+        
+    n canvas =>5=><<''
+        at.c.canvas = $s;
+        
+    n type =>51=><<''
+        at.c.type = $s;
+        at.c.ishtml = 1;
+        at.c.title = undef;
+        
+    n tag =>5=><<''
+        at.c.tag = $s;
+        
+    n at =>5=><<''
+        die "inat";
+        $s =~ /^(?:(\S+):)?(\S+)$/;
+        at.c->{$1} = $2;
+        
+    n atrp =>5=><<''
+        die "heloarp";
+        at.rp = $s;
+        
+    n path =>5=><<''
+        # to compuile J.ys
+        
+    n origin =>5=><<''
+        # better than W via c pi and W
+        
+    n pwar =>5=><<''
+        # to suggest
+        
+    n Joint =>5=><<''
+        # Something
+
+    
     n enid =>59=><<''
         at.id = $s;
         at.c.nobody = 1; 
@@ -156,7 +201,8 @@ Oscapps: |
         }
     
     n css =>555=><<''
-        $s = join ';', map{"$_:$s->{$_}"} sort keys %$s if ref $s eq 'HASH';
+        $s = join ';', map{"$_:$s->{$_}"} 
+            sort keys %$s if ref $s eq 'HASH';
         for my $set (split ';', $s) {
             my ($k,$s) = split ':', $set;
             at.sc.css->{$k} = $s;
@@ -173,58 +219,18 @@ Oscapps: |
         at.s = '';
     
     # long range stuff reporting, use A.sv the toplevel intergatr
-    n idly =>58=><<''
+    # like sort by A.sv length and number
+    # also putting a particular object behind an id... blessing
+    # weird sortes is the ways
+    # even urls are like this
+    n idly =>58=><<'' 
         my $id = mkuid();
-        die "HI";
-        at.id && die "arl";
-        at.id = $id;
+        my $qual = '';
+        at.c.id && sayre "Blessing C.t with $qual ($id -> at.c.id)";
+        at.c.id = $id;
         #J.idyl->($J, $id, $j);
         sayre "idly C.t  J.name J.r    ".ki C.sc;
-        #die wdump 2, A.J
         
-    n lp =>5=><<''
-        at.ishtml = 1;
-        
-    n ishtml =>5=><<''
-        at.ishtml = 1;
-        
-    n id =>5=><<''
-        at.d.id = $s;
-        
-    n tt =>5=><<''
-        at.c.title = $s;
-        
-    n canvas =>5=><<''
-        at.c.canvas = $s;
-        
-    n type =>51=><<''
-        at.type = $s;
-        at.ishtml = 1;
-        at.title = undef;
-        
-    n tag =>5=><<''
-        at.tag = $s;
-        
-    n at =>5=><<''
-        die;
-        $s =~ /^(?:(\S+):)?(\S+)$/;
-        $at->{$1} = $2;
-        
-    n atrp =>5=><<''
-        die "heloarp";
-        at.rp = $s;
-        
-    n path =>5=><<''
-        # to compuile J.ys
-        
-    n origin =>5=><<''
-        # better than W via c pi and W
-        
-    n pwar =>5=><<''
-        # to suggest
-        
-    n Joint =>5=><<''
-        # Something
 TheAttractor: |
     u allsvse
         
@@ -525,5 +531,4 @@ TheAttractor: |
       - 3.4
       - |
         C.sc.css->{"border"} = $s;
-
 
