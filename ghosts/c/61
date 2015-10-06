@@ -5,6 +5,33 @@ lod/2:
     return 1;
 recur: |
      Mojo::IOLoop->recurring($d,$cb);
+timer: |
+    
+    Mojo::IOLoop->timer($d,$cb);
+    return;
+    my $B; 
+    B.name = "t";
+    B.talk = "Ze timer from ".$F[0]->{talk};
+    B.time = $d;
+    B.D = $cb; # maybe sub or Disc like thing
+    B.stuff = [@_];
+    my $Dome = G.d&Doming,$B;
+    my $mb = sub {
+        G.d&comeback=>$Dome;
+    };
+    Mojo::IOLoop->timer($d,$mb);
+    $G->Done($Dome);
+    return $Dome;
+wayt: |
+    my $d = delete ar.d;
+    my $p = delete ar.p;
+    my $cb = sub {
+        sayre "$d to $p";
+        Rw $p;
+    };
+    sayyl "$d to $p: $cb";
+    Rw timer $d $cb;
+    
 vortex: |
      my $m = ar.m||[];
      my $d = ar.d||4;
@@ -54,13 +81,10 @@ Run: |
     'In=Indi',
     'Jto=Jtt';
     
-    my $cb = sub {
-        Rw Top;
-    };
+    Rw wayt $d=0.001 $p=Top;
+    
     #Rw recur $d=8 $cb;
-    $cb->();
     sayyl "YEP";
-    exit;
 Top: |
     my $now = hitime;
     my $gap = $now - G.lastout;
@@ -98,7 +122,6 @@ Many: |
     y.la->{$ts} = 1;
     sayyl "many y.i"; 
     
-
 Loading: |
     my @l;
     push @l, keys %{G.T} if G.T;

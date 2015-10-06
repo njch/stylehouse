@@ -128,19 +128,17 @@ Yools: |
                     $arg->{$k} = d.s->{$k};
                 }
                 .
-                my $fo = "    ";
-                $fo = "444 " if keys %{d.s.T && d.s.T.q || {}};
                 my $path = "@{Q.path}";
-                arg.talk = "C.t $fo($k:$path) C.t C.y.cv"
+                arg.talk = "C.t  ($k:$path) C.t C.y.cv"
                     .":\t".join '/', map{$arg->{$_}} @{Q.atar};
                 d.weig ||= Q.weig;
                 d.path ||= $path;
                 if (d.weig > Q.weig) {
-                    say "Later $path  Q.weig < d.weig  d.path";
+                    say "Later $path  Q.weig < d.weig  d.path" if A.J.V > 1;
                     next;
                 }
                 elsif (d.path ne $path) {
-                    say "Moreo $path  Q.weig > d.weig  d.path";
+                    say "Moreo $path  Q.weig > d.weig  d.path" if A.J.V > 1;
                     d.weig = Q.weig;
                     d.path = $path;
                 }
@@ -151,7 +149,7 @@ Yools: |
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
                 # 6 ^
-                sayre "arg.talk  ".ki $arg if A.J.V;
+                sayre(ki($arg)) if A.J.V;
             }
         }
         @is
