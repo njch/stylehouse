@@ -1,367 +1,249 @@
-oJ7: |
-    my $J = C.sc.J;
+RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
+    # non babzub, assume pbab skipped <<''s in origin
+    my $A = {};
     
-    J.most.wq && return
-    Rw J.most.eo $J;
+    A.oA = ar.oA if ar.oA;
+    A.J = ar.J || die 'noJ';
+    A.G = $G; # so travel can G/T/Hypo
+    A.mo = $A;
+    (A.am) = ar.t || ar.name || @{delete ar.m};
+    A.am || die "unsame?";
     
-    exists C.sc.pi && return Rw opi7;
-    
-    return if A.roundi;
-    
-    say "oJ7777 J.name" unless J.yt.quiet;
-    Rw oJ $J geo &up $noesc=1
-        if !J.most.wq;
-    my $eo = J.most.eo;
-    $eo || die "noeo: J.name";
-    Rw $eo $J;
-opi7: | # MOD pi     out cup           # REF JOIN A.c/sc
-    my $J = C.sc.J;
-    
-    sayyl "opi7! J.most.J.name J.name" if J.most.J.V;
-    my $aj = Rw J.most.eo $J $catj=1;
-    
-    J.Ec = [@{aj.c}];
-    die wdump $aj if @{aj.sc};
-       
-oJ75: | # chov J
-    if (C.sc.pi) {
-        $v = C.sc.J || die'enoJ'.C.t;
-        die "Pi v.r has s" if v.s;
-        delete at.s if defined at.s;
-        die "No Ec came out of v.name  on J.name" if !ref v.Ec;
-        die "Pi v.r no .Ec" if !@{v.Ec};
-        acum $at, 'Esc', $_ for @{v.Ec};
-    }
-    else {
-        #say "AM v.name  rrrrr J.name";
-        at.s = "Vrrr v.name";
-    }
-Yesui: |
-    !J.most.wq && return Rw chuv;
-    
-    my $V = Rw Noodles $J;
-    
-    V.rv;
-Noodles: |
-    my $A = {J=>$J};
+    A.N = [ar.C || @{ar.N}];
+    A.M = [];
     A.talk = "A.J.name ".(A.J.le && A.J.le.name);
-    # then we could I when doing:
+    A.fl = ar.fl || {};
+    A.I = {};
     
+    my $I = delete G.drop.recycling->{A.J.id}->{A.am};
     
-    my $Y = Rw Elvus $J Pre;
-    # providing the source pretend of c/sc ray anarchy
-    # v to ^
-    Y.il = Y.tv->{"0.9\t/"}
-        || Y.tv->{"0.9\t".J.name}
-        || Y.tv->{"0.9\t".J.uname}
-          || die " noroot J.name: showing 0.9s: "
-            .wdump [map{ki $_}values %{Y.v->{0.9}}];
+    my $II = Rw collaspII $A;
     
-    my $N = [grep { $_ ne Y.il } @{Y.vs}];
-    push @$N, Y.il;
-    A.N = [@$N];
-    
-    my $hup = sub {
-        my $C = shift;
-        my $CC = {%$C};
-        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
-        $CC;
-    };
-    
-    my $V = Rw El Duv;
-    V.os = [];
-    while (@{A.N}) {
-        my $C = shift @{A.N};
-        ref C.y || die"nospace".ki $C;
-        ref C.y || sayre("Weird".ki$C) && next;
-        
-        my $k = C.y.cv."\t".C.t;
-        push @{V.os}, $k unless $C eq Y.il;
-        
-        next unless $C eq Y.il ||
-        # if change is, or just diff in perceiving it
-        Rw diffre $J $C $k $Y $V;
-        
-        # O
-        my $lv = {k=>$k};
-        lv.C = $C;
-        my $at = Rw OSC $A $J $C $k $Y $V $lv;
-        
-        my $ta = V.ta->{$k};
-        my $vl = V.lv->{$k};
-        
-        if ('force') {
-            at.c.el = 1;
-            lv.force = 'el';
-            lv.selfs = 1;
-            lv.grab = [at.t, at.y, {el=>8}];
-            lv.rmnsc = [at.t, at.y, {el=>9}];
-            # and or ID
-            # ID makes possible to throw into the W (most J) tiniest specs of change
-            # maybe 8regate
-        }
-        
-        # crazy has places to hide in
-        my $heq = sub {
-            my ($o,$t) = @_;
-            if (ref $o && ref $t) {
-                keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o
-            }
-            elsif (!ref $o && !ref $t) {
-                $o eq $t
-            }else{0}
-        };
-        for my $nk (qw't y c sc V') {
-            my $v = $at->{$nk};
-            my $o = $ta->{$nk};
-            if (!$heq->($v, $o)) {
-                Rw ACT $J $C $k $Y $V $at $ta $lv $vl $nk $v $o;
-            }
-        }
-        
-        V.ta->{$k} = $hup->($at); 
-        V.tv->{$k} = $hup->($C);
-        
-        Rw OMP $J $C $k $Y $V $at $ta $lv $vl;
-        
-        V.lv->{$k} = $lv;
-        
-        if ($C eq Y.il) {
-            V.rl = $vl;
-            V.rv = $lv;
-        }
-    }
-    Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv
-        if J.V;
-    $V
-    # bloop
-
-ACT: |
-    my $talk = "J.name ACT $nk: $k\t";
-    if (ref $v eq 'HASH') {
-        my $wt = Rw wtfch $Jb:v $Yb:o;
-        my $nonnew = keys %{wt.gone} || keys %{wt.diff} || keys %{wt.still};
-        
-        for my $wk (qw'gone diff new still') {
-            for my $gk (sort keys %{$wt->{$wk}}) {
-                my $talk = "$talk $wk: $gk";
-                my $s = $at->{$nk}->{$gk};
-                
-                if ($nk eq 'V') {
-                    Rw AC_V + $talk $nonnew $gk $wt $wk $s;
-                }
-                elsif ($nk eq 'c') {
-                    Rw AC_c + $talk $nonnew $gk $wt $wk $s;
-                }
-                elsif ($nk eq 'sc') {
-                    Rw AC_sc + $talk $nonnew $gk $wt $wk $s;
-                }
-                else {die"wtfis  '$nk'"}
-            }
-        }
-        saybl "$talk    is all new" if $vl && !$nonnew && keys %{wt.new};
-    }
-    else {
-        my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";
-        $talk .= "$wk: ";
-        if ($nk eq 't' || $nk eq 'y') {
-            if ($wk ne 'new') {
-                die "HOWTO $talk";
-            }
-            sayyl $talk if $vl;
-            
-            lv.op->{$nk} = 1;
-        }
-        else {die"wtfis $v $nk".wdump[$v,$o]}
-    }
-AC_c: |
-    if ($wk eq 'gone') {
-        die "how delete a c $gk";
-        die "would have" if !$vl;
-        # most of these can re c if they get confused
-        # care later to grab /in, recreate holster, replace
-        # or however we whatever
-        # protocols for travel regroup
-        
-        lv.op.c->{$gk} = 9;
-    }
-    elsif ($wk eq 'new') {
-        die "how inject a c $gk" if $vl;
-        
-        lv.op.c->{$gk} = 9;
-    }
-    elsif ($wk eq 'diff') {
-        sayyl "$talk  ".slim(45,$v->{$gk})." <--- ".slim(45,$o->{$gk});
-        
-        if ($gk eq 's') {
-        
-            lv.pur.c->{$gk} = 1;
+    if ($I) {
+        if (I.Ii eq II.Ii) {
+            say "Recyc A.talk! I.Ii continu" if A.J.V;
+            #$I = {%$I,nF=>{}};
+            A.I = $I;
+            A.cv = 0.1;
         }
         else {
-            die "how to c dif $gk";
-            
-            lv.op.c->{$gk} = 9;
+            sayre "Recycloped, Diff I.Ii  --  II.Ii" if A.J.V;
+            undef $I;
         }
-    }
-    elsif ($wk eq 'still') {}
-    else {die 'wtwhack'.$wk}
-AC_sc: |
-    if ($wk eq 'gone') {
-        die "how delete a c $gk";
-        die "would have" if !$vl;
-        # most of these can re c if they get confused
-        # care later to grab /in, recreate holster, place
-        # or however we whatever
-        
-        lv.op.sc->{$gk} = 9;
-    }
-    elsif ($wk eq 'new') {
-        sayyl "$talk  !!!!  $v->{$gk} " unless !$nonnew;
-        
-        lv.pur.sc->{$gk} = 1;
-    }
-    elsif ($wk eq 'diff') {
-        sayyl "$talk  $v->{$gk} <--- $o->{$gk}";
-        
-        lv.pur.sc->{$gk} = 1;
-    }
-    elsif ($wk eq 'still') {}
-    else {die 'wtwhack'.$wk}
-    
-AC_V: |
-    my $iv = lv.do->{$gk};
-    my $ov = vl.do->{$gk};
-    ov.i && (ov.i eq $o->{$gk} || warn "no ovi ogk");
-    if ($wk eq 'gone') {
-        ov.rmnsc || die "no remin";
-        !$iv || die "gone had iv";
-        # ^ sc plumb its destruction
-        # can void if our c reframes by implicitly clearing 
-        saybl "$talk  is GONE!";
-        
-        lv.od.go->{$gk} = $ov;
-    }
-    elsif ($wk eq 'new') {
-        $iv || die;
-        # may like to grab the element before it
-        # like a curve continuing
-        saybl "$talk    new!" unless !$nonnew;
-        
-        lv.od.new->{$gk} = $iv;
-    }
-    elsif ($wk eq 'diff') {
-        if (iv.c eq ov.c) {
-            iv.sc eq ov.sc && die "same c fluc sc $gk";
-            my $in = @{iv.sc};
-            my $out = @{ov.sc};
-            if (@{iv.sc} > @{ov.sc}) {
-                saybl "$talk GROWs" if J.V > 2;
-                
-                lv.od.gr->{$gk} = $iv;
-            }
-            else {
-                warn "WTFF ".wdump 2,[$iv,$ov];
-            }
-        }
-        else {
-            saybl "$talk  REPLACES c";
-            
-            lv.od.over->{$gk} = $iv;
-        }
-    }
-    elsif ($wk eq 'still') {
-        lv.od.ll->{$gk} = $iv;
-    }
-    else {die 'wtwhack'};
-OSC: | # sheets of language up to da
-    my $at = {};
-    
-    at.t = C.t;
-    at.y.cv = C.y.cv;
-    sayre "OSC7 C.t no c_s" if !exists C.c.s;
-    at.c.s = C.c.s;
-    at.sc = {%{C.sc}};
-    delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
-    if (my $v = at.sc.J) { # J unifies -
-        at.sc.J = v.name;
-        
-        my $nV = v.El->{V.name}||{};
-        my $rv = nV.rv || {LIES=>"from v.name"};
-        
-        lv.do->{V.name} = $rv;
-        at.V->{V.name} = rv.i;
-    }
-    if ($C eq Y.il) { # / unifies  <
-        lv.voso = 1;
-        for my $ik (@{V.os}) {
-            my $iv = V.lv->{$ik};
-            sayre("Skip self in self") && next if C.sc.J && C.sc.J eq A.J;
-            lv.do->{$ik} = $iv;
-            at.V->{$ik} = iv.i;
-        }
-    }
-    at.sc.geo = ki(at.sc.geo) if at.sc.geo;
-    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
-    for my $up (qw'tag id') {
-        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
     }
     
-    $at;
-diffre: |
-    my $heq = sub {
-        my ($o,$t) = @_;
-        keys %$o == keys %$t && !grep{$o->{$_} ne $t->{$_}}keys %$o;
+    A.I.Ii = II.Ii;
+    
+    if (!$I) {
+        $I = A.I||die'basenoi';
+        Rw SNtl $I;
+    }
+    $A
+Galso: | # Gooso goner # 
+    G.h = sub {
+        my $am = shift;
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$am;
     };
-    my $toen = 1;
+    my %T = %{G.T||{}};
+    G.T = \%T;
+    {
+        package Wormhole;
+        use Tie::Hash;
+        use YAML::Syck;
+        our @ISA = qw(Tie::StdHash);
+        sub FETCH {
+            my ($s,$k) = @_;
+            $s->{$k} ||= do{ 
+            print "Loading w/$k ...\n" for 1..5;
+            LoadFile("w/$k") };
+        }
+    }
+    tie %T, 'Wormhole';
+Seven: | # ^^^^^^^^^^^^^^^^^ is Motion, v is Sevening
+    n Yesoo =>W
+    n Yools =>W
+    n Yuni =>W
+    n Yeosleep =>W
+    n Yosc =>W
     
-    if (my $di = Y.lo->{$k}) {
-        my $not;
-        if (keys %$di == 1 && di.diff) {
-            my $CC = V.tv->{$k};
-            if (!$CC) {
-                sayre "never heard of (V_tv) diff J.name : $k ";
-                return 1;
+    n Yod =>W
+    n Ydo =>W
+    n YdoV =>W
+    # edub:
+    #n Yex =>W
+    
+    n Yeomp =>W
+Yesoo: | # hoist in J most eo = Seve (above and below)
+    u allvse
+    n '','','%of:Mo'
+    n J =>69,<<''
+        J.most.eo = 'Sev';
+        # dosgeo v Yesui as O or so
+        # A pile v spiral
+        # hive of change
+Yex: |
+    u allacgts
+    
+    n ex =>''=>{s=><<''},{acgt=>'i,K,cv,av',nois=>'# c',code=>"Sev 1"}
+        # was Rw SNat $A $C $G $T $I $i $K $cv;
+        # baseism
+        my $c = 0+("0.".$cv);
+        my $Av = $av || A.cv;
+        my $sp = $av ? " Flav $av (no A.cv)" : "";
+        .
+        my $talk = "A.talk: $K$sp $Av > $c --- C.t ";
+        .
+        my $aim = {$K=>1};
+        if ($aim->{A.am}) {
+            $aim->{$_} = 1 for @{A.Isl||[]};
+            aim.I = 1;
+        }
+        .
+        my $yv = {};
+        # make K/cv/t -> cv/K/t
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            .
+            next if $k eq 'Ii';
+            next if $k eq 'ooI';
+            ref $ii eq 'HASH' || die "weird $k=$ii";
+            .
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
+                $yv->{$vc}->{$k} = $iii;
             }
-            for my $tk (keys %{di.diff}) {
-                if ($tk eq 'geo') {
-                    $not++ if 0 && !$heq->(C.sc.geo,CC.sc.geo);
-                    if ($not && 0) {
-                        sayyl "Geo was $not a difference in the thing";
-                        sayyl sjson(C.sc.geo);
-                        saybl sjson(CC.sc.geo);
+        }
+        .
+        # do stuff
+        my $vb; # in fractions
+        for my $vc (sort keys %$yv) {
+            my $is = $yv->{$vc};
+            my $s = {};
+            my $x = {};
+            my $xrd = [];
+            .
+            next if $vc <= $Av && $vc != $c;
+            next if $vc > $c;
+            .
+            if (0 && $K eq 'Sev') {
+                saybl "We $K - $vb -> $vc  ".join', ',
+                    map{"$_: ".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};
+            }
+            if ($vb && $vc > $vb && (
+                @{A.N} || @{A.mo.re->{$vb}||[]}
+                )) {
+                # sincing, wide order
+                # various others want to be around for only some of the process...
+                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V > 1;
+                T.Z->{$vb} = 1;
+                A.cv = $vb; # so we dont wind up to 6 on the way out of t
+                return T.not = 1;
+            }
+            for my $k (sort keys %$is) {
+                my $iii = $is->{$k};
+                .
+                next unless $aim->{$k} || (aim.I && A.Iso->{$k});
+                .
+                for my $ik (sort keys %$iii) {
+                    my $D = $iii->{$ik};
+                    .
+                    if (my $nk = D.sc.nk) {
+                        my $C = I.nF.C;
+                        next if !exists $C->{$nk};
+                        if (my $gk = D.sc.gk) {
+                            next if !exists $C->{$nk}->{$gk};
+                        }
                     }
-                }
-                elsif ($tk eq '') {
-                    $not++ unless ref C.c.s && C.sc.dige && C.sc.dige eq CC.sc.dige;
-                }
-                else {
-                    saybl "J.name $k has diffre: $tk";
-                    $not++;
+                    my $act;
+                    my $dont;
+                    if (D.sc.acgt && D.sc.act) {
+                        $act = 1;
+                        # acgtsubs can be defined at any cv
+                        # run themselves if act
+                        # usu. one receiver (Ci) and the rest scheme
+                        die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
+                        $dont = 1 if exists A.I->{D.t};
+                    }
+                    .
+                    # way or acgt-setuping-way
+                    unless ($dont) {
+                        my $paw = join"_",'',$k,$vc,D.t;
+                        $paw =~ s/\W//g;
+                        Rw $paw $A $C $G $T $__D:D;
+                    }
+                    # most tiny ticks
+                    # this ind is all flywheel
+                    # it's a kind of unity that wants to be a block of code like this
+                    # and #c
+                    my @is = A.s;
+                    #
+                    @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
+                    #
+                    unless (@is) {
+                        sayre("Skip D.t") if A.J.V > 1;
+                        next;
+                    }
+                    if ($act) {
+                        push @$xrd, [$k,$ik];
+                        my $Ds = $x->{$k}->{$ik} ||= {};
+                        Ds.D = $D;
+                        Ds.is = \@is;
+                        D.sc.its = @is;
+                        # pin down poles
+                        #I.cv = $vc;
+                        #I.vb = $vb;
+                        # draw curvles as spirals done
+                    }
+                    .
+                    # TreeD
+                    $s->{$k}->{$vc}->{$ik} = $D;
                 }
             }
-        }
-        else {
-            $not = 1;
-        }
-        $toen = 0 if !$not;
-    }
-    if (!$toen) {
-        if (my $JJ = C.sc.J) {
-            my $ta = V.ta->{$k};
-            if (my $nV = JJ.El->{V.name}) {
-                my $iv = nV.rv;
-                my $oi = ta.V->{V.name};
-                if ($oi ne iv.i) {
-                    $toen = 1;
-                    #sayyl "J.name  $k   about JJ.name: $toen \n"
-                    #.($toen&&" ^ iv.i\n | $oi");
+            my $se = Rw TreeD $s $scby=gro
+                if A.J.V > 1 && keys %$s;
+            $c == 0.1 ? saygr $se : say $se if $se;
+            .
+            for my $kik (@$xrd) {
+                my ($k,$ik) = @$kik;
+                my $Ds = $x->{$k}->{$ik};
+                my $D = Ds.D;
+                for my $s (@{Ds.is}) {
+                    D.sc.acgt eq 's'||die "nonacgts".wdump $D;
+                    exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
+                    .
+                    I.d&D.t,$s;
+                    .
+                    I.acted and I.d&acted,$s;
+                    .
+                    if (my $ut = T.ut) {
+                        if (ut.matchTd) {
+                            my $d = s.d || die "confuse";
+                            d.od.s.T.q->{d.e.k} ||= $d;
+                            d.od.s.T.m->{d.e.k} ||= $d
+                                unless delete(T.noTd)
+                                    && sayre("un Noted d.e.k: d.path");
+                        }
+                        else { die"utrowhat ".wdump 2, $ut }
+                    }
+                    .
+                    # schools of many fish (not upcv if !@is)
+                    $vb ||= $vc if D.sc.v;
+                    .
+                    last if T.not || T.whack;
                 }
+                delete T.ut;
+                last if T.not || T.whack;
             }
-            else {
-               sayre "no El V.name on JJ.name";
-            }
+            .
+            return if T.not;  # will &z, oseve
+            return if delete T.whack;
         }
-    }
-    $toen
-     
+    
+    # y
+    
 
