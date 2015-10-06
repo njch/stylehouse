@@ -386,10 +386,6 @@ KnowTime: | # dome props
             next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
             .
-            if (0 && $K eq 'Sev') {
-                saybl "We $K - $vb -> $vc  ".join', ',
-                    map{"$_: ".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};
-            }
             if ($wasSubtle) {
                 undef $wasSubtle;
                 $vb = $vc;
@@ -404,16 +400,42 @@ KnowTime: | # dome props
                 A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
+            # pin down poles
+            I.cv = $vc;
+            I.vb = $vb;
+            # draw curvles as spirals done
+            .
             my $nonSubtle;
             for my $k (sort keys %$is) {
                 my $iii = $is->{$k};
-                .
+                I.k = $k;
                 next unless $aim->{$k} || (aim.I && A.Iso->{$k});
                 $nonSubtle = 1 unless A.Subtle && A.Subtle->{$k};
-                .
+                I.d&carebowl,$s,$iii,$x,$xrd;
+            }
+            .
+            my $se = Rw TreeD $s $scby=gro if A.J.V > 1 && keys %$s;
+            $c == 0.1 ? saygr $se : say $se if $se;
+            .
+            die if I.cv ne $vc;
+            die if I.vb ne $vb;
+            my $o;
+            o.vc = $vc;
+            o.vb = $vb;
+            I.d&exood,$o,$x,$xrd;
+            $vc = o.vc;
+            $vb = o.vb;
+            if (!$nonSubtle) {
+                $wasSubtle = 1;
+            }
+            return if T.not;  # will &z, oseve
+            return if delete T.whack;
+        }
+    
+    J.V = 1;
+    n carebowl =>''=><<'',{l=>'#c',acgt=>'s,iii,x,xrd'}
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
-                    .
                     if (my $nk = D.sc.nk) {
                         my $C = I.nF.C;
                         next if !exists $C->{$nk};
@@ -431,10 +453,9 @@ KnowTime: | # dome props
                         die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
                         $dont = 1 if exists A.I->{D.t};
                     }
-                    .
                     # way or acgt-setuping-way
                     unless ($dont) {
-                        my $paw = join"_",'',$k,$vc,D.t;
+                        my $paw = join"_",'',I.k,I.cv,D.t;
                         $paw =~ s/\W//g;
                         Rw $paw $A $C $G $T $__D:D;
                     }
@@ -443,31 +464,19 @@ KnowTime: | # dome props
                     # it's a kind of unity that wants to be a block of code like this
                     # and c
                     my @is = A.s;
-                    #
                     @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
-                    #
                     @is || next;
-                    .
                     if ($act) {
-                        push @$xrd, [$k,$ik];
-                        my $Ds = $x->{$k}->{$ik} ||= {};
+                        push @$xrd, [I.k,$ik];
+                        my $Ds = $x->{I.k}->{$ik} ||= {};
                         Ds.D = $D;
                         Ds.is = \@is;
                         D.sc.its = @is;
-                        # pin down poles
-                        #I.cv = $vc;
-                        #I.vb = $vb;
-                        # draw curvles as spirals done
                     }
-                    .
                     # TreeD
-                    $s->{$k}->{$vc}->{$ik} = $D;
+                    $s->{I.k}->{I.cv}->{$ik} = $D;
                 }
-            }
-            my $se = Rw TreeD $s $scby=gro
-                if A.J.V > 1 && keys %$s;
-            $c == 0.1 ? saygr $se : say $se if $se;
-            .
+    n exeood =>''=><<'',{l=>'#c',acgt=>'o,x,xrd'}
             for my $kik (@$xrd) {
                 my ($k,$ik) = @$kik;
                 my $Ds = $x->{$k}->{$ik};
@@ -491,23 +500,14 @@ KnowTime: | # dome props
                     }
                     .
                     # schools of many fish (not upcv if !@is)
-                    $vb ||= $vc if D.sc.v;
+                    o.vb ||= o.vc if D.sc.v;
                     .
                     last if T.not || T.whack;
                 }
                 delete T.ut;
                 last if T.not || T.whack;
             }
-            .
-            if (!$nonSubtle) {
-                $wasSubtle = 1;
-                $vb = $vc;
-            }
-            .
-            return if T.not;  # will &z, oseve
-            return if delete T.whack;
-        }
-    
+
     # y
 Indulator: | # Wain spinality
     # not allcode since uCons blank qq cone & then thing
