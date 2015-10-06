@@ -36,7 +36,6 @@ Modulator: |
     n Wrinkles =>W
     n Jing =>W
     n Jong =>W
-
 unThaw: |
     0&&
     n NotStuff =>''=>{s=><<''},{code=>'Mo 29'}
@@ -331,45 +330,4 @@ lum: |
         my $fs = ($spc / 0.02) * 4;
         C.sc.fs = $fs if $fs < 9;
         C.y.spc = $spc;
-Jndi: | # read, delete, create J in its A.jr
-    u allvse
-    
-    n '','','%of:Mo'
-    
-    # resolve,<<''
-    n J =>431,<<''
-        my $f = A.jr&J;
-        my $j = C.sc.J;
-        ref $j && ref $f && ($j eq $f || die ".sc J dif $f $j");
-        # should T.at so vis, substrate insecting
-        C.c.J = T.at.J = $f if $f && ref $f && !f.dead;
-    
-    n X =>432,<<''
-        my $J = C.sc.J;
-        sayre "DELING J.name".ki$C;
-        $J || die "X no J";
-        ref $J || die "Nofound $J  C.t   C.y.cv";
-        $X eq $J || die "noovewr X  C.c.X ne $J";
-        A.jr&J,$J,9;
-        J.dead = 1;
-        # SNat bail, we have balin by now so hole in space this time
-        T.not = 1;
-    
-    n J =>433,<<''
-        return if ref $J;
-        $J = Rw Jto $name:J;
-        ref $J || die 'watt'.$J;
-        if (exists C.c.pi) {
-            J.Jiter = A.J; # erse rev
-            J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};
-        }
-        # til the I train shows up:
-        J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;
-        J.A.Indo = 2;
-        C.c.s ||= 'Wildy';
-        # 
-        sayyl "J33   Made J.name" unless J.Jiter;
-        T.at.J = $J;
-        A.jr&J,$J; # sc, c, and on sphere
-        die "noovewr   C.c.J ne $J" if ref C.c.J && C.c.J ne $J;
 
