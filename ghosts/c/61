@@ -55,22 +55,22 @@ Run: |
     'Jto=Jtt';
     
     my $cb = sub {
-        my $now = hitime;
-        my $gap = $now - G.lastout;
-        if ($gap < 2) {
-            sayre "slowlaned" for 1..7;
-            sleep 3;
-            return;
-        }
-        Rw Many;    
-        G.lastout = $now;
+        Rw Top;
     };
     #Rw recur $d=8 $cb;
     $cb->();
     sayyl "YEP";
-    $cb->();
-    sayyl "YEPE";
     exit;
+Top: |
+    my $now = hitime;
+    my $gap = $now - G.lastout;
+    if ($gap < 2) {
+        sayre "slowlaned" for 1..7;
+        sleep 3;
+        return;
+    }
+    Rw Many;    
+    G.lastout = $now;
 Many: |
     $G || die;
     # The Beatles - Martha My Dear

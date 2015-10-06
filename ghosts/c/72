@@ -179,7 +179,7 @@ Yex: |
                     @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
                     #
                     unless (@is) {
-                        sayre("Skip D.t") if A.J.V;
+                        sayre("Skip D.t") if A.J.V > 1;
                         next;
                     }
                     if ($act) {
@@ -214,12 +214,13 @@ Yex: |
                     .
                     I.acted and I.d&acted,$s;
                     .
-                    if (my $ut = delete T.ut) {
+                    if (my $ut = T.ut) {
                         if (ut.matchTd) {
-                            unless (delete T.noTd) {
-                                s.d.od || die "matchd root: OOgie";
-                                s.d.od.s.T.m = 1;
-                            }
+                            my $d = s.d || die "confuse";
+                            d.od.s.T.q->{d.e.k} ||= $d;
+                            d.od.s.T.m->{d.e.k} ||= $d
+                                unless delete(T.noTd)
+                                    && sayre("un Noted d.e.k: d.path");
                         }
                         else { die"utrowhat ".wdump 2, $ut }
                     }
@@ -229,6 +230,7 @@ Yex: |
                     .
                     last if T.not || T.whack;
                 }
+                delete T.ut;
                 last if T.not || T.whack;
             }
             .
@@ -281,7 +283,6 @@ Yex: |
                 my $up = $d;
                 my $last = $up;
                 my $i = 0;
-                #sayre "INZifs: ".wdump 5, $d;
                 while ($up) {
                     $i++ > 8 && die "LAST WANDERS";
                     $arg->{up.e.lk} = up.e.k;
@@ -314,20 +315,20 @@ Yex: |
                 d.weig ||= Q.weig;
                 d.path ||= $path;
                 if (d.weig > Q.weig) {
-                    say "Later $path outweighed by d.path (Q.weig < d.weig)";
+                    say "Later $path  Q.weig < d.weig  d.path";
                     next;
                 }
                 elsif (d.path ne $path) {
-                    say "Moreo $path ............. d.path (Q.weig < d.weig)";
+                    say "Moreo $path  Q.weig > d.weig  d.path";
                     d.weig = Q.weig;
                     d.path = $path;
                 }
                 push @is, $arg;
+                T.ut.matchTd = 1;
                 # Z/D wad of multiplicity
                 # D args $d and arg, $nk/$ov etc things plucked
                 # they must stay present to later Ds as well
                 # stored T.d path subtlates
-                d.od.s.T.q->{d.e.k} ||= $d;
                 # 6 ^
                 sayre "arg.talk  ".ki $arg if A.J.V;
             }

@@ -52,8 +52,6 @@ Yod: |
             d.o = $o;
             if (ref $v eq 'HASH') {
                 my $wt = Rw wtfch $Jb:v $Yb:o;
-                #my $nonnew = keys %{wt.gone} 
-                #|| keys %{wt.diff} || keys %{wt.still};
                 for my $wk (qw'gone diff new still') {
                     for my $gk (sort keys %{$wt->{$wk}}) {
                         my $dd = {};
@@ -66,14 +64,14 @@ Yod: |
                 }
             }
             else {
-                my $wk = !$vl ? "new" : !exists $at->{$nk} ? "gone" : "diff";
+                my $wk = !$vl ? "new"
+                    : !exists $at->{$nk} ? "gone"
+                    : "diff";
                 my $dd = {%$d};
                 d.T.d.s =
                     dd.T.d->{$wk} = $dd;
             }
             T.d->{$nk} = $d;
-            #next unless C.t eq 'Car';
-            #sayyl "TDback $nk: ".wdump 7,$d;
         }
 
 
@@ -84,40 +82,22 @@ Yod: |
             my $d = T.d->{$nk};
             for my $gk (sort keys %{d.T.d}) {
                 my $dd = d.T.d->{$gk};
-                if (dd.T.q) {
-                    #say "Answer ans $nk $gk";
+                if (dd.T.m) {
+                    say "Answers  $nk $gk";
+                }
+                elsif (dd.T.q) {
+                    say "probly $nk $gk";
                 }
                 else {
-                    sayre "An $nk $gk: ". wdump 4, $dd;
+                    sayre "Unclear $nk $gk:  ". ki $dd;
                 }
             }
             return unless C.t eq 'sto';
         }
     
-coiTd: |
-    my $Q;
-    Q.path = [split '/', C.sc.Td];
-    die if @{Q.path} < 1;
-    
-    my $form = C.sc.Tdform || 'nk/gk/wk';
-    Q.atar = [split '/', $form];
-    @{Q.atar} = @{Q.atar}[0 .. (@{Q.path}-1)];
-    
-    Q.onpa = [split '/', 'T/d'];
-    Q.caps = {map{$_=>1}split',',C.sc.Tdarge} if C.sc.Tdarge;
-    # like rg but from $s
-    C.sc.sr && die "already sr";
-    C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
-    for my $sr (split ',', C.sc.sr) {
-        die "mixo $sr" if $sr =~ /\W/;
-        push @$ara, "    my \$".$sr." = s\.$sr;";
-    }
-    C.sc.Ifs.Td = $Q;
-    
 Ydo: |
     u allovse
     n '','','%of:Sev'
-    J.V = 1;
     # tee to 4 sc ^T.* to T looks compinkgk 6
     # this alternating data, which brings in middle terms
     # all T.d is a divable rhythm like:
@@ -132,12 +112,11 @@ Ydo: |
     # other flywheel stuff for lv.op button presses
     # wk = still is fine (usu)
     
-    #n tsnew =>4311=><<'',{Td=>'t/s/new'}
-    #    lv.op.t = 1;
+    n tsnew =>4311=><<'',{Td=>'t/s/new'}
+        lv.op.t = 1;
     
     n ysnew =>4312=><<'',{Td=>'y/s/new'}
         lv.op.y = 1;
-    
     
     n cnew =>4321=><<'',{Td=>'c/*/new'}
         die "how inject a c $gk" if $vl;
@@ -176,18 +155,16 @@ YdoV: |
     
     # without being a match prepare the Vacuumosd iv/ov
     n Vsup =>434=><<'',{Td=>'V/*/*'}
-        saybl "$talk       $s    s.d ";
         d.iv = lv.do->{$gk};
         d.ov = vl.do->{$gk};
-        d.ov.i && (d.ov.i eq $o || warn "no ovi ogk  d.ov.i eq $o");
+        d.ov && d.ov.i && (d.ov.i eq $o || warn "no ovi ogk  d.ov.i eq $o");
         T.noTd = 1;
     
     n Vnew =>4341=><<'',{Td=>'V/*/new',Tdarge=>'iv,ov'}
-        saybl "$talk           s.d ";
+        saybl "$talk           s.d   ov";
         # may like to grab the element before it
         # like a curve continuing
         $iv || sayre("News cap no iv: ".wdump $s) && return;
-        sayyl "$talk  ($iv) NEW!";
         lv.od.new->{$gk} = $iv;
     
     n Vgone =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
@@ -198,11 +175,10 @@ YdoV: |
         lv.od.go->{$gk} = $ov;
     
     n Vdiff =>4343=><<'',{Td=>'V/*/diff',Tdarge=>'iv,ov'}
-        saybl "$talk           s.d ";
         if (iv.c eq ov.c) {
             iv.sc eq ov.sc && do {
-            sayre "SAME FLUC SC $gk";
-            die "same c fluc sc $gk";
+                sayre "SAME FLUC SC $gk";
+                die "same c fluc sc $gk";
             };
             my $in = @{iv.sc};
             my $out = @{ov.sc};

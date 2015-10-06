@@ -129,7 +129,24 @@ ym/concoi: |
             }
             
             if (C.sc.Td) {
-                Rw coiTd $C $ara;
+                my $Q;
+                Q.path = [split '/', C.sc.Td];
+                die if @{Q.path} < 1;
+
+                my $form = C.sc.Tdform || 'nk/gk/wk';
+                Q.atar = [split '/', $form];
+                @{Q.atar} = @{Q.atar}[0 .. (@{Q.path}-1)];
+
+                Q.onpa = [split '/', 'T/d'];
+                Q.caps = {map{$_=>1}split',',C.sc.Tdarge} if C.sc.Tdarge;
+                # like rg but from $s
+                C.sc.sr && die "already sr";
+                C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
+                for my $sr (split ',', C.sc.sr) {
+                    die "mixo $sr" if $sr =~ /\W/;
+                    push @$ara, "    my \$".$sr." = s\.$sr;";
+                }
+                C.sc.Ifs.Td = $Q;
             }
             
             if (my $v = C.sc.rg) {
