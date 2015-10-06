@@ -185,21 +185,22 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/C/C
-    cole: 
+    carebowl: 
       c: 
         el: 1
-        s: "A.I.cole = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $h;\n    (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)\n        if $s =~ /^(\\w)(\\w)(\\w)(\\w)?$/ || die \"not cole: $s\";\n    if (defined h.a) {\n       # do an rgba(255,255,255,1)\n       for my $k (qw'r g b a') {\n           my $e = $h->{$k};\n           $e = \"$e$e\" if length $e == 1; # out of 255\n           $h->{$k} = hex $e;\n       }\n       h.la = sprintf '%.2f', h.la / 255; # out of 1\n       return \"rgba(h.r,h.g,h.b,h.a)\";\n    }\n    else {\n       return sprintf \"#%s%s%s\", h.r, h.g, h.b;\n    }\n};\n"
+        s: "A.I.carebowl = sub {\n    my ($A,$C,$G,$T,$s,$iii,$x,$xrd) = @_;\n    my $I = A.I;\n    for my $ik (sort keys %$iii) {\n        my $D = $iii->{$ik};\n        if (my $nk = D.sc.nk) {\n            my $C = I.nF.C;\n            next if !exists $C->{$nk};\n            if (my $gk = D.sc.gk) {\n                next if !exists $C->{$nk}->{$gk};\n            }\n        }\n        my $act;\n        my $dont;\n        if (D.sc.acgt && D.sc.act) {\n            $act = 1;\n            # acgtsubs can be defined at any cv\n            # run themselves if act\n            # usu. one receiver (Ci) and the rest scheme\n            die \"D.t .act gets... D.sc.act\" if D.sc.act ne '1';\n            $dont = 1 if exists A.I->{D.t};\n        }\n        # way or acgt-setuping-way\n        unless ($dont) {\n            my $paw = join\"_\",'',I.k,I.cv,D.t;\n            $paw =~ s/\\W//g;\n            Rw $paw $A $C $G $T $__D:D;\n        }\n        # most tiny ticks\n        # this ind is all flywheel\n        # it's a kind of unity that wants to be a block of code like this\n        # and c\n        my @is = A.s;\n        @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;\n        @is || next;\n        if ($act) {\n            push @$xrd, [I.k,$ik];\n            my $Ds = $x->{I.k}->{$ik} ||= {};\n            Ds.D = $D;\n            Ds.is = \\@is;\n            D.sc.its = @is;\n        }\n        # TreeD\n        $s->{I.k}->{I.cv}->{$ik} = $D;\n    }\n};\n"
       sc: 
-        acgt: s
-        args: A,C,G,T,s
+        acgt: s,iii,x,xrd
+        args: A,C,G,T,s,iii,x,xrd
         code: I 1
-        dige: '157893e22213'
-        gro: Oscgrin
-      t: cole
+        dige: 6a65d4535276
+        gro: KnowTime
+        l: "#c"
+      t: carebowl
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
+        p: qq/KnowTime/KnowTime
     convog: 
       c: 
         el: 1
@@ -230,37 +231,38 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/IStuff/IStuff
-    empc: 
-      c: 
-        el: 1
-        s: "A.I.empc = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    $s .= 'em' if $s !~ /(%|em|px)/;\n    $s =~ s/^-?0em$/0%/;\n    $s\n};\n"
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        code: I 1
-        dige: 96a6574c1cad
-        gro: Oscgrin
-      t: empc
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
     ex: 
       c: 
         el: 1
-        s: "A.I.ex = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($i,$K,$cv,$av) = @M;\n    my $I = A.I;\n    # was Rw SNat $A $C $G $T $I $i $K $cv;\n    # baseism\n    my $c = 0+(\"0.\".$cv);\n    my $Av = $av || A.cv;\n    my $sp = $av ? \" Flav $av (no A.cv)\" : \"\";\n    \n    my $talk = \"A.talk: $K$sp $Av > $c --- C.t \";\n    \n    my $aim = {$K=>1};\n    if ($aim->{A.am}) {\n        $aim->{$_} = 1 for @{A.Isl||[]};\n        aim.I = 1;\n    }\n    \n    my $yv = {};\n    # make K/cv/t -> cv/K/t\n    for my $k (sort keys %$i) {\n        my $ii = $i->{$k};\n    \n        next if $k eq 'Ii';\n        next if $k eq 'ooI';\n        ref $ii eq 'HASH' || die \"weird $k=$ii\";\n    \n        for my $vc (sort keys %$ii) {\n            my $iii = $ii->{$vc};\n            die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;\n            $yv->{$vc}->{$k} = $iii;\n        }\n    }\n    \n    # do stuff\n    my $vb; # in fractions\n    for my $vc (sort keys %$yv) {\n        my $is = $yv->{$vc};\n        my $s = {};\n        my $x = {};\n        my $xrd = [];\n    \n        next if $vc <= $Av && $vc != $c;\n        next if $vc > $c;\n    \n        if (0 && $K eq 'Sev') {\n            saybl \"We $K - $vb -> $vc  \".join', ',\n                map{\"$_: \".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};\n        }\n        if ($vb && $vc > $vb && (\n            @{A.N} || @{A.mo.re->{$vb}||[]}\n            )) {\n            # sincing, wide order\n            # various others want to be around for only some of the process...\n            sayre \"$vb -> $vc  bump, \". @{A.N} if A.J.V;\n            T.Z->{$vb} = 1;\n            A.cv = $vb; # so we dont wind up to 6 on the way out of t\n            return T.not = 1;\n        }\n        for my $k (sort keys %$is) {\n            my $iii = $is->{$k};\n    \n            next unless $aim->{$k} || (aim.I && A.Iso->{$k});\n    \n            for my $ik (sort keys %$iii) {\n                my $D = $iii->{$ik};\n    \n                if (my $nk = D.sc.nk) {\n                    my $C = I.nF.C;\n                    next if !exists $C->{$nk};\n                    if (my $gk = D.sc.gk) {\n                        next if !exists $C->{$nk}->{$gk};\n                    }\n                }\n                my $act;\n                my $dont;\n                if (D.sc.acgt && D.sc.act) {\n                    $act = 1;\n                    # acgtsubs can be defined at any cv\n                    # run themselves if act\n                    # usu. one receiver (Ci) and the rest scheme\n                    die \"D.t .act gets... D.sc.act\" if D.sc.act ne '1';\n                    $dont = 1 if exists A.I->{D.t};\n                }\n    \n                # way or acgt-setuping-way\n                unless ($dont) {\n                    my $paw = join\"_\",'',$k,$vc,D.t;\n                    $paw =~ s/\\W//g;\n                    Rw $paw $A $C $G $T $__D:D;\n                }\n                # most tiny ticks\n                # this ind is all flywheel\n                # it's a kind of unity that wants to be a block of code like this\n                # and c\n                my @is = A.s;\n                #\n                @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;\n                #\n                @is || next;\n    \n                if ($act) {\n                    push @$xrd, [$k,$ik];\n                    my $Ds = $x->{$k}->{$ik} ||= {};\n                    Ds.D = $D;\n                    Ds.is = \\@is;\n                    D.sc.its = @is;\n                    # pin down poles\n                    #I.cv = $vc;\n                    #I.vb = $vb;\n                    # draw curvles as spirals done\n                }\n    \n                # TreeD\n                $s->{$k}->{$vc}->{$ik} = $D;\n            }\n        }\n        my $se = Rw TreeD $s $scby=gro\n            if A.J.V > 1 && keys %$s;\n        $c == 0.1 ? saygr $se : say $se if $se;\n    \n        for my $kik (@$xrd) {\n            my ($k,$ik) = @$kik;\n            my $Ds = $x->{$k}->{$ik};\n            my $D = Ds.D;\n            for my $s (@{Ds.is}) {\n                D.sc.acgt eq 's'||die \"nonacgts\".wdump $D;\n                exists A.I->{D.t}||die \"acgtI D.t not up: \".wdump A.I;\n    \n                I.d&D.t,$s;\n    \n                I.acted and I.d&acted,$s;\n    \n                if (my $ut = T.ut) {\n                    if (ut.matchTd) {\n                        my $d = s.d || die \"confuse\";\n                        d.od.s.T.q->{d.e.k} ||= $d;\n                        d.od.s.T.m->{d.e.k} ||= $d\n                            unless delete(T.noTd);\n                    }\n                    else { die\"utrowhat \".wdump 2, $ut }\n                }\n    \n                # schools of many fish (not upcv if !@is)\n                $vb ||= $vc if D.sc.v;\n    \n                last if T.not || T.whack;\n            }\n            delete T.ut;\n            last if T.not || T.whack;\n        }\n    \n        return if T.not;  # will &z, oseve\n        return if delete T.whack;\n    }\n};\n"
+        s: "A.I.ex = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($i,$K,$cv,$av) = @M;\n    my $I = A.I;\n    # was Rw SNat $A $C $G $T $I $i $K $cv;\n    # baseism\n    my $c = 0+(\"0.\".$cv);\n    my $Av = $av || A.cv;\n    my $sp = $av ? \" Flav $av (no A.cv)\" : \"\";\n    \n    my $talk = \"A.talk: $K$sp $Av > $c --- C.t \";\n    \n    my $aim = {$K=>1};\n    if ($aim->{A.am}) {\n        $aim->{$_} = 1 for @{A.Isl||[]};\n        aim.I = 1;\n    }\n    \n    my $yv = {};\n    # make K/cv/t -> cv/K/t\n    for my $k (sort keys %$i) {\n        my $ii = $i->{$k};\n    \n        next if $k eq 'Ii';\n        next if $k eq 'ooI';\n        ref $ii eq 'HASH' || die \"weird $k=$ii\";\n    \n        for my $vc (sort keys %$ii) {\n            my $iii = $ii->{$vc};\n            die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;\n            $yv->{$vc}->{$k} = $iii;\n        }\n    }\n    \n    # do stuff\n    my $vb; # in fractions\n    my $wasSubtle;\n    for my $vc (sort keys %$yv) {\n        my $is = $yv->{$vc};\n        my $s = {};\n        my $x = {};\n        my $xrd = [];\n    \n        next if $vc <= $Av && $vc != $c;\n        next if $vc > $c;\n    \n        if ($wasSubtle) {\n            undef $wasSubtle;\n            $vb = $vc;\n        }\n        if ($vb && $vc > $vb && (\n            @{A.N} || @{A.mo.re->{$vb}||[]}\n            )) {\n            # sincing, wide order\n            # various others want to be around for only some of the process...\n            sayre \"$vb -> $vc  bump, \". @{A.N} if A.J.V;\n            T.Z->{$vb} = 1;\n            A.cv = $vb; # so we dont wind up to 6 on the way out of t\n            return T.not = 1;\n        }\n        # pin down poles\n        I.cv = $vc;\n        I.vb = $vb;\n        # draw curvles as spirals done\n    \n        my $nonSubtle;\n        for my $k (sort keys %$is) {\n            my $iii = $is->{$k};\n            I.k = $k;\n            next unless $aim->{$k} || (aim.I && A.Iso->{$k});\n            $nonSubtle = 1 unless A.Subtle && A.Subtle->{$k};\n            I.d&carebowl,$s,$iii,$x,$xrd;\n        }\n    \n        my $se = Rw TreeD $s $scby=gro if A.J.V > 1 && keys %$s;\n        $c == 0.1 ? saygr $se : say $se if $se;\n    \n        die if I.cv ne $vc;\n        die if I.vb ne $vb;\n        my $o;\n        o.vc = $vc;\n        o.vb = $vb;\n        I.d&exood,$o,$x,$xrd;\n        $vc = o.vc;\n        $vb = o.vb;\n        if (!$nonSubtle) {\n            $wasSubtle = 1;\n        }\n        return if T.not;  # will &z, oseve\n        return if delete T.whack;\n    }\n};\n"
       sc: 
         acgt: i,K,cv,av
         args: A,C,G,T,i,K,cv,av
         code: I 1
-        dige: 9f81bd65ce2d
-        gro: Indulator/KnowTime
+        dige: 8db5d84dd89e
+        gro: KnowTime
         nois: "#c"
       t: ex
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
-        p: qq/Indulator/Indulator/KnowTime/KnowTime
+        p: qq/KnowTime/KnowTime
+    exood: 
+      c: 
+        el: 1
+        s: "A.I.exood = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($o,$x,$xrd) = @M;\n    my $I = A.I;\n    for my $kik (@$xrd) {\n        my ($k,$ik) = @$kik;\n        my $Ds = $x->{$k}->{$ik};\n        my $D = Ds.D;\n        for my $s (@{Ds.is}) {\n            D.sc.acgt eq 's'||die \"nonacgts\".wdump $D;\n            exists A.I->{D.t}||die \"acgtI D.t not up: \".wdump A.I;\n    \n            I.d&D.t,$s;\n    \n            I.acted and I.d&acted,$s;\n    \n            if (my $ut = T.ut) {\n                if (ut.matchTd) {\n                    my $d = s.d || die \"confuse\";\n                    d.od.s.T.q->{d.e.k} ||= $d;\n                    d.od.s.T.m->{d.e.k} ||= $d\n                        unless delete(T.noTd);\n                }\n                else { die\"utrowhat \".wdump 2, $ut }\n            }\n    \n            # schools of many fish (not upcv if !@is)\n            o.vb ||= o.vc if D.sc.v;\n    \n            last if T.not || T.whack;\n        }\n        delete T.ut;\n        last if T.not || T.whack;\n    }\n};\n"
+      sc: 
+        acgt: o,x,xrd
+        args: A,C,G,T,o,x,xrd
+        code: I 1
+        dige: e888deef6747
+        gro: KnowTime
+        l: "#c"
+      t: exood
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/KnowTime/KnowTime
     flywheels: 
       c: 
         el: 1
@@ -336,21 +338,6 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yools/Yools
-    hsle: 
-      c: 
-        el: 1
-        s: "A.I.hsle = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my @m;\n    for ($s) {\n        @m = split ' ', $_;\n        last if @m == 3 || @m == 4;\n        @m = split /\\./, $_;\n        last if @m == 3 || @m == 4;\n        @m = split '', $_;\n        last if @m == 3 || @m == 4;\n        @m = ();\n    }\n    @m || die \"not hsle: $s\";\n    my $h;\n    (h.h, h.s, h.l, h.a) = map{0+(\"0.\".$_)}@m;\n    \n    h.h = h.h * 360 if h.h < 1;\n    \n    $h->{$_} = ($h->{$_}*100).'%' for 's','l';\n    \n    my $al = \", h.a\" if defined h.a;\n    \"hsl\".($al?'a':'').\"(h.h, h.s, h.l$al)\";\n};\n"
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        code: I 1
-        dige: 2acbf4d925d1
-        gro: Oscgrin
-      t: hsle
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
     iZu: 
       c: 
         el: 1
@@ -381,66 +368,6 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/C/C
-    mean: 
-      c: 
-        el: 1
-        s: "A.I.mean = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($to,$fro,$mix) = @M;\n    my $I = A.I;\n    $mix ||= 0.5;\n    my $yu = $fro - $to;\n    $yu = $yu * $mix;\n    $fro -= $yu;\n    $fro\n};\n"
-      sc: 
-        acgt: to,fro,mix
-        args: A,C,G,T,to,fro,mix
-        code: I 1
-        dige: f0f2e49791c4
-        gro: Oscgrin
-      t: mean
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
-    meat: 
-      c: 
-        el: 1
-        s: "A.I.meat = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($k,$v) = @M;\n    my $I = A.I;\n    my $f = $v;\n    my $mv = C.sc->{$k};\n    $f = I.d&mean,$f,$mv;\n    C.sc->{$k} = $f;\n};\n"
-      sc: 
-        acgt: k,v
-        args: A,C,G,T,k,v
-        code: I 1
-        dige: 9da249b6005f
-        gro: Oscgrin
-      t: meat
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
-    mksc: 
-      c: 
-        el: 1
-        s: "A.I.mksc = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $t = I.d&mos,C.c;\n    while(my($k,$v) = each %$t) {\n        C.sc.>$k = $v;\n    }\n    return;\n};\n"
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        code: I 1
-        dige: e4abcb2a3d3a
-        gro: Oscgrin
-      t: mksc
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
-    mos: 
-      c: 
-        el: 1
-        s: "A.I.mos = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my @t = split ',',$s;\n    for (@t) {\n        my ($k, $v) = split ':', $_;\n        $T.>$k = $v;\n    }\n};\n"
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        code: I 1
-        dige: 727d887d9be6
-        gro: Oscgrin
-      t: mos
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscgrin/Oscgrin
     moy: 
       c: 
         el: 1
@@ -676,13 +603,13 @@ I:
         args: A,C,G,T,K,cv,av
         code: I 1
         dige: 011ed841e14d
-        gro: Indulator/KnowTime
+        gro: KnowTime
         nois: "#c"
       t: t
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
-        p: qq/Indulator/Indulator/KnowTime/KnowTime
+        p: qq/KnowTime/KnowTime
     tlM: 
       c: 
         el: 1
@@ -1673,29 +1600,6 @@ Sev:
         cv: '0.2'
         cvt: 0.2	C.t
         p: qq/Seven/Seven/Yuni/Yuni
-    nspc_2: 
-      c: 
-        el: 1
-        s: "A.I.nspc_2 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $nspc = C.sc.nspc;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    my $J = C.sc.J;\n    my $squ = C.sc.yspc || J.d.y.spc;\n    my $ratio = $squ / $s;\n    my $sl = sprintf '%.2f', $ratio;\n    my $cl = 0.02;\n    my $max = C.sc.nspc_max || 1;\n    $sl = $max if $sl > $max;\n    if ($sl > 1+$cl || $sl < 1-$cl) {\n        C.sc.geo ? \n        C.sc.geo.scale = $sl\n        :\n        C.sc.tr.scale = $sl;\n    }\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 2
-        dige: b3fc99747561
-        gk: nspc
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scnspc
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scnspc
-      t: nspc_2
-      "y": 
-        cv: '0.2'
-        cvt: 0.2	C.t
-        p: qq/Oscapps/Oscapps
   "0.21": 
     dElvis_21: 
       c: 
@@ -1806,29 +1710,6 @@ Sev:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yuni/Yuni
-    geo_3: 
-      c: 
-        el: 1
-        s: "A.I.geo_3 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $geo = C.sc.geo;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    my $l = join ' ', map{0+$_} s.x, s.y, s.radial;\n    $l .= ' '.s.scale if s.scale;\n    #$l = \"a\".v.ab.\" $l\" if s.ab;\n    at.sc.geo = $l;\n    C.sc.ab = delete v.ab if v.ab;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 3
-        dige: 4dd8a23d1a4b
-        gk: geo
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scgeo
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scgeo
-      t: geo_3
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Oscapps/Oscapps
   "0.31": 
     tycsc_31: 
       c: 
@@ -2213,7 +2094,7 @@ Sev:
         dige: 1cf48f75fab8
         gk: 'Y'
         gro: Seven/Ydo
-        its: 8
+        its: 3
         nk: c
         rg: J,V,yk,yat,yta,ylv,yvl
         sr: d,o,v,talk,nk,gk,wk
@@ -2544,307 +2425,6 @@ Sev:
         cv: '0.49'
         cvt: 0.49	C.t
         p: qq/Seven/Seven/Yuni/Yuni
-  "0.5": 
-    Joint_5: 
-      c: 
-        el: 1
-        s: "A.I.Joint_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $Joint = C.sc.Joint;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # Something\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 83cdfc14e528
-        gk: Joint
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scJoint
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scJoint
-      t: Joint_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    at_5: 
-      c: 
-        el: 1
-        s: "A.I.at_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $at = C.sc.at;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    die \"inat\";\n    $s =~ /^(?:(\\S+):)?(\\S+)$/;\n    $at->{$1} = $2;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 1ad0abc1ac41
-        gk: at
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scat
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scat
-      t: at_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    atrp_5: 
-      c: 
-        el: 1
-        s: "A.I.atrp_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $atrp = C.sc.atrp;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    die \"heloarp\";\n    at.rp = $s;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 21e7b8e30b26
-        gk: atrp
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scatrp
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scatrp
-      t: atrp_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    canvas_5: 
-      c: 
-        el: 1
-        s: "A.I.canvas_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $canvas = C.sc.canvas;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.canvas = $s;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: dbdb91010e91
-        gk: canvas
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sccanvas
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sccanvas
-      t: canvas_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    id_5: 
-      c: 
-        el: 1
-        s: "A.I.id_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $id = C.sc.id;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.id = $s;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: b68fed62e23d
-        gk: id
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scid
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scid
-      t: id_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    ishtml_5: 
-      c: 
-        el: 1
-        s: "A.I.ishtml_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $ishtml = C.sc.ishtml;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.ishtml = 1;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: ff19739fd93b
-        gk: ishtml
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scishtml
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scishtml
-      t: ishtml_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    lp_5: 
-      c: 
-        el: 1
-        s: "A.I.lp_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $lp = C.sc.lp;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.ishtml = 1;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 852182b4d602
-        gk: lp
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sclp
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sclp
-      t: lp_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    origin_5: 
-      c: 
-        el: 1
-        s: "A.I.origin_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $origin = C.sc.origin;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # better than W via c pi and W\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 02a03034b7ec
-        gk: origin
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scorigin
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scorigin
-      t: origin_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    path_5: 
-      c: 
-        el: 1
-        s: "A.I.path_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $path = C.sc.path;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # to compuile J.ys\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 355c0845bebd
-        gk: path
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scpath
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scpath
-      t: path_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    pwar_5: 
-      c: 
-        el: 1
-        s: "A.I.pwar_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $pwar = C.sc.pwar;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # to suggest\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 69482278e36f
-        gk: pwar
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scpwar
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scpwar
-      t: pwar_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    tag_5: 
-      c: 
-        el: 1
-        s: "A.I.tag_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $tag = C.sc.tag;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.tag = $s;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: bbd59245c331
-        gk: tag
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sctag
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sctag
-      t: tag_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-    tt_5: 
-      c: 
-        el: 1
-        s: "A.I.tt_5 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $tt = C.sc.tt;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.title = $s;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 5
-        dige: 7b00646db057
-        gk: tt
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sctt
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sctt
-      t: tt_5
-      "y": 
-        cv: '0.5'
-        cvt: 0.5	C.t
-        p: qq/Oscapps/Oscapps
-  "0.51": 
-    type_51: 
-      c: 
-        el: 1
-        s: "A.I.type_51 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $type = C.sc.type;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.c.type = $s;\n    at.c.ishtml = 1;\n    at.c.title = undef;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 51
-        dige: 1696fa6277ca
-        gk: type
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sctype
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sctype
-      t: type_51
-      "y": 
-        cv: '0.51'
-        cvt: 0.51	C.t
-        p: qq/Oscapps/Oscapps
   "0.52": 
     OlOMP_52: 
       c: 
@@ -2867,54 +2447,6 @@ Sev:
         cv: '0.52'
         cvt: 0.52	C.t
         p: qq/Seven/Seven/Yeomp/Yeomp
-  "0.555": 
-    css_555: 
-      c: 
-        el: 1
-        s: "A.I.css_555 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $css = C.sc.css;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    $s = join ';', map{\"$_:$s->{$_}\"} \n        sort keys %$s if ref $s eq 'HASH';\n    for my $set (split ';', $s) {\n        my ($k,$s) = split ':', $set;\n        at.sc.css->{$k} = $s;\n    }\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 555
-        dige: 0f452231ca9d
-        gk: css
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sccss
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sccss
-      t: css_555
-      "y": 
-        cv: '0.555'
-        cvt: 0.555	C.t
-        p: qq/Oscapps/Oscapps
-  "0.556": 
-    src_556: 
-      c: 
-        el: 1
-        s: "A.I.src_556 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $src = C.sc.src;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.src = $s\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 556
-        dige: 6f1969dce2ab
-        gk: src
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scsrc
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scsrc
-      t: src_556
-      "y": 
-        cv: '0.556'
-        cvt: 0.556	C.t
-        p: qq/Oscapps/Oscapps
   "0.58": 
     Y_58: 
       c: 
@@ -2937,74 +2469,3 @@ Sev:
         cv: '0.58'
         cvt: 0.58	C.t
         p: qq/Seven/Seven/Yuni/Yuni
-    idly_58: 
-      c: 
-        el: 1
-        s: "A.I.idly_58 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $idly = C.sc.idly;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    my $id = mkuid();\n    my $qual = '';\n    at.c.id && sayre \"Blessing C.t with $qual ($id -> at.c.id)\";\n    at.c.id = $id;\n    #J.idyl->($J, $id, $j);\n    sayre \"idly C.t  J.name J.r    \".ki C.sc;\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 58
-        dige: a8b5f03d033e
-        gk: idly
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scidly
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scidly
-      t: idly_58
-      "y": 
-        cv: '0.58'
-        cvt: 0.58	C.t
-        p: qq/Oscapps/Oscapps
-  "0.584": 
-    cm_584: 
-      c: 
-        el: 1
-        s: "A.I.cm_584 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $cm = C.sc.cm;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    my $wt = {id=>at.id, value=>at.s};\n    at.id || die\"noid\".wdump 2,$at;\n    at.dig = C.sc.dig || die \"no diggy\";\n    at.sc.cod = $wt;\n    at.s = '';\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 584
-        dige: fb09e6e1798d
-        gk: cm
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: sccm
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: sccm
-      t: cm_584
-      "y": 
-        cv: '0.584'
-        cvt: 0.584	C.t
-        p: qq/Oscapps/Oscapps
-  "0.59": 
-    enid_59: 
-      c: 
-        el: 1
-        s: "A.I.enid_59 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $enid = C.sc.enid;\n    my $J = C.sc.J;\n    my $V = C.sc.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    at.id = $s;\n    at.c.nobody = 1; \n    at.t = j.l;\n    #say \"enid j.l ::::  C.sc.at.sc.ab   \".k2 $at;\n    at.sc.ab = '100';\n    \n    if (my $J = C.sc.J) {\n        die \"DIffnoiw\";\n        my $aj = C.sc.J.oJ.A.W->[-1];\n        my $l = aj.c->[0];\n        if (!aj.sent && ref $l) {\n            my ($t,$y,$c,$sc) = @$l;\n            if ($t eq j.l) {\n                die if c.id ne at.id;\n                %$sc = (%$sc,%{at.sc});\n                at._aux = 1;\n            }\n        }\n    }\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Sev 59
-        dige: 8d3807c39d74
-        gk: enid
-        gkiss: s
-        gro: Oscapps
-        nk: sc
-        nov: 1
-        nv: scenid
-        rg: J,V,yk,yat,yta,ylv,yvl
-        v: scenid
-      t: enid_59
-      "y": 
-        cv: '0.59'
-        cvt: 0.59	C.t
-        p: qq/Oscapps/Oscapps
