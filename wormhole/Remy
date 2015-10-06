@@ -502,6 +502,22 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/EatSlide/EatSlide
+    scIfs: 
+      c: 
+        el: 1
+        s: "A.I.scIfs = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my @is;\n    for my $k (keys %$s) {\n        my $Q = $s->{$k};\n        my $tot = @{Q.path};\n        my $star = grep{$_ eq '*'} @{Q.path};\n        Q.weig = $tot - $star;\n    \n        my $in = [{s=>{T=>$T}}];\n        my $pi = 0;\n        for my $pin (@{Q.path}) {\n            for my $pTn (@{Q.onpa}) {\n                I.d&pass,$pTn,$in;\n            }\n            I.d&pass,$pin,$in;\n            @$in = map {\n                if (_.d) { # nonroot pattern mutable (into/on/off origin s)\n                    _.od ||= _.d;\n                    if (my $su = _.od.s.T.q->{_.e.k}) {\n                        $_ = $su;\n                        # deeper knowish\n                    }\n                }\n                _.d = $_;\n                _.e.lk = Q.atar->[$pi]||die\"no idea what $pi is\";\n                $_\n            } grep{defined} @$in;\n            $pi++;\n            last if !@$in;\n        }\n    \n        for my $d (@$in) {\n            # now inmost, .od leads above (without pTn inway)\n            # and each d.e.lk calls it something $nk $gk and $wk\n                # and avoid less specific after more specific\n                # or just avoid repeats\n                #   \n                # shaky but index\n                # the fish is shaking but on the deck\n            my $arg;\n            my $up = $d;\n            my $last = $up;\n            my $i = 0;\n            while ($up) {\n                $i++ > 8 && die \"LAST WANDERS\";\n                $arg->{up.e.lk} = up.e.k;\n                if (Q.caps) {\n                    for my $k (grep{Q.caps->{$_}} keys %$up) {\n                        $arg->{$k} ||= $up->{$k};\n                    }\n                }\n                $last = $up;\n                $up = up.od;\n                if ($up eq $last) {\n                    sayre \"D.t D.sc.Td  refers to itself as .od: \".wdump $last;\n                    last;\n                }\n            }\n    \n            arg.d = $d;\n    \n            for my $k (keys %{d.s}) {\n                next if $k eq 'T';\n                $arg->{$k} && die \"Already $k arg of \".wdump[$d,$arg];\n                $arg->{$k} = d.s->{$k};\n            }\n    \n            my $fo = \"    \";\n            $fo = \"444 \" if keys %{d.s.T && d.s.T.q || {}};\n            my $path = \"@{Q.path}\";\n            arg.talk = \"C.t $fo($k:$path) C.t C.y.cv\"\n                .\":\\t\".join '/', map{$arg->{$_}} @{Q.atar};\n            d.weig ||= Q.weig;\n            d.path ||= $path;\n            if (d.weig > Q.weig) {\n                say \"Later $path  Q.weig < d.weig  d.path\";\n                next;\n            }\n            elsif (d.path ne $path) {\n                say \"Moreo $path  Q.weig > d.weig  d.path\";\n                d.weig = Q.weig;\n                d.path = $path;\n            }\n            push @is, $arg;\n            T.ut.matchTd = 1;\n            # Z/D wad of multiplicity\n            # D args $d and arg, $nk/$ov etc things plucked\n            # they must stay present to later Ds as well\n            # stored T.d path subtlates\n            # 6 ^\n            sayre \"arg.talk  \".ki $arg if A.J.V;\n        }\n    }\n    @is\n};\n"
+      sc: 
+        acgt: s
+        als: "#c"
+        args: A,C,G,T,s
+        code: I 1
+        dige: 145d806b4302
+        gro: Seven/Yex
+      t: scIfs
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Seven/Seven/Yex/Yex
     scyvle: 
       c: 
         el: 1
@@ -1594,6 +1610,22 @@ S:
         p: qq/Seven/Seven/Yeosleep/Yeosleep
 Sev: 
   "0.1": 
+    ex: 
+      c: 
+        el: 1
+        s: "A.I.ex = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($i,$K,$cv,$av) = @M;\n    my $I = A.I;\n    # was Rw SNat $A $C $G $T $I $i $K $cv;\n    # baseism\n    my $c = 0+(\"0.\".$cv);\n    my $Av = $av || A.cv;\n    my $sp = $av ? \" Flav $av (no A.cv)\" : \"\";\n    \n    my $talk = \"A.talk: $K$sp $Av > $c --- C.t \";\n    \n    my $aim = {$K=>1};\n    if ($aim->{A.am}) {\n        $aim->{$_} = 1 for @{A.Isl||[]};\n        aim.I = 1;\n    }\n    \n    my $yv = {};\n    # make K/cv/t -> cv/K/t\n    for my $k (sort keys %$i) {\n        my $ii = $i->{$k};\n    \n        next if $k eq 'Ii';\n        next if $k eq 'ooI';\n        ref $ii eq 'HASH' || die \"weird $k=$ii\";\n    \n        for my $vc (sort keys %$ii) {\n            my $iii = $ii->{$vc};\n            die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;\n            $yv->{$vc}->{$k} = $iii;\n        }\n    }\n    \n    # do stuff\n    my $vb; # in fractions\n    for my $vc (sort keys %$yv) {\n        my $is = $yv->{$vc};\n        my $s = {};\n        my $x = {};\n        my $xrd = [];\n    \n        next if $vc <= $Av && $vc != $c;\n        next if $vc > $c;\n    \n        if (0 && $K eq 'Sev') {\n            saybl \"We $K - $vb -> $vc  \".join', ',\n                map{\"$_: \".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};\n        }\n        if ($vb && $vc > $vb && (\n            @{A.N} || @{A.mo.re->{$vb}||[]}\n            )) {\n            # sincing, wide order\n            # various others want to be around for only some of the process...\n            sayre \"$vb -> $vc  bump, \". @{A.N} if A.J.V > 1;\n            T.Z->{$vb} = 1;\n            A.cv = $vb; # so we dont wind up to 6 on the way out of t\n            return T.not = 1;\n        }\n        for my $k (sort keys %$is) {\n            my $iii = $is->{$k};\n    \n            next unless $aim->{$k} || (aim.I && A.Iso->{$k});\n    \n            for my $ik (sort keys %$iii) {\n                my $D = $iii->{$ik};\n    \n                if (my $nk = D.sc.nk) {\n                    my $C = I.nF.C;\n                    next if !exists $C->{$nk};\n                    if (my $gk = D.sc.gk) {\n                        next if !exists $C->{$nk}->{$gk};\n                    }\n                }\n                my $act;\n                my $dont;\n                if (D.sc.acgt && D.sc.act) {\n                    $act = 1;\n                    # acgtsubs can be defined at any cv\n                    # run themselves if act\n                    # usu. one receiver (Ci) and the rest scheme\n                    die \"D.t .act gets... D.sc.act\" if D.sc.act ne '1';\n                    $dont = 1 if exists A.I->{D.t};\n                }\n    \n                # way or acgt-setuping-way\n                unless ($dont) {\n                    my $paw = join\"_\",'',$k,$vc,D.t;\n                    $paw =~ s/\\W//g;\n                    Rw $paw $A $C $G $T $__D:D;\n                }\n                # most tiny ticks\n                # this ind is all flywheel\n                # it's a kind of unity that wants to be a block of code like this\n                # and #c\n                my @is = A.s;\n                #\n                @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;\n                #\n                unless (@is) {\n                    sayre(\"Skip D.t\") if A.J.V > 1;\n                    next;\n                }\n                if ($act) {\n                    push @$xrd, [$k,$ik];\n                    my $Ds = $x->{$k}->{$ik} ||= {};\n                    Ds.D = $D;\n                    Ds.is = \\@is;\n                    D.sc.its = @is;\n                    # pin down poles\n                    #I.cv = $vc;\n                    #I.vb = $vb;\n                    # draw curvles as spirals done\n                }\n    \n                # TreeD\n                $s->{$k}->{$vc}->{$ik} = $D;\n            }\n        }\n        my $se = Rw TreeD $s $scby=gro\n            if A.J.V > 1 && keys %$s;\n        $c == 0.1 ? saygr $se : say $se if $se;\n    \n        for my $kik (@$xrd) {\n            my ($k,$ik) = @$kik;\n            my $Ds = $x->{$k}->{$ik};\n            my $D = Ds.D;\n            for my $s (@{Ds.is}) {\n                D.sc.acgt eq 's'||die \"nonacgts\".wdump $D;\n                exists A.I->{D.t}||die \"acgtI D.t not up: \".wdump A.I;\n    \n                I.d&D.t,$s;\n    \n                I.acted and I.d&acted,$s;\n    \n                if (my $ut = T.ut) {\n                    if (ut.matchTd) {\n                        my $d = s.d || die \"confuse\";\n                        d.od.s.T.q->{d.e.k} ||= $d;\n                        d.od.s.T.m->{d.e.k} ||= $d\n                            unless delete(T.noTd)\n                                && sayre(\"un Noted d.e.k: d.path\");\n                    }\n                    else { die\"utrowhat \".wdump 2, $ut }\n                }\n    \n                # schools of many fish (not upcv if !@is)\n                $vb ||= $vc if D.sc.v;\n    \n                last if T.not || T.whack;\n            }\n            delete T.ut;\n            last if T.not || T.whack;\n        }\n    \n        return if T.not;  # will &z, oseve\n        return if delete T.whack;\n    }\n};\n"
+      sc: 
+        acgt: i,K,cv,av
+        args: A,C,G,T,i,K,cv,av
+        code: Sev 1
+        dige: 6ea3757c71c8
+        gro: Seven/Yex
+        nois: "# c"
+      t: ex
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Seven/Seven/Yex/Yex
     hup: 
       c: 
         el: 1
@@ -1747,7 +1779,7 @@ Sev:
         code: Sev 41
         dige: 88fca617bd46
         gk: 'Y'
-        gro: Seven/Yeoodle
+        gro: Seven/Yeomp
         nk: c
         rg: J,V,yk,yat,yta,ylv,yvl
         v: cY
@@ -1755,28 +1787,568 @@ Sev:
       "y": 
         cv: '0.41'
         cvt: 0.41	C.t
-        p: qq/Seven/Seven/Yeoodle/Yeoodle
+        p: qq/Seven/Seven/Yeomp/Yeomp
   "0.42": 
-    acttle_42: 
+    mkTd_42: 
       c: 
         el: 1
-        s: "A.I.acttle_42 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    for my $nk (qw't y c sc V') {\n        my $v = $at->{$nk};\n        my $o = $ta->{$nk};\n        I.d&heq,$v,$o && next;\n        Rw ACT $J $A $I $C $k $Y $V $at $ta $lv $vl $nk $v $o;\n        # wants to be embedded A.t&A,3-4 per T.nk or so\n        # ex flywheel arbiter more into T\n    }\n};\n"
+        s: "A.I.mkTd_42 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    for my $nk (qw't y c sc V') {\n        my $v = $at->{$nk};\n        my $o = $ta->{$nk};\n        I.d&heq,$v,$o && next;\n        my $d;\n        d.v = $v;\n        d.o = $o;\n        if (ref $v eq 'HASH') {\n            my $wt = Rw wtfch $Jb:v $Yb:o;\n            for my $wk (qw'gone diff new still') {\n                for my $gk (sort keys %{$wt->{$wk}}) {\n                    my $dd = {};\n                    dd.v = $at->{$nk}->{$gk};\n                    dd.o = $ta->{$nk}->{$gk};\n                    d.T.d->{$gk} && die \"C.t: $nk,$gk ($v) rep.\";\n                    d.T.d->{$gk} =\n                        dd.T.d->{$wk} = $dd;\n                }\n            }\n        }\n        else {\n            my $wk = !$vl ? \"new\"\n                : !exists $at->{$nk} ? \"gone\"\n                : \"diff\";\n            my $dd = {%$d};\n            d.T.d.s =\n                dd.T.d->{$wk} = $dd;\n        }\n        T.d->{$nk} = $d;\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Sev 42
-        dige: 068d4cf10e0e
+        dige: f77aa396964a
         gk: 'Y'
-        gro: Seven/Yeoodle
+        gro: Seven/Yod
         nk: c
         rg: J,V,yk,yat,yta,ylv,yvl
         v: cY
-      t: acttle_42
+      t: mkTd_42
       "y": 
         cv: '0.42'
         cvt: 0.42	C.t
-        p: qq/Seven/Seven/Yeoodle/Yeoodle
+        p: qq/Seven/Seven/Yod/Yod
+  "0.4311": 
+    tsnew_4311: 
+      c: 
+        el: 1
+        s: "A.I.tsnew_4311 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        $lv->{op}->{t} = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - t
+              - s
+              - new
+        Td: t/s/new
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4311
+        dige: e62d357c3863
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: tsnew_4311
+      "y": 
+        cv: '0.4311'
+        cvt: 0.4311	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4312": 
+    ysnew_4312: 
+      c: 
+        el: 1
+        s: "A.I.ysnew_4312 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        $lv->{op}->{y} = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - 'y'
+              - s
+              - new
+        Td: y/s/new
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4312
+        dige: ead8dc25d207
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: ysnew_4312
+      "y": 
+        cv: '0.4312'
+        cvt: 0.4312	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4321": 
+    cgone_4321: 
+      c: 
+        el: 1
+        s: "A.I.cgone_4321 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        die \"how delete a c $gk\";\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - c
+              - "*"
+              - gone
+        Td: c/*/gone
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4321
+        dige: a64a7002f49a
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: cgone_4321
+      "y": 
+        cv: '0.4321'
+        cvt: 0.4321	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+    cnew_4321: 
+      c: 
+        el: 1
+        s: "A.I.cnew_4321 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        die \"how inject a c $gk\" if $vl;\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - c
+              - "*"
+              - new
+        Td: c/*/new
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4321
+        dige: cd2c3e3a25a0
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: cnew_4321
+      "y": 
+        cv: '0.4321'
+        cvt: 0.4321	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4323": 
+    csdiff_4323: 
+      c: 
+        el: 1
+        s: "A.I.csdiff_4323 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        $lv->{pur}->{c}->{$gk} = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - c
+              - s
+              - diff
+        Td: c/s/diff
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4323
+        dige: 5eb0b8fd3e49
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: csdiff_4323
+      "y": 
+        cv: '0.4323'
+        cvt: 0.4323	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4324": 
+    cdiff_4324: 
+      c: 
+        el: 1
+        s: "A.I.cdiff_4324 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        warn \"how to c dif $gk\".slim(30,$v).\" <--- \".slim(30,$o);\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - c
+              - "*"
+              - diff
+        Td: c/*/diff
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4324
+        dige: f20cd564f6f9
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: cdiff_4324
+      "y": 
+        cv: '0.4324'
+        cvt: 0.4324	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4331": 
+    scnew_4331: 
+      c: 
+        el: 1
+        s: "A.I.scnew_4331 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        $lv->{pur}->{sc}->{$gk} = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - sc
+              - "*"
+              - new
+        Td: sc/*/new
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4331
+        dige: 1cf48f75fab8
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: scnew_4331
+      "y": 
+        cv: '0.4331'
+        cvt: 0.4331	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4332": 
+    scgone_4332: 
+      c: 
+        el: 1
+        s: "A.I.scgone_4332 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        die \"how delete a sc $gk\";\n        $lv->{op}->{sc}->{$gk} = 9;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - sc
+              - "*"
+              - gone
+        Td: sc/*/gone
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4332
+        dige: 5b2b1bd79bba
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: scgone_4332
+      "y": 
+        cv: '0.4332'
+        cvt: 0.4332	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.4333": 
+    scdiff_4333: 
+      c: 
+        el: 1
+        s: "A.I.scdiff_4333 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        sayyl \"$C->{t} $nk $gk $wk: \".slim(30,$v).\" <--- \".slim(30,$o);\n        saybl \"YEP\";\n        $lv->{pur}->{sc}->{$gk} = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - sc
+              - "*"
+              - diff
+        Td: sc/*/diff
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4333
+        dige: 003e52722bc6
+        gk: 'Y'
+        gro: Seven/Ydo
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: scdiff_4333
+      "y": 
+        cv: '0.4333'
+        cvt: 0.4333	C.t
+        p: qq/Seven/Seven/Ydo/Ydo
+  "0.434": 
+    Vsup_434: 
+      c: 
+        el: 1
+        s: "A.I.Vsup_434 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    d.iv = lv.do->{$gk};\n    d.ov = vl.do->{$gk};\n    d.ov && d.ov.i && (d.ov.i eq $o || warn \"no ovi ogk  d.ov.i eq $o\");\n    T.noTd = 1;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            onpa: 
+              - T
+              - d
+            path: 
+              - V
+              - "*"
+              - "*"
+        Td: V/*/*
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 434
+        dige: e8bc951574b5
+        gk: 'Y'
+        gro: Seven/YdoV
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk
+        v: cY
+      t: Vsup_434
+      "y": 
+        cv: '0.434'
+        cvt: 0.434	C.t
+        p: qq/Seven/Seven/YdoV/YdoV
+  "0.4341": 
+    Vnew_4341: 
+      c: 
+        el: 1
+        s: "A.I.Vnew_4341 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    saybl \"$talk           s.d   ov\";\n    # may like to grab the element before it\n    # like a curve continuing\n    $iv || sayre(\"News cap no iv: \".wdump $s) && return;\n    lv.od.new->{$gk} = $iv;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            caps: 
+              iv: 1
+              ov: 1
+            onpa: 
+              - T
+              - d
+            path: 
+              - V
+              - "*"
+              - new
+        Td: V/*/new
+        Tdarge: iv,ov
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4341
+        dige: 5dea218634ac
+        gk: 'Y'
+        gro: Seven/YdoV
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk,iv,ov
+        v: cY
+      t: Vnew_4341
+      "y": 
+        cv: '0.4341'
+        cvt: 0.4341	C.t
+        p: qq/Seven/Seven/YdoV/YdoV
+  "0.4342": 
+    Vgone_4342: 
+      c: 
+        el: 1
+        s: "A.I.Vgone_4342 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    ov.rmnsc || die \"no remin\";\n    !$iv || die \"gone had iv\";\n    # ^ sc plumb its destruction\n    # can void if our c reframes by implicitly clearing\n    lv.od.go->{$gk} = $ov;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            caps: 
+              iv: 1
+              ov: 1
+            onpa: 
+              - T
+              - d
+            path: 
+              - V
+              - "*"
+              - gone
+        Td: V/*/gone
+        Tdarge: iv,ov
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4342
+        dige: 0acf2b9646a9
+        gk: 'Y'
+        gro: Seven/YdoV
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk,iv,ov
+        v: cY
+      t: Vgone_4342
+      "y": 
+        cv: '0.4342'
+        cvt: 0.4342	C.t
+        p: qq/Seven/Seven/YdoV/YdoV
+  "0.4343": 
+    Vdiff_4343: 
+      c: 
+        el: 1
+        s: "A.I.Vdiff_4343 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (iv.c eq ov.c) {\n        iv.sc eq ov.sc && do {\n            sayre \"SAME FLUC SC $gk\";\n            die \"same c fluc sc $gk\";\n        };\n        my $in = @{iv.sc};\n        my $out = @{ov.sc};\n        if (@{iv.sc} > @{ov.sc}) {\n            saybl \"$talk GROWS\" if J.V > 2;\n            lv.od.gr->{$gk} = $iv;\n        }\n        else {\n            warn \"WTFF \".wdump 2,[$iv,$ov];\n        }\n    }\n    else {\n        saybl \"$talk  REPLACES c\";\n        lv.od.over->{$gk} = $iv;\n    }\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            caps: 
+              iv: 1
+              ov: 1
+            onpa: 
+              - T
+              - d
+            path: 
+              - V
+              - "*"
+              - diff
+        Td: V/*/diff
+        Tdarge: iv,ov
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4343
+        dige: f4732e59d8fa
+        gk: 'Y'
+        gro: Seven/YdoV
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk,iv,ov
+        v: cY
+      t: Vdiff_4343
+      "y": 
+        cv: '0.4343'
+        cvt: 0.4343	C.t
+        p: qq/Seven/Seven/YdoV/YdoV
+  "0.4344": 
+    Vstill_4344: 
+      c: 
+        el: 1
+        s: "A.I.Vstill_4344 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    say \"Wegode: \".wdump 2, $d;\n    lv.od.ll->{$gk} = $iv;\n};\n"
+      sc: 
+        Ifs: 
+          Td: 
+            atar: 
+              - nk
+              - gk
+              - wk
+            caps: 
+              iv: 1
+              ov: 1
+            onpa: 
+              - T
+              - d
+            path: 
+              - V
+              - "*"
+              - still
+        Td: V/*/still
+        Tdarge: iv,ov
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 4344
+        dige: 9c978f52d233
+        gk: 'Y'
+        gro: Seven/YdoV
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        sr: d,o,v,talk,nk,gk,wk,iv,ov
+        v: cY
+      t: Vstill_4344
+      "y": 
+        cv: '0.4344'
+        cvt: 0.4344	C.t
+        p: qq/Seven/Seven/YdoV/YdoV
+  "0.48": 
+    doTd_48: 
+      c: 
+        el: 1
+        s: "A.I.doTd_48 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # pick T bones, dot Is\n    # a 9 for the Td (ill 8) consciousness rendezvou\n    for my $nk (sort keys %{T.d}) {\n        my $d = T.d->{$nk};\n        for my $gk (sort keys %{d.T.d}) {\n            my $dd = d.T.d->{$gk};\n            if (dd.T.m) {\n                say \"Answers  $nk $gk\";\n            }\n            elsif (dd.T.q) {\n                say \"probly $nk $gk\";\n            }\n            else {\n                sayre \"Unclear $nk $gk:  \". ki $dd;\n            }\n        }\n    }\n    delete T.d;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 48
+        dige: 9ee32a7fd13b
+        gk: 'Y'
+        gro: Seven/Yod
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: doTd_48
+      "y": 
+        cv: '0.48'
+        cvt: 0.48	C.t
+        p: qq/Seven/Seven/Yod/Yod
   "0.49": 
     Y_49: 
       c: 
