@@ -433,82 +433,80 @@ KnowTime: | # dome props
         }
     
     n carebowl =>''=><<'',{l=>'#c',acgt=>'s,iii,x,xrd'}
-                for my $ik (sort keys %$iii) {
-                    my $D = $iii->{$ik};
-                    if (my $nk = D.sc.nk) {
-                        my $C = I.nF.C;
-                        next if !exists $C->{$nk};
-                        if (my $gk = D.sc.gk) {
-                            next if !exists $C->{$nk}->{$gk};
-                        }
-                    }
-                    my $act;
-                    my $dont;
-                    if (D.sc.acgt && D.sc.act) {
-                        $act = 1;
-                        # acgtsubs can be defined at any cv
-                        # run themselves if act
-                        # usu. one receiver (Ci) and the rest scheme
-                        die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
-                        $dont = 1 if exists A.I->{D.t};
-                    }
-                    # way or acgt-setuping-way
-                    unless ($dont) {
-                        my $paw = join"_",'',I.k,I.cv,D.t;
-                        $paw =~ s/\W//g;
-                        Rw $paw $A $C $G $T $__D:D;
-                    }
-                    # most tiny ticks
-                    # this ind is all flywheel
-                    # it's a kind of unity that wants to be a block of code like this
-                    # and c
-                    my @is = A.s;
-                    @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
-                    @is || next;
-                    if ($act) {
-                        push @$xrd, [I.k,$ik];
-                        my $Ds = $x->{I.k}->{$ik} ||= {};
-                        Ds.D = $D;
-                        Ds.is = \@is;
-                        D.sc.its = @is;
-                    }
-                    # TreeD
-                    $s->{I.k}->{I.cv}->{$ik} = $D;
+        for my $ik (sort keys %$iii) {
+            my $D = $iii->{$ik};
+            if (my $nk = D.sc.nk) {
+                my $C = I.nF.C;
+                next if !exists $C->{$nk};
+                if (my $gk = D.sc.gk) {
+                    next if !exists $C->{$nk}->{$gk};
                 }
+            }
+            my $act;
+            my $dont;
+            if (D.sc.acgt && D.sc.act) {
+                $act = 1;
+                # acgtsubs can be defined at any cv
+                # run themselves if act
+                # usu. one receiver (Ci) and the rest scheme
+                die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
+                $dont = 1 if exists A.I->{D.t};
+            }
+            # way or acgt-setuping-way
+            unless ($dont) {
+                my $paw = join"_",'',I.k,I.cv,D.t;
+                $paw =~ s/\W//g;
+                Rw $paw $A $C $G $T $__D:D;
+            }
+            # most tiny ticks
+            # this ind is all flywheel
+            # it's a kind of unity that wants to be a block of code like this
+            # and c
+            my @is = A.s;
+            @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
+            @is || next;
+            if ($act) {
+                push @$xrd, [I.k,$ik];
+                my $Ds = $x->{I.k}->{$ik} ||= {};
+                Ds.D = $D;
+                Ds.is = \@is;
+                D.sc.its = @is;
+            }
+            # TreeD
+            $s->{I.k}->{I.cv}->{$ik} = $D;
+        }
+    
     n exood =>''=><<'',{l=>'#c',acgt=>'o,x,xrd'}
-            for my $kik (@$xrd) {
-                my ($k,$ik) = @$kik;
-                my $Ds = $x->{$k}->{$ik};
-                my $D = Ds.D;
-                for my $s (@{Ds.is}) {
-                    D.sc.acgt eq 's'||die "nonacgts".wdump $D;
-                    exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
-                    .
-                    I.d&D.t,$s;
-                    .
-                    I.acted and I.d&acted,$s;
-                    .
-                    if (my $ut = T.ut) {
-                        if (ut.matchTd) {
-                            my $d = s.d || die "confuse";
-                            d.od.s.T.q->{d.e.k} ||= $d;
-                            d.od.s.T.m->{d.e.k} ||= $d
-                                unless delete(T.noTd);
-                        }
-                        else { die"utrowhat ".wdump 2, $ut }
+        for my $kik (@$xrd) {
+            my ($k,$ik) = @$kik;
+            my $Ds = $x->{$k}->{$ik};
+            my $D = Ds.D;
+            for my $s (@{Ds.is}) {
+                D.sc.acgt eq 's'||die "nonacgts".wdump $D;
+                exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
+                .
+                I.d&D.t,$s;
+                .
+                I.acted and I.d&acted,$s;
+                .
+                if (my $ut = T.ut) {
+                    if (ut.matchTd) {
+                        my $d = s.d || die "confuse";
+                        d.od.s.T.q->{d.e.k} ||= $d;
+                        d.od.s.T.m->{d.e.k} ||= $d
+                            unless delete(T.noTd);
                     }
-                    .
-                    # schools of many fish (not upcv if !@is)
-                    o.vb ||= o.vc if D.sc.v;
-                    .
-                    last if T.not || T.whack;
+                    else { die"utrowhat ".wdump 2, $ut }
                 }
-                delete T.ut;
+                .
+                # schools of many fish (not upcv if !@is)
+                o.vb ||= o.vc if D.sc.v;
+                .
                 last if T.not || T.whack;
             }
-    
-    n exrtyrrrrrrrrrrrood =>''=><<'',{l=>'#c',acgt=>'o,x,xrd'}
-            # synapse ##
+            delete T.ut;
+            last if T.not || T.whack;
+        }
     
     # y
 Indulator: | # Wain spinality
