@@ -505,12 +505,12 @@ I:
     scIfs: 
       c: 
         el: 1
-        s: "A.I.scIfs = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my @is;\n    for my $k (keys %$s) {\n        my $Q = $s->{$k};\n        my $tot = @{Q.path};\n        my $star = grep{$_ eq '*'} @{Q.path};\n        Q.weig = $tot - $star;\n    \n        my $in = [{s=>{T=>$T}}];\n        my $pi = 0;\n        for my $pin (@{Q.path}) {\n            for my $pTn (@{Q.onpa}) {\n                I.d&pass,$pTn,$in;\n            }\n            I.d&pass,$pin,$in;\n            @$in = map {\n                if (_.d) { # nonroot pattern mutable (into/on/off origin s)\n                    _.od ||= _.d;\n                    if (my $su = _.od.s.T.q->{_.e.k}) {\n                        $_ = $su;\n                        # deeper knowish\n                    }\n                }\n                _.d = $_;\n                _.e.lk = Q.atar->[$pi]||die\"no idea what $pi is\";\n                $_\n            } grep{defined} @$in;\n            $pi++;\n            last if !@$in;\n        }\n    \n        for my $d (@$in) {\n            # now inmost, .od leads above (without pTn inway)\n            # and each d.e.lk calls it something $nk $gk and $wk\n                # and avoid less specific after more specific\n                # or just avoid repeats\n                #   \n                # shaky but index\n                # the fish is shaking but on the deck\n            my $arg;\n            my $up = $d;\n            my $last = $up;\n            my $i = 0;\n            while ($up) {\n                $i++ > 8 && die \"LAST WANDERS\";\n                $arg->{up.e.lk} = up.e.k;\n                if (Q.caps) {\n                    for my $k (grep{Q.caps->{$_}} keys %$up) {\n                        $arg->{$k} ||= $up->{$k};\n                    }\n                }\n                $last = $up;\n                $up = up.od;\n                if ($up eq $last) {\n                    sayre \"D.t D.sc.Td  refers to itself as .od: \".wdump $last;\n                    last;\n                }\n            }\n    \n            arg.d = $d;\n    \n            for my $k (keys %{d.s}) {\n                next if $k eq 'T';\n                $arg->{$k} && die \"Already $k arg of \".wdump[$d,$arg];\n                $arg->{$k} = d.s->{$k};\n            }\n    \n            my $path = \"@{Q.path}\";\n            arg.talk = \"C.t  ($k:$path) C.t C.y.cv\"\n                .\":\\t\".join '/', map{$arg->{$_}} @{Q.atar};\n            d.weig ||= Q.weig;\n            d.path ||= $path;\n            if (d.weig > Q.weig) {\n                say \"Later $path  Q.weig < d.weig  d.path\" if A.J.V > 1;\n                next;\n            }\n            elsif (d.path ne $path) {\n                say \"Moreo $path  Q.weig > d.weig  d.path\" if A.J.V > 1;\n                d.weig = Q.weig;\n                d.path = $path;\n            }\n            push @is, $arg;\n            T.ut.matchTd = 1;\n            # Z/D wad of multiplicity\n            # D args $d and arg, $nk/$ov etc things plucked\n            # they must stay present to later Ds as well\n            # stored T.d path subtlates\n            # 6 ^\n            sayre(ki($arg)) if A.J.V;\n        }\n    }\n    @is\n};\n"
+        s: "A.I.scIfs = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my @is;\n    for my $k (keys %$s) {\n        my $Q = $s->{$k};\n        my $tot = @{Q.path};\n        my $star = grep{$_ eq '*'} @{Q.path};\n        Q.weig = $tot - $star;\n    \n        my $in = [{s=>{T=>$T}}];\n        my $pi = 0;\n        for my $pin (@{Q.path}) {\n            for my $pTn (@{Q.onpa}) {\n                I.d&pass,$pTn,$in;\n            }\n            I.d&pass,$pin,$in;\n            @$in = map {\n                if (_.d) { # nonroot pattern mutable (into/on/off origin s)\n                    _.od ||= _.d;\n                    if (my $su = _.od.s.T.q->{_.e.k}) {\n                        $_ = $su;\n                        # deeper knowish\n                    }\n                }\n                _.d = $_;\n                _.e.lk = Q.atar->[$pi]||die\"no idea what $pi is\";\n                $_\n            } grep{defined} @$in;\n            $pi++;\n            last if !@$in;\n        }\n    \n        for my $d (@$in) {\n            # now inmost, .od leads above (without pTn inway)\n            # and each d.e.lk calls it something $nk $gk and $wk\n                # and avoid less specific after more specific\n                # or just avoid repeats\n                #   \n                # shaky but index\n                # the fish is shaking but on the deck\n            my $arg;\n            my $up = $d;\n            my $last = $up;\n            my $i = 0;\n            while ($up) {\n                $i++ > 8 && die \"LAST WANDERS\";\n                $arg->{up.e.lk} = up.e.k;\n                if (Q.caps) {\n                    for my $k (grep{Q.caps->{$_}} keys %$up) {\n                        $arg->{$k} ||= $up->{$k};\n                    }\n                }\n                $last = $up;\n                $up = up.od;\n                if ($up eq $last) {\n                    sayre \"D.t D.sc.Td  refers to itself as .od: \".wdump $last;\n                    last;\n                }\n            }\n    \n            arg.d = $d;\n    \n            for my $k (keys %{d.s}) {\n                next if $k eq 'T';\n                $arg->{$k} && die \"Already $k arg of \".wdump[$d,$arg];\n                $arg->{$k} = d.s->{$k};\n            }\n    \n            my $path = \"@{Q.path}\";\n            arg.talk = \"C.t  ($k:$path) C.t C.y.cv\"\n                .\":\\t\".join '/', map{$arg->{$_}} @{Q.atar};\n            d.weig ||= Q.weig;\n            d.path ||= $path;\n            if (d.weig > Q.weig) {\n                say \"Later $path  Q.weig < d.weig  d.path\" if A.J.V > 1;\n                next;\n            }\n            elsif (d.path ne $path) {\n                say \"Moreo $path  Q.weig > d.weig  d.path\" if A.J.V > 1;\n                d.weig = Q.weig;\n                d.path = $path;\n            }\n            push @is, $arg;\n            T.ut.matchTd = 1;\n            # Z/D wad of multiplicity\n            # D args $d and arg, $nk/$ov etc things plucked\n            # they must stay present to later Ds as well\n            # stored T.d path subtlates\n            # 6 ^\n            sayre(ki($arg)) if A.J.V > 1;\n        }\n    }\n    @is\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: f3bb367f674f
+        dige: d4abcdd6b56a
         gro: Seven/Yools
       t: scIfs
       "y": 
@@ -1427,13 +1427,13 @@ Mo:
     J_6: 
       c: 
         el: 1
-        s: "A.I.J_6 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $talk = \"T A.cv A.ztime J.most.J.name       J.name\";\n    Atime(6) || return do {\n        say\"$talk   SKive!\" if A.J.V;\n        T.nose = 1;\n    };\n    sayyl \"J6 ! A.talk\";\n    A.t&J,7,1;\n};\n"
+        s: "A.I.J_6 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $talk = \"T A.cv A.ztime J.most.J.name       J.name\";\n    Atime(6) || return do {\n        say\"$talk   SKive!\" if A.J.V;\n        T.nose = 1;\n    };\n    sayyl \"J6 ! C.t C.y.cv A.talk\";\n    A.t&J,7,1;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 6
-        dige: 0085734cd4d8
+        dige: 6ac895e850d1
         gk: J
         gro: Modulator/Jing/Jumps
         its: 1
@@ -1444,26 +1444,6 @@ Mo:
         cv: '0.6'
         cvt: 0.6	C.t
         p: qq/Modulator/Modulator/Jing/Jing/Jumps/Jumps
-  "0.69": 
-    J_69: 
-      c: 
-        el: 1
-        s: "A.I.J_69 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    J.most.eo = 'Sev';\n    # dosgeo v Yesui as O or so\n    # A pile v spiral\n    # hive of change\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        code: Mo 69
-        dige: 23dc8a380d2a
-        gk: J
-        gro: Seven/Yesoo
-        nk: c
-        v: cJ
-      t: J_69
-      "y": 
-        cv: '0.69'
-        cvt: 0.69	C.t
-        p: qq/Seven/Seven/Yesoo/Yesoo
   "0.7": 
     J_7: 
       c: 
