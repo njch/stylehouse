@@ -136,12 +136,10 @@ KowTime: | # current eel
                 A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
-            my $nonSubtle;
             for my $k (sort keys %$is) {
                 my $iii = $is->{$k};
                 .
                 next unless $aim->{$k} || (aim.I && A.Iso->{$k});
-                $nonSubtle = 1 unless A.Subtle && A.Subtle->{$k};
                 .
                 for my $ik (sort keys %$iii) {
                     my $D = $iii->{$ik};
@@ -196,12 +194,15 @@ KowTime: | # current eel
                     $s->{$k}->{$vc}->{$ik} = $D;
                 }
             }
+            #c suble
             my $se = Rw TreeD $s $scby=gro
                 if A.J.V > 1 && keys %$s;
             $c == 0.1 ? saygr $se : say $se if $se;
             .
+            my ($Subtle,$nonSubtle);
             for my $kik (@$xrd) {
                 my ($k,$ik) = @$kik;
+                A.Subtle && A.Subtle->{$k} ? $Subtle++ : $nonSubtle++;
                 my $Ds = $x->{$k}->{$ik};
                 my $D = Ds.D;
                 for my $s (@{Ds.is}) {
@@ -231,9 +232,8 @@ KowTime: | # current eel
                 last if T.not || T.whack;
             }
             .
-            if (!$nonSubtle) {
+            if ($Subtle && !$nonSubtle) {
                 $wasSubtle = 1;
-                $vb = $vc;
             }
             .
             return if T.not;  # will &z, oseve
