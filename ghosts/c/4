@@ -109,17 +109,17 @@ Oscgrin: |
     
 Oscapps: |
     u allsvse
-    n '','','%of:S'
+    n '','','%of:O'
     # all but intercepted sc is sc
     
-    n geo =>3=><<''
+    n geo =>33=><<''
         my $l = join ' ', map{0+$_} s.x, s.y, s.radial;
         $l .= ' '.s.scale if s.scale;
         #$l = "a".v.ab." $l" if s.ab;
         at.sc.geo = $l;
         C.sc.ab = delete v.ab if v.ab;
     
-    n nspc =>2=><<''
+    n nspc =>32=><<''
         my $J = C.sc.J;
         my $squ = C.sc.yspc || J.d.y.spc;
         my $ratio = $squ / $s;
@@ -134,51 +134,51 @@ Oscapps: |
             C.sc.tr.scale = $sl;
         }
     
-    n lp =>5=><<''
+    n lp =>35=><<''
         at.c.ishtml = 1;
         
-    n ishtml =>5=><<''
+    n ishtml =>35=><<''
         at.c.ishtml = 1;
         
-    n id =>5=><<''
+    n id =>35=><<''
         at.c.id = $s;
         
-    n tt =>5=><<''
+    n tt =>35=><<''
         at.c.title = $s;
         
-    n canvas =>5=><<''
+    n canvas =>35=><<''
         at.c.canvas = $s;
         
-    n type =>51=><<''
+    n type =>351=><<''
         at.c.type = $s;
         at.c.ishtml = 1;
         at.c.title = undef;
         
-    n tag =>5=><<''
+    n tag =>35=><<''
         at.c.tag = $s;
         
-    n at =>5=><<''
+    n at =>35=><<''
         die "inat";
         $s =~ /^(?:(\S+):)?(\S+)$/;
         at.c->{$1} = $2;
         
-    n atrp =>5=><<''
+    n atrp =>35=><<''
         die "heloarp";
         at.rp = $s;
         
-    n path =>5=><<''
+    n path =>35=><<''
         # to compuile J.ys
         
-    n origin =>5=><<''
+    n origin =>35=><<''
         # better than W via c pi and W
         
-    n pwar =>5=><<''
+    n pwar =>35=><<''
         # to suggest
         
-    n Joint =>5=><<''
+    n Joint =>35=><<''
         # Something
     
-    n css =>555=><<''
+    n css =>3555=><<''
         $s = join ';', map{"$_:$s->{$_}"} 
             sort keys %$s if ref $s eq 'HASH';
         for my $set (split ';', $s) {
@@ -186,10 +186,10 @@ Oscapps: |
             at.sc.css->{$k} = $s;
         }
     
-    n src =>556=><<''
+    n src =>3556=><<''
         at.src = $s
     
-    n cm =>584=><<''
+    n cm =>3584=><<''
         my $wt = {id=>at.id, value=>at.s};
         at.id || die"noid".wdump 2,$at;
         at.dig = C.sc.dig || die "no diggy";
@@ -201,7 +201,7 @@ Oscapps: |
     # also putting a particular object behind an id... blessing
     # weird sortes is the ways
     # even urls are like this
-    n idly =>58=><<'' 
+    n idly =>358=><<'' 
         my $id = mkuid();
         my $qual = '';
         at.c.id && sayre "Blessing C.t with $qual ($id -> at.c.id)";
@@ -209,7 +209,7 @@ Oscapps: |
         #J.idyl->($J, $id, $j);
         sayre "idly C.t  J.name J.r    ".ki C.sc;
     
-    n enid =>59=><<''
+    n enid =>359=><<''
         at.id = $s;
         at.c.nobody = 1; 
         at.t = j.l;
