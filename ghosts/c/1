@@ -643,29 +643,22 @@ EatSlide: | # liney schemery
     u allacgts
     
     n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
-        if (!ref $s) {
-            I.d&string,$s;
-        }
-        elsif (ref $s eq 'ARRAY') {
-            I.d&array,$s;
-        }
-        elsif (ref $s eq 'HASH') {
-            I.d&hash,$s;
-        }
-        else { die "mmtype:$s" }
+        !ref $s ? I.d&string,$s
+        :
+        ref $s eq 'ARRAY' ? I.d&array,$s
+        :
+        ref $s eq 'HASH' ? I.d&hash,$s
+        :
+        die "mmtype:$s";
     
     n string =>''=>{s=><<''}
         die "string: $s";
     
     n array =>''=>{s=><<''}
-        if (@$s == 1) {
-            my ($s) = @$s;
-            ref $s && die "array1ref: ".wdump $s;
-            I.d&fourstring,$s
-        }
-        else {
-            I.d&fourreal,$s
-        }
+        return I.d&fourreal,$s if @$s != 1;
+        $s = $s->[0];
+        ref $s && die "array1ref: ".wdump $s;
+        I.d&fourstring,$s
     
     n hash =>''=>{s=><<''}
         return %$C = %$s if exists s.t && s.y && s.c;
@@ -720,10 +713,10 @@ EatSlide: | # liney schemery
 C: |
     u allacgts
     
+    # modem sounds etc.
+    # dome props, repeatable tests
     n fourstring =>'',<<''
         I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
-        # modem sounds etc.
-        # dome props, repeatable tests
         if ($s =~ /^\s*(#.*)$/) {
            T.not = 1;
            T.com = $1;
