@@ -158,12 +158,12 @@ I:
     array: 
       c: 
         el: 1
-        s: "A.I.array = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    if (@$s == 1) {\n        my ($s) = @$s;\n        ref $s && die \"array1ref: \".wdump $s;\n        I.d&fourstring,$s\n    }\n    else {\n        I.d&fourreal,$s\n    }\n};\n"
+        s: "A.I.array = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    return I.d&fourreal,$s if @$s != 1;\n    $s = $s->[0];\n    ref $s && die \"array1ref: \".wdump $s;\n    I.d&fourstring,$s\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: '226182228909'
+        dige: aa9778381472
         gro: Indulator/EatSlide
       t: array
       "y": 
@@ -264,12 +264,12 @@ I:
     fourstring: 
       c: 
         el: 1
-        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    # modem sounds etc.\n    # dome props, repeatable tests\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: \".ki $C;\n};\n"
+        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: \".ki $C;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: c256a81abc59
+        dige: 3053d85dfeae
         gro: Indulator/C
       t: fourstring
       "y": 
@@ -646,13 +646,13 @@ I:
     Ci: 
       c: 
         el: 1
-        s: "A.I.Ci = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    if (!ref $s) {\n        I.d&string,$s;\n    }\n    elsif (ref $s eq 'ARRAY') {\n        I.d&array,$s;\n    }\n    elsif (ref $s eq 'HASH') {\n        I.d&hash,$s;\n    }\n    else { die \"mmtype:$s\" }\n};\n"
+        s: "A.I.Ci = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    !ref $s ? I.d&string,$s\n    :\n    ref $s eq 'ARRAY' ? I.d&array,$s\n    :\n    ref $s eq 'HASH' ? I.d&hash,$s\n    :\n    die \"mmtype:$s\";\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: I 12
-        dige: a0b64a21d656
+        dige: 8321990636a8
         gro: Indulator/EatSlide
         its: 1
       t: Ci
