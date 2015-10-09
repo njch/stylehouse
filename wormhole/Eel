@@ -1,16 +1,108 @@
 --- 
+I: 
+  "0.1": 
+    as: 
+      c: 
+        el: 1
+        s: "A.I.as = sub {\n    my ($A,$C,$G,$T,$s,$x) = @_;\n    my $I = A.I;\n    for (qw'begin bb ord tim wtf') {\n         exists $x->{$_} || next;\n         my $v = $x->{$_};\n         $v = [@$v] if ref $v eq 'ARRAY';\n         $v = {%$v} if ref $v eq 'HASH';\n         $s->{$_} = $v;\n    }\n};\n"
+      sc: 
+        acgt: s,x
+        args: A,C,G,T,s,x
+        code: I 1
+        dige: 68275f8dba30
+        gro: Pha
+      t: as
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
+    bandon: 
+      c: 
+        el: 1
+        s: "A.I.bandon = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    delete s.J.phy->{s.name};\n    s.abandoned = 1;\n    if (my $x = s.head) {\n        I.d&as,$s,$x;\n    }\n    I.d&end,$s\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: f11d8e18828e
+        gro: Pha
+      t: bandon
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
+    end: 
+      c: 
+        el: 1
+        s: "A.I.end = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $y = s.J.phl->{s.name} ||= {name=>s.name, l=>[]};\n    s.ended = hitime();\n    delete s.J.phy->{s.name};\n    shift @{y.l} while @{y.l} > 5;\n    # layers ^ rolling in time index .r -> the y.l\n    # so last phase of $name can be found?\n    push @{y.l}, $s;\n    if (s.bb) {\n        my $w = @{y.l};\n        y.l_bb->{$_} = $w for keys %{s.bb};\n    }\n    # somewhere thinks about what happened\n    $y\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 9be2c29b1c85
+        gro: Pha
+      t: end
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
+    exactl: 
+      c: 
+        el: 1
+        s: "A.I.exactl = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $q = shift;\n    my $y = I.d&end,$s;\n    my $cur = y.l->[-1];\n    my $last = y.l->[-2];\n    $cur eq $s || die \"sidf$cur $s\";\n    last.bb ||= {};\n    \n    my $wtf = I.d&wtfch,cur.bb,last.bb;\n    \n    delete s.J.bb->{$_} for keys %{wtf.gone};\n    \n    # see s.extill, time passing interesto...\n    # churn stats like 30% of last disappear, 20% new\n    s.wt = $wtf;\n    $wtf;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: af0a9486c1a4
+        gro: Pha
+      t: exactl
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
+    pha: 
+      c: 
+        el: 1
+        s: "A.I.pha = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($J,$name) = @M;\n    my $I = A.I;\n    # tracked being\n    # temporal phatness, per suJ (encap $M surges within)\n    if (my $x = J.phy->{$name}) {\n        sayre \"J.name 's $name was re entrant\";\n        I.d&end,$x;\n        # end - maybe new stuffright as some random part of this process\n        # hold yay minutes of changes in 10 second groups, etc\n    }\n    # bz multicasts\n    my $x = J.phy->{$name} = {\n        begin => hitime(),\n        name => $name,\n        J => $J,\n        bb => {},\n        ord => [],\n        #tim => {},\n        #wtf => {}, # F grab\n        #ap => sub{}, # bz do aftering\n        qui => 1,\n    };\n    x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};\n    $x;\n};\n"
+      sc: 
+        acgt: J,name
+        args: A,C,G,T,J,name
+        code: I 1
+        dige: 966335cd3a53
+        gro: Pha
+      t: pha
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
+    wtfch: 
+      c: 
+        el: 1
+        s: "A.I.wtfch = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($Jb,$Yb) = @M;\n    my $I = A.I;\n    my $wtf = {};\n    wtf.same = 1;\n    $wtf->{$_} = {} for qw'new diff gone';\n    \n    for (sort keys %$Jb) {\n        if (!exists $Yb->{$_}) {\n            wtf.new->{$_} = $Jb->{$_};\n            wtf.same = 0;\n        } \n        elsif ($Yb->{$_} ne $Jb->{$_}) {\n            wtf.diff->{$_} = $Jb->{$_};\n            wtf.same = 0;\n        }\n        else {\n            wtf.sami++;\n            wtf.still->{$_} = $Jb->{$_};\n        }\n        wtf.tot++;\n    }\n    for (grep { !exists $Jb->{$_} } sort keys %$Yb) {\n        wtf.gone->{$_} = $Yb->{$_};\n        wtf.same = 0;\n    }\n    $wtf;\n};\n"
+      sc: 
+        acgt: Jb,Yb
+        args: A,C,G,T,Jb,Yb
+        code: I 1
+        dige: f4b8a34e7993
+        gro: Pha
+      t: wtfch
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Pha/Pha
 J: 
   "0.6211": 
     J_6211: 
       c: 
         el: 1
-        s: "A.I.J_6211 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if exists C.c.pi;\n    \n    if (A.ztime < 9) {\n        if (A.jr&bol) {\n            sayre \"STOPPING \".ki($C) for 1..3;\n        }\n        A.bangdesk.aft.unblocknine = A.jr&bol,9;\n    }\n    A.bangdesk.bang.bang_ts = sub {\n        A.jr&bang_ts,hitime\n    };\n    \n    C.c.pin = J.name;\n};\n"
+        s: "A.I.J_6211 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if exists C.c.pi;\n    \n    if (A.ztime < 9) {\n        if (A.jr&bol) {\n            sayre \"STOPPING \".ki($C) for 1..3;\n            # TODO stop\n        }\n        A.bangdesk.aft.unblocknine = A.jr&bol,9;\n    }\n    A.bangdesk.bang.bang_ts = sub {\n        A.jr&bang_ts,hitime\n    };\n    \n    C.c.pin = J.name;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 6211
-        dige: 33617b8b7984
+        dige: 4335f418be7b
         gk: J
         gro: Jiterbug
         nk: c
@@ -24,13 +116,13 @@ J:
     J_6212: 
       c: 
         el: 1
-        s: "A.I.J_6212 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.c.pi;\n    die'csnod' if $C ne J.C;\n    J.cv = (C.c.gp && C.c.gp.cv) || C.c.cv || 0.6;\n    my $path = C.sc.pi||die'nopi';\n    if (J.A.d > 9) {\n        $path = 'text';\n        warn \"J.name J.A.d limit to text\";\n    }\n    C.c.pin = \"pi/$path\";\n};\n"
+        s: "A.I.J_6212 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.c.pi;\n    \n    die'csnod' if $C ne J.C;\n    J.cv = (C.c.gp && C.c.gp.cv) || C.c.cv || 0.6;\n    my $path = C.sc.pi||die'nopi';\n    if (J.A.d > 9) {\n        $path = 'text';\n        warn \"J.name J.A.d limit to text\";\n    }\n    C.c.pin = \"pi/$path\";\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 6212
-        dige: a28658d421e1
+        dige: 4114c7a0b224
         gk: J
         gro: Jiterbug
         nk: c
@@ -44,13 +136,13 @@ J:
     J_631: 
       c: 
         el: 1
-        s: "A.I.J_631 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    T.alk = \"T A.cv J.most.J.name /// J.name  A.ztime\";\n    A.coi = Rw pha $J ako;\n};\n"
+        s: "A.I.J_631 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    A.oci = I.d&pha,$J,'lac';\n    A.coi = Rw pha $J ako;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 631
-        dige: b217730064c0
+        dige: f4651aafce6a
         gk: J
         gro: Jiterbug
         nk: c
@@ -145,13 +237,13 @@ Mo:
     J_433: 
       c: 
         el: 1
-        s: "A.I.J_433 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    # \n    sayyl \"J33   Made J.name\" for 1..5;# unless J.Jiter;\n    T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
+        s: "A.I.J_433 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    sayyl \"J33   Made J.name\" unless J.Jiter;\n    T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 433
-        dige: a5ccae3aa338
+        dige: f3c7099f6ecb
         gk: J
         gro: Joot
         nk: c
@@ -165,13 +257,13 @@ Mo:
     J_6: 
       c: 
         el: 1
-        s: "A.I.J_6 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n        my $talk = \"T $A->{cv} $A->{ztime} $J->{most}->{J}->{name}       $J->{name}\";\n        $A->{time}->($J, 6) || return do {\n            say\"$talk   SKive!\" if $A->{J}->{V};\n            $T->{nose} = 1;\n        };\n        sayyl \"J6 ! $talk\";\n        if ($J->{name} eq 'Oth') {\n            saybl \"FFFFFFFFFFFFFFFFFFFFFFFFFFFOTH $J->{name}\" for 1..5;\n            $G->{w}->(\"dumpGoinbb\", {%$ar}, $G);\n        }\n        $A->{Subtle}->{J} = 1;\n        $A->{t}->(\"J\",9,1);\n};\n"
+        s: "A.I.J_6 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n        $T->{alk} = \"$A->{talk}  TT  $A->{ztime}\";\n        $A->{time}->($J, 6) || return do {\n            say \"SKive! $T->{alk}\" if $A->{J}->{V};\n            $T->{nose} = 1;\n        };\n        sayyl \"J6 ! $T->{alk}\";\n        $A->{Subtle}->{J} = 1;\n        $A->{t}->(\"J\",9,1);\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 6
-        dige: 4c6084b9e1f4
+        dige: a74dabffeb61
         gk: J
         gro: Jumps
         nk: c
@@ -185,13 +277,13 @@ Mo:
     J_7: 
       c: 
         el: 1
-        s: "A.I.J_7 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n        if ($J->{name} eq 'Oth') {\n            sayyl \"SOTHE 7                  #777777 \" for 1..5;\n            $G->{w}->(\"dumpGoinbb\", {%$ar}, $G);\n            saybl \"Coney: \".wdump 2, $J->{phy};\n        }\n        return sayre\"$J->{name} nose\" if $T->{nose};\n        return sayre \"Tsame=$T->{same} $J->{name}\" if $T->{same};\n        $J->{most}->{eo} = 'Sev' if $J->{A}->{II}->{Sev};\n        say \"oJ77 77 $J->{name} -> $J->{most}->{eo}\";# unless $J->{yt}->{quiet} || $C->{sc}->{pi};\n        $G->{w}->(\"$J->{most}->{eo}\", {J => $J, A => $A}, $G);\n        # dos geo ^ Yesui\n};\n"
+        s: "A.I.J_7 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n        return sayre\"nose $T->{alk}\" if $T->{nose};\n        return sayre \"same $T->{alk}\" if $T->{same};\n        $J->{most}->{eo} = 'Sev' if $J->{A}->{II}->{Sev};\n        say \"oJ77 77 $T->{alk}     -> $J->{most}->{eo}\" unless $J->{yt}->{quiet} || $C->{sc}->{pi};\n        $G->{w}->(\"$J->{most}->{eo}\", {J => $J, A => $A}, $G);\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 7
-        dige: d6023a9a76df
+        dige: 83283028177c
         gk: J
         gro: Jumps
         nk: c

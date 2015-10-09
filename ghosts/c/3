@@ -67,9 +67,9 @@ Pha: |
     n pha =>''=><<'',{acgt=>'J,name'}
         # tracked being
         # temporal phatness, per suJ (encap $M surges within)
-        if (my $xx = J.phy->{$name}) {
-             sayre "J.name 's $name was re entrant";
-            xx.end->();
+        if (my $x = J.phy->{$name}) {
+            sayre "J.name 's $name was re entrant";
+            I.d&end,$x;
             # end - maybe new stuffright as some random part of this process
             # hold yay minutes of changes in 10 second groups, etc
         }
@@ -107,7 +107,7 @@ Pha: |
         }
     
     n end =>''=><<''
-        my $y = J.phl->{s.name} ||= {name=>s.name, l=>[]};
+        my $y = s.J.phl->{s.name} ||= {name=>s.name, l=>[]};
         s.ended = hitime();
         delete s.J.phy->{s.name};
         shift @{y.l} while @{y.l} > 5;
@@ -123,13 +123,15 @@ Pha: |
     
     n exactl =>''=><<''
         my $q = shift;
-        my $y = I.d&end,$s
+        my $y = I.d&end,$s;
         my $cur = y.l->[-1];
         my $last = y.l->[-2];
         $cur eq $s || die "sidf$cur $s";
         last.bb ||= {};
         .
         my $wtf = I.d&wtfch,cur.bb,last.bb;
+        .
+        delete s.J.bb->{$_} for keys %{wtf.gone};
         .
         # see s.extill, time passing interesto...
         # churn stats like 30% of last disappear, 20% new
