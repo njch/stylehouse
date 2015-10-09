@@ -1,5 +1,10 @@
-lod/2:
-   newwave: | # THE TAKER
+lod/2/newwave: | # s
+    G.IIII = ['G/T/Remy','G/T/Eel'];
+    Rw Run;
+    saygr "YEYEEEEEEEEEEEEEE";
+    return 1;
+lod/1/newwave: | # safe
+    G.IIII = ['G/T/Wild'];
     Rw Run;
     saygr "YEYEEEEEEEEEEEEEE";
     return 1;
@@ -66,7 +71,6 @@ Run: |
     }
     'In=Intt',
     'Jto=Jtt';
-    G.IIII = ['G/T/Wild'];
     
     Rw wayt $d=0.001 $p=Top;
     
@@ -76,8 +80,7 @@ Top: |
     my $now = hitime;
     my $gap = $now - G.lastout;
     if ($gap < 2) {
-        sayre "slowlaned" for 1..7;
-        sleep 3;
+        sayre("slowlaned ${_}s")&& sleep 1 for 1..2;
         return;
     }
     Rw Many;    
@@ -89,6 +92,7 @@ Many: |
     my $t = 'Oth';
     my $cv = 0.3;
     $J = G.outerspace ||= do {
+        sayyl "Greating $G outerspace";
         $J = Rw Jto One;
         my $s = G.what;
         my $sc;
@@ -97,7 +101,7 @@ Many: |
         Rw jamsc $J:G.oin $t $cv $s $sc;
         $J
     };
-    J.A.IIII = ['G/T/Wild'];
+    J.A.IIII = [@{G.IIII}];
     J.A.Indo = 2;
     Rw Viu $J;
     
