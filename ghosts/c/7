@@ -119,6 +119,12 @@ KowTime: | # current eel
             next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
             .
+            # our  osc (stay in K per Subtle ness);
+            my @iz = grep {
+                $aim->{$_} || (aim.I && A.Iso->{$_})
+            } sort keys %$is;
+            next if !@iz;
+            .
             # (for oscillating stretches of inner being)
             if ($wasSubtle) {
                 undef $wasSubtle;
@@ -141,9 +147,8 @@ KowTime: | # current eel
             I.vb = $vb;
             # draw curvles as spirals done
             .
-            for my $k (sort keys %$is) {
+            for my $k (@iz) {
                 my $iii = $is->{$k};
-                next unless $aim->{$k} || (aim.I && A.Iso->{$k});
                 I.k = $k;
                 I.d&carebowl,$s,$iii,$x,$xrd;
             }
@@ -503,7 +508,6 @@ Ysleep: | # sees if it wants to wake up...
     
     # J embed
     n Y =>25=><<'',{rg=>'J,V'}
-        die "WHuioo";
         if (my $JJ = C.sc.J) {
             my $ta = V.ta->{C.y.k};
             if (my $nV = JJ.El->{V.name}) {
