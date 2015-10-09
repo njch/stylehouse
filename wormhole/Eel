@@ -36,12 +36,12 @@ I:
     Elvis: 
       c: 
         el: 1
-        s: "A.I.Elvis = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($J,$Y) = @M;\n    my $I = A.I;\n    my $wtf = I.d&wtfch,J.bb,Y.bb;\n    \n    Y.tw ||= {};\n    Y.lo = {}; # compile\n    \n    for my $mo (qw'gone diff new') {\n        for my $r (keys %{$wtf->{$mo}}) {\n            my $j = I.d&r2j,$J,$r;\n            j.r = $r;\n            j.lt = j.cv.\"\\t\".j.t;\n            if (!j.lt=~/\\S/) {\n                die \"Got $r =>   \".ki $j;\n            }\n            if ($mo eq 'gone') {\n                delete Y.bb->{j.r};\n                delete Y.tw->{j.lt}->{j.style};\n            }\n            else {\n                Y.bb->{j.r} = j.s;\n                Y.tw->{j.lt}->{j.style} = j.s;\n            }\n            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;\n        }\n    }\n    \n    Y.tv ||= {};\n    Y.v ||= {};\n    Y.go = {};\n    my $same = 1;\n    for my $k (keys %{Y.lo}) {\n        my $tf = Y.lo->{$k};\n        my $cs = Y.tw->{$k};\n        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {\n            $same = 0; # new line to make\n        }\n        if (tf.gone && !keys %$cs) {\n            $same = 0; # line to disappear\n            my $C = Y.go->{$k} = delete Y.tv->{$k};\n            my ($cv,$t) = $k =~ /^(.+?)\\t(.*)$/;\n            delete Y.v->{$cv}->{$t};\n            delete Y.v->{$cv} unless keys %{Y.v->{$cv}};\n        }\n        if (tf.diff || tf.new) {\n            keys %$cs || die 'nokeys';\n            my ($cv,$t) = $k =~ /^(.+?)\\t(.*)$/;\n            defined $cv || die \"twas $k\";\n            my $foam = sub {\n                my $C = shift;\n                %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});\n                C.c.s = delete C.sc->{''} if exists C.sc->{''};\n            };\n            $foam->(Y.tv->{$k} ||= {});\n            $foam->(Y.v->{$cv}->{$t} ||= {});\n        }\n    }\n    if (!$same) {\n        Y.vs = [];\n        for my $k (sort keys %{Y.tv}) {\n            my $C = Y.tv->{$k} || die \"wtf $k\";\n            push @{Y.vs}, $C;\n        }\n        #sayre \"vs re: \".@{Y.vs};\n    }\n    \n    Y.ra = I.d&ratio,wtf.sami,wtf.tot;\n    Y.rato = wtf.tot;\n    Y.revs = !$same;\n    \n    $Y;\n};\n"
+        s: "A.I.Elvis = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($J,$Y) = @M;\n    my $I = A.I;\n    my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;\n    #I.d&wtfch,J.bb,Y.bb;\n    \n    Y.tw ||= {};\n    Y.lo = {}; # compile\n    \n    for my $mo (qw'gone diff new') {\n        for my $r (keys %{$wtf->{$mo}}) {\n            my $j = Rw r2j $J $r;\n            #I.d&r2j,$J,$r;\n            saybl \"r2j'd $r => \".ki $j if J.name eq 'Dwight';\n            j.r = $r;\n            j.lt = j.cv.\"\\t\".j.t;\n            if (!j.lt=~/\\S/) {\n                die \"Got $r =>   \".ki $j;\n            }\n            if ($mo eq 'gone') {\n                delete Y.bb->{j.r};\n                delete Y.tw->{j.lt}->{j.style};\n            }\n            else {\n                Y.bb->{j.r} = j.s;\n                Y.tw->{j.lt}->{j.style} = j.s;\n            }\n            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;\n        }\n    }\n    \n    Y.tv ||= {};\n    Y.v ||= {};\n    Y.go = {};\n    my $same = 1;\n    for my $k (keys %{Y.lo}) {\n        my $tf = Y.lo->{$k};\n        my $cs = Y.tw->{$k};\n        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {\n            $same = 0; # new line to make\n        }\n        if (tf.gone && !keys %$cs) {\n            $same = 0; # line to disappear\n            my $C = Y.go->{$k} = delete Y.tv->{$k};\n            my ($cv,$t) = $k =~ /^(.+?)\\t(.*)$/;\n            delete Y.v->{$cv}->{$t};\n            delete Y.v->{$cv} unless keys %{Y.v->{$cv}};\n        }\n        if (tf.diff || tf.new) {\n            keys %$cs || die 'nokeys';\n            my ($cv,$t) = $k =~ /^(.+?)\\t(.*)$/;\n            defined $cv || die \"twas $k\";\n            my $foam = sub {\n                my $C = shift;\n                %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});\n                C.c.s = delete C.sc->{''} if exists C.sc->{''};\n            };\n            $foam->(Y.tv->{$k} ||= {});\n            $foam->(Y.v->{$cv}->{$t} ||= {});\n        }\n    }\n    if (!$same) {\n        Y.vs = [];\n        for my $k (sort keys %{Y.tv}) {\n            my $C = Y.tv->{$k} || die \"wtf $k\";\n            push @{Y.vs}, $C;\n        }\n        #sayre \"vs re: \".@{Y.vs};\n    }\n    \n    Y.ra = I.d&ratio,wtf.sami,wtf.tot;\n    Y.rato = wtf.tot;\n    Y.revs = !$same;\n    sayyl \"J.name :::\". wdump 4, Y.lo if J.name eq 'Dwight';\n    \n    $Y;\n};\n"
       sc: 
         acgt: J,Y
         args: A,C,G,T,J,Y
         code: I 1
-        dige: a5eb28a6a34d
+        dige: aefe48ca597a
         gro: Modems/Pha
         l: "#c"
       t: Elvis
@@ -144,12 +144,12 @@ I:
     r2j: 
       c: 
         el: 1
-        s: "A.I.r2j = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($J,$r) = @M;\n    my $I = A.I;\n    my $j;\n    my $sing;\n    if (J.tt) {\n        $sing = 'J_tt';\n        (j.cv,j.t,j.style) = $r =~ /^(.*?)\\t(.*)\\t(.*?)$/;\n        if (!j.cv) {\n            sayre \"Hind $r  \" for 1..5;\n            (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\\s+(.+?)$/;\n        }\n    }\n    else {\n        (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\\s+(.+?)$/;\n    }\n    defined j.cv || die \"$sing no $r    \".ki $j;\n    j.s = ar.J.bb->{$r} if ar.J;\n    j.nos = 1 if ar.J && !exists ar.J.bb->{$r};\n    $j;\n};\n"
+        s: "A.I.r2j = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($r,$J) = @M;\n    my $I = A.I;\n    my $j;\n    my $sing;\n    if (J.tt) {\n        $sing = 'J_tt';\n        (j.cv,j.t,j.style) = $r =~ /^(.*?)\\t(.*)\\t(.*?)$/;\n        if (!j.cv) {\n            sayre \"Hind $r  \" for 1..5;\n            (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\\s+(.+?)$/;\n        }\n    }\n    else {\n        (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\\s+(.+?)$/;\n    }\n    defined j.cv || die \"$sing no $r    \".ki $j;\n    j.s = J.bb->{$r} if $J;\n    j.nos = 1 if $J && !exists J.bb->{$r};\n    $j;\n};\n"
       sc: 
-        acgt: J,r
-        args: A,C,G,T,J,r
+        acgt: r,J
+        args: A,C,G,T,r,J
         code: I 1
-        dige: a3afa2fc23cb
+        dige: 142c469590ad
         gro: Modems/Jamsc
       t: r2j
       "y": 
@@ -429,3 +429,214 @@ Mo:
         cv: '0.7'
         cvt: 0.7	C.t
         p: qq/Jumps/Jumps
+Sev: 
+  "0.2": 
+    JYV_2: 
+      c: 
+        el: 1
+        s: "A.I.JYV_2 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    for my $K ('Y','V') {\n        my $name = C.c->{$K};\n        $name || die \"No $K\";\n        C.c->{$K} = I.d&Elj,$J,$name;\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 2
+        dige: 74b861812f5b
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V
+        v: cY
+      t: JYV_2
+      "y": 
+        cv: '0.2'
+        cvt: 0.2	C.t
+        p: qq/Yuni/Yuni
+  "0.21": 
+    dElvis_21: 
+      c: 
+        el: 1
+        s: "A.I.dElvis_21 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    I.d&Elvis,$J,$Y;\n    #Rw Elvis $J $Y;\n    \n    V.os = [];\n    A.mo.retu && die \"J.name's  V.name: Already is  A.mo.retu.name\";\n    A.mo.retu = $V;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 21
+        dige: 831bfd1dfbed
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V
+        v: cY
+      t: dElvis_21
+      "y": 
+        cv: '0.21'
+        cvt: 0.21	C.t
+        p: qq/Yuni/Yuni
+  "0.22": 
+    root_22: 
+      c: 
+        el: 1
+        s: "A.I.root_22 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $rC = Y.tv->{\"0.9\\t/\"}\n        || Y.tv->{\"0.9\\t\".J.name}\n        || Y.tv->{\"0.9\\t\".J.uname}\n          || die \" noroot J.name: showing 0.9s: \"\n            .wdump [map{ki $_}values %{Y.v->{0.9}}];\n    rC.c.root = 1;\n    my $N = [grep { $_ ne $rC } @{Y.vs}];\n    push @$N, $rC;\n    # T.Z.$incv = 1||$setAcv makes A,Celf, \n    # A.mo.re array others (yarN) which may Acquire\n    push @{A.mo.re->{0.22}||=[]}, map{\n        my $CC = I.d&hup,$_;\n        # all spreads out to play Y/V\n        I.d&xot,$CC,{c=>C.c};\n        [undef,$CC]\n    }@$N;\n    T.not = 1; # or more 78ism\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 22
+        dige: 478535a0bf3c
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V
+        v: cY
+      t: root_22
+      "y": 
+        cv: '0.22'
+        cvt: 0.22	C.t
+        p: qq/Yuni/Yuni
+  "0.23": 
+    Y_23: 
+      c: 
+        el: 1
+        s: "A.I.Y_23 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    C.y.k = C.y.cv.\"\\t\".C.t;\n    push @{V.os}, C.y.k unless C.c.root;\n    # how happening to thingk\n    # must ,,,, A.t to gain perception (not mid ex but should)\n    # but yeah add things as lines rejoin\n    A.Iso.O = 1; # also ex O as I (whoever we are)\n    A.Subtle.S = 1; # only-S ex slips through time unwide\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 23
+        dige: 45108e25a4cf
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V
+        v: cY
+      t: Y_23
+      "y": 
+        cv: '0.23'
+        cvt: 0.23	C.t
+        p: qq/Yuni/Yuni
+  "0.231": 
+    Y_231: 
+      c: 
+        el: 1
+        s: "A.I.Y_231 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    return if C.c.root;\n    T.to = 0;\n    A.t&S,6,2;\n    T.not = 1 if !delete T.to;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 231
+        dige: 8a667da8779f
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V
+        v: cY
+      t: Y_231
+      "y": 
+        cv: '0.231'
+        cvt: 0.231	C.t
+        p: qq/Yuni/Yuni
+  "0.3": 
+    Y_3: 
+      c: 
+        el: 1
+        s: "A.I.Y_3 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    C.y.lv = {k=>$k,C=>$C};\n    C.y.at = {};\n    C.y.ta = V.ta->{$k};\n    C.y.vl = V.lv->{$k};\n    if (C.c.root) { # / continues from 3 when everything's 6\n        T.Z->{0.6} = 0.3;\n        T.not = 1;\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 3
+        dige: cbff00921d90
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V,yk
+        v: cY
+      t: Y_3
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Yuni/Yuni
+  "0.42": 
+    mkTd_42: 
+      c: 
+        el: 1
+        s: "A.I.mkTd_42 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    for my $nk (qw't y c sc V') {\n        my $v = $at->{$nk};\n        my $o = $ta->{$nk};\n        I.d&heq,$v,$o && next;\n        my $d;\n        d.v = $v;\n        d.o = $o;\n        if (ref $v eq 'HASH') {\n            my $wt = Rw wtfch $Jb:v $Yb:o;\n            for my $wk (qw'gone diff new still') {\n                for my $gk (sort keys %{$wt->{$wk}}) {\n                    my $dd = {};\n                    dd.v = $at->{$nk}->{$gk};\n                    dd.o = $ta->{$nk}->{$gk};\n                    d.T.d->{$gk} && die \"C.t: $nk,$gk ($v) rep.\";\n                    d.T.d->{$gk} =\n                        dd.T.d->{$wk} = $dd;\n                }\n            }\n        }\n        else {\n            my $wk = !$vl ? \"new\"\n                : !exists $at->{$nk} ? \"gone\"\n                : \"diff\";\n            my $dd = {%$d};\n            d.T.d.s =\n                dd.T.d->{$wk} = $dd;\n        }\n        T.d->{$nk} = $d;\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 42
+        dige: f77aa396964a
+        gk: 'Y'
+        gro: Yod
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: mkTd_42
+      "y": 
+        cv: '0.42'
+        cvt: 0.42	C.t
+        p: qq/Yod/Yod
+  "0.48": 
+    doTd_48: 
+      c: 
+        el: 1
+        s: "A.I.doTd_48 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # pick T bones, dot Is\n    # a 9 for the Td (ill 8) consciousness rendezvou\n    for my $nk (sort keys %{T.d}) {\n        my $d = T.d->{$nk};\n        for my $gk (sort keys %{d.T.d}) {\n            my $dd = d.T.d->{$gk};\n            if (dd.T.m) {\n                #say \"Answers  $nk $gk: \".wdump 4, $dd;\n            }\n            elsif (dd.T.q) {\n                #say \"probly $nk $gk\";\n            }\n            else {\n                sayre \"Unclear $nk $gk:  \". ki $dd;\n            }\n        }\n    }\n    delete T.d;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 48
+        dige: 099aa40486cd
+        gk: 'Y'
+        gro: Yod
+        nk: c
+        rg: J,V,yk,yat,yta,ylv,yvl
+        v: cY
+      t: doTd_48
+      "y": 
+        cv: '0.48'
+        cvt: 0.48	C.t
+        p: qq/Yod/Yod
+  "0.49": 
+    Y_49: 
+      c: 
+        el: 1
+        s: "A.I.Y_49 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    V.ta->{$k} = I.d&hup,$at;\n    V.tv->{$k} = I.d&hup,$C;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 49
+        dige: e2043d4e9a48
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V,yk,yat
+        v: cY
+      t: Y_49
+      "y": 
+        cv: '0.49'
+        cvt: 0.49	C.t
+        p: qq/Yuni/Yuni
+  "0.58": 
+    Y_58: 
+      c: 
+        el: 1
+        s: "A.I.Y_58 = sub {\n    my ($A,$C,$G,$T,$s) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    V.lv->{$k} = $lv;\n    if (C.c.root) {\n        V.rl = $vl;\n        V.rv = $lv;\n        Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv\n            if J.V;\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Sev 58
+        dige: 8d87a19e3583
+        gk: 'Y'
+        gro: Yuni
+        nk: c
+        rg: J,V,yk,ylv,yvl
+        v: cY
+      t: Y_58
+      "y": 
+        cv: '0.58'
+        cvt: 0.58	C.t
+        p: qq/Yuni/Yuni
