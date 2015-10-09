@@ -256,21 +256,24 @@ ym/doex: | # extend C by v
     I.d&xot,$C,$v;
 
 TNews: |
-    return say "$talk: Same    rl.i eq rv.i" if rl.i eq rv.i;
+    my $rl = ar.rl || {};
+    my $talk = ar.talk;
+    return say "$talk: Same    rl.i eq rv.i" if ar.talk && rl.i eq rv.i;
     
     my $new;
-    if (rl.c ne rv.c) {
+    if (ar.talk && rl.c ne rv.c) {
         sayre "C C C C C C C";
         sayre "C C C C C C C";
         sayre "C C C C C C C";
         $new = "new!";
     }
     return sayyl "Byst und instro" if G.Byst eq $J;
+    
     my $r = Rw scd $rl $rv;
     my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
     my $n = Rw ZNews news $sc:r.z;
     
-    say "$talk: ".($new||"GROWTH!");
+    say "$talk: ".($new||"GROWTH!") if ar.talk;
     my $lim = sub {
         my ($s,$lim) = @_;
         my @o = split "\n", $s;
@@ -282,9 +285,13 @@ TNews: |
         join "\n", @o;
     };
     $o = $lim->($o);
-    saybl $lim->($o,5) if $o;
-    sayyl $n if $n;
-    #$lim->($n,7)
+    if (ar.talk) {
+        saybl $lim->($o,5) if $o;
+        sayyl $n if $n;
+    }
+    else {
+        $n
+    }
     
 ZNews: |
     my $J = G.Byst || return sayre "Cannot G-Byst-ander yet";

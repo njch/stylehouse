@@ -172,17 +172,14 @@ Pha: |
     # safe vs doing - sheets of J->Y, dont drop any frames
     # where we start being onlies
     n Elvis =>''=><<'',{acgt=>'J,Y',l=>'#c'}
-        my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
-        #I.d&wtfch,J.bb,Y.bb;
+        my $wtf = I.d&wtfch,J.bb,Y.bb;
         .
         Y.tw ||= {};
         Y.lo = {}; # compile
         .
         for my $mo (qw'gone diff new') {
             for my $r (keys %{$wtf->{$mo}}) {
-                my $j = Rw r2j $J $r;
-                #I.d&r2j,$J,$r;
-                saybl "r2j'd $r => ".ki $j if J.name eq 'Dwight';
+                my $j = I.d&rJ,$r,$J;
                 j.r = $r;
                 j.lt = j.cv."\t".j.t;
                 if (!j.lt=~/\S/) {
@@ -236,13 +233,11 @@ Pha: |
                 my $C = Y.tv->{$k} || die "wtf $k";
                 push @{Y.vs}, $C;
             }
-            #sayre "vs re: ".@{Y.vs};
         }
         .
         Y.ra = I.d&ratio,wtf.sami,wtf.tot;
         Y.rato = wtf.tot;
         Y.revs = !$same;
-        sayyl "J.name :::". wdump 4, Y.lo if J.name eq 'Dwight';
         .
         $Y;
     
@@ -267,7 +262,7 @@ Jamsc: | # all the \t bz-io, very J2
     
     # interpreter of buzzed puit partiscules r -> j.[cv,t,style]
     # opens schema, how to interpret r to J
-    n r2j =>''=><<'',{acgt=>'r,J'}
+    n rJ =>''=><<'',{acgt=>'r,J',l=>'#c'}
         my $j;
         my $sing;
         if (J.tt) {
@@ -287,7 +282,7 @@ Jamsc: | # all the \t bz-io, very J2
         $j;
 
     # put C in bb, some towering tractor beams (ljm)
-    n jamsc =>''=><<''
+    n jamsc =>''=><<'','%l:#c'
         my $ar = $s;
         my $sc = ar.sc || {};
         my $J = ar.J || die "jamsc noj".ki$s;

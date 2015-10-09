@@ -27,8 +27,6 @@ dumpGoinbb: |
     }grep{/J$/}sort keys %$bb];
 All: |
     Rw dumpGoinbb;
-    
-    saybl "All Coney: ".wdump 3, G.oin.phy;
     J.V = 1;
     n Byst =>W
     n Check =>W
@@ -126,8 +124,43 @@ Draw: | # most wild (furthest from Wild, goes in circle)
     
 Dwive: |
     J.A.IIII = G.IIII = ['G/T/Remy','G/T/Eel'];
-    n Head =>W
+    #n Head =>W
+    
+    my $D = 
     n Dwight =>W
+    
+    
+    use Test::More 'no_plan';
+    my $rv = D.nj.El.Duv.rv;
+    ok($rv, "got J.name rv");
+    
+    
+    # provide $vl for follower
+    my $stuff = Rw TNews $J $rv;
+    my $ids = {};
+    my $here = 3;
+    my $idi = 1;
+    my $idstu = sub {
+        my $id = shift;
+        my $il = $ids->{$id} ||= $idi++;
+        "il$here$il";
+    };
+    $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
+    $stuff =~ s/(mtime=)(\d{5})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
+    $stuff = [split "\n", encode_utf8 $stuff];
+    my $file = "t/J.name/01-this";
+    my $right = 0 ? do {
+        DumpFile($file,$stuff);
+        $stuff;
+    } : LoadFile($file);
+    
+    is_deeply($stuff,$right,"Stuff is right!");
+    
+    sayyl $stuff;
+    # this can A.t&38 itself a ...
+    # bab &38 -> if (A.t&38) {
+    
+    
     #n Gapitan =>W
 Dwight: |
     J.A.IIII = [@{G.IIII},'G/T/Draw'];

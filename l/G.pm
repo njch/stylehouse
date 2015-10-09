@@ -316,7 +316,7 @@ sub ki {
     } sort keys %$ar;
 }
 
-sub ok {
+sub kk {
     my ($s,$lum) = @_;
     $lum ||= 1;
     my $d = (3 - $lum);
