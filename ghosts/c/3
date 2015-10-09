@@ -61,10 +61,14 @@ unThaw: |
         # also how & 9s (noncompresses) out for us into a more local J
         # u W would zlide in as an Elvis clone
         # it has a high frequency
+Modems: |
+    n Pha =>W
+    n Jamsc =>W
+    n Timing =>W
 Pha: |
     u allacgts
     
-    n pha =>''=><<'',{acgt=>'J,name'}
+    n pha =>''=><<'',{acgt=>'J,name',l=>'#c'}
         # tracked being
         # temporal phatness, per suJ (encap $M surges within)
         if (my $x = J.phy->{$name}) {
@@ -74,17 +78,16 @@ Pha: |
             # hold yay minutes of changes in 10 second groups, etc
         }
         # bz multicasts
-        my $x = J.phy->{$name} = {
-            begin => hitime(),
-            name => $name,
-            J => $J,
-            bb => {},
-            ord => [],
-            #tim => {},
-            #wtf => {}, # F grab
-            #ap => sub{}, # bz do aftering
-            qui => 1,
-        };
+        my $x = J.phy->{$name} = {};
+        x.begin = hitime();
+        x.name = $name;
+        x.J = $J;
+        x.bb = {};
+        x.ord = [];
+        #x.tim = {};
+        #x.wtf = {}; # F grab
+        #x.ap = sub{}; # bz do aftering
+        x.qui = 1;
         x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
         $x;
     
@@ -121,7 +124,7 @@ Pha: |
         # somewhere thinks about what happened
         $y
     
-    n exactl =>''=><<''
+    n exactl =>''=><<'','%l:#c un-ins things from J'
         my $q = shift;
         my $y = I.d&end,$s;
         my $cur = y.l->[-1];
@@ -135,11 +138,11 @@ Pha: |
         .
         # see s.extill, time passing interesto...
         # churn stats like 30% of last disappear, 20% new
-        s.wt = $wtf;
+        s.wtf = $wtf;
         $wtf;
     
     # J future, Y saves
-    n wtfch =>''=><<'',{acgt=>'Jb,Yb'}
+    n wtfch =>''=><<'',{acgt=>'Jb,Yb',l=>'#c diff J'}
         my $wtf = {};
         wtf.same = 1;
         $wtf->{$_} = {} for qw'new diff gone';
@@ -165,6 +168,167 @@ Pha: |
         }
         $wtf;
     
+    # the mess C-er
+    # safe vs doing - sheets of J->Y, dont drop any frames
+    # where we start being onlies
+    n Elvis =>''=><<'',{acgt=>'J,Y',l=>'#c'}
+        my $wtf = I.d&wtfch,J.bb,Y.bb;
+        .
+        Y.tw ||= {};
+        Y.lo = {}; # compile
+        .
+        for my $mo (qw'gone diff new') {
+            for my $r (keys %{$wtf->{$mo}}) {
+                my $j = I.d&r2j,$J,$r;
+                j.r = $r;
+                j.lt = j.cv."\t".j.t;
+                if (!j.lt=~/\S/) {
+                    die "Got $r =>   ".ki $j;
+                }
+                if ($mo eq 'gone') {
+                    delete Y.bb->{j.r};
+                    delete Y.tw->{j.lt}->{j.style};
+                }
+                else {
+                    Y.bb->{j.r} = j.s;
+                    Y.tw->{j.lt}->{j.style} = j.s;
+                }
+                Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
+            }
+        }
+        .
+        Y.tv ||= {};
+        Y.v ||= {};
+        Y.go = {};
+        my $same = 1;
+        for my $k (keys %{Y.lo}) {
+            my $tf = Y.lo->{$k};
+            my $cs = Y.tw->{$k};
+            if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+                $same = 0; # new line to make
+            }
+            if (tf.gone && !keys %$cs) {
+                $same = 0; # line to disappear
+                my $C = Y.go->{$k} = delete Y.tv->{$k};
+                my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+                delete Y.v->{$cv}->{$t};
+                delete Y.v->{$cv} unless keys %{Y.v->{$cv}};
+            }
+            if (tf.diff || tf.new) {
+                keys %$cs || die 'nokeys';
+                my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+                defined $cv || die "twas $k";
+                my $foam = sub {
+                    my $C = shift;
+                    %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});
+                    C.c.s = delete C.sc->{''} if exists C.sc->{''};
+                };
+                $foam->(Y.tv->{$k} ||= {});
+                $foam->(Y.v->{$cv}->{$t} ||= {});
+            }
+        }
+        if (!$same) {
+            Y.vs = [];
+            for my $k (sort keys %{Y.tv}) {
+                my $C = Y.tv->{$k} || die "wtf $k";
+                push @{Y.vs}, $C;
+            }
+            #sayre "vs re: ".@{Y.vs};
+        }
+        .
+        Y.ra = I.d&ratio,wtf.sami,wtf.tot;
+        Y.rato = wtf.tot;
+        Y.revs = !$same;
+        .
+        $Y;
+    
+    
+    
+    n Elj =>''=><<'',{acgt=>'J,name',l=>'#c with a self'}
+        J.El->{$name} ||= Rw Jto - $le:J $name;
+    
+    n El =>''=><<'',{acgt=>'J,name',l=>'#c without a self'}
+        J.El->{$name} ||= {bb=>{},name=>$name};
+
+    
+Timing: |
+    u allacgts
+    
+    n ratio =>''=><<'',{acgt=>'o,t'}
+        my $ratio = $o / ($t||1);
+        0.01 * int(100*$ratio);
+    
+Jamsc: | # all the \t bz-io, very J2
+    u allacgts
+    
+    # interpreter of buzzed puit partiscules r -> j.[cv,t,style]
+    n r2j =>''=><<'',{acgt=>'J,r'}
+        my $j;
+        my $sing;
+        if (J.tt) {
+            $sing = 'J_tt';
+            (j.cv,j.t,j.style) = $r =~ /^(.*?)\t(.*)\t(.*?)$/;
+            if (!j.cv) {
+                sayre "Hind $r  " for 1..5;
+                (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
+            }
+        }
+        else {
+            (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
+        }
+        defined j.cv || die "$sing no $r    ".ki $j;
+        j.s = ar.J.bb->{$r} if ar.J;
+        j.nos = 1 if ar.J && !exists ar.J.bb->{$r};
+        $j;
+
+    # put C in bb, some towering tractor beams (ljm)
+    n jamsc =>''=><<''
+        my $ar = $s;
+        my $sc = ar.sc || {};
+        my $J = ar.J || die "jamsc noj".ki$s;
+        ar.C = ar.d if ar.d;
+        my $t = ar.t ? ar.t
+            : ar.j ? ar.j.l
+            : ar.C ? ar.C.t : die'not';
+        my $cv = ar.cv ? ar.cv
+            : ar.j ? ar.j.cv
+            : ar.C ? ar.C.cv || ar.C.y.cv : die'noy';
+        .
+        if (ar.oJ && ar.oJ ne ar.J && !ar.noR) {
+            my $J = ar.oJ;
+            if (my $ljm = J.A.ljm) {
+                my $Me = "ar.oJ.ind ar.J.name "
+                ." J.A.ljmo <<< J.name  sends:"
+                ." $t\t$cv  $ljm";
+                sayyl $Me if J.V || ar.J.V;
+                push @$ljm, {%$ar};
+            }
+        }
+        .
+        my @fobz;
+        push @fobz, [$cv,$t,undef,ar.s] if exists ar.s;
+        push @fobz, [$cv,$t,$_,$sc->{$_}] for keys %$sc;
+        my @tobz = map {
+            my ($cv,$t,$s,$v) = @$_;
+            my $r;
+            if (J.tt) { # FUTU
+                $r = $cv."\t".$t."\t".$s;
+            }
+            else {
+                my $s = $s;
+                $s = '%'.$s if $s;
+                $r = $t.$s."\t".$cv;
+            }
+            if ($s) {
+                ar.C.sc->{$s} = $v;
+            }
+            [$r,$v]
+        } @fobz;
+        .
+        for (@tobz) {
+            my ($r,$v) = @$_;
+            J.bz->($r,$v);
+        }
 C14: | # the CIA is all over it
     # cp gip I.i, particle pullever
     if (my $c = G.pwin->(C.t, A.J.A.in)) { 
