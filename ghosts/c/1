@@ -655,7 +655,8 @@ EatSlide: | # liney schemery
         die "string: $s";
     
     n array =>''=>{s=><<''}
-        return I.d&fourreal,$s if @$s != 1;
+        return I.d&fourreal,$s
+            if @$s != 1 || $s->[0] =~ /^\w+$/;
         $s = $s->[0];
         ref $s && die "array1ref: ".wdump $s;
         I.d&fourstring,$s
@@ -670,8 +671,8 @@ EatSlide: | # liney schemery
         die"reft" if ref C.t;
         # uis a nested wave
         # allow much manufold
-        I.d&reny if !ref C.y;
         I.d&renc if !ref C.c;
+        I.d&reny if !ref C.y;
         I.d&rensc if !ref C.sc;
         defined C.t && !ref C.t
         && ref C.y && ref C.c && ref C.sc
@@ -691,13 +692,16 @@ EatSlide: | # liney schemery
         }
     
     n reny =>''=>{s=><<''}
-        C.y = C.y eq '' ? {}
-            : C.y =~ /^($NUM)$/
-            ? {cv=>$1}
-            : C.y =~ /^($NUM)-($NUM)$/
-            ? {in=>$1,out=>$2}
-            : C.y =~ /^($NUM)-($NUM)x($NUM)$/
-            ? {in=>$1,out=>$2,thi=>$3}
+        $_ = C.y;
+        C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})
+            : /^($NUM)$/ ? {cv=>$1}
+            : /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
+            : /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
+            : C.y eq 'W' ? do {
+                C.c.W = C.t;
+                {};
+            }
+            : I.rey ? I.d&rey
             : die "C y wtf: C.y";
     
     n renc =>''=>{s=><<''}
