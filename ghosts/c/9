@@ -31,10 +31,10 @@ allvc: |
     n 'allarev=c'=>2,{s=><<''},{code=>'In 422'}
         return if C.sc.nov;
         C.sc.v = 'c'.C.sc.v;
-allvse: |
-    n allvc =>W
-    n 'allvse'=>2,{s=><<''},{code=>'In 419'}
-        if (C.c.of) {
+allof: |
+    n allacgts =>W
+    n 'allof'=>2,{s=><<''},{code=>'In 418'}
+        if (C.c.of) { # or how this u tater got .s'd
             A.J.A.vse.of = C.c.of;
             return T.not = 1;
         }
@@ -43,6 +43,11 @@ allvse: |
             $cv =~ s/^0\.//;
             (A.J.A.vse.of||C.t)." $cv"
         };
+    
+allvse: |
+    n allvc =>W
+    n allof =>W
+    n 'allvse'=>2,{s=><<''},{code=>'In 419'}
         if (C.sc.nv) {
             C.sc.nov = 1;
             C.sc.v = C.sc.nv;
@@ -50,7 +55,7 @@ allvse: |
         C.sc.v ||= C.t unless exists C.sc.v;
         (my $cv = C.y.cv) =~ s/^0\.//;
         $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
-        $cv||die"no0 C.y.cv  ".ki $C;
+        $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
 allovse: |
     n allvse =>W
