@@ -87,7 +87,6 @@ Driver: |
     J.A.IIII = G.IIII = ['G/T/Remy','G/T/Eel'];
     n Car =>W
 Car: |
-    J.V = 1;
     my $r = J.foib++;
     $r > 0 &&
     n foib =>''=>"foib$r",'%fs:'.(30 * (($r+1) / 3))
@@ -99,7 +98,6 @@ Car: |
     #Rw wayt $d=4 $p=Top;
     n sjei => 3 => 'Steilrofoam'
     n jury => '2-7x8' => '$(000'
-    J.V = 1;
     
 Stoops: |
     u grows
@@ -133,7 +131,7 @@ Dwive: |
     
     n Dwight =>W=>'%test:1'
     
-    n Dwight =>W=>'%test:1'
+    n Car =>W=>'%test:1'
     
     #n Gapitan =>W
     # EatDwightfully 
@@ -141,6 +139,8 @@ Dwive: |
     # bab &38 -> if (A.t&38) {
     # A.e&sackil # A.c for C.c.e for sackil, travel got it there
 AutoCzech: | # check re-working
+    # wants to n Tests first
+    # u uns when un repeats
     u allvse
     n '','','%of:Mo'
     
@@ -197,16 +197,25 @@ TestTool: |
 TestRun: |
     u allact
     
-    n runs =>1,<<'','%code:U 4,v:cJ'
-        my $ts = J.tests;
+    n runs =>4,<<'','%v:cJ,code:U 4'
+        my $ts = J.tests ||= {};
         ts.i++;
-        map{sayre "Running tests for the ts.i time"}1..3;# if ts.i > 1;
+        ok(ts.i, "Running tests ts.i of J.name");
     
     n test =>2,<<'','%v:ctest,code:Mo 2'
-        C.c.tfile = join '/', 't', A.J.name, C.t, $test;
-        my $st = C.c.st = {};
+        my $J = A.J;
+        my $ts = J.tests||die'suhpetsts';
+        my $f = C.c.tfile = join '/', 't', J.name, C.t, $test;
+        my $its = $ts->{$f} ||= {};
+        its.i++;
+        .
+        its.is->{its.i} && die'alelee';
+        my $st = C.c.st = its.is->{its.i} = {};
         st.exp = LoadFile(C.c.tfile) if -f C.c.tfile;
         C.c->{"test$test"} = 1;
+        .
+        my $min = " (ts.i)" if ts.i > 1;
+        ok(its.i, "$f begins its.i$min");
     
 Dwight: |
     J.A.IIII = [@{G.IIII},'G/T/Draw'];
