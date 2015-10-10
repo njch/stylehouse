@@ -700,12 +700,12 @@ EatSlide: | # liney schemery
         }
     
     n reny =>''=>{s=><<''}
-        $_ = C.y;
         C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})
-            : /^($NUM)$/ ? {cv=>$1}
-            : /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
-            : /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
-            :/^([WJ])$/ ? do {
+            : C.y =~ /^($NUM)$/ ? {cv=>$1}
+            : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
+            : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
+            : C.y =~ /^([WJ])$/ ? do {
+                sayre ":Bout2 C.t onto ".wdump 3,$C;
                 C.c->{$1} = C.t;
                 {};
             }
