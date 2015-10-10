@@ -131,40 +131,12 @@ Dwive: |
     #n Head =>W
     n s=>''=>t
     
-    my $D = 
-    n Dwight
-    #J.V = 1;
-    my $t =
     n Dwight =>W=>'%test:1'
+    
+    n Dwight =>W=>'%test:1'
+    
     #n Gapitan =>W
-    
     # EatDwightfully 
-    my $rv = D.nj.El.Duv.rv;
-    ok($rv, "got J.name rv");
-    
-    
-    # provide $vl for follower
-    my $stuff = Rw TNews $J $rv;
-    my $ids = {};
-    my $here = 3;
-    my $idi = 1;
-    my $idstu = sub {
-        my $id = shift;
-        my $il = $ids->{$id} ||= $idi++;
-        "il$here$il";
-    };
-    $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
-    $stuff =~ s/(mtime=)(\d{5})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
-    $stuff = [split "\n", encode_utf8 $stuff];
-    my $file = "t/J.name/01-this";
-    my $right = 0 ? do {
-        DumpFile($file,$stuff);
-        $stuff;
-    } : LoadFile($file);
-    
-    is_deeply($stuff,$right,"Stuff is right!")
-        || sayre wdump 2, $stuff;
-    
     # this can A.t&38 itself a ...
     # bab &38 -> if (A.t&38) {
     # A.e&sackil # A.c for C.c.e for sackil, travel got it there
@@ -172,7 +144,7 @@ AutoCzech: | # check re-working
     u allvse
     n '','','%of:Mo'
     
-    n test1 =>45,<<''
+    n test1 =>77,<<''
         ok(ref C.c.J, "J is alive");
         is(C.c.J, C.sc.J, "in two places");
         my $rv = C.c.J.El.Duv.rv;
@@ -180,26 +152,21 @@ AutoCzech: | # check re-working
         my $stuff = I.d&testNews,$rv;
         I.d&eeply,$stuff,$_
             for "Wheels of chaos";
-        .
-        sayre "SGood ".ki $C;
-    
-    n test1 =>77,<<''
-        saybl "TESTED!" for 1..4;
-        sayre "Samer";
         # if fails launch something to apply got -> exp or so
-        #I.d&taccept;
+        I.d&taccept if C.c.tac;
 
     
 TestTool: |
     u allacgts
-    
     # pushed to
     n taccept =>'',<<''
         my $f = C.c.tfile;
         (my $d = $f) =~ s/\/[^\/]+$//;
         `mkdir -p $d` unless -d $d;
         my $got = C.c.st.got;
-        say "Write $f the ".ki $got;
+        say "Accepting for $f: ".wdump 2,$got;
+        die "Ref leaky " if 
+            length(wdump 4,$got) < length(wdump 5,$got);
         DumpFile($f, $got);
 
     n eeply =>'',<<'',{acgt=>'s,K'}
@@ -228,10 +195,14 @@ TestTool: |
         [split "\n", encode_utf8 $stuff];
     
 TestRun: |
-    u allvse
-    n '','','%of:Mo'
+    u allact
     
-    n test =>2,<<''
+    n runs =>1,<<'','%code:U 4,v:cJ'
+        my $ts = J.tests;
+        ts.i++;
+        map{sayre "Running tests for the ts.i time"}1..3;# if ts.i > 1;
+    
+    n test =>2,<<'','%v:ctest,code:Mo 2'
         C.c.tfile = join '/', 't', A.J.name, C.t, $test;
         my $st = C.c.st = {};
         st.exp = LoadFile(C.c.tfile) if -f C.c.tfile;

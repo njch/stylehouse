@@ -113,7 +113,10 @@ Arange: |
     $A;
 WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     my $A = Rw Arange;
-    A.N = [ar.C || @{ar.N}];
+    A.N = [ar.C ||
+        @{ar.N ||
+            [[ar.t?(ar.t,'',{J=>A.J}):die"artnot: send C or N"]]
+        }];
     A.M = [];
     A.talk = "A.J.name ".(A.J.le && A.J.le.name);
     A.fl = ar.fl || {};
