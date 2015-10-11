@@ -1,14 +1,30 @@
+TestI: |
+    # u whateverworkon
+    u AutoCzech
+    u TestTool
+    u TestRun
+    #u WhoAmI
+    n s=>''=>t
+    Rw dow $TestI:J.A.I;
+    T.nose = 1; # dont Sev (next run may use trouble)
+    # do tests... contigo
+    # merge/split things into Seate-good, Seate-bung etc
+    
 TestRun: |
-    u allact
+    u allvse
+    n '','','%of:Mo';
     
     # runs twice.. .what the hell,
     # could In it like test but u wants to be enough
-    n runs =>4,<<'','%v:cJ,code:U 4'
+    n runs =>2,<<''
+        my $J = A.J;
+        J.tests && return sayyl "Top level TestRun J.name repeats";
+        use Test::More 'no_plan';
         my $ts = J.tests ||= {};
         ts.i++;
         ok(ts.i, "Running tests ts.i of J.name");
     
-    n test =>2,<<'','%v:ctest,code:Mo 2'
+    n test =>21,<<''
         my $J = A.J;
         my $ts = J.tests||die'suhpetsts';
         my $f = C.c.tfile = join '/', 't', J.name, C.t, $test;
@@ -16,9 +32,13 @@ TestRun: |
         its.i++;
         .
         its.is->{its.i} && die'alelee';
-        my $st = C.c.st = its.is->{its.i} = {};
-        st.exp = LoadFile(C.c.tfile) if -f C.c.tfile;
-        C.c->{"test$test"} = 1;
+        my $st = its.is->{its.i} = {};
+        st.ts = $ts;
+        .
+        my $is = -f C.c.tfile;
+        ok($is, "has test data: C.c.tfile");
+        st.exp = LoadFile(C.c.tfile) if $is;
+        C.c.st = $st;
         .
         my $min = " (ts.i)" if ts.i > 1;
         ok(its.i, "$f begins its.i$min");
@@ -39,15 +59,37 @@ TestTool: |
     n eeply =>'',<<'',{acgt=>'s,K'}
         C.c.st.got->{$K} = $s;
         my $e = C.c.st.exp->{$K};
-        is_deeply($s, $e, $K);
+        is_deeply($s, $e, $K)
+        && return;
+        return sayre wdump 3, {"Got for $K: "=>$s,"Expected: "=>$e}
+            if ref $s ne 'ARRAY';
+        my $i = 0;
+        # chuck into two pis, present W with timer slider
+        for my $l (@$s) {
+            my $el = $e->[$i++];
+            if ($l eq $el) {
+                say "Same: $l";
+            }
+            else {
+                sayre "Got:  $l";
+                saybl "Exp:  $el";
+            }
+        }
         
     n testNews =>'',<<''
-        # provide $vl for follower
-        my $rv = $s;
-        my $rl = {}; # pass, lives with $ids
+        my $J = C.c.J;
+        my $st = C.c.st;
+        my $oJ = J.El->{$s};
+        my $rv = oJ.rv;
+        my $rlk = "J.name:$s";
+        my $rl = st.ts.rls->{$rlk} || {};
+        .
         my $r = Rw scd $rl $rv;
-        my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
+        #my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
         my $n = Rw ZNews news $sc:r.z;
+        $n = @{r.oldz}." more ^^^:\n$n" if r.oldz;
+        .
+        st.ts.rls->{$rlk} = $rv;
         my $stuff = $n;
         my $ids = {};
         my $here = 3;
@@ -61,46 +103,47 @@ TestTool: |
         $stuff =~ s/(mtime=)(\d{5})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
         [split "\n", encode_utf8 $stuff];
     
-
 AutoCzech: | # check re-working
     # wants to n Tests first
     # u uns when un repeats
     u allvse
     n '','','%of:Mo'
     
-    n test1 =>77,<<''
+    n test =>77,<<''
         ok(ref C.c.J, "J is alive");
         is(C.c.J, C.sc.J, "in two places");
+        .
         my $rv = C.c.J.El.Duv.rv;
         ok(ref $rv, "rv is alive");
-        my $stuff = I.d&testNews,$rv;
+        .
+        my $stuff = I.d&testNews,'Duv';
         I.d&eeply,$stuff,$_
-            for "Wheels of chaos";
-        # if fails launch something to apply got -> exp or so
+            for "Wheels of chaos ($test)";
+        .
         I.d&taccept if C.c.tac;
 
     
-
-
-
-
 Dwive: |
-    #J.A.IIII = G.IIII = ['G/T/Remy','G/T/Eel'];
-    u AutoCzech
-    u TestTool
-    u TestRun
-    use Test::More 'no_plan';
+    J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
+    n '','','%runs'
+    
     #n Head =>W
     n s=>''=>t
     if (!J.fsjoi) {
-        #n DwightSmall =>W=>'%test:1'
+        n DwightSmall =>W=>'%test:1'
 
-        #n CarSmall =>W=>'%test:1'
+        n CarSmall =>W=>'%test:1'
 
         n EwokSmall =>W=>'%test:1'
     }
-    else {
+    elsif (J.fsjoi == 1) {
         n EwokSmall =>W=>'%test:2'
+    }
+    elsif (J.fsjoi == 2) {
+        n EwokSmall =>W=>'%test:3'
+    }
+    else {
+        ok(0 => "Run too many times!");
     }
     
     #n Gapitan =>W
@@ -108,8 +151,9 @@ Dwive: |
     # this can A.t&38 itself a ...
     # bab &38 -> if (A.t&38) {
     # A.e&sackil # A.c for C.c.e for sackil, travel got it there
+    G.asap = 1;
     J.fsjoi++ ||
-    Rw loopfourby $d=5 $p=Top;
+    Rw loopby $b=0.2 $d=7 $p=Top;
 DwightSmall: |
     J.A.IIII = [@{G.IIII},'G/T/Draw'];
     
@@ -146,8 +190,15 @@ pi/ekwo: |
     Mn($_=>''=>{pi=>ewoks=>s=>$_})
         for "Deliu", "Deo";
 pi/ewoks: |
-    n seww => 1,{s=>'sile: '}
+    # changes:
+    n seww => 1,{s=>'sile: '.J.most.J.runjloop}
+    # disappears @ 2:
     J.most.J.runjloop ||
     n sewt => 2,{s=>$s}
+    # etc
     Mn($_=>''=>{pi=>eee=>s=>$_})
         for "Deleeeeiu", "Deeeeeo";
+pi/eee: |
+    n silfe => 1,{s=>'sile: '.$s}
+    n 'manyis2' => 3,{s=>"J.name 3: $s"}
+

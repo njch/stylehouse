@@ -79,7 +79,7 @@ Run: |
 Top: |
     my $now = hitime;
     my $gap = $now - G.lastout;
-    if ($gap < 2) {
+    if (!G.asap && $gap < 2) {
         sayre("slowlaned ${_}s")&& sleep 1 for 1..2;
         return;
     }
@@ -111,7 +111,7 @@ Many: |
     y.i++;
     my $ts = hitime;
     y.la->{$ts} = 1;
-    sayyl "many y.i"; 
+    sayyl "many y.i  since: ".($ts - G.oin.A.first);
     
 Loading: |
     my @l;
