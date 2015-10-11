@@ -127,22 +127,9 @@ Viu: | # u/n/m pinging uCon, setup part Jto
         my @m = @_;
         shift @m if ref $m[0] && $m[0] eq $J;
         pop @m while $m[-1] eq '';
-        if (@m < 4) {
-            my $gk = $m[1] eq 'W' ? 'W' : 'J';
-            $m[1] = '' if $gk eq 'W';
-            $m[2] = {$gk=>$m[0]} unless defined $m[2]; # c.J=t reflex
-            @m == 3 || die "!!!\n".wdump[@m];
-        }
         @m>4&&die"mvelope>4".wdump 2, \@m;
         [@m]
-    };
-    $dJ = sub {
-        my @m = @_;
-        shift @m if ref $m[0] && $m[0] eq $J;
-        pop @m while $m[-1] eq '';
-        @m>4&&die"mvelope>4".wdump 2, \@m;
-        [@m]
-    } if $ARGV[-1] eq '2';
+    } if $ARGV[-1] ne '3';
     my $oAr = sub { # bit of dome escape vector
         my ($ar) = @_;
         my $oA = ar.oA = {};
