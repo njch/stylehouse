@@ -293,6 +293,7 @@ IStuff: |
         G.drop.recycling->{A.J.id}->{A.am} = $I;
 KnowTime: | # dome props
     u allacgts
+    
     n 't' =>''=>{s=><<''},{acgt=>'K,cv,av',nois=>'#c'}
         ($K,$cv) = (A.am,$K) if !$cv && $K;
         $av = 0+("0.".$av) if $av;
@@ -379,6 +380,7 @@ KnowTime: | # dome props
         .
         # do stuff
         my $vb; # in fractions
+        my $wasSubtle;
         for my $vc (sort keys %$yv) {
             my $is = $yv->{$vc};
             my $s = {};
@@ -388,127 +390,141 @@ KnowTime: | # dome props
             next if $vc <= $Av && $vc != $c;
             next if $vc > $c;
             .
-            if (0 && $K eq 'Sev') {
-                saybl "We $K - $vb -> $vc  ".join', ',
-                    map{"$_: ".@{A.mo.re->{$_}}} sort keys %{A.mo.re||{}};
+            # our  osc (stay in K per Subtle ness);
+            my @iz = grep {
+                $aim->{$_} || (aim.I && (A.Iso->{$_} || I.also->{$_}))
+            } sort keys %$is;
+            next if !@iz;
+            .
+            # decide inter cv wideness loop
+            if ($wasSubtle) {
+                undef $wasSubtle;
             }
-            if ($vb && $vc > $vb && (
+            elsif ($vb && $vc > $vb && (
                 @{A.N} || @{A.mo.re->{$vb}||[]}
                 )) {
                 # sincing, wide order
                 # various others want to be around for only some of the process...
-                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V;
+                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V > 1;
                 T.Z->{$vb} = 1;
                 A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
-            for my $k (sort keys %$is) {
+            .
+            # pin down poles
+            I.cv = $vc;
+            I.vb = $vb;
+            # draw curvles as spirals done
+            .
+            for my $k (@iz) {
                 my $iii = $is->{$k};
-                .
-                next unless $aim->{$k} || (aim.I && A.Iso->{$k});
-                .
-                for my $ik (sort keys %$iii) {
-                    my $D = $iii->{$ik};
-                    .
-                    if (my $nk = D.sc.nk) {
-                        my $C = I.nF.C;
-                        next if !exists $C->{$nk};
-                        if (my $gk = D.sc.gk) {
-                            next if !exists $C->{$nk}->{$gk};
-                        }
-                    }
-                    my $act;
-                    my $dont;
-                    if (D.sc.acgt && D.sc.act) {
-                        $act = 1;
-                        # acgtsubs can be defined at any cv
-                        # run themselves if act
-                        # usu. one receiver (Ci) and the rest scheme
-                        die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
-                        $dont = 1 if exists A.I->{D.t};
-                    }
-                    .
-                    # way or acgt-setuping-way
-                    unless ($dont) {
-                        my $paw = join"_",'',$k,$vc,D.t;
-                        $paw =~ s/\W//g;
-                        Rw $paw $A $C $G $T $__D:D;
-                    }
-                    # most tiny ticks
-                    # this ind is all flywheel
-                    # it's a kind of unity that wants to be a block of code like this
-                    # and c
-                    my @is = A.s;
-                    #
-                    @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
-                    #
-                    @is || next;
-                    .
-                    if ($act) {
-                        push @$xrd, [$k,$ik];
-                        my $Ds = $x->{$k}->{$ik} ||= {};
-                        Ds.D = $D;
-                        Ds.is = \@is;
-                        D.sc.its = @is;
-                        # pin down poles
-                        #I.cv = $vc;
-                        #I.vb = $vb;
-                        # draw curvles as spirals done
-                    }
-                    .
-                    # TreeD
-                    $s->{$k}->{$vc}->{$ik} = $D;
-                }
+                I.k = $k;
+                I.d&carebowl,$s,$iii,$x,$xrd;
             }
-            my $se = Rw TreeD $s $scby=gro
+            # suble
+            my $se = Rw TreeD $s $scby=gro 
                 if A.J.V > 1 && keys %$s;
             $c == 0.1 ? saygr $se : say $se if $se;
             .
-            for my $kik (@$xrd) {
-                my ($k,$ik) = @$kik;
-                my $Ds = $x->{$k}->{$ik};
-                my $D = Ds.D;
-                for my $s (@{Ds.is}) {
-                    D.sc.acgt eq 's'||die "nonacgts".wdump $D;
-                    exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
-                    .
-                    I.d&D.t,$s;
-                    .
-                    I.acted and I.d&acted,$s;
-                    .
-                    if (my $ut = T.ut) {
-                        if (ut.matchTd) {
-                            my $d = s.d || die "confuse";
-                            d.od.s.T.q->{d.e.k} ||= $d;
-                            d.od.s.T.m->{d.e.k} ||= $d
-                                unless delete(T.noTd);
-                        }
-                        else { die"utrowhat ".wdump 2, $ut }
-                    }
-                    .
-                    # schools of many fish (not upcv if !@is)
-                    $vb ||= $vc if D.sc.v;
-                    .
-                    last if T.not || T.whack;
-                }
-                delete T.ut;
-                last if T.not || T.whack;
+            my $o;
+            (o.vc,o.vb) = ($vc,$vb);
+            I.d&exood,$o,$x,$xrd;
+            ($vc,$vb) = (o.vc,o.vb);
+            if (o.Subtle && !o.nonSubtle) {
+                $wasSubtle = 1;
             }
             .
             return if T.not;  # will &z, oseve
             return if delete T.whack;
         }
     
+    n carebowl =>''=><<'',{l=>'#c',acgt=>'s,iii,x,xrd'}
+        for my $ik (sort keys %$iii) {
+            my $D = $iii->{$ik};
+            if (my $nk = D.sc.nk) {
+                my $C = I.nF.C;
+                next if !exists $C->{$nk};
+                if (my $gk = D.sc.gk) {
+                    next if !exists $C->{$nk}->{$gk};
+                }
+            }
+            my $act;
+            my $dont;
+            if (D.sc.acgt && D.sc.act) {
+                $act = 1;
+                # acgtsubs can be defined at any cv
+                # run themselves if act
+                # usu. one receiver (Ci) and the rest scheme
+                die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
+                $dont = 1 if exists A.I->{D.t};
+            }
+            # way or acgt-setuping-way
+            unless ($dont) {
+                my $paw = join"_",'',I.k,I.cv,D.t;
+                $paw =~ s/\W//g;
+                Rw $paw $A $C $G $T $__D:D;
+            }
+            # most tiny ticks
+            # this ind is all flywheel
+            # it's a kind of unity that wants to be a block of code like this
+            # and c
+            my @is = A.s;
+            @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
+            @is || next;
+            if ($act) {
+                push @$xrd, [I.k,$ik];
+                my $Ds = $x->{I.k}->{$ik} ||= {};
+                Ds.D = $D;
+                Ds.is = \@is;
+                D.sc.its = @is;
+            }
+            # TreeD
+            $s->{I.k}->{I.cv}->{$ik} = $D;
+        }
+    
+    n exood =>''=><<'',{l=>'#c',acgt=>'o,x,xrd'}
+        for my $kik (@$xrd) {
+            my ($k,$ik) = @$kik;
+            A.Subtle && A.Subtle->{$k} ? o.Subtle++ : o.nonSubtle++;
+            my $Ds = $x->{$k}->{$ik};
+            my $D = Ds.D;
+            for my $s (@{Ds.is}) {
+                D.sc.acgt eq 's'||die "nonacgts".wdump $D;
+                exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
+                .
+                I.d&D.t,$s;
+                .
+                I.acted and I.d&acted,$s;
+                .
+                if (my $ut = T.ut) {
+                    if (ut.matchTd) {
+                        my $d = s.d || die "confuse";
+                        d.od.s.T.q->{d.e.k} ||= $d;
+                        d.od.s.T.m->{d.e.k} ||= $d
+                            unless delete(T.noTd);
+                    }
+                    else { die"utrowhat ".wdump 2, $ut }
+                }
+                .
+                # outwave: schools of many fish (not upcv if !@is)
+                o.vb ||= o.vc if D.sc.v;
+                .
+                last if T.not || T.whack;
+            }
+            delete T.ut;
+            last if T.not || T.whack;
+        }
+    
     # y
 Indulator: | # Wain spinality
     # not allcode since uCons blank qq cone & then thing
-    n Bangdesk =>W
-    n IStuff =>W
-    n KnowTime =>W
-    n EatSlide =>W
-    n C =>W
-    n Servo =>W
-    n Motion =>W
+    n Bangdesk
+    n IStuff
+    n KnowTime
+    n EatSlide
+    n C
+    n Servo
+    n Motion
     
 Motion: |
     u allacgts
