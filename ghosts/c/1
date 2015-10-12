@@ -675,11 +675,12 @@ EatSlide: | # liney schemery
         die "string: $s";
     
     n array =>''=>{s=><<''}
-        return I.d&fourreal,$s
-            if @$s != 1 || $s->[0] =~ /^\w+$/;
-        $s = $s->[0];
-        ref $s && die "array1ref: ".wdump $s;
-        I.d&fourstring,$s
+        return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
+        return I.d&fourstring,$s if @$s == 1 && !ref $s->[0];
+        # should stick In in first and M it? 
+        # kind of motion that wants to be unsure in the wild
+        unshift @{A.N}, @$s;
+        T.not = 1;
     
     n hash =>''=>{s=><<''}
         return %$C = %$s if exists s.t && s.y && s.c;
@@ -701,7 +702,7 @@ EatSlide: | # liney schemery
         I.d&rensc if !ref C.sc;
         defined C.t && !ref C.t
         && ref C.y && ref C.c && ref C.sc
-            || die "reaso fail".wdump $C;
+            || die "reaso fail".wdump [A.s,$C];
         I.d&scyvle;
     
     # fold space til fit
@@ -843,7 +844,7 @@ C: |
         $s
    
    
-Servo: | # lightning over speech bubble in the c 5 liniarity
+Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     u allacgts
     
     n servehash =>''=>{s=><<''}

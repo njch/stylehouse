@@ -296,11 +296,12 @@ sub HGf {
 }
 
 sub ki {
-    my $ar = shift;
-    my $re = $ar if $ar =~ /^\d+$/;
-    $ar = shift if defined $re;
-    $re = 1 if !defined $re;
-    my $d = 1 + shift;
+    my ($re,$ar,$d) = @_;
+    $d++;
+    if ($re !~ /^\d+$/ && !$ar) {
+        $ar = $re;
+        $re = 2;
+    }
     if (!ref $ar || "$ar" !~ /(HASH)/) {
         return "!%:$ar";
     }
@@ -2142,7 +2143,7 @@ sub g_parse_babble {
     $eval =~ s/($mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
     $eval =~ s/($mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
 
-    $eval =~ s/($mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+    $eval =~ s/($mwall)(u|n) (.+?)(;| for .+)?$/"${1}J\.$2->($3=>'')".($4||';')/smeg;
     #$eval =~ s/($mwall)(m) (\w+)\(/${1}J\.$3->(\$$2, /smg;
 
     # lma quack $not->('tag');
