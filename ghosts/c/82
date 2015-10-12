@@ -1,7 +1,12 @@
 
+alljs: |
+    n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
+        C.sc.acgt = 's' if !exists C.sc.acgt;
+        C.sc.js = 1;
 JSea: |
     u alljs
     # for the webclient channels
+    # top level mirage is o(ww,Wid,$s)  which ins ww (G.Wid,Oth), Wid (you)
     n om =>''=><<''
         A = $.extend({},A);
         C = G.inC(C); 
@@ -49,9 +54,7 @@ JSea: |
            if (C.sc[v]) {
                var nC = {c: C.sc[v], sc: C.sc};
                var way = 'sc_'+v;
-               
                var f = {n: G[way]};
-               
                f.n(A,nC,G,T);
            }
         });
@@ -71,7 +74,7 @@ JSea: |
     n sc_geo =>''=><<''
         var s = C.c.split(' ');
         if (s[0].match('^a')) {
-            
+            //absolu
         }
         C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
         C.sc.css.top = (C.c.y * 100)+'%';
@@ -94,7 +97,7 @@ JSea: |
             C.sc.attr = {};
         var last;
         if (C.c.el === '9' || C.c.el === '1') {
-            
+            // some
         }
         if (C.c.id) { 
             C.sc.attr.id = C.c.id;
@@ -230,6 +233,9 @@ JScomp: |
         else if (typeof C === 'string') {
             C = {c: C};
         }
+        if (typeof C.c === 'string') {
+            C.c = {s: C.c};
+        }
         return C
 
     n yl =>''=><<'',{acgt=>'delay,func'}
@@ -275,19 +281,19 @@ JScomp: |
     # contextualise to W
     n do =>''=><<''
         try {
-          eval(C.c);
+          eval(C.c.s);
         }
         catch (er) {
-          a.er(C.c, er);
+          a.er(C.c.s, er);
         }
     
     n ps =>''=><<''
         with (paper) {
           try {
-            eval(C.c);
+            eval(C.c.s);
           }
           catch (er) {
-            a.er(C.c, er);
+            a.er(C.c.s, er);
           }
         }
     
