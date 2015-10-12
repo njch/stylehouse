@@ -58,6 +58,11 @@ allvse: |
         $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
         $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
+allvs: |
+    n allvse
+    n 'allvs'=>2,{s=><<''},{code=>'In 419'}
+        C.sc.v ||= 's';
+    
 allovse: |
     n allvse
     n 'allovse'=>2,{s=><<''},{code=>'In 4189'}
@@ -161,7 +166,8 @@ ym/concoi: |
                     C.sc.gk ||= $gk;
                     my $gkk = $gk;
                     $gk = C.sc.gkis if C.sc.gkis;
-                    push @$ara, "    my \$".$gk." = C\.".$nk."\.".$gkk.";";
+                    my $my = "my " unless C.sc.args =~ /\bs\b/ && $nk eq 'c' && $gkk eq 's';
+                    push @$ara, "    $my\$".$gk." = C\.".$nk."\.".$gkk.";";
                 }
             }
             
