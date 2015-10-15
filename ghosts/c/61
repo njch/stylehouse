@@ -17,12 +17,17 @@ wayt: |
     my $d = delete ar.d;
     my $p = delete ar.p;
     my $cb = sub {
-        sayre "$d to $p";
         Rw $p;
     };
-    sayyl "$d to $p: $cb";
     Rw timer $d $cb;
     
+loopfourby: |
+    Rw loopby + $b=4;
+loopby: |
+    map {
+      $_ *= $b || 4;
+      Rw wayt $d:_ $p=Top;
+    } 1..$d;
 vortex: |
      my $m = ar.m||[];
      my $d = ar.d||4;
