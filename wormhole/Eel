@@ -1,4 +1,36 @@
 --- 
+I: 
+  "0.1": 
+    ratio: 
+      c: 
+        el: 1
+        s: "A.I.ratio = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($o,$t) = @M;\n    my $I = A.I;\n    my $ratio = $o / ($t||1);\n    0.01 * int(100*$ratio);\n};\n"
+      sc: 
+        acgt: o,t
+        args: A,C,G,T,o,t
+        code: I 1
+        dige: c195879acd18
+        gro: Timing
+      t: ratio
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Timing/Timing
+    scd: 
+      c: 
+        el: 1
+        s: "A.I.scd = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($rv,$rl) = @M;\n    my $I = A.I;\n    my $r;\n    r.z = [];\n    r.oldz = [];\n    undef $rl if $rl && rl.c ne rv.c;\n    push @{$rl ? r.oldz : r.z}, @{rv.c};\n    \n    r.in = @{rl.sc||[]};\n    r.out = @{rv.sc};\n    if (r.out > r.in) {\n        r.ay = [r.in..(r.out - 1)];\n        push @{r.oldz}, @{rv.sc}[0..r.in] if r.in;\n        push @{r.z}, @{rv.sc}[@{r.ay}];\n    }\n    $r\n};\n"
+      sc: 
+        acgt: rv,rl
+        args: A,C,G,T,rv,rl
+        code: I 1
+        dige: c877ff060dc9
+        gro: Timing
+      t: scd
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Timing/Timing
 Mo: 
   "0.3211": 
     J_3211: 
