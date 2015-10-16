@@ -307,6 +307,8 @@ sub ki {
     }
     #
     my $lim = 150 - (150 * ($d / 3));
+    my @keys = sort keys %$ar;
+    @keys = ('name') if $ar->{name} && $ar->{bb};
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
