@@ -240,7 +240,6 @@ ym/concoi: |
     }
 ym/jscoi: |
     my $s = C.sc.js || return;
-    
     if (C.sc.acgt) {
         C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
     }
@@ -249,7 +248,15 @@ ym/jscoi: |
     C.sc.args =~ s/ /,/g;
     C.c.s = "a.".C.t." = function(".C.sc.args.") {".C.c.s."};\n";
     C.sc.dige = slm 12, dig C.c.s;
+    
+    delete C.c.from; # as 7, S over
+    C.sc.lines = 1;
     $v->{js}->{C.y.cv}->{C.t} = $C;
+ym/spots: |
+    v.i ||= 0;
+    $v->{Z}->{v.i} = $C;
+    push @{v.z||=[]}, $v->{l}->{v.i++} = C.c.s;
+    
 ym/talky: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     my $nC = {%$C};
     my $t = ar.t ||"";
