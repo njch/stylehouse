@@ -3,6 +3,113 @@ alljs: |
     n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
         C.sc.js = 1;
+JSC: |
+    u alljs
+    
+    
+JScomp: |
+    u alljs
+
+    n inC =>''=><<''
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: C};
+        }
+        if (typeof C.c === 'string') {
+            C.c = {s: C.c};
+        }
+        return C;
+
+    n yl =>''=><<'',{acgt=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<''
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+    # turf grab
+    n wu =>''=><<'',{acgt=>'wwid,Wid,s'}
+        $('ww#'+wwid+' > *#'+Wid).remove();
+        $('ww#'+wwid).append(s);
+    
+    # contextualise to W
+    n WW =>''=><<''
+        var W = ww[s];
+        if (!W) {
+            W = ww[s] = {};
+            W.Wid = s;
+            W.A = {};
+            //W.A.p = new paper.Project();
+            W.A.W = W;
+        }
+        //W.A.p.activate();
+        return W;
+    
+    # contextualise to W
+    n o =>''=><<'',{acgt=>'Wid,K,C'}
+        var W = a.WW(Wid);
+        var A = W.A;
+        C = a.inC(C);
+        var G = a;
+        // should be receiver, W.G, auto locals + uni
+        // looks in W.G, W.G.incs, a
+        // passes ACGT
+        var T = {};
+        a[K](A, C, G, T);
+    
+    # contextualise to W
+    n do =>''=><<''
+        try {
+          eval(C.c.s);
+        }
+        catch (er) {
+          a.er(C.c.s, er);
+        }
+    
+    n ps =>''=><<''
+        with (paper) {
+          try {
+            eval(C.c.s);
+          }
+          catch (er) {
+            a.er(C.c.s, er);
+          }
+        }
+    
+    # mire
+    n cod =>''=><<''
+        var def = {mode:'perl',theme:'midnight',lineWrapping:true};
+        var set = $.extend(def, s);
+        var id = set['id'];
+        delete set['id'];
+        var cm = CodeMirror(document.getElementById(id), set);
+        .
+        cm.ididid = id;
+        cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
+        .
+        cm.on('focus',function(){clof();keof();});
+        cm.on('blur',function(){clon();keon();a.codsav(cm)});
+        .
+        $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
+        $('#'+id+' > .CodeMirror');//.css('height','auto');
+    
+    # reflux
+    n codsav =>''=><<''
+        var we = $('#'+s.ididid);
+        a.m('AAAAAAAAAAA');
+        var d = {};
+        a.entag(d, we);
+        d.code = cm.getValue();
+        d.dig = we.attr('dig');
+        a.ethro(d, ws);
+        console.log(d);
 JSea: |
     u alljs
     # for the webclient channels
@@ -119,7 +226,7 @@ JSea: |
         if (C.c.s)
             $(el).html(C.c.s);
         A.on = el;
-Otheringso: |
+Funstuff: |
     u alljs
     # paperscope (with (paper) {...}) FUN STUFF! spines!
     
@@ -131,7 +238,7 @@ Otheringso: |
     # pAaq2_PkypY?t=24
     # http://jsfiddle.net/M78zz/
     n Re =>''=><<''
-        # <div id="ytplayer"></div>
+        // <div id="ytplayer"></div>
     
     n yt =>''=><<''
         var d = {};
@@ -145,7 +252,7 @@ Otheringso: |
     
     # compression jsc ^, js v
     n ytapi =>''=><<''
-        # makes element src: https://www.youtube.com/player_api
+        // makes element src: https://www.youtube.com/player_api
     
     n ytr =>''=><<''
         //$('canvas#display').attr('width'=>'100%', height=>'100%');
@@ -220,109 +327,6 @@ Canvasc: |
             }
         }
     
-JScomp: |
-    u alljs
-
-    n inC =>''=><<''
-        C = s;
-        if (C.constructor == Array) {
-            C.length !== 4 && a.er("no4y", C);
-            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
-        }
-        else if (typeof C === 'string') {
-            C = {c: C};
-        }
-        if (typeof C.c === 'string') {
-            C.c = {s: C.c};
-        }
-        return C
-
-    n yl =>''=><<'',{acgt=>'delay,func'}
-        setTimeout(func, delay);
-
-    n ks =>''=><<''
-        var ks = [];
-        for (var k in s) {
-            ks.push(k);
-        }
-        return ks.join(',');
-    
-    # turf grab
-    n wu =>''=><<'',{acgt=>'wwid,Wid,s'}
-        $('ww#'+wwid+' > *#'+Wid).remove();
-        $('ww#'+wwid).append(s);
-    
-    # contextualise to W
-    n WW =>''=><<''
-        var W = ww[s];
-        if (!W) {
-            W = ww[s] = {};
-            W.Wid =s;
-            W.A = {};
-            //W.A.p = new paper.Project();
-            W.A.W = W;
-        }
-        //W.A.p.activate();
-        return W;
-    
-    # contextualise to W
-    n o =>''=><<'',{acgt=>'Wid,K,C'}
-        var W = a.WW(Wid);
-        var A = W.A;
-        C = a.inC(C);
-        var G = a;
-        // should be receiver, W.G, auto locals + uni
-        // looks in W.G, W.G.incs, a
-        // passes ACGT
-        var T = {};
-        a[K](A, C, G, T);
-    
-    # contextualise to W
-    n do =>''=><<''
-        try {
-          eval(C.c.s);
-        }
-        catch (er) {
-          a.er(C.c.s, er);
-        }
-    
-    n ps =>''=><<''
-        with (paper) {
-          try {
-            eval(C.c.s);
-          }
-          catch (er) {
-            a.er(C.c.s, er);
-          }
-        }
-    
-    # mire
-    n cod =>''=><<''
-        var def = {mode:'perl',theme:'midnight',lineWrapping:true};
-        var set = $.extend(def, s);
-        var id = set['id'];
-        delete set['id'];
-        var cm = CodeMirror(document.getElementById(id), set);
-        .
-        cm.ididid = id;
-        cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
-        .
-        cm.on('focus',function(){clof();keof();});
-        cm.on('blur',function(){clon();keon();a.codsav(cm)});
-        .
-        $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
-        $('#'+id+' > .CodeMirror');//.css('height','auto');
-    
-    # reflux
-    n codsav =>''=><<''
-        var we = $('#'+s.ididid);
-        a.m('AAAAAAAAAAA');
-        var d = {};
-        a.entag(d, we);
-        d.code = cm.getValue();
-        d.dig = we.attr('dig');
-        a.ethro(d, ws);
-        console.log(d);
 JSosC: |
     u allsvse
     

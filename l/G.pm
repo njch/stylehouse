@@ -1673,6 +1673,7 @@ sub sjson {
     my $m = shift;
     $H->{canon}||= do {
        my $j = new JSON::XS;
+       $j->allow_nonref;
        $j->canonical(1);
        $j
     };
