@@ -27,6 +27,8 @@ floatation: |
         # which give them a G-finding W above their own W
         # which they dont know about, it's routed to...
     
+
+        # J.mo.s is G.oin
 Wight: |
     J.A.III = ['G/T/Sav'];
     n Funstuff
@@ -38,7 +40,7 @@ Wight: |
 JSlines: |
     J.A.III = ['G/T/Sav'];
     u threes
-    y.at.em = 'jslines';
+    y.at.jslines = 1;
     
     y.ope = 1;
     #u openphase
@@ -114,13 +116,23 @@ jive: |
     n ar.J.name =>''=>{IsOn=>1,%{C.c},time=>6}
 ww: | # open this ghost
     u SevWo
-    u uxWout
-    
+    y.at.uxwout = 1;
     n ww =>0.9,{},"%id:J.id,tt:H.ol,poi:0,ab:100,bgh:33.5.3.1"
     #G.Wid = J.id;
     #unshift @{aj.c}, jsq " \$('#ux').append(%s);", $s;
+SevOth: |
+    u allovse
+    n '','','%of:O'
+    n J =>35=><<''
+        delete at.sc.J if C.c.S;
+        # conceal the multiJexits
+    
 SevWo: |
+    n Meta
+    n Wuts
+    
     u allacgts
+    
     n writef =>''=><<'',{acgt=>'f,s,append'}
         saybl "SZOY: $f    ".slim(300,$s).($append && " APPEND");
         (my $d = $f) =~ s/\/[^\/]+?$//;
@@ -144,12 +156,10 @@ SevWo: |
         delete at.sc.J if C.c.S;
         # conceal the multiJexits
     
-    
     u allvse
     n '','','%of:Sev'
     n root =>582=><<'',{rg=>'ylv,yvl'}
         return unless A.J.most.J eq A.J || A.J.C.c.Wo;
-        saybl '------------------' for 1..4;
         my $r = Rw scd $rl:vl $rv:lv;
         return unless @{r.z};
         aft { $@ || return; sayre "$@  !~!! ".wdump 9, $r; };
@@ -163,6 +173,8 @@ SevWo: |
         saygr "Well ".wdump 2, $C;
         A.t&em,6,2;
     
+Meta: |
+    u allvse
     n '','','%of:em'
     n em =>21=><<''
         em.lines || die "Not lines";
@@ -171,35 +183,45 @@ SevWo: |
         em.is.M = A.J.name;
         em.id = A.J.id.'.'.(0+em.i);
     
-    n em =>44=><<'','%rg:J'
-        # J.mo.s is G.oin
-        my $N = [@{em.lines}];
-        if (C.sc.em eq 'jslines') {
-            @$N = Rw humms $J $N wongui _;
-            @$N = Rw humms $J $N notnotjs _;
-            my $S = Rw humms $J $N spots;
-            em.lines = [map{
-                " a\.e(".sjson($_).");"
-            }@{S.z}];
-            C.c.os = 1 if !grep {/\S/} @{S.z};
-        }
-        else {
-            my $M = ['','',{W=>G.oin.id},{z=>em.lines}];
-            em.lines = [" a\.om({},".sjson($M).",a,{});"];
-        }
+    n em =>446=><<'',{rg=>'J'}
+        sayre "No Wc for A.J.name" if !C.sc.Wc;
+    
+    u allsvse
+    # split into line forms
+    n jslines =>44=><<'',{cg=>'J,em'}
+        my $N = [@{em.lines||die"Nop"}];
+        @$N = Rw humms $J $N wongui _;
+        @$N = Rw humms $J $N notnotjs _;
+        my $S = Rw humms $J $N spots;
+        em.lines = [map{
+            " a\.e(".sjson($_).");"
+        }@{S.z}];
+        C.c.os = 1 if !grep {/\S/} @{S.z};
+        C.sc.Wc = 1;
+    
+    n uxwout =>44=><<'',{cg=>'J,em'}
+        my $M = ['','',{W=>G.oin.id},{z=>em.lines}];
+        em.lines = [" a\.om({},".sjson($M).",a,{});"];
+        C.sc.Wc = 1;
+    
+    
+Wuts: |
+    u allsvse
+    n '','','%of:em'
+    n Wc =>446=><<'',{cg=>'J,em'}
         saybl "Downing ".wdump 5,$em;
         I.d&writef,"life/W/em.is.W\.c",em.lines,em.i;
         .
         # is coming soon: (only space or)
         C.c.as = !C.c.os;
         C.c.As = C.c.as;
-        C.c.meta = 1;
-        C.c.speak = 1 if C.c.as;
-        C.c.takeover = 1 if C.c.As;
+        C.sc.meta = 1;
+        C.sc.speak = 1 if C.c.as;
+        C.sc.takeover = 1 if C.c.As;
         saybl "WHITESPACE S J.name" for grep{C.c.os} 1..3;
     
     # inter intros
-    n meta =>447=><<'','%rg:em'
+    n meta =>47=><<'','%cg:em'
         G.Wh->{em.is.W} && return;
         G.Wh->{em.is.W} = A.J;
         sayyl "Life! of W em.is.W";
@@ -209,14 +231,14 @@ SevWo: |
         I.d&writef,"life/W/em.is.W\.i",$me;
     
     # event feedback (even tee rollistic trickles) donafto, drops
-    n speak =>448=><<'','%rg:em'
+    n speak =>48=><<'','%cg:em'
         saybl "c            A.J.name" for 1..3;
         I.d&writef,"life/J/em.id\.c",em.lines;
         .
         my $catch = sjson {y=>J=>id=>em.id};
         I.d&writef,"life/J\.s",$catch,1;
     
-    n takeover =>449=><<'','%rg:em'
+    n takeover =>49=><<'','%cg:em'
         saybl "takeover     A.J.name" for 1..3;
         .
         -l $_ && `unlink $_` for "life/W/em.is.M";

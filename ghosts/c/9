@@ -94,8 +94,7 @@ ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     }
 ym/notnotcode: |
     T.not = 1 unless exists C.sc.code;
-ym/notnotjs: |
-    T.not = 1 unless exists C.sc.js;
+
 ym/concoi: |
     my $s = C.sc.code || return;
     
@@ -171,10 +170,12 @@ ym/concoi: |
                 }
             }
             
+            C.sc.rg = C.sc.cg if C.sc.cg;
             if (my $v = C.sc.rg) {
                 $v = '' if $v eq '1';
                 my ($nk) = C.sc.v =~ /^([tyc]|sc)(.*)$/;
                 $nk ||= C.sc.nk || die"nonkrg".ki$C;
+                $nk = 'c' if C.sc.cg;
                 my @no = map {
                     my ($wnk,$wgk);
                     ($wnk,$wgk) = ($1,$2) if /^([tyc]|sc)(.*)$/;
@@ -213,7 +214,7 @@ ym/concoi: |
                     ."sub {\n"
                     .$gl
                     ."    my (".join(',',map{'$'.$_}split',',$args).",\@Me) = \@".$und.";\n"
-                    .join("\n",@$ara)."\n"
+                    .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                     ."}"
                     .$sa
@@ -238,6 +239,8 @@ ym/concoi: |
             A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
         }
     }
+ym/notnotjs: |
+    T.not = 1 unless exists C.sc.js;
 ym/jscoi: |
     my $s = C.sc.js || return;
     if (C.sc.acgt) {
