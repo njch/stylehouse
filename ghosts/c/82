@@ -3,14 +3,23 @@ alljs: |
     n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
         C.sc.js = 1;
-JSC: |
+stylehut: |
     u alljs
     
-    
+    n m =>''=><<'','%args:e'
+          var d = e.substr(0,1);
+          if (d == " ") {
+            a.e(e);
+          }
+          else {
+            if (d == ".")
+              e = '<span style="font-size:66%">'+e+'</span>';
+            a.c(e);
+          }
 JScomp: |
     u alljs
 
-    n inC =>''=><<''
+    n inC =>''=><<'','%args:s'
         C = s;
         if (C.constructor == Array) {
             C.length !== 4 && a.er("no4y", C);
@@ -24,10 +33,10 @@ JScomp: |
         }
         return C;
 
-    n yl =>''=><<'',{acgt=>'delay,func'}
+    n yl =>''=><<'',{args=>'delay,func'}
         setTimeout(func, delay);
 
-    n ks =>''=><<''
+    n ks =>''=><<'','%args:s'
         var ks = [];
         for (var k in s) {
             ks.push(k);
@@ -35,12 +44,12 @@ JScomp: |
         return ks.join(',');
     
     # turf grab
-    n wu =>''=><<'',{acgt=>'wwid,Wid,s'}
+    n wu =>''=><<'',{args=>'wwid,Wid,s'}
         $('ww#'+wwid+' > *#'+Wid).remove();
         $('ww#'+wwid).append(s);
     
     # contextualise to W
-    n WW =>''=><<''
+    n WW =>''=><<'','%args:s'
         var W = ww[s];
         if (!W) {
             W = ww[s] = {};
@@ -52,7 +61,7 @@ JScomp: |
         //W.A.p.activate();
         return W;
     
-    n o =>''=><<'',{acgt=>'Wid,K,C'}
+    n o =>''=><<'',{args=>'Wid,K,C'}
         var W = a.WW(Wid);
         var A = W.A;
         C = a.inC(C);
@@ -63,26 +72,26 @@ JScomp: |
         var T = {};
         a[K](A, C, G, T);
     
-    n do =>''=><<''
+    n do =>''=><<'','%args:s'
         try {
-          eval(C.c.s);
+          eval(s);
         }
         catch (er) {
-          a.er(C.c.s, er);
+          a.er(s, er);
         }
     
-    n ps =>''=><<''
+    n ps =>''=><<'','%args:s'
         with (paper) {
           try {
-            eval(C.c.s);
+            eval(s);
           }
           catch (er) {
-            a.er(C.c.s, er);
+            a.er(s, er);
           }
         }
     
     # mire
-    n cod =>''=><<''
+    n cod =>''=><<'','%args:s'
         var def = {mode:'perl',theme:'midnight',lineWrapping:true};
         var set = $.extend(def, s);
         var id = set['id'];
@@ -99,7 +108,7 @@ JScomp: |
         $('#'+id+' > .CodeMirror');//.css('height','auto');
     
     # reflux
-    n codsav =>''=><<''
+    n codsav =>''=><<'','%args:s'
         var we = $('#'+s.ididid);
         a.m('AAAAAAAAAAA');
         var d = {};
@@ -122,17 +131,22 @@ JSea: |
         .
         var see = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
         .
-        if (C.c.W)
+        if (C.c.W) {
            A.on = $('#'+C.c.W);
+           if (!$(A.on).length)
+               a.c("no W on "+C.c.W);
+        }
         if (C.c.el)
            G.el(A,C,G,T);
-        if (C.c.nobody)
+        if (C.c.nobody) {
            A.on = $('#'+C.c.nobody);
+           if (!$(A.on).length)
+               a.c("no nobody at "+C.c.nobody);
+        }
         if (C.c.rm) {
            a.m(see);
            var delay = C.c.rm;
-           if (!delay)
-              delay = 10;
+           if (!delay) {delay = 10}
            delay *= 100;
            $(A.on).fadeOut(delay, function() { $(this).remove(); });
            return;
