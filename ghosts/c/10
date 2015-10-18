@@ -105,8 +105,21 @@ TestTool: |
         };
         $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
         $stuff =~ s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
+        $stuff =~ s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
         $stuff =~ s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
         [split "\n", encode_utf8 $stuff];
+        
+    n Wushredids =>'',<<''
+        my $ids = {};
+        my $here = 3;
+        my $idi = 1;
+        my $idstu = sub {
+            my $id = shift;
+            my $il = $ids->{$id} ||= $idi++;
+            "il$here$il";
+        };
+        s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg for @$s;
+        $s
     
 AutoCzech: | # check re-working # conapi
     # wants to n Tests first
@@ -138,8 +151,9 @@ AutoCzech: | # check re-working # conapi
         for my $f (sort @got) {
             my $u = [read_file $f];
             if ($f =~ /\.c$/) {
+                $u = I.d&Wushredids,$u;
                 I.d&eeply,$u,$_
-                    for "C.t C.c.test: .c con";
+                    for "C.t C.c.test: .c content";
             }
             elsif ($f =~ /\.i$/) {
                 is(@$u.'', '1', "C.t $f is one");
@@ -158,23 +172,42 @@ AutoCzech: | # check re-working # conapi
         I.d&taccept;
         
     
-Dwive: |
+Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
     J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
     n '','','%runs'
     G.asap = 1;
     y.ope = 1;
     my $n = J.fsjoi++;
     $n || Rw loopby $b=0.2 $d=7 $p=Top;
+    $n || `rm life/W/{JStestlines,Sltest,Detailtest}`;
+    $n
     
-    # W outputting
+Slt: | # W outputting
+    my $n = Rw Dwive;
+    
+    
+    if ($n == 0) {
+        n Sltest =>W=>'%test:1,West:1'
+    }
+    elsif ($n == 1) {
+        n Sltest =>W=>'%test:2'
+        n Detailtest =>W=>'%test:2,West:1,noJ'
+    }
+    elsif ($n == 2) {
+        n Detailtest =>W=>'%test:3,West:1,noJ'
+    }
+JSlt: | # W outputting
+    my $n = Rw Dwive;
+    
     if ($n == 0) {
         n Wightest =>W=>'%test:1'
     }
     elsif ($n == 1) {
         n JStestlines =>W=>'%test:2,West:1,noJ'
     }
+Elt: | # LV shuffling stuff
+    my $n = Rw Dwive;
     
-    # LV shuffling stuff
     if ($n == 0) {
         n qqreps =>W=>'%test:1'
         
@@ -191,15 +224,21 @@ Dwive: |
         n EwokSmall =>W=>'%test:3'
     }
     else {
-        ok(0 => "Run too many times!");
+        ok(0 => "Run too many times! ($n)");
     }
+Sltest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    my $n = J.fsjoi++;
+    y.at.jslines = 1;
+    n bawls =>3=><<'','%js'
+        var v = $('#msgs');
+        a.m("SOmething clea r "+v);
     
-    #n Gapitan =>W
-    # EatDwightfully 
-    # this can A.t&38 itself a ...
-    # bab &38 -> if (A.t&38) {
-    # A.e&sackil # A.c for C.c.e for sackil, travel got it there
-Wightest: |
+    n Detailtest
+Detailtest: |
+    sayyl "Got E!: ".wdump [$C,C.c.e] if C.c.e;
+    y.at.ux = 1;
+    n b320 => '3-9x7','777'
+Wightest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     n JStestuff
     # could ahh...
     n JStestlines =>W=>{s=>$J}
@@ -240,7 +279,7 @@ JStestuff: |
         }
         C.sc.css.position = 'absolute';
     
-qqreps: |
+qqreps: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     J.V = 1;
     u allacgts
     n acgtsish =>''=><<''
