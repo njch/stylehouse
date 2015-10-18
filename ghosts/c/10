@@ -45,6 +45,7 @@ TestRun: |
     
 TestTool: |
     u allacgts
+    
     # pushed to
     n taccept =>'',<<''
         my $f = C.c.tfile;
@@ -52,17 +53,20 @@ TestTool: |
         `mkdir -p $d` unless -d $d;
         my $got = C.c.st.got;
         say "Accepting for $f: ".wdump 2,$got;
-        die "Ref leaky " if 
+        return sayre("Ref leaky ".wdump 6, $got) && sleep 6 if 
             length(wdump 4,$got) < length(wdump 5,$got);
         DumpFile($f, $got);
 
     n eeply =>'',<<'',{acgt=>'s,K'}
         C.c.st.got->{$K} = $s;
         my $e = C.c.st.exp->{$K};
+        .
         is_deeply($s, $e, $K)
         && return;
+        .
         return sayre wdump 3, {"Got for $K: "=>$s,"Expected: "=>$e}
             if ref $s ne 'ARRAY';
+        .
         my $i = 0;
         # chuck into two pis, present W with timer slider
         for my $l (@$s) {
@@ -100,16 +104,20 @@ TestTool: |
             "il$here$il";
         };
         $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
+        $stuff =~ s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
         $stuff =~ s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
         [split "\n", encode_utf8 $stuff];
     
-AutoCzech: | # check re-working
+AutoCzech: | # check re-working # conapi
     # wants to n Tests first
     # u uns when un repeats
     u allvse
     n '','','%of:Mo'
     
-    n test =>77,<<''
+    n noJ =>222,<<''
+        delete A.Iso.oJ;
+    
+    n test =>76,<<''
         ok(ref C.c.J, "C.t $test: J is alive");
         is(C.c.J, C.sc.J, "in two places");
         .
@@ -119,19 +127,54 @@ AutoCzech: | # check re-working
         my $stuff = I.d&testNews,'Duv';
         I.d&eeply,$stuff,$_
             for "C.t $test: Wheels of chaos";
-        .
-        I.d&taccept if C.c.tac;
 
+    n West =>761,<<''
+        my $Wr = "life/W";
+        my $l = "$Wr/C.t";
+        ok(-l $l, "C.t linked into $Wr");
+        my $in = readlink $l;
+        ok($in =~ /^(.+)\.(.+?)$/, "read $Wr: $in");
+        my @got = glob "$Wr/$1*";
+        for my $f (sort @got) {
+            my $u = [read_file $f];
+            if ($f =~ /\.c$/) {
+                I.d&eeply,$u,$_
+                    for "C.t C.c.test: .c con";
+            }
+            elsif ($f =~ /\.i$/) {
+                is(@$u.'', '1', "C.t $f is one");
+                $u = eval {djson $u->[0]};
+                ok(ref $u, "C.t: $f JSON decoded");
+                is($@,'',"C.t: $f errorless");
+                $@ = "" if $@;
+                is(u.is.M, C.t, "C.t: $f M is C.t");
+            }
+            else {
+                ok(0, "Unkown W thing: $f:  ".slim 300, $u);
+            }
+        }
+    
+    n tac =>769,<<''
+        I.d&taccept;
+        
     
 Dwive: |
     J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
     n '','','%runs'
     G.asap = 1;
+    y.ope = 1;
     my $n = J.fsjoi++;
     $n || Rw loopby $b=0.2 $d=7 $p=Top;
     
+    # W outputting
+    if ($n == 0) {
+        n Wightest =>W=>'%test:1'
+    }
+    elsif ($n == 1) {
+        n JStestlines =>W=>'%test:2,West:1,noJ'
+    }
     
-    #n Head =>W
+    # LV shuffling stuff
     if ($n == 0) {
         n qqreps =>W=>'%test:1'
         
@@ -156,6 +199,47 @@ Dwive: |
     # this can A.t&38 itself a ...
     # bab &38 -> if (A.t&38) {
     # A.e&sackil # A.c for C.c.e for sackil, travel got it there
+Wightest: |
+    n JStestuff
+    # could ahh...
+    n JStestlines =>W=>{s=>$J}
+JStestlines: |
+    Rw JSlines;
+JStestuff: |
+    u alljs
+
+    n inC =>''=><<'','%args:s'
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: C};
+        }
+        if (typeof C.c === 'string') {
+            C.c = {s: C.c};
+        }
+        return C;
+
+    n yl =>''=><<'',{args=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<'','%args:s'
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+    
+    n sc_ab =>''=><<''
+        if (C.c === '100') {
+            C.sc.css.width = '100%';
+            C.sc.css.height = '100%';
+        }
+        C.sc.css.position = 'absolute';
+    
 qqreps: |
     J.V = 1;
     u allacgts
@@ -177,7 +261,6 @@ qqreps: |
     
 DwightSmall: |
     J.A.IIII = [@{G.IIII},'G/T/Draw'];
-    J.V = 1;
     n s=>''=>t
     my $lot = "g/G/on g/G/way";# g/0/G g/G/cis";
     n shedful => '0.1-0.7', {pi=>'seas',s=>$lot}

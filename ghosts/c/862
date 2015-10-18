@@ -87,6 +87,10 @@ pi/loadc: |
      }
 pi/cfile: |
      my $file = $s;
+     if (C.c.create && !-f $file) {
+          sayyl "Creating $file";
+          `touch $file`;
+     }
      Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
      C.sc.nspc = 0.02;
      #y.limn = 18;
