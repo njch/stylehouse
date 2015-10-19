@@ -171,6 +171,9 @@ pi/text: |
      J.cv < 0.7 ?
          Rw pi/boxtext
      :
+     J.cv < 0.8 ?
+         Rw pi/flotext
+     :
      Rw pi/fulltext
 pi/foldytext: |
     C.sc.nspc = 0.01;
@@ -219,9 +222,15 @@ pi/boxtext: |
                 '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
                     ."font-size:70%");
             }
+pi/flotext: |
+    my @lines = split "\n", $s;
+    y.at.si = @lines;
+    my $i;
+    Mn("Line ".$i++ =>'',{s=>$_}) for @lines;
 pi/fulltext: |
     C.sc.nspc = 0.04;
     C.c.pwth = 'somewhere';
+    sayyl "Wegot ".wdump [J.cv,$s];
     # 7
     my @tex = split /\n/, $s;
     
@@ -247,7 +256,7 @@ pi/fulltext: |
     $fs = "font-size:$fs%;";
 
     my $s = join"\n", @tex;
-    n line=>0.1=>$s, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}
+    n line=>0.1=>{s=>$s}, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}
 pi/vimcolor: |
     my $string = shift;
     my $h = dig($string);

@@ -176,15 +176,16 @@ Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
     J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
     n '','','%runs'
     G.asap = 1;
+    G.Jlone = 1;
     y.ope = 1;
     my $n = J.fsjoi++;
-    $n || Rw loopby $b=0.2 $d=7 $p=Top;
+    my $d = ar.d || 7;
+    $n || Rw loopby $b=0.2 $d $p=Top;
     $n || `rm life/W/{JStestlines,Sltest,Detailtest}`;
     $n
     
 Slt: | # W outputting
-    my $n = Rw Dwive;
-    
+    my $n = Rw Dwive + $d=17;
     
     if ($n == 0) {
         n Sltest =>W=>'%test:1,West:1'
@@ -195,6 +196,9 @@ Slt: | # W outputting
     }
     elsif ($n == 2) {
         n Detailtest =>W=>'%test:3,West:1,noJ'
+    }
+    else {
+        n Sltest
     }
 JSlt: | # W outputting
     my $n = Rw Dwive;
@@ -227,13 +231,31 @@ Elt: | # LV shuffling stuff
         ok(0 => "Run too many times! ($n)");
     }
 Sltest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    my $n = J.fsjoi++;
+    my $n = J.fsbejoi++;
     y.at.jslines = 1;
     n bawls =>3=><<'','%js'
         var v = $('#msgs');
         a.m("SOmething clea r "+v);
     
+    my $an = 
     n Detailtest
+    $n ||
+    Rw loopby + $b=3 $d=3 $p=MkSle $an;
+MkSle: |
+    my $oJ = an.nj;
+    my $s = J.mo.s;
+    sayyl "Gotsle s.name s.id -> oJ.name oJ.id ";
+    saybl wdump ["#########", 1..5];
+    my $e;
+    e.ids = [s.id,oJ.id];
+    e.wop = 'Woosh';
+    e.time = ++J.dskooe;
+    my $f = "life/W/s.id\.e";
+    ok(-f $f, "$f is exist");
+    write_file($f,{append=>1},sjson($e)."\n");
+        
+    
+    
 Detailtest: |
     sayyl "Got E!: ".wdump [$C,C.c.e] if C.c.e;
     y.at.ux = 1;
