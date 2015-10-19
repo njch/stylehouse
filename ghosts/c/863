@@ -172,7 +172,7 @@ pi/text: |
          Rw pi/boxtext
      :
      J.cv < 0.8 ?
-         Rw pi/flotext
+         Rw pi/lines
      :
      Rw pi/fulltext
 pi/foldytext: |
@@ -222,11 +222,13 @@ pi/boxtext: |
                 '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
                     ."font-size:70%");
             }
-pi/flotext: |
+pi/lines: |
     my @lines = split "\n", $s;
     y.at.si = @lines;
     my $i;
-    Mn("Line ".$i++ =>'',{s=>$_}) for @lines;
+    Mn("Line ".$i++ =>'',{pi=>line=>s=>$_}) for @lines;
+pi/line: |
+    # nothing
 pi/fulltext: |
     C.sc.nspc = 0.04;
     C.c.pwth = 'somewhere';
