@@ -199,6 +199,7 @@ Slt: | # W outputting
     }
     else {
         n Sltest
+        Rw MkSle G-Slt Detailtest;
     }
 JSlt: | # W outputting
     my $n = Rw Dwive;
@@ -239,18 +240,19 @@ Sltest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     my $an = 
     n Detailtest
-    $n ||
-    Rw loopby + $b=3 $d=3 $p=MkSle $an;
 MkSle: |
-    my $oJ = an.nj;
-    my $s = J.mo.s;
-    sayyl "Gotsle s.name s.id -> oJ.name oJ.id ";
+    my ($Wid,$Jid) = map {
+        my $l = readlink "life/W/$_";
+        $l || die ":No $_ link";
+        $l =~ /^(.+)\.c$/ || die "no c $l";
+        $1
+    } @{ar.m};
     saybl wdump ["#########", 1..5];
     my $e;
-    e.ids = [s.id,oJ.id];
+    e.ids = [$Wid,$Jid];
     e.wop = 'Woosh';
     e.time = ++J.dskooe;
-    my $f = "life/W/s.id\.e";
+    my $f = "life/W/$Wid\.e";
     ok(-f $f, "$f is exist");
     write_file($f,{append=>1},sjson($e)."\n");
         
