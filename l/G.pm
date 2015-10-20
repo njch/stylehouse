@@ -314,7 +314,7 @@ sub ki {
         $v = "~" unless defined $v;
         ref $v eq 'HASH' ? do {
             $v->{bb} && $v->{name} ?
-                "$_={@".$v->{name}."@}"
+                "$_={@".$v->{name}."&".slm(3,$v->{id})."@}"
             : 
                   "$_=".($re?"{ ".slim($lim,ki($re-1,$v,$d))." }":"$v")
         }

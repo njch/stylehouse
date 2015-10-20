@@ -367,6 +367,7 @@ Yosc: | # make lv,at + write stuff on at
     n Jin =>36=><<''
         if (my $v = at.sc.J) { # J unifies -
             at.sc.J = v.name;
+            return if C.c.noJin;
             .
             my $nV = v.El->{V.name};
             $nV || return sayre "no V.name on v.name $v: El: ".join', ',sort keys %{v.El};
@@ -382,7 +383,14 @@ Yosc: | # make lv,at + write stuff on at
             lv.voso = 1;
             for my $ik (@{V.os}) {
                 my $iv = V.lv->{$ik};
-                sayyl " A.J.name follows: ".wdump 2, $iv if A.J eq 'Followe';
+                if (A.J.name eq 'Followe') {
+                    my $C = iv.C;
+                    sayyl " A.J.name follows: ".ki $C;
+                    saybl "and : ".ki C.sc;
+                    sayyl "~~~~" for 1..3;
+                    die "nocsc" if 2 != grep{ref $_ eq 'ARRAY'} iv.c, iv.sc;
+                    iv.rmnsc || die "normnsc on C.t";
+                }
                 do { sayre("Skip self in self") for 1..6 } && next
                     if C.sc.J && C.sc.J eq A.J;
                 lv.do->{$ik} = $iv;
@@ -528,7 +536,10 @@ YdoV: |
         lv.od.new->{$gk} = $iv;
     
     n Vgone =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
-        ov.rmnsc || die "no rm: hon A.J.name  ;; ".wdump 3, [$s,J.name,J.bb];
+        if (!ov.rmnsc) {
+            die "no rm: hon A.J.name C.c.J.name =- C.sc.J.name ;; "
+                .wdump 3, [$at,$ta,"Cfor $gk pmtp", vl.do, lv.do, $s];
+        }
         !$iv || die "gone had iv";
         # ^ sc plumb its destruction
         # can void if our c reframes by implicitly clearing

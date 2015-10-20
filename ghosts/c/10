@@ -69,8 +69,10 @@ TestTool: |
         .
         my $i = 0;
         # chuck into two pis, present W with timer slider
-        for my $l (@$s) {
-            my $el = $e->[$i++];
+        while (1) {
+            my $el = $e->[$i];
+            my $l = $s->[$i++];
+            $l || $el || last;
             if ($l eq $el) {
                 say "Same: $l";
             }
@@ -79,6 +81,7 @@ TestTool: |
                 saybl "Exp:  $el";
             }
         }
+        
         
     n testNews =>'',<<''
         my $J = C.c.J;
@@ -265,8 +268,9 @@ Detailtest: |
 Wightest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     n JStestuff
     # could ahh...
-    n JStestlines =>W=>{e=>$J}
+    n JStestlines =>W=>{s=>$J}
 JStestlines: |
+    J.V = 1;
     Rw JSlines;
 JStestuff: |
     u alljs
