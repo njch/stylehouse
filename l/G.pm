@@ -312,10 +312,14 @@ sub ki {
     join ' ', map {
         my $v = $ar->{$_};
         $v = "~" unless defined $v;
-        ref $v eq 'HASH'
-            ? "$_=".($re ?  "{ ".slim($lim,ki($re-1, $v,$d))." }" : "$v")
-        : ref $v eq 'ARRAY'
-            ? do "$_=\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
+        ref $v eq 'HASH' ? do {
+            $v->{bb} && $v->{name} ?
+                "$_={@".$v->{name}."@}"
+            : 
+                  "$_=".($re?"{ ".slim($lim,ki($re-1,$v,$d))." }":"$v")
+        }
+        : ref $v eq 'ARRAY' ?
+              do "$_=\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
             : "$_=".slim(150,"$v")
     } sort keys %$ar;
 }
