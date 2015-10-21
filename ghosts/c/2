@@ -182,6 +182,10 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        $oAr->($ar);
        Rw In;
     };
+UnPreDuv: |
+    delete J.El.Pre; # diff bb-Y
+    delete J.El.Duv; # diff Y-shell
+    
 uCon: |
     my $A = {J=>$J};
     # am U?
@@ -203,8 +207,7 @@ uCon: |
         sayre "SLIPPING SC, dropping qq past" for 1..3;
         J.on_usc->() if J.on_usc;
         snooze;
-        delete qq.El.Pre; # diff bb-Y
-        delete qq.El.Duv; # diff Y-shell
+        Rw UnPreDuv $J:qq;
         return Rw uCon;
     }
     
