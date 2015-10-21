@@ -85,20 +85,19 @@ pi/pane: |
     
 Followe: |
     J.A.III = ['G/T/Sav'];
-    J.V = 1;
-    y.ope = 1;
-    y.at.oWl = 1;
     u linesfollow
     u Ipifalls
+    y.ope = 1;
+    y.at.oWl = 1;
+    J.ev.th = 'openevent';
     # ^ v
     #J.A.in->{"qq:cpi=lines"} = {u=>[followlines=>'']};
     sayyl "Checkin following...";
     !ref $s && $s &&
     n Follow =>''=>{pi=>cfile=>s=>$s,create=>1};
     
-    J.eve.th = 'openevent';
     n $C
-openevent: |
+openevent: | # join Followe to Trabit as an event
     saybl "FOund event: ".ki C.c.e;
     sayyl "An J.name  oit C.t  from   C.c.J.name";
     saybl "" for 1..6;
@@ -108,8 +107,7 @@ Trabit: |
     u pi3d
     u Ipifalls
     y.ope = 1;
-    J.V = 1;
-    J.eve.th = 'closeline';
+    J.ev.th = 'closeline';
     n $C
 closeline: |
     my $C = $C;
@@ -184,25 +182,26 @@ threes: | # Sav
         if (A.J ne $J) {
             # what we are holding out as .e and .s helps it leave
             A.ztime = 6 if exists C.c.e;
-            sayre "THosught of A.J.name  holds  J.name  ".ki C.c;
+            sayre "THosught of A.J.name  holds  J.name  ".ki C.c if A.V&V;
             return;
         }
         unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there
             say "threesorbtion: A.J.name to J.name"
-                ." is not holding e or sJ" for 1..2;
+                ." is not holding e or sJ" if A.V&V;
             # absorb self Cing
             T.not = 1;
             return;
         }
         my $S = C.c.s;
         $S = {name=>"An: C.c.s"} if !ref $S;
-        saybl "In s A.J.name: J.name   ".ki(C.c.e)."   unto  S.name     ".ki $C;
+        saybl "In s A.J.name: J.name   ".ki(C.c.e)
+            ."   unto  S.name     ".ki $C if A.V&V;
         die " unable to count self ?" if C.c.s eq $J;
         die "thoughts of a thous" if A.J ne $J;
         if (!exists C.c.e) {
             # be thing=>W=>other, later
             C.c.IsOn || return do {
-                say "Comebacking J.name with C.t...";
+                say "Comebacking J.name with C.t..." if A.V&V;
                 Rw wayt $J $C $d=0.01 $p=jive;
                 T.not = 1;
             }
@@ -210,11 +209,9 @@ threes: | # Sav
         # no J being tricks for handulation, event energy
         A.Iso.th = 1;
         delete A.Iso.oJ;
-        saybl "Being stricks: C.c.s";
     
     n '','','%of:th'
     n J =>4,<<''
-        sleep 1;
         my $ar;
         ar.A=$A;ar.G=$G;ar.C=$C;ar.T=$T;ar.J=$J;
         C.c.e ?
@@ -258,7 +255,7 @@ thank: | # J, as self consuming other, s=other, !e
 threve: | # nonself sends you
     say "threeevent J.name ! ";
     my $J = A.J;
-    if (my $pin = J.eve.th) {
+    if (my $pin = J.ev.th) {
         sayyl "Fuyndering $pin in J.name";
         Rw $pin + $J;
     }
