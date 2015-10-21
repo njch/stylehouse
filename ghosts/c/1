@@ -98,6 +98,16 @@ MourmaZ: | # notes
         # so it is data injection agent
         # that one awareness is part of the budle am wires
         # this feeding on I or III
+Indulator: | # Wain spinality
+    # not allcode since uCons blank qq cone & then thing
+    n Bangdesk
+    n IStuff
+    n KnowTime
+    n SlideEa
+    n C
+    n Servo
+    n Motion
+    
 Arange: |
     ar.N && ar.oA && ar.oA.D &&
     substr(ar.oA.D.bab, 0, 200) =~ /<<('\w*'|"\w*")/ && 
@@ -516,16 +526,6 @@ KnowTime: | # dome props
         }
     
     # y
-Indulator: | # Wain spinality
-    # not allcode since uCons blank qq cone & then thing
-    n Bangdesk
-    n IStuff
-    n KnowTime
-    n EatSlide
-    n C
-    n Servo
-    n Motion
-    
 Motion: |
     u allacgts
     # 6* thing/rule management
@@ -659,7 +659,7 @@ Bangdesk: |
         $m .= "\ns: ".wdump 3, A.s unless length $m > 20;
         $@ = "$m\n$@";
     
-EatSlide: | # liney schemery
+SlideEa: | # liney schemery
     u allacgts
     
     n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
@@ -690,11 +690,28 @@ EatSlide: | # liney schemery
     
     n reasonlock =>''=>{s=><<''},{code=>'I 18',act=>1}
         die"reft" if ref C.t;
-        # uis a nested wave
+        my $istf = sub {
+            my $s = shift;
+            exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;
+        };
+        # uis a nested wave - falling ]]]]]]]
         # allow much manufold
         # knot this not this:
         if (A.J.name eq 'qq' || A.J.most.J eq A.J) {
             C.c.W = C.t unless C.c || C.sc || C.y;
+        }
+        if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {
+            if (C.y.bb) {
+                if (ref C.c && $istf->(C.c)) {
+                    C.c = {e=>C.c};
+                }
+                C.c.s = C.y;
+            }
+            else {
+                C.c.e = C.y;
+            }
+            C.y = '';
+            C.c.W = C.t;
         }
         .
         I.d&renc if !ref C.c;
