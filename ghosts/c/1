@@ -553,6 +553,8 @@ Motion: |
         A.note = {}; # pinging csc
         A.talk = "A.J.name ".(A.J.le && A.J.le.name);
         A.c = sub { I.d&c,@_; };
+        A.e = sub { I.d&e,@_; };
+        A.us = sub { I.d&us,@_; };
         A.t = sub { I.d&t,@_; };
         A.V = sub { A.J.V }; # or so
         $A
@@ -812,17 +814,34 @@ C: |
     
     # for getting click together:
     n c =>'',<<'','%acgt:D'
+        I.d&inDin,$C,@M;
+    
+    n e =>'',<<'','%acgt:D'
+        I.d&inDin,C.c.e,@M;
+    
+    n us =>'',<<'','%acgt:D'
+        my $E = C.c.e || return ();
+        I.d&inDin,E.c.us,@M;
+    
+    n inDin =>'',<<'',{acgt=>'s,D'}
         die'nofA' if !I.nF.A;
+        #
+        return () unless defined $s;
+        return $s if $D eq 'C';
+        #
+        shift @M; # s
         $D = I.d&interpD,@M if !ref $D;
-        for (qw'code if of ref') {
-            exists C.c->{$_} && die "COT I".ki $C
-        }
+        #
         my $v = I.d&Cngk,$D;
+        #
         return () unless $v;
+        #
         A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
+        #
         die 'mulitAn' if @$v > 1;
         if (D.c.as eq 'list') {
-            return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';
+            ref $v eq 'ARRAY' || die 'Cngk not array';
+            return @$v;
         }
         return 1;
     

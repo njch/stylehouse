@@ -1,6 +1,36 @@
 --- 
 I: 
   "0.1": 
+    Act: 
+      c: 
+        el: 1
+        s: "A.I.Act = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        $A = {%$s};\n        $A->{mo}->{ont} = $A;\n        $A->{s} = shift @{$A->{N}};\n        $T = {};\n        $T->{oM} = [];\n        $I->{d}->(\"n\",$A,{},$G,$T);\n        $I->{d}->(\"An\");\n        $A->{t}->(\"2\");\n        map{$I->{nF}->{$_}}qw'A C T';\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: e24a2c98dffd
+        gro: Motion
+      t: Act
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
+    An: 
+      c: 
+        el: 1
+        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub { $A->{J}->{V} }; # or so\n        $A\n};A.I.d&An;\n"
+      sc: 
+        acgt: 1
+        args: A,C,G,T
+        code: I 1
+        dige: af1e3d91f123
+        gro: Motion
+      t: An
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
     Cngk: 
       c: 
         el: 1
@@ -16,6 +46,36 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/C/C
+    Other: 
+      c: 
+        el: 1
+        s: "A.I.Other = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        my $ar = $F[0]->{ar};\n        $A = $G->{w}->(\"RB\", {%$ar, t => $s}, $G);\n        $I = $A->{I};\n        # midnight at the oasis\n        $I->{d}->(\"n\",$A,{},$G,{});\n        $I->{d}->(\"An\");\n        $A->{t}->(\"1\");\n        $A->{t}->(\"11111\") || warn \"NO 1\";\n        ($A,$A->{I})\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 9e38e8306a8d
+        gro: Motion
+      t: Other
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
+    Tat: 
+      c: 
+        el: 1
+        s: "A.I.Tat = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        my $at = delete $T->{at};\n        $at || die \"youAT\";\n        $C->{sc}->{$_} = $at->{$_} for keys %$at; # sizling update sprites\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 0a4f4c661b5b
+        gro: Motion
+      t: Tat
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
     array: 
       c: 
         el: 1
@@ -34,18 +94,48 @@ I:
     c: 
       c: 
         el: 1
-        s: "A.I.c = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    $D = I.d&interpD,@M if !ref $D;\n    for (qw'code if of ref') {\n        exists C.c->{$_} && die \"COT I\".ki $C\n    }\n    my $v = I.d&Cngk,$D;\n    return () unless $v;\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';\n    }\n    return 1;\n};\n"
+        s: "A.I.c = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,$C,@M;\n};\n"
       sc: 
         acgt: D
         args: A,C,G,T,D
         code: I 1
-        dige: 58c6c34b9569
+        dige: a931936381c2
         gro: C
       t: c
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/C/C
+    e: 
+      c: 
+        el: 1
+        s: "A.I.e = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,C.c.e,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: 06747ef15695
+        gro: C
+      t: e
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    flywheels: 
+      c: 
+        el: 1
+        s: "A.I.flywheels = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # $II->{All}? $II->{Fly}?\n        # its $I->{d}->(\"nded\") and holds things to code, $v a spiral it's filling up\n        # $v could be mounted... aj8 mysteries\n        for my $k (sort keys %{$A->{fl}}) {\n            my $v = $A->{fl}->{$k};\n            #   ^ bus to ride\n            $k = $2 if $k =~ /^(\\d+) (.+)$/;\n            $G->{w}->(\"ym/$k\", {I => $I, J => $A->{J}, A => $A, C => $C, v => $v, G => $G, T => $T}, $G);\n        }\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 6a90e0b56807
+        gro: Motion
+      t: flywheels
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
     fourreal: 
       c: 
         el: 1
@@ -91,6 +181,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/SlideEa/SlideEa
+    inDin: 
+      c: 
+        el: 1
+        s: "A.I.inDin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    #\n    return () unless defined $s;\n    return $s if $D eq 'C';\n    #\n    shift @M; # s\n    $D = I.d&interpD,@M if !ref $D;\n    #\n    my $v = I.d&Cngk,$D;\n    #\n    return () unless $v;\n    #\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    #\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        ref $v eq 'ARRAY' || die 'Cngk not array';\n        return @$v;\n    }\n    return 1;\n};\n"
+      sc: 
+        acgt: s,D
+        args: A,C,G,T,s,D
+        code: I 1
+        dige: c3e3fd0dfee9
+        gro: C
+      t: inDin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     interpD: 
       c: 
         el: 1
@@ -106,6 +211,36 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/C/C
+    moy: 
+      c: 
+        el: 1
+        s: "A.I.moy = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        # groups, spread the moise over A\n        my $i = $A->{mo}->{y}->{$s}||die\"no$s\";\n        my $is = $i->{$C->{y}->{p}}; # things in our C's pool\n        {is=>$is,N=>[map{$is->{$_}}sort keys %$is]};\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2fb4d87f09eb
+        gro: Motion
+      t: moy
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
+    oseverato: 
+      c: 
+        el: 1
+        s: "A.I.oseverato = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        if ($T->{d}) {\n            $A->{T}->{d} = $T->{d}; # carte\n        }\n        if (my $z = delete $T->{Z}) { # tease out the next times\n            my ($lo) = sort keys %$z; # next one\n            my $v = $z->{$lo};\n            push @{$A->{mo}->{re}->{$lo} ||= []},\n                ref $v eq 'ARRAY' ? @$v :\n                $v ne '1' ? [$A,$C,$v] :\n                [$A,$C];\n            @{$T->{oM}} = ();\n        }\n        if (!@{$A->{mo}->{N}} && $A->{mo}->{re}) {\n            my $ats = $A->{mo}->{re} || {};\n            my @wa = sort keys %$ats;\n            my ($lo) = @wa;\n            if ($lo) {\n                my $ay = delete $ats->{$lo};\n                my @N = map { {AZ=>{$lo=>$_}} } @$ay;\n                push @{$A->{mo}->{N}}, @N;\n                saybl \"Looping \".@N.\" to $lo\" if $A->{J}->{V} > 1;\n            }\n        }\n        # concoi severaliser, for conglom up; merging spiral snips of code\n        if (my $y = $T->{y}) {\n            for my $k (keys %$y) {\n                $A->{mo}->{y}->{$k}->{$C->{y}->{p}}->{$C->{y}->{cvt}} = $C;\n            }\n        }\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: c2111bfab654
+        gro: Motion
+      t: oseverato
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
     peel: 
       c: 
         el: 1
@@ -212,21 +347,51 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/SlideEa/SlideEa
+    us: 
+      c: 
+        el: 1
+        s: "A.I.us = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    my $E = C.c.e || return ();\n    I.d&inDin,E.c.us,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: d51aaa4dcee0
+        gro: C
+      t: us
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     xot: 
       c: 
         el: 1
-        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,$s,$c,@Me) = @_;\n    my $I = A.I;\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;\n    }\n    $s\n};\n"
+        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;\n    }\n    $s\n};\n"
       sc: 
         acgt: s,c
         args: A,C,G,T,s,c
         code: I 1
-        dige: ebbcb1ba9ff2
+        dige: f8940275bf17
         gro: C
       t: xot
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/C/C
+    z: 
+      c: 
+        el: 1
+        s: "A.I.z = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        $I->{d}->(\"oseverato\");\n        push @{$A->{M}}, @{$T->{oM}};\n        1\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 85ce5e302f71
+        gro: Motion
+      t: z
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
   "0.12": 
     Ci: 
       c: 
@@ -264,3 +429,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/SlideEa/SlideEa
+  "0.71": 
+    CoM: 
+      c: 
+        el: 1
+        s: "A.I.CoM = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n        push @{$T->{oM}}, $C unless $T->{Z};\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: I 71
+        dige: 7a9e6cff36b8
+        gro: Motion
+        its: 1
+      t: CoM
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Motion/Motion
