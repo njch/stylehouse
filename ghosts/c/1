@@ -700,14 +700,18 @@ SlideEa: | # liney schemery
         if (A.J.name eq 'qq' || A.J.most.J eq A.J) {
             C.c.W = C.t unless C.c || C.sc || C.y;
         }
+        # this form:
         if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {
             if (C.y.bb) {
-                if (ref C.c && $istf->(C.c)) {
+                if (ref C.c eq 'HASH' && $istf->(C.c)) {
                     C.c = {e=>C.c};
                 }
                 C.c.s = C.y;
             }
             else {
+                if (ref C.c eq 'HASH' && C.c.bb) {
+                    C.c = {s=>C.c};
+                }
                 C.c.e = C.y;
             }
             C.y = '';
@@ -809,7 +813,7 @@ C: |
     # for getting click together:
     n c =>'',<<'','%acgt:D'
         die'nofA' if !I.nF.A;
-        $D = I.d&interpD,@_ if !ref $D;
+        $D = I.d&interpD,@M if !ref $D;
         for (qw'code if of ref') {
             exists C.c->{$_} && die "COT I".ki $C
         }
@@ -825,6 +829,7 @@ C: |
     n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
         return $nk if ref $nk;
         my $D = {};
+        D.c.as = 'list' if $nk =~ s/^_//;
             while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
                 D.c->{$1} = $2;
                 pop @M if @M == 2;
