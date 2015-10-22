@@ -34,12 +34,12 @@ I:
     Cngk: 
       c: 
         el: 1
-        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft {\n        $@ .= \"\\n\\nWas: \".ki$D if $@;\n    };\n    die 'nk no gk' if exists D.c.nk && !exists D.c.gk;\n    return 1 if D.c.any;\n    if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {\n        my $v = [$C->{D.c.nk}->{D.c.gk}];\n        delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;\n        return $v;\n    }\n    die \"noNnk\".wdump $D unless exists D.c.nk;\n    0;\n};\n"
+        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft {\n        $@ .= \"\\n\\nWas: \".ki$D if $@;\n    };\n    #die 'nk no gk' if exists D.c.nk && !exists D.c.gk;\n    return 1 if D.c.any;\n    if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {\n        my $v = [$C->{D.c.nk}->{D.c.gk}];\n        delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;\n        return $v;\n    }\n    die \"noNnk\".wdump $D unless exists D.c.nk;\n    0;\n};\n"
       sc: 
-        acgt: D
-        args: A,C,G,T,D
+        acgt: s,D
+        args: A,C,G,T,s,D
         code: I 1
-        dige: d34d293f0760
+        dige: 052732cb32e7
         gro: C
       t: Cngk
       "y": 
@@ -184,12 +184,12 @@ I:
     inDin: 
       c: 
         el: 1
-        s: "A.I.inDin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    #\n    return () unless defined $s;\n    return $s if $D eq 'C';\n    #\n    shift @M; # s\n    $D = I.d&interpD,@M if !ref $D;\n    #\n    my $v = I.d&Cngk,$D;\n    #\n    return () unless $v;\n    #\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    #\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        ref $v eq 'ARRAY' || die 'Cngk not array';\n        return @$v;\n    }\n    return 1;\n};\n"
+        s: "A.I.inDin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    #\n    return () unless defined $s;\n    return $s if $D eq 'C';\n    #\n    shift @M; # s\n    $D = I.d&interpD,@M if !ref $D;\n    #\n    my $v = I.d&Cngk,$s,$D;\n    #\n    return () unless $v;\n    #\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    #\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        ref $v eq 'ARRAY' || die 'Cngk not array';\n        return @$v;\n    }\n    return 1;\n};\n"
       sc: 
         acgt: s,D
         args: A,C,G,T,s,D
         code: I 1
-        dige: c3e3fd0dfee9
+        dige: a3079a2b62e8
         gro: C
       t: inDin
       "y": 
@@ -199,12 +199,12 @@ I:
     interpD: 
       c: 
         el: 1
-        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1) { # or from t,,,\n            D.c.nk ||= 'c';\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n    $D\n};\n"
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $gookon = shift @M if $nk eq 'nogk';\n    ($nk,$gk) = @M if $gookon;\n    my $defnk = $gookon ? '' : 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1) { # or from t,,,\n            if ($defnk) {\n                D.c.nk ||= 'c';\n                D.c.gk ||= $nk;\n            }\n            else {\n                D.c.nk ||= $nk;\n            }\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n    $D\n};\n"
       sc: 
         acgt: nk,gk
         args: A,C,G,T,nk,gk
         code: I 1
-        dige: 296a30efd23e
+        dige: f10aa72050cb
         gro: C
       t: interpD
       "y": 
@@ -350,12 +350,12 @@ I:
     us: 
       c: 
         el: 1
-        s: "A.I.us = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    my $E = C.c.e || return ();\n    I.d&inDin,E.c.us,@M;\n};\n"
+        s: "A.I.us = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    my $E = C.c.e || return ();\n    unshift @M, 'nogk';\n    I.d&inDin,E.c.us,@M;\n};\n"
       sc: 
         acgt: D
         args: A,C,G,T,D
         code: I 1
-        dige: d51aaa4dcee0
+        dige: 39a43875ba07
         gro: C
       t: us
       "y": 
