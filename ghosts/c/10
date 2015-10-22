@@ -207,21 +207,22 @@ Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
     my $d = ar.d || 7;
     $n || Rw loopby $b=0.2 $d $p=Top;
     $n || `rm life/W/{JStestlines,Sltest,Detailtest}`;
+    T.nose = 1; # dont thing the test vector
     $n
     
 Slt: | # W outputting
     my $n = Rw Dwive + $d=18;
     
     if ($n == 0) {
-        n Sltest =>W=>'%test:1,West:1'
+        n Sltest =>W=>'%test:1,West:1,tac'
     }
     elsif ($n == 1) {
         n Sltest =>W=>'%test:2'
-        n Detailtest =>W=>'%test:2,West:1,noJ'
+        n Detailtest =>W=>'%test:2,West:1,noJ,tac',{l=>'empty eventuat'}
     }
     elsif ($n == 2) {
         Rw MkSle G-Slt Detailtest;
-        n Detailtest =>W=>'%test:3,West:1,noJ'
+        n Detailtest =>W=>'%test:3,West:2,noJ,tac'
         n Followe =>W=>'%test:3,noJ',{l=>'following empty file'}
     }
     elsif ($n == 3) {
@@ -233,9 +234,10 @@ Slt: | # W outputting
     elsif ($n == 4) {
         n Followe =>W=>'%test:5,noJ',{l=>'two more pi'}
         n Trabit =>W=>'%test:5,noJ',{l=>'two more rabits'}
+        n Detailtest =>W=>'%test:5,West:5,noJ,tac'
     }
     elsif ($n == 5) {
-        n Followe =>W=>'%test:55,tac'
+        n Followe =>W=>'%test:55'
         my $rab=
         n Trabit =>W=>'%test:55'
         J.rabi = rab.nj;
@@ -282,6 +284,7 @@ Elt: | # LV shuffling stuff
     }
 Sltest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     y.at.jslines = 1;
+    y.at.oWl = 1;
     
     n bawls =>3=><<'','%js'
         var v = $('#msgs');

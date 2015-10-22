@@ -34,12 +34,12 @@ I:
     Cngk: 
       c: 
         el: 1
-        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft { $@ .= \"\\n\\nWas: \".ki$D if $@ };\n    return 1 if D.c.any;\n    die \"nonNKnk\".ki$D if !D.c.nk;\n    return 0 if !exists $C->{D.c.nk};\n    return [$C->{D.c.nk}] if !exists D.c.gk;\n    return 0 if !exists $C->{D.c.nk}->{D.c.gk};\n    return [$C->{D.c.nk}->{D.c.gk}];\n};\n"
+        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft { $@ .= \"\\nLookat: \".ki($s).\"\\nWith: \".ki($D) if $@ };\n    return 1 if D.c.any;\n    die \"nonNKnk\".ki$D if !D.c.nk;\n    return 0 if !exists $s->{D.c.nk};\n    return [$s->{D.c.nk}] if !exists D.c.gk;\n    return 0 if !exists $s->{D.c.nk}->{D.c.gk};\n    return [$s->{D.c.nk}->{D.c.gk}];\n};\n"
       sc: 
         acgt: s,D
         args: A,C,G,T,s,D
         code: I 1
-        dige: afb94d40c10f
+        dige: 1ce95658c144
         gro: C
       t: Cngk
       "y": 
@@ -199,12 +199,12 @@ I:
     interpD: 
       c: 
         el: 1
-        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1 && $nk eq 't') {\n            D.c.nk = $nk;\n        }\n        elsif (@M == 1) { # or from t,,,\n            D.c.nk ||= $defnk;\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n        delete D.c.gk if D.c.gk eq 'NOGK';\n        saybl \"Hmmm @M  :::: \".ki $D;\n    $D\n};\n"
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1 && $nk eq 't') {\n            D.c.nk = $nk;\n        }\n        elsif (@M == 1) { # or from t,,,\n            D.c.nk ||= $defnk;\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n        delete D.c.gk if D.c.gk eq 'NOGK';\n        saybl \"Hmmm @M  :::: \".ki $D;\n    $D\n};\n"
       sc: 
         acgt: nk,gk
         args: A,C,G,T,nk,gk
         code: I 1
-        dige: 49129ac7576e
+        dige: 1a041e308854
         gro: C
       t: interpD
       "y": 
@@ -414,13 +414,13 @@ I:
     reasonlock: 
       c: 
         el: 1
-        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    my $istf = sub {\n        my $s = shift;\n        exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n    };\n    # uis a nested wave - falling ]]]]]]]\n    # allow much manufold\n    # knot this not this:\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    # this form:\n    if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {\n        if (C.y.bb) {\n            if (ref C.c eq 'HASH' && $istf->(C.c)) {\n                C.c = {e=>C.c};\n            }\n            C.c.s = C.y;\n        }\n        else {\n            if (ref C.c eq 'HASH' && C.c.bb) {\n                C.c = {s=>C.c};\n            }\n            C.c.e = C.y;\n        }\n        C.y = '';\n        C.c.W = C.t;\n    }\n    \n    I.d&renc if !ref C.c;\n    I.d&reny if !ref C.y;\n    I.d&rensc if !ref C.sc;\n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
+        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    my $istf = sub {\n        my $s = shift;\n        exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n    };\n    # uis a nested wave - falling ]]]]]]]\n    # allow much manufold\n    # knot this not this:\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    # this form: NextWorm=>$C=>$J (C/J swappy)\n    if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {\n        if (C.y.bb) {\n            if (ref C.c eq 'HASH' && $istf->(C.c)) {\n                C.c = {e=>C.c};\n            }\n            C.c.s = C.y;\n        }\n        else {\n            if (ref C.c eq 'HASH' && C.c.bb) {\n                C.c = {s=>C.c};\n            }\n            C.c.e = C.y;\n        }\n        C.y = '';\n        C.c.W = C.t;\n    }\n    \n    I.d&renc if !ref C.c;\n    I.d&reny if !ref C.y;\n    I.d&rensc if !ref C.sc;\n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: I 18
-        dige: 82f088fd235b
+        dige: 860ac48a38e1
         gro: SlideEa
         its: 1
         li: "#c"
