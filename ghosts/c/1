@@ -821,7 +821,7 @@ C: |
     
     n us =>'',<<'','%acgt:D'
         my $E = C.c.e || return ();
-        unshift @M, 'nogk';
+        push @M, 'NOGK' if @M == 1;
         I.d&inDin,E.c.us,@M;
     
     n inDin =>'',<<'',{acgt=>'s,D'}
@@ -836,7 +836,7 @@ C: |
         my $v = I.d&Cngk,$s,$D;
         #
         return () unless $v;
-        #
+        # blankgk
         A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
         #
         die 'mulitAn' if @$v > 1;
@@ -847,45 +847,38 @@ C: |
         return 1;
     
     n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
-        my $gookon = shift @M if $nk eq 'nogk';
-        ($nk,$gk) = @M if $gookon;
-        my $defnk = $gookon ? '' : 'c';
+        my $defnk = 'c';
         return $nk if ref $nk;
         my $D = {};
-        D.c.as = 'list' if $nk =~ s/^_//;
+        D.c.as = 'list' if 1 || $nk =~ s/^_//;
             while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
                 D.c->{$1} = $2;
                 pop @M if @M == 2;
             }
-            if (@M == 1) { # or from t,,,
-                if ($defnk) {
-                    D.c.nk ||= 'c';
-                    D.c.gk ||= $nk;
-                }
-                else {
-                    D.c.nk ||= $nk;
-                }
+            if (@M == 1 && $nk eq 't') {
+                D.c.nk = $nk;
+            }
+            elsif (@M == 1) { # or from t,,,
+                D.c.nk ||= $defnk;
+                D.c.gk ||= $nk;
             }
             elsif (@M == 2) {
                 D.c.nk = $nk;
                 D.c.gk = $gk;
             }
+            delete D.c.gk if D.c.gk eq 'NOGK';
+            saybl "Hmmm @M  :::: ".ki $D;
         $D
     
     n Cngk =>'',<<'',{acgt=>'s,D'}
         ref $A || die "nmonref A!";
-        aft {
-            $@ .= "\n\nWas: ".ki$D if $@;
-        };
-        #die 'nk no gk' if exists D.c.nk && !exists D.c.gk;
+        aft { $@ .= "\n\nWas: ".ki$D if $@ };
         return 1 if D.c.any;
-        if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {
-            my $v = [$C->{D.c.nk}->{D.c.gk}];
-            delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;
-            return $v;
-        }
-        die "noNnk".wdump $D unless exists D.c.nk;
-        0;
+        die "nonNKnk".ki$D if !D.c.nk;
+        return 0 if !exists $C->{D.c.nk};
+        return [$C->{D.c.nk}] if !exists D.c.gk;
+        return 0 if !exists $C->{D.c.nk}->{D.c.gk};
+        return [$C->{D.c.nk}->{D.c.gk}];
     
     n xot =>'',<<'',{acgt=>'s,c'}
         while (my($k,$v) = each %$c) {
