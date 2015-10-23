@@ -682,7 +682,7 @@ SlideEa: | # liney schemery
     
     n array =>''=>{s=><<''}
         return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
-        return I.d&fourstring,$s if @$s == 1 && !ref $s->[0];
+        return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];
         # should stick In in first and M it? 
         # kind of motion that wants to be unsure in the wild
         unshift @{A.N}, @$s;
@@ -749,8 +749,8 @@ SlideEa: | # liney schemery
             : C.y =~ /^($NUM)$/ ? {cv=>$1}
             : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
             : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
-            : C.y =~ /^([WJ])$/ ? do {
-                C.c->{$1} = C.t;
+            : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {
+                C.c->{$1} = $2 || C.t;
                 {};
             }
             : I.rey ? I.d&rey
@@ -791,7 +791,7 @@ C: |
                }
            }
         }
-        saybl "4string: ".ki $C;
+        saybl "4string: $s            ".ki $C;
     
     n fourreal =>'',<<''
         (C.t, C.y) = @$s;
