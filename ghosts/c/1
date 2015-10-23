@@ -556,7 +556,11 @@ Motion: |
         A.e = sub { I.d&e,@_; };
         A.us = sub { I.d&us,@_; };
         A.t = sub { I.d&t,@_; };
-        A.V = sub { my$bl=shift;A.J.VV->{$bl}||A.J.V }; # or so
+        A.V = sub {
+            my $bl = shift;
+            A.J.VV && A.J.VV->{$bl}
+            || A.J.V
+        };
         $A
     
     n Act =>''=>{s=><<''}
@@ -850,23 +854,22 @@ C: |
         return $nk if ref $nk;
         my $D = {};
         D.c.as = 'list' if 1 || $nk =~ s/^_//;
-            while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
-                D.c->{$1} = $2;
-                pop @M if @M == 2;
-            }
-            if (@M == 1 && $nk eq 't') {
-                D.c.nk = $nk;
-            }
-            elsif (@M == 1) { # or from t,,,
-                D.c.nk ||= $defnk;
-                D.c.gk ||= $nk;
-            }
-            elsif (@M == 2) {
-                D.c.nk = $nk;
-                D.c.gk = $gk;
-            }
-            delete D.c.gk if D.c.gk eq 'NOGK';
-            saybl "Hmmm @M  :::: ".ki $D;
+        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
+            D.c->{$1} = $2;
+            pop @M if @M == 2;
+        }
+        if (@M == 1 && $nk eq 't') {
+            D.c.nk = $nk;
+        }
+        elsif (@M == 1) { # or from t,,,
+            D.c.nk ||= $defnk;
+            D.c.gk ||= $nk;
+        }
+        elsif (@M == 2) {
+            D.c.nk = $nk;
+            D.c.gk = $gk;
+        }
+        delete D.c.gk if D.c.gk eq 'NOGK';
         $D
     
     n Cngk =>'',<<'',{acgt=>'s,D'}
