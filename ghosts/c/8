@@ -123,7 +123,7 @@ GeoSlur: |
     
     u allvse
     n '','','%of:Sev'
-    n root =>32=><<'',{rg=>'J,ylv,yvl'}
+    n root =>32=><<''
         # root holds this 0, next any is a thing...
         # squary downy
         my $l = C.y.last = {};
@@ -133,15 +133,20 @@ GeoSlur: |
         l.rad = C.sc.rad||$RADIAN;
         l.spin = C.sc.spin||0;
     
-    n J =>321=><<'',{rg=>'J,Y,ylv,yvl,ylast'}
-        my $l = Y.root.y.last;
-        saybl "So lv knows about last ".ki $l;
+    n J =>321=><<'',{rg=>'J,Y'}
+        sayyl "For C.y.k    => ".ki $C;
         my $i = Y.kvi->{C.y.k};
+        my $l = $i == 0 ? Y.root.y.last : Y.vs->[$i-1];
+        my $self = Y.vs->[$i];
+        die "$self vs $C".wdump 2,[$self,$C] if $self ne $C;
+        #
+        saybl "So lv knows about last ".ki $l;
         my ($left,$us,$right) = @{Y.vs}[$i-1,$i,$i+1];
         say "lv : ".wdump [map{ki$_}$left,$us,$right];
         saybl "for ".ki $C;
         .
         return;
+        my $last = $l;
         $last = {%$last};
         my $j = $C;
         # mapping intents into chain reactions
