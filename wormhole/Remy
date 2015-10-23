@@ -35,12 +35,12 @@ I:
     An: 
       c: 
         el: 1
-        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub { $A->{J}->{V} }; # or so\n        $A\n};A.I.d&An;\n"
+        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub {\n            my $bl = shift;\n            $A->{J}->{VV} && $A->{J}->{VV}->{$bl}\n            || $A->{J}->{V}\n        };\n        $A\n};A.I.d&An;\n"
       sc: 
         acgt: 1
         args: A,C,G,T
         code: I 1
-        dige: af1e3d91f123
+        dige: fb63d04c1357
         gro: Indulator/Motion
       t: An
       "y": 
@@ -495,12 +495,12 @@ I:
     interpD: 
       c: 
         el: 1
-        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1 && $nk eq 't') {\n            D.c.nk = $nk;\n        }\n        elsif (@M == 1) { # or from t,,,\n            D.c.nk ||= $defnk;\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n        delete D.c.gk if D.c.gk eq 'NOGK';\n        saybl \"Hmmm @M  :::: \".ki $D;\n    $D\n};\n"
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n    while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n        D.c->{$1} = $2;\n        pop @M if @M == 2;\n    }\n    if (@M == 1 && $nk eq 't') {\n        D.c.nk = $nk;\n    }\n    elsif (@M == 1) { # or from t,,,\n        D.c.nk ||= $defnk;\n        D.c.gk ||= $nk;\n    }\n    elsif (@M == 2) {\n        D.c.nk = $nk;\n        D.c.gk = $gk;\n    }\n    delete D.c.gk if D.c.gk eq 'NOGK';\n    $D\n};\n"
       sc: 
         acgt: nk,gk
         args: A,C,G,T,nk,gk
         code: I 1
-        dige: 1a041e308854
+        dige: 688db989ec06
         gro: Indulator/C
       t: interpD
       "y": 
@@ -2716,14 +2716,14 @@ em:
     ressur_3: 
       c: 
         el: 1
-        s: "A.I.ressur_3 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $ressur = C.sc.ressur;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    saybl \"Ressurrecting $ressur ...\";\n    die \"zomp $ressur\" if $ressur =~ /\\W/;\n    die \"bno JSlines\" unless -f \"life/W/$ressur\";\n    `cd life; ln -s ../W/$ressur J/em.id\\.c`;\n    my $catch = sjson {y=>J=>id=>em.id};\n    I.d&writef,\"life/J\\.s\",$catch,1;\n    T.whack = 1; # out of em\n};\n"
+        s: "A.I.ressur_3 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $ressur = C.sc.ressur;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    saybl \"Ressurrecting $ressur ...\";\n    die \"zomp $ressur\" if $ressur =~ /\\W/;\n    die \"bno JSlines\" unless -e \"life/W/$ressur\";\n    `cd life; ln -s ../W/$ressur J/em.id\\.c`;\n    my $catch = sjson {y=>J=>id=>em.id};\n    I.d&writef,\"life/J\\.s\",$catch,1;\n    T.whack = 1; # out of em\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         cg: J,em
         code: em 3
-        dige: d0c68ea60fab
+        dige: bc77ff177d9a
         gk: ressur
         gkiss: s
         gro: Seven/SevWo/Meta
@@ -2886,22 +2886,22 @@ oJ:
     J_344: 
       c: 
         el: 1
-        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    die \"In self: J.name\" if $J eq A.J;\n};\n"
+        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"THosught of A.J.name  holds  J.name  \".ki C.c if A.V&V;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        # absorb self Cing\n        T.not = 1;\n        return;\n    }\n    my $S = C.c.s;\n    $S = {name=>\"An: C.c.s\"} if !ref $S;\n    saybl \"In s A.J.name: J.name   \".ki(C.c.e)\n        .\"\\n   unto  S.name     \".ki $C if A.V&V;\n    die \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be thing=>W=>other, later\n        C.c.IsOn || return do {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 344
-        dige: 0ce5c7c00e29
+        dige: f82611e00c9a
         gk: J
-        gro: Modulator/Jing/Joot
+        gro: threes
         nk: c
         v: cJ
       t: J_344
       "y": 
         cv: '0.344'
         cvt: 0.344	C.t
-        p: qq/Modulator/Modulator/Jing/Jing/Joot/Joot
+        p: qq/threes/threes
   "0.434": 
     J_434: 
       c: 
@@ -2962,3 +2962,24 @@ oJ:
         cv: '0.71'
         cvt: 0.71	C.t
         p: qq/Modulator/Modulator/Jing/Jing/Jumps/Jumps
+th: 
+  "0.4": 
+    J_4: 
+      c: 
+        el: 1
+        s: "A.I.J_4 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $ar;\n    ar.A=$A;ar.G=$G;ar.C=$C;ar.T=$T;ar.J=$J;\n    C.c.e ?\n        Rw threve\n    :\n        Rw thank;\n    if (T.oke) {\n        delete A.Iso.th;\n        A.Iso.oJ = 1;\n        A.ztime = 6;\n        return sayyl \"Tanking into J.name\";\n    }\n    T.not = 1;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: th 4
+        dige: db9c30797819
+        gk: J
+        gro: threes
+        nk: c
+        v: cJ
+      t: J_4
+      "y": 
+        cv: '0.4'
+        cvt: 0.4	C.t
+        p: qq/threes/threes
