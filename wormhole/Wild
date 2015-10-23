@@ -35,12 +35,12 @@ I:
     An: 
       c: 
         el: 1
-        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub { $A->{J}->{V} }; # or so\n        $A\n};A.I.d&An;\n"
+        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub {\n            my $bl = shift;\n            $A->{J}->{VV} && $A->{J}->{VV}->{$bl}\n            || $A->{J}->{V}\n        };\n        $A\n};A.I.d&An;\n"
       sc: 
         acgt: 1
         args: A,C,G,T
         code: I 1
-        dige: af1e3d91f123
+        dige: fb63d04c1357
         gro: Indulator/Motion
       t: An
       "y": 
@@ -465,12 +465,12 @@ I:
     interpD: 
       c: 
         el: 1
-        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1 && $nk eq 't') {\n            D.c.nk = $nk;\n        }\n        elsif (@M == 1) { # or from t,,,\n            D.c.nk ||= $defnk;\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n        delete D.c.gk if D.c.gk eq 'NOGK';\n        saybl \"Hmmm @M  :::: \".ki $D;\n    $D\n};\n"
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n    while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n        D.c->{$1} = $2;\n        pop @M if @M == 2;\n    }\n    if (@M == 1 && $nk eq 't') {\n        D.c.nk = $nk;\n    }\n    elsif (@M == 1) { # or from t,,,\n        D.c.nk ||= $defnk;\n        D.c.gk ||= $nk;\n    }\n    elsif (@M == 2) {\n        D.c.nk = $nk;\n        D.c.gk = $gk;\n    }\n    delete D.c.gk if D.c.gk eq 'NOGK';\n    $D\n};\n"
       sc: 
         acgt: nk,gk
         args: A,C,G,T,nk,gk
         code: I 1
-        dige: 1a041e308854
+        dige: 688db989ec06
         gro: Indulator/C
       t: interpD
       "y": 
