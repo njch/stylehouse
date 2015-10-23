@@ -35,12 +35,12 @@ I:
     An: 
       c: 
         el: 1
-        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub { $A->{J}->{V} }; # or so\n        $A\n};A.I.d&An;\n"
+        s: "A.I.An = sub {\n    my ($A,$C,$G,$T,@Me) = @_;\n    my $I = A.I;\n        $A->{note} = {}; # pinging csc\n        $A->{talk} = \"$A->{J}->{name} \".($A->{J}->{le} && $A->{J}->{le}->{name});\n        $A->{c} = sub { $I->{d}->(\"c\",@_); };\n        $A->{e} = sub { $I->{d}->(\"e\",@_); };\n        $A->{us} = sub { $I->{d}->(\"us\",@_); };\n        $A->{t} = sub { $I->{d}->(\"t\",@_); };\n        $A->{V} = sub { $A->{J}->{V} }; # or so\n        $A\n};A.I.d&An;\n"
       sc: 
         acgt: 1
         args: A,C,G,T
         code: I 1
-        dige: c5aef33d8e9a
+        dige: af1e3d91f123
         gro: Indulator/Motion
       t: An
       "y": 
@@ -50,12 +50,12 @@ I:
     Cngk: 
       c: 
         el: 1
-        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft {\n        $@ .= \"\\n\\nWas: \".ki$D if $@;\n    };\n    die 'nk no gk' if exists D.c.nk && !exists D.c.gk;\n    return 1 if D.c.any;\n    if (D.c.nk && exists $C->{D.c.nk} && exists $C->{D.c.nk}->{D.c.gk}) {\n        my $v = [$C->{D.c.nk}->{D.c.gk}];\n        delete $C->{D.c.nk}->{D.c.gk} if D.c.mdel;\n        return $v;\n    }\n    die \"noNnk\".wdump $D unless exists D.c.nk;\n    0;\n};\n"
+        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft { $@ .= \"\\nLookat: \".ki($s).\"\\nWith: \".ki($D) if $@ };\n    return 1 if D.c.any;\n    die \"nonNKnk\".ki$D if !D.c.nk;\n    return 0 if !exists $s->{D.c.nk};\n    return [$s->{D.c.nk}] if !exists D.c.gk;\n    return 0 if !exists $s->{D.c.nk}->{D.c.gk};\n    return [$s->{D.c.nk}->{D.c.gk}];\n};\n"
       sc: 
-        acgt: D
-        args: A,C,G,T,D
+        acgt: s,D
+        args: A,C,G,T,s,D
         code: I 1
-        dige: d34d293f0760
+        dige: 1ce95658c144
         gro: Indulator/C
       t: Cngk
       "y": 
@@ -221,12 +221,12 @@ I:
     as: 
       c: 
         el: 1
-        s: "A.I.as = sub {\n    my ($A,$C,$G,$T,$s,$x,@Me) = @_;\n    my $I = A.I;\n    for (qw'begin bb ord tim wtf') {\n         exists $x->{$_} || next;\n         my $v = $x->{$_};\n         $v = [@$v] if ref $v eq 'ARRAY';\n         $v = {%$v} if ref $v eq 'HASH';\n         $s->{$_} = $v;\n    }\n};\n"
+        s: "A.I.as = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$x,@Me) = @M;\n    my $I = A.I;\n    for (qw'begin bb ord tim wtf') {\n         exists $x->{$_} || next;\n         my $v = $x->{$_};\n         $v = [@$v] if ref $v eq 'ARRAY';\n         $v = {%$v} if ref $v eq 'HASH';\n         $s->{$_} = $v;\n    }\n};\n"
       sc: 
         acgt: s,x
         args: A,C,G,T,s,x
         code: I 1
-        dige: 34a42e730f45
+        dige: e6a7402c5fdd
         gro: Modems/Pha
       t: as
       "y": 
@@ -251,12 +251,12 @@ I:
     c: 
       c: 
         el: 1
-        s: "A.I.c = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    $D = I.d&interpD,@_ if !ref $D;\n    for (qw'code if of ref') {\n        exists C.c->{$_} && die \"COT I\".ki $C\n    }\n    my $v = I.d&Cngk,$D;\n    return () unless $v;\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        return ref $v eq 'ARRAY' ? @$v : die'Cngk not array';\n    }\n    return 1;\n};\n"
+        s: "A.I.c = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,$C,@M;\n};\n"
       sc: 
         acgt: D
         args: A,C,G,T,D
         code: I 1
-        dige: 5f643a068b75
+        dige: a931936381c2
         gro: Indulator/C
       t: c
       "y": 
@@ -266,12 +266,12 @@ I:
     carebowl: 
       c: 
         el: 1
-        s: "A.I.carebowl = sub {\n    my ($A,$C,$G,$T,$s,$iii,$x,$xrd,@Me) = @_;\n    my $I = A.I;\n    for my $ik (sort keys %$iii) {\n        my $D = $iii->{$ik};\n        if (my $nk = D.sc.nk) {\n            my $C = I.nF.C;\n            next if !exists $C->{$nk};\n            if (my $gk = D.sc.gk) {\n                next if !exists $C->{$nk}->{$gk};\n            }\n        }\n        my $act;\n        my $dont;\n        if (D.sc.acgt && D.sc.act) {\n            $act = 1;\n            # acgtsubs can be defined at any cv\n            # run themselves if act\n            # usu. one receiver (Ci) and the rest scheme\n            die \"D.t .act gets... D.sc.act\" if D.sc.act ne '1';\n            $dont = 1 if exists A.I->{D.t};\n        }\n        # way or acgt-setuping-way\n        unless ($dont) {\n            my $paw = join\"_\",'',I.k,I.cv,D.t;\n            $paw =~ s/\\W//g;\n            Rw $paw $A $C $G $T $__D:D;\n        }\n        # most tiny ticks\n        # this ind is all flywheel\n        # it's a kind of unity that wants to be a block of code like this\n        # and c\n        my @is = A.s;\n        @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;\n        @is || next;\n        if ($act) {\n            push @$xrd, [I.k,$ik];\n            my $Ds = $x->{I.k}->{$ik} ||= {};\n            Ds.D = $D;\n            Ds.is = \\@is;\n            D.sc.its = @is;\n        }\n        # TreeD\n        $s->{I.k}->{I.cv}->{$ik} = $D;\n    }\n};\n"
+        s: "A.I.carebowl = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$iii,$x,$xrd,@Me) = @M;\n    my $I = A.I;\n    for my $ik (sort keys %$iii) {\n        my $D = $iii->{$ik};\n        if (my $nk = D.sc.nk) {\n            my $C = I.nF.C;\n            next if !exists $C->{$nk};\n            if (my $gk = D.sc.gk) {\n                next if !exists $C->{$nk}->{$gk};\n            }\n        }\n        my $act;\n        my $dont;\n        if (D.sc.acgt && D.sc.act) {\n            $act = 1;\n            # acgtsubs can be defined at any cv\n            # run themselves if act\n            # usu. one receiver (Ci) and the rest scheme\n            die \"D.t .act gets... D.sc.act\" if D.sc.act ne '1';\n            $dont = 1 if exists A.I->{D.t};\n        }\n        # way or acgt-setuping-way\n        unless ($dont) {\n            my $paw = join\"_\",'',I.k,I.cv,D.t;\n            $paw =~ s/\\W//g;\n            Rw $paw $A $C $G $T $__D:D;\n        }\n        # most tiny ticks\n        # this ind is all flywheel\n        # it's a kind of unity that wants to be a block of code like this\n        # and c\n        my @is = A.s;\n        @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;\n        @is || next;\n        if ($act) {\n            push @$xrd, [I.k,$ik];\n            my $Ds = $x->{I.k}->{$ik} ||= {};\n            Ds.D = $D;\n            Ds.is = \\@is;\n            D.sc.its = @is;\n        }\n        # TreeD\n        $s->{I.k}->{I.cv}->{$ik} = $D;\n    }\n};\n"
       sc: 
         acgt: s,iii,x,xrd
         args: A,C,G,T,s,iii,x,xrd
         code: I 1
-        dige: f4d060d1cba7
+        dige: 1e38d8a681fb
         gro: Indulator/KnowTime
         l: "#c"
       t: carebowl
@@ -294,6 +294,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/IStuff/IStuff
+    e: 
+      c: 
+        el: 1
+        s: "A.I.e = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,C.c.e,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: 06747ef15695
+        gro: Indulator/C
+      t: e
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Indulator/Indulator/C/C
     end: 
       c: 
         el: 1
@@ -432,15 +447,30 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/Servo/Servo
+    inDin: 
+      c: 
+        el: 1
+        s: "A.I.inDin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    #\n    return () unless defined $s;\n    return $s if $D eq 'C';\n    #\n    shift @M; # s\n    $D = I.d&interpD,@M if !ref $D;\n    #\n    my $v = I.d&Cngk,$s,$D;\n    #\n    return () unless $v;\n    # blankgk\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    #\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        ref $v eq 'ARRAY' || die 'Cngk not array';\n        return @$v;\n    }\n    return 1;\n};\n"
+      sc: 
+        acgt: s,D
+        args: A,C,G,T,s,D
+        code: I 1
+        dige: bc7f2cfdcb5f
+        gro: Indulator/C
+      t: inDin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Indulator/Indulator/C/C
     interpD: 
       c: 
         el: 1
-        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    return $nk if ref $nk;\n    my $D = {};\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1) { # or from t,,,\n            D.c.nk ||= 'c';\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n    $D\n};\n"
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n        while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n            D.c->{$1} = $2;\n            pop @M if @M == 2;\n        }\n        if (@M == 1 && $nk eq 't') {\n            D.c.nk = $nk;\n        }\n        elsif (@M == 1) { # or from t,,,\n            D.c.nk ||= $defnk;\n            D.c.gk ||= $nk;\n        }\n        elsif (@M == 2) {\n            D.c.nk = $nk;\n            D.c.gk = $gk;\n        }\n        delete D.c.gk if D.c.gk eq 'NOGK';\n        saybl \"Hmmm @M  :::: \".ki $D;\n    $D\n};\n"
       sc: 
         acgt: nk,gk
         args: A,C,G,T,nk,gk
         code: I 1
-        dige: 4de16c0e06fd
+        dige: 1a041e308854
         gro: Indulator/C
       t: interpD
       "y": 
@@ -737,6 +767,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Modulator/Modulator/Rings/Rings
+    us: 
+      c: 
+        el: 1
+        s: "A.I.us = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    my $E = C.c.e || return ();\n    push @M, 'NOGK' if @M == 1;\n    I.d&inDin,E.c.us,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: 0cdebb6cbbf0
+        gro: Indulator/C
+      t: us
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Indulator/Indulator/C/C
     wtfch: 
       c: 
         el: 1
@@ -756,12 +801,12 @@ I:
     xot: 
       c: 
         el: 1
-        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,$s,$c,@Me) = @_;\n    my $I = A.I;\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;\n    }\n    $s\n};\n"
+        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;\n    }\n    $s\n};\n"
       sc: 
         acgt: s,c
         args: A,C,G,T,s,c
         code: I 1
-        dige: ebbcb1ba9ff2
+        dige: f8940275bf17
         gro: Indulator/C
       t: xot
       "y": 
@@ -823,15 +868,16 @@ I:
     reasonlock: 
       c: 
         el: 1
-        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    my $istf = sub {\n        my $s = shift;\n        exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n    };\n    # uis a nested wave - falling ]]]]]]]\n    # allow much manufold\n    # knot this not this:\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {\n        if (C.y.bb) {\n            if (ref C.c && $istf->(C.c)) {\n                C.c = {e=>C.c};\n            }\n            C.c.s = C.y;\n        }\n        else {\n            C.c.e = C.y;\n        }\n        C.y = '';\n        C.c.W = C.t;\n    }\n    \n    I.d&renc if !ref C.c;\n    I.d&reny if !ref C.y;\n    I.d&rensc if !ref C.sc;\n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
+        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    my $istf = sub {\n        my $s = shift;\n        exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n    };\n    # uis a nested wave - falling ]]]]]]]\n    # allow much manufold\n    # knot this not this:\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    # this form: NextWorm=>$C=>$J (C/J swappy)\n    if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {\n        if (C.y.bb) {\n            if (ref C.c eq 'HASH' && $istf->(C.c)) {\n                C.c = {e=>C.c};\n            }\n            C.c.s = C.y;\n        }\n        else {\n            if (ref C.c eq 'HASH' && C.c.bb) {\n                C.c = {s=>C.c};\n            }\n            C.c.e = C.y;\n        }\n        C.y = '';\n        C.c.W = C.t;\n    }\n    \n    I.d&renc if !ref C.c;\n    I.d&reny if !ref C.y;\n    I.d&rensc if !ref C.sc;\n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: I 18
-        dige: af6015bf516a
+        dige: 860ac48a38e1
         gro: Indulator/SlideEa
         its: 1
+        li: "#c"
       t: reasonlock
       "y": 
         cv: '0.3'
@@ -1532,13 +1578,13 @@ Mo:
     pin: 
       c: 
         el: 1
-        s: "A.I.pin = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    my $oJ = A.J;\n    my $J = C.y.o && C.y.o.J || $oJ;\n    my $ar = {};\n    ar.s = C.c.s if exists C.c.s;\n    \n    Rw jamsc + $J $oJ $C $sc:C.sc;\n    \n    # man is an insect is a flame\n    \n    sayyl \"Hamsc! A.talk: C.t C.y.cv     \".ki(1,{c=>C.c,sc=>C.sc})\n        if A.J.V;\n};\n"
+        s: "A.I.pin = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    return if delete T.oke;\n    my $oJ = A.J;\n    my $J = C.y.o && C.y.o.J || $oJ;\n    my $ar = {};\n    ar.s = C.c.s if exists C.c.s;\n    \n    Rw jamsc + $J $oJ $C $sc:C.sc;\n    \n    # man is an insect is a flame\n    \n    sayyl \"Hamsc! A.talk: C.t C.y.cv     \".ki(1,{c=>C.c,sc=>C.sc})\n        if A.J.V;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 77
-        dige: 61a9f7cd1cf2
+        dige: dc8edcf51f43
         gro: Modulator/Spaci
         its: 1
         nk: 'y'

@@ -176,6 +176,17 @@ hooks:
     W: | #c
         $e->{$_} =~ /^\w+$/ || delete $e->{$_} for qw'id ux W';
         
+        saybl "e: ".wdump($e);
+        my $f =  "W/e.ids->[0]\.e";
+        if (-f "life/$f") {
+            my $m = sjson($e)."\n";
+            write_file("life/$f",{append=>1},encode_utf8 $m);
+        }
+        else {
+            die "Nogo $f";
+        }
+        return;
+        
         my $meta = $G->tri('W/'.e.W.'.i');
         $meta || return warn "no such e.W but also H.G.A.W->{e.W}";
         $meta = djson $meta if $meta;
@@ -213,8 +224,7 @@ hooks:
         }
         elsif ($hol ne H.ol) {
             sayyl "HSW H.ol -> $hol";
-            saybl "e: ".wdump($e);
-            $G->pub("S/$hol", "speaks $m"); # our json event again over there
+            $G->pub("S/$hol", "speaks $m");
         }
         else {
             die "goner";
