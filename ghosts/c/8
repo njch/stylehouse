@@ -54,6 +54,7 @@ floatation: |
 Sl: |
     #n JSlines =>W=>{s=>$J}
     #u alljs
+    u Yuni
     y.at.jslines = 1;
     y.at.oWl = 1;
     n reJSlines
@@ -99,6 +100,73 @@ pi/curv: |
     }
     Mn([$_]) for split "\n", $s;
 GeoSlur: |
+    u allvse
+    n '','','%of:Sev'
+    
+    n root =>3123=><<''
+        # root holds this 0, next any is a thing...
+        # squary downy
+        die "HEII";
+        my $l = C.y.last = {};
+        l.x = C.sc.x||0;
+        l.y = C.sc.y||0;
+        l.cv = 0.001;
+        l.rad = C.sc.rad||$RADIAN;
+        l.spin = C.sc.spin||0;
+        sayyl "ROOT CL: $C $l";
+    
+    n J =>321=><<'',{rg=>'J,Y,V'}
+        sayyl "#";
+        sayyl "For C.y.k    => C.c.s => ".ki C.sc;
+        .
+        my $i = Y.kvi->{C.y.k};
+        my $last = $i == 0 ? Y.root.y.last : do {
+            # lv buffets geo cache, they sleep
+            # at is your outgoing awakeness
+            # lv.C is the sevd osc (hup from Y  post 345 C, .y will be noisey from its last Yission
+            # wakeup should haps....
+            # the process of this is off
+            # & to spirals, potentially...
+            # deep[end te data somewhere
+            my $lC = Y.vs->[$i-1] || die "nof leftoi $i";
+            lC.y.k = lC.y.cv."\t".lC.t;
+            my $llv = V.lv->{lC.y.k};
+            $llv || die "No lv left of C.y.k:  lC.y.k  ".wdump[V.lv];
+            ref llv.C || die'nollv';
+            saybl "Grba cur C.y.k:  lC.y.k";
+            llv.C.y.here;
+        };
+        sayyl "ROOTO CL: Y.root $last";
+        sayyl wdump [ C.t=>C.y.cv => C.sc,$last ];
+        saybl "So lv knows about last ".ki $last;
+        $last || return sayre "Dunno";
+        my $here = C.y.here = {%$last};
+        here.cv = C.y.cv;
+        sayyl wdump [ C.y.cv => C.sc ];
+        .
+        return;
+        $last = {%$last};
+        my $j = $C;
+        # mapping intents into chain reactions
+        here.cv = j.cv;
+        my $r = j.s;
+        here.x  = last.x = r.x if exists r.x;
+        here.y = last.y = r.y if exists r.y;
+        .
+        here.rad = 4*$RADIAN * r.spun if exists r.spun;
+        .
+        here.creatin = j.s;
+        .
+        here.zoom = r.zoom if defined r.zoom;
+        .
+        Rw atom $j $here $last;
+        .
+        # aft fo smoothi
+        here.spin = r.curve if exists r.curve; # on the level
+        .
+        J.bz->("b%ve\t".j.cv => $here);
+        $last = $here;
+
     # may +atomb? without compare you are dead
     u allacgts
     n atom =>''=><<'',{acgt=>'here,last'}
@@ -121,55 +189,6 @@ GeoSlur: |
          here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
          here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
     
-    u allvse
-    n '','','%of:Sev'
-    n root =>32=><<''
-        # root holds this 0, next any is a thing...
-        # squary downy
-        my $l = C.y.last = {};
-        l.x = C.sc.x||0;
-        l.y = C.sc.y||0;
-        l.cv = 0.001;
-        l.rad = C.sc.rad||$RADIAN;
-        l.spin = C.sc.spin||0;
-    
-    n J =>321=><<'',{rg=>'J,Y'}
-        sayyl "For C.y.k    => ".ki $C;
-        my $i = Y.kvi->{C.y.k};
-        my $l = $i == 0 ? Y.root.y.last : Y.vs->[$i-1];
-        my $self = Y.vs->[$i];
-        die "$self vs $C".wdump 2,[$self,$C] if $self ne $C;
-        #
-        saybl "So lv knows about last ".ki $l;
-        my ($left,$us,$right) = @{Y.vs}[$i-1,$i,$i+1];
-        say "lv : ".wdump [map{ki$_}$left,$us,$right];
-        saybl "for ".ki $C;
-        .
-        return;
-        my $last = $l;
-        $last = {%$last};
-        my $j = $C;
-        # mapping intents into chain reactions
-        my $here = {};
-        here.cv = j.cv;
-        my $r = j.s;
-        here.x  = last.x = r.x if exists r.x;
-        here.y = last.y = r.y if exists r.y;
-        .
-        here.rad = 4*$RADIAN * r.spun if exists r.spun;
-        .
-        here.creatin = j.s;
-        .
-        here.zoom = r.zoom if defined r.zoom;
-        .
-        Rw atom $j $here $last;
-        .
-        # aft fo smoothi
-        here.spin = r.curve if exists r.curve; # on the level
-        .
-        J.bz->("b%ve\t".j.cv => $here);
-        $last = $here;
-   
 Teal: | # de al
     n 'curvsligu'=>2,<<'','%code:In 4189'
         return unless C.t eq 'curves';
