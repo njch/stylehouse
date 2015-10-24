@@ -143,8 +143,9 @@ GeoSlur: |
         l.rad = C.sc.rad||$RADIAN;
         l.spin = C.sc.spin||0;
     
-    n J =>3213=><<'',{rg=>'J,Y,V',l=>'#c get here'}
+    n J =>3213=><<'',{rg=>'J,Y,V,yat',l=>'#c get here'}
         my $i = Y.kvi->{C.y.k};
+        sayyl "C.t is C.sc $at";
         # mapping intents into chain reactions
         # sleeps if prev here same, shifting arms
         # make bouncey land time, things joiN post-Sly if engaged
@@ -208,8 +209,9 @@ GeoSlur: |
             }
         }
     
-    n J =>3214=><<'',{rg=>'J,Y,V',l=>'#c wait here'}
+    n J =>3214=><<'',{rg=>'J,Y,V,yat',l=>'#c wait here'}
         my $here = C.y.here;
+        saybl "C.t is C.sc $at";
         $here || return sayre "NO HERE C.y.k";
         return sayyl "C.y.k  has e geo: C.sc.geo" if C.sc.geo;
         say "Geo looks from: ".ki $here;
@@ -231,11 +233,9 @@ GeoSlur: |
         my $radleg = -$RADIAN;
         $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
         $rad -= $radleg;
-        geo.radial = $rad;
-        #
+        geo.radial = I.d&ron,$rad;
         geo.x = here.x;
         geo.y = here.y;
-        #
         geo.ab = '100' if 1; # w=h=100,ab=1
         # transform about
         geo.tro = '0 0.5'; # midleft
@@ -247,11 +247,21 @@ GeoSlur: |
         # OR SOMETHING
         # loses its compressibility as csz
         sayyl "SKI C.t    ".ki $geo;
-        C.sc.geo = $geo;
+        my @am = qw'a? ab  x x  y y  r radial  s scale';
+        my @l;
+        while (@am) {
+            my $k = shift @am;
+            my $v = shift @am;
+            my $sens = $k =~ s/\?$//;
+            push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};
+        }
+        my $l = join ' ', @l;
+        C.sc.geo = $l;
         if (J.C.c.e eq C.c.s) {
             sayyl "ElvisSpace: A.J.name C.y.k  is holding: ".ki C.c.s;
-            C.c.s.sc.geo = $geo;
+            C.c.s.sc.geo = $l;
         }
+        sayyl "YEAH! ".wdump C.sc.geo;
     
     
 Teal: | # de al
