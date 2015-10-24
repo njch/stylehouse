@@ -327,7 +327,7 @@ Jamsc: | # all the \t bz-io, very J2, inline thing protocol
         if (J.tt) {
             $sing = 'J_tt';
             (j.cv,j.t,j.style) = $r =~ /^(.*?)\t(.*)\t(.*?)$/;
-            if (!j.cv) {
+            if (!defined j.cv) {
                 sayre "Hind $r  " for 1..5;
                 (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
             }
@@ -346,12 +346,12 @@ Jamsc: | # all the \t bz-io, very J2, inline thing protocol
         my $sc = ar.sc || {};
         my $J = ar.J || die "jamsc noj".ki$s;
         ar.C = ar.d if ar.d;
-        my $t = ar.t ? ar.t
+        my $t = defined ar.t ? ar.t
             : ar.j ? ar.j.l
             : ar.C ? ar.C.t : die'not';
-        my $cv = ar.cv ? ar.cv
+        my $cv = defined ar.cv ? ar.cv
             : ar.j ? ar.j.cv
-            : ar.C ? ar.C.cv || ar.C.y.cv : die'noy';
+            : ar.C ? ar.C.cv || ar.C.y.cv : die'cvoy';
         .
         if (ar.oJ && ar.oJ ne ar.J && !ar.noR) {
             my $J = ar.oJ;
@@ -505,8 +505,8 @@ Spaci: |
     n yin =>''=>{s=><<''},{code=>'Mo 23'}
         # build wave plot manifold
         # solar systems
-        y.cv ||= 0.3 if !y.cv && !y.in;
-        y.in = y.cv if y.cv;
+        y.cv ||= 0.3 if !defined y.cv && !defined y.in;
+        y.in = y.cv if defined y.cv;
         y.in ||= 0.1;
         y.out = y.in + y.space if defined y.space;
         y.out ||= 0.9; # up to, then low things big

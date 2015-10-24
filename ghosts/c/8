@@ -100,10 +100,36 @@ pi/curv: |
         sayyl "Placing in J.name ::: ".ki $_;
         return y.ope = 1;
     }
+    J.VV.C = 1;
     Mn([$_]) for split "\n", $s;
     # ^ fill gaps > 0.1 at 0.1s, or maybe all 0.1s
     # so produce
 GeoSlur: |
+    # may +atomb? without compare you are dead
+    u allacgts
+    n atom =>''=><<'',{acgt=>'last,here'}
+         # spacin
+         here.dist = here.cv - last.cv;
+         # twistin spin inherit
+         here.spin += last.spin;
+         # scale local-local change
+         here.rad += here.spin * here.dist * 10;
+         # builds rad on rad
+         here.rad += last.rad;
+         # distort space + more ways, orbital
+         # chuck skeletons for mods
+         # adapt M meta for what kinda places things want
+         # into constellations of high level things
+         # atomised hairs
+         here.zoom ||= last.zoom;
+         here.dist *= here.zoom if here.zoom;
+         # and move
+         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+    
+    n ron =>''=><<''
+        0.0001 * int(10000*$s)
+    
     u allvse
     n '','','%of:Sev'
     
@@ -116,29 +142,12 @@ GeoSlur: |
         l.cv = 0.001;
         l.rad = C.sc.rad||$RADIAN;
         l.spin = C.sc.spin||0;
-        sayyl "Amro";
     
-    n J =>3213=><<'',{rg=>'J,Y,V'}
+    n J =>3213=><<'',{rg=>'J,Y,V',l=>'#c get here'}
         my $i = Y.kvi->{C.y.k};
         # mapping intents into chain reactions
-        .
-        my $last = $i == 0 ? Y.root.y.last || die "no root ylast"
-            : do {
-            # alv is lv but early, is doesn't want to be?
-            # so its place to find last C.y.here for others
-            # at is your outgoing awakeness
-            # lv.C is the sevd osc (hup from Y  post 345 C, .y will be noisey from its last Yission
-            # wakeup should haps....
-            # the process of this is off
-            # & to spirals, potentially...
-            # deep[end te data somewhere
-            my $lC = Y.vs->[$i-1] || die "nof leftoi $i";
-            my $lk = lC.y.cv."\t".lC.t;
-            my $llv = V.alv->{$lk};
-            $llv || die "No lv left of C.y.k:  $lk ".wdump[V.alv];
-            $lC = llv.C || die "nollv $lk";
-            llv.C.y.here || die "bnoi yhere".ki $lC;
-        };
+        # sleeps if prev here same, shifting arms
+        # make bouncey land time, things joiN post-Sly if engaged
         if (C.c.root) {
             # roots here is remote, elvis space vectors
             # ab:100 + top/left/rad
@@ -146,10 +155,31 @@ GeoSlur: |
             #  - blend between figured there geos
             #  - insert & osc the stranger:
             my $Wsp = C.sc.Wsp||'TeCurve';
+            saygr "r   o o  ".ki $last;
             #n $Wsp=>$C,$J
             #C.y.here || C.sc.geo || die "$Wsp didnt set geospacei ! ".ki $C;
         }
         else {
+            my $last;
+            if ($i == 0) {
+                $last = Y.root.y.last || die "no root ylast";
+            }
+            else {
+                # alv is lv but early, but it doesn't want to be (?)
+                # so its place to find last C.y.here for others
+                # at is your outgoing awakeness
+                # lv.C is the sevd osc (hup from Y  post 345 C, .y will be noisey from its last Yission
+                # wakeup should haps....
+                # the process of this is off
+                # & to spirals, potentially...
+                # deep[end te data somewhere
+                my $lC = Y.vs->[$i-1] || die "nof leftoi $i";
+                my $lk = lC.y.cv."\t".lC.t;
+                my $llv = V.alv->{$lk};
+                $llv || die "No lv left of C.y.k:  $lk ".wdump[V.alv];
+                $lC = llv.C || die "nollv $lk";
+                $last = llv.C.y.here || die "bnoi yhere".ki $lC;
+            }
             # eat last, make here here
             my $last = {%$last};
             my $here = C.y.here = {};
@@ -178,37 +208,52 @@ GeoSlur: |
                 C.c.s.y.here = $here;
             }
         }
+    
+    n J =>3214=><<'',{rg=>'J,Y,V',l=>'#c wait here'}
         my $here = C.y.here;
         $here || return sayre "NO HERE C.y.k";
         return sayyl "C.y.k  has e geo: C.sc.geo" if C.sc.geo;
-        C.sc.geo = do { # is omp
-            say "Geo looks from: ".ki $here;
-            "somegeo!C.y.k"
-        };
+        say "Geo looks from: ".ki $here;
         .
-        return;
-
-    # may +atomb? without compare you are dead
-    u allacgts
-    n atom =>''=><<'',{acgt=>'last,here'}
-         # spacin
-         here.dist = here.cv - last.cv;
-         # twistin spin inherit
-         here.spin += last.spin;
-         # scale local-local change
-         here.rad += here.spin * here.dist * 10;
-         # builds rad on rad
-         here.rad += last.rad;
-         # distort space + more ways, orbital
-         # chuck skeletons for mods
-         # adapt M meta for what kinda places things want
-         # into constellations of high level things
-         # atomised hairs
-         here.zoom ||= last.zoom;
-         here.dist *= here.zoom if here.zoom;
-         # and move
-         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
-         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+        my $geo = {};
+        geo.rad = here.rad;
+        # unwind (into...)
+        my $o = $RADIAN*4;
+        my $swish = $o;
+        $swish *= -1 if geo.rad < 0;
+        my $i = 0;
+        geo.rad -= $swish until
+            do {$i++>5&&die"$i muchwind".ki$here;0}
+            ||
+            $o*-1 < geo.rad && geo.rad < $o*4;
+        # pan to hemisphere...
+        # from O- is it in the left hemisphere etc
+        my $rad = geo.rad;
+        my $radleg = -$RADIAN;
+        $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
+        $rad -= $radleg;
+        geo.radial = $rad;
+        #
+        geo.x = here.x;
+        geo.y = here.y;
+        #
+        geo.ab = '100' if 1; # w=h=100,ab=1
+        # transform about
+        geo.tro = '0 0.5'; # midleft
+        geo.tro = '0 0' if 0; # topleft
+        #
+        my $fo = sub { (shift() * 100).'%' };
+        geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;
+        # shove com toeget
+        # OR SOMETHING
+        # loses its compressibility as csz
+        sayyl "SKI C.t    ".ki $geo;
+        C.sc.geo = $geo;
+        if (J.C.c.e eq C.c.s) {
+            sayyl "ElvisSpace: A.J.name C.y.k  is holding: ".ki C.c.s;
+            C.c.s.sc.geo = $geo;
+        }
+    
     
 Teal: | # de al
     n 'curvsligu'=>2,<<'','%code:In 4189'
