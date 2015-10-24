@@ -363,7 +363,9 @@ Yosc: | # make lv,at + write stuff on at
     n Jin =>36=><<''
         # so osci ^ can C.sc.
         at.sc = {%{C.sc}};
-        delete at.sc->{$_} for qw'geo idly ml nspc path yspc';
+        for (qw'idly ml nspc path yspc') {
+            delete at.sc->{$_} && sayre "C.t sc blocking $_";
+        }
         # haps to be crate later somewhere if we oWl/S
         delete ta.V if ref ta.V eq 'HASH' && !keys %{ta.V};
         .
