@@ -79,6 +79,8 @@ EYZ: |
     Mn(shedful => '', {pi=>'eye',s=>'eye/Tarf'});
     n TeCurve =>$J
 TeCurve: | # plop W space resolve
+    y.at.unit = 1; # e W come by, upper state could kink into curv
+    # it pis into I... suu
     u ReoCur
     u curv =>pi=><<''
         zoom 0 1.4
@@ -88,17 +90,21 @@ TeCurve: | # plop W space resolve
         curve 0.4 0.4
         spin 0.3 2
 
-    n s=>''=>t
     for (A.e&C) {
-        sayyl "GOT SPACE ELVIS: ".wdump 2, $_;
+        # y.unit 
+        sayyl "GOT SPACE ELVIS: _.t   _.y.cv "
+            .wdump 2, ["",''];
     }
+    J.V = 1;
     # weird mediation between placed J.C and J.root to plop W 
 Claw: |
+    y.at.shape = 1; # advise e to draw in
     u curv =>pi=><<''
-       zoom 0  0.7
-       y    0  0
-       x    0  0
-       curve 0 0.1
+        zoom 0  0.7
+        y    0  0
+        x    0  0
+        curve 0 0.1
+    
 pi/curv: | # source/be ex
     u GeoSlur
     J.V = 1;
@@ -110,22 +116,42 @@ pi/curv: | # source/be ex
     n $_ for split "\n", $s;
     # ^ fill gaps > 0.1 at 0.1s, or maybe all 0.1s
     # so produce
+findupi: |
+    my $Ye;
+    for ('El/qq/El/Duv') {
+        $Ye = I.d&pin,$_,$J;
+        last if $Ye;
+    }
+    my @curv = grep { _.sc.pi eq 'curv'} values %{Ye.tv};
+    @curv = map{J.El.qq.bb->{$_}} grep{/curv\tJ$/} keys%{J.El.qq.bb} if !@curv;
+    die "many ".wdump \@curv if @curv > 1;
+    shift @curv
+    
 ReoCur: | # inner bracken resolve (for randoms)
     # wants to reach qq... do ^qq/(.+) root reacumin
+    # u pi is I art
+    # sinky massive spiral space, name system of
+    # this is the thin osc superfactor
+    # could climb in by V.cvi and atom or blend geos
     #n 'allovse'=>2,<<'','%code:In 4189'
     u allvse
     n '','','%of:Sev'
     n J =>3212=><<'',{rg=>'J,Y,ylv,yvl'}
+        return if C.c.root;
         my $csrc = Y.csrcmostly ||= do {
-            my $Ye = J.El.qq.El.Duv;
-            saybl "YEFUN: on J.name ".wdump 2, $Ye;
-            my ($cur) = grep {/\tcurv/} keys %{Ye.tv};
-            my $CC = Ye.tv->{$cur};
-            $CC || sayre "No curve in J.name qq";
-            say "Got curve: ".wdump $CC;
-            $CC || sayre "No curve J.name"
+            my $cs = Rw findupi $I $J curv;
+            my $from = "Jse" if $cs;
+            $cs ||= do {
+                $from = "Clawdef";
+                my $def =
+                n Claw
+                Rw findupi $I $J:def.nj curv;
+            };
+            sayyl "Finding J.name  $from:  cs.t";
+            say "J.name  Got curve: ".ki $cs;
+            $cs || sayre "No curve J.name"
         };
-        saybl "J.name Gainst: C.t  ";
+        saybl "J.name Gainst: C.t  C.y.cv ";
         # might wanna crawl
 Teal: | # de al
     n 'curvsligu'=>2,<<'','%code:In 4189'
@@ -292,11 +318,12 @@ Details: |
     for (A.us&time) {
         J.icker += $_;
     }
+    J.V = 1;
     y.at.ux = 1;
     my $n = J.sdjfsiji ||= int rand 9;
     n b320 => '3-9x7',join'',($n) x 3
     n latelo => '12', '12-'.J.icker
-    n TeCurve =>$J
+    n TeCurve =>$C=>$J
 Wight: |
     n Funstuff
     n JScomp
