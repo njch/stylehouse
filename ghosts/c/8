@@ -152,29 +152,35 @@ ReoCur: | # inner bracken resolve (for randoms)
     n '','','%of:Sev'
     n J =>3212=><<'',{rg=>'J,Y,ylv,yvl'}
         # eat, rob, art
+        my $host;
         if (C.c.root) {
-            my $host = 'TeCurve';
+            $host = 'TeCurve';
             return sayre "topleve C.t is self" if $host eq C.t;
             #$cC = Rw findupi $I $J:host curv;
             #$cC || die "toplev C.t no find curv";
-            my $cur =
+            my ($cur) = map {_.nj}
             n $host =>$C=>$J
-            my $cJ = cur.nj;
-            my $wat = cJ.El.Duv.ids->{C.sc.id};
-            sayyl "Rooted in $host, C.t found geo at: ".ki $wat;
-            C.sc.geo = wat.sc.geo || die "not foundcurve";
+            my $wat = cur.El.Duv.ids->{C.sc.id};
+            C.sc.geo = wat.sc.geo || die "not foundcurve".wdump $cur;
         }
         else {
             my $cC;
-            my $host = 'Claw';
+            $host = 'Claw';
+            my $st;
             $st = Y.stackurv ||= do {
-                $cC = Rw findupi $I $J curv;
-                $cC ||= Rw findupi $I $J:host curv;
-                $cC
+                st.C = Rw findupi $I $J curv;
+                st.l = 'self curv';
+                st.C ||= do {
+                    st.l = "$host curv";
+                    Rw findupi $I $J:host curv;
+                };
+                $st
             };
             my $cJ = st.C.sc.J;
+            $host = "st.l";
             Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
         }
+        saybl "$host: C.y.cv       C.y.t   found  C.sc.geo";
         # might wanna crawl
 curre: |
     my $cv = C.y.cv;
@@ -200,7 +206,6 @@ curre: |
     I.d&last2here,$last,{},$here;
     my $geo = I.d&here2geo,$here;
     C.sc.geo = $geo;
-    saybl "J.name of J.mo.le.name   Gainst: C.t  C.y.cv    $geo";
     
     
 Teal: | # de al
