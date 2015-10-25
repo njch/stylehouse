@@ -4,8 +4,7 @@ Sl: |
     #u alljs
     y.at.jslines = 1;
     y.at.oWl = 1;
-    n reJSlines
-    J.V = 1;
+    #n reJSlines
     
     n bawls =>3=><<'','%js'
         var v = $('#msgs');
@@ -48,8 +47,218 @@ Wight: |
     $n || Rw loopby $b=0.2 $d=17 $p=Top;
 Sight: |
     n stylehut
+    n styleomi
     # could ahh...
-    n JSlines =>W=>{s=>$J}
+    n JSlines =>$J
+    
+stylehut: |
+    u alljs
+    
+    n e =>''=><<'',{args=>'e'}
+        if (!q)
+            console.log("xut "+e);
+        var m;
+        try { m = eval(e); }
+        catch (er) { a.er(e, er); }
+        m
+    
+    n er =>''=><<'',{args=>'e,er'}
+        console.log("xutbang: ", e, er);
+        var ej = {er: {e: e}};
+        if (er && er.message)
+            ej.er.m = er.message;
+        s.reply(ej);
+        a.m("!"+ (ej.er.m || e));
+    
+    n m =>''=><<'','%args:e'
+        var d = e.substr(0,1);
+        if (d == " ") {
+          a.e(e);
+        }
+        else if (d == "[" || d == "{") {
+          var N = $.parseJSON(e);
+          console.log("gooftoes ", N);
+          a.om({},N,a,{});
+        }
+        else {
+          if (d == ".")
+            e = '<span style="font-size:66%">'+e+'</span>';
+          a.c(e);
+        }
+
+    n c =>''=><<'','%args:e'
+        $('#msgs').prepend(e+"\n");
+    
+    n yl =>''=><<'',{args=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<'','%args:s'
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+styleomi: |
+    u alljs
+    
+    n inC =>''=><<'','%args:s'
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: {s: C}};
+        }
+        if (typeof C.c === 'string') {
+            C.c = {s: C.c};
+        }
+        return C;
+
+    # contextualise to W
+    n WW =>''=><<'','%args:s'
+        var W = ww[s];
+        if (!W) {
+            W = ww[s] = {};
+            W.Wid = s;
+            W.A = {};
+            //W.A.p = new paper.Project();
+            W.A.W = W;
+        }
+        //W.A.p.activate();
+        return W;
+    
+    # for the webclient channels
+    # top level mirage is o(ww,Wid,$s)  which ins ww (G.Wid,Oth), Wid (you)
+    n om =>''=><<''
+        A = $.extend({},A);
+        C = G.inC(C); 
+        if (!T.d)
+           T.d=1; 
+        if (typeof C.c === 'string')
+           return a.er('c string: '+C.c);
+        .
+        T.alk = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
+        .
+        .
+        if (!C.sc)
+           C.sc = {};
+        .
+        if (C.sc.z) { 
+           //T.d++;
+           $.each(C.sc.z, function(i,v) {
+               var nC = G.inC(v);
+               //a.yl(1, function () { 
+                G.om(A,nC,G,{d:T.d+1});
+               //});
+           });
+        }
+        .
+        if (!C.sc.css)
+          C.sc.css = {};
+          C.sc.anc = {};
+        var ung = ['geo','ab'];
+        $.each(ung, function(i,v) {
+           if (C.sc[v]) {
+               var nC = {c: C.sc[v], sc: C.sc};
+               var way = 'sc_'+v;
+               var f = {n: G[way]};
+               f.n(A,nC,G,T);
+           }
+        });
+        .
+        if (C.sc.css) {
+           $.each(C.sc.css, function(i,v) {
+                $(A.on).css(i, v);
+           });
+        }
+        if (C.sc.anc) {
+           $(A.on).animate(C.sc.anc, (C.sc.ant||900));
+        }
+        if (C.sc.cod) {
+           a.cod(C.sc.cod);
+        }
+stylation: |
+    u alljse
+    n '','','%nk:c'
+    
+    n W =>28=><<''
+        A.on = $('#'+C.c.W);
+        if (!$(A.on).length)
+            a.c("no W on "+C.c.W);
+    
+    n nobody =>31=><<''
+        A.on = $('#'+C.c.nobody);
+        if (!$(A.on).length)
+            a.c("no nobody at "+C.c.nobody);
+    
+    # whole time...
+    n el =>3=><<''
+        if (!C.sc.attr)
+            C.sc.attr = {};
+        var last;
+        if (C.c.el === '9' || C.c.el === '1') {
+            // some
+        }
+        if (C.c.id) { 
+            C.sc.attr.id = C.c.id;
+            var aid = $(A.on).attr('id');
+            if (aid && C.c.id) { 
+                var to = '#'+aid+' #'+C.c.id;
+                var ex = $(to);
+                if (ex) {
+                    a.m('rm '+ex.prop('tagName')+' '+to);
+                    if (ex.prop('tagName') === 'undefined')
+                       a.m('?');
+                    $(ex).remove();
+                }
+            }
+        }
+        var lab = C.t;
+        lab = 'n'+lab;
+        var div = $("<"+lab+">", C.sc.attr);
+        var el;
+        $(div).appendTo(A.on).each(function(i,v){el=v});
+        if (C.c.s)
+            $(el).html(C.c.s);
+        A.on = el;
+        
+    n el =>32=><<''
+        a.m(T.alk);
+        var delay = C.c.rm;
+        if (!delay) {delay = 10}
+        delay *= 100;
+        $(A.on).fadeOut(delay, function() { $(this).remove(); });
+        return;
+    
+stylers: |
+    u alljse
+    
+    n geo =>5=><<''
+        var s = C.c.split(' ');
+        var aung = s[0].match('^a(\\d+)');
+        if (aung) {
+            s.shift();
+            aung.shift();
+            C.sc.ab = aung.shift();
+            //absolu
+        }
+        C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
+        C.sc.css.top = (C.c.y * 100)+'%';
+        C.sc.css.left = (C.c.x * 100)+'%';
+        C.sc.css['transform-origin'] = '0% 0%';
+        .
+        C.sc.css['transform'] = 'rotate('+C.c.rad+'rad)';
+        if (C.c.scale)
+            C.sc.css['transform'] += ' scale('+C.c.scale+')';
+    
+    n ab =>51=><<''
+        if (C.c === '100') {
+            C.sc.css.width = '100%';
+            C.sc.css.height = '100%';
+        }
+        C.sc.css.position = 'absolute';
     
 reJSlines: | # could spiral intuit re$W to just this - A coney islands
     y.at.ressur = 'JSlines';
@@ -57,3 +266,4 @@ JSlines: |
     y.at.jslines = 1;
     y.ope = 1;
     n $C
+
