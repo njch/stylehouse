@@ -93,7 +93,9 @@ TeCurve: | # plop W space resolve
     for (A.e&C) {
         # y.unit 
         sayyl "GOT SPACE ELVIS: _.t   _.y.cv "
-            .wdump 2, ["",''];
+            .wdump 2, $_;
+        Mn(_.t=>''=>"Thi _.t");
+        # & id ^
     }
     J.V = 1;
     # weird mediation between placed J.C and J.root to plop W 
@@ -137,7 +139,10 @@ ReoCur: | # inner bracken resolve (for randoms)
     u allvse
     n '','','%of:Sev'
     n J =>3212=><<'',{rg=>'J,Y,ylv,yvl'}
-        return if C.c.root;
+        if (C.c.root) {
+            sayyl "REOCUR ROOT C.t" for 1..4;
+            return;
+        }
         my $csrc = Y.csrcmostly ||= do {
             my $cs = Rw findupi $I $J curv;
             my $from = "Jse" if $cs;
@@ -152,122 +157,77 @@ ReoCur: | # inner bracken resolve (for randoms)
             $cs || sayre "No curve J.name"
         };
         my $cJ = csrc.sc.J;
-        Rw curre $J:cJ $Y:cJ.El.Pre $C;
+        Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
         # might wanna crawl
 curre: |
-        saybl "J.name Gainst: C.t  C.y.cv ".wdump 2, ;
+    my $cv = C.y.cv;
+    my @cvs = sort keys %{Y.cvi};
+    my ($li,$ri);
+    for (@cvs) {
+        next if $_ == 0.9;
+        $li = $_ if $_ <= $cv;
+        $ri = $_ if !defined $ri && $_ > $cv;
+    }
+    my ($l,$r) =
+        map { _.C }
+        map { V.alv->{$_} }
+        map { _.y.cv."\t"._.t }
+        map { Y.vs->[$_] }
+        map { Y.cvi->{$_} }
+        grep {defined} $li, $ri;
+    my $one = $l || $r;
+    $one || die "nothing to grab";
+    my $last = one.y.here;
+    my $here = {};
+    here.cv = C.y.cv;
+    I.d&last2here,$last,{},$here;
+    my $geo = I.d&here2geo,$here;
+    C.sc.geo = $geo;
+    saybl "J.name Gainst: C.t  C.y.cv    $geo";
+    
     
 Teal: | # de al
     n 'curvsligu'=>2,<<'','%code:In 4189'
         return unless C.t eq 'curves';
         
-GeoSlur: |
+GeoSo: |
     # may +atomb? without compare you are dead
     u allacgts
-    n atom =>''=><<'',{acgt=>'last,here'}
-         # spacin
-         here.dist = here.cv - last.cv;
-         # twistin spin inherit
-         here.spin += last.spin;
-         # scale local-local change
-         here.rad += here.spin * here.dist * 10;
-         # builds rad on rad
-         here.rad += last.rad;
-         # distort space + more ways, orbital
-         # chuck skeletons for mods
-         # adapt M meta for what kinda places things want
-         # into constellations of high level things
-         # atomised hairs
-         here.zoom ||= last.zoom;
-         here.dist *= here.zoom if here.zoom;
-         # and move
-         here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
-         here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
-    
-    n ron =>''=><<''
-        0.0001 * int(10000*$s)
-    
-    u allvse
-    n '','','%of:Sev'
-    
-    n root =>24111=><<''
-        # root holds this 0, next any is a thing...
-        # squary downy
-        my $l = C.y.last = {};
-        l.x = C.sc.x||0;
-        l.y = C.sc.y||0;
-        l.cv = 0.001;
-        l.rad = C.sc.rad||$RADIAN;
-        l.spin = C.sc.spin||0;
-    
-    n J =>3213=><<'',{rg=>'J,Y,V,yat',l=>'#c get here'}
-        my $i = Y.kvi->{C.y.k};
-        # mapping intents into chain reactions
-        # sleeps if prev here same, shifting arms
-        # make bouncey land time, things joiN post-Sly if engaged
-        if (C.c.root) {
-            # roots here is remote, elvis space vectors
-            # ab:100 + top/left/rad
-            # and when host space ins see/want e into geo they can:
-            #  - blend between figured there geos
-            #  - insert & osc the stranger:
-            my $Wsp = C.sc.Wsp||'TeCurve';
-            #n $Wsp=>$C,$J
-            #C.y.here || C.sc.geo || die "$Wsp didnt set geospacei ! ".ki $C;
-        }
-        else {
-            my $last;
-            if ($i == 0) {
-                $last = Y.root.y.last || die "no root ylast";
-            }
-            else {
-                # alv is lv but early, but it doesn't want to be (?)
-                # so its place to find last C.y.here for others
-                # at is your outgoing awakeness
-                # wakeup should haps when src change....
-                # the process of this is off
-                # & to spirals, potentially...
-                # deep[end te data somewhere
-                my $lC = Y.vs->[$i-1] || die "nof leftoi $i";
-                my $lk = lC.y.cv."\t".lC.t;
-                my $llv = V.alv->{$lk};
-                $llv || die "No lv left of C.y.k:  $lk ".wdump[V.alv];
-                $lC = llv.C || die "nollv $lk";
-                $last = llv.C.y.here || die "bnoi yhere".ki $lC;
-            }
-            # eat last, make here here
-            $last = {%$last};
-            my $here = C.y.here = {};
-            # moves
-            here.cv = C.y.cv;
-            my $r = {};
-            if (!keys %{C.sc}) {
-                #sayre "- asume @ C.y.cv  C.t = C.c.s   istrunctio";
-                $r->{C.t} = C.c.s;
-            }
-            here.x  = last.x = r.x if exists r.x;
-            here.y = last.y = r.y if exists r.y;
-            here.rad = 4*$RADIAN * r.spun if exists r.spun;
-            here.zoom = r.zoom if defined r.zoom;
-            .
-            I.d&atom,$last,$here;
-            here.spin = r.curve if exists r.curve; # on the level
-            #
-            here.x = I.d&ron,here.x;
-            here.y = I.d&ron,here.y;
-            here.rad = I.d&ron,here.rad;
-            # here may inc down compression styles geo is expanded
-            if (J.C.c.e eq C.c.s) {
-                sayyl "ElvisSpace: A.J.name C.y.k  is holding: ".ki C.c.s;
-                C.c.s.y.here = $here;
-            }
-        }
-    
-    n J =>3214=><<'',{rg=>'J,Y,V,yat',l=>'#c wait here'}
-        my $here = C.y.here;
-        $here || return sayre "NO HERE C.y.k";
-        return sayyl "C.y.k  has e geo: C.sc.geo" if C.sc.geo;
+    n last2here =>''=><<'',{acgt=>'last,r,here'}
+        here.x  = last.x = r.x if exists r.x;
+        here.y = last.y = r.y if exists r.y;
+        here.rad = 4*$RADIAN * r.spun if exists r.spun;
+        here.zoom = r.zoom if defined r.zoom;
         .
+        I.d&atom,$last,$here;
+        .
+        here.spin = r.curve if exists r.curve; # on the level
+        #
+        here.x = I.d&ron,here.x;
+        here.y = I.d&ron,here.y;
+        here.rad = I.d&ron,here.rad;
+    
+    n atom =>''=><<'',{acgt=>'last,here'}
+        # spacin
+        here.dist = here.cv - last.cv;
+        # twistin spin inherit
+        here.spin += last.spin;
+        # scale local-local change
+        here.rad += here.spin * here.dist * 10;
+        # builds rad on rad
+        here.rad += last.rad;
+        # distort space + more ways, orbital
+        # chuck skeletons for mods
+        # adapt M meta for what kinda places things want
+        # into constellations of high level things
+        # atomised hairs
+        here.zoom ||= last.zoom;
+        here.dist *= here.zoom if here.zoom;
+        # and move
+        here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+        here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+    
+    n here2geo =>''=><<'',{acgt=>'here'}
         my $geo = {};
         geo.rad = here.rad;
         # unwind (into...)
@@ -295,6 +255,10 @@ GeoSlur: |
         #
         my $fo = sub { (shift() * 100).'%' };
         geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;
+        .
+        I.d&geo2lin,$geo;
+    
+    n geo2lin =>''=><<'',{acgt=>'geo'}
         # shove com toeget
         # OR SOMETHING
         # loses its compressibility as csz
@@ -307,10 +271,83 @@ GeoSlur: |
             push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};
         }
         my $l = join ' ', @l;
-        C.sc.geo = $l;
+        $l
+    
+    n ron =>''=><<''
+        0.0001 * int(10000*$s)
+GeoSlur: |
+    u allvse
+    n '','','%of:Sev'
+    
+    n root =>24111=><<''
+        # root holds this 0, next any is a thing...
+        # squary downy
+        my $l = C.y.last = {};
+        l.x = C.sc.x||0;
+        l.y = C.sc.y||0;
+        l.cv = 0.001;
+        l.rad = C.sc.rad||$RADIAN;
+        l.spin = C.sc.spin||0;
+    
+    n J =>3213=><<'',{rg=>'J,Y,V,yat',l=>'get here'}
+        my $i = Y.kvi->{C.y.k};
+        # mapping intents into chain reactions
+        # sleeps if prev here same, shifting arms
+        # make bouncey land time, things joiN post-Sly if engaged
+        if (C.c.root) {
+            # roots here is remote, elvis space vectors returning here
+            my $Wsp = C.sc.Wsp||'TeCurve';
+            #n $Wsp=>$C,$J
+            #C.y.here || C.sc.geo || die "$Wsp didnt set geospacei ! ".ki $C;
+        }
+        else {
+            my $last;
+            if ($i == 0) {
+                $last = Y.root.y.last || die "no root ylast";
+            }
+            else {
+                # alv is lv but early, but it doesn't want to be (?)
+                # so its place to find last C.y.here for others
+                # at is your outgoing awakeness
+                # wakeup should haps when src change....
+                # the process of this is off
+                # & to spirals, potentially...
+                # deep[end te data somewhere
+                my $lC = Y.vs->[$i-1] || die "nof leftoi $i";
+                my $lk = lC.y.cv."\t".lC.t;
+                my $llv = V.alv->{$lk};
+                $llv || die "No lv left of C.y.k:  $lk ".wdump[V.alv];
+                $lC = llv.C || die "nollv $lk";
+                $last = llv.C.y.here || die "bnoi yhere".ki $lC;
+            }
+            # eat last, make here here
+            $last = {%$last};
+            my $here = C.y.here = {};
+            # form moves
+            here.cv = C.y.cv;
+            my $r = {};
+            $r->{C.t} = C.c.s if !keys %{C.sc};
+            .
+            I.d&last2here,$last,$r,$here;
+            .
+            # here may inc down compression styles geo is expanded
+            if (J.C.c.e eq C.c.s) {
+                sayyl "ElvisSpace: A.J.name C.y.k  is holding: ".ki C.c.s;
+                C.c.s.y.here = $here;
+            }
+        }
+    
+    n J =>3214=><<'',{rg=>'J,Y,V,yat',l=>'wait here'}
+        my $here = C.y.here;
+        $here || return sayre "NO HERE C.y.k";
+        return sayyl "C.y.k  has e geo: C.sc.geo" if C.sc.geo;
+        .
+        my $geo = I.d&here2geo,$here;
+        .
+        C.sc.geo = $geo;
         if (J.C.c.e eq C.c.s) {
             sayyl "ElvisSpace: A.J.name C.y.k  is holding: ".ki C.c.s;
-            C.c.s.sc.geo = $l;
+            C.c.s.sc.geo = $geo;
         }
     
     

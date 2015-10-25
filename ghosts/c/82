@@ -168,7 +168,7 @@ JSea: |
         if (!C.sc.css)
           C.sc.css = {};
           C.sc.anc = {};
-        var ung = ['ab','geo'];
+        var ung = ['geo','ab'];
         $.each(ung, function(i,v) {
            if (C.sc[v]) {
                var nC = {c: C.sc[v], sc: C.sc};
@@ -192,7 +192,11 @@ JSea: |
     
     n sc_geo =>''=><<''
         var s = C.c.split(' ');
-        if (s[0].match('^a')) {
+        var aung = s[0].match('^a(\\d+)');
+        if (aung) {
+            s.shift();
+            aung.shift();
+            C.sc.ab = aung.shift();
             //absolu
         }
         C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
