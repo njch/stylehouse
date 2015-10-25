@@ -67,7 +67,7 @@ Sl: |
     
     my $n = J.fsjoi++;
     $n && 1;
-    $n || Rw loopby $b=0.6 $d=2 $p=Top;
+    $n || Rw loopby $b=2 $d=9 $p=Top;
 EYZ: |
     u ReoCur
     u curv =>pi=><<''
@@ -81,6 +81,9 @@ EYZ: |
 TeCurve: | # plop W space resolve
     y.at.unit = 1; # e W come by, upper state could kink into curv
     # it pis into I... suu
+    J.VV.V = 1;
+    y.ope = 1;
+    J.ev.th = "SpaceElvis";
     u ReoCur
     u curv =>pi=><<''
         zoom 0 1.4
@@ -94,13 +97,16 @@ TeCurve: | # plop W space resolve
         # y.unit 
         sayyl "GOT SPACE ELVIS: _.t   _.y.cv "
             .wdump 2, $_;
-        Mn(_.t=>''=>"Thi _.t");
+        Mn(_.t=>''=>"Thi _.t",{id=>_.sc.id});
         # & id ^
     }
     J.V = 1;
     # weird mediation between placed J.C and J.root to plop W 
+SpaceElvis: |
+    die "IN SSPACE".wdump 2, $ar;
 Claw: |
     y.at.shape = 1; # advise e to draw in
+    J.VV.V = 1;
     u curv =>pi=><<''
         zoom 0  0.7
         y    0  0
@@ -109,16 +115,23 @@ Claw: |
     
 pi/curv: | # source/be ex
     u GeoSlur
-    J.V = 1;
     for (A.e&C) {
         sayyl "Placing in J.name ::: ".ki $_ for 1..5;    
+        die;
         return y.ope = 1;
     }
-    J.VV.C = 1;
-    n $_ for split "\n", $s;
+    y.cvil = 1; # cvs leave M yuvis
+    Mn($_) for split "\n", $s;
     # ^ fill gaps > 0.1 at 0.1s, or maybe all 0.1s
     # so produce
 findupi: |
+    if (!ref $J) {
+        my $t = $J;
+        $J = G.oin;
+        my $def =
+        n $t
+        $J = def.nj;
+    }
     my $Ye;
     for ('El/qq/El/Duv') {
         $Ye = I.d&pin,$_,$J;
@@ -139,25 +152,32 @@ ReoCur: | # inner bracken resolve (for randoms)
     u allvse
     n '','','%of:Sev'
     n J =>3212=><<'',{rg=>'J,Y,ylv,yvl'}
+        my $cC;
+        # eat or rob art
         if (C.c.root) {
-            sayyl "REOCUR ROOT C.t" for 1..4;
-            return;
+            C.sc.hostcur = my $host = 'TeCurve';
+            say "Top of C.t to $host";
+            return sayre "topleve C.t is self" if $host eq C.t;
+            #$cC = Rw findupi $I $J:host curv;
+            #$cC || die "toplev C.t no find curv";
+            my $cur =
+            n $host =>$C=>$J
+            say "ust ind toplev... ".ki C.sc;
+            my $cJ = cur.nj;
+            my $wat = cJ.El.Duv.ids->{C.sc.id};
+            sayyl "Root for C.t to $host found ".wdump 2, $wat;
+            C.sc.geo = wat.sc.geo || die "not foundcurve";
         }
-        my $csrc = Y.csrcmostly ||= do {
-            my $cs = Rw findupi $I $J curv;
-            my $from = "Jse" if $cs;
-            $cs ||= do {
-                $from = "Clawdef";
-                my $def =
-                n Claw
-                Rw findupi $I $J:def.nj curv;
+        else {
+            my $host = 'Claw';
+            $cC = Y.stackurv ||= do {
+                $cC = Rw findupi $I $J curv;
+                $cC ||= Rw findupi $I $J:host curv;
+                $cC
             };
-            sayyl "Finding J.name  $from:  cs.t";
-            say "J.name  Got curve: ".ki $cs;
-            $cs || sayre "No curve J.name"
-        };
-        my $cJ = csrc.sc.J;
-        Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
+            my $cJ = cC.sc.J;
+            Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
+        }
         # might wanna crawl
 curre: |
     my $cv = C.y.cv;
@@ -183,7 +203,7 @@ curre: |
     I.d&last2here,$last,{},$here;
     my $geo = I.d&here2geo,$here;
     C.sc.geo = $geo;
-    saybl "J.name Gainst: C.t  C.y.cv    $geo";
+    saybl "J.name of J.mo.le.name   Gainst: C.t  C.y.cv    $geo";
     
     
 Teal: | # de al
@@ -352,6 +372,7 @@ GeoSlur: |
     
     
 Details: |
+    J.VV.V = 1;
     u ReoCur 
     for (A.us&C) {
         sayyl "Goots: ".wdump $_;
@@ -364,7 +385,6 @@ Details: |
     my $n = J.sdjfsiji ||= int rand 9;
     n b320 => '3-9x7',join'',($n) x 3
     n latelo => '12', '12-'.J.icker
-    n TeCurve =>$C=>$J
 Wight: |
     n Funstuff
     n JScomp
