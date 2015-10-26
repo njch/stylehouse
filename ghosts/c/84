@@ -55,12 +55,14 @@ Sight: |
     #saybl C.c.s;
     #sayyl C.c.s;
     #sayyl for 1..3;
-    n stylehut
-    n styleomi
-    n stylation
-    n stylers
+    #n stylehut
+    #n styleomi
+    #n stylation
+    #n stylers
+    J.inV = 1;
+    n file=>pi=>'g/c/84'
     # could ahh...
-    n JSlines =>$J
+    #n JSlines =>$J
     
 alljs: |
     n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
@@ -168,9 +170,8 @@ styleomi: |
         C.constructor == Object and $.each(C,function(k,v) { G&$k,v }); T.not = 1;
         else
         typeof C === 'string' and C = {c: {s: C}};
-        .
         typeof C.c === 'string' and C.c = {s: C.c};
-        typeof C.y === 'string' and C.y = {cv: C.c};
+        typeof C.y === 'string' and C.y = {cv: C.y};
         !typeof C.t === 'string' and console.log('queda',C);
         C.c ||= {};
         C.sc ||= {};
@@ -260,6 +261,7 @@ styleomi: |
 stylation: |
     u alljse
     n '','','%nk:c'
+    # $(A.on).fadeOut(delay, function() { $(this).remove(); });
     
     n W =>28=><<''
         A.on = $('#'+C.c.W);
@@ -279,39 +281,24 @@ stylation: |
         var last;
         a.c("stitcho "+C.t+"   "+C.y.cv+"   OOOOOO "+C.c.el);
         var t = C.t.replace(/\W/g,'e');
-        t = 'n'+t+'n' if t.length < 4;
-        var el;
-        if (C.c.el == '1') {
-            el = G&f,t;
-            $(el).remove;
-        }
-        else if (C.c.el == '3') {
-            el = G&find,t;
-        }
-        else if (C.c.el == '8') {
-            A.on.aft = G&find,t;
-            return;
-        }
-        else if (C.c.el == '9') {
-        if (C.c.el === '9' || C.c.el === '1') {
-            a.m(T.alk);
-            var delay = C.c.rm;
-            if (!delay) {delay = 10}
-            delay *= 100;
-            $(A.on).fadeOut(delay, function() { $(this).remove(); });
-            return;
-        }
+        t.length < 4 and t = 'n'+t+'n';
+        var el = G&f,t;
+        s == '1' || s == '9' and $(el).remove;
+        s == '8' and return A.on.aft = el;
+        !el and console.log("Cno find "+C.t+"  of "+C.y.cv);
         if (C.c.id) { 
             C.sc.attr.id = C.c.id;
             var aid = $(A.on).attr('id');
             if (aid && C.c.id) { 
                 var to = '#'+aid+' #'+C.c.id;
                 var ex = $(to);
-                if (ex) {
+                if (ex.length) {
                     a.m('rm '+ex.prop('tagName')+' '+to);
                     if (ex.prop('tagName') === 'undefined')
                        a.m('?');
                     $(ex).remove();
+                }else{
+                    console.log("blank rm untd "+C.t,A.C);
                 }
             }
         }
@@ -327,8 +314,8 @@ stylation: |
         var t;
         s and t=s
         var at;
-        C.y.cv and at .= 'cv='+C.y.cv
-        return $(A.on).(s+'['+at+']');
+        C.y.cv and at += 'cv='+C.y.cv
+        return $(A.on).find(s+'['+at+']');
 stylers: |
     n stylext
     u alljse
@@ -411,7 +398,9 @@ JSlines: |
 EmJSlines: |
     my $N = [@{em.lines||die"Nop"}];
     @$N = Rw humms $J $N wongui _;
-    @$N = Rw humms $J $N notnotjs _;
+    @$N = sort { a.t cmp b.t }
+    Rw humms $J $N notnotjs _;
+    
     my $S = Rw humms $J $N spots;
     em.lines = [map{
         " a\.e(".sjson($_).");"
