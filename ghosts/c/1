@@ -887,6 +887,12 @@ C: |
             $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
         }
         $s
+    
+    n hup =>'',<<''
+        my $CC = {%$s};
+        $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
+        $CC;
+    
    
    
 Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)

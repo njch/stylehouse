@@ -463,15 +463,7 @@ Meta: |
     u allsvse
     # split into line forms
     n jslines =>3=><<'',{cg=>'J,em'}
-        my $N = [@{em.lines||die"Nop"}];
-        @$N = Rw humms $J $N wongui _;
-        @$N = Rw humms $J $N notnotjs _;
-        my $S = Rw humms $J $N spots;
-        em.lines = [map{
-            " a\.e(".sjson($_).");"
-        }@{S.z}];
-        C.c.os = 1 if !grep {/\S/} @{S.z};
-        C.sc.Wc = 1;
+        Rw EmJSlines $J $em $C;
     
     n ux =>3=><<'',{cg=>'em'}
         my $J = G.oin;
@@ -502,7 +494,8 @@ Wuts: |
     u allsvse
     n '','','%of:em'
     n Wc =>446=><<'',{cg=>'J,em'}
-        saybl "Downing em.is.M: em.is.W: ".wdump 5,em.lines;
+        saybl join"\n","Downing em.is.M: em.is.W: ",
+            map{!ref $_ ? $_ : wdump 5,$_} @{em.lines};
         I.d&writef,"life/W/em.is.W\.c",em.lines,em.i;
         .
         # is coming soon: (only space or)
