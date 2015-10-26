@@ -48,8 +48,50 @@ Wight: |
 Sight: |
     n stylehut
     n styleomi
+    n stylation
+    n stylers
     # could ahh...
     n JSlines =>$J
+    
+alljs: |
+    n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
+        C.sc.acgt = 's' if !exists C.sc.acgt;
+        C.sc.js = 1;
+alljse: |
+    n alljs
+    n 'allarejse=s'=>2,{s=><<''},{code=>'In 419'}
+        return T.not = 1 for
+            map { A.J.A.vse->{$_} = C.c->{$_} }
+            grep {exists C.c->{$_}} qw'of nk';
+        my $av = A.J.A.vse;
+        C.sc.of ||= av.of||'om';
+        C.sc.nk ||= av.nk||'sc';
+        C.sc.gk ||= C.t;
+        my $cv = C.y.cv || 1;
+        $cv =~ s/^0\.//;
+        C.t = C.sc.of."_".C.t."_".$cv;
+ym/jscoi: |
+    my $s = C.sc.js || return;
+    if (C.sc.acgt) {
+        C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
+    }
+    my $JO = I.d&hup,$C;
+    delete JO.c.s;
+    sayyl "Swao ".ki $JO;    
+    C.sc.args || die "no args of";
+    die "wonky C.t   of ".ki $C if C.t =~ /\W/;
+    C.sc.args =~ s/ /,/g;
+    C.c.s = "a.".C.t." = function(".C.sc.args.") {".C.c.s."};\n";
+    C.sc.dige = slm 12, dig C.c.s;
+    
+    delete C.c.from; # as 7, S over
+    C.sc.lines = 1;
+    $v->{js}->{C.y.cv}->{C.t} = $C;
+ym/spots: |
+    v.i ||= 0;
+    v.X->{C.sc.of}->{C.y.cv}->{C.t} = $C if C.sc.of; # vetc
+    $v->{Z}->{v.i} = $C;
+    push @{v.z||=[]}, $v->{l}->{v.i++} = C.c.s;
     
 stylehut: |
     u alljs
@@ -116,15 +158,15 @@ styleomi: |
         }
         return C;
 
-    # contextualise to W
-    n WW =>''=><<'','%args:s'
+    n Win =>''=><<'','%args:s'
         var W = ww[s];
         if (!W) {
+            a.c("new W: "+s);
             W = ww[s] = {};
             W.Wid = s;
             W.A = {};
-            //W.A.p = new paper.Project();
             W.A.W = W;
+            //W.A.p = new paper.Project();
         }
         //W.A.p.activate();
         return W;
@@ -135,29 +177,17 @@ styleomi: |
         A = $.extend({},A);
         C = G.inC(C); 
         if (!T.d)
-           T.d=1; 
-        if (typeof C.c === 'string')
            return a.er('c string: '+C.c);
         .
         T.alk = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
         .
-        .
         if (!C.sc)
-           C.sc = {};
-        .
-        if (C.sc.z) { 
-           //T.d++;
-           $.each(C.sc.z, function(i,v) {
-               var nC = G.inC(v);
-               //a.yl(1, function () { 
-                G.om(A,nC,G,{d:T.d+1});
-               //});
-           });
-        }
-        .
+          C.sc = {};
         if (!C.sc.css)
           C.sc.css = {};
+        if (!C.sc.anc)
           C.sc.anc = {};
+        .
         var ung = ['geo','ab'];
         $.each(ung, function(i,v) {
            if (C.sc[v]) {
@@ -187,19 +217,27 @@ stylation: |
         A.on = $('#'+C.c.W);
         if (!$(A.on).length)
             a.c("no W on "+C.c.W);
+        var W = G&Win,C.c.W;
+        $.extend(A,W.A);
     
     n nobody =>31=><<''
         A.on = $('#'+C.c.nobody);
         if (!$(A.on).length)
             a.c("no nobody at "+C.c.nobody);
     
-    # whole time...
+    # whole time... (make whote, A.t&4 ex inness..
     n el =>3=><<''
         if (!C.sc.attr)
             C.sc.attr = {};
         var last;
+        a.c("stitcho "+C.t+"   "+C.y+"   OOOOOO "+C.c.el);
         if (C.c.el === '9' || C.c.el === '1') {
-            // some
+            a.m(T.alk);
+            var delay = C.c.rm;
+            if (!delay) {delay = 10}
+            delay *= 100;
+            $(A.on).fadeOut(delay, function() { $(this).remove(); });
+            return;
         }
         if (C.c.id) { 
             C.sc.attr.id = C.c.id;
@@ -223,20 +261,13 @@ stylation: |
         if (C.c.s)
             $(el).html(C.c.s);
         A.on = el;
-        
-    n el =>32=><<''
-        a.m(T.alk);
-        var delay = C.c.rm;
-        if (!delay) {delay = 10}
-        delay *= 100;
-        $(A.on).fadeOut(delay, function() { $(this).remove(); });
-        return;
+   
     
 stylers: |
     u alljse
     
     n geo =>5=><<''
-        var s = C.c.split(' ');
+        s = s.split(' ');
         var aung = s[0].match('^a(\\d+)');
         if (aung) {
             s.shift();
@@ -244,21 +275,28 @@ stylers: |
             C.sc.ab = aung.shift();
             //absolu
         }
-        C.c = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
-        C.sc.css.top = (C.c.y * 100)+'%';
-        C.sc.css.left = (C.c.x * 100)+'%';
+        s = {x:s[0],y:s[1],rad:s[2],scale:s[3]};
+        C.sc.css.top = (s.y * 100)+'%';
+        C.sc.css.left = (s.x * 100)+'%';
         C.sc.css['transform-origin'] = '0% 0%';
-        .
-        C.sc.css['transform'] = 'rotate('+C.c.rad+'rad)';
-        if (C.c.scale)
-            C.sc.css['transform'] += ' scale('+C.c.scale+')';
+        C.sc.css['transform'] = 'rotate('+s.rad+'rad)';
+        if (s.scale)
+            C.sc.css['transform'] += ' scale('+s.scale+')';
     
     n ab =>51=><<''
-        if (C.c === '100') {
+        if (s === '100') {
             C.sc.css.width = '100%';
             C.sc.css.height = '100%';
         }
         C.sc.css.position = 'absolute';
+    
+    n z =>6=><<''
+        $.each(s, function(i,v) {
+            var nC = G.inC(v);
+            //a.yl(1, function () { 
+            G.om(A,nC,G,{d:T.d+1});
+            //});
+        });
     
 reJSlines: | # could spiral intuit re$W to just this - A coney islands
     y.at.ressur = 'JSlines';
