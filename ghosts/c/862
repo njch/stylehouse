@@ -85,13 +85,31 @@ pi/loadc: |
      for my $file (@f) {
          Mn($file => '', {pi=>'cfile',s=>$file});
      }
-pi/cfile: |
-     my $file = $s;
-     if (C.c.create && !-f $file) {
-          sayyl "Creating $file";
-          `touch $file`;
+pi/file: |
+     defined $s || die 'nofile';
+     die if C.sc.dir;
+     C.sc.sz = 20;
+     my $sc = ar.sc;
+     if (C.c.create && !-f $s) {
+          sayyl "Creating $s";
+          `touch $s`;
      }
-     Jn(file => 0.1 => $file, '%hs:042,mtime:'.(stat($file))[9]);
+     if (C.c.mtime) {
+         sc.mtime = (stat($s))[9];
+     }
+     sc.hs ||= '042';
+     if (C.c.met) { # the apply slow yish
+         sc.met = `file '$s'`;
+         chomp sc.met;
+         die sc.met unless sc.met =~ /text/;
+     }
+     n file =>1=>$s,$sc;
+     
+pi/cfile: |
+    C.c.mtime = 1;
+    Rw pi/file;
+    
+     my $file = $s;
      C.sc.nspc = 0.02;
      #y.limn = 18;
      #y.lumfa = 2; 
