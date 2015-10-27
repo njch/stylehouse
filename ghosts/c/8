@@ -179,9 +179,10 @@ TeCurve: | # plop W space resolve
     J.V = 1;
     y.ope = 1;
     J.ev.th = "SpaceElvis"; # no where yet...
+    
     # hinges open spacecones
     u ReoCur
-    J.El.qq.V = 1;
+    
     u curv =>pi=><<''
         zoom 0 1.4
         y    0  0
@@ -199,8 +200,13 @@ SpaceElvis: |
     J.eM = $M;
     for (A.e&C) {
         # y.unit 
+        my $id = _.sc.id;
+        if (grep{_.sc.id eq $id}@$M) {
+            saygr "Already spaced: $id";
+            next;
+        }
         sayyl "GOT SPACE ELVIS: C.t: _.t   _.y.cv";
-        Mn(_.t=>''=>"Thi _.t",{id=>_.sc.id});
+        Mn(_.t=>''=>"Thi _.t",{id=>$id});
         # & id ^
     }
 Claw: |
@@ -216,15 +222,8 @@ pi/curv: | # source/be ex
     u GeoSlur
     die "refcurvin" if ref $s;
     y.at.dig = slm 6, dig $s;
-    
     Atime(2)||return;
     
-    J.V = 1;
-    for (A.e&C) {
-        sayyl "Placing in J.name ::: ".ki $_ for 1..5;    
-        die;
-        return y.ope = 1;
-    }
     y.cvil = 1; # cvs leave M yuvis
     Mn($_) for split "\n", $s;
     # ^ fill gaps > 0.1 at 0.1s, or maybe all 0.1s
@@ -287,7 +286,7 @@ ReoCur: | # inner bracken resolve (for randoms)
             $host = "st.l";
             Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
         }
-        saybl "$host: C.y.cv       C.t   found  C.sc.geo";
+        saybl "$host: C.y.cv       C.t   found  C.sc.geo" if J.V;
         # might wanna crawl
 curre: |
     my $cv = C.y.cv;

@@ -365,7 +365,7 @@ Yosc: | # make lv,at + write stuff on at
         # so osci ^ can C.sc.
         at.sc = {%{C.sc}};
         for (qw'idly ml nspc path yspc') {
-            delete at.sc->{$_} && sayre "C.t sc blocking $_";
+            delete at.sc->{$_}# && sayre "C.t sc blocking $_";
         }
         # haps to be crate later somewhere if we oWl/S
         delete ta.V if ref ta.V eq 'HASH' && !keys %{ta.V};
@@ -373,10 +373,8 @@ Yosc: | # make lv,at + write stuff on at
         if (my $v = at.sc.J) { # J unifies -
             at.sc.J = v.name;
             .
-            return sayre "osc Without leaves A.J.name: v.name"
-                if C.sc.W && Y.root.sc.oWl;
-            return sayre "osc WivoSelf A.J.name: v.name"
-                if C.sc.W && defined at.c.S && at.c.S eq '';
+            return if C.sc.W && Y.root.sc.oWl;
+            return if C.sc.W && defined at.c.S && at.c.S eq '';
             .
             my $nV = v.El->{V.name};
             return sayre "no V.name on v.name $v: El: "
@@ -510,6 +508,9 @@ Ydo: |
         warn "how to c dif $gk".slim(30,$v)." <--- ".slim(30,$o);
         lv.op.c->{$gk} = 9;
     
+    n cstill =>4324=><<'',{Td=>'c/*/still'}
+        # ya
+    
     
     
     n scnew =>4331=><<'',{Td=>'sc/*/new'}
@@ -520,8 +521,10 @@ Ydo: |
         lv.op.sc->{$gk} = 9;
     
     n scdiff =>4333=><<'',{Td=>'sc/*/diff'}
-        #sayyl "C.t $nk $gk $wk: ".slim(30,$v)." <--- ".slim(30,$o);
         lv.pur.sc->{$gk} = 1;
+    
+    n scstill =>4334=><<'',{Td=>'sc/*/still'}
+        # ya
     
     
 YdoV: |
