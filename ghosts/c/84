@@ -4,7 +4,7 @@ Sl: |
     #u alljs
     y.at.jslines = 1;
     y.at.oWl = 1;
-    #n reJSlines
+    n reJSlines
     
     n bawls =>3=><<'','%js'
         var v = $('#msgs');
@@ -55,14 +55,14 @@ Sight: |
     #saybl C.c.s;
     #sayyl C.c.s;
     #sayyl for 1..3;
-    #n stylehut
-    #n styleomi
-    #n stylation
-    #n stylers
+    n stylehut
+    n styleomi
+    n stylation
+    n stylers
     J.inV = 1;
     n lim=>pi=>'g/c/84'
     # could ahh...
-    #n JSlines =>$J
+    n JSlines =>$J
     
 pi/lim: |
     n file=>pi=>{mtime=>1=>s=>$s}
@@ -166,6 +166,12 @@ stylehut: |
 styleomi: |
     u alljs
     
+    n sca =>''=><<''
+        while (s > 1) {
+            s = s / 10;
+        }
+        return s;
+    
     n inC =>''=><<''
         C = s;
         C.constructor == Array and C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
@@ -174,7 +180,7 @@ styleomi: |
         else
         typeof C === 'string' and C = {c: {s: C}};
         typeof C.c === 'string' and C.c = {s: C.c};
-        typeof C.y === 'string' and C.y = {cv: C.y};
+        typeof C.y === 'string' and C.y = {cv: G&sca,C.y };
         !typeof C.t === 'string' and console.log('queda',C);
         C.c ||= {};
         C.sc ||= {};
@@ -202,23 +208,13 @@ styleomi: |
     n An =>''=><<''
         var A = $.extend({},A);
         A.I = {};
-        if (!A.mo)
-            A.mo = A;
-        if (!T.d)
-           T.d=1;
-        if (s)
-            var k = 'e_'+s; A.e = G[k];
+        A.mo ||= A;
+        T.d ||= 1;
+        s and var k = 'e_'+s; A.e = G[k];
         return A
     
-    n sca =>''=><<''
-        while (s > 1) {
-            s = s / 10;
-        }
-        return s;
-    
     n t =>''=><<''
-        if (T.not)
-            return 0;
+        T.not and return 0;
         A.I.cv = G&sca,s;
         G&ex,A.I;
         return 1;
@@ -237,7 +233,6 @@ styleomi: |
                 sc.gk and !C[sc.nk][sc.gk] and return
                 var es;
                 sc.gk and es = C[sc.nk][sc.gk];
-                //console.log(" For "+C.t+" "+C.y,'      ', v[0]+"<"+s.cv,'      ',t,sc);
                 G&$t,es;
             });
         }
@@ -248,18 +243,20 @@ styleomi: |
         var k = 'e_'+K;
         G[k] = e;
     
-    # for the webclient channels
-    # top level mirage is o(ww,Wid,$s)  which ins ww (G.Wid,Oth), Wid (you)
+    # persona perforthe webclient channels
+    # so the G copies and lives from/to W
+    # h reach up/down to applied layers of you
+    # top level mirage is o(ww,Wid,$s) 
+    # which ins ww (G.Wid for Oth), J.id (Wid)
+    # and the difference is you
     n om =>''=><<''
         A = G&An,'om';
         C = G&inC,C;
         t&2;
         T.alk = 'w'+T.d+' '+C.t+' '+a.ks(C.c)+'%'+a.ks(C.sc);
-        .
         C.sc ||= {};
         C.sc.css ||= {};
         C.sc.anc ||= {};
-        .
         t&7;
 stylation: |
     u alljse
@@ -268,7 +265,7 @@ stylation: |
     
     n W =>28=><<''
         A.on = $('#'+C.c.W);
-        $(A.on).length and a.c("no W on "+C.c.W);
+        $(A.on).length and a.c(T.alk+"  noW: "+C.c.W);
         .
         var W = G&Win,C.c.W;
         $.extend(A,W.A);
@@ -279,16 +276,15 @@ stylation: |
     
     # whole time... (make whote, A.t&4 ex inness..
     n el =>3=><<''
-        if (!C.sc.attr)
-            C.sc.attr = {};
+        C.sc.attr ||= {};
         var last;
         a.c("stitcho "+C.t+"   "+C.y.cv+"   OOOOOO "+C.c.el);
         var t = C.t.replace(/\W/g,'e');
-        t.length < 4 and t = 'n'+t+'n';
+        t.length < 4 || 1 and t = 'n'+t+'n';
         var el = G&f,t;
-        s == '1' || s == '9' and $(el).remove;
+        s == '1' || s == '9' and $(el).remove();
         s == '8' and return A.on.aft = el;
-        !el and console.log("Cno find "+C.t+"  of "+C.y.cv);
+        !el and console.log("Cno find el="+el+": "+C.t+"  of "+C.y.cv);
         if (C.c.id) { 
             C.sc.attr.id = C.c.id;
             var aid = $(A.on).attr('id');
@@ -305,20 +301,22 @@ stylation: |
                 }
             }
         }
-        C.sc.attr.cv = C.y.cv;
-        var div = $("<"+t+">", C.sc.attr);
-        $(div).appendTo(A.on).each(function(i,v){el=v});
-        if (C.c.s)
-            $(el).html(C.c.s);
+        if (s == '1') {
+            C.sc.attr.cv = C.y.cv;
+            var div = $("<"+t+">", C.sc.attr);
+            $(div).appendTo(A.on).each(function(i,v){el=v});
+        }
+        C.c.s and $(el).html(C.c.s);
         A.on = el;
    
     u alljs
     n f =>''=><<''
-        var t;
+        var t = '';
         s and t=s
-        var at;
-        C.y.cv and at += 'cv='+C.y.cv
-        return $(A.on).find(s+'['+at+']');
+        var at = '';
+        C.y.cv and at += "cv='"+C.y.cv+"'";
+        t || at || console.log("No attach: "+T.alk);
+        return $(A.on).find(t+'['+at+']');
 stylers: |
     n stylext
     u alljse
