@@ -175,6 +175,8 @@ Wuts: |
 TeCurve: | # plop W space resolve
     y.at.unit = 1; # e W come by, upper state could kink into curv
     # it pis into I... suu
+    J.inV = 1;
+    J.V = 1;
     y.ope = 1;
     J.ev.th = "SpaceElvis"; # no where yet...
     u ReoCur
@@ -186,6 +188,9 @@ TeCurve: | # plop W space resolve
         curve 0.4 0.4
         spin 0.3 2
 
+    # kind of space that is balanced, recurring, cleaning
+    Mn($_) for @{J.eM||[]};
+    J.eM = $M;
     for (A.e&C) {
         # y.unit 
         sayyl "GOT SPACE ELVIS: C.t: _.t   _.y.cv";
@@ -206,6 +211,9 @@ Claw: |
     
 pi/curv: | # source/be ex
     u GeoSlur
+    die "refcurvin" if ref $s;
+    y.at.dig = dig $s;
+    #A.time&2 || return sayre "CURV TIMED 2\n\n\n\n";
     J.V = 1;
     for (A.e&C) {
         sayyl "Placing in J.name ::: ".ki $_ for 1..5;    
@@ -249,8 +257,6 @@ ReoCur: | # inner bracken resolve (for randoms)
         if (C.c.root) {
             $host = 'TeCurve';
             return sayre "topleve C.t is self" if $host eq C.t;
-            #$cC = Rw findupi $I $J:host curv;
-            #$cC || die "toplev C.t no find curv";
             my ($cur) = map {_.nj}
             n $host =>$C=>$J
             my $wat = cur.El.Duv.ids->{C.sc.id};
@@ -433,7 +439,7 @@ GeoSlur: |
                 my $llv = V.alv->{$lk};
                 $llv || die "No lv left of C.y.k:  $lk ".wdump[V.alv];
                 $lC = llv.C || die "nollv $lk";
-                $last = llv.C.y.here || die "bnoi yhere".ki $lC;
+                $last = lC.y.here || die "bnoi yhere C.y.k   to   lC.y.k \n".ki $lC;
             }
             # eat last, make here here
             $last = {%$last};
@@ -444,6 +450,7 @@ GeoSlur: |
             $r->{C.t} = C.c.s if !keys %{C.sc};
             .
             I.d&last2here,$last,$r,$here;
+            saybl "Make here: C.y.k:". ki $here;
             .
             # here may inc down compression styles geo is expanded
             if (J.C.c.e eq C.c.s) {
