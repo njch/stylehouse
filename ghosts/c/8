@@ -180,6 +180,7 @@ TeCurve: | # plop W space resolve
     y.ope = 1;
     J.ev.th = "SpaceElvis"; # no where yet...
     u ReoCur
+    J.El.qq.V = 1;
     u curv =>pi=><<''
         zoom 0 1.4
         y    0  0
@@ -212,8 +213,10 @@ Claw: |
 pi/curv: | # source/be ex
     u GeoSlur
     die "refcurvin" if ref $s;
-    y.at.dig = dig $s;
-    #A.time&2 || return sayre "CURV TIMED 2\n\n\n\n";
+    y.at.dig = slm 6, dig $s;
+    
+    Atime(2)||return sayre "CURV TIMED 2\n\n\n\n";
+    
     J.V = 1;
     for (A.e&C) {
         sayyl "Placing in J.name ::: ".ki $_ for 1..5;    
@@ -422,6 +425,9 @@ GeoSlur: |
             #C.y.here || C.sc.geo || die "$Wsp didnt set geospacei ! ".ki $C;
         }
         else {
+            if (C.y.cv == 0.9) {
+                die "C.y.k thinks is root: ".wdump 2, [sort keys %{J.bb}];
+            }
             my $last;
             if ($i == 0) {
                 $last = Y.root.y.last || die "no root ylast";

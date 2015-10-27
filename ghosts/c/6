@@ -237,10 +237,7 @@ Jiterbug: |
         if (@$M) {
             n z=>$y=>{}
         }
-        if (y.at) {
-            my $root = C.c.pi ? J.uname : J.name;
-            n J.name =>9=>{},delete y.at
-        }
+        Rw Jamroot $C $J $sc:y.at if y.at;
         # T may cause big recoil of Mo/J, miss pha closures:
     
     # full exact light ^ may take over (whack) from the usual given full cone:
@@ -263,6 +260,9 @@ Jiterbug: |
             }
         }
     
+Jamroot: |
+    my $t = ar.C.c.pi ? J.uname : J.name;
+    Rw jamsc $J $t $cv=0.9 $sc;
 Juperfi: |
     u allvse
     n '','','%of:J'
@@ -278,12 +278,14 @@ Juperfi: |
         .
         A.time = sub {
             my($JJ,$q) = @_;
-            $J eq $JJ || die "wtfJure";
+            $J eq $JJ || die "wtfJure  J.name   vs JJ.name";
             # wanna A.t&T,2,0 us to difference streams
             # they could be xot maps or code to run
             # then all over things 
             .
             if ($q == 2) {
+                Rw Jamroot $J $C:J.C $sc:T.oy.at if T.oy.at;
+                .
                 A.ico = I.d&pha,$J,'ico';
                 A.ico.qui = 1;
                 I.d&as,A.ico,A.coi;
