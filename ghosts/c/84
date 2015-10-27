@@ -13,26 +13,35 @@ Sl: |
     n Details
     n Usee
     
+    J.mo.s.al.opt.folch = [Followe=>W=>"life/S\.s"];
+    
     my $n = J.fsjoi++;
     $n && 1;
-    $n || Rw loopby $b=0.6 $d=20 $p=Top;
+    $n || Rw loopby $b=3 $d=6 $p=Top;
 Usee: |
     u ReoCur
     y.at.ux = 1;
     J.VV.N = 1;
-    J.V = 1;
     
     my $i = int rand 19;
-    `echo $i >> ded/$i`;
+    sayre("CHANGING THIS\n\n\n\n") && `echo $i >> ded/$i` if int(rand 19) > 14;
     my @l = `find ded`;
     #my @l = `find life/W -type l`;
     #my @r = `find life/W -mtime 0.6`;
     #my @el = `find life/W`;
     chomp for @l;
+    while (@l > 7) {
+        `rm $_` for shift @l;
+    }
+    y.in=1;
+    y.out=5;
     Mn(some=>''=>{pi=>textl=>s=>$_})
         for split"\n",wdump 2, \@l;
 pi/textl: |
-    n text=>1=>$s
+    my $l = sum map{ord $_} split '', $s;
+    $l /= 10 until $l < 10;
+    my $h = int $l;
+    n text=>1=>$s,{hs=>"${h}86"}
 EYZ: |
     u ReoCur
     u curv =>pi=><<''
@@ -47,27 +56,13 @@ Details: |
     u ReoCur
     y.at.ux = 1;
     
+    J.VV.N = 1;
     J.fkeo ||= 7;
     A.us&C && A.us&S ? J.fkeo++ : J.fkeo--;
     
     J.sdjfsiji ||= 4;
     my $n = J.sdjfsiji++;
-    Mn(b320 => '3-5x'.$n, join'',(J.fkeo) x 3);
-Wight: |
-    n Funstuff
-    n JScomp
-    n JSea
-    # could ahh...
-    
-    n JSlines =>$J
-    
-    my $n = J.fsjoi++;
-    $n || Rw loopby $b=0.2 $d=17 $p=Top;
-glaciup: |
-    my $e = G&$k,C;
-    var W = G&Win,C.c.W;
-    t&3;
-    
+    n b320 => '3-5x'.$n, join'',(J.fkeo) x 3;
 Sight: |
     my $C = {c=>{s=>G.way.glaciup}};
     #saybl C.c.s;
@@ -190,6 +185,14 @@ styleomi: |
         }
         return s;
     
+    n f =>''=><<''
+        var t = '';
+        s and t=s
+        var at = '';
+        C.y.cv and at += "cv='"+C.y.cv+"'";
+        t || at || console.log("No attach: "+T.alk);
+        return $(A.on).find(t+'['+at+']');
+    
     n inC =>''=><<''
         C = s;
         C.constructor == Array and C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
@@ -204,19 +207,6 @@ styleomi: |
         C.sc ||= {};
         return C;
 
-    n Win =>''=><<''
-        var W = ww[s];
-        if (!W) {
-            a.c("new W: "+s);
-            W = ww[s] = {};
-            W.Wid = s;
-            W.A = {};
-            W.A.W = W;
-            //W.A.p = new paper.Project();
-        }
-        //W.A.p.activate();
-        return W;
-    
     n h =>''=><<'',{acgt=>'way,s'}
         if (!G[way])
             throw "No way: "+way
@@ -255,7 +245,20 @@ styleomi: |
             });
         }
     
-    n uprun =>''=><<'',{acgt=>'s'}
+    n Win =>''=><<''
+        var W = ww[s];
+        if (!W) {
+            a.c("new W: "+s);
+            W = ww[s] = {};
+            W.Wid = s;
+            W.A = {};
+            W.A.W = W;
+            //W.A.p = new paper.Project();
+        }
+        //W.A.p.activate();
+        return W;
+    
+    n eine =>''=><<'',{acgt=>'s'}
         var K = s[0];
         var e = s[1];
         var k = 'e_'+K;
@@ -302,6 +305,16 @@ stylation: |
         s == '1' || s == '9' and $(el).remove();
         s == '8' and return A.on.aft = el;
         !el and console.log("Cno find el="+el+": "+C.t+"  of "+C.y.cv);
+        if (s == '1') {
+            C.sc.attr.cv = C.y.cv;
+            var div = $("<"+t+">", C.sc.attr);
+            $(div).appendTo(A.on).each(function(i,v){el=v});
+        }
+        C.c.s and $(el).html(C.c.s);
+        A.on = el;
+   
+    0 &&
+    n alsonot =>'',<<''
         if (C.c.id) { 
             C.sc.attr.id = C.c.id;
             var aid = $(A.on).attr('id');
@@ -318,22 +331,6 @@ stylation: |
                 }
             }
         }
-        if (s == '1') {
-            C.sc.attr.cv = C.y.cv;
-            var div = $("<"+t+">", C.sc.attr);
-            $(div).appendTo(A.on).each(function(i,v){el=v});
-        }
-        C.c.s and $(el).html(C.c.s);
-        A.on = el;
-   
-    u alljs
-    n f =>''=><<''
-        var t = '';
-        s and t=s
-        var at = '';
-        C.y.cv and at += "cv='"+C.y.cv+"'";
-        t || at || console.log("No attach: "+T.alk);
-        return $(A.on).find(t+'['+at+']');
 stylers: |
     n stylext
     u alljse
@@ -420,14 +417,12 @@ EmJSlines: |
     Rw humms $J $N notnotjs _;
     
     my $S = Rw humms $J $N spots;
-    em.lines = [map{
-        " a\.e(".sjson($_).");"
-    }@{S.z}];
-    push @{em.lines},
-        Rw collateJS $I:S.X;
+    my $l = em.lines = [];
+    push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
+    push @$l, Rw JSpots $I:S.X;
     C.c.os = 1 if !grep {/\S/} @{S.z};
     C.sc.Wc = 1;
-collateJS: |
+JSpots: |
     my @sup;
     for my $K (sort keys %$I) {
         my $cvs = $I->{$K};
@@ -444,7 +439,7 @@ collateJS: |
             }
             push @cvs, [$cv, \@ts];
         }
-        push @sup, sjson({uprun=>[$K,\@cvs]});
+        push @sup, sjson({eine=>[$K,\@cvs]});
     }
     @sup
 
