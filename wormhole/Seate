@@ -1,6 +1,21 @@
 --- 
 I: 
   "0.1": 
+    atom: 
+      c: 
+        el: 1
+        s: "A.I.atom = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($last,$here,@Me) = @M;\n    my $I = A.I;\n    # spacin\n    here.dist = here.cv - last.cv;\n    # twistin spin inherit\n    here.spin += last.spin;\n    # scale local-local change\n    here.rad += here.spin * here.dist * 10;\n    # builds rad on rad\n    here.rad += last.rad;\n    # distort space + more ways, orbital\n    # chuck skeletons for mods\n    # adapt M meta for what kinda places things want\n    # into constellations of high level things\n    # atomised hairs\n    here.zoom ||= last.zoom;\n    here.dist *= here.zoom if here.zoom;\n    # and move\n    here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;\n    here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;\n};\n"
+      sc: 
+        acgt: last,here
+        args: A,C,G,T,last,here
+        code: I 1
+        dige: a2b2426c55db
+        gro: GeoSo
+      t: atom
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
     convog: 
       c: 
         el: 1
@@ -16,6 +31,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yools/Yools
+    geo2lin: 
+      c: 
+        el: 1
+        s: "A.I.geo2lin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($geo,@Me) = @M;\n    my $I = A.I;\n    # shove com toeget\n    # OR SOMETHING\n    # loses its compressibility as csz\n    my @am = qw'a? ab  x x  y y  r radial  s scale';\n    my @l;\n    while (@am) {\n        my $k = shift @am;\n        my $v = shift @am;\n        my $sens = $k =~ s/\\?$//;\n        push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};\n    }\n    my $l = join ' ', @l;\n    $l\n};\n"
+      sc: 
+        acgt: geo
+        args: A,C,G,T,geo
+        code: I 1
+        dige: 755b1ccec764
+        gro: GeoSo
+      t: geo2lin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
     heq: 
       c: 
         el: 1
@@ -31,6 +61,36 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yools/Yools
+    here2geo: 
+      c: 
+        el: 1
+        s: "A.I.here2geo = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($here,@Me) = @M;\n    my $I = A.I;\n    my $geo = {};\n    geo.rad = here.rad;\n    # unwind (into...)\n    my $o = $RADIAN*4;\n    my $swish = $o;\n    $swish *= -1 if geo.rad < 0;\n    my $i = 0;\n    geo.rad -= $swish until\n        do {$i++>5&&die\"$i muchwind\".ki$here;0}\n        ||\n        $o*-1 < geo.rad && geo.rad < $o*4;\n    # pan to hemisphere...\n    # from O- is it in the left hemisphere etc\n    my $rad = geo.rad;\n    my $radleg = -$RADIAN;\n    $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;\n    $rad -= $radleg;\n    geo.radial = I.d&ron,$rad;\n    geo.x = here.x;\n    geo.y = here.y;\n    geo.ab = '100' if 1; # w=h=100,ab=1\n    # transform about\n    geo.tro = '0 0.5'; # midleft\n    geo.tro = '0 0' if 0; # topleft\n    #\n    my $fo = sub { (shift() * 100).'%' };\n    geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;\n    \n    I.d&geo2lin,$geo;\n};\n"
+      sc: 
+        acgt: here
+        args: A,C,G,T,here
+        code: I 1
+        dige: e81d82f252c3
+        gro: GeoSo
+      t: here2geo
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
+    last2here: 
+      c: 
+        el: 1
+        s: "A.I.last2here = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($last,$r,$here,@Me) = @M;\n    my $I = A.I;\n    here.x  = last.x = r.x if exists r.x;\n    here.y = last.y = r.y if exists r.y;\n    here.rad = 4*$RADIAN * r.spun if exists r.spun;\n    here.zoom = r.zoom if defined r.zoom;\n    \n    I.d&atom,$last,$here;\n    \n    here.spin = r.curve if exists r.curve; # on the level\n    #\n    here.x = I.d&ron,here.x;\n    here.y = I.d&ron,here.y;\n    here.rad = I.d&ron,here.rad;\n};\n"
+      sc: 
+        acgt: last,r,here
+        args: A,C,G,T,last,r,here
+        code: I 1
+        dige: 338d0c840521
+        gro: GeoSo
+      t: last2here
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
     pas: 
       c: 
         el: 1
@@ -61,6 +121,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Seven/Seven/Yools/Yools
+    ron: 
+      c: 
+        el: 1
+        s: "A.I.ron = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    0.0001 * int(10000*$s)\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 45a95b7f03ae
+        gro: GeoSo
+      t: ron
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
     scIfs: 
       c: 
         el: 1

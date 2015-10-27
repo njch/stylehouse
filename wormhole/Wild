@@ -405,12 +405,12 @@ I:
     fourstring: 
       c: 
         el: 1
-        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: $s            \".ki $C;\n};\n"
+        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: $s            \".ki $C if A.V&C;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 173505d9057f
+        dige: 94abbc0a2dcf
         gro: Indulator/C
       t: fourstring
       "y": 
@@ -432,6 +432,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Indulator/Indulator/SlideEa/SlideEa
+    hup: 
+      c: 
+        el: 1
+        s: "A.I.hup = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $CC = {%$s};\n    $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;\n    $CC;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2bc362811316
+        gro: Indulator/C
+      t: hup
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/Indulator/Indulator/C/C
     iZu: 
       c: 
         el: 1
@@ -982,13 +997,13 @@ J:
     J_632: 
       c: 
         el: 1
-        s: "A.I.J_632 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.sc.pi;\n    \n    map { # telephone winch, propaganda (top-er levels receiving stuff)\n         J.A->{$_} = J.Jiter.A->{$_}\n         if J.Jiter && J.Jiter.A->{$_};\n    } qw'ljm ljmo';\n    \n    A.time = sub {\n        my($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure\";\n        # wanna A.t&T,2,0 us to difference streams\n        # they could be xot maps or code to run\n        # then all over things \n    \n        if ($q == 2) {\n            A.ico = I.d&pha,$J,'ico';\n            A.ico.qui = 1;\n            I.d&as,A.ico,A.coi;\n            my $wtf = I.d&exactl,A.ico;\n    \n            if (wtf.last && !wtf.same) {\n                my $uf = join \"\\n\", map{\"$_: \".wdump(1,$wtf->{$_})}\n                    grep {keys %{$wtf->{$_}}} qw'new diff gone';\n                saybl \"T.alk  2222  $uf\";\n            }\n    \n            Rw eighthnot $J\n             ? do { A.ico.wtf.same = 0; }\n             : wtf.same && return 0;\n    \n            # for jamcs screenfly\n            J.A.ljm = [];\n            J.A.ljmo = \"fr  J.name\";\n            return 1;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        A.ztime >= $q;\n    };\n};\n"
+        s: "A.I.J_632 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.sc.pi;\n    \n    map { # telephone winch, propaganda (top-er levels receiving stuff)\n         J.A->{$_} = J.Jiter.A->{$_}\n         if J.Jiter && J.Jiter.A->{$_};\n    } qw'ljm ljmo';\n    \n    A.time = sub {\n        my($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure  J.name   vs JJ.name\";\n        # wanna A.t&T,2,0 us to difference streams\n        # they could be xot maps or code to run\n        # then all over things \n    \n        if ($q == 2) {\n            Rw Jamroot $J $C:J.C $sc:T.oy.at if T.oy.at;\n    \n            A.ico = I.d&pha,$J,'ico';\n            A.ico.qui = 1;\n            I.d&as,A.ico,A.coi;\n            my $wtf = I.d&exactl,A.ico;\n    \n            if (wtf.last && !wtf.same) {\n                my $uf = join \"\\n\", map{\"$_: \".wdump(1,$wtf->{$_})}\n                    grep {keys %{$wtf->{$_}}} qw'new diff gone';\n                saybl \"T.alk  2222  $uf\";\n            }\n    \n            Rw eighthnot $J\n             ? do { A.ico.wtf.same = 0; }\n             : wtf.same && return 0;\n    \n            # for jamcs screenfly\n            J.A.ljm = [];\n            J.A.ljmo = \"fr  J.name\";\n            return 1;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        A.ztime >= $q;\n    };\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 632
-        dige: 1f93220cafe1
+        dige: 997fe473a76e
         gk: J
         gro: Modulator/Jong/Juperfi
         nk: c
@@ -1002,13 +1017,13 @@ J:
     J_66: 
       c: 
         el: 1
-        s: "A.I.J_66 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $M = [];\n    my $y = {o=>$M};\n    my $ar = {%{C.c}};\n    #sayre \"no ars\" if !exists ar.s;\n    ar.s = '' if !exists ar.s;\n    ar.u = ar.s;\n    ar.pin = C.c.pin || die \"nopin\";\n    T.oy = $y;\n    \n    Rw ar.pin + $A $C $G $T $J $M $y;\n    # set our C.c.s to [that], noise probe case, maybe\n    if (@$M) {\n        n z=>$y=>{}\n    }\n    if (y.at) {\n        my $root = C.c.pi ? J.uname : J.name;\n        n J.name =>9=>{},delete y.at\n    }\n    # T may cause big recoil of Mo/J, miss pha closures:\n};\n"
+        s: "A.I.J_66 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $M = [];\n    my $y = {o=>$M};\n    my $ar = {%{C.c}};\n    #sayre \"no ars\" if !exists ar.s;\n    ar.s = '' if !exists ar.s;\n    ar.u = ar.s;\n    ar.pin = C.c.pin || die \"nopin\";\n    T.oy = $y;\n    \n    Rw ar.pin + $A $C $G $T $J $M $y;\n    # set our C.c.s to [that], noise probe case, maybe\n    if (@$M) {\n        n z=>$y=>{}\n    }\n    Rw Jamroot $C $J $sc:y.at if y.at;\n    # T may cause big recoil of Mo/J, miss pha closures:\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 66
-        dige: 980246233c35
+        dige: fb73faf838d2
         gk: J
         gro: Modulator/Jong/Jiterbug
         nk: c
@@ -1199,18 +1214,18 @@ Mo:
     lum_thy_: 
       c: 
         el: 1
-        s: "A.I.lum_thy_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    my $lumfa = C.y.lumfa;\n    my $bal = C.y.bal;\n    # barel! vylum\n    # could put these mys on y.u.thing and loop Nautically in 32...\n    my $roll = 1;\n    my $lum = 3;\n    my $i = 0;\n    for (@$bal) {\n        _.y.thy+=$lum;\n        $i++;\n        if ($i > $roll) {\n            $lum -= $lum * 0.2 if $lum > 0.1;\n        }\n    }\n};\n"
+        s: "A.I.lum_thy_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    my $lum = C.y.lum;\n    my $bal = C.y.bal;\n    # barel! vylum\n    # could put these mys on y.u.thing and loop Nautically in 32...\n    my $roll = 1;\n    my $lum = 3;\n    my $i = 0;\n    for (@$bal) {\n        _.y.thy+=$lum;\n        $i++;\n        if ($i > $roll) {\n            $lum -= $lum * 0.2 if $lum > 0.1;\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 233
-        dige: 5eab6987f067
-        gk: lumfa
+        dige: 1308c42fbac6
+        gk: lum
         gro: Modulator/lum
         nk: 'y'
         rg: bal
-        v: ylumfa
+        v: ylum
       t: lum_thy_
       "y": 
         cv: '0.3'

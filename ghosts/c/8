@@ -240,8 +240,12 @@ findupi: |
         $Ye = I.d&pin,$_,$J;
         last if $Ye;
     }
-    my @curv = grep { _.sc.pi eq 'curv'} values %{Ye.tv};
-    @curv = map{J.El.qq.bb->{$_}} grep{/curv\tJ$/} keys%{J.El.qq.bb} if !@curv;
+    my @curv = map {_.sc.J} grep { _.sc.pi eq 'curv'} values %{Ye.tv};
+    say "Got TV from J.name for curv: _.name" for @curv;
+    if (!@curv) {
+        @curv = map{J.El.qq.bb->{$_}} grep{/curv\tJ$/} keys%{J.El.qq.bb};
+        say "insyun from J.name for curv: _.name" for @curv;
+    }   
     die "many ".wdump \@curv if @curv > 1;
     shift @curv
     
@@ -266,23 +270,22 @@ ReoCur: | # inner bracken resolve (for randoms)
             C.sc.geo = wat.sc.geo || die "not foundcurve".wdump $cur;
         }
         else {
-            my $cC;
             $host = 'Claw';
             my $st;
             $st = Y.stackurv ||= do {
-                st.C = Rw findupi $I $J curv;
+                st.J = Rw findupi $I $J curv;
                 st.l = 'self curv';
-                st.C ||= do {
+                st.J ||= do {
                     st.l = "$host curv";
                     Rw findupi $I $J:host curv;
                 };
                 $st
             };
-            my $cJ = st.C.sc.J;
+            my $cJ = st.J;
             $host = "st.l";
             Rw curre $I $J:cJ $Y:cJ.El.Pre $V:cJ.El.Duv $C;
         }
-        saybl "$host: C.y.cv       C.y.t   found  C.sc.geo";
+        saybl "$host: C.y.cv       C.t   found  C.sc.geo";
         # might wanna crawl
 curre: |
     my $cv = C.y.cv;
@@ -301,7 +304,7 @@ curre: |
         map { Y.cvi->{$_} }
         grep {defined} $li, $ri;
     my $one = $l || $r;
-    $one || die "nothing to grab";
+    $one || die "nothing to grab in J.name".wdump 4, V.alv;
     my $last = one.y.here;
     my $here = {};
     here.cv = C.y.cv;
