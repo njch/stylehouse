@@ -435,12 +435,12 @@ I:
     fourstring: 
       c: 
         el: 1
-        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: $s            \".ki $C if A.V&C;\n};\n"
+        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    $s =~ s/^\\s+//;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: $s            \".ki $C if A.V&C;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 94abbc0a2dcf
+        dige: dbd7f1097b0d
         gro: Indulator/C
       t: fourstring
       "y": 
@@ -1012,13 +1012,13 @@ I:
     after: 
       c: 
         el: 1
-        s: "A.I.after = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    A.bangdesk = {};\n    aft {\n        $_->() for values %{A.bangdesk.aft};\n        $@ || return;\n        A.bang && return;\n        A.bang = 21;\n        $_->() for values %{A.bangdesk.bang};\n        # want to sus $@ and hang vectors of what, should be autoish\n        my $m = \"J: I.nF.A.talk        A.mo.ont.cv\";\n        $m .= \"\\nC: \".k2 I.nF.C;\n        $m .= \"\\ns: \".wdump 3, I.nF.A.s unless length $m > 20;\n        $@ = \"$m\\n$@\";\n        # A.t&9,$@; # skippy\n    }\n};\n"
+        s: "A.I.after = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    A.bangdesk = {};\n    aft {\n        $_->() for values %{A.bangdesk.aft};\n        $@ || return;\n        A.bang && return;\n        A.bang = 21;\n        $_->() for values %{A.bangdesk.bang};\n        # want to sus $@ and hang vectors of what, should be autoish\n        my $m = \"J: I.nF.A.talk        A.mo.ont.cv\";\n        $m .= \"\\nC: \".k2 I.nF.C;\n        $m .= \"\\ns: \".wdump 3, I.nF.A.s unless length $m > 20;\n        $@ = \"$m\\nand: $@ .\";\n        # A.t&9,$@; # skippy\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: I 11
-        dige: b585621f8302
+        dige: d20f0f78e02c
         gro: Indulator/Bangdesk
         its: 1
       t: after
@@ -1163,13 +1163,13 @@ J:
     J_632: 
       c: 
         el: 1
-        s: "A.I.J_632 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.sc.pi;\n    \n    map { # telephone winch, propaganda (top-er levels receiving stuff)\n         J.A->{$_} = J.Jiter.A->{$_}\n         if J.Jiter && J.Jiter.A->{$_};\n    } qw'ljm ljmo';\n    \n    A.time = sub {\n        my($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure  J.name   vs JJ.name\";\n        # wanna A.t&T,2,0 us to difference streams\n        # they could be xot maps or code to run\n        # then all over things \n    \n        if ($q == 2) {\n            Rw Jamroot $J $C:J.C $sc:T.oy.at if T.oy.at;\n    \n            A.ico = I.d&pha,$J,'ico';\n            A.ico.qui = 1;\n            I.d&as,A.ico,A.coi;\n            my $wtf = I.d&exactl,A.ico;\n    \n            if (wtf.last && !wtf.same) {\n                my $uf = join \"\\n\", map{\"$_: \".wdump(1,$wtf->{$_})}\n                    grep {keys %{$wtf->{$_}}} qw'new diff gone';\n                saybl \"T.alk  2222  $uf\";\n            }\n    \n            Rw eighthnot $J\n             ? do { A.ico.wtf.same = 0; }\n             : wtf.same && return 0;\n    \n            # for jamcs screenfly\n            J.A.ljm = [];\n            J.A.ljmo = \"fr  J.name\";\n            return 1;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        A.ztime >= $q;\n    };\n};\n"
+        s: "A.I.J_632 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.sc.pi;\n    \n    map { # telephone winch, propaganda (top-er levels receiving stuff)\n         J.A->{$_} = J.Jiter.A->{$_}\n         if J.Jiter && J.Jiter.A->{$_};\n    } qw'ljm ljmo';\n    \n    A.time = sub {\n        my($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure  J.name   vs JJ.name\";\n        # wanna A.t&T,2,0 us to difference streams\n        # they could be xot maps or code to run\n        # then all over things \n    \n        if ($q == 2) {\n            Rw Jamroot $J $C:J.C $y:J.oy if J.oy.at;\n    \n            A.ico = I.d&pha,$J,'ico';\n            A.ico.qui = 1;\n            I.d&as,A.ico,A.coi;\n            my $wtf = I.d&exactl,A.ico;\n    \n            if (wtf.last && !wtf.same) {\n                my $uf = join \"\\n\", map{\"$_: \".wdump(1,$wtf->{$_})}\n                    grep {keys %{$wtf->{$_}}} qw'new diff gone';\n                saybl \"T.alk  2222  $uf\";\n            }\n    \n            Rw eighthnot $J\n             ? do { A.ico.wtf.same = 0; }\n             : wtf.same && return 0;\n    \n            # for jamcs screenfly\n            J.A.ljm = [];\n            J.A.ljmo = \"fr  J.name\";\n            return 1;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        A.ztime >= $q;\n    };\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 632
-        dige: 997fe473a76e
+        dige: 14e6ed2f7f36
         gk: J
         gro: Modulator/Jong/Juperfi
         nk: c
@@ -1183,13 +1183,13 @@ J:
     J_66: 
       c: 
         el: 1
-        s: "A.I.J_66 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $M = [];\n    my $y = {o=>$M};\n    my $ar = {%{C.c}};\n    #sayre \"no ars\" if !exists ar.s;\n    ar.s = '' if !exists ar.s;\n    ar.u = ar.s;\n    ar.pin = C.c.pin || die \"nopin\";\n    T.oy = $y;\n    \n    Rw ar.pin + $A $C $G $T $J $M $y;\n    # set our C.c.s to [that], noise probe case, maybe\n    if (@$M) {\n        n z=>$y=>{}\n    }\n    Rw Jamroot $C $J $sc:y.at if y.at;\n    # T may cause big recoil of Mo/J, miss pha closures:\n};\n"
+        s: "A.I.J_66 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $M = [];\n    my $y = {o=>$M};\n    my $ar = {%{C.c}};\n    #sayre \"no ars\" if !exists ar.s;\n    ar.s = '' if !exists ar.s;\n    ar.u = ar.s;\n    ar.pin = C.c.pin || die \"nopin\";\n    J.oy = $y;\n    \n    Rw ar.pin + $A $C $G $T $J $M $y;\n    # set our C.c.s to [that], noise probe case, maybe\n    if (@$M) {\n        n z=>$y=>{}\n    }\n    Rw Jamroot $C $J $y if y.at;\n    # T may cause big recoil of Mo/J, miss pha closures:\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 66
-        dige: fb73faf838d2
+        dige: 46fbb85075f6
         gk: J
         gro: Modulator/Jong/Jiterbug
         nk: c
@@ -1223,13 +1223,13 @@ J:
     J_677: 
       c: 
         el: 1
-        s: "A.I.J_677 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    if (T.oy.ope) {\n        sayyl \"Leaving J.name open pha...\" if A.V&ope;\n        I.d&end,A.coi;\n        return;\n    }\n    A.coi.qui = 1;\n    my $wt = I.d&exactl,A.coi;\n    if (wt.same) {\n        if (++J.A.wch > 4) {\n            J.A.wch = 0;\n            # ^ rate to avoid v see J 632 eighthnot\n        }\n        else {\n           sayre \"SAME T.alk\" if A.V&SAME;\n           T.same = 1;\n        }\n    }\n};\n"
+        s: "A.I.J_677 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    if (J.oy.ope) {\n        sayyl \"Leaving J.name open pha...\" if A.V&ope;\n        I.d&end,A.coi;\n        return;\n    }\n    A.coi.qui = 1;\n    my $wt = I.d&exactl,A.coi;\n    if (wt.same) {\n        if (++J.A.wch > 4) {\n            J.A.wch = 0;\n            # ^ rate to avoid v see J 632 eighthnot\n        }\n        else {\n           sayre \"SAME T.alk\" if A.V&SAME;\n           T.same = 1;\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: J 677
-        dige: 8fbdf1b27fe5
+        dige: fe51018f11a7
         gk: J
         gro: Modulator/Jong/Jiterbug
         nk: c
@@ -1822,13 +1822,13 @@ O:
     Jin_36: 
       c: 
         el: 1
-        s: "A.I.Jin_36 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # so osci ^ can C.sc.\n    at.sc = {%{C.sc}};\n    for (qw'idly ml nspc path yspc') {\n        delete at.sc->{$_} && sayre \"C.t sc blocking $_\";\n    }\n    # haps to be crate later somewhere if we oWl/S\n    delete ta.V if ref ta.V eq 'HASH' && !keys %{ta.V};\n    \n    if (my $v = at.sc.J) { # J unifies -\n        at.sc.J = v.name;\n    \n        return sayre \"osc Without leaves A.J.name: v.name\"\n            if C.sc.W && Y.root.sc.oWl;\n        return sayre \"osc WivoSelf A.J.name: v.name\"\n            if C.sc.W && defined at.c.S && at.c.S eq '';\n    \n        my $nV = v.El->{V.name};\n        return sayre \"no V.name on v.name $v: El: \"\n            .join', ',sort keys %{v.El}\n            if !$nV;\n    \n        my $rv = nV.rv || {LIES=>\"from v.name\"};\n        return sayre \"no rv V.name on v.name\"\n            if !nV.rv;\n    \n        lv.do->{V.name} = $rv;\n        at.V->{V.name} = rv.i;\n    }\n};\n"
+        s: "A.I.Jin_36 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    # so osci ^ can C.sc.\n    at.sc = {%{C.sc}};\n    for (qw'idly ml nspc path yspc') {\n        delete at.sc->{$_}# && sayre \"C.t sc blocking $_\";\n    }\n    # haps to be crate later somewhere if we oWl/S\n    delete ta.V if ref ta.V eq 'HASH' && !keys %{ta.V};\n    \n    if (my $v = at.sc.J) { # J unifies -\n        at.sc.J = v.name;\n    \n        return if C.sc.W && Y.root.sc.oWl;\n        return if C.sc.W && defined at.c.S && at.c.S eq '';\n    \n        my $nV = v.El->{V.name};\n        return sayre \"no V.name on v.name $v: El: \"\n            .join', ',sort keys %{v.El}\n            if !$nV;\n    \n        my $rv = nV.rv || {LIES=>\"from v.name\"};\n        return sayre \"no rv V.name on v.name\"\n            if !nV.rv;\n    \n        lv.do->{V.name} = $rv;\n        at.V->{V.name} = rv.i;\n    \n        if (at.sc.pi && exists at.c.s && Y.root.sc.ux) {\n            delete at.c.s; # words about what its looking\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: O 36
-        dige: ce6090aa86bb
+        dige: '467478695187'
         gk: 'Y'
         gro: Seven/Yosc
         nk: c
@@ -1843,13 +1843,13 @@ O:
     Jnine_37: 
       c: 
         el: 1
-        s: "A.I.Jnine_37 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (C.c.root) { # / unifies  <\n        lv.voso = 1;\n        for my $ik (@{V.os}) {\n            my $iv = V.lv->{$ik};\n            my $C = iv.C;\n            do { sayre(\"Skip C.t: self in self\") for 1..6 } && next\n                if C.sc.J && C.sc.J eq A.J;\n            lv.do->{$ik} = $iv;\n            at.V->{$ik} = iv.i;\n        }\n    }\n};\n"
+        s: "A.I.Jnine_37 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (C.c.root) { # / unifies  <\n        if (at.sc.pi && exists at.c.s && Y.root.sc.ux) {\n            delete at.c.s; # itself, 'pi'\n        }\n        lv.voso = 1;\n        for my $ik (@{V.os}) {\n            my $iv = V.lv->{$ik};\n            my $C = iv.C;\n            do { sayre(\"Skip C.t: self in self\") for 1..6 } && next\n                if C.sc.J && C.sc.J eq A.J;\n            lv.do->{$ik} = $iv;\n            at.V->{$ik} = iv.i;\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: O 37
-        dige: f74da94e2bd6
+        dige: ce6542f237c0
         gk: 'Y'
         gro: Seven/Yosc
         nk: c
@@ -2787,13 +2787,13 @@ Sev:
     Y_58: 
       c: 
         el: 1
-        s: "A.I.Y_58 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    V.lv->{$k} = $lv;\n    if (C.c.root) {\n        V.rl = $vl;\n        V.rv = $lv;\n        Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv\n            if J.V;\n    }\n};\n"
+        s: "A.I.Y_58 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    V.lv->{$k} = $lv;\n    if (C.c.root) {\n        V.rl = $vl;\n        V.rv = $lv;\n        Rw TNews $J $talk:A.talk $rl:V.rl $rv:V.rv\n            if J.V || A.V&N;\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Sev 58
-        dige: 8afb999ae4f7
+        dige: fe866d47c232
         gk: 'Y'
         gro: Seven/Yuni
         nk: c
@@ -2850,14 +2850,14 @@ em:
     eve_3: 
       c: 
         el: 1
-        s: "A.I.eve_3 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $eve = C.sc.eve;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    `touch life/W/em.is.W\\.e`;\n    J.mo.s.al.opt.fole = [Followe=>W=>\"life/W/em.is.W\\.e\"];\n    # routes ids[] into All(Oth)\n};\n"
+        s: "A.I.eve_3 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $eve = C.sc.eve;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    J.mo.s.al.opt.fole = [Followe=>W=>\"life/W/em.is.W\\.e\"];\n    # routes ids[] into All(Oth)\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         cg: J,em
         code: em 3
-        dige: 2845d7c631b6
+        dige: c3ba7554f60b
         gk: eve
         gkiss: s
         gro: Seven/SevWo/Meta
