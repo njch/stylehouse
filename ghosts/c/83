@@ -18,9 +18,10 @@ CsE: | # collasp C.c.e& tube, decode line, gives E
     E.c.m = $m;
     
     # & any
-    my $u = E.c.us ||= eval{djson E.c.s};
-    die "KGAO: $@\n\n cs: E.c.s" if $@;
-    
+    if (!E.c.us && E.c.s =~ /^\{/) {
+        E.c.us = eval{djson E.c.s};
+        die "KGAO: $@\n\n cs: E.c.s" if $@;
+    }
     return $E
 GW: | # assume G W, router, uxvis nestle into GW/W... via om & CsE utbing
     J.A.III = ['G/T/Sav'];
@@ -107,8 +108,12 @@ closeline: | # event end (following few wires together)
     # the strand should collapse hierarchy upwards
     # see Sev for limited channels
     my $E = Rw CsE $C;
-    if (A.V&Ecl) {
+    # ids are brain tickets
+    if (A.V&Ecl || 1) {
         sayyl " - _.t   _.y.cv  _.c.s :: _.c.e" for @{E.c.z};
+    }
+    if (!E.c.us) {
+        return Rw Elis + $E;
     }
     # trail piled up to eventual/original Ece=Cevent(cs={jsonform})
     # because from O we get cJ 9er, scJ 6er
@@ -207,8 +212,4 @@ thank: | # J, as self consuming other, s=other, !e
     # feed also cones?
     n $_ =>''=>{pi=>pane=>s=>$S->{$_}} for sort keys %$S;
     # panes
-pi/pane: |
-    #u perCcsomethingtracepha
-    n $_ for map{values %$_}values %$s
-    
 
