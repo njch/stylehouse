@@ -65,11 +65,16 @@ pi/sol: | # file anywhere, together
     n Film=>$C
     
 Film: |
+    J.ev.th ||= 'middle';
     y.ope = 1;
     J.VV.N = 1;
+    for (A.us&C) {
+        sayyl "FILM IN RIGHT PLACE: " for 1..4;
+        return; # 
+    }
     map {
         saybl "_.t _.sc.J.id Tango _.c.s           _.sc.pi";
-        n _.c.s=>''=>{pi=>panop=>s=>$_,},'%qs'
+        n _.c.s=>6=>{pi=>panop=>s=>$_,},'%qs'
     } A.e&C
 pi/pane: |
     #u perCcsomethingtracepha
@@ -86,14 +91,7 @@ pi/anoply: |
     my ($t,$l) = Rw idToE;
     n $t =>{}=>{}=>{opel=>sjson($l)}
     
-idToE: |
-    my $ids = Rw idTrunk $C:s;
-    my $mo = $ids->[0];
-    my $la = $ids->[-1];
-    my $l = [map{[_.t=>_.cv=>_.id]}@$ids];
-    my $t = join ',',map{_.id}$mo,$la;
-    return ($t,$l)
-    
+
 pi/annopl: |
     y.ope = 1;
     my ($t,$l) = Rw idToE;
@@ -125,12 +123,13 @@ SpaceFlos: |
     }
 Elis: |
     my $pi = E.sc.pi;
-    sayyl " - _.t   _.y.cv  _.c.s :: _.c.e" for @{E.c.z};
+    sayyl " - _.t   _.y.cv  _.c.s :: ".ki _.c.e for @{E.c.z};
     if ($pi eq 'panop') {
-        sayyl "J.name eats: $pi";
         my $j = E.sc.J;
+        #
         saybl "Conpoly: j.C.t from j.C.sc.pi";
         saybl " C con: C.t   C.y.cv   ".ki C.sc;
+        
         saybl " E con: E.t   E.y.cv   ".ki E.sc;
         Rw SpaceFlos + $E $K:j.C.t;
     }
@@ -138,7 +137,9 @@ Elis: |
         sayyl "J.name C.t has reactoin to: $pi: E.t E.c.s";
         Rw cJTrunk $J $C $E;
         Rw yJLong $J $C $E;
-        return; 
+        return;
+        #
+        #
     }
     else {
         sayyl "EV J.name like E.t  ".wdump 2,[ E.c, E.sc ];
@@ -148,50 +149,68 @@ Elis: |
     
 middle: |
     my $E = Rw CsE $C;
+    sayyl "C.t has reactoin to: E.sc.pi: E.t E.c.s ";
+    if (E.c.us) {
+        sayre "US: ".wdump 2, E.c.us;
+        sayyl "For J.name J.id";
+        saybl "KI: ".ki $C;
+    }
     # ids are brain tickets
-    if (!E.c.us) {
+    if (!E.c.us || do{E.c.us.ids->[E.c.us.idi - 1] eq J.id
+        && sayre("middle aft us landed on self: J.name")}) {
         return Rw Elis + $E;
     }
     else {
         sayre "Some other middle to J.name!" for 1..4;
-        saybl "Got: ".wdump 2, djson E.c.us.hopel if E.c.us.hopel;
+        saybl "Got: J.id:".wdump 3, [E.c.us,$E];
         Rw zyeuter $A $C $J $E;
     }
+Follower: | # follws E.t as file, sends lines to E.t, has panopoly of Film like things to unify changesity into therermore panoply actioney changesity
+
+    # (everything threes)
+    u linesfollow
+    u Ipifalls
+    y.ope = 1;
+    y.cvil = 1;
+    y.at.oWl = 1;
+    
+    
+    J.mo.s.al.opt.foler = [Follower=>'W'=>{}];
+    J.VV.N = 1;
+    J.ev.th ||= 'middle';
+    #
+    n $C
 yJLong: |
+    my $om;
+    if (E.c.us) {
+        $om = J.C;
+    }
     my ($mo,$ne) = @{E.c.yJ};
     mo.mo.J eq $mo || die "momo no mo: ";
+    $om ||= $mo; # 
+    $mo = $om;
     my $dub = ne.C.y.cv * 2;
     my $cC = mo.El.Pre.tv->{$dub."\t".ne.C.t};
     sayre "Du ne.C.t $dub  isin: ".ki $cC;
+    sayyl "Was: ".ki delete E.c.us;
     $cC || die "no dubber";
     my $cJ = cC.sc.J;
     my @routes = grep {_.sc.opel} @{cJ.El.Pre.vs};
+    
     for my $r (@routes) {
         say wdump 3, [map{ki ref $_ && _.sc || $_}C.c.s,$C,$E,E.c.s];
         E.c.us = {ids=>[split ',',r.t],hopel=>r.sc.opel};
         # givesd to router
         n $C
     }
-    return;
-    #
-    #
-    #
-    #
-    sayyl " - _.t   _.y.cv  ".ki(_.c.s)." :: ".ki(_.c.e) for @{E.c.z};
-    my $rv = J.El.Duv.rv;
-    saybl wdump 2, $rv;
-cJTrunk: |
-    my $E = ar.E || ar.C;
-    E.c.yJ = Rw yJTrunk $C:E;
-    Rw yJBlab $C:E;
-idTrunk: |
-    my $E = ar.E || ar.C;
-    E.c.yJ = Rw yJTrunk $C:E;
-    [ map { {id=>_.id,t=>_.C.t,cv=>_.C.y.cv} } @{E.c.yJ} ]
 yJBlab: |
     say "Vertical E:Js";
     say " - _.t   _.y.cv  ".ki(_.c.s)." :: ".ki(_.c.e)
        ."    ****** ".ki(_.sc)for map{_.C}@{C.c.yJ};
+cJTrunk: |
+    my $E = ar.E || ar.C;
+    E.c.yJ = Rw yJTrunk $C:E;
+    Rw yJBlab $C:E;
 yJTrunk: | # from C.sc.J, uup
     my $jay = C.sc.J;
     my @js;
@@ -200,17 +219,18 @@ yJTrunk: | # from C.sc.J, uup
         $jay = jay.Jiter || last;
     }
     [ reverse @js ];
-Follower: | # follws E.t as file, sends lines to E.t, has panopoly of Film like things to unify changesity into therermore panoply actioney changesity
-    # (everything threes)
-    u linesfollow
-    u Ipifalls
-    y.ope = 1;
-    y.cvil = 1;
-    y.at.oWl = 1;
-    J.mo.s.al.opt.foler = [Follower=>'W'=>{}];
-    J.VV.N = 1;
-    J.ev.th ||= 'middle';
-    n $C
+idTrunk: |
+    my $E = ar.E || ar.C;
+    E.c.yJ = Rw yJTrunk $C:E;
+    [ map { {id=>_.id,t=>_.C.t,cv=>_.C.y.cv} } @{E.c.yJ} ]
+idToE: |
+    my $ids = Rw idTrunk $C:s;
+    my $mo = $ids->[0];
+    my $la = $ids->[-1];
+    my $l = [map{[_.t=>_.cv=>_.id]}@$ids];
+    my $t = join ',',map{_.id}$mo,$la;
+    return ($t,$l)
+    
 Usee: |
     u ReoCur
     y.at.ux = 1;
