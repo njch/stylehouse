@@ -11,13 +11,21 @@ Sl: |
         var v = $('#msgs');
         a.m("SOmething clea r "+v);
     
+    #
     #n Details
     #n Usee
-    Mn(foland=>pi=>"life/S\.s",'%dos:loadwav,qz');
+    my $see = "life/S\.s";
+    Mn(foland=>pi=>$see,'%dos:loadwav,qz');
     
     Mn(foland=>pi=>"life/W/ire",'%dos:zonein,qz');
     #J.mo.s.al.opt.folch = [Followe=>W=>"life/S\.s"];
     J.VV.N = 1;
+    
+    my ($l) = $1 if `wc -l $see` =~/(\d+)/;
+    `cat /dev/null > $see` if $l > 4 && J.ever == 0 || J.ejiqd++> 3 && do{ J.ejiqd = 0; 1};
+    `echo 'hello' >> $see`;
+    J.ever = 1;
+    
     
     my $n = J.fsjoi++;
     $n && 1;
@@ -26,9 +34,17 @@ goneplay: |
     u allovse
     n '','','%of:Sev'
 
+    # without being a match prepare the Vacuumosd iv/ov
+    n Vsup =>434=><<'',{Td=>'V/*/*'}
+        d.iv = lv.do->{$gk};
+        d.ov = vl.do->{$gk};
+        #saybl "Seen: $gk    d.iv   d.ov";
+        d.ov && d.ov.i && (d.ov.i eq $o || warn "no ovi ogk  d.ov.i eq $o");
+        T.noTd = 1;
+    
     n Vgone =>4342=><<'',{Td=>'V/*/gone',Tdarge=>'iv,ov'}
         if (!ov.rmnsc) {
-            die "no rm: A.J.name => C.sc.J.name "
+            die "no rm: A.J.name =>  C.t: C.y.k   \n".ki(C.sc)
                 .wdump 3, [$at,$ta,"Cfor $gk pmtp", $vl,'','',$lv,"ESS:". $s];
         }
         !$iv || die "gone had iv";
@@ -52,7 +68,7 @@ Film: |
     y.ope = 1;
     J.VV.N = 1;
     map {
-        saybl "_.t _.sc.J.id Tango _.c.s ";
+        saybl "_.t _.sc.J.id Tango _.c.s           _.sc.pi";
         n _.c.s=>''=>{pi=>panop=>s=>$_,},'%qs'
     } A.e&C
 pi/pane: |
@@ -64,9 +80,10 @@ pi/panop: |
     n Follower=>$C,{},'%qs'
     
 pi/anoply: |
+    Rw cJTrunk $C:s;
+    #
     y.ope =  1;
     y.at.oWl = 1;
-    J.VV.N = 1;
     $s || return;
     my $z = "Some s.sc.J.name";
     my $j = s.sc.J;
@@ -74,9 +91,11 @@ pi/anoply: |
     
 pi/annopl: |
     y.ope = 1;
-    
-        sayyl " - _.t   _.y.cv  _.c.s :: _.c.e" for @{s.c.z};
-    #n 
+    Rw cJTrunk $C:s;
+    my $ids = Rw idTrunk $C:s;
+    $ids = join ",", @$ids;
+    sayyl "IDS for J.name vs s.sc.J.name: $ids";
+    n $ids =>{}=>{s=>"J.mo.J.name J.name vs s.sc.J.mo.J.name s.sc.J.name"}
 loadwav: |
     sayyl " F  IND SOME FOR E.c.s";
     my $mayb
@@ -98,14 +117,13 @@ SpaceFlos: |
         sayyl "GOT SPACE ELVIS: C.t: "
             .(_.sc.J && "_.sc.J.mo.J.name  _.sc.J.name")
             ."  _.t   _.y.cv    linking $K";
-        #Mn($K=>""=>"Thi _.t",{id=>$id});
-        saybl "_.t _.sc.J.name Tango _.c.s ";
         
+        saybl "_.t _.sc.J.name Tango _.c.s ";
         n $K=>6=>{pi=>annopl=>s=>$_},"%qs"
-        # & id ^
     }
 Elis: |
     my $pi = E.sc.pi;
+    sayyl " - _.t   _.y.cv  _.c.s :: _.c.e" for @{E.c.z};
     if ($pi eq 'panop') {
         sayyl "J.name eats: $pi";
         my $j = E.sc.J;
@@ -116,7 +134,8 @@ Elis: |
     }
     elsif ($pi eq 'line') {
         sayyl "J.name C.t has reactoin to: $pi: E.t E.c.s";
-        sayyl '' for 1..3;
+        Rw cJTrunk $J $C $E;
+        Rw yJLong $J $C $E;
         return; 
     }
     else {
@@ -125,12 +144,45 @@ Elis: |
         #
     }
     
+yJLong: |
+    my ($mo,$ne) = @{E.c.yJ};
+    mo.mo.J eq $mo || die "momo no mo: ";
+    my $dub = ne.C.y.cv * 2;
+    my $cC = mo.El.Pre.tv->{$dub."\t".ne.C.t};
+    #
+    sayre "Du ne.C.t $dub  isin: ".ki $cC;
+    $cC || die "no dubber";
+    my $cJ = cC.sc.J;
+    saybl "Perc to J.name: ". wdump 5,[map{ki $_}@{cJ.El.Pre.vs}];
+    return;
+    #
+    #
+    #
+    #
+    sayyl " - _.t   _.y.cv  ".ki(_.c.s)." :: ".ki(_.c.e) for @{E.c.z};
+    my $rv = J.El.Duv.rv;
+    saybl wdump 2, $rv;
+cJTrunk: |
+    my $E = ar.E || ar.C;
+    E.c.yJ = Rw yJTrunk $C:E;
+    Rw yJBlab $C:E;
+yJBlab: |
+    say "Vertical E:Js";
+    say " - _.t   _.y.cv  ".ki(_.c.s)." :: ".ki(_.c.e)."
+        * ".ki(_.sc)for map{_.C}@{C.c.yJ};
+yJTrunk: | # from C.sc.J, uup
+    my $jay = C.sc.J;
+    my @js;
+    while ($jay) {
+        push @js, $jay;
+        $jay = jay.Jiter || last;
+    }
+    [ reverse @js ];
+idTrunk: |
+    [ map { "_.id" } @{C.c.yJ} ]
 middle: |
     my $E = Rw CsE $C;
     # ids are brain tickets
-    if (A.V&Ecl || 1) {
-        sayyl " - _.t   _.y.cv  ".ki(_.c.s)." :: _.c.e" for @{E.c.z};
-    }
     if (!E.c.us) {
         return Rw Elis + $E;
     }

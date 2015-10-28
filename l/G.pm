@@ -303,7 +303,9 @@ sub ki {
         $re = 2;
     }
     if (!ref $ar || "$ar" !~ /(HASH)/) {
-        return "!%:$ar";
+        my $s = "!%:$ar";
+        $s =~ s/\n/\\n/g;
+        return slim(30,$s);
     }
     #
     my $lim = 150 - (150 * ($d / 3));
@@ -321,7 +323,7 @@ sub ki {
         : ref $v eq 'ARRAY' ?
               do "$_=\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
             : "$_=".slim(150,"$v")
-    } sort keys %$ar;
+    } @keys;
 }
 
 sub kk {
