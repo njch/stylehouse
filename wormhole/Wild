@@ -648,12 +648,12 @@ I:
     renc: 
       c: 
         el: 1
-        s: "A.I.renc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.c = C.c =~ I.peels ? I.d&peel,C.c\n      : {s => C.c};\n};\n"
+        s: "A.I.renc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.c = C.c =~ I.peels ? I.d&peel,C.c\n      : do {\n        A.btw.cwass = 1 if !defined C.c;\n          {s => C.c};\n      };\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: eae926764058
+        dige: 53c8354b3c3d
         gro: Indulator/SlideEa
       t: renc
       "y": 
@@ -678,12 +678,12 @@ I:
     reny: 
       c: 
         el: 1
-        s: "A.I.reny = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})\n        : C.y =~ /^($NUM)$/ ? {cv=>$1}\n        : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}\n        : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}\n        : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {\n            C.c->{$1} = $2 || C.t;\n            {};\n        }\n        : I.rey ? I.d&rey\n        : die \"C y wtf: C.y\";\n};\n"
+        s: "A.I.reny = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})\n        : C.y =~ /^($NUM)$/ ? {cv=>$1}\n        : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}\n        : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}\n        : C.y =~ /^-(\\w+)$/ ? do {\n            C.c.pi = $1;\n            C.c.s = C.t if !exists C.c.s || A.btw.cwass;\n            {}\n        }\n        : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {\n            C.c->{$1} = $2 || C.t;\n            {};\n        }\n        : I.rey ? I.d&rey\n        : die \"C y wtf: C.y\";\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: eba66862923b
+        dige: 395247b38a13
         gro: Indulator/SlideEa
       t: reny
       "y": 
@@ -1455,13 +1455,13 @@ Mo:
     ent_: 
       c: 
         el: 1
-        s: "A.I.ent_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';\n    C.sc.yspc = y.spc if C.sc.nspc;\n    C.sc.ml = (C.y.over * 40).\"%\" if y.over;\n};\n"
+        s: "A.I.ent_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';\n    C.sc.yspc = y.spc if C.sc.nspc;\n    C.sc.ml = (C.y.over * 40).\"%\" if y.over;\n    if (!y.bal && y.aspace == 0.6 && y.in == 0.3) {\n        delete $y->{$_} for qw'space i in mu out ov pcv space spc thi u';\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 37
-        dige: 0634f01bf91f
+        dige: a7dafb032f01
         gro: Modulator/Spaci
         its: 1
         nk: 'y'
@@ -1614,13 +1614,13 @@ oJ:
     J_343: 
       c: 
         el: 1
-        s: "A.I.J_343 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    sayyl \"J33   Made J.name\" unless J.Jiter;\n    C.c.J = T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
+        s: "A.I.J_343 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    G.W->{J.id} && G.W->{J.id} ne $J && die \"runup J.name\";\n    G.W->{J.id} = $J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    sayyl \"J33   Made J.name\" unless J.Jiter;\n    C.c.J = T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 343
-        dige: 8ee6ec538437
+        dige: c940f9361cba
         gk: J
         gro: Modulator/Jing/Joot
         nk: c

@@ -750,6 +750,11 @@ SlideEa: | # liney schemery
             : C.y =~ /^($NUM)$/ ? {cv=>$1}
             : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
             : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
+            : C.y =~ /^-(\w+)$/ ? do {
+                C.c.pi = $1;
+                C.c.s = C.t if !exists C.c.s || A.btw.cwass;
+                {}
+            }
             : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {
                 C.c->{$1} = $2 || C.t;
                 {};
@@ -759,7 +764,10 @@ SlideEa: | # liney schemery
     
     n renc =>''=>{s=><<''}
         C.c = C.c =~ I.peels ? I.d&peel,C.c
-          : {s => C.c};
+          : do {
+            A.btw.cwass = 1 if !defined C.c;
+              {s => C.c};
+          };
     
     n rensc =>''=>{s=><<''}
         C.sc = C.sc eq '' ? {}
