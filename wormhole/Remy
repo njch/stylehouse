@@ -768,12 +768,12 @@ I:
     renc: 
       c: 
         el: 1
-        s: "A.I.renc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.c = C.c =~ I.peels ? I.d&peel,C.c\n      : {s => C.c};\n};\n"
+        s: "A.I.renc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.c = C.c =~ I.peels ? I.d&peel,C.c\n      : do {\n        A.btw.cwass = 1 if !defined C.c;\n          {s => C.c};\n      };\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: eae926764058
+        dige: 53c8354b3c3d
         gro: Indulator/SlideEa
       t: renc
       "y": 
@@ -798,12 +798,12 @@ I:
     reny: 
       c: 
         el: 1
-        s: "A.I.reny = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})\n        : C.y =~ /^($NUM)$/ ? {cv=>$1}\n        : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}\n        : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}\n        : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {\n            C.c->{$1} = $2 || C.t;\n            {};\n        }\n        : I.rey ? I.d&rey\n        : die \"C y wtf: C.y\";\n};\n"
+        s: "A.I.reny = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})\n        : C.y =~ /^($NUM)$/ ? {cv=>$1}\n        : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}\n        : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}\n        : C.y =~ /^-(\\w+)$/ ? do {\n            C.c.pi = $1;\n            C.c.s = C.t if !exists C.c.s || A.btw.cwass;\n            {}\n        }\n        : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {\n            C.c->{$1} = $2 || C.t;\n            {};\n        }\n        : I.rey ? I.d&rey\n        : die \"C y wtf: C.y\";\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: eba66862923b
+        dige: 395247b38a13
         gro: Indulator/SlideEa
       t: reny
       "y": 
@@ -1112,6 +1112,7 @@ J:
         dige: 613d690d5559
         gk: J
         gro: Modulator/Jong/Jiterbug
+        its: 1
         nk: c
         v: cJ
       t: J_6211
@@ -1132,6 +1133,7 @@ J:
         dige: dd3968d99abd
         gk: J
         gro: Modulator/Jong/Jiterbug
+        its: 1
         nk: c
         v: cJ
       t: J_6212
@@ -1152,6 +1154,7 @@ J:
         dige: 59b0dc2b2481
         gk: J
         gro: Modulator/Jong/Jiterbug
+        its: 1
         nk: c
         v: cJ
       t: J_631
@@ -1172,6 +1175,7 @@ J:
         dige: 14e6ed2f7f36
         gk: J
         gro: Modulator/Jong/Juperfi
+        its: 1
         nk: c
         v: cJ
       t: J_632
@@ -1192,6 +1196,7 @@ J:
         dige: 46fbb85075f6
         gk: J
         gro: Modulator/Jong/Jiterbug
+        its: 1
         nk: c
         v: cJ
       t: J_66
@@ -1212,6 +1217,7 @@ J:
         dige: 8a8f5c43f7ab
         gk: J
         gro: Modulator/Jong/Juperfi
+        its: 1
         nk: c
         v: cJ
       t: J_672
@@ -1232,6 +1238,7 @@ J:
         dige: fe51018f11a7
         gk: J
         gro: Modulator/Jong/Jiterbug
+        its: 1
         nk: c
         v: cJ
       t: J_677
@@ -1510,6 +1517,7 @@ Mo:
         dige: c5aa5fc1a21a
         gk: pi
         gro: Modulator/Jing/Jlaces
+        its: 1
         nk: c
         v: cpi
       t: pi_3213
@@ -1530,6 +1538,7 @@ Mo:
         dige: e31ad819f6b6
         gk: W
         gro: Modulator/Jing/Jlaces
+        its: 1
         nk: c
         v: cW
       t: W_3214
@@ -1590,6 +1599,7 @@ Mo:
         dige: a66bb6c1e9e4
         gk: J
         gro: Modulator/Jing/Joot
+        its: 1
         nk: c
         v: cJ
       t: J_341
@@ -1621,13 +1631,13 @@ Mo:
     ent_: 
       c: 
         el: 1
-        s: "A.I.ent_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';\n    C.sc.yspc = y.spc if C.sc.nspc;\n    C.sc.ml = (C.y.over * 40).\"%\" if y.over;\n};\n"
+        s: "A.I.ent_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';\n    C.sc.yspc = y.spc if C.sc.nspc;\n    C.sc.ml = (C.y.over * 40).\"%\" if y.over;\n    if (!y.bal && y.aspace == 0.6 && y.in == 0.3) {\n        delete $y->{$_} for qw'space i in mu out ov pcv space spc thi u';\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 37
-        dige: 0634f01bf91f
+        dige: a7dafb032f01
         gro: Modulator/Spaci
         its: 1
         nk: 'y'
@@ -2604,7 +2614,7 @@ Sev:
     Vgone_4342: 
       c: 
         el: 1
-        s: "A.I.Vgone_4342 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (!ov.rmnsc) {\n        die \"no rm: hon A.J.name C.c.J.name =- C.sc.J.name ;; \"\n            .wdump 3, [$at,$ta,\"Cfor $gk pmtp\", vl.do, lv.do, $s];\n    }\n    !$iv || die \"gone had iv\";\n    # ^ sc plumb its destruction\n    # can void if our c reframes by implicitly clearing\n    lv.od.go->{$gk} = $ov;\n};\n"
+        s: "A.I.Vgone_4342 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $iv = s.iv;\n    my $ov = s.ov;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (!ov.rmnsc) {\n        #\n        lv.op.V->{$gk} = 'oio';\n        return sayre \"no rm: A.J.name => (C.t C.y.cv) C.sc.J.name\";\n        #\n        #    .wdump 3, [$at,$ta,\"Cfor $gk pmtp\", $vl,'','',$lv,\"ESS:\", $s];\n    }\n    !$iv || die \"gone had iv\";\n    # ^ sc plumb its destruction\n    # can void if our c reframes by implicitly clearing\n    lv.od.go->{$gk} = $ov;\n};\n"
       sc: 
         Ifs: 
           Td: 
@@ -2628,7 +2638,7 @@ Sev:
         act: 1
         args: A,C,G,T,s
         code: Sev 4342
-        dige: 2d1765414328
+        dige: a1e300befe89
         gk: 'Y'
         gro: Seven/YdoV
         nk: c
@@ -3048,15 +3058,16 @@ oJ:
     J_343: 
       c: 
         el: 1
-        s: "A.I.J_343 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    sayyl \"J33   Made J.name\" unless J.Jiter;\n    C.c.J = T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
+        s: "A.I.J_343 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if ref $J;\n    $J = Rw Jto $name:J;\n    G.W->{J.id} && G.W->{J.id} ne $J && die \"runup J.name\";\n    G.W->{J.id} = $J;\n    ref $J || die 'watt'.$J;\n    if (exists C.c.pi) {\n        J.Jiter = A.J; # erse rev\n        J.most->{$_} = A.J.most->{$_} for keys %{A.J.most||{}};\n    }\n    # til the I train shows up:\n    J.V = J.most.J.inV || 1 if A.J.V == 2 || J.most.J.inV;\n    J.A.Indo = 2;\n    #C.c.s ||= 'Wildy';\n    sayyl \"J33   Made J.name\" unless J.Jiter;\n    C.c.J = T.at.J = $J;\n    A.jr&J,$J; # sc, c, and on sphere\n    die \"noovewr   C.c.J ne $J\" if ref C.c.J && C.c.J ne $J;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 343
-        dige: 8ee6ec538437
+        dige: c940f9361cba
         gk: J
         gro: Modulator/Jing/Joot
+        its: 1
         nk: c
         v: cJ
       t: J_343
@@ -3068,13 +3079,13 @@ oJ:
     J_344: 
       c: 
         el: 1
-        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"THosught of A.J.name  holds  J.name  \".ki C.c if A.V&V;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        # absorb self Cing\n        T.not = 1;\n        return;\n    }\n    my $S = C.c.s;\n    $S = {name=>\"An: C.c.s\"} if !ref $S;\n    my $E = C.c.e;\n    sayyl \"An: S.name\" if ref $S;\n    saybl \"In s C.t: E.t     \".ki(E.sc) if 1 || A.V&V;\n    die \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be thing=>W=>other, later\n        C.c.IsOn || return do {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
+        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"THosught of A.J.name  holds  J.name  \".ki C.c if A.V&V;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        # absorb self Cing\n        T.not = 1;\n        return;\n    }\n    my $S = C.c.s;\n    my $E = C.c.e;\n    saybl \"In s C.t: E.t     \".ki(E.sc) if A.V&E;\n    sayre \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be thing=>W=>other, later\n        C.c.IsOn || return do {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 344
-        dige: 45ae4d7ccc42
+        dige: 1e29eacdb3b2
         gk: J
         gro: threes
         nk: c
@@ -3097,6 +3108,7 @@ oJ:
         dige: 51bc0362e5f1
         gk: J
         gro: Modulator/Jing/Jamping
+        its: 1
         nk: c
         v: cJ
       t: J_434
@@ -3117,6 +3129,7 @@ oJ:
         dige: 7184afd776e4
         gk: J
         gro: Modulator/Jing/Jumps
+        its: 1
         nk: c
         v: cJ
       t: J_61
@@ -3137,6 +3150,7 @@ oJ:
         dige: fef97be28189
         gk: J
         gro: Modulator/Jing/Jumps
+        its: 1
         nk: c
         v: cJ
       t: J_71
@@ -3149,13 +3163,13 @@ th:
     J_4: 
       c: 
         el: 1
-        s: "A.I.J_4 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $ar;\n    ar.A=$A;ar.G=$G;ar.C=$C;ar.T=$T;ar.J=$J;\n    C.c.e ?\n        Rw threve\n    :\n        Rw thank;\n    if (T.oke) {\n        delete A.Iso.th;\n        A.Iso.oJ = 1;\n        A.ztime = 6;\n        return sayyl \"Tanking into J.name\";\n    }\n    T.not = 1;\n};\n"
+        s: "A.I.J_4 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $ar;\n    ar.A=$A;ar.G=$G;ar.C=$C;ar.T=$T;ar.J=$J;\n    C.c.e ?\n        Rw threve\n    :\n        Rw thank;\n    if (T.oke) {\n        die \"thoughts of a thous\" if A.J ne $J;\n        delete A.Iso.th;\n        A.Iso.oJ = 1;\n        A.ztime = 6;\n        return sayyl \"Tanking into J.name\";\n    }\n    T.not = 1;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: th 4
-        dige: db9c30797819
+        dige: 0ea60ba92a74
         gk: J
         gro: threes
         nk: c
