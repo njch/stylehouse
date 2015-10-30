@@ -10,27 +10,7 @@ bodos: |
     sayyl "e.name  says   dos=$pin";
     $pin || die "nopindos ".wdump 4,[e.name,e.C];
     Rw $pin;
-loadwav: |
-    sayyl " F  IND SOME FOR E.c.s";
-    
-    E.c.serv &&
-        return sayre "Already served beside J.name\n\n\n".
-        Rw talkzyJhJ;
-    E.c.serv = 1;
-    
-    for (E.c.s) {
-        /^ghostchanges (.+)$/ ?
-            Rw ghosch + $m:1
-        :
-        /^hello/ ?
-            saybl " hello! E.t: $_"
-        :
-        sayre "Unclassified talk: $_"
-    }
-    # be!  plus
-    #Rw talkzyJhJ;
-    
-    sayyl '' for 1..4;
+
 ghosch: |
     sayyl "Ghosch: $m";
     return sayre "iggy $m" if $m !~ /^g(hosts?)?\/c\//;
@@ -55,7 +35,7 @@ Film: |
     y.ope = 1;
     J.VV.N = 1;
     map {
-        saybl "_.t _.sc.J.id Tango _.c.s           _.sc.pi";
+        saybl "\n\n_.t _.sc.J.id Tango _.c.s           _.sc.pi";
         n _.c.s=>6=>{pi=>panop=>s=>$_,},'%qs'
     } A.e&C
 pi/pane: |
@@ -79,31 +59,7 @@ pi/annopl: |
     n $t =>{}=>{}=>{opel=>sjson($l)}
     
 
-SpaceFlos: | # node write, collected goo sticks (active agent & hi wires)
-    return sayre "E.t iutno self E.sc.J.name\n\n\n\n"
-        if E.sc.J && E.sc.J.mo.J eq $J;
-    my $M = J.oy.o;
-    Mn($_) for @{J.eM||[]};
-    
-    
-    J.eM = $M;
-    for (A.e&C) {
-        $E eq $_ || die "handed different elvis than A_e prod";
-        my $K = E.c.s.t;
-        
-        return saybl "Com\nCom" if J.El.Pre.tv->{"0.6\t$K\t"};
-        
-        n $K=>3=>{pi=>cfile=>s=>$K}
- 
-        sayyl "SPACE ELVIS: C.t: "
-            .(_.sc.J && "_.sc.J.mo.J.name  _.sc.J.name")
-            ."  _.t   _.y.cv    linking $K";
-        
-        saybl "_.t _.sc.J.name Tango _.c.s ";
-        n $K=>6=>{pi=>annopl=>s=>$_},"%qs"
-    }
-    saybl "SpaceFlos: done: ".F_delta();
-    
+
 Follower: | # follws E.t as file, sends lines to E.t, has panopoly of Film like things to unify changesity into therermore panoply actioney changesity
 
     # (everything threes)
@@ -112,10 +68,13 @@ Follower: | # follws E.t as file, sends lines to E.t, has panopoly of Film like 
     y.ope = 1;
     y.cvil = 1;
     y.at.oWl = 1;
+    J.VV.N = 1;
     
     J.mo.s.al.opt.foler = [Follower=>'W'=>{}];
     #J.VV.N = 1;
     J.ev.th ||= 'middle';
+    J.ev.f.panop = 'SpaceFlos';
+    J.ev.so = 'cfile';
     #
     n $C
 Sight: |
@@ -321,6 +280,7 @@ styleomi: |
     # top level mirage is o(ww,Wid,$s) 
     # which ins ww (G.Wid for Oth), J.id (Wid)
     # and the difference is you
+    
     n om =>''=><<''
         A = G&An,'om';
         C = G&inC,C;
@@ -358,15 +318,27 @@ stylation: |
         !el and console.log("Cno find el="+el+": "+C.t+"  of "+C.y.cv);
         if (s == '1') {
             C.sc.attr.cv = C.y.cv;
-            C.c.id and C.sc.attr.id = C.c.id;
-            C.sc.src and C.sc.attr.src = C.sc.src;
             C.c.tag and t = C.c.tag;
             var div = $("<"+t+">", C.sc.attr);
             $(div).appendTo(A.on).each(function(i,v){el=v});
         }
+        delete C.sc.attr;
         C.c.s and $(el).html(C.c.s);
         A.on = el;
    
+    n el =>4=><<''
+        var f = ['id','src','dig'];
+        var fl = function (v,z) {
+            C.sc.attr and C.sc.attr[v] = z;
+            else {
+                $(A.on).attr(v,z);
+            }
+        };
+        $.each(f,function(i,v) {
+            C.sc[v] and fl(v, C.sc[v])
+            else
+            C.c[v] and fl(v, C.c[v])
+        });
 stylers: |
     n stylext
     u alljse
@@ -402,6 +374,10 @@ stylers: |
             //});
         });
     
+    n cssdel =>589=><<''
+        var re = s.split(',');
+        $.each(re,function(i,v){ delete C.sc.css[v] });
+    
     n css =>59=><<''
         $.each(s, function(i,v) { $(A.on).css(i, v); });
     
@@ -412,26 +388,29 @@ stylext: |
     u alljse
     
     n cod =>59=><<''
-        G&cod,s;
-    
-    u alljs
-    n cod =>''=><<'','%args:s'
+        typeof s === 'string' and s = {mode:'perl'}
         var def = {mode:'perl',theme:'midnight',lineWrapping:true};
         var set = $.extend(def, s);
         var id = set['id'];
         delete set['id'];
+        id ||= C.c.id;
+        !id and a.c("No id");
         var cm = CodeMirror(document.getElementById(id), set);
         .
         cm.ididid = id;
         cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
         .
         cm.on('focus',function(){clof();keof();});
-        cm.on('blur',function(){clon();keon();a.codsav(cm)});
+        cm.on('blur',function(){clon();keon();
+            G&codsav,cm;
+        });
         .
+        var W = 
         $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
         $('#'+id+' > .CodeMirror');//.css('height','auto');
     
-    n codsav =>''=><<'','%args:s'
+    u alljs
+    n codsav =>''=><<''
         var we = $('#'+s.ididid);
         a.m('AAAAAAAAAAA');
         var d = {};

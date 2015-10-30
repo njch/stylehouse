@@ -61,28 +61,62 @@ climbo: | # hop down tv, for hJ
     
     Rw clack;
     
+SpaceFlos: | # node write, collected goo sticks (active agent & hi wires)
+    return sayre "E.t iutno self E.sc.J.name\n\n\n\n"
+        if E.sc.J && E.sc.J.mo.J eq $J;
+    
+    for (A.e&C) {
+        $E eq $_ || die "handed different elvis than A_e prod";
+        my $K = E.c.s.t;
+        
+        #return saybl "Com\nCom" if J.El.Pre.tv->{"0.6\t$K"};
+        sayyl "SPACE ELVIS: C.t: "
+            .(_.sc.J && "_.sc.J.mo.J.name  _.sc.J.name");
+        $K || die "noK?";
+        if (my $so = J.ev.so) {
+            my ($h) = map{_.nj}
+            n $K=>3=>{pi=>$so=>s=>$K}
+            
+            E.c.s.sc.pi || die "E.t Ecs Holding strange: ".wdump 2, E.c.s;
+            
+            E.c.s.c.h = $h;
+            # esc gas radar, sol can embed or so
+        }
+         #
+        my $opl = J.ev.opl || 'annopl';
+        n $K=>6=>{pi=>$opl=>s=>$_},"%qs"
+    }
+    saybl "SpaceFlos: done: ".F_delta();
+    
 Elis: |
+    E.c.trJ = $J;
+    J.ev.av && sayre("On to J.name: J.ev.av") && # on arrival
+        Rw J.ev.av;
+    
     J.ev.li && return
         sayyl("JevLi: J.ev.li: J.name  C.sc.J.name  E.sc.J.name") &&
         Rw J.ev.li;
     
-    E.sc.pi eq 'panop' && return
-        Rw SpaceFlos + $E;
-    
+    my $f = J.ev.f;
+    $f = {split':',$f,2} if !ref $f;
+    for my $pi (keys %$f) {
+        E.sc.pi eq $pi || next;
+        my $d = $f->{$pi};
+        my $pin = ref $d ? die "ref f d in $pi" : $d;
+        sayyl "Elis: $pi to $pin";
+        return
+        Rw $pin;
+    }
     
     E.sc.was && return saybl "E.t was: $_ ".E.c.s;
-    
-    return
-        Rw yJLong $J $C $E
-        if E.sc.pi eq 'line';
     
     Rw clack;
     
 middle: |
     my $E = Rw CsE $C;
     say "midd: C.t has E.t: E.c.s ".(E.c.us && "(us)");
-    # us, ids are brain tickets
-    if (!E.c.us || E.c.us.ids->[E.c.us.idi - 1] eq J.id) {
+    # us, ids are brain tickets, tractorbeam does Elis first time
+    if (J.ev.tr && E.c.trJ ne $J || !E.c.us || E.c.us.ids->[E.c.us.idi - 1] eq J.id) {
         Rw Elis + $E;
     }
     else {
