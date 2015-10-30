@@ -1,0 +1,255 @@
+
+pi/head: |
+    Jn(t=>0.01,C.t,'%fs:6,hs:389');
+    Jn(pi=>0.02,C.sc.pi,'%fs:7');
+kapai: |
+    my $f = [];
+    my $l = [];
+    for my $k (sort keys %$u) {
+        my $v = $u->{$k};
+        my $pi = $i->{$k};
+        my $h = $pi ? $f : $l;
+        $pi ||= 'text';
+        push @$h, [C.t,'',{pi=>'kv',s=>[$k,$v],and=>{pi=>$pi}}];
+    }
+    push @$f, @$l;
+    Mn(@$_) for @$f;
+pi/liv: |
+    my $s = "find $u -type f";
+    Jn(for => 0.1 => $s, '%hs:2784,fs:5');
+    my @m = map{chomp;$_} `$s`;
+    Jn(fo => 0.2 => 'fo'.@m, '%fs:6,hs:938');
+    #y.lim = 9;
+    my $lim = 19;
+    @m = @m[0..$lim-1] if @m > $lim;  
+    Mn($_ => '', {pi=>'lif',s=>$_}) for @m;
+    
+    Atime(4)||return;
+    
+    Rwyl 0.2 delifeH $J;
+pi/lif: |
+      -e $u || return 
+      Jn('not',0.1,'!!!!'.$u,'%hs:9385');
+      
+      Jn(lifen => 0.09 => 'l', '%hs:3884,fs:11');
+      my $si = -s $u;
+      #Jn(si => 0.1 => $si, '%hs:9584,fs:7');
+      
+      J.most.filey = $u;  
+      
+      if ($si > 8000) {
+          Jn(more => 0.3, '@', '%mu:r');
+      }
+      else {
+          my @m = read_file $u;
+          Mn(C.t=>'',{pi=>'liel',s=>$_}) for @m;
+      }
+pi/liel: |
+    $u =~ /^[\{\[]/ || return
+    Jn(funny=>0.1,"$s");
+    #Jn(line=>0.1,{pi=>'text',s=>$u}, '%hs:3884,fs:6');
+    
+    Mn(C.t=>{},{pi=>'life',s=>djson $u});
+pi/life: |
+    Jn('ins',0.1,{s=>'{'});
+    Jn(life => 0.2 => $s);
+     C.sc.nspc = 0.02;
+    my $i = {qw'hol hol pid pid now now begin now'};
+    my $s = 'text';
+    my $br = 1; 
+    Rw kapai + $i $u $s;
+    my $mf = J.most.filey;
+    if (u.now && $mf && hitime() - u.now > 60*1.2) {
+        C.sc.deco = 1;
+        Jn(rm => 0.6 => "RM", '%hs:378');
+        sayre "RM $mf";
+        `rm $mf`;
+    }
+pi/seas: |
+     Jn(see => 0.1 => $s,'%hs:7878');
+     for my $t (map{glob $_}split /\s+/, $s) {
+         chomp $t;
+         Mn($t => '', {pi=>'loadc',s=>$t});
+     }
+pi/loadc: |
+     my $l = $s;
+     Jn(l => 0.1 => $l);
+     #y.lumfa = 1;
+     #y.limn = 1;
+     die "LLL $s -> $l ".wdump $C if  $l !~ /.../;
+     die "llll $l" if $l =~ /[^\/\.\w]/;
+     
+     my $r = "find -L $l -type f";
+     my @f = grep{!/(\/|^)^\./}map{chomp$_;$_}`$r`;
+     @f || die "no $l";
+     for my $file (@f) {
+         Mn($file => '', {pi=>'cfile',s=>$file});
+     }
+pi/file: |
+     defined $s || die 'nofile';
+     die if C.sc.dir;
+     C.sc.sz = 20;
+     my $sc = ar.sc;
+     if (C.c.create && !-f $s) {
+          sayyl "Creating $s";
+          `touch $s`;
+     }
+     if (C.c.mtime) {
+         sc.mtime = (stat($s))[9];
+     }
+     sc.hs ||= '042';
+     if (C.c.met) { # the apply slow yish
+         sc.met = `file '$s'`;
+         chomp sc.met;
+         die sc.met unless sc.met =~ /text/;
+     }
+     n file =>1=>$s,$sc;
+     
+pi/cfile: |
+    C.c.mtime = 1;
+    Rw pi/file;
+    
+    
+     my $file = $s;
+     C.sc.nspc = 0.02;
+     #y.limn = 18;
+     #y.lumfa = 2; 
+     
+     Atime(2)||return; 
+     -f $s || return
+     n 404 =>2=>'404','%hs:388';
+     
+     my $be = `wc -l $file`; chomp $be;
+     saybl "Loading    cfile $be";
+     if ($be =~ /^\d{4}/) {
+         Mn(massive=>'',{pi=>text=>s=>"MASSIVE"});
+         sayre "massive s";
+         return;
+     }
+      #
+     # etc
+     my $s = read_file($file);
+     unless ($s =~ /^\s*[\w]+.*:\s/s) {
+         n notyaml=>''=>{pi=>lines=>s=>$s}
+         return
+     }
+     my $m = Load($s);
+     
+     my $kf = qr/^(\S+)(:.+?)(?=^\S|\Z)/sm;
+     my $tsc = {};
+     
+     if (m.R_Jz || m.Ds) {
+         Rw pi/mRJz + $file $m $tsc;
+         my $k = qr/^\s*- K: /sm;
+         $kf = qr/$k(\S+)(.+?)(?=$k|\Z)/sm;
+     }
+     
+     my $h;
+     my @ks; 
+     while ($s =~ m/($kf)/smg) {
+         push @ks, $2;
+         $h->{$2} = $1;
+     }
+     my $in = {map{$_=>1}@ks};
+     $in->{$_} || die wdump ["nothave $_", [sort @ks], [ sort keys %$m ]] for keys %$m;
+     
+     for my $p (@ks) {
+         my $n = $m->{$p};
+         my $s = $h->{$p};
+         $s || die "no $p $s ".wdump $h;
+         my $sc = $tsc->{$p}||{};
+         sc.dige = substr dig($s), 0, 8;
+         sc.nspc = 0.2;
+         Mn($p => '', {pi=>'clife',pwth=>'somewhere',s=>$n},$sc);
+     }
+pi/mRJz: |
+    my $n = {%$m};
+    my $all = 'R_Jz';
+    if (n.Ds) {
+        n.R_Jz && die'alrDs';
+        n.R_Jz = delete n.Ds;
+        $all = 'Ds';
+    }
+    my $rj = delete n.R_Jz;
+    my @ksl = sort keys %$n;
+    for (@ksl) {
+         Mn($_=>''=>{pi=>text=>s=>$_});
+    }
+    my $tw;
+    for my $D (@$rj) {
+        my $d = {%$D};
+        my $k = exists d.K ? delete d.K : die"noK:".ki $D;
+        my $s = exists d.n_D ? delete d.n_D :
+        exists d.D ? delete d.D : die "whjeres ".ki $D;
+        $k || die "nmotK".ki $D;
+        my $sc = $tsc->{$k} ||= {};
+        for (qw'style') {
+             $sc->{$_} = delete $d->{$_} if exists $d->{$_};
+        }
+        if (%$d) {
+            Mn(more=>''=>{pi=>text=>s=>ki $D});
+        }
+        $tw->{$k} = $s;
+        $sc->{$all} = 1;
+        
+    }
+    %$m = %$tw;
+pi/clife: |
+     C.sc.nspc = 0.04;
+     #y.limn = 1;
+     #y.lumfa = 1;
+     # THE K -> NET
+     Jn(c=>0.1=>'c'=>'%hs:8474');
+     Jn(K=>0.2=>"C.t"=>'%hs:849');  # blah
+     $s = ref $s ? "$s"=~/^(.+)\(/ && $1 : slim(20,"$s");
+     #Mn(c=>'',{pi=>''=>s=>$s});
+pi/now: |
+    die "ulargesmall $u" if $u < 100 && $u > -100;
+    my $d = hitime() - $u;
+    my $dl = $d > 3*60 ? [8,873] : $d > 60 ? [6,853] : [5,634];
+    my $l = Rw samv $d;
+    Jn(delta=>0.1=>$l,"%fs:$dl->[0],hs:$dl->[1]");
+pi/hol: |
+    my ($s,$n,$i,$etc) = split '/', $u;
+    die "$u is long" if $etc;
+    #die "wells $u => $s"; 
+    Jn(_style => 0.1 => $s, '%is:style');
+    Jn(name => 0.2 => $n, '%is:name,fs:12');
+    Jn(id => 0.3 => $i, '%is:id,fs:6');
+    
+pi/pid: |
+    Jn(pid => 0.1 => $u, '%hs:483,fs:5');
+    
+pi/waps: |
+    my $sleep = sub {
+        my $til = hitime() + shift;
+        G.pslagtil = $til if $til > G.pslagtil;
+    };
+    
+    
+    my @ps = `ps -p$$ fu`; # j right
+    my ($u, $pid, $cpu, $mem) = (split /\s+/, $ps[1])[0,1,2,3];
+    if ($mem > 20 || $cpu > 60) {
+        saybl "& $mem";
+        if ($mem > 38) {
+            sayre "massive, restarting" for 1..8;sleep 1;
+            Rw rez;
+        }
+        $sleep->(4);
+    }
+     
+    my @temps = 
+    map {/\+(\d+\.\d+)\S+? /;$1} 
+    grep {/^temp1:/} 
+    `sensors`;
+    my ($ch,$gh) = @temps;
+    sayre "$u $pid       mem:$mem   cpu:$cpu  $ch    $gh ";
+    if ($ch > 70) {
+        sayre "HOT";
+        $sleep->(7);
+    }
+    n cpu => 3 => $cpu;
+    n mem => 32 => $mem;
+    n cputemp => 34 => $ch;
+    n gputemp => 36 => $gh;
+

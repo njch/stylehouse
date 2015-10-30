@@ -1,0 +1,525 @@
+
+Goo: | # Gto is made, babbed, things for G's I which is G itself
+    # this all goes... somewhere
+    n Gooso
+    n Goodat
+    n Gooway
+    n Goolog
+    n GBabz
+    n Ghoots
+    n GDom
+    n Gouck
+
+Gooso: |
+    u allacgts
+    
+    # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
+    n h =>''=><<''
+        my $D = $F[0];
+        my $r = D.ar;
+        my $A = r.A || die 'GhnoA';
+        my $I = A.I || die 'GhnoI';
+        I.d&Other,$s;
+
+    # see also Loading for ongoign G.T timeyness
+    n T =>''=><<'','%subpeel:1'
+        my %T = %{G.T||{}};
+        {
+            package Wormhole;
+            use Tie::Hash;
+            use YAML::Syck;
+            our @ISA = qw(Tie::StdHash);
+            sub FETCH {
+                my ($s,$k) = @_;
+                $s->{$k} ||= do{ 
+                    print "Loading w/$k ...\n" for 1..5;
+                    LoadFile("w/$k");
+                };
+            }
+        }
+        tie %T, 'Wormhole';
+        G.T = \%T;
+Goodat: |
+    u allacgts
+        
+    n mkD =>''=><<'',{acgt=>'pin,ar'}
+        my $D;
+        D.point = $pin;
+        if (my $C = ar.__D) {
+            delete ar.__D;
+            D.bab = C.c.s || die "N s".ki $C;
+            D.noise .= C.sc.dige if C.sc.dige;
+            D.babnon = 1 if C.sc.bab eq 'non';
+            D.Verb = 1;
+        }
+        D.ar = $ar;
+        D.name = join ' ', D.point, sort keys %{D.ar};
+        D.sign = "Z";
+        D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
+        $D;
+
+    n pin =>''=><<'',{acgt=>'pin,way'}
+        I.pwin || die "nopwin from pin";
+        I.pwin->($pin,$way);
+    
+    # non acgts
+    n pwin =>''=><<'',{args=>'pin,way'}
+        return $way->{$pin} if exists $way->{$pin};
+        my @path = split /\/|\./, $pin;
+        my $h = $way;
+        for my $p (@path) {
+            $h = $h->{$p};
+            unless ($h) {
+                undef $h;
+                last;
+            }
+        }
+        return $h if defined $h;
+        . 
+        return undef unless $pin =~ /\*/;
+        die "sat rs findy $pin";
+    
+Gooway: |
+    u allacgts
+    
+    n w =>''=><<'',{acgt=>'pin,ar'}
+        my $D = GmkD($pin,$ar);
+        .
+        if (!defined D.bab) {
+            D.bab = G.way->{$pin};
+        }
+        .
+        if (!defined D.bab) {
+            if ($pin =~ /\//) {
+                D.bab = Gpwin($pin,G.way);
+            }
+        }
+        .
+        if (!defined D.bab && !ar.__D && ar.A) {
+            my $c = ar.A;
+            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
+            if ($c) {
+                my $C = $c->{$pin};
+                if ($C) {
+                    c.sc.acgt && die "selected W4".ki$C;
+                    ar.__D = $C;
+                    $D = GmkD($pin,$ar);
+                }
+            }
+        }
+        .
+        return die "Not findin D.talk" if !defined D.bab;
+        .
+        Glog(D.talk) if G.logs;
+        .
+        my $Z = GDoming($D);
+        G.randomtask->() if G.randomtask;
+        my $r; eval { $r = [ GD($Z) ] };
+        sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
+        GDone($Z);
+        .
+        if ($@) {
+            D.nodie || die $@;
+            $@ = "";
+        }
+        return wantarray ? @$r : $r->[0];
+    
+    n comeback ''=><<''
+        my $Dome = $s;
+        my $a;
+        a.name = 'r';
+        a.from = $Dome;
+        my $Doing = $G->Doming($a); 
+        $G->D({D=>Dome.D, toplevel=>1, talk=>"351 dollars",name=>"comeback"});
+        $G->Done($Doing);
+        sayre $@ if $@; # TODO toplevely
+        $@ = "";
+    
+Goolog: |
+    u allacgts
+    
+    n rese =>''=><<'','%code:G 1'
+        `rm w/glog`;
+        G.logs = 1;
+    
+    n log =>''=><<''
+        write_file('w/glog', {append=>1}, "\n$s");
+    
+    
+GBabz: |
+    # see <<'' and levitate
+    u allacgts
+    
+    n bitsof_babble =>''=><<'','%bab:non,subpeel:1'
+        my $p;
+        p.alive = qr/\$[\w]*[\w\->\{\}]+/;
+        p.dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
+        p.oing = qr/p.alive|p.dotha|[-\w]{8,}/;
+        p.oint = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
+        p.mwall = qr/(?:= |if |unless |^\s*)/m;
+        p.sur = qr/ if| unless| for| when|,\s*$|;\s*/;
+        $p
+    
+    n parse_babble =>''=><<'','%bab:non'
+        my $p = G.bitsof_babble;
+        # gone:
+        my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
+        my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
+        $s =~ s/p.mwall$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
+        .
+        # :
+        my @s;
+        my $indbe;
+        for my $s (split "\n", $s) {
+            if ($indbe) {
+                if ($indbe eq 'nextind') {
+                    $s =~ /^(\s+)/;
+                    $indbe = qr/^$1/;
+                }
+                if ($s =~ $indbe) {
+                    push @s, $s;
+                    next;
+                }
+                else {
+                    undef $indbe;
+                }
+            }
+            if ($s =~ /<<['"](\w*)['"]/) {
+                $indbe = $1 ?
+                    qr/^(?!\Q$1\E)/ # for <<'EOD' til ^EOD, etc
+                  : 'nextind';
+            }
+            $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
+            $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
+            $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+            $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+            .
+            $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+            #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+            .
+            # lma quack $not->('tag');? from I.d&pui,$s
+            $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
+                my $s = "$1->(\"$2\"$3)$4";
+                $s = '$'.$s if $1 !~ m{\.};
+                $s
+            /smge;
+            # $sc>$k -> $sc->{$k}
+            $s =~ s/(p.oing)((?:\.>p.oing)+)/
+                join '->', $1, map {'{"'.$_.'"}'}
+                grep {$_} split m{\.>}, $2;
+            /smge;
+            .
+            while ($s =~ /(?:^| )(Rw ((?:\*\/)?p.oint)(?: (.+))?)p.sur?$/gsm) {
+                my ($old, $p, $a) = ($1, $2, $3);
+                my $g;
+                $g ||= '$G';
+                .
+                my $ne = ""; # hidden reverse
+                $ne = $1 if $a =~ s/(p.sur)$//;
+                .
+                my @n;
+                my @m;
+                # want to mix {m m m %$ar m m} whereever + is
+                my $wanr = $a =~ s/^\+ ?//;
+                $wanr = 'stick' if $a =~ s/^- ?//;
+                for (split /\,| |\, /, $a) {
+                    # sweet little pool... $J:geo etc
+                    if (/^\$((\w+(:|=))?\S+)$/) {
+                        my ($na, $fa, $wa) = ($1, $2, $3);
+                        if (!$fa) { # fake name, to ar
+                            $fa = $na;
+                        }
+                        else {
+                            $na =~ s/^\Q$fa\E//;
+                            $fa =~ s/(:|=)$//;
+                            if ($wa eq '=') {
+                                $na = '"'.$na.'"';
+                            }
+                        }
+                        $na = '$'.$na unless
+                            $wa eq '=' || $na =~ /^\S+\.\S/;
+                        #saygr "from: $a          na: $na";
+                        push @n, "$fa => $na" ; # also avail a listy position
+                    }
+                    else {
+                        push @m, $_;
+                    }
+                }
+                unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
+                # could use ^ here # edpeak?
+                push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
+                    if @m;
+                .
+                my @e;
+                push @e, '"'.$p.'"';
+                push @e, "{".join(", ",@n)."}";
+                my $en = join ", ", @e;
+                .
+                my $wa = $g.'->{w}->('.$en.')'.$ne;
+                die "Delay" if $delay;
+                $s =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n $s";
+            }
+            .
+            # sc.k -> $sc->{k};
+            $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+            # 
+            $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
+            #
+            .
+            push @s, $s;
+        }
+        $s = join "\n", @s;
+        .
+        $s;
+Ghoots: |
+    u allacgts
+    
+    n sigstackend =>''=><<'',
+        local $@;
+        eval { confess( '' ) };
+        my @stack = split m/\n/, $@;
+        #shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
+        my @stackend;
+        push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack && die "NO find gggg stack";
+        s/\t//g for @stackend;
+        # write on the train thats about to derail
+        push @{$F[0]->{SigDieStack}||=[]}, \@stackend;
+    
+    n sigstackwa =>''=><<'',
+        return 1 if $_[0] =~ /^Use of uninitialized value/;
+        if ($_[0] =~ /Deep recursion on/) {
+           return if G.deepr++ < 9;
+           G.deepr = 0;
+           sayre "snoozing $F[0]->{talk}";
+           snooze();
+           return;
+        }
+        my @loc = caller(1);
+        $@ = join "\n", @_;
+        my $DOOF = GDuck($F[0],1);
+        $@ = "";
+        sayre $DOOF;
+        return 1;
+    
+    n Doming =>''=><<'',
+        my $D = shift;
+        die "More to DOming" if @_;
+        $D = Gpyramid($D);
+        unshift @F, $D;
+        D.F = [@F];
+        return $D;
+    
+    n pyramid =>''=><<'',
+        my $am = $s;
+        confess "Ba" if ref $am ne 'HASH';
+        #
+        my ($last) = @F;
+        my $u = {%$am};
+        if ($last) {
+            push @{last.Lo||=[]}, $u;
+            u.Li = $last;
+        }
+        else {
+            push @{G.East||=[]}, $u;
+        }
+        u.G = $G;
+        u.K = u.name || die "No Dome Name";
+        u.hitime = hitime;
+        u.order = H.pyramiding++;
+        u.stack = stack(2,7);
+        u.F = [@F];
+        u.depth = 0+@F;
+        u.Error = $@ if $@; #?
+        $u
+    
+    n Done =>''=><<'',
+        my $D = $s;
+        sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
+        D.dolat = $@ if $@;
+        $_->() for @{D._after_do||[]};
+        shift @F;
+        GDuck($D) if $@;
+        $_->() for @{D._aft_etc_do||[]};
+        $D
+GDom: |
+    u allacgts
+    
+    n ggggggg =>''=><<'',{code=>'Perl 3',args=>'c,sc'}
+        eval{ $c->($sc) }
+    
+    # swim by the compile (Dm), do(g7 evals)/done($@ handle)/return
+    n D =>''=><<''
+        my $D = $s;
+        my $ar = D.ar || {};
+        .
+        die "RECURSION ".@F if @F > $MAX_FCURSION;
+        my $sub = D.D || do {
+             D.Ds = GDm($D);
+             D.Ds.sub;
+        };
+        D.sign = 'D';
+        D.talk = "D.sign D.name";
+        $D = GDoming($D);
+        my @return;
+        if (ref $sub eq "CODE" && !$@) {
+            local $SIG{__DIE__} = G.sigstackend;
+            local $SIG{__WARN__} = G.sigstackwa;
+            
+            wantarray ? 
+                do { @return = ggggggg($sub, D.ar) }
+                : do { $return[0] = ggggggg($sub, D.ar) };
+        }
+        .
+        GDone($D); # Ducks
+        D.r = [@return];
+        .
+        return wantarray ? @return : shift @return
+    
+    n Dm =>''=><<''
+        my $am = $s;
+        am.talk || confess wdump 2, $am;
+        my $Ds = G.drop.Dscache->{am.talk};
+        return $Ds if $Ds;
+        .
+        die "SOMEONENONE".wdump 1, $am if ref am.bab;
+        .
+        my $eval = am.bab;
+        $eval = Gparse_babble($eval) unless am.babnon;
+        .
+        my $ar = am.ar || {};
+         ar.R = $G;
+        my $download = join("", map {
+            'my$'.$_.'=$ar->{'.$_."}; "
+            } keys %$ar)
+            if %$ar;
+        my $sub = "bollox";
+        my $evs = 'sub { my $ar = shift; '
+        ."$download\n"
+        ."my \@doo_return = (sub { \n\n$eval\n })->();\n"
+        .'return @doo_return };';
+        .
+        $sub = GDoe($evs, $ar);
+        .
+        $@ = "nicht kompilieren!\n\n$@" if $@;
+        .
+        $Ds = {evs=>$evs, sub=>$sub, talk=>am.talk};
+        .
+        if (!$@ && ref $sub eq "CODE") {
+            G.drop.Dscache->{am.talk} = $Ds;
+        }
+        else {
+            am.bungeval = $evs;
+        }
+        $Ds
+    
+    n Doe =>''=><<'',{acgt=>'D_eval_string,ar'}
+         return eval $D_eval_string;
+Gouck: |
+    u allacgts
+    
+    n Duck =>''=><<''
+        my $D = $s;
+        my $evs = D.Ds.evs;
+        my $ar = D.ar;
+        my $DOOF; 
+        my $first = 1 unless $@ =~ /DOOF/;
+        $DOOF .= "DOOF D.talk\n" if D.sign eq 'D' || $nodie;
+        $DOOF .= "  D.inter" if D.inter;
+        if ($first) {
+            my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+                || $@ =~ /line (\d+)/;
+            my $file = $1 if $@ =~ /at (\S+) line/;
+            undef $file if $file && $file =~ /\(eval \d+\)/;
+            undef $file if $file && !-f $file;
+            my $code = $file ? 
+            read_file($file)
+            : $evs;
+            my $eval = GDuckling($x, $code, $D);
+            if (exists $D->{SigDieStack}) {
+                warn "3MALTY SIGGI" if @{$D->{SigDieStack}} > 3;
+                $DOOF .= "\n";
+                my $i = "  ";
+                for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                    $DOOF .= "$i- $s\n";
+                    $i .= "  ";
+                }
+            }        
+            $DOOF .= "\n$eval\n";
+        }
+        .
+        if ($first) {
+            $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+        }
+        else {
+            my $in = D.sign eq 'D' ? "! " : "";
+            $DOOF .= ind($in, "$@")."\n";
+        }
+        .
+        if ($first) {
+            $DOOF .= ind('ar.', join "\n",
+                map{
+                 my $e = $ar->{$_};
+                 my $s = "$e";
+                 $s .= "(name=$e->{name})"
+                     if ref $e && ref $e ne 'ARRAY'
+                    && $e->{name};
+                "$_ = ". $s;
+                }keys %$ar); 
+        }
+        .
+        return $DOOF if $nodie;
+        .
+        D.Error = $DOOF;
+        $@ = $DOOF;
+        sayre $@;
+        exit;
+        if (@F == 1) {
+            # send it away
+            $DOOF = join"\n",map{s/^(\! )+//smg if !/DOOF/; $_}split"\n",$DOOF;
+            sayre $DOOF;
+            G.dooftip && G.dooftip->($@);
+            $@ = "";
+            $_->() for @{G._aft_err_do||[]};
+        }
+        else {
+            die $@;
+        }
+    
+    n Duckling =>''=><<'',{acgt=>'line,code,D'}
+        my $diag = "";
+        my @code = split "\n", $code;
+        my $whole = @code < 18;
+        if (!D.Verb && $code =~ /^sub \{ my \$ar = shift/
+            && $code =~ /return \@doo_return \};/) {
+            $line -= 2 if $line;
+            shift @code for 1..2;
+            pop @code for 1..2;
+        }
+        my $xx = 0;
+        my $lci;
+        for my $c (@code) {
+            $xx++;
+            $lci = $1 if $xx < $line && $c =~ /^\s*(#\s*\d.*)$/;
+            if (!defined $line) {
+                $diag .= ind("⊘  ", $c)."\n"
+            }
+            elsif ($xx == $line) {
+                $diag .= ind("⊘  ", $c)."\n";
+                
+                my $bab = (split"\n",D.bab)[$line-2];
+                if ($bab ne $c) {
+                    $diag .= ind("⊖r ", $bab)."\n";
+                }
+            }
+            elsif (!$whole && $xx > $line-5 && $xx < $line+5) {
+                $diag .= ind("|  ", $c)."\n"
+            }
+            elsif ($whole) {
+                $diag .= ind("|  ", $c)."\n"
+            }
+        }
+        $diag = "$diag\n#~~~$lci" if $lci && $lci !~ /^# 0.01/;
+        $diag
+    
+   
+

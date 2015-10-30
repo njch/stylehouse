@@ -1,0 +1,405 @@
+TestI: |
+    # u whateverworkon
+    u AutoCzech
+    u TestTool
+    u TestRun
+    #u WhoAmI
+    n s=>''=>t
+    Rw dow $TestI:J.A.I;
+    T.nose = 1; # dont Sev (next run may use trouble)
+    # do tests... contigo
+    # merge/split things into Seate-good, Seate-bung etc
+    
+TestRun: |
+    u allvse
+    n '','','%of:Mo';
+    
+    # runs twice.. .what the hell,
+    # could In it like test but u wants to be enough
+    n runs =>2,<<''
+        my $J = A.J;
+        J.tests && return;
+        use Test::More 'no_plan';
+        my $ts = J.tests ||= {};
+        ts.i++;
+        ok(ts.i, "Running tests ts.i of J.name");
+    
+    n test =>21,<<''
+        my $J = A.J;
+        my $ts = J.tests||die'suhpetsts';
+        my $f = C.c.tfile = join '/', 't', J.name, C.t, $test;
+        my $its = $ts->{$f} ||= {};
+        its.i++;
+        .
+        its.is->{its.i} && die'alelee';
+        my $st = its.is->{its.i} = {};
+        st.ts = $ts;
+        .
+        my $is = -f C.c.tfile;
+        ok($is, "td: C.c.tfile");
+        st.exp = LoadFile(C.c.tfile) if $is;
+        C.c.st = $st;
+        .
+        my $min = " (ts.i)" if ts.i > 1;
+        ok(its.i, "$f begins its.i$min");
+    
+TestTool: |
+    u allacgts
+    
+    # pushed to
+    n taccept =>'',<<''
+        my $f = C.c.tfile;
+        (my $d = $f) =~ s/\/[^\/]+?$//;
+        `mkdir -p $d` unless -d $d;
+        my $got = C.c.st.got;
+        say "Accepting for $f: ".wdump 2,$got;
+        return sayre("Ref leaky ".wdump 6, $got) && sleep 6 if 
+            length(wdump 4,$got) < length(wdump 5,$got);
+        DumpFile($f, $got);
+
+    n eeply =>'',<<'',{acgt=>'s,K'}
+        C.c.st.got->{$K} = $s;
+        my $e = C.c.st.exp->{$K};
+        .
+        is_deeply($s, $e, $K)
+        && return;
+        .
+        return sayre wdump 3, {"Got for $K: "=>$s,"Expected: "=>$e}
+            if ref $s ne 'ARRAY';
+        .
+        my $i = 0;
+        # chuck into two pis, present W with timer slider
+        while (1) {
+            my $el = $e->[$i];
+            my $l = $s->[$i++];
+            $l || $el || last;
+            if ($l eq $el) {
+                say "Same: $l";
+            }
+            else {
+                sayre "Got:  $l";
+                saybl "Exp:  $el";
+            }
+        }
+        
+        
+    n testNews =>'',<<''
+        my $J = C.c.J;
+        my $st = C.c.st;
+        my $oJ = J.El->{$s};
+        my $rv = oJ.rv;
+        my $rlk = "J.name:$s";
+        my $rl = st.ts.rls->{$rlk} || {};
+        .
+        my $r = Rw scd $rl $rv;
+        #my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
+        my $n = Rw ZNews news $sc:r.z;
+        $n = @{r.oldz}." more ^^^:\n$n" if r.oldz;
+        .
+        st.ts.rls->{$rlk} = $rv;
+        my $stuff = $n;
+        my $ids = {};
+        my $here = 3;
+        my $idi = 1;
+        my $idstu = sub {
+            my $id = shift;
+            my $il = $ids->{$id} ||= $idi++;
+            "il$here$il";
+        };
+        $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
+        $stuff =~ s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
+        $stuff =~ s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
+        $stuff =~ s/("ids":\[")((?:\w+|",")+)("\])/$1.join('","',map{$idstu->($_)}split'","', $2).$3/eg;
+        $stuff =~ s/(\=\w+\/\w\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
+        $stuff =~ s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
+        [split "\n", encode_utf8 $stuff];
+        
+    n Wushredids =>'',<<''
+        my $ids = {};
+        my $here = 3;
+        my $idi = 1;
+        my $idstu = sub {
+            my $id = shift;
+            my $il = $ids->{$id} ||= $idi++;
+            "il$here$il";
+        };
+        s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg for @$s;
+        $s
+    
+AutoCzech: | # check re-working # conapi
+    # wants to n Tests first
+    # u uns when un repeats
+    u allvse
+    n '','','%of:Mo'
+    
+    n noJ =>222,<<''
+        delete A.Iso.oJ;
+    
+    n test =>76,<<''
+        ok(ref C.c.J, "C.t $test: J is alive");
+        is(C.c.J, C.sc.J, "in two places");
+        .
+        my $rv = C.c.J.El.Duv.rv;
+        ok(ref $rv, "rv is alive");
+        .
+        my $stuff = I.d&testNews,'Duv';
+        my $l = C.sc.l || "Wheels of chaos";
+        I.d&eeply,$stuff,$_
+            for "C.t $test: $l";
+
+    n West =>761,<<''
+        my $Wr = "life/W";
+        my $l = "$Wr/C.t";
+        ok(-l $l, "C.t linked into $Wr");
+        my $in = readlink $l;
+        ok($in =~ /^(.+)\.(.+?)$/, "read $Wr: $in");
+        my @got = glob "$Wr/$1*";
+        for my $f (sort @got) {
+            my $u = [read_file $f];
+            if ($f =~ /\.c$/) {
+                $u = I.d&Wushredids,$u;
+                I.d&eeply,$u,$_
+                    for "C.t C.c.test: .c content";
+            }
+            elsif ($f =~ /\.i$/) {
+                is(@$u.'', '1', "C.t $f is one");
+                $u = eval {djson $u->[0]};
+                ok(ref $u, "C.t: $f JSON decoded");
+                is($@,'',"C.t: $f errorless");
+                $@ = "" if $@;
+                is(u.is.M, C.t, "C.t: $f M is C.t");
+            }
+            else {
+                ok(0, "Unkown W thing: $f:  ".slim 300, $u);
+            }
+        }
+    
+    n tac =>769,<<''
+        I.d&taccept;
+        
+    
+MkSle: |
+    my ($Wid,$Jid) = map {
+        my $l = readlink "life/W/$_";
+        $l || die ":No $_ link";
+        $l =~ /^(.+)\.c$/ || die "no c $l";
+        $1
+    } @{ar.m};
+    my $e;
+    e.ids = [$Wid,$Jid];
+    e.wop = 'Woosh';
+    e.time = ++J.dskooe;
+    my $f = "life/W/$Wid\.e";
+    ok(-f $f, "$f is exist");
+    my $l = sjson($e);
+    saybl "Makiing event: to $f: $l";
+    write_file($f,{append=>1},"$l\n");
+        
+    
+    
+Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
+    J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
+    n '','','%runs'
+    G.asap = 1;
+    G.Jlone = 1;
+    y.ope = 1;
+    my $n = J.fsjoi++;
+    my $d = ar.d || 7;
+    $n || Rw loopby $b=0.2 $d $p=Top;
+    $n || `rm life/W/{JStestlines,Sltest,Detailtest}`;
+    T.nose = 1; # dont thing the test vector
+    $n
+    
+Slt: | # W outputting
+    my $n = Rw Dwive + $d=18;
+    
+    if ($n == 0) {
+        n Sltest =>W=>'%test:1,West:1'
+    }
+    elsif ($n == 1) {
+        n Sltest =>W=>'%test:2'
+        n Detailtest =>W=>'%test:2,West:1,noJ',{l=>'empty eventuat'}
+    }
+    elsif ($n == 2) {
+        Rw MkSle G-Slt Detailtest;
+        n Detailtest =>W=>'%test:3,West:2,noJ'
+        n Followe =>W=>'%test:3,noJ',{l=>'following empty file'}
+    }
+    elsif ($n == 3) {
+        Rw MkSle G-Slt Detailtest;
+        Rw MkSle G-Slt Detailtest;
+        n Followe =>W=>'%test:4,noJ',{l=>'pi line turnup'}
+        n Trabit =>W=>'%test:4,noJ',{l=>'1 rabit also turnup'}
+    }
+    elsif ($n == 4) {
+        n Followe =>W=>'%test:5,noJ',{l=>'two more pi'}
+        n Trabit =>W=>'%test:5,noJ',{l=>'two more rabits'}
+        n Detailtest =>W=>'%test:5,West:5,noJ'
+    }
+    elsif ($n == 5) {
+        n Followe =>W=>'%test:55'
+        my $rab=
+        n Trabit =>W=>'%test:55'
+        J.rabi = rab.nj;
+    }
+    elsif ($n == 6) {
+        Rw UnPreDuv $J:J.rabi;
+        n Trabit =>W=>'%test:6',{l=>'all 3 rabits'}
+    }
+    else {
+        ok(0, "Runtomuch: $n");
+    }
+    ok(1,"Run over: $n");
+JSlt: | # W outputting
+    my $n = Rw Dwive;
+    
+    if ($n == 0) {
+        n Wightest =>W=>'%test:1'
+    }
+    elsif ($n == 1) {
+        n JStestlines =>W=>'%test:2,West:1,noJ',{l=>'jslines have'}
+    }
+Elt: | # LV shuffling stuff
+    my $n = Rw Dwive;
+    
+    if ($n == 0) {
+        n qqreps =>W=>'%test:1'
+        
+        n DwightSmall =>W=>'%test:1'
+
+        n CarSmall =>W=>'%test:1'
+
+        n EwokSmall =>W=>'%test:1'
+    }
+    elsif ($n == 1) {
+        n EwokSmall =>W=>'%test:2'
+    }
+    elsif ($n == 2) {
+        n EwokSmall =>W=>'%test:3'
+    }
+    else {
+        ok(0 => "Run too many times! ($n)");
+    }
+Sltest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    y.at.jslines = 1;
+    y.at.oWl = 1;
+    
+    n bawls =>3=><<'','%js'
+        var v = $('#msgs');
+        a.m("SOmething clea r "+v);
+    
+    n Detailtest
+Detailtest: |
+    for (grep {$_ eq '2'} A.us&time) {
+        my ($j) = A.c&J;
+        is($j, $J, "J is AcJ");
+        my ($e) = A.e&C;
+        is(ref $e, "HASH", "e is hash");
+        ok(e.t&&e.y&&e.c, "e is tyc");
+    }
+    for (A.us&time) {
+        J.icker += $_;
+    }
+    y.at.ux = 1;
+    n b320 => '3-9x7','777'
+    n latelo => '12', '12-'.J.icker
+Wightest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    n JStestuff
+    # could ahh...
+    n JStestlines =>$J
+JStestlines: |
+    Rw JSlines;
+JStestuff: |
+    u alljs
+
+    n inC =>''=><<'','%args:s'
+        C = s;
+        if (C.constructor == Array) {
+            C.length !== 4 && a.er("no4y", C);
+            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
+        }
+        else if (typeof C === 'string') {
+            C = {c: C};
+        }
+        if (typeof C.c === 'string') {
+            C.c = {s: C.c};
+        }
+        return C;
+
+    n yl =>''=><<'',{args=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<'','%args:s'
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+    
+    n sc_ab =>''=><<''
+        if (C.c === '100') {
+            C.sc.css.width = '100%';
+            C.sc.css.height = '100%';
+        }
+        C.sc.css.position = 'absolute';
+    
+qqreps: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    J.V = 1;
+    u allacgts
+    n acgtsish =>''=><<''
+        # this is acgt=s
+    
+    u allvse
+    n vasey =>''=><<''
+        # this is a vase
+    
+    n '','','%of:Zoy'
+    n vazoyy =>''=><<''
+        # this is another vase
+    
+    u allacgt
+    n acgtish =>''=><<''
+        # this is acgt=1
+    
+    
+DwightSmall: |
+    J.A.IIII = [@{G.IIII},'G/T/Draw'];
+    n s=>''=>t
+    my $lot = "g/G/on g/G/way";# g/0/G g/G/cis";
+    n shedful => '0.1-0.7', {pi=>'seas',s=>$lot}
+    
+CarSmall: |
+    n CarSmall =>0.9=>{}=>'%Steve:was'
+    my $r = J.foib++;
+    $r > 0 &&
+    n foib =>''=>"foib$r",'%fs:'.(30 * (($r+1) / 3))
+    
+    
+    n sto => 2 => {pi=>'ARRAY',s=>[THing=>With=>"The $r"]}
+    
+    #!$r &&
+    #Rw wayt $d=4 $p=Top;
+    n sjei => 3 => 'Steilrofoam'
+    n jury => '2-7x8' => '$(000'
+    
+EwokSmall: |
+    n some => '',{pi=>ekwo=>s=>'sil'}
+    J.runjloop++;
+        
+pi/ekwo: |
+    Mn($_=>''=>{pi=>ewoks=>s=>$_})
+        for "Deliu", "Deo";
+pi/ewoks: |
+    # changes:
+    n seww => 1,{s=>'sile: '.J.most.J.runjloop}
+    # disappears @ 2:
+    J.most.J.runjloop ||
+    n sewt => 2,{s=>$s}
+    # etc
+    Mn($_=>''=>{pi=>eee=>s=>$_})
+        for "Deleeeeiu", "Deeeeeo";
+pi/eee: |
+    n silfe => 1,{s=>'sile: '.$s}
+    n 'manyis2' => 3,{s=>"J.name 3: $s"}
+

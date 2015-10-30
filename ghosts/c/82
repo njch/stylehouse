@@ -1,0 +1,160 @@
+
+
+
+Funstuff: |
+    u alljs
+    # paperscope (with (paper) {...}) FUN STUFF! spines!
+    
+    n funstuff =>''=><<''
+        project.clear(); 
+        a.sitandspin();
+        //a.pzl();
+    
+    # pAaq2_PkypY?t=24
+    # http://jsfiddle.net/M78zz/
+    n Re =>''=><<''
+        // <div id="ytplayer"></div>
+    
+    n yt =>''=><<''
+        var d = {};
+        d.playerVars = C.c || {};
+        d.height = '390';
+        d.width = '640';
+        d.videoId = C.t;
+        console.log(' yepeppp', C);
+        etc.pla = A.player = new YT.Player('ytplayer', d);
+        console.log(' yepeppp', d, A.player);
+    
+    # compression jsc ^, js v
+    n ytapi =>''=><<''
+        // makes element src: https://www.youtube.com/player_api
+    
+    n ytr =>''=><<''
+        //$('canvas#display').attr('width'=>'100%', height=>'100%');
+        function onYouTubeIframeAPIReady() {
+            etc.ytread = 1;
+        }
+Canvasc: |
+    u alljs
+    # & sitting
+    die 'relartd';
+    
+    n ps =>''=><<'','%args:s'
+        with (paper) {
+          try {
+            eval(s);
+          }
+          catch (er) {
+            a.er(s, er);
+          }
+        }
+    
+    n doya =>''=><<''
+        # animation frame
+        console.log('de rock'); 
+        // and!
+        // etc https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
+    
+    n pzl =>''=><<''
+        with(paper){
+            var shape = new Path.RegularPolygon(view.center,3, 100);
+            .
+            shape.fillColor = '#8C8A00';
+            view.onFrame = function (event) {
+                shape.rotate(1);
+                shape.fillColor.hue += 1;
+                .
+                shape.position.x += shape.bounds.width / 50;
+                if (shape.bounds.left > view.size.width) {
+                    shape.position.x = -shape.bounds.width;
+                }
+            }
+        }
+    
+    n sitandspin =>''=><<''
+        with (paper) {
+            var project = new Project;
+            var mousePoint = view.center;
+            var amount = 30;
+            var colors = ['red', 'black', 'blue', 'black'];
+
+            for (var i = 0; i < amount; i++) {
+                var rect = new Rectangle([5, 0], [25, 25]);
+                rect.center = mousePoint;
+                var path = new Path.Rectangle(rect, 6);
+                path.fillColor = colors[i % 4];
+                var scale = (1 - i / amount) * 25;
+                path.scale(scale);
+            }
+
+            view.onMouseMove = function (event) {
+                mousePoint = event.point;
+                a.m('mm!');
+            }
+
+            var children = project.activeLayer.children;
+            view.onFrame = function (event) {
+                paper.uplg.update(event);
+                
+                for (var i = 1, l = children.length; i < l; i++) {
+                    var item = children[i];
+                    var delta = (mousePoint - item.position) / (i + 5);
+                    item.rotate((Math.sin((event.count + i) / 10)+0.617) * 3);
+                    if (delta.length > 0.1)
+                        item.position += delta;
+                    item.fillColor.hue += 1;
+                    var shape = item;
+                    shape.position.x += shape.bounds.width / 50;
+                    if (shape.bounds.left > view.size.width) {
+                        shape.position.x = -shape.bounds.width;
+                    } 
+                }
+            }
+        }
+    
+JSosC: |
+    u allsvse
+    
+    n args =>5=><<''
+        # quack
+    
+    n jsc =>5=><<''
+        my $args = cs.args || 'A,C,G,T';
+        at.c = 'e';
+        at.s =  "a.".j.l." = function (".$args.") {\n".at.s."};\n";
+    
+    n js =>5=><<''
+        if (1 || cs.src) {
+            at.tag = 'script';
+            at.type = cs.type || 'text/javascript';
+            at.title = undef;
+            at.src = cs.src if cs.src;
+        }
+        else {
+            at.c = 'o';
+            at.s =   [J.id, 'do', at.s];
+        }
+    
+    n st =>5=><<''
+        at.tag = 'style';
+        at.type = 'text/css';
+    
+    n ps =>5=><<''
+        at.c = 'o'; # etc
+        at.s = [J.id, 'ps', at.s];
+        at.pur = 1; # TODO local lumi
+    
+    n yt =>5=><<''
+        my $n = {};
+        (n.t, my $ma) = split /\?/, $v;
+        $ma = {map{split '=', $_, 2}split '&', $ma};
+        .
+        n.c.autoplay = 1 if ma.t;
+        n.c.start = ma.t if ma.t;
+        .
+        #die "$v   :". wdump $n;
+        at.pur = 1; # TODO local lumi
+        at.c = 'o';
+        at.s = [J.id, yt => [n.t,n.y,n.c,n.sc]];
+        #<iframe width="420" height="315" src="https://www.youtube.com/embed/DyVnwKcb0YY#t=958" frameborder="0" autoplay="1" start="958" allowfullscreen></iframe>
+

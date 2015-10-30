@@ -1,0 +1,142 @@
+lod/2/newwave: | # s
+    G.IIII = ['G/T/Remy','G/T/Eel'];
+    Rw Run;
+    saygr "YEYEEEEEEEEEEEEEE";
+    return 1;
+lod/1/newwave: | # safe
+    G.IIII = ['G/T/Wild'];
+    Rw Run;
+    saygr "YEYEEEEEEEEEEEEEE";
+    return 1;
+recur: |
+     Mojo::IOLoop->recurring($d,$cb);
+timer: |
+    Mojo::IOLoop->timer($d,$cb);
+    return;
+wayt: |
+    my $d = delete ar.d;
+    my $p = delete ar.p;
+    my $cb = sub {
+        Rw $p;
+    };
+    Rw timer $d $cb;
+    
+loopfourby: |
+    Rw loopby + $b=4;
+loopby: |
+    my $p = ar.p || 'Top';
+    map {
+      $_ *= $b || 4;
+      Rw wayt + $d:_ $p;
+    } 1..$d;
+vortex: |
+     my $m = ar.m||[];
+     my $d = ar.d||4;
+     my $o = Rw pul $cs:m way;
+     o.way || die;
+     
+     my $loopr = J.name."%loopid#o.way\t0.3";
+     my $id = G.oin.bb->{$loopr};
+     saybl "timer replaco J.name o.way" if $id;
+     # if last hit and delta are whack
+     # tiny hairs of sanity
+     Mojo::IOLoop->remove($id) if $id;
+     
+     my $bl = {};
+     my $cb = sub {
+         return Mojo::IOLoop->remove(bl.id)
+         if G.oin.bb->{$loopr} ne bl.id;
+         Rw o.way $J;
+     };
+     bl.id = G.oin.bb->{$loopr} = Rw recur $d $cb;
+Run: |
+    # arrived from newwave:
+    #  perl G/on/wag eats a wormhole of way
+    #  Z/1/expro
+    #  Z/5/zoc
+    #   Z/1/exprob     names    lifes if ^[sh]
+    #   Z/5/loD  way loadc w/c, extends way with lod/$name hash
+    #   Z/5/zurc  Rw newwave || do { Rw zoybracken, Rw fresh_init }
+    
+    # to make more
+    # wagging wormhole and w/c are one
+    # intention can open it for itself
+    # the z executable points ARGV points to w/*s to apply on top of each other
+    # as a kind of u that gains meaning as it receives layers of language
+    # so behaviour can eat the rest of its specuity
+    
+    my $G = Rw Gto;
+    `rm w/glog`;
+    G.logs = 1; 
+    
+    (G.what) = @ARGV;
+    
+    map {
+        my ($k,$f) = split '=';
+        G.way->{$k} = G.way->{$f};
+    }
+    'In=Intt',
+    'Jto=Jtt';
+    
+    Rw wayt $d=0.001 $p=Top;
+    
+    #Rw recur $d=8 $cb;
+    sayyl "YEP";
+Top: |
+    say "";
+    my $now = hitime;
+    my $gap = $now - G.lastout;
+    if (!G.asap && $gap < 0.2) {
+        sayre("slowlaned ${_}s")&& snooze 40000;
+        return;
+    }
+    Rw Many;    
+    G.lastout = $now;
+Many: |
+    $G || die;
+    G.lastin = hitime;
+    # The Beatles - Martha My Dear
+    my $J;
+    my $t = 'Oth';
+    my $cv = 0.3;
+    $J = G.outerspace ||= do {
+        sayyl "Greating $G outerspace";
+        $J = Rw Jto One;
+        my $s = G.what;
+        my $sc;
+        G.oin = sc.J = Rw Jto $t;
+        Rw jamsc $J $t $cv $s $sc;
+        Rw jamsc $J:G.oin $t $cv $s $sc;
+        $J
+    };
+    J.A.IIII = [@{G.IIII}];
+    J.A.Indo = 2;
+    Rw Viu $J;
+    
+    n $t =>$cv=>{J=>$t,vv=>6,s=>G.what};
+    
+    my $y = G.Many||={};
+    y.i++;
+    my $ts = hitime;
+    y.la->{$ts} = 1;
+    my $ron = sub {
+        0.01 * int(100 * (shift() - shift()))
+    };
+    sayyl "many y.i   took ".$ron->($ts, G.lastin)
+        ." since: ".$ron->($ts, G.oin.A.first);
+    
+Loading: |
+    my @l;
+    push @l, keys %{G.T} if G.T;
+    push @l, keys %{G.Tfor} if G.Tfor;
+    @l = uniq @l;
+    for my $k (sort @l) {
+        my $f = G.Tfor->{$k} || "w/$k";
+        my $s = -s $f;
+        $s || die "Not $f";
+        G.Tt->{$k} eq $s && next;
+        sayyl "Loading: $k";
+        G.Tt->{$k} = $s;
+        G.T->{$k} = LoadFile($f);
+    }
+

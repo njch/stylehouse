@@ -1,0 +1,382 @@
+
+humms: | # In wild packier, aggregator following alllist or so, proto arirang
+    ar.v ||= {};
+    ar.M ||= [];
+    my ($oK,$rM) = @{delete ar.m||die"nbok"};
+    inter({oK=>$oK});
+    $N = [{MZ=>{$oK=>ar.v}}, @$N];
+    Rw In + $N;
+    $rM ? @{ar.M} : ar.v
+babsubrip: |
+    my $l = oA.subline;
+    $l -= 4; # sub head lines
+    my @l = split "\n", D.bab;
+    my $st = $l[$l];
+    if ($st =~ /<<['"](\w*)['"]/) {
+        my $mark = $1;
+        $st =~ /^\S/ || die "first line start space: $st";
+        $l++;
+        my $ind;
+        my @up;
+        while (1) {
+            my $s = $l[$l];
+            last unless $s =~ /\S/ || $mark;
+            last if $mark && $s =~ /^$mark$/;
+            $ind = $1 if !defined $ind
+                && ($s =~ /^(    ).*\S+/ || die "no start ind $s");
+            $mark || $s =~ /^$ind(.+)$/ || last;
+            push @up, $1;
+            $l++;
+        }
+        my $co = join '', map{"$_\n"} @up;
+        $co =~ s/\n\s*\.\s*\n/\n\n/sg;
+        @$N == 1 || die "allcode in swa";
+        my $c = $N->[0]->[2];
+        if (!ref $c) {
+            $c = $N->[0]->[2] = {s=>$co};
+        }
+        my $ck = 's';
+        #$ck = $1 if $st =~ /(\w+)=><<['"](\w*)['"]/; # confuse (y)=>$s
+        my $o = $c->{$ck};
+        die "Swap ".wdump [$c,$ck,$o=>FOR=>$co,[@up]] unless split("\n", $o) == @up;
+        $c->{$ck} = $co;
+    }
+pidepth: |
+    my $o = $J;
+    my $i = 0;
+    while (o.Jiter) {
+        $i++; $o = o.Jiter;
+    }
+    $i;
+ratio: |
+    my $ratio = $o / ($t||1);
+    0.01 * int(100*$ratio);
+    
+eighthnot: |
+    my ($dir) = J.id =~ /(.)$/;
+    my $lim = $dir > 6 ? 6 : $dir > 3 ? 5 : 4;
+    if (J.A.tch++ > $lim) {
+        J.A.tch = $lim - 4;
+        1
+    }
+    else {
+        0
+    }
+r2j: | # interpreter of buzzed puit partiscules r -> j.[cv,t,style]
+    my $j;
+    my $sing;
+    if (J.tt) {
+        $sing = 'J_tt';
+        (j.cv,j.t,j.style) = $r =~ /^(.*?)\t(.*)\t(.*?)$/;
+        if (!defined j.cv) {
+            sayre "Hind $r  ";
+            (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
+        }
+    }
+    else {
+        (j.t,j.style,j.cv) = $r =~ /^(.+?)(?:%(.+))?\s+(.+?)$/;
+    }
+    defined j.cv || die "$sing no $r    ".ki $j;
+    j.s = ar.J.bb->{$r} if ar.J;
+    j.nos = 1 if ar.J && !exists ar.J.bb->{$r};
+    $j;
+Ajr: | # shed A.jr bb io, aimed for J and cv,t (of C?)  send $style,$v
+    sub {
+        my ($s,$v,$d) = @_;
+        my $isv = @_ >= 2;
+        my $isd = @_ >= 3;
+        my $t = exists ar.t ? ar.t : ar.C.t;
+        my $cv = exists ar.cv ? ar.cv : ar.C.y.cv;
+        my $r;
+        if (J.tt) { # FUTU
+            $r = $cv."\t".$t."\t".$s;
+        }
+        else {
+            $s = '%'.$s if $s;
+            $r = $t.$s."\t".$cv;
+        }
+        if ($isd) {
+            return delete J.bb->{$r};
+        }
+        defined $v ? 
+            saybl "J.name chuck $r     $v  <--  ".J.bb->{$r}
+          : saygr "J.name read $r     ".J.bb->{$r}
+            if J.V;
+        !$isv ?
+          !exists J.bb->{$r} ? () : J.bb->{$r}
+        : do {
+            J.bz->($r, $v);
+            sub { delete J.bb->{$r} } 
+        };
+    };
+jamsc: | # put C in bb
+    ar.C = ar.d if ar.d;
+    my $t = defined ar.t ? ar.t
+        : ar.j ? ar.j.l
+        : ar.C ? ar.C.t : die'not';
+    my $cv = defined ar.cv ? ar.cv
+        : ar.j ? ar.j.cv
+        : ar.C ? ar.C.cv || ar.C.y.cv : die'noy';
+    if (ar.oJ && ar.oJ ne ar.J && !ar.noR) {
+        my $J = ar.oJ;
+        if (my $ljm = J.A.ljm) {
+            my $Me = "ar.oJ.ind ar.J.name "
+            ." J.A.ljmo <<< J.name  sends:"
+            ." $t\t$cv  $ljm";
+            sayyl $Me if J.V || ar.J.V;
+            push @$ljm, {%$ar};
+        }
+    }
+    
+    my @fobz;
+    push @fobz, [$cv,$t,undef,ar.s] if exists ar.s;
+    push @fobz, [$cv,$t,$_,$sc->{$_}] for keys %$sc;
+    my @tobz = map {
+        my ($cv,$t,$s,$v) = @$_;
+        my $r;
+        if (J.tt) { # FUTU
+            $r = $cv."\t".$t."\t".$s;
+        }
+        else {
+            my $s = $s;
+            $s = '%'.$s if $s;
+            $r = $t.$s."\t".$cv;
+        }
+        if ($s) {
+            ar.C.sc->{$s} = $v;
+        }
+        [$r,$v]
+    } @fobz;
+    
+    for (@tobz) {
+        my ($r,$v) = @$_;
+        J.bz->($r,$v);
+    }
+pha: | # temporal phatness, per suJ (encap $M surges within)
+     my $name = ar.k || shift @{ar.m};
+     
+     if (my $xx = J.phy->{$name}) {
+         # re endtrant
+         xx.end->();
+         # end - maybe new stuffright as some random part of this process
+     }
+     for my $outx (grep {_.outsidey} values %{J.phy}) {
+        # something? # perhaps a non, fire when no other phy
+     }
+      
+     J.phy ||= {}; # phases
+     
+     my $x = J.phy->{$name} = {
+        begin => hitime(),
+        name => $name,
+        bb => {},
+        ord => [],
+        #tim => {},
+        #wtf => {}, # F grab
+        #ap => sub{}, # bz do aftering
+        qui => 1,
+     };
+     x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
+     x.abandon = sub { # upgrades what's there already, early exity lop
+         my $why = shift;
+         delete J.phy->{$name};
+         x.abadoned = $why || 1;
+         if (my $xx = x.head) {
+             x.as->($xx);
+         }
+         x.end->();
+     };
+     x.as = sub {
+         my $ox = shift;
+         for (qw'begin bb ord tim wtf') {
+              exists $ox->{$_} || next;
+              my $v = $ox->{$_};
+              $v = [@$v] if ref $v eq 'ARRAY';
+              $v = {%$v} if ref $v eq 'HASH';
+              $x->{$_} = $v;
+         }
+     };
+     x.end = sub {
+         my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
+         x.ended = hitime();
+         delete J.phy->{$name};
+         push @{y.l}, $x;
+         shift @{y.l} while @{y.l} > 5;
+         # layers ^ rolling in time index .r -> the y.l
+         # so last phase of $name can be found?
+         if (x.bb) {
+             my $w = @{y.l};
+             y.l_bb->{$_} = $w for keys %{x.bb};
+         }
+         # somewhere thinks about what happened
+         return $y;
+     };
+     x.exactl = sub {
+         my $q = shift;
+         my $y = x.end->();
+         Rw ph_exactl $J $y $q;
+     };
+     # ensure phase reset with _after_do
+     $x;
+ph_exactl: | #c or drop not in last
+       my $wtf = ar.wtf || {};
+       my $cur = wtf.cur = y.l->[-1];
+       my $last = wtf.last = y.l->[-2];
+       wtf.same = 1;
+       if (!$last) { # better not get autovivified! 
+           wtf.allnew = 1;
+           wtf.same = 0;
+           #return;
+           last.bb = {};
+       }
+       $wtf->{$_} = {} for qw'new diff gone';
+       #y.l_bb->{$_} = $w for keys %{x.bb};
+       # churn stats like 30% of last disappear, 20% new
+       
+       for (sort keys %{cur.bb}) {
+           if (!exists last.bb->{$_}) {
+               wtf.new->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           } 
+           elsif (last.bb->{$_} ne cur.bb->{$_}) {
+               wtf.diff->{$_} = cur.bb->{$_};
+               wtf.same = 0;
+           }
+       }
+       
+       for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
+           wtf.gone->{$_} = last.bb->{$_};
+           wtf.same = 0;
+           delete J.bb->{$_};
+       }
+       
+       my $count = keys %{cur.bb};
+       cur.wt = $wtf;
+       $wtf;
+     
+wtfch: |   
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    
+    for (sort keys %$Jb) {
+        if (!exists $Yb->{$_}) {
+            wtf.new->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        } 
+        elsif ($Yb->{$_} ne $Jb->{$_}) {
+            wtf.diff->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        }
+        else {
+            wtf.sami++;
+            wtf.still->{$_} = $Jb->{$_};
+        }
+        wtf.tot++;
+    }
+    for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+        wtf.gone->{$_} = $Yb->{$_};
+        wtf.same = 0;
+    }
+    $wtf;
+Elvis: | # safe vs doing - sheets of J->Y, dont drop any frames, where we start being onlies
+    my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
+    
+    Y.tw ||= {};
+    Y.lo = {};
+    
+    for my $mo (qw'gone diff new') {
+        for my $r (keys %{$wtf->{$mo}}) {
+            my $j = Rw r2j $r $J;
+            j.r = $r;
+            j.lt = j.cv."\t".j.t;
+            if (!j.lt=~/\S/) {
+                die "Got $r =>   ".ki $j;
+            }
+            
+            if ($mo eq 'gone') {
+                delete Y.bb->{j.r};
+                delete Y.tw->{j.lt}->{j.style};
+            }
+            else {
+                Y.bb->{j.r} = j.s;
+                Y.tw->{j.lt}->{j.style} = j.s;
+            }
+            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
+        }
+    }
+    
+    Y.tv ||= {};
+    Y.v ||= {};
+    Y.go = {};
+    my $same = 1;
+    for my $k (keys %{Y.lo}) {
+        my $tf = Y.lo->{$k};
+        my $cs = Y.tw->{$k};
+        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+            $same = 0; # new line to make
+        }
+        if (tf.gone && !keys %$cs) {
+            $same = 0; # line to disappear
+            my $C = Y.go->{$k} = delete Y.tv->{$k};
+            my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+            delete Y.v->{$cv}->{$t};
+            delete Y.v->{$cv} unless keys %{Y.v->{$cv}};
+        }
+        if (tf.diff || tf.new) {
+            keys %$cs || die 'nokeys';
+            my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+            defined $cv || die "twas $k";
+            my $foam = sub {
+                my $C = shift;
+                %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});
+                C.c.s = delete C.sc->{''} if exists C.sc->{''};
+            };
+            $foam->(Y.tv->{$k} ||= {});
+            $foam->(Y.v->{$cv}->{$t} ||= {});
+        }
+    }
+    if (!$same) {
+        Y.vs = [];
+        for my $k (sort keys %{Y.tv}) {
+            my $C = Y.tv->{$k} || die "wtf $k";
+            push @{Y.vs}, $C;
+        }
+        #sayre "vs re: ".@{Y.vs};
+    }
+    
+    Y.ra = Rw ratio $o:wtf.sami $t:wtf.tot;
+    Y.rato = wtf.tot;
+    Y.revs = !$same;
+    
+    
+    $Y;
+scd: | # RAY SCUTTLER read parts, given rv and possibly since rl 
+    # puts newzs in flat list, they themselves unify time etc.
+    my $r;
+    r.z = [];
+    r.oldz = [];
+    undef $rl if $rl && rl.c ne rv.c;
+    push @{$rl ? r.oldz : r.z}, @{rv.c};
+    
+    r.in = @{rl.sc||[]};
+    r.out = @{rv.sc};
+    if (r.out > r.in) {
+        r.ay = [r.in..(r.out - 1)];
+        push @{r.oldz}, @{rv.sc}[0..r.in] if r.in;
+        push @{r.z}, @{rv.sc}[@{r.ay}];
+    }
+    $r
+dow: |
+    my @e = grep{length > 1} keys %$ar;
+    die "dowtoo @e" if @e > 1;
+    my $f = shift @e;
+    my $s = $ar->{$f};
+    if (s.ooI) {
+        $s = {%$s};
+        delete s.ooI;
+        s.Ii =~ s/\(\S+\)//g;
+    }
+    DumpFile("w/$f", $s);
+    saybl "Downed w/$f";
+

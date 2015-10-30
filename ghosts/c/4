@@ -1,0 +1,525 @@
+TheKnobbies: |
+    u allsvse
+    
+    n lumquest =>5=><<''
+         J.lum.lev->("knobs\t0.08" => sub {
+             my $J2 = shift; 
+             J2 bz lable 0.1 "knobs "
+             J2.lev->("knobs\t0.2" => sub {
+               my $J3 = shift;
+               J3 bz slide 0.2 "<input type=range min=1 value=$cra max=9 step=0.25>", "%ishtml"=>1, "%idly" => 'slide', '%css'=>'font-size:50%'
+             });
+         }); 
+
+    n stylesheest =>5=><<''
+            input[type=range] {
+                -webkit-appearance: none;
+                background: black;
+                height: 2px;
+            }
+            input[type=range]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              background: url(i/copper_anodes.jpg);
+              height: 12px;
+              width: 12px;
+              border-radius: 6px;
+              cursor: crosshair;
+              box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            }
+       
+
+Oscgrin: |
+    u allacgts
+    
+    J.V = 2;
+    n mksc =>''=><<''
+        my $t = I.d&mos,C.c;
+        while(my($k,$v) = each %$t) {
+            C.sc.>$k = $v;
+        }
+        return;
+        
+    # language expansion
+    n mos =>''=><<''
+        my @t = split ',',$s;
+        for (@t) {
+            my ($k, $v) = split ':', $_;
+            $T.>$k = $v;
+        }
+    
+    n meat =>''=><<'',{acgt=>'k,v'}
+        my $f = $v;
+        my $mv = C.sc->{$k};
+        $f = I.d&mean,$f,$mv;
+        C.sc->{$k} = $f;
+
+    n mean =>''=><<'',{acgt=>'to,fro,mix'}
+        $mix ||= 0.5;
+        my $yu = $fro - $to;
+        $yu = $yu * $mix;
+        $fro -= $yu;
+        $fro
+    
+    # it
+    n cole =>''=><<''
+        my $h;
+        (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
+            if $s =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $s";
+        if (defined h.a) {
+           # do an rgba(255,255,255,1)
+           for my $k (qw'r g b a') {
+               my $e = $h->{$k};
+               $e = "$e$e" if length $e == 1; # out of 255
+               $h->{$k} = hex $e;
+           }
+           h.la = sprintf '%.2f', h.la / 255; # out of 1
+           return "rgba(h.r,h.g,h.b,h.a)";
+        }
+        else {
+           return sprintf "#%s%s%s", h.r, h.g, h.b;
+        }
+    
+    # ray lih, unhassley
+    n hsle =>''=><<''
+        my @m;
+        for ($s) {
+            @m = split ' ', $_;
+            last if @m == 3 || @m == 4;
+            @m = split /\./, $_;
+            last if @m == 3 || @m == 4;
+            @m = split '', $_;
+            last if @m == 3 || @m == 4;
+            @m = ();
+        }
+        @m || die "not hsle: $s";
+        my $h;
+        (h.h, h.s, h.l, h.a) = map{0+("0.".$_)}@m;
+        .
+        h.h = h.h * 360 if h.h < 1;
+        .
+        $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+        .
+        my $al = ", h.a" if defined h.a;
+        "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+    
+    # decide space unit TODO init soon
+    n empc =>''=><<''
+        $s .= 'em' if $s !~ /(%|em|px)/;
+        $s =~ s/^-?0em$/0%/;
+        $s
+    
+Oscapps: |
+    u allsvse
+    n '','','%of:Not'
+    # all but intercepted sc is sc
+    
+    n nspc =>2=><<''
+        my $J = C.sc.J;
+        my $squ = C.sc.yspc || J.d.y.spc;
+        my $ratio = $squ / $s;
+        my $sl = sprintf '%.2f', $ratio;
+        my $cl = 0.02;
+        my $max = C.sc.nspc_max || 1;
+        $sl = $max if $sl > $max;
+        if ($sl > 1+$cl || $sl < 1-$cl) {
+            C.sc.geo ? 
+            C.sc.geo.scale = $sl
+            :
+            C.sc.tr.scale = $sl;
+        }
+    
+    n enid =>59=><<''
+        at.id = $s;
+        at.c.nobody = 1; 
+        at.t = j.l;
+        #say "enid j.l ::::  C.sc.at.sc.ab   ".k2 $at;
+        at.sc.ab = '100';
+        .
+        if (my $J = C.sc.J) {
+            die "DIffnoiw";
+            my $aj = C.sc.J.oJ.A.W->[-1];
+            my $l = aj.c->[0];
+            if (!aj.sent && ref $l) {
+                my ($t,$y,$c,$sc) = @$l;
+                if ($t eq j.l) {
+                    die if c.id ne at.id;
+                    %$sc = (%$sc,%{at.sc});
+                    at._aux = 1;
+                }
+            }
+        }
+    
+    n css =>555=><<''
+        $s = join ';', map{"$_:$s->{$_}"} sort keys %$s if ref $s eq 'HASH';
+        for my $set (split ';', $s) {
+            my ($k,$s) = split ':', $set;
+            at.sc.css->{$k} = $s;
+        }
+    
+    n src =>556=><<''
+        at.src = $s
+    
+    n cm =>584=><<''
+        my $wt = {id=>at.id, value=>at.s};
+        at.id || die"noid".wdump 2,$at;
+        at.dig = C.sc.dig || die "no diggy";
+        at.sc.cod = $wt;
+        at.s = '';
+     
+    # long range stuff reporting, use A.sv the toplevel intergatr
+    # like sort by A.sv length and number
+    # also putting a particular object behind an id... blessing
+    # weird sortes is the ways
+    # even urls are like this, we making up a short url or so
+    # keeping bits of short urls percolating up from where
+    # wants to find C, which may unify to ...
+    n idly =>58=><<''
+        my $id = mkuid();
+        my $qual = '';
+        at.c.id && sayre "Blessing C.t with $qual ($id -> at.c.id)";
+        at.c.id = $id;
+        #J.idyl->($J, $id, $j);
+        sayre "idly C.t  J.name J.r    ".ki C.sc;
+        
+    n lp =>5=><<''
+        at.c.ishtml = 1;
+    
+    
+    n ishtml =>5=><<''
+        at.ishtml = 1;
+        
+    n tt =>5=><<''
+        at.c.title = $s;
+        
+    n canvas =>5=><<''
+        at.c.canvas = $s;
+        
+    n type =>51=><<''
+        at.type = $s;
+        at.c.ishtml = 1;
+        sayre "at.t at.y cannot have a title: $_" for grep{defined} delete at.c.title;
+        
+    n tag =>5=><<''
+        at.c.tag = $s;
+        
+    n at =>5=><<''
+        die;
+        $s =~ /^(?:(\S+):)?(\S+)$/;
+        $at->{$1} = $2;
+        
+    n atrp =>5=><<''
+        die "heloarp";
+        at.rp = $s;
+        
+    n path =>5=><<''
+        # to compuile J.ys
+        
+    n origin =>5=><<''
+        # better than W via c pi and W
+        
+    n pwar =>5=><<''
+        # to suggest
+        
+    n Joint =>5=><<''
+        # Something
+TheAttractor: |
+    u allsvse
+        
+    m @$_
+    for @{Load(<<'')}
+     -
+      - sz
+      - 3.1
+      - |
+        my $si = length(C.c.s);
+        ($s, my $lim) = split '/',$s;
+        my $di = $s/$si;
+        $di = $lim if $lim && $di > $lim;
+        I.d&meat,fsi=>$di;
+        I.d&meat,fsi=>1 if $di > 2;
+        return;
+        #        $fs = "font-size:$fs%;";
+        #        if ($si > $tev) {
+        #            $text = ($text=~/^(.{$tev})/s)[0];
+        #        }
+     -
+      - deco # splurge many, get this pipe sorted...
+      - 3.2
+      - |
+        at.sc.css->{"text-decoration"} = "underline";
+     -
+      - is # colour from value spinner
+      - 3.2
+      - |
+        my ($t,$z) = split ':', $s;
+        $z ||= C.c.s;
+        my $i = sum map { ord $_ } split '', $z;
+        $i -= 9 until $i < 10;
+        C.sc.hs = "${i}75";
+     -
+      - mu # timers
+      - 3.2
+      - |
+        if ($s eq 'g') {
+            C.c.s || die "nos : ".wdump 2, $C;
+            C.c.s = Rw mugwu $d:C.c.s;
+            C.sc.hs ||= "576";
+        }
+        else {
+            die "how mu $s? C.s";
+        }
+     -
+      - poi # pointer-events
+      - 3.2
+      - |
+        at.sc.css->{"pointer-events"} = ($s =~ /^([1ay])/ ? 'all' : 'none');
+     -
+      - at # fossicks
+      - 3
+      - |
+         $at.>$_ = $s.>$_ for keys %$s;
+     -
+      - tag #
+      - 3
+      - |
+         at.tag = $s;
+     -
+      - sha # it
+      - 3
+      - |
+         my @m = split m/\s/, $s;
+         $m[-1] = I.d&cole,$m[-1];
+         at.sc.css->{"text-shadow"} = sprintf '%dpx %dpx %dpx %s', @m;
+     -
+      - co # it
+      - 3.3
+      - |
+        at.sc.css->{"color"} = I.d&cole,$s;
+     -
+      - hs # color: hsla
+      - 3.3
+      - |
+        at.sc.css->{"color"} = I.d&hsle,$s;
+     - #c ground etc
+      - zi 
+      - 3
+      - |
+        at.sc.css->{"z-index"} = 0+$s;
+     -
+      - zig # it alley, primary, ground
+      - 3
+      - |
+        at.sc.css->{"z-index"} = 0+($s-20);
+     -
+      - zie # suuuuuu, ether
+      - 3
+      - |
+         at.sc.css->{"z-index"} = 0+($s-10);
+     -
+      - bgi # background image
+      - 3.2
+      - |
+         at.sc.css->{"background-image"} = "url('$s')";
+     -
+      - bg # background something
+      - 3.2
+      - |
+         at.sc.css->{"background"} = "$s";
+     -
+      - bgh # background hsla
+      - 3.2
+      - |
+         at.sc.css->{"background-color"} = I.d&hsle,$s;
+     -
+      - fsi # it
+      - 6.9
+      - |
+         at.sc.css.>font-size = int($s*100).'%';
+     -
+      - fs # it
+      - 7
+      - |
+         $s *= 9;
+         at.sc.css.>font-size = int($s).'%';
+     -
+      - fw # it
+      - 7
+      - |
+        at.sc.css->{"font-weight"} = int($s*100);
+     -
+      - ws # it
+      - 7
+      - |
+        if ($s eq 'p') { 
+            $s = 'pre';
+        }
+        if ($s eq 'n') {
+            $s = 'nowrap';
+        }
+        at.sc.css->{"white-space"} = $s;
+     - #c filterszzzz weird style using com to agg.
+      - opa # seetrhu
+      - 3
+      - |
+         at.sc.css->{"opacity"} = $s;
+     -
+      - tro #
+      - 3.6
+      - |
+        at.sc.css->{"transform-origin"} = $s;
+     -
+      - rad # radial tr
+      - 3.6
+      - |
+        C.sc.tr.rotate = $s.'rad' if $s;
+     -
+      - scale # zzz tr
+      - 3.6
+      - |
+        C.sc.tr.scale = $s;
+     -
+      - tr # filterszzzz weird style using com to agg.
+      - 3.7
+      - |
+        at.sc.css->{"-webkit-transform"} = join' ', map {"$_($s->{$_})"} keys %$s;
+     -
+      - of
+      - 3.7
+      - |
+        C.sc.css->{"-webkit-filter"} = join' ', map {"$_($s->{$_})"} keys %$s;
+     -
+      - blr # it
+      - 3.6
+      - |
+        C.cs.of.blur = $s.'px';
+     -
+      - sat # it saturation
+      - 3.6
+      - |
+        C.cs.of.saturate = $s;
+     -
+      - con # it contrast
+      - 3.6
+      - |
+        C.cs.of.contrast = $s;
+     -
+      - bri # it bright
+      - 3.6
+      - |
+        C.cs.of.brightness = $s;
+     -
+      - hue # it bright
+      - 3.6
+      - |
+        C.cs.of->{'hue-rotate'} = $s.'deg';
+     -
+      - sep # it old
+      - 3.6
+      - |
+        C.cs.of.sepia = $s;
+     -
+      - inv # it old
+      - 3.6
+      - |
+        C.cs.of.invert = $s;
+     -
+      - gray # it old
+      - 3.6
+      - |
+        C.cs.of.grayscale = $s;
+     - #c limbic space
+      - ls # it
+      - 3
+      - |
+        C.sc.css->{"letter-spacing"} = g.empc->($s);
+     -
+      - lh # it
+      - 3
+      - |
+        C.sc.css->{"line-height"} = g.empc->($s);
+     -
+      - ml # it
+      - 3
+      - |
+        C.sc.css->{"margin-left"} = g.empc->($s);
+     -
+      - mr # it
+      - 3
+      - |
+        C.sc.css->{"margin-right"} = g.empc->($s);
+     -
+      - mt # it
+      - 3
+      - |
+        C.sc.css->{"margin-top"} = g.empc->($s);
+     -
+      - mb # it
+      - 3
+      - |
+        C.sc.css->{"margin-bottom"} = g.empc->($s);
+     -
+      - m # margrin
+      - 3
+      - |
+        C.sc.css->{margin} = $s;
+     -
+      - right # yep
+      - 3.4
+      - |
+        C.sc.css->{right} = $s;
+     -
+      - left # yep
+      - 3.4
+      - |
+        C.sc.css->{left} = $s;
+     -
+      - top # yep
+      - 3.4
+      - |
+        C.sc.css->{top} = $s;
+     -
+      - bottom # yep
+      - 3.4
+      - |
+        C.sc.css->{bottom} = $s;
+     -
+      - mw # y
+      - 3.4
+      - |
+        C.sc.css->{"max-width"} = $s;
+     -
+      - mh # y
+      - 3.4
+      - |
+        C.sc.css->{"max-height"} = $s;
+     -
+      - miw # y
+      - 3.4
+      - |
+        C.sc.css->{"min-width"} = $s;
+     -
+      - width # y
+      - 3.4
+      - |
+        C.sc.css->{"width"} = $s;
+     -
+      - height # y
+      - 3.4
+      - |
+        C.sc.css->{"height"} = $s;
+     -
+      - over # y 
+      - 3.4
+      - |
+        C.sc.css->{"overflow"} = $s;
+     -
+      - float # y 
+      - 3.4
+      - |
+        C.sc.css->{"float"} = $s;
+     -
+      - bo # border
+      - 3.4
+      - |
+        C.sc.css->{"border"} = $s;
+
