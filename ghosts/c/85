@@ -61,7 +61,7 @@ climbo: | # hop down tv, for hJ
     
     Rw clack;
     
-SpaceFlos: | # node write, collected goo sticks (active agent & hi wires)
+SpaceFlos: | # node write, collected goo sticks (active agent & hi wires) gets E.t to thingdex routes to remote by C
     return sayre "E.t iutno self E.sc.J.name\n\n\n\n"
         if E.sc.J && E.sc.J.mo.J eq $J;
     
@@ -89,6 +89,8 @@ SpaceFlos: | # node write, collected goo sticks (active agent & hi wires)
     saybl "SpaceFlos: done: ".F_delta();
     
 Elis: |
+    E.c.trJ eq $J && return
+        Rw clack Doublysendo;
     E.c.trJ = $J;
     J.ev.av && sayre("On to J.name: J.ev.av") && # on arrival
         Rw J.ev.av;
@@ -110,7 +112,12 @@ Elis: |
     
     E.sc.was && return saybl "E.t was: $_ ".E.c.s;
     
-    Rw clack;
+    # double take aft writedown
+    J.ev.tr && return
+        Rw J.ev.th;
+    
+    Rw clack + Elisi;
+    
     
 middle: |
     my $E = Rw CsE $C;
@@ -124,11 +131,12 @@ middle: |
     }
 clack: |
     sayyl "UNclassified something F-1 at J.name";
+    saybl "M<essage: ".wdump ar.m if ar.m;
     saybl wdump J.ev;
     
-    Rw talkzyJhJ;
+    Rw talkzyh;
     
-talkzyJhJ: |
+talkzyh: |
     # z is the waypoints, 
     # yJ the yonder (origin) stack, 
     # hJ the here stack

@@ -106,13 +106,19 @@ TestTool: |
             my $il = $ids->{$id} ||= $idi++;
             "il$here$il";
         };
-        $stuff =~ s/(id=)(\S+)/$1.$idstu->($2)/eg;
-        $stuff =~ s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
-        $stuff =~ s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
-        $stuff =~ s/("ids":\[")((?:\w+|",")+)("\])/$1.join('","',map{$idstu->($_)}split'","', $2).$3/eg;
-        $stuff =~ s/(\=\w+\/\w\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
-        $stuff =~ s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
-        [split "\n", encode_utf8 $stuff];
+        for ($stuff) {
+        s/(id=)(\S+)/$1.$idstu->($2)/eg;
+        s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
+        s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
+        s/("ids":\[")((?:\w+|",")+)("\])/$1.join('","',map{$idstu->($_)}split'","', $2).$3/eg;
+        s/(\=\w+\/\w\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
+        while (1) {
+        s/(opel=.+?)(")(\w{6,})("])/$1.$2.$idstu->($3).$4/eg
+        && (s/($3)/$idstu->($1)/eg || 1) || last
+        };
+        s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
+        }
+        return [split "\n", encode_utf8 $stuff];
         
     n Wushredids =>'',<<''
         my $ids = {};
@@ -210,6 +216,43 @@ Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
     T.nose = 1; # dont thing the test vector
     $n
     
+Syl: | # swoioshy 
+    my $n = Rw Dwive + $d=10;
+    my $see = 'life/testSyl.s';
+    if ($n == 0) {
+        `cat /dev/null > $see`;
+        n followtest =>W=>'%test:1',{see=>$see}
+    }
+    elsif ($n < 3) {
+        my $say = $n == 2 ? 'corners' : 'walls';
+        `echo '$say' >> $see`;
+        n followtest =>W=>'%test:'.($n+1)
+    }
+    elsif ($n == 3) {
+        n followtest =>W=>'%test:4'
+        n Film =>W=>'%test:4,noJ'
+        n Follower =>W=>'%test:4,noJ'
+    }
+    else {
+        ok(0, "Runtomuch: $n");
+    }
+    ok(1,"Run over: $n");
+followtest: |
+    y.at.oWl = 1;
+    J.ev.th ||= 'middle';
+    J.ev.li ||= 'climbo';
+    J.ev.bo ||= 'bodos';
+    
+    my $see = J.see ||= C.sc.see || die "nosee";
+    n $see=>-sol=>''=>'%dos:loadfollow,qz'
+    
+    J.VV.N = 1;
+    y.ope = 1;
+    
+    #
+    J.ever = 1;
+loadfollow: |
+    n So =>'3'.(1+J.dkoo++)=>"something say: E.c.s"
 Slt: | # W outputting
     my $n = Rw Dwive + $d=18;
     
@@ -234,17 +277,19 @@ Slt: | # W outputting
     elsif ($n == 4) {
         n Followe =>W=>'%test:5,noJ',{l=>'two more pi'}
         n Trabit =>W=>'%test:5,noJ',{l=>'two more rabits'}
+        (J.deta) = map{_.nj}
         n Detailtest =>W=>'%test:5,West:5,noJ'
     }
     elsif ($n == 5) {
         n Followe =>W=>'%test:55'
-        my $rab=
+        (J.rabi) = map{_.nj}
         n Trabit =>W=>'%test:55'
-        J.rabi = rab.nj;
     }
     elsif ($n == 6) {
         Rw UnPreDuv $J:J.rabi;
         n Trabit =>W=>'%test:6',{l=>'all 3 rabits'}
+        Rw UnPreDuv $J:J.deta;
+        n Detailtest =>W=>'%test:6,noJ',{l=>'answered calls'}
     }
     else {
         ok(0, "Runtomuch: $n");
@@ -303,6 +348,8 @@ Detailtest: |
     y.at.ux = 1;
     n b320 => '3-9x7','777'
     n latelo => '12', '12-'.J.icker
+    J.icker > 2 &&
+    n hade => '3'.J.icker => "Seen some J.icker .."
 Wightest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     n JStestuff
     # could ahh...
