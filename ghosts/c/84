@@ -323,7 +323,11 @@ stylation: |
             $(div).appendTo(A.on).each(function(i,v){el=v});
         }
         delete C.sc.attr;
-        C.c.s and $(el).html(C.c.s);
+        if (typeof C.c.s === 'string') {
+            C.sc.ht and $(el).html(C.c.s);
+            else
+            !C.sc.cod and $(el).text(C.c.s);
+        }
         A.on = el;
    
     n el =>4=><<''
@@ -395,23 +399,26 @@ stylext: |
         delete set['id'];
         id ||= C.c.id;
         !id and a.c("No id");
-        var cm = CodeMirror(document.getElementById(id), set);
+        var cm = CodeMirror(A.on, set);
         .
         cm.ididid = id;
-        cm.setOption('extraKeys', {Esc:function(){a.codsav(cm)}});
-        .
-        cm.on('focus',function(){clof();keof();});
-        cm.on('blur',function(){clon();keon();
+        var sav = function(){
             G&codsav,cm;
-        });
+        };
+        cm.setOption('extraKeys', {Esc:sav});
+        cm.on('focus',function(){clof();keof();});
+        cm.on('blur',function(){clon();keon();sav();});
+        cm.setValue(C.c.s);
         .
         var W = 
-        $('#'+id).css('width','50%','max-height','70%','overflow','scroll');
+        $('#'+id).css('width','15em','max-height','70%','overflow','scroll');
         $('#'+id+' > .CodeMirror');//.css('height','auto');
+        cm.refresh();
     
     u alljs
     n codsav =>''=><<''
-        var we = $('#'+s.ididid);
+        var cm = s;
+        var we = $('#'+cm.ididid);
         a.m('AAAAAAAAAAA');
         var d = {};
         a.entag(d, we);
