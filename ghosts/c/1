@@ -746,7 +746,7 @@ SlideEa: | # liney schemery
         && ref s.y && ref s.c && 9 > keys %$s;
     
     n isJ =>''=><<''
-        return 0 unless ref $s eq 'HASH' && ref s.bb eq 'HASH';
+        ref $s eq 'HASH' && ref s.bb eq 'HASH';
     
     n taJe =>''=><<''
         I.d&isC,$s || I.d&isJ,$s || return;
@@ -771,10 +771,9 @@ SlideEa: | # liney schemery
         if (ref $s eq 'ARRAY') {
             for my $yy (@$s) {
                 C.y = {};
-                sayre "Taken array";
                 I.d&givy,$yy;
                 ref $y || die "notash ".ki $y;
-                I.d&xot,$y,$yy;
+                I.d&xot,$y,C.y;
                 C.y = $y;
             }
         }
@@ -782,10 +781,8 @@ SlideEa: | # liney schemery
             ref $s eq 'HASH' || die "no $s";
             if (I.d&taJe,$s ) {
                 my $yy = C.y;
-                C.y = {};
+                C.y = {} if ref C.y ne 'HASH';
                 I.d&givy,$yy;
-                I.d&xot,$y,$yy;
-                C.y = $y;
             }
             elsif ($y ne $s) {
                 I.d&xot,$y,$s;
