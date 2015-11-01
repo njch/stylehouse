@@ -94,12 +94,12 @@ I:
     array: 
       c: 
         el: 1
-        s: "A.I.array = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\\w+$/;\n    return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];\n    unshift @{A.N}, @$s;\n    T.not = 1;\n};\n"
+        s: "A.I.array = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\\w+$/;\n    return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];\n    # should stick In in first and M it? \n    # kind of motion that wants to be unsure in the wild\n    unshift @{A.N}, @$s;\n    T.not = 1;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 2500f27e2026
+        dige: 1621c6fcf424
         gro: SlideEa
       t: array
       "y": 
@@ -304,12 +304,12 @@ I:
     isC: 
       c: 
         el: 1
-        s: "A.I.isC = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return 0 unless ref $s eq 'HASH';\n    exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n};\n"
+        s: "A.I.isC = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return 0 unless ref $s eq 'HASH';\n    exists s.t && defined C.t && !ref s.t\n    && ref s.y && ref s.c && 9 > keys %$s;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 0264fe0f4424
+        dige: 63202b6a0791
         gro: SlideEa
       t: isC
       "y": 
@@ -506,12 +506,12 @@ I:
         args: A,C,G,T,s
         code: I 1
         dige: d054be1e9bda
-        gro: C
+        gro: SlideEa
       t: scyvle
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
-        p: qq/C/C
+        p: qq/SlideEa/SlideEa
     string: 
       c: 
         el: 1
@@ -530,12 +530,12 @@ I:
     taJe: 
       c: 
         el: 1
-        s: "A.I.taJe = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&isC,$s || I.d&isJ,$s || return;\n    sayyl \"taJE y: \".ki $s;\n    if (s.bb) {\n        if (I.d&isC,C.c ) {\n            C.c = {e=>C.c};\n        }\n        C.c.s = $s;\n    }\n    else {\n        if (I.d&isJ,C.c ) {\n            C.c = {s=>C.c};\n        }\n        C.c.e = $s;\n    }\n    C.y = {};\n    C.c.W = C.t;\n    return 1\n};\n"
+        s: "A.I.taJe = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&isC,$s || I.d&isJ,$s || return;\n    if (s.bb) {\n        if (I.d&isC,C.c ) {\n            C.c = {e=>C.c};\n        }\n        C.c.s = $s;\n    }\n    else {\n        if (I.d&isJ,C.c ) {\n            C.c = {s=>C.c};\n        }\n        C.c.e = $s;\n    }\n    C.y = {};\n    C.c.W = C.t;\n    return 1\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 2b45369cb634
+        dige: faa4604847df
         gro: SlideEa
       t: taJe
       "y": 
@@ -609,13 +609,13 @@ I:
     reasonlock: 
       c: 
         el: 1
-        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    I.d&renc if !ref C.c;\n    \n    my $yy = C.y;\n    C.y = {} if ref C.y ne 'HASH';\n    I.d&givy,$yy;\n    \n    I.d&rensc if !ref C.sc;\n    \n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
+        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    I.d&renc if !ref C.c;\n    \n    my $yy = C.y;\n    C.y = {} if ref C.y ne 'HASH';\n    I.d&givy,$yy;\n    \n    I.d&rensc if !ref C.sc;\n    \n    I.d&isC,$C && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: I 18
-        dige: 0b65e29bdc13
+        dige: 2498294940c1
         gro: SlideEa
         its: 1
       t: reasonlock
