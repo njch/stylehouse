@@ -409,12 +409,12 @@ I:
     peels: 
       c: 
         el: 1
-        s: "A.I.peels = (sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    qr/^[\\{\\%]/;\n})->($A,$C,$G,$T);\n"
+        s: "A.I.peels = (sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    qr/^[\\{\\%]\\w+/;\n})->($A,$C,$G,$T);\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 2cef197e1b39
+        dige: 1a4b86ada8e3
         gro: C
         subpeel: 1
       t: peels
@@ -802,13 +802,13 @@ Mo:
     yarN_: 
       c: 
         el: 1
-        s: "A.I.yarN_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    # twist, lay into segment\n    ref $y eq 'HASH' || die \"Notash: \".wdump 2, $C;\n    y.u.v = defined y.cv ? y.cv\n        : defined y.in ? y.in\n        : die \"no yiny\".ki$y;\n    y.thi || die \"Whythi\".ki$C;\n    # y.u. shares av, y. separates\n    # difference pours out of y.bal via y.i in 32\n    my @lot = map {\n        eval {\n        my $C = I.d&xot,{},$C;\n        };\n        $@ && die \"Tpp \".wdump 2, $C;\n        C.y.i = $_-1;\n        $C\n    } 1..y.thi;\n    if (@lot > 1) {\n        push @{A.mo.re->{0.29}||=[]}, map{[undef,$_]}@lot;\n        T.not = 1;\n    }\n    else {\n        my ($CC) = @lot;\n        $CC || die \"not one?\";\n        %$C = %$CC;\n    }\n};\n"
+        s: "A.I.yarN_ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    # twist, lay into segment\n    ref $y eq 'HASH' || die \"Notash: \".wdump 2, $C;\n    !defined y.u || ref y.u eq 'HASH' || die \"Nou : y.u \".wdump 2, $y;\n    y.u.v = defined y.cv ? y.cv\n        : defined y.in ? y.in\n        : die \"no yiny\".ki$y;\n    y.thi || die \"Whythi\".ki$C;\n    die \":idify\" if $y ne C.y;\n    # y.u. shares av, y. separates\n    # difference pours out of y.bal via y.i in 32\n    my @lot = map {\n        my $C = eval { I.d&xot,{},$C };\n        C.y.i = $_-1;\n        $@ && die \"Tpp \".wdump 2, $C;\n        $C\n    } 1..y.thi;\n    if (@lot > 1) {\n        push @{A.mo.re->{0.29}||=[]}, map{[undef,$_]}@lot;\n        T.not = 1;\n    }\n    else {\n        my ($CC) = @lot;\n        ref $CC eq 'HASH' || die \"not one? $CC\";\n        %$C = %$CC;\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: Mo 26
-        dige: 2697aa375608
+        dige: 8b60c744edc4
         gro: Spaci
         its: 1
         nk: 'y'
