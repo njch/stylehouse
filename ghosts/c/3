@@ -228,15 +228,22 @@ Spaci: |
     
     n yarN =>''=>{s=><<''},{code=>'Mo 26'}
         # twist, lay into segment
+        ref $y eq 'HASH' || die "Notash: ".wdump 2, $C;
+        defined y.u && ref y.u eq 'HASH' || die "Nou : y.u ".wdump 2, $y;
         y.u.v = defined y.cv ? y.cv
             : defined y.in ? y.in
             : die "no yiny".ki$y;
         y.thi || die "Whythi".ki$C;
+        die ":idify" if $y ne C.y;
         # y.u. shares av, y. separates
         # difference pours out of y.bal via y.i in 32
         my @lot = map {
-            my $C = I.d&xot,{},$C;
+            my $C;
+            eval {
+            $C = I.d&xot,{},$C;
             C.y.i = $_-1;
+            };
+            $@ && die "Tpp ".wdump 2, $C;
             $C
         } 1..y.thi;
         if (@lot > 1) {
@@ -245,7 +252,7 @@ Spaci: |
         }
         else {
             my ($CC) = @lot;
-            $CC || die "not one?";
+            ref $CC eq 'HASH' || die "not one? $CC";
             %$C = %$CC;
         }
     
