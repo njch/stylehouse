@@ -90,7 +90,9 @@ TestTool: |
         my $rv = oJ.rv;
         my $rlk = "J.name:$s";
         my $rl = st.ts.rls->{$rlk} || {};
+        $rl = {} if C.c.norl;
         .
+        sayre "go rl.c to rv.c";
         my $r = Rw scd $rl $rv;
         #my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
         my $n = Rw ZNews news $sc:r.z;
@@ -112,6 +114,7 @@ TestTool: |
         s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
         s/("ids":\[")((?:\w+|",")+)("\])/$1.join('","',map{$idstu->($_)}split'","', $2).$3/eg;
         s/(\=\w+\/\w\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
+        s/(life\/W\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
         while (1) {
         s/(opel=.+?)(")(\w{6,})("])/$1.$2.$idstu->($3).$4/eg
         && (s/($3)/$idstu->($1)/eg || 1) || last
@@ -255,7 +258,9 @@ loadfollow: |
     n So =>'3'.(1+J.dkoo++)=>"something say: E.c.s"
 Slt: | # W outputting
     my $n = Rw Dwive + $d=18;
+    
     #J.mo.s.al.opt.fole = [Followe=>W=>"life/W/J.mo.s.id\.e"];
+    
     if ($n == 0) {
         n Sltest =>W=>'%test:1,West:1'
     }
@@ -266,30 +271,31 @@ Slt: | # W outputting
     elsif ($n == 2) {
         Rw MkSle G-Slt Detailtest;
         n Detailtest =>W=>'%test:3,West:2,noJ'
-        n Followe =>W=>'%test:3,noJ',{l=>'following empty file'}
+        n Follower =>W=>'%test:3,noJ',{l=>'following empty file'}
+        Rw UnPreDuv $J:J.foll;
     }
     elsif ($n == 3) {
         Rw MkSle G-Slt Detailtest;
         Rw MkSle G-Slt Detailtest;
-        n Followe =>W=>'%test:4,noJ',{l=>'pi line turnup'}
-        n Trabit =>W=>'%test:4,noJ',{l=>'1 rabit also turnup'}
+        n Follower =>W=>'%test:4,noJ',{l=>'pi line turnup'}
+        #n Trabit =>W=>'%test:4,noJ',{l=>'1 rabit also turnup'}
     }
     elsif ($n == 4) {
-        n Followe =>W=>'%test:5,noJ',{l=>'two more pi'}
-        n Trabit =>W=>'%test:5,noJ',{l=>'two more rabits'}
-        (J.deta) = map{_.nj}
+        n Follower =>W=>'%test:5,noJ',{l=>'two more pi'}
+        #n Trabit =>W=>'%test:5,noJ',{l=>'two more rabits'}
+        Rw UnPreDuv $J:_
+        for map{_.nj}
         n Detailtest =>W=>'%test:5,West:5,noJ'
     }
     elsif ($n == 5) {
-        n Followe =>W=>'%test:55'
-        (J.rabi) = map{_.nj}
-        n Trabit =>W=>'%test:55'
+        Rw UnPreDuv $J:_
+        for map{_.nj}
+        n Follower =>W=>'%test:55'
+        #n Trabit =>W=>'%test:55'
     }
     elsif ($n == 6) {
-        Rw UnPreDuv $J:J.rabi;
-        n Trabit =>W=>'%test:6',{l=>'all 3 rabits'}
-        Rw UnPreDuv $J:J.deta;
-        n Detailtest =>W=>'%test:6,noJ',{l=>'answered calls'}
+        n Follower =>W=>'%test:6',{l=>'all 3 rabits'}
+        n Detailtest =>W=>'%test:6',{l=>'answered calls'}
     }
     else {
         ok(0, "Runtomuch: $n");
@@ -345,6 +351,7 @@ Detailtest: |
     for (A.us&time) {
         J.icker += $_;
     }
+    y.ope = 1;
     y.at.ux = 1;
     n b320 => '3-9x7','777'
     n latelo => '12', '12-'.J.icker

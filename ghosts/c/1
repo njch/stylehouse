@@ -98,6 +98,19 @@ MourmaZ: | # notes
         # so it is data injection agent
         # that one awareness is part of the budle am wires
         # this feeding on I or III
+        .
+        # should stick In in first and M it? 
+        # kind of motion that wants to be unsure in the wild
+        # some talking to self - how to C over exactly
+        # the object could be live
+        # uis a nested wave - falling ]]]]]]]
+        # allow much manufold
+        # knot this not this:
+        # this form: NextWorm=>$C=>$J (C/J swappy)
+        # and some=>[$C,pi=>3]  should xotogether
+        #if (A.J.name eq 'qq' || A.J.most.J eq A.J) {
+        
+        # if Ting
 Indulator: | # Wain spinality
     # not allcode since uCons blank qq cone & then thing
     n Bangdesk
@@ -674,6 +687,18 @@ Bangdesk: |
 SlideEa: | # liney schemery
     u allacgts
     
+    # fold space til fit
+    n scyvle =>''=>{s=><<''}
+        for (qw'in out cv') {
+            if (my $so = C.y->{$_}) {
+                my $i;
+                while (C.y->{$_} <= -1 || C.y->{$_} >= 1) {
+                    C.y->{$_} /= 10;
+                    die "Many i chewing on ".ki C.y if $i++ > 10;
+                }
+            }
+        }
+    
     n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
         !ref $s ? I.d&string,$s
         :
@@ -696,77 +721,104 @@ SlideEa: | # liney schemery
     
     n hash =>''=>{s=><<''}
         return %$C = %$s if exists s.t && s.y && s.c;
-        # some talking to self - how to C over exactly
-        # the object could be live
         I.d&servehash,$s;
     
-    n reasonlock =>''=>{s=><<''},{code=>'I 18',act=>1,li=>'#c'}
+    n reasonlock =>''=>{s=><<''},{code=>'I 18',act=>1}
         die"reft" if ref C.t;
-        my $istf = sub {
-            my $s = shift;
-            exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;
-        };
-        # uis a nested wave - falling ]]]]]]]
-        # allow much manufold
-        # knot this not this:
         if (A.J.name eq 'qq' || A.J.most.J eq A.J) {
             C.c.W = C.t unless C.c || C.sc || C.y;
         }
-        # this form: NextWorm=>$C=>$J (C/J swappy)
-        if (ref C.y eq 'HASH' && (C.y.bb || $istf->(C.y))) {
-            if (C.y.bb) {
-                if (ref C.c eq 'HASH' && $istf->(C.c)) {
-                    C.c = {e=>C.c};
-                }
-                C.c.s = C.y;
-            }
-            else {
-                if (ref C.c eq 'HASH' && C.c.bb) {
-                    C.c = {s=>C.c};
-                }
-                C.c.e = C.y;
-            }
-            C.y = '';
-            C.c.W = C.t;
-        }
-        .
         I.d&renc if !ref C.c;
-        I.d&reny if !ref C.y;
+        .
+        my $yy = C.y;
+        C.y = {} if ref C.y ne 'HASH';
+        I.d&givy,$yy;
+        .
         I.d&rensc if !ref C.sc;
-        defined C.t && !ref C.t
-        && ref C.y && ref C.c && ref C.sc
+        .
+        I.d&isC,$C && ref C.sc
             || die "reaso fail".wdump [A.s,$C];
         I.d&scyvle;
     
-    # fold space til fit
-    n scyvle =>''=>{s=><<''}
-        for (qw'in out cv') {
-            if (my $so = C.y->{$_}) {
-                my $i;
-                while (C.y->{$_} <= -1 || C.y->{$_} >= 1) {
-                    C.y->{$_} /= 10;
-                    die "Many i chewing on ".ki C.y if $i++ > 10;
-                }
+    n isC =>''=><<''
+        return 0 unless ref $s eq 'HASH';
+        exists s.t && defined C.t && !ref s.t
+        && ref s.y && ref s.c && 9 > keys %$s;
+    
+    n isJ =>''=><<''
+        return 0 unless ref $s eq 'HASH' && ref s.bb eq 'HASH';
+    
+    n taJe =>''=><<''
+        I.d&isC,$s || I.d&isJ,$s || return;
+        if (s.bb) {
+            if (I.d&isC,C.c ) {
+                C.c = {e=>C.c};
+            }
+            C.c.s = $s;
+        }
+        else {
+            if (I.d&isJ,C.c ) {
+                C.c = {s=>C.c};
+            }
+            C.c.e = $s;
+        }
+        C.y = {};
+        C.c.W = C.t;
+        return 1
+    
+    n givy =>''=><<''
+        my $y = C.y;
+        if (ref $s eq 'ARRAY') {
+            for my $yy (@$s) {
+                C.y = {};
+                sayre "Taken array";
+                I.d&givy,$yy;
+                ref $y || die "notash ".ki $y;
+                I.d&xot,$y,$yy;
+                C.y = $y;
             }
         }
-    
-    n reny =>''=>{s=><<''}
-        C.y = C.y eq '' ? (I.blanky ? I.d&blanky : {})
-            : C.y =~ /^($NUM)$/ ? {cv=>$1}
-            : C.y =~ /^($NUM)-($NUM)$/ ? {in=>$1,out=>$2}
-            : C.y =~ /^($NUM)-($NUM)x($NUM)$/ ? {in=>$1,out=>$2,thi=>$3}
-            : C.y =~ /^-(\w+)$/ ? do {
-                C.c.pi = $1;
-                C.c.s = C.t if !exists C.c.s || A.btw.cwass;
-                {}
+        elsif (ref $s) {
+            ref $s eq 'HASH' || die "no $s";
+            if (I.d&taJe,$s ) {
+                my $yy = C.y;
+                C.y = {};
+                I.d&givy,$yy;
+                I.d&xot,$y,$yy;
+                C.y = $y;
             }
-            : C.y =~ /^([a-zA-Z]+)(?::(.+))?$/ ? do {
-                C.c->{$1} = $2 || C.t;
-                {};
+            elsif ($y ne $s) {
+                I.d&xot,$y,$s;
             }
-            : I.rey ? I.d&rey
-            : die "C y wtf: C.y";
+        }
+        elsif ($s eq '') {
+            my $x = I.blanky ? I.d&blanky : {};
+            I.d&xot,C.y,$x if keys %$x;
+        }
+        elsif ($s =~ /^($NUM)$/) {
+            y.cv = $1;
+        }
+        elsif ($s =~ /^($NUM)-($NUM)$/) {
+            y.in = $1;
+            y.out = $2;
+        }
+        elsif ($s =~ /^($NUM)-($NUM)x($NUM)$/) {
+            y.in = $1;
+            y.out = $2;
+            y.thi = $3;
+        }
+        elsif ($s =~ /^-(\w+)$/) {
+            C.c.pi = $1;
+            C.c.s = C.t if !exists C.c.s || A.btw.cwass;
+        }
+        elsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {
+            C.c->{$1} = $2 || C.t;
+        }
+        else {
+            die "C y wtf: $s";
+        }
     
+    # curv=>pi=>see
     n renc =>''=>{s=><<''}
         C.c = C.c =~ I.peels ? I.d&peel,C.c
           : do {
@@ -780,7 +832,6 @@ SlideEa: | # liney schemery
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
             : die "C sc nostr: C.sc   of I.peels  ".ki $C
-    
 C: |
     u allacgts
     # modem sounds etc.
@@ -899,8 +950,14 @@ C: |
         return [$s->{D.c.nk}->{D.c.gk}];
     
     n xot =>'',<<'',{acgt=>'s,c'}
+        ref $c eq 'HASH' && ref $s eq 'HASH' ||
+            die "Hash up".wdump 3, [$s,$c];
         while (my($k,$v) = each %$c) {
-            $s->{$k} = ref $v ? {%{$s->{$k}||{}}, %$v} : $v;
+            $s->{$k} = ref $v eq 'HASH' ?
+                        {%{$s->{$k}||{}}, %$v}
+            : ref $v ? 
+                die "Hash a ref v: ".wdump 2, $s
+            : $v;
         }
         $s
     
@@ -909,7 +966,6 @@ C: |
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         $CC;
     
-   
    
 Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     u allacgts

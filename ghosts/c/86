@@ -54,7 +54,6 @@ Meta: |
         em.id = em.is.W.'.'.(0+em.i);
     
     u allsvse
-    # split into line forms
     n jslines =>3=><<'',{cg=>'J,em'}
         Rw EmJSlines $J $em $C;
     
@@ -147,7 +146,7 @@ SpaceElvis: |
             next;
         }
         sayyl "GOT SPACE ELVIS: C.t: _.t   _.y.cv";
-        Mn(_.t=>''=>"Thi _.t",{id=>$id});
+        Mn(_.t=>''=>"Thi _.t",{id=>$id,wi=>'de'});
         # & id ^
     }
 Claw: |
@@ -251,6 +250,8 @@ curre: |
     my $here = {};
     here.cv = C.y.cv;
     I.d&last2here,$last,{},$here;
+    $here->{$_} = C.sc->{$_} for grep {exists C.sc->{$_}} 'wi';
+    here.wi ||= 'atom';
     my $geo = I.d&here2geo,$here;
     # a little climb means a little hashsame
     C.sc.geo = $geo;
@@ -314,6 +315,7 @@ GeoSo: |
         geo.x = here.x;
         geo.y = here.y;
         geo.ab = '100' if 1; # w=h=100,ab=1
+        geo.ab = '1' if here.wi eq 'atom';
         # transform about
         geo.tro = '0 0.5'; # midleft
         geo.tro = '0 0' if 0; # topleft

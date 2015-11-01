@@ -495,12 +495,12 @@ I:
     here2geo: 
       c: 
         el: 1
-        s: "A.I.here2geo = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($here,@Me) = @M;\n    my $I = A.I;\n    my $geo = {};\n    geo.rad = here.rad;\n    # unwind (into...)\n    my $o = $RADIAN*4;\n    my $swish = $o;\n    $swish *= -1 if geo.rad < 0;\n    my $i = 0;\n    geo.rad -= $swish until\n        do {$i++>5&&die\"$i muchwind\".ki$here;0}\n        ||\n        $o*-1 < geo.rad && geo.rad < $o*4;\n    # pan to hemisphere...\n    # from O- is it in the left hemisphere etc\n    my $rad = geo.rad;\n    my $radleg = -$RADIAN;\n    $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;\n    $rad -= $radleg;\n    geo.radial = I.d&ron,$rad;\n    geo.x = here.x;\n    geo.y = here.y;\n    geo.ab = '100' if 1; # w=h=100,ab=1\n    # transform about\n    geo.tro = '0 0.5'; # midleft\n    geo.tro = '0 0' if 0; # topleft\n    #\n    my $fo = sub { (shift() * 100).'%' };\n    geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;\n    \n    I.d&geo2lin,$geo;\n};\n"
+        s: "A.I.here2geo = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($here,@Me) = @M;\n    my $I = A.I;\n    my $geo = {};\n    geo.rad = here.rad;\n    # unwind (into...)\n    my $o = $RADIAN*4;\n    my $swish = $o;\n    $swish *= -1 if geo.rad < 0;\n    my $i = 0;\n    geo.rad -= $swish until\n        do {$i++>5&&die\"$i muchwind\".ki$here;0}\n        ||\n        $o*-1 < geo.rad && geo.rad < $o*4;\n    # pan to hemisphere...\n    # from O- is it in the left hemisphere etc\n    my $rad = geo.rad;\n    my $radleg = -$RADIAN;\n    $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;\n    $rad -= $radleg;\n    geo.radial = I.d&ron,$rad;\n    geo.x = here.x;\n    geo.y = here.y;\n    geo.ab = '100' if 1; # w=h=100,ab=1\n    geo.ab = '1' if here.wi eq 'atom';\n    # transform about\n    geo.tro = '0 0.5'; # midleft\n    geo.tro = '0 0' if 0; # topleft\n    #\n    my $fo = sub { (shift() * 100).'%' };\n    geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;\n    \n    I.d&geo2lin,$geo;\n};\n"
       sc: 
         acgt: here
         args: A,C,G,T,here
         code: I 1
-        dige: e81d82f252c3
+        dige: 7547904e615b
         gro: GeoSo
       t: here2geo
       "y": 
@@ -1874,13 +1874,13 @@ O:
     sel_38: 
       c: 
         el: 1
-        s: "A.I.sel_38 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    A.t&Art,8,6;\n    at.sc.geo = ki(at.sc.geo) if ref at.sc.geo;\n    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;\n    # ^ to SlideEater decode array of y expressions, xotted together\n    for my $up (qw'tag id ht') {\n        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}\n    }\n};\n"
+        s: "A.I.sel_38 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    A.t&Art,8,6;\n    at.sc.geo = ki(at.sc.geo) if ref at.sc.geo;\n    at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;\n    # ^ to SlideEater decode array of y expressions, xotted together\n    for my $up (qw'tag id ht cod') {\n        at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}\n    }\n    delete at.c.s if at.c.s eq 'pi' && C.t eq 'pi' && C.y.cv == 0.9;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: O 38
-        dige: 3dc7f2520aa1
+        dige: 4ede6ef51b8f
         gk: 'Y'
         gro: Seven/Yosc
         nk: c
@@ -2216,7 +2216,7 @@ Sev:
     cgone_4321: 
       c: 
         el: 1
-        s: "A.I.cgone_4321 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        die \"how delete a c $gk\";\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+        s: "A.I.cgone_4321 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        sayre \"how delete a c $gk\";\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
       sc: 
         Ifs: 
           Td: 
@@ -2236,7 +2236,7 @@ Sev:
         act: 1
         args: A,C,G,T,s
         code: Sev 4321
-        dige: a64d33544bee
+        dige: 73fd3a261366
         gk: 'Y'
         gro: Seven/Ydo
         nk: c
@@ -2251,7 +2251,7 @@ Sev:
     cnew_4321: 
       c: 
         el: 1
-        s: "A.I.cnew_4321 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        die \"how inject a c $gk\" if $vl;\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+        s: "A.I.cnew_4321 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        sayre \"how inject a c $gk\" if $vl;\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
       sc: 
         Ifs: 
           Td: 
@@ -2271,7 +2271,7 @@ Sev:
         act: 1
         args: A,C,G,T,s
         code: Sev 4321
-        dige: 16ada623d56d
+        dige: 94e3a3249bf6
         gk: 'Y'
         gro: Seven/Ydo
         nk: c
@@ -2323,7 +2323,7 @@ Sev:
     cdiff_4324: 
       c: 
         el: 1
-        s: "A.I.cdiff_4324 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        warn \"how to c dif $gk\".slim(30,$v).\" <--- \".slim(30,$o);\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
+        s: "A.I.cdiff_4324 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $d = s.d;\n    my $o = s.o;\n    my $v = s.v;\n    my $talk = s.talk;\n    my $nk = s.nk;\n    my $gk = s.gk;\n    my $wk = s.wk;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n        sayre \"how to c dif $gk\".slim(30,$v).\" <--- \".slim(30,$o);\n        $lv->{op}->{c}->{$gk} = 9;\n};\n"
       sc: 
         Ifs: 
           Td: 
@@ -2343,7 +2343,7 @@ Sev:
         act: 1
         args: A,C,G,T,s
         code: Sev 4324
-        dige: 2fbafd6ff498
+        dige: cc3740350322
         gk: 'Y'
         gro: Seven/Ydo
         nk: c
@@ -3055,13 +3055,13 @@ oJ:
     J_344: 
       c: 
         el: 1
-        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"e zught of A.J.name  holds  J.name  \".ki C.c if C.c.e;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        if (J.ev.amb) {\n            my $ar = I.d&ar;\n            Rw J.ev.amb + $J;\n        }\n        # absorb self Cing\n        T.not = 1;\n        # above will oscusifetc\n        return;\n    }\n    my $E = C.c.e;\n    # S could be a C if we are already inflecting panopsi\n    saybl \"In s C.t: E.t     \".ki(E.sc) if A.V&E;\n    sayre \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be s=J suctio later, ev on at protocol for incompleteness\n        unless (C.c.IsOn) {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            return T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy, unless T.oke\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
+        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"J344E A.J.mo.J.name ' A.J.name holds:  J.name\" if C.c.e;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        if (J.ev.amb) {\n            my $ar = I.d&ar;\n            Rw J.ev.amb + $J;\n        }\n        # absorb self Cing\n        T.not = 1;\n        # above will oscusifetc\n        return;\n    }\n    my $E = C.c.e;\n    # S could be a C if we are already inflecting panopsi\n    saybl \"In s C.t: E.t     \".ki(E.sc) if A.V&E;\n    sayre \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be s=J suctio later, ev on at protocol for incompleteness\n        unless (C.c.IsOn) {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            return T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy, unless T.oke\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 344
-        dige: 9d9b54b635ad
+        dige: d2677bd7d2f6
         gk: J
         gro: threes
         nk: c

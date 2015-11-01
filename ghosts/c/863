@@ -200,27 +200,20 @@ pi/boxtext: |
      
      Rw pi/foldytext;
      
-     my $ni = J.c.lin if J.c.lin > 1;
-     my $bi = J.c.b if J.c.b > 1;
-            
-            J.bz->("si/l 0.2" => "C.c.si",
-            '%css' => "color:#b89;font-size:50%;position:absolute")
-            if exists C.c.si;
-            
-            J.bz->('si/n 0.2' => "$ni",
-            '%css' =>
-            "color:#fff;font-size:50%;"
-            ."position:absolute;margin-top:1.4em;") if $ni;
-            
-                J.bz->('si/b 0.2' => "b$bi",
-                    '%css' =>
-                        "color:#f89;font-size:50%;"
-                        ."float:left;left:-1em") if $bi;
-                   
+     my $ni = J.c.lin if C.c.lin > 1;
+     my $bi = J.c.b if C.b > 1;
+     
+     exists C.c.si &&
+     n 'si/l',2,"C.c.si",{css=>"color:#b89;font-size:50%;position:absolute"}
+     
+     $ni &&
+     n 'si/n',2,"$ni",{css=>"color:#fff;font-size:50%;position:absolute;margin-top:1.4em;"}
+     
+     $bi &&
+     n 'si/b',2,"b$bi",{css=>"color:#f89;font-size:50%;float:left;left:-1em"}
+     
             if (J.cv < 0.7 && $s =~ /^(# \d.+?)↯/) {
-                J.bz->('line 0.1' => $1,
-                '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
-                    ."font-size:70%");
+                n line =>1=>$1=>{css=>"background:rgba(200,30,80,0.3);color:#3f3;font-size:70%"}
             }
 pi/lines: |
     my @lines = split "\n", $s;
@@ -259,8 +252,8 @@ pi/fulltext: |
     my $fs = int(50 + $surge * 7);
     $fs = "font-size:$fs%;";
 
-    my $s = join"\n", @tex;
-    n line=>0.1=>{s=>$s}, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}
+    my $se = join"\n", @tex;
+    n line=>0.1=>{s=>$se}, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}
 pi/vimcolor: |
     my $string = shift;
     my $h = dig($string);

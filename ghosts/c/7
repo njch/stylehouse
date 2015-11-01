@@ -417,9 +417,10 @@ Yosc: | # make lv,at + write stuff on at (connect Art)
         at.sc.geo = ki(at.sc.geo) if ref at.sc.geo;
         at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
         # ^ to SlideEater decode array of y expressions, xotted together
-        for my $up (qw'tag id ht') {
+        for my $up (qw'tag id ht cod') {
             at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
         }
+        delete at.c.s if at.c.s eq 'pi' && C.t eq 'pi' && C.y.cv == 0.9;
 Yod: |
     u allovse
     n '','','%of:Sev'
@@ -504,11 +505,11 @@ Ydo: |
     
     
     n cnew =>4321=><<'',{Td=>'c/*/new'}
-        die "how inject a c $gk" if $vl;
+        sayre "how inject a c $gk" if $vl;
         lv.op.c->{$gk} = 9;
         
     n cgone =>4321=><<'',{Td=>'c/*/gone'}
-        die "how delete a c $gk";
+        sayre "how delete a c $gk";
         lv.op.c->{$gk} = 9;
     
     n csdiff =>4323=><<'',{Td=>'c/s/diff'}
@@ -516,7 +517,7 @@ Ydo: |
     
     # ^ should avoid v (matched paths)
     n cdiff =>4324=><<'',{Td=>'c/*/diff'}
-        warn "how to c dif $gk".slim(30,$v)." <--- ".slim(30,$o);
+        sayre "how to c dif $gk".slim(30,$v)." <--- ".slim(30,$o);
         lv.op.c->{$gk} = 9;
     
     n cstill =>4324=><<'',{Td=>'c/*/still'}

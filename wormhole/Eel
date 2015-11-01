@@ -31,6 +31,21 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Motion/Motion
+    Cngk: 
+      c: 
+        el: 1
+        s: "A.I.Cngk = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    ref $A || die \"nmonref A!\";\n    aft { $@ .= \"\\nLookat: \".ki($s).\"\\nWith: \".ki($D) if $@ };\n    return 1 if D.c.any;\n    die \"nonNKnk\".ki$D if !D.c.nk;\n    return 0 if !exists $s->{D.c.nk};\n    return [$s->{D.c.nk}] if !exists D.c.gk;\n    return 0 if !exists $s->{D.c.nk}->{D.c.gk};\n    return [$s->{D.c.nk}->{D.c.gk}];\n};\n"
+      sc: 
+        acgt: s,D
+        args: A,C,G,T,s,D
+        code: I 1
+        dige: 1ce95658c144
+        gro: C
+      t: Cngk
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     Other: 
       c: 
         el: 1
@@ -76,6 +91,66 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Motion/Motion
+    array: 
+      c: 
+        el: 1
+        s: "A.I.array = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\\w+$/;\n    return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];\n    unshift @{A.N}, @$s;\n    T.not = 1;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2500f27e2026
+        gro: SlideEa
+      t: array
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    atom: 
+      c: 
+        el: 1
+        s: "A.I.atom = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($last,$here,@Me) = @M;\n    my $I = A.I;\n    # spacin\n    here.dist = here.cv - last.cv;\n    # twistin spin inherit\n    here.spin += last.spin;\n    # scale local-local change\n    here.rad += here.spin * here.dist * 10;\n    # builds rad on rad\n    here.rad += last.rad;\n    # distort space + more ways, orbital\n    # chuck skeletons for mods\n    # adapt M meta for what kinda places things want\n    # into constellations of high level things\n    # atomised hairs\n    here.zoom ||= last.zoom;\n    here.dist *= here.zoom if here.zoom;\n    # and move\n    here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;\n    here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;\n};\n"
+      sc: 
+        acgt: last,here
+        args: A,C,G,T,last,here
+        code: I 1
+        dige: a2b2426c55db
+        gro: GeoSo
+      t: atom
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
+    c: 
+      c: 
+        el: 1
+        s: "A.I.c = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,$C,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: a931936381c2
+        gro: C
+      t: c
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    e: 
+      c: 
+        el: 1
+        s: "A.I.e = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    I.d&inDin,C.c.e,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: 06747ef15695
+        gro: C
+      t: e
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     flywheels: 
       c: 
         el: 1
@@ -91,6 +166,186 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Motion/Motion
+    fourreal: 
+      c: 
+        el: 1
+        s: "A.I.fourreal = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    (C.t, C.y) = @$s;\n    C.c  = $s->[2] if exists $s->[2];\n    C.sc = $s->[3] if exists $s->[3];\n    die'@>4'.wdump $s if @$s > 4;\n    die\"C.t from \".wdump $s if ref C.t; # dives\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 87baea0c56c8
+        gro: C
+      t: fourreal
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    fourstring: 
+      c: 
+        el: 1
+        s: "A.I.fourstring = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n    $s =~ s/^\\s+//;\n    if ($s =~ /^\\s*(#.*)$/) {\n       T.not = 1;\n       T.com = $1;\n    }\n    elsif ($s eq '') {\n       T.not = T.space = 1;\n    }\n    else {\n       my $ci = $s;\n       for my $nk (qw't y c sc') {\n           if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n               my $v = $1;\n               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n               # << consumes more lines into $nk, then ...\n               $v = '' if $v =~ /^(''|\"\")$/;\n               $C->{$nk} = $v;\n           }\n       }\n    }\n    saybl \"4string: $s            \".ki $C if A.V&C;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: dbd7f1097b0d
+        gro: C
+      t: fourstring
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    geo2lin: 
+      c: 
+        el: 1
+        s: "A.I.geo2lin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($geo,@Me) = @M;\n    my $I = A.I;\n    # shove com toeget\n    # OR SOMETHING\n    # loses its compressibility as csz\n    my @am = qw'a? ab  x x  y y  r radial  s scale';\n    my @l;\n    while (@am) {\n        my $k = shift @am;\n        my $v = shift @am;\n        my $sens = $k =~ s/\\?$//;\n        push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};\n    }\n    my $l = join ' ', @l;\n    $l\n};\n"
+      sc: 
+        acgt: geo
+        args: A,C,G,T,geo
+        code: I 1
+        dige: 755b1ccec764
+        gro: GeoSo
+      t: geo2lin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
+    givy: 
+      c: 
+        el: 1
+        s: "A.I.givy = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $y = C.y;\n    if (ref $s eq 'ARRAY') {\n        for my $yy (@$s) {\n            C.y = {};\n            sayre \"Taken array\";\n            I.d&givy,$yy;\n            ref $y || die \"notash \".ki $y;\n            I.d&xot,$y,$yy;\n            C.y = $y;\n        }\n    }\n    elsif (ref $s) {\n        ref $s eq 'HASH' || die \"no $s\";\n        if (I.d&taJe,$s ) {\n            my $yy = C.y;\n            C.y = {};\n            I.d&givy,$yy;\n            I.d&xot,$y,$yy;\n            C.y = $y;\n        }\n        elsif ($y ne $s) {\n            I.d&xot,$y,$s;\n        }\n    }\n    elsif ($s eq '') {\n        my $x = I.blanky ? I.d&blanky : {};\n        I.d&xot,C.y,$x if keys %$x;\n    }\n    elsif ($s =~ /^($NUM)$/) {\n        y.cv = $1;\n    }\n    elsif ($s =~ /^($NUM)-($NUM)$/) {\n        y.in = $1;\n        y.out = $2;\n    }\n    elsif ($s =~ /^($NUM)-($NUM)x($NUM)$/) {\n        y.in = $1;\n        y.out = $2;\n        y.thi = $3;\n    }\n    elsif ($s =~ /^-(\\w+)$/) {\n        C.c.pi = $1;\n        C.c.s = C.t if !exists C.c.s || A.btw.cwass;\n    }\n    elsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {\n        C.c->{$1} = $2 || C.t;\n    }\n    else {\n        die \"C y wtf: $s\";\n    }\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: a15c3c1b93b8
+        gro: SlideEa
+      t: givy
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    hash: 
+      c: 
+        el: 1
+        s: "A.I.hash = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return %$C = %$s if exists s.t && s.y && s.c;\n    I.d&servehash,$s;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: a28cc9c268cf
+        gro: SlideEa
+      t: hash
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    here2geo: 
+      c: 
+        el: 1
+        s: "A.I.here2geo = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($here,@Me) = @M;\n    my $I = A.I;\n    my $geo = {};\n    geo.rad = here.rad;\n    # unwind (into...)\n    my $o = $RADIAN*4;\n    my $swish = $o;\n    $swish *= -1 if geo.rad < 0;\n    my $i = 0;\n    geo.rad -= $swish until\n        do {$i++>5&&die\"$i muchwind\".ki$here;0}\n        ||\n        $o*-1 < geo.rad && geo.rad < $o*4;\n    # pan to hemisphere...\n    # from O- is it in the left hemisphere etc\n    my $rad = geo.rad;\n    my $radleg = -$RADIAN;\n    $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;\n    $rad -= $radleg;\n    geo.radial = I.d&ron,$rad;\n    geo.x = here.x;\n    geo.y = here.y;\n    geo.ab = '100' if 1; # w=h=100,ab=1\n    geo.ab = '1' if here.wi eq 'atom';\n    # transform about\n    geo.tro = '0 0.5'; # midleft\n    geo.tro = '0 0' if 0; # topleft\n    #\n    my $fo = sub { (shift() * 100).'%' };\n    geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;\n    \n    I.d&geo2lin,$geo;\n};\n"
+      sc: 
+        acgt: here
+        args: A,C,G,T,here
+        code: I 1
+        dige: 7547904e615b
+        gro: GeoSo
+      t: here2geo
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
+    hup: 
+      c: 
+        el: 1
+        s: "A.I.hup = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $CC = {%$s};\n    $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;\n    $CC;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2bc362811316
+        gro: C
+      t: hup
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    inDin: 
+      c: 
+        el: 1
+        s: "A.I.inDin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$D,@Me) = @M;\n    my $I = A.I;\n    die'nofA' if !I.nF.A;\n    #\n    return () unless defined $s;\n    return $s if $D eq 'C';\n    #\n    shift @M; # s\n    $D = I.d&interpD,@M if !ref $D;\n    #\n    my $v = I.d&Cngk,$s,$D;\n    #\n    return () unless $v;\n    # blankgk\n    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;\n    #\n    die 'mulitAn' if @$v > 1;\n    if (D.c.as eq 'list') {\n        ref $v eq 'ARRAY' || die 'Cngk not array';\n        return @$v;\n    }\n    return 1;\n};\n"
+      sc: 
+        acgt: s,D
+        args: A,C,G,T,s,D
+        code: I 1
+        dige: bc7f2cfdcb5f
+        gro: C
+      t: inDin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    interpD: 
+      c: 
+        el: 1
+        s: "A.I.interpD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($nk,$gk,@Me) = @M;\n    my $I = A.I;\n    my $defnk = 'c';\n    return $nk if ref $nk;\n    my $D = {};\n    D.c.as = 'list' if 1 || $nk =~ s/^_//;\n    while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {\n        D.c->{$1} = $2;\n        pop @M if @M == 2;\n    }\n    if (@M == 1 && $nk eq 't') {\n        D.c.nk = $nk;\n    }\n    elsif (@M == 1) { # or from t,,,\n        D.c.nk ||= $defnk;\n        D.c.gk ||= $nk;\n    }\n    elsif (@M == 2) {\n        D.c.nk = $nk;\n        D.c.gk = $gk;\n    }\n    delete D.c.gk if D.c.gk eq 'NOGK';\n    $D\n};\n"
+      sc: 
+        acgt: nk,gk
+        args: A,C,G,T,nk,gk
+        code: I 1
+        dige: 688db989ec06
+        gro: C
+      t: interpD
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    isC: 
+      c: 
+        el: 1
+        s: "A.I.isC = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return 0 unless ref $s eq 'HASH';\n    exists s.t && !ref s.t && ref s.y && ref s.c && 9 > keys %$s;\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 0264fe0f4424
+        gro: SlideEa
+      t: isC
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    isJ: 
+      c: 
+        el: 1
+        s: "A.I.isJ = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    return 0 unless ref $s eq 'HASH' && ref s.bb eq 'HASH';\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: a54b15df658f
+        gro: SlideEa
+      t: isJ
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    last2here: 
+      c: 
+        el: 1
+        s: "A.I.last2here = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($last,$r,$here,@Me) = @M;\n    my $I = A.I;\n    here.x  = last.x = r.x if exists r.x;\n    here.y = last.y = r.y if exists r.y;\n    here.rad = 4*$RADIAN * r.spun if exists r.spun;\n    here.zoom = r.zoom if defined r.zoom;\n    \n    I.d&atom,$last,$here;\n    \n    here.spin = r.curve if exists r.curve; # on the level\n    #\n    here.x = I.d&ron,here.x;\n    here.y = I.d&ron,here.y;\n    here.rad = I.d&ron,here.rad;\n};\n"
+      sc: 
+        acgt: last,r,here
+        args: A,C,G,T,last,r,here
+        code: I 1
+        dige: 338d0c840521
+        gro: GeoSo
+      t: last2here
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
     mkD: 
       c: 
         el: 1
@@ -136,6 +391,37 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Motion/Motion
+    peel: 
+      c: 
+        el: 1
+        s: "A.I.peel = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    $s =~ s/^%// || \n        $s =~ s/^{// && $s =~ s/}$//\n        || die \"unpealable $s\";\n    my $c;\n    for (split ',', $s) {\n        my ($k, $v) = split ':', $_, 2;\n        $v = 1 if !defined $v;\n        $c->{$k} = $v;\n    }\n    $c||{}\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 86d02e052c88
+        gro: C
+      t: peel
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    peels: 
+      c: 
+        el: 1
+        s: "A.I.peels = (sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    qr/^[\\{\\%]/;\n})->($A,$C,$G,$T);\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2cef197e1b39
+        gro: C
+        subpeel: 1
+      t: peels
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     pin: 
       c: 
         el: 1
@@ -166,6 +452,126 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Goodat/Goodat
+    renc: 
+      c: 
+        el: 1
+        s: "A.I.renc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.c = C.c =~ I.peels ? I.d&peel,C.c\n      : do {\n        A.btw.cwass = 1 if \"\" eq C.c;\n        A.btw.cwasnd = 1 if !defined C.c;\n          {s => C.c};\n      };\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: c80f2d6f0f67
+        gro: SlideEa
+      t: renc
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    rensc: 
+      c: 
+        el: 1
+        s: "A.I.rensc = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    C.sc = C.sc eq '' ? {}\n        : C.sc =~ I.peels\n        ? I.d&peel,C.sc\n        : die \"C sc nostr: C.sc   of I.peels  \".ki $C\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 4e4662544dd1
+        gro: SlideEa
+      t: rensc
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    ron: 
+      c: 
+        el: 1
+        s: "A.I.ron = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    0.0001 * int(10000*$s)\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 45a95b7f03ae
+        gro: GeoSo
+      t: ron
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/GeoSo/GeoSo
+    scyvle: 
+      c: 
+        el: 1
+        s: "A.I.scyvle = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    for (qw'in out cv') {\n        if (my $so = C.y->{$_}) {\n            my $i;\n            while (C.y->{$_} <= -1 || C.y->{$_} >= 1) {\n                C.y->{$_} /= 10;\n                die \"Many i chewing on \".ki C.y if $i++ > 10;\n            }\n        }\n    }\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: d054be1e9bda
+        gro: C
+      t: scyvle
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    string: 
+      c: 
+        el: 1
+        s: "A.I.string = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die \"string: $s\";\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 196a2239898a
+        gro: SlideEa
+      t: string
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    taJe: 
+      c: 
+        el: 1
+        s: "A.I.taJe = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    I.d&isC,$s || I.d&isJ,$s || return;\n    sayyl \"taJE y: \".ki $s;\n    if (s.bb) {\n        if (I.d&isC,C.c ) {\n            C.c = {e=>C.c};\n        }\n        C.c.s = $s;\n    }\n    else {\n        if (I.d&isJ,C.c ) {\n            C.c = {s=>C.c};\n        }\n        C.c.e = $s;\n    }\n    C.y = {};\n    C.c.W = C.t;\n    return 1\n};\n"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I 1
+        dige: 2b45369cb634
+        gro: SlideEa
+      t: taJe
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+    us: 
+      c: 
+        el: 1
+        s: "A.I.us = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($D,@Me) = @M;\n    my $I = A.I;\n    my $E = C.c.e || return ();\n    push @M, 'NOGK' if @M == 1;\n    I.d&inDin,E.c.us,@M;\n};\n"
+      sc: 
+        acgt: D
+        args: A,C,G,T,D
+        code: I 1
+        dige: 0cdebb6cbbf0
+        gro: C
+      t: us
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    xot: 
+      c: 
+        el: 1
+        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    ref $c eq 'HASH' && ref $s eq 'HASH' ||\n        die \"Hash up\".wdump 3, [$s,$c];\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v eq 'HASH' ?\n                    {%{$s->{$k}||{}}, %$v}\n        : ref $v ? \n            die \"Hash a ref v: \".wdump 2, $s\n        : $v;\n    }\n    $s\n};\n"
+      sc: 
+        acgt: s,c
+        args: A,C,G,T,s,c
+        code: I 1
+        dige: e7dcc3a8d931
+        gro: C
+      t: xot
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
     z: 
       c: 
         el: 1
@@ -181,6 +587,42 @@ I:
         cv: '0.3'
         cvt: 0.3	C.t
         p: qq/Motion/Motion
+  "0.12": 
+    Ci: 
+      c: 
+        el: 1
+        s: "A.I.Ci = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    !ref $s ? I.d&string,$s\n    :\n    ref $s eq 'ARRAY' ? I.d&array,$s\n    :\n    ref $s eq 'HASH' ? I.d&hash,$s\n    :\n    die \"mmtype:$s\";\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: I 12
+        dige: 0ae2f062639c
+        gro: SlideEa
+        its: 1
+      t: Ci
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
+  "0.18": 
+    reasonlock: 
+      c: 
+        el: 1
+        s: "A.I.reasonlock = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    die\"reft\" if ref C.t;\n    if (A.J.name eq 'qq' || A.J.most.J eq A.J) {\n        C.c.W = C.t unless C.c || C.sc || C.y;\n    }\n    I.d&renc if !ref C.c;\n    \n    my $yy = C.y;\n    C.y = {} if ref C.y ne 'HASH';\n    I.d&givy,$yy;\n    \n    I.d&rensc if !ref C.sc;\n    \n    defined C.t && !ref C.t\n    && ref C.y && ref C.c && ref C.sc\n        || die \"reaso fail\".wdump [A.s,$C];\n    I.d&scyvle;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: I 18
+        dige: 0b65e29bdc13
+        gro: SlideEa
+        its: 1
+      t: reasonlock
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/SlideEa/SlideEa
   "0.71": 
     CoM: 
       c: 
@@ -221,30 +663,6 @@ em:
         cvt: 0.21	C.t
         p: qq/Meta/Meta
   "0.3": 
-    eve_3: 
-      c: 
-        el: 1
-        s: "A.I.eve_3 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $eve = C.sc.eve;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    #J.mo.s.al.opt.fole = [Followe=>W=>\"life/W/em.is.W\\.e\"];\n    n \"life/W/em.is.W\\.e\"=>-sol\n    # routes ids[] into All(Oth)\n};\n"
-      sc: 
-        acgt: s
-        act: 1
-        args: A,C,G,T,s
-        cg: J,em
-        code: em 3
-        dige: 1faf0cd4043c
-        gk: eve
-        gkiss: s
-        gro: Meta
-        nk: sc
-        nov: 1
-        nv: sceve
-        rg: J,em
-        v: sceve
-      t: eve_3
-      "y": 
-        cv: '0.3'
-        cvt: 0.3	C.t
-        p: qq/Meta/Meta
     jslines_3: 
       c: 
         el: 1
@@ -322,13 +740,13 @@ oJ:
     J_344: 
       c: 
         el: 1
-        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        A.ztime = 6 if exists C.c.e;\n        sayre \"e zught of A.J.name  holds  J.name  \".ki C.c if C.c.e;\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        if (J.ev.amb) {\n            my $ar = I.d&ar;\n            Rw J.ev.amb + $J;\n        }\n        # absorb self Cing\n        T.not = 1;\n        # above will oscusifetc\n        return;\n    }\n    my $E = C.c.e;\n    # S could be a C if we are already inflecting panopsi\n    saybl \"In s C.t: E.t     \".ki(E.sc) if A.V&E;\n    sayre \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be s=J suctio later, ev on at protocol for incompleteness\n        unless (C.c.IsOn) {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            return T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy, unless T.oke\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
+        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    # here before we could be interrupting\n    my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };\n    if (A.J ne $J) {\n        # what we are holding out as .e and .s helps it leave\n        if (my $E = C.c.e) {\n            A.ztime = 6;\n            my $na = A.J ne A.J.mo.J\n                ? \"A.J.mo.J.name ' A.J.name\"\n                : A.J.name;\n            my $el = ref $E eq 'HASH'\n                ? E.t || die \"wtf $E\"\n                : \"e:$E\";\n            saygr \"J344E $na holds $el --->  J.name\";\n        }\n        return;\n    }\n    unless (exists C.c.e || $isJ->(C.c.s)) { # subscribe maintain there\n        say \"threesorbtion: A.J.name to J.name\"\n            .\" is not holding e or sJ\" if A.V&V;\n        if (J.ev.amb) {\n            my $ar = I.d&ar;\n            Rw J.ev.amb + $J;\n        }\n        # absorb self Cing\n        T.not = 1;\n        # above will oscusifetc\n        return;\n    }\n    my $E = C.c.e;\n    # S could be a C if we are already inflecting panopsi\n    saybl \"In s C.t: E.t     \".ki(E.sc) if A.V&E;\n    sayre \" unable to count self ?\" if C.c.s eq $J;\n    die \"thoughts of a thous\" if A.J ne $J;\n    if (!exists C.c.e) {\n        # be s=J suctio later, ev on at protocol for incompleteness\n        unless (C.c.IsOn) {\n            say \"Comebacking J.name with C.t...\" if A.V&V;\n            Rw wayt $J $C $d=0.01 $p=jive;\n            return T.not = 1;\n        }\n    }\n    # no J being tricks for handulation, event energy, unless T.oke\n    A.Iso.th = 1;\n    delete A.Iso.oJ;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 344
-        dige: 9d9b54b635ad
+        dige: 82b8e0852127
         gk: J
         gro: threes
         nk: c
