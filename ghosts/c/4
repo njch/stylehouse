@@ -112,6 +112,7 @@ Oscapps: |
     u allsvse
     n '','','%of:Not'
     # all but intercepted sc is sc
+    # 
     
     n nspc =>2=><<''
         my $J = C.sc.J;
@@ -122,6 +123,8 @@ Oscapps: |
         my $max = C.sc.nspc_max || 1;
         $sl = $max if $sl > $max;
         if ($sl > 1+$cl || $sl < 1-$cl) {
+            saybl "Abo nspc $sl";
+            return;
             C.sc.geo ? 
             C.sc.geo.scale = $sl
             :
@@ -157,7 +160,7 @@ Oscapps: |
         }
     
     n src =>556=><<''
-        at.src = $s
+        at.c.src = $s;
     
     # long range stuff reporting, use A.sv the toplevel intergatr
     # like sort by A.sv length and number
@@ -175,11 +178,10 @@ Oscapps: |
         sayre "idly C.t  J.name J.r    ".ki C.sc;
         
     n lp =>5=><<''
-        at.c.ishtml = 1;
-    
+        at.c.ht = 1;
     
     n ishtml =>5=><<''
-        at.ishtml = 1;
+        at.c.ht = 1;
         
     n tt =>5=><<''
         at.c.title = $s;
@@ -188,8 +190,8 @@ Oscapps: |
         at.c.canvas = $s;
         
     n type =>51=><<''
-        at.type = $s;
-        at.c.ishtml = 1;
+        at.c.type = $s;
+        at.c.ht = 1;
         sayre "at.t at.y cannot have a title: $_" for grep{defined} delete at.c.title;
         
     n tag =>5=><<''

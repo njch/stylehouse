@@ -62,17 +62,36 @@ Goodat: |
         I.pwin || die "nopwin from pin";
         I.pwin->($pin,$way);
     
+    n pon =>''=><<'',{acgt=>'pin,way,s'}
+        I.pwin || die "nopwin from pin";
+        I.pwin->($pin,$way,{et=>$s});
+    
     # non acgts
-    n pwin =>''=><<'',{args=>'pin,way'}
-        return $way->{$pin} if exists $way->{$pin};
+    n pwin =>''=><<'',{args=>'pin,way,set'}
+        if (exists $way->{$pin}) {
+              my $o = $way->{$pin};
+            $way->{$pin} = set.et if exists set.et;
+            delete $way->{$pin} if set.de;
+            return $o;
+        }
         my @path = split /\/|\./, $pin;
         my $h = $way;
+        my $last;
         for my $p (@path) {
-            $h = $h->{$p};
-            unless ($h) {
+            if (ref $h ne 'HASH' && ref $h ne 'G') {
+                undef $last;
                 undef $h;
                 last;
             }
+            $last = [$h,$p];
+            $h = $h->{$p};
+            # ref = T makes it look for jointed rest of path in tiedinto {}
+            # then T collapses the feely data mesh
+        }
+        if ($last) {
+            my ($he,$pi) = @$last;
+            $he->{$pi} = set.et if exists set.et;
+            delete $he->{$pi} if set.de;
         }
         return $h if defined $h;
         . 
