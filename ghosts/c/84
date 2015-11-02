@@ -103,9 +103,40 @@ alljse: |
         my $cv = C.y.cv || 1;
         $cv =~ s/^0\.//;
         C.t = C.sc.of."_".C.t."_".$cv;
+reJSlines: | # could spiral intuit re$W to just this - A coney islands
+    y.at.ressur = 'JSlines';
+JSlines: |
+    y.at.jslines = 1;
+    y.ope = 1;
+    n $C
+EmJSlines: |
+    my $N = [@{em.lines||die"Nop"}];
+    @$N = Rw humms $J $N wongui _;
+    @$N = sort { a.t cmp b.t }
+    Rw humms $J $N notnotjs _;
+    
+    #my $S = Rw humms $J $N jscoi;
+    return if grep {$_} map {
+        _.sc.args ? do {
+            say " the _.t  has processed .... ".ki _.sc;
+            0;
+        } : do {
+        sayre " the _.t  has not been processed .... ".ki _.sc;
+        }
+    } @$N;
+    
+    
+    my $S = Rw humms $J $N spots;
+    my $l = em.lines = [];
+    push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
+    push @$l, Rw JSpots $II:S.X;
+    C.c.os = 1 if !grep {/\S/} @{S.z};
+    C.sc.Wc = 1;
 ym/jscoi: |
+    say "Sggot C.t   ".ki C.sc;
     my $s = C.sc.js || return;
     if (C.sc.acgt) {
+        sayre "C.t already C.sc.args" if C.sc.args;
         C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
     }
     die "wonky C.t   of ".ki $C if C.t =~ /\W/;
@@ -127,6 +158,26 @@ ym/jscoi: |
     C.sc.dige = slm 12, dig C.c.s;
     delete C.c.from; # as 7, S over
     $v->{js}->{C.y.cv}->{C.t} = $C;
+JSpots: |
+    my @sup;
+    for my $K (sort keys %$II) {
+        my $cvs = $II->{$K};
+        my @cvs = ();
+        for my $cv (sort keys %$cvs) {
+            my $ts = $cvs->{$cv};
+            my @ts;
+            for my $t (sort keys %$ts) {
+                my $D = $ts->{$t};
+                my $s = {%{D.sc}};
+                die "collajsee s.args".ki $D if s.args ne 'A,C,G,T,s';
+                delete $s->{$_} for qw'of acgt args dige lines js';
+                push @ts, [$t,$s];
+            }
+            push @cvs, [$cv, \@ts];
+        }
+        push @sup, sjson({eine=>[$K,\@cvs]});
+    }
+    @sup
 ym/spots: |
     v.i ||= 0;
     v.X->{C.sc.of}->{C.y.cv}->{C.t} = $C if C.sc.of; # vetc
@@ -482,42 +533,4 @@ stylext: |
         d.dig = $(A.on).attr('dig');
         a.ethro(d, ws);
         console.log(d);
-reJSlines: | # could spiral intuit re$W to just this - A coney islands
-    y.at.ressur = 'JSlines';
-JSlines: |
-    y.at.jslines = 1;
-    y.ope = 1;
-    n $C
-EmJSlines: |
-    my $N = [@{em.lines||die"Nop"}];
-    @$N = Rw humms $J $N wongui _;
-    @$N = sort { a.t cmp b.t }
-    Rw humms $J $N notnotjs _;
-    
-    my $S = Rw humms $J $N spots;
-    my $l = em.lines = [];
-    push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
-    push @$l, Rw JSpots $I:S.X;
-    C.c.os = 1 if !grep {/\S/} @{S.z};
-    C.sc.Wc = 1;
-JSpots: |
-    my @sup;
-    for my $K (sort keys %$I) {
-        my $cvs = $I->{$K};
-        my @cvs = ();
-        for my $cv (sort keys %$cvs) {
-            my $ts = $cvs->{$cv};
-            my @ts;
-            for my $t (sort keys %$ts) {
-                my $D = $ts->{$t};
-                my $s = {%{D.sc}};
-                die "collajsee s.args".ki $D if s.args ne 'A,C,G,T,s';
-                delete $s->{$_} for qw'of acgt args dige lines js';
-                push @ts, [$t,$s];
-            }
-            push @cvs, [$cv, \@ts];
-        }
-        push @sup, sjson({eine=>[$K,\@cvs]});
-    }
-    @sup
 
