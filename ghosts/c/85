@@ -31,29 +31,49 @@ yJLong: | # node read at here using event origin's apoly C.t (trhe ky)
     
 climbo: | # hop down tv, for hJ
     my $tj = $J;
-    my $h = djson E.c.us.hopel;
+    my $h = E.c.us.hopel ?
+        djson E.c.us.hopel
+        :
+        E.c.us.ids ?
+        [map{[undef,undef,$_]}@{E.c.us.ids}]
+        :
+        die "No way to climb into J.name with: ".wdump 2, E.c.us;
+    shift @$h until !@$h || $h->[0]->[-1] eq J.id;
+    !@$h && die "no hold";
+    my @C;
     my $i = -1;
-    my @hopin;
     for my $l (@$h) {
+        sayyl "for   @$l";
         $i++;
+        my $f;
         my ($t,$cv,$id) = @$l;
         if ($i == 0 && $id eq J.id) {
-            #say "hop 1 is J.name";
+            say "hop 1 is J.name";
+            $f = tj.C;
         }
-        else {
+        elsif (defined $t && defined $cv) {
             my $vt = $cv."\t".$t;
             my $tv = tj.El.Pre.tv;
-            $tj = $tv->{$vt}
+            $f = $tv->{$vt}
                 || return sayre "NO $vt on tj.name!!!"
                 .wdump 3, [$l, OF=>$h,HAD=>$tv];
-            $tj = tj.sc.J || die "no J on tj.t";
+            f.sc.J || die "no J on tj.t";
         }
-        push @hopin, $tj;
+        elsif (defined $id) {
+            my $oj = Rw lookiDuv $J:tj $id;
+            sayyl "Found: ".ki $oj;
+            $f = $oj || return sayre "No J on oj.name $id . .. ";
+        }
+        else {
+            die "L hop: $i ? ".wdump 3, $h;
+        }
+        push @C, $f;
+        $tj = f.sc.J;
         #sayyl "hop - tj.name";
     }
-    E.c.hJ = [@hopin];
-    
-    #sayyl "Found a tj.name";
+    E.c.hJ = [grep{defined}map{_.sc.J}@C];
+    E.c.hC = [@C];
+    sayyl "Found a tj.name";
     
     return sayre("JevBo: J.ev.bo: J.name  C.sc.J.name  E.sc.J.name") &&
         Rw J.ev.bo
@@ -61,6 +81,31 @@ climbo: | # hop down tv, for hJ
     
     Rw clack;
     
+bodos: |
+    my ($e,$pin,$ba) = map { ($_,_.sc.dos) }
+        grep {_.sc.dos}
+        @{E.c.hC},map{_.C}@{E.c.hJ};
+    $e || return 
+        Rw clack UNFOUNDCLIMB;
+    
+    sayyl "%dos: e.t  says   dos=$pin";
+    $pin || die "nopindos ".wdump 4,[$e];
+    Rw $pin;
+lookiDuv: | # look at Duv.ids and even ((Duv.vs)) deeply for ids
+    my @pos = $J;
+    my $d = ar.d || 3;
+    my @got;
+    for (1..$d) {
+        @got = grep{defined} map{ _.El.Duv.ids->{$id} } @pos;
+        last if @got;
+        @pos = map{ @{_.El.Pre.vs||do{sayre "NO VS on _.name";[]}} }@pos;
+        @got = grep{ _.sc.id eq $id || _.sc.J && _.sc.J.id eq $id } @pos;
+        last if @got;
+        @pos = grep{defined} map{_.sc.J} @pos;
+    }
+    #@got = map{ _.sc.J || die "$id id no J: ".ki $_ }@got;
+    @got == 1 || return sayre "Not found $id ! ".@got;
+    shift @got;
 SpaceFlos: | # node write, collected goo sticks (active agent & hi wires) gets E.t to thingdex routes to remote by C
     return sayre "E.t iutno self E.sc.J.name\n\n\n\n"
         if E.sc.J && E.sc.J.mo.J eq $J;
@@ -138,7 +183,7 @@ talkzyh: |
     # z is the waypoints, 
     # yJ the yonder (origin) stack, 
     # hJ the here stack
-    for my $k (qw'z yJ hJ') {
+    for my $k (qw'z yJ hJ hC') {
         saybl("no $k") && next unless E.c->{$k};
         saybl "$k $k $k $k $k $k" for 1..2;
         sayyl ref _.sc ? ki $_ : " - _.name    ". ki _.C.sc for @{E.c->{$k}};

@@ -142,8 +142,9 @@ Ghuts: |
         eval { confess( '' ) };
         my @stack = split m/\n/, $@;
         shift @stack for 1..2; # hide above this sub, G eval & '  at G...';
+        @stack = @stack[0..20] if @stack > 24;
         my @stackend;
-        push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack && die "NO find gggg stack";
+        push @stackend, shift @stack until $stack[0] =~ /g::ggggggg/ || !@stack;
         s/\t//g for @stackend;
 
         # write on the train thats about to derail

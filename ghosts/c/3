@@ -85,6 +85,9 @@ Wrinkles: | # space refering to itself
     n id =>'',<<'','%code:Mo 42'
         T.at.id = $id;
     
+    n idly =>'',<<'','%code:Mo 42'
+        T.at.id = mkuid();
+    
     n pwar =>'',<<'','%code:Mo 42'
         T.at.pwar = $pwar;
     
@@ -93,7 +96,6 @@ Wrinkles: | # space refering to itself
         T.at.path = $path;
         T.at.idly = 1 if !C.c.fo;
     
-
 C14: | # the CIA is all over it
     # cp gip I.i, particle pullever
     if (my $c = G.pwin->(C.t, A.J.A.in)) { 
@@ -199,7 +201,8 @@ Space: |
         C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if y.o.J;
         #sayre "Jyspace: spc:  J.d.y.spc  or aspace: Jy.aspace" if $Jy;
         # divvy space inside parent's share most J or in 3-4 of the pi
-        my $sl = Jy.spc * 0.1;
+        my $sl = Jy.spc * 0.01;
+        $sl = 0.02 if $sl < 0.02;
         C.y.in ||= $shut ? 0.3 : $Jy ? Jy.cv + $sl : 0.1;
         C.y.out ||= $shut ? 0.4 : $Jy ? Jy.ov - $sl : 0.9;
         C.c.lumfa = 1 if y.lumfa;
@@ -313,7 +316,10 @@ bal: |
         y.u.muav = $over / $total;
 
     n balin =>''=>{s=><<''},{code=>'Mo 301',v=>'bal'}
-        I.d&xot,$C,$bal->[y.i];
+        my $CC = $bal->[y.i];
+        ref $CC eq 'HASH' || sayre "Not ref: $CC A.J.name  C.t bal y.i :";
+        $CC ||= {};
+        I.d&xot,$C,$CC;
         
     n balou =>''=>{s=><<''},{code=>'Mo 337',v=>'bal'}
         y.mu = y.thy if exists y.thy;
