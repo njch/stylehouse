@@ -85,6 +85,7 @@ Sight: |
     n styleomi
     n stylation
     n stylers
+    n stylext
     J.inV = 1;
     #n lim=>pi=>'g/c/84'
     # could ahh...
@@ -190,6 +191,27 @@ stylehut: |
         }
         return ks.join(',');
     
+styleven: |
+    u alljs
+    
+    n entag =>''=><<'',{args=>'d,tag'}
+          d.name = tag.attr('name');
+          var ids = [];
+          while (tag.length) {
+              var nam = tag.prop('tagName');
+              var id = tag.attr('id');
+              if (!d.id && id)
+                  d.id = id;
+              if (id)
+                  ids.unshift(id);
+              if (nam === 'WW') {
+                  d.W = id;
+                  d.ux = ids[1];
+                  break;
+              }
+              tag = tag.parent();
+          }
+          d.ids = ids;
 styleomi: |
     u alljs
     
@@ -295,7 +317,6 @@ styleomi: |
         C.sc.anc ||= {};
         t&7;
     
-    0 &&
     n nn =>''=><<''
         A.W.bb ||= {};
         A.bb ||= A.W.bb;
@@ -370,7 +391,6 @@ stylation: |
             C.c[v] and fl(v, C.c[v])
         });
 stylers: |
-    n stylext
     u alljse
     
     n geo =>5=><<''
@@ -423,7 +443,7 @@ stylext: |
         .
         if (typeof s === 'string') {
             if (s === '3') {
-                !cm && return a.c('no cod !');
+                !cm and return a.c('no cod !');
                 s = {};
             }
             else {
@@ -438,14 +458,18 @@ stylext: |
         !cm and cm = CodeMirror(A.on, set);
         A.bb.cod = cm;
         .
+        if (C.c.s) {
+            C.c.s !== A.bb.jus and cm.setValue(C.c.s);
+            else { a.c('vv vv'+C.t); }
+        }
+        cm.refresh();
+        .
         var sav = function(){ 
             G&codsav,cm;
         };
         cm.setOption('extraKeys', {Esc:sav});
-        cm.on('focus',function(){clof();keof();});
-        cm.on('blur',function(){clon();keon();sav();});
-        C.c.s and cm.setValue(C.c.s);
-        cm.refresh();
+        cm.on('focus',function(){a.c('Cofuc');clof();keof();});
+        cm.on('blur',function(){a.c('Cofus');clon();keon();sav();});
     
     #    $('#'+id).css('width','15em','max-height','70%','overflow','scroll');
     #    $('#'+id+' > .CodeMirror');//.css('height','auto');
@@ -453,11 +477,11 @@ stylext: |
     u alljs
     n codsav =>''=><<''
         var cm = s;
-        a.m('AA AA '+C.t);
+        a.c('AA AA '+C.t);
         var d = {};
-        a.entag(d, A.on);
-        d.code = cm.getValue();
-        d.dig = A.on.attr('dig');
+        a.entag(d, $(A.on));
+        A.bb.jus = d.code = cm.getValue();
+        d.dig = $(A.on).attr('dig');
         a.ethro(d, ws);
         console.log(d);
 reJSlines: | # could spiral intuit re$W to just this - A coney islands
