@@ -224,7 +224,11 @@ Spaci: |
         y.in ||= 0.1;
         y.out = y.in + y.space if defined y.space;
         y.out ||= 0.9; # up to, then low things big
-        y.thi ||= 1; 
+        y.thi ||= 1;
+        if (my $mk = y.ert) {
+            $mk += y.ert while y.thi > $mk;
+            y.thi = $mk;
+        }
         y.space = y.out - y.in;
         y.space *= -1 unless y.space > 0;
         y.aspace = y.space / y.thi;
@@ -317,7 +321,10 @@ bal: |
 
     n balin =>''=>{s=><<''},{code=>'Mo 301',v=>'bal'}
         my $CC = $bal->[y.i];
-        ref $CC eq 'HASH' || sayre "Not ref: $CC A.J.name  C.t bal y.i :";
+        if (ref $CC ne 'HASH') {
+            sayre "Not ref: $CC A.J.name  C.t bal y.i :";
+            return T.not = 1;
+        }
         $CC ||= {};
         I.d&xot,$C,$CC;
         
