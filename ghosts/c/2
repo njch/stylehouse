@@ -595,17 +595,25 @@ collaspII: | # acquire perhaps even time 1, spiral spiraled IIII and I
     $II;
     
 spII: | # thereis a II being passed overhead, entrance to spIII N C applier/updater
-    my @N = @{ar.m};
     my @C;
-    while (@N) {
-        my $m = shift @N;
-        my $r = ref $m ? $m : G.pwin->($m, $A);
-        $m = "href:$m" if ref $m;
-        if (ref $r eq 'ARRAY') {
-            unshift @N, @$r;
+    if (ar.src) {
+        for (@{ar.src}) {
+            my ($t,$s) = @$_;
+            say "Pusing  $t : ".ki $s;
+            push @C, {t=>$t,c=>{s=>$s}};
         }
-        elsif (ref $r eq 'HASH') {
-            push @C, {t=>$m,c=>{s=>$r}};
+    }
+    elsif (ar.m) {
+        my @N = @{ar.m};
+        while (@N) {
+            my $m = shift @N;
+            my $r = G.pwin->($m, $A);
+            if (ref $r eq 'ARRAY') {
+                unshift @N, @$r;
+            }
+            elsif (ref $r eq 'HASH') {
+                push @C, {t=>$m,c=>{s=>$r}};
+            }
         }
     }
     my $Ii = join " + ", map{"_.t:_.c.s"} @C;
