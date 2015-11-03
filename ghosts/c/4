@@ -594,42 +594,53 @@ Chang: |
     #u slowmoving
     J.pix = {any=>1,u=>'csfisto'};
     u csfisto
+    y.at.isle = 'u';
     
+    #
     n lum
     n bal
     n jsfistos
     #n stylation
     #y.at.jslines = 2;
-    J.VV.N = 1;
+    #J.VV.N = 1;
 csfisto: | # the in osc ^
     u allsvse
     n '','','%of:Art'
     # root lv.II <- at.V.*.rv.II
     # plucked Ktv spots X running upwards
-    n code =>2=><<''
+    n code =>5=><<''
         sayyl "Have code     A.J.name the C.t  via ".ki C.sc;
         lv.op.sc.code = 1;
         return sayre "C.t is js running ooze" if !C.sc.acgt;
         my $v = {};
-        Rw ym/conoi $A $C $G $T $v;
+        Rw ym/conoi $A $C:at $G $T $v;
         lv.X = $v;
-
-    J.VV.N=1;
+     
+    n J =>7=><<''
+        return sayre "BanJ" if C.c.root;
+        my $rv = lv.do.Duv || die "Noduv";
+        rv.X || sayre "Not Xceiving C.t";
+        lv.X ||= rv.X;
+        #lv.do->{V.name} = $rv;
+    
     n root =>7=><<'','%nv:croot'
-        at.X ||= ta.X || {My=>"self"};
+        lv.X ||= ta.X || {My=>"self"};
         my $src = [];
         for my $k (@{C.c.V.os}) {
             my $kv = lv.do->{$k} || die "nondo $k";
-            push @$src, [$_,kv.X] if kv.X;
+            push @$src, [$k,kv.X] if kv.X;
         }
-        J.V = 1;
-        Rw spII $A $II:at.X $src;
-        J.V = 0;
-        sayyl "C.t top:".wdump 4,[at.X];
-        
-        #lv.do->{V.name} = $rv;
-        #at.V->{V.name} = rv.i;
-        # play splots
+        Rw spII $A $II:lv.X $src;
+        #saybl "C.t top:".wdump 4,[lv.X];
+        saybl "From: ".join', ',map{$_->[0]}@$src;
+    
+    n '','','%of:em'
+    n isle =>3=><<'',{cg=>'J,em'}
+        # # #
+        my $lv = C.y.lv;
+        my $X = lv.X;
+        Rw down $f=$isle/C.t $s:X;
+    
 jsfistos: |
     u allsvse
     n '','','%of:Art'
