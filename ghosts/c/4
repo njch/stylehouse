@@ -591,10 +591,12 @@ thank: | # J, as self consuming other, s=other, !e
     n $_ =>''=>{pi=>pane=>s=>$S->{$_}} for sort keys %$S;
     # panes
 Chang: |
-    u slowmoving
-    n stylation
+    #u slowmoving
+    n tesooyl
+    n testylate
+    #n stylation
     y.at.jslines = 2;
-    J.V = 1;
+    J.VV.N = 1;
 slowmoving: |
     u allvse
     n '','','%of:Mo'
@@ -602,16 +604,17 @@ slowmoving: |
         saybl " *" for 1..2;
         saybl " * THink about resu J.name  ".ki $C;
         saybl " *" for 1..2;
-
 jsfisto: | # the in osc ^
     u allsvse
     n '','','%of:Art'
-    J.VV.N = 1;
-    n js =>4=><<''
-        sayyl "Have fopr J.name the C.t  via ".ki C.sc;
+    n js =>2=><<''
+        sayyl "Have fopr A.J.name the C.t  via ".ki C.sc;
+        lv.op.sc.js = 1;
+        return sayre "C.t is js running ooze" if !C.sc.acgt;
         my $v = {}; # spots indexes
         Rw ym/jscoi $A $C $G $T $v;
-
+        # root lv.II <- at.V.*.rv.II
+        # plucked Ktv
 EmJSlines: |
     my $N = [@{em.lines||die"Nop"}];
     @$N = Rw humms $J $N wongui _;
@@ -622,15 +625,15 @@ EmJSlines: |
         sayre "HEavily JSLINES: J.name";
         my ($don,$not);
         for (@$N) {
-            $don++, last if C.sc.args;
+            ++$don && next if _.sc.args;
             $not++;
             sayre " the _.t  has not been processed .... ".ki _.sc;
         }
 
         if ($not && !$don) {
+            sayyl "In Em jscoi $don done, $not remain";
             my $II = Rw humms $J $N jscoi;
             # N will be changed...
-            sayyl "In Em jscoi";
             sayre "DedstilL: _.t   ".ki _.sc 
                 for grep{!_.sc.args} @$N;
         }
@@ -638,21 +641,45 @@ EmJSlines: |
             say "Is good jscoi";
         }
         else {
-            die "Mis somewhere";
+            die "Mis somewhere".wdump 3, $N;
         }
     }
     
     my $S = Rw humms $J $N spots;
+    if (S.X) {
+        my $lv = C.y.lv;
+        my $vl = C.y.vl;
+        if (vl.X) {
+            Rw qsp $I:S.X $II:vl.X;
+            #sayre "Should under at: ". wdump 3, vl.X;
+        }
+        lv.X = {%{S.X}};
+        delete S.X->{$_} for 'ooI','Ii';
+        sayyl "Alltook: ".F_delta();
+    }
+    
     my $l = em.lines = [];
     push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
     push @$l, Rw JSpots $II:S.X;
     C.c.os = 1 if !grep {/\S/} @{S.z};
     C.sc.Wc = 1;
+qsp: | # ensure II underneath I, no-9 X stretcher (jslines alljsers when jslines all lv.X)
+    for my $K (keys %$II) {
+        die "ooIIi" if $K eq 'Ii' || $K eq 'ooI';
+        my $cvs = $II->{$K};
+        my @cvs = ();
+        for my $cv (keys %$cvs) {
+            my $ts = $cvs->{$cv};
+            my @ts;
+            for my $t (keys %$ts) {
+                $I->{$K}->{$cv}->{$t} ||= $ts->{$t};
+            }
+        }
+    }
 ym/jscoi: |
-    say "Sggot C.t   ".ki C.sc;
     my $s = C.sc.js || return;
     if (C.sc.acgt) {
-        sayre "C.t already C.sc.args" if C.sc.args;
+        sayre "acgt js: C.t already C.sc.args" if C.sc.args;
         C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
     }
     die "wonky C.t   of ".ki $C if C.t =~ /\W/;
@@ -677,6 +704,7 @@ ym/jscoi: |
 JSpots: |
     my @sup;
     for my $K (sort keys %$II) {
+        die "ooIIi" if $K eq 'Ii' || $K eq 'ooI';
         my $cvs = $II->{$K};
         my @cvs = ();
         for my $cv (sort keys %$cvs) {

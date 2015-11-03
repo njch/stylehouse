@@ -599,7 +599,8 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     my @C;
     while (@N) {
         my $m = shift @N;
-        my $r = G.pwin->($m, $A);
+        my $r = ref $m ? $m : G.pwin->($m, $A);
+        $m = "href:$m" if ref $m;
         if (ref $r eq 'ARRAY') {
             unshift @N, @$r;
         }
