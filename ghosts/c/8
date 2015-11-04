@@ -170,19 +170,23 @@ Sl: |
     J.ev.th ||= 'middle';
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
+    J.VV.N = 1;
     
-    n reJSlines
+    #n reJSlines
     # makes everything but js=1
-    n mild=>-pape
     
     #$('canvas').remove();
     
-    n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
+    #n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
     
+    y.at.jslines = 1;
+    n skdo=>2=>"a\.sitandspin();",'%js'
+        
     
-    n jshang
+    #n jshang
     #n ThisPr
-    #n Details
+    n Details
+    n Scrawl
     #n EYZ
     #n Usee
     # Rw followS
@@ -190,10 +194,14 @@ Sl: |
     my $n = J.fsjoi++;
     $n && 1;
     $n || Rw loopby $b=5 $d=26 $p=Top;
+Scrawl: |
+    y.at.ux = 1;
+    n mild=>-pape
 pi/pape: |
-    y.at.jslines = 1;
     my ($no,$i,$se) = `uptime` =~ /( [\d\.]+){3}/;
     my $fo = $no - $i;
+    
+    map{delete J.El->{$_}}'Pre','Duv' if rand(3) > 2;
     
     my $sc = {
         pa=>ra=>es=>"\$('img').attr('src')",
@@ -202,22 +210,31 @@ pi/pape: |
         b=>(shuffle qw[multiply exclusion hard-light lighten])[0],
         r=>360 * $fo,
     };
-    n payp =>int(rand 3)=>{},$sc
+    n payp =>3=>{},$sc
     
 jspa: |
     u alljse
     
     n pa =>3=><<''
         with (paper) {
-            !s.pa === 'ra' and a.c('nom ra: '+s.pa);
-            var r = a.e('new Raster('+s.es+')');
-            s.poes and r.position = a.e(s.poes);
-            !s.poes and r.position = view.center;
-            s.poxop and r.position += s.poxop;
+            !s === 'ra' and a.c('nom ra: '+s);
+            s = C.sc;
+            s.jfi ||= 'img';
+            var find = $(s.jfi);
+            !find.length and a.c('no find '+s.jfi);
+            var src = $(find).attr('src')
+            var r = new Raster(src);
+            s.poes and r.position = eval(s.poes);
+            else { r.position = view.center; }
+            s.poxop and r.position.x += s.poxop;
+            s.poyop and r.position.y += s.poyop;
             s.sca and r.scale = s.sca;
             s.b and r.blendMode = s.b;
             s.r and r.rotate(s.r);
+            a.c('vectred '+a.ks(s));
             console.log('img: ', r);
+            A.W.ras ||= {};
+            A.W.ras[src] = r;
         }
     
 ThisPr: |
@@ -417,7 +434,7 @@ flse: | # fusilagery - wants about 2 seconds
         }
     }
     else {
-        die "How to hold ".wdump 2, $r;
+        sayre "How to hold ".wdump 2, $r;
     }
     sayre "Have flse click: ".wdump 2, $r;
 goche: |

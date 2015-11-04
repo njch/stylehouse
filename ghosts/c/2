@@ -640,6 +640,17 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     
     say "Spidered A.talk: ".F_delta if A.J.V;
     $say
+sumX: | #v topleve & size descript, maps C into N if
+    my @k = grep{$_ ne 'Ii' && $_ ne 'ooI'}sort keys %$X;
+    my @ll = map{$X->{$_}}@k;
+    my @l;
+    for (1..2) {
+        @ll = map {values %$_}grep{ref $_ eq 'HASH'} @ll;
+        push @l, scalar @ll;
+    }
+    ar.N && push @{ar.N}, @ll;
+    join(", ",@k).": ".join(" - ",@l);
+    
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};
