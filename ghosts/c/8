@@ -172,23 +172,34 @@ Sl: |
     J.ev.bo ||= 'bodos';
     J.VV.N = 1;
     
-    #n reJSlines
+    n reJSlines
     # makes everything but js=1
     
     #$('canvas').remove();
     
-    #n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
+    n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
     
     y.at.jslines = 1;
     #n skdo=>2=>"a\.sitandspin();",'%js'
     
-    #n bla =>3=>G.way.paps,'%js'
+    #rand 1 < 0.17 &&
+    n bla =>3=>G.way.paps,'%js'
     
+    n blag =>4=>{s=><<''},'%js'
+        var g;
+        $.each(ww, function(i,v){
+            a['c']("Have: "+i);
+            $.each(ww, function(ii,vv){
+            a['c']("----- "+ii);
+            });
+        });
+        //paper.project.clear();
+    
+    # here
     
     #n jshang
     #n ThisPr
     n Details
-    n Scrawl
     #n EYZ
     #n Usee
     # Rw followS
@@ -204,39 +215,38 @@ paps: |
             r.position = view.center;
             r.scaling = 3;
             r.rotation = 30;
-            r.blendMode = 'lighten';
+            r.blendMode = 'color-burn';
             console.log('img: ', r);
             if (!a.fo)
                 a.fo = {};
             a.fo[src] = r;
         }
-Scrawl: |
-    y.at.ux = 1;
-    n mild=>-pape
 pi/pape: |
-    my ($no,$i,$se) = `uptime` =~ /( [\d\.]+){3}/;
+    my ($no,$i,$se) = ($1,$2,$3) if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
     my $fo = $no - $i;
     
     map{delete J.El->{$_}}'Pre','Duv';
-    
+    say wdump [$no,$i,$se,$fo];
     my $sc = {
         pa=>ra=>es=>"\$('img').attr('src')",
-    #    poxop=>'-30',
-        sca=>0.421 * $se,
-        b=>(shuffle qw[multiply exclusion hard-light lighten])[0],
-        r=>360 * $fo,
+        poxop=>-70 * (rand(3) -2),
+        poyop=>-70 * (rand(3) -2),
+        sca=>3.421 * rand(3) ^ 2,
+        opa=>0.61,
+        b=>(shuffle 'normal', 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference', 'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor')[0],
+        r=>int(900 * $fo),
     };
+    $sc->{$_} = I.d&ron,$sc->{$_} for grep{$sc->{$_}} qw'poxop poyop sca opa r';
     n payp =>3=>{},$sc
     
 jspa: |
     u alljse
     
     n pa =>3=><<''
-        A.W.p ||= new paper.Project();
-        A.W.p.activate();
         with (paper) {
             !s === 'ra' and a.c('nom ra: '+s);
             s = C.sc;
+            s ||= {};
             s.jfi ||= 'img';
             var find = $(s.jfi);
             !find.length and a.c('no find '+s.jfi);
@@ -251,8 +261,9 @@ jspa: |
             s.sca and r.scaling = s.sca;
             s.b and r.blendMode = s.b;
             s.r and r.rotation = s.r;
-            a.c('vectred '+a.ks(s));
+            s.opa and r.opacity = s.opa;
             console.log('img: ', r);
+            A.W ||= {};
             A.W.ras ||= {};
             A.W.ras[src] = r;
         }
@@ -421,13 +432,7 @@ Details: |
     n G.edit=>[-cde=>'2-6']
     y.at.cssdel = 'transform';
     
-    J.tea ||= [grep{chomp}shuffle`ls -1 eye/Tarf/*/*`];
-    J.fast++;
-    if (J.fast > 4) {
-        J.slow++;
-        J.fast = 0;
-    }
-    n J.tea->[J.slow]=>[-fi=>3]=>{}=>'%dos:flse,op:J/slow,to:1'
+    Rw Tarp;
     
     y.in = 1;
     y.out = 3;
@@ -439,7 +444,16 @@ Details: |
     return;
     Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
     
-    
+Tarp: |
+    J.tea ||= [grep{chomp}shuffle`ls -1 eye/Tarf/*/*`];
+    J.fast++;
+    if (J.fast > 2) {
+        J.slow++;
+        J.fast = 0;
+        J.slow = 0 if J.slow >= @{J.tea};
+    }
+    n J.tea->[J.slow]=>[-fi=>3]=>{}=>'%dos:flse,op:J/slow,to:1'
+    n mild=>-pape
 flse: | # fusilagery - wants about 2 seconds
     my $r = E.c.hC->[-1];
     if (r.sc.to) {

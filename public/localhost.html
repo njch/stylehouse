@@ -29,26 +29,40 @@
   <script src="paper.js"></script>
   <script src="paper.animate.js"></script>
 <script src="jquery.min.js" type="text/javascript"></script>
-<script canvas="display" type="text/paperscript">
-        var raster = new Raster('tee');
-        raster.fitBounds(view.bounds, true);
-        function onResize() {
-            raster.fitBounds(view.bounds, true);
-        }
-        function onFrame(event) {
-	  if (raster.opacity > 0.1) {
-          raster.opacity -= 0.001;
-}
-        }
-</script>
+
+  <script canvas="display" type="text/paperscript">paper.uplg = new PaperAnimate.Updater();
+
+
+      var shape = new Path.RegularPolygon(view.center, 3, 100);
+      shape.fillColor = '#333bbb';
+      shape.animate(1, paper.uplg)
+           .translate(new Point(200,100))
+           .rotate(60)
+           .scale(2);
+
+      var text = new PointText(view.center);
+      text.justification = 'center';
+      text.fillColor = 'green';
+      text.content = 'STYLEHOUSE';
+      text.scale(14);
+       text.animate(4, paper.uplg, true)
+           .scale(0.0001);
+
+   function onFrame(e) { 
+   if (a.doya) {
+       a.doya(e);
+   }
+   paper.uplg.update(e);
+   }
+  </script>
 
 
 </head><body style="margin: 0px; background: url('eye/Pic/ift/IMG_4021.JPG'); background: black; color: #0d2; height:100%; width:100%;">
 
-    <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;z-index:-200" onclick="keon();clon();" > </div>
+    <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;right:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;z-index:200" onclick="keon();clon();" > </div>
     <img id='tee' src="eye/el/teeswivelm.jpg" style="display:none"/>
     <div id='ux' style="position:absolute;top:0em;
-    right:0em;width:100%;height:100%; overflow:hidden;"> </div>
+    right:0em;width:100%;height:100%;"> </div>
 
     <canvas id="display" resize></canvas>
 
