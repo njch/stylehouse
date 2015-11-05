@@ -174,7 +174,8 @@ ym/conoi: |
                 C.sc.Ifs.Td = $Q;
             }
             
-            if (my $v = C.sc.v) {
+            if (C.sc.v && C.sc.v ne '1') {
+                my $v = C.sc.v;
                 my ($nk,$gk) = $v =~ /^([tyc]|sc)(.*)$/;
                 $nk||die"strv:$v";
                 C.sc.nk ||= $nk;
@@ -193,7 +194,7 @@ ym/conoi: |
             if (my $v = C.sc.rg) {
                 $v = '' if $v eq '1';
                 my ($nk) = C.sc.v =~ /^([tyc]|sc)(.*)$/;
-                $nk ||= C.sc.nk || die"nonkrg".ki$C;
+                $nk ||= C.sc.nk || 'c';
                 $nk = 'c' if C.sc.cg;
                 my @no = map {
                     my ($wnk,$wgk);
