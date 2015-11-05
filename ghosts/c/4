@@ -677,14 +677,17 @@ Statch: |
     u allsvse
     J.VV.N = 1;
     n '','','%of:Art'
-    n muchofany =>5=><<'','%nv,tldo:scindex'
-        for my $k (keys %{T.D.sc.scindex||{}}) {
-            if (exists C.sc->{$k}) {
-                #A.t#
-            }
+    n muchofany =>5=><<'','%nv,tldo:scgkindex'
+        say "Skindex ... ";
+        for (keys %{T.D.sc.scindex||{}}) {
+            exists C.sc->{$k} || next;
+            sayyl "Found $k";
+            A.Subtle.Styles = 1;
+            A.t&Styles,6,1;
+            return;
         }
     
-scindex: |
+scgkindex: |
     D.sc.scindex = {map{_.sc.gk=>1}grep{_.sc.nk eq 'sc' && _.sc.gk}@$N};
     saybl wdump 3, $D;
 Strope: |
@@ -707,18 +710,36 @@ Stripes: |
         map{$for->(@$_)}
         [empc => qw'letter spacing'],
         [empc => qw'line height'],
+        
         [empc => 'margin' =>[qw'left right top bottom']],
         [empc => 'ma^rgin'],
         [empc => [qw'mi^n max']=>[qw'width height']],
         [empc => [qw'lef^t ri^ght top^ bo^ttom']],
         [empc => [qw'left^ right^ top^ bottom^']],
         [empc => [qw'width^ height^']],
+        
         ['' => 'over^flow'],
         ['' => 'float^'],
         ['' => 'bo^rder'],
         [sca => 'opa^city'],
+        
         ['' => qw'tr^ansform origin'],
+        [radun => qw'^transform rad^^rotate'],
+        [sca => qw'^transform scale^'],
+        
+        [pixels => qw'^filter blr^^blur'],
+        ['' => qw'^filter sat^urate'],
+        ['' => qw'^filter con^trast'],
+        ['' => qw'^filter bri^ghtness'],
+        [saydeg => qw'^filter hue^-rotate'],
+        ['' => qw'^filter sep^ia'],
+        ['' => qw'^filter inv^ert'],
+        ['' => qw'^filter gray^scale'],
+        
     ];
+    #at.sc.css->{"-webkit-transform"} = join' ', map {"$_($s->{$_})"} keys %$s;
+    #C.sc.css->{"-webkit-filter"} = join' ', map {"$_($s->{$_})"} keys %$s;
+    
     for (@$patterns) {
         my $sc = {};
         (my($t), sc.filt, sc.cssk, sc.mor) = @$_;
@@ -729,67 +750,7 @@ Stripes: |
     }
     J.VV.N = 1;
 NOtesz: |
-    - #c filterszzzz weird style using com to agg.
-     -
-      - rad # radial tr
-      - 3.6
-      - |
-        C.sc.tr.rotate = $s.'rad' if $s;
-     -
-      - scale # zzz tr
-      - 3.6
-      - |
-        C.sc.tr.scale = $s;
-     -
-      - tr # filterszzzz weird style using com to agg.
-      - 3.7
-      - |
-        at.sc.css->{"-webkit-transform"} = join' ', map {"$_($s->{$_})"} keys %$s;
-     -
-      - of
-      - 3.7
-      - |
-        C.sc.css->{"-webkit-filter"} = join' ', map {"$_($s->{$_})"} keys %$s;
-     -
-      - blr # it
-      - 3.6
-      - |
-        C.cs.of.blur = $s.'px';
-     -
-      - sat # it saturation
-      - 3.6
-      - |
-        C.cs.of.saturate = $s;
-     -
-      - con # it contrast
-      - 3.6
-      - |
-        C.cs.of.contrast = $s;
-     -
-      - bri # it bright
-      - 3.6
-      - |
-        C.cs.of.brightness = $s;
-     -
-      - hue # it bright
-      - 3.6
-      - |
-        C.cs.of->{'hue-rotate'} = $s.'deg';
-     -
-      - sep # it old
-      - 3.6
-      - |
-        C.cs.of.sepia = $s;
-     -
-      - inv # it old
-      - 3.6
-      - |
-        C.cs.of.invert = $s;
-     -
-      - gray # it old
-      - 3.6
-      - |
-        C.cs.of.grayscale = $s;
+
 forerstir: |
     my $so = sub {substr $_[0], 0, 1};
     sub {
@@ -800,9 +761,10 @@ forerstir: |
             for my $l (@a) {
                 for my $i (ref $e ? @$e : $e) {
                     my $el = [@$l];
-                    $i =~ s/^(.+)\^/$1/;
+                    $i =~ s/^(.*)\^\^// ||
+                    $i =~ s/^(.*)\^/$1/;
                     my $in = $1;
-                    $in ||= $so->($i);
+                    $in = $so->($i) if !defined $in;
                     $el->[0] .= $in;
                     $el->[2] = join '-', grep{$_}$el->[2],$i;
                     push @na, $el;
