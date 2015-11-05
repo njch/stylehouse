@@ -679,9 +679,11 @@ Statch: |
     n '','','%of:Art'
     n muchofany =>5=><<'','%nv,tldo:scindex'
         sayyl "jseo: A.J.name the C.t  via ".ki C.sc;
+        saybl " KSIEY: ".join' ',sort keys %{T.D.scindex||{}};
     
 scindex: |
     D.sc.scindex = {map{_.sc.gk=>1}grep{_.sc.nk eq 'sc' && _.sc.gk}@$N};
+    saybl wdump 3, $D;
 Strope: |
     u allacgts
     n stri=>''=><<'',{acgt=>'D,s'}
@@ -815,6 +817,8 @@ waitme: |
         waitpid($pid,0);
         saybl "Restart? <";
         while (<STDIN>) {
+            chomp;
+            J.me = $_;
             sayyl "OK!";
             Rw goche $n=4;
             Rw waitme;
