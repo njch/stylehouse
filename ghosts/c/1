@@ -516,6 +516,7 @@ KnowTime: | # dome props
                 D.sc.acgt eq 's'||die "nonacgts".wdump $D;
                 exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
                 .
+                T.D = $D;
                 I.d&D.t,$s;
                 .
                 I.acted and I.d&acted,$s;
@@ -688,6 +689,10 @@ SlideEa: | # liney schemery
     u allacgts
     
     # fold space til fit
+    n sca =>''=><<''
+        $s /= 10 while $s > 1 || $s < -1;
+        return $s
+    
     n scyvle =>''=>{s=><<''}
         for (qw'in out cv') {
             if (my $so = C.y->{$_}) {
