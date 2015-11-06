@@ -170,9 +170,8 @@ Sl: |
     J.ev.th ||= 'middle';
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
-    J.VV.N = 1;
     
-    #n reJSlines
+    n reJSlines
     # makes everything but js=1
     
     #n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
@@ -194,12 +193,26 @@ Sl: |
     #n ThisPr
     n ReoCur
     n Precoall
-    Rw waitme;
-    if (J.me =~ /d/) {
+    
+    if (J.fsjoi++ >= 1) {
+        Rw waitme;
+        J.fsjoi -= 3 if J.me =~ s/o//g;
+    }
+    if (J.fsjoi <= 1) {
+        n Details
+        Rw loopby $b=1 $d=5 $p=Top;
+    }
+    if (J.me =~ /c/) {
+        n Chang
+    }
+    elsif (J.me =~ /d/) {
         n Details
     }
+    elsif (J.me =~ /j/) {
+        n jshang
+    }
     else {
-        n Chang
+        #n Details
     }
     #n EYZ
     #n Usee
@@ -208,6 +221,15 @@ Sl: |
         my $n = J.fsjoi++;
         $n && 1;
         $n || Rw loopby $b=5 $d=26 $p=Top;
+Wh: |
+    y.at.oWl = 1;
+    n Details
+    
+    my $n = J.fsjoi++;
+    $n && 1;
+    $n || Rw loopby $b=5 $d=26 $p=Top;
+    
+    
 paps: |
         with (paper) {
             var find = $('img');
@@ -401,7 +423,11 @@ Details: |
     J.A.III = ['G/T/Chang'];
     u ReoCur
     y.at.ux = 1;
-    n reJSlines
+    y.at.oWl = 1;
+    J.VV.N = 1;
+    
+    #n AfghanRug
+    n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
     
     J.ev.th ||= 'middle';
     J.ev.li ||= 'climbo';
@@ -424,9 +450,8 @@ Details: |
     
     #n b320 => '3-5x'.$n, join($sp,(J.fkeo) x 3),$sc;
     
-    n fsdk => 0.04 => "Steve, ya need: <b>BVOLD</b>",'%ht:1'
-    n lod=>0.06 =>'fds'=>'%id:lodo,dos:goche,wi:3'
-    #
+    #n fsdk => 0.04 => "Steve, ya need: <b>BVOLD</b>",'%ht:1'
+    #n lod=>0.06 =>'fds'=>'%id:lodo,dos:goche,wi:3'
     G.edit ||= 'G/way/Chang';
     n edit=>0.08=>'@'=>'%id:edat,dos:flse,op:J/se/cod,to:!'
     J.se.cod &&
@@ -439,14 +464,87 @@ Details: |
     
     y.in = 1;
     y.out = 3;
-    y.ert = 9; 
-    J.VV.N = 1;
-    Mn(d =>''=>$mark->[J.fkeo]=>'%fs:44') for 1..6;
+    Mn($_=>-shed=>) for 'g/c/11';
     
+    Mn($_=>-codey=>) for @{J.CO||=[]};
+    #Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
+    #Mn(d =>''=>$mark->[J.fkeo]=>'%fs:44,hs:'.int(rand(9)).'36') for 1..6;
+    
+    n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
     
     return;
-    Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
     
+pi/shed: |
+    n what=>1=>"C.t shed: $s",'%hs:258'
+    my ($j)=map{_.nj}
+    Mn($s=>-yaml=>);
+    
+pi/yaml: |
+    C.c.mtime = 1;
+    C.sc.serv = 'packyaml';
+    Rw pi/file;
+    #C.sc.nspc = 0.02;
+    #y.limn = 18;
+    #y.lumfa = 2;
+    Atime(2)||return; 
+    my @l = read_file($s);
+    push @l, {};
+    my ($t,$s,$e);
+    for my $l (@l) {
+        if (ref $l || $l =~ /^(\S.*): \|(.*)\n/) {
+            my @new = ($1,'',$2);
+            if (defined $t) {
+                my $ind = $1 if $s =~ /^(\s+)\S/ || die "Noin stya: $l";
+                $s =~ s/^$ind//sgm;
+                Mn($t=>'pi:yam'=>{s=>$s},length $e ? {ontop=>$e} : ());
+            }
+            ($t,$s,$e) = @new;
+        }
+        else {
+            $l !~ /\S/ && next || die "no t aft $l" if !$t;
+            $s .= $l;
+        }
+    }
+pi/yam: |
+    C.sc.dos = 'hijack';
+    n the=>1=>C.t
+    n is=>3=>"'".slim(30, $s)."'"
+hijack: |
+    saybl "HERE\n\n\n";
+    my $ep = E.c.hC->[-1];
+    ep.sc.pi eq 'yam' || die "Dodge E: ".
+        Rw talkzyh;
+    E.c.yJ = Rw yJTrunk $C:ep;
+    
+AfghanRug: |
+    J.A.III = ['G/T/Chang'];
+    u ReoCur
+    y.at.ux = 1;
+    n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
+    my $c;
+    c.s = encode_entities("  ஓ୶");
+    c.cow = 'r4b3 a3a';
+    c.mixco = '0.5 582';
+    
+    y.in = 1;
+    y.out = 9;
+    Mn(d =>''=>$c=>'%ht,fs:164,hs:'.int(rand(9)).'96,sha:3 3 3 034') for 1..6;
+    0 &&
+    n afghanrug =>'1-9x3',$c,@{Load(fixutf8(<<''))};
+          - blr: 4
+            fs: 152.9
+            fw: 4
+            ht: 1
+            sat: 1
+            bri: 0.3
+            con: 3
+            sha: 3 3 3 034
+            hs: 493
+            zig: 5
+    
+    
+    n affg =>'12-88x8'=>$c=>'%fs:73,blr:3,hs:374,ht:1,ml:4';
+    # c
 Portito: |
     n quiet=>2=><<'','%ht'
         <video width="420" height="0" autoplay controls>
@@ -456,7 +554,7 @@ Portito: |
 Tarp: |
     J.tea ||= [grep{chomp}shuffle`ls -1 eye/Tarf/*/*`];
     J.fast++;
-    if (J.fast > 2) {
+    if (J.fast > 0) {
         J.slow++;
         J.fast = 0;
         J.slow = 0 if J.slow >= @{J.tea};

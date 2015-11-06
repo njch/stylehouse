@@ -138,7 +138,7 @@ Oscapps: |
 
     n nspc =>2=><<''
         my $J = C.sc.J;
-        my $squ = C.sc.yspc || J.d.y.spc;
+        my $squ = C.sc.yspc || J.C.y.spc;
         my $ratio = $squ / $s;
         my $sl = sprintf '%.2f', $ratio;
         my $cl = 0.02;
@@ -146,11 +146,7 @@ Oscapps: |
         $sl = $max if $sl > $max;
         if ($sl > 1+$cl || $sl < 1-$cl) {
             saybl "Abo nspc $sl";
-            return;
-            C.sc.geo ? 
-            C.sc.geo.scale = $sl
-            :
-            C.sc.tr.scale = $sl;
+            C.sc.scale = $sl;
         }
     
     n enid =>59=><<''
@@ -266,8 +262,10 @@ alljse: |
             grep {exists C.c->{$_}} qw'of nk';
         my $av = A.J.A.vse;
         C.sc.of ||= av.of||'om';
-        C.sc.nk ||= av.nk||'sc';
-        C.sc.gk ||= C.t;
+        unless (C.sc.any) {
+            C.sc.nk ||= av.nk||'sc';
+            C.sc.gk ||= C.t;
+        }
         my $cv = C.y.cv || 1;
         $cv =~ s/^0\.//;
         C.t = C.sc.of."_".C.t."_".$cv;
@@ -327,7 +325,6 @@ codeo: | # the in osc ^
     # root lv.II <- at.V.*.rv.II
     # plucked Ktv spots X running upwards
     n code =>5=><<''
-        sayyl "Have code     A.J.name the C.t  via ".ki C.sc;
         lv.op.sc.code = 1;
         return sayre "C.t is js running ooze" if !C.sc.acgt;
         my $v = {};
@@ -339,9 +336,11 @@ jshang: |
     y.at.jsl = 1; # send js
     J.VV.N = 1;
     #n Canvasc
-    n jspa
+    n Swomp
+    n Spap=>-try
     n Shorse=>-try
-    n Sipes=>-try
+    n Sipes
+    #=>-try
 pi/try: |
     C.sc.try = $s;
 jeoish: |
@@ -555,12 +554,16 @@ Sipes: |
     n stylation
     n stylers
     n stylext
+Spap: |
+    Rw jeoish;
+    n jspa
 Chang: |
     Rw codish;
     #u slowmoving
     y.at.coil = 1;
     n Stitchy
-    n Stripey =>-try
+    n Stripey
+    #=>-try
     #n stylation
     #y.at.jslines = 2;
     #J.VV.N = 1;
@@ -568,6 +571,7 @@ Stitchy: |
     Rw codish;
     n Statch
     n Strope
+    n Oscgrin
 Stripey: |
     Rw codish;
     n Stripes
@@ -575,7 +579,7 @@ Statch: |
     u allsvse
     J.VV.N = 1;
     n '','','%of:Art'
-    n muchofany =>5=><<'','%nv,tldo:scgkindex'
+    n muchofany =>3=><<'','%nv,tldo:scgkindex'
         for my $k (keys %{T.D.sc.scindex||{}}) {
             exists C.sc->{$k} || next;
             A.Subtle.Styles = 1;
@@ -590,14 +594,110 @@ Strope: |
     n stri=>''=><<'',{acgt=>'D,s'}
         # uses an I cap, the sc satays with any filing
         my $v = C.sc->{D.sc.gk};
-        sayyl "STYLE D.sc.gk = $v FOR D.sc.cssk";
+        if (D.sc.flex) {
+            for my $st (@{D.sc.flex}) {
+                for my $k (sort keys %$st) {
+                    my $vv = $st->{$k};
+                    my $e;
+                    e.v = $v;
+                    e.et = $vv;
+                    $v = I.d&$k,$s;
+                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
+                }
+            }
+        }
+        else {
+            my $k = D.sc.filt;
+            return unless $k;
+            $v = I.d&$k,$v;
+        }
+        C.sc->{D.sc.gk} = $v;
     
-    #    [radun => 'rad^'],
-    n radun=>''=><<''
-        sayre "UNWIND OR";
+    n plus=>''=><<''
+        s.v + s.et
     
-    # in patterns v
+    n defsa=>''=><<''
+        s.v || s.et
     
+    n ori =>''=><<''
+        @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
+        my ($t,$f) = @{s.et};
+        return s.v =~ /[1ay]/ ? $t : $f
+    
+    n whipre =>''=><<''
+        return $s =~ /[1p]/ ? 'pre' : 
+        $s =~ /[2n]/ ? 'nowrap' : 
+        die "Canot $s whipre?";
+    
+    n shadole =>''=><<''
+        my @m = split m/\s/, $s;
+        $m[-1] = I.d&cole,$m[-1];
+        return sprintf '%dpx %dpx %dpx %s', @m;
+    
+    n radun =>''=><<''
+        my $o = $RADIAN*4;
+        my $swish = $o;
+        $swish *= -1 if $s < 0;
+        my $i = 0;
+        my $ori = $s;
+        $s -= $swish until
+            do {$i++>5&&die"$i muchwind from $ori ... $s";0}
+            ||
+            $o*-1 < $s && $s < $o;
+        return $s
+    
+    n saypx=>''=><<''
+        return $s if $s =~ /px$/;
+        $s.'px';
+    
+    n hundr=>''=><<''
+        int($s*100).'%';
+    
+    n hunine=>''=><<''
+        int($s*9).'%';
+        
+    n numb=>''=><<''
+        int($s);
+    
+    n saydeg=>''=><<''
+        int($s).'deg';
+    
+    n sayurl=>''=><<''
+        "url('$s')"
+    
+Swomp: |
+    my $e = Rw swampdex;
+    u alljse
+    n css =>58,<<'',{any=>1,s=>$e}
+        $.each(s.thy,function(k,v){
+            C.sc[k] and C.sc.css[v] = C.sc[k];
+        });
+        $.each(s.roi,function(k,v){
+            var o = C.sc.css[k];
+            !o and return;
+            var ve = v[0];
+            var ss = v[1];
+            C.sc.css[ve] ||= {};
+            C.sc.css[ve][ss] = o;
+            delete C.sc.css[k];
+        });
+swampdex: |
+    my $X = LoadFile('w/u/Chang');
+    my $N = [];
+    Rw sumX $X $N;
+    my $e;
+    e.thy->{_.sc.gk} = _.sc.cssk for grep {_.sc.cssk} @$N;
+    my @pooling = (
+        {k=>transform=>also=>[qw'rotate scale']},
+        {k=>filter=>also=>[qw'blur saturate brightness hue-rotate sepia invert grayscale']},
+    );
+    for my $g (@pooling) {
+        for my $al (@{g.also}) {
+            my $lie = g.k.'-'.$al;
+            e.roi->{$lie} = [g.k,$al];
+        }
+    }
+    $e
 Stripes: |
     u allsvse
     n '','','%of:Styles'
@@ -622,9 +722,9 @@ Stripes: |
         
         ['' => qw'tr^ansform origin'],
         [radun => qw'^transform rad^^rotate'],
-        [sca => qw'^transform scale^'],
+        ['' => qw'^transform scale^'],
         
-        [pixels => qw'^filter blr^^blur'],
+        [saypx=>qw'^filter blr^^blur'],
         ['' => qw'^filter sat^urate'],
         ['' => qw'^filter con^trast'],
         ['' => qw'^filter bri^ghtness'],
@@ -635,34 +735,22 @@ Stripes: |
         
         [numb => z=>'index'],
         ['numb+plus:-20' => z=>'ig^^index'],
-        ['numb+plus:-20' => z=>'ie^^index'],
+        ['numb+plus:-10' => z=>'ie^^index'],
         
         [sayurl => background=>'gi^^image'],
-        [sayurl => 'bg^^background'], # "url('$s')"
+        ['' => 'bg^^background'],
         [hsle => 'bgh^^background-color'],
-        [hundr => font=>'size'], # int($s*100).'%';
-        [hunine => font=>'si^ze'], # int($s*9).'%';
+        [hunine => font=>'size'],
+        [hundr => font=>'si^ze'],
         [hundr => font=>'weight'],
-        [whipre => white=>'space'], # 1|p=re, 2|n=owrap
+        [whipre => white=>'space'],
         
         [shadole => '^text'=>'sha^dow'],
         [cole => 'co^lor'],
         [hsle => 'hs^^color'],
-        ['defsa:underline' => text=>'deco^ration'],
-        ['ori:all,none' => 'poi^nter'=>'^events'],
+        ['defsa:underline' => '^text'=>'deco^ration'],
+        ['ori:all~none' => 'poi^nter'=>'^events'],
     ];
-    
-    n shadole =>''=><<''
-         my @m = split m/\s/, $s;
-         $m[-1] = I.d&cole,$m[-1];
-         return sprintf '%dpx %dpx %dpx %s', @m;
-    
-    n ori =>''=><<''
-        return $s =~ /[1ay]/ ? 'all' : 'none'
-    
-    
-    #at.sc.css->{"-webkit-transform"} = join' ', map {"$_($s->{$_})"} keys %$s;
-    #C.sc.css->{"-webkit-filter"} = join' ', map {"$_($s->{$_})"} keys %$s;
     
     for (@$patterns) {
         my $sc = {};
@@ -673,7 +761,8 @@ Stripes: |
             map{
                 my ($k,$v);
                 if (/\W/) {
-                    ($k,$v) = /^(\w+):([^,]+)/;
+                    ($k,$v) = /^(\w+):(.+)/;
+                    $v = [split'~',$v] if $v =~ /^\w+(~\w+)+$/;
                 }
                 else {
                     $k = $_;
@@ -687,7 +776,6 @@ Stripes: |
             I.d&stri,T.D,$s;
     
     }
-    J.VV.N = 1;
 forerstir: |
     my $so = sub {substr $_[0], 0, 1};
     sub {
@@ -725,6 +813,7 @@ waitme: |
             /(\d+)/ &&
             Rw goche $n=$1;
             Rw goche $n=4;
+            Rw goche $n=8;
             Rw waitme;
             return;
         }
@@ -743,26 +832,16 @@ stylehut: |
     n er =>''=><<'',{args=>'e,er'}
         console.log("xutbang: ", e, er);
         var ej = {er: {e: e}};
-        if (er && er.message)
-            ej.er.m = er.message;
+        er && er.message and ej.er.m = er.message;
         s.reply(ej);
         a.m("!"+ (ej.er.m || e));
     
     n m =>''=><<'','%args:e'
         var d = e.substr(0,1);
-        if (d == " ") {
-          a.e(e);
-        }
-        else if (d == "[" || d == "{") {
-          var N = $.parseJSON(e);
-          console.log("gooftoes ", N);
-          a.om({},N,a,{});
-        }
-        else {
-          if (d == ".")
-            e = '<span style="font-size:66%">'+e+'</span>';
-          a.c(e);
-        }
+        d == " " and return a.e(e);
+        d == "[" || d == "{"  and return a.om({},$.parseJSON(e),a,{});
+        d == "." and e = '<span style="font-size:66%">'+e+'</span>';
+        a.c(e);
 
     n c =>''=><<'','%args:e'
         $('#msgs').prepend(e+"\n");
@@ -863,6 +942,7 @@ styleomi: |
                 sc.gk and !C[sc.nk][sc.gk] and return
                 var es;
                 sc.gk and es = C[sc.nk][sc.gk];
+                sc.s and es = sc.s;
                 G&$t,es;
             });
         }
@@ -987,9 +1067,9 @@ stylers: |
         C.sc.css.top = (s.y * 100)+'%';
         C.sc.css.left = (s.x * 100)+'%';
         C.sc.css['transform-origin'] = '0% 0%';
-        C.sc.css['transform'] = 'rotate('+s.rad+'rad)';
-        if (s.scale)
-            C.sc.css['transform'] += ' scale('+s.scale+')';
+        s.tro and C.sc.css['transform-origin'] = s.tro;
+        s.rad and C.sc.css['transform-rotate'] = s.rad+'rad';
+        s.scale and C.sc.css['transform-scale'] = s.scale;
     
     n ab =>51=><<''
         if (s === '100') {
@@ -1018,7 +1098,18 @@ stylers: |
                 s[kv[0]] = kv[1];
             });
         }
-        $.each(s, function(i,v) { $(A.on).css(i, v); });
+        $.each(s, function(i,v) {
+            if (v.constructor === Object) {
+                var swav = [];
+                $.each(v, function(ve,ss) {
+                    var se = ve+'('+ss+')';
+                    swav.push(se);
+                });
+                v = swav.join(' ');
+            }
+            i === 'filter' and i = '-webkit-filter';
+            $(A.on).css(i, v);
+        });
     
     n anc =>59=><<''
         $(A.on).animate(C.sc.anc, (C.sc.ant||900));
