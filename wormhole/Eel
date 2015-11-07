@@ -172,12 +172,12 @@ I:
     hup: 
       c: 
         el: 1
-        s: "A.I.hup = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $CC = {%$s};\n    $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;\n    $CC;\n};\n"
+        s: "A.I.hup = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $CC = {%$s};\n    $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;\n    return $CC;\n};\n"
       sc: 
         acgt: s
         args: A,C,G,T,s
         code: I 1
-        dige: 2bc362811316
+        dige: 5c16f3716362
         gro: C
       t: hup
       "y": 
@@ -459,14 +459,29 @@ I:
     xot: 
       c: 
         el: 1
-        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    ref $c eq 'HASH' && ref $s eq 'HASH' ||\n        die \"Hash up\".wdump 3, [$s,$c];\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v eq 'HASH' ?\n                    {%{$s->{$k}||{}}, %$v}\n        : ref $v ? \n            die \"Hash a ref v: \".wdump 2, $s\n        : $v;\n    }\n    $s\n};\n"
+        s: "A.I.xot = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    ref $c eq 'HASH' && ref $s eq 'HASH' ||\n        die \"Hash up\".wdump 3, [$s,$c];\n    while (my($k,$v) = each %$c) {\n        $s->{$k} = ref $v eq 'HASH' ?\n                    {%{$s->{$k}||{}}, %$v}\n        : ref $v ? \n            die \"Hash a ref v: \".wdump 2, $s\n        : $v;\n    }\n    return $s\n};\n"
       sc: 
         acgt: s,c
         args: A,C,G,T,s,c
         code: I 1
-        dige: e7dcc3a8d931
+        dige: 5b5480545ba0
         gro: C
       t: xot
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	C.t
+        p: qq/C/C
+    xoy: 
+      c: 
+        el: 1
+        s: "A.I.xoy = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($s,$c,@Me) = @M;\n    my $I = A.I;\n    $c = I.d&xot,{},$c;\n    I.d&xot,$c,$s;\n    return $s;\n};\n"
+      sc: 
+        acgt: s,c
+        args: A,C,G,T,s,c
+        code: I 1
+        dige: 3bee9aa63385
+        gro: C
+      t: xoy
       "y": 
         cv: '0.3'
         cvt: 0.3	C.t
@@ -528,6 +543,46 @@ J:
         cv: '0.622211'
         cvt: 0.622211	C.t
         p: qq/Foli/Foli
+  "0.632": 
+    J_632: 
+      c: 
+        el: 1
+        s: "A.I.J_632 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless exists C.sc.pi;\n    \n    map { # telephone winch, propaganda (top-er levels receiving stuff)\n         J.A->{$_} = J.Jiter.A->{$_}\n         if J.Jiter && J.Jiter.A->{$_};\n    } qw'ljm ljmo';\n    \n    A.time = sub {\n        my($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure  J.name   vs JJ.name\";\n        # wanna A.t&T,2,0 us to difference streams\n        # they could be xot maps or code to run\n        # then all over things \n    \n        if ($q == 2) {\n            Rw Jamroot $J $C:J.C $y:J.oy if J.oy.at;\n    \n            A.ico = I.d&pha,$J,'ico';\n            A.ico.qui = 1;\n            I.d&as,A.ico,A.coi;\n            my $wtf = I.d&exactl,A.ico;\n    \n            if (wtf.last && !wtf.same) {\n                my $uf = join \"\\n\", map{\"$_: \".wdump(1,$wtf->{$_})}\n                    grep {keys %{$wtf->{$_}}} qw'new diff gone';\n                saybl \"T.alk  2222  $uf\";\n            }\n    \n            J.mo.J.act || # travel part\n            Rw eighthnot $J\n             ? do { A.ico.wtf.same = 0; }\n             : wtf.same && return 0;\n    \n            # for jamcs screenfly\n            J.A.ljm = [];\n            J.A.ljmo = \"fr  J.name\";\n            return 1;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        A.ztime >= $q;\n    };\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: J 632
+        dige: 4ef5160d59a4
+        gk: J
+        gro: Juperfi
+        nk: c
+        v: cJ
+      t: J_632
+      "y": 
+        cv: '0.632'
+        cvt: 0.632	C.t
+        p: qq/Juperfi/Juperfi
+  "0.672": 
+    J_672: 
+      c: 
+        el: 1
+        s: "A.I.J_672 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return unless A.ico && A.ico.wtf.same;\n    # first the superstilled\n    # anything T_D can arrange through time...\n    # wants to join G subtly vis T and so....\n    # should be no M in the first bit\n    # it is just pinpricks of consciousness keeping it alive, like mtime\n    # be nicer to do with an I that can T out of this whole change res patch\n    my $cut = @{A.ico.ord};\n    my @cc = @{A.coi.ord};\n    if (@cc > $cut) {\n        warn\"J.name entered stuff after 2!\".wdump [@cc, \n        '                 =============', @{A.ico.ord}];\n    }\n    I.d&bandon,A.coi;\n    if (my $ljm = J.A.ljm) {\n        for my $s (@$ljm) {\n            s.noR=1;\n            I.d&jamsc,$s;\n        }\n    }\n    sayre \"SKIP T.alk\";# if J.V || J.most.J.V;\n    T.whack = 1; # exit A.t&J\n    T.same = 1; # exit Mo, T.not but not, kind of unlet ztime6->7\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: J 672
+        dige: 8a8f5c43f7ab
+        gk: J
+        gro: Juperfi
+        nk: c
+        v: cJ
+      t: J_672
+      "y": 
+        cv: '0.672'
+        cvt: 0.672	C.t
+        p: qq/Juperfi/Juperfi
 Mo: 
   "0.221": 
     yall_: 

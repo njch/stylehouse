@@ -954,6 +954,11 @@ C: |
         return 0 if !exists $s->{D.c.nk}->{D.c.gk};
         return [$s->{D.c.nk}->{D.c.gk}];
     
+    n xoy =>'',<<'',{acgt=>'s,c'}
+        $c = I.d&xot,{},$c;
+        I.d&xot,$c,$s;
+        return $s;
+    
     n xot =>'',<<'',{acgt=>'s,c'}
         ref $c eq 'HASH' && ref $s eq 'HASH' ||
             die "Hash up".wdump 3, [$s,$c];
@@ -964,12 +969,12 @@ C: |
                 die "Hash a ref v: ".wdump 2, $s
             : $v;
         }
-        $s
+        return $s
     
     n hup =>'',<<''
         my $CC = {%$s};
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
-        $CC;
+        return $CC;
     
    
 Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
