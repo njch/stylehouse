@@ -191,8 +191,8 @@ Sl: |
     
     #n jshang
     #n ThisPr
-    n ReoCur
-    n Precoall
+    #n ReoCur
+    #n Precoall
     
     if (J.fsjoi++ >= 1) {
         Rw waitme;
@@ -200,7 +200,7 @@ Sl: |
     }
     if (J.fsjoi <= 1) {
         n Details
-        Rw loopby $b=1 $d=5 $p=Top;
+        Rw loopby $b=3 $d=5 $p=Top;
     }
     if (J.me =~ /c/) {
         n Chang
@@ -523,11 +523,9 @@ hijack: | # yJ, the event for-er
         sayyl "Here: - ".ki $o;
         if (o.name =~ /^2/) {
             my $rv = o.El.Duv.rv;
-            saybl wdump 2, rv.C;
-            sayre "ALso: ".wdump 2, o.C;
             my $s = "Outside: ".ki(rv.C)."\nInside: ".ki(o.C);
-            my $Ce = {t=>'Hole'=>c=>{s=>$s}};
-            n Dug =>$C
+            push @{E.c.us.pick||=[]}, [founde=>-ckup=>$s];
+            n Dug =>$E
         }
     }
     
@@ -535,11 +533,22 @@ Dug: |
     J.A.III = ['G/T/Chang'];
     u ReoCur
     y.at.ux = 1;
+    J.VV.N=1;
     J.UG = [] if !defined J.UG || A.us&S;
-    sayyl wdump 3, [  A.e&C  ,$C];
-    #push @{J.UG}, $_ for A.e&
+    sayyl wdump 3, [  "Picked: ", A.us&_pick ];
+    push @{J.UG}, $_ for A.us&_pick;
     Mn(@$_) for @{J.UG};
     
+pi/ckup: |
+    J.A.III = ['G/T/Chang'];
+    n lin=>1=>"ckup: C.t"
+    Mn($_->[0]=>-te=>$_->[1],'%width:42%,wb') for map{ /^(.+?): (.+)$/ ? [$1, $2] : ["?",$_] } split "\n", $s;
+pi/te: |
+    J.A.III = ['G/T/Chang'];
+    y.at.ws = '1';
+    y.at.bgh = '8733';
+    n it =>1=>C.t=>'%hs:748,fw:3'
+    n li =>''=>$s;
 AfghanRug: |
     J.A.III = ['G/T/Chang'];
     u ReoCur

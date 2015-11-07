@@ -907,23 +907,25 @@ C: |
         $D = I.d&interpD,@M if !ref $D;
         #
         my $v = I.d&Cngk,$s,$D;
+        die "Unhandles any: $v: ".ki $D if $v eq '1';
         #
         return () unless $v;
         # blankgk
         A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
         #
-        die 'mulitAn' if @$v > 1;
+        @$v == 1 || die "Many somehowed ".wdump 3,[ki($D),$v];
+        ($v) = @$v;
         if (D.c.as eq 'list') {
-            ref $v eq 'ARRAY' || die 'Cngk not array';
+            ref $v eq 'ARRAY' || die 'Cngk for list not array '.ki $D;
             return @$v;
         }
-        return 1;
+        return $v;
     
     n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
         my $defnk = 'c';
         return $nk if ref $nk;
         my $D = {};
-        D.c.as = 'list' if 1 || $nk =~ s/^_//;
+        D.c.as = 'list' if $nk =~ s/^_//;
         while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
             D.c->{$1} = $2;
             pop @M if @M == 2;
