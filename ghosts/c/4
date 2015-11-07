@@ -997,7 +997,15 @@ styleomi: |
         }
         A.bb[C.y.cv] ||= {};
         A.bb[C.y.cv][C.t] ||= {};
+        A.bb.t ||= {};
+        A.bb.t[C.t] ||= {};
+        A.bb.t[C.t][C.y.cv] ||= A.bb[C.y.cv][C.t];
         return A.bb[C.y.cv][C.t];
+    
+    n tcl =>''=><<''
+        var t = C.t.replace(/\W/g,'e');
+        t = 'n'+t+'n';
+        return t;
     
 stylation: |
     u alljse
@@ -1018,12 +1026,12 @@ stylation: |
     n el =>3=><<''
         C.sc.attr ||= {};
         var last;
-        var t = C.t.replace(/\W/g,'e');
-        t.length < 4 || 1 and t = 'n'+t+'n';
+        var t = G&tcl;
+        s == '2' and $(A.on).find(t).remove();
         var el = G&f,t;
         s == '1' || s == '9' and $(el).remove();
         s == '8' and return A.on.aft = el;
-        !el and console.log("Cno find el="+el+": "+C.t+"  of "+C.y.cv);
+        !el.length and console.log("Cno find el="+el+": "+C.t+"  of "+C.y.cv);
         if (s == '1') {
             C.sc.attr.cv = C.y.cv;
             C.c.tag and t = C.c.tag;
