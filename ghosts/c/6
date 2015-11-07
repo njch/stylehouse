@@ -313,12 +313,19 @@ Juperfi: |
                 my $iM = 1 if sc.osci && J.mo.J.act;
                 my $stick = !J.mo.J.act && !$iM && # travel part
                     Rw eighthnot $J;
+                if (!$stick) { # am sticking
+                    my ($o,$O) = (J.oy,J.Oy);
+                    if (!grep{$o->{$_} ne $O->{$_}} 
+                        grep{!ref $o->{$_}} keys %$o) {
+                        $stick = 0; # unless y.? nonref changed, or wider spacer
+                    }
+                }
                 # rhythm^
                 if ($stick) {
                     A.ico.wtf.same = 0;
                 }
                 elsif (wtf.same) {
-                    T.iM = $iM if $iM;
+                    T.iM = $iM if $iM ;
                     return 0;
                 }
                 .
@@ -359,9 +366,6 @@ Juperfi: |
             }
         }
         sayre "SKIP T.alk";# if J.V || J.most.J.V;
-        if (T.iM) {
-            sayyl "With iMitationd";
-        }
         T.whack = 1; # exit A.t&J
         T.same = 1; # exit Mo, T.not but not, kind of unlet ztime6->7
     
