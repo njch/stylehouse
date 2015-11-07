@@ -315,10 +315,11 @@ Juperfi: |
                     Rw eighthnot $J;
                 if (!$stick) { # am sticking
                     my ($o,$O) = (J.oy,J.Oy);
-                    if (!grep{$o->{$_} ne $O->{$_}} 
+                    for (grep{$o->{$_} ne $O->{$_}} 
                         grep{!ref $o->{$_}} keys %$o) {
                         $stick = 1; # unless y.? nonref changed, or wider spacer
-                        saybl "J.name unstuck due to ychange: ".ki J.oy;
+                        saybl "J.name unstuck due to ychange: $_:"
+                            ." $o->{$_} ne $O->{$_}";
                     }
                 }
                 # rhythm^
