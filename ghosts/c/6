@@ -237,7 +237,9 @@ Jiterbug: |
         J.oy = $y;
         .
         Rw ar.pin + $A $C $G $T $I $J $M $y;
+        .
         # set our C.c.s to [that], noise probe case, maybe
+        push @{J.oy.o}, @{J.Oy.o} if T.iM;
         J.Oy = $y;
         if (@$M) {
             n z=>$y=>{}
@@ -304,16 +306,16 @@ Juperfi: |
                 }
                 .
                 my $iM = 1 if J.oy.at.osci && J.mo.J.act;
-                J.mo.J.act && !$iM || # travel part
-                Rw eighthnot $J
-                 ? do { A.ico.wtf.same = 0; }
-                 : wtf.same && return do {
-                 T.iM = $iM if $iM;
-                 if (T.iM) {
-                     J.Oy || die "TiM without JOy: J.name";
-                    push @{J.oy.o}, @{J.Oy.o};
-                 }
-                 0};
+                my $belaze = !J.mo.J.act && !$iM && # travel part
+                    Rw eighthnot $J;
+                # rhythm^
+                if (!$belaze) {
+                    A.ico.wtf.same = 0;
+                }
+                elsif (wtf.same) {
+                    T.iM = $iM if $iM;
+                     return 0;
+                }
                 .
                 # for the lift, osc should Jiter ne A.J and pd it
                 J.A.ljm = [];
@@ -354,7 +356,6 @@ Juperfi: |
         sayre "SKIP T.alk";# if J.V || J.most.J.V;
         if (T.iM) {
             sayyl "With iMitationd";
-            
         }
         T.whack = 1; # exit A.t&J
         T.same = 1; # exit Mo, T.not but not, kind of unlet ztime6->7
