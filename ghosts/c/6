@@ -239,7 +239,12 @@ Jiterbug: |
         Rw ar.pin + $A $C $G $T $I $J $M $y;
         .
         # set our C.c.s to [that], noise probe case, maybe
-        push @{J.oy.o}, @{J.Oy.o} if T.iM;
+        if (T.iM) {
+            sayyl "Lim ".wdump 2, J.Oy.o;
+            sayyl "Pusin oOoOoo ".@{J.Oy.o.M};
+            sayre "oyu already ".@{J.oy.o} if @{J.oy.o};
+            push @{J.oy.o}, @{J.Oy.o.M};
+        }
         J.Oy = $y;
         if (@$M) {
             n z=>$y=>{}
@@ -271,6 +276,7 @@ Jamroot: |
     my $t = ar.C.c.pi ? J.uname : J.name;
     my $sc = ar.sc || delete ar.y.at;
     Rw jamsc $J $t $cv=0.9 $sc;
+    $sc;
 Juperfi: |
     u allvse
     n '','','%of:J'
@@ -292,7 +298,7 @@ Juperfi: |
             # then all over things 
             .
             if ($q == 2) {
-                Rw Jamroot $J $C:J.C $y:J.oy if J.oy.at;
+                my $sc = Rw Jamroot $J $C:J.C $y:J.oy if J.oy.at;
                 .
                 A.ico = I.d&pha,$J,'ico';
                 A.ico.qui = 1;
@@ -305,16 +311,18 @@ Juperfi: |
                     saybl "T.alk  2222  $uf";
                 }
                 .
-                my $iM = 1 if J.oy.at.osci && J.mo.J.act;
-                my $belaze = !J.mo.J.act && !$iM && # travel part
+                my $iM = 1 if sc.osci && J.mo.J.act;
+                my $stick = !J.mo.J.act && !$iM && # travel part
                     Rw eighthnot $J;
                 # rhythm^
-                if (!$belaze) {
+                if ($stick) {
+                    sayre "Unstick cos: J.mo.J.act or $iM or eightnot";
                     A.ico.wtf.same = 0;
                 }
                 elsif (wtf.same) {
+                    sayre "Same, iM: $iM";
                     T.iM = $iM if $iM;
-                     return 0;
+                    return 0;
                 }
                 .
                 # for the lift, osc should Jiter ne A.J and pd it
