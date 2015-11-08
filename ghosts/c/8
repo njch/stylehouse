@@ -449,10 +449,8 @@ Details: |
     sc.ml += 1;
     
     
-    #n b320 => '3-5x'.$n, join($sp,(J.fkeo) x 3),$sc;
-    
-    #n fsdk => 0.04 => "Steve, ya need: <b>BVOLD</b>",'%ht:1'
     #n lod=>0.06 =>'fds'=>'%id:lodo,dos:goche,wi:3'
+    
     G.edit ||= 'G/way/Chang';
     n edit=>0.02=>'@'=>'%id:edat,dos:flse,op:J/se/cod,to:!'
     J.se.cod &&
@@ -486,10 +484,9 @@ pi/yaml: |
     C.c.mtime = 1;
     y.at.serv = 'packyaml';
     y.at.osci = 1;
-    J.VV.N = 1;
     Rw pi/file;
     #C.sc.nspc = 0.02;
-    y.limn = 1.7;
+    y.limn = 1.6;
     #y.lumfa = 2;
     
     Atime(2)||return saybl "\nIs J.name ico\n"; 
@@ -506,6 +503,7 @@ pi/yaml: |
                 my $sc;
                 sc.vert = $i;
                 sc.ontop = $e if length $e;
+                sc.dig = slm(6, dig($s));
                 Mn($t=>'pi:yam'=>{s=>$s},$sc);
             }
             ($t,$s,$e) = @new;
@@ -532,6 +530,7 @@ pi/yam: |
     C.sc.dos = 'hijack';
     #n style=>1=>C.t
     saybl " - -yamin C.t";
+    n dig=>1=>C.sc.dig,'%hs:388,ml:-3em,ab'
     C.sc.ontop &&
     n also=>2=>C.sc.ontop,'%hs:864'
     Mn(C.t=>-te=>$s=>'%wb,ws,dis,lh:1,fs:7,vert:'.C.sc.vert);
@@ -566,16 +565,20 @@ pi/te: |
     my $fs = I.d&ron,(0+split("\n",$s))*(1 / 12);
     Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs.',vert:'.C.sc.vert);
     y.spc < 0.2
-        ? sayyl "Wasbig: C.t: J.C.y.spc  for ".slim 30,$s
-        : sayyl "Notbig: C.t  a  J.C.y.spc";
-    Rw Rums $C $M $y $I;
+        ? sayyl "Wasbig: C.t: y.spc  J.C.y.spc  for ".slim 30,$s
+        : sayyl "Notbig: C.t  a y.spc    J.C.y.spc";
+    
+    Rw Rums $C $M $y $spc:J.C.y.spc $I;
 Rums: |
     # attach _.yy.NOISE.ytalk for tiny ysland mentalities
     @$M = map {
-        if (_.sc.vert && _.sc.vert > 9) {
-          _.c.s =~ s/^(([^\n]*\n){9}).*$/$1 .../s;
+        my $ls = int($spc * 90);
+        saybl "Have $spc * 90 = $ls      ----- _.sc.vert";
+        if (_.sc.vert && _.sc.vert > $ls) {
+            _.c.s =~ s/^(([^\n]*\n){$ls}).*$/$1 .../s;
+              saybl "Made snip";
         }
-        if (y.spc < 0.2) {
+        if ($spc < 0.2) {
             $_
         }
         elsif (_.c.s =~ /^(.+?): (.+)$/) {
