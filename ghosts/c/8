@@ -496,20 +496,25 @@ pi/yaml: |
     my @l = read_file($s);
     sayyl "Reading for $s" for 1..4;
     push @l, {};
-    my ($t,$s,$e);
+    my ($t,$s,$e,$i);
     for my $l (@l) {
         if (ref $l || $l =~ /^(\S.*): \|(.*)\n/) {
             my @new = ($1,'',$2);
             if (defined $t) {
                 my $ind = $1 if $s =~ /^(\s+)\S/ || die "Noin stya: $l";
                 $s =~ s/^$ind//sgm;
-                Mn($t=>'pi:yam'=>{s=>$s},length $e ? {ontop=>$e} : ());
+                my $sc;
+                sc.vert = $i;
+                sc.ontop = $e if length $e;
+                Mn($t=>'pi:yam'=>{s=>$s},$sc);
             }
             ($t,$s,$e) = @new;
+            $i = 0;
         }
         else {
             $l !~ /\S/ && next || die "no t aft $l" if !$t;
             $s .= $l;
+            $i++;
         }
     }
 Dug: |
@@ -529,7 +534,7 @@ pi/yam: |
     saybl " - -yamin C.t";
     C.sc.ontop &&
     n also=>2=>C.sc.ontop,'%hs:864'
-    Mn(C.t=>-te=>$s=>'%wb,ws,dis,lh:1,fs:7');
+    Mn(C.t=>-te=>$s=>'%wb,ws,dis,lh:1,fs:7,vert:'.C.sc.vert);
 hijack: | # yJ, the event for-er
     saybl "HERE\n\n\n";
     my $ep = E.c.hC->[-1];
@@ -559,16 +564,21 @@ pi/te: |
     n it =>1=>C.t=>'%hs:748,fw:3'
     # as an In osc, string ring ring
     my $fs = I.d&ron,(0+split("\n",$s))*(1 / 12);
-    Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs);
-    y.spc < 0.2 && return sayyl "Wasbig: C.t: J.C.y.spc  for ".slim 30,$s;
+    Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs.',vert:'.C.sc.vert);
+    y.spc < 0.2
+        ? sayyl "Wasbig: C.t: J.C.y.spc  for ".slim 30,$s
+        : sayyl "Notbig: C.t  a  J.C.y.spc";
     Rw Rums $C $M $y $I;
 Rums: |
-    my $xs = sub {
-        I.d&xot,{},shift;
-    };
     # attach _.yy.NOISE.ytalk for tiny ysland mentalities
     @$M = map {
-        if (_.c.s =~ /^(.+?): (.+)$/) {
+        if (_.sc.vert && _.sc.vert > 9) {
+          _.c.s =~ s/^(([^\n]*\n){9}).*$/$1 .../s;
+        }
+        if (y.spc < 0.2) {
+            $_
+        }
+        elsif (_.c.s =~ /^(.+?): (.+)$/) {
             $_
         }
         elsif (_.c.s =~ /^(.+)( sc=\{ )(.+)$/s) {
