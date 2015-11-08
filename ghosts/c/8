@@ -231,23 +231,12 @@ Wh: |
     $n || Rw loopby $b=5 $d=26 $p=Top;
     
     
-paps: |
-        with (paper) {
-            var find = $('img');
-            var src = $(find).attr('src');
-            var r = new Raster(src);
-            r.position = view.center;
-            r.scaling = 3;
-            r.rotation = 30;
-            r.blendMode = 'color-burn';
-            console.log('img: ', r);
-            if (!a.fo)
-                a.fo = {};
-            a.fo[src] = r;
-        }
+
 pi/pape: |
     my ($no,$i,$se) = ($1,$2,$3) if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
     my $fo = $no - $i;
+    
+    shuffle 1, 2, 3 for 1..int($no);
     
     map{delete J.El->{$_}}'Pre','Duv';
     say wdump [$no,$i,$se,$fo];
@@ -428,7 +417,7 @@ Details: |
     J.VV.N = 1;
     
     #n AfghanRug
-    n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
+    n $_,$_,$_,'%hs:389,fs:24,ml:-2em' for 1, 3, 5, 7, 9;
     
     J.ev.th ||= 'middle';
     J.ev.li ||= 'climbo';
@@ -464,7 +453,7 @@ Details: |
     
     y.in = 0.08;
     y.out = 9;
-    Mn($_=>-shed=>) for 'g/c/10';
+    Mn($_=>-shed=>) for 'nol';
     
     #Mn($_=>-codey=>) for @{J.CO||=[]};
     #Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
@@ -515,6 +504,16 @@ pi/yaml: |
             $i++;
         }
     }
+pi/yam: |
+    J.A.III = ['G/T/Chang'];
+    C.sc.dos = 'hijack';
+    J.mo.yam = $C;
+    C.sc.hs = int(rand 9).'74';
+    saybl " - -yamin C.t";
+    #n dig=>1=>C.sc.dig,'%hs:388,ml:-3em,ab'
+    C.sc.ontop &&
+    n also=>2=>C.sc.ontop,'%hs:864'
+    Mn(C.t=>-te=>$s);
 Dug: |
     J.A.III = ['G/T/Chang'];
     u ReoCur
@@ -525,15 +524,6 @@ Dug: |
     push @{J.UG}, $_ for A.us&_pick;
     Mn(@$_) for @{J.UG};
     
-pi/yam: |
-    J.A.III = ['G/T/Chang'];
-    C.sc.dos = 'hijack';
-    #n style=>1=>C.t
-    saybl " - -yamin C.t";
-    n dig=>1=>C.sc.dig,'%hs:388,ml:-3em,ab'
-    C.sc.ontop &&
-    n also=>2=>C.sc.ontop,'%hs:864'
-    Mn(C.t=>-te=>$s=>'%wb,ws,dis,lh:1,fs:7,vert:'.C.sc.vert);
 hijack: | # yJ, the event for-er
     saybl "HERE\n\n\n";
     my $ep = E.c.hC->[-1];
@@ -560,21 +550,23 @@ pi/te: |
     J.A.III = ['G/T/Chang'];
     y.at.ws = '1';
     y.at.bgh = '8733';
+    y.at.ma = '1em';
     n it =>1=>C.t=>'%hs:748,fw:3'
-    # as an In osc, string ring ring
+    
     my $fs = I.d&ron,(0+split("\n",$s))*(1 / 12);
-    Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs.',vert:'.C.sc.vert);
+    Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs);
     y.spc < 0.2
         ? sayyl "Wasbig: C.t: y.spc  J.C.y.spc  for ".slim 30,$s
         : sayyl "Notbig: C.t  a y.spc    J.C.y.spc";
     
-    Rw Rums $C $M $y $spc:J.C.y.spc $I;
-Rums: |
+    Rw Rums $J $C $M $y $spc:J.C.y.spc $I;
+Rums: | # as an In osc, string ring ring
     # attach _.yy.NOISE.ytalk for tiny ysland mentalities
     @$M = map {
         my $ls = int($spc * 90);
-        saybl "Have $spc * 90 = $ls      ----- _.sc.vert";
-        if (_.sc.vert && _.sc.vert > $ls) {
+        my $lino = J.mo.yam.sc.vert || scalar(split"\n",_.c.s);
+        saybl "Have $spc * 90 = $ls      ----- $lino";
+        if ($lino && $lino > $ls) {
             _.c.s =~ s/^(([^\n]*\n){$ls}).*$/$1 .../s;
               saybl "Made snip";
         }
