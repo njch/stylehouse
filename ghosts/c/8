@@ -203,18 +203,14 @@ Sl: |
         n Details
         Rw loopby $b=3 $d=5 $p=Top;
     }
-    if (J.me =~ /c/) {
+    J.me =~ /c/ &&
         n Chang
-    }
-    elsif (J.me =~ /d/) {
+    J.me =~ /d/ &&
         n Details
-    }
-    elsif (J.me =~ /j/) {
+    J.me =~ /j/ &&
         n jshang
-    }
-    else {
-        #n Details
-    }
+    
+    #n Details
     #n EYZ
     #n Usee
     # Rw followS
@@ -410,7 +406,6 @@ EYZ: |
     #Mn(shedful => '', {pi=>'eye',s=>'eye/Tarf/Photo serieses'});
     Mn(shedful => '', {pi=>'fi',s=>'eye/el'});
 Details: |
-    J.A.III = ['G/T/Chang'];
     u ReoCur
     y.at.ux = 1;
     y.at.oWl = 1;
@@ -440,7 +435,7 @@ Details: |
     
     #n lod=>0.06 =>'fds'=>'%id:lodo,dos:goche,wi:3'
     
-    G.edit ||= 'G/way/Chang';
+    G.edit ||= 'G/way/Details';
     n edit=>0.02=>'@'=>'%id:edat,dos:flse,op:J/se/cod,to:!'
     J.se.cod &&
     n 'G/edit'=>[-cde=>'1-2']
@@ -449,11 +444,12 @@ Details: |
     y.at.cssdel = 'transform';
     
     #Rw Tarp;
-    J.act = 1; # pi always
+    J.act = 0; # pi always
     
     y.in = 0.08;
+    y.lum = 3;
     y.out = 9;
-    Mn($_=>-shed=>) for 'nol';
+    Mn($_=>-shed=>) for 'g/c/8';
     
     #Mn($_=>-codey=>) for @{J.CO||=[]};
     #Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
@@ -474,6 +470,8 @@ pi/yaml: |
     y.at.serv = 'packyaml';
     y.at.osci = 1;
     Rw pi/file;
+     -f $s || return
+     n 404 =>2=>"404: $s",'%hs:388';
     #C.sc.nspc = 0.02;
     y.limn = 1.6;
     #y.lumfa = 2;
@@ -553,7 +551,8 @@ pi/te: |
     y.at.ma = '1em';
     n it =>1=>C.t=>'%hs:748,fw:3'
     
-    my $fs = I.d&ron,(0+split("\n",$s))*(1 / 12);
+    my $fs = I.d&ron,(0+split("\n",$s))*(1 / 8);
+    
     Mn(C.t=>''=>$s,'%wb,ws,dis,lh:1,fs:'.$fs);
     y.spc < 0.2
         ? sayyl "Wasbig: C.t: y.spc  J.C.y.spc  for ".slim 30,$s
