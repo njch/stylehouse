@@ -1,0 +1,487 @@
+
+jshang: |
+    Rw jeoish;
+    y.at.jsl = 1; # send js
+    J.VV.N = 1;
+    #n Canvasc
+    n Swomp
+    n Spap=>-try
+    n Shorse
+    #=>-try
+    n Sipes
+    #=>-try
+    
+Shorse: |
+    Rw jeoish;
+    n stylehut
+    n styleven
+    n styleomi
+Sipes: |
+    Rw jeoish;
+    n stylation
+    n stylers
+    n stylext
+Spap: |
+    Rw jeoish;
+    n jspa
+    
+    
+Chang: |
+    Rw codish;
+    #u slowmoving
+    y.at.coil = 1;
+    n Stitchy
+    n Stripey=>-try
+    #n stylation
+    #y.at.jslines = 2;
+    #J.VV.N = 1;
+    
+Stitchy: |
+    Rw codish;
+    n Statch
+    n Strope
+    n Oscgrin
+Stripey: |
+    Rw codish;
+    n Stripes
+    
+Statch: |
+    u allsvse
+    J.VV.N = 1;
+    n '','','%of:Art'
+    n muchofany =>3=><<'','%nv,tldo:scgkindex'
+        for my $k (keys %{T.D.sc.scindex||{}}) {
+            exists C.sc->{$k} || next;
+            A.Subtle.Styles = 1;
+            A.t&Styles,6,1;
+            return;
+        }
+    
+scgkindex: |
+    D.sc.scindex = {map{_.sc.gk=>1}grep{_.sc.nk eq 'sc' && _.sc.gk}@$N};
+Strope: |
+    u allacgts
+    n stri=>''=><<'',{acgt=>'D,s'}
+        # uses an I cap, the sc satays with any filing
+        my $v = C.sc->{D.sc.gk};
+        if (D.sc.flex) {
+            for my $st (@{D.sc.flex}) {
+                for my $k (sort keys %$st) {
+                    my $vv = $st->{$k};
+                    my $e;
+                    e.v = $v;
+                    e.et = $vv;
+                    $v = I.d&$k,$e;
+                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
+                }
+            }
+        }
+        else {
+            my $k = D.sc.filt;
+            return unless $k;
+            $v = I.d&$k,$v;
+        }
+        C.sc->{D.sc.gk} = $v;
+    
+    n plus=>''=><<''
+        s.v + s.et
+    
+    n defsa=>''=><<''
+        s.v || s.et
+    
+    n ori =>''=><<''
+        @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
+        my ($t,$f) = @{s.et};
+        return s.v =~ /[1ay]/ ? $t : $f
+    
+    n whipre =>''=><<''
+        return $s =~ /[1p]/ ? 'pre' : 
+        $s =~ /[2n]/ ? 'nowrap' : 
+        die "Canot $s whipre?";
+    
+    n shadole =>''=><<''
+        my @m = split m/\s/, $s;
+        $m[-1] = I.d&cole,$m[-1];
+        return sprintf '%dpx %dpx %dpx %s', @m;
+    
+    n radun =>''=><<''
+        my $o = $RADIAN*4;
+        my $swish = $o;
+        $swish *= -1 if $s < 0;
+        my $i = 0;
+        my $ori = $s;
+        $s -= $swish until
+            do {$i++>5&&die"$i muchwind from $ori ... $s";0}
+            ||
+            $o*-1 < $s && $s < $o;
+        return $s
+    
+    n saypx=>''=><<''
+        return $s if $s =~ /px$/;
+        $s.'px';
+    
+    n hundr=>''=><<''
+        int($s*100).'%';
+    
+    n hunine=>''=><<''
+        int($s*9).'%';
+        
+    n numb=>''=><<''
+        int($s);
+    
+    n saydeg=>''=><<''
+        int($s).'deg';
+    
+    n sayurl=>''=><<''
+        "url('$s')"
+    
+    n wordbreakwords=>''=><<''
+        die "Wordbreaku: $s" if $s ne '1';
+        'break-word';
+    
+Swomp: |
+    my $e = Rw swampdex;
+    u alljse
+    n css =>58,<<'',{any=>1,s=>$e}
+        $.each(s.thy,function(k,v){
+            C.sc[k] and C.sc.css[v] = C.sc[k];
+        });
+        $.each(s.roi,function(k,v){
+            var o = C.sc.css[k];
+            !o and return;
+            var ve = v[0];
+            var ss = v[1];
+            C.sc.css[ve] ||= {};
+            C.sc.css[ve][ss] = o;
+            delete C.sc.css[k];
+        });
+swampdex: | # from Chang, cssk to keep on the client
+    my $X = LoadFile('w/u/Chang');
+    my $N = [];
+    Rw sumX $X $N;
+    my $e;
+    e.thy->{_.sc.gk} = _.sc.cssk for grep {_.sc.cssk} @$N;
+    my @pooling = (
+        {k=>transform=>also=>[qw'rotate scale']},
+        {k=>filter=>also=>[qw'blur saturate brightness hue-rotate sepia invert grayscale']},
+    );
+    for my $g (@pooling) {
+        for my $al (@{g.also}) {
+            my $lie = g.k.'-'.$al;
+            e.roi->{$lie} = [g.k,$al];
+        }
+    }
+    $e
+Stripes: |
+    u allsvse
+    n '','','%of:Styles'
+    my $for = Rw forerstir;
+    
+    my $patterns = [map{!ref $_ ? [split /\s+/,$_] : $_}
+        map{$for->(@$_)}
+        [empc => qw'letter spacing'],
+        [empc => qw'line height'],
+        
+        [empc => 'margin' =>[qw'left right top bottom']],
+        [empc => 'ma^rgin'],
+        [empc => [qw'mi^n max']=>[qw'width height']],
+        [empc => [qw'lef^t ri^ght top^ bo^ttom']],
+        [empc => [qw'left^ right^ top^ bottom^']],
+        [empc => [qw'width^ height^']],
+        
+        ['' => 'over^flow'],
+        ['' => 'float^'],
+        ['' => 'bo^rder'],
+        [sca => 'opa^city'],
+        
+        ['' => qw'tr^ansform origin'],
+        [radun => qw'^transform rad^^rotate'],
+        ['' => qw'^transform scale^'],
+        
+        [saypx=>qw'^filter blr^^blur'],
+        ['' => qw'^filter sat^urate'],
+        ['' => qw'^filter con^trast'],
+        ['' => qw'^filter bri^ghtness'],
+        [saydeg => qw'^filter hue^-rotate'],
+        ['' => qw'^filter sep^ia'],
+        ['' => qw'^filter inv^ert'],
+        ['' => qw'^filter gray^scale'],
+        
+        [numb => z=>'index'],
+        ['numb+plus:-20' => z=>'ig^^index'],
+        ['numb+plus:-10' => z=>'ie^^index'],
+        
+        [sayurl => background=>'gi^^image'],
+        ['' => 'bg^^background'],
+        [hsle => 'bgh^^background-color'],
+        [hunine => font=>'size'],
+        [hundr => font=>'si^ze'],
+        [hundr => font=>'weight'],
+        [whipre => white=>'space'],
+        
+        [shadole => '^text'=>'sha^dow'],
+        [cole => 'co^lor'],
+        [hsle => 'hs^^color'],
+        ['defsa:underline' => '^text'=>'deco^ration'],
+        ['ori:all~none' => 'poi^nter'=>'^events'],
+        ['wordbreakwords'=>'word'=>'break'],
+        ['ori:block~none'=>'dis^play'],
+    ];
+    
+    for (@$patterns) {
+        my $sc = {};
+        (my($t), sc.filt, sc.cssk, sc.mor) = @$_;
+        if (sc.filt =~ /\W/) {
+            my @l = split /\+/, sc.filt;
+            my $i = 0;
+            map{
+                my ($k,$v);
+                if (/\W/) {
+                    ($k,$v) = /^(\w+):(.+)/;
+                    $v = [split'~',$v] if $v =~ /^\w+(~\w+)+$/;
+                }
+                else {
+                    $k = $_;
+                }
+                $k || die "noundo $_";
+                sc.flex->[$i++]->{$k} = $v;
+            } grep{defined} @l;
+        }
+        sc.mor || delete sc.mor;
+        n $t=>4=><<'',$sc
+            I.d&stri,T.D,$s;
+    
+    }
+forerstir: |
+    my $so = sub {substr $_[0], 0, 1};
+    sub {
+        my ($y,@b) = @_;
+        my @a = (['',$y,'']);
+        for my $e (@b) {
+            my @na;
+            for my $l (@a) {
+                for my $i (ref $e ? @$e : $e) {
+                    my $el = [@$l];
+                    $i =~ s/^(.*)\^\^// ||
+                    $i =~ s/^(.*)\^/$1/;
+                    my $in = $1;
+                    $in = $so->($i) if !defined $in;
+                    $el->[0] .= $in;
+                    $el->[2] = join '-', grep{$_}$el->[2],$i;
+                    push @na, $el;
+                }
+            }
+            @a = @na;
+        }
+        die"noper @b" if @a == 1 && $a[0]->[0] eq '';
+        @a;
+    };
+
+Oscgrin: |
+    u allacgts
+    
+    n mksc =>''=><<''
+        my $t = I.d&mos,$s;
+        I.d&xot,C.sc,$t;
+        
+    # language expansion
+    n mos =>''=><<''
+        my @t = split ',',$s;
+        for (@t) {
+            my ($k, $v) = split ':', $_;
+            $T.>$k = $v;
+        }
+    
+    n meat =>''=><<'',{acgt=>'k,v'}
+        my $f = $v;
+        my $mv = C.sc->{$k};
+        $f = I.d&mean,$f,$mv;
+        C.sc->{$k} = $f;
+
+    n mean =>''=><<'',{acgt=>'to,fro,mix'}
+        $mix ||= 0.5;
+        my $yu = $fro - $to;
+        $yu = $yu * $mix;
+        $fro -= $yu;
+        $fro
+    
+    # it
+    n cole =>''=><<''
+        my $h;
+        (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
+            if $s =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $s";
+        if (defined h.a) {
+           # do an rgba(255,255,255,1)
+           for my $k (qw'r g b a') {
+               my $e = $h->{$k};
+               $e = "$e$e" if length $e == 1; # out of 255
+               $h->{$k} = hex $e;
+           }
+           h.la = sprintf '%.2f', h.la / 255; # out of 1
+           return "rgba(h.r,h.g,h.b,h.a)";
+        }
+        else {
+           return sprintf "#%s%s%s", h.r, h.g, h.b;
+        }
+    
+    # ray lih, unhassley
+    n hsle =>''=><<''
+        my @m;
+        for ($s) {
+            @m = split ' ', $_;
+            last if @m == 3 || @m == 4;
+            @m = split /\./, $_;
+            last if @m == 3 || @m == 4;
+            @m = split '', $_;
+            last if @m == 3 || @m == 4;
+            @m = ();
+        }
+        @m || die "not hsle: $s";
+        my $h;
+        (h.h, h.s, h.l, h.a) = map{0+("0.".$_)}@m;
+        .
+        h.h = h.h * 360 if h.h < 1;
+        .
+        $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+        .
+        my $al = ", h.a" if defined h.a;
+        "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+    
+    # decide space unit TODO init soon
+    n empc =>''=><<''
+        $s .= 'em' if $s !~ /(%|em|px)/;
+        $s =~ s/^-?0em$/0%/;
+        $s
+    
+Oscapps: |
+    u allsvse
+    n '','','%of:Art'
+    # all but intercepted sc is sc
+    # 
+    
+    n sz =>2=><<''
+        my $si = length(C.c.s);
+        ($s, my $lim) = split '/',$s;
+        my $di = $s/$si;
+        $di = $lim if $lim && $di > $lim;
+        I.d&meat,fsi=>$di;
+        I.d&meat,fsi=>1 if $di > 2;
+        return;
+    
+    n is =>2=><<''
+        my ($t,$z) = split ':', $s;
+        $z ||= C.c.s;
+        my $i = sum map { ord $_ } split '', $z;
+        $i -= 9 until $i < 10;
+        C.sc.hs = "${i}75";
+    
+    n mu =>2=><<''
+        if ($s eq 'g') {
+            C.c.s || die "nos : ".wdump 2, $C;
+            C.c.s = Rw mugwu $d:C.c.s;
+            C.sc.hs ||= "576";
+        }
+        else {
+            die "how mu $s? C.c.s";
+        }
+
+    n nspc =>2=><<''
+        my $J = C.sc.J;
+        my $squ = C.sc.yspc || J.C.y.spc;
+        my $ratio = $squ / $s;
+        my $sl = sprintf '%.2f', $ratio;
+        my $cl = 0.02;
+        my $max = C.sc.nspc_max || 1;
+        $sl = $max if $sl > $max;
+        if ($sl > 1+$cl || $sl < 1-$cl) {
+            saybl "Abo nspc $sl";
+            C.sc.scale = $sl;
+        }
+    
+    n enid =>59=><<''
+        at.id = $s;
+        at.c.nobody = 1; 
+        at.t = j.l;
+        #say "enid j.l ::::  C.sc.at.sc.ab   ".k2 $at;
+        at.sc.ab = '100';
+        .
+        if (my $J = C.sc.J) {
+            die "DIffnoiw";
+            my $aj = C.sc.J.oJ.A.W->[-1];
+            my $l = aj.c->[0];
+            if (!aj.sent && ref $l) {
+                my ($t,$y,$c,$sc) = @$l;
+                if ($t eq j.l) {
+                    die if c.id ne at.id;
+                    %$sc = (%$sc,%{at.sc});
+                    at._aux = 1;
+                }
+            }
+        }
+    
+    n css =>555=><<''
+        $s = join ';', map{"$_:$s->{$_}"} sort keys %$s if ref $s eq 'HASH';
+        for my $set (split ';', $s) {
+            my ($k,$s) = split ':', $set;
+            at.sc.css->{$k} = $s;
+        }
+    
+    n src =>556=><<''
+        at.c.src = $s;
+    
+    # long range stuff reporting, use A.sv the toplevel intergatr
+    # like sort by A.sv length and number
+    # also putting a particular object behind an id... blessing
+    # weird sortes is the ways
+    # even urls are like this, we making up a short url or so
+    # keeping bits of short urls percolating up from where
+    # wants to find C, which may unify to ...
+    n idly =>58=><<''
+        my $id = mkuid();
+        my $qual = '';
+        at.c.id && sayre "Blessing C.t with $qual ($id -> at.c.id)";
+        at.c.id = $id;
+        #J.idyl->($J, $id, $j);
+        sayre "idly C.t  J.name J.r    ".ki C.sc;
+        
+    n lp =>5=><<''
+        at.c.ht = 1;
+    
+    n ishtml =>5=><<''
+        at.c.ht = 1;
+        
+    n tt =>5=><<''
+        at.c.title = $s;
+        
+    n canvas =>5=><<''
+        at.c.canvas = $s;
+        
+    n type =>51=><<''
+        at.c.type = $s;
+        at.c.ht = 1;
+        sayre "at.t at.y cannot have a title: $_" for grep{defined} delete at.c.title;
+        
+    n tag =>5=><<''
+        at.c.tag = $s;
+        
+    n at =>5=><<''
+        die;
+        $s =~ /^(?:(\S+):)?(\S+)$/;
+        $at->{$1} = $2;
+        
+    n atrp =>5=><<''
+        die "heloarp";
+        at.rp = $s;
+        
+    n path =>5=><<''
+        # to compuile J.ys
+        
+    n origin =>5=><<''
+        # better than W via c pi and W
+        
+    n pwar =>5=><<''
+        # to suggest
+        
+    n Joint =>5=><<''
+        # Something
+        
