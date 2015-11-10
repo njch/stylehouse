@@ -5,10 +5,13 @@ jshang: |
     J.VV.N = 1;
     #n Canvasc
     n Swomp
-    n Spap=>-try
+    #=>-try
+    #=>-try
     n Shorse
     #=>-try
+    #=>-try
     n Sipes
+    #=>-try
     #=>-try
     
 Shorse: |
@@ -21,31 +24,27 @@ Sipes: |
     n stylation
     n stylers
     n stylext
-Spap: |
-    Rw jeoish;
-    n jspa
-    
-    
+    n stylepap
 Chang: |
     Rw codish;
-    #u slowmoving
+    
     y.at.coil = 1;
+    
     n Stitchy
-    n Stripey=>-try
-    #n stylation
-    #y.at.jslines = 2;
-    #J.VV.N = 1;
+    n Stripey
     
 Stitchy: |
     Rw codish;
+    
     n Statch
     n Strope
     n Oscgrin
 Stripey: |
     Rw codish;
+    
     n Stripes
     
-Statch: |
+Statch: | # from Chang make scindex, use in Art to attach Styles
     u allsvse
     J.VV.N = 1;
     n '','','%of:Art'
@@ -57,12 +56,12 @@ Statch: |
             return;
         }
     
-scgkindex: |
+scgkindex: | # make scindex
     D.sc.scindex = {map{_.sc.gk=>1}grep{_.sc.nk eq 'sc' && _.sc.gk}@$N};
-Strope: |
+Strope: | # Art form Styles, scindex dispatched
     u allacgts
+    # uses an I cap, the sc satays with any filing
     n stri=>''=><<'',{acgt=>'D,s'}
-        # uses an I cap, the sc satays with any filing
         my $v = C.sc->{D.sc.gk};
         if (D.sc.flex) {
             for my $st (@{D.sc.flex}) {
@@ -83,63 +82,7 @@ Strope: |
         }
         C.sc->{D.sc.gk} = $v;
     
-    n plus=>''=><<''
-        s.v + s.et
-    
-    n defsa=>''=><<''
-        s.v || s.et
-    
-    n ori =>''=><<''
-        @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
-        my ($t,$f) = @{s.et};
-        return s.v =~ /[1ay]/ ? $t : $f
-    
-    n whipre =>''=><<''
-        return $s =~ /[1p]/ ? 'pre' : 
-        $s =~ /[2n]/ ? 'nowrap' : 
-        die "Canot $s whipre?";
-    
-    n shadole =>''=><<''
-        my @m = split m/\s/, $s;
-        $m[-1] = I.d&cole,$m[-1];
-        return sprintf '%dpx %dpx %dpx %s', @m;
-    
-    n radun =>''=><<''
-        my $o = $RADIAN*4;
-        my $swish = $o;
-        $swish *= -1 if $s < 0;
-        my $i = 0;
-        my $ori = $s;
-        $s -= $swish until
-            do {$i++>5&&die"$i muchwind from $ori ... $s";0}
-            ||
-            $o*-1 < $s && $s < $o;
-        return $s
-    
-    n saypx=>''=><<''
-        return $s if $s =~ /px$/;
-        $s.'px';
-    
-    n hundr=>''=><<''
-        int($s*100).'%';
-    
-    n hunine=>''=><<''
-        int($s*9).'%';
-        
-    n numb=>''=><<''
-        int($s);
-    
-    n saydeg=>''=><<''
-        int($s).'deg';
-    
-    n sayurl=>''=><<''
-        "url('$s')"
-    
-    n wordbreakwords=>''=><<''
-        die "Wordbreaku: $s" if $s ne '1';
-        'break-word';
-    
-Swomp: |
+Swomp: | # the Chang for js
     my $e = Rw swampdex;
     u alljse
     n css =>58,<<'',{any=>1,s=>$e}
@@ -353,6 +296,62 @@ Oscgrin: |
         $s =~ s/^-?0em$/0%/;
         $s
     
+    n plus=>''=><<''
+        s.v + s.et
+    
+    n defsa=>''=><<''
+        s.v || s.et
+    
+    n ori =>''=><<''
+        @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
+        my ($t,$f) = @{s.et};
+        return s.v =~ /[1ay]/ ? $t : $f
+    
+    n whipre =>''=><<''
+        return $s =~ /[1p]/ ? 'pre' : 
+        $s =~ /[2n]/ ? 'nowrap' : 
+        die "Canot $s whipre?";
+    
+    n shadole =>''=><<''
+        my @m = split m/\s/, $s;
+        $m[-1] = I.d&cole,$m[-1];
+        return sprintf '%dpx %dpx %dpx %s', @m;
+    
+    n radun =>''=><<''
+        my $o = $RADIAN*4;
+        my $swish = $o;
+        $swish *= -1 if $s < 0;
+        my $i = 0;
+        my $ori = $s;
+        $s -= $swish until
+            do {$i++>5&&die"$i muchwind from $ori ... $s";0}
+            ||
+            $o*-1 < $s && $s < $o;
+        return $s
+    
+    n saypx=>''=><<''
+        return $s if $s =~ /px$/;
+        $s.'px';
+    
+    n hundr=>''=><<''
+        int($s*100).'%';
+    
+    n hunine=>''=><<''
+        int($s*9).'%';
+        
+    n numb=>''=><<''
+        int($s);
+    
+    n saydeg=>''=><<''
+        int($s).'deg';
+    
+    n sayurl=>''=><<''
+        "url('$s')"
+    
+    n wordbreakwords=>''=><<''
+        die "Wordbreaku: $s" if $s ne '1';
+        'break-word';
+    
 Oscapps: |
     u allsvse
     n '','','%of:Art'
@@ -485,3 +484,4 @@ Oscapps: |
     n Joint =>5=><<''
         # Something
         
+
