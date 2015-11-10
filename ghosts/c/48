@@ -41,6 +41,16 @@ stylehut: |
 styleven: |
     u alljs
     
+    n codsav =>''=><<''
+        var cm = s;
+        a.c('AA AA '+C.t);
+        var d = {};
+        a.entag(d, $(A.on));
+        A.bb.jus = d.code = cm.getValue();
+        d.dig = $(A.on).attr('dig');
+        a.ethro(d, ws);
+        console.log(d);
+    
     n entag =>''=><<'',{args=>'d,tag'}
           d.name = tag.attr('name');
           var ids = [];
@@ -200,7 +210,7 @@ stylation: |
         !$(A.on).length and a.c("no nobody at "+C.c.nobody);
     
     # whole time... (make whote, A.t&4 ex inness..
-    n el =>3=><<''
+    n el =>333=><<''
         C.sc.attr ||= {};
         var last;
         var t = G&tcl;
@@ -221,7 +231,10 @@ stylation: |
         if (A.bb.cod) {
             C.c.cod ||= '3';
         }
-        if (typeof C.c.s === 'string' && !C.c.cod) {
+        if (A.bb.pa) {
+            C.sc.pa ||= '3';
+        }
+        if (typeof C.c.s === 'string' && !C.c.cod && !C.sc.pa) {
             C.c.ht and $(el).html(C.c.s);
             else
             $(el).text(C.c.s);
@@ -342,37 +355,36 @@ stylext: |
         cm.on('blur',function(){a.c('Cofus');clon();keon();sav();});
     
     #    $('#'+id).css('width','15em','max-height','70%','overflow','scroll');
-    #    $('#'+id+' > .CodeMirror');//.css('height','auto');
-    
-    u alljs
-    n codsav =>''=><<''
-        var cm = s;
-        a.c('AA AA '+C.t);
-        var d = {};
-        a.entag(d, $(A.on));
-        A.bb.jus = d.code = cm.getValue();
-        d.dig = $(A.on).attr('dig');
-        a.ethro(d, ws);
-        console.log(d);
-    
+    #   $('#'+id+' > .CodeMirror');//.css('height','auto');
     
 stylepap: |
     u alljse
     
-    n pa =>3=><<''
-        with (paper) { # push to codcoil the paper scope grab to build into the dome
-            !s === 'ra' and a.c('nom ra: '+s);
+    # push to codcoil the paper scope grab to build into the dome
+    n pa =>34=><<''
+        delete C.c.el;
+        with (paper) {
             s = C.sc;
-            s ||= {};
-            s.jfi ||= 'img';
-            var find = $(s.jfi);
-            !find.length and a.c('no find '+s.jfi);
-            var src = $(find).last().attr('src');
-            var r = new Raster(src);
-            s.poes and r.position = eval(s.poes);
-            else { 
-                r.position = view.center;
+            var r;
+            if (C.sc.pa === '3') {
+                r = A.bb.pa;
+                !r && a.c("no rasmeemmber "+C.t);
             }
+            else {
+                !s === 'ra' and a.c('nom ra: '+s);
+                var src;
+                s.src and src = s.src;
+                if (!src) {
+                    s.jfi ||= 'img';
+                    var find = $(s.jfi);
+                    !find.length and a.c('no find '+s.jfi);
+                    src = $(find).last().attr('src');
+                }
+                r = new Raster(src);
+            }
+            s.poes and r.position = eval(s.poes);
+            else
+            !C.sc.pa === '3' and r.position = view.center;
             s.poxop and r.position.x += s.poxop;
             s.poyop and r.position.y += s.poyop;
             s.sca and r.scaling = s.sca;
@@ -383,27 +395,34 @@ stylepap: |
             A.W ||= {};
             A.W.ras ||= {};
             A.W.ras[src] = r;
+            A.bb.pa = r;
         }
     
 pi/pape: |
-    my ($no,$i,$se) = ($1,$2,$3) if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
-    my $fo = $no - $i;
+    C.sc.pa = 'res';
+    if (C.c.thumb) {
+        my ($th)=map{_.nj}
+        n th=>-thumb=>C.c.thumb
+        C.sc.src = th.C.sc.src;
+    }
+    C.sc.oc = 1;
+    Rw papernoise;
     
+papernoise: |
+    my ($no,$i,$se) = ($1,$2,$3)
+        if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
+    my $fo = $no - $i;
     shuffle 1, 2, 3 for 1..int($no);
     
-    map{delete J.El->{$_}}'Pre','Duv';
-    say wdump [$no,$i,$se,$fo];
-    my $sc = {
-        pa=>ra=>es=>"\$('img').attr('src')",
-        poxop=>-70 * (rand(3) -2),
-        poyop=>-70 * (rand(3) -2),
-        sca=>3.421 * rand(3) ^ 2,
-        opa=>0.61,
-        b=>(shuffle 'normal', 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference', 'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor')[0],
-        r=>int(900 * $fo),
-    };
-    $sc->{$_} = I.d&ron,$sc->{$_} for grep{$sc->{$_}} qw'poxop poyop sca opa r';
-    n payp =>3=>{},$sc
+    C.sc.src || sayre "no src..";
+    C.sc.poxop = -70 * (rand(3) -2);
+    C.sc.poyop = -70 * (rand(3) -2);
+    C.sc.sca = 3.421 * rand(3) ^ 2;
+    C.sc.opa = 0.61;
+    C.sc.b = (shuffle 'normal', 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference', 'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor')[0];
+    C.sc.r = int(900 * $fo);
+    
+    C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'poxop poyop sca opa r';
     
 Canvasc: |
     u alljs

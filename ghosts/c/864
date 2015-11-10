@@ -67,6 +67,27 @@ pi/fi: |
           do { $u = C.t; 'text' };
      Mn($pi,{},{pi=>$pi,s=>$u});
      
+pi/thumb: |
+    return "nontypeimage: $s" unless $s =~ /(tga|png|gif|jpe?g)$/i;
+    my $mou = "public/";
+    my ($first) = split '/', $s;
+    die "$first not $mou?" unless -e "$mou$first";
+    my $thl = "th/$s";
+    my $th = "$mou$thl";
+     if (!-f $th){
+         sayyl " thumbnail++$s";
+         my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
+         if (!-d $thd) {
+             run 'mkdir', '-p', $thd;
+         }
+         if ($u =~ /(mov|avi|mp4)$/i) {
+             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
+         }
+         else {
+             run 'convert', $u, '-thumbnail','500x500', $th
+         }
+     }
+    C.sc.src = $thl if $thl;
 pi/thumbnail: |
      my $size = -s $u;
      C.sc.nspc = 0.46;

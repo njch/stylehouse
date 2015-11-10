@@ -198,6 +198,7 @@ Space: |
         C.y.bal = o.M || die"nomo";
         # unless y unlimited...until
         o.J = J.most.J if $Jy && Jy.o && Jy.spc > 0.1;
+        delete o.J if y.clos;
         my $shut = $Jy && Jy.o && !o.J;
         C.y.over = (Jy.o && Jy.over && Jy.over || 0) + 0.06 if y.o.J;
         #sayre "Jyspace: spc:  J.d.y.spc  or aspace: Jy.aspace" if $Jy;
@@ -339,17 +340,25 @@ bal: |
 lum: |
     u allvy
     
+    # barel! vylum
+    # could put these mys on y.u.thing and loop Nautically in 32...
     n lum_thy =>''=>{s=><<''},{code=>'Mo 233',v=>'lum',rg=>'bal'}
-        # barel! vylum
-        # could put these mys on y.u.thing and loop Nautically in 32...
-        my $roll = 1;
-        $lum ||= 3;
+        my $um = {};
+        (um.l,um.r) = split ',', $lum;
+        $um->{$_} =
+            $um->{$_} =~ /^(?:(\d+)-)??(?:(\d)+)(?:-(\d)+)?$/
+            ? {i=>$1,um=>$2,o=>$3}
+            : die "notunder: ".wdump 2, $um
+            for keys %$um;
+        saybl "Lum C.t: ". wdump 2, $um;
+        um.l.um ||= 3;
+        my $lumhalvesby = (um.l.um / 2) / (um.r.um || 3);
         my $i = 0;
         for (@$bal) {
-            _.y.thy+=$lum;
+            _.y.thy+=um.l.um;
             $i++;
-            if ($i > $roll) {
-                $lum -= $lum * 0.2 if $lum > 0.1;
+            if ($i > um.l.o) {
+                um.l.um -= $lumhalvesby if um.l.um > 0.1;
             }
         }
     
@@ -359,6 +368,6 @@ lum: |
         $spc = $upt if $spc < $upt;
         # t-rewirey formulae:
         my $fs = ($spc / 0.02) * 4;
-        C.sc.fs = $fs if $fs < 9;
+        C.sc.fs = $fs;# if $fs < 9;
         C.y.spc = $spc;
 
