@@ -201,6 +201,12 @@ Sl: |
         n Details
         Rw loopby $b=3 $d=5 $p=Top;
     }
+    J.me =~ /u/ &&
+        n uncan
+    J.me =~ /s/ &&
+        n Sefi
+    J.me =~ /w/ &&
+        n Wjes
     J.me =~ /g/ &&
         n jogthe
     J.me =~ /c/ &&
@@ -218,6 +224,11 @@ Sl: |
         my $n = J.fsjoi++;
         $n && 1;
         $n || Rw loopby $b=5 $d=26 $p=Top;
+uncan: |
+    y.at.jslines = 1;
+    n blag =>4=>{s=><<''},'%js'
+        paper.project.clear();
+    
 Wh: |
     y.at.oWl = 1;
     n Details
@@ -395,8 +406,7 @@ Details: |
     J.act = 0; # pi always
     #return
     n Sefi
-    
-    # Mn('w/jes'=>-ll=>);
+    n Wjes
     # one to com the piles
     return;
     y.in = 0.08;
@@ -417,67 +427,225 @@ Sefi: |
     u ReoCur
     y.at.ux = 1;
     y.at.oWl = 1;
-    y.in=0.5
-    Mn(gc=>-gl=>'g/c/*');
-Compu: |
-    sayyl "HERE\n\n".wdump 2,[ ki C.c.s ];
-    u ReoCur
-    y.at.ux = 1;
-    y.at.oWl = 1;
-    J.VV.N = 1;
-pi/gl: |
-    my @li = glob $s;
     y.at.ws = 1;
     y.at.hs = '393';
-    n $_=>-glo=>{},'%dis' for @li;
-    sayyl "Did ".@li." in ".F_delta();
-pi/glo: |
-    y.at.hs = '632';
-    my $mt = (stat $s)[9];
-    n fst => 1=>$mt
-    Atime(2) || return;
-    my $fi = $s;
-    $fi =~ s/\//-/g;
-    my $wf = "w/wf/$fi";
-    my $mft = (stat $wf)[9] if -f $wf;
-    if ($mt > $mft) {
-        n bang=>'',"!",'%hs:858';
+    y.in = 0.03;
+    y.out = 4;
+    J.VV.N = 1;
+    
+    my $p = 'g/c/*';
+    Mn(p=>''=>$p,'%decor,hs:388,fs:15');
+    
+    # $f mtimes into w/wf/$fish (s/\//-/g), for its -glo:
+    #  - way $k digs into w/digway/$kish
+    #    - new file written & diffed and move in/over w/way/$kish
+    
+    my $glomet = sub {
+        my $f = shift;
+        my $mt = (stat $f)[9];
+        my $fi = $f;
+        $fi =~ s/\//-/g;
+        my $wf = "w/wf/$fi";
+        my $mft = (stat $wf)[9] if -f $wf;
+        $mt > $mft
+    };
+    
+    my @li = glob $p;
+    for my $f (@li) {
+        $glomet->($f) || next;
+        # part of glo ^
+        Mn($f=>-glo=>{}=>'%dis');
+    }
+    Mn(found=>''=>"found ".@li);
+    n o=>42=>"@",'%fs:40,blr:4';
+    # and so
+pi/glo: | # see file glowing, flood gates of
+    y.at.hs = '638';
+    n f => 1 => C.t
+    n changed=>2=>changed=>'%hs:857'
+    
         my $d = LoadFile($s);
         `mkdir w/way` if !-d 'w/way';
+        `mkdir w/digway` if !-d 'w/digway';
+        
         while(my($k,$v) = each %$d) {
             $k =~ s/\//-/g;
             my $waf = "w/way/$k";
+            my $wig = "w/digway/$k";
+            my $dig = slm 10, dig($v);
+            my $lin = readlink($wig) if -l $wig;
+            if ($lin eq $dig) {
+                sayyl "$wig same ($dig)";
+                next;
+            }
+            else {
+                sayyl "Lin: $lin eq $dig" if $lin;
+                sayre "No lin $wig " if !$lin;
+            }
             write_file($waf."nt",$v);
             if (!-f $waf || `diff $waf ${waf}nt`) {
-                say "GFot $waf";
-                Mn(gfot=>''=>"Gfot: $waf");
+                Mn(gfot=>''=>"\n - $k");
                 `mv ${waf}nt $waf`;
             }
             else {
-                saybl "mello $waf";
                 `rm ${waf}nt`;
             }
+            -l $wig && `unlink $wig`;
+            `ln -s $dig $wig`;
         }
+        
+    # mtimes in wf must be after any of the inner branches ^
+        my $fi = $s;
+        $fi =~ s/\//-/g;
+        my $wf = "w/wf/$fi";
         `mkdir w/wf` if !-d 'w/wf';
         write_file($wf,'');
-    }
     
-pi/wf: | # wildlife federation
-    my ($si,$ti,$fi) = split ' -- ', $s;
-    $fi || return 
-     n 404 => ''=>404,'%hs:584'
-    n ti=>1=>$ti
-    n fi=>2=>$fi,'%ma:0.1em'
-    my $f = $fi;
-    my $mt = (stat $fi)[7];
-    saybl "Doing wf $fi! ";
-    my $l = "w/wf/$fi";
-    if (-f $l) {
-        my $mti = (stat $l)[7];
-        n soom =>3=>"was: ".($mt - $mti)
+Wjes: |
+    u ReoCur
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    y.at.ws = 1;
+    y.at.hs = '893';
+    y.in = 0.03;
+    y.out = 6;
+    J.VV.N = 1;
+    J.mo.jes = $J;
+    
+    my $dir = "w/jes";
+    my $p = "$dir/*";
+    Mn(p=>''=>$p,'%decor,hs:388');
+    
+    my $geese = sub {
+        my $f = shift;
+        my $way = $1 if $f =~ /.+\/(.+?)$/;
+        $way || die "noqway $f";
+        my $mt = (stat $f)[9];
+        my $fi = $f;
+        $fi =~ s/\//-/g;
+        my $wf = "w/way/$way";
+        my $mft = (stat $wf)[9] if -f $wf;
+        $mt > $mft
+    };
+    
+    my $li = {map{$_=>1}glob($p)};
+    my @n;
+    my $jf = "$dir/J";
+    if (delete $li->{$jf}) {
+        Rw trowil $J $s:jf;
+        Mn($jf=>-gejo=>{}=>'%dis');
+        
     }
     else {
-        n soomo=>3=>"wasnt yet",'%hs:398'
+        sayre "No $jf in ".wdump 2, $li;
+    }
+    my $wt = J.mo.jes.trowl || die "no trowl";
+    
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        map {
+            my $v = $wt->{$_};
+            my @M;
+            my $in = join("",("  ")x$d);
+            push @M, [$_=>''=>"${in}z $_"];
+            push @M, $tal->($d+1, $v) if keys %$v;
+            @M
+        } sort keys %$wt;
+    };
+    my $N = [$tal->(0,$wt)];
+    my $eM = [];
+    Rw In $J $N $M:eM;
+    for (@$eM) {
+        my $f = "$dir/_.t";
+        if (delete $li->{$f}) {
+            _.c.pi = 'gee' if $geese->($f);
+            _.sc.hs = '555';
+        }
+        else {
+            _.sc.hs = '339';
+        }
+    }
+    
+    keys %$li &&
+        Mn(not=>{thy=>2.4}=>"Uncounted ".wdump [sort keys %$li]);
+    
+    Mn(@$_) for @$eM;
+    
+    n o=>62=>"@",'%fs:40,blr:4';
+    # and so
+trowil: |
+    my @li = glob "$s/*/*";
+    my $tw = {};
+    for my $f (@li) {
+        my ($gate,$up,$way) = $f =~ /^(.+)\/J\/(.+?)\/(.+?)$/;
+        $up && $way || die "nope $f";
+        $tw->{$up}->{n}->{$way} = 1;
+        $tw->{$way}->{u}->{$up} = 1;
+    }
+    my $wt = {};
+    $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+    my @ne = $wt;
+    while (@ne) {
+        my @m = @ne;
+        @ne = ();
+        for $wt (@m) {
+            for my $k (keys %$wt) {
+                my $t = $tw->{$k};
+                if (t.n) {
+                    my $n = $wt->{$k};
+                    $n->{$_} = {} for keys %{t.n};
+                    push @ne, $n;
+                }
+                else {
+                    #
+                }
+            }
+        }
+    }
+    J.mo.jes.tower = $tw;
+    J.mo.jes.trowl = $wt;
+pi/gejo: |
+    y.at.hs = '388';
+    y.at.ml = '13';
+    y.at.fs = '7';
+    y.at.lh = '0.9em';
+    y.at.geo = 'a100 0 0 1.2';
+    n gate=>2=>"Gasm: $s";
+    $s =~ /\/J$/ || die "nogate: $s";
+    my $wt = J.mo.jes.trowl;
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        join"\n",map{
+            ind(join("",("  ") x $d), $_)
+        }map {
+            "$_".(!keys %{$wt->{$_}} ? "" : do {
+                ":\n".$tal->($d+1, $wt->{$_});
+            });
+        }sort keys %$wt;
+    };
+    my $s = $tal->(0,$wt);
+    Mn(eo=>''=>" got ".@li.",\n$s");
+    
+pi/gee: |
+    my ($gate,$way) = $s =~ /^(.+)\/(.+?)$/;
+    n gate=>2=>"Gate $gate "
+    n way =>21=>"$way",'%hs:389'
+    
+    my $mt = (stat $s)[9];
+    
+    $way || die "noqway $s";
+    my $wf = "w/way/$way";
+    -f $wf || return
+        n no=>2=>"NO $wf",'%hs:898'
+    my $mft = (stat $wf)[9];
+    my $mis = $mft - $mt;
+    
+    if ($mt > $mft) {
+        n mis=>31=>"$mis",'%hs:333'
+        
+        my $tw = J.mo.jes.tower;
+        my $u = $tw->{$way} || die "no topwer $way";
+        
     }
     
 ll: |
