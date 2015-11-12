@@ -172,7 +172,7 @@ Sl: |
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
     
-    #n reJSlines
+    n reJSlines
     # makes everything but js=1
     
     #n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
@@ -393,15 +393,16 @@ Details: |
     
     #n Tarp
     J.act = 0; # pi always
+    #return
+    n Sefi
     
-    Mn('w/jes'=>-ll=>);
-    
-    
+    # Mn('w/jes'=>-ll=>);
+    # one to com the piles
     return;
     y.in = 0.08;
     y.lum = 1;
     y.out = 3;
-    Mn($_=>-shed=>) for 'g/c/45';
+    Mn($_=>-shed=>) for 'ghosts/c/45';
     J.pix = {pi=>te=>pito=>'nothing'};
     
     
@@ -412,17 +413,116 @@ Details: |
     n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
     
     return;
+Sefi: |
+    u ReoCur
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    y.in=0.5
+    Mn(gc=>-gl=>'g/c/*');
+Compu: |
+    sayyl "HERE\n\n".wdump 2,[ ki C.c.s ];
+    u ReoCur
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    J.VV.N = 1;
+pi/gl: |
+    my @li = glob $s;
+    y.at.ws = 1;
+    y.at.hs = '393';
+    n $_=>-glo=>{},'%dis' for @li;
+    sayyl "Did ".@li." in ".F_delta();
+pi/glo: |
+    y.at.hs = '632';
+    my $mt = (stat $s)[9];
+    n fst => 1=>$mt
+    Atime(2) || return;
+    my $fi = $s;
+    $fi =~ s/\//-/g;
+    my $wf = "w/wf/$fi";
+    my $mft = (stat $wf)[9] if -f $wf;
+    if ($mt > $mft) {
+        n bang=>'',"!",'%hs:858';
+        my $d = LoadFile($s);
+        `mkdir w/way` if !-d 'w/way';
+        while(my($k,$v) = each %$d) {
+            $k =~ s/\//-/g;
+            my $waf = "w/way/$k";
+            write_file($waf."nt",$v);
+            if (!-f $waf || `diff $waf ${waf}nt`) {
+                say "GFot $waf";
+                Mn(gfot=>''=>"Gfot: $waf");
+                `mv ${waf}nt $waf`;
+            }
+            else {
+                saybl "mello $waf";
+                `rm ${waf}nt`;
+            }
+        }
+        `mkdir w/wf` if !-d 'w/wf';
+        write_file($wf,'');
+    }
+    
+pi/wf: | # wildlife federation
+    my ($si,$ti,$fi) = split ' -- ', $s;
+    $fi || return 
+     n 404 => ''=>404,'%hs:584'
+    n ti=>1=>$ti
+    n fi=>2=>$fi,'%ma:0.1em'
+    my $f = $fi;
+    my $mt = (stat $fi)[7];
+    saybl "Doing wf $fi! ";
+    my $l = "w/wf/$fi";
+    if (-f $l) {
+        my $mti = (stat $l)[7];
+        n soom =>3=>"was: ".($mt - $mti)
+    }
+    else {
+        n soomo=>3=>"wasnt yet",'%hs:398'
+    }
+    
+ll: |
+    my $se = `ls -l --full-time $s`;
+    $se =~ s/-rw-r\S-r-- 1 s s //sgm;
+    my $l = [map {
+        if (/^(\s*)(\d+) ([\d-]{10}) ((?:\d+:?)+)\.\d+ \+\d{4} (.+)$/) {
+            "$1$2 -- $4 -- $5";
+        }
+        else {
+            $_
+        }
+    } split "\n", $se];
+    $l
 pi/ll: |
     u lum
-    my $se = `ls -l --full-time $s`;
-    $se =~ s/-rw-rw-r-- 1 s s //sgm;
-    y.at.fs = 18;
+    my $ea = "$s/*";
+    my $l = Rw ll $s:ea;
+    y.at.fs = 28;
     y.at.ws = 1;
     y.at.sha = '3 3 4 111';
     y.clos = 1;
     y.lum = '6-6,8';
-    Mn(se=>-pell=>$_,{dis=>1}) for split "\n", $se;
+    my $com = C.c.ll ? '-'.C.c.ll : ''; # -pell
+    say wdump 2, [$com, $l];
+    Mn(se=>$com=>$_,{dis=>1}) for @$l;
     
+    -d "$s/J" && 
+    Mn(Joint=>-ll=>{ll=>'join',s=>"$s/J/*"},'%hs:399');
+    
+pi/join: |
+    $s =~ /(\S+J\/(\w+)\/(\w+))$/;
+    my $jf = $1;
+    my $fj = "(!-f)" if !-f $jf;
+    my $jfm = (stat $jf)[9];
+    my $wf = "w/way/$3";
+    my $wfm = (stat $wf)[9];
+    !-f $wf &&
+        n no=>''=>" NO $wf",'%hs:846'
+    my $del = $wfm - $jfm;
+    $del < 0 && return
+        n del=>''=>" OK: $del",'%hs:288'
+    
+    n sout => 3 =>"\n - Sou $wf ($wfm - $jfm)  $jf",'%hs:394,fs:5'
+    n means => 4 => $del,'%hs:445'
 pi/pell: |
     C.sc.qs = 1;
     if ($s =~ /^(\s*)(\d+) ([\d-]{10} [\d:\.]+ \+\d{4}) (.+)$/) {
@@ -614,7 +714,7 @@ Tarp: |
     J.tea ||= [grep{chomp}shuffle`ls -1 eye/Tarf/*/*`];
     J.slow ||= 0;
     J.fast++;
-    if (J.fast > 2) {
+    if (J.fast > 1) {
         J.slow++;
         J.fast = 0;
         J.slow = 0 if J.slow >= @{J.tea};
@@ -622,7 +722,7 @@ Tarp: |
     #
     y.ope = 1;
     my $f = J.tea->[J.slow];
-    n "the J.slow"=>-pape=>{s=>'mild'=>thumb=>$f};
+    n "the J.slow J.fast"=>-pape=>{s=>'mild'=>thumb=>$f};
     
     Mn(f=>''=>$f=>'%dos:flse,op:J/slow,to:1');
 flse: | # fusilagery - wants about 2 seconds

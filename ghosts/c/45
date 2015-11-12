@@ -23,18 +23,27 @@ pi/trW: | # uses localeo
     my $isle = J.mo.J.oy.at.isle;
     $isle || die "No isledea !? J.name of J.mo.J.name";
     my $f = "w/$isle/$s";
+    my $Jd = "w/$isle/J/J.mo.J.name";
+    `mkdir -p $Jd` if !-d $Jd;
+    for (glob"$Jd/$s") {
+        if (-s $_) {
+            saybl "Travel from $_: ".wdump 3,[
+                `cat $_`
+                ];
+            
+        }
+    }
     #`rm $f`;
     if (-f $f) {
         say "Found $f !";
         n $f =>3,$s,{X=>LoadFile($f)}
+        `touch $Jd/$s` && sayre "Xuper $f" if !-f "$Jd/$s";
     }
     else {
         say "Making  $s !";
         n $s=>W
+        `touch $Jd/$s`;
     }
-    my $Jd = "w/$isle/J/J.mo.J.name";
-    `mkdir -p $Jd` if !-d $Jd;
-    `touch $Jd/$s`;
     saybl "Donel  $Jd  $s";
     
 Sweep: |
