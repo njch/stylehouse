@@ -215,6 +215,8 @@ Sl: |
         n Details
     J.me =~ /j/ &&
         n jshang
+    J.me =~ /t/ &&
+        n Tarp
     
     #n Details
     #n EYZ
@@ -405,8 +407,8 @@ Details: |
     #n Tarp
     J.act = 0; # pi always
     #return
-    n Sefi
-    n Wjes
+    #n Sefi
+    #n Wjes
     # one to com the piles
     return;
     y.in = 0.08;
@@ -503,6 +505,12 @@ pi/glo: | # see file glowing, flood gates of
     
 Wjes: |
     u ReoCur
+    u curv =>pi=><<''
+        zoom 0  0.7
+        y    0  0
+        x    0  0
+        curve 0 0.03
+    
     y.at.ux = 1;
     y.at.oWl = 1;
     y.at.ws = 1;
@@ -511,6 +519,7 @@ Wjes: |
     y.out = 6;
     J.VV.N = 1;
     J.mo.jes = $J;
+    y.ert = 20;
     
     my $dir = "w/jes";
     my $p = "$dir/*";
@@ -546,8 +555,7 @@ Wjes: |
         map {
             my $v = $wt->{$_};
             my @M;
-            my $in = join("",("  ")x$d);
-            push @M, [$_=>''=>"${in}z $_"];
+            push @M, [$_=>''=>{s=>$_,ind=>$d}];
             push @M, $tal->($d+1, $v) if keys %$v;
             @M
         } sort keys %$wt;
@@ -558,8 +566,14 @@ Wjes: |
     for (@$eM) {
         my $f = "$dir/_.t";
         if (delete $li->{$f}) {
-            _.c.pi = 'gee' if $geese->($f);
-            _.sc.hs = '555';
+            if ($geese->($f)) {
+                _.c.s = $f;
+                _.c.pi = 'gee';
+            }
+            else {
+                _.c.pi = 'bl';
+            }
+            _.sc.hs = '255';
         }
         else {
             _.sc.hs = '339';
@@ -567,12 +581,20 @@ Wjes: |
     }
     
     keys %$li &&
-        Mn(not=>{thy=>2.4}=>"Uncounted ".wdump [sort keys %$li]);
+        Mn(unc=>''=>"Uncounted: $_")
+            for sort keys %$li;
     
-    Mn(@$_) for @$eM;
+    saybl eval{ _.c.s } for @$M;
+    $@ = "";
+    
+    Mn($eM);
     
     n o=>62=>"@",'%fs:40,blr:4';
     # and so
+pi/bl: |
+    n ind=>0.03=>join("", ("  ~  ") x C.c.ind)
+    
+    n way=>1=>C.t
 trowil: |
     my @li = glob "$s/*/*";
     my $tw = {};
@@ -606,11 +628,11 @@ trowil: |
     J.mo.jes.trowl = $wt;
 pi/gejo: |
     y.at.hs = '388';
-    y.at.ml = '13';
-    y.at.fs = '7';
+    y.at.mt = '5';
+    y.at.fs = '9';
     y.at.lh = '0.9em';
-    y.at.geo = 'a100 0 0 1.2';
-    n gate=>2=>"Gasm: $s";
+    y.at.geo = 'a100 0 0.1 1.2';
+    n gate=>2=>"\n.\n.\n.\n.\n.\n.\nGasm: $s\n\n";
     $s =~ /\/J$/ || die "nogate: $s";
     my $wt = J.mo.jes.trowl;
     my $tal;$tal = sub {
@@ -624,12 +646,15 @@ pi/gejo: |
         }sort keys %$wt;
     };
     my $s = $tal->(0,$wt);
-    Mn(eo=>''=>" got ".@li.",\n$s");
+    Mn(eo=>''=>"\n$s");
     
 pi/gee: |
+    #y.at.ml = C.c.ind * 2;
+    n ind=>0.03=>join("", ("  ~  ") x C.c.ind)
+    
     my ($gate,$way) = $s =~ /^(.+)\/(.+?)$/;
-    n gate=>2=>"Gate $gate "
-    n way =>21=>"$way",'%hs:389'
+    $way eq C.t || die "C.t - $way mix";
+    n way =>1=>C.t,'%hs:389'
     
     my $mt = (stat $s)[9];
     
@@ -641,8 +666,8 @@ pi/gee: |
     my $mis = $mft - $mt;
     
     if ($mt > $mft) {
+        n from=>2=>'way'
         n mis=>31=>"$mis",'%hs:333'
-        
         my $tw = J.mo.jes.tower;
         my $u = $tw->{$way} || die "no topwer $way";
         
