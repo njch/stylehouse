@@ -190,8 +190,9 @@ Sl: |
     
     #n jshang
     #n ThisPr
-    n ReoCur
-    n Precoall
+    #n ReoCur
+    #n Precoall
+    J.me = $ARGV[-1] if @ARGV == 3;
     
     if (J.fsjoi++ >= 1) {
         Rw waitme;
@@ -378,20 +379,6 @@ Details: |
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
     
-    my $mark = [',',qw' ? ; :'];
-    A.us&C && A.us&S ? J.fkeo++ : J.fkeo--;
-    
-    J.fkeo += 1 until J.fkeo >= 0;
-    J.fkeo -= @$mark while J.fkeo > @$mark;
-    
-    J.sdjfsiji ||= 4;
-    my $n = J.sdjfsiji++;
-    my $sp = J.sfjkiig .= '   ';
-    my $sc = J.fekooo ||= {};
-    sc.fs ||= 3;
-    sc.fs += 2;
-    sc.ml += 1;
-    
     n undivthis=>[-dos=>0.06]
     
     #n lod=>0.06 =>'fds'=>'%id:lodo,dos:goche,wi:3'
@@ -408,7 +395,7 @@ Details: |
     J.act = 0; # pi always
     #return
     #n Sefi
-    #n Wjes
+    n Wjes
     # one to com the piles
     return;
     y.in = 0.08;
@@ -420,11 +407,26 @@ Details: |
     
     #Mn($_=>-codey=>) for @{J.CO||=[]};
     #Mn(shedful => '', {pi=>'eye',s=>'eye/fug/1/lt'});
-    #Mn(d =>''=>$mark->[J.fkeo]=>'%fs:44,hs:'.int(rand(9)).'36') for 1..6;
     
     n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
     
     return;
+DetailMark: |
+    my $mark = [',',qw' ? ; :'];
+    A.us&C && A.us&S ? J.fkeo++ : J.fkeo--;
+    
+    J.fkeo += 1 until J.fkeo >= 0;
+    J.fkeo -= @$mark while J.fkeo > @$mark;
+    
+    J.sdjfsiji ||= 4;
+    my $n = J.sdjfsiji++;
+    my $sp = J.sfjkiig .= '   ';
+    my $sc = J.fekooo ||= {};
+    sc.fs ||= 3;
+    sc.fs += 2;
+    sc.ml += 1;
+    #Mn(d =>''=>$mark->[J.fkeo]=>'%fs:44,hs:'.int(rand(9)).'36') for 1..6;
+    
 Sefi: |
     u ReoCur
     y.at.ux = 1;
@@ -503,6 +505,9 @@ pi/glo: | # see file glowing, flood gates of
         `mkdir w/wf` if !-d 'w/wf';
         write_file($wf,'');
     
+pileJup: |
+    sayyl wdump 3, [ A.e&C ];
+    Rw talkzyh;
 Wjes: |
     u ReoCur
     u curv =>pi=><<''
@@ -510,6 +515,10 @@ Wjes: |
         y    0  0
         x    0  0
         curve 0 0.03
+    
+    J.ev.th ||= 'middle';
+    J.ev.li ||= 'climbo';
+    J.ev.bo ||= 'bodos';
     
     y.at.ux = 1;
     y.at.oWl = 1;
@@ -521,7 +530,11 @@ Wjes: |
     J.mo.jes = $J;
     y.ert = 20;
     
-    my $dir = "w/jes";
+    Mn("w/jes"=>-Join);
+Join: |
+    C.sc.dos = 'pileJup';
+    my $dir = $s;
+    -d $dir || die "No $dir";
     my $p = "$dir/*";
     Mn(p=>''=>$p,'%decor,hs:388');
     
@@ -563,6 +576,7 @@ Wjes: |
     my $N = [$tal->(0,$wt)];
     my $eM = [];
     Rw In $J $N $M:eM;
+    
     for (@$eM) {
         my $f = "$dir/_.t";
         if (delete $li->{$f}) {
@@ -902,16 +916,15 @@ Tarp: |
     J.VV.N = 1;
     #
     J.tea ||= [grep{chomp}shuffle`ls -1 eye/Tarf/*/*`];
-    J.slow ||= 0;
-    J.fast++;
-    if (J.fast > 1) {
-        J.slow++;
-        J.fast = 0;
-        J.slow = 0 if J.slow >= @{J.tea};
-    }
+    my $pg = 'w/Tarpig';
+    J.slow = readlink($pg) || 0;
+    J.slow += 0.5;
+    `unlink $pg` if -l $pg;
+    `ln -s J.slow $pg`;
+    J.slow = 0 if int(J.slow) >= @{J.tea};
     #
     y.ope = 1;
-    my $f = J.tea->[J.slow];
+    my $f = J.tea->[int J.slow];
     n "the J.slow J.fast"=>-pape=>{s=>'mild'=>thumb=>$f};
     
     Mn(f=>''=>$f=>'%dos:flse,op:J/slow,to:1');
