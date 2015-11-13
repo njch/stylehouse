@@ -538,7 +538,7 @@ pileJup: |
     say "Find path to tl.C.t    from: ".wdump 3, \@up;
     push @{E.c.us.pick||=[]}, [founde=>-edr=>join';',@up];
     n Dug =>$E
-edr: |
+pi/edr: |
     
 Wjes: |
     u ReoCur
@@ -717,60 +717,10 @@ pi/gee: |
         
     }
     
-ll: |
-    my $se = `ls -l --full-time $s`;
-    $se =~ s/-rw-r\S-r-- 1 s s //sgm;
-    my $l = [map {
-        if (/^(\s*)(\d+) ([\d-]{10}) ((?:\d+:?)+)\.\d+ \+\d{4} (.+)$/) {
-            "$1$2 -- $4 -- $5";
-        }
-        else {
-            $_
-        }
-    } split "\n", $se];
-    $l
-pi/ll: |
-    u lum
-    my $ea = "$s/*";
-    my $l = Rw ll $s:ea;
-    y.at.fs = 28;
-    y.at.ws = 1;
-    y.at.sha = '3 3 4 111';
-    y.clos = 1;
-    y.lum = '6-6,8';
-    my $com = C.c.ll ? '-'.C.c.ll : ''; # -pell
-    say wdump 2, [$com, $l];
-    Mn(se=>$com=>$_,{dis=>1}) for @$l;
-    
-    -d "$s/J" && 
-    Mn(Joint=>-ll=>{ll=>'join',s=>"$s/J/*"},'%hs:399');
-    
-pi/join: |
-    $s =~ /(\S+J\/(\w+)\/(\w+))$/;
-    my $jf = $1;
-    my $fj = "(!-f)" if !-f $jf;
-    my $jfm = (stat $jf)[9];
-    my $wf = "w/way/$3";
-    my $wfm = (stat $wf)[9];
-    !-f $wf &&
-        n no=>''=>" NO $wf",'%hs:846'
-    my $del = $wfm - $jfm;
-    $del < 0 && return
-        n del=>''=>" OK: $del",'%hs:288'
-    
-    n sout => 3 =>"\n - Sou $wf ($wfm - $jfm)  $jf",'%hs:394,fs:5'
-    n means => 4 => $del,'%hs:445'
-pi/pell: |
-    C.sc.qs = 1;
-    if ($s =~ /^(\s*)(\d+) ([\d-]{10} [\d:\.]+ \+\d{4}) (.+)$/) {
-        n ind=>1=>$1
-        n size=>2=>$2
-        n fulltime=>3=>$3,'%fs:3'
-        n name=>4=>$4
-    }
-    else {
-        n C.t =>''=>$s;
-    }
+
+
+
+
 pi/dos: |
     n sym => 1=>C.t,{hs=>844=>dos=>'dosier'}
 pi/shed: |
@@ -832,7 +782,6 @@ pi/yam: |
     #Mn(C.t=>-te=>$s);
 pi/nothing: |
     C.sc.qs = 1;
-
 Dug: |
     u ReoCur
     u Passing
@@ -841,6 +790,9 @@ Dug: |
     J.VV.N = 1;
     J.UG = [] if !defined J.UG || A.us&S;
     sayyl wdump 3, [  "Picked: ", A.us&_pick ];
+    sayyl "From: ".wdump 3,
+        A.e&C
+    ];
     push @{J.UG}, $_ for A.us&_pick;
     sayyl wdump 3, J.UG;
     saybl wdump 3, $_ for @{J.UG};
