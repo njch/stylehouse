@@ -202,6 +202,8 @@ Sl: |
         n Details
         Rw loopby $b=3 $d=5 $p=Top;
     }
+    J.me =~ /a/ &&
+        n All
     J.me =~ /u/ &&
         n uncan
     J.me =~ /s/ &&
@@ -395,6 +397,7 @@ Details: |
     J.act = 0; # pi always
     #return
     #n Sefi
+    J.dooed++ || 
     n Wjes
     # one to com the piles
     return;
@@ -506,8 +509,12 @@ pi/glo: | # see file glowing, flood gates of
         write_file($wf,'');
     
 pileJup: |
-    sayyl wdump 3, [ A.e&C ];
-    Rw talkzyh;
+    my ($tW,$tJ,$tl) = A.e&_hJ;
+    tW.sc.J.mo.J eq $tW || die "not most 1: ".ki $tW;
+    tJ.sc.pi eq 'Joint' || die "not Joint 2: ".ki $tJ;
+    tl.sc.pi =~ /^(bl|gee)$/ || die "not bl/gee 3: ".ki $tl;
+    # tJ/tl mo.jes es littljoin
+    saybl wdump 3, [map {ki $_}$tW,$tJ,$tl];
 Wjes: |
     u ReoCur
     u curv =>pi=><<''
@@ -527,16 +534,16 @@ Wjes: |
     y.in = 0.03;
     y.out = 6;
     J.VV.N = 1;
-    J.mo.jes = $J;
     y.ert = 20;
     
     Mn("w/jes"=>-Join);
-Join: |
+pi/Join: |
     C.sc.dos = 'pileJup';
     my $dir = $s;
     -d $dir || die "No $dir";
     my $p = "$dir/*";
     Mn(p=>''=>$p,'%decor,hs:388');
+    J.mo.jes = $J;
     
     my $geese = sub {
         my $f = shift;
@@ -588,6 +595,7 @@ Join: |
             else {
                 _.c.pi = 'bl';
             }
+            _.c.idly = 1;
             _.sc.hs = '255';
         }
         else {
@@ -740,8 +748,6 @@ pi/pell: |
     }
 pi/dos: |
     n sym => 1=>C.t,{hs=>844=>dos=>'dosier'}
-dosier: |
-    say "DOZIER ". wdump 2, $C;
 pi/shed: |
     y.lum = 0.6;
     n what=>1=>"C.t shed: $s",'%hs:258'
@@ -829,9 +835,9 @@ hijack: | # yJ, the event for-er
     }
     
 pi/ckup: |
-    J.A.III = ['G/T/Chang'];
     n lin=>1=>"ckup: C.t"
-    Mn($_->[0]=>-te=>$_->[1],'%width:42%,wb,ws') for map{ /^(.+?): (.+)$/ ? [$1, $2] : ["?",$_] } split "\n", $s;
+    Mn($_->[0]=>-te=>$_->[1],'%width:42%,wb,ws')
+        for map{ /^(.+?): (.+)$/ ? [$1, $2] : ["?",$_] } split "\n", $s;
 pi/te: |
     C.sc.qs = 1;
     y.at.ws = '1';
