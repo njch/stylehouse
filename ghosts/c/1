@@ -664,7 +664,7 @@ Bangdesk: |
     # suppose we come here with only ACGT between us and F
     n after =>''=>{s=><<''},{code=>"I 11",act=>1}
         A.bangdesk = {};
-        aft {
+        A.bangdesk.main = sub {
             $_->() for values %{A.bangdesk.aft};
             $@ || return;
             A.bang && return;
@@ -674,9 +674,10 @@ Bangdesk: |
             my $m = "J: I.nF.A.talk        A.mo.ont.cv";
             $m .= "\nC: ".k2 I.nF.C;
             $m .= "\ns: ".wdump 3, I.nF.A.s unless length $m > 20;
-            $@ = "$m\nand: $@ .";
-            # A.t&9,$@; # skippy
-        }
+            sayre " * bangdesk: \n$m";
+            return $m;
+        };
+        aft { A.bangdesk.main->() }
     
     n erg =>''=>{s=><<''},{code=>"I 9"}
         # must pre compile, see D severators
