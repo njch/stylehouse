@@ -241,8 +241,10 @@ forked: |
 Noteal: | # heeling notation, a TeCurve, space share
     y.at.unit = 1; # e W come by, upper state could kink into curv
     y.ope = 1;
+    y.at.anch = 'Noteal';
     J.ev.th = "SpaceElvs"; # no where yet...
     J.UG ||= [];
+    J.VV.N = 1;
     
     # hinges open spacecones
     u ReoCur
@@ -258,10 +260,10 @@ Noteal: | # heeling notation, a TeCurve, space share
 
     # kind of space that is balanced, recurring, cleaning
     # weird mediation between placed J.C and J.root to plop W
-    
+    n s=>''=>t
     y.in = 2;
     
-    Mn(J.UG);
+    Mn(J.UG) if @{J.UG};
 SpaceElvs: |
     my $M = J.UG||die"stuppug";
     for (A.e&C) {
@@ -269,11 +271,13 @@ SpaceElvs: |
         my $id = _.sc.id;
         if (grep{_.sc.id eq $id}@$M) {
             saygr "Already spaced: $id";
-            next;
         }
-        sayyl "GOT SPACE ELVIS: C.t: _.t   _.y.cv";
-        Mn(_.t=>''=>"Thi _.t",{id=>$id,swy=>'de',nspc=>0.3});
-        # & id ^
+        else {
+            sayyl "GOT S P A C E ELVIS: C.t: _.t   _.y.cv";
+            sayyl "Unto: ".wdump 3,[$M,$_];
+            Mn(_.t=>''=>"Thi _.t",{id=>$id,swy=>'de',nspc=>0.3});
+        }
+        T.oke = 1; # must reply for id
     }
 indoc: | # for notes, income
     J.UG = [] if !defined J.UG || A.us&S;
@@ -281,18 +285,21 @@ indoc: | # for notes, income
         # ^ array of pick, can be empty meaning bring display,
         # align proteins tracks, sheer interest
         push @{J.UG}, $_ for A.us&_pick;
+        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
     }
     else {
-        die "e complicated but not pick ".ki C.c.e if A.us&C || A.e&yJ;
-        say "CLumping from A.J.name to J.name: ".wdump 2, C.c.e;
-        push @{J.UG}, C.c.e;
+        warn "e complicated but not pick ".ki C.c.e if A.us&C || A.e&yJ;
+        my $e = C.c.e;
+        say "CLumping from A.J.name to J.name: e.t  ===  e.c.s";
+        e.sc.oW = A.J.name;
+        push @{J.UG}, $e;
     };
-    Rw talkzyh $E:C.c.e;
 Notes: |
-    y.at.curv = 'Noteal';
+    y.at.anch = 'Noteal';
     u ReoCur
     u threJ
     y.at.ux = 1;
+    J.VV.N = 1;
     n Yep=>1=>Yep
     delete J.dfkog if J.dfkog > 3;
     return if J.dfkog++;
@@ -306,23 +313,23 @@ Notes: |
 Othie: |
     u ReoCur
     u threJ
-    y.at.curv = 'Noteal';
+    y.at.anch = 'Noteal';
     y.at.ux = 1;
     J.ev.th ||= 'middle';
     J.ev.li ||= 'indoc';
     J.UG ||= [];
-    y.in = 0.1;
-    y.out = 0.5;
+    y.in = 2;
+    y.out = 5;
     J.VV.N = 1;
     J.VV.V = 1;
-    J.V = 1;
-    
+    n noie => 1=>"OOOOOOO"
+    n noie => 7=>"OOOOOOO"
     my $pi = {};
-    push @{$pi->{"_.sc.mean _.sc.to"}||=[]}, $_ for @{J.UG};
+    push @{$pi->{"_.sc.oW _.sc.mean _.sc.to"}||=[]}, $_ for @{J.UG};
     for my $k (sort keys %$pi) {
         Mn($k=>-ean=>{s=>$pi->{$k}});
     }
-    sayyl "Other things we arte: ". wdump 3, $M;
+    sayyl "Other things we arte: _.t    x ".@{_.c.s} for @$M;
     my $from = A.e&trJ;
     say "From: from.name from a C.c.e.t ".wdump 3, [
         A.us&_pick ,
@@ -634,7 +641,6 @@ pileJup: |
     my $M = E.c.us.pick ||= [];
     Mn(founde=>-edr=>(join';',@up),{mean=>Jiter=>onto=>tJ.C.c.s});
     n Dug =>$E
-
 Wjes: |
     u ReoCur
     u threJ
@@ -664,18 +670,25 @@ threJ: | # Sav Sav
     # heaven's above me on a street called love
     n '','','%of:oJ'
     n J =>344,<<''
-        my $isJ = sub { my $J = shift; ref $J eq 'HASH' && J.bb };
         my $ins = sub { my $J = shift; $J ne J.mo.J ? "J.mo.J.name ' J.name" : J.name };
-        .
         A.J eq $J && die "THreJ does Celt A.J.name   ".(C.c.e && ki C.c.e);
-        !C.c.e && return saybl $ins->(A.J)." can create -----> ".$ins->($J);
-        .
-        my $new = !J.A.first;
-        say $ins->(A.J)."   is elvising to  ".$ins->($J)." ($new)\n    ".ki C.c.e;
-        C.c.elv = delete C.c.e if $new;
-        # do over after osc (or time2 could in middle)
-        # donow, may wat
-        A.Iso.th = 1;
+        if (C.c.e) {
+            my $new = !J.A.first;
+            say $ins->(A.J)."   is elvising to  ".$ins->($J)." ($new)\n    ".ki C.c.e;
+            C.c.elv = delete C.c.e if $new;
+            # do over after osc (or time2 could in middle)
+            # donow, may wat
+            A.Iso.th = 1;
+        }
+        else {
+            saybl $ins->(A.J)." can create -----> ".$ins->($J);
+        }
+    
+    n morenothingJ =>344,<<''
+        if (J.ev.amb) {
+            my $ar = I.d&ar;
+            Rw J.ev.amb + $J;
+        }
     
     n '','','%of:th'
     # coming to a known thing, engage wave lasso
@@ -683,17 +696,27 @@ threJ: | # Sav Sav
     #   e could time2 in, pre-osc 7 or post-osc 76
     #   also the e could know if its an incoming list, bringing into the handler ...
     n e =>36,<<'','%rg:J'
+        $J || warn "e no J";
+        sayyl "E36: J.name   ontop   A.J.name   e.t";
         # no J being tricks for handulation, event energy, unless T.oke
         delete A.Iso.oJ;
         my $ar = I.d&ar;
         Rw hevt + $J;
         if (T.oke) {
-            die "thoughts of a thous" if A.J ne $J;
+            #die "thoughts of a thous" if A.J ne $J;
             delete A.Iso.th;
             A.Iso.oJ = 1;
             A.ztime = 6;
             return say "Tanking into J.name";
         }  
+    
+    # cancels proto this (threes)
+    n J =>4,<<''
+        return;
+    
+    # communication log, join proton, usually no trace of other in the self
+    n e =>769,<<'','%rg:J'
+        T.oke = 1; # unpin
     
     # T.oke means the vector wants to immediately handle e itself
     # or must m/osc some truth for the question, eg creating geo
@@ -704,7 +727,7 @@ threJ: | # Sav Sav
         C.c.e = delete C.c.elv;
         my $ar = I.d&ar;
         Rw hevt + $J;
-        T.oke && die "NOTOKE time2 J.name";
+        T.oke && warn "NOTOKE time2 J.name";
         # time true, complete vector, unless we cat a list
     
     
@@ -714,34 +737,16 @@ threJ: | # Sav Sav
         C.c.e = delete C.c.elv;
         my $ar = I.d&ar;
         J.VV.E = J.VV.V = 1;
-        sayyl wdump 2, J.ev;
-        sayyl "In>...";
         Rw hevt + $J;
-        T.oke && die "NOTOKE elv 76 J.name";
+        sayyl "Out of J.name !";
+        T.oke && return
+            say("Tanking 76 into J.name") &&
+            Rw waited $J;
         T.pos = 1 unless defined T.pos;
         T.pos &&
             Rw waito $J $C;
-        
-        
-        
+        sayyl "After 76 !: ".ki $T;
     
-    n morenothingJ =>344,<<''
-        if (J.ev.amb) {
-            my $ar = I.d&ar;
-            Rw J.ev.amb + $J;
-        }
-    
-    # above will oscusifetc
-    # after PIN, or in time2:
-    #   resolve postponed C.c.e if J is new
-    #   do amb, etc
-    # all in coi
-    
-    n '','','%of:th'
-    n J =>4,<<''
-        return;
-    
-    # some
 waito: | # refresh vector in a post e swarm catchup way, without e, departs call stack
     say "Comebacking J.name with C.t...";# if A.V&V;
     my $d = ar.d || 0.03;
@@ -753,11 +758,11 @@ waito: | # refresh vector in a post e swarm catchup way, without e, departs call
     say "Going to $K";
     
 waited: | # refresh soon has returned so it cIsOn, a hicup of order clasps e noise
-    delete J.waito->{$K};
+    ar.K && say("Back to ar.K") &&
+        delete J.waito->{ar.K};
     # how much exactly... arg scuttle lots, mind moires, eddying structures
     #my $c = {%{C.c}};
     #delete c.e;
-    say "Back to $K";
     my $c = {W=>J.name};
     my $J = G.oin;
     n c.W =>''=>{%$c,time=>6}
@@ -1017,6 +1022,8 @@ pi/edr: |
     n for=>1=>$s
     n instr=>2=>" To C.sc.mean C.sc.onto"
 pi/ean: |
+    J.V = 1;
+    y.close = 1;
     n ean=>1=>"Meaning: C.t"
     Mn($s);
 hijack: | # yJ, the event for-er
