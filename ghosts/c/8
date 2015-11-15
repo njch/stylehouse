@@ -239,16 +239,14 @@ forked: |
     #n Usee
     # Rw followS
 Noteal: | # heeling notation, a TeCurve, space share
-    y.at.unit = 1; # e W come by, upper state could kink into curv
-    y.ope = 1;
+    y.at.unit = 1;
+    # ^ all ev should spring out of this, is Wish, could kink into curv
     y.at.anch = 'Noteal';
     J.ev.th = "SpaceElvs"; # no where yet...
     J.UG ||= [];
-    J.VV.N = 1;
-    
     # hinges open spacecones
     u ReoCur
-    u threJ
+    J.VV.N = 1;
     
     # it pis into I... suu
     u curv =>pi=><<''
@@ -261,9 +259,8 @@ Noteal: | # heeling notation, a TeCurve, space share
 
     # kind of space that is balanced, recurring, cleaning
     # weird mediation between placed J.C and J.root to plop W
-    n s=>''=>t
     y.in = 2;
-    
+    Atime(2);
     Mn(J.UG) if @{J.UG};
 SpaceElvs: |
     my $M = J.UG||die"stuppug";
@@ -295,9 +292,8 @@ indoc: | # for notes, income
         push @{J.UG}, $e;
     };
 Notes: |
-    y.at.anch = 'Noteal';
     u ReoCur
-    u threJ
+    y.at.anch = 'Noteal';
     y.at.ux = 1;
     J.VV.N = 1;
     J.ev.th ||= 'middle';
@@ -334,17 +330,16 @@ plucJ: |
     n Othie =>$C
 Othie: |
     u ReoCur
-    u threJ
     y.at.anch = 'Noteal';
     y.at.ux = 1;
     J.ev.th ||= 'middle';
     J.ev.li ||= 'indoc';
-    J.ev.tr = 1;
+    J.ev.tr = 1; # thing dont fly off to inners, has id, from event line
     J.UG ||= [];
     y.in = 2;
     y.out = 5;
     J.VV.N = 1;
-    J.VV.V = 1;
+    Atime(2);
     
     n noie => 1=>"OOOOOOO"
     n noie => 7=>"OOOOOOO"
@@ -355,15 +350,10 @@ Othie: |
     }
     sayyl "Other things we arte: _.t    x ".@{_.c.s} for @$M;
  
-uncan: |
-    y.at.jslines = 1;
-    n blag =>4=>{s=><<''},'%js'
-        paper.project.clear();
-    
 Wh: |
     y.at.oWl = 1;
     n Details
-    
+    n Notes
     my $n = J.fsjoi++;
     $n && 1;
     $n || Rw loopby $b=5 $d=26 $p=Top;
@@ -699,20 +689,42 @@ threJ: | # Sav Sav
         }
         else {
             A.J eq $J && die sayre "THreJ does Celt A.J.name   ".(C.c.e && ki C.c.e);
-            saybl $ins->(A.J)." can create -----> ".$ins->($J);
+            #saybl $ins->(A.J)." can create -----> ".$ins->($J);
+            if (J.ev.amb) {
+                my $ar = I.d&ar;
+                Rw J.ev.amb + $J;
+            }
         }
     
-    n morenothingJ =>344,<<''
-        if (J.ev.amb) {
-            my $ar = I.d&ar;
-            Rw J.ev.amb + $J;
+    n '','','%of:J'
+    # fit e into 2
+    n J =>632114142,<<''
+        return if exists C.sc.pi;
+        A.time = sub {
+            my($JJ,$q) = @_;
+            $J eq $JJ || die "wtfJure  J.name   vs JJ.name";
+            my $r = 1;
+            if ($q == 2) {
+                A.Subtle.time = 1;
+                A.t&time,3,19;
+                $r = 0 if T.pos == 0; # def 1, 0 if no change
+                return $r;
+            }
+            .
+            warn "T.alk other $q";
+            if ($q == 8) {
+                # until J.most coord attention evaporates
+                # as in pulling on a list
+            }
+            $r
         }
     
-    n '','','%of:th'
     # coming to a known thing, engage wave lasso
     #   vector may want to wake up itself,
     #   e could time2 in, pre-osc 7 or post-osc 76
-    #   also the e could know if its an incoming list, bringing into the handler ...
+    #   also the e could know if its an incoming list,
+    # bringing into the handler ...
+    n '','','%of:th'
     n e =>36,<<'','%rg:J'
         $J || warn "e no J";
         sayyl "E36: J.name   ontop   A.J.name   e.t";
@@ -737,19 +749,19 @@ threJ: | # Sav Sav
     
     # communication log, join proton, usually no trace of other in the self
     n e =>769,<<'','%rg:J'
-        say "Nopin J.name";
         T.oke = 1; # unpin
     
     # T.oke means the vector wants to immediately handle e itself
     # or must m/osc some truth for the question, eg creating geo
     # the answer is laid along the tracks
-    n '','','%of:time2'
-    n elv =>5,<<'','%rg:J'
+    n '','','%of:time'
+    n elv =>2,<<'','%rg:J'
         say "Time2 do elvi! \n".ki C.c.elv;
         C.c.e = delete C.c.elv;
         my $ar = I.d&ar;
         Rw hevt + $J;
-        T.oke && warn "NOTOKE time2 J.name";
+        #T.oke && warn "NOTOKE time2 J.name";
+        T.pos = 1 unless defined T.pos;
         # time true, complete vector, unless we cat a list
     
     
@@ -760,7 +772,6 @@ threJ: | # Sav Sav
         my $ar = I.d&ar;
         J.VV.E = J.VV.V = 1;
         Rw hevt + $J;
-        sayyl "Out of J.name !";
         if (T.oke) {
             die "76 thoughtself J.name" if A.J eq $J;
             say "Tanking 76 into J.name";
