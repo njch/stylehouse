@@ -310,7 +310,6 @@ plucJ: |
     Mn(founde=>-edr=>(join';',tl.C.c.s),{mean=>'Somehows'});
     n Othie =>$E
     T.pos = 0;
-
 Othie: |
     u ReoCur
     y.at.anch = 'Noteal';
@@ -785,6 +784,7 @@ hevt: | # nonself sends you (the mount) (C.c.e)
     say "threeevent A.J.name ----> J.name !-> $pin" if A.V&E;
     # eg openevent means J opens to Trabitation for events
     Rw $pin + $J;
+
 pi/Join: |
     C.sc.dos = 'pileJup';
     my $dir = $s;
@@ -1004,6 +1004,31 @@ pi/yam: |
     #Mn(C.t=>-te=>$s);
 pi/nothing: |
     C.sc.qs = 1;
+Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
+    sayyl "Jiterating ! C.t";
+    # not =>$E properly, C is first C,c.e $E is from before $E
+    my @Js = A.e&_hJ;
+    my ($tW,$tl) = @Js[0,-1];
+    tW.mo.J eq $tW || die "not most 1: ".ki $tW;
+    my $ing = tl.C;
+    my ($mean,$onto) = (ing.sc.dos,ing.sc.onto);
+    $mean && $onto || die " notmeanonto compre ".ki $ing;
+    
+    my $duvi = sub {
+        my $tl = shift;
+        my $uv = tl.El.Duv || die "HJiter not Duv tl.name";
+        map{uv.tv->{$_}}@{uv.os}
+    };
+    my $gre = sub {
+        grep {_.sc.onto eq $onto && _.sc.mean eq $mean} $duvi->(shift);
+    };
+    my @bun = $gre->($tW);
+    push @bun, $gre->($tl);
+    sayyl "Seem to have: ".ki $_ for @bun;
+    my @s = uniq map{_.c.s} @bun;
+    saybl "Make Joint stand: $mean $onto: ".wdump 3, \@s;
+    
+    
 indoc: | # for notes, income
     J.UG = [] if !defined J.UG || A.us&S;
     if (A.us&pick) {
@@ -1034,12 +1059,11 @@ Dug: |
     y.in = 0.1;
     y.out = 0.5;
     J.VV.N = 1;
-    J.VV.V = 1;
     
     Atime(2);
     
     n downsave=>[-doi=>0.04]
-    saybl "Dug patter: ".wdump 5, J.UG;
+    saybl "J.name JUG:: ".ki $_ for @{J.UG};
     
     my $pi = {};
     push @{$pi->{"_.sc.mean _.sc.onto"}||=[]}, $_ for @{J.UG};
@@ -1064,13 +1088,8 @@ downsave_up: |
     my $perl = read_file $f;
     my $datya = eval $perl;
     die "Eval $f: $@" if $@;
-    saybl "Resuming $t: ".wdump 9, $datya;
-    die "Not dataray" if ref $datya ne 'ARRAY';
-    push @{j.UG}, @$datya;
-Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
-    sayyl "Jiterating ! ".wdump 3, $C;
-    
-    Rw talkzyh;
+    die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
+    push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
 Somehows: |
     sayyl "SOMEHOWS! ".wdump 3, C.c.e.c.e.c.e;
     my ($jj,$ti,$no) = A.e&_hJ;
@@ -1085,7 +1104,7 @@ pi/ean: |
     J.V = 1;
     y.close = 1;
     n ean=>1=>"Meaning: C.t"
-    (C.sc.dos,C.sc.unto) = (split ' ', C.t);
+    (C.sc.dos,C.sc.onto) = (split ' ', C.t);
     Mn($s);
 hijack: | # yJ, the event for-er
     saybl "HERE\n\n\n";
