@@ -310,25 +310,7 @@ plucJ: |
     Mn(founde=>-edr=>(join';',tl.C.c.s),{mean=>'Somehows'});
     n Othie =>$E
     T.pos = 0;
-indoc: | # for notes, income
-    J.UG = [] if !defined J.UG || A.us&S;
-    if (A.us&pick) {
-        # ^ array of pick, can be empty meaning bring display,
-        # align proteins tracks, sheer interest
-        push @{J.UG}, $_ for A.us&_pick;
-        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
-        
-    }
-    else {
-        warn "e complicated but not pick ".ki(C.c.e)."\n\n\n"
-            ."  ". ki(A.us&C).
-            Rw talkzyh 
-           if A.us&C || A.e&yJ;
-        my $e = C.c.e;
-        say "CLumping from A.J.name to J.name: e.t  ===  \n\n\n\n";
-        saybl "SHould have li'd>? ".ki C.c.e;
-        #push @{J.UG}, $e;
-    }
+
 Othie: |
     u ReoCur
     y.at.anch = 'Noteal';
@@ -1022,6 +1004,25 @@ pi/yam: |
     #Mn(C.t=>-te=>$s);
 pi/nothing: |
     C.sc.qs = 1;
+indoc: | # for notes, income
+    J.UG = [] if !defined J.UG || A.us&S;
+    if (A.us&pick) {
+        # ^ array of pick, can be empty meaning bring display,
+        # align proteins tracks, sheer interest
+        push @{J.UG}, $_ for A.us&_pick;
+        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
+        
+    }
+    else {
+        warn "e complicated but not pick ".ki(C.c.e)."\n\n\n"
+            ."  ". ki(A.us&C).
+            Rw talkzyh 
+           if A.us&C || A.e&yJ;
+        my $e = C.c.e;
+        say "CLumping from A.J.name to J.name: e.t  ===  \n\n\n\n";
+        saybl "SHould have li'd>? ".ki C.c.e;
+        #push @{J.UG}, $e;
+    }
 Dug: |
     u ReoCur
     y.at.ux = 1;
@@ -1045,22 +1046,30 @@ Dug: |
     for my $k (sort keys %$pi) {
         Mn($k=>-ean=>{s=>$pi->{$k}});
     }
-    sayyl wdump 3, $M;
-    my $from = A.e&trJ;
-    say "From: from.name from a C.c.e.t ".wdump 3, [
-        A.us&_pick ,
-        [From=>map{ki $_} A.e&_hJ
-        ],
-    ];
  
+downsave: | # Dug Jiters, write Join from
+    sayyl "downsave ! ".ki $C;
+    my ($one,$other) = map { wdump $_, J.UG } 5,7;
+    length $one == length $other || die "wdump depth 5-7 unstable: $other";
+    my $dir = 'w/downsave';
+    `mkdir -p $dir` if !-d $dir;
+    write_file("$dir/C.t", $one);
+    Rw talkzyh;
+downsave_up: |
+    my $j = J.mo.J;
+    my $t = j.C.t;
+    my $dir = 'w/downsave';
+    my $f = "$dir/$t";
+    return saygr "No\ndown\nsave: $t" unless -f $f;
+    my $perl = read_file $f;
+    my $datya = eval $perl;
+    die "Eval $f: $@" if $@;
+    saybl "Resuming $t: ".wdump 9, $datya;
+    die "Not dataray" if ref $datya ne 'ARRAY';
+    push @{j.UG}, @$datya;
 Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     sayyl "Jiterating ! ".wdump 3, $C;
     
-    Rw talkzyh;
-downsave: | # Dug Jiters, write Join from
-    # 
-    sayyl "downsave ! ".wdump 3, $C;
-    saybl "JUG: ".wdump 5, J.UG;
     Rw talkzyh;
 Somehows: |
     sayyl "SOMEHOWS! ".wdump 3, C.c.e.c.e.c.e;
@@ -1099,6 +1108,10 @@ pi/doi: |
     C.sc.dos = $s;
     n s=>1=>'D','%fs:12'
     n o=>2=>$s,'%hs:268'
+    if (!J.El.Duv && exists G.way->{"${s}_up"}) {
+        say "Why not wake up... $s";
+        Rw ${s}_up;
+    }
     
 pi/ckup: |
     n lin=>1=>"ckup: C.t"
