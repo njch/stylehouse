@@ -238,6 +238,15 @@ forked: |
     #n EYZ
     #n Usee
     # Rw followS
+Wh: |
+    y.at.oWl = 1;
+    n Details
+    n Notes
+    my $n = J.fsjoi++;
+    $n && 1;
+    $n || Rw loopby $b=5 $d=26 $p=Top;
+    
+    
 Noteal: | # heeling notation, a TeCurve, space share
     y.at.unit = 1;
     # ^ all ev should spring out of this, is Wish, could kink into curv
@@ -252,7 +261,7 @@ Noteal: | # heeling notation, a TeCurve, space share
     u curv =>pi=><<''
         zoom 0 0.9
         y    0  0
-        x    0  0.02
+        x    0  0.6
         curve 0 -0.2
         curve 0.4 0.4
         spin 0.3 2
@@ -269,28 +278,14 @@ SpaceElvs: |
         my $id = _.sc.id;
         if (grep{_.sc.id eq $id}@$M) {
             saygr "Already spaced: $id";
+            T.oke = 1;
         }
         else {
             sayyl "GOT S P A C E ELVIS: C.t: _.t   _.y.cv";
             Mn(_.t=>''=>"Thi _.t",{id=>$id,swy=>'de',nspc=>0.3});
+            T.oke = 1; # immedia
         }
-        T.oke = 1;
     }
-indoc: | # for notes, income
-    J.UG = [] if !defined J.UG || A.us&S;
-    if (A.us&pick) {
-        # ^ array of pick, can be empty meaning bring display,
-        # align proteins tracks, sheer interest
-        push @{J.UG}, $_ for A.us&_pick;
-        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
-    }
-    else {
-        warn "e complicated but not pick ".ki C.c.e if A.us&C || A.e&yJ;
-        my $e = C.c.e;
-        say "CLumping from A.J.name to J.name: e.t  ===  e.c.s";
-        e.sc.oW = A.J.name;
-        push @{J.UG}, $e;
-    };
 Notes: |
     u ReoCur
     y.at.anch = 'Noteal';
@@ -328,6 +323,22 @@ plucJ: |
     my $M = C.c.us.pick ||= [];
     Mn(founde=>-edr=>(join';',tl.C.c.s),{mean=>'Somehows'});
     n Othie =>$C
+    T.pos = 0;
+indoc: | # for notes, income
+    J.UG = [] if !defined J.UG || A.us&S;
+    if (A.us&pick) {
+        # ^ array of pick, can be empty meaning bring display,
+        # align proteins tracks, sheer interest
+        push @{J.UG}, $_ for A.us&_pick;
+        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
+    }
+    else {
+        warn "e complicated but not pick ".ki C.c.e if A.us&C || A.e&yJ;
+        my $e = C.c.e;
+        say "CLumping from A.J.name to J.name: e.t  ===  e.c.s";
+        e.sc.oW = A.J.name;
+        push @{J.UG}, $e;
+    }
 Othie: |
     u ReoCur
     y.at.anch = 'Noteal';
@@ -350,15 +361,6 @@ Othie: |
     }
     sayyl "Other things we arte: _.t    x ".@{_.c.s} for @$M;
  
-Wh: |
-    y.at.oWl = 1;
-    n Details
-    n Notes
-    my $n = J.fsjoi++;
-    $n && 1;
-    $n || Rw loopby $b=5 $d=26 $p=Top;
-    
-    
 ThisPr: |
     #u ReoCur
     y.at.ux = 1;
@@ -651,7 +653,6 @@ pileJup: |
     n Dug =>$E
 Wjes: |
     u ReoCur
-    u threJ
     u curv =>pi=><<''
         zoom 0  0.7
         y    0  0
@@ -681,7 +682,8 @@ threJ: | # Sav Sav
         my $ins = sub { my $J = shift; $J ne J.mo.J ? "J.mo.J.name ' J.name" : J.name };
         if (C.c.e) {
             my $new = !J.A.first;
-            say $ins->(A.J)."   is elvising to  ".$ins->($J)." ($new)\n    ".ki C.c.e;
+            say $ins->(A.J)."   is elvising to  ".$ins->($J)." ($new)\n    "
+                ." C.t  ".ki(C.c)."     ".ki(C.sc);
             C.c.elv = delete C.c.e if $new;
             # do over after osc (or time2 could in middle)
             # donow, may wat
@@ -1051,7 +1053,6 @@ Dug: |
         [From=>map{ki $_} A.e&_hJ
         ],
     ];
-    n $C
  
 pi/edr: |
     n for=>1=>$s
