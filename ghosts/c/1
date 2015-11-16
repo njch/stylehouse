@@ -891,12 +891,22 @@ C: |
         I.d&inDin,$C,@M;
     
     n e =>'',<<'','%acgt:D'
-        I.d&inDin,C.c.e,@M;
+        my $e = I.d&sces,C.c.e||return();
+        I.d&inDin,$e,@M;
     
     n us =>'',<<'','%acgt:D'
-        my $E = C.c.e || return ();
+        my $e = I.d&sces,C.c.e||return();
+        my $us = e.c.us||return();
         push @M, 'NOGK' if @M == 1;
-        I.d&inDin,E.c.us,@M;
+        I.d&inDin,$us,@M;
+    
+    n sces =>'',<<''
+        my $i = 0;
+        while (s.c.e) {
+            $s = s.c.e;
+            $i++ > 9 && die "HUGE $i recursing CceCceCceCce... by ".ki $s;
+        }
+        return $s;
     
     n inDin =>'',<<'',{acgt=>'s,D'}
         die'nofA' if !I.nF.A;
@@ -923,7 +933,7 @@ C: |
         }
         return $v;
     
-    n interpD =>''=>{s=><<''},{acgt=>'nk,gk'}
+    n interpD =>'',<<'',{acgt=>'nk,gk'}
         my $defnk = 'c';
         return $nk if ref $nk;
         my $D = {};
@@ -948,7 +958,9 @@ C: |
     
     n Cngk =>'',<<'',{acgt=>'s,D'}
         ref $A || die "nmonref A!";
-        aft { $@ .= "\nLookat: ".ki($s)."\nWith: ".ki($D) if $@ };
+        A.bangdesk.bang->{Cngek} = sub {
+            sayre "was Cngk; ".ki($s)."\nWith: ".ki($D)
+        };
         return 1 if D.c.any;
         die "nonNKnk".ki$D if !D.c.nk;
         return 0 if !exists $s->{D.c.nk};
