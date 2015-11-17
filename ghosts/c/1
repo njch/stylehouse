@@ -968,6 +968,26 @@ C: |
         return 0 if !exists $s->{D.c.nk}->{D.c.gk};
         return [$s->{D.c.nk}->{D.c.gk}];
     
+    #cCccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetc
+    
+    n ip =>'',<<'',{acgt=>'s,c'}
+        my $pass = 1;
+        for my $I (keys %$s) {
+            !ref $s->{$I} && $s->{$I} ne $c->{$I} && $pass--;
+            ref $s->{$I} eq 'HASH' && do {
+                if (my $not = $s->{$I}->{not}) {
+                    $not eq 'def' && do {
+                        defined $c->{$I} && $pass--;
+                    } 
+                    || $not eq $c->{$I} && $pass--;
+                }
+                else {
+                    $s->{$I}->{$c->{$I}} eq '1' || $pass--;
+                }
+            };
+        }
+        $pass == 1
+    
     n xoy =>'',<<'',{acgt=>'s,c'}
         $c = I.d&xot,{},$c;
         I.d&xot,$c,$s;

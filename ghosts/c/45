@@ -1,10 +1,4 @@
-jogthe: |
-    Rw jeocling;
-    y.at.jsl = 1; # send js
-    n Swomp
-    n Shorse
-    n Sipes
-    
+
 jeocling: |
     J.pix = [{any=>1,Rw=>'jeocling'}];
     u jseo
@@ -23,18 +17,19 @@ pi/trW: | # uses localeo
     my $isle = J.mo.J.oy.at.isle;
     $isle || die "No isledea !? J.name of J.mo.J.name";
     my $f = "w/$isle/$s";
+    say "J.name:   J.mo.J.name eq A.J.name";
     my $Jd = "w/$isle/J/J.mo.J.name";
     `mkdir -p $Jd` if !-d $Jd;
+    my $traveli;
     for (glob"$Jd/$s") {
-        if (-s $_) {
-            saybl "Travel from $_: ".wdump 3,[
-                `cat $_`
-                ];
-            
-        }
+        next unless -s $_;
+        $traveli = read_file($_);
+        saybl "Travel from $_: ".wdump 3,[
+            $traveli
+        ];
     }
     #`rm $f`;
-    if (-f $f) {
+    if (!$traveli && -f $f) {
         say "Found $f !";
         n $f =>3,$s,{X=>LoadFile($f)}
         `touch $Jd/$s` && sayre "Xuper $f" if !-f "$Jd/$s";
@@ -42,7 +37,7 @@ pi/trW: | # uses localeo
     else {
         say "Making  $s !";
         n $s=>W
-        `touch $Jd/$s`;
+        `cat /dev/null > $Jd/$s`;
     }
     saybl "Donel  $Jd  $s";
     

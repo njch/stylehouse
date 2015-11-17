@@ -300,7 +300,6 @@ Notes: |
         Loenade
     ';
 plucJ: |
-    # not =>$E properly, C is first C,c.e $E is from before $E
     my @Js = I.d&inDin,$E,'_hJ';
     my ($tW,$tl) = @Js[0,-1];
     tW.mo.J eq $tW || die "not most 1: ".ki $tW;
@@ -523,6 +522,7 @@ DetailMark: |
     
 Sefi: |
     u ReoCur
+    y.at.anch = 'Noteal';
     y.at.ux = 1;
     y.at.oWl = 1;
     y.at.ws = 1;
@@ -573,7 +573,7 @@ pi/glo: | # see file glowing, flood gates of
             my $dig = slm 10, dig($v);
             my $lin = readlink($wig) if -l $wig;
             if ($lin eq $dig) {
-                sayyl "$wig same ($dig)";
+                #sayyl "$wig same ($dig)";
                 next;
             }
             else {
@@ -775,7 +775,7 @@ waited: | # refresh soon has returned so it cIsOn, a hicup of order clasps e noi
     # how much exactly... arg scuttle lots, mind moires, eddying structures
     #my $c = {%{C.c}};
     #delete c.e;
-    my $c = {W=>J.name};
+    my $c = {W=>ar.J ? ref ar.J ? ar.J.name : ar.J : ar.W || die "say what W to waited"};
     my $J = G.oin;
     n c.W =>''=>{%$c,time=>6}
 hevt: | # nonself sends you (the mount) (C.c.e)
@@ -784,13 +784,12 @@ hevt: | # nonself sends you (the mount) (C.c.e)
     say "threeevent A.J.name ----> J.name !-> $pin" if A.V&E;
     # eg openevent means J opens to Trabitation for events
     Rw $pin + $J;
-
 pi/Join: |
     C.sc.dos = 'pileJup';
     my $dir = $s;
     -d $dir || die "No $dir";
     my $p = "$dir/*";
-    Mn(p=>''=>$p,'%decor,hs:388');
+    n Join=>1=>$s,'%decor,hs:388'
     J.mo.jes = $J;
     
     my $geese = sub {
@@ -801,8 +800,8 @@ pi/Join: |
         my $fi = $f;
         $fi =~ s/\//-/g;
         my $wf = "w/way/$way";
-        my $mft = (stat $wf)[9] if -f $wf;
-        $mt > $mft
+        my $wt = (stat $wf)[9] if -f $wf;
+        $wt > $mt
     };
     
     my $li = {map{$_=>1}glob($p)};
@@ -863,6 +862,7 @@ pi/Join: |
     n o=>62=>"@",'%fs:40,blr:4';
     # and so
 pi/bl: |
+    C.sc.qs = 1;
     n way=>1=>C.t
 trowil: |
     my @li = glob "$s/*/*";
@@ -895,7 +895,7 @@ trowil: |
     }
     J.mo.jes.tower = $tw;
     J.mo.jes.trowl = $wt;
-pi/gejo: |
+pi/gejo: | # the dog leg sketch, optional
     y.at.hs = '388';
     y.at.mt = '5';
     y.at.fs = '9';
@@ -918,31 +918,38 @@ pi/gejo: |
     Mn(eo=>''=>"\n$s");
     
 pi/gee: |
+    C.sc.qs = 1;
     my ($gate,$way) = $s =~ /^(.+)\/(.+?)$/;
     $way eq C.t || die "C.t - $way mix";
+    my $tw = J.mo.jes.tower;
+    my $u = $tw->{$way} || die "no topwer $way";
     n way =>1=>C.t,'%hs:389'
-    
+    y.clos = 1;
     my $mt = (stat $s)[9];
     
     $way || die "noqway $s";
-    my $wf = "w/way/$way";
-    -f $wf || return
-        n no=>2=>"NO $wf",'%hs:898'
-    my $mft = (stat $wf)[9];
-    my $mis = $mft - $mt;
-    
-    if ($mt > $mft) {
-        n from=>2=>'way','%ml'
-        n mis=>31=>"$mis",'%hs:333'
-        my $tw = J.mo.jes.tower;
-        my $u = $tw->{$way} || die "no topwer $way";
-        
+    # places to find way
+    my @ott = ({k=>'way'});
+    for my $h (@ott) {
+        my $wf = "w/h.k/$way";
+        if (!-f $wf) {
+            n no=>2=>"NO $wf",'%hs:898'
+            %$h = ();
+            next;
+        }
+        h.t = (stat $wf)[9];
+    }
+    push @ott, {k=>'now',t=>hitime()};
+    for my $h (@ott) {
+        next unless keys %$h;
+        if (h.t > $mt) {
+            my $d = h.t - $mt;
+            $d = Rw samv $d;
+            Mn("d h.k",''," $d ",'%hs:333,ml');
+            Mn("k h.k",'',h.k);
+        }
     }
     
-
-
-
-
 pi/dos: |
     n sym => 1=>C.t,{hs=>844=>dos=>'dosier'}
 pi/shed: |
@@ -1011,8 +1018,8 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     my ($tW,$tl) = @Js[0,-1];
     tW.mo.J eq $tW || die "not most 1: ".ki $tW;
     my $ing = tl.C;
-    my ($mean,$onto) = (ing.sc.dos,ing.sc.onto);
-    $mean && $onto || die " notmeanonto compre ".ki $ing;
+    my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
+    ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
     
     my $duvi = sub {
         my $tl = shift;
@@ -1020,34 +1027,42 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
         map{uv.tv->{$_}}@{uv.os}
     };
     my $gre = sub {
-        grep {_.sc.onto eq $onto && _.sc.mean eq $mean} $duvi->(shift);
+        grep { I.d&ip,$ip,_.sc } $duvi->(shift);
     };
     my @bun = $gre->($tW);
     push @bun, $gre->($tl);
-    sayyl "Seem to have: ".ki $_ for @bun;
     my @s = uniq map{_.c.s} @bun;
     saybl "Make Joint stand: $mean $onto: ".wdump 3, \@s;
+    my $r = {};
+    for my $leng (@s) {
+        my @l = split ';', $leng;
+        @l > 1 || die "Leng not long enough: @l";
+        r.ops->{$l[0]}++;
+        while (@l > 1) {
+            my $o = shift @l;
+            my $n = shift @l;
+            my $f = "$onto/J/$o/$n";
+            r.ave->{$f}++;
+            unshift @l, $n;
+        }
+    }
+    sayyl "You ordered: ".wdump $r;
+    `echo 1 > $_` for keys %{r.ave};
+    Rw waited $J:_ 
+    for keys %{r.ops};
+    T.pos = 0;
     
     
 indoc: | # for notes, income
-    J.UG = [] if !defined J.UG || A.us&S;
-    if (A.us&pick) {
-        # ^ array of pick, can be empty meaning bring display,
-        # align proteins tracks, sheer interest
-        push @{J.UG}, $_ for A.us&_pick;
-        sayyl "Intdoctrined J.name from A.J.name: ".wdump 3,[A.us&_pick ];
-        
-    }
-    else {
-        warn "e complicated but not pick ".ki(C.c.e)."\n\n\n"
-            ."  ". ki(A.us&C).
-            Rw talkzyh 
-           if A.us&C || A.e&yJ;
-        my $e = C.c.e;
-        say "CLumping from A.J.name to J.name: e.t  ===  \n\n\n\n";
-        saybl "SHould have li'd>? ".ki C.c.e;
-        #push @{J.UG}, $e;
-    }
+    A.us&pick || return
+        Rw clack unindoc_pick;
+    # ^ array of pick, can be empty meaning bring display,
+    # align proteins tracks, sheer interest
+    my @M = A.us&_pick;
+    _.sc.doct = "J.name J.id" for @M;
+    push @{J.UG}, @M;
+    sayyl "Intdoctrined J.name from A.J.name: "
+    sayyl " - ".ki $_ for @M;
 Dug: |
     u ReoCur
     y.at.ux = 1;
@@ -1055,9 +1070,13 @@ Dug: |
     J.ev.o ||= 'indoc';
     J.ev.li ||= 'climbos';
     J.ev.tr = 1;
+    
+    J.uzk = [qw'mean onto etc'];
     J.UG ||= [];
+    
     y.in = 0.1;
     y.out = 0.5;
+    y.ert = 3;
     J.VV.N = 1;
     
     Atime(2);
@@ -1066,19 +1085,33 @@ Dug: |
     saybl "J.name JUG:: ".ki $_ for @{J.UG};
     
     my $pi = {};
-    push @{$pi->{"_.sc.mean _.sc.onto"}||=[]}, $_ for @{J.UG};
+    for my $u (@{J.UG}) {
+        my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
+        push @{$pi->{$k}||=[]}, $u;
+    }
     for my $k (sort keys %$pi) {
-        Mn($k=>-ean=>{s=>$pi->{$k}});
+        my $v = $pi->{$k};
+        my $t = {};
+        push @{$t->{"_.doct"}||=[]}, $_ for @$v;
+        my @o = sort {@{$t->{$a}} <=> @{$t->{$b}}} keys %$t;
+        saybl "You have doct: ".wdump [ @o ];
+        t.win = $t->{$_} for pop @o;
+        Mn($k=>-ean=>{s=>$v,ts=>$t});
     }
  
 downsave: | # Dug Jiters, write Join from
+    if (A.us&S ) {
+        sayre "Downsave shave ".@{J.UG} for 1..3;
+        @{J.UG} = ();
+        return;
+    }
     sayyl "downsave ! ".ki $C;
+    
     my ($one,$other) = map { wdump $_, J.UG } 5,7;
     length $one == length $other || die "wdump depth 5-7 unstable: $other";
     my $dir = 'w/downsave';
     `mkdir -p $dir` if !-d $dir;
     write_file("$dir/C.t", $one);
-    Rw talkzyh;
 downsave_up: |
     my $j = J.mo.J;
     my $t = j.C.t;
@@ -1098,8 +1131,11 @@ Somehows: |
     saybl wdump 3, ti.C;
     Rw talkzyh;
 pi/edr: |
-    n for=>1=>$s,'%fs:20'
+    my $ts = J.Jiter.C.c.ts;
+    n for=>1=>$s,'%fs:12,hs:347'
     n instr=>2=>" To C.sc.mean C.sc.onto"
+    $ts->{C.sc.doct} ne ts.win &&
+        n move=>3=>"Upg?"
 pi/ean: |
     J.V = 1;
     y.close = 1;
