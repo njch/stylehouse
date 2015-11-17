@@ -209,6 +209,33 @@ Sl: |
     J.fsjoi = $time;
     Rw forked;
     
+waitme: |
+    use POSIX ':sys_wait_h';
+    if (G.forked) {
+        return sayre "waitme already forked";
+        exit;
+    }
+    if (my $pid = fork()) {
+        sayyl "FOrked! ,,,," for 1..3;
+        waitpid($pid,0);
+        saybl "Restart? <";
+        while (<STDIN>) {
+            chomp;
+            J.me = $_;
+            sayyl "OK!";
+            /(\d+)/ &&
+            Rw goche $n=$1;
+            Rw goche $n=4;
+            Rw goche $n=45;
+            Rw goche $n=8;
+            Rw waitme;
+            return;
+        }
+    }
+    else {
+        G.forked = 1;
+    }
+    
 forked: |
     J.me =~ s/p// &&
         delete G.forked;

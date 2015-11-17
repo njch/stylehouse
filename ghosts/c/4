@@ -173,33 +173,7 @@ slowmoving: |
         saybl " *" for 1..2;
         saybl " * THink about resu J.name  ".ki $C;
         saybl " *" for 1..2;
-waitme: |
-    use POSIX ':sys_wait_h';
-    if (G.forked) {
-        return sayre "waitme already forked";
-        exit;
-    }
-    if (my $pid = fork()) {
-        sayyl "FOrked! ,,,," for 1..3;
-        waitpid($pid,0);
-        saybl "Restart? <";
-        while (<STDIN>) {
-            chomp;
-            J.me = $_;
-            sayyl "OK!";
-            /(\d+)/ &&
-            Rw goche $n=$1;
-            Rw goche $n=4;
-            Rw goche $n=45;
-            Rw goche $n=8;
-            Rw waitme;
-            return;
-        }
-    }
-    else {
-        G.forked = 1;
-    }
-    
+
 EmJSlines: |
     my $N = [@{em.lines||die"Nop"}];
     @$N = Rw humms $J $N wongui _;
