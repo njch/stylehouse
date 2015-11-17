@@ -108,51 +108,6 @@ lookiDuv: | # look at Duv.ids and even ((Duv.vs)) deeply for ids
     #@got = map{ _.sc.J || die "$id id no J: ".ki $_ }@got;
     @got == 1 || sayre("Not found $id ! ".@got) && return;
     shift @got;
-Elis: |
-    E.c.trJ eq $J && return
-        Rw clack Doublysendo;
-    E.c.trJ = $J;
-    J.ev.av && sayre("On to J.name: J.ev.av") && # on arrival
-        Rw J.ev.av;
-    
-    J.ev.o && A.J ne $J && return
-        saygr("othero: J.ev.o: A.J.name to J.name  C.sc.J.name  E.sc.J.name") &&
-        Rw J.ev.o;
-    
-    J.ev.li && return
-        saygr("JevLi: J.ev.li: A.J.name to J.name  ---  C.sc.J.name  E.sc.J.name") &&
-        Rw J.ev.li;
-    
-    my $f = J.ev.f;
-    $f = {split':',$f,2} if !ref $f;
-    for my $pi (keys %$f) {
-        E.sc.pi eq $pi || next;
-        my $d = $f->{$pi};
-        my $pin = ref $d ? die "ref f d in $pi" : $d;
-        sayyl "Elis: $pi to $pin";
-        return
-        Rw $pin;
-    }
-    
-    E.sc.was && return saybl "E.t was: $_ ".E.c.s;
-    
-    # double take aft writedown
-    J.ev.tr && return
-        Rw J.ev.th;
-    
-    Rw clack + Elisi;
-    
-    
-middle: |
-    my $E = Rw CsE $C;
-    say "midd: C.t has E.t: E.c.s ".(E.c.us && "(us)");
-    # us, ids are brain tickets, tractorbeam does Elis first time
-    if (J.ev.tr && E.c.trJ ne $J || !E.c.us || E.c.us.ids->[E.c.us.idi - 1] eq J.id) {
-        Rw Elis + $E;
-    }
-    else {
-        Rw zyeuter + $E;
-    }
 clack: |
     sayyl "UNclassified something F-1 at J.name";
     saybl "M<essage: ".wdump ar.m if ar.m;
