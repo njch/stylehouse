@@ -1,0 +1,454 @@
+
+Sefi: |
+    u ReoCur
+    y.at.anch = 'Noteal';
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    y.at.ws = 1;
+    y.at.hs = '393';
+    y.in = 0.03;
+    y.out = 4;
+    J.VV.N = 1;
+    
+    my $p = 'g/c/*';
+    Mn(p=>''=>$p,'%decor,hs:388,fs:15');
+    
+    # $f mtimes into w/wf/$fish (s/\//-/g), for its -glo:
+    #  - way $k digs into w/digway/$kish
+    #    - new file written & diffed and move in/over w/way/$kish
+    
+    my $glomet = sub {
+        my $f = shift;
+        my $mt = (stat $f)[9];
+        my $fi = $f;
+        $fi =~ s/\//-/g;
+        my $wf = "w/wf/$fi";
+        my $mft = (stat $wf)[9] if -f $wf;
+        $mt > $mft
+    };
+    
+    my @li = glob $p;
+    for my $f (@li) {
+        $glomet->($f) || next;
+        # part of glo ^
+        Mn($f=>-glo=>{}=>'%dis');
+    }
+    Mn(found=>''=>"found ".@li);
+    n o=>42=>"@",'%fs:40,blr:4';
+    # and so
+pi/glo: | # see file glowing, flood gates of
+    y.at.hs = '638';
+    n f => 1 => C.t
+    n changed=>2=>changed=>'%hs:857'
+    
+    my $d = LoadFile($s);
+    `mkdir w/way` if !-d 'w/way';
+    `mkdir w/digway` if !-d 'w/digway';
+        
+        while(my($k,$v) = each %$d) {
+            $k =~ s/\//-/g;
+            my $waf = "w/way/$k";
+            my $wig = "w/digway/$k";
+            my $dig = slm 10, dig($v);
+            my $lin = readlink($wig) if -l $wig;
+            if ($lin eq $dig) {
+                #sayyl "$wig same ($dig)";
+                next;
+            }
+            else {
+                sayyl "Lin: $lin eq $dig" if $lin;
+                sayre "No lin $wig " if !$lin;
+            }
+            write_file($waf."nt",$v);
+            if (!-f $waf || `diff $waf ${waf}nt`) {
+                Mn(gfot=>''=>"\n - $k");
+                `mv ${waf}nt $waf`;
+            }
+            else {
+                `rm ${waf}nt`;
+            }
+            -l $wig && `unlink $wig`;
+            `ln -s $dig $wig`;
+        }
+        
+    # mtimes in wf must be after any of the inner branches ^
+    my $fi = $s;
+    $fi =~ s/\//-/g;
+    my $wf = "w/wf/$fi";
+    `mkdir w/wf` if !-d 'w/wf';
+    write_file($wf,'');
+    
+Wjes: |
+    u ReoCur
+    u curv =>pi=><<''
+        zoom 0  0.7
+        y    0  0
+        x    0  0
+        curve 0 0.03
+    
+    J.VV.V = 1;
+    J.ev.th ||= 'middle';
+    J.ev.li ||= 'climbo';
+    J.ev.bo ||= 'bodos';
+    
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    y.at.ws = 1;
+    y.at.hs = '893';
+    y.in = 0.03;
+    y.out = 6;
+    J.VV.N = 1;
+    y.ert = 20;
+    
+    Mn("w/jes"=>-Join);
+pi/Join: |
+    C.sc.dos = 'pileJup';
+    my $dir = $s;
+    -d $dir || die "No $dir";
+    my $p = "$dir/*";
+    n Join=>1=>$s,'%decor,hs:388'
+    J.mo.jes = $J;
+    
+    my $geese = sub {
+        my $f = shift;
+        my $way = $1 if $f =~ /.+\/(.+?)$/;
+        $way || die "noqway $f";
+        my $mt = (stat $f)[9];
+        my $fi = $f;
+        $fi =~ s/\//-/g;
+        my $wf = "w/way/$way";
+        my $wt = (stat $wf)[9] if -f $wf;
+        $wt > $mt
+    };
+    
+    my $li = {map{$_=>1}glob($p)};
+    my @n;
+    my $jf = "$dir/J";
+    if (delete $li->{$jf}) {
+        Rw trowil $J $s:jf;
+        Mn($jf=>-gejo=>{}=>'%dis');
+        
+    }
+    else {
+        sayre "No $jf in ".wdump 2, $li;
+    }
+    my $wt = J.mo.jes.trowl || die "no trowl";
+    
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        map {
+            my $v = $wt->{$_};
+            my @M;
+            push @M, [$_=>''=>{s=>$_,ind=>$d}];
+            push @M, $tal->($d+1, $v) if keys %$v;
+            @M
+        } sort keys %$wt;
+    };
+    my $N = [$tal->(0,$wt)];
+    my $eM = [];
+    Rw In $J $N $M:eM;
+    
+    for (@$eM) {
+        my $f = "$dir/_.t";
+        if (delete $li->{$f}) {
+            _.sc.ml = _.c.ind * 3;
+            if ($geese->($f)) {
+                _.c.s = $f;
+                _.c.pi = 'gee';
+            }
+            else {
+                _.c.pi = 'bl';
+            }
+            _.sc.id = $f;
+            _.sc.hs = '255';
+        }
+        else {
+            _.sc.hs = '339';
+        }
+        _.sc.dis = 1;
+    }
+    
+    keys %$li &&
+        Mn(unc=>''=>"Uncounted: $_")
+            for sort keys %$li;
+    
+    saybl _.c.s for @$M;
+    
+    Mn($eM);
+    
+    n o=>62=>"@",'%fs:40,blr:4';
+    # and so
+pi/bl: |
+    C.sc.qs = 1;
+    n way=>1=>C.t
+pi/gejo: | # the dog leg sketch, optional
+    y.at.hs = '388';
+    y.at.mt = '5';
+    y.at.fs = '9';
+    y.at.lh = '0.9em';
+    y.at.geo = 'a100 0 0.1 1.2';
+    n gate=>2=>"\n.\n.\n.\n.\n.\n.\nGasm: $s\n\n";
+    $s =~ /\/J$/ || die "nogate: $s";
+    my $wt = J.mo.jes.trowl;
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        join"\n",map{
+            ind(join("",("  ") x $d), $_)
+        }map {
+            "$_".(!keys %{$wt->{$_}} ? "" : do {
+                ":\n".$tal->($d+1, $wt->{$_});
+            });
+        }sort keys %$wt;
+    };
+    my $s = $tal->(0,$wt);
+    Mn(eo=>''=>"\n$s");
+    
+pi/gee: |
+    C.sc.qs = 1;
+    my ($gate,$way) = $s =~ /^(.+)\/(.+?)$/;
+    $way eq C.t || die "C.t - $way mix";
+    my $tw = J.mo.jes.tower;
+    my $u = $tw->{$way} || die "no topwer $way";
+    n way =>1=>C.t,'%hs:389'
+    y.clos = 1;
+    my $mt = (stat $s)[9];
+    
+    $way || die "noqway $s";
+    # places to find way
+    my @ott = ({k=>'way'});
+    for my $h (@ott) {
+        my $wf = "w/h.k/$way";
+        if (!-f $wf) {
+            n no=>2=>"NO $wf",'%hs:898'
+            %$h = ();
+            next;
+        }
+        h.t = (stat $wf)[9];
+    }
+    push @ott, {k=>'now',t=>hitime()};
+    for my $h (@ott) {
+        next unless keys %$h;
+        if (h.t > $mt) {
+            my $d = h.t - $mt;
+            $d = Rw samv $d;
+            Mn("d h.k",''," $d ",'%hs:333,ml');
+            Mn("k h.k",'',h.k);
+        }
+    }
+    
+trowil: |
+    my @li = glob "$s/*/*";
+    my $tw = {};
+    for my $f (@li) {
+        my ($gate,$up,$way) = $f =~ /^(.+)\/J\/(.+?)\/(.+?)$/;
+        $up && $way || die "nope $f";
+        $tw->{$up}->{n}->{$way} = 1;
+        $tw->{$way}->{u}->{$up} = 1;
+    }
+    my $wt = {};
+    $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+    my @ne = $wt;
+    while (@ne) {
+        my @m = @ne;
+        @ne = ();
+        for $wt (@m) {
+            for my $k (keys %$wt) {
+                my $t = $tw->{$k};
+                if (t.n) {
+                    my $n = $wt->{$k};
+                    $n->{$_} = {} for keys %{t.n};
+                    push @ne, $n;
+                }
+                else {
+                    #
+                }
+            }
+        }
+    }
+    J.mo.jes.tower = $tw;
+    J.mo.jes.trowl = $wt;
+
+pileJup: |
+    # not =>$E properly, C is first C,c.e $E is from before $E
+    my @Js = I.d&inDin,$E,'_hJ';
+    @Js == 3 || return sayre("WEird look".wdump 4, [ @Js  ]) &&
+        Rw talkzyh;
+    my ($tW,$tJ,$tl) = @Js;
+    tW.mo.J eq $tW || die "not most 1: ".ki $tW;
+    tJ.C.sc.pi eq 'Join' || die "not Join 2: ".ki($tJ).saybl(wdump 2, tJ.C);
+    tl.C.sc.pi =~ /^(bl|gee)$/ || die "not bl/gee 3: ".ki $tl;
+    # tJ/tl mo.jes es littljoin
+    saybl wdump 3, [map {ki $_}$tW,$tJ,$tl];
+    my $jes = tJ.mo.jes;
+    my $to = jes.tower;
+    my @up = tl.C.t;
+    while (1) {
+        my $l = $up[0];
+        die "if $l" if $l =~ / or /;
+        my $o = $to->{$l} || die "No tower: $l ".wdump 2, jes.trowl;
+        my $u = o.u || last;
+        unshift @up, join(" or ", sort keys %$u);
+    }
+    say "Find path to tl.C.t    from: ".wdump 3, \@up;
+    my $M = E.c.us.pick ||= [];
+    Mn(founde=>-edr=>(join';',@up),{mean=>Jiter=>onto=>tJ.C.c.s});
+    n Dug =>$E
+    T.pos = 0;
+Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
+    sayyl "Jiterating ! C.t";
+    # not =>$E properly, C is first C,c.e $E is from before $E
+    my @Js = A.e&_hJ;
+    my ($tW,$tl) = @Js[0,-1];
+    tW.mo.J eq $tW || die "not most 1: ".ki $tW;
+    my $ing = tl.C;
+    my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
+    ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
+    ip.pi = 'edr';
+    
+    my $duvi = sub {
+        my $tl = shift;
+        my $uv = tl.El.Duv || die "HJiter not Duv tl.name";
+        map{uv.tv->{$_}}@{uv.os}
+    };
+    my $gre = sub {
+        grep { I.d&ip,$ip,_.sc } $duvi->(shift);
+    };
+    my @bun = $gre->($tW);
+    push @bun, $gre->($tl);
+    saygr "Have Some: ".wdump 3, $_ for @bun;
+    my @s = uniq map{_.c.s} @bun;
+    saybl "Make Joint stand: ".ki($ip).": ".wdump 3, \@s;
+    my $r = {};
+    for my $leng (@s) {
+        my @l = split ';', $leng;
+        @l > 1 || die "Leng not long enough: @l".wdump \@l;
+        r.ops->{$l[0]}++;
+        while (@l > 1) {
+            my $o = shift @l;
+            my $n = shift @l;
+            my $f = ip.onto."/J/$o/$n";
+            r.ave->{$f}++;
+            unshift @l, $n;
+        }
+    }
+    sayyl "You ordered: ".wdump $r;
+    `echo 1 > $_` for keys %{r.ave};
+    Rw waited $J:_ 
+    for keys %{r.ops};
+    T.pos = 0;
+    
+    
+indoc: | # for notes, income
+    A.us&pick || return
+        Rw clack unindoc_pick;
+    # ^ array of pick, can be empty meaning bring display,
+    # align proteins tracks, sheer interest
+    my @M = A.us&_pick;
+    _.sc.doct = "J.name J.id" for @M;
+    _.sc.id = "io".mkuid() for @M;
+    push @{J.UG}, @M;
+    sayyl "Intdoctrined J.name from A.J.name: ";
+    sayyl " - ".ki $_ for @M;
+Dug: |
+    u ReoCur
+    y.at.ux = 1;
+    J.ev.th ||= 'middle';
+    J.ev.o ||= 'indoc';
+    J.ev.li ||= 'climbos';
+    J.ev.tr = 1;
+    
+    J.uzk = [qw'mean onto etc'];
+    J.UG ||= [];
+    
+    y.in = 0.1;
+    y.out = 0.5;
+    y.ert = 3;
+    J.VV.N = 1;
+    
+    Atime(2);
+    @{J.UG} = grep {keys %$_} @{J.UG};
+    
+    n downsave=>[-doi=>0.04]
+    saybl "J.name JUG:: ".ki $_ for @{J.UG};
+    
+    my $pi = {};
+    for my $u (@{J.UG}) {
+        my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
+        push @{$pi->{$k}||=[]}, $u;
+    }
+    for my $k (sort keys %$pi) {
+        my $v = $pi->{$k};
+        my $t = {};
+        push @{$t->{"_.doct"}||=[]}, $_ for @$v;
+        my @o = sort {@{$t->{$a}} <=> @{$t->{$b}}} keys %$t;
+        saybl "You have doct: ".wdump [ @o ];
+        t.win = $t->{$_} for pop @o;
+        Mn($k=>-ean=>{s=>$v,ts=>$t});
+    }
+ 
+downsave: | # Dug Jiters, write Join from
+    if (A.us&S ) {
+        sayre "Downsave shave ".@{J.UG} for 1..3;
+        @{J.UG} = ();
+        return;
+    }
+    sayyl "downsave ! ".ki $C;
+    
+    my ($one,$other) = map { wdump $_, J.UG } 5,7;
+    length $one == length $other || die "wdump depth 5-7 unstable: $other";
+    my $dir = 'w/downsave';
+    `mkdir -p $dir` if !-d $dir;
+    DumpFile("$dir/C.t", J.UG);
+downsave_up: |
+    my $j = J.mo.J;
+    my $t = j.C.t;
+    my $dir = 'w/downsave';
+    my $f = "$dir/$t";
+    return saygr "No\ndown\nsave: $t" unless -f $f;
+    my $datya = LoadFile($f);
+    die "Eval $f: $@" if $@;
+    die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
+    push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
+pi/edr: |
+    my $ts = J.Jiter.C.c.ts;
+    n for=>1=>$s,'%fs:12,hs:347'
+    n instr=>2=>" To C.sc.mean C.sc.onto"
+    C.sc.dos = 'getcated';
+    $ts->{C.sc.doct} ne ts.win &&
+        n move=>3=>"ƾ",'%dos:getcated,id:whatu'
+pi/ean: |
+    J.V = 1;
+    y.close = 1;
+    n ean=>1=>"Meaning: C.t"
+    (C.sc.dos) = (C.sc.mean,C.sc.onto) = (split ' ', C.t);
+    Mn($s);
+getcated: |
+    my @h = A.e&_hC;
+    my $p = shift @h;
+    my ($ic,$edr,@etc) = reverse @h;
+    p.c.J.mo.J eq p.c.J || die "Nomop: ".ki $p;
+    my $jugs = sub {
+        my $u = shift;
+        return (grep{ _.sc.id eq u.sc.id}@{J.UG})[0];
+    };
+    sayre " HAs: ".ki $ic;
+    saybl "Se edr: ".ki $edr;
+    my $co = $jugs->($edr);
+    sayyl "Self: ".ki $co;
+    if ($ic && ic.y.cv < 0.9) {
+        $_ = ic.c.s;
+        /\;/ ? do {
+            
+        }:
+        /ƾ/ ? do {
+            
+            sayre " HAs: ".ki edr.c.self;
+            saybl "Se edr: ".ki $edr;
+        }
+        : die " nO $_";
+    }
+    else {
+    
+    }
+    saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
+    sayre " _ _ _ ".ki $_ for @etc;
