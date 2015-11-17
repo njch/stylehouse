@@ -1,8 +1,18 @@
 
+ocling: | # give isle
+    Rw Jamroot $J;
+    J.pix = [{any=>1,Rw=>'ocling'}];
+    my $isle =
+    ar.pin ? J.at.isle || die "no isle on J.name: ".ki J.at
+        : A.J.at.isle || die "no isle for J.name baton A.J.name: ".ki A.J.at;
+    my $coder = $isle =~ /^j/ ? 'jseo' : 'codeo';
+    u $coder
+    u trWs
+    y.at.isle = $isle unless $isle eq J.at.isle;
 jshang: |
-    Rw jeocling;
-    `rm w/jes/$_` for qw{Sipes stylepap};
+    y.at.isle = 'jes';
     y.at.jsl = 1; # send js
+    Rw ocling;
     J.VV.N = 1;
     n Swomp
     n Shorse
@@ -18,22 +28,20 @@ Sipes: |
     n stylext
     n stylepap
 Chang: |
-    Rw codish;
+    y.at.isle = 'u';
+    y.at.coil = 1; # does indeax
+    Rw ocling;
+    J.VV.N = 1;
     
-    y.at.coil = 1;
     
     n Stitchy
     n Stripey
     
 Stitchy: |
-    Rw codish;
-    
     n Statch
     n Strope
     n Oscgrin
 Stripey: |
-    Rw codish;
-    
     n Stripes
     
 Statch: | # from Chang make scindex, use in Art to attach Styles
@@ -50,30 +58,6 @@ Statch: | # from Chang make scindex, use in Art to attach Styles
     
 scgkindex: | # make scindex
     D.sc.scindex = {map{_.sc.gk=>1}grep{_.sc.nk eq 'sc' && _.sc.gk}@$N};
-Strope: | # Art form Styles, scindex dispatched
-    u allacgts
-    # uses an I cap, the sc satays with any filing
-    n stri=>''=><<'',{acgt=>'D,s'}
-        my $v = C.sc->{D.sc.gk};
-        if (D.sc.flex) {
-            for my $st (@{D.sc.flex}) {
-                for my $k (sort keys %$st) {
-                    my $vv = $st->{$k};
-                    my $e;
-                    e.v = $v;
-                    e.et = $vv;
-                    $v = I.d&$k,$e;
-                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
-                }
-            }
-        }
-        else {
-            my $k = D.sc.filt;
-            return unless $k;
-            $v = I.d&$k,$v;
-        }
-        C.sc->{D.sc.gk} = $v;
-    
 Swomp: | # the Chang for js
     my $e = Rw swampdex;
     u alljse
@@ -107,6 +91,30 @@ swampdex: | # from Chang, cssk to keep on the client
         }
     }
     $e
+Strope: | # Art form Styles do, Styles o indexed by compression phase, symmetricated scindex dispatched
+    u allacgts
+    # uses an I cap, the sc satays with any filing
+    n stri=>''=><<'',{acgt=>'D,s'}
+        my $v = C.sc->{D.sc.gk};
+        if (D.sc.flex) {
+            for my $st (@{D.sc.flex}) {
+                for my $k (sort keys %$st) {
+                    my $vv = $st->{$k};
+                    my $e;
+                    e.v = $v;
+                    e.et = $vv;
+                    $v = I.d&$k,$e;
+                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
+                }
+            }
+        }
+        else {
+            my $k = D.sc.filt;
+            return unless $k;
+            $v = I.d&$k,$v;
+        }
+        C.sc->{D.sc.gk} = $v;
+    
 Stripes: |
     u allsvse
     n '','','%of:Styles'
