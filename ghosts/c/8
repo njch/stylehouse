@@ -483,16 +483,18 @@ Details: |
     n G.edit=>[-cde=>'2-6']
     y.at.cssdel = 'transform';
     
+    #n time =>[-timem=>'1-9x8']=>`date`
+    
     #n Tarp
     J.act = 0; # pi always
     #return
     #n Sefi
     J.dooed++ || 
-    n Wjes
+    #n Wjes
     # one to com the piles
     return;
     y.in = 0.08;
-    y.lum = 1;
+    #y.lum = 1;
     y.out = 3;
     Mn($_=>-shed=>) for 'ghosts/c/45';
     J.pix = {pi=>te=>pito=>'nothing'};
@@ -504,6 +506,11 @@ Details: |
     n $_,$_,$_,'%hs:389,fs:20' for 1, 3, 5, 7, 9;
     
     return;
+pi/timem: |
+    Mn(dko=>''=>$_=>
+        '%fs:40,hs:'.join('',map{int rand $_}5,7,8).',blr:'.int rand 4
+      )
+        for split ' ', $s;
 DetailMark: |
     my $mark = [',',qw' ? ; :'];
     A.us&C && A.us&S ? J.fkeo++ : J.fkeo--;
@@ -1020,6 +1027,7 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     my $ing = tl.C;
     my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
     ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
+    ip.pi = 'edr';
     
     my $duvi = sub {
         my $tl = shift;
@@ -1031,17 +1039,26 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     };
     my @bun = $gre->($tW);
     push @bun, $gre->($tl);
-    my @s = uniq map{_.c.s} @bun;
-    saybl "Make Joint stand: $mean $onto: ".wdump 3, \@s;
+    saygr "Have Some: ".wdump 3, $_ for @bun;
+    my @s = map{_.c.s} @bun;
+    @s = uniq @s;
+    saybl "Make Joint stand: ".ki($ip).": ".wdump 3, \@s;
+    saybl "ETC: ".wdump 3,[
+        #map {_.c.s} 
+        @bun,
+    ];
+    
+    
+    aft { $@ && sayre $@ };
     my $r = {};
     for my $leng (@s) {
         my @l = split ';', $leng;
-        @l > 1 || die "Leng not long enough: @l";
+        @l > 1 || die "Leng not long enough: @l".wdump \@l;
         r.ops->{$l[0]}++;
         while (@l > 1) {
             my $o = shift @l;
             my $n = shift @l;
-            my $f = "$onto/J/$o/$n";
+            my $f = ip.onto."/J/$o/$n";
             r.ave->{$f}++;
             unshift @l, $n;
         }
@@ -1060,8 +1077,9 @@ indoc: | # for notes, income
     # align proteins tracks, sheer interest
     my @M = A.us&_pick;
     _.sc.doct = "J.name J.id" for @M;
+    _.sc.id = "io".mkuid() for @M;
     push @{J.UG}, @M;
-    sayyl "Intdoctrined J.name from A.J.name: "
+    sayyl "Intdoctrined J.name from A.J.name: ";
     sayyl " - ".ki $_ for @M;
 Dug: |
     u ReoCur
@@ -1080,6 +1098,7 @@ Dug: |
     J.VV.N = 1;
     
     Atime(2);
+    @{J.UG} = grep {keys %$_} @{J.UG};
     
     n downsave=>[-doi=>0.04]
     saybl "J.name JUG:: ".ki $_ for @{J.UG};
@@ -1111,15 +1130,14 @@ downsave: | # Dug Jiters, write Join from
     length $one == length $other || die "wdump depth 5-7 unstable: $other";
     my $dir = 'w/downsave';
     `mkdir -p $dir` if !-d $dir;
-    write_file("$dir/C.t", $one);
+    DumpFile("$dir/C.t", J.UG);
 downsave_up: |
     my $j = J.mo.J;
     my $t = j.C.t;
     my $dir = 'w/downsave';
     my $f = "$dir/$t";
     return saygr "No\ndown\nsave: $t" unless -f $f;
-    my $perl = read_file $f;
-    my $datya = eval $perl;
+    my $datya = LoadFile($f);
     die "Eval $f: $@" if $@;
     die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
     push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
@@ -1134,13 +1152,44 @@ pi/edr: |
     my $ts = J.Jiter.C.c.ts;
     n for=>1=>$s,'%fs:12,hs:347'
     n instr=>2=>" To C.sc.mean C.sc.onto"
+    C.sc.dos = 'getcated';
     $ts->{C.sc.doct} ne ts.win &&
-        n move=>3=>"Upg?"
+        n move=>3=>"ƾ",'%dos:getcated,id:whatu'
+getcated: |
+    my @h = A.e&_hC;
+    my $p = shift @h;
+    my ($ic,$edr,@etc) = reverse @h;
+    p.c.J.mo.J eq p.c.J || die "Nomop: ".ki $p;
+    my $jugs = sub {
+        my $u = shift;
+        return (grep{ _.sc.id eq u.sc.id}@{J.UG})[0];
+    };
+    sayre " HAs: ".ki $ic;
+    saybl "Se edr: ".ki $edr;
+    my $co = $jugs->($edr);
+    sayyl "Self: ".ki $co;
+    if ($ic && ic.y.cv < 0.9) {
+        $_ = ic.c.s;
+        /\;/ ? do {
+            
+        }:
+        /ƾ/ ? do {
+            
+            sayre " HAs: ".ki edr.c.self;
+            saybl "Se edr: ".ki $edr;
+        }
+        : die " nO $_";
+    }
+    else {
+    
+    }
+    saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
+    sayre " _ _ _ ".ki $_ for @etc;
 pi/ean: |
     J.V = 1;
     y.close = 1;
     n ean=>1=>"Meaning: C.t"
-    (C.sc.dos,C.sc.onto) = (split ' ', C.t);
+    (C.sc.dos) = (C.sc.mean,C.sc.onto) = (split ' ', C.t);
     Mn($s);
 hijack: | # yJ, the event for-er
     saybl "HERE\n\n\n";
