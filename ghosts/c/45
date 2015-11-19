@@ -33,10 +33,9 @@ trWs: |
     u allvse
     n '','','%of:Mo'
     n W =>3211,<<''
-        unless (A.J.C.sc.pi eq 'trW') {
-            C.c.s = delete C.c.W;
-            C.c.pi = 'trW';
-        }
+        return if A.J.C.sc.pi eq 'trW';
+        C.c.s = delete C.c.W;
+        C.c.pi = 'trW';
     
 pi/trW: | # uses localeo
     my $isle = J.mo.J.at.isle;
@@ -45,26 +44,26 @@ pi/trW: | # uses localeo
     say "J.name:   J.mo.J.name eq A.J.name";
     my $Jd = "w/$isle/J/J.mo.J.name";
     `mkdir -p $Jd` if !-d $Jd;
+    my $jf = "$Jd/$s";
     my $traveli;
-    for (glob"$Jd/$s") {
+    for ($jf) {
         next unless -s $_;
         $traveli = read_file($_);
         saybl "Travel from $_: ".wdump 3,[
             $traveli
         ];
     }
-    #`rm $f`;
     if (!$traveli && -f $f) {
         say "Found $f !";
         n $f =>3,$s,{X=>LoadFile($f)}
-        `touch $Jd/$s` && sayre "Xuper $f" if !-f "$Jd/$s";
+        `touch $jf` && sayre "Xuper $f" if !-f $jf;
     }
     else {
         say "Making  $s !";
         n $s=>W
-        `cat /dev/null > $Jd/$s`;
+        `cat /dev/null > $jf`;
     }
-    saybl "Donel  $Jd  $s";
+    saybl "Donel  $jf";
     
 Sweep: |
     n stylesweep

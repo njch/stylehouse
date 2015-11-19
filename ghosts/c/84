@@ -100,7 +100,7 @@ Wjes: |
     J.VV.N = 1;
     y.ert = 20;
     
-    Mn("w/u"=>-Join);
+    Mn("w/uuu"=>-Join);
 pi/Join: |
     C.sc.dos = 'pileJup';
     my $dir = $s;
@@ -168,13 +168,13 @@ pi/Join: |
         _.sc.dis = 1;
     }
     
+    Mn($eM);
+    
     keys %$li &&
-        Mn(unc=>''=>"Uncounted: $_")
+        Mn(unc=>''=>"Uncounted: $_\n",'%ws,dis')
             for sort keys %$li;
     
     saybl _.c.s for @$M;
-    
-    Mn($eM);
     
     n o=>62=>"@",'%fs:40,blr:4';
     # and so
@@ -236,6 +236,7 @@ pi/gee: |
         }
     }
     
+
 trowil: |
     my @li = glob "$s/*/*";
     my $tw = {};
@@ -267,7 +268,6 @@ trowil: |
     }
     J.mo.jes.tower = $tw;
     J.mo.jes.trowl = $wt;
-
 pileJup: |
     # not =>$E properly, C is first C,c.e $E is from before $E
     my @Js = I.d&inDin,$E,'_hJ';
@@ -377,12 +377,18 @@ Dug: |
     }
     for my $k (sort keys %$pi) {
         my $v = $pi->{$k};
-        my $t = {};
-        push @{$t->{"_.doct"}||=[]}, $_ for @$v;
-        my @o = sort {@{$t->{$a}} <=> @{$t->{$b}}} keys %$t;
-        saybl "You have doct: ".wdump [ @o ];
-        t.win = $t->{$_} for pop @o;
-        Mn($k=>-ean=>{s=>$v,ts=>$t});
+        my $ts = {};
+        for my $u (@$v) {
+            my $ses = u.sc->{ts.k};
+            push @{$ts->{$ses}||=[]}, $u;
+        }
+        if (keys %$ts > 1) {
+            my @o = sort {@{$ts->{$a}} <=> @{$ts->{$b}}} keys %$ts;
+            saybl "You have doct: ".wdump [ @o ];
+            ts.win = $ts->{$_} for pop @o;
+            ts.k = 'doct';
+        }
+        Mn($k=>-ean=>{s=>$v,ts=>$ts});
     }
  
 downsave: | # Dug Jiters, write Join from
@@ -409,11 +415,11 @@ downsave_up: |
     die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
     push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
 pi/edr: |
-    my $ts = J.Jiter.C.c.ts;
+    my $ts = J.Jiter.C.c.ts; # look to ean
     n for=>1=>$s,'%fs:12,hs:347'
     n instr=>2=>" To C.sc.mean C.sc.onto"
     C.sc.dos = 'getcated';
-    $ts->{C.sc.doct} ne ts.win &&
+    ts.win && $ts->{C.sc->{ts.k}} ne ts.win &&
         n move=>3=>"ƾ",'%dos:getcated,id:whatu'
 pi/ean: |
     y.close = 1;
@@ -429,7 +435,9 @@ getcated: |
         my $u = shift;
         return (grep{ _.sc.id eq u.sc.id}@{J.UG})[0];
     };
-    sayre " HAs: ".ki $ic;
+    $edr = edr.c.J.C if edr.y.cv == 0.9;
+    shift @etc if $etc[0] == $edr; # ^ yeah
+    sayyl " HAs: ".ki $ic;
     saybl "Se edr: ".ki $edr;
     my $co = $jugs->($edr);
     sayyl "Self: ".ki $co;
@@ -439,16 +447,17 @@ getcated: |
             
         }:
         /ƾ/ ? do {
-            
-            sayre " HAs: ".ki edr.c.self;
-            saybl "Se edr: ".ki $edr;
+            co.sc.etc++;
+            # another layer of how to do increments, Jtinue split into sorts ops
+            sayyl "Shifted  to co.s.etc";
         }
         : die " nO $_";
     }
     else {
-        saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
-        sayre " _ _ _ ".ki $_ for @etc;
         sayre "Guess you want to unJUG ".ki $co;
         @{J.UG} = grep{ $_ ne $co } @{J.UG};
     }
+    saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
+    sayre " _ _ _ ".ki $_ for @etc;
+    Rw UnPreDuv $J;
 
