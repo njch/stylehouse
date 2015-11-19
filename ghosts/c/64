@@ -30,15 +30,15 @@ Gooso: |
             our @ISA = qw(Tie::StdHash);
             sub FETCH {
                 my ($s,$k) = @_;
-                return $s->{$k} if $k eq 'dir';
-                $s->{$k} ||= do {
+                $s->{$k} ||= $k eq 'dir' ? return : do {
                     my $d = s.dir;
                     my $il = join('/', grep{defined} $d, $k);
-                    my $f = "w/$il";
+                    my $f = s.base.'/'.$il;
                     if (-d $f) {
                         my %Di;
                         tie %Di, 'Wormhole';
                         my $di = \%Di;
+                        di.base = s.base;
                         di.dir = $il;
                         $di
                     }
@@ -54,6 +54,11 @@ Gooso: |
         }
         tie %T, 'Wormhole';
         G.T = \%T;
+        G.T.base = 'w';
+        G.T
+    
+    # the J.at should be looking at J.oy.at too
+    # 
 Goodat: |
     u allacgts
         
@@ -80,6 +85,14 @@ Goodat: |
     n pon =>''=><<'',{acgt=>'pin,way,s'}
         I.pwin || die "nopwin from pin";
         I.pwin->($pin,$way,{et=>$s});
+    
+    n sorp =>''=><<'',{acgt=>'pin'}
+        I.pwin || die "nopwin from pin";
+        sort { I.pwin->($pin,$a) cmp I.pwin->($pin,$b) } @Me;
+    
+    n norp =>''=><<'',{acgt=>'pin'}
+        I.pwin || die "nopwin from pin";
+        sort { I.pwin->($pin,$a) <=> I.pwin->($pin,$b) } @Me;
     
     # non acgts
     n pwin =>''=><<'',{args=>'pin,way,set'}
