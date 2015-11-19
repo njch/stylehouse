@@ -194,19 +194,11 @@ Sl: |
     
     #J.dfko++ ||
     #    n Notes
-    
-    my $time = J.fsjoi ||= 0;
-    if ($time >= 0) {
+    J.fti ||= 0;
+    if (J.fti >= 0) {
         Rw waitme;
-        $time -= 3 if J.me =~ s/o//g;
-        $time -= 2 if J.me =~ s/i//g;
     }
-    sayyl "Ftime up $time";
-    $time++;
-    if ($time < 1) {
-        Rw loopby $b=3 $d=5 $p=Top;
-    }
-    J.fsjoi = $time;
+    sayyl "Ftime up J.fti";
     Rw forked;
     
 waitme: |
@@ -223,8 +215,8 @@ waitme: |
             chomp;
             J.me = $_;
             sayyl "OK!";
-            /(\d+)/ &&
-            Rw goche $n=$1;
+            Rw goche $n=$1
+            while s/(\d+)//g;
             Rw goche $n=84;
             Rw goche $n=8;
             Rw waitme;
@@ -236,8 +228,16 @@ waitme: |
     }
     
 forked: |
-    J.me =~ s/p// &&
-        delete G.forked;
+    if (J.me =~ s/^ (\w+)(?: (.+))?// && G.way->{$1}) {
+        n $1=>W=>{t=>$2}
+    }
+    J.fti -= 3 if J.me =~ s/o//g;
+    J.fti -= 2 if J.me =~ s/i//g;
+    delete G.forked if J.me =~ s/p//;
+    J.fti++;
+    Rw loopby $b=3 $d=5 $p=Top
+        if J.fti < 0;
+    
     J.me =~ /a/ &&
         n All=>W=>{time=>6}
     J.me =~ /u/ &&
