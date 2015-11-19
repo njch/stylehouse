@@ -45,12 +45,11 @@ climbo: | # hop down tv, for hJ
     my @C;
     my $i = -1;
     for my $l (@$h) {
-        sayyl "for   @$l";
         $i++;
         my $f;
         my ($t,$cv,$id) = @$l;
         if ($i == 0 && $id eq J.id) {
-            say "hop 1 is J.name";
+            #say "hop 1 is J.name";
             $f = tj.C;
         }
         elsif (defined $t && defined $cv) {
@@ -63,19 +62,23 @@ climbo: | # hop down tv, for hJ
         }
         elsif (defined $id) {
             my $oj = Rw lookiDuv $J:tj $id;
-            sayyl "Found: ".ki $oj;
             $f = $oj || return sayre "No J on oj.name $id . .. ";
         }
         else {
             die "L hop: $i ? ".wdump 3, $h;
         }
+        sayyl "Found: ".ki $f;
         push @C, $f;
+        my $fo = $tj;
         $tj = f.sc.J;
-        #sayyl "hop - tj.name";
+        if (!$tj && f.y.cv == 0.9) {
+            $tj = f.c.J;
+            $tj eq $fo || die "Tried to J find ".ki($f)
+                ."\n but its cJ: tj.name   ne   fo.name";
+        }
     }
     E.c.hJ = [grep{defined}map{_.sc.J}@C];
     E.c.hC = [@C];
-    sayyl "Found a ".ki $tj;
     
     return sayre("JevBo: J.ev.bo: J.name  C.sc.J.name  E.sc.J.name") &&
         Rw J.ev.bo
