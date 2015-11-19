@@ -104,22 +104,39 @@ Galso: | # Gooso goner #
         my $I = A.I || die 'GhnoI';
         I.d&Other,$am;
     };
-    my %T = %{G.T||{}};
-    G.T = \%T;
-    {
-        package Wormhole;
-        use Tie::Hash;
-        use YAML::Syck;
-        our @ISA = qw(Tie::StdHash);
-        sub FETCH {
-            my ($s,$k) = @_;
-            $s->{$k} ||= do{ 
-                print "Loading w/$k ...\n";
-                LoadFile("w/$k")
-            };
+    # lifted from 64 Gooso
+        my %T = %{G.T||{}};
+        {
+            package Wormhole;
+            use Tie::Hash;
+            use YAML::Syck;
+            our @ISA = qw(Tie::StdHash);
+            sub FETCH {
+                my ($s,$k) = @_;
+                return $s->{$k} if $k eq 'dir';
+                $s->{$k} ||= do {
+                    my $d = s.dir;
+                    my $il = join('/', grep{defined} $d, $k);
+                    my $f = "w/$il";
+                    if (-d $f) {
+                        my %Di;
+                        tie %Di, 'Wormhole';
+                        my $di = \%Di;
+                        di.dir = $il;
+                        $di
+                    }
+                    elsif (-f $f) {
+                        print "Loading $f ...\n";
+                        LoadFile($f);
+                    }
+                    else {
+                        die "Wormhole sens nothing: $f";
+                    }
+                };
+            }
         }
-    }
-    tie %T, 'Wormhole';
+        tie %T, 'Wormhole';
+        G.T = \%T;
     G.comeback = sub {
         my $Dome = shift;
         

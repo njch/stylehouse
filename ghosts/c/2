@@ -184,16 +184,15 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        $oAr->($ar);
        Rw In;
     };
-UnPreDuv: |
-    delete J.El.Pre; # diff bb-Y
-    delete J.El.Duv; # diff Y-shell
-    
+
 uCon: |
     my $A = {J=>$J};
     # am U?
     A.talk = "A.J.name ".(A.J.le && A.J.le.name);
     
     my $qq = Rw Elj $J qq;
+    # low frequencies atop high frequencies
+    # travels/foli/foldout vs in-pin u..n..u..n..s
     if (my $los = qq.A.los) {
         my $Yb = qq.A.los.lbbst;
         %{qq.bb} = (%{qq.A.keep.bb||{}}, %{los.bb||{}});
@@ -238,6 +237,13 @@ uCon: |
     
 uThree: | # shadow qq via oo - curve expnd
     @$N = Rw humms $J:oo $N wongui _;
+    
+    my @o = grep {_.sc.Wf} @$N;
+    J.A.III.qqth = [map {
+        -f $_ || die "No $_ exist! from  qq   le   J.name";
+        /^w\/(.+)$/ ? "G/T/$1" : die "$_ no w/ dir";
+    } map {_.sc.Wf} @o];
+    
     @$N = Rw humms $J:oo $N notnotcode _;
     my $hup = sub {
         my $s = shift;
@@ -613,6 +619,13 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
             my $r = G.pwin->($m, $A);
             if (ref $r eq 'ARRAY') {
                 unshift @N, @$r;
+            }
+            elsif ($m eq 'J/A/III' && $r) {
+                die "the one hash that isn't code is: ".wdump 3, [$m, $r]
+                    unless ref $r eq 'HASH' &&
+                    values %$r == grep{ref $_ eq 'ARRAY'} values %$r;
+                next if !keys %$r;
+                push @N, @{$r->{$_}} for sort keys %$r;
             }
             elsif (ref $r eq 'HASH') {
                 push @C, {t=>$m,c=>{s=>$r}};

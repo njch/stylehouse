@@ -9,7 +9,6 @@ Goo: | # Gto is made, babbed, things for G's I which is G itself
     n Ghoots
     n GDom
     n Gouck
-
 Gooso: |
     u allacgts
     
@@ -20,7 +19,7 @@ Gooso: |
         my $A = r.A || die 'GhnoA';
         my $I = A.I || die 'GhnoI';
         I.d&Other,$s;
-
+    
     # see also Loading for ongoign G.T timeyness
     n T =>''=><<'','%subpeel:1'
         my %T = %{G.T||{}};
@@ -31,9 +30,25 @@ Gooso: |
             our @ISA = qw(Tie::StdHash);
             sub FETCH {
                 my ($s,$k) = @_;
-                $s->{$k} ||= do{ 
-                    print "Loading w/$k ...\n" for 1..5;
-                    LoadFile("w/$k");
+                return $s->{$k} if $k eq 'dir';
+                $s->{$k} ||= do {
+                    my $d = s.dir;
+                    my $il = join('/', grep{defined} $d, $k);
+                    my $f = "w/$il";
+                    if (-d $f) {
+                        my %Di;
+                        tie %Di, 'Wormhole';
+                        my $di = \%Di;
+                        di.dir = $il;
+                        $di
+                    }
+                    elsif (-f $f) {
+                        print "Loading $f ...\n";
+                        LoadFile($f);
+                    }
+                    else {
+                        die "Wormhole sens nothing: $f";
+                    }
                 };
             }
         }
