@@ -15,12 +15,18 @@ trWs: |
         C.c.pi = 'trW';
     
 pi/trW: | # uses localeo
-    my $isle = J.mo.J.at.isle;
+    my $isle = C.c.isle || J.mo.J.at.isle;
     $isle || die "No isledea !? J.name of J.mo.J.name has; ".ki J.mo.J.at;
     my $f = "w/$isle/$s";
     say "J.name:   J.mo.J.name eq A.J.name";
     my $Jd = "w/$isle/J/J.mo.J.name";
     `mkdir -p $Jd` if !-d $Jd;
+    if ($isle ne J.mo.J.at.isle) {
+        say "$s has src over in $isle";
+        my $clue = "$Jd/${s}_src_$isle";
+        `touch $clue`;
+        #`cd $Jd; ln -s ../../../$isle/$s ${s}_src` panic: sv_setpvn
+    }
     my $jf = "$Jd/$s";
     my $traveli;
     for ($jf) {
@@ -37,7 +43,8 @@ pi/trW: | # uses localeo
     }
     else {
         say "Making  $s !";
-        n $s=>W
+        my $c = {map{$_=>C.c->{$_}}grep{exists C.c.->{$_}}qw'noXup{%{C.c}}
+        n $s=>W=>
         `cat /dev/null > $jf`;
     }
     saybl "Donel  $jf";
