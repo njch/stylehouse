@@ -830,6 +830,21 @@ I:
         dige: 16486e072e02
       t: meat
       "y": '0.3'
+    mkD: 
+      c: 
+        el: 1
+        s: "A.I.mkD = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,$ar,@Me) = @M;\n    my $I = A.I;\n    my $D;\n    D.point = $pin;\n    if (my $C = ar.__D) {\n        delete ar.__D;\n        D.bab = C.c.s || die \"N s\".ki $C;\n        D.noise .= C.sc.dige if C.sc.dige;\n        D.babnon = 1 if C.sc.bab eq 'non';\n        D.Verb = 1;\n    }\n    D.ar = $ar;\n    D.name = join ' ', D.point, sort keys %{D.ar};\n    D.sign = \"Z\";\n    D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';\n    $D;\n};\n"
+      sc: 
+        acgt: pin,ar
+        args: A,C,G,T,pin,ar
+        code: I 1
+        dige: 974b297c1911
+        gro: Goodat
+      t: mkD
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	mkD
+        p: qq/Goodat/Goodat
     mksc: 
       c: 
         el: 2
@@ -882,6 +897,21 @@ I:
         cv: '0.3'
         cvt: 0.3	n
         p: qq/Indulator/Indulator/IStuff/IStuff
+    norp: 
+      c: 
+        el: 1
+        s: "A.I.norp = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,@Me) = @M;\n    my $I = A.I;\n    I.pwin || die \"nopwin from pin\";\n    sort { I.pwin->($pin,$a) <=> I.pwin->($pin,$b) } @Me;\n};\n"
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        code: I 1
+        dige: e00d4915894a
+        gro: Goodat
+      t: norp
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	norp
+        p: qq/Goodat/Goodat
     numb: 
       c: 
         el: 2
@@ -995,6 +1025,21 @@ I:
         cv: '0.3'
         cvt: 0.3	pha
         p: qq/Modems/Modems/Pha/Pha
+    pin: 
+      c: 
+        el: 1
+        s: "A.I.pin = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,$way,@Me) = @M;\n    my $I = A.I;\n    I.pwin || die \"nopwin from pin\";\n    I.pwin->($pin,$way);\n};\n"
+      sc: 
+        acgt: pin,way
+        args: A,C,G,T,pin,way
+        code: I 1
+        dige: 82803a8c20f2
+        gro: Goodat
+      t: pin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	pin
+        p: qq/Goodat/Goodat
     plus: 
       c: 
         el: 2
@@ -1006,6 +1051,36 @@ I:
         dige: b7dfa07a876d
       t: plus
       "y": '0.3'
+    pon: 
+      c: 
+        el: 1
+        s: "A.I.pon = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,$way,$s,@Me) = @M;\n    my $I = A.I;\n    I.pwin || die \"nopwin from pin\";\n    I.pwin->($pin,$way,{et=>$s});\n};\n"
+      sc: 
+        acgt: pin,way,s
+        args: A,C,G,T,pin,way,s
+        code: I 1
+        dige: e37d81abf9f1
+        gro: Goodat
+      t: pon
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	pon
+        p: qq/Goodat/Goodat
+    pwin: 
+      c: 
+        el: 1
+        s: "A.I.pwin = sub {\n    my ($pin,$way,$set,@Me) = @_;\n    my $I = A.I;\n    if (exists $way->{$pin}) {\n          my $o = $way->{$pin};\n        $way->{$pin} = set.et if exists set.et;\n        delete $way->{$pin} if set.de;\n        return $o;\n    }\n    my @path = split /\\/|\\./, $pin;\n    my $h = $way;\n    my $last;\n    for my $p (@path) {\n        if (ref $h ne 'HASH' && ref $h ne 'G') {\n            undef $last;\n            undef $h;\n            last;\n        }\n        $last = [$h,$p];\n        $h = $h->{$p};\n        # ref = T makes it look for jointed rest of path in tiedinto {}\n        # then T collapses the feely data mesh\n    }\n    if ($last) {\n        my ($he,$pi) = @$last;\n        $he->{$pi} = set.et if exists set.et;\n        delete $he->{$pi} if set.de;\n    }\n    return $h if defined $h;\n    \n    return undef unless $pin =~ /\\*/;\n    die \"sat rs findy $pin\";\n};\n"
+      sc: 
+        acgt: s
+        args: pin,way,set
+        code: I 1
+        dige: 41ad5cef7aed
+        gro: Goodat
+      t: pwin
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	pwin
+        p: qq/Goodat/Goodat
     rJ: 
       c: 
         el: 1
@@ -1242,6 +1317,21 @@ I:
         dige: 72d2fab5b281
       t: shadole
       "y": '0.3'
+    sorp: 
+      c: 
+        el: 1
+        s: "A.I.sorp = sub {\n    my ($A,$C,$G,$T,@M)=@_;\n    my ($pin,@Me) = @M;\n    my $I = A.I;\n    I.pwin || die \"nopwin from pin\";\n    sort { I.pwin->($pin,$a) cmp I.pwin->($pin,$b) } @Me;\n};\n"
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        code: I 1
+        dige: 53cc12a39989
+        gro: Goodat
+      t: sorp
+      "y": 
+        cv: '0.3'
+        cvt: 0.3	sorp
+        p: qq/Goodat/Goodat
     stri: 
       c: 
         el: 2
@@ -1539,6 +1629,26 @@ J:
         cv: '0.6211'
         cvt: 0.6211	J_6211
         p: qq/Modulator/Modulator/Jong/Jong/Jiterbug/Jiterbug
+  "0.6211211": 
+    J_6211211: 
+      c: 
+        el: 1
+        s: "A.I.J_6211211 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    J.le && return;\n    my $x = A.J.pix || J.mo.J.pix || return;\n    Rw Foldout $x $A $C $J $T $y:J.oy;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: J 6211211
+        dige: a283762a195b
+        gk: J
+        gro: Foli
+        nk: c
+        v: cJ
+      t: J_6211211
+      "y": 
+        cv: '0.621121'
+        cvt: 0.621121	J_6211211
+        p: qq/Foli/Foli
   "0.6212": 
     J_6212: 
       c: 
@@ -1602,6 +1712,26 @@ J:
         cv: '0.632'
         cvt: 0.632	J_632
         p: qq/Modulator/Modulator/Jong/Jong/Juperfi/Juperfi
+  "0.632114142": 
+    J_632114142: 
+      c: 
+        el: 1
+        s: "A.I.J_632114142 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return if exists C.sc.pi;\n    A.time = sub {\n        my ($JJ,$q) = @_;\n        $J eq $JJ || die \"wtfJure  J.name   vs JJ.name\";\n        my $r = 1;\n        if ($q == 2) {\n            A.Subtle.time = 1;\n            A.t&time,3,19;\n            $r = 0 if T.pos == 0; # def 1, 0 if no change\n            return $r;\n        }\n    \n        warn \"T.alk other $q\";\n        if ($q == 8) {\n            # until J.most coord attention evaporates\n            # as in pulling on a list\n        }\n        $r\n    }\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: J 632114142
+        dige: 3ff893ff2467
+        gk: J
+        gro: threJ
+        nk: c
+        v: cJ
+      t: J_632114142
+      "y": 
+        cv: '0.632114'
+        cvt: 0.632114	J_632114142
+        p: qq/threJ/threJ
   "0.66": 
     J_66: 
       c: 
@@ -1944,6 +2074,26 @@ Mo:
         cv: '0.3213'
         cvt: 0.3213	pi_3213
         p: qq/Modulator/Modulator/Jing/Jing/Jlaces/Jlaces
+  "0.321323": 
+    W_321323: 
+      c: 
+        el: 1
+        s: "A.I.W_321323 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $W = C.c.W;\n    my $J = A.J;\n    return unless J.name eq 'qq';\n    my $f = \"w/u/$W\";\n    return unless -f $f;\n    C.sc.wW = delete C.c.W;\n    C.sc.Wf = $f;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: Mo 321323
+        dige: 3dae2bd46d97
+        gk: W
+        gro: qqlaces
+        nk: c
+        v: cW
+      t: W_321323
+      "y": 
+        cv: '0.321323'
+        cvt: 0.321323	W_321323
+        p: qq/qqlaces/qqlaces
   "0.3214": 
     W_3214: 
       c: 
@@ -2288,25 +2438,25 @@ O:
         cvt: 0.36	Jin_36
         p: qq/Seven/Seven/Yosc/Yosc
   "0.37": 
-    Jnine_37: 
+    Josl_37: 
       c: 
         el: 1
-        s: "A.I.Jnine_37 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (C.c.root) { # / unifies  <\n        if (at.sc.pi && exists at.c.s && Y.root.sc.ux) {\n            delete at.c.s; # itself, 'pi'\n        }\n        lv.voso = 1;\n        for my $ik (@{V.os}) {\n            my $iv = V.lv->{$ik};\n            my $C = iv.C;\n            do { sayre(\"Skip C.t: self in self\") for 1..6 } && next\n                if C.sc.J && C.sc.J eq A.J;\n            lv.do->{$ik} = $iv;\n            at.V->{$ik} = iv.i;\n        }\n    }\n};\n"
+        s: "A.I.Josl_37 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $Y = C.c.Y;\n    my $J = C.c.J;\n    my $V = C.c.V;\n    my $k = C.y.k;\n    my $at = C.y.at;\n    my $ta = C.y.ta;\n    my $lv = C.y.lv;\n    my $vl = C.y.vl;\n    if (C.c.root) { # / unifies  <\n        %{J.at||die\"You must make Jat for J.name\"} = %{C.sc};\n        if (at.sc.pi && exists at.c.s && Y.root.sc.ux) {\n            delete at.c.s; # itself, 'pi'\n        }\n        lv.voso = 1;\n        for my $ik (@{V.os}) {\n            my $iv = V.lv->{$ik};\n            my $C = iv.C;\n            do { sayre(\"Skip C.t: self in self\") for 1..6 } && next\n                if C.sc.J && C.sc.J eq A.J;\n            lv.do->{$ik} = $iv;\n            at.V->{$ik} = iv.i;\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: O 37
-        dige: ce6542f237c0
+        dige: a926cd30cf05
         gk: 'Y'
         gro: Seven/Yosc
         nk: c
         rg: J,V,yk,yat,yta,ylv,yvl
         v: cY
-      t: Jnine_37
+      t: Josl_37
       "y": 
         cv: '0.37'
-        cvt: 0.37	Jnine_37
+        cvt: 0.37	Josl_37
         p: qq/Seven/Seven/Yosc/Yosc
   "0.38": 
     sel_38: 
@@ -4373,14 +4523,14 @@ em:
     Wc_446: 
       c: 
         el: 1
-        s: "A.I.Wc_446 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $Wc = C.sc.Wc;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    saybl join\"\\n\",\"Downing em.is.M: em.is.W: \",\n        map{!ref $_ ? $_ : wdump 5,$_} @{em.lines}\n        if A.V&W;\n    I.d&writef,\"life/W/em.is.W\\.c\",em.lines,em.i;\n    \n    # is coming soon: (only space or)\n    C.c.as = !C.c.os;\n    C.c.As = C.c.as;\n    C.sc.meta = 1;\n    C.sc.speak = 1 if C.c.as;\n    C.sc.takeover = 1 if C.c.As;\n    saybl \"WHITESPACE S em.is.M\" if C.c.os;\n};\n"
+        s: "A.I.Wc_446 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $sc = C.sc;\n    my $Wc = C.sc.Wc;\n    my $J = C.c.J;\n    my $em = C.c.em;\n    saybl join\"\\n\",\"Downing em.is.M: em.is.W: \",\n        map{!ref $_ ? $_ : wdump 5,$_} @{em.lines}\n        if A.V&W;\n    I.d&writef,\"life/W/em.is.W\\.c\",em.lines,em.i;\n    \n    C.c.as = !C.c.os;\n    C.c.As = C.c.as;\n    C.sc.meta = 1;\n    C.sc.speak = 1 if C.c.as;\n    C.sc.takeover = 1 if C.c.As;\n    saybl \"WHITESPACE S em.is.M\" if C.c.os;\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         cg: J,em
         code: em 446
-        dige: 07197e436c17
+        dige: c1499eada9e8
         gk: Wc
         gro: Seven/SevWo/Wuts
         nk: sc
@@ -4491,23 +4641,22 @@ oJ:
     J_344: 
       c: 
         el: 1
-        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    die \"In self: J.name\" if $J eq A.J;\n};\n"
+        s: "A.I.J_344 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    my $ins = sub { my $J = shift; $J ne J.mo.J ? \"J.mo.J.name ' J.name\" : J.name };\n    if (C.c.e) {\n        my $new = !J.A.first ? \"(first!)\":\"\";\n        say $ins->(A.J).\"   is elvising to  \".$ins->($J).\" $new\\n    \"\n            .\" C.t  \".ki(C.c).\"     \".ki(C.sc);\n        C.c.elv = delete C.c.e if $new;\n        # do over after osc (or time2 could in middle)\n        # donow, may wat\n        A.Iso.th = 1;\n    }\n    else {\n        A.J eq $J && die sayre \"THreJ does Celt A.J.name   \".(C.c.e && ki C.c.e);\n        #saybl $ins->(A.J).\" can create -----> \".$ins->($J);\n        if (J.ev.amb) {\n            my $ar = I.d&ar;\n            Rw J.ev.amb + $J;\n        }\n    }\n};\n"
       sc: 
         acgt: s
         act: 1
         args: A,C,G,T,s
         code: oJ 344
-        dige: 0ce5c7c00e29
+        dige: 4620d2953769
         gk: J
-        gro: Modulator/Jing/Joot
-        its: 1
+        gro: threJ
         nk: c
         v: cJ
       t: J_344
       "y": 
         cv: '0.344'
         cvt: 0.344	J_344
-        p: qq/Modulator/Modulator/Jing/Jing/Joot/Joot
+        p: qq/threJ/threJ
   "0.434": 
     J_434: 
       c: 
@@ -4571,3 +4720,109 @@ oJ:
         cv: '0.71'
         cvt: 0.71	J_71
         p: qq/Modulator/Modulator/Jing/Jing/Jumps/Jumps
+  "0.76": 
+    elv_76: 
+      c: 
+        el: 1
+        s: "A.I.elv_76 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $elv = C.c.elv;\n    my $J = C.c.J;\n    C.c.e = delete C.c.elv;\n    my $ar = I.d&ar;\n    J.VV.E = J.VV.V = 1;\n    Rw hevt + $J elv76;\n    if (T.oke) {\n        die \"76 thoughtself J.name\" if A.J eq $J;\n        say \"Tanking 76 into J.name\";\n        Rw waited $J;\n        return;\n    }\n    T.pos = 1 unless defined T.pos;\n    T.pos &&\n        Rw waito $J $C;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: oJ 76
+        dige: 255985b1842a
+        gk: elv
+        gro: threJ
+        nk: c
+        rg: J
+        v: celv
+      t: elv_76
+      "y": 
+        cv: '0.76'
+        cvt: 0.76	elv_76
+        p: qq/threJ/threJ
+th: 
+  "0.36": 
+    e_36: 
+      c: 
+        el: 1
+        s: "A.I.e_36 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $e = C.c.e;\n    my $J = C.c.J;\n    $J || warn \"e no J\";\n    # no J being tricks for handulation, event energy, unless T.oke\n    delete A.Iso.oJ;\n    my $ar = I.d&ar;\n    Rw hevt + $J e36;\n    if (T.oke) {\n        die \"thoughts of a thous J.name\" if A.J eq $J;\n        delete A.Iso.th;\n        A.Iso.oJ = 1;\n        A.ztime = 6;\n        return say \"Tanking into J.name\";\n    }\n    T.pos = 1 unless defined T.pos;\n    T.pos &&\n        Rw waito $J $C;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: th 36
+        dige: 5839718a45dc
+        gk: e
+        gro: threJ
+        nk: c
+        rg: J
+        v: ce
+      t: e_36
+      "y": 
+        cv: '0.36'
+        cvt: 0.36	e_36
+        p: qq/threJ/threJ
+  "0.4": 
+    J_4: 
+      c: 
+        el: 1
+        s: "A.I.J_4 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $J = C.c.J;\n    return;\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: th 4
+        dige: cd18581836b3
+        gk: J
+        gro: threJ
+        nk: c
+        v: cJ
+      t: J_4
+      "y": 
+        cv: '0.4'
+        cvt: 0.4	J_4
+        p: qq/threJ/threJ
+  "0.769": 
+    e_769: 
+      c: 
+        el: 1
+        s: "A.I.e_769 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $e = C.c.e;\n    my $J = C.c.J;\n    T.oke = 1; # unpin\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: th 769
+        dige: 53315c3ae1fb
+        gk: e
+        gro: threJ
+        nk: c
+        rg: J
+        v: ce
+      t: e_769
+      "y": 
+        cv: '0.769'
+        cvt: 0.769	e_769
+        p: qq/threJ/threJ
+time: 
+  "0.2": 
+    elv_2: 
+      c: 
+        el: 1
+        s: "A.I.elv_2 = sub {\n    my ($A,$C,$G,$T,$s,@Me) = @_;\n    my $I = A.I;\n    my $c = C.c;\n    my $elv = C.c.elv;\n    my $J = C.c.J;\n    C.c.e = delete C.c.elv;\n    my $ar = I.d&ar;\n    Rw hevt + $J elv2;\n    #T.oke && warn \"NOTOKE time2 J.name\";\n    T.pos = 1 unless defined T.pos;\n    # time true, complete vector, unless we cat a list\n};\n"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: time 2
+        dige: 7d7c7e37b9e0
+        gk: elv
+        gro: threJ
+        nk: c
+        rg: J
+        v: celv
+      t: elv_2
+      "y": 
+        cv: '0.2'
+        cvt: 0.2	elv_2
+        p: qq/threJ/threJ
