@@ -60,10 +60,14 @@ allvse: |
         $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
 ALL: | # travel code, /J/ 
-    y.at.isle = C.c.isle || 'uuu';
+    #C.c.isle = $1 if C.c.fort =~ /
+    y.at.isle = C.c.isle || 'u';
+    my $fort = "w/J.at.isle";
+    -d $fort || die "No dir $fort .. at\.isle missing?";
     Rw ocling;
     J.VV.N = 1;
-    my @ee = grep { -s $_ } glob "w/uuu/J/ALL/*";
+    my @ee = C.c.t ? do{`echo 1 >> $fort/J/ALL/C.c.t`; C.c.t}
+        : grep { -s $_ } glob "$fort/J/ALL/*";
     for (map { (split'/',$_)[-1] } @ee) {
         n $_
     }

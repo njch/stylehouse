@@ -137,6 +137,44 @@ Galso: | # Gooso goner #
         }
         tie %T, 'Wormhole';
         G.T = \%T;
+    
+    
+        {
+            package Ghoz; #c
+            use Tie::Hash;
+            our @ISA = qw(Tie::ExtraHash);
+            sub TIEHASH {
+                my $class = shift;
+                my $sto = bless [{},@_], $class;
+                $sto
+            }
+            sub FETCH {
+                my ($s,$k) = @_;
+                my ($st,@o) = @$s;
+                return $st->{$k} if exists $st->{$k};
+                option:
+                for my $o (@o) {
+                    if (my $in = o.inp) {
+                        my $v = o.o;
+                        for my $i (@$in,$k) {
+                            exists $v->{$i} || next option;
+                            $v = $v->{$i};
+                        }
+                        return $v;
+                    }
+                    else {
+                        die "Hwoto climb a ".G::ki $o;
+                    }
+                }
+            }
+        }
+    G.tie = sub {
+        my ($class,@Me) = @_;
+        my %na;
+        tie %na, 'Ghoz', @Me;
+        return \%na
+    };
+    
     G.comeback = sub {
         my $Dome = shift;
         

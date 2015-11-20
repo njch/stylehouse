@@ -56,12 +56,12 @@ pi/glo: | # see file glowing, flood gates of
                 next;
             }
             else {
-                sayyl "Lin: $lin eq $dig" if $lin;
+                sayyl "Lin: $k   $dig <--- $lin" if $lin;
                 sayre "No lin $wig " if !$lin;
             }
             write_file($waf."nt",$v);
             if (!-f $waf || `diff $waf ${waf}nt`) {
-                Mn(gfot=>''=>"\n - $k");
+                Mn(gfot=>''=>"+ $k");
                 `mv ${waf}nt $waf`;
             }
             else {
@@ -100,14 +100,14 @@ Wjes: |
     J.VV.N = 1;
     y.ert = 20;
     
-    Mn("w/uuu"=>-Join);
+    Mn("w/u"=>-Join);
 pi/Join: |
     C.sc.dos = 'pileJup';
     my $dir = $s;
     -d $dir || die "No $dir";
     n Join=>0.0001=>$dir,'%decor,hs:388'
     my $jes = J.mo.jes = $J;
-    C.c.k = $1 if $dir =~ /.+\/(.+?)$/
+    C.c.isley = $1 if $dir =~ /.+\/(.+?)$/
         || die "DirJ not k ended: $dir";
     
     my $geese = sub {
@@ -219,13 +219,13 @@ pi/gefore: |
     fo.c.pi eq 'gefore' && warn "geforebefore: fo.t  me.t";
     # check J/fo.t/me.t is up to $s
     n Ge =>1=> C.t,'%fs:8,hs:548,sha:1 1 4 000'
-    my $k = J.mo.jes.C.c.k || die "mojes doesnt know code k";
+    my $k = J.mo.jes.C.c.isley || die "mojes doesnt know code ...";
     my ($gate) = $s =~ /^(.+)\/.+?$/;
     Rw noMt + $s=$gate/fo.t $k $way:C.t;
 pi/bl: |
     C.sc.qs = 1;
     n way=>1=>C.t
-pi/gejo: | # the dog leg sketch, optional
+pi/gejo: | # the dog leg trowl sketch, optional
     y.at.hs = '388';
     y.at.mt = '5';
     y.at.fs = '9';
@@ -247,7 +247,7 @@ pi/gejo: | # the dog leg sketch, optional
     my $s = $tal->(0,$wt);
     Mn(eo=>''=>"\n$s");
     
-pi/gee: |
+pi/gee: | # an out of dater (to way)
     C.sc.qs = 1;
     my ($gate,$way) = $s =~ /^(.+)\/(.+?)$/;
     $way eq C.t || die "C.t - $way mix";
@@ -256,7 +256,7 @@ pi/gee: |
     n way =>1=>C.t,'%hs:389'
     
     Rw noMt + $s $k=way $way:C.t;
-noMt: |
+noMt: | # draw out of dateness
     y.clos = 1;
     $s || die "no source file";
     $way || die "no way $s";
@@ -284,7 +284,7 @@ noMt: |
         }
     }
     
-trowil: |
+trowil: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     my @li = glob "$s/*/*";
     my $tw = {};
     for my $f (@li) {
@@ -296,7 +296,9 @@ trowil: |
     my $wt = {};
     $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
     my @ne = $wt;
+    my $i;
     while (@ne) {
+        $i++ > 166 && die "$s join wanders for $i from ".@li." lines, maybe circular?";
         my @m = @ne;
         @ne = ();
         for $wt (@m) {
@@ -315,17 +317,18 @@ trowil: |
     }
     J.mo.jes.tower = $tw;
     J.mo.jes.trowl = $wt;
-pileJup: |
+pileJup: | # select things into Dug
     # not =>$E properly, C is first C,c.e $E is from before $E
     my @Js = I.d&inDin,$E,'_hJ';
     @Js == 3 || return sayre("WEird look".wdump 4, [ @Js  ]) &&
         Rw talkzyh;
     my ($tW,$tJ,$tl) = @Js;
-    tW.mo.J eq $tW || die "not most 1: ".ki $tW;
-    tJ.C.sc.pi eq 'Join' || die "not Join 2: ".ki($tJ).saybl(wdump 2, tJ.C);
-    tl.C.sc.pi =~ /^(bl|gee)$/ || die "not bl/gee 3: ".ki $tl;
-    # tJ/tl mo.jes es littljoin
-    saybl wdump 3, [map {ki $_}$tW,$tJ,$tl];
+    tW.mo.J eq $tW
+        || die "not most 1: ".ki $tW;
+    tJ.C.sc.pi eq 'Join'
+        || die "not Join 2: ".ki($tJ).saybl(wdump 2, tJ.C);
+    tl.C.sc.pi =~ /^(bl|gee)$/
+        || die "not bl/gee 3: ".ki $tl;
     my $jes = tJ.mo.jes;
     my $to = jes.tower;
     my @up = tl.C.t;
@@ -342,9 +345,10 @@ pileJup: |
         }
         unshift @up, join(" or ", @ops);
     }
-    say "Find path to tl.C.t    from: ".wdump 3, \@up;
+    my $path = join';',@up;
+    say "Find path to tl.C.t    whichis:   $path";
     my $M = E.c.us.pick ||= [];
-    Mn(founde=>-edr=>(join';',@up),{mean=>Jiter=>onto=>tJ.C.c.s});
+    Mn(founde=>-edr=>$path,{mean=>Jiter=>onto=>tJ.C.c.s});
     n Dug =>$E
     T.pos = 0;
 Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
@@ -401,7 +405,7 @@ indoc: | # for notes, income
     push @{J.UG}, @M;
     sayyl "Intdoctrined J.name from A.J.name: ";
     sayyl " - ".ki $_ for @M;
-Dug: |
+Dug: | # acum, regroup, persist, do batches
     u ReoCur
     y.at.ux = 1;
     J.ev.th ||= 'middle';
@@ -444,7 +448,7 @@ Dug: |
         Mn($k=>-ean=>{s=>$v,ts=>$ts});
     }
  
-downsave: | # Dug Jiters, write Join from
+downsave: | # Dug downup
     if (A.us&S ) {
         sayre "Downsave shave ".@{J.UG} for 1..3;
         @{J.UG} = ();
@@ -467,19 +471,19 @@ downsave_up: |
     die "Eval $f: $@" if $@;
     die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
     push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
-pi/edr: |
+pi/ean: | # a group, see J.uzk
+    y.close = 1;
+    n ean=>1=>"Meaning: C.t"
+    (C.sc.dos) = (C.sc.mean,C.sc.onto) = (split ' ', C.t);
+    Mn($s);
+pi/edr: | # thing in a group
     my $ts = J.Jiter.C.c.ts; # look to ean
     n for=>1=>$s,'%fs:12,hs:347'
     n instr=>2=>" To C.sc.mean C.sc.onto"
     C.sc.dos = 'getcated';
     ts.win && $ts->{C.sc->{ts.k}} ne ts.win &&
         n move=>3=>"ƾ",'%dos:getcated,id:whatu'
-pi/ean: |
-    y.close = 1;
-    n ean=>1=>"Meaning: C.t"
-    (C.sc.dos) = (C.sc.mean,C.sc.onto) = (split ' ', C.t);
-    Mn($s);
-getcated: |
+getcated: | # moves
     my @h = A.e&_hC;
     my $p = shift @h;
     my ($ic,$edr,@etc) = reverse @h;
