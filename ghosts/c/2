@@ -193,10 +193,12 @@ uCon: |
     # low frequencies atop high frequencies
     # travels/foli/foldout vs in-pin u..n..u..n..s
     if (my $los = qq.A.los) {
-        my $Yb = qq.A.los.lbbst;
-        %{qq.bb} = (%{qq.A.keep.bb||{}}, %{los.bb||{}});
-        #sayyl "qq applies: ".wdump 2, 
-        #    Rw wtfch $Jb:qq.bb $Yb;
+        my $Yb = qq.A.los.lbbst; # last qq bb (post-this)
+        %{qq.bb} = (
+            %{qq.A.keep.bb||{}}, # from beginning of time
+            %{qq.A.hqq.bb||{}}, # 6y inject before pin
+            %{los.bb||{}}, # non-first iteration of uing
+        );
         los.end->();
     }
     my $Y = Rw Noodles $J:qq;
