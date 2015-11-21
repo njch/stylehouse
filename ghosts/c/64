@@ -12,8 +12,8 @@ Goo: | # Gto is made, babbed, things for G's I which is G itself
 Gooso: |
     u allacgts
     
-    # G.h&In # finds relevant A.I to AI.d&Other with, returning ($A,$I)
-    n h =>''=><<''
+    # G&A,'person/machine' finds relevant A.I to AI.d&Other with, returning ($A,$I)
+    n A =>''=><<''
         my $D = $F[0];
         my $r = D.ar;
         my $A = r.A || die 'GhnoA';
@@ -207,7 +207,7 @@ GBabz: |
         p.sur = qr/ if| unless| for| when|,\s*$|;\s*/;
         $p
     
-    n parse_babble =>''=><<'','%bab:non'
+    n parse_babbl =>''=><<'','%bab:non'
         my $p = G.bitsof_babble;
         # gone:
         my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
@@ -217,25 +217,41 @@ GBabz: |
         # :
         my @s;
         my $indbe;
-        for my $s (split "\n", $s) {
+        my $inend;
+        for my $l (split "\n", $s) {
+            my $s = $l;
             if ($indbe) {
                 if ($indbe eq 'nextind') {
                     $s =~ /^(\s+)/;
                     $indbe = qr/^$1/;
                 }
                 if ($s =~ $indbe) {
+                    saybl "Indendt  $s";
                     push @s, $s;
                     next;
                 }
                 else {
                     undef $indbe;
+                    if ($s !~ /^\s*$/) {
+                        $s[-1] eq '' ? pop @s :
+                        sayyl "$s[-1] was last line of quote, no space before $s";
+                        push @s, $inend if $inend;
+                    }
+                    else {
+                        $s = $inend if $inend;
+                    }
                 }
             }
-            if ($s =~ /<<['"](\w*)['"]/) {
-                $indbe = $1 ?
+            my $ze = qr/<<['"](\w*)['"]/;
+            if ($s =~ /^(\s*)\S.*$ze/) {
+                $indbe = $2 ?
                     qr/^(?!\Q$1\E)/ # for <<'EOD' til ^EOD, etc
-                  : 'nextind';
+                  : qr/^($1\s+|\s*$)/; # some space in or no nonspace = quote
+                $s =~ s/$ze/'<<'.($1?"'$1'":'STEVE')/e;
+                $inend = 'STEVE' if !$1;
             }
+            .
+            say "$indbe ind of: $l";
             $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
             $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
             $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
@@ -258,6 +274,7 @@ GBabz: |
             .
             while ($s =~ /(?:^| )(Rw ((?:\*\/)?p.oint)(?: (.+))?)p.sur?$/gsm) {
                 my ($old, $p, $a) = ($1, $2, $3);
+                sayyl wdump [$old,$p,$a];
                 my $g;
                 $g ||= '$G';
                 .
@@ -303,7 +320,6 @@ GBabz: |
                 my $en = join ", ", @e;
                 .
                 my $wa = $g.'->{w}->('.$en.')'.$ne;
-                die "Delay" if $delay;
                 $s =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n $s";
             }
             .

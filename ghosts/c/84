@@ -86,7 +86,6 @@ Wjes: |
         x    0  0
         curve 0 0.03
     
-    J.VV.V = 1;
     J.ev.th ||= 'middle';
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
@@ -100,7 +99,7 @@ Wjes: |
     J.VV.N = 1;
     y.ert = 20;
     
-    Mn("w/jes"=>-Join);
+    Mn("w/U"=>-Join);
 pi/Join: |
     C.sc.dos = 'pileJup';
     y.ert = 32;
@@ -108,7 +107,7 @@ pi/Join: |
     -d $dir || die "No $dir";
     n Join=>0.0001=>$dir,'%decor,hs:388'
     my $jes = J.mo.jes = $J;
-    C.c.isley = $1 if $dir =~ /.+\/(.+?)$/
+    (my $rd,C.c.isley) = ($1,$2) if $dir =~ /^(.+)\/(.+?)$/
         || die "DirJ not k ended: $dir";
     
     # should Atime(2) from a globby ls + this J pins
@@ -130,12 +129,12 @@ pi/Join: |
     my $jf = "$dir/J";
     if (delete $li->{$jf}) {
         Rw trowil $J $s:jf;
-        #Mn($jf=>-gejo=>{}=>'%dis');
-        
+        Mn($jf=>-gejo=>{}=>'%dis');
     }
     else {
         sayre "No $jf in ".wdump 2, $li;
     }
+    my $tow = jes.tower || die "no tower";
     my $wt = jes.trowl || die "no trowl";
     my $tal;$tal = sub {
         my ($d,$wt) = @_;
@@ -147,14 +146,24 @@ pi/Join: |
             @M
         } sort keys %$wt;
     };
-    my $N = [$tal->(0,$wt)];
-    my $eM = [];
-    Rw In $J $N $M:eM;
+    my $N = do { #G&NM
+        my $M = [];
+        my $N = [$tal->(0,$wt)];
+        Mn($N);
+        $M;
+    };
     
     my $was = {};
-    for (@$eM) {
-        my $f = "$dir/_.t";
-        if (delete($li->{$f}) || $was->{$f}) {
+    for (@$N) {
+        my $s = $tow->{_.t}->{e} || next;
+        _.c.isley = s.src if s.src;
+        'src' ne join(' ', sort keys %$s) &&
+            die "Moresutf: ".ki $s;
+    }
+    for (@$N) {
+        my $f = _.c.isley ? "$rd/_.c.isley/_.t" : "$dir/_.t";
+        if (delete($li->{$f}) || $was->{$f} || _.c.isley) {
+            -f $f || die "NO isley C.t thiong $f" if _.c.isley;
             _.c.s = $f;
             _.sc.ml = _.c.ind * 3;
             if ($geese->($f)) {
@@ -164,13 +173,16 @@ pi/Join: |
                 _.c.pi = 'bl';
             }
             if (my $aw = $was->{$f}) {
-                if (aw.c.ind < _.c.ind) {
+                if (aw.c.ind <= _.c.ind) {
                     _.c.pi = 'gefore';
                 }
                 else {
                     aw.c.pi = 'gefore';
                     $was->{$f} = $_;
                 }
+            }
+            elsif (_.c.isley) {
+                _.c.pi = 'gefore';
             }
             else {
                 $was->{$f} = $_;
@@ -179,30 +191,31 @@ pi/Join: |
             _.sc.hs = '255';
         }
         else {
+            
             _.sc.hs = '339';
         }
         _.sc.dis = 1;
     }
     
     my $i;
-    _.sc.id .= 'geef'.$i++ for grep { _.c.pi eq 'gefore' } @$eM;
+    _.sc.id .= 'geef'.$i++ for grep { _.c.pi eq 'gefore' } @$N;
     my $la;
     for (1..3) {
-    for (@$eM) {
-        _.c.dropi++ if _.c.pi eq 'gefore' && $la && la.c.pi eq 'gefore';
-        $la = $_;
-    }
-    @$eM = grep{ keys %$_ } grep { !_.c.dropi } @$eM;
+        for (@$N) {
+            _.c.dropi++ if _.c.pi eq 'gefore' && $la && la.c.pi eq 'gefore';
+            $la = $_;
+        }
+        @$N = grep{ keys %$_ } grep { !_.c.dropi } @$N;
     }
     my $ee = jes.teeps = {};
     my $un = {};
-    my @ins = grep {_.c.pi ne 'gefore'} @$eM;
+    my @ins = grep {_.c.pi ne 'gefore'} @$N;
     $ee->{_.t} = $_ for @ins;
     $un->{_.t}++ for @ins;
     my @to = grep { $un->{$_} > 1 } keys %$un;
     sayre wdump [ "things showed up too many;", @to] if @to;
     
-    Mn($eM);
+    Mn($N);
     
     keys %$li &&
         Mn(unc=>''=>"Uncounted: $_\n",'%ws,dis')
@@ -212,14 +225,22 @@ pi/Join: |
     # and so
 pi/gefore: |
     y.at.dis = y.at.ws = C.sc.qs = 1;
-    my ($fo,$me,$aft) = @{C.y.bal}[C.y.i -1 .. C.y.i +1];
+    my $i = C.y.i - 1;
+    my $fo;
+    until (fo.c.ind + 1 == C.c.ind) {
+        $fo = C.y.bal->[$i--];
+        last if !$fo;
+    }
     fo.c.pi eq 'gefore' && sayre "GEFORE FORE: ".
-        ki($fo)."\n the : ".ki $me;
+        ki($fo)."\n the : ".ki $C;
     # check J/fo.t/me.t is up to $s
     n Ge =>1=> C.t,'%fs:8,hs:548,sha:1 1 4 000'
-    my $k = J.mo.jes.C.c.isley || die "mojes doesnt know code ...";
-    my ($gate) = $s =~ /^(.+)\/.+?$/;
-    Rw noMt + $s=$gate/fo.t $k $way:C.t;
+    my $mosile = J.mo.jes.C.c.isley;
+    my $k = C.c.isley || $mosile
+        || die "mojes doesnt know code ... C.t";
+    
+    my $alwk = $k ne $mosile; # fo really, but we only show the first way out
+    Rw noMt + $s:fo.c.s $k $way:C.t $alwk;
 pi/bl: |
     C.sc.qs = 1;
     n way=>1=>C.t
@@ -263,6 +284,7 @@ noMt: | # draw out of dateness
     my @ott = ({k=>$k});
     for my $h (@ott) {
         my $wf = "w/h.k/$way";
+        say " COmp $s ".(-f$s)."  ->  $wf ".(-f$wf) if C.t eq 'Chang';
         if (!-f $wf) {
             n no=>2=>"NO $wf",'%hs:898'
             %$h = ();
@@ -270,7 +292,10 @@ noMt: | # draw out of dateness
         }
         h.t = (stat $wf)[9];
     }
-    return if !grep { _.t > $mt } @ott;
+    if (!grep { _.t > $mt } @ott) {
+        Mn("k $k",'',$k) if ar.alwk;
+        return;
+    }
     push @ott, {k=>'now',t=>hitime()} unless ar.nowless;
     for my $h (@ott) {
         next unless keys %$h;
@@ -285,14 +310,25 @@ noMt: | # draw out of dateness
 trowil: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     my @li = glob "$s/*/*";
     my $tw = {};
+    my $et = {};
     for my $f (@li) {
         my ($gate,$up,$way) = $f =~ /^(.+)\/J\/(.+?)\/(.+?)$/;
+        if ($way =~ /^(.+?)_(.+)$/) {
+            my ($way,$set) = ($1,$2);
+            saybl "  $way trowil join thoughts: $set";
+            my $st = {split '_', $set};
+            my $ts = $et->{$way} ||= {};
+            %$ts = (%$ts, %$st);
+            next;
+        }
         $up && $way || die "nope $f";
         $tw->{$up}->{n}->{$way} = 1;
         $tw->{$way}->{u}->{$up} = 1;
     }
+    $tw->{$_}->{e} = $et->{$_} for keys %$et;
     my $wt = {};
     $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+    keys %$wt || die "No top level! Circular?";
     my @ne = $wt;
     my $i;
     while (@ne) {
@@ -359,7 +395,8 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
     ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
     ip.pi = 'edr';
-    my ($gate,$way) = ip.onto =~ /^(.+)\/(.+?)$/ || die "notipono: ip.onto";
+    my ($gate,$way) = ip.onto =~ /^(.+)\/(.+?)$/;
+    $gate && $way || die "notipono: ip.onto";
     
     my $duvi = sub {
         my $tl = shift;
@@ -387,7 +424,7 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
         }
     }
     my $c = {isle=>$way};
-    sayyl "You ordered: ".wdump $r;
+    sayyl "You ordered: ip.onto: $way (c.isle) ".wdump $r;
     `echo 1 > $_` for keys %{r.ave};
     # jobinate (J1) or fork or acquire fork or something...
     Rw waited $J:_ $c
@@ -518,5 +555,5 @@ getcated: | # moves
     }
     saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
     sayre " _ _ _ ".ki $_ for @etc;
-    Rw UnPreDuv $J;
+    # Rw UnPreDuv $J; # opposite of help until c/sc inner properly VOD
 

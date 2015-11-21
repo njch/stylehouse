@@ -51,7 +51,6 @@ alljse: |
         C.t = C.sc.of."_".C.t."_".$cv;
 reJSlines: | # could spiral intuit re$W to just this - A coney islands
     y.at.ressur = 'jshang';
-
 Precoall: |
     n allsvse
     n ReoCur
@@ -59,18 +58,72 @@ Precoall: |
     n GeoSlur
     n odeo
     
-ocling: | # give isle, eo gondola
+trWs: |
+    u allvse
+    n '','','%of:Mo'
+    n W =>3211,<<''
+        return if A.J.C.sc.pi eq 'trW';
+        C.c.s = delete C.c.W;
+        C.c.pi = 'trW';
+    
+pi/trW: | # uses localeo
+    my $isle = C.c.isle || J.mo.J.at.isle;
+    $isle || die "No isledea !? J.name of J.mo.J.name has; ".ki J.mo.J.at;
+    my $f = "w/$isle/$s";
+    y.at.isle = $isle;
+    say "trW; A.J.name - J.name";
+    my $moj = J.mo.J;
+    moj.at.isle || die "NO isle above? moj.name";
+    my $Jd = "w/moj.at.isle/J/moj.name";
+    `mkdir -p $Jd` if !-d $Jd;
+    my $clue;
+    if (J.at.isle ne moj.at.isle) {
+        say "moj.name (moj.at.isle)   $s has src over in J.at.isle";
+        $clue = "$Jd/${s}_src_$isle";
+        say "Gunna leave clue at: $clue";
+        `touch $clue`;
+    }
+    else {
+        saygr "$s has src over in $isle";
+    }
+    my $jf = "$Jd/$s";
+    my $traveli;
+    for ($jf) {
+        next unless -s $_;
+        $traveli = read_file($_);
+        saybl "Travel from $_: ".wdump 3,[
+            $traveli
+        ];
+    }
+    if (!$traveli && -f $f) {
+        say "Found $f !";
+        n $f =>3,$s,{X=>LoadFile($f)}
+        `touch $jf` && sayre "Xuper $f" if !-f $jf;
+    }
+    else {
+        say "Making  $s !";
+        die "Cannot diff src with travelineedy $s" if $clue;
+        n $s=>W=>
+        `cat /dev/null > $jf`;
+    }
+    saybl "Donel  $jf";
+    
+ocling: | # give isle, eo gondola (thow to diff isle must spec before now)
     Rw Jamroot $J;
     J.pix = [{any=>1,Rw=>'ocling'}];
     my $isle = # J.at to fetch from J.oy.at, unshift the lots in times
-    ar.y && ar.y.at && ar.y.at.isle ||
-    (ar.pin  && (J.at.isle))
-        || J.at.isle || A.J.at.isle || A.J.oy.at.isle
+    ar.y && ar.y.at && ar.y.at.isle || J.at.isle || A.J.at.isle
         || die "no isle for J.name baton A.J.name: ".ki A.J.at;
     my $coder = $isle =~ /^j/ ? 'jseo' : 'codeo';
     u $coder
     u trWs
     y.at.isle = $isle unless $isle eq J.at.isle;
+jeocling: | # proto give isle
+    J.pix = [{any=>1,Rw=>'jeocling'}];
+    saybl "On J.name from A.J.name: ".ki A.J.at;
+    u jseo
+    u trWs
+    y.at.isle = 'jes';
 codeo: | # the in osc ^
     n odeo
     u allsvse
@@ -94,9 +147,7 @@ jseo: | # the in osc ^
         my $v = {}; # spots indexes
         Rw ym/jscoi $A $C:at $G $T $v;
         lv.X = $v;
-pi/try: | # W use-output-only er, limb pile
-    
-    C.sc.try = $s;
+
 odeo: |
     u allsvse
     n '','','%of:Art'
@@ -132,7 +183,9 @@ odeo: |
         for my $k (@{C.c.V.os}) {
             my $kv = lv.do->{$k} || die "nondo $k";
             if (kv.C.sc.noXup) {
-                saybl "Jar swamp: kv.C.t  from kv.C.c.isle or kv.C.sc.J.at.isle";
+                my $in = kv.C.sc.J;
+                sayyl "Jarconomy: C.t (J.at.isle)   in.C.t (in.at.isle)";
+                next;
             }
             #noXup
             push @$src, [$k,kv.X] if kv.X;
