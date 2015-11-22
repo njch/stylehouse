@@ -130,6 +130,8 @@ ym/concoi: |
     }
 ym/conoi: | # is Art shader
     C.sc.code || return;
+    $C = {%$C}; # hup
+    $C->{$_} = {%{$C->{$_}}} for grep {ref $C->{$_} eq 'HASH'} keys %$C;
     C.y = {cv=>C.y} if !ref C.y;
     
     if (C.sc.acgt) {
@@ -148,7 +150,8 @@ ym/conoi: | # is Art shader
             my ($K,$cv) = ($1,$2);
             C.sc.code = $K;
             $cv = 0+("0.".$cv);
-            sayre "CHangting $K / $cv / C.t   from C.y.cv" if $cv ne C.y.cv;
+            sayyl "CHangting $K / $cv / C.t   from C.y.cv"
+                if $cv ne C.y.cv && C.y.cv != 0.3;
             C.y.cv = $cv;
         }
             
