@@ -169,6 +169,47 @@ WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
         Rw SNtl $I;
     }
     $A
+RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
+    # non babzub, assume pbab skipped <<''s in origin
+    my $A = {};
+    
+    A.oA = ar.oA if ar.oA;
+    A.J = ar.J || die 'noJ';
+    A.G = $G; # so travel can G/T/Hypo
+    A.mo = $A;
+    (A.am) = ar.t || ar.name || @{delete ar.m};
+    A.am || die "unsame?";
+    
+    A.N = [ar.C || @{ar.N}];
+    A.M = [];
+    A.talk = "A.J.name ".(A.J.le && A.J.le.name);
+    A.fl = ar.fl || {};
+    A.I = {};
+    
+    my $I = delete G.drop.recycling->{A.J.id}->{A.am};
+    
+    my $II = Rw collaspII $A;
+    
+    if ($I) {
+        if (I.Ii eq II.Ii) {
+            say "Recyc A.talk! I.Ii continu" if A.J.V;
+            #$I = {%$I,nF=>{}};
+            A.I = $I;
+            A.cv = 0.1;
+        }
+        else {
+            sayre "Recycloped, Diff I.Ii  --  II.Ii" if A.J.V;
+            undef $I;
+        }
+    }
+    
+    A.I.Ii = II.Ii;
+    
+    if (!$I) {
+        $I = A.I||die'basenoi';
+        Rw SNtl $I;
+    }
+    $A
 SNtl: | # spiral Nat toolz
     I.n = sub { # A qcui
         my ($A,$C,$G,$T,$AA,$CC,$GG,$TT) = @_;
@@ -544,13 +585,12 @@ Motion: |
     # 6* thing/rule management
     # SNat exudes over the nk'ing ish things which .wh=fly(wheel)
     # iterates grouped 6cv via T.Z, all N at a time
-    # (make no hop if ==1)
+    # (make no hop if N==1 or A.Subtle.$K)
     # also have pha cone stack available for offphasing
     # if our intent it loose enough
     
-    # G.h
     # encap A/spiral spinner for the G.h, from the  to ar A.I.d&Others
-    # G.h&I finds relevant A.I to AI.d&Other with, returning ($A,$I)
+    # finds relevant A.I, returning ($A,$I)
     n Other =>''=>{s=><<''}
         my $ar = $F[0]->{ar};
         $A = Rw RB + $t:s;

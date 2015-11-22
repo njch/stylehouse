@@ -21,8 +21,24 @@ Gooso: |
         I.d&Other,$s;
     
     # see also Loading for ongoign G.T timeyness
-    n T =>''=><<'','%subpeel:1'
-        my %T = %{G.T||{}};
+    n T =>''=><<'','%subpeel'
+        my $e = I.d&ti,'Wormhole';
+        %$e = (%$e,%{G.T}) if G.T;
+        G.T = $e;
+        G.T.base = 'w';
+        G.T
+    
+Tides: |
+    u allacgts
+    n ti =>''=><<'','%acgt:class'
+        my %na;
+        tie %na, $class, @Me;
+        return \%na
+    
+    # for the hash of a filesystem
+    # results must be kept up to date otherwise
+    # (use only as G.T & Loading)
+    n pack_Wormhole =>''=><<'','%subpeel'
         {
             package Wormhole;
             use Tie::Hash;
@@ -52,13 +68,39 @@ Gooso: |
                 };
             }
         }
-        tie %T, 'Wormhole';
-        G.T = \%T;
-        G.T.base = 'w';
-        G.T
     
-    # the J.at should be looking at J.oy.at too
-    # 
+    # for the T.at that also sees J.oy.at
+    n pack_Ghoz =>''=><<'','%subpeel'
+        {
+            package Ghoz; #
+            use Tie::Hash;
+            our @ISA = qw(Tie::ExtraHash);
+            sub TIEHASH {
+                my $class = shift;
+                my $sto = bless [{},@_], $class;
+                $sto
+            }
+            sub FETCH {
+                my ($s,$k) = @_;
+                my ($st,@o) = @$s;
+                return $st->{$k} if exists $st->{$k};
+                option:
+                for my $o (@o) {
+                    if (my $in = o.inp) {
+                        my $v = o.o;
+                        for my $i (@$in,$k) {
+                            exists $v->{$i} || next option;
+                            $v = $v->{$i};
+                        }
+                        return $v;
+                    }
+                    else {
+                        die "Hwoto climb a ".G::ki $o;
+                    }
+                }
+            }
+        }
+        
 Goodat: |
     u allacgts
         
@@ -226,7 +268,6 @@ GBabz: |
                     $indbe = qr/^$1/;
                 }
                 if ($s =~ $indbe) {
-                    saybl "Indendt  $s";
                     push @s, $s;
                     next;
                 }
@@ -234,12 +275,12 @@ GBabz: |
                     undef $indbe;
                     if ($s !~ /^\s*$/) {
                         $s[-1] eq '' ? pop @s :
-                        sayyl "$s[-1] was last line of quote, no space before $s";
                         push @s, $inend if $inend;
                     }
                     else {
                         $s = $inend if $inend;
                     }
+                    undef $inend;
                 }
             }
             my $ze = qr/<<['"](\w*)['"]/;
@@ -251,7 +292,7 @@ GBabz: |
                 $inend = 'STEVE' if !$1;
             }
             .
-            say "$indbe ind of: $l";
+            # babable #c
             $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
             $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
             $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
@@ -331,6 +372,7 @@ GBabz: |
             .
             push @s, $s;
         }
+        push @s, $inend if $indbe && $inend;
         $s = join "\n", @s;
         .
         $s;
