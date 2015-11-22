@@ -59,29 +59,7 @@ allvse: |
         $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
         $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
-ALL: | # travel code, /J/
-    (C.c.isle,C.c.t) = ($1,$2) if C.c.t =~ /^(\w+):(.+)$/;
-    y.at.isle = C.c.isle || 'u';
-    my $fort = "w/J.at.isle";
-    -d $fort || die "No dir $fort .. at\.isle missing?";
-    Rw ocling;
-    J.VV.N = 1;
-    my @ee = C.c.t ? do{`echo 1 >> $fort/J/J.name/C.c.t`; C.c.t}
-        : grep { -s $_ } glob "$fort/J/J.name/*";
-    say "Travei: $fort/J/J.name/*  ".wdump 3, \@ee;
-    for (map { (split'/',$_)[-1] } @ee) {
-        my $c = {};
-        c.isle = C.c.isle if C.c.isle;
-        n $_=>W=>$c
-    }
-    y.at.isle = 'top';
-NULL: |
-    my $v = ar.m ? ar.m->[0] : $ARGV[2] || 'allovse';
-    $v || die "arg 3 must be \$W to udown";
-    u $v
-    n s=>''=>t
-    my $f = 'u/'.$v;
-    Rw down $f $s:J.A.I;
+
 allvs: |
     n allvse
     n 'allvs'=>2,<<'','%code:In 419'
@@ -98,13 +76,9 @@ allsvse: |
         C.sc.nv ||= 'sc'.C.t;
     
 allacgt: |
-    n allcode=>''=>{W=>'allcode'}
+    n allcode
     n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
-        #
         C.sc.acgt = '1' if !exists C.sc.acgt;
-onlycode: |
-    n 'skip if no sc_code'=>2,{s=><<''},{code=>'In 31'}
-        T.last = 1 unless C.sc.code;
 ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     my $wire = 'from';
     return unless C.sc.z;
@@ -154,8 +128,9 @@ ym/concoi: |
             A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
         }
     }
-ym/conoi: |
+ym/conoi: | # is Art shader
     C.sc.code || return;
+    C.y = {cv=>C.y} if !ref C.y;
     
     if (C.sc.acgt) {
         # for ACGT+args in acgt, args take whole @_
@@ -168,11 +143,14 @@ ym/conoi: |
             die ":Slooping";
             return T.not=1;
         }
-        my $s = C.sc.code || return;
-        if ($s =~ /\w+ \w+/) {
-            $s =~ /^(\w+) (\d+)$/ || die "wtf '$_'  ".ki$C;
-            my ($K,$cv) = ($1,$2); 
+        if (C.sc.code =~ /\w+ \w+/) {
+            C.sc.code =~ /^(\w+) (\d+)$/ || die "wtfs code=C.sc.code  ".ki$C;
+            my ($K,$cv) = ($1,$2);
+            C.sc.code = $K;
             $cv = 0+("0.".$cv);
+            sayre "CHangting $K / $cv / C.t   from C.y.cv" if $cv ne C.y.cv;
+            C.y.cv = $cv;
+        }
             
             my $ara = []; # ar ups and demand argsed
             
@@ -271,10 +249,9 @@ ym/conoi: |
             C.sc.gro = join'/',map{_.t}grep{_.y.cv != 0.9}
                 @{C.c.from} if C.c.from;
 
-            delete C.c.from; # as 7
+            delete C.c.from; # as 7, from appears on each thing as it leaves there
             
-            $v->{$K}->{$cv}->{C.t} = $C;
-        }
+            $v->{C.sc.code}->{C.y.cv}->{C.t} = $C;
 ym/notnotjs: |
     T.not = 1 unless exists C.sc.js;
 

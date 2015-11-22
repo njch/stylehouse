@@ -27,9 +27,40 @@ TheKnobbies: |
               box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
             }
        
-
-
-
+ALL: | # travel code, /J/
+    (C.c.isle,C.c.t) = ($1,$2) if C.c.t =~ /^(\w+):(.+)$/;
+    y.at.isle = C.c.isle || 'u';
+    my $fort = "w/J.at.isle";
+    -d $fort || die "No dir $fort .. at\.isle missing?";
+    my $Jd = "$fort/J";
+    my @di;
+    push @di, $1 while C.c.t =~ s/,([\w\/]+)//g;
+    for (@di) {
+        my $la = C.c.t;
+        for (split '/', $_) {
+            `echo 1 >> $Jd/$la/$_`;
+            $la = $_;
+        }
+    }
+    
+    Rw ocling;
+    J.VV.N = 1;
+    my @ee = C.c.t ? do{`echo 1 >> $Jd/J.name/C.c.t`; C.c.t}
+        : grep { -s $_ } glob "$Jd/J.name/*";
+    say "Travei: $fort/J/J.name/*  ".wdump 3, \@ee;
+    for (map { (split'/',$_)[-1] } @ee) {
+        my $c = {};
+        c.isle = C.c.isle if C.c.isle;
+        n $_=>W=>$c
+    }
+    y.at.isle = 'top';
+NULL: |
+    my $v = ar.m ? ar.m->[0] : $ARGV[2] || 'allovse';
+    $v || die "arg 3 must be \$W to udown";
+    u $v
+    n s=>''=>t
+    my $f = 'u/'.$v;
+    Rw down $f $s:J.A.I;
 alljs: |
     n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
@@ -67,6 +98,7 @@ trWs: |
         C.c.pi = 'trW';
     
 pi/trW: | # uses localeo
+    y.at.invis = 1;
     my $isle = C.c.isle || J.mo.J.at.isle;
     $isle || die "No isledea !? J.name of J.mo.J.name has; ".ki J.mo.J.at;
     my $f = "w/$isle/$s";
@@ -147,14 +179,12 @@ jseo: | # the in osc ^
         my $v = {}; # spots indexes
         Rw ym/jscoi $A $C:at $G $T $v;
         lv.X = $v;
-
 odeo: |
     u allsvse
     n '','','%of:Art'
     
     n X =>7=><<''
         lv.X = $X;
-        saybl "Got X from sc: C.t   J.name";
         at.sc.notX = Rw sumX $X:lv.X;
     
     # also trW, the W cache user
@@ -182,17 +212,26 @@ odeo: |
         my $src = [];
         for my $k (@{C.c.V.os}) {
             my $kv = lv.do->{$k} || die "nondo $k";
-            if (kv.C.sc.noXup) {
-                my $in = kv.C.sc.J;
-                sayyl "Jarconomy: C.t (J.at.isle)   in.C.t (in.at.isle)";
-                next;
+            kv.X || next;
+            my $D = kv.C;
+            D.sc.noXup && sayyl("tent: C.t (J.at.isle)   D.sc.J.C.t (D.sc.J.at.isle)")
+                && next;
+            .
+            if (kv.X.Ii && !C.sc.invis) { # has spII before, Ii clues versions of things
+                my $N = [];
+                Rw sumX $X:kv.X $N;
+                my $for = D.t || die "Nofor ".ki $D;
+                _.c.from = join '/', grep{defined} $for, _.c.from for @$N;
             }
-            #noXup
-            push @$src, [$k,kv.X] if kv.X;
+            my $ib = "D.t D.y.cv kv.i";
+            sayyl "Uaban: ". $ib;
+            .
+            push @$src, [$ib,kv.X];
         }
         Rw spII $A $II:lv.X $src;
         lv.X.My eq 'self' && die "Didndt get any C.sc.isle off J.name: ".wdump C.c.V.os;
     
+    # name these
     n coil =>701=><<''
         my $N = [];
         my $X = lv.X || die "no X on J.name for isl";

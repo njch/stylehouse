@@ -219,7 +219,7 @@ waitme: |
             Rw goche $n=$1
             while s/(\d+)//g;
             Rw goche $n:_
-                for qw'8 84 64';
+                for qw'8 84 64 4';
             Rw waitme;
             return;
         }
@@ -230,8 +230,25 @@ waitme: |
     
 forked: |
     # etc
-    J.me = J.wasme 
-        if J.wasme && J.me =~ /^re/;
+    say wdump J.me;
+    if (J.wasme && J.me eq 'm') {
+        J.me = J.wasme;
+        say "Repeating: J.me";
+    }
+    J.wasme = J.me;
+    if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
+        my $o;
+        my ($is,$ul) = ($1,$2);
+        my $t = $1 if $ul =~ /^(\w+)/ || die "niul $ul";
+        if (!-f "w/$is/$t") {
+            my @op = glob "w/$is/$t*";
+            sayre "Many options: ".ki @op if @op > 1;
+            my $o = shift @op;
+            $ul = $1 if $o =~ /^.+\/(.+?)$/;
+        }
+        sayyl "So: $is, $ul   fr  $o";
+        J.me = " ALL $is:$ul";
+    }
     if (J.me =~ s/^ (\w+)(?: (.+))?// && G.way->{$1}) {
         n $1=>W=>{t=>$2}
     }
@@ -265,7 +282,6 @@ forked: |
     J.me =~ /v/ &&
         n Vortecs
     
-    J.wasme = J.me;
     J.me = '';
     #n Details
     #n EYZ

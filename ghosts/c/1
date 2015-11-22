@@ -356,6 +356,43 @@ IStuff: |
     n recycle =>''=>{s=><<''}
         return if I.recyttl++ > 8;
         G.drop.recycling->{A.J.id}->{A.am} = $I;
+    
+    n Other =>''=>{s=><<''}
+        my $ar = $F[0]->{ar};
+        $A = Rw RB + $t:s;
+        $I = A.I;
+        # midnight at the oasis
+        I.d&n,$A,{},$G,{};
+        I.d&An;
+        A.t&1;
+        A.t&11111 || warn "NO 1";
+        ($A,A.I)
+    
+    n An =>''=>{s=><<''},{acgt=>1}
+        A.note = {}; # pinging csc
+        A.talk = "A.J.name ".(A.J.le && A.J.le.name);
+        A.c = sub { I.d&c,@_; };
+        A.e = sub { I.d&e,@_; };
+        A.us = sub { I.d&us,@_; };
+        A.t = sub { I.d&t,@_; };
+        A.V = sub {
+            my $bl = shift;
+            A.J.VV && A.J.VV->{$bl}
+            || A.J.V
+        };
+        $A
+    
+    n Act =>''=>{s=><<''}
+        $A = {%$s};
+        A.mo.ont = $A;
+        A.s = shift @{A.N};
+        $T = {};
+        T.oM = [];
+        I.d&n,$A,{},$G,$T;
+        I.d&An;
+        A.t&2;
+        map{I.nF->{$_}}qw'A C T';
+    
 KnowTime: | # dome props
     u allacgts
     
@@ -523,8 +560,11 @@ KnowTime: | # dome props
                 die "D.t .act gets... D.sc.act" if D.sc.act ne '1';
                 $dont = 1 if exists A.I->{D.t};
             }
-            # way or acgt-setuping-way
-            unless ($dont) {
+            if (!$dont && D.sc.eg) {
+                $dont = I.d&robeg,$D;
+            }
+            # the D.s should be perl expecting ACGT (which become robes to rob)
+            if (!$dont) {
                 my $paw = join"_",'',I.k,I.cv,D.t;
                 $paw =~ s/\W//g;
                 Rw $paw $A $C $G $T $__D:D;
@@ -591,43 +631,7 @@ Motion: |
     
     # encap A/spiral spinner for the G.h, from the  to ar A.I.d&Others
     # finds relevant A.I, returning ($A,$I)
-    n Other =>''=>{s=><<''}
-        my $ar = $F[0]->{ar};
-        $A = Rw RB + $t:s;
-        $I = A.I;
-        # midnight at the oasis
-        I.d&n,$A,{},$G,{};
-        I.d&An;
-        A.t&1;
-        A.t&11111 || warn "NO 1";
-        ($A,A.I)
-    
-    n An =>''=>{s=><<''},{acgt=>1}
-        A.note = {}; # pinging csc
-        A.talk = "A.J.name ".(A.J.le && A.J.le.name);
-        A.c = sub { I.d&c,@_; };
-        A.e = sub { I.d&e,@_; };
-        A.us = sub { I.d&us,@_; };
-        A.t = sub { I.d&t,@_; };
-        A.V = sub {
-            my $bl = shift;
-            A.J.VV && A.J.VV->{$bl}
-            || A.J.V
-        };
-        $A
-    
-    n Act =>''=>{s=><<''}
-        $A = {%$s};
-        A.mo.ont = $A;
-        A.s = shift @{A.N};
-        $T = {};
-        T.oM = [];
-        I.d&n,$A,{},$G,$T;
-        I.d&An;
-        A.t&2;
-        map{I.nF->{$_}}qw'A C T';
-    
-    # ingoing niles
+    # ingoing niles, can take ACGT or just J, like you were holding the self
     #n u =>''=><<'','%acgt:J'
     #n n =>''=><<'','%acgt:J'
     #n M =>''=><<'','%acgt:J'
