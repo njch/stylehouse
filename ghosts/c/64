@@ -17,9 +17,69 @@ Rob: |
         $eg =~ s/\//::/g;
         say "Robeg for D.t looking in $eg";
         return 0; # TODO
+Dwight: | # grab old subs of G
+    J.A.IIII = [@{G.IIII},'G/T/Draw'];
+    
+    # Rw codish;
+    J.VV.N = 1;
+    
+    n s=>''=>t
+    #J.inV = 1;
+    
+    my $lot = "g/G/on g/G/way g/0/G g/G/cis";
+    n shedful => '0.1-0.7', {pi=>'seas',s=>$lot}
+    
+Dlos: | # grab G subs, must get wormholes to do this this shortly
+    my $f = "w/J.name\.yml";
+    my $N = -f $f ? LoadFile($f) : do {
+        my $ay = 
+        n Dwight
+        my $N = Rw getJN $J:ay.nj $I:ay.I $pi=clife;
+        delete _.c.from for @$N;
+        DumpFile($f,$N);
+        $N
+    };
+    for (@$N) {
+        my $s = _.sc.style;
+        _.sc.head = 1 if _.t eq 'head';
+        _.sc.bab = 'non' if $s eq 'nonbabble';
+        _.sc.subis = 1 if $s eq 'func' || $s eq '';
+        _.sc.export = 1 if $s eq 'func';
+        _.c.s = "my \$G = shift;\n"._.c.s if $s eq '';
+        _.c.s = "sub _.t {\n"._.c.s."\n}" if _.sc.subis;
+        _.c.from = "G";
+    }
+    if (1) {
+        my $E = {};
+        for (@$N) {
+            my $kip = join ' ', sort keys %{_.sc};
+            E.tisc->{$kip}++;
+            E.styles->{_.sc.head} .= "_.t ";
+            E.subi->{_.sc.subis} .= "_.t ";
+        }
+        say wdump [$E];
+        #sayyl [@{$N}[0..5]];
+        #return;
+    }
+    # grep{_.t ne 'wag'} # anything with H... 
+    u allcode
+    #@$N = @{$N}[0..5];
+    Mn($N);
+    
+getJN: | # rips out all rv Cs deeply, op. matching ip
+    my $rv = J.El.Duv.rv || die "J.name no elduvarv yet?";
+    @{rv.sc} && die "J.name needs to compress layers of news";
+    my $N = [@{rv.c}];
+    @$N = Rw humms $J $N wongui _;
+    ar.sc.pi = ar.pi if ar.pi;
+    if (my $s = ar.sc) {
+        @$N = grep { I.d&ip,$s,_.sc } @$N;
+    }
+    return $N;
 Ear: |
     n Goat
     n Ise
+    n Dlos
 Goth: |
     u GBabz
     my ($A) = 
@@ -34,41 +94,71 @@ Goth: |
         push @{E.from->{_.c.from}||=[]}, $_;
     }
     my @to;
+    my $tld; # 'StyleHose'
     for my $k (sort keys %{E.from}) {
         my $t = {};
         my ($il,$i) = $k =~ /^(.+)\/(.+?)$/;
         my $N = E.from->{$k};
         @$N = I.d&sorp,'t',@$N;
         @$N = I.d&sorp,'y/cv',@$N;
-        t.pack = join("::",split'/',$k);
-        t.l = [
-        "package t.pack;",
-        "our \$A = {}",
-        ];
+        t.pack = join("::",grep{defined}$tld,split'/',$k);
+        t.head = [];
+        t.l = [];
         for my $D (@$N) {
             ref D.y || die "Dy nonref ".ki $D;
             say "Got D.c.from : D.y.cv    D.t";
+            D.sc.eg = t.pack;
             $D = I.d&hup,$D;
             my $s = delete D.c.s;
+            $s = I.d&parse_babbl,$s unless D.sc.bab eq 'non';
+            $_ && $_ ne 'non' && die "INter bab $_" for D.sc.bab;
             my $nov = wdump 5, $D;
-            die "TOo long D D.t: $nov" if length($nov) > 300;
+            die "TOo long D D.t: $nov" if length($nov) > 500;
+            my $wh = D.sc.head ? 'head' : 'l';
+            acum $t,$wh,"\$A->{II}->{D.sc.code}->{D.y.cv}->{D.t} = $nov"
+                unless D.sc.head || D.sc.subis;
+            acum $t,$wh,$s;
+            acum $t,export=>D.t if D.sc.export;
+        }
+        acum $t,l=>
+            "package t.pack;",
+            "use G;",
+            "our \$A = {};";
+        if (my $e = t.export) {
             push @{t.l},
-                "\$A->{II}->{D.sc.code}->{D.y.cv}->{D.t} = $nov",
-                I.d&parse_babbl,$s;
-                
+                "use Exporter 'import';",
+                '@EXPORT_OK = qw('.join(' ',@$e).');';
         }
         push @to, $t;
     }
-    my $e = join "\n\n\n", map {join "\n",@{_.l}}@to;
-    say $e;
+    my $lib = 'othlia';
+    my @inc;
+    for my $t (@to) {
+        my @el = split '::', t.pack;
+        my $fi = pop @el;
+        my $dir = join '/', $lib, @el;
+        `mkdir -p $dir` if !-d $dir;
+        my $code = join "\n", @{t.l};
+        my $f = "$dir/$fi\.pm";
+        write_file($f, $code);
+        push @inc, t.pack;
+    }
     
-    n main =>''=><<'','%code'
-        our @F;
+    my $main = <<''
+    use lib 'othlia';
+    our @F;
+    
+    .join("\n",
+        (map{"use $_;"}@inc),
+    )
+    .<<''
+        say "YEAH!";
         
+    ;
     
     
-    
-    
+    n othing=>''=><<'','%code'
+        say "Not nothing here";
     
     
     
@@ -313,18 +403,20 @@ GBabz: |
     # see <<'' and levitate
     u allacgts
     
-    n bitsof_babble =>''=><<'','%bab:non,subpeel:1'
+    # bab:non,,'%subpeel'
+    n bitsof_babble =>''=><<''
         my $p;
         p.alive = qr/\$[\w]*[\w\->\{\}]+/;
         p.dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
         p.oing = qr/p.alive|p.dotha|[-\w]{8,}/;
         p.oint = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
-        p.mwall = qr/(?:= |if |unless |^\s*)/m;
+        p.mwall = qr/(?:= |if |unless |^\s*)/;
         p.sur = qr/ if| unless| for| when|,\s*$|;\s*/;
         $p
     
-    n parse_babbl =>''=><<'','%bab:non'
-        my $p = G.bitsof_babble;
+    #,'%bab:non'
+    n parse_babbl =>''=><<''
+        my $p = G.bitsof_babble ||= I.d&bitsof_babble;
         # gone:
         my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
         my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
@@ -342,14 +434,17 @@ GBabz: |
                     $indbe = qr/^$1/;
                 }
                 if ($s =~ $indbe) {
+                    $s =~ s/^(\s*)\.(\s*)$/$1$2/;
                     push @s, $s;
                     next;
                 }
                 else {
                     undef $indbe;
                     if ($s !~ /^\s*$/) {
-                        $s[-1] eq '' ? pop @s :
-                        push @s, $inend if $inend;
+                        if ($inend) {
+                            pop @s  if $s[-1] eq '';
+                            push @s, $inend;
+                        }
                     }
                     else {
                         $s = $inend if $inend;
@@ -366,12 +461,14 @@ GBabz: |
                 $inend = 'STEVE' if !$1;
             }
             .
-            # babable #c
+            # babable # expect closing brackets and insert J
+            # eg Atime(2) = A.time->($J, 2)
             $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
             $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
             $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
             $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
             .
+            # close side ourselves, likely to gobble suro if, etc.
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
@@ -387,21 +484,20 @@ GBabz: |
                 grep {$_} split m{\.>}, $2;
             /smge;
             .
-            while ($s =~ /(?:^| )(Rw ((?:\*\/)?p.oint)(?: (.+))?)p.sur?$/gsm) {
-                my ($old, $p, $a) = ($1, $2, $3);
-                sayyl wdump [$old,$p,$a];
+            while ($s =~ /(Rw (p.oint)(?:(?!p.sur) (.+?))?)p.sur.*/gsm) {
+                my ($old, $op, $oa) = ($1, $2, $3);
                 my $g;
                 $g ||= '$G';
                 .
                 my $ne = ""; # hidden reverse
-                $ne = $1 if $a =~ s/(p.sur)$//;
+                $ne = $1 if $oa =~ s/(p.sur)$//;
                 .
                 my @n;
                 my @m;
                 # want to mix {m m m %$ar m m} whereever + is
-                my $wanr = $a =~ s/^\+ ?//;
-                $wanr = 'stick' if $a =~ s/^- ?//;
-                for (split /\,| |\, /, $a) {
+                my $wanr = $oa =~ s/^\+ ?//;
+                $wanr = 'stick' if $oa =~ s/^- ?//;
+                for (split /\,| |\, /, $oa) {
                     # sweet little pool... $J:geo etc
                     if (/^\$((\w+(:|=))?\S+)$/) {
                         my ($na, $fa, $wa) = ($1, $2, $3);
@@ -417,20 +513,18 @@ GBabz: |
                         }
                         $na = '$'.$na unless
                             $wa eq '=' || $na =~ /^\S+\.\S/;
-                        #saygr "from: $a          na: $na";
                         push @n, "$fa => $na" ; # also avail a listy position
                     }
                     else {
                         push @m, $_;
                     }
                 }
-                unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick"; 
-                # could use ^ here # edpeak?
+                unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick";
                 push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
                     if @m;
                 .
                 my @e;
-                push @e, '"'.$p.'"';
+                push @e, '"'.$op.'"';
                 push @e, "{".join(", ",@n)."}";
                 my $en = join ", ", @e;
                 .
