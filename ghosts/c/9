@@ -10,31 +10,45 @@ allcurve: |
         # draw out atoms, x=y=0 r=0 begins
     
     #y
+NULL: |
+    my $v = ar.m ? ar.m->[0] : $ARGV[2] || 'allsvse';
+    $v || die "arg 3 must be \$W to udown";
+    u $v
+    n s=>''=>t
+    my $f = 'u/'.$v;
+    Rw down $f $s:J.A.I;
 allcode: |
-    n 'allarecode1'=>2,{s=><<''},{code=>'In 42'}
+    n 'allarecode=1'=>42,<<'','%acgt:s,act,code:In'
         C.sc.code = 1 if !exists C.sc.code;
+allacgt: |
+    n allcode
+    n 'allareacgt=1'=>42,<<'','%acgt:s,act,code:In'
+        C.sc.acgt = '1' if !exists C.sc.acgt;
 allacgts: |
     n allcode
-    n 'allareacgt=s'=>2,{s=><<''},{code=>'In 42'}
+    n 'allareacgt=s'=>42,<<'','%acgt:s,act,code:In'
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
     n allacgts
-    n 'allareact=1'=>2,{s=><<''},{code=>'In 42'}
+    n 'allareact=1'=>42,<<'','%acgt:s,act,code:In'
         C.sc.act = 1 if !exists C.sc.act;
 allvy: |
+    #u allact
     n allact
-    n 'allarev=y'=>2,{s=><<''},{code=>'In 42'}
+    n 'allarev=y'=>42,{s=><<''},'%acgt:s,act,code:In'
         return if C.sc.nov;
         C.sc.v = 'y'.C.sc.v;
         C.t .= "_".C.y.cv;
 allvc: |
+    #u allact
     n allact
-    n 'allarev=c'=>2,<<'','%code:In 422'
+    n 'allarev=c'=>422,<<'','%acgt:s,act,code:In'
         return if C.sc.nov;
         C.sc.v = 'c'.C.sc.v;
 allof: |
+    #u allact
     n allacgts
-    n 'allof'=>2,<<'','%code:In 418'
+    n 'allof'=>418,<<'','%acgt:s,act,code:In'
         if (C.c.of) { # or how this u tater got .s'd
             A.J.A.vse.of = C.c.of;
             return T.not = 1;
@@ -49,7 +63,7 @@ allvse: |
     n allvc
     n allof
     # vices should be novelty not envy
-    n 'allvse'=>2,<<'','%code:In 419'
+    n 'allvse'=>419,<<'','%acgt:s,act,code:In'
         if (C.sc.nv) {
             C.sc.nov = 1;
             C.sc.v = C.sc.nv;
@@ -59,26 +73,21 @@ allvse: |
         $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
         $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
-
 allvs: |
     n allvse
-    n 'allvs'=>2,<<'','%code:In 419'
+    n 'allvs'=>419,<<'','%acgt:s,act,code:In'
         C.sc.v ||= 's';
     
 allovse: |
     n allvse
-    n 'allovse'=>2,<<'','%code:In 4189'
+    n 'allovse'=>4189,<<'','%acgt:s,act,code:In'
         C.sc.v ||= 'Y';
         C.sc.rg ||= 'J,V,yk,yat,yta,ylv,yvl';
 allsvse: |
     n allovse
-    n 'allsvse'=>2,<<'','%code:In 4189'
+    n 'allsvse'=>4189,<<'','%acgt:s,act,code:In'
         C.sc.nv ||= 'sc'.C.t;
     
-allacgt: |
-    n allcode
-    n 'allareacgt=1'=>2,{s=><<''},{code=>'In 42'}
-        C.sc.acgt = '1' if !exists C.sc.acgt;
 ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
     my $wire = 'from';
     return unless C.sc.z;
@@ -94,7 +103,8 @@ ym/notnotcode: |
 ym/concoi: |
     my $s = C.sc.code || return;
     
-    if (C.c.from) {
+    if (C.c.from && 0) {
+        # sorta sorts A, toolboxre
         C.y.p ||= join'/',map{_.t}@{C.c.from||[]};
         C.y.cvt ||= C.y.cv."\t".C.t;
         T.y.spr=$C if A.t&43 && $s=~/^(\^|1)$/;
@@ -133,6 +143,15 @@ ym/conoi: | # is Art shader
     $C = {%$C}; # hup
     $C->{$_} = {%{$C->{$_}}} for grep {ref $C->{$_} eq 'HASH'} keys %$C;
     C.y = {cv=>C.y} if !ref C.y;
+    if (keys %{C.y} > 1) {
+        sayre "Recuding to cv: C.t  ".ki C.y;
+        C.y = {cv=>C.y.cv};
+    }
+    delete C.sc.z if C.sc.z;
+    my $wast = C.t;
+    C.t =~ s/\W//sg;
+    sayyl "Changed $wast --> C.t" if C.t ne $wast;
+    my $ind = "    ";
     
     if (C.sc.acgt) {
         # for ACGT+args in acgt, args take whole @_
@@ -141,10 +160,8 @@ ym/conoi: | # is Art shader
         # the I that Cs all, it is indifferent to its current
         C.sc.code ||= "I 1";
     }
-        if (C.sc.got) {
-            die ":Slooping";
-            return T.not=1;
-        }
+    C.sc.got && die ":Slooping";
+    
         if (C.sc.code =~ /\w+ \w+/) {
             C.sc.code =~ /^(\w+) (\d+)$/ || die "wtfs code=C.sc.code  ".ki$C;
             my ($K,$cv) = ($1,$2);
@@ -173,7 +190,7 @@ ym/conoi: | # is Art shader
                 C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
                 for my $sr (split ',', C.sc.sr) {
                     die "mixo $sr" if $sr =~ /\W/;
-                    push @$ara, "    my \$".$sr." = s\.$sr;";
+                    push @$ara, "${ind}my \$".$sr." = s\.$sr;";
                 }
                 C.sc.Ifs.Td = $Q;
             }
@@ -190,7 +207,7 @@ ym/conoi: | # is Art shader
                     my $gkk = $gk;
                     $gk = C.sc.gkis if C.sc.gkis;
                     my $my = "my " unless C.sc.args =~ /\bs\b/ && $nk eq 'c' && $gkk eq 's';
-                    push @$ara, "    $my\$".$gk." = C\.".$nk."\.".$gkk.";";
+                    push @$ara, "${ind}$my\$".$gk." = C\.".$nk."\.".$gkk.";";
                 }
             }
             
@@ -209,7 +226,7 @@ ym/conoi: | # is Art shader
                 } split /,/, $v;
                 push @no, [C.sc.nk,C.sc.gk] if C.sc.nk && $nk ne C.sc.nk;
                 for my $s (@no) {
-                    push @$ara, "    my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
+                    push @$ara, "${ind}my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
                 }
             }
 
@@ -218,7 +235,7 @@ ym/conoi: | # is Art shader
                 my $gl = "";
                 my $und = "_";
                 if ($args =~ s/^(A,C,G,T,)(?!s$)//) {
-                    $gl .= '    my ($A,$C,$G,$T,@M)=@_;'."\n";
+                    $gl .= '${ind}my ($A,$C,$G,$T,@M)=@_;'."\n";
                     $und = 'M';
                 }
                 my($sf,$sa);
@@ -229,7 +246,6 @@ ym/conoi: | # is Art shader
                 # here some want their own I space
                 # if I resolv backward winding pro-be
                 # G pulls in I
-                my $sn = "A\.I\.d"."&An;" if C.t eq 'An';
                 
                 unshift @$ara, "    my \$I = A\.I;";
                 
@@ -237,12 +253,14 @@ ym/conoi: | # is Art shader
                     .$sf
                     ."sub {\n"
                     .$gl
-                    ."    my (".join(',',map{'$'.$_}split',',$args).",\@Me) = \@".$und.";\n"
+                    ."    my (".join(',',map{'$'.$_}
+                                split',',$args).',@Me) = @'.$und.";\n"
                     .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
                     ."}"
                     .$sa
-                    .";$sn\n";
+                    .";";
+                C.c.s .= "A\.I\.d"."&An;\n" if C.t eq 'An';
             }
             else {
                 C.sc.subpeel&&die"nonargs ha subpeel".ki$C

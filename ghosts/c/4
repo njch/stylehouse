@@ -47,20 +47,13 @@ ALL: | # travel code, /J/
     J.VV.N = 1;
     my @ee = C.c.t ? do{`echo 1 >> $Jd/J.name/C.c.t`; C.c.t}
         : grep { -s $_ } glob "$Jd/J.name/*";
-    say "Travei: $fort/J/J.name/*  ".wdump 3, \@ee;
+    say "Travei: $fort/J/J.name/*   @ee";
     for (map { (split'/',$_)[-1] } @ee) {
         my $c = {};
         c.isle = C.c.isle if C.c.isle;
         n $_=>W=>$c
     }
     y.at.isle = 'top';
-NULL: |
-    my $v = ar.m ? ar.m->[0] : $ARGV[2] || 'allovse';
-    $v || die "arg 3 must be \$W to udown";
-    u $v
-    n s=>''=>t
-    my $f = 'u/'.$v;
-    Rw down $f $s:J.A.I;
 alljs: |
     n 'allarejs=s'=>2,{s=><<''},{code=>'In 42'}
         C.sc.acgt = 's' if !exists C.sc.acgt;
@@ -115,17 +108,12 @@ pi/trW: | # uses localeo
         say "Gunna leave clue at: $clue";
         `touch $clue`;
     }
-    else {
-        saygr "$s has src over in $isle";
-    }
     my $jf = "$Jd/$s";
     my $traveli;
     for ($jf) {
         next unless -s $_;
         $traveli = read_file($_);
-        saybl "Travel from $_: ".wdump 3,[
-            $traveli
-        ];
+        say "Travel from $_: $traveli";
     }
     if (!$traveli && -f $f) {
         say "Found $f !";
@@ -161,6 +149,7 @@ codeo: | # the in osc ^
     u allsvse
     n '','','%of:Art'
     # root lv.II <- at.V.*.rv.II
+    #saybl wdump 3, [sort keys %{J.El.qq.bb}];
     # plucked Ktv spots X running upwards
     n code =>5=><<''
         lv.op.sc.code = 1;
@@ -168,6 +157,18 @@ codeo: | # the in osc ^
         Rw ym/conoi $A $C:at $G $T $v;
         lv.X = $v;
     
+codeol: |
+    y.at.isle = 'u';
+    Rw ocling;
+    Rw codeo;
+    -l $_ && `unlink $_` for 'w/u/codeo';
+    `cd w/u; ln -s codeol codeo`;
+odeol: |
+    y.at.isle = 'u';
+    Rw ocling;
+    Rw odeo;
+    -l $_ && `unlink $_` for 'w/u/odeo';
+    `cd w/u; ln -s odeol odeo`;
 jseo: | # the in osc ^
     n odeo
     u allsvse
@@ -207,6 +208,10 @@ odeo: |
         lv.X ||= rv.X;
         #lv.do->{V.name} = $rv;
     
+    # pack the inners, they get names as they leave here
+    # receiving end should be able to see Ii outside, as w/$isle/$W.i
+    # which should talk of versions of things
+    # so we could grab the smallest chunks of change without reading the whole top again
     n root =>7=><<'','%nv:croot'
         lv.X ||= vl.X || {My=>"self"}; # disappears
         my $src = [];
@@ -224,7 +229,6 @@ odeo: |
                 _.c.from = join '/', grep{defined} $for, _.c.from for @$N;
             }
             my $ib = "D.t D.y.cv kv.i";
-            sayyl "Uaban: ". $ib;
             .
             push @$src, [$ib,kv.X];
         }
