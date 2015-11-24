@@ -179,7 +179,7 @@ ym/conoi: | # is Art shader
                 C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
                 for my $sr (split ',', C.sc.sr) {
                     die "mixo $sr" if $sr =~ /\W/;
-                    push @$ara, "${ind}my \$".$sr." = s\.$sr;";
+                    push @$ara, $ind."my \$".$sr." = s\.$sr;";
                 }
                 C.sc.Ifs.Td = $Q;
             }
@@ -196,7 +196,7 @@ ym/conoi: | # is Art shader
                     my $gkk = $gk;
                     $gk = C.sc.gkis if C.sc.gkis;
                     my $my = "my " unless C.sc.args =~ /\bs\b/ && $nk eq 'c' && $gkk eq 's';
-                    push @$ara, "${ind}$my\$".$gk." = C\.".$nk."\.".$gkk.";";
+                    push @$ara, $ind."$my\$".$gk." = C\.".$nk."\.".$gkk.";";
                 }
             }
             
@@ -215,7 +215,7 @@ ym/conoi: | # is Art shader
                 } split /,/, $v;
                 push @no, [C.sc.nk,C.sc.gk] if C.sc.nk && $nk ne C.sc.nk;
                 for my $s (@no) {
-                    push @$ara, "${ind}my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
+                    push @$ara, $ind."my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
                 }
             }
 
@@ -224,7 +224,7 @@ ym/conoi: | # is Art shader
                 my $gl = "";
                 my $und = "_";
                 if ($args =~ s/^(A,C,G,T,)(?!s$)//) {
-                    $gl .= '${ind}my ($A,$C,$G,$T,@M)=@_;'."\n";
+                    $gl .= $ind.'my ($A,$C,$G,$T,@M)=@_;'."\n";
                     $und = 'M';
                 }
                 my($sf,$sa);
@@ -236,16 +236,16 @@ ym/conoi: | # is Art shader
                 # if I resolv backward winding pro-be
                 # G pulls in I
                 
-                unshift @$ara, "    my \$I = A\.I;";
+                unshift @$ara, $ind."my \$I = A\.I;";
                 
                 C.c.s = "A\.I.".C.t." = "
                     .$sf
                     ."sub {\n"
                     .$gl
-                    ."    my (".join(',',map{'$'.$_}
+                    .$ind."my (".join(',',map{'$'.$_}
                                 split',',$args).',@Me) = @'.$und.";\n"
                     .join("\n",uniq(@$ara))."\n"
-                    .join("\n",map{"    $_"}split "\n", C.c.s)."\n"
+                    .join("\n",map{$ind.$_}split "\n", C.c.s)."\n"
                     ."}"
                     .$sa
                     .";";
