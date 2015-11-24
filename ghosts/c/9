@@ -13,6 +13,7 @@ allcurve: |
 
 allcode: |
     u allact
+    n all4noJ
     n 'allarecode=1'=>42,<<''
         C.sc.code = 1 if !exists C.sc.code;
 all4noJ: |
@@ -39,30 +40,30 @@ allacgts: |
     n 'allareacgt=s'=>42,<<''
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
-    #u allact
+    u allact
     n allacgts
     n all4nonJ
-    n 'allareact=1'=>42,<<'','%act,acgt:s,code:In';
+    n 'allareact=1'=>42,<<''
         C.sc.act = 1 if !exists C.sc.act;
         C.sc.code = 'In' if !exists C.sc.code;
 allvy: |
     u allact
     #u allact
     n allact
-    n 'allarev=y'=>42,{s=><<''},'%code:In'
+    n 'allarev=y'=>42,<<''
         return if C.sc.nov;
         C.sc.v = 'y'.C.sc.v;
         C.t .= "_".C.y.cv;
 allvc: |
     u allact
     n allact
-    n 'allarev=c'=>422,<<'','%code:In'
+    n 'allarev=c'=>422,<<''
         return if C.sc.nov;
         C.sc.v = 'c'.C.sc.v;
 allof: |
     u allact
     n allacgts
-    n 'allof'=>418,<<'','%code:In'
+    n 'allof'=>418,<<''
         if (C.c.of) { # or how this u tater got .s'd
             A.J.A.vse.of = C.c.of;
             return T.not = 1;
@@ -89,13 +90,15 @@ allvse: |
         $cv||die"no0 C.y.cv  ".ki 2, $C;
         C.t .= "_$cv";
 allovse: |
+    u allact
     n allvse
-    n 'allovse'=>4189,<<'','%acgt:s,act,code:In'
+    n 'allovse'=>4189,<<''
         C.sc.v ||= 'Y';
         C.sc.rg ||= 'J,V,yk,yat,yta,ylv,yvl';
 allsvse: |
+    u allact
     n allovse
-    n 'allsvse'=>4189,<<'','%acgt:s,act,code:In'
+    n 'allsvse'=>4189,<<''
         C.sc.nv ||= 'sc'.C.t;
     
 ym/wongui: | # make M flat, acum .c.from, atoms wired together like so J.most.$
