@@ -184,7 +184,10 @@ Shelf: |
     # G&A,'person/machine',$J
     # run from above, Other should patch iminia2, give J to ensessionate
     n A =>''=><<''
-        # we have $s == personality, Other (whose in  knows to J hookup
+        my $AA = $A;
+        $A = {};
+        A.mo = $A;
+        A.talk = (A.J.le&&"(A.J.le.name)").A.J.name;
         G&Other,$s;
     
     n h =>''=>{s=><<''},'%acgt:s'
@@ -211,7 +214,6 @@ Shelf: |
     
     n An =>101=>{s=><<''},{acgt=>1}
         A.note = {}; # pinging csc
-        A.talk = "A.J.name ".(A.J.le && A.J.le.name);
         A.c = sub { I.d&c,@_; };
         A.e = sub { I.d&e,@_; };
         A.us = sub { I.d&us,@_; };
@@ -234,6 +236,43 @@ Shelf: |
         A.t&2;
         map{I.nF->{$_}}qw'A C T';
     
+RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
+    # non babzub, assume pbab skipped <<''s in origin
+    my $A = {};
+    A.J = ar.J || die 'noJ';
+    A.G = $G; # so travel can G/T/Hypo
+    A.mo = $A;
+    (A.am) = ar.t || ar.name || @{delete ar.m};
+    A.am || die "unsame?";
+    
+    A.N = [ar.C || @{ar.N}];
+    A.M = [];
+    A.talk = "A.J.name ".(A.J.le && A.J.le.name);
+    A.fl = ar.fl || {};
+    A.I = {};
+    
+    my $I = delete G.drop.recycling->{A.J.id}->{A.am};
+    
+    my $II = Rw collaspII $A;
+    
+    if ($I) {
+        if (I.Ii eq II.Ii) {
+            A.I = $I;
+            A.cv = 0.1;
+        }
+        else {
+            sayre "Recycloped, Diff I.Ii  --  II.Ii" if A.J.V;
+            undef $I;
+        }
+    }
+    
+    A.I.Ii = II.Ii;
+    
+    if (!$I) {
+        $I = A.I||die'basenoi';
+        Rw SNtl $I;
+    }
+    $A
 Modiy: |
     # make pool, synth space, want arches
     # fork & rejoin to exciting place
@@ -551,14 +590,13 @@ GBabz: |
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
+            s/I\.d\&(p.oint)/G\&$1/sg;
             # lma quack $not->('tag');? from I.d&pui,$s
             $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
                 my ($on,$p,$e,$t) = ($1,$2,$3,$4);
                 my $in;
-                if ($on eq 'G') {
-                    $on = "G\.h";
-                    $in = '$A,$C,$G,$T,';
-                }
+                ($on,$in) = ("G\.h",'$A,$C,$G,$T,')
+                    if $on eq 'G';
                 my $s = $on."->($in\"$p\"$e)$t";
                 $s = '$'.$s if $on !~ m{\.};
                 $s

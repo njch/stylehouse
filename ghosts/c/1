@@ -655,31 +655,43 @@ Motion: |
         1
 
     # A and A.mo dye drops, M tractios, T tooly, see also flywheel
-    n flywheels =>''=>{s=><<''}
-        # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
-        # its I.d&nded and holds things to code, $v a spiral it's filling up
-        # $v could be mounted... aj8 mysteries
-        for my $k (sort keys %{A.fl}) {
-            my $v = A.fl->{$k};
+    # wants to be a six alwayser... ,{code=>'I 6',act=>'all'} # II.All? II.Fly?
+    # its I.d&nded and holds things to code, $v a spiral it's filling up
+    # $v could be mounted... aj8 mysteries
             #   ^ bus to ride
+    n flywheels =>'',<<''
+        for my $k (sort keys %{A.fl||return}) {
+            my $v = A.fl->{$k};
             $k = $2 if $k =~ /^(\d+) (.+)$/;
             Rw ym/$k $I $J:A.J $A $C $v $G $T;
         }
     
-    n oseverato =>''=>{s=><<''}
-        if (T.d) {
-            A.T.d = T.d; # carte
+    n sano =>''=><<''
+        A.C = $C;
+        A.T = $T;
+        return$A
+    
+    n oseverato =>''=><<''
+        A.T.d = T.d if T.d;
+        if (my $z = delete T.Z) {
+            I.d&Tz,$z;
         }
-        if (my $z = delete T.Z) { # tease out the next times
-            my ($lo) = sort keys %$z; # next one
-            my $v = $z->{$lo};
-            push @{A.mo.re->{$lo} ||= []},
-                ref $v eq 'ARRAY' ? @$v :
-                $v ne '1' ? [$A,$C,$v] :
-                [$A,$C];
-            @{T.oM} = ();
-        }
-        if (!@{A.mo.N} && A.mo.re) {
+        I.d&more,A.mo.re if !@{A.mo.N} && A.mo.re
+    
+    # carry A through time
+    # tease out the next times off T.Z.$nexttime = $incv|$N
+    # is N or incv, put things off til all else lo
+    n Tz =>'',<<''
+        my ($lo) = sort keys %$s;
+        my $v = $z->{$lo};
+        my $wait = A.mo.re->{$lo} ||= [];
+        T.incv = $v if $v ne '1';
+        push @$wait,
+            ref $v eq 'ARRAY' ? @$v :
+            $v ne '1' ? [$A,$C,$v] :
+            [$A,$C];
+        @{T.oM} = ();
+    n Tz =>'',<<''
             my $ats = A.mo.re || {};
             my @wa = sort keys %$ats;
             my ($lo) = @wa;
@@ -688,6 +700,7 @@ Motion: |
                 my @N = map { {AZ=>{$lo=>$_}} } @$ay;
                 push @{A.mo.N}, @N;
                 saybl "Looping ".@N." to $lo" if A.J.V > 1;
+                # sort by y.i
             }
         }
         # concoi severaliser, for conglom up; merging spiral snips of code
@@ -744,7 +757,7 @@ SlideEa: | # liney schemery
         $s /= 10 while $s > 1 || $s < -1;
         return $s
     
-    n scyvle =>''=>{s=><<''}
+    n scyvle =>''=><<''
         for (qw'in out cv') {
             if (my $so = C.y->{$_}) {
                 my $i;
@@ -755,7 +768,7 @@ SlideEa: | # liney schemery
             }
         }
     
-    n Ci =>''=>{s=><<''},{code=>'I 12',act=>1}
+    n Ci =>12=><<'','%act'
         !ref $s ? I.d&string,$s
         :
         ref $s eq 'ARRAY' ? I.d&array,$s
@@ -1132,17 +1145,16 @@ Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
         }
         T.not = 1;
     
+    # extend C on the way in to another dome, magnetised into our M
+    # probably for collapsing roooves...
+    # dumber than sc decompresphere & playing out
+    # (is mailing itself further instructions, intro c, further lines)
+    # an In persona, joining our M
+    # push to dome
+    # that must in  A
     n ECu =>''=>{s=><<''},{l=>'Motion'}
-        # extend C on the way in to another dome, magnetised into our M
-        # probably for collapsing roooves...
-        # dumber than sc decompresphere & playing out
-        # (is mailing itself further instructions, intro c, further lines)
-        # an In persona, joining our M
-        # push to dome
-        # that must in  A
         ref $s eq 'ARRAY' || die;
         my ($N,$c) = @$s;
-        # take 4s v             add 3s v         next 2 
         $N = [{MZ=>A.fl}, {MZ=>{'3 doex'=>$c}}, @$N];
         # and In could feel our light cone
         Rw In $J:A.J $M:T.oM $N;
