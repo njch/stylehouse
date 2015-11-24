@@ -1,21 +1,28 @@
 Ipifalls: |
-    n stopiclife=>''=><<'',{code=>"Mo 444",v=>'cpi'}
+    u allvc
+    n stopiclife =>444,<<'','%code:Mo,v:pi'
         return unless C.c.J;
+        saybl "Apply moJAI fall A.J.name -> C.sc.J.name";
         C.sc.J.A.III.Ipifalls = ['J/most/J/A/I'];
 IIpifalls: |
-    n stopicqlife=>''=><<'',{code=>"Mo 444",v=>'cpi'}
+    u allvc
+    n stopicqlife =>444,<<'','%code:Mo,v:pi'
         return unless C.c.J;
+        saybl "Apply moJAII fall A.J.name -> C.sc.J.name";
         C.c.J.A.III.IIpifalls = ['J/most/J/A/II'];
 pi3d: |
-    n inlevels =>''=><<'',{code=>"Mo 3212",v=>'cpi'}
+    u allvc
+    n inlevels =>3212,<<'','%code:Mo,v:pi'
         C.c.pi && delete C.y.o.J;
         
-stopi_clife: |
-    n stopi_clife=>''=><<'',{code=>"Mo 32131",v=>'cpi'}
+stopiclife: |
+    u allvc
+    n stopi_clife =>32131,<<'','%code:Mo,v:pi'
         delete C.c.J if C.sc.pi eq 'clife';
 clifeGkeeps: |
+    u allact
     # wants to be in a humming list of the things, before thi gets figured tho
-    n clifeGkeeps=>''=><<'',{code=>"Mo 212",act=>1}
+    n clifeGkeeps =>212,<<'','%code:Mo'
         my $CC = A.J.C;
         return unless $CC && CC.c.pi eq 'cfile' && C.t eq 'z';
         my $keep = {
@@ -32,6 +39,12 @@ clifeGkeeps: |
         saybl "CC.t keeps ".join", ",sort map{_.t} @keep;
         saygr "CC.t drops ".join", ",sort map{_.t} @not;
         return;
+Dra: | # most wild (furthest from Wild, goes in circle)
+    n IIpifalls
+    n pi3d
+    n stopiclife
+    n clifeGkeeps
+    
 timery: | # capturing
     # n ^-re should mean n C.t."-re"
     n timery_re => 2 => {s=><<''},{code=>'J 42'}

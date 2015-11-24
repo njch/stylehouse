@@ -666,45 +666,11 @@ spII: | # thereis a II being passed overhead, entrance to spIII N C applier/upda
     (($say = 
     Rw spIII $A $II $N K/cv/t $s
     )=~ /stabilised/ && say("Stabilised A.talk ...") && 0
-    || A.J.V > 1) &&
+    || A.J.V > 1 || A.J.VV.t) &&
     saybl Rw TreeD $s $scby=gro;
     
     say "Spidered A.talk: ".F_delta if A.J.V;
     $say
-sumX: | #v topleve & size descript, maps C into N if
-    my @k = grep{$_ ne 'Ii' && $_ ne 'ooI'}sort keys %$X;
-    my @ll = map{$X->{$_}}@k;
-    my @l;
-    for (1..2) {
-        @ll = map {values %$_}grep{ref $_ eq 'HASH'} @ll;
-        push @l, scalar @ll;
-    }
-    ar.N && push @{ar.N}, @ll;
-    join(", ",@k).": ".join(" - ",@l);
-    
-Xisle: | # return X,NofX from isle + W
-    my ($t,$isle) = reverse @{ar.m};
-    ($t,$isle) = reverse split '/', $t, 1 if $t && !$isle;
-    $t && $isle || die " Arg m proper: $t+$isle";
-    
-    my ($ch) = map{_.nj}
-    n $t=>W=>{isle=>$isle},'%noXup'
-    
-    my $X = ch.El.Duv.rv.X || die "NO X on ch.name";
-    my $N = [];
-    Rw sumX $X $N;
-    ($X,$N)
-    
-getJN: | # rips out all rv Cs deeply, op. matching ip
-    my $rv = J.El.Duv.rv || die "J.name no elduvarv yet?";
-    @{rv.sc} && die "J.name needs to compress layers of news";
-    my $N = [@{rv.c}];
-    @$N = Rw humms $J $N wongui _;
-    ar.sc.pi = ar.pi if ar.pi;
-    if (my $s = ar.sc) {
-        @$N = grep { I.d&ip,$s,_.sc } @$N;
-    }
-    return $N;
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};
@@ -764,6 +730,40 @@ spIII: |
         II.ooI = $ooI;
     }
     join "\n",grep{defined}@say;
+sumX: | #v topleve & size descript, maps C into N if
+    my @k = grep{$_ ne 'Ii' && $_ ne 'ooI'}sort keys %$X;
+    my @ll = map{$X->{$_}}@k;
+    my @l;
+    for (1..2) {
+        @ll = map {values %$_}grep{ref $_ eq 'HASH'} @ll;
+        push @l, scalar @ll;
+    }
+    ar.N && push @{ar.N}, @ll;
+    join(", ",@k).": ".join(" - ",@l);
+    
+Xisle: | # return X,NofX from isle + W
+    my ($t,$isle) = reverse @{ar.m};
+    ($t,$isle) = reverse split '/', $t, 1 if $t && !$isle;
+    $t && $isle || die " Arg m proper: $t+$isle";
+    
+    my ($ch) = map{_.nj}
+    n $t=>W=>{isle=>$isle},'%noXup'
+    
+    my $X = ch.El.Duv.rv.X || die "NO X on ch.name";
+    my $N = [];
+    Rw sumX $X $N;
+    ($X,$N)
+    
+getJN: | # rips out all rv Cs deeply, op. matching ip
+    my $rv = J.El.Duv.rv || die "J.name no elduvarv yet?";
+    @{rv.sc} && die "J.name needs to compress layers of news";
+    my $N = [@{rv.c}];
+    @$N = Rw humms $J $N wongui _;
+    ar.sc.pi = ar.pi if ar.pi;
+    if (my $s = ar.sc) {
+        @$N = grep { I.d&ip,$s,_.sc } @$N;
+    }
+    return $N;
 TreeD: |
     # $scby
     my $bydef = "^";
