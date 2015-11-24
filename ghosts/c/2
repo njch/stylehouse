@@ -694,6 +694,16 @@ Xisle: | # return X,NofX from isle + W
     Rw sumX $X $N;
     ($X,$N)
     
+getJN: | # rips out all rv Cs deeply, op. matching ip
+    my $rv = J.El.Duv.rv || die "J.name no elduvarv yet?";
+    @{rv.sc} && die "J.name needs to compress layers of news";
+    my $N = [@{rv.c}];
+    @$N = Rw humms $J $N wongui _;
+    ar.sc.pi = ar.pi if ar.pi;
+    if (my $s = ar.sc) {
+        @$N = grep { I.d&ip,$s,_.sc } @$N;
+    }
+    return $N;
 spIII: |
     my $ooI = ar.ooI;
     $ooI ||= II.ooI ||= {};

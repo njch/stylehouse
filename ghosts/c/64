@@ -6,7 +6,7 @@ Goat: |
     n Goodat
 Ise: |
     n KnowTime
-    n IStuff
+    n Shelf
     n Rob
 Rob: |
     u allacgts
@@ -34,6 +34,7 @@ G: | # GGG subs, must get wormholes to do this this shortly
         DumpFile($f,$N);
         $N
     };
+    return sayyl "isleless J.name, assume stop" if !J.at.isle;
     for (@$N) {
         my $s = _.sc.style;
         _.sc.head = 1         if _.t eq 'head';
@@ -58,21 +59,11 @@ G: | # GGG subs, must get wormholes to do this this shortly
         #sayyl [@{$N}[0..5]];
         #return;
     }
-    # grep{_.t ne 'wag'} # anything with H... 
+    @$N = grep{_.t ne 'wag'} @$N; # anything with H... 
     u allcode
     #@$N = @{$N}[0..5];
     Mn($N);
     
-getJN: | # rips out all rv Cs deeply, op. matching ip
-    my $rv = J.El.Duv.rv || die "J.name no elduvarv yet?";
-    @{rv.sc} && die "J.name needs to compress layers of news";
-    my $N = [@{rv.c}];
-    @$N = Rw humms $J $N wongui _;
-    ar.sc.pi = ar.pi if ar.pi;
-    if (my $s = ar.sc) {
-        @$N = grep { I.d&ip,$s,_.sc } @$N;
-    }
-    return $N;
 Ear: |
     n Goat
     n Ise
@@ -107,6 +98,7 @@ Goth: |
             D.sc.eg = t.pack;
             $D = I.d&hup,$D;
             my $s = delete D.c.s;
+            $s =~ s/A\.I\.d {0}\&An;\s*$//s if D.t eq 'An';
             $s = I.d&parse_babbl,$s unless D.sc.bab eq 'non';
             $_ && $_ ne 'non' && die "INter bab $_" for D.sc.bab;
             my $nov = wdump 5, $D;
@@ -120,16 +112,17 @@ Goth: |
         if (my $e = t.export) {
             push @{t.head},
                 "use Exporter 'import';",
-                '@EXPORT = qw('.join(' ',@$e).');',
+                'our @EXPORT = qw('.join(' ',@$e).');',
                 '';
         }
         unshift @{t.l},grep{defined}
             "package t.pack;",
+            'use strict;',
+            'use warnings;',
             (t.pack ne "G" ? "use G;" : ""),
             "our \$A = {};",
             @{t.head},
-            '',
-            @{t.l};
+            '';
         push @to, $t;
     }
     my $lib = 'othlia';
@@ -144,50 +137,135 @@ Goth: |
         write_file($f, $code);
         push @inc, t.pack;
     }
+    n othing=>''=><<'','%code'
+        say "Not nothing here";
     
-    my $main = <<''
-    use lib 'othlia';
-    our @F;
     
-    .join("\n",
+got: |
+    my $inc = "othlia";
+    my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
+    my $as = {map{$_=>1} grep {-f $_} @find};
+    my $se = {};
+    for my $in (keys %$as) {
+        (my $o = $in) =~ s/\/\w+(\.pm)$/$1/;
+        $se->{$in} = 1 if $as->{$o};
+    }
+    my @in = map{delete $as->{$_};$_} keys %$se;
+    my @inc = sort keys %$as;
+    s/^$inc\/(.+)\.pm/$1/ || die "NOgot $_" for @inc;
+    s/\//::/sgm for @inc;
+    # include topmosts
+    
+    my $l=[
+        'use strict;',
+        'use warnings;',
+        'use FindBin qw($Bin);',
+        'use lib "$Bin/othlia";',
         (map{"use $_;"}@inc),
-    )
-    .<<''
-        say "YEAH!";
-        
-    ;
+        'our $A = {};',
+        '$A->{I} = {};',
+        '%{$A->{I}} = (%{$A->{I}}, %$_) for',
+        join(',',map {'   $'.$_.'::A'} @inc).';',
+        G.way.gothat,
+    ];
+    
+    write_file('got',join("\n",@$l));
     
     
     n othing=>''=><<'','%code'
         say "Not nothing here";
     
     
+gothat: |
+    sayyl wdump $A;
+Shelf: |
+    u allacgt
     
+    # G&A,'person/machine',$J
+    # run from above, Other should patch iminia2, give J to ensessionate
+    n A =>''=><<''
+        # we have $s == personality, Other (whose in  knows to J hookup
+        G&Other,$s;
     
+    n h =>''=>{s=><<''},'%acgt:s'
+        my $y = A.I->{$s} || die "No way named $s on A.talk";
+        $y->($A,$C,$G,$T,@Me);
     
+    n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
+        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
     
+    n recycle =>''=>{s=><<''}
+        return if I.recyttl++ > 8;
+        G.drop.recycling->{A.J.id}->{A.am} = $I;
     
+    n Other =>''=>{s=><<''}
+        my $ar = $F[0]->{ar};
+        $A = Rw RB + $t:s;
+        $I = A.I;
+        # midnight at the oasis
+        I.d&n,$A,{},$G,{};
+        I.d&An;
+        A.t&1;
+        A.t&11111 || warn "NO 1";
+        ($A,A.I)
     
+    n An =>101=>{s=><<''},{acgt=>1}
+        A.note = {}; # pinging csc
+        A.talk = "A.J.name ".(A.J.le && A.J.le.name);
+        A.c = sub { I.d&c,@_; };
+        A.e = sub { I.d&e,@_; };
+        A.us = sub { I.d&us,@_; };
+        A.t = sub { I.d&t,@_; };
+        A.V = sub {
+            my $bl = shift;
+            A.J.VV && A.J.VV->{$bl}
+            || A.J.V
+        };
+        $A
     
+    n Act =>''=>{s=><<''}
+        $A = {%$s};
+        A.mo.ont = $A; # keep
+        A.s = shift @{A.N};
+        $T = {};
+        T.oM = [];
+        I.d&n,$A,{},$G,$T;
+        I.d&An;
+        A.t&2;
+        map{I.nF->{$_}}qw'A C T';
     
-    
-    
-    
-    #sayyl "Somehwuir";
-    # 
+Modiy: |
+    # make pool, synth space, want arches
+    # fork & rejoin to exciting place
+    # the valley, what it means to be here in here YIN
+    my $A = Rw WeBase Mo;
+    my $I = A.I;
+    I.d&n,$A,$C,$G,{};
+    I.d&An;
+    A.t&1;
+    A.t&11111 || warn "NO 1";
+    @{A.N}||die"nois".wdump[$C,$A];
+    my $i;
+    while (@{A.N}) { #                                             ඬ
+        $i++ > 5000 && die " @ Huge Modi";
+        my ($A,$C,$T) = I.d&Act,$A;
+        # ^this to thisv to 2, returns the finitest A, etc.
+        T.not&&next;
+        A.t&6;
+        T.not&&next;
+        I.d&flywheels; # want to outgrow
+        T.not&&next;
+        A.t&78;
+    }
+    continue { I.d&z; }
+    # 9
+    (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
+    return $A
 Gooso: |
     u allacgts
     
-    # G&A,'person/machine' finds relevant A.I to AI.d&Other with, returning ($A,$I)
-    n A =>''=><<''
-        my $D = $F[0];
-        my $r = D.ar;
-        my $A = r.A || die 'GhnoA';
-        my $I = A.I || die 'GhnoI';
-        I.d&Other,$s;
-    
     # see also Loading for ongoign G.T timeyness
-    n T =>0.101=><<'','%subpeel'
+    n T =>0.101=><<''
         my $e = I.d&ti,'Wormhole';
         %$e = (%$e,%{G.T}) if G.T;
         G.T = $e;
@@ -475,8 +553,14 @@ GBabz: |
             .
             # lma quack $not->('tag');? from I.d&pui,$s
             $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
-                my $s = "$1->(\"$2\"$3)$4";
-                $s = '$'.$s if $1 !~ m{\.};
+                my ($on,$p,$e,$t) = ($1,$2,$3,$4);
+                my $in;
+                if ($on eq 'G') {
+                    $on = "G\.h";
+                    $in = '$A,$C,$G,$T,';
+                }
+                my $s = $on."->($in\"$p\"$e)$t";
+                $s = '$'.$s if $on !~ m{\.};
                 $s
             /smge;
             # $sc>$k -> $sc->{$k}
@@ -487,7 +571,6 @@ GBabz: |
             .
             while ($s =~ /(Rw (p.oint)(?:(?!p.sur) (.+?))?)p.sur/gsm) {
                 my ($old, $op, $oa) = ($1, $2, $3);
-                say "FOund ".wdump [ $old,$op,$oa ];
                 my $g;
                 $g ||= '$G';
                 .

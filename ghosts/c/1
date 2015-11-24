@@ -151,8 +151,6 @@ WeBase: | # require N, required to return an A.I that I.n,I.An,A.t
     
     if ($I) {
         if (I.Ii eq II.Ii) {
-            #say "Recyc A.talk! I.Ii continu" if A.J.V;
-            #$I = {%$I,nF=>{}};
             A.I = $I;
             A.cv = 0.1;
         }
@@ -192,8 +190,6 @@ RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
     
     if ($I) {
         if (I.Ii eq II.Ii) {
-            say "Recyc A.talk! I.Ii continu" if A.J.V;
-            #$I = {%$I,nF=>{}};
             A.I = $I;
             A.cv = 0.1;
         }
@@ -544,7 +540,8 @@ KnowTime: | # dome props
         for my $ik (sort keys %$iii) {
             my $D = $iii->{$ik};
             if (my $nk = D.sc.nk) {
-                my $C = I.nF.C;
+                my $Ce = I.nF.C;
+                die " SDIfC ".wdump 4,[$C, $Ce] if $C ne $Ce;
                 next if !exists $C->{$nk};
                 if (my $gk = D.sc.gk) {
                     next if !exists $C->{$nk}->{$gk};
@@ -724,9 +721,9 @@ Bangdesk: |
             A.bang = 21;
             $_->() for values %{A.bangdesk.bang};
             # want to sus $@ and hang vectors of what, should be autoish
-            my $m = "J: I.nF.A.talk        A.mo.ont.cv";
-            $m .= "\nC: ".k2 I.nF.C;
-            $m .= "\ns: ".wdump 3, I.nF.A.s unless length $m > 20;
+            my $m = "J: A.mo.ont.talk        A.mo.ont.cv";
+            $m .= "\nC: ".k2 A.mo.ont.C;
+            $m .= "\ns: ".wdump 3, A.mo.ont.s unless length $m > 20;
             sayre " * bangdesk: \n$m";
             return $m;
         };
@@ -962,8 +959,6 @@ C: |
         return $s;
     
     n inDin =>'',<<'',{acgt=>'s,D'}
-        die'nofA' if !I.nF.A;
-        #
         return () unless defined $s;
         return $s if $D eq 'C';
         #
