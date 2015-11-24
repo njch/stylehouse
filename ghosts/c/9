@@ -12,37 +12,46 @@ allcurve: |
     #y
 
 allcode: |
-    n 'allarecode=1'=>42,<<'','%acgt:s,act,code:In'
+    u allact
+    n 'allarecode=1'=>42,<<'','%code:In'
         C.sc.code = 1 if !exists C.sc.code;
+allpack: |
+    u allact
+    n 'allarepack=t'=>41,<<'','%code:In'
+        C.sc.code = 'Pack' if !exists C.sc.code;
+        C.sc.pack ||= C.t;
 allacgt: |
-    n allcode
-    n 'allareacgt=1'=>42,<<'','%acgt:s,act,code:In'
+    u allact
+    n 'allareacgt=1'=>42,<<'','%code:In'
         C.sc.acgt = '1' if !exists C.sc.acgt;
 allacgts: |
+    u allact
     n allcode
-    n 'allareacgt=s'=>42,<<'','%acgt:s,act,code:In'
+    n 'allareacgt=s'=>42,<<'','%code:In'
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
+    u allact
     n allacgts
-    n 'allareact=1'=>42,<<'','%acgt:s,act,code:In'
+    n 'allareact=1'=>42,<<'','%code:In'
         C.sc.act = 1 if !exists C.sc.act;
 allvy: |
+    u allact
     #u allact
     n allact
-    n 'allarev=y'=>42,{s=><<''},'%acgt:s,act,code:In'
+    n 'allarev=y'=>42,{s=><<''},'%code:In'
         return if C.sc.nov;
         C.sc.v = 'y'.C.sc.v;
         C.t .= "_".C.y.cv;
 allvc: |
-    #u allact
+    u allact
     n allact
-    n 'allarev=c'=>422,<<'','%acgt:s,act,code:In'
+    n 'allarev=c'=>422,<<'','%code:In'
         return if C.sc.nov;
         C.sc.v = 'c'.C.sc.v;
 allof: |
-    #u allact
+    u allact
     n allacgts
-    n 'allof'=>418,<<'','%acgt:s,act,code:In'
+    n 'allof'=>418,<<'','%code:In'
         if (C.c.of) { # or how this u tater got .s'd
             A.J.A.vse.of = C.c.of;
             return T.not = 1;
@@ -54,10 +63,11 @@ allof: |
         };
     
 allvse: |
+    u allact
     n allvc
     n allof
     # vices should be novelty not envy
-    n 'allvse'=>419,<<'','%acgt:s,act,code:In'
+    n 'allvse'=>419,<<'','%code:In'
         if (C.sc.nv) {
             C.sc.nov = 1;
             C.sc.v = C.sc.nv;

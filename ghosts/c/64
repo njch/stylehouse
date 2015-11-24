@@ -1,5 +1,5 @@
 
-Goat: |
+Datarl: |
     y.at.isle = 'U';
     n Gooso
     n Tides
@@ -180,9 +180,10 @@ gothat: |
     sayyl wdump $A;
 Shelf: |
     u allacgts
-    # all should be G.I
-    # G&A,'person/machine' where C.c.J=J
-    # run from above, Other should patch iminia2, give J to ensessionate
+    n h =>'',<<''
+        my $y = A.I->{$s} || die "No way named $s on A.talk";
+        $y->($A,$C,$G,$T,@Me);
+    
     n A =>''=><<''
         ($A,my$up) = ({},$A);
         A.G = $G; # for wiring from A (G/T/Hypo)
@@ -210,6 +211,7 @@ Shelf: |
         I.Ii = II.Ii;
         # throw in from R exact Ii, bits of Ii to I before t gets it
         if (my $re = delete G.drop.recycling->{A.J.id}->{A.am}) {
+            sayyl "Recyclo A.talk --- I.Ii  (".keys %$I;
             if (re.Ii eq I.Ii) {
                 %$I = (%$I,%$re);
                 A.cv = 0.1;
@@ -226,20 +228,6 @@ Shelf: |
     n recycle =>''=>{s=><<''}
         return if I.recyttl++ > 38;
         G.drop.recycling->{A.J.id}->{A.am} = $I;
-    
-    n h =>'',<<''
-        my $y = A.I->{$s} || die "No way named $s on A.talk";
-        $y->($A,$C,$G,$T,@Me);
-    
-    n An =>101,<<''
-        A.I || die "GimeI";
-        A.note = {}; # pinging csc
-        A.c = sub { G&c,@_; };
-        A.e = sub { G&e,@_; };
-        A.us = sub { G&us,@_; };
-        A.t = sub { G&t,@_; };
-        A.V = sub { A.J.VV && A.J.VV->{$_[0]} || A.J.V };
-        $A
     
     n Act =>'',<<''
         A.s = shift @{A.N};
@@ -259,6 +247,16 @@ Shelf: |
         G&An;
         A.t&2;
         ($A,$C,$T)
+    
+    n An =>101,<<''
+        A.I || die "GimeI";
+        A.note = {}; # pinging csc
+        A.c = sub { G&c,@_; };
+        A.e = sub { G&e,@_; };
+        A.us = sub { G&us,@_; };
+        A.t = sub { G&t,@_; };
+        A.V = sub { A.J.VV && A.J.VV->{$_[0]} || A.J.V };
+        $A
     
     #c ventlike      ඬ
     # make pool, synth space, want arches
@@ -280,10 +278,9 @@ Shelf: |
     
     n Sev =>'',<<''
         $C = [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
+        $C = [$s, $C];
         ($A,$C,$G,$T) = G&A,'Sev';
-        A.I.scIfs || die "NO scIfs: ".wdump 3,
-            ["J.name I,JAI:",A.I,
-            J.A.I,J.A.IIII,"GI:",G.IIII ];
+        A.I.scIfs || die "NO scIfs: A.J.name";
         G&loop;
 
     n loop =>'',<<''
@@ -319,25 +316,26 @@ Shelf: |
 Gooso: |
     u allacgts
     
+Tides: |
+    u allacgts
+    n ti =>0.09=><<'','%acgt:class'
+        my %na;
+        tie %na, $class, @Me;
+        return \%na
+    
     # see also Loading for ongoign G.T timeyness
-    n T =>0.101=><<''
+    n T =>''=><<''
         my $e = I.d&ti,'Wormhole';
         %$e = (%$e,%{G.T}) if G.T;
         G.T = $e;
         G.T.base = 'w';
         G.T
     
-Tides: |
-    u allacgts
-    n ti =>''=><<'','%acgt:class'
-        my %na;
-        tie %na, $class, @Me;
-        return \%na
-    
+    u allpack
     # for the hash of a filesystem
     # results must be kept up to date otherwise
     # (use only as G.T & Loading)
-    n pack_Wormhole =>''=><<'','%subpeel'
+    n Wormhole =>''=><<''
         {
             package Wormhole;
             use Tie::Hash;
@@ -369,7 +367,7 @@ Tides: |
         }
     
     # for the T.at that also sees J.oy.at
-    n pack_Ghoz =>''=><<'','%subpeel'
+    n Ghoz =>''=><<''
         {
             package Ghoz; #
             use Tie::Hash;
