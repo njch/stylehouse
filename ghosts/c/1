@@ -676,7 +676,11 @@ Motion: |
         if (my $z = delete T.Z) {
             I.d&Tz,$z;
         }
-        I.d&more,A.mo.re if !@{A.mo.N} && A.mo.re
+        !@{A.mo.N} && A.mo.re &&
+            I.d&more,A.mo.re;
+        if (my $y = delete T.y) {
+            I.d&mar,T.y;
+        }
     
     # carry A through time
     # tease out the next times off T.Z.$nexttime = $incv|$N
@@ -684,30 +688,19 @@ Motion: |
     n Tz =>'',<<''
         my ($lo) = sort keys %$s;
         my $v = $z->{$lo};
-        my $wait = A.mo.re->{$lo} ||= [];
         T.incv = $v if $v ne '1';
-        push @$wait,
-            ref $v eq 'ARRAY' ? @$v :
-            $v ne '1' ? [$A,$C,$v] :
-            [$A,$C];
+        $v = [I.d&sano ] if ref $v ne $A;
+        push @{A.mo.re->{$lo}||=[]}, @$v;
         @{T.oM} = ();
-    n Tz =>'',<<''
-            my $ats = A.mo.re || {};
-            my @wa = sort keys %$ats;
-            my ($lo) = @wa;
-            if ($lo) {
-                my $ay = delete $ats->{$lo};
-                my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-                push @{A.mo.N}, @N;
-                saybl "Looping ".@N." to $lo" if A.J.V > 1;
-                # sort by y.i
-            }
-        }
-        # concoi severaliser, for conglom up; merging spiral snips of code
-        if (my $y = T.y) {
-            for my $k (keys %$y) {
-                A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
-            }
+    
+    # TODO sort by y.i ) s = c
+    n more =>'',<<''
+        my ($lo) = sort keys %$s;
+        if ($lo) {
+            my $ay = delete $ats->{$lo};
+            my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+            push @{A.mo.N}, @N;
+            saybl "Looping ".@N." to $lo" if A.J.V > 1;
         }
 
     n moy =>''=>{s=><<''}
@@ -1088,7 +1081,9 @@ Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     n AZu =>''=>{s=><<''},{l=>'Motion/oseverato'}
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
-        my ($AA,$CC,$cov) = @$ac;
+        my ($AA,$CC) = ($ac,ac.C);
+        $T = ac.T||{};
+        my $cov = delete T.incv;
         my $aa = $AA?"AAcv=AA.cv":"NoAA";
         $AA ||= $A; # spawning cone thing
         I.d&n,$AA,$CC,$G,$T;
@@ -1099,7 +1094,6 @@ Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
             #return T.not = 1;
         }
         A.cv = $cov || $cv;
-        $T->{$_} = A.T->{$_} for keys %{A.T||{}};
         I.d&An;
         T.whack = 1;
     

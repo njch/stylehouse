@@ -179,127 +179,143 @@ got: |
 gothat: |
     sayyl wdump $A;
 Shelf: |
-    u allacgt
-    
-    # G&A,'person/machine',$J
+    u allacgts
+    # all should be G.I
+    # G&A,'person/machine' where C.c.J=J
     # run from above, Other should patch iminia2, give J to ensessionate
     n A =>''=><<''
-        my $AA = $A;
-        $A = {};
+        ($A,my$up) = ({},$A);
+        A.G = $G; # for wiring from A (G/T/Hypo)
+        A.up = $up;
         A.mo = $A;
+        ($C,my$S) = ({},$C);
+        C.c.J = shift @$S;
+        C.c.M = $S->[1] if 2 == grep{ref$_ eq 'ARRAY'}@{$S}[0,1];
+        C.c.N = C.c.M ? $S->[0] : $S;
+        A.N = [@{C.c.N}];
+        A.M = [];
+        A.J = C.c.J if C.c.J;
+        A.J || die "NOJ";
+        .
+        A.fl = C.c.fl || {};
+        A.am = $s || die "unsame?";
         A.talk = (A.J.le&&"(A.J.le.name)").A.J.name;
-        G&Other,$s;
-    
-    n h =>''=>{s=><<''},'%acgt:s'
-        my $y = A.I->{$s} || die "No way named $s on A.talk";
-        $y->($A,$C,$G,$T,@Me);
-    
-    n n =>''=>{s=><<''},{acgt=>'AA,CC,GG,TT'}
-        I.nF = {A=>$AA,C=>$CC,G=>$GG,T=>$TT};
-    
-    n recycle =>''=>{s=><<''}
-        return if I.recyttl++ > 8;
-        G.drop.recycling->{A.J.id}->{A.am} = $I;
-    
-    n Other =>''=>{s=><<''}
-        my $ar = $F[0]->{ar};
-        $A = Rw RB + $t:s;
-        $I = A.I;
-        # midnight at the oasis
-        I.d&n,$A,{},$G,{};
+        my $I = A.I = {};
+        my $II = Rw collaspII $A;
+        I.Ii = II.Ii;
+        say "A.talk wants : II.Ii";
+        # split from R, dispatches of patches as I.$k = CODE
+        # base exuder of self if no Ii resol
+        %$I = (%$I,%{G.I});
+        I.Ii = II.Ii;
+        # throw in from R exact Ii, bits of Ii to I before t gets it
+        if (my $re = delete G.drop.recycling->{A.J.id}->{A.am}) {
+            if (re.Ii eq I.Ii) {
+                %$I = (%$I,%$re);
+                A.cv = 0.1;
+            }
+            else {
+                sayre "Recycloped, Diff I.Ii  <--  re.Ii";
+            }
+        }
         I.d&An;
         A.t&1;
         A.t&11111 || warn "NO 1";
-        ($A,A.I)
+        ($A,$C,$T)
     
-    n An =>101=>{s=><<''},{acgt=>1}
+    n recycle =>''=>{s=><<''}
+        return if I.recyttl++ > 38;
+        G.drop.recycling->{A.J.id}->{A.am} = $I;
+    
+    n h =>'',<<''
+        my $y = A.I->{$s} || die "No way named $s on A.talk";
+        $y->($A,$C,$G,$T,@Me);
+    
+    n An =>101,<<''
+        A.I || die "GimeI";
         A.note = {}; # pinging csc
-        A.c = sub { I.d&c,@_; };
-        A.e = sub { I.d&e,@_; };
-        A.us = sub { I.d&us,@_; };
-        A.t = sub { I.d&t,@_; };
-        A.V = sub {
-            my $bl = shift;
-            A.J.VV && A.J.VV->{$bl}
-            || A.J.V
-        };
+        A.c = sub { G&c,@_; };
+        A.e = sub { G&e,@_; };
+        A.us = sub { G&us,@_; };
+        A.t = sub { G&t,@_; };
+        A.V = sub { A.J.VV && A.J.VV->{$_[0]} || A.J.V };
         $A
     
-    n Act =>''=>{s=><<''}
-        $A = {%$s};
-        A.mo.ont = $A; # keep
+    n Act =>'',<<''
         A.s = shift @{A.N};
-        $T = {};
-        T.oM = [];
-        I.d&n,$A,{},$G,$T;
-        I.d&An;
-        A.t&2;
-        map{I.nF->{$_}}qw'A C T';
-    
-RB: | # inits A of ar C/N, pins spiral down (ret A.I that I.n,I.An,A.t)
-    # non babzub, assume pbab skipped <<''s in origin
-    my $A = {};
-    A.J = ar.J || die 'noJ';
-    A.G = $G; # so travel can G/T/Hypo
-    A.mo = $A;
-    (A.am) = ar.t || ar.name || @{delete ar.m};
-    A.am || die "unsame?";
-    
-    A.N = [ar.C || @{ar.N}];
-    A.M = [];
-    A.talk = "A.J.name ".(A.J.le && A.J.le.name);
-    A.fl = ar.fl || {};
-    A.I = {};
-    
-    my $I = delete G.drop.recycling->{A.J.id}->{A.am};
-    
-    my $II = Rw collaspII $A;
-    
-    if ($I) {
-        if (I.Ii eq II.Ii) {
-            A.I = $I;
-            A.cv = 0.1;
+        if (ref A.s eq 'HASH' && A.s.J && A.s.mo && A.s.talk) {
+            $A = A.s;
+            A.mo eq $s || die "A.talk  mo A.mo.talk not s.talk";
+            $C = A.C||die"travcno A.talk";
+            $T = A.T ||= {};
         }
         else {
-            sayre "Recycloped, Diff I.Ii  --  II.Ii" if A.J.V;
-            undef $I;
+            $A = {%$s};
+            A.mo.ont = $A; # keep
+            $C = A.C = {};
+            $T = A.T = {};
         }
-    }
+        T.oM = [];
+        G&An;
+        A.t&2;
+        ($A,$C,$T)
     
-    A.I.Ii = II.Ii;
-    
-    if (!$I) {
-        $I = A.I||die'basenoi';
-        Rw SNtl $I;
-    }
-    $A
-Modiy: |
+    #c ventlike      ඬ
     # make pool, synth space, want arches
     # fork & rejoin to exciting place
     # the valley, what it means to be here in here YIN
-    my $A = Rw WeBase Mo;
-    my $I = A.I;
-    I.d&n,$A,$C,$G,{};
-    I.d&An;
-    A.t&1;
-    A.t&11111 || warn "NO 1";
-    @{A.N}||die"nois".wdump[$C,$A];
-    my $i;
-    while (@{A.N}) { #                                             ඬ
-        $i++ > 5000 && die " @ Huge Modi";
-        my ($A,$C,$T) = I.d&Act,$A;
-        # ^this to thisv to 2, returns the finitest A, etc.
-        T.not&&next;
-        A.t&6;
-        T.not&&next;
-        I.d&flywheels; # want to outgrow
-        T.not&&next;
-        A.t&78;
-    }
-    continue { I.d&z; }
-    # 9
-    (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
-    return $A
+    # todo undef $s as repl, J ventlike
+        #  $J, [in], [out]
+    # @M = $s + @Me
+    # Mn(.+) is n $J [$1] $M
+    n n =>'',<<''
+        $C = \@M;
+        ($A,$C,$G,$T) = G&A,'In';
+        G&loop;
+    
+    n m =>'',<<''
+        $C = \@M;
+        ($A,$C,$G,$T) = G&A,'Mo';
+        G&loop;
+    
+    n Sev =>'',<<''
+        $C = [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
+        ($A,$C,$G,$T) = G&A,'Sev';
+        A.I.scIfs || die "NO scIfs: ".wdump 3,
+            ["J.name I,JAI:",A.I,
+            J.A.I,J.A.IIII,"GI:",G.IIII ];
+        G&loop;
+
+    n loop =>'',<<''
+        my $i;
+        @{A.N}||die"nois".wdump[$C,$A];
+        while (@{A.N}) { #
+            $i++ > 5000 && die "Huge Indi";
+            my ($A,$C,$T) = G&Act,$A;
+            T.not&&next;
+            A.t&6;
+            T.not&&next;
+            G&flywheels;
+            T.not&&next;
+            A.t&78;
+            T.not&&next;
+        }
+        continue { I.d&z; }
+        A.t&8;
+        G&recycle;
+        (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
+        if (C.c.M) {
+            @{C.c.M} = () if C.c.M eq C.c.N;
+            die "ManyofsameM: ".wdump 3, A.M if @{A.M} > uniq @{A.M};
+            push @{C.c.M}, @{A.M};
+            $A
+        }
+        elsif (C.c.J) {
+            G&Mo,C.c.J,A.M,C.c.M||[];
+        }
+        else {
+            die "noJMout";
+        }
 Gooso: |
     u allacgts
     
