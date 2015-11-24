@@ -13,27 +13,37 @@ allcurve: |
 
 allcode: |
     u allact
-    n 'allarecode=1'=>42,<<'','%code:In'
+    n 'allarecode=1'=>42,<<''
         C.sc.code = 1 if !exists C.sc.code;
+all4noJ: |
+    u allact
+    n 'skip4around4fornonJ'=>4,<<''
+        return unless C.c.J || C.c.W || C.c.pi;
+        T.Z->{0.44} = 1;
+        T.not = 1;
+    
 allpack: |
     u allact
-    n 'allarepack=t'=>41,<<'','%code:In'
+    n 'allarepack=t'=>41,<<''
         C.sc.code = 'Pack' if !exists C.sc.code;
         C.sc.pack ||= C.t;
 allacgt: |
     u allact
-    n 'allareacgt=1'=>42,<<'','%code:In'
+    n allcode
+    n 'allareacgt=1'=>42,<<''
         C.sc.acgt = '1' if !exists C.sc.acgt;
 allacgts: |
     u allact
     n allcode
-    n 'allareacgt=s'=>42,<<'','%code:In'
+    n 'allareacgt=s'=>42,<<''
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
-    u allact
+    #u allact
     n allacgts
-    n 'allareact=1'=>42,<<'','%code:In'
+    n all4nonJ
+    n 'allareact=1'=>42,<<'','%act,code:In';
         C.sc.act = 1 if !exists C.sc.act;
+        C.sc.code = 'In' if !exists C.sc.code;
 allvy: |
     u allact
     #u allact
