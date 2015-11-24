@@ -34,17 +34,23 @@ G: | # GGG subs, must get wormholes to do this this shortly
         $N
     };
     return sayyl "isleless J.name, assume stop" if !J.at.isle;
-    for (@$N) {
-        my $s = _.sc.style;
-        _.sc.head = 1         if _.t eq 'head';
-        _.sc.bab = 'non'     if $s eq 'nonbabble';
-        _.sc.subis = 1         if $s eq 'func' || $s eq '';
-        _.sc.export = 1     if $s eq 'func';
-        _.c.s = "my \$G = shift;\n"._.c.s
+    for my $D (@$N) {
+        my $s = D.sc.style;
+        D.sc.head = 1         if _.t eq 'head';
+        D.sc.bab = 'non'     if $s eq 'nonbabble';
+        D.sc.subis = 1         if $s eq 'func' || $s eq '';
+        D.sc.export = 1     if $s eq 'func';
+        if (D.sc.head && !D.sc.export) {
+            my $e = [];
+            push @$e, $1 while D.c.s =~ /^use .+ (?:qw)?\W([\w\s]+)\W;/sgm;
+            _.sc.export = join ' ', @$e;
+            sayyl "Have ".wdump 4, $_;
+        }
+        D.c.s = "my \$G = shift;\n".D.c.s
                             if $s eq '';
-        _.c.s = "sub _.t {\n"._.c.s."\n}"
-                            if _.sc.subis;
-        _.c.from = "G";
+        D.c.s = "sub D.t {\n".D.c.s."\n}"
+                            if D.sc.subis;
+        D.c.from = "G";
     }
     if (1) {
         my $E = {};
@@ -55,16 +61,13 @@ G: | # GGG subs, must get wormholes to do this this shortly
             E.subi->{_.sc.subis} .= "_.t ";
         }
         say wdump [$E];
-        #sayyl [@{$N}[0..5]];
-        #return;
     }
     @$N = grep{_.t ne 'wag'} @$N; # anything with H... 
     u allcode
-    #@$N = @{$N}[0..5];
     Mn($N);
     
 Ear: |
-    n Goat
+    n Down
     n Ise
     n G
 Goth: |
@@ -103,10 +106,13 @@ Goth: |
             my $nov = wdump 5, $D;
             die "TOo long D D.t: $nov" if length($nov) > 500;
             my $wh = D.sc.head ? 'head' : 'l';
-            acum $t,$wh,"\$A->{II}->{D.sc.code}->{D.y.cv}->{D.t} = $nov"
+            acum $t=>$wh=>"\$A->{II}->{D.sc.code}->{D.y.cv}->{D.t} = $nov"
                 unless D.sc.head || D.sc.subis;
-            acum $t,$wh,$s;
-            acum $t,export=>D.t if D.sc.export;
+            acum $t=>$wh=>$s;
+            if (my $e = D.sc.export) {
+                $e = $e ne '1' ? $e : D.t;
+                acum $t=>export=>$e;
+            }
         }
         if (my $e = t.export) {
             push @{t.head},
@@ -200,6 +206,7 @@ Shelf: |
         A.fl = C.c.fl || {};
         A.am = $s || die "unsame?";
         A.talk = (A.J.le&&"(A.J.le.name)").A.J.name;
+        {
         my $I = A.I = {};
         my $II = Rw collaspII $A;
         I.Ii = II.Ii;
@@ -222,6 +229,7 @@ Shelf: |
         I.d&An;
         A.t&1;
         A.t&11111 || warn "NO 1";
+        }
         ($A,$C,$T)
     
     n recycle =>''=>{s=><<''}
@@ -302,7 +310,8 @@ Shelf: |
         (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
         if (C.c.M) {
             @{C.c.M} = () if C.c.M eq C.c.N;
-            die "ManyofsameM: ".wdump 3, A.M if @{A.M} > uniq @{A.M};
+            my @un = uniq @{A.M};
+            die "ManyofsameM: ".wdump 3, A.M if @{A.M} > @un;
             push @{C.c.M}, @{A.M};
             $A
         }
