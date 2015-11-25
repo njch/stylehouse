@@ -4,23 +4,6 @@ use warnings;
 use G;
 our $A = {};
 
-$A->{II}->{I}->{0.1}->{A} = {
-  'sc' => {
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Shelf',
-    'bab' => undef,
-    'code' => 'I',
-    'dige' => '812f6744f401',
-    'acgt' => 's'
-  },
-  't' => 'A',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Ise/Shelf'
-     }
-};
 $A->{I}->{A} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -66,23 +49,6 @@ $A->{I}->{A} = sub {
     }
     ($A,$C,$T)
 };
-$A->{II}->{I}->{0.1}->{Act} = {
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
-  't' => 'Act',
-  'sc' => {
-    'acgt' => 's',
-    'bab' => undef,
-    'eg' => 'Ise::Shelf',
-    'code' => 'I',
-    'args' => 'A,C,G,T,s',
-    'dige' => 'ebb51d1b7d0d'
-  },
-  'y' => {
-   'cv' => '0.1'
-     }
-};
 $A->{I}->{Act} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -104,23 +70,6 @@ $A->{I}->{Act} = sub {
     $A->{t}->("2");
     ($A,$C,$T)
 };
-$A->{II}->{I}->{0.1}->{An} = {
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
-  'y' => {
-   'cv' => '0.1'
-     },
-  't' => 'An',
-  'sc' => {
-    'acgt' => 's',
-    'args' => 'A,C,G,T,s',
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Ise::Shelf',
-    'dige' => 'c338bf154937'
-  }
-};
 $A->{I}->{An} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -133,23 +82,6 @@ $A->{I}->{An} = sub {
     $A->{V} = sub { $A->{J}->{VV} && $A->{J}->{VV}->{$_[0]} || $A->{J}->{V} };
     $A
 };
-$A->{II}->{I}->{0.1}->{Sev} = {
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
-  't' => 'Sev',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'acgt' => 's',
-    'dige' => '3154442f2daf',
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Ise::Shelf',
-    'args' => 'A,C,G,T,s'
-  }
-};
 $A->{I}->{Sev} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -159,45 +91,11 @@ $A->{I}->{Sev} = sub {
     $A->{I}->{scIfs} || die "NO scIfs: $A->{J}->{name}";
     $G->{h}->($A,$C,$G,$T,"loop");
 };
-$A->{II}->{I}->{0.1}->{h} = {
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
-  'sc' => {
-    'acgt' => 's',
-    'dige' => 'e6ec3c80aa41',
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Ise::Shelf',
-    'args' => 'A,C,G,T,s'
-  },
-  't' => 'h',
-  'y' => {
-   'cv' => '0.1'
-     }
-};
 $A->{I}->{h} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $y = $A->{I}->{$s} || die "No way named $s on $A->{talk}";
     $y->($A,$C,$G,$T,@Me);
-};
-$A->{II}->{I}->{0.1}->{loop} = {
-  'y' => {
-   'cv' => '0.1'
-     },
-  't' => 'loop',
-  'sc' => {
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Shelf',
-    'bab' => undef,
-    'code' => 'I',
-    'dige' => '2cd19675052b',
-    'acgt' => 's'
-  },
-  'c' => {
-   'from' => 'Ise/Shelf'
-     }
 };
 $A->{I}->{loop} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -233,46 +131,12 @@ $A->{I}->{loop} = sub {
         die "noJMout";
     }
 };
-$A->{II}->{I}->{0.1}->{m} = {
-  't' => 'm',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'dige' => 'dcad850e9d3b',
-    'eg' => 'Ise::Shelf',
-    'bab' => undef,
-    'code' => 'I',
-    'args' => 'A,C,G,T,s',
-    'acgt' => 's'
-  },
-  'c' => {
-   'from' => 'Ise/Shelf'
-     }
-};
 $A->{I}->{m} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $C = [$s,@Me];
     ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Mo');
     $G->{h}->($A,$C,$G,$T,"loop");
-};
-$A->{II}->{I}->{0.1}->{n} = {
-  'sc' => {
-    'acgt' => 's',
-    'dige' => '156997e2ba28',
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Shelf',
-    'bab' => undef,
-    'code' => 'I'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  't' => 'n',
-  'c' => {
-   'from' => 'Ise/Shelf'
-     }
 };
 $A->{I}->{n} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -281,26 +145,132 @@ $A->{I}->{n} = sub {
     ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'In');
     $G->{h}->($A,$C,$G,$T,"loop");
 };
-$A->{II}->{I}->{0.1}->{recycle} = {
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
-  't' => 'recycle',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'dige' => '529c5fe2a27b',
-    'eg' => 'Ise::Shelf',
-    'bab' => undef,
-    'code' => 'I',
-    'args' => 'A,C,G,T,s',
-    'acgt' => 's'
-  }
-};
 $A->{I}->{recycle} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     return if $I->{recyttl}++ > 38;
     $G->{drop}->{recycling}->{$A->{J}->{id}}->{$A->{am}} = $I;
 };
+$A->{II} = Load(<<STEVE);
+--- 
+I: 
+  "0.1": 
+    A: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 812f6744f401
+        eg: Ise::Shelf
+      t: A
+      "y": 
+        cv: '0.1'
+    Act: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: ebb51d1b7d0d
+        eg: Ise::Shelf
+      t: Act
+      "y": 
+        cv: '0.1'
+    An: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: c338bf154937
+        eg: Ise::Shelf
+      t: An
+      "y": 
+        cv: '0.1'
+    Sev: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 3154442f2daf
+        eg: Ise::Shelf
+      t: Sev
+      "y": 
+        cv: '0.1'
+    h: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: e6ec3c80aa41
+        eg: Ise::Shelf
+      t: h
+      "y": 
+        cv: '0.1'
+    loop: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 2cd19675052b
+        eg: Ise::Shelf
+      t: loop
+      "y": 
+        cv: '0.1'
+    m: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: dcad850e9d3b
+        eg: Ise::Shelf
+      t: m
+      "y": 
+        cv: '0.1'
+    "n": 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 156997e2ba28
+        eg: Ise::Shelf
+      t: 'n'
+      "y": 
+        cv: '0.1'
+    recycle: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 529c5fe2a27b
+        eg: Ise::Shelf
+      t: recycle
+      "y": 
+        cv: '0.1'
+
+STEVE

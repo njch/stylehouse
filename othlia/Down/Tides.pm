@@ -4,23 +4,6 @@ use warnings;
 use G;
 our $A = {};
 
-$A->{II}->{I}->{0.1}->{T} = {
-  't' => 'T',
-  'sc' => {
-    'acgt' => 's',
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Down::Tides',
-    'args' => 'A,C,G,T,s',
-    'dige' => '459d5b4d0e67'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Down/Tides'
-     }
-};
 $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -29,23 +12,6 @@ $A->{I}->{T} = sub {
     $G->{T} = $e;
     $G->{T}->{base} = 'w';
     $G->{T}
-};
-$A->{II}->{I}->{0.1}->{tie} = {
-  't' => 'tie',
-  'sc' => {
-    'bab' => undef,
-    'eg' => 'Down::Tides',
-    'code' => 'I',
-    'args' => 'A,C,G,T,class',
-    'dige' => '308c97386cb4',
-    'acgt' => 'class'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Down/Tides'
-     }
 };
 $A->{I}->{tie} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -113,3 +79,35 @@ $A->{I}->{tie} = sub {
         };
     }
 }
+$A->{II} = Load(<<STEVE);
+--- 
+I: 
+  "0.1": 
+    T: 
+      c: 
+        from: Down/Tides
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 459d5b4d0e67
+        eg: Down::Tides
+      t: T
+      "y": 
+        cv: '0.1'
+    tie: 
+      c: 
+        from: Down/Tides
+      sc: 
+        acgt: class
+        args: A,C,G,T,class
+        bab: ~
+        code: I
+        dige: 308c97386cb4
+        eg: Down::Tides
+      t: tie
+      "y": 
+        cv: '0.1'
+
+STEVE

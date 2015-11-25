@@ -4,46 +4,12 @@ use warnings;
 use G;
 our $A = {};
 
-$A->{II}->{I}->{0.1}->{norp} = {
-  'sc' => {
-    'acgt' => 'pin',
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Down::Goodat',
-    'args' => 'A,C,G,T,pin',
-    'dige' => '49d8296634db'
-  },
-  't' => 'norp',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Down/Goodat'
-     }
-};
 $A->{I}->{norp} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,@Me) = @M;
     my $I = $A->{I};
     $I->{pwin} || die "nopwin from pin";
     sort { $I->{pwin}->($pin,$a) <=> $I->{pwin}->($pin,$b) } @Me;
-};
-$A->{II}->{I}->{0.1}->{pin} = {
-  'sc' => {
-    'dige' => '4b3004b63abe',
-    'args' => 'A,C,G,T,pin,way',
-    'eg' => 'Down::Goodat',
-    'bab' => undef,
-    'code' => 'I',
-    'acgt' => 'pin,way'
-  },
-  't' => 'pin',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Down/Goodat'
-     }
 };
 $A->{I}->{pin} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -52,46 +18,12 @@ $A->{I}->{pin} = sub {
     $I->{pwin} || die "nopwin from pin";
     $I->{pwin}->($pin,$way);
 };
-$A->{II}->{I}->{0.1}->{pon} = {
-  't' => 'pon',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'acgt' => 'pin,way,s',
-    'args' => 'A,C,G,T,pin,way,s',
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Down::Goodat',
-    'dige' => '76860c9adfeb'
-  },
-  'c' => {
-   'from' => 'Down/Goodat'
-     }
-};
 $A->{I}->{pon} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,$way,$s,@Me) = @M;
     my $I = $A->{I};
     $I->{pwin} || die "nopwin from pin";
     $I->{pwin}->($pin,$way,{et=>$s});
-};
-$A->{II}->{I}->{0.1}->{pwin} = {
-  'c' => {
-   'from' => 'Down/Goodat'
-     },
-  't' => 'pwin',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Down::Goodat',
-    'args' => 'pin,way,set',
-    'dige' => '04e675e3351c',
-    'acgt' => 's'
-  }
 };
 $A->{I}->{pwin} = sub {
     my ($pin,$way,$set,@Me) = @_;
@@ -124,23 +56,6 @@ $A->{I}->{pwin} = sub {
     return undef unless $pin =~ /\*/;
     die "sat rs findy $pin";
 };
-$A->{II}->{I}->{0.1}->{sorp} = {
-  't' => 'sorp',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'sc' => {
-    'acgt' => 'pin',
-    'dige' => '3ec4ecde0d62',
-    'args' => 'A,C,G,T,pin',
-    'bab' => undef,
-    'eg' => 'Down::Goodat',
-    'code' => 'I'
-  },
-  'c' => {
-   'from' => 'Down/Goodat'
-     }
-};
 $A->{I}->{sorp} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,@Me) = @M;
@@ -148,3 +63,74 @@ $A->{I}->{sorp} = sub {
     $I->{pwin} || die "nopwin from pin";
     sort { $I->{pwin}->($pin,$a) cmp $I->{pwin}->($pin,$b) } @Me;
 };
+$A->{II} = Load(<<STEVE);
+--- 
+I: 
+  "0.1": 
+    norp: 
+      c: 
+        from: Down/Goodat
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        bab: ~
+        code: I
+        dige: 49d8296634db
+        eg: Down::Goodat
+      t: norp
+      "y": 
+        cv: '0.1'
+    pin: 
+      c: 
+        from: Down/Goodat
+      sc: 
+        acgt: pin,way
+        args: A,C,G,T,pin,way
+        bab: ~
+        code: I
+        dige: 4b3004b63abe
+        eg: Down::Goodat
+      t: pin
+      "y": 
+        cv: '0.1'
+    pon: 
+      c: 
+        from: Down/Goodat
+      sc: 
+        acgt: pin,way,s
+        args: A,C,G,T,pin,way,s
+        bab: ~
+        code: I
+        dige: 76860c9adfeb
+        eg: Down::Goodat
+      t: pon
+      "y": 
+        cv: '0.1'
+    pwin: 
+      c: 
+        from: Down/Goodat
+      sc: 
+        acgt: s
+        args: pin,way,set
+        bab: ~
+        code: I
+        dige: 04e675e3351c
+        eg: Down::Goodat
+      t: pwin
+      "y": 
+        cv: '0.1'
+    sorp: 
+      c: 
+        from: Down/Goodat
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        bab: ~
+        code: I
+        dige: 3ec4ecde0d62
+        eg: Down::Goodat
+      t: sorp
+      "y": 
+        cv: '0.1'
+
+STEVE

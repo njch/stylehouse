@@ -4,23 +4,6 @@ use warnings;
 use G;
 our $A = {};
 
-$A->{II}->{I}->{0.1}->{robeg} = {
-  'c' => {
-   'from' => 'Ise/Rob'
-     },
-  'sc' => {
-    'dige' => '9a0f4abe2423',
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Rob',
-    'bab' => undef,
-    'code' => 'I',
-    'acgt' => 's'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  't' => 'robeg'
-};
 $A->{I}->{robeg} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
@@ -31,3 +14,22 @@ $A->{I}->{robeg} = sub {
     say "Robeg for $D->{t} looking in $eg";
     return 0; # TODO
 };
+$A->{II} = Load(<<STEVE);
+--- 
+I: 
+  "0.1": 
+    robeg: 
+      c: 
+        from: Ise/Rob
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 9a0f4abe2423
+        eg: Ise::Rob
+      t: robeg
+      "y": 
+        cv: '0.1'
+
+STEVE

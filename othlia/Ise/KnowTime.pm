@@ -4,24 +4,6 @@ use warnings;
 use G;
 our $A = {};
 
-$A->{II}->{I}->{0.1}->{carebowl} = {
-  'c' => {
-   'from' => 'Ise/KnowTime'
-     },
-  'sc' => {
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Ise::KnowTime',
-    'l' => '#c',
-    'args' => 'A,C,G,T,s,iii,x,xrd',
-    'dige' => '9b257ed6b49a',
-    'acgt' => 's,iii,x,xrd'
-  },
-  't' => 'carebowl',
-  'y' => {
-   'cv' => '0.1'
-     }
-};
 $A->{I}->{carebowl} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($s,$iii,$x,$xrd,@Me) = @M;
@@ -72,24 +54,6 @@ $A->{I}->{carebowl} = sub {
         # TreeD
         $s->{$I->{k}}->{$I->{cv}}->{$ik} = $D;
     }
-};
-$A->{II}->{I}->{0.1}->{ex} = {
-  'sc' => {
-    'acgt' => 'i,K,cv,av',
-    'args' => 'A,C,G,T,i,K,cv,av',
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Ise::KnowTime',
-    'l' => '#c',
-    'dige' => '1c765b977fbc'
-  },
-  't' => 'ex',
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Ise/KnowTime'
-     }
 };
 $A->{I}->{ex} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -177,24 +141,6 @@ $A->{I}->{ex} = sub {
         return if delete $T->{whack};
     }
 };
-$A->{II}->{I}->{0.1}->{exood} = {
-  't' => 'exood',
-  'sc' => {
-    'dige' => '23703206c8e8',
-    'args' => 'A,C,G,T,o,x,xrd',
-    'eg' => 'Ise::KnowTime',
-    'bab' => undef,
-    'l' => '#c',
-    'code' => 'I',
-    'acgt' => 'o,x,xrd'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  'c' => {
-   'from' => 'Ise/KnowTime'
-     }
-};
 $A->{I}->{exood} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($o,$x,$xrd,@Me) = @M;
@@ -229,24 +175,6 @@ $A->{I}->{exood} = sub {
         delete $T->{ut};
         last if $T->{not} || $T->{whack};
     }
-};
-$A->{II}->{I}->{0.1}->{t} = {
-  'sc' => {
-    'args' => 'A,C,G,T,K,cv,av',
-    'nois' => '#c',
-    'bab' => undef,
-    'code' => 'I',
-    'eg' => 'Ise::KnowTime',
-    'dige' => '109f43256035',
-    'acgt' => 'K,cv,av'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
-  't' => 't',
-  'c' => {
-   'from' => 'Ise/KnowTime'
-     }
 };
 $A->{I}->{t} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -303,3 +231,65 @@ $A->{I}->{t} = sub {
     $A->{cv} = $ncv if defined $ncv && $A->{cv} == $was;
     $re;
 };
+$A->{II} = Load(<<STEVE);
+--- 
+I: 
+  "0.1": 
+    carebowl: 
+      c: 
+        from: Ise/KnowTime
+      sc: 
+        acgt: s,iii,x,xrd
+        args: A,C,G,T,s,iii,x,xrd
+        bab: ~
+        code: I
+        dige: 9b257ed6b49a
+        eg: Ise::KnowTime
+        l: "#c"
+      t: carebowl
+      "y": 
+        cv: '0.1'
+    ex: 
+      c: 
+        from: Ise/KnowTime
+      sc: 
+        acgt: i,K,cv,av
+        args: A,C,G,T,i,K,cv,av
+        bab: ~
+        code: I
+        dige: 1c765b977fbc
+        eg: Ise::KnowTime
+        l: "#c"
+      t: ex
+      "y": 
+        cv: '0.1'
+    exood: 
+      c: 
+        from: Ise/KnowTime
+      sc: 
+        acgt: o,x,xrd
+        args: A,C,G,T,o,x,xrd
+        bab: ~
+        code: I
+        dige: 23703206c8e8
+        eg: Ise::KnowTime
+        l: "#c"
+      t: exood
+      "y": 
+        cv: '0.1'
+    t: 
+      c: 
+        from: Ise/KnowTime
+      sc: 
+        acgt: K,cv,av
+        args: A,C,G,T,K,cv,av
+        bab: ~
+        code: I
+        dige: 109f43256035
+        eg: Ise::KnowTime
+        nois: "#c"
+      t: t
+      "y": 
+        cv: '0.1'
+
+STEVE
