@@ -5,20 +5,20 @@ use G;
 our $A = {};
 
 $A->{II}->{I}->{0.1}->{norp} = {
-  'sc' => {
-    'eg' => 'Down::Goodat',
-    'acgt' => 'pin',
-    'args' => 'A,C,G,T,pin',
-    'bab' => undef,
-    'code' => 'I',
-    'dige' => '49d8296634db'
-  },
-  't' => 'norp',
-  'y' => {
-   'cv' => '0.1'
-     },
   'c' => {
    'from' => 'Down/Goodat'
+     },
+  't' => 'norp',
+  'sc' => {
+    'acgt' => 'pin',
+    'dige' => '49d8296634db',
+    'args' => 'A,C,G,T,pin',
+    'bab' => undef,
+    'eg' => 'Down::Goodat',
+    'code' => 'I'
+  },
+  'y' => {
+   'cv' => '0.1'
      }
 };
 $A->{I}->{norp} = sub {
@@ -29,21 +29,21 @@ $A->{I}->{norp} = sub {
     sort { $I->{pwin}->($pin,$a) <=> $I->{pwin}->($pin,$b) } @Me;
 };
 $A->{II}->{I}->{0.1}->{pin} = {
-  'y' => {
-   'cv' => '0.1'
-     },
   'c' => {
    'from' => 'Down/Goodat'
      },
+  'y' => {
+   'cv' => '0.1'
+     },
+  't' => 'pin',
   'sc' => {
-    'dige' => '4b3004b63abe',
     'code' => 'I',
-    'eg' => 'Down::Goodat',
-    'acgt' => 'pin,way',
     'bab' => undef,
-    'args' => 'A,C,G,T,pin,way'
-  },
-  't' => 'pin'
+    'eg' => 'Down::Goodat',
+    'args' => 'A,C,G,T,pin,way',
+    'dige' => '4b3004b63abe',
+    'acgt' => 'pin,way'
+  }
 };
 $A->{I}->{pin} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -53,21 +53,21 @@ $A->{I}->{pin} = sub {
     $I->{pwin}->($pin,$way);
 };
 $A->{II}->{I}->{0.1}->{pon} = {
+  't' => 'pon',
+  'sc' => {
+    'acgt' => 'pin,way,s',
+    'eg' => 'Down::Goodat',
+    'bab' => undef,
+    'code' => 'I',
+    'args' => 'A,C,G,T,pin,way,s',
+    'dige' => '76860c9adfeb'
+  },
   'y' => {
    'cv' => '0.1'
      },
   'c' => {
    'from' => 'Down/Goodat'
-     },
-  'sc' => {
-    'code' => 'I',
-    'dige' => '76860c9adfeb',
-    'acgt' => 'pin,way,s',
-    'eg' => 'Down::Goodat',
-    'args' => 'A,C,G,T,pin,way,s',
-    'bab' => undef
-  },
-  't' => 'pon'
+     }
 };
 $A->{I}->{pon} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -78,12 +78,12 @@ $A->{I}->{pon} = sub {
 };
 $A->{II}->{I}->{0.1}->{pwin} = {
   'sc' => {
-    'code' => 'I',
     'dige' => '04e675e3351c',
+    'code' => 'I',
+    'bab' => undef,
     'eg' => 'Down::Goodat',
-    'acgt' => 's',
     'args' => 'pin,way,set',
-    'bab' => undef
+    'acgt' => 's'
   },
   't' => 'pwin',
   'y' => {
@@ -125,21 +125,21 @@ $A->{I}->{pwin} = sub {
     die "sat rs findy $pin";
 };
 $A->{II}->{I}->{0.1}->{sorp} = {
-  'c' => {
-   'from' => 'Down/Goodat'
-     },
+  't' => 'sorp',
+  'sc' => {
+    'acgt' => 'pin',
+    'bab' => undef,
+    'eg' => 'Down::Goodat',
+    'code' => 'I',
+    'args' => 'A,C,G,T,pin',
+    'dige' => '3ec4ecde0d62'
+  },
   'y' => {
    'cv' => '0.1'
      },
-  'sc' => {
-    'eg' => 'Down::Goodat',
-    'acgt' => 'pin',
-    'args' => 'A,C,G,T,pin',
-    'bab' => undef,
-    'code' => 'I',
-    'dige' => '3ec4ecde0d62'
-  },
-  't' => 'sorp'
+  'c' => {
+   'from' => 'Down/Goodat'
+     }
 };
 $A->{I}->{sorp} = sub {
     my ($A,$C,$G,$T,@M)=@_;

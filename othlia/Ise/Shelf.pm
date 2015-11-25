@@ -5,18 +5,18 @@ use G;
 our $A = {};
 
 $A->{II}->{I}->{0.1}->{A} = {
-  't' => 'A',
-  'sc' => {
-    'bab' => undef,
-    'args' => 'A,C,G,T,s',
-    'acgt' => 's',
-    'eg' => 'Ise::Shelf',
-    'dige' => '812f6744f401',
-    'code' => 'I'
-  },
   'c' => {
    'from' => 'Ise/Shelf'
      },
+  'sc' => {
+    'bab' => undef,
+    'eg' => 'Ise::Shelf',
+    'code' => 'I',
+    'args' => 'A,C,G,T,s',
+    'dige' => '812f6744f401',
+    'acgt' => 's'
+  },
+  't' => 'A',
   'y' => {
    'cv' => '0.1'
      }
@@ -67,21 +67,21 @@ $A->{I}->{A} = sub {
     ($A,$C,$T)
 };
 $A->{II}->{I}->{0.1}->{Act} = {
-  'sc' => {
-    'bab' => undef,
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Shelf',
-    'acgt' => 's',
-    'dige' => 'ebb51d1b7d0d',
-    'code' => 'I'
-  },
+  'c' => {
+   'from' => 'Ise/Shelf'
+     },
   't' => 'Act',
   'y' => {
    'cv' => '0.1'
      },
-  'c' => {
-   'from' => 'Ise/Shelf'
-     }
+  'sc' => {
+    'acgt' => 's',
+    'bab' => undef,
+    'eg' => 'Ise::Shelf',
+    'code' => 'I',
+    'args' => 'A,C,G,T,s',
+    'dige' => 'ebb51d1b7d0d'
+  }
 };
 $A->{I}->{Act} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -108,18 +108,18 @@ $A->{II}->{I}->{0.1}->{An} = {
   'y' => {
    'cv' => '0.1'
      },
+  'sc' => {
+    'acgt' => 's',
+    'bab' => undef,
+    'code' => 'I',
+    'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s',
+    'dige' => 'c338bf154937'
+  },
+  't' => 'An',
   'c' => {
    'from' => 'Ise/Shelf'
-     },
-  't' => 'An',
-  'sc' => {
-    'args' => 'A,C,G,T,s',
-    'bab' => undef,
-    'eg' => 'Ise::Shelf',
-    'acgt' => 's',
-    'code' => 'I',
-    'dige' => 'c338bf154937'
-  }
+     }
 };
 $A->{I}->{An} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -134,21 +134,21 @@ $A->{I}->{An} = sub {
     $A
 };
 $A->{II}->{I}->{0.1}->{Sev} = {
-  't' => 'Sev',
-  'sc' => {
-    'dige' => '3154442f2daf',
-    'code' => 'I',
-    'eg' => 'Ise::Shelf',
-    'acgt' => 's',
-    'bab' => undef,
-    'args' => 'A,C,G,T,s'
-  },
   'c' => {
    'from' => 'Ise/Shelf'
      },
+  'sc' => {
+    'acgt' => 's',
+    'bab' => undef,
+    'code' => 'I',
+    'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s',
+    'dige' => '3154442f2daf'
+  },
   'y' => {
    'cv' => '0.1'
-     }
+     },
+  't' => 'Sev'
 };
 $A->{I}->{Sev} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -162,12 +162,12 @@ $A->{I}->{Sev} = sub {
 $A->{II}->{I}->{0.1}->{h} = {
   't' => 'h',
   'sc' => {
-    'code' => 'I',
-    'dige' => 'e6ec3c80aa41',
-    'args' => 'A,C,G,T,s',
     'bab' => undef,
-    'acgt' => 's',
-    'eg' => 'Ise::Shelf'
+    'code' => 'I',
+    'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s',
+    'dige' => 'e6ec3c80aa41',
+    'acgt' => 's'
   },
   'y' => {
    'cv' => '0.1'
@@ -183,15 +183,15 @@ $A->{I}->{h} = sub {
     $y->($A,$C,$G,$T,@Me);
 };
 $A->{II}->{I}->{0.1}->{loop} = {
-  't' => 'loop',
   'sc' => {
-    'code' => 'I',
-    'dige' => '2cd19675052b',
-    'args' => 'A,C,G,T,s',
     'bab' => undef,
+    'code' => 'I',
     'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s',
+    'dige' => '2cd19675052b',
     'acgt' => 's'
   },
+  't' => 'loop',
   'y' => {
    'cv' => '0.1'
      },
@@ -235,19 +235,19 @@ $A->{I}->{loop} = sub {
 };
 $A->{II}->{I}->{0.1}->{m} = {
   'sc' => {
-    'dige' => 'dcad850e9d3b',
-    'code' => 'I',
     'acgt' => 's',
-    'eg' => 'Ise::Shelf',
+    'code' => 'I',
     'bab' => undef,
-    'args' => 'A,C,G,T,s'
+    'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s',
+    'dige' => 'dcad850e9d3b'
   },
+  'y' => {
+   'cv' => '0.1'
+     },
   't' => 'm',
   'c' => {
    'from' => 'Ise/Shelf'
-     },
-  'y' => {
-   'cv' => '0.1'
      }
 };
 $A->{I}->{m} = sub {
@@ -261,18 +261,18 @@ $A->{II}->{I}->{0.1}->{n} = {
   'c' => {
    'from' => 'Ise/Shelf'
      },
+  'sc' => {
+    'acgt' => 's',
+    'dige' => '156997e2ba28',
+    'bab' => undef,
+    'code' => 'I',
+    'eg' => 'Ise::Shelf',
+    'args' => 'A,C,G,T,s'
+  },
+  't' => 'n',
   'y' => {
    'cv' => '0.1'
-     },
-  'sc' => {
-    'dige' => '156997e2ba28',
-    'code' => 'I',
-    'bab' => undef,
-    'args' => 'A,C,G,T,s',
-    'eg' => 'Ise::Shelf',
-    'acgt' => 's'
-  },
-  't' => 'n'
+     }
 };
 $A->{I}->{n} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -282,18 +282,18 @@ $A->{I}->{n} = sub {
     $G->{h}->($A,$C,$G,$T,"loop");
 };
 $A->{II}->{I}->{0.1}->{recycle} = {
+  'c' => {
+   'from' => 'Ise/Shelf'
+     },
+  't' => 'recycle',
   'sc' => {
     'acgt' => 's',
     'eg' => 'Ise::Shelf',
     'bab' => undef,
+    'code' => 'I',
     'args' => 'A,C,G,T,s',
-    'dige' => '529c5fe2a27b',
-    'code' => 'I'
+    'dige' => '529c5fe2a27b'
   },
-  't' => 'recycle',
-  'c' => {
-   'from' => 'Ise/Shelf'
-     },
   'y' => {
    'cv' => '0.1'
      }

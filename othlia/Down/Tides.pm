@@ -7,12 +7,12 @@ our $A = {};
 $A->{II}->{I}->{0.1}->{T} = {
   't' => 'T',
   'sc' => {
-    'code' => 'I',
-    'dige' => '0df41cdfdfbf',
     'acgt' => 's',
-    'eg' => 'Down::Tides',
+    'dige' => '459d5b4d0e67',
     'args' => 'A,C,G,T,s',
-    'bab' => undef
+    'bab' => undef,
+    'eg' => 'Down::Tides',
+    'code' => 'I'
   },
   'y' => {
    'cv' => '0.1'
@@ -24,52 +24,36 @@ $A->{II}->{I}->{0.1}->{T} = {
 $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
-    my $e = $G->{h}->($A,$C,$G,$T,"ti",'Wormhole');
+    my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole');
     %$e = (%$e,%{$G->{T}}) if $G->{T};
     $G->{T} = $e;
     $G->{T}->{base} = 'w';
     $G->{T}
 };
-$A->{II}->{I}->{0.1}->{ti} = {
-  't' => 'ti',
-  'sc' => {
-    'dige' => 'd2fe11f7eb4a',
-    'code' => 'I',
-    'bab' => undef,
-    'args' => 'A,C,G,T,class',
-    'acgt' => 'class',
-    'eg' => 'Down::Tides'
-  },
-  'y' => {
-   'cv' => '0.1'
-     },
+$A->{II}->{I}->{0.1}->{tie} = {
   'c' => {
    'from' => 'Down/Tides'
+     },
+  'sc' => {
+    'code' => 'I',
+    'bab' => undef,
+    'eg' => 'Down::Tides',
+    'args' => 'A,C,G,T,class',
+    'dige' => '308c97386cb4',
+    'acgt' => 'class'
+  },
+  't' => 'tie',
+  'y' => {
+   'cv' => '0.1'
      }
 };
-$A->{I}->{ti} = sub {
+$A->{I}->{tie} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($class,@Me) = @M;
     my $I = $A->{I};
     my %na;
     tie %na, $class, @Me;
     return \%na
-};
-$A->{II}->{Pack}->{0.3}->{Ghoz} = {
-  'c' => {
-   'from' => 'Down/Tides'
-     },
-  'y' => {
-   'cv' => '0.3'
-     },
-  't' => 'Ghoz',
-  'sc' => {
-    'code' => 'Pack',
-    'dige' => '228c7913fab6',
-    'pack' => 'Ghoz',
-    'bab' => undef,
-    'eg' => 'Down::Tides'
-  }
 };
 {
     package Ghoz; #
@@ -100,22 +84,6 @@ $A->{II}->{Pack}->{0.3}->{Ghoz} = {
         }
     }
 }
-$A->{II}->{Pack}->{0.3}->{Wormhole} = {
-  'c' => {
-   'from' => 'Down/Tides'
-     },
-  'y' => {
-   'cv' => '0.3'
-     },
-  'sc' => {
-    'eg' => 'Down::Tides',
-    'bab' => undef,
-    'pack' => 'Wormhole',
-    'dige' => 'ce649583e642',
-    'code' => 'Pack'
-  },
-  't' => 'Wormhole'
-};
 {
     package Wormhole;
     use Tie::Hash;

@@ -392,13 +392,12 @@ IStuff: |
 KnowTime: | # dome props
     u allacgts
     
-    n 't' =>''=>{s=><<''},{acgt=>'K,cv,av',nois=>'#c'}
+    n 't' =>''=><<'',{acgt=>'K,cv,av',nois=>'#c'}
         ($K,$cv) = (A.am,$K) if !$cv && $K;
         $av = 0+("0.".$av) if $av;
         die "K$K cv$cv" unless $K && $cv;
         my $c = 0+("0.".$cv);
         my $Av = $av || A.cv;
-        .
         # adapt to much  mergey       extendo  rubble
         my $i = Rw collaspII $A;
         die'difAvcol' if $Av ne ($av || A.cv);
@@ -439,15 +438,14 @@ KnowTime: | # dome props
             }
             else {die"nof"}
         }
-        undef $ncv if $av; # aux K
+        undef $ncv if $av; # aux/Subtle K
         my $was = A.cv;
         $dont || I.d&ex,$i,$K,$cv,$av;
         A.cv = $ncv if defined $ncv && A.cv == $was;
         $re;
     
-    n ex =>''=>{s=><<''},{acgt=>'i,K,cv,av',nois=>'#c'}
-        # was Rw SNat $A $C $G $T $I $i $K $cv;
-        # baseism
+    # do stuff # in fractions
+    n ex =>'',<<'',{l=>'#c',acgt=>'i,K,cv,av'}
         my $c = 0+("0.".$cv);
         my $Av = $av || A.cv;
         my $sp = $av ? " Flav $av (no A.cv)" : "";
@@ -461,7 +459,6 @@ KnowTime: | # dome props
         }
         .
         my $yv = {};
-        # make K/cv/t -> cv/K/t
         for my $k (sort keys %$i) {
             my $ii = $i->{$k};
             .
@@ -476,8 +473,7 @@ KnowTime: | # dome props
             }
         }
         .
-        # do stuff
-        my $vb; # in fractions
+        my $vb;
         my $wasSubtle;
         for my $vc (sort keys %$yv) {
             my $is = $yv->{$vc};
@@ -508,12 +504,8 @@ KnowTime: | # dome props
                 A.cv = $vb; # so we dont wind up to 6 on the way out of t
                 return T.not = 1;
             }
-            .
-            # pin down poles
             I.cv = $vc;
             I.vb = $vb;
-            # draw curvles as spirals done
-            .
             for my $k (@iz) {
                 my $iii = $is->{$k};
                 I.k = $k;
@@ -536,6 +528,7 @@ KnowTime: | # dome props
             return if delete T.whack;
         }
     
+    #
     n carebowl =>''=><<'',{l=>'#c',acgt=>'s,iii,x,xrd'}
         for my $ik (sort keys %$iii) {
             my $D = $iii->{$ik};
@@ -584,6 +577,7 @@ KnowTime: | # dome props
             $s->{I.k}->{I.cv}->{$ik} = $D;
         }
     
+    #
     n exood =>''=><<'',{l=>'#c',acgt=>'o,x,xrd'}
         for my $kik (@$xrd) {
             my ($k,$ik) = @$kik;

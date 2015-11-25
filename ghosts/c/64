@@ -38,15 +38,15 @@ G: | # GGG subs, must get wormholes to do this this shortly
     return sayyl "isleless J.name, assume stop" if !J.at.isle;
     for my $D (@$N) {
         my $s = D.sc.style;
-        D.sc.head = 1         if _.t eq 'head';
+        D.sc.head = 1         if D.t eq 'head';
         D.sc.bab = 'non'     if $s eq 'nonbabble';
         D.sc.subis = 1         if $s eq 'func' || $s eq '';
         D.sc.export = 1     if $s eq 'func';
         if (D.sc.head && !D.sc.export) {
             my $e = [];
-            push @$e, $1 while D.c.s =~ /^use .+ (?:qw)?\W([\w\s]+)\W;/sgm;
-            _.sc.export = join ' ', @$e;
-            sayyl "Have ".wdump 4, $_;
+            push @$e, $1 while D.c.s =~ /use \S+ (?:qw)?\W([\w\s]+)\W;/sgm;
+            D.sc.export = join ' ', @$e;
+            sayyl "Have ".wdump 4, $D;
         }
         D.c.s = "my \$G = shift;\n".D.c.s
                             if $s eq '';
@@ -54,6 +54,10 @@ G: | # GGG subs, must get wormholes to do this this shortly
                             if D.sc.subis;
         D.c.from = "G";
     }
+    @$N = reverse I.d&sorp,'sc/head',@$N;
+    #delete _.y.cv for @$N;
+    sayyl "Came back : _.sc.head "._.t for @$N;
+    
     if (1) {
         my $E = {};
         for (@$N) {
@@ -72,7 +76,8 @@ Ear: |
     n Down
     n Ise
     n G
-Goth: |
+    n Ngwe
+Goth: | # agther limbs (Ear)
     u GBabz
     my ($A) = 
     n s=>'13'=>see
@@ -104,12 +109,12 @@ Goth: |
             my $s = delete D.c.s;
             $s =~ s/A\.I\.d {0}\&An;\s*$//s if D.t eq 'An';
             $s = I.d&parse_babbl,$s unless D.sc.bab eq 'non';
-            $_ && $_ ne 'non' && die "INter bab $_" for D.sc.bab;
+            $_ && $_ ne 'non' && die "INter bab D.t bab=$_" for D.sc.bab;
             my $nov = wdump 5, $D;
             die "TOo long D D.t: $nov" if length($nov) > 500;
             my $wh = D.sc.head ? 'head' : 'l';
             acum $t=>$wh=>"\$A->{II}->{D.sc.code}->{D.y.cv}->{D.t} = $nov"
-                unless D.sc.head || D.sc.subis;
+                unless D.sc.head || D.sc.subis || D.sc.code eq 'Pack';
             acum $t=>$wh=>$s;
             if (my $e = D.sc.export) {
                 $e = $e ne '1' ? $e : D.t;
@@ -148,7 +153,12 @@ Goth: |
         say "Not nothing here";
     
     
+
 got: |
+    u GBabz
+    my ($A) = 
+    n s=>'13'=>see
+    my $I = A.I;
     my $inc = "othlia";
     my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
     my $as = {map{$_=>1} grep {-f $_} @find};
@@ -161,7 +171,7 @@ got: |
     my @inc = sort keys %$as;
     s/^$inc\/(.+)\.pm/$1/ || die "NOgot $_" for @inc;
     s/\//::/sgm for @inc;
-    # include topmosts
+    # ^ include topmosts
     
     my $l=[
         'use strict;',
@@ -171,9 +181,9 @@ got: |
         (map{"use $_;"}@inc),
         'our $A = {};',
         '$A->{I} = {};',
-        '%{$A->{I}} = (%{$A->{I}}, %$_) for',
-        join(',',map {'   $'.$_.'::A'} @inc).';',
-        G.way.gothat,
+        '$A->{AAAA} = [',
+        join(',',map {'$'.$_.'::A'} @inc).'];',
+        I.d&parse_babbl,G.way.gothat ,
     ];
     
     write_file('got',join("\n",@$l));
@@ -184,7 +194,43 @@ got: |
     
     
 gothat: |
-    sayyl wdump $A;
+    for my $AA (@{A.AAAA}) {
+        my @D = map{values%$_} map{values%$_} values %{AA.II};
+        my $ne = {map{$_=>1}keys%{AA.I}};
+        for my $D (@D) {
+            delete $ne->{D.t} || sayre("II index for not in I: ".ki$D) && next;
+            A.I->{D.t.'_dige'} = D.sc.dige;
+            A.I->{D.t} = AA.I->{D.t};
+            A.tople->{D.t} = 1;
+        }
+        saybl wdump 3, $AA;
+    }
+    sayyl "Have : ".join' ', sort keys %{A.tople};
+    my $G;
+    G.up = hitime();
+    G.id = mkuid();
+    G.I = A.I;
+    my $C = {};
+    my $T = {};
+    
+    for my $sn (qw'pwin tie h w') {
+        $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
+    }
+    $SIG{__WARN__} = sub {
+        my $ing = shift;
+        warn$ing unless $ing =~ /^Use of uninitialized/;
+    };
+    G&init;
+    G&w,'expro';
+     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+Ngwe: |
+    u allacgts
+    
+    n 'w'=>'',<<'',{acgt=>'pin,ar'}
+        sayyl "Got www $pin   with ".ki $ar;
+    
+    # etc
+    
 Shelf: |
     u allacgts
     n h =>'',<<''
@@ -325,14 +371,14 @@ Shelf: |
         }
 Tides: |
     u allacgts
-    n ti =>0.09=><<'','%acgt:class'
+    n tie =>0.09=><<'','%acgt:class'
         my %na;
         tie %na, $class, @Me;
         return \%na
     
     # see also Loading for ongoign G.T timeyness
     n T =>''=><<''
-        my $e = I.d&ti,'Wormhole';
+        my $e = I.d&tie,'Wormhole';
         %$e = (%$e,%{G.T}) if G.T;
         G.T = $e;
         G.T.base = 'w';
@@ -611,7 +657,7 @@ GBabz: |
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
-            s/I\.d\&(p.oint)/G\&$1/sg;
+            $s =~ s/I\.d\&(p.oint)/G\&$1/sgm;
             # lma quack $not->('tag');? from I.d&pui,$s
             $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
                 my ($on,$p,$e,$t) = ($1,$2,$3,$4);

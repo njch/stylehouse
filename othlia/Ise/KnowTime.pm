@@ -5,22 +5,22 @@ use G;
 our $A = {};
 
 $A->{II}->{I}->{0.1}->{carebowl} = {
-  'y' => {
-   'cv' => '0.1'
-     },
   'c' => {
    'from' => 'Ise/KnowTime'
      },
   'sc' => {
-    'l' => '#c',
     'acgt' => 's,iii,x,xrd',
-    'eg' => 'Ise::KnowTime',
+    'dige' => '9b257ed6b49a',
     'args' => 'A,C,G,T,s,iii,x,xrd',
+    'l' => '#c',
     'bab' => undef,
-    'code' => 'I',
-    'dige' => '9b257ed6b49a'
+    'eg' => 'Ise::KnowTime',
+    'code' => 'I'
   },
-  't' => 'carebowl'
+  't' => 'carebowl',
+  'y' => {
+   'cv' => '0.1'
+     }
 };
 $A->{I}->{carebowl} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -74,29 +74,27 @@ $A->{I}->{carebowl} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{ex} = {
+  't' => 'ex',
+  'sc' => {
+    'dige' => '1c765b977fbc',
+    'args' => 'A,C,G,T,i,K,cv,av',
+    'bab' => undef,
+    'code' => 'I',
+    'eg' => 'Ise::KnowTime',
+    'l' => '#c',
+    'acgt' => 'i,K,cv,av'
+  },
   'y' => {
    'cv' => '0.1'
      },
   'c' => {
    'from' => 'Ise/KnowTime'
-     },
-  'sc' => {
-    'args' => 'A,C,G,T,i,K,cv,av',
-    'bab' => undef,
-    'acgt' => 'i,K,cv,av',
-    'eg' => 'Ise::KnowTime',
-    'code' => 'I',
-    'dige' => 'e83fa1cf7861',
-    'nois' => '#c'
-  },
-  't' => 'ex'
+     }
 };
 $A->{I}->{ex} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($i,$K,$cv,$av,@Me) = @M;
     my $I = $A->{I};
-    # was $G->{w}->("SNat", {A => $A, C => $C, G => $G, T => $T, I => $I, i => $i, K => $K, cv => $cv});
-    # baseism
     my $c = 0+("0.".$cv);
     my $Av = $av || $A->{cv};
     my $sp = $av ? " Flav $av (no $A->{cv})" : "";
@@ -110,7 +108,6 @@ $A->{I}->{ex} = sub {
     }
     
     my $yv = {};
-    # make K/cv/t -> cv/K/t
     for my $k (sort keys %$i) {
         my $ii = $i->{$k};
     
@@ -125,8 +122,7 @@ $A->{I}->{ex} = sub {
         }
     }
     
-    # do stuff
-    my $vb; # in fractions
+    my $vb;
     my $wasSubtle;
     for my $vc (sort keys %$yv) {
         my $is = $yv->{$vc};
@@ -157,12 +153,8 @@ $A->{I}->{ex} = sub {
             $A->{cv} = $vb; # so we dont wind up to 6 on the way out of t
             return $T->{not} = 1;
         }
-    
-        # pin down poles
         $I->{cv} = $vc;
         $I->{vb} = $vb;
-        # draw curvles as spirals done
-    
         for my $k (@iz) {
             my $iii = $is->{$k};
             $I->{k} = $k;
@@ -186,22 +178,22 @@ $A->{I}->{ex} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{exood} = {
-  'c' => {
-   'from' => 'Ise/KnowTime'
-     },
+  'sc' => {
+    'acgt' => 'o,x,xrd',
+    'code' => 'I',
+    'bab' => undef,
+    'eg' => 'Ise::KnowTime',
+    'l' => '#c',
+    'args' => 'A,C,G,T,o,x,xrd',
+    'dige' => '23703206c8e8'
+  },
+  't' => 'exood',
   'y' => {
    'cv' => '0.1'
      },
-  't' => 'exood',
-  'sc' => {
-    'dige' => '23703206c8e8',
-    'code' => 'I',
-    'l' => '#c',
-    'eg' => 'Ise::KnowTime',
-    'acgt' => 'o,x,xrd',
-    'bab' => undef,
-    'args' => 'A,C,G,T,o,x,xrd'
-  }
+  'c' => {
+   'from' => 'Ise/KnowTime'
+     }
 };
 $A->{I}->{exood} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -239,22 +231,22 @@ $A->{I}->{exood} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{t} = {
+  't' => 't',
   'y' => {
    'cv' => '0.1'
      },
+  'sc' => {
+    'acgt' => 'K,cv,av',
+    'dige' => '109f43256035',
+    'code' => 'I',
+    'bab' => undef,
+    'eg' => 'Ise::KnowTime',
+    'args' => 'A,C,G,T,K,cv,av',
+    'nois' => '#c'
+  },
   'c' => {
    'from' => 'Ise/KnowTime'
-     },
-  't' => 't',
-  'sc' => {
-    'eg' => 'Ise::KnowTime',
-    'acgt' => 'K,cv,av',
-    'bab' => undef,
-    'args' => 'A,C,G,T,K,cv,av',
-    'nois' => '#c',
-    'dige' => '2307b8c71873',
-    'code' => 'I'
-  }
+     }
 };
 $A->{I}->{t} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -265,7 +257,6 @@ $A->{I}->{t} = sub {
     die "K$K cv$cv" unless $K && $cv;
     my $c = 0+("0.".$cv);
     my $Av = $av || $A->{cv};
-    
     # adapt to much  mergey       extendo  rubble
     my $i = $G->{w}->("collaspII", {A => $A});
     die'difAvcol' if $Av ne ($av || $A->{cv});
@@ -306,7 +297,7 @@ $A->{I}->{t} = sub {
         }
         else {die"nof"}
     }
-    undef $ncv if $av; # aux K
+    undef $ncv if $av; # aux/Subtle K
     my $was = $A->{cv};
     $dont || $G->{h}->($A,$C,$G,$T,"ex",$i,$K,$cv,$av);
     $A->{cv} = $ncv if defined $ncv && $A->{cv} == $was;

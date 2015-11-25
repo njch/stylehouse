@@ -8,8 +8,36 @@ use G;
 use Ise::KnowTime;
 use Ise::Rob;
 use Ise::Shelf;
+use Ngwe;
 our $A = {};
 $A->{I} = {};
-%{$A->{I}} = (%{$A->{I}}, %$_) for
-   $Down::Goodat::A,   $Down::Tides::A,   $G::A,   $Ise::KnowTime::A,   $Ise::Rob::A,   $Ise::Shelf::A;
-sayyl wdump $A;
+$A->{AAAA} = [
+$Down::Goodat::A,$Down::Tides::A,$G::A,$Ise::KnowTime::A,$Ise::Rob::A,$Ise::Shelf::A,$Ngwe::A];
+for my $AA (@{$A->{AAAA}}) {
+    my @D = map{values%$_} map{values%$_} values %{$AA->{II}};
+    my $ne = {map{$_=>1}keys%{$AA->{I}}};
+    for my $D (@D) {
+        delete $ne->{$D->{t}} || sayre("II index for not in I: ".ki$D) && next;
+        $A->{I}->{$D->{t}.'_dige'} = $D->{sc}->{dige};
+        $A->{I}->{$D->{t}} = $AA->{I}->{$D->{t}};
+        $A->{tople}->{$D->{t}} = 1;
+    }
+    saybl wdump 3, $AA;
+}
+sayyl "Have : ".join' ', sort keys %{$A->{tople}};
+my $G;
+$G->{up} = hitime();
+$G->{id} = mkuid();
+$G->{I} = $A->{I};
+my $C = {};
+my $T = {};
+
+for my $sn (qw'pwin tie h w') {
+    $G->{$sn} = $G->{I}->{$sn} || die "No $sn from G I";
+}
+$SIG{__WARN__} = sub {
+    my $ing = shift;
+    warn$ing unless $ing =~ /^Use of uninitialized/;
+};
+$G->{h}->($A,$C,$G,$T,"w",'expro');
+ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;

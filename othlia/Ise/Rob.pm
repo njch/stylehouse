@@ -8,18 +8,18 @@ $A->{II}->{I}->{0.1}->{robeg} = {
   'y' => {
    'cv' => '0.1'
      },
-  'c' => {
-   'from' => 'Ise/Rob'
-     },
-  't' => 'robeg',
   'sc' => {
     'dige' => '9a0f4abe2423',
+    'args' => 'A,C,G,T,s',
     'code' => 'I',
     'bab' => undef,
-    'args' => 'A,C,G,T,s',
     'eg' => 'Ise::Rob',
     'acgt' => 's'
-  }
+  },
+  't' => 'robeg',
+  'c' => {
+   'from' => 'Ise/Rob'
+     }
 };
 $A->{I}->{robeg} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
