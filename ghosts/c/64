@@ -703,22 +703,22 @@ GBabz: |
                         }
                         $na = '$'.$na unless
                             $wa eq '=' || $na =~ /^\S+\.\S/;
-                        push @n, "$fa => $na" ; # also avail a listy position
+                        push @n, "$fa=>$na" ; # also avail a listy position
                     }
                     else {
                         push @m, $_;
                     }
                 }
                 unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick";
-                push @n, "m => [".join(',',map{'"'.$_.'"'}@m).']'
+                push @n, "m=>[".join(',',map{'"'.$_.'"'}@m).']'
                     if @m;
                 .
                 my @e;
                 push @e, '"'.$op.'"';
-                push @e, "{".join(", ",@n)."}";
-                my $en = join ", ", @e;
+                push @e, "{".join(",",@n)."}";
+                my $en = join ",", @e;
                 .
-                my $wa = $g.'->{w}->('.$en.')'.$ne;
+                my $wa = $g.'->{w}->($A,$C,$G,$T,'.$en.')'.$ne;
                 $s =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n $s";
             }
             .

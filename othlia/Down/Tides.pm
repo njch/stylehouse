@@ -8,11 +8,11 @@ $A->{II}->{I}->{0.1}->{T} = {
   't' => 'T',
   'sc' => {
     'acgt' => 's',
-    'dige' => '459d5b4d0e67',
-    'args' => 'A,C,G,T,s',
     'bab' => undef,
+    'code' => 'I',
     'eg' => 'Down::Tides',
-    'code' => 'I'
+    'args' => 'A,C,G,T,s',
+    'dige' => '459d5b4d0e67'
   },
   'y' => {
    'cv' => '0.1'
@@ -31,20 +31,20 @@ $A->{I}->{T} = sub {
     $G->{T}
 };
 $A->{II}->{I}->{0.1}->{tie} = {
-  'c' => {
-   'from' => 'Down/Tides'
-     },
+  't' => 'tie',
   'sc' => {
-    'code' => 'I',
     'bab' => undef,
     'eg' => 'Down::Tides',
+    'code' => 'I',
     'args' => 'A,C,G,T,class',
     'dige' => '308c97386cb4',
     'acgt' => 'class'
   },
-  't' => 'tie',
   'y' => {
    'cv' => '0.1'
+     },
+  'c' => {
+   'from' => 'Down/Tides'
      }
 };
 $A->{I}->{tie} = sub {

@@ -9,13 +9,13 @@ $A->{II}->{I}->{0.1}->{carebowl} = {
    'from' => 'Ise/KnowTime'
      },
   'sc' => {
-    'acgt' => 's,iii,x,xrd',
-    'dige' => '9b257ed6b49a',
-    'args' => 'A,C,G,T,s,iii,x,xrd',
-    'l' => '#c',
     'bab' => undef,
+    'code' => 'I',
     'eg' => 'Ise::KnowTime',
-    'code' => 'I'
+    'l' => '#c',
+    'args' => 'A,C,G,T,s,iii,x,xrd',
+    'dige' => '9b257ed6b49a',
+    'acgt' => 's,iii,x,xrd'
   },
   't' => 'carebowl',
   'y' => {
@@ -53,7 +53,7 @@ $A->{I}->{carebowl} = sub {
         if (!$dont) {
             my $paw = join"_",'',$I->{k},$I->{cv},$D->{t};
             $paw =~ s/\W//g;
-            $G->{w}->("$paw", {A => $A, C => $C, G => $G, T => $T, __D => $D});
+            $G->{w}->($A,$C,$G,$T,"$paw",{A=>$A,C=>$C,G=>$G,T=>$T,__D=>$D});
         }
         # most tiny ticks
         # this ind is all flywheel
@@ -74,16 +74,16 @@ $A->{I}->{carebowl} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{ex} = {
-  't' => 'ex',
   'sc' => {
-    'dige' => '1c765b977fbc',
+    'acgt' => 'i,K,cv,av',
     'args' => 'A,C,G,T,i,K,cv,av',
-    'bab' => undef,
     'code' => 'I',
+    'bab' => undef,
     'eg' => 'Ise::KnowTime',
     'l' => '#c',
-    'acgt' => 'i,K,cv,av'
+    'dige' => '1c765b977fbc'
   },
+  't' => 'ex',
   'y' => {
    'cv' => '0.1'
      },
@@ -161,7 +161,7 @@ $A->{I}->{ex} = sub {
             $G->{h}->($A,$C,$G,$T,"carebowl",$s,$iii,$x,$xrd);
         }
         # suble
-        my $se = $G->{w}->("TreeD", {s => $s, scby => "gro"}) 
+        my $se = $G->{w}->($A,$C,$G,$T,"TreeD",{s=>$s,scby=>"gro"}) 
             if $A->{J}->{V} > 1 && keys %$s;
         $c == 0.1 ? saygr $se : say $se if $se;
     
@@ -178,16 +178,16 @@ $A->{I}->{ex} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{exood} = {
-  'sc' => {
-    'acgt' => 'o,x,xrd',
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Ise::KnowTime',
-    'l' => '#c',
-    'args' => 'A,C,G,T,o,x,xrd',
-    'dige' => '23703206c8e8'
-  },
   't' => 'exood',
+  'sc' => {
+    'dige' => '23703206c8e8',
+    'args' => 'A,C,G,T,o,x,xrd',
+    'eg' => 'Ise::KnowTime',
+    'bab' => undef,
+    'l' => '#c',
+    'code' => 'I',
+    'acgt' => 'o,x,xrd'
+  },
   'y' => {
    'cv' => '0.1'
      },
@@ -231,19 +231,19 @@ $A->{I}->{exood} = sub {
     }
 };
 $A->{II}->{I}->{0.1}->{t} = {
-  't' => 't',
+  'sc' => {
+    'args' => 'A,C,G,T,K,cv,av',
+    'nois' => '#c',
+    'bab' => undef,
+    'code' => 'I',
+    'eg' => 'Ise::KnowTime',
+    'dige' => '109f43256035',
+    'acgt' => 'K,cv,av'
+  },
   'y' => {
    'cv' => '0.1'
      },
-  'sc' => {
-    'acgt' => 'K,cv,av',
-    'dige' => '109f43256035',
-    'code' => 'I',
-    'bab' => undef,
-    'eg' => 'Ise::KnowTime',
-    'args' => 'A,C,G,T,K,cv,av',
-    'nois' => '#c'
-  },
+  't' => 't',
   'c' => {
    'from' => 'Ise/KnowTime'
      }
@@ -258,7 +258,7 @@ $A->{I}->{t} = sub {
     my $c = 0+("0.".$cv);
     my $Av = $av || $A->{cv};
     # adapt to much  mergey       extendo  rubble
-    my $i = $G->{w}->("collaspII", {A => $A});
+    my $i = $G->{w}->($A,$C,$G,$T,"collaspII",{A=>$A});
     die'difAvcol' if $Av ne ($av || $A->{cv});
     #
     my $ncv;

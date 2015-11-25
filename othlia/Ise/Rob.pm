@@ -5,21 +5,21 @@ use G;
 our $A = {};
 
 $A->{II}->{I}->{0.1}->{robeg} = {
-  'y' => {
-   'cv' => '0.1'
+  'c' => {
+   'from' => 'Ise/Rob'
      },
   'sc' => {
     'dige' => '9a0f4abe2423',
     'args' => 'A,C,G,T,s',
-    'code' => 'I',
-    'bab' => undef,
     'eg' => 'Ise::Rob',
+    'bab' => undef,
+    'code' => 'I',
     'acgt' => 's'
   },
-  't' => 'robeg',
-  'c' => {
-   'from' => 'Ise/Rob'
-     }
+  'y' => {
+   'cv' => '0.1'
+     },
+  't' => 'robeg'
 };
 $A->{I}->{robeg} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
