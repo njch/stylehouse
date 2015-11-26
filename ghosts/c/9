@@ -138,16 +138,7 @@ ym/concoi: |
             A.mo.y->{$k}->{C.y.p}->{C.y.cvt} = $C;
         }
     }
-ym/conoi: | # is Art shader
-    C.sc.code || return;
-    $C = {%$C}; # hup
-    $C->{$_} = {%{$C->{$_}}} for grep {ref $C->{$_} eq 'HASH'} keys %$C;
-    C.y = {cv=>C.y} if !ref C.y;
-    if (keys %{C.y} > 1) {
-        sayre "Recuding to cv: C.t  ".ki C.y;
-        C.y = {cv=>C.y.cv};
-    }
-    delete C.sc.z if C.sc.z;
+cono: | # is perl Art shader, just re C
     my $wast = C.t;
     C.t =~ s/\W//sg;
     sayyl "Changed $wast --> C.t" if C.t ne $wast;
@@ -266,7 +257,21 @@ ym/conoi: | # is Art shader
             else {
                 C.sc.subpeel&&die"nonargs ha subpeel".ki$C
             }
-
+            
+            $C;
+ym/conoi: | # is Art shader
+    C.sc.code || return;
+    $C = {%$C}; # hup
+    $C->{$_} = {%{$C->{$_}}} for grep {ref $C->{$_} eq 'HASH'} keys %$C;
+    C.y = {cv=>C.y} if !ref C.y;
+    if (keys %{C.y} > 1) {
+        sayre "Recuding to cv: C.t  ".ki C.y;
+        C.y = {cv=>C.y.cv};
+    }
+    delete C.sc.z if C.sc.z;
+    
+    Rw conoi + $C;
+    
             C.sc.dige = slm 12, dig C.c.s;
             C.sc.gro = join'/',map{_.t}grep{_.y.cv != 0.9}
                 @{C.c.from} if C.c.from;
