@@ -8,6 +8,7 @@ our $A = {};
 
 $A->{I}->{airlock} = sub {
 
+    sayre "Airlocked: ".$_[0];
     eval shift
 };
 $A->{I}->{init} = sub {
@@ -36,12 +37,16 @@ $A->{I}->{w} = sub {
         }
     }
     my @src = ($A,$C,$G,$T);
-    unshift @k, grep{defined} map {
+    my @got;
+    for (qw'A C G T') {
         my $sr = shift @src;
-        !$t->{$_} && $sr;
-    } qw'A C G T';
-    unshift @k, grep{defined} !$t->{A} && $A, !$t->{C} && $C, !$t->{G} && $G, !$t->{T} && $T;
-    sayyl "Got www $pin   with @k";
+        if (!exists $t->{$_}) {
+            $t->{$_} = $sr;
+            push @got, $_;
+        }
+    }
+    unshift @k, @got if @got;
+    sayyl "Got www $pin   with ".wdump [[@k],[@got]];
     (my $fi = $pin) =~ s/\W/-/g;
     my $way = $G->{way}->{$fi} || die "No way: $fi";
     say ":WAY: $way";
@@ -55,6 +60,7 @@ $A->{I}->{w} = sub {
         $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
         my $code = $G->{h}->($A,$C,$G,$T,"won");
         $@ && die ":BEFORE $pin www $@";
+        saybl "Ark: $C->{sc}->{args} \n\n $code";
         my $sub = $G->{airlock}->($code);
         $@ && die "www to $pin:\n$@";
         !$sub && die "www to $pin: no sub returned";
@@ -186,8 +192,6 @@ $A->{I}->{won} = sub {
                 $C->{sc}->{subpeel}&&die"nonargs ha subpeel".ki$C
             }
     
-            $C;
-    
     $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
@@ -202,7 +206,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 3c1977f3f48b
+        dige: 07010c0626e9
         eg: Ngwe
       t: airlock
       "y": 
@@ -228,7 +232,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 4262ba1fc3ff
+        dige: 5b24b61f43ba
         eg: Ngwe
       t: w
       "y": 
@@ -241,7 +245,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 67d8de2ff144
+        dige: b0a067f0aad7
         eg: Ngwe
       t: won
       "y": 

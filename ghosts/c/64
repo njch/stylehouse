@@ -273,15 +273,18 @@ Ngwe: |
             }
         }
         my @src = ($A,$C,$G,$T);
-        unshift @k, grep{defined} map {
+        my @got;
+        for (qw'A C G T') {
             my $sr = shift @src;
-            !$t->{$_} && $sr;
-        } qw'A C G T';
-        unshift @k, grep{defined} !t.A && $A, !t.C && $C, !t.G && $G, !t.T && $T;
-        sayyl "Got www $pin   with @k";
+            if (!exists $t->{$_}) {
+                $t->{$_} = $sr;
+                push @got, $_;
+            }
+        }
+        unshift @k, @got if @got;
+        sayyl "Got www $pin   with ".wdump [[@k],[@got]];
         (my $fi = $pin) =~ s/\W/-/g;
         my $way = G.way->{$fi} || die "No way: $fi";
-        say ":WAY: $way";
         my $dige = G.way.o.dige->{$fi}
             || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
         my $ark = join' ',@k;
@@ -303,6 +306,7 @@ Ngwe: |
     n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
     
     n airlock=>''=><<'','%args:1'
+        sayre "Airlocked: ".$_[0];
         eval shift
     
     # etc
