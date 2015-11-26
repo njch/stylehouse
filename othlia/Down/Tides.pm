@@ -1,12 +1,14 @@
 package Down::Tides;
 use strict;
 use warnings;
-no warnings "uninitialized";
+no warnings qw(uninitialized redefine);
+
 use G;
 our $A = {};
 
 $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
     say "Made Wormhole: ".ki $e->{o};
@@ -15,6 +17,7 @@ $A->{I}->{T} = sub {
 $A->{I}->{tie} = sub {
     my ($A,$C,$G,$T,@M)=@_;
     my ($class,@Me) = @M;
+
     my $I = $A->{I};
     my %na;
     tie %na, $class, @Me;
@@ -90,7 +93,7 @@ $A->{I}->{tie} = sub {
             elsif (-f $f) {
                 print "Loading $f ...\n";
                 $o->{nonyam} ?
-                read_file($f)
+                scalar read_file($f)
                 :
                 LoadFile($f);
             }
@@ -112,7 +115,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 78fb2441cfeb
+        dige: 822466e9f044
         eg: Down::Tides
       t: T
       "y": 
@@ -125,7 +128,7 @@ I:
         args: A,C,G,T,class
         bab: ~
         code: I
-        dige: 308c97386cb4
+        dige: ece170fad0ed
         eg: Down::Tides
       t: tie
       "y": 

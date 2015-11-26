@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-no warnings "uninitialized";
+no warnings qw(uninitialized redefine);
+
 use FindBin qw($Bin);
 use lib "$Bin/othlia";
 use Down::GBabz;
@@ -33,12 +34,12 @@ $G->{I} = $A->{I};
 $G->{A} = $A;
 my $C = {};
 my $T = {};
-for my $sn (qw'pwin tie h w') {
+for my $sn (qw'pwin tie h w airlock') {
     $G->{$sn} = $G->{I}->{$sn} || die "No $sn from G I";
 }
 
 $G->{h}->($A,$C,$G,$T,"init");
 
-$G->{h}->($A,$C,$G,$T,"w",'Rune');
+$G->{w}->($A,$C,$G,$T,"Rune",A=>$A,C=>$C,G=>$G,T=>$T,m=>["i"]);
 
 Mojo::IOLoop->start unless Mojo::IOLoop->is_running;

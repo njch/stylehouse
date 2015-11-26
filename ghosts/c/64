@@ -156,9 +156,7 @@ thilm: | # for another
         }
         unshift @{t.l},grep{defined}
             "package t.pack;",
-            'use strict;',
-            'use warnings;',
-            'no warnings "uninitialized";',
+            G.way.strictwarn,
             (t.pack ne "G" ? "use G;" : ""),
             "our \$A = {};",
             @{t.head},
@@ -181,6 +179,10 @@ thilm: | # for another
         say "Not nothing here";
     
     
+strictwarn: |
+    use strict;
+    use warnings;
+    no warnings qw(uninitialized redefine);
 got: |
     u GBabz
     my ($A) = 
@@ -201,9 +203,7 @@ got: |
     # ^ include topmosts
     
     my $l=[
-        'use strict;',
-        'use warnings;',
-        'no warnings "uninitialized";',
+        G.way.strictwarn,
         'use FindBin qw($Bin);',
         'use lib "$Bin/othlia";',
         (map{"use $_;"}@inc),
@@ -240,13 +240,13 @@ gothat: |
     G.A = $A;
     my $C = {};
     my $T = {};
-    for my $sn (qw'pwin tie h w') {
+    for my $sn (qw'pwin tie h w airlock') {
         $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
     }
     
     G&init;
     
-    G&w,'Rune';
+    Rw Rune $A $C $G $T i;
     
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 Ngwe: |
@@ -256,7 +256,7 @@ Ngwe: |
         G.T = G&T,'w',G.T||{};
         G.way = G&T,'w/way',{nonyam=>1};
     
-    # make ar @Me, always in order
+    # make ar @Me, always in order, ref $k = +ar mixin
     n 'w'=>'',<<''
         my $pin = $s;
         my ($t,@k);
@@ -272,32 +272,43 @@ Ngwe: |
                 $t->{$k} = shift @Eat;
             }
         }
+        my @src = ($A,$C,$G,$T);
+        unshift @k, grep{defined} map {
+            my $sr = shift @src;
+            !$t->{$_} && $sr;
+        } qw'A C G T';
+        unshift @k, grep{defined} !t.A && $A, !t.C && $C, !t.G && $G, !t.T && $T;
         sayyl "Got www $pin   with @k";
         (my $fi = $pin) =~ s/\W/-/g;
         my $way = G.way->{$fi} || die "No way: $fi";
+        say ":WAY: $way";
         my $dige = G.way.o.dige->{$fi}
             || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
         my $ark = join' ',@k;
         my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
             my $C = {};
-            C.t = $way;
+            C.t = $pin;
             C.c = {s=>$way,from=>"way"};
-            C.sc = {code=>1,args=>join',',ar=>@k};
+            C.sc = {code=>1,noAI=>1,args=>join',',ar=>@k};
             my $code = G&won;
-            #G.airlock->($ar);
-            'not'
+            $@ && die ":BEFORE $pin www $@";
+            my $sub = G.airlock->($code);
+            $@ && die "www to $pin:\n$@";
+            !$sub && die "www to $pin: no sub returned";
+            $sub;
         };
-        sayre "OKAY: $pin is $dige: ".slim($way)." \n\n\nAND SUB: $sub";
+        sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";
+        $sub->($t,map{$t->{$_}}@k);
     
-    my $etc = G.way->{'cono'} || die "No cono shader";
-    my $ers = G.way->{'ersl'} || die "No ersl thrower";
-    n won=>'',$etc.$ers
-        
+    n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
+    
+    n airlock=>''=><<'','%args:1'
+        eval shift
+    
     # etc
     
 ersl: |
-    my $s = G&parse_babbl,C.c.s;
-    saybl $s;
+    G&parse_babbl,C.c.s;
 Shelf: |
     u allacgts
     n h =>'',<<''
@@ -470,10 +481,8 @@ Tides: |
                 my ($s,$o,@o) = @$e;
                 die "Storign o " if $k eq 'o';
                 if (o.nonyam) {
-                    sayre "Storing nonyam";
                     o.dige->{$k} = slim 12, dig $v unless ref $v;
                 }
-                say ki($o)."storing $k";
                 $s->{$k} = $v;
             }
             sub FETCH {
@@ -495,7 +504,7 @@ Tides: |
                     elsif (-f $f) {
                         print "Loading $f ...\n";
                         o.nonyam ?
-                        read_file($f)
+                        scalar read_file($f)
                         :
                         LoadFile($f);
                     }

@@ -1,18 +1,25 @@
 package Ngwe;
 use strict;
 use warnings;
-no warnings "uninitialized";
+no warnings qw(uninitialized redefine);
+
 use G;
 our $A = {};
 
+$A->{I}->{airlock} = sub {
+
+    eval shift
+};
 $A->{I}->{init} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
     $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
 $A->{I}->{w} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     my $pin = $s;
     my ($t,@k);
@@ -28,25 +35,37 @@ $A->{I}->{w} = sub {
             $t->{$k} = shift @Eat;
         }
     }
+    my @src = ($A,$C,$G,$T);
+    unshift @k, grep{defined} map {
+        my $sr = shift @src;
+        !$t->{$_} && $sr;
+    } qw'A C G T';
+    unshift @k, grep{defined} !$t->{A} && $A, !$t->{C} && $C, !$t->{G} && $G, !$t->{T} && $T;
     sayyl "Got www $pin   with @k";
     (my $fi = $pin) =~ s/\W/-/g;
     my $way = $G->{way}->{$fi} || die "No way: $fi";
+    say ":WAY: $way";
     my $dige = $G->{way}->{o}->{dige}->{$fi}
         || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
     my $ark = join' ',@k;
     my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
         my $C = {};
-        $C->{t} = $way;
+        $C->{t} = $pin;
         $C->{c} = {s=>$way,from=>"way"};
-        $C->{sc} = {code=>1,args=>join',',ar=>@k};
+        $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
         my $code = $G->{h}->($A,$C,$G,$T,"won");
-        #$G->{airlock}->($ar);
-        'not'
+        $@ && die ":BEFORE $pin www $@";
+        my $sub = $G->{airlock}->($code);
+        $@ && die "www to $pin:\n$@";
+        !$sub && die "www to $pin: no sub returned";
+        $sub;
     };
-    sayre "OKAY: $pin is $dige: ".slim($way)." \n\n\nAND SUB: $sub";
+    sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";
+    $sub->($t,map{$t->{$_}}@k);
 };
 $A->{I}->{won} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     my $wast = $C->{t};
     $C->{t} =~ s/\W//sg;
@@ -146,16 +165,16 @@ $A->{I}->{won} = sub {
                 # here some want their own I space
                 # if I resolv backward winding pro-be
                 # G pulls in I
-    
-                unshift @$ara, $ind."my \$I = A\.I;";
-    
                 my $waytoset = "A\.I.".$C->{t}." = " unless $C->{sc}->{noAI};
+                unless ($args eq '1') {
+                    unshift @$ara, $ind."my \$I = A\.I;";
+                    unshift @$ara, $ind."my (".join(',',map{'$'.$_}
+                        split',',$args).',@Me) = @'.$und.";\n";
+                }
                 $C->{c}->{s} = $waytoset
                     .$sf
                     ."sub {\n"
                     .$gl
-                    .$ind."my (".join(',',map{'$'.$_}
-                                split',',$args).',@Me) = @'.$und.";\n"
                     .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{$ind.$_}split "\n", $C->{c}->{s})."\n"
                     ."}"
@@ -168,13 +187,26 @@ $A->{I}->{won} = sub {
             }
     
             $C;
-    my $s = $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
-    saybl $s;
+    
+    $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
 --- 
 I: 
   "0.1": 
+    airlock: 
+      c: 
+        from: Ngwe
+      sc: 
+        acgt: s
+        args: 1
+        bab: ~
+        code: I
+        dige: 3c1977f3f48b
+        eg: Ngwe
+      t: airlock
+      "y": 
+        cv: '0.1'
     init: 
       c: 
         from: Ngwe
@@ -183,7 +215,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: a0ded370e768
+        dige: 9b8bb1946979
         eg: Ngwe
       t: init
       "y": 
@@ -196,7 +228,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: c2d15abb1a9c
+        dige: 4262ba1fc3ff
         eg: Ngwe
       t: w
       "y": 
@@ -209,7 +241,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: cd65df1593b7
+        dige: 67d8de2ff144
         eg: Ngwe
       t: won
       "y": 

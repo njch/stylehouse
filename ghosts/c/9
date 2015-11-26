@@ -237,16 +237,16 @@ cono: | # is perl Art shader, just re C
                 # here some want their own I space
                 # if I resolv backward winding pro-be
                 # G pulls in I
-                
-                unshift @$ara, $ind."my \$I = A\.I;";
-                
                 my $waytoset = "A\.I.".C.t." = " unless C.sc.noAI;
+                unless ($args eq '1') {
+                    unshift @$ara, $ind."my \$I = A\.I;";
+                    unshift @$ara, $ind."my (".join(',',map{'$'.$_}
+                        split',',$args).',@Me) = @'.$und.";\n";
+                }
                 C.c.s = $waytoset
                     .$sf
                     ."sub {\n"
                     .$gl
-                    .$ind."my (".join(',',map{'$'.$_}
-                                split',',$args).',@Me) = @'.$und.";\n"
                     .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{$ind.$_}split "\n", C.c.s)."\n"
                     ."}"
@@ -270,7 +270,7 @@ ym/conoi: | # is Art shader
     }
     delete C.sc.z if C.sc.z;
     
-    Rw conoi + $C;
+    Rw cono + $C;
     
             C.sc.dige = slm 12, dig C.c.s;
             C.sc.gro = join'/',map{_.t}grep{_.y.cv != 0.9}

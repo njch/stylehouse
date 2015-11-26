@@ -1,7 +1,8 @@
 package G;
 use strict;
 use warnings;
-no warnings "uninitialized";
+no warnings qw(uninitialized redefine);
+
 
 our $A = {};
 # two annoying dependencies 
