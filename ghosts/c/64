@@ -27,6 +27,7 @@ Dwight: | # grab old subs of G
 G: | # GGG subs, must get wormholes to do this this shortly
     my $f = "w/J.name\.yml";
     my $N = -f $f ? LoadFile($f) : do {
+        J.at.isle && die "Run without isle";
         my $ay = 
         n Dwight
         my $N = Rw getJN $J:ay.nj $I:ay.I $pi=clife;
@@ -42,11 +43,10 @@ G: | # GGG subs, must get wormholes to do this this shortly
         D.sc.bab = 'non'     if $s eq 'nonbabble';
         D.sc.subis = 1         if $s eq 'func' || $s eq '';
         D.sc.export = 1     if $s eq 'func';
-        if (D.sc.head && !D.sc.export) {
+        if (D.sc.head && !D.sc.export) { # re exports subs G imports
             my $e = [];
             push @$e, $1 while D.c.s =~ /use \S+ (?:qw)?\W([\w\s]+)\W;/sgm;
             D.sc.export = join ' ', @$e;
-            sayyl "Have ".wdump 4, $D;
         }
         D.c.s = "my \$G = shift;\n".D.c.s
                             if $s eq '';
@@ -55,10 +55,8 @@ G: | # GGG subs, must get wormholes to do this this shortly
         D.c.from = "G";
     }
     @$N = reverse I.d&sorp,'sc/head',@$N;
-    #delete _.y.cv for @$N;
     sayyl "Came back : _.sc.head "._.t for @$N;
-    
-    if (1) {
+    if (0) {
         my $E = {};
         for (@$N) {
             my $kip = join ' ', sort keys %{_.sc};
@@ -84,7 +82,7 @@ Goth: | # agther limbs (Ear)
     my $I = A.I;
     y.at.isle = 'U';
     my $E = {};
-    my ($X,$N) = Rw Xisle U Ear;
+    my ($X,$N) = Rw Xisle U Ngwe;
     for (@$N) {
         my $kip = join ' ', sort keys %{_.sc};
         E.tisc->{$kip}++;
@@ -205,7 +203,6 @@ gothat: |
             A.I->{D.t} = AA.I->{D.t};
             A.tople->{D.t} = 1;
         }
-        saybl wdump 3, $AA;
     }
     sayyl "Have : ".join' ', sort keys %{A.tople};
     my $G;
@@ -228,8 +225,16 @@ gothat: |
 Ngwe: |
     u allacgts
     
+    n init=>'',<<''
+        G.T = G&T,'w',G.T;
+        G.way = G&T,'way'
+    
     n 'w'=>'',<<'',{acgt=>'pin,ar'}
         sayyl "Got www $pin   with ".ki $ar;
+        (my $fi = $pin) =~ s/\W/-/g;
+        my $way = G.way->{$fi};
+        my $dige = G.way->{$fi."_dige"} ||= slm 12, dig $way;
+        sayre "OKAY: $dige: $way";
     
     # etc
     
@@ -373,7 +378,7 @@ Shelf: |
         }
 Tides: |
     u allacgts
-    n tie =>0.09=><<'','%acgt:class'
+    n tie =>''=><<'','%acgt:class'
         my %na;
         tie %na, $class, @Me;
         return \%na
@@ -381,10 +386,9 @@ Tides: |
     # see also Loading for ongoign G.T timeyness
     n T =>''=><<''
         my $e = I.d&tie,'Wormhole';
-        %$e = (%$e,%{G.T}) if G.T;
-        G.T = $e;
-        G.T.base = 'w';
-        G.T
+        %$e = (%$e,%$_) for @Me;
+        e.base = $s;
+        return $e;
     
     u allpack
     # for the hash of a filesystem
@@ -399,7 +403,7 @@ Tides: |
             sub FETCH {
                 my ($s,$k) = @_;
                 $s->{$k} ||= $k eq 'dir' ? return : do {
-                    my $d = s.dir;
+                    my $d = s.dir || die "NO dir on Wormhole";
                     my $il = join('/', grep{defined} $d, $k);
                     my $f = s.base.'/'.$il;
                     if (-d $f) {

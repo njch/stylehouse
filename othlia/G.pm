@@ -8,14 +8,13 @@ use Mojo::IOLoop::Stream;
 use Mojo::IOLoop;
 use Mojo::UserAgent;
 #use Mojo::SMTP::Client;
-use File::Path qw(make_path remove_tree);
-use File::Slurp;
+use File::Slurp qw(read_file write_file);
 use JSON::XS;
 our $JSON = JSON::XS->new->allow_nonref;
 our $JSONS = JSON::XS->new->allow_nonref;
 $JSONS->canonical(1); # sorts hashes
 our $IDI = 1; # hash
-use YAML::Syck;
+use YAML::Syck qw(Dump DumpFile Load LoadFile);
 use Data::Dumper; 
 use Storable 'dclone';
 use Carp;
@@ -30,8 +29,7 @@ use Math::Trig 'pi2';
 use HTML::Entities;
 use Unicode::UCD 'charinfo';
 use Encode qw(encode_utf8 decode_utf8 is_utf8);
-use Term::ANSIColor; 
-use File::Find;
+use Term::ANSIColor;
 our @F; # is Ring re subs from below 
 
 our $MAX_FCURSION = 240;
@@ -52,7 +50,7 @@ our $_ob = undef;
 # to dry up
 
 use Exporter 'import';
-our @EXPORT = qw(make_path remove_tree dclone gettimeofday usleep first max maxstr min minstr reduce shuffle sum natatime uniq ceil floor pi2 charinfo encode_utf8 decode_utf8 is_utf8 snooze dig ind acum slm slim sjson ejson djson zjson mkuuid mkuid flatline hitime hexbe hexend unico k2 kk ki saybl saygr sayg sayre sayyl say saycol wdump ddump inter F_delta stack fwind);
+our @EXPORT = qw(read_file write_file Dump DumpFile Load LoadFile dclone gettimeofday usleep first max maxstr min minstr reduce shuffle sum natatime uniq ceil floor pi2 charinfo encode_utf8 decode_utf8 is_utf8 snooze dig ind acum slm slim sjson ejson djson zjson mkuuid mkuid flatline hitime hexbe hexend unico k2 kk ki saybl saygr sayg sayre sayyl say saycol wdump ddump inter F_delta stack fwind);
 
 
 sub snooze {
