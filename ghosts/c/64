@@ -1,6 +1,5 @@
 
 Down: |
-    y.at.isle = 'U';
     n Tides
     n Goodat
 Ise: |
@@ -85,7 +84,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw'Ngwe Tides';
+    my @for = qw'Ngwe Tides'; #                 
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -216,7 +215,7 @@ got: |
     
     write_file('got',join("\n",@$l));
     
-    
+    sayyl "Wrote got: ".@$l." lines";
     n othing=>''=><<'','%code'
         say "Not nothing here";
     
@@ -237,35 +236,62 @@ gothat: |
     G.up = hitime();
     G.id = mkuid();
     G.I = A.I;
+    G.A = $A;
     my $C = {};
     my $T = {};
-    
     for my $sn (qw'pwin tie h w') {
         $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
     }
-    $SIG{__WARN__} = sub {
-        my $ing = shift;
-        warn$ing unless $ing =~ /^Use of uninitialized/;
-    };
+    
     G&init;
-    G&w,'expro';
-     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+    
+    G&w,'Rune';
+    
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 Ngwe: |
     u allacgts
     
     n init=>'',<<''
-        G.T = G&T,'w',G.T;
-        G.way = G&T,'w/way';
-        sayyl "Gway: $_  G.way->{$_}" for sort keys %{G.way};
-        
+        G.T = G&T,'w',G.T||{};
+        G.way = G&T,'w/way',{nonyam=>1};
     
-    n 'w'=>'',<<'',{acgt=>'pin,ar'}
-        sayyl "Got www $pin   with ".ki $ar;
+    # make ar @Me, always in order
+    n 'w'=>'',<<''
+        my ($o,$t,@k);
+        for (@Me) {
+            if ($o) {
+                ref $_ && die "a ref k to way $s after @k";
+                push @k, $_;
+            }
+            else {
+                $t->{$k[-1]} = $_;
+            }
+            $o = !$o;
+        }
+        sayyl "Got www $pin   with @k";
         (my $fi = $pin) =~ s/\W/-/g;
         my $way = G.way->{$fi} || die "No way: $fi";
-        my $dige = G.way->{$fi."_dige"} ||= slm 12, dig $way;
-        sayre "OKAY: $dige: $way";
+        my $dige = G.way.o.dige->{$fi} || die "Not diges $fi: wayo: ".ki G.way.o;
+        my $ark = join' ',@k;
+        my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
+            my $C = {};
+            C.t = $way;
+            C.c = {s=>$way,from=>"way"},
+            C.sc = {code=>1,args=>join',',ar=>@k};
+            my $code = G&won;
+            #G.airlock->($ar);
+            'not'
+        };
+        sayre "OKAY: $pin is $dige: ".slim($way)." \n\n\nAND SUB: $sub";
     
+    my $etc = G.way->{'ym/conoi'};
+    $etc =~ s/# AND(.{10,50})$//s || die "no find AND end of ym/conoi: $etc";
+    n won=>'',<<''.$etc,'%acgt:v'
+        my $s = G&parse_babbl,C.c.s;
+        saybl $s;
+        
+        
+        
     # etc
     
 Shelf: |
@@ -415,10 +441,8 @@ Tides: |
     
     # see also Loading for ongoign G.T timeyness
     n T =>''=><<''
-        my $e = I.d&tie,'Wormhole';
-        %$e = (%$e,%$_) for @Me;
-        e.base = $s;
-        say "Made Wormhole: e.dir ) e.base";
+        my $e = I.d&tie,'Wormhole',{base=>$s},@Me;
+        say "Made Wormhole: e.o.dir ) e.o.base";
         return $e;
     
     u allpack
@@ -428,25 +452,45 @@ Tides: |
     n Wormhole =>''=><<''
         {
             package Wormhole;
+            use G;
             use Tie::Hash;
-            use YAML::Syck;
-            our @ISA = qw(Tie::StdHash);
+            our @ISA = qw(Tie::ExtraHash);
+            sub TIEHASH {
+                my $class = shift;
+                my %o;
+                %o = (%o, %{$_}) for @_;
+                return bless [{},\%o], $class;
+            }
+            sub STORE {
+                my ($e,$k,$v) = @_;
+                my ($s,$o,@o) = @$e;
+                die "Storign o " if $k eq 'o';
+                if (o.nonyam) {
+                    o.dige->{$k} = slim 12, dig $v;
+                }
+                $s->{$k} = $v;
+            }
             sub FETCH {
                 my ($s,$k) = @_;
-                $s->{$k} ||= $k eq 'dir' ? return : do {
-                    my $d = s.dir || die "NO dir on Wormhole";
-                    my $il = join('/', grep{defined} $d, $k);
-                    my $f = s.base.'/'.$il;
+                ($s,my$o,my@o) = @$s;
+                return $o if $k eq 'o';
+                $s->{$k} ||= do {
+                    my $il = join('/', grep{defined} o.dir, $k);
+                    my $f = o.base.'/'.$il;
                     if (-d $f) {
                         my %Di;
                         tie %Di, 'Wormhole';
                         my $di = \%Di;
-                        di.base = s.base;
+                        di.o =
+                        di.base = o.base;
                         di.dir = $il;
                         $di
                     }
                     elsif (-f $f) {
                         print "Loading $f ...\n";
+                        o.nonyam ?
+                        read_file($f)
+                        :
                         LoadFile($f);
                     }
                     else {
@@ -752,7 +796,7 @@ GBabz: |
                 .
                 my @e;
                 push @e, '"'.$op.'"';
-                push @e, "{".join(",",@n)."}";
+                push @e, join(",",@n);
                 my $en = join ",", @e;
                 .
                 my $wa = $g.'->{w}->($A,$C,$G,$T,'.$en.')'.$ne;

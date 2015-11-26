@@ -249,7 +249,8 @@ ym/conoi: | # is Art shader
                 
                 unshift @$ara, $ind."my \$I = A\.I;";
                 
-                C.c.s = "A\.I.".C.t." = "
+                my $waytoset = "A\.I.".C.t." = " unless C.sc.noAI;
+                C.c.s = $waytoset
                     .$sf
                     ."sub {\n"
                     .$gl
@@ -271,7 +272,7 @@ ym/conoi: | # is Art shader
                 @{C.c.from} if C.c.from;
 
             delete C.c.from; # as 7, from appears on each thing as it leaves there
-            
+            # AND
             $v->{C.sc.code}->{C.y.cv}->{C.t} = $C;
 ym/notnotjs: |
     T.not = 1 unless exists C.sc.js;

@@ -7,10 +7,8 @@ our $A = {};
 $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
-    my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole');
-    %$e = (%$e,%$_) for @Me;
-    $e->{base} = $s;
-    say "Made Wormhole: $e->{dir} ) $e->{base}";
+    my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
+    say "Made Wormhole: $e->{o}->{dir} ) $e->{o}->{base}";
     return $e;
 };
 $A->{I}->{tie} = sub {
@@ -52,25 +50,45 @@ $A->{I}->{tie} = sub {
 }
 {
     package Wormhole;
+    use G;
     use Tie::Hash;
-    use YAML::Syck;
-    our @ISA = qw(Tie::StdHash);
+    our @ISA = qw(Tie::ExtraHash);
+    sub TIEHASH {
+        my $class = shift;
+        my %o;
+        %o = (%o, %{$_}) for @_;
+        return bless [{},\%o], $class;
+    }
+    sub STORE {
+        my ($e,$k,$v) = @_;
+        my ($s,$o,@o) = @$e;
+        die "Storign o " if $k eq 'o';
+        if ($o->{nonyam}) {
+            $o->{dige}->{$k} = slim 12, dig $v;
+        }
+        $s->{$k} = $v;
+    }
     sub FETCH {
         my ($s,$k) = @_;
-        $s->{$k} ||= $k eq 'dir' ? return : do {
-            my $d = $s->{dir} || die "NO dir on Wormhole";
-            my $il = join('/', grep{defined} $d, $k);
-            my $f = $s->{base}.'/'.$il;
+        ($s,my$o,my@o) = @$s;
+        return $o if $k eq 'o';
+        $s->{$k} ||= do {
+            my $il = join('/', grep{defined} $o->{dir}, $k);
+            my $f = $o->{base}.'/'.$il;
             if (-d $f) {
                 my %Di;
                 tie %Di, 'Wormhole';
                 my $di = \%Di;
-                $di->{base} = $s->{base};
+                $di->{o} =
+                $di->{base} = $o->{base};
                 $di->{dir} = $il;
                 $di
             }
             elsif (-f $f) {
                 print "Loading $f ...\n";
+                $o->{nonyam} ?
+                read_file($f)
+                :
                 LoadFile($f);
             }
             else {
@@ -91,7 +109,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 3806f6e6367b
+        dige: c42975758d0c
         eg: Down::Tides
       t: T
       "y": 

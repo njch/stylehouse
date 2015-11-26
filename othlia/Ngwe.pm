@@ -7,19 +7,45 @@ our $A = {};
 $A->{I}->{init} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
-    $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T});
-    $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way');
-    sayyl "Gway: $_  $G->{way}->{$_}" for sort keys %{$G->{way}};
+    $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
+    $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
 $A->{I}->{w} = sub {
-    my ($A,$C,$G,$T,@M)=@_;
-    my ($pin,$ar,@Me) = @M;
+    my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
-    sayyl "Got www $pin   with ".ki $ar;
+    my ($o,$t,@k);
+    for (@Me) {
+        if ($o) {
+            ref $_ && die "a ref k to way $s after @k";
+            push @k, $_;
+        }
+        else {
+            $t->{$k[-1]} = $_;
+        }
+        $o = !$o;
+    }
+    sayyl "Got www $pin   with @k";
     (my $fi = $pin) =~ s/\W/-/g;
     my $way = $G->{way}->{$fi} || die "No way: $fi";
-    my $dige = $G->{way}->{$fi."_dige"} ||= slm 12, dig $way;
-    sayre "OKAY: $dige: $way";
+    my $dige = $G->{way}->{o}->{dige}->{$fi} || die "Not diges $fi: wayo: ".ki $G->{way}->{o};
+    my $ark = join' ',@k;
+    my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
+        my $C = {};
+        $C->{t} = $way;
+        $C->{c} = {s=>$way,from=>"way"},
+        $C->{sc} = {code=>1,args=>join',',ar=>@k};
+        my $code = $G->{h}->($A,$C,$G,$T,"won");
+        #$G->{airlock}->($ar);
+        'not'
+    };
+    sayre "OKAY: $pin is $dige: ".slim($way)." \n\n\nAND SUB: $sub";
+};
+$A->{I}->{won} = sub {
+    my ($A,$C,$G,$T,@M)=@_;
+    my ($v,@Me) = @M;
+    my $I = $A->{I};
+    my $s = $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
+    saybl $s;
 };
 $A->{II} = Load(<<STEVE);
 --- 
@@ -33,7 +59,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: cfba26bfd017
+        dige: a0ded370e768
         eg: Ngwe
       t: init
       "y": 
@@ -42,13 +68,26 @@ I:
       c: 
         from: Ngwe
       sc: 
-        acgt: pin,ar
-        args: A,C,G,T,pin,ar
+        acgt: s
+        args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 40b46fc8c5aa
+        dige: 58788c6d84c4
         eg: Ngwe
       t: w
+      "y": 
+        cv: '0.1'
+    won: 
+      c: 
+        from: Ngwe
+      sc: 
+        acgt: v
+        args: A,C,G,T,v
+        bab: ~
+        code: I
+        dige: 9794186b50f5
+        eg: Ngwe
+      t: won
       "y": 
         cv: '0.1'
 

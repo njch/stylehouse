@@ -82,8 +82,26 @@ Run: |
     
     #Rw recur $d=8 $cb;
     sayyl "YEP";
+Rune: |
+    $SIG{__WARN__} = sub {
+        my $ing = shift;
+        warn$ing unless $ing =~ /^Use of uninitialized/;
+    };
+    (G.what) = @ARGV;
+    map {
+        my ($k,$f) = split '=';
+        G.way->{$k} = G.way->{$f};
+    } qw'In=Intt Jto=Jtt'
+    
+    Rw wayt $d=0.001 $p=Top;
+    
+    sayyl "Gway: $_  ".ki G.way->{$_} for sort keys %{G.way};
+    
+    
+    
+    #
 Top: |
-    say "";
+    say "|";
     my $now = hitime;
     my $gap = $now - G.lastout;
     if (!G.asap && $gap < 0.2) {
