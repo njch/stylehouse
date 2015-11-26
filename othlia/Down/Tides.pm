@@ -8,10 +8,10 @@ $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole');
-    %$e = (%$e,%{$G->{T}}) if $G->{T};
-    $G->{T} = $e;
-    $G->{T}->{base} = 'w';
-    $G->{T}
+    %$e = (%$e,%$_) for @Me;
+    $e->{base} = $s;
+    say "Made Wormhole: $e->{dir} ) $e->{base}";
+    return $e;
 };
 $A->{I}->{tie} = sub {
     my ($A,$C,$G,$T,@M)=@_;
@@ -58,7 +58,7 @@ $A->{I}->{tie} = sub {
     sub FETCH {
         my ($s,$k) = @_;
         $s->{$k} ||= $k eq 'dir' ? return : do {
-            my $d = $s->{dir};
+            my $d = $s->{dir} || die "NO dir on Wormhole";
             my $il = join('/', grep{defined} $d, $k);
             my $f = $s->{base}.'/'.$il;
             if (-d $f) {
@@ -91,7 +91,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 459d5b4d0e67
+        dige: 3806f6e6367b
         eg: Down::Tides
       t: T
       "y": 

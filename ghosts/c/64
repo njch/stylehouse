@@ -76,11 +76,6 @@ Ear: |
     n G
     n Ngwe
 Goth: | # agther limbs (Ear)
-    u GBabz
-    my ($A) = 
-    n s=>'13'=>see
-    my $I = A.I;
-    y.at.isle = 'U';
     my $E = {};
     my ($X,$N) = Rw Xisle U Ear;
     for (@$N) {
@@ -88,6 +83,38 @@ Goth: | # agther limbs (Ear)
         E.tisc->{$kip}++;
         push @{E.from->{_.c.from}||=[]}, $_;
     }
+    Rw thilm + $E;
+opot: |
+    my @for = qw'Ngwe Tides';
+    `rm w/U/$_` for @for;
+    my $com = 'othlia';
+    my @fo = `find $com -type f`;
+    chomp for @fo;
+    my $tf = {map{$_=>1}@for};
+    my $am;
+    /^$com\/((?:.+\/)?(.+?))\.pm$/
+        && $tf->{$2} && do{$am->{$2} = $1}
+        for @fo;
+    my $E = {};
+    for (@for) {
+        my $from = $am->{$_} || die "No from from $_";
+        my $m = [U=>$_];
+        my ($X,$N) = Rw Xisle + $m;
+        for (@$N) {
+            _.c.from = $from;
+            push @{E.from->{_.c.from}||=[]}, $_;
+        }
+    }
+    Rw thilm + $E;
+    
+    
+thilm: | # for another
+    u GBabz
+    my ($A) = 
+    n s=>'13'=>see
+    my $I = A.I;
+    y.at.isle = 'U';
+    # 
     my @to;
     my $tld; # 'StyleHose'
     for my $k (sort keys %{E.from}) {
@@ -228,14 +255,14 @@ Ngwe: |
     
     n init=>'',<<''
         G.T = G&T,'w',G.T;
-        G.way = G&T,'way';
-        sayyl "Gway: $_" for sort keys %{G.way};
+        G.way = G&T,'w/way';
+        sayyl "Gway: $_  G.way->{$_}" for sort keys %{G.way};
         
     
     n 'w'=>'',<<'',{acgt=>'pin,ar'}
         sayyl "Got www $pin   with ".ki $ar;
         (my $fi = $pin) =~ s/\W/-/g;
-        my $way = G.way->{$fi};
+        my $way = G.way->{$fi} || die "No way: $fi";
         my $dige = G.way->{$fi."_dige"} ||= slm 12, dig $way;
         sayre "OKAY: $dige: $way";
     
@@ -391,6 +418,7 @@ Tides: |
         my $e = I.d&tie,'Wormhole';
         %$e = (%$e,%$_) for @Me;
         e.base = $s;
+        say "Made Wormhole: e.dir ) e.base";
         return $e;
     
     u allpack
