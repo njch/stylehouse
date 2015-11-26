@@ -25,7 +25,7 @@ $A->{I}->{A} = sub {
     $A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
     {
     my $I = $A->{I} = {};
-    my $II = $G->{w}->($A,$C,$G,$T,"collaspII",{A=>$A});
+    my $II = $G->{w}->($A,$C,$G,$T,"collaspII",A=>$A);
     $I->{Ii} = $II->{Ii};
     say "$A->{talk} wants : $II->{Ii}";
     # split from R, dispatches of patches as I.$k = CODE

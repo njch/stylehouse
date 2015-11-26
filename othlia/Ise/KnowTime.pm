@@ -35,7 +35,7 @@ $A->{I}->{carebowl} = sub {
         if (!$dont) {
             my $paw = join"_",'',$I->{k},$I->{cv},$D->{t};
             $paw =~ s/\W//g;
-            $G->{w}->($A,$C,$G,$T,"$paw",{A=>$A,C=>$C,G=>$G,T=>$T,__D=>$D});
+            $G->{w}->($A,$C,$G,$T,"$paw",A=>$A,C=>$C,G=>$G,T=>$T,__D=>$D);
         }
         # most tiny ticks
         # this ind is all flywheel
@@ -125,7 +125,7 @@ $A->{I}->{ex} = sub {
             $G->{h}->($A,$C,$G,$T,"carebowl",$s,$iii,$x,$xrd);
         }
         # suble
-        my $se = $G->{w}->($A,$C,$G,$T,"TreeD",{s=>$s,scby=>"gro"}) 
+        my $se = $G->{w}->($A,$C,$G,$T,"TreeD",s=>$s,scby=>"gro") 
             if $A->{J}->{V} > 1 && keys %$s;
         $c == 0.1 ? saygr $se : say $se if $se;
     
@@ -186,7 +186,7 @@ $A->{I}->{t} = sub {
     my $c = 0+("0.".$cv);
     my $Av = $av || $A->{cv};
     # adapt to much  mergey       extendo  rubble
-    my $i = $G->{w}->($A,$C,$G,$T,"collaspII",{A=>$A});
+    my $i = $G->{w}->($A,$C,$G,$T,"collaspII",A=>$A);
     die'difAvcol' if $Av ne ($av || $A->{cv});
     #
     my $ncv;

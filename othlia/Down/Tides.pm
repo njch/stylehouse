@@ -8,7 +8,7 @@ $A->{I}->{T} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
-    say "Made Wormhole: $e->{o}->{dir} ) $e->{o}->{base}";
+    say "Made Wormhole: ".ki $e->{o};
     return $e;
 };
 $A->{I}->{tie} = sub {
@@ -64,15 +64,17 @@ $A->{I}->{tie} = sub {
         my ($s,$o,@o) = @$e;
         die "Storign o " if $k eq 'o';
         if ($o->{nonyam}) {
-            $o->{dige}->{$k} = slim 12, dig $v;
+            sayre "Storing nonyam";
+            $o->{dige}->{$k} = slim 12, dig $v unless ref $v;
         }
+        say ki($o)."storing $k";
         $s->{$k} = $v;
     }
     sub FETCH {
-        my ($s,$k) = @_;
-        ($s,my$o,my@o) = @$s;
+        my ($e,$k,$v) = @_;
+        my ($s,$o,@o) = @$e;
         return $o if $k eq 'o';
-        $s->{$k} ||= do {
+        $s->{$k} || STORE($e,$k, do {
             my $il = join('/', grep{defined} $o->{dir}, $k);
             my $f = $o->{base}.'/'.$il;
             if (-d $f) {
@@ -94,7 +96,7 @@ $A->{I}->{tie} = sub {
             else {
                 die "Wormhole sens nothing: $f";
             }
-        };
+        });
     }
 }
 $A->{II} = Load(<<STEVE);
@@ -109,7 +111,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: c42975758d0c
+        dige: 78fb2441cfeb
         eg: Down::Tides
       t: T
       "y": 

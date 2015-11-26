@@ -2,6 +2,7 @@
 Down: |
     n Tides
     n Goodat
+    n GBabz
 Ise: |
     n KnowTime
     n Shelf
@@ -42,19 +43,18 @@ G: | # GGG subs, must get wormholes to do this this shortly
         D.sc.bab = 'non'     if $s eq 'nonbabble';
         D.sc.subis = 1         if $s eq 'func' || $s eq '';
         D.sc.export = 1     if $s eq 'func';
-        if (D.sc.head && !D.sc.export) { # re exports subs G imports
+        if (D.sc.head && !D.sc.export) {
+            # G re-exports subs G imports
             my $e = [];
-            push @$e, $1 while D.c.s =~ /use \S+ (?:qw)?\W([\w\s]+)\W;/sgm;
+            push @$e, $1 while D.c.s =~
+                /use \S+ (?:qw)?\W([\w\s]+)\W;/sgm;
             D.sc.export = join ' ', @$e;
         }
-        D.c.s = "my \$G = shift;\n".D.c.s
-                            if $s eq '';
-        D.c.s = "sub D.t {\n".D.c.s."\n}"
-                            if D.sc.subis;
+        D.c.s = "my \$G = shift;\n".D.c.s if $s eq '';
+        D.c.s = "sub D.t {\n".D.c.s."\n}" if D.sc.subis;
         D.c.from = "G";
     }
     @$N = reverse I.d&sorp,'sc/head',@$N;
-    sayyl "Came back : _.sc.head "._.t for @$N;
     if (0) {
         my $E = {};
         for (@$N) {
@@ -159,6 +159,7 @@ thilm: | # for another
             "package t.pack;",
             'use strict;',
             'use warnings;',
+            'no warnings "uninitialized";',
             (t.pack ne "G" ? "use G;" : ""),
             "our \$A = {};",
             @{t.head},
@@ -203,6 +204,7 @@ got: |
     my $l=[
         'use strict;',
         'use warnings;',
+        'no warnings "uninitialized";',
         'use FindBin qw($Bin);',
         'use lib "$Bin/othlia";',
         (map{"use $_;"}@inc),
@@ -257,16 +259,19 @@ Ngwe: |
     
     # make ar @Me, always in order
     n 'w'=>'',<<''
-        my ($o,$t,@k);
-        for (@Me) {
-            if ($o) {
-                ref $_ && die "a ref k to way $s after @k";
-                push @k, $_;
+        my $pin = $s;
+        my ($t,@k);
+        my @Eat = @Me;
+        while (@Eat) {
+            my $k = shift @Eat;
+            if (ref $k) {
+                my @or = map{$_=>$k->{$_}} sort keys %$k;
+                unshift @Eat, @or;
             }
             else {
-                $t->{$k[-1]} = $_;
+                push @k, $k;
+                $t->{$k} = shift @Eat;
             }
-            $o = !$o;
         }
         sayyl "Got www $pin   with @k";
         (my $fi = $pin) =~ s/\W/-/g;
@@ -276,7 +281,7 @@ Ngwe: |
         my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
             my $C = {};
             C.t = $way;
-            C.c = {s=>$way,from=>"way"},
+            C.c = {s=>$way,from=>"way"};
             C.sc = {code=>1,args=>join',',ar=>@k};
             my $code = G&won;
             #G.airlock->($ar);
@@ -442,7 +447,7 @@ Tides: |
     # see also Loading for ongoign G.T timeyness
     n T =>''=><<''
         my $e = I.d&tie,'Wormhole',{base=>$s},@Me;
-        say "Made Wormhole: e.o.dir ) e.o.base";
+        say "Made Wormhole: ".ki e.o;
         return $e;
     
     u allpack
@@ -466,15 +471,17 @@ Tides: |
                 my ($s,$o,@o) = @$e;
                 die "Storign o " if $k eq 'o';
                 if (o.nonyam) {
-                    o.dige->{$k} = slim 12, dig $v;
+                    sayre "Storing nonyam";
+                    o.dige->{$k} = slim 12, dig $v unless ref $v;
                 }
+                say ki($o)."storing $k";
                 $s->{$k} = $v;
             }
             sub FETCH {
-                my ($s,$k) = @_;
-                ($s,my$o,my@o) = @$s;
+                my ($e,$k,$v) = @_;
+                my ($s,$o,@o) = @$e;
                 return $o if $k eq 'o';
-                $s->{$k} ||= do {
+                $s->{$k} || STORE($e,$k, do {
                     my $il = join('/', grep{defined} o.dir, $k);
                     my $f = o.base.'/'.$il;
                     if (-d $f) {
@@ -496,7 +503,7 @@ Tides: |
                     else {
                         die "Wormhole sens nothing: $f";
                     }
-                };
+                });
             }
         }
     
@@ -790,7 +797,7 @@ GBabz: |
                         push @m, $_;
                     }
                 }
-                unshift @n, '%$ar' if (!@n || $wanr) && $wanr ne "stick";
+                unshift @n, '$ar' if (!@n || $wanr) && $wanr ne "stick";
                 push @n, "m=>[".join(',',map{'"'.$_.'"'}@m).']'
                     if @m;
                 .

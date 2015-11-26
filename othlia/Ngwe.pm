@@ -13,16 +13,19 @@ $A->{I}->{init} = sub {
 $A->{I}->{w} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
-    my ($o,$t,@k);
-    for (@Me) {
-        if ($o) {
-            ref $_ && die "a ref k to way $s after @k";
-            push @k, $_;
+    my $pin = $s;
+    my ($t,@k);
+    my @Eat = @Me;
+    while (@Eat) {
+        my $k = shift @Eat;
+        if (ref $k) {
+            my @or = map{$_=>$k->{$_}} sort keys %$k;
+            unshift @Eat, @or;
         }
         else {
-            $t->{$k[-1]} = $_;
+            push @k, $k;
+            $t->{$k} = shift @Eat;
         }
-        $o = !$o;
     }
     sayyl "Got www $pin   with @k";
     (my $fi = $pin) =~ s/\W/-/g;
@@ -32,7 +35,7 @@ $A->{I}->{w} = sub {
     my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
         my $C = {};
         $C->{t} = $way;
-        $C->{c} = {s=>$way,from=>"way"},
+        $C->{c} = {s=>$way,from=>"way"};
         $C->{sc} = {code=>1,args=>join',',ar=>@k};
         my $code = $G->{h}->($A,$C,$G,$T,"won");
         #$G->{airlock}->($ar);
@@ -72,7 +75,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 58788c6d84c4
+        dige: c80956c13c8e
         eg: Ngwe
       t: w
       "y": 
