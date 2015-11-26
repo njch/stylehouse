@@ -1,6 +1,7 @@
 package Down::GBabz;
 use strict;
 use warnings;
+no warnings "uninitialized";
 use G;
 our $A = {};
 

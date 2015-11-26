@@ -1,6 +1,7 @@
 package Ise::KnowTime;
 use strict;
 use warnings;
+no warnings "uninitialized";
 use G;
 our $A = {};
 

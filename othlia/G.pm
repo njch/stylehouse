@@ -1,6 +1,7 @@
 package G;
 use strict;
 use warnings;
+no warnings "uninitialized";
 
 our $A = {};
 # two annoying dependencies 
