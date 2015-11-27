@@ -20,6 +20,11 @@ for my $AA (@{$A->{AAAA}}) {
     my @D = map{values%$_} map{values%$_} values %{$AA->{II}};
     my $ne = {map{$_=>1}keys%{$AA->{I}}};
     for my $D (@D) {
+        unless ($ne->{$D->{t}}) {
+            $D->{sc}->{eg} || die "notI sub not .eg".ki$D;
+            $AA->{symb} ||= eval'\%'.$D->{sc}->{eg}.'::';
+            $AA->{I}->{$D->{t}} = $ne->{$D->{t}} = $AA->{symb}->{$D->{t}};
+        }
         delete $ne->{$D->{t}} || sayre("II index for not in I: ".ki$D) && next;
         $A->{I}->{$D->{t}.'_dige'} = $D->{sc}->{dige};
         $A->{I}->{$D->{t}} = $AA->{I}->{$D->{t}};

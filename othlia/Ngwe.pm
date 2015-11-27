@@ -6,18 +6,18 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{airlock} = sub {
+sub airlock {
 
     eval shift
 };
-$A->{I}->{init} = sub {
+sub init {
     my ($A,$C,$G,$T,$s,@Me) = @_;
 
     my $I = $A->{I};
     $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
     $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
-$A->{I}->{sigstackend} = sub {
+sub sigstackend {
 
     local $@;
     eval { G::confess( '' ) };
@@ -29,7 +29,7 @@ $A->{I}->{sigstackend} = sub {
     # write on the train thats about to derail
     saybl "Stakc: ".wdump 3, \@stackend;
 };
-$A->{I}->{w} = sub {
+sub w {
     my ($A,$C,$G,$T,$s,@Me) = @_;
 
     my $I = $A->{I};
@@ -77,7 +77,7 @@ $A->{I}->{w} = sub {
     sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";
     $sub->($t,map{$t->{$_}}@k);
 };
-$A->{I}->{won} = sub {
+sub won {
     my ($A,$C,$G,$T,$s,@Me) = @_;
 
     my $I = $A->{I};
@@ -179,7 +179,8 @@ $A->{I}->{won} = sub {
                 # here some want their own I space
                 # if I resolv backward winding pro-be
                 # G pulls in I
-                my $waytoset = "A\.I.".$C->{t}." = " unless $C->{sc}->{noAI};
+                my $waytoset = "A\.I.".$C->{t}." = " unless $C->{sc}->{noAI} || $C->{sc}->{sub};
+                my $sub = "sub".($C->{sc}->{sub} ? " $C->{t} " : ' ')."{\n";
                 unless ($args eq '1') {
                     unshift @$ara, $ind."my \$I = A\.I;";
                     unshift @$ara, $ind."my (".join(',',map{'$'.$_}
@@ -187,7 +188,7 @@ $A->{I}->{won} = sub {
                 }
                 $C->{c}->{s} = $waytoset
                     .$sf
-                    ."sub {\n"
+                    .$sub
                     .$gl
                     .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{$ind.$_}split "\n", $C->{c}->{s})."\n"
@@ -245,6 +246,19 @@ I:
       t: sigstackend
       "y": 
         cv: '0.1'
+    w: 
+      c: 
+        from: Ngwe
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 29827cb394b3
+        eg: Ngwe
+      t: w
+      "y": 
+        cv: '0.1'
     won: 
       c: 
         from: Ngwe
@@ -253,7 +267,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: b0a067f0aad7
+        dige: eabc02d7f0ef
         eg: Ngwe
       t: won
       "y": 

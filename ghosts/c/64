@@ -137,8 +137,12 @@ thilm: | # for another
             my $nov = wdump 5, $D;
             die "TOo long D D.t: $nov" if length($nov) > 500;
             my $wh = D.sc.head ? 'head' : 'l';
-            t.II->{D.sc.code}->{D.y.cv}->{D.t} = $D
-                unless D.sc.head || D.sc.subis || D.sc.code eq 'Pack';
+            unless (D.sc.head || D.sc.subis || D.sc.code eq 'Pack') {
+                t.II->{D.sc.code}->{D.y.cv}->{D.t} = $D;
+                say "D.t begins: ".(split "\n",$s)[0];
+                $s =~ s/^(\$A->\{I\}->\{(\S+)\} = sub \{)/sub $2 {/s;
+                $2 eq D.t || die "Replaceo subAI $2 for D.t but it looks like $1";
+            }
             acum $t=>$wh=>$s;
             if (my $e = D.sc.export) {
                 $e = $e ne '1' ? $e : D.t;
@@ -226,6 +230,11 @@ gothat: |
         my @D = map{values%$_} map{values%$_} values %{AA.II};
         my $ne = {map{$_=>1}keys%{AA.I}};
         for my $D (@D) {
+            unless ($ne->{D.t}) {
+                D.sc.eg || die "notI sub not .eg".ki$D;
+                AA.symb ||= eval'\%'.D.sc.eg.'::';
+                AA.I->{D.t} = $ne->{D.t} = AA.symb->{D.t};
+            }
             delete $ne->{D.t} || sayre("II index for not in I: ".ki$D) && next;
             A.I->{D.t.'_dige'} = D.sc.dige;
             A.I->{D.t} = AA.I->{D.t};
@@ -271,7 +280,7 @@ Ngwe: |
     
     
     # make ar @Me, always in order, ref $k = +ar mixin
-    n 'w'=>'',<<'','%subis'
+    n 'w'=>'',<<''
         my $pin = $s;
         my ($t,@k);
         my @Eat = @Me;
@@ -309,8 +318,8 @@ Ngwe: |
             my $code = G&won;
             $@ && die ":BEFORE $pin www $@";
             my $sub = G.airlock->($code);
-            $@ && die "www to $pin:\n$@";
-            !$sub && die "www to $pin: no sub returned";
+            $@ && die "way nicht compile: $pin:\n$@";
+            !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
         };
         sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";

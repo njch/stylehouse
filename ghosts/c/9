@@ -237,7 +237,8 @@ cono: | # is perl Art shader, just re C
                 # here some want their own I space
                 # if I resolv backward winding pro-be
                 # G pulls in I
-                my $waytoset = "A\.I.".C.t." = " unless C.sc.noAI;
+                my $waytoset = "A\.I.".C.t." = " unless C.sc.noAI || C.sc.sub;
+                my $sub = "sub".(C.sc.sub ? " C.t " : ' ')."{\n";
                 unless ($args eq '1') {
                     unshift @$ara, $ind."my \$I = A\.I;";
                     unshift @$ara, $ind."my (".join(',',map{'$'.$_}
@@ -245,7 +246,7 @@ cono: | # is perl Art shader, just re C
                 }
                 C.c.s = $waytoset
                     .$sf
-                    ."sub {\n"
+                    .$sub
                     .$gl
                     .join("\n",uniq(@$ara))."\n"
                     .join("\n",map{$ind.$_}split "\n", C.c.s)."\n"
