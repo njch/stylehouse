@@ -84,7 +84,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw' GBabz'; #   Ngwe   Tides           
+    my @for = qw' GBabz'; # Shelf Ngwe Tides  GBabz            
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -193,13 +193,6 @@ got: |
     n s=>'13'=>see
     my $I = A.I;
     
-    my $s = G.way.nogog;
-            $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
-            # 
-    say Seee=>$s;
-        #I.d&parse_babbl,G.way.nogog
-        ;
-    return;
     my $inc = "othlia";
     my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
     my $as = {map{$_=>1} grep {-f $_} @find};
@@ -332,7 +325,8 @@ Ngwe: |
             C.sc = {code=>1,noAI=>1,args=>join',',ar=>@k};
             $code = G&won;
             $@ && die ":BEFORE $pin www $@";
-            my $sub = eval { G.airlock->($code) };
+            my $sub = G.airlock->($code);
+            $@ && sayre "DED:\n".$code;
             $@ && die "way nicht compile: $pin:\n$@";
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
@@ -352,7 +346,8 @@ ersl: |
 Shelf: |
     u allacgts
     n h =>'',<<''
-        my $y = A.I->{$s} || die "No way named $s on A.talk";
+        $DB::single = !A.I->{$s};
+        my $y = A.I->{$s} || die "No whay named $s on A.talk: ".wdump 2, A.I;
         $y->($A,$C,$G,$T,@Me);
     
     n A =>''=><<''
@@ -374,12 +369,12 @@ Shelf: |
         A.talk = (A.J.le&&"(A.J.le.name)").A.J.name;
         {
         my $I = A.I = {};
+        %$I = (%$I,%{G.I});
         my $II = Rw collaspII $A;
         I.Ii = II.Ii;
         say "A.talk wants : II.Ii";
         # split from R, dispatches of patches as I.$k = CODE
         # base exuder of self if no Ii resol
-        %$I = (%$I,%{G.I});
         I.Ii = II.Ii;
         # throw in from R exact Ii, bits of Ii to I before t gets it
         if (my $re = delete G.drop.recycling->{A.J.id}->{A.am}) {
@@ -521,7 +516,7 @@ Tides: |
                 my ($s,$o,@o) = @$e;
                 die "Storign o " if $k eq 'o';
                 if (o.nonyam) {
-                    o.dige->{$k} = slim 12, dig $v unless ref $v;
+                    o.dige->{$k} = slm 12, dig $v unless ref $v;
                 }
                 $s->{$k} = $v;
             }
@@ -779,7 +774,7 @@ GBabz: |
                 $indbe = $2 ?
                     qr/^(?!\Q$1\E)/ # for <#<'EOD' til ^EOD, etc
                   : qr/^($1\s+|\s*$)/; # some space in or no nonspace = quote
-                $s =~ s/$ze/'$angt'.($1?"'$1'":'STEVE')/e;
+                $s =~ s/$ze/$angt.($1?"'$1'":"'STEVE'")/e;
                 $inend = 'STEVE' if !$1;
             }
             .
@@ -791,7 +786,6 @@ GBabz: |
             $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
             .
             # close side ourselves, likely to gobble suro if, etc.
-            $DB::single = C.t =~ /Many/ && $s =~ /^\s*n /;
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
@@ -861,7 +855,7 @@ GBabz: |
             }
             .
             # sc.k -> $sc->{k};
-            $s =~ s/([A-Z-a-z]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
+            $s =~ s/([A-Z-a-z_]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
             # 
             $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
             #

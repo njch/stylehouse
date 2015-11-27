@@ -7,19 +7,19 @@ use G;
 our $A = {};
 
 sub T {
-    my ($A,$C,$G,$T,$s,@Me) = @_;
-    my $I = $A->{I};
-    my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
-    say "Made Wormhole: ".ki $e->{o};
-    return $e;
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
+say "Made Wormhole: ".ki $e->{o};
+return $e;
 };
 sub tie {
-    my ($A,$C,$G,$T,@M)=@_;
-    my ($class,@Me) = @M;
-    my $I = $A->{I};
-    my %na;
-    tie %na, $class, @Me;
-    return \%na
+my ($A,$C,$G,$T,@M)=@_;
+my ($class,@Me) = @M;
+my $I = $A->{I};
+my %na;
+tie %na, $class, @Me;
+return \%na
 };
 {
     package Ghoz; #
@@ -66,7 +66,7 @@ sub tie {
         my ($s,$o,@o) = @$e;
         die "Storign o " if $k eq 'o';
         if ($o->{nonyam}) {
-            $o->{dige}->{$k} = slim 12, dig $v unless ref $v;
+            $o->{dige}->{$k} = slm 12, dig $v unless ref $v;
         }
         $s->{$k} = $v;
     }
@@ -111,7 +111,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 78fb2441cfeb
+        dige: b2ec9119560f
         eg: Down::Tides
       t: T
       "y": 
@@ -124,7 +124,7 @@ I:
         args: A,C,G,T,class
         bab: ~
         code: I
-        dige: 308c97386cb4
+        dige: 26a6bbbfb025
         eg: Down::Tides
       t: tie
       "y": 
