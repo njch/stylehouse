@@ -6,7 +6,7 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{carebowl} = sub {
+sub carebowl {
     my ($A,$C,$G,$T,@M)=@_;
     my ($s,$iii,$x,$xrd,@Me) = @M;
     my $I = $A->{I};
@@ -57,7 +57,7 @@ $A->{I}->{carebowl} = sub {
         $s->{$I->{k}}->{$I->{cv}}->{$ik} = $D;
     }
 };
-$A->{I}->{ex} = sub {
+sub ex {
     my ($A,$C,$G,$T,@M)=@_;
     my ($i,$K,$cv,$av,@Me) = @M;
     my $I = $A->{I};
@@ -143,7 +143,7 @@ $A->{I}->{ex} = sub {
         return if delete $T->{whack};
     }
 };
-$A->{I}->{exood} = sub {
+sub exood {
     my ($A,$C,$G,$T,@M)=@_;
     my ($o,$x,$xrd,@Me) = @M;
     my $I = $A->{I};
@@ -178,7 +178,7 @@ $A->{I}->{exood} = sub {
         last if $T->{not} || $T->{whack};
     }
 };
-$A->{I}->{t} = sub {
+sub t {
     my ($A,$C,$G,$T,@M)=@_;
     my ($K,$cv,$av,@Me) = @M;
     my $I = $A->{I};

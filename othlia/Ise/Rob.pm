@@ -6,7 +6,7 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{robeg} = sub {
+sub robeg {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     # look

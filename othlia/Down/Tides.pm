@@ -6,7 +6,7 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{T} = sub {
+sub T {
     my ($A,$C,$G,$T,$s,@Me) = @_;
 
     my $I = $A->{I};
@@ -14,7 +14,7 @@ $A->{I}->{T} = sub {
     say "Made Wormhole: ".ki $e->{o};
     return $e;
 };
-$A->{I}->{tie} = sub {
+sub tie {
     my ($A,$C,$G,$T,@M)=@_;
     my ($class,@Me) = @M;
 

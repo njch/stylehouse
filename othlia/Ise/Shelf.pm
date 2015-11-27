@@ -6,7 +6,7 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{A} = sub {
+sub A {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     ($A,my$up) = ({},$A);
@@ -51,7 +51,7 @@ $A->{I}->{A} = sub {
     }
     ($A,$C,$T)
 };
-$A->{I}->{Act} = sub {
+sub Act {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $A->{s} = shift @{$A->{N}};
@@ -72,7 +72,7 @@ $A->{I}->{Act} = sub {
     $A->{t}->("2");
     ($A,$C,$T)
 };
-$A->{I}->{An} = sub {
+sub An {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $A->{I} || die "GimeI";
@@ -84,7 +84,7 @@ $A->{I}->{An} = sub {
     $A->{V} = sub { $A->{J}->{VV} && $A->{J}->{VV}->{$_[0]} || $A->{J}->{V} };
     $A
 };
-$A->{I}->{Sev} = sub {
+sub Sev {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $C = [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
@@ -93,13 +93,13 @@ $A->{I}->{Sev} = sub {
     $A->{I}->{scIfs} || die "NO scIfs: $A->{J}->{name}";
     $G->{h}->($A,$C,$G,$T,"loop");
 };
-$A->{I}->{h} = sub {
+sub h {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $y = $A->{I}->{$s} || die "No way named $s on $A->{talk}";
     $y->($A,$C,$G,$T,@Me);
 };
-$A->{I}->{loop} = sub {
+sub loop {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $i;
@@ -133,21 +133,21 @@ $A->{I}->{loop} = sub {
         die "noJMout";
     }
 };
-$A->{I}->{m} = sub {
+sub m {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $C = [$s,@Me];
     ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Mo');
     $G->{h}->($A,$C,$G,$T,"loop");
 };
-$A->{I}->{n} = sub {
+sub n {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     $C = [$s,@Me];
     ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'In');
     $G->{h}->($A,$C,$G,$T,"loop");
 };
-$A->{I}->{recycle} = sub {
+sub recycle {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     return if $I->{recyttl}++ > 38;

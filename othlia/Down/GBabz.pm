@@ -6,7 +6,7 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{bitsof_babble} = sub {
+sub bitsof_babble {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $p;
@@ -18,7 +18,7 @@ $A->{I}->{bitsof_babble} = sub {
     $p->{sur} = qr/ if| unless| for| when|,?\s*$|;\s*/;
     $p
 };
-$A->{I}->{parse_babbl} = sub {
+sub parse_babbl {
     my ($A,$C,$G,$T,$s,@Me) = @_;
     my $I = $A->{I};
     my $p = $G->{bitsof_babble} ||= $G->{h}->($A,$C,$G,$T,"bitsof_babble");

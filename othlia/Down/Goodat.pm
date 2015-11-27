@@ -6,28 +6,28 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-$A->{I}->{norp} = sub {
+sub norp {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,@Me) = @M;
     my $I = $A->{I};
     $I->{pwin} || die "nopwin from pin";
     sort { $I->{pwin}->($pin,$a) <=> $I->{pwin}->($pin,$b) } @Me;
 };
-$A->{I}->{pin} = sub {
+sub pin {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,$way,@Me) = @M;
     my $I = $A->{I};
     $I->{pwin} || die "nopwin from pin";
     $I->{pwin}->($pin,$way);
 };
-$A->{I}->{pon} = sub {
+sub pon {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,$way,$s,@Me) = @M;
     my $I = $A->{I};
     $I->{pwin} || die "nopwin from pin";
     $I->{pwin}->($pin,$way,{et=>$s});
 };
-$A->{I}->{pwin} = sub {
+sub pwin {
     my ($pin,$way,$set,@Me) = @_;
     my $I = $A->{I};
     if (exists $way->{$pin}) {
@@ -58,7 +58,7 @@ $A->{I}->{pwin} = sub {
     return undef unless $pin =~ /\*/;
     die "sat rs findy $pin";
 };
-$A->{I}->{sorp} = sub {
+sub sorp {
     my ($A,$C,$G,$T,@M)=@_;
     my ($pin,@Me) = @M;
     my $I = $A->{I};
