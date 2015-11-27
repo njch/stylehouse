@@ -59,30 +59,31 @@ sub parse_babbl {
                 undef $inend;
             }
         }
-        my $ze = qr/<<['"](\w*)['"]/;
+        my $angt = '<'.'<';
+        my $ze = qr/$angt['"](\w*)['"]/;
         if ($s =~ /^(\s*)\S.*$ze/) {
             $indbe = $2 ?
-                qr/^(?!\Q$1\E)/ # for <<'EOD' til ^EOD, etc
+                qr/^(?!\Q$1\E)/ # for <#<'EOD' til ^EOD, etc
               : qr/^($1\s+|\s*$)/; # some space in or no nonspace = quote
-            $s =~ s/$ze/'<<'.($1?"'$1'":'STEVE')/e;
+            $s =~ s/$ze/'$angt'.($1?"'$1'":'STEVE')/e;
             $inend = 'STEVE' if !$1;
         }
     
-        #c babable # expect closing brackets and insert J
-        # eg Atime(2) = A.time->($J, 2)
-        $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
-        $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
-        $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
-        $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+        # babable # expect closing brackets and insert J
+        # eg Atime(2) = $A->{time}->($J, 2)
+        $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
+        $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
+        $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+        $s =~ s/($p->{mwall})(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
     
         # close side ourselves, likely to gobble suro if, etc.
-        $DB::single = C.t =~ /Many/ && $s =~ /^\s*n /;
-        $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
-        #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+        $DB::single = $C->{t} =~ /Many/ && $s =~ /^\s*n /;
+        $s =~ s/($p->{mwall})(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+        #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
     
-        $s =~ s/I\.d\&(p.oint)/G\&$1/sgm;
-        # lma quack $not->('tag');? from I.d&pui,$s
-        $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
+        $s =~ s/I\.d\&($p->{oint})/G\&$1/sgm;
+        # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
+        $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
             my ($on,$p,$e,$t) = ($1,$2,$3,$4);
             my $in;
             ($on,$in) = ("G\.h",'$A,$C,$G,$T,')
@@ -96,7 +97,7 @@ sub parse_babbl {
             join '->', $1, map {'{"'.$_.'"}'}
             grep {$_} split m{\.>}, $2;
         /smge;
-        #c Rw
+        # Rw
         while ($s =~ /(Rw ($p->{oint})(?:(?!$p->{sur}) (.+?))?)$p->{sur}/gsm) {
             my ($old, $op, $oa) = ($1, $2, $3);
             my $g;
@@ -146,7 +147,7 @@ sub parse_babbl {
         }
     
         # $sc->{k} -> $sc->{k};
-        $s =~ s/(^\s+|\W)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/$1."\$$2".join"",map {"->{$_}"} grep {length} split '\.', $3;/seg;
+        $s =~ s/(\w+)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
         # 
         $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
         #
@@ -183,7 +184,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: bf359702fc8b
+        dige: fbc4d5c764cc
         eg: GBabz
       t: parse_babbl
       "y": 
