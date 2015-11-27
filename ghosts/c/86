@@ -245,7 +245,7 @@ GeoSo: |
     n last2here =>''=><<'',{acgt=>'last,r,here'}
         here.x  = last.x = r.x if exists r.x;
         here.y = last.y = r.y if exists r.y;
-        here.rad = 4*$RADIAN * r.spun if exists r.spun;
+        here.rad = 4*$G::RADIAN * r.spun if exists r.spun;
         here.zoom = r.zoom if defined r.zoom;
         .
         I.d&atom,$last,$here;
@@ -280,7 +280,7 @@ GeoSo: |
         my $geo = {};
         geo.rad = here.rad;
         # unwind (into...)
-        my $o = $RADIAN*4;
+        my $o = $G::RADIAN*4;
         my $swish = $o;
         $swish *= -1 if geo.rad < 0;
         my $i = 0;
@@ -291,8 +291,8 @@ GeoSo: |
         # pan to hemisphere...
         # from O- is it in the left hemisphere etc
         my $rad = geo.rad;
-        my $radleg = -$RADIAN;
-        $radleg *= -1 unless $rad < -$RADIAN && $rad > $RADIAN;
+        my $radleg = -$G::RADIAN;
+        $radleg *= -1 unless $rad < -$G::RADIAN && $rad > $G::RADIAN;
         $rad -= $radleg;
         geo.radial = I.d&ron,$rad;
         geo.x = here.x;
@@ -336,7 +336,7 @@ GeoSlur: |
         l.x = C.sc.x||0;
         l.y = C.sc.y||0;
         l.cv = 0.001;
-        l.rad = C.sc.rad||$RADIAN;
+        l.rad = C.sc.rad||$G::RADIAN;
         l.spin = C.sc.spin||0;
     
     n J =>3213=><<'',{rg=>'J,Y,V,yat',l=>'get here'}
