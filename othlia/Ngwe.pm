@@ -62,19 +62,20 @@ sub w {
     my $dige = $G->{way}->{o}->{dige}->{$fi}
         || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
     my $ark = join' ',@k;
+    my $code;
     my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
         my $C = {};
         $C->{t} = $pin;
         $C->{c} = {s=>$way,from=>"way"};
         $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
-        my $code = $G->{h}->($A,$C,$G,$T,"won");
+        $code = $G->{h}->($A,$C,$G,$T,"won");
         $@ && die ":BEFORE $pin www $@";
         my $sub = $G->{airlock}->($code);
-        $@ && die "www to $pin:\n$@";
-        !$sub && die "www to $pin: no sub returned";
+        $@ && die "way nicht compile: $pin:\n$@";
+        !$sub && die "way nicht sub returned: $pin (no error tho)";
         $sub;
     };
-    sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";
+    sayre "OKAY: $pin is $dige: $code \n\n\nAND SUB: $sub";
     $sub->($t,map{$t->{$_}}@k);
 };
 sub won {
@@ -201,6 +202,7 @@ sub won {
                 $C->{sc}->{subpeel}&&die"nonargs ha subpeel".ki$C
             }
     
+    my $A = $G::A;
     $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
@@ -254,7 +256,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 29827cb394b3
+        dige: da43570c6560
         eg: Ngwe
       t: w
       "y": 
@@ -267,7 +269,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: eabc02d7f0ef
+        dige: bbcfd395ed2b
         eg: Ngwe
       t: won
       "y": 

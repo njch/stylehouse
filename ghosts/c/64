@@ -139,7 +139,6 @@ thilm: | # for another
             my $wh = D.sc.head ? 'head' : 'l';
             unless (D.sc.head || D.sc.subis || D.sc.code eq 'Pack') {
                 t.II->{D.sc.code}->{D.y.cv}->{D.t} = $D;
-                say "D.t begins: ".(split "\n",$s)[0];
                 $s =~ s/^(\$A->\{I\}->\{(\S+)\} = sub \{)/sub $2 {/s;
                 $2 eq D.t || die "Replaceo subAI $2 for D.t but it looks like $1";
             }
@@ -192,6 +191,11 @@ got: |
     my ($A) = 
     n s=>'13'=>see
     my $I = A.I;
+    
+    say Seee=>
+        I.d&parse_babbl,G.way.Many
+        ;
+    
     my $inc = "othlia";
     my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
     my $as = {map{$_=>1} grep {-f $_} @find};
@@ -310,19 +314,20 @@ Ngwe: |
         my $dige = G.way.o.dige->{$fi}
             || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
         my $ark = join' ',@k;
+        my $code;
         my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
             my $C = {};
             C.t = $pin;
             C.c = {s=>$way,from=>"way"};
             C.sc = {code=>1,noAI=>1,args=>join',',ar=>@k};
-            my $code = G&won;
+            $code = G&won;
             $@ && die ":BEFORE $pin www $@";
             my $sub = G.airlock->($code);
             $@ && die "way nicht compile: $pin:\n$@";
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
         };
-        sayre "OKAY: $pin is $dige: $way \n\n\nAND SUB: $sub";
+        sayre "OKAY: $pin is $dige: $code \n\n\nAND SUB: $sub";
         $sub->($t,map{$t->{$_}}@k);
     
     n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
