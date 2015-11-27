@@ -74,6 +74,17 @@ Ear: |
     n G
     n Ngwe
     n GBabz
+Boat: | # will be waiting
+    n Indular
+    n Modulator
+    n Modems
+Rest: |
+    n Seven
+    n GeoSo
+    n Goodat
+    n Foli
+    n qqlaces
+    n threJ
 Goth: | # agther limbs (Ear)
     my $E = {};
     my ($X,$N) = Rw Xisle U Ear;
@@ -84,7 +95,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw' GBabz'; # Shelf Ngwe Tides  GBabz            
+    my @for = qw' Tides'; # Shelf  NgweGBabz  GBabz            
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -260,6 +271,7 @@ gothat: |
         $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
     }
     $SIG{__DIE__} = G.I.sigstackend || die "NO sigstackend";
+    G.IIII = [map{'G/T/H/'.$_}qw'Boat Rest'];
     
     G&init;
     
@@ -313,9 +325,19 @@ Ngwe: |
         }
         unshift @k, @got if @got;
         (my $fi = $pin) =~ s/\W/-/g;
-        my $way = G.way->{$fi} || die "No way: $fi";
-        my $dige = G.way.o.dige->{$fi}
-            || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
+        my ($way,$dige);
+        if (my $D = t.__D) {
+            say wdump 3, $D;
+            $dige = D.sc.dige || die "wayzipin wasnt scdige: ".ki$D;
+            $way = D.c.s;
+            $way =~ s/^A\.I\.(\w+) = //s;
+            $way =~ s/}A\.I\S+\n/\n/s if D.t eq 'An'; # redoes, too trouble
+        }
+        else {
+            $way = G.way->{$fi} || die "No way: $fi";
+            $dige = G.way.o.dige->{$fi}
+                || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
+        }
         my $ark = join' ',@k;
         my $code;
         my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
@@ -331,7 +353,7 @@ Ngwe: |
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
         };
-        sayre "OKAY: $pin is $dige: $code \n\n\nAND SUB: $sub";
+        sayre "OKAY: $pin is $dige: $code \n\n\nAND SUB: $sub" if $code;
         $sub->($t,map{$t->{$_}}@k);
     
     n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
@@ -514,7 +536,7 @@ Tides: |
             sub STORE {
                 my ($e,$k,$v) = @_;
                 my ($s,$o,@o) = @$e;
-                die "Storign o " if $k eq 'o';
+                die "Storign o: $v" if $k eq 'o';
                 if (o.nonyam) {
                     o.dige->{$k} = slm 12, dig $v unless ref $v;
                 }
@@ -529,12 +551,8 @@ Tides: |
                     my $f = o.base.'/'.$il;
                     if (-d $f) {
                         my %Di;
-                        tie %Di, 'Wormhole';
-                        my $di = \%Di;
-                        di.o =
-                        di.base = o.base;
-                        di.dir = $il;
-                        $di
+                        tie %Di, 'Wormhole', $o, {dir=>$il};
+                        \%Di;
                     }
                     elsif (-f $f) {
                         print "Loading $f ...\n";

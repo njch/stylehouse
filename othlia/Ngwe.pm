@@ -54,9 +54,17 @@ for (qw'A C G T') {
 }
 unshift @k, @got if @got;
 (my $fi = $pin) =~ s/\W/-/g;
-my $way = $G->{way}->{$fi} || die "No way: $fi";
-my $dige = $G->{way}->{o}->{dige}->{$fi}
-    || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
+my ($way,$dige);
+if (my $D = $t->{__D}) {
+    say wdump 3, $D;
+    $dige = $D->{sc}->{dige} || die "wayzipin wasnt scdige: ".ki$D;
+    $way = $D->{c}->{s};
+}
+else {
+    $way = $G->{way}->{$fi} || die "No way: $fi";
+    $dige = $G->{way}->{o}->{dige}->{$fi}
+        || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
+}
 my $ark = join' ',@k;
 my $code;
 my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
@@ -250,7 +258,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 25589ecddab7
+        dige: e66c507cc1cd
         eg: Ngwe
       t: w
       "y": 

@@ -64,7 +64,7 @@ return \%na
     sub STORE {
         my ($e,$k,$v) = @_;
         my ($s,$o,@o) = @$e;
-        die "Storign o " if $k eq 'o';
+        die "Storign o: $v" if $k eq 'o';
         if ($o->{nonyam}) {
             $o->{dige}->{$k} = slm 12, dig $v unless ref $v;
         }
@@ -79,12 +79,8 @@ return \%na
             my $f = $o->{base}.'/'.$il;
             if (-d $f) {
                 my %Di;
-                tie %Di, 'Wormhole';
-                my $di = \%Di;
-                $di->{o} =
-                $di->{base} = $o->{base};
-                $di->{dir} = $il;
-                $di
+                tie %Di, 'Wormhole', $o, {dir=>$il};
+                \%Di;
             }
             elsif (-f $f) {
                 print "Loading $f ...\n";
