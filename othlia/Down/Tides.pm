@@ -8,7 +8,6 @@ our $A = {};
 
 sub T {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
     say "Made Wormhole: ".ki $e->{o};
@@ -17,7 +16,6 @@ sub T {
 sub tie {
     my ($A,$C,$G,$T,@M)=@_;
     my ($class,@Me) = @M;
-
     my $I = $A->{I};
     my %na;
     tie %na, $class, @Me;
@@ -68,10 +66,8 @@ sub tie {
         my ($s,$o,@o) = @$e;
         die "Storign o " if $k eq 'o';
         if ($o->{nonyam}) {
-            sayre "Storing nonyam";
             $o->{dige}->{$k} = slim 12, dig $v unless ref $v;
         }
-        say ki($o)."storing $k";
         $s->{$k} = $v;
     }
     sub FETCH {
@@ -115,7 +111,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 822466e9f044
+        dige: 78fb2441cfeb
         eg: Down::Tides
       t: T
       "y": 
@@ -128,7 +124,7 @@ I:
         args: A,C,G,T,class
         bab: ~
         code: I
-        dige: ece170fad0ed
+        dige: 308c97386cb4
         eg: Down::Tides
       t: tie
       "y": 

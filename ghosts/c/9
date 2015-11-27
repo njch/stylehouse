@@ -181,7 +181,7 @@ cono: | # is perl Art shader, just re C
                 C.sc.sr = join ',', grep{$_} d=>o=>v=>talk=> @{Q.atar}, sort keys %{Q.caps||{}};
                 for my $sr (split ',', C.sc.sr) {
                     die "mixo $sr" if $sr =~ /\W/;
-                    push @$ara, $ind."my \$".$sr." = s\.$sr;";
+                    push @$ara, "my \$".$sr." = s\.$sr;";
                 }
                 C.sc.Ifs.Td = $Q;
             }
@@ -192,13 +192,13 @@ cono: | # is perl Art shader, just re C
                 $nk||die"strv:$v";
                 C.sc.nk ||= $nk;
                 C.sc.rg ||= 1 if C.sc.nk ne $nk;
-                push @$ara, "    my \$".$nk." = C\.".$nk.";";
+                push @$ara, $ind."my \$".$nk." = C\.".$nk.";";
                 if ($gk) {
                     C.sc.gk ||= $gk;
                     my $gkk = $gk;
                     $gk = C.sc.gkis if C.sc.gkis;
                     my $my = "my " unless C.sc.args =~ /\bs\b/ && $nk eq 'c' && $gkk eq 's';
-                    push @$ara, $ind."$my\$".$gk." = C\.".$nk."\.".$gkk.";";
+                    push @$ara, "$my\$".$gk." = C\.".$nk."\.".$gkk.";";
                 }
             }
             
@@ -217,7 +217,7 @@ cono: | # is perl Art shader, just re C
                 } split /,/, $v;
                 push @no, [C.sc.nk,C.sc.gk] if C.sc.nk && $nk ne C.sc.nk;
                 for my $s (@no) {
-                    push @$ara, $ind."my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
+                    push @$ara, "my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
                 }
             }
 
@@ -240,16 +240,15 @@ cono: | # is perl Art shader, just re C
                 my $waytoset = "A\.I.".C.t." = " unless C.sc.noAI || C.sc.sub;
                 my $sub = "sub".(C.sc.sub ? " C.t " : ' ')."{\n";
                 unless ($args eq '1') {
-                    unshift @$ara, $ind."my \$I = A\.I;";
-                    unshift @$ara, $ind."my (".join(',',map{'$'.$_}
-                        split',',$args).',@Me) = @'.$und.";\n";
+                    unshift @$ara, "my \$I = A\.I;";
+                    unshift @$ara, "my (".join(',',map{'$'.$_}
+                        split',',$args).',@Me) = @'.$und.";";
                 }
                 C.c.s = $waytoset
                     .$sf
                     .$sub
                     .$gl
-                    .join("\n",uniq(@$ara))."\n"
-                    .join("\n",map{$ind.$_}split "\n", C.c.s)."\n"
+                    .join("",map{"$ind$_\n"} uniq(grep{$_}@$ara), split("\n", C.c.s))
                     ."}"
                     .$sa
                     .";";

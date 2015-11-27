@@ -7,18 +7,15 @@ use G;
 our $A = {};
 
 sub airlock {
-
     eval shift
 };
 sub init {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
     $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
 sub sigstackend {
-
     local $@;
     eval { G::confess( '' ) };
     my @stack = split m/\n/, $@;
@@ -31,7 +28,6 @@ sub sigstackend {
 };
 sub w {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     my $pin = $s;
     my ($t,@k);
@@ -80,7 +76,6 @@ sub w {
 };
 sub won {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     my $wast = $C->{t};
     $C->{t} =~ s/\W//sg;
@@ -124,7 +119,7 @@ sub won {
                 $C->{sc}->{sr} = join ',', grep{$_} d=>o=>v=>talk=> @{$Q->{atar}}, sort keys %{$Q->{caps}||{}};
                 for my $sr (split ',', $C->{sc}->{sr}) {
                     die "mixo $sr" if $sr =~ /\W/;
-                    push @$ara, $ind."my \$".$sr." = s\.$sr;";
+                    push @$ara, "my \$".$sr." = s\.$sr;";
                 }
                 $C->{sc}->{Ifs}->{Td} = $Q;
             }
@@ -135,13 +130,13 @@ sub won {
                 $nk||die"strv:$v";
                 $C->{sc}->{nk} ||= $nk;
                 $C->{sc}->{rg} ||= 1 if $C->{sc}->{nk} ne $nk;
-                push @$ara, "    my \$".$nk." = C\.".$nk.";";
+                push @$ara, $ind."my \$".$nk." = C\.".$nk.";";
                 if ($gk) {
                     $C->{sc}->{gk} ||= $gk;
                     my $gkk = $gk;
                     $gk = $C->{sc}->{gkis} if $C->{sc}->{gkis};
                     my $my = "my " unless $C->{sc}->{args} =~ /\bs\b/ && $nk eq 'c' && $gkk eq 's';
-                    push @$ara, $ind."$my\$".$gk." = C\.".$nk."\.".$gkk.";";
+                    push @$ara, "$my\$".$gk." = C\.".$nk."\.".$gkk.";";
                 }
             }
     
@@ -160,7 +155,7 @@ sub won {
                 } split /,/, $v;
                 push @no, [$C->{sc}->{nk},$C->{sc}->{gk}] if $C->{sc}->{nk} && $nk ne $C->{sc}->{nk};
                 for my $s (@no) {
-                    push @$ara, $ind."my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
+                    push @$ara, "my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
                 }
             }
     
@@ -183,16 +178,15 @@ sub won {
                 my $waytoset = "A\.I.".$C->{t}." = " unless $C->{sc}->{noAI} || $C->{sc}->{sub};
                 my $sub = "sub".($C->{sc}->{sub} ? " $C->{t} " : ' ')."{\n";
                 unless ($args eq '1') {
-                    unshift @$ara, $ind."my \$I = A\.I;";
-                    unshift @$ara, $ind."my (".join(',',map{'$'.$_}
-                        split',',$args).',@Me) = @'.$und.";\n";
+                    unshift @$ara, "my \$I = A\.I;";
+                    unshift @$ara, "my (".join(',',map{'$'.$_}
+                        split',',$args).',@Me) = @'.$und.";";
                 }
                 $C->{c}->{s} = $waytoset
                     .$sf
                     .$sub
                     .$gl
-                    .join("\n",uniq(@$ara))."\n"
-                    .join("\n",map{$ind.$_}split "\n", $C->{c}->{s})."\n"
+                    .join("",map{"$ind$_\n"} uniq(grep{$_}@$ara), split("\n", $C->{c}->{s}))
                     ."}"
                     .$sa
                     .";";
@@ -216,7 +210,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 3c1977f3f48b
+        dige: b5ca5c54a134
         eg: Ngwe
       t: airlock
       "y": 
@@ -229,7 +223,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 9b8bb1946979
+        dige: a0ded370e768
         eg: Ngwe
       t: init
       "y": 
@@ -242,7 +236,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: b49bff33ffa5
+        dige: de43c5dd9b74
         eg: Ngwe
       t: sigstackend
       "y": 
@@ -255,7 +249,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: a7a6316917f6
+        dige: e0a7505e07a6
         eg: Ngwe
       t: w
       "y": 
@@ -268,7 +262,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: eabc02d7f0ef
+        dige: ec4d91e2fe1a
         eg: Ngwe
       t: won
       "y": 

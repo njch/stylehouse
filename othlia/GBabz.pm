@@ -8,7 +8,6 @@ our $A = {};
 
 sub bitsof_babble {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     my $p;
     $p->{alive} = qr/\$[\w]*[\w\->\{\}]+/;
@@ -21,7 +20,6 @@ sub bitsof_babble {
 };
 sub parse_babbl {
     my ($A,$C,$G,$T,$s,@Me) = @_;
-
     my $I = $A->{I};
     my $p = $G->{bitsof_babble} ||= $G->{h}->($A,$C,$G,$T,"bitsof_babble");
     # gone:
@@ -69,7 +67,7 @@ sub parse_babbl {
             $inend = 'STEVE' if !$1;
         }
     
-        # babable # expect closing brackets and insert J
+        #c babable # expect closing brackets and insert J
         # eg Atime(2) = $A->{time}->($J, 2)
         $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
         $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
@@ -97,7 +95,7 @@ sub parse_babbl {
             join '->', $1, map {'{"'.$_.'"}'}
             grep {$_} split m{\.>}, $2;
         /smge;
-        # Rw
+        #c Rw
         while ($s =~ /(Rw ($p->{oint})(?:(?!$p->{sur}) (.+?))?)$p->{sur}/gsm) {
             my ($old, $op, $oa) = ($1, $2, $3);
             my $g;
@@ -147,7 +145,7 @@ sub parse_babbl {
         }
     
         # $sc->{k} -> $sc->{k};
-        $s =~ s/(\w+)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
+        $s =~ s/([A-Z-a-z]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
         # 
         $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
         #
@@ -171,7 +169,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 72aeaa3d9a07
+        dige: 1cb90e1d550a
         eg: GBabz
       t: bitsof_babble
       "y": 
@@ -184,7 +182,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: fbc4d5c764cc
+        dige: ffef0e5ab880
         eg: GBabz
       t: parse_babbl
       "y": 
