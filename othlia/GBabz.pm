@@ -1,4 +1,4 @@
-package Down::GBabz;
+package GBabz;
 use strict;
 use warnings;
 no warnings qw(uninitialized redefine);
@@ -8,6 +8,7 @@ our $A = {};
 
 sub bitsof_babble {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     my $p;
     $p->{alive} = qr/\$[\w]*[\w\->\{\}]+/;
@@ -20,6 +21,7 @@ sub bitsof_babble {
 };
 sub parse_babbl {
     my ($A,$C,$G,$T,$s,@Me) = @_;
+
     my $I = $A->{I};
     my $p = $G->{bitsof_babble} ||= $G->{h}->($A,$C,$G,$T,"bitsof_babble");
     # gone:
@@ -66,7 +68,7 @@ sub parse_babbl {
             $inend = 'STEVE' if !$1;
         }
     
-        # babable # expect closing brackets and insert J
+        #c babable # expect closing brackets and insert J
         # eg Atime(2) = A.time->($J, 2)
         $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
         $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
@@ -74,6 +76,7 @@ sub parse_babbl {
         $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
     
         # close side ourselves, likely to gobble suro if, etc.
+        $DB::single = C.t =~ /Many/ && $s =~ /^\s*n /;
         $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
         #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
     
@@ -93,7 +96,7 @@ sub parse_babbl {
             join '->', $1, map {'{"'.$_.'"}'}
             grep {$_} split m{\.>}, $2;
         /smge;
-    
+        #c Rw
         while ($s =~ /(Rw ($p->{oint})(?:(?!$p->{sur}) (.+?))?)$p->{sur}/gsm) {
             my ($old, $op, $oa) = ($1, $2, $3);
             my $g;
@@ -143,7 +146,7 @@ sub parse_babbl {
         }
     
         # $sc->{k} -> $sc->{k};
-        $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+        $s =~ s/(^\s+|\W)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/$1."\$$2".join"",map {"->{$_}"} grep {length} split '\.', $3;/seg;
         # 
         $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
         #
@@ -161,27 +164,27 @@ I:
   "0.1": 
     bitsof_babble: 
       c: 
-        from: Down/GBabz
+        from: GBabz
       sc: 
         acgt: s
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 1cb90e1d550a
-        eg: Down::GBabz
+        dige: 72aeaa3d9a07
+        eg: GBabz
       t: bitsof_babble
       "y": 
         cv: '0.1'
     parse_babbl: 
       c: 
-        from: Down/GBabz
+        from: GBabz
       sc: 
         acgt: s
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: f6e8ec6adc67
-        eg: Down::GBabz
+        dige: bf359702fc8b
+        eg: GBabz
       t: parse_babbl
       "y": 
         cv: '0.1'

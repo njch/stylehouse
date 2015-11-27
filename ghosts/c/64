@@ -2,7 +2,6 @@
 Down: |
     n Tides
     n Goodat
-    n GBabz
 Ise: |
     n KnowTime
     n Shelf
@@ -74,6 +73,7 @@ Ear: |
     n Ise
     n G
     n Ngwe
+    n GBabz
 Goth: | # agther limbs (Ear)
     my $E = {};
     my ($X,$N) = Rw Xisle U Ear;
@@ -84,7 +84,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw'Ngwe '; #      Tides           
+    my @for = qw' GBabz'; #   Ngwe   Tides           
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -140,7 +140,8 @@ thilm: | # for another
             unless (D.sc.head || D.sc.subis || D.sc.code eq 'Pack') {
                 t.II->{D.sc.code}->{D.y.cv}->{D.t} = $D;
                 $s =~ s/^(\$A->\{I\}->\{(\S+)\} = sub \{)/sub $2 {/s;
-                $2 eq D.t || die "Replaceo subAI $2 for D.t but it looks like $1";
+                $2 eq D.t || die "Replaceo subAI $2 for D.t but it looks like $1\n"
+                    .ki($D)."   which is".(split"\n",$s)[0];
             }
             acum $t=>$wh=>$s;
             if (my $e = D.sc.export) {
@@ -192,10 +193,13 @@ got: |
     n s=>'13'=>see
     my $I = A.I;
     
-    say Seee=>
-        I.d&parse_babbl,G.way.Many
+    my $s = G.way.nogog;
+            $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+            # 
+    say Seee=>$s;
+        #I.d&parse_babbl,G.way.nogog
         ;
-    
+    return;
     my $inc = "othlia";
     my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
     my $as = {map{$_=>1} grep {-f $_} @find};
@@ -229,6 +233,12 @@ got: |
         say "Not nothing here";
     
     
+nogog: |
+            $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
+            $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
+            $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+            $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+            
 gothat: |
     for my $AA (@{A.AAAA}) {
         my @D = map{values%$_} map{values%$_} values %{AA.II};
@@ -322,7 +332,7 @@ Ngwe: |
             C.sc = {code=>1,noAI=>1,args=>join',',ar=>@k};
             $code = G&won;
             $@ && die ":BEFORE $pin www $@";
-            my $sub = G.airlock->($code);
+            my $sub = eval { G.airlock->($code) };
             $@ && die "way nicht compile: $pin:\n$@";
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
@@ -763,12 +773,13 @@ GBabz: |
                     undef $inend;
                 }
             }
-            my $ze = qr/<<['"](\w*)['"]/;
+            my $angt = '<'.'<';
+            my $ze = qr/$angt['"](\w*)['"]/;
             if ($s =~ /^(\s*)\S.*$ze/) {
                 $indbe = $2 ?
-                    qr/^(?!\Q$1\E)/ # for <<'EOD' til ^EOD, etc
+                    qr/^(?!\Q$1\E)/ # for <#<'EOD' til ^EOD, etc
                   : qr/^($1\s+|\s*$)/; # some space in or no nonspace = quote
-                $s =~ s/$ze/'<<'.($1?"'$1'":'STEVE')/e;
+                $s =~ s/$ze/'$angt'.($1?"'$1'":'STEVE')/e;
                 $inend = 'STEVE' if !$1;
             }
             .
@@ -780,6 +791,7 @@ GBabz: |
             $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
             .
             # close side ourselves, likely to gobble suro if, etc.
+            $DB::single = C.t =~ /Many/ && $s =~ /^\s*n /;
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
@@ -799,7 +811,7 @@ GBabz: |
                 join '->', $1, map {'{"'.$_.'"}'}
                 grep {$_} split m{\.>}, $2;
             /smge;
-            .
+            # Rw
             while ($s =~ /(Rw (p.oint)(?:(?!p.sur) (.+?))?)p.sur/gsm) {
                 my ($old, $op, $oa) = ($1, $2, $3);
                 my $g;
@@ -849,7 +861,7 @@ GBabz: |
             }
             .
             # sc.k -> $sc->{k};
-            $s =~ s/(?:(?<=\W)|^)(?<!\\)([A-Za-z_]\w{0,3})((?:\.[\w-]*\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/seg;
+            $s =~ s/(\w+)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
             # 
             $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
             #

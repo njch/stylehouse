@@ -70,7 +70,7 @@ sub w {
         $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
         $code = $G->{h}->($A,$C,$G,$T,"won");
         $@ && die ":BEFORE $pin www $@";
-        my $sub = $G->{airlock}->($code);
+        my $sub = eval { $G->{airlock}->($code) };
         $@ && die "way nicht compile: $pin:\n$@";
         !$sub && die "way nicht sub returned: $pin (no error tho)";
         $sub;
@@ -202,7 +202,6 @@ sub won {
                 $C->{sc}->{subpeel}&&die"nonargs ha subpeel".ki$C
             }
     
-    my $A = $G::A;
     $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
@@ -256,7 +255,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: da43570c6560
+        dige: a7a6316917f6
         eg: Ngwe
       t: w
       "y": 
@@ -269,7 +268,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: bbcfd395ed2b
+        dige: eabc02d7f0ef
         eg: Ngwe
       t: won
       "y": 
